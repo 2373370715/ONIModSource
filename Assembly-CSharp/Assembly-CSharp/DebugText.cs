@@ -6,17 +6,17 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/DebugText")]
 public class DebugText : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		DebugText.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		DebugText.Instance = this;
 	}
 
-	public void Draw(string text, Vector3 pos, Color color)
+		public void Draw(string text, Vector3 pos, Color color)
 	{
 		DebugText.Entry item = new DebugText.Entry
 		{
@@ -27,7 +27,7 @@ public class DebugText : KMonoBehaviour
 		this.entries.Add(item);
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		foreach (Text text in this.texts)
 		{
@@ -53,18 +53,18 @@ public class DebugText : KMonoBehaviour
 		this.entries.Clear();
 	}
 
-	public static DebugText Instance;
+		public static DebugText Instance;
 
-	private List<DebugText.Entry> entries = new List<DebugText.Entry>();
+		private List<DebugText.Entry> entries = new List<DebugText.Entry>();
 
-	private List<Text> texts = new List<Text>();
+		private List<Text> texts = new List<Text>();
 
-	private struct Entry
+		private struct Entry
 	{
-		public string text;
+				public string text;
 
-		public Vector3 pos;
+				public Vector3 pos;
 
-		public Color color;
+				public Color color;
 	}
 }

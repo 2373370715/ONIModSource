@@ -6,14 +6,14 @@ using UnityEngine;
 
 public class CookingStation : ComplexFabricator, IGameObjectEffectDescriptor
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.choreType = Db.Get().ChoreTypes.Cook;
 		this.fetchChoreTypeIdHash = Db.Get().ChoreTypes.CookFetch.IdHash;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.workable.requiredSkillPerk = Db.Get().SkillPerks.CanElectricGrill.Id;
@@ -27,7 +27,7 @@ public class CookingStation : ComplexFabricator, IGameObjectEffectDescriptor
 		this.workable.SkillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
 		this.workable.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 		ComplexFabricatorWorkable workable = this.workable;
-		workable.OnWorkTickActions = (Action<Worker, float>)Delegate.Combine(workable.OnWorkTickActions, new Action<Worker, float>(delegate(Worker worker, float dt)
+		workable.OnWorkTickActions = (Action<WorkerBase, float>)Delegate.Combine(workable.OnWorkTickActions, new Action<WorkerBase, float>(delegate(WorkerBase worker, float dt)
 		{
 			global::Debug.Assert(worker != null, "How did we get a null worker?");
 			if (this.diseaseCountKillRate > 0)
@@ -40,7 +40,7 @@ public class CookingStation : ComplexFabricator, IGameObjectEffectDescriptor
 		base.GetComponent<ComplexFabricator>().workingStatusItem = Db.Get().BuildingStatusItems.ComplexFabricatorCooking;
 	}
 
-	protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
+		protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
 	{
 		List<GameObject> list = base.SpawnOrderProduct(recipe);
 		foreach (GameObject gameObject in list)
@@ -52,13 +52,13 @@ public class CookingStation : ComplexFabricator, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> descriptors = base.GetDescriptors(go);
 		descriptors.Add(new Descriptor(UI.BUILDINGEFFECTS.REMOVES_DISEASE, UI.BUILDINGEFFECTS.TOOLTIPS.REMOVES_DISEASE, Descriptor.DescriptorType.Effect, false));
 		return descriptors;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private int diseaseCountKillRate = 100;
 }

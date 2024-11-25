@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Klei;
 using Klei.AI;
 using STRINGS;
 using TUNING;
@@ -9,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/TinkerStation")]
 public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 {
-		public AttributeConverter AttributeConverter
+			public AttributeConverter AttributeConverter
 	{
 		set
 		{
@@ -17,7 +16,7 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 		}
 	}
 
-		public float AttributeExperienceMultiplier
+			public float AttributeExperienceMultiplier
 	{
 		set
 		{
@@ -25,7 +24,7 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 		}
 	}
 
-		public string SkillExperienceSkillGroup
+			public string SkillExperienceSkillGroup
 	{
 		set
 		{
@@ -33,7 +32,7 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 		}
 	}
 
-		public float SkillExperienceMultiplier
+			public float SkillExperienceMultiplier
 	{
 		set
 		{
@@ -41,7 +40,7 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.attributeConverter = Db.Get().AttributeConverters.MachinerySpeed;
@@ -53,11 +52,10 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 			ChoreType byHash = Db.Get().ChoreTypes.GetByHash(this.fetchChoreType);
 			this.filteredStorage = new FilteredStorage(this, null, null, false, byHash);
 		}
-		base.SetWorkTime(15f);
 		base.Subscribe<TinkerStation>(-592767678, TinkerStation.OnOperationalChangedDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.useFilteredStorage && this.filteredStorage != null)
@@ -66,7 +64,7 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.filteredStorage != null)
 		{
@@ -75,13 +73,13 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 		base.OnCleanUp();
 	}
 
-	private bool CorrectRolePrecondition(MinionIdentity worker)
+		private bool CorrectRolePrecondition(MinionIdentity worker)
 	{
 		MinionResume component = worker.GetComponent<MinionResume>();
 		return component != null && component.HasPerk(this.requiredSkillPerk);
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		RoomTracker component = base.GetComponent<RoomTracker>();
 		if (component != null && component.room != null)
@@ -90,7 +88,7 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 		}
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		if (!this.operational.IsOperational)
@@ -101,7 +99,7 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 		this.operational.SetActive(true, false);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		base.ShowProgressBar(false);
@@ -109,25 +107,29 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 		this.operational.SetActive(false, false);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
-		float num;
-		SimUtil.DiseaseInfo diseaseInfo;
-		float num2;
-		this.storage.ConsumeAndGetDisease(this.inputMaterial, this.massPerTinker, out num, out diseaseInfo, out num2);
-		GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(this.outputPrefab), base.transform.GetPosition(), Grid.SceneLayer.Ore, null, 0);
-		gameObject.GetComponent<PrimaryElement>().Temperature = this.outputTemperature;
-		gameObject.SetActive(true);
+		PrimaryElement primaryElement = this.storage.FindFirstWithMass(this.inputMaterial, this.massPerTinker);
+		if (primaryElement != null)
+		{
+			SimHashes elementID = primaryElement.ElementID;
+			this.storage.ConsumeIgnoringDisease(elementID.CreateTag(), this.massPerTinker);
+			GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(this.outputPrefab), base.transform.GetPosition() + Vector3.up, Grid.SceneLayer.Ore, null, 0);
+			PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
+			component.SetElement(elementID, true);
+			component.Temperature = this.outputTemperature;
+			gameObject.SetActive(true);
+		}
 		this.chore = null;
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		this.UpdateChore();
 	}
 
-	private void UpdateChore()
+		private void UpdateChore()
 	{
 		if (this.operational.IsOperational && (this.ToolsRequested() || this.alwaysTinker) && this.HasMaterial())
 		{
@@ -146,17 +148,17 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 		}
 	}
 
-	private bool HasMaterial()
+		private bool HasMaterial()
 	{
 		return this.storage.MassStored() > 0f;
 	}
 
-	private bool ToolsRequested()
+		private bool ToolsRequested()
 	{
 		return MaterialNeeds.GetAmount(this.outputPrefab, base.gameObject.GetMyWorldId(), false) > 0f && this.GetMyWorld().worldInventory.GetAmount(this.outputPrefab, true) <= 0f;
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		string arg = this.inputMaterial.ProperName();
 		List<Descriptor> descriptors = base.GetDescriptors(go);
@@ -186,48 +188,48 @@ public class TinkerStation : Workable, IGameObjectEffectDescriptor, ISim1000ms
 		return descriptors;
 	}
 
-	public static TinkerStation AddTinkerStation(GameObject go, string required_room_type)
+		public static TinkerStation AddTinkerStation(GameObject go, string required_room_type)
 	{
 		TinkerStation result = go.AddOrGet<TinkerStation>();
 		go.AddOrGet<RoomTracker>().requiredRoomType = required_room_type;
 		return result;
 	}
 
-	public HashedString choreType;
+		public HashedString choreType;
 
-	public HashedString fetchChoreType;
+		public HashedString fetchChoreType;
 
-	private Chore chore;
+		private Chore chore;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Operational operational;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Storage storage;
 
-	public bool useFilteredStorage;
+		public bool useFilteredStorage;
 
-	protected FilteredStorage filteredStorage;
+		protected FilteredStorage filteredStorage;
 
-	public bool alwaysTinker;
+		public bool alwaysTinker;
 
-	public float massPerTinker;
+		public float massPerTinker;
 
-	public Tag inputMaterial;
+		public Tag inputMaterial;
 
-	public Tag outputPrefab;
+		public Tag outputPrefab;
 
-	public float outputTemperature;
+		public float outputTemperature;
 
-	public string EffectTitle = UI.BUILDINGEFFECTS.IMPROVED_BUILDINGS;
+		public string EffectTitle = UI.BUILDINGEFFECTS.IMPROVED_BUILDINGS;
 
-	public string EffectTooltip = UI.BUILDINGEFFECTS.TOOLTIPS.IMPROVED_BUILDINGS;
+		public string EffectTooltip = UI.BUILDINGEFFECTS.TOOLTIPS.IMPROVED_BUILDINGS;
 
-	public string EffectItemString = UI.BUILDINGEFFECTS.IMPROVED_BUILDINGS_ITEM;
+		public string EffectItemString = UI.BUILDINGEFFECTS.IMPROVED_BUILDINGS_ITEM;
 
-	public string EffectItemTooltip = UI.BUILDINGEFFECTS.TOOLTIPS.IMPROVED_BUILDINGS_ITEM;
+		public string EffectItemTooltip = UI.BUILDINGEFFECTS.TOOLTIPS.IMPROVED_BUILDINGS_ITEM;
 
-	private static readonly EventSystem.IntraObjectHandler<TinkerStation> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<TinkerStation>(delegate(TinkerStation component, object data)
+		private static readonly EventSystem.IntraObjectHandler<TinkerStation> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<TinkerStation>(delegate(TinkerStation component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});

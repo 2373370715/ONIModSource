@@ -8,18 +8,18 @@ using UnityEngine.UI;
 
 public class WorldSelector : KScreen, ISim4000ms
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		WorldSelector.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		WorldSelector.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (!DlcManager.FeatureClusterSpaceEnabled())
 		{
@@ -56,7 +56,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		});
 	}
 
-	private void SpawnToggles()
+		private void SpawnToggles()
 	{
 		foreach (KeyValuePair<int, MultiToggle> keyValuePair in this.worldRows)
 		{
@@ -78,7 +78,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		}
 	}
 
-	private void AddWorld(object data)
+		private void AddWorld(object data)
 	{
 		int num = (int)data;
 		MultiToggle component = Util.KInstantiateUI(this.worldRowPrefab, this.worldRowContainer, false).GetComponent<MultiToggle>();
@@ -94,7 +94,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		this.RefreshToggles();
 	}
 
-	private void RemoveWorld(object data)
+		private void RemoveWorld(object data)
 	{
 		int key = (int)data;
 		MultiToggle cmp;
@@ -107,7 +107,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		this.RefreshToggles();
 	}
 
-	public void OnWorldRowClicked(int id)
+		public void OnWorldRowClicked(int id)
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(id);
 		if (world != null && world.IsDiscovered)
@@ -116,7 +116,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		}
 	}
 
-	private void RefreshToggles()
+		private void RefreshToggles()
 	{
 		foreach (KeyValuePair<int, MultiToggle> keyValuePair in this.worldRows)
 		{
@@ -154,7 +154,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		this.SortRows();
 	}
 
-	private void RefreshWorldStatus()
+		private void RefreshWorldStatus()
 	{
 		foreach (KeyValuePair<int, MultiToggle> keyValuePair in this.worldRows)
 		{
@@ -172,7 +172,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		}
 	}
 
-	private void RefreshToggleTooltips()
+		private void RefreshToggleTooltips()
 	{
 		int num = 0;
 		List<int> discoveredAsteroidIDsSorted = ClusterManager.Instance.GetDiscoveredAsteroidIDsSorted();
@@ -214,7 +214,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		}
 	}
 
-	private void SortRows()
+		private void SortRows()
 	{
 		List<KeyValuePair<int, MultiToggle>> list = this.worldRows.ToList<KeyValuePair<int, MultiToggle>>();
 		list.Sort(delegate(KeyValuePair<int, MultiToggle> x, KeyValuePair<int, MultiToggle> y)
@@ -249,7 +249,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		}
 	}
 
-	private global::Action IdxToHotkeyAction(int idx)
+		private global::Action IdxToHotkeyAction(int idx)
 	{
 		global::Action result;
 		switch (idx)
@@ -292,7 +292,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		return result;
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
 		foreach (KeyValuePair<int, MultiToggle> keyValuePair in this.worldRows)
 		{
@@ -308,7 +308,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		this.RefreshToggleTooltips();
 	}
 
-	public void TriggerVisualNotification(int worldID, ColonyDiagnostic.DiagnosticResult.Opinion result)
+		public void TriggerVisualNotification(int worldID, ColonyDiagnostic.DiagnosticResult.Opinion result)
 	{
 		foreach (KeyValuePair<int, MultiToggle> keyValuePair in this.worldRows)
 		{
@@ -323,7 +323,7 @@ public class WorldSelector : KScreen, ISim4000ms
 		}
 	}
 
-	private IEnumerator VisualNotificationRoutine(GameObject contentGameObject, RectTransform indicator, GameObject spacer)
+		private IEnumerator VisualNotificationRoutine(GameObject contentGameObject, RectTransform indicator, GameObject spacer)
 	{
 		spacer.GetComponent<NotificationAnimator>().Begin(false);
 		Vector2 defaultIndicatorSize = new Vector2(8f, 8f);
@@ -349,19 +349,19 @@ public class WorldSelector : KScreen, ISim4000ms
 		yield break;
 	}
 
-	public static WorldSelector Instance;
+		public static WorldSelector Instance;
 
-	public Dictionary<int, MultiToggle> worldRows;
+		public Dictionary<int, MultiToggle> worldRows;
 
-	public TextStyleSetting titleTextSetting;
+		public TextStyleSetting titleTextSetting;
 
-	public TextStyleSetting bodyTextSetting;
+		public TextStyleSetting bodyTextSetting;
 
-	public GameObject worldRowPrefab;
+		public GameObject worldRowPrefab;
 
-	public GameObject worldRowContainer;
+		public GameObject worldRowContainer;
 
-	private Dictionary<int, ColonyDiagnostic.DiagnosticResult.Opinion> previousWorldDiagnosticStatus = new Dictionary<int, ColonyDiagnostic.DiagnosticResult.Opinion>();
+		private Dictionary<int, ColonyDiagnostic.DiagnosticResult.Opinion> previousWorldDiagnosticStatus = new Dictionary<int, ColonyDiagnostic.DiagnosticResult.Opinion>();
 
-	private Dictionary<int, List<GameObject>> worldStatusIcons = new Dictionary<int, List<GameObject>>();
+		private Dictionary<int, List<GameObject>> worldStatusIcons = new Dictionary<int, List<GameObject>>();
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class RocketEngineCluster : StateMachineComponent<RocketEngineCluster.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -22,7 +22,7 @@ public class RocketEngineCluster : StateMachineComponent<RocketEngineCluster.Sta
 		}
 	}
 
-	private void ConfigureFlameLight()
+		private void ConfigureFlameLight()
 	{
 		this.flameLight = base.gameObject.AddOrGet<Light2D>();
 		this.flameLight.Color = Color.white;
@@ -39,7 +39,7 @@ public class RocketEngineCluster : StateMachineComponent<RocketEngineCluster.Sta
 		this.flameLight.enabled = false;
 	}
 
-	private void UpdateFlameLight(int cell)
+		private void UpdateFlameLight(int cell)
 	{
 		base.smi.master.flameLight.RefreshShapeAndPosition();
 		if (Grid.IsValidCell(cell))
@@ -56,51 +56,51 @@ public class RocketEngineCluster : StateMachineComponent<RocketEngineCluster.Sta
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	public float exhaustEmitRate = 50f;
+		public float exhaustEmitRate = 50f;
 
-	public float exhaustTemperature = 1500f;
+		public float exhaustTemperature = 1500f;
 
-	public SpawnFXHashes explosionEffectHash;
+		public SpawnFXHashes explosionEffectHash;
 
-	public SimHashes exhaustElement = SimHashes.CarbonDioxide;
+		public SimHashes exhaustElement = SimHashes.CarbonDioxide;
 
-	public Tag fuelTag;
+		public Tag fuelTag;
 
-	public float efficiency = 1f;
+		public float efficiency = 1f;
 
-	public bool requireOxidizer = true;
+		public bool requireOxidizer = true;
 
-	public int maxModules = 32;
+		public int maxModules = 32;
 
-	public int maxHeight;
+		public int maxHeight;
 
-	public bool mainEngine = true;
+		public bool mainEngine = true;
 
-	public byte exhaustDiseaseIdx = byte.MaxValue;
+		public byte exhaustDiseaseIdx = byte.MaxValue;
 
-	public int exhaustDiseaseCount;
+		public int exhaustDiseaseCount;
 
-	public bool emitRadiation;
+		public bool emitRadiation;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private RadiationEmitter radiationEmitter;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Generator powerGenerator;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KBatchedAnimController animController;
 
-	public Light2D flameLight;
+		public Light2D flameLight;
 
-	public class StatesInstance : GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.GameInstance
+		public class StatesInstance : GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.GameInstance
 	{
-		public StatesInstance(RocketEngineCluster smi) : base(smi)
+				public StatesInstance(RocketEngineCluster smi) : base(smi)
 		{
 			if (smi.emitRadiation)
 			{
@@ -109,7 +109,7 @@ public class RocketEngineCluster : StateMachineComponent<RocketEngineCluster.Sta
 			}
 		}
 
-		public void BeginBurn()
+				public void BeginBurn()
 		{
 			if (base.smi.master.emitRadiation)
 			{
@@ -132,7 +132,7 @@ public class RocketEngineCluster : StateMachineComponent<RocketEngineCluster.Sta
 			}
 		}
 
-		public void DoBurn(float dt)
+				public void DoBurn(float dt)
 		{
 			int num = Grid.PosToCell(base.smi.master.gameObject.transform.GetPosition() + base.smi.master.animController.Offset);
 			if (Grid.AreCellsInSameWorld(num, this.pad_cell))
@@ -186,7 +186,7 @@ public class RocketEngineCluster : StateMachineComponent<RocketEngineCluster.Sta
 			}
 		}
 
-		public void EndBurn()
+				public void EndBurn()
 		{
 			if (base.smi.master.emitRadiation)
 			{
@@ -196,14 +196,14 @@ public class RocketEngineCluster : StateMachineComponent<RocketEngineCluster.Sta
 			this.pad_cell = Grid.InvalidCell;
 		}
 
-		public Vector3 radiationEmissionBaseOffset;
+				public Vector3 radiationEmissionBaseOffset;
 
-		private int pad_cell;
+				private int pad_cell;
 	}
 
-	public class States : GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster>
+		public class States : GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.initializing.load;
 			this.initializing.load.ScheduleGoTo(0f, this.initializing.decide);
@@ -233,50 +233,50 @@ public class RocketEngineCluster : StateMachineComponent<RocketEngineCluster.Sta
 			this.burnComplete.PlayAnim("launch_pst", KAnim.PlayMode.Loop).GoTo(this.idle);
 		}
 
-		private bool IsReadyToLaunch(RocketEngineCluster.StatesInstance smi)
+				private bool IsReadyToLaunch(RocketEngineCluster.StatesInstance smi)
 		{
 			return smi.GetComponent<RocketModuleCluster>().CraftInterface.CheckPreppedForLaunch();
 		}
 
-		public bool IsRocketAirborne(RocketEngineCluster.StatesInstance smi)
+				public bool IsRocketAirborne(RocketEngineCluster.StatesInstance smi)
 		{
 			return smi.master.HasTag(GameTags.RocketNotOnGround) && !smi.master.HasTag(GameTags.RocketInSpace);
 		}
 
-		public bool IsRocketGrounded(RocketEngineCluster.StatesInstance smi)
+				public bool IsRocketGrounded(RocketEngineCluster.StatesInstance smi)
 		{
 			return smi.master.HasTag(GameTags.RocketOnGround);
 		}
 
-		public bool IsRocketInSpace(RocketEngineCluster.StatesInstance smi)
+				public bool IsRocketInSpace(RocketEngineCluster.StatesInstance smi)
 		{
 			return smi.master.HasTag(GameTags.RocketInSpace);
 		}
 
-		public RocketEngineCluster.States.InitializingStates initializing;
+				public RocketEngineCluster.States.InitializingStates initializing;
 
-		public RocketEngineCluster.States.IdleStates idle;
+				public RocketEngineCluster.States.IdleStates idle;
 
-		public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State burning_pre;
+				public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State burning_pre;
 
-		public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State burning;
+				public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State burning;
 
-		public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State burnComplete;
+				public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State burnComplete;
 
-		public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State space;
+				public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State space;
 
-		public class InitializingStates : GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State
+				public class InitializingStates : GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State
 		{
-			public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State load;
+						public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State load;
 
-			public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State decide;
+						public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State decide;
 		}
 
-		public class IdleStates : GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State
+				public class IdleStates : GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State
 		{
-			public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State grounded;
+						public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State grounded;
 
-			public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State ready;
+						public GameStateMachine<RocketEngineCluster.States, RocketEngineCluster.StatesInstance, RocketEngineCluster, object>.State ready;
 		}
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/MainMenuIntroShort")]
 public class MainMenuIntroShort : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		string @string = KPlayerPrefs.GetString("PlayShortOnLaunch", "");
@@ -22,6 +22,6 @@ public class MainMenuIntroShort : KMonoBehaviour
 		base.gameObject.SetActive(false);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private bool alwaysPlay;
 }

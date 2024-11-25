@@ -5,23 +5,23 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Pathfinding")]
 public class Pathfinding : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		Pathfinding.Instance = null;
 		OffsetTableTracker.OnPathfindingInvalidated();
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Pathfinding.Instance = this;
 	}
 
-	public void AddNavGrid(NavGrid nav_grid)
+		public void AddNavGrid(NavGrid nav_grid)
 	{
 		this.NavGrids.Add(nav_grid);
 	}
 
-	public NavGrid GetNavGrid(string id)
+		public NavGrid GetNavGrid(string id)
 	{
 		foreach (NavGrid navGrid in this.NavGrids)
 		{
@@ -34,12 +34,12 @@ public class Pathfinding : KMonoBehaviour
 		return null;
 	}
 
-	public List<NavGrid> GetNavGrids()
+		public List<NavGrid> GetNavGrids()
 	{
 		return this.NavGrids;
 	}
 
-	public void ResetNavGrids()
+		public void ResetNavGrids()
 	{
 		foreach (NavGrid navGrid in this.NavGrids)
 		{
@@ -47,7 +47,7 @@ public class Pathfinding : KMonoBehaviour
 		}
 	}
 
-	public void FlushNavGridsOnLoad()
+		public void FlushNavGridsOnLoad()
 	{
 		if (this.navGridsHaveBeenFlushedOnLoad)
 		{
@@ -57,7 +57,7 @@ public class Pathfinding : KMonoBehaviour
 		this.UpdateNavGrids(true);
 	}
 
-	public void UpdateNavGrids(bool update_all = false)
+		public void UpdateNavGrids(bool update_all = false)
 	{
 		update_all = true;
 		if (update_all)
@@ -83,7 +83,7 @@ public class Pathfinding : KMonoBehaviour
 		this.UpdateIdx = (this.UpdateIdx + 1) % this.NavGrids.Count;
 	}
 
-	public void RenderEveryTick()
+		public void RenderEveryTick()
 	{
 		foreach (NavGrid navGrid in this.NavGrids)
 		{
@@ -91,7 +91,7 @@ public class Pathfinding : KMonoBehaviour
 		}
 	}
 
-	public void AddDirtyNavGridCell(int cell)
+		public void AddDirtyNavGridCell(int cell)
 	{
 		foreach (NavGrid navGrid in this.NavGrids)
 		{
@@ -99,7 +99,7 @@ public class Pathfinding : KMonoBehaviour
 		}
 	}
 
-	public void RefreshNavCell(int cell)
+		public void RefreshNavCell(int cell)
 	{
 		HashSet<int> hashSet = new HashSet<int>();
 		hashSet.Add(cell);
@@ -109,17 +109,17 @@ public class Pathfinding : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.NavGrids.Clear();
 		OffsetTableTracker.OnPathfindingInvalidated();
 	}
 
-	private List<NavGrid> NavGrids = new List<NavGrid>();
+		private List<NavGrid> NavGrids = new List<NavGrid>();
 
-	private int UpdateIdx;
+		private int UpdateIdx;
 
-	private bool navGridsHaveBeenFlushedOnLoad;
+		private bool navGridsHaveBeenFlushedOnLoad;
 
-	public static Pathfinding Instance;
+		public static Pathfinding Instance;
 }

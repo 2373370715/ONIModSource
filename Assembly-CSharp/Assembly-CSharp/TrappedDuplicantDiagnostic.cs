@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class TrappedDuplicantDiagnostic : ColonyDiagnostic
 {
-	public TrappedDuplicantDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.TRAPPEDDUPLICANTDIAGNOSTIC.ALL_NAME)
+		public TrappedDuplicantDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.TRAPPEDDUPLICANTDIAGNOSTIC.ALL_NAME)
 	{
 		this.icon = "overlay_power";
 		base.AddCriterion("CheckTrapped", new DiagnosticCriterion(UI.COLONY_DIAGNOSTICS.TRAPPEDDUPLICANTDIAGNOSTIC.CRITERIA.CHECKTRAPPED, new Func<ColonyDiagnostic.DiagnosticResult>(this.CheckTrapped)));
 	}
 
-	public ColonyDiagnostic.DiagnosticResult CheckTrapped()
+		public ColonyDiagnostic.DiagnosticResult CheckTrapped()
 	{
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null);
 		bool flag = false;
@@ -46,13 +46,12 @@ public class TrappedDuplicantDiagnostic : ColonyDiagnostic
 						flag2 = (flag2 && !component.CanReach(worldItems2[0].GetComponent<IApproachable>()));
 					}
 				}
-				List<Sleepable> worldItems3 = Components.Sleepables.GetWorldItems(component.GetMyWorld().id, false);
-				for (int i = 0; i < worldItems3.Count; i++)
+				foreach (Sleepable sleepable in Components.NormalBeds.WorldItemsEnumerate(component.GetMyWorldId(), true))
 				{
-					Assignable component2 = worldItems3[i].GetComponent<Assignable>();
-					if (component2 != null && component2.IsAssignedTo(minionIdentity))
+					Assignable assignable = sleepable.assignable;
+					if (assignable != null && assignable.IsAssignedTo(minionIdentity))
 					{
-						flag2 = (flag2 && !component.CanReach(worldItems3[i].GetComponent<IApproachable>()));
+						flag2 = (flag2 && !component.CanReach(sleepable.approachable));
 					}
 				}
 				if (flag2)
@@ -67,7 +66,7 @@ public class TrappedDuplicantDiagnostic : ColonyDiagnostic
 		return result;
 	}
 
-	private bool CheckMinionBasicallyIdle(MinionIdentity minion)
+		private bool CheckMinionBasicallyIdle(MinionIdentity minion)
 	{
 		KPrefabID component = minion.GetComponent<KPrefabID>();
 		return component.HasTag(GameTags.Idle) || component.HasTag(GameTags.RecoveringBreath) || component.HasTag(GameTags.MakingMess);

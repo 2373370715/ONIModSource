@@ -2,12 +2,12 @@
 
 public class StorageLockerSmart : StorageLocker
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.Initialize(true);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.ports = base.gameObject.GetComponent<LogicPorts>();
@@ -16,12 +16,12 @@ public class StorageLockerSmart : StorageLocker
 		this.UpdateLogicAndActiveState();
 	}
 
-	private void UpdateLogicCircuitCB(object data)
+		private void UpdateLogicCircuitCB(object data)
 	{
 		this.UpdateLogicAndActiveState();
 	}
 
-	private void UpdateLogicAndActiveState()
+		private void UpdateLogicAndActiveState()
 	{
 		bool flag = this.filteredStorage.IsFull();
 		bool isOperational = this.operational.IsOperational;
@@ -31,7 +31,7 @@ public class StorageLockerSmart : StorageLocker
 		this.operational.SetActive(isOperational, false);
 	}
 
-			public override float UserMaxCapacity
+				public override float UserMaxCapacity
 	{
 		get
 		{
@@ -44,13 +44,13 @@ public class StorageLockerSmart : StorageLocker
 		}
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private LogicPorts ports;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private static readonly EventSystem.IntraObjectHandler<StorageLockerSmart> UpdateLogicCircuitCBDelegate = new EventSystem.IntraObjectHandler<StorageLockerSmart>(delegate(StorageLockerSmart component, object data)
+		private static readonly EventSystem.IntraObjectHandler<StorageLockerSmart> UpdateLogicCircuitCBDelegate = new EventSystem.IntraObjectHandler<StorageLockerSmart>(delegate(StorageLockerSmart component, object data)
 	{
 		component.UpdateLogicCircuitCB(data);
 	});

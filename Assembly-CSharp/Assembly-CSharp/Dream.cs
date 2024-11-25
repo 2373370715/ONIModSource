@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Dream : Resource
 {
-	public Dream(string id, ResourceSet parent, string background, string[] icons_sprite_names) : base(id, parent, null)
+		public Dream(string id, ResourceSet parent, string background, string[] icons_sprite_names) : base(id, parent, null)
 	{
 		this.Icons = new Sprite[icons_sprite_names.Length];
 		this.BackgroundAnim = background;
@@ -13,14 +13,14 @@ public class Dream : Resource
 		}
 	}
 
-	public Dream(string id, ResourceSet parent, string background, string[] icons_sprite_names, float durationPerImage) : this(id, parent, background, icons_sprite_names)
+		public Dream(string id, ResourceSet parent, string background, string[] icons_sprite_names, float durationPerImage) : this(id, parent, background, icons_sprite_names)
 	{
 		this.secondPerImage = durationPerImage;
 	}
 
-	public string BackgroundAnim;
+		public string BackgroundAnim;
 
-	public Sprite[] Icons;
+		public Sprite[] Icons;
 
-	public float secondPerImage = 2.4f;
+		public float secondPerImage = 2.4f;
 }

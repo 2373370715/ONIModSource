@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Klei;
 using Klei.AI;
 using TUNING;
@@ -7,12 +8,22 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/JuicerWorkable")]
 public class JuicerWorkable : Workable, IWorkerPrioritizable
 {
-	private JuicerWorkable()
+		private JuicerWorkable()
 	{
 		base.SetReportType(ReportManager.ReportType.PersonalTime);
 	}
 
-	protected override void OnPrefabInit()
+		public override Workable.AnimInfo GetAnim(WorkerBase worker)
+	{
+		KAnimFile[] overrideAnims = null;
+		if (this.workerTypeOverrideAnims.TryGetValue(worker.PrefabID(), out overrideAnims))
+		{
+			this.overrideAnims = overrideAnims;
+		}
+		return base.GetAnim(worker);
+	}
+
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.overrideAnims = new KAnimFile[]
@@ -26,12 +37,12 @@ public class JuicerWorkable : Workable, IWorkerPrioritizable
 		this.juicer = base.GetComponent<Juicer>();
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		this.operational.SetActive(true, false);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		Storage component = base.GetComponent<Storage>();
 		float num;
@@ -63,12 +74,12 @@ public class JuicerWorkable : Workable, IWorkerPrioritizable
 		}
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		this.operational.SetActive(false, false);
 	}
 
-	public bool GetWorkerPriority(Worker worker, out int priority)
+		public bool GetWorkerPriority(WorkerBase worker, out int priority)
 	{
 		priority = this.basePriority;
 		Effects component = worker.GetComponent<Effects>();
@@ -84,10 +95,12 @@ public class JuicerWorkable : Workable, IWorkerPrioritizable
 		return true;
 	}
 
-	[MyCmpReq]
+		public Dictionary<Tag, KAnimFile[]> workerTypeOverrideAnims = new Dictionary<Tag, KAnimFile[]>();
+
+		[MyCmpReq]
 	private Operational operational;
 
-	public int basePriority;
+		public int basePriority;
 
-	private Juicer juicer;
+		private Juicer juicer;
 }

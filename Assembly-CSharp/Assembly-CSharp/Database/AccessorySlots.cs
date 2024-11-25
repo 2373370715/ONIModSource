@@ -2,9 +2,9 @@
 
 namespace Database
 {
-	public class AccessorySlots : ResourceSet<AccessorySlot>
+		public class AccessorySlots : ResourceSet<AccessorySlot>
 	{
-		public AccessorySlots(ResourceSet parent) : base("AccessorySlots", parent)
+				public AccessorySlots(ResourceSet parent) : base("AccessorySlots", parent)
 		{
 			parent = Db.Get().Accessories;
 			KAnimFile anim = Assets.GetAnim("head_swap_kanim");
@@ -41,7 +41,7 @@ namespace Database
 			Db.Get().Accessories.AddCustomAccessories(Assets.GetAnim("body_lonelyminion_kanim"), parent, this);
 		}
 
-		public AccessorySlot Find(KAnimHashedString symbol_name)
+				public AccessorySlot Find(KAnimHashedString symbol_name)
 		{
 			foreach (AccessorySlot accessorySlot in Db.Get().AccessorySlots.resources)
 			{
@@ -53,48 +53,48 @@ namespace Database
 			return null;
 		}
 
-		public AccessorySlot Eyes;
+				public AccessorySlot Eyes;
 
-		public AccessorySlot Hair;
+				public AccessorySlot Hair;
 
-		public AccessorySlot HeadShape;
+				public AccessorySlot HeadShape;
 
-		public AccessorySlot Mouth;
+				public AccessorySlot Mouth;
 
-		public AccessorySlot Body;
+				public AccessorySlot Body;
 
-		public AccessorySlot Arm;
+				public AccessorySlot Arm;
 
-		public AccessorySlot ArmLower;
+				public AccessorySlot ArmLower;
 
-		public AccessorySlot Hat;
+				public AccessorySlot Hat;
 
-		public AccessorySlot HatHair;
+				public AccessorySlot HatHair;
 
-		public AccessorySlot HeadEffects;
+				public AccessorySlot HeadEffects;
 
-		public AccessorySlot Belt;
+				public AccessorySlot Belt;
 
-		public AccessorySlot Neck;
+				public AccessorySlot Neck;
 
-		public AccessorySlot Pelvis;
+				public AccessorySlot Pelvis;
 
-		public AccessorySlot Leg;
+				public AccessorySlot Leg;
 
-		public AccessorySlot Foot;
+				public AccessorySlot Foot;
 
-		public AccessorySlot Skirt;
+				public AccessorySlot Skirt;
 
-		public AccessorySlot Necklace;
+				public AccessorySlot Necklace;
 
-		public AccessorySlot Cuff;
+				public AccessorySlot Cuff;
 
-		public AccessorySlot Hand;
+				public AccessorySlot Hand;
 
-		public AccessorySlot ArmLowerSkin;
+				public AccessorySlot ArmLowerSkin;
 
-		public AccessorySlot ArmUpperSkin;
+				public AccessorySlot ArmUpperSkin;
 
-		public AccessorySlot LegSkin;
+				public AccessorySlot LegSkin;
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AstronautTrainingCenterConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "AstronautTrainingCenter";
 		int width = 5;
@@ -30,7 +30,7 @@ public class AstronautTrainingCenterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		Prioritizable.AddRef(go);
@@ -45,9 +45,9 @@ public class AstronautTrainingCenterConfig : IBuildingConfig
 		astronautTrainingCenter.workLayer = Grid.SceneLayer.BuildingFront;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "AstronautTrainingCenter";
+		public const string ID = "AstronautTrainingCenter";
 }

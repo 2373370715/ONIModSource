@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ClusterMapTravelAnimator : GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer>
 {
-	public override void InitializeStates(out StateMachine.BaseState defaultState)
+		public override void InitializeStates(out StateMachine.BaseState defaultState)
 	{
 		defaultState = this.idle;
 		this.root.OnTargetLost(this.entityTarget, null);
@@ -21,91 +21,91 @@ public class ClusterMapTravelAnimator : GameStateMachine<ClusterMapTravelAnimato
 		this.traveling.orientToIdle.Transition(this.idle, new StateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.Transition.ConditionCallback(this.DoOrientToIdle), UpdateRate.RENDER_EVERY_TICK);
 	}
 
-	private bool IsTraveling(ClusterMapTravelAnimator.StatesInstance smi)
+		private bool IsTraveling(ClusterMapTravelAnimator.StatesInstance smi)
 	{
 		return smi.entity.GetComponent<ClusterTraveler>().IsTraveling();
 	}
 
-	private bool IsSurfaceTransitioning(ClusterMapTravelAnimator.StatesInstance smi)
+		private bool IsSurfaceTransitioning(ClusterMapTravelAnimator.StatesInstance smi)
 	{
 		Clustercraft clustercraft = smi.entity as Clustercraft;
 		return clustercraft != null && (clustercraft.Status == Clustercraft.CraftStatus.Landing || clustercraft.Status == Clustercraft.CraftStatus.Launching);
 	}
 
-	private bool IsGrounded(ClusterMapTravelAnimator.StatesInstance smi)
+		private bool IsGrounded(ClusterMapTravelAnimator.StatesInstance smi)
 	{
 		Clustercraft clustercraft = smi.entity as Clustercraft;
 		return clustercraft != null && clustercraft.Status == Clustercraft.CraftStatus.Grounded;
 	}
 
-	private bool DoReposition(ClusterMapTravelAnimator.StatesInstance smi)
+		private bool DoReposition(ClusterMapTravelAnimator.StatesInstance smi)
 	{
 		Vector3 position = ClusterGrid.Instance.GetPosition(smi.entity);
 		return smi.MoveTowards(position, Time.unscaledDeltaTime);
 	}
 
-	private bool DoMove(ClusterMapTravelAnimator.StatesInstance smi)
+		private bool DoMove(ClusterMapTravelAnimator.StatesInstance smi)
 	{
 		Vector3 position = ClusterGrid.Instance.GetPosition(smi.entity);
 		return smi.MoveTowards(position, Time.unscaledDeltaTime);
 	}
 
-	private bool DoOrientToPath(ClusterMapTravelAnimator.StatesInstance smi)
+		private bool DoOrientToPath(ClusterMapTravelAnimator.StatesInstance smi)
 	{
 		float pathAngle = smi.GetComponent<ClusterMapVisualizer>().GetPathAngle();
 		return smi.RotateTowards(pathAngle, Time.unscaledDeltaTime);
 	}
 
-	private bool DoOrientToIdle(ClusterMapTravelAnimator.StatesInstance smi)
+		private bool DoOrientToIdle(ClusterMapTravelAnimator.StatesInstance smi)
 	{
 		return smi.keepRotationOnIdle || smi.RotateTowards(0f, Time.unscaledDeltaTime);
 	}
 
-	private bool ClusterChangedAtMyLocation(ClusterMapTravelAnimator.StatesInstance smi, object data)
+		private bool ClusterChangedAtMyLocation(ClusterMapTravelAnimator.StatesInstance smi, object data)
 	{
 		ClusterLocationChangedEvent clusterLocationChangedEvent = (ClusterLocationChangedEvent)data;
 		return clusterLocationChangedEvent.oldLocation == smi.entity.Location || clusterLocationChangedEvent.newLocation == smi.entity.Location;
 	}
 
-	public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State idle;
+		public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State idle;
 
-	public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State grounded;
+		public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State grounded;
 
-	public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State repositioning;
+		public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State repositioning;
 
-	public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State surfaceTransitioning;
+		public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State surfaceTransitioning;
 
-	public ClusterMapTravelAnimator.TravelingStates traveling;
+		public ClusterMapTravelAnimator.TravelingStates traveling;
 
-	public StateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.TargetParameter entityTarget;
+		public StateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.TargetParameter entityTarget;
 
-	private class Tuning : TuningData<ClusterMapTravelAnimator.Tuning>
+		private class Tuning : TuningData<ClusterMapTravelAnimator.Tuning>
 	{
-		public float visualizerTransitionSpeed = 1f;
+				public float visualizerTransitionSpeed = 1f;
 
-		public float visualizerRotationSpeed = 1f;
+				public float visualizerRotationSpeed = 1f;
 	}
 
-	public class TravelingStates : GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State
+		public class TravelingStates : GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State
 	{
-		public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State travelIdle;
+				public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State travelIdle;
 
-		public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State orientToPath;
+				public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State orientToPath;
 
-		public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State move;
+				public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State move;
 
-		public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State orientToIdle;
+				public GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.State orientToIdle;
 	}
 
-	public class StatesInstance : GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ClusterMapTravelAnimator, ClusterMapTravelAnimator.StatesInstance, ClusterMapVisualizer, object>.GameInstance
 	{
-		public StatesInstance(ClusterMapVisualizer master, ClusterGridEntity entity) : base(master)
+				public StatesInstance(ClusterMapVisualizer master, ClusterGridEntity entity) : base(master)
 		{
 			this.entity = entity;
 			base.sm.entityTarget.Set(entity, this);
 		}
 
-		public bool MoveTowards(Vector3 targetPosition, float dt)
+				public bool MoveTowards(Vector3 targetPosition, float dt)
 		{
 			RectTransform component = base.GetComponent<RectTransform>();
 			ClusterMapVisualizer component2 = base.GetComponent<ClusterMapVisualizer>();
@@ -126,7 +126,7 @@ public class ClusterMapTravelAnimator : GameStateMachine<ClusterMapTravelAnimato
 			return true;
 		}
 
-		public bool RotateTowards(float targetAngle, float dt)
+				public bool RotateTowards(float targetAngle, float dt)
 		{
 			ClusterMapVisualizer component = base.GetComponent<ClusterMapVisualizer>();
 			float num = targetAngle - this.simpleAngle;
@@ -156,10 +156,10 @@ public class ClusterMapTravelAnimator : GameStateMachine<ClusterMapTravelAnimato
 			return true;
 		}
 
-		public ClusterGridEntity entity;
+				public ClusterGridEntity entity;
 
-		private float simpleAngle;
+				private float simpleAngle;
 
-		public bool keepRotationOnIdle;
+				public bool keepRotationOnIdle;
 	}
 }

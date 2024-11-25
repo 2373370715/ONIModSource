@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.operational;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -62,7 +62,7 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 		});
 	}
 
-	private static void TriggerSoundsForGeyserChange(GeoTuner.Instance smi)
+		private static void TriggerSoundsForGeyserChange(GeoTuner.Instance smi)
 	{
 		Geyser assignedGeyser = smi.GetAssignedGeyser();
 		if (assignedGeyser != null)
@@ -84,7 +84,7 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 		}
 	}
 
-	private static void RefreshStorageRequirements(GeoTuner.Instance smi)
+		private static void RefreshStorageRequirements(GeoTuner.Instance smi)
 	{
 		Geyser assignedGeyser = smi.GetAssignedGeyser();
 		if (assignedGeyser == null)
@@ -110,12 +110,12 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 		smi.manualDelivery.RequestedItemTag = settingsForGeyser.material;
 	}
 
-	private static void DropStorage(GeoTuner.Instance smi)
+		private static void DropStorage(GeoTuner.Instance smi)
 	{
 		smi.storage.DropAll(false, false, default(Vector3), true, null);
 	}
 
-	private static void DropStorageIfNotMatching(GeoTuner.Instance smi)
+		private static void DropStorageIfNotMatching(GeoTuner.Instance smi)
 	{
 		Geyser assignedGeyser = smi.GetAssignedGeyser();
 		if (assignedGeyser != null)
@@ -145,46 +145,46 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 		}
 	}
 
-	private static bool GeyserExitEruptionTransition(GeoTuner.Instance smi, float dt)
+		private static bool GeyserExitEruptionTransition(GeoTuner.Instance smi, float dt)
 	{
 		Geyser assignedGeyser = smi.GetAssignedGeyser();
 		return assignedGeyser != null && assignedGeyser.smi.GetCurrentState() != null && assignedGeyser.smi.GetCurrentState().parent != assignedGeyser.smi.sm.erupt;
 	}
 
-	public static void OnResearchCompleted(GeoTuner.Instance smi)
+		public static void OnResearchCompleted(GeoTuner.Instance smi)
 	{
 		smi.storage.ConsumeAllIgnoringDisease();
 		smi.sm.hasBeenWorkedByResearcher.Set(true, smi, false);
 	}
 
-	public static void PlayBroadcastingAnimation(GeoTuner.Instance smi)
+		public static void PlayBroadcastingAnimation(GeoTuner.Instance smi)
 	{
 		smi.animController.Play("broadcasting", KAnim.PlayMode.Loop, 1f, 0f);
 	}
 
-	public static void StopPlayingBroadcastingAnimation(GeoTuner.Instance smi)
+		public static void StopPlayingBroadcastingAnimation(GeoTuner.Instance smi)
 	{
 		smi.animController.Play("broadcasting", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	public static void RefreshAnimationGeyserSymbolType(GeoTuner.Instance smi)
+		public static void RefreshAnimationGeyserSymbolType(GeoTuner.Instance smi)
 	{
 		smi.RefreshGeyserSymbol();
 	}
 
-	public static float GetRemainingExpiraionTime(GeoTuner.Instance smi)
+		public static float GetRemainingExpiraionTime(GeoTuner.Instance smi)
 	{
 		return smi.sm.expirationTimer.Get(smi);
 	}
 
-	private static void ExpirationTimerUpdate(GeoTuner.Instance smi, float dt)
+		private static void ExpirationTimerUpdate(GeoTuner.Instance smi, float dt)
 	{
 		float num = GeoTuner.GetRemainingExpiraionTime(smi);
 		num -= dt;
 		smi.sm.expirationTimer.Set(num, smi, false);
 	}
 
-	private static void ResetExpirationTimer(GeoTuner.Instance smi)
+		private static void ResetExpirationTimer(GeoTuner.Instance smi)
 	{
 		Geyser assignedGeyser = smi.GetAssignedGeyser();
 		if (assignedGeyser != null)
@@ -195,23 +195,23 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 		smi.sm.expirationTimer.Set(0f, smi, false);
 	}
 
-	private static void ForgetWorkDoneByDupe(GeoTuner.Instance smi)
+		private static void ForgetWorkDoneByDupe(GeoTuner.Instance smi)
 	{
 		smi.sm.hasBeenWorkedByResearcher.Set(false, smi, false);
 		smi.workable.WorkTimeRemaining = smi.workable.GetWorkTime();
 	}
 
-	private Chore CreateResearchChore(GeoTuner.Instance smi)
+		private Chore CreateResearchChore(GeoTuner.Instance smi)
 	{
 		return new WorkChore<GeoTunerWorkable>(Db.Get().ChoreTypes.Research, smi.workable, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 	}
 
-	private static void ApplyTuning(GeoTuner.Instance smi)
+		private static void ApplyTuning(GeoTuner.Instance smi)
 	{
 		smi.GetAssignedGeyser().AddModification(smi.currentGeyserModification);
 	}
 
-	private static void RemoveTuning(GeoTuner.Instance smi)
+		private static void RemoveTuning(GeoTuner.Instance smi)
 	{
 		Geyser assignedGeyser = smi.GetAssignedGeyser();
 		if (assignedGeyser != null)
@@ -220,51 +220,51 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 		}
 	}
 
-	public static bool WorkRequirementsMet(GeoTuner.Instance smi)
+		public static bool WorkRequirementsMet(GeoTuner.Instance smi)
 	{
 		return GeoTuner.IsInLabRoom(smi) && smi.storage.MassStored() == smi.storage.capacityKg;
 	}
 
-	public static bool IsInLabRoom(GeoTuner.Instance smi)
+		public static bool IsInLabRoom(GeoTuner.Instance smi)
 	{
 		return smi.roomTracker.IsInCorrectRoom();
 	}
 
-	private StateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.Signal geyserSwitchSignal;
+		private StateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.Signal geyserSwitchSignal;
 
-	private GeoTuner.NonOperationalState nonOperational;
+		private GeoTuner.NonOperationalState nonOperational;
 
-	private GeoTuner.OperationalState operational;
+		private GeoTuner.OperationalState operational;
 
-	private StateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.TargetParameter FutureGeyser;
+		private StateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.TargetParameter FutureGeyser;
 
-	private StateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.TargetParameter AssignedGeyser;
+		private StateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.TargetParameter AssignedGeyser;
 
-	public StateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.BoolParameter hasBeenWorkedByResearcher;
+		public StateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.BoolParameter hasBeenWorkedByResearcher;
 
-	public StateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.FloatParameter expirationTimer;
+		public StateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.FloatParameter expirationTimer;
 
-	public static string liquidGeyserTuningSoundPath = GlobalAssets.GetSound("GeoTuner_Tuning_Geyser", false);
+		public static string liquidGeyserTuningSoundPath = GlobalAssets.GetSound("GeoTuner_Tuning_Geyser", false);
 
-	public static string gasGeyserTuningSoundPath = GlobalAssets.GetSound("GeoTuner_Tuning_Vent", false);
+		public static string gasGeyserTuningSoundPath = GlobalAssets.GetSound("GeoTuner_Tuning_Vent", false);
 
-	public static string metalGeyserTuningSoundPath = GlobalAssets.GetSound("GeoTuner_Tuning_Volcano", false);
+		public static string metalGeyserTuningSoundPath = GlobalAssets.GetSound("GeoTuner_Tuning_Volcano", false);
 
-	public const string anim_switchGeyser_down = "geyser_down";
+		public const string anim_switchGeyser_down = "geyser_down";
 
-	public const string anim_switchGeyser_up = "geyser_up";
+		public const string anim_switchGeyser_up = "geyser_up";
 
-	private const string BroadcastingOnHoldAnimationName = "on";
+		private const string BroadcastingOnHoldAnimationName = "on";
 
-	private const string OnAnimName = "on";
+		private const string OnAnimName = "on";
 
-	private const string OffAnimName = "off";
+		private const string OffAnimName = "off";
 
-	private const string BroadcastingAnimationName = "broadcasting";
+		private const string BroadcastingAnimationName = "broadcasting";
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public GeoTunerConfig.GeotunedGeyserSettings GetSettingsForGeyser(Geyser geyser)
+				public GeoTunerConfig.GeotunedGeyserSettings GetSettingsForGeyser(Geyser geyser)
 		{
 			GeoTunerConfig.GeotunedGeyserSettings result;
 			if (!this.geotunedGeyserSettings.TryGetValue(geyser.configuration.typeId, out result))
@@ -275,96 +275,96 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			return result;
 		}
 
-		public string OUTPUT_LOGIC_PORT_ID;
+				public string OUTPUT_LOGIC_PORT_ID;
 
-		public Dictionary<HashedString, GeoTunerConfig.GeotunedGeyserSettings> geotunedGeyserSettings;
+				public Dictionary<HashedString, GeoTunerConfig.GeotunedGeyserSettings> geotunedGeyserSettings;
 
-		public GeoTunerConfig.GeotunedGeyserSettings defaultSetting;
+				public GeoTunerConfig.GeotunedGeyserSettings defaultSetting;
 	}
 
-	public class BroadcastingState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
+		public class BroadcastingState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
 	{
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State active;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State active;
 
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State onHold;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State onHold;
 
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State expired;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State expired;
 	}
 
-	public class ResearchProgress : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
+		public class ResearchProgress : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
 	{
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State waitingForDupe;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State waitingForDupe;
 
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State inProgress;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State inProgress;
 	}
 
-	public class ResearchState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
+		public class ResearchState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
 	{
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State blocked;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State blocked;
 
-		public GeoTuner.ResearchProgress available;
+				public GeoTuner.ResearchProgress available;
 
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State completed;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State completed;
 	}
 
-	public class SwitchingGeyser : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
+		public class SwitchingGeyser : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
 	{
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State down;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State down;
 	}
 
-	public class GeyserSelectedState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
+		public class GeyserSelectedState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
 	{
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State idle;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State idle;
 
-		public GeoTuner.SwitchingGeyser switchingGeyser;
+				public GeoTuner.SwitchingGeyser switchingGeyser;
 
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State resourceNeeded;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State resourceNeeded;
 
-		public GeoTuner.ResearchState researcherInteractionNeeded;
+				public GeoTuner.ResearchState researcherInteractionNeeded;
 
-		public GeoTuner.BroadcastingState broadcasting;
+				public GeoTuner.BroadcastingState broadcasting;
 	}
 
-	public class SimpleIdleState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
+		public class SimpleIdleState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
 	{
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State idle;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State idle;
 	}
 
-	public class NonOperationalState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
+		public class NonOperationalState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
 	{
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State off;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State off;
 
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State switchingGeyser;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State switchingGeyser;
 
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State down;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State down;
 	}
 
-	public class OperationalState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
+		public class OperationalState : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State
 	{
-		public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State idle;
+				public GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.State idle;
 
-		public GeoTuner.SimpleIdleState noGeyserSelected;
+				public GeoTuner.SimpleIdleState noGeyserSelected;
 
-		public GeoTuner.GeyserSelectedState geyserSelected;
+				public GeoTuner.GeyserSelectedState geyserSelected;
 	}
 
-	public enum GeyserAnimTypeSymbols
+		public enum GeyserAnimTypeSymbols
 	{
-		meter_gas,
-		meter_metal,
-		meter_liquid,
-		meter_board
+				meter_gas,
+				meter_metal,
+				meter_liquid,
+				meter_board
 	}
 
-	public new class Instance : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.GameInstance
+		public new class Instance : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMachineTarget, GeoTuner.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, GeoTuner.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, GeoTuner.Def def) : base(master, def)
 		{
 			this.originID = UI.StripLinkFormatting("GeoTuner") + " [" + base.gameObject.GetInstanceID().ToString() + "]";
 			this.switchGeyserMeter = new MeterController(this.animController, "geyser_target", this.GetAnimationSymbol().ToString(), Meter.Offset.Behind, Grid.SceneLayer.NoLayer, Array.Empty<string>());
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			Components.GeoTuners.Add(base.smi.GetMyWorldId(), this);
@@ -379,7 +379,7 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			base.gameObject.Subscribe(-905833192, new Action<object>(this.OnCopySettings));
 		}
 
-		public Geyser GetFutureGeyser()
+				public Geyser GetFutureGeyser()
 		{
 			if (base.smi.sm.FutureGeyser.IsNull(this))
 			{
@@ -388,7 +388,7 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			return base.sm.FutureGeyser.Get(this).GetComponent<Geyser>();
 		}
 
-		public Geyser GetAssignedGeyser()
+				public Geyser GetAssignedGeyser()
 		{
 			if (base.smi.sm.AssignedGeyser.IsNull(this))
 			{
@@ -397,7 +397,7 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			return base.sm.AssignedGeyser.Get(this).GetComponent<Geyser>();
 		}
 
-		public void AssignFutureGeyser(Geyser newFutureGeyser)
+				public void AssignFutureGeyser(Geyser newFutureGeyser)
 		{
 			bool flag = newFutureGeyser != this.GetFutureGeyser();
 			bool flag2 = this.GetAssignedGeyser() != newFutureGeyser;
@@ -421,7 +421,7 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			}
 		}
 
-		private void AbortSwitchGeyserChore(string reason = "Aborting Switch Geyser Chore")
+				private void AbortSwitchGeyserChore(string reason = "Aborting Switch Geyser Chore")
 		{
 			if (this.switchGeyserChore != null)
 			{
@@ -433,7 +433,7 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			this.switchGeyserChore = null;
 		}
 
-		private Chore RecreateSwitchGeyserChore()
+				private Chore RecreateSwitchGeyserChore()
 		{
 			this.AbortSwitchGeyserChore("Recreating Chore");
 			this.switchGeyserChore = new WorkChore<GeoTunerSwitchGeyserWorkable>(Db.Get().ChoreTypes.Toggle, this.switchGeyserWorkable, null, true, null, new Action<Chore>(this.ShowSwitchingGeyserStatusItem), new Action<Chore>(this.HideSwitchingGeyserStatusItem), true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
@@ -442,17 +442,17 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			return this.switchGeyserChore;
 		}
 
-		private void ShowSwitchingGeyserStatusItem(Chore chore)
+				private void ShowSwitchingGeyserStatusItem(Chore chore)
 		{
 			base.gameObject.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.PendingSwitchToggle, null);
 		}
 
-		private void HideSwitchingGeyserStatusItem(Chore chore)
+				private void HideSwitchingGeyserStatusItem(Chore chore)
 		{
 			base.gameObject.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.PendingSwitchToggle, false);
 		}
 
-		private void OnSwitchGeyserChoreCompleted(Chore chore)
+				private void OnSwitchGeyserChoreCompleted(Chore chore)
 		{
 			this.GetCurrentState();
 			GeoTuner.NonOperationalState nonOperational = base.sm.nonOperational;
@@ -465,7 +465,7 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			base.Trigger(1980521255, null);
 		}
 
-		public void AssignGeyser(Geyser geyser)
+				public void AssignGeyser(Geyser geyser)
 		{
 			Geyser assignedGeyser = this.GetAssignedGeyser();
 			if (assignedGeyser != null && assignedGeyser != geyser)
@@ -491,7 +491,7 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			}
 		}
 
-		private void RefreshModification()
+				private void RefreshModification()
 		{
 			Geyser assignedGeyser = this.GetAssignedGeyser();
 			if (assignedGeyser != null)
@@ -506,12 +506,12 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			GeoTuner.DropStorageIfNotMatching(this);
 		}
 
-		public void RefreshGeyserSymbol()
+				public void RefreshGeyserSymbol()
 		{
 			this.switchGeyserMeter.meterController.Play(this.GetAnimationSymbol().ToString(), KAnim.PlayMode.Once, 1f, 0f);
 		}
 
-		private GeoTuner.GeyserAnimTypeSymbols GetAnimationSymbol()
+				private GeoTuner.GeyserAnimTypeSymbols GetAnimationSymbol()
 		{
 			GeoTuner.GeyserAnimTypeSymbols result = GeoTuner.GeyserAnimTypeSymbols.meter_board;
 			Geyser assignedGeyser = base.smi.GetAssignedGeyser();
@@ -533,13 +533,13 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			return result;
 		}
 
-		public void OnEruptionStateChanged(object data)
+				public void OnEruptionStateChanged(object data)
 		{
 			bool flag = (bool)data;
 			this.RefreshLogicOutput();
 		}
 
-		public void RefreshLogicOutput()
+				public void RefreshLogicOutput()
 		{
 			Geyser assignedGeyser = this.GetAssignedGeyser();
 			bool flag = this.GetCurrentState() != base.smi.sm.nonOperational;
@@ -550,7 +550,7 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			this.switchGeyserMeter.meterController.SetSymbolVisiblity("light_bloom", flag4);
 		}
 
-		public void OnCopySettings(object data)
+				public void OnCopySettings(object data)
 		{
 			GameObject gameObject = (GameObject)data;
 			if (gameObject != null)
@@ -567,7 +567,7 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			}
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			Geyser assignedGeyser = this.GetAssignedGeyser();
 			Components.GeoTuners.Remove(base.smi.GetMyWorldId(), this);
@@ -578,38 +578,38 @@ public class GeoTuner : GameStateMachine<GeoTuner, GeoTuner.Instance, IStateMach
 			GeoTuner.RemoveTuning(this);
 		}
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public Operational operational;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public Storage storage;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public ManualDeliveryKG manualDelivery;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public GeoTunerWorkable workable;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public GeoTunerSwitchGeyserWorkable switchGeyserWorkable;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public LogicPorts logicPorts;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public RoomTracker roomTracker;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public KBatchedAnimController animController;
 
-		public MeterController switchGeyserMeter;
+				public MeterController switchGeyserMeter;
 
-		public string originID;
+				public string originID;
 
-		public float enhancementDuration;
+				public float enhancementDuration;
 
-		public Geyser.GeyserModification currentGeyserModification;
+				public Geyser.GeyserModification currentGeyserModification;
 
-		private Chore switchGeyserChore;
+				private Chore switchGeyserChore;
 	}
 }

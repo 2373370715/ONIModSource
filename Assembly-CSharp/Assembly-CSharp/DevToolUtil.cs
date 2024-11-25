@@ -3,42 +3,42 @@ using UnityEngine;
 
 public static class DevToolUtil
 {
-	public static DevPanel Open(DevTool devTool)
+		public static DevPanel Open(DevTool devTool)
 	{
 		return DevToolManager.Instance.panels.AddPanelFor(devTool);
 	}
 
-	public static DevPanel Open<T>() where T : DevTool, new()
+		public static DevPanel Open<T>() where T : DevTool, new()
 	{
 		return DevToolManager.Instance.panels.AddPanelFor<T>();
 	}
 
-	public static DevPanel DebugObject<T>(T obj)
+		public static DevPanel DebugObject<T>(T obj)
 	{
 		return DevToolUtil.Open(new DevToolObjectViewer<T>(() => obj));
 	}
 
-	public static DevPanel DebugObject<T>(Func<T> get_obj_fn)
+		public static DevPanel DebugObject<T>(Func<T> get_obj_fn)
 	{
 		return DevToolUtil.Open(new DevToolObjectViewer<T>(get_obj_fn));
 	}
 
-	public static void Close(DevTool devTool)
+		public static void Close(DevTool devTool)
 	{
 		devTool.ClosePanel();
 	}
 
-	public static void Close(DevPanel devPanel)
+		public static void Close(DevPanel devPanel)
 	{
 		devPanel.Close();
 	}
 
-	public static string GenerateDevToolName(DevTool devTool)
+		public static string GenerateDevToolName(DevTool devTool)
 	{
 		return DevToolUtil.GenerateDevToolName(devTool.GetType());
 	}
 
-	public static string GenerateDevToolName(Type devToolType)
+		public static string GenerateDevToolName(Type devToolType)
 	{
 		string result;
 		if (DevToolManager.Instance != null && DevToolManager.Instance.devToolNameDict.TryGetValue(devToolType, out result))
@@ -57,13 +57,13 @@ public static class DevToolUtil
 		return text;
 	}
 
-	public static bool CanRevealAndFocus(GameObject gameObject)
+		public static bool CanRevealAndFocus(GameObject gameObject)
 	{
 		int num;
 		return DevToolUtil.TryGetCellIndexFor(gameObject, out num);
 	}
 
-	public static void RevealAndFocus(GameObject gameObject)
+		public static void RevealAndFocus(GameObject gameObject)
 	{
 		int cellIndex;
 		if (DevToolUtil.TryGetCellIndexFor(gameObject, out cellIndex))
@@ -79,13 +79,13 @@ public static class DevToolUtil
 		SelectTool.Instance.Select(null, false);
 	}
 
-	public static void FocusCameraOnCell(int cellIndex)
+		public static void FocusCameraOnCell(int cellIndex)
 	{
 		Vector3 position = Grid.CellToPos2D(cellIndex);
 		CameraController.Instance.SetPosition(position);
 	}
 
-	public static bool TryGetCellIndexFor(GameObject gameObject, out int cellIndex)
+		public static bool TryGetCellIndexFor(GameObject gameObject, out int cellIndex)
 	{
 		cellIndex = -1;
 		if (gameObject.IsNullOrDestroyed())
@@ -100,7 +100,7 @@ public static class DevToolUtil
 		return true;
 	}
 
-	public static bool TryGetCellIndexForUniqueBuilding(string prefabId, out int index)
+		public static bool TryGetCellIndexForUniqueBuilding(string prefabId, out int index)
 	{
 		index = -1;
 		BuildingComplete[] array = UnityEngine.Object.FindObjectsOfType<BuildingComplete>(true);
@@ -119,7 +119,7 @@ public static class DevToolUtil
 		return false;
 	}
 
-	public static void RevealAndFocusAt(int cellIndex)
+		public static void RevealAndFocusAt(int cellIndex)
 	{
 		int num;
 		int num2;
@@ -142,10 +142,10 @@ public static class DevToolUtil
 		}
 	}
 
-	public enum TextAlignment
+		public enum TextAlignment
 	{
-		Center,
-		Left,
-		Right
+				Center,
+				Left,
+				Right
 	}
 }

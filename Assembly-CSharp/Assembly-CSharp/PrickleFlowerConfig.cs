@@ -7,12 +7,12 @@ using UnityEngine;
 
 public class PrickleFlowerConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PrickleFlower";
 		string name = STRINGS.CREATURES.SPECIES.PRICKLEFLOWER.NAME;
@@ -39,32 +39,42 @@ public class PrickleFlowerConfig : IEntityConfig
 		def.diseaseIdx = Db.Get().Diseases.GetIndex(Db.Get().Diseases.PollenGerms.id);
 		def.singleEmitQuantity = 1000000;
 		gameObject.AddOrGet<DirectlyEdiblePlant_Growth>();
+		gameObject.AddOrGet<DiseaseSourceVisualizer>().alwaysShowDisease = "PollenGerms";
 		Modifiers component = gameObject.GetComponent<Modifiers>();
 		Db.Get().traits.Get(component.initialTraits[0]).Add(new AttributeModifier(Db.Get().PlantAttributes.MinLightLux.Id, 200f, STRINGS.CREATURES.SPECIES.PRICKLEFLOWER.NAME, false, false, true));
 		component.initialAttributes.Add(Db.Get().PlantAttributes.MinLightLux.Id);
 		gameObject.AddOrGet<IlluminationVulnerable>().SetPrefersDarkness(false);
 		gameObject.AddOrGet<BlightVulnerable>();
-		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Harvest, "PrickleFlowerSeed", STRINGS.CREATURES.SPECIES.SEEDS.PRICKLEFLOWER.NAME, STRINGS.CREATURES.SPECIES.SEEDS.PRICKLEFLOWER.DESC, Assets.GetAnim("seed_bristleblossom_kanim"), "object", 1, new List<Tag>
-		{
-			GameTags.CropSeed
-		}, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 2, STRINGS.CREATURES.SPECIES.PRICKLEFLOWER.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.25f, 0.25f, null, "", false, null), "PrickleFlower_preview", Assets.GetAnim("bristleblossom_kanim"), "place", 1, 2);
+		GameObject plant = gameObject;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Harvest;
+		string id2 = "PrickleFlowerSeed";
+		string name2 = STRINGS.CREATURES.SPECIES.SEEDS.PRICKLEFLOWER.NAME;
+		string desc2 = STRINGS.CREATURES.SPECIES.SEEDS.PRICKLEFLOWER.DESC;
+		KAnimFile anim = Assets.GetAnim("seed_bristleblossom_kanim");
+		string initialAnim = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.CropSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		string domesticatedDescription = STRINGS.CREATURES.SPECIES.PRICKLEFLOWER.DOMESTICATEDDESC;
+		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id2, name2, desc2, anim, initialAnim, numberOfSeeds, list, planterDirection, default(Tag), 2, domesticatedDescription, EntityTemplates.CollisionShape.CIRCLE, 0.25f, 0.25f, null, "", false, null), "PrickleFlower_preview", Assets.GetAnim("bristleblossom_kanim"), "place", 1, 2);
 		SoundEventVolumeCache.instance.AddVolume("bristleblossom_kanim", "PrickleFlower_harvest", NOISE_POLLUTION.CREATURES.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("bristleblossom_kanim", "PrickleFlower_grow", NOISE_POLLUTION.CREATURES.TIER3);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<PrimaryElement>().Temperature = 288.15f;
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const float WATER_RATE = 0.033333335f;
+		public const float WATER_RATE = 0.033333335f;
 
-	public const string ID = "PrickleFlower";
+		public const string ID = "PrickleFlower";
 
-	public const string SEED_ID = "PrickleFlowerSeed";
+		public const string SEED_ID = "PrickleFlowerSeed";
 }

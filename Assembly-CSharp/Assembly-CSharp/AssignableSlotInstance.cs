@@ -3,9 +3,9 @@ using UnityEngine;
 
 public abstract class AssignableSlotInstance
 {
-			public Assignables assignables { get; private set; }
+				public Assignables assignables { get; private set; }
 
-		public GameObject gameObject
+			public GameObject gameObject
 	{
 		get
 		{
@@ -13,13 +13,18 @@ public abstract class AssignableSlotInstance
 		}
 	}
 
-	public AssignableSlotInstance(Assignables assignables, AssignableSlot slot)
+		public AssignableSlotInstance(Assignables assignables, AssignableSlot slot) : this(slot.Id, assignables, slot)
 	{
+	}
+
+		public AssignableSlotInstance(string id, Assignables assignables, AssignableSlot slot)
+	{
+		this.ID = id;
 		this.slot = slot;
 		this.assignables = assignables;
 	}
 
-	public void Assign(Assignable assignable)
+		public void Assign(Assignable assignable)
 	{
 		if (this.assignable == assignable)
 		{
@@ -30,7 +35,7 @@ public abstract class AssignableSlotInstance
 		this.assignables.Trigger(-1585839766, this);
 	}
 
-	public virtual void Unassign(bool trigger_event = true)
+		public virtual void Unassign(bool trigger_event = true)
 	{
 		if (this.unassigning)
 		{
@@ -49,19 +54,21 @@ public abstract class AssignableSlotInstance
 		}
 	}
 
-	public bool IsAssigned()
+		public bool IsAssigned()
 	{
 		return this.assignable != null;
 	}
 
-	public bool IsUnassigning()
+		public bool IsUnassigning()
 	{
 		return this.unassigning;
 	}
 
-	public AssignableSlot slot;
+		public string ID;
 
-	public Assignable assignable;
+		public AssignableSlot slot;
 
-	private bool unassigning;
+		public Assignable assignable;
+
+		private bool unassigning;
 }

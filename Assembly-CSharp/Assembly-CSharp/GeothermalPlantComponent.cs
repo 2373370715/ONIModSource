@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GeothermalPlantComponent : KMonoBehaviour, ICheckboxListGroupControl, IRelatedEntities
 {
-		string ICheckboxListGroupControl.Title
+			string ICheckboxListGroupControl.Title
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class GeothermalPlantComponent : KMonoBehaviour, ICheckboxListGroupContro
 		}
 	}
 
-		string ICheckboxListGroupControl.Description
+			string ICheckboxListGroupControl.Description
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class GeothermalPlantComponent : KMonoBehaviour, ICheckboxListGroupContro
 		}
 	}
 
-	public ICheckboxListGroupControl.ListGroup[] GetData()
+		public ICheckboxListGroupControl.ListGroup[] GetData()
 	{
 		ColonyAchievement activateGeothermalPlant = Db.Get().ColonyAchievements.ActivateGeothermalPlant;
 		ICheckboxListGroupControl.CheckboxItem[] array = new ICheckboxListGroupControl.CheckboxItem[activateGeothermalPlant.requirementChecklist.Count];
@@ -41,37 +41,37 @@ public class GeothermalPlantComponent : KMonoBehaviour, ICheckboxListGroupContro
 		};
 	}
 
-	public bool SidescreenEnabled()
+		public bool SidescreenEnabled()
 	{
 		return true;
 	}
 
-	public int CheckboxSideScreenSortOrder()
+		public int CheckboxSideScreenSortOrder()
 	{
 		return 100;
 	}
 
-	public static bool GeothermalControllerRepaired()
+		public static bool GeothermalControllerRepaired()
 	{
 		return SaveGame.Instance.ColonyAchievementTracker.GeothermalControllerRepaired;
 	}
 
-	public static bool GeothermalFacilityDiscovered()
+		public static bool GeothermalFacilityDiscovered()
 	{
 		return SaveGame.Instance.ColonyAchievementTracker.GeothermalFacilityDiscovered;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.Subscribe(-1503271301, new Action<object>(this.OnObjectSelect));
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	public static void DisplayPopup(string title, string desc, HashedString anim, System.Action onDismissCallback, Transform clickFocus = null)
+		public static void DisplayPopup(string title, string desc, HashedString anim, System.Action onDismissCallback, Transform clickFocus = null)
 	{
 		EventInfoData eventInfoData = new EventInfoData(title, desc, anim);
 		if (Components.LiveMinionIdentities.Count >= 2)
@@ -96,7 +96,7 @@ public class GeothermalPlantComponent : KMonoBehaviour, ICheckboxListGroupContro
 		EventInfoScreen.ShowPopup(eventInfoData);
 	}
 
-	protected void RevealAllVentsAndController()
+		protected void RevealAllVentsAndController()
 	{
 		foreach (WorldGenSpawner.Spawnable spawnable in SaveGame.Instance.worldGenSpawner.GetSpawnablesWithTag(true, new Tag[]
 		{
@@ -121,7 +121,7 @@ public class GeothermalPlantComponent : KMonoBehaviour, ICheckboxListGroupContro
 		SelectTool.Instance.Select(null, true);
 	}
 
-	protected void OnObjectSelect(object clicked)
+		protected void OnObjectSelect(object clicked)
 	{
 		base.Unsubscribe(-1503271301, new Action<object>(this.OnObjectSelect));
 		if (SaveGame.Instance.ColonyAchievementTracker.GeothermalFacilityDiscovered)
@@ -132,27 +132,35 @@ public class GeothermalPlantComponent : KMonoBehaviour, ICheckboxListGroupContro
 		GeothermalPlantComponent.DisplayPopup(COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.POPUPS.GEOTHERMAL_DISCOVERED_TITLE, COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.POPUPS.GEOTHERMAL_DISOCVERED_DESC, "geothermalplantintro_kanim", new System.Action(this.RevealAllVentsAndController), null);
 	}
 
-	public static void OnVentingHotMaterial(int worldid)
+		public static void OnVentingHotMaterial(int worldid)
 	{
-		foreach (GeothermalVent geothermalVent in Components.GeothermalVents.GetItems(worldid))
+		using (List<GeothermalVent>.Enumerator enumerator = Components.GeothermalVents.GetItems(worldid).GetEnumerator())
 		{
-			if (geothermalVent.IsQuestEntombed())
+			while (enumerator.MoveNext())
 			{
-				geothermalVent.SetQuestComplete();
-				if (!SaveGame.Instance.ColonyAchievementTracker.GeothermalClearedEntombedVent)
+				GeothermalVent vent = enumerator.Current;
+				if (vent.IsQuestEntombed())
 				{
-					GeothermalVictorySequence.VictoryVent = geothermalVent;
-					GeothermalPlantComponent.DisplayPopup(COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.POPUPS.GEOPLANT_ERRUPTED_TITLE, COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.POPUPS.GEOPLANT_ERRUPTED_DESC, "geothermalplantachievement_kanim", delegate
+					vent.SetQuestComplete();
+					if (!SaveGame.Instance.ColonyAchievementTracker.GeothermalClearedEntombedVent)
 					{
-						SaveGame.Instance.ColonyAchievementTracker.GeothermalClearedEntombedVent = true;
-					}, null);
-					break;
+						GeothermalVictorySequence.VictoryVent = vent;
+						GeothermalPlantComponent.DisplayPopup(COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.POPUPS.GEOPLANT_ERRUPTED_TITLE, COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.POPUPS.GEOPLANT_ERRUPTED_DESC, "geothermalplantachievement_kanim", delegate
+						{
+							SaveGame.Instance.ColonyAchievementTracker.GeothermalClearedEntombedVent = true;
+							if (!Db.Get().ColonyAchievements.ActivateGeothermalPlant.IsValidForSave())
+							{
+								GeothermalVictorySequence.Start(vent);
+							}
+						}, null);
+						break;
+					}
 				}
 			}
 		}
 	}
 
-	public List<KSelectable> GetRelatedEntities()
+		public List<KSelectable> GetRelatedEntities()
 	{
 		List<KSelectable> list = new List<KSelectable>();
 		int myWorldId = this.GetMyWorldId();
@@ -167,9 +175,9 @@ public class GeothermalPlantComponent : KMonoBehaviour, ICheckboxListGroupContro
 		return list;
 	}
 
-	public const string POPUP_DISCOVERED_KANIM = "geothermalplantintro_kanim";
+		public const string POPUP_DISCOVERED_KANIM = "geothermalplantintro_kanim";
 
-	public const string POPUP_PROGRESS_KANIM = "geothermalplantonline_kanim";
+		public const string POPUP_PROGRESS_KANIM = "geothermalplantonline_kanim";
 
-	public const string POPUP_COMPLETE_KANIM = "geothermalplantachievement_kanim";
+		public const string POPUP_COMPLETE_KANIM = "geothermalplantachievement_kanim";
 }

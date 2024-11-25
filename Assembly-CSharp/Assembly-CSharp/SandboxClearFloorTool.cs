@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class SandboxClearFloorTool : BrushTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SandboxClearFloorTool.instance = null;
 	}
 
-		private SandboxSettings settings
+			private SandboxSettings settings
 	{
 		get
 		{
@@ -18,23 +18,23 @@ public class SandboxClearFloorTool : BrushTool
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		SandboxClearFloorTool.instance = this;
 	}
 
-	protected override string GetDragSound()
+		protected override string GetDragSound()
 	{
 		return "";
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		PlayerController.Instance.ActivateTool(this);
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		SandboxToolParameterMenu.instance.gameObject.SetActive(true);
@@ -43,13 +43,13 @@ public class SandboxClearFloorTool : BrushTool
 		SandboxToolParameterMenu.instance.brushRadiusSlider.SetValue((float)this.settings.GetIntSetting("SandboxTools.BrushSize"), true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		SandboxToolParameterMenu.instance.gameObject.SetActive(false);
 	}
 
-	public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
+		public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
 	{
 		colors = new HashSet<ToolMenu.CellColorData>();
 		foreach (int cell in this.cellsInRadius)
@@ -58,18 +58,18 @@ public class SandboxClearFloorTool : BrushTool
 		}
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		base.OnMouseMove(cursorPos);
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		base.OnLeftClickDown(cursor_pos);
 		KFMOD.PlayUISound(GlobalAssets.GetSound("SandboxTool_Click", false));
 	}
 
-	protected override void OnPaintCell(int cell, int distFromOrigin)
+		protected override void OnPaintCell(int cell, int distFromOrigin)
 	{
 		base.OnPaintCell(cell, distFromOrigin);
 		bool flag = false;
@@ -92,7 +92,7 @@ public class SandboxClearFloorTool : BrushTool
 		}
 	}
 
-	public static SandboxClearFloorTool instance;
+		public static SandboxClearFloorTool instance;
 
-	private string soundPath = GlobalAssets.GetSound("SandboxTool_ClearFloor", false);
+		private string soundPath = GlobalAssets.GetSound("SandboxTool_ClearFloor", false);
 }

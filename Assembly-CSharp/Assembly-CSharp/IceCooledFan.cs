@@ -5,13 +5,13 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 {
-	public bool HasMaterial()
+		public bool HasMaterial()
 	{
 		this.UpdateMeter();
 		return this.iceStorage.MassStored() > 0f;
 	}
 
-	public void CheckWorking()
+		public void CheckWorking()
 	{
 		if (base.smi.master.workable.worker == null)
 		{
@@ -19,7 +19,7 @@ public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 		}
 	}
 
-	private void UpdateUnworkableStatusItems()
+		private void UpdateUnworkableStatusItems()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		if (!base.smi.EnvironmentNeedsCooling())
@@ -47,7 +47,7 @@ public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.meter = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new string[]
@@ -60,7 +60,7 @@ public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 		base.GetComponent<ManualDeliveryKG>().SetStorage(this.iceStorage);
 	}
 
-	private void UpdateMeter()
+		private void UpdateMeter()
 	{
 		float num = 0f;
 		foreach (GameObject gameObject in this.iceStorage.items)
@@ -73,7 +73,7 @@ public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 		this.meter.SetPositionPercent(1f - num2);
 	}
 
-	private void DoCooling(float dt)
+		private void DoCooling(float dt)
 	{
 		float kilowatts = this.coolingRate * dt;
 		foreach (GameObject gameObject in this.iceStorage.items)
@@ -105,50 +105,50 @@ public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 		this.UpdateMeter();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public float minCooledTemperature;
 
-	[SerializeField]
+		[SerializeField]
 	public float minEnvironmentMass;
 
-	[SerializeField]
+		[SerializeField]
 	public float coolingRate;
 
-	[SerializeField]
+		[SerializeField]
 	public float targetTemperature;
 
-	[SerializeField]
+		[SerializeField]
 	public Vector2I minCoolingRange;
 
-	[SerializeField]
+		[SerializeField]
 	public Vector2I maxCoolingRange;
 
-	[SerializeField]
+		[SerializeField]
 	public Storage iceStorage;
 
-	[SerializeField]
+		[SerializeField]
 	public Storage liquidStorage;
 
-	[SerializeField]
+		[SerializeField]
 	public Tag consumptionTag;
 
-	private float LOW_ICE_TEMP = 173.15f;
+		private float LOW_ICE_TEMP = 173.15f;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private IceCooledFanWorkable workable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	public class StatesInstance : GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.GameInstance
+		public class StatesInstance : GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.GameInstance
 	{
-		public StatesInstance(IceCooledFan smi) : base(smi)
+				public StatesInstance(IceCooledFan smi) : base(smi)
 		{
 		}
 
-		public bool IsWorkable()
+				public bool IsWorkable()
 		{
 			bool result = false;
 			if (base.master.operational.IsOperational && this.EnvironmentNeedsCooling() && base.smi.master.HasMaterial() && base.smi.EnvironmentHighEnoughPressure())
@@ -158,7 +158,7 @@ public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 			return result;
 		}
 
-		public bool EnvironmentNeedsCooling()
+				public bool EnvironmentNeedsCooling()
 		{
 			bool result = false;
 			int cell = Grid.PosToCell(base.transform.GetPosition());
@@ -178,7 +178,7 @@ public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 			return result;
 		}
 
-		public bool EnvironmentHighEnoughPressure()
+				public bool EnvironmentHighEnoughPressure()
 		{
 			int cell = Grid.PosToCell(base.transform.GetPosition());
 			for (int i = base.master.minCoolingRange.y; i < base.master.maxCoolingRange.y; i++)
@@ -197,9 +197,9 @@ public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 		}
 	}
 
-	public class States : GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan>
+		public class States : GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.unworkable;
 			this.root.Enter(delegate(IceCooledFan.StatesInstance smi)
@@ -241,22 +241,22 @@ public class IceCooledFan : StateMachineComponent<IceCooledFan.StatesInstance>
 			});
 		}
 
-		private Chore CreateUseChore(IceCooledFan.StatesInstance smi)
+				private Chore CreateUseChore(IceCooledFan.StatesInstance smi)
 		{
 			return new WorkChore<IceCooledFanWorkable>(Db.Get().ChoreTypes.IceCooledFan, smi.master.workable, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 
-		public IceCooledFan.States.Workable workable;
+				public IceCooledFan.States.Workable workable;
 
-		public GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.State unworkable;
+				public GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.State unworkable;
 
-		public GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.State work_pst;
+				public GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.State work_pst;
 
-		public class Workable : GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.State
+				public class Workable : GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.State
 		{
-			public GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.State waiting;
+						public GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.State waiting;
 
-			public GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.State cooling;
+						public GameStateMachine<IceCooledFan.States, IceCooledFan.StatesInstance, IceCooledFan, object>.State cooling;
 		}
 	}
 }

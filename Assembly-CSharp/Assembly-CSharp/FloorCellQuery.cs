@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class FloorCellQuery : PathFinderQuery
 {
-	public FloorCellQuery Reset(int max_results, int adjacent_cells_buffer = 0)
+		public FloorCellQuery Reset(int max_results, int adjacent_cells_buffer = 0)
 	{
 		this.max_results = max_results;
 		this.adjacent_cells_buffer = adjacent_cells_buffer;
@@ -11,7 +11,7 @@ public class FloorCellQuery : PathFinderQuery
 		return this;
 	}
 
-	public override bool IsMatch(int cell, int parent_cell, int cost)
+		public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
 		if (!this.result_cells.Contains(cell) && this.CheckValidFloorCell(cell))
 		{
@@ -20,7 +20,7 @@ public class FloorCellQuery : PathFinderQuery
 		return this.result_cells.Count >= this.max_results;
 	}
 
-	private bool CheckValidFloorCell(int testCell)
+		private bool CheckValidFloorCell(int testCell)
 	{
 		if (!Grid.IsValidCell(testCell) || Grid.IsSolidCell(testCell))
 		{
@@ -50,9 +50,9 @@ public class FloorCellQuery : PathFinderQuery
 		return false;
 	}
 
-	public List<int> result_cells = new List<int>();
+		public List<int> result_cells = new List<int>();
 
-	private int max_results;
+		private int max_results;
 
-	private int adjacent_cells_buffer;
+		private int adjacent_cells_buffer;
 }

@@ -3,14 +3,14 @@ using STRINGS;
 
 public class ConditionHasResource : ProcessCondition
 {
-	public ConditionHasResource(Storage storage, SimHashes resource, float thresholdMass)
+		public ConditionHasResource(Storage storage, SimHashes resource, float thresholdMass)
 	{
 		this.storage = storage;
 		this.resource = resource;
 		this.thresholdMass = thresholdMass;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		if (this.storage.GetAmountAvailable(this.resource.CreateTag()) < this.thresholdMass)
 		{
@@ -19,7 +19,7 @@ public class ConditionHasResource : ProcessCondition
 		return ProcessCondition.Status.Ready;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		string result;
 		if (status != ProcessCondition.Status.Failure)
@@ -40,7 +40,7 @@ public class ConditionHasResource : ProcessCondition
 		return result;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		string result;
 		if (status != ProcessCondition.Status.Failure)
@@ -61,14 +61,14 @@ public class ConditionHasResource : ProcessCondition
 		return result;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private Storage storage;
+		private Storage storage;
 
-	private SimHashes resource;
+		private SimHashes resource;
 
-	private float thresholdMass;
+		private float thresholdMass;
 }

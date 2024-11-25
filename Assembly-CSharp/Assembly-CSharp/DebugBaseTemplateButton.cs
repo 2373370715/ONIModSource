@@ -6,14 +6,14 @@ using UnityEngine;
 
 public class DebugBaseTemplateButton : KScreen
 {
-			public static DebugBaseTemplateButton Instance { get; private set; }
+				public static DebugBaseTemplateButton Instance { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		DebugBaseTemplateButton.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		DebugBaseTemplateButton.Instance = this;
@@ -35,13 +35,13 @@ public class DebugBaseTemplateButton : KScreen
 		});
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		base.ConsumeMouseScroll = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.saveBaseButton != null)
@@ -86,49 +86,49 @@ public class DebugBaseTemplateButton : KScreen
 		}
 	}
 
-	private void SetupLocText()
+		private void SetupLocText()
 	{
 	}
 
-	private void OnClickDestroySelection()
+		private void OnClickDestroySelection()
 	{
 		DebugTool.Instance.Activate(DebugTool.Type.Destroy);
 	}
 
-	private void OnClickDeconstructSelection()
+		private void OnClickDeconstructSelection()
 	{
 		DebugTool.Instance.Activate(DebugTool.Type.Deconstruct);
 	}
 
-	private void OnClickMove()
+		private void OnClickMove()
 	{
 		DebugTool.Instance.DeactivateTool(null);
 		this.moveAsset = this.GetSelectionAsAsset();
 		StampTool.Instance.Activate(this.moveAsset, false, false);
 	}
 
-	private void OnClickAddSelection()
+		private void OnClickAddSelection()
 	{
 		DebugTool.Instance.Activate(DebugTool.Type.AddSelection);
 	}
 
-	private void OnClickRemoveSelection()
+		private void OnClickRemoveSelection()
 	{
 		DebugTool.Instance.Activate(DebugTool.Type.RemoveSelection);
 	}
 
-	private void OnClickClearSelection()
+		private void OnClickClearSelection()
 	{
 		this.ClearSelection();
 		this.nameField.text = "";
 	}
 
-	private void OnClickClear()
+		private void OnClickClear()
 	{
 		DebugTool.Instance.Activate(DebugTool.Type.Clear);
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		if (DebugTool.Instance != null)
 		{
@@ -137,7 +137,7 @@ public class DebugBaseTemplateButton : KScreen
 		base.OnDeactivate();
 	}
 
-	protected override void OnDisable()
+		protected override void OnDisable()
 	{
 		if (DebugTool.Instance != null)
 		{
@@ -145,7 +145,7 @@ public class DebugBaseTemplateButton : KScreen
 		}
 	}
 
-	private TemplateContainer GetSelectionAsAsset()
+		private TemplateContainer GetSelectionAsAsset()
 	{
 		List<Cell> list = new List<Cell>();
 		List<Prefab> list2 = new List<Prefab>();
@@ -372,14 +372,14 @@ public class DebugBaseTemplateButton : KScreen
 		return templateContainer;
 	}
 
-	private void GetEntities<T>(int rootX, int rootY, ref List<Prefab> _primaryElementOres, ref List<Prefab> _otherEntities, ref HashSet<GameObject> _excludeEntities)
+		private void GetEntities<T>(int rootX, int rootY, ref List<Prefab> _primaryElementOres, ref List<Prefab> _otherEntities, ref HashSet<GameObject> _excludeEntities)
 	{
 		object[] array = UnityEngine.Object.FindObjectsOfType(typeof(T));
 		object[] component_collection = array;
 		this.GetEntities<object>(component_collection, rootX, rootY, ref _primaryElementOres, ref _otherEntities, ref _excludeEntities);
 	}
 
-	private void GetEntities<T>(IEnumerable<T> component_collection, int rootX, int rootY, ref List<Prefab> _primaryElementOres, ref List<Prefab> _otherEntities, ref HashSet<GameObject> _excludeEntities)
+		private void GetEntities<T>(IEnumerable<T> component_collection, int rootX, int rootY, ref List<Prefab> _primaryElementOres, ref List<Prefab> _otherEntities, ref HashSet<GameObject> _excludeEntities)
 	{
 		foreach (T t in component_collection)
 		{
@@ -458,7 +458,7 @@ public class DebugBaseTemplateButton : KScreen
 		}
 	}
 
-	private void OnClickSaveBase()
+		private void OnClickSaveBase()
 	{
 		TemplateContainer selectionAsAsset = this.GetSelectionAsAsset();
 		if (this.SelectedCells.Count <= 0)
@@ -478,7 +478,7 @@ public class DebugBaseTemplateButton : KScreen
 		PasteBaseTemplateScreen.Instance.RefreshStampButtons();
 	}
 
-	public void ClearSelection()
+		public void ClearSelection()
 	{
 		for (int i = this.SelectedCells.Count - 1; i >= 0; i--)
 		{
@@ -486,15 +486,15 @@ public class DebugBaseTemplateButton : KScreen
 		}
 	}
 
-	public void DestroySelection()
+		public void DestroySelection()
 	{
 	}
 
-	public void DeconstructSelection()
+		public void DeconstructSelection()
 	{
 	}
 
-	public void AddToSelection(int cell)
+		public void AddToSelection(int cell)
 	{
 		if (!this.SelectedCells.Contains(cell))
 		{
@@ -508,7 +508,7 @@ public class DebugBaseTemplateButton : KScreen
 		}
 	}
 
-	public void RemoveFromSelection(int cell)
+		public void RemoveFromSelection(int cell)
 	{
 		if (this.SelectedCells.Contains(cell))
 		{
@@ -521,37 +521,37 @@ public class DebugBaseTemplateButton : KScreen
 		}
 	}
 
-	private bool SaveAllBuildings;
+		private bool SaveAllBuildings;
 
-	private bool SaveAllPickups;
+		private bool SaveAllPickups;
 
-	public KButton saveBaseButton;
+		public KButton saveBaseButton;
 
-	public KButton clearButton;
+		public KButton clearButton;
 
-	private TemplateContainer pasteAndSelectAsset;
+		private TemplateContainer pasteAndSelectAsset;
 
-	public KButton AddSelectionButton;
+		public KButton AddSelectionButton;
 
-	public KButton RemoveSelectionButton;
+		public KButton RemoveSelectionButton;
 
-	public KButton clearSelectionButton;
+		public KButton clearSelectionButton;
 
-	public KButton DestroyButton;
+		public KButton DestroyButton;
 
-	public KButton DeconstructButton;
+		public KButton DeconstructButton;
 
-	public KButton MoveButton;
+		public KButton MoveButton;
 
-	public TemplateContainer moveAsset;
+		public TemplateContainer moveAsset;
 
-	public KInputTextField nameField;
+		public KInputTextField nameField;
 
-	private string SaveName = "enter_template_name";
+		private string SaveName = "enter_template_name";
 
-	public GameObject Placer;
+		public GameObject Placer;
 
-	public Grid.SceneLayer visualizerLayer = Grid.SceneLayer.Move;
+		public Grid.SceneLayer visualizerLayer = Grid.SceneLayer.Move;
 
-	public List<int> SelectedCells = new List<int>();
+		public List<int> SelectedCells = new List<int>();
 }

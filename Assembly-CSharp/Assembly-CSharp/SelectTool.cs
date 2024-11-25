@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SelectTool : InterfaceTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SelectTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.defaultLayerMask = (1 | LayerMask.GetMask(new string[]
 		{
@@ -28,38 +28,38 @@ public class SelectTool : InterfaceTool
 		SelectTool.Instance = this;
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		PlayerController.Instance.ActivateTool(this);
 		ToolMenu.Instance.PriorityScreen.ResetPriority();
 		this.Select(null, false);
 	}
 
-	public void SetLayerMask(int mask)
+		public void SetLayerMask(int mask)
 	{
 		this.layerMask = mask;
 		base.ClearHover();
 		this.LateUpdate();
 	}
 
-	public void ClearLayerMask()
+		public void ClearLayerMask()
 	{
 		this.layerMask = this.defaultLayerMask;
 	}
 
-	public int GetDefaultLayerMask()
+		public int GetDefaultLayerMask()
 	{
 		return this.defaultLayerMask;
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		base.ClearHover();
 		this.Select(null, false);
 	}
 
-	public void Focus(Vector3 pos, KSelectable selectable, Vector3 offset)
+		public void Focus(Vector3 pos, KSelectable selectable, Vector3 offset)
 	{
 		if (selectable != null)
 		{
@@ -76,31 +76,31 @@ public class SelectTool : InterfaceTool
 		DebugUtil.DevLogError("DevError: specified camera focus position has null world - possible out of bounds location");
 	}
 
-	public void SelectAndFocus(Vector3 pos, KSelectable selectable, Vector3 offset)
+		public void SelectAndFocus(Vector3 pos, KSelectable selectable, Vector3 offset)
 	{
 		this.Focus(pos, selectable, offset);
 		this.Select(selectable, false);
 	}
 
-	public void SelectAndFocus(Vector3 pos, KSelectable selectable)
+		public void SelectAndFocus(Vector3 pos, KSelectable selectable)
 	{
 		this.SelectAndFocus(pos, selectable, Vector3.zero);
 	}
 
-	public void SelectNextFrame(KSelectable new_selected, bool skipSound = false)
+		public void SelectNextFrame(KSelectable new_selected, bool skipSound = false)
 	{
 		this.delayedNextSelection = new_selected;
 		this.delayedSkipSound = skipSound;
 		UIScheduler.Instance.ScheduleNextFrame("DelayedSelect", new Action<object>(this.DoSelectNextFrame), null, null);
 	}
 
-	private void DoSelectNextFrame(object data)
+		private void DoSelectNextFrame(object data)
 	{
 		this.Select(this.delayedNextSelection, this.delayedSkipSound);
 		this.delayedNextSelection = null;
 	}
 
-	public void Select(KSelectable new_selected, bool skipSound = false)
+		public void Select(KSelectable new_selected, bool skipSound = false)
 	{
 		if (new_selected == this.previousSelection)
 		{
@@ -155,7 +155,7 @@ public class SelectTool : InterfaceTool
 		Game.Instance.Trigger(-1503271301, gameObject);
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		KSelectable objectUnderCursor = base.GetObjectUnderCursor<KSelectable>(true, (KSelectable s) => s.GetComponent<KSelectable>().IsSelectable, this.selected);
 		this.selectedCell = Grid.PosToCell(cursor_pos);
@@ -170,24 +170,24 @@ public class SelectTool : InterfaceTool
 		}
 	}
 
-	public int GetSelectedCell()
+		public int GetSelectedCell()
 	{
 		return this.selectedCell;
 	}
 
-	public KSelectable selected;
+		public KSelectable selected;
 
-	protected int cell_new;
+		protected int cell_new;
 
-	private int selectedCell;
+		private int selectedCell;
 
-	protected int defaultLayerMask;
+		protected int defaultLayerMask;
 
-	public static SelectTool Instance;
+		public static SelectTool Instance;
 
-	private KSelectable delayedNextSelection;
+		private KSelectable delayedNextSelection;
 
-	private bool delayedSkipSound;
+		private bool delayedSkipSound;
 
-	private KSelectable previousSelection;
+		private KSelectable previousSelection;
 }

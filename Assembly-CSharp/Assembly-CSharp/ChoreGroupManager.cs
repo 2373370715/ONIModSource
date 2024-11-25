@@ -7,12 +7,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ChoreGroupManager")]
 public class ChoreGroupManager : KMonoBehaviour, ISaveLoadable
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ChoreGroupManager.instance = null;
 	}
 
-		public List<Tag> DefaultForbiddenTagsList
+			public List<Tag> DefaultForbiddenTagsList
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class ChoreGroupManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-		public Dictionary<Tag, int> DefaultChorePermission
+			public Dictionary<Tag, int> DefaultChorePermission
 	{
 		get
 		{
@@ -28,7 +28,7 @@ public class ChoreGroupManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		ChoreGroupManager.instance = this;
@@ -42,7 +42,7 @@ public class ChoreGroupManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void ConvertOldVersion()
+		private void ConvertOldVersion()
 	{
 		foreach (Tag key in this.defaultForbiddenTagsList)
 		{
@@ -55,11 +55,11 @@ public class ChoreGroupManager : KMonoBehaviour, ISaveLoadable
 		this.defaultForbiddenTagsList.Clear();
 	}
 
-	public static ChoreGroupManager instance;
+		public static ChoreGroupManager instance;
 
-	[Serialize]
+		[Serialize]
 	private List<Tag> defaultForbiddenTagsList = new List<Tag>();
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<Tag, int> defaultChorePermissions = new Dictionary<Tag, int>();
 }

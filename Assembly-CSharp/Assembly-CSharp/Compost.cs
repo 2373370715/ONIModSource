@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class Compost : StateMachineComponent<Compost.StatesInstance>, IGameObjectEffectDescriptor
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<Compost>(-1697596308, Compost.OnStorageChangedDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.GetComponent<ManualDeliveryKG>().ShowStatusItem = false;
@@ -18,68 +18,68 @@ public class Compost : StateMachineComponent<Compost.StatesInstance>, IGameObjec
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.temperatureAdjuster.CleanUp();
 	}
 
-	private void OnStorageChanged(object data)
+		private void OnStorageChanged(object data)
 	{
 		(GameObject)data == null;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return SimulatedTemperatureAdjuster.GetDescriptors(this.simulatedInternalTemperature);
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	[SerializeField]
+		[SerializeField]
 	public float flipInterval = 600f;
 
-	[SerializeField]
+		[SerializeField]
 	public float simulatedInternalTemperature = 323.15f;
 
-	[SerializeField]
+		[SerializeField]
 	public float simulatedInternalHeatCapacity = 400f;
 
-	[SerializeField]
+		[SerializeField]
 	public float simulatedThermalConductivity = 1000f;
 
-	private SimulatedTemperatureAdjuster temperatureAdjuster;
+		private SimulatedTemperatureAdjuster temperatureAdjuster;
 
-	private static readonly EventSystem.IntraObjectHandler<Compost> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<Compost>(delegate(Compost component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Compost> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<Compost>(delegate(Compost component, object data)
 	{
 		component.OnStorageChanged(data);
 	});
 
-	public class StatesInstance : GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.GameInstance
 	{
-		public StatesInstance(Compost master) : base(master)
+				public StatesInstance(Compost master) : base(master)
 		{
 		}
 
-		public bool CanStartConverting()
+				public bool CanStartConverting()
 		{
 			return base.master.GetComponent<ElementConverter>().HasEnoughMassToStartConverting(false);
 		}
 
-		public bool CanContinueConverting()
+				public bool CanContinueConverting()
 		{
 			return base.master.GetComponent<ElementConverter>().CanConvertAtAll();
 		}
 
-		public bool IsEmpty()
+				public bool IsEmpty()
 		{
 			return base.master.storage.IsEmpty();
 		}
 
-		public void ResetWorkable()
+				public void ResetWorkable()
 		{
 			CompostWorkable component = base.master.GetComponent<CompostWorkable>();
 			component.ShowProgressBar(false);
@@ -87,9 +87,9 @@ public class Compost : StateMachineComponent<Compost.StatesInstance>, IGameObjec
 		}
 	}
 
-	public class States : GameStateMachine<Compost.States, Compost.StatesInstance, Compost>
+		public class States : GameStateMachine<Compost.States, Compost.StatesInstance, Compost>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.empty;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -119,21 +119,21 @@ public class Compost : StateMachineComponent<Compost.StatesInstance>, IGameObjec
 			}).PlayAnim("off").EventTransition(GameHashes.OperationalChanged, this.empty, (Compost.StatesInstance smi) => smi.GetComponent<Operational>().IsOperational);
 		}
 
-		private Chore CreateFlipChore(Compost.StatesInstance smi)
+				private Chore CreateFlipChore(Compost.StatesInstance smi)
 		{
 			return new WorkChore<CompostWorkable>(Db.Get().ChoreTypes.FlipCompost, smi.master, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 
-		public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State empty;
+				public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State empty;
 
-		public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State insufficientMass;
+				public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State insufficientMass;
 
-		public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State disabled;
+				public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State disabled;
 
-		public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State disabledEmpty;
+				public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State disabledEmpty;
 
-		public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State inert;
+				public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State inert;
 
-		public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State composting;
+				public GameStateMachine<Compost.States, Compost.StatesInstance, Compost, object>.State composting;
 	}
 }

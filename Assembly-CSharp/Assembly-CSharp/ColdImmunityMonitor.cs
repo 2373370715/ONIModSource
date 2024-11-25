@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ColdImmunityMonitor : GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.idle;
@@ -16,79 +16,79 @@ public class ColdImmunityMonitor : GameStateMachine<ColdImmunityMonitor, ColdImm
 		this.cold.idle.Enter(new StateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State.Callback(ColdImmunityMonitor.ResetColdTimer)).ToggleStatusItem(Db.Get().DuplicantStatusItems.Cold, (ColdImmunityMonitor.Instance smi) => smi).TagTransition(GameTags.FeelingCold, this.cold.exiting, true);
 	}
 
-	public static bool OnEffectAdded(ColdImmunityMonitor.Instance smi, object data)
+		public static bool OnEffectAdded(ColdImmunityMonitor.Instance smi, object data)
 	{
 		return true;
 	}
 
-	public static void ClearTimer(ColdImmunityMonitor.Instance smi)
+		public static void ClearTimer(ColdImmunityMonitor.Instance smi)
 	{
 		smi.sm.coldCountdown.Set(0f, smi, false);
 	}
 
-	public static void ResetColdTimer(ColdImmunityMonitor.Instance smi)
+		public static void ResetColdTimer(ColdImmunityMonitor.Instance smi)
 	{
 		smi.sm.coldCountdown.Set(5f, smi, false);
 	}
 
-	public static void ColdTimerUpdate(ColdImmunityMonitor.Instance smi, float dt)
+		public static void ColdTimerUpdate(ColdImmunityMonitor.Instance smi, float dt)
 	{
 		float value = Mathf.Clamp(smi.ColdCountdown - dt, 0f, 5f);
 		smi.sm.coldCountdown.Set(value, smi, false);
 	}
 
-	private static void UpdateWarmUpCell(ColdImmunityMonitor.Instance smi, float dt)
+		private static void UpdateWarmUpCell(ColdImmunityMonitor.Instance smi, float dt)
 	{
 		smi.UpdateWarmUpCell();
 	}
 
-	private static void UpdateWarmUpCell(ColdImmunityMonitor.Instance smi)
+		private static void UpdateWarmUpCell(ColdImmunityMonitor.Instance smi)
 	{
 		smi.UpdateWarmUpCell();
 	}
 
-	public static bool HasImmunityEffect(ColdImmunityMonitor.Instance smi, object data)
+		public static bool HasImmunityEffect(ColdImmunityMonitor.Instance smi, object data)
 	{
 		Effects component = smi.GetComponent<Effects>();
 		return component != null && component.HasEffect("WarmTouch");
 	}
 
-	private static Chore CreateRecoverFromChillyBonesChore(ColdImmunityMonitor.Instance smi)
+		private static Chore CreateRecoverFromChillyBonesChore(ColdImmunityMonitor.Instance smi)
 	{
 		return new RecoverFromColdChore(smi.master);
 	}
 
-	private const float EFFECT_DURATION = 5f;
+		private const float EFFECT_DURATION = 5f;
 
-	public ColdImmunityMonitor.IdleStates idle;
+		public ColdImmunityMonitor.IdleStates idle;
 
-	public ColdImmunityMonitor.ColdStates cold;
+		public ColdImmunityMonitor.ColdStates cold;
 
-	public StateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.FloatParameter coldCountdown;
+		public StateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.FloatParameter coldCountdown;
 
-	public class ColdStates : GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State
+		public class ColdStates : GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State idle;
+				public GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State idle;
 
-		public GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State exiting;
+				public GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State exiting;
 
-		public GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State resetChore;
+				public GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State resetChore;
 	}
 
-	public class IdleStates : GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State
+		public class IdleStates : GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State feelingFine;
+				public GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State feelingFine;
 
-		public GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State leftWithDesireToWarmupAfterBeingCold;
+				public GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.State leftWithDesireToWarmupAfterBeingCold;
 	}
 
-	public new class Instance : GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<ColdImmunityMonitor, ColdImmunityMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-						public ColdImmunityProvider.Instance NearestImmunityProvider { get; private set; }
+								public ColdImmunityProvider.Instance NearestImmunityProvider { get; private set; }
 
-						public int WarmUpCell { get; private set; }
+								public int WarmUpCell { get; private set; }
 
-				public float ColdCountdown
+						public float ColdCountdown
 		{
 			get
 			{
@@ -96,17 +96,17 @@ public class ColdImmunityMonitor : GameStateMachine<ColdImmunityMonitor, ColdImm
 			}
 		}
 
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			this.navigator = base.gameObject.GetComponent<Navigator>();
 			base.StartSM();
 		}
 
-		public void UpdateWarmUpCell()
+				public void UpdateWarmUpCell()
 		{
 			int myWorldId = this.navigator.GetMyWorldId();
 			int warmUpCell = Grid.InvalidCell;
@@ -131,6 +131,6 @@ public class ColdImmunityMonitor : GameStateMachine<ColdImmunityMonitor, ColdImm
 			this.WarmUpCell = warmUpCell;
 		}
 
-		private Navigator navigator;
+				private Navigator navigator;
 	}
 }

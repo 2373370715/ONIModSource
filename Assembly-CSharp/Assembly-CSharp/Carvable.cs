@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Carvable")]
 public class Carvable : Workable, IDigActionEntity
 {
-		public bool IsMarkedForCarve
+			public bool IsMarkedForCarve
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class Carvable : Workable, IDigActionEntity
 		}
 	}
 
-	protected Carvable()
+		protected Carvable()
 	{
 		this.buttonLabel = UI.USERMENUACTIONS.CARVE.NAME;
 		this.buttonTooltip = UI.USERMENUACTIONS.CARVE.TOOLTIP;
@@ -22,7 +22,7 @@ public class Carvable : Workable, IDigActionEntity
 		this.cancelButtonTooltip = UI.USERMENUACTIONS.CANCELCARVE.TOOLTIP;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.pendingStatusItem = new StatusItem("PendingCarve", "MISC", "status_item_pending_carve", StatusItem.IconType.Custom, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022, null);
@@ -43,7 +43,7 @@ public class Carvable : Workable, IDigActionEntity
 		this.synchronizeAnims = false;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.SetWorkTime(10f);
@@ -59,7 +59,7 @@ public class Carvable : Workable, IDigActionEntity
 		}
 	}
 
-	public void Carve()
+		public void Carve()
 	{
 		this.isMarkedForCarve = false;
 		this.chore = null;
@@ -70,7 +70,7 @@ public class Carvable : Workable, IDigActionEntity
 		UnityEngine.Object.Destroy(base.gameObject);
 	}
 
-	public void MarkForCarve(bool instantOnDebug = true)
+		public void MarkForCarve(bool instantOnDebug = true)
 	{
 		if (DebugHandler.InstantBuildMode && instantOnDebug)
 		{
@@ -86,12 +86,12 @@ public class Carvable : Workable, IDigActionEntity
 		}
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.Carve();
 	}
 
-	private void OnCancel(object data)
+		private void OnCancel(object data)
 	{
 		if (this.chore != null)
 		{
@@ -103,17 +103,17 @@ public class Carvable : Workable, IDigActionEntity
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	private void OnClickCarve()
+		private void OnClickCarve()
 	{
 		this.MarkForCarve(true);
 	}
 
-	protected void OnClickCancelCarve()
+		protected void OnClickCancelCarve()
 	{
 		this.OnCancel(null);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (!this.showUserMenuButtons)
 		{
@@ -123,19 +123,19 @@ public class Carvable : Workable, IDigActionEntity
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		base.GetComponent<KSelectable>().RemoveStatusItem(this.pendingStatusItem, false);
 	}
 
-	private GameObject ProducePickupable(string pickupablePrefabId)
+		private GameObject ProducePickupable(string pickupablePrefabId)
 	{
 		if (pickupablePrefabId != null)
 		{
@@ -151,43 +151,43 @@ public class Carvable : Workable, IDigActionEntity
 		return null;
 	}
 
-	public void Dig()
+		public void Dig()
 	{
 		this.Carve();
 	}
 
-	public void MarkForDig(bool instantOnDebug = true)
+		public void MarkForDig(bool instantOnDebug = true)
 	{
 		this.MarkForCarve(instantOnDebug);
 	}
 
-	[Serialize]
+		[Serialize]
 	protected bool isMarkedForCarve;
 
-	protected Chore chore;
+		protected Chore chore;
 
-	private string buttonLabel;
+		private string buttonLabel;
 
-	private string buttonTooltip;
+		private string buttonTooltip;
 
-	private string cancelButtonLabel;
+		private string cancelButtonLabel;
 
-	private string cancelButtonTooltip;
+		private string cancelButtonTooltip;
 
-	private StatusItem pendingStatusItem;
+		private StatusItem pendingStatusItem;
 
-	public bool showUserMenuButtons = true;
+		public bool showUserMenuButtons = true;
 
-	public string dropItemPrefabId;
+		public string dropItemPrefabId;
 
-	public HandleVector<int>.Handle partitionerEntry;
+		public HandleVector<int>.Handle partitionerEntry;
 
-	private static readonly EventSystem.IntraObjectHandler<Carvable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Carvable>(delegate(Carvable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Carvable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Carvable>(delegate(Carvable component, object data)
 	{
 		component.OnCancel(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Carvable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Carvable>(delegate(Carvable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Carvable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Carvable>(delegate(Carvable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});

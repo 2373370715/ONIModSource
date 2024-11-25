@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class MissionControlCluster : GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.Inoperational;
 		this.Inoperational.EventTransition(GameHashes.OperationalChanged, this.Operational, new StateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.Transition.ConditionCallback(this.ValidateOperationalTransition)).EventTransition(GameHashes.UpdateRoom, this.Operational, new StateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.Transition.ConditionCallback(this.ValidateOperationalTransition));
@@ -16,7 +16,7 @@ public class MissionControlCluster : GameStateMachine<MissionControlCluster, Mis
 		this.Operational.HasRockets.ParamTransition<bool>(this.WorkableRocketsAreInRange, this.Operational.NoRockets, (MissionControlCluster.Instance smi, bool inRange) => !this.WorkableRocketsAreInRange.Get(smi)).ToggleChore(new Func<MissionControlCluster.Instance, Chore>(this.CreateChore), this.Operational);
 	}
 
-	private Chore CreateChore(MissionControlCluster.Instance smi)
+		private Chore CreateChore(MissionControlCluster.Instance smi)
 	{
 		MissionControlClusterWorkable component = smi.master.gameObject.GetComponent<MissionControlClusterWorkable>();
 		Chore result = new WorkChore<MissionControlClusterWorkable>(Db.Get().ChoreTypes.Research, component, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
@@ -25,7 +25,7 @@ public class MissionControlCluster : GameStateMachine<MissionControlCluster, Mis
 		return result;
 	}
 
-	private void OnEnterOperational(MissionControlCluster.Instance smi)
+		private void OnEnterOperational(MissionControlCluster.Instance smi)
 	{
 		smi.UpdateWorkableRocketsInRange(null);
 		if (this.WorkableRocketsAreInRange.Get(smi))
@@ -36,47 +36,47 @@ public class MissionControlCluster : GameStateMachine<MissionControlCluster, Mis
 		smi.GoTo(this.Operational.NoRockets);
 	}
 
-	private bool ValidateOperationalTransition(MissionControlCluster.Instance smi)
+		private bool ValidateOperationalTransition(MissionControlCluster.Instance smi)
 	{
 		Operational component = smi.GetComponent<Operational>();
 		bool flag = smi.IsInsideState(smi.sm.Operational);
 		return component != null && flag != component.IsOperational;
 	}
 
-	private bool IsInLabRoom(MissionControlCluster.Instance smi)
+		private bool IsInLabRoom(MissionControlCluster.Instance smi)
 	{
 		return smi.roomTracker.IsInCorrectRoom();
 	}
 
-	public GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.State Inoperational;
+		public GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.State Inoperational;
 
-	public MissionControlCluster.OperationalState Operational;
+		public MissionControlCluster.OperationalState Operational;
 
-	public StateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.BoolParameter WorkableRocketsAreInRange;
+		public StateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.BoolParameter WorkableRocketsAreInRange;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.GameInstance
+		public new class Instance : GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, MissionControlCluster.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, MissionControlCluster.Def def) : base(master, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			this.clusterUpdatedHandle = Game.Instance.Subscribe(-1298331547, new Action<object>(this.UpdateWorkableRocketsInRange));
 		}
 
-		public override void StopSM(string reason)
+				public override void StopSM(string reason)
 		{
 			base.StopSM(reason);
 			Game.Instance.Unsubscribe(this.clusterUpdatedHandle);
 		}
 
-		public void UpdateWorkableRocketsInRange(object data)
+				public void UpdateWorkableRocketsInRange(object data)
 		{
 			this.boostableClustercraft.Clear();
 			AxialI myWorldLocation = base.gameObject.GetMyWorldLocation();
@@ -103,42 +103,42 @@ public class MissionControlCluster : GameStateMachine<MissionControlCluster, Mis
 			base.sm.WorkableRocketsAreInRange.Set(this.boostableClustercraft.Count > 0, base.smi, false);
 		}
 
-		public Clustercraft GetRandomBoostableClustercraft()
+				public Clustercraft GetRandomBoostableClustercraft()
 		{
 			return this.boostableClustercraft.GetRandom<Clustercraft>();
 		}
 
-		private bool CanBeBoosted(Clustercraft clustercraft)
+				private bool CanBeBoosted(Clustercraft clustercraft)
 		{
 			return clustercraft.controlStationBuffTimeRemaining == 0f && clustercraft.HasResourcesToMove(1, Clustercraft.CombustionResource.All) && clustercraft.IsFlightInProgress();
 		}
 
-		private bool IsOwnWorld(Clustercraft candidateClustercraft)
+				private bool IsOwnWorld(Clustercraft candidateClustercraft)
 		{
 			int myWorldId = base.gameObject.GetMyWorldId();
 			WorldContainer interiorWorld = candidateClustercraft.ModuleInterface.GetInteriorWorld();
 			return !(interiorWorld == null) && myWorldId == interiorWorld.id;
 		}
 
-		public void ApplyEffect(Clustercraft clustercraft)
+				public void ApplyEffect(Clustercraft clustercraft)
 		{
 			clustercraft.controlStationBuffTimeRemaining = 600f;
 		}
 
-		private int clusterUpdatedHandle = -1;
+				private int clusterUpdatedHandle = -1;
 
-		private List<Clustercraft> boostableClustercraft = new List<Clustercraft>();
+				private List<Clustercraft> boostableClustercraft = new List<Clustercraft>();
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public RoomTracker roomTracker;
 	}
 
-	public class OperationalState : GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.State
+		public class OperationalState : GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.State
 	{
-		public GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.State WrongRoom;
+				public GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.State WrongRoom;
 
-		public GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.State NoRockets;
+				public GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.State NoRockets;
 
-		public GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.State HasRockets;
+				public GameStateMachine<MissionControlCluster, MissionControlCluster.Instance, IStateMachineTarget, MissionControlCluster.Def>.State HasRockets;
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class MotdBox_ImageButtonLayoutElement : LayoutElement
 {
-	private void UpdateState()
+		private void UpdateState()
 	{
 		MotdBox_ImageButtonLayoutElement.Style style = this.style;
 		if (style == MotdBox_ImageButtonLayoutElement.Style.WidthExpandsBasedOnHeight)
@@ -31,27 +31,27 @@ public class MotdBox_ImageButtonLayoutElement : LayoutElement
 		this.ignoreLayout = false;
 	}
 
-	protected override void OnTransformParentChanged()
+		protected override void OnTransformParentChanged()
 	{
 		this.UpdateState();
 		base.OnTransformParentChanged();
 	}
 
-	protected override void OnRectTransformDimensionsChange()
+		protected override void OnRectTransformDimensionsChange()
 	{
 		this.UpdateState();
 		base.OnRectTransformDimensionsChange();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private float heightToWidthRatio;
 
-	[SerializeField]
+		[SerializeField]
 	private MotdBox_ImageButtonLayoutElement.Style style;
 
-	private enum Style
+		private enum Style
 	{
-		WidthExpandsBasedOnHeight,
-		HeightExpandsBasedOnWidth
+				WidthExpandsBasedOnHeight,
+				HeightExpandsBasedOnWidth
 	}
 }

@@ -1,31 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Database
-{
-	public class ArtifactDropRate : Resource
-	{
-		public void AddItem(ArtifactTier tier, float weight)
-		{
-			this.rates.Add(new global::Tuple<ArtifactTier, float>(tier, weight));
-			this.totalWeight += weight;
-		}
+namespace Database {
+    public class ArtifactDropRate : Resource {
+        public List<Tuple<ArtifactTier, float>> rates = new List<Tuple<ArtifactTier, float>>();
+        public float                            totalWeight;
 
-		public float GetTierWeight(ArtifactTier tier)
-		{
-			float result = 0f;
-			foreach (global::Tuple<ArtifactTier, float> tuple in this.rates)
-			{
-				if (tuple.first == tier)
-				{
-					result = tuple.second;
-				}
-			}
-			return result;
-		}
+        public void AddItem(ArtifactTier tier, float weight) {
+            rates.Add(new Tuple<ArtifactTier, float>(tier, weight));
+            totalWeight += weight;
+        }
 
-		public List<global::Tuple<ArtifactTier, float>> rates = new List<global::Tuple<ArtifactTier, float>>();
+        public float GetTierWeight(ArtifactTier tier) {
+            var result = 0f;
+            foreach (var tuple in rates)
+                if (tuple.first == tier)
+                    result = tuple.second;
 
-		public float totalWeight;
-	}
+            return result;
+        }
+    }
 }

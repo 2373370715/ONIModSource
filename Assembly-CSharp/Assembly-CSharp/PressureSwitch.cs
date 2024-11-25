@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, ISim200ms
 {
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		int num = Grid.PosToCell(this);
 		if (this.sampleIdx < 8)
@@ -32,13 +32,13 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-			public float Threshold
+				public float Threshold
 	{
 		get
 		{
@@ -50,7 +50,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-			public bool ActivateAboveThreshold
+				public bool ActivateAboveThreshold
 	{
 		get
 		{
@@ -62,7 +62,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-		public float CurrentValue
+			public float CurrentValue
 	{
 		get
 		{
@@ -75,7 +75,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-		public float RangeMin
+			public float RangeMin
 	{
 		get
 		{
@@ -83,7 +83,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-		public float RangeMax
+			public float RangeMax
 	{
 		get
 		{
@@ -91,7 +91,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-	public float GetRangeMinInputField()
+		public float GetRangeMinInputField()
 	{
 		if (this.desiredState != Element.State.Gas)
 		{
@@ -100,7 +100,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		return this.rangeMin * 1000f;
 	}
 
-	public float GetRangeMaxInputField()
+		public float GetRangeMaxInputField()
 	{
 		if (this.desiredState != Element.State.Gas)
 		{
@@ -109,7 +109,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		return this.rangeMax * 1000f;
 	}
 
-		public LocString Title
+			public LocString Title
 	{
 		get
 		{
@@ -117,7 +117,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-		public LocString ThresholdValueName
+			public LocString ThresholdValueName
 	{
 		get
 		{
@@ -125,7 +125,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-		public string AboveToolTip
+			public string AboveToolTip
 	{
 		get
 		{
@@ -133,7 +133,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-		public string BelowToolTip
+			public string BelowToolTip
 	{
 		get
 		{
@@ -141,7 +141,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-	public string Format(float value, bool units)
+		public string Format(float value, bool units)
 	{
 		GameUtil.MetricMassFormat massFormat;
 		if (this.desiredState == Element.State.Gas)
@@ -155,7 +155,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		return GameUtil.GetFormattedMass(value, GameUtil.TimeSlice.None, massFormat, units, "{0:0.#}");
 	}
 
-	public float ProcessedSliderValue(float input)
+		public float ProcessedSliderValue(float input)
 	{
 		if (this.desiredState == Element.State.Gas)
 		{
@@ -168,7 +168,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		return input;
 	}
 
-	public float ProcessedInputValue(float input)
+		public float ProcessedInputValue(float input)
 	{
 		if (this.desiredState == Element.State.Gas)
 		{
@@ -177,12 +177,12 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		return input;
 	}
 
-	public LocString ThresholdValueUnits()
+		public LocString ThresholdValueUnits()
 	{
 		return GameUtil.GetCurrentMassUnit(this.desiredState == Element.State.Gas);
 	}
 
-		public ThresholdScreenLayoutType LayoutType
+			public ThresholdScreenLayoutType LayoutType
 	{
 		get
 		{
@@ -190,7 +190,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-		public int IncrementScale
+			public int IncrementScale
 	{
 		get
 		{
@@ -198,7 +198,7 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-		public NonLinearSlider.Range[] GetRanges
+			public NonLinearSlider.Range[] GetRanges
 	{
 		get
 		{
@@ -206,23 +206,23 @@ public class PressureSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, IS
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	private float threshold;
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	private bool activateAboveThreshold = true;
 
-	public float rangeMin;
+		public float rangeMin;
 
-	public float rangeMax = 1f;
+		public float rangeMax = 1f;
 
-	public Element.State desiredState = Element.State.Gas;
+		public Element.State desiredState = Element.State.Gas;
 
-	private const int WINDOW_SIZE = 8;
+		private const int WINDOW_SIZE = 8;
 
-	private float[] samples = new float[8];
+		private float[] samples = new float[8];
 
-	private int sampleIdx;
+		private int sampleIdx;
 }

@@ -6,22 +6,29 @@ using UnityEngine;
 
 public class SapTreeConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "SapTree";
 		string name = STRINGS.CREATURES.SPECIES.SAPTREE.NAME;
 		string desc = STRINGS.CREATURES.SPECIES.SAPTREE.DESC;
 		float mass = 1f;
 		EffectorValues positive_DECOR_EFFECT = SapTreeConfig.POSITIVE_DECOR_EFFECT;
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, Assets.GetAnim("gravitas_sap_tree_kanim"), "idle", Grid.SceneLayer.BuildingFront, 5, 5, positive_DECOR_EFFECT, default(EffectorValues), SimHashes.Creature, new List<Tag>
+		KAnimFile anim = Assets.GetAnim("gravitas_sap_tree_kanim");
+		string initialAnim = "idle";
+		Grid.SceneLayer sceneLayer = Grid.SceneLayer.BuildingFront;
+		int width = 5;
+		int height = 5;
+		EffectorValues decor = positive_DECOR_EFFECT;
+		List<Tag> additionalTags = new List<Tag>
 		{
 			GameTags.Decoration
-		}, 293f);
+		};
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, sceneLayer, width, height, decor, default(EffectorValues), SimHashes.Creature, additionalTags, 293f);
 		SapTree.Def def = gameObject.AddOrGetDef<SapTree.Def>();
 		def.foodSenseArea = new Vector2I(5, 1);
 		def.massEatRate = 0.05f;
@@ -52,25 +59,25 @@ public class SapTreeConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "SapTree";
+		public const string ID = "SapTree";
 
-	public static readonly EffectorValues POSITIVE_DECOR_EFFECT = DECOR.BONUS.TIER5;
+		public static readonly EffectorValues POSITIVE_DECOR_EFFECT = DECOR.BONUS.TIER5;
 
-	private const int WIDTH = 5;
+		private const int WIDTH = 5;
 
-	private const int HEIGHT = 5;
+		private const int HEIGHT = 5;
 
-	private const int ATTACK_RADIUS = 2;
+		private const int ATTACK_RADIUS = 2;
 
-	public const float MASS_EAT_RATE = 0.05f;
+		public const float MASS_EAT_RATE = 0.05f;
 
-	public const float KCAL_TO_KG_RATIO = 0.005f;
+		public const float KCAL_TO_KG_RATIO = 0.005f;
 }

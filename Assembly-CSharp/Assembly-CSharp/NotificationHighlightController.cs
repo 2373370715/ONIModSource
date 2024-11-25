@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class NotificationHighlightController : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.highlightBox = Util.KInstantiateUI<RectTransform>(this.highlightBoxPrefab.gameObject, base.gameObject, false);
 		this.HideBox();
 	}
 
-	[ContextMenu("Force Update")]
+		[ContextMenu("Force Update")]
 	protected void LateUpdate()
 	{
 		bool flag = false;
@@ -33,22 +33,22 @@ public class NotificationHighlightController : KMonoBehaviour
 		}
 	}
 
-	public void AddTarget(NotificationHighlightTarget target)
+		public void AddTarget(NotificationHighlightTarget target)
 	{
 		this.targets.Add(target);
 	}
 
-	public void RemoveTarget(NotificationHighlightTarget target)
+		public void RemoveTarget(NotificationHighlightTarget target)
 	{
 		this.targets.Remove(target);
 	}
 
-	public void SetActiveTarget(ManagementMenuNotification notification)
+		public void SetActiveTarget(ManagementMenuNotification notification)
 	{
 		this.activeTargetNotification = notification;
 	}
 
-	public void ClearActiveTarget(ManagementMenuNotification checkNotification)
+		public void ClearActiveTarget(ManagementMenuNotification checkNotification)
 	{
 		if (checkNotification == this.activeTargetNotification)
 		{
@@ -56,12 +56,12 @@ public class NotificationHighlightController : KMonoBehaviour
 		}
 	}
 
-	public void ClearActiveTarget()
+		public void ClearActiveTarget()
 	{
 		this.activeTargetNotification = null;
 	}
 
-	public void TargetViewed(NotificationHighlightTarget target)
+		public void TargetViewed(NotificationHighlightTarget target)
 	{
 		if (this.activeTargetNotification != null && this.activeTargetNotification.highlightTarget == target.targetKey)
 		{
@@ -69,7 +69,7 @@ public class NotificationHighlightController : KMonoBehaviour
 		}
 	}
 
-	private void SnapBoxToTarget(NotificationHighlightTarget target)
+		private void SnapBoxToTarget(NotificationHighlightTarget target)
 	{
 		RectTransform rectTransform = target.rectTransform();
 		Vector3 position = rectTransform.GetPosition();
@@ -107,16 +107,16 @@ public class NotificationHighlightController : KMonoBehaviour
 		this.highlightBox.gameObject.SetActive(this.highlightBox.sizeDelta.x > 0f && this.highlightBox.sizeDelta.y > 0f);
 	}
 
-	private void HideBox()
+		private void HideBox()
 	{
 		this.highlightBox.gameObject.SetActive(false);
 	}
 
-	public RectTransform highlightBoxPrefab;
+		public RectTransform highlightBoxPrefab;
 
-	private RectTransform highlightBox;
+		private RectTransform highlightBox;
 
-	private List<NotificationHighlightTarget> targets = new List<NotificationHighlightTarget>();
+		private List<NotificationHighlightTarget> targets = new List<NotificationHighlightTarget>();
 
-	private ManagementMenuNotification activeTargetNotification;
+		private ManagementMenuNotification activeTargetNotification;
 }

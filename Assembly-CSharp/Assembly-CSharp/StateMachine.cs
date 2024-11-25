@@ -8,12 +8,12 @@ using UnityEngine;
 
 public abstract class StateMachine
 {
-	public StateMachine()
+		public StateMachine()
 	{
 		this.name = base.GetType().FullName;
 	}
 
-	public virtual void FreeResources()
+		public virtual void FreeResources()
 	{
 		this.name = null;
 		if (this.defaultState != null)
@@ -24,24 +24,24 @@ public abstract class StateMachine
 		this.parameters = null;
 	}
 
-	public abstract string[] GetStateNames();
+		public abstract string[] GetStateNames();
 
-	public abstract StateMachine.BaseState GetState(string name);
+		public abstract StateMachine.BaseState GetState(string name);
 
-	public abstract void BindStates();
+		public abstract void BindStates();
 
-	public abstract Type GetStateMachineInstanceType();
+		public abstract Type GetStateMachineInstanceType();
 
-			public int version { get; protected set; }
+				public int version { get; protected set; }
 
-			public StateMachine.SerializeType serializable { get; protected set; }
+				public StateMachine.SerializeType serializable { get; protected set; }
 
-	public virtual void InitializeStates(out StateMachine.BaseState default_state)
+		public virtual void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = null;
 	}
 
-	public void InitializeStateMachine()
+		public void InitializeStateMachine()
 	{
 		this.debugSettings = StateMachineDebuggerSettings.Get().CreateEntry(base.GetType());
 		StateMachine.BaseState baseState = null;
@@ -50,7 +50,7 @@ public abstract class StateMachine
 		this.defaultState = baseState;
 	}
 
-	public void CreateStates(object state_machine)
+		public void CreateStates(object state_machine)
 	{
 		foreach (FieldInfo fieldInfo in state_machine.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy))
 		{
@@ -92,93 +92,93 @@ public abstract class StateMachine
 		}
 	}
 
-	public StateMachine.BaseState GetDefaultState()
+		public StateMachine.BaseState GetDefaultState()
 	{
 		return this.defaultState;
 	}
 
-	public int GetMaxDepth()
+		public int GetMaxDepth()
 	{
 		return this.maxDepth;
 	}
 
-	public override string ToString()
+		public override string ToString()
 	{
 		return this.name;
 	}
 
-	protected string name;
+		protected string name;
 
-	protected int maxDepth;
+		protected int maxDepth;
 
-	protected StateMachine.BaseState defaultState;
+		protected StateMachine.BaseState defaultState;
 
-	protected StateMachine.Parameter[] parameters = new StateMachine.Parameter[0];
+		protected StateMachine.Parameter[] parameters = new StateMachine.Parameter[0];
 
-	public int dataTableSize;
+		public int dataTableSize;
 
-	public int updateTableSize;
+		public int updateTableSize;
 
-	public StateMachineDebuggerSettings.Entry debugSettings;
+		public StateMachineDebuggerSettings.Entry debugSettings;
 
-	public bool saveHistory;
+		public bool saveHistory;
 
-	public sealed class DoNotAutoCreate : Attribute
+		public sealed class DoNotAutoCreate : Attribute
 	{
 	}
 
-	public enum Status
+		public enum Status
 	{
-		Initialized,
-		Running,
-		Failed,
-		Success
+				Initialized,
+				Running,
+				Failed,
+				Success
 	}
 
-	public class BaseDef
+		public class BaseDef
 	{
-		public StateMachine.Instance CreateSMI(IStateMachineTarget master)
+				public StateMachine.Instance CreateSMI(IStateMachineTarget master)
 		{
 			return Singleton<StateMachineManager>.Instance.CreateSMIFromDef(master, this);
 		}
 
-		public Type GetStateMachineType()
+				public Type GetStateMachineType()
 		{
 			return base.GetType().DeclaringType;
 		}
 
-		public virtual void Configure(GameObject prefab)
+				public virtual void Configure(GameObject prefab)
 		{
 		}
 
-		public bool preventStartSMIOnSpawn;
+				public bool preventStartSMIOnSpawn;
 	}
 
-	public class Category : Resource
+		public class Category : Resource
 	{
-		public Category(string id) : base(id, null, null)
+				public Category(string id) : base(id, null, null)
 		{
 		}
 	}
 
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	public abstract class Instance
 	{
-		public abstract StateMachine.BaseState GetCurrentState();
+				public abstract StateMachine.BaseState GetCurrentState();
 
-		public abstract void GoTo(StateMachine.BaseState state);
+				public abstract void GoTo(StateMachine.BaseState state);
 
-				public abstract float timeinstate { get; }
+						public abstract float timeinstate { get; }
 
-		public abstract IStateMachineTarget GetMaster();
+				public abstract IStateMachineTarget GetMaster();
 
-		public abstract void StopSM(string reason);
+				public abstract void StopSM(string reason);
 
-		public abstract SchedulerHandle Schedule(float time, Action<object> callback, object callback_data = null);
+				public abstract SchedulerHandle Schedule(float time, Action<object> callback, object callback_data = null);
 
-		public abstract SchedulerHandle ScheduleNextFrame(Action<object> callback, object callback_data = null);
+				public abstract SchedulerHandle ScheduleNextFrame(Action<object> callback, object callback_data = null);
 
-		public virtual void FreeResources()
+				public virtual void FreeResources()
 		{
 			this.stateMachine = null;
 			if (this.subscribedEvents != null)
@@ -191,76 +191,76 @@ public abstract class StateMachine
 			this.updateTable = null;
 		}
 
-		public Instance(StateMachine state_machine, IStateMachineTarget master)
+				public Instance(StateMachine state_machine, IStateMachineTarget master)
 		{
 			this.stateMachine = state_machine;
 			this.CreateParameterContexts();
 			this.log = new LoggerFSSSS(this.stateMachine.name, 35);
 		}
 
-		public bool IsRunning()
+				public bool IsRunning()
 		{
 			return this.GetCurrentState() != null;
 		}
 
-		public void GoTo(string state_name)
+				public void GoTo(string state_name)
 		{
 			DebugUtil.DevAssert(!KMonoBehaviour.isLoadingScene, "Using Goto while scene was loaded", null);
 			StateMachine.BaseState state = this.stateMachine.GetState(state_name);
 			this.GoTo(state);
 		}
 
-		public int GetStackSize()
+				public int GetStackSize()
 		{
 			return this.stackSize;
 		}
 
-		public StateMachine GetStateMachine()
+				public StateMachine GetStateMachine()
 		{
 			return this.stateMachine;
 		}
 
-		[Conditional("UNITY_EDITOR")]
+				[Conditional("UNITY_EDITOR")]
 		public void Log(string a, string b = "", string c = "", string d = "")
 		{
 		}
 
-		public bool IsConsoleLoggingEnabled()
+				public bool IsConsoleLoggingEnabled()
 		{
 			return this.enableConsoleLogging || this.stateMachine.debugSettings.enableConsoleLogging;
 		}
 
-		public bool IsBreakOnGoToEnabled()
+				public bool IsBreakOnGoToEnabled()
 		{
 			return this.breakOnGoTo || this.stateMachine.debugSettings.breakOnGoTo;
 		}
 
-		public LoggerFSSSS GetLog()
+				public LoggerFSSSS GetLog()
 		{
 			return this.log;
 		}
 
-		public StateMachine.Parameter.Context[] GetParameterContexts()
+				public StateMachine.Parameter.Context[] GetParameterContexts()
 		{
 			return this.parameterContexts;
 		}
 
-		public StateMachine.Parameter.Context GetParameterContext(StateMachine.Parameter parameter)
+				public StateMachine.Parameter.Context GetParameterContext(StateMachine.Parameter parameter)
 		{
 			return this.parameterContexts[parameter.idx];
 		}
 
-		public StateMachine.Status GetStatus()
+				public StateMachine.Status GetStatus()
 		{
 			return this.status;
 		}
 
-		public void SetStatus(StateMachine.Status status)
+				public void SetStatus(StateMachine.Status status)
 		{
 			this.status = status;
 		}
 
-		public void Error()
+				public void Error()
 		{
 			if (!StateMachine.Instance.error)
 			{
@@ -270,7 +270,7 @@ public abstract class StateMachine
 			}
 		}
 
-		public override string ToString()
+				public override string ToString()
 		{
 			string str = "";
 			if (this.GetCurrentState() != null)
@@ -284,7 +284,7 @@ public abstract class StateMachine
 			return this.stateMachine.ToString() + "(" + str + ")";
 		}
 
-		public virtual void StartSM()
+				public virtual void StartSM()
 		{
 			if (!this.IsRunning())
 			{
@@ -299,12 +299,12 @@ public abstract class StateMachine
 			}
 		}
 
-		public bool HasTag(Tag tag)
+				public bool HasTag(Tag tag)
 		{
 			return this.GetComponent<KPrefabID>().HasTag(tag);
 		}
 
-		public bool IsInsideState(StateMachine.BaseState state)
+				public bool IsInsideState(StateMachine.BaseState state)
 		{
 			StateMachine.BaseState currentState = this.GetCurrentState();
 			if (currentState == null)
@@ -320,7 +320,7 @@ public abstract class StateMachine
 			return flag;
 		}
 
-		public void ScheduleGoTo(float time, StateMachine.BaseState state)
+				public void ScheduleGoTo(float time, StateMachine.BaseState state)
 		{
 			if (this.scheduleGoToCallback == null)
 			{
@@ -332,32 +332,32 @@ public abstract class StateMachine
 			this.Schedule(time, this.scheduleGoToCallback, state);
 		}
 
-		public void Subscribe(int hash, Action<object> handler)
+				public void Subscribe(int hash, Action<object> handler)
 		{
 			this.GetMaster().Subscribe(hash, handler);
 		}
 
-		public void Unsubscribe(int hash, Action<object> handler)
+				public void Unsubscribe(int hash, Action<object> handler)
 		{
 			this.GetMaster().Unsubscribe(hash, handler);
 		}
 
-		public void Trigger(int hash, object data = null)
+				public void Trigger(int hash, object data = null)
 		{
 			this.GetMaster().GetComponent<KPrefabID>().Trigger(hash, data);
 		}
 
-		public ComponentType Get<ComponentType>()
+				public ComponentType Get<ComponentType>()
 		{
 			return this.GetComponent<ComponentType>();
 		}
 
-		public ComponentType GetComponent<ComponentType>()
+				public ComponentType GetComponent<ComponentType>()
 		{
 			return this.GetMaster().GetComponent<ComponentType>();
 		}
 
-		private void CreateParameterContexts()
+				private void CreateParameterContexts()
 		{
 			this.parameterContexts = new StateMachine.Parameter.Context[this.stateMachine.parameters.Length];
 			for (int i = 0; i < this.stateMachine.parameters.Length; i++)
@@ -366,7 +366,7 @@ public abstract class StateMachine
 			}
 		}
 
-				public GameObject gameObject
+						public GameObject gameObject
 		{
 			get
 			{
@@ -374,7 +374,7 @@ public abstract class StateMachine
 			}
 		}
 
-				public Transform transform
+						public Transform transform
 		{
 			get
 			{
@@ -382,54 +382,54 @@ public abstract class StateMachine
 			}
 		}
 
-		public string serializationSuffix;
+				public string serializationSuffix;
 
-		protected LoggerFSSSS log;
+				protected LoggerFSSSS log;
 
-		protected StateMachine.Status status;
+				protected StateMachine.Status status;
 
-		protected StateMachine stateMachine;
+				protected StateMachine stateMachine;
 
-		protected Stack<StateEvent.Context> subscribedEvents = new Stack<StateEvent.Context>();
+				protected Stack<StateEvent.Context> subscribedEvents = new Stack<StateEvent.Context>();
 
-		protected int stackSize;
+				protected int stackSize;
 
-		protected StateMachine.Parameter.Context[] parameterContexts;
+				protected StateMachine.Parameter.Context[] parameterContexts;
 
-		public object[] dataTable;
+				public object[] dataTable;
 
-		public StateMachine.Instance.UpdateTableEntry[] updateTable;
+				public StateMachine.Instance.UpdateTableEntry[] updateTable;
 
-		private Action<object> scheduleGoToCallback;
+				private Action<object> scheduleGoToCallback;
 
-		public Action<string, StateMachine.Status> OnStop;
+				public Action<string, StateMachine.Status> OnStop;
 
-		public bool breakOnGoTo;
+				public bool breakOnGoTo;
 
-		public bool enableConsoleLogging;
+				public bool enableConsoleLogging;
 
-		public bool isCrashed;
+				public bool isCrashed;
 
-		public static bool error;
+				public static bool error;
 
-		public struct UpdateTableEntry
+				public struct UpdateTableEntry
 		{
-			public HandleVector<int>.Handle handle;
+						public HandleVector<int>.Handle handle;
 
-			public StateMachineUpdater.BaseUpdateBucket bucket;
+						public StateMachineUpdater.BaseUpdateBucket bucket;
 		}
 	}
 
-	[DebuggerDisplay("{longName}")]
+		[DebuggerDisplay("{longName}")]
 	public class BaseState
 	{
-		public BaseState()
+				public BaseState()
 		{
 			this.branch = new StateMachine.BaseState[1];
 			this.branch[0] = this;
 		}
 
-		public void FreeResources()
+				public void FreeResources()
 		{
 			if (this.name == null)
 			{
@@ -462,46 +462,46 @@ public abstract class StateMachine
 			this.parent = null;
 		}
 
-		public int GetStateCount()
+				public int GetStateCount()
 		{
 			return this.branch.Length;
 		}
 
-		public StateMachine.BaseState GetState(int idx)
+				public StateMachine.BaseState GetState(int idx)
 		{
 			return this.branch[idx];
 		}
 
-		public string name;
+				public string name;
 
-		public string longName;
+				public string longName;
 
-		public string debugPushName;
+				public string debugPushName;
 
-		public string debugPopName;
+				public string debugPopName;
 
-		public string debugExecuteName;
+				public string debugExecuteName;
 
-		public StateMachine.BaseState defaultState;
+				public StateMachine.BaseState defaultState;
 
-		public List<StateEvent> events;
+				public List<StateEvent> events;
 
-		public List<StateMachine.BaseTransition> transitions;
+				public List<StateMachine.BaseTransition> transitions;
 
-		public List<StateMachine.UpdateAction> updateActions;
+				public List<StateMachine.UpdateAction> updateActions;
 
-		public List<StateMachine.Action> enterActions;
+				public List<StateMachine.Action> enterActions;
 
-		public List<StateMachine.Action> exitActions;
+				public List<StateMachine.Action> exitActions;
 
-		public StateMachine.BaseState[] branch;
+				public StateMachine.BaseState[] branch;
 
-		public StateMachine.BaseState parent;
+				public StateMachine.BaseState parent;
 	}
 
-	public class BaseTransition
+		public class BaseTransition
 	{
-		public BaseTransition(int idx, string name, StateMachine.BaseState source_state, StateMachine.BaseState target_state)
+				public BaseTransition(int idx, string name, StateMachine.BaseState source_state, StateMachine.BaseState target_state)
 		{
 			this.idx = idx;
 			this.name = name;
@@ -509,20 +509,20 @@ public abstract class StateMachine
 			this.targetState = target_state;
 		}
 
-		public virtual void Evaluate(StateMachine.Instance smi)
+				public virtual void Evaluate(StateMachine.Instance smi)
 		{
 		}
 
-		public virtual StateMachine.BaseTransition.Context Register(StateMachine.Instance smi)
+				public virtual StateMachine.BaseTransition.Context Register(StateMachine.Instance smi)
 		{
 			return new StateMachine.BaseTransition.Context(this);
 		}
 
-		public virtual void Unregister(StateMachine.Instance smi, StateMachine.BaseTransition.Context context)
+				public virtual void Unregister(StateMachine.Instance smi, StateMachine.BaseTransition.Context context)
 		{
 		}
 
-		public void Clear()
+				public void Clear()
 		{
 			this.name = null;
 			if (this.sourceState != null)
@@ -537,97 +537,97 @@ public abstract class StateMachine
 			this.targetState = null;
 		}
 
-		public int idx;
+				public int idx;
 
-		public string name;
+				public string name;
 
-		public StateMachine.BaseState sourceState;
+				public StateMachine.BaseState sourceState;
 
-		public StateMachine.BaseState targetState;
+				public StateMachine.BaseState targetState;
 
-		public struct Context
+				public struct Context
 		{
-			public Context(StateMachine.BaseTransition transition)
+						public Context(StateMachine.BaseTransition transition)
 			{
 				this.idx = transition.idx;
 				this.handlerId = 0;
 			}
 
-			public int idx;
+						public int idx;
 
-			public int handlerId;
+						public int handlerId;
 		}
 	}
 
-	public struct UpdateAction
+		public struct UpdateAction
 	{
-		public int updateTableIdx;
+				public int updateTableIdx;
 
-		public UpdateRate updateRate;
+				public UpdateRate updateRate;
 
-		public int nextBucketIdx;
+				public int nextBucketIdx;
 
-		public StateMachineUpdater.BaseUpdateBucket[] buckets;
+				public StateMachineUpdater.BaseUpdateBucket[] buckets;
 
-		public object updater;
+				public object updater;
 	}
 
-	public struct Action
+		public struct Action
 	{
-		public Action(string name, object callback)
+				public Action(string name, object callback)
 		{
 			this.name = name;
 			this.callback = callback;
 		}
 
-		public string name;
+				public string name;
 
-		public object callback;
+				public object callback;
 	}
 
-	public class ParameterTransition : StateMachine.BaseTransition
+		public class ParameterTransition : StateMachine.BaseTransition
 	{
-		public ParameterTransition(int idx, string name, StateMachine.BaseState source_state, StateMachine.BaseState target_state) : base(idx, name, source_state, target_state)
+				public ParameterTransition(int idx, string name, StateMachine.BaseState source_state, StateMachine.BaseState target_state) : base(idx, name, source_state, target_state)
 		{
 		}
 	}
 
-	public abstract class Parameter
+		public abstract class Parameter
 	{
-		public abstract StateMachine.Parameter.Context CreateContext();
+				public abstract StateMachine.Parameter.Context CreateContext();
 
-		public string name;
+				public string name;
 
-		public int idx;
+				public int idx;
 
-		public abstract class Context
+				public abstract class Context
 		{
-			public Context(StateMachine.Parameter parameter)
+						public Context(StateMachine.Parameter parameter)
 			{
 				this.parameter = parameter;
 			}
 
-			public abstract void Serialize(BinaryWriter writer);
+						public abstract void Serialize(BinaryWriter writer);
 
-			public abstract void Deserialize(IReader reader, StateMachine.Instance smi);
+						public abstract void Deserialize(IReader reader, StateMachine.Instance smi);
 
-			public virtual void Cleanup()
+						public virtual void Cleanup()
 			{
 			}
 
-			public abstract void ShowEditor(StateMachine.Instance base_smi);
+						public abstract void ShowEditor(StateMachine.Instance base_smi);
 
-			public abstract void ShowDevTool(StateMachine.Instance base_smi);
+						public abstract void ShowDevTool(StateMachine.Instance base_smi);
 
-			public StateMachine.Parameter parameter;
+						public StateMachine.Parameter parameter;
 		}
 	}
 
-	public enum SerializeType
+		public enum SerializeType
 	{
-		Never,
-		ParamsOnly,
-		CurrentStateOnly_DEPRECATED,
-		Both_DEPRECATED
+				Never,
+				ParamsOnly,
+				CurrentStateOnly_DEPRECATED,
+				Both_DEPRECATED
 	}
 }

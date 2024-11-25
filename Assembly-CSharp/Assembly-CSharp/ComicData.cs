@@ -4,9 +4,9 @@ using UnityEngine;
 [Serializable]
 public class ComicData
 {
-	public string name;
+		public string name;
 
-	public Sprite[] images;
+		public Sprite[] images;
 
-	public string[] stringKeys;
+		public string[] stringKeys;
 }

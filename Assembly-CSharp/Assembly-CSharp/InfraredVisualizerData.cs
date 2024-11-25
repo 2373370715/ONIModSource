@@ -4,7 +4,7 @@ using UnityEngine;
 
 public struct InfraredVisualizerData
 {
-	public void Update()
+		public void Update()
 	{
 		float num = 0f;
 		if (this.temperatureAmount != null)
@@ -35,7 +35,7 @@ public struct InfraredVisualizerData
 		this.controller.OverlayColour = c;
 	}
 
-	public InfraredVisualizerData(GameObject go)
+		public InfraredVisualizerData(GameObject go)
 	{
 		this.controller = go.GetComponent<KBatchedAnimController>();
 		if (this.controller != null)
@@ -54,15 +54,15 @@ public struct InfraredVisualizerData
 		this.critterTemperatureMonitorInstance = null;
 	}
 
-	public KAnimControllerBase controller;
+		public KAnimControllerBase controller;
 
-	public AmountInstance temperatureAmount;
+		public AmountInstance temperatureAmount;
 
-	public HandleVector<int>.Handle structureTemperature;
+		public HandleVector<int>.Handle structureTemperature;
 
-	public PrimaryElement primaryElement;
+		public PrimaryElement primaryElement;
 
-	public TemperatureVulnerable temperatureVulnerable;
+		public TemperatureVulnerable temperatureVulnerable;
 
-	public CritterTemperatureMonitor.Instance critterTemperatureMonitorInstance;
+		public CritterTemperatureMonitor.Instance critterTemperatureMonitorInstance;
 }

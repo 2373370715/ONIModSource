@@ -5,19 +5,19 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class RustDeoxidizer : StateMachineComponent<RustDeoxidizer.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 		Tutorial.Instance.oxygenGenerators.Add(base.gameObject);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Tutorial.Instance.oxygenGenerators.Remove(base.gameObject);
 		base.OnCleanUp();
 	}
 
-		private bool RoomForPressure
+			private bool RoomForPressure
 	{
 		get
 		{
@@ -27,35 +27,35 @@ public class RustDeoxidizer : StateMachineComponent<RustDeoxidizer.StatesInstanc
 		}
 	}
 
-	private static bool OverPressure(int cell, RustDeoxidizer rustDeoxidizer)
+		private static bool OverPressure(int cell, RustDeoxidizer rustDeoxidizer)
 	{
 		return Grid.Mass[cell] > rustDeoxidizer.maxMass;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public float maxMass = 2.5f;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ElementConverter emitter;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	public class StatesInstance : GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer, object>.GameInstance
+		public class StatesInstance : GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer, object>.GameInstance
 	{
-		public StatesInstance(RustDeoxidizer smi) : base(smi)
+				public StatesInstance(RustDeoxidizer smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer>
+		public class States : GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.disabled;
 			this.root.EventTransition(GameHashes.OperationalChanged, this.disabled, (RustDeoxidizer.StatesInstance smi) => !smi.master.operational.IsOperational);
@@ -74,12 +74,12 @@ public class RustDeoxidizer : StateMachineComponent<RustDeoxidizer.StatesInstanc
 			}).ToggleStatusItem(Db.Get().BuildingStatusItems.PressureOk, null).Transition(this.converting, (RustDeoxidizer.StatesInstance smi) => smi.master.RoomForPressure, UpdateRate.SIM_200ms);
 		}
 
-		public GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer, object>.State disabled;
+				public GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer, object>.State disabled;
 
-		public GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer, object>.State waiting;
+				public GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer, object>.State waiting;
 
-		public GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer, object>.State converting;
+				public GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer, object>.State converting;
 
-		public GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer, object>.State overpressure;
+				public GameStateMachine<RustDeoxidizer.States, RustDeoxidizer.StatesInstance, RustDeoxidizer, object>.State overpressure;
 	}
 }

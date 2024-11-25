@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SolidConduitConsumer")]
 public class SolidConduitConsumer : KMonoBehaviour, IConduitConsumer
 {
-		public Storage Storage
+			public Storage Storage
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class SolidConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-		public ConduitType ConduitType
+			public ConduitType ConduitType
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class SolidConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-		public bool IsConsuming
+			public bool IsConsuming
 	{
 		get
 		{
@@ -29,7 +29,7 @@ public class SolidConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-		public bool IsConnected
+			public bool IsConnected
 	{
 		get
 		{
@@ -38,12 +38,12 @@ public class SolidConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-	private SolidConduitFlow GetConduitFlow()
+		private SolidConduitFlow GetConduitFlow()
 	{
 		return Game.Instance.solidConduitFlow;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.utilityCell = this.GetInputCell();
@@ -53,20 +53,20 @@ public class SolidConduitConsumer : KMonoBehaviour, IConduitConsumer
 		this.OnConduitConnectionChanged(null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.GetConduitFlow().RemoveConduitUpdater(new Action<float>(this.ConduitUpdate));
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		base.OnCleanUp();
 	}
 
-	private void OnConduitConnectionChanged(object data)
+		private void OnConduitConnectionChanged(object data)
 	{
 		this.consuming = (this.consuming && this.IsConnected);
 		base.Trigger(-2094018600, this.IsConnected);
 	}
 
-	private void ConduitUpdate(float dt)
+		private void ConduitUpdate(float dt)
 	{
 		bool flag = false;
 		SolidConduitFlow conduitFlow = this.GetConduitFlow();
@@ -100,7 +100,7 @@ public class SolidConduitConsumer : KMonoBehaviour, IConduitConsumer
 		this.consuming = flag;
 	}
 
-	private int GetConnectedNetworkID()
+		private int GetConnectedNetworkID()
 	{
 		GameObject gameObject = Grid.Objects[this.utilityCell, 20];
 		SolidConduit solidConduit = (gameObject != null) ? gameObject.GetComponent<SolidConduit>() : null;
@@ -112,7 +112,7 @@ public class SolidConduitConsumer : KMonoBehaviour, IConduitConsumer
 		return utilityNetwork.id;
 	}
 
-	private int GetInputCell()
+		private int GetInputCell()
 	{
 		if (this.useSecondaryInput)
 		{
@@ -128,30 +128,30 @@ public class SolidConduitConsumer : KMonoBehaviour, IConduitConsumer
 		return this.building.GetUtilityInputCell();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public Tag capacityTag = GameTags.Any;
 
-	[SerializeField]
+		[SerializeField]
 	public float capacityKG = float.PositiveInfinity;
 
-	[SerializeField]
+		[SerializeField]
 	public bool alwaysConsume;
 
-	[SerializeField]
+		[SerializeField]
 	public bool useSecondaryInput;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public Storage storage;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private int utilityCell = -1;
+		private int utilityCell = -1;
 
-	private bool consuming;
+		private bool consuming;
 }

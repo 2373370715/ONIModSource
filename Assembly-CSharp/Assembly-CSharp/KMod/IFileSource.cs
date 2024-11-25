@@ -4,22 +4,22 @@ using Klei;
 
 namespace KMod
 {
-	public interface IFileSource
+		public interface IFileSource
 	{
-		string GetRoot();
+				string GetRoot();
 
-		bool Exists();
+				bool Exists();
 
-		bool Exists(string relative_path);
+				bool Exists(string relative_path);
 
-		void GetTopLevelItems(List<FileSystemItem> file_system_items, string relative_root = "");
+				void GetTopLevelItems(List<FileSystemItem> file_system_items, string relative_root = "");
 
-		IFileDirectory GetFileSystem();
+				IFileDirectory GetFileSystem();
 
-		void CopyTo(string path, List<string> extensions = null);
+				void CopyTo(string path, List<string> extensions = null);
 
-		string Read(string relative_path);
+				string Read(string relative_path);
 
-		void Dispose();
+				void Dispose();
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RailGunSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.unitsLabel.text = GameUtil.GetCurrentMassUnit(false);
@@ -27,7 +27,7 @@ public class RailGunSideScreen : SideScreenContent
 		this.numberInput.decimalPlaces = 1;
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		if (this.selectedGun)
@@ -36,7 +36,7 @@ public class RailGunSideScreen : SideScreenContent
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (this.selectedGun)
@@ -45,12 +45,12 @@ public class RailGunSideScreen : SideScreenContent
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<RailGun>() != null;
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -76,7 +76,7 @@ public class RailGunSideScreen : SideScreenContent
 		this.UpdateHEPLabels(null);
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 		if (this.targetRailgunHEPStorageSubHandle != -1 && this.selectedGun != null)
 		{
@@ -86,7 +86,7 @@ public class RailGunSideScreen : SideScreenContent
 		this.selectedGun = null;
 	}
 
-	public void UpdateHEPLabels(object data = null)
+		public void UpdateHEPLabels(object data = null)
 	{
 		if (this.selectedGun == null)
 		{
@@ -98,17 +98,17 @@ public class RailGunSideScreen : SideScreenContent
 		this.hepStorageInfo.text = text;
 	}
 
-	private void ReceiveValueFromSlider(float newValue)
+		private void ReceiveValueFromSlider(float newValue)
 	{
 		this.UpdateMaxCapacity(newValue);
 	}
 
-	private void ReceiveValueFromInput(float newValue)
+		private void ReceiveValueFromInput(float newValue)
 	{
 		this.UpdateMaxCapacity(newValue);
 	}
 
-	private void UpdateMaxCapacity(float newValue)
+		private void UpdateMaxCapacity(float newValue)
 	{
 		this.selectedGun.launchMass = newValue;
 		this.slider.value = newValue;
@@ -116,30 +116,30 @@ public class RailGunSideScreen : SideScreenContent
 		this.selectedGun.Trigger(161772031, null);
 	}
 
-	private void UpdateMaxCapacityLabel()
+		private void UpdateMaxCapacityLabel()
 	{
 		this.numberInput.SetDisplayValue(this.selectedGun.launchMass.ToString());
 	}
 
-	public GameObject content;
+		public GameObject content;
 
-	private RailGun selectedGun;
+		private RailGun selectedGun;
 
-	public LocText DescriptionText;
+		public LocText DescriptionText;
 
-	[Header("Slider")]
+		[Header("Slider")]
 	[SerializeField]
 	private KSlider slider;
 
-	[Header("Number Input")]
+		[Header("Number Input")]
 	[SerializeField]
 	private KNumberInputField numberInput;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText unitsLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText hepStorageInfo;
 
-	private int targetRailgunHEPStorageSubHandle = -1;
+		private int targetRailgunHEPStorageSubHandle = -1;
 }

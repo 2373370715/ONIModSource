@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class VignetteManager : GameStateMachine<VignetteManager, VignetteManager.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.off;
 		this.off.ParamTransition<bool>(this.isOn, this.on, GameStateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.IsTrue);
@@ -47,41 +47,41 @@ public class VignetteManager : GameStateMachine<VignetteManager, VignetteManager
 		}).ToggleLoopingSound(GlobalAssets.GetSound("YellowAlert_LP", false), null, true, false, true);
 	}
 
-	public GameStateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.State off;
+		public GameStateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.State off;
 
-	public VignetteManager.OnStates on;
+		public VignetteManager.OnStates on;
 
-	public StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter isRedAlert = new StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter();
+		public StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter isRedAlert = new StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter();
 
-	public StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter isYellowAlert = new StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter();
+		public StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter isYellowAlert = new StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter();
 
-	public StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter isOn = new StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter();
+		public StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter isOn = new StateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.BoolParameter();
 
-	public class OnStates : GameStateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.State
+		public class OnStates : GameStateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.State yellow;
+				public GameStateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.State yellow;
 
-		public GameStateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.State red;
+				public GameStateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.State red;
 	}
 
-	public new class Instance : GameStateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<VignetteManager, VignetteManager.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public static void DestroyInstance()
+				public static void DestroyInstance()
 		{
 			VignetteManager.Instance.instance = null;
 		}
 
-		public static VignetteManager.Instance Get()
+				public static VignetteManager.Instance Get()
 		{
 			return VignetteManager.Instance.instance;
 		}
 
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			VignetteManager.Instance.instance = this;
 		}
 
-		public void UpdateState(float dt)
+				public void UpdateState(float dt)
 		{
 			if (this.IsRedAlert())
 			{
@@ -99,51 +99,51 @@ public class VignetteManager : GameStateMachine<VignetteManager, VignetteManager
 			}
 		}
 
-		public bool IsOn()
+				public bool IsOn()
 		{
 			return base.sm.isYellowAlert.Get(base.smi) || base.sm.isRedAlert.Get(base.smi);
 		}
 
-		public bool IsRedAlert()
+				public bool IsRedAlert()
 		{
 			return base.sm.isRedAlert.Get(base.smi);
 		}
 
-		public bool IsYellowAlert()
+				public bool IsYellowAlert()
 		{
 			return base.sm.isYellowAlert.Get(base.smi);
 		}
 
-		public bool IsRedAlertToggledOn()
+				public bool IsRedAlertToggledOn()
 		{
 			return this.isToggled;
 		}
 
-		public void ToggleRedAlert(bool on)
+				public void ToggleRedAlert(bool on)
 		{
 			this.isToggled = on;
 			this.Refresh();
 		}
 
-		public void HasTopPriorityChore(bool on)
+				public void HasTopPriorityChore(bool on)
 		{
 			this.hasTopPriorityChore = on;
 			this.Refresh();
 		}
 
-		private void Refresh()
+				private void Refresh()
 		{
 			base.sm.isYellowAlert.Set(this.hasTopPriorityChore, base.smi, false);
 			base.sm.isRedAlert.Set(this.isToggled, base.smi, false);
 			base.sm.isOn.Set(this.hasTopPriorityChore || this.isToggled, base.smi, false);
 		}
 
-		private static VignetteManager.Instance instance;
+				private static VignetteManager.Instance instance;
 
-		private bool isToggled;
+				private bool isToggled;
 
-		private bool hasTopPriorityChore;
+				private bool hasTopPriorityChore;
 
-		public Notification redAlertNotification = new Notification(MISC.NOTIFICATIONS.REDALERT.NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.REDALERT.TOOLTIP, null, false, 0f, null, null, null, true, false, false);
+				public Notification redAlertNotification = new Notification(MISC.NOTIFICATIONS.REDALERT.NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.REDALERT.TOOLTIP, null, false, 0f, null, null, null, true, false, false);
 	}
 }

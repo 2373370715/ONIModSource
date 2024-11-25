@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class Oxyfern : StateMachineComponent<Oxyfern.StatesInstance>
 {
-	protected void DestroySelf(object callbackParam)
+		protected void DestroySelf(object callbackParam)
 	{
 		CreatureHelpers.DeselectCreature(base.gameObject);
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (Tutorial.Instance.oxygenGenerators.Contains(base.gameObject))
@@ -25,13 +25,13 @@ public class Oxyfern : StateMachineComponent<Oxyfern.StatesInstance>
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.Subscribe<Oxyfern>(1309017699, Oxyfern.OnReplantedDelegate);
 		base.OnPrefabInit();
 	}
 
-	private void OnReplanted(object data = null)
+		private void OnReplanted(object data = null)
 	{
 		this.SetConsumptionRate();
 		if (this.receptacleMonitor.Replanted)
@@ -40,7 +40,7 @@ public class Oxyfern : StateMachineComponent<Oxyfern.StatesInstance>
 		}
 	}
 
-	public void SetConsumptionRate()
+		public void SetConsumptionRate()
 	{
 		if (this.receptacleMonitor.Replanted)
 		{
@@ -50,37 +50,45 @@ public class Oxyfern : StateMachineComponent<Oxyfern.StatesInstance>
 		this.elementConsumer.consumptionRate = 0.00015625001f;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private WiltCondition wiltCondition;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ElementConsumer elementConsumer;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ElementConverter elementConverter;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ReceptacleMonitor receptacleMonitor;
 
-	private static readonly EventSystem.IntraObjectHandler<Oxyfern> OnReplantedDelegate = new EventSystem.IntraObjectHandler<Oxyfern>(delegate(Oxyfern component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Oxyfern> OnReplantedDelegate = new EventSystem.IntraObjectHandler<Oxyfern>(delegate(Oxyfern component, object data)
 	{
 		component.OnReplanted(data);
 	});
 
-	public class StatesInstance : GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.GameInstance
 	{
-		public StatesInstance(Oxyfern master) : base(master)
+				public StatesInstance(Oxyfern master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern>
+		public class States : GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
 			default_state = this.grow;
-			this.dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).Enter(delegate(Oxyfern.StatesInstance smi)
+			GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.State state = this.dead;
+			string name = CREATURES.STATUSITEMS.DEAD.NAME;
+			string tooltip = CREATURES.STATUSITEMS.DEAD.TOOLTIP;
+			string icon = "";
+			StatusItem.IconType icon_type = StatusItem.IconType.Info;
+			NotificationType notification_type = NotificationType.Neutral;
+			bool allow_multiples = false;
+			StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+			state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).Enter(delegate(Oxyfern.StatesInstance smi)
 			{
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);
@@ -107,19 +115,19 @@ public class Oxyfern : StateMachineComponent<Oxyfern.StatesInstance>
 			this.alive.wilting.PlayAnim("wilt3").EventTransition(GameHashes.WiltRecover, this.alive.mature, (Oxyfern.StatesInstance smi) => !smi.master.wiltCondition.IsWilting());
 		}
 
-		public GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.State grow;
+				public GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.State grow;
 
-		public GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.State blocked_from_growing;
+				public GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.State blocked_from_growing;
 
-		public Oxyfern.States.AliveStates alive;
+				public Oxyfern.States.AliveStates alive;
 
-		public GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.State dead;
+				public GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.State dead;
 
-		public class AliveStates : GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.PlantAliveSubState
+				public class AliveStates : GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.PlantAliveSubState
 		{
-			public GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.State mature;
+						public GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.State mature;
 
-			public GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.State wilting;
+						public GameStateMachine<Oxyfern.States, Oxyfern.StatesInstance, Oxyfern, object>.State wilting;
 		}
 	}
 }

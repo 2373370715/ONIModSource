@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicTimeOfDaySensorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicTimeOfDaySensorConfig.ID;
 		int width = 1;
@@ -37,11 +37,11 @@ public class LogicTimeOfDaySensorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicTimeOfDaySensor>().manuallyControlled = false;
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicTimeOfDaySensor";
+		public static string ID = "LogicTimeOfDaySensor";
 }

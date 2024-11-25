@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/GridSettings")]
 public class GridSettings : KMonoBehaviour
 {
-	public static void Reset(int width, int height)
+		public static void Reset(int width, int height)
 	{
 		Grid.WidthInCells = width;
 		Grid.HeightInCells = height;
@@ -52,7 +52,7 @@ public class GridSettings : KMonoBehaviour
 		Grid.OnReveal = null;
 	}
 
-	public static void ClearGrid()
+		public static void ClearGrid()
 	{
 		Grid.WidthInCells = 0;
 		Grid.HeightInCells = 0;
@@ -78,5 +78,5 @@ public class GridSettings : KMonoBehaviour
 		Grid.ResetNavMasksAndDetails();
 	}
 
-	public const float CellSizeInMeters = 1f;
+		public const float CellSizeInMeters = 1f;
 }

@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class DeathStates : GameStateMachine<DeathStates, DeathStates.Instance, IStateMachineTarget, DeathStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.loop;
-		this.loop.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).Enter("EnableGravity", delegate(DeathStates.Instance smi)
+		GameStateMachine<DeathStates, DeathStates.Instance, IStateMachineTarget, DeathStates.Def>.State state = this.loop;
+		string name = CREATURES.STATUSITEMS.DEAD.NAME;
+		string tooltip = CREATURES.STATUSITEMS.DEAD.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).Enter("EnableGravity", delegate(DeathStates.Instance smi)
 		{
 			smi.EnableGravityIfNecessary();
 		}).Enter("Play Death Animations", delegate(DeathStates.Instance smi)
@@ -27,23 +35,23 @@ public class DeathStates : GameStateMachine<DeathStates, DeathStates.Instance, I
 		}).BehaviourComplete(GameTags.Creatures.Die, false);
 	}
 
-	private GameStateMachine<DeathStates, DeathStates.Instance, IStateMachineTarget, DeathStates.Def>.State loop;
+		private GameStateMachine<DeathStates, DeathStates.Instance, IStateMachineTarget, DeathStates.Def>.State loop;
 
-	public GameStateMachine<DeathStates, DeathStates.Instance, IStateMachineTarget, DeathStates.Def>.State pst;
+		public GameStateMachine<DeathStates, DeathStates.Instance, IStateMachineTarget, DeathStates.Def>.State pst;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public float DIE_ANIMATION_EXPIRATION_TIME = 4f;
+				public float DIE_ANIMATION_EXPIRATION_TIME = 4f;
 	}
 
-	public new class Instance : GameStateMachine<DeathStates, DeathStates.Instance, IStateMachineTarget, DeathStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<DeathStates, DeathStates.Instance, IStateMachineTarget, DeathStates.Def>.GameInstance
 	{
-		public Instance(Chore<DeathStates.Instance> chore, DeathStates.Def def) : base(chore, def)
+				public Instance(Chore<DeathStates.Instance> chore, DeathStates.Def def) : base(chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.Die);
 		}
 
-		public void EnableGravityIfNecessary()
+				public void EnableGravityIfNecessary()
 		{
 			if (base.HasTag(GameTags.Creatures.Flyer) && !base.HasTag(GameTags.Stored))
 			{
@@ -54,7 +62,7 @@ public class DeathStates : GameStateMachine<DeathStates, DeathStates.Instance, I
 			}
 		}
 
-		public void DisableGravity()
+				public void DisableGravity()
 		{
 			if (GameComps.Gravities.Has(base.smi.gameObject))
 			{
@@ -62,7 +70,7 @@ public class DeathStates : GameStateMachine<DeathStates, DeathStates.Instance, I
 			}
 		}
 
-		public void PlayDeathAnimations()
+				public void PlayDeathAnimations()
 		{
 			if (base.gameObject.HasTag(GameTags.PreventDeadAnimation))
 			{

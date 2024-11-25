@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicRibbonWriterConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicRibbonWriterConfig.ID;
 		int width = 2;
@@ -43,11 +43,11 @@ public class LogicRibbonWriterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicRibbonWriter>();
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicRibbonWriter";
+		public static string ID = "LogicRibbonWriter";
 }

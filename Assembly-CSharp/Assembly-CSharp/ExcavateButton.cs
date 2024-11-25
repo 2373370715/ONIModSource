@@ -3,7 +3,7 @@ using STRINGS;
 
 public class ExcavateButton : KMonoBehaviour, ISidescreenButtonControl
 {
-		public string SidescreenButtonText
+			public string SidescreenButtonText
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class ExcavateButton : KMonoBehaviour, ISidescreenButtonControl
 		}
 	}
 
-		public string SidescreenButtonTooltip
+			public string SidescreenButtonTooltip
 	{
 		get
 		{
@@ -27,27 +27,27 @@ public class ExcavateButton : KMonoBehaviour, ISidescreenButtonControl
 		}
 	}
 
-	public int HorizontalGroupID()
+		public int HorizontalGroupID()
 	{
 		return -1;
 	}
 
-	public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
+		public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
 	{
 		throw new NotImplementedException();
 	}
 
-	public bool SidescreenEnabled()
+		public bool SidescreenEnabled()
 	{
 		return true;
 	}
 
-	public bool SidescreenButtonInteractable()
+		public bool SidescreenButtonInteractable()
 	{
 		return true;
 	}
 
-	public void OnSidescreenButtonPressed()
+		public void OnSidescreenButtonPressed()
 	{
 		System.Action onButtonPressed = this.OnButtonPressed;
 		if (onButtonPressed == null)
@@ -57,12 +57,12 @@ public class ExcavateButton : KMonoBehaviour, ISidescreenButtonControl
 		onButtonPressed();
 	}
 
-	public int ButtonSideScreenSortOrder()
+		public int ButtonSideScreenSortOrder()
 	{
 		return 20;
 	}
 
-	public Func<bool> isMarkedForDig;
+		public Func<bool> isMarkedForDig;
 
-	public System.Action OnButtonPressed;
+		public System.Action OnButtonPressed;
 }

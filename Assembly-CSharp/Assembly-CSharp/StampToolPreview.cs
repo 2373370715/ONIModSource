@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StampToolPreview
 {
-	public StampToolPreview(InterfaceTool tool, params IStampToolPreviewPlugin[] plugins)
+		public StampToolPreview(InterfaceTool tool, params IStampToolPreviewPlugin[] plugins)
 	{
 		this.context = new StampToolPreviewContext();
 		this.context.previewParent = new GameObject("StampToolPreview::Preview").transform;
@@ -12,7 +12,7 @@ public class StampToolPreview
 		this.plugins = plugins;
 	}
 
-	public IEnumerator Setup(TemplateContainer stampTemplate)
+		public IEnumerator Setup(TemplateContainer stampTemplate)
 	{
 		this.Cleanup();
 		this.context.stampTemplate = stampTemplate;
@@ -32,7 +32,7 @@ public class StampToolPreview
 		yield break;
 	}
 
-	public void Refresh(int originCell)
+		public void Refresh(int originCell)
 	{
 		if (this.context.stampTemplate == null)
 		{
@@ -55,7 +55,7 @@ public class StampToolPreview
 		this.context.previewParent.gameObject.SetActive(true);
 	}
 
-	public void OnErrorChange(string error)
+		public void OnErrorChange(string error)
 	{
 		if (this.context.onErrorChangeFn != null)
 		{
@@ -63,7 +63,7 @@ public class StampToolPreview
 		}
 	}
 
-	public void OnPlace()
+		public void OnPlace()
 	{
 		if (this.context.onPlaceFn != null)
 		{
@@ -71,7 +71,7 @@ public class StampToolPreview
 		}
 	}
 
-	public void Cleanup()
+		public void Cleanup()
 	{
 		if (this.context.cleanupFn != null)
 		{
@@ -85,9 +85,9 @@ public class StampToolPreview
 		this.context.cleanupFn = null;
 	}
 
-	private IStampToolPreviewPlugin[] plugins;
+		private IStampToolPreviewPlugin[] plugins;
 
-	private StampToolPreviewContext context;
+		private StampToolPreviewContext context;
 
-	private int prevOriginCell;
+		private int prevOriginCell;
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/FabricatorSideScreen")]
-public class FabricatorSideScreen : KMonoBehaviour
-{
-}
+public class FabricatorSideScreen : KMonoBehaviour { }

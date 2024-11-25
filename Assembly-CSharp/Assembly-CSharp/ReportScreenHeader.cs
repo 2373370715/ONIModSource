@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ReportScreenHeader")]
 public class ReportScreenHeader : KMonoBehaviour
 {
-	public void SetMainEntry(ReportManager.ReportGroup reportGroup)
+		public void SetMainEntry(ReportManager.ReportGroup reportGroup)
 	{
 		if (this.mainRow == null)
 		{
@@ -13,8 +13,8 @@ public class ReportScreenHeader : KMonoBehaviour
 		this.mainRow.SetLine(reportGroup);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private ReportScreenHeaderRow rowTemplate;
 
-	private ReportScreenHeaderRow mainRow;
+		private ReportScreenHeaderRow mainRow;
 }

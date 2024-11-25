@@ -2,13 +2,13 @@
 
 namespace STRINGS
 {
-	public class SUBWORLDS
+		public class SUBWORLDS
 	{
-		public static class BARREN
+				public static class BARREN
 		{
-			public static LocString NAME = "Barren";
+						public static LocString NAME = "Barren";
 
-			public static LocString DESC = string.Concat(new string[]
+						public static LocString DESC = string.Concat(new string[]
 			{
 				"Initial scans of this biome yield no signs of either ",
 				UI.FormatAsLink("plant life", "PLANTS"),
@@ -21,7 +21,7 @@ namespace STRINGS
 				" deposits. These dry, dusty plains can be mined for building materials but there is little in the way of life sustaining resources here for a colony."
 			});
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"The layers of sedimentary rock are predominantly made up of ",
 				UI.FormatAsLink("Granite", "GRANITE"),
@@ -37,13 +37,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class FOREST
+				public static class FOREST
 		{
-			public static LocString NAME = "Forest";
+						public static LocString NAME = "Forest";
 
-			public static LocString DESC = "Temperate and filled with unique " + UI.FormatAsLink("Plant", "PLANTS") + " life, this biome contains all the necessities for life support, although not in quantities sufficient to sustain a long term colony. Exploration into neighboring biomes should be a priority.";
+						public static LocString DESC = "Temperate and filled with unique " + UI.FormatAsLink("Plant", "PLANTS") + " life, this biome contains all the necessities for life support, although not in quantities sufficient to sustain a long term colony. Exploration into neighboring biomes should be a priority.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"Small pockets of ",
 				UI.FormatAsLink("Oxylite", "OXYROCK"),
@@ -73,11 +73,11 @@ namespace STRINGS
 			});
 		}
 
-		public static class FROZEN
+				public static class FROZEN
 		{
-			public static LocString NAME = "Tundra";
+						public static LocString NAME = "Tundra";
 
-			public static LocString DESC = string.Concat(new string[]
+						public static LocString DESC = string.Concat(new string[]
 			{
 				"The sub-zero temperatures of the Tundra Biome provide rare frozen deposits of ",
 				UI.FormatAsLink("Ice", "ICE"),
@@ -88,7 +88,7 @@ namespace STRINGS
 				" regulation needs."
 			});
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"Far from devoid of life, this biome contains some much needed plant life, ripe for cultivation. ",
 				UI.FormatAsLink("Sleet Wheat", "COLDWHEAT"),
@@ -104,11 +104,11 @@ namespace STRINGS
 			});
 		}
 
-		public static class JUNGLE
+				public static class JUNGLE
 		{
-			public static LocString NAME = "Jungle";
+						public static LocString NAME = "Jungle";
 
-			public static LocString DESC = string.Concat(new string[]
+						public static LocString DESC = string.Concat(new string[]
 			{
 				"Initial investigations of the Jungle Biome reveal an ecosystem filled with unique flora but centered around ",
 				UI.FormatAsLink("Liquid Chlorine", "CHLORINE"),
@@ -117,7 +117,7 @@ namespace STRINGS
 				" gas, toxic to Duplicants. When exploring here, it is worth setting up a good system."
 			});
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"The ",
 				UI.FormatAsLink("Drecko", "DRECKOSPECIES"),
@@ -137,13 +137,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class MAGMA
+				public static class MAGMA
 		{
-			public static LocString NAME = "Magma";
+						public static LocString NAME = "Magma";
 
-			public static LocString DESC = "Temperatures in the Magma Biome can reach upwards of 1526 degrees, making it a reliable source of extreme heat that can be exploited for the purposes of producing " + UI.FormatAsLink("Power", "POWER") + " and fuel.";
+						public static LocString DESC = "Temperatures in the Magma Biome can reach upwards of 1526 degrees, making it a reliable source of extreme heat that can be exploited for the purposes of producing " + UI.FormatAsLink("Power", "POWER") + " and fuel.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				UI.FormatAsLink("Magma", "MAGMA"),
 				" is source of extreme ",
@@ -166,13 +166,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class MARSH
+				public static class MARSH
 		{
-			public static LocString NAME = "Marsh";
+						public static LocString NAME = "Marsh";
 
-			public static LocString DESC = UI.FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " dominates the atmosphere of the Marsh Biome as it escapes from the " + UI.FormatAsLink("Slime", "SLIMEMOLD") + " this biome is known for.";
+						public static LocString DESC = UI.FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN") + " dominates the atmosphere of the Marsh Biome as it escapes from the " + UI.FormatAsLink("Slime", "SLIMEMOLD") + " this biome is known for.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"Marsh Biomes contain large amounts of ",
 				UI.FormatAsLink("Slime", "SLIMEMOLD"),
@@ -190,13 +190,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class METALLIC
+				public static class METALLIC
 		{
-			public static LocString NAME = "Metallic";
+						public static LocString NAME = "Metallic";
 
-			public static LocString DESC = "A plethora of metals pervade the Metallic Biome making it the go-to destination for a colony ramping up production for technological advancement.";
+						public static LocString DESC = "A plethora of metals pervade the Metallic Biome making it the go-to destination for a colony ramping up production for technological advancement.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				UI.FormatAsLink("Gold Amalgam", "GOLDAMALGAM"),
 				", ",
@@ -223,11 +223,11 @@ namespace STRINGS
 			});
 		}
 
-		public static class OCEAN
+				public static class OCEAN
 		{
-			public static LocString NAME = "Ocean";
+						public static LocString NAME = "Ocean";
 
-			public static LocString DESC = string.Concat(new string[]
+						public static LocString DESC = string.Concat(new string[]
 			{
 				UI.FormatAsLink("Sand", "SAND"),
 				", ",
@@ -239,7 +239,7 @@ namespace STRINGS
 				" biome."
 			});
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				UI.FormatAsLink("Pokeshell", "CRABSPECIES"),
 				" molt is an excellent source of ",
@@ -268,11 +268,11 @@ namespace STRINGS
 			});
 		}
 
-		public static class OIL
+				public static class OIL
 		{
-			public static LocString NAME = "Oily";
+						public static LocString NAME = "Oily";
 
-			public static LocString DESC = string.Concat(new string[]
+						public static LocString DESC = string.Concat(new string[]
 			{
 				"Viscous pools of liquid ",
 				UI.FormatAsLink("Crude Oil", "CRUDEOIL"),
@@ -281,7 +281,7 @@ namespace STRINGS
 				"-rich environment of the Oil Biome."
 			});
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"Though ",
 				UI.FormatAsLink("Oxygen", "OXYGEN"),
@@ -305,13 +305,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class RADIOACTIVE
+				public static class RADIOACTIVE
 		{
-			public static LocString NAME = "Radioactive";
+						public static LocString NAME = "Radioactive";
 
-			public static LocString DESC = "A highly volatile environment containing a highly useful resource, this biome is invaluable when venturing into nuclear technologies.";
+						public static LocString DESC = "A highly volatile environment containing a highly useful resource, this biome is invaluable when venturing into nuclear technologies.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				UI.FormatAsLink("Lead Suits", "LEAD_SUIT"),
 				" are imperative if my Duplicants are going to start exploring this biome as ",
@@ -328,13 +328,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class RUST
+				public static class RUST
 		{
-			public static LocString NAME = "Rust";
+						public static LocString NAME = "Rust";
 
-			public static LocString DESC = "The orange-brown oasis of the Rust Biome is home to many unusual flora and fauna. It contains the resources for several intermediate technologies.";
+						public static LocString DESC = "The orange-brown oasis of the Rust Biome is home to many unusual flora and fauna. It contains the resources for several intermediate technologies.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"When combined with the ",
 				UI.FormatAsLink("Rust Deoxidizer", "RUSTDEOXIDIZER"),
@@ -360,13 +360,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class SANDSTONE
+				public static class SANDSTONE
 		{
-			public static LocString NAME = "Sandstone";
+						public static LocString NAME = "Sandstone";
 
-			public static LocString DESC = "The Sandstone Biome is a temperate oasis with few inherent dangers. It's the perfect spot to get your colony up and running.";
+						public static LocString DESC = "The Sandstone Biome is a temperate oasis with few inherent dangers. It's the perfect spot to get your colony up and running.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				UI.FormatAsLink("Oxylite", "OXYROCK"),
 				" and ",
@@ -393,13 +393,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class WASTELAND
+				public static class WASTELAND
 		{
-			public static LocString NAME = "Wasteland";
+						public static LocString NAME = "Wasteland";
 
-			public static LocString DESC = "While the Wasteland Biome does not look particularly interesting, a pragmatic colony can take advantage of its selection of construction resources.";
+						public static LocString DESC = "While the Wasteland Biome does not look particularly interesting, a pragmatic colony can take advantage of its selection of construction resources.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"The prevalance of ",
 				UI.FormatAsLink("Copper", "COPPER"),
@@ -429,13 +429,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class SPACE
+				public static class SPACE
 		{
-			public static LocString NAME = "Space";
+						public static LocString NAME = "Space";
 
-			public static LocString DESC = "The Space Biome is located on the scenic surface of an asteroid. Watch for dazzling meteorites to shower elements down from the sky.";
+						public static LocString DESC = "The Space Biome is located on the scenic surface of an asteroid. Watch for dazzling meteorites to shower elements down from the sky.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"Setting up ",
 				UI.FormatAsLink("Solar Panels", "SOLARPANEL"),
@@ -451,11 +451,11 @@ namespace STRINGS
 			});
 		}
 
-		public static class SWAMP
+				public static class SWAMP
 		{
-			public static LocString NAME = "Swampy";
+						public static LocString NAME = "Swampy";
 
-			public static LocString DESC = string.Concat(new string[]
+						public static LocString DESC = string.Concat(new string[]
 			{
 				"With its abundance of ",
 				UI.FormatAsLink("Polluted Oxygen", "CONTAMINATEDOXYGEN"),
@@ -466,7 +466,7 @@ namespace STRINGS
 				" the Swampy Biome presents some challenges for a budding colony. But, with a little hard work, it can also turn into a great starting biome with some valuable resources."
 			});
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				UI.FormatAsLink("Swamp Chard", "SWAMPFORAGEPLANTPLANTED"),
 				" can provide adequate nutrients for my Duplicants while they establish farms, but it cannot be planted or propogated. ",
@@ -491,13 +491,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class NIOBIUM
+				public static class NIOBIUM
 		{
-			public static LocString NAME = "Niobium";
+						public static LocString NAME = "Niobium";
 
-			public static LocString DESC = "The Niobium Biome features only two resources yet, because " + UI.FormatAsLink("Niobium", "NIOBIUM") + " is an extremely rare and valuable element, it is worth making a special visit.";
+						public static LocString DESC = "The Niobium Biome features only two resources yet, because " + UI.FormatAsLink("Niobium", "NIOBIUM") + " is an extremely rare and valuable element, it is worth making a special visit.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"By itself, ",
 				UI.FormatAsLink("Niobium", "NIOBIUM"),
@@ -513,13 +513,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class AQUATIC
+				public static class AQUATIC
 		{
-			public static LocString NAME = "Aquatic";
+						public static LocString NAME = "Aquatic";
 
-			public static LocString DESC = "The Aquatic Biome is flush with a huge deposit of precious " + UI.FormatAsLink("Water", "WATER") + ".";
+						public static LocString DESC = "The Aquatic Biome is flush with a huge deposit of precious " + UI.FormatAsLink("Water", "WATER") + ".";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"Initially there is very little solid ground in this biome to establish a temporary base, but once a transportation network can be established to send the ",
 				UI.FormatAsLink("Water", "WATER"),
@@ -539,11 +539,11 @@ namespace STRINGS
 			});
 		}
 
-		public static class MOO
+				public static class MOO
 		{
-			public static LocString NAME = "Moo";
+						public static LocString NAME = "Moo";
 
-			public static LocString DESC = string.Concat(new string[]
+						public static LocString DESC = string.Concat(new string[]
 			{
 				"The Moo Biome is the natural habitat of the charismatic ",
 				UI.FormatAsLink("Gassy Moo", "MOO"),
@@ -552,7 +552,7 @@ namespace STRINGS
 				"."
 			});
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"In addition to ",
 				UI.FormatAsLink("Natural Gas", "METHANE"),
@@ -582,13 +582,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class REGOLITH
+				public static class REGOLITH
 		{
-			public static LocString NAME = "Regolith";
+						public static LocString NAME = "Regolith";
 
-			public static LocString DESC = "The Regolith Biome contains a bounty of " + UI.FormatAsLink("Regolith", "REGOLITH") + " which is very useful as a material for filtration.";
+						public static LocString DESC = "The Regolith Biome contains a bounty of " + UI.FormatAsLink("Regolith", "REGOLITH") + " which is very useful as a material for filtration.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"Lingering within the layers of Regolith are the pernicious ",
 				UI.FormatAsLink("Shove Voles", "MOLESPECIES"),
@@ -598,13 +598,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class ICECAVES
+				public static class ICECAVES
 		{
-			public static LocString NAME = "Ice Cave";
+						public static LocString NAME = "Ice Cave";
 
-			public static LocString DESC = "The Ice Cave Biome's extremely low temperatures make thermal regulation the top priority.";
+						public static LocString DESC = "The Ice Cave Biome's extremely low temperatures make thermal regulation the top priority.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				"The below-freezing climate in this biome keeps elements frozen solid, but once a colony has established the means necessary to melt the abundant ",
 				UI.FormatAsLink("Ice", "ICE"),
@@ -634,13 +634,13 @@ namespace STRINGS
 			});
 		}
 
-		public static class CARROTQUARRY
+				public static class CARROTQUARRY
 		{
-			public static LocString NAME = "Cool Pool";
+						public static LocString NAME = "Cool Pool";
 
-			public static LocString DESC = "The Cool Pool Biome's chilly landscape features plentiful " + UI.FormatAsLink("Ethanol", "ETHANOL") + " lakes, making it an excellent destination for a colony eager to gather fuel resources.";
+						public static LocString DESC = "The Cool Pool Biome's chilly landscape features plentiful " + UI.FormatAsLink("Ethanol", "ETHANOL") + " lakes, making it an excellent destination for a colony eager to gather fuel resources.";
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				UI.FormatAsLink("Plume Squash", "CARROTPLANT"),
 				" is a calorie-dense crop that thrives in ",
@@ -669,11 +669,11 @@ namespace STRINGS
 			});
 		}
 
-		public static class SUGARWOODS
+				public static class SUGARWOODS
 		{
-			public static LocString NAME = "Nectar";
+						public static LocString NAME = "Nectar";
 
-			public static LocString DESC = string.Concat(new string[]
+						public static LocString DESC = string.Concat(new string[]
 			{
 				"The ",
 				UI.FormatAsLink("snow", "SNOW"),
@@ -688,7 +688,7 @@ namespace STRINGS
 				"."
 			});
 
-			public static LocString UTILITY = string.Concat(new string[]
+						public static LocString UTILITY = string.Concat(new string[]
 			{
 				UI.FormatAsLink("Spigot Seals", "SEALSPECIES"),
 				" consume this sweet liquid and produce ",

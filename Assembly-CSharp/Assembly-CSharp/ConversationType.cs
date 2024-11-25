@@ -3,21 +3,21 @@ using UnityEngine;
 
 public class ConversationType
 {
-	public virtual void NewTarget(MinionIdentity speaker)
+		public virtual void NewTarget(MinionIdentity speaker)
 	{
 	}
 
-	public virtual Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
-	{
-		return null;
-	}
-
-	public virtual Sprite GetSprite(string topic)
+		public virtual Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
 	{
 		return null;
 	}
 
-	public string id;
+		public virtual Sprite GetSprite(string topic)
+	{
+		return null;
+	}
 
-	public string target;
+		public string id;
+
+		public string target;
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/UserNavigation")]
 public class UserNavigation : KMonoBehaviour
 {
-	public UserNavigation()
+		public UserNavigation()
 	{
 		for (global::Action action = global::Action.SetUserNav1; action <= global::Action.SetUserNav10; action++)
 		{
@@ -15,7 +15,7 @@ public class UserNavigation : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Game.Instance.Subscribe(1983128072, delegate(object worlds)
@@ -51,7 +51,7 @@ public class UserNavigation : KMonoBehaviour
 		});
 	}
 
-	public void SetWorldCameraStartPosition(int world_id, Vector3 start_pos)
+		public void SetWorldCameraStartPosition(int world_id, Vector3 start_pos)
 	{
 		if (!this.worldCameraPositions.ContainsKey(world_id))
 		{
@@ -69,7 +69,7 @@ public class UserNavigation : KMonoBehaviour
 		};
 	}
 
-	private static int GetIndex(global::Action action)
+		private static int GetIndex(global::Action action)
 	{
 		int result = -1;
 		if (global::Action.SetUserNav1 <= action && action <= global::Action.SetUserNav10)
@@ -83,7 +83,7 @@ public class UserNavigation : KMonoBehaviour
 		return result;
 	}
 
-	private void SetHotkeyNavPoint(global::Action action, Vector3 pos, float ortho_size)
+		private void SetHotkeyNavPoint(global::Action action, Vector3 pos, float ortho_size)
 	{
 		int index = UserNavigation.GetIndex(action);
 		if (index < 0)
@@ -100,7 +100,7 @@ public class UserNavigation : KMonoBehaviour
 		KFMOD.EndOneShot(instance);
 	}
 
-	private void GoToHotkeyNavPoint(global::Action action)
+		private void GoToHotkeyNavPoint(global::Action action)
 	{
 		int index = UserNavigation.GetIndex(action);
 		if (index < 0)
@@ -117,7 +117,7 @@ public class UserNavigation : KMonoBehaviour
 		}
 	}
 
-	public bool Handle(KButtonEvent e)
+		public bool Handle(KButtonEvent e)
 	{
 		bool flag = false;
 		for (global::Action action = global::Action.GotoUserNav1; action <= global::Action.GotoUserNav10; action++)
@@ -146,25 +146,25 @@ public class UserNavigation : KMonoBehaviour
 		return flag;
 	}
 
-	[Serialize]
+		[Serialize]
 	private List<UserNavigation.NavPoint> hotkeyNavPoints = new List<UserNavigation.NavPoint>();
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<int, UserNavigation.NavPoint> worldCameraPositions = new Dictionary<int, UserNavigation.NavPoint>();
 
-	[Serializable]
+		[Serializable]
 	private struct NavPoint
 	{
-		public bool IsValid()
+				public bool IsValid()
 		{
 			return this.orthoSize != 0f;
 		}
 
-		public Vector3 pos;
+				public Vector3 pos;
 
-		public float orthoSize;
+				public float orthoSize;
 
-		public static readonly UserNavigation.NavPoint Invalid = new UserNavigation.NavPoint
+				public static readonly UserNavigation.NavPoint Invalid = new UserNavigation.NavPoint
 		{
 			pos = Vector3.zero,
 			orthoSize = 0f

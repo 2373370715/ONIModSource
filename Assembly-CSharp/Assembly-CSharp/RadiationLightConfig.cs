@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class RadiationLightConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "RadiationLight";
 		int width = 1;
@@ -29,10 +29,12 @@ public class RadiationLightConfig : IBuildingConfig
 		buildingDef.ViewMode = OverlayModes.Radiation.ID;
 		buildingDef.AudioCategory = "Metal";
 		buildingDef.PermittedRotations = PermittedRotations.FlipH;
+		buildingDef.DiseaseCellVisName = "RadiationSickness";
+		buildingDef.UtilityOutputOffset = CellOffset.none;
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		Prioritizable.AddRef(go);
@@ -71,31 +73,31 @@ public class RadiationLightConfig : IBuildingConfig
 		radiationLight.consumptionRate = 0.016666668f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 	}
 
-	public const string ID = "RadiationLight";
+		public const string ID = "RadiationLight";
 
-	private Tag FUEL_ELEMENT = SimHashes.UraniumOre.CreateTag();
+		private Tag FUEL_ELEMENT = SimHashes.UraniumOre.CreateTag();
 
-	private SimHashes WASTE_ELEMENT = SimHashes.DepletedUranium;
+		private SimHashes WASTE_ELEMENT = SimHashes.DepletedUranium;
 
-	private const float FUEL_PER_CYCLE = 10f;
+		private const float FUEL_PER_CYCLE = 10f;
 
-	private const float CYCLES_PER_REFILL = 5f;
+		private const float CYCLES_PER_REFILL = 5f;
 
-	private const float FUEL_TO_WASTE_RATIO = 0.5f;
+		private const float FUEL_TO_WASTE_RATIO = 0.5f;
 
-	private const float FUEL_STORAGE_AMOUNT = 50f;
+		private const float FUEL_STORAGE_AMOUNT = 50f;
 
-	private const float FUEL_CONSUMPTION_RATE = 0.016666668f;
+		private const float FUEL_CONSUMPTION_RATE = 0.016666668f;
 
-	private const short RAD_LIGHT_SIZE_X = 16;
+		private const short RAD_LIGHT_SIZE_X = 16;
 
-	private const short RAD_LIGHT_SIZE_Y = 4;
+		private const short RAD_LIGHT_SIZE_Y = 4;
 }

@@ -15,7 +15,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/CustomGameSettings")]
 public class CustomGameSettings : KMonoBehaviour
 {
-		public static CustomGameSettings Instance
+			public static CustomGameSettings Instance
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-		public IReadOnlyDictionary<string, string> CurrentStoryLevelsBySetting
+			public IReadOnlyDictionary<string, string> CurrentStoryLevelsBySetting
 	{
 		get
 		{
@@ -31,13 +31,13 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-			public event Action<SettingConfig, SettingLevel> OnQualitySettingChanged;
+				public event Action<SettingConfig, SettingLevel> OnQualitySettingChanged;
 
-			public event Action<SettingConfig, SettingLevel> OnStorySettingChanged;
+				public event Action<SettingConfig, SettingLevel> OnStorySettingChanged;
 
-			public event Action<SettingConfig, SettingLevel> OnMixingSettingChanged;
+				public event Action<SettingConfig, SettingLevel> OnMixingSettingChanged;
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 6))
@@ -93,12 +93,12 @@ public class CustomGameSettings : KMonoBehaviour
 		this.CheckCustomGameMode();
 	}
 
-	private void AddMissingQualitySettings()
+		private void AddMissingQualitySettings()
 	{
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in this.QualitySettings)
 		{
 			SettingConfig value = keyValuePair.Value;
-			if (SaveLoader.Instance.IsDlcListActiveForCurrentSave(value.required_content) && !this.CurrentQualityLevelsBySetting.ContainsKey(value.id))
+			if (SaveLoader.Instance.IsAllDlcActiveForCurrentSave(value.required_content) && !this.CurrentQualityLevelsBySetting.ContainsKey(value.id))
 			{
 				if (value.missing_content_default != "")
 				{
@@ -123,7 +123,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		DlcManager.IsExpansion1Active();
 		Action<SettingConfig> action = delegate(SettingConfig setting)
@@ -171,6 +171,7 @@ public class CustomGameSettings : KMonoBehaviour
 		action3(CustomMixingSettingsConfigs.CarrotQuarryMixing);
 		action3(CustomMixingSettingsConfigs.SugarWoodsMixing);
 		action3(CustomMixingSettingsConfigs.CeresAsteroidMixing);
+		action3(CustomMixingSettingsConfigs.DLC3Mixing);
 		foreach (Story story in Db.Get().Stories.GetStoriesSortedByCoordinateOrder())
 		{
 			int num = (story.kleiUseOnlyCoordinateOrder == -1) ? -1 : 3;
@@ -192,7 +193,7 @@ public class CustomGameSettings : KMonoBehaviour
 		this.VerifySettingCoordinates();
 	}
 
-	public void DisableAllStories()
+		public void DisableAllStories()
 	{
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in this.StorySettings)
 		{
@@ -200,7 +201,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public void SetSurvivalDefaults()
+		public void SetSurvivalDefaults()
 	{
 		this.customGameMode = CustomGameSettings.CustomGameMode.Survival;
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in this.QualitySettings)
@@ -209,7 +210,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public void SetNosweatDefaults()
+		public void SetNosweatDefaults()
 	{
 		this.customGameMode = CustomGameSettings.CustomGameMode.Nosweat;
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in this.QualitySettings)
@@ -218,19 +219,19 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public SettingLevel CycleQualitySettingLevel(ListSettingConfig config, int direction)
+		public SettingLevel CycleQualitySettingLevel(ListSettingConfig config, int direction)
 	{
 		this.SetQualitySetting(config, config.CycleSettingLevelID(this.CurrentQualityLevelsBySetting[config.id], direction));
 		return config.GetLevel(this.CurrentQualityLevelsBySetting[config.id]);
 	}
 
-	public SettingLevel ToggleQualitySettingLevel(ToggleSettingConfig config)
+		public SettingLevel ToggleQualitySettingLevel(ToggleSettingConfig config)
 	{
 		this.SetQualitySetting(config, config.ToggleSettingLevelID(this.CurrentQualityLevelsBySetting[config.id]));
 		return config.GetLevel(this.CurrentQualityLevelsBySetting[config.id]);
 	}
 
-	private void CheckCustomGameMode()
+		private void CheckCustomGameMode()
 	{
 		bool flag = true;
 		bool flag2 = true;
@@ -285,12 +286,12 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public void SetQualitySetting(SettingConfig config, string value)
+		public void SetQualitySetting(SettingConfig config, string value)
 	{
 		this.SetQualitySetting(config, value, true);
 	}
 
-	public void SetQualitySetting(SettingConfig config, string value, bool notify)
+		public void SetQualitySetting(SettingConfig config, string value, bool notify)
 	{
 		this.CurrentQualityLevelsBySetting[config.id] = value;
 		this.CheckCustomGameMode();
@@ -300,12 +301,12 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public SettingLevel GetCurrentQualitySetting(SettingConfig setting)
+		public SettingLevel GetCurrentQualitySetting(SettingConfig setting)
 	{
 		return this.GetCurrentQualitySetting(setting.id);
 	}
 
-	public SettingLevel GetCurrentQualitySetting(string setting_id)
+		public SettingLevel GetCurrentQualitySetting(string setting_id)
 	{
 		SettingConfig settingConfig = this.QualitySettings[setting_id];
 		if (this.customGameMode == CustomGameSettings.CustomGameMode.Survival && settingConfig.triggers_custom_game)
@@ -320,16 +321,16 @@ public class CustomGameSettings : KMonoBehaviour
 		{
 			this.CurrentQualityLevelsBySetting[setting_id] = this.QualitySettings[setting_id].GetDefaultLevelId();
 		}
-		string level_id = DlcManager.HasAllContentSubscribed(settingConfig.required_content) ? this.CurrentQualityLevelsBySetting[setting_id] : settingConfig.GetDefaultLevelId();
+		string level_id = DlcManager.IsAllContentSubscribed(settingConfig.required_content) ? this.CurrentQualityLevelsBySetting[setting_id] : settingConfig.GetDefaultLevelId();
 		return this.QualitySettings[setting_id].GetLevel(level_id);
 	}
 
-	public string GetCurrentQualitySettingLevelId(SettingConfig config)
+		public string GetCurrentQualitySettingLevelId(SettingConfig config)
 	{
 		return this.CurrentQualityLevelsBySetting[config.id];
 	}
 
-	public string GetSettingLevelLabel(string setting_id, string level_id)
+		public string GetSettingLevelLabel(string setting_id, string level_id)
 	{
 		SettingConfig settingConfig = this.QualitySettings[setting_id];
 		if (settingConfig != null)
@@ -344,7 +345,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return "";
 	}
 
-	public string GetQualitySettingLevelTooltip(string setting_id, string level_id)
+		public string GetQualitySettingLevelTooltip(string setting_id, string level_id)
 	{
 		SettingConfig settingConfig = this.QualitySettings[setting_id];
 		if (settingConfig != null)
@@ -359,7 +360,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return "";
 	}
 
-	public void AddQualitySettingConfig(SettingConfig config)
+		public void AddQualitySettingConfig(SettingConfig config)
 	{
 		this.QualitySettings.Add(config.id, config);
 		if (!this.CurrentQualityLevelsBySetting.ContainsKey(config.id) || string.IsNullOrEmpty(this.CurrentQualityLevelsBySetting[config.id]))
@@ -368,7 +369,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public void AddStorySettingConfig(SettingConfig config)
+		public void AddStorySettingConfig(SettingConfig config)
 	{
 		this.StorySettings.Add(config.id, config);
 		if (!this.currentStoryLevelsBySetting.ContainsKey(config.id) || string.IsNullOrEmpty(this.currentStoryLevelsBySetting[config.id]))
@@ -377,12 +378,12 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public void SetStorySetting(SettingConfig config, string value)
+		public void SetStorySetting(SettingConfig config, string value)
 	{
 		this.SetStorySetting(config, value == "Guaranteed");
 	}
 
-	public void SetStorySetting(SettingConfig config, bool value)
+		public void SetStorySetting(SettingConfig config, bool value)
 	{
 		this.currentStoryLevelsBySetting[config.id] = (value ? "Guaranteed" : "Disabled");
 		if (this.OnStorySettingChanged != null)
@@ -391,7 +392,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public void ParseAndApplyStoryTraitSettingsCode(string code)
+		public void ParseAndApplyStoryTraitSettingsCode(string code)
 	{
 		BigInteger dividend = this.Base36toBinary(code);
 		Dictionary<SettingConfig, string> dictionary = new Dictionary<SettingConfig, string>();
@@ -419,7 +420,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	private string GetStoryTraitSettingsCode()
+		private string GetStoryTraitSettingsCode()
 	{
 		BigInteger bigInteger = 0;
 		foreach (string key in this.CoordinatedStorySettings)
@@ -431,12 +432,12 @@ public class CustomGameSettings : KMonoBehaviour
 		return this.BinarytoBase36(bigInteger);
 	}
 
-	public SettingLevel GetCurrentStoryTraitSetting(SettingConfig setting)
+		public SettingLevel GetCurrentStoryTraitSetting(SettingConfig setting)
 	{
 		return this.GetCurrentStoryTraitSetting(setting.id);
 	}
 
-	public SettingLevel GetCurrentStoryTraitSetting(string settingId)
+		public SettingLevel GetCurrentStoryTraitSetting(string settingId)
 	{
 		SettingConfig settingConfig = this.StorySettings[settingId];
 		if (this.customGameMode == CustomGameSettings.CustomGameMode.Survival && settingConfig.triggers_custom_game)
@@ -451,11 +452,11 @@ public class CustomGameSettings : KMonoBehaviour
 		{
 			this.currentStoryLevelsBySetting[settingId] = this.StorySettings[settingId].GetDefaultLevelId();
 		}
-		string level_id = DlcManager.HasAllContentSubscribed(settingConfig.required_content) ? this.currentStoryLevelsBySetting[settingId] : settingConfig.GetDefaultLevelId();
+		string level_id = DlcManager.IsAllContentSubscribed(settingConfig.required_content) ? this.currentStoryLevelsBySetting[settingId] : settingConfig.GetDefaultLevelId();
 		return this.StorySettings[settingId].GetLevel(level_id);
 	}
 
-	public List<string> GetCurrentStories()
+		public List<string> GetCurrentStories()
 	{
 		List<string> list = new List<string>();
 		foreach (KeyValuePair<string, string> keyValuePair in this.currentStoryLevelsBySetting)
@@ -468,18 +469,18 @@ public class CustomGameSettings : KMonoBehaviour
 		return list;
 	}
 
-	public bool IsStoryActive(string id, string level)
+		public bool IsStoryActive(string id, string level)
 	{
 		SettingConfig settingConfig;
 		return this.StorySettings.TryGetValue(id, out settingConfig) && settingConfig != null && level == "Guaranteed";
 	}
 
-	public void SetMixingSetting(SettingConfig config, string value)
+		public void SetMixingSetting(SettingConfig config, string value)
 	{
 		this.SetMixingSetting(config, value, true);
 	}
 
-	public void SetMixingSetting(SettingConfig config, string value, bool notify)
+		public void SetMixingSetting(SettingConfig config, string value, bool notify)
 	{
 		this.CurrentMixingLevelsBySetting[config.id] = value;
 		if (notify && this.OnMixingSettingChanged != null)
@@ -488,7 +489,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public void AddMixingSettingsConfig(SettingConfig config)
+		public void AddMixingSettingsConfig(SettingConfig config)
 	{
 		this.MixingSettings.Add(config.id, config);
 		if (!this.CurrentMixingLevelsBySetting.ContainsKey(config.id) || string.IsNullOrEmpty(this.CurrentMixingLevelsBySetting[config.id]))
@@ -497,12 +498,12 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public SettingLevel GetCurrentMixingSettingLevel(SettingConfig setting)
+		public SettingLevel GetCurrentMixingSettingLevel(SettingConfig setting)
 	{
 		return this.GetCurrentMixingSettingLevel(setting.id);
 	}
 
-	public SettingConfig GetWorldMixingSettingForWorldgenFile(string file)
+		public SettingConfig GetWorldMixingSettingForWorldgenFile(string file)
 	{
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in this.MixingSettings)
 		{
@@ -515,7 +516,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return null;
 	}
 
-	public SettingConfig GetSubworldMixingSettingForWorldgenFile(string file)
+		public SettingConfig GetSubworldMixingSettingForWorldgenFile(string file)
 	{
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in this.MixingSettings)
 		{
@@ -528,7 +529,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return null;
 	}
 
-	public void DisableAllMixing()
+		public void DisableAllMixing()
 	{
 		foreach (SettingConfig settingConfig in this.MixingSettings.Values)
 		{
@@ -536,7 +537,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public List<SubworldMixingSettingConfig> GetActiveSubworldMixingSettings()
+		public List<SubworldMixingSettingConfig> GetActiveSubworldMixingSettings()
 	{
 		List<SubworldMixingSettingConfig> list = new List<SubworldMixingSettingConfig>();
 		foreach (SettingConfig settingConfig in this.MixingSettings.Values)
@@ -550,7 +551,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return list;
 	}
 
-	public List<WorldMixingSettingConfig> GetActiveWorldMixingSettings()
+		public List<WorldMixingSettingConfig> GetActiveWorldMixingSettings()
 	{
 		List<WorldMixingSettingConfig> list = new List<WorldMixingSettingConfig>();
 		foreach (SettingConfig settingConfig in this.MixingSettings.Values)
@@ -564,30 +565,30 @@ public class CustomGameSettings : KMonoBehaviour
 		return list;
 	}
 
-	public SettingLevel CycleMixingSettingLevel(ListSettingConfig config, int direction)
+		public SettingLevel CycleMixingSettingLevel(ListSettingConfig config, int direction)
 	{
 		this.SetMixingSetting(config, config.CycleSettingLevelID(this.CurrentMixingLevelsBySetting[config.id], direction));
 		return config.GetLevel(this.CurrentMixingLevelsBySetting[config.id]);
 	}
 
-	public SettingLevel ToggleMixingSettingLevel(ToggleSettingConfig config)
+		public SettingLevel ToggleMixingSettingLevel(ToggleSettingConfig config)
 	{
 		this.SetMixingSetting(config, config.ToggleSettingLevelID(this.CurrentMixingLevelsBySetting[config.id]));
 		return config.GetLevel(this.CurrentMixingLevelsBySetting[config.id]);
 	}
 
-	public SettingLevel GetCurrentMixingSettingLevel(string settingId)
+		public SettingLevel GetCurrentMixingSettingLevel(string settingId)
 	{
 		SettingConfig settingConfig = this.MixingSettings[settingId];
 		if (!this.CurrentMixingLevelsBySetting.ContainsKey(settingId))
 		{
 			this.CurrentMixingLevelsBySetting[settingId] = this.MixingSettings[settingId].GetDefaultLevelId();
 		}
-		string level_id = DlcManager.HasAllContentSubscribed(settingConfig.required_content) ? this.CurrentMixingLevelsBySetting[settingId] : settingConfig.GetDefaultLevelId();
+		string level_id = DlcManager.IsAllContentSubscribed(settingConfig.required_content) ? this.CurrentMixingLevelsBySetting[settingId] : settingConfig.GetDefaultLevelId();
 		return this.MixingSettings[settingId].GetLevel(level_id);
 	}
 
-	public List<string> GetCurrentDlcMixingIds()
+		public List<string> GetCurrentDlcMixingIds()
 	{
 		List<string> list = new List<string>();
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in this.MixingSettings)
@@ -601,7 +602,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return list;
 	}
 
-	public void ParseAndApplyMixingSettingsCode(string code)
+		public void ParseAndApplyMixingSettingsCode(string code)
 	{
 		BigInteger dividend = this.Base36toBinary(code);
 		Dictionary<SettingConfig, string> dictionary = new Dictionary<SettingConfig, string>();
@@ -629,7 +630,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	private string GetMixingSettingsCode()
+		private string GetMixingSettingsCode()
 	{
 		BigInteger bigInteger = 0;
 		foreach (string key in this.CoordinatedMixingSettings)
@@ -641,7 +642,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return this.BinarytoBase36(bigInteger);
 	}
 
-	public void RemoveInvalidMixingSettings()
+		public void RemoveInvalidMixingSettings()
 	{
 		ClusterLayout currentClusterLayout = this.GetCurrentClusterLayout();
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in this.MixingSettings)
@@ -677,7 +678,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	public ClusterLayout GetCurrentClusterLayout()
+		public ClusterLayout GetCurrentClusterLayout()
 	{
 		SettingLevel currentQualitySetting = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.ClusterLayout);
 		if (currentQualitySetting == null)
@@ -687,7 +688,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return SettingsCache.clusterLayouts.GetClusterData(currentQualitySetting.id);
 	}
 
-	public int GetCurrentWorldgenSeed()
+		public int GetCurrentWorldgenSeed()
 	{
 		SettingLevel currentQualitySetting = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.WorldgenSeed);
 		if (currentQualitySetting == null)
@@ -697,7 +698,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return int.Parse(currentQualitySetting.id);
 	}
 
-	public void LoadClusters()
+		public void LoadClusters()
 	{
 		Dictionary<string, ClusterLayout> clusterCache = SettingsCache.clusterLayouts.clusterCache;
 		List<SettingLevel> list = new List<SettingLevel>(clusterCache.Count);
@@ -711,7 +712,7 @@ public class CustomGameSettings : KMonoBehaviour
 		CustomGameSettingConfigs.ClusterLayout.StompLevels(list, WorldGenSettings.ClusterDefaultName, WorldGenSettings.ClusterDefaultName);
 	}
 
-	public void Print()
+		public void Print()
 	{
 		string text = "Custom Settings: ";
 		foreach (KeyValuePair<string, string> keyValuePair in this.CurrentQualityLevelsBySetting)
@@ -754,7 +755,7 @@ public class CustomGameSettings : KMonoBehaviour
 		global::Debug.Log(text);
 	}
 
-	private bool AllValuesMatch(Dictionary<string, string> data, CustomGameSettings.CustomGameMode mode)
+		private bool AllValuesMatch(Dictionary<string, string> data, CustomGameSettings.CustomGameMode mode)
 	{
 		bool result = true;
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in this.QualitySettings)
@@ -783,7 +784,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return result;
 	}
 
-	public List<CustomGameSettings.MetricSettingsData> GetSettingsForMetrics()
+		public List<CustomGameSettings.MetricSettingsData> GetSettingsForMetrics()
 	{
 		List<CustomGameSettings.MetricSettingsData> list = new List<CustomGameSettings.MetricSettingsData>();
 		list.Add(new CustomGameSettings.MetricSettingsData
@@ -817,12 +818,12 @@ public class CustomGameSettings : KMonoBehaviour
 		return list;
 	}
 
-	public List<CustomGameSettings.MetricSettingsData> GetSettingsForMixingMetrics()
+		public List<CustomGameSettings.MetricSettingsData> GetSettingsForMixingMetrics()
 	{
 		List<CustomGameSettings.MetricSettingsData> list = new List<CustomGameSettings.MetricSettingsData>();
 		foreach (KeyValuePair<string, string> keyValuePair in this.CurrentMixingLevelsBySetting)
 		{
-			if (DlcManager.HasAllContentSubscribed(this.MixingSettings[keyValuePair.Key].required_content))
+			if (DlcManager.IsAllContentSubscribed(this.MixingSettings[keyValuePair.Key].required_content))
 			{
 				list.Add(new CustomGameSettings.MetricSettingsData
 				{
@@ -834,14 +835,14 @@ public class CustomGameSettings : KMonoBehaviour
 		return list;
 	}
 
-	public bool VerifySettingCoordinates()
+		public bool VerifySettingCoordinates()
 	{
 		bool flag = this.VerifySettingsDictionary(this.QualitySettings);
 		bool flag2 = this.VerifySettingsDictionary(this.StorySettings);
 		return flag || flag2;
 	}
 
-	private bool VerifySettingsDictionary(Dictionary<string, SettingConfig> configs)
+		private bool VerifySettingsDictionary(Dictionary<string, SettingConfig> configs)
 	{
 		bool result = false;
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in configs)
@@ -906,7 +907,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return result;
 	}
 
-	public static string[] ParseSettingCoordinate(string coord)
+		public static string[] ParseSettingCoordinate(string coord)
 	{
 		Match match = new Regex("(.*)-(\\d*)-(.*)-(.*)-(.*)").Match(coord);
 		for (int i = 1; i <= 2; i++)
@@ -924,7 +925,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return array;
 	}
 
-	public string GetSettingsCoordinate()
+		public string GetSettingsCoordinate()
 	{
 		SettingLevel currentQualitySetting = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.ClusterLayout);
 		if (currentQualitySetting == null)
@@ -949,7 +950,7 @@ public class CustomGameSettings : KMonoBehaviour
 		});
 	}
 
-	public void ParseAndApplySettingsCode(string code)
+		public void ParseAndApplySettingsCode(string code)
 	{
 		BigInteger dividend = this.Base36toBinary(code);
 		Dictionary<SettingConfig, string> dictionary = new Dictionary<SettingConfig, string>();
@@ -980,7 +981,7 @@ public class CustomGameSettings : KMonoBehaviour
 		}
 	}
 
-	private string GetOtherSettingsCode()
+		private string GetOtherSettingsCode()
 	{
 		BigInteger bigInteger = 0;
 		foreach (string text in this.CoordinatedQualitySettings)
@@ -992,7 +993,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return this.BinarytoBase36(bigInteger);
 	}
 
-	private BigInteger Base36toBinary(string input)
+		private BigInteger Base36toBinary(string input)
 	{
 		if (input == "0")
 		{
@@ -1017,7 +1018,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return bigInteger;
 	}
 
-	private string BinarytoBase36(BigInteger input)
+		private string BinarytoBase36(BigInteger input)
 	{
 		if (input == 0L)
 		{
@@ -1033,7 +1034,7 @@ public class CustomGameSettings : KMonoBehaviour
 		return text;
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static bool <RemoveInvalidMixingSettings>g__HasRequiredContent|71_0(string[] requiredContent, ref CustomGameSettings.<>c__DisplayClass71_0 A_1)
 	{
 		foreach (string text in requiredContent)
@@ -1046,57 +1047,57 @@ public class CustomGameSettings : KMonoBehaviour
 		return true;
 	}
 
-	private static CustomGameSettings instance;
+		private static CustomGameSettings instance;
 
-	public const long NO_COORDINATE_RANGE = -1L;
+		public const long NO_COORDINATE_RANGE = -1L;
 
-	private const int NUM_STORY_LEVELS = 3;
+		private const int NUM_STORY_LEVELS = 3;
 
-	public const string STORY_DISABLED_LEVEL = "Disabled";
+		public const string STORY_DISABLED_LEVEL = "Disabled";
 
-	public const string STORY_GUARANTEED_LEVEL = "Guaranteed";
+		public const string STORY_GUARANTEED_LEVEL = "Guaranteed";
 
-	[Serialize]
+		[Serialize]
 	public bool is_custom_game;
 
-	[Serialize]
+		[Serialize]
 	public CustomGameSettings.CustomGameMode customGameMode;
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<string, string> CurrentQualityLevelsBySetting = new Dictionary<string, string>();
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<string, string> CurrentMixingLevelsBySetting = new Dictionary<string, string>();
 
-	private Dictionary<string, string> currentStoryLevelsBySetting = new Dictionary<string, string>();
+		private Dictionary<string, string> currentStoryLevelsBySetting = new Dictionary<string, string>();
 
-	public List<string> CoordinatedQualitySettings = new List<string>();
+		public List<string> CoordinatedQualitySettings = new List<string>();
 
-	public Dictionary<string, SettingConfig> QualitySettings = new Dictionary<string, SettingConfig>();
+		public Dictionary<string, SettingConfig> QualitySettings = new Dictionary<string, SettingConfig>();
 
-	public List<string> CoordinatedStorySettings = new List<string>();
+		public List<string> CoordinatedStorySettings = new List<string>();
 
-	public Dictionary<string, SettingConfig> StorySettings = new Dictionary<string, SettingConfig>();
+		public Dictionary<string, SettingConfig> StorySettings = new Dictionary<string, SettingConfig>();
 
-	public List<string> CoordinatedMixingSettings = new List<string>();
+		public List<string> CoordinatedMixingSettings = new List<string>();
 
-	public Dictionary<string, SettingConfig> MixingSettings = new Dictionary<string, SettingConfig>();
+		public Dictionary<string, SettingConfig> MixingSettings = new Dictionary<string, SettingConfig>();
 
-	private const string coordinatePatern = "(.*)-(\\d*)-(.*)-(.*)-(.*)";
+		private const string coordinatePatern = "(.*)-(\\d*)-(.*)-(.*)-(.*)";
 
-	private string hexChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		private string hexChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-	public enum CustomGameMode
+		public enum CustomGameMode
 	{
-		Survival,
-		Nosweat,
-		Custom = 255
+				Survival,
+				Nosweat,
+				Custom = 255
 	}
 
-	public struct MetricSettingsData
+		public struct MetricSettingsData
 	{
-		public string Name;
+				public string Name;
 
-		public string Value;
+				public string Value;
 	}
 }

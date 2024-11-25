@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/User")]
 public class User : KMonoBehaviour
 {
-	public void OnStateMachineStop(string reason, StateMachine.Status status)
+		public void OnStateMachineStop(string reason, StateMachine.Status status)
 	{
 		if (status == StateMachine.Status.Success)
 		{

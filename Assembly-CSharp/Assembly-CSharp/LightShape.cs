@@ -2,7 +2,7 @@
 
 public enum LightShape
 {
-	Circle,
-	Cone,
-	Quad
+		Circle,
+		Cone,
+		Quad
 }

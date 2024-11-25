@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class KScrollbarVisibility : MonoBehaviour
 {
-	private void Start()
+		private void Start()
 	{
 		this.Update();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.content.content == null)
 		{
@@ -36,21 +36,21 @@ public class KScrollbarVisibility : MonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private ScrollRect content;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform parent;
 
-	[SerializeField]
+		[SerializeField]
 	private bool checkWidth = true;
 
-	[SerializeField]
+		[SerializeField]
 	private bool checkHeight = true;
 
-	[SerializeField]
+		[SerializeField]
 	private Scrollbar scrollbar;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject[] others;
 }

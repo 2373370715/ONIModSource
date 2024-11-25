@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Structure")]
 public class Structure : KMonoBehaviour
 {
-	public bool IsEntombed()
+		public bool IsEntombed()
 	{
 		return this.isEntombed;
 	}
 
-	public static bool IsBuildingEntombed(Building building)
+		public static bool IsBuildingEntombed(Building building)
 	{
 		if (!Grid.IsValidCell(Grid.PosToCell(building)))
 		{
@@ -27,7 +27,7 @@ public class Structure : KMonoBehaviour
 		return false;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Extents extents = this.building.GetExtents();
@@ -36,17 +36,17 @@ public class Structure : KMonoBehaviour
 		base.Subscribe<Structure>(-887025858, Structure.RocketLandedDelegate);
 	}
 
-	public void UpdatePosition()
+		public void UpdatePosition()
 	{
 		GameScenePartitioner.Instance.UpdatePosition(this.partitionerEntry, this.building.GetExtents());
 	}
 
-	private void RocketChanged(object data)
+		private void RocketChanged(object data)
 	{
 		this.OnSolidChanged(data);
 	}
 
-	private void OnSolidChanged(object data)
+		private void OnSolidChanged(object data)
 	{
 		bool flag = Structure.IsBuildingEntombed(this.building);
 		if (flag != this.isEntombed)
@@ -66,27 +66,27 @@ public class Structure : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private PrimaryElement primaryElement;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	public static readonly Operational.Flag notEntombedFlag = new Operational.Flag("not_entombed", Operational.Flag.Type.Functional);
+		public static readonly Operational.Flag notEntombedFlag = new Operational.Flag("not_entombed", Operational.Flag.Type.Functional);
 
-	private bool isEntombed;
+		private bool isEntombed;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private static EventSystem.IntraObjectHandler<Structure> RocketLandedDelegate = new EventSystem.IntraObjectHandler<Structure>(delegate(Structure cmp, object data)
+		private static EventSystem.IntraObjectHandler<Structure> RocketLandedDelegate = new EventSystem.IntraObjectHandler<Structure>(delegate(Structure cmp, object data)
 	{
 		cmp.RocketChanged(data);
 	});

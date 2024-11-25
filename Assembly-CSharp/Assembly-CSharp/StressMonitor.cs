@@ -4,7 +4,7 @@ using Klei.CustomSettings;
 
 public class StressMonitor : GameStateMachine<StressMonitor, StressMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
 		default_state = this.satisfied;
@@ -18,24 +18,24 @@ public class StressMonitor : GameStateMachine<StressMonitor, StressMonitor.Insta
 		this.stressed.tier2.TriggerOnEnter(GameHashes.StressedHadEnough, null).Transition(this.stressed.tier1, (StressMonitor.Instance smi) => !smi.HasHadEnough(), UpdateRate.SIM_200ms);
 	}
 
-	public GameStateMachine<StressMonitor, StressMonitor.Instance, IStateMachineTarget, object>.State satisfied;
+		public GameStateMachine<StressMonitor, StressMonitor.Instance, IStateMachineTarget, object>.State satisfied;
 
-	public StressMonitor.Stressed stressed;
+		public StressMonitor.Stressed stressed;
 
-	private const float StressThreshold_One = 60f;
+		private const float StressThreshold_One = 60f;
 
-	private const float StressThreshold_Two = 100f;
+		private const float StressThreshold_Two = 100f;
 
-	public class Stressed : GameStateMachine<StressMonitor, StressMonitor.Instance, IStateMachineTarget, object>.State
+		public class Stressed : GameStateMachine<StressMonitor, StressMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<StressMonitor, StressMonitor.Instance, IStateMachineTarget, object>.State tier1;
+				public GameStateMachine<StressMonitor, StressMonitor.Instance, IStateMachineTarget, object>.State tier1;
 
-		public GameStateMachine<StressMonitor, StressMonitor.Instance, IStateMachineTarget, object>.State tier2;
+				public GameStateMachine<StressMonitor, StressMonitor.Instance, IStateMachineTarget, object>.State tier2;
 	}
 
-	public new class Instance : GameStateMachine<StressMonitor, StressMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<StressMonitor, StressMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.stress = Db.Get().Amounts.Stress.Lookup(base.gameObject);
 			SettingConfig settingConfig = CustomGameSettings.Instance.QualitySettings[CustomGameSettingConfigs.StressBreaks.id];
@@ -43,17 +43,17 @@ public class StressMonitor : GameStateMachine<StressMonitor, StressMonitor.Insta
 			this.allowStressBreak = settingConfig.IsDefaultLevel(currentQualitySetting.id);
 		}
 
-		public bool IsStressed()
+				public bool IsStressed()
 		{
 			return base.IsInsideState(base.sm.stressed);
 		}
 
-		public bool HasHadEnough()
+				public bool HasHadEnough()
 		{
 			return this.allowStressBreak && this.stress.value >= 100f;
 		}
 
-		public void ReportStress(float dt)
+				public void ReportStress(float dt)
 		{
 			for (int num = 0; num != this.stress.deltaAttribute.Modifiers.Count; num++)
 			{
@@ -63,13 +63,13 @@ public class StressMonitor : GameStateMachine<StressMonitor, StressMonitor.Insta
 			}
 		}
 
-		public Reactable CreateConcernReactable()
+				public Reactable CreateConcernReactable()
 		{
 			return new EmoteReactable(base.master.gameObject, "StressConcern", Db.Get().ChoreTypes.Emote, 15, 8, 0f, 30f, float.PositiveInfinity, 0f).SetEmote(Db.Get().Emotes.Minion.Concern);
 		}
 
-		public AmountInstance stress;
+				public AmountInstance stress;
 
-		private bool allowStressBreak = true;
+				private bool allowStressBreak = true;
 	}
 }

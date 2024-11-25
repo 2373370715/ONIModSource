@@ -2,25 +2,25 @@
 
 public interface ILogicRibbonBitSelector
 {
-	void SetBitSelection(int bit);
+		void SetBitSelection(int bit);
 
-	int GetBitSelection();
+		int GetBitSelection();
 
-	int GetBitDepth();
+		int GetBitDepth();
 
-		string SideScreenTitle { get; }
+			string SideScreenTitle { get; }
 
-		string SideScreenDescription { get; }
+			string SideScreenDescription { get; }
 
-	bool SideScreenDisplayWriterDescription();
+		bool SideScreenDisplayWriterDescription();
 
-	bool SideScreenDisplayReaderDescription();
+		bool SideScreenDisplayReaderDescription();
 
-	bool IsBitActive(int bit);
+		bool IsBitActive(int bit);
 
-	int GetOutputValue();
+		int GetOutputValue();
 
-	int GetInputValue();
+		int GetInputValue();
 
-	void UpdateVisuals();
+		void UpdateVisuals();
 }

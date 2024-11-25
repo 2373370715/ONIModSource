@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FloorLampConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "FloorLamp";
 		int width = 1;
@@ -26,7 +26,7 @@ public class FloorLampConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		LightShapePreview lightShapePreview = go.AddComponent<LightShapePreview>();
 		lightShapePreview.lux = 1000;
@@ -35,12 +35,12 @@ public class FloorLampConfig : IBuildingConfig
 		lightShapePreview.offset = new CellOffset((int)def.BuildingComplete.GetComponent<Light2D>().Offset.x, (int)def.BuildingComplete.GetComponent<Light2D>().Offset.y);
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<EnergyConsumer>();
 		go.AddOrGet<LoopingSounds>();
@@ -56,5 +56,5 @@ public class FloorLampConfig : IBuildingConfig
 		go.AddOrGetDef<LightController.Def>();
 	}
 
-	public const string ID = "FloorLamp";
+		public const string ID = "FloorLamp";
 }

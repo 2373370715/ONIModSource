@@ -2,11 +2,11 @@
 
 public class CropTracker : WorldTracker
 {
-	public CropTracker(int worldID) : base(worldID)
+		public CropTracker(int worldID) : base(worldID)
 	{
 	}
 
-	public override void UpdateData()
+		public override void UpdateData()
 	{
 		float num = 0f;
 		foreach (PlantablePlot plantablePlot in Components.PlantablePlots.GetItems(base.WorldID))
@@ -19,7 +19,7 @@ public class CropTracker : WorldTracker
 		base.AddPoint(num);
 	}
 
-	public override string FormatValueString(float value)
+		public override string FormatValueString(float value)
 	{
 		return value.ToString() + "%";
 	}

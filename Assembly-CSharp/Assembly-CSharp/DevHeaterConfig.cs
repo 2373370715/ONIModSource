@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DevHeaterConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "DevHeater";
 		int width = 1;
@@ -30,19 +30,19 @@ public class DevHeaterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddTag(GameTags.DevBuilding);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<DirectVolumeHeater>();
 	}
 
-	public const string ID = "DevHeater";
+		public const string ID = "DevHeater";
 }

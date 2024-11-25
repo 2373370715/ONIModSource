@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Toggleable")]
 public class Toggleable : Workable
 {
-	protected Toggleable()
+		protected Toggleable()
 	{
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTable);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.faceTargetWhenWorking = true;
 		base.OnPrefabInit();
@@ -24,13 +24,13 @@ public class Toggleable : Workable
 		this.synchronizeAnims = false;
 	}
 
-	public int SetTarget(IToggleHandler handler)
+		public int SetTarget(IToggleHandler handler)
 	{
 		this.targets.Add(new KeyValuePair<IToggleHandler, Chore>(handler, null));
 		return this.targets.Count - 1;
 	}
 
-	public IToggleHandler GetToggleHandlerForWorker(Worker worker)
+		public IToggleHandler GetToggleHandlerForWorker(WorkerBase worker)
 	{
 		int targetForWorker = this.GetTargetForWorker(worker);
 		if (targetForWorker != -1)
@@ -40,7 +40,7 @@ public class Toggleable : Workable
 		return null;
 	}
 
-	private int GetTargetForWorker(Worker worker)
+		private int GetTargetForWorker(WorkerBase worker)
 	{
 		for (int i = 0; i < this.targets.Count; i++)
 		{
@@ -52,7 +52,7 @@ public class Toggleable : Workable
 		return -1;
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		int targetForWorker = this.GetTargetForWorker(worker);
 		if (targetForWorker != -1 && this.targets[targetForWorker].Key != null)
@@ -63,7 +63,7 @@ public class Toggleable : Workable
 		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.PendingSwitchToggle, false);
 	}
 
-	private void QueueToggle(int targetIdx)
+		private void QueueToggle(int targetIdx)
 	{
 		if (this.targets[targetIdx].Value == null)
 		{
@@ -77,7 +77,7 @@ public class Toggleable : Workable
 		}
 	}
 
-	public void Toggle(int targetIdx)
+		public void Toggle(int targetIdx)
 	{
 		if (targetIdx >= this.targets.Count)
 		{
@@ -91,7 +91,7 @@ public class Toggleable : Workable
 		this.CancelToggle(targetIdx);
 	}
 
-	private void CancelToggle(int targetIdx)
+		private void CancelToggle(int targetIdx)
 	{
 		if (this.targets[targetIdx].Value != null)
 		{
@@ -101,10 +101,10 @@ public class Toggleable : Workable
 		}
 	}
 
-	public bool IsToggleQueued(int targetIdx)
+		public bool IsToggleQueued(int targetIdx)
 	{
 		return this.targets[targetIdx].Value != null;
 	}
 
-	private List<KeyValuePair<IToggleHandler, Chore>> targets;
+		private List<KeyValuePair<IToggleHandler, Chore>> targets;
 }

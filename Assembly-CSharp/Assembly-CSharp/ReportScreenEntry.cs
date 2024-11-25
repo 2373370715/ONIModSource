@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ReportScreenEntry")]
 public class ReportScreenEntry : KMonoBehaviour
 {
-	public void SetMainEntry(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup)
+		public void SetMainEntry(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup)
 	{
 		if (this.mainRow == null)
 		{
@@ -35,13 +35,13 @@ public class ReportScreenEntry : KMonoBehaviour
 		this.UpdateVisibility();
 	}
 
-	private void ToggleContext()
+		private void ToggleContext()
 	{
 		this.mainRow.toggle.NextState();
 		this.UpdateVisibility();
 	}
 
-	private void UpdateVisibility()
+		private void UpdateVisibility()
 	{
 		int i;
 		for (i = 0; i < this.currentContextCount; i++)
@@ -55,12 +55,12 @@ public class ReportScreenEntry : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private ReportScreenEntryRow rowTemplate;
 
-	private ReportScreenEntryRow mainRow;
+		private ReportScreenEntryRow mainRow;
 
-	private List<ReportScreenEntryRow> contextRows = new List<ReportScreenEntryRow>();
+		private List<ReportScreenEntryRow> contextRows = new List<ReportScreenEntryRow>();
 
-	private int currentContextCount;
+		private int currentContextCount;
 }

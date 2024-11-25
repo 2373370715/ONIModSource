@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LightSymbolTracker")]
 public class LightSymbolTracker : KMonoBehaviour, IRenderEveryTick
 {
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		Vector3 v = Vector3.zero;
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
@@ -13,5 +13,5 @@ public class LightSymbolTracker : KMonoBehaviour, IRenderEveryTick
 		base.GetComponent<Light2D>().Offset = v;
 	}
 
-	public HashedString targetSymbol;
+		public HashedString targetSymbol;
 }

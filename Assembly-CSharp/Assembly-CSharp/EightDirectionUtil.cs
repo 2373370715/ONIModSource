@@ -5,27 +5,27 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class EightDirectionUtil
 {
-	public static int GetDirectionIndex(EightDirection direction)
+		public static int GetDirectionIndex(EightDirection direction)
 	{
 		return (int)direction;
 	}
 
-	public static EightDirection AngleToDirection(int angle)
+		public static EightDirection AngleToDirection(int angle)
 	{
 		return (EightDirection)Mathf.Floor((float)angle / 45f);
 	}
 
-	public static Vector3 GetNormal(EightDirection direction)
+		public static Vector3 GetNormal(EightDirection direction)
 	{
 		return EightDirectionUtil.normals[EightDirectionUtil.GetDirectionIndex(direction)];
 	}
 
-	public static float GetAngle(EightDirection direction)
+		public static float GetAngle(EightDirection direction)
 	{
 		return (float)(45 * EightDirectionUtil.GetDirectionIndex(direction));
 	}
 
-	public static readonly Vector3[] normals = new Vector3[]
+		public static readonly Vector3[] normals = new Vector3[]
 	{
 		Vector3.up,
 		(Vector3.up + Vector3.left).normalized,

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LiquidCooledFanConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidCooledFan";
 		int width = 2;
@@ -29,7 +29,7 @@ public class LiquidCooledFanConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddComponent<Storage>();
 		Storage storage2 = go.AddComponent<Storage>();
@@ -37,7 +37,7 @@ public class LiquidCooledFanConfig : IBuildingConfig
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		go.AddOrGet<LoopingSounds>();
 		Prioritizable.AddRef(go);
-		float num = 2426.72f;
+		float num = 580f * (DUPLICANTSTATS.STANDARD.BaseStats.KCAL2JOULES / 1000f);
 		float num2 = 0.01f;
 		LiquidCooledFan liquidCooledFan = go.AddOrGet<LiquidCooledFan>();
 		liquidCooledFan.gasStorage = storage;
@@ -69,9 +69,9 @@ public class LiquidCooledFanConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "LiquidCooledFan";
+		public const string ID = "LiquidCooledFan";
 }

@@ -6,40 +6,40 @@ using UnityEngine;
 
 public static class Sim
 {
-	public static bool IsRadiationEnabled()
+		public static bool IsRadiationEnabled()
 	{
 		return DlcManager.FeatureRadiationEnabled();
 	}
 
-	public static bool IsValidHandle(int h)
+		public static bool IsValidHandle(int h)
 	{
 		return h != -1 && h != -2;
 	}
 
-	public static int GetHandleIndex(int h)
+		public static int GetHandleIndex(int h)
 	{
 		return h & 16777215;
 	}
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	public static extern void SIM_Initialize(Sim.GAME_MessageHandler callback);
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	public static extern void SIM_Shutdown();
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	public unsafe static extern IntPtr SIM_HandleMessage(int sim_msg_id, int msg_length, byte* msg);
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	private unsafe static extern byte* SIM_BeginSave(int* size, int x, int y);
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	private static extern void SIM_EndSave();
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	public static extern void SIM_DebugCrash();
 
-	public unsafe static IntPtr HandleMessage(SimMessageHashes sim_msg_id, int msg_length, byte[] msg)
+		public unsafe static IntPtr HandleMessage(SimMessageHashes sim_msg_id, int msg_length, byte[] msg)
 	{
 		IntPtr result;
 		fixed (byte[] array = msg)
@@ -58,7 +58,7 @@ public static class Sim
 		return result;
 	}
 
-	public unsafe static void Save(BinaryWriter writer, int x, int y)
+		public unsafe static void Save(BinaryWriter writer, int x, int y)
 	{
 		int num;
 		void* value = (void*)Sim.SIM_BeginSave(&num, x, y);
@@ -69,7 +69,7 @@ public static class Sim
 		writer.Write(array);
 	}
 
-	public unsafe static int LoadWorld(IReader reader)
+		public unsafe static int LoadWorld(IReader reader)
 	{
 		int num = reader.ReadInt32();
 		byte[] array;
@@ -91,7 +91,7 @@ public static class Sim
 		return 0;
 	}
 
-	public static void AllocateCells(int width, int height, bool headless = false)
+		public static void AllocateCells(int width, int height, bool headless = false)
 	{
 		using (MemoryStream memoryStream = new MemoryStream(8))
 		{
@@ -108,7 +108,7 @@ public static class Sim
 		}
 	}
 
-	public unsafe static int Load(IReader reader)
+		public unsafe static int Load(IReader reader)
 	{
 		int num = reader.ReadInt32();
 		byte[] array;
@@ -130,7 +130,7 @@ public static class Sim
 		return 0;
 	}
 
-	public unsafe static void Start()
+		public unsafe static void Start()
 	{
 		Sim.GameDataUpdate* ptr = (Sim.GameDataUpdate*)((void*)Sim.SIM_HandleMessage(-931446686, 0, null));
 		Grid.elementIdx = ptr->elementIdx;
@@ -149,19 +149,19 @@ public static class Sim
 		Grid.InitializeCells();
 	}
 
-	public static void Shutdown()
+		public static void Shutdown()
 	{
 		Sim.SIM_Shutdown();
 		Grid.mass = null;
 	}
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	public unsafe static extern char* SYSINFO_Acquire();
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	public static extern void SYSINFO_Release();
 
-	public unsafe static int DLL_MessageHandler(int message_id, IntPtr data)
+		public unsafe static int DLL_MessageHandler(int message_id, IntPtr data)
 	{
 		if (message_id == 0)
 		{
@@ -192,106 +192,106 @@ public static class Sim
 		return -1;
 	}
 
-	public const int InvalidHandle = -1;
+		public const int InvalidHandle = -1;
 
-	public const int QueuedRegisterHandle = -2;
+		public const int QueuedRegisterHandle = -2;
 
-	public const byte InvalidDiseaseIdx = 255;
+		public const byte InvalidDiseaseIdx = 255;
 
-	public const ushort InvalidElementIdx = 65535;
+		public const ushort InvalidElementIdx = 65535;
 
-	public const byte SpaceZoneID = 255;
+		public const byte SpaceZoneID = 255;
 
-	public const byte SolidZoneID = 0;
+		public const byte SolidZoneID = 0;
 
-	public const int ChunkEdgeSize = 32;
+		public const int ChunkEdgeSize = 32;
 
-	public const float StateTransitionEnergy = 3f;
+		public const float StateTransitionEnergy = 3f;
 
-	public const float ZeroDegreesCentigrade = 273.15f;
+		public const float ZeroDegreesCentigrade = 273.15f;
 
-	public const float StandardTemperature = 293.15f;
+		public const float StandardTemperature = 293.15f;
 
-	public const float StandardMeltingPointOffset = 10f;
+		public const float StandardMeltingPointOffset = 10f;
 
-	public const float StandardPressure = 101.3f;
+		public const float StandardPressure = 101.3f;
 
-	public const float Epsilon = 0.0001f;
+		public const float Epsilon = 0.0001f;
 
-	public const float MaxTemperature = 10000f;
+		public const float MaxTemperature = 10000f;
 
-	public const float MinTemperature = 0f;
+		public const float MinTemperature = 0f;
 
-	public const float MaxRadiation = 9000000f;
+		public const float MaxRadiation = 9000000f;
 
-	public const float MinRadiation = 0f;
+		public const float MinRadiation = 0f;
 
-	public const float MaxMass = 10000f;
+		public const float MaxMass = 10000f;
 
-	public const float MinMass = 1.0001f;
+		public const float MinMass = 1.0001f;
 
-	private const int PressureUpdateInterval = 1;
+		private const int PressureUpdateInterval = 1;
 
-	private const int TemperatureUpdateInterval = 1;
+		private const int TemperatureUpdateInterval = 1;
 
-	private const int LiquidUpdateInterval = 1;
+		private const int LiquidUpdateInterval = 1;
 
-	private const int LifeUpdateInterval = 1;
+		private const int LifeUpdateInterval = 1;
 
-	public const byte ClearSkyGridValue = 253;
+		public const byte ClearSkyGridValue = 253;
 
-	public const int PACKING_ALIGNMENT = 4;
+		public const int PACKING_ALIGNMENT = 4;
 
-		public delegate int GAME_MessageHandler(int message_id, IntPtr data);
+			public delegate int GAME_MessageHandler(int message_id, IntPtr data);
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct DLLExceptionHandlerMessage
 	{
-		public IntPtr callstack;
+				public IntPtr callstack;
 
-		public IntPtr dmpFilename;
+				public IntPtr dmpFilename;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct DLLReportMessageMessage
 	{
-		public IntPtr callstack;
+				public IntPtr callstack;
 
-		public IntPtr message;
+				public IntPtr message;
 
-		public IntPtr file;
+				public IntPtr file;
 
-		public int line;
+				public int line;
 	}
 
-	private enum GameHandledMessages
+		private enum GameHandledMessages
 	{
-		ExceptionHandler,
-		ReportMessage
+				ExceptionHandler,
+				ReportMessage
 	}
 
-	[Serializable]
+		[Serializable]
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct PhysicsData
 	{
-		public void Write(BinaryWriter writer)
+				public void Write(BinaryWriter writer)
 		{
 			writer.Write(this.temperature);
 			writer.Write(this.mass);
 			writer.Write(this.pressure);
 		}
 
-		public float temperature;
+				public float temperature;
 
-		public float mass;
+				public float mass;
 
-		public float pressure;
+				public float pressure;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
 	public struct Cell
 	{
-		public void Write(BinaryWriter writer)
+				public void Write(BinaryWriter writer)
 		{
 			writer.Write(this.elementIdx);
 			writer.Write(0);
@@ -304,12 +304,12 @@ public static class Sim
 			writer.Write(this.mass);
 		}
 
-		public void SetValues(global::Element elem, List<global::Element> elements)
+				public void SetValues(global::Element elem, List<global::Element> elements)
 		{
 			this.SetValues(elem, elem.defaultValues, elements);
 		}
 
-		public void SetValues(global::Element elem, Sim.PhysicsData pd, List<global::Element> elements)
+				public void SetValues(global::Element elem, Sim.PhysicsData pd, List<global::Element> elements)
 		{
 			this.elementIdx = (ushort)elements.IndexOf(elem);
 			this.temperature = pd.temperature;
@@ -318,7 +318,7 @@ public static class Sim
 			DebugUtil.Assert(this.temperature > 0f || this.mass == 0f, "A non-zero mass cannot have a <= 0 temperature");
 		}
 
-		public void SetValues(ushort new_elem_idx, float new_temperature, float new_mass)
+				public void SetValues(ushort new_elem_idx, float new_temperature, float new_mass)
 		{
 			this.elementIdx = new_elem_idx;
 			this.temperature = new_temperature;
@@ -327,41 +327,41 @@ public static class Sim
 			DebugUtil.Assert(this.temperature > 0f || this.mass == 0f, "A non-zero mass cannot have a <= 0 temperature");
 		}
 
-		public ushort elementIdx;
+				public ushort elementIdx;
 
-		public byte properties;
+				public byte properties;
 
-		public byte insulation;
+				public byte insulation;
 
-		public byte strengthInfo;
+				public byte strengthInfo;
 
-		public byte pad0;
+				public byte pad0;
 
-		public byte pad1;
+				public byte pad1;
 
-		public byte pad2;
+				public byte pad2;
 
-		public float temperature;
+				public float temperature;
 
-		public float mass;
+				public float mass;
 
-		public enum Properties
+				public enum Properties
 		{
-			GasImpermeable = 1,
-			LiquidImpermeable,
-			SolidImpermeable = 4,
-			Unbreakable = 8,
-			Transparent = 16,
-			Opaque = 32,
-			NotifyOnMelt = 64,
-			ConstructedTile = 128
+						GasImpermeable = 1,
+						LiquidImpermeable,
+						SolidImpermeable = 4,
+						Unbreakable = 8,
+						Transparent = 16,
+						Opaque = 32,
+						NotifyOnMelt = 64,
+						ConstructedTile = 128
 		}
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct Element
 	{
-		public Element(global::Element e, List<global::Element> elements)
+				public Element(global::Element e, List<global::Element> elements)
 		{
 			this.id = e.id;
 			this.state = (byte)e.state;
@@ -415,7 +415,7 @@ public static class Sim
 			this.defaultValues = e.defaultValues;
 		}
 
-		public void Write(BinaryWriter writer)
+				public void Write(BinaryWriter writer)
 		{
 			writer.Write((int)this.id);
 			writer.Write(this.lowTempTransitionIdx);
@@ -455,83 +455,83 @@ public static class Sim
 			this.defaultValues.Write(writer);
 		}
 
-		public SimHashes id;
+				public SimHashes id;
 
-		public ushort lowTempTransitionIdx;
+				public ushort lowTempTransitionIdx;
 
-		public ushort highTempTransitionIdx;
+				public ushort highTempTransitionIdx;
 
-		public ushort elementsTableIdx;
+				public ushort elementsTableIdx;
 
-		public byte state;
+				public byte state;
 
-		public byte pack0;
+				public byte pack0;
 
-		public float specificHeatCapacity;
+				public float specificHeatCapacity;
 
-		public float thermalConductivity;
+				public float thermalConductivity;
 
-		public float molarMass;
+				public float molarMass;
 
-		public float solidSurfaceAreaMultiplier;
+				public float solidSurfaceAreaMultiplier;
 
-		public float liquidSurfaceAreaMultiplier;
+				public float liquidSurfaceAreaMultiplier;
 
-		public float gasSurfaceAreaMultiplier;
+				public float gasSurfaceAreaMultiplier;
 
-		public float flow;
+				public float flow;
 
-		public float viscosity;
+				public float viscosity;
 
-		public float minHorizontalFlow;
+				public float minHorizontalFlow;
 
-		public float minVerticalFlow;
+				public float minVerticalFlow;
 
-		public float maxMass;
+				public float maxMass;
 
-		public float lowTemp;
+				public float lowTemp;
 
-		public float highTemp;
+				public float highTemp;
 
-		public float strength;
+				public float strength;
 
-		public SimHashes lowTempTransitionOreID;
+				public SimHashes lowTempTransitionOreID;
 
-		public float lowTempTransitionOreMassConversion;
+				public float lowTempTransitionOreMassConversion;
 
-		public SimHashes highTempTransitionOreID;
+				public SimHashes highTempTransitionOreID;
 
-		public float highTempTransitionOreMassConversion;
+				public float highTempTransitionOreMassConversion;
 
-		public ushort sublimateIndex;
+				public ushort sublimateIndex;
 
-		public ushort convertIndex;
+				public ushort convertIndex;
 
-		public uint colour;
+				public uint colour;
 
-		public SpawnFXHashes sublimateFX;
+				public SpawnFXHashes sublimateFX;
 
-		public float sublimateRate;
+				public float sublimateRate;
 
-		public float sublimateEfficiency;
+				public float sublimateEfficiency;
 
-		public float sublimateProbability;
+				public float sublimateProbability;
 
-		public float offGasProbability;
+				public float offGasProbability;
 
-		public float lightAbsorptionFactor;
+				public float lightAbsorptionFactor;
 
-		public float radiationAbsorptionFactor;
+				public float radiationAbsorptionFactor;
 
-		public float radiationPer1000Mass;
+				public float radiationPer1000Mass;
 
-		public Sim.PhysicsData defaultValues;
+				public Sim.PhysicsData defaultValues;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct DiseaseCell
 	{
-		public void Write(BinaryWriter writer)
+				public void Write(BinaryWriter writer)
 		{
 			writer.Write(this.diseaseIdx);
 			writer.Write(this.reservedInfestationTickCount);
@@ -541,508 +541,508 @@ public static class Sim
 			writer.Write(this.reservedAccumulatedError);
 		}
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		private byte reservedInfestationTickCount;
+				private byte reservedInfestationTickCount;
 
-		private byte pad1;
+				private byte pad1;
 
-		private byte pad2;
+				private byte pad2;
 
-		public int elementCount;
+				public int elementCount;
 
-		private float reservedAccumulatedError;
+				private float reservedAccumulatedError;
 
-		public static readonly Sim.DiseaseCell Invalid = new Sim.DiseaseCell
+				public static readonly Sim.DiseaseCell Invalid = new Sim.DiseaseCell
 		{
 			diseaseIdx = byte.MaxValue,
 			elementCount = 0
 		};
 	}
 
-		public delegate void GAME_Callback();
+			public delegate void GAME_Callback();
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct SolidInfo
 	{
-		public int cellIdx;
+				public int cellIdx;
 
-		public int isSolid;
+				public int isSolid;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct LiquidChangeInfo
 	{
-		public int cellIdx;
+				public int cellIdx;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct SolidSubstanceChangeInfo
 	{
-		public int cellIdx;
+				public int cellIdx;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct SubstanceChangeInfo
 	{
-		public int cellIdx;
+				public int cellIdx;
 
-		public ushort oldElemIdx;
+				public ushort oldElemIdx;
 
-		public ushort newElemIdx;
+				public ushort newElemIdx;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct CallbackInfo
 	{
-		public int callbackIdx;
+				public int callbackIdx;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct GameDataUpdate
 	{
-		public int numFramesProcessed;
+				public int numFramesProcessed;
 
-		public unsafe ushort* elementIdx;
+				public unsafe ushort* elementIdx;
 
-		public unsafe float* temperature;
+				public unsafe float* temperature;
 
-		public unsafe float* mass;
+				public unsafe float* mass;
 
-		public unsafe byte* properties;
+				public unsafe byte* properties;
 
-		public unsafe byte* insulation;
+				public unsafe byte* insulation;
 
-		public unsafe byte* strengthInfo;
+				public unsafe byte* strengthInfo;
 
-		public unsafe float* radiation;
+				public unsafe float* radiation;
 
-		public unsafe byte* diseaseIdx;
+				public unsafe byte* diseaseIdx;
 
-		public unsafe int* diseaseCount;
+				public unsafe int* diseaseCount;
 
-		public int numSolidInfo;
+				public int numSolidInfo;
 
-		public unsafe Sim.SolidInfo* solidInfo;
+				public unsafe Sim.SolidInfo* solidInfo;
 
-		public int numLiquidChangeInfo;
+				public int numLiquidChangeInfo;
 
-		public unsafe Sim.LiquidChangeInfo* liquidChangeInfo;
+				public unsafe Sim.LiquidChangeInfo* liquidChangeInfo;
 
-		public int numSolidSubstanceChangeInfo;
+				public int numSolidSubstanceChangeInfo;
 
-		public unsafe Sim.SolidSubstanceChangeInfo* solidSubstanceChangeInfo;
+				public unsafe Sim.SolidSubstanceChangeInfo* solidSubstanceChangeInfo;
 
-		public int numSubstanceChangeInfo;
+				public int numSubstanceChangeInfo;
 
-		public unsafe Sim.SubstanceChangeInfo* substanceChangeInfo;
+				public unsafe Sim.SubstanceChangeInfo* substanceChangeInfo;
 
-		public int numCallbackInfo;
+				public int numCallbackInfo;
 
-		public unsafe Sim.CallbackInfo* callbackInfo;
+				public unsafe Sim.CallbackInfo* callbackInfo;
 
-		public int numSpawnFallingLiquidInfo;
+				public int numSpawnFallingLiquidInfo;
 
-		public unsafe Sim.SpawnFallingLiquidInfo* spawnFallingLiquidInfo;
+				public unsafe Sim.SpawnFallingLiquidInfo* spawnFallingLiquidInfo;
 
-		public int numDigInfo;
+				public int numDigInfo;
 
-		public unsafe Sim.SpawnOreInfo* digInfo;
+				public unsafe Sim.SpawnOreInfo* digInfo;
 
-		public int numSpawnOreInfo;
+				public int numSpawnOreInfo;
 
-		public unsafe Sim.SpawnOreInfo* spawnOreInfo;
+				public unsafe Sim.SpawnOreInfo* spawnOreInfo;
 
-		public int numSpawnFXInfo;
+				public int numSpawnFXInfo;
 
-		public unsafe Sim.SpawnFXInfo* spawnFXInfo;
+				public unsafe Sim.SpawnFXInfo* spawnFXInfo;
 
-		public int numUnstableCellInfo;
+				public int numUnstableCellInfo;
 
-		public unsafe Sim.UnstableCellInfo* unstableCellInfo;
+				public unsafe Sim.UnstableCellInfo* unstableCellInfo;
 
-		public int numWorldDamageInfo;
+				public int numWorldDamageInfo;
 
-		public unsafe Sim.WorldDamageInfo* worldDamageInfo;
+				public unsafe Sim.WorldDamageInfo* worldDamageInfo;
 
-		public int numBuildingTemperatures;
+				public int numBuildingTemperatures;
 
-		public unsafe Sim.BuildingTemperatureInfo* buildingTemperatures;
+				public unsafe Sim.BuildingTemperatureInfo* buildingTemperatures;
 
-		public int numMassConsumedCallbacks;
+				public int numMassConsumedCallbacks;
 
-		public unsafe Sim.MassConsumedCallback* massConsumedCallbacks;
+				public unsafe Sim.MassConsumedCallback* massConsumedCallbacks;
 
-		public int numMassEmittedCallbacks;
+				public int numMassEmittedCallbacks;
 
-		public unsafe Sim.MassEmittedCallback* massEmittedCallbacks;
+				public unsafe Sim.MassEmittedCallback* massEmittedCallbacks;
 
-		public int numDiseaseConsumptionCallbacks;
+				public int numDiseaseConsumptionCallbacks;
 
-		public unsafe Sim.DiseaseConsumptionCallback* diseaseConsumptionCallbacks;
+				public unsafe Sim.DiseaseConsumptionCallback* diseaseConsumptionCallbacks;
 
-		public int numComponentStateChangedMessages;
+				public int numComponentStateChangedMessages;
 
-		public unsafe Sim.ComponentStateChangedMessage* componentStateChangedMessages;
+				public unsafe Sim.ComponentStateChangedMessage* componentStateChangedMessages;
 
-		public int numRemovedMassEntries;
+				public int numRemovedMassEntries;
 
-		public unsafe Sim.ConsumedMassInfo* removedMassEntries;
+				public unsafe Sim.ConsumedMassInfo* removedMassEntries;
 
-		public int numEmittedMassEntries;
+				public int numEmittedMassEntries;
 
-		public unsafe Sim.EmittedMassInfo* emittedMassEntries;
+				public unsafe Sim.EmittedMassInfo* emittedMassEntries;
 
-		public int numElementChunkInfos;
+				public int numElementChunkInfos;
 
-		public unsafe Sim.ElementChunkInfo* elementChunkInfos;
+				public unsafe Sim.ElementChunkInfo* elementChunkInfos;
 
-		public int numElementChunkMeltedInfos;
+				public int numElementChunkMeltedInfos;
 
-		public unsafe Sim.MeltedInfo* elementChunkMeltedInfos;
+				public unsafe Sim.MeltedInfo* elementChunkMeltedInfos;
 
-		public int numBuildingOverheatInfos;
+				public int numBuildingOverheatInfos;
 
-		public unsafe Sim.MeltedInfo* buildingOverheatInfos;
+				public unsafe Sim.MeltedInfo* buildingOverheatInfos;
 
-		public int numBuildingNoLongerOverheatedInfos;
+				public int numBuildingNoLongerOverheatedInfos;
 
-		public unsafe Sim.MeltedInfo* buildingNoLongerOverheatedInfos;
+				public unsafe Sim.MeltedInfo* buildingNoLongerOverheatedInfos;
 
-		public int numBuildingMeltedInfos;
+				public int numBuildingMeltedInfos;
 
-		public unsafe Sim.MeltedInfo* buildingMeltedInfos;
+				public unsafe Sim.MeltedInfo* buildingMeltedInfos;
 
-		public int numCellMeltedInfos;
+				public int numCellMeltedInfos;
 
-		public unsafe Sim.CellMeltedInfo* cellMeltedInfos;
+				public unsafe Sim.CellMeltedInfo* cellMeltedInfos;
 
-		public int numDiseaseEmittedInfos;
+				public int numDiseaseEmittedInfos;
 
-		public unsafe Sim.DiseaseEmittedInfo* diseaseEmittedInfos;
+				public unsafe Sim.DiseaseEmittedInfo* diseaseEmittedInfos;
 
-		public int numDiseaseConsumedInfos;
+				public int numDiseaseConsumedInfos;
 
-		public unsafe Sim.DiseaseConsumedInfo* diseaseConsumedInfos;
+				public unsafe Sim.DiseaseConsumedInfo* diseaseConsumedInfos;
 
-		public int numRadiationConsumedCallbacks;
+				public int numRadiationConsumedCallbacks;
 
-		public unsafe Sim.ConsumedRadiationCallback* radiationConsumedCallbacks;
+				public unsafe Sim.ConsumedRadiationCallback* radiationConsumedCallbacks;
 
-		public unsafe float* accumulatedFlow;
+				public unsafe float* accumulatedFlow;
 
-		public IntPtr propertyTextureFlow;
+				public IntPtr propertyTextureFlow;
 
-		public IntPtr propertyTextureLiquid;
+				public IntPtr propertyTextureLiquid;
 
-		public IntPtr propertyTextureExposedToSunlight;
+				public IntPtr propertyTextureExposedToSunlight;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct SpawnFallingLiquidInfo
 	{
-		public int cellIdx;
+				public int cellIdx;
 
-		public ushort elemIdx;
+				public ushort elemIdx;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		public byte pad0;
+				public byte pad0;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct SpawnOreInfo
 	{
-		public int cellIdx;
+				public int cellIdx;
 
-		public ushort elemIdx;
+				public ushort elemIdx;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		private byte pad0;
+				private byte pad0;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct SpawnFXInfo
 	{
-		public int cellIdx;
+				public int cellIdx;
 
-		public int fxHash;
+				public int fxHash;
 
-		public float rotation;
+				public float rotation;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct UnstableCellInfo
 	{
-		public int cellIdx;
+				public int cellIdx;
 
-		public ushort elemIdx;
+				public ushort elemIdx;
 
-		public byte fallingInfo;
+				public byte fallingInfo;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public int diseaseCount;
+				public int diseaseCount;
 
-		public enum FallingInfo
+				public enum FallingInfo
 		{
-			StartedFalling,
-			StoppedFalling
+						StartedFalling,
+						StoppedFalling
 		}
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct NewGameFrame
 	{
-		public float elapsedSeconds;
+				public float elapsedSeconds;
 
-		public int minX;
+				public int minX;
 
-		public int minY;
+				public int minY;
 
-		public int maxX;
+				public int maxX;
 
-		public int maxY;
+				public int maxY;
 
-		public float currentSunlightIntensity;
+				public float currentSunlightIntensity;
 
-		public float currentCosmicRadiationIntensity;
+				public float currentCosmicRadiationIntensity;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct WorldDamageInfo
 	{
-		public int gameCell;
+				public int gameCell;
 
-		public int damageSourceOffset;
+				public int damageSourceOffset;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct PipeTemperatureChange
 	{
-		public int cellIdx;
+				public int cellIdx;
 
-		public float temperature;
+				public float temperature;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct MassConsumedCallback
 	{
-		public int callbackIdx;
+				public int callbackIdx;
 
-		public ushort elemIdx;
+				public ushort elemIdx;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		private byte pad0;
+				private byte pad0;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct MassEmittedCallback
 	{
-		public int callbackIdx;
+				public int callbackIdx;
 
-		public ushort elemIdx;
+				public ushort elemIdx;
 
-		public byte suceeded;
+				public byte suceeded;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct DiseaseConsumptionCallback
 	{
-		public int callbackIdx;
+				public int callbackIdx;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		private byte pad0;
+				private byte pad0;
 
-		private byte pad1;
+				private byte pad1;
 
-		private byte pad2;
+				private byte pad2;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct ComponentStateChangedMessage
 	{
-		public int callbackIdx;
+				public int callbackIdx;
 
-		public int simHandle;
+				public int simHandle;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct DebugProperties
 	{
-		public float buildingTemperatureScale;
+				public float buildingTemperatureScale;
 
-		public float buildingToBuildingTemperatureScale;
+				public float buildingToBuildingTemperatureScale;
 
-		public float biomeTemperatureLerpRate;
+				public float biomeTemperatureLerpRate;
 
-		public byte isDebugEditing;
+				public byte isDebugEditing;
 
-		public byte pad0;
+				public byte pad0;
 
-		public byte pad1;
+				public byte pad1;
 
-		public byte pad2;
+				public byte pad2;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct EmittedMassInfo
 	{
-		public ushort elemIdx;
+				public ushort elemIdx;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		public byte pad0;
+				public byte pad0;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct ConsumedMassInfo
 	{
-		public int simHandle;
+				public int simHandle;
 
-		public ushort removedElemIdx;
+				public ushort removedElemIdx;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		private byte pad0;
+				private byte pad0;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct ConsumedDiseaseInfo
 	{
-		public int simHandle;
+				public int simHandle;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		private byte pad0;
+				private byte pad0;
 
-		private byte pad1;
+				private byte pad1;
 
-		private byte pad2;
+				private byte pad2;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct ElementChunkInfo
 	{
-		public float temperature;
+				public float temperature;
 
-		public float deltaKJ;
+				public float deltaKJ;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct MeltedInfo
 	{
-		public int handle;
+				public int handle;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct CellMeltedInfo
 	{
-		public int gameCell;
+				public int gameCell;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct BuildingTemperatureInfo
 	{
-		public int handle;
+				public int handle;
 
-		public float temperature;
+				public float temperature;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct BuildingConductivityData
 	{
-		public float temperature;
+				public float temperature;
 
-		public float heatCapacity;
+				public float heatCapacity;
 
-		public float thermalConductivity;
+				public float thermalConductivity;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct DiseaseEmittedInfo
 	{
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		private byte pad0;
+				private byte pad0;
 
-		private byte pad1;
+				private byte pad1;
 
-		private byte pad2;
+				private byte pad2;
 
-		public int count;
+				public int count;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct DiseaseConsumedInfo
 	{
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		private byte pad0;
+				private byte pad0;
 
-		private byte pad1;
+				private byte pad1;
 
-		private byte pad2;
+				private byte pad2;
 
-		public int count;
+				public int count;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	public struct ConsumedRadiationCallback
 	{
-		public int callbackIdx;
+				public int callbackIdx;
 
-		public int gameCell;
+				public int gameCell;
 
-		public float radiation;
+				public float radiation;
 	}
 }

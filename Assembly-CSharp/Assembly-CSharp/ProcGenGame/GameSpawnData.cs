@@ -6,10 +6,10 @@ using TemplateClasses;
 
 namespace ProcGenGame
 {
-	[SerializationConfig(MemberSerialization.OptOut)]
+		[SerializationConfig(MemberSerialization.OptOut)]
 	public class GameSpawnData
 	{
-		public void AddRange(IEnumerable<KeyValuePair<int, string>> newItems)
+				public void AddRange(IEnumerable<KeyValuePair<int, string>> newItems)
 		{
 			foreach (KeyValuePair<int, string> keyValuePair in newItems)
 			{
@@ -19,7 +19,7 @@ namespace ProcGenGame
 			}
 		}
 
-		public void AddTemplate(TemplateContainer template, Vector2I position, ref Dictionary<int, int> claimedCells)
+				public void AddTemplate(TemplateContainer template, Vector2I position, ref Dictionary<int, int> claimedCells)
 		{
 			int cell = Grid.XYToCell(position.x, position.y);
 			bool flag = true;
@@ -94,23 +94,23 @@ namespace ProcGenGame
 			}
 		}
 
-		private bool IsWarpTeleporter(Prefab prefab)
+				private bool IsWarpTeleporter(Prefab prefab)
 		{
 			return prefab.id == "WarpPortal" || prefab.id == WarpReceiverConfig.ID || prefab.id == "WarpConduitSender" || prefab.id == "WarpConduitReceiver";
 		}
 
-		public Vector2I baseStartPos;
+				public Vector2I baseStartPos;
 
-		public List<Prefab> buildings = new List<Prefab>();
+				public List<Prefab> buildings = new List<Prefab>();
 
-		public List<Prefab> pickupables = new List<Prefab>();
+				public List<Prefab> pickupables = new List<Prefab>();
 
-		public List<Prefab> elementalOres = new List<Prefab>();
+				public List<Prefab> elementalOres = new List<Prefab>();
 
-		public List<Prefab> otherEntities = new List<Prefab>();
+				public List<Prefab> otherEntities = new List<Prefab>();
 
-		public List<Tag> discoveredResources = new List<Tag>();
+				public List<Tag> discoveredResources = new List<Tag>();
 
-		public List<KeyValuePair<Vector2I, bool>> preventFoWReveal = new List<KeyValuePair<Vector2I, bool>>();
+				public List<KeyValuePair<Vector2I, bool>> preventFoWReveal = new List<KeyValuePair<Vector2I, bool>>();
 	}
 }

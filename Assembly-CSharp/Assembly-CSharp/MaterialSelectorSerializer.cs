@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/MaterialSelectorSerializer")]
 public class MaterialSelectorSerializer : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.previouslySelectedElementsPerWorld == null)
@@ -25,12 +25,12 @@ public class MaterialSelectorSerializer : KMonoBehaviour
 		}
 	}
 
-	public void WipeWorldSelectionData(int worldID)
+		public void WipeWorldSelectionData(int worldID)
 	{
 		this.previouslySelectedElementsPerWorld[worldID] = null;
 	}
 
-	public void SetSelectedElement(int worldID, int selectorIndex, Tag recipe, Tag element)
+		public void SetSelectedElement(int worldID, int selectorIndex, Tag recipe, Tag element)
 	{
 		if (this.previouslySelectedElementsPerWorld[worldID] == null)
 		{
@@ -44,7 +44,7 @@ public class MaterialSelectorSerializer : KMonoBehaviour
 		list[selectorIndex][recipe] = element;
 	}
 
-	public Tag GetPreviousElement(int worldID, int selectorIndex, Tag recipe)
+		public Tag GetPreviousElement(int worldID, int selectorIndex, Tag recipe)
 	{
 		Tag invalid = Tag.Invalid;
 		if (this.previouslySelectedElementsPerWorld[worldID] == null)
@@ -60,9 +60,9 @@ public class MaterialSelectorSerializer : KMonoBehaviour
 		return invalid;
 	}
 
-	[Serialize]
+		[Serialize]
 	private List<Dictionary<Tag, Tag>> previouslySelectedElements;
 
-	[Serialize]
+		[Serialize]
 	private List<Dictionary<Tag, Tag>>[] previouslySelectedElementsPerWorld;
 }

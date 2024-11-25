@@ -3,19 +3,19 @@ using UnityEngine;
 
 public class RoleStationSideScreen : SideScreenContent
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return false;
 	}
 
-	public GameObject content;
+		public GameObject content;
 
-	private GameObject target;
+		private GameObject target;
 
-	public LocText DescriptionText;
+		public LocText DescriptionText;
 }

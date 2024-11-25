@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class BatteryModuleConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "BatteryModule";
 		int width = 3;
@@ -40,7 +40,7 @@ public class BatteryModuleConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -52,7 +52,7 @@ public class BatteryModuleConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Prioritizable.AddRef(go);
 		ModuleBattery moduleBattery = go.AddOrGet<ModuleBattery>();
@@ -64,9 +64,9 @@ public class BatteryModuleConfig : IBuildingConfig
 		BuildingTemplates.ExtendBuildingToRocketModuleCluster(go, null, ROCKETRY.BURDEN.MINOR, 0f, 0f);
 	}
 
-	public const string ID = "BatteryModule";
+		public const string ID = "BatteryModule";
 
-	public const float NUM_CAPSULES = 3f;
+		public const float NUM_CAPSULES = 3f;
 
-	private static readonly CellOffset PLUG_OFFSET = new CellOffset(-1, 0);
+		private static readonly CellOffset PLUG_OFFSET = new CellOffset(-1, 0);
 }

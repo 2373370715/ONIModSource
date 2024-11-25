@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class HEPEngineConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "HEPEngine";
 		int width = 5;
@@ -42,6 +42,8 @@ public class HEPEngineConfig : IBuildingConfig
 		buildingDef.ShowInBuildMenu = false;
 		buildingDef.UseHighEnergyParticleInputPort = true;
 		buildingDef.HighEnergyParticleInputOffset = new CellOffset(0, 3);
+		buildingDef.DiseaseCellVisName = "RadiationSickness";
+		buildingDef.UtilityOutputOffset = buildingDef.HighEnergyParticleInputOffset;
 		buildingDef.LogicOutputPorts = new List<LogicPorts.Port>
 		{
 			LogicPorts.Port.OutputPort("HEP_STORAGE", new CellOffset(0, 2), STRINGS.BUILDINGS.PREFABS.HEPENGINE.LOGIC_PORT_STORAGE, STRINGS.BUILDINGS.PREFABS.HEPENGINE.LOGIC_PORT_STORAGE_ACTIVE, STRINGS.BUILDINGS.PREFABS.HEPENGINE.LOGIC_PORT_STORAGE_INACTIVE, false, false)
@@ -49,7 +51,7 @@ public class HEPEngineConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -60,15 +62,15 @@ public class HEPEngineConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		RadiationEmitter radiationEmitter = go.AddOrGet<RadiationEmitter>();
 		radiationEmitter.emitType = RadiationEmitter.RadiationEmitterType.Constant;
@@ -102,15 +104,15 @@ public class HEPEngineConfig : IBuildingConfig
 		};
 	}
 
-	private const int PARTICLES_PER_HEX = 200;
+		private const int PARTICLES_PER_HEX = 200;
 
-	private const int RANGE = 20;
+		private const int RANGE = 20;
 
-	private const int PARTICLE_STORAGE_CAPACITY = 4000;
+		private const int PARTICLE_STORAGE_CAPACITY = 4000;
 
-	private const int PORT_OFFSET_Y = 3;
+		private const int PORT_OFFSET_Y = 3;
 
-	public const string ID = "HEPEngine";
+		public const string ID = "HEPEngine";
 
-	public const string PORT_ID = "HEP_STORAGE";
+		public const string PORT_ID = "HEP_STORAGE";
 }

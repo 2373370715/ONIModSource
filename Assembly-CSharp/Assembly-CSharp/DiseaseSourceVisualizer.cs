@@ -6,14 +6,14 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/DiseaseSourceVisualizer")]
 public class DiseaseSourceVisualizer : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.UpdateVisibility();
 		Components.DiseaseSourceVisualizers.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
 		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(this.OnViewModeChanged));
@@ -26,7 +26,7 @@ public class DiseaseSourceVisualizer : KMonoBehaviour
 		}
 	}
 
-	private void CreateVisualizer()
+		private void CreateVisualizer()
 	{
 		if (this.visualizer != null)
 		{
@@ -39,7 +39,7 @@ public class DiseaseSourceVisualizer : KMonoBehaviour
 		this.visualizer = Util.KInstantiate(Assets.UIPrefabs.ResourceVisualizer, GameScreenManager.Instance.worldSpaceCanvas, null);
 	}
 
-	public void UpdateVisibility()
+		public void UpdateVisibility()
 	{
 		this.CreateVisualizer();
 		if (string.IsNullOrEmpty(this.alwaysShowDisease))
@@ -60,7 +60,7 @@ public class DiseaseSourceVisualizer : KMonoBehaviour
 		}
 	}
 
-	private void SetVisibleDisease(Disease disease)
+		private void SetVisibleDisease(Disease disease)
 	{
 		Sprite overlaySprite = Assets.instance.DiseaseVisualization.overlaySprite;
 		Color32 colorByName = GlobalAssets.Instance.colorSet.GetColorByName(disease.overlayColourName);
@@ -70,7 +70,7 @@ public class DiseaseSourceVisualizer : KMonoBehaviour
 		this.visible = true;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.visualizer == null)
 		{
@@ -79,12 +79,12 @@ public class DiseaseSourceVisualizer : KMonoBehaviour
 		this.visualizer.transform.SetPosition(base.transform.GetPosition() + this.offset);
 	}
 
-	private void OnViewModeChanged(HashedString mode)
+		private void OnViewModeChanged(HashedString mode)
 	{
 		this.Show(mode);
 	}
 
-	public void Show(HashedString mode)
+		public void Show(HashedString mode)
 	{
 		base.enabled = (this.visible && mode == OverlayModes.Disease.ID);
 		if (this.visualizer != null)
@@ -93,12 +93,12 @@ public class DiseaseSourceVisualizer : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Vector3 offset;
 
-	private GameObject visualizer;
+		private GameObject visualizer;
 
-	private bool visible;
+		private bool visible;
 
-	public string alwaysShowDisease;
+		public string alwaysShowDisease;
 }

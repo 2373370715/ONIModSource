@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class ConditionHasMinimumMass : ProcessCondition
 {
-	public ConditionHasMinimumMass(CommandModule command)
+		public ConditionHasMinimumMass(CommandModule command)
 	{
 		this.commandModule = command;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		int id = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this.commandModule.GetComponent<LaunchConditionManager>()).id;
 		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(id);
@@ -20,7 +20,7 @@ public class ConditionHasMinimumMass : ProcessCondition
 		return ProcessCondition.Status.Warning;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		int id = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this.commandModule.GetComponent<LaunchConditionManager>()).id;
 		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(id);
@@ -35,7 +35,7 @@ public class ConditionHasMinimumMass : ProcessCondition
 		return string.Format(UI.STARMAP.LAUNCHCHECKLIST.MINIMUM_MASS, UI.STARMAP.COMPOSITION_UNDISCOVERED_AMOUNT);
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		int id = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this.commandModule.GetComponent<LaunchConditionManager>()).id;
 		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(id);
@@ -85,7 +85,7 @@ public class ConditionHasMinimumMass : ProcessCondition
 		return text;
 	}
 
-	public static float CargoCapacity(SpaceDestination destination, CommandModule module)
+		public static float CargoCapacity(SpaceDestination destination, CommandModule module)
 	{
 		if (module == null)
 		{
@@ -104,10 +104,10 @@ public class ConditionHasMinimumMass : ProcessCondition
 		return num;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private CommandModule commandModule;
+		private CommandModule commandModule;
 }

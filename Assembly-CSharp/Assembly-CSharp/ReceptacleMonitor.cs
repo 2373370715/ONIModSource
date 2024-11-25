@@ -6,7 +6,7 @@ using UnityEngine;
 [SkipSaveFileSerialization]
 public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesInstance>, IGameObjectEffectDescriptor, IWiltCause, ISim1000ms
 {
-		public bool Replanted
+			public bool Replanted
 	{
 		get
 		{
@@ -14,18 +14,18 @@ public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesI
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	public PlantablePlot GetReceptacle()
+		public PlantablePlot GetReceptacle()
 	{
 		return (PlantablePlot)base.smi.sm.receptacle.Get(base.smi);
 	}
 
-	public void SetReceptacle(PlantablePlot plot = null)
+		public void SetReceptacle(PlantablePlot plot = null)
 	{
 		if (plot == null)
 		{
@@ -40,7 +40,7 @@ public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesI
 		base.Trigger(-1636776682, null);
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		if (base.smi.sm.receptacle.Get(base.smi) == null)
 		{
@@ -61,7 +61,7 @@ public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesI
 		base.smi.GoTo(base.smi.sm.inoperational);
 	}
 
-		WiltCondition.Condition[] IWiltCause.Conditions
+			WiltCondition.Condition[] IWiltCause.Conditions
 	{
 		get
 		{
@@ -72,7 +72,7 @@ public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesI
 		}
 	}
 
-		public string WiltStateString
+			public string WiltStateString
 	{
 		get
 		{
@@ -85,17 +85,17 @@ public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesI
 		}
 	}
 
-	public bool HasReceptacle()
+		public bool HasReceptacle()
 	{
 		return !base.smi.IsInsideState(base.smi.sm.wild);
 	}
 
-	public bool HasOperationalReceptacle()
+		public bool HasOperationalReceptacle()
 	{
 		return base.smi.IsInsideState(base.smi.sm.operational);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return new List<Descriptor>
 		{
@@ -103,18 +103,18 @@ public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesI
 		};
 	}
 
-	private bool replanted;
+		private bool replanted;
 
-	public class StatesInstance : GameStateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor, object>.GameInstance
 	{
-		public StatesInstance(ReceptacleMonitor master) : base(master)
+				public StatesInstance(ReceptacleMonitor master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor>
+		public class States : GameStateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.wild;
 			base.serializable = StateMachine.SerializeType.Never;
@@ -123,12 +123,12 @@ public class ReceptacleMonitor : StateMachineComponent<ReceptacleMonitor.StatesI
 			this.operational.TriggerOnEnter(GameHashes.ReceptacleOperational, null);
 		}
 
-		public StateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor, object>.ObjectParameter<SingleEntityReceptacle> receptacle;
+				public StateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor, object>.ObjectParameter<SingleEntityReceptacle> receptacle;
 
-		public GameStateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor, object>.State wild;
+				public GameStateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor, object>.State wild;
 
-		public GameStateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor, object>.State inoperational;
+				public GameStateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor, object>.State inoperational;
 
-		public GameStateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor, object>.State operational;
+				public GameStateMachine<ReceptacleMonitor.States, ReceptacleMonitor.StatesInstance, ReceptacleMonitor, object>.State operational;
 	}
 }

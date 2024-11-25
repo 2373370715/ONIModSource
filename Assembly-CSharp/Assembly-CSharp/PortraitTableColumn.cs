@@ -3,24 +3,24 @@ using UnityEngine;
 
 public class PortraitTableColumn : TableColumn
 {
-	public PortraitTableColumn(Action<IAssignableIdentity, GameObject> on_load_action, Comparison<IAssignableIdentity> sort_comparison, bool double_click_to_target = true) : base(on_load_action, sort_comparison, null, null, null, false, "")
+		public PortraitTableColumn(Action<IAssignableIdentity, GameObject> on_load_action, Comparison<IAssignableIdentity> sort_comparison, bool double_click_to_target = true) : base(on_load_action, sort_comparison, null, null, null, false, "")
 	{
 		this.double_click_to_target = double_click_to_target;
 	}
 
-	public override GameObject GetDefaultWidget(GameObject parent)
+		public override GameObject GetDefaultWidget(GameObject parent)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.prefab_portrait, parent, true);
 		gameObject.GetComponent<CrewPortrait>().targetImage.enabled = true;
 		return gameObject;
 	}
 
-	public override GameObject GetHeaderWidget(GameObject parent)
+		public override GameObject GetHeaderWidget(GameObject parent)
 	{
 		return Util.KInstantiateUI(this.prefab_portrait, parent, true);
 	}
 
-	public override GameObject GetMinionWidget(GameObject parent)
+		public override GameObject GetMinionWidget(GameObject parent)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.prefab_portrait, parent, true);
 		if (this.double_click_to_target)
@@ -37,7 +37,7 @@ public class PortraitTableColumn : TableColumn
 		return gameObject;
 	}
 
-	public GameObject prefab_portrait = Assets.UIPrefabs.TableScreenWidgets.MinionPortrait;
+		public GameObject prefab_portrait = Assets.UIPrefabs.TableScreenWidgets.MinionPortrait;
 
-	private bool double_click_to_target;
+		private bool double_click_to_target;
 }

@@ -2,5 +2,5 @@
 
 public interface ILogicNetworkConnection
 {
-	void OnLogicNetworkConnectionChanged(bool connected);
+		void OnLogicNetworkConnectionChanged(bool connected);
 }

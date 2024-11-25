@@ -3,283 +3,283 @@ using UnityEngine;
 
 public class LightingSettings : ScriptableObject
 {
-	[Header("Global")]
+		[Header("Global")]
 	public bool UpdateLightSettings;
 
-	public float BloomScale;
+		public float BloomScale;
 
-	public Color32 LightColour = Color.white;
+		public Color32 LightColour = Color.white;
 
-	[Header("Digging")]
+		[Header("Digging")]
 	public float DigMapScale;
 
-	public Color DigMapColour;
+		public Color DigMapColour;
 
-	public Texture2D DigDamageMap;
+		public Texture2D DigDamageMap;
 
-	[Header("State Transition")]
+		[Header("State Transition")]
 	public Texture2D StateTransitionMap;
 
-	public Color StateTransitionColor;
+		public Color StateTransitionColor;
 
-	public float StateTransitionUVScale;
+		public float StateTransitionUVScale;
 
-	public Vector2 StateTransitionUVOffsetRate;
+		public Vector2 StateTransitionUVOffsetRate;
 
-	[Header("Falling Solids")]
+		[Header("Falling Solids")]
 	public Texture2D FallingSolidMap;
 
-	public Color FallingSolidColor;
+		public Color FallingSolidColor;
 
-	public float FallingSolidUVScale;
+		public float FallingSolidUVScale;
 
-	public Vector2 FallingSolidUVOffsetRate;
+		public Vector2 FallingSolidUVOffsetRate;
 
-	[Header("Metal Shine")]
+		[Header("Metal Shine")]
 	public Vector2 ShineCenter;
 
-	public Vector2 ShineRange;
+		public Vector2 ShineRange;
 
-	public float ShineZoomSpeed;
+		public float ShineZoomSpeed;
 
-	[Header("Water")]
+		[Header("Water")]
 	public Color WaterTrimColor;
 
-	public float WaterTrimSize;
+		public float WaterTrimSize;
 
-	public float WaterAlphaTrimSize;
+		public float WaterAlphaTrimSize;
 
-	public float WaterAlphaThreshold;
+		public float WaterAlphaThreshold;
 
-	public float WaterCubesAlphaThreshold;
+		public float WaterCubesAlphaThreshold;
 
-	public float WaterWaveAmplitude;
+		public float WaterWaveAmplitude;
 
-	public float WaterWaveFrequency;
+		public float WaterWaveFrequency;
 
-	public float WaterWaveSpeed;
+		public float WaterWaveSpeed;
 
-	public float WaterDetailSpeed;
+		public float WaterDetailSpeed;
 
-	public float WaterDetailTiling;
+		public float WaterDetailTiling;
 
-	public float WaterDetailTiling2;
+		public float WaterDetailTiling2;
 
-	public Vector2 WaterDetailDirection;
+		public Vector2 WaterDetailDirection;
 
-	public float WaterWaveAmplitude2;
+		public float WaterWaveAmplitude2;
 
-	public float WaterWaveFrequency2;
+		public float WaterWaveFrequency2;
 
-	public float WaterWaveSpeed2;
+		public float WaterWaveSpeed2;
 
-	public float WaterCubeMapScale;
+		public float WaterCubeMapScale;
 
-	public float WaterColorScale;
+		public float WaterColorScale;
 
-	public float WaterDistortionScaleStart;
+		public float WaterDistortionScaleStart;
 
-	public float WaterDistortionScaleEnd;
+		public float WaterDistortionScaleEnd;
 
-	public float WaterDepthColorOpacityStart;
+		public float WaterDepthColorOpacityStart;
 
-	public float WaterDepthColorOpacityEnd;
+		public float WaterDepthColorOpacityEnd;
 
-	[Header("Liquid")]
+		[Header("Liquid")]
 	public float LiquidMin;
 
-	public float LiquidMax;
+		public float LiquidMax;
 
-	public float LiquidCutoff;
+		public float LiquidCutoff;
 
-	public float LiquidTransparency;
+		public float LiquidTransparency;
 
-	public float LiquidAmountOffset;
+		public float LiquidAmountOffset;
 
-	public float LiquidMaxMass;
+		public float LiquidMaxMass;
 
-	[Header("Grid")]
+		[Header("Grid")]
 	public float GridLineWidth;
 
-	public float GridSize;
+		public float GridSize;
 
-	public float GridMaxIntensity;
+		public float GridMaxIntensity;
 
-	public float GridMinIntensity;
+		public float GridMinIntensity;
 
-	public Color GridColor;
+		public Color GridColor;
 
-	[Header("Terrain")]
+		[Header("Terrain")]
 	public float EdgeGlowCutoffStart;
 
-	public float EdgeGlowCutoffEnd;
+		public float EdgeGlowCutoffEnd;
 
-	public float EdgeGlowIntensity;
+		public float EdgeGlowIntensity;
 
-	public int BackgroundLayers;
+		public int BackgroundLayers;
 
-	public float BackgroundBaseParallax;
+		public float BackgroundBaseParallax;
 
-	public float BackgroundLayerParallax;
+		public float BackgroundLayerParallax;
 
-	public float BackgroundDarkening;
+		public float BackgroundDarkening;
 
-	public float BackgroundClip;
+		public float BackgroundClip;
 
-	public float BackgroundUVScale;
+		public float BackgroundUVScale;
 
-	public global::LightingSettings.EdgeLighting substanceEdgeParameters;
+		public global::LightingSettings.EdgeLighting substanceEdgeParameters;
 
-	public global::LightingSettings.EdgeLighting tileEdgeParameters;
+		public global::LightingSettings.EdgeLighting tileEdgeParameters;
 
-	public float AnimIntensity;
+		public float AnimIntensity;
 
-	public float GasMinOpacity;
+		public float GasMinOpacity;
 
-	public float GasMaxOpacity;
+		public float GasMaxOpacity;
 
-	public Color[] DarkenTints;
+		public Color[] DarkenTints;
 
-	public global::LightingSettings.LightingColours characterLighting;
+		public global::LightingSettings.LightingColours characterLighting;
 
-	public Color BrightenOverlayColour;
+		public Color BrightenOverlayColour;
 
-	public Color[] ColdColours;
+		public Color[] ColdColours;
 
-	public Color[] HotColours;
+		public Color[] HotColours;
 
-	[Header("Temperature Overlay Effects")]
+		[Header("Temperature Overlay Effects")]
 	public Vector4 TemperatureParallax;
 
-	public Texture2D EmberTex;
+		public Texture2D EmberTex;
 
-	public Texture2D FrostTex;
+		public Texture2D FrostTex;
 
-	public Texture2D Thermal1Tex;
+		public Texture2D Thermal1Tex;
 
-	public Texture2D Thermal2Tex;
+		public Texture2D Thermal2Tex;
 
-	public Vector2 ColdFGUVOffset;
+		public Vector2 ColdFGUVOffset;
 
-	public Vector2 ColdMGUVOffset;
+		public Vector2 ColdMGUVOffset;
 
-	public Vector2 ColdBGUVOffset;
+		public Vector2 ColdBGUVOffset;
 
-	public Vector2 HotFGUVOffset;
+		public Vector2 HotFGUVOffset;
 
-	public Vector2 HotMGUVOffset;
+		public Vector2 HotMGUVOffset;
 
-	public Vector2 HotBGUVOffset;
+		public Vector2 HotBGUVOffset;
 
-	public Texture2D DustTex;
+		public Texture2D DustTex;
 
-	public Color DustColour;
+		public Color DustColour;
 
-	public float DustScale;
+		public float DustScale;
 
-	public Vector3 DustMovement;
+		public Vector3 DustMovement;
 
-	public float ShowGas;
+		public float ShowGas;
 
-	public float ShowTemperature;
+		public float ShowTemperature;
 
-	public float ShowDust;
+		public float ShowDust;
 
-	public float ShowShadow;
+		public float ShowShadow;
 
-	public Vector4 HeatHazeParameters;
+		public Vector4 HeatHazeParameters;
 
-	public Texture2D HeatHazeTexture;
+		public Texture2D HeatHazeTexture;
 
-	[Header("Biome")]
+		[Header("Biome")]
 	public float WorldZoneGasBlend;
 
-	public float WorldZoneLiquidBlend;
+		public float WorldZoneLiquidBlend;
 
-	public float WorldZoneForegroundBlend;
+		public float WorldZoneForegroundBlend;
 
-	public float WorldZoneSimpleAnimBlend;
+		public float WorldZoneSimpleAnimBlend;
 
-	public float WorldZoneAnimBlend;
+		public float WorldZoneAnimBlend;
 
-	[Header("FX")]
+		[Header("FX")]
 	public Color32 SmokeDamageTint;
 
-	[Header("Building Damage")]
+		[Header("Building Damage")]
 	public Texture2D BuildingDamagedTex;
 
-	public Vector4 BuildingDamagedUVParameters;
+		public Vector4 BuildingDamagedUVParameters;
 
-	[Header("Disease")]
+		[Header("Disease")]
 	public Texture2D DiseaseOverlayTex;
 
-	public Vector4 DiseaseOverlayTexInfo;
+		public Vector4 DiseaseOverlayTexInfo;
 
-	[Header("Conduits")]
+		[Header("Conduits")]
 	public ConduitFlowVisualizer.Tuning GasConduit;
 
-	public ConduitFlowVisualizer.Tuning LiquidConduit;
+		public ConduitFlowVisualizer.Tuning LiquidConduit;
 
-	public SolidConduitFlowVisualizer.Tuning SolidConduit;
+		public SolidConduitFlowVisualizer.Tuning SolidConduit;
 
-	[Header("Radiation Overlay")]
+		[Header("Radiation Overlay")]
 	public bool ShowRadiation;
 
-	public Texture2D Radiation1Tex;
+		public Texture2D Radiation1Tex;
 
-	public Texture2D Radiation2Tex;
+		public Texture2D Radiation2Tex;
 
-	public Texture2D Radiation3Tex;
+		public Texture2D Radiation3Tex;
 
-	public Texture2D Radiation4Tex;
+		public Texture2D Radiation4Tex;
 
-	public Texture2D NoiseTex;
+		public Texture2D NoiseTex;
 
-	public Color RadColor;
+		public Color RadColor;
 
-	public Vector2 Rad1UVOffset;
+		public Vector2 Rad1UVOffset;
 
-	public Vector2 Rad2UVOffset;
+		public Vector2 Rad2UVOffset;
 
-	public Vector2 Rad3UVOffset;
+		public Vector2 Rad3UVOffset;
 
-	public Vector2 Rad4UVOffset;
+		public Vector2 Rad4UVOffset;
 
-	public Vector4 RadUVScales;
+		public Vector4 RadUVScales;
 
-	public Vector2 Rad1Range;
+		public Vector2 Rad1Range;
 
-	public Vector2 Rad2Range;
+		public Vector2 Rad2Range;
 
-	public Vector2 Rad3Range;
+		public Vector2 Rad3Range;
 
-	public Vector2 Rad4Range;
+		public Vector2 Rad4Range;
 
-	[Serializable]
+		[Serializable]
 	public struct EdgeLighting
 	{
-		public float intensity;
+				public float intensity;
 
-		public float edgeIntensity;
+				public float edgeIntensity;
 
-		public float directSunlightScale;
+				public float directSunlightScale;
 
-		public float power;
+				public float power;
 	}
 
-	public enum TintLayers
+		public enum TintLayers
 	{
-		Background,
-		Midground,
-		Foreground,
-		NumLayers
+				Background,
+				Midground,
+				Foreground,
+				NumLayers
 	}
 
-	[Serializable]
+		[Serializable]
 	public struct LightingColours
 	{
-		public Color32 litColour;
+				public Color32 litColour;
 
-		public Color32 unlitColour;
+				public Color32 unlitColour;
 	}
 }

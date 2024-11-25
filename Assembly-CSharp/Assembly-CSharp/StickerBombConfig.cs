@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class StickerBombConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateBasicEntity("StickerBomb", STRINGS.BUILDINGS.PREFABS.STICKERBOMB.NAME, STRINGS.BUILDINGS.PREFABS.STICKERBOMB.DESC, 1f, true, Assets.GetAnim("sticker_a_kanim"), "off", Grid.SceneLayer.Backwall, SimHashes.Creature, null, 293f);
 		EntityTemplates.AddCollision(gameObject, EntityTemplates.CollisionShape.RECTANGLE, 1f, 1f);
@@ -19,16 +19,16 @@ public class StickerBombConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.AddOrGet<OccupyArea>().SetCellOffsets(new CellOffset[1]);
 		inst.AddComponent<Modifiers>();
 		inst.AddOrGet<DecorProvider>().SetValues(DECOR.BONUS.TIER2);
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "StickerBomb";
+		public const string ID = "StickerBomb";
 }

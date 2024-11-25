@@ -7,18 +7,18 @@ using UnityEngine;
 
 public class MinionPersonalityPanel : DetailScreenTab
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<MinionIdentity>() != null;
 	}
 
-	protected override void OnSelectTarget(GameObject target)
+		protected override void OnSelectTarget(GameObject target)
 	{
 		base.OnSelectTarget(target);
 		this.Refresh();
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.bioPanel = base.CreateCollapsableSection(UI.DETAILTABS.PERSONALITY.GROUPNAME_BIO);
@@ -29,20 +29,20 @@ public class MinionPersonalityPanel : DetailScreenTab
 		this.equipmentPanel = base.CreateCollapsableSection(UI.DETAILTABS.PERSONALITY.EQUIPMENT.GROUPNAME_OWNABLE);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.updateHandle.ClearScheduler();
 		base.OnCleanUp();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.Refresh();
 		this.ScheduleUpdate();
 	}
 
-	private void ScheduleUpdate()
+		private void ScheduleUpdate()
 	{
 		this.updateHandle = UIScheduler.Instance.Schedule("RefreshMinionPersonalityPanel", 1f, delegate(object o)
 		{
@@ -51,7 +51,7 @@ public class MinionPersonalityPanel : DetailScreenTab
 		}, null, null);
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		if (!base.gameObject.activeSelf)
 		{
@@ -69,7 +69,7 @@ public class MinionPersonalityPanel : DetailScreenTab
 		MinionPersonalityPanel.RefreshAttributesPanel(this.attributesPanel, this.selectedTarget);
 	}
 
-	private static void RefreshBioPanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
+		private static void RefreshBioPanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
 	{
 		MinionIdentity component = targetEntity.GetComponent<MinionIdentity>();
 		if (!component)
@@ -79,6 +79,7 @@ public class MinionPersonalityPanel : DetailScreenTab
 		}
 		targetPanel.SetActive(true);
 		targetPanel.SetLabel("name", DUPLICANTS.NAMETITLE + component.name, "");
+		targetPanel.SetLabel("model", DUPLICANTS.MODELTITLE + component.model.ProperName(), GameTags.Minions.Models.GetModelTooltipForTag(component.model));
 		targetPanel.SetLabel("age", DUPLICANTS.ARRIVALTIME + GameUtil.GetFormattedCycles(((float)GameClock.Instance.GetCycle() - component.arrivalTime) * 600f, "F0", true), string.Format(DUPLICANTS.ARRIVALTIME_TOOLTIP, component.arrivalTime + 1f, component.name));
 		targetPanel.SetLabel("gender", DUPLICANTS.GENDERTITLE + string.Format(Strings.Get(string.Format("STRINGS.DUPLICANTS.GENDER.{0}.NAME", component.genderStringKey.ToUpper())), component.gender), "");
 		targetPanel.SetLabel("personality", string.Format(Strings.Get(string.Format("STRINGS.DUPLICANTS.PERSONALITIES.{0}.DESC", component.nameStringKey.ToUpper())), component.name), string.Format(Strings.Get(string.Format("STRINGS.DUPLICANTS.DESC_TOOLTIP", component.nameStringKey.ToUpper())), component.name));
@@ -101,7 +102,7 @@ public class MinionPersonalityPanel : DetailScreenTab
 		targetPanel.Commit();
 	}
 
-	private static void RefreshTraitsPanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
+		private static void RefreshTraitsPanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
 	{
 		if (!targetEntity.GetComponent<MinionIdentity>())
 		{
@@ -119,7 +120,7 @@ public class MinionPersonalityPanel : DetailScreenTab
 		targetPanel.Commit();
 	}
 
-	private static void RefreshEquipmentPanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
+		private static void RefreshEquipmentPanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
 	{
 		Assignables equipment = targetEntity.GetComponent<MinionIdentity>().GetEquipment();
 		bool flag = false;
@@ -149,7 +150,7 @@ public class MinionPersonalityPanel : DetailScreenTab
 		targetPanel.Commit();
 	}
 
-	private static void RefreshAmenitiesPanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
+		private static void RefreshAmenitiesPanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
 	{
 		Assignables soleOwner = targetEntity.GetComponent<MinionIdentity>().GetSoleOwner();
 		bool flag = false;
@@ -179,7 +180,7 @@ public class MinionPersonalityPanel : DetailScreenTab
 		targetPanel.Commit();
 	}
 
-	private static void RefreshAttributesPanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
+		private static void RefreshAttributesPanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
 	{
 		if (!targetEntity.GetComponent<MinionIdentity>())
 		{
@@ -197,7 +198,7 @@ public class MinionPersonalityPanel : DetailScreenTab
 		targetPanel.Commit();
 	}
 
-	private static void RefreshResumePanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
+		private static void RefreshResumePanel(CollapsibleDetailContentPanel targetPanel, GameObject targetEntity)
 	{
 		MinionResume component = targetEntity.GetComponent<MinionResume>();
 		targetPanel.SetTitle(string.Format(UI.DETAILTABS.PERSONALITY.GROUPNAME_RESUME, targetEntity.name.ToUpper()));
@@ -219,28 +220,34 @@ public class MinionPersonalityPanel : DetailScreenTab
 		{
 			foreach (Skill skill in list)
 			{
-				string text = "";
-				foreach (SkillPerk skillPerk in skill.perks)
+				if (SaveLoader.Instance.IsDLCActiveForCurrentSave(skill.dlcId))
 				{
-					text = text + "  • " + skillPerk.Name + "\n";
+					string text = "";
+					foreach (SkillPerk skillPerk in skill.perks)
+					{
+						if (SaveLoader.Instance.IsAllDlcActiveForCurrentSave(skillPerk.requiredDlcIds))
+						{
+							text = text + "  • " + skillPerk.Name + "\n";
+						}
+					}
+					targetPanel.SetLabel(skill.Id, "  • " + skill.Name, skill.description + "\n" + text);
 				}
-				targetPanel.SetLabel(skill.Id, "  • " + skill.Name, skill.description + "\n" + text);
 			}
 		}
 		targetPanel.Commit();
 	}
 
-	private CollapsibleDetailContentPanel bioPanel;
+		private CollapsibleDetailContentPanel bioPanel;
 
-	private CollapsibleDetailContentPanel traitsPanel;
+		private CollapsibleDetailContentPanel traitsPanel;
 
-	private CollapsibleDetailContentPanel resumePanel;
+		private CollapsibleDetailContentPanel resumePanel;
 
-	private CollapsibleDetailContentPanel attributesPanel;
+		private CollapsibleDetailContentPanel attributesPanel;
 
-	private CollapsibleDetailContentPanel equipmentPanel;
+		private CollapsibleDetailContentPanel equipmentPanel;
 
-	private CollapsibleDetailContentPanel amenitiesPanel;
+		private CollapsibleDetailContentPanel amenitiesPanel;
 
-	private SchedulerHandle updateHandle;
+		private SchedulerHandle updateHandle;
 }

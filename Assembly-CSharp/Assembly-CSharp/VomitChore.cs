@@ -7,23 +7,30 @@ using UnityEngine;
 
 public class VomitChore : Chore<VomitChore.StatesInstance>
 {
-	public VomitChore(ChoreType chore_type, IStateMachineTarget target, StatusItem status_item, Notification notification, Action<Chore> on_complete = null) : base(Db.Get().ChoreTypes.Vomit, target, target.GetComponent<ChoreProvider>(), true, on_complete, null, null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+		public VomitChore(ChoreType chore_type, IStateMachineTarget target, StatusItem status_item, Notification notification, Action<Chore> on_complete = null) : base(Db.Get().ChoreTypes.Vomit, target, target.GetComponent<ChoreProvider>(), true, on_complete, null, null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new VomitChore.StatesInstance(this, target.gameObject, status_item, notification);
 	}
 
-	public class StatesInstance : GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.GameInstance
 	{
-		public StatesInstance(VomitChore master, GameObject vomiter, StatusItem status_item, Notification notification) : base(master)
+								public SimHashes elementToVomit { get; private set; } = SimHashes.DirtyWater;
+
+				public StatesInstance(VomitChore master, GameObject vomiter, StatusItem status_item, Notification notification) : base(master)
 		{
 			base.sm.vomiter.Set(vomiter, base.smi, false);
 			this.bodyTemperature = Db.Get().Amounts.Temperature.Lookup(vomiter);
 			this.statusItem = status_item;
 			this.notification = notification;
 			this.vomitCellQuery = new SafetyQuery(Game.Instance.safetyConditions.VomitCellChecker, base.GetComponent<KMonoBehaviour>(), 10);
+			MinionIdentity component = vomiter.GetComponent<MinionIdentity>();
+			if (component != null && component.model == BionicMinionConfig.MODEL)
+			{
+				this.elementToVomit = SimHashes.LiquidGunk;
+			}
 		}
 
-		private static bool CanEmitLiquid(int cell)
+				private static bool CanEmitLiquid(int cell)
 		{
 			bool result = true;
 			if (!Grid.IsValidCell(cell) || Grid.Solid[cell] || (Grid.Properties[cell] & 2) != 0)
@@ -33,7 +40,12 @@ public class VomitChore : Chore<VomitChore.StatesInstance>
 			return result;
 		}
 
-		public void SpawnDirtyWater(float dt)
+				public void SpawnDirtyWater(float dt)
+		{
+			this.SpawnVomitLiquid(dt, SimHashes.DirtyWater);
+		}
+
+				public void SpawnVomitLiquid(float dt, SimHashes element)
 		{
 			if (dt > 0f)
 			{
@@ -56,14 +68,14 @@ public class VomitChore : Chore<VomitChore.StatesInstance>
 				Equippable equippable = base.GetComponent<SuitEquipper>().IsWearingAirtightSuit();
 				if (equippable != null)
 				{
-					equippable.GetComponent<Storage>().AddLiquid(SimHashes.DirtyWater, STRESS.VOMIT_AMOUNT * num, this.bodyTemperature.value, invalid.idx, invalid.count, false, true);
+					equippable.GetComponent<Storage>().AddLiquid(element, STRESS.VOMIT_AMOUNT * num, this.bodyTemperature.value, invalid.idx, invalid.count, false, true);
 					return;
 				}
-				SimMessages.AddRemoveSubstance(num4, SimHashes.DirtyWater, CellEventLogger.Instance.Vomit, STRESS.VOMIT_AMOUNT * num, this.bodyTemperature.value, invalid.idx, invalid.count, true, -1);
+				SimMessages.AddRemoveSubstance(num4, element, CellEventLogger.Instance.Vomit, STRESS.VOMIT_AMOUNT * num, this.bodyTemperature.value, invalid.idx, invalid.count, true, -1);
 			}
 		}
 
-		public int GetVomitCell()
+				public int GetVomitCell()
 		{
 			this.vomitCellQuery.Reset();
 			Navigator component = base.GetComponent<Navigator>();
@@ -76,18 +88,18 @@ public class VomitChore : Chore<VomitChore.StatesInstance>
 			return num;
 		}
 
-		public StatusItem statusItem;
+				public StatusItem statusItem;
 
-		private AmountInstance bodyTemperature;
+				private AmountInstance bodyTemperature;
 
-		public Notification notification;
+				public Notification notification;
 
-		private SafetyQuery vomitCellQuery;
+				private SafetyQuery vomitCellQuery;
 	}
 
-	public class States : GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore>
+		public class States : GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.moveto;
 			base.Target(this.vomiter);
@@ -110,9 +122,9 @@ public class VomitChore : Chore<VomitChore.StatesInstance>
 				}
 			});
 			this.vomit.buildup.PlayAnim("vomit_pre", KAnim.PlayMode.Once).OnAnimQueueComplete(this.vomit.release);
-			this.vomit.release.ToggleEffect("Vomiting").PlayAnim("vomit_loop", KAnim.PlayMode.Once).Update("SpawnDirtyWater", delegate(VomitChore.StatesInstance smi, float dt)
+			this.vomit.release.ToggleEffect("Vomiting").PlayAnim("vomit_loop", KAnim.PlayMode.Once).Update("SpawnVomitLiquid", delegate(VomitChore.StatesInstance smi, float dt)
 			{
-				smi.SpawnDirtyWater(dt);
+				smi.SpawnVomitLiquid(dt, smi.elementToVomit);
 			}, UpdateRate.SIM_200ms, false).OnAnimQueueComplete(this.vomit.release_pst);
 			this.vomit.release_pst.PlayAnim("vomit_pst", KAnim.PlayMode.Once).OnAnimQueueComplete(this.recover);
 			this.recover.PlayAnim("breathe_pre").QueueAnim("breathe_loop", true, null).ScheduleGoTo(8f, this.recover_pst);
@@ -120,25 +132,25 @@ public class VomitChore : Chore<VomitChore.StatesInstance>
 			this.complete.ReturnSuccess();
 		}
 
-		public StateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.TargetParameter vomiter;
+				public StateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.TargetParameter vomiter;
 
-		public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State moveto;
+				public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State moveto;
 
-		public VomitChore.States.VomitState vomit;
+				public VomitChore.States.VomitState vomit;
 
-		public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State recover;
+				public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State recover;
 
-		public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State recover_pst;
+				public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State recover_pst;
 
-		public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State complete;
+				public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State complete;
 
-		public class VomitState : GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State
+				public class VomitState : GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State
 		{
-			public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State buildup;
+						public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State buildup;
 
-			public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State release;
+						public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State release;
 
-			public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State release_pst;
+						public GameStateMachine<VomitChore.States, VomitChore.StatesInstance, VomitChore, object>.State release_pst;
 		}
 	}
 }

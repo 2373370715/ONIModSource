@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
@@ -11,7 +12,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Unlocks")]
 public class Unlocks : KMonoBehaviour
 {
-		private static string UnlocksFilename
+			private static string UnlocksFilename
 	{
 		get
 		{
@@ -19,12 +20,12 @@ public class Unlocks : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.LoadUnlocks();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.UnlockCycleCodexes();
@@ -35,17 +36,17 @@ public class Unlocks : KMonoBehaviour
 		Components.LiveMinionIdentities.OnAdd += this.OnNewDupe;
 	}
 
-	public bool IsUnlocked(string unlockID)
+		public bool IsUnlocked(string unlockID)
 	{
 		return !string.IsNullOrEmpty(unlockID) && (DebugHandler.InstantBuildMode || this.unlocked.Contains(unlockID));
 	}
 
-	public IReadOnlyList<string> GetAllUnlockedIds()
+		public IReadOnlyList<string> GetAllUnlockedIds()
 	{
 		return this.unlocked;
 	}
 
-	public void Lock(string unlockID)
+		public void Lock(string unlockID)
 	{
 		if (this.unlocked.Contains(unlockID))
 		{
@@ -55,7 +56,7 @@ public class Unlocks : KMonoBehaviour
 		}
 	}
 
-	public void Unlock(string unlockID, bool shouldTryShowCodexNotification = true)
+		public void Unlock(string unlockID, bool shouldTryShowCodexNotification = true)
 	{
 		if (string.IsNullOrEmpty(unlockID))
 		{
@@ -79,54 +80,59 @@ public class Unlocks : KMonoBehaviour
 		this.EvalMetaCategories();
 	}
 
-	private void EvalMetaCategories()
+		private void EvalMetaCategories()
 	{
 		foreach (Unlocks.MetaUnlockCategory metaUnlockCategory in this.MetaUnlockCategories)
 		{
 			string metaCollectionID = metaUnlockCategory.metaCollectionID;
-			string mesaCollectionID = metaUnlockCategory.mesaCollectionID;
+			Unlocks.<>c__DisplayClass14_0 CS$<>8__locals1;
+			CS$<>8__locals1.mesaCollectionID = metaUnlockCategory.mesaCollectionID;
 			int mesaUnlockCount = metaUnlockCategory.mesaUnlockCount;
-			int num = 0;
-			bool flag = false;
+			CS$<>8__locals1.count = 0;
+			CS$<>8__locals1.isCollectionReplaced = false;
 			if (SaveLoader.Instance != null)
 			{
-				foreach (ClusterLayout.ClusterUnlock clusterUnlock in SaveLoader.Instance.ClusterLayout.clusterUnlocks)
+				foreach (LoreCollectionOverride loreUnlock in SaveLoader.Instance.ClusterLayout.clusterUnlocks)
 				{
-					if (clusterUnlock.id == mesaCollectionID)
+					if (this.<EvalMetaCategories>g__EvaluateCollection|14_0(loreUnlock, ref CS$<>8__locals1))
 					{
-						foreach (string unlockID in this.lockCollections[clusterUnlock.collection])
+						break;
+					}
+				}
+				foreach (string name in CustomGameSettings.Instance.GetCurrentDlcMixingIds())
+				{
+					DlcMixingSettings cachedDlcMixingSettings = SettingsCache.GetCachedDlcMixingSettings(name);
+					if (cachedDlcMixingSettings != null)
+					{
+						foreach (LoreCollectionOverride loreUnlock2 in cachedDlcMixingSettings.globalLoreUnlocks)
 						{
-							if (this.IsUnlocked(unlockID))
+							if (this.<EvalMetaCategories>g__EvaluateCollection|14_0(loreUnlock2, ref CS$<>8__locals1))
 							{
-								num++;
+								break;
 							}
 						}
-						if (clusterUnlock.orderRule == ClusterLayout.ClusterUnlock.OrderRule.Replace)
-						{
-							flag = true;
-							break;
-						}
 					}
 				}
 			}
-			if (!flag)
+			if (!CS$<>8__locals1.isCollectionReplaced)
 			{
-				foreach (string unlockID2 in this.lockCollections[mesaCollectionID])
+				foreach (string unlockID in this.lockCollections[CS$<>8__locals1.mesaCollectionID])
 				{
-					if (this.IsUnlocked(unlockID2))
+					if (this.IsUnlocked(unlockID))
 					{
-						num++;
+						int count = CS$<>8__locals1.count;
+						CS$<>8__locals1.count = count + 1;
 					}
 				}
 			}
-			if (num >= mesaUnlockCount)
+			if (CS$<>8__locals1.count >= mesaUnlockCount)
 			{
 				this.UnlockNext(metaCollectionID, false);
 			}
 		}
 	}
 
-	private void SaveUnlocks()
+		private void SaveUnlocks()
 	{
 		if (!Directory.Exists(global::Util.RootFolder()))
 		{
@@ -159,7 +165,7 @@ public class Unlocks : KMonoBehaviour
 		}
 	}
 
-	public void LoadUnlocks()
+		public void LoadUnlocks()
 	{
 		this.unlocked.Clear();
 		if (!File.Exists(Unlocks.UnlocksFilename))
@@ -219,19 +225,19 @@ public class Unlocks : KMonoBehaviour
 		}
 	}
 
-	private string GetNextClusterUnlock(string collectionID, out ClusterLayout.ClusterUnlock.OrderRule orderRule, bool randomize)
+		private string GetNextClusterUnlock(string collectionID, out LoreCollectionOverride.OrderRule orderRule, bool randomize)
 	{
-		foreach (ClusterLayout.ClusterUnlock clusterUnlock in SaveLoader.Instance.ClusterLayout.clusterUnlocks)
+		foreach (LoreCollectionOverride loreCollectionOverride in SaveLoader.Instance.ClusterLayout.clusterUnlocks)
 		{
-			if (!(clusterUnlock.id != collectionID))
+			if (!(loreCollectionOverride.id != collectionID))
 			{
 				if (!this.lockCollections.ContainsKey(collectionID))
 				{
 					DebugUtil.DevLogError("Lore collection '" + collectionID + "' is missing");
-					orderRule = ClusterLayout.ClusterUnlock.OrderRule.Invalid;
+					orderRule = LoreCollectionOverride.OrderRule.Invalid;
 					return null;
 				}
-				string[] array = this.lockCollections[clusterUnlock.collection];
+				string[] array = this.lockCollections[loreCollectionOverride.collection];
 				if (randomize)
 				{
 					array.Shuffle<string>();
@@ -240,33 +246,83 @@ public class Unlocks : KMonoBehaviour
 				{
 					if (!this.IsUnlocked(text))
 					{
-						orderRule = clusterUnlock.orderRule;
+						orderRule = loreCollectionOverride.orderRule;
 						return text;
 					}
 				}
-				if (clusterUnlock.orderRule == ClusterLayout.ClusterUnlock.OrderRule.Replace)
+				if (loreCollectionOverride.orderRule == LoreCollectionOverride.OrderRule.Replace)
 				{
-					orderRule = clusterUnlock.orderRule;
+					orderRule = loreCollectionOverride.orderRule;
 					return null;
 				}
 			}
 		}
-		orderRule = ClusterLayout.ClusterUnlock.OrderRule.Invalid;
+		orderRule = LoreCollectionOverride.OrderRule.Invalid;
 		return null;
 	}
 
-	public string UnlockNext(string collectionID, bool randomize = false)
+		private string GetNextGlobalDlcUnlock(string collectionID, out LoreCollectionOverride.OrderRule orderRule, bool randomize)
+	{
+		foreach (string name in CustomGameSettings.Instance.GetCurrentDlcMixingIds())
+		{
+			DlcMixingSettings cachedDlcMixingSettings = SettingsCache.GetCachedDlcMixingSettings(name);
+			if (cachedDlcMixingSettings != null)
+			{
+				foreach (LoreCollectionOverride loreCollectionOverride in cachedDlcMixingSettings.globalLoreUnlocks)
+				{
+					if (!(loreCollectionOverride.id != collectionID))
+					{
+						if (!this.lockCollections.ContainsKey(collectionID))
+						{
+							DebugUtil.DevLogError("Lore collection '" + collectionID + "' is missing");
+							orderRule = LoreCollectionOverride.OrderRule.Invalid;
+							return null;
+						}
+						string[] array = this.lockCollections[loreCollectionOverride.collection];
+						if (randomize)
+						{
+							array.Shuffle<string>();
+						}
+						foreach (string text in array)
+						{
+							if (!this.IsUnlocked(text))
+							{
+								orderRule = loreCollectionOverride.orderRule;
+								return text;
+							}
+						}
+						if (loreCollectionOverride.orderRule == LoreCollectionOverride.OrderRule.Replace)
+						{
+							orderRule = loreCollectionOverride.orderRule;
+							return null;
+						}
+					}
+				}
+			}
+		}
+		orderRule = LoreCollectionOverride.OrderRule.Invalid;
+		return null;
+	}
+
+		public string UnlockNext(string collectionID, bool randomize = false)
 	{
 		if (SaveLoader.Instance != null)
 		{
-			ClusterLayout.ClusterUnlock.OrderRule orderRule;
-			string nextClusterUnlock = this.GetNextClusterUnlock(collectionID, out orderRule, randomize);
-			if (nextClusterUnlock != null && (orderRule == ClusterLayout.ClusterUnlock.OrderRule.Prepend || orderRule == ClusterLayout.ClusterUnlock.OrderRule.Replace))
+			LoreCollectionOverride.OrderRule orderRule;
+			string text = this.GetNextClusterUnlock(collectionID, out orderRule, randomize);
+			if (text != null && (orderRule == LoreCollectionOverride.OrderRule.Prepend || orderRule == LoreCollectionOverride.OrderRule.Replace))
 			{
-				this.Unlock(nextClusterUnlock, true);
-				return nextClusterUnlock;
+				this.Unlock(text, true);
+				return text;
 			}
-			if (orderRule == ClusterLayout.ClusterUnlock.OrderRule.Replace)
+			LoreCollectionOverride.OrderRule orderRule2;
+			text = this.GetNextGlobalDlcUnlock(collectionID, out orderRule2, randomize);
+			if (text != null && (orderRule2 == LoreCollectionOverride.OrderRule.Prepend || orderRule2 == LoreCollectionOverride.OrderRule.Replace))
+			{
+				this.Unlock(text, true);
+				return text;
+			}
+			if (orderRule == LoreCollectionOverride.OrderRule.Replace || orderRule2 == LoreCollectionOverride.OrderRule.Replace)
 			{
 				return null;
 			}
@@ -276,9 +332,9 @@ public class Unlocks : KMonoBehaviour
 		{
 			array.Shuffle<string>();
 		}
-		foreach (string text in array)
+		foreach (string text2 in array)
 		{
-			if (string.IsNullOrEmpty(text))
+			if (string.IsNullOrEmpty(text2))
 			{
 				DebugUtil.DevAssertArgs(false, new object[]
 				{
@@ -286,26 +342,32 @@ public class Unlocks : KMonoBehaviour
 					collectionID
 				});
 			}
-			else if (!this.IsUnlocked(text))
+			else if (!this.IsUnlocked(text2))
 			{
-				this.Unlock(text, true);
-				return text;
+				this.Unlock(text2, true);
+				return text2;
 			}
 		}
 		if (SaveLoader.Instance != null)
 		{
-			ClusterLayout.ClusterUnlock.OrderRule orderRule2;
-			string nextClusterUnlock2 = this.GetNextClusterUnlock(collectionID, out orderRule2, randomize);
-			if (nextClusterUnlock2 != null && orderRule2 == ClusterLayout.ClusterUnlock.OrderRule.Append)
+			LoreCollectionOverride.OrderRule orderRule3;
+			string text3 = this.GetNextClusterUnlock(collectionID, out orderRule3, randomize);
+			if (text3 != null && orderRule3 == LoreCollectionOverride.OrderRule.Append)
 			{
-				this.Unlock(nextClusterUnlock2, true);
-				return nextClusterUnlock2;
+				this.Unlock(text3, true);
+				return text3;
+			}
+			text3 = this.GetNextGlobalDlcUnlock(collectionID, out orderRule3, randomize);
+			if (text3 != null && orderRule3 == LoreCollectionOverride.OrderRule.Append)
+			{
+				this.Unlock(text3, true);
+				return text3;
 			}
 		}
 		return null;
 	}
 
-	private MessageNotification GenerateCodexUnlockNotification(string lockID)
+		private MessageNotification GenerateCodexUnlockNotification(string lockID)
 	{
 		string entryForLock = CodexCache.GetEntryForLock(lockID);
 		if (string.IsNullOrEmpty(entryForLock))
@@ -345,7 +407,7 @@ public class Unlocks : KMonoBehaviour
 		return null;
 	}
 
-	private void UnlockCycleCodexes()
+		private void UnlockCycleCodexes()
 	{
 		foreach (KeyValuePair<int, string> keyValuePair in this.cycleLocked)
 		{
@@ -356,18 +418,18 @@ public class Unlocks : KMonoBehaviour
 		}
 	}
 
-	private void OnNewDay(object data)
+		private void OnNewDay(object data)
 	{
 		this.UnlockCycleCodexes();
 	}
 
-	private void OnLaunchRocket(object data)
+		private void OnLaunchRocket(object data)
 	{
 		this.Unlock("surfacebreach", true);
 		this.Unlock("firstrocketlaunch", true);
 	}
 
-	private void OnDuplicantDied(object data)
+		private void OnDuplicantDied(object data)
 	{
 		this.Unlock("duplicantdeath", true);
 		if (Components.LiveMinionIdentities.Count == 1)
@@ -376,7 +438,7 @@ public class Unlocks : KMonoBehaviour
 		}
 	}
 
-	private void OnNewDupe(MinionIdentity minion_identity)
+		private void OnNewDupe(MinionIdentity minion_identity)
 	{
 		if (Components.LiveMinionIdentities.Count >= Db.Get().Personalities.GetAll(true, false).Count)
 		{
@@ -384,12 +446,12 @@ public class Unlocks : KMonoBehaviour
 		}
 	}
 
-	private void OnDiscoveredSpace(object data)
+		private void OnDiscoveredSpace(object data)
 	{
 		this.Unlock("surfacebreach", true);
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
 		int x = int.MinValue;
 		int num = int.MinValue;
@@ -456,16 +518,38 @@ public class Unlocks : KMonoBehaviour
 		}
 	}
 
-	private const int FILE_IO_RETRY_ATTEMPTS = 5;
+		[CompilerGenerated]
+	private bool <EvalMetaCategories>g__EvaluateCollection|14_0(LoreCollectionOverride loreUnlock, ref Unlocks.<>c__DisplayClass14_0 A_2)
+	{
+		if (loreUnlock.id == A_2.mesaCollectionID)
+		{
+			foreach (string unlockID in this.lockCollections[loreUnlock.collection])
+			{
+				if (this.IsUnlocked(unlockID))
+				{
+					int count = A_2.count;
+					A_2.count = count + 1;
+				}
+			}
+			if (loreUnlock.orderRule == LoreCollectionOverride.OrderRule.Replace)
+			{
+				A_2.isCollectionReplaced = true;
+				return true;
+			}
+		}
+		return false;
+	}
 
-	private List<string> unlocked = new List<string>();
+		private const int FILE_IO_RETRY_ATTEMPTS = 5;
 
-	private List<Unlocks.MetaUnlockCategory> MetaUnlockCategories = new List<Unlocks.MetaUnlockCategory>
+		private List<string> unlocked = new List<string>();
+
+		private List<Unlocks.MetaUnlockCategory> MetaUnlockCategories = new List<Unlocks.MetaUnlockCategory>
 	{
 		new Unlocks.MetaUnlockCategory("dimensionalloreMeta", "dimensionallore", 4)
 	};
 
-	public Dictionary<string, string[]> lockCollections = new Dictionary<string, string[]>
+		public Dictionary<string, string[]> lockCollections = new Dictionary<string, string[]>
 	{
 		{
 			"emails",
@@ -510,6 +594,13 @@ public class Unlocks : KMonoBehaviour
 			}
 		},
 		{
+			"dlc3emails",
+			new string[]
+			{
+				"email_ulti"
+			}
+		},
+		{
 			"journals",
 			new string[]
 			{
@@ -551,6 +642,15 @@ public class Unlocks : KMonoBehaviour
 			}
 		},
 		{
+			"dlc3journals",
+			new string[]
+			{
+				"journal_potatobattery1",
+				"journal_potatobattery2",
+				"journal_potatobattery3"
+			}
+		},
+		{
 			"researchnotes",
 			new string[]
 			{
@@ -586,6 +686,14 @@ public class Unlocks : KMonoBehaviour
 			new string[]
 			{
 				"notes_cleanup"
+			}
+		},
+		{
+			"dlc3researchnotes",
+			new string[]
+			{
+				"notes_talkshow",
+				"notes_remoteworkstation"
 			}
 		},
 		{
@@ -672,7 +780,7 @@ public class Unlocks : KMonoBehaviour
 		}
 	};
 
-	public Dictionary<int, string> cycleLocked = new Dictionary<int, string>
+		public Dictionary<int, string> cycleLocked = new Dictionary<int, string>
 	{
 		{
 			0,
@@ -720,34 +828,34 @@ public class Unlocks : KMonoBehaviour
 		}
 	};
 
-	private static readonly EventSystem.IntraObjectHandler<Unlocks> OnLaunchRocketDelegate = new EventSystem.IntraObjectHandler<Unlocks>(delegate(Unlocks component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Unlocks> OnLaunchRocketDelegate = new EventSystem.IntraObjectHandler<Unlocks>(delegate(Unlocks component, object data)
 	{
 		component.OnLaunchRocket(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Unlocks> OnDuplicantDiedDelegate = new EventSystem.IntraObjectHandler<Unlocks>(delegate(Unlocks component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Unlocks> OnDuplicantDiedDelegate = new EventSystem.IntraObjectHandler<Unlocks>(delegate(Unlocks component, object data)
 	{
 		component.OnDuplicantDied(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Unlocks> OnDiscoveredSpaceDelegate = new EventSystem.IntraObjectHandler<Unlocks>(delegate(Unlocks component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Unlocks> OnDiscoveredSpaceDelegate = new EventSystem.IntraObjectHandler<Unlocks>(delegate(Unlocks component, object data)
 	{
 		component.OnDiscoveredSpace(data);
 	});
 
-	private class MetaUnlockCategory
+		private class MetaUnlockCategory
 	{
-		public MetaUnlockCategory(string metaCollectionID, string mesaCollectionID, int mesaUnlockCount)
+				public MetaUnlockCategory(string metaCollectionID, string mesaCollectionID, int mesaUnlockCount)
 		{
 			this.metaCollectionID = metaCollectionID;
 			this.mesaCollectionID = mesaCollectionID;
 			this.mesaUnlockCount = mesaUnlockCount;
 		}
 
-		public string metaCollectionID;
+				public string metaCollectionID;
 
-		public string mesaCollectionID;
+				public string mesaCollectionID;
 
-		public int mesaUnlockCount;
+				public int mesaUnlockCount;
 	}
 }

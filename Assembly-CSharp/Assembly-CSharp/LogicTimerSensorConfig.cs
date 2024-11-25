@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicTimerSensorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicTimerSensorConfig.ID;
 		int width = 1;
@@ -37,11 +37,11 @@ public class LogicTimerSensorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicTimerSensor>().manuallyControlled = false;
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicTimerSensor";
+		public static string ID = "LogicTimerSensor";
 }

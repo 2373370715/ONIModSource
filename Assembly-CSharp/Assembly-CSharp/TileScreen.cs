@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class TileScreen : KScreen
 {
-	private bool SetSliderColour(float temperature, float transition_temperature)
+		private bool SetSliderColour(float temperature, float transition_temperature)
 	{
 		if (Mathf.Abs(temperature - transition_temperature) < 5f)
 		{
@@ -18,7 +18,7 @@ public class TileScreen : KScreen
 		return false;
 	}
 
-	private void DisplayTileInfo()
+		private void DisplayTileInfo()
 	{
 		Vector3 mousePos = KInputManager.GetMousePos();
 		mousePos.z = -Camera.main.transform.GetPosition().z - Grid.CellSizeInMeters;
@@ -110,7 +110,7 @@ public class TileScreen : KScreen
 		this.nameLabel.text = "Unknown";
 	}
 
-	private void DisplayConduitFlowInfo()
+		private void DisplayConduitFlowInfo()
 	{
 		HashedString mode = OverlayScreen.Instance.GetMode();
 		UtilityNetworkManager<FlowUtilityNetwork, Vent> utilityNetworkManager = (mode == OverlayModes.GasConduits.ID) ? Game.Instance.gasConduitSystem : Game.Instance.liquidConduitSystem;
@@ -170,7 +170,7 @@ public class TileScreen : KScreen
 		this.massTitleLabel.text = "";
 	}
 
-	private void Update()
+		private void Update()
 	{
 		base.transform.SetPosition(KInputManager.GetMousePos());
 		HashedString mode = OverlayScreen.Instance.GetMode();
@@ -182,35 +182,35 @@ public class TileScreen : KScreen
 		this.DisplayTileInfo();
 	}
 
-	public Text nameLabel;
+		public Text nameLabel;
 
-	public Text symbolLabel;
+		public Text symbolLabel;
 
-	public Text massTitleLabel;
+		public Text massTitleLabel;
 
-	public Text massAmtLabel;
+		public Text massAmtLabel;
 
-	public Image massIcon;
+		public Image massIcon;
 
-	public MinMaxSlider temperatureSlider;
+		public MinMaxSlider temperatureSlider;
 
-	public Text temperatureSliderText;
+		public Text temperatureSliderText;
 
-	public Image temperatureSliderIcon;
+		public Image temperatureSliderIcon;
 
-	public Image solidIcon;
+		public Image solidIcon;
 
-	public Image liquidIcon;
+		public Image liquidIcon;
 
-	public Image gasIcon;
+		public Image gasIcon;
 
-	public Text solidText;
+		public Text solidText;
 
-	public Text gasText;
+		public Text gasText;
 
-	[SerializeField]
+		[SerializeField]
 	private Color temperatureDefaultColour;
 
-	[SerializeField]
+		[SerializeField]
 	private Color temperatureTransitionColour;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GeneratedOre
 {
-	public static void LoadGeneratedOre(List<Type> types)
+		public static void LoadGeneratedOre(List<Type> types)
 	{
 		Type typeFromHandle = typeof(IOreConfig);
 		HashSet<SimHashes> hashSet = new HashSet<SimHashes>();
@@ -50,7 +50,7 @@ public class GeneratedOre
 		}
 	}
 
-	public static SubstanceChunk CreateChunk(Element element, float mass, float temperature, byte diseaseIdx, int diseaseCount, Vector3 position)
+		public static SubstanceChunk CreateChunk(Element element, float mass, float temperature, byte diseaseIdx, int diseaseCount, Vector3 position)
 	{
 		if (temperature <= 0f)
 		{

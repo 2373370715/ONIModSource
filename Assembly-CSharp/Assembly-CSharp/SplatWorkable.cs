@@ -3,7 +3,7 @@ using TUNING;
 
 public class SplatWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTableWithCorners);
@@ -18,7 +18,7 @@ public class SplatWorkable : Workable
 		Prioritizable.AddRef(base.gameObject);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.SetWorkTime(5f);

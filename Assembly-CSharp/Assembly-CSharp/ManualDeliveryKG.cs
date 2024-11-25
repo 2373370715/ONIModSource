@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ManualDeliveryKG")]
 public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 {
-		public bool IsPaused
+			public bool IsPaused
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-		public float Capacity
+			public float Capacity
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-			public Tag RequestedItemTag
+				public Tag RequestedItemTag
 	{
 		get
 		{
@@ -36,7 +36,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-			public Tag[] ForbiddenTags
+				public Tag[] ForbiddenTags
 	{
 		get
 		{
@@ -49,7 +49,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-		public Storage DebugStorage
+			public Storage DebugStorage
 	{
 		get
 		{
@@ -57,7 +57,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-		public FetchList2 DebugFetchList
+			public FetchList2 DebugFetchList
 	{
 		get
 		{
@@ -65,7 +65,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-		private float MassStoredPerUnit
+			private float MassStoredPerUnit
 	{
 		get
 		{
@@ -73,7 +73,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		DebugUtil.Assert(this.choreTypeIDHash.IsValid, "ManualDeliveryKG Must have a valid chore type specified!", base.name);
@@ -94,14 +94,14 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.AbortDelivery("ManualDeliverKG destroyed");
 		Prioritizable.RemoveRef(base.gameObject);
 		base.OnCleanUp();
 	}
 
-	public void SetStorage(Storage storage)
+		public void SetStorage(Storage storage)
 	{
 		if (this.storage != null)
 		{
@@ -117,7 +117,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public void Pause(bool pause, string reason)
+		public void Pause(bool pause, string reason)
 	{
 		if (this.paused != pause)
 		{
@@ -129,12 +129,12 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		this.UpdateDeliveryState();
 	}
 
-	[ContextMenu("UpdateDeliveryState")]
+		[ContextMenu("UpdateDeliveryState")]
 	public void UpdateDeliveryState()
 	{
 		if (!this.requestedItemTag.IsValid)
@@ -148,7 +148,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		this.UpdateFetchList();
 	}
 
-	public void RequestDelivery()
+		public void RequestDelivery()
 	{
 		if (this.fetchList != null)
 		{
@@ -161,7 +161,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	private void CreateFetchChore(float stored_mass)
+		private void CreateFetchChore(float stored_mass)
 	{
 		float num = this.capacity - stored_mass;
 		num = Mathf.Max(PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT, num);
@@ -184,7 +184,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		this.fetchList.Submit(new System.Action(this.OnFetchComplete), false);
 	}
 
-	private void OnFetchComplete()
+		private void OnFetchComplete()
 	{
 		if (this.FillToCapacity && this.storage != null)
 		{
@@ -196,7 +196,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	private void UpdateFetchList()
+		private void UpdateFetchList()
 	{
 		if (this.paused)
 		{
@@ -221,7 +221,7 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public void AbortDelivery(string reason)
+		public void AbortDelivery(string reason)
 	{
 		if (this.fetchList != null)
 		{
@@ -231,24 +231,24 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	protected void OnStorageChanged(object data)
+		protected void OnStorageChanged(object data)
 	{
 		this.UpdateDeliveryState();
 	}
 
-	private void OnPause()
+		private void OnPause()
 	{
 		this.userPaused = true;
 		this.Pause(true, "Forbid manual delivery");
 	}
 
-	private void OnResume()
+		private void OnResume()
 	{
 		this.userPaused = false;
 		this.Pause(false, "Allow manual delivery");
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (!this.allowPause)
 		{
@@ -258,72 +258,72 @@ public class ManualDeliveryKG : KMonoBehaviour, ISim1000ms
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		this.UpdateDeliveryState();
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[SerializeField]
+		[SerializeField]
 	private Storage storage;
 
-	[SerializeField]
+		[SerializeField]
 	public Tag requestedItemTag;
 
-	private Tag[] forbiddenTags;
+		private Tag[] forbiddenTags;
 
-	[SerializeField]
+		[SerializeField]
 	public float capacity = 100f;
 
-	[SerializeField]
+		[SerializeField]
 	public float refillMass = 10f;
 
-	[SerializeField]
+		[SerializeField]
 	public float MinimumMass = 10f;
 
-	[SerializeField]
+		[SerializeField]
 	public bool RoundFetchAmountToInt;
 
-	[SerializeField]
+		[SerializeField]
 	public float MassPerUnit = 1f;
 
-	[SerializeField]
+		[SerializeField]
 	public bool FillToCapacity;
 
-	[SerializeField]
+		[SerializeField]
 	public Operational.State operationalRequirement;
 
-	[SerializeField]
+		[SerializeField]
 	public bool allowPause;
 
-	[SerializeField]
+		[SerializeField]
 	private bool paused;
 
-	[SerializeField]
+		[SerializeField]
 	public HashedString choreTypeIDHash;
 
-	[Serialize]
+		[Serialize]
 	private bool userPaused;
 
-	public bool ShowStatusItem = true;
+		public bool ShowStatusItem = true;
 
-	private FetchList2 fetchList;
+		private FetchList2 fetchList;
 
-	private int onStorageChangeSubscription = -1;
+		private int onStorageChangeSubscription = -1;
 
-	private static readonly EventSystem.IntraObjectHandler<ManualDeliveryKG> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<ManualDeliveryKG>(delegate(ManualDeliveryKG component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ManualDeliveryKG> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<ManualDeliveryKG>(delegate(ManualDeliveryKG component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<ManualDeliveryKG> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<ManualDeliveryKG>(delegate(ManualDeliveryKG component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ManualDeliveryKG> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<ManualDeliveryKG>(delegate(ManualDeliveryKG component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<ManualDeliveryKG> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<ManualDeliveryKG>(delegate(ManualDeliveryKG component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ManualDeliveryKG> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<ManualDeliveryKG>(delegate(ManualDeliveryKG component, object data)
 	{
 		component.OnStorageChanged(data);
 	});

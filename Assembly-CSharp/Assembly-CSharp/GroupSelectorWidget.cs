@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GroupSelectorWidget : MonoBehaviour
 {
-	public void Initialize(object widget_id, IList<GroupSelectorWidget.ItemData> options, GroupSelectorWidget.ItemCallbacks item_callbacks)
+		public void Initialize(object widget_id, IList<GroupSelectorWidget.ItemData> options, GroupSelectorWidget.ItemCallbacks item_callbacks)
 	{
 		this.widgetID = widget_id;
 		this.options = options;
@@ -13,7 +13,7 @@ public class GroupSelectorWidget : MonoBehaviour
 		this.addItemButton.onClick += this.OnAddItemClicked;
 	}
 
-	public void Reconfigure(IList<int> selected_option_indices)
+		public void Reconfigure(IList<int> selected_option_indices)
 	{
 		this.selectedOptionIndices.Clear();
 		this.selectedOptionIndices.AddRange(selected_option_indices);
@@ -22,7 +22,7 @@ public class GroupSelectorWidget : MonoBehaviour
 		this.RebuildSelectedVisualizers();
 	}
 
-	private void OnAddItemClicked()
+		private void OnAddItemClicked()
 	{
 		if (!this.IsSubPanelOpen())
 		{
@@ -40,7 +40,7 @@ public class GroupSelectorWidget : MonoBehaviour
 		}
 	}
 
-	private void OnItemAdded(int option_idx)
+		private void OnItemAdded(int option_idx)
 	{
 		if (this.itemCallbacks.onItemAdded != null)
 		{
@@ -49,7 +49,7 @@ public class GroupSelectorWidget : MonoBehaviour
 		}
 	}
 
-	private void OnItemRemoved(int option_idx)
+		private void OnItemRemoved(int option_idx)
 	{
 		if (this.itemCallbacks.onItemRemoved != null)
 		{
@@ -57,7 +57,7 @@ public class GroupSelectorWidget : MonoBehaviour
 		}
 	}
 
-	private void RebuildSelectedVisualizers()
+		private void RebuildSelectedVisualizers()
 	{
 		foreach (GameObject original in this.selectedVisualizers)
 		{
@@ -71,7 +71,7 @@ public class GroupSelectorWidget : MonoBehaviour
 		}
 	}
 
-	private GameObject CreateItem(int idx, Action<int> on_click, GameObject parent, bool is_selected_item)
+		private GameObject CreateItem(int idx, Action<int> on_click, GameObject parent, bool is_selected_item)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.itemTemplate, parent, true);
 		KButton component = gameObject.GetComponent<KButton>();
@@ -96,18 +96,18 @@ public class GroupSelectorWidget : MonoBehaviour
 		return gameObject;
 	}
 
-	public bool IsSubPanelOpen()
+		public bool IsSubPanelOpen()
 	{
 		return this.unselectedItemsPanel.gameObject.activeSelf;
 	}
 
-	public void CloseSubPanel()
+		public void CloseSubPanel()
 	{
 		this.ClearSubPanelOptions();
 		this.unselectedItemsPanel.gameObject.SetActive(false);
 	}
 
-	private void ClearSubPanelOptions()
+		private void ClearSubPanelOptions()
 	{
 		foreach (object obj in this.unselectedItemsPanel.transform)
 		{
@@ -115,7 +115,7 @@ public class GroupSelectorWidget : MonoBehaviour
 		}
 	}
 
-	private int RebuildSubPanelOptions()
+		private int RebuildSubPanelOptions()
 	{
 		IList<int> list = this.itemCallbacks.getSubPanelDisplayIndices(this.widgetID);
 		if (list.Count > 0)
@@ -139,53 +139,53 @@ public class GroupSelectorWidget : MonoBehaviour
 		return list.Count;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject itemTemplate;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform selectedItemsPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform unselectedItemsPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton addItemButton;
 
-	[SerializeField]
+		[SerializeField]
 	private int numExpectedPanelColumns = 3;
 
-	private object widgetID;
+		private object widgetID;
 
-	private GroupSelectorWidget.ItemCallbacks itemCallbacks;
+		private GroupSelectorWidget.ItemCallbacks itemCallbacks;
 
-	private IList<GroupSelectorWidget.ItemData> options;
+		private IList<GroupSelectorWidget.ItemData> options;
 
-	private List<int> selectedOptionIndices = new List<int>();
+		private List<int> selectedOptionIndices = new List<int>();
 
-	private List<GameObject> selectedVisualizers = new List<GameObject>();
+		private List<GameObject> selectedVisualizers = new List<GameObject>();
 
-	[Serializable]
+		[Serializable]
 	public struct ItemData
 	{
-		public ItemData(Sprite sprite, object user_data)
+				public ItemData(Sprite sprite, object user_data)
 		{
 			this.sprite = sprite;
 			this.userData = user_data;
 		}
 
-		public Sprite sprite;
+				public Sprite sprite;
 
-		public object userData;
+				public object userData;
 	}
 
-	public struct ItemCallbacks
+		public struct ItemCallbacks
 	{
-		public Func<object, IList<int>> getSubPanelDisplayIndices;
+				public Func<object, IList<int>> getSubPanelDisplayIndices;
 
-		public Action<object, object> onItemAdded;
+				public Action<object, object> onItemAdded;
 
-		public Action<object, object> onItemRemoved;
+				public Action<object, object> onItemRemoved;
 
-		public Func<object, object, bool, string> getItemHoverText;
+				public Func<object, object, bool, string> getItemHoverText;
 	}
 }

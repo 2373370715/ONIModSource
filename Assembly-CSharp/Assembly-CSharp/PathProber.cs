@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/PathProber")]
 public class PathProber : KMonoBehaviour
 {
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.PathGrid != null)
 		{
@@ -15,12 +15,12 @@ public class PathProber : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	public void SetGroupProber(IGroupProber group_prober)
+		public void SetGroupProber(IGroupProber group_prober)
 	{
 		this.PathGrid.SetGroupProber(group_prober);
 	}
 
-	public void SetValidNavTypes(NavType[] nav_types, int max_probing_radius)
+		public void SetValidNavTypes(NavType[] nav_types, int max_probing_radius)
 	{
 		if (max_probing_radius != 0)
 		{
@@ -30,22 +30,22 @@ public class PathProber : KMonoBehaviour
 		this.PathGrid = new PathGrid(Grid.WidthInCells, Grid.HeightInCells, false, nav_types);
 	}
 
-	public int GetCost(int cell)
+		public int GetCost(int cell)
 	{
 		return this.PathGrid.GetCost(cell);
 	}
 
-	public int GetNavigationCostIgnoreProberOffset(int cell, CellOffset[] offsets)
+		public int GetNavigationCostIgnoreProberOffset(int cell, CellOffset[] offsets)
 	{
 		return this.PathGrid.GetCostIgnoreProberOffset(cell, offsets);
 	}
 
-	public PathGrid GetPathGrid()
+		public PathGrid GetPathGrid()
 	{
 		return this.PathGrid;
 	}
 
-	public void UpdateProbe(NavGrid nav_grid, int cell, NavType nav_type, PathFinderAbilities abilities, PathFinder.PotentialPath.Flags flags)
+		public void UpdateProbe(NavGrid nav_grid, int cell, NavType nav_type, PathFinderAbilities abilities, PathFinder.PotentialPath.Flags flags)
 	{
 		if (this.scratchPad == null)
 		{
@@ -82,23 +82,23 @@ public class PathProber : KMonoBehaviour
 		}
 	}
 
-	public const int InvalidHandle = -1;
+		public const int InvalidHandle = -1;
 
-	public const int InvalidIdx = -1;
+		public const int InvalidIdx = -1;
 
-	public const int InvalidCell = -1;
+		public const int InvalidCell = -1;
 
-	public const int InvalidCost = -1;
+		public const int InvalidCost = -1;
 
-	private PathGrid PathGrid;
+		private PathGrid PathGrid;
 
-	private PathFinder.PotentialList Potentials = new PathFinder.PotentialList();
+		private PathFinder.PotentialList Potentials = new PathFinder.PotentialList();
 
-	public int updateCount = -1;
+		public int updateCount = -1;
 
-	private const int updateCountThreshold = 25;
+		private const int updateCountThreshold = 25;
 
-	private PathFinder.PotentialScratchPad scratchPad;
+		private PathFinder.PotentialScratchPad scratchPad;
 
-	public int potentialCellsPerUpdate = -1;
+		public int potentialCellsPerUpdate = -1;
 }

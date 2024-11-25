@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class FetchChore : Chore<FetchChore.StatesInstance>
 {
-		public float originalAmount
+			public float originalAmount
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		}
 	}
 
-			public float amount
+				public float amount
 	{
 		get
 		{
@@ -26,7 +26,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		}
 	}
 
-			public Pickupable fetchTarget
+				public Pickupable fetchTarget
 	{
 		get
 		{
@@ -38,7 +38,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		}
 	}
 
-			public GameObject fetcher
+				public GameObject fetcher
 	{
 		get
 		{
@@ -50,9 +50,9 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		}
 	}
 
-			public Storage destination { get; private set; }
+				public Storage destination { get; private set; }
 
-	public void FetchAreaBegin(Chore.Precondition.Context context, float amount_to_be_fetched)
+		public void FetchAreaBegin(Chore.Precondition.Context context, float amount_to_be_fetched)
 	{
 		this.amount = amount_to_be_fetched;
 		base.smi.sm.fetcher.Set(context.consumerState.gameObject, base.smi, false);
@@ -60,23 +60,23 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		base.Begin(context);
 	}
 
-	public void FetchAreaEnd(ChoreDriver driver, Pickupable pickupable, bool is_success)
+		public void FetchAreaEnd(ChoreDriver driver, Pickupable pickupable, bool is_success)
 	{
 		if (is_success)
 		{
-			ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, -1f, base.choreType.Name, GameUtil.GetChoreName(this, pickupable));
+			ReportManager.Instance.ReportValue(ReportManager.ReportType.ChoreStatus, -1f, this.choreType.Name, GameUtil.GetChoreName(this, pickupable));
 			this.fetchTarget = pickupable;
-			base.driver = driver;
+			this.driver = driver;
 			this.fetcher = driver.gameObject;
 			base.Succeed("FetchAreaEnd");
-			SaveGame.Instance.ColonyAchievementTracker.LogFetchChore(this.fetcher, base.choreType);
+			SaveGame.Instance.ColonyAchievementTracker.LogFetchChore(this.fetcher, this.choreType);
 			return;
 		}
 		base.SetOverrideTarget(null);
 		this.Fail("FetchAreaFail");
 	}
 
-	public Pickupable FindFetchTarget(ChoreConsumerState consumer_state)
+		public Pickupable FindFetchTarget(ChoreConsumerState consumer_state)
 	{
 		if (!(this.destination != null))
 		{
@@ -89,7 +89,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		return Game.Instance.fetchManager.FindFetchTarget(this.destination, this);
 	}
 
-	public override void Begin(Chore.Precondition.Context context)
+		public override void Begin(Chore.Precondition.Context context)
 	{
 		Pickupable pickupable = (Pickupable)context.data;
 		if (pickupable == null)
@@ -101,7 +101,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		base.Begin(context);
 	}
 
-	protected override void End(string reason)
+		protected override void End(string reason)
 	{
 		Pickupable pickupable = base.smi.sm.source.Get<Pickupable>(base.smi);
 		if (pickupable != null)
@@ -111,7 +111,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		base.End(reason);
 	}
 
-	private void OnTagsChanged(object data)
+		private void OnTagsChanged(object data)
 	{
 		if (base.smi.sm.chunk.Get(base.smi) != null)
 		{
@@ -119,12 +119,12 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		}
 	}
 
-	public override void PrepareChore(ref Chore.Precondition.Context context)
+		public override void PrepareChore(ref Chore.Precondition.Context context)
 	{
 		context.chore = new FetchAreaChore(context);
 	}
 
-	public float AmountWaitingToFetch()
+		public float AmountWaitingToFetch()
 	{
 		if (this.fetcher == null)
 		{
@@ -133,7 +133,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		return this.amount;
 	}
 
-	public FetchChore(ChoreType choreType, Storage destination, float amount, HashSet<Tag> tags, FetchChore.MatchCriteria criteria, Tag required_tag, Tag[] forbidden_tags = null, ChoreProvider chore_provider = null, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, Operational.State operational_requirement = Operational.State.Operational, int priority_mod = 0) : base(choreType, destination, chore_provider, run_until_complete, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.basic, 5, false, true, priority_mod, false, ReportManager.ReportType.WorkTime)
+		public FetchChore(ChoreType choreType, Storage destination, float amount, HashSet<Tag> tags, FetchChore.MatchCriteria criteria, Tag required_tag, Tag[] forbidden_tags = null, ChoreProvider chore_provider = null, bool run_until_complete = true, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null, Operational.State operational_requirement = Operational.State.Operational, int priority_mod = 0) : base(choreType, destination, chore_provider, run_until_complete, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.basic, 5, false, true, priority_mod, false, ReportManager.ReportType.WorkTime)
 	{
 		if (choreType == null)
 		{
@@ -170,18 +170,18 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 			DebugUtil.DevAssert(!this.requiredTag.IsValid, "Only one requiredTag is supported at a time, this will stomp!", null);
 			this.requiredTag = GameTags.Garbage;
 		}
-		base.AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Work);
-		base.AddPrecondition(ChorePreconditions.instance.CanMoveTo, destination);
-		base.AddPrecondition(FetchChore.IsFetchTargetAvailable, null);
-		Deconstructable component = base.target.GetComponent<Deconstructable>();
+		this.AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Work);
+		this.AddPrecondition(ChorePreconditions.instance.CanMoveTo, destination);
+		this.AddPrecondition(FetchChore.IsFetchTargetAvailable, null);
+		Deconstructable component = this.target.GetComponent<Deconstructable>();
 		if (component != null)
 		{
-			base.AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDeconstruction, component);
+			this.AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDeconstruction, component);
 		}
-		BuildingEnabledButton component2 = base.target.GetComponent<BuildingEnabledButton>();
+		BuildingEnabledButton component2 = this.target.GetComponent<BuildingEnabledButton>();
 		if (component2 != null)
 		{
-			base.AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component2);
+			this.AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component2);
 		}
 		if (operational_requirement != Operational.State.None)
 		{
@@ -193,7 +193,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 				{
 					precondition = ChorePreconditions.instance.IsFunctional;
 				}
-				base.AddPrecondition(precondition, component3);
+				this.AddPrecondition(precondition, component3);
 			}
 		}
 		this.partitionerEntry = GameScenePartitioner.Instance.Add(destination.name, this, Grid.PosToCell(destination), GameScenePartitioner.Instance.fetchChoreLayer, null);
@@ -201,11 +201,11 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		this.automatable = destination.GetComponent<Automatable>();
 		if (this.automatable)
 		{
-			base.AddPrecondition(ChorePreconditions.instance.IsAllowedByAutomation, this.automatable);
+			this.AddPrecondition(ChorePreconditions.instance.IsAllowedByAutomation, this.automatable);
 		}
 	}
 
-	private void OnOnlyFetchMarkedItemsSettingChanged(object data)
+		private void OnOnlyFetchMarkedItemsSettingChanged(object data)
 	{
 		if (this.destination != null)
 		{
@@ -219,22 +219,27 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		}
 	}
 
-	private void OnMasterPriorityChanged(PriorityScreen.PriorityClass priorityClass, int priority_value)
+		private void OnMasterPriorityChanged(PriorityScreen.PriorityClass priorityClass, int priority_value)
 	{
 		this.masterPriority.priority_class = priorityClass;
 		this.masterPriority.priority_value = priority_value;
 	}
 
-	public override void CollectChores(ChoreConsumerState consumer_state, List<Chore.Precondition.Context> succeeded_contexts, List<Chore.Precondition.Context> failed_contexts, bool is_attempting_override)
+		public override void CollectChores(ChoreConsumerState consumer_state, List<Chore.Precondition.Context> succeeded_contexts, List<Chore.Precondition.Context> incomplete_contexts, List<Chore.Precondition.Context> failed_contexts, bool is_attempting_override)
 	{
 	}
 
-	public void CollectChoresFromGlobalChoreProvider(ChoreConsumerState consumer_state, List<Chore.Precondition.Context> succeeded_contexts, List<Chore.Precondition.Context> failed_contexts, bool is_attempting_override)
+		public void CollectChoresFromGlobalChoreProvider(ChoreConsumerState consumer_state, List<Chore.Precondition.Context> succeeded_contexts, List<Chore.Precondition.Context> failed_contexts, bool is_attempting_override)
 	{
-		base.CollectChores(consumer_state, succeeded_contexts, failed_contexts, is_attempting_override);
+		this.CollectChoresFromGlobalChoreProvider(consumer_state, succeeded_contexts, null, failed_contexts, is_attempting_override);
 	}
 
-	public override void Cleanup()
+		public void CollectChoresFromGlobalChoreProvider(ChoreConsumerState consumer_state, List<Chore.Precondition.Context> succeeded_contexts, List<Chore.Precondition.Context> incomplete_contexts, List<Chore.Precondition.Context> failed_contexts, bool is_attempting_override)
+	{
+		base.CollectChores(consumer_state, succeeded_contexts, incomplete_contexts, failed_contexts, is_attempting_override);
+	}
+
+		public override void Cleanup()
 	{
 		base.Cleanup();
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
@@ -244,7 +249,7 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		}
 	}
 
-	public static int ComputeHashCodeForTags(IEnumerable<Tag> tags)
+		public static int ComputeHashCodeForTags(IEnumerable<Tag> tags)
 	{
 		int num = 123137;
 		foreach (Tag tag in new SortedSet<Tag>(tags))
@@ -254,29 +259,29 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		return num;
 	}
 
-	public HashSet<Tag> tags;
+		public HashSet<Tag> tags;
 
-	public Tag tagsFirst;
+		public Tag tagsFirst;
 
-	public FetchChore.MatchCriteria criteria;
+		public FetchChore.MatchCriteria criteria;
 
-	public int tagsHash;
+		public int tagsHash;
 
-	public bool validateRequiredTagOnTagChange;
+		public bool validateRequiredTagOnTagChange;
 
-	public Tag requiredTag;
+		public Tag requiredTag;
 
-	public Tag[] forbiddenTags;
+		public Tag[] forbiddenTags;
 
-	public int forbidHash;
+		public int forbidHash;
 
-	public Automatable automatable;
+		public Automatable automatable;
 
-	public bool allowMultifetch = true;
+		public bool allowMultifetch = true;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	public static readonly Chore.Precondition IsFetchTargetAvailable = new Chore.Precondition
+		public static readonly Chore.Precondition IsFetchTargetAvailable = new Chore.Precondition
 	{
 		id = "IsFetchTargetAvailable",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.IS_FETCH_TARGET_AVAILABLE,
@@ -313,34 +318,34 @@ public class FetchChore : Chore<FetchChore.StatesInstance>
 		}
 	};
 
-	public enum MatchCriteria
+		public enum MatchCriteria
 	{
-		MatchID,
-		MatchTags
+				MatchID,
+				MatchTags
 	}
 
-	public class StatesInstance : GameStateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.GameInstance
 	{
-		public StatesInstance(FetchChore master) : base(master)
+				public StatesInstance(FetchChore master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore>
+		public class States : GameStateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.root;
 		}
 
-		public StateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.TargetParameter fetcher;
+				public StateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.TargetParameter fetcher;
 
-		public StateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.TargetParameter source;
+				public StateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.TargetParameter source;
 
-		public StateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.TargetParameter chunk;
+				public StateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.TargetParameter chunk;
 
-		public StateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.FloatParameter requestedamount;
+				public StateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.FloatParameter requestedamount;
 
-		public StateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.FloatParameter actualamount;
+				public StateMachine<FetchChore.States, FetchChore.StatesInstance, FetchChore, object>.FloatParameter actualamount;
 	}
 }

@@ -2,5 +2,5 @@
 
 public interface IBitRating
 {
-	LogicWire.BitDepth GetMaxBitRating();
+		LogicWire.BitDepth GetMaxBitRating();
 }

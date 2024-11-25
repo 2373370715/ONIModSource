@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class PartyPointWorkable : Workable, IWorkerPrioritizable
 {
-	private PartyPointWorkable()
+		private PartyPointWorkable()
 	{
 		base.SetReportType(ReportManager.ReportType.PersonalTime);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.overrideAnims = new KAnimFile[]
@@ -73,14 +73,14 @@ public class PartyPointWorkable : Workable, IWorkerPrioritizable
 		};
 	}
 
-	public override Workable.AnimInfo GetAnim(Worker worker)
+		public override Workable.AnimInfo GetAnim(WorkerBase worker)
 	{
 		int num = UnityEngine.Random.Range(0, this.workerOverrideAnims.Length);
 		this.overrideAnims = this.workerOverrideAnims[num];
 		return base.GetAnim(worker);
 	}
 
-	public override Vector3 GetFacingTarget()
+		public override Vector3 GetFacingTarget()
 	{
 		if (this.lastTalker != null)
 		{
@@ -89,12 +89,12 @@ public class PartyPointWorkable : Workable, IWorkerPrioritizable
 		return base.GetFacingTarget();
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		return false;
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		worker.GetComponent<KPrefabID>().AddTag(GameTags.AlwaysConverse, false);
@@ -102,7 +102,7 @@ public class PartyPointWorkable : Workable, IWorkerPrioritizable
 		worker.Subscribe(25860745, new Action<object>(this.OnStoppedTalking));
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		worker.GetComponent<KPrefabID>().RemoveTag(GameTags.AlwaysConverse);
@@ -110,7 +110,7 @@ public class PartyPointWorkable : Workable, IWorkerPrioritizable
 		worker.Unsubscribe(25860745, new Action<object>(this.OnStoppedTalking));
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		Effects component = worker.GetComponent<Effects>();
 		if (!string.IsNullOrEmpty(this.specificEffect))
@@ -119,7 +119,7 @@ public class PartyPointWorkable : Workable, IWorkerPrioritizable
 		}
 	}
 
-	private void OnStartedTalking(object data)
+		private void OnStartedTalking(object data)
 	{
 		ConversationManager.StartedTalkingEvent startedTalkingEvent = data as ConversationManager.StartedTalkingEvent;
 		if (startedTalkingEvent == null)
@@ -149,11 +149,11 @@ public class PartyPointWorkable : Workable, IWorkerPrioritizable
 		}
 	}
 
-	private void OnStoppedTalking(object data)
+		private void OnStoppedTalking(object data)
 	{
 	}
 
-	public bool GetWorkerPriority(Worker worker, out int priority)
+		public bool GetWorkerPriority(WorkerBase worker, out int priority)
 	{
 		priority = this.basePriority;
 		if (!string.IsNullOrEmpty(this.specificEffect) && worker.GetComponent<Effects>().HasEffect(this.specificEffect))
@@ -163,20 +163,20 @@ public class PartyPointWorkable : Workable, IWorkerPrioritizable
 		return true;
 	}
 
-	private GameObject lastTalker;
+		private GameObject lastTalker;
 
-	public int basePriority;
+		public int basePriority;
 
-	public string specificEffect;
+		public string specificEffect;
 
-	public KAnimFile[][] workerOverrideAnims;
+		public KAnimFile[][] workerOverrideAnims;
 
-	private PartyPointWorkable.ActivityType activity;
+		private PartyPointWorkable.ActivityType activity;
 
-	private enum ActivityType
+		private enum ActivityType
 	{
-		Talk,
-		Dance,
-		LENGTH
+				Talk,
+				Dance,
+				LENGTH
 	}
 }

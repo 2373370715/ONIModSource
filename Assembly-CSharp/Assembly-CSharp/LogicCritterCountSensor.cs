@@ -6,14 +6,14 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.selectable = base.GetComponent<KSelectable>();
 		base.Subscribe<LogicCritterCountSensor>(-905833192, LogicCritterCountSensor.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicCritterCountSensor component = ((GameObject)data).GetComponent<LogicCritterCountSensor>();
 		if (component != null)
@@ -25,7 +25,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.OnSwitchToggled;
@@ -34,7 +34,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		this.wasOn = this.switchedOn;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		Room roomOfGameObject = Game.Instance.roomProber.GetRoomOfGameObject(base.gameObject);
 		if (roomOfGameObject != null)
@@ -66,18 +66,18 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateLogicCircuit();
 		this.UpdateVisualState(false);
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, this.switchedOn ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -93,13 +93,13 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-			public float Threshold
+				public float Threshold
 	{
 		get
 		{
@@ -111,7 +111,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-			public bool ActivateAboveThreshold
+				public bool ActivateAboveThreshold
 	{
 		get
 		{
@@ -123,7 +123,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-		public float CurrentValue
+			public float CurrentValue
 	{
 		get
 		{
@@ -131,7 +131,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-		public float RangeMin
+			public float RangeMin
 	{
 		get
 		{
@@ -139,7 +139,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-		public float RangeMax
+			public float RangeMax
 	{
 		get
 		{
@@ -147,17 +147,17 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-	public float GetRangeMinInputField()
+		public float GetRangeMinInputField()
 	{
 		return this.RangeMin;
 	}
 
-	public float GetRangeMaxInputField()
+		public float GetRangeMaxInputField()
 	{
 		return this.RangeMax;
 	}
 
-		public LocString Title
+			public LocString Title
 	{
 		get
 		{
@@ -165,7 +165,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-		public LocString ThresholdValueName
+			public LocString ThresholdValueName
 	{
 		get
 		{
@@ -173,7 +173,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-		public string AboveToolTip
+			public string AboveToolTip
 	{
 		get
 		{
@@ -181,7 +181,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-		public string BelowToolTip
+			public string BelowToolTip
 	{
 		get
 		{
@@ -189,27 +189,27 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-	public string Format(float value, bool units)
+		public string Format(float value, bool units)
 	{
 		return value.ToString();
 	}
 
-	public float ProcessedSliderValue(float input)
+		public float ProcessedSliderValue(float input)
 	{
 		return Mathf.Round(input);
 	}
 
-	public float ProcessedInputValue(float input)
+		public float ProcessedInputValue(float input)
 	{
 		return Mathf.Round(input);
 	}
 
-	public LocString ThresholdValueUnits()
+		public LocString ThresholdValueUnits()
 	{
 		return "";
 	}
 
-		public ThresholdScreenLayoutType LayoutType
+			public ThresholdScreenLayoutType LayoutType
 	{
 		get
 		{
@@ -217,7 +217,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-		public int IncrementScale
+			public int IncrementScale
 	{
 		get
 		{
@@ -225,7 +225,7 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-		public NonLinearSlider.Range[] GetRanges
+			public NonLinearSlider.Range[] GetRanges
 	{
 		get
 		{
@@ -233,31 +233,31 @@ public class LogicCritterCountSensor : Switch, ISaveLoadable, IThresholdSwitch, 
 		}
 	}
 
-	private bool wasOn;
+		private bool wasOn;
 
-	[Serialize]
+		[Serialize]
 	public bool countEggs = true;
 
-	[Serialize]
+		[Serialize]
 	public bool countCritters = true;
 
-	[Serialize]
+		[Serialize]
 	public int countThreshold;
 
-	[Serialize]
+		[Serialize]
 	public bool activateOnGreaterThan = true;
 
-	[Serialize]
+		[Serialize]
 	public int currentCount;
 
-	private KSelectable selectable;
+		private KSelectable selectable;
 
-	private Guid roomStatusGUID;
+		private Guid roomStatusGUID;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicCritterCountSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicCritterCountSensor>(delegate(LogicCritterCountSensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicCritterCountSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicCritterCountSensor>(delegate(LogicCritterCountSensor component, object data)
 	{
 		component.OnCopySettings(data);
 	});

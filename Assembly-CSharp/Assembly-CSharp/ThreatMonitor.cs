@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.safe;
 		this.root.EventHandler(GameHashes.SafeFromThreats, delegate(ThreatMonitor.Instance smi, object d)
@@ -39,7 +39,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 		}).Update("CritterCalmUpdate", new Action<ThreatMonitor.Instance, float>(ThreatMonitor.CritterCalmUpdate), UpdateRate.SIM_200ms, false).PreBrainUpdate(new Action<ThreatMonitor.Instance>(ThreatMonitor.CritterUpdateThreats));
 	}
 
-	private static void SeekThreats(ThreatMonitor.Instance smi)
+		private static void SeekThreats(ThreatMonitor.Instance smi)
 	{
 		Faction faction = FactionManager.Instance.GetFaction(smi.alignment.Alignment);
 		if (smi.IAmADuplicant || faction.CanAttack)
@@ -50,7 +50,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 		smi.GoTo(smi.sm.safe.passive);
 	}
 
-	private static bool DupeHasValidTarget(ThreatMonitor.Instance smi)
+		private static bool DupeHasValidTarget(ThreatMonitor.Instance smi)
 	{
 		bool result = false;
 		if (smi.MainThreat != null && smi.MainThreat.GetComponent<FactionAlignment>().IsPlayerTargeted())
@@ -64,7 +64,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 		return result;
 	}
 
-	private static void DupeUpdateTarget(ThreatMonitor.Instance smi, float dt)
+		private static void DupeUpdateTarget(ThreatMonitor.Instance smi, float dt)
 	{
 		if (!ThreatMonitor.DupeHasValidTarget(smi))
 		{
@@ -72,7 +72,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 		}
 	}
 
-	private static void CritterCalmUpdate(ThreatMonitor.Instance smi, float dt)
+		private static void CritterCalmUpdate(ThreatMonitor.Instance smi, float dt)
 	{
 		if (smi.isMasterNull)
 		{
@@ -84,7 +84,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 		}
 	}
 
-	private static void CritterUpdateThreats(ThreatMonitor.Instance smi)
+		private static void CritterUpdateThreats(ThreatMonitor.Instance smi)
 	{
 		if (smi.isMasterNull)
 		{
@@ -96,69 +96,69 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 		}
 	}
 
-	private static bool IsInSafeState(ThreatMonitor.Instance smi)
+		private static bool IsInSafeState(ThreatMonitor.Instance smi)
 	{
 		return smi.GetCurrentState() == smi.sm.safe.passive || smi.GetCurrentState() == smi.sm.safe.seeking;
 	}
 
-	private Chore CreateAttackChore(ThreatMonitor.Instance smi)
+		private Chore CreateAttackChore(ThreatMonitor.Instance smi)
 	{
 		return new AttackChore(smi.master, smi.MainThreat);
 	}
 
-	private Chore CreateFleeChore(ThreatMonitor.Instance smi)
+		private Chore CreateFleeChore(ThreatMonitor.Instance smi)
 	{
 		return new FleeChore(smi.master, smi.MainThreat);
 	}
 
-	public ThreatMonitor.SafeStates safe;
+		public ThreatMonitor.SafeStates safe;
 
-	public ThreatMonitor.ThreatenedStates threatened;
+		public ThreatMonitor.ThreatenedStates threatened;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Health.HealthState fleethresholdState = Health.HealthState.Injured;
+				public Health.HealthState fleethresholdState = Health.HealthState.Injured;
 
-		public Tag[] friendlyCreatureTags;
+				public Tag[] friendlyCreatureTags;
 
-		public int maxSearchEntities = 50;
+				public int maxSearchEntities = 50;
 
-		public int maxSearchDistance = 20;
+				public int maxSearchDistance = 20;
 
-		public CellOffset[] offsets = OffsetGroups.Use;
+				public CellOffset[] offsets = OffsetGroups.Use;
 	}
 
-	public class SafeStates : GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State
+		public class SafeStates : GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State
 	{
-		public GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State passive;
+				public GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State passive;
 
-		public GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State seeking;
+				public GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State seeking;
 	}
 
-	public class ThreatenedStates : GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State
+		public class ThreatenedStates : GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State
 	{
-		public ThreatMonitor.ThreatenedDuplicantStates duplicant;
+				public ThreatMonitor.ThreatenedDuplicantStates duplicant;
 
-		public GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State creature;
+				public GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State creature;
 	}
 
-	public class ThreatenedDuplicantStates : GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State
+		public class ThreatenedDuplicantStates : GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State
 	{
-		public GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State ShoudFlee;
+				public GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State ShoudFlee;
 
-		public GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State ShouldFight;
+				public GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.State ShouldFight;
 	}
 
-	public struct Grudge
+		public struct Grudge
 	{
-		public void Reset(FactionAlignment revengeTarget)
+				public void Reset(FactionAlignment revengeTarget)
 		{
 			this.target = revengeTarget;
 			float num = 10f;
 			this.grudgeTime = num;
 		}
 
-		public bool Calm(float dt, FactionAlignment self)
+				public bool Calm(float dt, FactionAlignment self)
 		{
 			if (this.grudgeTime <= 0f)
 			{
@@ -177,25 +177,25 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			return false;
 		}
 
-		public void Clear()
+				public void Clear()
 		{
 			this.grudgeTime = 0f;
 			this.target = null;
 		}
 
-		public bool IsValidRevengeTarget(bool isDuplicant)
+				public bool IsValidRevengeTarget(bool isDuplicant)
 		{
 			return this.target != null && this.target.IsAlignmentActive() && (this.target.health == null || !this.target.health.IsDefeated()) && (!isDuplicant || !this.target.IsPlayerTargeted());
 		}
 
-		public FactionAlignment target;
+				public FactionAlignment target;
 
-		public float grudgeTime;
+				public float grudgeTime;
 	}
 
-	public new class Instance : GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<ThreatMonitor, ThreatMonitor.Instance, IStateMachineTarget, ThreatMonitor.Def>.GameInstance
 	{
-				public GameObject MainThreat
+						public GameObject MainThreat
 		{
 			get
 			{
@@ -203,7 +203,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			}
 		}
 
-				public bool IAmADuplicant
+						public bool IAmADuplicant
 		{
 			get
 			{
@@ -211,7 +211,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			}
 		}
 
-		public Instance(IStateMachineTarget master, ThreatMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ThreatMonitor.Def def) : base(master, def)
 		{
 			this.alignment = master.GetComponent<FactionAlignment>();
 			this.navigator = master.GetComponent<Navigator>();
@@ -221,12 +221,12 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			this.refreshThreatDelegate = new Action<object>(this.RefreshThreat);
 		}
 
-		public void ClearMainThreat()
+				public void ClearMainThreat()
 		{
 			this.SetMainThreat(null);
 		}
 
-		public void SetMainThreat(GameObject threat)
+				public void SetMainThreat(GameObject threat)
 		{
 			if (threat == this.mainThreat)
 			{
@@ -254,12 +254,12 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			}
 		}
 
-		public bool HasThreat()
+				public bool HasThreat()
 		{
 			return this.MainThreat != null;
 		}
 
-		public void OnSafe(object data)
+				public void OnSafe(object data)
 		{
 			if (this.revengeThreat.target != null)
 			{
@@ -271,7 +271,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			}
 		}
 
-		public void OnAttacked(object data)
+				public void OnAttacked(object data)
 		{
 			FactionAlignment factionAlignment = (FactionAlignment)data;
 			this.revengeThreat.Reset(factionAlignment);
@@ -294,7 +294,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			}
 		}
 
-		public bool WillFight()
+				public bool WillFight()
 		{
 			if (this.choreConsumer != null)
 			{
@@ -310,7 +310,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			return this.health.State < base.smi.def.fleethresholdState;
 		}
 
-		private void GotoThreatResponse()
+				private void GotoThreatResponse()
 		{
 			Chore currentChore = base.smi.master.GetComponent<ChoreDriver>().GetCurrentChore();
 			if (this.WillFight() && this.mainThreat.GetComponent<FactionAlignment>().IsPlayerTargeted())
@@ -325,7 +325,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			base.smi.GoTo(base.smi.sm.threatened.duplicant.ShoudFlee);
 		}
 
-		public void GoToThreatened()
+				public void GoToThreatened()
 		{
 			if (this.IAmADuplicant)
 			{
@@ -335,7 +335,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			base.smi.GoTo(base.sm.threatened.creature);
 		}
 
-		public void Cleanup(object data)
+				public void Cleanup(object data)
 		{
 			if (this.mainThreat)
 			{
@@ -344,7 +344,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			}
 		}
 
-		public void RefreshThreat(object data)
+				public void RefreshThreat(object data)
 		{
 			if (!base.IsRunning())
 			{
@@ -362,7 +362,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			}
 		}
 
-		public bool CheckForThreats()
+				public bool CheckForThreats()
 		{
 			if (base.isMasterNull)
 			{
@@ -385,7 +385,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			return x != null;
 		}
 
-		private GameObject FindThreatDuplicant()
+				private GameObject FindThreatDuplicant()
 		{
 			this.threats.Clear();
 			if (this.WillFight())
@@ -402,14 +402,14 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			return this.PickBestTarget(this.threats);
 		}
 
-		private GameObject FindThreatOther()
+				private GameObject FindThreatOther()
 		{
 			this.threats.Clear();
 			this.GatherThreats();
 			return this.PickBestTarget(this.threats);
 		}
 
-		private void GatherThreats()
+				private void GatherThreats()
 		{
 			ListPool<ScenePartitionerEntry, ThreatMonitor>.PooledList pooledList = ListPool<ScenePartitionerEntry, ThreatMonitor>.Allocate();
 			Extents extents = new Extents(Grid.PosToCell(base.gameObject), base.def.maxSearchDistance);
@@ -433,7 +433,7 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			pooledList.Recycle();
 		}
 
-		public GameObject PickBestTarget(List<FactionAlignment> threats)
+				public GameObject PickBestTarget(List<FactionAlignment> threats)
 		{
 			float num = 1f;
 			Vector2 a = base.gameObject.transform.GetPosition();
@@ -452,24 +452,24 @@ public class ThreatMonitor : GameStateMachine<ThreatMonitor, ThreatMonitor.Insta
 			return result;
 		}
 
-		public FactionAlignment alignment;
+				public FactionAlignment alignment;
 
-		public Navigator navigator;
+				public Navigator navigator;
 
-		public ChoreDriver choreDriver;
+				public ChoreDriver choreDriver;
 
-		private Health health;
+				private Health health;
 
-		private ChoreConsumer choreConsumer;
+				private ChoreConsumer choreConsumer;
 
-		public ThreatMonitor.Grudge revengeThreat;
+				public ThreatMonitor.Grudge revengeThreat;
 
-		public int currentUpdateIndex;
+				public int currentUpdateIndex;
 
-		private GameObject mainThreat;
+				private GameObject mainThreat;
 
-		private List<FactionAlignment> threats = new List<FactionAlignment>();
+				private List<FactionAlignment> threats = new List<FactionAlignment>();
 
-		private Action<object> refreshThreatDelegate;
+				private Action<object> refreshThreatDelegate;
 	}
 }

@@ -3,149 +3,100 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/MinionGroupProber")]
-public class MinionGroupProber : KMonoBehaviour, IGroupProber
+public class MinionGroupProber : KMonoBehaviour, IGroupProber, ISim200ms
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		MinionGroupProber.Instance = null;
 	}
 
-	public static MinionGroupProber Get()
+		public static MinionGroupProber Get()
 	{
 		return MinionGroupProber.Instance;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		MinionGroupProber.Instance = this;
 		this.cells = new Dictionary<object, short>[Grid.CellCount];
+		for (int i = 0; i < Grid.CellCount; i++)
+		{
+			this.cells[i] = new Dictionary<object, short>();
+		}
+		this.cell_cleanup_index = 0;
+		this.cell_checks_per_frame = Grid.CellCount / 500;
 	}
 
-	private bool IsReachable_AssumeLock(int cell)
+		public bool IsReachable(int cell)
 	{
 		if (!Grid.IsValidCell(cell))
 		{
 			return false;
 		}
-		Dictionary<object, short> dictionary = this.cells[cell];
-		if (dictionary == null)
-		{
-			return false;
-		}
-		bool result = false;
-		foreach (KeyValuePair<object, short> keyValuePair in dictionary)
+		foreach (KeyValuePair<object, short> keyValuePair in this.cells[cell])
 		{
 			object key = keyValuePair.Key;
 			short value = keyValuePair.Value;
 			KeyValuePair<short, short> keyValuePair2;
 			if (this.valid_serial_nos.TryGetValue(key, out keyValuePair2) && (value == keyValuePair2.Key || value == keyValuePair2.Value))
 			{
-				result = true;
-				break;
-			}
-			this.pending_removals.Add(key);
-		}
-		foreach (object key2 in this.pending_removals)
-		{
-			dictionary.Remove(key2);
-			if (dictionary.Count == 0)
-			{
-				this.cells[cell] = null;
+				return true;
 			}
 		}
-		this.pending_removals.Clear();
-		return result;
+		return false;
 	}
 
-	public bool IsReachable(int cell)
+		public bool IsReachable(int cell, CellOffset[] offsets)
 	{
 		if (!Grid.IsValidCell(cell))
 		{
 			return false;
 		}
-		bool result = false;
-		object obj = this.access;
-		lock (obj)
+		foreach (CellOffset offset in offsets)
 		{
-			result = this.IsReachable_AssumeLock(cell);
+			if (this.IsReachable(Grid.OffsetCell(cell, offset)))
+			{
+				return true;
+			}
 		}
-		return result;
+		return false;
 	}
 
-	public bool IsReachable(int cell, CellOffset[] offsets)
+		public bool IsAllReachable(int cell, CellOffset[] offsets)
 	{
-		if (!Grid.IsValidCell(cell))
+		if (this.IsReachable(cell))
 		{
-			return false;
+			return true;
 		}
-		bool result = false;
-		object obj = this.access;
-		lock (obj)
+		foreach (CellOffset offset in offsets)
 		{
-			foreach (CellOffset offset in offsets)
+			if (this.IsReachable(Grid.OffsetCell(cell, offset)))
 			{
-				if (this.IsReachable_AssumeLock(Grid.OffsetCell(cell, offset)))
-				{
-					result = true;
-					break;
-				}
+				return true;
 			}
 		}
-		return result;
+		return false;
 	}
 
-	public bool IsAllReachable(int cell, CellOffset[] offsets)
-	{
-		if (!Grid.IsValidCell(cell))
-		{
-			return false;
-		}
-		bool result = false;
-		object obj = this.access;
-		lock (obj)
-		{
-			if (this.IsReachable_AssumeLock(cell))
-			{
-				result = true;
-			}
-			else
-			{
-				foreach (CellOffset offset in offsets)
-				{
-					if (this.IsReachable_AssumeLock(Grid.OffsetCell(cell, offset)))
-					{
-						result = true;
-						break;
-					}
-				}
-			}
-		}
-		return result;
-	}
-
-	public bool IsReachable(Workable workable)
+		public bool IsReachable(Workable workable)
 	{
 		return this.IsReachable(Grid.PosToCell(workable), workable.GetOffsets());
 	}
 
-	public void Occupy(object prober, short serial_no, IEnumerable<int> cells)
+		public void Occupy(object prober, short serial_no, IEnumerable<int> cells)
 	{
-		object obj = this.access;
-		lock (obj)
+		foreach (int num in cells)
 		{
-			foreach (int num in cells)
+			Dictionary<object, short> obj = this.cells[num];
+			lock (obj)
 			{
-				if (this.cells[num] == null)
-				{
-					this.cells[num] = new Dictionary<object, short>();
-				}
 				this.cells[num][prober] = serial_no;
 			}
 		}
 	}
 
-	public void SetValidSerialNos(object prober, short previous_serial_no, short serial_no)
+		public void SetValidSerialNos(object prober, short previous_serial_no, short serial_no)
 	{
 		object obj = this.access;
 		lock (obj)
@@ -154,7 +105,7 @@ public class MinionGroupProber : KMonoBehaviour, IGroupProber
 		}
 	}
 
-	public bool ReleaseProber(object prober)
+		public bool ReleaseProber(object prober)
 	{
 		object obj = this.access;
 		bool result;
@@ -165,13 +116,40 @@ public class MinionGroupProber : KMonoBehaviour, IGroupProber
 		return result;
 	}
 
-	private static MinionGroupProber Instance;
+		public void Sim200ms(float dt)
+	{
+		int i = 0;
+		while (i < this.cell_checks_per_frame)
+		{
+			this.pending_removals.Clear();
+			foreach (KeyValuePair<object, short> keyValuePair in this.cells[this.cell_cleanup_index])
+			{
+				KeyValuePair<short, short> keyValuePair2;
+				if (!this.valid_serial_nos.TryGetValue(keyValuePair.Key, out keyValuePair2) || (keyValuePair2.Key != keyValuePair.Value && keyValuePair2.Value != keyValuePair.Value))
+				{
+					this.pending_removals.Add(keyValuePair.Key);
+				}
+			}
+			foreach (object key in this.pending_removals)
+			{
+				this.cells[this.cell_cleanup_index].Remove(key);
+			}
+			i++;
+			this.cell_cleanup_index = (this.cell_cleanup_index + 1) % this.cells.Length;
+		}
+	}
 
-	private Dictionary<object, short>[] cells;
+		private static MinionGroupProber Instance;
 
-	private Dictionary<object, KeyValuePair<short, short>> valid_serial_nos = new Dictionary<object, KeyValuePair<short, short>>();
+		private Dictionary<object, short>[] cells;
 
-	private List<object> pending_removals = new List<object>();
+		private Dictionary<object, KeyValuePair<short, short>> valid_serial_nos = new Dictionary<object, KeyValuePair<short, short>>();
 
-	private readonly object access = new object();
+		private List<object> pending_removals = new List<object>();
+
+		private int cell_cleanup_index;
+
+		private int cell_checks_per_frame;
+
+		private readonly object access = new object();
 }

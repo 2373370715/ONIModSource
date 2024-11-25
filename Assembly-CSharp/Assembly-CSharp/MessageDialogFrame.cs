@@ -1,100 +1,87 @@
 ﻿using System;
 using UnityEngine;
 
-public class MessageDialogFrame : KScreen
-{
-	public override float GetSortKey()
-	{
-		return 15f;
-	}
+public class MessageDialogFrame : KScreen {
+    [SerializeField]
+    private RectTransform body;
 
-	protected override void OnActivate()
-	{
-		this.closeButton.onClick += this.OnClickClose;
-		this.nextMessageButton.onClick += this.OnClickNextMessage;
-		MultiToggle multiToggle = this.dontShowAgainButton;
-		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(this.OnClickDontShowAgain));
-		bool flag = KPlayerPrefs.GetInt("HideTutorial_CheckState", 0) == 1;
-		this.dontShowAgainButton.ChangeState(flag ? 0 : 1);
-		base.Subscribe(Messenger.Instance.gameObject, -599791736, new Action<object>(this.OnMessagesChanged));
-		this.OnMessagesChanged(null);
-	}
+    [SerializeField]
+    private KButton closeButton;
 
-	protected override void OnDeactivate()
-	{
-		base.Unsubscribe(Messenger.Instance.gameObject, -599791736, new Action<object>(this.OnMessagesChanged));
-	}
+    [SerializeField]
+    private MultiToggle dontShowAgainButton;
 
-	private void OnClickClose()
-	{
-		this.TryDontShowAgain();
-		UnityEngine.Object.Destroy(base.gameObject);
-	}
+    private System.Action dontShowAgainDelegate;
 
-	private void OnClickNextMessage()
-	{
-		this.TryDontShowAgain();
-		UnityEngine.Object.Destroy(base.gameObject);
-		NotificationScreen.Instance.OnClickNextMessage();
-	}
+    [SerializeField]
+    private GameObject dontShowAgainElement;
 
-	private void OnClickDontShowAgain()
-	{
-		this.dontShowAgainButton.NextState();
-		bool flag = this.dontShowAgainButton.CurrentState == 0;
-		KPlayerPrefs.SetInt("HideTutorial_CheckState", flag ? 1 : 0);
-	}
+    [SerializeField]
+    private KToggle nextMessageButton;
 
-	private void OnMessagesChanged(object data)
-	{
-		this.nextMessageButton.gameObject.SetActive(Messenger.Instance.Count != 0);
-	}
+    [SerializeField]
+    private LocText title;
 
-	public void SetMessage(MessageDialog dialog, Message message)
-	{
-		this.title.text = message.GetTitle().ToUpper();
-		dialog.GetComponent<RectTransform>().SetParent(this.body.GetComponent<RectTransform>());
-		RectTransform component = dialog.GetComponent<RectTransform>();
-		component.offsetMin = Vector2.zero;
-		component.offsetMax = Vector2.zero;
-		dialog.transform.SetLocalPosition(Vector3.zero);
-		dialog.SetMessage(message);
-		dialog.OnClickAction();
-		if (dialog.CanDontShowAgain)
-		{
-			this.dontShowAgainElement.SetActive(true);
-			this.dontShowAgainDelegate = new System.Action(dialog.OnDontShowAgain);
-			return;
-		}
-		this.dontShowAgainElement.SetActive(false);
-		this.dontShowAgainDelegate = null;
-	}
+    public override float GetSortKey() { return 15f; }
 
-	private void TryDontShowAgain()
-	{
-		if (this.dontShowAgainDelegate != null && this.dontShowAgainButton.CurrentState == 0)
-		{
-			this.dontShowAgainDelegate();
-		}
-	}
+    protected override void OnActivate() {
+        closeButton.onClick       += OnClickClose;
+        nextMessageButton.onClick += OnClickNextMessage;
+        var multiToggle = dontShowAgainButton;
+        multiToggle.onClick
+            = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(OnClickDontShowAgain));
 
-	[SerializeField]
-	private KButton closeButton;
+        var flag = KPlayerPrefs.GetInt("HideTutorial_CheckState", 0) == 1;
+        dontShowAgainButton.ChangeState(flag ? 0 : 1);
+        Subscribe(Messenger.Instance.gameObject, -599791736, OnMessagesChanged);
+        OnMessagesChanged(null);
+    }
 
-	[SerializeField]
-	private KToggle nextMessageButton;
+    protected override void OnDeactivate() {
+        Unsubscribe(Messenger.Instance.gameObject, -599791736, OnMessagesChanged);
+    }
 
-	[SerializeField]
-	private GameObject dontShowAgainElement;
+    private void OnClickClose() {
+        TryDontShowAgain();
+        Destroy(gameObject);
+    }
 
-	[SerializeField]
-	private MultiToggle dontShowAgainButton;
+    private void OnClickNextMessage() {
+        TryDontShowAgain();
+        Destroy(gameObject);
+        NotificationScreen.Instance.OnClickNextMessage();
+    }
 
-	[SerializeField]
-	private LocText title;
+    private void OnClickDontShowAgain() {
+        dontShowAgainButton.NextState();
+        var flag = dontShowAgainButton.CurrentState == 0;
+        KPlayerPrefs.SetInt("HideTutorial_CheckState", flag ? 1 : 0);
+    }
 
-	[SerializeField]
-	private RectTransform body;
+    private void OnMessagesChanged(object data) {
+        nextMessageButton.gameObject.SetActive(Messenger.Instance.Count != 0);
+    }
 
-	private System.Action dontShowAgainDelegate;
+    public void SetMessage(MessageDialog dialog, Message message) {
+        title.text = message.GetTitle().ToUpper();
+        dialog.GetComponent<RectTransform>().SetParent(body.GetComponent<RectTransform>());
+        var component = dialog.GetComponent<RectTransform>();
+        component.offsetMin = Vector2.zero;
+        component.offsetMax = Vector2.zero;
+        dialog.transform.SetLocalPosition(Vector3.zero);
+        dialog.SetMessage(message);
+        dialog.OnClickAction();
+        if (dialog.CanDontShowAgain) {
+            dontShowAgainElement.SetActive(true);
+            dontShowAgainDelegate = dialog.OnDontShowAgain;
+            return;
+        }
+
+        dontShowAgainElement.SetActive(false);
+        dontShowAgainDelegate = null;
+    }
+
+    private void TryDontShowAgain() {
+        if (dontShowAgainDelegate != null && dontShowAgainButton.CurrentState == 0) dontShowAgainDelegate();
+    }
 }

@@ -6,761 +6,1155 @@ using System.Text;
 using System.Threading;
 using Klei;
 using KMod;
-using KSerialization;
 using ProcGenGame;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.U2D;
+using Directory = System.IO.Directory;
 
-public class Global : MonoBehaviour
-{
-			public static Global Instance { get; private set; }
+public class Global : MonoBehaviour {
+    private static         GameInputManager mInputManager;
+    private static         string           saveFolderTestResult = "unknown";
+    public static readonly string           LanguageModKey       = "LanguageMod";
+    public static readonly string           LanguageCodeKey      = "LanguageCode";
+    private readonly       DevToolManager   DevTools             = new DevToolManager();
+    public                 SpriteAtlas[]    forcedAtlasInitializationList;
+    public                 GameObject       globalCanvas;
+    private                bool             gotKleiUserID;
+    public                 GameObject       modErrorsPrefab;
+    public                 Manager          modManager;
+    private                bool             updated_with_initialized_distribution_platform;
+    public static          Global           Instance { get; private set; }
 
-	public static BindingEntry[] GenerateDefaultBindings(bool hotKeyBuildMenuPermitted = true)
-	{
-		List<BindingEntry> list = new List<BindingEntry>
-		{
-			new BindingEntry(null, GamepadButton.Start, KKeyCode.Escape, Modifier.None, global::Action.Escape, false, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.W, Modifier.None, global::Action.PanUp, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.S, Modifier.None, global::Action.PanDown, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.A, Modifier.None, global::Action.PanLeft, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.D, Modifier.None, global::Action.PanRight, true, false),
-			new BindingEntry("Tool", GamepadButton.NumButtons, KKeyCode.O, Modifier.None, global::Action.RotateBuilding, true, false),
-			new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.L, Modifier.None, global::Action.ManagePriorities, true, false),
-			new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.F, Modifier.None, global::Action.ManageConsumables, true, false),
-			new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.V, Modifier.None, global::Action.ManageVitals, true, false),
-			new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.R, Modifier.None, global::Action.ManageResearch, true, false),
-			new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.E, Modifier.None, global::Action.ManageReport, true, false),
-			new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.U, Modifier.None, global::Action.ManageDatabase, true, false),
-			new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.J, Modifier.None, global::Action.ManageSkills, true, false),
-			new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.Period, Modifier.None, global::Action.ManageSchedule, true, false),
-			new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.Z, Modifier.None, global::Action.ManageStarmap, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.G, Modifier.None, global::Action.Dig, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.M, Modifier.None, global::Action.Mop, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.K, Modifier.None, global::Action.Clear, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.I, Modifier.None, global::Action.Disinfect, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.T, Modifier.None, global::Action.Attack, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.N, Modifier.None, global::Action.Capture, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Y, Modifier.None, global::Action.Harvest, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Insert, Modifier.None, global::Action.EmptyPipe, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.D, Modifier.Shift, global::Action.Disconnect, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.P, Modifier.None, global::Action.Prioritize, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.S, Modifier.Alt, global::Action.ToggleScreenshotMode, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.C, Modifier.None, global::Action.BuildingCancel, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.X, Modifier.None, global::Action.BuildingDeconstruct, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Tab, Modifier.None, global::Action.CycleSpeed, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.H, Modifier.None, global::Action.CameraHome, true, false),
-			new BindingEntry("Root", GamepadButton.A, KKeyCode.Mouse0, Modifier.None, global::Action.MouseLeft, false, false),
-			new BindingEntry("Root", GamepadButton.A, KKeyCode.Mouse0, Modifier.Shift, global::Action.ShiftMouseLeft, false, false),
-			new BindingEntry("Root", GamepadButton.B, KKeyCode.Mouse1, Modifier.None, global::Action.MouseRight, false, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Mouse2, Modifier.None, global::Action.MouseMiddle, false, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha1, Modifier.None, global::Action.Plan1, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha2, Modifier.None, global::Action.Plan2, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha3, Modifier.None, global::Action.Plan3, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha4, Modifier.None, global::Action.Plan4, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha5, Modifier.None, global::Action.Plan5, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha6, Modifier.None, global::Action.Plan6, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha7, Modifier.None, global::Action.Plan7, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha8, Modifier.None, global::Action.Plan8, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha9, Modifier.None, global::Action.Plan9, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha0, Modifier.None, global::Action.Plan10, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Minus, Modifier.None, global::Action.Plan11, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Equals, Modifier.None, global::Action.Plan12, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Minus, Modifier.Shift, global::Action.Plan13, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Equals, Modifier.Shift, global::Action.Plan14, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Backspace, Modifier.Shift, global::Action.Plan15, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.B, Modifier.None, global::Action.CopyBuilding, true, false),
-			new BindingEntry("Root", GamepadButton.RT, KKeyCode.MouseScrollUp, Modifier.None, global::Action.ZoomIn, true, false),
-			new BindingEntry("Root", GamepadButton.LT, KKeyCode.MouseScrollDown, Modifier.None, global::Action.ZoomOut, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F1, Modifier.None, global::Action.Overlay1, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F2, Modifier.None, global::Action.Overlay2, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F3, Modifier.None, global::Action.Overlay3, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F4, Modifier.None, global::Action.Overlay4, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F5, Modifier.None, global::Action.Overlay5, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F6, Modifier.None, global::Action.Overlay6, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F7, Modifier.None, global::Action.Overlay7, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F8, Modifier.None, global::Action.Overlay8, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F9, Modifier.None, global::Action.Overlay9, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F10, Modifier.None, global::Action.Overlay10, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F11, Modifier.None, global::Action.Overlay11, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F1, Modifier.Shift, global::Action.Overlay12, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F2, Modifier.Shift, global::Action.Overlay13, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F3, Modifier.Shift, global::Action.Overlay14, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F4, Modifier.Shift, global::Action.Overlay15, DlcManager.AVAILABLE_EXPANSION1_ONLY),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.KeypadPlus, Modifier.None, global::Action.SpeedUp, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.KeypadMinus, Modifier.None, global::Action.SlowDown, true, false),
-			new BindingEntry("Root", GamepadButton.Back, KKeyCode.Space, Modifier.None, global::Action.TogglePause, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha1, Modifier.Ctrl, global::Action.SetUserNav1, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha2, Modifier.Ctrl, global::Action.SetUserNav2, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha3, Modifier.Ctrl, global::Action.SetUserNav3, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha4, Modifier.Ctrl, global::Action.SetUserNav4, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha5, Modifier.Ctrl, global::Action.SetUserNav5, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha6, Modifier.Ctrl, global::Action.SetUserNav6, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha7, Modifier.Ctrl, global::Action.SetUserNav7, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha8, Modifier.Ctrl, global::Action.SetUserNav8, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha9, Modifier.Ctrl, global::Action.SetUserNav9, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha0, Modifier.Ctrl, global::Action.SetUserNav10, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha1, Modifier.Shift, global::Action.GotoUserNav1, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha2, Modifier.Shift, global::Action.GotoUserNav2, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha3, Modifier.Shift, global::Action.GotoUserNav3, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha4, Modifier.Shift, global::Action.GotoUserNav4, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha5, Modifier.Shift, global::Action.GotoUserNav5, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha6, Modifier.Shift, global::Action.GotoUserNav6, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha7, Modifier.Shift, global::Action.GotoUserNav7, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha8, Modifier.Shift, global::Action.GotoUserNav8, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha9, Modifier.Shift, global::Action.GotoUserNav9, true, false),
-			new BindingEntry("Navigation", GamepadButton.NumButtons, KKeyCode.Alpha0, Modifier.Shift, global::Action.GotoUserNav10, true, false),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.C, Modifier.None, global::Action.CinemaCamEnable, true, true),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.A, Modifier.None, global::Action.CinemaPanLeft, true, true),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.D, Modifier.None, global::Action.CinemaPanRight, true, true),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.W, Modifier.None, global::Action.CinemaPanUp, true, true),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.S, Modifier.None, global::Action.CinemaPanDown, true, true),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.I, Modifier.None, global::Action.CinemaZoomIn, true, true),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.O, Modifier.None, global::Action.CinemaZoomOut, true, true),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.Z, Modifier.None, global::Action.CinemaZoomSpeedPlus, true, true),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.Z, Modifier.Shift, global::Action.CinemaZoomSpeedMinus, true, true),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.P, Modifier.None, global::Action.CinemaUnpauseOnMove, true, true),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.T, Modifier.None, global::Action.CinemaToggleLock, true, true),
-			new BindingEntry("CinematicCamera", GamepadButton.NumButtons, KKeyCode.E, Modifier.None, global::Action.CinemaToggleEasing, true, true),
-			new BindingEntry("Building", GamepadButton.NumButtons, KKeyCode.Slash, Modifier.None, global::Action.ToggleOpen, true, false),
-			new BindingEntry("Building", GamepadButton.NumButtons, KKeyCode.Return, Modifier.None, global::Action.ToggleEnabled, true, false),
-			new BindingEntry("Building", GamepadButton.NumButtons, KKeyCode.Backslash, Modifier.None, global::Action.BuildingUtility1, true, false),
-			new BindingEntry("Building", GamepadButton.NumButtons, KKeyCode.LeftBracket, Modifier.None, global::Action.BuildingUtility2, true, false),
-			new BindingEntry("Building", GamepadButton.NumButtons, KKeyCode.RightBracket, Modifier.None, global::Action.BuildingUtility3, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.LeftAlt, Modifier.Alt, global::Action.AlternateView, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.RightAlt, Modifier.Alt, global::Action.AlternateView, true, false),
-			new BindingEntry("Tool", GamepadButton.NumButtons, KKeyCode.LeftShift, Modifier.Shift, global::Action.DragStraight, true, false),
-			new BindingEntry("Tool", GamepadButton.NumButtons, KKeyCode.RightShift, Modifier.Shift, global::Action.DragStraight, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.T, Modifier.Ctrl, global::Action.DebugFocus, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.U, Modifier.Ctrl, global::Action.DebugUltraTestMode, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F1, Modifier.Alt, global::Action.DebugToggleUI, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F3, Modifier.Alt, global::Action.DebugCollectGarbage, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F7, Modifier.Alt, global::Action.DebugInvincible, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F10, Modifier.Alt, global::Action.DebugForceLightEverywhere, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F10, Modifier.Shift, global::Action.DebugElementTest, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F12, Modifier.Shift, global::Action.DebugTileTest, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.N, Modifier.Alt, global::Action.DebugRefreshNavCell, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Q, Modifier.Ctrl, global::Action.DebugGotoTarget, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.S, Modifier.Ctrl, global::Action.DebugSelectMaterial, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.M, Modifier.Ctrl, global::Action.DebugToggleMusic, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F, Modifier.Ctrl, global::Action.DebugToggleClusterFX, DlcManager.AVAILABLE_EXPANSION1_ONLY),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Backspace, Modifier.None, global::Action.DebugToggle, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Backspace, Modifier.Ctrl, global::Action.DebugToggleFastWorkers, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Q, Modifier.Alt, global::Action.DebugTeleport, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F2, Modifier.Alt, global::Action.DebugSpawnMinionAtmoSuit, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F2, Modifier.Ctrl, global::Action.DebugSpawnMinion, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F3, Modifier.Ctrl, global::Action.DebugPlace, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F4, Modifier.Ctrl, global::Action.DebugInstantBuildMode, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F5, Modifier.Ctrl, global::Action.DebugSlowTestMode, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F6, Modifier.Ctrl, global::Action.DebugDig, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F8, Modifier.Ctrl, global::Action.DebugExplosion, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F9, Modifier.Ctrl, global::Action.DebugDiscoverAllElements, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.T, Modifier.Alt, global::Action.DebugToggleSelectInEditor, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.P, Modifier.Alt, global::Action.DebugPathFinding, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.C, Modifier.Ctrl, global::Action.DebugCheerEmote, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Z, Modifier.Alt, global::Action.DebugSuperSpeed, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Equals, Modifier.Alt, global::Action.DebugGameStep, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Minus, Modifier.Alt, global::Action.DebugSimStep, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.X, Modifier.Alt, global::Action.DebugNotification, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.C, Modifier.Alt, global::Action.DebugNotificationMessage, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.BackQuote, Modifier.None, global::Action.ToggleProfiler, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.BackQuote, Modifier.Alt, global::Action.ToggleChromeProfiler, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F1, Modifier.Ctrl, global::Action.DebugDumpSceneParitionerLeakData, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F12, Modifier.Ctrl, global::Action.DebugTriggerException, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F12, (Modifier)6, global::Action.DebugTriggerError, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F10, Modifier.Ctrl, global::Action.DebugDumpGCRoots, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F10, (Modifier)3, global::Action.DebugDumpGarbageReferences, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F11, Modifier.Ctrl, global::Action.DebugDumpEventData, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F7, (Modifier)3, global::Action.DebugCrashSim, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha9, Modifier.Alt, global::Action.DebugNextCall, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha1, Modifier.Alt, global::Action.SreenShot1x, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha2, Modifier.Alt, global::Action.SreenShot2x, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha3, Modifier.Alt, global::Action.SreenShot8x, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha4, Modifier.Alt, global::Action.SreenShot32x, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha5, Modifier.Alt, global::Action.DebugLockCursor, true, false),
-			new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha0, Modifier.Alt, global::Action.DebugTogglePersonalPriorityComparison, true, false),
-			new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Return, Modifier.None, global::Action.DialogSubmit, false, false),
-			new BindingEntry("Analog", GamepadButton.NumButtons, KKeyCode.None, Modifier.None, global::Action.AnalogCamera, false, false),
-			new BindingEntry("Analog", GamepadButton.NumButtons, KKeyCode.None, Modifier.None, global::Action.AnalogCursor, false, false),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.A, Modifier.None, global::Action.BuildMenuKeyA, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.B, Modifier.None, global::Action.BuildMenuKeyB, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.C, Modifier.None, global::Action.BuildMenuKeyC, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.D, Modifier.None, global::Action.BuildMenuKeyD, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.E, Modifier.None, global::Action.BuildMenuKeyE, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.F, Modifier.None, global::Action.BuildMenuKeyF, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.G, Modifier.None, global::Action.BuildMenuKeyG, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.H, Modifier.None, global::Action.BuildMenuKeyH, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.I, Modifier.None, global::Action.BuildMenuKeyI, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.J, Modifier.None, global::Action.BuildMenuKeyJ, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.K, Modifier.None, global::Action.BuildMenuKeyK, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.L, Modifier.None, global::Action.BuildMenuKeyL, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.M, Modifier.None, global::Action.BuildMenuKeyM, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.N, Modifier.None, global::Action.BuildMenuKeyN, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.O, Modifier.None, global::Action.BuildMenuKeyO, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.P, Modifier.None, global::Action.BuildMenuKeyP, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.Q, Modifier.None, global::Action.BuildMenuKeyQ, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.R, Modifier.None, global::Action.BuildMenuKeyR, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.S, Modifier.None, global::Action.BuildMenuKeyS, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.T, Modifier.None, global::Action.BuildMenuKeyT, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.U, Modifier.None, global::Action.BuildMenuKeyU, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.V, Modifier.None, global::Action.BuildMenuKeyV, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.W, Modifier.None, global::Action.BuildMenuKeyW, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.X, Modifier.None, global::Action.BuildMenuKeyX, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.Y, Modifier.None, global::Action.BuildMenuKeyY, false, true),
-			new BindingEntry("BuildingsMenu", GamepadButton.NumButtons, KKeyCode.Z, Modifier.None, global::Action.BuildMenuKeyZ, false, true),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.B, Modifier.Shift, global::Action.SandboxBrush, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.N, Modifier.Shift, global::Action.SandboxSprinkle, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.F, Modifier.Shift, global::Action.SandboxFlood, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.K, Modifier.Shift, global::Action.SandboxSample, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.H, Modifier.Shift, global::Action.SandboxHeatGun, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.J, Modifier.Shift, global::Action.SandboxStressTool, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.C, Modifier.Shift, global::Action.SandboxClearFloor, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.X, Modifier.Shift, global::Action.SandboxDestroy, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.E, Modifier.Shift, global::Action.SandboxSpawnEntity, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.S, Modifier.Shift, global::Action.ToggleSandboxTools, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.R, Modifier.Shift, global::Action.SandboxReveal, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.Z, Modifier.Shift, global::Action.SandboxCritterTool, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.T, Modifier.Shift, global::Action.SandboxStoryTraitTool, true, false),
-			new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.Mouse0, Modifier.Ctrl, global::Action.SandboxCopyElement, true, false),
-			new BindingEntry("SwitchActiveWorld", GamepadButton.NumButtons, KKeyCode.Alpha1, Modifier.Backtick, global::Action.SwitchActiveWorld1, true, false, DlcManager.AVAILABLE_EXPANSION1_ONLY),
-			new BindingEntry("SwitchActiveWorld", GamepadButton.NumButtons, KKeyCode.Alpha2, Modifier.Backtick, global::Action.SwitchActiveWorld2, true, false, DlcManager.AVAILABLE_EXPANSION1_ONLY),
-			new BindingEntry("SwitchActiveWorld", GamepadButton.NumButtons, KKeyCode.Alpha3, Modifier.Backtick, global::Action.SwitchActiveWorld3, true, false, DlcManager.AVAILABLE_EXPANSION1_ONLY),
-			new BindingEntry("SwitchActiveWorld", GamepadButton.NumButtons, KKeyCode.Alpha4, Modifier.Backtick, global::Action.SwitchActiveWorld4, true, false, DlcManager.AVAILABLE_EXPANSION1_ONLY),
-			new BindingEntry("SwitchActiveWorld", GamepadButton.NumButtons, KKeyCode.Alpha5, Modifier.Backtick, global::Action.SwitchActiveWorld5, true, false, DlcManager.AVAILABLE_EXPANSION1_ONLY),
-			new BindingEntry("SwitchActiveWorld", GamepadButton.NumButtons, KKeyCode.Alpha6, Modifier.Backtick, global::Action.SwitchActiveWorld6, true, false, DlcManager.AVAILABLE_EXPANSION1_ONLY),
-			new BindingEntry("SwitchActiveWorld", GamepadButton.NumButtons, KKeyCode.Alpha7, Modifier.Backtick, global::Action.SwitchActiveWorld7, true, false, DlcManager.AVAILABLE_EXPANSION1_ONLY),
-			new BindingEntry("SwitchActiveWorld", GamepadButton.NumButtons, KKeyCode.Alpha8, Modifier.Backtick, global::Action.SwitchActiveWorld8, true, false, DlcManager.AVAILABLE_EXPANSION1_ONLY),
-			new BindingEntry("SwitchActiveWorld", GamepadButton.NumButtons, KKeyCode.Alpha9, Modifier.Backtick, global::Action.SwitchActiveWorld9, true, false, DlcManager.AVAILABLE_EXPANSION1_ONLY),
-			new BindingEntry("SwitchActiveWorld", GamepadButton.NumButtons, KKeyCode.Alpha0, Modifier.Backtick, global::Action.SwitchActiveWorld10, true, false, DlcManager.AVAILABLE_EXPANSION1_ONLY)
-		};
-		IList<BuildMenu.DisplayInfo> list2 = (IList<BuildMenu.DisplayInfo>)BuildMenu.OrderedBuildings.data;
-		if (BuildMenu.UseHotkeyBuildMenu() && hotKeyBuildMenuPermitted)
-		{
-			foreach (BuildMenu.DisplayInfo display_info in list2)
-			{
-				Global.AddBindings(HashedString.Invalid, display_info, list);
-			}
-		}
-		return list.ToArray();
-	}
+    public static BindingEntry[] GenerateDefaultBindings(bool hotKeyBuildMenuPermitted = true) {
+        var list = new List<BindingEntry> {
+            new BindingEntry(null,   GamepadButton.Start,      KKeyCode.Escape, Modifier.None, Action.Escape, false),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.W,      Modifier.None, Action.PanUp),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.S,      Modifier.None, Action.PanDown),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.A,      Modifier.None, Action.PanLeft),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.D,      Modifier.None, Action.PanRight),
+            new BindingEntry("Tool", GamepadButton.NumButtons, KKeyCode.O,      Modifier.None, Action.RotateBuilding),
+            new BindingEntry("Management",
+                             GamepadButton.NumButtons,
+                             KKeyCode.L,
+                             Modifier.None,
+                             Action.ManagePriorities),
+            new BindingEntry("Management",
+                             GamepadButton.NumButtons,
+                             KKeyCode.F,
+                             Modifier.None,
+                             Action.ManageConsumables),
+            new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.V, Modifier.None, Action.ManageVitals),
+            new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.R, Modifier.None, Action.ManageResearch),
+            new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.E, Modifier.None, Action.ManageReport),
+            new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.U, Modifier.None, Action.ManageDatabase),
+            new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.J, Modifier.None, Action.ManageSkills),
+            new BindingEntry("Management",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Period,
+                             Modifier.None,
+                             Action.ManageSchedule),
+            new BindingEntry("Management", GamepadButton.NumButtons, KKeyCode.Z, Modifier.None, Action.ManageStarmap),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.G, Modifier.None, Action.Dig),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.M, Modifier.None, Action.Mop),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.K, Modifier.None, Action.Clear),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.I, Modifier.None, Action.Disinfect),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.T, Modifier.None, Action.Attack),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.N, Modifier.None, Action.Capture),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Y, Modifier.None, Action.Harvest),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Insert, Modifier.None, Action.EmptyPipe),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.D, Modifier.Shift, Action.Disconnect),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.P, Modifier.None, Action.Prioritize),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.S, Modifier.Alt, Action.ToggleScreenshotMode),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.C, Modifier.None, Action.BuildingCancel),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.X, Modifier.None, Action.BuildingDeconstruct),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Tab, Modifier.None, Action.CycleSpeed),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.H, Modifier.None, Action.CameraHome),
+            new BindingEntry("Root", GamepadButton.A, KKeyCode.Mouse0, Modifier.None, Action.MouseLeft, false),
+            new BindingEntry("Root", GamepadButton.A, KKeyCode.Mouse0, Modifier.Shift, Action.ShiftMouseLeft, false),
+            new BindingEntry("Root", GamepadButton.B, KKeyCode.Mouse1, Modifier.None, Action.MouseRight, false),
+            new BindingEntry("Root",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Mouse2,
+                             Modifier.None,
+                             Action.MouseMiddle,
+                             false),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha1, Modifier.None, Action.Plan1),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha2, Modifier.None, Action.Plan2),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha3, Modifier.None, Action.Plan3),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha4, Modifier.None, Action.Plan4),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha5, Modifier.None, Action.Plan5),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha6, Modifier.None, Action.Plan6),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha7, Modifier.None, Action.Plan7),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha8, Modifier.None, Action.Plan8),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha9, Modifier.None, Action.Plan9),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Alpha0, Modifier.None, Action.Plan10),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Minus, Modifier.None, Action.Plan11),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Equals, Modifier.None, Action.Plan12),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Minus, Modifier.Shift, Action.Plan13),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Equals, Modifier.Shift, Action.Plan14),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.Backspace, Modifier.Shift, Action.Plan15),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.B, Modifier.None, Action.CopyBuilding),
+            new BindingEntry("Root", GamepadButton.RT,         KKeyCode.MouseScrollUp, Modifier.None, Action.ZoomIn),
+            new BindingEntry("Root", GamepadButton.LT,         KKeyCode.MouseScrollDown, Modifier.None, Action.ZoomOut),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F1, Modifier.None, Action.Overlay1),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F2, Modifier.None, Action.Overlay2),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F3, Modifier.None, Action.Overlay3),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F4, Modifier.None, Action.Overlay4),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F5, Modifier.None, Action.Overlay5),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F6, Modifier.None, Action.Overlay6),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F7, Modifier.None, Action.Overlay7),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F8, Modifier.None, Action.Overlay8),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F9, Modifier.None, Action.Overlay9),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F10, Modifier.None, Action.Overlay10),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F11, Modifier.None, Action.Overlay11),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F1, Modifier.Shift, Action.Overlay12),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F2, Modifier.Shift, Action.Overlay13),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.F3, Modifier.Shift, Action.Overlay14),
+            new BindingEntry("Root",
+                             GamepadButton.NumButtons,
+                             KKeyCode.F4,
+                             Modifier.Shift,
+                             Action.Overlay15,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.KeypadPlus,  Modifier.None, Action.SpeedUp),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.KeypadMinus, Modifier.None, Action.SlowDown),
+            new BindingEntry("Root", GamepadButton.Back,       KKeyCode.Space,       Modifier.None, Action.TogglePause),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha1,
+                             Modifier.Ctrl,
+                             Action.SetUserNav1),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha2,
+                             Modifier.Ctrl,
+                             Action.SetUserNav2),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha3,
+                             Modifier.Ctrl,
+                             Action.SetUserNav3),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha4,
+                             Modifier.Ctrl,
+                             Action.SetUserNav4),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha5,
+                             Modifier.Ctrl,
+                             Action.SetUserNav5),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha6,
+                             Modifier.Ctrl,
+                             Action.SetUserNav6),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha7,
+                             Modifier.Ctrl,
+                             Action.SetUserNav7),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha8,
+                             Modifier.Ctrl,
+                             Action.SetUserNav8),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha9,
+                             Modifier.Ctrl,
+                             Action.SetUserNav9),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha0,
+                             Modifier.Ctrl,
+                             Action.SetUserNav10),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha1,
+                             Modifier.Shift,
+                             Action.GotoUserNav1),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha2,
+                             Modifier.Shift,
+                             Action.GotoUserNav2),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha3,
+                             Modifier.Shift,
+                             Action.GotoUserNav3),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha4,
+                             Modifier.Shift,
+                             Action.GotoUserNav4),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha5,
+                             Modifier.Shift,
+                             Action.GotoUserNav5),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha6,
+                             Modifier.Shift,
+                             Action.GotoUserNav6),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha7,
+                             Modifier.Shift,
+                             Action.GotoUserNav7),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha8,
+                             Modifier.Shift,
+                             Action.GotoUserNav8),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha9,
+                             Modifier.Shift,
+                             Action.GotoUserNav9),
+            new BindingEntry("Navigation",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha0,
+                             Modifier.Shift,
+                             Action.GotoUserNav10),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.C,
+                             Modifier.None,
+                             Action.CinemaCamEnable,
+                             true,
+                             true),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.A,
+                             Modifier.None,
+                             Action.CinemaPanLeft,
+                             true,
+                             true),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.D,
+                             Modifier.None,
+                             Action.CinemaPanRight,
+                             true,
+                             true),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.W,
+                             Modifier.None,
+                             Action.CinemaPanUp,
+                             true,
+                             true),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.S,
+                             Modifier.None,
+                             Action.CinemaPanDown,
+                             true,
+                             true),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.I,
+                             Modifier.None,
+                             Action.CinemaZoomIn,
+                             true,
+                             true),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.O,
+                             Modifier.None,
+                             Action.CinemaZoomOut,
+                             true,
+                             true),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Z,
+                             Modifier.None,
+                             Action.CinemaZoomSpeedPlus,
+                             true,
+                             true),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Z,
+                             Modifier.Shift,
+                             Action.CinemaZoomSpeedMinus,
+                             true,
+                             true),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.P,
+                             Modifier.None,
+                             Action.CinemaUnpauseOnMove,
+                             true,
+                             true),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.T,
+                             Modifier.None,
+                             Action.CinemaToggleLock,
+                             true,
+                             true),
+            new BindingEntry("CinematicCamera",
+                             GamepadButton.NumButtons,
+                             KKeyCode.E,
+                             Modifier.None,
+                             Action.CinemaToggleEasing,
+                             true,
+                             true),
+            new BindingEntry("Building", GamepadButton.NumButtons, KKeyCode.Slash, Modifier.None, Action.ToggleOpen),
+            new BindingEntry("Building",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Return,
+                             Modifier.None,
+                             Action.ToggleEnabled),
+            new BindingEntry("Building",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Backslash,
+                             Modifier.None,
+                             Action.BuildingUtility1),
+            new BindingEntry("Building",
+                             GamepadButton.NumButtons,
+                             KKeyCode.LeftBracket,
+                             Modifier.None,
+                             Action.BuildingUtility2),
+            new BindingEntry("Building",
+                             GamepadButton.NumButtons,
+                             KKeyCode.RightBracket,
+                             Modifier.None,
+                             Action.BuildingUtility3),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.LeftAlt,   Modifier.Alt, Action.AlternateView),
+            new BindingEntry("Root", GamepadButton.NumButtons, KKeyCode.RightAlt,  Modifier.Alt, Action.AlternateView),
+            new BindingEntry("Tool", GamepadButton.NumButtons, KKeyCode.LeftShift, Modifier.Shift, Action.DragStraight),
+            new BindingEntry("Tool",
+                             GamepadButton.NumButtons,
+                             KKeyCode.RightShift,
+                             Modifier.Shift,
+                             Action.DragStraight),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.T,  Modifier.Ctrl, Action.DebugFocus),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.U,  Modifier.Ctrl, Action.DebugUltraTestMode),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F1, Modifier.Alt,  Action.DebugToggleUI),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F3, Modifier.Alt,  Action.DebugCollectGarbage),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F7, Modifier.Alt,  Action.DebugInvincible),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.F10,
+                             Modifier.Alt,
+                             Action.DebugForceLightEverywhere),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F10, Modifier.Shift, Action.DebugElementTest),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F12, Modifier.Shift, Action.DebugTileTest),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.N, Modifier.Alt, Action.DebugRefreshNavCell),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Q, Modifier.Ctrl, Action.DebugGotoTarget),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.S, Modifier.Ctrl, Action.DebugSelectMaterial),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.M, Modifier.Ctrl, Action.DebugToggleMusic),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.F,
+                             Modifier.Ctrl,
+                             Action.DebugToggleClusterFX,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Backspace, Modifier.None, Action.DebugToggle),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Backspace,
+                             Modifier.Ctrl,
+                             Action.DebugToggleFastWorkers),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Q, Modifier.Alt, Action.DebugTeleport),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.F2,
+                             Modifier.Alt,
+                             Action.DebugSpawnMinionAtmoSuit),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F2, Modifier.Ctrl, Action.DebugSpawnMinion),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F3, Modifier.Ctrl, Action.DebugPlace),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.F4,
+                             Modifier.Ctrl,
+                             Action.DebugInstantBuildMode),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F5, Modifier.Ctrl, Action.DebugSlowTestMode),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F6, Modifier.Ctrl, Action.DebugDig),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F8, Modifier.Ctrl, Action.DebugExplosion),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.F9,
+                             Modifier.Ctrl,
+                             Action.DebugDiscoverAllElements),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.T,
+                             Modifier.Alt,
+                             Action.DebugToggleSelectInEditor),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.P, Modifier.Alt, Action.DebugPathFinding),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.C, Modifier.Ctrl, Action.DebugCheerEmote),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Z, Modifier.Alt, Action.DebugSuperSpeed),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Equals, Modifier.Alt, Action.DebugGameStep),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Minus, Modifier.Alt, Action.DebugSimStep),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.X, Modifier.Alt, Action.DebugNotification),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.C,
+                             Modifier.Alt,
+                             Action.DebugNotificationMessage),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.BackQuote,
+                             Modifier.None,
+                             Action.ToggleProfiler),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.BackQuote,
+                             Modifier.Alt,
+                             Action.ToggleChromeProfiler),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.F1,
+                             Modifier.Ctrl,
+                             Action.DebugDumpSceneParitionerLeakData),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.F12,
+                             Modifier.Ctrl,
+                             Action.DebugTriggerException),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F12, (Modifier)6,   Action.DebugTriggerError),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F10, Modifier.Ctrl, Action.DebugDumpGCRoots),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.F10,
+                             (Modifier)3,
+                             Action.DebugDumpGarbageReferences),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F11, Modifier.Ctrl, Action.DebugDumpEventData),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.F7, (Modifier)3, Action.DebugCrashSim),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha9, Modifier.Alt, Action.DebugNextCall),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha1, Modifier.Alt, Action.SreenShot1x),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha2, Modifier.Alt, Action.SreenShot2x),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha3, Modifier.Alt, Action.SreenShot8x),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha4, Modifier.Alt, Action.SreenShot32x),
+            new BindingEntry("Debug", GamepadButton.NumButtons, KKeyCode.Alpha5, Modifier.Alt, Action.DebugLockCursor),
+            new BindingEntry("Debug",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha0,
+                             Modifier.Alt,
+                             Action.DebugTogglePersonalPriorityComparison),
+            new BindingEntry("Root",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Return,
+                             Modifier.None,
+                             Action.DialogSubmit,
+                             false),
+            new BindingEntry("Analog",
+                             GamepadButton.NumButtons,
+                             KKeyCode.None,
+                             Modifier.None,
+                             Action.AnalogCamera,
+                             false),
+            new BindingEntry("Analog",
+                             GamepadButton.NumButtons,
+                             KKeyCode.None,
+                             Modifier.None,
+                             Action.AnalogCursor,
+                             false),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.A,
+                             Modifier.None,
+                             Action.BuildMenuKeyA,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.B,
+                             Modifier.None,
+                             Action.BuildMenuKeyB,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.C,
+                             Modifier.None,
+                             Action.BuildMenuKeyC,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.D,
+                             Modifier.None,
+                             Action.BuildMenuKeyD,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.E,
+                             Modifier.None,
+                             Action.BuildMenuKeyE,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.F,
+                             Modifier.None,
+                             Action.BuildMenuKeyF,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.G,
+                             Modifier.None,
+                             Action.BuildMenuKeyG,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.H,
+                             Modifier.None,
+                             Action.BuildMenuKeyH,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.I,
+                             Modifier.None,
+                             Action.BuildMenuKeyI,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.J,
+                             Modifier.None,
+                             Action.BuildMenuKeyJ,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.K,
+                             Modifier.None,
+                             Action.BuildMenuKeyK,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.L,
+                             Modifier.None,
+                             Action.BuildMenuKeyL,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.M,
+                             Modifier.None,
+                             Action.BuildMenuKeyM,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.N,
+                             Modifier.None,
+                             Action.BuildMenuKeyN,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.O,
+                             Modifier.None,
+                             Action.BuildMenuKeyO,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.P,
+                             Modifier.None,
+                             Action.BuildMenuKeyP,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Q,
+                             Modifier.None,
+                             Action.BuildMenuKeyQ,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.R,
+                             Modifier.None,
+                             Action.BuildMenuKeyR,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.S,
+                             Modifier.None,
+                             Action.BuildMenuKeyS,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.T,
+                             Modifier.None,
+                             Action.BuildMenuKeyT,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.U,
+                             Modifier.None,
+                             Action.BuildMenuKeyU,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.V,
+                             Modifier.None,
+                             Action.BuildMenuKeyV,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.W,
+                             Modifier.None,
+                             Action.BuildMenuKeyW,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.X,
+                             Modifier.None,
+                             Action.BuildMenuKeyX,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Y,
+                             Modifier.None,
+                             Action.BuildMenuKeyY,
+                             false,
+                             true),
+            new BindingEntry("BuildingsMenu",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Z,
+                             Modifier.None,
+                             Action.BuildMenuKeyZ,
+                             false,
+                             true),
+            new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.B, Modifier.Shift, Action.SandboxBrush),
+            new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.N, Modifier.Shift, Action.SandboxSprinkle),
+            new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.F, Modifier.Shift, Action.SandboxFlood),
+            new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.K, Modifier.Shift, Action.SandboxSample),
+            new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.H, Modifier.Shift, Action.SandboxHeatGun),
+            new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.J, Modifier.Shift, Action.SandboxStressTool),
+            new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.C, Modifier.Shift, Action.SandboxClearFloor),
+            new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.X, Modifier.Shift, Action.SandboxDestroy),
+            new BindingEntry("Sandbox",
+                             GamepadButton.NumButtons,
+                             KKeyCode.E,
+                             Modifier.Shift,
+                             Action.SandboxSpawnEntity),
+            new BindingEntry("Sandbox",
+                             GamepadButton.NumButtons,
+                             KKeyCode.S,
+                             Modifier.Shift,
+                             Action.ToggleSandboxTools),
+            new BindingEntry("Sandbox", GamepadButton.NumButtons, KKeyCode.R, Modifier.Shift, Action.SandboxReveal),
+            new BindingEntry("Sandbox",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Z,
+                             Modifier.Shift,
+                             Action.SandboxCritterTool),
+            new BindingEntry("Sandbox",
+                             GamepadButton.NumButtons,
+                             KKeyCode.T,
+                             Modifier.Shift,
+                             Action.SandboxStoryTraitTool),
+            new BindingEntry("Sandbox",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Mouse0,
+                             Modifier.Ctrl,
+                             Action.SandboxCopyElement),
+            new BindingEntry("SwitchActiveWorld",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha1,
+                             Modifier.Backtick,
+                             Action.SwitchActiveWorld1,
+                             true,
+                             false,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY),
+            new BindingEntry("SwitchActiveWorld",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha2,
+                             Modifier.Backtick,
+                             Action.SwitchActiveWorld2,
+                             true,
+                             false,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY),
+            new BindingEntry("SwitchActiveWorld",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha3,
+                             Modifier.Backtick,
+                             Action.SwitchActiveWorld3,
+                             true,
+                             false,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY),
+            new BindingEntry("SwitchActiveWorld",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha4,
+                             Modifier.Backtick,
+                             Action.SwitchActiveWorld4,
+                             true,
+                             false,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY),
+            new BindingEntry("SwitchActiveWorld",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha5,
+                             Modifier.Backtick,
+                             Action.SwitchActiveWorld5,
+                             true,
+                             false,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY),
+            new BindingEntry("SwitchActiveWorld",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha6,
+                             Modifier.Backtick,
+                             Action.SwitchActiveWorld6,
+                             true,
+                             false,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY),
+            new BindingEntry("SwitchActiveWorld",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha7,
+                             Modifier.Backtick,
+                             Action.SwitchActiveWorld7,
+                             true,
+                             false,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY),
+            new BindingEntry("SwitchActiveWorld",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha8,
+                             Modifier.Backtick,
+                             Action.SwitchActiveWorld8,
+                             true,
+                             false,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY),
+            new BindingEntry("SwitchActiveWorld",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha9,
+                             Modifier.Backtick,
+                             Action.SwitchActiveWorld9,
+                             true,
+                             false,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY),
+            new BindingEntry("SwitchActiveWorld",
+                             GamepadButton.NumButtons,
+                             KKeyCode.Alpha0,
+                             Modifier.Backtick,
+                             Action.SwitchActiveWorld10,
+                             true,
+                             false,
+                             DlcManager.AVAILABLE_EXPANSION1_ONLY)
+        };
 
-	private static void AddBindings(HashedString parent_category, BuildMenu.DisplayInfo display_info, List<BindingEntry> bindings)
-	{
-		if (display_info.data != null)
-		{
-			Type type = display_info.data.GetType();
-			if (typeof(IList<BuildMenu.DisplayInfo>).IsAssignableFrom(type))
-			{
-				using (IEnumerator<BuildMenu.DisplayInfo> enumerator = ((IList<BuildMenu.DisplayInfo>)display_info.data).GetEnumerator())
-				{
-					while (enumerator.MoveNext())
-					{
-						BuildMenu.DisplayInfo display_info2 = enumerator.Current;
-						Global.AddBindings(display_info.category, display_info2, bindings);
-					}
-					return;
-				}
-			}
-			if (typeof(IList<BuildMenu.BuildingInfo>).IsAssignableFrom(type))
-			{
-				string str = HashCache.Get().Get(parent_category);
-				string group = new CultureInfo("en-US", false).TextInfo.ToTitleCase(str) + " Menu";
-				BindingEntry item = new BindingEntry(group, GamepadButton.NumButtons, display_info.keyCode, Modifier.None, display_info.hotkey, true, true);
-				bindings.Add(item);
-			}
-		}
-	}
+        var list2 = (IList<BuildMenu.DisplayInfo>)BuildMenu.OrderedBuildings.data;
+        if (BuildMenu.UseHotkeyBuildMenu() && hotKeyBuildMenuPermitted)
+            foreach (var display_info in list2)
+                AddBindings(HashedString.Invalid, display_info, list);
 
-	private void Awake()
-	{
-		KCrashReporter crash_reporter = base.GetComponent<KCrashReporter>();
-		if (crash_reporter != null & SceneInitializerLoader.ReportDeferredError == null)
-		{
-			SceneInitializerLoader.ReportDeferredError = delegate(SceneInitializerLoader.DeferredError deferred_error)
-			{
-				crash_reporter.ShowDialog(deferred_error.msg, deferred_error.stack_trace);
-			};
-		}
-		this.globalCanvas = GameObject.Find("Canvas");
-		UnityEngine.Object.DontDestroyOnLoad(this.globalCanvas.gameObject);
-		this.OutputSystemInfo();
-		global::Debug.Assert(Global.Instance == null);
-		Global.Instance = this;
-		global::Debug.Log("Initializing at " + System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-		global::Debug.Log("Save path: " + Util.RootFolder());
-		MyCmp.Init();
-		MySmi.Init();
-		DevToolManager.Instance.Init();
-		if (this.forcedAtlasInitializationList != null)
-		{
-			foreach (SpriteAtlas spriteAtlas in this.forcedAtlasInitializationList)
-			{
-				Sprite[] array2 = new Sprite[spriteAtlas.spriteCount];
-				spriteAtlas.GetSprites(array2);
-				Sprite[] array3 = array2;
-				for (int j = 0; j < array3.Length; j++)
-				{
-					Texture2D texture = array3[j].texture;
-					if (texture != null)
-					{
-						texture.filterMode = FilterMode.Bilinear;
-						texture.anisoLevel = 4;
-						texture.mipMapBias = 0f;
-					}
-				}
-			}
-		}
-		FileSystem.Initialize();
-		Singleton<StateMachineUpdater>.CreateInstance();
-		Singleton<StateMachineManager>.CreateInstance();
-		Localization.RegisterForTranslation(typeof(UI));
-		this.modManager = new KMod.Manager();
-		this.modManager.LoadModDBAndInitialize();
-		this.modManager.Load(Content.DLL);
-		this.modManager.Load(Content.Strings);
-		KSerialization.Manager.Initialize();
-		Global.InitializeGlobalInput();
-		Global.InitializeGlobalSound();
-		Global.InitializeGlobalAnimation();
-		Localization.Initialize();
-		this.modManager.Load(Content.Translation);
-		this.modManager.distribution_platforms.Add(new Local("Local", Label.DistributionPlatform.Local, false));
-		this.modManager.distribution_platforms.Add(new Local("Dev", Label.DistributionPlatform.Dev, true));
-		KProfiler.main_thread = Thread.CurrentThread;
-		this.RestoreLegacyMetricsSetting();
-		this.TestDataLocations();
-		DistributionPlatform.onExitRequest += this.OnExitRequest;
-		DistributionPlatform.onDlcAuthenticationFailed += this.OnDlcAuthenticationFailed;
-		if (DistributionPlatform.Initialized)
-		{
-			if (!KPrivacyPrefs.instance.disableDataCollection)
-			{
-				string[] array4 = new string[6];
-				array4[0] = "Logged into ";
-				array4[1] = DistributionPlatform.Inst.Name;
-				array4[2] = " with ID:";
-				int num = 3;
-				DistributionPlatform.UserId id = DistributionPlatform.Inst.LocalUser.Id;
-				array4[num] = ((id != null) ? id.ToString() : null);
-				array4[4] = ", NAME:";
-				array4[5] = DistributionPlatform.Inst.LocalUser.Name;
-				global::Debug.Log(string.Concat(array4));
-				ThreadedHttps<KleiAccount>.Instance.AuthenticateUser(new KleiAccount.GetUserIDdelegate(this.OnGetUserIdKey), false);
-			}
-			else
-			{
-				global::Debug.Log("Data collection disabled, account will not be used.");
-			}
-		}
-		else
-		{
-			global::Debug.LogWarning("Can't init " + DistributionPlatform.Inst.Name + " distribution platform...");
-			this.OnGetUserIdKey();
-		}
-		ThreadedHttps<KleiItems>.Instance.LoadInventoryCache();
-		this.modManager.Load(Content.LayerableFiles);
-		WorldGen.LoadSettings(true);
-		base.StartCoroutine(WorldGen.ListenForLoadSettingsErrorRoutine());
-		GlobalResources.Instance();
-	}
+        return list.ToArray();
+    }
 
-	private static void InitializeGlobalInput()
-	{
-		if (Game.IsQuitting())
-		{
-			return;
-		}
-		Global.mInputManager = new GameInputManager(Global.GenerateDefaultBindings(true));
-	}
+    private static void AddBindings(HashedString          parent_category,
+                                    BuildMenu.DisplayInfo display_info,
+                                    List<BindingEntry>    bindings) {
+        if (display_info.data != null) {
+            var type = display_info.data.GetType();
+            if (typeof(IList<BuildMenu.DisplayInfo>).IsAssignableFrom(type))
+                using (var enumerator = ((IList<BuildMenu.DisplayInfo>)display_info.data).GetEnumerator()) {
+                    while (enumerator.MoveNext()) {
+                        var display_info2 = enumerator.Current;
+                        AddBindings(display_info.category, display_info2, bindings);
+                    }
 
-	private static void InitializeGlobalSound()
-	{
-		Audio.Get();
-		Singleton<SoundEventVolumeCache>.CreateInstance();
-	}
+                    return;
+                }
 
-	private static void InitializeGlobalAnimation()
-	{
-		KAnimBatchManager.CreateInstance();
-		Singleton<AnimEventManager>.CreateInstance();
-		Singleton<KBatchedAnimUpdater>.CreateInstance();
-	}
+            if (typeof(IList<BuildMenu.BuildingInfo>).IsAssignableFrom(type)) {
+                var str   = HashCache.Get().Get(parent_category);
+                var group = new CultureInfo("en-US", false).TextInfo.ToTitleCase(str) + " Menu";
+                var item = new BindingEntry(group,
+                                            GamepadButton.NumButtons,
+                                            display_info.keyCode,
+                                            Modifier.None,
+                                            display_info.hotkey,
+                                            true,
+                                            true);
 
-	private void OnExitRequest()
-	{
-		bool flag = true;
-		if (Game.Instance != null)
-		{
-			string filename = SaveLoader.GetActiveSaveFilePath();
-			if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
-			{
-				flag = false;
-				KScreen component = KScreenManager.AddChild(this.globalCanvas, ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject).GetComponent<KScreen>();
-				component.Activate();
-				component.GetComponent<ConfirmDialogScreen>().PopupConfirmDialog(string.Format(UI.FRONTEND.RAILFORCEQUIT.SAVE_EXIT, Path.GetFileNameWithoutExtension(filename)), delegate
-				{
-					SaveLoader.Instance.Save(filename, false, true);
-					App.Quit();
-				}, delegate
-				{
-					App.Quit();
-				}, null, null, null, null, null, null);
-			}
-		}
-		if (flag)
-		{
-			KScreen component2 = KScreenManager.AddChild(this.globalCanvas, ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject).GetComponent<KScreen>();
-			component2.Activate();
-			component2.GetComponent<ConfirmDialogScreen>().PopupConfirmDialog(UI.FRONTEND.RAILFORCEQUIT.WARN_EXIT, delegate
-			{
-				App.Quit();
-			}, null, null, null, null, null, null, null);
-		}
-	}
+                bindings.Add(item);
+            }
+        }
+    }
 
-	private void OnDlcAuthenticationFailed()
-	{
-		if (DlcManager.IsExpansion1Active())
-		{
-			KScreen component = KScreenManager.AddChild(this.globalCanvas, ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject).GetComponent<KScreen>();
-			component.Activate();
-			ConfirmDialogScreen component2 = component.GetComponent<ConfirmDialogScreen>();
-			component2.deactivateOnCancelAction = false;
-			component2.PopupConfirmDialog(UI.FRONTEND.RAILFORCEQUIT.DLC_NOT_PURCHASED, delegate
-			{
-				App.Quit();
-			}, null, null, null, null, null, null, null);
-		}
-	}
+    private void Awake() {
+        var crash_reporter = GetComponent<KCrashReporter>();
+        if ((crash_reporter != null) & (SceneInitializerLoader.ReportDeferredError == null))
+            SceneInitializerLoader.ReportDeferredError = delegate(SceneInitializerLoader.DeferredError deferred_error) {
+                                                             crash_reporter.ShowDialog(deferred_error.msg,
+                                                              deferred_error.stack_trace);
+                                                         };
 
-	private void RestoreLegacyMetricsSetting()
-	{
-		if (KPlayerPrefs.GetInt("ENABLE_METRICS", 1) == 0)
-		{
-			KPlayerPrefs.DeleteKey("ENABLE_METRICS");
-			KPlayerPrefs.Save();
-			KPrivacyPrefs.instance.disableDataCollection = true;
-			KPrivacyPrefs.Save();
-		}
-	}
+        globalCanvas = GameObject.Find("Canvas");
+        DontDestroyOnLoad(globalCanvas.gameObject);
+        OutputSystemInfo();
+        Debug.Assert(Instance == null);
+        Instance = this;
+        Debug.Log("Initializing at " + System.DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff"));
+        Debug.Log("Save path: "      + Util.RootFolder());
+        MyCmp.Init();
+        MySmi.Init();
+        DevToolManager.Instance.Init();
+        if (forcedAtlasInitializationList != null)
+            foreach (var spriteAtlas in forcedAtlasInitializationList) {
+                var array2 = new Sprite[spriteAtlas.spriteCount];
+                spriteAtlas.GetSprites(array2);
+                var array3 = array2;
+                for (var j = 0; j < array3.Length; j++) {
+                    var texture = array3[j].texture;
+                    if (texture != null) {
+                        texture.filterMode = FilterMode.Bilinear;
+                        texture.anisoLevel = 4;
+                        texture.mipMapBias = 0f;
+                    }
+                }
+            }
 
-	private void TestDataLocations()
-	{
-		if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.WindowsEditor)
-		{
-			try
-			{
-				string text = Util.RootFolder();
-				string text2 = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-				text2 = Path.Combine(text2, "Klei");
-				text2 = Path.Combine(text2, Util.GetTitleFolderName());
-				global::Debug.Log("Test Data Location / docs / " + text);
-				global::Debug.Log("Test Data Location / local / " + text2);
-				if (!System.IO.Directory.Exists(text2))
-				{
-					System.IO.Directory.CreateDirectory(text2);
-				}
-				if (!System.IO.Directory.Exists(text))
-				{
-					System.IO.Directory.CreateDirectory(text);
-				}
-				string text3 = Path.Combine(text, "test");
-				string text4 = Path.Combine(text2, "test");
-				string[] array = new string[]
-				{
-					text3,
-					text4
-				};
-				bool[] array2 = new bool[2];
-				bool[] array3 = new bool[2];
-				bool[] array4 = new bool[2];
-				for (int i = 0; i < array.Length; i++)
-				{
-					try
-					{
-						using (FileStream fileStream = File.Open(array[i], FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
-						{
-							byte[] bytes = Encoding.UTF8.GetBytes("test");
-							fileStream.Write(bytes, 0, bytes.Length);
-							array2[i] = true;
-						}
-					}
-					catch (Exception ex)
-					{
-						array2[i] = false;
-						DebugUtil.LogWarningArgs(new object[]
-						{
-							"Test Data Locations / failed to write " + array[i] + ": " + ex.Message
-						});
-					}
-					try
-					{
-						using (FileStream fileStream2 = File.Open(array[i], FileMode.Open, FileAccess.Read))
-						{
-							Encoding utf = Encoding.UTF8;
-							byte[] array5 = new byte[fileStream2.Length];
-							if ((long)fileStream2.Read(array5, 0, array5.Length) == fileStream2.Length)
-							{
-								string @string = utf.GetString(array5);
-								if (@string == "test")
-								{
-									array3[i] = true;
-								}
-								else
-								{
-									array3[i] = false;
-									DebugUtil.LogWarningArgs(new object[]
-									{
-										string.Concat(new string[]
-										{
-											"Test Data Locations / failed to validate contents ",
-											array[i],
-											", got: `",
-											@string,
-											"`"
-										})
-									});
-								}
-							}
-						}
-					}
-					catch (Exception ex2)
-					{
-						array3[i] = false;
-						DebugUtil.LogWarningArgs(new object[]
-						{
-							"Test Data Locations / failed to read " + array[i] + ": " + ex2.Message
-						});
-					}
-					try
-					{
-						File.Delete(array[i]);
-						array4[i] = true;
-					}
-					catch (Exception ex3)
-					{
-						array4[i] = false;
-						DebugUtil.LogWarningArgs(new object[]
-						{
-							"Test Data Locations / failed to remove " + array[i] + ": " + ex3.Message
-						});
-					}
-				}
-				for (int j = 0; j < array.Length; j++)
-				{
-					global::Debug.Log(string.Concat(new string[]
-					{
-						"Test Data Locations / ",
-						array[j],
-						" / write ",
-						array2[j].ToString(),
-						" / read ",
-						array3[j].ToString(),
-						" / removed ",
-						array4[j].ToString()
-					}));
-				}
-				bool flag = array2[0] && array3[0];
-				bool flag2 = array2[1] && array3[1];
-				if (flag && flag2)
-				{
-					Global.saveFolderTestResult = "both";
-				}
-				else if (flag && !flag2)
-				{
-					Global.saveFolderTestResult = "docs_only";
-				}
-				else if (!flag && flag2)
-				{
-					Global.saveFolderTestResult = "local_only";
-				}
-				else
-				{
-					Global.saveFolderTestResult = "neither";
-				}
-			}
-			catch (Exception ex4)
-			{
-				KCrashReporter.Assert(false, "Test Data Locations / failed: " + ex4.Message, new string[]
-				{
-					KCrashReporter.CRASH_CATEGORY.FILEIO
-				});
-			}
-		}
-	}
+        FileSystem.Initialize();
+        Singleton<StateMachineUpdater>.CreateInstance();
+        Singleton<StateMachineManager>.CreateInstance();
+        Localization.RegisterForTranslation(typeof(UI));
+        modManager = new Manager();
+        modManager.LoadModDBAndInitialize();
+        modManager.Load(Content.DLL);
+        modManager.Load(Content.Strings);
+        KSerialization.Manager.Initialize();
+        InitializeGlobalInput();
+        InitializeGlobalSound();
+        InitializeGlobalAnimation();
+        Localization.Initialize();
+        modManager.Load(Content.Translation);
+        modManager.distribution_platforms.Add(new Local("Local", Label.DistributionPlatform.Local, false));
+        modManager.distribution_platforms.Add(new Local("Dev",   Label.DistributionPlatform.Dev,   true));
+        KProfiler.main_thread = Thread.CurrentThread;
+        RestoreLegacyMetricsSetting();
+        TestDataLocations();
+        DistributionPlatform.onExitRequest             += OnExitRequest;
+        DistributionPlatform.onDlcAuthenticationFailed += OnDlcAuthenticationFailed;
+        if (DistributionPlatform.Initialized) {
+            if (!KPrivacyPrefs.instance.disableDataCollection) {
+                var array4 = new string[6];
+                array4[0] = "Logged into ";
+                array4[1] = DistributionPlatform.Inst.Name;
+                array4[2] = " with ID:";
+                var num = 3;
+                var id  = DistributionPlatform.Inst.LocalUser.Id;
+                array4[num] = id != null ? id.ToString() : null;
+                array4[4]   = ", NAME:";
+                array4[5]   = DistributionPlatform.Inst.LocalUser.Name;
+                Debug.Log(string.Concat(array4));
+                ThreadedHttps<KleiAccount>.Instance.AuthenticateUser(OnGetUserIdKey);
+            } else
+                Debug.Log("Data collection disabled, account will not be used.");
+        } else {
+            Debug.LogWarning("Can't init " + DistributionPlatform.Inst.Name + " distribution platform...");
+            OnGetUserIdKey();
+        }
 
-	public static GameInputManager GetInputManager()
-	{
-		if (Global.mInputManager == null)
-		{
-			Global.InitializeGlobalInput();
-		}
-		return Global.mInputManager;
-	}
+        ThreadedHttps<KleiItems>.Instance.LoadInventoryCache();
+        modManager.Load(Content.LayerableFiles);
+        WorldGen.LoadSettings(true);
+        StartCoroutine(WorldGen.ListenForLoadSettingsErrorRoutine());
+        GlobalResources.Instance();
+    }
 
-	private void OnApplicationFocus(bool focus)
-	{
-		if (Global.mInputManager != null)
-		{
-			Global.mInputManager.OnApplicationFocus(focus);
-		}
-	}
+    private static void InitializeGlobalInput() {
+        if (Game.IsQuitting()) return;
 
-	private void OnGetUserIdKey()
-	{
-		this.gotKleiUserID = true;
-	}
+        mInputManager = new GameInputManager(GenerateDefaultBindings());
+    }
 
-	private void Update()
-	{
-		ImGuiRenderer instance = ImGuiRenderer.GetInstance();
-		if (instance)
-		{
-			this.DevTools.UpdateShouldShowTools();
-			instance.gameObject.transform.parent.gameObject.SetActive(this.DevTools.Show);
-			if (this.DevTools.Show)
-			{
-				instance.NewFrame();
-			}
-			this.DevTools.UpdateTools();
-		}
-		Global.mInputManager.Update();
-		if (Singleton<AnimEventManager>.Instance != null)
-		{
-			Singleton<AnimEventManager>.Instance.Update();
-		}
-		if (DistributionPlatform.Initialized && !this.updated_with_initialized_distribution_platform)
-		{
-			this.updated_with_initialized_distribution_platform = true;
-			SteamUGCService.Initialize();
-			Steam steam = new Steam();
-			SteamUGCService.Instance.AddClient(steam);
-			this.modManager.distribution_platforms.Add(steam);
-			SteamAchievementService.Initialize();
-		}
-		if (this.gotKleiUserID)
-		{
-			this.gotKleiUserID = false;
-			ThreadedHttps<KleiMetrics>.Instance.SetCallBacks(new System.Action(this.SetONIStaticSessionVariables), new Action<Dictionary<string, object>>(this.SetONIDynamicSessionVariables));
-			ThreadedHttps<KleiMetrics>.Instance.StartSession();
-			KleiItems.AddRequestInventoryRefresh(null);
-			KleiItems.AddRequestGetPricingInfo(null);
-		}
-		ThreadedHttps<KleiMetrics>.Instance.SetLastUserAction(KInputManager.lastUserActionTicks);
-		Localization.VerifyTranslationModSubscription(this.globalCanvas);
-		if (DistributionPlatform.Initialized)
-		{
-			ThreadedHttps<KleiItems>.Instance.Update();
-		}
-	}
+    private static void InitializeGlobalSound() {
+        Audio.Get();
+        Singleton<SoundEventVolumeCache>.CreateInstance();
+    }
 
-	private void SetONIStaticSessionVariables()
-	{
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch", "release");
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build", 626616U);
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("SaveFolderWriteTest", Global.saveFolderTestResult);
-		if (KPlayerPrefs.HasKey(UnitConfigurationScreen.MassUnitKey))
-		{
-			ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.MassUnitKey, ((GameUtil.MassUnit)KPlayerPrefs.GetInt(UnitConfigurationScreen.MassUnitKey)).ToString());
-		}
-		if (KPlayerPrefs.HasKey(UnitConfigurationScreen.TemperatureUnitKey))
-		{
-			ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.TemperatureUnitKey, ((GameUtil.TemperatureUnit)KPlayerPrefs.GetInt(UnitConfigurationScreen.TemperatureUnitKey)).ToString());
-		}
-		int selectedLanguageType = (int)Localization.GetSelectedLanguageType();
-		ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(Global.LanguageCodeKey, Localization.GetCurrentLanguageCode());
-		if (selectedLanguageType == 2)
-		{
-			ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(Global.LanguageModKey, LanguageOptionsScreen.GetSavedLanguageMod());
-		}
-	}
+    private static void InitializeGlobalAnimation() {
+        KAnimBatchManager.CreateInstance();
+        Singleton<AnimEventManager>.CreateInstance();
+        Singleton<KBatchedAnimUpdater>.CreateInstance();
+    }
 
-	private void SetONIDynamicSessionVariables(Dictionary<string, object> data)
-	{
-		if (Game.Instance != null && GameClock.Instance != null)
-		{
-			data.Add("GameTimeSeconds", (uint)GameClock.Instance.GetTime());
-			data.Add("WasDebugEverUsed", Game.Instance.debugWasUsed);
-			data.Add("IsSandboxEnabled", SaveGame.Instance.sandboxEnabled);
-		}
-	}
+    private void OnExitRequest() {
+        var flag = true;
+        if (Game.Instance != null) {
+            var filename = SaveLoader.GetActiveSaveFilePath();
+            if (!string.IsNullOrEmpty(filename) && File.Exists(filename)) {
+                flag = false;
+                var component = KScreenManager
+                                .AddChild(globalCanvas, ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject)
+                                .GetComponent<KScreen>();
 
-	private void LateUpdate()
-	{
-		StreamedTextures.UpdateRequests();
-		Singleton<KBatchedAnimUpdater>.Instance.LateUpdate();
-		if (this.DevTools.Show)
-		{
-			ImGuiRenderer instance = ImGuiRenderer.GetInstance();
-			if (instance == null)
-			{
-				return;
-			}
-			instance.EndFrame();
-		}
-	}
+                component.Activate();
+                component.GetComponent<ConfirmDialogScreen>()
+                         .PopupConfirmDialog(string.Format(UI.FRONTEND.RAILFORCEQUIT.SAVE_EXIT,
+                                                           Path.GetFileNameWithoutExtension(filename)),
+                                             delegate {
+                                                 SaveLoader.Instance.Save(filename);
+                                                 App.Quit();
+                                             },
+                                             delegate { App.Quit(); });
+            }
+        }
 
-	private void OnDestroy()
-	{
-		if (this.modManager != null)
-		{
-			this.modManager.Shutdown();
-		}
-		Global.Instance = null;
-		if (Singleton<AnimEventManager>.Instance != null)
-		{
-			Singleton<AnimEventManager>.Instance.FreeResources();
-		}
-		Singleton<KBatchedAnimUpdater>.DestroyInstance();
-	}
+        if (flag) {
+            var component2 = KScreenManager
+                             .AddChild(globalCanvas, ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject)
+                             .GetComponent<KScreen>();
 
-	private void OnApplicationQuit()
-	{
-		KGlobalAnimParser.DestroyInstance();
-		ThreadedHttps<KleiMetrics>.Instance.EndSession(false);
-	}
+            component2.Activate();
+            component2.GetComponent<ConfirmDialogScreen>()
+                      .PopupConfirmDialog(UI.FRONTEND.RAILFORCEQUIT.WARN_EXIT, delegate { App.Quit(); }, null);
+        }
+    }
 
-	private void OutputSystemInfo()
-	{
-		try
-		{
-			Console.WriteLine("SYSTEM INFO:");
-			foreach (KeyValuePair<string, object> keyValuePair in KleiMetrics.GetHardwareStats())
-			{
-				try
-				{
-					Console.WriteLine(string.Format("    {0}={1}", keyValuePair.Key.ToString(), keyValuePair.Value.ToString()));
-				}
-				catch
-				{
-				}
-			}
-			Console.WriteLine(string.Format("    {0}={1}", "System Language", Application.systemLanguage.ToString()));
-		}
-		catch
-		{
-		}
-	}
+    private void OnDlcAuthenticationFailed() {
+        if (DlcManager.IsExpansion1Active()) {
+            var component = KScreenManager.AddChild(globalCanvas, ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject)
+                                          .GetComponent<KScreen>();
 
-	public SpriteAtlas[] forcedAtlasInitializationList;
+            component.Activate();
+            var component2 = component.GetComponent<ConfirmDialogScreen>();
+            component2.deactivateOnCancelAction = false;
+            component2.PopupConfirmDialog(UI.FRONTEND.RAILFORCEQUIT.DLC_NOT_PURCHASED, delegate { App.Quit(); }, null);
+        }
+    }
 
-	public GameObject modErrorsPrefab;
+    private void RestoreLegacyMetricsSetting() {
+        if (KPlayerPrefs.GetInt("ENABLE_METRICS", 1) == 0) {
+            KPlayerPrefs.DeleteKey("ENABLE_METRICS");
+            KPlayerPrefs.Save();
+            KPrivacyPrefs.instance.disableDataCollection = true;
+            KPrivacyPrefs.Save();
+        }
+    }
 
-	public GameObject globalCanvas;
+    private void TestDataLocations() {
+        if (Application.platform == RuntimePlatform.WindowsPlayer ||
+            Application.platform == RuntimePlatform.WindowsEditor)
+            try {
+                var text  = Util.RootFolder();
+                var text2 = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                text2 = Path.Combine(text2, "Klei");
+                text2 = Path.Combine(text2, Util.GetTitleFolderName());
+                Debug.Log("Test Data Location / docs / "  + text);
+                Debug.Log("Test Data Location / local / " + text2);
+                if (!Directory.Exists(text2)) Directory.CreateDirectory(text2);
+                if (!Directory.Exists(text)) Directory.CreateDirectory(text);
+                var      text3  = Path.Combine(text,  "test");
+                var      text4  = Path.Combine(text2, "test");
+                string[] array  = { text3, text4 };
+                var      array2 = new bool[2];
+                var      array3 = new bool[2];
+                var      array4 = new bool[2];
+                for (var i = 0; i < array.Length; i++) {
+                    try {
+                        using (var fileStream
+                               = File.Open(array[i], FileMode.Create, FileAccess.Write, FileShare.ReadWrite)) {
+                            var bytes = Encoding.UTF8.GetBytes("test");
+                            fileStream.Write(bytes, 0, bytes.Length);
+                            array2[i] = true;
+                        }
+                    } catch (Exception ex) {
+                        array2[i] = false;
+                        DebugUtil.LogWarningArgs("Test Data Locations / failed to write " +
+                                                 array[i]                                 +
+                                                 ": "                                     +
+                                                 ex.Message);
+                    }
 
-	private static GameInputManager mInputManager;
+                    try {
+                        using (var fileStream2 = File.Open(array[i], FileMode.Open, FileAccess.Read)) {
+                            var utf    = Encoding.UTF8;
+                            var array5 = new byte[fileStream2.Length];
+                            if (fileStream2.Read(array5, 0, array5.Length) == fileStream2.Length) {
+                                var @string = utf.GetString(array5);
+                                if (@string == "test")
+                                    array3[i] = true;
+                                else {
+                                    array3[i] = false;
+                                    DebugUtil
+                                        .LogWarningArgs(string
+                                                            .Concat("Test Data Locations / failed to validate contents ",
+                                                                    array[i],
+                                                                    ", got: `",
+                                                                    @string,
+                                                                    "`"));
+                                }
+                            }
+                        }
+                    } catch (Exception ex2) {
+                        array3[i] = false;
+                        DebugUtil.LogWarningArgs("Test Data Locations / failed to read " +
+                                                 array[i]                                +
+                                                 ": "                                    +
+                                                 ex2.Message);
+                    }
 
-	private DevToolManager DevTools = new DevToolManager();
+                    try {
+                        File.Delete(array[i]);
+                        array4[i] = true;
+                    } catch (Exception ex3) {
+                        array4[i] = false;
+                        DebugUtil.LogWarningArgs("Test Data Locations / failed to remove " +
+                                                 array[i]                                  +
+                                                 ": "                                      +
+                                                 ex3.Message);
+                    }
+                }
 
-	public KMod.Manager modManager;
+                for (var j = 0; j < array.Length; j++)
+                    Debug.Log(string.Concat("Test Data Locations / ",
+                                            array[j],
+                                            " / write ",
+                                            array2[j].ToString(),
+                                            " / read ",
+                                            array3[j].ToString(),
+                                            " / removed ",
+                                            array4[j].ToString()));
 
-	private bool gotKleiUserID;
+                var flag  = array2[0] && array3[0];
+                var flag2 = array2[1] && array3[1];
+                if (flag && flag2)
+                    saveFolderTestResult = "both";
+                else if (flag && !flag2)
+                    saveFolderTestResult = "docs_only";
+                else if (!flag && flag2)
+                    saveFolderTestResult = "local_only";
+                else
+                    saveFolderTestResult = "neither";
+            } catch (Exception ex4) {
+                KCrashReporter.Assert(false,
+                                      "Test Data Locations / failed: " + ex4.Message,
+                                      new[] { KCrashReporter.CRASH_CATEGORY.FILEIO });
+            }
+    }
 
-	private static string saveFolderTestResult = "unknown";
+    public static GameInputManager GetInputManager() {
+        if (mInputManager == null) InitializeGlobalInput();
+        return mInputManager;
+    }
 
-	private bool updated_with_initialized_distribution_platform;
+    private void OnApplicationFocus(bool focus) {
+        if (mInputManager != null) mInputManager.OnApplicationFocus(focus);
+    }
 
-	public static readonly string LanguageModKey = "LanguageMod";
+    private void OnGetUserIdKey() { gotKleiUserID = true; }
 
-	public static readonly string LanguageCodeKey = "LanguageCode";
+    private void Update() {
+        var instance = ImGuiRenderer.GetInstance();
+        if (instance) {
+            DevTools.UpdateShouldShowTools();
+            instance.gameObject.transform.parent.gameObject.SetActive(DevTools.Show);
+            if (DevTools.Show) instance.NewFrame();
+            DevTools.UpdateTools();
+        }
+
+        mInputManager.Update();
+        if (Singleton<AnimEventManager>.Instance != null) Singleton<AnimEventManager>.Instance.Update();
+        if (DistributionPlatform.Initialized && !updated_with_initialized_distribution_platform) {
+            updated_with_initialized_distribution_platform = true;
+            SteamUGCService.Initialize();
+            var steam = new Steam();
+            SteamUGCService.Instance.AddClient(steam);
+            modManager.distribution_platforms.Add(steam);
+            SteamAchievementService.Initialize();
+        }
+
+        if (gotKleiUserID) {
+            gotKleiUserID = false;
+            ThreadedHttps<KleiMetrics>.Instance.SetCallBacks(SetONIStaticSessionVariables,
+                                                             SetONIDynamicSessionVariables);
+
+            ThreadedHttps<KleiMetrics>.Instance.StartSession();
+            KleiItems.AddRequestInventoryRefresh();
+            KleiItems.AddRequestGetPricingInfo();
+        }
+
+        ThreadedHttps<KleiMetrics>.Instance.SetLastUserAction(KInputManager.lastUserActionTicks);
+        Localization.VerifyTranslationModSubscription(globalCanvas);
+        if (DistributionPlatform.Initialized) ThreadedHttps<KleiItems>.Instance.Update();
+    }
+
+    private void SetONIStaticSessionVariables() {
+        ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Branch",              "release");
+        ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("Build",               642695U);
+        ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable("SaveFolderWriteTest", saveFolderTestResult);
+        if (KPlayerPrefs.HasKey(UnitConfigurationScreen.MassUnitKey))
+            ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.MassUnitKey,
+                                                                         ((GameUtil.MassUnit)
+                                                                             KPlayerPrefs.GetInt(UnitConfigurationScreen
+                                                                                 .MassUnitKey)).ToString());
+
+        if (KPlayerPrefs.HasKey(UnitConfigurationScreen.TemperatureUnitKey))
+            ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(UnitConfigurationScreen.TemperatureUnitKey,
+                                                                         ((GameUtil.TemperatureUnit)
+                                                                             KPlayerPrefs.GetInt(UnitConfigurationScreen
+                                                                                 .TemperatureUnitKey)).ToString());
+
+        var selectedLanguageType = (int)Localization.GetSelectedLanguageType();
+        ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(LanguageCodeKey,
+                                                                     Localization.GetCurrentLanguageCode());
+
+        if (selectedLanguageType == 2)
+            ThreadedHttps<KleiMetrics>.Instance.SetStaticSessionVariable(LanguageModKey,
+                                                                         LanguageOptionsScreen.GetSavedLanguageMod());
+    }
+
+    private void SetONIDynamicSessionVariables(Dictionary<string, object> data) {
+        if (Game.Instance != null && GameClock.Instance != null) {
+            data.Add("GameTimeSeconds",  (uint)GameClock.Instance.GetTime());
+            data.Add("WasDebugEverUsed", Game.Instance.debugWasUsed);
+            data.Add("IsSandboxEnabled", SaveGame.Instance.sandboxEnabled);
+        }
+    }
+
+    private void LateUpdate() {
+        StreamedTextures.UpdateRequests();
+        Singleton<KBatchedAnimUpdater>.Instance.LateUpdate();
+        if (DevTools.Show) {
+            var instance = ImGuiRenderer.GetInstance();
+            if (instance == null) return;
+
+            instance.EndFrame();
+        }
+    }
+
+    private void OnDestroy() {
+        if (modManager != null) modManager.Shutdown();
+        Instance = null;
+        if (Singleton<AnimEventManager>.Instance != null) Singleton<AnimEventManager>.Instance.FreeResources();
+        Singleton<KBatchedAnimUpdater>.DestroyInstance();
+    }
+
+    private void OnApplicationQuit() {
+        KGlobalAnimParser.DestroyInstance();
+        ThreadedHttps<KleiMetrics>.Instance.EndSession();
+    }
+
+    private void OutputSystemInfo() {
+        try {
+            Console.WriteLine("SYSTEM INFO:");
+            foreach (var keyValuePair in KleiMetrics.GetHardwareStats())
+                try { Console.WriteLine("    {0}={1}", keyValuePair.Key, keyValuePair.Value); } catch { }
+
+            Console.WriteLine("    {0}={1}", "System Language", Application.systemLanguage.ToString());
+        } catch { }
+    }
 }

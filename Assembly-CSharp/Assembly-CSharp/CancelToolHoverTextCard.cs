@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CancelToolHoverTextCard : HoverTextConfiguration
 {
-	public override void UpdateHoverElements(List<KSelectable> selected)
+		public override void UpdateHoverElements(List<KSelectable> selected)
 	{
 		string lastEnabledFilter = ToolMenu.Instance.toolParameterMenu.GetLastEnabledFilter();
 		HoverTextScreen instance = HoverTextScreen.Instance;
@@ -27,7 +27,7 @@ public class CancelToolHoverTextCard : HoverTextConfiguration
 		hoverTextDrawer.EndDrawing();
 	}
 
-	protected override void ConfigureTitle(HoverTextScreen screen)
+		protected override void ConfigureTitle(HoverTextScreen screen)
 	{
 		string lastEnabledFilter = ToolMenu.Instance.toolParameterMenu.GetLastEnabledFilter();
 		if (string.IsNullOrEmpty(this.ToolName) || lastEnabledFilter == "ALL")
@@ -41,5 +41,5 @@ public class CancelToolHoverTextCard : HoverTextConfiguration
 		this.lastUpdatedFilter = lastEnabledFilter;
 	}
 
-	private string lastUpdatedFilter;
+		private string lastUpdatedFilter;
 }

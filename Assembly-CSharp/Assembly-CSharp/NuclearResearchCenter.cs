@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class NuclearResearchCenter : StateMachineComponent<NuclearResearchCenter.StatesInstance>, IResearchCenter, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.ResearchCenters.Add(this);
@@ -19,29 +19,29 @@ public class NuclearResearchCenter : StateMachineComponent<NuclearResearchCenter
 		Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Radiation, true);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.ResearchCenters.Remove(this);
 	}
 
-	public string GetResearchType()
+		public string GetResearchType()
 	{
 		return this.researchTypeID;
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		this.RefreshMeter();
 	}
 
-	private void RefreshMeter()
+		private void RefreshMeter()
 	{
 		float positionPercent = Mathf.Clamp01(this.particleStorage.Particles / this.particleStorage.Capacity());
 		this.particleMeter.SetPositionPercent(positionPercent);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return new List<Descriptor>
 		{
@@ -50,32 +50,32 @@ public class NuclearResearchCenter : StateMachineComponent<NuclearResearchCenter
 		};
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	public string researchTypeID;
+		public string researchTypeID;
 
-	public float materialPerPoint = 50f;
+		public float materialPerPoint = 50f;
 
-	public float timePerPoint;
+		public float timePerPoint;
 
-	public Tag inputMaterial;
+		public Tag inputMaterial;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private HighEnergyParticleStorage particleStorage;
 
-	public Meter.Offset particleMeterOffset;
+		public Meter.Offset particleMeterOffset;
 
-	private MeterController particleMeter;
+		private MeterController particleMeter;
 
-	private static readonly EventSystem.IntraObjectHandler<NuclearResearchCenter> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<NuclearResearchCenter>(delegate(NuclearResearchCenter component, object data)
+		private static readonly EventSystem.IntraObjectHandler<NuclearResearchCenter> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<NuclearResearchCenter>(delegate(NuclearResearchCenter component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	public class States : GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter>
+		public class States : GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.inoperational;
 			this.inoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.requirements, false);
@@ -106,7 +106,7 @@ public class NuclearResearchCenter : StateMachineComponent<NuclearResearchCenter
 			}).WorkableStopTransition((NuclearResearchCenter.StatesInstance smi) => smi.master.GetComponent<NuclearResearchCenterWorkable>(), this.ready.idle).WorkableCompleteTransition((NuclearResearchCenter.StatesInstance smi) => smi.master.GetComponent<NuclearResearchCenterWorkable>(), this.ready.idle);
 		}
 
-		protected bool IsAllResearchComplete()
+				protected bool IsAllResearchComplete()
 		{
 			using (List<Tech>.Enumerator enumerator = Db.Get().Techs.resources.GetEnumerator())
 			{
@@ -121,7 +121,7 @@ public class NuclearResearchCenter : StateMachineComponent<NuclearResearchCenter
 			return true;
 		}
 
-		private void UpdateNoResearchSelectedStatusItem(NuclearResearchCenter.StatesInstance smi, bool entering)
+				private void UpdateNoResearchSelectedStatusItem(NuclearResearchCenter.StatesInstance smi, bool entering)
 		{
 			bool flag = entering && !this.IsResearchSelected(smi) && !this.IsAllResearchComplete();
 			KSelectable component = smi.GetComponent<KSelectable>();
@@ -133,17 +133,17 @@ public class NuclearResearchCenter : StateMachineComponent<NuclearResearchCenter
 			component.RemoveStatusItem(Db.Get().BuildingStatusItems.NoResearchSelected, false);
 		}
 
-		private bool IsReady(NuclearResearchCenter.StatesInstance smi)
+				private bool IsReady(NuclearResearchCenter.StatesInstance smi)
 		{
 			return smi.GetComponent<HighEnergyParticleStorage>().Particles > smi.master.materialPerPoint;
 		}
 
-		private bool IsResearchSelected(NuclearResearchCenter.StatesInstance smi)
+				private bool IsResearchSelected(NuclearResearchCenter.StatesInstance smi)
 		{
 			return Research.Instance.GetActiveResearch() != null;
 		}
 
-		private bool IsResearchApplicable(NuclearResearchCenter.StatesInstance smi)
+				private bool IsResearchApplicable(NuclearResearchCenter.StatesInstance smi)
 		{
 			TechInstance activeResearch = Research.Instance.GetActiveResearch();
 			if (activeResearch != null && activeResearch.tech.costsByResearchTypeID.ContainsKey(smi.master.researchTypeID))
@@ -155,58 +155,58 @@ public class NuclearResearchCenter : StateMachineComponent<NuclearResearchCenter
 			return false;
 		}
 
-		private bool HasRadiation(NuclearResearchCenter.StatesInstance smi)
+				private bool HasRadiation(NuclearResearchCenter.StatesInstance smi)
 		{
 			return !smi.GetComponent<HighEnergyParticleStorage>().IsEmpty();
 		}
 
-		public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State inoperational;
+				public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State inoperational;
 
-		public NuclearResearchCenter.States.RequirementsState requirements;
+				public NuclearResearchCenter.States.RequirementsState requirements;
 
-		public NuclearResearchCenter.States.ReadyState ready;
+				public NuclearResearchCenter.States.ReadyState ready;
 
-		public class RequirementsState : GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State
+				public class RequirementsState : GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State
 		{
-			public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State highEnergyParticlesNeeded;
+						public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State highEnergyParticlesNeeded;
 
-			public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State noResearchSelected;
+						public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State noResearchSelected;
 
-			public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State noApplicableResearch;
+						public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State noApplicableResearch;
 		}
 
-		public class ReadyState : GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State
+				public class ReadyState : GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State
 		{
-			public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State idle;
+						public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State idle;
 
-			public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State working;
+						public GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.State working;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.GameInstance
+		public class StatesInstance : GameStateMachine<NuclearResearchCenter.States, NuclearResearchCenter.StatesInstance, NuclearResearchCenter, object>.GameInstance
 	{
-		public StatesInstance(NuclearResearchCenter master) : base(master)
+				public StatesInstance(NuclearResearchCenter master) : base(master)
 		{
 		}
 
-		public void CreateChore()
+				public void CreateChore()
 		{
 			Workable component = base.smi.master.GetComponent<NuclearResearchCenterWorkable>();
 			this.chore = new WorkChore<NuclearResearchCenterWorkable>(Db.Get().ChoreTypes.Research, component, null, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 			this.chore.preemption_cb = new Func<Chore.Precondition.Context, bool>(NuclearResearchCenter.StatesInstance.CanPreemptCB);
 		}
 
-		public void DestroyChore()
+				public void DestroyChore()
 		{
 			this.chore.Cancel("destroy me!");
 			this.chore = null;
 		}
 
-		private static bool CanPreemptCB(Chore.Precondition.Context context)
+				private static bool CanPreemptCB(Chore.Precondition.Context context)
 		{
-			Worker component = context.chore.driver.GetComponent<Worker>();
+			WorkerBase component = context.chore.driver.GetComponent<WorkerBase>();
 			float num = Db.Get().AttributeConverters.ResearchSpeed.Lookup(component).Evaluate();
-			Worker worker = context.consumerState.worker;
+			WorkerBase worker = context.consumerState.worker;
 			float num2 = Db.Get().AttributeConverters.ResearchSpeed.Lookup(worker).Evaluate();
 			TechInstance activeResearch = Research.Instance.GetActiveResearch();
 			if (activeResearch != null)
@@ -220,6 +220,6 @@ public class NuclearResearchCenter : StateMachineComponent<NuclearResearchCenter
 			return false;
 		}
 
-		private WorkChore<NuclearResearchCenterWorkable> chore;
+				private WorkChore<NuclearResearchCenterWorkable> chore;
 	}
 }

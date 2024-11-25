@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CellSelectionInstantiator : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		GameObject gameObject = Util.KInstantiate(this.CellSelectionPrefab, null, "WorldSelectionCollider");
 		GameObject gameObject2 = Util.KInstantiate(this.CellSelectionPrefab, null, "WorldSelectionCollider");
@@ -13,5 +13,5 @@ public class CellSelectionInstantiator : MonoBehaviour
 		component2.alternateSelectionObject = component;
 	}
 
-	public GameObject CellSelectionPrefab;
+		public GameObject CellSelectionPrefab;
 }

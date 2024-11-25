@@ -1,30 +1,18 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class MinionAssignablesProxyConfig : IEntityConfig
-{
-	public string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_ALL_VERSIONS;
-	}
+public class MinionAssignablesProxyConfig : IEntityConfig {
+    public static string   ID = "MinionAssignablesProxy";
+    public        string[] GetDlcIds() { return DlcManager.AVAILABLE_ALL_VERSIONS; }
 
-	public GameObject CreatePrefab()
-	{
-		GameObject gameObject = EntityTemplates.CreateEntity(MinionAssignablesProxyConfig.ID, MinionAssignablesProxyConfig.ID, true);
-		gameObject.AddOrGet<SaveLoadRoot>();
-		gameObject.AddOrGet<Ownables>();
-		gameObject.AddOrGet<Equipment>();
-		gameObject.AddOrGet<MinionAssignablesProxy>();
-		return gameObject;
-	}
+    public GameObject CreatePrefab() {
+        var gameObject = EntityTemplates.CreateEntity(ID, ID);
+        gameObject.AddOrGet<SaveLoadRoot>();
+        gameObject.AddOrGet<Ownables>();
+        gameObject.AddOrGet<Equipment>();
+        gameObject.AddOrGet<MinionAssignablesProxy>();
+        return gameObject;
+    }
 
-	public void OnPrefabInit(GameObject inst)
-	{
-	}
-
-	public void OnSpawn(GameObject inst)
-	{
-	}
-
-	public static string ID = "MinionAssignablesProxy";
+    public void OnPrefabInit(GameObject inst) { }
+    public void OnSpawn(GameObject      inst) { }
 }

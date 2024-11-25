@@ -2,13 +2,13 @@
 
 public interface IPlayerControlledToggle
 {
-	void ToggledByPlayer();
+		void ToggledByPlayer();
 
-	bool ToggledOn();
+		bool ToggledOn();
 
-	KSelectable GetSelectable();
+		KSelectable GetSelectable();
 
-		string SideScreenTitleKey { get; }
+			string SideScreenTitleKey { get; }
 
-			bool ToggleRequested { get; set; }
+				bool ToggleRequested { get; set; }
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class GoldCometConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(GoldCometConfig.ID, UI.SPACEDESTINATIONS.COMETS.GOLDCOMET.NAME, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
@@ -42,13 +42,13 @@ public class GoldCometConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static string ID = "GoldComet";
+		public static string ID = "GoldComet";
 }

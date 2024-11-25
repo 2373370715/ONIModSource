@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class DevToolEntity_DebugGoTo : DevTool
 {
-	public DevToolEntity_DebugGoTo() : this(Option.None)
+		public DevToolEntity_DebugGoTo() : this(Option.None)
 	{
 	}
 
-	public DevToolEntity_DebugGoTo(Option<DevToolEntityTarget.ForWorldGameObject> target)
+		public DevToolEntity_DebugGoTo(Option<DevToolEntityTarget.ForWorldGameObject> target)
 	{
 		this.targetOpt = target;
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (ImGui.BeginMenuBar())
 		{
@@ -101,7 +101,7 @@ public class DevToolEntity_DebugGoTo : DevTool
 		}
 	}
 
-	public static Option<string> GetErrorForCandidateTarget(DevToolEntityTarget uncastTarget)
+		public static Option<string> GetErrorForCandidateTarget(DevToolEntityTarget uncastTarget)
 	{
 		if (!(uncastTarget is DevToolEntityTarget.ForWorldGameObject))
 		{
@@ -119,7 +119,7 @@ public class DevToolEntity_DebugGoTo : DevTool
 		return Option.None;
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static string <RenderTo>g__GetCellName|6_1(Option<DevToolEntityTarget.ForSimCell> target)
 	{
 		if (!target.IsNone())
@@ -129,11 +129,11 @@ public class DevToolEntity_DebugGoTo : DevTool
 		return "<None>";
 	}
 
-	private Option<DevToolEntityTarget.ForWorldGameObject> targetOpt;
+		private Option<DevToolEntityTarget.ForWorldGameObject> targetOpt;
 
-	private Option<DevToolEntityTarget.ForSimCell> destinationSimCellTarget;
+		private Option<DevToolEntityTarget.ForSimCell> destinationSimCellTarget;
 
-	private bool shouldDrawBoundingBox = true;
+		private bool shouldDrawBoundingBox = true;
 
-	private bool shouldContinouslyRequest;
+		private bool shouldContinouslyRequest;
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SmartReservoir")]
 public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 {
-		public float PercentFull
+			public float PercentFull
 	{
 		get
 		{
@@ -14,25 +14,25 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<SmartReservoir>(-801688580, SmartReservoir.OnLogicValueChangedDelegate);
 		base.Subscribe<SmartReservoir>(-592767678, SmartReservoir.UpdateLogicCircuitDelegate);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<SmartReservoir>(-905833192, SmartReservoir.OnCopySettingsDelegate);
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		this.UpdateLogicCircuit(null);
 	}
 
-	private void UpdateLogicCircuit(object data)
+		private void UpdateLogicCircuit(object data)
 	{
 		float num = this.PercentFull * 100f;
 		if (this.activated)
@@ -50,7 +50,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		this.logicPorts.SendSignal(SmartReservoir.PORT_ID, flag ? 1 : 0);
 	}
 
-	private void OnLogicValueChanged(object data)
+		private void OnLogicValueChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 		if (logicValueChanged.portID == SmartReservoir.PORT_ID)
@@ -59,7 +59,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		SmartReservoir component = ((GameObject)data).GetComponent<SmartReservoir>();
 		if (component != null)
@@ -69,7 +69,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-	public void SetLogicMeter(bool on)
+		public void SetLogicMeter(bool on)
 	{
 		if (this.logicMeter != null)
 		{
@@ -77,7 +77,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-			public float ActivateValue
+				public float ActivateValue
 	{
 		get
 		{
@@ -90,7 +90,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-			public float DeactivateValue
+				public float DeactivateValue
 	{
 		get
 		{
@@ -103,7 +103,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-		public float MinValue
+			public float MinValue
 	{
 		get
 		{
@@ -111,7 +111,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-		public float MaxValue
+			public float MaxValue
 	{
 		get
 		{
@@ -119,7 +119,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-		public bool UseWholeNumbers
+			public bool UseWholeNumbers
 	{
 		get
 		{
@@ -127,7 +127,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-		public string ActivateTooltip
+			public string ActivateTooltip
 	{
 		get
 		{
@@ -135,7 +135,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-		public string DeactivateTooltip
+			public string DeactivateTooltip
 	{
 		get
 		{
@@ -143,7 +143,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-		public string ActivationRangeTitleText
+			public string ActivationRangeTitleText
 	{
 		get
 		{
@@ -151,7 +151,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-		public string ActivateSliderLabelText
+			public string ActivateSliderLabelText
 	{
 		get
 		{
@@ -159,7 +159,7 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-		public string DeactivateSliderLabelText
+			public string DeactivateSliderLabelText
 	{
 		get
 		{
@@ -167,42 +167,42 @@ public class SmartReservoir : KMonoBehaviour, IActivationRangeTarget, ISim200ms
 		}
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[Serialize]
+		[Serialize]
 	private int activateValue;
 
-	[Serialize]
+		[Serialize]
 	private int deactivateValue = 100;
 
-	[Serialize]
+		[Serialize]
 	private bool activated;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private LogicPorts logicPorts;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private MeterController logicMeter;
+		private MeterController logicMeter;
 
-	public static readonly HashedString PORT_ID = "SmartReservoirLogicPort";
+		public static readonly HashedString PORT_ID = "SmartReservoirLogicPort";
 
-	private static readonly EventSystem.IntraObjectHandler<SmartReservoir> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<SmartReservoir>(delegate(SmartReservoir component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SmartReservoir> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<SmartReservoir>(delegate(SmartReservoir component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<SmartReservoir> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<SmartReservoir>(delegate(SmartReservoir component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SmartReservoir> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<SmartReservoir>(delegate(SmartReservoir component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<SmartReservoir> UpdateLogicCircuitDelegate = new EventSystem.IntraObjectHandler<SmartReservoir>(delegate(SmartReservoir component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SmartReservoir> UpdateLogicCircuitDelegate = new EventSystem.IntraObjectHandler<SmartReservoir>(delegate(SmartReservoir component, object data)
 	{
 		component.UpdateLogicCircuit(data);
 	});

@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class PopFXManager : KScreen
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		PopFXManager.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		PopFXManager.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.ready = true;
@@ -31,12 +31,12 @@ public class PopFXManager : KScreen
 		}
 	}
 
-	public bool Ready()
+		public bool Ready()
 	{
 		return this.ready;
 	}
 
-	public PopFX SpawnFX(Sprite icon, string text, Transform target_transform, Vector3 offset, float lifetime = 1.5f, bool track_target = false, bool force_spawn = false)
+		public PopFX SpawnFX(Sprite icon, string text, Transform target_transform, Vector3 offset, float lifetime = 1.5f, bool track_target = false, bool force_spawn = false)
 	{
 		if (GenericGameSettings.instance.disablePopFx)
 		{
@@ -76,38 +76,38 @@ public class PopFXManager : KScreen
 		return popFX;
 	}
 
-	public PopFX SpawnFX(Sprite icon, string text, Transform target_transform, float lifetime = 1.5f, bool track_target = false)
+		public PopFX SpawnFX(Sprite icon, string text, Transform target_transform, float lifetime = 1.5f, bool track_target = false)
 	{
 		return this.SpawnFX(icon, text, target_transform, Vector3.zero, lifetime, track_target, false);
 	}
 
-	private PopFX CreatePopFX()
+		private PopFX CreatePopFX()
 	{
 		GameObject gameObject = Util.KInstantiate(this.Prefab_PopFX, base.gameObject, "Pooled_PopFX");
 		gameObject.transform.localScale = Vector3.one;
 		return gameObject.GetComponent<PopFX>();
 	}
 
-	public void RecycleFX(PopFX fx)
+		public void RecycleFX(PopFX fx)
 	{
 		this.Pool.Add(fx);
 	}
 
-	public static PopFXManager Instance;
+		public static PopFXManager Instance;
 
-	public GameObject Prefab_PopFX;
+		public GameObject Prefab_PopFX;
 
-	public List<PopFX> Pool = new List<PopFX>();
+		public List<PopFX> Pool = new List<PopFX>();
 
-	public Sprite sprite_Plus;
+		public Sprite sprite_Plus;
 
-	public Sprite sprite_Negative;
+		public Sprite sprite_Negative;
 
-	public Sprite sprite_Resource;
+		public Sprite sprite_Resource;
 
-	public Sprite sprite_Building;
+		public Sprite sprite_Building;
 
-	public Sprite sprite_Research;
+		public Sprite sprite_Research;
 
-	private bool ready;
+		private bool ready;
 }

@@ -7,12 +7,12 @@ using UnityEngine;
 
 public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		StoryManager.Instance.ForceCreateStory(Db.Get().Stories.MegaBrainTank, base.gameObject.GetMyWorldId());
@@ -23,13 +23,13 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 		base.smi.JournalDelivery.FillToCapacity = true;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		base.Unsubscribe(-1503271301);
 	}
 
-	private void OnBuildingSelect(object obj)
+		private void OnBuildingSelect(object obj)
 	{
 		if (!(bool)obj)
 		{
@@ -43,17 +43,17 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 		base.smi.ShowEventCompleteUI(null);
 	}
 
-	private void DoInitialUnlock()
+		private void DoInitialUnlock()
 	{
 		Game.Instance.unlocks.Unlock("story_trait_mega_brain_tank_initial", true);
 	}
 
-	[Serialize]
+		[Serialize]
 	private bool introDisplayed;
 
-	public class States : GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank>
+		public class States : GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.ParamsOnly;
 			default_state = this.root;
@@ -122,25 +122,25 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-		public MegaBrainTank.States.CommonState common;
+				public MegaBrainTank.States.CommonState common;
 
-		public StateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.Signal storyTraitCompleted;
+				public StateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.Signal storyTraitCompleted;
 
-		public Effect StatBonus;
+				public Effect StatBonus;
 
-		public class CommonState : GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.State
+				public class CommonState : GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.State
 		{
-			public GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.State dormant;
+						public GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.State dormant;
 
-			public GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.State idle;
+						public GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.State idle;
 
-			public GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.State active;
+						public GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.State active;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.GameInstance
+		public class StatesInstance : GameStateMachine<MegaBrainTank.States, MegaBrainTank.StatesInstance, MegaBrainTank, object>.GameInstance
 	{
-				public KBatchedAnimController BrainController
+						public KBatchedAnimController BrainController
 		{
 			get
 			{
@@ -148,7 +148,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-				public KBatchedAnimController ShelfController
+						public KBatchedAnimController ShelfController
 		{
 			get
 			{
@@ -156,19 +156,19 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-						public Storage BrainStorage { get; private set; }
+								public Storage BrainStorage { get; private set; }
 
-						public KSelectable Selectable { get; private set; }
+								public KSelectable Selectable { get; private set; }
 
-						public Operational Operational { get; private set; }
+								public Operational Operational { get; private set; }
 
-						public ElementConverter ElementConverter { get; private set; }
+								public ElementConverter ElementConverter { get; private set; }
 
-						public ManualDeliveryKG JournalDelivery { get; private set; }
+								public ManualDeliveryKG JournalDelivery { get; private set; }
 
-						public LoopingSounds BrainSounds { get; private set; }
+								public LoopingSounds BrainSounds { get; private set; }
 
-				public bool IsHungry
+						public bool IsHungry
 		{
 			get
 			{
@@ -176,7 +176,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-				public int TimeTilDigested
+						public int TimeTilDigested
 		{
 			get
 			{
@@ -184,7 +184,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-				public int ActivationProgress
+						public int ActivationProgress
 		{
 			get
 			{
@@ -192,7 +192,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-				public HashedString CurrentActivationAnim
+						public HashedString CurrentActivationAnim
 		{
 			get
 			{
@@ -200,7 +200,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-				private HashedString currentActivationLoop
+						private HashedString currentActivationLoop
 		{
 			get
 			{
@@ -209,7 +209,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-		public StatesInstance(MegaBrainTank master) : base(master)
+				public StatesInstance(MegaBrainTank master) : base(master)
 		{
 			this.BrainSounds = base.GetComponent<LoopingSounds>();
 			this.BrainStorage = base.GetComponent<Storage>();
@@ -223,7 +223,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			this.fxLink = new KAnimLink(this.BrainController, this.ShelfController);
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			this.InitializeEffectsList();
 			base.StartSM();
@@ -257,7 +257,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			this.CompleteBrainActivation();
 		}
 
-		public override void StopSM(string reason)
+				public override void StopSM(string reason)
 		{
 			this.BrainController.onAnimComplete -= this.OnAnimComplete;
 			this.ShelfController.onAnimComplete -= this.OnAnimComplete;
@@ -266,7 +266,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			base.StopSM(reason);
 		}
 
-		private void InitializeEffectsList()
+				private void InitializeEffectsList()
 		{
 			Components.Cmps<MinionIdentity> liveMinionIdentities = Components.LiveMinionIdentities;
 			liveMinionIdentities.OnAdd += this.OnLiveMinionIdAdded;
@@ -278,7 +278,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-		private void OnLiveMinionIdAdded(MinionIdentity id)
+				private void OnLiveMinionIdAdded(MinionIdentity id)
 		{
 			Effects component = id.GetComponent<Effects>();
 			MegaBrainTank.StatesInstance.minionEffects.Add(component);
@@ -288,13 +288,13 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-		private void OnLiveMinionIdRemoved(MinionIdentity id)
+				private void OnLiveMinionIdRemoved(MinionIdentity id)
 		{
 			Effects component = id.GetComponent<Effects>();
 			MegaBrainTank.StatesInstance.minionEffects.Remove(component);
 		}
 
-		public void SetBonusActive(bool active)
+				public void SetBonusActive(bool active)
 		{
 			for (int i = 0; i < MegaBrainTank.StatesInstance.minionEffects.Count; i++)
 			{
@@ -309,7 +309,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-		private void OnAnimComplete(HashedString anim)
+				private void OnAnimComplete(HashedString anim)
 		{
 			if (anim == MegaBrainTankConfig.KACHUNK)
 			{
@@ -322,7 +322,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-		private void OnJournalDeliveryStateChanged(Workable w, Workable.WorkableEvent state)
+				private void OnJournalDeliveryStateChanged(Workable w, Workable.WorkableEvent state)
 		{
 			if (state == Workable.WorkableEvent.WorkStopped)
 			{
@@ -349,7 +349,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			this.BrainStorage.SetWorkTime(num * this.BrainStorage.storageWorkTime);
 		}
 
-		public void ShelveJournals(float dt)
+				public void ShelveJournals(float dt)
 		{
 			float num = this.lastRemainingTime - this.BrainStorage.WorkTimeRemaining;
 			if (num <= 0f)
@@ -387,7 +387,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			this.UnitsFromLastStore -= 1;
 		}
 
-		public void StoreJournals()
+				public void StoreJournals()
 		{
 			this.lastRemainingTime = 0f;
 			this.activatedJournals = 0;
@@ -401,7 +401,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			this.targetProgress = Mathf.Clamp01(unitsAvailable / 25f);
 		}
 
-		public void ActivateBrains(float dt)
+				public void ActivateBrains(float dt)
 		{
 			if (this.currentlyActivating)
 			{
@@ -420,7 +420,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-		public void CompleteBrainActivation()
+				public void CompleteBrainActivation()
 		{
 			this.BrainController.Play(this.currentActivationLoop, KAnim.PlayMode.Loop, 1f, 0f);
 			this.nextActiveBrain += 1;
@@ -433,7 +433,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-		public void Digest(float dt)
+				public void Digest(float dt)
 		{
 			float unitsAvailable = this.BrainStorage.GetUnitsAvailable(DreamJournalConfig.ID);
 			this.timeTilDigested = unitsAvailable * 60f;
@@ -450,7 +450,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			}
 		}
 
-		public void CleanTank(bool active)
+				public void CleanTank(bool active)
 		{
 			this.SetBonusActive(active);
 			base.GetComponent<Light2D>().enabled = active;
@@ -478,7 +478,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			this.BrainSounds.StopSound(this.brainHum);
 		}
 
-		public bool IncrementMeter(float dt)
+				public bool IncrementMeter(float dt)
 		{
 			if (this.targetProgress - this.meterFill <= Mathf.Epsilon)
 			{
@@ -493,7 +493,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			return this.targetProgress - this.meterFill > 0.001f;
 		}
 
-		public void CompleteEvent()
+				public void CompleteEvent()
 		{
 			this.Selectable.RemoveStatusItem(Db.Get().BuildingStatusItems.MegaBrainTankActivationProgress, false);
 			this.Selectable.AddStatusItem(Db.Get().BuildingStatusItems.MegaBrainTankComplete, base.smi);
@@ -508,7 +508,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			this.notifier.Add(this.eventComplete, "");
 		}
 
-		public void ShowEventCompleteUI(object _ = null)
+				public void ShowEventCompleteUI(object _ = null)
 		{
 			if (this.eventComplete == null)
 			{
@@ -531,7 +531,7 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			});
 		}
 
-		private void OnCompleteStorySequence()
+				private void OnCompleteStorySequence()
 		{
 			Vector3 keepsakeSpawnPosition = Grid.CellToPosCCC(Grid.OffsetCell(Grid.PosToCell(base.master), new CellOffset(0, 2)), Grid.SceneLayer.Ore);
 			StoryManager.Instance.CompleteStoryEvent(Db.Get().Stories.MegaBrainTank, keepsakeSpawnPosition);
@@ -539,38 +539,38 @@ public class MegaBrainTank : StateMachineComponent<MegaBrainTank.StatesInstance>
 			base.sm.storyTraitCompleted.Trigger(this);
 		}
 
-		private static List<Effects> minionEffects;
+				private static List<Effects> minionEffects;
 
-		public short UnitsFromLastStore;
+				public short UnitsFromLastStore;
 
-		private float meterFill = 0.04f;
+				private float meterFill = 0.04f;
 
-		private float targetProgress;
+				private float targetProgress;
 
-		private float timeTilDigested;
+				private float timeTilDigested;
 
-		private float journalActivationTimer;
+				private float journalActivationTimer;
 
-		private float lastRemainingTime;
+				private float lastRemainingTime;
 
-		private byte activatedJournals;
+				private byte activatedJournals;
 
-		private bool currentlyActivating;
+				private bool currentlyActivating;
 
-		private short nextActiveBrain = 1;
+				private short nextActiveBrain = 1;
 
-		private string brainHum;
+				private string brainHum;
 
-		private KBatchedAnimController[] controllers;
+				private KBatchedAnimController[] controllers;
 
-		private KAnimLink fxLink;
+				private KAnimLink fxLink;
 
-		private MeterController meter;
+				private MeterController meter;
 
-		private EventInfoData eventInfo;
+				private EventInfoData eventInfo;
 
-		private Notification eventComplete;
+				private Notification eventComplete;
 
-		private Notifier notifier;
+				private Notifier notifier;
 	}
 }

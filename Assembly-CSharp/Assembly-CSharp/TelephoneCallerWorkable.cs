@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/TelephoneWorkable")]
 public class TelephoneCallerWorkable : Workable, IWorkerPrioritizable
 {
-	private TelephoneCallerWorkable()
+		private TelephoneCallerWorkable()
 	{
 		base.SetReportType(ReportManager.ReportType.PersonalTime);
 		this.workingPstComplete = new HashedString[]
@@ -24,7 +24,7 @@ public class TelephoneCallerWorkable : Workable, IWorkerPrioritizable
 		};
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.overrideAnims = new KAnimFile[]
@@ -38,13 +38,13 @@ public class TelephoneCallerWorkable : Workable, IWorkerPrioritizable
 		this.telephone = base.GetComponent<Telephone>();
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		this.operational.SetActive(true, false);
 		this.telephone.isInUse = true;
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		Effects component = worker.GetComponent<Effects>();
 		if (this.telephone.HasTag(GameTags.LongDistanceCall))
@@ -71,13 +71,13 @@ public class TelephoneCallerWorkable : Workable, IWorkerPrioritizable
 		}
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		this.operational.SetActive(false, false);
 		this.telephone.HangUp();
 	}
 
-	public bool GetWorkerPriority(Worker worker, out int priority)
+		public bool GetWorkerPriority(WorkerBase worker, out int priority)
 	{
 		priority = this.basePriority;
 		Effects component = worker.GetComponent<Effects>();
@@ -97,10 +97,10 @@ public class TelephoneCallerWorkable : Workable, IWorkerPrioritizable
 		return true;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	public int basePriority;
+		public int basePriority;
 
-	private Telephone telephone;
+		private Telephone telephone;
 }

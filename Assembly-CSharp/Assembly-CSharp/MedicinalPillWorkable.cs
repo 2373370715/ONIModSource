@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/MedicinalPillWorkable")]
 public class MedicinalPillWorkable : Workable, IConsumableUIItem
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.SetWorkTime(10f);
@@ -15,7 +15,7 @@ public class MedicinalPillWorkable : Workable, IConsumableUIItem
 		this.CreateChore();
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		if (!string.IsNullOrEmpty(this.pill.info.effect))
 		{
@@ -43,12 +43,12 @@ public class MedicinalPillWorkable : Workable, IConsumableUIItem
 		base.gameObject.DeleteObject();
 	}
 
-	private void CreateChore()
+		private void CreateChore()
 	{
 		new TakeMedicineChore(this);
 	}
 
-	public bool CanBeTakenBy(GameObject consumer)
+		public bool CanBeTakenBy(GameObject consumer)
 	{
 		if (!string.IsNullOrEmpty(this.pill.info.effect))
 		{
@@ -77,7 +77,7 @@ public class MedicinalPillWorkable : Workable, IConsumableUIItem
 		return false;
 	}
 
-		public string ConsumableId
+			public string ConsumableId
 	{
 		get
 		{
@@ -85,7 +85,7 @@ public class MedicinalPillWorkable : Workable, IConsumableUIItem
 		}
 	}
 
-		public string ConsumableName
+			public string ConsumableName
 	{
 		get
 		{
@@ -93,7 +93,7 @@ public class MedicinalPillWorkable : Workable, IConsumableUIItem
 		}
 	}
 
-		public int MajorOrder
+			public int MajorOrder
 	{
 		get
 		{
@@ -101,7 +101,7 @@ public class MedicinalPillWorkable : Workable, IConsumableUIItem
 		}
 	}
 
-		public int MinorOrder
+			public int MinorOrder
 	{
 		get
 		{
@@ -109,7 +109,7 @@ public class MedicinalPillWorkable : Workable, IConsumableUIItem
 		}
 	}
 
-		public bool Display
+			public bool Display
 	{
 		get
 		{
@@ -117,5 +117,5 @@ public class MedicinalPillWorkable : Workable, IConsumableUIItem
 		}
 	}
 
-	public MedicinalPill pill;
+		public MedicinalPill pill;
 }

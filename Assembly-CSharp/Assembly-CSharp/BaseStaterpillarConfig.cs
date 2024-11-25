@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class BaseStaterpillarConfig
 {
-	public static GameObject BaseStaterpillar(string id, string name, string desc, string anim_file, string trait_id, bool is_baby, ObjectLayer conduitLayer, string connectorDefId, Tag inhaleTag, string symbolOverridePrefix = null, float warningLowTemperature = 283.15f, float warningHighTemperature = 293.15f, float lethalLowTemperature = 243.15f, float lethalHighTemperature = 343.15f, InhaleStates.Def inhaleDef = null)
+		public static GameObject BaseStaterpillar(string id, string name, string desc, string anim_file, string trait_id, bool is_baby, ObjectLayer conduitLayer, string connectorDefId, Tag inhaleTag, string symbolOverridePrefix = null, float warningLowTemperature = 283.15f, float warningHighTemperature = 293.15f, float lethalLowTemperature = 243.15f, float lethalHighTemperature = 343.15f, InhaleStates.Def inhaleDef = null)
 	{
 		float mass = 200f;
 		EffectorValues tier = DECOR.BONUS.TIER0;
@@ -47,7 +47,7 @@ public class BaseStaterpillarConfig
 		return gameObject;
 	}
 
-	public static GameObject SetupDiet(GameObject prefab, List<Diet.Info> diet_infos)
+		public static GameObject SetupDiet(GameObject prefab, List<Diet.Info> diet_infos)
 	{
 		Diet diet = new Diet(diet_infos.ToArray());
 		prefab.AddOrGetDef<CreatureCalorieMonitor.Def>().diet = diet;
@@ -55,7 +55,7 @@ public class BaseStaterpillarConfig
 		return prefab;
 	}
 
-	public static List<Diet.Info> RawMetalDiet(Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
+		public static List<Diet.Info> RawMetalDiet(Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
 	{
 		List<SimHashes> list = new List<SimHashes>
 		{
@@ -69,13 +69,13 @@ public class BaseStaterpillarConfig
 				list2.Add(new Diet.Info(new HashSet<Tag>(new Tag[]
 				{
 					element.tag
-				}), poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false, false));
+				}), poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, Diet.Info.FoodType.EatSolid, false, null));
 			}
 		}
 		return list2;
 	}
 
-	public static List<Diet.Info> RefinedMetalDiet(Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
+		public static List<Diet.Info> RefinedMetalDiet(Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
 	{
 		List<Diet.Info> list = new List<Diet.Info>();
 		foreach (Element element in ElementLoader.elements)
@@ -85,13 +85,13 @@ public class BaseStaterpillarConfig
 				list.Add(new Diet.Info(new HashSet<Tag>(new Tag[]
 				{
 					element.tag
-				}), poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false, false));
+				}), poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, Diet.Info.FoodType.EatSolid, false, null));
 			}
 		}
 		return list;
 	}
 
-	private static HashedString CustomIdleAnim(IdleStates.Instance smi, ref HashedString pre_anim)
+		private static HashedString CustomIdleAnim(IdleStates.Instance smi, ref HashedString pre_anim)
 	{
 		CellOffset offset = new CellOffset(0, -1);
 		bool facing = smi.GetComponent<Facing>().GetFacing();

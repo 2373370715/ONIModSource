@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnection
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.inputOne = new LogicEventHandler(base.InputCellOne, new Action<int, int>(this.UpdateState), null, LogicPortSpriteType.Input);
 		if (base.RequiresTwoInputs)
@@ -60,7 +60,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.cleaningUp = true;
 		this.Disconnect();
@@ -69,17 +69,17 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		base.OnCleanUp();
 	}
 
-	private void OnBuildingBroken(object data)
+		private void OnBuildingBroken(object data)
 	{
 		this.Disconnect();
 	}
 
-	private void OnBuildingFullyRepaired(object data)
+		private void OnBuildingFullyRepaired(object data)
 	{
 		this.Connect();
 	}
 
-	private void Connect()
+		private void Connect()
 	{
 		if (!this.connected)
 		{
@@ -131,7 +131,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		}
 	}
 
-	private void Disconnect()
+		private void Disconnect()
 	{
 		if (this.connected)
 		{
@@ -190,7 +190,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		}
 	}
 
-	private void UpdateState(int new_value, int prev_value)
+		private void UpdateState(int new_value, int prev_value)
 	{
 		if (this.cleaningUp)
 		{
@@ -307,7 +307,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		this.RefreshAnimation();
 	}
 
-	private void OnAdditionalOutputsLogicValueChanged(HashedString port_id, int new_value, int prev_value)
+		private void OnAdditionalOutputsLogicValueChanged(HashedString port_id, int new_value, int prev_value)
 	{
 		if (base.gameObject != null)
 		{
@@ -320,16 +320,16 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		}
 	}
 
-	public virtual void LogicTick()
+		public virtual void LogicTick()
 	{
 	}
 
-	protected virtual int GetCustomValue(int val1, int val2)
+		protected virtual int GetCustomValue(int val1, int val2)
 	{
 		return val1;
 	}
 
-	public int GetPortValue(LogicGateBase.PortId port)
+		public int GetPortValue(LogicGateBase.PortId port)
 	{
 		switch (port)
 		{
@@ -370,7 +370,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		}
 	}
 
-	public bool GetPortConnected(LogicGateBase.PortId port)
+		public bool GetPortConnected(LogicGateBase.PortId port)
 	{
 		if ((port == LogicGateBase.PortId.InputTwo && !base.RequiresTwoInputs && !base.RequiresFourInputs) || (port == LogicGateBase.PortId.InputThree && !base.RequiresFourInputs) || (port == LogicGateBase.PortId.InputFour && !base.RequiresFourInputs))
 		{
@@ -380,12 +380,12 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		return Game.Instance.logicCircuitManager.GetNetworkForCell(cell) != null;
 	}
 
-	public void SetPortDescriptions(LogicGate.LogicGateDescriptions descriptions)
+		public void SetPortDescriptions(LogicGate.LogicGateDescriptions descriptions)
 	{
 		this.descriptions = descriptions;
 	}
 
-	public LogicGate.LogicGateDescriptions.Description GetPortDescription(LogicGateBase.PortId port)
+		public LogicGate.LogicGateDescriptions.Description GetPortDescription(LogicGateBase.PortId port)
 	{
 		switch (port)
 		{
@@ -462,27 +462,27 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		}
 	}
 
-	public int GetLogicValue()
+		public int GetLogicValue()
 	{
 		return this.outputValueOne;
 	}
 
-	public int GetLogicCell()
+		public int GetLogicCell()
 	{
 		return this.GetLogicUICell();
 	}
 
-	public int GetLogicUICell()
+		public int GetLogicUICell()
 	{
 		return base.OutputCellOne;
 	}
 
-	public bool IsLogicInput()
+		public bool IsLogicInput()
 	{
 		return false;
 	}
 
-	private LogicEventHandler GetInputFromControlValue(int val)
+		private LogicEventHandler GetInputFromControlValue(int val)
 	{
 		switch (val)
 		{
@@ -496,7 +496,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		return this.inputOne;
 	}
 
-	private void ShowSymbolConditionally(bool showAnything, bool active, KBatchedAnimController kbac, KAnimHashedString ifTrue, KAnimHashedString ifFalse)
+		private void ShowSymbolConditionally(bool showAnything, bool active, KBatchedAnimController kbac, KAnimHashedString ifTrue, KAnimHashedString ifFalse)
 	{
 		if (!showAnything)
 		{
@@ -508,7 +508,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		kbac.SetSymbolVisiblity(ifFalse, !active);
 	}
 
-	private void TintSymbolConditionally(bool tintAnything, bool condition, KBatchedAnimController kbac, KAnimHashedString symbol, Color ifTrue, Color ifFalse)
+		private void TintSymbolConditionally(bool tintAnything, bool condition, KBatchedAnimController kbac, KAnimHashedString symbol, Color ifTrue, Color ifFalse)
 	{
 		if (tintAnything)
 		{
@@ -518,13 +518,13 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		kbac.SetSymbolTint(symbol, Color.white);
 	}
 
-	private void SetBloomSymbolShowing(bool showing, KBatchedAnimController kbac, KAnimHashedString symbol, KAnimHashedString bloomSymbol)
+		private void SetBloomSymbolShowing(bool showing, KBatchedAnimController kbac, KAnimHashedString symbol, KAnimHashedString bloomSymbol)
 	{
 		kbac.SetSymbolVisiblity(bloomSymbol, showing);
 		kbac.SetSymbolVisiblity(symbol, !showing);
 	}
 
-	protected void RefreshAnimation()
+		protected void RefreshAnimation()
 	{
 		if (this.cleaningUp)
 		{
@@ -686,271 +686,271 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		}
 	}
 
-	public void OnLogicNetworkConnectionChanged(bool connected)
+		public void OnLogicNetworkConnectionChanged(bool connected)
 	{
 	}
 
-	private static readonly LogicGate.LogicGateDescriptions.Description INPUT_ONE_SINGLE_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description INPUT_ONE_SINGLE_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_SINGLE_INPUT_ONE_NAME,
 		active = UI.LOGIC_PORTS.GATE_SINGLE_INPUT_ONE_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_SINGLE_INPUT_ONE_INACTIVE
 	};
 
-	private static readonly LogicGate.LogicGateDescriptions.Description INPUT_ONE_MULTI_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description INPUT_ONE_MULTI_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_MULTI_INPUT_ONE_NAME,
 		active = UI.LOGIC_PORTS.GATE_MULTI_INPUT_ONE_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_MULTI_INPUT_ONE_INACTIVE
 	};
 
-	private static readonly LogicGate.LogicGateDescriptions.Description INPUT_TWO_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description INPUT_TWO_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_MULTI_INPUT_TWO_NAME,
 		active = UI.LOGIC_PORTS.GATE_MULTI_INPUT_TWO_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_MULTI_INPUT_TWO_INACTIVE
 	};
 
-	private static readonly LogicGate.LogicGateDescriptions.Description INPUT_THREE_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description INPUT_THREE_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_MULTI_INPUT_THREE_NAME,
 		active = UI.LOGIC_PORTS.GATE_MULTI_INPUT_THREE_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_MULTI_INPUT_THREE_INACTIVE
 	};
 
-	private static readonly LogicGate.LogicGateDescriptions.Description INPUT_FOUR_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description INPUT_FOUR_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_MULTI_INPUT_FOUR_NAME,
 		active = UI.LOGIC_PORTS.GATE_MULTI_INPUT_FOUR_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_MULTI_INPUT_FOUR_INACTIVE
 	};
 
-	private static readonly LogicGate.LogicGateDescriptions.Description OUTPUT_ONE_SINGLE_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description OUTPUT_ONE_SINGLE_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_SINGLE_OUTPUT_ONE_NAME,
 		active = UI.LOGIC_PORTS.GATE_SINGLE_OUTPUT_ONE_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_SINGLE_OUTPUT_ONE_INACTIVE
 	};
 
-	private static readonly LogicGate.LogicGateDescriptions.Description OUTPUT_ONE_MULTI_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description OUTPUT_ONE_MULTI_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_ONE_NAME,
 		active = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_ONE_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_ONE_INACTIVE
 	};
 
-	private static readonly LogicGate.LogicGateDescriptions.Description OUTPUT_TWO_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description OUTPUT_TWO_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_TWO_NAME,
 		active = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_TWO_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_TWO_INACTIVE
 	};
 
-	private static readonly LogicGate.LogicGateDescriptions.Description OUTPUT_THREE_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description OUTPUT_THREE_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_THREE_NAME,
 		active = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_THREE_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_THREE_INACTIVE
 	};
 
-	private static readonly LogicGate.LogicGateDescriptions.Description OUTPUT_FOUR_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description OUTPUT_FOUR_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_FOUR_NAME,
 		active = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_FOUR_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_MULTI_OUTPUT_FOUR_INACTIVE
 	};
 
-	private static readonly LogicGate.LogicGateDescriptions.Description CONTROL_ONE_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description CONTROL_ONE_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_MULTIPLEXER_CONTROL_ONE_NAME,
 		active = UI.LOGIC_PORTS.GATE_MULTIPLEXER_CONTROL_ONE_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_MULTIPLEXER_CONTROL_ONE_INACTIVE
 	};
 
-	private static readonly LogicGate.LogicGateDescriptions.Description CONTROL_TWO_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
+		private static readonly LogicGate.LogicGateDescriptions.Description CONTROL_TWO_DESCRIPTION = new LogicGate.LogicGateDescriptions.Description
 	{
 		name = UI.LOGIC_PORTS.GATE_MULTIPLEXER_CONTROL_TWO_NAME,
 		active = UI.LOGIC_PORTS.GATE_MULTIPLEXER_CONTROL_TWO_ACTIVE,
 		inactive = UI.LOGIC_PORTS.GATE_MULTIPLEXER_CONTROL_TWO_INACTIVE
 	};
 
-	private LogicGate.LogicGateDescriptions descriptions;
+		private LogicGate.LogicGateDescriptions descriptions;
 
-	private LogicEventSender[] additionalOutputs;
+		private LogicEventSender[] additionalOutputs;
 
-	private const bool IS_CIRCUIT_ENDPOINT = true;
+		private const bool IS_CIRCUIT_ENDPOINT = true;
 
-	private bool connected;
+		private bool connected;
 
-	protected bool cleaningUp;
+		protected bool cleaningUp;
 
-	private int lastAnimState = -1;
+		private int lastAnimState = -1;
 
-	[Serialize]
+		[Serialize]
 	protected int outputValueOne;
 
-	[Serialize]
+		[Serialize]
 	protected int outputValueTwo;
 
-	[Serialize]
+		[Serialize]
 	protected int outputValueThree;
 
-	[Serialize]
+		[Serialize]
 	protected int outputValueFour;
 
-	private LogicEventHandler inputOne;
+		private LogicEventHandler inputOne;
 
-	private LogicEventHandler inputTwo;
+		private LogicEventHandler inputTwo;
 
-	private LogicEventHandler inputThree;
+		private LogicEventHandler inputThree;
 
-	private LogicEventHandler inputFour;
+		private LogicEventHandler inputFour;
 
-	private LogicPortVisualizer outputOne;
+		private LogicPortVisualizer outputOne;
 
-	private LogicPortVisualizer outputTwo;
+		private LogicPortVisualizer outputTwo;
 
-	private LogicPortVisualizer outputThree;
+		private LogicPortVisualizer outputThree;
 
-	private LogicPortVisualizer outputFour;
+		private LogicPortVisualizer outputFour;
 
-	private LogicEventSender outputTwoSender;
+		private LogicEventSender outputTwoSender;
 
-	private LogicEventSender outputThreeSender;
+		private LogicEventSender outputThreeSender;
 
-	private LogicEventSender outputFourSender;
+		private LogicEventSender outputFourSender;
 
-	private LogicEventHandler controlOne;
+		private LogicEventHandler controlOne;
 
-	private LogicEventHandler controlTwo;
+		private LogicEventHandler controlTwo;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicGate> OnBuildingBrokenDelegate = new EventSystem.IntraObjectHandler<LogicGate>(delegate(LogicGate component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicGate> OnBuildingBrokenDelegate = new EventSystem.IntraObjectHandler<LogicGate>(delegate(LogicGate component, object data)
 	{
 		component.OnBuildingBroken(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<LogicGate> OnBuildingFullyRepairedDelegate = new EventSystem.IntraObjectHandler<LogicGate>(delegate(LogicGate component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicGate> OnBuildingFullyRepairedDelegate = new EventSystem.IntraObjectHandler<LogicGate>(delegate(LogicGate component, object data)
 	{
 		component.OnBuildingFullyRepaired(data);
 	});
 
-	private static KAnimHashedString INPUT1_SYMBOL = "input1";
+		private static KAnimHashedString INPUT1_SYMBOL = "input1";
 
-	private static KAnimHashedString INPUT2_SYMBOL = "input2";
+		private static KAnimHashedString INPUT2_SYMBOL = "input2";
 
-	private static KAnimHashedString INPUT3_SYMBOL = "input3";
+		private static KAnimHashedString INPUT3_SYMBOL = "input3";
 
-	private static KAnimHashedString INPUT4_SYMBOL = "input4";
+		private static KAnimHashedString INPUT4_SYMBOL = "input4";
 
-	private static KAnimHashedString OUTPUT1_SYMBOL = "output1";
+		private static KAnimHashedString OUTPUT1_SYMBOL = "output1";
 
-	private static KAnimHashedString OUTPUT2_SYMBOL = "output2";
+		private static KAnimHashedString OUTPUT2_SYMBOL = "output2";
 
-	private static KAnimHashedString OUTPUT3_SYMBOL = "output3";
+		private static KAnimHashedString OUTPUT3_SYMBOL = "output3";
 
-	private static KAnimHashedString OUTPUT4_SYMBOL = "output4";
+		private static KAnimHashedString OUTPUT4_SYMBOL = "output4";
 
-	private static KAnimHashedString INPUT1_SYMBOL_BLM_RED = "input1_red_bloom";
+		private static KAnimHashedString INPUT1_SYMBOL_BLM_RED = "input1_red_bloom";
 
-	private static KAnimHashedString INPUT1_SYMBOL_BLM_GRN = "input1_green_bloom";
+		private static KAnimHashedString INPUT1_SYMBOL_BLM_GRN = "input1_green_bloom";
 
-	private static KAnimHashedString INPUT2_SYMBOL_BLM_RED = "input2_red_bloom";
+		private static KAnimHashedString INPUT2_SYMBOL_BLM_RED = "input2_red_bloom";
 
-	private static KAnimHashedString INPUT2_SYMBOL_BLM_GRN = "input2_green_bloom";
+		private static KAnimHashedString INPUT2_SYMBOL_BLM_GRN = "input2_green_bloom";
 
-	private static KAnimHashedString INPUT3_SYMBOL_BLM_RED = "input3_red_bloom";
+		private static KAnimHashedString INPUT3_SYMBOL_BLM_RED = "input3_red_bloom";
 
-	private static KAnimHashedString INPUT3_SYMBOL_BLM_GRN = "input3_green_bloom";
+		private static KAnimHashedString INPUT3_SYMBOL_BLM_GRN = "input3_green_bloom";
 
-	private static KAnimHashedString INPUT4_SYMBOL_BLM_RED = "input4_red_bloom";
+		private static KAnimHashedString INPUT4_SYMBOL_BLM_RED = "input4_red_bloom";
 
-	private static KAnimHashedString INPUT4_SYMBOL_BLM_GRN = "input4_green_bloom";
+		private static KAnimHashedString INPUT4_SYMBOL_BLM_GRN = "input4_green_bloom";
 
-	private static KAnimHashedString OUTPUT1_SYMBOL_BLM_RED = "output1_red_bloom";
+		private static KAnimHashedString OUTPUT1_SYMBOL_BLM_RED = "output1_red_bloom";
 
-	private static KAnimHashedString OUTPUT1_SYMBOL_BLM_GRN = "output1_green_bloom";
+		private static KAnimHashedString OUTPUT1_SYMBOL_BLM_GRN = "output1_green_bloom";
 
-	private static KAnimHashedString OUTPUT2_SYMBOL_BLM_RED = "output2_red_bloom";
+		private static KAnimHashedString OUTPUT2_SYMBOL_BLM_RED = "output2_red_bloom";
 
-	private static KAnimHashedString OUTPUT2_SYMBOL_BLM_GRN = "output2_green_bloom";
+		private static KAnimHashedString OUTPUT2_SYMBOL_BLM_GRN = "output2_green_bloom";
 
-	private static KAnimHashedString OUTPUT3_SYMBOL_BLM_RED = "output3_red_bloom";
+		private static KAnimHashedString OUTPUT3_SYMBOL_BLM_RED = "output3_red_bloom";
 
-	private static KAnimHashedString OUTPUT3_SYMBOL_BLM_GRN = "output3_green_bloom";
+		private static KAnimHashedString OUTPUT3_SYMBOL_BLM_GRN = "output3_green_bloom";
 
-	private static KAnimHashedString OUTPUT4_SYMBOL_BLM_RED = "output4_red_bloom";
+		private static KAnimHashedString OUTPUT4_SYMBOL_BLM_RED = "output4_red_bloom";
 
-	private static KAnimHashedString OUTPUT4_SYMBOL_BLM_GRN = "output4_green_bloom";
+		private static KAnimHashedString OUTPUT4_SYMBOL_BLM_GRN = "output4_green_bloom";
 
-	private static KAnimHashedString LINE_LEFT_1_SYMBOL = "line_left_1";
+		private static KAnimHashedString LINE_LEFT_1_SYMBOL = "line_left_1";
 
-	private static KAnimHashedString LINE_LEFT_2_SYMBOL = "line_left_2";
+		private static KAnimHashedString LINE_LEFT_2_SYMBOL = "line_left_2";
 
-	private static KAnimHashedString LINE_LEFT_3_SYMBOL = "line_left_3";
+		private static KAnimHashedString LINE_LEFT_3_SYMBOL = "line_left_3";
 
-	private static KAnimHashedString LINE_LEFT_4_SYMBOL = "line_left_4";
+		private static KAnimHashedString LINE_LEFT_4_SYMBOL = "line_left_4";
 
-	private static KAnimHashedString LINE_RIGHT_1_SYMBOL = "line_right_1";
+		private static KAnimHashedString LINE_RIGHT_1_SYMBOL = "line_right_1";
 
-	private static KAnimHashedString LINE_RIGHT_2_SYMBOL = "line_right_2";
+		private static KAnimHashedString LINE_RIGHT_2_SYMBOL = "line_right_2";
 
-	private static KAnimHashedString LINE_RIGHT_3_SYMBOL = "line_right_3";
+		private static KAnimHashedString LINE_RIGHT_3_SYMBOL = "line_right_3";
 
-	private static KAnimHashedString LINE_RIGHT_4_SYMBOL = "line_right_4";
+		private static KAnimHashedString LINE_RIGHT_4_SYMBOL = "line_right_4";
 
-	private static KAnimHashedString FLIPPER_1_SYMBOL = "flipper1";
+		private static KAnimHashedString FLIPPER_1_SYMBOL = "flipper1";
 
-	private static KAnimHashedString FLIPPER_2_SYMBOL = "flipper2";
+		private static KAnimHashedString FLIPPER_2_SYMBOL = "flipper2";
 
-	private static KAnimHashedString FLIPPER_3_SYMBOL = "flipper3";
+		private static KAnimHashedString FLIPPER_3_SYMBOL = "flipper3";
 
-	private static KAnimHashedString INPUT_SYMBOL = "input";
+		private static KAnimHashedString INPUT_SYMBOL = "input";
 
-	private static KAnimHashedString OUTPUT_SYMBOL = "output";
+		private static KAnimHashedString OUTPUT_SYMBOL = "output";
 
-	private static KAnimHashedString INPUT1_SYMBOL_BLOOM = "input1_bloom";
+		private static KAnimHashedString INPUT1_SYMBOL_BLOOM = "input1_bloom";
 
-	private static KAnimHashedString INPUT2_SYMBOL_BLOOM = "input2_bloom";
+		private static KAnimHashedString INPUT2_SYMBOL_BLOOM = "input2_bloom";
 
-	private static KAnimHashedString INPUT3_SYMBOL_BLOOM = "input3_bloom";
+		private static KAnimHashedString INPUT3_SYMBOL_BLOOM = "input3_bloom";
 
-	private static KAnimHashedString INPUT4_SYMBOL_BLOOM = "input4_bloom";
+		private static KAnimHashedString INPUT4_SYMBOL_BLOOM = "input4_bloom";
 
-	private static KAnimHashedString OUTPUT1_SYMBOL_BLOOM = "output1_bloom";
+		private static KAnimHashedString OUTPUT1_SYMBOL_BLOOM = "output1_bloom";
 
-	private static KAnimHashedString OUTPUT2_SYMBOL_BLOOM = "output2_bloom";
+		private static KAnimHashedString OUTPUT2_SYMBOL_BLOOM = "output2_bloom";
 
-	private static KAnimHashedString OUTPUT3_SYMBOL_BLOOM = "output3_bloom";
+		private static KAnimHashedString OUTPUT3_SYMBOL_BLOOM = "output3_bloom";
 
-	private static KAnimHashedString OUTPUT4_SYMBOL_BLOOM = "output4_bloom";
+		private static KAnimHashedString OUTPUT4_SYMBOL_BLOOM = "output4_bloom";
 
-	private static KAnimHashedString LINE_LEFT_1_SYMBOL_BLOOM = "line_left_1_bloom";
+		private static KAnimHashedString LINE_LEFT_1_SYMBOL_BLOOM = "line_left_1_bloom";
 
-	private static KAnimHashedString LINE_LEFT_2_SYMBOL_BLOOM = "line_left_2_bloom";
+		private static KAnimHashedString LINE_LEFT_2_SYMBOL_BLOOM = "line_left_2_bloom";
 
-	private static KAnimHashedString LINE_LEFT_3_SYMBOL_BLOOM = "line_left_3_bloom";
+		private static KAnimHashedString LINE_LEFT_3_SYMBOL_BLOOM = "line_left_3_bloom";
 
-	private static KAnimHashedString LINE_LEFT_4_SYMBOL_BLOOM = "line_left_4_bloom";
+		private static KAnimHashedString LINE_LEFT_4_SYMBOL_BLOOM = "line_left_4_bloom";
 
-	private static KAnimHashedString LINE_RIGHT_1_SYMBOL_BLOOM = "line_right_1_bloom";
+		private static KAnimHashedString LINE_RIGHT_1_SYMBOL_BLOOM = "line_right_1_bloom";
 
-	private static KAnimHashedString LINE_RIGHT_2_SYMBOL_BLOOM = "line_right_2_bloom";
+		private static KAnimHashedString LINE_RIGHT_2_SYMBOL_BLOOM = "line_right_2_bloom";
 
-	private static KAnimHashedString LINE_RIGHT_3_SYMBOL_BLOOM = "line_right_3_bloom";
+		private static KAnimHashedString LINE_RIGHT_3_SYMBOL_BLOOM = "line_right_3_bloom";
 
-	private static KAnimHashedString LINE_RIGHT_4_SYMBOL_BLOOM = "line_right_4_bloom";
+		private static KAnimHashedString LINE_RIGHT_4_SYMBOL_BLOOM = "line_right_4_bloom";
 
-	private static KAnimHashedString FLIPPER_1_SYMBOL_BLOOM = "flipper1_bloom";
+		private static KAnimHashedString FLIPPER_1_SYMBOL_BLOOM = "flipper1_bloom";
 
-	private static KAnimHashedString FLIPPER_2_SYMBOL_BLOOM = "flipper2_bloom";
+		private static KAnimHashedString FLIPPER_2_SYMBOL_BLOOM = "flipper2_bloom";
 
-	private static KAnimHashedString FLIPPER_3_SYMBOL_BLOOM = "flipper3_bloom";
+		private static KAnimHashedString FLIPPER_3_SYMBOL_BLOOM = "flipper3_bloom";
 
-	private static KAnimHashedString INPUT_SYMBOL_BLOOM = "input_bloom";
+		private static KAnimHashedString INPUT_SYMBOL_BLOOM = "input_bloom";
 
-	private static KAnimHashedString OUTPUT_SYMBOL_BLOOM = "output_bloom";
+		private static KAnimHashedString OUTPUT_SYMBOL_BLOOM = "output_bloom";
 
-	private static KAnimHashedString[][] multiplexerSymbolPaths = new KAnimHashedString[][]
+		private static KAnimHashedString[][] multiplexerSymbolPaths = new KAnimHashedString[][]
 	{
 		new KAnimHashedString[]
 		{
@@ -986,7 +986,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		}
 	};
 
-	private static KAnimHashedString[] multiplexerSymbols = new KAnimHashedString[]
+		private static KAnimHashedString[] multiplexerSymbols = new KAnimHashedString[]
 	{
 		LogicGate.LINE_LEFT_1_SYMBOL,
 		LogicGate.LINE_LEFT_2_SYMBOL,
@@ -1000,7 +1000,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		LogicGate.OUTPUT_SYMBOL
 	};
 
-	private static KAnimHashedString[] multiplexerBloomSymbols = new KAnimHashedString[]
+		private static KAnimHashedString[] multiplexerBloomSymbols = new KAnimHashedString[]
 	{
 		LogicGate.LINE_LEFT_1_SYMBOL_BLOOM,
 		LogicGate.LINE_LEFT_2_SYMBOL_BLOOM,
@@ -1014,7 +1014,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		LogicGate.OUTPUT_SYMBOL_BLOOM
 	};
 
-	private static KAnimHashedString[][] demultiplexerSymbolPaths = new KAnimHashedString[][]
+		private static KAnimHashedString[][] demultiplexerSymbolPaths = new KAnimHashedString[][]
 	{
 		new KAnimHashedString[]
 		{
@@ -1046,7 +1046,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		}
 	};
 
-	private static KAnimHashedString[] demultiplexerSymbols = new KAnimHashedString[]
+		private static KAnimHashedString[] demultiplexerSymbols = new KAnimHashedString[]
 	{
 		LogicGate.INPUT_SYMBOL,
 		LogicGate.LINE_LEFT_1_SYMBOL,
@@ -1057,7 +1057,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		LogicGate.LINE_RIGHT_4_SYMBOL
 	};
 
-	private static KAnimHashedString[] demultiplexerBloomSymbols = new KAnimHashedString[]
+		private static KAnimHashedString[] demultiplexerBloomSymbols = new KAnimHashedString[]
 	{
 		LogicGate.INPUT_SYMBOL_BLOOM,
 		LogicGate.LINE_LEFT_1_SYMBOL_BLOOM,
@@ -1068,7 +1068,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		LogicGate.LINE_RIGHT_4_SYMBOL_BLOOM
 	};
 
-	private static KAnimHashedString[] demultiplexerOutputSymbols = new KAnimHashedString[]
+		private static KAnimHashedString[] demultiplexerOutputSymbols = new KAnimHashedString[]
 	{
 		LogicGate.OUTPUT1_SYMBOL,
 		LogicGate.OUTPUT2_SYMBOL,
@@ -1076,7 +1076,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		LogicGate.OUTPUT4_SYMBOL
 	};
 
-	private static KAnimHashedString[] demultiplexerOutputRedSymbols = new KAnimHashedString[]
+		private static KAnimHashedString[] demultiplexerOutputRedSymbols = new KAnimHashedString[]
 	{
 		LogicGate.OUTPUT1_SYMBOL_BLM_RED,
 		LogicGate.OUTPUT2_SYMBOL_BLM_RED,
@@ -1084,7 +1084,7 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		LogicGate.OUTPUT4_SYMBOL_BLM_RED
 	};
 
-	private static KAnimHashedString[] demultiplexerOutputGreenSymbols = new KAnimHashedString[]
+		private static KAnimHashedString[] demultiplexerOutputGreenSymbols = new KAnimHashedString[]
 	{
 		LogicGate.OUTPUT1_SYMBOL_BLM_GRN,
 		LogicGate.OUTPUT2_SYMBOL_BLM_GRN,
@@ -1092,39 +1092,39 @@ public class LogicGate : LogicGateBase, ILogicEventSender, ILogicNetworkConnecti
 		LogicGate.OUTPUT4_SYMBOL_BLM_GRN
 	};
 
-	private Color activeTintColor = new Color(0.5411765f, 0.9882353f, 0.29803923f);
+		private Color activeTintColor = new Color(0.5411765f, 0.9882353f, 0.29803923f);
 
-	private Color inactiveTintColor = Color.red;
+		private Color inactiveTintColor = Color.red;
 
-	public class LogicGateDescriptions
+		public class LogicGateDescriptions
 	{
-		public LogicGate.LogicGateDescriptions.Description inputOne;
+				public LogicGate.LogicGateDescriptions.Description inputOne;
 
-		public LogicGate.LogicGateDescriptions.Description inputTwo;
+				public LogicGate.LogicGateDescriptions.Description inputTwo;
 
-		public LogicGate.LogicGateDescriptions.Description inputThree;
+				public LogicGate.LogicGateDescriptions.Description inputThree;
 
-		public LogicGate.LogicGateDescriptions.Description inputFour;
+				public LogicGate.LogicGateDescriptions.Description inputFour;
 
-		public LogicGate.LogicGateDescriptions.Description outputOne;
+				public LogicGate.LogicGateDescriptions.Description outputOne;
 
-		public LogicGate.LogicGateDescriptions.Description outputTwo;
+				public LogicGate.LogicGateDescriptions.Description outputTwo;
 
-		public LogicGate.LogicGateDescriptions.Description outputThree;
+				public LogicGate.LogicGateDescriptions.Description outputThree;
 
-		public LogicGate.LogicGateDescriptions.Description outputFour;
+				public LogicGate.LogicGateDescriptions.Description outputFour;
 
-		public LogicGate.LogicGateDescriptions.Description controlOne;
+				public LogicGate.LogicGateDescriptions.Description controlOne;
 
-		public LogicGate.LogicGateDescriptions.Description controlTwo;
+				public LogicGate.LogicGateDescriptions.Description controlTwo;
 
-		public class Description
+				public class Description
 		{
-			public string name;
+						public string name;
 
-			public string active;
+						public string active;
 
-			public string inactive;
+						public string inactive;
 		}
 	}
 }

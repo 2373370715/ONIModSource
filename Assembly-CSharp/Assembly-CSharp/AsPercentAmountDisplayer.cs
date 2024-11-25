@@ -4,7 +4,7 @@ using STRINGS;
 
 public class AsPercentAmountDisplayer : IAmountDisplayer
 {
-		public IAttributeFormatter Formatter
+			public IAttributeFormatter Formatter
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class AsPercentAmountDisplayer : IAmountDisplayer
 		}
 	}
 
-			public GameUtil.TimeSlice DeltaTimeSlice
+				public GameUtil.TimeSlice DeltaTimeSlice
 	{
 		get
 		{
@@ -24,27 +24,27 @@ public class AsPercentAmountDisplayer : IAmountDisplayer
 		}
 	}
 
-	public AsPercentAmountDisplayer(GameUtil.TimeSlice deltaTimeSlice)
+		public AsPercentAmountDisplayer(GameUtil.TimeSlice deltaTimeSlice)
 	{
 		this.formatter = new StandardAttributeFormatter(GameUtil.UnitClass.Percent, deltaTimeSlice);
 	}
 
-	public string GetValueString(Amount master, AmountInstance instance)
+		public string GetValueString(Amount master, AmountInstance instance)
 	{
 		return this.formatter.GetFormattedValue(this.ToPercent(instance.value, instance), GameUtil.TimeSlice.None);
 	}
 
-	public virtual string GetDescription(Amount master, AmountInstance instance)
+		public virtual string GetDescription(Amount master, AmountInstance instance)
 	{
 		return string.Format("{0}: {1}", master.Name, this.formatter.GetFormattedValue(this.ToPercent(instance.value, instance), GameUtil.TimeSlice.None));
 	}
 
-	public virtual string GetTooltipDescription(Amount master, AmountInstance instance)
+		public virtual string GetTooltipDescription(Amount master, AmountInstance instance)
 	{
 		return string.Format(master.description, this.formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None));
 	}
 
-	public virtual string GetTooltip(Amount master, AmountInstance instance)
+		public virtual string GetTooltip(Amount master, AmountInstance instance)
 	{
 		string text = string.Format(master.description, this.formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None));
 		text += "\n\n";
@@ -65,12 +65,12 @@ public class AsPercentAmountDisplayer : IAmountDisplayer
 		return text;
 	}
 
-	public string GetFormattedAttribute(AttributeInstance instance)
+		public string GetFormattedAttribute(AttributeInstance instance)
 	{
 		return this.formatter.GetFormattedAttribute(instance);
 	}
 
-	public string GetFormattedModifier(AttributeModifier modifier)
+		public string GetFormattedModifier(AttributeModifier modifier)
 	{
 		if (modifier.IsMultiplier)
 		{
@@ -79,15 +79,15 @@ public class AsPercentAmountDisplayer : IAmountDisplayer
 		return this.formatter.GetFormattedModifier(modifier);
 	}
 
-	public string GetFormattedValue(float value, GameUtil.TimeSlice timeSlice)
+		public string GetFormattedValue(float value, GameUtil.TimeSlice timeSlice)
 	{
 		return this.formatter.GetFormattedValue(value, timeSlice);
 	}
 
-	protected float ToPercent(float value, AmountInstance instance)
+		protected float ToPercent(float value, AmountInstance instance)
 	{
 		return 100f * value / instance.GetMax();
 	}
 
-	protected StandardAttributeFormatter formatter;
+		protected StandardAttributeFormatter formatter;
 }

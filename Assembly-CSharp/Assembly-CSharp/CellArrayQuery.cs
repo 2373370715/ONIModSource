@@ -2,13 +2,13 @@
 
 public class CellArrayQuery : PathFinderQuery
 {
-	public CellArrayQuery Reset(int[] target_cells)
+		public CellArrayQuery Reset(int[] target_cells)
 	{
 		this.targetCells = target_cells;
 		return this;
 	}
 
-	public override bool IsMatch(int cell, int parent_cell, int cost)
+		public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
 		for (int i = 0; i < this.targetCells.Length; i++)
 		{
@@ -20,5 +20,5 @@ public class CellArrayQuery : PathFinderQuery
 		return false;
 	}
 
-	private int[] targetCells;
+		private int[] targetCells;
 }

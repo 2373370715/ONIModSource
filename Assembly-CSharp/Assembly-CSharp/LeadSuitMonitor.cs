@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class LeadSuitMonitor : GameStateMachine<LeadSuitMonitor, LeadSuitMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.wearingSuit;
 		base.Target(this.owner);
@@ -36,7 +36,7 @@ public class LeadSuitMonitor : GameStateMachine<LeadSuitMonitor, LeadSuitMonitor
 		}).TagTransition(GameTags.SuitBatteryOut, this.wearingSuit.hasBattery, true);
 	}
 
-	public static void CoolSuit(LeadSuitMonitor.Instance smi, float dt)
+		public static void CoolSuit(LeadSuitMonitor.Instance smi, float dt)
 	{
 		if (!smi.navigator)
 		{
@@ -58,20 +58,20 @@ public class LeadSuitMonitor : GameStateMachine<LeadSuitMonitor, LeadSuitMonitor
 		}
 	}
 
-	public LeadSuitMonitor.WearingSuit wearingSuit;
+		public LeadSuitMonitor.WearingSuit wearingSuit;
 
-	public StateMachine<LeadSuitMonitor, LeadSuitMonitor.Instance, IStateMachineTarget, object>.TargetParameter owner;
+		public StateMachine<LeadSuitMonitor, LeadSuitMonitor.Instance, IStateMachineTarget, object>.TargetParameter owner;
 
-	public class WearingSuit : GameStateMachine<LeadSuitMonitor, LeadSuitMonitor.Instance, IStateMachineTarget, object>.State
+		public class WearingSuit : GameStateMachine<LeadSuitMonitor, LeadSuitMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<LeadSuitMonitor, LeadSuitMonitor.Instance, IStateMachineTarget, object>.State hasBattery;
+				public GameStateMachine<LeadSuitMonitor, LeadSuitMonitor.Instance, IStateMachineTarget, object>.State hasBattery;
 
-		public GameStateMachine<LeadSuitMonitor, LeadSuitMonitor.Instance, IStateMachineTarget, object>.State noBattery;
+				public GameStateMachine<LeadSuitMonitor, LeadSuitMonitor.Instance, IStateMachineTarget, object>.State noBattery;
 	}
 
-	public new class Instance : GameStateMachine<LeadSuitMonitor, LeadSuitMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<LeadSuitMonitor, LeadSuitMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, GameObject owner) : base(master)
+				public Instance(IStateMachineTarget master, GameObject owner) : base(master)
 		{
 			base.sm.owner.Set(owner, base.smi, false);
 			this.navigator = owner.GetComponent<Navigator>();
@@ -80,10 +80,10 @@ public class LeadSuitMonitor : GameStateMachine<LeadSuitMonitor, LeadSuitMonitor
 			this.noBatteryModifiers.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.THERMAL_CONDUCTIVITY_BARRIER, -TUNING.EQUIPMENT.SUITS.LEADSUIT_THERMAL_CONDUCTIVITY_BARRIER, STRINGS.EQUIPMENT.PREFABS.LEAD_SUIT.SUIT_OUT_OF_BATTERIES, false, false, true));
 		}
 
-		public Navigator navigator;
+				public Navigator navigator;
 
-		public LeadSuitTank lead_suit_tank;
+				public LeadSuitTank lead_suit_tank;
 
-		public List<AttributeModifier> noBatteryModifiers = new List<AttributeModifier>();
+				public List<AttributeModifier> noBatteryModifiers = new List<AttributeModifier>();
 	}
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 
 public static class BaseSquirrelConfig
 {
-	public static GameObject BaseSquirrel(string id, string name, string desc, string anim_file, string traitId, bool is_baby, string symbolOverridePrefix = null, bool isHuggable = false)
+		public static GameObject BaseSquirrel(string id, string name, string desc, string anim_file, string traitId, bool is_baby, string symbolOverridePrefix = null, bool isHuggable = false)
 	{
 		float mass = 100f;
 		EffectorValues tier = DECOR.BONUS.TIER0;
@@ -17,7 +17,7 @@ public static class BaseSquirrelConfig
 		{
 			navGridName = "DreckoBabyNavGrid";
 		}
-		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Pest, traitId, navGridName, NavType.Floor, 32, 2f, "Meat", 1, true, false, 283.15f, 313.15f, 243.15f, 373.15f);
+		EntityTemplates.ExtendEntityToBasicCreature(gameObject, FactionManager.FactionID.Pest, traitId, navGridName, NavType.Floor, 32, 2f, "Meat", 1, true, false, 283.15f, 313.15f, 228.15f, 373.15f);
 		if (symbolOverridePrefix != null)
 		{
 			gameObject.AddOrGet<SymbolOverrideController>().ApplySymbolOverridesByAffix(Assets.GetAnim(anim_file), symbolOverridePrefix, null, 0);
@@ -56,19 +56,22 @@ public static class BaseSquirrelConfig
 		return gameObject;
 	}
 
-	public static Diet.Info[] BasicDiet(Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
+		public static Diet.Info[] BasicDiet(Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
 	{
+		HashSet<Tag> hashSet = new HashSet<Tag>();
+		hashSet.Add("ForestTree");
+		hashSet.Add(BasicFabricMaterialPlantConfig.ID);
+		if (DlcManager.IsContentSubscribed("DLC2_ID"))
+		{
+			hashSet.Add("SpaceTree");
+		}
 		return new Diet.Info[]
 		{
-			new Diet.Info(new HashSet<Tag>
-			{
-				"ForestTree",
-				BasicFabricMaterialPlantConfig.ID
-			}, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, true, false)
+			new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, Diet.Info.FoodType.EatPlantDirectly, false, null)
 		};
 	}
 
-	public static GameObject SetupDiet(GameObject prefab, Diet.Info[] diet_infos, float minPoopSizeInKg)
+		public static GameObject SetupDiet(GameObject prefab, Diet.Info[] diet_infos, float minPoopSizeInKg)
 	{
 		Diet diet = new Diet(diet_infos);
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();
@@ -78,7 +81,7 @@ public static class BaseSquirrelConfig
 		return prefab;
 	}
 
-	private static int AdjustSpawnLocationCB(int cell)
+		private static int AdjustSpawnLocationCB(int cell)
 	{
 		while (!Grid.Solid[cell])
 		{

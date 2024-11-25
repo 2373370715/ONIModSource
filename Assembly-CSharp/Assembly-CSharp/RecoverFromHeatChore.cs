@@ -3,18 +3,18 @@ using UnityEngine;
 
 public class RecoverFromHeatChore : Chore<RecoverFromHeatChore.Instance>
 {
-	public RecoverFromHeatChore(IStateMachineTarget target) : base(Db.Get().ChoreTypes.RecoverFromHeat, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+		public RecoverFromHeatChore(IStateMachineTarget target) : base(Db.Get().ChoreTypes.RecoverFromHeat, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new RecoverFromHeatChore.Instance(this, target.gameObject);
 		HeatImmunityMonitor.Instance chillyBones = target.gameObject.GetSMI<HeatImmunityMonitor.Instance>();
 		Func<int> data = () => chillyBones.ShelterCell;
-		base.AddPrecondition(ChorePreconditions.instance.CanMoveToDynamicCell, data);
-		base.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
+		this.AddPrecondition(ChorePreconditions.instance.CanMoveToDynamicCell, data);
+		this.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
 	}
 
-	public class States : GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore>
+		public class States : GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.approach;
 			base.Target(this.entityRecovering);
@@ -35,7 +35,14 @@ public class RecoverFromHeatChore : Chore<RecoverFromHeatChore.Instance>
 				smi.UpdateImmunityProvider();
 			}, UpdateRate.SIM_200ms, true);
 			this.approach.InitializeStates(this.entityRecovering, this.locator, this.recover, null, null, null);
-			this.recover.OnTargetLost(this.heatImmunityProvider, null).ToggleAnims(new Func<RecoverFromHeatChore.Instance, HashedString>(RecoverFromHeatChore.States.GetAnimFileName)).DefaultState(this.recover.pre).ToggleTag(GameTags.RecoveringFromHeat);
+			this.recover.OnTargetLost(this.heatImmunityProvider, null).Enter("AnimOverride", delegate(RecoverFromHeatChore.Instance smi)
+			{
+				smi.cachedAnimName = RecoverFromHeatChore.States.GetAnimFileName(smi);
+				smi.GetComponent<KAnimControllerBase>().AddAnimOverrides(Assets.GetAnim(smi.cachedAnimName), 0f);
+			}).Exit(delegate(RecoverFromHeatChore.Instance smi)
+			{
+				smi.GetComponent<KAnimControllerBase>().RemoveAnimOverrides(Assets.GetAnim(smi.cachedAnimName));
+			}).DefaultState(this.recover.pre).ToggleTag(GameTags.RecoveringFromHeat);
 			this.recover.pre.Face(this.heatImmunityProvider, 0f).PlayAnim(new Func<RecoverFromHeatChore.Instance, string>(RecoverFromHeatChore.States.GetPreAnimName), KAnim.PlayMode.Once).OnAnimQueueComplete(this.recover.loop);
 			this.recover.loop.PlayAnim(new Func<RecoverFromHeatChore.Instance, string>(RecoverFromHeatChore.States.GetLoopAnimName), KAnim.PlayMode.Once).OnAnimQueueComplete(this.recover.pst);
 			this.recover.pst.QueueAnim(new Func<RecoverFromHeatChore.Instance, string>(RecoverFromHeatChore.States.GetPstAnimName), false, null).OnAnimQueueComplete(this.complete);
@@ -45,13 +52,13 @@ public class RecoverFromHeatChore : Chore<RecoverFromHeatChore.Instance>
 			this.complete.fail.ReturnFailure();
 		}
 
-		public static bool IsImmunityProviderStillValid(RecoverFromHeatChore.Instance smi)
+				public static bool IsImmunityProviderStillValid(RecoverFromHeatChore.Instance smi)
 		{
 			HeatImmunityProvider.Instance lastKnownImmunityProvider = smi.lastKnownImmunityProvider;
 			return lastKnownImmunityProvider != null && lastKnownImmunityProvider.CanBeUsed;
 		}
 
-		public static void ApplyHeatImmunityEffect(RecoverFromHeatChore.Instance smi)
+				public static void ApplyHeatImmunityEffect(RecoverFromHeatChore.Instance smi)
 		{
 			HeatImmunityProvider.Instance lastKnownImmunityProvider = smi.lastKnownImmunityProvider;
 			if (lastKnownImmunityProvider != null)
@@ -60,27 +67,27 @@ public class RecoverFromHeatChore : Chore<RecoverFromHeatChore.Instance>
 			}
 		}
 
-		public static HashedString GetAnimFileName(RecoverFromHeatChore.Instance smi)
+				public static HashedString GetAnimFileName(RecoverFromHeatChore.Instance smi)
 		{
-			return RecoverFromHeatChore.States.GetAnimFromHeatImmunityProvider(smi, (HeatImmunityProvider.Instance p) => p.AnimFileName);
+			return RecoverFromHeatChore.States.GetAnimFromHeatImmunityProvider(smi, (HeatImmunityProvider.Instance p) => p.GetAnimFileName(smi.sm.entityRecovering.Get(smi)));
 		}
 
-		public static string GetPreAnimName(RecoverFromHeatChore.Instance smi)
+				public static string GetPreAnimName(RecoverFromHeatChore.Instance smi)
 		{
 			return RecoverFromHeatChore.States.GetAnimFromHeatImmunityProvider(smi, (HeatImmunityProvider.Instance p) => p.PreAnimName);
 		}
 
-		public static string GetLoopAnimName(RecoverFromHeatChore.Instance smi)
+				public static string GetLoopAnimName(RecoverFromHeatChore.Instance smi)
 		{
 			return RecoverFromHeatChore.States.GetAnimFromHeatImmunityProvider(smi, (HeatImmunityProvider.Instance p) => p.LoopAnimName);
 		}
 
-		public static string GetPstAnimName(RecoverFromHeatChore.Instance smi)
+				public static string GetPstAnimName(RecoverFromHeatChore.Instance smi)
 		{
 			return RecoverFromHeatChore.States.GetAnimFromHeatImmunityProvider(smi, (HeatImmunityProvider.Instance p) => p.PstAnimName);
 		}
 
-		public static string GetAnimFromHeatImmunityProvider(RecoverFromHeatChore.Instance smi, Func<HeatImmunityProvider.Instance, string> getCallback)
+				public static string GetAnimFromHeatImmunityProvider(RecoverFromHeatChore.Instance smi, Func<HeatImmunityProvider.Instance, string> getCallback)
 		{
 			HeatImmunityProvider.Instance lastKnownImmunityProvider = smi.lastKnownImmunityProvider;
 			if (lastKnownImmunityProvider != null)
@@ -90,33 +97,33 @@ public class RecoverFromHeatChore : Chore<RecoverFromHeatChore.Instance>
 			return null;
 		}
 
-		public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.ApproachSubState<IApproachable> approach;
+				public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.ApproachSubState<IApproachable> approach;
 
-		public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.PreLoopPostState recover;
+				public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.PreLoopPostState recover;
 
-		public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.State remove_suit;
+				public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.State remove_suit;
 
-		public RecoverFromHeatChore.States.CompleteStates complete;
+				public RecoverFromHeatChore.States.CompleteStates complete;
 
-		public StateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.TargetParameter heatImmunityProvider;
+				public StateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.TargetParameter heatImmunityProvider;
 
-		public StateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.TargetParameter entityRecovering;
+				public StateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.TargetParameter entityRecovering;
 
-		public StateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.TargetParameter locator;
+				public StateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.TargetParameter locator;
 
-		public class CompleteStates : GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.State
+				public class CompleteStates : GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.State
 		{
-			public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.State evaluate;
+						public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.State evaluate;
 
-			public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.State fail;
+						public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.State fail;
 
-			public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.State success;
+						public GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.State success;
 		}
 	}
 
-	public class Instance : GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.GameInstance
+		public class Instance : GameStateMachine<RecoverFromHeatChore.States, RecoverFromHeatChore.Instance, RecoverFromHeatChore, object>.GameInstance
 	{
-				public HeatImmunityProvider.Instance lastKnownImmunityProvider
+						public HeatImmunityProvider.Instance lastKnownImmunityProvider
 		{
 			get
 			{
@@ -128,7 +135,7 @@ public class RecoverFromHeatChore : Chore<RecoverFromHeatChore.Instance>
 			}
 		}
 
-				public HeatImmunityMonitor.Instance heatImmunityMonitor
+						public HeatImmunityMonitor.Instance heatImmunityMonitor
 		{
 			get
 			{
@@ -136,7 +143,7 @@ public class RecoverFromHeatChore : Chore<RecoverFromHeatChore.Instance>
 			}
 		}
 
-		public Instance(RecoverFromHeatChore master, GameObject entityRecovering) : base(master)
+				public Instance(RecoverFromHeatChore master, GameObject entityRecovering) : base(master)
 		{
 			base.sm.entityRecovering.Set(entityRecovering, this, false);
 			HeatImmunityMonitor.Instance heatImmunityMonitor = this.heatImmunityMonitor;
@@ -146,20 +153,20 @@ public class RecoverFromHeatChore : Chore<RecoverFromHeatChore.Instance>
 			}
 		}
 
-		public void CreateLocator()
+				public void CreateLocator()
 		{
 			GameObject value = ChoreHelpers.CreateLocator("RecoverWarmthLocator", Vector3.zero);
 			base.sm.locator.Set(value, this, false);
 			this.UpdateLocator();
 		}
 
-		public void UpdateImmunityProvider()
+				public void UpdateImmunityProvider()
 		{
 			HeatImmunityProvider.Instance nearestImmunityProvider = this.heatImmunityMonitor.NearestImmunityProvider;
 			base.sm.heatImmunityProvider.Set((nearestImmunityProvider == null || nearestImmunityProvider.isMasterNull) ? null : nearestImmunityProvider.gameObject, this, false);
 		}
 
-		public void UpdateLocator()
+				public void UpdateLocator()
 		{
 			int num = this.heatImmunityMonitor.ShelterCell;
 			if (num == Grid.InvalidCell)
@@ -175,12 +182,14 @@ public class RecoverFromHeatChore : Chore<RecoverFromHeatChore.Instance>
 			this.targetCell = num;
 		}
 
-		public void DestroyLocator()
+				public void DestroyLocator()
 		{
 			ChoreHelpers.DestroyLocator(base.sm.locator.Get(this));
 			base.sm.locator.Set(null, this);
 		}
 
-		private int targetCell;
+				private int targetCell;
+
+				public HashedString cachedAnimName;
 	}
 }

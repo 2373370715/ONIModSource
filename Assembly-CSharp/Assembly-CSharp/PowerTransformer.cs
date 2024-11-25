@@ -4,7 +4,7 @@ using System.Diagnostics;
 [DebuggerDisplay("{name}")]
 public class PowerTransformer : Generator
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.battery = base.GetComponent<Battery>();
@@ -12,24 +12,24 @@ public class PowerTransformer : Generator
 		this.UpdateJoulesLostPerSecond();
 	}
 
-	public override void ApplyDeltaJoules(float joules_delta, bool can_over_power = false)
+		public override void ApplyDeltaJoules(float joules_delta, bool can_over_power = false)
 	{
 		this.battery.ConsumeEnergy(-joules_delta);
 		base.ApplyDeltaJoules(joules_delta, can_over_power);
 	}
 
-	public override void ConsumeEnergy(float joules)
+		public override void ConsumeEnergy(float joules)
 	{
 		this.battery.ConsumeEnergy(joules);
 		base.ConsumeEnergy(joules);
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		this.UpdateJoulesLostPerSecond();
 	}
 
-	private void UpdateJoulesLostPerSecond()
+		private void UpdateJoulesLostPerSecond()
 	{
 		if (this.operational.IsOperational)
 		{
@@ -39,7 +39,7 @@ public class PowerTransformer : Generator
 		this.battery.joulesLostPerSecond = 3.3333333f;
 	}
 
-	public override void EnergySim200ms(float dt)
+		public override void EnergySim200ms(float dt)
 	{
 		base.EnergySim200ms(dt);
 		float joulesAvailable = this.operational.IsOperational ? Math.Min(this.battery.JoulesAvailable, base.WattageRating * dt) : 0f;
@@ -54,11 +54,11 @@ public class PowerTransformer : Generator
 		}
 	}
 
-	private Battery battery;
+		private Battery battery;
 
-	private bool mLoopDetected;
+		private bool mLoopDetected;
 
-	private static readonly EventSystem.IntraObjectHandler<PowerTransformer> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<PowerTransformer>(delegate(PowerTransformer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<PowerTransformer> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<PowerTransformer>(delegate(PowerTransformer component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});

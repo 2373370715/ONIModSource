@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BeeHive : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.enabled.grownStates;
@@ -41,63 +41,63 @@ public class BeeHive : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateM
 		});
 	}
 
-	public GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State disabled;
+		public GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State disabled;
 
-	public BeeHive.EnabledStates enabled;
+		public BeeHive.EnabledStates enabled;
 
-	public StateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.FloatParameter hiveGrowth = new StateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.FloatParameter(1f);
+		public StateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.FloatParameter hiveGrowth = new StateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.FloatParameter(1f);
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public string beePrefabID;
+				public string beePrefabID;
 
-		public string larvaPrefabID;
+				public string larvaPrefabID;
 	}
 
-	public class GrowingStates : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State
+		public class GrowingStates : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State
 	{
-		public GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State idle;
+				public GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State idle;
 	}
 
-	public class GrownStates : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State
+		public class GrownStates : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State
 	{
-		public GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State dayTime;
+				public GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State dayTime;
 
-		public GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State nightTime;
+				public GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State nightTime;
 	}
 
-	public class EnabledStates : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State
+		public class EnabledStates : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.State
 	{
-		public BeeHive.GrowingStates growingStates;
+				public BeeHive.GrowingStates growingStates;
 
-		public BeeHive.GrownStates grownStates;
+				public BeeHive.GrownStates grownStates;
 	}
 
-	public class StatesInstance : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateMachineTarget, BeeHive.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, BeeHive.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, BeeHive.Def def) : base(master, def)
 		{
 			base.Subscribe(1119167081, new Action<object>(this.OnNewGameSpawn));
 			Components.BeeHives.Add(this);
 		}
 
-		public void SetUpNewHive()
+				public void SetUpNewHive()
 		{
 			base.sm.hiveGrowth.Set(0f, this, false);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			Components.BeeHives.Remove(this);
 			base.OnCleanUp();
 		}
 
-		private void OnNewGameSpawn(object data)
+				private void OnNewGameSpawn(object data)
 		{
 			this.NewGamePopulateHive();
 		}
 
-		private void NewGamePopulateHive()
+				private void NewGamePopulateHive()
 		{
 			int num = 1;
 			for (int i = 0; i < num; i++)
@@ -111,12 +111,12 @@ public class BeeHive : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateM
 			}
 		}
 
-		public bool IsFullyGrown()
+				public bool IsFullyGrown()
 		{
 			return base.sm.hiveGrowth.Get(this) >= 1f;
 		}
 
-		public void DeltaGrowth(float delta)
+				public void DeltaGrowth(float delta)
 		{
 			float num = base.sm.hiveGrowth.Get(this);
 			num += delta;
@@ -124,17 +124,17 @@ public class BeeHive : GameStateMachine<BeeHive, BeeHive.StatesInstance, IStateM
 			base.sm.hiveGrowth.Set(num, this, false);
 		}
 
-		public void SpawnNewLarvaFromHive()
+				public void SpawnNewLarvaFromHive()
 		{
 			Util.KInstantiate(Assets.GetPrefab(base.def.larvaPrefabID), base.transform.GetPosition()).SetActive(true);
 		}
 
-		public void SpawnNewBeeFromHive()
+				public void SpawnNewBeeFromHive()
 		{
 			Util.KInstantiate(Assets.GetPrefab(base.def.beePrefabID), base.transform.GetPosition()).SetActive(true);
 		}
 
-		public bool IsDisabled()
+				public bool IsDisabled()
 		{
 			KPrefabID component = base.GetComponent<KPrefabID>();
 			return component.HasTag(GameTags.Creatures.HasNoFoundation) || component.HasTag(GameTags.Entombed) || component.HasTag(GameTags.Creatures.Drowning);

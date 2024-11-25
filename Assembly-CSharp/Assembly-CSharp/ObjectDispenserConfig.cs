@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ObjectDispenserConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ObjectDispenser";
 		int width = 1;
@@ -37,7 +37,7 @@ public class ObjectDispenserConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<ObjectDispenser>().dropOffset = new CellOffset(1, 0);
 		Prioritizable.AddRef(go);
@@ -54,5 +54,5 @@ public class ObjectDispenserConfig : IBuildingConfig
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<LogicOperationalController>());
 	}
 
-	public const string ID = "ObjectDispenser";
+		public const string ID = "ObjectDispenser";
 }

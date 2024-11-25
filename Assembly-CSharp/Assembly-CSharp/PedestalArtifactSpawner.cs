@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PedestalArtifactSpawner : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		foreach (GameObject gameObject in this.storage.items)
@@ -26,12 +26,12 @@ public class PedestalArtifactSpawner : KMonoBehaviour
 		this.artifactSpawned = true;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private SingleEntityReceptacle receptacle;
 
-	[Serialize]
+		[Serialize]
 	private bool artifactSpawned;
 }

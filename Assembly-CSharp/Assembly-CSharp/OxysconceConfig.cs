@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class OxysconceConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_DLC_2;
+		return DlcManager.DLC2;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Oxysconce";
 		int width = 1;
@@ -32,7 +32,7 @@ public class OxysconceConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
 		new CellOffset(0, 0);
@@ -50,7 +50,7 @@ public class OxysconceConfig : IBuildingConfig
 		go.AddOrGet<StorageMeter>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
@@ -58,7 +58,7 @@ public class OxysconceConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "Oxysconce";
+		public const string ID = "Oxysconce";
 
-	private const float OXYLITE_STORAGE = 240f;
+		private const float OXYLITE_STORAGE = 240f;
 }

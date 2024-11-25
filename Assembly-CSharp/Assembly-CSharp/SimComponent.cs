@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class SimComponent : KMonoBehaviour, ISim200ms
 {
-		public bool IsSimActive
+			public bool IsSimActive
 	{
 		get
 		{
@@ -12,52 +12,52 @@ public abstract class SimComponent : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	protected virtual void OnSimRegister(HandleVector<Game.ComplexCallbackInfo<int>>.Handle cb_handle)
+		protected virtual void OnSimRegister(HandleVector<Game.ComplexCallbackInfo<int>>.Handle cb_handle)
 	{
 	}
 
-	protected virtual void OnSimRegistered()
+		protected virtual void OnSimRegistered()
 	{
 	}
 
-	protected virtual void OnSimActivate()
+		protected virtual void OnSimActivate()
 	{
 	}
 
-	protected virtual void OnSimDeactivate()
+		protected virtual void OnSimDeactivate()
 	{
 	}
 
-	protected virtual void OnSimUnregister()
+		protected virtual void OnSimUnregister()
 	{
 	}
 
-	protected abstract Action<int> GetStaticUnregister();
+		protected abstract Action<int> GetStaticUnregister();
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.SimRegister();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.SimUnregister();
 		base.OnCleanUp();
 	}
 
-	public void SetSimActive(bool active)
+		public void SetSimActive(bool active)
 	{
 		this.simActive = active;
 		this.dirty = true;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (!Sim.IsValidHandle(this.simHandle))
 		{
@@ -66,7 +66,7 @@ public abstract class SimComponent : KMonoBehaviour, ISim200ms
 		this.UpdateSimState();
 	}
 
-	private void UpdateSimState()
+		private void UpdateSimState()
 	{
 		if (!this.dirty)
 		{
@@ -81,7 +81,7 @@ public abstract class SimComponent : KMonoBehaviour, ISim200ms
 		this.OnSimDeactivate();
 	}
 
-	private void SimRegister()
+		private void SimRegister()
 	{
 		if (base.isSpawned && this.simHandle == -1)
 		{
@@ -95,7 +95,7 @@ public abstract class SimComponent : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	private void SimUnregister()
+		private void SimUnregister()
 	{
 		if (Sim.IsValidHandle(this.simHandle))
 		{
@@ -104,7 +104,7 @@ public abstract class SimComponent : KMonoBehaviour, ISim200ms
 		this.simHandle = -1;
 	}
 
-	private static void OnSimRegistered(SimComponent instance, int handle, Action<int> static_unregister)
+		private static void OnSimRegistered(SimComponent instance, int handle, Action<int> static_unregister)
 	{
 		if (instance != null)
 		{
@@ -115,15 +115,15 @@ public abstract class SimComponent : KMonoBehaviour, ISim200ms
 		static_unregister(handle);
 	}
 
-	[Conditional("ENABLE_LOGGER")]
+		[Conditional("ENABLE_LOGGER")]
 	protected void Log(string msg)
 	{
 	}
 
-	[SerializeField]
+		[SerializeField]
 	protected int simHandle = -1;
 
-	private bool simActive = true;
+		private bool simActive = true;
 
-	private bool dirty = true;
+		private bool dirty = true;
 }

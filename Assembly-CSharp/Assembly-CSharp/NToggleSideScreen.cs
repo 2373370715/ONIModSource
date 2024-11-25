@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class NToggleSideScreen : SideScreenContent
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<INToggleSideScreenControl>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.target = target.GetComponent<INToggleSideScreenControl>();
@@ -27,7 +27,7 @@ public class NToggleSideScreen : SideScreenContent
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		for (int i = 0; i < Mathf.Max(this.target.Options.Count, this.buttonList.Count); i++)
 		{
@@ -87,13 +87,13 @@ public class NToggleSideScreen : SideScreenContent
 		this.description.gameObject.SetActive(!string.IsNullOrEmpty(this.target.Description));
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle buttonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText description;
 
-	private INToggleSideScreenControl target;
+		private INToggleSideScreenControl target;
 
-	private List<KToggle> buttonList = new List<KToggle>();
+		private List<KToggle> buttonList = new List<KToggle>();
 }

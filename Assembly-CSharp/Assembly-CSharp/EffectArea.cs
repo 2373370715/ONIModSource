@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/EffectArea")]
 public class EffectArea : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.Effect = Db.Get().effects.Get(this.EffectName);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		int num = 0;
 		int num2 = 0;
@@ -27,9 +27,9 @@ public class EffectArea : KMonoBehaviour
 		}
 	}
 
-	public string EffectName;
+		public string EffectName;
 
-	public int Area;
+		public int Area;
 
-	private Effect Effect;
+		private Effect Effect;
 }

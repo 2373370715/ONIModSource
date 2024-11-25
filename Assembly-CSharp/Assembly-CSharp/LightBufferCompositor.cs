@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class LightBufferCompositor : MonoBehaviour
 {
-	private void Start()
+		private void Start()
 	{
 		this.material = new Material(Shader.Find("Klei/PostFX/LightBufferCompositor"));
 		this.material.SetTexture("_InvalidTex", Assets.instance.invalidAreaTex);
@@ -12,12 +12,12 @@ public class LightBufferCompositor : MonoBehaviour
 		ShaderReloader.Register(new System.Action(this.OnShadersReloaded));
 	}
 
-	private void OnEnable()
+		private void OnEnable()
 	{
 		this.OnShadersReloaded();
 	}
 
-	private void DownSample4x(Texture source, RenderTexture dest)
+		private void DownSample4x(Texture source, RenderTexture dest)
 	{
 		float num = 1f;
 		Graphics.BlitMultiTap(source, dest, this.blurMaterial, new Vector2[]
@@ -29,20 +29,20 @@ public class LightBufferCompositor : MonoBehaviour
 		});
 	}
 
-	[ContextMenu("ToggleParticles")]
+		[ContextMenu("ToggleParticles")]
 	private void ToggleParticles()
 	{
 		this.particlesEnabled = !this.particlesEnabled;
 		this.UpdateMaterialState();
 	}
 
-	public void SetParticlesEnabled(bool enabled)
+		public void SetParticlesEnabled(bool enabled)
 	{
 		this.particlesEnabled = enabled;
 		this.UpdateMaterialState();
 	}
 
-	private void UpdateMaterialState()
+		private void UpdateMaterialState()
 	{
 		if (this.particlesEnabled)
 		{
@@ -52,7 +52,7 @@ public class LightBufferCompositor : MonoBehaviour
 		this.material.EnableKeyword("DISABLE_TEMPERATURE_PARTICLES");
 	}
 
-	private void OnRenderImage(RenderTexture src, RenderTexture dest)
+		private void OnRenderImage(RenderTexture src, RenderTexture dest)
 	{
 		RenderTexture renderTexture = null;
 		if (PropertyTextures.instance != null)
@@ -72,7 +72,7 @@ public class LightBufferCompositor : MonoBehaviour
 		}
 	}
 
-	private void OnShadersReloaded()
+		private void OnShadersReloaded()
 	{
 		if (this.material != null && Lighting.Instance != null)
 		{
@@ -87,11 +87,11 @@ public class LightBufferCompositor : MonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Material material;
 
-	[SerializeField]
+		[SerializeField]
 	private Material blurMaterial;
 
-	private bool particlesEnabled = true;
+		private bool particlesEnabled = true;
 }

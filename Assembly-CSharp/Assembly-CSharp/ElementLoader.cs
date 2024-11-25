@@ -10,7 +10,7 @@ using UnityEngine;
 
 public class ElementLoader
 {
-	public static float GetMinMeltingPointAmongElements(IList<Tag> elements)
+		public static float GetMinMeltingPointAmongElements(IList<Tag> elements)
 	{
 		float num = float.MaxValue;
 		for (int i = 0; i < elements.Count; i++)
@@ -24,7 +24,7 @@ public class ElementLoader
 		return num;
 	}
 
-	public static List<ElementLoader.ElementEntry> CollectElementsFromYAML()
+		public static List<ElementLoader.ElementEntry> CollectElementsFromYAML()
 	{
 		List<ElementLoader.ElementEntry> list = new List<ElementLoader.ElementEntry>();
 		ListPool<FileHandle, ElementLoader>.PooledList pooledList = ListPool<FileHandle, ElementLoader>.Allocate();
@@ -60,7 +60,7 @@ public class ElementLoader
 		return list;
 	}
 
-	public static void Load(ref Hashtable substanceList, Dictionary<string, SubstanceTable> substanceTablesByDlc)
+		public static void Load(ref Hashtable substanceList, Dictionary<string, SubstanceTable> substanceTablesByDlc)
 	{
 		ElementLoader.elements = new List<Element>();
 		ElementLoader.elementTable = new Dictionary<int, Element>();
@@ -90,7 +90,7 @@ public class ElementLoader
 		WorldGen.SetupDefaultElements();
 	}
 
-	private static void CopyEntryToElement(ElementLoader.ElementEntry entry, Element elem)
+		private static void CopyEntryToElement(ElementLoader.ElementEntry entry, Element elem)
 	{
 		Hash.SDBMLower(entry.elementId);
 		elem.tag = TagManager.Create(entry.elementId.ToString());
@@ -156,7 +156,7 @@ public class ElementLoader
 		elem.defaultValues = defaultValues;
 	}
 
-	private static bool ManifestSubstanceForElement(Element elem, ref Hashtable substanceList, SubstanceTable substanceTable)
+		private static bool ManifestSubstanceForElement(Element elem, ref Hashtable substanceList, SubstanceTable substanceTable)
 	{
 		elem.substance = null;
 		if (substanceList.ContainsKey(elem.id))
@@ -190,24 +190,24 @@ public class ElementLoader
 		return true;
 	}
 
-	public static Element FindElementByName(string name)
+		public static Element FindElementByName(string name)
 	{
 		return ElementLoader.FindElementByHash((SimHashes)Hash.SDBMLower(name));
 	}
 
-	public static Element FindElementByTag(Tag tag)
+		public static Element FindElementByTag(Tag tag)
 	{
 		return ElementLoader.GetElement(tag);
 	}
 
-	public static Element FindElementByHash(SimHashes hash)
+		public static Element FindElementByHash(SimHashes hash)
 	{
-		Element result;
-		elementTable.TryGetValue((int)hash, out result);
+		Element result = null;
+		ElementLoader.elementTable.TryGetValue((int)hash, out result);
 		return result;
 	}
 
-	public static ushort GetElementIndex(SimHashes hash)
+		public static ushort GetElementIndex(SimHashes hash)
 	{
 		Element element = null;
 		ElementLoader.elementTable.TryGetValue((int)hash, out element);
@@ -218,14 +218,14 @@ public class ElementLoader
 		return ushort.MaxValue;
 	}
 
-	public static Element GetElement(Tag tag)
+		public static Element GetElement(Tag tag)
 	{
 		Element result;
 		ElementLoader.elementTagTable.TryGetValue(tag, out result);
 		return result;
 	}
 
-	public static SimHashes GetElementID(Tag tag)
+		public static SimHashes GetElementID(Tag tag)
 	{
 		Element element;
 		ElementLoader.elementTagTable.TryGetValue(tag, out element);
@@ -236,7 +236,7 @@ public class ElementLoader
 		return SimHashes.Vacuum;
 	}
 
-	private static SimHashes GetID(int column, int row, string[,] grid, SimHashes defaultValue = SimHashes.Vacuum)
+		private static SimHashes GetID(int column, int row, string[,] grid, SimHashes defaultValue = SimHashes.Vacuum)
 	{
 		if (column >= grid.GetLength(0) || row > grid.GetLength(1))
 		{
@@ -267,7 +267,7 @@ public class ElementLoader
 		return (SimHashes)obj;
 	}
 
-	private static SpawnFXHashes GetSpawnFX(int column, int row, string[,] grid)
+		private static SpawnFXHashes GetSpawnFX(int column, int row, string[,] grid)
 	{
 		if (column >= grid.GetLength(0) || row > grid.GetLength(1))
 		{
@@ -298,7 +298,7 @@ public class ElementLoader
 		return (SpawnFXHashes)obj;
 	}
 
-	private static Tag CreateMaterialCategoryTag(SimHashes element_id, Tag phaseTag, string materialCategoryField)
+		private static Tag CreateMaterialCategoryTag(SimHashes element_id, Tag phaseTag, string materialCategoryField)
 	{
 		if (!string.IsNullOrEmpty(materialCategoryField))
 		{
@@ -316,7 +316,7 @@ public class ElementLoader
 		return phaseTag;
 	}
 
-	private static Tag[] CreateOreTags(Tag materialCategory, Tag phaseTag, string[] ore_tags_split)
+		private static Tag[] CreateOreTags(Tag materialCategory, Tag phaseTag, string[] ore_tags_split)
 	{
 		List<Tag> list = new List<Tag>();
 		if (ore_tags_split != null)
@@ -337,7 +337,7 @@ public class ElementLoader
 		return list.ToArray();
 	}
 
-	private static void FinaliseElementsTable(ref Hashtable substanceList)
+		private static void FinaliseElementsTable(ref Hashtable substanceList)
 	{
 		foreach (Element element in ElementLoader.elements)
 		{
@@ -403,7 +403,7 @@ public class ElementLoader
 		}
 	}
 
-	private static void ValidateElements()
+		private static void ValidateElements()
 	{
 		global::Debug.Log("------ Start Validating Elements ------");
 		foreach (Element element in ElementLoader.elements)
@@ -446,127 +446,127 @@ public class ElementLoader
 		global::Debug.Log("------ End Validating Elements ------");
 	}
 
-	public static List<Element> elements;
+		public static List<Element> elements;
 
-	public static Dictionary<int, Element> elementTable;
+		public static Dictionary<int, Element> elementTable;
 
-	public static Dictionary<Tag, Element> elementTagTable;
+		public static Dictionary<Tag, Element> elementTagTable;
 
-	private static string path = Application.streamingAssetsPath + "/elements/";
+		private static string path = Application.streamingAssetsPath + "/elements/";
 
-	private static readonly Color noColour = new Color(0f, 0f, 0f, 0f);
+		private static readonly Color noColour = new Color(0f, 0f, 0f, 0f);
 
-	public class ElementEntryCollection
+		public class ElementEntryCollection
 	{
-						public ElementLoader.ElementEntry[] elements { get; set; }
+								public ElementLoader.ElementEntry[] elements { get; set; }
 	}
 
-	public class ElementComposition
+		public class ElementComposition
 	{
-						public string elementID { get; set; }
+								public string elementID { get; set; }
 
-						public float percentage { get; set; }
+								public float percentage { get; set; }
 	}
 
-	public class ElementEntry
+		public class ElementEntry
 	{
-		public ElementEntry()
+				public ElementEntry()
 		{
 			this.lowTemp = 0f;
 			this.highTemp = 10000f;
 		}
 
-						public string elementId { get; set; }
+								public string elementId { get; set; }
 
-						public float specificHeatCapacity { get; set; }
+								public float specificHeatCapacity { get; set; }
 
-						public float thermalConductivity { get; set; }
+								public float thermalConductivity { get; set; }
 
-						public float solidSurfaceAreaMultiplier { get; set; }
+								public float solidSurfaceAreaMultiplier { get; set; }
 
-						public float liquidSurfaceAreaMultiplier { get; set; }
+								public float liquidSurfaceAreaMultiplier { get; set; }
 
-						public float gasSurfaceAreaMultiplier { get; set; }
+								public float gasSurfaceAreaMultiplier { get; set; }
 
-						public float defaultMass { get; set; }
+								public float defaultMass { get; set; }
 
-						public float defaultTemperature { get; set; }
+								public float defaultTemperature { get; set; }
 
-						public float defaultPressure { get; set; }
+								public float defaultPressure { get; set; }
 
-						public float molarMass { get; set; }
+								public float molarMass { get; set; }
 
-						public float lightAbsorptionFactor { get; set; }
+								public float lightAbsorptionFactor { get; set; }
 
-						public float radiationAbsorptionFactor { get; set; }
+								public float radiationAbsorptionFactor { get; set; }
 
-						public float radiationPer1000Mass { get; set; }
+								public float radiationPer1000Mass { get; set; }
 
-						public string lowTempTransitionTarget { get; set; }
+								public string lowTempTransitionTarget { get; set; }
 
-						public float lowTemp { get; set; }
+								public float lowTemp { get; set; }
 
-						public string highTempTransitionTarget { get; set; }
+								public string highTempTransitionTarget { get; set; }
 
-						public float highTemp { get; set; }
+								public float highTemp { get; set; }
 
-						public string lowTempTransitionOreId { get; set; }
+								public string lowTempTransitionOreId { get; set; }
 
-						public float lowTempTransitionOreMassConversion { get; set; }
+								public float lowTempTransitionOreMassConversion { get; set; }
 
-						public string highTempTransitionOreId { get; set; }
+								public string highTempTransitionOreId { get; set; }
 
-						public float highTempTransitionOreMassConversion { get; set; }
+								public float highTempTransitionOreMassConversion { get; set; }
 
-						public string sublimateId { get; set; }
+								public string sublimateId { get; set; }
 
-						public string sublimateFx { get; set; }
+								public string sublimateFx { get; set; }
 
-						public float sublimateRate { get; set; }
+								public float sublimateRate { get; set; }
 
-						public float sublimateEfficiency { get; set; }
+								public float sublimateEfficiency { get; set; }
 
-						public float sublimateProbability { get; set; }
+								public float sublimateProbability { get; set; }
 
-						public float offGasPercentage { get; set; }
+								public float offGasPercentage { get; set; }
 
-						public string materialCategory { get; set; }
+								public string materialCategory { get; set; }
 
-						public string[] tags { get; set; }
+								public string[] tags { get; set; }
 
-						public bool isDisabled { get; set; }
+								public bool isDisabled { get; set; }
 
-						public float strength { get; set; }
+								public float strength { get; set; }
 
-						public float maxMass { get; set; }
+								public float maxMass { get; set; }
 
-						public byte hardness { get; set; }
+								public byte hardness { get; set; }
 
-						public float toxicity { get; set; }
+								public float toxicity { get; set; }
 
-						public float liquidCompression { get; set; }
+								public float liquidCompression { get; set; }
 
-						public float speed { get; set; }
+								public float speed { get; set; }
 
-						public float minHorizontalFlow { get; set; }
+								public float minHorizontalFlow { get; set; }
 
-						public float minVerticalFlow { get; set; }
+								public float minVerticalFlow { get; set; }
 
-						public string convertId { get; set; }
+								public string convertId { get; set; }
 
-						public float flow { get; set; }
+								public float flow { get; set; }
 
-						public int buildMenuSort { get; set; }
+								public int buildMenuSort { get; set; }
 
-						public Element.State state { get; set; }
+								public Element.State state { get; set; }
 
-						public string localizationID { get; set; }
+								public string localizationID { get; set; }
 
-						public string dlcId { get; set; }
+								public string dlcId { get; set; }
 
-						public ElementLoader.ElementComposition[] composition { get; set; }
+								public ElementLoader.ElementComposition[] composition { get; set; }
 
-						public string description
+								public string description
 		{
 			get
 			{
@@ -578,6 +578,6 @@ public class ElementLoader
 			}
 		}
 
-		private string description_backing;
+				private string description_backing;
 	}
 }

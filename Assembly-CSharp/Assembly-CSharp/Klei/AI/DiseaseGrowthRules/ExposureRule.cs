@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Klei.AI.DiseaseGrowthRules
 {
-	public class ExposureRule
+		public class ExposureRule
 	{
-		public void Apply(ElemExposureInfo[] infoList)
+				public void Apply(ElemExposureInfo[] infoList)
 		{
 			List<Element> elements = ElementLoader.elements;
 			for (int i = 0; i < elements.Count; i++)
@@ -22,16 +22,16 @@ namespace Klei.AI.DiseaseGrowthRules
 			}
 		}
 
-		public virtual bool Test(Element e)
+				public virtual bool Test(Element e)
 		{
 			return true;
 		}
 
-		public virtual string Name()
+				public virtual string Name()
 		{
 			return null;
 		}
 
-		public float? populationHalfLife;
+				public float? populationHalfLife;
 	}
 }

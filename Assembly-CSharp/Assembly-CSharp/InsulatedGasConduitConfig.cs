@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class InsulatedGasConduitConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "InsulatedGasConduit";
 		int width = 1;
@@ -42,13 +42,13 @@ public class InsulatedGasConduitConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		go.AddOrGet<Conduit>().type = ConduitType.Gas;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<Building>().Def.BuildingUnderConstruction.GetComponent<Constructable>().isDiggingRequired = false;
 		go.AddComponent<EmptyConduitWorkable>();
@@ -59,12 +59,12 @@ public class InsulatedGasConduitConfig : IBuildingConfig
 		LiquidConduitConfig.CommonConduitPostConfigureComplete(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		KAnimGraphTileVisualizer kanimGraphTileVisualizer = go.AddComponent<KAnimGraphTileVisualizer>();
 		kanimGraphTileVisualizer.connectionSource = KAnimGraphTileVisualizer.ConnectionSource.Gas;
 		kanimGraphTileVisualizer.isPhysicalBuilding = false;
 	}
 
-	public const string ID = "InsulatedGasConduit";
+		public const string ID = "InsulatedGasConduit";
 }

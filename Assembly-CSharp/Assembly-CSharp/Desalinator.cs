@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 {
-			public float SaltStorageLeft
+				public float SaltStorageLeft
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.deliveryComponents = base.GetComponents<ManualDeliveryKG>();
@@ -28,7 +28,7 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 		base.smi.StartSM();
 	}
 
-	private void OnConduitConnectionChanged(object data)
+		private void OnConduitConnectionChanged(object data)
 	{
 		bool pause = (bool)data;
 		foreach (ManualDeliveryKG manualDeliveryKG in this.deliveryComponents)
@@ -41,7 +41,7 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 		}
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (base.smi.GetCurrentState() == base.smi.sm.full || !base.smi.HasSalt || base.smi.emptyChore != null)
 		{
@@ -53,7 +53,7 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 		}, global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.CLEANTOILET.TOOLTIP, true), 1f);
 	}
 
-	private bool CheckCanConvert()
+		private bool CheckCanConvert()
 	{
 		if (this.converters == null)
 		{
@@ -69,7 +69,7 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 		return false;
 	}
 
-	private bool CheckEnoughMassToConvert()
+		private bool CheckEnoughMassToConvert()
 	{
 		if (this.converters == null)
 		{
@@ -85,34 +85,34 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 		return false;
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private ManualDeliveryKG[] deliveryComponents;
+		private ManualDeliveryKG[] deliveryComponents;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	[Serialize]
+		[Serialize]
 	public float maxSalt = 1000f;
 
-	[Serialize]
+		[Serialize]
 	private float _storageLeft = 1000f;
 
-	private ElementConverter[] converters;
+		private ElementConverter[] converters;
 
-	private static readonly EventSystem.IntraObjectHandler<Desalinator> OnConduitConnectionChangedDelegate = new EventSystem.IntraObjectHandler<Desalinator>(delegate(Desalinator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Desalinator> OnConduitConnectionChangedDelegate = new EventSystem.IntraObjectHandler<Desalinator>(delegate(Desalinator component, object data)
 	{
 		component.OnConduitConnectionChanged(data);
 	});
 
-	public class StatesInstance : GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.GameInstance
 	{
-		public StatesInstance(Desalinator smi) : base(smi)
+				public StatesInstance(Desalinator smi) : base(smi)
 		{
 		}
 
-				public bool HasSalt
+						public bool HasSalt
 		{
 			get
 			{
@@ -120,17 +120,17 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 			}
 		}
 
-		public bool IsFull()
+				public bool IsFull()
 		{
 			return base.master.SaltStorageLeft <= 0f;
 		}
 
-		public bool IsSaltRemoved()
+				public bool IsSaltRemoved()
 		{
 			return !this.HasSalt;
 		}
 
-		public void CreateEmptyChore()
+				public void CreateEmptyChore()
 		{
 			if (this.emptyChore != null)
 			{
@@ -140,7 +140,7 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 			this.emptyChore = new WorkChore<DesalinatorWorkableEmpty>(Db.Get().ChoreTypes.EmptyDesalinator, component, null, true, new Action<Chore>(this.OnEmptyComplete), null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 		}
 
-		public void CancelEmptyChore()
+				public void CancelEmptyChore()
 		{
 			if (this.emptyChore != null)
 			{
@@ -149,7 +149,7 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 			}
 		}
 
-		private void OnEmptyComplete(Chore chore)
+				private void OnEmptyComplete(Chore chore)
 		{
 			this.emptyChore = null;
 			Tag tag = GameTagExtensions.Create(SimHashes.Salt);
@@ -162,18 +162,18 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 			pooledList.Recycle();
 		}
 
-		public void UpdateStorageLeft()
+				public void UpdateStorageLeft()
 		{
 			Tag tag = GameTagExtensions.Create(SimHashes.Salt);
 			base.master.SaltStorageLeft = base.master.maxSalt - base.master.storage.GetMassAvailable(tag);
 		}
 
-		public Chore emptyChore;
+				public Chore emptyChore;
 	}
 
-	public class States : GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator>
+		public class States : GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.off;
 			this.off.PlayAnim("off").EventTransition(GameHashes.OperationalChanged, this.on, (Desalinator.StatesInstance smi) => smi.master.operational.IsOperational);
@@ -213,37 +213,37 @@ public class Desalinator : StateMachineComponent<Desalinator.StatesInstance>
 			}).GoTo(this.on.waiting);
 		}
 
-		public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State off;
+				public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State off;
 
-		public Desalinator.States.OnStates on;
+				public Desalinator.States.OnStates on;
 
-		public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State full;
+				public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State full;
 
-		public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State fullWaitingForEmpty;
+				public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State fullWaitingForEmpty;
 
-		public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State earlyEmpty;
+				public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State earlyEmpty;
 
-		public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State earlyWaitingForEmpty;
+				public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State earlyWaitingForEmpty;
 
-		public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State empty;
+				public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State empty;
 
-		private static readonly HashedString[] FULL_ANIMS = new HashedString[]
+				private static readonly HashedString[] FULL_ANIMS = new HashedString[]
 		{
 			"working_pst",
 			"off"
 		};
 
-		public StateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.FloatParameter saltStorageLeft = new StateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.FloatParameter(0f);
+				public StateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.FloatParameter saltStorageLeft = new StateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.FloatParameter(0f);
 
-		public class OnStates : GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State
+				public class OnStates : GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State
 		{
-			public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State waiting;
+						public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State waiting;
 
-			public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State working_pre;
+						public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State working_pre;
 
-			public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State working;
+						public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State working;
 
-			public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State working_pst;
+						public GameStateMachine<Desalinator.States, Desalinator.StatesInstance, Desalinator, object>.State working_pst;
 		}
 	}
 }

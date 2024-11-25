@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	[DebuggerDisplay("{amount.Name} {value} ({deltaAttribute.value}/{minAttribute.value}/{maxAttribute.value})")]
 	public class AmountInstance : ModifierInstance<Amount>, ISaveLoadable, ISim200ms
 	{
-				public Amount amount
+						public Amount amount
 		{
 			get
 			{
@@ -18,7 +18,7 @@ namespace Klei.AI
 			}
 		}
 
-						public bool paused
+								public bool paused
 		{
 			get
 			{
@@ -36,22 +36,22 @@ namespace Klei.AI
 			}
 		}
 
-		public float GetMin()
+				public float GetMin()
 		{
 			return this.minAttribute.GetTotalValue();
 		}
 
-		public float GetMax()
+				public float GetMax()
 		{
 			return this.maxAttribute.GetTotalValue();
 		}
 
-		public float GetDelta()
+				public float GetDelta()
 		{
 			return this.deltaAttribute.GetTotalValue();
 		}
 
-		public AmountInstance(Amount amount, GameObject game_object) : base(game_object, amount)
+				public AmountInstance(Amount amount, GameObject game_object) : base(game_object, amount)
 		{
 			Attributes attributes = game_object.GetAttributes();
 			this.minAttribute = attributes.Add(amount.minAttribute);
@@ -59,25 +59,34 @@ namespace Klei.AI
 			this.deltaAttribute = attributes.Add(amount.deltaAttribute);
 		}
 
-		public float SetValue(float value)
+				public float SetValue(float value)
 		{
 			this.value = Mathf.Min(Mathf.Max(value, this.GetMin()), this.GetMax());
 			return this.value;
 		}
 
-		public void Publish(float delta, float previous_value)
+				public void Publish(float delta, float previous_value)
 		{
 			if (this.OnDelta != null)
 			{
 				this.OnDelta(delta);
 			}
+			if (this.OnValueChanged != null && previous_value != this.value)
+			{
+				float obj = this.value - previous_value;
+				this.OnValueChanged(obj);
+			}
 			if (this.OnMaxValueReached != null && previous_value < this.GetMax() && this.value >= this.GetMax())
 			{
 				this.OnMaxValueReached();
 			}
+			if (this.OnMinValueReached != null && previous_value > this.GetMin() && this.value <= this.GetMin())
+			{
+				this.OnMinValueReached();
+			}
 		}
 
-		public float ApplyDelta(float delta)
+				public float ApplyDelta(float delta)
 		{
 			float previous_value = this.value;
 			this.SetValue(this.value + delta);
@@ -85,31 +94,31 @@ namespace Klei.AI
 			return this.value;
 		}
 
-		public string GetValueString()
+				public string GetValueString()
 		{
 			return this.amount.GetValueString(this);
 		}
 
-		public string GetDescription()
+				public string GetDescription()
 		{
 			return this.amount.GetDescription(this);
 		}
 
-		public string GetTooltip()
+				public string GetTooltip()
 		{
 			return this.amount.GetTooltip(this);
 		}
 
-		public void Activate()
+				public void Activate()
 		{
 			SimAndRenderScheduler.instance.Add(this, false);
 		}
 
-		public void Sim200ms(float dt)
+				public void Sim200ms(float dt)
 		{
 		}
 
-		public static void BatchUpdate(List<UpdateBucketWithUpdater<ISim200ms>.Entry> amount_instances, float time_delta)
+				public static void BatchUpdate(List<UpdateBucketWithUpdater<ISim200ms>.Entry> amount_instances, float time_delta)
 		{
 			if (time_delta == 0f)
 			{
@@ -132,33 +141,37 @@ namespace Klei.AI
 			AmountInstance.batch_update_job.Reset(null);
 		}
 
-		public void Deactivate()
+				public void Deactivate()
 		{
 			SimAndRenderScheduler.instance.Remove(this);
 		}
 
-		[Serialize]
+				[Serialize]
 		public float value;
 
-		public AttributeInstance minAttribute;
+				public AttributeInstance minAttribute;
 
-		public AttributeInstance maxAttribute;
+				public AttributeInstance maxAttribute;
 
-		public AttributeInstance deltaAttribute;
+				public AttributeInstance deltaAttribute;
 
-		public Action<float> OnDelta;
+				public Action<float> OnDelta;
 
-		public System.Action OnMaxValueReached;
+				public Action<float> OnValueChanged;
 
-		public bool hide;
+				public System.Action OnMaxValueReached;
 
-		private bool _paused;
+				public System.Action OnMinValueReached;
 
-		private static WorkItemCollection<AmountInstance.BatchUpdateTask, AmountInstance.BatchUpdateContext> batch_update_job = new WorkItemCollection<AmountInstance.BatchUpdateTask, AmountInstance.BatchUpdateContext>();
+				public bool hide;
 
-		private class BatchUpdateContext
+				private bool _paused;
+
+				private static WorkItemCollection<AmountInstance.BatchUpdateTask, AmountInstance.BatchUpdateContext> batch_update_job = new WorkItemCollection<AmountInstance.BatchUpdateTask, AmountInstance.BatchUpdateContext>();
+
+				private class BatchUpdateContext
 		{
-			public BatchUpdateContext(List<UpdateBucketWithUpdater<ISim200ms>.Entry> amount_instances, float time_delta)
+						public BatchUpdateContext(List<UpdateBucketWithUpdater<ISim200ms>.Entry> amount_instances, float time_delta)
 			{
 				for (int num = 0; num != amount_instances.Count; num++)
 				{
@@ -172,7 +185,7 @@ namespace Klei.AI
 				this.results.Capacity = this.amount_instances.Count;
 			}
 
-			public void Finish()
+						public void Finish()
 			{
 				foreach (AmountInstance.BatchUpdateContext.Result result in this.results)
 				{
@@ -181,31 +194,31 @@ namespace Klei.AI
 				this.results.Recycle();
 			}
 
-			public List<UpdateBucketWithUpdater<ISim200ms>.Entry> amount_instances;
+						public List<UpdateBucketWithUpdater<ISim200ms>.Entry> amount_instances;
 
-			public float time_delta;
+						public float time_delta;
 
-			public ListPool<AmountInstance.BatchUpdateContext.Result, AmountInstance>.PooledList results;
+						public ListPool<AmountInstance.BatchUpdateContext.Result, AmountInstance>.PooledList results;
 
-			public struct Result
+						public struct Result
 			{
-				public AmountInstance amount_instance;
+								public AmountInstance amount_instance;
 
-				public float previous;
+								public float previous;
 
-				public float delta;
+								public float delta;
 			}
 		}
 
-		private struct BatchUpdateTask : IWorkItem<AmountInstance.BatchUpdateContext>
+				private struct BatchUpdateTask : IWorkItem<AmountInstance.BatchUpdateContext>
 		{
-			public BatchUpdateTask(int start, int end)
+						public BatchUpdateTask(int start, int end)
 			{
 				this.start = start;
 				this.end = end;
 			}
 
-			public void Run(AmountInstance.BatchUpdateContext context)
+						public void Run(AmountInstance.BatchUpdateContext context)
 			{
 				for (int num = this.start; num != this.end; num++)
 				{
@@ -224,9 +237,9 @@ namespace Klei.AI
 				}
 			}
 
-			private int start;
+						private int start;
 
-			private int end;
+						private int end;
 		}
 	}
 }

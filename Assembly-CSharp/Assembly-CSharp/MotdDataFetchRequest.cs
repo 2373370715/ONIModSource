@@ -7,12 +7,12 @@ using UnityEngine.Networking;
 
 public class MotdDataFetchRequest : IDisposable
 {
-	public void Dispose()
+		public void Dispose()
 	{
 		this.onCompleteFn = null;
 	}
 
-	public void Fetch(string url)
+		public void Fetch(string url)
 	{
 		MotdDataFetchRequest.FetchWebMotdJson(url, delegate(MotdData webMotd)
 		{
@@ -47,7 +47,7 @@ public class MotdDataFetchRequest : IDisposable
 		});
 	}
 
-	public void OnComplete(Action<MotdData> callbackFn)
+		public void OnComplete(Action<MotdData> callbackFn)
 	{
 		if (this.isComplete)
 		{
@@ -57,7 +57,7 @@ public class MotdDataFetchRequest : IDisposable
 		this.onCompleteFn = (Action<MotdData>)Delegate.Combine(this.onCompleteFn, callbackFn);
 	}
 
-	public static void FetchWebMotdJson(string url, Action<MotdData> onCompleteFn)
+		public static void FetchWebMotdJson(string url, Action<MotdData> onCompleteFn)
 	{
 		UnityWebRequest webRequest = UnityWebRequest.Get(url);
 		webRequest.timeout = 3;
@@ -77,7 +77,7 @@ public class MotdDataFetchRequest : IDisposable
 		};
 	}
 
-	public static void FetchWebMotdImagesFor(MotdData motdData, Action<bool> onCompleteFn)
+		public static void FetchWebMotdImagesFor(MotdData motdData, Action<bool> onCompleteFn)
 	{
 		using (List<MotdData_Box>.Enumerator enumerator = motdData.boxesLive.GetEnumerator())
 		{
@@ -120,7 +120,7 @@ public class MotdDataFetchRequest : IDisposable
 		}
 	}
 
-	public static void FetchWebMotdImage(string url, Action<Texture2D, bool> onCompleteFn)
+		public static void FetchWebMotdImage(string url, Action<Texture2D, bool> onCompleteFn)
 	{
 		Texture2D texture2D = MotdDataFetchRequest.ReadCachedMotdImage(url);
 		if (texture2D != null)
@@ -145,17 +145,17 @@ public class MotdDataFetchRequest : IDisposable
 		};
 	}
 
-	public static string GetCachePath()
+		public static string GetCachePath()
 	{
 		return Path.Combine(Util.CacheFolder(), "motd");
 	}
 
-	public static string GetCachedFilePath(string filePath)
+		public static string GetCachedFilePath(string filePath)
 	{
 		return Path.Combine(Util.CacheFolder(), "motd", Path.GetFileName(filePath));
 	}
 
-	public static void WriteCachedMotdImages(MotdData data)
+		public static void WriteCachedMotdImages(MotdData data)
 	{
 		if (data == null)
 		{
@@ -227,7 +227,7 @@ public class MotdDataFetchRequest : IDisposable
 		}
 	}
 
-	public static Texture2D ReadCachedMotdImage(string url)
+		public static Texture2D ReadCachedMotdImage(string url)
 	{
 		string fileName = Path.GetFileName(url);
 		string cachedFilePath = MotdDataFetchRequest.GetCachedFilePath(fileName);
@@ -248,7 +248,7 @@ public class MotdDataFetchRequest : IDisposable
 		return result;
 	}
 
-	public static string GetLocaleCode()
+		public static string GetLocaleCode()
 	{
 		Localization.Locale locale = Localization.GetLocale();
 		if (locale != null)
@@ -262,7 +262,7 @@ public class MotdDataFetchRequest : IDisposable
 		return null;
 	}
 
-	public static Texture2D ParseImage(byte[] buffer)
+		public static Texture2D ParseImage(byte[] buffer)
 	{
 		if (MotdDataFetchRequest.<ParseImage>g__IsPng|14_0(buffer) || MotdDataFetchRequest.<ParseImage>g__IsJpg|14_1(buffer))
 		{
@@ -279,7 +279,7 @@ public class MotdDataFetchRequest : IDisposable
 		return null;
 	}
 
-	public static void GetUrlParams(out string platformCode, out string languageCode)
+		public static void GetUrlParams(out string platformCode, out string languageCode)
 	{
 		platformCode = "default";
 		if ((((Localization.GetLocale() == null) ? null : new Localization.Language?(Localization.GetLocale().Lang)) ?? Localization.Language.Japanese) == Localization.Language.Chinese)
@@ -290,7 +290,7 @@ public class MotdDataFetchRequest : IDisposable
 		languageCode = "en";
 	}
 
-	public static string BuildUrl()
+		public static string BuildUrl()
 	{
 		string str;
 		string str2;
@@ -298,7 +298,7 @@ public class MotdDataFetchRequest : IDisposable
 		return "https://motd.klei.com/motd.json/?game=oni&platform=" + str + "&lang=" + str2;
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	private void <Fetch>g__CompleteWith|4_1(MotdData data)
 	{
 		if (this.isComplete)
@@ -313,27 +313,27 @@ public class MotdDataFetchRequest : IDisposable
 		}
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static bool <ParseImage>g__IsPng|14_0(byte[] buffer)
 	{
 		return buffer[0] == 137 && buffer[1] == 80 && buffer[2] == 78 && buffer[3] == 71 && buffer[4] == 13 && buffer[5] == 10 && buffer[6] == 26 && buffer[7] == 10;
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static bool <ParseImage>g__IsJpg|14_1(byte[] buffer)
 	{
 		return buffer[0] == byte.MaxValue && buffer[1] == 216 && buffer[6] == 74 && buffer[7] == 70 && buffer[8] == 73 && buffer[9] == 70;
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static bool <ParseImage>g__IsKleiTex|14_2(byte[] buffer)
 	{
 		return buffer[0] == 75 && buffer[1] == 84 && buffer[2] == 69 && buffer[3] == 88;
 	}
 
-	private MotdData data;
+		private MotdData data;
 
-	private bool isComplete;
+		private bool isComplete;
 
-	private Action<MotdData> onCompleteFn;
+		private Action<MotdData> onCompleteFn;
 }

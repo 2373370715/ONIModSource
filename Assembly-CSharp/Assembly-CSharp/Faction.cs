@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Faction
 {
-	public HashSet<FactionAlignment> HostileTo()
+		public HashSet<FactionAlignment> HostileTo()
 	{
 		HashSet<FactionAlignment> hashSet = new HashSet<FactionAlignment>();
 		foreach (KeyValuePair<FactionManager.FactionID, FactionManager.Disposition> keyValuePair in this.Dispositions)
@@ -16,17 +16,17 @@ public class Faction
 		return hashSet;
 	}
 
-	public Faction(FactionManager.FactionID faction)
+		public Faction(FactionManager.FactionID faction)
 	{
 		this.ID = faction;
 		this.ConfigureAlignments(faction);
 	}
 
-			public bool CanAttack { get; private set; }
+				public bool CanAttack { get; private set; }
 
-			public bool CanAssist { get; private set; }
+				public bool CanAssist { get; private set; }
 
-	private void ConfigureAlignments(FactionManager.FactionID faction)
+		private void ConfigureAlignments(FactionManager.FactionID faction)
 	{
 		switch (faction)
 		{
@@ -92,20 +92,20 @@ public class Faction
 		}
 	}
 
-	public HashSet<FactionAlignment> Members = new HashSet<FactionAlignment>();
+		public HashSet<FactionAlignment> Members = new HashSet<FactionAlignment>();
 
-	public FactionManager.FactionID ID;
+		public FactionManager.FactionID ID;
 
-	public Dictionary<FactionManager.FactionID, FactionManager.Disposition> Dispositions = new Dictionary<FactionManager.FactionID, FactionManager.Disposition>(default(Faction.FactionIDComparer));
+		public Dictionary<FactionManager.FactionID, FactionManager.Disposition> Dispositions = new Dictionary<FactionManager.FactionID, FactionManager.Disposition>(default(Faction.FactionIDComparer));
 
-	public struct FactionIDComparer : IEqualityComparer<FactionManager.FactionID>
+		public struct FactionIDComparer : IEqualityComparer<FactionManager.FactionID>
 	{
-		public bool Equals(FactionManager.FactionID x, FactionManager.FactionID y)
+				public bool Equals(FactionManager.FactionID x, FactionManager.FactionID y)
 		{
 			return x == y;
 		}
 
-		public int GetHashCode(FactionManager.FactionID obj)
+				public int GetHashCode(FactionManager.FactionID obj)
 		{
 			return (int)obj;
 		}

@@ -3,18 +3,18 @@ using Klei.AI;
 
 public abstract class Need : KMonoBehaviour
 {
-			public string Name { get; protected set; }
+				public string Name { get; protected set; }
 
-			public string ExpectationTooltip { get; protected set; }
+				public string ExpectationTooltip { get; protected set; }
 
-			public string Tooltip { get; protected set; }
+				public string Tooltip { get; protected set; }
 
-	public Klei.AI.Attribute GetExpectationAttribute()
+		public Klei.AI.Attribute GetExpectationAttribute()
 	{
 		return this.expectationAttribute.Attribute;
 	}
 
-	protected void SetModifier(Need.ModifierType modifier)
+		protected void SetModifier(Need.ModifierType modifier)
 	{
 		if (this.currentStressModifier != modifier)
 		{
@@ -30,7 +30,7 @@ public abstract class Need : KMonoBehaviour
 		}
 	}
 
-	private void ApplyModifier(Need.ModifierType modifier)
+		private void ApplyModifier(Need.ModifierType modifier)
 	{
 		if (modifier.modifier != null)
 		{
@@ -46,7 +46,7 @@ public abstract class Need : KMonoBehaviour
 		}
 	}
 
-	private void UnapplyModifier(Need.ModifierType modifier)
+		private void UnapplyModifier(Need.ModifierType modifier)
 	{
 		if (modifier.modifier != null)
 		{
@@ -62,22 +62,22 @@ public abstract class Need : KMonoBehaviour
 		}
 	}
 
-	protected AttributeInstance expectationAttribute;
+		protected AttributeInstance expectationAttribute;
 
-	protected Need.ModifierType stressBonus;
+		protected Need.ModifierType stressBonus;
 
-	protected Need.ModifierType stressNeutral;
+		protected Need.ModifierType stressNeutral;
 
-	protected Need.ModifierType stressPenalty;
+		protected Need.ModifierType stressPenalty;
 
-	protected Need.ModifierType currentStressModifier;
+		protected Need.ModifierType currentStressModifier;
 
-	protected class ModifierType
+		protected class ModifierType
 	{
-		public AttributeModifier modifier;
+				public AttributeModifier modifier;
 
-		public StatusItem statusItem;
+				public StatusItem statusItem;
 
-		public Thought thought;
+				public Thought thought;
 	}
 }

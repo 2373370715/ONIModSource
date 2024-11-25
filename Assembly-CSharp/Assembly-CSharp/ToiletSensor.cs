@@ -2,12 +2,12 @@
 
 public class ToiletSensor : Sensor
 {
-	public ToiletSensor(Sensors sensors) : base(sensors)
+		public ToiletSensor(Sensors sensors) : base(sensors)
 	{
 		this.navigator = base.GetComponent<Navigator>();
 	}
 
-	public override void Update()
+		public override void Update()
 	{
 		IUsable usable = null;
 		int num = int.MaxValue;
@@ -35,26 +35,26 @@ public class ToiletSensor : Sensor
 		}
 	}
 
-	public bool AreThereAnyToilets()
+		public bool AreThereAnyToilets()
 	{
 		return this.areThereAnyToilets;
 	}
 
-	public bool AreThereAnyUsableToilets()
+		public bool AreThereAnyUsableToilets()
 	{
 		return this.areThereAnyUsableToilets;
 	}
 
-	public IUsable GetNearestUsableToilet()
+		public IUsable GetNearestUsableToilet()
 	{
 		return this.toilet;
 	}
 
-	private Navigator navigator;
+		private Navigator navigator;
 
-	private IUsable toilet;
+		private IUsable toilet;
 
-	private bool areThereAnyToilets;
+		private bool areThereAnyToilets;
 
-	private bool areThereAnyUsableToilets;
+		private bool areThereAnyUsableToilets;
 }

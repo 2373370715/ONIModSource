@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessConditionSet
 {
-		public RocketModuleCluster LandedRocket
+			public RocketModuleCluster LandedRocket
 	{
 		get
 		{
@@ -26,7 +26,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		}
 	}
 
-		public int RocketBottomPosition
+			public int RocketBottomPosition
 	{
 		get
 		{
@@ -34,7 +34,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		}
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialzed()
 	{
 		if (SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 24))
@@ -53,7 +53,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		UserNameable component = base.GetComponent<UserNameable>();
 		if (component != null)
@@ -62,7 +62,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.tower = new LaunchPad.LaunchPadTower(this, this.maxTowerHeight);
@@ -77,7 +77,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.LaunchPads.Remove(this);
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
@@ -91,7 +91,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		base.OnCleanUp();
 	}
 
-	private void CheckLandedRocketPassengerModuleStatus()
+		private void CheckLandedRocketPassengerModuleStatus()
 	{
 		if (this.LandedRocket == null)
 		{
@@ -114,13 +114,13 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		}
 	}
 
-	public bool IsLogicInputConnected()
+		public bool IsLogicInputConnected()
 	{
 		int portCell = base.GetComponent<LogicPorts>().GetPortCell(this.triggerPort);
 		return Game.Instance.logicCircuitManager.GetNetworkForCell(portCell) != null;
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		LogicPorts component = base.gameObject.GetComponent<LogicPorts>();
 		RocketModuleCluster landedRocket = this.LandedRocket;
@@ -152,7 +152,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		component.SendSignal(this.statusPort, 0);
 	}
 
-	public GameObject AddBaseModule(BuildingDef moduleDefID, IList<Tag> elements)
+		public GameObject AddBaseModule(BuildingDef moduleDefID, IList<Tag> elements)
 	{
 		int cell = Grid.OffsetCell(Grid.PosToCell(base.gameObject), this.baseModulePosition);
 		GameObject gameObject;
@@ -177,7 +177,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		return gameObject;
 	}
 
-	private void OnRocketBuildingChanged(object data)
+		private void OnRocketBuildingChanged(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		RocketModuleCluster landedRocket = this.LandedRocket;
@@ -199,7 +199,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		this.OnRocketLayoutChanged(null);
 	}
 
-	private void OnRocketLayoutChanged(object data)
+		private void OnRocketLayoutChanged(object data)
 	{
 		if (this.lastBaseAttachable != null)
 		{
@@ -217,17 +217,17 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		this.DirtyTowerHeight();
 	}
 
-	public bool HasRocket()
+		public bool HasRocket()
 	{
 		return this.LandedRocket != null;
 	}
 
-	public bool HasRocketWithCommandModule()
+		public bool HasRocketWithCommandModule()
 	{
 		return this.HasRocket() && this.LandedRocket.CraftInterface.FindLaunchableRocket() != null;
 	}
 
-	private GameObject GetRocketBaseModule()
+		private GameObject GetRocketBaseModule()
 	{
 		GameObject gameObject = Grid.Objects[Grid.OffsetCell(Grid.PosToCell(base.gameObject), this.baseModulePosition), 1];
 		if (!(gameObject != null) || !(gameObject.GetComponent<RocketModule>() != null))
@@ -237,7 +237,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		return gameObject;
 	}
 
-	public void DirtyTowerHeight()
+		public void DirtyTowerHeight()
 	{
 		if (!this.dirtyTowerHeight)
 		{
@@ -249,7 +249,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		}
 	}
 
-	private void RebuildLaunchTowerHeight(object obj)
+		private void RebuildLaunchTowerHeight(object obj)
 	{
 		RocketModuleCluster landedRocket = this.LandedRocket;
 		if (landedRocket != null)
@@ -260,12 +260,12 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		this.RebuildLaunchTowerHeightHandler.ClearScheduler();
 	}
 
-	public string GetProperName()
+		public string GetProperName()
 	{
 		return base.gameObject.GetProperName();
 	}
 
-	public List<ProcessCondition> GetConditionSet(ProcessCondition.ProcessConditionType conditionType)
+		public List<ProcessCondition> GetConditionSet(ProcessCondition.ProcessConditionType conditionType)
 	{
 		RocketProcessConditionDisplayTarget rocketProcessConditionDisplayTarget = null;
 		RocketModuleCluster landedRocket = this.LandedRocket;
@@ -288,7 +288,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		return new List<ProcessCondition>();
 	}
 
-	public static List<LaunchPad> GetLaunchPadsForDestination(AxialI destination)
+		public static List<LaunchPad> GetLaunchPadsForDestination(AxialI destination)
 	{
 		List<LaunchPad> list = new List<LaunchPad>();
 		foreach (object obj in Components.LaunchPads)
@@ -302,38 +302,38 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 		return list;
 	}
 
-	public HashedString triggerPort;
+		public HashedString triggerPort;
 
-	public HashedString statusPort;
+		public HashedString statusPort;
 
-	public HashedString landedRocketPort;
+		public HashedString landedRocketPort;
 
-	private CellOffset baseModulePosition = new CellOffset(0, 2);
+		private CellOffset baseModulePosition = new CellOffset(0, 2);
 
-	private SchedulerHandle RebuildLaunchTowerHeightHandler;
+		private SchedulerHandle RebuildLaunchTowerHeightHandler;
 
-	private AttachableBuilding lastBaseAttachable;
+		private AttachableBuilding lastBaseAttachable;
 
-	private LaunchPad.LaunchPadTower tower;
+		private LaunchPad.LaunchPadTower tower;
 
-	[Serialize]
+		[Serialize]
 	public int maxTowerHeight;
 
-	private bool dirtyTowerHeight;
+		private bool dirtyTowerHeight;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private Guid landedRocketPassengerModuleStatusItem = Guid.Empty;
+		private Guid landedRocketPassengerModuleStatusItem = Guid.Empty;
 
-	public class LaunchPadTower
+		public class LaunchPadTower
 	{
-		public LaunchPadTower(LaunchPad pad, int startHeight)
+				public LaunchPadTower(LaunchPad pad, int startHeight)
 		{
 			this.pad = pad;
 			this.SetTowerHeight(startHeight);
 		}
 
-		public void AddTowerRow()
+				public void AddTowerRow()
 		{
 			GameObject gameObject = new GameObject("LaunchPadTowerRow");
 			gameObject.SetActive(false);
@@ -351,11 +351,11 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 			this.animLink = new KAnimLink(this.pad.GetComponent<KAnimControllerBase>(), kbatchedAnimController);
 		}
 
-		public void RemoveTowerRow()
+				public void RemoveTowerRow()
 		{
 		}
 
-		public void SetTowerHeight(int height)
+				public void SetTowerHeight(int height)
 		{
 			if (height < 8)
 			{
@@ -374,7 +374,7 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 			this.activeAnimationRoutine = this.pad.StartCoroutine(this.TowerRoutine());
 		}
 
-		private IEnumerator TowerRoutine()
+				private IEnumerator TowerRoutine()
 		{
 			while (this.currentHeight < this.targetHeight)
 			{
@@ -418,13 +418,13 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 			yield break;
 		}
 
-		private LaunchPad pad;
+				private LaunchPad pad;
 
-		private KAnimLink animLink;
+				private KAnimLink animLink;
 
-		private Coroutine activeAnimationRoutine;
+				private Coroutine activeAnimationRoutine;
 
-		private string[] towerBGAnimNames = new string[]
+				private string[] towerBGAnimNames = new string[]
 		{
 			"A1",
 			"A2",
@@ -438,18 +438,18 @@ public class LaunchPad : KMonoBehaviour, ISim1000ms, IListableOption, IProcessCo
 			"F2"
 		};
 
-		private string towerBGAnimSuffix_on = "_on";
+				private string towerBGAnimSuffix_on = "_on";
 
-		private string towerBGAnimSuffix_on_pre = "_on_pre";
+				private string towerBGAnimSuffix_on_pre = "_on_pre";
 
-		private string towerBGAnimSuffix_off_pre = "_off_pre";
+				private string towerBGAnimSuffix_off_pre = "_off_pre";
 
-		private string towerBGAnimSuffix_off = "_off";
+				private string towerBGAnimSuffix_off = "_off";
 
-		private List<KBatchedAnimController> towerAnimControllers = new List<KBatchedAnimController>();
+				private List<KBatchedAnimController> towerAnimControllers = new List<KBatchedAnimController>();
 
-		private int targetHeight;
+				private int targetHeight;
 
-		private int currentHeight;
+				private int currentHeight;
 	}
 }

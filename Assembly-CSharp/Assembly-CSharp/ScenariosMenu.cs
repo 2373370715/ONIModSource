@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class ScenariosMenu : KModalScreen, SteamUGCService.IClient
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.dismissButton.onClick += delegate()
@@ -27,7 +27,7 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IClient
 		this.RebuildScreen();
 	}
 
-	private void RebuildScreen()
+		private void RebuildScreen()
 	{
 		foreach (GameObject obj in this.buttons)
 		{
@@ -37,7 +37,7 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IClient
 		this.RebuildUGCButtons();
 	}
 
-	private void RebuildUGCButtons()
+		private void RebuildUGCButtons()
 	{
 		ListPool<SteamUGCService.Mod, ScenariosMenu>.PooledList pooledList = ListPool<SteamUGCService.Mod, ScenariosMenu>.Allocate();
 		bool flag = pooledList.Count > 0;
@@ -83,7 +83,7 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IClient
 		pooledList.Recycle();
 	}
 
-	private void LoadScenario(PublishedFileId_t item)
+		private void LoadScenario(PublishedFileId_t item)
 	{
 		ulong num;
 		string text;
@@ -108,14 +108,14 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IClient
 		App.LoadScene("backend");
 	}
 
-	private ConfirmDialogScreen GetConfirmDialog()
+		private ConfirmDialogScreen GetConfirmDialog()
 	{
 		KScreen component = KScreenManager.AddChild(base.transform.parent.gameObject, ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject).GetComponent<KScreen>();
 		component.Activate();
 		return component.GetComponent<ConfirmDialogScreen>();
 	}
 
-	private void ShowDetails(PublishedFileId_t item)
+		private void ShowDetails(PublishedFileId_t item)
 	{
 		this.activeItem = item;
 		SteamUGCService.Mod mod = SteamUGCService.Instance.FindMod(item);
@@ -131,62 +131,62 @@ public class ScenariosMenu : KModalScreen, SteamUGCService.IClient
 		this.detailsRoot.gameObject.SetActive(true);
 	}
 
-	private void HideDetails()
+		private void HideDetails()
 	{
 		this.detailsRoot.gameObject.SetActive(false);
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		SteamUGCService.Instance.AddClient(this);
 		this.HideDetails();
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		base.OnDeactivate();
 		SteamUGCService.Instance.RemoveClient(this);
 	}
 
-	private void OnClickOpenWorkshop()
+		private void OnClickOpenWorkshop()
 	{
 		App.OpenWebURL("http://steamcommunity.com/workshop/browse/?appid=457140&requiredtags[]=scenario");
 	}
 
-	public void UpdateMods(IEnumerable<PublishedFileId_t> added, IEnumerable<PublishedFileId_t> updated, IEnumerable<PublishedFileId_t> removed, IEnumerable<SteamUGCService.Mod> loaded_previews)
+		public void UpdateMods(IEnumerable<PublishedFileId_t> added, IEnumerable<PublishedFileId_t> updated, IEnumerable<PublishedFileId_t> removed, IEnumerable<SteamUGCService.Mod> loaded_previews)
 	{
 		this.RebuildScreen();
 	}
 
-	public const string TAG_SCENARIO = "scenario";
+		public const string TAG_SCENARIO = "scenario";
 
-	public KButton textButton;
+		public KButton textButton;
 
-	public KButton dismissButton;
+		public KButton dismissButton;
 
-	public KButton closeButton;
+		public KButton closeButton;
 
-	public KButton workshopButton;
+		public KButton workshopButton;
 
-	public KButton loadScenarioButton;
+		public KButton loadScenarioButton;
 
-	[Space]
+		[Space]
 	public GameObject ugcContainer;
 
-	public GameObject ugcButtonPrefab;
+		public GameObject ugcButtonPrefab;
 
-	public LocText noScenariosText;
+		public LocText noScenariosText;
 
-	public RectTransform contentRoot;
+		public RectTransform contentRoot;
 
-	public RectTransform detailsRoot;
+		public RectTransform detailsRoot;
 
-	public LocText scenarioTitle;
+		public LocText scenarioTitle;
 
-	public LocText scenarioDetails;
+		public LocText scenarioDetails;
 
-	private PublishedFileId_t activeItem;
+		private PublishedFileId_t activeItem;
 
-	private List<GameObject> buttons = new List<GameObject>();
+		private List<GameObject> buttons = new List<GameObject>();
 }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/BreakdownListRow")]
 public class BreakdownListRow : KMonoBehaviour
 {
-	public void ShowData(string name, string value)
+		public void ShowData(string name, string value)
 	{
 		base.gameObject.transform.localScale = Vector3.one;
 		this.nameLabel.text = name;
@@ -22,7 +22,7 @@ public class BreakdownListRow : KMonoBehaviour
 		this.SetImportant(false);
 	}
 
-	public void ShowStatusData(string name, string value, BreakdownListRow.Status dotColor)
+		public void ShowStatusData(string name, string value, BreakdownListRow.Status dotColor)
 	{
 		this.ShowData(name, value);
 		this.dotOutlineImage.gameObject.SetActive(true);
@@ -32,7 +32,7 @@ public class BreakdownListRow : KMonoBehaviour
 		this.SetStatusColor(dotColor);
 	}
 
-	public void SetStatusColor(BreakdownListRow.Status dotColor)
+		public void SetStatusColor(BreakdownListRow.Status dotColor)
 	{
 		this.checkmarkImage.gameObject.SetActive(dotColor > BreakdownListRow.Status.Default);
 		this.checkmarkImage.color = BreakdownListRow.statusColour[(int)dotColor];
@@ -52,7 +52,7 @@ public class BreakdownListRow : KMonoBehaviour
 		}
 	}
 
-	public void ShowCheckmarkData(string name, string value, BreakdownListRow.Status status)
+		public void ShowCheckmarkData(string name, string value, BreakdownListRow.Status status)
 	{
 		this.ShowData(name, value);
 		this.dotOutlineImage.gameObject.SetActive(true);
@@ -62,7 +62,7 @@ public class BreakdownListRow : KMonoBehaviour
 		this.SetStatusColor(status);
 	}
 
-	public void ShowIconData(string name, string value, Sprite sprite)
+		public void ShowIconData(string name, string value, Sprite sprite)
 	{
 		this.ShowData(name, value);
 		this.dotOutlineImage.gameObject.SetActive(false);
@@ -73,13 +73,13 @@ public class BreakdownListRow : KMonoBehaviour
 		this.iconImage.color = Color.white;
 	}
 
-	public void ShowIconData(string name, string value, Sprite sprite, Color spriteColor)
+		public void ShowIconData(string name, string value, Sprite sprite, Color spriteColor)
 	{
 		this.ShowIconData(name, value, sprite);
 		this.iconImage.color = spriteColor;
 	}
 
-	public void SetHighlighted(bool highlighted)
+		public void SetHighlighted(bool highlighted)
 	{
 		this.isHighlighted = highlighted;
 		Vector2 vector = Vector2.one * 0.8f;
@@ -88,14 +88,14 @@ public class BreakdownListRow : KMonoBehaviour
 		this.valueLabel.alpha = (this.isHighlighted ? 0.9f : 0.5f);
 	}
 
-	public void SetDisabled(bool disabled)
+		public void SetDisabled(bool disabled)
 	{
 		this.isDisabled = disabled;
 		this.nameLabel.alpha = (this.isDisabled ? 0.4f : 0.5f);
 		this.valueLabel.alpha = (this.isDisabled ? 0.4f : 0.5f);
 	}
 
-	public void SetImportant(bool important)
+		public void SetImportant(bool important)
 	{
 		this.isImportant = important;
 		this.dotOutlineImage.rectTransform.localScale = Vector3.one;
@@ -105,7 +105,7 @@ public class BreakdownListRow : KMonoBehaviour
 		this.valueLabel.fontStyle = (this.isImportant ? FontStyles.Bold : FontStyles.Normal);
 	}
 
-	public void HideIcon()
+		public void HideIcon()
 	{
 		this.dotOutlineImage.gameObject.SetActive(false);
 		this.dotInsideImage.gameObject.SetActive(false);
@@ -113,7 +113,7 @@ public class BreakdownListRow : KMonoBehaviour
 		this.checkmarkImage.gameObject.SetActive(false);
 	}
 
-	public void AddTooltip(string tooltipText)
+		public void AddTooltip(string tooltipText)
 	{
 		if (this.tooltip == null)
 		{
@@ -122,7 +122,7 @@ public class BreakdownListRow : KMonoBehaviour
 		this.tooltip.SetSimpleTooltip(tooltipText);
 	}
 
-	public void ClearTooltip()
+		public void ClearTooltip()
 	{
 		if (this.tooltip != null)
 		{
@@ -130,12 +130,12 @@ public class BreakdownListRow : KMonoBehaviour
 		}
 	}
 
-	public void SetValue(string value)
+		public void SetValue(string value)
 	{
 		this.valueLabel.text = value;
 	}
 
-	private static Color[] statusColour = new Color[]
+		private static Color[] statusColour = new Color[]
 	{
 		new Color(0.34117648f, 0.36862746f, 0.45882353f, 1f),
 		new Color(0.72156864f, 0.38431373f, 0f, 1f),
@@ -143,40 +143,40 @@ public class BreakdownListRow : KMonoBehaviour
 		new Color(0.72156864f, 0.72156864f, 0f, 1f)
 	};
 
-	public Image dotOutlineImage;
+		public Image dotOutlineImage;
 
-	public Image dotInsideImage;
+		public Image dotInsideImage;
 
-	public Image iconImage;
+		public Image iconImage;
 
-	public Image checkmarkImage;
+		public Image checkmarkImage;
 
-	public LocText nameLabel;
+		public LocText nameLabel;
 
-	public LocText valueLabel;
+		public LocText valueLabel;
 
-	private bool isHighlighted;
+		private bool isHighlighted;
 
-	private bool isDisabled;
+		private bool isDisabled;
 
-	private bool isImportant;
+		private bool isImportant;
 
-	private ToolTip tooltip;
+		private ToolTip tooltip;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite statusSuccessIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite statusWarningIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite statusFailureIcon;
 
-	public enum Status
+		public enum Status
 	{
-		Default,
-		Red,
-		Green,
-		Yellow
+				Default,
+				Red,
+				Green,
+				Yellow
 	}
 }

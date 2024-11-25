@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CropSleepingMonitor : GameStateMachine<CropSleepingMonitor, CropSleepingMonitor.Instance, IStateMachineTarget, CropSleepingMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.awake;
 		base.serializable = StateMachine.SerializeType.Never;
@@ -20,13 +20,13 @@ public class CropSleepingMonitor : GameStateMachine<CropSleepingMonitor, CropSle
 		this.awake.TriggerOnEnter(GameHashes.CropWakeUp, null);
 	}
 
-	public GameStateMachine<CropSleepingMonitor, CropSleepingMonitor.Instance, IStateMachineTarget, CropSleepingMonitor.Def>.State sleeping;
+		public GameStateMachine<CropSleepingMonitor, CropSleepingMonitor.Instance, IStateMachineTarget, CropSleepingMonitor.Def>.State sleeping;
 
-	public GameStateMachine<CropSleepingMonitor, CropSleepingMonitor.Instance, IStateMachineTarget, CropSleepingMonitor.Def>.State awake;
+		public GameStateMachine<CropSleepingMonitor, CropSleepingMonitor.Instance, IStateMachineTarget, CropSleepingMonitor.Def>.State awake;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject obj)
+				public List<Descriptor> GetDescriptors(GameObject obj)
 		{
 			if (this.prefersDarkness)
 			{
@@ -44,21 +44,21 @@ public class CropSleepingMonitor : GameStateMachine<CropSleepingMonitor, CropSle
 			};
 		}
 
-		public bool prefersDarkness;
+				public bool prefersDarkness;
 	}
 
-	public new class Instance : GameStateMachine<CropSleepingMonitor, CropSleepingMonitor.Instance, IStateMachineTarget, CropSleepingMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<CropSleepingMonitor, CropSleepingMonitor.Instance, IStateMachineTarget, CropSleepingMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, CropSleepingMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, CropSleepingMonitor.Def def) : base(master, def)
 		{
 		}
 
-		public bool IsSleeping()
+				public bool IsSleeping()
 		{
 			return this.GetCurrentState() == base.smi.sm.sleeping;
 		}
 
-		public bool IsCellSafe(int cell)
+				public bool IsCellSafe(int cell)
 		{
 			AttributeInstance attributeInstance = Db.Get().PlantAttributes.MinLightLux.Lookup(base.gameObject);
 			int num = Grid.LightIntensity[cell];

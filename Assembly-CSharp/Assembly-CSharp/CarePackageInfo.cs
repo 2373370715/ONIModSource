@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class CarePackageInfo : ITelepadDeliverable
 {
-	public CarePackageInfo(string ID, float amount, Func<bool> requirement)
+		public CarePackageInfo(string ID, float amount, Func<bool> requirement)
 	{
 		this.id = ID;
 		this.quantity = amount;
 		this.requirement = requirement;
 	}
 
-	public CarePackageInfo(string ID, float amount, Func<bool> requirement, string facadeID)
+		public CarePackageInfo(string ID, float amount, Func<bool> requirement, string facadeID)
 	{
 		this.id = ID;
 		this.quantity = amount;
@@ -18,7 +18,7 @@ public class CarePackageInfo : ITelepadDeliverable
 		this.facadeID = facadeID;
 	}
 
-	public GameObject Deliver(Vector3 location)
+		public GameObject Deliver(Vector3 location)
 	{
 		location += Vector3.right / 2f;
 		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(CarePackageConfig.ID), location);
@@ -27,11 +27,11 @@ public class CarePackageInfo : ITelepadDeliverable
 		return gameObject;
 	}
 
-	public readonly string id;
+		public readonly string id;
 
-	public readonly float quantity;
+		public readonly float quantity;
 
-	public readonly Func<bool> requirement;
+		public readonly Func<bool> requirement;
 
-	public readonly string facadeID;
+		public readonly string facadeID;
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/AssignableSideScreenRow")]
 public class AssignableSideScreenRow : KMonoBehaviour
 {
-	public void Refresh(object data = null)
+		public void Refresh(object data = null)
 	{
 		if (!this.sideScreen.targetAssignable.CanAssignTo(this.targetIdentity))
 		{
@@ -26,23 +26,39 @@ public class AssignableSideScreenRow : KMonoBehaviour
 				Ownables component = kmonoBehaviour.GetComponent<Ownables>();
 				if (component != null)
 				{
-					AssignableSlotInstance slot = component.GetSlot(this.sideScreen.targetAssignable.slot);
-					if (slot != null && slot.IsAssigned())
+					AssignableSlotInstance[] slots = component.GetSlots(this.sideScreen.targetAssignable.slot);
+					if (slots != null && slots.Length != 0)
 					{
-						this.currentState = AssignableSideScreenRow.AssignableState.AssignedToOther;
-						this.assignmentText.text = slot.assignable.GetProperName();
-						flag = true;
+						AssignableSlotInstance assignableSlotInstance = slots.FindFirst((AssignableSlotInstance s) => !s.IsAssigned());
+						if (assignableSlotInstance == null)
+						{
+							assignableSlotInstance = slots[0];
+						}
+						if (assignableSlotInstance != null && assignableSlotInstance.IsAssigned())
+						{
+							this.currentState = AssignableSideScreenRow.AssignableState.AssignedToOther;
+							this.assignmentText.text = assignableSlotInstance.assignable.GetProperName();
+							flag = true;
+						}
 					}
 				}
 				Equipment component2 = kmonoBehaviour.GetComponent<Equipment>();
 				if (component2 != null)
 				{
-					AssignableSlotInstance slot2 = component2.GetSlot(this.sideScreen.targetAssignable.slot);
-					if (slot2 != null && slot2.IsAssigned())
+					AssignableSlotInstance[] slots2 = component2.GetSlots(this.sideScreen.targetAssignable.slot);
+					if (slots2 != null && slots2.Length != 0)
 					{
-						this.currentState = AssignableSideScreenRow.AssignableState.AssignedToOther;
-						this.assignmentText.text = slot2.assignable.GetProperName();
-						flag = true;
+						AssignableSlotInstance assignableSlotInstance2 = slots2.FindFirst((AssignableSlotInstance s) => !s.IsAssigned());
+						if (assignableSlotInstance2 == null)
+						{
+							assignableSlotInstance2 = slots2[0];
+						}
+						if (assignableSlotInstance2 != null && assignableSlotInstance2.IsAssigned())
+						{
+							this.currentState = AssignableSideScreenRow.AssignableState.AssignedToOther;
+							this.assignmentText.text = assignableSlotInstance2.assignable.GetProperName();
+							flag = true;
+						}
 					}
 				}
 			}
@@ -55,7 +71,7 @@ public class AssignableSideScreenRow : KMonoBehaviour
 		this.toggle.ChangeState((int)this.currentState);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.refreshHandle == -1)
 		{
@@ -64,7 +80,7 @@ public class AssignableSideScreenRow : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	public void SetContent(IAssignableIdentity identity_object, Action<IAssignableIdentity> selectionCallback, AssignableSideScreen assignableSideScreen)
+		public void SetContent(IAssignableIdentity identity_object, Action<IAssignableIdentity> selectionCallback, AssignableSideScreen assignableSideScreen)
 	{
 		if (this.refreshHandle == -1)
 		{
@@ -95,7 +111,7 @@ public class AssignableSideScreenRow : KMonoBehaviour
 		this.Refresh(null);
 	}
 
-	private string GetTooltip()
+		private string GetTooltip()
 	{
 		ToolTip component = base.GetComponent<ToolTip>();
 		component.ClearMultiStringTooltip();
@@ -121,30 +137,30 @@ public class AssignableSideScreenRow : KMonoBehaviour
 		return "";
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private CrewPortrait crewPortraitPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText assignmentText;
 
-	public AssignableSideScreen sideScreen;
+		public AssignableSideScreen sideScreen;
 
-	private CrewPortrait portraitInstance;
+		private CrewPortrait portraitInstance;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private MultiToggle toggle;
 
-	public IAssignableIdentity targetIdentity;
+		public IAssignableIdentity targetIdentity;
 
-	public AssignableSideScreenRow.AssignableState currentState;
+		public AssignableSideScreenRow.AssignableState currentState;
 
-	private int refreshHandle = -1;
+		private int refreshHandle = -1;
 
-	public enum AssignableState
+		public enum AssignableState
 	{
-		Selected,
-		AssignedToOther,
-		Unassigned,
-		Disabled
+				Selected,
+				AssignedToOther,
+				Unassigned,
+				Disabled
 	}
 }

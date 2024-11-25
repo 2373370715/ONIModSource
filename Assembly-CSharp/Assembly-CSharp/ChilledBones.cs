@@ -1,63 +1,38 @@
-﻿using System;
-using Klei.AI;
+﻿using Klei.AI;
 
-public class ChilledBones : GameStateMachine<ChilledBones, ChilledBones.Instance, IStateMachineTarget, ChilledBones.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		base.serializable = StateMachine.SerializeType.ParamsOnly;
-		default_state = this.normal;
-		this.normal.UpdateTransition(this.chilled, new Func<ChilledBones.Instance, float, bool>(this.IsChilling), UpdateRate.SIM_200ms, false);
-		this.chilled.ToggleEffect("ChilledBones").UpdateTransition(this.normal, new Func<ChilledBones.Instance, float, bool>(this.IsNotChilling), UpdateRate.SIM_200ms, false);
-	}
+public class
+    ChilledBones : GameStateMachine<ChilledBones, ChilledBones.Instance, IStateMachineTarget, ChilledBones.Def> {
+    public const string EFFECT_NAME = "ChilledBones";
+    public       State  chilled;
+    public       State  normal;
 
-	public bool IsNotChilling(ChilledBones.Instance smi, float dt)
-	{
-		return !this.IsChilling(smi, dt);
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        serializable  = SerializeType.ParamsOnly;
+        default_state = normal;
+        normal.UpdateTransition(chilled, IsChilling);
+        chilled.ToggleEffect("ChilledBones").UpdateTransition(normal, IsNotChilling);
+    }
 
-	public bool IsChilling(ChilledBones.Instance smi, float dt)
-	{
-		return smi.IsChilled;
-	}
+    public bool IsNotChilling(Instance smi, float dt) { return !IsChilling(smi, dt); }
+    public bool IsChilling(Instance    smi, float dt) { return smi.IsChilled; }
 
-	public const string EFFECT_NAME = "ChilledBones";
+    public class Def : BaseDef {
+        public float THRESHOLD = -1f;
+    }
 
-	public GameStateMachine<ChilledBones, ChilledBones.Instance, IStateMachineTarget, ChilledBones.Def>.State normal;
+    public new class Instance : GameInstance {
+        public Attribute bodyTemperatureTransferAttribute;
 
-	public GameStateMachine<ChilledBones, ChilledBones.Instance, IStateMachineTarget, ChilledBones.Def>.State chilled;
+        [MyCmpGet]
+        public MinionModifiers minionModifiers;
 
-	public class Def : StateMachine.BaseDef
-	{
-		public float THRESHOLD = -1f;
-	}
+        public Instance(IStateMachineTarget master, Def def) : base(master, def) {
+            bodyTemperatureTransferAttribute = Db.Get().Attributes.TryGet("TemperatureDelta");
+        }
 
-	public new class Instance : GameStateMachine<ChilledBones, ChilledBones.Instance, IStateMachineTarget, ChilledBones.Def>.GameInstance
-	{
-				public float TemperatureTransferAttribute
-		{
-			get
-			{
-				return this.minionModifiers.GetAttributes().GetValue(this.bodyTemperatureTransferAttribute.Id) * 600f;
-			}
-		}
+        public float TemperatureTransferAttribute =>
+            minionModifiers.GetAttributes().GetValue(bodyTemperatureTransferAttribute.Id) * 600f;
 
-				public bool IsChilled
-		{
-			get
-			{
-				return this.TemperatureTransferAttribute < base.def.THRESHOLD;
-			}
-		}
-
-		public Instance(IStateMachineTarget master, ChilledBones.Def def) : base(master, def)
-		{
-			this.bodyTemperatureTransferAttribute = Db.Get().Attributes.TryGet("TemperatureDelta");
-		}
-
-		[MyCmpGet]
-		public MinionModifiers minionModifiers;
-
-		public Klei.AI.Attribute bodyTemperatureTransferAttribute;
-	}
+        public bool IsChilled => TemperatureTransferAttribute < def.THRESHOLD;
+    }
 }

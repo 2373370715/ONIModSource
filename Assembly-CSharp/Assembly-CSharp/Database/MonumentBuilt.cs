@@ -4,19 +4,19 @@ using STRINGS;
 
 namespace Database
 {
-	public class MonumentBuilt : VictoryColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class MonumentBuilt : VictoryColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public override string Name()
+				public override string Name()
 		{
 			return COLONY_ACHIEVEMENTS.THRIVING.REQUIREMENTS.BUILT_MONUMENT;
 		}
 
-		public override string Description()
+				public override string Description()
 		{
 			return COLONY_ACHIEVEMENTS.THRIVING.REQUIREMENTS.BUILT_MONUMENT_DESCRIPTION;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			using (IEnumerator enumerator = Components.MonumentParts.GetEnumerator())
 			{
@@ -32,11 +32,11 @@ namespace Database
 			return false;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			return this.Name();
 		}

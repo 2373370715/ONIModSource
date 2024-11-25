@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RustDeoxidizerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "RustDeoxidizer";
 		int width = 2;
@@ -29,7 +29,7 @@ public class RustDeoxidizerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<RustDeoxidizer>().maxMass = 1.8f;
@@ -67,29 +67,29 @@ public class RustDeoxidizerConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "RustDeoxidizer";
+		public const string ID = "RustDeoxidizer";
 
-	private const float RUST_KG_CONSUMPTION_RATE = 0.75f;
+		private const float RUST_KG_CONSUMPTION_RATE = 0.75f;
 
-	private const float SALT_KG_CONSUMPTION_RATE = 0.25f;
+		private const float SALT_KG_CONSUMPTION_RATE = 0.25f;
 
-	private const float RUST_KG_PER_REFILL = 585f;
+		private const float RUST_KG_PER_REFILL = 585f;
 
-	private const float SALT_KG_PER_REFILL = 195f;
+		private const float SALT_KG_PER_REFILL = 195f;
 
-	private const float TOTAL_CONSUMPTION_RATE = 1f;
+		private const float TOTAL_CONSUMPTION_RATE = 1f;
 
-	private const float IRON_CONVERSION_RATIO = 0.4f;
+		private const float IRON_CONVERSION_RATIO = 0.4f;
 
-	private const float OXYGEN_CONVERSION_RATIO = 0.57f;
+		private const float OXYGEN_CONVERSION_RATIO = 0.57f;
 
-	private const float CHLORINE_CONVERSION_RATIO = 0.029999971f;
+		private const float CHLORINE_CONVERSION_RATIO = 0.029999971f;
 
-	public const float OXYGEN_TEMPERATURE = 348.15f;
+		public const float OXYGEN_TEMPERATURE = 348.15f;
 }

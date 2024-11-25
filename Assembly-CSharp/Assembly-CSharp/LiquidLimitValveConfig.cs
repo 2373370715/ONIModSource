@@ -6,12 +6,7 @@ using UnityEngine;
 
 public class LiquidLimitValveConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_ALL_VERSIONS;
-	}
-
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidLimitValve";
 		int width = 1;
@@ -56,7 +51,7 @@ public class LiquidLimitValveConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGetDef<PoweredActiveTransitionController.Def>();
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
@@ -69,7 +64,7 @@ public class LiquidLimitValveConfig : IBuildingConfig
 		limitValve.sliderRanges = LimitValveTuning.GetDefaultSlider();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitConsumer>());
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitDispenser>());
@@ -77,7 +72,7 @@ public class LiquidLimitValveConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public const string ID = "LiquidLimitValve";
+		public const string ID = "LiquidLimitValve";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
 }

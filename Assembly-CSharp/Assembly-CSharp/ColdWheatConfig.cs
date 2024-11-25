@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class ColdWheatConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "ColdWheat";
 		string name = STRINGS.CREATURES.SPECIES.COLDWHEAT.NAME;
@@ -42,10 +42,19 @@ public class ColdWheatConfig : IEntityConfig
 			}
 		});
 		gameObject.AddOrGet<StandardCropPlant>();
-		GameObject gameObject2 = EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Crop, "ColdWheatSeed", STRINGS.CREATURES.SPECIES.SEEDS.COLDWHEAT.NAME, STRINGS.CREATURES.SPECIES.SEEDS.COLDWHEAT.DESC, Assets.GetAnim("seed_coldwheat_kanim"), "object", 1, new List<Tag>
-		{
-			GameTags.CropSeed
-		}, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 3, STRINGS.CREATURES.SPECIES.COLDWHEAT.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.2f, 0.2f, null, "", true, null);
+		GameObject plant = gameObject;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Crop;
+		string id2 = "ColdWheatSeed";
+		string name2 = STRINGS.CREATURES.SPECIES.SEEDS.COLDWHEAT.NAME;
+		string desc2 = STRINGS.CREATURES.SPECIES.SEEDS.COLDWHEAT.DESC;
+		KAnimFile anim = Assets.GetAnim("seed_coldwheat_kanim");
+		string initialAnim = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.CropSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		string domesticatedDescription = STRINGS.CREATURES.SPECIES.COLDWHEAT.DOMESTICATEDDESC;
+		GameObject gameObject2 = EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id2, name2, desc2, anim, initialAnim, numberOfSeeds, list, planterDirection, default(Tag), 3, domesticatedDescription, EntityTemplates.CollisionShape.CIRCLE, 0.2f, 0.2f, null, "", true, null);
 		EntityTemplates.ExtendEntityToFood(gameObject2, FOOD.FOOD_TYPES.COLD_WHEAT_SEED);
 		EntityTemplates.CreateAndRegisterPreviewForPlant(gameObject2, "ColdWheat_preview", Assets.GetAnim("coldwheat_kanim"), "place", 1, 1);
 		SoundEventVolumeCache.instance.AddVolume("coldwheat_kanim", "ColdWheat_grow", NOISE_POLLUTION.CREATURES.TIER3);
@@ -53,19 +62,19 @@ public class ColdWheatConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "ColdWheat";
+		public const string ID = "ColdWheat";
 
-	public const string SEED_ID = "ColdWheatSeed";
+		public const string SEED_ID = "ColdWheatSeed";
 
-	public const float FERTILIZATION_RATE = 0.008333334f;
+		public const float FERTILIZATION_RATE = 0.008333334f;
 
-	public const float WATER_RATE = 0.033333335f;
+		public const float WATER_RATE = 0.033333335f;
 }

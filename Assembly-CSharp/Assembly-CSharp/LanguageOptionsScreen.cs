@@ -13,7 +13,7 @@ using UnityEngine.UI;
 
 public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.dismissButton.onClick += this.Deactivate;
@@ -31,7 +31,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		this.RebuildScreen();
 	}
 
-	private void RebuildScreen()
+		private void RebuildScreen()
 	{
 		foreach (GameObject obj in this.buttons)
 		{
@@ -43,7 +43,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		this.RebuildUGCButtons();
 	}
 
-	private void RebuildPreinstalledButtons()
+		private void RebuildPreinstalledButtons()
 	{
 		using (List<string>.Enumerator enumerator = Localization.PreinstalledLanguages.GetEnumerator())
 		{
@@ -74,7 +74,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		}
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		Global.Instance.modManager.Sanitize(base.gameObject);
@@ -84,7 +84,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		}
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		base.OnDeactivate();
 		if (SteamUGCService.Instance != null)
@@ -93,7 +93,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		}
 	}
 
-	private void ConfirmLanguageChoiceDialog(string[] lines, bool is_template, System.Action install_language)
+		private void ConfirmLanguageChoiceDialog(string[] lines, bool is_template, System.Action install_language)
 	{
 		Localization.Locale locale = Localization.GetLocale(lines);
 		Dictionary<string, string> translated_strings = Localization.ExtractTranslatedStrings(lines, is_template);
@@ -123,12 +123,12 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		}, null, null, title_text, func(UI.FRONTEND.TRANSLATIONS_SCREEN.RESTART), UI.FRONTEND.TRANSLATIONS_SCREEN.CANCEL, null);
 	}
 
-	private void ConfirmPreinstalledLanguage(string selected_preinstalled_translation)
+		private void ConfirmPreinstalledLanguage(string selected_preinstalled_translation)
 	{
 		Localization.GetSelectedLanguageType();
 	}
 
-	private void ConfirmLanguagePreinstalledOrMod(string selected_preinstalled_translation, string mod_id)
+		private void ConfirmLanguagePreinstalledOrMod(string selected_preinstalled_translation, string mod_id)
 	{
 		Localization.SelectedLanguageType selectedLanguageType = Localization.GetSelectedLanguageType();
 		if (mod_id != null)
@@ -176,14 +176,14 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		}
 	}
 
-	private ConfirmDialogScreen GetConfirmDialog()
+		private ConfirmDialogScreen GetConfirmDialog()
 	{
 		KScreen component = KScreenManager.AddChild(base.transform.parent.gameObject, ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject).GetComponent<KScreen>();
 		component.Activate();
 		return component.GetComponent<ConfirmDialogScreen>();
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.Consumed)
 		{
@@ -196,7 +196,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		base.OnKeyDown(e);
 	}
 
-	private void RebuildUGCButtons()
+		private void RebuildUGCButtons()
 	{
 		foreach (Mod mod in Global.Instance.modManager.mods)
 		{
@@ -224,7 +224,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		}
 	}
 
-	private void Uninstall()
+		private void Uninstall()
 	{
 		this.GetConfirmDialog().PopupConfirmDialog(UI.FRONTEND.TRANSLATIONS_SCREEN.ARE_YOU_SURE, delegate
 		{
@@ -235,17 +235,17 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		}, null, null, null, null, null, null);
 	}
 
-	private void OnClickUninstall()
+		private void OnClickUninstall()
 	{
 		this.Uninstall();
 	}
 
-	private void OnClickOpenWorkshop()
+		private void OnClickOpenWorkshop()
 	{
 		App.OpenWebURL("http://steamcommunity.com/workshop/browse/?appid=457140&requiredtags[]=language");
 	}
 
-	public void UpdateMods(IEnumerable<PublishedFileId_t> added, IEnumerable<PublishedFileId_t> updated, IEnumerable<PublishedFileId_t> removed, IEnumerable<SteamUGCService.Mod> loaded_previews)
+		public void UpdateMods(IEnumerable<PublishedFileId_t> added, IEnumerable<PublishedFileId_t> updated, IEnumerable<PublishedFileId_t> removed, IEnumerable<SteamUGCService.Mod> loaded_previews)
 	{
 		string savedLanguageMod = LanguageOptionsScreen.GetSavedLanguageMod();
 		ulong value;
@@ -269,22 +269,22 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		this.RebuildScreen();
 	}
 
-	public static string GetSavedLanguageMod()
+		public static string GetSavedLanguageMod()
 	{
 		return KPlayerPrefs.GetString("InstalledLanguage");
 	}
 
-	public static void SetSavedLanguageMod(string mod_id)
+		public static void SetSavedLanguageMod(string mod_id)
 	{
 		KPlayerPrefs.SetString("InstalledLanguage", mod_id);
 	}
 
-	public static void CleanUpSavedLanguageMod()
+		public static void CleanUpSavedLanguageMod()
 	{
 		KPlayerPrefs.SetString("InstalledLanguage", null);
 	}
 
-			public string currentLanguageModId
+				public string currentLanguageModId
 	{
 		get
 		{
@@ -297,7 +297,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		}
 	}
 
-	public static bool SetCurrentLanguage(string mod_id)
+		public static bool SetCurrentLanguage(string mod_id)
 	{
 		LanguageOptionsScreen.CleanUpSavedLanguageMod();
 		if (LanguageOptionsScreen.LoadTranslation(mod_id))
@@ -308,7 +308,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		return false;
 	}
 
-	public static bool HasInstalledLanguage()
+		public static bool HasInstalledLanguage()
 	{
 		string currentModId = LanguageOptionsScreen.GetSavedLanguageMod();
 		if (currentModId == null)
@@ -323,7 +323,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		return true;
 	}
 
-	public static string GetInstalledLanguageCode()
+		public static string GetInstalledLanguageCode()
 	{
 		string result = "";
 		string[] languageLinesForMod = LanguageOptionsScreen.GetLanguageLinesForMod(LanguageOptionsScreen.GetSavedLanguageMod());
@@ -338,7 +338,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		return result;
 	}
 
-	private static bool LoadTranslation(string mod_id)
+		private static bool LoadTranslation(string mod_id)
 	{
 		Mod mod = Global.Instance.modManager.mods.Find((Mod m) => m.label.id == mod_id);
 		if (mod == null)
@@ -350,7 +350,7 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		return languageFilename != null && Localization.LoadLocalTranslationFile(Localization.SelectedLanguageType.UGC, languageFilename);
 	}
 
-	private static string GetLanguageFilename(Mod mod)
+		private static string GetLanguageFilename(Mod mod)
 	{
 		global::Debug.Assert(mod.content_source.GetType() == typeof(KMod.Directory), "Can only load translations from extracted mods.");
 		string text = Path.Combine(mod.ContentPath, "strings.po");
@@ -362,12 +362,12 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		return text;
 	}
 
-	private static string[] GetLanguageLinesForMod(string mod_id)
+		private static string[] GetLanguageLinesForMod(string mod_id)
 	{
 		return LanguageOptionsScreen.GetLanguageLinesForMod(Global.Instance.modManager.mods.Find((Mod m) => m.label.id == mod_id));
 	}
 
-	private static string[] GetLanguageLinesForMod(Mod mod)
+		private static string[] GetLanguageLinesForMod(Mod mod)
 	{
 		string languageFilename = LanguageOptionsScreen.GetLanguageFilename(mod);
 		if (languageFilename == null)
@@ -383,39 +383,39 @@ public class LanguageOptionsScreen : KModalScreen, SteamUGCService.IClient
 		return array;
 	}
 
-	private static readonly string[] poFile = new string[]
+		private static readonly string[] poFile = new string[]
 	{
 		"strings.po"
 	};
 
-	public const string KPLAYER_PREFS_LANGUAGE_KEY = "InstalledLanguage";
+		public const string KPLAYER_PREFS_LANGUAGE_KEY = "InstalledLanguage";
 
-	public const string TAG_LANGUAGE = "language";
+		public const string TAG_LANGUAGE = "language";
 
-	public KButton textButton;
+		public KButton textButton;
 
-	public KButton dismissButton;
+		public KButton dismissButton;
 
-	public KButton closeButton;
+		public KButton closeButton;
 
-	public KButton workshopButton;
+		public KButton workshopButton;
 
-	public KButton uninstallButton;
+		public KButton uninstallButton;
 
-	[Space]
+		[Space]
 	public GameObject languageButtonPrefab;
 
-	public GameObject preinstalledLanguagesTitle;
+		public GameObject preinstalledLanguagesTitle;
 
-	public GameObject preinstalledLanguagesContainer;
+		public GameObject preinstalledLanguagesContainer;
 
-	public GameObject ugcLanguagesTitle;
+		public GameObject ugcLanguagesTitle;
 
-	public GameObject ugcLanguagesContainer;
+		public GameObject ugcLanguagesContainer;
 
-	private List<GameObject> buttons = new List<GameObject>();
+		private List<GameObject> buttons = new List<GameObject>();
 
-	private string _currentLanguageModId;
+		private string _currentLanguageModId;
 
-	private System.DateTime currentLastModified;
+		private System.DateTime currentLastModified;
 }

@@ -5,25 +5,25 @@ using UnityEngine;
 [EntityConfigOrder(2)]
 public class BabyHatchConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = HatchConfig.CreateHatch("HatchBaby", CREATURES.SPECIES.HATCH.BABY.NAME, CREATURES.SPECIES.HATCH.BABY.DESC, "baby_hatch_kanim", true);
 		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "Hatch", null, false, 5f);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "HatchBaby";
+		public const string ID = "HatchBaby";
 }

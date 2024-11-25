@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Crop")]
 public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-		public string cropId
+			public string cropId
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-			public Storage PlanterStorage
+				public Storage PlanterStorage
 	{
 		get
 		{
@@ -27,30 +27,30 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Components.Crops.Add(this);
 		this.yield = this.GetAttributes().Add(Db.Get().PlantAttributes.YieldAmount);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<Crop>(1272413801, Crop.OnHarvestDelegate);
 	}
 
-	public void Configure(Crop.CropVal cropval)
+		public void Configure(Crop.CropVal cropval)
 	{
 		this.cropVal = cropval;
 	}
 
-	public bool CanGrow()
+		public bool CanGrow()
 	{
 		return this.cropVal.renewable;
 	}
 
-	public void SpawnConfiguredFruit(object callbackParam)
+		public void SpawnConfiguredFruit(object callbackParam)
 	{
 		if (this == null)
 		{
@@ -64,7 +64,7 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public void SpawnSomeFruit(Tag cropID, float amount)
+		public void SpawnSomeFruit(Tag cropID, float amount)
 	{
 		GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(cropID), base.transform.GetPosition() + new Vector3(0f, 0.75f, 0f), Grid.SceneLayer.Ore, null, 0);
 		if (gameObject != null)
@@ -97,22 +97,22 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.Crops.Remove(this);
 		base.OnCleanUp();
 	}
 
-	private void OnHarvest(object obj)
+		private void OnHarvest(object obj)
 	{
 	}
 
-	public List<Descriptor> RequirementDescriptors(GameObject go)
+		public List<Descriptor> RequirementDescriptors(GameObject go)
 	{
 		return new List<Descriptor>();
 	}
 
-	public List<Descriptor> InformationDescriptors(GameObject go)
+		public List<Descriptor> InformationDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Tag tag = new Tag(this.cropVal.cropId);
@@ -146,7 +146,7 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		foreach (Descriptor item in this.RequirementDescriptors(go))
@@ -160,26 +160,26 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	public Crop.CropVal cropVal;
+		public Crop.CropVal cropVal;
 
-	private AttributeInstance yield;
+		private AttributeInstance yield;
 
-	public string domesticatedDesc = "";
+		public string domesticatedDesc = "";
 
-	private Storage planterStorage;
+		private Storage planterStorage;
 
-	private static readonly EventSystem.IntraObjectHandler<Crop> OnHarvestDelegate = new EventSystem.IntraObjectHandler<Crop>(delegate(Crop component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Crop> OnHarvestDelegate = new EventSystem.IntraObjectHandler<Crop>(delegate(Crop component, object data)
 	{
 		component.OnHarvest(data);
 	});
 
-	[Serializable]
+		[Serializable]
 	public struct CropVal
 	{
-		public CropVal(string crop_id, float crop_duration, int num_produced = 1, bool renewable = true)
+				public CropVal(string crop_id, float crop_duration, int num_produced = 1, bool renewable = true)
 		{
 			this.cropId = crop_id;
 			this.cropDuration = crop_duration;
@@ -187,12 +187,12 @@ public class Crop : KMonoBehaviour, IGameObjectEffectDescriptor
 			this.renewable = renewable;
 		}
 
-		public string cropId;
+				public string cropId;
 
-		public float cropDuration;
+				public float cropDuration;
 
-		public int numProduced;
+				public int numProduced;
 
-		public bool renewable;
+				public bool renewable;
 	}
 }

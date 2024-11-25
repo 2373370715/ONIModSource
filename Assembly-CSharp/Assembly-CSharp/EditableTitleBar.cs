@@ -6,11 +6,11 @@ using UnityEngine.Events;
 
 public class EditableTitleBar : TitleBar
 {
-			public event Action<string> OnNameChanged;
+				public event Action<string> OnNameChanged;
 
-			public event System.Action OnStartedEditing;
+				public event System.Action OnStartedEditing;
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.randomNameButton != null)
@@ -27,7 +27,7 @@ public class EditableTitleBar : TitleBar
 		}
 	}
 
-	public void UpdateRenameTooltip(GameObject target)
+		public void UpdateRenameTooltip(GameObject target)
 	{
 		if (this.editNameButton != null && target != null)
 		{
@@ -44,7 +44,7 @@ public class EditableTitleBar : TitleBar
 		}
 	}
 
-	private void OnEndEdit(string finalStr)
+		private void OnEndEdit(string finalStr)
 	{
 		finalStr = Localization.FilterDirtyWords(finalStr);
 		this.SetEditingState(false);
@@ -67,7 +67,7 @@ public class EditableTitleBar : TitleBar
 		}
 	}
 
-	private IEnumerator PostOnEndEditRoutine()
+		private IEnumerator PostOnEndEditRoutine()
 	{
 		int i = 0;
 		while (i < 10)
@@ -84,7 +84,7 @@ public class EditableTitleBar : TitleBar
 		yield break;
 	}
 
-	private IEnumerator PreToggleNameEditingRoutine()
+		private IEnumerator PreToggleNameEditingRoutine()
 	{
 		yield return SequenceUtil.WaitForEndOfFrame;
 		this.ToggleNameEditing();
@@ -92,7 +92,7 @@ public class EditableTitleBar : TitleBar
 		yield break;
 	}
 
-	private void EnableEditButtonClick()
+		private void EnableEditButtonClick()
 	{
 		this.editNameButton.onClick += delegate()
 		{
@@ -104,7 +104,7 @@ public class EditableTitleBar : TitleBar
 		};
 	}
 
-	private void GenerateRandomName()
+		private void GenerateRandomName()
 	{
 		if (this.postEndEdit != null)
 		{
@@ -119,7 +119,7 @@ public class EditableTitleBar : TitleBar
 		this.SetEditingState(true);
 	}
 
-	private void ToggleNameEditing()
+		private void ToggleNameEditing()
 	{
 		this.editNameButton.ClearOnClick();
 		bool flag = !this.inputField.gameObject.activeInHierarchy;
@@ -130,7 +130,7 @@ public class EditableTitleBar : TitleBar
 		this.SetEditingState(flag);
 	}
 
-	private void SetEditingState(bool state)
+		private void SetEditingState(bool state)
 	{
 		this.titleText.gameObject.SetActive(!state);
 		if (this.setCameraControllerState)
@@ -159,7 +159,7 @@ public class EditableTitleBar : TitleBar
 		}
 	}
 
-	public void ForceStopEditing()
+		public void ForceStopEditing()
 	{
 		if (this.postEndEdit != null)
 		{
@@ -170,7 +170,7 @@ public class EditableTitleBar : TitleBar
 		this.EnableEditButtonClick();
 	}
 
-	public void SetUserEditable(bool editable)
+		public void SetUserEditable(bool editable)
 	{
 		this.userEditable = editable;
 		this.editNameButton.gameObject.SetActive(editable);
@@ -178,13 +178,13 @@ public class EditableTitleBar : TitleBar
 		this.EnableEditButtonClick();
 	}
 
-	public KButton editNameButton;
+		public KButton editNameButton;
 
-	public KButton randomNameButton;
+		public KButton randomNameButton;
 
-	public KInputTextField inputField;
+		public KInputTextField inputField;
 
-	private Coroutine postEndEdit;
+		private Coroutine postEndEdit;
 
-	private Coroutine preToggleNameEditing;
+		private Coroutine preToggleNameEditing;
 }

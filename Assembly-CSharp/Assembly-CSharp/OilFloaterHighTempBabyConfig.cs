@@ -5,25 +5,25 @@ using UnityEngine;
 [EntityConfigOrder(2)]
 public class OilFloaterHighTempBabyConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = OilFloaterHighTempConfig.CreateOilFloater("OilfloaterHighTempBaby", CREATURES.SPECIES.OILFLOATER.VARIANT_HIGHTEMP.BABY.NAME, CREATURES.SPECIES.OILFLOATER.VARIANT_HIGHTEMP.BABY.DESC, "baby_oilfloater_kanim", true);
 		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "OilfloaterHighTemp", null, false, 5f);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "OilfloaterHighTempBaby";
+		public const string ID = "OilfloaterHighTempBaby";
 }

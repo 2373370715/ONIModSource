@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Valve")]
 public class Valve : Workable, ISaveLoadable
 {
-		public float QueuedMaxFlow
+			public float QueuedMaxFlow
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class Valve : Workable, ISaveLoadable
 		}
 	}
 
-		public float DesiredFlow
+			public float DesiredFlow
 	{
 		get
 		{
@@ -26,7 +26,7 @@ public class Valve : Workable, ISaveLoadable
 		}
 	}
 
-		public float MaxFlow
+			public float MaxFlow
 	{
 		get
 		{
@@ -34,7 +34,7 @@ public class Valve : Workable, ISaveLoadable
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		Valve component = ((GameObject)data).GetComponent<Valve>();
 		if (component != null)
@@ -43,7 +43,7 @@ public class Valve : Workable, ISaveLoadable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTable);
@@ -53,20 +53,20 @@ public class Valve : Workable, ISaveLoadable
 		base.Subscribe<Valve>(-905833192, Valve.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.ChangeFlow(this.desiredFlow);
 		base.OnSpawn();
 		Prioritizable.AddRef(base.gameObject);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Prioritizable.RemoveRef(base.gameObject);
 		base.OnCleanUp();
 	}
 
-	public void ChangeFlow(float amount)
+		public void ChangeFlow(float amount)
 	{
 		this.desiredFlow = Mathf.Clamp(amount, 0f, this.valveBase.MaxFlow);
 		KSelectable component = base.GetComponent<KSelectable>();
@@ -96,13 +96,13 @@ public class Valve : Workable, ISaveLoadable
 		}
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		this.UpdateFlow();
 	}
 
-	public void UpdateFlow()
+		public void UpdateFlow()
 	{
 		this.valveBase.CurrentFlow = this.desiredFlow;
 		this.valveBase.UpdateAnim();
@@ -116,18 +116,18 @@ public class Valve : Workable, ISaveLoadable
 		component.RemoveStatusItem(Db.Get().BuildingStatusItems.PendingWork, false);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ValveBase valveBase;
 
-	[Serialize]
+		[Serialize]
 	private float desiredFlow = 0.5f;
 
-	private Chore chore;
+		private Chore chore;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<Valve> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Valve>(delegate(Valve component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Valve> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Valve>(delegate(Valve component, object data)
 	{
 		component.OnCopySettings(data);
 	});

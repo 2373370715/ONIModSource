@@ -3,14 +3,14 @@ using UnityEngine;
 
 public static class StampToolPreviewUtil
 {
-	public static Material MakeMaterial(Texture texture)
+		public static Material MakeMaterial(Texture texture)
 	{
 		Material material = new Material(Shader.Find("Sprites/Default"));
 		material.SetTexture("_MainTex", texture);
 		return material;
 	}
 
-	public static void MakeQuad(out GameObject gameObject, out MeshRenderer meshRenderer, float mesh_size, Vector4? uvBox = null)
+		public static void MakeQuad(out GameObject gameObject, out MeshRenderer meshRenderer, float mesh_size, Vector4? uvBox = null)
 	{
 		gameObject = new GameObject();
 		gameObject.layer = LayerMask.NameToLayer("Place");
@@ -66,15 +66,15 @@ public static class StampToolPreviewUtil
 		meshRenderer = gameObject.AddComponent<MeshRenderer>();
 	}
 
-	public static readonly Color COLOR_OK = Color.white;
+		public static readonly Color COLOR_OK = Color.white;
 
-	public static readonly Color COLOR_ERROR = Color.red;
+		public static readonly Color COLOR_ERROR = Color.red;
 
-	public const float SOLID_VIS_ALPHA = 1f;
+		public const float SOLID_VIS_ALPHA = 1f;
 
-	public const float LIQUID_VIS_ALPHA = 1f;
+		public const float LIQUID_VIS_ALPHA = 1f;
 
-	public const float GAS_VIS_ALPHA = 1f;
+		public const float GAS_VIS_ALPHA = 1f;
 
-	public const float BACKGROUND_ALPHA = 1f;
+		public const float BACKGROUND_ALPHA = 1f;
 }

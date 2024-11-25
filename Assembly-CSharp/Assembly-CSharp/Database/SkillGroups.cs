@@ -5,9 +5,9 @@ using STRINGS;
 
 namespace Database
 {
-	public class SkillGroups : ResourceSet<SkillGroup>
+		public class SkillGroups : ResourceSet<SkillGroup>
 	{
-		public SkillGroups(ResourceSet parent) : base("SkillGroups", parent)
+				public SkillGroups(ResourceSet parent) : base("SkillGroups", parent)
 		{
 			this.Mining = base.Add(new SkillGroup("Mining", Db.Get().ChoreGroups.Dig.Id, DUPLICANTS.CHOREGROUPS.DIG.NAME, "icon_errand_dig", "icon_archetype_dig"));
 			this.Mining.relevantAttributes = new List<Klei.AI.Attribute>
@@ -127,30 +127,30 @@ namespace Database
 			};
 		}
 
-		public SkillGroup Mining;
+				public SkillGroup Mining;
 
-		public SkillGroup Building;
+				public SkillGroup Building;
 
-		public SkillGroup Farming;
+				public SkillGroup Farming;
 
-		public SkillGroup Ranching;
+				public SkillGroup Ranching;
 
-		public SkillGroup Cooking;
+				public SkillGroup Cooking;
 
-		public SkillGroup Art;
+				public SkillGroup Art;
 
-		public SkillGroup Research;
+				public SkillGroup Research;
 
-		public SkillGroup Rocketry;
+				public SkillGroup Rocketry;
 
-		public SkillGroup Suits;
+				public SkillGroup Suits;
 
-		public SkillGroup Hauling;
+				public SkillGroup Hauling;
 
-		public SkillGroup Technicals;
+				public SkillGroup Technicals;
 
-		public SkillGroup MedicalAid;
+				public SkillGroup MedicalAid;
 
-		public SkillGroup Basekeeping;
+				public SkillGroup Basekeeping;
 	}
 }

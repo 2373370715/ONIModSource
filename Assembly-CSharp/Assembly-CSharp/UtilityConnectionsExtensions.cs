@@ -2,7 +2,7 @@
 
 public static class UtilityConnectionsExtensions
 {
-	public static UtilityConnections InverseDirection(this UtilityConnections direction)
+		public static UtilityConnections InverseDirection(this UtilityConnections direction)
 	{
 		switch (direction)
 		{
@@ -24,7 +24,7 @@ public static class UtilityConnectionsExtensions
 		throw new ArgumentException("Unexpected enum value: " + direction.ToString(), "direction");
 	}
 
-	public static UtilityConnections LeftDirection(this UtilityConnections direction)
+		public static UtilityConnections LeftDirection(this UtilityConnections direction)
 	{
 		switch (direction)
 		{
@@ -46,7 +46,7 @@ public static class UtilityConnectionsExtensions
 		throw new ArgumentException("Unexpected enum value: " + direction.ToString(), "direction");
 	}
 
-	public static UtilityConnections RightDirection(this UtilityConnections direction)
+		public static UtilityConnections RightDirection(this UtilityConnections direction)
 	{
 		switch (direction)
 		{
@@ -68,7 +68,7 @@ public static class UtilityConnectionsExtensions
 		throw new ArgumentException("Unexpected enum value: " + direction.ToString(), "direction");
 	}
 
-	public static int CellInDirection(this UtilityConnections direction, int from_cell)
+		public static int CellInDirection(this UtilityConnections direction, int from_cell)
 	{
 		switch (direction)
 		{
@@ -90,7 +90,7 @@ public static class UtilityConnectionsExtensions
 		throw new ArgumentException("Unexpected enum value: " + direction.ToString(), "direction");
 	}
 
-	public static UtilityConnections DirectionFromToCell(int from_cell, int to_cell)
+		public static UtilityConnections DirectionFromToCell(int from_cell, int to_cell)
 	{
 		if (to_cell == from_cell - 1)
 		{

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PetroleumGeneratorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "PetroleumGenerator";
 		int width = 3;
@@ -26,7 +26,7 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 		EffectorValues tier = NOISE_POLLUTION.NOISY.TIER5;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER2, tier, 0.2f);
 		buildingDef.GeneratorWattageRating = 2000f;
-		buildingDef.GeneratorBaseCapacity = 2000f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
 		buildingDef.ExhaustKilowattsWhenActive = 4f;
 		buildingDef.SelfHeatKilowattsWhenActive = 16f;
 		buildingDef.ViewMode = OverlayModes.Power.ID;
@@ -39,10 +39,13 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.PowerBuilding, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.GeneratorType, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.HeavyDutyGeneratorType, false);
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<Storage>();
 		BuildingDef def = go.GetComponent<Building>().Def;
@@ -75,23 +78,23 @@ public class PetroleumGeneratorConfig : IBuildingConfig
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "PetroleumGenerator";
+		public const string ID = "PetroleumGenerator";
 
-	public const float CONSUMPTION_RATE = 2f;
+		public const float CONSUMPTION_RATE = 2f;
 
-	private const SimHashes INPUT_ELEMENT = SimHashes.Petroleum;
+		private const SimHashes INPUT_ELEMENT = SimHashes.Petroleum;
 
-	private const SimHashes EXHAUST_ELEMENT_GAS = SimHashes.CarbonDioxide;
+		private const SimHashes EXHAUST_ELEMENT_GAS = SimHashes.CarbonDioxide;
 
-	private const SimHashes EXHAUST_ELEMENT_LIQUID = SimHashes.DirtyWater;
+		private const SimHashes EXHAUST_ELEMENT_LIQUID = SimHashes.DirtyWater;
 
-	public const float EFFICIENCY_RATE = 0.5f;
+		public const float EFFICIENCY_RATE = 0.5f;
 
-	public const float EXHAUST_GAS_RATE = 0.5f;
+		public const float EXHAUST_GAS_RATE = 0.5f;
 
-	public const float EXHAUST_LIQUID_RATE = 0.75f;
+		public const float EXHAUST_LIQUID_RATE = 0.75f;
 
-	private const int WIDTH = 3;
+		private const int WIDTH = 3;
 
-	private const int HEIGHT = 4;
+		private const int HEIGHT = 4;
 }

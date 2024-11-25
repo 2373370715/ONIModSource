@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class PajamaDispenser : Workable, IDispenser
 {
-			public event System.Action OnStopWorkEvent;
+				public event System.Action OnStopWorkEvent;
 
-			private WorkChore<PajamaDispenser> Chore
+				private WorkChore<PajamaDispenser> Chore
 	{
 		get
 		{
@@ -25,7 +25,7 @@ public class PajamaDispenser : Workable, IDispenser
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (PajamaDispenser.pajamaPrefab != null)
@@ -35,7 +35,7 @@ public class PajamaDispenser : Workable, IDispenser
 		PajamaDispenser.pajamaPrefab = Assets.GetPrefab(new Tag("SleepClinicPajamas"));
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		Vector3 targetPoint = this.GetTargetPoint();
 		targetPoint.z = Grid.GetLayerZ(Grid.SceneLayer.BuildingFront);
@@ -43,7 +43,7 @@ public class PajamaDispenser : Workable, IDispenser
 		this.hasDispenseChore = false;
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		if (this.Chore != null && this.Chore.smi.IsRunning())
@@ -61,7 +61,7 @@ public class PajamaDispenser : Workable, IDispenser
 		}
 	}
 
-	[ContextMenu("fetch")]
+		[ContextMenu("fetch")]
 	public void FetchPajamas()
 	{
 		if (this.Chore != null)
@@ -73,7 +73,7 @@ public class PajamaDispenser : Workable, IDispenser
 		this.Chore.AddPrecondition(ChorePreconditions.instance.IsNotARobot, null);
 	}
 
-	public void CancelFetch()
+		public void CancelFetch()
 	{
 		if (this.Chore == null)
 		{
@@ -85,7 +85,7 @@ public class PajamaDispenser : Workable, IDispenser
 		base.gameObject.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.DispenseRequested, false);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.hasDispenseChore)
@@ -94,43 +94,43 @@ public class PajamaDispenser : Workable, IDispenser
 		}
 	}
 
-	public List<Tag> DispensedItems()
+		public List<Tag> DispensedItems()
 	{
 		return PajamaDispenser.PajamaList;
 	}
 
-	public Tag SelectedItem()
+		public Tag SelectedItem()
 	{
 		return PajamaDispenser.PajamaList[0];
 	}
 
-	public void SelectItem(Tag tag)
+		public void SelectItem(Tag tag)
 	{
 	}
 
-	public void OnOrderDispense()
+		public void OnOrderDispense()
 	{
 		this.FetchPajamas();
 	}
 
-	public void OnCancelDispense()
+		public void OnCancelDispense()
 	{
 		this.CancelFetch();
 	}
 
-	public bool HasOpenChore()
+		public bool HasOpenChore()
 	{
 		return this.Chore != null;
 	}
 
-	[Serialize]
+		[Serialize]
 	private bool hasDispenseChore;
 
-	private static GameObject pajamaPrefab = null;
+		private static GameObject pajamaPrefab = null;
 
-	private WorkChore<PajamaDispenser> chore;
+		private WorkChore<PajamaDispenser> chore;
 
-	private static List<Tag> PajamaList = new List<Tag>
+		private static List<Tag> PajamaList = new List<Tag>
 	{
 		"SleepClinicPajamas"
 	};

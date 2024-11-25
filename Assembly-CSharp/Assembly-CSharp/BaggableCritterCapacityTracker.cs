@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserControlledCapacity
 {
-			[Serialize]
+				[Serialize]
 	public int creatureLimit { get; set; } = 20;
 
-			public int storedCreatureCount { get; private set; }
+				public int storedCreatureCount { get; private set; }
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		int cell = Grid.PosToCell(this);
@@ -23,7 +23,7 @@ public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserC
 		base.Subscribe(144050788, new Action<object>(this.RefreshCreatureCount));
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (BaggableCritterCapacityTracker.capacityStatusItem == null)
@@ -41,7 +41,7 @@ public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserC
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, BaggableCritterCapacityTracker.capacityStatusItem, this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		TreeFilterable treeFilterable = this.filter;
 		treeFilterable.OnFilterChanged = (Action<HashSet<Tag>>)Delegate.Remove(treeFilterable.OnFilterChanged, new Action<HashSet<Tag>>(this.RefreshCreatureCount));
@@ -49,7 +49,7 @@ public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserC
 		base.OnCleanUp();
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		if (gameObject == null)
@@ -64,7 +64,7 @@ public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserC
 		this.creatureLimit = component.creatureLimit;
 	}
 
-	public void RefreshCreatureCount(object data = null)
+		public void RefreshCreatureCount(object data = null)
 	{
 		CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(this.cavityCell);
 		int storedCreatureCount = this.storedCreatureCount;
@@ -86,12 +86,12 @@ public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserC
 		}
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		this.RefreshCreatureCount(null);
 	}
 
-			float IUserControlledCapacity.UserMaxCapacity
+				float IUserControlledCapacity.UserMaxCapacity
 	{
 		get
 		{
@@ -107,7 +107,7 @@ public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserC
 		}
 	}
 
-		float IUserControlledCapacity.AmountStored
+			float IUserControlledCapacity.AmountStored
 	{
 		get
 		{
@@ -115,7 +115,7 @@ public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserC
 		}
 	}
 
-		float IUserControlledCapacity.MinCapacity
+			float IUserControlledCapacity.MinCapacity
 	{
 		get
 		{
@@ -123,7 +123,7 @@ public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserC
 		}
 	}
 
-		float IUserControlledCapacity.MaxCapacity
+			float IUserControlledCapacity.MaxCapacity
 	{
 		get
 		{
@@ -131,7 +131,7 @@ public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserC
 		}
 	}
 
-		bool IUserControlledCapacity.WholeValues
+			bool IUserControlledCapacity.WholeValues
 	{
 		get
 		{
@@ -139,7 +139,7 @@ public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserC
 		}
 	}
 
-		LocString IUserControlledCapacity.CapacityUnits
+			LocString IUserControlledCapacity.CapacityUnits
 	{
 		get
 		{
@@ -147,18 +147,18 @@ public class BaggableCritterCapacityTracker : KMonoBehaviour, ISim1000ms, IUserC
 		}
 	}
 
-	public int maximumCreatures = 40;
+		public int maximumCreatures = 40;
 
-	public CellOffset cavityOffset;
+		public CellOffset cavityOffset;
 
-	public bool filteredCount;
+		public bool filteredCount;
 
-	public System.Action onCountChanged;
+		public System.Action onCountChanged;
 
-	private int cavityCell;
+		private int cavityCell;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private TreeFilterable filter;
 
-	private static StatusItem capacityStatusItem;
+		private static StatusItem capacityStatusItem;
 }

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 public class OldNoteEntriesV5
 {
-	public void Deserialize(BinaryReader reader)
+		public void Deserialize(BinaryReader reader)
 	{
 		int num = reader.ReadInt32();
 		for (int i = 0; i < num; i++)
@@ -16,25 +16,25 @@ public class OldNoteEntriesV5
 		}
 	}
 
-	public List<OldNoteEntriesV5.NoteStorageBlock> storageBlocks = new List<OldNoteEntriesV5.NoteStorageBlock>();
+		public List<OldNoteEntriesV5.NoteStorageBlock> storageBlocks = new List<OldNoteEntriesV5.NoteStorageBlock>();
 
-	[StructLayout(LayoutKind.Explicit)]
+		[StructLayout(LayoutKind.Explicit)]
 	public struct NoteEntry
 	{
-		[FieldOffset(0)]
+				[FieldOffset(0)]
 		public int reportEntryId;
 
-		[FieldOffset(4)]
+				[FieldOffset(4)]
 		public int noteHash;
 
-		[FieldOffset(8)]
+				[FieldOffset(8)]
 		public float value;
 	}
 
-	[StructLayout(LayoutKind.Explicit)]
+		[StructLayout(LayoutKind.Explicit)]
 	public struct NoteEntryArray
 	{
-				public int StructSizeInBytes
+						public int StructSizeInBytes
 		{
 			get
 			{
@@ -42,23 +42,23 @@ public class OldNoteEntriesV5
 			}
 		}
 
-		[FieldOffset(0)]
+				[FieldOffset(0)]
 		public byte[] bytes;
 
-		[FieldOffset(0)]
+				[FieldOffset(0)]
 		public OldNoteEntriesV5.NoteEntry[] structs;
 	}
 
-	public struct NoteStorageBlock
+		public struct NoteStorageBlock
 	{
-		public void Deserialize(BinaryReader reader)
+				public void Deserialize(BinaryReader reader)
 		{
 			this.entryCount = reader.ReadInt32();
 			this.entries.bytes = reader.ReadBytes(this.entries.StructSizeInBytes * this.entryCount);
 		}
 
-		public int entryCount;
+				public int entryCount;
 
-		public OldNoteEntriesV5.NoteEntryArray entries;
+				public OldNoteEntriesV5.NoteEntryArray entries;
 	}
 }

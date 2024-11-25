@@ -4,9 +4,9 @@ using TUNING;
 
 namespace Database
 {
-	public class SkillPerks : ResourceSet<SkillPerk>
+		public class SkillPerks : ResourceSet<SkillPerk>
 	{
-		public SkillPerks(ResourceSet parent) : base("SkillPerks", parent)
+				public SkillPerks(ResourceSet parent) : base("SkillPerks", parent)
 		{
 			this.IncreaseDigSpeedSmall = base.Add(new SkillAttributePerk("IncreaseDigSpeedSmall", Db.Get().Attributes.Digging.Id, (float)ROLES.ATTRIBUTE_BONUS_FIRST, DUPLICANTS.ROLES.JUNIOR_MINER.NAME));
 			this.IncreaseDigSpeedMedium = base.Add(new SkillAttributePerk("IncreaseDigSpeedMedium", Db.Get().Attributes.Digging.Id, (float)ROLES.ATTRIBUTE_BONUS_SECOND, DUPLICANTS.ROLES.MINER.NAME));
@@ -59,6 +59,7 @@ namespace Database
 			this.ConveyorBuild = base.Add(new SimpleSkillPerk("ConveyorBuild", UI.ROLES_SCREEN.PERKS.CONVEYOR_BUILD.DESCRIPTION));
 			this.CanPowerTinker = base.Add(new SimpleSkillPerk("CanPowerTinker", UI.ROLES_SCREEN.PERKS.CAN_POWER_TINKER.DESCRIPTION));
 			this.CanMakeMissiles = base.Add(new SimpleSkillPerk("CanMakeMissiles", UI.ROLES_SCREEN.PERKS.CAN_MAKE_MISSILES.DESCRIPTION));
+			this.CanCraftElectronics = base.Add(new SimpleSkillPerk("CanCraftElectronics", UI.ROLES_SCREEN.PERKS.CAN_CRAFT_ELECTRONICS.DESCRIPTION, DlcManager.DLC3));
 			this.CanElectricGrill = base.Add(new SimpleSkillPerk("CanElectricGrill", UI.ROLES_SCREEN.PERKS.CAN_ELECTRIC_GRILL.DESCRIPTION));
 			this.IncreaseCookingSmall = base.Add(new SkillAttributePerk("IncreaseCookingSmall", Db.Get().Attributes.Cooking.Id, (float)ROLES.ATTRIBUTE_BONUS_FIRST, DUPLICANTS.ROLES.JUNIOR_COOK.NAME));
 			this.IncreaseCookingMedium = base.Add(new SkillAttributePerk("IncreaseCookingMedium", Db.Get().Attributes.Cooking.Id, (float)ROLES.ATTRIBUTE_BONUS_SECOND, DUPLICANTS.ROLES.COOK.NAME));
@@ -87,162 +88,164 @@ namespace Database
 			this.IncreaseRocketSpeedSmall = base.Add(new SkillAttributePerk("IncreaseRocketSpeedSmall", Db.Get().Attributes.SpaceNavigation.Id, (float)ROLES.ATTRIBUTE_BONUS_FIRST, DUPLICANTS.ROLES.ROCKETPILOT.NAME));
 		}
 
-		public SkillPerk IncreaseDigSpeedSmall;
+				public SkillPerk IncreaseDigSpeedSmall;
 
-		public SkillPerk IncreaseDigSpeedMedium;
+				public SkillPerk IncreaseDigSpeedMedium;
 
-		public SkillPerk IncreaseDigSpeedLarge;
+				public SkillPerk IncreaseDigSpeedLarge;
 
-		public SkillPerk CanDigVeryFirm;
+				public SkillPerk CanDigVeryFirm;
 
-		public SkillPerk CanDigNearlyImpenetrable;
+				public SkillPerk CanDigNearlyImpenetrable;
 
-		public SkillPerk CanDigSuperDuperHard;
+				public SkillPerk CanDigSuperDuperHard;
 
-		public SkillPerk CanDigRadioactiveMaterials;
+				public SkillPerk CanDigRadioactiveMaterials;
 
-		public SkillPerk CanDigUnobtanium;
+				public SkillPerk CanDigUnobtanium;
 
-		public SkillPerk IncreaseConstructionSmall;
+				public SkillPerk IncreaseConstructionSmall;
 
-		public SkillPerk IncreaseConstructionMedium;
+				public SkillPerk IncreaseConstructionMedium;
 
-		public SkillPerk IncreaseConstructionLarge;
+				public SkillPerk IncreaseConstructionLarge;
 
-		public SkillPerk IncreaseConstructionMechatronics;
+				public SkillPerk IncreaseConstructionMechatronics;
 
-		public SkillPerk CanDemolish;
+				public SkillPerk CanDemolish;
 
-		public SkillPerk IncreaseLearningSmall;
+				public SkillPerk IncreaseLearningSmall;
 
-		public SkillPerk IncreaseLearningMedium;
+				public SkillPerk IncreaseLearningMedium;
 
-		public SkillPerk IncreaseLearningLarge;
+				public SkillPerk IncreaseLearningLarge;
 
-		public SkillPerk IncreaseLearningLargeSpace;
+				public SkillPerk IncreaseLearningLargeSpace;
 
-		public SkillPerk IncreaseBotanySmall;
+				public SkillPerk IncreaseBotanySmall;
 
-		public SkillPerk IncreaseBotanyMedium;
+				public SkillPerk IncreaseBotanyMedium;
 
-		public SkillPerk IncreaseBotanyLarge;
+				public SkillPerk IncreaseBotanyLarge;
 
-		public SkillPerk CanFarmTinker;
+				public SkillPerk CanFarmTinker;
 
-		public SkillPerk CanIdentifyMutantSeeds;
+				public SkillPerk CanIdentifyMutantSeeds;
 
-		public SkillPerk CanWrangleCreatures;
+				public SkillPerk CanWrangleCreatures;
 
-		public SkillPerk CanUseRanchStation;
+				public SkillPerk CanUseRanchStation;
 
-		public SkillPerk CanUseMilkingStation;
+				public SkillPerk CanUseMilkingStation;
 
-		public SkillPerk IncreaseRanchingSmall;
+				public SkillPerk IncreaseRanchingSmall;
 
-		public SkillPerk IncreaseRanchingMedium;
+				public SkillPerk IncreaseRanchingMedium;
 
-		public SkillPerk IncreaseAthleticsSmall;
+				public SkillPerk IncreaseAthleticsSmall;
 
-		public SkillPerk IncreaseAthleticsMedium;
+				public SkillPerk IncreaseAthleticsMedium;
 
-		public SkillPerk IncreaseAthleticsLarge;
+				public SkillPerk IncreaseAthleticsLarge;
 
-		public SkillPerk IncreaseStrengthSmall;
+				public SkillPerk IncreaseStrengthSmall;
 
-		public SkillPerk IncreaseStrengthMedium;
+				public SkillPerk IncreaseStrengthMedium;
 
-		public SkillPerk IncreaseStrengthGofer;
+				public SkillPerk IncreaseStrengthGofer;
 
-		public SkillPerk IncreaseStrengthCourier;
+				public SkillPerk IncreaseStrengthCourier;
 
-		public SkillPerk IncreaseStrengthGroundskeeper;
+				public SkillPerk IncreaseStrengthGroundskeeper;
 
-		public SkillPerk IncreaseStrengthPlumber;
+				public SkillPerk IncreaseStrengthPlumber;
 
-		public SkillPerk IncreaseCarryAmountSmall;
+				public SkillPerk IncreaseCarryAmountSmall;
 
-		public SkillPerk IncreaseCarryAmountMedium;
+				public SkillPerk IncreaseCarryAmountMedium;
 
-		public SkillPerk IncreaseArtSmall;
+				public SkillPerk IncreaseArtSmall;
 
-		public SkillPerk IncreaseArtMedium;
+				public SkillPerk IncreaseArtMedium;
 
-		public SkillPerk IncreaseArtLarge;
+				public SkillPerk IncreaseArtLarge;
 
-		public SkillPerk CanArt;
+				public SkillPerk CanArt;
 
-		public SkillPerk CanArtUgly;
+				public SkillPerk CanArtUgly;
 
-		public SkillPerk CanArtOkay;
+				public SkillPerk CanArtOkay;
 
-		public SkillPerk CanArtGreat;
+				public SkillPerk CanArtGreat;
 
-		public SkillPerk CanStudyArtifact;
+				public SkillPerk CanStudyArtifact;
 
-		public SkillPerk CanClothingAlteration;
+				public SkillPerk CanClothingAlteration;
 
-		public SkillPerk IncreaseMachinerySmall;
+				public SkillPerk IncreaseMachinerySmall;
 
-		public SkillPerk IncreaseMachineryMedium;
+				public SkillPerk IncreaseMachineryMedium;
 
-		public SkillPerk IncreaseMachineryLarge;
+				public SkillPerk IncreaseMachineryLarge;
 
-		public SkillPerk ConveyorBuild;
+				public SkillPerk ConveyorBuild;
 
-		public SkillPerk CanMakeMissiles;
+				public SkillPerk CanMakeMissiles;
 
-		public SkillPerk CanPowerTinker;
+				public SkillPerk CanPowerTinker;
 
-		public SkillPerk CanElectricGrill;
+				public SkillPerk CanCraftElectronics;
 
-		public SkillPerk IncreaseCookingSmall;
+				public SkillPerk CanElectricGrill;
 
-		public SkillPerk IncreaseCookingMedium;
+				public SkillPerk IncreaseCookingSmall;
 
-		public SkillPerk CanSpiceGrinder;
+				public SkillPerk IncreaseCookingMedium;
 
-		public SkillPerk IncreaseCaringSmall;
+				public SkillPerk CanSpiceGrinder;
 
-		public SkillPerk IncreaseCaringMedium;
+				public SkillPerk IncreaseCaringSmall;
 
-		public SkillPerk IncreaseCaringLarge;
+				public SkillPerk IncreaseCaringMedium;
 
-		public SkillPerk CanCompound;
+				public SkillPerk IncreaseCaringLarge;
 
-		public SkillPerk CanDoctor;
+				public SkillPerk CanCompound;
 
-		public SkillPerk CanAdvancedMedicine;
+				public SkillPerk CanDoctor;
 
-		public SkillPerk ExosuitExpertise;
+				public SkillPerk CanAdvancedMedicine;
 
-		public SkillPerk ExosuitDurability;
+				public SkillPerk ExosuitExpertise;
 
-		public SkillPerk AllowAdvancedResearch;
+				public SkillPerk ExosuitDurability;
 
-		public SkillPerk AllowInterstellarResearch;
+				public SkillPerk AllowAdvancedResearch;
 
-		public SkillPerk AllowNuclearResearch;
+				public SkillPerk AllowInterstellarResearch;
 
-		public SkillPerk AllowOrbitalResearch;
+				public SkillPerk AllowNuclearResearch;
 
-		public SkillPerk AllowGeyserTuning;
+				public SkillPerk AllowOrbitalResearch;
 
-		public SkillPerk CanStudyWorldObjects;
+				public SkillPerk AllowGeyserTuning;
 
-		public SkillPerk CanUseClusterTelescope;
+				public SkillPerk CanStudyWorldObjects;
 
-		public SkillPerk IncreaseRocketSpeedSmall;
+				public SkillPerk CanUseClusterTelescope;
 
-		public SkillPerk CanMissionControl;
+				public SkillPerk IncreaseRocketSpeedSmall;
 
-		public SkillPerk CanDoPlumbing;
+				public SkillPerk CanMissionControl;
 
-		public SkillPerk CanUseRockets;
+				public SkillPerk CanDoPlumbing;
 
-		public SkillPerk FasterSpaceFlight;
+				public SkillPerk CanUseRockets;
 
-		public SkillPerk CanTrainToBeAstronaut;
+				public SkillPerk FasterSpaceFlight;
 
-		public SkillPerk CanUseRocketControlStation;
+				public SkillPerk CanTrainToBeAstronaut;
+
+				public SkillPerk CanUseRocketControlStation;
 	}
 }

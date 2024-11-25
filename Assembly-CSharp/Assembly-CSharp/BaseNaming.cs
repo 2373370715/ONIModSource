@@ -7,7 +7,7 @@ using UnityEngine.Events;
 [AddComponentMenu("KMonoBehaviour/scripts/BaseNaming")]
 public class BaseNaming : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.GenerateBaseName();
@@ -17,7 +17,7 @@ public class BaseNaming : KMonoBehaviour
 		this.minionSelectScreen = base.GetComponent<MinionSelectScreen>();
 	}
 
-	private bool CheckBaseName(string newName)
+		private bool CheckBaseName(string newName)
 	{
 		if (string.IsNullOrEmpty(newName))
 		{
@@ -49,13 +49,13 @@ public class BaseNaming : KMonoBehaviour
 		return true;
 	}
 
-	private void OnEditing(string newName)
+		private void OnEditing(string newName)
 	{
 		Util.ScrubInputField(this.inputField, false, false);
 		this.CheckBaseName(this.inputField.text);
 	}
 
-	private void OnEndEdit(string newName)
+		private void OnEndEdit(string newName)
 	{
 		if (Localization.HasDirtyWords(newName))
 		{
@@ -68,10 +68,7 @@ public class BaseNaming : KMonoBehaviour
 		}
 		if (newName.EndsWith(" "))
 		{
-			newName = newName.TrimEnd(new char[]
-			{
-				' '
-			});
+			newName = newName.TrimEnd(' ');
 		}
 		if (!this.CheckBaseName(newName))
 		{
@@ -90,7 +87,7 @@ public class BaseNaming : KMonoBehaviour
 		SaveLoader.SetActiveSaveFilePath(Path.Combine(path2, newName, path));
 	}
 
-	private void GenerateBaseName()
+		private void GenerateBaseName()
 	{
 		string text = this.GenerateBaseNameString();
 		((LocText)this.inputField.placeholder).text = text;
@@ -98,7 +95,7 @@ public class BaseNaming : KMonoBehaviour
 		this.OnEndEdit(text);
 	}
 
-	private string GenerateBaseNameString()
+		private string GenerateBaseNameString()
 	{
 		string fullString = LocString.GetStrings(typeof(NAMEGEN.COLONY.FORMATS)).GetRandom<string>();
 		fullString = this.ReplaceStringWithRandom(fullString, "{noun}", LocString.GetStrings(typeof(NAMEGEN.COLONY.NOUN)));
@@ -109,7 +106,7 @@ public class BaseNaming : KMonoBehaviour
 		return this.ReplaceStringWithRandom(fullString, "{adjective4}", strings);
 	}
 
-	private string ReplaceStringWithRandom(string fullString, string replacementKey, string[] replacementValues)
+		private string ReplaceStringWithRandom(string fullString, string replacementKey, string[] replacementValues)
 	{
 		if (!fullString.Contains(replacementKey))
 		{
@@ -118,11 +115,11 @@ public class BaseNaming : KMonoBehaviour
 		return fullString.Replace(replacementKey, replacementValues.GetRandom<string>());
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KInputTextField inputField;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton shuffleBaseNameButton;
 
-	private MinionSelectScreen minionSelectScreen;
+		private MinionSelectScreen minionSelectScreen;
 }

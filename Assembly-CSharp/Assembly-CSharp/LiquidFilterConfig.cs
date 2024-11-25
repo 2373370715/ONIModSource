@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LiquidFilterConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidFilter";
 		int width = 3;
@@ -34,39 +34,39 @@ public class LiquidFilterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	private void AttachPort(GameObject go)
+		private void AttachPort(GameObject go)
 	{
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.secondaryPort;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		this.AttachPort(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		this.AttachPort(go);
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<ElementFilter>().portInfo = this.secondaryPort;
 		go.AddOrGet<Filterable>().filterElementState = Filterable.ElementState.Liquid;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveController.Def>().showWorkingStatus = true;
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public const string ID = "LiquidFilter";
+		public const string ID = "LiquidFilter";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
 
-	private ConduitPortInfo secondaryPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(0, 0));
+		private ConduitPortInfo secondaryPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(0, 0));
 }

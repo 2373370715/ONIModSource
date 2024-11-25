@@ -1,4 +1,4 @@
-﻿
+﻿namespace RsTransferPort;
 
 public class TransferPortCenter : StateMachineComponent<TransferPortCenter.StatesInstance> {
     protected override void OnSpawn() {

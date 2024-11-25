@@ -5,25 +5,25 @@ using UnityEngine;
 [EntityConfigOrder(2)]
 public class OilFloaterBabyConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = OilFloaterConfig.CreateOilFloater("OilfloaterBaby", CREATURES.SPECIES.OILFLOATER.BABY.NAME, CREATURES.SPECIES.OILFLOATER.BABY.DESC, "baby_oilfloater_kanim", true);
 		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "Oilfloater", null, false, 5f);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "OilfloaterBaby";
+		public const string ID = "OilfloaterBaby";
 }

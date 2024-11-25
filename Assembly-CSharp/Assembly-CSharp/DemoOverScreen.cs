@@ -2,7 +2,7 @@
 
 public class DemoOverScreen : KModalScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.Init();
@@ -10,7 +10,7 @@ public class DemoOverScreen : KModalScreen
 		SelectTool.Instance.Select(null, false);
 	}
 
-	private void Init()
+		private void Init()
 	{
 		this.QuitButton.onClick += delegate()
 		{
@@ -18,10 +18,10 @@ public class DemoOverScreen : KModalScreen
 		};
 	}
 
-	private void Quit()
+		private void Quit()
 	{
 		PauseScreen.TriggerQuitGame();
 	}
 
-	public KButton QuitButton;
+		public KButton QuitButton;
 }

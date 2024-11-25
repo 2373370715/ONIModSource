@@ -10,12 +10,12 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ElementConverter : StateMachineComponent<ElementConverter.StatesInstance>, IGameObjectEffectDescriptor
 {
-	public void SetWorkSpeedMultiplier(float speed)
+		public void SetWorkSpeedMultiplier(float speed)
 	{
 		this.workSpeedMultiplier = speed;
 	}
 
-	public void SetConsumedElementActive(Tag elementId, bool active)
+		public void SetConsumedElementActive(Tag elementId, bool active)
 	{
 		int i = 0;
 		while (i < this.consumedElements.Length)
@@ -43,7 +43,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		}
 	}
 
-	public void SetOutputElementActive(SimHashes element, bool active)
+		public void SetOutputElementActive(SimHashes element, bool active)
 	{
 		int i = 0;
 		while (i < this.outputElements.Length)
@@ -67,12 +67,12 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		}
 	}
 
-	public void SetStorage(Storage storage)
+		public void SetStorage(Storage storage)
 	{
 		this.storage = storage;
 	}
 
-			public float OutputMultiplier
+				public float OutputMultiplier
 	{
 		get
 		{
@@ -84,7 +84,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		}
 	}
 
-		public float AverageConvertRate
+			public float AverageConvertRate
 	{
 		get
 		{
@@ -92,7 +92,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		}
 	}
 
-	public bool HasEnoughMass(Tag tag, bool includeInactive = false)
+		public bool HasEnoughMass(Tag tag, bool includeInactive = false)
 	{
 		bool result = false;
 		List<GameObject> items = this.storage.items;
@@ -116,7 +116,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		return result;
 	}
 
-	public bool HasEnoughMassToStartConverting(bool includeInactive = false)
+		public bool HasEnoughMassToStartConverting(bool includeInactive = false)
 	{
 		float speedMultiplier = this.GetSpeedMultiplier();
 		float num = 1f * speedMultiplier;
@@ -148,7 +148,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		return flag && flag2;
 	}
 
-	public bool CanConvertAtAll()
+		public bool CanConvertAtAll()
 	{
 		bool flag = this.consumedElements.Length == 0;
 		bool flag2 = true;
@@ -179,12 +179,12 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		return flag && flag2;
 	}
 
-	private float GetSpeedMultiplier()
+		private float GetSpeedMultiplier()
 	{
 		return this.machinerySpeedAttribute.GetTotalValue() * this.workSpeedMultiplier;
 	}
 
-	private void ConvertMass()
+		private void ConvertMass()
 	{
 		float speedMultiplier = this.GetSpeedMultiplier();
 		float num = 1f * speedMultiplier;
@@ -356,7 +356,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		this.storage.Trigger(-1697596308, base.gameObject);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Attributes attributes = base.gameObject.GetAttributes();
@@ -383,7 +383,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		}
 	}
 
-	public void SetAllConsumedActive(bool active)
+		public void SetAllConsumedActive(bool active)
 	{
 		for (int i = 0; i < this.consumedElements.Length; i++)
 		{
@@ -392,7 +392,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		base.smi.sm.canConvert.Set(active, base.smi, false);
 	}
 
-	public void SetConsumedActive(Tag id, bool active)
+		public void SetConsumedActive(Tag id, bool active)
 	{
 		bool flag = this.consumedElements.Length == 0;
 		for (int i = 0; i < this.consumedElements.Length; i++)
@@ -412,7 +412,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		base.smi.sm.canConvert.Set(flag, base.smi, false);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		for (int i = 0; i < this.consumedElements.Length; i++)
@@ -428,7 +428,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		for (int i = 0; i < this.consumedElements.Length; i++)
 		{
@@ -441,7 +441,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		base.OnCleanUp();
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (!this.showDescriptors)
@@ -486,47 +486,47 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 		return list;
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	public Action<float> onConvertMass;
+		public Action<float> onConvertMass;
 
-	private float totalDiseaseWeight = float.MaxValue;
+		private float totalDiseaseWeight = float.MaxValue;
 
-	public Operational.State OperationalRequirement = Operational.State.Active;
+		public Operational.State OperationalRequirement = Operational.State.Active;
 
-	private AttributeInstance machinerySpeedAttribute;
+		private AttributeInstance machinerySpeedAttribute;
 
-	private float workSpeedMultiplier = 1f;
+		private float workSpeedMultiplier = 1f;
 
-	public bool showDescriptors = true;
+		public bool showDescriptors = true;
 
-	private const float BASE_INTERVAL = 1f;
+		private const float BASE_INTERVAL = 1f;
 
-	public ElementConverter.ConsumedElement[] consumedElements;
+		public ElementConverter.ConsumedElement[] consumedElements;
 
-	public ElementConverter.OutputElement[] outputElements;
+		public ElementConverter.OutputElement[] outputElements;
 
-	public bool ShowInUI = true;
+		public bool ShowInUI = true;
 
-	private float outputMultiplier = 1f;
+		private float outputMultiplier = 1f;
 
-	private Dictionary<Tag, Guid> consumedElementStatusHandles = new Dictionary<Tag, Guid>();
+		private Dictionary<Tag, Guid> consumedElementStatusHandles = new Dictionary<Tag, Guid>();
 
-	private Dictionary<SimHashes, Guid> outputElementStatusHandles = new Dictionary<SimHashes, Guid>();
+		private Dictionary<SimHashes, Guid> outputElementStatusHandles = new Dictionary<SimHashes, Guid>();
 
-	private static StatusItem ElementConverterInput;
+		private static StatusItem ElementConverterInput;
 
-	private static StatusItem ElementConverterOutput;
+		private static StatusItem ElementConverterOutput;
 
-	[DebuggerDisplay("{tag} {massConsumptionRate}")]
+		[DebuggerDisplay("{tag} {massConsumptionRate}")]
 	[Serializable]
 	public struct ConsumedElement
 	{
-		public ConsumedElement(Tag tag, float kgPerSecond, bool isActive = true)
+				public ConsumedElement(Tag tag, float kgPerSecond, bool isActive = true)
 		{
 			this.Tag = tag;
 			this.MassConsumptionRate = kgPerSecond;
@@ -534,7 +534,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			this.Accumulator = HandleVector<int>.InvalidHandle;
 		}
 
-				public string Name
+						public string Name
 		{
 			get
 			{
@@ -542,7 +542,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			}
 		}
 
-				public float Rate
+						public float Rate
 		{
 			get
 			{
@@ -550,19 +550,19 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			}
 		}
 
-		public Tag Tag;
+				public Tag Tag;
 
-		public float MassConsumptionRate;
+				public float MassConsumptionRate;
 
-		public bool IsActive;
+				public bool IsActive;
 
-		public HandleVector<int>.Handle Accumulator;
+				public HandleVector<int>.Handle Accumulator;
 	}
 
-	[Serializable]
+		[Serializable]
 	public struct OutputElement
 	{
-		public OutputElement(float kgPerSecond, SimHashes element, float minOutputTemperature, bool useEntityTemperature = false, bool storeOutput = false, float outputElementOffsetx = 0f, float outputElementOffsety = 0.5f, float diseaseWeight = 1f, byte addedDiseaseIdx = 255, int addedDiseaseCount = 0, bool isActive = true)
+				public OutputElement(float kgPerSecond, SimHashes element, float minOutputTemperature, bool useEntityTemperature = false, bool storeOutput = false, float outputElementOffsetx = 0f, float outputElementOffsety = 0.5f, float diseaseWeight = 1f, byte addedDiseaseIdx = 255, int addedDiseaseCount = 0, bool isActive = true)
 		{
 			this.elementHash = element;
 			this.minOutputTemperature = minOutputTemperature;
@@ -577,7 +577,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			this.IsActive = isActive;
 		}
 
-				public string Name
+						public string Name
 		{
 			get
 			{
@@ -585,7 +585,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			}
 		}
 
-				public float Rate
+						public float Rate
 		{
 			get
 			{
@@ -593,37 +593,37 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			}
 		}
 
-		public bool IsActive;
+				public bool IsActive;
 
-		public SimHashes elementHash;
+				public SimHashes elementHash;
 
-		public float minOutputTemperature;
+				public float minOutputTemperature;
 
-		public bool useEntityTemperature;
+				public bool useEntityTemperature;
 
-		public float massGenerationRate;
+				public float massGenerationRate;
 
-		public bool storeOutput;
+				public bool storeOutput;
 
-		public Vector2 outputElementOffset;
+				public Vector2 outputElementOffset;
 
-		public HandleVector<int>.Handle accumulator;
+				public HandleVector<int>.Handle accumulator;
 
-		public float diseaseWeight;
+				public float diseaseWeight;
 
-		public byte addedDiseaseIdx;
+				public byte addedDiseaseIdx;
 
-		public int addedDiseaseCount;
+				public int addedDiseaseCount;
 	}
 
-	public class StatesInstance : GameStateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter, object>.GameInstance
 	{
-		public StatesInstance(ElementConverter smi) : base(smi)
+				public StatesInstance(ElementConverter smi) : base(smi)
 		{
 			this.selectable = base.GetComponent<KSelectable>();
 		}
 
-		public void AddStatusItems()
+				public void AddStatusItems()
 		{
 			if (!base.master.ShowInUI)
 			{
@@ -645,7 +645,7 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			}
 		}
 
-		public void RemoveStatusItems()
+				public void RemoveStatusItems()
 		{
 			if (!base.master.ShowInUI)
 			{
@@ -665,13 +665,13 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			base.master.outputElementStatusHandles.Clear();
 		}
 
-		public void AddStatusItem<ElementType, IDType>(ElementType element, IDType id, StatusItem status, Dictionary<IDType, Guid> collection)
+				public void AddStatusItem<ElementType, IDType>(ElementType element, IDType id, StatusItem status, Dictionary<IDType, Guid> collection)
 		{
 			Guid value = this.selectable.AddStatusItem(status, element);
 			collection[id] = value;
 		}
 
-		public void RemoveStatusItem<IDType>(IDType id, Dictionary<IDType, Guid> collection)
+				public void RemoveStatusItem<IDType>(IDType id, Dictionary<IDType, Guid> collection)
 		{
 			Guid guid;
 			if (!collection.TryGetValue(id, out guid))
@@ -681,19 +681,19 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			this.selectable.RemoveStatusItem(guid, false);
 		}
 
-		public void OnOperationalRequirementChanged(object data)
+				public void OnOperationalRequirementChanged(object data)
 		{
 			Operational operational = data as Operational;
 			bool value = (operational == null) ? ((bool)data) : operational.IsActive;
 			base.sm.canConvert.Set(value, this, false);
 		}
 
-		private KSelectable selectable;
+				private KSelectable selectable;
 	}
 
-	public class States : GameStateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter>
+		public class States : GameStateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter>
 	{
-		private bool ValidateStateTransition(ElementConverter.StatesInstance smi, bool _)
+				private bool ValidateStateTransition(ElementConverter.StatesInstance smi, bool _)
 		{
 			bool flag = smi.GetCurrentState() == smi.sm.disabled;
 			if (smi.master.operational == null)
@@ -716,19 +716,19 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			return smi.master.operational.MeetsRequirements(smi.master.OperationalRequirement) == flag;
 		}
 
-		private void OnEnterRoot(ElementConverter.StatesInstance smi)
+				private void OnEnterRoot(ElementConverter.StatesInstance smi)
 		{
 			int eventForState = (int)Operational.GetEventForState(smi.master.OperationalRequirement);
 			smi.Subscribe(eventForState, new Action<object>(smi.OnOperationalRequirementChanged));
 		}
 
-		private void OnExitRoot(ElementConverter.StatesInstance smi)
+				private void OnExitRoot(ElementConverter.StatesInstance smi)
 		{
 			int eventForState = (int)Operational.GetEventForState(smi.master.OperationalRequirement);
 			smi.Unsubscribe(eventForState, new Action<object>(smi.OnOperationalRequirementChanged));
 		}
 
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.disabled;
 			this.root.Enter(new StateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter, object>.State.Callback(this.OnEnterRoot)).Exit(new StateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter, object>.State.Callback(this.OnExitRoot));
@@ -745,10 +745,10 @@ public class ElementConverter : StateMachineComponent<ElementConverter.StatesIns
 			}, UpdateRate.SIM_1000ms, true);
 		}
 
-		public GameStateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter, object>.State disabled;
+				public GameStateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter, object>.State disabled;
 
-		public GameStateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter, object>.State converting;
+				public GameStateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter, object>.State converting;
 
-		public StateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter, object>.BoolParameter canConvert;
+				public StateMachine<ElementConverter.States, ElementConverter.StatesInstance, ElementConverter, object>.BoolParameter canConvert;
 	}
 }

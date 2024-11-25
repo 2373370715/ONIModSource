@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bee : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<Bee>(-739654666, Bee.OnAttackDelegate);
@@ -18,7 +18,7 @@ public class Bee : KMonoBehaviour
 		this.StopSleep();
 	}
 
-	private void OnDeath(object data)
+		private void OnDeath(object data)
 	{
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
 		Storage component2 = base.GetComponent<Storage>();
@@ -27,31 +27,31 @@ public class Bee : KMonoBehaviour
 		component2.DropAll(base.transform.position, true, true, default(Vector3), true, null);
 	}
 
-	private void StartSleep()
+		private void StartSleep()
 	{
 		this.RemoveRadiationMod(this.awakeRadiationModKey);
 		base.GetComponent<ElementConsumer>().EnableConsumption(true);
 	}
 
-	private void StopSleep()
+		private void StopSleep()
 	{
 		this.AddRadiationModifier(this.awakeRadiationModKey, this.awakeRadiationMod);
 		base.GetComponent<ElementConsumer>().EnableConsumption(false);
 	}
 
-	private void AddRadiationModifier(HashedString name, float mod)
+		private void AddRadiationModifier(HashedString name, float mod)
 	{
 		this.radiationModifiers.Add(name, mod);
 		this.RefreshRadiationOutput();
 	}
 
-	private void RemoveRadiationMod(HashedString name)
+		private void RemoveRadiationMod(HashedString name)
 	{
 		this.radiationModifiers.Remove(name);
 		this.RefreshRadiationOutput();
 	}
 
-	public void RefreshRadiationOutput()
+		public void RefreshRadiationOutput()
 	{
 		float num = this.radiationOutputAmount;
 		foreach (KeyValuePair<HashedString, float> keyValuePair in this.radiationModifiers)
@@ -64,7 +64,7 @@ public class Bee : KMonoBehaviour
 		component.Refresh();
 	}
 
-	private void OnAttack(object data)
+		private void OnAttack(object data)
 	{
 		if ((Tag)data == GameTags.Creatures.Attack)
 		{
@@ -72,7 +72,7 @@ public class Bee : KMonoBehaviour
 		}
 	}
 
-	public KPrefabID FindHiveInRoom()
+		public KPrefabID FindHiveInRoom()
 	{
 		List<BeeHive.StatesInstance> list = new List<BeeHive.StatesInstance>();
 		Room roomOfGameObject = Game.Instance.roomProber.GetRoomOfGameObject(base.gameObject);
@@ -97,44 +97,44 @@ public class Bee : KMonoBehaviour
 		return result;
 	}
 
-	public float radiationOutputAmount;
+		public float radiationOutputAmount;
 
-	private Dictionary<HashedString, float> radiationModifiers = new Dictionary<HashedString, float>();
+		private Dictionary<HashedString, float> radiationModifiers = new Dictionary<HashedString, float>();
 
-	private float unhappyRadiationMod = 0.1f;
+		private float unhappyRadiationMod = 0.1f;
 
-	private float awakeRadiationMod;
+		private float awakeRadiationMod;
 
-	private HashedString unhappyRadiationModKey = "UNHAPPY";
+		private HashedString unhappyRadiationModKey = "UNHAPPY";
 
-	private HashedString awakeRadiationModKey = "AWAKE";
+		private HashedString awakeRadiationModKey = "AWAKE";
 
-	private static readonly EventSystem.IntraObjectHandler<Bee> OnAttackDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Bee> OnAttackDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
 	{
 		component.OnAttack(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Bee> OnSleepDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Bee> OnSleepDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
 	{
 		component.StartSleep();
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Bee> OnWakeUpDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Bee> OnWakeUpDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
 	{
 		component.StopSleep();
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Bee> OnDeathDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Bee> OnDeathDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
 	{
 		component.OnDeath(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Bee> OnUnhappyDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Bee> OnUnhappyDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
 	{
 		component.AddRadiationModifier(component.unhappyRadiationModKey, component.unhappyRadiationMod);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Bee> OnSatisfiedDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Bee> OnSatisfiedDelegate = new EventSystem.IntraObjectHandler<Bee>(delegate(Bee component, object data)
 	{
 		component.RemoveRadiationMod(component.unhappyRadiationModKey);
 	});

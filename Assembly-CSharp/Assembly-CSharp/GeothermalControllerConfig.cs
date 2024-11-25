@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GeothermalControllerConfig : IEntityConfig
 {
-	public static List<GeothermalVent.ElementInfo> GetClearingEntombedVentReward()
+		public static List<GeothermalVent.ElementInfo> GetClearingEntombedVentReward()
 	{
 		return new List<GeothermalVent.ElementInfo>
 		{
@@ -31,7 +31,7 @@ public class GeothermalControllerConfig : IEntityConfig
 		};
 	}
 
-	public static List<GeothermalControllerConfig.Impurity> GetImpurities()
+		public static List<GeothermalControllerConfig.Impurity> GetImpurities()
 	{
 		return new List<GeothermalControllerConfig.Impurity>
 		{
@@ -152,7 +152,7 @@ public class GeothermalControllerConfig : IEntityConfig
 		};
 	}
 
-	public static float CalculateOutputTemperature(float inputTemperature)
+		public static float CalculateOutputTemperature(float inputTemperature)
 	{
 		if (inputTemperature < 1650f)
 		{
@@ -161,12 +161,12 @@ public class GeothermalControllerConfig : IEntityConfig
 		return Math.Max(1650f, inputTemperature - 150f);
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	GameObject IEntityConfig.CreatePrefab()
+		GameObject IEntityConfig.CreatePrefab()
 	{
 		string id = "GeothermalControllerEntity";
 		string name = STRINGS.BUILDINGS.PREFABS.GEOTHERMALCONTROLLER.NAME;
@@ -201,95 +201,95 @@ public class GeothermalControllerConfig : IEntityConfig
 		return gameObject;
 	}
 
-	void IEntityConfig.OnPrefabInit(GameObject inst)
+		void IEntityConfig.OnPrefabInit(GameObject inst)
 	{
 	}
 
-	void IEntityConfig.OnSpawn(GameObject inst)
+		void IEntityConfig.OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "GeothermalControllerEntity";
+		public const string ID = "GeothermalControllerEntity";
 
-	public const string KEEPSAKE_ID = "keepsake_geothermalplant";
+		public const string KEEPSAKE_ID = "keepsake_geothermalplant";
 
-	public const string COMPLETED_LORE_ENTRY_UNLOCK_ID = "notes_earthquake";
+		public const string COMPLETED_LORE_ENTRY_UNLOCK_ID = "notes_earthquake";
 
-	private const string ANIM_FILE = "gravitas_geoplant_kanim";
+		private const string ANIM_FILE = "gravitas_geoplant_kanim";
 
-	public const string OFFLINE_ANIM = "off";
+		public const string OFFLINE_ANIM = "off";
 
-	public const string ONLINE_ANIM = "on";
+		public const string ONLINE_ANIM = "on";
 
-	public const string OBSTRUCTED_ANIM = "on";
+		public const string OBSTRUCTED_ANIM = "on";
 
-	public const float WORKING_LOOP_DURATION_SECONDS = 16f;
+		public const float WORKING_LOOP_DURATION_SECONDS = 16f;
 
-	public const float HEATPUMP_CAPACITY_KG = 12000f;
+		public const float HEATPUMP_CAPACITY_KG = 12000f;
 
-	public const float OUTPUT_TARGET_TEMPERATURE = 1650f;
+		public const float OUTPUT_TARGET_TEMPERATURE = 1650f;
 
-	public const float OUTPUT_DELTA_TEMPERATURE = 150f;
+		public const float OUTPUT_DELTA_TEMPERATURE = 150f;
 
-	public const float OUTPUT_PASSTHROUGH_RATIO = 0.92f;
+		public const float OUTPUT_PASSTHROUGH_RATIO = 0.92f;
 
-	public static MathUtil.MinMax OUTPUT_VENT_WEIGHT_RANGE = new MathUtil.MinMax(43f, 57f);
+		public static MathUtil.MinMax OUTPUT_VENT_WEIGHT_RANGE = new MathUtil.MinMax(43f, 57f);
 
-	public static HashSet<Tag> STEEL_FETCH_TAGS = new HashSet<Tag>
+		public static HashSet<Tag> STEEL_FETCH_TAGS = new HashSet<Tag>
 	{
 		GameTags.Steel
 	};
 
-	public const float STEEL_FETCH_QUANTITY_KG = 1200f;
+		public const float STEEL_FETCH_QUANTITY_KG = 1200f;
 
-	public const float RECONNECT_PUMP_CHORE_DURATION_SECONDS = 5f;
+		public const float RECONNECT_PUMP_CHORE_DURATION_SECONDS = 5f;
 
-	public static HashedString RECONNECT_PUMP_ANIM_OVERRIDE = "anim_use_remote_kanim";
+		public static HashedString RECONNECT_PUMP_ANIM_OVERRIDE = "anim_use_remote_kanim";
 
-	public const string BAROMETER_ANIM = "meter";
+		public const string BAROMETER_ANIM = "meter";
 
-	public const string BAROMETER_TARGET = "meter_target";
+		public const string BAROMETER_TARGET = "meter_target";
 
-	public static string[] BAROMETER_SYMBOLS = new string[]
+		public static string[] BAROMETER_SYMBOLS = new string[]
 	{
 		"meter_target"
 	};
 
-	public const string THERMOMETER_ANIM = "meter_temp";
+		public const string THERMOMETER_ANIM = "meter_temp";
 
-	public const string THERMOMETER_TARGET = "meter_target";
+		public const string THERMOMETER_TARGET = "meter_target";
 
-	public static string[] THERMOMETER_SYMBOLS = new string[]
+		public static string[] THERMOMETER_SYMBOLS = new string[]
 	{
 		"meter_target"
 	};
 
-	public const float THERMOMETER_MIN_TEMP = 50f;
+		public const float THERMOMETER_MIN_TEMP = 50f;
 
-	public const float THERMOMETER_RANGE = 2450f;
+		public const float THERMOMETER_RANGE = 2450f;
 
-	public static HashedString[] PRESSURE_ANIM_LOOPS = new HashedString[]
+		public static HashedString[] PRESSURE_ANIM_LOOPS = new HashedString[]
 	{
 		"pressure_loop",
 		"high_pressure_loop",
 		"high_pressure_loop2"
 	};
 
-	public static float[] PRESSURE_ANIM_THRESHOLDS = new float[]
+		public static float[] PRESSURE_ANIM_THRESHOLDS = new float[]
 	{
 		0f,
 		0.35f,
 		0.85f
 	};
 
-	public const float CLEAR_ENTOMBED_VENT_THRESHOLD_TEMPERATURE = 602f;
+		public const float CLEAR_ENTOMBED_VENT_THRESHOLD_TEMPERATURE = 602f;
 
-	public struct Impurity
+		public struct Impurity
 	{
-		public ushort elementIdx;
+				public ushort elementIdx;
 
-		public float mass_kg;
+				public float mass_kg;
 
-		public MathUtil.MinMax required_temp_range;
+				public MathUtil.MinMax required_temp_range;
 	}
 }

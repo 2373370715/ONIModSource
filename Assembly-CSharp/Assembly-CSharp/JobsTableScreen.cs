@@ -11,12 +11,12 @@ using UnityEngine.UI;
 
 public class JobsTableScreen : TableScreen
 {
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 22f;
 	}
 
-		public static List<JobsTableScreen.PriorityInfo> priorityInfo
+			public static List<JobsTableScreen.PriorityInfo> priorityInfo
 	{
 		get
 		{
@@ -37,7 +37,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		this.title = UI.JOBSSCREEN.TITLE;
 		base.OnActivate();
@@ -76,7 +76,7 @@ public class JobsTableScreen : TableScreen
 		this.RefreshEffectListeners();
 	}
 
-	private string HoverPersonalPriority(object widget_go_obj)
+		private string HoverPersonalPriority(object widget_go_obj)
 	{
 		GameObject gameObject = widget_go_obj as GameObject;
 		ChoreGroup choreGroup = (base.GetWidgetColumn(gameObject) as PrioritizationGroupTableColumn).userData as ChoreGroup;
@@ -166,19 +166,19 @@ public class JobsTableScreen : TableScreen
 		return "";
 	}
 
-	private string HoverChangeColumnPriorityButton(object widget_go_obj)
+		private string HoverChangeColumnPriorityButton(object widget_go_obj)
 	{
 		GameObject widget_go = widget_go_obj as GameObject;
 		ChoreGroup choreGroup = (base.GetWidgetColumn(widget_go) as PrioritizationGroupTableColumn).userData as ChoreGroup;
 		return UI.JOBSSCREEN.HEADER_CHANGE_TOOLTIP.ToString().Replace("{Job}", choreGroup.Name);
 	}
 
-	private string GetUsageString()
+		private string GetUsageString()
 	{
 		return GameUtil.ReplaceHotkeyString(UI.JOBSSCREEN.INCREASE_PRIORITY_TUTORIAL, global::Action.MouseLeft) + "\n" + GameUtil.ReplaceHotkeyString(UI.JOBSSCREEN.DECREASE_PRIORITY_TUTORIAL, global::Action.MouseRight);
 	}
 
-	private string HoverChangeRowPriorityButton(object widget_go_obj, int delta)
+		private string HoverChangeRowPriorityButton(object widget_go_obj, int delta)
 	{
 		GameObject widget_go = widget_go_obj as GameObject;
 		LocString locString = null;
@@ -217,7 +217,7 @@ public class JobsTableScreen : TableScreen
 		return text2;
 	}
 
-	private void OnSortClicked(object widget_go_obj)
+		private void OnSortClicked(object widget_go_obj)
 	{
 		GameObject widget_go = widget_go_obj as GameObject;
 		PrioritizationGroupTableColumn prioritizationGroupTableColumn = base.GetWidgetColumn(widget_go) as PrioritizationGroupTableColumn;
@@ -264,14 +264,14 @@ public class JobsTableScreen : TableScreen
 		base.SortRows();
 	}
 
-	private string OnSortHovered(object widget_go_obj)
+		private string OnSortHovered(object widget_go_obj)
 	{
 		GameObject widget_go = widget_go_obj as GameObject;
 		ChoreGroup choreGroup = (base.GetWidgetColumn(widget_go) as PrioritizationGroupTableColumn).userData as ChoreGroup;
 		return UI.JOBSSCREEN.SORT_TOOLTIP.ToString().Replace("{Job}", choreGroup.Name);
 	}
 
-	private IPersonalPriorityManager GetPriorityManager(TableRow row)
+		private IPersonalPriorityManager GetPriorityManager(TableRow row)
 	{
 		IPersonalPriorityManager result = null;
 		switch (row.rowType)
@@ -295,7 +295,7 @@ public class JobsTableScreen : TableScreen
 		return result;
 	}
 
-	private LocString GetPriorityStr(int priority)
+		private LocString GetPriorityStr(int priority)
 	{
 		priority = Mathf.Clamp(priority, 0, 5);
 		LocString result = null;
@@ -309,12 +309,12 @@ public class JobsTableScreen : TableScreen
 		return result;
 	}
 
-	private string GetPriorityValue(int priority)
+		private string GetPriorityValue(int priority)
 	{
 		return (priority * 10).ToString();
 	}
 
-	private void LoadValue(IAssignableIdentity minion, GameObject widget_go)
+		private void LoadValue(IAssignableIdentity minion, GameObject widget_go)
 	{
 		if (widget_go == null)
 		{
@@ -344,7 +344,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	private JobsTableScreen.PriorityInfo GetPriorityInfo(int priority)
+		private JobsTableScreen.PriorityInfo GetPriorityInfo(int priority)
 	{
 		JobsTableScreen.PriorityInfo result = default(JobsTableScreen.PriorityInfo);
 		for (int i = 0; i < JobsTableScreen.priorityInfo.Count; i++)
@@ -358,7 +358,7 @@ public class JobsTableScreen : TableScreen
 		return result;
 	}
 
-	private void ChangePersonalPriority(object widget_go_obj, int delta)
+		private void ChangePersonalPriority(object widget_go_obj, int delta)
 	{
 		GameObject widget_go = widget_go_obj as GameObject;
 		if (widget_go_obj == null)
@@ -376,7 +376,7 @@ public class JobsTableScreen : TableScreen
 		this.UpdateWidget(widget_go, chore_group, priorityManager);
 	}
 
-	private void ChangeColumnPriority(object widget_go_obj, int new_priority)
+		private void ChangeColumnPriority(object widget_go_obj, int new_priority)
 	{
 		GameObject widget_go = widget_go_obj as GameObject;
 		if (widget_go_obj == null)
@@ -401,7 +401,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	private void ChangeRowPriority(object widget_go_obj, int delta)
+		private void ChangeRowPriority(object widget_go_obj, int delta)
 	{
 		GameObject widget_go = widget_go_obj as GameObject;
 		if (widget_go_obj == null)
@@ -428,7 +428,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	private void ChangePersonalPriority(IPersonalPriorityManager priority_mgr, ChoreGroup chore_group, int delta, bool wrap_around)
+		private void ChangePersonalPriority(IPersonalPriorityManager priority_mgr, ChoreGroup chore_group, int delta, bool wrap_around)
 	{
 		if (priority_mgr.IsChoreGroupDisabled(chore_group))
 		{
@@ -455,7 +455,7 @@ public class JobsTableScreen : TableScreen
 		KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click_Deselect", false));
 	}
 
-	private void UpdateWidget(GameObject widget_go, ChoreGroup chore_group, IPersonalPriorityManager priority_mgr)
+		private void UpdateWidget(GameObject widget_go, ChoreGroup chore_group, IPersonalPriorityManager priority_mgr)
 	{
 		int fgIndex = 0;
 		int num = 0;
@@ -498,7 +498,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	public void ToggleColumnSortWidgets(bool show)
+		public void ToggleColumnSortWidgets(bool show)
 	{
 		foreach (KeyValuePair<string, TableColumn> keyValuePair in this.columns)
 		{
@@ -509,7 +509,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	public void Refresh(MinionResume minion_resume)
+		public void Refresh(MinionResume minion_resume)
 	{
 		if (this == null)
 		{
@@ -533,7 +533,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	protected override void RefreshRows()
+		protected override void RefreshRows()
 	{
 		base.RefreshRows();
 		this.RefreshEffectListeners();
@@ -543,7 +543,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	private void SizeRows()
+		private void SizeRows()
 	{
 		float num = 0f;
 		int num2 = 0;
@@ -578,7 +578,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	private void RefreshEffectListeners()
+		private void RefreshEffectListeners()
 	{
 		for (int i = 0; i < this.EffectListeners.Count; i++)
 		{
@@ -613,7 +613,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	public override void ScreenUpdate(bool topLevel)
+		public override void ScreenUpdate(bool topLevel)
 	{
 		base.ScreenUpdate(topLevel);
 		if (this.dirty_single_minion_rows.Count != 0)
@@ -629,12 +629,12 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	protected void MarkSingleMinionRowDirty(MinionIdentity id)
+		protected void MarkSingleMinionRowDirty(MinionIdentity id)
 	{
 		this.dirty_single_minion_rows.Add(id);
 	}
 
-	private void RefreshSingleMinionRow(IAssignableIdentity id)
+		private void RefreshSingleMinionRow(IAssignableIdentity id)
 	{
 		foreach (KeyValuePair<string, TableColumn> keyValuePair in this.columns)
 		{
@@ -651,7 +651,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
 		base.OnCmpDisable();
@@ -695,7 +695,7 @@ public class JobsTableScreen : TableScreen
 		this.optionsPanel.gameObject.SetActive(false);
 	}
 
-	private void GetMouseHoverInfo(out bool is_hovering_screen, out bool is_hovering_button)
+		private void GetMouseHoverInfo(out bool is_hovering_screen, out bool is_hovering_button)
 	{
 		UnityEngine.EventSystems.EventSystem current = UnityEngine.EventSystems.EventSystem.current;
 		if (current == null)
@@ -728,7 +728,7 @@ public class JobsTableScreen : TableScreen
 		is_hovering_button = flag;
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		bool flag = false;
 		if (e.IsAction(global::Action.MouseRight))
@@ -751,7 +751,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		bool flag = false;
 		if (e.IsAction(global::Action.MouseRight))
@@ -771,7 +771,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	private bool HasParent(GameObject obj, GameObject parent)
+		private bool HasParent(GameObject obj, GameObject parent)
 	{
 		bool result = false;
 		Transform transform = parent.transform;
@@ -788,7 +788,7 @@ public class JobsTableScreen : TableScreen
 		return result;
 	}
 
-	private void ConfigureNameLabel(IAssignableIdentity identity, GameObject widget_go)
+		private void ConfigureNameLabel(IAssignableIdentity identity, GameObject widget_go)
 	{
 		base.on_load_name_label(identity, widget_go);
 		if (identity == null)
@@ -842,7 +842,7 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	private void InitializeHeader(ChoreGroup chore_group, GameObject widget_go)
+		private void InitializeHeader(ChoreGroup chore_group, GameObject widget_go)
 	{
 		HierarchyReferences component = widget_go.GetComponent<HierarchyReferences>();
 		HierarchyReferences hierarchyReferences = component.GetReference("PrioritizationWidget") as HierarchyReferences;
@@ -883,13 +883,13 @@ public class JobsTableScreen : TableScreen
 		}
 	}
 
-	private void OnSettingsButtonClicked()
+		private void OnSettingsButtonClicked()
 	{
 		this.optionsPanel.gameObject.SetActive(true);
 		this.optionsPanel.GetComponent<Selectable>().Select();
 	}
 
-	private void OnResetSettingsClicked()
+		private void OnResetSettingsClicked()
 	{
 		if (Game.Instance.advancedPersonalPriorities)
 		{
@@ -928,73 +928,73 @@ public class JobsTableScreen : TableScreen
 		base.MarkRowsDirty();
 	}
 
-	private void OnAdvancedModeToggleClicked()
+		private void OnAdvancedModeToggleClicked()
 	{
 		Game.Instance.advancedPersonalPriorities = !Game.Instance.advancedPersonalPriorities;
 		this.toggleAdvancedModeButton.fgImage.gameObject.SetActive(Game.Instance.advancedPersonalPriorities);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private int skillLevelLow = 1;
 
-	[SerializeField]
+		[SerializeField]
 	private int skillLevelHigh = 10;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton settingsButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton resetSettingsButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton toggleAdvancedModeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KImage optionsPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private bool dynamicRowSpacing = true;
 
-	public TextStyleSetting TooltipTextStyle_Ability;
+		public TextStyleSetting TooltipTextStyle_Ability;
 
-	public TextStyleSetting TooltipTextStyle_AbilityPositiveModifier;
+		public TextStyleSetting TooltipTextStyle_AbilityPositiveModifier;
 
-	public TextStyleSetting TooltipTextStyle_AbilityNegativeModifier;
+		public TextStyleSetting TooltipTextStyle_AbilityNegativeModifier;
 
-	private HashSet<MinionIdentity> dirty_single_minion_rows = new HashSet<MinionIdentity>();
+		private HashSet<MinionIdentity> dirty_single_minion_rows = new HashSet<MinionIdentity>();
 
-	private static List<JobsTableScreen.PriorityInfo> _priorityInfo;
+		private static List<JobsTableScreen.PriorityInfo> _priorityInfo;
 
-	private List<Sprite> prioritySprites;
+		private List<Sprite> prioritySprites;
 
-	private List<KeyValuePair<GameObject, JobsTableScreen.SkillEventHandlerID>> EffectListeners = new List<KeyValuePair<GameObject, JobsTableScreen.SkillEventHandlerID>>();
+		private List<KeyValuePair<GameObject, JobsTableScreen.SkillEventHandlerID>> EffectListeners = new List<KeyValuePair<GameObject, JobsTableScreen.SkillEventHandlerID>>();
 
-	public struct PriorityInfo
+		public struct PriorityInfo
 	{
-		public PriorityInfo(int priority, Sprite sprite, LocString name)
+				public PriorityInfo(int priority, Sprite sprite, LocString name)
 		{
 			this.priority = priority;
 			this.sprite = sprite;
 			this.name = name;
 		}
 
-		public int priority;
+				public int priority;
 
-		public Sprite sprite;
+				public Sprite sprite;
 
-		public LocString name;
+				public LocString name;
 	}
 
-	private struct SkillEventHandlerID
+		private struct SkillEventHandlerID
 	{
-		public int level_up;
+				public int level_up;
 
-		public int effect_added;
+				public int effect_added;
 
-		public int effect_removed;
+				public int effect_removed;
 
-		public int disease_added;
+				public int disease_added;
 
-		public int disease_cured;
+				public int disease_cured;
 	}
 }

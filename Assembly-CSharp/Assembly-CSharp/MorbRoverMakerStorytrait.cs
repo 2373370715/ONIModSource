@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class MorbRoverMakerStorytrait : StoryTraitStateMachine<MorbRoverMakerStorytrait, MorbRoverMakerStorytrait.Instance, MorbRoverMakerStorytrait.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.root;
 	}
 
-	public StateMachine<MorbRoverMakerStorytrait, MorbRoverMakerStorytrait.Instance, StateMachineController, MorbRoverMakerStorytrait.Def>.BoolParameter HasAnyBioBotBeenReleased;
+		public StateMachine<MorbRoverMakerStorytrait, MorbRoverMakerStorytrait.Instance, StateMachineController, MorbRoverMakerStorytrait.Def>.BoolParameter HasAnyBioBotBeenReleased;
 
-	public class Def : StoryTraitStateMachine<MorbRoverMakerStorytrait, MorbRoverMakerStorytrait.Instance, MorbRoverMakerStorytrait.Def>.TraitDef
+		public class Def : StoryTraitStateMachine<MorbRoverMakerStorytrait, MorbRoverMakerStorytrait.Instance, MorbRoverMakerStorytrait.Def>.TraitDef
 	{
-		public override void Configure(GameObject prefab)
+				public override void Configure(GameObject prefab)
 		{
 			this.Story = Db.Get().Stories.MorbRoverMaker;
 			this.CompletionData = new StoryCompleteData
@@ -75,35 +75,35 @@ public class MorbRoverMakerStorytrait : StoryTraitStateMachine<MorbRoverMakerSto
 			};
 		}
 
-		public void UnlockRevealEntries()
+				public void UnlockRevealEntries()
 		{
 			Game.Instance.unlocks.Unlock(this.MachineRevealedLoreId, true);
 			Game.Instance.unlocks.Unlock(this.MachineRevealedLoreId2, true);
 		}
 
-		public const string LORE_UNLOCK_PREFIX = "story_trait_morbrover_";
+				public const string LORE_UNLOCK_PREFIX = "story_trait_morbrover_";
 
-		public string MachineRevealedLoreId = "story_trait_morbrover_reveal";
+				public string MachineRevealedLoreId = "story_trait_morbrover_reveal";
 
-		public string MachineRevealedLoreId2 = "story_trait_morbrover_reveal_lore";
+				public string MachineRevealedLoreId2 = "story_trait_morbrover_reveal_lore";
 
-		public string CompleteLoreId2 = "story_trait_morbrover_complete_lore";
+				public string CompleteLoreId2 = "story_trait_morbrover_complete_lore";
 
-		public string CompleteLoreId3 = "story_trait_morbrover_biobot";
+				public string CompleteLoreId3 = "story_trait_morbrover_biobot";
 
-		public System.Action NormalPopupOpenCodexButtonPressed;
+				public System.Action NormalPopupOpenCodexButtonPressed;
 
-		public StoryManager.PopupInfo EventMachineRevealedInfo;
+				public StoryManager.PopupInfo EventMachineRevealedInfo;
 	}
 
-	public new class Instance : StoryTraitStateMachine<MorbRoverMakerStorytrait, MorbRoverMakerStorytrait.Instance, MorbRoverMakerStorytrait.Def>.TraitInstance
+		public new class Instance : StoryTraitStateMachine<MorbRoverMakerStorytrait, MorbRoverMakerStorytrait.Instance, MorbRoverMakerStorytrait.Def>.TraitInstance
 	{
-		public Instance(StateMachineController master, MorbRoverMakerStorytrait.Def def) : base(master, def)
+				public Instance(StateMachineController master, MorbRoverMakerStorytrait.Def def) : base(master, def)
 		{
 			def.NormalPopupOpenCodexButtonPressed = (System.Action)Delegate.Combine(def.NormalPopupOpenCodexButtonPressed, new System.Action(this.OnNormalPopupOpenCodexButtonPressed));
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			this.machine = base.gameObject.GetSMI<MorbRoverMaker.Instance>();
@@ -129,7 +129,7 @@ public class MorbRoverMakerStorytrait : StoryTraitStateMachine<MorbRoverMakerSto
 			}
 		}
 
-		private void OnMachineUncovered()
+				private void OnMachineUncovered()
 		{
 			if (this.storyInstance != null && !this.storyInstance.HasDisplayedPopup(EventInfoDataHelper.PopupType.NORMAL))
 			{
@@ -137,7 +137,7 @@ public class MorbRoverMakerStorytrait : StoryTraitStateMachine<MorbRoverMakerSto
 			}
 		}
 
-		protected override void ShowEventNormalUI()
+				protected override void ShowEventNormalUI()
 		{
 			base.ShowEventNormalUI();
 			if (this.storyInstance != null && this.storyInstance.PendingType == EventInfoDataHelper.PopupType.NORMAL)
@@ -146,7 +146,7 @@ public class MorbRoverMakerStorytrait : StoryTraitStateMachine<MorbRoverMakerSto
 			}
 		}
 
-		public override void OnPopupClosed()
+				public override void OnPopupClosed()
 		{
 			base.OnPopupClosed();
 			if (this.storyInstance.HasDisplayedPopup(EventInfoDataHelper.PopupType.COMPLETE))
@@ -163,12 +163,12 @@ public class MorbRoverMakerStorytrait : StoryTraitStateMachine<MorbRoverMakerSto
 			}
 		}
 
-		private void OnNormalPopupOpenCodexButtonPressed()
+				private void OnNormalPopupOpenCodexButtonPressed()
 		{
 			base.TriggerStoryEvent(StoryInstance.State.IN_PROGRESS);
 		}
 
-		private void OnRoverSpawned(GameObject rover)
+				private void OnRoverSpawned(GameObject rover)
 		{
 			base.smi.sm.HasAnyBioBotBeenReleased.Set(true, base.smi, false);
 			if (!this.storyInstance.HasDisplayedPopup(EventInfoDataHelper.PopupType.COMPLETE))
@@ -177,7 +177,7 @@ public class MorbRoverMakerStorytrait : StoryTraitStateMachine<MorbRoverMakerSto
 			}
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			if (this.machine != null)
 			{
@@ -189,8 +189,8 @@ public class MorbRoverMakerStorytrait : StoryTraitStateMachine<MorbRoverMakerSto
 			base.OnCleanUp();
 		}
 
-		private MorbRoverMaker.Instance machine;
+				private MorbRoverMaker.Instance machine;
 
-		private StoryInstance storyInstance;
+				private StoryInstance storyInstance;
 	}
 }

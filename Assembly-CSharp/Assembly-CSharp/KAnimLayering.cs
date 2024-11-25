@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class KAnimLayering
 {
-	public KAnimLayering(KAnimControllerBase controller, Grid.SceneLayer layer)
+		public KAnimLayering(KAnimControllerBase controller, Grid.SceneLayer layer)
 	{
 		this.controller = controller;
 		this.layer = layer;
 	}
 
-	public void SetLayer(Grid.SceneLayer layer)
+		public void SetLayer(Grid.SceneLayer layer)
 	{
 		this.layer = layer;
 		if (this.foregroundController != null)
@@ -19,22 +19,22 @@ public class KAnimLayering
 		}
 	}
 
-	public void SetIsForeground(bool is_foreground)
+		public void SetIsForeground(bool is_foreground)
 	{
 		this.isForeground = is_foreground;
 	}
 
-	public bool GetIsForeground()
+		public bool GetIsForeground()
 	{
 		return this.isForeground;
 	}
 
-	public KAnimLink GetLink()
+		public KAnimLink GetLink()
 	{
 		return this.link;
 	}
 
-	private static bool IsAnimLayered(KAnimFile[] anims)
+		private static bool IsAnimLayered(KAnimFile[] anims)
 	{
 		foreach (KAnimFile kanimFile in anims)
 		{
@@ -57,7 +57,7 @@ public class KAnimLayering
 		return false;
 	}
 
-	private void HideSymbolsInternal()
+		private void HideSymbolsInternal()
 	{
 		foreach (KAnimFile kanimFile in this.controller.AnimFiles)
 		{
@@ -79,7 +79,7 @@ public class KAnimLayering
 		}
 	}
 
-	public void HideSymbols()
+		public void HideSymbols()
 	{
 		if (EntityPrefabs.Instance == null)
 		{
@@ -136,7 +136,7 @@ public class KAnimLayering
 		}
 	}
 
-	public void RefreshForegroundBatchGroup()
+		public void RefreshForegroundBatchGroup()
 	{
 		if (this.foregroundController == null)
 		{
@@ -145,7 +145,7 @@ public class KAnimLayering
 		this.foregroundController.GetComponent<KBatchedAnimController>().SwapAnims(this.foregroundController.AnimFiles);
 	}
 
-	public void Dirty()
+		public void Dirty()
 	{
 		if (this.foregroundController == null)
 		{
@@ -158,15 +158,15 @@ public class KAnimLayering
 		this.foregroundController.FlipY = this.controller.FlipY;
 	}
 
-	private bool isForeground;
+		private bool isForeground;
 
-	private KAnimControllerBase controller;
+		private KAnimControllerBase controller;
 
-	private KAnimControllerBase foregroundController;
+		private KAnimControllerBase foregroundController;
 
-	private KAnimLink link;
+		private KAnimLink link;
 
-	private Grid.SceneLayer layer = Grid.SceneLayer.BuildingFront;
+		private Grid.SceneLayer layer = Grid.SceneLayer.BuildingFront;
 
-	public static readonly KAnimHashedString UI = new KAnimHashedString("ui");
+		public static readonly KAnimHashedString UI = new KAnimHashedString("ui");
 }

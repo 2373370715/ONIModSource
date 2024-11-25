@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ArtifactSelector : KMonoBehaviour
 {
-		public int AnalyzedArtifactCount
+			public int AnalyzedArtifactCount
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class ArtifactSelector : KMonoBehaviour
 		}
 	}
 
-		public int AnalyzedSpaceArtifactCount
+			public int AnalyzedSpaceArtifactCount
 	{
 		get
 		{
@@ -21,12 +21,12 @@ public class ArtifactSelector : KMonoBehaviour
 		}
 	}
 
-	public List<string> GetAnalyzedArtifactIDs()
+		public List<string> GetAnalyzedArtifactIDs()
 	{
 		return this.analyzedArtifatIDs;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		ArtifactSelector.Instance = this;
@@ -35,7 +35,7 @@ public class ArtifactSelector : KMonoBehaviour
 		this.placedArtifacts.Add(ArtifactType.Any, new List<string>());
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		int num = 0;
@@ -65,7 +65,7 @@ public class ArtifactSelector : KMonoBehaviour
 		}
 	}
 
-	public bool RecordArtifactAnalyzed(string id)
+		public bool RecordArtifactAnalyzed(string id)
 	{
 		if (this.analyzedArtifatIDs.Contains(id))
 		{
@@ -75,17 +75,17 @@ public class ArtifactSelector : KMonoBehaviour
 		return true;
 	}
 
-	public void IncrementAnalyzedTerrestrialArtifacts()
+		public void IncrementAnalyzedTerrestrialArtifacts()
 	{
 		this.analyzedArtifactCount++;
 	}
 
-	public void IncrementAnalyzedSpaceArtifacts()
+		public void IncrementAnalyzedSpaceArtifacts()
 	{
 		this.analyzedSpaceArtifactCount++;
 	}
 
-	public string GetUniqueArtifactID(ArtifactType artifactType = ArtifactType.Any)
+		public string GetUniqueArtifactID(ArtifactType artifactType = ArtifactType.Any)
 	{
 		List<string> list = new List<string>();
 		foreach (string item in ArtifactConfig.artifactItems[artifactType])
@@ -115,7 +115,7 @@ public class ArtifactSelector : KMonoBehaviour
 		return text;
 	}
 
-	public void ReserveArtifactID(string artifactID, ArtifactType artifactType = ArtifactType.Any)
+		public void ReserveArtifactID(string artifactID, ArtifactType artifactType = ArtifactType.Any)
 	{
 		if (this.placedArtifacts[artifactType].Contains(artifactID))
 		{
@@ -124,7 +124,7 @@ public class ArtifactSelector : KMonoBehaviour
 		this.placedArtifacts[artifactType].Add(artifactID);
 	}
 
-	public ArtifactType GetArtifactType(string artifactID)
+		public ArtifactType GetArtifactType(string artifactID)
 	{
 		if (this.placedArtifacts[ArtifactType.Terrestrial].Contains(artifactID))
 		{
@@ -137,19 +137,19 @@ public class ArtifactSelector : KMonoBehaviour
 		return ArtifactType.Any;
 	}
 
-	public static ArtifactSelector Instance;
+		public static ArtifactSelector Instance;
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<ArtifactType, List<string>> placedArtifacts = new Dictionary<ArtifactType, List<string>>();
 
-	[Serialize]
+		[Serialize]
 	private int analyzedArtifactCount;
 
-	[Serialize]
+		[Serialize]
 	private int analyzedSpaceArtifactCount;
 
-	[Serialize]
+		[Serialize]
 	private List<string> analyzedArtifatIDs = new List<string>();
 
-	private const string DEFAULT_ARTIFACT_ID = "artifact_officemug";
+		private const string DEFAULT_ARTIFACT_ID = "artifact_officemug";
 }

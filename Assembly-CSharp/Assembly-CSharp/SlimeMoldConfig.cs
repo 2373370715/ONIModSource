@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SlimeMoldConfig : IOreConfig
 {
-		public SimHashes ElementID
+			public SimHashes ElementID
 	{
 		get
 		{
@@ -11,7 +11,7 @@ public class SlimeMoldConfig : IOreConfig
 		}
 	}
 
-		public SimHashes SublimeElementID
+			public SimHashes SublimeElementID
 	{
 		get
 		{
@@ -19,12 +19,12 @@ public class SlimeMoldConfig : IOreConfig
 		}
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateSolidOreEntity(this.ElementID, null);
 		Sublimates sublimates = gameObject.AddOrGet<Sublimates>();

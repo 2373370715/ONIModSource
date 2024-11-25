@@ -1,6 +1,6 @@
 ﻿using System;
 
-
+namespace RsTransferPort;
 
 public abstract class SingleManager<T> where T : class {
     protected static T _instance;

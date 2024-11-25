@@ -2,9 +2,9 @@
 
 public struct DiseaseHeader
 {
-	public PrimaryElement primaryElement;
+		public PrimaryElement primaryElement;
 
-	public int diseaseCount;
+		public int diseaseCount;
 
-	public byte diseaseIdx;
+		public byte diseaseIdx;
 }

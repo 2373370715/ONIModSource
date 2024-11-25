@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ClusterMapBallisticAnimator : GameStateMachine<ClusterMapBallisticAnimator, ClusterMapBallisticAnimator.StatesInstance, ClusterMapVisualizer>
 {
-	public override void InitializeStates(out StateMachine.BaseState defaultState)
+		public override void InitializeStates(out StateMachine.BaseState defaultState)
 	{
 		defaultState = this.moving;
 		this.root.Target(this.entityTarget).TagTransition(GameTags.BallisticEntityLaunching, this.launching, false).TagTransition(GameTags.BallisticEntityLanding, this.landing, false).TagTransition(GameTags.BallisticEntityMoving, this.moving, false);
@@ -21,28 +21,28 @@ public class ClusterMapBallisticAnimator : GameStateMachine<ClusterMapBallisticA
 		});
 	}
 
-	public StateMachine<ClusterMapBallisticAnimator, ClusterMapBallisticAnimator.StatesInstance, ClusterMapVisualizer, object>.TargetParameter entityTarget;
+		public StateMachine<ClusterMapBallisticAnimator, ClusterMapBallisticAnimator.StatesInstance, ClusterMapVisualizer, object>.TargetParameter entityTarget;
 
-	public GameStateMachine<ClusterMapBallisticAnimator, ClusterMapBallisticAnimator.StatesInstance, ClusterMapVisualizer, object>.State launching;
+		public GameStateMachine<ClusterMapBallisticAnimator, ClusterMapBallisticAnimator.StatesInstance, ClusterMapVisualizer, object>.State launching;
 
-	public GameStateMachine<ClusterMapBallisticAnimator, ClusterMapBallisticAnimator.StatesInstance, ClusterMapVisualizer, object>.State moving;
+		public GameStateMachine<ClusterMapBallisticAnimator, ClusterMapBallisticAnimator.StatesInstance, ClusterMapVisualizer, object>.State moving;
 
-	public GameStateMachine<ClusterMapBallisticAnimator, ClusterMapBallisticAnimator.StatesInstance, ClusterMapVisualizer, object>.State landing;
+		public GameStateMachine<ClusterMapBallisticAnimator, ClusterMapBallisticAnimator.StatesInstance, ClusterMapVisualizer, object>.State landing;
 
-	public class StatesInstance : GameStateMachine<ClusterMapBallisticAnimator, ClusterMapBallisticAnimator.StatesInstance, ClusterMapVisualizer, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ClusterMapBallisticAnimator, ClusterMapBallisticAnimator.StatesInstance, ClusterMapVisualizer, object>.GameInstance
 	{
-		public StatesInstance(ClusterMapVisualizer master, ClusterGridEntity entity) : base(master)
+				public StatesInstance(ClusterMapVisualizer master, ClusterGridEntity entity) : base(master)
 		{
 			this.entity = entity;
 			base.sm.entityTarget.Set(entity, this);
 		}
 
-		public void PlayVisAnim(string animName, KAnim.PlayMode playMode)
+				public void PlayVisAnim(string animName, KAnim.PlayMode playMode)
 		{
 			base.GetComponent<ClusterMapVisualizer>().PlayAnim(animName, playMode);
 		}
 
-		public void ToggleVisAnim(bool on)
+				public void ToggleVisAnim(bool on)
 		{
 			ClusterMapVisualizer component = base.GetComponent<ClusterMapVisualizer>();
 			if (!on)
@@ -51,7 +51,7 @@ public class ClusterMapBallisticAnimator : GameStateMachine<ClusterMapBallisticA
 			}
 		}
 
-		public void SubscribeOnVisAnimComplete(Action<object> action)
+				public void SubscribeOnVisAnimComplete(Action<object> action)
 		{
 			ClusterMapVisualizer component = base.GetComponent<ClusterMapVisualizer>();
 			this.UnsubscribeOnVisAnimComplete();
@@ -59,7 +59,7 @@ public class ClusterMapBallisticAnimator : GameStateMachine<ClusterMapBallisticA
 			this.animCompleteHandle = this.animCompleteSubscriber.Subscribe(-1061186183, action);
 		}
 
-		public void UnsubscribeOnVisAnimComplete()
+				public void UnsubscribeOnVisAnimComplete()
 		{
 			if (this.animCompleteHandle != -1)
 			{
@@ -69,16 +69,16 @@ public class ClusterMapBallisticAnimator : GameStateMachine<ClusterMapBallisticA
 			}
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.OnCleanUp();
 			this.UnsubscribeOnVisAnimComplete();
 		}
 
-		public ClusterGridEntity entity;
+				public ClusterGridEntity entity;
 
-		private int animCompleteHandle = -1;
+				private int animCompleteHandle = -1;
 
-		private GameObject animCompleteSubscriber;
+				private GameObject animCompleteSubscriber;
 	}
 }

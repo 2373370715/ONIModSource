@@ -5,234 +5,297 @@ using KSerialization;
 using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/Operational")]
-public class Operational : KMonoBehaviour {
-    public enum State {
-        Operational,
-        Functional,
-        Active,
-        None
-    }
+public class Operational : KMonoBehaviour
+{
+				public bool IsFunctional { get; private set; }
 
-    private static readonly EventSystem.IntraObjectHandler<Operational> OnNewBuildingDelegate
-        = new EventSystem.IntraObjectHandler<Operational>(delegate(Operational component, object data) {
-                                                              component.OnNewBuilding(data);
-                                                          });
+				public bool IsOperational { get; private set; }
 
-    [Serialize]
-    public float activeStartTime;
+				public bool IsActive { get; private set; }
 
-    [Serialize]
-    private float activeTime;
+		[OnSerializing]
+	private void OnSerializing()
+	{
+		this.AddTimeData(this.IsActive);
+		this.activeStartTime = GameClock.Instance.GetTime();
+		this.inactiveStartTime = GameClock.Instance.GetTime();
+	}
 
-    public Dictionary<Flag, bool> Flags = new Dictionary<Flag, bool>();
+		protected override void OnPrefabInit()
+	{
+		this.UpdateFunctional();
+		this.UpdateOperational();
+		base.Subscribe<Operational>(-1661515756, Operational.OnNewBuildingDelegate);
+		GameClock.Instance.Subscribe(631075836, new Action<object>(this.OnNewDay));
+	}
 
-    [Serialize]
-    public float inactiveStartTime;
+		public void OnNewBuilding(object data)
+	{
+		BuildingComplete component = base.GetComponent<BuildingComplete>();
+		if (component.creationTime > 0f)
+		{
+			this.inactiveStartTime = component.creationTime;
+			this.activeStartTime = component.creationTime;
+		}
+	}
 
-    [Serialize]
-    private float inactiveTime;
+		public bool IsOperationalType(Operational.Flag.Type type)
+	{
+		if (type == Operational.Flag.Type.Functional)
+		{
+			return this.IsFunctional;
+		}
+		return this.IsOperational;
+	}
 
-    private readonly int MAX_DATA_POINTS = 5;
+		public void SetFlag(Operational.Flag flag, bool value)
+	{
+		bool flag2 = false;
+		if (this.Flags.TryGetValue(flag, out flag2))
+		{
+			if (flag2 != value)
+			{
+				this.Flags[flag] = value;
+				base.Trigger(187661686, flag);
+			}
+		}
+		else
+		{
+			this.Flags[flag] = value;
+			base.Trigger(187661686, flag);
+		}
+		if (flag.FlagType == Operational.Flag.Type.Functional && value != this.IsFunctional)
+		{
+			this.UpdateFunctional();
+		}
+		if (value != this.IsOperational)
+		{
+			this.UpdateOperational();
+		}
+	}
 
-    [Serialize]
-    private readonly List<float> uptimeData = new List<float>();
+		public bool GetFlag(Operational.Flag flag)
+	{
+		bool result = false;
+		this.Flags.TryGetValue(flag, out result);
+		return result;
+	}
 
-    public bool IsFunctional  { get; private set; }
-    public bool IsOperational { get; private set; }
-    public bool IsActive      { get; private set; }
+		private void UpdateFunctional()
+	{
+		bool isFunctional = true;
+		foreach (KeyValuePair<Operational.Flag, bool> keyValuePair in this.Flags)
+		{
+			if (keyValuePair.Key.FlagType == Operational.Flag.Type.Functional && !keyValuePair.Value)
+			{
+				isFunctional = false;
+				break;
+			}
+		}
+		this.IsFunctional = isFunctional;
+		base.Trigger(-1852328367, this.IsFunctional);
+	}
 
-    [OnSerializing]
-    private void OnSerializing() {
-        AddTimeData(IsActive);
-        activeStartTime   = GameClock.Instance.GetTime();
-        inactiveStartTime = GameClock.Instance.GetTime();
-    }
+		private void UpdateOperational()
+	{
+		Dictionary<Operational.Flag, bool>.Enumerator enumerator = this.Flags.GetEnumerator();
+		bool flag = true;
+		while (enumerator.MoveNext())
+		{
+			KeyValuePair<Operational.Flag, bool> keyValuePair = enumerator.Current;
+			if (!keyValuePair.Value)
+			{
+				flag = false;
+				break;
+			}
+		}
+		if (flag != this.IsOperational)
+		{
+			this.IsOperational = flag;
+			if (!this.IsOperational)
+			{
+				this.SetActive(false, false);
+			}
+			if (this.IsOperational)
+			{
+				base.GetComponent<KPrefabID>().AddTag(GameTags.Operational, false);
+			}
+			else
+			{
+				base.GetComponent<KPrefabID>().RemoveTag(GameTags.Operational);
+			}
+			base.Trigger(-592767678, this.IsOperational);
+			Game.Instance.Trigger(-809948329, base.gameObject);
+		}
+	}
 
-    protected override void OnPrefabInit() {
-        UpdateFunctional();
-        UpdateOperational();
-        Subscribe(-1661515756, OnNewBuildingDelegate);
-        GameClock.Instance.Subscribe(631075836, OnNewDay);
-    }
+		public void SetActive(bool value, bool force_ignore = false)
+	{
+		if (this.IsActive != value)
+		{
+			this.AddTimeData(value);
+			base.Trigger(824508782, this);
+			Game.Instance.Trigger(-809948329, base.gameObject);
+		}
+	}
 
-    public void OnNewBuilding(object data) {
-        var component = GetComponent<BuildingComplete>();
-        if (component.creationTime > 0f) {
-            inactiveStartTime = component.creationTime;
-            activeStartTime   = component.creationTime;
-        }
-    }
+		private void AddTimeData(bool value)
+	{
+		float num = this.IsActive ? this.activeStartTime : this.inactiveStartTime;
+		float time = GameClock.Instance.GetTime();
+		float num2 = time - num;
+		if (this.IsActive)
+		{
+			this.activeTime += num2;
+		}
+		else
+		{
+			this.inactiveTime += num2;
+		}
+		this.IsActive = value;
+		if (this.IsActive)
+		{
+			this.activeStartTime = time;
+			return;
+		}
+		this.inactiveStartTime = time;
+	}
 
-    public bool IsOperationalType(Flag.Type type) {
-        if (type == Flag.Type.Functional) return IsFunctional;
+		public void OnNewDay(object data)
+	{
+		this.AddTimeData(this.IsActive);
+		this.uptimeData.Add(this.activeTime / 600f);
+		while (this.uptimeData.Count > this.MAX_DATA_POINTS)
+		{
+			this.uptimeData.RemoveAt(0);
+		}
+		this.activeTime = 0f;
+		this.inactiveTime = 0f;
+	}
 
-        return IsOperational;
-    }
+		public float GetCurrentCycleUptime()
+	{
+		if (this.IsActive)
+		{
+			float num = this.IsActive ? this.activeStartTime : this.inactiveStartTime;
+			float num2 = GameClock.Instance.GetTime() - num;
+			return (this.activeTime + num2) / GameClock.Instance.GetTimeSinceStartOfCycle();
+		}
+		return this.activeTime / GameClock.Instance.GetTimeSinceStartOfCycle();
+	}
 
-    public void SetFlag(Flag flag, bool value) {
-        var flag2 = false;
-        if (Flags.TryGetValue(flag, out flag2)) {
-            if (flag2 != value) {
-                Flags[flag] = value;
-                Trigger(187661686, flag);
-            }
-        } else {
-            Flags[flag] = value;
-            Trigger(187661686, flag);
-        }
+		public float GetLastCycleUptime()
+	{
+		if (this.uptimeData.Count > 0)
+		{
+			return this.uptimeData[this.uptimeData.Count - 1];
+		}
+		return 0f;
+	}
 
-        if (flag.FlagType == Flag.Type.Functional && value != IsFunctional) UpdateFunctional();
-        if (value != IsOperational) UpdateOperational();
-    }
+		public float GetUptimeOverCycles(int num_cycles)
+	{
+		if (this.uptimeData.Count > 0)
+		{
+			int num = Mathf.Min(this.uptimeData.Count, num_cycles);
+			float num2 = 0f;
+			for (int i = num - 1; i >= 0; i--)
+			{
+				num2 += this.uptimeData[i];
+			}
+			return num2 / (float)num;
+		}
+		return 0f;
+	}
 
-    public bool GetFlag(Flag flag) {
-        var result = false;
-        Flags.TryGetValue(flag, out result);
-        return result;
-    }
+		public bool MeetsRequirements(Operational.State stateRequirement)
+	{
+		switch (stateRequirement)
+		{
+		case Operational.State.Operational:
+			return this.IsOperational;
+		case Operational.State.Functional:
+			return this.IsFunctional;
+		case Operational.State.Active:
+			return this.IsActive;
+		}
+		return true;
+	}
 
-    private void UpdateFunctional() {
-        var isFunctional = true;
-        foreach (var keyValuePair in Flags)
-            if (keyValuePair.Key.FlagType == Flag.Type.Functional && !keyValuePair.Value) {
-                isFunctional = false;
-                break;
-            }
+		public static GameHashes GetEventForState(Operational.State state)
+	{
+		if (state == Operational.State.Operational)
+		{
+			return GameHashes.OperationalChanged;
+		}
+		if (state == Operational.State.Functional)
+		{
+			return GameHashes.FunctionalChanged;
+		}
+		return GameHashes.ActiveChanged;
+	}
 
-        IsFunctional = isFunctional;
-        Trigger(-1852328367, IsFunctional);
-    }
+		[Serialize]
+	public float inactiveStartTime;
 
-    private void UpdateOperational() {
-        var enumerator = Flags.GetEnumerator();
-        var flag       = true;
-        while (enumerator.MoveNext()) {
-            var keyValuePair = enumerator.Current;
-            if (!keyValuePair.Value) {
-                flag = false;
-                break;
-            }
-        }
+		[Serialize]
+	public float activeStartTime;
 
-        if (flag != IsOperational) {
-            IsOperational = flag;
-            if (!IsOperational) SetActive(false);
-            if (IsOperational)
-                GetComponent<KPrefabID>().AddTag(GameTags.Operational);
-            else
-                GetComponent<KPrefabID>().RemoveTag(GameTags.Operational);
+		[Serialize]
+	private List<float> uptimeData = new List<float>();
 
-            Trigger(-592767678, IsOperational);
-            Game.Instance.Trigger(-809948329, gameObject);
-        }
-    }
+		[Serialize]
+	private float activeTime;
 
-    public void SetActive(bool value, bool force_ignore = false) {
-        if (IsActive != value) {
-            AddTimeData(value);
-            Trigger(824508782, this);
-            Game.Instance.Trigger(-809948329, gameObject);
-        }
-    }
+		[Serialize]
+	private float inactiveTime;
 
-    private void AddTimeData(bool value) {
-        var num  = IsActive ? activeStartTime : inactiveStartTime;
-        var time = GameClock.Instance.GetTime();
-        var num2 = time - num;
-        if (IsActive)
-            activeTime += num2;
-        else
-            inactiveTime += num2;
+		private int MAX_DATA_POINTS = 5;
 
-        IsActive = value;
-        if (IsActive) {
-            activeStartTime = time;
-            return;
-        }
+		public Dictionary<Operational.Flag, bool> Flags = new Dictionary<Operational.Flag, bool>();
 
-        inactiveStartTime = time;
-    }
+		private static readonly EventSystem.IntraObjectHandler<Operational> OnNewBuildingDelegate = new EventSystem.IntraObjectHandler<Operational>(delegate(Operational component, object data)
+	{
+		component.OnNewBuilding(data);
+	});
 
-    public void OnNewDay(object data) {
-        AddTimeData(IsActive);
-        uptimeData.Add(activeTime / 600f);
-        while (uptimeData.Count > MAX_DATA_POINTS) uptimeData.RemoveAt(0);
-        activeTime   = 0f;
-        inactiveTime = 0f;
-    }
+		public enum State
+	{
+				Operational,
+				Functional,
+				Active,
+				None
+	}
 
-    public float GetCurrentCycleUptime() {
-        if (IsActive) {
-            var num  = IsActive ? activeStartTime : inactiveStartTime;
-            var num2 = GameClock.Instance.GetTime() - num;
-            return (activeTime + num2) / GameClock.Instance.GetTimeSinceStartOfCycle();
-        }
+		public class Flag
+	{
+				public Flag(string name, Operational.Flag.Type type)
+		{
+			this.Name = name;
+			this.FlagType = type;
+		}
 
-        return activeTime / GameClock.Instance.GetTimeSinceStartOfCycle();
-    }
+				public static Operational.Flag.Type GetFlagType(Operational.State operationalState)
+		{
+			switch (operationalState)
+			{
+			case Operational.State.Operational:
+			case Operational.State.Active:
+				return Operational.Flag.Type.Requirement;
+			case Operational.State.Functional:
+				return Operational.Flag.Type.Functional;
+			}
+			throw new InvalidOperationException("Can not convert NONE state to an Operational Flag Type");
+		}
 
-    public float GetLastCycleUptime() {
-        if (uptimeData.Count > 0) return uptimeData[uptimeData.Count - 1];
+				public string Name;
 
-        return 0f;
-    }
+				public Operational.Flag.Type FlagType;
 
-    public float GetUptimeOverCycles(int num_cycles) {
-        if (uptimeData.Count > 0) {
-            var num                                 = Mathf.Min(uptimeData.Count, num_cycles);
-            var num2                                = 0f;
-            for (var i = num - 1; i >= 0; i--) num2 += uptimeData[i];
-            return num2 / num;
-        }
-
-        return 0f;
-    }
-
-    public bool MeetsRequirements(State stateRequirement) {
-        switch (stateRequirement) {
-            case State.Operational:
-                return IsOperational;
-            case State.Functional:
-                return IsFunctional;
-            case State.Active:
-                return IsActive;
-        }
-
-        return true;
-    }
-
-    public static GameHashes GetEventForState(State state) {
-        if (state == State.Operational) return GameHashes.OperationalChanged;
-
-        if (state == State.Functional) return GameHashes.FunctionalChanged;
-
-        return GameHashes.ActiveChanged;
-    }
-
-    public class Flag {
-        public enum Type {
-            Requirement,
-            Functional
-        }
-
-        public Type   FlagType;
-        public string Name;
-
-        public Flag(string name, Type type) {
-            Name     = name;
-            FlagType = type;
-        }
-
-        public static Type GetFlagType(State operationalState) {
-            switch (operationalState) {
-                case State.Operational:
-                case State.Active:
-                    return Type.Requirement;
-                case State.Functional:
-                    return Type.Functional;
-            }
-
-            throw new InvalidOperationException("Can not convert NONE state to an Operational Flag Type");
-        }
-    }
+				public enum Type
+		{
+						Requirement,
+						Functional
+		}
+	}
 }

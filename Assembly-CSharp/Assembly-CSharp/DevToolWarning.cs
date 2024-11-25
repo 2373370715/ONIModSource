@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class DevToolWarning
 {
-	public DevToolWarning()
+		public DevToolWarning()
 	{
 		this.Name = UI.FRONTEND.DEVTOOLS.TITLE;
 	}
 
-	public void DrawMenuBar()
+		public void DrawMenuBar()
 	{
 		if (ImGui.BeginMainMenuBar())
 		{
@@ -19,7 +19,7 @@ public class DevToolWarning
 		}
 	}
 
-	public void DrawWindow(out bool isOpen)
+		public void DrawWindow(out bool isOpen)
 	{
 		ImGuiWindowFlags flags = ImGuiWindowFlags.None;
 		isOpen = true;
@@ -50,9 +50,9 @@ public class DevToolWarning
 		}
 	}
 
-	private bool showAgain;
+		private bool showAgain;
 
-	public string Name;
+		public string Name;
 
-	public bool ShouldDrawWindow;
+		public bool ShouldDrawWindow;
 }

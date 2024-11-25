@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 [AddComponentMenu("KMonoBehaviour/scripts/GroundRenderer")]
 public class GroundRenderer : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		ShaderReloader.Register(new System.Action(this.OnShadersReloaded));
@@ -22,7 +22,7 @@ public class GroundRenderer : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.size = new Vector2I((Grid.WidthInCells + 16 - 1) / 16, (Grid.HeightInCells + 16 - 1) / 16);
@@ -38,7 +38,7 @@ public class GroundRenderer : KMonoBehaviour
 		}
 	}
 
-	public void Render(Vector2I vis_min, Vector2I vis_max, bool forceVisibleRebuild = false)
+		public void Render(Vector2I vis_min, Vector2I vis_max, bool forceVisibleRebuild = false)
 	{
 		if (!base.enabled)
 		{
@@ -63,12 +63,12 @@ public class GroundRenderer : KMonoBehaviour
 		this.RebuildDirtyChunks();
 	}
 
-	public void RenderAll()
+		public void RenderAll()
 	{
 		this.Render(new Vector2I(0, 0), new Vector2I(this.worldChunks.GetLength(0) * 16, this.worldChunks.GetLength(1) * 16), true);
 	}
 
-	private void RebuildDirtyChunks()
+		private void RebuildDirtyChunks()
 	{
 		for (int i = 0; i < this.dirtyChunks.GetLength(1); i++)
 		{
@@ -83,7 +83,7 @@ public class GroundRenderer : KMonoBehaviour
 		}
 	}
 
-	public void MarkDirty(int cell)
+		public void MarkDirty(int cell)
 	{
 		Vector2I vector2I = Grid.CellToXY(cell);
 		Vector2I vector2I2 = new Vector2I(vector2I.x / 16, vector2I.y / 16);
@@ -126,13 +126,13 @@ public class GroundRenderer : KMonoBehaviour
 		}
 	}
 
-	private Vector2I GetChunkIdx(int cell)
+		private Vector2I GetChunkIdx(int cell)
 	{
 		Vector2I vector2I = Grid.CellToXY(cell);
 		return new Vector2I(vector2I.x / 16, vector2I.y / 16);
 	}
 
-	private GroundMasks.BiomeMaskData GetBiomeMask(SubWorld.ZoneType zone_type)
+		private GroundMasks.BiomeMaskData GetBiomeMask(SubWorld.ZoneType zone_type)
 	{
 		GroundMasks.BiomeMaskData result = null;
 		string key = zone_type.ToString().ToLower();
@@ -140,7 +140,7 @@ public class GroundRenderer : KMonoBehaviour
 		return result;
 	}
 
-	private void InitOpaqueMaterial(Material material, Element element)
+		private void InitOpaqueMaterial(Material material, Element element)
 	{
 		material.name = element.id.ToString() + "_opaque";
 		material.renderQueue = RenderQueues.WorldOpaque;
@@ -153,7 +153,7 @@ public class GroundRenderer : KMonoBehaviour
 		material.SetTexture("_AlphaTestMap", Texture2D.whiteTexture);
 	}
 
-	private void InitAlphaMaterial(Material material, Element element)
+		private void InitAlphaMaterial(Material material, Element element)
 	{
 		material.name = element.id.ToString() + "_alpha";
 		material.renderQueue = RenderQueues.WorldTransparent;
@@ -166,7 +166,7 @@ public class GroundRenderer : KMonoBehaviour
 		material.SetInt("_ZWrite", 0);
 	}
 
-	private void ConfigureMaterialShine(Material material)
+		private void ConfigureMaterialShine(Material material)
 	{
 		if (material.GetTexture("_ShineMask") != null)
 		{
@@ -178,7 +178,7 @@ public class GroundRenderer : KMonoBehaviour
 		material.DisableKeyword("SHINY");
 	}
 
-	[ContextMenu("Reload Shaders")]
+		[ContextMenu("Reload Shaders")]
 	public void OnShadersReloaded()
 	{
 		this.FreeMaterials();
@@ -226,7 +226,7 @@ public class GroundRenderer : KMonoBehaviour
 		}
 	}
 
-	public void FreeResources()
+		public void FreeResources()
 	{
 		this.FreeMaterials();
 		this.elementMaterials.Clear();
@@ -248,7 +248,7 @@ public class GroundRenderer : KMonoBehaviour
 		}
 	}
 
-	private void FreeMaterials()
+		private void FreeMaterials()
 	{
 		foreach (GroundRenderer.Materials materials in this.elementMaterials.Values)
 		{
@@ -258,38 +258,38 @@ public class GroundRenderer : KMonoBehaviour
 		this.elementMaterials.Clear();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GroundMasks masks;
 
-	private GroundMasks.BiomeMaskData[] biomeMasks;
+		private GroundMasks.BiomeMaskData[] biomeMasks;
 
-	private Dictionary<SimHashes, GroundRenderer.Materials> elementMaterials = new Dictionary<SimHashes, GroundRenderer.Materials>();
+		private Dictionary<SimHashes, GroundRenderer.Materials> elementMaterials = new Dictionary<SimHashes, GroundRenderer.Materials>();
 
-	private bool[,] dirtyChunks;
+		private bool[,] dirtyChunks;
 
-	private GroundRenderer.WorldChunk[,] worldChunks;
+		private GroundRenderer.WorldChunk[,] worldChunks;
 
-	private const int ChunkEdgeSize = 16;
+		private const int ChunkEdgeSize = 16;
 
-	private Vector2I size;
+		private Vector2I size;
 
-	[Serializable]
+		[Serializable]
 	private struct Materials
 	{
-		public Materials(Material opaque, Material alpha)
+				public Materials(Material opaque, Material alpha)
 		{
 			this.opaque = opaque;
 			this.alpha = alpha;
 		}
 
-		public Material opaque;
+				public Material opaque;
 
-		public Material alpha;
+				public Material alpha;
 	}
 
-	private class ElementChunk
+		private class ElementChunk
 	{
-		public ElementChunk(SimHashes element, Dictionary<SimHashes, GroundRenderer.Materials> materials)
+				public ElementChunk(SimHashes element, Dictionary<SimHashes, GroundRenderer.Materials> materials)
 		{
 			this.element = element;
 			GroundRenderer.Materials materials2 = materials[element];
@@ -298,32 +298,32 @@ public class GroundRenderer : KMonoBehaviour
 			this.Clear();
 		}
 
-		public void Clear()
+				public void Clear()
 		{
 			this.opaque.Clear();
 			this.alpha.Clear();
 			this.tileCount = 0;
 		}
 
-		public void AddOpaqueQuad(int x, int y, GroundMasks.UVData uvs)
+				public void AddOpaqueQuad(int x, int y, GroundMasks.UVData uvs)
 		{
 			this.opaque.AddQuad(x, y, uvs);
 			this.tileCount++;
 		}
 
-		public void AddAlphaQuad(int x, int y, GroundMasks.UVData uvs)
+				public void AddAlphaQuad(int x, int y, GroundMasks.UVData uvs)
 		{
 			this.alpha.AddQuad(x, y, uvs);
 			this.tileCount++;
 		}
 
-		public void Build()
+				public void Build()
 		{
 			this.opaque.Build();
 			this.alpha.Build();
 		}
 
-		public void Render(int layer, int element_idx)
+				public void Render(int layer, int element_idx)
 		{
 			float num = Grid.GetLayerZ(Grid.SceneLayer.Ground);
 			num -= 0.0001f * (float)element_idx;
@@ -331,7 +331,7 @@ public class GroundRenderer : KMonoBehaviour
 			this.alpha.Render(new Vector3(0f, 0f, num), layer);
 		}
 
-		public void FreeResources()
+				public void FreeResources()
 		{
 			this.alpha.FreeResources();
 			this.opaque.FreeResources();
@@ -339,17 +339,17 @@ public class GroundRenderer : KMonoBehaviour
 			this.opaque = null;
 		}
 
-		public SimHashes element;
+				public SimHashes element;
 
-		private GroundRenderer.ElementChunk.RenderData alpha;
+				private GroundRenderer.ElementChunk.RenderData alpha;
 
-		private GroundRenderer.ElementChunk.RenderData opaque;
+				private GroundRenderer.ElementChunk.RenderData opaque;
 
-		public int tileCount;
+				public int tileCount;
 
-		private class RenderData
+				private class RenderData
 		{
-			public RenderData(Material material)
+						public RenderData(Material material)
 			{
 				this.material = material;
 				this.mesh = new Mesh();
@@ -360,7 +360,7 @@ public class GroundRenderer : KMonoBehaviour
 				this.indices = new List<int>();
 			}
 
-			public void ClearMesh()
+						public void ClearMesh()
 			{
 				if (this.mesh != null)
 				{
@@ -370,7 +370,7 @@ public class GroundRenderer : KMonoBehaviour
 				}
 			}
 
-			public void Clear()
+						public void Clear()
 			{
 				if (this.mesh != null)
 				{
@@ -390,7 +390,7 @@ public class GroundRenderer : KMonoBehaviour
 				}
 			}
 
-			public void FreeResources()
+						public void FreeResources()
 			{
 				this.ClearMesh();
 				this.Clear();
@@ -400,14 +400,14 @@ public class GroundRenderer : KMonoBehaviour
 				this.material = null;
 			}
 
-			public void Build()
+						public void Build()
 			{
 				this.mesh.SetVertices(this.pos);
 				this.mesh.SetUVs(0, this.uv);
 				this.mesh.SetTriangles(this.indices, 0);
 			}
 
-			public void AddQuad(int x, int y, GroundMasks.UVData uvs)
+						public void AddQuad(int x, int y, GroundMasks.UVData uvs)
 			{
 				int count = this.pos.Count;
 				this.indices.Add(count);
@@ -426,7 +426,7 @@ public class GroundRenderer : KMonoBehaviour
 				this.uv.Add(uvs.tr);
 			}
 
-			public void Render(Vector3 position, int layer)
+						public void Render(Vector3 position, int layer)
 			{
 				if (this.pos.Count != 0)
 				{
@@ -434,33 +434,33 @@ public class GroundRenderer : KMonoBehaviour
 				}
 			}
 
-			public Material material;
+						public Material material;
 
-			public Mesh mesh;
+						public Mesh mesh;
 
-			public List<Vector3> pos;
+						public List<Vector3> pos;
 
-			public List<Vector2> uv;
+						public List<Vector2> uv;
 
-			public List<int> indices;
+						public List<int> indices;
 		}
 	}
 
-	private struct WorldChunk
+		private struct WorldChunk
 	{
-		public WorldChunk(int x, int y)
+				public WorldChunk(int x, int y)
 		{
 			this.chunkX = x;
 			this.chunkY = y;
 			this.elementChunks = new List<GroundRenderer.ElementChunk>();
 		}
 
-		public void Clear()
+				public void Clear()
 		{
 			this.elementChunks.Clear();
 		}
 
-		private static void InsertSorted(Element element, Element[] array, int size)
+				private static void InsertSorted(Element element, Element[] array, int size)
 		{
 			int id = (int)element.id;
 			for (int i = 0; i < size; i++)
@@ -476,7 +476,7 @@ public class GroundRenderer : KMonoBehaviour
 			array[size] = element;
 		}
 
-		public void Rebuild(GroundMasks.BiomeMaskData[] biomeMasks, Dictionary<SimHashes, GroundRenderer.Materials> materials)
+				public void Rebuild(GroundMasks.BiomeMaskData[] biomeMasks, Dictionary<SimHashes, GroundRenderer.Materials> materials)
 		{
 			foreach (GroundRenderer.ElementChunk elementChunk in this.elementChunks)
 			{
@@ -561,7 +561,7 @@ public class GroundRenderer : KMonoBehaviour
 			}
 		}
 
-		private GroundRenderer.ElementChunk GetElementChunk(SimHashes elementID, Dictionary<SimHashes, GroundRenderer.Materials> materials)
+				private GroundRenderer.ElementChunk GetElementChunk(SimHashes elementID, Dictionary<SimHashes, GroundRenderer.Materials> materials)
 		{
 			GroundRenderer.ElementChunk elementChunk = null;
 			for (int i = 0; i < this.elementChunks.Count; i++)
@@ -580,7 +580,7 @@ public class GroundRenderer : KMonoBehaviour
 			return elementChunk;
 		}
 
-		private static int GetBiomeIdx(int cell)
+				private static int GetBiomeIdx(int cell)
 		{
 			if (!Grid.IsValidCell(cell))
 			{
@@ -594,12 +594,12 @@ public class GroundRenderer : KMonoBehaviour
 			return (int)result;
 		}
 
-		private static float GetStaticRandom(int x, int y)
+				private static float GetStaticRandom(int x, int y)
 		{
 			return PerlinSimplexNoise.noise((float)x * GroundRenderer.WorldChunk.NoiseScale.x, (float)y * GroundRenderer.WorldChunk.NoiseScale.y);
 		}
 
-		public void Render(int layer)
+				public void Render(int layer)
 		{
 			for (int i = 0; i < this.elementChunks.Count; i++)
 			{
@@ -608,7 +608,7 @@ public class GroundRenderer : KMonoBehaviour
 			}
 		}
 
-		public void FreeResources()
+				public void FreeResources()
 		{
 			foreach (GroundRenderer.ElementChunk elementChunk in this.elementChunks)
 			{
@@ -618,18 +618,18 @@ public class GroundRenderer : KMonoBehaviour
 			this.elementChunks = null;
 		}
 
-		public readonly int chunkX;
+				public readonly int chunkX;
 
-		public readonly int chunkY;
+				public readonly int chunkY;
 
-		private List<GroundRenderer.ElementChunk> elementChunks;
+				private List<GroundRenderer.ElementChunk> elementChunks;
 
-		private static Element[] elements = new Element[4];
+				private static Element[] elements = new Element[4];
 
-		private static Element[] uniqueElements = new Element[4];
+				private static Element[] uniqueElements = new Element[4];
 
-		private static int[] substances = new int[4];
+				private static int[] substances = new int[4];
 
-		private static Vector2 NoiseScale = new Vector3(1f, 1f);
+				private static Vector2 NoiseScale = new Vector3(1f, 1f);
 	}
 }

@@ -4,11 +4,11 @@ using System.Collections.ObjectModel;
 
 public class AssignmentGroup : IAssignableIdentity
 {
-			public string id { get; private set; }
+				public string id { get; private set; }
 
-			public string name { get; private set; }
+				public string name { get; private set; }
 
-	public AssignmentGroup(string id, IAssignableIdentity[] members, string name)
+		public AssignmentGroup(string id, IAssignableIdentity[] members, string name)
 	{
 		this.id = id;
 		this.name = name;
@@ -23,7 +23,7 @@ public class AssignmentGroup : IAssignableIdentity
 		}
 	}
 
-	public void AddMember(IAssignableIdentity member)
+		public void AddMember(IAssignableIdentity member)
 	{
 		if (!this.members.Contains(member))
 		{
@@ -32,33 +32,33 @@ public class AssignmentGroup : IAssignableIdentity
 		Game.Instance.Trigger(-1123234494, this);
 	}
 
-	public void RemoveMember(IAssignableIdentity member)
+		public void RemoveMember(IAssignableIdentity member)
 	{
 		this.members.Remove(member);
 		Game.Instance.Trigger(-1123234494, this);
 	}
 
-	public string GetProperName()
+		public string GetProperName()
 	{
 		return this.name;
 	}
 
-	public bool HasMember(IAssignableIdentity member)
+		public bool HasMember(IAssignableIdentity member)
 	{
 		return this.members.Contains(member);
 	}
 
-	public bool IsNull()
+		public bool IsNull()
 	{
 		return false;
 	}
 
-	public ReadOnlyCollection<IAssignableIdentity> GetMembers()
+		public ReadOnlyCollection<IAssignableIdentity> GetMembers()
 	{
 		return this.members.AsReadOnly();
 	}
 
-	public List<Ownables> GetOwners()
+		public List<Ownables> GetOwners()
 	{
 		this.current_owners.Clear();
 		foreach (IAssignableIdentity assignableIdentity in this.members)
@@ -68,7 +68,7 @@ public class AssignmentGroup : IAssignableIdentity
 		return this.current_owners;
 	}
 
-	public Ownables GetSoleOwner()
+		public Ownables GetSoleOwner()
 	{
 		if (this.members.Count == 1)
 		{
@@ -81,7 +81,7 @@ public class AssignmentGroup : IAssignableIdentity
 		return null;
 	}
 
-	public bool HasOwner(Assignables owner)
+		public bool HasOwner(Assignables owner)
 	{
 		using (List<IAssignableIdentity>.Enumerator enumerator = this.members.GetEnumerator())
 		{
@@ -96,7 +96,7 @@ public class AssignmentGroup : IAssignableIdentity
 		return false;
 	}
 
-	public int NumOwners()
+		public int NumOwners()
 	{
 		int num = 0;
 		foreach (IAssignableIdentity assignableIdentity in this.members)
@@ -106,7 +106,7 @@ public class AssignmentGroup : IAssignableIdentity
 		return num;
 	}
 
-	private List<IAssignableIdentity> members = new List<IAssignableIdentity>();
+		private List<IAssignableIdentity> members = new List<IAssignableIdentity>();
 
-	public List<Ownables> current_owners = new List<Ownables>();
+		public List<Ownables> current_owners = new List<Ownables>();
 }

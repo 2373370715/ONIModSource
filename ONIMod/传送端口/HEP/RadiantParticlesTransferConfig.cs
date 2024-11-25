@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using RsTransferPort;
 using TUNING;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 
 public class RadiantParticlesTransferSenderConfig : RadiantParticlesTransferConfig {
     public const  string ID   = "RsRadiantParticlesTransferSender";
@@ -48,7 +47,7 @@ public abstract class RadiantParticlesTransferConfig : IBuildingConfig {
                                            MYSTRINGS.BUILDINGS.PREFABS.RSRADIANTPARTICLESTRANSFERSENDER.LOGIC_PORT,
                                            MYSTRINGS.BUILDINGS.PREFABS.RSRADIANTPARTICLESTRANSFERSENDER.LOGIC_PORT_ACTIVE,
                                            MYSTRINGS.BUILDINGS.PREFABS.RSRADIANTPARTICLESTRANSFERSENDER
-                                                    .LOGIC_PORT_INACTIVE)
+                                                  .LOGIC_PORT_INACTIVE)
             };
         } else {
             buildingDef.UseHighEnergyParticleOutputPort = true;
@@ -58,9 +57,9 @@ public abstract class RadiantParticlesTransferConfig : IBuildingConfig {
                                           new CellOffset(0, 0),
                                           MYSTRINGS.BUILDINGS.PREFABS.RSRADIANTPARTICLESTRANSFERRECEIVER.LOGIC_PORT,
                                           MYSTRINGS.BUILDINGS.PREFABS.RSRADIANTPARTICLESTRANSFERRECEIVER
-                                                   .LOGIC_PORT_ACTIVE,
+                                                 .LOGIC_PORT_ACTIVE,
                                           MYSTRINGS.BUILDINGS.PREFABS.RSRADIANTPARTICLESTRANSFERRECEIVER
-                                                   .LOGIC_PORT_INACTIVE)
+                                                 .LOGIC_PORT_INACTIVE)
             };
         }
 

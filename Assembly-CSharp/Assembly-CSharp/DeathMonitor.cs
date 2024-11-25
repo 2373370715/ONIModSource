@@ -3,7 +3,7 @@ using STRINGS;
 
 public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.alive;
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -49,39 +49,39 @@ public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance
 		}).PlayAnim("idle_dead", KAnim.PlayMode.Loop);
 	}
 
-	public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State alive;
+		public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State alive;
 
-	public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State dying_duplicant;
+		public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State dying_duplicant;
 
-	public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State dying_creature;
+		public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State dying_creature;
 
-	public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State die;
+		public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State die;
 
-	public DeathMonitor.Dead dead;
+		public DeathMonitor.Dead dead;
 
-	public DeathMonitor.Dead dead_creature;
+		public DeathMonitor.Dead dead_creature;
 
-	public StateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.ResourceParameter<Death> death;
+		public StateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.ResourceParameter<Death> death;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public class Dead : GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State
+		public class Dead : GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State
 	{
-		public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State ground;
+				public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State ground;
 
-		public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State carried;
+				public GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.State carried;
 	}
 
-	public new class Instance : GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<DeathMonitor, DeathMonitor.Instance, IStateMachineTarget, DeathMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, DeathMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, DeathMonitor.Def def) : base(master, def)
 		{
 			this.isDuplicant = base.GetComponent<MinionIdentity>();
 		}
 
-				public bool IsDuplicant
+						public bool IsDuplicant
 		{
 			get
 			{
@@ -89,12 +89,12 @@ public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance
 			}
 		}
 
-		public void Kill(Death death)
+				public void Kill(Death death)
 		{
 			base.sm.death.Set(death, base.smi, false);
 		}
 
-		public void PickedUp(object data = null)
+				public void PickedUp(object data = null)
 		{
 			if (data is Storage || (data != null && (bool)data))
 			{
@@ -102,12 +102,12 @@ public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance
 			}
 		}
 
-		public bool IsDead()
+				public bool IsDead()
 		{
 			return base.smi.IsInsideState(base.smi.sm.dead);
 		}
 
-		public void ApplyDeath()
+				public void ApplyDeath()
 		{
 			if (this.isDuplicant)
 			{
@@ -124,6 +124,6 @@ public class DeathMonitor : GameStateMachine<DeathMonitor, DeathMonitor.Instance
 			base.GetComponent<KPrefabID>().AddTag(GameTags.Corpse, false);
 		}
 
-		private bool isDuplicant;
+				private bool isDuplicant;
 	}
 }

@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/CO2Manager")]
 public class CO2Manager : KMonoBehaviour, ISim33ms
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		CO2Manager.instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		CO2Manager.instance = this;
 		this.prefab.gameObject.SetActive(false);
@@ -19,21 +19,21 @@ public class CO2Manager : KMonoBehaviour, ISim33ms
 		this.breathPool = new GameObjectPool(new Func<GameObject>(this.InstantiateBreath), 16);
 	}
 
-	private GameObject InstantiateCO2()
+		private GameObject InstantiateCO2()
 	{
 		GameObject gameObject = GameUtil.KInstantiate(this.prefab, Grid.SceneLayer.Front, null, 0);
 		gameObject.SetActive(false);
 		return gameObject;
 	}
 
-	private GameObject InstantiateBreath()
+		private GameObject InstantiateBreath()
 	{
 		GameObject gameObject = GameUtil.KInstantiate(this.breathPrefab, Grid.SceneLayer.Front, null, 0);
 		gameObject.SetActive(false);
 		return gameObject;
 	}
 
-	public void Sim33ms(float dt)
+		public void Sim33ms(float dt)
 	{
 		Vector2I vector2I = default(Vector2I);
 		Vector2I vector2I2 = default(Vector2I);
@@ -118,7 +118,7 @@ public class CO2Manager : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	public void SpawnCO2(Vector3 position, float mass, float temperature, bool flip)
+		public void SpawnCO2(Vector3 position, float mass, float temperature, bool flip)
 	{
 		position.z = Grid.GetLayerZ(Grid.SceneLayer.Front);
 		GameObject gameObject = this.co2Pool.GetInstance();
@@ -137,7 +137,7 @@ public class CO2Manager : KMonoBehaviour, ISim33ms
 		this.co2Items.Add(component);
 	}
 
-	public void SpawnBreath(Vector3 position, float mass, float temperature, bool flip)
+		public void SpawnBreath(Vector3 position, float mass, float temperature, bool flip)
 	{
 		position.z = Grid.GetLayerZ(Grid.SceneLayer.Front);
 		this.SpawnCO2(position, mass, temperature, flip);
@@ -151,37 +151,37 @@ public class CO2Manager : KMonoBehaviour, ISim33ms
 		component.Play("breath", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	private void OnDestroyCO2(GameObject co2_go)
+		private void OnDestroyCO2(GameObject co2_go)
 	{
 		co2_go.SetActive(false);
 		this.co2Pool.ReleaseInstance(co2_go);
 	}
 
-	private void OnDestroyBreath(GameObject breath_go)
+		private void OnDestroyBreath(GameObject breath_go)
 	{
 		breath_go.SetActive(false);
 		this.breathPool.ReleaseInstance(breath_go);
 	}
 
-	private const float CO2Lifetime = 3f;
+		private const float CO2Lifetime = 3f;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector3 acceleration;
 
-	[SerializeField]
+		[SerializeField]
 	private CO2 prefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject breathPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private Color tintColour;
 
-	private List<CO2> co2Items = new List<CO2>();
+		private List<CO2> co2Items = new List<CO2>();
 
-	private GameObjectPool breathPool;
+		private GameObjectPool breathPool;
 
-	private GameObjectPool co2Pool;
+		private GameObjectPool co2Pool;
 
-	public static CO2Manager instance;
+		public static CO2Manager instance;
 }

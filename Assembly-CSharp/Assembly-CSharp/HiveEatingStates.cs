@@ -5,11 +5,19 @@ using UnityEngine;
 
 public class HiveEatingStates : GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.eating;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
-		this.eating.ToggleStatusItem(CREATURES.STATUSITEMS.HIVE_DIGESTING.NAME, CREATURES.STATUSITEMS.HIVE_DIGESTING.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).DefaultState(this.eating.pre).Enter(delegate(HiveEatingStates.Instance smi)
+		GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.State state = this.eating;
+		string name = CREATURES.STATUSITEMS.HIVE_DIGESTING.NAME;
+		string tooltip = CREATURES.STATUSITEMS.HIVE_DIGESTING.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).DefaultState(this.eating.pre).Enter(delegate(HiveEatingStates.Instance smi)
 		{
 			smi.TurnOn();
 		}).Exit(delegate(HiveEatingStates.Instance smi)
@@ -25,49 +33,49 @@ public class HiveEatingStates : GameStateMachine<HiveEatingStates, HiveEatingSta
 		this.behaviourcomplete.BehaviourComplete(GameTags.Creatures.WantsToEat, false);
 	}
 
-	public HiveEatingStates.EatingStates eating;
+		public HiveEatingStates.EatingStates eating;
 
-	public GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.State behaviourcomplete;
+		public GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.State behaviourcomplete;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Def(Tag consumedOre)
+				public Def(Tag consumedOre)
 		{
 			this.consumedOre = consumedOre;
 		}
 
-		public Tag consumedOre;
+				public Tag consumedOre;
 	}
 
-	public class EatingStates : GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.State
+		public class EatingStates : GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.State
 	{
-		public GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.State pre;
+				public GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.State pre;
 
-		public GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.State loop;
+				public GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.State loop;
 
-		public GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.State pst;
+				public GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.State pst;
 	}
 
-	public new class Instance : GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<HiveEatingStates, HiveEatingStates.Instance, IStateMachineTarget, HiveEatingStates.Def>.GameInstance
 	{
-		public Instance(Chore<HiveEatingStates.Instance> chore, HiveEatingStates.Def def) : base(chore, def)
+				public Instance(Chore<HiveEatingStates.Instance> chore, HiveEatingStates.Def def) : base(chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.WantsToEat);
 		}
 
-		public void TurnOn()
+				public void TurnOn()
 		{
 			this.emitter.emitRads = 600f * this.emitter.emitRate;
 			this.emitter.Refresh();
 		}
 
-		public void TurnOff()
+				public void TurnOff()
 		{
 			this.emitter.emitRads = 0f;
 			this.emitter.Refresh();
 		}
 
-		public void EatOreFromStorage(HiveEatingStates.Instance smi, float dt)
+				public void EatOreFromStorage(HiveEatingStates.Instance smi, float dt)
 		{
 			GameObject gameObject = smi.storage.FindFirst(smi.def.consumedOre);
 			if (!gameObject)
@@ -115,10 +123,10 @@ public class HiveEatingStates : GameStateMachine<HiveEatingStates, HiveEatingSta
 			smi.gameObject.Trigger(-2038961714, caloriesConsumedEvent);
 		}
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public Storage storage;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		private RadiationEmitter emitter;
 	}
 }

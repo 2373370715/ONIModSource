@@ -2,8 +2,8 @@
 
 namespace EventSystem2Syntax
 {
-	internal enum GameHashes
+		internal enum GameHashes
 	{
-		ObjectDestroyed
+				ObjectDestroyed
 	}
 }

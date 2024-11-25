@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 public interface IDispenser
 {
-	List<Tag> DispensedItems();
+		List<Tag> DispensedItems();
 
-	Tag SelectedItem();
+		Tag SelectedItem();
 
-	void SelectItem(Tag tag);
+		void SelectItem(Tag tag);
 
-	void OnOrderDispense();
+		void OnOrderDispense();
 
-	void OnCancelDispense();
+		void OnCancelDispense();
 
-	bool HasOpenChore();
+		bool HasOpenChore();
 
-			event System.Action OnStopWorkEvent;
+				event System.Action OnStopWorkEvent;
 }

@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PinkRockConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = this.ID;
 		string name = STRINGS.CREATURES.SPECIES.PINKROCK.NAME;
@@ -44,13 +44,13 @@ public class PinkRockConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public string ID = "PinkRock";
+		public string ID = "PinkRock";
 }

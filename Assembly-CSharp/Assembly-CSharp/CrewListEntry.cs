@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/CrewListEntry")]
 public class CrewListEntry : KMonoBehaviour, IPointerEnterHandler, IEventSystemHandler, IPointerExitHandler, IPointerClickHandler
 {
-		public MinionIdentity Identity
+			public MinionIdentity Identity
 	{
 		get
 		{
@@ -15,28 +15,28 @@ public class CrewListEntry : KMonoBehaviour, IPointerEnterHandler, IEventSystemH
 		}
 	}
 
-	public void OnPointerEnter(PointerEventData eventData)
+		public void OnPointerEnter(PointerEventData eventData)
 	{
 		this.mouseOver = true;
 		this.BGImage.enabled = true;
 		this.BorderHighlight.color = new Color(0.65882355f, 0.2901961f, 0.4745098f);
 	}
 
-	public void OnPointerExit(PointerEventData eventData)
+		public void OnPointerExit(PointerEventData eventData)
 	{
 		this.mouseOver = false;
 		this.BGImage.enabled = false;
 		this.BorderHighlight.color = new Color(0.8f, 0.8f, 0.8f);
 	}
 
-	public void OnPointerClick(PointerEventData eventData)
+		public void OnPointerClick(PointerEventData eventData)
 	{
 		bool focus = Time.unscaledTime - this.lastClickTime < 0.3f;
 		this.SelectCrewMember(focus);
 		this.lastClickTime = Time.unscaledTime;
 	}
 
-	public virtual void Populate(MinionIdentity _identity)
+		public virtual void Populate(MinionIdentity _identity)
 	{
 		this.identity = _identity;
 		if (this.portrait == null)
@@ -51,11 +51,11 @@ public class CrewListEntry : KMonoBehaviour, IPointerEnterHandler, IEventSystemH
 		this.portrait.SetIdentityObject(_identity, true);
 	}
 
-	public virtual void Refresh()
+		public virtual void Refresh()
 	{
 	}
 
-	public void RefreshCrewPortraitContent()
+		public void RefreshCrewPortraitContent()
 	{
 		if (this.portrait != null)
 		{
@@ -63,12 +63,12 @@ public class CrewListEntry : KMonoBehaviour, IPointerEnterHandler, IEventSystemH
 		}
 	}
 
-	private string seniorityString()
+		private string seniorityString()
 	{
 		return this.identity.GetAttributes().GetProfessionString(true);
 	}
 
-	public void SelectCrewMember(bool focus)
+		public void SelectCrewMember(bool focus)
 	{
 		if (focus)
 		{
@@ -78,19 +78,19 @@ public class CrewListEntry : KMonoBehaviour, IPointerEnterHandler, IEventSystemH
 		SelectTool.Instance.Select(this.identity.GetComponent<KSelectable>(), false);
 	}
 
-	protected MinionIdentity identity;
+		protected MinionIdentity identity;
 
-	protected CrewPortrait portrait;
+		protected CrewPortrait portrait;
 
-	public CrewPortrait PortraitPrefab;
+		public CrewPortrait PortraitPrefab;
 
-	public GameObject crewPortraitParent;
+		public GameObject crewPortraitParent;
 
-	protected bool mouseOver;
+		protected bool mouseOver;
 
-	public Image BorderHighlight;
+		public Image BorderHighlight;
 
-	public Image BGImage;
+		public Image BGImage;
 
-	public float lastClickTime;
+		public float lastClickTime;
 }

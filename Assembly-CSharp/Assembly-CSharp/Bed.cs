@@ -6,13 +6,25 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Bed")]
 public class Bed : Workable, IGameObjectEffectDescriptor, IBasicBuilding
 {
-	protected override void OnPrefabInit()
+		private bool CanSleepOwnablePrecondition(MinionAssignablesProxy worker)
 	{
+		bool result = false;
+		MinionIdentity minionIdentity = worker.target as MinionIdentity;
+		if (minionIdentity != null)
+		{
+			result = (Db.Get().Amounts.Stamina.Lookup(minionIdentity) != null);
+		}
+		return result;
+	}
+
+		protected override void OnPrefabInit()
+	{
+		this.ownable.AddAssignPrecondition(new Func<MinionAssignablesProxy, bool>(this.CanSleepOwnablePrecondition));
 		base.OnPrefabInit();
 		this.showProgressBar = false;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.BasicBuildings.Add(this);
@@ -21,7 +33,7 @@ public class Bed : Workable, IGameObjectEffectDescriptor, IBasicBuilding
 		sleepable.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(sleepable.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(this.OnWorkableEvent));
 	}
 
-	private void OnWorkableEvent(Workable workable, Workable.WorkableEvent workable_event)
+		private void OnWorkableEvent(Workable workable, Workable.WorkableEvent workable_event)
 	{
 		if (workable_event == Workable.WorkableEvent.WorkStarted)
 		{
@@ -34,7 +46,7 @@ public class Bed : Workable, IGameObjectEffectDescriptor, IBasicBuilding
 		}
 	}
 
-	private void AddEffects()
+		private void AddEffects()
 	{
 		this.targetWorker = this.sleepable.worker;
 		if (this.effects != null)
@@ -60,7 +72,7 @@ public class Bed : Workable, IGameObjectEffectDescriptor, IBasicBuilding
 		roomType.TriggerRoomEffects(base.GetComponent<KPrefabID>(), this.targetWorker.GetComponent<Effects>());
 	}
 
-	private void RemoveEffects()
+		private void RemoveEffects()
 	{
 		if (this.targetWorker == null)
 		{
@@ -80,7 +92,7 @@ public class Bed : Workable, IGameObjectEffectDescriptor, IBasicBuilding
 		this.targetWorker = null;
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.effects != null)
@@ -96,7 +108,7 @@ public class Bed : Workable, IGameObjectEffectDescriptor, IBasicBuilding
 		return list;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.BasicBuildings.Remove(this);
@@ -107,14 +119,17 @@ public class Bed : Workable, IGameObjectEffectDescriptor, IBasicBuilding
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
+	private Ownable ownable;
+
+		[MyCmpReq]
 	private Sleepable sleepable;
 
-	private Worker targetWorker;
+		private WorkerBase targetWorker;
 
-	public string[] effects;
+		public string[] effects;
 
-	private static Dictionary<string, string> roomSleepingEffects = new Dictionary<string, string>
+		private static Dictionary<string, string> roomSleepingEffects = new Dictionary<string, string>
 	{
 		{
 			"Barracks",

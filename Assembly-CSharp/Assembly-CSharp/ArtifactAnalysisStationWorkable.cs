@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ArtifactAnalysisStationWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.requiredSkillPerk = Db.Get().SkillPerks.CanStudyArtifact.Id;
@@ -24,32 +24,32 @@ public class ArtifactAnalysisStationWorkable : Workable
 		Components.ArtifactAnalysisStations.Add(this);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.animController = base.GetComponent<KBatchedAnimController>();
 		this.animController.SetSymbolVisiblity("snapTo_artifact", false);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.ArtifactAnalysisStations.Remove(this);
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		this.InitialDisplayStoredArtifact();
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		this.PositionArtifact();
 		return base.OnWorkTick(worker, dt);
 	}
 
-	private void InitialDisplayStoredArtifact()
+		private void InitialDisplayStoredArtifact()
 	{
 		GameObject gameObject = base.GetComponent<Storage>().GetItems()[0];
 		KBatchedAnimController component = gameObject.GetComponent<KBatchedAnimController>();
@@ -65,7 +65,7 @@ public class ArtifactAnalysisStationWorkable : Workable
 		base.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.ArtifactAnalysisAnalyzing, gameObject);
 	}
 
-	private void ReleaseStoredArtifact()
+		private void ReleaseStoredArtifact()
 	{
 		Storage component = base.GetComponent<Storage>();
 		GameObject gameObject = component.GetItems()[0];
@@ -77,7 +77,7 @@ public class ArtifactAnalysisStationWorkable : Workable
 		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.ArtifactAnalysisAnalyzing, gameObject);
 	}
 
-	private void PositionArtifact()
+		private void PositionArtifact()
 	{
 		GameObject gameObject = base.GetComponent<Storage>().GetItems()[0];
 		bool flag;
@@ -86,14 +86,14 @@ public class ArtifactAnalysisStationWorkable : Workable
 		gameObject.transform.SetPosition(position);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		this.ConsumeCharm();
 		this.ReleaseStoredArtifact();
 	}
 
-	private void ConsumeCharm()
+		private void ConsumeCharm()
 	{
 		GameObject gameObject = this.storage.FindFirst(GameTags.CharmedArtifact);
 		DebugUtil.DevAssertArgs(gameObject != null, new object[]
@@ -116,7 +116,7 @@ public class ArtifactAnalysisStationWorkable : Workable
 		}
 	}
 
-	private void YieldPayload(SpaceArtifact artifact)
+		private void YieldPayload(SpaceArtifact artifact)
 	{
 		if (this.nextYeildRoll == -1f)
 		{
@@ -134,21 +134,21 @@ public class ArtifactAnalysisStationWorkable : Workable
 		this.nextYeildRoll = UnityEngine.Random.Range(0f, 1f);
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	public Notifier notifier;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Storage storage;
 
-	[SerializeField]
+		[SerializeField]
 	public Vector3 finishedArtifactDropOffset;
 
-	private Notification notification;
+		private Notification notification;
 
-	public ArtifactAnalysisStation.StatesInstance statesInstance;
+		public ArtifactAnalysisStation.StatesInstance statesInstance;
 
-	private KBatchedAnimController animController;
+		private KBatchedAnimController animController;
 
-	[Serialize]
+		[Serialize]
 	private float nextYeildRoll = -1f;
 }

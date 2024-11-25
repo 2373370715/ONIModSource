@@ -2,39 +2,39 @@
 
 public interface IThresholdSwitch
 {
-			float Threshold { get; set; }
+				float Threshold { get; set; }
 
-			bool ActivateAboveThreshold { get; set; }
+				bool ActivateAboveThreshold { get; set; }
 
-		float CurrentValue { get; }
+			float CurrentValue { get; }
 
-		float RangeMin { get; }
+			float RangeMin { get; }
 
-		float RangeMax { get; }
+			float RangeMax { get; }
 
-	float GetRangeMinInputField();
+		float GetRangeMinInputField();
 
-	float GetRangeMaxInputField();
+		float GetRangeMaxInputField();
 
-		LocString Title { get; }
+			LocString Title { get; }
 
-		LocString ThresholdValueName { get; }
+			LocString ThresholdValueName { get; }
 
-	LocString ThresholdValueUnits();
+		LocString ThresholdValueUnits();
 
-	string Format(float value, bool units);
+		string Format(float value, bool units);
 
-		string AboveToolTip { get; }
+			string AboveToolTip { get; }
 
-		string BelowToolTip { get; }
+			string BelowToolTip { get; }
 
-	float ProcessedSliderValue(float input);
+		float ProcessedSliderValue(float input);
 
-	float ProcessedInputValue(float input);
+		float ProcessedInputValue(float input);
 
-		ThresholdScreenLayoutType LayoutType { get; }
+			ThresholdScreenLayoutType LayoutType { get; }
 
-		int IncrementScale { get; }
+			int IncrementScale { get; }
 
-		NonLinearSlider.Range[] GetRanges { get; }
+			NonLinearSlider.Range[] GetRanges { get; }
 }

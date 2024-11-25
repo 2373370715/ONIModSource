@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class HEPBatteryConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "HEPBattery";
 		int width = 3;
@@ -52,7 +52,7 @@ public class HEPBatteryConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
 		HighEnergyParticleStorage highEnergyParticleStorage = go.AddOrGet<HighEnergyParticleStorage>();
@@ -69,23 +69,23 @@ public class HEPBatteryConfig : IBuildingConfig
 		def.particleDecayRate = 0.5f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "HEPBattery";
+		public const string ID = "HEPBattery";
 
-	public const float MIN_LAUNCH_INTERVAL = 1f;
+		public const float MIN_LAUNCH_INTERVAL = 1f;
 
-	public const int MIN_SLIDER = 0;
+		public const int MIN_SLIDER = 0;
 
-	public const int MAX_SLIDER = 100;
+		public const int MAX_SLIDER = 100;
 
-	public const float HEP_CAPACITY = 1000f;
+		public const float HEP_CAPACITY = 1000f;
 
-	public const float DISABLED_DECAY_RATE = 0.5f;
+		public const float DISABLED_DECAY_RATE = 0.5f;
 
-	public const string STORAGE_PORT_ID = "HEP_STORAGE";
+		public const string STORAGE_PORT_ID = "HEP_STORAGE";
 
-	public const string FIRE_PORT_ID = "HEP_FIRE";
+		public const string FIRE_PORT_ID = "HEP_FIRE";
 }

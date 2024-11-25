@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PowerUseDiagnostic : ColonyDiagnostic
 {
-	public PowerUseDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.POWERUSEDIAGNOSTIC.ALL_NAME)
+		public PowerUseDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.POWERUSEDIAGNOSTIC.ALL_NAME)
 	{
 		this.tracker = TrackerTool.Instance.GetWorldTracker<PowerUseTracker>(worldID);
 		this.trackerSampleCountSeconds = 30f;
@@ -13,7 +13,7 @@ public class PowerUseDiagnostic : ColonyDiagnostic
 		base.AddCriterion("CheckPowerUseChange", new DiagnosticCriterion(UI.COLONY_DIAGNOSTICS.POWERUSEDIAGNOSTIC.CRITERIA.CHECKPOWERUSECHANGE, new Func<ColonyDiagnostic.DiagnosticResult>(this.CheckPowerChange)));
 	}
 
-	private ColonyDiagnostic.DiagnosticResult CheckOverWattage()
+		private ColonyDiagnostic.DiagnosticResult CheckOverWattage()
 	{
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null);
 		result.opinion = ColonyDiagnostic.DiagnosticResult.Opinion.Normal;
@@ -43,7 +43,7 @@ public class PowerUseDiagnostic : ColonyDiagnostic
 		return result;
 	}
 
-	private ColonyDiagnostic.DiagnosticResult CheckPowerChange()
+		private ColonyDiagnostic.DiagnosticResult CheckPowerChange()
 	{
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null);
 		result.opinion = ColonyDiagnostic.DiagnosticResult.Opinion.Normal;
@@ -69,7 +69,7 @@ public class PowerUseDiagnostic : ColonyDiagnostic
 		return result;
 	}
 
-	public override ColonyDiagnostic.DiagnosticResult Evaluate()
+		public override ColonyDiagnostic.DiagnosticResult Evaluate()
 	{
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, base.NO_MINIONS, null);
 		if (ColonyDiagnosticUtility.IgnoreRocketsWithNoCrewRequested(base.worldID, out result))

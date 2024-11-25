@@ -9,20 +9,20 @@ using UnityEngine;
 
 namespace KMod
 {
-	[JsonObject(MemberSerialization.OptIn)]
+		[JsonObject(MemberSerialization.OptIn)]
 	[DebuggerDisplay("{title}")]
 	public class Mod
 	{
-						public Content available_content { get; private set; }
+								public Content available_content { get; private set; }
 
-						[JsonProperty]
+								[JsonProperty]
 		public string staticID { get; private set; }
 
-						public LocString manage_tooltip { get; private set; }
+								public LocString manage_tooltip { get; private set; }
 
-						public System.Action on_managed { get; private set; }
+								public System.Action on_managed { get; private set; }
 
-				public bool is_managed
+						public bool is_managed
 		{
 			get
 			{
@@ -30,7 +30,7 @@ namespace KMod
 			}
 		}
 
-				public string title
+						public string title
 		{
 			get
 			{
@@ -38,11 +38,11 @@ namespace KMod
 			}
 		}
 
-						public string description { get; private set; }
+								public string description { get; private set; }
 
-						public Content loaded_content { get; private set; }
+								public Content loaded_content { get; private set; }
 
-						public IFileSource file_source
+								public IFileSource file_source
 		{
 			get
 			{
@@ -58,14 +58,14 @@ namespace KMod
 			}
 		}
 
-						public bool DevModCrashTriggered { get; private set; }
+								public bool DevModCrashTriggered { get; private set; }
 
-		[JsonConstructor]
+				[JsonConstructor]
 		public Mod()
 		{
 		}
 
-		public void CopyPersistentDataTo(Mod other_mod)
+				public void CopyPersistentDataTo(Mod other_mod)
 		{
 			other_mod.status = this.status;
 			other_mod.enabledForDlc = ((this.enabledForDlc != null) ? new List<string>(this.enabledForDlc) : new List<string>());
@@ -75,7 +75,7 @@ namespace KMod
 			other_mod.reinstall_path = this.reinstall_path;
 		}
 
-		public Mod(Label label, string staticID, string description, IFileSource file_source, LocString manage_tooltip, System.Action on_managed)
+				public Mod(Label label, string staticID, string description, IFileSource file_source, LocString manage_tooltip, System.Action on_managed)
 		{
 			this.label = label;
 			this.status = Mod.Status.NotInstalled;
@@ -89,22 +89,22 @@ namespace KMod
 			this.ScanContent();
 		}
 
-		public bool IsEnabledForActiveDlc()
+				public bool IsEnabledForActiveDlc()
 		{
 			return this.IsEnabledForDlc(DlcManager.GetHighestActiveDlcId());
 		}
 
-		public bool IsEnabledForDlc(string dlcId)
+				public bool IsEnabledForDlc(string dlcId)
 		{
 			return this.enabledForDlc != null && this.enabledForDlc.Contains(dlcId);
 		}
 
-		public void SetEnabledForActiveDlc(bool enabled)
+				public void SetEnabledForActiveDlc(bool enabled)
 		{
 			this.SetEnabledForDlc(DlcManager.GetHighestActiveDlcId(), enabled);
 		}
 
-		public void SetEnabledForDlc(string dlcId, bool set_enabled)
+				public void SetEnabledForDlc(string dlcId, bool set_enabled)
 		{
 			if (this.enabledForDlc == null)
 			{
@@ -122,7 +122,7 @@ namespace KMod
 			}
 		}
 
-		public void ScanContent()
+				public void ScanContent()
 		{
 			this.ModDevLog(string.Format("{0} ({1}): Setting up mod.", this.label, this.label.id));
 			this.available_content = (Content)0;
@@ -207,7 +207,7 @@ namespace KMod
 			global::Debug.Log(string.Format("{0}: Successfully loaded from path '{1}' with content '{2}'.", this.label, arg, this.available_content.ToString()));
 		}
 
-		private Mod.ArchivedVersion GetMostSuitableArchive()
+				private Mod.ArchivedVersion GetMostSuitableArchive()
 		{
 			Mod.PackagedModInfo packagedModInfo = this.GetModInfoForFolder("");
 			if (packagedModInfo == null)
@@ -281,7 +281,7 @@ namespace KMod
 					where v.info.APIVersion == 2 || v.info.APIVersion == 0
 					select v).ToList<Mod.ArchivedVersion>();
 					Mod.ArchivedVersion archivedVersion2 = (from v in list2
-					where (long)v.info.minimumSupportedBuild <= 626616L
+					where (long)v.info.minimumSupportedBuild <= 642695L
 					orderby v.info.minimumSupportedBuild descending
 					select v).FirstOrDefault<Mod.ArchivedVersion>();
 					if (archivedVersion2 == null)
@@ -293,7 +293,7 @@ namespace KMod
 			}
 		}
 
-		private Mod.PackagedModInfo GetModInfoForFolder(string relative_root)
+				private Mod.PackagedModInfo GetModInfoForFolder(string relative_root)
 		{
 			List<FileSystemItem> list = new List<FileSystemItem>();
 			this.file_source.GetTopLevelItems(list, relative_root);
@@ -371,7 +371,7 @@ namespace KMod
 			return packagedModInfo;
 		}
 
-		private bool DoesModSupportCurrentContent(Mod.PackagedModInfo mod_info)
+				private bool DoesModSupportCurrentContent(Mod.PackagedModInfo mod_info)
 		{
 			string text = DlcManager.GetHighestActiveDlcId();
 			if (text == "")
@@ -383,7 +383,7 @@ namespace KMod
 			return text2.Contains(text) || text2.Contains("all");
 		}
 
-		private bool ScanContentFromSourceForTranslationsOnly(string relativeRoot)
+				private bool ScanContentFromSourceForTranslationsOnly(string relativeRoot)
 		{
 			this.available_content = (Content)0;
 			List<FileSystemItem> list = new List<FileSystemItem>();
@@ -398,7 +398,7 @@ namespace KMod
 			return this.available_content > (Content)0;
 		}
 
-		private bool ScanContentFromSource(string relativeRoot, out Content available)
+				private bool ScanContentFromSource(string relativeRoot, out Content available)
 		{
 			available = (Content)0;
 			List<FileSystemItem> list = new List<FileSystemItem>();
@@ -419,7 +419,7 @@ namespace KMod
 			return available > (Content)0;
 		}
 
-				public string ContentPath
+						public string ContentPath
 		{
 			get
 			{
@@ -427,81 +427,75 @@ namespace KMod
 			}
 		}
 
-		public bool IsEmpty()
+				public bool IsEmpty()
 		{
 			return this.available_content == (Content)0;
 		}
 
-		private Content AddDirectory(string directory)
+				private Content AddDirectory(string directory)
 		{
 			Content content = (Content)0;
-			string text = directory.TrimEnd(new char[]
+			string text = directory.TrimEnd('/');
+			uint num = <PrivateImplementationDetails>.ComputeStringHash(text);
+			if (num <= 1519694028U)
 			{
-				'/'
-			});
-			if (text != null)
-			{
-				uint num = <PrivateImplementationDetails>.ComputeStringHash(text);
-				if (num <= 1519694028U)
+				if (num != 948591336U)
 				{
-					if (num != 948591336U)
+					if (num != 1318520008U)
 					{
-						if (num != 1318520008U)
+						if (num == 1519694028U)
 						{
-							if (num == 1519694028U)
-							{
-								if (text == "elements")
-								{
-									content |= Content.LayerableFiles;
-								}
-							}
-						}
-						else if (text == "buildingfacades")
-						{
-							content |= Content.Animation;
-						}
-					}
-					else if (text == "templates")
-					{
-						content |= Content.LayerableFiles;
-					}
-				}
-				else if (num <= 3037049615U)
-				{
-					if (num != 2960291089U)
-					{
-						if (num == 3037049615U)
-						{
-							if (text == "worldgen")
+							if (text == "elements")
 							{
 								content |= Content.LayerableFiles;
 							}
 						}
 					}
-					else if (text == "strings")
+					else if (text == "buildingfacades")
 					{
-						content |= Content.Strings;
+						content |= Content.Animation;
 					}
 				}
-				else if (num != 3319670096U)
+				else if (text == "templates")
 				{
-					if (num == 3570262116U)
+					content |= Content.LayerableFiles;
+				}
+			}
+			else if (num <= 3037049615U)
+			{
+				if (num != 2960291089U)
+				{
+					if (num == 3037049615U)
 					{
-						if (text == "codex")
+						if (text == "worldgen")
 						{
 							content |= Content.LayerableFiles;
 						}
 					}
 				}
-				else if (text == "anim")
+				else if (text == "strings")
 				{
-					content |= Content.Animation;
+					content |= Content.Strings;
 				}
+			}
+			else if (num != 3319670096U)
+			{
+				if (num == 3570262116U)
+				{
+					if (text == "codex")
+					{
+						content |= Content.LayerableFiles;
+					}
+				}
+			}
+			else if (text == "anim")
+			{
+				content |= Content.Animation;
 			}
 			return content;
 		}
 
-		private Content AddFile(string file)
+				private Content AddFile(string file)
 		{
 			Content content = (Content)0;
 			if (file.EndsWith(".dll"))
@@ -515,7 +509,7 @@ namespace KMod
 			return content;
 		}
 
-		private static void AccumulateExtensions(Content content, List<string> extensions)
+				private static void AccumulateExtensions(Content content, List<string> extensions)
 		{
 			if ((content & Content.DLL) != (Content)0)
 			{
@@ -527,7 +521,7 @@ namespace KMod
 			}
 		}
 
-		[Conditional("DEBUG")]
+				[Conditional("DEBUG")]
 		private void Assert(bool condition, string failure_message)
 		{
 			if (string.IsNullOrEmpty(this.title))
@@ -538,7 +532,7 @@ namespace KMod
 			DebugUtil.Assert(condition, string.Format("{1}\n\t{0}", this.label.ToString(), failure_message));
 		}
 
-		public void Install()
+				public void Install()
 		{
 			if (this.IsLocal)
 			{
@@ -563,7 +557,7 @@ namespace KMod
 			this.status = Mod.Status.Installed;
 		}
 
-		public bool Uninstall()
+				public bool Uninstall()
 		{
 			this.SetEnabledForActiveDlc(false);
 			if (this.loaded_content != (Content)0)
@@ -582,7 +576,7 @@ namespace KMod
 			return true;
 		}
 
-		private bool LoadStrings()
+				private bool LoadStrings()
 		{
 			string path = FileSystem.Normalize(Path.Combine(this.ContentPath, "strings"));
 			if (!Directory.Exists(path))
@@ -601,12 +595,12 @@ namespace KMod
 			return true;
 		}
 
-		private bool LoadTranslations()
+				private bool LoadTranslations()
 		{
 			return false;
 		}
 
-		private bool LoadAnimation()
+				private bool LoadAnimation()
 		{
 			string path = FileSystem.Normalize(Path.Combine(this.ContentPath, "anim"));
 			if (!Directory.Exists(path))
@@ -667,7 +661,7 @@ namespace KMod
 			return true;
 		}
 
-		public void Load(Content content)
+				public void Load(Content content)
 		{
 			content &= (this.available_content & ~this.loaded_content);
 			if (content > (Content)0)
@@ -708,7 +702,7 @@ namespace KMod
 			}
 		}
 
-		public void PostLoad(IReadOnlyList<Mod> mods)
+				public void PostLoad(IReadOnlyList<Mod> mods)
 		{
 			if ((this.loaded_content & Content.DLL) != (Content)0 && this.loaded_mod_data != null)
 			{
@@ -716,7 +710,7 @@ namespace KMod
 			}
 		}
 
-		public void Unload(Content content)
+				public void Unload(Content content)
 		{
 			content &= this.loaded_content;
 			if ((content & Content.LayerableFiles) != (Content)0)
@@ -726,12 +720,12 @@ namespace KMod
 			}
 		}
 
-		private void SetCrashCount(int new_crash_count)
+				private void SetCrashCount(int new_crash_count)
 		{
 			this.crash_count = MathUtil.Clamp(0, 3, new_crash_count);
 		}
 
-				public bool IsDev
+						public bool IsDev
 		{
 			get
 			{
@@ -739,7 +733,7 @@ namespace KMod
 			}
 		}
 
-				public bool IsLocal
+						public bool IsLocal
 		{
 			get
 			{
@@ -747,7 +741,7 @@ namespace KMod
 			}
 		}
 
-		public void SetCrashed()
+				public void SetCrashed()
 		{
 			this.SetCrashCount(this.crash_count + 1);
 			if (!this.IsDev)
@@ -756,47 +750,47 @@ namespace KMod
 			}
 		}
 
-		public void Uncrash()
+				public void Uncrash()
 		{
 			this.SetCrashCount(this.IsDev ? (this.crash_count - 1) : 0);
 		}
 
-		public bool IsActive()
+				public bool IsActive()
 		{
 			return this.loaded_content > (Content)0;
 		}
 
-		public bool AllActive(Content content)
+				public bool AllActive(Content content)
 		{
 			return (this.loaded_content & content) == content;
 		}
 
-		public bool AllActive()
+				public bool AllActive()
 		{
 			return (this.loaded_content & this.available_content) == this.available_content;
 		}
 
-		public bool AnyActive(Content content)
+				public bool AnyActive(Content content)
 		{
 			return (this.loaded_content & content) > (Content)0;
 		}
 
-		public bool HasContent()
+				public bool HasContent()
 		{
 			return this.available_content > (Content)0;
 		}
 
-		public bool HasAnyContent(Content content)
+				public bool HasAnyContent(Content content)
 		{
 			return (this.available_content & content) > (Content)0;
 		}
 
-		public bool HasOnlyTranslationContent()
+				public bool HasOnlyTranslationContent()
 		{
 			return this.available_content == Content.Translation;
 		}
 
-		public Texture2D GetPreviewImage()
+				public Texture2D GetPreviewImage()
 		{
 			string text = null;
 			foreach (string text2 in Mod.PREVIEW_FILENAMES)
@@ -827,7 +821,7 @@ namespace KMod
 			return result;
 		}
 
-		public void ModDevLog(string msg)
+				public void ModDevLog(string msg)
 		{
 			if (this.IsDev)
 			{
@@ -835,7 +829,7 @@ namespace KMod
 			}
 		}
 
-		public void ModDevLogWarning(string msg)
+				public void ModDevLogWarning(string msg)
 		{
 			if (this.IsDev)
 			{
@@ -843,7 +837,7 @@ namespace KMod
 			}
 		}
 
-		public void ModDevLogError(string msg)
+				public void ModDevLogError(string msg)
 		{
 			if (this.IsDev)
 			{
@@ -852,92 +846,92 @@ namespace KMod
 			}
 		}
 
-		public const int MOD_API_VERSION_NONE = 0;
+				public const int MOD_API_VERSION_NONE = 0;
 
-		public const int MOD_API_VERSION_HARMONY1 = 1;
+				public const int MOD_API_VERSION_HARMONY1 = 1;
 
-		public const int MOD_API_VERSION_HARMONY2 = 2;
+				public const int MOD_API_VERSION_HARMONY2 = 2;
 
-		public const int MOD_API_VERSION = 2;
+				public const int MOD_API_VERSION = 2;
 
-		[JsonProperty]
+				[JsonProperty]
 		public Label label;
 
-		[JsonProperty]
+				[JsonProperty]
 		public Mod.Status status;
 
-		[JsonProperty]
+				[JsonProperty]
 		public bool enabled;
 
-		[JsonProperty]
+				[JsonProperty]
 		public List<string> enabledForDlc;
 
-		[JsonProperty]
+				[JsonProperty]
 		public int crash_count;
 
-		[JsonProperty]
+				[JsonProperty]
 		public string reinstall_path;
 
-		public bool foundInStackTrace;
+				public bool foundInStackTrace;
 
-		public string relative_root = "";
+				public string relative_root = "";
 
-		public Mod.PackagedModInfo packagedModInfo;
+				public Mod.PackagedModInfo packagedModInfo;
 
-		public LoadedModData loaded_mod_data;
+				public LoadedModData loaded_mod_data;
 
-		private IFileSource _fileSource;
+				private IFileSource _fileSource;
 
-		public IFileSource content_source;
+				public IFileSource content_source;
 
-		public bool is_subscribed;
+				public bool is_subscribed;
 
-		private const string VANILLA_ID = "vanilla_id";
+				private const string VANILLA_ID = "vanilla_id";
 
-		private const string ALL_ID = "all";
+				private const string ALL_ID = "all";
 
-		private const string ARCHIVED_VERSIONS_FOLDER = "archived_versions";
+				private const string ARCHIVED_VERSIONS_FOLDER = "archived_versions";
 
-		private const string MOD_INFO_FILENAME = "mod_info.yaml";
+				private const string MOD_INFO_FILENAME = "mod_info.yaml";
 
-		public ModContentCompatability contentCompatability;
+				public ModContentCompatability contentCompatability;
 
-		public const int MAX_CRASH_COUNT = 3;
+				public const int MAX_CRASH_COUNT = 3;
 
-		private static readonly List<string> PREVIEW_FILENAMES = new List<string>
+				private static readonly List<string> PREVIEW_FILENAMES = new List<string>
 		{
 			"preview.png",
 			"Preview.png",
 			"PREVIEW.PNG"
 		};
 
-		public enum Status
+				public enum Status
 		{
-			NotInstalled,
-			Installed,
-			UninstallPending,
-			ReinstallPending
+						NotInstalled,
+						Installed,
+						UninstallPending,
+						ReinstallPending
 		}
 
-		public class ArchivedVersion
+				public class ArchivedVersion
 		{
-			public string relativePath;
+						public string relativePath;
 
-			public Mod.PackagedModInfo info;
+						public Mod.PackagedModInfo info;
 		}
 
-		public class PackagedModInfo
+				public class PackagedModInfo
 		{
-									public string supportedContent { get; set; }
+												public string supportedContent { get; set; }
 
-									[Obsolete("Use minimumSupportedBuild instead!")]
+												[Obsolete("Use minimumSupportedBuild instead!")]
 			public int lastWorkingBuild { get; set; }
 
-									public int minimumSupportedBuild { get; set; }
+												public int minimumSupportedBuild { get; set; }
 
-									public int APIVersion { get; set; }
+												public int APIVersion { get; set; }
 
-									public string version { get; set; }
+												public string version { get; set; }
 		}
 	}
 }

@@ -1,187 +1,171 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Klei.AI;
 using KSerialization;
 using STRINGS;
 using UnityEngine;
 
-public class ElementGrowthMonitor : GameStateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.growing;
-		this.root.Enter(delegate(ElementGrowthMonitor.Instance smi)
-		{
-			ElementGrowthMonitor.UpdateGrowth(smi, 0f);
-		}).Update(new Action<ElementGrowthMonitor.Instance, float>(ElementGrowthMonitor.UpdateGrowth), UpdateRate.SIM_1000ms, false).EventHandler(GameHashes.EatSolidComplete, delegate(ElementGrowthMonitor.Instance smi, object data)
-		{
-			smi.OnEatSolidComplete(data);
-		});
-		this.growing.DefaultState(this.growing.growing).Transition(this.fullyGrown, new StateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.Transition.ConditionCallback(ElementGrowthMonitor.IsFullyGrown), UpdateRate.SIM_1000ms).TagTransition(this.HungryTags, this.halted, false);
-		this.growing.growing.Transition(this.growing.stunted, GameStateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.Not(new StateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.Transition.ConditionCallback(ElementGrowthMonitor.IsConsumedInTemperatureRange)), UpdateRate.SIM_1000ms).ToggleStatusItem(Db.Get().CreatureStatusItems.ElementGrowthGrowing, null).Enter(new StateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.State.Callback(ElementGrowthMonitor.ApplyModifier)).Exit(new StateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.State.Callback(ElementGrowthMonitor.RemoveModifier));
-		this.growing.stunted.Transition(this.growing.growing, new StateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.Transition.ConditionCallback(ElementGrowthMonitor.IsConsumedInTemperatureRange), UpdateRate.SIM_1000ms).ToggleStatusItem(Db.Get().CreatureStatusItems.ElementGrowthStunted, null).Enter(new StateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.State.Callback(ElementGrowthMonitor.ApplyModifier)).Exit(new StateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.State.Callback(ElementGrowthMonitor.RemoveModifier));
-		this.halted.TagTransition(this.HungryTags, this.growing, true).ToggleStatusItem(Db.Get().CreatureStatusItems.ElementGrowthHalted, null);
-		this.fullyGrown.ToggleStatusItem(Db.Get().CreatureStatusItems.ElementGrowthComplete, null).ToggleBehaviour(GameTags.Creatures.ScalesGrown, (ElementGrowthMonitor.Instance smi) => smi.HasTag(GameTags.Creatures.CanMolt), null).Transition(this.growing, GameStateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.Not(new StateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.Transition.ConditionCallback(ElementGrowthMonitor.IsFullyGrown)), UpdateRate.SIM_1000ms);
-	}
+public class ElementGrowthMonitor
+    : GameStateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget,
+        ElementGrowthMonitor.Def> {
+    private static readonly HashedString[] GROWTH_SYMBOL_NAMES = {
+        "del_ginger1", "del_ginger2", "del_ginger3", "del_ginger4", "del_ginger5"
+    };
 
-	private static bool IsConsumedInTemperatureRange(ElementGrowthMonitor.Instance smi)
-	{
-		return smi.lastConsumedTemperature == 0f || (smi.lastConsumedTemperature >= smi.def.minTemperature && smi.lastConsumedTemperature <= smi.def.maxTemperature);
-	}
+    public State        fullyGrown;
+    public GrowingState growing;
+    public State        halted;
+    public Tag[]        HungryTags = { GameTags.Creatures.Hungry };
 
-	private static bool IsFullyGrown(ElementGrowthMonitor.Instance smi)
-	{
-		return smi.elementGrowth.value >= smi.elementGrowth.GetMax();
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = growing;
+        root.Enter(delegate(Instance smi) { UpdateGrowth(smi, 0f); })
+            .Update(UpdateGrowth, UpdateRate.SIM_1000ms)
+            .EventHandler(GameHashes.EatSolidComplete,
+                          delegate(Instance smi, object data) { smi.OnEatSolidComplete(data); });
 
-	private static void ApplyModifier(ElementGrowthMonitor.Instance smi)
-	{
-		if (smi.IsInsideState(smi.sm.growing.growing))
-		{
-			smi.elementGrowth.deltaAttribute.Add(smi.growingGrowthModifier);
-			return;
-		}
-		if (smi.IsInsideState(smi.sm.growing.stunted))
-		{
-			smi.elementGrowth.deltaAttribute.Add(smi.stuntedGrowthModifier);
-		}
-	}
+        growing.DefaultState(growing.growing)
+               .Transition(fullyGrown, IsFullyGrown, UpdateRate.SIM_1000ms)
+               .TagTransition(HungryTags, halted);
 
-	private static void RemoveModifier(ElementGrowthMonitor.Instance smi)
-	{
-		smi.elementGrowth.deltaAttribute.Remove(smi.growingGrowthModifier);
-		smi.elementGrowth.deltaAttribute.Remove(smi.stuntedGrowthModifier);
-	}
+        growing.growing.Transition(growing.stunted, Not(IsConsumedInTemperatureRange), UpdateRate.SIM_1000ms)
+               .ToggleStatusItem(Db.Get().CreatureStatusItems.ElementGrowthGrowing, null)
+               .Enter(ApplyModifier)
+               .Exit(RemoveModifier);
 
-	private static void UpdateGrowth(ElementGrowthMonitor.Instance smi, float dt)
-	{
-		int num = (int)((float)smi.def.levelCount * smi.elementGrowth.value / 100f);
-		if (smi.currentGrowthLevel != num)
-		{
-			KBatchedAnimController component = smi.GetComponent<KBatchedAnimController>();
-			for (int i = 0; i < ElementGrowthMonitor.GROWTH_SYMBOL_NAMES.Length; i++)
-			{
-				bool is_visible = i == num - 1;
-				component.SetSymbolVisiblity(ElementGrowthMonitor.GROWTH_SYMBOL_NAMES[i], is_visible);
-			}
-			smi.currentGrowthLevel = num;
-		}
-	}
+        growing.stunted.Transition(growing.growing, IsConsumedInTemperatureRange, UpdateRate.SIM_1000ms)
+               .ToggleStatusItem(Db.Get().CreatureStatusItems.ElementGrowthStunted, null)
+               .Enter(ApplyModifier)
+               .Exit(RemoveModifier);
 
-	public Tag[] HungryTags = new Tag[]
-	{
-		GameTags.Creatures.Hungry
-	};
+        halted.TagTransition(HungryTags, growing, true)
+              .ToggleStatusItem(Db.Get().CreatureStatusItems.ElementGrowthHalted, null);
 
-	public GameStateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.State halted;
+        fullyGrown.ToggleStatusItem(Db.Get().CreatureStatusItems.ElementGrowthComplete, null)
+                  .ToggleBehaviour(GameTags.Creatures.ScalesGrown, smi => smi.HasTag(GameTags.Creatures.CanMolt))
+                  .Transition(growing, Not(IsFullyGrown), UpdateRate.SIM_1000ms);
+    }
 
-	public ElementGrowthMonitor.GrowingState growing;
+    private static bool IsConsumedInTemperatureRange(Instance smi) {
+        return smi.lastConsumedTemperature == 0f ||
+               (smi.lastConsumedTemperature >= smi.def.minTemperature &&
+                smi.lastConsumedTemperature <= smi.def.maxTemperature);
+    }
 
-	public GameStateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.State fullyGrown;
+    private static bool IsFullyGrown(Instance smi) { return smi.elementGrowth.value >= smi.elementGrowth.GetMax(); }
 
-	private static HashedString[] GROWTH_SYMBOL_NAMES = new HashedString[]
-	{
-		"del_ginger1",
-		"del_ginger2",
-		"del_ginger3",
-		"del_ginger4",
-		"del_ginger5"
-	};
+    private static void ApplyModifier(Instance smi) {
+        if (smi.IsInsideState(smi.sm.growing.growing)) {
+            smi.elementGrowth.deltaAttribute.Add(smi.growingGrowthModifier);
+            return;
+        }
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
-	{
-		public override void Configure(GameObject prefab)
-		{
-			prefab.GetComponent<Modifiers>().initialAmounts.Add(Db.Get().Amounts.ElementGrowth.Id);
-		}
+        if (smi.IsInsideState(smi.sm.growing.stunted)) smi.elementGrowth.deltaAttribute.Add(smi.stuntedGrowthModifier);
+    }
 
-		public List<Descriptor> GetDescriptors(GameObject obj)
-		{
-			return new List<Descriptor>
-			{
-				new Descriptor(UI.BUILDINGEFFECTS.SCALE_GROWTH_TEMP.Replace("{Item}", this.itemDroppedOnShear.ProperName()).Replace("{Amount}", GameUtil.GetFormattedMass(this.dropMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")).Replace("{Time}", GameUtil.GetFormattedCycles(1f / this.defaultGrowthRate, "F1", false)).Replace("{TempMin}", GameUtil.GetFormattedTemperature(this.minTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)).Replace("{TempMax}", GameUtil.GetFormattedTemperature(this.maxTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), UI.BUILDINGEFFECTS.TOOLTIPS.SCALE_GROWTH_TEMP.Replace("{Item}", this.itemDroppedOnShear.ProperName()).Replace("{Amount}", GameUtil.GetFormattedMass(this.dropMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")).Replace("{Time}", GameUtil.GetFormattedCycles(1f / this.defaultGrowthRate, "F1", false)).Replace("{TempMin}", GameUtil.GetFormattedTemperature(this.minTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)).Replace("{TempMax}", GameUtil.GetFormattedTemperature(this.maxTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), Descriptor.DescriptorType.Effect, false)
-			};
-		}
+    private static void RemoveModifier(Instance smi) {
+        smi.elementGrowth.deltaAttribute.Remove(smi.growingGrowthModifier);
+        smi.elementGrowth.deltaAttribute.Remove(smi.stuntedGrowthModifier);
+    }
 
-		public int levelCount;
+    private static void UpdateGrowth(Instance smi, float dt) {
+        var num = (int)(smi.def.levelCount * smi.elementGrowth.value / 100f);
+        if (smi.currentGrowthLevel != num) {
+            var component = smi.GetComponent<KBatchedAnimController>();
+            for (var i = 0; i < GROWTH_SYMBOL_NAMES.Length; i++) {
+                var is_visible = i == num - 1;
+                component.SetSymbolVisiblity(GROWTH_SYMBOL_NAMES[i], is_visible);
+            }
 
-		public float defaultGrowthRate;
+            smi.currentGrowthLevel = num;
+        }
+    }
 
-		public Tag itemDroppedOnShear;
+    public class Def : BaseDef, IGameObjectEffectDescriptor {
+        public float defaultGrowthRate;
+        public float dropMass;
+        public Tag   itemDroppedOnShear;
+        public int   levelCount;
+        public float maxTemperature;
+        public float minTemperature;
 
-		public float dropMass;
+        public List<Descriptor> GetDescriptors(GameObject obj) {
+            return new List<Descriptor> {
+                new Descriptor(UI.BUILDINGEFFECTS.SCALE_GROWTH_TEMP.Replace("{Item}", itemDroppedOnShear.ProperName())
+                                 .Replace("{Amount}",  GameUtil.GetFormattedMass(dropMass))
+                                 .Replace("{Time}",    GameUtil.GetFormattedCycles(1f / defaultGrowthRate))
+                                 .Replace("{TempMin}", GameUtil.GetFormattedTemperature(minTemperature))
+                                 .Replace("{TempMax}", GameUtil.GetFormattedTemperature(maxTemperature)),
+                               UI.BUILDINGEFFECTS.TOOLTIPS.SCALE_GROWTH_TEMP
+                                 .Replace("{Item}",    itemDroppedOnShear.ProperName())
+                                 .Replace("{Amount}",  GameUtil.GetFormattedMass(dropMass))
+                                 .Replace("{Time}",    GameUtil.GetFormattedCycles(1f / defaultGrowthRate))
+                                 .Replace("{TempMin}", GameUtil.GetFormattedTemperature(minTemperature))
+                                 .Replace("{TempMax}", GameUtil.GetFormattedTemperature(maxTemperature)))
+            };
+        }
 
-		public float minTemperature;
+        public override void Configure(GameObject prefab) {
+            prefab.GetComponent<Modifiers>().initialAmounts.Add(Db.Get().Amounts.ElementGrowth.Id);
+        }
+    }
 
-		public float maxTemperature;
-	}
+    public class GrowingState : State {
+        public State growing;
+        public State stunted;
+    }
 
-	public class GrowingState : GameStateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.State
-	{
-		public GameStateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.State growing;
+    public new class Instance : GameInstance, IShearable {
+        public int               currentGrowthLevel = -1;
+        public AmountInstance    elementGrowth;
+        public AttributeModifier growingGrowthModifier;
 
-		public GameStateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.State stunted;
-	}
+        [Serialize]
+        public SimHashes lastConsumedElement;
 
-	public new class Instance : GameStateMachine<ElementGrowthMonitor, ElementGrowthMonitor.Instance, IStateMachineTarget, ElementGrowthMonitor.Def>.GameInstance, IShearable
-	{
-		public Instance(IStateMachineTarget master, ElementGrowthMonitor.Def def) : base(master, def)
-		{
-			this.elementGrowth = Db.Get().Amounts.ElementGrowth.Lookup(base.gameObject);
-			this.elementGrowth.value = this.elementGrowth.GetMax();
-			this.growingGrowthModifier = new AttributeModifier(this.elementGrowth.amount.deltaAttribute.Id, def.defaultGrowthRate * 100f, CREATURES.MODIFIERS.ELEMENT_GROWTH_RATE.NAME, false, false, true);
-			this.stuntedGrowthModifier = new AttributeModifier(this.elementGrowth.amount.deltaAttribute.Id, def.defaultGrowthRate * 20f, CREATURES.MODIFIERS.ELEMENT_GROWTH_RATE.NAME, false, false, true);
-		}
+        [Serialize]
+        public float lastConsumedTemperature;
 
-		public void OnEatSolidComplete(object data)
-		{
-			KPrefabID kprefabID = (KPrefabID)data;
-			if (kprefabID == null)
-			{
-				return;
-			}
-			PrimaryElement component = kprefabID.GetComponent<PrimaryElement>();
-			this.lastConsumedElement = component.ElementID;
-			this.lastConsumedTemperature = component.Temperature;
-		}
+        public AttributeModifier stuntedGrowthModifier;
 
-		public bool IsFullyGrown()
-		{
-			return this.currentGrowthLevel == base.def.levelCount;
-		}
+        public Instance(IStateMachineTarget master, Def def) : base(master, def) {
+            elementGrowth       = Db.Get().Amounts.ElementGrowth.Lookup(gameObject);
+            elementGrowth.value = elementGrowth.GetMax();
+            growingGrowthModifier = new AttributeModifier(elementGrowth.amount.deltaAttribute.Id,
+                                                          def.defaultGrowthRate * 100f,
+                                                          CREATURES.MODIFIERS.ELEMENT_GROWTH_RATE.NAME);
 
-		public void Shear()
-		{
-			PrimaryElement component = base.smi.GetComponent<PrimaryElement>();
-			GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(base.def.itemDroppedOnShear), null, null);
-			gameObject.transform.SetPosition(Grid.CellToPosCCC(Grid.CellLeft(Grid.PosToCell(this)), Grid.SceneLayer.Ore));
-			PrimaryElement component2 = gameObject.GetComponent<PrimaryElement>();
-			component2.Temperature = component.Temperature;
-			component2.Mass = base.def.dropMass;
-			component2.AddDisease(component.DiseaseIdx, component.DiseaseCount, "Shearing");
-			gameObject.SetActive(true);
-			Vector2 initial_velocity = new Vector2(UnityEngine.Random.Range(-1f, 1f) * 1f, UnityEngine.Random.value * 2f + 2f);
-			if (GameComps.Fallers.Has(gameObject))
-			{
-				GameComps.Fallers.Remove(gameObject);
-			}
-			GameComps.Fallers.Add(gameObject, initial_velocity);
-			this.elementGrowth.value = 0f;
-			ElementGrowthMonitor.UpdateGrowth(this, 0f);
-		}
+            stuntedGrowthModifier = new AttributeModifier(elementGrowth.amount.deltaAttribute.Id,
+                                                          def.defaultGrowthRate * 20f,
+                                                          CREATURES.MODIFIERS.ELEMENT_GROWTH_RATE.NAME);
+        }
 
-		public AmountInstance elementGrowth;
+        public bool IsFullyGrown() { return currentGrowthLevel == def.levelCount; }
 
-		public AttributeModifier growingGrowthModifier;
+        public void Shear() {
+            var component  = smi.GetComponent<PrimaryElement>();
+            var gameObject = Util.KInstantiate(Assets.GetPrefab(def.itemDroppedOnShear));
+            gameObject.transform.SetPosition(Grid.CellToPosCCC(Grid.CellLeft(Grid.PosToCell(this)),
+                                                               Grid.SceneLayer.Ore));
 
-		public AttributeModifier stuntedGrowthModifier;
+            var component2 = gameObject.GetComponent<PrimaryElement>();
+            component2.Temperature = component.Temperature;
+            component2.Mass        = def.dropMass;
+            component2.AddDisease(component.DiseaseIdx, component.DiseaseCount, "Shearing");
+            gameObject.SetActive(true);
+            var initial_velocity = new Vector2(Random.Range(-1f, 1f) * 1f, Random.value * 2f + 2f);
+            if (GameComps.Fallers.Has(gameObject)) GameComps.Fallers.Remove(gameObject);
+            GameComps.Fallers.Add(gameObject, initial_velocity);
+            elementGrowth.value = 0f;
+            UpdateGrowth(this, 0f);
+        }
 
-		public int currentGrowthLevel = -1;
+        public void OnEatSolidComplete(object data) {
+            var kprefabID = (KPrefabID)data;
+            if (kprefabID == null) return;
 
-		[Serialize]
-		public SimHashes lastConsumedElement;
-
-		[Serialize]
-		public float lastConsumedTemperature;
-	}
+            var component = kprefabID.GetComponent<PrimaryElement>();
+            lastConsumedElement     = component.ElementID;
+            lastConsumedTemperature = component.Temperature;
+        }
+    }
 }

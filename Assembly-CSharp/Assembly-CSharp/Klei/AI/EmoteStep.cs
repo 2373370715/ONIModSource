@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class EmoteStep
+		public class EmoteStep
 	{
-				public int Id
+						public int Id
 		{
 			get
 			{
@@ -13,7 +13,7 @@ namespace Klei.AI
 			}
 		}
 
-		public HandleVector<EmoteStep.Callbacks>.Handle RegisterCallbacks(Action<GameObject> startedCb, Action<GameObject> finishedCb)
+				public HandleVector<EmoteStep.Callbacks>.Handle RegisterCallbacks(Action<GameObject> startedCb, Action<GameObject> finishedCb)
 		{
 			if (startedCb == null && finishedCb == null)
 			{
@@ -27,17 +27,17 @@ namespace Klei.AI
 			return this.callbacks.Add(item);
 		}
 
-		public void UnregisterCallbacks(HandleVector<EmoteStep.Callbacks>.Handle callbackHandle)
+				public void UnregisterCallbacks(HandleVector<EmoteStep.Callbacks>.Handle callbackHandle)
 		{
 			this.callbacks.Release(callbackHandle);
 		}
 
-		public void UnregisterAllCallbacks()
+				public void UnregisterAllCallbacks()
 		{
 			this.callbacks = new HandleVector<EmoteStep.Callbacks>(64);
 		}
 
-		public void OnStepStarted(HandleVector<EmoteStep.Callbacks>.Handle callbackHandle, GameObject parameter)
+				public void OnStepStarted(HandleVector<EmoteStep.Callbacks>.Handle callbackHandle, GameObject parameter)
 		{
 			if (callbackHandle == HandleVector<EmoteStep.Callbacks>.Handle.InvalidHandle)
 			{
@@ -50,7 +50,7 @@ namespace Klei.AI
 			}
 		}
 
-		public void OnStepFinished(HandleVector<EmoteStep.Callbacks>.Handle callbackHandle, GameObject parameter)
+				public void OnStepFinished(HandleVector<EmoteStep.Callbacks>.Handle callbackHandle, GameObject parameter)
 		{
 			if (callbackHandle == HandleVector<EmoteStep.Callbacks>.Handle.InvalidHandle)
 			{
@@ -63,19 +63,19 @@ namespace Klei.AI
 			}
 		}
 
-		public HashedString anim = HashedString.Invalid;
+				public HashedString anim = HashedString.Invalid;
 
-		public KAnim.PlayMode mode = KAnim.PlayMode.Once;
+				public KAnim.PlayMode mode = KAnim.PlayMode.Once;
 
-		public float timeout = -1f;
+				public float timeout = -1f;
 
-		private HandleVector<EmoteStep.Callbacks> callbacks = new HandleVector<EmoteStep.Callbacks>(64);
+				private HandleVector<EmoteStep.Callbacks> callbacks = new HandleVector<EmoteStep.Callbacks>(64);
 
-		public struct Callbacks
+				public struct Callbacks
 		{
-			public Action<GameObject> StartedCb;
+						public Action<GameObject> StartedCb;
 
-			public Action<GameObject> FinishedCb;
+						public Action<GameObject> FinishedCb;
 		}
 	}
 }

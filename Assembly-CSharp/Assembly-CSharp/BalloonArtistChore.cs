@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class BalloonArtistChore : Chore<BalloonArtistChore.StatesInstance>, IWorkerPrioritizable
 {
-	public BalloonArtistChore(IStateMachineTarget target)
+		public BalloonArtistChore(IStateMachineTarget target)
 	{
 		Chore.Precondition hasBalloonStallCell = default(Chore.Precondition);
 		hasBalloonStallCell.id = "HasBalloonStallCell";
@@ -19,25 +19,25 @@ public class BalloonArtistChore : Chore<BalloonArtistChore.StatesInstance>, IWor
 		base..ctor(Db.Get().ChoreTypes.JoyReaction, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.high, 5, false, true, 0, false, ReportManager.ReportType.PersonalTime);
 		this.showAvailabilityInHoverText = false;
 		base.smi = new BalloonArtistChore.StatesInstance(this, target.gameObject);
-		base.AddPrecondition(this.HasBalloonStallCell, this);
-		base.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
-		base.AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Recreation);
-		base.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, this);
+		this.AddPrecondition(this.HasBalloonStallCell, this);
+		this.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
+		this.AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Recreation);
+		this.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, this);
 	}
 
-	public bool GetWorkerPriority(Worker worker, out int priority)
+		public bool GetWorkerPriority(WorkerBase worker, out int priority)
 	{
 		priority = this.basePriority;
 		return true;
 	}
 
-	private int basePriority = RELAXATION.PRIORITY.TIER1;
+		private int basePriority = RELAXATION.PRIORITY.TIER1;
 
-	private Chore.Precondition HasBalloonStallCell;
+		private Chore.Precondition HasBalloonStallCell;
 
-	public class States : GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore>
+		public class States : GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.goToStand;
 			base.Target(this.balloonArtist);
@@ -58,50 +58,50 @@ public class BalloonArtistChore : Chore<BalloonArtistChore.StatesInstance>, IWor
 			this.balloonStand.giveBalloon.PlayAnim("working_pst").OnAnimQueueComplete(this.balloonStand.idle);
 		}
 
-		public StateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.TargetParameter balloonArtist;
+				public StateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.TargetParameter balloonArtist;
 
-		public StateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.IntParameter balloonsGivenOut = new StateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.IntParameter(0);
+				public StateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.IntParameter balloonsGivenOut = new StateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.IntParameter(0);
 
-		public StateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.Signal giveBalloonOut;
+				public StateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.Signal giveBalloonOut;
 
-		public GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.State idle;
+				public GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.State idle;
 
-		public GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.State goToStand;
+				public GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.State goToStand;
 
-		public BalloonArtistChore.States.BalloonStandStates balloonStand;
+				public BalloonArtistChore.States.BalloonStandStates balloonStand;
 
-		public class BalloonStandStates : GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.State
+				public class BalloonStandStates : GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.State
 		{
-			public GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.State idle;
+						public GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.State idle;
 
-			public GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.State giveBalloon;
+						public GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.State giveBalloon;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<BalloonArtistChore.States, BalloonArtistChore.StatesInstance, BalloonArtistChore, object>.GameInstance
 	{
-		public StatesInstance(BalloonArtistChore master, GameObject balloonArtist) : base(master)
+				public StatesInstance(BalloonArtistChore master, GameObject balloonArtist) : base(master)
 		{
 			this.balloonArtist = balloonArtist;
 			base.sm.balloonArtist.Set(balloonArtist, base.smi, false);
 		}
 
-		public bool IsRecTime()
+				public bool IsRecTime()
 		{
 			return base.master.GetComponent<Schedulable>().IsAllowed(Db.Get().ScheduleBlockTypes.Recreation);
 		}
 
-		public int GetBalloonStallCell()
+				public int GetBalloonStallCell()
 		{
 			return this.balloonArtistCellSensor.GetCell();
 		}
 
-		public int GetBalloonStallTargetCell()
+				public int GetBalloonStallTargetCell()
 		{
 			return this.balloonArtistCellSensor.GetStandCell();
 		}
 
-		public bool HasBalloonStallCell()
+				public bool HasBalloonStallCell()
 		{
 			if (this.balloonArtistCellSensor == null)
 			{
@@ -110,7 +110,7 @@ public class BalloonArtistChore : Chore<BalloonArtistChore.StatesInstance>, IWor
 			return this.balloonArtistCellSensor.GetCell() != Grid.InvalidCell;
 		}
 
-		public bool IsSameRoom()
+				public bool IsSameRoom()
 		{
 			int cell = Grid.PosToCell(this.balloonArtist);
 			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(cell);
@@ -118,7 +118,7 @@ public class BalloonArtistChore : Chore<BalloonArtistChore.StatesInstance>, IWor
 			return cavityForCell != null && cavityForCell2 != null && cavityForCell.handle == cavityForCell2.handle;
 		}
 
-		public void SpawnBalloonStand()
+				public void SpawnBalloonStand()
 		{
 			Vector3 vector = Grid.CellToPos(this.GetBalloonStallTargetCell());
 			this.balloonArtist.GetComponent<Facing>().Face(vector);
@@ -127,22 +127,22 @@ public class BalloonArtistChore : Chore<BalloonArtistChore.StatesInstance>, IWor
 			this.balloonStand.GetComponent<GetBalloonWorkable>().SetBalloonArtist(base.smi);
 		}
 
-		public void DestroyBalloonStand()
+				public void DestroyBalloonStand()
 		{
 			this.balloonStand.DeleteObject();
 		}
 
-		public BalloonOverrideSymbol GetBalloonOverride()
+				public BalloonOverrideSymbol GetBalloonOverride()
 		{
 			return this.balloonArtist.GetSMI<BalloonArtist.Instance>().GetCurrentBalloonSymbolOverride();
 		}
 
-		public void NextBalloonOverride()
+				public void NextBalloonOverride()
 		{
 			this.balloonArtist.GetSMI<BalloonArtist.Instance>().ApplyNextBalloonSymbolOverride();
 		}
 
-		public void GiveBalloon(BalloonOverrideSymbol balloonOverride)
+				public void GiveBalloon(BalloonOverrideSymbol balloonOverride)
 		{
 			BalloonArtist.Instance smi = this.balloonArtist.GetSMI<BalloonArtist.Instance>();
 			smi.GiveBalloon();
@@ -150,10 +150,10 @@ public class BalloonArtistChore : Chore<BalloonArtistChore.StatesInstance>, IWor
 			base.smi.sm.giveBalloonOut.Trigger(base.smi);
 		}
 
-		private BalloonStandCellSensor balloonArtistCellSensor;
+				private BalloonStandCellSensor balloonArtistCellSensor;
 
-		private GameObject balloonArtist;
+				private GameObject balloonArtist;
 
-		private GameObject balloonStand;
+				private GameObject balloonStand;
 	}
 }

@@ -1,45 +1,31 @@
-﻿using System;
+﻿[SkipSaveFileSerialization]
+public class Workaholic : StateMachineComponent<Workaholic.StatesInstance> {
+    protected override void OnSpawn() { smi.StartSM(); }
+    protected bool IsUncomfortable() { return smi.master.GetComponent<ChoreDriver>().GetCurrentChore() is IdleChore; }
 
-[SkipSaveFileSerialization]
-public class Workaholic : StateMachineComponent<Workaholic.StatesInstance>
-{
-	protected override void OnSpawn()
-	{
-		base.smi.StartSM();
-	}
+    public class StatesInstance : GameStateMachine<States, StatesInstance, Workaholic, object>.GameInstance {
+        public StatesInstance(Workaholic master) : base(master) { }
+    }
 
-	protected bool IsUncomfortable()
-	{
-		return base.smi.master.GetComponent<ChoreDriver>().GetCurrentChore() is IdleChore;
-	}
+    public class States : GameStateMachine<States, StatesInstance, Workaholic> {
+        public State satisfied;
+        public State suffering;
 
-	public class StatesInstance : GameStateMachine<Workaholic.States, Workaholic.StatesInstance, Workaholic, object>.GameInstance
-	{
-		public StatesInstance(Workaholic master) : base(master)
-		{
-		}
-	}
+        public override void InitializeStates(out BaseState default_state) {
+            default_state = satisfied;
+            root.Update("WorkaholicCheck",
+                        delegate(StatesInstance smi, float dt) {
+                            if (smi.master.IsUncomfortable()) {
+                                smi.GoTo(suffering);
+                                return;
+                            }
 
-	public class States : GameStateMachine<Workaholic.States, Workaholic.StatesInstance, Workaholic>
-	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
-		{
-			default_state = this.satisfied;
-			this.root.Update("WorkaholicCheck", delegate(Workaholic.StatesInstance smi, float dt)
-			{
-				if (smi.master.IsUncomfortable())
-				{
-					smi.GoTo(this.suffering);
-					return;
-				}
-				smi.GoTo(this.satisfied);
-			}, UpdateRate.SIM_1000ms, false);
-			this.suffering.AddEffect("Restless").ToggleExpression(Db.Get().Expressions.Uncomfortable, null);
-			this.satisfied.DoNothing();
-		}
+                            smi.GoTo(satisfied);
+                        },
+                        UpdateRate.SIM_1000ms);
 
-		public GameStateMachine<Workaholic.States, Workaholic.StatesInstance, Workaholic, object>.State satisfied;
-
-		public GameStateMachine<Workaholic.States, Workaholic.StatesInstance, Workaholic, object>.State suffering;
-	}
+            suffering.AddEffect("Restless").ToggleExpression(Db.Get().Expressions.Uncomfortable);
+            satisfied.DoNothing();
+        }
+    }
 }

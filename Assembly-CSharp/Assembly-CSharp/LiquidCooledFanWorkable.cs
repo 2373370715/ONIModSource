@@ -4,18 +4,18 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/LiquidCooledFanWorkable")]
 public class LiquidCooledFanWorkable : Workable
 {
-	private LiquidCooledFanWorkable()
+		private LiquidCooledFanWorkable()
 	{
 		this.showProgressBar = false;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workerStatusItem = null;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		GameScheduler.Instance.Schedule("InsulationTutorial", 2f, delegate(object obj)
 		{
@@ -24,21 +24,21 @@ public class LiquidCooledFanWorkable : Workable
 		base.OnSpawn();
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		this.operational.SetActive(true, false);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		this.operational.SetActive(false, false);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.operational.SetActive(false, false);
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 }

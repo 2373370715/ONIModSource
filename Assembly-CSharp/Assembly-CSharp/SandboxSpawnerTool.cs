@@ -4,24 +4,24 @@ using UnityEngine;
 
 public class SandboxSpawnerTool : InterfaceTool
 {
-	public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
+		public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
 	{
 		colors = new HashSet<ToolMenu.CellColorData>();
 		colors.Add(new ToolMenu.CellColorData(this.currentCell, this.radiusIndicatorColor));
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		base.OnMouseMove(cursorPos);
 		this.currentCell = Grid.PosToCell(cursorPos);
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		this.Place(Grid.PosToCell(cursor_pos));
 	}
 
-	private void Place(int cell)
+		private void Place(int cell)
 	{
 		if (!Grid.IsValidBuildingCell(cell))
 		{
@@ -29,9 +29,9 @@ public class SandboxSpawnerTool : InterfaceTool
 		}
 		string stringSetting = SandboxToolParameterMenu.instance.settings.GetStringSetting("SandboxTools.SelectedEntity");
 		GameObject prefab = Assets.GetPrefab(stringSetting);
-		if (stringSetting == MinionConfig.ID)
+		if (prefab.HasTag(GameTags.BaseMinion))
 		{
-			this.SpawnMinion();
+			this.SpawnMinion(stringSetting);
 		}
 		else if (prefab.GetComponent<Building>() != null)
 		{
@@ -53,7 +53,7 @@ public class SandboxSpawnerTool : InterfaceTool
 		KFMOD.PlayUISound(this.soundPath);
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		SandboxToolParameterMenu.instance.gameObject.SetActive(true);
@@ -61,25 +61,27 @@ public class SandboxSpawnerTool : InterfaceTool
 		SandboxToolParameterMenu.instance.entitySelector.row.SetActive(true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		SandboxToolParameterMenu.instance.gameObject.SetActive(false);
 	}
 
-	private void SpawnMinion()
+		private void SpawnMinion(string prefabID)
 	{
-		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(MinionConfig.ID), null, null);
-		gameObject.name = Assets.GetPrefab(MinionConfig.ID).name;
+		GameObject prefab = Assets.GetPrefab(prefabID);
+		Tag model = prefabID;
+		GameObject gameObject = Util.KInstantiate(prefab, null, null);
+		gameObject.name = prefab.name;
 		Immigration.Instance.ApplyDefaultPersonalPriorities(gameObject);
 		Vector3 position = Grid.CellToPosCBC(this.currentCell, Grid.SceneLayer.Move);
 		gameObject.transform.SetLocalPosition(position);
 		gameObject.SetActive(true);
-		new MinionStartingStats(false, null, null, false).Apply(gameObject);
+		new MinionStartingStats(model, false, null, null, false).Apply(gameObject);
 		gameObject.GetMyWorld().SetDupeVisited();
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.SandboxCopyElement))
 		{
@@ -108,12 +110,12 @@ public class SandboxSpawnerTool : InterfaceTool
 		}
 	}
 
-	protected Color radiusIndicatorColor = new Color(0.5f, 0.7f, 0.5f, 0.2f);
+		protected Color radiusIndicatorColor = new Color(0.5f, 0.7f, 0.5f, 0.2f);
 
-	private int currentCell;
+		private int currentCell;
 
-	private string soundPath = GlobalAssets.GetSound("SandboxTool_Spawner", false);
+		private string soundPath = GlobalAssets.GetSound("SandboxTool_Spawner", false);
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject fxPrefab;
 }

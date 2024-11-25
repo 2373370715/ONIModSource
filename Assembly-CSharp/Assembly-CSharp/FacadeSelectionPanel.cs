@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class FacadeSelectionPanel : KMonoBehaviour
 {
-		private int GridLayoutConstraintCount
+			private int GridLayoutConstraintCount
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		}
 	}
 
-			public ClothingOutfitUtility.OutfitType SelectedOutfitCategory
+				public ClothingOutfitUtility.OutfitType SelectedOutfitCategory
 	{
 		get
 		{
@@ -33,7 +33,7 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		}
 	}
 
-		public string SelectedBuildingDefID
+			public string SelectedBuildingDefID
 	{
 		get
 		{
@@ -41,7 +41,7 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		}
 	}
 
-			public string SelectedFacade
+				public string SelectedFacade
 	{
 		get
 		{
@@ -72,20 +72,20 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.gridLayout = this.toggleContainer.GetComponent<GridLayoutGroup>();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.getMoreButton.ClearOnClick();
 		this.getMoreButton.onClick += LockerMenuScreen.Instance.ShowInventoryScreen;
 	}
 
-	public void SetBuildingDef(string defID, string currentFacadeID = null)
+		public void SetBuildingDef(string defID, string currentFacadeID = null)
 	{
 		this.currentConfigType = FacadeSelectionPanel.ConfigType.BuildingFacade;
 		this.ClearToggles();
@@ -98,7 +98,7 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		}
 	}
 
-	public void SetOutfitTarget(ClothingOutfitTarget outfitTarget, ClothingOutfitUtility.OutfitType outfitType)
+		public void SetOutfitTarget(ClothingOutfitTarget outfitTarget, ClothingOutfitUtility.OutfitType outfitType)
 	{
 		this.currentConfigType = FacadeSelectionPanel.ConfigType.MinionOutfit;
 		this.ClearToggles();
@@ -106,7 +106,7 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		base.gameObject.SetActive(true);
 	}
 
-	private void ClearToggles()
+		private void ClearToggles()
 	{
 		foreach (KeyValuePair<string, FacadeSelectionPanel.FacadeToggle> keyValuePair in this.activeFacadeToggles)
 		{
@@ -116,7 +116,7 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		this.activeFacadeToggles.Clear();
 	}
 
-	public void Refresh()
+		public void Refresh()
 	{
 		FacadeSelectionPanel.ConfigType configType = this.currentConfigType;
 		if (configType != FacadeSelectionPanel.ConfigType.BuildingFacade)
@@ -162,7 +162,7 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		}
 	}
 
-	private void RefreshTogglesForOutfit(ClothingOutfitUtility.OutfitType outfitType)
+		private void RefreshTogglesForOutfit(ClothingOutfitUtility.OutfitType outfitType)
 	{
 		IEnumerable<ClothingOutfitTarget> enumerable = from outfit in ClothingOutfitTarget.GetAllTemplates()
 		where outfit.OutfitType == outfitType
@@ -202,7 +202,7 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		this.RefreshHeight();
 	}
 
-	private void RefreshTogglesForBuilding()
+		private void RefreshTogglesForBuilding()
 	{
 		BuildingDef buildingDef = Assets.GetBuildingDef(this.selectedBuildingDefID);
 		List<string> list = new List<string>();
@@ -237,7 +237,7 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		this.RefreshHeight();
 	}
 
-	private void RefreshHeight()
+		private void RefreshHeight()
 	{
 		if (this.usesScrollRect)
 		{
@@ -247,17 +247,17 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		}
 	}
 
-	private void AddDefaultBuildingFacadeToggle()
+		private void AddDefaultBuildingFacadeToggle()
 	{
 		this.AddNewBuildingToggle("DEFAULT_FACADE");
 	}
 
-	private void AddDefaultOutfitToggle()
+		private void AddDefaultOutfitToggle()
 	{
 		this.AddNewOutfitToggle("DEFAULT_FACADE", true);
 	}
 
-	private void AddNewBuildingToggle(string facadeID)
+		private void AddNewBuildingToggle(string facadeID)
 	{
 		if (this.activeFacadeToggles.ContainsKey(facadeID))
 		{
@@ -282,7 +282,7 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		this.activeFacadeToggles.Add(newToggle.id, newToggle);
 	}
 
-	private void AddNewOutfitToggle(string outfitID, bool setAsFirstSibling = false)
+		private void AddNewOutfitToggle(string outfitID, bool setAsFirstSibling = false)
 	{
 		if (this.activeFacadeToggles.ContainsKey(outfitID))
 		{
@@ -315,59 +315,59 @@ public class FacadeSelectionPanel : KMonoBehaviour
 		}
 	}
 
-	private void SelectFacade(string id)
+		private void SelectFacade(string id)
 	{
 		this.SelectedFacade = id;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject togglePrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform toggleContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private bool usesScrollRect;
 
-	[SerializeField]
+		[SerializeField]
 	private LayoutElement scrollRect;
 
-	private Dictionary<string, FacadeSelectionPanel.FacadeToggle> activeFacadeToggles = new Dictionary<string, FacadeSelectionPanel.FacadeToggle>();
+		private Dictionary<string, FacadeSelectionPanel.FacadeToggle> activeFacadeToggles = new Dictionary<string, FacadeSelectionPanel.FacadeToggle>();
 
-	private List<GameObject> pooledFacadeToggles = new List<GameObject>();
+		private List<GameObject> pooledFacadeToggles = new List<GameObject>();
 
-	[SerializeField]
+		[SerializeField]
 	private KButton getMoreButton;
 
-	[SerializeField]
+		[SerializeField]
 	private bool showGetMoreButton;
 
-	[SerializeField]
+		[SerializeField]
 	private bool hideWhenEmpty = true;
 
-	[SerializeField]
+		[SerializeField]
 	private bool useDummyPlaceholder;
 
-	private GridLayoutGroup gridLayout;
+		private GridLayoutGroup gridLayout;
 
-	[SerializeField]
+		[SerializeField]
 	private List<GameObject> dummyGridPlaceholders;
 
-	public System.Action OnFacadeSelectionChanged;
+		public System.Action OnFacadeSelectionChanged;
 
-	private ClothingOutfitUtility.OutfitType selectedOutfitCategory;
+		private ClothingOutfitUtility.OutfitType selectedOutfitCategory;
 
-	private string selectedBuildingDefID;
+		private string selectedBuildingDefID;
 
-	private FacadeSelectionPanel.ConfigType currentConfigType;
+		private FacadeSelectionPanel.ConfigType currentConfigType;
 
-	private string _selectedFacade;
+		private string _selectedFacade;
 
-	public const string DEFAULT_FACADE_ID = "DEFAULT_FACADE";
+		public const string DEFAULT_FACADE_ID = "DEFAULT_FACADE";
 
-	private struct FacadeToggle
+		private struct FacadeToggle
 	{
-		public FacadeToggle(string buildingFacadeID, string buildingPrefabID, GameObject gameObject)
+				public FacadeToggle(string buildingFacadeID, string buildingPrefabID, GameObject gameObject)
 		{
 			this.id = buildingFacadeID;
 			this.gameObject = gameObject;
@@ -449,7 +449,7 @@ public class FacadeSelectionPanel : KMonoBehaviour
 			reference.gameObject.SetActive(false);
 		}
 
-		public FacadeToggle(string outfitID, GameObject gameObject, ClothingOutfitUtility.OutfitType outfitType)
+				public FacadeToggle(string outfitID, GameObject gameObject, ClothingOutfitUtility.OutfitType outfitType)
 		{
 			this.id = outfitID;
 			this.gameObject = gameObject;
@@ -501,16 +501,16 @@ public class FacadeSelectionPanel : KMonoBehaviour
 			reference.rectTransform().sizeDelta = sizeDelta;
 		}
 
-						public string id { readonly get; set; }
+								public string id { readonly get; set; }
 
-						public GameObject gameObject { readonly get; set; }
+								public GameObject gameObject { readonly get; set; }
 
-						public MultiToggle multiToggle { readonly get; set; }
+								public MultiToggle multiToggle { readonly get; set; }
 	}
 
-	private enum ConfigType
+		private enum ConfigType
 	{
-		BuildingFacade,
-		MinionOutfit
+				BuildingFacade,
+				MinionOutfit
 	}
 }

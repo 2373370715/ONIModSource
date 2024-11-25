@@ -2,14 +2,14 @@
 
 public class SafetyChecker
 {
-			public SafetyChecker.Condition[] conditions { get; private set; }
+				public SafetyChecker.Condition[] conditions { get; private set; }
 
-	public SafetyChecker(SafetyChecker.Condition[] conditions)
+		public SafetyChecker(SafetyChecker.Condition[] conditions)
 	{
 		this.conditions = conditions;
 	}
 
-	public int GetSafetyConditions(int cell, int cost, SafetyChecker.Context context, out bool all_conditions_met)
+		public int GetSafetyConditions(int cell, int cost, SafetyChecker.Context context, out bool all_conditions_met)
 	{
 		int num = 0;
 		int num2 = 0;
@@ -26,25 +26,25 @@ public class SafetyChecker
 		return num;
 	}
 
-	public struct Condition
+		public struct Condition
 	{
-						public SafetyChecker.Condition.Callback callback { readonly get; private set; }
+								public SafetyChecker.Condition.Callback callback { readonly get; private set; }
 
-						public int mask { readonly get; private set; }
+								public int mask { readonly get; private set; }
 
-		public Condition(string id, int condition_mask, SafetyChecker.Condition.Callback condition_callback)
+				public Condition(string id, int condition_mask, SafetyChecker.Condition.Callback condition_callback)
 		{
 			this = default(SafetyChecker.Condition);
 			this.callback = condition_callback;
 			this.mask = condition_mask;
 		}
 
-				public delegate bool Callback(int cell, int cost, SafetyChecker.Context context);
+						public delegate bool Callback(int cell, int cost, SafetyChecker.Context context);
 	}
 
-	public struct Context
+		public struct Context
 	{
-		public Context(KMonoBehaviour cmp)
+				public Context(KMonoBehaviour cmp)
 		{
 			this.cell = Grid.PosToCell(cmp);
 			this.navigator = cmp.GetComponent<Navigator>();
@@ -55,18 +55,18 @@ public class SafetyChecker
 			this.worldID = this.navigator.GetMyWorldId();
 		}
 
-		public Navigator navigator;
+				public Navigator navigator;
 
-		public OxygenBreather oxygenBreather;
+				public OxygenBreather oxygenBreather;
 
-		public SimTemperatureTransfer temperatureTransferer;
+				public SimTemperatureTransfer temperatureTransferer;
 
-		public PrimaryElement primaryElement;
+				public PrimaryElement primaryElement;
 
-		public MinionBrain minionBrain;
+				public MinionBrain minionBrain;
 
-		public int worldID;
+				public int worldID;
 
-		public int cell;
+				public int cell;
 	}
 }

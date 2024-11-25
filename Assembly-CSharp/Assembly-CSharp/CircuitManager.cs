@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CircuitManager
 {
-	public void Connect(Generator generator)
+		public void Connect(Generator generator)
 	{
 		if (Game.IsQuitting())
 		{
@@ -16,7 +16,7 @@ public class CircuitManager
 		this.dirty = true;
 	}
 
-	public void Disconnect(Generator generator)
+		public void Disconnect(Generator generator)
 	{
 		if (Game.IsQuitting())
 		{
@@ -26,7 +26,7 @@ public class CircuitManager
 		this.dirty = true;
 	}
 
-	public void Connect(IEnergyConsumer consumer)
+		public void Connect(IEnergyConsumer consumer)
 	{
 		if (Game.IsQuitting())
 		{
@@ -36,7 +36,7 @@ public class CircuitManager
 		this.dirty = true;
 	}
 
-	public void Disconnect(IEnergyConsumer consumer, bool isDestroy)
+		public void Disconnect(IEnergyConsumer consumer, bool isDestroy)
 	{
 		if (Game.IsQuitting())
 		{
@@ -50,19 +50,19 @@ public class CircuitManager
 		this.dirty = true;
 	}
 
-	public void Connect(WireUtilityNetworkLink bridge)
+		public void Connect(WireUtilityNetworkLink bridge)
 	{
 		this.bridges.Add(bridge);
 		this.dirty = true;
 	}
 
-	public void Disconnect(WireUtilityNetworkLink bridge)
+		public void Disconnect(WireUtilityNetworkLink bridge)
 	{
 		this.bridges.Remove(bridge);
 		this.dirty = true;
 	}
 
-	public float GetPowerDraw(ushort circuitID, Generator generator)
+		public float GetPowerDraw(ushort circuitID, Generator generator)
 	{
 		float result = 0f;
 		if ((int)circuitID < this.circuitInfo.Count)
@@ -74,19 +74,19 @@ public class CircuitManager
 		return result;
 	}
 
-	public ushort GetCircuitID(int cell)
+		public ushort GetCircuitID(int cell)
 	{
 		UtilityNetwork networkForCell = Game.Instance.electricalConduitSystem.GetNetworkForCell(cell);
 		return (ushort)((networkForCell == null) ? 65535 : networkForCell.id);
 	}
 
-	public ushort GetVirtualCircuitID(object virtualKey)
+		public ushort GetVirtualCircuitID(object virtualKey)
 	{
 		UtilityNetwork networkForVirtualKey = Game.Instance.electricalConduitSystem.GetNetworkForVirtualKey(virtualKey);
 		return (ushort)((networkForVirtualKey == null) ? 65535 : networkForVirtualKey.id);
 	}
 
-	public ushort GetCircuitID(ICircuitConnected ent)
+		public ushort GetCircuitID(ICircuitConnected ent)
 	{
 		if (!ent.IsVirtual)
 		{
@@ -95,17 +95,17 @@ public class CircuitManager
 		return this.GetVirtualCircuitID(ent.VirtualCircuitKey);
 	}
 
-	public void Sim200msFirst(float dt)
+		public void Sim200msFirst(float dt)
 	{
 		this.Refresh(dt);
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		this.Refresh(dt);
 	}
 
-	private void Refresh(float dt)
+		private void Refresh(float dt)
 	{
 		UtilityNetworkManager<ElectricalUtilityNetwork, Wire> electricalConduitSystem = Game.Instance.electricalConduitSystem;
 		if (electricalConduitSystem.IsDirty || this.dirty)
@@ -133,7 +133,7 @@ public class CircuitManager
 		}
 	}
 
-	public void Rebuild()
+		public void Rebuild()
 	{
 		for (int i = 0; i < this.circuitInfo.Count; i++)
 		{
@@ -209,7 +209,7 @@ public class CircuitManager
 		this.dirty = false;
 	}
 
-	private float GetBatteryJoulesAvailable(List<Battery> batteries, out int num_powered)
+		private float GetBatteryJoulesAvailable(List<Battery> batteries, out int num_powered)
 	{
 		float result = 0f;
 		num_powered = 0;
@@ -225,7 +225,7 @@ public class CircuitManager
 		return result;
 	}
 
-	public void Sim200msLast(float dt)
+		public void Sim200msLast(float dt)
 	{
 		this.elapsedTime += dt;
 		if (this.elapsedTime < 0.2f)
@@ -426,7 +426,7 @@ public class CircuitManager
 		}
 	}
 
-	private float PowerFromBatteries(float joules_needed, List<Battery> batteries, IEnergyConsumer c)
+		private float PowerFromBatteries(float joules_needed, List<Battery> batteries, IEnergyConsumer c)
 	{
 		int num2;
 		do
@@ -445,7 +445,7 @@ public class CircuitManager
 		return joules_needed;
 	}
 
-	private float PowerFromGenerator(float joules_needed, Generator g, IEnergyConsumer c)
+		private float PowerFromGenerator(float joules_needed, Generator g, IEnergyConsumer c)
 	{
 		float num = Mathf.Min(g.JoulesAvailable, joules_needed);
 		joules_needed -= num;
@@ -454,7 +454,7 @@ public class CircuitManager
 		return joules_needed;
 	}
 
-	private void ChargeBatteries(List<Battery> sink_batteries, List<Generator> source_generators, ref float joules_used)
+		private void ChargeBatteries(List<Battery> sink_batteries, List<Generator> source_generators, ref float joules_used)
 	{
 		if (sink_batteries.Count == 0)
 		{
@@ -468,7 +468,7 @@ public class CircuitManager
 		}
 	}
 
-	private bool ChargeBatteriesFromGenerator(List<Battery> sink_batteries, Generator source_generator, ref float joules_used)
+		private bool ChargeBatteriesFromGenerator(List<Battery> sink_batteries, Generator source_generator, ref float joules_used)
 	{
 		float num = source_generator.JoulesAvailable;
 		float num2 = 0f;
@@ -496,7 +496,7 @@ public class CircuitManager
 		return false;
 	}
 
-	private void UpdateBatteryConnectionStatus(List<Battery> batteries, bool is_connected_to_something_useful, int circuit_id)
+		private void UpdateBatteryConnectionStatus(List<Battery> batteries, bool is_connected_to_something_useful, int circuit_id)
 	{
 		foreach (Battery battery in batteries)
 		{
@@ -514,7 +514,7 @@ public class CircuitManager
 		}
 	}
 
-	private void ChargeTransformer<T>(Battery sink_transformer, List<T> source_energy_producers, ref float joules_used) where T : IEnergyProducer
+		private void ChargeTransformer<T>(Battery sink_transformer, List<T> source_energy_producers, ref float joules_used) where T : IEnergyProducer
 	{
 		if (source_energy_producers.Count <= 0)
 		{
@@ -542,7 +542,7 @@ public class CircuitManager
 		joules_used += num3;
 	}
 
-	private void ChargeTransformers<T>(List<Battery> sink_transformers, List<T> source_energy_producers, ref float joules_used) where T : IEnergyProducer
+		private void ChargeTransformers<T>(List<Battery> sink_transformers, List<T> source_energy_producers, ref float joules_used) where T : IEnergyProducer
 	{
 		foreach (Battery sink_transformer in sink_transformers)
 		{
@@ -550,7 +550,7 @@ public class CircuitManager
 		}
 	}
 
-	private void CheckCircuitOverloaded(float dt, int id, float watts_used)
+		private void CheckCircuitOverloaded(float dt, int id, float watts_used)
 	{
 		UtilityNetwork networkByID = Game.Instance.electricalConduitSystem.GetNetworkByID(id);
 		if (networkByID != null)
@@ -563,7 +563,7 @@ public class CircuitManager
 		}
 	}
 
-	public float GetWattsUsedByCircuit(ushort circuitID)
+		public float GetWattsUsedByCircuit(ushort circuitID)
 	{
 		if (circuitID == 65535)
 		{
@@ -572,7 +572,7 @@ public class CircuitManager
 		return this.circuitInfo[(int)circuitID].wattsUsed;
 	}
 
-	public float GetWattsNeededWhenActive(ushort originCircuitId)
+		public float GetWattsNeededWhenActive(ushort originCircuitId)
 	{
 		if (originCircuitId == 65535)
 		{
@@ -641,18 +641,18 @@ public class CircuitManager
 		}
 		float num5;
 		dictionary.TryGetValue(originCircuitId, out num5);
-		foreach (KeyValuePair<ushort, float> self in dictionary2)
+		foreach (KeyValuePair<ushort, float> keyValuePair in dictionary2)
 		{
 			ushort num6;
 			float num7;
-			self.Deconstruct(out num6, out num7);
+			keyValuePair.Deconstruct(out num6, out num7);
 			float num8 = num7;
 			num5 += num8;
 		}
 		return num5;
 	}
 
-	public float GetWattsGeneratedByCircuit(ushort circuitID)
+		public float GetWattsGeneratedByCircuit(ushort circuitID)
 	{
 		if (circuitID == 65535)
 		{
@@ -669,7 +669,7 @@ public class CircuitManager
 		return num;
 	}
 
-	public float GetPotentialWattsGeneratedByCircuit(ushort circuitID)
+		public float GetPotentialWattsGeneratedByCircuit(ushort circuitID)
 	{
 		if (circuitID == 65535)
 		{
@@ -683,13 +683,13 @@ public class CircuitManager
 		return num;
 	}
 
-	public float GetJoulesAvailableOnCircuit(ushort circuitID)
+		public float GetJoulesAvailableOnCircuit(ushort circuitID)
 	{
 		int num;
 		return this.GetBatteryJoulesAvailable(this.GetBatteriesOnCircuit(circuitID), out num) * (float)num;
 	}
 
-	public ReadOnlyCollection<Generator> GetGeneratorsOnCircuit(ushort circuitID)
+		public ReadOnlyCollection<Generator> GetGeneratorsOnCircuit(ushort circuitID)
 	{
 		if (circuitID == 65535)
 		{
@@ -698,7 +698,7 @@ public class CircuitManager
 		return this.circuitInfo[(int)circuitID].generators.AsReadOnly();
 	}
 
-	public ReadOnlyCollection<IEnergyConsumer> GetConsumersOnCircuit(ushort circuitID)
+		public ReadOnlyCollection<IEnergyConsumer> GetConsumersOnCircuit(ushort circuitID)
 	{
 		if (circuitID == 65535)
 		{
@@ -707,7 +707,7 @@ public class CircuitManager
 		return this.circuitInfo[(int)circuitID].consumers.AsReadOnly();
 	}
 
-	public ReadOnlyCollection<Battery> GetTransformersOnCircuit(ushort circuitID)
+		public ReadOnlyCollection<Battery> GetTransformersOnCircuit(ushort circuitID)
 	{
 		if (circuitID == 65535)
 		{
@@ -716,7 +716,7 @@ public class CircuitManager
 		return this.circuitInfo[(int)circuitID].inputTransformers.AsReadOnly();
 	}
 
-	public List<Battery> GetBatteriesOnCircuit(ushort circuitID)
+		public List<Battery> GetBatteriesOnCircuit(ushort circuitID)
 	{
 		if (circuitID == 65535)
 		{
@@ -725,7 +725,7 @@ public class CircuitManager
 		return this.circuitInfo[(int)circuitID].batteries;
 	}
 
-	public float GetMinBatteryPercentFullOnCircuit(ushort circuitID)
+		public float GetMinBatteryPercentFullOnCircuit(ushort circuitID)
 	{
 		if (circuitID == 65535)
 		{
@@ -734,27 +734,27 @@ public class CircuitManager
 		return this.circuitInfo[(int)circuitID].minBatteryPercentFull;
 	}
 
-	public bool HasBatteries(ushort circuitID)
+		public bool HasBatteries(ushort circuitID)
 	{
 		return circuitID != ushort.MaxValue && this.circuitInfo[(int)circuitID].batteries.Count + this.circuitInfo[(int)circuitID].inputTransformers.Count > 0;
 	}
 
-	public bool HasGenerators(ushort circuitID)
+		public bool HasGenerators(ushort circuitID)
 	{
 		return circuitID != ushort.MaxValue && this.circuitInfo[(int)circuitID].generators.Count + this.circuitInfo[(int)circuitID].outputTransformers.Count > 0;
 	}
 
-	public bool HasGenerators()
+		public bool HasGenerators()
 	{
 		return this.generators.Count > 0;
 	}
 
-	public bool HasConsumers(ushort circuitID)
+		public bool HasConsumers(ushort circuitID)
 	{
 		return circuitID != ushort.MaxValue && this.circuitInfo[(int)circuitID].consumers.Count > 0;
 	}
 
-	public float GetMaxSafeWattageForCircuit(ushort circuitID)
+		public float GetMaxSafeWattageForCircuit(ushort circuitID)
 	{
 		if (circuitID == 65535)
 		{
@@ -768,51 +768,51 @@ public class CircuitManager
 		return electricalUtilityNetwork.GetMaxSafeWattage();
 	}
 
-	public const ushort INVALID_ID = 65535;
+		public const ushort INVALID_ID = 65535;
 
-	private const int SimUpdateSortKey = 1000;
+		private const int SimUpdateSortKey = 1000;
 
-	private const float MIN_POWERED_THRESHOLD = 0.01f;
+		private const float MIN_POWERED_THRESHOLD = 0.01f;
 
-	private bool dirty = true;
+		private bool dirty = true;
 
-	private HashSet<Generator> generators = new HashSet<Generator>();
+		private HashSet<Generator> generators = new HashSet<Generator>();
 
-	private HashSet<IEnergyConsumer> consumers = new HashSet<IEnergyConsumer>();
+		private HashSet<IEnergyConsumer> consumers = new HashSet<IEnergyConsumer>();
 
-	private HashSet<WireUtilityNetworkLink> bridges = new HashSet<WireUtilityNetworkLink>();
+		private HashSet<WireUtilityNetworkLink> bridges = new HashSet<WireUtilityNetworkLink>();
 
-	private float elapsedTime;
+		private float elapsedTime;
 
-	private List<CircuitManager.CircuitInfo> circuitInfo = new List<CircuitManager.CircuitInfo>();
+		private List<CircuitManager.CircuitInfo> circuitInfo = new List<CircuitManager.CircuitInfo>();
 
-	private List<IEnergyConsumer> consumersShadow = new List<IEnergyConsumer>();
+		private List<IEnergyConsumer> consumersShadow = new List<IEnergyConsumer>();
 
-	private List<Generator> activeGenerators = new List<Generator>();
+		private List<Generator> activeGenerators = new List<Generator>();
 
-	private struct CircuitInfo
+		private struct CircuitInfo
 	{
-		public List<Generator> generators;
+				public List<Generator> generators;
 
-		public List<IEnergyConsumer> consumers;
+				public List<IEnergyConsumer> consumers;
 
-		public List<Battery> batteries;
+				public List<Battery> batteries;
 
-		public List<Battery> inputTransformers;
+				public List<Battery> inputTransformers;
 
-		public List<Generator> outputTransformers;
+				public List<Generator> outputTransformers;
 
-		public List<WireUtilityNetworkLink>[] bridgeGroups;
+				public List<WireUtilityNetworkLink>[] bridgeGroups;
 
-		public float minBatteryPercentFull;
+				public float minBatteryPercentFull;
 
-		public float wattsUsed;
+				public float wattsUsed;
 	}
 
-	public enum ConnectionStatus
+		public enum ConnectionStatus
 	{
-		NotConnected,
-		Unpowered,
-		Powered
+				NotConnected,
+				Unpowered,
+				Powered
 	}
 }

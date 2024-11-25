@@ -8,7 +8,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/ResourceCategoryHeader")]
 public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEventSystemHandler, IPointerExitHandler, ISim4000ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.EntryContainer.SetParent(base.transform.parent);
@@ -23,7 +23,7 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		this.SetActiveColor(false);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.tooltip.OnToolTip = new Func<string>(this.OnTooltip);
@@ -31,7 +31,7 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		this.RefreshChart();
 	}
 
-	private void SetInteractable(bool state)
+		private void SetInteractable(bool state)
 	{
 		if (!state)
 		{
@@ -47,7 +47,7 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		this.expandArrow.SetActive();
 	}
 
-	private void SetActiveColor(bool state)
+		private void SetActiveColor(bool state)
 	{
 		if (state)
 		{
@@ -65,7 +65,7 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		this.expandArrow.TargetImage.color = this.TextColor_NonInteractable;
 	}
 
-	public void SetTag(Tag t, GameUtil.MeasureUnit measure)
+		public void SetTag(Tag t, GameUtil.MeasureUnit measure)
 	{
 		this.ResourceCategoryTag = t;
 		this.Measure = measure;
@@ -77,7 +77,7 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		}
 	}
 
-	private void ToggleOpen(bool play_sound)
+		private void ToggleOpen(bool play_sound)
 	{
 		if (!this.anyDiscovered)
 		{
@@ -107,7 +107,7 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		this.elements.QuantityText.fontSize = (float)this.minimizedFontSize;
 	}
 
-	private void Hover(bool is_hovering)
+		private void Hover(bool is_hovering)
 	{
 		this.Background.color = (is_hovering ? this.BackgroundHoverColor : new Color(0f, 0f, 0f, 0f));
 		ICollection<Pickupable> collection = null;
@@ -132,17 +132,17 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		}
 	}
 
-	public void OnPointerEnter(PointerEventData eventData)
+		public void OnPointerEnter(PointerEventData eventData)
 	{
 		this.Hover(true);
 	}
 
-	public void OnPointerExit(PointerEventData eventData)
+		public void OnPointerExit(PointerEventData eventData)
 	{
 		this.Hover(false);
 	}
 
-	public void SetOpen(bool open)
+		public void SetOpen(bool open)
 	{
 		this.IsOpen = open;
 		if (open)
@@ -161,7 +161,7 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		this.EntryContainer.gameObject.SetActive(this.IsOpen);
 	}
 
-	private void GetAmounts(bool doExtras, out float available, out float total, out float reserved)
+		private void GetAmounts(bool doExtras, out float available, out float total, out float reserved)
 	{
 		available = 0f;
 		total = 0f;
@@ -206,7 +206,7 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		pooledList.Recycle();
 	}
 
-	public void UpdateContents()
+		public void UpdateContents()
 	{
 		float num;
 		float num2;
@@ -243,7 +243,7 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		this.SetInteractable(this.anyDiscovered);
 	}
 
-	private string OnTooltip()
+		private string OnTooltip()
 	{
 		float quantity;
 		float quantity2;
@@ -263,19 +263,19 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		return text;
 	}
 
-	private ResourceEntry NewResourceEntry(Tag resourceTag, GameUtil.MeasureUnit measure)
+		private ResourceEntry NewResourceEntry(Tag resourceTag, GameUtil.MeasureUnit measure)
 	{
 		ResourceEntry component = Util.KInstantiateUI(this.Prefab_ResourceEntry, this.EntryContainer.gameObject, true).GetComponent<ResourceEntry>();
 		component.SetTag(resourceTag, measure);
 		return component;
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
 		this.RefreshChart();
 	}
 
-	private void RefreshChart()
+		private void RefreshChart()
 	{
 		if (this.sparkChart != null)
 		{
@@ -285,67 +285,67 @@ public class ResourceCategoryHeader : KMonoBehaviour, IPointerEnterHandler, IEve
 		}
 	}
 
-	public GameObject Prefab_ResourceEntry;
+		public GameObject Prefab_ResourceEntry;
 
-	public Transform EntryContainer;
+		public Transform EntryContainer;
 
-	public Tag ResourceCategoryTag;
+		public Tag ResourceCategoryTag;
 
-	public GameUtil.MeasureUnit Measure;
+		public GameUtil.MeasureUnit Measure;
 
-	public bool IsOpen;
+		public bool IsOpen;
 
-	public ImageToggleState expandArrow;
+		public ImageToggleState expandArrow;
 
-	private Button mButton;
+		private Button mButton;
 
-	public Dictionary<Tag, ResourceEntry> ResourcesDiscovered = new Dictionary<Tag, ResourceEntry>();
+		public Dictionary<Tag, ResourceEntry> ResourcesDiscovered = new Dictionary<Tag, ResourceEntry>();
 
-	public ResourceCategoryHeader.ElementReferences elements;
+		public ResourceCategoryHeader.ElementReferences elements;
 
-	public Color TextColor_Interactable;
+		public Color TextColor_Interactable;
 
-	public Color TextColor_NonInteractable;
+		public Color TextColor_NonInteractable;
 
-	private string quantityString;
+		private string quantityString;
 
-	private float currentQuantity;
+		private float currentQuantity;
 
-	private bool anyDiscovered;
+		private bool anyDiscovered;
 
-	public const float chartHistoryLength = 3000f;
+		public const float chartHistoryLength = 3000f;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ToolTip tooltip;
 
-	[SerializeField]
+		[SerializeField]
 	private int minimizedFontSize;
 
-	[SerializeField]
+		[SerializeField]
 	private int maximizedFontSize;
 
-	[SerializeField]
+		[SerializeField]
 	private Color highlightColour;
 
-	[SerializeField]
+		[SerializeField]
 	private Color BackgroundHoverColor;
 
-	[SerializeField]
+		[SerializeField]
 	private Image Background;
 
-	public GameObject sparkChart;
+		public GameObject sparkChart;
 
-	private float cachedAvailable = float.MinValue;
+		private float cachedAvailable = float.MinValue;
 
-	private float cachedTotal = float.MinValue;
+		private float cachedTotal = float.MinValue;
 
-	private float cachedReserved = float.MinValue;
+		private float cachedReserved = float.MinValue;
 
-	[Serializable]
+		[Serializable]
 	public struct ElementReferences
 	{
-		public LocText LabelText;
+				public LocText LabelText;
 
-		public LocText QuantityText;
+				public LocText QuantityText;
 	}
 }

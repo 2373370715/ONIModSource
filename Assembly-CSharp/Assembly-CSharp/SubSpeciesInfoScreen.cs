@@ -6,17 +6,17 @@ using UnityEngine.UI;
 
 public class SubSpeciesInfoScreen : KModalScreen
 {
-	public override bool IsModal()
+		public override bool IsModal()
 	{
 		return true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	private void ClearMutations()
+		private void ClearMutations()
 	{
 		for (int i = this.mutationLineItems.Count - 1; i >= 0; i--)
 		{
@@ -25,13 +25,13 @@ public class SubSpeciesInfoScreen : KModalScreen
 		this.mutationLineItems.Clear();
 	}
 
-	public void DisplayDiscovery(Tag speciesID, Tag subSpeciesID, GeneticAnalysisStation station)
+		public void DisplayDiscovery(Tag speciesID, Tag subSpeciesID, GeneticAnalysisStation station)
 	{
 		this.SetSubspecies(speciesID, subSpeciesID);
 		this.targetStation = station;
 	}
 
-	private void SetSubspecies(Tag speciesID, Tag subSpeciesID)
+		private void SetSubspecies(Tag speciesID, Tag subSpeciesID)
 	{
 		this.ClearMutations();
 		ref PlantSubSpeciesCatalog.SubSpeciesInfo subSpecies = PlantSubSpeciesCatalog.Instance.GetSubSpecies(speciesID, subSpeciesID);
@@ -47,25 +47,25 @@ public class SubSpeciesInfoScreen : KModalScreen
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton renameButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton saveButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton discardButton;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform mutationsList;
 
-	[SerializeField]
+		[SerializeField]
 	private Image plantIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject mutationsItemPrefab;
 
-	private List<GameObject> mutationLineItems = new List<GameObject>();
+		private List<GameObject> mutationLineItems = new List<GameObject>();
 
-	private GeneticAnalysisStation targetStation;
+		private GeneticAnalysisStation targetStation;
 }

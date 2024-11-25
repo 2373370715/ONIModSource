@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Studyable")]
 public class Studyable : Workable, ISidescreenButtonControl
 {
-		public bool Studied
+			public bool Studied
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 		}
 	}
 
-		public bool Studying
+			public bool Studying
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 		}
 	}
 
-		public string SidescreenTitleKey
+			public string SidescreenTitleKey
 	{
 		get
 		{
@@ -31,7 +31,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 		}
 	}
 
-		public string SidescreenStatusMessage
+			public string SidescreenStatusMessage
 	{
 		get
 		{
@@ -47,7 +47,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 		}
 	}
 
-		public string SidescreenButtonText
+			public string SidescreenButtonText
 	{
 		get
 		{
@@ -63,7 +63,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 		}
 	}
 
-		public string SidescreenButtonTooltip
+			public string SidescreenButtonTooltip
 	{
 		get
 		{
@@ -79,27 +79,27 @@ public class Studyable : Workable, ISidescreenButtonControl
 		}
 	}
 
-	public int HorizontalGroupID()
+		public int HorizontalGroupID()
 	{
 		return -1;
 	}
 
-	public void SetButtonTextOverride(ButtonMenuTextOverride text)
+		public void SetButtonTextOverride(ButtonMenuTextOverride text)
 	{
 		throw new NotImplementedException();
 	}
 
-	public bool SidescreenEnabled()
+		public bool SidescreenEnabled()
 	{
 		return true;
 	}
 
-	public bool SidescreenButtonInteractable()
+		public bool SidescreenButtonInteractable()
 	{
 		return !this.studied;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.overrideAnims = new KAnimFile[]
@@ -118,7 +118,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 		base.SetWorkTime(3600f);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.studiedIndicator = new MeterController(base.GetComponent<KBatchedAnimController>(), this.meterTrackerSymbol, this.meterAnim, Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new string[]
@@ -129,7 +129,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 		this.Refresh();
 	}
 
-	public void CancelChore()
+		public void CancelChore()
 	{
 		if (this.chore != null)
 		{
@@ -139,7 +139,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 		}
 	}
 
-	public void Refresh()
+		public void Refresh()
 	{
 		if (KMonoBehaviour.isLoadingScene)
 		{
@@ -171,7 +171,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 		this.studiedIndicator.gameObject.SetActive(false);
 	}
 
-	private void ToggleStudyChore()
+		private void ToggleStudyChore()
 	{
 		if (DebugHandler.InstantBuildMode)
 		{
@@ -190,7 +190,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 		this.Refresh();
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		this.studied = true;
@@ -203,7 +203,7 @@ public class Studyable : Workable, ISidescreenButtonControl
 		}
 	}
 
-	private void DropDatabanks()
+		private void DropDatabanks()
 	{
 		int num = UnityEngine.Random.Range(7, 13);
 		for (int i = 0; i <= num; i++)
@@ -214,33 +214,33 @@ public class Studyable : Workable, ISidescreenButtonControl
 		}
 	}
 
-	public void OnSidescreenButtonPressed()
+		public void OnSidescreenButtonPressed()
 	{
 		this.ToggleStudyChore();
 	}
 
-	public int ButtonSideScreenSortOrder()
+		public int ButtonSideScreenSortOrder()
 	{
 		return 20;
 	}
 
-	public string meterTrackerSymbol;
+		public string meterTrackerSymbol;
 
-	public string meterAnim;
+		public string meterAnim;
 
-	private Chore chore;
+		private Chore chore;
 
-	private const float STUDY_WORK_TIME = 3600f;
+		private const float STUDY_WORK_TIME = 3600f;
 
-	[Serialize]
+		[Serialize]
 	private bool studied;
 
-	[Serialize]
+		[Serialize]
 	private bool markedForStudy;
 
-	private Guid statusItemGuid;
+		private Guid statusItemGuid;
 
-	private Guid additionalStatusItemGuid;
+		private Guid additionalStatusItemGuid;
 
-	public MeterController studiedIndicator;
+		public MeterController studiedIndicator;
 }

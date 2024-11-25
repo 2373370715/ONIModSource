@@ -4,7 +4,7 @@ using ImGuiNET;
 
 public class DevToolStoryManager : DevTool
 {
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (ImGui.CollapsingHeader("Story Instance Data", ImGuiTreeNodeFlags.DefaultOpen))
 		{
@@ -17,7 +17,7 @@ public class DevToolStoryManager : DevTool
 		}
 	}
 
-	private void DrawStoryInstanceData()
+		private void DrawStoryInstanceData()
 	{
 		if (StoryManager.Instance == null)
 		{
@@ -37,7 +37,7 @@ public class DevToolStoryManager : DevTool
 		}
 	}
 
-	private void DrawTelemetryData()
+		private void DrawTelemetryData()
 	{
 		ImGuiEx.DrawObjectTable<StoryManager.StoryTelemetry>("ID_telemetry", StoryManager.GetTelemetry(), null);
 	}

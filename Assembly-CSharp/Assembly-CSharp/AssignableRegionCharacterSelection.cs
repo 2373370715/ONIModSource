@@ -5,16 +5,16 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/AssignableRegionCharacterSelection")]
 public class AssignableRegionCharacterSelection : KMonoBehaviour
 {
-			public event Action<MinionIdentity> OnDuplicantSelected;
+				public event Action<MinionIdentity> OnDuplicantSelected;
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.buttonPool = new UIPool<KButton>(this.buttonPrefab);
 		base.gameObject.SetActive(false);
 	}
 
-	public void Open()
+		public void Open()
 	{
 		base.gameObject.SetActive(true);
 		this.buttonPool.ClearAll();
@@ -33,7 +33,7 @@ public class AssignableRegionCharacterSelection : KMonoBehaviour
 		}
 	}
 
-	public void Close()
+		public void Close()
 	{
 		this.buttonPool.DestroyAllActive();
 		this.buttonIdentityMap.Clear();
@@ -41,7 +41,7 @@ public class AssignableRegionCharacterSelection : KMonoBehaviour
 		base.gameObject.SetActive(false);
 	}
 
-	private void SelectDuplicant(KButton btn)
+		private void SelectDuplicant(KButton btn)
 	{
 		if (this.OnDuplicantSelected != null)
 		{
@@ -50,15 +50,15 @@ public class AssignableRegionCharacterSelection : KMonoBehaviour
 		this.Close();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton buttonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject buttonParent;
 
-	private UIPool<KButton> buttonPool;
+		private UIPool<KButton> buttonPool;
 
-	private Dictionary<KButton, MinionIdentity> buttonIdentityMap = new Dictionary<KButton, MinionIdentity>();
+		private Dictionary<KButton, MinionIdentity> buttonIdentityMap = new Dictionary<KButton, MinionIdentity>();
 
-	private List<CrewPortrait> portraitList = new List<CrewPortrait>();
+		private List<CrewPortrait> portraitList = new List<CrewPortrait>();
 }

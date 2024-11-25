@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GasLogicValveConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "GasLogicValve";
 		int width = 1;
@@ -39,7 +39,7 @@ public class GasLogicValveConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -48,7 +48,7 @@ public class GasLogicValveConfig : IBuildingConfig
 		operationalValve.maxFlow = 1f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitConsumer>());
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitDispenser>());
@@ -57,7 +57,7 @@ public class GasLogicValveConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public const string ID = "GasLogicValve";
+		public const string ID = "GasLogicValve";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
 }

@@ -4,23 +4,23 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/InfoScreenLineItem")]
 public class InfoScreenLineItem : KMonoBehaviour
 {
-	public void SetText(string text)
+		public void SetText(string text)
 	{
 		this.locText.text = text;
 	}
 
-	public void SetTooltip(string tooltip)
+		public void SetTooltip(string tooltip)
 	{
 		this.toolTip.toolTip = tooltip;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText locText;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip toolTip;
 
-	private string text;
+		private string text;
 
-	private string tooltip;
+		private string tooltip;
 }

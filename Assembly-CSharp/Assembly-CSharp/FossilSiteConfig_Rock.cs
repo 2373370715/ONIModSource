@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class FossilSiteConfig_Rock : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "FossilRock";
 		string name = CODEX.STORY_TRAITS.FOSSILHUNT.ENTITIES.FOSSIL_ROCK.NAME;
@@ -38,7 +38,7 @@ public class FossilSiteConfig_Rock : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<EntombVulnerable>().SetStatusItem(Db.Get().BuildingStatusItems.FossilEntombed);
 		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
@@ -47,11 +47,11 @@ public class FossilSiteConfig_Rock : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public static readonly HashedString FossilQuestCriteriaID = "LostRockFossil";
+		public static readonly HashedString FossilQuestCriteriaID = "LostRockFossil";
 
-	public const string ID = "FossilRock";
+		public const string ID = "FossilRock";
 }

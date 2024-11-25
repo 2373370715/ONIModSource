@@ -4,26 +4,25 @@ using STRINGS;
 
 public class ToiletDiagnostic : ColonyDiagnostic
 {
-	public ToiletDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.TOILETDIAGNOSTIC.ALL_NAME)
+		public ToiletDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.TOILETDIAGNOSTIC.ALL_NAME)
 	{
 		this.icon = "icon_action_region_toilet";
 		this.tracker = TrackerTool.Instance.GetWorldTracker<WorkingToiletTracker>(worldID);
+		this.NO_MINIONS_WITH_BLADDER = (base.IsWorldModuleInterior ? UI.COLONY_DIAGNOSTICS.TOILETDIAGNOSTIC.NO_MINIONS_ROCKET : UI.COLONY_DIAGNOSTICS.TOILETDIAGNOSTIC.NO_MINIONS_PLANETOID);
 		base.AddCriterion("CheckHasAnyToilets", new DiagnosticCriterion(UI.COLONY_DIAGNOSTICS.TOILETDIAGNOSTIC.CRITERIA.CHECKHASANYTOILETS, new Func<ColonyDiagnostic.DiagnosticResult>(this.CheckHasAnyToilets)));
 		base.AddCriterion("CheckEnoughToilets", new DiagnosticCriterion(UI.COLONY_DIAGNOSTICS.TOILETDIAGNOSTIC.CRITERIA.CHECKENOUGHTOILETS, new Func<ColonyDiagnostic.DiagnosticResult>(this.CheckEnoughToilets)));
 		base.AddCriterion("CheckBladders", new DiagnosticCriterion(UI.COLONY_DIAGNOSTICS.TOILETDIAGNOSTIC.CRITERIA.CHECKBLADDERS, new Func<ColonyDiagnostic.DiagnosticResult>(this.CheckBladders)));
 	}
 
-	private ColonyDiagnostic.DiagnosticResult CheckHasAnyToilets()
+		private ColonyDiagnostic.DiagnosticResult CheckHasAnyToilets()
 	{
-		List<IUsable> worldItems = Components.Toilets.GetWorldItems(base.worldID, false);
-		List<MinionIdentity> worldItems2 = Components.LiveMinionIdentities.GetWorldItems(base.worldID, false);
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null);
-		if (worldItems2.Count == 0)
+		if (this.minionsWithBladders.Count == 0)
 		{
 			result.opinion = ColonyDiagnostic.DiagnosticResult.Opinion.Normal;
-			result.Message = base.NO_MINIONS;
+			result.Message = this.NO_MINIONS_WITH_BLADDER;
 		}
-		else if (worldItems.Count == 0)
+		else if (this.toilets.Count == 0)
 		{
 			result.opinion = ColonyDiagnostic.DiagnosticResult.Opinion.Concern;
 			result.Message = UI.COLONY_DIAGNOSTICS.TOILETDIAGNOSTIC.NO_TOILETS;
@@ -31,15 +30,13 @@ public class ToiletDiagnostic : ColonyDiagnostic
 		return result;
 	}
 
-	private ColonyDiagnostic.DiagnosticResult CheckEnoughToilets()
+		private ColonyDiagnostic.DiagnosticResult CheckEnoughToilets()
 	{
-		Components.Toilets.GetWorldItems(base.worldID, false);
-		List<MinionIdentity> worldItems = Components.LiveMinionIdentities.GetWorldItems(base.worldID, false);
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null);
-		if (worldItems.Count == 0)
+		if (this.minionsWithBladders.Count == 0)
 		{
 			result.opinion = ColonyDiagnostic.DiagnosticResult.Opinion.Normal;
-			result.Message = base.NO_MINIONS;
+			result.Message = this.NO_MINIONS_WITH_BLADDER;
 		}
 		else
 		{
@@ -54,23 +51,23 @@ public class ToiletDiagnostic : ColonyDiagnostic
 		return result;
 	}
 
-	private ColonyDiagnostic.DiagnosticResult CheckBladders()
+		private ColonyDiagnostic.DiagnosticResult CheckBladders()
 	{
-		List<MinionIdentity> worldItems = Components.LiveMinionIdentities.GetWorldItems(base.worldID, false);
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null);
-		if (worldItems.Count == 0)
+		if (this.minionsWithBladders.Count == 0)
 		{
 			result.opinion = ColonyDiagnostic.DiagnosticResult.Opinion.Normal;
-			result.Message = base.NO_MINIONS;
+			result.Message = this.NO_MINIONS_WITH_BLADDER;
 		}
 		else
 		{
 			result.opinion = ColonyDiagnostic.DiagnosticResult.Opinion.Normal;
 			result.Message = UI.COLONY_DIAGNOSTICS.TOILETDIAGNOSTIC.NORMAL;
-			foreach (MinionIdentity cmp in worldItems)
+			WorldContainer world = ClusterManager.Instance.GetWorld(base.worldID);
+			foreach (PeeChoreMonitor.Instance instance in Components.CriticalBladders.Items)
 			{
-				PeeChoreMonitor.Instance smi = cmp.GetSMI<PeeChoreMonitor.Instance>();
-				if (smi != null && smi.IsCritical())
+				int myWorldId = instance.master.gameObject.GetMyWorldId();
+				if (myWorldId == base.worldID || world.GetChildWorldIds().Contains(myWorldId))
 				{
 					result.opinion = ColonyDiagnostic.DiagnosticResult.Opinion.Warning;
 					result.Message = UI.COLONY_DIAGNOSTICS.TOILETDIAGNOSTIC.TOILET_URGENT;
@@ -81,27 +78,50 @@ public class ToiletDiagnostic : ColonyDiagnostic
 		return result;
 	}
 
-	public override ColonyDiagnostic.DiagnosticResult Evaluate()
+		private bool MinionFilter(MinionIdentity minion)
 	{
-		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, base.NO_MINIONS, null);
+		return minion.modifiers.amounts.Has(Db.Get().Amounts.Bladder);
+	}
+
+		public override ColonyDiagnostic.DiagnosticResult Evaluate()
+	{
+		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, this.NO_MINIONS_WITH_BLADDER, null);
 		if (ColonyDiagnosticUtility.IgnoreRocketsWithNoCrewRequested(base.worldID, out result))
 		{
 			return result;
 		}
+		this.RefreshData();
 		return base.Evaluate();
 	}
 
-	public override string GetAverageValueString()
+		private void RefreshData()
 	{
-		List<IUsable> worldItems = Components.Toilets.GetWorldItems(base.worldID, false);
-		int num = worldItems.Count;
-		for (int i = 0; i < worldItems.Count; i++)
+		this.minionsWithBladders = Components.LiveMinionIdentities.GetWorldItems(base.worldID, true, new Func<MinionIdentity, bool>(this.MinionFilter));
+		this.toilets = Components.Toilets.GetWorldItems(base.worldID, true);
+	}
+
+		public override string GetAverageValueString()
+	{
+		if (this.minionsWithBladders == null || this.minionsWithBladders.Count == 0)
 		{
-			if (!worldItems[i].IsUsable())
+			this.RefreshData();
+		}
+		int num = this.toilets.Count;
+		for (int i = 0; i < this.toilets.Count; i++)
+		{
+			if (!this.toilets[i].IsNullOrDestroyed() && !this.toilets[i].IsUsable())
 			{
 				num--;
 			}
 		}
-		return num.ToString() + ":" + Components.LiveMinionIdentities.GetWorldItems(base.worldID, false).Count.ToString();
+		return num.ToString() + ":" + this.minionsWithBladders.Count.ToString();
 	}
+
+		private const bool INCLUDE_CHILD_WORLDS = true;
+
+		private List<MinionIdentity> minionsWithBladders;
+
+		private List<IUsable> toilets;
+
+		private readonly string NO_MINIONS_WITH_BLADDER;
 }

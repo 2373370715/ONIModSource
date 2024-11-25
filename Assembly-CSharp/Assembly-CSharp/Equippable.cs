@@ -7,17 +7,17 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor, IQuality
 {
-	public global::QualityLevel GetQuality()
+		public global::QualityLevel GetQuality()
 	{
 		return this.quality;
 	}
 
-	public void SetQuality(global::QualityLevel level)
+		public void SetQuality(global::QualityLevel level)
 	{
 		this.quality = level;
 	}
 
-			public EquipmentDef def
+				public EquipmentDef def
 	{
 		get
 		{
@@ -29,7 +29,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (this.def.AdditionalTags != null)
@@ -41,8 +41,9 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
+		Components.AssignableItems.Add(this);
 		if (this.isEquipped)
 		{
 			if (this.assignee != null && this.assignee is MinionIdentity)
@@ -67,7 +68,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		base.Subscribe<Equippable>(1969584890, Equippable.SetDestroyedTrueDelegate);
 	}
 
-	public KAnimFile GetBuildOverride()
+		public KAnimFile GetBuildOverride()
 	{
 		EquippableFacade component = base.GetComponent<EquippableFacade>();
 		if (component == null || component.BuildOverride == null)
@@ -77,7 +78,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		return Assets.GetAnim(component.BuildOverride);
 	}
 
-	public override void Assign(IAssignableIdentity new_assignee)
+		public override void Assign(IAssignableIdentity new_assignee)
 	{
 		if (new_assignee == this.assignee)
 		{
@@ -106,7 +107,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		base.Assign(new_assignee);
 	}
 
-	public override void Unassign()
+		public override void Unassign()
 	{
 		if (this.isEquipped)
 		{
@@ -116,7 +117,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		base.Unassign();
 	}
 
-	public void OnEquip(AssignableSlotInstance slot)
+		public void OnEquip(AssignableSlotInstance slot)
 	{
 		this.isEquipped = true;
 		if (SelectTool.Instance.selected == this.selectable)
@@ -143,7 +144,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		targetGameObject.Trigger(-210173199, this);
 	}
 
-	public void OnUnequip()
+		public void OnUnequip()
 	{
 		this.isEquipped = false;
 		if (this.destroyed)
@@ -191,7 +192,7 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		}
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		if (this.def != null)
 		{
@@ -208,31 +209,31 @@ public class Equippable : Assignable, ISaveLoadable, IGameObjectEffectDescriptor
 		return new List<Descriptor>();
 	}
 
-	private global::QualityLevel quality;
+		private global::QualityLevel quality;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private EquippableWorkable equippableWorkable;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private EquippableFacade facade;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	public DefHandle defHandle;
+		public DefHandle defHandle;
 
-	[Serialize]
+		[Serialize]
 	public bool isEquipped;
 
-	private bool destroyed;
+		private bool destroyed;
 
-	[Serialize]
+		[Serialize]
 	public bool unequippable = true;
 
-	[Serialize]
+		[Serialize]
 	public bool hideInCodex;
 
-	private static readonly EventSystem.IntraObjectHandler<Equippable> SetDestroyedTrueDelegate = new EventSystem.IntraObjectHandler<Equippable>(delegate(Equippable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Equippable> SetDestroyedTrueDelegate = new EventSystem.IntraObjectHandler<Equippable>(delegate(Equippable component, object data)
 	{
 		component.destroyed = true;
 	});

@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class MultiSliderSideScreen : SideScreenContent
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		IMultiSliderControl component = target.GetComponent<IMultiSliderControl>();
 		return component != null && component.SidescreenEnabled();
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -23,7 +23,7 @@ public class MultiSliderSideScreen : SideScreenContent
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		while (this.liveSliders.Count < this.target.sliderControls.Length)
 		{
@@ -62,13 +62,13 @@ public class MultiSliderSideScreen : SideScreenContent
 		}
 	}
 
-	public LayoutElement sliderPrefab;
+		public LayoutElement sliderPrefab;
 
-	public RectTransform sliderContainer;
+		public RectTransform sliderContainer;
 
-	private IMultiSliderControl target;
+		private IMultiSliderControl target;
 
-	private List<GameObject> liveSliders = new List<GameObject>();
+		private List<GameObject> liveSliders = new List<GameObject>();
 
-	private List<SliderSet> sliderSets = new List<SliderSet>();
+		private List<SliderSet> sliderSets = new List<SliderSet>();
 }

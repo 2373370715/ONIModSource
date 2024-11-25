@@ -1,6 +1,3 @@
-﻿using System;
-
-internal interface IQuality
-{
-	QualityLevel GetQuality();
+﻿internal interface IQuality {
+    QualityLevel GetQuality();
 }

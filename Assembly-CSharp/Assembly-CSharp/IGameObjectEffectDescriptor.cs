@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IGameObjectEffectDescriptor
 {
-	List<Descriptor> GetDescriptors(GameObject go);
+		List<Descriptor> GetDescriptors(GameObject go);
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AssignmentGroupControllerSideScreen : KScreen
 {
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (show)
@@ -14,7 +14,7 @@ public class AssignmentGroupControllerSideScreen : KScreen
 		}
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		for (int i = 0; i < this.identityRowMap.Count; i++)
 		{
@@ -24,13 +24,13 @@ public class AssignmentGroupControllerSideScreen : KScreen
 		base.OnCmpDisable();
 	}
 
-	public void SetTarget(GameObject target)
+		public void SetTarget(GameObject target)
 	{
 		this.target = target.GetComponent<AssignmentGroupController>();
 		this.RefreshRows();
 	}
 
-	private void RefreshRows()
+		private void RefreshRows()
 	{
 		int num = 0;
 		WorldContainer myWorld = this.target.GetMyWorld();
@@ -128,7 +128,7 @@ public class AssignmentGroupControllerSideScreen : KScreen
 		this.minionRowContainer.GetComponent<QuickLayout>().ForceUpdate();
 	}
 
-	private string UpdateToolTip(MinionAssignablesProxy minion, bool offworld)
+		private string UpdateToolTip(MinionAssignablesProxy minion, bool offworld)
 	{
 		string text = this.target.CheckMinionIsMember(minion) ? UI.UISIDESCREENS.ASSIGNMENTGROUPCONTROLLER.TOOLTIPS.UNASSIGN : UI.UISIDESCREENS.ASSIGNMENTGROUPCONTROLLER.TOOLTIPS.ASSIGN;
 		if (offworld)
@@ -145,28 +145,28 @@ public class AssignmentGroupControllerSideScreen : KScreen
 		return text;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject header;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject minionRowPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject footer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject minionRowContainer;
 
-	private AssignmentGroupController target;
+		private AssignmentGroupController target;
 
-	private List<GameObject> identityRowMap = new List<GameObject>();
+		private List<GameObject> identityRowMap = new List<GameObject>();
 
-	private struct RowSortHelper
+		private struct RowSortHelper
 	{
-		public MinionAssignablesProxy minion;
+				public MinionAssignablesProxy minion;
 
-		public bool isPilot;
+				public bool isPilot;
 
-		public bool isSameWorld;
+				public bool isSameWorld;
 	}
 }

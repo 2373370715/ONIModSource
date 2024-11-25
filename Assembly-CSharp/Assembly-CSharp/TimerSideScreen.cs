@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class TimerSideScreen : SideScreenContent, IRenderEveryTick
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.labelHeaderOnDuration.text = UI.UISIDESCREENS.TIMER_SIDE_SCREEN.ON;
 		this.labelHeaderOffDuration.text = UI.UISIDESCREENS.TIMER_SIDE_SCREEN.OFF;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.modeButton.onClick += delegate()
@@ -32,12 +32,12 @@ public class TimerSideScreen : SideScreenContent, IRenderEveryTick
 		this.offDurationSlider.wholeNumbers = false;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<LogicTimerSensor>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.greenActiveZone.color = GlobalAssets.Instance.colorSet.logicOnSidescreen;
 		this.redActiveZone.color = GlobalAssets.Instance.colorSet.logicOffSidescreen;
@@ -58,7 +58,7 @@ public class TimerSideScreen : SideScreenContent, IRenderEveryTick
 		});
 	}
 
-	private void UpdateVisualsForNewTarget()
+		private void UpdateVisualsForNewTarget()
 	{
 		float onDuration = this.targetTimedSwitch.onDuration;
 		float offDuration = this.targetTimedSwitch.offDuration;
@@ -100,7 +100,7 @@ public class TimerSideScreen : SideScreenContent, IRenderEveryTick
 		this.modeButton.GetComponentInChildren<LocText>().text = (displayCyclesMode ? UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_CYCLES : UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_SECONDS);
 	}
 
-	private void ToggleMode()
+		private void ToggleMode()
 	{
 		this.cyclesMode = !this.cyclesMode;
 		this.targetTimedSwitch.displayCyclesMode = this.cyclesMode;
@@ -133,7 +133,7 @@ public class TimerSideScreen : SideScreenContent, IRenderEveryTick
 		this.modeButton.GetComponentInChildren<LocText>().text = (this.cyclesMode ? UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_CYCLES : UI.UISIDESCREENS.TIMER_SIDE_SCREEN.MODE_LABEL_SECONDS);
 	}
 
-	private void ChangeSetting()
+		private void ChangeSetting()
 	{
 		this.targetTimedSwitch.onDuration = (this.cyclesMode ? (this.onDurationSlider.value * 600f) : this.onDurationSlider.value);
 		this.targetTimedSwitch.offDuration = (this.cyclesMode ? (this.offDurationSlider.value * 600f) : this.offDurationSlider.value);
@@ -161,14 +161,14 @@ public class TimerSideScreen : SideScreenContent, IRenderEveryTick
 		}
 	}
 
-	private void ReconfigureRingVisuals()
+		private void ReconfigureRingVisuals()
 	{
 		this.phaseLength = this.targetTimedSwitch.onDuration + this.targetTimedSwitch.offDuration;
 		this.greenActiveZone.fillAmount = this.targetTimedSwitch.onDuration / this.phaseLength;
 		this.redActiveZone.fillAmount = this.targetTimedSwitch.offDuration / this.phaseLength;
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		if (this.phaseLength == 0f)
 		{
@@ -192,7 +192,7 @@ public class TimerSideScreen : SideScreenContent, IRenderEveryTick
 		this.currentTimeMarker.Rotate(0f, 0f, (this.targetTimedSwitch.onDuration + this.targetTimedSwitch.timeElapsedInCurrentState) / this.phaseLength * -360f);
 	}
 
-	private void UpdateDurationValueFromTextInput(float newValue, KSlider slider)
+		private void UpdateDurationValueFromTextInput(float newValue, KSlider slider)
 	{
 		if (newValue < slider.minValue)
 		{
@@ -212,62 +212,62 @@ public class TimerSideScreen : SideScreenContent, IRenderEveryTick
 		slider.value = newValue;
 	}
 
-	private void ResetTimer()
+		private void ResetTimer()
 	{
 		this.targetTimedSwitch.ResetTimer();
 	}
 
-	public Image greenActiveZone;
+		public Image greenActiveZone;
 
-	public Image redActiveZone;
+		public Image redActiveZone;
 
-	private LogicTimerSensor targetTimedSwitch;
+		private LogicTimerSensor targetTimedSwitch;
 
-	public KToggle modeButton;
+		public KToggle modeButton;
 
-	public KButton resetButton;
+		public KButton resetButton;
 
-	public KSlider onDurationSlider;
+		public KSlider onDurationSlider;
 
-	[SerializeField]
+		[SerializeField]
 	private KNumberInputField onDurationNumberInput;
 
-	public KSlider offDurationSlider;
+		public KSlider offDurationSlider;
 
-	[SerializeField]
+		[SerializeField]
 	private KNumberInputField offDurationNumberInput;
 
-	public RectTransform endIndicator;
+		public RectTransform endIndicator;
 
-	public RectTransform currentTimeMarker;
+		public RectTransform currentTimeMarker;
 
-	public LocText labelHeaderOnDuration;
+		public LocText labelHeaderOnDuration;
 
-	public LocText labelHeaderOffDuration;
+		public LocText labelHeaderOffDuration;
 
-	public LocText labelValueOnDuration;
+		public LocText labelValueOnDuration;
 
-	public LocText labelValueOffDuration;
+		public LocText labelValueOffDuration;
 
-	public LocText timeLeft;
+		public LocText timeLeft;
 
-	public float phaseLength;
+		public float phaseLength;
 
-	private bool cyclesMode;
+		private bool cyclesMode;
 
-	[SerializeField]
+		[SerializeField]
 	private float minSeconds;
 
-	[SerializeField]
+		[SerializeField]
 	private float maxSeconds = 600f;
 
-	[SerializeField]
+		[SerializeField]
 	private float minCycles;
 
-	[SerializeField]
+		[SerializeField]
 	private float maxCycles = 10f;
 
-	private const int CYCLEMODE_DECIMALS = 2;
+		private const int CYCLEMODE_DECIMALS = 2;
 
-	private const int SECONDSMODE_DECIMALS = 1;
+		private const int SECONDSMODE_DECIMALS = 1;
 }

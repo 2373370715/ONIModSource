@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class ConditionHasEngine : ProcessCondition
 {
-	public ConditionHasEngine(ILaunchableRocket launchable)
+		public ConditionHasEngine(ILaunchableRocket launchable)
 	{
 		this.launchable = launchable;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.launchable.LaunchableGameObject.GetComponent<AttachableBuilding>()))
 		{
@@ -21,7 +21,7 @@ public class ConditionHasEngine : ProcessCondition
 		return ProcessCondition.Status.Failure;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		string result;
 		if (status != ProcessCondition.Status.Failure)
@@ -42,7 +42,7 @@ public class ConditionHasEngine : ProcessCondition
 		return result;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		string result;
 		if (status != ProcessCondition.Status.Failure)
@@ -63,10 +63,10 @@ public class ConditionHasEngine : ProcessCondition
 		return result;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private ILaunchableRocket launchable;
+		private ILaunchableRocket launchable;
 }

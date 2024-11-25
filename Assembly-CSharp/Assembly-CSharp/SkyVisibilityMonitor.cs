@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class SkyVisibilityMonitor : GameStateMachine<SkyVisibilityMonitor, SkyVisibilityMonitor.Instance, IStateMachineTarget, SkyVisibilityMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.Update(new Action<SkyVisibilityMonitor.Instance, float>(SkyVisibilityMonitor.CheckSkyVisibility), UpdateRate.SIM_1000ms, false);
 	}
 
-	public static void CheckSkyVisibility(SkyVisibilityMonitor.Instance smi, float dt)
+		public static void CheckSkyVisibility(SkyVisibilityMonitor.Instance smi, float dt)
 	{
 		bool hasSkyVisibility = smi.HasSkyVisibility;
 		ValueTuple<bool, float> visibilityOf = smi.def.skyVisibilityInfo.GetVisibilityOf(smi.gameObject);
@@ -27,14 +27,14 @@ public class SkyVisibilityMonitor : GameStateMachine<SkyVisibilityMonitor, SkyVi
 		smi.TriggerVisibilityChange();
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public SkyVisibilityInfo skyVisibilityInfo;
+				public SkyVisibilityInfo skyVisibilityInfo;
 	}
 
-	public new class Instance : GameStateMachine<SkyVisibilityMonitor, SkyVisibilityMonitor.Instance, IStateMachineTarget, SkyVisibilityMonitor.Def>.GameInstance, BuildingStatusItems.ISkyVisInfo
+		public new class Instance : GameStateMachine<SkyVisibilityMonitor, SkyVisibilityMonitor.Instance, IStateMachineTarget, SkyVisibilityMonitor.Def>.GameInstance, BuildingStatusItems.ISkyVisInfo
 	{
-				public bool HasSkyVisibility
+						public bool HasSkyVisibility
 		{
 			get
 			{
@@ -42,7 +42,7 @@ public class SkyVisibilityMonitor : GameStateMachine<SkyVisibilityMonitor, SkyVi
 			}
 		}
 
-				public float PercentClearSky
+						public float PercentClearSky
 		{
 			get
 			{
@@ -50,28 +50,28 @@ public class SkyVisibilityMonitor : GameStateMachine<SkyVisibilityMonitor, SkyVi
 			}
 		}
 
-		public void Internal_SetPercentClearSky(float percent01)
+				public void Internal_SetPercentClearSky(float percent01)
 		{
 			this.percentClearSky01 = percent01;
 		}
 
-		float BuildingStatusItems.ISkyVisInfo.GetPercentVisible01()
+				float BuildingStatusItems.ISkyVisInfo.GetPercentVisible01()
 		{
 			return this.percentClearSky01;
 		}
 
-		public Instance(IStateMachineTarget master, SkyVisibilityMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, SkyVisibilityMonitor.Def def) : base(master, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			SkyVisibilityMonitor.CheckSkyVisibility(this, 0f);
 			this.TriggerVisibilityChange();
 		}
 
-		public void TriggerVisibilityChange()
+				public void TriggerVisibilityChange()
 		{
 			if (this.visibilityStatusItem != null)
 			{
@@ -84,12 +84,12 @@ public class SkyVisibilityMonitor : GameStateMachine<SkyVisibilityMonitor, SkyVi
 			}
 		}
 
-		private float percentClearSky01;
+				private float percentClearSky01;
 
-		public System.Action SkyVisibilityChanged;
+				public System.Action SkyVisibilityChanged;
 
-		private StatusItem visibilityStatusItem;
+				private StatusItem visibilityStatusItem;
 
-		private static readonly Operational.Flag skyVisibilityFlag = new Operational.Flag("sky visibility", Operational.Flag.Type.Requirement);
+				private static readonly Operational.Flag skyVisibilityFlag = new Operational.Flag("sky visibility", Operational.Flag.Type.Requirement);
 	}
 }

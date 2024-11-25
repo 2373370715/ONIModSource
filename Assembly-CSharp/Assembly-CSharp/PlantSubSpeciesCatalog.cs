@@ -10,12 +10,12 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class PlantSubSpeciesCatalog : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		PlantSubSpeciesCatalog.Instance = null;
 	}
 
-		public bool AnyNonOriginalDiscovered
+			public bool AnyNonOriginalDiscovered
 	{
 		get
 		{
@@ -30,24 +30,24 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		PlantSubSpeciesCatalog.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.EnsureOriginalSubSpecies();
 	}
 
-	public List<Tag> GetAllDiscoveredSpecies()
+		public List<Tag> GetAllDiscoveredSpecies()
 	{
 		return this.discoveredSubspeciesBySpecies.Keys.ToList<Tag>();
 	}
 
-	public List<PlantSubSpeciesCatalog.SubSpeciesInfo> GetAllSubSpeciesForSpecies(Tag speciesID)
+		public List<PlantSubSpeciesCatalog.SubSpeciesInfo> GetAllSubSpeciesForSpecies(Tag speciesID)
 	{
 		List<PlantSubSpeciesCatalog.SubSpeciesInfo> result;
 		if (this.discoveredSubspeciesBySpecies.TryGetValue(speciesID, out result))
@@ -57,7 +57,7 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 		return null;
 	}
 
-	public bool GetOriginalSubSpecies(Tag speciesID, out PlantSubSpeciesCatalog.SubSpeciesInfo subSpeciesInfo)
+		public bool GetOriginalSubSpecies(Tag speciesID, out PlantSubSpeciesCatalog.SubSpeciesInfo subSpeciesInfo)
 	{
 		if (!this.discoveredSubspeciesBySpecies.ContainsKey(speciesID))
 		{
@@ -68,12 +68,12 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 		return true;
 	}
 
-	public PlantSubSpeciesCatalog.SubSpeciesInfo GetSubSpecies(Tag speciesID, Tag subSpeciesID)
+		public PlantSubSpeciesCatalog.SubSpeciesInfo GetSubSpecies(Tag speciesID, Tag subSpeciesID)
 	{
 		return this.discoveredSubspeciesBySpecies[speciesID].Find((PlantSubSpeciesCatalog.SubSpeciesInfo i) => i.ID == subSpeciesID);
 	}
 
-	public PlantSubSpeciesCatalog.SubSpeciesInfo FindSubSpecies(Tag subSpeciesID)
+		public PlantSubSpeciesCatalog.SubSpeciesInfo FindSubSpecies(Tag subSpeciesID)
 	{
 		Predicate<PlantSubSpeciesCatalog.SubSpeciesInfo> <>9__0;
 		foreach (KeyValuePair<Tag, List<PlantSubSpeciesCatalog.SubSpeciesInfo>> keyValuePair in this.discoveredSubspeciesBySpecies)
@@ -93,7 +93,7 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 		return default(PlantSubSpeciesCatalog.SubSpeciesInfo);
 	}
 
-	public void DiscoverSubSpecies(PlantSubSpeciesCatalog.SubSpeciesInfo newSubSpeciesInfo, MutantPlant source)
+		public void DiscoverSubSpecies(PlantSubSpeciesCatalog.SubSpeciesInfo newSubSpeciesInfo, MutantPlant source)
 	{
 		if (!this.discoveredSubspeciesBySpecies[newSubSpeciesInfo.speciesID].Contains(newSubSpeciesInfo))
 		{
@@ -103,13 +103,13 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 		}
 	}
 
-	private string NewSubspeciesTooltipCB(List<Notification> notifications, object data)
+		private string NewSubspeciesTooltipCB(List<Notification> notifications, object data)
 	{
 		PlantSubSpeciesCatalog.SubSpeciesInfo subSpeciesInfo = (PlantSubSpeciesCatalog.SubSpeciesInfo)data;
 		return MISC.NOTIFICATIONS.NEWMUTANTSEED.TOOLTIP.Replace("{Plant}", subSpeciesInfo.speciesID.ProperName());
 	}
 
-	public void IdentifySubSpecies(Tag subSpeciesID)
+		public void IdentifySubSpecies(Tag subSpeciesID)
 	{
 		if (this.identifiedSubSpecies.Add(subSpeciesID))
 		{
@@ -127,17 +127,17 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 		}
 	}
 
-	public bool IsSubSpeciesIdentified(Tag subSpeciesID)
+		public bool IsSubSpeciesIdentified(Tag subSpeciesID)
 	{
 		return this.identifiedSubSpecies.Contains(subSpeciesID);
 	}
 
-	public List<PlantSubSpeciesCatalog.SubSpeciesInfo> GetAllUnidentifiedSubSpecies(Tag speciesID)
+		public List<PlantSubSpeciesCatalog.SubSpeciesInfo> GetAllUnidentifiedSubSpecies(Tag speciesID)
 	{
 		return this.discoveredSubspeciesBySpecies[speciesID].FindAll((PlantSubSpeciesCatalog.SubSpeciesInfo ss) => !this.IsSubSpeciesIdentified(ss.ID));
 	}
 
-	public bool IsValidPlantableSeed(Tag seedID, Tag subspeciesID)
+		public bool IsValidPlantableSeed(Tag seedID, Tag subspeciesID)
 	{
 		if (!seedID.IsValid)
 		{
@@ -152,7 +152,7 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 		return allSubSpeciesForSpecies != null && allSubSpeciesForSpecies.FindIndex((PlantSubSpeciesCatalog.SubSpeciesInfo s) => s.ID == subspeciesID) != -1 && PlantSubSpeciesCatalog.Instance.IsSubSpeciesIdentified(subspeciesID);
 	}
 
-	private void EnsureOriginalSubSpecies()
+		private void EnsureOriginalSubSpecies()
 	{
 		foreach (GameObject gameObject in Assets.GetPrefabsWithComponent<MutantPlant>())
 		{
@@ -167,18 +167,18 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 		}
 	}
 
-	public static PlantSubSpeciesCatalog Instance;
+		public static PlantSubSpeciesCatalog Instance;
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<Tag, List<PlantSubSpeciesCatalog.SubSpeciesInfo>> discoveredSubspeciesBySpecies = new Dictionary<Tag, List<PlantSubSpeciesCatalog.SubSpeciesInfo>>();
 
-	[Serialize]
+		[Serialize]
 	private HashSet<Tag> identifiedSubSpecies = new HashSet<Tag>();
 
-	[Serializable]
+		[Serializable]
 	public struct SubSpeciesInfo : IEquatable<PlantSubSpeciesCatalog.SubSpeciesInfo>
 	{
-				public bool IsValid
+						public bool IsValid
 		{
 			get
 			{
@@ -186,7 +186,7 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 			}
 		}
 
-				public bool IsOriginal
+						public bool IsOriginal
 		{
 			get
 			{
@@ -194,14 +194,14 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 			}
 		}
 
-		public SubSpeciesInfo(Tag speciesID, List<string> mutationIDs)
+				public SubSpeciesInfo(Tag speciesID, List<string> mutationIDs)
 		{
 			this.speciesID = speciesID;
 			this.mutationIDs = ((mutationIDs != null) ? new List<string>(mutationIDs) : new List<string>());
 			this.ID = PlantSubSpeciesCatalog.SubSpeciesInfo.SubSpeciesIDFromMutations(speciesID, mutationIDs);
 		}
 
-		public static Tag SubSpeciesIDFromMutations(Tag speciesID, List<string> mutationIDs)
+				public static Tag SubSpeciesIDFromMutations(Tag speciesID, List<string> mutationIDs)
 		{
 			if (mutationIDs == null || mutationIDs.Count == 0)
 			{
@@ -218,7 +218,7 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 			return stringBuilder.ToString().ToTag();
 		}
 
-		public string GetMutationsNames()
+				public string GetMutationsNames()
 		{
 			if (this.mutationIDs == null || this.mutationIDs.Count == 0)
 			{
@@ -227,7 +227,7 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 			return string.Join(", ", Db.Get().PlantMutations.GetNamesForMutations(this.mutationIDs));
 		}
 
-		public string GetNameWithMutations(string properName, bool identified, bool cleanOriginal)
+				public string GetNameWithMutations(string properName, bool identified, bool cleanOriginal)
 		{
 			string result;
 			if (this.mutationIDs == null || this.mutationIDs.Count == 0)
@@ -252,32 +252,32 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 			return result;
 		}
 
-		public static bool operator ==(PlantSubSpeciesCatalog.SubSpeciesInfo obj1, PlantSubSpeciesCatalog.SubSpeciesInfo obj2)
+				public static bool operator ==(PlantSubSpeciesCatalog.SubSpeciesInfo obj1, PlantSubSpeciesCatalog.SubSpeciesInfo obj2)
 		{
 			return obj1.Equals(obj2);
 		}
 
-		public static bool operator !=(PlantSubSpeciesCatalog.SubSpeciesInfo obj1, PlantSubSpeciesCatalog.SubSpeciesInfo obj2)
+				public static bool operator !=(PlantSubSpeciesCatalog.SubSpeciesInfo obj1, PlantSubSpeciesCatalog.SubSpeciesInfo obj2)
 		{
 			return !(obj1 == obj2);
 		}
 
-		public override bool Equals(object other)
+				public override bool Equals(object other)
 		{
 			return other is PlantSubSpeciesCatalog.SubSpeciesInfo && this == (PlantSubSpeciesCatalog.SubSpeciesInfo)other;
 		}
 
-		public bool Equals(PlantSubSpeciesCatalog.SubSpeciesInfo other)
+				public bool Equals(PlantSubSpeciesCatalog.SubSpeciesInfo other)
 		{
 			return this.ID == other.ID;
 		}
 
-		public override int GetHashCode()
+				public override int GetHashCode()
 		{
 			return this.ID.GetHashCode();
 		}
 
-		public string GetMutationsTooltip()
+				public string GetMutationsTooltip()
 		{
 			if (this.mutationIDs == null || this.mutationIDs.Count == 0)
 			{
@@ -292,12 +292,12 @@ public class PlantSubSpeciesCatalog : KMonoBehaviour
 			return CREATURES.STATUSITEMS.SPECIFICPLANTMUTATION.TOOLTIP.Replace("{MutationName}", plantMutation.Name) + "\n" + plantMutation.GetTooltip();
 		}
 
-		public Tag speciesID;
+				public Tag speciesID;
 
-		public Tag ID;
+				public Tag ID;
 
-		public List<string> mutationIDs;
+				public List<string> mutationIDs;
 
-		private const string ORIGINAL_SUFFIX = "_Original";
+				private const string ORIGINAL_SUFFIX = "_Original";
 	}
 }

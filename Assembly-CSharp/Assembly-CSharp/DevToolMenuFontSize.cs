@@ -3,15 +3,15 @@ using ImGuiNET;
 
 public class DevToolMenuFontSize
 {
-			public bool initialized { get; private set; }
+				public bool initialized { get; private set; }
 
-	public void RefreshFontSize()
+		public void RefreshFontSize()
 	{
 		DevToolMenuFontSize.FontSizeCategory @int = (DevToolMenuFontSize.FontSizeCategory)KPlayerPrefs.GetInt("Imgui_font_size_category", 2);
 		this.SetFontSizeCategory(@int);
 	}
 
-	public void InitializeIfNeeded()
+		public void InitializeIfNeeded()
 	{
 		if (!this.initialized)
 		{
@@ -20,7 +20,7 @@ public class DevToolMenuFontSize
 		}
 	}
 
-	public void DrawMenu()
+		public void DrawMenu()
 	{
 		if (ImGui.BeginMenu("Settings"))
 		{
@@ -52,7 +52,7 @@ public class DevToolMenuFontSize
 		}
 	}
 
-	public unsafe void SetFontSizeCategory(DevToolMenuFontSize.FontSizeCategory size)
+		public unsafe void SetFontSizeCategory(DevToolMenuFontSize.FontSizeCategory size)
 	{
 		this.fontSizeCategory = size;
 		KPlayerPrefs.SetInt("Imgui_font_size_category", (int)size);
@@ -64,15 +64,15 @@ public class DevToolMenuFontSize
 		}
 	}
 
-	public const string SETTINGS_KEY_FONT_SIZE_CATEGORY = "Imgui_font_size_category";
+		public const string SETTINGS_KEY_FONT_SIZE_CATEGORY = "Imgui_font_size_category";
 
-	private DevToolMenuFontSize.FontSizeCategory fontSizeCategory;
+		private DevToolMenuFontSize.FontSizeCategory fontSizeCategory;
 
-	public enum FontSizeCategory
+		public enum FontSizeCategory
 	{
-		Fabric,
-		Small,
-		Regular,
-		Large
+				Fabric,
+				Small,
+				Regular,
+				Large
 	}
 }

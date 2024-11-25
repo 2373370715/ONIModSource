@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class ForestForagePlantPlantedConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "ForestForagePlantPlanted";
 		string name = STRINGS.CREATURES.SPECIES.FORESTFORAGEPLANTPLANTED.NAME;
@@ -36,13 +36,13 @@ public class ForestForagePlantPlantedConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "ForestForagePlantPlanted";
+		public const string ID = "ForestForagePlantPlanted";
 }

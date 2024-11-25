@@ -6,9 +6,9 @@ using KSerialization;
 [DebuggerDisplay("{name} {WattsUsed}W")]
 public class EnergyConsumerSelfSustaining : EnergyConsumer
 {
-			public event System.Action OnConnectionChanged;
+				public event System.Action OnConnectionChanged;
 
-		public override bool IsPowered
+			public override bool IsPowered
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class EnergyConsumerSelfSustaining : EnergyConsumer
 		}
 	}
 
-		public bool IsExternallyPowered
+			public bool IsExternallyPowered
 	{
 		get
 		{
@@ -24,12 +24,12 @@ public class EnergyConsumerSelfSustaining : EnergyConsumer
 		}
 	}
 
-	public void SetSustained(bool isSustained)
+		public void SetSustained(bool isSustained)
 	{
 		this.isSustained = isSustained;
 	}
 
-	public override void SetConnectionStatus(CircuitManager.ConnectionStatus connection_status)
+		public override void SetConnectionStatus(CircuitManager.ConnectionStatus connection_status)
 	{
 		CircuitManager.ConnectionStatus connectionStatus = this.connectionStatus;
 		switch (connection_status)
@@ -57,12 +57,12 @@ public class EnergyConsumerSelfSustaining : EnergyConsumer
 		}
 	}
 
-	public void UpdatePoweredStatus()
+		public void UpdatePoweredStatus()
 	{
 		this.operational.SetFlag(EnergyConsumer.PoweredFlag, this.IsPowered);
 	}
 
-	private bool isSustained;
+		private bool isSustained;
 
-	private CircuitManager.ConnectionStatus connectionStatus;
+		private CircuitManager.ConnectionStatus connectionStatus;
 }

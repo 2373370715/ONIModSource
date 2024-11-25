@@ -5,25 +5,25 @@ using UnityEngine;
 
 public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Instance, IStateMachineTarget, DiggerMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.loop;
 		this.loop.EventTransition(GameHashes.BeginMeteorBombardment, (DiggerMonitor.Instance smi) => Game.Instance, this.dig, (DiggerMonitor.Instance smi) => smi.CanTunnel());
 		this.dig.ToggleBehaviour(GameTags.Creatures.Tunnel, (DiggerMonitor.Instance smi) => true, null).GoTo(this.loop);
 	}
 
-	public GameStateMachine<DiggerMonitor, DiggerMonitor.Instance, IStateMachineTarget, DiggerMonitor.Def>.State loop;
+		public GameStateMachine<DiggerMonitor, DiggerMonitor.Instance, IStateMachineTarget, DiggerMonitor.Def>.State loop;
 
-	public GameStateMachine<DiggerMonitor, DiggerMonitor.Instance, IStateMachineTarget, DiggerMonitor.Def>.State dig;
+		public GameStateMachine<DiggerMonitor, DiggerMonitor.Instance, IStateMachineTarget, DiggerMonitor.Def>.State dig;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-						public int depthToDig { get; set; }
+								public int depthToDig { get; set; }
 	}
 
-	public new class Instance : GameStateMachine<DiggerMonitor, DiggerMonitor.Instance, IStateMachineTarget, DiggerMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<DiggerMonitor, DiggerMonitor.Instance, IStateMachineTarget, DiggerMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, DiggerMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, DiggerMonitor.Def def) : base(master, def)
 		{
 			global::World instance = global::World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Combine(instance.OnSolidChanged, new Action<int>(this.OnSolidChanged));
@@ -32,7 +32,7 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 			master.Subscribe(-766531887, this.OnDestinationReachedDelegate);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.OnCleanUp();
 			global::World instance = global::World.Instance;
@@ -41,12 +41,12 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 			base.master.Unsubscribe(-766531887, this.OnDestinationReachedDelegate);
 		}
 
-		private void OnDestinationReached(object data)
+				private void OnDestinationReached(object data)
 		{
 			this.CheckInSolid();
 		}
 
-		private void CheckInSolid()
+				private void CheckInSolid()
 		{
 			Navigator component = base.gameObject.GetComponent<Navigator>();
 			if (component == null)
@@ -66,12 +66,12 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 			}
 		}
 
-		private void OnSolidChanged(int cell)
+				private void OnSolidChanged(int cell)
 		{
 			this.CheckInSolid();
 		}
 
-		public bool CanTunnel()
+				public bool CanTunnel()
 		{
 			int num = Grid.PosToCell(this);
 			if (global::World.Instance.zoneRenderData.GetSubWorldZoneType(num) == SubWorld.ZoneType.Space)
@@ -89,7 +89,7 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 			return false;
 		}
 
-		private bool FoundValidDigCell()
+				private bool FoundValidDigCell()
 		{
 			int num = base.smi.def.depthToDig;
 			int num2 = Grid.PosToCell(base.smi.master.gameObject);
@@ -108,7 +108,7 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 			return this.lastDigCell != -1;
 		}
 
-		private bool IsValidDigCell(int cell, object arg = null)
+				private bool IsValidDigCell(int cell, object arg = null)
 		{
 			if (Grid.IsValidCell(cell) && Grid.Solid[cell])
 			{
@@ -128,9 +128,9 @@ public class DiggerMonitor : GameStateMachine<DiggerMonitor, DiggerMonitor.Insta
 			return false;
 		}
 
-		[Serialize]
+				[Serialize]
 		public int lastDigCell = -1;
 
-		private Action<object> OnDestinationReachedDelegate;
+				private Action<object> OnDestinationReachedDelegate;
 	}
 }

@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class IncubatorSideScreen : ReceptacleSideScreen
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<EggIncubator>() != null;
 	}
 
-	protected override void SetResultDescriptions(GameObject go)
+		protected override void SetResultDescriptions(GameObject go)
 	{
 		string text = "";
 		InfoDescription component = go.GetComponent<InfoDescription>();
@@ -19,17 +19,17 @@ public class IncubatorSideScreen : ReceptacleSideScreen
 		this.descriptionLabel.SetText(text);
 	}
 
-	protected override bool RequiresAvailableAmountToDeposit()
+		protected override bool RequiresAvailableAmountToDeposit()
 	{
 		return false;
 	}
 
-	protected override Sprite GetEntityIcon(Tag prefabTag)
+		protected override Sprite GetEntityIcon(Tag prefabTag)
 	{
 		return Def.GetUISprite(Assets.GetPrefab(prefabTag), "ui", false).first;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		EggIncubator incubator = target.GetComponent<EggIncubator>();
@@ -41,11 +41,11 @@ public class IncubatorSideScreen : ReceptacleSideScreen
 		};
 	}
 
-	public DescriptorPanel RequirementsDescriptorPanel;
+		public DescriptorPanel RequirementsDescriptorPanel;
 
-	public DescriptorPanel HarvestDescriptorPanel;
+		public DescriptorPanel HarvestDescriptorPanel;
 
-	public DescriptorPanel EffectsDescriptorPanel;
+		public DescriptorPanel EffectsDescriptorPanel;
 
-	public MultiToggle continuousToggle;
+		public MultiToggle continuousToggle;
 }

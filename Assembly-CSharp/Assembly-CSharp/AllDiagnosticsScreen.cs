@@ -6,20 +6,20 @@ using UnityEngine.UI;
 
 public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		AllDiagnosticsScreen.Instance = this;
 		this.ConfigureDebugToggle();
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		AllDiagnosticsScreen.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	private void ConfigureDebugToggle()
+		private void ConfigureDebugToggle()
 	{
 		Game.Instance.Subscribe(1557339983, new Action<object>(this.DebugToggleRefresh));
 		MultiToggle toggle = this.debugNotificationToggleCotainer.GetComponentInChildren<MultiToggle>();
@@ -33,12 +33,12 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		toggle.ChangeState(DebugHandler.NotificationsDisabled ? 1 : 0);
 	}
 
-	private void DebugToggleRefresh(object data = null)
+		private void DebugToggleRefresh(object data = null)
 	{
 		this.debugNotificationToggleCotainer.gameObject.SetActive(DebugHandler.InstantBuildMode);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.ConsumeMouseScroll = true;
@@ -69,7 +69,7 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		this.Show(false);
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (show)
@@ -80,7 +80,7 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.isHiddenButActive)
 		{
@@ -100,12 +100,12 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		base.OnKeyDown(e);
 	}
 
-	public int GetRowCount()
+		public int GetRowCount()
 	{
 		return this.diagnosticRows.Count;
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (this.isHiddenButActive)
 		{
@@ -123,12 +123,12 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 50f;
 	}
 
-	public void Populate(object data = null)
+		public void Populate(object data = null)
 	{
 		this.SpawnRows();
 		foreach (string s in this.diagnosticRows.Keys)
@@ -140,7 +140,7 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		this.RefreshRows();
 	}
 
-	private void SpawnRows()
+		private void SpawnRows()
 	{
 		foreach (KeyValuePair<int, Dictionary<string, ColonyDiagnosticUtility.DisplaySetting>> keyValuePair in ColonyDiagnosticUtility.Instance.diagnosticDisplaySettings)
 		{
@@ -168,7 +168,7 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	private void SpawnRow(ColonyDiagnostic diagnostic, GameObject container)
+		private void SpawnRow(ColonyDiagnostic diagnostic, GameObject container)
 	{
 		if (diagnostic == null)
 		{
@@ -242,12 +242,12 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	private void FilterRowBySearch(Tag tag, string filter)
+		private void FilterRowBySearch(Tag tag, string filter)
 	{
 		this.currentlyDisplayedRows[tag] = this.PassesSearchFilter(tag, filter);
 	}
 
-	private void SearchFilter(string search)
+		private void SearchFilter(string search)
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.diagnosticRows)
 		{
@@ -260,7 +260,7 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		this.SetRowsActive();
 	}
 
-	private bool PassesSearchFilter(Tag tag, string filter)
+		private bool PassesSearchFilter(Tag tag, string filter)
 	{
 		if (string.IsNullOrEmpty(filter))
 		{
@@ -293,7 +293,7 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		return false;
 	}
 
-	private void RefreshPinnedState(string diagnosticID)
+		private void RefreshPinnedState(string diagnosticID)
 	{
 		if (!ColonyDiagnosticUtility.Instance.diagnosticDisplaySettings[ClusterManager.Instance.activeWorldId].ContainsKey(diagnosticID))
 		{
@@ -342,7 +342,7 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		reference.GetComponent<ToolTip>().SetSimpleTooltip(simpleTooltip);
 	}
 
-	public void RefreshRows()
+		public void RefreshRows()
 	{
 		WorldInventory worldInventory = ClusterManager.Instance.GetWorld(ClusterManager.Instance.activeWorldId).worldInventory;
 		if (this.allowRefresh)
@@ -368,7 +368,7 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		this.RefreshSubrows();
 	}
 
-	private void RefreshSubrows()
+		private void RefreshSubrows()
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.diagnosticRows)
 		{
@@ -393,7 +393,7 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	private void RefreshCharts()
+		private void RefreshCharts()
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.diagnosticRows)
 		{
@@ -415,7 +415,7 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	private void SetRowsActive()
+		private void SetRowsActive()
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.diagnosticRows)
 		{
@@ -433,42 +433,50 @@ public class AllDiagnosticsScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
+		if (this.isHiddenButActive)
+		{
+			return;
+		}
 		this.RefreshCharts();
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
+		if (this.isHiddenButActive)
+		{
+			return;
+		}
 		this.RefreshRows();
 	}
 
-	private Dictionary<string, GameObject> diagnosticRows = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> diagnosticRows = new Dictionary<string, GameObject>();
 
-	private Dictionary<string, Dictionary<string, GameObject>> criteriaRows = new Dictionary<string, Dictionary<string, GameObject>>();
+		private Dictionary<string, Dictionary<string, GameObject>> criteriaRows = new Dictionary<string, Dictionary<string, GameObject>>();
 
-	public GameObject rootListContainer;
+		public GameObject rootListContainer;
 
-	public GameObject diagnosticLinePrefab;
+		public GameObject diagnosticLinePrefab;
 
-	public GameObject subDiagnosticLinePrefab;
+		public GameObject subDiagnosticLinePrefab;
 
-	public KButton closeButton;
+		public KButton closeButton;
 
-	public bool allowRefresh = true;
+		public bool allowRefresh = true;
 
-	[SerializeField]
+		[SerializeField]
 	private KInputTextField searchInputField;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton clearSearchButton;
 
-	public static AllDiagnosticsScreen Instance;
+		public static AllDiagnosticsScreen Instance;
 
-	public Dictionary<Tag, bool> currentlyDisplayedRows = new Dictionary<Tag, bool>();
+		public Dictionary<Tag, bool> currentlyDisplayedRows = new Dictionary<Tag, bool>();
 
-	public Dictionary<Tag, bool> subrowContainerOpen = new Dictionary<Tag, bool>();
+		public Dictionary<Tag, bool> subrowContainerOpen = new Dictionary<Tag, bool>();
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform debugNotificationToggleCotainer;
 }

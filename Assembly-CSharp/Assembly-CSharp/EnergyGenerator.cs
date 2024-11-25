@@ -8,7 +8,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSliderControl, ISliderControl
 {
-		public string SliderTitleKey
+			public string SliderTitleKey
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		}
 	}
 
-		public string SliderUnits
+			public string SliderUnits
 	{
 		get
 		{
@@ -24,43 +24,43 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		}
 	}
 
-	public int SliderDecimalPlaces(int index)
+		public int SliderDecimalPlaces(int index)
 	{
 		return 0;
 	}
 
-	public float GetSliderMin(int index)
+		public float GetSliderMin(int index)
 	{
 		return 0f;
 	}
 
-	public float GetSliderMax(int index)
+		public float GetSliderMax(int index)
 	{
 		return 100f;
 	}
 
-	public float GetSliderValue(int index)
+		public float GetSliderValue(int index)
 	{
 		return this.batteryRefillPercent * 100f;
 	}
 
-	public void SetSliderValue(float value, int index)
+		public void SetSliderValue(float value, int index)
 	{
 		this.batteryRefillPercent = value / 100f;
 	}
 
-	string ISliderControl.GetSliderTooltip(int index)
+		string ISliderControl.GetSliderTooltip(int index)
 	{
 		ManualDeliveryKG component = base.GetComponent<ManualDeliveryKG>();
 		return string.Format(Strings.Get("STRINGS.UI.UISIDESCREENS.MANUALDELIVERYGENERATORSIDESCREEN.TOOLTIP"), component.RequestedItemTag.ProperName(), this.batteryRefillPercent * 100f);
 	}
 
-	public string GetSliderTooltipKey(int index)
+		public string GetSliderTooltipKey(int index)
 	{
 		return "STRINGS.UI.UISIDESCREENS.MANUALDELIVERYGENERATORSIDESCREEN.TOOLTIP";
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		EnergyGenerator.EnsureStatusItemAvailable();
@@ -72,7 +72,7 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		EnergyGenerator component = ((GameObject)data).GetComponent<EnergyGenerator>();
 		if (component != null)
@@ -81,13 +81,13 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		}
 	}
 
-	protected void OnActiveChanged(object data)
+		protected void OnActiveChanged(object data)
 	{
 		StatusItem status_item = ((Operational)data).IsActive ? Db.Get().BuildingStatusItems.Wattage : Db.Get().BuildingStatusItems.GeneratorOffline;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, this);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.hasMeter)
@@ -102,7 +102,7 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		}
 	}
 
-	private bool IsConvertible(float dt)
+		private bool IsConvertible(float dt)
 	{
 		bool flag = true;
 		foreach (EnergyGenerator.InputItem inputItem in this.formula.inputs)
@@ -118,7 +118,7 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		return flag;
 	}
 
-	public override void EnergySim200ms(float dt)
+		public override void EnergySim200ms(float dt)
 	{
 		base.EnergySim200ms(dt);
 		if (this.hasMeter)
@@ -190,7 +190,7 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		this.operational.SetActive(value, false);
 	}
 
-	public List<Descriptor> RequirementDescriptors()
+		public List<Descriptor> RequirementDescriptors()
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.formula.inputs == null || this.formula.inputs.Length == 0)
@@ -208,7 +208,7 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		return list;
 	}
 
-	public List<Descriptor> EffectDescriptors()
+		public List<Descriptor> EffectDescriptors()
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.formula.outputs == null || this.formula.outputs.Length == 0)
@@ -233,7 +233,7 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		return list;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		foreach (Descriptor item in this.RequirementDescriptors())
@@ -247,7 +247,7 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		return list;
 	}
 
-		public static StatusItem BatteriesSufficientlyFull
+			public static StatusItem BatteriesSufficientlyFull
 	{
 		get
 		{
@@ -255,7 +255,7 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		}
 	}
 
-	public static void EnsureStatusItemAvailable()
+		public static void EnsureStatusItemAvailable()
 	{
 		if (EnergyGenerator.batteriesSufficientlyFull == null)
 		{
@@ -263,7 +263,7 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		}
 	}
 
-	public static EnergyGenerator.Formula CreateSimpleFormula(Tag input_element, float input_mass_rate, float max_stored_input_mass, SimHashes output_element = SimHashes.Void, float output_mass_rate = 0f, bool store_output_mass = true, CellOffset output_offset = default(CellOffset), float min_output_temperature = 0f)
+		public static EnergyGenerator.Formula CreateSimpleFormula(Tag input_element, float input_mass_rate, float max_stored_input_mass, SimHashes output_element = SimHashes.Void, float output_mass_rate = 0f, bool store_output_mass = true, CellOffset output_offset = default(CellOffset), float min_output_temperature = 0f)
 	{
 		EnergyGenerator.Formula result = default(EnergyGenerator.Formula);
 		result.inputs = new EnergyGenerator.InputItem[]
@@ -284,7 +284,7 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		return result;
 	}
 
-	private void Emit(EnergyGenerator.OutputItem output, float dt, PrimaryElement root_pe)
+		private void Emit(EnergyGenerator.OutputItem output, float dt, PrimaryElement root_pe)
 	{
 		Element element = ElementLoader.FindElementByHash(output.element);
 		float num = output.creationRate * dt;
@@ -324,67 +324,67 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 		}
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ManualDeliveryKG delivery;
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	private float batteryRefillPercent = 0.5f;
 
-	public bool ignoreBatteryRefillPercent;
+		public bool ignoreBatteryRefillPercent;
 
-	public bool hasMeter = true;
+		public bool hasMeter = true;
 
-	private static StatusItem batteriesSufficientlyFull;
+		private static StatusItem batteriesSufficientlyFull;
 
-	public Meter.Offset meterOffset;
+		public Meter.Offset meterOffset;
 
-	[SerializeField]
+		[SerializeField]
 	public EnergyGenerator.Formula formula;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private static readonly EventSystem.IntraObjectHandler<EnergyGenerator> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<EnergyGenerator>(delegate(EnergyGenerator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<EnergyGenerator> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<EnergyGenerator>(delegate(EnergyGenerator component, object data)
 	{
 		component.OnActiveChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<EnergyGenerator> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<EnergyGenerator>(delegate(EnergyGenerator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<EnergyGenerator> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<EnergyGenerator>(delegate(EnergyGenerator component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	[DebuggerDisplay("{tag} -{consumptionRate} kg/s")]
+		[DebuggerDisplay("{tag} -{consumptionRate} kg/s")]
 	[Serializable]
 	public struct InputItem
 	{
-		public InputItem(Tag tag, float consumption_rate, float max_stored_mass)
+				public InputItem(Tag tag, float consumption_rate, float max_stored_mass)
 		{
 			this.tag = tag;
 			this.consumptionRate = consumption_rate;
 			this.maxStoredMass = max_stored_mass;
 		}
 
-		public Tag tag;
+				public Tag tag;
 
-		public float consumptionRate;
+				public float consumptionRate;
 
-		public float maxStoredMass;
+				public float maxStoredMass;
 	}
 
-	[DebuggerDisplay("{element} {creationRate} kg/s")]
+		[DebuggerDisplay("{element} {creationRate} kg/s")]
 	[Serializable]
 	public struct OutputItem
 	{
-		public OutputItem(SimHashes element, float creation_rate, bool store, float min_temperature = 0f)
+				public OutputItem(SimHashes element, float creation_rate, bool store, float min_temperature = 0f)
 		{
 			this = new EnergyGenerator.OutputItem(element, creation_rate, store, CellOffset.none, min_temperature);
 		}
 
-		public OutputItem(SimHashes element, float creation_rate, bool store, CellOffset emit_offset, float min_temperature = 0f)
+				public OutputItem(SimHashes element, float creation_rate, bool store, CellOffset emit_offset, float min_temperature = 0f)
 		{
 			this.element = element;
 			this.creationRate = creation_rate;
@@ -393,24 +393,24 @@ public class EnergyGenerator : Generator, IGameObjectEffectDescriptor, ISingleSl
 			this.minTemperature = min_temperature;
 		}
 
-		public SimHashes element;
+				public SimHashes element;
 
-		public float creationRate;
+				public float creationRate;
 
-		public bool store;
+				public bool store;
 
-		public CellOffset emitOffset;
+				public CellOffset emitOffset;
 
-		public float minTemperature;
+				public float minTemperature;
 	}
 
-	[Serializable]
+		[Serializable]
 	public struct Formula
 	{
-		public EnergyGenerator.InputItem[] inputs;
+				public EnergyGenerator.InputItem[] inputs;
 
-		public EnergyGenerator.OutputItem[] outputs;
+				public EnergyGenerator.OutputItem[] outputs;
 
-		public Tag meterTag;
+				public Tag meterTag;
 	}
 }

@@ -1,146 +1,108 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-[SkipSaveFileSerialization]
-[AddComponentMenu("KMonoBehaviour/scripts/AnimTileableController")]
-public class AnimTileableController : KMonoBehaviour
-{
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		if (this.tags == null || this.tags.Length == 0)
-		{
-			this.tags = new Tag[]
-			{
-				base.GetComponent<KPrefabID>().PrefabTag
-			};
-		}
-	}
+[SkipSaveFileSerialization, AddComponentMenu("KMonoBehaviour/scripts/AnimTileableController")]
+public class AnimTileableController : KMonoBehaviour {
+    private KAnimSynchronizedController bottom;
+    public  string                      bottomName = "#cap_bottom";
+    private Extents                     extents;
+    private KAnimSynchronizedController left;
+    public  string                      leftName    = "#cap_left";
+    public  ObjectLayer                 objectLayer = ObjectLayer.Building;
+    private HandleVector<int>.Handle    partitionerEntry;
+    private KAnimSynchronizedController right;
+    public  string                      rightName = "#cap_right";
+    public  Tag[]                       tags;
+    private KAnimSynchronizedController top;
+    public  string                      topName = "#cap_top";
 
-	protected override void OnSpawn()
-	{
-		OccupyArea component = base.GetComponent<OccupyArea>();
-		if (component != null)
-		{
-			this.extents = component.GetExtents();
-		}
-		else
-		{
-			Building component2 = base.GetComponent<Building>();
-			this.extents = component2.GetExtents();
-		}
-		Extents extents = new Extents(this.extents.x - 1, this.extents.y - 1, this.extents.width + 2, this.extents.height + 2);
-		this.partitionerEntry = GameScenePartitioner.Instance.Add("AnimTileable.OnSpawn", base.gameObject, extents, GameScenePartitioner.Instance.objectLayers[(int)this.objectLayer], new Action<object>(this.OnNeighbourCellsUpdated));
-		KBatchedAnimController component3 = base.GetComponent<KBatchedAnimController>();
-		this.left = new KAnimSynchronizedController(component3, (Grid.SceneLayer)component3.GetLayer(), this.leftName);
-		this.right = new KAnimSynchronizedController(component3, (Grid.SceneLayer)component3.GetLayer(), this.rightName);
-		this.top = new KAnimSynchronizedController(component3, (Grid.SceneLayer)component3.GetLayer(), this.topName);
-		this.bottom = new KAnimSynchronizedController(component3, (Grid.SceneLayer)component3.GetLayer(), this.bottomName);
-		this.UpdateEndCaps();
-	}
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        if (tags == null || tags.Length == 0) tags = new[] { GetComponent<KPrefabID>().PrefabTag };
+    }
 
-	protected override void OnCleanUp()
-	{
-		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
-		base.OnCleanUp();
-	}
+    protected override void OnSpawn() {
+        var component = GetComponent<OccupyArea>();
+        if (component != null)
+            this.extents = component.GetExtents();
+        else {
+            var component2 = GetComponent<Building>();
+            this.extents = component2.GetExtents();
+        }
 
-	private void UpdateEndCaps()
-	{
-		int cell = Grid.PosToCell(this);
-		bool enable = true;
-		bool enable2 = true;
-		bool enable3 = true;
-		bool enable4 = true;
-		int num;
-		int num2;
-		Grid.CellToXY(cell, out num, out num2);
-		CellOffset rotatedCellOffset = new CellOffset(this.extents.x - num - 1, 0);
-		CellOffset rotatedCellOffset2 = new CellOffset(this.extents.x - num + this.extents.width, 0);
-		CellOffset rotatedCellOffset3 = new CellOffset(0, this.extents.y - num2 + this.extents.height);
-		CellOffset rotatedCellOffset4 = new CellOffset(0, this.extents.y - num2 - 1);
-		Rotatable component = base.GetComponent<Rotatable>();
-		if (component)
-		{
-			rotatedCellOffset = component.GetRotatedCellOffset(rotatedCellOffset);
-			rotatedCellOffset2 = component.GetRotatedCellOffset(rotatedCellOffset2);
-			rotatedCellOffset3 = component.GetRotatedCellOffset(rotatedCellOffset3);
-			rotatedCellOffset4 = component.GetRotatedCellOffset(rotatedCellOffset4);
-		}
-		int num3 = Grid.OffsetCell(cell, rotatedCellOffset);
-		int num4 = Grid.OffsetCell(cell, rotatedCellOffset2);
-		int num5 = Grid.OffsetCell(cell, rotatedCellOffset3);
-		int num6 = Grid.OffsetCell(cell, rotatedCellOffset4);
-		if (Grid.IsValidCell(num3))
-		{
-			enable = !this.HasTileableNeighbour(num3);
-		}
-		if (Grid.IsValidCell(num4))
-		{
-			enable2 = !this.HasTileableNeighbour(num4);
-		}
-		if (Grid.IsValidCell(num5))
-		{
-			enable3 = !this.HasTileableNeighbour(num5);
-		}
-		if (Grid.IsValidCell(num6))
-		{
-			enable4 = !this.HasTileableNeighbour(num6);
-		}
-		this.left.Enable(enable);
-		this.right.Enable(enable2);
-		this.top.Enable(enable3);
-		this.bottom.Enable(enable4);
-	}
+        var extents = new Extents(this.extents.x      - 1,
+                                  this.extents.y      - 1,
+                                  this.extents.width  + 2,
+                                  this.extents.height + 2);
 
-	private bool HasTileableNeighbour(int neighbour_cell)
-	{
-		bool result = false;
-		GameObject gameObject = Grid.Objects[neighbour_cell, (int)this.objectLayer];
-		if (gameObject != null)
-		{
-			KPrefabID component = gameObject.GetComponent<KPrefabID>();
-			if (component != null && component.HasAnyTags(this.tags))
-			{
-				result = true;
-			}
-		}
-		return result;
-	}
+        partitionerEntry = GameScenePartitioner.Instance.Add("AnimTileable.OnSpawn",
+                                                             gameObject,
+                                                             extents,
+                                                             GameScenePartitioner.Instance.objectLayers
+                                                                 [(int)objectLayer],
+                                                             OnNeighbourCellsUpdated);
 
-	private void OnNeighbourCellsUpdated(object data)
-	{
-		if (this == null || base.gameObject == null)
-		{
-			return;
-		}
-		if (this.partitionerEntry.IsValid())
-		{
-			this.UpdateEndCaps();
-		}
-	}
+        var component3 = GetComponent<KBatchedAnimController>();
+        left   = new KAnimSynchronizedController(component3, (Grid.SceneLayer)component3.GetLayer(), leftName);
+        right  = new KAnimSynchronizedController(component3, (Grid.SceneLayer)component3.GetLayer(), rightName);
+        top    = new KAnimSynchronizedController(component3, (Grid.SceneLayer)component3.GetLayer(), topName);
+        bottom = new KAnimSynchronizedController(component3, (Grid.SceneLayer)component3.GetLayer(), bottomName);
+        UpdateEndCaps();
+    }
 
-	private HandleVector<int>.Handle partitionerEntry;
+    protected override void OnCleanUp() {
+        GameScenePartitioner.Instance.Free(ref partitionerEntry);
+        base.OnCleanUp();
+    }
 
-	public ObjectLayer objectLayer = ObjectLayer.Building;
+    private void UpdateEndCaps() {
+        var cell    = Grid.PosToCell(this);
+        var enable  = true;
+        var enable2 = true;
+        var enable3 = true;
+        var enable4 = true;
+        int num;
+        int num2;
+        Grid.CellToXY(cell, out num, out num2);
+        var rotatedCellOffset  = new CellOffset(extents.x       - num - 1,       0);
+        var rotatedCellOffset2 = new CellOffset(extents.x - num + extents.width, 0);
+        var rotatedCellOffset3 = new CellOffset(0,                               extents.y - num2 + extents.height);
+        var rotatedCellOffset4 = new CellOffset(0,                               extents.y        - num2 - 1);
+        var component          = GetComponent<Rotatable>();
+        if (component) {
+            rotatedCellOffset  = component.GetRotatedCellOffset(rotatedCellOffset);
+            rotatedCellOffset2 = component.GetRotatedCellOffset(rotatedCellOffset2);
+            rotatedCellOffset3 = component.GetRotatedCellOffset(rotatedCellOffset3);
+            rotatedCellOffset4 = component.GetRotatedCellOffset(rotatedCellOffset4);
+        }
 
-	public Tag[] tags;
+        var num3                            = Grid.OffsetCell(cell, rotatedCellOffset);
+        var num4                            = Grid.OffsetCell(cell, rotatedCellOffset2);
+        var num5                            = Grid.OffsetCell(cell, rotatedCellOffset3);
+        var num6                            = Grid.OffsetCell(cell, rotatedCellOffset4);
+        if (Grid.IsValidCell(num3)) enable  = !HasTileableNeighbour(num3);
+        if (Grid.IsValidCell(num4)) enable2 = !HasTileableNeighbour(num4);
+        if (Grid.IsValidCell(num5)) enable3 = !HasTileableNeighbour(num5);
+        if (Grid.IsValidCell(num6)) enable4 = !HasTileableNeighbour(num6);
+        left.Enable(enable);
+        right.Enable(enable2);
+        top.Enable(enable3);
+        bottom.Enable(enable4);
+    }
 
-	private Extents extents;
+    private bool HasTileableNeighbour(int neighbour_cell) {
+        var result     = false;
+        var gameObject = Grid.Objects[neighbour_cell, (int)objectLayer];
+        if (gameObject != null) {
+            var component                                               = gameObject.GetComponent<KPrefabID>();
+            if (component != null && component.HasAnyTags(tags)) result = true;
+        }
 
-	public string leftName = "#cap_left";
+        return result;
+    }
 
-	public string rightName = "#cap_right";
+    private void OnNeighbourCellsUpdated(object data) {
+        if (this == null || gameObject == null) return;
 
-	public string topName = "#cap_top";
-
-	public string bottomName = "#cap_bottom";
-
-	private KAnimSynchronizedController left;
-
-	private KAnimSynchronizedController right;
-
-	private KAnimSynchronizedController top;
-
-	private KAnimSynchronizedController bottom;
+        if (partitionerEntry.IsValid()) UpdateEndCaps();
+    }
 }

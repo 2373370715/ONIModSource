@@ -7,13 +7,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ElementFilter")]
 public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.InitializeStatusItems();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.inputCell = this.building.GetUtilityInputCell();
@@ -63,7 +63,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Conduit.GetNetworkManager(this.portInfo.conduitType).RemoveFromNetworks(this.filteredCell, this.itemFilter, true);
 		if (this.portInfo.conduitType == ConduitType.Solid)
@@ -81,7 +81,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 		base.OnCleanUp();
 	}
 
-	private void OnConduitTick(float dt)
+		private void OnConduitTick(float dt)
 	{
 		bool value = false;
 		this.UpdateConduitBlockedStatus();
@@ -137,7 +137,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 		this.operational.SetActive(value, false);
 	}
 
-	private void UpdateConduitExistsStatus()
+		private void UpdateConduitExistsStatus()
 	{
 		bool flag = RequireOutputs.IsConnected(this.filteredCell, this.portInfo.conduitType);
 		StatusItem status_item;
@@ -162,7 +162,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 		}
 	}
 
-	private void UpdateConduitBlockedStatus()
+		private void UpdateConduitBlockedStatus()
 	{
 		bool flag = Conduit.GetFlowManager(this.portInfo.conduitType).IsConduitEmpty(this.filteredCell);
 		StatusItem conduitBlockedMultiples = Db.Get().BuildingStatusItems.ConduitBlockedMultiples;
@@ -173,13 +173,13 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 		}
 	}
 
-	private void OnFilterChanged(Tag tag)
+		private void OnFilterChanged(Tag tag)
 	{
 		bool on = !tag.IsValid || tag == GameTags.Void;
 		base.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.NoFilterElementSelected, on, null);
 	}
 
-	private void InitializeStatusItems()
+		private void InitializeStatusItems()
 	{
 		if (ElementFilter.filterStatusItem == null)
 		{
@@ -201,7 +201,7 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 		}
 	}
 
-	private bool ShowInUtilityOverlay(HashedString mode, object data)
+		private bool ShowInUtilityOverlay(HashedString mode, object data)
 	{
 		bool result = false;
 		switch (((ElementFilter)data).portInfo.conduitType)
@@ -219,49 +219,49 @@ public class ElementFilter : KMonoBehaviour, ISaveLoadable, ISecondaryOutput
 		return result;
 	}
 
-	public bool HasSecondaryConduitType(ConduitType type)
+		public bool HasSecondaryConduitType(ConduitType type)
 	{
 		return this.portInfo.conduitType == type;
 	}
 
-	public CellOffset GetSecondaryConduitOffset(ConduitType type)
+		public CellOffset GetSecondaryConduitOffset(ConduitType type)
 	{
 		return this.portInfo.offset;
 	}
 
-	public int GetFilteredCell()
+		public int GetFilteredCell()
 	{
 		return this.filteredCell;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo portInfo;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Filterable filterable;
 
-	private Guid needsConduitStatusItemGuid;
+		private Guid needsConduitStatusItemGuid;
 
-	private Guid conduitBlockedStatusItemGuid;
+		private Guid conduitBlockedStatusItemGuid;
 
-	private int inputCell = -1;
+		private int inputCell = -1;
 
-	private int outputCell = -1;
+		private int outputCell = -1;
 
-	private int filteredCell = -1;
+		private int filteredCell = -1;
 
-	private FlowUtilityNetwork.NetworkItem itemFilter;
+		private FlowUtilityNetwork.NetworkItem itemFilter;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private static StatusItem filterStatusItem;
+		private static StatusItem filterStatusItem;
 }

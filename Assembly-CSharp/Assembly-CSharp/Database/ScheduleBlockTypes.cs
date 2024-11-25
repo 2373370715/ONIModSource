@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Database
 {
-	public class ScheduleBlockTypes : ResourceSet<ScheduleBlockType>
+		public class ScheduleBlockTypes : ResourceSet<ScheduleBlockType>
 	{
-		public ScheduleBlockTypes(ResourceSet parent) : base("ScheduleBlockTypes", parent)
+				public ScheduleBlockTypes(ResourceSet parent) : base("ScheduleBlockTypes", parent)
 		{
 			this.Sleep = base.Add(new ScheduleBlockType("Sleep", this, UI.SCHEDULEBLOCKTYPES.SLEEP.NAME, UI.SCHEDULEBLOCKTYPES.SLEEP.DESCRIPTION, new Color(0.9843137f, 0.99215686f, 0.27058825f)));
 			this.Eat = base.Add(new ScheduleBlockType("Eat", this, UI.SCHEDULEBLOCKTYPES.EAT.NAME, UI.SCHEDULEBLOCKTYPES.EAT.DESCRIPTION, new Color(0.80784315f, 0.5294118f, 0.11372549f)));
@@ -15,14 +15,14 @@ namespace Database
 			this.Recreation = base.Add(new ScheduleBlockType("Recreation", this, UI.SCHEDULEBLOCKTYPES.RECREATION.NAME, UI.SCHEDULEBLOCKTYPES.RECREATION.DESCRIPTION, new Color(0.45882353f, 0.37254903f, 0.1882353f)));
 		}
 
-		public ScheduleBlockType Sleep;
+				public ScheduleBlockType Sleep;
 
-		public ScheduleBlockType Eat;
+				public ScheduleBlockType Eat;
 
-		public ScheduleBlockType Work;
+				public ScheduleBlockType Work;
 
-		public ScheduleBlockType Hygiene;
+				public ScheduleBlockType Hygiene;
 
-		public ScheduleBlockType Recreation;
+				public ScheduleBlockType Recreation;
 	}
 }

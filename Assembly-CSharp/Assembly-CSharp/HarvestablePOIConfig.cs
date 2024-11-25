@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HarvestablePOIConfig : IMultiEntityConfig
 {
-	public List<GameObject> CreatePrefabs()
+		public List<GameObject> CreatePrefabs()
 	{
 		List<GameObject> list = new List<GameObject>();
 		foreach (HarvestablePOIConfig.HarvestablePOIParams harvestablePOIParams in this.GenerateConfigs())
@@ -14,7 +14,7 @@ public class HarvestablePOIConfig : IMultiEntityConfig
 		return list;
 	}
 
-	public static GameObject CreateHarvestablePOI(string id, string anim, string name, StringKey descStringKey, HashedString poiType, bool canProvideArtifacts = false)
+		public static GameObject CreateHarvestablePOI(string id, string anim, string name, StringKey descStringKey, HashedString poiType, bool canProvideArtifacts = false)
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(id, id, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
@@ -32,15 +32,15 @@ public class HarvestablePOIConfig : IMultiEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	private List<HarvestablePOIConfig.HarvestablePOIParams> GenerateConfigs()
+		private List<HarvestablePOIConfig.HarvestablePOIParams> GenerateConfigs()
 	{
 		List<HarvestablePOIConfig.HarvestablePOIParams> list = new List<HarvestablePOIConfig.HarvestablePOIParams>();
 		list.Add(new HarvestablePOIConfig.HarvestablePOIParams("cloud", new HarvestablePOIConfigurator.HarvestablePOIType("CarbonAsteroidField", new Dictionary<SimHashes, float>
@@ -458,57 +458,57 @@ public class HarvestablePOIConfig : IMultiEntityConfig
 		return list;
 	}
 
-	public const string CarbonAsteroidField = "CarbonAsteroidField";
+		public const string CarbonAsteroidField = "CarbonAsteroidField";
 
-	public const string MetallicAsteroidField = "MetallicAsteroidField";
+		public const string MetallicAsteroidField = "MetallicAsteroidField";
 
-	public const string SatelliteField = "SatelliteField";
+		public const string SatelliteField = "SatelliteField";
 
-	public const string RockyAsteroidField = "RockyAsteroidField";
+		public const string RockyAsteroidField = "RockyAsteroidField";
 
-	public const string InterstellarIceField = "InterstellarIceField";
+		public const string InterstellarIceField = "InterstellarIceField";
 
-	public const string OrganicMassField = "OrganicMassField";
+		public const string OrganicMassField = "OrganicMassField";
 
-	public const string IceAsteroidField = "IceAsteroidField";
+		public const string IceAsteroidField = "IceAsteroidField";
 
-	public const string GasGiantCloud = "GasGiantCloud";
+		public const string GasGiantCloud = "GasGiantCloud";
 
-	public const string ChlorineCloud = "ChlorineCloud";
+		public const string ChlorineCloud = "ChlorineCloud";
 
-	public const string GildedAsteroidField = "GildedAsteroidField";
+		public const string GildedAsteroidField = "GildedAsteroidField";
 
-	public const string GlimmeringAsteroidField = "GlimmeringAsteroidField";
+		public const string GlimmeringAsteroidField = "GlimmeringAsteroidField";
 
-	public const string HeliumCloud = "HeliumCloud";
+		public const string HeliumCloud = "HeliumCloud";
 
-	public const string OilyAsteroidField = "OilyAsteroidField";
+		public const string OilyAsteroidField = "OilyAsteroidField";
 
-	public const string OxidizedAsteroidField = "OxidizedAsteroidField";
+		public const string OxidizedAsteroidField = "OxidizedAsteroidField";
 
-	public const string SaltyAsteroidField = "SaltyAsteroidField";
+		public const string SaltyAsteroidField = "SaltyAsteroidField";
 
-	public const string FrozenOreField = "FrozenOreField";
+		public const string FrozenOreField = "FrozenOreField";
 
-	public const string ForestyOreField = "ForestyOreField";
+		public const string ForestyOreField = "ForestyOreField";
 
-	public const string SwampyOreField = "SwampyOreField";
+		public const string SwampyOreField = "SwampyOreField";
 
-	public const string SandyOreField = "SandyOreField";
+		public const string SandyOreField = "SandyOreField";
 
-	public const string RadioactiveGasCloud = "RadioactiveGasCloud";
+		public const string RadioactiveGasCloud = "RadioactiveGasCloud";
 
-	public const string RadioactiveAsteroidField = "RadioactiveAsteroidField";
+		public const string RadioactiveAsteroidField = "RadioactiveAsteroidField";
 
-	public const string OxygenRichAsteroidField = "OxygenRichAsteroidField";
+		public const string OxygenRichAsteroidField = "OxygenRichAsteroidField";
 
-	public const string InterstellarOcean = "InterstellarOcean";
+		public const string InterstellarOcean = "InterstellarOcean";
 
-	public const string DLC2CeresField = "DLC2CeresField";
+		public const string DLC2CeresField = "DLC2CeresField";
 
-	public const string DLC2CeresOreField = "DLC2CeresOreField";
+		public const string DLC2CeresOreField = "DLC2CeresOreField";
 
-	private static readonly List<string> GasFieldOrbit = new List<string>
+		private static readonly List<string> GasFieldOrbit = new List<string>
 	{
 		Db.Get().OrbitalTypeCategories.iceCloud.Id,
 		Db.Get().OrbitalTypeCategories.heliumCloud.Id,
@@ -516,16 +516,16 @@ public class HarvestablePOIConfig : IMultiEntityConfig
 		Db.Get().OrbitalTypeCategories.radioactiveGas.Id
 	};
 
-	private static readonly List<string> AsteroidFieldOrbit = new List<string>
+		private static readonly List<string> AsteroidFieldOrbit = new List<string>
 	{
 		Db.Get().OrbitalTypeCategories.iceRock.Id,
 		Db.Get().OrbitalTypeCategories.frozenOre.Id,
 		Db.Get().OrbitalTypeCategories.rocky.Id
 	};
 
-	public struct HarvestablePOIParams
+		public struct HarvestablePOIParams
 	{
-		public HarvestablePOIParams(string anim, HarvestablePOIConfigurator.HarvestablePOIType poiType)
+				public HarvestablePOIParams(string anim, HarvestablePOIConfigurator.HarvestablePOIType poiType)
 		{
 			this.id = "HarvestableSpacePOI_" + poiType.id;
 			this.anim = anim;
@@ -534,14 +534,14 @@ public class HarvestablePOIConfig : IMultiEntityConfig
 			this.poiType = poiType;
 		}
 
-		public string id;
+				public string id;
 
-		public string anim;
+				public string anim;
 
-		public StringKey nameStringKey;
+				public StringKey nameStringKey;
 
-		public StringKey descStringKey;
+				public StringKey descStringKey;
 
-		public HarvestablePOIConfigurator.HarvestablePOIType poiType;
+				public HarvestablePOIConfigurator.HarvestablePOIType poiType;
 	}
 }

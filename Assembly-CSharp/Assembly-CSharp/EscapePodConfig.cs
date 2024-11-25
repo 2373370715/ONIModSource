@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class EscapePodConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "EscapePod";
 		string name = STRINGS.BUILDINGS.PREFABS.ESCAPEPOD.NAME;
@@ -51,7 +51,7 @@ public class EscapePodConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		OccupyArea component = inst.GetComponent<OccupyArea>();
 		component.ApplyToCells = false;
@@ -61,11 +61,11 @@ public class EscapePodConfig : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "EscapePod";
+		public const string ID = "EscapePod";
 
-	public const float MASS = 100f;
+		public const float MASS = 100f;
 }

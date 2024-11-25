@@ -6,12 +6,12 @@ using UnityEngine;
 
 public static class GeothermalFirstEmissionSequence
 {
-	public static void Start(GeothermalController controller)
+		public static void Start(GeothermalController controller)
 	{
 		controller.StartCoroutine(GeothermalFirstEmissionSequence.Sequence(controller));
 	}
 
-	private static IEnumerator Sequence(GeothermalController controller)
+		private static IEnumerator Sequence(GeothermalController controller)
 	{
 		List<GeothermalVent> items = Components.GeothermalVents.GetItems(controller.GetMyWorldId());
 		GeothermalVent vent = null;

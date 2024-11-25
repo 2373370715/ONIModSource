@@ -2,7 +2,7 @@
 
 public class RationMonitor : GameStateMachine<RationMonitor, RationMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.rationsavailable;
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -23,12 +23,12 @@ public class RationMonitor : GameStateMachine<RationMonitor, RationMonitor.Insta
 		this.outofrations.InitializeStates(this.masterTarget, Db.Get().DuplicantStatusItems.DailyRationLimitReached);
 	}
 
-	private static bool AreThereNoEdibles(RationMonitor.Instance smi)
+		private static bool AreThereNoEdibles(RationMonitor.Instance smi)
 	{
 		return !RationMonitor.AreThereAnyEdibles(smi);
 	}
 
-	private static bool AreThereAnyEdibles(RationMonitor.Instance smi)
+		private static bool AreThereAnyEdibles(RationMonitor.Instance smi)
 	{
 		if (SaveGame.Instance != null)
 		{
@@ -41,94 +41,94 @@ public class RationMonitor : GameStateMachine<RationMonitor, RationMonitor.Insta
 		return false;
 	}
 
-	private static KMonoBehaviour GetSaveGame(RationMonitor.Instance smi)
+		private static KMonoBehaviour GetSaveGame(RationMonitor.Instance smi)
 	{
 		return SaveGame.Instance;
 	}
 
-	private static bool IsEdibleAvailable(RationMonitor.Instance smi)
+		private static bool IsEdibleAvailable(RationMonitor.Instance smi)
 	{
 		return smi.GetEdible() != null;
 	}
 
-	private static bool NotIsEdibleInReachButNotPermitted(RationMonitor.Instance smi)
+		private static bool NotIsEdibleInReachButNotPermitted(RationMonitor.Instance smi)
 	{
 		return !RationMonitor.IsEdibleInReachButNotPermitted(smi);
 	}
 
-	private static bool IsEdibleInReachButNotPermitted(RationMonitor.Instance smi)
+		private static bool IsEdibleInReachButNotPermitted(RationMonitor.Instance smi)
 	{
 		return smi.GetComponent<Sensors>().GetSensor<ClosestEdibleSensor>().edibleInReachButNotPermitted;
 	}
 
-	public StateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.FloatParameter rationsAteToday;
+		public StateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.FloatParameter rationsAteToday;
 
-	public RationMonitor.RationsAvailableState rationsavailable;
+		public RationMonitor.RationsAvailableState rationsavailable;
 
-	public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.HungrySubState outofrations;
+		public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.HungrySubState outofrations;
 
-	public class EdibleAvailablestate : GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.State
+		public class EdibleAvailablestate : GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.State readytoeat;
+				public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.State readytoeat;
 
-		public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.State eating;
+				public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.State eating;
 	}
 
-	public class RationsAvailableState : GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.State
+		public class RationsAvailableState : GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.HungrySubState noediblesavailable;
+				public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.HungrySubState noediblesavailable;
 
-		public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.HungrySubState ediblereachablebutnotpermitted;
+				public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.HungrySubState ediblereachablebutnotpermitted;
 
-		public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.HungrySubState ediblesunreachable;
+				public GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.HungrySubState ediblesunreachable;
 
-		public RationMonitor.EdibleAvailablestate edibleavailable;
+				public RationMonitor.EdibleAvailablestate edibleavailable;
 	}
 
-	public new class Instance : GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<RationMonitor, RationMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.choreDriver = master.GetComponent<ChoreDriver>();
 		}
 
-		public Edible GetEdible()
+				public Edible GetEdible()
 		{
 			return base.GetComponent<Sensors>().GetSensor<ClosestEdibleSensor>().GetEdible();
 		}
 
-		public bool HasRationsAvailable()
+				public bool HasRationsAvailable()
 		{
 			return true;
 		}
 
-		public float GetRationsAteToday()
+				public float GetRationsAteToday()
 		{
 			return base.sm.rationsAteToday.Get(base.smi);
 		}
 
-		public float GetRationsRemaining()
+				public float GetRationsRemaining()
 		{
 			return 1f;
 		}
 
-		public bool IsEating()
+				public bool IsEating()
 		{
 			return this.choreDriver.HasChore() && this.choreDriver.GetCurrentChore().choreType.urge == Db.Get().Urges.Eat;
 		}
 
-		public void OnNewDay()
+				public void OnNewDay()
 		{
 			base.smi.sm.rationsAteToday.Set(0f, base.smi, false);
 		}
 
-		public void OnEatComplete(object data)
+				public void OnEatComplete(object data)
 		{
 			Edible edible = (Edible)data;
 			base.sm.rationsAteToday.Delta(edible.caloriesConsumed, base.smi);
-			RationTracker.Get().RegisterRationsConsumed(edible);
+			WorldResourceAmountTracker<RationTracker>.Get().RegisterAmountConsumed(edible.FoodInfo.Id, edible.caloriesConsumed);
 		}
 
-		private ChoreDriver choreDriver;
+				private ChoreDriver choreDriver;
 	}
 }

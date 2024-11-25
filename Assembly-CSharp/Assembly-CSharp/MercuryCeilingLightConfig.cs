@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class MercuryCeilingLightConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_DLC_2;
+		return DlcManager.DLC2;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MercuryCeilingLight";
 		int width = 3;
@@ -35,7 +35,7 @@ public class MercuryCeilingLightConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		LightShapePreview lightShapePreview = go.AddComponent<LightShapePreview>();
 		lightShapePreview.lux = 60000;
@@ -45,7 +45,7 @@ public class MercuryCeilingLightConfig : IBuildingConfig
 		lightShapePreview.direction = DiscreteShadowCaster.Direction.South;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource, false);
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
@@ -61,7 +61,7 @@ public class MercuryCeilingLightConfig : IBuildingConfig
 		def.TURN_ON_DELAY = 60f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LoopingSounds>();
 		Light2D light2D = go.AddOrGet<Light2D>();
@@ -80,9 +80,9 @@ public class MercuryCeilingLightConfig : IBuildingConfig
 		light2D.FalloffRate = 0.4f;
 	}
 
-	public const string ID = "MercuryCeilingLight";
+		public const string ID = "MercuryCeilingLight";
 
-	public const float MERCURY_CONSUMED_PER_SECOOND = 0.13000001f;
+		public const float MERCURY_CONSUMED_PER_SECOOND = 0.13000001f;
 
-	public const float CHARGING_DELAY = 60f;
+		public const float CHARGING_DELAY = 60f;
 }

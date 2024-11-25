@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 [AddComponentMenu("KMonoBehaviour/scripts/InterfaceTool")]
 public class InterfaceTool : KMonoBehaviour
 {
-		public static InterfaceToolConfig ActiveConfig
+			public static InterfaceToolConfig ActiveConfig
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class InterfaceTool : KMonoBehaviour
 		}
 	}
 
-	public static void ToggleConfig(global::Action configKey)
+		public static void ToggleConfig(global::Action configKey)
 	{
 		if (InterfaceTool.interfaceConfigMap == null)
 		{
@@ -43,7 +43,7 @@ public class InterfaceTool : KMonoBehaviour
 		InterfaceTool.activeConfigs.Remove(item);
 	}
 
-	public static void InitializeConfigs(global::Action defaultKey, List<InterfaceToolConfig> configs)
+		public static void InitializeConfigs(global::Action defaultKey, List<InterfaceToolConfig> configs)
 	{
 		string arg = (configs == null) ? "null" : configs.Count.ToString();
 		global::Debug.Log(string.Format("[InterfaceTool] Initializing configs with values of DefaultKey: {0} Configs: {1}", defaultKey, arg));
@@ -58,7 +58,7 @@ public class InterfaceTool : KMonoBehaviour
 		InterfaceTool.ToggleConfig(defaultKey);
 	}
 
-		public HashedString ViewMode
+			public HashedString ViewMode
 	{
 		get
 		{
@@ -66,7 +66,7 @@ public class InterfaceTool : KMonoBehaviour
 		}
 	}
 
-		public virtual string[] DlcIDs
+			public virtual string[] DlcIDs
 	{
 		get
 		{
@@ -74,20 +74,20 @@ public class InterfaceTool : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.hoverTextConfiguration = base.GetComponent<HoverTextConfiguration>();
 	}
 
-	public void ActivateTool()
+		public void ActivateTool()
 	{
 		this.OnActivateTool();
 		this.OnMouseMove(PlayerController.GetCursorPos(KInputManager.GetMousePos()));
 		Game.Instance.Trigger(1174281782, this);
 	}
 
-	public virtual bool ShowHoverUI()
+		public virtual bool ShowHoverUI()
 	{
 		if (ManagementMenu.Instance == null || ManagementMenu.Instance.IsFullscreenUIActive())
 		{
@@ -102,7 +102,7 @@ public class InterfaceTool : KMonoBehaviour
 		return current != null && !current.IsPointerOverGameObject();
 	}
 
-	protected virtual void OnActivateTool()
+		protected virtual void OnActivateTool()
 	{
 		if (OverlayScreen.Instance != null && this.viewMode != OverlayModes.None.ID && OverlayScreen.Instance.mode != this.viewMode)
 		{
@@ -112,7 +112,7 @@ public class InterfaceTool : KMonoBehaviour
 		this.SetCursor(this.cursor, this.cursorOffset, CursorMode.Auto);
 	}
 
-	public void SetCurrentVirtualInputModuleMousMovementMode(bool mouseMovementOnly, Action<VirtualInputModule> extraActions = null)
+		public void SetCurrentVirtualInputModuleMousMovementMode(bool mouseMovementOnly, Action<VirtualInputModule> extraActions = null)
 	{
 		UnityEngine.EventSystems.EventSystem current = UnityEngine.EventSystems.EventSystem.current;
 		if (current != null && current.currentInputModule != null)
@@ -129,7 +129,7 @@ public class InterfaceTool : KMonoBehaviour
 		}
 	}
 
-	public void DeactivateTool(InterfaceTool new_tool = null)
+		public void DeactivateTool(InterfaceTool new_tool = null)
 	{
 		this.OnDeactivateTool(new_tool);
 		if ((new_tool == null || new_tool == SelectTool.Instance) && InterfaceTool.toolActivatedViewMode != OverlayModes.None.ID && InterfaceTool.toolActivatedViewMode == SimDebugView.Instance.GetMode())
@@ -139,26 +139,26 @@ public class InterfaceTool : KMonoBehaviour
 		}
 	}
 
-	public virtual void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
+		public virtual void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
 	{
 		colors = null;
 	}
 
-	protected virtual void OnDeactivateTool(InterfaceTool new_tool)
+		protected virtual void OnDeactivateTool(InterfaceTool new_tool)
 	{
 	}
 
-	private void OnApplicationFocus(bool focusStatus)
+		private void OnApplicationFocus(bool focusStatus)
 	{
 		this.isAppFocused = focusStatus;
 	}
 
-	public virtual string GetDeactivateSound()
+		public virtual string GetDeactivateSound()
 	{
 		return "Tile_Cancel";
 	}
 
-	public virtual void OnMouseMove(Vector3 cursor_pos)
+		public virtual void OnMouseMove(Vector3 cursor_pos)
 	{
 		if (this.visualizer == null || !this.isAppFocused)
 		{
@@ -169,31 +169,31 @@ public class InterfaceTool : KMonoBehaviour
 		this.visualizer.transform.SetLocalPosition(cursor_pos);
 	}
 
-	public virtual void OnKeyDown(KButtonEvent e)
+		public virtual void OnKeyDown(KButtonEvent e)
 	{
 	}
 
-	public virtual void OnKeyUp(KButtonEvent e)
+		public virtual void OnKeyUp(KButtonEvent e)
 	{
 	}
 
-	public virtual void OnLeftClickDown(Vector3 cursor_pos)
+		public virtual void OnLeftClickDown(Vector3 cursor_pos)
 	{
 	}
 
-	public virtual void OnLeftClickUp(Vector3 cursor_pos)
+		public virtual void OnLeftClickUp(Vector3 cursor_pos)
 	{
 	}
 
-	public virtual void OnRightClickDown(Vector3 cursor_pos, KButtonEvent e)
+		public virtual void OnRightClickDown(Vector3 cursor_pos, KButtonEvent e)
 	{
 	}
 
-	public virtual void OnRightClickUp(Vector3 cursor_pos)
+		public virtual void OnRightClickUp(Vector3 cursor_pos)
 	{
 	}
 
-	public virtual void OnFocus(bool focus)
+		public virtual void OnFocus(bool focus)
 	{
 		if (this.visualizer != null)
 		{
@@ -202,20 +202,20 @@ public class InterfaceTool : KMonoBehaviour
 		this.hasFocus = focus;
 	}
 
-	protected Vector2 GetRegularizedPos(Vector2 input, bool minimize)
+		protected Vector2 GetRegularizedPos(Vector2 input, bool minimize)
 	{
 		Vector3 vector = new Vector3(Grid.HalfCellSizeInMeters, Grid.HalfCellSizeInMeters, 0f);
 		return Grid.CellToPosCCC(Grid.PosToCell(input), Grid.SceneLayer.Background) + (minimize ? (-vector) : vector);
 	}
 
-	protected Vector2 GetWorldRestrictedPosition(Vector2 input)
+		protected Vector2 GetWorldRestrictedPosition(Vector2 input)
 	{
 		input.x = Mathf.Clamp(input.x, ClusterManager.Instance.activeWorld.minimumBounds.x, ClusterManager.Instance.activeWorld.maximumBounds.x);
 		input.y = Mathf.Clamp(input.y, ClusterManager.Instance.activeWorld.minimumBounds.y, ClusterManager.Instance.activeWorld.maximumBounds.y);
 		return input;
 	}
 
-	protected void SetCursor(Texture2D new_cursor, Vector2 offset, CursorMode mode)
+		protected void SetCursor(Texture2D new_cursor, Vector2 offset, CursorMode mode)
 	{
 		if (new_cursor != InterfaceTool.activeCursor && new_cursor != null)
 		{
@@ -236,7 +236,7 @@ public class InterfaceTool : KMonoBehaviour
 		}
 	}
 
-	protected void UpdateHoverElements(List<KSelectable> hits)
+		protected void UpdateHoverElements(List<KSelectable> hits)
 	{
 		if (this.hoverTextConfiguration != null)
 		{
@@ -244,7 +244,7 @@ public class InterfaceTool : KMonoBehaviour
 		}
 	}
 
-	public virtual void LateUpdate()
+		public virtual void LateUpdate()
 	{
 		if (!this.populateHitsList)
 		{
@@ -281,7 +281,7 @@ public class InterfaceTool : KMonoBehaviour
 		this.playedSoundThisFrame = false;
 	}
 
-	public void GetSelectablesUnderCursor(List<KSelectable> hits)
+		public void GetSelectablesUnderCursor(List<KSelectable> hits)
 	{
 		if (this.hoverOverride != null)
 		{
@@ -319,12 +319,12 @@ public class InterfaceTool : KMonoBehaviour
 		pooledList.Recycle();
 	}
 
-	public void SetLinkCursor(bool set)
+		public void SetLinkCursor(bool set)
 	{
 		this.SetCursor(set ? Assets.GetTexture("cursor_hand") : this.cursor, set ? Vector2.zero : this.cursorOffset, CursorMode.Auto);
 	}
 
-	protected T GetObjectUnderCursor<T>(bool cycleSelection, Func<T, bool> condition = null, Component previous_selection = null) where T : MonoBehaviour
+		protected T GetObjectUnderCursor<T>(bool cycleSelection, Func<T, bool> condition = null, Component previous_selection = null) where T : MonoBehaviour
 	{
 		this.intersections.Clear();
 		this.GetObjectUnderCursor2D<T>(this.intersections, condition, this.layerMask);
@@ -364,7 +364,7 @@ public class InterfaceTool : KMonoBehaviour
 		return this.intersections[index].component as T;
 	}
 
-	private void GetObjectUnderCursor2D<T>(List<InterfaceTool.Intersection> intersections, Func<T, bool> condition, int layer_mask) where T : MonoBehaviour
+		private void GetObjectUnderCursor2D<T>(List<InterfaceTool.Intersection> intersections, Func<T, bool> condition, int layer_mask) where T : MonoBehaviour
 	{
 		Camera main = Camera.main;
 		Vector3 position = new Vector3(KInputManager.GetMousePos().x, KInputManager.GetMousePos().y, -main.transform.GetPosition().z);
@@ -427,7 +427,7 @@ public class InterfaceTool : KMonoBehaviour
 		}
 	}
 
-	private int SortSelectables(KMonoBehaviour x, KMonoBehaviour y)
+		private int SortSelectables(KMonoBehaviour x, KMonoBehaviour y)
 	{
 		if (x == null && y == null)
 		{
@@ -449,24 +449,24 @@ public class InterfaceTool : KMonoBehaviour
 		return x.GetInstanceID().CompareTo(y.GetInstanceID());
 	}
 
-	public void SetHoverOverride(KSelectable hover_override)
+		public void SetHoverOverride(KSelectable hover_override)
 	{
 		this.hoverOverride = hover_override;
 	}
 
-	private int SortHoverCards(ScenePartitionerEntry x, ScenePartitionerEntry y)
+		private int SortHoverCards(ScenePartitionerEntry x, ScenePartitionerEntry y)
 	{
 		KMonoBehaviour x2 = x.obj as KMonoBehaviour;
 		KMonoBehaviour y2 = y.obj as KMonoBehaviour;
 		return this.SortSelectables(x2, y2);
 	}
 
-	private static bool is_component_null(InterfaceTool.Intersection intersection)
+		private static bool is_component_null(InterfaceTool.Intersection intersection)
 	{
 		return !intersection.component;
 	}
 
-	protected void ClearHover()
+		protected void ClearHover()
 	{
 		if (this.hover != null)
 		{
@@ -477,68 +477,68 @@ public class InterfaceTool : KMonoBehaviour
 		}
 	}
 
-	private static Dictionary<global::Action, InterfaceToolConfig> interfaceConfigMap = null;
+		private static Dictionary<global::Action, InterfaceToolConfig> interfaceConfigMap = null;
 
-	private static List<InterfaceToolConfig> activeConfigs = new List<InterfaceToolConfig>();
+		private static List<InterfaceToolConfig> activeConfigs = new List<InterfaceToolConfig>();
 
-	public const float MaxClickDistance = 0.02f;
+		public const float MaxClickDistance = 0.02f;
 
-	public const float DepthBias = -0.15f;
+		public const float DepthBias = -0.15f;
 
-	public GameObject visualizer;
+		public GameObject visualizer;
 
-	public Grid.SceneLayer visualizerLayer = Grid.SceneLayer.Move;
+		public Grid.SceneLayer visualizerLayer = Grid.SceneLayer.Move;
 
-	public string placeSound;
+		public string placeSound;
 
-	protected bool populateHitsList;
+		protected bool populateHitsList;
 
-	[NonSerialized]
+		[NonSerialized]
 	public bool hasFocus;
 
-	[SerializeField]
+		[SerializeField]
 	protected Texture2D cursor;
 
-	public Vector2 cursorOffset = new Vector2(2f, 2f);
+		public Vector2 cursorOffset = new Vector2(2f, 2f);
 
-	public System.Action OnDeactivate;
+		public System.Action OnDeactivate;
 
-	private static Texture2D activeCursor = null;
+		private static Texture2D activeCursor = null;
 
-	private static HashedString toolActivatedViewMode = OverlayModes.None.ID;
+		private static HashedString toolActivatedViewMode = OverlayModes.None.ID;
 
-	protected HashedString viewMode = OverlayModes.None.ID;
+		protected HashedString viewMode = OverlayModes.None.ID;
 
-	private HoverTextConfiguration hoverTextConfiguration;
+		private HoverTextConfiguration hoverTextConfiguration;
 
-	private KSelectable hoverOverride;
+		private KSelectable hoverOverride;
 
-	public KSelectable hover;
+		public KSelectable hover;
 
-	protected int layerMask;
+		protected int layerMask;
 
-	protected SelectMarker selectMarker;
+		protected SelectMarker selectMarker;
 
-	private List<RaycastResult> castResults = new List<RaycastResult>();
+		private List<RaycastResult> castResults = new List<RaycastResult>();
 
-	private bool isAppFocused = true;
+		private bool isAppFocused = true;
 
-	private List<KSelectable> hits = new List<KSelectable>();
+		private List<KSelectable> hits = new List<KSelectable>();
 
-	protected bool playedSoundThisFrame;
+		protected bool playedSoundThisFrame;
 
-	private List<InterfaceTool.Intersection> intersections = new List<InterfaceTool.Intersection>();
+		private List<InterfaceTool.Intersection> intersections = new List<InterfaceTool.Intersection>();
 
-	private HashSet<Component> prevIntersectionGroup = new HashSet<Component>();
+		private HashSet<Component> prevIntersectionGroup = new HashSet<Component>();
 
-	private HashSet<Component> curIntersectionGroup = new HashSet<Component>();
+		private HashSet<Component> curIntersectionGroup = new HashSet<Component>();
 
-	private int hitCycleCount;
+		private int hitCycleCount;
 
-	public struct Intersection
+		public struct Intersection
 	{
-		public MonoBehaviour component;
+				public MonoBehaviour component;
 
-		public float distance;
+				public float distance;
 	}
 }

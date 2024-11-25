@@ -6,25 +6,25 @@ using UnityEngine.UI;
 
 public class StatusItemGroup
 {
-	public IEnumerator<StatusItemGroup.Entry> GetEnumerator()
+		public IEnumerator<StatusItemGroup.Entry> GetEnumerator()
 	{
 		return this.items.GetEnumerator();
 	}
 
-			public GameObject gameObject { get; private set; }
+				public GameObject gameObject { get; private set; }
 
-	public StatusItemGroup(GameObject go)
+		public StatusItemGroup(GameObject go)
 	{
 		this.gameObject = go;
 	}
 
-	public void SetOffset(Vector3 offset)
+		public void SetOffset(Vector3 offset)
 	{
 		this.offset = offset;
 		Game.Instance.SetStatusItemOffset(this.gameObject.transform, offset);
 	}
 
-	public StatusItemGroup.Entry GetStatusItem(StatusItemCategory category)
+		public StatusItemGroup.Entry GetStatusItem(StatusItemCategory category)
 	{
 		for (int i = 0; i < this.items.Count; i++)
 		{
@@ -36,7 +36,7 @@ public class StatusItemGroup
 		return StatusItemGroup.Entry.EmptyEntry;
 	}
 
-	public Guid SetStatusItem(StatusItemCategory category, StatusItem item, object data = null)
+		public Guid SetStatusItem(StatusItemCategory category, StatusItem item, object data = null)
 	{
 		if (item != null && item.allowMultiples)
 		{
@@ -69,7 +69,7 @@ public class StatusItemGroup
 		return Guid.Empty;
 	}
 
-	public void SetStatusItem(Guid guid, StatusItemCategory category, StatusItem new_item, object data = null)
+		public void SetStatusItem(Guid guid, StatusItemCategory category, StatusItem new_item, object data = null)
 	{
 		this.RemoveStatusItem(guid, false);
 		if (new_item != null)
@@ -78,7 +78,7 @@ public class StatusItemGroup
 		}
 	}
 
-	public bool HasStatusItem(StatusItem status_item)
+		public bool HasStatusItem(StatusItem status_item)
 	{
 		for (int i = 0; i < this.items.Count; i++)
 		{
@@ -90,7 +90,7 @@ public class StatusItemGroup
 		return false;
 	}
 
-	public bool HasStatusItemID(string status_item_id)
+		public bool HasStatusItemID(string status_item_id)
 	{
 		for (int i = 0; i < this.items.Count; i++)
 		{
@@ -102,7 +102,7 @@ public class StatusItemGroup
 		return false;
 	}
 
-	public Guid AddStatusItem(StatusItem item, object data = null, StatusItemCategory category = null)
+		public Guid AddStatusItem(StatusItem item, object data = null, StatusItemCategory category = null)
 	{
 		if (this.gameObject == null || (!item.allowMultiples && this.HasStatusItem(item)))
 		{
@@ -140,7 +140,7 @@ public class StatusItemGroup
 		return entry.id;
 	}
 
-	public Guid RemoveStatusItem(StatusItem status_item, bool immediate = false)
+		public Guid RemoveStatusItem(StatusItem status_item, bool immediate = false)
 	{
 		if (status_item.allowMultiples)
 		{
@@ -167,7 +167,7 @@ public class StatusItemGroup
 		return Guid.Empty;
 	}
 
-	public Guid RemoveStatusItem(Guid guid, bool immediate = false)
+		public Guid RemoveStatusItem(Guid guid, bool immediate = false)
 	{
 		if (guid == Guid.Empty)
 		{
@@ -184,7 +184,7 @@ public class StatusItemGroup
 		return Guid.Empty;
 	}
 
-	private void RemoveStatusItemInternal(Guid guid, int itemIdx, bool immediate)
+		private void RemoveStatusItemInternal(Guid guid, int itemIdx, bool immediate)
 	{
 		StatusItemGroup.Entry entry = this.items[itemIdx];
 		this.items.RemoveAt(itemIdx);
@@ -202,12 +202,12 @@ public class StatusItemGroup
 		}
 	}
 
-	private static string OnToolTip(List<Notification> notifications, object data)
+		private static string OnToolTip(List<Notification> notifications, object data)
 	{
 		return ((StatusItem)data).notificationTooltipText + notifications.ReduceMessages(true);
 	}
 
-	public void Destroy()
+		public void Destroy()
 	{
 		if (Game.IsQuitting())
 		{
@@ -219,26 +219,26 @@ public class StatusItemGroup
 		}
 	}
 
-	[Conditional("ENABLE_LOGGER")]
+		[Conditional("ENABLE_LOGGER")]
 	private void Log(string action, StatusItem item, Guid guid)
 	{
 	}
 
-	private void Log(string action, StatusItem item, Guid guid, StatusItemCategory category)
+		private void Log(string action, StatusItem item, Guid guid, StatusItemCategory category)
 	{
 	}
 
-	private List<StatusItemGroup.Entry> items = new List<StatusItemGroup.Entry>();
+		private List<StatusItemGroup.Entry> items = new List<StatusItemGroup.Entry>();
 
-	public Action<StatusItemGroup.Entry, StatusItemCategory> OnAddStatusItem;
+		public Action<StatusItemGroup.Entry, StatusItemCategory> OnAddStatusItem;
 
-	public Action<StatusItemGroup.Entry, bool> OnRemoveStatusItem;
+		public Action<StatusItemGroup.Entry, bool> OnRemoveStatusItem;
 
-	private Vector3 offset = new Vector3(0f, 0f, 0f);
+		private Vector3 offset = new Vector3(0f, 0f, 0f);
 
-	public struct Entry : IComparable<StatusItemGroup.Entry>, IEquatable<StatusItemGroup.Entry>
+		public struct Entry : IComparable<StatusItemGroup.Entry>, IEquatable<StatusItemGroup.Entry>
 	{
-		public Entry(StatusItem item, StatusItemCategory category, object data)
+				public Entry(StatusItem item, StatusItemCategory category, object data)
 		{
 			this.id = Guid.NewGuid();
 			this.item = item;
@@ -247,49 +247,49 @@ public class StatusItemGroup
 			this.notification = null;
 		}
 
-		public string GetName()
+				public string GetName()
 		{
 			return this.item.GetName(this.data);
 		}
 
-		public void ShowToolTip(ToolTip tooltip_widget, TextStyleSetting property_style)
+				public void ShowToolTip(ToolTip tooltip_widget, TextStyleSetting property_style)
 		{
 			this.item.ShowToolTip(tooltip_widget, this.data, property_style);
 		}
 
-		public void SetIcon(Image image)
+				public void SetIcon(Image image)
 		{
 			this.item.SetIcon(image, this.data);
 		}
 
-		public int CompareTo(StatusItemGroup.Entry other)
+				public int CompareTo(StatusItemGroup.Entry other)
 		{
 			return this.id.CompareTo(other.id);
 		}
 
-		public bool Equals(StatusItemGroup.Entry other)
+				public bool Equals(StatusItemGroup.Entry other)
 		{
 			return this.id == other.id;
 		}
 
-		public void OnClick()
+				public void OnClick()
 		{
 			this.item.OnClick(this.data);
 		}
 
-		public static StatusItemGroup.Entry EmptyEntry = new StatusItemGroup.Entry
+				public static StatusItemGroup.Entry EmptyEntry = new StatusItemGroup.Entry
 		{
 			id = Guid.Empty
 		};
 
-		public Guid id;
+				public Guid id;
 
-		public StatusItem item;
+				public StatusItem item;
 
-		public object data;
+				public object data;
 
-		public Notification notification;
+				public Notification notification;
 
-		public StatusItemCategory category;
+				public StatusItemCategory category;
 	}
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class OilFloaterConfig : IEntityConfig
 {
-	public static GameObject CreateOilFloater(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreateOilFloater(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		GameObject prefab = BaseOilFloaterConfig.BaseOilFloater(id, name, desc, anim_file, "OilfloaterBaseTrait", 323.15f, 413.15f, 273.15f, 473.15f, is_baby, null);
 		EntityTemplates.ExtendEntityToWildCreature(prefab, OilFloaterTuning.PEN_SIZE_PER_CREATURE);
@@ -21,12 +21,12 @@ public class OilFloaterConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = OilFloaterConfig.CreateOilFloater("Oilfloater", STRINGS.CREATURES.SPECIES.OILFLOATER.NAME, STRINGS.CREATURES.SPECIES.OILFLOATER.DESC, "oilfloater_kanim", false);
 		string eggId = "OilfloaterEgg";
@@ -43,29 +43,29 @@ public class OilFloaterConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "Oilfloater";
+		public const string ID = "Oilfloater";
 
-	public const string BASE_TRAIT_ID = "OilfloaterBaseTrait";
+		public const string BASE_TRAIT_ID = "OilfloaterBaseTrait";
 
-	public const string EGG_ID = "OilfloaterEgg";
+		public const string EGG_ID = "OilfloaterEgg";
 
-	public const SimHashes CONSUME_ELEMENT = SimHashes.CarbonDioxide;
+		public const SimHashes CONSUME_ELEMENT = SimHashes.CarbonDioxide;
 
-	public const SimHashes EMIT_ELEMENT = SimHashes.CrudeOil;
+		public const SimHashes EMIT_ELEMENT = SimHashes.CrudeOil;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 20f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 20f;
 
-	private static float CALORIES_PER_KG_OF_ORE = OilFloaterTuning.STANDARD_CALORIES_PER_CYCLE / OilFloaterConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = OilFloaterTuning.STANDARD_CALORIES_PER_CYCLE / OilFloaterConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 0.5f;
+		private static float MIN_POOP_SIZE_IN_KG = 0.5f;
 
-	public static int EGG_SORT_ORDER = 400;
+		public static int EGG_SORT_ORDER = 400;
 }

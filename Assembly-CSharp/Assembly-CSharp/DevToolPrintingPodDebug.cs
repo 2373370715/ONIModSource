@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DevToolPrintingPodDebug : DevTool
 {
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (Immigration.Instance != null)
 		{
@@ -14,7 +14,7 @@ public class DevToolPrintingPodDebug : DevTool
 		ImGui.Text("Game not available");
 	}
 
-	private void ShowButtons()
+		private void ShowButtons()
 	{
 		if (Components.Telepads.Count == 0)
 		{

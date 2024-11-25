@@ -4,125 +4,125 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ScreenPrefabs")]
 public class ScreenPrefabs : KMonoBehaviour
 {
-			public static ScreenPrefabs Instance { get; private set; }
+				public static ScreenPrefabs Instance { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		ScreenPrefabs.Instance = this;
 	}
 
-	public void ConfirmDoAction(string message, System.Action action, Transform parent)
+		public void ConfirmDoAction(string message, System.Action action, Transform parent)
 	{
 		((ConfirmDialogScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent.gameObject)).PopupConfirmDialog(message, action, delegate
 		{
 		}, null, null, null, null, null, null);
 	}
 
-	public ControlsScreen ControlsScreen;
+		public ControlsScreen ControlsScreen;
 
-	public Hud HudScreen;
+		public Hud HudScreen;
 
-	public HoverTextScreen HoverTextScreen;
+		public HoverTextScreen HoverTextScreen;
 
-	public OverlayScreen OverlayScreen;
+		public OverlayScreen OverlayScreen;
 
-	public TileScreen TileScreen;
+		public TileScreen TileScreen;
 
-	public SpeedControlScreen SpeedControlScreen;
+		public SpeedControlScreen SpeedControlScreen;
 
-	public ManagementMenu ManagementMenu;
+		public ManagementMenu ManagementMenu;
 
-	public ToolTipScreen ToolTipScreen;
+		public ToolTipScreen ToolTipScreen;
 
-	public DebugPaintElementScreen DebugPaintElementScreen;
+		public DebugPaintElementScreen DebugPaintElementScreen;
 
-	public UserMenuScreen UserMenuScreen;
+		public UserMenuScreen UserMenuScreen;
 
-	public KButtonMenu OwnerScreen;
+		public KButtonMenu OwnerScreen;
 
-	public KButtonMenu ButtonGrid;
+		public KButtonMenu ButtonGrid;
 
-	public NameDisplayScreen NameDisplayScreen;
+		public NameDisplayScreen NameDisplayScreen;
 
-	public ConfirmDialogScreen ConfirmDialogScreen;
+		public ConfirmDialogScreen ConfirmDialogScreen;
 
-	public CustomizableDialogScreen CustomizableDialogScreen;
+		public CustomizableDialogScreen CustomizableDialogScreen;
 
-	public SpriteListDialogScreen SpriteListDialogScreen;
+		public SpriteListDialogScreen SpriteListDialogScreen;
 
-	public InfoDialogScreen InfoDialogScreen;
+		public InfoDialogScreen InfoDialogScreen;
 
-	public StoryMessageScreen StoryMessageScreen;
+		public StoryMessageScreen StoryMessageScreen;
 
-	public SubSpeciesInfoScreen SubSpeciesInfoScreen;
+		public SubSpeciesInfoScreen SubSpeciesInfoScreen;
 
-	public EventInfoScreen eventInfoScreen;
+		public EventInfoScreen eventInfoScreen;
 
-	public FileNameDialog FileNameDialog;
+		public FileNameDialog FileNameDialog;
 
-	public TagFilterScreen TagFilterScreen;
+		public TagFilterScreen TagFilterScreen;
 
-	public ResearchScreen ResearchScreen;
+		public ResearchScreen ResearchScreen;
 
-	public MessageDialogFrame MessageDialogFrame;
+		public MessageDialogFrame MessageDialogFrame;
 
-	public ResourceCategoryScreen ResourceCategoryScreen;
+		public ResourceCategoryScreen ResourceCategoryScreen;
 
-	public ColonyDiagnosticScreen ColonyDiagnosticScreen;
+		public ColonyDiagnosticScreen ColonyDiagnosticScreen;
 
-	public LanguageOptionsScreen languageOptionsScreen;
+		public LanguageOptionsScreen languageOptionsScreen;
 
-	public ModsScreen modsMenu;
+		public ModsScreen modsMenu;
 
-	public RailModUploadScreen RailModUploadMenu;
+		public RailModUploadScreen RailModUploadMenu;
 
-	public GameObject GameOverScreen;
+		public GameObject GameOverScreen;
 
-	public GameObject VictoryScreen;
+		public GameObject VictoryScreen;
 
-	public GameObject StatusItemIndicatorScreen;
+		public GameObject StatusItemIndicatorScreen;
 
-	public GameObject CollapsableContentPanel;
+		public GameObject CollapsableContentPanel;
 
-	public GameObject DescriptionLabel;
+		public GameObject DescriptionLabel;
 
-	public LoadingOverlay loadingOverlay;
+		public LoadingOverlay loadingOverlay;
 
-	public LoadScreen LoadScreen;
+		public LoadScreen LoadScreen;
 
-	public InspectSaveScreen InspectSaveScreen;
+		public InspectSaveScreen InspectSaveScreen;
 
-	public OptionsMenuScreen OptionsScreen;
+		public OptionsMenuScreen OptionsScreen;
 
-	public WorldGenScreen WorldGenScreen;
+		public WorldGenScreen WorldGenScreen;
 
-	public ModeSelectScreen ModeSelectScreen;
+		public ModeSelectScreen ModeSelectScreen;
 
-	public ColonyDestinationSelectScreen ColonyDestinationSelectScreen;
+		public ColonyDestinationSelectScreen ColonyDestinationSelectScreen;
 
-	public RetiredColonyInfoScreen RetiredColonyInfoScreen;
+		public RetiredColonyInfoScreen RetiredColonyInfoScreen;
 
-	public VideoScreen VideoScreen;
+		public VideoScreen VideoScreen;
 
-	public ComicViewer ComicViewer;
+		public ComicViewer ComicViewer;
 
-	public GameObject OldVersionWarningScreen;
+		public GameObject OldVersionWarningScreen;
 
-	public GameObject DLCBetaWarningScreen;
+		public GameObject DLCBetaWarningScreen;
 
-	[Header("Klei Items")]
+		[Header("Klei Items")]
 	public GameObject KleiItemDropScreen;
 
-	public GameObject LockerMenuScreen;
+		public GameObject LockerMenuScreen;
 
-	public GameObject LockerNavigator;
+		public GameObject LockerNavigator;
 
-	[Header("Main Menu")]
+		[Header("Main Menu")]
 	public GameObject MainMenuForVanilla;
 
-	public GameObject MainMenuForSpacedOut;
+		public GameObject MainMenuForSpacedOut;
 
-	public GameObject MainMenuIntroShort;
+		public GameObject MainMenuIntroShort;
 
-	public GameObject MainMenuHealthyGameMessage;
+		public GameObject MainMenuHealthyGameMessage;
 }

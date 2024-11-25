@@ -1,60 +1,46 @@
-﻿using System;
+﻿internal class OilFloaterMovementSound : KMonoBehaviour {
+    private static readonly EventSystem.IntraObjectHandler<OilFloaterMovementSound> OnObjectMovementStateChangedDelegate
+        = new EventSystem.IntraObjectHandler<OilFloaterMovementSound>(delegate(OilFloaterMovementSound component,
+                                                                               object                  data) {
+                                                                          component.OnObjectMovementStateChanged(data);
+                                                                      });
 
-internal class OilFloaterMovementSound : KMonoBehaviour
-{
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		this.sound = GlobalAssets.GetSound(this.sound, false);
-		base.Subscribe<OilFloaterMovementSound>(1027377649, OilFloaterMovementSound.OnObjectMovementStateChangedDelegate);
-		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, new System.Action(this.OnCellChanged), "OilFloaterMovementSound");
-	}
+    public bool   isMoving;
+    public bool   isPlayingSound;
+    public string sound;
 
-	private void OnObjectMovementStateChanged(object data)
-	{
-		GameHashes gameHashes = (GameHashes)data;
-		this.isMoving = (gameHashes == GameHashes.ObjectMovementWakeUp);
-		this.UpdateSound();
-	}
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        sound = GlobalAssets.GetSound(sound);
+        Subscribe(1027377649, OnObjectMovementStateChangedDelegate);
+        Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(transform,
+                                                                         OnCellChanged,
+                                                                         "OilFloaterMovementSound");
+    }
 
-	private void OnCellChanged()
-	{
-		this.UpdateSound();
-	}
+    private void OnObjectMovementStateChanged(object data) {
+        var gameHashes = (GameHashes)data;
+        isMoving = gameHashes == GameHashes.ObjectMovementWakeUp;
+        UpdateSound();
+    }
 
-	private void UpdateSound()
-	{
-		bool flag = this.isMoving && base.GetComponent<Navigator>().CurrentNavType != NavType.Swim;
-		if (flag == this.isPlayingSound)
-		{
-			return;
-		}
-		LoopingSounds component = base.GetComponent<LoopingSounds>();
-		if (flag)
-		{
-			component.StartSound(this.sound);
-		}
-		else
-		{
-			component.StopSound(this.sound);
-		}
-		this.isPlayingSound = flag;
-	}
+    private void OnCellChanged() { UpdateSound(); }
 
-	protected override void OnCleanUp()
-	{
-		base.OnCleanUp();
-		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, new System.Action(this.OnCellChanged));
-	}
+    private void UpdateSound() {
+        var flag = isMoving && GetComponent<Navigator>().CurrentNavType != NavType.Swim;
+        if (flag == isPlayingSound) return;
 
-	public string sound;
+        var component = GetComponent<LoopingSounds>();
+        if (flag)
+            component.StartSound(sound);
+        else
+            component.StopSound(sound);
 
-	public bool isPlayingSound;
+        isPlayingSound = flag;
+    }
 
-	public bool isMoving;
-
-	private static readonly EventSystem.IntraObjectHandler<OilFloaterMovementSound> OnObjectMovementStateChangedDelegate = new EventSystem.IntraObjectHandler<OilFloaterMovementSound>(delegate(OilFloaterMovementSound component, object data)
-	{
-		component.OnObjectMovementStateChanged(data);
-	});
+    protected override void OnCleanUp() {
+        base.OnCleanUp();
+        Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(transform, OnCellChanged);
+    }
 }

@@ -2,9 +2,9 @@
 
 namespace Database
 {
-	public readonly struct BalloonOverrideSymbol
+		public readonly struct BalloonOverrideSymbol
 	{
-		public BalloonOverrideSymbol(string animFileID, string animFileSymbolID)
+				public BalloonOverrideSymbol(string animFileID, string animFileSymbolID)
 		{
 			if (string.IsNullOrEmpty(animFileID) || string.IsNullOrEmpty(animFileSymbolID))
 			{
@@ -17,22 +17,22 @@ namespace Database
 			this.symbol = this.animFile.Value.GetData().build.GetSymbol(animFileSymbolID);
 		}
 
-		public void ApplyTo(BalloonArtist.Instance artist)
+				public void ApplyTo(BalloonArtist.Instance artist)
 		{
 			artist.SetBalloonSymbolOverride(this);
 		}
 
-		public void ApplyTo(BalloonFX.Instance balloon)
+				public void ApplyTo(BalloonFX.Instance balloon)
 		{
 			balloon.SetBalloonSymbolOverride(this);
 		}
 
-		public readonly Option<KAnim.Build.Symbol> symbol;
+				public readonly Option<KAnim.Build.Symbol> symbol;
 
-		public readonly Option<KAnimFile> animFile;
+				public readonly Option<KAnimFile> animFile;
 
-		public readonly string animFileID;
+				public readonly string animFileID;
 
-		public readonly string animFileSymbolID;
+				public readonly string animFileSymbolID;
 	}
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 internal class BeckonFromSpaceStates : GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.beckoning;
 		this.beckoning.ToggleMainStatusItem(Db.Get().CreatureStatusItems.Beckoning, null).DefaultState(this.beckoning.pre);
@@ -13,14 +13,14 @@ internal class BeckonFromSpaceStates : GameStateMachine<BeckonFromSpaceStates, B
 		this.behaviourcomplete.PlayAnim("idle_loop", KAnim.PlayMode.Loop).Enter(new StateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State.Callback(BeckonFromSpaceStates.DoBeckon)).Enter(new StateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State.Callback(BeckonFromSpaceStates.MooCheer)).BehaviourComplete(GameTags.Creatures.WantsToBeckon, false);
 	}
 
-	private static void MooEchoFX(BeckonFromSpaceStates.Instance smi)
+		private static void MooEchoFX(BeckonFromSpaceStates.Instance smi)
 	{
 		KBatchedAnimController kbatchedAnimController = FXHelpers.CreateEffect("moo_call_fx_kanim", smi.master.transform.position, null, false, Grid.SceneLayer.Front, false);
 		kbatchedAnimController.destroyOnAnimComplete = true;
 		kbatchedAnimController.Play("moo_call", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	private static void MooCheer(BeckonFromSpaceStates.Instance smi)
+		private static void MooCheer(BeckonFromSpaceStates.Instance smi)
 	{
 		Vector3 position = smi.transform.GetPosition();
 		ListPool<ScenePartitionerEntry, BeckonFromSpaceStates>.PooledList pooledList = ListPool<ScenePartitionerEntry, BeckonFromSpaceStates>.Allocate();
@@ -37,7 +37,7 @@ internal class BeckonFromSpaceStates : GameStateMachine<BeckonFromSpaceStates, B
 		pooledList.Recycle();
 	}
 
-	private static void DoBeckon(BeckonFromSpaceStates.Instance smi)
+		private static void DoBeckon(BeckonFromSpaceStates.Instance smi)
 	{
 		Db.Get().Amounts.Beckoning.Lookup(smi.gameObject).value = 0f;
 		WorldContainer myWorld = smi.GetMyWorld();
@@ -75,36 +75,36 @@ internal class BeckonFromSpaceStates : GameStateMachine<BeckonFromSpaceStates, B
 		gameObject.SetActive(true);
 	}
 
-	public BeckonFromSpaceStates.BeckoningState beckoning;
+		public BeckonFromSpaceStates.BeckoningState beckoning;
 
-	public GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State behaviourcomplete;
+		public GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State behaviourcomplete;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public string prefab;
+				public string prefab;
 
-		public Grid.SceneLayer sceneLayer;
+				public Grid.SceneLayer sceneLayer;
 
-		public HashedString[] choirAnims = new HashedString[]
+				public HashedString[] choirAnims = new HashedString[]
 		{
 			"reply_loop"
 		};
 	}
 
-	public new class Instance : GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.GameInstance
 	{
-		public Instance(Chore<BeckonFromSpaceStates.Instance> chore, BeckonFromSpaceStates.Def def) : base(chore, def)
+				public Instance(Chore<BeckonFromSpaceStates.Instance> chore, BeckonFromSpaceStates.Def def) : base(chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.WantsToBeckon);
 		}
 	}
 
-	public class BeckoningState : GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State
+		public class BeckoningState : GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State
 	{
-		public GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State pre;
+				public GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State pre;
 
-		public GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State loop;
+				public GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State loop;
 
-		public GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State pst;
+				public GameStateMachine<BeckonFromSpaceStates, BeckonFromSpaceStates.Instance, IStateMachineTarget, BeckonFromSpaceStates.Def>.State pst;
 	}
 }

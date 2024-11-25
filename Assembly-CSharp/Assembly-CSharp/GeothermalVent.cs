@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstance>, ISim200ms
 {
-	public bool IsQuestEntombed()
+		public bool IsQuestEntombed()
 	{
 		return this.progress == GeothermalVent.QuestProgress.Entombed;
 	}
 
-	public void SetQuestComplete()
+		public void SetQuestComplete()
 	{
 		this.progress = GeothermalVent.QuestProgress.Complete;
 		this.connectedToggler.showButton = true;
@@ -19,7 +19,7 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		base.Trigger(-1514841199, null);
 	}
 
-	public static string GenerateName()
+		public static string GenerateName()
 	{
 		string text = "";
 		for (int i = 0; i < 2; i++)
@@ -29,7 +29,7 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		return BUILDINGS.PREFABS.GEOTHERMALVENT.NAME_FMT.Replace("{ID}", text);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.entombVulnerable.SetStatusItem(Db.Get().BuildingStatusItems.Entombed);
@@ -69,35 +69,35 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		base.smi.StartSM();
 	}
 
-	protected void SimRegister()
+		protected void SimRegister()
 	{
 		this.onBlockedHandle = Game.Instance.callbackManager.Add(new Game.CallbackInfo(new System.Action(this.OnSimBlockedCallback), true));
 		this.onUnblockedHandle = Game.Instance.callbackManager.Add(new Game.CallbackInfo(new System.Action(this.OnSimUnblockedCallback), true));
 		SimMessages.AddElementEmitter(float.MaxValue, Game.Instance.simComponentCallbackManager.Add(new Action<int, object>(GeothermalVent.OnSimRegisteredCallback), this, "GeothermalVentElementEmitter").index, this.onBlockedHandle.index, this.onUnblockedHandle.index);
 	}
 
-	protected void OnSimBlockedCallback()
+		protected void OnSimBlockedCallback()
 	{
 		this.overpressure = true;
 	}
 
-	protected void OnSimUnblockedCallback()
+		protected void OnSimUnblockedCallback()
 	{
 		this.overpressure = false;
 	}
 
-	protected static void OnSimRegisteredCallback(int handle, object data)
+		protected static void OnSimRegisteredCallback(int handle, object data)
 	{
 		((GeothermalVent)data).OnSimRegisteredImpl(handle);
 	}
 
-	protected void OnSimRegisteredImpl(int handle)
+		protected void OnSimRegisteredImpl(int handle)
 	{
 		global::Debug.Assert(this.emitterInfo.simHandle == -1, "?! too many handles registered");
 		this.emitterInfo.simHandle = handle;
 	}
 
-	protected void SimUnregister()
+		protected void SimUnregister()
 	{
 		if (Sim.IsValidHandle(this.emitterInfo.simHandle))
 		{
@@ -106,7 +106,7 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		this.emitterInfo.simHandle = -1;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.ManualReleaseHandle(this.onBlockedHandle);
 		Game.Instance.ManualReleaseHandle(this.onUnblockedHandle);
@@ -114,7 +114,7 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		base.OnCleanUp();
 	}
 
-	protected void OnMassEmitted(ushort element, float mass)
+		protected void OnMassEmitted(ushort element, float mass)
 	{
 		bool flag = false;
 		for (int i = 0; i < this.availableMaterial.Count; i++)
@@ -134,7 +134,7 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		}
 	}
 
-	public void SpawnKeepsake()
+		public void SpawnKeepsake()
 	{
 		GameObject keepsakePrefab = Assets.GetPrefab("keepsake_geothermalplant");
 		if (keepsakePrefab != null)
@@ -159,12 +159,12 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		}
 	}
 
-	public bool IsOverPressure()
+		public bool IsOverPressure()
 	{
 		return this.overpressure;
 	}
 
-	protected void RecomputeEmissions()
+		protected void RecomputeEmissions()
 	{
 		this.availableMaterial.Sort();
 		while (this.availableMaterial.Count > 0 && this.availableMaterial[this.availableMaterial.Count - 1].mass <= 0f)
@@ -200,13 +200,13 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		this.emitterInfo.dirty = true;
 	}
 
-	public void addMaterial(GeothermalVent.ElementInfo info)
+		public void addMaterial(GeothermalVent.ElementInfo info)
 	{
 		this.availableMaterial.Add(info);
 		this.recentMass = this.MaterialAvailable();
 	}
 
-	public bool HasMaterial()
+		public bool HasMaterial()
 	{
 		bool flag = this.availableMaterial.Count != 0;
 		if (flag != this.logicPorts.GetOutputValue("GEOTHERMAL_VENT_STATUS_PORT") > 0)
@@ -216,7 +216,7 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		return flag;
 	}
 
-	public float MaterialAvailable()
+		public float MaterialAvailable()
 	{
 		float num = 0f;
 		foreach (GeothermalVent.ElementInfo elementInfo in this.availableMaterial)
@@ -226,22 +226,22 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		return num;
 	}
 
-	public bool IsEntombed()
+		public bool IsEntombed()
 	{
 		return this.entombVulnerable.GetEntombed;
 	}
 
-	public bool CanVent()
+		public bool CanVent()
 	{
 		return !this.HasMaterial() && !this.IsEntombed();
 	}
 
-	public bool IsVentConnected()
+		public bool IsVentConnected()
 	{
 		return !(this.connectedToggler == null) && this.connectedToggler.IsConnected;
 	}
 
-	public void EmitSolidChunk()
+		public void EmitSolidChunk()
 	{
 		int num = 0;
 		foreach (GeothermalVent.ElementInfo elementInfo in this.availableMaterial)
@@ -279,8 +279,10 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		{
 			num3 = elementInfo2.mass;
 		}
-		if (num3 < 0.125f)
+		if (num3 < 0.01f)
 		{
+			elementInfo2.mass = 0f;
+			this.availableMaterial[num2] = elementInfo2;
 			return;
 		}
 		int num4 = (int)((float)elementInfo2.diseaseCount * num3 / elementInfo2.mass);
@@ -300,7 +302,7 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		this.availableMaterial[num2] = elementInfo2;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (dt > 0f)
 		{
@@ -308,7 +310,7 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		}
 	}
 
-	private unsafe void unsafeSim200ms(float dt)
+		private unsafe void unsafeSim200ms(float dt)
 	{
 		if (Sim.IsValidHandle(this.emitterInfo.simHandle))
 		{
@@ -327,85 +329,85 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 		this.massMeter.SetPositionPercent(this.MaterialAvailable() / this.recentMass);
 	}
 
-	protected static bool HasProblem(GeothermalVent.StatesInstance smi)
+		protected static bool HasProblem(GeothermalVent.StatesInstance smi)
 	{
 		return smi.master.IsEntombed() || smi.master.IsOverPressure();
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private ConnectionManager connectedToggler;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private EntombVulnerable entombVulnerable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private LogicPorts logicPorts;
 
-	[Serialize]
+		[Serialize]
 	private float recentMass = 1f;
 
-	private MeterController massMeter;
+		private MeterController massMeter;
 
-	[Serialize]
+		[Serialize]
 	private GeothermalVent.QuestProgress progress;
 
-	protected GeothermalVent.EmitterInfo emitterInfo;
+		protected GeothermalVent.EmitterInfo emitterInfo;
 
-	[Serialize]
+		[Serialize]
 	protected List<GeothermalVent.ElementInfo> availableMaterial = new List<GeothermalVent.ElementInfo>();
 
-	protected bool overpressure;
+		protected bool overpressure;
 
-	protected int debrisEmissionCell;
+		protected int debrisEmissionCell;
 
-	private HandleVector<Game.CallbackInfo>.Handle onBlockedHandle = HandleVector<Game.CallbackInfo>.InvalidHandle;
+		private HandleVector<Game.CallbackInfo>.Handle onBlockedHandle = HandleVector<Game.CallbackInfo>.InvalidHandle;
 
-	private HandleVector<Game.CallbackInfo>.Handle onUnblockedHandle = HandleVector<Game.CallbackInfo>.InvalidHandle;
+		private HandleVector<Game.CallbackInfo>.Handle onUnblockedHandle = HandleVector<Game.CallbackInfo>.InvalidHandle;
 
-	private enum QuestProgress
+		private enum QuestProgress
 	{
-		Uninitialized,
-		Entombed,
-		Complete
+				Uninitialized,
+				Entombed,
+				Complete
 	}
 
-	public struct ElementInfo : IComparable
+		public struct ElementInfo : IComparable
 	{
-		public int CompareTo(object obj)
+				public int CompareTo(object obj)
 		{
 			return -this.mass.CompareTo(((GeothermalVent.ElementInfo)obj).mass);
 		}
 
-		public bool isSolid;
+				public bool isSolid;
 
-		public ushort elementIdx;
+				public ushort elementIdx;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 
-	public struct EmitterInfo
+		public struct EmitterInfo
 	{
-		public int simHandle;
+				public int simHandle;
 
-		public int cell;
+				public int cell;
 
-		public GeothermalVent.ElementInfo element;
+				public GeothermalVent.ElementInfo element;
 
-		public bool dirty;
+				public bool dirty;
 	}
 
-	public class States : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent>
+		public class States : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.root;
 			this.root.EnterTransition(this.questEntombed, (GeothermalVent.StatesInstance smi) => smi.master.IsQuestEntombed()).EnterTransition(this.online, (GeothermalVent.StatesInstance smi) => !smi.master.IsQuestEntombed());
@@ -441,52 +443,52 @@ public class GeothermalVent : StateMachineComponent<GeothermalVent.StatesInstanc
 			this.online.inactive.overpressure.ToggleMainStatusItem(Db.Get().BuildingStatusItems.GeoVentsOverpressure, null).EnterTransition(this.online.inactive.identify, (GeothermalVent.StatesInstance smi) => !smi.master.IsOverPressure());
 		}
 
-		public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State questEntombed;
+				public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State questEntombed;
 
-		public GeothermalVent.States.OnlineStates online;
+				public GeothermalVent.States.OnlineStates online;
 
-		public class ActiveStates : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State
+				public class ActiveStates : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State
 		{
-			public GeothermalVent.States.ActiveStates.LoopStates loopVent;
+						public GeothermalVent.States.ActiveStates.LoopStates loopVent;
 
-			public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State preVent;
+						public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State preVent;
 
-			public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State postVent;
+						public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State postVent;
 
-			public class LoopStates : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State
+						public class LoopStates : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State
 			{
-				public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State start;
+								public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State start;
 
-				public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State finish;
+								public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State finish;
 			}
 		}
 
-		public class ProblemStates : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State
+				public class ProblemStates : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State
 		{
-			public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State identify;
+						public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State identify;
 
-			public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State entombed;
+						public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State entombed;
 
-			public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State overpressure;
+						public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State overpressure;
 		}
 
-		public class OnlineStates : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State
+				public class OnlineStates : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State
 		{
-			public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State identify;
+						public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State identify;
 
-			public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State ready;
+						public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State ready;
 
-			public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State disconnected;
+						public GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.State disconnected;
 
-			public GeothermalVent.States.ActiveStates active;
+						public GeothermalVent.States.ActiveStates active;
 
-			public GeothermalVent.States.ProblemStates inactive;
+						public GeothermalVent.States.ProblemStates inactive;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.GameInstance
+		public class StatesInstance : GameStateMachine<GeothermalVent.States, GeothermalVent.StatesInstance, GeothermalVent, object>.GameInstance
 	{
-		public StatesInstance(GeothermalVent smi) : base(smi)
+				public StatesInstance(GeothermalVent smi) : base(smi)
 		{
 		}
 	}

@@ -6,22 +6,22 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Refinery")]
 public class Refinery : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	[Serializable]
+		[Serializable]
 	public struct OrderSaveData
 	{
-		public OrderSaveData(string id, bool infinite)
+				public OrderSaveData(string id, bool infinite)
 		{
 			this.id = id;
 			this.infinite = infinite;
 		}
 
-		public string id;
+				public string id;
 
-		public bool infinite;
+				public bool infinite;
 	}
 }

@@ -4,17 +4,17 @@ using UnityEngine;
 
 public readonly struct Updater : IEnumerator
 {
-	public Updater(Func<float, UpdaterResult> fn)
+		public Updater(Func<float, UpdaterResult> fn)
 	{
 		this.fn = fn;
 	}
 
-	public UpdaterResult Internal_Update(float deltaTime)
+		public UpdaterResult Internal_Update(float deltaTime)
 	{
 		return this.fn(deltaTime);
 	}
 
-		object IEnumerator.Current
+			object IEnumerator.Current
 	{
 		get
 		{
@@ -22,21 +22,21 @@ public readonly struct Updater : IEnumerator
 		}
 	}
 
-	bool IEnumerator.MoveNext()
+		bool IEnumerator.MoveNext()
 	{
 		return this.fn(Updater.GetDeltaTime()) == UpdaterResult.NotComplete;
 	}
 
-	void IEnumerator.Reset()
+		void IEnumerator.Reset()
 	{
 	}
 
-	public static implicit operator Updater(Promise promise)
+		public static implicit operator Updater(Promise promise)
 	{
 		return Updater.Until(() => promise.IsResolved);
 	}
 
-	public static Updater Until(Func<bool> fn)
+		public static Updater Until(Func<bool> fn)
 	{
 		return new Updater(delegate(float dt)
 		{
@@ -48,7 +48,7 @@ public readonly struct Updater : IEnumerator
 		});
 	}
 
-	public static Updater While(Func<bool> isTrueFn)
+		public static Updater While(Func<bool> isTrueFn)
 	{
 		return new Updater(delegate(float dt)
 		{
@@ -60,7 +60,7 @@ public readonly struct Updater : IEnumerator
 		});
 	}
 
-	public static Updater While(Func<bool> isTrueFn, Func<Updater> getUpdaterWhileNotTrueFn)
+		public static Updater While(Func<bool> isTrueFn, Func<Updater> getUpdaterWhileNotTrueFn)
 	{
 		Updater whileNotTrueUpdater = Updater.None();
 		return new Updater(delegate(float dt)
@@ -77,17 +77,17 @@ public readonly struct Updater : IEnumerator
 		});
 	}
 
-	public static Updater None()
+		public static Updater None()
 	{
 		return new Updater((float dt) => UpdaterResult.Complete);
 	}
 
-	public static Updater WaitOneFrame()
+		public static Updater WaitOneFrame()
 	{
 		return Updater.WaitFrames(1);
 	}
 
-	public static Updater WaitFrames(int framesToWait)
+		public static Updater WaitFrames(int framesToWait)
 	{
 		int frame = 0;
 		return new Updater(delegate(float dt)
@@ -102,7 +102,7 @@ public readonly struct Updater : IEnumerator
 		});
 	}
 
-	public static Updater WaitForSeconds(float secondsToWait)
+		public static Updater WaitForSeconds(float secondsToWait)
 	{
 		float currentSeconds = 0f;
 		return new Updater(delegate(float dt)
@@ -116,22 +116,22 @@ public readonly struct Updater : IEnumerator
 		});
 	}
 
-	public static Updater Ease(Action<float> fn, float from, float to, float duration, Easing.EasingFn easing = null, float delay = -1f)
+		public static Updater Ease(Action<float> fn, float from, float to, float duration, Easing.EasingFn easing = null, float delay = -1f)
 	{
 		return Updater.GenericEase<float>(fn, new Func<float, float, float, float>(Mathf.LerpUnclamped), easing, from, to, duration, delay);
 	}
 
-	public static Updater Ease(Action<Vector2> fn, Vector2 from, Vector2 to, float duration, Easing.EasingFn easing = null, float delay = -1f)
+		public static Updater Ease(Action<Vector2> fn, Vector2 from, Vector2 to, float duration, Easing.EasingFn easing = null, float delay = -1f)
 	{
 		return Updater.GenericEase<Vector2>(fn, new Func<Vector2, Vector2, float, Vector2>(Vector2.LerpUnclamped), easing, from, to, duration, delay);
 	}
 
-	public static Updater Ease(Action<Vector3> fn, Vector3 from, Vector3 to, float duration, Easing.EasingFn easing = null, float delay = -1f)
+		public static Updater Ease(Action<Vector3> fn, Vector3 from, Vector3 to, float duration, Easing.EasingFn easing = null, float delay = -1f)
 	{
 		return Updater.GenericEase<Vector3>(fn, new Func<Vector3, Vector3, float, Vector3>(Vector3.LerpUnclamped), easing, from, to, duration, delay);
 	}
 
-	public static Updater GenericEase<T>(Action<T> useFn, Func<T, T, float, T> interpolateFn, Easing.EasingFn easingFn, T from, T to, float duration, float delay)
+		public static Updater GenericEase<T>(Action<T> useFn, Func<T, T, float, T> interpolateFn, Easing.EasingFn easingFn, T from, T to, float duration, float delay)
 	{
 		Updater.<>c__DisplayClass18_0<T> CS$<>8__locals1 = new Updater.<>c__DisplayClass18_0<T>();
 		CS$<>8__locals1.useFn = useFn;
@@ -168,7 +168,7 @@ public readonly struct Updater : IEnumerator
 		return updater;
 	}
 
-	public static Updater Do(System.Action fn)
+		public static Updater Do(System.Action fn)
 	{
 		return new Updater(delegate(float dt)
 		{
@@ -177,7 +177,7 @@ public readonly struct Updater : IEnumerator
 		});
 	}
 
-	public static Updater Do(Func<Updater> fn)
+		public static Updater Do(Func<Updater> fn)
 	{
 		bool didInitalize = false;
 		Updater target = default(Updater);
@@ -192,17 +192,17 @@ public readonly struct Updater : IEnumerator
 		});
 	}
 
-	public static Updater Loop(params Func<Updater>[] makeUpdaterFns)
+		public static Updater Loop(params Func<Updater>[] makeUpdaterFns)
 	{
 		return Updater.Internal_Loop(Option.None, makeUpdaterFns);
 	}
 
-	public static Updater Loop(int loopCount, params Func<Updater>[] makeUpdaterFns)
+		public static Updater Loop(int loopCount, params Func<Updater>[] makeUpdaterFns)
 	{
 		return Updater.Internal_Loop(loopCount, makeUpdaterFns);
 	}
 
-	public static Updater Internal_Loop(Option<int> limitLoopCount, Func<Updater>[] makeUpdaterFns)
+		public static Updater Internal_Loop(Option<int> limitLoopCount, Func<Updater>[] makeUpdaterFns)
 	{
 		if (makeUpdaterFns == null || makeUpdaterFns.Length == 0)
 		{
@@ -233,7 +233,7 @@ public readonly struct Updater : IEnumerator
 		});
 	}
 
-	public static Updater Parallel(params Updater[] updaters)
+		public static Updater Parallel(params Updater[] updaters)
 	{
 		bool[] isCompleted = new bool[updaters.Length];
 		return new Updater(delegate(float dt)
@@ -261,7 +261,7 @@ public readonly struct Updater : IEnumerator
 		});
 	}
 
-	public static Updater Series(params Updater[] updaters)
+		public static Updater Series(params Updater[] updaters)
 	{
 		int i = 0;
 		return new Updater(delegate(float dt)
@@ -284,7 +284,7 @@ public readonly struct Updater : IEnumerator
 		});
 	}
 
-	public static Promise RunRoutine(MonoBehaviour monoBehaviour, IEnumerator coroutine)
+		public static Promise RunRoutine(MonoBehaviour monoBehaviour, IEnumerator coroutine)
 	{
 		Updater.<>c__DisplayClass26_0 CS$<>8__locals1 = new Updater.<>c__DisplayClass26_0();
 		CS$<>8__locals1.coroutine = coroutine;
@@ -293,12 +293,12 @@ public readonly struct Updater : IEnumerator
 		return CS$<>8__locals1.willComplete;
 	}
 
-	public static Promise Run(MonoBehaviour monoBehaviour, params Updater[] updaters)
+		public static Promise Run(MonoBehaviour monoBehaviour, params Updater[] updaters)
 	{
 		return Updater.Run(monoBehaviour, Updater.Series(updaters));
 	}
 
-	public static Promise Run(MonoBehaviour monoBehaviour, Updater updater)
+		public static Promise Run(MonoBehaviour monoBehaviour, Updater updater)
 	{
 		Updater.<>c__DisplayClass28_0 CS$<>8__locals1 = new Updater.<>c__DisplayClass28_0();
 		CS$<>8__locals1.updater = updater;
@@ -307,10 +307,10 @@ public readonly struct Updater : IEnumerator
 		return CS$<>8__locals1.willComplete;
 	}
 
-	public static float GetDeltaTime()
+		public static float GetDeltaTime()
 	{
 		return Time.unscaledDeltaTime;
 	}
 
-	public readonly Func<float, UpdaterResult> fn;
+		public readonly Func<float, UpdaterResult> fn;
 }

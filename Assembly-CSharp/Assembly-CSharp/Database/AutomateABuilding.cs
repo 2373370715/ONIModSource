@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Database
 {
-	public class AutomateABuilding : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class AutomateABuilding : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public override bool Success()
+				public override bool Success()
 		{
 			foreach (UtilityNetwork utilityNetwork in Game.Instance.logicCircuitSystem.GetNetworks())
 			{
@@ -48,11 +48,11 @@ namespace Database
 			return false;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.AUTOMATE_A_BUILDING;
 		}

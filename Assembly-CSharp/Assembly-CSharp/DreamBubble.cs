@@ -3,16 +3,16 @@ using UnityEngine;
 
 public class DreamBubble : KMonoBehaviour
 {
-			public bool IsVisible { get; private set; }
+				public bool IsVisible { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.dreamBackgroundComponent.SetSymbolVisiblity(this.snapToPivotSymbol, false);
 		this.SetVisibility(false);
 	}
 
-	public void Tick(float dt)
+		public void Tick(float dt)
 	{
 		if (this._currentDream != null && this._currentDream.Icons.Length != 0)
 		{
@@ -31,7 +31,7 @@ public class DreamBubble : KMonoBehaviour
 		}
 	}
 
-	public void SetDream(Dream dream)
+		public void SetDream(Dream dream)
 	{
 		this._currentDream = dream;
 		this.dreamBackgroundComponent.Stop();
@@ -45,7 +45,7 @@ public class DreamBubble : KMonoBehaviour
 		this._color.a = 0f;
 	}
 
-	public void SetVisibility(bool visible)
+		public void SetVisibility(bool visible)
 	{
 		this.IsVisible = visible;
 		this.dreamBackgroundComponent.SetVisiblity(visible);
@@ -65,35 +65,35 @@ public class DreamBubble : KMonoBehaviour
 		this.dreamBubbleBorderKanim.Stop();
 	}
 
-	public void StopDreaming()
+		public void StopDreaming()
 	{
 		this._currentDream = null;
 		this.SetVisibility(false);
 	}
 
-	public KBatchedAnimController dreamBackgroundComponent;
+		public KBatchedAnimController dreamBackgroundComponent;
 
-	public KBatchedAnimController maskKanim;
+		public KBatchedAnimController maskKanim;
 
-	public KBatchedAnimController dreamBubbleBorderKanim;
+		public KBatchedAnimController dreamBubbleBorderKanim;
 
-	public KImage dreamContentComponent;
+		public KImage dreamContentComponent;
 
-	private const string dreamBackgroundAnimationName = "dream_loop";
+		private const string dreamBackgroundAnimationName = "dream_loop";
 
-	private const string dreamMaskAnimationName = "dream_bubble_mask";
+		private const string dreamMaskAnimationName = "dream_bubble_mask";
 
-	private const string dreamBubbleBorderAnimationName = "dream_bubble_loop";
+		private const string dreamBubbleBorderAnimationName = "dream_bubble_loop";
 
-	private HashedString snapToPivotSymbol = new HashedString("snapto_pivot");
+		private HashedString snapToPivotSymbol = new HashedString("snapto_pivot");
 
-	private Dream _currentDream;
+		private Dream _currentDream;
 
-	private float _timePassedSinceDreamStarted;
+		private float _timePassedSinceDreamStarted;
 
-	private Color _color = Color.white;
+		private Color _color = Color.white;
 
-	private const float PI_2 = 6.2831855f;
+		private const float PI_2 = 6.2831855f;
 
-	private const float HALF_PI = 1.5707964f;
+		private const float HALF_PI = 1.5707964f;
 }

@@ -7,7 +7,7 @@ using TUNING;
 [SkipSaveFileSerialization]
 public class Meteorphile : StateMachineComponent<Meteorphile.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.attributeModifiers = new AttributeModifier[]
 		{
@@ -26,7 +26,7 @@ public class Meteorphile : StateMachineComponent<Meteorphile.StatesInstance>
 		base.smi.StartSM();
 	}
 
-	public void ApplyModifiers()
+		public void ApplyModifiers()
 	{
 		Attributes attributes = base.gameObject.GetAttributes();
 		for (int i = 0; i < this.attributeModifiers.Length; i++)
@@ -36,7 +36,7 @@ public class Meteorphile : StateMachineComponent<Meteorphile.StatesInstance>
 		}
 	}
 
-	public void RemoveModifiers()
+		public void RemoveModifiers()
 	{
 		Attributes attributes = base.gameObject.GetAttributes();
 		for (int i = 0; i < this.attributeModifiers.Length; i++)
@@ -46,18 +46,18 @@ public class Meteorphile : StateMachineComponent<Meteorphile.StatesInstance>
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KPrefabID kPrefabID;
 
-	private AttributeModifier[] attributeModifiers;
+		private AttributeModifier[] attributeModifiers;
 
-	public class StatesInstance : GameStateMachine<Meteorphile.States, Meteorphile.StatesInstance, Meteorphile, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Meteorphile.States, Meteorphile.StatesInstance, Meteorphile, object>.GameInstance
 	{
-		public StatesInstance(Meteorphile master) : base(master)
+				public StatesInstance(Meteorphile master) : base(master)
 		{
 		}
 
-		public bool IsMeteors()
+				public bool IsMeteors()
 		{
 			if (GameplayEventManager.Instance == null || base.master.kPrefabID.PrefabTag == GameTags.MinionSelectPreview)
 			{
@@ -78,9 +78,9 @@ public class Meteorphile : StateMachineComponent<Meteorphile.StatesInstance>
 		}
 	}
 
-	public class States : GameStateMachine<Meteorphile.States, Meteorphile.StatesInstance, Meteorphile>
+		public class States : GameStateMachine<Meteorphile.States, Meteorphile.StatesInstance, Meteorphile>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.root.TagTransition(GameTags.Dead, null, false);
@@ -94,8 +94,8 @@ public class Meteorphile : StateMachineComponent<Meteorphile.StatesInstance>
 			}).ToggleStatusItem(Db.Get().DuplicantStatusItems.Meteorphile, null).ToggleExpression(Db.Get().Expressions.Happy, null).Transition(this.idle, (Meteorphile.StatesInstance smi) => !smi.IsMeteors(), UpdateRate.SIM_200ms);
 		}
 
-		public GameStateMachine<Meteorphile.States, Meteorphile.StatesInstance, Meteorphile, object>.State idle;
+				public GameStateMachine<Meteorphile.States, Meteorphile.StatesInstance, Meteorphile, object>.State idle;
 
-		public GameStateMachine<Meteorphile.States, Meteorphile.StatesInstance, Meteorphile, object>.State early;
+				public GameStateMachine<Meteorphile.States, Meteorphile.StatesInstance, Meteorphile, object>.State early;
 	}
 }

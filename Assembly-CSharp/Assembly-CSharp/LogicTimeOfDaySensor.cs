@@ -5,13 +5,13 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicTimeOfDaySensor : Switch, ISaveLoadable, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicTimeOfDaySensor>(-905833192, LogicTimeOfDaySensor.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicTimeOfDaySensor component = ((GameObject)data).GetComponent<LogicTimeOfDaySensor>();
 		if (component != null)
@@ -21,7 +21,7 @@ public class LogicTimeOfDaySensor : Switch, ISaveLoadable, ISim200ms
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.OnSwitchToggled;
@@ -30,7 +30,7 @@ public class LogicTimeOfDaySensor : Switch, ISaveLoadable, ISim200ms
 		this.wasOn = this.switchedOn;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		float currentCycleAsPercentage = GameClock.Instance.GetCurrentCycleAsPercentage();
 		bool state = false;
@@ -45,18 +45,18 @@ public class LogicTimeOfDaySensor : Switch, ISaveLoadable, ISim200ms
 		this.SetState(state);
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateLogicCircuit();
 		this.UpdateVisualState(false);
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, this.switchedOn ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -67,26 +67,26 @@ public class LogicTimeOfDaySensor : Switch, ISaveLoadable, ISim200ms
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	public float startTime;
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	public float duration = 1f;
 
-	private bool wasOn;
+		private bool wasOn;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicTimeOfDaySensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicTimeOfDaySensor>(delegate(LogicTimeOfDaySensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicTimeOfDaySensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicTimeOfDaySensor>(delegate(LogicTimeOfDaySensor component, object data)
 	{
 		component.OnCopySettings(data);
 	});

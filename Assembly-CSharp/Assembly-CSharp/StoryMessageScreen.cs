@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class StoryMessageScreen : KScreen
 {
-		public string title
+			public string title
 	{
 		set
 		{
@@ -15,7 +15,7 @@ public class StoryMessageScreen : KScreen
 		}
 	}
 
-		public string body
+			public string body
 	{
 		set
 		{
@@ -23,19 +23,19 @@ public class StoryMessageScreen : KScreen
 		}
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 8f;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		StoryMessageScreen.HideInterface(true);
 		CameraController.Instance.FadeOut(0.5f, 1f, null);
 	}
 
-	private IEnumerator ExpandPanel()
+		private IEnumerator ExpandPanel()
 	{
 		this.content.gameObject.SetActive(true);
 		yield return SequenceUtil.WaitForSecondsRealtime(0.25f);
@@ -51,7 +51,7 @@ public class StoryMessageScreen : KScreen
 		yield break;
 	}
 
-	private IEnumerator CollapsePanel()
+		private IEnumerator CollapsePanel()
 	{
 		float height = 300f;
 		while (height > 0f)
@@ -71,7 +71,7 @@ public class StoryMessageScreen : KScreen
 		yield break;
 	}
 
-	public static void HideInterface(bool hide)
+		public static void HideInterface(bool hide)
 	{
 		SelectTool.Instance.Select(null, true);
 		NotificationScreen.Instance.Show(!hide);
@@ -102,7 +102,7 @@ public class StoryMessageScreen : KScreen
 		PopFXManager.Instance.Show(!hide);
 	}
 
-	public void Update()
+		public void Update()
 	{
 		if (!this.startFade)
 		{
@@ -117,7 +117,7 @@ public class StoryMessageScreen : KScreen
 		this.bg.color = color;
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		SelectTool.Instance.Select(null, false);
@@ -136,7 +136,7 @@ public class StoryMessageScreen : KScreen
 		base.StartCoroutine(this.ExpandPanel());
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		base.IsActive();
 		base.OnDeactivate();
@@ -149,7 +149,7 @@ public class StoryMessageScreen : KScreen
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape))
 		{
@@ -158,39 +158,39 @@ public class StoryMessageScreen : KScreen
 		e.Consumed = true;
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		e.Consumed = true;
 	}
 
-	private const float ALPHA_SPEED = 0.01f;
+		private const float ALPHA_SPEED = 0.01f;
 
-	[SerializeField]
+		[SerializeField]
 	private Image bg;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject dialog;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton button;
 
-	[SerializeField]
+		[SerializeField]
 	private EventReference dialogSound;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText titleLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText bodyLabel;
 
-	private const float expandedHeight = 300f;
+		private const float expandedHeight = 300f;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject content;
 
-	public bool restoreInterfaceOnClose = true;
+		public bool restoreInterfaceOnClose = true;
 
-	public System.Action OnClose;
+		public System.Action OnClose;
 
-	private bool startFade;
+		private bool startFade;
 }

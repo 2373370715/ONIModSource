@@ -1,10 +1,11 @@
 ﻿using System;
 using Klei.AI;
 using STRINGS;
+using TUNING;
 
 public class SuitSuffocationMonitor : GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.satisfied;
 		this.satisfied.DefaultState(this.satisfied.normal).ToggleAttributeModifier("Breathing", (SuitSuffocationMonitor.Instance smi) => smi.breathing, null).Transition(this.nooxygen, (SuitSuffocationMonitor.Instance smi) => smi.IsTankEmpty(), UpdateRate.SIM_200ms);
@@ -19,66 +20,66 @@ public class SuitSuffocationMonitor : GameStateMachine<SuitSuffocationMonitor, S
 		});
 	}
 
-	public SuitSuffocationMonitor.SatisfiedState satisfied;
+		public SuitSuffocationMonitor.SatisfiedState satisfied;
 
-	public SuitSuffocationMonitor.NoOxygenState nooxygen;
+		public SuitSuffocationMonitor.NoOxygenState nooxygen;
 
-	public GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State death;
+		public GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State death;
 
-	public class NoOxygenState : GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State
+		public class NoOxygenState : GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State holdingbreath;
+				public GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State holdingbreath;
 
-		public GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State suffocating;
+				public GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State suffocating;
 	}
 
-	public class SatisfiedState : GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State
+		public class SatisfiedState : GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State normal;
+				public GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State normal;
 
-		public GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State low;
+				public GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.State low;
 	}
 
-	public new class Instance : GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<SuitSuffocationMonitor, SuitSuffocationMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-						public SuitTank suitTank { get; private set; }
+								public SuitTank suitTank { get; private set; }
 
-		public Instance(IStateMachineTarget master, SuitTank suit_tank) : base(master)
+				public Instance(IStateMachineTarget master, SuitTank suit_tank) : base(master)
 		{
 			this.breath = Db.Get().Amounts.Breath.Lookup(master.gameObject);
 			Klei.AI.Attribute deltaAttribute = Db.Get().Amounts.Breath.deltaAttribute;
-			float num = 0.90909094f;
-			this.breathing = new AttributeModifier(deltaAttribute.Id, num, DUPLICANTS.MODIFIERS.BREATHING.NAME, false, false, true);
-			this.holdingbreath = new AttributeModifier(deltaAttribute.Id, -num, DUPLICANTS.MODIFIERS.HOLDINGBREATH.NAME, false, false, true);
+			float breath_RATE = DUPLICANTSTATS.STANDARD.Breath.BREATH_RATE;
+			this.breathing = new AttributeModifier(deltaAttribute.Id, breath_RATE, DUPLICANTS.MODIFIERS.BREATHING.NAME, false, false, true);
+			this.holdingbreath = new AttributeModifier(deltaAttribute.Id, -breath_RATE, DUPLICANTS.MODIFIERS.HOLDINGBREATH.NAME, false, false, true);
 			this.suitTank = suit_tank;
 		}
 
-		public bool IsTankEmpty()
+				public bool IsTankEmpty()
 		{
 			return this.suitTank.IsEmpty();
 		}
 
-		public bool HasSuffocated()
+				public bool HasSuffocated()
 		{
 			return this.breath.value <= 0f;
 		}
 
-		public bool IsSuffocating()
+				public bool IsSuffocating()
 		{
-			return this.breath.value <= 45.454548f;
+			return this.breath.value <= DUPLICANTSTATS.STANDARD.Breath.SUFFOCATE_AMOUNT;
 		}
 
-		public void Kill()
+				public void Kill()
 		{
 			base.gameObject.GetSMI<DeathMonitor.Instance>().Kill(Db.Get().Deaths.Suffocation);
 		}
 
-		private AmountInstance breath;
+				private AmountInstance breath;
 
-		public AttributeModifier breathing;
+				public AttributeModifier breathing;
 
-		public AttributeModifier holdingbreath;
+				public AttributeModifier holdingbreath;
 
-		private OxygenBreather masterOxygenBreather;
+				private OxygenBreather masterOxygenBreather;
 	}
 }

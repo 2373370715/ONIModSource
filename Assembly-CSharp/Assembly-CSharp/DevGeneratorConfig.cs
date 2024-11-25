@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DevGeneratorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "DevGenerator";
 		int width = 1;
@@ -19,7 +19,7 @@ public class DevGeneratorConfig : IBuildingConfig
 		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER5;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, all_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER2, tier2, 0.2f);
 		buildingDef.GeneratorWattageRating = 100000f;
-		buildingDef.GeneratorBaseCapacity = 200000f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
 		buildingDef.RequiresPowerOutput = true;
 		buildingDef.PowerOutputOffset = new CellOffset(0, 0);
 		buildingDef.ViewMode = OverlayModes.Power.ID;
@@ -30,7 +30,7 @@ public class DevGeneratorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddTag(GameTags.DevBuilding);
 		DevGenerator devGenerator = go.AddOrGet<DevGenerator>();
@@ -38,10 +38,10 @@ public class DevGeneratorConfig : IBuildingConfig
 		devGenerator.wattageRating = 100000f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "DevGenerator";
+		public const string ID = "DevGenerator";
 }

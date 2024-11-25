@@ -2,11 +2,11 @@
 
 public class TableSaltTuning
 {
-	public static int SORTORDER = 1;
+		public static int SORTORDER = 1;
 
-	public static float SALTSHAKERSTORAGEMASS = 0.005f;
+		public static float SALTSHAKERSTORAGEMASS = 0.005f;
 
-	public static int MORALE_MODIFIER = 1;
+		public static int MORALE_MODIFIER = 1;
 
-	public static float CONSUMABLE_RATE = TableSaltTuning.SALTSHAKERSTORAGEMASS / 5f;
+		public static float CONSUMABLE_RATE = TableSaltTuning.SALTSHAKERSTORAGEMASS / 5f;
 }

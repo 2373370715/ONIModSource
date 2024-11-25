@@ -6,7 +6,7 @@ using UnityEngine;
 [Obsolete("Deprecated, use RangeVisualizer")]
 public class StationaryChoreRangeVisualizer : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<StationaryChoreRangeVisualizer>(-1503271301, StationaryChoreRangeVisualizer.OnSelectDelegate);
@@ -17,7 +17,7 @@ public class StationaryChoreRangeVisualizer : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, new System.Action(this.OnCellChange));
 		base.Unsubscribe<StationaryChoreRangeVisualizer>(-1503271301, StationaryChoreRangeVisualizer.OnSelectDelegate, false);
@@ -26,7 +26,7 @@ public class StationaryChoreRangeVisualizer : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	private void OnSelect(object data)
+		private void OnSelect(object data)
 	{
 		if ((bool)data)
 		{
@@ -38,17 +38,17 @@ public class StationaryChoreRangeVisualizer : KMonoBehaviour
 		this.ClearVisualizers();
 	}
 
-	private void OnRotated(object data)
+		private void OnRotated(object data)
 	{
 		this.UpdateVisualizers();
 	}
 
-	private void OnCellChange()
+		private void OnCellChange()
 	{
 		this.UpdateVisualizers();
 	}
 
-	private void UpdateVisualizers()
+		private void UpdateVisualizers()
 	{
 		this.newCells.Clear();
 		CellOffset rotatedCellOffset = this.vision_offset;
@@ -105,7 +105,7 @@ public class StationaryChoreRangeVisualizer : KMonoBehaviour
 		}
 	}
 
-	private void ClearVisualizers()
+		private void ClearVisualizers()
 	{
 		for (int i = 0; i < this.visualizers.Count; i++)
 		{
@@ -114,7 +114,7 @@ public class StationaryChoreRangeVisualizer : KMonoBehaviour
 		this.visualizers.Clear();
 	}
 
-	private KBatchedAnimController CreateEffect(int cell)
+		private KBatchedAnimController CreateEffect(int cell)
 	{
 		KBatchedAnimController kbatchedAnimController = FXHelpers.CreateEffect(StationaryChoreRangeVisualizer.AnimName, Grid.CellToPosCCC(cell, this.sceneLayer), null, false, this.sceneLayer, true);
 		kbatchedAnimController.destroyOnAnimComplete = false;
@@ -124,64 +124,64 @@ public class StationaryChoreRangeVisualizer : KMonoBehaviour
 		return kbatchedAnimController;
 	}
 
-	private void DestroyEffect(KBatchedAnimController controller)
+		private void DestroyEffect(KBatchedAnimController controller)
 	{
 		controller.destroyOnAnimComplete = true;
 		controller.Play(StationaryChoreRangeVisualizer.PostAnim, KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Rotatable rotatable;
 
-	public int x;
+		public int x;
 
-	public int y;
+		public int y;
 
-	public int width;
+		public int width;
 
-	public int height;
+		public int height;
 
-	public bool movable;
+		public bool movable;
 
-	public Grid.SceneLayer sceneLayer = Grid.SceneLayer.FXFront;
+		public Grid.SceneLayer sceneLayer = Grid.SceneLayer.FXFront;
 
-	public CellOffset vision_offset;
+		public CellOffset vision_offset;
 
-	public Func<int, bool> blocking_cb = new Func<int, bool>(Grid.PhysicalBlockingCB);
+		public Func<int, bool> blocking_cb = new Func<int, bool>(Grid.PhysicalBlockingCB);
 
-	public bool blocking_tile_visible = true;
+		public bool blocking_tile_visible = true;
 
-	private static readonly string AnimName = "transferarmgrid_kanim";
+		private static readonly string AnimName = "transferarmgrid_kanim";
 
-	private static readonly HashedString[] PreAnims = new HashedString[]
+		private static readonly HashedString[] PreAnims = new HashedString[]
 	{
 		"grid_pre",
 		"grid_loop"
 	};
 
-	private static readonly HashedString PostAnim = "grid_pst";
+		private static readonly HashedString PostAnim = "grid_pst";
 
-	private List<StationaryChoreRangeVisualizer.VisData> visualizers = new List<StationaryChoreRangeVisualizer.VisData>();
+		private List<StationaryChoreRangeVisualizer.VisData> visualizers = new List<StationaryChoreRangeVisualizer.VisData>();
 
-	private List<int> newCells = new List<int>();
+		private List<int> newCells = new List<int>();
 
-	private static readonly EventSystem.IntraObjectHandler<StationaryChoreRangeVisualizer> OnSelectDelegate = new EventSystem.IntraObjectHandler<StationaryChoreRangeVisualizer>(delegate(StationaryChoreRangeVisualizer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<StationaryChoreRangeVisualizer> OnSelectDelegate = new EventSystem.IntraObjectHandler<StationaryChoreRangeVisualizer>(delegate(StationaryChoreRangeVisualizer component, object data)
 	{
 		component.OnSelect(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<StationaryChoreRangeVisualizer> OnRotatedDelegate = new EventSystem.IntraObjectHandler<StationaryChoreRangeVisualizer>(delegate(StationaryChoreRangeVisualizer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<StationaryChoreRangeVisualizer> OnRotatedDelegate = new EventSystem.IntraObjectHandler<StationaryChoreRangeVisualizer>(delegate(StationaryChoreRangeVisualizer component, object data)
 	{
 		component.OnRotated(data);
 	});
 
-	private struct VisData
+		private struct VisData
 	{
-		public int cell;
+				public int cell;
 
-		public KBatchedAnimController controller;
+				public KBatchedAnimController controller;
 	}
 }

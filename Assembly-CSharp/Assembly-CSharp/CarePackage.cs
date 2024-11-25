@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -16,30 +16,30 @@ public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 		this.reactable = this.CreateReactable();
 	}
 
-	public Reactable CreateReactable()
+		public Reactable CreateReactable()
 	{
 		return new EmoteReactable(base.gameObject, "UpgradeFX", Db.Get().ChoreTypes.Emote, 15, 8, 0f, 20f, float.PositiveInfinity, 0f).SetEmote(Db.Get().Emotes.Minion.Cheer);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.reactable.Cleanup();
 		base.OnCleanUp();
 	}
 
-	public void SetInfo(CarePackageInfo info)
+		public void SetInfo(CarePackageInfo info)
 	{
 		this.info = info;
 		this.SetAnimToInfo();
 	}
 
-	public void SetFacade(string facadeID)
+		public void SetFacade(string facadeID)
 	{
 		this.facadeID = facadeID;
 		this.SetAnimToInfo();
 	}
 
-	private void SetAnimToInfo()
+		private void SetAnimToInfo()
 	{
 		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab("Meter".ToTag()), base.gameObject, null);
 		GameObject prefab = Assets.GetPrefab(this.info.id);
@@ -79,7 +79,7 @@ public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 		new KAnimLink(component, component4);
 	}
 
-	private void SpawnContents()
+		private void SpawnContents()
 	{
 		if (this.info == null)
 		{
@@ -122,25 +122,25 @@ public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	public CarePackageInfo info;
 
-	private string facadeID;
+		private string facadeID;
 
-	private Reactable reactable;
+		private Reactable reactable;
 
-	public class SMInstance : GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.GameInstance
+		public class SMInstance : GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.GameInstance
 	{
-		public SMInstance(CarePackage master) : base(master)
+				public SMInstance(CarePackage master) : base(master)
 		{
 		}
 
-		public List<Chore> activeUseChores;
+				public List<Chore> activeUseChores;
 	}
 
-	public class States : GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage>
+		public class States : GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.spawn;
 			base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -157,14 +157,14 @@ public class CarePackage : StateMachineComponent<CarePackage.SMInstance>
 			});
 		}
 
-		public StateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.BoolParameter spawnedContents;
+				public StateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.BoolParameter spawnedContents;
 
-		public GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.State spawn;
+				public GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.State spawn;
 
-		public GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.State open;
+				public GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.State open;
 
-		public GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.State pst;
+				public GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.State pst;
 
-		public GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.State destroy;
+				public GameStateMachine<CarePackage.States, CarePackage.SMInstance, CarePackage, object>.State destroy;
 	}
 }

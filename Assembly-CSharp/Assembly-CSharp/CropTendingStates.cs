@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CropTendingStates : GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.findCrop;
 		this.root.Exit(delegate(CropTendingStates.Instance smi)
@@ -28,8 +28,24 @@ public class CropTendingStates : GameStateMachine<CropTendingStates, CropTending
 			this.ReserverCrop(smi);
 			smi.GoTo(this.moveToCrop);
 		});
-		this.moveToCrop.ToggleStatusItem(CREATURES.STATUSITEMS.DIVERGENT_WILL_TEND.NAME, CREATURES.STATUSITEMS.DIVERGENT_WILL_TEND.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).MoveTo((CropTendingStates.Instance smi) => smi.moveCell, this.tendCrop, this.behaviourcomplete, false).ParamTransition<GameObject>(this.targetCrop, this.behaviourcomplete, (CropTendingStates.Instance smi, GameObject p) => this.targetCrop.Get(smi) == null);
-		this.tendCrop.DefaultState(this.tendCrop.pre).ToggleStatusItem(CREATURES.STATUSITEMS.DIVERGENT_TENDING.NAME, CREATURES.STATUSITEMS.DIVERGENT_TENDING.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).ParamTransition<GameObject>(this.targetCrop, this.behaviourcomplete, (CropTendingStates.Instance smi, GameObject p) => this.targetCrop.Get(smi) == null).Enter(delegate(CropTendingStates.Instance smi)
+		GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State state = this.moveToCrop;
+		string name = CREATURES.STATUSITEMS.DIVERGENT_WILL_TEND.NAME;
+		string tooltip = CREATURES.STATUSITEMS.DIVERGENT_WILL_TEND.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).MoveTo((CropTendingStates.Instance smi) => smi.moveCell, this.tendCrop, this.behaviourcomplete, false).ParamTransition<GameObject>(this.targetCrop, this.behaviourcomplete, (CropTendingStates.Instance smi, GameObject p) => this.targetCrop.Get(smi) == null);
+		GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State state2 = this.tendCrop.DefaultState(this.tendCrop.pre);
+		string name2 = CREATURES.STATUSITEMS.DIVERGENT_TENDING.NAME;
+		string tooltip2 = CREATURES.STATUSITEMS.DIVERGENT_TENDING.TOOLTIP;
+		string icon2 = "";
+		StatusItem.IconType icon_type2 = StatusItem.IconType.Info;
+		NotificationType notification_type2 = NotificationType.Neutral;
+		bool allow_multiples2 = false;
+		main = Db.Get().StatusItemCategories.Main;
+		state2.ToggleStatusItem(name2, tooltip2, icon2, icon_type2, notification_type2, allow_multiples2, default(HashedString), 129022, null, null, main).ParamTransition<GameObject>(this.targetCrop, this.behaviourcomplete, (CropTendingStates.Instance smi, GameObject p) => this.targetCrop.Get(smi) == null).Enter(delegate(CropTendingStates.Instance smi)
 		{
 			smi.animSet = this.GetCropTendingAnimSet(smi);
 			this.StoreSymbolsVisibility(smi);
@@ -61,7 +77,7 @@ public class CropTendingStates : GameStateMachine<CropTendingStates, CropTending
 		this.behaviourcomplete.BehaviourComplete(GameTags.Creatures.WantsToTendCrops, false);
 	}
 
-	private CropTendingStates.AnimSet GetCropTendingAnimSet(CropTendingStates.Instance smi)
+		private CropTendingStates.AnimSet GetCropTendingAnimSet(CropTendingStates.Instance smi)
 	{
 		CropTendingStates.AnimSet result;
 		if (smi.def.animSetOverrides.TryGetValue(this.targetCrop.Get(smi).PrefabID(), out result))
@@ -71,7 +87,7 @@ public class CropTendingStates : GameStateMachine<CropTendingStates, CropTending
 		return CropTendingStates.defaultAnimSet;
 	}
 
-	private void FindCrop(CropTendingStates.Instance smi)
+		private void FindCrop(CropTendingStates.Instance smi)
 	{
 		Navigator component = smi.GetComponent<Navigator>();
 		Crop crop = null;
@@ -80,60 +96,77 @@ public class CropTendingStates : GameStateMachine<CropTendingStates, CropTending
 		int num2 = -1;
 		foreach (Crop crop2 in Components.Crops.GetWorldItems(smi.gameObject.GetMyWorldId(), false))
 		{
-			if (smi.effect != null)
+			if (Vector2.SqrMagnitude(crop2.transform.position - smi.transform.position) <= 625f)
 			{
-				Effects component2 = crop2.GetComponent<Effects>();
-				if (component2 != null)
+				if (smi.effect != null)
 				{
-					bool flag = false;
-					foreach (string effect_id in smi.def.ignoreEffectGroup)
+					Effects component2 = crop2.GetComponent<Effects>();
+					if (component2 != null)
 					{
-						if (component2.HasEffect(effect_id))
+						bool flag = false;
+						foreach (string effect_id in smi.def.ignoreEffectGroup)
 						{
-							flag = true;
-							break;
-						}
-					}
-					if (flag)
-					{
-						continue;
-					}
-				}
-			}
-			Growing component3 = crop2.GetComponent<Growing>();
-			if ((!(component3 != null) || !component3.IsGrown()) && !crop2.HasTag(GameTags.Creatures.ReservedByCreature) && Vector2.SqrMagnitude(crop2.transform.position - smi.transform.position) <= 625f)
-			{
-				int num3;
-				smi.def.interests.TryGetValue(crop2.PrefabID(), out num3);
-				if (num3 >= num2)
-				{
-					bool flag2 = num3 > num2;
-					int cell = Grid.PosToCell(crop2);
-					int[] array = new int[]
-					{
-						Grid.CellLeft(cell),
-						Grid.CellRight(cell)
-					};
-					int num4 = 100;
-					int num5 = Grid.InvalidCell;
-					for (int j = 0; j < array.Length; j++)
-					{
-						if (Grid.IsValidCell(array[j]))
-						{
-							int navigationCost = component.GetNavigationCost(array[j]);
-							if (navigationCost != -1 && navigationCost < num4)
+							if (component2.HasEffect(effect_id))
 							{
-								num4 = navigationCost;
-								num5 = array[j];
+								flag = true;
+								break;
 							}
 						}
+						if (flag)
+						{
+							continue;
+						}
 					}
-					if (num4 != -1 && num5 != Grid.InvalidCell && (flag2 || num4 < num))
+				}
+				Growing component3 = crop2.GetComponent<Growing>();
+				if (!(component3 != null) || !component3.IsGrown())
+				{
+					KPrefabID component4 = crop2.GetComponent<KPrefabID>();
+					if (!component4.HasTag(GameTags.Creatures.ReservedByCreature))
 					{
-						moveCell = num5;
-						num = num4;
-						num2 = num3;
-						crop = crop2;
+						int num3;
+						smi.def.interests.TryGetValue(crop2.PrefabID(), out num3);
+						if (num3 >= num2)
+						{
+							bool flag2 = num3 > num2;
+							int cell = Grid.PosToCell(crop2);
+							int[] array = new int[]
+							{
+								Grid.CellLeft(cell),
+								Grid.CellRight(cell)
+							};
+							if (component4.HasTag(GameTags.PlantedOnFloorVessel))
+							{
+								array = new int[]
+								{
+									Grid.CellLeft(cell),
+									Grid.CellRight(cell),
+									Grid.CellDownLeft(cell),
+									Grid.CellDownRight(cell)
+								};
+							}
+							int num4 = 100;
+							int num5 = Grid.InvalidCell;
+							for (int j = 0; j < array.Length; j++)
+							{
+								if (Grid.IsValidCell(array[j]))
+								{
+									int navigationCost = component.GetNavigationCost(array[j]);
+									if (navigationCost != -1 && navigationCost < num4)
+									{
+										num4 = navigationCost;
+										num5 = array[j];
+									}
+								}
+							}
+							if (num4 != -1 && num5 != Grid.InvalidCell && (flag2 || num4 < num))
+							{
+								moveCell = num5;
+								num = num4;
+								num2 = num3;
+								crop = crop2;
+							}
+						}
 					}
 				}
 			}
@@ -143,7 +176,7 @@ public class CropTendingStates : GameStateMachine<CropTendingStates, CropTending
 		smi.moveCell = moveCell;
 	}
 
-	private void ReserverCrop(CropTendingStates.Instance smi)
+		private void ReserverCrop(CropTendingStates.Instance smi)
 	{
 		GameObject gameObject = smi.sm.targetCrop.Get(smi);
 		if (gameObject != null)
@@ -153,7 +186,7 @@ public class CropTendingStates : GameStateMachine<CropTendingStates, CropTending
 		}
 	}
 
-	private void UnreserveCrop(CropTendingStates.Instance smi)
+		private void UnreserveCrop(CropTendingStates.Instance smi)
 	{
 		GameObject gameObject = smi.sm.targetCrop.Get(smi);
 		if (gameObject != null)
@@ -162,7 +195,7 @@ public class CropTendingStates : GameStateMachine<CropTendingStates, CropTending
 		}
 	}
 
-	private void SetSymbolsVisibility(CropTendingStates.Instance smi, bool isVisible)
+		private void SetSymbolsVisibility(CropTendingStates.Instance smi, bool isVisible)
 	{
 		if (this.targetCrop.Get(smi) != null)
 		{
@@ -181,7 +214,7 @@ public class CropTendingStates : GameStateMachine<CropTendingStates, CropTending
 		}
 	}
 
-	private void StoreSymbolsVisibility(CropTendingStates.Instance smi)
+		private void StoreSymbolsVisibility(CropTendingStates.Instance smi)
 	{
 		if (this.targetCrop.Get(smi) != null)
 		{
@@ -201,7 +234,7 @@ public class CropTendingStates : GameStateMachine<CropTendingStates, CropTending
 		}
 	}
 
-	private void RestoreSymbolsVisibility(CropTendingStates.Instance smi)
+		private void RestoreSymbolsVisibility(CropTendingStates.Instance smi)
 	{
 		if (this.targetCrop.Get(smi) != null && smi.symbolStates != null)
 		{
@@ -220,81 +253,81 @@ public class CropTendingStates : GameStateMachine<CropTendingStates, CropTending
 		}
 	}
 
-	private const int MAX_NAVIGATE_DISTANCE = 100;
+		private const int MAX_NAVIGATE_DISTANCE = 100;
 
-	private const int MAX_SQR_EUCLIDEAN_DISTANCE = 625;
+		private const int MAX_SQR_EUCLIDEAN_DISTANCE = 625;
 
-	private static CropTendingStates.AnimSet defaultAnimSet = new CropTendingStates.AnimSet
+		private static CropTendingStates.AnimSet defaultAnimSet = new CropTendingStates.AnimSet
 	{
 		crop_tending_pre = "crop_tending_pre",
 		crop_tending = "crop_tending_loop",
 		crop_tending_pst = "crop_tending_pst"
 	};
 
-	public StateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.TargetParameter targetCrop;
+		public StateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.TargetParameter targetCrop;
 
-	private GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State findCrop;
+		private GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State findCrop;
 
-	private GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State moveToCrop;
+		private GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State moveToCrop;
 
-	private CropTendingStates.TendingStates tendCrop;
+		private CropTendingStates.TendingStates tendCrop;
 
-	private GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State behaviourcomplete;
+		private GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State behaviourcomplete;
 
-	public class AnimSet
+		public class AnimSet
 	{
-		public string crop_tending_pre;
+				public string crop_tending_pre;
 
-		public string crop_tending;
+				public string crop_tending;
 
-		public string crop_tending_pst;
+				public string crop_tending_pst;
 
-		public string[] hide_symbols_after_pre;
+				public string[] hide_symbols_after_pre;
 	}
 
-	public class CropTendingEventData
+		public class CropTendingEventData
 	{
-		public GameObject source;
+				public GameObject source;
 
-		public Tag cropId;
+				public Tag cropId;
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public string effectId;
+				public string effectId;
 
-		public string[] ignoreEffectGroup;
+				public string[] ignoreEffectGroup;
 
-		public Dictionary<Tag, int> interests = new Dictionary<Tag, int>();
+				public Dictionary<Tag, int> interests = new Dictionary<Tag, int>();
 
-		public Dictionary<Tag, CropTendingStates.AnimSet> animSetOverrides = new Dictionary<Tag, CropTendingStates.AnimSet>();
+				public Dictionary<Tag, CropTendingStates.AnimSet> animSetOverrides = new Dictionary<Tag, CropTendingStates.AnimSet>();
 	}
 
-	public new class Instance : GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.GameInstance
 	{
-		public Instance(Chore<CropTendingStates.Instance> chore, CropTendingStates.Def def) : base(chore, def)
+				public Instance(Chore<CropTendingStates.Instance> chore, CropTendingStates.Def def) : base(chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.WantsToTendCrops);
 			this.effect = Db.Get().effects.TryGet(base.smi.def.effectId);
 		}
 
-		public Effect effect;
+				public Effect effect;
 
-		public int moveCell;
+				public int moveCell;
 
-		public CropTendingStates.AnimSet animSet;
+				public CropTendingStates.AnimSet animSet;
 
-		public bool tendedSucceeded;
+				public bool tendedSucceeded;
 
-		public bool[] symbolStates;
+				public bool[] symbolStates;
 	}
 
-	public class TendingStates : GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State
+		public class TendingStates : GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State
 	{
-		public GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State pre;
+				public GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State pre;
 
-		public GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State tend;
+				public GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State tend;
 
-		public GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State pst;
+				public GameStateMachine<CropTendingStates, CropTendingStates.Instance, IStateMachineTarget, CropTendingStates.Def>.State pst;
 	}
 }

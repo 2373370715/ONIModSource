@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/CellSelectionObject")]
 public class CellSelectionObject : KMonoBehaviour
 {
-		public int SelectedCell
+			public int SelectedCell
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class CellSelectionObject : KMonoBehaviour
 		}
 	}
 
-		public float FlowRate
+			public float FlowRate
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class CellSelectionObject : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.mCollider = base.GetComponent<KBoxCollider2D>();
@@ -47,24 +47,24 @@ public class CellSelectionObject : KMonoBehaviour
 		global::Debug.LogError("CellSelectionObjects not properly cleaned up.");
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		CellSelectionObject.selectionObjectA = null;
 		CellSelectionObject.selectionObjectB = null;
 		base.OnCleanUp();
 	}
 
-	public static bool IsSelectionObject(GameObject testObject)
+		public static bool IsSelectionObject(GameObject testObject)
 	{
 		return testObject == CellSelectionObject.selectionObjectA.gameObject || testObject == CellSelectionObject.selectionObjectB.gameObject;
 	}
 
-	private void OnApplicationFocus(bool focusStatus)
+		private void OnApplicationFocus(bool focusStatus)
 	{
 		this.isAppFocused = focusStatus;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!this.isAppFocused || SelectTool.Instance == null)
 		{
@@ -131,7 +131,7 @@ public class CellSelectionObject : KMonoBehaviour
 		}
 	}
 
-	public void UpdateValues()
+		public void UpdateValues()
 	{
 		if (!Grid.IsValidCell(this.selectedCell))
 		{
@@ -190,12 +190,12 @@ public class CellSelectionObject : KMonoBehaviour
 		this.mSelectable.ToggleStatusItem(Db.Get().MiscStatusItems.Space, on, null);
 	}
 
-	public static bool IsExposedToSpace(int cell)
+		public static bool IsExposedToSpace(int cell)
 	{
 		return Game.Instance.world.zoneRenderData.GetSubWorldZoneType(cell) == SubWorld.ZoneType.Space && Grid.Objects[cell, 2] == null;
 	}
 
-	private void UpdateStatusItem()
+		private void UpdateStatusItem()
 	{
 		if (this.element.id == SimHashes.Vacuum || this.element.id == SimHashes.Void)
 		{
@@ -224,7 +224,7 @@ public class CellSelectionObject : KMonoBehaviour
 		}
 	}
 
-	public void OnObjectSelected(object o)
+		public void OnObjectSelected(object o)
 	{
 		this.SelectedDisplaySprite.GetComponent<SpriteRenderer>().sprite = this.Sprite_Hover;
 		this.UpdateStatusItem();
@@ -239,62 +239,62 @@ public class CellSelectionObject : KMonoBehaviour
 		}
 	}
 
-	public string MassString()
+		public string MassString()
 	{
 		return string.Format("{0:0.00}", this.Mass);
 	}
 
-	private void ForceRefreshUserMenu(object data)
+		private void ForceRefreshUserMenu(object data)
 	{
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	private static CellSelectionObject selectionObjectA;
+		private static CellSelectionObject selectionObjectA;
 
-	private static CellSelectionObject selectionObjectB;
+		private static CellSelectionObject selectionObjectB;
 
-	[HideInInspector]
+		[HideInInspector]
 	public CellSelectionObject alternateSelectionObject;
 
-	private float zDepth = Grid.GetLayerZ(Grid.SceneLayer.WorldSelection) - 0.5f;
+		private float zDepth = Grid.GetLayerZ(Grid.SceneLayer.WorldSelection) - 0.5f;
 
-	private float zDepthSelected = Grid.GetLayerZ(Grid.SceneLayer.WorldSelection);
+		private float zDepthSelected = Grid.GetLayerZ(Grid.SceneLayer.WorldSelection);
 
-	private KBoxCollider2D mCollider;
+		private KBoxCollider2D mCollider;
 
-	private KSelectable mSelectable;
+		private KSelectable mSelectable;
 
-	private Vector3 offset = new Vector3(0.5f, 0.5f, 0f);
+		private Vector3 offset = new Vector3(0.5f, 0.5f, 0f);
 
-	public GameObject SelectedDisplaySprite;
+		public GameObject SelectedDisplaySprite;
 
-	public Sprite Sprite_Selected;
+		public Sprite Sprite_Selected;
 
-	public Sprite Sprite_Hover;
+		public Sprite Sprite_Hover;
 
-	public int mouseCell;
+		public int mouseCell;
 
-	private int selectedCell;
+		private int selectedCell;
 
-	public string ElementName;
+		public string ElementName;
 
-	public Element element;
+		public Element element;
 
-	public Element.State state;
+		public Element.State state;
 
-	public float Mass;
+		public float Mass;
 
-	public float temperature;
+		public float temperature;
 
-	public Tag tags;
+		public Tag tags;
 
-	public byte diseaseIdx;
+		public byte diseaseIdx;
 
-	public int diseaseCount;
+		public int diseaseCount;
 
-	private float updateTimer;
+		private float updateTimer;
 
-	private Dictionary<HashedString, Func<bool>> overlayFilterMap = new Dictionary<HashedString, Func<bool>>();
+		private Dictionary<HashedString, Func<bool>> overlayFilterMap = new Dictionary<HashedString, Func<bool>>();
 
-	private bool isAppFocused = true;
+		private bool isAppFocused = true;
 }

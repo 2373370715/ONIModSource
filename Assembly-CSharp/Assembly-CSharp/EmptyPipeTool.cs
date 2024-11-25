@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class EmptyPipeTool : FilteredDragTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		EmptyPipeTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		EmptyPipeTool.Instance = this;
 	}
 
-	protected override void OnDragTool(int cell, int distFromOrigin)
+		protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		for (int i = 0; i < 45; i++)
 		{
@@ -46,19 +46,19 @@ public class EmptyPipeTool : FilteredDragTool
 		}
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		ToolMenu.Instance.PriorityScreen.Show(true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		ToolMenu.Instance.PriorityScreen.Show(false);
 	}
 
-	protected override void GetDefaultFilters(Dictionary<string, ToolParameterMenu.ToggleState> filters)
+		protected override void GetDefaultFilters(Dictionary<string, ToolParameterMenu.ToggleState> filters)
 	{
 		filters.Add(ToolParameterMenu.FILTERLAYERS.ALL, ToolParameterMenu.ToggleState.On);
 		filters.Add(ToolParameterMenu.FILTERLAYERS.LIQUIDCONDUIT, ToolParameterMenu.ToggleState.Off);
@@ -66,5 +66,5 @@ public class EmptyPipeTool : FilteredDragTool
 		filters.Add(ToolParameterMenu.FILTERLAYERS.SOLIDCONDUIT, ToolParameterMenu.ToggleState.Off);
 	}
 
-	public static EmptyPipeTool Instance;
+		public static EmptyPipeTool Instance;
 }

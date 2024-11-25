@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SicknessTrigger")]
 public class SicknessTrigger : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	public void AddTrigger(GameHashes src_event, string[] sickness_ids, SicknessTrigger.SourceCallback source_callback)
+		public void AddTrigger(GameHashes src_event, string[] sickness_ids, SicknessTrigger.SourceCallback source_callback)
 	{
 		this.triggers.Add(new SicknessTrigger.TriggerInfo
 		{
@@ -17,7 +17,7 @@ public class SicknessTrigger : KMonoBehaviour, IGameObjectEffectDescriptor
 		});
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		for (int i = 0; i < this.triggers.Count; i++)
 		{
@@ -29,7 +29,7 @@ public class SicknessTrigger : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	private void OnSicknessTrigger(GameObject target, SicknessTrigger.TriggerInfo trigger)
+		private void OnSicknessTrigger(GameObject target, SicknessTrigger.TriggerInfo trigger)
 	{
 		int num = UnityEngine.Random.Range(0, trigger.sickness_ids.Length);
 		string text = trigger.sickness_ids[num];
@@ -56,7 +56,7 @@ public class SicknessTrigger : KMonoBehaviour, IGameObjectEffectDescriptor
 		});
 	}
 
-	public List<Descriptor> EffectDescriptors(GameObject go)
+		public List<Descriptor> EffectDescriptors(GameObject go)
 	{
 		Dictionary<GameHashes, HashSet<string>> dictionary = new Dictionary<GameHashes, HashSet<string>>();
 		foreach (SicknessTrigger.TriggerInfo triggerInfo in this.triggers)
@@ -94,23 +94,23 @@ public class SicknessTrigger : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return this.EffectDescriptors(go);
 	}
 
-	public List<SicknessTrigger.TriggerInfo> triggers = new List<SicknessTrigger.TriggerInfo>();
+		public List<SicknessTrigger.TriggerInfo> triggers = new List<SicknessTrigger.TriggerInfo>();
 
-		public delegate string SourceCallback(GameObject source, GameObject target);
+			public delegate string SourceCallback(GameObject source, GameObject target);
 
-	[Serializable]
+		[Serializable]
 	public struct TriggerInfo
 	{
-		[HashedEnum]
+				[HashedEnum]
 		public GameHashes srcEvent;
 
-		public string[] sickness_ids;
+				public string[] sickness_ids;
 
-		public SicknessTrigger.SourceCallback sourceCallback;
+				public SicknessTrigger.SourceCallback sourceCallback;
 	}
 }

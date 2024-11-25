@@ -2,7 +2,7 @@
 
 public class ClusterMapIconFixRotation : KMonoBehaviour
 {
-	private void Update()
+		private void Update()
 	{
 		if (base.transform.parent != null)
 		{
@@ -12,8 +12,8 @@ public class ClusterMapIconFixRotation : KMonoBehaviour
 		}
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimController animController;
 
-	private float rotation;
+		private float rotation;
 }

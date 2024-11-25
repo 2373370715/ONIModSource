@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class ScreenResize : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		ScreenResize.Instance = this;
 		this.isFullscreen = Screen.fullScreen;
 		this.OnResize = (System.Action)Delegate.Combine(this.OnResize, new System.Action(this.SaveResolutionToPrefs));
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (Screen.width != this.Width || Screen.height != this.Height || this.isFullscreen != Screen.fullScreen)
 		{
@@ -21,7 +21,7 @@ public class ScreenResize : MonoBehaviour
 		}
 	}
 
-	public void TriggerResize()
+		public void TriggerResize()
 	{
 		if (this.OnResize != null)
 		{
@@ -29,18 +29,18 @@ public class ScreenResize : MonoBehaviour
 		}
 	}
 
-	private void SaveResolutionToPrefs()
+		private void SaveResolutionToPrefs()
 	{
 		GraphicsOptionsScreen.OnResize();
 	}
 
-	public System.Action OnResize;
+		public System.Action OnResize;
 
-	public static ScreenResize Instance;
+		public static ScreenResize Instance;
 
-	private int Width;
+		private int Width;
 
-	private int Height;
+		private int Height;
 
-	private bool isFullscreen;
+		private bool isFullscreen;
 }

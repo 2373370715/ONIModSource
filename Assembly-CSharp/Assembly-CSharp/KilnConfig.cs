@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class KilnConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Kiln";
 		int width = 2;
@@ -29,7 +29,7 @@ public class KilnConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<DropAllWorkable>();
@@ -46,7 +46,7 @@ public class KilnConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	private void ConfigureRecipes()
+		private void ConfigureRecipes()
 	{
 		Tag tag = SimHashes.Ceramic.CreateTag();
 		Tag material = SimHashes.Clay.CreateTag();
@@ -118,26 +118,26 @@ public class KilnConfig : IBuildingConfig
 		ComplexRecipeManager.Get().AddObsoleteIDMapping(obsolete_id3, text3);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 	}
 
-	public const string ID = "Kiln";
+		public const string ID = "Kiln";
 
-	public const float INPUT_CLAY_PER_SECOND = 1f;
+		public const float INPUT_CLAY_PER_SECOND = 1f;
 
-	public const float CERAMIC_PER_SECOND = 1f;
+		public const float CERAMIC_PER_SECOND = 1f;
 
-	public const float CO2_RATIO = 0.1f;
+		public const float CO2_RATIO = 0.1f;
 
-	public const float OUTPUT_TEMP = 353.15f;
+		public const float OUTPUT_TEMP = 353.15f;
 
-	public const float REFILL_RATE = 2400f;
+		public const float REFILL_RATE = 2400f;
 
-	public const float CERAMIC_STORAGE_AMOUNT = 2400f;
+		public const float CERAMIC_STORAGE_AMOUNT = 2400f;
 
-	public const float COAL_RATE = 0.1f;
+		public const float COAL_RATE = 0.1f;
 }

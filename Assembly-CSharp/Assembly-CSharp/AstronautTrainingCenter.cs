@@ -1,65 +1,72 @@
-﻿using STRINGS;
+﻿using System;
+using STRINGS;
 using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/Workable/AstronautTrainingCenter")]
-public class AstronautTrainingCenter : Workable {
-    private Chore              chore;
-    public  float              daysToMasterRole;
-    public  Chore.Precondition IsNotMarkedForDeconstruction;
+public class AstronautTrainingCenter : Workable
+{
+		protected override void OnSpawn()
+	{
+		base.OnSpawn();
+		this.chore = this.CreateChore();
+	}
 
-    public AstronautTrainingCenter() {
-        var isNotMarkedForDeconstruction = default(Chore.Precondition);
-        isNotMarkedForDeconstruction.id          = "IsNotMarkedForDeconstruction";
-        isNotMarkedForDeconstruction.description = DUPLICANTS.CHORES.PRECONDITIONS.IS_MARKED_FOR_DECONSTRUCTION;
-        isNotMarkedForDeconstruction.fn = delegate(ref Chore.Precondition.Context context, object data) {
-                                              var deconstructable = data as Deconstructable;
-                                              return deconstructable == null ||
-                                                     !deconstructable.IsMarkedForDeconstruction();
-                                          };
+		private Chore CreateChore()
+	{
+		return new WorkChore<AstronautTrainingCenter>(Db.Get().ChoreTypes.Train, this, null, true, null, null, null, false, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+	}
 
-        IsNotMarkedForDeconstruction = isNotMarkedForDeconstruction;
-        base..ctor();
-    }
+		protected override void OnStartWork(WorkerBase worker)
+	{
+		base.OnStartWork(worker);
+		base.GetComponent<Operational>().SetActive(true, false);
+	}
 
-    protected override void OnSpawn() {
-        base.OnSpawn();
-        chore = CreateChore();
-    }
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
+	{
+		worker == null;
+		return true;
+	}
 
-    private Chore CreateChore() {
-        return new WorkChore<AstronautTrainingCenter>(Db.Get().ChoreTypes.Train,
-                                                      this,
-                                                      null,
-                                                      true,
-                                                      null,
-                                                      null,
-                                                      null,
-                                                      false);
-    }
+		protected override void OnCompleteWork(WorkerBase worker)
+	{
+		base.OnCompleteWork(worker);
+		if (this.chore != null && !this.chore.isComplete)
+		{
+			this.chore.Cancel("completed but not complete??");
+		}
+		this.chore = this.CreateChore();
+	}
 
-    protected override void OnStartWork(Worker worker) {
-        base.OnStartWork(worker);
-        GetComponent<Operational>().SetActive(true);
-    }
+		protected override void OnStopWork(WorkerBase worker)
+	{
+		base.OnStopWork(worker);
+		base.GetComponent<Operational>().SetActive(false, false);
+	}
 
-    protected override bool OnWorkTick(Worker worker, float dt) {
-        // worker == null;
-        return true;
-    }
+		public override float GetPercentComplete()
+	{
+		base.worker == null;
+		return 0f;
+	}
 
-    protected override void OnCompleteWork(Worker worker) {
-        base.OnCompleteWork(worker);
-        if (chore != null && !chore.isComplete) chore.Cancel("completed but not complete??");
-        chore = CreateChore();
-    }
+		public AstronautTrainingCenter()
+	{
+		Chore.Precondition isNotMarkedForDeconstruction = default(Chore.Precondition);
+		isNotMarkedForDeconstruction.id = "IsNotMarkedForDeconstruction";
+		isNotMarkedForDeconstruction.description = DUPLICANTS.CHORES.PRECONDITIONS.IS_MARKED_FOR_DECONSTRUCTION;
+		isNotMarkedForDeconstruction.fn = delegate(ref Chore.Precondition.Context context, object data)
+		{
+			Deconstructable deconstructable = data as Deconstructable;
+			return deconstructable == null || !deconstructable.IsMarkedForDeconstruction();
+		};
+		this.IsNotMarkedForDeconstruction = isNotMarkedForDeconstruction;
+		base..ctor();
+	}
 
-    protected override void OnStopWork(Worker worker) {
-        base.OnStopWork(worker);
-        GetComponent<Operational>().SetActive(false);
-    }
+		public float daysToMasterRole;
 
-    public override float GetPercentComplete() {
-        worker == null;
-        return 0f;
-    }
+		private Chore chore;
+
+		public Chore.Precondition IsNotMarkedForDeconstruction;
 }

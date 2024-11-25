@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class ControlsScreen : KScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		BindingEntry[] bindingEntries = GameInputMapping.GetBindingEntries();
 		string text = "";
@@ -17,7 +17,7 @@ public class ControlsScreen : KScreen
 		this.controlLabel.text = text;
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Help) || e.TryConsume(global::Action.Escape))
 		{
@@ -25,5 +25,5 @@ public class ControlsScreen : KScreen
 		}
 	}
 
-	public Text controlLabel;
+		public Text controlLabel;
 }

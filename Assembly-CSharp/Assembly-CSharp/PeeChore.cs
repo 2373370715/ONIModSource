@@ -2,57 +2,58 @@
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
+using TUNING;
 using UnityEngine;
 
 public class PeeChore : Chore<PeeChore.StatesInstance>
 {
-	public PeeChore(IStateMachineTarget target) : base(Db.Get().ChoreTypes.Pee, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+		public PeeChore(IStateMachineTarget target) : base(Db.Get().ChoreTypes.Pee, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new PeeChore.StatesInstance(this, target.gameObject);
 	}
 
-	public class StatesInstance : GameStateMachine<PeeChore.States, PeeChore.StatesInstance, PeeChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<PeeChore.States, PeeChore.StatesInstance, PeeChore, object>.GameInstance
 	{
-		public StatesInstance(PeeChore master, GameObject worker) : base(master)
+				public StatesInstance(PeeChore master, GameObject worker) : base(master)
 		{
 			this.bladder = Db.Get().Amounts.Bladder.Lookup(worker);
 			this.bodyTemperature = Db.Get().Amounts.Temperature.Lookup(worker);
 			base.sm.worker.Set(worker, base.smi, false);
 		}
 
-		public bool IsDonePeeing()
+				public bool IsDonePeeing()
 		{
 			return this.bladder.value <= 0f;
 		}
 
-		public void SpawnDirtyWater(float dt)
+				public void SpawnDirtyWater(float dt)
 		{
 			int gameCell = Grid.PosToCell(base.sm.worker.Get<KMonoBehaviour>(base.smi));
-			byte index = Db.Get().Diseases.GetIndex("FoodPoisoning");
+			byte index = Db.Get().Diseases.GetIndex(DUPLICANTSTATS.STANDARD.Secretions.PEE_DISEASE);
 			float num = dt * -this.bladder.GetDelta() / this.bladder.GetMax();
 			if (num > 0f)
 			{
-				float mass = 2f * num;
+				float mass = DUPLICANTSTATS.STANDARD.Secretions.PEE_PER_FLOOR_PEE * num;
 				Equippable equippable = base.GetComponent<SuitEquipper>().IsWearingAirtightSuit();
 				if (equippable != null)
 				{
-					equippable.GetComponent<Storage>().AddLiquid(SimHashes.DirtyWater, mass, this.bodyTemperature.value, index, Mathf.CeilToInt(100000f * num), false, true);
+					equippable.GetComponent<Storage>().AddLiquid(SimHashes.DirtyWater, mass, this.bodyTemperature.value, index, Mathf.CeilToInt((float)DUPLICANTSTATS.STANDARD.Secretions.DISEASE_PER_PEE * num), false, true);
 					return;
 				}
-				SimMessages.AddRemoveSubstance(gameCell, SimHashes.DirtyWater, CellEventLogger.Instance.Vomit, mass, this.bodyTemperature.value, index, Mathf.CeilToInt(100000f * num), true, -1);
+				SimMessages.AddRemoveSubstance(gameCell, SimHashes.DirtyWater, CellEventLogger.Instance.Vomit, mass, this.bodyTemperature.value, index, Mathf.CeilToInt((float)DUPLICANTSTATS.STANDARD.Secretions.DISEASE_PER_PEE * num), true, -1);
 			}
 		}
 
-		public Notification stressfullyEmptyingBladder = new Notification(DUPLICANTS.STATUSITEMS.STRESSFULLYEMPTYINGBLADDER.NOTIFICATION_NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => DUPLICANTS.STATUSITEMS.STRESSFULLYEMPTYINGBLADDER.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null, true, false, false);
+				public Notification stressfullyEmptyingBladder = new Notification(DUPLICANTS.STATUSITEMS.STRESSFULLYEMPTYINGBLADDER.NOTIFICATION_NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => DUPLICANTS.STATUSITEMS.STRESSFULLYEMPTYINGBLADDER.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null, true, false, false);
 
-		public AmountInstance bladder;
+				public AmountInstance bladder;
 
-		private AmountInstance bodyTemperature;
+				private AmountInstance bodyTemperature;
 	}
 
-	public class States : GameStateMachine<PeeChore.States, PeeChore.StatesInstance, PeeChore>
+		public class States : GameStateMachine<PeeChore.States, PeeChore.StatesInstance, PeeChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.running;
 			base.Target(this.worker);
@@ -85,8 +86,8 @@ public class PeeChore : Chore<PeeChore.StatesInstance>
 			});
 		}
 
-		public StateMachine<PeeChore.States, PeeChore.StatesInstance, PeeChore, object>.TargetParameter worker;
+				public StateMachine<PeeChore.States, PeeChore.StatesInstance, PeeChore, object>.TargetParameter worker;
 
-		public GameStateMachine<PeeChore.States, PeeChore.StatesInstance, PeeChore, object>.State running;
+				public GameStateMachine<PeeChore.States, PeeChore.StatesInstance, PeeChore, object>.State running;
 	}
 }

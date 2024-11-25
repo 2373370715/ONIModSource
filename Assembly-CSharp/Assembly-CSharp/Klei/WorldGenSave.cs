@@ -3,21 +3,21 @@ using System.Collections.Generic;
 
 namespace Klei
 {
-	public class WorldGenSave
+		public class WorldGenSave
 	{
-		public WorldGenSave()
+				public WorldGenSave()
 		{
 			this.data = new Data();
 		}
 
-		public Vector2I version;
+				public Vector2I version;
 
-		public Data data;
+				public Data data;
 
-		public string worldID;
+				public string worldID;
 
-		public List<string> traitIDs;
+				public List<string> traitIDs;
 
-		public List<string> storyTraitIDs;
+				public List<string> storyTraitIDs;
 	}
 }

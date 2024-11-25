@@ -5,7 +5,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LimitValve : KMonoBehaviour, ISaveLoadable
 {
-		public float RemainingCapacity
+			public float RemainingCapacity
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class LimitValve : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public NonLinearSlider.Range[] GetRanges()
+		public NonLinearSlider.Range[] GetRanges()
 	{
 		if (this.sliderRanges != null && this.sliderRanges.Length != 0)
 		{
@@ -22,7 +22,7 @@ public class LimitValve : KMonoBehaviour, ISaveLoadable
 		return NonLinearSlider.GetDefaultRange(this.maxLimitKg);
 	}
 
-			public float Limit
+				public float Limit
 	{
 		get
 		{
@@ -35,7 +35,7 @@ public class LimitValve : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-			public float Amount
+				public float Amount
 	{
 		get
 		{
@@ -49,13 +49,13 @@ public class LimitValve : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LimitValve>(-905833192, LimitValve.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
 		logicCircuitManager.onLogicTick = (System.Action)Delegate.Combine(logicCircuitManager.onLogicTick, new System.Action(this.LogicTick));
@@ -85,14 +85,14 @@ public class LimitValve : KMonoBehaviour, ISaveLoadable
 		base.OnSpawn();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
 		logicCircuitManager.onLogicTick = (System.Action)Delegate.Remove(logicCircuitManager.onLogicTick, new System.Action(this.LogicTick));
 		base.OnCleanUp();
 	}
 
-	private void LogicTick()
+		private void LogicTick()
 	{
 		if (this.m_resetRequested)
 		{
@@ -100,13 +100,13 @@ public class LimitValve : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void ResetAmount()
+		public void ResetAmount()
 	{
 		this.m_resetRequested = false;
 		this.Amount = 0f;
 	}
 
-	private float DesiredMassTransfer(float dt, SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, Pickupable pickupable)
+		private float DesiredMassTransfer(float dt, SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, Pickupable pickupable)
 	{
 		if (!this.operational.IsOperational)
 		{
@@ -124,7 +124,7 @@ public class LimitValve : KMonoBehaviour, ISaveLoadable
 		return Mathf.Min(mass, this.RemainingCapacity);
 	}
 
-	private void OnMassTransfer(SimHashes element, float transferredMass, float temperature, byte disease_idx, int disease_count, Pickupable pickupable)
+		private void OnMassTransfer(SimHashes element, float transferredMass, float temperature, byte disease_idx, int disease_count, Pickupable pickupable)
 	{
 		if (!LogicCircuitNetwork.IsBitActive(0, this.ports.GetInputValue(LimitValve.RESET_PORT_ID)))
 		{
@@ -141,7 +141,7 @@ public class LimitValve : KMonoBehaviour, ISaveLoadable
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		if (this.operational == null)
 		{
@@ -160,7 +160,7 @@ public class LimitValve : KMonoBehaviour, ISaveLoadable
 		this.selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.LimitValveLimitReached, this);
 	}
 
-	public void OnLogicValueChanged(object data)
+		public void OnLogicValueChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 		if (logicValueChanged.portID == LimitValve.RESET_PORT_ID && LogicCircuitNetwork.IsBitActive(0, logicValueChanged.newValue))
@@ -169,7 +169,7 @@ public class LimitValve : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LimitValve component = ((GameObject)data).GetComponent<LimitValve>();
 		if (component != null)
@@ -178,59 +178,59 @@ public class LimitValve : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public static readonly HashedString RESET_PORT_ID = new HashedString("LimitValveReset");
+		public static readonly HashedString RESET_PORT_ID = new HashedString("LimitValveReset");
 
-	public static readonly HashedString OUTPUT_PORT_ID = new HashedString("LimitValveOutput");
+		public static readonly HashedString OUTPUT_PORT_ID = new HashedString("LimitValveOutput");
 
-	public static readonly Operational.Flag limitNotReached = new Operational.Flag("limitNotReached", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag limitNotReached = new Operational.Flag("limitNotReached", Operational.Flag.Type.Requirement);
 
-	public ConduitType conduitType;
+		public ConduitType conduitType;
 
-	public float maxLimitKg = 100f;
+		public float maxLimitKg = 100f;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private LogicPorts ports;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimController controller;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ConduitBridge conduitBridge;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private SolidConduitBridge solidConduitBridge;
 
-	[Serialize]
+		[Serialize]
 	[SerializeField]
 	private float m_limit;
 
-	[Serialize]
+		[Serialize]
 	private float m_amount;
 
-	[Serialize]
+		[Serialize]
 	private bool m_resetRequested;
 
-	private MeterController limitMeter;
+		private MeterController limitMeter;
 
-	public bool displayUnitsInsteadOfMass;
+		public bool displayUnitsInsteadOfMass;
 
-	public NonLinearSlider.Range[] sliderRanges;
+		public NonLinearSlider.Range[] sliderRanges;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LimitValve> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LimitValve>(delegate(LimitValve component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LimitValve> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LimitValve>(delegate(LimitValve component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<LimitValve> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LimitValve>(delegate(LimitValve component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LimitValve> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LimitValve>(delegate(LimitValve component, object data)
 	{
 		component.OnCopySettings(data);
 	});

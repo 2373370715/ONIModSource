@@ -9,9 +9,9 @@ using UnityEngine.UI;
 
 public class JoyResponseDesignerScreen : KMonoBehaviour
 {
-			public JoyResponseScreenConfig Config { get; private set; }
+				public JoyResponseScreenConfig Config { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		global::Debug.Assert(this.categoryRowPrefab.transform.parent == this.categoryListContent.transform);
@@ -39,12 +39,12 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		this.dioramaVis.ConfigureSetup();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.galleryGridLayouter.CheckIfShouldResizeGrid();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.postponeConfiguration = false;
 		if (this.Config.isValid)
@@ -55,7 +55,7 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		throw new InvalidOperationException("Cannot open up JoyResponseDesignerScreen without a target personality or minion instance");
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		KleiItemsStatusRefresher.AddOrGetListener(this).OnRefreshUI(delegate
@@ -64,7 +64,7 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		});
 	}
 
-	public void Configure(JoyResponseScreenConfig config)
+		public void Configure(JoyResponseScreenConfig config)
 	{
 		this.Config = config;
 		if (this.postponeConfiguration)
@@ -117,12 +117,12 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		}
 	}
 
-	private bool CanSaveSelection()
+		private bool CanSaveSelection()
 	{
 		return this.GetSaveSelectionError().IsNone();
 	}
 
-	private Option<string> GetSaveSelectionError()
+		private Option<string> GetSaveSelectionError()
 	{
 		if (!this.selectedGalleryItem.IsUnlocked())
 		{
@@ -131,7 +131,7 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		return Option.None;
 	}
 
-	private void RefreshCategories()
+		private void RefreshCategories()
 	{
 		if (this.RefreshCategoriesFn != null)
 		{
@@ -139,7 +139,7 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		}
 	}
 
-	public void PopulateCategories()
+		public void PopulateCategories()
 	{
 		this.RefreshCategoriesFn = null;
 		this.categoryRowPool.ReturnAll();
@@ -169,7 +169,7 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		this.SelectCategory(this.joyResponseCategories[0]);
 	}
 
-	public void SelectCategory(JoyResponseDesignerScreen.JoyResponseCategory category)
+		public void SelectCategory(JoyResponseDesignerScreen.JoyResponseCategory category)
 	{
 		this.selectedCategoryOpt = category;
 		this.galleryHeaderLabel.text = category.displayName;
@@ -178,11 +178,11 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		this.RefreshPreview();
 	}
 
-	private void SetCatogoryClickUISound(JoyResponseDesignerScreen.JoyResponseCategory category, MultiToggle toggle)
+		private void SetCatogoryClickUISound(JoyResponseDesignerScreen.JoyResponseCategory category, MultiToggle toggle)
 	{
 	}
 
-	private void RefreshGallery()
+		private void RefreshGallery()
 	{
 		if (this.RefreshGalleryFn != null)
 		{
@@ -190,7 +190,7 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		}
 	}
 
-	public void PopulateGallery()
+		public void PopulateGallery()
 	{
 		this.RefreshGalleryFn = null;
 		this.galleryGridItemPool.ReturnAll();
@@ -206,19 +206,19 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		this.SelectGalleryItem(joyResponseCategory.items[0]);
 	}
 
-	public void SelectGalleryItem(JoyResponseDesignerScreen.GalleryItem item)
+		public void SelectGalleryItem(JoyResponseDesignerScreen.GalleryItem item)
 	{
 		this.selectedGalleryItem = item;
 		this.RefreshGallery();
 		this.RefreshPreview();
 	}
 
-	private void OnMouseOverToggle()
+		private void OnMouseOverToggle()
 	{
 		KFMOD.PlayUISound(GlobalAssets.GetSound("HUD_Mouseover", false));
 	}
 
-	public void RefreshPreview()
+		public void RefreshPreview()
 	{
 		if (this.RefreshPreviewFn != null)
 		{
@@ -226,7 +226,7 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		}
 	}
 
-	public void PopulatePreview()
+		public void PopulatePreview()
 	{
 		this.RefreshPreviewFn = (System.Action)Delegate.Combine(this.RefreshPreviewFn, new System.Action(delegate()
 		{
@@ -259,7 +259,7 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		this.RefreshPreview();
 	}
 
-	private void RegisterPreventScreenPop()
+		private void RegisterPreventScreenPop()
 	{
 		this.UnregisterPreventScreenPop();
 		this.preventScreenPopFn = delegate()
@@ -279,7 +279,7 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		LockerNavigator.Instance.preventScreenPop.Add(this.preventScreenPopFn);
 	}
 
-	private void UnregisterPreventScreenPop()
+		private void UnregisterPreventScreenPop()
 	{
 		if (this.preventScreenPopFn != null)
 		{
@@ -288,7 +288,7 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		}
 	}
 
-	public static void MakeSaveWarningPopup(JoyResponseOutfitTarget target, System.Action discardChangesFn)
+		public static void MakeSaveWarningPopup(JoyResponseOutfitTarget target, System.Action discardChangesFn)
 	{
 		Action<InfoDialogScreen> <>9__1;
 		LockerNavigator.Instance.ShowDialogPopup(delegate(InfoDialogScreen dialog)
@@ -311,7 +311,7 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		});
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	private void <PopulateGallery>g__AddGridIcon|36_0(JoyResponseDesignerScreen.GalleryItem item)
 	{
 		GameObject gameObject = this.galleryGridItemPool.Borrow();
@@ -341,107 +341,107 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 		}));
 	}
 
-	[Header("CategoryColumn")]
+		[Header("CategoryColumn")]
 	[SerializeField]
 	private RectTransform categoryListContent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject categoryRowPrefab;
 
-	[Header("GalleryColumn")]
+		[Header("GalleryColumn")]
 	[SerializeField]
 	private LocText galleryHeaderLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform galleryGridContent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject galleryItemPrefab;
 
-	[Header("SelectionDetailsColumn")]
+		[Header("SelectionDetailsColumn")]
 	[SerializeField]
 	private LocText selectionHeaderLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_JoyResponseBalloon dioramaVis;
 
-	[SerializeField]
+		[SerializeField]
 	private OutfitDescriptionPanel outfitDescriptionPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton primaryButton;
 
-	public JoyResponseDesignerScreen.JoyResponseCategory[] joyResponseCategories;
+		public JoyResponseDesignerScreen.JoyResponseCategory[] joyResponseCategories;
 
-	private bool postponeConfiguration = true;
+		private bool postponeConfiguration = true;
 
-	private Option<JoyResponseDesignerScreen.JoyResponseCategory> selectedCategoryOpt;
+		private Option<JoyResponseDesignerScreen.JoyResponseCategory> selectedCategoryOpt;
 
-	private UIPrefabLocalPool categoryRowPool;
+		private UIPrefabLocalPool categoryRowPool;
 
-	private System.Action RefreshCategoriesFn;
+		private System.Action RefreshCategoriesFn;
 
-	private JoyResponseDesignerScreen.GalleryItem selectedGalleryItem;
+		private JoyResponseDesignerScreen.GalleryItem selectedGalleryItem;
 
-	private UIPrefabLocalPool galleryGridItemPool;
+		private UIPrefabLocalPool galleryGridItemPool;
 
-	private GridLayouter galleryGridLayouter;
+		private GridLayouter galleryGridLayouter;
 
-	private System.Action RefreshGalleryFn;
+		private System.Action RefreshGalleryFn;
 
-	public System.Action RefreshPreviewFn;
+		public System.Action RefreshPreviewFn;
 
-	private Func<bool> preventScreenPopFn;
+		private Func<bool> preventScreenPopFn;
 
-	public class JoyResponseCategory
+		public class JoyResponseCategory
 	{
-		public string displayName;
+				public string displayName;
 
-		public Sprite icon;
+				public Sprite icon;
 
-		public JoyResponseDesignerScreen.GalleryItem[] items;
+				public JoyResponseDesignerScreen.GalleryItem[] items;
 	}
 
-	private enum MultiToggleState
+		private enum MultiToggleState
 	{
-		Default,
-		Selected
+				Default,
+				Selected
 	}
 
-	public abstract class GalleryItem : IEquatable<JoyResponseDesignerScreen.GalleryItem>
+		public abstract class GalleryItem : IEquatable<JoyResponseDesignerScreen.GalleryItem>
 	{
-		public abstract string GetName();
+				public abstract string GetName();
 
-		public abstract Sprite GetIcon();
+				public abstract Sprite GetIcon();
 
-		public abstract string GetUniqueId();
+				public abstract string GetUniqueId();
 
-		public abstract bool IsUnlocked();
+				public abstract bool IsUnlocked();
 
-		public abstract Option<PermitResource> GetPermitResource();
+				public abstract Option<PermitResource> GetPermitResource();
 
-		public override bool Equals(object obj)
+				public override bool Equals(object obj)
 		{
 			JoyResponseDesignerScreen.GalleryItem galleryItem = obj as JoyResponseDesignerScreen.GalleryItem;
 			return galleryItem != null && this.Equals(galleryItem);
 		}
 
-		public bool Equals(JoyResponseDesignerScreen.GalleryItem other)
+				public bool Equals(JoyResponseDesignerScreen.GalleryItem other)
 		{
 			return this.GetHashCode() == other.GetHashCode();
 		}
 
-		public override int GetHashCode()
+				public override int GetHashCode()
 		{
 			return Hash.SDBMLower(this.GetUniqueId());
 		}
 
-		public override string ToString()
+				public override string ToString()
 		{
 			return this.GetUniqueId();
 		}
 
-		public static JoyResponseDesignerScreen.GalleryItem.BalloonArtistFacadeTarget Of(Option<BalloonArtistFacadeResource> permit)
+				public static JoyResponseDesignerScreen.GalleryItem.BalloonArtistFacadeTarget Of(Option<BalloonArtistFacadeResource> permit)
 		{
 			return new JoyResponseDesignerScreen.GalleryItem.BalloonArtistFacadeTarget
 			{
@@ -449,34 +449,34 @@ public class JoyResponseDesignerScreen : KMonoBehaviour
 			};
 		}
 
-		public class BalloonArtistFacadeTarget : JoyResponseDesignerScreen.GalleryItem
+				public class BalloonArtistFacadeTarget : JoyResponseDesignerScreen.GalleryItem
 		{
-			public override Sprite GetIcon()
+						public override Sprite GetIcon()
 			{
 				return this.permit.AndThen<Sprite>((BalloonArtistFacadeResource p) => p.GetPermitPresentationInfo().sprite).UnwrapOrElse(() => KleiItemsUI.GetNoneBalloonArtistIcon(), null);
 			}
 
-			public override string GetName()
+						public override string GetName()
 			{
 				return this.permit.AndThen<string>((BalloonArtistFacadeResource p) => p.Name).UnwrapOrElse(() => KleiItemsUI.GetNoneClothingItemStrings(PermitCategory.JoyResponse).Item1, null);
 			}
 
-			public override string GetUniqueId()
+						public override string GetUniqueId()
 			{
 				return "balloon_artist_facade::" + this.permit.AndThen<string>((BalloonArtistFacadeResource p) => p.Id).UnwrapOr("<none>", null);
 			}
 
-			public override Option<PermitResource> GetPermitResource()
+						public override Option<PermitResource> GetPermitResource()
 			{
 				return this.permit.AndThen<PermitResource>((BalloonArtistFacadeResource p) => p);
 			}
 
-			public override bool IsUnlocked()
+						public override bool IsUnlocked()
 			{
 				return this.GetPermitResource().AndThen<bool>((PermitResource p) => p.IsUnlocked()).UnwrapOr(true, null);
 			}
 
-			public Option<BalloonArtistFacadeResource> permit;
+						public Option<BalloonArtistFacadeResource> permit;
 		}
 	}
 }

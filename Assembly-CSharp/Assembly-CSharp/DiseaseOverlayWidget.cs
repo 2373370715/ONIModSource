@@ -8,7 +8,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/DiseaseOverlayWidget")]
 public class DiseaseOverlayWidget : KMonoBehaviour
 {
-	public void Refresh(AmountInstance value_src)
+		public void Refresh(AmountInstance value_src)
 	{
 		GameObject gameObject = value_src.gameObject;
 		if (gameObject == null)
@@ -63,20 +63,20 @@ public class DiseaseOverlayWidget : KMonoBehaviour
 		this.germsImage.transform.parent.gameObject.SetActive(this.displayedDiseases.Count > 0);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Image progressFill;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip progressToolTip;
 
-	[SerializeField]
+		[SerializeField]
 	private Image germsImage;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector3 offset;
 
-	[SerializeField]
+		[SerializeField]
 	private Image diseasedImage;
 
-	private List<Image> displayedDiseases = new List<Image>();
+		private List<Image> displayedDiseases = new List<Image>();
 }

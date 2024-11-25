@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ArtifactModule : SingleEntityReceptacle, IRenderEveryTick
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.craft = this.module.CraftInterface.GetComponent<Clustercraft>();
 		if (this.craft.Status == Clustercraft.CraftStatus.InFlight && base.occupyingObject != null)
@@ -15,12 +15,12 @@ public class ArtifactModule : SingleEntityReceptacle, IRenderEveryTick
 		base.Subscribe(-1165815793, new Action<object>(this.OnExitSpace));
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		this.ArtifactTrackModulePosition();
 	}
 
-	private void ArtifactTrackModulePosition()
+		private void ArtifactTrackModulePosition()
 	{
 		this.occupyingObjectRelativePosition = this.animController.Offset + Vector3.up * 0.5f + new Vector3(0f, 0f, -1f);
 		if (base.occupyingObject != null)
@@ -29,7 +29,7 @@ public class ArtifactModule : SingleEntityReceptacle, IRenderEveryTick
 		}
 	}
 
-	private void OnEnterSpace(object data)
+		private void OnEnterSpace(object data)
 	{
 		if (base.occupyingObject != null)
 		{
@@ -37,7 +37,7 @@ public class ArtifactModule : SingleEntityReceptacle, IRenderEveryTick
 		}
 	}
 
-	private void OnExitSpace(object data)
+		private void OnExitSpace(object data)
 	{
 		if (base.occupyingObject != null)
 		{
@@ -45,11 +45,11 @@ public class ArtifactModule : SingleEntityReceptacle, IRenderEveryTick
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KBatchedAnimController animController;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private RocketModuleCluster module;
 
-	private Clustercraft craft;
+		private Clustercraft craft;
 }

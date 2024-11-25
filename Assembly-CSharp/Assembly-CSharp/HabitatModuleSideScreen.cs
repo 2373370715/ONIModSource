@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class HabitatModuleSideScreen : SideScreenContent
 {
-		private CraftModuleInterface craftModuleInterface
+			private CraftModuleInterface craftModuleInterface
 	{
 		get
 		{
@@ -12,23 +12,23 @@ public class HabitatModuleSideScreen : SideScreenContent
 		}
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		base.ConsumeMouseScroll = true;
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 21f;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<Clustercraft>() != null && this.GetPassengerModule(target.GetComponent<Clustercraft>()) != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.targetCraft = target.GetComponent<Clustercraft>();
@@ -36,7 +36,7 @@ public class HabitatModuleSideScreen : SideScreenContent
 		this.RefreshModulePanel(passengerModule);
 	}
 
-	private PassengerRocketModule GetPassengerModule(Clustercraft craft)
+		private PassengerRocketModule GetPassengerModule(Clustercraft craft)
 	{
 		foreach (Ref<RocketModuleCluster> @ref in craft.GetComponent<CraftModuleInterface>().ClusterModules)
 		{
@@ -49,7 +49,7 @@ public class HabitatModuleSideScreen : SideScreenContent
 		return null;
 	}
 
-	private void RefreshModulePanel(PassengerRocketModule module)
+		private void RefreshModulePanel(PassengerRocketModule module)
 	{
 		HierarchyReferences component = base.GetComponent<HierarchyReferences>();
 		component.GetReference<Image>("icon").sprite = Def.GetUISprite(module.gameObject, "ui", false).first;
@@ -65,9 +65,9 @@ public class HabitatModuleSideScreen : SideScreenContent
 		component.GetReference<LocText>("label").SetText(module.gameObject.GetProperName());
 	}
 
-	private Clustercraft targetCraft;
+		private Clustercraft targetCraft;
 
-	public GameObject moduleContentContainer;
+		public GameObject moduleContentContainer;
 
-	public GameObject modulePanelPrefab;
+		public GameObject modulePanelPrefab;
 }

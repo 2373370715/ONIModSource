@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class MopTool : DragTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		MopTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.Placer = Assets.GetPrefab(new Tag("MopPlacer"));
@@ -17,12 +17,12 @@ public class MopTool : DragTool
 		MopTool.Instance = this;
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		PlayerController.Instance.ActivateTool(this);
 	}
 
-	protected override void OnDragTool(int cell, int distFromOrigin)
+		protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		if (Grid.IsValidCell(cell))
 		{
@@ -73,23 +73,23 @@ public class MopTool : DragTool
 		}
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		ToolMenu.Instance.PriorityScreen.Show(true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		ToolMenu.Instance.PriorityScreen.Show(false);
 	}
 
-	private GameObject Placer;
+		private GameObject Placer;
 
-	public static MopTool Instance;
+		public static MopTool Instance;
 
-	private SimHashes Element;
+		private SimHashes Element;
 
-	public static float maxMopAmt = 150f;
+		public static float maxMopAmt = 150f;
 }

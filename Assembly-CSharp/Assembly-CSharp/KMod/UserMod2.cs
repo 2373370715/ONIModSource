@@ -5,20 +5,20 @@ using HarmonyLib;
 
 namespace KMod
 {
-	public class UserMod2
+		public class UserMod2
 	{
-						public Assembly assembly { get; set; }
+								public Assembly assembly { get; set; }
 
-						public string path { get; set; }
+								public string path { get; set; }
 
-						public Mod mod { get; set; }
+								public Mod mod { get; set; }
 
-		public virtual void OnLoad(Harmony harmony)
+				public virtual void OnLoad(Harmony harmony)
 		{
 			harmony.PatchAll(this.assembly);
 		}
 
-		public virtual void OnAllModsLoaded(Harmony harmony, IReadOnlyList<Mod> mods)
+				public virtual void OnAllModsLoaded(Harmony harmony, IReadOnlyList<Mod> mods)
 		{
 		}
 	}

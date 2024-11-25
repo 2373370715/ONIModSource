@@ -4,9 +4,9 @@ using Klei.AI;
 
 namespace Database
 {
-	public class FertilityModifiers : ResourceSet<FertilityModifier>
+		public class FertilityModifiers : ResourceSet<FertilityModifier>
 	{
-		public List<FertilityModifier> GetForTag(Tag searchTag)
+				public List<FertilityModifier> GetForTag(Tag searchTag)
 		{
 			List<FertilityModifier> list = new List<FertilityModifier>();
 			foreach (FertilityModifier fertilityModifier in this.resources)

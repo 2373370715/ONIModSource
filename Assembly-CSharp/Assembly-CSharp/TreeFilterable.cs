@@ -10,7 +10,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/TreeFilterable")]
 public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 {
-		public HashSet<Tag> AcceptedTags
+			public HashSet<Tag> AcceptedTags
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	[Obsolete]
 	private void OnDeserialized()
 	{
@@ -33,7 +33,7 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void OnDiscover(Tag category_tag, Tag tag)
+		private void OnDiscover(Tag category_tag, Tag tag)
 	{
 		if (this.preventAutoAddOnDiscovery)
 		{
@@ -74,13 +74,13 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<TreeFilterable>(-905833192, TreeFilterable.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		DiscoveredResources.Instance.OnDiscover += this.OnDiscover;
 		if (this.autoSelectStoredOnLoad && this.storage != null)
@@ -100,7 +100,7 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void RemoveIncorrectAcceptedTags()
+		private void RemoveIncorrectAcceptedTags()
 	{
 		List<Tag> list = new List<Tag>();
 		foreach (Tag item in this.acceptedTagSet)
@@ -125,13 +125,13 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		DiscoveredResources.Instance.OnDiscover -= this.OnDiscover;
 		base.OnCleanUp();
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		if (this.copySettingsEnabled)
 		{
@@ -143,17 +143,17 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public HashSet<Tag> GetTags()
+		public HashSet<Tag> GetTags()
 	{
 		return this.acceptedTagSet;
 	}
 
-	public bool ContainsTag(Tag t)
+		public bool ContainsTag(Tag t)
 	{
 		return this.acceptedTagSet.Contains(t);
 	}
 
-	public void AddTagToFilter(Tag t)
+		public void AddTagToFilter(Tag t)
 	{
 		if (this.ContainsTag(t))
 		{
@@ -165,7 +165,7 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 		});
 	}
 
-	public void RemoveTagFromFilter(Tag t)
+		public void RemoveTagFromFilter(Tag t)
 	{
 		if (!this.ContainsTag(t))
 		{
@@ -176,7 +176,7 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 		this.UpdateFilters(hashSet);
 	}
 
-	public void UpdateFilters(HashSet<Tag> filters)
+		public void UpdateFilters(HashSet<Tag> filters)
 	{
 		this.acceptedTagSet.Clear();
 		this.acceptedTagSet.UnionWith(filters);
@@ -200,7 +200,7 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void DropFilteredItemsFromTargetStorage(Storage targetStorage)
+		private void DropFilteredItemsFromTargetStorage(Storage targetStorage)
 	{
 		for (int i = targetStorage.items.Count - 1; i >= 0; i--)
 		{
@@ -216,7 +216,7 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public string GetTagsAsStatus(int maxDisplays = 6)
+		public string GetTagsAsStatus(int maxDisplays = 6)
 	{
 		string text = "Tags:\n";
 		List<Tag> list = new List<Tag>(this.storage.storageFilters);
@@ -241,66 +241,66 @@ public class TreeFilterable : KMonoBehaviour, ISaveLoadable
 		return text;
 	}
 
-	private void RefreshTint()
+		private void RefreshTint()
 	{
 		bool flag = this.acceptedTagSet != null && this.acceptedTagSet.Count != 0;
 		base.GetComponent<KBatchedAnimController>().TintColour = (flag ? this.filterTint : this.noFilterTint);
 		base.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.NoStorageFilterSet, !flag, this);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	public static readonly Color32 FILTER_TINT = Color.white;
+		public static readonly Color32 FILTER_TINT = Color.white;
 
-	public static readonly Color32 NO_FILTER_TINT = new Color(0.5019608f, 0.5019608f, 0.5019608f, 1f);
+		public static readonly Color32 NO_FILTER_TINT = new Color(0.5019608f, 0.5019608f, 0.5019608f, 1f);
 
-	public Color32 filterTint = TreeFilterable.FILTER_TINT;
+		public Color32 filterTint = TreeFilterable.FILTER_TINT;
 
-	public Color32 noFilterTint = TreeFilterable.NO_FILTER_TINT;
+		public Color32 noFilterTint = TreeFilterable.NO_FILTER_TINT;
 
-	[SerializeField]
+		[SerializeField]
 	public bool dropIncorrectOnFilterChange = true;
 
-	[SerializeField]
+		[SerializeField]
 	public bool autoSelectStoredOnLoad = true;
 
-	public bool showUserMenu = true;
+		public bool showUserMenu = true;
 
-	public bool copySettingsEnabled = true;
+		public bool copySettingsEnabled = true;
 
-	public bool preventAutoAddOnDiscovery;
+		public bool preventAutoAddOnDiscovery;
 
-	public string allResourceFilterLabelString = UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.ALLBUTTON;
+		public string allResourceFilterLabelString = UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.ALLBUTTON;
 
-	public bool filterAllStoragesOnBuilding;
+		public bool filterAllStoragesOnBuilding;
 
-	public TreeFilterable.UISideScreenHeight uiHeight = TreeFilterable.UISideScreenHeight.Tall;
+		public TreeFilterable.UISideScreenHeight uiHeight = TreeFilterable.UISideScreenHeight.Tall;
 
-	public bool filterByStorageCategoriesOnSpawn = true;
+		public bool filterByStorageCategoriesOnSpawn = true;
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	[Obsolete("Deprecated, use acceptedTagSet")]
 	private List<Tag> acceptedTags = new List<Tag>();
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	private HashSet<Tag> acceptedTagSet = new HashSet<Tag>();
 
-	public Action<HashSet<Tag>> OnFilterChanged;
+		public Action<HashSet<Tag>> OnFilterChanged;
 
-	private static readonly EventSystem.IntraObjectHandler<TreeFilterable> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<TreeFilterable>(delegate(TreeFilterable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<TreeFilterable> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<TreeFilterable>(delegate(TreeFilterable component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	public enum UISideScreenHeight
+		public enum UISideScreenHeight
 	{
-		Short,
-		Tall
+				Short,
+				Tall
 	}
 }

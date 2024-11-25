@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class BalloonStandConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(BalloonStandConfig.ID, BalloonStandConfig.ID, false);
 		KAnimFile[] overrideAnims = new KAnimFile[]
@@ -24,29 +24,29 @@ public class BalloonStandConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		GetBalloonWorkable component = inst.GetComponent<GetBalloonWorkable>();
 		WorkChore<GetBalloonWorkable> workChore = new WorkChore<GetBalloonWorkable>(Db.Get().ChoreTypes.JoyReaction, component, null, true, new Action<Chore>(this.MakeNewBalloonChore), null, null, true, Db.Get().ScheduleBlockTypes.Recreation, false, true, null, false, true, true, PriorityScreen.PriorityClass.high, 5, true, true);
 		workChore.AddPrecondition(this.HasNoBalloon, workChore);
-		workChore.AddPrecondition(ChorePreconditions.instance.IsNotARobot, workChore);
+		workChore.AddPrecondition(ChorePreconditions.instance.IsNotARobot, null);
 		component.GetBalloonArtist().NextBalloonOverride();
 	}
 
-	private void MakeNewBalloonChore(Chore chore)
+		private void MakeNewBalloonChore(Chore chore)
 	{
 		GetBalloonWorkable component = chore.target.GetComponent<GetBalloonWorkable>();
 		WorkChore<GetBalloonWorkable> workChore = new WorkChore<GetBalloonWorkable>(Db.Get().ChoreTypes.JoyReaction, component, null, true, new Action<Chore>(this.MakeNewBalloonChore), null, null, true, Db.Get().ScheduleBlockTypes.Recreation, false, true, null, false, true, true, PriorityScreen.PriorityClass.high, 5, true, true);
 		workChore.AddPrecondition(this.HasNoBalloon, workChore);
-		workChore.AddPrecondition(ChorePreconditions.instance.IsNotARobot, workChore);
+		workChore.AddPrecondition(ChorePreconditions.instance.IsNotARobot, null);
 		component.GetBalloonArtist().NextBalloonOverride();
 	}
 
-	public BalloonStandConfig()
+		public BalloonStandConfig()
 	{
 		Chore.Precondition hasNoBalloon = default(Chore.Precondition);
 		hasNoBalloon.id = "HasNoBalloon";
@@ -59,7 +59,7 @@ public class BalloonStandConfig : IEntityConfig
 		base..ctor();
 	}
 
-	public static readonly string ID = "BalloonStand";
+		public static readonly string ID = "BalloonStand";
 
-	private Chore.Precondition HasNoBalloon;
+		private Chore.Precondition HasNoBalloon;
 }

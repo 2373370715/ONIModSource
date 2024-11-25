@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class Grave : StateMachineComponent<Grave.StatesInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<Grave>(-1697596308, Grave.OnStorageChangedDelegate);
 		this.epitaphIdx = UnityEngine.Random.Range(0, int.MaxValue);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.GetComponent<Storage>().SetOffsets(Grave.DELIVERY_OFFSETS);
 		Storage component = base.GetComponent<Storage>();
@@ -42,13 +42,13 @@ public class Grave : StateMachineComponent<Grave.StatesInstance>
 		Components.Graves.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.Graves.Remove(this);
 		base.OnCleanUp();
 	}
 
-	private void OnStorageChanged(object data)
+		private void OnStorageChanged(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		if (gameObject != null)
@@ -68,56 +68,56 @@ public class Grave : StateMachineComponent<Grave.StatesInstance>
 		}
 	}
 
-	private void OnWorkEvent(Workable workable, Workable.WorkableEvent evt)
+		private void OnWorkEvent(Workable workable, Workable.WorkableEvent evt)
 	{
 	}
 
-	[Serialize]
+		[Serialize]
 	public string graveName;
 
-	[Serialize]
+		[Serialize]
 	public string graveAnim = "closed";
 
-	[Serialize]
+		[Serialize]
 	public int epitaphIdx;
 
-	[Serialize]
+		[Serialize]
 	public float burialTime = -1f;
 
-	private static readonly CellOffset[] DELIVERY_OFFSETS = new CellOffset[1];
+		private static readonly CellOffset[] DELIVERY_OFFSETS = new CellOffset[1];
 
-	private static readonly EventSystem.IntraObjectHandler<Grave> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<Grave>(delegate(Grave component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Grave> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<Grave>(delegate(Grave component, object data)
 	{
 		component.OnStorageChanged(data);
 	});
 
-	public class StatesInstance : GameStateMachine<Grave.States, Grave.StatesInstance, Grave, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Grave.States, Grave.StatesInstance, Grave, object>.GameInstance
 	{
-		public StatesInstance(Grave master) : base(master)
+				public StatesInstance(Grave master) : base(master)
 		{
 		}
 
-		public void CreateFetchTask()
+				public void CreateFetchTask()
 		{
 			this.chore = new FetchChore(Db.Get().ChoreTypes.FetchCritical, base.GetComponent<Storage>(), 1f, new HashSet<Tag>
 			{
-				GameTags.Minion
-			}, FetchChore.MatchCriteria.MatchID, GameTags.Corpse, null, null, true, null, null, null, Operational.State.Operational, 0);
+				GameTags.BaseMinion
+			}, FetchChore.MatchCriteria.MatchTags, GameTags.Corpse, null, null, true, null, null, null, Operational.State.Operational, 0);
 			this.chore.allowMultifetch = false;
 		}
 
-		public void CancelFetchTask()
+				public void CancelFetchTask()
 		{
 			this.chore.Cancel("Exit State");
 			this.chore = null;
 		}
 
-		private FetchChore chore;
+				private FetchChore chore;
 	}
 
-	public class States : GameStateMachine<Grave.States, Grave.StatesInstance, Grave>
+		public class States : GameStateMachine<Grave.States, Grave.StatesInstance, Grave>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.empty;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -137,8 +137,8 @@ public class Grave : StateMachineComponent<Grave.StatesInstance>
 			});
 		}
 
-		public GameStateMachine<Grave.States, Grave.StatesInstance, Grave, object>.State empty;
+				public GameStateMachine<Grave.States, Grave.StatesInstance, Grave, object>.State empty;
 
-		public GameStateMachine<Grave.States, Grave.StatesInstance, Grave, object>.State full;
+				public GameStateMachine<Grave.States, Grave.StatesInstance, Grave, object>.State full;
 	}
 }

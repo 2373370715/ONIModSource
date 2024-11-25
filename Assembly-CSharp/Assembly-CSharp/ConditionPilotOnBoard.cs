@@ -1,44 +1,39 @@
-﻿using System;
-using STRINGS;
+﻿using STRINGS;
 
-public class ConditionPilotOnBoard : ProcessCondition
-{
-	public ConditionPilotOnBoard(PassengerRocketModule module)
-	{
-		this.module = module;
-	}
+public class ConditionPilotOnBoard : ProcessCondition {
+    private readonly PassengerRocketModule module;
+    private readonly RocketModuleCluster   rocketModule;
 
-	public override ProcessCondition.Status EvaluateCondition()
-	{
-		if (!this.module.CheckPilotBoarded())
-		{
-			return ProcessCondition.Status.Failure;
-		}
-		return ProcessCondition.Status.Ready;
-	}
+    public ConditionPilotOnBoard(PassengerRocketModule module) {
+        this.module  = module;
+        rocketModule = module.GetComponent<RocketModuleCluster>();
+    }
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
-	{
-		if (status == ProcessCondition.Status.Ready)
-		{
-			return UI.STARMAP.LAUNCHCHECKLIST.PILOT_BOARDED.READY;
-		}
-		return UI.STARMAP.LAUNCHCHECKLIST.PILOT_BOARDED.FAILURE;
-	}
+    public override Status EvaluateCondition() {
+        if (module.CheckPilotBoarded()) return Status.Ready;
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
-	{
-		if (status == ProcessCondition.Status.Ready)
-		{
-			return UI.STARMAP.LAUNCHCHECKLIST.PILOT_BOARDED.TOOLTIP.READY;
-		}
-		return UI.STARMAP.LAUNCHCHECKLIST.PILOT_BOARDED.TOOLTIP.FAILURE;
-	}
+        if (rocketModule.CraftInterface.GetRobotPilotModule() != null) return Status.Warning;
 
-	public override bool ShowInUI()
-	{
-		return true;
-	}
+        return Status.Failure;
+    }
 
-	private PassengerRocketModule module;
+    public override string GetStatusMessage(Status status) {
+        if (status == Status.Ready) return UI.STARMAP.LAUNCHCHECKLIST.PILOT_BOARDED.READY;
+
+        if (status == Status.Warning && rocketModule.CraftInterface.GetRobotPilotModule() != null)
+            return UI.STARMAP.LAUNCHCHECKLIST.PILOT_BOARDED.ROBO_PILOT_WARNING;
+
+        return UI.STARMAP.LAUNCHCHECKLIST.PILOT_BOARDED.FAILURE;
+    }
+
+    public override string GetStatusTooltip(Status status) {
+        if (status == Status.Ready) return UI.STARMAP.LAUNCHCHECKLIST.PILOT_BOARDED.TOOLTIP.READY;
+
+        if (status == Status.Warning && rocketModule.CraftInterface.GetRobotPilotModule() != null)
+            return UI.STARMAP.LAUNCHCHECKLIST.PILOT_BOARDED.TOOLTIP.ROBO_PILOT_WARNING;
+
+        return UI.STARMAP.LAUNCHCHECKLIST.PILOT_BOARDED.TOOLTIP.FAILURE;
+    }
+
+    public override bool ShowInUI() { return true; }
 }

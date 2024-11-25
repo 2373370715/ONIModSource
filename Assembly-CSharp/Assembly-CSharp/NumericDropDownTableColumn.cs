@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class NumericDropDownTableColumn : TableColumn
 {
-	public NumericDropDownTableColumn(object user_data, List<TMP_Dropdown.OptionData> options, Action<IAssignableIdentity, GameObject> on_load_action, Action<GameObject, int> set_value_action, Comparison<IAssignableIdentity> sort_comparer, NumericDropDownTableColumn.ToolTipCallbacks callbacks, Func<bool> revealed = null) : base(on_load_action, sort_comparer, callbacks.headerTooltip, callbacks.headerSortTooltip, revealed, false, "")
+		public NumericDropDownTableColumn(object user_data, List<TMP_Dropdown.OptionData> options, Action<IAssignableIdentity, GameObject> on_load_action, Action<GameObject, int> set_value_action, Comparison<IAssignableIdentity> sort_comparer, NumericDropDownTableColumn.ToolTipCallbacks callbacks, Func<bool> revealed = null) : base(on_load_action, sort_comparer, callbacks.headerTooltip, callbacks.headerSortTooltip, revealed, false, "")
 	{
 		this.userData = user_data;
 		this.set_value_action = set_value_action;
@@ -14,17 +14,17 @@ public class NumericDropDownTableColumn : TableColumn
 		this.callbacks = callbacks;
 	}
 
-	public override GameObject GetMinionWidget(GameObject parent)
+		public override GameObject GetMinionWidget(GameObject parent)
 	{
 		return this.GetWidget(parent);
 	}
 
-	public override GameObject GetDefaultWidget(GameObject parent)
+		public override GameObject GetDefaultWidget(GameObject parent)
 	{
 		return this.GetWidget(parent);
 	}
 
-	private GameObject GetWidget(GameObject parent)
+		private GameObject GetWidget(GameObject parent)
 	{
 		GameObject widget_go = Util.KInstantiateUI(Assets.UIPrefabs.TableScreenWidgets.NumericDropDown, parent, true);
 		TMP_Dropdown componentInChildren = widget_go.transform.GetComponentInChildren<TMP_Dropdown>();
@@ -41,7 +41,7 @@ public class NumericDropDownTableColumn : TableColumn
 		return widget_go;
 	}
 
-	public override GameObject GetHeaderWidget(GameObject parent)
+		public override GameObject GetHeaderWidget(GameObject parent)
 	{
 		NumericDropDownTableColumn.<>c__DisplayClass9_0 CS$<>8__locals1 = new NumericDropDownTableColumn.<>c__DisplayClass9_0();
 		CS$<>8__locals1.<>4__this = this;
@@ -87,20 +87,20 @@ public class NumericDropDownTableColumn : TableColumn
 		return CS$<>8__locals1.widget_go;
 	}
 
-	public object userData;
+		public object userData;
 
-	private NumericDropDownTableColumn.ToolTipCallbacks callbacks;
+		private NumericDropDownTableColumn.ToolTipCallbacks callbacks;
 
-	private Action<GameObject, int> set_value_action;
+		private Action<GameObject, int> set_value_action;
 
-	private List<TMP_Dropdown.OptionData> options;
+		private List<TMP_Dropdown.OptionData> options;
 
-	public class ToolTipCallbacks
+		public class ToolTipCallbacks
 	{
-		public Action<IAssignableIdentity, GameObject, ToolTip> headerTooltip;
+				public Action<IAssignableIdentity, GameObject, ToolTip> headerTooltip;
 
-		public Action<IAssignableIdentity, GameObject, ToolTip> headerSortTooltip;
+				public Action<IAssignableIdentity, GameObject, ToolTip> headerSortTooltip;
 
-		public Action<IAssignableIdentity, GameObject, ToolTip> headerDropdownTooltip;
+				public Action<IAssignableIdentity, GameObject, ToolTip> headerDropdownTooltip;
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DevToolStateMachineDebug : DevTool
 {
-	private void Update()
+		private void Update()
 	{
 		if (!Application.isPlaying)
 		{
@@ -35,7 +35,7 @@ public class DevToolStateMachineDebug : DevTool
 		}
 	}
 
-	public void ShowEditor(StateMachineDebuggerSettings.Entry entry)
+		public void ShowEditor(StateMachineDebuggerSettings.Entry entry)
 	{
 		ImGui.Text(entry.typeName);
 		ImGui.SameLine();
@@ -54,7 +54,7 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.PopID();
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		this.Update();
 		ImGui.InputText("Filter:", ref this.stateMachineFilter, 256U);
@@ -176,7 +176,7 @@ public class DevToolStateMachineDebug : DevTool
 		}
 	}
 
-	private void ShowStates(StateMachine.Instance state_machine_instance)
+		private void ShowStates(StateMachine.Instance state_machine_instance)
 	{
 		StateMachine stateMachine = state_machine_instance.GetStateMachine();
 		ImGui.Text(stateMachine.ToString() + ": ");
@@ -207,7 +207,7 @@ public class DevToolStateMachineDebug : DevTool
 		}
 	}
 
-	public void ShowTags(StateMachine.Instance state_machine_instance)
+		public void ShowTags(StateMachine.Instance state_machine_instance)
 	{
 		ImGui.Text("Tags:");
 		ImGui.Indent();
@@ -222,7 +222,7 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.Unindent();
 	}
 
-	private void ShowDetails(StateMachine.Instance state_machine_instance)
+		private void ShowDetails(StateMachine.Instance state_machine_instance)
 	{
 		state_machine_instance.GetStateMachine();
 		string str = "None";
@@ -241,7 +241,7 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.Unindent();
 	}
 
-	private void ShowParameters(StateMachine.Instance state_machine_instance)
+		private void ShowParameters(StateMachine.Instance state_machine_instance)
 	{
 		ImGui.Text("Parameters:");
 		ImGui.Indent();
@@ -253,7 +253,7 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.Unindent();
 	}
 
-	private void ShowEvents(StateMachine.Instance state_machine_instance)
+		private void ShowEvents(StateMachine.Instance state_machine_instance)
 	{
 		StateMachine.BaseState currentState = state_machine_instance.GetCurrentState();
 		ImGui.Text("Events: ");
@@ -276,7 +276,7 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.Unindent();
 	}
 
-	private void ShowTransitions(StateMachine.Instance state_machine_instance)
+		private void ShowTransitions(StateMachine.Instance state_machine_instance)
 	{
 		StateMachine.BaseState currentState = state_machine_instance.GetCurrentState();
 		ImGui.Text("Transitions:");
@@ -299,7 +299,7 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.Unindent();
 	}
 
-	private void ShowExitActions(StateMachine.Instance state_machine_instance)
+		private void ShowExitActions(StateMachine.Instance state_machine_instance)
 	{
 		StateMachine.BaseState currentState = state_machine_instance.GetCurrentState();
 		ImGui.Text("Exit Actions: ");
@@ -322,7 +322,7 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.Unindent();
 	}
 
-	private void ShowEnterActions(StateMachine.Instance state_machine_instance)
+		private void ShowEnterActions(StateMachine.Instance state_machine_instance)
 	{
 		StateMachine.BaseState currentState = state_machine_instance.GetCurrentState();
 		ImGui.Text("Enter Actions: ");
@@ -345,27 +345,27 @@ public class DevToolStateMachineDebug : DevTool
 		ImGui.Unindent();
 	}
 
-	private void ShowLog(StateMachine.Instance state_machine_instance)
+		private void ShowLog(StateMachine.Instance state_machine_instance)
 	{
 		ImGui.Text("Machine Log:");
 	}
 
-	private void ShowKAnimControllerLog()
+		private void ShowKAnimControllerLog()
 	{
 		this.selectedGameObject.GetComponentInChildren<KAnimControllerBase>() == null;
 	}
 
-	private void ShowHistory(StateMachineController controller)
+		private void ShowHistory(StateMachineController controller)
 	{
 		ImGui.Text("Logger disabled");
 	}
 
-	private void ShowControllerLog(StateMachineController controller)
+		private void ShowControllerLog(StateMachineController controller)
 	{
 		ImGui.Text("Object Log:");
 	}
 
-	private void ShowControllerLog(StateMachine.Instance state_machine)
+		private void ShowControllerLog(StateMachine.Instance state_machine)
 	{
 		if (!state_machine.GetMaster().isNull)
 		{
@@ -373,17 +373,17 @@ public class DevToolStateMachineDebug : DevTool
 		}
 	}
 
-	private int selectedStateMachine;
+		private int selectedStateMachine;
 
-	private int selectedLog;
+		private int selectedLog;
 
-	private GameObject selectedGameObject;
+		private GameObject selectedGameObject;
 
-	private Vector2 scrollPos;
+		private Vector2 scrollPos;
 
-	private bool lockSelection;
+		private bool lockSelection;
 
-	private bool showSettings;
+		private bool showSettings;
 
-	private string stateMachineFilter = "";
+		private string stateMachineFilter = "";
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class OrbitalObject : KMonoBehaviour, IRenderEveryTick
 {
-	public void Init(string orbit_data_name, WorldContainer orbiting_world, List<Ref<OrbitalObject>> orbiting_obj)
+		public void Init(string orbit_data_name, WorldContainer orbiting_world, List<Ref<OrbitalObject>> orbiting_obj)
 	{
 		OrbitalData orbitalData = Db.Get().OrbitalTypeCategories.Get(orbit_data_name);
 		if (orbiting_world != null)
@@ -27,7 +27,7 @@ public class OrbitalObject : KMonoBehaviour, IRenderEveryTick
 		this.orbitalDBId = orbitalData.Id;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.world = ClusterManager.Instance.GetWorld(this.orbitingWorldId);
 		this.orbitData = Db.Get().OrbitalTypeCategories.Get(this.orbitalDBId);
@@ -44,7 +44,7 @@ public class OrbitalObject : KMonoBehaviour, IRenderEveryTick
 		this.animController = kbatchedAnimController;
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		float time = GameClock.Instance.GetTime();
 		bool flag;
@@ -79,7 +79,7 @@ public class OrbitalObject : KMonoBehaviour, IRenderEveryTick
 		}
 	}
 
-	private Vector3 CalculateWorldPos(float time, out bool behind)
+		private Vector3 CalculateWorldPos(float time, out bool behind)
 	{
 		Vector3 result;
 		if (this.orbitData.periodInCycles > 0f)
@@ -102,7 +102,7 @@ public class OrbitalObject : KMonoBehaviour, IRenderEveryTick
 		return result;
 	}
 
-	private string GetInitialAnim(OrbitalData data)
+		private string GetInitialAnim(OrbitalData data)
 	{
 		if (data.initialAnim.IsNullOrWhiteSpace())
 		{
@@ -113,7 +113,7 @@ public class OrbitalObject : KMonoBehaviour, IRenderEveryTick
 		return data.initialAnim;
 	}
 
-	private Vector3 GetWorldOrigin(WorldContainer wc, OrbitalData data)
+		private Vector3 GetWorldOrigin(WorldContainer wc, OrbitalData data)
 	{
 		if (wc != null)
 		{
@@ -124,12 +124,12 @@ public class OrbitalObject : KMonoBehaviour, IRenderEveryTick
 		return new Vector3((float)Grid.WidthInCells * data.xGridPercent, (float)Grid.HeightInCells * data.yGridPercent, 0f);
 	}
 
-	private float GetAngle(OrbitalData data)
+		private float GetAngle(OrbitalData data)
 	{
 		return UnityEngine.Random.Range(data.minAngle, data.maxAngle);
 	}
 
-	private int GetTimeOffset(List<Ref<OrbitalObject>> orbiting_obj)
+		private int GetTimeOffset(List<Ref<OrbitalObject>> orbiting_obj)
 	{
 		List<int> list = new List<int>();
 		foreach (Ref<OrbitalObject> @ref in orbiting_obj)
@@ -147,30 +147,30 @@ public class OrbitalObject : KMonoBehaviour, IRenderEveryTick
 		return num;
 	}
 
-	private WorldContainer world;
+		private WorldContainer world;
 
-	private OrbitalData orbitData;
+		private OrbitalData orbitData;
 
-	private KBatchedAnimController animController;
+		private KBatchedAnimController animController;
 
-	[Serialize]
+		[Serialize]
 	private string animFilename;
 
-	[Serialize]
+		[Serialize]
 	private string initialAnim;
 
-	[Serialize]
+		[Serialize]
 	private Vector3 worldOrbitingOrigin;
 
-	[Serialize]
+		[Serialize]
 	private int orbitingWorldId;
 
-	[Serialize]
+		[Serialize]
 	private float angle;
 
-	[Serialize]
+		[Serialize]
 	public int timeoffset;
 
-	[Serialize]
+		[Serialize]
 	public string orbitalDBId;
 }

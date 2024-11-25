@@ -8,12 +8,12 @@ using UnityEngine;
 
 public class SandboxBrushTool : BrushTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SandboxBrushTool.instance = null;
 	}
 
-		private SandboxSettings settings
+			private SandboxSettings settings
 	{
 		get
 		{
@@ -21,18 +21,18 @@ public class SandboxBrushTool : BrushTool
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		SandboxBrushTool.instance = this;
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		PlayerController.Instance.ActivateTool(this);
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		SandboxToolParameterMenu.instance.gameObject.SetActive(true);
@@ -47,14 +47,14 @@ public class SandboxBrushTool : BrushTool
 		elementSelector.onValueChanged = (Action<object>)Delegate.Combine(elementSelector.onValueChanged, new Action<object>(this.OnElementChanged));
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		SandboxToolParameterMenu.instance.gameObject.SetActive(false);
 		this.audioEvent.release();
 	}
 
-	public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
+		public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
 	{
 		colors = new HashSet<ToolMenu.CellColorData>();
 		foreach (int num in this.recentlyAffectedCells)
@@ -68,7 +68,7 @@ public class SandboxBrushTool : BrushTool
 		}
 	}
 
-	public override void SetBrushSize(int radius)
+		public override void SetBrushSize(int radius)
 	{
 		this.brushRadius = radius;
 		this.brushOffsets.Clear();
@@ -84,7 +84,7 @@ public class SandboxBrushTool : BrushTool
 		}
 	}
 
-	protected override void OnPaintCell(int cell, int distFromOrigin)
+		protected override void OnPaintCell(int cell, int distFromOrigin)
 	{
 		base.OnPaintCell(cell, distFromOrigin);
 		this.recentlyAffectedCells.Add(cell);
@@ -118,7 +118,7 @@ public class SandboxBrushTool : BrushTool
 		SimMessages.ReplaceElement(cell2, id, sandBoxTool, floatSetting, floatSetting2, index2, this.settings.GetIntSetting("SandboxTools.DiseaseCount"), callbackIdx);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.SandboxCopyElement))
 		{
@@ -134,30 +134,30 @@ public class SandboxBrushTool : BrushTool
 		}
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		base.OnLeftClickDown(cursor_pos);
 		KFMOD.PlayUISound(GlobalAssets.GetSound("SandboxTool_Click", false));
 	}
 
-	public override void OnLeftClickUp(Vector3 cursor_pos)
+		public override void OnLeftClickUp(Vector3 cursor_pos)
 	{
 		base.OnLeftClickUp(cursor_pos);
 		this.StopSound();
 	}
 
-	private void OnElementChanged(object new_element)
+		private void OnElementChanged(object new_element)
 	{
 		this.clearVisitedCells();
 	}
 
-	protected override string GetDragSound()
+		protected override string GetDragSound()
 	{
 		string str = (ElementLoader.elements[this.settings.GetIntSetting("SandboxTools.SelectedElement")].state & Element.State.Solid).ToString();
 		return "SandboxTool_Brush_" + str + "_Add";
 	}
 
-	protected override void PlaySound()
+		protected override void PlaySound()
 	{
 		base.PlaySound();
 		Element element = ElementLoader.elements[this.settings.GetIntSetting("SandboxTools.SelectedElement")];
@@ -190,17 +190,17 @@ public class SandboxBrushTool : BrushTool
 		this.audioEvent.start();
 	}
 
-	private void StopSound()
+		private void StopSound()
 	{
 		this.audioEvent.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 		this.audioEvent.release();
 	}
 
-	public static SandboxBrushTool instance;
+		public static SandboxBrushTool instance;
 
-	protected HashSet<int> recentlyAffectedCells = new HashSet<int>();
+		protected HashSet<int> recentlyAffectedCells = new HashSet<int>();
 
-	private Dictionary<int, Color> recentAffectedCellColor = new Dictionary<int, Color>();
+		private Dictionary<int, Color> recentAffectedCellColor = new Dictionary<int, Color>();
 
-	private EventInstance audioEvent;
+		private EventInstance audioEvent;
 }

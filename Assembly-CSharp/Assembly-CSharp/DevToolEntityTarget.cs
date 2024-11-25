@@ -4,28 +4,28 @@ using UnityEngine;
 
 public abstract class DevToolEntityTarget
 {
-	public abstract string GetTag();
+		public abstract string GetTag();
 
-	[return: TupleElementNames(new string[]
+		[return: TupleElementNames(new string[]
 	{
 		"cornerA",
 		"cornerB"
 	})]
 	public abstract Option<ValueTuple<Vector2, Vector2>> GetScreenRect();
 
-	public string GetDebugName()
+		public string GetDebugName()
 	{
 		return "[" + this.GetTag() + "] " + this.ToString();
 	}
 
-	public class ForUIGameObject : DevToolEntityTarget
+		public class ForUIGameObject : DevToolEntityTarget
 	{
-		public ForUIGameObject(GameObject gameObject)
+				public ForUIGameObject(GameObject gameObject)
 		{
 			this.gameObject = gameObject;
 		}
 
-		[return: TupleElementNames(new string[]
+				[return: TupleElementNames(new string[]
 		{
 			"cornerA",
 			"cornerB"
@@ -63,39 +63,39 @@ public abstract class DevToolEntityTarget
 			return Option.None;
 		}
 
-		public override string GetTag()
+				public override string GetTag()
 		{
 			return "UI";
 		}
 
-		public override string ToString()
+				public override string ToString()
 		{
 			return DevToolEntity.GetNameFor(this.gameObject);
 		}
 
-		[CompilerGenerated]
+				[CompilerGenerated]
 		internal static Vector2 <GetScreenRect>g__ScreenPointToScreenPosition|2_0(Vector2 coord, ref DevToolEntityTarget.ForUIGameObject.<>c__DisplayClass2_0 A_1)
 		{
 			return new Vector2(coord.x, (float)A_1.camera.pixelHeight - coord.y);
 		}
 
-		[CompilerGenerated]
+				[CompilerGenerated]
 		internal static Vector2 <GetScreenRect>g__ScreenPointToScreenPosition|2_1(Vector2 coord)
 		{
 			return new Vector2(coord.x, (float)Screen.height - coord.y);
 		}
 
-		public GameObject gameObject;
+				public GameObject gameObject;
 	}
 
-	public class ForWorldGameObject : DevToolEntityTarget
+		public class ForWorldGameObject : DevToolEntityTarget
 	{
-		public ForWorldGameObject(GameObject gameObject)
+				public ForWorldGameObject(GameObject gameObject)
 		{
 			this.gameObject = gameObject;
 		}
 
-		[return: TupleElementNames(new string[]
+				[return: TupleElementNames(new string[]
 		{
 			"cornerA",
 			"cornerB"
@@ -120,33 +120,33 @@ public abstract class DevToolEntityTarget
 			return new ValueTuple<Vector2, Vector2>(DevToolEntityTarget.ForWorldGameObject.<GetScreenRect>g__ScreenPointToScreenPosition|2_0(CS$<>8__locals1.camera.WorldToScreenPoint(component.bounds.min), ref CS$<>8__locals1), DevToolEntityTarget.ForWorldGameObject.<GetScreenRect>g__ScreenPointToScreenPosition|2_0(CS$<>8__locals1.camera.WorldToScreenPoint(component.bounds.max), ref CS$<>8__locals1));
 		}
 
-		public override string GetTag()
+				public override string GetTag()
 		{
 			return "World";
 		}
 
-		public override string ToString()
+				public override string ToString()
 		{
 			return DevToolEntity.GetNameFor(this.gameObject);
 		}
 
-		[CompilerGenerated]
+				[CompilerGenerated]
 		internal static Vector2 <GetScreenRect>g__ScreenPointToScreenPosition|2_0(Vector2 coord, ref DevToolEntityTarget.ForWorldGameObject.<>c__DisplayClass2_0 A_1)
 		{
 			return new Vector2(coord.x, (float)A_1.camera.pixelHeight - coord.y);
 		}
 
-		public GameObject gameObject;
+				public GameObject gameObject;
 	}
 
-	public class ForSimCell : DevToolEntityTarget
+		public class ForSimCell : DevToolEntityTarget
 	{
-		public ForSimCell(int cellIndex)
+				public ForSimCell(int cellIndex)
 		{
 			this.cellIndex = cellIndex;
 		}
 
-		[return: TupleElementNames(new string[]
+				[return: TupleElementNames(new string[]
 		{
 			"cornerA",
 			"cornerB"
@@ -166,22 +166,22 @@ public abstract class DevToolEntityTarget
 			return new ValueTuple<Vector2, Vector2>(DevToolEntityTarget.ForSimCell.<GetScreenRect>g__ScreenPointToScreenPosition|2_0(CS$<>8__locals1.camera.WorldToScreenPoint(v), ref CS$<>8__locals1), DevToolEntityTarget.ForSimCell.<GetScreenRect>g__ScreenPointToScreenPosition|2_0(CS$<>8__locals1.camera.WorldToScreenPoint(v2), ref CS$<>8__locals1));
 		}
 
-		public override string GetTag()
+				public override string GetTag()
 		{
 			return "Sim Cell";
 		}
 
-		public override string ToString()
+				public override string ToString()
 		{
 			return this.cellIndex.ToString();
 		}
 
-		[CompilerGenerated]
+				[CompilerGenerated]
 		internal static Vector2 <GetScreenRect>g__ScreenPointToScreenPosition|2_0(Vector2 coord, ref DevToolEntityTarget.ForSimCell.<>c__DisplayClass2_0 A_1)
 		{
 			return new Vector2(coord.x, (float)A_1.camera.pixelHeight - coord.y);
 		}
 
-		public int cellIndex;
+				public int cellIndex;
 	}
 }

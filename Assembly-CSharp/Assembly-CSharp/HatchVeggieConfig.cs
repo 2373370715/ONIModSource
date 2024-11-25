@@ -8,7 +8,7 @@ using UnityEngine;
 [EntityConfigOrder(1)]
 public class HatchVeggieConfig : IEntityConfig
 {
-	public static GameObject CreateHatch(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreateHatch(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		GameObject prefab = EntityTemplates.ExtendEntityToWildCreature(BaseHatchConfig.BaseHatch(id, name, desc, anim_file, "HatchVeggieBaseTrait", is_baby, "veg_"), HatchTuning.PEN_SIZE_PER_CREATURE);
 		Trait trait = Db.Get().CreateTrait("HatchVeggieBaseTrait", name, name, null, false, null, true, true);
@@ -21,37 +21,37 @@ public class HatchVeggieConfig : IEntityConfig
 		return BaseHatchConfig.SetupDiet(prefab, list, HatchVeggieConfig.CALORIES_PER_KG_OF_ORE, HatchVeggieConfig.MIN_POOP_SIZE_IN_KG);
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		return EntityTemplates.ExtendEntityToFertileCreature(HatchVeggieConfig.CreateHatch("HatchVeggie", STRINGS.CREATURES.SPECIES.HATCH.VARIANT_VEGGIE.NAME, STRINGS.CREATURES.SPECIES.HATCH.VARIANT_VEGGIE.DESC, "hatch_kanim", false), "HatchVeggieEgg", STRINGS.CREATURES.SPECIES.HATCH.VARIANT_VEGGIE.EGG_NAME, STRINGS.CREATURES.SPECIES.HATCH.VARIANT_VEGGIE.DESC, "egg_hatch_kanim", HatchTuning.EGG_MASS, "HatchVeggieBaby", 60.000004f, 20f, HatchTuning.EGG_CHANCES_VEGGIE, this.GetDlcIds(), HatchVeggieConfig.EGG_SORT_ORDER, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "HatchVeggie";
+		public const string ID = "HatchVeggie";
 
-	public const string BASE_TRAIT_ID = "HatchVeggieBaseTrait";
+		public const string BASE_TRAIT_ID = "HatchVeggieBaseTrait";
 
-	public const string EGG_ID = "HatchVeggieEgg";
+		public const string EGG_ID = "HatchVeggieEgg";
 
-	private const SimHashes EMIT_ELEMENT = SimHashes.Carbon;
+		private const SimHashes EMIT_ELEMENT = SimHashes.Carbon;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 140f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 140f;
 
-	private static float CALORIES_PER_KG_OF_ORE = HatchTuning.STANDARD_CALORIES_PER_CYCLE / HatchVeggieConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = HatchTuning.STANDARD_CALORIES_PER_CYCLE / HatchVeggieConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 50f;
+		private static float MIN_POOP_SIZE_IN_KG = 50f;
 
-	public static int EGG_SORT_ORDER = HatchConfig.EGG_SORT_ORDER + 1;
+		public static int EGG_SORT_ORDER = HatchConfig.EGG_SORT_ORDER + 1;
 }

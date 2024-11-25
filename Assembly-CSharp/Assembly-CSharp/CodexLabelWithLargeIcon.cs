@@ -6,20 +6,20 @@ using UnityEngine.UI;
 
 public class CodexLabelWithLargeIcon : CodexLabelWithIcon
 {
-			public string linkID { get; set; }
+				public string linkID { get; set; }
 
-	public CodexLabelWithLargeIcon()
+		public CodexLabelWithLargeIcon()
 	{
 	}
 
-	public CodexLabelWithLargeIcon(string text, CodexTextStyle style, global::Tuple<Sprite, Color> coloredSprite, string targetEntrylinkID) : base(text, style, coloredSprite, 128, 128)
+		public CodexLabelWithLargeIcon(string text, CodexTextStyle style, global::Tuple<Sprite, Color> coloredSprite, string targetEntrylinkID) : base(text, style, coloredSprite, 128, 128)
 	{
 		base.icon = new CodexImage(128, 128, coloredSprite);
 		base.label = new CodexText(text, style, null);
 		this.linkID = targetEntrylinkID;
 	}
 
-	public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		base.icon.ConfigureImage(contentGameObject.GetComponentsInChildren<Image>()[1]);
 		if (base.icon.preferredWidth != -1 && base.icon.preferredHeight != -1)

@@ -7,7 +7,7 @@ using UnityEngine.UI.Extensions;
 [AddComponentMenu("KMonoBehaviour/scripts/GraphBase")]
 public class GraphBase : KMonoBehaviour
 {
-	public Vector2 GetRelativePosition(Vector2 absolute_point)
+		public Vector2 GetRelativePosition(Vector2 absolute_point)
 	{
 		Vector2 zero = Vector2.zero;
 		float num = Mathf.Max(1f, this.axis_x.max_value - this.axis_x.min_value);
@@ -19,18 +19,18 @@ public class GraphBase : KMonoBehaviour
 		return zero;
 	}
 
-	public Vector2 GetRelativeSize(Vector2 absolute_size)
+		public Vector2 GetRelativeSize(Vector2 absolute_size)
 	{
 		return this.GetRelativePosition(absolute_size);
 	}
 
-	public void ClearGuides()
+		public void ClearGuides()
 	{
 		this.ClearVerticalGuides();
 		this.ClearHorizontalGuides();
 	}
 
-	public void ClearHorizontalGuides()
+		public void ClearHorizontalGuides()
 	{
 		foreach (GameObject gameObject in this.horizontalGuides)
 		{
@@ -42,7 +42,7 @@ public class GraphBase : KMonoBehaviour
 		this.horizontalGuides.Clear();
 	}
 
-	public void ClearVerticalGuides()
+		public void ClearVerticalGuides()
 	{
 		foreach (GameObject gameObject in this.verticalGuides)
 		{
@@ -54,14 +54,14 @@ public class GraphBase : KMonoBehaviour
 		this.verticalGuides.Clear();
 	}
 
-	public void RefreshGuides()
+		public void RefreshGuides()
 	{
 		this.ClearGuides();
 		this.RefreshHorizontalGuides();
 		this.RefreshVerticalGuides();
 	}
 
-	public void RefreshHorizontalGuides()
+		public void RefreshHorizontalGuides()
 	{
 		if (this.prefab_guide_x != null)
 		{
@@ -87,7 +87,7 @@ public class GraphBase : KMonoBehaviour
 		}
 	}
 
-	public void RefreshVerticalGuides()
+		public void RefreshVerticalGuides()
 	{
 		if (this.prefab_guide_y != null)
 		{
@@ -113,35 +113,35 @@ public class GraphBase : KMonoBehaviour
 		}
 	}
 
-	[Header("Axis")]
+		[Header("Axis")]
 	public GraphAxis axis_x;
 
-	public GraphAxis axis_y;
+		public GraphAxis axis_y;
 
-	[Header("References")]
+		[Header("References")]
 	public GameObject prefab_guide_x;
 
-	public GameObject prefab_guide_y;
+		public GameObject prefab_guide_y;
 
-	public GameObject prefab_guide_horizontal_label;
+		public GameObject prefab_guide_horizontal_label;
 
-	public GameObject prefab_guide_vertical_label;
+		public GameObject prefab_guide_vertical_label;
 
-	public GameObject guides_x;
+		public GameObject guides_x;
 
-	public GameObject guides_y;
+		public GameObject guides_y;
 
-	public LocText label_title;
+		public LocText label_title;
 
-	public LocText label_x;
+		public LocText label_x;
 
-	public LocText label_y;
+		public LocText label_y;
 
-	public string graphName;
+		public string graphName;
 
-	protected List<GameObject> horizontalGuides = new List<GameObject>();
+		protected List<GameObject> horizontalGuides = new List<GameObject>();
 
-	protected List<GameObject> verticalGuides = new List<GameObject>();
+		protected List<GameObject> verticalGuides = new List<GameObject>();
 
-	private const int points_per_guide_line = 2;
+		private const int points_per_guide_line = 2;
 }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace ImGuiObjectDrawer
 {
-	public class PrimaryMemberDrawerProvider : IMemberDrawerProvider
+		public class PrimaryMemberDrawerProvider : IMemberDrawerProvider
 	{
-				public int Priority
+						public int Priority
 		{
 			get
 			{
@@ -13,7 +13,7 @@ namespace ImGuiObjectDrawer
 			}
 		}
 
-		public void AppendDrawersTo(List<MemberDrawer> drawers)
+				public void AppendDrawersTo(List<MemberDrawer> drawers)
 		{
 			drawers.AddRange(new MemberDrawer[]
 			{

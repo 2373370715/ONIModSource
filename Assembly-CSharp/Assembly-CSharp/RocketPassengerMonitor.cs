@@ -2,7 +2,7 @@
 
 public class RocketPassengerMonitor : GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.satisfied;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -26,32 +26,32 @@ public class RocketPassengerMonitor : GameStateMachine<RocketPassengerMonitor, R
 		});
 	}
 
-	public Chore CreateChore(RocketPassengerMonitor.Instance smi)
+		public Chore CreateChore(RocketPassengerMonitor.Instance smi)
 	{
 		MoveChore moveChore = new MoveChore(smi.master, Db.Get().ChoreTypes.RocketEnterExit, (MoveChore.StatesInstance mover_smi) => this.targetCell.Get(smi), false);
 		moveChore.AddPrecondition(ChorePreconditions.instance.CanMoveToCell, this.targetCell.Get(smi));
 		return moveChore;
 	}
 
-	public StateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.IntParameter targetCell = new StateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.IntParameter(Grid.InvalidCell);
+		public StateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.IntParameter targetCell = new StateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.IntParameter(Grid.InvalidCell);
 
-	public GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.State satisfied;
+		public GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.State satisfied;
 
-	public GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.State moving;
+		public GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.State moving;
 
-	public GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.State movingToModuleDeployPre;
+		public GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.State movingToModuleDeployPre;
 
-	public GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.State movingToModuleDeploy;
+		public GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.State movingToModuleDeploy;
 
-	public GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.State moduleDeploy;
+		public GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.State moduleDeploy;
 
-	public new class Instance : GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<RocketPassengerMonitor, RocketPassengerMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 
-		public bool ShouldMoveThroughRocketDoor()
+				public bool ShouldMoveThroughRocketDoor()
 		{
 			int num = base.sm.targetCell.Get(this);
 			if (!Grid.IsValidCell(num))
@@ -66,7 +66,7 @@ public class RocketPassengerMonitor : GameStateMachine<RocketPassengerMonitor, R
 			return true;
 		}
 
-		public void SetMoveTarget(int cell)
+				public void SetMoveTarget(int cell)
 		{
 			if ((int)Grid.WorldIdx[cell] == this.GetMyWorldId())
 			{
@@ -75,7 +75,7 @@ public class RocketPassengerMonitor : GameStateMachine<RocketPassengerMonitor, R
 			base.sm.targetCell.Set(cell, this, false);
 		}
 
-		public void SetModuleDeployChore(int cell, Action<Chore> OnChoreCompleteCallback)
+				public void SetModuleDeployChore(int cell, Action<Chore> OnChoreCompleteCallback)
 		{
 			this.moduleDeployCompleteCallback = OnChoreCompleteCallback;
 			this.moduleDeployTaskTargetMoveCell = cell;
@@ -83,14 +83,14 @@ public class RocketPassengerMonitor : GameStateMachine<RocketPassengerMonitor, R
 			base.sm.targetCell.Set(cell, this, false);
 		}
 
-		public void CancelModuleDeployChore()
+				public void CancelModuleDeployChore()
 		{
 			this.moduleDeployCompleteCallback = null;
 			this.moduleDeployTaskTargetMoveCell = Grid.InvalidCell;
 			base.sm.targetCell.Set(Grid.InvalidCell, base.smi, false);
 		}
 
-		public void ClearMoveTarget(int testCell)
+				public void ClearMoveTarget(int testCell)
 		{
 			int num = base.sm.targetCell.Get(this);
 			if (Grid.IsValidCell(num) && Grid.WorldIdx[num] == Grid.WorldIdx[testCell])
@@ -103,10 +103,10 @@ public class RocketPassengerMonitor : GameStateMachine<RocketPassengerMonitor, R
 			}
 		}
 
-		public int lastWorldID;
+				public int lastWorldID;
 
-		public Action<Chore> moduleDeployCompleteCallback;
+				public Action<Chore> moduleDeployCompleteCallback;
 
-		public int moduleDeployTaskTargetMoveCell;
+				public int moduleDeployTaskTargetMoveCell;
 	}
 }

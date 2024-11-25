@@ -3,13 +3,13 @@ using Klei.AI.DiseaseGrowthRules;
 
 namespace Klei.AI
 {
-	public class SlimeGerms : Disease
+		public class SlimeGerms : Disease
 	{
-		public SlimeGerms(bool statsOnly) : base("SlimeLung", 20f, new Disease.RangeInfo(283.15f, 293.15f, 363.15f, 373.15f), new Disease.RangeInfo(10f, 1200f, 1200f, 10f), new Disease.RangeInfo(0f, 0f, 1000f, 1000f), Disease.RangeInfo.Idempotent(), 2.5f, statsOnly)
+				public SlimeGerms(bool statsOnly) : base("SlimeLung", 20f, new Disease.RangeInfo(283.15f, 293.15f, 363.15f, 373.15f), new Disease.RangeInfo(10f, 1200f, 1200f, 10f), new Disease.RangeInfo(0f, 0f, 1000f, 1000f), Disease.RangeInfo.Idempotent(), 2.5f, statsOnly)
 		{
 		}
 
-		protected override void PopulateElemGrowthInfo()
+				protected override void PopulateElemGrowthInfo()
 		{
 			base.InitializeElemGrowthArray(ref this.elemGrowthInfo, Disease.DEFAULT_GROWTH_INFO);
 			base.AddGrowthRule(new GrowthRule
@@ -104,10 +104,10 @@ namespace Klei.AI
 			});
 		}
 
-		private const float COUGH_FREQUENCY = 20f;
+				private const float COUGH_FREQUENCY = 20f;
 
-		private const int DISEASE_AMOUNT = 1000;
+				private const int DISEASE_AMOUNT = 1000;
 
-		public const string ID = "SlimeLung";
+				public const string ID = "SlimeLung";
 	}
 }

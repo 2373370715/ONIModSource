@@ -4,20 +4,20 @@ using KSerialization;
 
 public abstract class SlicedUpdaterSim1000ms<T> : KMonoBehaviour, ISim200ms where T : KMonoBehaviour, ISlicedSim1000ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.InitializeSlices();
 		base.OnPrefabInit();
 		SlicedUpdaterSim1000ms<T>.instance = this;
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		SlicedUpdaterSim1000ms<T>.instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	private void InitializeSlices()
+		private void InitializeSlices()
 	{
 		int num = SlicedUpdaterSim1000ms<T>.NUM_200MS_BUCKETS * this.numSlicesPer200ms;
 		this.m_slices = new List<SlicedUpdaterSim1000ms<T>.Slice>();
@@ -28,24 +28,24 @@ public abstract class SlicedUpdaterSim1000ms<T> : KMonoBehaviour, ISim200ms wher
 		this.m_nextSliceIdx = 0;
 	}
 
-	private int GetSliceIdx(T toBeUpdated)
+		private int GetSliceIdx(T toBeUpdated)
 	{
 		return toBeUpdated.GetComponent<KPrefabID>().InstanceID % this.m_slices.Count;
 	}
 
-	public void RegisterUpdate1000ms(T toBeUpdated)
+		public void RegisterUpdate1000ms(T toBeUpdated)
 	{
 		SlicedUpdaterSim1000ms<T>.Slice slice = this.m_slices[this.GetSliceIdx(toBeUpdated)];
 		slice.Register(toBeUpdated);
 		DebugUtil.DevAssert(slice.Count < this.maxUpdatesPer200ms, string.Format("The SlicedUpdaterSim1000ms for {0} wants to update no more than {1} instances per 200ms tick, but a slice has grown more than the SlicedUpdaterSim1000ms can support.", typeof(T).Name, this.maxUpdatesPer200ms), null);
 	}
 
-	public void UnregisterUpdate1000ms(T toBeUpdated)
+		public void UnregisterUpdate1000ms(T toBeUpdated)
 	{
 		this.m_slices[this.GetSliceIdx(toBeUpdated)].Unregister(toBeUpdated);
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		foreach (SlicedUpdaterSim1000ms<T>.Slice slice in this.m_slices)
 		{
@@ -67,23 +67,23 @@ public abstract class SlicedUpdaterSim1000ms<T> : KMonoBehaviour, ISim200ms wher
 		}
 	}
 
-	private static int NUM_200MS_BUCKETS = 5;
+		private static int NUM_200MS_BUCKETS = 5;
 
-	public static SlicedUpdaterSim1000ms<T> instance;
+		public static SlicedUpdaterSim1000ms<T> instance;
 
-	[Serialize]
+		[Serialize]
 	public int maxUpdatesPer200ms = 300;
 
-	[Serialize]
+		[Serialize]
 	public int numSlicesPer200ms = 3;
 
-	private List<SlicedUpdaterSim1000ms<T>.Slice> m_slices;
+		private List<SlicedUpdaterSim1000ms<T>.Slice> m_slices;
 
-	private int m_nextSliceIdx;
+		private int m_nextSliceIdx;
 
-	private class Slice
+		private class Slice
 	{
-		public void Register(T toBeUpdated)
+				public void Register(T toBeUpdated)
 		{
 			if (this.m_timeSinceLastUpdate == 0f)
 			{
@@ -93,7 +93,7 @@ public abstract class SlicedUpdaterSim1000ms<T> : KMonoBehaviour, ISim200ms wher
 			this.m_recentlyAdded[toBeUpdated] = 0f;
 		}
 
-		public void Unregister(T toBeUpdated)
+				public void Unregister(T toBeUpdated)
 		{
 			if (!this.m_updateList.Remove(toBeUpdated))
 			{
@@ -101,7 +101,7 @@ public abstract class SlicedUpdaterSim1000ms<T> : KMonoBehaviour, ISim200ms wher
 			}
 		}
 
-				public int Count
+						public int Count
 		{
 			get
 			{
@@ -109,7 +109,7 @@ public abstract class SlicedUpdaterSim1000ms<T> : KMonoBehaviour, ISim200ms wher
 			}
 		}
 
-		public List<T> GetUpdateList()
+				public List<T> GetUpdateList()
 		{
 			List<T> list = new List<T>();
 			list.AddRange(this.m_updateList);
@@ -117,7 +117,7 @@ public abstract class SlicedUpdaterSim1000ms<T> : KMonoBehaviour, ISim200ms wher
 			return list;
 		}
 
-		public void Update()
+				public void Update()
 		{
 			foreach (T t in this.m_updateList)
 			{
@@ -132,7 +132,7 @@ public abstract class SlicedUpdaterSim1000ms<T> : KMonoBehaviour, ISim200ms wher
 			this.m_timeSinceLastUpdate = 0f;
 		}
 
-		public void IncrementDt(float dt)
+				public void IncrementDt(float dt)
 		{
 			this.m_timeSinceLastUpdate += dt;
 			if (this.m_recentlyAdded.Count > 0)
@@ -146,10 +146,10 @@ public abstract class SlicedUpdaterSim1000ms<T> : KMonoBehaviour, ISim200ms wher
 			}
 		}
 
-		private float m_timeSinceLastUpdate;
+				private float m_timeSinceLastUpdate;
 
-		private List<T> m_updateList = new List<T>();
+				private List<T> m_updateList = new List<T>();
 
-		private Dictionary<T, float> m_recentlyAdded = new Dictionary<T, float>();
+				private Dictionary<T, float> m_recentlyAdded = new Dictionary<T, float>();
 	}
 }

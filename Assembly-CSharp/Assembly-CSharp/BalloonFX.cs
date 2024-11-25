@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BalloonFX : GameStateMachine<BalloonFX, BalloonFX.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		base.Target(this.fx);
@@ -14,23 +14,23 @@ public class BalloonFX : GameStateMachine<BalloonFX, BalloonFX.Instance>
 		});
 	}
 
-	public StateMachine<BalloonFX, BalloonFX.Instance, IStateMachineTarget, object>.TargetParameter fx;
+		public StateMachine<BalloonFX, BalloonFX.Instance, IStateMachineTarget, object>.TargetParameter fx;
 
-	public KAnimFile defaultAnim = Assets.GetAnim("balloon_anim_kanim");
+		public KAnimFile defaultAnim = Assets.GetAnim("balloon_anim_kanim");
 
-	private KAnimFile defaultBalloon = Assets.GetAnim("balloon_basic_red_kanim");
+		private KAnimFile defaultBalloon = Assets.GetAnim("balloon_basic_red_kanim");
 
-	private const string defaultAnimName = "balloon_anim_kanim";
+		private const string defaultAnimName = "balloon_anim_kanim";
 
-	private const string balloonAnimName = "balloon_basic_red_kanim";
+		private const string balloonAnimName = "balloon_basic_red_kanim";
 
-	private const string TARGET_SYMBOL_TO_OVERRIDE = "body";
+		private const string TARGET_SYMBOL_TO_OVERRIDE = "body";
 
-	private const int TARGET_OVERRIDE_PRIORITY = 0;
+		private const int TARGET_OVERRIDE_PRIORITY = 0;
 
-	public new class Instance : GameStateMachine<BalloonFX, BalloonFX.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<BalloonFX, BalloonFX.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.balloonAnimController = FXHelpers.CreateEffectOverride(new string[]
 			{
@@ -42,7 +42,7 @@ public class BalloonFX : GameStateMachine<BalloonFX, BalloonFX.Instance>
 			master.GetComponent<KBatchedAnimController>().GetSynchronizer().Add(this.balloonAnimController.GetComponent<KBatchedAnimController>());
 		}
 
-		public void SetBalloonSymbolOverride(BalloonOverrideSymbol balloonOverride)
+				public void SetBalloonSymbolOverride(BalloonOverrideSymbol balloonOverride)
 		{
 			KAnimFile kanimFile = balloonOverride.animFile.IsSome() ? balloonOverride.animFile.Unwrap() : base.smi.sm.defaultBalloon;
 			this.balloonAnimController.SwapAnims(new KAnimFile[]
@@ -71,13 +71,13 @@ public class BalloonFX : GameStateMachine<BalloonFX, BalloonFX.Instance>
 			this.currentBodyOverrideSymbol = balloonOverride;
 		}
 
-		public void DestroyFX()
+				public void DestroyFX()
 		{
 			Util.KDestroyGameObject(base.sm.fx.Get(base.smi));
 		}
 
-		private KBatchedAnimController balloonAnimController;
+				private KBatchedAnimController balloonAnimController;
 
-		private Option<BalloonOverrideSymbol> currentBodyOverrideSymbol;
+				private Option<BalloonOverrideSymbol> currentBodyOverrideSymbol;
 	}
 }

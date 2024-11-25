@@ -2,9 +2,9 @@
 
 public interface IMultiSliderControl
 {
-		string SidescreenTitleKey { get; }
+			string SidescreenTitleKey { get; }
 
-	bool SidescreenEnabled();
+		bool SidescreenEnabled();
 
-		ISliderControl[] sliderControls { get; }
+			ISliderControl[] sliderControls { get; }
 }

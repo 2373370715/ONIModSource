@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class GeoTunerSideScreen : SideScreenContent
 {
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		this.rowPrefab.SetActive(false);
@@ -17,19 +17,19 @@ public class GeoTunerSideScreen : SideScreenContent
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetSMI<GeoTuner.Instance>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.targetGeotuner = target.GetSMI<GeoTuner.Instance>();
 		this.RefreshOptions(null);
 		this.uiRefreshSubHandle = target.Subscribe(1980521255, new Action<object>(this.RefreshOptions));
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 		if (this.uiRefreshSubHandle != -1 && this.targetGeotuner != null)
 		{
@@ -38,7 +38,7 @@ public class GeoTunerSideScreen : SideScreenContent
 		}
 	}
 
-	private void RefreshOptions(object data = null)
+		private void RefreshOptions(object data = null)
 	{
 		int num = 0;
 		this.SetRow(num++, UI.UISIDESCREENS.GEOTUNERSIDESCREEN.NOTHING, Assets.GetSprite("action_building_disabled"), null, true);
@@ -63,7 +63,7 @@ public class GeoTunerSideScreen : SideScreenContent
 		}
 	}
 
-	private void ClearRows()
+		private void ClearRows()
 	{
 		for (int i = this.rowContainer.childCount - 1; i >= 0; i--)
 		{
@@ -72,7 +72,7 @@ public class GeoTunerSideScreen : SideScreenContent
 		this.rows.Clear();
 	}
 
-	private void SetRow(int idx, string name, Sprite icon, Geyser geyser, bool studied)
+		private void SetRow(int idx, string name, Sprite icon, Geyser geyser, bool studied)
 	{
 		bool flag = geyser == null;
 		GameObject gameObject;
@@ -186,19 +186,19 @@ public class GeoTunerSideScreen : SideScreenContent
 		};
 	}
 
-	private GeoTuner.Instance targetGeotuner;
+		private GeoTuner.Instance targetGeotuner;
 
-	public GameObject rowPrefab;
+		public GameObject rowPrefab;
 
-	public RectTransform rowContainer;
+		public RectTransform rowContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting AnalyzedTextStyle;
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting UnanalyzedTextStyle;
 
-	public Dictionary<object, GameObject> rows = new Dictionary<object, GameObject>();
+		public Dictionary<object, GameObject> rows = new Dictionary<object, GameObject>();
 
-	private int uiRefreshSubHandle = -1;
+		private int uiRefreshSubHandle = -1;
 }

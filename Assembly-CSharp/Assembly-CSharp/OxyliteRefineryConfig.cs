@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OxyliteRefineryConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "OxyliteRefinery";
 		int width = 3;
@@ -40,7 +40,7 @@ public class OxyliteRefineryConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Tag tag = SimHashes.Oxygen.CreateTag();
 		Tag tag2 = SimHashes.Gold.CreateTag();
@@ -79,29 +79,29 @@ public class OxyliteRefineryConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "OxyliteRefinery";
+		public const string ID = "OxyliteRefinery";
 
-	public const float EMIT_MASS = 10f;
+		public const float EMIT_MASS = 10f;
 
-	public const float INPUT_O2_PER_SECOND = 0.6f;
+		public const float INPUT_O2_PER_SECOND = 0.6f;
 
-	public const float OXYLITE_PER_SECOND = 0.6f;
+		public const float OXYLITE_PER_SECOND = 0.6f;
 
-	public const float GOLD_PER_SECOND = 0.003f;
+		public const float GOLD_PER_SECOND = 0.003f;
 
-	public const float OUTPUT_TEMP = 303.15f;
+		public const float OUTPUT_TEMP = 303.15f;
 
-	public const float REFILL_RATE = 2400f;
+		public const float REFILL_RATE = 2400f;
 
-	public const float GOLD_STORAGE_AMOUNT = 7.2000003f;
+		public const float GOLD_STORAGE_AMOUNT = 7.2000003f;
 
-	public const float O2_STORAGE_AMOUNT = 6f;
+		public const float O2_STORAGE_AMOUNT = 6f;
 
-	public const float STORAGE_CAPACITY = 23.2f;
+		public const float STORAGE_CAPACITY = 23.2f;
 }

@@ -5,12 +5,12 @@ using UnityEngine;
 [EntityConfigOrder(2)]
 public class LightBugBabyConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = LightBugConfig.CreateLightBug("LightBugBaby", CREATURES.SPECIES.LIGHTBUG.BABY.NAME, CREATURES.SPECIES.LIGHTBUG.BABY.DESC, "baby_lightbug_kanim", true);
 		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "LightBug", null, false, 5f);
@@ -18,13 +18,13 @@ public class LightBugBabyConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "LightBugBaby";
+		public const string ID = "LightBugBaby";
 }

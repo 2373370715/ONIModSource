@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SlimeCometConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		float mass = ElementLoader.FindElementByHash(SimHashes.SlimeMold).defaultValues.mass;
 		GameObject gameObject = BaseCometConfig.BaseComet(SlimeCometConfig.ID, UI.SPACEDESTINATIONS.COMETS.SLIMECOMET.NAME, "meteor_slime_kanim", SimHashes.SlimeMold, new Vector2(mass * 0.8f * 2f, mass * 1.2f * 2f), new Vector2(310.15f, 323.15f), "Meteor_slimeball_Impact", 7, SimHashes.ContaminatedOxygen, SpawnFXHashes.MeteorImpactSlime, 0.6f);
@@ -26,18 +26,18 @@ public class SlimeCometConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 		go.GetComponent<PrimaryElement>().AddDisease(Db.Get().Diseases.GetIndex("SlimeLung"), (int)(UnityEngine.Random.Range(0.9f, 1.2f) * 50f * 100000f), "Meteor");
 	}
 
-	public static string ID = "SlimeComet";
+		public static string ID = "SlimeComet";
 
-	public const int ADDED_CELLS = 2;
+		public const int ADDED_CELLS = 2;
 
-	private const SimHashes element = SimHashes.SlimeMold;
+		private const SimHashes element = SimHashes.SlimeMold;
 }

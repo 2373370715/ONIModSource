@@ -2,7 +2,7 @@
 
 namespace STRINGS
 {
-	public class SETITEMS
+		public class SETITEMS
 	{
 	}
 }

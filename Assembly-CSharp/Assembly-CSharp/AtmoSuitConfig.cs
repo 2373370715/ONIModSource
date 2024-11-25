@@ -7,12 +7,12 @@ using UnityEngine;
 
 public class AtmoSuitConfig : IEquipmentConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public EquipmentDef CreateEquipmentDef()
+		public EquipmentDef CreateEquipmentDef()
 	{
 		List<AttributeModifier> list = new List<AttributeModifier>();
 		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.INSULATION, (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_INSULATION, STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.NAME, false, false, true));
@@ -33,9 +33,10 @@ public class AtmoSuitConfig : IEquipmentConfig
 		equipmentDef.RecipeDescription = STRINGS.EQUIPMENT.PREFABS.ATMO_SUIT.RECIPE_DESC;
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("SoakingWet"));
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("WetFeet"));
-		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("PoppedEarDrums"));
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("ColdAir"));
 		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("WarmAir"));
+		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("PoppedEarDrums"));
+		equipmentDef.EffectImmunites.Add(Db.Get().effects.Get("Slipped"));
 		equipmentDef.OnEquipCallBack = delegate(Equippable eq)
 		{
 			Ownables soleOwner = eq.assignee.GetSoleOwner();
@@ -52,6 +53,7 @@ public class AtmoSuitConfig : IEquipmentConfig
 				{
 					targetGameObject.GetAttributes().Get(Db.Get().Attributes.Athletics).Add(this.expertAthleticsModifier);
 				}
+				targetGameObject.AddTag(GameTags.HasAirtightSuit);
 			}
 		};
 		equipmentDef.OnUnequipCallBack = delegate(Equippable eq)
@@ -84,6 +86,7 @@ public class AtmoSuitConfig : IEquipmentConfig
 								component2.Remove("SoiledSuit");
 							}
 						}
+						targetGameObject.RemoveTag(GameTags.HasAirtightSuit);
 					}
 					Tag elementTag = eq.GetComponent<SuitTank>().elementTag;
 					eq.GetComponent<Storage>().DropUnlessHasTag(elementTag);
@@ -95,11 +98,11 @@ public class AtmoSuitConfig : IEquipmentConfig
 		return equipmentDef;
 	}
 
-	public void DoPostConfigure(GameObject go)
+		public void DoPostConfigure(GameObject go)
 	{
 		SuitTank suitTank = go.AddComponent<SuitTank>();
 		suitTank.element = "Oxygen";
-		suitTank.capacity = 75f;
+		suitTank.capacity = DUPLICANTSTATS.STANDARD.BaseStats.OXYGEN_USED_PER_SECOND * 600f * 1.25f;
 		suitTank.elementTag = GameTags.Breathable;
 		go.AddComponent<HelmetController>();
 		KPrefabID component = go.GetComponent<KPrefabID>();
@@ -116,13 +119,13 @@ public class AtmoSuitConfig : IEquipmentConfig
 		go.AddComponent<SuitDiseaseHandler>();
 	}
 
-	public const string ID = "Atmo_Suit";
+		public const string ID = "Atmo_Suit";
 
-	public const string WORN_ID = "Worn_Atmo_Suit";
+		public const string WORN_ID = "Worn_Atmo_Suit";
 
-	public static ComplexRecipe recipe;
+		public static ComplexRecipe recipe;
 
-	private const PathFinder.PotentialPath.Flags suit_flags = PathFinder.PotentialPath.Flags.HasAtmoSuit;
+		private const PathFinder.PotentialPath.Flags suit_flags = PathFinder.PotentialPath.Flags.HasAtmoSuit;
 
-	private AttributeModifier expertAthleticsModifier;
+		private AttributeModifier expertAthleticsModifier;
 }

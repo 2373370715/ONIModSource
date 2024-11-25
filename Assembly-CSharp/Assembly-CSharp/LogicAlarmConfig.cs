@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicAlarmConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicAlarmConfig.ID;
 		int width = 1;
@@ -37,11 +37,11 @@ public class LogicAlarmConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicAlarm>();
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicAlarm";
+		public static string ID = "LogicAlarm";
 }

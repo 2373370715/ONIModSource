@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CO2ScrubberConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "CO2Scrubber";
 		int width = 2;
@@ -33,7 +33,7 @@ public class CO2ScrubberConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
@@ -80,15 +80,15 @@ public class CO2ScrubberConfig : IBuildingConfig
 		go.AddOrGet<KBatchedAnimController>().randomiseLoopedOffset = true;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "CO2Scrubber";
+		public const string ID = "CO2Scrubber";
 
-	private const float CO2_CONSUMPTION_RATE = 0.3f;
+		private const float CO2_CONSUMPTION_RATE = 0.3f;
 
-	private const float H2O_CONSUMPTION_RATE = 1f;
+		private const float H2O_CONSUMPTION_RATE = 1f;
 }

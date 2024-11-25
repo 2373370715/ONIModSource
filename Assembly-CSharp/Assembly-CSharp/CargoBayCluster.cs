@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CargoBayCluster : KMonoBehaviour, IUserControlledCapacity
 {
-			public float UserMaxCapacity
+				public float UserMaxCapacity
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class CargoBayCluster : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float MinCapacity
+			public float MinCapacity
 	{
 		get
 		{
@@ -26,7 +26,7 @@ public class CargoBayCluster : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float MaxCapacity
+			public float MaxCapacity
 	{
 		get
 		{
@@ -34,7 +34,7 @@ public class CargoBayCluster : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float AmountStored
+			public float AmountStored
 	{
 		get
 		{
@@ -42,7 +42,7 @@ public class CargoBayCluster : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public bool WholeValues
+			public bool WholeValues
 	{
 		get
 		{
@@ -50,7 +50,7 @@ public class CargoBayCluster : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public LocString CapacityUnits
+			public LocString CapacityUnits
 	{
 		get
 		{
@@ -58,7 +58,7 @@ public class CargoBayCluster : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float RemainingCapacity
+			public float RemainingCapacity
 	{
 		get
 		{
@@ -66,12 +66,12 @@ public class CargoBayCluster : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.userMaxCapacity = this.storage.capacityKg;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.GetComponent<KBatchedAnimController>().Play("grounded", KAnim.PlayMode.Loop, 1f, 0f);
@@ -90,7 +90,7 @@ public class CargoBayCluster : KMonoBehaviour, IUserControlledCapacity
 		base.Subscribe<CargoBayCluster>(-1697596308, CargoBayCluster.OnStorageChangeDelegate);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		KIconButtonMenu.ButtonInfo button = new KIconButtonMenu.ButtonInfo("action_empty_contents", UI.USERMENUACTIONS.EMPTYSTORAGE.NAME, delegate()
 		{
@@ -99,13 +99,13 @@ public class CargoBayCluster : KMonoBehaviour, IUserControlledCapacity
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		this.meter.SetPositionPercent(this.storage.MassStored() / this.storage.Capacity());
 		this.UpdateCargoStatusItem();
 	}
 
-	private void UpdateCargoStatusItem()
+		private void UpdateCargoStatusItem()
 	{
 		RocketModuleCluster component = base.GetComponent<RocketModuleCluster>();
 		if (component == null)
@@ -125,23 +125,23 @@ public class CargoBayCluster : KMonoBehaviour, IUserControlledCapacity
 		component2.UpdateStatusItem();
 	}
 
-	private MeterController meter;
+		private MeterController meter;
 
-	[SerializeField]
+		[SerializeField]
 	public Storage storage;
 
-	[SerializeField]
+		[SerializeField]
 	public CargoBay.CargoType storageType;
 
-	[Serialize]
+		[Serialize]
 	private float userMaxCapacity;
 
-	private static readonly EventSystem.IntraObjectHandler<CargoBayCluster> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<CargoBayCluster>(delegate(CargoBayCluster component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CargoBayCluster> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<CargoBayCluster>(delegate(CargoBayCluster component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<CargoBayCluster> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<CargoBayCluster>(delegate(CargoBayCluster component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CargoBayCluster> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<CargoBayCluster>(delegate(CargoBayCluster component, object data)
 	{
 		component.OnStorageChange(data);
 	});

@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SubstanceChunk")]
 public class SubstanceChunk : KMonoBehaviour, ISaveLoadable
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Color color = base.GetComponent<PrimaryElement>().Element.substance.colour;
@@ -16,12 +16,12 @@ public class SubstanceChunk : KMonoBehaviour, ISaveLoadable
 		base.GetComponent<KBatchedAnimController>().SetSymbolTint(SubstanceChunk.symbolToTint, color);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("action_deconstruct", UI.USERMENUACTIONS.RELEASEELEMENT.NAME, new System.Action(this.OnRelease), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.RELEASEELEMENT.TOOLTIP, true), 1f);
 	}
 
-	private void OnRelease()
+		private void OnRelease()
 	{
 		int gameCell = Grid.PosToCell(base.transform.GetPosition());
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
@@ -32,5 +32,5 @@ public class SubstanceChunk : KMonoBehaviour, ISaveLoadable
 		base.gameObject.DeleteObject();
 	}
 
-	private static readonly KAnimHashedString symbolToTint = new KAnimHashedString("substance_tinter");
+		private static readonly KAnimHashedString symbolToTint = new KAnimHashedString("substance_tinter");
 }

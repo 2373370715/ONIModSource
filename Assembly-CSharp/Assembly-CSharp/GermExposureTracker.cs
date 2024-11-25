@@ -8,23 +8,23 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/GermExposureTracker")]
 public class GermExposureTracker : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		global::Debug.Assert(GermExposureTracker.Instance == null);
 		GermExposureTracker.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.rng = new SeededRandom(GameClock.Instance.GetCycle());
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		GermExposureTracker.Instance = null;
 	}
 
-	public void AddExposure(ExposureType exposure_type, float amount)
+		public void AddExposure(ExposureType exposure_type, float amount)
 	{
 		float num;
 		this.accumulation.TryGetValue(exposure_type.germ_id, out num);
@@ -70,19 +70,19 @@ public class GermExposureTracker : KMonoBehaviour
 		this.exposure_candidates.Clear();
 	}
 
-	public static GermExposureTracker Instance;
+		public static GermExposureTracker Instance;
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<HashedString, float> accumulation = new Dictionary<HashedString, float>();
 
-	private SeededRandom rng;
+		private SeededRandom rng;
 
-	private List<GermExposureTracker.WeightedExposure> exposure_candidates = new List<GermExposureTracker.WeightedExposure>();
+		private List<GermExposureTracker.WeightedExposure> exposure_candidates = new List<GermExposureTracker.WeightedExposure>();
 
-	private class WeightedExposure : IWeighted
+		private class WeightedExposure : IWeighted
 	{
-						public float weight { get; set; }
+								public float weight { get; set; }
 
-		public GermExposureMonitor.Instance monitor;
+				public GermExposureMonitor.Instance monitor;
 	}
 }

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class ColonyDestinationSelectScreen : NewGameFlowScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.backButton.onClick += this.BackClicked;
@@ -29,7 +29,7 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		this.random = new KRandom();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.RefreshCloudSavePref();
@@ -61,7 +61,7 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		this.coordinate.text = CustomGameSettings.Instance.GetSettingsCoordinate();
 	}
 
-	private void ResizeLayout()
+		private void ResizeLayout()
 	{
 		Vector2 sizeDelta = this.destinationProperties.clusterDetailsButton.rectTransform().sizeDelta;
 		this.destinationProperties.clusterDetailsButton.rectTransform().sizeDelta = new Vector2(sizeDelta.x, (float)(DlcManager.FeatureClusterSpaceEnabled() ? 164 : 76));
@@ -80,7 +80,7 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		this.gameSettingsScrollPanel.rectTransform().sizeDelta = new Vector2(sizeDelta2.x, num);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		CustomGameSettings.Instance.OnQualitySettingChanged -= this.QualitySettingChanged;
 		CustomGameSettings.Instance.OnStorySettingChanged -= this.QualitySettingChanged;
@@ -91,7 +91,7 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		base.OnCleanUp();
 	}
 
-	private void RefreshCloudLocalIcon()
+		private void RefreshCloudLocalIcon()
 	{
 		if (this.locationIcons == null)
 		{
@@ -133,7 +133,7 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		}
 	}
 
-	private void RefreshCloudSavePref()
+		private void RefreshCloudSavePref()
 	{
 		if (!SaveLoader.GetCloudSavesAvailable())
 		{
@@ -143,30 +143,30 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		CustomGameSettings.Instance.SetQualitySetting(CustomGameSettingConfigs.SaveToCloud, cloudSavesDefaultPref);
 	}
 
-	private void BackClicked()
+		private void BackClicked()
 	{
 		this.newGameSettingsPanel.Cancel();
 		base.NavigateBackward();
 	}
 
-	private void CustomizeClicked()
+		private void CustomizeClicked()
 	{
 		this.newGameSettingsPanel.Refresh();
 		this.customSettings.SetActive(true);
 	}
 
-	private void CustomizeClose()
+		private void CustomizeClose()
 	{
 		this.customSettings.SetActive(false);
 	}
 
-	private void LaunchClicked()
+		private void LaunchClicked()
 	{
 		CustomGameSettings.Instance.RemoveInvalidMixingSettings();
 		base.NavigateForward();
 	}
 
-	private void RefreshMenuTabs()
+		private void RefreshMenuTabs()
 	{
 		for (int i = 0; i < this.menuTabs.Length; i++)
 		{
@@ -205,7 +205,7 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		this.destinationDetailsHeader.SetAsFirstSibling();
 	}
 
-	private void ShuffleClicked()
+		private void ShuffleClicked()
 	{
 		ClusterLayout currentClusterLayout = CustomGameSettings.Instance.GetCurrentClusterLayout();
 		int num = this.random.Next();
@@ -216,12 +216,12 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		this.newGameSettingsPanel.SetSetting(CustomGameSettingConfigs.WorldgenSeed, num.ToString(), true);
 	}
 
-	private void StoryTraitShuffleClicked()
+		private void StoryTraitShuffleClicked()
 	{
 		this.storyContentPanel.SelectRandomStories(5, 5, false);
 	}
 
-	private void CoordinateChanged(string text)
+		private void CoordinateChanged(string text)
 	{
 		string[] array = CustomGameSettings.ParseSettingCoordinate(text);
 		if (array.Length < 4 || array.Length > 6)
@@ -254,19 +254,19 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		this.newGameSettingsPanel.ConsumeMixingSettingsCode(code2);
 	}
 
-	private void CoordinateEditStarted()
+		private void CoordinateEditStarted()
 	{
 		this.isEditingCoordinate = true;
 	}
 
-	private void CoordinateEditFinished(string text)
+		private void CoordinateEditFinished(string text)
 	{
 		this.CoordinateChanged(text);
 		this.isEditingCoordinate = false;
 		this.coordinate.text = CustomGameSettings.Instance.GetSettingsCoordinate();
 	}
 
-	private void QualitySettingChanged(SettingConfig config, SettingLevel level)
+		private void QualitySettingChanged(SettingConfig config, SettingLevel level)
 	{
 		if (config == CustomGameSettingConfigs.SaveToCloud)
 		{
@@ -282,7 +282,7 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		}
 	}
 
-	public void RefreshRowsAndDescriptions()
+		public void RefreshRowsAndDescriptions()
 	{
 		string setting = this.newGameSettingsPanel.GetSetting(CustomGameSettingConfigs.ClusterLayout);
 		int seed;
@@ -334,19 +334,19 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		this.RefreshStoryLabel();
 	}
 
-	public void RefreshStoryLabel()
+		public void RefreshStoryLabel()
 	{
 		this.storyTraitsDestinationDetailsLabel.SetText(this.storyContentPanel.GetTraitsString(false));
 		this.storyTraitsDestinationDetailsLabel.GetComponent<ToolTip>().SetSimpleTooltip(this.storyContentPanel.GetTraitsString(true));
 	}
 
-	private void OnAsteroidClicked(ColonyDestinationAsteroidBeltData cluster)
+		private void OnAsteroidClicked(ColonyDestinationAsteroidBeltData cluster)
 	{
 		this.newGameSettingsPanel.SetSetting(CustomGameSettingConfigs.ClusterLayout, cluster.beltPath, true);
 		this.ShuffleClicked();
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.isEditingCoordinate)
 		{
@@ -367,106 +367,106 @@ public class ColonyDestinationSelectScreen : NewGameFlowScreen
 		base.OnKeyDown(e);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject destinationMap;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject customSettings;
 
-	[Header("Menu")]
+		[Header("Menu")]
 	[SerializeField]
 	private MultiToggle[] menuTabs;
 
-	private int selectedMenuTabIdx = 1;
+		private int selectedMenuTabIdx = 1;
 
-	[Header("Buttons")]
+		[Header("Buttons")]
 	[SerializeField]
 	private KButton backButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton customizeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton launchButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton shuffleButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton storyTraitShuffleButton;
 
-	[Header("Scroll Panels")]
+		[Header("Scroll Panels")]
 	[SerializeField]
 	private RectTransform worldsScrollPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform storyScrollPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform mixingScrollPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform gameSettingsScrollPanel;
 
-	[Header("Panels")]
+		[Header("Panels")]
 	[SerializeField]
 	private RectTransform destinationDetailsHeader;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform destinationInfoPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform storyInfoPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform mixingSettingsPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform gameSettingsPanel;
 
-	[Header("References")]
+		[Header("References")]
 	[SerializeField]
 	private RectTransform destinationDetailsParent_Asteroid;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform destinationDetailsParent_Story;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText storyTraitsDestinationDetailsLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private HierarchyReferences locationIcons;
 
-	[SerializeField]
+		[SerializeField]
 	private KInputTextField coordinate;
 
-	[SerializeField]
+		[SerializeField]
 	private StoryContentPanel storyContentPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private AsteroidDescriptorPanel destinationProperties;
 
-	[SerializeField]
+		[SerializeField]
 	private AsteroidDescriptorPanel selectedLocationProperties;
 
-	private const int DESTINATION_HEADER_BUTTON_HEIGHT_CLUSTER = 164;
+		private const int DESTINATION_HEADER_BUTTON_HEIGHT_CLUSTER = 164;
 
-	private const int DESTINATION_HEADER_BUTTON_HEIGHT_BASE = 76;
+		private const int DESTINATION_HEADER_BUTTON_HEIGHT_BASE = 76;
 
-	private const int WORLDS_SCROLL_PANEL_HEIGHT_CLUSTER = 436;
+		private const int WORLDS_SCROLL_PANEL_HEIGHT_CLUSTER = 436;
 
-	private const int WORLDS_SCROLL_PANEL_HEIGHT_BASE = 524;
+		private const int WORLDS_SCROLL_PANEL_HEIGHT_BASE = 524;
 
-	[SerializeField]
+		[SerializeField]
 	private NewGameSettingsPanel newGameSettingsPanel;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private DestinationSelectPanel destinationMapPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private MixingContentPanel mixingPanel;
 
-	private KRandom random;
+		private KRandom random;
 
-	private bool isEditingCoordinate;
+		private bool isEditingCoordinate;
 }

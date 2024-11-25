@@ -6,18 +6,18 @@ using UnityEngine.UI;
 
 public class LockerMenuScreen : KModalScreen
 {
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		LockerMenuScreen.Instance = this;
 		this.Show(false);
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 40f;
 	}
 
-	public void ShowInventoryScreen()
+		public void ShowInventoryScreen()
 	{
 		if (!base.isActiveAndEnabled)
 		{
@@ -27,7 +27,7 @@ public class LockerMenuScreen : KModalScreen
 		MusicManager.instance.SetSongParameter("Music_SupplyCloset", "SupplyClosetView", "inventory", true);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		MultiToggle multiToggle = this.buttonInventory;
@@ -57,7 +57,7 @@ public class LockerMenuScreen : KModalScreen
 		this.descriptionArea.text = UI.LOCKER_MENU.DEFAULT_DESCRIPTION;
 	}
 
-	private void ConfigureHoverForButton(MultiToggle toggle, string desc, bool useHoverColor = true)
+		private void ConfigureHoverForButton(MultiToggle toggle, string desc, bool useHoverColor = true)
 	{
 		LockerMenuScreen.<>c__DisplayClass17_0 CS$<>8__locals1 = new LockerMenuScreen.<>c__DisplayClass17_0();
 		CS$<>8__locals1.useHoverColor = useHoverColor;
@@ -70,7 +70,7 @@ public class LockerMenuScreen : KModalScreen
 		toggle.onExit = (System.Action)Delegate.Combine(toggle.onExit, CS$<>8__locals1.<ConfigureHoverForButton>g__OnHoverExitFn|1(toggle));
 	}
 
-	public override void Show(bool show = true)
+		public override void Show(bool show = true)
 	{
 		base.Show(show);
 		if (show)
@@ -92,22 +92,22 @@ public class LockerMenuScreen : KModalScreen
 		this.RefreshClaimItemsButton();
 	}
 
-	private void TriggerShouldRefreshClaimItems()
+		private void TriggerShouldRefreshClaimItems()
 	{
 		this.refreshRequested = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		base.OnForcedCleanUp();
 	}
 
-	private void RefreshClaimItemsButton()
+		private void RefreshClaimItemsButton()
 	{
 		this.noConnectionIcon.SetActive(!ThreadedHttps<KleiAccount>.Instance.HasValidTicket());
 		this.refreshRequested = false;
@@ -129,7 +129,7 @@ public class LockerMenuScreen : KModalScreen
 		this.ConfigureHoverForButton(this.buttonClaimItems, hasClaimable ? UI.LOCKER_MENU.BUTTON_CLAIM_DESCRIPTION : UI.LOCKER_MENU.BUTTON_CLAIM_NONE_DESCRIPTION, hasClaimable);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape) || e.TryConsume(global::Action.MouseRight))
 		{
@@ -144,7 +144,7 @@ public class LockerMenuScreen : KModalScreen
 		base.OnKeyDown(e);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.refreshRequested)
 		{
@@ -152,38 +152,38 @@ public class LockerMenuScreen : KModalScreen
 		}
 	}
 
-	public static LockerMenuScreen Instance;
+		public static LockerMenuScreen Instance;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle buttonInventory;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle buttonDuplicants;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle buttonOutfitBroswer;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle buttonClaimItems;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText descriptionArea;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject dropsAvailableNotification;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject noConnectionIcon;
 
-	private const string LOCKER_MENU_MUSIC = "Music_SupplyCloset";
+		private const string LOCKER_MENU_MUSIC = "Music_SupplyCloset";
 
-	private const string MUSIC_PARAMETER = "SupplyClosetView";
+		private const string MUSIC_PARAMETER = "SupplyClosetView";
 
-	[SerializeField]
+		[SerializeField]
 	private Material desatUIMaterial;
 
-	private bool refreshRequested;
+		private bool refreshRequested;
 }

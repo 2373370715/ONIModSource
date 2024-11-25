@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/TreeBud")]
 public class TreeBud : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		PlantBranch.Instance smi = base.gameObject.GetSMI<PlantBranch.Instance>();
@@ -15,13 +15,13 @@ public class TreeBud : KMonoBehaviour
 		}
 	}
 
-	public BuddingTrunk GetAndForgetOldTrunk()
+		public BuddingTrunk GetAndForgetOldTrunk()
 	{
 		BuddingTrunk result = (this.buddingTrunk == null) ? null : this.buddingTrunk.Get();
 		this.buddingTrunk = null;
 		return result;
 	}
 
-	[Serialize]
+		[Serialize]
 	public Ref<BuddingTrunk> buddingTrunk;
 }

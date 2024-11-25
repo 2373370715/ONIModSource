@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class LockerNavigator : KModalScreen
 {
-		public GameObject ContentSlot
+			public GameObject ContentSlot
 	{
 		get
 		{
@@ -14,19 +14,19 @@ public class LockerNavigator : KModalScreen
 		}
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		LockerNavigator.Instance = this;
 		this.Show(false);
 		this.backButton.onClick += this.OnClickBack;
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 41f;
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape) || e.TryConsume(global::Action.MouseRight))
 		{
@@ -35,7 +35,7 @@ public class LockerNavigator : KModalScreen
 		base.OnKeyDown(e);
 	}
 
-	public override void Show(bool show = true)
+		public override void Show(bool show = true)
 	{
 		base.Show(show);
 		if (!show)
@@ -45,12 +45,12 @@ public class LockerNavigator : KModalScreen
 		StreamedTextures.SetBundlesLoaded(show);
 	}
 
-	private void OnClickBack()
+		private void OnClickBack()
 	{
 		this.PopScreen();
 	}
 
-	public void PushScreen(GameObject screen, System.Action onClose = null)
+		public void PushScreen(GameObject screen, System.Action onClose = null)
 	{
 		if (screen == null)
 		{
@@ -82,7 +82,7 @@ public class LockerNavigator : KModalScreen
 		this.RefreshButtons();
 	}
 
-	public bool PopScreen()
+		public bool PopScreen()
 	{
 		while (this.preventScreenPop.Count > 0)
 		{
@@ -113,7 +113,7 @@ public class LockerNavigator : KModalScreen
 		return false;
 	}
 
-	public void PopAllScreens()
+		public void PopAllScreens()
 	{
 		if (this.navigationHistory.Count == 0 && this.preventScreenPop.Count == 0)
 		{
@@ -131,12 +131,12 @@ public class LockerNavigator : KModalScreen
 		}
 	}
 
-	private void RefreshButtons()
+		private void RefreshButtons()
 	{
 		this.backButton.isInteractable = true;
 	}
 
-	public void ShowDialogPopup(Action<InfoDialogScreen> configureDialogFn)
+		public void ShowDialogPopup(Action<InfoDialogScreen> configureDialogFn)
 	{
 		InfoDialogScreen dialog = Util.KInstantiateUI<InfoDialogScreen>(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, this.ContentSlot, false);
 		configureDialogFn(dialog);
@@ -156,7 +156,7 @@ public class LockerNavigator : KModalScreen
 		}));
 	}
 
-	public static void MakeDataCollectionWarningPopup(GameObject fullscreenParent)
+		public static void MakeDataCollectionWarningPopup(GameObject fullscreenParent)
 	{
 		Action<InfoDialogScreen> <>9__2;
 		LockerNavigator.Instance.ShowDialogPopup(delegate(InfoDialogScreen dialog)
@@ -181,54 +181,54 @@ public class LockerNavigator : KModalScreen
 		});
 	}
 
-	public static LockerNavigator Instance;
+		public static LockerNavigator Instance;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform slot;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton backButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	public GameObject kleiInventoryScreen;
 
-	[SerializeField]
+		[SerializeField]
 	public GameObject duplicantCatalogueScreen;
 
-	[SerializeField]
+		[SerializeField]
 	public GameObject outfitDesignerScreen;
 
-	[SerializeField]
+		[SerializeField]
 	public GameObject outfitBrowserScreen;
 
-	[SerializeField]
+		[SerializeField]
 	public GameObject joyResponseDesignerScreen;
 
-	private const string LOCKER_MENU_MUSIC = "Music_SupplyCloset";
+		private const string LOCKER_MENU_MUSIC = "Music_SupplyCloset";
 
-	private const string MUSIC_PARAMETER = "SupplyClosetView";
+		private const string MUSIC_PARAMETER = "SupplyClosetView";
 
-	private List<LockerNavigator.HistoryEntry> navigationHistory = new List<LockerNavigator.HistoryEntry>();
+		private List<LockerNavigator.HistoryEntry> navigationHistory = new List<LockerNavigator.HistoryEntry>();
 
-	private Dictionary<string, GameObject> screens = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> screens = new Dictionary<string, GameObject>();
 
-	private static bool didDisplayDataCollectionWarningPopupOnce;
+		private static bool didDisplayDataCollectionWarningPopupOnce;
 
-	public List<Func<bool>> preventScreenPop = new List<Func<bool>>();
+		public List<Func<bool>> preventScreenPop = new List<Func<bool>>();
 
-	public readonly struct HistoryEntry
+		public readonly struct HistoryEntry
 	{
-		public HistoryEntry(GameObject screen, System.Action onClose = null)
+				public HistoryEntry(GameObject screen, System.Action onClose = null)
 		{
 			this.screen = screen;
 			this.onClose = onClose;
 		}
 
-		public readonly GameObject screen;
+				public readonly GameObject screen;
 
-		public readonly Option<System.Action> onClose;
+				public readonly Option<System.Action> onClose;
 	}
 }

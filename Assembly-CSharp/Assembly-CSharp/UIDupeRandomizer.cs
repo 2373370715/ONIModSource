@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UIDupeRandomizer : MonoBehaviour
 {
-	protected virtual void Start()
+		protected virtual void Start()
 	{
 		this.slots = Db.Get().AccessorySlots;
 		for (int i = 0; i < this.anims.Length; i++)
@@ -15,7 +15,7 @@ public class UIDupeRandomizer : MonoBehaviour
 		}
 	}
 
-	protected void GetNewBody(int minion_idx)
+		protected void GetNewBody(int minion_idx)
 	{
 		Personality random = Db.Get().Personalities.GetRandom(true, false);
 		foreach (KBatchedAnimController dupe in this.anims[minion_idx].minions)
@@ -24,7 +24,7 @@ public class UIDupeRandomizer : MonoBehaviour
 		}
 	}
 
-	private void Apply(KBatchedAnimController dupe, Personality personality)
+		private void Apply(KBatchedAnimController dupe, Personality personality)
 	{
 		KCompBuilder.BodyData bodyData = MinionStartingStats.CreateBodyData(personality);
 		SymbolOverrideController component = dupe.GetComponent<SymbolOverrideController>();
@@ -70,7 +70,7 @@ public class UIDupeRandomizer : MonoBehaviour
 		dupe.SetSymbolVisiblity(Db.Get().AccessorySlots.Necklace.targetSymbolId, false);
 	}
 
-	public static KAnimHashedString AddAccessory(KBatchedAnimController minion, Accessory accessory)
+		public static KAnimHashedString AddAccessory(KBatchedAnimController minion, Accessory accessory)
 	{
 		if (accessory != null)
 		{
@@ -84,13 +84,13 @@ public class UIDupeRandomizer : MonoBehaviour
 		return HashedString.Invalid;
 	}
 
-	public KAnimHashedString AddRandomAccessory(KBatchedAnimController minion, List<Accessory> choices)
+		public KAnimHashedString AddRandomAccessory(KBatchedAnimController minion, List<Accessory> choices)
 	{
 		Accessory accessory = choices[UnityEngine.Random.Range(1, choices.Count)];
 		return UIDupeRandomizer.AddAccessory(minion, accessory);
 	}
 
-	public void Randomize()
+		public void Randomize()
 	{
 		if (this.slots == null)
 		{
@@ -102,33 +102,33 @@ public class UIDupeRandomizer : MonoBehaviour
 		}
 	}
 
-	protected virtual void Update()
+		protected virtual void Update()
 	{
 	}
 
-	[Tooltip("Enable this to allow for a chance for skill hats to appear")]
+		[Tooltip("Enable this to allow for a chance for skill hats to appear")]
 	public bool applyHat = true;
 
-	[Tooltip("Enable this to allow for a chance for suit helmets to appear (ie. atmosuit and leadsuit)")]
+		[Tooltip("Enable this to allow for a chance for suit helmets to appear (ie. atmosuit and leadsuit)")]
 	public bool applySuit = true;
 
-	public UIDupeRandomizer.AnimChoice[] anims;
+		public UIDupeRandomizer.AnimChoice[] anims;
 
-	private AccessorySlots slots;
+		private AccessorySlots slots;
 
-	[Serializable]
+		[Serializable]
 	public struct AnimChoice
 	{
-		public string anim_name;
+				public string anim_name;
 
-		public List<KBatchedAnimController> minions;
+				public List<KBatchedAnimController> minions;
 
-		public float minSecondsBetweenAction;
+				public float minSecondsBetweenAction;
 
-		public float maxSecondsBetweenAction;
+				public float maxSecondsBetweenAction;
 
-		public float lastWaitTime;
+				public float lastWaitTime;
 
-		public KAnimFile curBody;
+				public KAnimFile curBody;
 	}
 }

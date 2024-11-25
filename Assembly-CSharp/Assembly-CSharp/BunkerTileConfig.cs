@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BunkerTileConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "BunkerTile";
 		int width = 1;
@@ -40,7 +40,7 @@ public class BunkerTileConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -52,7 +52,7 @@ public class BunkerTileConfig : IBuildingConfig
 		go.AddOrGet<BuildingHP>().destroyOnDamaged = true;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
 		KPrefabID component = go.GetComponent<KPrefabID>();
@@ -60,13 +60,13 @@ public class BunkerTileConfig : IBuildingConfig
 		component.AddTag(GameTags.FloorTiles, false);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.AddOrGet<KAnimGridTileVisualizer>();
 	}
 
-	public const string ID = "BunkerTile";
+		public const string ID = "BunkerTile";
 
-	public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_bunker_tops");
+		public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_bunker_tops");
 }

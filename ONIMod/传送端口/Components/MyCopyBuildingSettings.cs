@@ -1,6 +1,6 @@
 ﻿using STRINGS;
 
-
+namespace RsTransferPort;
 
 public class MyCopyBuildingSettings : CopyBuildingSettings {
     private static readonly EventSystem.IntraObjectHandler<MyCopyBuildingSettings> OnRefreshUserMenuDelegate2

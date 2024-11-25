@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/UnstableGroundManager")]
 public class UnstableGroundManager : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.fallingTileOffset = new Vector3(0.5f, 0f, 0f);
 		UnstableGroundManager.EffectInfo[] array = this.effects;
@@ -29,7 +29,7 @@ public class UnstableGroundManager : KMonoBehaviour
 		}
 	}
 
-	private void ReleaseGO(GameObject go)
+		private void ReleaseGO(GameObject go)
 	{
 		if (GameComps.Gravities.Has(go))
 		{
@@ -38,7 +38,7 @@ public class UnstableGroundManager : KMonoBehaviour
 		go.SetActive(false);
 	}
 
-	private GameObject InstantiateObj(GameObject prefab)
+		private GameObject InstantiateObj(GameObject prefab)
 	{
 		GameObject gameObject = GameUtil.KInstantiate(prefab, Grid.SceneLayer.BuildingBack, null, 0);
 		gameObject.SetActive(false);
@@ -46,7 +46,7 @@ public class UnstableGroundManager : KMonoBehaviour
 		return gameObject;
 	}
 
-	public void Spawn(int cell, Element element, float mass, float temperature, byte disease_idx, int disease_count)
+		public void Spawn(int cell, Element element, float mass, float temperature, byte disease_idx, int disease_count)
 	{
 		Vector3 vector = Grid.CellToPosCCC(cell, Grid.SceneLayer.TileMain);
 		if (float.IsNaN(temperature) || float.IsInfinity(temperature))
@@ -68,7 +68,7 @@ public class UnstableGroundManager : KMonoBehaviour
 		}
 	}
 
-	private void SpawnOld(Vector3 pos, Element element, float mass, float temperature, byte disease_idx, int disease_count)
+		private void SpawnOld(Vector3 pos, Element element, float mass, float temperature, byte disease_idx, int disease_count)
 	{
 		if (!element.IsUnstable)
 		{
@@ -81,7 +81,7 @@ public class UnstableGroundManager : KMonoBehaviour
 		kbatchedAnimController.gameObject.name = "SpawnOld " + element.name;
 	}
 
-	private void SpawnPuff(Vector3 pos, Element element, float mass, float temperature, byte disease_idx, int disease_count)
+		private void SpawnPuff(Vector3 pos, Element element, float mass, float temperature, byte disease_idx, int disease_count)
 	{
 		if (!element.IsUnstable)
 		{
@@ -93,7 +93,7 @@ public class UnstableGroundManager : KMonoBehaviour
 		kbatchedAnimController.transform.SetPosition(kbatchedAnimController.transform.GetPosition() + this.spawnPuffOffset);
 	}
 
-	private KBatchedAnimController Spawn(Vector3 pos, Element element, float mass, float temperature, byte disease_idx, int disease_count)
+		private KBatchedAnimController Spawn(Vector3 pos, Element element, float mass, float temperature, byte disease_idx, int disease_count)
 	{
 		UnstableGroundManager.EffectRuntimeInfo effectRuntimeInfo;
 		if (!this.runtimeInfo.TryGetValue(element.id, out effectRuntimeInfo))
@@ -124,7 +124,7 @@ public class UnstableGroundManager : KMonoBehaviour
 		return component2;
 	}
 
-	public List<int> GetCellsContainingFallingAbove(Vector2I cellXY)
+		public List<int> GetCellsContainingFallingAbove(Vector2I cellXY)
 	{
 		List<int> list = new List<int>();
 		for (int i = 0; i < this.fallingObjects.Count; i++)
@@ -148,12 +148,12 @@ public class UnstableGroundManager : KMonoBehaviour
 		return list;
 	}
 
-	private void RemoveFromPending(int cell)
+		private void RemoveFromPending(int cell)
 	{
 		this.pendingCells.Remove(cell);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (App.isLoading)
 		{
@@ -213,7 +213,7 @@ public class UnstableGroundManager : KMonoBehaviour
 		}
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerializing()
 	{
 		if (this.fallingObjects.Count > 0)
@@ -237,13 +237,13 @@ public class UnstableGroundManager : KMonoBehaviour
 		}
 	}
 
-	[OnSerialized]
+		[OnSerialized]
 	private void OnSerialized()
 	{
 		this.serializedInfo = null;
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (this.serializedInfo == null)
@@ -266,54 +266,54 @@ public class UnstableGroundManager : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Vector3 spawnPuffOffset;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector3 landEffectOffset;
 
-	private Vector3 fallingTileOffset;
+		private Vector3 fallingTileOffset;
 
-	[SerializeField]
+		[SerializeField]
 	private UnstableGroundManager.EffectInfo[] effects;
 
-	private List<GameObject> fallingObjects = new List<GameObject>();
+		private List<GameObject> fallingObjects = new List<GameObject>();
 
-	private List<int> pendingCells = new List<int>();
+		private List<int> pendingCells = new List<int>();
 
-	private Dictionary<SimHashes, UnstableGroundManager.EffectRuntimeInfo> runtimeInfo = new Dictionary<SimHashes, UnstableGroundManager.EffectRuntimeInfo>();
+		private Dictionary<SimHashes, UnstableGroundManager.EffectRuntimeInfo> runtimeInfo = new Dictionary<SimHashes, UnstableGroundManager.EffectRuntimeInfo>();
 
-	[Serialize]
+		[Serialize]
 	private List<UnstableGroundManager.SerializedInfo> serializedInfo;
 
-	[Serializable]
+		[Serializable]
 	private struct EffectInfo
 	{
-		[HashedEnum]
+				[HashedEnum]
 		public SimHashes element;
 
-		public GameObject prefab;
+				public GameObject prefab;
 	}
 
-	private struct EffectRuntimeInfo
+		private struct EffectRuntimeInfo
 	{
-		public GameObjectPool pool;
+				public GameObjectPool pool;
 
-		public Action<GameObject> releaseFunc;
+				public Action<GameObject> releaseFunc;
 	}
 
-	private struct SerializedInfo
+		private struct SerializedInfo
 	{
-		public Vector3 position;
+				public Vector3 position;
 
-		public SimHashes element;
+				public SimHashes element;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public int diseaseID;
+				public int diseaseID;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 }

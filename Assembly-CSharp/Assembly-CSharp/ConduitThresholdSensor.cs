@@ -5,15 +5,15 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public abstract class ConduitThresholdSensor : ConduitSensor
 {
-		public abstract float CurrentValue { get; }
+			public abstract float CurrentValue { get; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<ConduitThresholdSensor>(-905833192, ConduitThresholdSensor.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		ConduitThresholdSensor component = ((GameObject)data).GetComponent<ConduitThresholdSensor>();
 		if (component != null)
@@ -23,7 +23,7 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 		}
 	}
 
-	protected override void ConduitUpdate(float dt)
+		protected override void ConduitUpdate(float dt)
 	{
 		if (this.GetContainedMass() <= 0f && !this.dirty)
 		{
@@ -45,7 +45,7 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 		}
 	}
 
-	private float GetContainedMass()
+		private float GetContainedMass()
 	{
 		int cell = Grid.PosToCell(this);
 		if (this.conduitType == ConduitType.Liquid || this.conduitType == ConduitType.Gas)
@@ -62,7 +62,7 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 		return 0f;
 	}
 
-			public float Threshold
+				public float Threshold
 	{
 		get
 		{
@@ -75,7 +75,7 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 		}
 	}
 
-			public bool ActivateAboveThreshold
+				public bool ActivateAboveThreshold
 	{
 		get
 		{
@@ -88,21 +88,21 @@ public abstract class ConduitThresholdSensor : ConduitSensor
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	protected float threshold;
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	protected bool activateAboveThreshold = true;
 
-	[Serialize]
+		[Serialize]
 	private bool dirty = true;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<ConduitThresholdSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ConduitThresholdSensor>(delegate(ConduitThresholdSensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ConduitThresholdSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ConduitThresholdSensor>(delegate(ConduitThresholdSensor component, object data)
 	{
 		component.OnCopySettings(data);
 	});

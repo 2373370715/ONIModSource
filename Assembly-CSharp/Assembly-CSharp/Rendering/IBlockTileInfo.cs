@@ -2,8 +2,8 @@
 
 namespace Rendering
 {
-	public interface IBlockTileInfo
+		public interface IBlockTileInfo
 	{
-		int GetBlockTileConnectorID();
+				int GetBlockTileConnectorID();
 	}
 }

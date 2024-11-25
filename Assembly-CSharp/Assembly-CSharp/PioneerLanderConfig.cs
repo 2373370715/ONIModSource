@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PioneerLanderConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PioneerLander";
 		string name = STRINGS.BUILDINGS.PREFABS.PIONEERLANDER.NAME;
@@ -47,7 +47,7 @@ public class PioneerLanderConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		OccupyArea component = inst.GetComponent<OccupyArea>();
 		component.ApplyToCells = false;
@@ -57,13 +57,13 @@ public class PioneerLanderConfig : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "PioneerLander";
+		public const string ID = "PioneerLander";
 
-	public const string PREVIEW_ID = "PioneerLander_Preview";
+		public const string PREVIEW_ID = "PioneerLander_Preview";
 
-	public const float MASS = 400f;
+		public const float MASS = 400f;
 }

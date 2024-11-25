@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ResearchCenterConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ResearchCenter";
 		int width = 2;
@@ -28,7 +28,7 @@ public class ResearchCenterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.ScienceBuilding, false);
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -59,19 +59,19 @@ public class ResearchCenterConfig : IBuildingConfig
 		go.AddOrGetDef<PoweredController.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const float BASE_SECONDS_PER_POINT = 45f;
+		public const float BASE_SECONDS_PER_POINT = 45f;
 
-	public const float MASS_PER_POINT = 50f;
+		public const float MASS_PER_POINT = 50f;
 
-	public const float BASE_MASS_PER_SECOND = 1.1111112f;
+		public const float BASE_MASS_PER_SECOND = 1.1111112f;
 
-	public static readonly Tag INPUT_MATERIAL = GameTags.Dirt;
+		public static readonly Tag INPUT_MATERIAL = GameTags.Dirt;
 
-	public const float CAPACITY = 750f;
+		public const float CAPACITY = 750f;
 
-	public const string ID = "ResearchCenter";
+		public const string ID = "ResearchCenter";
 }

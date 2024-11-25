@@ -4,11 +4,11 @@ using Klei.AI;
 
 public class RadiationTracker : WorldTracker
 {
-	public RadiationTracker(int worldID) : base(worldID)
+		public RadiationTracker(int worldID) : base(worldID)
 	{
 	}
 
-	public override void UpdateData()
+		public override void UpdateData()
 	{
 		float num = 0f;
 		List<MinionIdentity> worldItems = Components.MinionIdentities.GetWorldItems(base.WorldID, false);
@@ -25,7 +25,7 @@ public class RadiationTracker : WorldTracker
 		base.AddPoint(value);
 	}
 
-	public override string FormatValueString(float value)
+		public override string FormatValueString(float value)
 	{
 		return GameUtil.GetFormattedRads(value, GameUtil.TimeSlice.None);
 	}

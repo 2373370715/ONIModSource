@@ -2,9 +2,7 @@
 using UnityEngine;
 
 [Serializable]
-public struct GraphedBarFormatting
-{
-	public Color[] colors;
-
-	public int width;
+public struct GraphedBarFormatting {
+    public Color[] colors;
+    public int     width;
 }

@@ -2,23 +2,23 @@
 
 namespace Klei
 {
-	public class SimSaveFileStructure
+		public class SimSaveFileStructure
 	{
-		public SimSaveFileStructure()
+				public SimSaveFileStructure()
 		{
 			this.worldDetail = new WorldDetailSave();
 		}
 
-		public int WidthInCells;
+				public int WidthInCells;
 
-		public int HeightInCells;
+				public int HeightInCells;
 
-		public int x;
+				public int x;
 
-		public int y;
+				public int y;
 
-		public byte[] Sim;
+				public byte[] Sim;
 
-		public WorldDetailSave worldDetail;
+				public WorldDetailSave worldDetail;
 	}
 }

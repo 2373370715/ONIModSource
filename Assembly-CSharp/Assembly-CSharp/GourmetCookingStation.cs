@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GourmetCookingStation : ComplexFabricator, IGameObjectEffectDescriptor
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.keepAdditionalTag = this.fuelTag;
@@ -14,7 +14,7 @@ public class GourmetCookingStation : ComplexFabricator, IGameObjectEffectDescrip
 		this.fetchChoreTypeIdHash = Db.Get().ChoreTypes.CookFetch.IdHash;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.workable.requiredSkillPerk = Db.Get().SkillPerks.CanElectricGrill.Id;
@@ -28,7 +28,7 @@ public class GourmetCookingStation : ComplexFabricator, IGameObjectEffectDescrip
 		this.workable.SkillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
 		this.workable.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 		ComplexFabricatorWorkable workable = this.workable;
-		workable.OnWorkTickActions = (Action<Worker, float>)Delegate.Combine(workable.OnWorkTickActions, new Action<Worker, float>(delegate(Worker worker, float dt)
+		workable.OnWorkTickActions = (Action<WorkerBase, float>)Delegate.Combine(workable.OnWorkTickActions, new Action<WorkerBase, float>(delegate(WorkerBase worker, float dt)
 		{
 			global::Debug.Assert(worker != null, "How did we get a null worker?");
 			if (this.diseaseCountKillRate > 0)
@@ -43,12 +43,12 @@ public class GourmetCookingStation : ComplexFabricator, IGameObjectEffectDescrip
 		base.GetComponent<ComplexFabricator>().workingStatusItem = Db.Get().BuildingStatusItems.ComplexFabricatorCooking;
 	}
 
-	public float GetAvailableFuel()
+		public float GetAvailableFuel()
 	{
 		return this.inStorage.GetAmountAvailable(this.fuelTag);
 	}
 
-	protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
+		protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
 	{
 		List<GameObject> list = base.SpawnOrderProduct(recipe);
 		foreach (GameObject gameObject in list)
@@ -60,38 +60,38 @@ public class GourmetCookingStation : ComplexFabricator, IGameObjectEffectDescrip
 		return list;
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> descriptors = base.GetDescriptors(go);
 		descriptors.Add(new Descriptor(UI.BUILDINGEFFECTS.REMOVES_DISEASE, UI.BUILDINGEFFECTS.TOOLTIPS.REMOVES_DISEASE, Descriptor.DescriptorType.Effect, false));
 		return descriptors;
 	}
 
-	private static readonly Operational.Flag gourmetCookingStationFlag = new Operational.Flag("gourmet_cooking_station", Operational.Flag.Type.Requirement);
+		private static readonly Operational.Flag gourmetCookingStationFlag = new Operational.Flag("gourmet_cooking_station", Operational.Flag.Type.Requirement);
 
-	public float GAS_CONSUMPTION_RATE;
+		public float GAS_CONSUMPTION_RATE;
 
-	public float GAS_CONVERSION_RATIO = 0.1f;
+		public float GAS_CONVERSION_RATIO = 0.1f;
 
-	public const float START_FUEL_MASS = 5f;
+		public const float START_FUEL_MASS = 5f;
 
-	public Tag fuelTag;
+		public Tag fuelTag;
 
-	[SerializeField]
+		[SerializeField]
 	private int diseaseCountKillRate = 150;
 
-	private GourmetCookingStation.StatesInstance smi;
+		private GourmetCookingStation.StatesInstance smi;
 
-	public class StatesInstance : GameStateMachine<GourmetCookingStation.States, GourmetCookingStation.StatesInstance, GourmetCookingStation, object>.GameInstance
+		public class StatesInstance : GameStateMachine<GourmetCookingStation.States, GourmetCookingStation.StatesInstance, GourmetCookingStation, object>.GameInstance
 	{
-		public StatesInstance(GourmetCookingStation smi) : base(smi)
+				public StatesInstance(GourmetCookingStation smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<GourmetCookingStation.States, GourmetCookingStation.StatesInstance, GourmetCookingStation>
+		public class States : GameStateMachine<GourmetCookingStation.States, GourmetCookingStation.StatesInstance, GourmetCookingStation>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			if (GourmetCookingStation.States.waitingForFuelStatus == null)
 			{
@@ -114,10 +114,10 @@ public class GourmetCookingStation : ComplexFabricator, IGameObjectEffectDescrip
 			}).EventTransition(GameHashes.OnStorageChange, this.waitingForFuel, (GourmetCookingStation.StatesInstance smi) => smi.master.GetAvailableFuel() <= 0f);
 		}
 
-		public static StatusItem waitingForFuelStatus;
+				public static StatusItem waitingForFuelStatus;
 
-		public GameStateMachine<GourmetCookingStation.States, GourmetCookingStation.StatesInstance, GourmetCookingStation, object>.State waitingForFuel;
+				public GameStateMachine<GourmetCookingStation.States, GourmetCookingStation.StatesInstance, GourmetCookingStation, object>.State waitingForFuel;
 
-		public GameStateMachine<GourmetCookingStation.States, GourmetCookingStation.StatesInstance, GourmetCookingStation, object>.State ready;
+				public GameStateMachine<GourmetCookingStation.States, GourmetCookingStation.StatesInstance, GourmetCookingStation, object>.State ready;
 	}
 }

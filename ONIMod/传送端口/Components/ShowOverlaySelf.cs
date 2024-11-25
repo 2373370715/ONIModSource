@@ -1,6 +1,4 @@
-﻿
-
-using RsTransferPort;
+﻿namespace RsTransferPort;
 
 public class ShowOverlaySelf : KMonoBehaviour {
     [MyCmpReq]

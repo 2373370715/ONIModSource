@@ -8,7 +8,7 @@ using UnityEngine;
 [EntityConfigOrder(1)]
 public class DivergentWormConfig : IEntityConfig
 {
-	public static GameObject CreateWorm(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreateWorm(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		GameObject prefab = EntityTemplates.ExtendEntityToWildCreature(BaseDivergentConfig.BaseDivergent(id, name, desc, 200f, anim_file, "DivergentWormBaseTrait", is_baby, 8f, null, "DivergentCropTendedWorm", 3, false), DivergentTuning.PEN_SIZE_PER_CREATURE_WORM);
 		Trait trait = Db.Get().CreateTrait("DivergentWormBaseTrait", name, name, null, false, null, true, true);
@@ -21,7 +21,7 @@ public class DivergentWormConfig : IEntityConfig
 		list.Add(new Diet.Info(new HashSet<Tag>
 		{
 			SimHashes.Sucrose.CreateTag()
-		}, SimHashes.Mud.CreateTag(), DivergentWormConfig.CALORIES_PER_KG_OF_SUCROSE, 1f, null, 0f, false, false, false));
+		}, SimHashes.Mud.CreateTag(), DivergentWormConfig.CALORIES_PER_KG_OF_SUCROSE, 1f, null, 0f, false, Diet.Info.FoodType.EatSolid, false, null));
 		GameObject gameObject = BaseDivergentConfig.SetupDiet(prefab, list, DivergentWormConfig.CALORIES_PER_KG_OF_ORE, DivergentWormConfig.MINI_POOP_SIZE_IN_KG);
 		SegmentedCreature.Def def = gameObject.AddOrGetDef<SegmentedCreature.Def>();
 		def.segmentTrackerSymbol = new HashedString("segmenttracker");
@@ -40,49 +40,49 @@ public class DivergentWormConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		return EntityTemplates.ExtendEntityToFertileCreature(DivergentWormConfig.CreateWorm("DivergentWorm", STRINGS.CREATURES.SPECIES.DIVERGENT.VARIANT_WORM.NAME, STRINGS.CREATURES.SPECIES.DIVERGENT.VARIANT_WORM.DESC, "worm_head_kanim", false), "DivergentWormEgg", STRINGS.CREATURES.SPECIES.DIVERGENT.VARIANT_WORM.EGG_NAME, STRINGS.CREATURES.SPECIES.DIVERGENT.VARIANT_WORM.DESC, "egg_worm_kanim", DivergentTuning.EGG_MASS, "DivergentWormBaby", 90f, 30f, DivergentTuning.EGG_CHANCES_WORM, this.GetDlcIds(), DivergentWormConfig.EGG_SORT_ORDER, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "DivergentWorm";
+		public const string ID = "DivergentWorm";
 
-	public const string BASE_TRAIT_ID = "DivergentWormBaseTrait";
+		public const string BASE_TRAIT_ID = "DivergentWormBaseTrait";
 
-	public const string EGG_ID = "DivergentWormEgg";
+		public const string EGG_ID = "DivergentWormEgg";
 
-	private const float LIFESPAN = 150f;
+		private const float LIFESPAN = 150f;
 
-	public const float CROP_TENDED_MULTIPLIER_EFFECT = 0.5f;
+		public const float CROP_TENDED_MULTIPLIER_EFFECT = 0.5f;
 
-	public const float CROP_TENDED_MULTIPLIER_DURATION = 600f;
+		public const float CROP_TENDED_MULTIPLIER_DURATION = 600f;
 
-	private const int NUM_SEGMENTS = 5;
+		private const int NUM_SEGMENTS = 5;
 
-	private const SimHashes EMIT_ELEMENT = SimHashes.Mud;
+		private const SimHashes EMIT_ELEMENT = SimHashes.Mud;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 50f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 50f;
 
-	private static float KG_SUCROSE_EATEN_PER_CYCLE = 30f;
+		private static float KG_SUCROSE_EATEN_PER_CYCLE = 30f;
 
-	private static float CALORIES_PER_KG_OF_ORE = DivergentTuning.STANDARD_CALORIES_PER_CYCLE / DivergentWormConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = DivergentTuning.STANDARD_CALORIES_PER_CYCLE / DivergentWormConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float CALORIES_PER_KG_OF_SUCROSE = DivergentTuning.STANDARD_CALORIES_PER_CYCLE / DivergentWormConfig.KG_SUCROSE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_SUCROSE = DivergentTuning.STANDARD_CALORIES_PER_CYCLE / DivergentWormConfig.KG_SUCROSE_EATEN_PER_CYCLE;
 
-	public static int EGG_SORT_ORDER = 0;
+		public static int EGG_SORT_ORDER = 0;
 
-	private static float MINI_POOP_SIZE_IN_KG = 4f;
+		private static float MINI_POOP_SIZE_IN_KG = 4f;
 }

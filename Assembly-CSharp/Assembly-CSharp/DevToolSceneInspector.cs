@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class DevToolSceneInspector : DevTool
 {
-	public DevToolSceneInspector()
+		public DevToolSceneInspector()
 	{
 		this.drawFlags = ImGuiWindowFlags.MenuBar;
 		this.CustomTypeViews = new Dictionary<Type, DevToolSceneInspector.ViewInfo>
@@ -29,12 +29,12 @@ public class DevToolSceneInspector : DevTool
 		};
 	}
 
-	public static void Inspect(object obj)
+		public static void Inspect(object obj)
 	{
 		DevToolManager.Instance.panels.AddOrGetDevTool<DevToolSceneInspector>().PushObject(obj);
 	}
 
-	public void PushObject(object obj)
+		public void PushObject(object obj)
 	{
 		if (obj == null)
 		{
@@ -55,7 +55,7 @@ public class DevToolSceneInspector : DevTool
 		this.StackIndex++;
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		for (int i = this.Stack.Count - 1; i >= 0; i--)
 		{
@@ -189,7 +189,7 @@ public class DevToolSceneInspector : DevTool
 		ImGui.PopID();
 	}
 
-	private bool DisplayField(string name, Type ft, ref object obj)
+		private bool DisplayField(string name, Type ft, ref object obj)
 	{
 		bool result = false;
 		if (obj == null)
@@ -266,7 +266,7 @@ public class DevToolSceneInspector : DevTool
 		return result;
 	}
 
-	private void CustomGameObjectDisplay(object obj, string filter)
+		private void CustomGameObjectDisplay(object obj, string filter)
 	{
 		GameObject gameObject = (GameObject)obj;
 		ImGui.BeginChild("ScrollRegion", new Vector2(0f, 0f), true, ImGuiWindowFlags.None);
@@ -293,7 +293,7 @@ public class DevToolSceneInspector : DevTool
 		ImGui.EndChild();
 	}
 
-	private void CustomPrefabTagView(object obj, string filter)
+		private void CustomPrefabTagView(object obj, string filter)
 	{
 		KPrefabID kprefabID = (KPrefabID)obj;
 		ImGui.BeginChild("ScrollRegion", new Vector2(0f, 0f), true, ImGuiWindowFlags.None);
@@ -312,29 +312,29 @@ public class DevToolSceneInspector : DevTool
 		ImGui.EndChild();
 	}
 
-	private List<DevToolSceneInspector.StackItem> Stack = new List<DevToolSceneInspector.StackItem>();
+		private List<DevToolSceneInspector.StackItem> Stack = new List<DevToolSceneInspector.StackItem>();
 
-	private int StackIndex = -1;
+		private int StackIndex = -1;
 
-	private Dictionary<Type, DevToolSceneInspector.ViewInfo> CustomTypeViews;
+		private Dictionary<Type, DevToolSceneInspector.ViewInfo> CustomTypeViews;
 
-	private class StackItem
+		private class StackItem
 	{
-		public object Obj;
+				public object Obj;
 
-		public string Filter;
+				public string Filter;
 	}
 
-	private class ViewInfo
+		private class ViewInfo
 	{
-		public ViewInfo(string s, Action<object, string> a)
+				public ViewInfo(string s, Action<object, string> a)
 		{
 			this.Name = s;
 			this.Callback = a;
 		}
 
-		public string Name;
+				public string Name;
 
-		public Action<object, string> Callback;
+				public Action<object, string> Callback;
 	}
 }

@@ -7,12 +7,12 @@ using UnityEngine;
 
 public class SleepClinicPajamas : IEquipmentConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public EquipmentDef CreateEquipmentDef()
+		public EquipmentDef CreateEquipmentDef()
 	{
 		ClothingWearer.ClothingInfo clothingInfo = ClothingWearer.ClothingInfo.FANCY_CLOTHING;
 		List<AttributeModifier> attributeModifiers = new List<AttributeModifier>();
@@ -36,7 +36,7 @@ public class SleepClinicPajamas : IEquipmentConfig
 		return equipmentDef;
 	}
 
-	public void DoPostConfigure(GameObject go)
+		public void DoPostConfigure(GameObject go)
 	{
 		KPrefabID component = go.GetComponent<KPrefabID>();
 		component.AddTag(GameTags.Clothes, false);
@@ -46,7 +46,7 @@ public class SleepClinicPajamas : IEquipmentConfig
 		go.GetComponent<KBatchedAnimController>().sceneLayer = Grid.SceneLayer.BuildingFront;
 	}
 
-	public const string ID = "SleepClinicPajamas";
+		public const string ID = "SleepClinicPajamas";
 
-	public const string EFFECT_ID = "SleepClinic";
+		public const string EFFECT_ID = "SleepClinic";
 }

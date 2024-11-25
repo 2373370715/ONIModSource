@@ -5,12 +5,12 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/TitleBarPortrait")]
 public class TitleBarPortrait : KMonoBehaviour
 {
-	public void SetSaturation(bool saturated)
+		public void SetSaturation(bool saturated)
 	{
 		this.ImageObject.GetComponent<Image>().material = (saturated ? this.DefaultMaterial : this.DesatMaterial);
 	}
 
-	public void SetPortrait(GameObject selectedTarget)
+		public void SetPortrait(GameObject selectedTarget)
 	{
 		MinionIdentity component = selectedTarget.GetComponent<MinionIdentity>();
 		if (component != null)
@@ -31,7 +31,7 @@ public class TitleBarPortrait : KMonoBehaviour
 		}
 	}
 
-	public void SetPortrait(Sprite image)
+		public void SetPortrait(Sprite image)
 	{
 		if (this.PortraitShadow)
 		{
@@ -57,7 +57,7 @@ public class TitleBarPortrait : KMonoBehaviour
 		this.ImageObject.GetComponent<Image>().sprite = image;
 	}
 
-	private void SetPortrait(MinionIdentity identity)
+		private void SetPortrait(MinionIdentity identity)
 	{
 		if (this.PortraitShadow)
 		{
@@ -84,7 +84,7 @@ public class TitleBarPortrait : KMonoBehaviour
 		}
 	}
 
-	public void ClearPortrait()
+		public void ClearPortrait()
 	{
 		if (this.PortraitShadow)
 		{
@@ -104,15 +104,15 @@ public class TitleBarPortrait : KMonoBehaviour
 		}
 	}
 
-	public GameObject FaceObject;
+		public GameObject FaceObject;
 
-	public GameObject ImageObject;
+		public GameObject ImageObject;
 
-	public GameObject PortraitShadow;
+		public GameObject PortraitShadow;
 
-	public GameObject AnimControllerObject;
+		public GameObject AnimControllerObject;
 
-	public Material DefaultMaterial;
+		public Material DefaultMaterial;
 
-	public Material DesatMaterial;
+		public Material DesatMaterial;
 }

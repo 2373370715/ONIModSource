@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ConduitSleepMonitor : GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.idle;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -27,12 +27,12 @@ public class ConduitSleepMonitor : GameStateMachine<ConduitSleepMonitor, Conduit
 		}).ParamTransition<int>(this.targetSleepCell, this.searching.looking, (ConduitSleepMonitor.Instance smi, int sleepCell) => sleepCell == Grid.InvalidCell).ToggleBehaviour(GameTags.Creatures.WantsConduitConnection, (ConduitSleepMonitor.Instance smi) => this.targetSleepCell.Get(smi) != Grid.InvalidCell && ConduitSleepMonitor.IsSleepyTime(smi), null);
 	}
 
-	public static bool IsSleepyTime(ConduitSleepMonitor.Instance smi)
+		public static bool IsSleepyTime(ConduitSleepMonitor.Instance smi)
 	{
 		return GameClock.Instance.GetTimeSinceStartOfCycle() >= 500f;
 	}
 
-	private void TryRecoverSave(ConduitSleepMonitor.Instance smi)
+		private void TryRecoverSave(ConduitSleepMonitor.Instance smi)
 	{
 		Staterpillar component = smi.GetComponent<Staterpillar>();
 		if (this.targetSleepCell.Get(smi) == Grid.InvalidCell && component.IsConnectorBuildingSpawned())
@@ -42,7 +42,7 @@ public class ConduitSleepMonitor : GameStateMachine<ConduitSleepMonitor, Conduit
 		}
 	}
 
-	private void FindSleepLocation(ConduitSleepMonitor.Instance smi)
+		private void FindSleepLocation(ConduitSleepMonitor.Instance smi)
 	{
 		StaterpillarCellQuery staterpillarCellQuery = PathFinderQueries.staterpillarCellQuery.Reset(10, smi.gameObject, smi.def.conduitLayer);
 		smi.GetComponent<Navigator>().RunQuery(staterpillarCellQuery);
@@ -64,27 +64,27 @@ public class ConduitSleepMonitor : GameStateMachine<ConduitSleepMonitor, Conduit
 		}
 	}
 
-	private GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State idle;
+		private GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State idle;
 
-	private ConduitSleepMonitor.SleepSearchStates searching;
+		private ConduitSleepMonitor.SleepSearchStates searching;
 
-	public StateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.IntParameter targetSleepCell = new StateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.IntParameter(Grid.InvalidCell);
+		public StateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.IntParameter targetSleepCell = new StateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.IntParameter(Grid.InvalidCell);
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public ObjectLayer conduitLayer;
+				public ObjectLayer conduitLayer;
 	}
 
-	private class SleepSearchStates : GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State
+		private class SleepSearchStates : GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State
 	{
-		public GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State looking;
+				public GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State looking;
 
-		public GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State found;
+				public GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.State found;
 	}
 
-	public new class Instance : GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<ConduitSleepMonitor, ConduitSleepMonitor.Instance, IStateMachineTarget, ConduitSleepMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, ConduitSleepMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ConduitSleepMonitor.Def def) : base(master, def)
 		{
 		}
 	}

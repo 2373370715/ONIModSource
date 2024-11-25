@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DuplicantNoiseLevels")]
 public class DuplicantNoiseLevels : KMonoBehaviour
 {
-	public static void SetupNoiseLevels()
+		public static void SetupNoiseLevels()
 	{
 		SoundEventVolumeCache.instance.AddVolume("anim_eat_floor_kanim", "Chew_food_gross", NOISE_POLLUTION.CREATURES.TIER2);
 		SoundEventVolumeCache.instance.AddVolume("anim_eat_floor_kanim", "Chew_food_first", NOISE_POLLUTION.CREATURES.TIER2);

@@ -1,203 +1,149 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class AutoStorageDropper : GameStateMachine<AutoStorageDropper, AutoStorageDropper.Instance, IStateMachineTarget, AutoStorageDropper.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.idle;
-		this.root.Update(delegate(AutoStorageDropper.Instance smi, float dt)
-		{
-			smi.UpdateBlockedStatus();
-		}, UpdateRate.SIM_200ms, true);
-		this.idle.EventTransition(GameHashes.OnStorageChange, this.pre_drop, null).OnSignal(this.checkCanDrop, this.pre_drop, (AutoStorageDropper.Instance smi) => !smi.GetComponent<Storage>().IsEmpty()).ParamTransition<bool>(this.isBlocked, this.blocked, GameStateMachine<AutoStorageDropper, AutoStorageDropper.Instance, IStateMachineTarget, AutoStorageDropper.Def>.IsTrue);
-		this.pre_drop.ScheduleGoTo((AutoStorageDropper.Instance smi) => smi.def.delay, this.dropping);
-		this.dropping.Enter(delegate(AutoStorageDropper.Instance smi)
-		{
-			smi.Drop();
-		}).GoTo(this.idle);
-		this.blocked.ParamTransition<bool>(this.isBlocked, this.pre_drop, GameStateMachine<AutoStorageDropper, AutoStorageDropper.Instance, IStateMachineTarget, AutoStorageDropper.Def>.IsFalse).ToggleStatusItem(Db.Get().BuildingStatusItems.OutputTileBlocked, null);
-	}
+public class AutoStorageDropper
+    : GameStateMachine<AutoStorageDropper, AutoStorageDropper.Instance, IStateMachineTarget, AutoStorageDropper.Def> {
+    private State         blocked;
+    public  Signal        checkCanDrop;
+    private State         dropping;
+    private State         idle;
+    private BoolParameter isBlocked;
+    private State         pre_drop;
 
-	private GameStateMachine<AutoStorageDropper, AutoStorageDropper.Instance, IStateMachineTarget, AutoStorageDropper.Def>.State idle;
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = idle;
+        root.Update(delegate(Instance smi, float dt) { smi.UpdateBlockedStatus(); }, UpdateRate.SIM_200ms, true);
+        idle.EventTransition(GameHashes.OnStorageChange, pre_drop)
+            .OnSignal(checkCanDrop, pre_drop, smi => !smi.GetComponent<Storage>().IsEmpty())
+            .ParamTransition(isBlocked, blocked, IsTrue);
 
-	private GameStateMachine<AutoStorageDropper, AutoStorageDropper.Instance, IStateMachineTarget, AutoStorageDropper.Def>.State pre_drop;
+        pre_drop.ScheduleGoTo(smi => smi.def.delay, dropping);
+        dropping.Enter(delegate(Instance smi) { smi.Drop(); }).GoTo(idle);
+        blocked.ParamTransition(isBlocked, pre_drop, IsFalse)
+               .ToggleStatusItem(Db.Get().BuildingStatusItems.OutputTileBlocked, null);
+    }
 
-	private GameStateMachine<AutoStorageDropper, AutoStorageDropper.Instance, IStateMachineTarget, AutoStorageDropper.Def>.State dropping;
+    public class DropperFxConfig {
+        public string          animFile;
+        public string          animName;
+        public bool            flipX;
+        public bool            flipY;
+        public Grid.SceneLayer layer          = Grid.SceneLayer.FXFront;
+        public bool            useElementTint = true;
+    }
 
-	private GameStateMachine<AutoStorageDropper, AutoStorageDropper.Instance, IStateMachineTarget, AutoStorageDropper.Def>.State blocked;
+    public class Def : BaseDef {
+        public bool            asOre;
+        public bool            blockedBySubstantialLiquid;
+        public float           cooldown = 2f;
+        public float           delay;
+        public DropperFxConfig downFx;
+        public CellOffset      dropOffset;
+        public SimHashes[]     elementFilter;
+        public Vector3         fxOffset = Vector3.zero;
+        public bool            invertElementFilterInitialValue;
+        public DropperFxConfig leftFx;
+        public DropperFxConfig neutralFx;
+        public DropperFxConfig rightFx;
+        public DropperFxConfig upFx;
+    }
 
-	private StateMachine<AutoStorageDropper, AutoStorageDropper.Instance, IStateMachineTarget, AutoStorageDropper.Def>.BoolParameter isBlocked;
+    public new class Instance : GameInstance {
+        [MyCmpGet]
+        private Rotatable m_rotatable;
 
-	public StateMachine<AutoStorageDropper, AutoStorageDropper.Instance, IStateMachineTarget, AutoStorageDropper.Def>.Signal checkCanDrop;
+        [MyCmpGet]
+        private Storage m_storage;
 
-	public class DropperFxConfig
-	{
-		public string animFile;
+        private float m_timeSinceLastDrop;
 
-		public string animName;
+        public Instance(IStateMachineTarget master, Def def) : base(master, def) {
+            isInvertElementFilter = def.invertElementFilterInitialValue;
+        }
 
-		public Grid.SceneLayer layer = Grid.SceneLayer.FXFront;
+        public bool isInvertElementFilter { get; private set; }
 
-		public bool useElementTint = true;
+        public void SetInvertElementFilter(bool value) {
+            smi.isInvertElementFilter = value;
+            smi.sm.checkCanDrop.Trigger(smi);
+        }
 
-		public bool flipX;
+        public void UpdateBlockedStatus() {
+            var cell  = Grid.PosToCell(smi.GetDropPosition());
+            var value = Grid.IsSolidCell(cell) || (def.blockedBySubstantialLiquid && Grid.IsSubstantialLiquid(cell));
+            sm.isBlocked.Set(value, smi);
+        }
 
-		public bool flipY;
-	}
+        private bool IsFilteredElement(SimHashes element) {
+            for (var num = 0; num != def.elementFilter.Length; num++)
+                if (def.elementFilter[num] == element)
+                    return true;
 
-	public class Def : StateMachine.BaseDef
-	{
-		public CellOffset dropOffset;
+            return false;
+        }
 
-		public bool asOre;
+        private bool AllowedToDrop(SimHashes element) {
+            return def.elementFilter        == null                       ||
+                   def.elementFilter.Length == 0                          ||
+                   (!isInvertElementFilter && IsFilteredElement(element)) ||
+                   (isInvertElementFilter  && !IsFilteredElement(element));
+        }
 
-		public SimHashes[] elementFilter;
+        public void Drop() {
+            var     flag    = false;
+            Element element = null;
+            for (var i = m_storage.Count - 1; i >= 0; i--) {
+                var gameObject = m_storage.items[i];
+                var component  = gameObject.GetComponent<PrimaryElement>();
+                if (AllowedToDrop(component.ElementID)) {
+                    if (def.asOre) {
+                        m_storage.Drop(gameObject);
+                        gameObject.transform.SetPosition(GetDropPosition());
+                        element = component.Element;
+                        flag    = true;
+                    } else {
+                        var component2 = gameObject.GetComponent<Dumpable>();
+                        if (!component2.IsNullOrDestroyed()) {
+                            component2.Dump(GetDropPosition());
+                            element = component.Element;
+                            flag    = true;
+                        }
+                    }
+                }
+            }
 
-		public bool invertElementFilterInitialValue;
+            var dropperAnim = GetDropperAnim();
+            if (flag && dropperAnim != null && GameClock.Instance.GetTime() > m_timeSinceLastDrop + def.cooldown) {
+                m_timeSinceLastDrop = GameClock.Instance.GetTime();
+                var vector = Grid.CellToPosCCC(Grid.PosToCell(GetDropPosition()), dropperAnim.layer);
+                vector += m_rotatable != null ? m_rotatable.GetRotatedOffset(def.fxOffset) : def.fxOffset;
+                var kbatchedAnimController
+                    = FXHelpers.CreateEffect(dropperAnim.animFile, vector, null, false, dropperAnim.layer);
 
-		public bool blockedBySubstantialLiquid;
+                kbatchedAnimController.destroyOnAnimComplete = false;
+                kbatchedAnimController.FlipX                 = dropperAnim.flipX;
+                kbatchedAnimController.FlipY                 = dropperAnim.flipY;
+                if (dropperAnim.useElementTint) kbatchedAnimController.TintColour = element.substance.colour;
+                kbatchedAnimController.Play(dropperAnim.animName);
+            }
+        }
 
-		public AutoStorageDropper.DropperFxConfig neutralFx;
+        public DropperFxConfig GetDropperAnim() {
+            var cellOffset = m_rotatable != null ? m_rotatable.GetRotatedCellOffset(def.dropOffset) : def.dropOffset;
+            if (cellOffset.x < 0) return def.leftFx;
 
-		public AutoStorageDropper.DropperFxConfig leftFx;
+            if (cellOffset.x > 0) return def.rightFx;
 
-		public AutoStorageDropper.DropperFxConfig rightFx;
+            if (cellOffset.y < 0) return def.downFx;
 
-		public AutoStorageDropper.DropperFxConfig upFx;
+            if (cellOffset.y > 0) return def.upFx;
 
-		public AutoStorageDropper.DropperFxConfig downFx;
+            return def.neutralFx;
+        }
 
-		public Vector3 fxOffset = Vector3.zero;
+        public Vector3 GetDropPosition() {
+            if (!(m_rotatable != null)) return transform.GetPosition() + def.dropOffset.ToVector3();
 
-		public float cooldown = 2f;
-
-		public float delay;
-	}
-
-	public new class Instance : GameStateMachine<AutoStorageDropper, AutoStorageDropper.Instance, IStateMachineTarget, AutoStorageDropper.Def>.GameInstance
-	{
-						public bool isInvertElementFilter { get; private set; }
-
-		public Instance(IStateMachineTarget master, AutoStorageDropper.Def def) : base(master, def)
-		{
-			this.isInvertElementFilter = def.invertElementFilterInitialValue;
-		}
-
-		public void SetInvertElementFilter(bool value)
-		{
-			base.smi.isInvertElementFilter = value;
-			base.smi.sm.checkCanDrop.Trigger(base.smi);
-		}
-
-		public void UpdateBlockedStatus()
-		{
-			int cell = Grid.PosToCell(base.smi.GetDropPosition());
-			bool value = Grid.IsSolidCell(cell) || (base.def.blockedBySubstantialLiquid && Grid.IsSubstantialLiquid(cell, 0.35f));
-			base.sm.isBlocked.Set(value, base.smi, false);
-		}
-
-		private bool IsFilteredElement(SimHashes element)
-		{
-			for (int num = 0; num != base.def.elementFilter.Length; num++)
-			{
-				if (base.def.elementFilter[num] == element)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		private bool AllowedToDrop(SimHashes element)
-		{
-			return base.def.elementFilter == null || base.def.elementFilter.Length == 0 || (!this.isInvertElementFilter && this.IsFilteredElement(element)) || (this.isInvertElementFilter && !this.IsFilteredElement(element));
-		}
-
-		public void Drop()
-		{
-			bool flag = false;
-			Element element = null;
-			for (int i = this.m_storage.Count - 1; i >= 0; i--)
-			{
-				GameObject gameObject = this.m_storage.items[i];
-				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-				if (this.AllowedToDrop(component.ElementID))
-				{
-					if (base.def.asOre)
-					{
-						this.m_storage.Drop(gameObject, true);
-						gameObject.transform.SetPosition(this.GetDropPosition());
-						element = component.Element;
-						flag = true;
-					}
-					else
-					{
-						Dumpable component2 = gameObject.GetComponent<Dumpable>();
-						if (!component2.IsNullOrDestroyed())
-						{
-							component2.Dump(this.GetDropPosition());
-							element = component.Element;
-							flag = true;
-						}
-					}
-				}
-			}
-			AutoStorageDropper.DropperFxConfig dropperAnim = this.GetDropperAnim();
-			if (flag && dropperAnim != null && GameClock.Instance.GetTime() > this.m_timeSinceLastDrop + base.def.cooldown)
-			{
-				this.m_timeSinceLastDrop = GameClock.Instance.GetTime();
-				Vector3 vector = Grid.CellToPosCCC(Grid.PosToCell(this.GetDropPosition()), dropperAnim.layer);
-				vector += ((this.m_rotatable != null) ? this.m_rotatable.GetRotatedOffset(base.def.fxOffset) : base.def.fxOffset);
-				KBatchedAnimController kbatchedAnimController = FXHelpers.CreateEffect(dropperAnim.animFile, vector, null, false, dropperAnim.layer, false);
-				kbatchedAnimController.destroyOnAnimComplete = false;
-				kbatchedAnimController.FlipX = dropperAnim.flipX;
-				kbatchedAnimController.FlipY = dropperAnim.flipY;
-				if (dropperAnim.useElementTint)
-				{
-					kbatchedAnimController.TintColour = element.substance.colour;
-				}
-				kbatchedAnimController.Play(dropperAnim.animName, KAnim.PlayMode.Once, 1f, 0f);
-			}
-		}
-
-		public AutoStorageDropper.DropperFxConfig GetDropperAnim()
-		{
-			CellOffset cellOffset = (this.m_rotatable != null) ? this.m_rotatable.GetRotatedCellOffset(base.def.dropOffset) : base.def.dropOffset;
-			if (cellOffset.x < 0)
-			{
-				return base.def.leftFx;
-			}
-			if (cellOffset.x > 0)
-			{
-				return base.def.rightFx;
-			}
-			if (cellOffset.y < 0)
-			{
-				return base.def.downFx;
-			}
-			if (cellOffset.y > 0)
-			{
-				return base.def.upFx;
-			}
-			return base.def.neutralFx;
-		}
-
-		public Vector3 GetDropPosition()
-		{
-			if (!(this.m_rotatable != null))
-			{
-				return base.transform.GetPosition() + base.def.dropOffset.ToVector3();
-			}
-			return base.transform.GetPosition() + this.m_rotatable.GetRotatedCellOffset(base.def.dropOffset).ToVector3();
-		}
-
-		[MyCmpGet]
-		private Storage m_storage;
-
-		[MyCmpGet]
-		private Rotatable m_rotatable;
-
-		private float m_timeSinceLastDrop;
-	}
+            return transform.GetPosition() + m_rotatable.GetRotatedCellOffset(def.dropOffset).ToVector3();
+        }
+    }
 }

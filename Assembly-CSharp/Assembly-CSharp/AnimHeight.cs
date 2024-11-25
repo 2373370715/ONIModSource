@@ -2,8 +2,8 @@
 
 public enum AnimHeight
 {
-	Low = -1,
-	Normal,
-	High,
-	VeryHigh
+		Low = -1,
+		Normal,
+		High,
+		VeryHigh
 }

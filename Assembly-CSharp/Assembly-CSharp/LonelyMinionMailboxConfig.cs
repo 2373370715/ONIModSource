@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LonelyMinionMailboxConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LonelyMailBox";
 		int width = 2;
@@ -30,7 +30,7 @@ public class LonelyMinionMailboxConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		SingleEntityReceptacle singleEntityReceptacle = go.AddComponent<SingleEntityReceptacle>();
 		singleEntityReceptacle.AddDepositTag(GameTags.Edible);
@@ -47,11 +47,11 @@ public class LonelyMinionMailboxConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "LonelyMailBox";
+		public const string ID = "LonelyMailBox";
 
-	public static readonly HashedString IdHash = "LonelyMailBox";
+		public static readonly HashedString IdHash = "LonelyMailBox";
 }

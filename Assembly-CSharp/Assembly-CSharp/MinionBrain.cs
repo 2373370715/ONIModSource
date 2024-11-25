@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class MinionBrain : Brain
 {
-	public bool IsCellClear(int cell)
+		public bool IsCellClear(int cell)
 	{
 		if (Grid.Reserved[cell])
 		{
@@ -17,7 +17,7 @@ public class MinionBrain : Brain
 		return !(gameObject != null) || !(base.gameObject != gameObject) || gameObject.GetComponent<Navigator>().IsMoving();
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.Navigator.SetAbilities(new MinionPathFinderAbilities(this.Navigator));
@@ -25,7 +25,7 @@ public class MinionBrain : Brain
 		base.Subscribe<MinionBrain>(-975551167, MinionBrain.OnUnstableGroundImpactDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		foreach (GameObject go in base.GetComponent<Storage>().items)
@@ -35,7 +35,7 @@ public class MinionBrain : Brain
 		Game.Instance.Subscribe(-107300940, new Action<object>(this.OnResearchComplete));
 	}
 
-	private void AnimTrackStoredItem(object data)
+		private void AnimTrackStoredItem(object data)
 	{
 		Storage component = base.GetComponent<Storage>();
 		GameObject gameObject = (GameObject)data;
@@ -46,7 +46,7 @@ public class MinionBrain : Brain
 		}
 	}
 
-	private void AddAnimTracker(GameObject go)
+		private void AddAnimTracker(GameObject go)
 	{
 		KAnimControllerBase component = go.GetComponent<KAnimControllerBase>();
 		if (component == null)
@@ -63,7 +63,7 @@ public class MinionBrain : Brain
 		}
 	}
 
-	private void RemoveTracker(GameObject go)
+		private void RemoveTracker(GameObject go)
 	{
 		KBatchedAnimTracker component = go.GetComponent<KBatchedAnimTracker>();
 		if (component != null)
@@ -72,7 +72,7 @@ public class MinionBrain : Brain
 		}
 	}
 
-	public override void UpdateBrain()
+		public override void UpdateBrain()
 	{
 		base.UpdateBrain();
 		if (Game.Instance == null)
@@ -100,7 +100,7 @@ public class MinionBrain : Brain
 		}
 	}
 
-	private void RegisterReactEmotePair(string reactable_id, Emote emote, float max_trigger_time)
+		private void RegisterReactEmotePair(string reactable_id, Emote emote, float max_trigger_time)
 	{
 		if (base.gameObject == null)
 		{
@@ -118,7 +118,7 @@ public class MinionBrain : Brain
 		}
 	}
 
-	private void OnResearchComplete(object data)
+		private void OnResearchComplete(object data)
 	{
 		if (Time.time - this.lastResearchCompleteEmoteTime > 1f)
 		{
@@ -127,13 +127,13 @@ public class MinionBrain : Brain
 		}
 	}
 
-	public Notification CreateCollapseNotification()
+		public Notification CreateCollapseNotification()
 	{
 		MinionIdentity component = base.GetComponent<MinionIdentity>();
 		return new Notification(MISC.NOTIFICATIONS.TILECOLLAPSE.NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.TILECOLLAPSE.TOOLTIP + notificationList.ReduceMessages(false), "/t• " + component.GetProperName(), true, 0f, null, null, null, true, false, false);
 	}
 
-	public void RemoveCollapseNotification(Notification notification)
+		public void RemoveCollapseNotification(Notification notification)
 	{
 		Vector3 position = notification.clickFocus.GetPosition();
 		position.z = -40f;
@@ -145,7 +145,7 @@ public class MinionBrain : Brain
 		base.gameObject.AddOrGet<Notifier>().Remove(notification);
 	}
 
-	private void OnUnstableGroundImpact(object data)
+		private void OnUnstableGroundImpact(object data)
 	{
 		GameObject telepad = GameUtil.GetTelepad(base.gameObject.GetMyWorld().id);
 		Navigator component = base.GetComponent<Navigator>();
@@ -164,26 +164,26 @@ public class MinionBrain : Brain
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Game.Instance.Unsubscribe(-107300940, new Action<object>(this.OnResearchComplete));
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Navigator Navigator;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public OxygenBreather OxygenBreather;
 
-	private float lastResearchCompleteEmoteTime;
+		private float lastResearchCompleteEmoteTime;
 
-	private static readonly EventSystem.IntraObjectHandler<MinionBrain> AnimTrackStoredItemDelegate = new EventSystem.IntraObjectHandler<MinionBrain>(delegate(MinionBrain component, object data)
+		private static readonly EventSystem.IntraObjectHandler<MinionBrain> AnimTrackStoredItemDelegate = new EventSystem.IntraObjectHandler<MinionBrain>(delegate(MinionBrain component, object data)
 	{
 		component.AnimTrackStoredItem(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<MinionBrain> OnUnstableGroundImpactDelegate = new EventSystem.IntraObjectHandler<MinionBrain>(delegate(MinionBrain component, object data)
+		private static readonly EventSystem.IntraObjectHandler<MinionBrain> OnUnstableGroundImpactDelegate = new EventSystem.IntraObjectHandler<MinionBrain>(delegate(MinionBrain component, object data)
 	{
 		component.OnUnstableGroundImpact(data);
 	});

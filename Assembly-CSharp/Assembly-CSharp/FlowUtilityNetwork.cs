@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FlowUtilityNetwork : UtilityNetwork
 {
-		public bool HasSinks
+			public bool HasSinks
 	{
 		get
 		{
@@ -12,12 +12,12 @@ public class FlowUtilityNetwork : UtilityNetwork
 		}
 	}
 
-	public int GetActiveCount()
+		public int GetActiveCount()
 	{
 		return this.sinks.Count;
 	}
 
-	public override void AddItem(object generic_item)
+		public override void AddItem(object generic_item)
 	{
 		FlowUtilityNetwork.IItem item = (FlowUtilityNetwork.IItem)generic_item;
 		if (item != null)
@@ -50,7 +50,7 @@ public class FlowUtilityNetwork : UtilityNetwork
 		}
 	}
 
-	public override void Reset(UtilityNetworkGridNode[] grid)
+		public override void Reset(UtilityNetworkGridNode[] grid)
 	{
 		for (int i = 0; i < this.sinks.Count; i++)
 		{
@@ -79,30 +79,30 @@ public class FlowUtilityNetwork : UtilityNetwork
 		}
 	}
 
-	public List<FlowUtilityNetwork.IItem> sources = new List<FlowUtilityNetwork.IItem>();
+		public List<FlowUtilityNetwork.IItem> sources = new List<FlowUtilityNetwork.IItem>();
 
-	public List<FlowUtilityNetwork.IItem> sinks = new List<FlowUtilityNetwork.IItem>();
+		public List<FlowUtilityNetwork.IItem> sinks = new List<FlowUtilityNetwork.IItem>();
 
-	public List<FlowUtilityNetwork.IItem> conduits = new List<FlowUtilityNetwork.IItem>();
+		public List<FlowUtilityNetwork.IItem> conduits = new List<FlowUtilityNetwork.IItem>();
 
-	public int conduitCount;
+		public int conduitCount;
 
-	public interface IItem
+		public interface IItem
 	{
-				int Cell { get; }
+						int Cell { get; }
 
-				FlowUtilityNetwork Network { set; }
+						FlowUtilityNetwork Network { set; }
 
-				Endpoint EndpointType { get; }
+						Endpoint EndpointType { get; }
 
-				ConduitType ConduitType { get; }
+						ConduitType ConduitType { get; }
 
-				GameObject GameObject { get; }
+						GameObject GameObject { get; }
 	}
 
-	public class NetworkItem : FlowUtilityNetwork.IItem
+		public class NetworkItem : FlowUtilityNetwork.IItem
 	{
-		public NetworkItem(ConduitType conduit_type, Endpoint endpoint_type, int cell, GameObject parent)
+				public NetworkItem(ConduitType conduit_type, Endpoint endpoint_type, int cell, GameObject parent)
 		{
 			this.conduitType = conduit_type;
 			this.endpointType = endpoint_type;
@@ -110,7 +110,7 @@ public class FlowUtilityNetwork : UtilityNetwork
 			this.parent = parent;
 		}
 
-				public Endpoint EndpointType
+						public Endpoint EndpointType
 		{
 			get
 			{
@@ -118,7 +118,7 @@ public class FlowUtilityNetwork : UtilityNetwork
 			}
 		}
 
-				public ConduitType ConduitType
+						public ConduitType ConduitType
 		{
 			get
 			{
@@ -126,7 +126,7 @@ public class FlowUtilityNetwork : UtilityNetwork
 			}
 		}
 
-				public int Cell
+						public int Cell
 		{
 			get
 			{
@@ -134,7 +134,7 @@ public class FlowUtilityNetwork : UtilityNetwork
 			}
 		}
 
-						public FlowUtilityNetwork Network
+								public FlowUtilityNetwork Network
 		{
 			get
 			{
@@ -146,7 +146,7 @@ public class FlowUtilityNetwork : UtilityNetwork
 			}
 		}
 
-				public GameObject GameObject
+						public GameObject GameObject
 		{
 			get
 			{
@@ -154,14 +154,14 @@ public class FlowUtilityNetwork : UtilityNetwork
 			}
 		}
 
-		private int cell;
+				private int cell;
 
-		private FlowUtilityNetwork network;
+				private FlowUtilityNetwork network;
 
-		private Endpoint endpointType;
+				private Endpoint endpointType;
 
-		private ConduitType conduitType;
+				private ConduitType conduitType;
 
-		private GameObject parent;
+				private GameObject parent;
 	}
 }

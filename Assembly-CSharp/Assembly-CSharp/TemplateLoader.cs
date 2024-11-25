@@ -7,18 +7,18 @@ using UnityEngine;
 
 public static class TemplateLoader
 {
-	public static void Stamp(TemplateContainer template, Vector2 rootLocation, System.Action on_complete_callback)
+		public static void Stamp(TemplateContainer template, Vector2 rootLocation, System.Action on_complete_callback)
 	{
 		TemplateLoader.ActiveStamp item = new TemplateLoader.ActiveStamp(template, rootLocation, on_complete_callback);
 		TemplateLoader.activeStamps.Add(item);
 	}
 
-	private static void StampComplete(TemplateLoader.ActiveStamp stamp)
+		private static void StampComplete(TemplateLoader.ActiveStamp stamp)
 	{
 		TemplateLoader.activeStamps.Remove(stamp);
 	}
 
-	private static void BuildPhase1(int baseX, int baseY, TemplateContainer template, System.Action callback)
+		private static void BuildPhase1(int baseX, int baseY, TemplateContainer template, System.Action callback)
 	{
 		if (Grid.WidthInCells < 16)
 		{
@@ -47,7 +47,7 @@ public static class TemplateLoader
 		callback();
 	}
 
-	private static void BuildPhase2(int baseX, int baseY, TemplateContainer template, System.Action callback)
+		private static void BuildPhase2(int baseX, int baseY, TemplateContainer template, System.Action callback)
 	{
 		int num = Grid.OffsetCell(0, baseX, baseY);
 		if (template == null)
@@ -73,7 +73,7 @@ public static class TemplateLoader
 		handle.index = -1;
 	}
 
-	public static GameObject PlaceBuilding(Prefab prefab, int root_cell)
+		public static GameObject PlaceBuilding(Prefab prefab, int root_cell)
 	{
 		if (prefab == null || prefab.id == "")
 		{
@@ -142,40 +142,37 @@ public static class TemplateLoader
 			{
 				Prefab.template_amount_value template_amount_value2 = array[j];
 				string id = template_amount_value2.id;
-				if (id != null)
+				if (!(id == "joulesAvailable"))
 				{
-					if (!(id == "joulesAvailable"))
+					if (!(id == "sealedDoorDirection"))
 					{
-						if (!(id == "sealedDoorDirection"))
+						if (id == "switchSetting")
 						{
-							if (id == "switchSetting")
+							LogicSwitch s = gameObject.GetComponent<LogicSwitch>();
+							if (s && ((s.IsSwitchedOn && template_amount_value2.value == 0f) || (!s.IsSwitchedOn && template_amount_value2.value == 1f)))
 							{
-								LogicSwitch s = gameObject.GetComponent<LogicSwitch>();
-								if (s && ((s.IsSwitchedOn && template_amount_value2.value == 0f) || (!s.IsSwitchedOn && template_amount_value2.value == 1f)))
+								s.SetFirstFrameCallback(delegate
 								{
-									s.SetFirstFrameCallback(delegate
-									{
-										s.HandleToggle();
-									});
-								}
-							}
-						}
-						else
-						{
-							Unsealable component4 = gameObject.GetComponent<Unsealable>();
-							if (component4)
-							{
-								component4.facingRight = (template_amount_value2.value != 0f);
+									s.HandleToggle();
+								});
 							}
 						}
 					}
 					else
 					{
-						Battery component5 = gameObject.GetComponent<Battery>();
-						if (component5)
+						Unsealable component4 = gameObject.GetComponent<Unsealable>();
+						if (component4)
 						{
-							component5.AddEnergy(template_amount_value2.value);
+							component4.facingRight = (template_amount_value2.value != 0f);
 						}
+					}
+				}
+				else
+				{
+					Battery component5 = gameObject.GetComponent<Battery>();
+					if (component5)
+					{
+						component5.AddEnergy(template_amount_value2.value);
 					}
 				}
 			}
@@ -196,7 +193,7 @@ public static class TemplateLoader
 				if (storageItem.isOre)
 				{
 					gameObject2 = ElementLoader.FindElementByHash(storageItem.element).substance.SpawnResource(Vector3.zero, storageItem.units, storageItem.temperature, Db.Get().Diseases.GetIndex(storageItem.diseaseName), storageItem.diseaseCount, false, false, false);
-					goto IL_49B;
+					goto IL_494;
 				}
 				gameObject2 = Scenario.SpawnPrefab(root_cell, 0, 0, id2, Grid.SceneLayer.Ore);
 				if (gameObject2 == null)
@@ -214,21 +211,21 @@ public static class TemplateLoader
 					if (smi != null)
 					{
 						smi.RotValue = storageItem.rottable.rotAmount;
-						goto IL_49B;
+						goto IL_494;
 					}
-					goto IL_49B;
+					goto IL_494;
 				}
-				IL_4C2:
+				IL_4BB:
 				k++;
 				continue;
-				IL_49B:
+				IL_494:
 				GameObject gameObject3 = component6.Store(gameObject2, true, true, true, false);
 				if (gameObject3 != null)
 				{
 					gameObject3.GetComponent<Pickupable>().OnStore(component6);
-					goto IL_4C2;
+					goto IL_4BB;
 				}
-				goto IL_4C2;
+				goto IL_4BB;
 			}
 		}
 		if (prefab.connections != 0)
@@ -250,120 +247,66 @@ public static class TemplateLoader
 		return gameObject;
 	}
 
-	public static void PlaceUtilityConnection(GameObject spawned, Prefab bc, int root_cell)
+		public static void PlaceUtilityConnection(GameObject spawned, Prefab bc, int root_cell)
 	{
 		int cell = Grid.OffsetCell(root_cell, bc.location_x, bc.location_y);
 		UtilityConnections connection = (UtilityConnections)bc.connections;
 		string id = bc.id;
-		if (id != null)
+		uint num = <PrivateImplementationDetails>.ComputeStringHash(id);
+		if (num <= 1938276536U)
 		{
-			uint num = <PrivateImplementationDetails>.ComputeStringHash(id);
-			if (num <= 1938276536U)
+			if (num <= 609727380U)
 			{
-				if (num <= 609727380U)
+				if (num != 301047391U)
 				{
-					if (num != 301047391U)
+					if (num != 379600269U)
 					{
-						if (num != 379600269U)
-						{
-							if (num != 609727380U)
-							{
-								return;
-							}
-							if (!(id == "GasConduit"))
-							{
-								return;
-							}
-							goto IL_1DE;
-						}
-						else
-						{
-							if (!(id == "LiquidConduit"))
-							{
-								return;
-							}
-							goto IL_1FB;
-						}
-					}
-					else if (!(id == "WireRefined"))
-					{
-						return;
-					}
-				}
-				else if (num != 848332507U)
-				{
-					if (num != 1213766155U)
-					{
-						if (num != 1938276536U)
+						if (num != 609727380U)
 						{
 							return;
 						}
-						if (!(id == "Wire"))
+						if (!(id == "GasConduit"))
 						{
 							return;
 						}
+						goto IL_1D8;
 					}
 					else
 					{
-						if (!(id == "TravelTube"))
+						if (!(id == "LiquidConduit"))
 						{
 							return;
 						}
-						spawned.GetComponent<TravelTube>().SetFirstFrameCallback(delegate
-						{
-							Game.Instance.travelTubeSystem.SetConnections(connection, cell, true);
-							KAnimGraphTileVisualizer component = spawned.GetComponent<KAnimGraphTileVisualizer>();
-							if (component != null)
-							{
-								component.Refresh();
-							}
-						});
-						return;
+						goto IL_1F5;
 					}
 				}
-				else
+				else if (!(id == "WireRefined"))
 				{
-					if (!(id == "InsulatedGasConduit"))
-					{
-						return;
-					}
-					goto IL_1DE;
+					return;
 				}
 			}
-			else if (num <= 3711470516U)
+			else if (num != 848332507U)
 			{
-				if (num != 3228988836U)
+				if (num != 1213766155U)
 				{
-					if (num != 3324196971U)
+					if (num != 1938276536U)
 					{
-						if (num != 3711470516U)
-						{
-							return;
-						}
-						if (!(id == "InsulatedLiquidConduit"))
-						{
-							return;
-						}
-						goto IL_1FB;
+						return;
 					}
-					else
+					if (!(id == "Wire"))
 					{
-						if (!(id == "GasConduitRadiant"))
-						{
-							return;
-						}
-						goto IL_1DE;
+						return;
 					}
 				}
 				else
 				{
-					if (!(id == "LogicWire"))
+					if (!(id == "TravelTube"))
 					{
 						return;
 					}
-					spawned.GetComponent<LogicWire>().SetFirstFrameCallback(delegate
+					spawned.GetComponent<TravelTube>().SetFirstFrameCallback(delegate
 					{
-						Game.Instance.logicCircuitSystem.SetConnections(connection, cell, true);
+						Game.Instance.travelTubeSystem.SetConnections(connection, cell, true);
 						KAnimGraphTileVisualizer component = spawned.GetComponent<KAnimGraphTileVisualizer>();
 						if (component != null)
 						{
@@ -373,45 +316,49 @@ public static class TemplateLoader
 					return;
 				}
 			}
-			else if (num <= 3863001292U)
+			else
 			{
-				if (num != 3716494409U)
-				{
-					if (num != 3863001292U)
-					{
-						return;
-					}
-					if (!(id == "LiquidConduitRadiant"))
-					{
-						return;
-					}
-					goto IL_1FB;
-				}
-				else if (!(id == "HighWattageWire"))
+				if (!(id == "InsulatedGasConduit"))
 				{
 					return;
 				}
+				goto IL_1D8;
 			}
-			else if (num != 4113070310U)
+		}
+		else if (num <= 3711470516U)
+		{
+			if (num != 3228988836U)
 			{
-				if (num != 4243975822U)
+				if (num != 3324196971U)
 				{
-					return;
+					if (num != 3711470516U)
+					{
+						return;
+					}
+					if (!(id == "InsulatedLiquidConduit"))
+					{
+						return;
+					}
+					goto IL_1F5;
 				}
-				if (!(id == "WireRefinedHighWattage"))
+				else
 				{
-					return;
+					if (!(id == "GasConduitRadiant"))
+					{
+						return;
+					}
+					goto IL_1D8;
 				}
 			}
 			else
 			{
-				if (!(id == "SolidConduit"))
+				if (!(id == "LogicWire"))
 				{
 					return;
 				}
-				spawned.GetComponent<SolidConduit>().SetFirstFrameCallback(delegate
+				spawned.GetComponent<LogicWire>().SetFirstFrameCallback(delegate
 				{
-					Game.Instance.solidConduitSystem.SetConnections(connection, cell, true);
+					Game.Instance.logicCircuitSystem.SetConnections(connection, cell, true);
 					KAnimGraphTileVisualizer component = spawned.GetComponent<KAnimGraphTileVisualizer>();
 					if (component != null)
 					{
@@ -420,31 +367,46 @@ public static class TemplateLoader
 				});
 				return;
 			}
-			spawned.GetComponent<Wire>().SetFirstFrameCallback(delegate
+		}
+		else if (num <= 3863001292U)
+		{
+			if (num != 3716494409U)
 			{
-				Game.Instance.electricalConduitSystem.SetConnections(connection, cell, true);
-				KAnimGraphTileVisualizer component = spawned.GetComponent<KAnimGraphTileVisualizer>();
-				if (component != null)
+				if (num != 3863001292U)
 				{
-					component.Refresh();
+					return;
 				}
-			});
-			return;
-			IL_1DE:
-			spawned.GetComponent<Conduit>().SetFirstFrameCallback(delegate
-			{
-				Game.Instance.gasConduitSystem.SetConnections(connection, cell, true);
-				KAnimGraphTileVisualizer component = spawned.GetComponent<KAnimGraphTileVisualizer>();
-				if (component != null)
+				if (!(id == "LiquidConduitRadiant"))
 				{
-					component.Refresh();
+					return;
 				}
-			});
-			return;
-			IL_1FB:
-			spawned.GetComponent<Conduit>().SetFirstFrameCallback(delegate
+				goto IL_1F5;
+			}
+			else if (!(id == "HighWattageWire"))
 			{
-				Game.Instance.liquidConduitSystem.SetConnections(connection, cell, true);
+				return;
+			}
+		}
+		else if (num != 4113070310U)
+		{
+			if (num != 4243975822U)
+			{
+				return;
+			}
+			if (!(id == "WireRefinedHighWattage"))
+			{
+				return;
+			}
+		}
+		else
+		{
+			if (!(id == "SolidConduit"))
+			{
+				return;
+			}
+			spawned.GetComponent<SolidConduit>().SetFirstFrameCallback(delegate
+			{
+				Game.Instance.solidConduitSystem.SetConnections(connection, cell, true);
 				KAnimGraphTileVisualizer component = spawned.GetComponent<KAnimGraphTileVisualizer>();
 				if (component != null)
 				{
@@ -453,9 +415,40 @@ public static class TemplateLoader
 			});
 			return;
 		}
+		spawned.GetComponent<Wire>().SetFirstFrameCallback(delegate
+		{
+			Game.Instance.electricalConduitSystem.SetConnections(connection, cell, true);
+			KAnimGraphTileVisualizer component = spawned.GetComponent<KAnimGraphTileVisualizer>();
+			if (component != null)
+			{
+				component.Refresh();
+			}
+		});
+		return;
+		IL_1D8:
+		spawned.GetComponent<Conduit>().SetFirstFrameCallback(delegate
+		{
+			Game.Instance.gasConduitSystem.SetConnections(connection, cell, true);
+			KAnimGraphTileVisualizer component = spawned.GetComponent<KAnimGraphTileVisualizer>();
+			if (component != null)
+			{
+				component.Refresh();
+			}
+		});
+		return;
+		IL_1F5:
+		spawned.GetComponent<Conduit>().SetFirstFrameCallback(delegate
+		{
+			Game.Instance.liquidConduitSystem.SetConnections(connection, cell, true);
+			KAnimGraphTileVisualizer component = spawned.GetComponent<KAnimGraphTileVisualizer>();
+			if (component != null)
+			{
+				component.Refresh();
+			}
+		});
 	}
 
-	public static GameObject PlacePickupables(Prefab prefab, int root_cell)
+		public static GameObject PlacePickupables(Prefab prefab, int root_cell)
 	{
 		int location_x = prefab.location_x;
 		int location_y = prefab.location_y;
@@ -485,7 +478,7 @@ public static class TemplateLoader
 		return gameObject;
 	}
 
-	public static GameObject PlaceOtherEntities(Prefab prefab, int root_cell)
+		public static GameObject PlaceOtherEntities(Prefab prefab, int root_cell)
 	{
 		int location_x = prefab.location_x;
 		int location_y = prefab.location_y;
@@ -533,7 +526,7 @@ public static class TemplateLoader
 		return gameObject;
 	}
 
-	public static GameObject PlaceElementalOres(Prefab prefab, int root_cell)
+		public static GameObject PlaceElementalOres(Prefab prefab, int root_cell)
 	{
 		int location_x = prefab.location_x;
 		int location_y = prefab.location_y;
@@ -552,7 +545,7 @@ public static class TemplateLoader
 		return substance.SpawnResource(position, prefab.units, prefab.temperature, index, prefab.diseaseCount, false, false, false);
 	}
 
-	private static void BuildPhase3(int baseX, int baseY, TemplateContainer template, System.Action callback)
+		private static void BuildPhase3(int baseX, int baseY, TemplateContainer template, System.Action callback)
 	{
 		if (template != null)
 		{
@@ -592,7 +585,7 @@ public static class TemplateLoader
 		}
 	}
 
-	private static void BuildPhase4(int baseX, int baseY, TemplateContainer template, System.Action callback)
+		private static void BuildPhase4(int baseX, int baseY, TemplateContainer template, System.Action callback)
 	{
 		if (template != null)
 		{
@@ -615,7 +608,7 @@ public static class TemplateLoader
 		}
 	}
 
-	private static void ClearPickups(int baseX, int baseY, CellOffset[] template_as_offsets)
+		private static void ClearPickups(int baseX, int baseY, CellOffset[] template_as_offsets)
 	{
 		if (SaveGame.Instance.worldGenSpawner != null)
 		{
@@ -630,7 +623,7 @@ public static class TemplateLoader
 		}
 	}
 
-	private static void ClearEntities<T>(int rootX, int rootY, CellOffset[] TemplateOffsets) where T : KMonoBehaviour
+		private static void ClearEntities<T>(int rootX, int rootY, CellOffset[] TemplateOffsets) where T : KMonoBehaviour
 	{
 		foreach (T t in (T[])UnityEngine.Object.FindObjectsOfType(typeof(T)))
 		{
@@ -641,7 +634,7 @@ public static class TemplateLoader
 		}
 	}
 
-	private static void PlaceCells(int baseX, int baseY, TemplateContainer template, System.Action callback)
+		private static void PlaceCells(int baseX, int baseY, TemplateContainer template, System.Action callback)
 	{
 		if (template == null)
 		{
@@ -677,7 +670,7 @@ public static class TemplateLoader
 		}
 	}
 
-	public static void ApplyGridProperties(int baseX, int baseY, TemplateContainer template)
+		public static void ApplyGridProperties(int baseX, int baseY, TemplateContainer template)
 	{
 		if (template.cells == null)
 		{
@@ -694,11 +687,11 @@ public static class TemplateLoader
 		}
 	}
 
-	private static List<TemplateLoader.ActiveStamp> activeStamps = new List<TemplateLoader.ActiveStamp>();
+		private static List<TemplateLoader.ActiveStamp> activeStamps = new List<TemplateLoader.ActiveStamp>();
 
-	private class ActiveStamp
+		private class ActiveStamp
 	{
-		public ActiveStamp(TemplateContainer template, Vector2 rootLocation, System.Action onCompleteCallback)
+				public ActiveStamp(TemplateContainer template, Vector2 rootLocation, System.Action onCompleteCallback)
 		{
 			this.m_template = template;
 			this.m_rootLocation = new Vector2I((int)rootLocation.x, (int)rootLocation.y);
@@ -706,7 +699,7 @@ public static class TemplateLoader
 			this.NextPhase();
 		}
 
-		private void NextPhase()
+				private void NextPhase()
 		{
 			this.currentPhase++;
 			switch (this.currentPhase)
@@ -733,12 +726,12 @@ public static class TemplateLoader
 			}
 		}
 
-		private TemplateContainer m_template;
+				private TemplateContainer m_template;
 
-		private Vector2I m_rootLocation;
+				private Vector2I m_rootLocation;
 
-		private System.Action m_onCompleteCallback;
+				private System.Action m_onCompleteCallback;
 
-		private int currentPhase;
+				private int currentPhase;
 	}
 }

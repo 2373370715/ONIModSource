@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Grid
 {
-	private static void UpdateBuildMask(int i, Grid.BuildFlags flag, bool state)
+		private static void UpdateBuildMask(int i, Grid.BuildFlags flag, bool state)
 	{
 		if (state)
 		{
@@ -16,12 +16,12 @@ public class Grid
 		Grid.BuildMasks[i] &= ~flag;
 	}
 
-	public static void SetSolid(int cell, bool solid, CellSolidEvent ev)
+		public static void SetSolid(int cell, bool solid, CellSolidEvent ev)
 	{
 		Grid.UpdateBuildMask(cell, Grid.BuildFlags.Solid, solid);
 	}
 
-	private static void UpdateVisMask(int i, Grid.VisFlags flag, bool state)
+		private static void UpdateVisMask(int i, Grid.VisFlags flag, bool state)
 	{
 		if (state)
 		{
@@ -31,7 +31,7 @@ public class Grid
 		Grid.VisMasks[i] &= ~flag;
 	}
 
-	private static void UpdateNavValidatorMask(int i, Grid.NavValidatorFlags flag, bool state)
+		private static void UpdateNavValidatorMask(int i, Grid.NavValidatorFlags flag, bool state)
 	{
 		if (state)
 		{
@@ -41,7 +41,7 @@ public class Grid
 		Grid.NavValidatorMasks[i] &= ~flag;
 	}
 
-	private static void UpdateNavMask(int i, Grid.NavFlags flag, bool state)
+		private static void UpdateNavMask(int i, Grid.NavFlags flag, bool state)
 	{
 		if (state)
 		{
@@ -51,7 +51,7 @@ public class Grid
 		Grid.NavMasks[i] &= ~flag;
 	}
 
-	public static void ResetNavMasksAndDetails()
+		public static void ResetNavMasksAndDetails()
 	{
 		Grid.NavMasks = null;
 		Grid.tubeEntrances.Clear();
@@ -59,12 +59,12 @@ public class Grid
 		Grid.suitMarkers.Clear();
 	}
 
-	public static bool DEBUG_GetRestrictions(int cell, out Grid.Restriction restriction)
+		public static bool DEBUG_GetRestrictions(int cell, out Grid.Restriction restriction)
 	{
 		return Grid.restrictions.TryGetValue(cell, out restriction);
 	}
 
-	public static void RegisterRestriction(int cell, Grid.Restriction.Orientation orientation)
+		public static void RegisterRestriction(int cell, Grid.Restriction.Orientation orientation)
 	{
 		Grid.HasAccessDoor[cell] = true;
 		Grid.restrictions[cell] = new Grid.Restriction
@@ -74,23 +74,23 @@ public class Grid
 		};
 	}
 
-	public static void UnregisterRestriction(int cell)
+		public static void UnregisterRestriction(int cell)
 	{
 		Grid.restrictions.Remove(cell);
 		Grid.HasAccessDoor[cell] = false;
 	}
 
-	public static void SetRestriction(int cell, int minionInstanceID, Grid.Restriction.Directions directions)
+		public static void SetRestriction(int cell, int minionInstanceID, Grid.Restriction.Directions directions)
 	{
 		Grid.restrictions[cell].DirectionMasksForMinionInstanceID[minionInstanceID] = directions;
 	}
 
-	public static void ClearRestriction(int cell, int minionInstanceID)
+		public static void ClearRestriction(int cell, int minionInstanceID)
 	{
 		Grid.restrictions[cell].DirectionMasksForMinionInstanceID.Remove(minionInstanceID);
 	}
 
-	public static bool HasPermission(int cell, int minionInstanceID, int fromCell, NavType fromNavType)
+		public static bool HasPermission(int cell, int minionInstanceID, int fromCell, NavType fromNavType)
 	{
 		if (!Grid.HasAccessDoor[cell])
 		{
@@ -135,7 +135,7 @@ public class Grid
 		return (!restriction.DirectionMasksForMinionInstanceID.TryGetValue(minionInstanceID, out directions2) && !restriction.DirectionMasksForMinionInstanceID.TryGetValue(-1, out directions2)) || (directions2 & directions) == (Grid.Restriction.Directions)0;
 	}
 
-	public static void RegisterTubeEntrance(int cell, int reservationCapacity)
+		public static void RegisterTubeEntrance(int cell, int reservationCapacity)
 	{
 		DebugUtil.Assert(!Grid.tubeEntrances.ContainsKey(cell));
 		Grid.HasTubeEntrance[cell] = true;
@@ -146,14 +146,14 @@ public class Grid
 		};
 	}
 
-	public static void UnregisterTubeEntrance(int cell)
+		public static void UnregisterTubeEntrance(int cell)
 	{
 		DebugUtil.Assert(Grid.tubeEntrances.ContainsKey(cell));
 		Grid.HasTubeEntrance[cell] = false;
 		Grid.tubeEntrances.Remove(cell);
 	}
 
-	public static bool ReserveTubeEntrance(int cell, int minionInstanceID, bool reserve)
+		public static bool ReserveTubeEntrance(int cell, int minionInstanceID, bool reserve)
 	{
 		Grid.TubeEntrance tubeEntrance = Grid.tubeEntrances[cell];
 		HashSet<int> reservedInstanceIDs = tubeEntrance.reservedInstanceIDs;
@@ -170,7 +170,7 @@ public class Grid
 		return true;
 	}
 
-	public static void SetTubeEntranceReservationCapacity(int cell, int newReservationCapacity)
+		public static void SetTubeEntranceReservationCapacity(int cell, int newReservationCapacity)
 	{
 		DebugUtil.Assert(Grid.HasTubeEntrance[cell]);
 		Grid.TubeEntrance value = Grid.tubeEntrances[cell];
@@ -178,7 +178,7 @@ public class Grid
 		Grid.tubeEntrances[cell] = value;
 	}
 
-	public static bool HasUsableTubeEntrance(int cell, int minionInstanceID)
+		public static bool HasUsableTubeEntrance(int cell, int minionInstanceID)
 	{
 		if (!Grid.HasTubeEntrance[cell])
 		{
@@ -193,13 +193,13 @@ public class Grid
 		return reservedInstanceIDs.Count < tubeEntrance.reservationCapacity || reservedInstanceIDs.Contains(minionInstanceID);
 	}
 
-	public static bool HasReservedTubeEntrance(int cell, int minionInstanceID)
+		public static bool HasReservedTubeEntrance(int cell, int minionInstanceID)
 	{
 		DebugUtil.Assert(Grid.HasTubeEntrance[cell]);
 		return Grid.tubeEntrances[cell].reservedInstanceIDs.Contains(minionInstanceID);
 	}
 
-	public static void SetTubeEntranceOperational(int cell, bool operational)
+		public static void SetTubeEntranceOperational(int cell, bool operational)
 	{
 		DebugUtil.Assert(Grid.HasTubeEntrance[cell]);
 		Grid.TubeEntrance value = Grid.tubeEntrances[cell];
@@ -207,7 +207,7 @@ public class Grid
 		Grid.tubeEntrances[cell] = value;
 	}
 
-	public static void RegisterSuitMarker(int cell)
+		public static void RegisterSuitMarker(int cell)
 	{
 		DebugUtil.Assert(!Grid.HasSuitMarker[cell]);
 		Grid.HasSuitMarker[cell] = true;
@@ -221,14 +221,14 @@ public class Grid
 		};
 	}
 
-	public static void UnregisterSuitMarker(int cell)
+		public static void UnregisterSuitMarker(int cell)
 	{
 		DebugUtil.Assert(Grid.HasSuitMarker[cell]);
 		Grid.HasSuitMarker[cell] = false;
 		Grid.suitMarkers.Remove(cell);
 	}
 
-	public static bool ReserveSuit(int cell, int minionInstanceID, bool reserve)
+		public static bool ReserveSuit(int cell, int minionInstanceID, bool reserve)
 	{
 		DebugUtil.Assert(Grid.HasSuitMarker[cell]);
 		Grid.SuitMarker suitMarker = Grid.suitMarkers[cell];
@@ -247,7 +247,7 @@ public class Grid
 		return true;
 	}
 
-	public static bool ReserveEmptyLocker(int cell, int minionInstanceID, bool reserve)
+		public static bool ReserveEmptyLocker(int cell, int minionInstanceID, bool reserve)
 	{
 		DebugUtil.Assert(Grid.HasSuitMarker[cell], "No suit marker");
 		Grid.SuitMarker suitMarker = Grid.suitMarkers[cell];
@@ -266,7 +266,7 @@ public class Grid
 		return true;
 	}
 
-	public static void UpdateSuitMarker(int cell, int fullLockerCount, int emptyLockerCount, Grid.SuitMarker.Flags flags, PathFinder.PotentialPath.Flags pathFlags)
+		public static void UpdateSuitMarker(int cell, int fullLockerCount, int emptyLockerCount, Grid.SuitMarker.Flags flags, PathFinder.PotentialPath.Flags pathFlags)
 	{
 		DebugUtil.Assert(Grid.HasSuitMarker[cell]);
 		Grid.SuitMarker value = Grid.suitMarkers[cell];
@@ -277,7 +277,7 @@ public class Grid
 		Grid.suitMarkers[cell] = value;
 	}
 
-	public static bool TryGetSuitMarkerFlags(int cell, out Grid.SuitMarker.Flags flags, out PathFinder.PotentialPath.Flags pathFlags)
+		public static bool TryGetSuitMarkerFlags(int cell, out Grid.SuitMarker.Flags flags, out PathFinder.PotentialPath.Flags pathFlags)
 	{
 		if (Grid.HasSuitMarker[cell])
 		{
@@ -290,7 +290,7 @@ public class Grid
 		return false;
 	}
 
-	public static bool HasSuit(int cell, int minionInstanceID)
+		public static bool HasSuit(int cell, int minionInstanceID)
 	{
 		if (!Grid.HasSuitMarker[cell])
 		{
@@ -301,7 +301,7 @@ public class Grid
 		return minionIDsWithSuitReservations.Count < suitMarker.suitCount || minionIDsWithSuitReservations.Contains(minionInstanceID);
 	}
 
-	public static bool HasEmptyLocker(int cell, int minionInstanceID)
+		public static bool HasEmptyLocker(int cell, int minionInstanceID)
 	{
 		if (!Grid.HasSuitMarker[cell])
 		{
@@ -312,7 +312,7 @@ public class Grid
 		return minionIDsWithEmptyLockerReservations.Count < suitMarker.emptyLockerCount || minionIDsWithEmptyLockerReservations.Contains(minionInstanceID);
 	}
 
-	public unsafe static void InitializeCells()
+		public unsafe static void InitializeCells()
 	{
 		for (int num = 0; num != Grid.WidthInCells * Grid.HeightInCells; num++)
 		{
@@ -331,12 +331,12 @@ public class Grid
 		}
 	}
 
-	public static bool IsInitialized()
+		public static bool IsInitialized()
 	{
 		return Grid.mass != null;
 	}
 
-	public static int GetCellInDirection(int cell, Direction d)
+		public static int GetCellInDirection(int cell, Direction d)
 	{
 		switch (d)
 		{
@@ -354,7 +354,7 @@ public class Grid
 		return -1;
 	}
 
-	public static bool Raycast(int cell, Vector2I direction, out int hitDistance, int maxDistance = 100, Grid.BuildFlags layerMask = Grid.BuildFlags.Any)
+		public static bool Raycast(int cell, Vector2I direction, out int hitDistance, int maxDistance = 100, Grid.BuildFlags layerMask = Grid.BuildFlags.Any)
 	{
 		bool flag = false;
 		Vector2I vector2I = Grid.CellToXY(cell);
@@ -389,35 +389,35 @@ public class Grid
 		return flag | hitDistance == num4;
 	}
 
-	public static int CellAbove(int cell)
+		public static int CellAbove(int cell)
 	{
 		return cell + Grid.WidthInCells;
 	}
 
-	public static int CellBelow(int cell)
+		public static int CellBelow(int cell)
 	{
 		return cell - Grid.WidthInCells;
 	}
 
-	public static int CellLeft(int cell)
+		public static int CellLeft(int cell)
 	{
 		if (cell % Grid.WidthInCells <= 0)
 		{
-			return -1;
+			return Grid.InvalidCell;
 		}
 		return cell - 1;
 	}
 
-	public static int CellRight(int cell)
+		public static int CellRight(int cell)
 	{
 		if (cell % Grid.WidthInCells >= Grid.WidthInCells - 1)
 		{
-			return -1;
+			return Grid.InvalidCell;
 		}
 		return cell + 1;
 	}
 
-	public static CellOffset GetOffset(int cell)
+		public static CellOffset GetOffset(int cell)
 	{
 		int x = 0;
 		int y = 0;
@@ -425,9 +425,9 @@ public class Grid
 		return new CellOffset(x, y);
 	}
 
-	public static int CellUpLeft(int cell)
+		public static int CellUpLeft(int cell)
 	{
-		int result = -1;
+		int result = Grid.InvalidCell;
 		if (cell < (Grid.HeightInCells - 1) * Grid.WidthInCells && cell % Grid.WidthInCells > 0)
 		{
 			result = cell - 1 + Grid.WidthInCells;
@@ -435,9 +435,9 @@ public class Grid
 		return result;
 	}
 
-	public static int CellUpRight(int cell)
+		public static int CellUpRight(int cell)
 	{
-		int result = -1;
+		int result = Grid.InvalidCell;
 		if (cell < (Grid.HeightInCells - 1) * Grid.WidthInCells && cell % Grid.WidthInCells < Grid.WidthInCells - 1)
 		{
 			result = cell + 1 + Grid.WidthInCells;
@@ -445,9 +445,9 @@ public class Grid
 		return result;
 	}
 
-	public static int CellDownLeft(int cell)
+		public static int CellDownLeft(int cell)
 	{
-		int result = -1;
+		int result = Grid.InvalidCell;
 		if (cell > Grid.WidthInCells && cell % Grid.WidthInCells > 0)
 		{
 			result = cell - 1 - Grid.WidthInCells;
@@ -455,9 +455,9 @@ public class Grid
 		return result;
 	}
 
-	public static int CellDownRight(int cell)
+		public static int CellDownRight(int cell)
 	{
-		int result = -1;
+		int result = Grid.InvalidCell;
 		if (cell >= Grid.WidthInCells && cell % Grid.WidthInCells < Grid.WidthInCells - 1)
 		{
 			result = cell + 1 - Grid.WidthInCells;
@@ -465,12 +465,12 @@ public class Grid
 		return result;
 	}
 
-	public static bool IsCellLeftOf(int cell, int other_cell)
+		public static bool IsCellLeftOf(int cell, int other_cell)
 	{
 		return Grid.CellColumn(cell) < Grid.CellColumn(other_cell);
 	}
 
-	public static bool IsCellOffsetOf(int cell, int target_cell, CellOffset[] target_offsets)
+		public static bool IsCellOffsetOf(int cell, int target_cell, CellOffset[] target_offsets)
 	{
 		int num = target_offsets.Length;
 		for (int i = 0; i < num; i++)
@@ -483,7 +483,7 @@ public class Grid
 		return false;
 	}
 
-	public static int GetCellDistance(int cell_a, int cell_b)
+		public static int GetCellDistance(int cell_a, int cell_b)
 	{
 		int num;
 		int num2;
@@ -494,7 +494,7 @@ public class Grid
 		return Math.Abs(num - num3) + Math.Abs(num2 - num4);
 	}
 
-	public static int GetCellRange(int cell_a, int cell_b)
+		public static int GetCellRange(int cell_a, int cell_b)
 	{
 		int num;
 		int num2;
@@ -505,7 +505,7 @@ public class Grid
 		return Math.Max(Math.Abs(num - num3), Math.Abs(num2 - num4));
 	}
 
-	public static CellOffset GetOffset(int base_cell, int offset_cell)
+		public static CellOffset GetOffset(int base_cell, int offset_cell)
 	{
 		int num;
 		int num2;
@@ -516,7 +516,7 @@ public class Grid
 		return new CellOffset(num3 - num, num4 - num2);
 	}
 
-	public static CellOffset GetCellOffsetDirection(int base_cell, int offset_cell)
+		public static CellOffset GetCellOffsetDirection(int base_cell, int offset_cell)
 	{
 		CellOffset offset = Grid.GetOffset(base_cell, offset_cell);
 		offset.x = Mathf.Clamp(offset.x, -1, 1);
@@ -524,17 +524,17 @@ public class Grid
 		return offset;
 	}
 
-	public static int OffsetCell(int cell, CellOffset offset)
+		public static int OffsetCell(int cell, CellOffset offset)
 	{
 		return cell + offset.x + offset.y * Grid.WidthInCells;
 	}
 
-	public static int OffsetCell(int cell, int x, int y)
+		public static int OffsetCell(int cell, int x, int y)
 	{
 		return cell + x + y * Grid.WidthInCells;
 	}
 
-	public static bool IsCellOffsetValid(int cell, int x, int y)
+		public static bool IsCellOffsetValid(int cell, int x, int y)
 	{
 		int num;
 		int num2;
@@ -542,27 +542,27 @@ public class Grid
 		return num + x >= 0 && num + x < Grid.WidthInCells && num2 + y >= 0 && num2 + y < Grid.HeightInCells;
 	}
 
-	public static bool IsCellOffsetValid(int cell, CellOffset offset)
+		public static bool IsCellOffsetValid(int cell, CellOffset offset)
 	{
 		return Grid.IsCellOffsetValid(cell, offset.x, offset.y);
 	}
 
-	public static int PosToCell(StateMachine.Instance smi)
+		public static int PosToCell(StateMachine.Instance smi)
 	{
 		return Grid.PosToCell(smi.transform.GetPosition());
 	}
 
-	public static int PosToCell(GameObject go)
+		public static int PosToCell(GameObject go)
 	{
 		return Grid.PosToCell(go.transform.GetPosition());
 	}
 
-	public static int PosToCell(KMonoBehaviour cmp)
+		public static int PosToCell(KMonoBehaviour cmp)
 	{
 		return Grid.PosToCell(cmp.transform.GetPosition());
 	}
 
-	public static bool IsValidBuildingCell(int cell)
+		public static bool IsValidBuildingCell(int cell)
 	{
 		if (!Grid.IsWorldValidCell(cell))
 		{
@@ -577,37 +577,37 @@ public class Grid
 		return (float)vector2I.x >= world.minimumBounds.x && (float)vector2I.x <= world.maximumBounds.x && (float)vector2I.y >= world.minimumBounds.y && (float)vector2I.y <= world.maximumBounds.y - (float)Grid.TopBorderHeight;
 	}
 
-	public static bool IsWorldValidCell(int cell)
+		public static bool IsWorldValidCell(int cell)
 	{
 		return Grid.IsValidCell(cell) && Grid.WorldIdx[cell] != byte.MaxValue;
 	}
 
-	public static bool IsValidCell(int cell)
+		public static bool IsValidCell(int cell)
 	{
 		return cell >= 0 && cell < Grid.CellCount;
 	}
 
-	public static bool IsValidCellInWorld(int cell, int world)
+		public static bool IsValidCellInWorld(int cell, int world)
 	{
 		return cell >= 0 && cell < Grid.CellCount && (int)Grid.WorldIdx[cell] == world;
 	}
 
-	public static bool IsActiveWorld(int cell)
+		public static bool IsActiveWorld(int cell)
 	{
 		return ClusterManager.Instance != null && ClusterManager.Instance.activeWorldId == (int)Grid.WorldIdx[cell];
 	}
 
-	public static bool AreCellsInSameWorld(int cell, int world_cell)
+		public static bool AreCellsInSameWorld(int cell, int world_cell)
 	{
 		return Grid.IsValidCell(cell) && Grid.IsValidCell(world_cell) && Grid.WorldIdx[cell] == Grid.WorldIdx[world_cell];
 	}
 
-	public static bool IsCellOpenToSpace(int cell)
+		public static bool IsCellOpenToSpace(int cell)
 	{
 		return !Grid.IsSolidCell(cell) && !(Grid.Objects[cell, 2] != null) && global::World.Instance.zoneRenderData.GetSubWorldZoneType(cell) == SubWorld.ZoneType.Space;
 	}
 
-	public static int PosToCell(Vector2 pos)
+		public static int PosToCell(Vector2 pos)
 	{
 		float x = pos.x;
 		int num = (int)(pos.y + 0.05f);
@@ -615,7 +615,7 @@ public class Grid
 		return num * Grid.WidthInCells + num2;
 	}
 
-	public static int PosToCell(Vector3 pos)
+		public static int PosToCell(Vector3 pos)
 	{
 		float x = pos.x;
 		int num = (int)(pos.y + 0.05f);
@@ -623,40 +623,40 @@ public class Grid
 		return num * Grid.WidthInCells + num2;
 	}
 
-	public static void PosToXY(Vector3 pos, out int x, out int y)
+		public static void PosToXY(Vector3 pos, out int x, out int y)
 	{
 		Grid.CellToXY(Grid.PosToCell(pos), out x, out y);
 	}
 
-	public static void PosToXY(Vector3 pos, out Vector2I xy)
+		public static void PosToXY(Vector3 pos, out Vector2I xy)
 	{
 		Grid.CellToXY(Grid.PosToCell(pos), out xy.x, out xy.y);
 	}
 
-	public static Vector2I PosToXY(Vector3 pos)
+		public static Vector2I PosToXY(Vector3 pos)
 	{
 		Vector2I result;
 		Grid.CellToXY(Grid.PosToCell(pos), out result.x, out result.y);
 		return result;
 	}
 
-	public static int XYToCell(int x, int y)
+		public static int XYToCell(int x, int y)
 	{
 		return x + y * Grid.WidthInCells;
 	}
 
-	public static void CellToXY(int cell, out int x, out int y)
+		public static void CellToXY(int cell, out int x, out int y)
 	{
 		x = Grid.CellColumn(cell);
 		y = Grid.CellRow(cell);
 	}
 
-	public static Vector2I CellToXY(int cell)
+		public static Vector2I CellToXY(int cell)
 	{
 		return new Vector2I(Grid.CellColumn(cell), Grid.CellRow(cell));
 	}
 
-	public static Vector3 CellToPos(int cell, float x_offset, float y_offset, float z_offset)
+		public static Vector3 CellToPos(int cell, float x_offset, float y_offset, float z_offset)
 	{
 		int widthInCells = Grid.WidthInCells;
 		float num = Grid.CellSizeInMeters * (float)(cell % widthInCells);
@@ -664,7 +664,7 @@ public class Grid
 		return new Vector3(num + x_offset, num2 + y_offset, z_offset);
 	}
 
-	public static Vector3 CellToPos(int cell)
+		public static Vector3 CellToPos(int cell)
 	{
 		int widthInCells = Grid.WidthInCells;
 		float x = Grid.CellSizeInMeters * (float)(cell % widthInCells);
@@ -672,7 +672,7 @@ public class Grid
 		return new Vector3(x, y, 0f);
 	}
 
-	public static Vector3 CellToPos2D(int cell)
+		public static Vector3 CellToPos2D(int cell)
 	{
 		int widthInCells = Grid.WidthInCells;
 		float x = Grid.CellSizeInMeters * (float)(cell % widthInCells);
@@ -680,34 +680,34 @@ public class Grid
 		return new Vector2(x, y);
 	}
 
-	public static int CellRow(int cell)
+		public static int CellRow(int cell)
 	{
 		return cell / Grid.WidthInCells;
 	}
 
-	public static int CellColumn(int cell)
+		public static int CellColumn(int cell)
 	{
 		return cell % Grid.WidthInCells;
 	}
 
-	public static int ClampX(int x)
+		public static int ClampX(int x)
 	{
 		return Math.Min(Math.Max(x, 0), Grid.WidthInCells - 1);
 	}
 
-	public static int ClampY(int y)
+		public static int ClampY(int y)
 	{
 		return Math.Min(Math.Max(y, 0), Grid.HeightInCells - 1);
 	}
 
-	public static Vector2I Constrain(Vector2I val)
+		public static Vector2I Constrain(Vector2I val)
 	{
 		val.x = Mathf.Max(0, Mathf.Min(val.x, Grid.WidthInCells - 1));
 		val.y = Mathf.Max(0, Mathf.Min(val.y, Grid.HeightInCells - 1));
 		return val;
 	}
 
-	public static void Reveal(int cell, byte visibility = 255, bool forceReveal = false)
+		public static void Reveal(int cell, byte visibility = 255, bool forceReveal = false)
 	{
 		bool flag = Grid.Spawnable[cell] == 0 && visibility > 0;
 		Grid.Spawnable[cell] = Math.Max(visibility, Grid.Visible[cell]);
@@ -721,7 +721,7 @@ public class Grid
 		}
 	}
 
-	public static ObjectLayer GetObjectLayerForConduitType(ConduitType conduit_type)
+		public static ObjectLayer GetObjectLayerForConduitType(ConduitType conduit_type)
 	{
 		switch (conduit_type)
 		{
@@ -736,7 +736,7 @@ public class Grid
 		}
 	}
 
-	public static Vector3 CellToPos(int cell, CellAlignment alignment, Grid.SceneLayer layer)
+		public static Vector3 CellToPos(int cell, CellAlignment alignment, Grid.SceneLayer layer)
 	{
 		switch (alignment)
 		{
@@ -757,47 +757,47 @@ public class Grid
 		return Grid.CellToPosCCC(cell, layer);
 	}
 
-	public static float GetLayerZ(Grid.SceneLayer layer)
+		public static float GetLayerZ(Grid.SceneLayer layer)
 	{
 		return -Grid.HalfCellSizeInMeters - Grid.CellSizeInMeters * (float)layer * Grid.LayerMultiplier;
 	}
 
-	public static Vector3 CellToPosCCC(int cell, Grid.SceneLayer layer)
+		public static Vector3 CellToPosCCC(int cell, Grid.SceneLayer layer)
 	{
 		return Grid.CellToPos(cell, Grid.HalfCellSizeInMeters, Grid.HalfCellSizeInMeters, Grid.GetLayerZ(layer));
 	}
 
-	public static Vector3 CellToPosCBC(int cell, Grid.SceneLayer layer)
+		public static Vector3 CellToPosCBC(int cell, Grid.SceneLayer layer)
 	{
 		return Grid.CellToPos(cell, Grid.HalfCellSizeInMeters, 0.01f, Grid.GetLayerZ(layer));
 	}
 
-	public static Vector3 CellToPosCCF(int cell, Grid.SceneLayer layer)
+		public static Vector3 CellToPosCCF(int cell, Grid.SceneLayer layer)
 	{
 		return Grid.CellToPos(cell, Grid.HalfCellSizeInMeters, Grid.HalfCellSizeInMeters, -Grid.CellSizeInMeters * (float)layer * Grid.LayerMultiplier);
 	}
 
-	public static Vector3 CellToPosLCC(int cell, Grid.SceneLayer layer)
+		public static Vector3 CellToPosLCC(int cell, Grid.SceneLayer layer)
 	{
 		return Grid.CellToPos(cell, 0.01f, Grid.HalfCellSizeInMeters, Grid.GetLayerZ(layer));
 	}
 
-	public static Vector3 CellToPosRCC(int cell, Grid.SceneLayer layer)
+		public static Vector3 CellToPosRCC(int cell, Grid.SceneLayer layer)
 	{
 		return Grid.CellToPos(cell, Grid.CellSizeInMeters - 0.01f, Grid.HalfCellSizeInMeters, Grid.GetLayerZ(layer));
 	}
 
-	public static Vector3 CellToPosCTC(int cell, Grid.SceneLayer layer)
+		public static Vector3 CellToPosCTC(int cell, Grid.SceneLayer layer)
 	{
 		return Grid.CellToPos(cell, Grid.HalfCellSizeInMeters, Grid.CellSizeInMeters - 0.01f, Grid.GetLayerZ(layer));
 	}
 
-	public static bool IsSolidCell(int cell)
+		public static bool IsSolidCell(int cell)
 	{
 		return Grid.IsValidCell(cell) && Grid.Solid[cell];
 	}
 
-	public unsafe static bool IsSubstantialLiquid(int cell, float threshold = 0.35f)
+		public unsafe static bool IsSubstantialLiquid(int cell, float threshold = 0.35f)
 	{
 		if (Grid.IsValidCell(cell))
 		{
@@ -814,7 +814,7 @@ public class Grid
 		return false;
 	}
 
-	public static bool IsVisiblyInLiquid(Vector2 pos)
+		public static bool IsVisiblyInLiquid(Vector2 pos)
 	{
 		int num = Grid.PosToCell(pos);
 		if (Grid.IsValidCell(num) && Grid.IsLiquid(num))
@@ -834,7 +834,7 @@ public class Grid
 		return false;
 	}
 
-	public static bool IsNavigatableLiquid(int cell)
+		public static bool IsNavigatableLiquid(int cell)
 	{
 		int num = Grid.CellAbove(cell);
 		if (!Grid.IsValidCell(cell) || !Grid.IsValidCell(num))
@@ -859,17 +859,17 @@ public class Grid
 		return false;
 	}
 
-	public static bool IsLiquid(int cell)
+		public static bool IsLiquid(int cell)
 	{
 		return ElementLoader.elements[(int)Grid.ElementIdx[cell]].IsLiquid;
 	}
 
-	public static bool IsGas(int cell)
+		public static bool IsGas(int cell)
 	{
 		return ElementLoader.elements[(int)Grid.ElementIdx[cell]].IsGas;
 	}
 
-	public static void GetVisibleExtents(out int min_x, out int min_y, out int max_x, out int max_y)
+		public static void GetVisibleExtents(out int min_x, out int min_y, out int max_x, out int max_y)
 	{
 		Vector3 vector = Camera.main.ViewportToWorldPoint(new Vector3(1f, 1f, Camera.main.transform.GetPosition().z));
 		Vector3 vector2 = Camera.main.ViewportToWorldPoint(new Vector3(0f, 0f, Camera.main.transform.GetPosition().z));
@@ -879,12 +879,12 @@ public class Grid
 		max_x = (int)(vector.x + 0.5f);
 	}
 
-	public static void GetVisibleExtents(out Vector2I min, out Vector2I max)
+		public static void GetVisibleExtents(out Vector2I min, out Vector2I max)
 	{
 		Grid.GetVisibleExtents(out min.x, out min.y, out max.x, out max.y);
 	}
 
-	public static void GetVisibleCellRangeInActiveWorld(out Vector2I min, out Vector2I max, int padding = 4, float rangeScale = 1.5f)
+		public static void GetVisibleCellRangeInActiveWorld(out Vector2I min, out Vector2I max, int padding = 4, float rangeScale = 1.5f)
 	{
 		Grid.GetVisibleExtents(out min.x, out min.y, out max.x, out max.y);
 		min.x -= padding;
@@ -910,7 +910,7 @@ public class Grid
 		max.y = Math.Min((int)((float)Grid.HeightInCells * rangeScale) - 1, Math.Max(0, max.y));
 	}
 
-	public static Extents GetVisibleExtentsInActiveWorld(int padding = 4, float rangeScale = 1.5f)
+		public static Extents GetVisibleExtentsInActiveWorld(int padding = 4, float rangeScale = 1.5f)
 	{
 		Vector2I vector2I;
 		Vector2I vector2I2;
@@ -918,22 +918,22 @@ public class Grid
 		return new Extents(vector2I.x, vector2I.y, vector2I2.x - vector2I.x, vector2I2.y - vector2I.y);
 	}
 
-	public static bool IsVisible(int cell)
+		public static bool IsVisible(int cell)
 	{
 		return Grid.Visible[cell] > 0 || !PropertyTextures.IsFogOfWarEnabled;
 	}
 
-	public static bool VisibleBlockingCB(int cell)
+		public static bool VisibleBlockingCB(int cell)
 	{
 		return !Grid.Transparent[cell] && Grid.IsSolidCell(cell);
 	}
 
-	public static bool VisibilityTest(int x, int y, int x2, int y2, bool blocking_tile_visible = false)
+		public static bool VisibilityTest(int x, int y, int x2, int y2, bool blocking_tile_visible = false)
 	{
 		return Grid.TestLineOfSight(x, y, x2, y2, Grid.VisibleBlockingDelegate, blocking_tile_visible, false);
 	}
 
-	public static bool VisibilityTest(int cell, int target_cell, bool blocking_tile_visible = false)
+		public static bool VisibilityTest(int cell, int target_cell, bool blocking_tile_visible = false)
 	{
 		int x = 0;
 		int y = 0;
@@ -944,17 +944,17 @@ public class Grid
 		return Grid.VisibilityTest(x, y, x2, y2, blocking_tile_visible);
 	}
 
-	public static bool PhysicalBlockingCB(int cell)
+		public static bool PhysicalBlockingCB(int cell)
 	{
 		return Grid.Solid[cell];
 	}
 
-	public static bool IsPhysicallyAccessible(int x, int y, int x2, int y2, bool blocking_tile_visible = false)
+		public static bool IsPhysicallyAccessible(int x, int y, int x2, int y2, bool blocking_tile_visible = false)
 	{
 		return Grid.FastTestLineOfSightSolid(x, y, x2, y2);
 	}
 
-	public static void CollectCellsInLine(int startCell, int endCell, HashSet<int> outputCells)
+		public static void CollectCellsInLine(int startCell, int endCell, HashSet<int> outputCells)
 	{
 		int num = 2;
 		int cellDistance = Grid.GetCellDistance(startCell, endCell);
@@ -969,7 +969,7 @@ public class Grid
 		}
 	}
 
-	public static bool IsRangeExposedToSunlight(int cell, int scanRadius, CellOffset scanShape, out int cellsClear, int clearThreshold = 1)
+		public static bool IsRangeExposedToSunlight(int cell, int scanRadius, CellOffset scanShape, out int cellsClear, int clearThreshold = 1)
 	{
 		cellsClear = 0;
 		if (Grid.IsValidCell(cell) && (int)Grid.ExposedToSunlight[cell] >= clearThreshold)
@@ -996,7 +996,7 @@ public class Grid
 		return cellsClear > 0;
 	}
 
-	public static bool FastTestLineOfSightSolid(int x, int y, int x2, int y2)
+		public static bool FastTestLineOfSightSolid(int x, int y, int x2, int y2)
 	{
 		int value = x2 - x;
 		int num = y2 - y;
@@ -1018,11 +1018,11 @@ public class Grid
 			{
 				num2 = 1;
 			}
-			num3 = 0;
+			num4 = 0;
 		}
 		int num8 = num6 >> 1;
-		int num9 = num4 + num5 * Grid.WidthInCells;
-		int num10 = num3 + num2 * Grid.WidthInCells;
+		int num9 = num3 + num5 * Grid.WidthInCells;
+		int num10 = num4 + num2 * Grid.WidthInCells;
 		int num11 = Grid.XYToCell(x, y);
 		for (int i = 1; i < num6; i++)
 		{
@@ -1044,7 +1044,7 @@ public class Grid
 		return true;
 	}
 
-	public static bool TestLineOfSightFixedBlockingVisible(int x, int y, int x2, int y2, Func<int, bool> blocking_cb, bool blocking_tile_visible, bool allow_invalid_cells = false)
+		public static bool TestLineOfSightFixedBlockingVisible(int x, int y, int x2, int y2, Func<int, bool> blocking_cb, bool blocking_tile_visible, bool allow_invalid_cells = false)
 	{
 		int num = x;
 		int num2 = y;
@@ -1123,7 +1123,7 @@ public class Grid
 		return true;
 	}
 
-	public static bool TestLineOfSight(int x, int y, int x2, int y2, Func<int, bool> blocking_cb, Func<int, bool> blocking_tile_visible_cb, bool allow_invalid_cells = false)
+		public static bool TestLineOfSight(int x, int y, int x2, int y2, Func<int, bool> blocking_cb, Func<int, bool> blocking_tile_visible_cb, bool allow_invalid_cells = false)
 	{
 		int num = x;
 		int num2 = y;
@@ -1202,12 +1202,12 @@ public class Grid
 		return true;
 	}
 
-	public static bool TestLineOfSight(int x, int y, int x2, int y2, Func<int, bool> blocking_cb, bool blocking_tile_visible = false, bool allow_invalid_cells = false)
+		public static bool TestLineOfSight(int x, int y, int x2, int y2, Func<int, bool> blocking_cb, bool blocking_tile_visible = false, bool allow_invalid_cells = false)
 	{
 		return Grid.TestLineOfSightFixedBlockingVisible(x, y, x2, y2, blocking_cb, blocking_tile_visible, allow_invalid_cells);
 	}
 
-	public static bool GetFreeGridSpace(Vector2I size, out Vector2I offset)
+		public static bool GetFreeGridSpace(Vector2I size, out Vector2I offset)
 	{
 		Vector2I gridOffset = BestFit.GetGridOffset(ClusterManager.Instance.WorldContainers, size, out offset);
 		if (gridOffset.X <= Grid.WidthInCells && gridOffset.Y <= Grid.HeightInCells)
@@ -1219,7 +1219,7 @@ public class Grid
 		return false;
 	}
 
-	public static void FreeGridSpace(Vector2I size, Vector2I offset)
+		public static void FreeGridSpace(Vector2I size, Vector2I offset)
 	{
 		SimMessages.SimDataFreeCells(size.x, size.y, offset.x, offset.y);
 		for (int i = offset.y; i < size.y + offset.y + 1; i++)
@@ -1236,186 +1236,186 @@ public class Grid
 		Game.Instance.roomProber.Refresh();
 	}
 
-	[Conditional("UNITY_EDITOR")]
+		[Conditional("UNITY_EDITOR")]
 	public static void DrawBoxOnCell(int cell, Color color, float offset = 0f)
 	{
 		Grid.CellToPos(cell) + new Vector3(0.5f, 0.5f, 0f);
 	}
 
-	public static readonly CellOffset[] DefaultOffset = new CellOffset[1];
+		public static readonly CellOffset[] DefaultOffset = new CellOffset[1];
 
-	public static float WidthInMeters;
+		public static float WidthInMeters;
 
-	public static float HeightInMeters;
+		public static float HeightInMeters;
 
-	public static int WidthInCells;
+		public static int WidthInCells;
 
-	public static int HeightInCells;
+		public static int HeightInCells;
 
-	public static float CellSizeInMeters;
+		public static float CellSizeInMeters;
 
-	public static float InverseCellSizeInMeters;
+		public static float InverseCellSizeInMeters;
 
-	public static float HalfCellSizeInMeters;
+		public static float HalfCellSizeInMeters;
 
-	public static int CellCount;
+		public static int CellCount;
 
-	public static int InvalidCell = -1;
+		public static int InvalidCell = -1;
 
-	public static int TopBorderHeight = 2;
+		public static int TopBorderHeight = 2;
 
-	public static Dictionary<int, GameObject>[] ObjectLayers;
+		public static Dictionary<int, GameObject>[] ObjectLayers;
 
-	public static Action<int> OnReveal;
+		public static Action<int> OnReveal;
 
-	public static Grid.BuildFlags[] BuildMasks;
+		public static Grid.BuildFlags[] BuildMasks;
 
-	public static Grid.BuildFlagsFoundationIndexer Foundation;
+		public static Grid.BuildFlagsFoundationIndexer Foundation;
 
-	public static Grid.BuildFlagsSolidIndexer Solid;
+		public static Grid.BuildFlagsSolidIndexer Solid;
 
-	public static Grid.BuildFlagsDupeImpassableIndexer DupeImpassable;
+		public static Grid.BuildFlagsDupeImpassableIndexer DupeImpassable;
 
-	public static Grid.BuildFlagsFakeFloorIndexer FakeFloor;
+		public static Grid.BuildFlagsFakeFloorIndexer FakeFloor;
 
-	public static Grid.BuildFlagsDupePassableIndexer DupePassable;
+		public static Grid.BuildFlagsDupePassableIndexer DupePassable;
 
-	public static Grid.BuildFlagsImpassableIndexer CritterImpassable;
+		public static Grid.BuildFlagsImpassableIndexer CritterImpassable;
 
-	public static Grid.BuildFlagsDoorIndexer HasDoor;
+		public static Grid.BuildFlagsDoorIndexer HasDoor;
 
-	public static Grid.VisFlags[] VisMasks;
+		public static Grid.VisFlags[] VisMasks;
 
-	public static Grid.VisFlagsRevealedIndexer Revealed;
+		public static Grid.VisFlagsRevealedIndexer Revealed;
 
-	public static Grid.VisFlagsPreventFogOfWarRevealIndexer PreventFogOfWarReveal;
+		public static Grid.VisFlagsPreventFogOfWarRevealIndexer PreventFogOfWarReveal;
 
-	public static Grid.VisFlagsRenderedByWorldIndexer RenderedByWorld;
+		public static Grid.VisFlagsRenderedByWorldIndexer RenderedByWorld;
 
-	public static Grid.VisFlagsAllowPathfindingIndexer AllowPathfinding;
+		public static Grid.VisFlagsAllowPathfindingIndexer AllowPathfinding;
 
-	public static Grid.NavValidatorFlags[] NavValidatorMasks;
+		public static Grid.NavValidatorFlags[] NavValidatorMasks;
 
-	public static Grid.NavValidatorFlagsLadderIndexer HasLadder;
+		public static Grid.NavValidatorFlagsLadderIndexer HasLadder;
 
-	public static Grid.NavValidatorFlagsPoleIndexer HasPole;
+		public static Grid.NavValidatorFlagsPoleIndexer HasPole;
 
-	public static Grid.NavValidatorFlagsTubeIndexer HasTube;
+		public static Grid.NavValidatorFlagsTubeIndexer HasTube;
 
-	public static Grid.NavValidatorFlagsNavTeleporterIndexer HasNavTeleporter;
+		public static Grid.NavValidatorFlagsNavTeleporterIndexer HasNavTeleporter;
 
-	public static Grid.NavValidatorFlagsUnderConstructionIndexer IsTileUnderConstruction;
+		public static Grid.NavValidatorFlagsUnderConstructionIndexer IsTileUnderConstruction;
 
-	public static Grid.NavFlags[] NavMasks;
+		public static Grid.NavFlags[] NavMasks;
 
-	private static Grid.NavFlagsAccessDoorIndexer HasAccessDoor;
+		private static Grid.NavFlagsAccessDoorIndexer HasAccessDoor;
 
-	public static Grid.NavFlagsTubeEntranceIndexer HasTubeEntrance;
+		public static Grid.NavFlagsTubeEntranceIndexer HasTubeEntrance;
 
-	public static Grid.NavFlagsPreventIdleTraversalIndexer PreventIdleTraversal;
+		public static Grid.NavFlagsPreventIdleTraversalIndexer PreventIdleTraversal;
 
-	public static Grid.NavFlagsReservedIndexer Reserved;
+		public static Grid.NavFlagsReservedIndexer Reserved;
 
-	public static Grid.NavFlagsSuitMarkerIndexer HasSuitMarker;
+		public static Grid.NavFlagsSuitMarkerIndexer HasSuitMarker;
 
-	private static Dictionary<int, Grid.Restriction> restrictions = new Dictionary<int, Grid.Restriction>();
+		private static Dictionary<int, Grid.Restriction> restrictions = new Dictionary<int, Grid.Restriction>();
 
-	private static Dictionary<int, Grid.TubeEntrance> tubeEntrances = new Dictionary<int, Grid.TubeEntrance>();
+		private static Dictionary<int, Grid.TubeEntrance> tubeEntrances = new Dictionary<int, Grid.TubeEntrance>();
 
-	private static Dictionary<int, Grid.SuitMarker> suitMarkers = new Dictionary<int, Grid.SuitMarker>();
+		private static Dictionary<int, Grid.SuitMarker> suitMarkers = new Dictionary<int, Grid.SuitMarker>();
 
-	public unsafe static ushort* elementIdx;
+		public unsafe static ushort* elementIdx;
 
-	public unsafe static float* temperature;
+		public unsafe static float* temperature;
 
-	public unsafe static float* radiation;
+		public unsafe static float* radiation;
 
-	public unsafe static float* mass;
+		public unsafe static float* mass;
 
-	public unsafe static byte* properties;
+		public unsafe static byte* properties;
 
-	public unsafe static byte* strengthInfo;
+		public unsafe static byte* strengthInfo;
 
-	public unsafe static byte* insulation;
+		public unsafe static byte* insulation;
 
-	public unsafe static byte* diseaseIdx;
+		public unsafe static byte* diseaseIdx;
 
-	public unsafe static int* diseaseCount;
+		public unsafe static int* diseaseCount;
 
-	public unsafe static byte* exposedToSunlight;
+		public unsafe static byte* exposedToSunlight;
 
-	public unsafe static float* AccumulatedFlowValues = null;
+		public unsafe static float* AccumulatedFlowValues = null;
 
-	public static byte[] Visible;
+		public static byte[] Visible;
 
-	public static byte[] Spawnable;
+		public static byte[] Spawnable;
 
-	public static float[] Damage;
+		public static float[] Damage;
 
-	public static float[] Decor;
+		public static float[] Decor;
 
-	public static bool[] GravitasFacility;
+		public static bool[] GravitasFacility;
 
-	public static byte[] WorldIdx;
+		public static byte[] WorldIdx;
 
-	public static float[] Loudness;
+		public static float[] Loudness;
 
-	public static Element[] Element;
+		public static Element[] Element;
 
-	public static int[] LightCount;
+		public static int[] LightCount;
 
-	public static Grid.PressureIndexer Pressure;
+		public static Grid.PressureIndexer Pressure;
 
-	public static Grid.TransparentIndexer Transparent;
+		public static Grid.TransparentIndexer Transparent;
 
-	public static Grid.ElementIdxIndexer ElementIdx;
+		public static Grid.ElementIdxIndexer ElementIdx;
 
-	public static Grid.TemperatureIndexer Temperature;
+		public static Grid.TemperatureIndexer Temperature;
 
-	public static Grid.RadiationIndexer Radiation;
+		public static Grid.RadiationIndexer Radiation;
 
-	public static Grid.MassIndexer Mass;
+		public static Grid.MassIndexer Mass;
 
-	public static Grid.PropertiesIndexer Properties;
+		public static Grid.PropertiesIndexer Properties;
 
-	public static Grid.ExposedToSunlightIndexer ExposedToSunlight;
+		public static Grid.ExposedToSunlightIndexer ExposedToSunlight;
 
-	public static Grid.StrengthInfoIndexer StrengthInfo;
+		public static Grid.StrengthInfoIndexer StrengthInfo;
 
-	public static Grid.Insulationndexer Insulation;
+		public static Grid.Insulationndexer Insulation;
 
-	public static Grid.DiseaseIdxIndexer DiseaseIdx;
+		public static Grid.DiseaseIdxIndexer DiseaseIdx;
 
-	public static Grid.DiseaseCountIndexer DiseaseCount;
+		public static Grid.DiseaseCountIndexer DiseaseCount;
 
-	public static Grid.LightIntensityIndexer LightIntensity;
+		public static Grid.LightIntensityIndexer LightIntensity;
 
-	public static Grid.AccumulatedFlowIndexer AccumulatedFlow;
+		public static Grid.AccumulatedFlowIndexer AccumulatedFlow;
 
-	public static Grid.ObjectLayerIndexer Objects;
+		public static Grid.ObjectLayerIndexer Objects;
 
-	public static float LayerMultiplier = 1f;
+		public static float LayerMultiplier = 1f;
 
-	private static readonly Func<int, bool> VisibleBlockingDelegate = (int cell) => Grid.VisibleBlockingCB(cell);
+		private static readonly Func<int, bool> VisibleBlockingDelegate = (int cell) => Grid.VisibleBlockingCB(cell);
 
-	private static readonly Func<int, bool> PhysicalBlockingDelegate = (int cell) => Grid.PhysicalBlockingCB(cell);
+		private static readonly Func<int, bool> PhysicalBlockingDelegate = (int cell) => Grid.PhysicalBlockingCB(cell);
 
-	[Flags]
+		[Flags]
 	public enum BuildFlags : byte
 	{
-		Solid = 1,
-		Foundation = 2,
-		Door = 4,
-		DupePassable = 8,
-		DupeImpassable = 16,
-		CritterImpassable = 32,
-		FakeFloor = 192,
-		Any = 255
+				Solid = 1,
+				Foundation = 2,
+				Door = 4,
+				DupePassable = 8,
+				DupeImpassable = 16,
+				CritterImpassable = 32,
+				FakeFloor = 192,
+				Any = 255
 	}
 
-	public struct BuildFlagsFoundationIndexer
+		public struct BuildFlagsFoundationIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1428,9 +1428,9 @@ public class Grid
 		}
 	}
 
-	public struct BuildFlagsSolidIndexer
+		public struct BuildFlagsSolidIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1439,9 +1439,9 @@ public class Grid
 		}
 	}
 
-	public struct BuildFlagsDupeImpassableIndexer
+		public struct BuildFlagsDupeImpassableIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1454,9 +1454,9 @@ public class Grid
 		}
 	}
 
-	public struct BuildFlagsFakeFloorIndexer
+		public struct BuildFlagsFakeFloorIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1464,7 +1464,7 @@ public class Grid
 			}
 		}
 
-		public void Add(int i)
+				public void Add(int i)
 		{
 			Grid.BuildFlags buildFlags = Grid.BuildMasks[i];
 			int num = (int)(((buildFlags & Grid.BuildFlags.FakeFloor) >> 6) + 1);
@@ -1472,7 +1472,7 @@ public class Grid
 			Grid.BuildMasks[i] = ((buildFlags & ~Grid.BuildFlags.FakeFloor) | ((Grid.BuildFlags)(num << 6) & Grid.BuildFlags.FakeFloor));
 		}
 
-		public void Remove(int i)
+				public void Remove(int i)
 		{
 			Grid.BuildFlags buildFlags = Grid.BuildMasks[i];
 			int num = (int)(((buildFlags & Grid.BuildFlags.FakeFloor) >> 6) - Grid.BuildFlags.Solid);
@@ -1481,9 +1481,9 @@ public class Grid
 		}
 	}
 
-	public struct BuildFlagsDupePassableIndexer
+		public struct BuildFlagsDupePassableIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1496,9 +1496,9 @@ public class Grid
 		}
 	}
 
-	public struct BuildFlagsImpassableIndexer
+		public struct BuildFlagsImpassableIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1511,9 +1511,9 @@ public class Grid
 		}
 	}
 
-	public struct BuildFlagsDoorIndexer
+		public struct BuildFlagsDoorIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1526,18 +1526,18 @@ public class Grid
 		}
 	}
 
-	[Flags]
+		[Flags]
 	public enum VisFlags : byte
 	{
-		Revealed = 1,
-		PreventFogOfWarReveal = 2,
-		RenderedByWorld = 4,
-		AllowPathfinding = 8
+				Revealed = 1,
+				PreventFogOfWarReveal = 2,
+				RenderedByWorld = 4,
+				AllowPathfinding = 8
 	}
 
-	public struct VisFlagsRevealedIndexer
+		public struct VisFlagsRevealedIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1550,9 +1550,9 @@ public class Grid
 		}
 	}
 
-	public struct VisFlagsPreventFogOfWarRevealIndexer
+		public struct VisFlagsPreventFogOfWarRevealIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1565,9 +1565,9 @@ public class Grid
 		}
 	}
 
-	public struct VisFlagsRenderedByWorldIndexer
+		public struct VisFlagsRenderedByWorldIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1580,9 +1580,9 @@ public class Grid
 		}
 	}
 
-	public struct VisFlagsAllowPathfindingIndexer
+		public struct VisFlagsAllowPathfindingIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1595,19 +1595,19 @@ public class Grid
 		}
 	}
 
-	[Flags]
+		[Flags]
 	public enum NavValidatorFlags : byte
 	{
-		Ladder = 1,
-		Pole = 2,
-		Tube = 4,
-		NavTeleporter = 8,
-		UnderConstruction = 16
+				Ladder = 1,
+				Pole = 2,
+				Tube = 4,
+				NavTeleporter = 8,
+				UnderConstruction = 16
 	}
 
-	public struct NavValidatorFlagsLadderIndexer
+		public struct NavValidatorFlagsLadderIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1620,9 +1620,9 @@ public class Grid
 		}
 	}
 
-	public struct NavValidatorFlagsPoleIndexer
+		public struct NavValidatorFlagsPoleIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1635,9 +1635,9 @@ public class Grid
 		}
 	}
 
-	public struct NavValidatorFlagsTubeIndexer
+		public struct NavValidatorFlagsTubeIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1650,9 +1650,9 @@ public class Grid
 		}
 	}
 
-	public struct NavValidatorFlagsNavTeleporterIndexer
+		public struct NavValidatorFlagsNavTeleporterIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1665,9 +1665,9 @@ public class Grid
 		}
 	}
 
-	public struct NavValidatorFlagsUnderConstructionIndexer
+		public struct NavValidatorFlagsUnderConstructionIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1680,19 +1680,19 @@ public class Grid
 		}
 	}
 
-	[Flags]
+		[Flags]
 	public enum NavFlags : byte
 	{
-		AccessDoor = 1,
-		TubeEntrance = 2,
-		PreventIdleTraversal = 4,
-		Reserved = 8,
-		SuitMarker = 16
+				AccessDoor = 1,
+				TubeEntrance = 2,
+				PreventIdleTraversal = 4,
+				Reserved = 8,
+				SuitMarker = 16
 	}
 
-	public struct NavFlagsAccessDoorIndexer
+		public struct NavFlagsAccessDoorIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1705,9 +1705,9 @@ public class Grid
 		}
 	}
 
-	public struct NavFlagsTubeEntranceIndexer
+		public struct NavFlagsTubeEntranceIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1720,9 +1720,9 @@ public class Grid
 		}
 	}
 
-	public struct NavFlagsPreventIdleTraversalIndexer
+		public struct NavFlagsPreventIdleTraversalIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1735,9 +1735,9 @@ public class Grid
 		}
 	}
 
-	public struct NavFlagsReservedIndexer
+		public struct NavFlagsReservedIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1750,9 +1750,9 @@ public class Grid
 		}
 	}
 
-	public struct NavFlagsSuitMarkerIndexer
+		public struct NavFlagsSuitMarkerIndexer
 	{
-		public bool this[int i]
+				public bool this[int i]
 		{
 			get
 			{
@@ -1765,42 +1765,42 @@ public class Grid
 		}
 	}
 
-	public struct Restriction
+		public struct Restriction
 	{
-		public const int DefaultID = -1;
+				public const int DefaultID = -1;
 
-		public Dictionary<int, Grid.Restriction.Directions> DirectionMasksForMinionInstanceID;
+				public Dictionary<int, Grid.Restriction.Directions> DirectionMasksForMinionInstanceID;
 
-		public Grid.Restriction.Orientation orientation;
+				public Grid.Restriction.Orientation orientation;
 
-		[Flags]
+				[Flags]
 		public enum Directions : byte
 		{
-			Left = 1,
-			Right = 2,
-			Teleport = 4
+						Left = 1,
+						Right = 2,
+						Teleport = 4
 		}
 
-		public enum Orientation : byte
+				public enum Orientation : byte
 		{
-			Vertical,
-			Horizontal,
-			SingleCell
+						Vertical,
+						Horizontal,
+						SingleCell
 		}
 	}
 
-	private struct TubeEntrance
+		private struct TubeEntrance
 	{
-		public bool operational;
+				public bool operational;
 
-		public int reservationCapacity;
+				public int reservationCapacity;
 
-		public HashSet<int> reservedInstanceIDs;
+				public HashSet<int> reservedInstanceIDs;
 	}
 
-	public struct SuitMarker
+		public struct SuitMarker
 	{
-				public int emptyLockerCount
+						public int emptyLockerCount
 		{
 			get
 			{
@@ -1808,30 +1808,30 @@ public class Grid
 			}
 		}
 
-		public int suitCount;
+				public int suitCount;
 
-		public int lockerCount;
+				public int lockerCount;
 
-		public Grid.SuitMarker.Flags flags;
+				public Grid.SuitMarker.Flags flags;
 
-		public PathFinder.PotentialPath.Flags pathFlags;
+				public PathFinder.PotentialPath.Flags pathFlags;
 
-		public HashSet<int> minionIDsWithSuitReservations;
+				public HashSet<int> minionIDsWithSuitReservations;
 
-		public HashSet<int> minionIDsWithEmptyLockerReservations;
+				public HashSet<int> minionIDsWithEmptyLockerReservations;
 
-		[Flags]
+				[Flags]
 		public enum Flags : byte
 		{
-			OnlyTraverseIfUnequipAvailable = 1,
-			Operational = 2,
-			Rotated = 4
+						OnlyTraverseIfUnequipAvailable = 1,
+						Operational = 2,
+						Rotated = 4
 		}
 	}
 
-	public struct ObjectLayerIndexer
+		public struct ObjectLayerIndexer
 	{
-		public GameObject this[int cell, int layer]
+				public GameObject this[int cell, int layer]
 		{
 			get
 			{
@@ -1854,9 +1854,9 @@ public class Grid
 		}
 	}
 
-	public struct PressureIndexer
+		public struct PressureIndexer
 	{
-		public unsafe float this[int i]
+				public unsafe float this[int i]
 		{
 			get
 			{
@@ -1865,9 +1865,9 @@ public class Grid
 		}
 	}
 
-	public struct TransparentIndexer
+		public struct TransparentIndexer
 	{
-		public unsafe bool this[int i]
+				public unsafe bool this[int i]
 		{
 			get
 			{
@@ -1876,9 +1876,9 @@ public class Grid
 		}
 	}
 
-	public struct ElementIdxIndexer
+		public struct ElementIdxIndexer
 	{
-		public unsafe ushort this[int i]
+				public unsafe ushort this[int i]
 		{
 			get
 			{
@@ -1887,9 +1887,9 @@ public class Grid
 		}
 	}
 
-	public struct TemperatureIndexer
+		public struct TemperatureIndexer
 	{
-		public unsafe float this[int i]
+				public unsafe float this[int i]
 		{
 			get
 			{
@@ -1898,9 +1898,9 @@ public class Grid
 		}
 	}
 
-	public struct RadiationIndexer
+		public struct RadiationIndexer
 	{
-		public unsafe float this[int i]
+				public unsafe float this[int i]
 		{
 			get
 			{
@@ -1909,9 +1909,9 @@ public class Grid
 		}
 	}
 
-	public struct MassIndexer
+		public struct MassIndexer
 	{
-		public unsafe float this[int i]
+				public unsafe float this[int i]
 		{
 			get
 			{
@@ -1920,9 +1920,9 @@ public class Grid
 		}
 	}
 
-	public struct PropertiesIndexer
+		public struct PropertiesIndexer
 	{
-		public unsafe byte this[int i]
+				public unsafe byte this[int i]
 		{
 			get
 			{
@@ -1931,9 +1931,9 @@ public class Grid
 		}
 	}
 
-	public struct ExposedToSunlightIndexer
+		public struct ExposedToSunlightIndexer
 	{
-		public unsafe byte this[int i]
+				public unsafe byte this[int i]
 		{
 			get
 			{
@@ -1942,9 +1942,9 @@ public class Grid
 		}
 	}
 
-	public struct StrengthInfoIndexer
+		public struct StrengthInfoIndexer
 	{
-		public unsafe byte this[int i]
+				public unsafe byte this[int i]
 		{
 			get
 			{
@@ -1953,9 +1953,9 @@ public class Grid
 		}
 	}
 
-	public struct Insulationndexer
+		public struct Insulationndexer
 	{
-		public unsafe byte this[int i]
+				public unsafe byte this[int i]
 		{
 			get
 			{
@@ -1964,9 +1964,9 @@ public class Grid
 		}
 	}
 
-	public struct DiseaseIdxIndexer
+		public struct DiseaseIdxIndexer
 	{
-		public unsafe byte this[int i]
+				public unsafe byte this[int i]
 		{
 			get
 			{
@@ -1975,9 +1975,9 @@ public class Grid
 		}
 	}
 
-	public struct DiseaseCountIndexer
+		public struct DiseaseCountIndexer
 	{
-		public unsafe int this[int i]
+				public unsafe int this[int i]
 		{
 			get
 			{
@@ -1986,9 +1986,9 @@ public class Grid
 		}
 	}
 
-	public struct AccumulatedFlowIndexer
+		public struct AccumulatedFlowIndexer
 	{
-		public unsafe float this[int i]
+				public unsafe float this[int i]
 		{
 			get
 			{
@@ -1997,9 +1997,9 @@ public class Grid
 		}
 	}
 
-	public struct LightIntensityIndexer
+		public struct LightIntensityIndexer
 	{
-		public unsafe int this[int i]
+				public unsafe int this[int i]
 		{
 			get
 			{
@@ -2016,44 +2016,44 @@ public class Grid
 		}
 	}
 
-	public enum SceneLayer
+		public enum SceneLayer
 	{
-		WorldSelection = -3,
-		NoLayer,
-		Background,
-		Backwall = 1,
-		Gas,
-		GasConduits,
-		GasConduitBridges,
-		LiquidConduits,
-		LiquidConduitBridges,
-		SolidConduits,
-		SolidConduitContents,
-		SolidConduitBridges,
-		Wires,
-		WireBridges,
-		WireBridgesFront,
-		LogicWires,
-		LogicGates,
-		LogicGatesFront,
-		InteriorWall,
-		GasFront,
-		BuildingBack,
-		Building,
-		BuildingUse,
-		BuildingFront,
-		TransferArm,
-		Ore,
-		Creatures,
-		Move,
-		Front,
-		GlassTile,
-		Liquid,
-		Ground,
-		TileMain,
-		TileFront,
-		FXFront,
-		FXFront2,
-		SceneMAX
+				WorldSelection = -3,
+				NoLayer,
+				Background,
+				Backwall = 1,
+				Gas,
+				GasConduits,
+				GasConduitBridges,
+				LiquidConduits,
+				LiquidConduitBridges,
+				SolidConduits,
+				SolidConduitContents,
+				SolidConduitBridges,
+				Wires,
+				WireBridges,
+				WireBridgesFront,
+				LogicWires,
+				LogicGates,
+				LogicGatesFront,
+				InteriorWall,
+				GasFront,
+				BuildingBack,
+				Building,
+				BuildingUse,
+				BuildingFront,
+				TransferArm,
+				Ore,
+				Creatures,
+				Move,
+				Front,
+				GlassTile,
+				Liquid,
+				Ground,
+				TileMain,
+				TileFront,
+				FXFront,
+				FXFront2,
+				SceneMAX
 	}
 }

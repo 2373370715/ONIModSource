@@ -3,28 +3,28 @@ using UnityEngine;
 
 public class QuickLayout : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.ForceUpdate();
 	}
 
-	private void OnEnable()
+		private void OnEnable()
 	{
 		this.ForceUpdate();
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		this.Run(false);
 	}
 
-	public void ForceUpdate()
+		public void ForceUpdate()
 	{
 		this.Run(true);
 	}
 
-	private void Run(bool forceUpdate = false)
+		private void Run(bool forceUpdate = false)
 	{
 		forceUpdate = (forceUpdate || this._elementSize != this.elementSize);
 		forceUpdate = (forceUpdate || this._spacing != this.spacing);
@@ -52,7 +52,7 @@ public class QuickLayout : KMonoBehaviour
 		}
 	}
 
-	public void Layout()
+		public void Layout()
 	{
 		Vector3 vector = this._offset;
 		bool flag = false;
@@ -95,7 +95,7 @@ public class QuickLayout : KMonoBehaviour
 		}
 	}
 
-	private Vector2 GetDirectionVector()
+		private Vector2 GetDirectionVector()
 	{
 		Vector2 result = Vector3.zero;
 		switch (this._layoutDirection)
@@ -116,37 +116,37 @@ public class QuickLayout : KMonoBehaviour
 		return result;
 	}
 
-	[Header("Configuration")]
+		[Header("Configuration")]
 	[SerializeField]
 	private int elementSize;
 
-	[SerializeField]
+		[SerializeField]
 	private int spacing;
 
-	[SerializeField]
+		[SerializeField]
 	private QuickLayout.LayoutDirection layoutDirection;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector2 offset;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform driveParentRectSize;
 
-	private int _elementSize;
+		private int _elementSize;
 
-	private int _spacing;
+		private int _spacing;
 
-	private QuickLayout.LayoutDirection _layoutDirection;
+		private QuickLayout.LayoutDirection _layoutDirection;
 
-	private Vector2 _offset;
+		private Vector2 _offset;
 
-	private int oldActiveChildCount;
+		private int oldActiveChildCount;
 
-	private enum LayoutDirection
+		private enum LayoutDirection
 	{
-		TopToBottom,
-		BottomToTop,
-		LeftToRight,
-		RightToLeft
+				TopToBottom,
+				BottomToTop,
+				LeftToRight,
+				RightToLeft
 	}
 }

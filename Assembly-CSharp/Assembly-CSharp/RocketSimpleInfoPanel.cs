@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class RocketSimpleInfoPanel : SimpleInfoPanel
 {
-	public RocketSimpleInfoPanel(SimpleInfoScreen simpleInfoScreen) : base(simpleInfoScreen)
+		public RocketSimpleInfoPanel(SimpleInfoScreen simpleInfoScreen) : base(simpleInfoScreen)
 	{
 	}
 
-	public override void Refresh(CollapsibleDetailContentPanel rocketStatusContainer, GameObject selectedTarget)
+		public override void Refresh(CollapsibleDetailContentPanel rocketStatusContainer, GameObject selectedTarget)
 	{
 		if (selectedTarget == null)
 		{
@@ -146,7 +146,7 @@ public class RocketSimpleInfoPanel : SimpleInfoPanel
 		rocketStatusContainer.Commit();
 	}
 
-	public static void GetRocketStuffFromTarget(GameObject selectedTarget, ref RocketModuleCluster rocketModuleCluster, ref Clustercraft clusterCraft, ref CraftModuleInterface craftModuleInterface)
+		public static void GetRocketStuffFromTarget(GameObject selectedTarget, ref RocketModuleCluster rocketModuleCluster, ref Clustercraft clusterCraft, ref CraftModuleInterface craftModuleInterface)
 	{
 		rocketModuleCluster = selectedTarget.GetComponent<RocketModuleCluster>();
 		clusterCraft = selectedTarget.GetComponent<Clustercraft>();
@@ -166,7 +166,7 @@ public class RocketSimpleInfoPanel : SimpleInfoPanel
 		}
 	}
 
-	private Dictionary<string, GameObject> cargoBayLabels = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> cargoBayLabels = new Dictionary<string, GameObject>();
 
-	private Dictionary<string, GameObject> artifactModuleLabels = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> artifactModuleLabels = new Dictionary<string, GameObject>();
 }

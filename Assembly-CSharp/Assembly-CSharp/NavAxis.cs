@@ -1,8 +1,5 @@
-﻿using System;
-
-public enum NavAxis : byte
-{
-	NA,
-	X,
-	Y
+﻿public enum NavAxis : byte {
+    NA,
+    X,
+    Y
 }

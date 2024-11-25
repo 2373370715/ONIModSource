@@ -9,14 +9,14 @@ using UnityEngine.Video;
 [AddComponentMenu("KMonoBehaviour/scripts/VideoWidget")]
 public class VideoWidget : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.button.onClick += this.Clicked;
 		this.rawImage = this.thumbnailPlayer.GetComponent<RawImage>();
 	}
 
-	private void Clicked()
+		private void Clicked()
 	{
 		VideoScreen.Instance.PlayVideo(this.clip, false, default(EventReference), false);
 		if (!string.IsNullOrEmpty(this.overlayName))
@@ -25,7 +25,7 @@ public class VideoWidget : KMonoBehaviour
 		}
 	}
 
-	public void SetClip(VideoClip clip, string overlayName = null, List<string> texts = null)
+		public void SetClip(VideoClip clip, string overlayName = null, List<string> texts = null)
 	{
 		if (clip == null)
 		{
@@ -41,7 +41,7 @@ public class VideoWidget : KMonoBehaviour
 		base.StartCoroutine(this.ConfigureThumbnail());
 	}
 
-	private IEnumerator ConfigureThumbnail()
+		private IEnumerator ConfigureThumbnail()
 	{
 		this.thumbnailPlayer.audioOutputMode = VideoAudioOutputMode.None;
 		this.thumbnailPlayer.clip = this.clip;
@@ -51,7 +51,7 @@ public class VideoWidget : KMonoBehaviour
 		yield break;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.thumbnailPlayer.isPlaying && this.thumbnailPlayer.time > 2.0)
 		{
@@ -59,22 +59,22 @@ public class VideoWidget : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private VideoClip clip;
 
-	[SerializeField]
+		[SerializeField]
 	private VideoPlayer thumbnailPlayer;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton button;
 
-	[SerializeField]
+		[SerializeField]
 	private string overlayName;
 
-	[SerializeField]
+		[SerializeField]
 	private List<string> texts;
 
-	private RenderTexture renderTexture;
+		private RenderTexture renderTexture;
 
-	private RawImage rawImage;
+		private RawImage rawImage;
 }

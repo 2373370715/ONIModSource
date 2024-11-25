@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class FilterPlantConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "FilterPlant";
 		string name = STRINGS.CREATURES.SPECIES.FILTERPLANT.NAME;
@@ -25,11 +25,11 @@ public class FilterPlantConfig : IEntityConfig
 		float temperature_warning_high = 383.15f;
 		float temperature_lethal_high = 443.15f;
 		string crop_id = SimHashes.Water.ToString();
-		string baseTraitName = STRINGS.CREATURES.SPECIES.FILTERPLANT.NAME;
+		string text = STRINGS.CREATURES.SPECIES.FILTERPLANT.NAME;
 		EntityTemplates.ExtendEntityToBasicPlant(template, temperature_lethal_low, temperature_warning_low, temperature_warning_high, temperature_lethal_high, new SimHashes[]
 		{
 			SimHashes.Oxygen
-		}, true, 0f, 0.025f, crop_id, true, true, true, true, 2400f, 0f, 2200f, "FilterPlantOriginal", baseTraitName);
+		}, true, 0f, 0.025f, crop_id, true, true, true, true, 2400f, 0f, 2200f, "FilterPlantOriginal", text);
 		EntityTemplates.ExtendPlantToFertilizable(gameObject, new PlantElementAbsorber.ConsumeInfo[]
 		{
 			new PlantElementAbsorber.ConsumeInfo
@@ -57,29 +57,39 @@ public class FilterPlantConfig : IEntityConfig
 		elementConsumer.consumptionRadius = 4;
 		elementConsumer.sampleCellOffset = new Vector3(0f, 0f);
 		elementConsumer.consumptionRate = 0.008333334f;
-		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Harvest, "FilterPlantSeed", STRINGS.CREATURES.SPECIES.SEEDS.FILTERPLANT.NAME, STRINGS.CREATURES.SPECIES.SEEDS.FILTERPLANT.DESC, Assets.GetAnim("seed_cactus_kanim"), "object", 1, new List<Tag>
-		{
-			GameTags.CropSeed
-		}, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 21, STRINGS.CREATURES.SPECIES.FILTERPLANT.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.35f, 0.35f, null, "", false, this.GetDlcIds()), "FilterPlant_preview", Assets.GetAnim("cactus_kanim"), "place", 1, 2);
+		GameObject plant = gameObject;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Harvest;
+		string id2 = "FilterPlantSeed";
+		string name2 = STRINGS.CREATURES.SPECIES.SEEDS.FILTERPLANT.NAME;
+		string desc2 = STRINGS.CREATURES.SPECIES.SEEDS.FILTERPLANT.DESC;
+		KAnimFile anim = Assets.GetAnim("seed_cactus_kanim");
+		string initialAnim = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.CropSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		text = STRINGS.CREATURES.SPECIES.FILTERPLANT.DOMESTICATEDDESC;
+		string[] dlcIds = this.GetDlcIds();
+		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id2, name2, desc2, anim, initialAnim, numberOfSeeds, list, planterDirection, default(Tag), 21, text, EntityTemplates.CollisionShape.CIRCLE, 0.35f, 0.35f, null, "", false, dlcIds), "FilterPlant_preview", Assets.GetAnim("cactus_kanim"), "place", 1, 2);
 		gameObject.AddTag(GameTags.DeprecatedContent);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "FilterPlant";
+		public const string ID = "FilterPlant";
 
-	public const string SEED_ID = "FilterPlantSeed";
+		public const string SEED_ID = "FilterPlantSeed";
 
-	public const float SAND_CONSUMPTION_RATE = 0.008333334f;
+		public const float SAND_CONSUMPTION_RATE = 0.008333334f;
 
-	public const float WATER_CONSUMPTION_RATE = 0.108333334f;
+		public const float WATER_CONSUMPTION_RATE = 0.108333334f;
 
-	public const float OXYGEN_CONSUMPTION_RATE = 0.008333334f;
+		public const float OXYGEN_CONSUMPTION_RATE = 0.008333334f;
 }

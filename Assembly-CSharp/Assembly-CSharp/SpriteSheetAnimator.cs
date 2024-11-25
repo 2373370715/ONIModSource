@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpriteSheetAnimator
 {
-	public SpriteSheetAnimator(SpriteSheet sheet)
+		public SpriteSheetAnimator(SpriteSheet sheet)
 	{
 		this.sheet = sheet;
 		this.mesh = new Mesh();
@@ -14,7 +14,7 @@ public class SpriteSheetAnimator
 		this.materialProperties.SetTexture("_MainTex", sheet.texture);
 	}
 
-	public void Play(Vector3 pos, Quaternion rotation, Vector2 size, Color colour)
+		public void Play(Vector3 pos, Quaternion rotation, Vector2 size, Color colour)
 	{
 		if (rotation == Quaternion.identity)
 		{
@@ -38,7 +38,7 @@ public class SpriteSheetAnimator
 		});
 	}
 
-	private void GetUVs(int frame, out Vector2 uv_bl, out Vector2 uv_br, out Vector2 uv_tl, out Vector2 uv_tr)
+		private void GetUVs(int frame, out Vector2 uv_bl, out Vector2 uv_br, out Vector2 uv_tl, out Vector2 uv_tr)
 	{
 		int num = frame / this.sheet.numXFrames;
 		int num2 = frame % this.sheet.numXFrames;
@@ -52,12 +52,12 @@ public class SpriteSheetAnimator
 		uv_tr = new Vector2(x2, y2);
 	}
 
-	public int GetFrameFromElapsedTime(float elapsed_time)
+		public int GetFrameFromElapsedTime(float elapsed_time)
 	{
 		return Mathf.Min(this.sheet.numFrames, (int)(elapsed_time / 0.033333335f));
 	}
 
-	public int GetFrameFromElapsedTimeLooping(float elapsed_time)
+		public int GetFrameFromElapsedTimeLooping(float elapsed_time)
 	{
 		int num = (int)(elapsed_time / 0.033333335f);
 		if (num > this.sheet.numFrames)
@@ -67,13 +67,13 @@ public class SpriteSheetAnimator
 		return num;
 	}
 
-	public void UpdateAnims(float dt)
+		public void UpdateAnims(float dt)
 	{
 		this.UpdateAnims(dt, this.anims);
 		this.UpdateAnims(dt, this.rotatedAnims);
 	}
 
-	private void UpdateAnims(float dt, IList<SpriteSheetAnimator.AnimInfo> anims)
+		private void UpdateAnims(float dt, IList<SpriteSheetAnimator.AnimInfo> anims)
 	{
 		int num = anims.Count;
 		int i = 0;
@@ -96,7 +96,7 @@ public class SpriteSheetAnimator
 		}
 	}
 
-	public void Render(List<SpriteSheetAnimator.AnimInfo> anim_infos, bool apply_rotation)
+		public void Render(List<SpriteSheetAnimator.AnimInfo> anim_infos, bool apply_rotation)
 	{
 		ListPool<Vector3, SpriteSheetAnimManager>.PooledList pooledList = ListPool<Vector3, SpriteSheetAnimManager>.Allocate();
 		ListPool<Vector2, SpriteSheetAnimManager>.PooledList pooledList2 = ListPool<Vector2, SpriteSheetAnimManager>.Allocate();
@@ -188,34 +188,34 @@ public class SpriteSheetAnimator
 		pooledList.Recycle();
 	}
 
-	public void Render()
+		public void Render()
 	{
 		this.Render(this.anims, false);
 		this.Render(this.rotatedAnims, true);
 	}
 
-	private SpriteSheet sheet;
+		private SpriteSheet sheet;
 
-	private Mesh mesh;
+		private Mesh mesh;
 
-	private MaterialPropertyBlock materialProperties;
+		private MaterialPropertyBlock materialProperties;
 
-	private List<SpriteSheetAnimator.AnimInfo> anims = new List<SpriteSheetAnimator.AnimInfo>();
+		private List<SpriteSheetAnimator.AnimInfo> anims = new List<SpriteSheetAnimator.AnimInfo>();
 
-	private List<SpriteSheetAnimator.AnimInfo> rotatedAnims = new List<SpriteSheetAnimator.AnimInfo>();
+		private List<SpriteSheetAnimator.AnimInfo> rotatedAnims = new List<SpriteSheetAnimator.AnimInfo>();
 
-	public struct AnimInfo
+		public struct AnimInfo
 	{
-		public int frame;
+				public int frame;
 
-		public float elapsedTime;
+				public float elapsedTime;
 
-		public Vector3 pos;
+				public Vector3 pos;
 
-		public Quaternion rotation;
+				public Quaternion rotation;
 
-		public Vector2 size;
+				public Vector2 size;
 
-		public Color32 colour;
+				public Color32 colour;
 	}
 }

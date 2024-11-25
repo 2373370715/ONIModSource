@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class EggShellConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateLooseEntity("EggShell", ITEMS.INDUSTRIAL_PRODUCTS.EGG_SHELL.NAME, ITEMS.INDUSTRIAL_PRODUCTS.EGG_SHELL.DESC, 1f, false, Assets.GetAnim("eggshells_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.9f, 0.6f, true, 0, SimHashes.Creature, null);
 		gameObject.GetComponent<KPrefabID>().AddTag(GameTags.Organics, false);
@@ -19,17 +19,17 @@ public class EggShellConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "EggShell";
+		public const string ID = "EggShell";
 
-	public static readonly Tag TAG = TagManager.Create("EggShell");
+		public static readonly Tag TAG = TagManager.Create("EggShell");
 
-	public const float EGG_TO_SHELL_RATIO = 0.5f;
+		public const float EGG_TO_SHELL_RATIO = 0.5f;
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MournChore : Chore<MournChore.StatesInstance>
 {
-	private static int GetStandableCell(int cell, Navigator navigator)
+		private static int GetStandableCell(int cell, Navigator navigator)
 	{
 		foreach (CellOffset offset in MournChore.ValidStandingOffsets)
 		{
@@ -21,15 +21,15 @@ public class MournChore : Chore<MournChore.StatesInstance>
 		return -1;
 	}
 
-	public MournChore(IStateMachineTarget master) : base(Db.Get().ChoreTypes.Mourn, master, master.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.high, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+		public MournChore(IStateMachineTarget master) : base(Db.Get().ChoreTypes.Mourn, master, master.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.high, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new MournChore.StatesInstance(this);
-		base.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
-		base.AddPrecondition(ChorePreconditions.instance.NoDeadBodies, null);
-		base.AddPrecondition(MournChore.HasValidMournLocation, master);
+		this.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
+		this.AddPrecondition(ChorePreconditions.instance.NoDeadBodies, null);
+		this.AddPrecondition(MournChore.HasValidMournLocation, master);
 	}
 
-	public static Grave FindGraveToMournAt()
+		public static Grave FindGraveToMournAt()
 	{
 		Grave result = null;
 		float num = -1f;
@@ -45,7 +45,7 @@ public class MournChore : Chore<MournChore.StatesInstance>
 		return result;
 	}
 
-	public override void Begin(Chore.Precondition.Context context)
+		public override void Begin(Chore.Precondition.Context context)
 	{
 		if (context.consumerState.consumer == null)
 		{
@@ -71,14 +71,14 @@ public class MournChore : Chore<MournChore.StatesInstance>
 		base.Begin(context);
 	}
 
-	private static readonly CellOffset[] ValidStandingOffsets = new CellOffset[]
+		private static readonly CellOffset[] ValidStandingOffsets = new CellOffset[]
 	{
 		new CellOffset(0, 0),
 		new CellOffset(-1, 0),
 		new CellOffset(1, 0)
 	};
 
-	private static readonly Chore.Precondition HasValidMournLocation = new Chore.Precondition
+		private static readonly Chore.Precondition HasValidMournLocation = new Chore.Precondition
 	{
 		id = "HasPlaceToStand",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.HAS_PLACE_TO_STAND,
@@ -95,13 +95,13 @@ public class MournChore : Chore<MournChore.StatesInstance>
 		}
 	};
 
-	public class StatesInstance : GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.GameInstance
 	{
-		public StatesInstance(MournChore master) : base(master)
+				public StatesInstance(MournChore master) : base(master)
 		{
 		}
 
-		public void CreateLocator()
+				public void CreateLocator()
 		{
 			int cell = Grid.PosToCell(MournChore.FindGraveToMournAt().transform.GetPosition());
 			Navigator component = base.master.GetComponent<Navigator>();
@@ -119,7 +119,7 @@ public class MournChore : Chore<MournChore.StatesInstance>
 			base.smi.GoTo(base.sm.moveto);
 		}
 
-		public void DestroyLocator()
+				public void DestroyLocator()
 		{
 			if (this.locatorCell >= 0)
 			{
@@ -130,12 +130,12 @@ public class MournChore : Chore<MournChore.StatesInstance>
 			}
 		}
 
-		private int locatorCell = -1;
+				private int locatorCell = -1;
 	}
 
-	public class States : GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore>
+		public class States : GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.findOffset;
 			base.Target(this.mourner);
@@ -155,19 +155,19 @@ public class MournChore : Chore<MournChore.StatesInstance>
 			});
 		}
 
-		public StateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.TargetParameter mourner;
+				public StateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.TargetParameter mourner;
 
-		public StateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.TargetParameter locator;
+				public StateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.TargetParameter locator;
 
-		public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.State findOffset;
+				public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.State findOffset;
 
-		public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.ApproachSubState<IApproachable> moveto;
+				public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.ApproachSubState<IApproachable> moveto;
 
-		public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.State mourn;
+				public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.State mourn;
 
-		public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.State completed;
+				public GameStateMachine<MournChore.States, MournChore.StatesInstance, MournChore, object>.State completed;
 
-		private static readonly HashedString[] WORK_ANIMS = new HashedString[]
+				private static readonly HashedString[] WORK_ANIMS = new HashedString[]
 		{
 			"working_pre",
 			"working_loop"

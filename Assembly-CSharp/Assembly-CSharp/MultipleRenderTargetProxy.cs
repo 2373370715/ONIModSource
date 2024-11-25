@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MultipleRenderTargetProxy : MonoBehaviour
 {
-	private void Start()
+		private void Start()
 	{
 		if (ScreenResize.Instance != null)
 		{
@@ -14,13 +14,13 @@ public class MultipleRenderTargetProxy : MonoBehaviour
 		ShaderReloader.Register(new System.Action(this.OnShadersReloaded));
 	}
 
-	public void ToggleColouredOverlayView(bool enabled)
+		public void ToggleColouredOverlayView(bool enabled)
 	{
 		this.colouredOverlayBufferEnabled = enabled;
 		this.CreateRenderTarget();
 	}
 
-	private void CreateRenderTarget()
+		private void CreateRenderTarget()
 	{
 		RenderBuffer[] array = new RenderBuffer[this.colouredOverlayBufferEnabled ? 3 : 2];
 		this.Textures[0] = this.RecreateRT(this.Textures[0], 24, RenderTextureFormat.ARGB32);
@@ -42,7 +42,7 @@ public class MultipleRenderTargetProxy : MonoBehaviour
 		this.OnShadersReloaded();
 	}
 
-	private RenderTexture RecreateRT(RenderTexture rt, int depth, RenderTextureFormat format)
+		private RenderTexture RecreateRT(RenderTexture rt, int depth, RenderTextureFormat format)
 	{
 		RenderTexture result = rt;
 		if (rt == null || rt.width != Screen.width || rt.height != Screen.height || rt.format != format)
@@ -56,12 +56,12 @@ public class MultipleRenderTargetProxy : MonoBehaviour
 		return result;
 	}
 
-	private void OnResize()
+		private void OnResize()
 	{
 		this.CreateRenderTarget();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!this.Textures[0].IsCreated())
 		{
@@ -69,7 +69,7 @@ public class MultipleRenderTargetProxy : MonoBehaviour
 		}
 	}
 
-	private void OnShadersReloaded()
+		private void OnShadersReloaded()
 	{
 		Shader.SetGlobalTexture("_MRT0", this.Textures[0]);
 		Shader.SetGlobalTexture("_MRT1", this.Textures[1]);
@@ -79,7 +79,7 @@ public class MultipleRenderTargetProxy : MonoBehaviour
 		}
 	}
 
-	public RenderTexture[] Textures = new RenderTexture[3];
+		public RenderTexture[] Textures = new RenderTexture[3];
 
-	private bool colouredOverlayBufferEnabled;
+		private bool colouredOverlayBufferEnabled;
 }

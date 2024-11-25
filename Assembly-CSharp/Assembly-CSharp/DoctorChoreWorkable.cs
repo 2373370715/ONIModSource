@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/DoctorChoreWorkable")]
 public class DoctorChoreWorkable : Workable
 {
-	private DoctorChoreWorkable()
+		private DoctorChoreWorkable()
 	{
 		this.synchronizeAnims = false;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.attributeConverter = Db.Get().AttributeConverters.DoctorSpeed;

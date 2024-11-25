@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MissionControlClusterWorkable : Workable
 {
-			public Clustercraft TargetClustercraft
+				public Clustercraft TargetClustercraft
 	{
 		get
 		{
@@ -17,7 +17,7 @@ public class MissionControlClusterWorkable : Workable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.requiredSkillPerk = Db.Get().SkillPerks.CanMissionControl.Id;
@@ -35,36 +35,36 @@ public class MissionControlClusterWorkable : Workable
 		this.lightEfficiencyBonus = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.MissionControlClusterWorkables.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.MissionControlClusterWorkables.Remove(this);
 		base.OnCleanUp();
 	}
 
-	public static bool IsRocketInRange(AxialI worldLocation, AxialI rocketLocation)
+		public static bool IsRocketInRange(AxialI worldLocation, AxialI rocketLocation)
 	{
 		return AxialUtil.GetDistance(worldLocation, rocketLocation) <= 2;
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		this.workStatusItem = base.gameObject.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.MissionControlAssistingRocket, this.TargetClustercraft);
 		this.operational.SetActive(true, false);
 	}
 
-	public override float GetEfficiencyMultiplier(Worker worker)
+		public override float GetEfficiencyMultiplier(WorkerBase worker)
 	{
 		return base.GetEfficiencyMultiplier(worker) * Mathf.Clamp01(this.GetSMI<SkyVisibilityMonitor.Instance>().PercentClearSky);
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		if (this.TargetClustercraft == null || !MissionControlClusterWorkable.IsRocketInRange(base.gameObject.GetMyWorldLocation(), this.TargetClustercraft.Location))
 		{
@@ -74,14 +74,14 @@ public class MissionControlClusterWorkable : Workable
 		return base.OnWorkTick(worker, dt);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		global::Debug.Assert(this.TargetClustercraft != null);
 		base.gameObject.GetSMI<MissionControlCluster.Instance>().ApplyEffect(this.TargetClustercraft);
 		base.OnCompleteWork(worker);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		base.gameObject.GetComponent<KSelectable>().RemoveStatusItem(this.workStatusItem, false);
@@ -89,10 +89,10 @@ public class MissionControlClusterWorkable : Workable
 		this.operational.SetActive(false, false);
 	}
 
-	private Clustercraft targetClustercraft;
+		private Clustercraft targetClustercraft;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	private Guid workStatusItem = Guid.Empty;
+		private Guid workStatusItem = Guid.Empty;
 }

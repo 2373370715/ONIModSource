@@ -4,33 +4,33 @@ using STRINGS;
 
 public class RoomType : Resource
 {
-			public string tooltip { get; private set; }
+				public string tooltip { get; private set; }
 
-			public string description { get; set; }
+				public string description { get; set; }
 
-			public string effect { get; private set; }
+				public string effect { get; private set; }
 
-			public RoomConstraints.Constraint primary_constraint { get; private set; }
+				public RoomConstraints.Constraint primary_constraint { get; private set; }
 
-			public RoomConstraints.Constraint[] additional_constraints { get; private set; }
+				public RoomConstraints.Constraint[] additional_constraints { get; private set; }
 
-			public int priority { get; private set; }
+				public int priority { get; private set; }
 
-			public bool single_assignee { get; private set; }
+				public bool single_assignee { get; private set; }
 
-			public RoomDetails.Detail[] display_details { get; private set; }
+				public RoomDetails.Detail[] display_details { get; private set; }
 
-			public bool priority_building_use { get; private set; }
+				public bool priority_building_use { get; private set; }
 
-			public RoomTypeCategory category { get; private set; }
+				public RoomTypeCategory category { get; private set; }
 
-			public RoomType[] upgrade_paths { get; private set; }
+				public RoomType[] upgrade_paths { get; private set; }
 
-			public string[] effects { get; private set; }
+				public string[] effects { get; private set; }
 
-			public int sortKey { get; private set; }
+				public int sortKey { get; private set; }
 
-	public RoomType(string id, string name, string description, string tooltip, string effect, RoomTypeCategory category, RoomConstraints.Constraint primary_constraint, RoomConstraints.Constraint[] additional_constraints, RoomDetails.Detail[] display_details, int priority = 0, RoomType[] upgrade_paths = null, bool single_assignee = false, bool priority_building_use = false, string[] effects = null, int sortKey = 0) : base(id, name)
+		public RoomType(string id, string name, string description, string tooltip, string effect, RoomTypeCategory category, RoomConstraints.Constraint primary_constraint, RoomConstraints.Constraint[] additional_constraints, RoomDetails.Detail[] display_details, int priority = 0, RoomType[] upgrade_paths = null, bool single_assignee = false, bool priority_building_use = false, string[] effects = null, int sortKey = 0) : base(id, name)
 	{
 		this.tooltip = tooltip;
 		this.description = description;
@@ -55,7 +55,7 @@ public class RoomType : Resource
 		}
 	}
 
-	public RoomType.RoomIdentificationResult isSatisfactory(Room candidate_room)
+		public RoomType.RoomIdentificationResult isSatisfactory(Room candidate_room)
 	{
 		if (this.primary_constraint != null && !this.primary_constraint.isSatisfied(candidate_room))
 		{
@@ -75,7 +75,7 @@ public class RoomType : Resource
 		return RoomType.RoomIdentificationResult.all_satisfied;
 	}
 
-	public string GetCriteriaString()
+		public string GetCriteriaString()
 	{
 		string text = string.Concat(new string[]
 		{
@@ -101,7 +101,7 @@ public class RoomType : Resource
 		return text;
 	}
 
-	public string GetRoomEffectsString()
+		public string GetRoomEffectsString()
 	{
 		if (this.effects != null && this.effects.Length != 0)
 		{
@@ -116,7 +116,7 @@ public class RoomType : Resource
 		return null;
 	}
 
-	public void TriggerRoomEffects(KPrefabID triggerer, Effects target)
+		public void TriggerRoomEffects(KPrefabID triggerer, Effects target)
 	{
 		if (this.primary_constraint == null)
 		{
@@ -139,10 +139,10 @@ public class RoomType : Resource
 		}
 	}
 
-	public enum RoomIdentificationResult
+		public enum RoomIdentificationResult
 	{
-		all_satisfied,
-		primary_satisfied,
-		primary_unsatisfied
+				all_satisfied,
+				primary_satisfied,
+				primary_unsatisfied
 	}
 }

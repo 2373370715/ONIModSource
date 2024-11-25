@@ -3,9 +3,9 @@ using UnityEngine;
 
 public interface IEquipmentConfig
 {
-	EquipmentDef CreateEquipmentDef();
+		EquipmentDef CreateEquipmentDef();
 
-	void DoPostConfigure(GameObject go);
+		void DoPostConfigure(GameObject go);
 
-	string[] GetDlcIds();
+		string[] GetDlcIds();
 }

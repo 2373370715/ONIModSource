@@ -7,21 +7,21 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/KUISelectable")]
 public class KUISelectable : KMonoBehaviour, IPointerEnterHandler, IEventSystemHandler, IPointerExitHandler
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.GetComponent<Button>().onClick.AddListener(new UnityAction(this.OnClick));
 	}
 
-	public void SetTarget(GameObject target)
+		public void SetTarget(GameObject target)
 	{
 		this.target = target;
 	}
 
-	public void OnPointerEnter(PointerEventData eventData)
+		public void OnPointerEnter(PointerEventData eventData)
 	{
 		if (this.target != null)
 		{
@@ -29,12 +29,12 @@ public class KUISelectable : KMonoBehaviour, IPointerEnterHandler, IEventSystemH
 		}
 	}
 
-	public void OnPointerExit(PointerEventData eventData)
+		public void OnPointerExit(PointerEventData eventData)
 	{
 		SelectTool.Instance.SetHoverOverride(null);
 	}
 
-	private void OnClick()
+		private void OnClick()
 	{
 		if (this.target != null)
 		{
@@ -42,7 +42,7 @@ public class KUISelectable : KMonoBehaviour, IPointerEnterHandler, IEventSystemH
 		}
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		if (SelectTool.Instance != null)
 		{
@@ -50,5 +50,5 @@ public class KUISelectable : KMonoBehaviour, IPointerEnterHandler, IEventSystemH
 		}
 	}
 
-	private GameObject target;
+		private GameObject target;
 }

@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class ConditionListSideScreen : SideScreenContent
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return false;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		if (target != null)
@@ -19,7 +19,7 @@ public class ConditionListSideScreen : SideScreenContent
 		}
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (show)
@@ -28,7 +28,7 @@ public class ConditionListSideScreen : SideScreenContent
 		}
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		bool flag = false;
 		List<ProcessCondition> conditionSet = this.targetConditionSet.GetConditionSet(ProcessCondition.ProcessConditionType.All);
@@ -58,7 +58,7 @@ public class ConditionListSideScreen : SideScreenContent
 		}
 	}
 
-	public static void SetRowState(GameObject row, ProcessCondition condition)
+		public static void SetRowState(GameObject row, ProcessCondition condition)
 	{
 		HierarchyReferences component = row.GetComponent<HierarchyReferences>();
 		ProcessCondition.Status status = condition.EvaluateCondition();
@@ -83,13 +83,13 @@ public class ConditionListSideScreen : SideScreenContent
 		row.GetComponent<ToolTip>().SetSimpleTooltip(condition.GetStatusTooltip(status));
 	}
 
-	private void Rebuild()
+		private void Rebuild()
 	{
 		this.ClearRows();
 		this.BuildRows();
 	}
 
-	private void ClearRows()
+		private void ClearRows()
 	{
 		foreach (KeyValuePair<ProcessCondition, GameObject> keyValuePair in this.rows)
 		{
@@ -98,7 +98,7 @@ public class ConditionListSideScreen : SideScreenContent
 		this.rows.Clear();
 	}
 
-	private void BuildRows()
+		private void BuildRows()
 	{
 		foreach (ProcessCondition processCondition in this.targetConditionSet.GetConditionSet(ProcessCondition.ProcessConditionType.All))
 		{
@@ -110,18 +110,18 @@ public class ConditionListSideScreen : SideScreenContent
 		}
 	}
 
-	public GameObject rowPrefab;
+		public GameObject rowPrefab;
 
-	public GameObject rowContainer;
+		public GameObject rowContainer;
 
-	[Tooltip("This list is indexed by the ProcessCondition.Status enum")]
+		[Tooltip("This list is indexed by the ProcessCondition.Status enum")]
 	public static Color readyColor = Color.black;
 
-	public static Color failedColor = Color.red;
+		public static Color failedColor = Color.red;
 
-	public static Color warningColor = new Color(1f, 0.3529412f, 0f, 1f);
+		public static Color warningColor = new Color(1f, 0.3529412f, 0f, 1f);
 
-	private IProcessConditionSet targetConditionSet;
+		private IProcessConditionSet targetConditionSet;
 
-	private Dictionary<ProcessCondition, GameObject> rows = new Dictionary<ProcessCondition, GameObject>();
+		private Dictionary<ProcessCondition, GameObject> rows = new Dictionary<ProcessCondition, GameObject>();
 }

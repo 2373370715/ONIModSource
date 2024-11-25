@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class PuftConfig : IEntityConfig
 {
-	public static GameObject CreatePuft(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreatePuft(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		GameObject prefab = BasePuftConfig.BasePuft(id, name, STRINGS.CREATURES.SPECIES.PUFT.DESC, "PuftBaseTrait", anim_file, is_baby, null, 288.15f, 328.15f, 223.15f, 373.15f);
 		EntityTemplates.ExtendEntityToWildCreature(prefab, PuftTuning.PEN_SIZE_PER_CREATURE);
@@ -22,12 +22,12 @@ public class PuftConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject prefab = PuftConfig.CreatePuft("Puft", STRINGS.CREATURES.SPECIES.PUFT.NAME, STRINGS.CREATURES.SPECIES.PUFT.DESC, "puft_kanim", false);
 		string eggId = "PuftEgg";
@@ -43,34 +43,34 @@ public class PuftConfig : IEntityConfig
 		return EntityTemplates.ExtendEntityToFertileCreature(prefab, eggId, eggName, eggDesc, egg_anim, egg_MASS, baby_id, fertility_cycles, incubation_cycles, egg_CHANCES_BASE, this.GetDlcIds(), egg_SORT_ORDER, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		BasePuftConfig.OnSpawn(inst);
 	}
 
-	public const string ID = "Puft";
+		public const string ID = "Puft";
 
-	public const string BASE_TRAIT_ID = "PuftBaseTrait";
+		public const string BASE_TRAIT_ID = "PuftBaseTrait";
 
-	public const string EGG_ID = "PuftEgg";
+		public const string EGG_ID = "PuftEgg";
 
-	public const SimHashes CONSUME_ELEMENT = SimHashes.ContaminatedOxygen;
+		public const SimHashes CONSUME_ELEMENT = SimHashes.ContaminatedOxygen;
 
-	public const SimHashes EMIT_ELEMENT = SimHashes.SlimeMold;
+		public const SimHashes EMIT_ELEMENT = SimHashes.SlimeMold;
 
-	public const string EMIT_DISEASE = "SlimeLung";
+		public const string EMIT_DISEASE = "SlimeLung";
 
-	public const float EMIT_DISEASE_PER_KG = 0f;
+		public const float EMIT_DISEASE_PER_KG = 0f;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 50f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 50f;
 
-	private static float CALORIES_PER_KG_OF_ORE = PuftTuning.STANDARD_CALORIES_PER_CYCLE / PuftConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = PuftTuning.STANDARD_CALORIES_PER_CYCLE / PuftConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 15f;
+		private static float MIN_POOP_SIZE_IN_KG = 15f;
 
-	public static int EGG_SORT_ORDER = 300;
+		public static int EGG_SORT_ORDER = 300;
 }

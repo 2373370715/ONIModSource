@@ -6,19 +6,19 @@ using UnityEngine.UI;
 
 public class ClusterLocationFilterSideScreen : SideScreenContent
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<LogicClusterLocationSensor>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.sensor = target.GetComponent<LogicClusterLocationSensor>();
 		this.Build();
 	}
 
-	private void ClearRows()
+		private void ClearRows()
 	{
 		if (this.emptySpaceRow != null)
 		{
@@ -31,7 +31,7 @@ public class ClusterLocationFilterSideScreen : SideScreenContent
 		this.worldRows.Clear();
 	}
 
-	private void Build()
+		private void Build()
 	{
 		this.headerLabel.SetText(UI.UISIDESCREENS.CLUSTERLOCATIONFILTERSIDESCREEN.HEADER);
 		this.ClearRows();
@@ -51,7 +51,7 @@ public class ClusterLocationFilterSideScreen : SideScreenContent
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		this.emptySpaceRow.GetComponent<HierarchyReferences>().GetReference<LocText>("Label").SetText(UI.UISIDESCREENS.CLUSTERLOCATIONFILTERSIDESCREEN.EMPTY_SPACE_ROW);
 		this.emptySpaceRow.GetComponent<HierarchyReferences>().GetReference<Image>("Icon").sprite = Def.GetUISprite("hex_soft", "ui", false).first;
@@ -82,18 +82,18 @@ public class ClusterLocationFilterSideScreen : SideScreenContent
 		}
 	}
 
-	private LogicClusterLocationSensor sensor;
+		private LogicClusterLocationSensor sensor;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject rowPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject listContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText headerLabel;
 
-	private Dictionary<AxialI, GameObject> worldRows = new Dictionary<AxialI, GameObject>();
+		private Dictionary<AxialI, GameObject> worldRows = new Dictionary<AxialI, GameObject>();
 
-	private GameObject emptySpaceRow;
+		private GameObject emptySpaceRow;
 }

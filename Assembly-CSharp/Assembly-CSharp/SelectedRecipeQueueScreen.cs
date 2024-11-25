@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class SelectedRecipeQueueScreen : KScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.DecrementButton.onClick = delegate()
@@ -54,7 +54,7 @@ public class SelectedRecipeQueueScreen : KScreen
 		multiToggle2.onClick = (System.Action)Delegate.Combine(multiToggle2.onClick, new System.Action(this.CycleNextRecipe));
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		if (this.selectedRecipe != null)
@@ -68,7 +68,7 @@ public class SelectedRecipeQueueScreen : KScreen
 		}
 	}
 
-	public void SetRecipe(ComplexFabricatorSideScreen owner, ComplexFabricator target, ComplexRecipe recipe)
+		public void SetRecipe(ComplexFabricatorSideScreen owner, ComplexFabricator target, ComplexRecipe recipe)
 	{
 		this.ownerScreen = owner;
 		this.target = target;
@@ -95,22 +95,22 @@ public class SelectedRecipeQueueScreen : KScreen
 		this.ToggleAndRefreshMinionDisplay();
 	}
 
-	private void CyclePreviousRecipe()
+		private void CyclePreviousRecipe()
 	{
 		this.ownerScreen.CycleRecipe(-1);
 	}
 
-	private void CycleNextRecipe()
+		private void CycleNextRecipe()
 	{
 		this.ownerScreen.CycleRecipe(1);
 	}
 
-	private void ToggleAndRefreshMinionDisplay()
+		private void ToggleAndRefreshMinionDisplay()
 	{
 		this.minionWidget.gameObject.SetActive(this.RefreshMinionDisplayAnim());
 	}
 
-	private bool RefreshMinionDisplayAnim()
+		private bool RefreshMinionDisplayAnim()
 	{
 		GameObject prefab = Assets.GetPrefab(this.selectedRecipe.results[0].material);
 		if (prefab == null)
@@ -141,8 +141,9 @@ public class SelectedRecipeQueueScreen : KScreen
 		return true;
 	}
 
-	private void RefreshQueueCountDisplay()
+		private void RefreshQueueCountDisplay()
 	{
+		this.ResearchRequiredContainer.SetActive(!this.selectedRecipe.IsRequiredTechUnlocked());
 		bool flag = this.target.GetRecipeQueueCount(this.selectedRecipe) == ComplexFabricator.QUEUE_INFINITE;
 		if (!flag)
 		{
@@ -155,7 +156,7 @@ public class SelectedRecipeQueueScreen : KScreen
 		this.InfiniteIcon.gameObject.SetActive(flag);
 	}
 
-	private void RefreshResultDescriptors()
+		private void RefreshResultDescriptors()
 	{
 		List<SelectedRecipeQueueScreen.DescriptorWithSprite> list = new List<SelectedRecipeQueueScreen.DescriptorWithSprite>();
 		list.AddRange(this.GetResultDescriptions(this.selectedRecipe));
@@ -185,7 +186,7 @@ public class SelectedRecipeQueueScreen : KScreen
 		}
 	}
 
-	private List<SelectedRecipeQueueScreen.DescriptorWithSprite> GetResultDescriptions(ComplexRecipe recipe)
+		private List<SelectedRecipeQueueScreen.DescriptorWithSprite> GetResultDescriptions(ComplexRecipe recipe)
 	{
 		List<SelectedRecipeQueueScreen.DescriptorWithSprite> list = new List<SelectedRecipeQueueScreen.DescriptorWithSprite>();
 		if (recipe.producedHEP > 0)
@@ -228,7 +229,7 @@ public class SelectedRecipeQueueScreen : KScreen
 		return list;
 	}
 
-	private void RefreshIngredientDescriptors()
+		private void RefreshIngredientDescriptors()
 	{
 		new List<SelectedRecipeQueueScreen.DescriptorWithSprite>();
 		List<SelectedRecipeQueueScreen.DescriptorWithSprite> ingredientDescriptions = this.GetIngredientDescriptions(this.selectedRecipe);
@@ -251,7 +252,7 @@ public class SelectedRecipeQueueScreen : KScreen
 		}
 	}
 
-	private List<SelectedRecipeQueueScreen.DescriptorWithSprite> GetIngredientDescriptions(ComplexRecipe recipe)
+		private List<SelectedRecipeQueueScreen.DescriptorWithSprite> GetIngredientDescriptions(ComplexRecipe recipe)
 	{
 		List<SelectedRecipeQueueScreen.DescriptorWithSprite> list = new List<SelectedRecipeQueueScreen.DescriptorWithSprite>();
 		foreach (ComplexRecipe.RecipeElement recipeElement in recipe.ingredients)
@@ -271,65 +272,67 @@ public class SelectedRecipeQueueScreen : KScreen
 		return list;
 	}
 
-	public Image recipeIcon;
+		public Image recipeIcon;
 
-	public LocText recipeName;
+		public LocText recipeName;
 
-	public LocText recipeMainDescription;
+		public LocText recipeMainDescription;
 
-	public LocText recipeDuration;
+		public LocText recipeDuration;
 
-	public ToolTip recipeDurationTooltip;
+		public ToolTip recipeDurationTooltip;
 
-	public GameObject IngredientsDescriptorPanel;
+		public GameObject IngredientsDescriptorPanel;
 
-	public GameObject EffectsDescriptorPanel;
+		public GameObject EffectsDescriptorPanel;
 
-	public KNumberInputField QueueCount;
+		public KNumberInputField QueueCount;
 
-	public MultiToggle DecrementButton;
+		public MultiToggle DecrementButton;
 
-	public MultiToggle IncrementButton;
+		public MultiToggle IncrementButton;
 
-	public KButton InfiniteButton;
+		public KButton InfiniteButton;
 
-	public GameObject InfiniteIcon;
+		public GameObject InfiniteIcon;
 
-	private ComplexFabricator target;
+		public GameObject ResearchRequiredContainer;
 
-	private ComplexFabricatorSideScreen ownerScreen;
+		private ComplexFabricator target;
 
-	private ComplexRecipe selectedRecipe;
+		private ComplexFabricatorSideScreen ownerScreen;
 
-	[SerializeField]
+		private ComplexRecipe selectedRecipe;
+
+		[SerializeField]
 	private GameObject recipeElementDescriptorPrefab;
 
-	private Dictionary<SelectedRecipeQueueScreen.DescriptorWithSprite, GameObject> recipeIngredientDescriptorRows = new Dictionary<SelectedRecipeQueueScreen.DescriptorWithSprite, GameObject>();
+		private Dictionary<SelectedRecipeQueueScreen.DescriptorWithSprite, GameObject> recipeIngredientDescriptorRows = new Dictionary<SelectedRecipeQueueScreen.DescriptorWithSprite, GameObject>();
 
-	private Dictionary<SelectedRecipeQueueScreen.DescriptorWithSprite, GameObject> recipeEffectsDescriptorRows = new Dictionary<SelectedRecipeQueueScreen.DescriptorWithSprite, GameObject>();
+		private Dictionary<SelectedRecipeQueueScreen.DescriptorWithSprite, GameObject> recipeEffectsDescriptorRows = new Dictionary<SelectedRecipeQueueScreen.DescriptorWithSprite, GameObject>();
 
-	[SerializeField]
+		[SerializeField]
 	private FullBodyUIMinionWidget minionWidget;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle previousRecipeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle nextRecipeButton;
 
-	private class DescriptorWithSprite
+		private class DescriptorWithSprite
 	{
-				public Descriptor descriptor { get; }
+						public Descriptor descriptor { get; }
 
-				public global::Tuple<Sprite, Color> tintedSprite { get; }
+						public global::Tuple<Sprite, Color> tintedSprite { get; }
 
-		public DescriptorWithSprite(Descriptor desc, global::Tuple<Sprite, Color> sprite, bool filterRowVisible = false)
+				public DescriptorWithSprite(Descriptor desc, global::Tuple<Sprite, Color> sprite, bool filterRowVisible = false)
 		{
 			this.descriptor = desc;
 			this.tintedSprite = sprite;
 			this.showFilterRow = filterRowVisible;
 		}
 
-		public bool showFilterRow;
+				public bool showFilterRow;
 	}
 }

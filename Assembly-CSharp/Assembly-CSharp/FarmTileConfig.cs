@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FarmTileConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "FarmTile";
 		int width = 1;
@@ -33,7 +33,7 @@ public class FarmTileConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -52,14 +52,14 @@ public class FarmTileConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
 		go.GetComponent<KPrefabID>().AddTag(GameTags.FarmTiles, false);
 		FarmTileConfig.SetUpFarmPlotTags(go);
 	}
 
-	public static void SetUpFarmPlotTags(GameObject go)
+		public static void SetUpFarmPlotTags(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject inst)
 		{
@@ -87,5 +87,5 @@ public class FarmTileConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "FarmTile";
+		public const string ID = "FarmTile";
 }

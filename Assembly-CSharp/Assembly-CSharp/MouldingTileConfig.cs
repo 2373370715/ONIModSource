@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MouldingTileConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MouldingTile";
 		int width = 1;
@@ -44,7 +44,7 @@ public class MouldingTileConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -54,18 +54,18 @@ public class MouldingTileConfig : IBuildingConfig
 		go.AddOrGet<BuildingHP>().destroyOnDamaged = true;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.AddOrGet<KAnimGridTileVisualizer>();
 	}
 
-	public const string ID = "MouldingTile";
+		public const string ID = "MouldingTile";
 
-	public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_bunker_tops");
+		public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_bunker_tops");
 }

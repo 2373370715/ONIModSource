@@ -8,13 +8,13 @@ using UnityEngine.UI.Extensions;
 
 public class ClusterMapPath : MonoBehaviour
 {
-	public void Init()
+		public void Init()
 	{
 		this.lineRenderer = base.gameObject.GetComponentInChildren<UILineRenderer>();
 		base.gameObject.SetActive(true);
 	}
 
-	public void Init(List<Vector2> nodes, Color color)
+		public void Init(List<Vector2> nodes, Color color)
 	{
 		this.m_nodes = nodes;
 		this.m_color = color;
@@ -24,26 +24,26 @@ public class ClusterMapPath : MonoBehaviour
 		base.gameObject.SetActive(true);
 	}
 
-	public void SetColor(Color color)
+		public void SetColor(Color color)
 	{
 		this.m_color = color;
 		this.UpdateColor();
 	}
 
-	private void UpdateColor()
+		private void UpdateColor()
 	{
 		this.lineRenderer.color = this.m_color;
 		this.pathStart.color = this.m_color;
 		this.pathEnd.color = this.m_color;
 	}
 
-	public void SetPoints(List<Vector2> points)
+		public void SetPoints(List<Vector2> points)
 	{
 		this.m_nodes = points;
 		this.UpdateRenderer();
 	}
 
-	private void UpdateRenderer()
+		private void UpdateRenderer()
 	{
 		HashSet<Vector2> pointsOnCatmullRomSpline = ProcGen.Util.GetPointsOnCatmullRomSpline(this.m_nodes, 10);
 		this.lineRenderer.Points = pointsOnCatmullRomSpline.ToArray<Vector2>();
@@ -63,7 +63,7 @@ public class ClusterMapPath : MonoBehaviour
 		this.pathEnd.gameObject.SetActive(false);
 	}
 
-	public float GetRotationForNextSegment()
+		public float GetRotationForNextSegment()
 	{
 		if (this.m_nodes.Count > 1)
 		{
@@ -74,13 +74,13 @@ public class ClusterMapPath : MonoBehaviour
 		return 0f;
 	}
 
-	private List<Vector2> m_nodes;
+		private List<Vector2> m_nodes;
 
-	private Color m_color;
+		private Color m_color;
 
-	public UILineRenderer lineRenderer;
+		public UILineRenderer lineRenderer;
 
-	public Image pathStart;
+		public Image pathStart;
 
-	public Image pathEnd;
+		public Image pathEnd;
 }

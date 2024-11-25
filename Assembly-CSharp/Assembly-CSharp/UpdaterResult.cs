@@ -2,6 +2,6 @@
 
 public enum UpdaterResult : byte
 {
-	NotComplete,
-	Complete
+		NotComplete,
+		Complete
 }

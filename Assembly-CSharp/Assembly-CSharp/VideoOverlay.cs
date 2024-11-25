@@ -1,28 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/VideoOverlay")]
-public class VideoOverlay : KMonoBehaviour
-{
-	public void SetText(List<string> strings)
-	{
-		if (strings.Count != this.textFields.Count)
-		{
-			DebugUtil.LogErrorArgs(new object[]
-			{
-				base.name,
-				"expects",
-				this.textFields.Count,
-				"strings passed to it, got",
-				strings.Count
-			});
-		}
-		for (int i = 0; i < this.textFields.Count; i++)
-		{
-			this.textFields[i].text = strings[i];
-		}
-	}
+public class VideoOverlay : KMonoBehaviour {
+    public List<LocText> textFields;
 
-	public List<LocText> textFields;
+    public void SetText(List<string> strings) {
+        if (strings.Count != textFields.Count)
+            DebugUtil.LogErrorArgs(name, "expects", textFields.Count, "strings passed to it, got", strings.Count);
+
+        for (var i = 0; i < textFields.Count; i++) textFields[i].text = strings[i];
+    }
 }

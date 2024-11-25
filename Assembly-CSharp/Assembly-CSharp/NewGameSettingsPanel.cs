@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/NewGameSettingsPanel")]
 public class NewGameSettingsPanel : CustomGameSettingsPanelBase
 {
-	public void SetCloseAction(System.Action onClose)
+		public void SetCloseAction(System.Action onClose)
 	{
 		if (this.closeButton != null)
 		{
@@ -18,7 +18,7 @@ public class NewGameSettingsPanel : CustomGameSettingsPanelBase
 		}
 	}
 
-	public override void Init()
+		public override void Init()
 	{
 		CustomGameSettings.Instance.LoadClusters();
 		Global.Instance.modManager.Report(base.gameObject);
@@ -63,61 +63,61 @@ public class NewGameSettingsPanel : CustomGameSettingsPanelBase
 		this.Refresh();
 	}
 
-	public void ConsumeSettingsCode(string code)
+		public void ConsumeSettingsCode(string code)
 	{
 		this.settings.ParseAndApplySettingsCode(code);
 	}
 
-	public void ConsumeStoryTraitsCode(string code)
+		public void ConsumeStoryTraitsCode(string code)
 	{
 		this.settings.ParseAndApplyStoryTraitSettingsCode(code);
 	}
 
-	public void ConsumeMixingSettingsCode(string code)
+		public void ConsumeMixingSettingsCode(string code)
 	{
 		this.settings.ParseAndApplyMixingSettingsCode(code);
 	}
 
-	public void SetSetting(SettingConfig setting, string level, bool notify = true)
+		public void SetSetting(SettingConfig setting, string level, bool notify = true)
 	{
 		this.settings.SetQualitySetting(setting, level, notify);
 	}
 
-	public string GetSetting(SettingConfig setting)
+		public string GetSetting(SettingConfig setting)
 	{
 		return this.settings.GetCurrentQualitySetting(setting).id;
 	}
 
-	public string GetSetting(string setting)
+		public string GetSetting(string setting)
 	{
 		return this.settings.GetCurrentQualitySetting(setting).id;
 	}
 
-	public void Cancel()
+		public void Cancel()
 	{
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Transform content;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton background;
 
-	[Header("Prefab UI Refs")]
+		[Header("Prefab UI Refs")]
 	[SerializeField]
 	private GameObject prefab_cycle_setting;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefab_slider_setting;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefab_checkbox_setting;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefab_seed_input_setting;
 
-	private CustomGameSettings settings;
+		private CustomGameSettings settings;
 }

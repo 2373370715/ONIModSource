@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class MessageNotification : Notification
 {
-	private string OnToolTip(List<Notification> notifications, string tooltipText)
+		private string OnToolTip(List<Notification> notifications, string tooltipText)
 	{
 		return tooltipText;
 	}
 
-	public MessageNotification(Message m) : base(m.GetTitle(), NotificationType.Messages, null, null, false, 0f, null, null, null, true, false, true)
+		public MessageNotification(Message m) : base(m.GetTitle(), NotificationType.Messages, null, null, false, 0f, null, null, null, true, false, true)
 	{
 		MessageNotification <>4__this = this;
 		this.message = m;
@@ -22,5 +22,5 @@ public class MessageNotification : Notification
 		base.clickFocus = null;
 	}
 
-	public Message message;
+		public Message message;
 }

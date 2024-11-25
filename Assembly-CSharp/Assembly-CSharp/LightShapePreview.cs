@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LightShapePreview")]
 public class LightShapePreview : KMonoBehaviour
 {
-	private void Update()
+		private void Update()
 	{
 		int num = Grid.PosToCell(base.transform.GetPosition());
 		if (num != this.previousCell)
@@ -15,22 +15,22 @@ public class LightShapePreview : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		LightGridManager.DestroyPreview();
 	}
 
-	public float radius;
+		public float radius;
 
-	public int lux;
+		public int lux;
 
-	public int width;
+		public int width;
 
-	public DiscreteShadowCaster.Direction direction;
+		public DiscreteShadowCaster.Direction direction;
 
-	public global::LightShape shape;
+		public global::LightShape shape;
 
-	public CellOffset offset;
+		public CellOffset offset;
 
-	private int previousCell = -1;
+		private int previousCell = -1;
 }

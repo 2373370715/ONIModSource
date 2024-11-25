@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CritterTrapPlant : StateMachineComponent<CritterTrapPlant.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.master.growing.enabled = false;
@@ -13,12 +13,12 @@ public class CritterTrapPlant : StateMachineComponent<CritterTrapPlant.StatesIns
 		base.smi.StartSM();
 	}
 
-	public void RefreshPositionPercent()
+		public void RefreshPositionPercent()
 	{
 		this.animController.SetPositionPercent(this.growing.PercentOfCurrentHarvest());
 	}
 
-	private void OnUprooted(object data = null)
+		private void OnUprooted(object data = null)
 	{
 		GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), base.gameObject.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 		base.gameObject.Trigger(1623392196, null);
@@ -27,63 +27,63 @@ public class CritterTrapPlant : StateMachineComponent<CritterTrapPlant.StatesIns
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	protected void DestroySelf(object callbackParam)
+		protected void DestroySelf(object callbackParam)
 	{
 		CreatureHelpers.DeselectCreature(base.gameObject);
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	public Notification CreateDeathNotification()
+		public Notification CreateDeathNotification()
 	{
 		return new Notification(CREATURES.STATUSITEMS.PLANTDEATH.NOTIFICATION, NotificationType.Bad, (List<Notification> notificationList, object data) => CREATURES.STATUSITEMS.PLANTDEATH.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), "/t• " + base.gameObject.GetProperName(), true, 0f, null, null, null, true, false, false);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Crop crop;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private WiltCondition wiltCondition;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ReceptacleMonitor rm;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Growing growing;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KAnimControllerBase animController;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Harvestable harvestable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	public float gasOutputRate;
+		public float gasOutputRate;
 
-	public float gasVentThreshold;
+		public float gasVentThreshold;
 
-	public SimHashes outputElement;
+		public SimHashes outputElement;
 
-	private float GAS_TEMPERATURE_DELTA = 10f;
+		private float GAS_TEMPERATURE_DELTA = 10f;
 
-	private static readonly EventSystem.IntraObjectHandler<CritterTrapPlant> OnUprootedDelegate = new EventSystem.IntraObjectHandler<CritterTrapPlant>(delegate(CritterTrapPlant component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CritterTrapPlant> OnUprootedDelegate = new EventSystem.IntraObjectHandler<CritterTrapPlant>(delegate(CritterTrapPlant component, object data)
 	{
 		component.OnUprooted(data);
 	});
 
-	public class StatesInstance : GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.GameInstance
+		public class StatesInstance : GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.GameInstance
 	{
-		public StatesInstance(CritterTrapPlant master) : base(master)
+				public StatesInstance(CritterTrapPlant master) : base(master)
 		{
 		}
 
-		public void OnTrapTriggered(object data)
+				public void OnTrapTriggered(object data)
 		{
 			base.smi.sm.trapTriggered.Trigger(base.smi);
 		}
 
-		public void AddGas(float dt)
+				public void AddGas(float dt)
 		{
 			float temperature = base.smi.GetComponent<PrimaryElement>().Temperature + base.smi.master.GAS_TEMPERATURE_DELTA;
 			base.smi.master.storage.AddGasChunk(base.smi.master.outputElement, base.smi.master.gasOutputRate * dt, temperature, byte.MaxValue, 0, false, true);
@@ -93,7 +93,7 @@ public class CritterTrapPlant : StateMachineComponent<CritterTrapPlant.StatesIns
 			}
 		}
 
-		public void VentGas()
+				public void VentGas()
 		{
 			PrimaryElement primaryElement = base.smi.master.storage.FindPrimaryElement(base.smi.master.outputElement);
 			if (primaryElement != null)
@@ -103,16 +103,16 @@ public class CritterTrapPlant : StateMachineComponent<CritterTrapPlant.StatesIns
 			}
 		}
 
-		public bool ShouldVentGas()
+				public bool ShouldVentGas()
 		{
 			PrimaryElement primaryElement = base.smi.master.storage.FindPrimaryElement(base.smi.master.outputElement);
 			return !(primaryElement == null) && primaryElement.Mass >= base.smi.master.gasVentThreshold;
 		}
 	}
 
-	public class States : GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant>
+		public class States : GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
 			default_state = this.trap;
@@ -194,54 +194,54 @@ public class CritterTrapPlant : StateMachineComponent<CritterTrapPlant.StatesIns
 			});
 		}
 
-		public bool IsOld(CritterTrapPlant.StatesInstance smi)
+				public bool IsOld(CritterTrapPlant.StatesInstance smi)
 		{
 			return smi.master.growing.PercentOldAge() > 0.5f;
 		}
 
-		public StateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.Signal trapTriggered;
+				public StateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.Signal trapTriggered;
 
-		public StateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.Signal ventGas;
+				public StateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.Signal ventGas;
 
-		public StateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.BoolParameter hasEatenCreature;
+				public StateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.BoolParameter hasEatenCreature;
 
-		public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State dead;
+				public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State dead;
 
-		public CritterTrapPlant.States.FruitingStates fruiting;
+				public CritterTrapPlant.States.FruitingStates fruiting;
 
-		public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State harvest;
+				public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State harvest;
 
-		public CritterTrapPlant.States.TrapStates trap;
+				public CritterTrapPlant.States.TrapStates trap;
 
-		public class DigestingStates : GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State
+				public class DigestingStates : GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State
 		{
-			public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State idle;
+						public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State idle;
 
-			public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State vent_pre;
+						public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State vent_pre;
 
-			public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State vent;
+						public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State vent;
 		}
 
-		public class TrapStates : GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State
+				public class TrapStates : GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State
 		{
-			public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State open;
+						public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State open;
 
-			public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State trigger;
+						public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State trigger;
 
-			public CritterTrapPlant.States.DigestingStates digesting;
+						public CritterTrapPlant.States.DigestingStates digesting;
 
-			public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State wilting;
+						public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State wilting;
 		}
 
-		public class FruitingStates : GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State
+				public class FruitingStates : GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State
 		{
-			public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State enter;
+						public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State enter;
 
-			public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State idle;
+						public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State idle;
 
-			public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State old;
+						public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State old;
 
-			public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State wilting;
+						public GameStateMachine<CritterTrapPlant.States, CritterTrapPlant.StatesInstance, CritterTrapPlant, object>.State wilting;
 		}
 	}
 }

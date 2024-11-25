@@ -3,7 +3,7 @@ using ImGuiNET;
 
 public class DevToolPOITechUnlocks : DevTool
 {
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (Research.Instance == null)
 		{

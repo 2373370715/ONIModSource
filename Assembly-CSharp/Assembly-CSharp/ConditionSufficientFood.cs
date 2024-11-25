@@ -3,12 +3,12 @@ using STRINGS;
 
 public class ConditionSufficientFood : ProcessCondition
 {
-	public ConditionSufficientFood(CommandModule module)
+		public ConditionSufficientFood(CommandModule module)
 	{
 		this.module = module;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		if (this.module.storage.GetAmountAvailable(GameTags.Edible) <= 1f)
 		{
@@ -17,7 +17,7 @@ public class ConditionSufficientFood : ProcessCondition
 		return ProcessCondition.Status.Ready;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		if (status == ProcessCondition.Status.Ready)
 		{
@@ -26,7 +26,7 @@ public class ConditionSufficientFood : ProcessCondition
 		return UI.STARMAP.NOFOOD.NAME;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		if (status == ProcessCondition.Status.Ready)
 		{
@@ -35,10 +35,10 @@ public class ConditionSufficientFood : ProcessCondition
 		return UI.STARMAP.NOFOOD.TOOLTIP;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private CommandModule module;
+		private CommandModule module;
 }

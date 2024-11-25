@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/RationBox")]
 public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms, IRottable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.filteredStorage = new FilteredStorage(this, new Tag[]
 		{
@@ -16,25 +16,25 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms,
 		DiscoveredResources.Instance.Discover("FieldRation".ToTag(), GameTags.Edible);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		Operational component = base.GetComponent<Operational>();
 		component.SetActive(component.IsOperational, false);
 		this.filteredStorage.FilterChanged();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.filteredStorage.CleanUp();
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		Operational component = base.GetComponent<Operational>();
 		component.SetActive(component.IsOperational, false);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		if (gameObject == null)
@@ -49,12 +49,12 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms,
 		this.UserMaxCapacity = component.UserMaxCapacity;
 	}
 
-	public void Render1000ms(float dt)
+		public void Render1000ms(float dt)
 	{
 		Rottable.SetStatusItems(this);
 	}
 
-			public float UserMaxCapacity
+				public float UserMaxCapacity
 	{
 		get
 		{
@@ -67,7 +67,7 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms,
 		}
 	}
 
-		public float AmountStored
+			public float AmountStored
 	{
 		get
 		{
@@ -75,7 +75,7 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms,
 		}
 	}
 
-		public float MinCapacity
+			public float MinCapacity
 	{
 		get
 		{
@@ -83,7 +83,7 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms,
 		}
 	}
 
-		public float MaxCapacity
+			public float MaxCapacity
 	{
 		get
 		{
@@ -91,7 +91,7 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms,
 		}
 	}
 
-		public bool WholeValues
+			public bool WholeValues
 	{
 		get
 		{
@@ -99,7 +99,7 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms,
 		}
 	}
 
-		public LocString CapacityUnits
+			public LocString CapacityUnits
 	{
 		get
 		{
@@ -107,7 +107,7 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms,
 		}
 	}
 
-		public float RotTemperature
+			public float RotTemperature
 	{
 		get
 		{
@@ -115,7 +115,7 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms,
 		}
 	}
 
-		public float PreserveTemperature
+			public float PreserveTemperature
 	{
 		get
 		{
@@ -123,25 +123,25 @@ public class RationBox : KMonoBehaviour, IUserControlledCapacity, IRender1000ms,
 		}
 	}
 
-	GameObject IRottable.get_gameObject()
+		GameObject IRottable.get_gameObject()
 	{
 		return base.gameObject;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	[Serialize]
+		[Serialize]
 	private float userMaxCapacity = float.PositiveInfinity;
 
-	private FilteredStorage filteredStorage;
+		private FilteredStorage filteredStorage;
 
-	private static readonly EventSystem.IntraObjectHandler<RationBox> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<RationBox>(delegate(RationBox component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RationBox> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<RationBox>(delegate(RationBox component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<RationBox> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<RationBox>(delegate(RationBox component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RationBox> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<RationBox>(delegate(RationBox component, object data)
 	{
 		component.OnCopySettings(data);
 	});

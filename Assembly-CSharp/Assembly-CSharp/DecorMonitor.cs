@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class DecorMonitor : GameStateMachine<DecorMonitor, DecorMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.ToggleAttributeModifier("DecorSmoother", (DecorMonitor.Instance smi) => smi.GetDecorModifier(), (DecorMonitor.Instance smi) => true).Update("DecorSensing", delegate(DecorMonitor.Instance smi, float dt)
@@ -19,23 +19,23 @@ public class DecorMonitor : GameStateMachine<DecorMonitor, DecorMonitor.Instance
 		});
 	}
 
-	public static float MAXIMUM_DECOR_VALUE = 120f;
+		public static float MAXIMUM_DECOR_VALUE = 120f;
 
-	public new class Instance : GameStateMachine<DecorMonitor, DecorMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<DecorMonitor, DecorMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.cycleTotalDecor = 2250f;
 			this.amount = Db.Get().Amounts.Decor.Lookup(base.gameObject);
 			this.modifier = new AttributeModifier(Db.Get().Amounts.Decor.deltaAttribute.Id, 1f, DUPLICANTS.NEEDS.DECOR.OBSERVED_DECOR, false, false, false);
 		}
 
-		public AttributeModifier GetDecorModifier()
+				public AttributeModifier GetDecorModifier()
 		{
 			return this.modifier;
 		}
 
-		public void Update(float dt)
+				public void Update(float dt)
 		{
 			int cell = Grid.PosToCell(base.gameObject);
 			if (!Grid.IsValidCell(cell))
@@ -64,7 +64,7 @@ public class DecorMonitor : GameStateMachine<DecorMonitor, DecorMonitor.Instance
 			this.modifier.SetValue(value);
 		}
 
-		public void OnNewDay()
+				public void OnNewDay()
 		{
 			this.yesterdaysTotalDecor = this.cycleTotalDecor;
 			this.cycleTotalDecor = 0f;
@@ -82,27 +82,27 @@ public class DecorMonitor : GameStateMachine<DecorMonitor, DecorMonitor.Instance
 			}
 		}
 
-		public float GetTodaysAverageDecor()
+				public float GetTodaysAverageDecor()
 		{
 			return this.cycleTotalDecor / (GameClock.Instance.GetCurrentCycleAsPercentage() * 600f);
 		}
 
-		public float GetYesterdaysAverageDecor()
+				public float GetYesterdaysAverageDecor()
 		{
 			return this.yesterdaysTotalDecor / 600f;
 		}
 
-		[Serialize]
+				[Serialize]
 		private float cycleTotalDecor;
 
-		[Serialize]
+				[Serialize]
 		private float yesterdaysTotalDecor;
 
-		private AmountInstance amount;
+				private AmountInstance amount;
 
-		private AttributeModifier modifier;
+				private AttributeModifier modifier;
 
-		private List<KeyValuePair<float, string>> effectLookup = new List<KeyValuePair<float, string>>
+				private List<KeyValuePair<float, string>> effectLookup = new List<KeyValuePair<float, string>>
 		{
 			new KeyValuePair<float, string>(DecorMonitor.MAXIMUM_DECOR_VALUE * -0.25f, "DecorMinus1"),
 			new KeyValuePair<float, string>(DecorMonitor.MAXIMUM_DECOR_VALUE * 0f, "Decor0"),

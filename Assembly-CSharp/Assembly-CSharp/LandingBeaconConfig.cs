@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class LandingBeaconConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LandingBeacon";
 		int width = 1;
@@ -36,29 +36,29 @@ public class LandingBeaconConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGetDef<LandingBeacon.Def>();
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		LandingBeaconConfig.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		LandingBeaconConfig.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		LandingBeaconConfig.AddVisualizer(go);
 	}
 
-	private static void AddVisualizer(GameObject prefab)
+		private static void AddVisualizer(GameObject prefab)
 	{
 		SkyVisibilityVisualizer skyVisibilityVisualizer = prefab.AddOrGet<SkyVisibilityVisualizer>();
 		skyVisibilityVisualizer.RangeMin = 0;
@@ -69,7 +69,7 @@ public class LandingBeaconConfig : IBuildingConfig
 		};
 	}
 
-	private static bool BeaconSkyVisibility(int cell)
+		private static bool BeaconSkyVisibility(int cell)
 	{
 		DebugUtil.DevAssert(ClusterManager.Instance != null, "beacon assumes DLC", null);
 		if (Grid.IsValidCell(cell) && Grid.WorldIdx[cell] != 255)
@@ -89,7 +89,7 @@ public class LandingBeaconConfig : IBuildingConfig
 		return false;
 	}
 
-	public const string ID = "LandingBeacon";
+		public const string ID = "LandingBeacon";
 
-	public const int LANDING_ACCURACY = 3;
+		public const int LANDING_ACCURACY = 3;
 }

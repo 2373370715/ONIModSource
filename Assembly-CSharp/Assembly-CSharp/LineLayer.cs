@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class LineLayer : GraphLayer
 {
-	private void InitAreaTexture()
+		private void InitAreaTexture()
 	{
 		if (this.areaTexture != null)
 		{
@@ -15,7 +15,7 @@ public class LineLayer : GraphLayer
 		this.areaFill.sprite = Sprite.Create(this.areaTexture, new Rect(0f, 0f, (float)this.areaTexture.width, (float)this.areaTexture.height), new Vector2(0.5f, 0.5f), 100f);
 	}
 
-	public virtual GraphedLine NewLine(global::Tuple<float, float>[] points, string ID = "")
+		public virtual GraphedLine NewLine(global::Tuple<float, float>[] points, string ID = "")
 	{
 		Vector2[] array = new Vector2[points.Length];
 		for (int i = 0; i < points.Length; i++)
@@ -64,7 +64,7 @@ public class LineLayer : GraphLayer
 		return this.NewLine(array, ID);
 	}
 
-	private GraphedLine FindLine(string ID)
+		private GraphedLine FindLine(string ID)
 	{
 		string text = string.Format("line_{0}", ID);
 		foreach (GraphedLine graphedLine in this.lines)
@@ -81,7 +81,7 @@ public class LineLayer : GraphLayer
 		return component;
 	}
 
-	public virtual void RefreshLine(global::Tuple<float, float>[] data, string ID)
+		public virtual void RefreshLine(global::Tuple<float, float>[] data, string ID)
 	{
 		this.FillArea(data);
 		Vector2[] array2;
@@ -159,7 +159,7 @@ public class LineLayer : GraphLayer
 		graphedLine.line_renderer.LineThickness = (float)this.line_formatting[this.lines.Count % this.line_formatting.Length].thickness;
 	}
 
-	private void FillArea(global::Tuple<float, float>[] points)
+		private void FillArea(global::Tuple<float, float>[] points)
 	{
 		if (this.fillAreaUnderLine)
 		{
@@ -206,7 +206,7 @@ public class LineLayer : GraphLayer
 		}
 	}
 
-	private void CalculateMinMax(global::Tuple<float, float>[] points, out Vector2 min, out Vector2 max)
+		private void CalculateMinMax(global::Tuple<float, float>[] points, out Vector2 min, out Vector2 max)
 	{
 		max = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
 		min = new Vector2(float.PositiveInfinity, 0f);
@@ -217,7 +217,7 @@ public class LineLayer : GraphLayer
 		}
 	}
 
-	protected Vector2 CalculateMax(global::Tuple<float, float>[] points)
+		protected Vector2 CalculateMax(global::Tuple<float, float>[] points)
 	{
 		Vector2 vector = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
 		for (int i = 0; i < points.Length; i++)
@@ -227,7 +227,7 @@ public class LineLayer : GraphLayer
 		return vector;
 	}
 
-	protected Vector2 CalculateMin(global::Tuple<float, float>[] points)
+		protected Vector2 CalculateMin(global::Tuple<float, float>[] points)
 	{
 		Vector2 vector = new Vector2(float.PositiveInfinity, 0f);
 		for (int i = 0; i < points.Length; i++)
@@ -237,7 +237,7 @@ public class LineLayer : GraphLayer
 		return vector;
 	}
 
-	public GraphedLine NewLine(Vector2[] points, string ID = "")
+		public GraphedLine NewLine(Vector2[] points, string ID = "")
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.prefab_line, this.line_container, true);
 		if (ID == "")
@@ -313,7 +313,7 @@ public class LineLayer : GraphLayer
 		return component;
 	}
 
-	public void ClearLines()
+		public void ClearLines()
 	{
 		foreach (GraphedLine graphedLine in this.lines)
 		{
@@ -325,7 +325,7 @@ public class LineLayer : GraphLayer
 		this.lines.Clear();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		RectTransform component = base.gameObject.GetComponent<RectTransform>();
 		if (!RectTransformUtility.RectangleContainsScreenPoint(component, Input.mousePosition))
@@ -356,41 +356,41 @@ public class LineLayer : GraphLayer
 		}
 	}
 
-	[Header("Lines")]
+		[Header("Lines")]
 	public LineLayer.LineFormat[] line_formatting;
 
-	public Image areaFill;
+		public Image areaFill;
 
-	public GameObject prefab_line;
+		public GameObject prefab_line;
 
-	public GameObject line_container;
+		public GameObject line_container;
 
-	private List<GraphedLine> lines = new List<GraphedLine>();
+		private List<GraphedLine> lines = new List<GraphedLine>();
 
-	protected float fillAlphaMin = 0.33f;
+		protected float fillAlphaMin = 0.33f;
 
-	protected float fillFadePixels = 15f;
+		protected float fillFadePixels = 15f;
 
-	public bool fillAreaUnderLine;
+		public bool fillAreaUnderLine;
 
-	private Texture2D areaTexture;
+		private Texture2D areaTexture;
 
-	private int compressDataToPointCount = 256;
+		private int compressDataToPointCount = 256;
 
-	private LineLayer.DataScalingType compressType = LineLayer.DataScalingType.DropValues;
+		private LineLayer.DataScalingType compressType = LineLayer.DataScalingType.DropValues;
 
-	[Serializable]
+		[Serializable]
 	public struct LineFormat
 	{
-		public Color color;
+				public Color color;
 
-		public int thickness;
+				public int thickness;
 	}
 
-	public enum DataScalingType
+		public enum DataScalingType
 	{
-		Average,
-		Max,
-		DropValues
+				Average,
+				Max,
+				DropValues
 	}
 }

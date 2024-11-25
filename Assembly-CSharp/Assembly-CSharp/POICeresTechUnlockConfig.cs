@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class POICeresTechUnlockConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "POICeresTechUnlock";
 		string name = STRINGS.BUILDINGS.PREFABS.DLC2POITECHUNLOCKS.NAME;
@@ -58,11 +58,11 @@ public class POICeresTechUnlockConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 }

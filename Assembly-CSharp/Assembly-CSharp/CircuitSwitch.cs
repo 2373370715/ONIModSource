@@ -5,13 +5,13 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class CircuitSwitch : Switch, IPlayerControlledToggle, ISim33ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<CircuitSwitch>(-905833192, CircuitSwitch.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.CircuitOnToggle;
@@ -28,7 +28,7 @@ public class CircuitSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		base.GetComponent<KBatchedAnimController>().Play(this.switchedOn ? "on" : "off", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.attachedWire != null)
 		{
@@ -40,7 +40,7 @@ public class CircuitSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		this.switchedOn = switchedOn;
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		CircuitSwitch component = ((GameObject)data).GetComponent<CircuitSwitch>();
 		if (component != null)
@@ -50,19 +50,19 @@ public class CircuitSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		}
 	}
 
-	public bool IsConnected()
+		public bool IsConnected()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		GameObject gameObject = Grid.Objects[cell, (int)this.objectLayer];
 		return gameObject != null && gameObject.GetComponent<IDisconnectable>() != null;
 	}
 
-	private void CircuitOnToggle(bool on)
+		private void CircuitOnToggle(bool on)
 	{
 		this.UpdateCircuit(true);
 	}
 
-	public void AttachWire(Wire wire)
+		public void AttachWire(Wire wire)
 	{
 		if (wire == this.attachedWire)
 		{
@@ -86,7 +86,7 @@ public class CircuitSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		}
 	}
 
-	private void OnWireDestroyed(object data)
+		private void OnWireDestroyed(object data)
 	{
 		if (this.attachedWire != null)
 		{
@@ -94,26 +94,26 @@ public class CircuitSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		}
 	}
 
-	private void OnWireStateChanged(object data)
+		private void OnWireStateChanged(object data)
 	{
 		this.UpdateCircuit(true);
 	}
 
-	private void SubscribeToWire(Wire wire)
+		private void SubscribeToWire(Wire wire)
 	{
 		wire.Subscribe(1969584890, new Action<object>(this.OnWireDestroyed));
 		wire.Subscribe(-1735440190, new Action<object>(this.OnWireStateChanged));
 		wire.Subscribe(774203113, new Action<object>(this.OnWireStateChanged));
 	}
 
-	private void UnsubscribeFromWire(Wire wire)
+		private void UnsubscribeFromWire(Wire wire)
 	{
 		wire.Unsubscribe(1969584890, new Action<object>(this.OnWireDestroyed));
 		wire.Unsubscribe(-1735440190, new Action<object>(this.OnWireStateChanged));
 		wire.Unsubscribe(774203113, new Action<object>(this.OnWireStateChanged));
 	}
 
-	private void UpdateCircuit(bool should_update_anim = true)
+		private void UpdateCircuit(bool should_update_anim = true)
 	{
 		if (this.attachedWire != null)
 		{
@@ -136,7 +136,7 @@ public class CircuitSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		this.wasOn = this.switchedOn;
 	}
 
-	public void Sim33ms(float dt)
+		public void Sim33ms(float dt)
 	{
 		if (this.ToggleRequested)
 		{
@@ -146,22 +146,22 @@ public class CircuitSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		}
 	}
 
-	public void ToggledByPlayer()
+		public void ToggledByPlayer()
 	{
 		this.Toggle();
 	}
 
-	public bool ToggledOn()
+		public bool ToggledOn()
 	{
 		return this.switchedOn;
 	}
 
-	public KSelectable GetSelectable()
+		public KSelectable GetSelectable()
 	{
 		return base.GetComponent<KSelectable>();
 	}
 
-		public string SideScreenTitleKey
+			public string SideScreenTitleKey
 	{
 		get
 		{
@@ -169,22 +169,22 @@ public class CircuitSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		}
 	}
 
-			public bool ToggleRequested { get; set; }
+				public bool ToggleRequested { get; set; }
 
-	[SerializeField]
+		[SerializeField]
 	public ObjectLayer objectLayer;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<CircuitSwitch> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<CircuitSwitch>(delegate(CircuitSwitch component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CircuitSwitch> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<CircuitSwitch>(delegate(CircuitSwitch component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private Wire attachedWire;
+		private Wire attachedWire;
 
-	private Guid wireConnectedGUID;
+		private Guid wireConnectedGUID;
 
-	private bool wasOn;
+		private bool wasOn;
 }

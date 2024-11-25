@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CancellableMove : Cancellable
 {
-		public List<Ref<Movable>> movingObjects
+			public List<Ref<Movable>> movingObjects
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class CancellableMove : Cancellable
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Prioritizable component = base.GetComponent<Prioritizable>();
@@ -40,7 +40,7 @@ public class CancellableMove : Cancellable
 		Grid.Objects[cell, 44] = base.gameObject;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		int cell = Grid.PosToCell(this);
@@ -48,12 +48,12 @@ public class CancellableMove : Cancellable
 		Prioritizable.RemoveRef(base.gameObject);
 	}
 
-	public void CancelAll()
+		public void CancelAll()
 	{
 		this.OnCancel(null);
 	}
 
-	public void OnCancel(Movable cancel_movable = null)
+		public void OnCancel(Movable cancel_movable = null)
 	{
 		for (int i = this.movables.Count - 1; i >= 0; i--)
 		{
@@ -78,17 +78,17 @@ public class CancellableMove : Cancellable
 		}
 	}
 
-	protected override void OnCancel(object data)
+		protected override void OnCancel(object data)
 	{
 		this.OnCancel(null);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("action_control", UI.USERMENUACTIONS.PICKUPABLEMOVE.NAME_OFF, new System.Action(this.CancelAll), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.PICKUPABLEMOVE.TOOLTIP_OFF, true), 1f);
 	}
 
-	public void SetMovable(Movable movable)
+		public void SetMovable(Movable movable)
 	{
 		if (this.fetchChore == null)
 		{
@@ -100,7 +100,7 @@ public class CancellableMove : Cancellable
 		}
 	}
 
-	public void OnChoreEnd(Chore chore)
+		public void OnChoreEnd(Chore chore)
 	{
 		GameObject nextTarget = this.GetNextTarget();
 		if (nextTarget == null)
@@ -111,13 +111,13 @@ public class CancellableMove : Cancellable
 		this.fetchChore = new MovePickupableChore(this, nextTarget, new Action<Chore>(this.OnChoreEnd));
 	}
 
-	public bool IsDeliveryComplete()
+		public bool IsDeliveryComplete()
 	{
 		this.ValidateMovables();
 		return this.movables.Count <= 0;
 	}
 
-	public void RemoveMovable(Movable moved)
+		public void RemoveMovable(Movable moved)
 	{
 		for (int i = this.movables.Count - 1; i >= 0; i--)
 		{
@@ -132,7 +132,7 @@ public class CancellableMove : Cancellable
 		}
 	}
 
-	public GameObject GetNextTarget()
+		public GameObject GetNextTarget()
 	{
 		this.ValidateMovables();
 		if (this.movables.Count > 0)
@@ -142,7 +142,7 @@ public class CancellableMove : Cancellable
 		return null;
 	}
 
-	private void ValidateMovables()
+		private void ValidateMovables()
 	{
 		for (int i = this.movables.Count - 1; i >= 0; i--)
 		{
@@ -166,8 +166,8 @@ public class CancellableMove : Cancellable
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private List<Ref<Movable>> movables = new List<Ref<Movable>>();
 
-	private MovePickupableChore fetchChore;
+		private MovePickupableChore fetchChore;
 }

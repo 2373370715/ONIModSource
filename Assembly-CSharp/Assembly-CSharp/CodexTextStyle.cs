@@ -2,8 +2,8 @@
 
 public enum CodexTextStyle
 {
-	Title,
-	Subtitle,
-	Body,
-	BodyWhite
+		Title,
+		Subtitle,
+		Body,
+		BodyWhite
 }

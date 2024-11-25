@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class GeneShufflerConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "GeneShuffler";
 		string name = STRINGS.BUILDINGS.PREFABS.GENESHUFFLER.NAME;
@@ -50,7 +50,7 @@ public class GeneShufflerConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<GeneShuffler>().workLayer = Grid.SceneLayer.Building;
 		inst.GetComponent<Ownable>().slotID = Db.Get().AssignableSlots.GeneShuffler.Id;
@@ -61,7 +61,7 @@ public class GeneShufflerConfig : IEntityConfig
 		inst.GetComponent<Deconstructable>();
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 }

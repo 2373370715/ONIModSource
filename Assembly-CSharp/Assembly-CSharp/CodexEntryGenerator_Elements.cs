@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class CodexEntryGenerator_Elements
 {
-	public static Dictionary<string, CodexEntry> GenerateEntries()
+		public static Dictionary<string, CodexEntry> GenerateEntries()
 	{
 		CodexEntryGenerator_Elements.<>c__DisplayClass8_0 CS$<>8__locals1;
 		CS$<>8__locals1.entriesElements = new Dictionary<string, CodexEntry>();
@@ -123,7 +123,7 @@ public class CodexEntryGenerator_Elements
 		return CS$<>8__locals1.entriesElements;
 	}
 
-	public static void GenerateElementDescriptionContainers(Element element, List<ContentContainer> containers)
+		public static void GenerateElementDescriptionContainers(Element element, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		List<ICodexWidget> list2 = new List<ICodexWidget>();
@@ -178,7 +178,7 @@ public class CodexEntryGenerator_Elements
 		}, ContentContainer.ContentLayout.Vertical));
 	}
 
-	public static void GenerateMadeAndUsedContainers(Tag tag, List<ContentContainer> containers)
+		public static void GenerateMadeAndUsedContainers(Tag tag, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		List<ICodexWidget> list2 = new List<ICodexWidget>();
@@ -245,7 +245,7 @@ public class CodexEntryGenerator_Elements
 		}
 	}
 
-	public static CodexEntryGenerator_Elements.ElementEntryContext GetElementEntryContext()
+		public static CodexEntryGenerator_Elements.ElementEntryContext GetElementEntryContext()
 	{
 		if (CodexEntryGenerator_Elements.contextInstance == null)
 		{
@@ -309,7 +309,7 @@ public class CodexEntryGenerator_Elements
 						float amount = num2 * info.producedConversionRate;
 						foreach (Tag tag in info.consumedTags)
 						{
-							ElementUsage item2 = value.IsConsumedTagAbleToBeEatenDirectly(tag) ? new ElementUsage(tag, num2, true, new Func<Tag, float, bool, string>(GameUtil.GetFormattedPlantConsumptionValuePerCycle)) : new ElementUsage(tag, num2, true);
+							ElementUsage item2 = value.IsConsumedTagAbleToBeEatenDirectly(tag) ? new ElementUsage(tag, num2, true, new Func<Tag, float, bool, string>(GameUtil.GetFormattedDirectPlantConsumptionValuePerCycle)) : new ElementUsage(tag, num2, true);
 							CodexEntryGenerator_Elements.ConversionEntry conversionEntry = new CodexEntryGenerator_Elements.ConversionEntry();
 							conversionEntry.title = gameObject3.GetProperName();
 							conversionEntry.prefab = gameObject3;
@@ -332,7 +332,7 @@ public class CodexEntryGenerator_Elements
 		return CodexEntryGenerator_Elements.contextInstance;
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <GenerateEntries>g__AddCategoryEntry|8_0(string categoryId, string name, Sprite icon, Dictionary<string, CodexEntry> entries, ref CodexEntryGenerator_Elements.<>c__DisplayClass8_0 A_4)
 	{
 		CodexEntry codexEntry = CodexEntryGenerator.GenerateCategoryEntry(categoryId, name, entries, icon, true, true, null);
@@ -341,7 +341,7 @@ public class CodexEntryGenerator_Elements
 		A_4.entriesElements.Add(categoryId, codexEntry);
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <GetElementEntryContext>g__CheckPrefab|12_0(GameObject prefab, CodexEntryGenerator_Elements.CodexElementMap usedMap, CodexEntryGenerator_Elements.CodexElementMap made, ref CodexEntryGenerator_Elements.<>c__DisplayClass12_0 A_3, ref CodexEntryGenerator_Elements.<>c__DisplayClass12_1 A_4)
 	{
 		HashSet<ElementUsage> hashSet = new HashSet<ElementUsage>();
@@ -506,11 +506,11 @@ public class CodexEntryGenerator_Elements
 				dictionary.TryGetValue(text, out num);
 				dictionary[text] = num + Assets.GetPrefab(text).GetComponent<PrimaryElement>().Mass;
 			}
-			foreach (KeyValuePair<string, float> self in dictionary)
+			foreach (KeyValuePair<string, float> keyValuePair in dictionary)
 			{
 				string text2;
 				float num2;
-				self.Deconstruct(out text2, out num2);
+				keyValuePair.Deconstruct(out text2, out num2);
 				string s = text2;
 				float amount = num2;
 				conversionEntry5.outSet.Add(new ElementUsage(s, amount, false));
@@ -519,32 +519,32 @@ public class CodexEntryGenerator_Elements
 		}
 	}
 
-	public static string ELEMENTS_ID = CodexCache.FormatLinkID("ELEMENTS");
+		public static string ELEMENTS_ID = CodexCache.FormatLinkID("ELEMENTS");
 
-	public static string ELEMENTS_SOLIDS_ID = CodexCache.FormatLinkID("ELEMENTS_SOLID");
+		public static string ELEMENTS_SOLIDS_ID = CodexCache.FormatLinkID("ELEMENTS_SOLID");
 
-	public static string ELEMENTS_LIQUIDS_ID = CodexCache.FormatLinkID("ELEMENTS_LIQUID");
+		public static string ELEMENTS_LIQUIDS_ID = CodexCache.FormatLinkID("ELEMENTS_LIQUID");
 
-	public static string ELEMENTS_GASES_ID = CodexCache.FormatLinkID("ELEMENTS_GAS");
+		public static string ELEMENTS_GASES_ID = CodexCache.FormatLinkID("ELEMENTS_GAS");
 
-	public static string ELEMENTS_OTHER_ID = CodexCache.FormatLinkID("ELEMENTS_OTHER");
+		public static string ELEMENTS_OTHER_ID = CodexCache.FormatLinkID("ELEMENTS_OTHER");
 
-	private static CodexEntryGenerator_Elements.ElementEntryContext contextInstance;
+		private static CodexEntryGenerator_Elements.ElementEntryContext contextInstance;
 
-	public class ConversionEntry
+		public class ConversionEntry
 	{
-		public string title;
+				public string title;
 
-		public GameObject prefab;
+				public GameObject prefab;
 
-		public HashSet<ElementUsage> inSet = new HashSet<ElementUsage>();
+				public HashSet<ElementUsage> inSet = new HashSet<ElementUsage>();
 
-		public HashSet<ElementUsage> outSet = new HashSet<ElementUsage>();
+				public HashSet<ElementUsage> outSet = new HashSet<ElementUsage>();
 	}
 
-	public class CodexElementMap
+		public class CodexElementMap
 	{
-		public void Add(Tag t, CodexEntryGenerator_Elements.ConversionEntry ce)
+				public void Add(Tag t, CodexEntryGenerator_Elements.ConversionEntry ce)
 		{
 			List<CodexEntryGenerator_Elements.ConversionEntry> list;
 			if (this.map.TryGetValue(t, out list))
@@ -558,13 +558,13 @@ public class CodexEntryGenerator_Elements
 			};
 		}
 
-		public Dictionary<Tag, List<CodexEntryGenerator_Elements.ConversionEntry>> map = new Dictionary<Tag, List<CodexEntryGenerator_Elements.ConversionEntry>>();
+				public Dictionary<Tag, List<CodexEntryGenerator_Elements.ConversionEntry>> map = new Dictionary<Tag, List<CodexEntryGenerator_Elements.ConversionEntry>>();
 	}
 
-	public class ElementEntryContext
+		public class ElementEntryContext
 	{
-		public CodexEntryGenerator_Elements.CodexElementMap madeMap = new CodexEntryGenerator_Elements.CodexElementMap();
+				public CodexEntryGenerator_Elements.CodexElementMap madeMap = new CodexEntryGenerator_Elements.CodexElementMap();
 
-		public CodexEntryGenerator_Elements.CodexElementMap usedMap = new CodexEntryGenerator_Elements.CodexElementMap();
+				public CodexEntryGenerator_Elements.CodexElementMap usedMap = new CodexEntryGenerator_Elements.CodexElementMap();
 	}
 }

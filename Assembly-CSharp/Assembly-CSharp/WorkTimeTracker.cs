@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class WorkTimeTracker : WorldTracker
 {
-	public WorkTimeTracker(int worldID, ChoreGroup group) : base(worldID)
+		public WorkTimeTracker(int worldID, ChoreGroup group) : base(worldID)
 	{
 		this.choreGroup = group;
 	}
 
-	public override void UpdateData()
+		public override void UpdateData()
 	{
 		float num = 0f;
 		List<MinionIdentity> worldItems = Components.LiveMinionIdentities.GetWorldItems(base.WorldID, false);
@@ -35,10 +35,10 @@ public class WorkTimeTracker : WorldTracker
 		base.AddPoint(num / (float)worldItems.Count * 100f);
 	}
 
-	public override string FormatValueString(float value)
+		public override string FormatValueString(float value)
 	{
 		return GameUtil.GetFormattedPercent(Mathf.Round(value), GameUtil.TimeSlice.None).ToString();
 	}
 
-	public ChoreGroup choreGroup;
+		public ChoreGroup choreGroup;
 }

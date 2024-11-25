@@ -4,12 +4,12 @@ using ImGuiNET;
 
 public class DevToolSpaceScannerNetwork : DevTool
 {
-	public DevToolSpaceScannerNetwork()
+		public DevToolSpaceScannerNetwork()
 	{
 		this.tableDrawer = ImGuiObjectTableDrawer<DevToolSpaceScannerNetwork.Entry>.New().Column("WorldId", (DevToolSpaceScannerNetwork.Entry e) => e.worldId).Column("Network Quality (0->1)", (DevToolSpaceScannerNetwork.Entry e) => e.networkQuality).Column("Targets Detected", (DevToolSpaceScannerNetwork.Entry e) => e.targetsString).FixedHeight(300f).Build();
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (Game.Instance == null)
 		{
@@ -36,7 +36,7 @@ public class DevToolSpaceScannerNetwork : DevTool
 		}
 	}
 
-	public static IEnumerable<DevToolSpaceScannerNetwork.Entry> GetData()
+		public static IEnumerable<DevToolSpaceScannerNetwork.Entry> GetData()
 	{
 		foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
 		{
@@ -47,7 +47,7 @@ public class DevToolSpaceScannerNetwork : DevTool
 		yield break;
 	}
 
-	public static string GetTargetsString(WorldContainer world)
+		public static string GetTargetsString(WorldContainer world)
 	{
 		SpaceScannerWorldData spaceScannerWorldData;
 		if (!Game.Instance.spaceScannerNetworkManager.DEBUG_GetWorldIdToDataMap().TryGetValue(world.id, out spaceScannerWorldData))
@@ -61,21 +61,21 @@ public class DevToolSpaceScannerNetwork : DevTool
 		return string.Join(",", spaceScannerWorldData.targetIdsDetected);
 	}
 
-	private ImGuiObjectTableDrawer<DevToolSpaceScannerNetwork.Entry> tableDrawer;
+		private ImGuiObjectTableDrawer<DevToolSpaceScannerNetwork.Entry> tableDrawer;
 
-	public readonly struct Entry
+		public readonly struct Entry
 	{
-		public Entry(int worldId, float networkQuality, string targetsString)
+				public Entry(int worldId, float networkQuality, string targetsString)
 		{
 			this.worldId = worldId;
 			this.networkQuality = networkQuality;
 			this.targetsString = targetsString;
 		}
 
-		public readonly int worldId;
+				public readonly int worldId;
 
-		public readonly float networkQuality;
+				public readonly float networkQuality;
 
-		public readonly string targetsString;
+				public readonly string targetsString;
 	}
 }

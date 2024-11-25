@@ -4,23 +4,23 @@ using UnityEngine;
 
 public class ClusterNameDisplayScreen : KScreen
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ClusterNameDisplayScreen.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		ClusterNameDisplayScreen.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	public void AddNewEntry(ClusterGridEntity representedObject)
+		public void AddNewEntry(ClusterGridEntity representedObject)
 	{
 		if (this.GetEntry(representedObject) != null)
 		{
@@ -42,7 +42,7 @@ public class ClusterNameDisplayScreen : KScreen
 		}
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (App.isLoading || App.IsExiting)
 		{
@@ -86,7 +86,7 @@ public class ClusterNameDisplayScreen : KScreen
 		this.m_entries.RemoveRange(num, this.m_entries.Count - num);
 	}
 
-	public void UpdateName(ClusterGridEntity representedObject)
+		public void UpdateName(ClusterGridEntity representedObject)
 	{
 		ClusterNameDisplayScreen.Entry entry = this.GetEntry(representedObject);
 		if (entry == null)
@@ -102,7 +102,7 @@ public class ClusterNameDisplayScreen : KScreen
 		}
 	}
 
-	private void UpdateBars(ClusterGridEntity representedObject)
+		private void UpdateBars(ClusterGridEntity representedObject)
 	{
 		ClusterNameDisplayScreen.Entry entry = this.GetEntry(representedObject);
 		if (entry == null)
@@ -125,35 +125,35 @@ public class ClusterNameDisplayScreen : KScreen
 		}
 	}
 
-	private ClusterNameDisplayScreen.Entry GetEntry(ClusterGridEntity entity)
+		private ClusterNameDisplayScreen.Entry GetEntry(ClusterGridEntity entity)
 	{
 		return this.m_entries.Find((ClusterNameDisplayScreen.Entry entry) => entry.grid_entity == entity);
 	}
 
-	public static ClusterNameDisplayScreen Instance;
+		public static ClusterNameDisplayScreen Instance;
 
-	public GameObject nameAndBarsPrefab;
+		public GameObject nameAndBarsPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private Color selectedColor;
 
-	[SerializeField]
+		[SerializeField]
 	private Color defaultColor;
 
-	private List<ClusterNameDisplayScreen.Entry> m_entries = new List<ClusterNameDisplayScreen.Entry>();
+		private List<ClusterNameDisplayScreen.Entry> m_entries = new List<ClusterNameDisplayScreen.Entry>();
 
-	private List<KCollider2D> workingList = new List<KCollider2D>();
+		private List<KCollider2D> workingList = new List<KCollider2D>();
 
-	private class Entry
+		private class Entry
 	{
-		public string Name;
+				public string Name;
 
-		public ClusterGridEntity grid_entity;
+				public ClusterGridEntity grid_entity;
 
-		public GameObject display_go;
+				public GameObject display_go;
 
-		public GameObject bars_go;
+				public GameObject bars_go;
 
-		public HierarchyReferences refs;
+				public HierarchyReferences refs;
 	}
 }

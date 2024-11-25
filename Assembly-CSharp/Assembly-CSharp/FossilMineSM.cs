@@ -2,16 +2,16 @@
 
 public class FossilMineSM : ComplexFabricatorSM
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		base.smi.StartSM();
 	}
 
-	public void Deactivate()
+		public void Deactivate()
 	{
 		base.smi.StopSM("FossilMine.Deactivated");
 	}

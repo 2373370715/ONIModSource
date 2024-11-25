@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/MonumentPart")]
 public class MonumentPart : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.MonumentParts.Add(this);
@@ -19,7 +19,7 @@ public class MonumentPart : KMonoBehaviour
 		this.UpdateMonumentDecor();
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserializedMethod()
 	{
 		if (Db.GetMonumentParts().TryGet(this.chosenState) == null)
@@ -44,14 +44,14 @@ public class MonumentPart : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.MonumentParts.Remove(this);
 		this.RemoveMonumentPiece();
 		base.OnCleanUp();
 	}
 
-	public void SetState(string state)
+		public void SetState(string state)
 	{
 		MonumentPartResource monumentPartResource = Db.GetMonumentParts().Get(state);
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
@@ -63,7 +63,7 @@ public class MonumentPart : KMonoBehaviour
 		this.chosenState = state;
 	}
 
-	public bool IsMonumentCompleted()
+		public bool IsMonumentCompleted()
 	{
 		bool flag = this.GetMonumentPart(MonumentPartResource.Part.Top) != null;
 		bool flag2 = this.GetMonumentPart(MonumentPartResource.Part.Middle) != null;
@@ -71,7 +71,7 @@ public class MonumentPart : KMonoBehaviour
 		return flag && flag3 && flag2;
 	}
 
-	public void UpdateMonumentDecor()
+		public void UpdateMonumentDecor()
 	{
 		GameObject monumentPart = this.GetMonumentPart(MonumentPartResource.Part.Middle);
 		if (this.IsMonumentCompleted())
@@ -87,7 +87,7 @@ public class MonumentPart : KMonoBehaviour
 		}
 	}
 
-	public void RemoveMonumentPiece()
+		public void RemoveMonumentPiece()
 	{
 		if (this.IsMonumentCompleted())
 		{
@@ -101,7 +101,7 @@ public class MonumentPart : KMonoBehaviour
 		}
 	}
 
-	private GameObject GetMonumentPart(MonumentPartResource.Part requestPart)
+		private GameObject GetMonumentPart(MonumentPartResource.Part requestPart)
 	{
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(base.GetComponent<AttachableBuilding>()))
 		{
@@ -114,10 +114,10 @@ public class MonumentPart : KMonoBehaviour
 		return null;
 	}
 
-	public MonumentPartResource.Part part;
+		public MonumentPartResource.Part part;
 
-	public string stateUISymbol;
+		public string stateUISymbol;
 
-	[Serialize]
+		[Serialize]
 	private string chosenState;
 }

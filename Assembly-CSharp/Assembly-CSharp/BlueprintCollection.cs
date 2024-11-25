@@ -6,14 +6,14 @@ using UnityEngine;
 
 public class BlueprintCollection
 {
-	public void AddBlueprintsFrom<T>(T provider) where T : BlueprintProvider
+		public void AddBlueprintsFrom<T>(T provider) where T : BlueprintProvider
 	{
 		provider.blueprintCollection = this;
 		provider.Interal_PreSetupBlueprints();
 		provider.SetupBlueprints();
 	}
 
-	public void AddBlueprintsFrom(BlueprintCollection collection)
+		public void AddBlueprintsFrom(BlueprintCollection collection)
 	{
 		this.artables.AddRange(collection.artables);
 		this.buildingFacades.AddRange(collection.buildingFacades);
@@ -25,7 +25,7 @@ public class BlueprintCollection
 		this.outfits.AddRange(collection.outfits);
 	}
 
-	public void PostProcess()
+		public void PostProcess()
 	{
 		if (Application.isPlaying)
 		{
@@ -40,10 +40,10 @@ public class BlueprintCollection
 		}
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static bool <PostProcess>g__ShouldExcludeBlueprint|10_0(IBlueprintDlcInfo blueprintDlcInfo)
 	{
-		if (!DlcManager.HasAnyContentSubscribed(blueprintDlcInfo.dlcIds))
+		if (!DlcManager.IsAnyContentSubscribed(blueprintDlcInfo.dlcIds))
 		{
 			return true;
 		}
@@ -63,19 +63,19 @@ public class BlueprintCollection
 		return false;
 	}
 
-	public List<ArtableInfo> artables = new List<ArtableInfo>();
+		public List<ArtableInfo> artables = new List<ArtableInfo>();
 
-	public List<BuildingFacadeInfo> buildingFacades = new List<BuildingFacadeInfo>();
+		public List<BuildingFacadeInfo> buildingFacades = new List<BuildingFacadeInfo>();
 
-	public List<ClothingItemInfo> clothingItems = new List<ClothingItemInfo>();
+		public List<ClothingItemInfo> clothingItems = new List<ClothingItemInfo>();
 
-	public List<BalloonArtistFacadeInfo> balloonArtistFacades = new List<BalloonArtistFacadeInfo>();
+		public List<BalloonArtistFacadeInfo> balloonArtistFacades = new List<BalloonArtistFacadeInfo>();
 
-	public List<StickerBombFacadeInfo> stickerBombFacades = new List<StickerBombFacadeInfo>();
+		public List<StickerBombFacadeInfo> stickerBombFacades = new List<StickerBombFacadeInfo>();
 
-	public List<EquippableFacadeInfo> equippableFacades = new List<EquippableFacadeInfo>();
+		public List<EquippableFacadeInfo> equippableFacades = new List<EquippableFacadeInfo>();
 
-	public List<MonumentPartInfo> monumentParts = new List<MonumentPartInfo>();
+		public List<MonumentPartInfo> monumentParts = new List<MonumentPartInfo>();
 
-	public List<ClothingOutfitResource> outfits = new List<ClothingOutfitResource>();
+		public List<ClothingOutfitResource> outfits = new List<ClothingOutfitResource>();
 }

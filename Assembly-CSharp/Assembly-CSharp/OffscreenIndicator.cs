@@ -6,19 +6,19 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/OffscreenIndicator")]
 public class OffscreenIndicator : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		OffscreenIndicator.Instance = this;
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		OffscreenIndicator.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		foreach (KeyValuePair<GameObject, GameObject> keyValuePair in this.targets)
 		{
@@ -26,7 +26,7 @@ public class OffscreenIndicator : KMonoBehaviour
 		}
 	}
 
-	public void ActivateIndicator(GameObject target)
+		public void ActivateIndicator(GameObject target)
 	{
 		if (!this.targets.ContainsKey(target))
 		{
@@ -38,7 +38,7 @@ public class OffscreenIndicator : KMonoBehaviour
 		}
 	}
 
-	public void ActivateIndicator(GameObject target, GameObject iconSource)
+		public void ActivateIndicator(GameObject target, GameObject iconSource)
 	{
 		if (!this.targets.ContainsKey(target))
 		{
@@ -55,7 +55,7 @@ public class OffscreenIndicator : KMonoBehaviour
 		}
 	}
 
-	public void ActivateIndicator(GameObject target, global::Tuple<Sprite, Color> icon)
+		public void ActivateIndicator(GameObject target, global::Tuple<Sprite, Color> icon)
 	{
 		if (!this.targets.ContainsKey(target))
 		{
@@ -70,7 +70,7 @@ public class OffscreenIndicator : KMonoBehaviour
 		}
 	}
 
-	public void DeactivateIndicator(GameObject target)
+		public void DeactivateIndicator(GameObject target)
 	{
 		if (this.targets.ContainsKey(target))
 		{
@@ -79,7 +79,7 @@ public class OffscreenIndicator : KMonoBehaviour
 		}
 	}
 
-	private void UpdateArrow(GameObject arrow, GameObject target)
+		private void UpdateArrow(GameObject arrow, GameObject target)
 	{
 		if (target == null)
 		{
@@ -103,7 +103,7 @@ public class OffscreenIndicator : KMonoBehaviour
 		this.UpdateTargetIconPosition(target, arrow);
 	}
 
-	private void UpdateTargetIconPosition(GameObject goTarget, GameObject indicator)
+		private void UpdateTargetIconPosition(GameObject goTarget, GameObject indicator)
 	{
 		Vector3 vector = goTarget.transform.position;
 		vector = Camera.main.WorldToViewportPoint(vector);
@@ -122,7 +122,7 @@ public class OffscreenIndicator : KMonoBehaviour
 		indicator.GetComponent<HierarchyReferences>().GetReference<CrewPortrait>("Portrait").transform.up = Vector3.up;
 	}
 
-	public Vector3 Vector3Maxamize(Vector3 vector)
+		public Vector3 Vector3Maxamize(Vector3 vector)
 	{
 		float num = 0f;
 		num = ((vector.x > num) ? vector.x : num);
@@ -131,14 +131,14 @@ public class OffscreenIndicator : KMonoBehaviour
 		return vector / num;
 	}
 
-	public GameObject IndicatorPrefab;
+		public GameObject IndicatorPrefab;
 
-	public GameObject IndicatorContainer;
+		public GameObject IndicatorContainer;
 
-	private Dictionary<GameObject, GameObject> targets = new Dictionary<GameObject, GameObject>();
+		private Dictionary<GameObject, GameObject> targets = new Dictionary<GameObject, GameObject>();
 
-	public static OffscreenIndicator Instance;
+		public static OffscreenIndicator Instance;
 
-	[SerializeField]
+		[SerializeField]
 	private float edgeInset = 25f;
 }

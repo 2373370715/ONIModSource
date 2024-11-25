@@ -2,7 +2,7 @@
 
 public class IdleCellQuery : PathFinderQuery
 {
-	public IdleCellQuery Reset(MinionBrain brain, int max_cost)
+		public IdleCellQuery Reset(MinionBrain brain, int max_cost)
 	{
 		this.brain = brain;
 		this.maxCost = max_cost;
@@ -10,7 +10,7 @@ public class IdleCellQuery : PathFinderQuery
 		return this;
 	}
 
-	public override bool IsMatch(int cell, int parent_cell, int cost)
+		public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
 		SafeCellQuery.SafeFlags flags = SafeCellQuery.GetFlags(cell, this.brain, false);
 		if ((flags & SafeCellQuery.SafeFlags.IsClear) != (SafeCellQuery.SafeFlags)0 && (flags & SafeCellQuery.SafeFlags.IsNotLadder) != (SafeCellQuery.SafeFlags)0 && (flags & SafeCellQuery.SafeFlags.IsNotTube) != (SafeCellQuery.SafeFlags)0 && (flags & SafeCellQuery.SafeFlags.IsBreathable) != (SafeCellQuery.SafeFlags)0 && (flags & SafeCellQuery.SafeFlags.IsNotLiquid) != (SafeCellQuery.SafeFlags)0)
@@ -20,14 +20,14 @@ public class IdleCellQuery : PathFinderQuery
 		return cost > this.maxCost;
 	}
 
-	public override int GetResultCell()
+		public override int GetResultCell()
 	{
 		return this.targetCell;
 	}
 
-	private MinionBrain brain;
+		private MinionBrain brain;
 
-	private int targetCell;
+		private int targetCell;
 
-	private int maxCost;
+		private int maxCost;
 }

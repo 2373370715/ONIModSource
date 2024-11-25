@@ -7,13 +7,13 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/FileErrorReporter")]
 public class FileErrorReporter : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.OnFileError();
 		FileUtil.onErrorMessage += this.OnFileError;
 	}
 
-	private void OnFileError()
+		private void OnFileError()
 	{
 		if (FileUtil.errorType == FileUtil.ErrorType.None)
 		{
@@ -63,7 +63,7 @@ public class FileErrorReporter : KMonoBehaviour
 		UnityEngine.Object.DontDestroyOnLoad(component.gameObject);
 	}
 
-	private void OpenMoreInfo()
+		private void OpenMoreInfo()
 	{
 	}
 }

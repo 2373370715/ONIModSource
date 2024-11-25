@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DescriptorPanel")]
 public class DescriptorPanel : KMonoBehaviour
 {
-	public bool HasDescriptors()
+		public bool HasDescriptors()
 	{
 		return this.labels.Count > 0;
 	}
 
-	public void SetDescriptors(IList<Descriptor> descriptors)
+		public void SetDescriptors(IList<Descriptor> descriptors)
 	{
 		int i;
 		for (i = 0; i < descriptors.Count; i++)
@@ -37,8 +37,8 @@ public class DescriptorPanel : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject customLabelPrefab;
 
-	private List<GameObject> labels = new List<GameObject>();
+		private List<GameObject> labels = new List<GameObject>();
 }

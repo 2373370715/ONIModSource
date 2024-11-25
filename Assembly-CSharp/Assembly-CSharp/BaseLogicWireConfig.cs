@@ -6,9 +6,9 @@ using UnityEngine;
 
 public abstract class BaseLogicWireConfig : IBuildingConfig
 {
-	public abstract override BuildingDef CreateBuildingDef();
+		public abstract override BuildingDef CreateBuildingDef();
 
-	public BuildingDef CreateBuildingDef(string id, string anim, float construction_time, float[] construction_mass, EffectorValues decor, EffectorValues noise)
+		public BuildingDef CreateBuildingDef(string id, string anim, float construction_time, float[] construction_mass, EffectorValues decor, EffectorValues noise)
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, 1, 1, anim, 10, construction_time, construction_mass, MATERIALS.REFINED_METALS, 1600f, BuildLocationRule.Anywhere, decor, noise, 0.2f);
 		buildingDef.ViewMode = OverlayModes.Logic.ID;
@@ -31,7 +31,7 @@ public abstract class BaseLogicWireConfig : IBuildingConfig
 		return buildingDef3;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -41,7 +41,7 @@ public abstract class BaseLogicWireConfig : IBuildingConfig
 		kanimGraphTileVisualizer.isPhysicalBuilding = true;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.GetComponent<Constructable>().isDiggingRequired = false;
@@ -50,7 +50,7 @@ public abstract class BaseLogicWireConfig : IBuildingConfig
 		kanimGraphTileVisualizer.isPhysicalBuilding = false;
 	}
 
-	protected void DoPostConfigureComplete(LogicWire.BitDepth rating, GameObject go)
+		protected void DoPostConfigureComplete(LogicWire.BitDepth rating, GameObject go)
 	{
 		go.GetComponent<LogicWire>().MaxBitDepth = rating;
 		int bitDepthAsInt = LogicWire.GetBitDepthAsInt(rating);

@@ -9,26 +9,26 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Scenario")]
 public class Scenario : KMonoBehaviour
 {
-			public bool[] ReplaceElementMask { get; set; }
+				public bool[] ReplaceElementMask { get; set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		Scenario.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Scenario.Instance = this;
 		SaveLoader instance = SaveLoader.Instance;
 		instance.OnWorldGenComplete = (Action<Cluster>)Delegate.Combine(instance.OnWorldGenComplete, new Action<Cluster>(this.OnWorldGenComplete));
 	}
 
-	private void OnWorldGenComplete(Cluster clusterLayout)
+		private void OnWorldGenComplete(Cluster clusterLayout)
 	{
 		this.Init();
 	}
 
-	private void Init()
+		private void Init()
 	{
 		this.Bot = Grid.HeightInCells / 4;
 		this.Left = 150;
@@ -36,7 +36,7 @@ public class Scenario : KMonoBehaviour
 		this.ReplaceElementMask = new bool[Grid.CellCount];
 	}
 
-	private void DigHole(int x, int y, int width, int height)
+		private void DigHole(int x, int y, int width, int height)
 	{
 		for (int i = 0; i < width; i++)
 		{
@@ -51,12 +51,12 @@ public class Scenario : KMonoBehaviour
 		}
 	}
 
-	private void Fill(int x, int y, SimHashes id = SimHashes.Ice)
+		private void Fill(int x, int y, SimHashes id = SimHashes.Ice)
 	{
 		SimMessages.ReplaceElement(Grid.OffsetCell(this.RootCell, x, y), id, CellEventLogger.Instance.Scenario, 10000f, -1f, byte.MaxValue, 0, -1);
 	}
 
-	private void PlaceColumn(int x, int y, int height)
+		private void PlaceColumn(int x, int y, int height)
 	{
 		for (int i = 0; i < height; i++)
 		{
@@ -64,7 +64,7 @@ public class Scenario : KMonoBehaviour
 		}
 	}
 
-	private void PlaceTileX(int left, int bot, int amount)
+		private void PlaceTileX(int left, int bot, int amount)
 	{
 		for (int i = 0; i < amount; i++)
 		{
@@ -72,7 +72,7 @@ public class Scenario : KMonoBehaviour
 		}
 	}
 
-	private void PlaceTileY(int left, int bot, int amount)
+		private void PlaceTileY(int left, int bot, int amount)
 	{
 		for (int i = 0; i < amount; i++)
 		{
@@ -80,12 +80,12 @@ public class Scenario : KMonoBehaviour
 		}
 	}
 
-	private void Clear(int x, int y)
+		private void Clear(int x, int y)
 	{
 		SimMessages.ReplaceElement(Grid.OffsetCell(this.RootCell, x, y), SimHashes.Oxygen, CellEventLogger.Instance.Scenario, 10000f, -1f, byte.MaxValue, 0, -1);
 	}
 
-	private void PlacerLadder(int x, int y, int amount)
+		private void PlacerLadder(int x, int y, int amount)
 	{
 		int num = 1;
 		if (amount < 0)
@@ -99,7 +99,7 @@ public class Scenario : KMonoBehaviour
 		}
 	}
 
-	private void PlaceBuildings(int left, int bot)
+		private void PlaceBuildings(int left, int bot)
 	{
 		this.PlaceBuilding(++left, bot, "ManualGenerator", SimHashes.Iron);
 		this.PlaceBuilding(left += 2, bot, "OxygenMachine", SimHashes.Steel);
@@ -109,7 +109,7 @@ public class Scenario : KMonoBehaviour
 		this.SpawnOre(left, bot + 1, SimHashes.Ice);
 	}
 
-	private IEnumerator TurnOn(GameObject go)
+		private IEnumerator TurnOn(GameObject go)
 	{
 		yield return null;
 		yield return null;
@@ -117,7 +117,7 @@ public class Scenario : KMonoBehaviour
 		yield break;
 	}
 
-	private void SetupPlacerTest(Scenario.Builder b, Element element)
+		private void SetupPlacerTest(Scenario.Builder b, Element element)
 	{
 		foreach (BuildingDef buildingDef in Assets.BuildingDefs)
 		{
@@ -129,7 +129,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	private void SetupBuildingTest(Scenario.RowLayout row_layout, bool is_powered, bool break_building)
+		private void SetupBuildingTest(Scenario.RowLayout row_layout, bool is_powered, bool break_building)
 	{
 		Scenario.Builder builder = null;
 		int num = 0;
@@ -166,7 +166,7 @@ public class Scenario : KMonoBehaviour
 		builder.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	private IEnumerator RunAfterNextUpdateRoutine(System.Action action)
+		private IEnumerator RunAfterNextUpdateRoutine(System.Action action)
 	{
 		yield return null;
 		yield return null;
@@ -178,12 +178,12 @@ public class Scenario : KMonoBehaviour
 		yield break;
 	}
 
-	private void RunAfterNextUpdate(System.Action action)
+		private void RunAfterNextUpdate(System.Action action)
 	{
 		base.StartCoroutine(this.RunAfterNextUpdateRoutine(action));
 	}
 
-	public void SetupFabricatorTest(Scenario.Builder b)
+		public void SetupFabricatorTest(Scenario.Builder b)
 	{
 		b.Minion(null);
 		b.Building("ManualGenerator");
@@ -194,7 +194,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupDoorTest(Scenario.Builder b)
+		public void SetupDoorTest(Scenario.Builder b)
 	{
 		b.Minion(null);
 		b.Jump(1, 0);
@@ -203,7 +203,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupHatchTest(Scenario.Builder b)
+		public void SetupHatchTest(Scenario.Builder b)
 	{
 		b.Minion(null);
 		b.Building("Door");
@@ -211,14 +211,14 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupPropaneGeneratorTest(Scenario.Builder b)
+		public void SetupPropaneGeneratorTest(Scenario.Builder b)
 	{
 		b.Building("PropaneGenerator");
 		b.Building("OxygenMachine");
 		b.FinalizeRoom(SimHashes.Propane, SimHashes.Steel);
 	}
 
-	public void SetupAirLockTest(Scenario.Builder b)
+		public void SetupAirLockTest(Scenario.Builder b)
 	{
 		b.Minion(null);
 		b.Jump(1, 0);
@@ -229,7 +229,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupBedTest(Scenario.Builder b)
+		public void SetupBedTest(Scenario.Builder b)
 	{
 		b.Minion(delegate(GameObject go)
 		{
@@ -244,7 +244,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupHexapedTest(Scenario.Builder b)
+		public void SetupHexapedTest(Scenario.Builder b)
 	{
 		b.Fill(4, 4, SimHashes.Oxygen);
 		b.Prefab("Hexaped", null);
@@ -253,7 +253,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupElectrolyzerTest(Scenario.Builder b)
+		public void SetupElectrolyzerTest(Scenario.Builder b)
 	{
 		b.Minion(null);
 		b.Building("ManualGenerator");
@@ -263,7 +263,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupOrePerformanceTest(Scenario.Builder b)
+		public void SetupOrePerformanceTest(Scenario.Builder b)
 	{
 		int num = 20;
 		int num2 = 20;
@@ -281,7 +281,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupFeedingTest(Scenario.Builder b)
+		public void SetupFeedingTest(Scenario.Builder b)
 	{
 		b.FillOffsets(SimHashes.IgneousRock, new int[]
 		{
@@ -343,7 +343,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupLiquifierTest(Scenario.Builder b)
+		public void SetupLiquifierTest(Scenario.Builder b)
 	{
 		b.Minion(null);
 		b.Minion(null);
@@ -353,7 +353,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupFallTest(Scenario.Builder b)
+		public void SetupFallTest(Scenario.Builder b)
 	{
 		b.Jump(0, 5);
 		b.Minion(null);
@@ -377,7 +377,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupClimbTest(int left, int bot)
+		public void SetupClimbTest(int left, int bot)
 	{
 		this.DigHole(left, bot, 13, 5);
 		this.SpawnPrefab(left + 1, bot + 1, "Minion", Grid.SceneLayer.Ore);
@@ -396,7 +396,7 @@ public class Scenario : KMonoBehaviour
 		this.Fill(num, bot + 1, SimHashes.Ice);
 	}
 
-	private void SetupSuitRechargeTest(Scenario.Builder b)
+		private void SetupSuitRechargeTest(Scenario.Builder b)
 	{
 		b.Prefab("PressureSuit", delegate(GameObject go)
 		{
@@ -410,7 +410,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	private void SetupSuitTest(Scenario.Builder b)
+		private void SetupSuitTest(Scenario.Builder b)
 	{
 		b.Minion(null);
 		b.Prefab("PressureSuit", null);
@@ -422,7 +422,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	private void SetupTwoKelvinsOneSuitTest(Scenario.Builder b)
+		private void SetupTwoKelvinsOneSuitTest(Scenario.Builder b)
 	{
 		b.Minion(null);
 		b.Jump(2, 0);
@@ -433,7 +433,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		foreach (Brain brain in Components.Brains.Items)
 		{
@@ -449,7 +449,7 @@ public class Scenario : KMonoBehaviour
 		}
 	}
 
-	public void SetupGameplayTest()
+		public void SetupGameplayTest()
 	{
 		this.Init();
 		Vector3 pos = Grid.CellToPosCCC(this.RootCell, Grid.SceneLayer.Background);
@@ -533,12 +533,12 @@ public class Scenario : KMonoBehaviour
 		}
 	}
 
-	private GameObject SpawnMinion(int x, int y)
+		private GameObject SpawnMinion(int x, int y)
 	{
 		return this.SpawnPrefab(x, y, "Minion", Grid.SceneLayer.Move);
 	}
 
-	private void SetupLadderTest(int left, int bot)
+		private void SetupLadderTest(int left, int bot)
 	{
 		int num = 5;
 		this.DigHole(left, bot, 13, num);
@@ -559,7 +559,7 @@ public class Scenario : KMonoBehaviour
 		this.PlacerLadder(x++, bot - 1, -num);
 	}
 
-	public void PlaceUtilitiesX(int left, int bot, int amount)
+		public void PlaceUtilitiesX(int left, int bot, int amount)
 	{
 		for (int i = 0; i < amount; i++)
 		{
@@ -567,20 +567,20 @@ public class Scenario : KMonoBehaviour
 		}
 	}
 
-	public void PlaceUtilities(int left, int bot)
+		public void PlaceUtilities(int left, int bot)
 	{
 		this.PlaceBuilding(left, bot, "Wire", SimHashes.Cuprite);
 		this.PlaceBuilding(left, bot, "GasConduit", SimHashes.Cuprite);
 	}
 
-	public void SetupVisualTest()
+		public void SetupVisualTest()
 	{
 		this.Init();
 		Scenario.RowLayout row_layout = new Scenario.RowLayout(this.Left, this.Bot);
 		this.SetupBuildingTest(row_layout, false, false);
 	}
 
-	private void SpawnMaterialTest(Scenario.Builder b)
+		private void SpawnMaterialTest(Scenario.Builder b)
 	{
 		foreach (Element element in ElementLoader.elements)
 		{
@@ -593,12 +593,12 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public GameObject PlaceBuilding(int x, int y, string prefab_id, SimHashes element = SimHashes.Cuprite)
+		public GameObject PlaceBuilding(int x, int y, string prefab_id, SimHashes element = SimHashes.Cuprite)
 	{
 		return Scenario.PlaceBuilding(this.RootCell, x, y, prefab_id, element);
 	}
 
-	public static GameObject PlaceBuilding(int root_cell, int x, int y, string prefab_id, SimHashes element = SimHashes.Cuprite)
+		public static GameObject PlaceBuilding(int root_cell, int x, int y, string prefab_id, SimHashes element = SimHashes.Cuprite)
 	{
 		int cell = Grid.OffsetCell(root_cell, x, y);
 		BuildingDef buildingDef = Assets.GetBuildingDef(prefab_id);
@@ -630,7 +630,7 @@ public class Scenario : KMonoBehaviour
 		return gameObject;
 	}
 
-	private void SpawnOre(int x, int y, SimHashes element = SimHashes.Cuprite)
+		private void SpawnOre(int x, int y, SimHashes element = SimHashes.Cuprite)
 	{
 		this.RunAfterNextUpdate(delegate
 		{
@@ -640,12 +640,12 @@ public class Scenario : KMonoBehaviour
 		});
 	}
 
-	public GameObject SpawnPrefab(int x, int y, string name, Grid.SceneLayer scene_layer = Grid.SceneLayer.Ore)
+		public GameObject SpawnPrefab(int x, int y, string name, Grid.SceneLayer scene_layer = Grid.SceneLayer.Ore)
 	{
 		return Scenario.SpawnPrefab(this.RootCell, x, y, name, scene_layer);
 	}
 
-	public void SpawnPrefabLate(int x, int y, string name, Grid.SceneLayer scene_layer = Grid.SceneLayer.Ore)
+		public void SpawnPrefabLate(int x, int y, string name, Grid.SceneLayer scene_layer = Grid.SceneLayer.Ore)
 	{
 		this.RunAfterNextUpdate(delegate
 		{
@@ -653,7 +653,7 @@ public class Scenario : KMonoBehaviour
 		});
 	}
 
-	public static GameObject SpawnPrefab(int RootCell, int x, int y, string name, Grid.SceneLayer scene_layer = Grid.SceneLayer.Ore)
+		public static GameObject SpawnPrefab(int RootCell, int x, int y, string name, Grid.SceneLayer scene_layer = Grid.SceneLayer.Ore)
 	{
 		int cell = Grid.OffsetCell(RootCell, x, y);
 		GameObject prefab = Assets.GetPrefab(TagManager.Create(name));
@@ -664,7 +664,7 @@ public class Scenario : KMonoBehaviour
 		return GameUtil.KInstantiate(prefab, Grid.CellToPosCBC(cell, scene_layer), scene_layer, null, 0);
 	}
 
-	public void SetupElementTest()
+		public void SetupElementTest()
 	{
 		this.Init();
 		PropertyTextures.FogOfWarScale = 1f;
@@ -737,7 +737,7 @@ public class Scenario : KMonoBehaviour
 		}
 	}
 
-	private void InitDebugScenario()
+		private void InitDebugScenario()
 	{
 		this.Init();
 		PropertyTextures.FogOfWarScale = 1f;
@@ -746,7 +746,7 @@ public class Scenario : KMonoBehaviour
 		this.Clear();
 	}
 
-	public void SetupTileTest()
+		public void SetupTileTest()
 	{
 		this.InitDebugScenario();
 		for (int i = 0; i < Grid.HeightInCells; i++)
@@ -771,7 +771,7 @@ public class Scenario : KMonoBehaviour
 		}
 	}
 
-	public void SetupRiverTest()
+		public void SetupRiverTest()
 	{
 		this.InitDebugScenario();
 		int num = Mathf.Min(64, Grid.WidthInCells);
@@ -794,7 +794,7 @@ public class Scenario : KMonoBehaviour
 		}
 	}
 
-	public void SetupRockCrusherTest(Scenario.Builder b)
+		public void SetupRockCrusherTest(Scenario.Builder b)
 	{
 		this.InitDebugScenario();
 		b.Building("ManualGenerator");
@@ -804,7 +804,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupCementMixerTest(Scenario.Builder b)
+		public void SetupCementMixerTest(Scenario.Builder b)
 	{
 		this.InitDebugScenario();
 		b.Building("Generator");
@@ -817,7 +817,7 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	public void SetupKilnTest(Scenario.Builder b)
+		public void SetupKilnTest(Scenario.Builder b)
 	{
 		this.InitDebugScenario();
 		b.Building("ManualGenerator");
@@ -828,61 +828,61 @@ public class Scenario : KMonoBehaviour
 		b.FinalizeRoom(SimHashes.Oxygen, SimHashes.Steel);
 	}
 
-	private int Bot;
+		private int Bot;
 
-	private int Left;
+		private int Left;
 
-	public int RootCell;
+		public int RootCell;
 
-	public static Scenario Instance;
+		public static Scenario Instance;
 
-	public bool PropaneGeneratorTest = true;
+		public bool PropaneGeneratorTest = true;
 
-	public bool HatchTest = true;
+		public bool HatchTest = true;
 
-	public bool DoorTest = true;
+		public bool DoorTest = true;
 
-	public bool AirLockTest = true;
+		public bool AirLockTest = true;
 
-	public bool BedTest = true;
+		public bool BedTest = true;
 
-	public bool SuitTest = true;
+		public bool SuitTest = true;
 
-	public bool SuitRechargeTest = true;
+		public bool SuitRechargeTest = true;
 
-	public bool FabricatorTest = true;
+		public bool FabricatorTest = true;
 
-	public bool ElectrolyzerTest = true;
+		public bool ElectrolyzerTest = true;
 
-	public bool HexapedTest = true;
+		public bool HexapedTest = true;
 
-	public bool FallTest = true;
+		public bool FallTest = true;
 
-	public bool FeedingTest = true;
+		public bool FeedingTest = true;
 
-	public bool OrePerformanceTest = true;
+		public bool OrePerformanceTest = true;
 
-	public bool TwoKelvinsOneSuitTest = true;
+		public bool TwoKelvinsOneSuitTest = true;
 
-	public bool LiquifierTest = true;
+		public bool LiquifierTest = true;
 
-	public bool RockCrusherTest = true;
+		public bool RockCrusherTest = true;
 
-	public bool CementMixerTest = true;
+		public bool CementMixerTest = true;
 
-	public bool KilnTest = true;
+		public bool KilnTest = true;
 
-	public bool ClearExistingScene = true;
+		public bool ClearExistingScene = true;
 
-	public class RowLayout
+		public class RowLayout
 	{
-		public RowLayout(int left, int bot)
+				public RowLayout(int left, int bot)
 		{
 			this.Left = left;
 			this.Bot = bot;
 		}
 
-		public Scenario.Builder NextRow()
+				public Scenario.Builder NextRow()
 		{
 			if (this.Builder != null)
 			{
@@ -892,16 +892,16 @@ public class Scenario : KMonoBehaviour
 			return this.Builder;
 		}
 
-		public int Left;
+				public int Left;
 
-		public int Bot;
+				public int Bot;
 
-		public Scenario.Builder Builder;
+				public Scenario.Builder Builder;
 	}
 
-	public class Builder
+		public class Builder
 	{
-		public Builder(int left, int bot, SimHashes element = SimHashes.Copper)
+				public Builder(int left, int bot, SimHashes element = SimHashes.Copper)
 		{
 			this.Left = left;
 			this.Bot = bot;
@@ -912,7 +912,7 @@ public class Scenario : KMonoBehaviour
 			this.Max = new Vector2I(left, bot);
 		}
 
-		private void UpdateMinMax(int x, int y)
+				private void UpdateMinMax(int x, int y)
 		{
 			this.Min.x = Math.Min(x, this.Min.x);
 			this.Min.y = Math.Min(y, this.Min.y);
@@ -920,7 +920,7 @@ public class Scenario : KMonoBehaviour
 			this.Max.y = Math.Max(y + 1, this.Max.y);
 		}
 
-		public void Utilities(int count)
+				public void Utilities(int count)
 		{
 			for (int i = 0; i < count; i++)
 			{
@@ -929,7 +929,7 @@ public class Scenario : KMonoBehaviour
 			}
 		}
 
-		public void BuildingOffsets(string prefab_id, params int[] offsets)
+				public void BuildingOffsets(string prefab_id, params int[] offsets)
 		{
 			int left = this.Left;
 			int bot = this.Bot;
@@ -941,7 +941,7 @@ public class Scenario : KMonoBehaviour
 			}
 		}
 
-		public void Placer(string prefab_id, Element element)
+				public void Placer(string prefab_id, Element element)
 		{
 			BuildingDef buildingDef = Assets.GetBuildingDef(prefab_id);
 			int buildingCell = buildingDef.GetBuildingCell(Grid.OffsetCell(Scenario.Instance.RootCell, this.Left, this.Bot));
@@ -959,7 +959,7 @@ public class Scenario : KMonoBehaviour
 			});
 		}
 
-		public GameObject Building(string prefab_id)
+				public GameObject Building(string prefab_id)
 		{
 			GameObject result = this.Scenario.PlaceBuilding(this.Left, this.Bot, prefab_id, this.Element);
 			BuildingDef buildingDef = Assets.GetBuildingDef(prefab_id);
@@ -977,7 +977,7 @@ public class Scenario : KMonoBehaviour
 			return result;
 		}
 
-		public void Minion(Action<GameObject> on_spawn = null)
+				public void Minion(Action<GameObject> on_spawn = null)
 		{
 			this.UpdateMinMax(this.Left, this.Bot);
 			int left = this.Left;
@@ -992,12 +992,12 @@ public class Scenario : KMonoBehaviour
 			});
 		}
 
-		private GameObject Hexaped()
+				private GameObject Hexaped()
 		{
 			return this.Scenario.SpawnPrefab(this.Left, this.Bot, "Hexaped", Grid.SceneLayer.Front);
 		}
 
-		public void OreOffsets(int count, SimHashes element, params int[] offsets)
+				public void OreOffsets(int count, SimHashes element, params int[] offsets)
 		{
 			int left = this.Left;
 			int bot = this.Bot;
@@ -1009,7 +1009,7 @@ public class Scenario : KMonoBehaviour
 			}
 		}
 
-		public void Ore(int count = 1, SimHashes element = SimHashes.Cuprite)
+				public void Ore(int count = 1, SimHashes element = SimHashes.Cuprite)
 		{
 			this.UpdateMinMax(this.Left, this.Bot);
 			for (int i = 0; i < count; i++)
@@ -1018,7 +1018,7 @@ public class Scenario : KMonoBehaviour
 			}
 		}
 
-		public void PrefabOffsets(string prefab_id, params int[] offsets)
+				public void PrefabOffsets(string prefab_id, params int[] offsets)
 		{
 			int left = this.Left;
 			int bot = this.Bot;
@@ -1030,7 +1030,7 @@ public class Scenario : KMonoBehaviour
 			}
 		}
 
-		public void Prefab(string prefab_id, Action<GameObject> on_spawn = null)
+				public void Prefab(string prefab_id, Action<GameObject> on_spawn = null)
 		{
 			this.UpdateMinMax(this.Left, this.Bot);
 			int left = this.Left;
@@ -1045,7 +1045,7 @@ public class Scenario : KMonoBehaviour
 			});
 		}
 
-		public void Wall(int height)
+				public void Wall(int height)
 		{
 			for (int i = 0; i < height; i++)
 			{
@@ -1059,19 +1059,19 @@ public class Scenario : KMonoBehaviour
 			this.Left++;
 		}
 
-		public void Jump(int x = 0, int y = 0)
+				public void Jump(int x = 0, int y = 0)
 		{
 			this.Left += x;
 			this.Bot += y;
 		}
 
-		public void JumpTo(int left, int bot)
+				public void JumpTo(int left, int bot)
 		{
 			this.Left = left;
 			this.Bot = bot;
 		}
 
-		public void Hole(int width, int height)
+				public void Hole(int width, int height)
 		{
 			for (int i = 0; i < width; i++)
 			{
@@ -1085,7 +1085,7 @@ public class Scenario : KMonoBehaviour
 			}
 		}
 
-		public void FillOffsets(SimHashes element, params int[] offsets)
+				public void FillOffsets(SimHashes element, params int[] offsets)
 		{
 			int left = this.Left;
 			int bot = this.Bot;
@@ -1097,7 +1097,7 @@ public class Scenario : KMonoBehaviour
 			}
 		}
 
-		public void Fill(int width, int height, SimHashes element)
+				public void Fill(int width, int height, SimHashes element)
 		{
 			for (int i = 0; i < width; i++)
 			{
@@ -1111,7 +1111,7 @@ public class Scenario : KMonoBehaviour
 			}
 		}
 
-		public void InAndOuts()
+				public void InAndOuts()
 		{
 			this.Wall(3);
 			this.Building("GasVent");
@@ -1131,7 +1131,7 @@ public class Scenario : KMonoBehaviour
 			});
 		}
 
-		public Scenario.Builder FinalizeRoom(SimHashes element = SimHashes.Oxygen, SimHashes tileElement = SimHashes.Steel)
+				public Scenario.Builder FinalizeRoom(SimHashes element = SimHashes.Oxygen, SimHashes tileElement = SimHashes.Steel)
 		{
 			for (int i = this.Min.x - 1; i <= this.Max.x; i++)
 			{
@@ -1164,18 +1164,18 @@ public class Scenario : KMonoBehaviour
 			return new Scenario.Builder(this.Max.x + 1, this.Min.y, SimHashes.Copper);
 		}
 
-		public bool PlaceUtilities;
+				public bool PlaceUtilities;
 
-		public int Left;
+				public int Left;
 
-		public int Bot;
+				public int Bot;
 
-		public Vector2I Min;
+				public Vector2I Min;
 
-		public Vector2I Max;
+				public Vector2I Max;
 
-		public SimHashes Element;
+				public SimHashes Element;
 
-		private Scenario Scenario;
+				private Scenario Scenario;
 	}
 }

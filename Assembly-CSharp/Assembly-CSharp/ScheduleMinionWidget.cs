@@ -8,9 +8,9 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/ScheduleMinionWidget")]
 public class ScheduleMinionWidget : KMonoBehaviour
 {
-			public Schedulable schedulable { get; private set; }
+				public Schedulable schedulable { get; private set; }
 
-	public void ChangeAssignment(Schedule targetSchedule, Schedulable schedulable)
+		public void ChangeAssignment(Schedule targetSchedule, Schedulable schedulable)
 	{
 		DebugUtil.LogArgs(new object[]
 		{
@@ -25,7 +25,7 @@ public class ScheduleMinionWidget : KMonoBehaviour
 		targetSchedule.Assign(schedulable);
 	}
 
-	public void Setup(Schedulable schedulable)
+		public void Setup(Schedulable schedulable)
 	{
 		this.schedulable = schedulable;
 		IAssignableIdentity component = schedulable.GetComponent<IAssignableIdentity>();
@@ -60,7 +60,7 @@ public class ScheduleMinionWidget : KMonoBehaviour
 		this.dropDown.Initialize(ScheduleManager.Instance.GetSchedules().Cast<IListableOption>(), new Action<IListableOption, object>(this.OnDropEntryClick), null, new Action<DropDownEntry, object>(this.DropEntryRefreshAction), false, schedulable);
 	}
 
-	public void RefreshWidgetWorldData()
+		public void RefreshWidgetWorldData()
 	{
 		this.worldContainer.SetActive(DlcManager.IsExpansion1Active());
 		MinionIdentity minionIdentity = this.schedulable.GetComponent<IAssignableIdentity>() as MinionIdentity;
@@ -90,13 +90,13 @@ public class ScheduleMinionWidget : KMonoBehaviour
 		}
 	}
 
-	private void OnDropEntryClick(IListableOption option, object obj)
+		private void OnDropEntryClick(IListableOption option, object obj)
 	{
 		Schedule targetSchedule = (Schedule)option;
 		this.ChangeAssignment(targetSchedule, this.schedulable);
 	}
 
-	private void DropEntryRefreshAction(DropDownEntry entry, object obj)
+		private void DropEntryRefreshAction(DropDownEntry entry, object obj)
 	{
 		Schedule schedule = (Schedule)entry.entryData;
 		if (((Schedulable)obj).GetSchedule() == schedule)
@@ -110,9 +110,11 @@ public class ScheduleMinionWidget : KMonoBehaviour
 			entry.button.isInteractable = true;
 		}
 		entry.gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("worldContainer").gameObject.SetActive(false);
+		entry.gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("ScheduleIcon").gameObject.SetActive(true);
+		entry.gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("PortraitContainer").gameObject.SetActive(false);
 	}
 
-	public void SetupBlank(Schedule schedule)
+		public void SetupBlank(Schedule schedule)
 	{
 		this.label.text = UI.SCHEDULESCREEN.SCHEDULE_DROPDOWN_BLANK;
 		this.dropDown.Initialize(Components.LiveMinionIdentities.Items.Cast<IListableOption>(), new Action<IListableOption, object>(this.OnBlankDropEntryClick), new Func<IListableOption, IListableOption, object, int>(this.BlankDropEntrySort), new Action<DropDownEntry, object>(this.BlankDropEntryRefreshAction), false, schedule);
@@ -120,12 +122,12 @@ public class ScheduleMinionWidget : KMonoBehaviour
 		Components.LiveMinionIdentities.OnRemove += this.OnLivingMinionsChanged;
 	}
 
-	private void OnLivingMinionsChanged(MinionIdentity minion)
+		private void OnLivingMinionsChanged(MinionIdentity minion)
 	{
 		this.dropDown.ChangeContent(Components.LiveMinionIdentities.Items.Cast<IListableOption>());
 	}
 
-	private void OnBlankDropEntryClick(IListableOption option, object obj)
+		private void OnBlankDropEntryClick(IListableOption option, object obj)
 	{
 		Schedule targetSchedule = (Schedule)obj;
 		MinionIdentity minionIdentity = (MinionIdentity)option;
@@ -136,7 +138,7 @@ public class ScheduleMinionWidget : KMonoBehaviour
 		this.ChangeAssignment(targetSchedule, minionIdentity.GetComponent<Schedulable>());
 	}
 
-	private void BlankDropEntryRefreshAction(DropDownEntry entry, object obj)
+		private void BlankDropEntryRefreshAction(DropDownEntry entry, object obj)
 	{
 		Schedule schedule = (Schedule)obj;
 		MinionIdentity minionIdentity = (MinionIdentity)entry.entryData;
@@ -171,9 +173,11 @@ public class ScheduleMinionWidget : KMonoBehaviour
 		Traits component = minionIdentity.GetComponent<Traits>();
 		entry.gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("NightOwlIcon").gameObject.SetActive(component.HasTrait("NightOwl"));
 		entry.gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("EarlyBirdIcon").gameObject.SetActive(component.HasTrait("EarlyBird"));
+		entry.gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("ScheduleIcon").gameObject.SetActive(false);
+		entry.gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("PortraitContainer").gameObject.SetActive(true);
 	}
 
-	private int BlankDropEntrySort(IListableOption a, IListableOption b, object obj)
+		private int BlankDropEntrySort(IListableOption a, IListableOption b, object obj)
 	{
 		Schedule schedule = (Schedule)obj;
 		MinionIdentity minionIdentity = (MinionIdentity)a;
@@ -191,27 +195,27 @@ public class ScheduleMinionWidget : KMonoBehaviour
 		return 0;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.LiveMinionIdentities.OnAdd -= this.OnLivingMinionsChanged;
 		Components.LiveMinionIdentities.OnRemove -= this.OnLivingMinionsChanged;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private CrewPortrait portrait;
 
-	[SerializeField]
+		[SerializeField]
 	private DropDown dropDown;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText label;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject nightOwlIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject earlyBirdIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject worldContainer;
 }

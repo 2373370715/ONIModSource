@@ -7,12 +7,12 @@ using UnityEngine;
 
 public class BuildTool : DragTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		BuildTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		BuildTool.Instance = this;
 		this.tooltip = base.GetComponent<ToolTip>();
@@ -20,7 +20,7 @@ public class BuildTool : DragTool
 		this.canChangeDragAxis = false;
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		this.lastDragCell = -1;
 		if (this.visualizer != null)
@@ -65,7 +65,7 @@ public class BuildTool : DragTool
 		GridCompositor.Instance.ToggleMajor(true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		this.lastDragCell = -1;
 		if (!this.active)
@@ -86,7 +86,7 @@ public class BuildTool : DragTool
 		base.OnDeactivateTool(new_tool);
 	}
 
-	public void Activate(BuildingDef def, IList<Tag> selected_elements)
+		public void Activate(BuildingDef def, IList<Tag> selected_elements)
 	{
 		this.selectedElements = selected_elements;
 		this.def = def;
@@ -96,13 +96,13 @@ public class BuildTool : DragTool
 		this.OnActivateTool();
 	}
 
-	public void Activate(BuildingDef def, IList<Tag> selected_elements, string facadeID)
+		public void Activate(BuildingDef def, IList<Tag> selected_elements, string facadeID)
 	{
 		this.facadeID = facadeID;
 		this.Activate(def, selected_elements);
 	}
 
-	public void Deactivate()
+		public void Deactivate()
 	{
 		this.selectedElements = null;
 		SelectTool.Instance.Activate();
@@ -111,7 +111,7 @@ public class BuildTool : DragTool
 		ResourceRemainingDisplayScreen.instance.DeactivateDisplay();
 	}
 
-		public int GetLastCell
+			public int GetLastCell
 	{
 		get
 		{
@@ -119,7 +119,7 @@ public class BuildTool : DragTool
 		}
 	}
 
-		public Orientation GetBuildingOrientation
+			public Orientation GetBuildingOrientation
 	{
 		get
 		{
@@ -127,7 +127,7 @@ public class BuildTool : DragTool
 		}
 	}
 
-	private void ClearTilePreview()
+		private void ClearTilePreview()
 	{
 		if (Grid.IsValidBuildingCell(this.lastCell) && this.def.IsTilePiece)
 		{
@@ -153,14 +153,14 @@ public class BuildTool : DragTool
 		}
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		base.OnMouseMove(cursorPos);
 		cursorPos = base.ClampPositionToWorld(cursorPos, ClusterManager.Instance.activeWorld);
 		this.UpdateVis(cursorPos);
 	}
 
-	private void UpdateVis(Vector3 pos)
+		private void UpdateVis(Vector3 pos)
 	{
 		string text;
 		bool flag = this.def.IsValidPlaceLocation(this.visualizer, pos, this.buildingOrientation, out text);
@@ -225,7 +225,7 @@ public class BuildTool : DragTool
 		}
 	}
 
-	public PermittedRotations? GetPermittedRotations()
+		public PermittedRotations? GetPermittedRotations()
 	{
 		if (this.visualizer == null)
 		{
@@ -239,12 +239,12 @@ public class BuildTool : DragTool
 		return new PermittedRotations?(component.permittedRotations);
 	}
 
-	public bool CanRotate()
+		public bool CanRotate()
 	{
 		return !(this.visualizer == null) && !(this.visualizer.GetComponent<Rotatable>() == null);
 	}
 
-	public void TryRotate()
+		public void TryRotate()
 	{
 		if (this.visualizer == null)
 		{
@@ -268,7 +268,7 @@ public class BuildTool : DragTool
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.RotateBuilding))
 		{
@@ -278,12 +278,12 @@ public class BuildTool : DragTool
 		base.OnKeyDown(e);
 	}
 
-	protected override void OnDragTool(int cell, int distFromOrigin)
+		protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		this.TryBuild(cell);
 	}
 
-	private void TryBuild(int cell)
+		private void TryBuild(int cell)
 	{
 		if (this.visualizer == null)
 		{
@@ -353,7 +353,7 @@ public class BuildTool : DragTool
 		this.PostProcessBuild(flag, pos, gameObject);
 	}
 
-	private GameObject InstantBuildReplace(int cell, Vector3 pos, GameObject tile)
+		private GameObject InstantBuildReplace(int cell, Vector3 pos, GameObject tile)
 	{
 		if (tile.GetComponent<SimCellOccupier>() == null)
 		{
@@ -371,7 +371,7 @@ public class BuildTool : DragTool
 		return null;
 	}
 
-	private void PostProcessBuild(bool instantBuild, Vector3 pos, GameObject builtItem)
+		private void PostProcessBuild(bool instantBuild, Vector3 pos, GameObject builtItem)
 	{
 		if (builtItem == null)
 		{
@@ -418,12 +418,12 @@ public class BuildTool : DragTool
 		}
 	}
 
-	protected override DragTool.Mode GetMode()
+		protected override DragTool.Mode GetMode()
 	{
 		return DragTool.Mode.Brush;
 	}
 
-	private void SetColor(GameObject root, Color c, float strength)
+		private void SetColor(GameObject root, Color c, float strength)
 	{
 		KBatchedAnimController component = root.GetComponent<KBatchedAnimController>();
 		if (component != null)
@@ -432,17 +432,17 @@ public class BuildTool : DragTool
 		}
 	}
 
-	private void ShowToolTip()
+		private void ShowToolTip()
 	{
 		ToolTipScreen.Instance.SetToolTip(this.tooltip);
 	}
 
-	private void HideToolTip()
+		private void HideToolTip()
 	{
 		ToolTipScreen.Instance.ClearToolTip(this.tooltip);
 	}
 
-	public void Update()
+		public void Update()
 	{
 		if (this.active)
 		{
@@ -454,22 +454,22 @@ public class BuildTool : DragTool
 		}
 	}
 
-	public override string GetDeactivateSound()
+		public override string GetDeactivateSound()
 	{
 		return "HUD_Click_Deselect";
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		base.OnLeftClickDown(cursor_pos);
 	}
 
-	public override void OnLeftClickUp(Vector3 cursor_pos)
+		public override void OnLeftClickUp(Vector3 cursor_pos)
 	{
 		base.OnLeftClickUp(cursor_pos);
 	}
 
-	public void SetToolOrientation(Orientation orientation)
+		public void SetToolOrientation(Orientation orientation)
 	{
 		if (this.visualizer != null)
 		{
@@ -491,28 +491,28 @@ public class BuildTool : DragTool
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting tooltipStyle;
 
-	private int lastCell = -1;
+		private int lastCell = -1;
 
-	private int lastDragCell = -1;
+		private int lastDragCell = -1;
 
-	private Orientation lastDragOrientation;
+		private Orientation lastDragOrientation;
 
-	private IList<Tag> selectedElements;
+		private IList<Tag> selectedElements;
 
-	private BuildingDef def;
+		private BuildingDef def;
 
-	private Orientation buildingOrientation;
+		private Orientation buildingOrientation;
 
-	private string facadeID;
+		private string facadeID;
 
-	private ToolTip tooltip;
+		private ToolTip tooltip;
 
-	public static BuildTool Instance;
+		public static BuildTool Instance;
 
-	private bool active;
+		private bool active;
 
-	private int buildingCount;
+		private int buildingCount;
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class GeneratedEquipment
 {
-	public static void LoadGeneratedEquipment(List<Type> types)
+		public static void LoadGeneratedEquipment(List<Type> types)
 	{
 		Type typeFromHandle = typeof(IEquipmentConfig);
 		List<Type> list = new List<Type>();

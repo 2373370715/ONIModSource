@@ -2,5 +2,5 @@
 
 public interface IHaveUtilityNetworkMgr
 {
-	IUtilityNetworkMgr GetNetworkManager();
+		IUtilityNetworkMgr GetNetworkManager();
 }

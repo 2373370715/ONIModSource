@@ -4,12 +4,12 @@ using UnityEngine;
 
 public static class LoreBearerUtil
 {
-	public static void AddLoreTo(GameObject prefabOrGameObject)
+		public static void AddLoreTo(GameObject prefabOrGameObject)
 	{
 		prefabOrGameObject.AddOrGet<LoreBearer>();
 	}
 
-	public static void AddLoreTo(GameObject prefabOrGameObject, LoreBearerAction unlockLoreFn)
+		public static void AddLoreTo(GameObject prefabOrGameObject, LoreBearerAction unlockLoreFn)
 	{
 		KPrefabID component = prefabOrGameObject.GetComponent<KPrefabID>();
 		if (component.IsInitialized())
@@ -24,7 +24,7 @@ public static class LoreBearerUtil
 		};
 	}
 
-	public static void AddLoreTo(GameObject prefabOrGameObject, string[] collectionsToUnlockFrom)
+		public static void AddLoreTo(GameObject prefabOrGameObject, string[] collectionsToUnlockFrom)
 	{
 		KPrefabID component = prefabOrGameObject.GetComponent<KPrefabID>();
 		if (component.IsInitialized())
@@ -39,7 +39,7 @@ public static class LoreBearerUtil
 		};
 	}
 
-	public static LoreBearerAction UnlockSpecificEntry(string unlockId, string searchDisplayText)
+		public static LoreBearerAction UnlockSpecificEntry(string unlockId, string searchDisplayText)
 	{
 		return delegate(InfoDialogScreen screen)
 		{
@@ -49,7 +49,7 @@ public static class LoreBearerUtil
 		};
 	}
 
-	public static void UnlockNextEmail(InfoDialogScreen screen)
+		public static void UnlockNextEmail(InfoDialogScreen screen)
 	{
 		string text = Game.Instance.unlocks.UnlockNext("emails", false);
 		if (text != null)
@@ -63,7 +63,7 @@ public static class LoreBearerUtil
 		screen.AddPlainText(Strings.Get("STRINGS.UI.USERMENUACTIONS.READLORE.SEARCH_COMPUTER_FAIL." + str2));
 	}
 
-	public static void UnlockNextResearchNote(InfoDialogScreen screen)
+		public static void UnlockNextResearchNote(InfoDialogScreen screen)
 	{
 		string text = Game.Instance.unlocks.UnlockNext("researchnotes", false);
 		if (text != null)
@@ -77,7 +77,7 @@ public static class LoreBearerUtil
 		screen.AddPlainText(Strings.Get("STRINGS.UI.USERMENUACTIONS.READLORE.SEARCH_OBJECT_FAIL." + str2));
 	}
 
-	public static void UnlockNextJournalEntry(InfoDialogScreen screen)
+		public static void UnlockNextJournalEntry(InfoDialogScreen screen)
 	{
 		string text = Game.Instance.unlocks.UnlockNext("journals", false);
 		if (text != null)
@@ -91,7 +91,7 @@ public static class LoreBearerUtil
 		screen.AddPlainText(Strings.Get("STRINGS.UI.USERMENUACTIONS.READLORE.SEARCH_OBJECT_FAIL." + str2));
 	}
 
-	public static void UnlockNextDimensionalLore(InfoDialogScreen screen)
+		public static void UnlockNextDimensionalLore(InfoDialogScreen screen)
 	{
 		string text = Game.Instance.unlocks.UnlockNext("dimensionallore", true);
 		if (text != null)
@@ -105,7 +105,7 @@ public static class LoreBearerUtil
 		screen.AddPlainText(Strings.Get("STRINGS.UI.USERMENUACTIONS.READLORE.SEARCH_OBJECT_FAIL." + str2));
 	}
 
-	public static void UnlockNextSpaceEntry(InfoDialogScreen screen)
+		public static void UnlockNextSpaceEntry(InfoDialogScreen screen)
 	{
 		string text = Game.Instance.unlocks.UnlockNext("space", false);
 		if (text != null)
@@ -119,7 +119,7 @@ public static class LoreBearerUtil
 		screen.AddPlainText(Strings.Get("STRINGS.UI.USERMENUACTIONS.READLORE.SEARCH_SPACEPOI_FAIL." + str2));
 	}
 
-	public static void UnlockNextDeskPodiumEntry(InfoDialogScreen screen)
+		public static void UnlockNextDeskPodiumEntry(InfoDialogScreen screen)
 	{
 		if (!Game.Instance.unlocks.IsUnlocked("story_trait_critter_manipulator_parking"))
 		{
@@ -133,7 +133,7 @@ public static class LoreBearerUtil
 		screen.AddPlainText(Strings.Get("STRINGS.UI.USERMENUACTIONS.READLORE.SEARCH_COMPUTER_FAIL." + str2));
 	}
 
-	public static LoreBearerAction UnlockNextInCollections(string[] collectionsToUnlockFrom)
+		public static LoreBearerAction UnlockNextInCollections(string[] collectionsToUnlockFrom)
 	{
 		return delegate(InfoDialogScreen screen)
 		{
@@ -152,13 +152,13 @@ public static class LoreBearerUtil
 		};
 	}
 
-	public static void NerualVacillator(InfoDialogScreen screen)
+		public static void NerualVacillator(InfoDialogScreen screen)
 	{
 		Game.Instance.unlocks.Unlock("neuralvacillator", true);
 		LoreBearerUtil.UnlockNextResearchNote(screen);
 	}
 
-	public static Action<InfoDialogScreen> OpenCodexByLockKeyID(string key, bool focusContent = false)
+		public static Action<InfoDialogScreen> OpenCodexByLockKeyID(string key, bool focusContent = false)
 	{
 		return delegate(InfoDialogScreen dialog)
 		{
@@ -167,7 +167,7 @@ public static class LoreBearerUtil
 		};
 	}
 
-	public static Action<InfoDialogScreen> OpenCodexByEntryID(string id)
+		public static Action<InfoDialogScreen> OpenCodexByEntryID(string id)
 	{
 		return delegate(InfoDialogScreen dialog)
 		{

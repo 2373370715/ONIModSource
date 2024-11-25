@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameNavGrids
 {
-	public GameNavGrids(Pathfinding pathfinding)
+		public GameNavGrids(Pathfinding pathfinding)
 	{
 		this.CreateDuplicantNavigation(pathfinding);
 		this.WalkerGrid1x1 = this.CreateWalkerNavigation(pathfinding, "WalkerNavGrid1x1", new CellOffset[]
@@ -49,7 +49,7 @@ public class GameNavGrids
 		this.CreateSquirrelNavigation(pathfinding);
 	}
 
-	private void CreateDuplicantNavigation(Pathfinding pathfinding)
+		private void CreateDuplicantNavigation(Pathfinding pathfinding)
 	{
 		NavOffset[] invalid_nav_offsets = new NavOffset[]
 		{
@@ -586,7 +586,7 @@ public class GameNavGrids
 		pathfinding.AddNavGrid(this.RobotGrid);
 	}
 
-	private NavGrid CreateWalkerNavigation(Pathfinding pathfinding, string id, CellOffset[] bounding_offsets)
+		private NavGrid CreateWalkerNavigation(Pathfinding pathfinding, string id, CellOffset[] bounding_offsets)
 	{
 		NavGrid.Transition[] transitions = new NavGrid.Transition[]
 		{
@@ -632,7 +632,7 @@ public class GameNavGrids
 		return navGrid;
 	}
 
-	private NavGrid CreateWalkerBabyNavigation(Pathfinding pathfinding, string id, CellOffset[] bounding_offsets)
+		private NavGrid CreateWalkerBabyNavigation(Pathfinding pathfinding, string id, CellOffset[] bounding_offsets)
 	{
 		NavGrid.Transition[] transitions = new NavGrid.Transition[]
 		{
@@ -655,14 +655,15 @@ public class GameNavGrids
 		return navGrid;
 	}
 
-	private NavGrid CreateWalkerLargeNavigation(Pathfinding pathfinding, string id, CellOffset[] bounding_offsets)
+		private NavGrid CreateWalkerLargeNavigation(Pathfinding pathfinding, string id, CellOffset[] bounding_offsets)
 	{
 		NavGrid.Transition[] transitions = new NavGrid.Transition[]
 		{
 			new NavGrid.Transition(NavType.Floor, NavType.Floor, 1, 0, NavAxis.NA, true, true, true, 1, "", new CellOffset[0], new CellOffset[0], new NavOffset[0], new NavOffset[0], true, 1f),
 			new NavGrid.Transition(NavType.Floor, NavType.Floor, 1, 1, NavAxis.NA, false, false, true, 1, "", new CellOffset[]
 			{
-				new CellOffset(2, 1)
+				new CellOffset(2, 1),
+				new CellOffset(0, 2)
 			}, new CellOffset[]
 			{
 				new CellOffset(1, 0),
@@ -672,7 +673,8 @@ public class GameNavGrids
 			{
 				new CellOffset(1, 0),
 				new CellOffset(2, 0),
-				new CellOffset(2, -1)
+				new CellOffset(2, -1),
+				new CellOffset(1, 1)
 			}, new CellOffset[]
 			{
 				new CellOffset(2, -2)
@@ -695,7 +697,7 @@ public class GameNavGrids
 		return navGrid;
 	}
 
-	private void CreateDreckoNavigation(Pathfinding pathfinding)
+		private void CreateDreckoNavigation(Pathfinding pathfinding)
 	{
 		CellOffset[] bounding_offsets = new CellOffset[]
 		{
@@ -872,7 +874,7 @@ public class GameNavGrids
 		pathfinding.AddNavGrid(this.DreckoGrid);
 	}
 
-	private void CreateDreckoBabyNavigation(Pathfinding pathfinding)
+		private void CreateDreckoBabyNavigation(Pathfinding pathfinding)
 	{
 		CellOffset[] bounding_offsets = new CellOffset[]
 		{
@@ -944,7 +946,7 @@ public class GameNavGrids
 		pathfinding.AddNavGrid(this.DreckoBabyGrid);
 	}
 
-	private void CreateFloaterNavigation(Pathfinding pathfinding)
+		private void CreateFloaterNavigation(Pathfinding pathfinding)
 	{
 		CellOffset[] bounding_offsets = new CellOffset[]
 		{
@@ -1059,7 +1061,7 @@ public class GameNavGrids
 		pathfinding.AddNavGrid(this.FloaterGrid);
 	}
 
-	private NavGrid CreateFlyerNavigation(Pathfinding pathfinding, string id, CellOffset[] bounding_offsets)
+		private NavGrid CreateFlyerNavigation(Pathfinding pathfinding, string id, CellOffset[] bounding_offsets)
 	{
 		NavGrid.Transition[] transitions = new NavGrid.Transition[]
 		{
@@ -1113,7 +1115,7 @@ public class GameNavGrids
 		return navGrid;
 	}
 
-	private void CreateSwimmerNavigation(Pathfinding pathfinding)
+		private void CreateSwimmerNavigation(Pathfinding pathfinding)
 	{
 		CellOffset[] bounding_offsets = new CellOffset[]
 		{
@@ -1151,7 +1153,7 @@ public class GameNavGrids
 		pathfinding.AddNavGrid(this.SwimmerGrid);
 	}
 
-	private void CreateDiggerNavigation(Pathfinding pathfinding)
+		private void CreateDiggerNavigation(Pathfinding pathfinding)
 	{
 		CellOffset[] bounding_offsets = new CellOffset[]
 		{
@@ -1244,7 +1246,7 @@ public class GameNavGrids
 		pathfinding.AddNavGrid(this.DiggerGrid);
 	}
 
-	private void CreateSquirrelNavigation(Pathfinding pathfinding)
+		private void CreateSquirrelNavigation(Pathfinding pathfinding)
 	{
 		CellOffset[] bounding_offsets = new CellOffset[]
 		{
@@ -1339,7 +1341,7 @@ public class GameNavGrids
 		pathfinding.AddNavGrid(this.SquirrelGrid);
 	}
 
-	private CellOffset[] MirrorOffsets(CellOffset[] offsets)
+		private CellOffset[] MirrorOffsets(CellOffset[] offsets)
 	{
 		List<CellOffset> list = new List<CellOffset>();
 		foreach (CellOffset cellOffset in offsets)
@@ -1350,7 +1352,7 @@ public class GameNavGrids
 		return list.ToArray();
 	}
 
-	private NavOffset[] MirrorNavOffsets(NavOffset[] offsets)
+		private NavOffset[] MirrorNavOffsets(NavOffset[] offsets)
 	{
 		List<NavOffset> list = new List<NavOffset>();
 		foreach (NavOffset navOffset in offsets)
@@ -1362,7 +1364,7 @@ public class GameNavGrids
 		return list.ToArray();
 	}
 
-	private NavGrid.Transition[] MirrorTransitions(NavGrid.Transition[] transitions)
+		private NavGrid.Transition[] MirrorTransitions(NavGrid.Transition[] transitions)
 	{
 		List<NavGrid.Transition> list = new List<NavGrid.Transition>();
 		foreach (NavGrid.Transition transition in transitions)
@@ -1385,7 +1387,7 @@ public class GameNavGrids
 		return list.ToArray();
 	}
 
-	private NavGrid.Transition[] CombineTransitions(NavGrid.Transition[] setA, NavGrid.Transition[] setB)
+		private NavGrid.Transition[] CombineTransitions(NavGrid.Transition[] setA, NavGrid.Transition[] setB)
 	{
 		NavGrid.Transition[] array = new NavGrid.Transition[setA.Length + setB.Length];
 		Array.Copy(setA, array, setA.Length);
@@ -1394,46 +1396,46 @@ public class GameNavGrids
 		return array;
 	}
 
-	public NavGrid DuplicantGrid;
+		public NavGrid DuplicantGrid;
 
-	public NavGrid WalkerGrid1x1;
+		public NavGrid WalkerGrid1x1;
 
-	public NavGrid WalkerBabyGrid1x1;
+		public NavGrid WalkerBabyGrid1x1;
 
-	public NavGrid WalkerGrid1x2;
+		public NavGrid WalkerGrid1x2;
 
-	public NavGrid WalkerGrid2x2;
+		public NavGrid WalkerGrid2x2;
 
-	public NavGrid DreckoGrid;
+		public NavGrid DreckoGrid;
 
-	public NavGrid DreckoBabyGrid;
+		public NavGrid DreckoBabyGrid;
 
-	public NavGrid FloaterGrid;
+		public NavGrid FloaterGrid;
 
-	public NavGrid FlyerGrid1x2;
+		public NavGrid FlyerGrid1x2;
 
-	public NavGrid FlyerGrid1x1;
+		public NavGrid FlyerGrid1x1;
 
-	public NavGrid FlyerGrid2x2;
+		public NavGrid FlyerGrid2x2;
 
-	public NavGrid SwimmerGrid;
+		public NavGrid SwimmerGrid;
 
-	public NavGrid DiggerGrid;
+		public NavGrid DiggerGrid;
 
-	public NavGrid SquirrelGrid;
+		public NavGrid SquirrelGrid;
 
-	public NavGrid RobotGrid;
+		public NavGrid RobotGrid;
 
-	public class SwimValidator : NavTableValidator
+		public class SwimValidator : NavTableValidator
 	{
-		public SwimValidator()
+				public SwimValidator()
 		{
 			World instance = World.Instance;
 			instance.OnLiquidChanged = (Action<int>)Delegate.Combine(instance.OnLiquidChanged, new Action<int>(this.OnLiquidChanged));
 			GameScenePartitioner.Instance.AddGlobalLayerListener(GameScenePartitioner.Instance.objectLayers[9], new Action<int, object>(this.OnFoundationTileChanged));
 		}
 
-		private void OnFoundationTileChanged(int cell, object unused)
+				private void OnFoundationTileChanged(int cell, object unused)
 		{
 			if (this.onDirty != null)
 			{
@@ -1441,7 +1443,7 @@ public class GameNavGrids
 			}
 		}
 
-		public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+				public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 		{
 			bool flag = Grid.IsSubstantialLiquid(cell, 0.35f);
 			if (!flag)
@@ -1452,7 +1454,7 @@ public class GameNavGrids
 			nav_table.SetValid(cell, NavType.Swim, is_valid);
 		}
 
-		private void OnLiquidChanged(int cell)
+				private void OnLiquidChanged(int cell)
 		{
 			if (this.onDirty != null)
 			{
@@ -1461,9 +1463,9 @@ public class GameNavGrids
 		}
 	}
 
-	public class FloorValidator : NavTableValidator
+		public class FloorValidator : NavTableValidator
 	{
-		public FloorValidator(bool is_dupe)
+				public FloorValidator(bool is_dupe)
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Combine(instance.OnSolidChanged, new Action<int>(this.OnSolidChanged));
@@ -1471,13 +1473,13 @@ public class GameNavGrids
 			this.isDupe = is_dupe;
 		}
 
-		public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+				public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 		{
 			bool flag = GameNavGrids.FloorValidator.IsWalkableCell(cell, Grid.CellBelow(cell), this.isDupe);
 			nav_table.SetValid(cell, NavType.Floor, flag && base.IsClear(cell, bounding_offsets, this.isDupe));
 		}
 
-		public static bool IsWalkableCell(int cell, int anchor_cell, bool is_dupe)
+				public static bool IsWalkableCell(int cell, int anchor_cell, bool is_dupe)
 		{
 			if (!Grid.IsWorldValidCell(cell))
 			{
@@ -1502,7 +1504,7 @@ public class GameNavGrids
 			return is_dupe && (Grid.NavValidatorMasks[cell] & (Grid.NavValidatorFlags.Ladder | Grid.NavValidatorFlags.Pole)) == (Grid.NavValidatorFlags)0 && (Grid.NavValidatorMasks[anchor_cell] & (Grid.NavValidatorFlags.Ladder | Grid.NavValidatorFlags.Pole)) > (Grid.NavValidatorFlags)0;
 		}
 
-		private void OnAddLadder(Ladder ladder)
+				private void OnAddLadder(Ladder ladder)
 		{
 			int obj = Grid.PosToCell(ladder);
 			if (this.onDirty != null)
@@ -1511,7 +1513,7 @@ public class GameNavGrids
 			}
 		}
 
-		private void OnRemoveLadder(Ladder ladder)
+				private void OnRemoveLadder(Ladder ladder)
 		{
 			int obj = Grid.PosToCell(ladder);
 			if (this.onDirty != null)
@@ -1520,7 +1522,7 @@ public class GameNavGrids
 			}
 		}
 
-		private void OnSolidChanged(int cell)
+				private void OnSolidChanged(int cell)
 		{
 			if (this.onDirty != null)
 			{
@@ -1528,25 +1530,25 @@ public class GameNavGrids
 			}
 		}
 
-		public override void Clear()
+				public override void Clear()
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Remove(instance.OnSolidChanged, new Action<int>(this.OnSolidChanged));
 			Components.Ladders.Unregister(new Action<Ladder>(this.OnAddLadder), new Action<Ladder>(this.OnRemoveLadder));
 		}
 
-		private bool isDupe;
+				private bool isDupe;
 	}
 
-	public class WallValidator : NavTableValidator
+		public class WallValidator : NavTableValidator
 	{
-		public WallValidator()
+				public WallValidator()
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Combine(instance.OnSolidChanged, new Action<int>(this.OnSolidChanged));
 		}
 
-		public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+				public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 		{
 			bool flag = GameNavGrids.WallValidator.IsWalkableCell(cell, Grid.CellRight(cell));
 			bool flag2 = GameNavGrids.WallValidator.IsWalkableCell(cell, Grid.CellLeft(cell));
@@ -1554,7 +1556,7 @@ public class GameNavGrids
 			nav_table.SetValid(cell, NavType.LeftWall, flag2 && base.IsClear(cell, bounding_offsets, false));
 		}
 
-		private static bool IsWalkableCell(int cell, int anchor_cell)
+				private static bool IsWalkableCell(int cell, int anchor_cell)
 		{
 			if (Grid.IsWorldValidCell(cell) && Grid.IsWorldValidCell(anchor_cell))
 			{
@@ -1574,7 +1576,7 @@ public class GameNavGrids
 			return false;
 		}
 
-		private void OnSolidChanged(int cell)
+				private void OnSolidChanged(int cell)
 		{
 			if (this.onDirty != null)
 			{
@@ -1582,28 +1584,28 @@ public class GameNavGrids
 			}
 		}
 
-		public override void Clear()
+				public override void Clear()
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Remove(instance.OnSolidChanged, new Action<int>(this.OnSolidChanged));
 		}
 	}
 
-	public class CeilingValidator : NavTableValidator
+		public class CeilingValidator : NavTableValidator
 	{
-		public CeilingValidator()
+				public CeilingValidator()
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Combine(instance.OnSolidChanged, new Action<int>(this.OnSolidChanged));
 		}
 
-		public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+				public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 		{
 			bool flag = GameNavGrids.CeilingValidator.IsWalkableCell(cell, Grid.CellAbove(cell));
 			nav_table.SetValid(cell, NavType.Ceiling, flag && base.IsClear(cell, bounding_offsets, false));
 		}
 
-		private static bool IsWalkableCell(int cell, int anchor_cell)
+				private static bool IsWalkableCell(int cell, int anchor_cell)
 		{
 			if (Grid.IsWorldValidCell(cell) && Grid.IsWorldValidCell(anchor_cell))
 			{
@@ -1631,7 +1633,7 @@ public class GameNavGrids
 			return false;
 		}
 
-		private void OnSolidChanged(int cell)
+				private void OnSolidChanged(int cell)
 		{
 			if (this.onDirty != null)
 			{
@@ -1639,21 +1641,21 @@ public class GameNavGrids
 			}
 		}
 
-		public override void Clear()
+				public override void Clear()
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Remove(instance.OnSolidChanged, new Action<int>(this.OnSolidChanged));
 		}
 	}
 
-	public class LadderValidator : NavTableValidator
+		public class LadderValidator : NavTableValidator
 	{
-		public LadderValidator()
+				public LadderValidator()
 		{
 			Components.Ladders.Register(new Action<Ladder>(this.OnAddLadder), new Action<Ladder>(this.OnRemoveLadder));
 		}
 
-		private void OnAddLadder(Ladder ladder)
+				private void OnAddLadder(Ladder ladder)
 		{
 			int obj = Grid.PosToCell(ladder);
 			if (this.onDirty != null)
@@ -1662,7 +1664,7 @@ public class GameNavGrids
 			}
 		}
 
-		private void OnRemoveLadder(Ladder ladder)
+				private void OnRemoveLadder(Ladder ladder)
 		{
 			int obj = Grid.PosToCell(ladder);
 			if (this.onDirty != null)
@@ -1671,33 +1673,33 @@ public class GameNavGrids
 			}
 		}
 
-		public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+				public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 		{
 			nav_table.SetValid(cell, NavType.Ladder, base.IsClear(cell, bounding_offsets, true) && Grid.HasLadder[cell]);
 		}
 
-		public override void Clear()
+				public override void Clear()
 		{
 			Components.Ladders.Unregister(new Action<Ladder>(this.OnAddLadder), new Action<Ladder>(this.OnRemoveLadder));
 		}
 	}
 
-	public class PoleValidator : GameNavGrids.LadderValidator
+		public class PoleValidator : GameNavGrids.LadderValidator
 	{
-		public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+				public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 		{
 			nav_table.SetValid(cell, NavType.Pole, base.IsClear(cell, bounding_offsets, true) && Grid.HasPole[cell]);
 		}
 	}
 
-	public class TubeValidator : NavTableValidator
+		public class TubeValidator : NavTableValidator
 	{
-		public TubeValidator()
+				public TubeValidator()
 		{
 			Components.ITravelTubePieces.Register(new Action<ITravelTubePiece>(this.OnAddLadder), new Action<ITravelTubePiece>(this.OnRemoveLadder));
 		}
 
-		private void OnAddLadder(ITravelTubePiece tube)
+				private void OnAddLadder(ITravelTubePiece tube)
 		{
 			int obj = Grid.PosToCell(tube.Position);
 			if (this.onDirty != null)
@@ -1706,7 +1708,7 @@ public class GameNavGrids
 			}
 		}
 
-		private void OnRemoveLadder(ITravelTubePiece tube)
+				private void OnRemoveLadder(ITravelTubePiece tube)
 		{
 			int obj = Grid.PosToCell(tube.Position);
 			if (this.onDirty != null)
@@ -1715,25 +1717,25 @@ public class GameNavGrids
 			}
 		}
 
-		public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+				public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 		{
 			nav_table.SetValid(cell, NavType.Tube, Grid.HasTube[cell]);
 		}
 
-		public override void Clear()
+				public override void Clear()
 		{
 			Components.ITravelTubePieces.Unregister(new Action<ITravelTubePiece>(this.OnAddLadder), new Action<ITravelTubePiece>(this.OnRemoveLadder));
 		}
 	}
 
-	public class TeleporterValidator : NavTableValidator
+		public class TeleporterValidator : NavTableValidator
 	{
-		public TeleporterValidator()
+				public TeleporterValidator()
 		{
 			Components.NavTeleporters.Register(new Action<NavTeleporter>(this.OnAddTeleporter), new Action<NavTeleporter>(this.OnRemoveTeleporter));
 		}
 
-		private void OnAddTeleporter(NavTeleporter teleporter)
+				private void OnAddTeleporter(NavTeleporter teleporter)
 		{
 			int obj = Grid.PosToCell(teleporter);
 			if (this.onDirty != null)
@@ -1742,7 +1744,7 @@ public class GameNavGrids
 			}
 		}
 
-		private void OnRemoveTeleporter(NavTeleporter teleporter)
+				private void OnRemoveTeleporter(NavTeleporter teleporter)
 		{
 			int obj = Grid.PosToCell(teleporter);
 			if (this.onDirty != null)
@@ -1751,21 +1753,21 @@ public class GameNavGrids
 			}
 		}
 
-		public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+				public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 		{
 			bool is_valid = Grid.IsWorldValidCell(cell) && Grid.HasNavTeleporter[cell];
 			nav_table.SetValid(cell, NavType.Teleport, is_valid);
 		}
 
-		public override void Clear()
+				public override void Clear()
 		{
 			Components.NavTeleporters.Unregister(new Action<NavTeleporter>(this.OnAddTeleporter), new Action<NavTeleporter>(this.OnRemoveTeleporter));
 		}
 	}
 
-	public class FlyingValidator : NavTableValidator
+		public class FlyingValidator : NavTableValidator
 	{
-		public FlyingValidator(bool exclude_floor = false, bool exclude_jet_suit_blockers = false, bool allow_door_traversal = false)
+				public FlyingValidator(bool exclude_floor = false, bool exclude_jet_suit_blockers = false, bool allow_door_traversal = false)
 		{
 			this.exclude_floor = exclude_floor;
 			this.exclude_jet_suit_blockers = exclude_jet_suit_blockers;
@@ -1777,7 +1779,7 @@ public class GameNavGrids
 			GameScenePartitioner.Instance.AddGlobalLayerListener(GameScenePartitioner.Instance.objectLayers[1], new Action<int, object>(this.OnBuildingChange));
 		}
 
-		public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+				public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 		{
 			bool flag = false;
 			if (Grid.IsWorldValidCell(Grid.CellAbove(cell)))
@@ -1800,12 +1802,12 @@ public class GameNavGrids
 			nav_table.SetValid(cell, NavType.Hover, flag);
 		}
 
-		private void OnBuildingChange(int cell, object data)
+				private void OnBuildingChange(int cell, object data)
 		{
 			this.MarkCellDirty(cell);
 		}
 
-		private void MarkCellDirty(int cell)
+				private void MarkCellDirty(int cell)
 		{
 			if (this.onDirty != null)
 			{
@@ -1813,7 +1815,7 @@ public class GameNavGrids
 			}
 		}
 
-		public override void Clear()
+				public override void Clear()
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Remove(instance.OnSolidChanged, new Action<int>(this.MarkCellDirty));
@@ -1822,18 +1824,18 @@ public class GameNavGrids
 			GameScenePartitioner.Instance.RemoveGlobalLayerListener(GameScenePartitioner.Instance.objectLayers[1], new Action<int, object>(this.OnBuildingChange));
 		}
 
-		private bool exclude_floor;
+				private bool exclude_floor;
 
-		private bool exclude_jet_suit_blockers;
+				private bool exclude_jet_suit_blockers;
 
-		private bool allow_door_traversal;
+				private bool allow_door_traversal;
 
-		private HandleVector<int>.Handle buildingParititonerEntry;
+				private HandleVector<int>.Handle buildingParititonerEntry;
 	}
 
-	public class HoverValidator : NavTableValidator
+		public class HoverValidator : NavTableValidator
 	{
-		public HoverValidator()
+				public HoverValidator()
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Combine(instance.OnSolidChanged, new Action<int>(this.MarkCellDirty));
@@ -1841,7 +1843,7 @@ public class GameNavGrids
 			instance2.OnLiquidChanged = (Action<int>)Delegate.Combine(instance2.OnLiquidChanged, new Action<int>(this.MarkCellDirty));
 		}
 
-		public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+				public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 		{
 			int num = Grid.CellBelow(cell);
 			if (Grid.IsWorldValidCell(num))
@@ -1851,7 +1853,7 @@ public class GameNavGrids
 			}
 		}
 
-		private void MarkCellDirty(int cell)
+				private void MarkCellDirty(int cell)
 		{
 			if (this.onDirty != null)
 			{
@@ -1859,7 +1861,7 @@ public class GameNavGrids
 			}
 		}
 
-		public override void Clear()
+				public override void Clear()
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Remove(instance.OnSolidChanged, new Action<int>(this.MarkCellDirty));
@@ -1868,21 +1870,21 @@ public class GameNavGrids
 		}
 	}
 
-	public class SolidValidator : NavTableValidator
+		public class SolidValidator : NavTableValidator
 	{
-		public SolidValidator()
+				public SolidValidator()
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Combine(instance.OnSolidChanged, new Action<int>(this.OnSolidChanged));
 		}
 
-		public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+				public override void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 		{
 			bool is_valid = GameNavGrids.SolidValidator.IsDiggable(cell, Grid.CellBelow(cell));
 			nav_table.SetValid(cell, NavType.Solid, is_valid);
 		}
 
-		public static bool IsDiggable(int cell, int anchor_cell)
+				public static bool IsDiggable(int cell, int anchor_cell)
 		{
 			if (Grid.IsWorldValidCell(cell) && Grid.Solid[cell])
 			{
@@ -1902,7 +1904,7 @@ public class GameNavGrids
 			return false;
 		}
 
-		private void OnSolidChanged(int cell)
+				private void OnSolidChanged(int cell)
 		{
 			if (this.onDirty != null)
 			{
@@ -1910,7 +1912,7 @@ public class GameNavGrids
 			}
 		}
 
-		public override void Clear()
+				public override void Clear()
 		{
 			World instance = World.Instance;
 			instance.OnSolidChanged = (Action<int>)Delegate.Remove(instance.OnSolidChanged, new Action<int>(this.OnSolidChanged));

@@ -4,14 +4,14 @@ using System.Diagnostics;
 
 namespace Database
 {
-	[DebuggerDisplay("{Id}")]
+		[DebuggerDisplay("{Id}")]
 	public class SpaceDestinationType : Resource
 	{
-						public int maxiumMass { get; private set; }
+								public int maxiumMass { get; private set; }
 
-						public int minimumMass { get; private set; }
+								public int minimumMass { get; private set; }
 
-				public float replishmentPerCycle
+						public float replishmentPerCycle
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Database
 			}
 		}
 
-				public float replishmentPerSim1000ms
+						public float replishmentPerSim1000ms
 		{
 			get
 			{
@@ -27,7 +27,7 @@ namespace Database
 			}
 		}
 
-		public SpaceDestinationType(string id, ResourceSet parent, string name, string description, int iconSize, string spriteName, Dictionary<SimHashes, MathUtil.MinMax> elementTable, Dictionary<string, int> recoverableEntities = null, ArtifactDropRate artifactDropRate = null, int max = 64000000, int min = 63994000, int cycles = 6, bool visitable = true) : base(id, parent, name)
+				public SpaceDestinationType(string id, ResourceSet parent, string name, string description, int iconSize, string spriteName, Dictionary<SimHashes, MathUtil.MinMax> elementTable, Dictionary<string, int> recoverableEntities = null, ArtifactDropRate artifactDropRate = null, int max = 64000000, int min = 63994000, int cycles = 6, bool visitable = true) : base(id, parent, name)
 		{
 			this.typeName = name;
 			this.description = description;
@@ -42,24 +42,24 @@ namespace Database
 			this.visitable = visitable;
 		}
 
-		public const float MASS_TO_RECOVER = 1000f;
+				public const float MASS_TO_RECOVER = 1000f;
 
-		public string typeName;
+				public string typeName;
 
-		public string description;
+				public string description;
 
-		public int iconSize = 128;
+				public int iconSize = 128;
 
-		public string spriteName;
+				public string spriteName;
 
-		public Dictionary<SimHashes, MathUtil.MinMax> elementTable;
+				public Dictionary<SimHashes, MathUtil.MinMax> elementTable;
 
-		public Dictionary<string, int> recoverableEntities;
+				public Dictionary<string, int> recoverableEntities;
 
-		public ArtifactDropRate artifactDropTable;
+				public ArtifactDropRate artifactDropTable;
 
-		public bool visitable;
+				public bool visitable;
 
-		public int cyclesToRecover;
+				public int cyclesToRecover;
 	}
 }

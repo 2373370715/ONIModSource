@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.wild;
 		base.serializable = StateMachine.SerializeType.Never;
@@ -48,27 +48,27 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 		this.replanted.starved.wrongLiquid.ParamTransition<bool>(this.hasIncorrectLiquid, this.replanted.starved.normal, GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.IsFalse);
 	}
 
-	public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.TargetParameter resourceStorage;
+		public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.TargetParameter resourceStorage;
 
-	public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.BoolParameter hasCorrectLiquid;
+		public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.BoolParameter hasCorrectLiquid;
 
-	public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.BoolParameter hasIncorrectLiquid;
+		public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.BoolParameter hasIncorrectLiquid;
 
-	public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.BoolParameter enoughCorrectLiquidToRecover;
+		public StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.BoolParameter enoughCorrectLiquidToRecover;
 
-	public GameHashes ResourceRecievedEvent = GameHashes.LiquidResourceRecieved;
+		public GameHashes ResourceRecievedEvent = GameHashes.LiquidResourceRecieved;
 
-	public GameHashes ResourceDepletedEvent = GameHashes.LiquidResourceEmpty;
+		public GameHashes ResourceDepletedEvent = GameHashes.LiquidResourceEmpty;
 
-	public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State wild;
+		public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State wild;
 
-	public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State unfertilizable;
+		public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State unfertilizable;
 
-	public IrrigationMonitor.ReplantedStates replanted;
+		public IrrigationMonitor.ReplantedStates replanted;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject obj)
+				public List<Descriptor> GetDescriptors(GameObject obj)
 		{
 			if (this.consumedElements.Length != 0)
 			{
@@ -84,33 +84,33 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 			return null;
 		}
 
-		public Tag wrongIrrigationTestTag;
+				public Tag wrongIrrigationTestTag;
 
-		public PlantElementAbsorber.ConsumeInfo[] consumedElements;
+				public PlantElementAbsorber.ConsumeInfo[] consumedElements;
 	}
 
-	public class VariableIrrigationStates : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State
+		public class VariableIrrigationStates : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State
 	{
-		public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State normal;
+				public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State normal;
 
-		public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State wrongLiquid;
+				public GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State wrongLiquid;
 	}
 
-	public class Irrigated : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State
+		public class Irrigated : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State
 	{
-		public IrrigationMonitor.VariableIrrigationStates absorbing;
+				public IrrigationMonitor.VariableIrrigationStates absorbing;
 	}
 
-	public class ReplantedStates : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State
+		public class ReplantedStates : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.State
 	{
-		public IrrigationMonitor.Irrigated irrigated;
+				public IrrigationMonitor.Irrigated irrigated;
 
-		public IrrigationMonitor.VariableIrrigationStates starved;
+				public IrrigationMonitor.VariableIrrigationStates starved;
 	}
 
-	public new class Instance : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.GameInstance, IWiltCause
+		public new class Instance : GameStateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.GameInstance, IWiltCause
 	{
-				public float total_fertilizer_available
+						public float total_fertilizer_available
 		{
 			get
 			{
@@ -118,41 +118,41 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 			}
 		}
 
-		public Instance(IStateMachineTarget master, IrrigationMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, IrrigationMonitor.Def def) : base(master, def)
 		{
 			this.AddAmounts(base.gameObject);
 			this.MakeModifiers();
 			master.Subscribe(1309017699, new Action<object>(this.SetStorage));
 		}
 
-		public virtual StatusItem GetStarvedStatusItem()
+				public virtual StatusItem GetStarvedStatusItem()
 		{
 			return Db.Get().CreatureStatusItems.NeedsIrrigation;
 		}
 
-		public virtual StatusItem GetIncorrectLiquidStatusItem()
+				public virtual StatusItem GetIncorrectLiquidStatusItem()
 		{
 			return Db.Get().CreatureStatusItems.WrongIrrigation;
 		}
 
-		public virtual StatusItem GetIncorrectLiquidStatusItemMajor()
+				public virtual StatusItem GetIncorrectLiquidStatusItemMajor()
 		{
 			return Db.Get().CreatureStatusItems.WrongIrrigationMajor;
 		}
 
-		protected virtual void AddAmounts(GameObject gameObject)
+				protected virtual void AddAmounts(GameObject gameObject)
 		{
 			Amounts amounts = gameObject.GetAmounts();
 			this.irrigation = amounts.Add(new AmountInstance(Db.Get().Amounts.Irrigation, gameObject));
 		}
 
-		protected virtual void MakeModifiers()
+				protected virtual void MakeModifiers()
 		{
 			this.consumptionRate = new AttributeModifier(Db.Get().Amounts.Irrigation.deltaAttribute.Id, -0.16666667f, CREATURES.STATS.IRRIGATION.CONSUME_MODIFIER, false, false, true);
 			this.absorptionRate = new AttributeModifier(Db.Get().Amounts.Irrigation.deltaAttribute.Id, 1.6666666f, CREATURES.STATS.IRRIGATION.ABSORBING_MODIFIER, false, false, true);
 		}
 
-		public static void DumpIncorrectFertilizers(Storage storage, GameObject go)
+				public static void DumpIncorrectFertilizers(Storage storage, GameObject go)
 		{
 			if (storage == null)
 			{
@@ -178,7 +178,7 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 			IrrigationMonitor.Instance.DumpIncorrectFertilizers(storage, consumed_infos2, true);
 		}
 
-		private static void DumpIncorrectFertilizers(Storage storage, PlantElementAbsorber.ConsumeInfo[] consumed_infos, bool validate_solids)
+				private static void DumpIncorrectFertilizers(Storage storage, PlantElementAbsorber.ConsumeInfo[] consumed_infos, bool validate_solids)
 		{
 			if (storage == null)
 			{
@@ -226,7 +226,7 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 			}
 		}
 
-		public void SetStorage(object obj)
+				public void SetStorage(object obj)
 		{
 			this.storage = (Storage)obj;
 			base.sm.resourceStorage.Set(this.storage, base.smi);
@@ -250,7 +250,7 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 			}
 		}
 
-				public WiltCondition.Condition[] Conditions
+						public WiltCondition.Condition[] Conditions
 		{
 			get
 			{
@@ -261,7 +261,7 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 			}
 		}
 
-				public string WiltStateString
+						public string WiltStateString
 		{
 			get
 			{
@@ -282,18 +282,18 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 			}
 		}
 
-		public virtual bool AcceptsLiquid()
+				public virtual bool AcceptsLiquid()
 		{
 			PlantablePlot component = base.sm.resourceStorage.Get(this).GetComponent<PlantablePlot>();
 			return component != null && component.AcceptsIrrigation;
 		}
 
-		public bool Starved()
+				public bool Starved()
 		{
 			return this.irrigation.value == 0f;
 		}
 
-		public void UpdateIrrigation(float dt)
+				public void UpdateIrrigation(float dt)
 		{
 			if (base.def.consumedElements == null)
 			{
@@ -347,7 +347,7 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 			base.sm.enoughCorrectLiquidToRecover.Set(flag2 && flag, base.smi, false);
 		}
 
-		public void UpdateAbsorbing(bool allow)
+				public void UpdateAbsorbing(bool allow)
 		{
 			bool flag = allow && !base.smi.gameObject.HasTag(GameTags.Wilting);
 			if (flag != this.absorberHandle.IsValid())
@@ -376,16 +376,16 @@ public class IrrigationMonitor : GameStateMachine<IrrigationMonitor, IrrigationM
 			}
 		}
 
-		public AttributeModifier consumptionRate;
+				public AttributeModifier consumptionRate;
 
-		public AttributeModifier absorptionRate;
+				public AttributeModifier absorptionRate;
 
-		protected AmountInstance irrigation;
+				protected AmountInstance irrigation;
 
-		private float total_available_mass;
+				private float total_available_mass;
 
-		private Storage storage;
+				private Storage storage;
 
-		private HandleVector<int>.Handle absorberHandle = HandleVector<int>.InvalidHandle;
+				private HandleVector<int>.Handle absorberHandle = HandleVector<int>.InvalidHandle;
 	}
 }

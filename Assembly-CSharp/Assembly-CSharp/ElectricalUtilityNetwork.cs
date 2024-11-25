@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ElectricalUtilityNetwork : UtilityNetwork
 {
-	public override void AddItem(object item)
+		public override void AddItem(object item)
 	{
 		if (item.GetType() == typeof(Wire))
 		{
@@ -24,7 +24,7 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 		}
 	}
 
-	public override void Reset(UtilityNetworkGridNode[] grid)
+		public override void Reset(UtilityNetworkGridNode[] grid)
 	{
 		for (int i = 0; i < 5; i++)
 		{
@@ -50,7 +50,7 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 		this.RemoveOverloadedNotification();
 	}
 
-	public void UpdateOverloadTime(float dt, float watts_used, List<WireUtilityNetworkLink>[] bridgeGroups)
+		public void UpdateOverloadTime(float dt, float watts_used, List<WireUtilityNetworkLink>[] bridgeGroups)
 	{
 		bool flag = false;
 		List<Wire> list = null;
@@ -132,7 +132,7 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 		}
 	}
 
-	private void RemoveOverloadedNotification()
+		private void RemoveOverloadedNotification()
 	{
 		if (this.overloadedNotification != null)
 		{
@@ -141,7 +141,7 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 		}
 	}
 
-	public float GetMaxSafeWattage()
+		public float GetMaxSafeWattage()
 	{
 		for (int i = 0; i < this.wireGroups.Length; i++)
 		{
@@ -154,7 +154,7 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 		return 0f;
 	}
 
-	public override void RemoveItem(object item)
+		public override void RemoveItem(object item)
 	{
 		if (item.GetType() == typeof(Wire))
 		{
@@ -164,19 +164,19 @@ public class ElectricalUtilityNetwork : UtilityNetwork
 		}
 	}
 
-	private Notification overloadedNotification;
+		private Notification overloadedNotification;
 
-	private List<Wire>[] wireGroups = new List<Wire>[5];
+		private List<Wire>[] wireGroups = new List<Wire>[5];
 
-	public List<Wire> allWires = new List<Wire>();
+		public List<Wire> allWires = new List<Wire>();
 
-	private const float MIN_OVERLOAD_TIME_FOR_DAMAGE = 6f;
+		private const float MIN_OVERLOAD_TIME_FOR_DAMAGE = 6f;
 
-	private const float MIN_OVERLOAD_NOTIFICATION_DISPLAY_TIME = 5f;
+		private const float MIN_OVERLOAD_NOTIFICATION_DISPLAY_TIME = 5f;
 
-	private GameObject targetOverloadedWire;
+		private GameObject targetOverloadedWire;
 
-	private float timeOverloaded;
+		private float timeOverloaded;
 
-	private float timeOverloadNotificationDisplayed;
+		private float timeOverloadNotificationDisplayed;
 }

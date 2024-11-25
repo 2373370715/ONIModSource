@@ -6,12 +6,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Moppable")]
 public class Moppable : Workable, ISim1000ms, ISim200ms
 {
-	private Moppable()
+		private Moppable()
 	{
 		this.showProgressBar = false;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workerStatusItem = Db.Get().DuplicantStatusItems.Mopping;
@@ -23,7 +23,7 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		Prioritizable.AddRef(base.gameObject);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (!this.IsThereLiquid())
@@ -50,41 +50,41 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		SimAndRenderScheduler.instance.Remove(this);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("icon_cancel", UI.USERMENUACTIONS.CANCELMOP.NAME, new System.Action(this.OnCancel), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.CANCELMOP.TOOLTIP, true), 1f);
 	}
 
-	private void OnCancel()
+		private void OnCancel()
 	{
 		DetailsScreen.Instance.Show(false);
 		base.gameObject.Trigger(2127324410, null);
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		SimAndRenderScheduler.instance.Add(this, false);
 		this.Refresh();
 		this.MopTick(this.amountMoppedPerTick);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		SimAndRenderScheduler.instance.Remove(this);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		SimAndRenderScheduler.instance.Remove(this);
 	}
 
-	public override bool InstantlyFinish(Worker worker)
+		public override bool InstantlyFinish(WorkerBase worker)
 	{
 		this.MopTick(1000f);
 		return true;
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		if (this.amountMopped > 0f)
 		{
@@ -93,7 +93,7 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		}
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (base.worker != null)
 		{
@@ -102,7 +102,7 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		}
 	}
 
-	private void OnCellMopped(Sim.MassConsumedCallback mass_cb_info, object data)
+		private void OnCellMopped(Sim.MassConsumedCallback mass_cb_info, object data)
 	{
 		if (this == null)
 		{
@@ -117,7 +117,7 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		}
 	}
 
-	public static void MopCell(int cell, float amount, Action<Sim.MassConsumedCallback, object> cb)
+		public static void MopCell(int cell, float amount, Action<Sim.MassConsumedCallback, object> cb)
 	{
 		if (Grid.Element[cell].IsLiquid)
 		{
@@ -130,7 +130,7 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		}
 	}
 
-	private void MopTick(float mopAmount)
+		private void MopTick(float mopAmount)
 	{
 		int cell = Grid.PosToCell(this);
 		for (int i = 0; i < this.offsets.Length; i++)
@@ -143,7 +143,7 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		}
 	}
 
-	private bool IsThereLiquid()
+		private bool IsThereLiquid()
 	{
 		int cell = Grid.PosToCell(this);
 		bool result = false;
@@ -158,7 +158,7 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		return result;
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		if (!this.IsThereLiquid())
 		{
@@ -177,12 +177,12 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		}
 	}
 
-	private void OnLiquidChanged(object data)
+		private void OnLiquidChanged(object data)
 	{
 		this.Refresh();
 	}
 
-	private void TryDestroy()
+		private void TryDestroy()
 	{
 		if (this != null)
 		{
@@ -190,13 +190,13 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 	}
 
-	private void OnReachableChanged(object data)
+		private void OnReachableChanged(object data)
 	{
 		if (this.childRenderer != null)
 		{
@@ -222,35 +222,35 @@ public class Moppable : Workable, ISim1000ms, ISim200ms
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable Selectable;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Prioritizable prioritizable;
 
-	public float amountMoppedPerTick = 1000f;
+		public float amountMoppedPerTick = 1000f;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private SchedulerHandle destroyHandle;
+		private SchedulerHandle destroyHandle;
 
-	private float amountMopped;
+		private float amountMopped;
 
-	private MeshRenderer childRenderer;
+		private MeshRenderer childRenderer;
 
-	private CellOffset[] offsets = new CellOffset[]
+		private CellOffset[] offsets = new CellOffset[]
 	{
 		new CellOffset(0, 0),
 		new CellOffset(1, 0),
 		new CellOffset(-1, 0)
 	};
 
-	private static readonly EventSystem.IntraObjectHandler<Moppable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Moppable>(delegate(Moppable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Moppable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Moppable>(delegate(Moppable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Moppable> OnReachableChangedDelegate = new EventSystem.IntraObjectHandler<Moppable>(delegate(Moppable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Moppable> OnReachableChangedDelegate = new EventSystem.IntraObjectHandler<Moppable>(delegate(Moppable component, object data)
 	{
 		component.OnReachableChanged(data);
 	});

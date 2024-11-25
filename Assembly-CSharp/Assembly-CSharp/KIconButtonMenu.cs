@@ -7,13 +7,13 @@ using UnityEngine.UI;
 
 public class KIconButtonMenu : KScreen
 {
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		this.RefreshButtons();
 	}
 
-	public void SetButtons(IList<KIconButtonMenu.ButtonInfo> buttons)
+		public void SetButtons(IList<KIconButtonMenu.ButtonInfo> buttons)
 	{
 		this.buttons = buttons;
 		if (this.activateOnSpawn)
@@ -22,7 +22,7 @@ public class KIconButtonMenu : KScreen
 		}
 	}
 
-	public void RefreshButtonTooltip()
+		public void RefreshButtonTooltip()
 	{
 		for (int i = 0; i < this.buttons.Count; i++)
 		{
@@ -44,7 +44,7 @@ public class KIconButtonMenu : KScreen
 		}
 	}
 
-	public virtual void RefreshButtons()
+		public virtual void RefreshButtons()
 	{
 		if (this.buttonObjects != null)
 		{
@@ -167,7 +167,7 @@ public class KIconButtonMenu : KScreen
 		this.Update();
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.buttons == null)
 		{
@@ -190,18 +190,18 @@ public class KIconButtonMenu : KScreen
 		base.OnKeyDown(e);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.Subscribe<KIconButtonMenu>(315865555, KIconButtonMenu.OnSetActivatorDelegate);
 	}
 
-	private void OnSetActivator(object data)
+		private void OnSetActivator(object data)
 	{
 		this.go = (GameObject)data;
 		this.Update();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!this.followGameObject || this.go == null || base.canvas == null)
 		{
@@ -216,7 +216,7 @@ public class KIconButtonMenu : KScreen
 		}
 	}
 
-	protected void SelectToggle(KToggle selectedToggle)
+		protected void SelectToggle(KToggle selectedToggle)
 	{
 		if (UnityEngine.EventSystems.EventSystem.current == null || !UnityEngine.EventSystems.EventSystem.current.enabled)
 		{
@@ -250,7 +250,7 @@ public class KIconButtonMenu : KScreen
 		}
 	}
 
-	public void ClearSelection()
+		public void ClearSelection()
 	{
 		foreach (GameObject gameObject in this.buttonObjects)
 		{
@@ -282,49 +282,49 @@ public class KIconButtonMenu : KScreen
 		this.SelectToggle(null);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	protected bool followGameObject;
 
-	[SerializeField]
+		[SerializeField]
 	protected bool keepMenuOpen;
 
-	[SerializeField]
+		[SerializeField]
 	protected bool automaticNavigation = true;
 
-	[SerializeField]
+		[SerializeField]
 	protected Transform buttonParent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject buttonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	protected Sprite[] icons;
 
-	[SerializeField]
+		[SerializeField]
 	private ToggleGroup externalToggleGroup;
 
-	protected KToggle currentlySelectedToggle;
+		protected KToggle currentlySelectedToggle;
 
-	[NonSerialized]
+		[NonSerialized]
 	public GameObject[] buttonObjects;
 
-	[SerializeField]
+		[SerializeField]
 	public TextStyleSetting ToggleToolTipTextStyleSetting;
 
-	private UnityAction inputChangeReceiver;
+		private UnityAction inputChangeReceiver;
 
-	protected GameObject go;
+		protected GameObject go;
 
-	protected IList<KIconButtonMenu.ButtonInfo> buttons;
+		protected IList<KIconButtonMenu.ButtonInfo> buttons;
 
-	private static readonly global::EventSystem.IntraObjectHandler<KIconButtonMenu> OnSetActivatorDelegate = new global::EventSystem.IntraObjectHandler<KIconButtonMenu>(delegate(KIconButtonMenu component, object data)
+		private static readonly global::EventSystem.IntraObjectHandler<KIconButtonMenu> OnSetActivatorDelegate = new global::EventSystem.IntraObjectHandler<KIconButtonMenu>(delegate(KIconButtonMenu component, object data)
 	{
 		component.OnSetActivator(data);
 	});
 
-	public class ButtonInfo
+		public class ButtonInfo
 	{
-		public ButtonInfo(string iconName = "", string text = "", System.Action on_click = null, global::Action shortcutKey = global::Action.NumActions, Action<GameObject> on_refresh = null, Action<KIconButtonMenu.ButtonInfo> on_create = null, Texture texture = null, string tooltipText = "", bool is_interactable = true)
+				public ButtonInfo(string iconName = "", string text = "", System.Action on_click = null, global::Action shortcutKey = global::Action.NumActions, Action<GameObject> on_refresh = null, Action<KIconButtonMenu.ButtonInfo> on_create = null, Texture texture = null, string tooltipText = "", bool is_interactable = true)
 		{
 			this.iconName = iconName;
 			this.text = text;
@@ -336,7 +336,7 @@ public class KIconButtonMenu : KScreen
 			this.isInteractable = is_interactable;
 		}
 
-		public string GetTooltipText()
+				public string GetTooltipText()
 		{
 			string text = (this.tooltipText == "") ? this.text : this.tooltipText;
 			if (this.shortcutKey != global::Action.NumActions)
@@ -346,30 +346,30 @@ public class KIconButtonMenu : KScreen
 			return text;
 		}
 
-		public string iconName;
+				public string iconName;
 
-		public string text;
+				public string text;
 
-		public string tooltipText;
+				public string tooltipText;
 
-		public string[] multiText;
+				public string[] multiText;
 
-		public global::Action shortcutKey;
+				public global::Action shortcutKey;
 
-		public bool isInteractable;
+				public bool isInteractable;
 
-		public Action<KIconButtonMenu.ButtonInfo> onCreate;
+				public Action<KIconButtonMenu.ButtonInfo> onCreate;
 
-		public System.Action onClick;
+				public System.Action onClick;
 
-		public Func<string> onToolTip;
+				public Func<string> onToolTip;
 
-		public GameObject buttonGo;
+				public GameObject buttonGo;
 
-		public object userData;
+				public object userData;
 
-		public Texture texture;
+				public Texture texture;
 
-				public delegate void Callback();
+						public delegate void Callback();
 	}
 }

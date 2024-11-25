@@ -2,7 +2,7 @@
 
 public class EquipChore : Chore<EquipChore.StatesInstance>
 {
-	public EquipChore(IStateMachineTarget equippable) : base(Db.Get().ChoreTypes.Equip, equippable, null, false, null, null, null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+		public EquipChore(IStateMachineTarget equippable) : base(Db.Get().ChoreTypes.Equip, equippable, null, false, null, null, null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new EquipChore.StatesInstance(this);
 		base.smi.sm.equippable_source.Set(equippable.gameObject, base.smi, false);
@@ -10,11 +10,11 @@ public class EquipChore : Chore<EquipChore.StatesInstance>
 		this.showAvailabilityInHoverText = false;
 		Prioritizable.AddRef(equippable.gameObject);
 		Game.Instance.Trigger(1980521255, equippable.gameObject);
-		base.AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, equippable.GetComponent<Assignable>());
-		base.AddPrecondition(ChorePreconditions.instance.CanPickup, equippable.GetComponent<Pickupable>());
+		this.AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, equippable.GetComponent<Assignable>());
+		this.AddPrecondition(ChorePreconditions.instance.CanPickup, equippable.GetComponent<Pickupable>());
 	}
 
-	public override void Begin(Chore.Precondition.Context context)
+		public override void Begin(Chore.Precondition.Context context)
 	{
 		if (context.consumerState.consumer == null)
 		{
@@ -40,16 +40,16 @@ public class EquipChore : Chore<EquipChore.StatesInstance>
 		base.Begin(context);
 	}
 
-	public class StatesInstance : GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.GameInstance
 	{
-		public StatesInstance(EquipChore master) : base(master)
+				public StatesInstance(EquipChore master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore>
+		public class States : GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.fetch;
 			base.Target(this.equipper);
@@ -58,25 +58,25 @@ public class EquipChore : Chore<EquipChore.StatesInstance>
 			this.equip.ToggleWork<EquippableWorkable>(this.equippable_result, null, null, null);
 		}
 
-		public StateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.TargetParameter equipper;
+				public StateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.TargetParameter equipper;
 
-		public StateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.TargetParameter equippable_source;
+				public StateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.TargetParameter equippable_source;
 
-		public StateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.TargetParameter equippable_result;
+				public StateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.TargetParameter equippable_result;
 
-		public StateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.FloatParameter requested_units;
+				public StateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.FloatParameter requested_units;
 
-		public StateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.FloatParameter actual_units;
+				public StateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.FloatParameter actual_units;
 
-		public GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.FetchSubState fetch;
+				public GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.FetchSubState fetch;
 
-		public EquipChore.States.Equip equip;
+				public EquipChore.States.Equip equip;
 
-		public class Equip : GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.State
+				public class Equip : GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.State
 		{
-			public GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.State pre;
+						public GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.State pre;
 
-			public GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.State pst;
+						public GameStateMachine<EquipChore.States, EquipChore.StatesInstance, EquipChore, object>.State pst;
 		}
 	}
 }

@@ -6,13 +6,13 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicMassSensor>(-905833192, LogicMassSensor.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicMassSensor component = ((GameObject)data).GetComponent<LogicMassSensor>();
 		if (component != null)
@@ -22,7 +22,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.UpdateVisualState(true);
@@ -33,7 +33,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		base.OnToggle += this.SwitchToggled;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.solidChangedEntry);
 		GameScenePartitioner.Instance.Free(ref this.pickupablesChangedEntry);
@@ -41,7 +41,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		base.OnCleanUp();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.toggleCooldown = Mathf.Max(0f, this.toggleCooldown - Time.deltaTime);
 		if (this.toggleCooldown == 0f)
@@ -56,7 +56,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-	private void OnSolidChanged(object data)
+		private void OnSolidChanged(object data)
 	{
 		int i = Grid.CellAbove(this.NaturalBuildingCell());
 		if (Grid.Solid[i])
@@ -67,7 +67,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		this.massSolid = 0f;
 	}
 
-	private void OnPickupablesChanged(object data)
+		private void OnPickupablesChanged(object data)
 	{
 		float num = 0f;
 		int cell = Grid.CellAbove(this.NaturalBuildingCell());
@@ -89,7 +89,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		this.massPickupables = num;
 	}
 
-	private void OnActivatorsChanged(object data)
+		private void OnActivatorsChanged(object data)
 	{
 		float num = 0f;
 		int cell = Grid.CellAbove(this.NaturalBuildingCell());
@@ -107,7 +107,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		this.massActivators = num;
 	}
 
-		public LocString Title
+			public LocString Title
 	{
 		get
 		{
@@ -115,7 +115,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-			public float Threshold
+				public float Threshold
 	{
 		get
 		{
@@ -127,7 +127,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-			public bool ActivateAboveThreshold
+				public bool ActivateAboveThreshold
 	{
 		get
 		{
@@ -139,7 +139,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-		public float CurrentValue
+			public float CurrentValue
 	{
 		get
 		{
@@ -147,7 +147,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-		public float RangeMin
+			public float RangeMin
 	{
 		get
 		{
@@ -155,7 +155,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-		public float RangeMax
+			public float RangeMax
 	{
 		get
 		{
@@ -163,17 +163,17 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-	public float GetRangeMinInputField()
+		public float GetRangeMinInputField()
 	{
 		return this.rangeMin;
 	}
 
-	public float GetRangeMaxInputField()
+		public float GetRangeMaxInputField()
 	{
 		return this.rangeMax;
 	}
 
-		public LocString ThresholdValueName
+			public LocString ThresholdValueName
 	{
 		get
 		{
@@ -181,7 +181,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-		public string AboveToolTip
+			public string AboveToolTip
 	{
 		get
 		{
@@ -189,7 +189,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-		public string BelowToolTip
+			public string BelowToolTip
 	{
 		get
 		{
@@ -197,29 +197,29 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-	public string Format(float value, bool units)
+		public string Format(float value, bool units)
 	{
 		GameUtil.MetricMassFormat massFormat = GameUtil.MetricMassFormat.Kilogram;
 		return GameUtil.GetFormattedMass(value, GameUtil.TimeSlice.None, massFormat, units, "{0:0.#}");
 	}
 
-	public float ProcessedSliderValue(float input)
+		public float ProcessedSliderValue(float input)
 	{
 		input = Mathf.Round(input);
 		return input;
 	}
 
-	public float ProcessedInputValue(float input)
+		public float ProcessedInputValue(float input)
 	{
 		return input;
 	}
 
-	public LocString ThresholdValueUnits()
+		public LocString ThresholdValueUnits()
 	{
 		return GameUtil.GetCurrentMassUnit(false);
 	}
 
-		public ThresholdScreenLayoutType LayoutType
+			public ThresholdScreenLayoutType LayoutType
 	{
 		get
 		{
@@ -227,7 +227,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-		public int IncrementScale
+			public int IncrementScale
 	{
 		get
 		{
@@ -235,7 +235,7 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-		public NonLinearSlider.Range[] GetRanges
+			public NonLinearSlider.Range[] GetRanges
 	{
 		get
 		{
@@ -243,12 +243,12 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-	private void SwitchToggled(bool toggled_on)
+		private void SwitchToggled(bool toggled_on)
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, toggled_on ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		bool flag = this.CurrentValue > this.threshold;
 		if (flag != this.was_pressed || this.was_on != base.IsSwitchedOn || force)
@@ -280,54 +280,54 @@ public class LogicMassSensor : Switch, ISaveLoadable, IThresholdSwitch
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	private float threshold;
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	private bool activateAboveThreshold = true;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private LogicPorts logicPorts;
 
-	private bool was_pressed;
+		private bool was_pressed;
 
-	private bool was_on;
+		private bool was_on;
 
-	public float rangeMin;
+		public float rangeMin;
 
-	public float rangeMax = 1f;
+		public float rangeMax = 1f;
 
-	[Serialize]
+		[Serialize]
 	private float massSolid;
 
-	[Serialize]
+		[Serialize]
 	private float massPickupables;
 
-	[Serialize]
+		[Serialize]
 	private float massActivators;
 
-	private const float MIN_TOGGLE_TIME = 0.15f;
+		private const float MIN_TOGGLE_TIME = 0.15f;
 
-	private float toggleCooldown = 0.15f;
+		private float toggleCooldown = 0.15f;
 
-	private HandleVector<int>.Handle solidChangedEntry;
+		private HandleVector<int>.Handle solidChangedEntry;
 
-	private HandleVector<int>.Handle pickupablesChangedEntry;
+		private HandleVector<int>.Handle pickupablesChangedEntry;
 
-	private HandleVector<int>.Handle floorSwitchActivatorChangedEntry;
+		private HandleVector<int>.Handle floorSwitchActivatorChangedEntry;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicMassSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicMassSensor>(delegate(LogicMassSensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicMassSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicMassSensor>(delegate(LogicMassSensor component, object data)
 	{
 		component.OnCopySettings(data);
 	});

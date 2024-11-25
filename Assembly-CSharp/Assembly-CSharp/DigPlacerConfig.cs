@@ -2,38 +2,28 @@
 using STRINGS;
 using UnityEngine;
 
-public class DigPlacerConfig : CommonPlacerConfig, IEntityConfig
-{
-	public GameObject CreatePrefab()
-	{
-		GameObject gameObject = base.CreatePrefab(DigPlacerConfig.ID, MISC.PLACERS.DIGPLACER.NAME, Assets.instance.digPlacerAssets.materials[0]);
-		Diggable diggable = gameObject.AddOrGet<Diggable>();
-		diggable.workTime = 5f;
-		diggable.synchronizeAnims = false;
-		diggable.workAnims = new HashedString[]
-		{
-			"place",
-			"release"
-		};
-		diggable.materials = Assets.instance.digPlacerAssets.materials;
-		diggable.materialDisplay = gameObject.GetComponentInChildren<MeshRenderer>(true);
-		gameObject.AddOrGet<CancellableDig>();
-		return gameObject;
-	}
+public class DigPlacerConfig : CommonPlacerConfig, IEntityConfig {
+    public static string ID = "DigPlacer";
 
-	public void OnPrefabInit(GameObject go)
-	{
-	}
+    public GameObject CreatePrefab() {
+        var gameObject
+            = base.CreatePrefab(ID, MISC.PLACERS.DIGPLACER.NAME, Assets.instance.digPlacerAssets.materials[0]);
 
-	public void OnSpawn(GameObject go)
-	{
-	}
+        var diggable = gameObject.AddOrGet<Diggable>();
+        diggable.workTime         = 5f;
+        diggable.synchronizeAnims = false;
+        diggable.workAnims        = new HashedString[] { "place", "release" };
+        diggable.materials        = Assets.instance.digPlacerAssets.materials;
+        diggable.materialDisplay  = gameObject.GetComponentInChildren<MeshRenderer>(true);
+        gameObject.AddOrGet<CancellableDig>();
+        return gameObject;
+    }
 
-	public static string ID = "DigPlacer";
+    public void OnPrefabInit(GameObject go) { }
+    public void OnSpawn(GameObject      go) { }
 
-	[Serializable]
-	public class DigPlacerAssets
-	{
-		public Material[] materials;
-	}
+    [Serializable]
+    public class DigPlacerAssets {
+        public Material[] materials;
+    }
 }

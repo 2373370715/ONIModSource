@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class SmallOxidizerTankConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SmallOxidizerTank";
 		int width = 3;
@@ -40,7 +40,7 @@ public class SmallOxidizerTankConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -52,7 +52,7 @@ public class SmallOxidizerTankConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 450f;
@@ -81,7 +81,7 @@ public class SmallOxidizerTankConfig : IBuildingConfig
 		BuildingTemplates.ExtendBuildingToRocketModuleCluster(go, null, ROCKETRY.BURDEN.MINOR, 0f, 0f);
 	}
 
-	public const string ID = "SmallOxidizerTank";
+		public const string ID = "SmallOxidizerTank";
 
-	public const float FuelCapacity = 450f;
+		public const float FuelCapacity = 450f;
 }

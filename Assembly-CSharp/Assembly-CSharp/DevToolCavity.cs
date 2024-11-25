@@ -7,16 +7,16 @@ using UnityEngine;
 
 public class DevToolCavity : DevTool
 {
-	public DevToolCavity() : this(Option.None)
+		public DevToolCavity() : this(Option.None)
 	{
 	}
 
-	public DevToolCavity(Option<DevToolEntityTarget.ForSimCell> target)
+		public DevToolCavity(Option<DevToolEntityTarget.ForSimCell> target)
 	{
 		this.targetOpt = target;
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (ImGui.BeginMenuBar())
 		{
@@ -86,7 +86,7 @@ public class DevToolCavity : DevTool
 		}
 	}
 
-	public static void DrawKPrefabIdCollection(string name, IEnumerable<KPrefabID> kprefabIds)
+		public static void DrawKPrefabIdCollection(string name, IEnumerable<KPrefabID> kprefabIds)
 	{
 		name += (kprefabIds.IsNullOrDestroyed() ? " (0)" : string.Format(" ({0})", kprefabIds.Count<KPrefabID>()));
 		if (ImGui.CollapsingHeader(name))
@@ -113,7 +113,7 @@ public class DevToolCavity : DevTool
 		}
 	}
 
-	public static Option<string> GetErrorForCandidateTarget(DevToolEntityTarget uncastTarget)
+		public static Option<string> GetErrorForCandidateTarget(DevToolEntityTarget uncastTarget)
 	{
 		if (!(uncastTarget is DevToolEntityTarget.ForSimCell))
 		{
@@ -135,7 +135,7 @@ public class DevToolCavity : DevTool
 		return Option.None;
 	}
 
-	private Option<DevToolEntityTarget.ForSimCell> targetOpt;
+		private Option<DevToolEntityTarget.ForSimCell> targetOpt;
 
-	private bool shouldDrawBoundingBox = true;
+		private bool shouldDrawBoundingBox = true;
 }

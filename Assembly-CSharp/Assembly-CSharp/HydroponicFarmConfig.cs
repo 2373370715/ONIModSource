@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HydroponicFarmConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "HydroponicFarm";
 		int width = 1;
@@ -34,7 +34,7 @@ public class HydroponicFarmConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		SimCellOccupier simCellOccupier = go.AddOrGet<SimCellOccupier>();
 		simCellOccupier.doReplaceElement = true;
@@ -60,12 +60,12 @@ public class HydroponicFarmConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		FarmTileConfig.SetUpFarmPlotTags(go);
 		go.GetComponent<KPrefabID>().AddTag(GameTags.FarmTiles, false);
 		go.GetComponent<RequireInputs>().requireConduitHasMass = false;
 	}
 
-	public const string ID = "HydroponicFarm";
+		public const string ID = "HydroponicFarm";
 }

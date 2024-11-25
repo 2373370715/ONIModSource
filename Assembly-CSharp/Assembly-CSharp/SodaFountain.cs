@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SodaFountain : StateMachineComponent<SodaFountain.StatesInstance>, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -16,12 +16,12 @@ public class SodaFountain : StateMachineComponent<SodaFountain.StatesInstance>, 
 		}, null, null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	private void AddRequirementDesc(List<Descriptor> descs, Tag tag, float mass)
+		private void AddRequirementDesc(List<Descriptor> descs, Tag tag, float mass)
 	{
 		string arg = tag.ProperName();
 		Descriptor item = default(Descriptor);
@@ -29,7 +29,7 @@ public class SodaFountain : StateMachineComponent<SodaFountain.StatesInstance>, 
 		descs.Add(item);
 	}
 
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
+		List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Descriptor item = default(Descriptor);
@@ -41,19 +41,19 @@ public class SodaFountain : StateMachineComponent<SodaFountain.StatesInstance>, 
 		return list;
 	}
 
-	public string specificEffect;
+		public string specificEffect;
 
-	public string trackingEffect;
+		public string trackingEffect;
 
-	public Tag ingredientTag;
+		public Tag ingredientTag;
 
-	public float ingredientMassPerUse;
+		public float ingredientMassPerUse;
 
-	public float waterMassPerUse;
+		public float waterMassPerUse;
 
-	public class States : GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain>
+		public class States : GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.unoperational;
 			this.unoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.operational, false);
@@ -64,7 +64,7 @@ public class SodaFountain : StateMachineComponent<SodaFountain.StatesInstance>, 
 			this.ready.post.PlayAnim("working_pst").OnAnimQueueComplete(this.ready);
 		}
 
-		private Chore CreateChore(SodaFountain.StatesInstance smi)
+				private Chore CreateChore(SodaFountain.StatesInstance smi)
 		{
 			Workable component = smi.master.GetComponent<SodaFountainWorkable>();
 			WorkChore<SodaFountainWorkable> workChore = new WorkChore<SodaFountainWorkable>(Db.Get().ChoreTypes.Relax, component, null, true, null, null, null, false, Db.Get().ScheduleBlockTypes.Recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
@@ -72,31 +72,31 @@ public class SodaFountain : StateMachineComponent<SodaFountain.StatesInstance>, 
 			return workChore;
 		}
 
-		private bool IsReady(SodaFountain.StatesInstance smi)
+				private bool IsReady(SodaFountain.StatesInstance smi)
 		{
 			PrimaryElement primaryElement = smi.GetComponent<Storage>().FindPrimaryElement(SimHashes.Water);
 			return !(primaryElement == null) && primaryElement.Mass >= smi.master.waterMassPerUse && smi.GetComponent<Storage>().GetAmountAvailable(smi.master.ingredientTag) >= smi.master.ingredientMassPerUse;
 		}
 
-		private GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State unoperational;
+				private GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State unoperational;
 
-		private GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State operational;
+				private GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State operational;
 
-		private SodaFountain.States.ReadyStates ready;
+				private SodaFountain.States.ReadyStates ready;
 
-		public class ReadyStates : GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State
+				public class ReadyStates : GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State
 		{
-			public GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State idle;
+						public GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State idle;
 
-			public GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State working;
+						public GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State working;
 
-			public GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State post;
+						public GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.State post;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.GameInstance
+		public class StatesInstance : GameStateMachine<SodaFountain.States, SodaFountain.StatesInstance, SodaFountain, object>.GameInstance
 	{
-		public StatesInstance(SodaFountain smi) : base(smi)
+				public StatesInstance(SodaFountain smi) : base(smi)
 		{
 		}
 	}

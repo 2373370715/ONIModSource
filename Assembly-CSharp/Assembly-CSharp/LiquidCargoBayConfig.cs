@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class LiquidCargoBayConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetForbiddenDlcIds()
 	{
-		return DlcManager.AVAILABLE_VANILLA_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidCargoBay";
 		int width = 5;
@@ -40,7 +40,7 @@ public class LiquidCargoBayConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -51,7 +51,7 @@ public class LiquidCargoBayConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		CargoBay cargoBay = go.AddOrGet<CargoBay>();
 		cargoBay.storage = go.AddOrGet<Storage>();
@@ -64,5 +64,5 @@ public class LiquidCargoBayConfig : IBuildingConfig
 		BuildingTemplates.ExtendBuildingToRocketModule(go, "rocket_storage_liquid_bg_kanim", false);
 	}
 
-	public const string ID = "LiquidCargoBay";
+		public const string ID = "LiquidCargoBay";
 }

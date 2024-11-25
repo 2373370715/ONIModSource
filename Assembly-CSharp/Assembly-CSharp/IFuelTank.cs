@@ -2,9 +2,9 @@
 
 public interface IFuelTank
 {
-		IStorage Storage { get; }
+			IStorage Storage { get; }
 
-		bool ConsumeFuelOnLand { get; }
+			bool ConsumeFuelOnLand { get; }
 
-	void DEBUG_FillTank();
+		void DEBUG_FillTank();
 }

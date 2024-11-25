@@ -1,56 +1,69 @@
-﻿using System;
-using Klei.AI;
+﻿using Klei.AI;
 using STRINGS;
 
-public class BeeHappinessMonitor : GameStateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget, BeeHappinessMonitor.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.satisfied;
-		this.satisfied.TriggerOnEnter(GameHashes.Satisfied, null).Transition(this.happy, new StateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget, BeeHappinessMonitor.Def>.Transition.ConditionCallback(BeeHappinessMonitor.IsHappy), UpdateRate.SIM_1000ms).Transition(this.unhappy, new StateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget, BeeHappinessMonitor.Def>.Transition.ConditionCallback(BeeHappinessMonitor.IsUnhappy), UpdateRate.SIM_1000ms).ToggleEffect((BeeHappinessMonitor.Instance smi) => this.neutralEffect);
-		this.happy.TriggerOnEnter(GameHashes.Happy, null).ToggleEffect((BeeHappinessMonitor.Instance smi) => this.happyEffect).Transition(this.satisfied, GameStateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget, BeeHappinessMonitor.Def>.Not(new StateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget, BeeHappinessMonitor.Def>.Transition.ConditionCallback(BeeHappinessMonitor.IsHappy)), UpdateRate.SIM_1000ms);
-		this.unhappy.TriggerOnEnter(GameHashes.Unhappy, null).Transition(this.satisfied, GameStateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget, BeeHappinessMonitor.Def>.Not(new StateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget, BeeHappinessMonitor.Def>.Transition.ConditionCallback(BeeHappinessMonitor.IsUnhappy)), UpdateRate.SIM_1000ms).ToggleEffect((BeeHappinessMonitor.Instance smi) => this.unhappyEffect);
-		this.happyEffect = new Effect("Happy", CREATURES.MODIFIERS.HAPPY_WILD.NAME, CREATURES.MODIFIERS.HAPPY_WILD.TOOLTIP, 0f, true, false, false, null, -1f, 0f, null, "");
-		this.neutralEffect = new Effect("Neutral", CREATURES.MODIFIERS.NEUTRAL.NAME, CREATURES.MODIFIERS.NEUTRAL.TOOLTIP, 0f, true, false, false, null, -1f, 0f, null, "");
-		this.unhappyEffect = new Effect("Unhappy", CREATURES.MODIFIERS.GLUM.NAME, CREATURES.MODIFIERS.GLUM.TOOLTIP, 0f, true, false, true, null, -1f, 0f, null, "");
-	}
+public class BeeHappinessMonitor
+    : GameStateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget,
+        BeeHappinessMonitor.Def> {
+    private State  happy;
+    private Effect happyEffect;
+    private Effect neutralEffect;
+    private State  satisfied;
+    private State  unhappy;
+    private Effect unhappyEffect;
 
-	private static bool IsHappy(BeeHappinessMonitor.Instance smi)
-	{
-		return smi.happiness.GetTotalValue() >= smi.def.happyThreshold;
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = satisfied;
+        satisfied.TriggerOnEnter(GameHashes.Satisfied)
+                 .Transition(happy,   IsHappy,   UpdateRate.SIM_1000ms)
+                 .Transition(unhappy, IsUnhappy, UpdateRate.SIM_1000ms)
+                 .ToggleEffect(smi => neutralEffect);
 
-	private static bool IsUnhappy(BeeHappinessMonitor.Instance smi)
-	{
-		return smi.happiness.GetTotalValue() <= smi.def.unhappyThreshold;
-	}
+        happy.TriggerOnEnter(GameHashes.Happy)
+             .ToggleEffect(smi => happyEffect)
+             .Transition(satisfied, Not(IsHappy), UpdateRate.SIM_1000ms);
 
-	private GameStateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget, BeeHappinessMonitor.Def>.State satisfied;
+        unhappy.TriggerOnEnter(GameHashes.Unhappy)
+               .Transition(satisfied, Not(IsUnhappy), UpdateRate.SIM_1000ms)
+               .ToggleEffect(smi => unhappyEffect);
 
-	private GameStateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget, BeeHappinessMonitor.Def>.State happy;
+        happyEffect = new Effect("Happy",
+                                 CREATURES.MODIFIERS.HAPPY_WILD.NAME,
+                                 CREATURES.MODIFIERS.HAPPY_WILD.TOOLTIP,
+                                 0f,
+                                 true,
+                                 false,
+                                 false);
 
-	private GameStateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget, BeeHappinessMonitor.Def>.State unhappy;
+        neutralEffect = new Effect("Neutral",
+                                   CREATURES.MODIFIERS.NEUTRAL.NAME,
+                                   CREATURES.MODIFIERS.NEUTRAL.TOOLTIP,
+                                   0f,
+                                   true,
+                                   false,
+                                   false);
 
-	private Effect happyEffect;
+        unhappyEffect = new Effect("Unhappy",
+                                   CREATURES.MODIFIERS.GLUM.NAME,
+                                   CREATURES.MODIFIERS.GLUM.TOOLTIP,
+                                   0f,
+                                   true,
+                                   false,
+                                   true);
+    }
 
-	private Effect neutralEffect;
+    private static bool IsHappy(Instance   smi) { return smi.happiness.GetTotalValue() >= smi.def.happyThreshold; }
+    private static bool IsUnhappy(Instance smi) { return smi.happiness.GetTotalValue() <= smi.def.unhappyThreshold; }
 
-	private Effect unhappyEffect;
+    public class Def : BaseDef {
+        public float happyThreshold   = 4f;
+        public float unhappyThreshold = -1f;
+    }
 
-	public class Def : StateMachine.BaseDef
-	{
-		public float happyThreshold = 4f;
+    public new class Instance : GameInstance {
+        public AttributeInstance happiness;
 
-		public float unhappyThreshold = -1f;
-	}
-
-	public new class Instance : GameStateMachine<BeeHappinessMonitor, BeeHappinessMonitor.Instance, IStateMachineTarget, BeeHappinessMonitor.Def>.GameInstance
-	{
-		public Instance(IStateMachineTarget master, BeeHappinessMonitor.Def def) : base(master, def)
-		{
-			this.happiness = base.gameObject.GetAttributes().Add(Db.Get().CritterAttributes.Happiness);
-		}
-
-		public AttributeInstance happiness;
-	}
+        public Instance(IStateMachineTarget master, Def def) : base(master, def) {
+            happiness = gameObject.GetAttributes().Add(Db.Get().CritterAttributes.Happiness);
+        }
+    }
 }

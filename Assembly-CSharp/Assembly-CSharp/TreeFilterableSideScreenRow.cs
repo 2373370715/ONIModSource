@@ -6,9 +6,9 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/TreeFilterableSideScreenRow")]
 public class TreeFilterableSideScreenRow : KMonoBehaviour
 {
-			public bool ArrowExpanded { get; private set; }
+				public bool ArrowExpanded { get; private set; }
 
-			public TreeFilterableSideScreen Parent
+				public TreeFilterableSideScreen Parent
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class TreeFilterableSideScreenRow : KMonoBehaviour
 		}
 	}
 
-	public TreeFilterableSideScreenRow.State GetState()
+		public TreeFilterableSideScreenRow.State GetState()
 	{
 		bool flag = false;
 		bool flag2 = false;
@@ -54,7 +54,7 @@ public class TreeFilterableSideScreenRow : KMonoBehaviour
 		return TreeFilterableSideScreenRow.State.On;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		MultiToggle multiToggle = this.checkBoxToggle;
@@ -79,30 +79,30 @@ public class TreeFilterableSideScreenRow : KMonoBehaviour
 		}));
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		this.SetArrowToggleState(this.GetState() > TreeFilterableSideScreenRow.State.Off);
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		this.SetArrowToggleState(false);
 		base.OnCmpDisable();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	public void UpdateCheckBoxVisualState()
+		public void UpdateCheckBoxVisualState()
 	{
 		this.checkBoxToggle.ChangeState((int)this.GetState());
 		this.visualDirty = false;
 	}
 
-	public void ChangeCheckBoxState(TreeFilterableSideScreenRow.State newState)
+		public void ChangeCheckBoxState(TreeFilterableSideScreenRow.State newState)
 	{
 		switch (newState)
 		{
@@ -122,36 +122,36 @@ public class TreeFilterableSideScreenRow : KMonoBehaviour
 		this.visualDirty = true;
 	}
 
-	private void ArrowToggleClicked()
+		private void ArrowToggleClicked()
 	{
 		this.SetArrowToggleState(!this.ArrowExpanded);
 		this.RefreshArrowToggleState();
 	}
 
-	public void SetArrowToggleState(bool state)
+		public void SetArrowToggleState(bool state)
 	{
 		this.ArrowExpanded = state;
 		this.RefreshArrowToggleState();
 	}
 
-	private void RefreshArrowToggleState()
+		private void RefreshArrowToggleState()
 	{
 		this.arrowToggle.ChangeState(this.ArrowExpanded ? 1 : 0);
 		this.elementGroup.SetActive(this.ArrowExpanded);
 		this.bgImg.enabled = this.ArrowExpanded;
 	}
 
-	private void ArrowToggleDisabledClick()
+		private void ArrowToggleDisabledClick()
 	{
 		KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Negative", false));
 	}
 
-	public void ShowToggleBox(bool show)
+		public void ShowToggleBox(bool show)
 	{
 		this.checkBoxToggle.gameObject.SetActive(show);
 	}
 
-	private void OnElementSelectionChanged(Tag t, bool state)
+		private void OnElementSelectionChanged(Tag t, bool state)
 	{
 		if (state)
 		{
@@ -164,7 +164,7 @@ public class TreeFilterableSideScreenRow : KMonoBehaviour
 		this.visualDirty = true;
 	}
 
-	public void SetElement(Tag mainElementTag, bool state, Dictionary<Tag, bool> filterMap)
+		public void SetElement(Tag mainElementTag, bool state, Dictionary<Tag, bool> filterMap)
 	{
 		this.subTags.Clear();
 		this.rowElements.Clear();
@@ -200,7 +200,7 @@ public class TreeFilterableSideScreenRow : KMonoBehaviour
 		this.UpdateCheckBoxVisualState();
 	}
 
-	public void RefreshRowElements()
+		public void RefreshRowElements()
 	{
 		foreach (TreeFilterableSideScreenElement treeFilterableSideScreenElement in this.rowElements)
 		{
@@ -208,7 +208,7 @@ public class TreeFilterableSideScreenRow : KMonoBehaviour
 		}
 	}
 
-	public void FilterAgainstSearch(Tag thisCategoryTag, string search)
+		public void FilterAgainstSearch(Tag thisCategoryTag, string search)
 	{
 		bool flag = false;
 		bool flag2 = thisCategoryTag.ProperNameStripLink().ToUpper().Contains(search.ToUpper());
@@ -226,35 +226,35 @@ public class TreeFilterableSideScreenRow : KMonoBehaviour
 		}
 	}
 
-	public bool visualDirty;
+		public bool visualDirty;
 
-	public bool standardCommodity = true;
+		public bool standardCommodity = true;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText elementName;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject elementGroup;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle checkBoxToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle arrowToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private KImage bgImg;
 
-	private List<Tag> subTags = new List<Tag>();
+		private List<Tag> subTags = new List<Tag>();
 
-	private List<TreeFilterableSideScreenElement> rowElements = new List<TreeFilterableSideScreenElement>();
+		private List<TreeFilterableSideScreenElement> rowElements = new List<TreeFilterableSideScreenElement>();
 
-	private TreeFilterableSideScreen parent;
+		private TreeFilterableSideScreen parent;
 
-	public enum State
+		public enum State
 	{
-		Off,
-		Mixed,
-		On
+				Off,
+				Mixed,
+				On
 	}
 }

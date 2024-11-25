@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PressureSwitchGasConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = PressureSwitchGasConfig.ID;
 		int width = 1;
@@ -29,7 +29,7 @@ public class PressureSwitchGasConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		PressureSwitch pressureSwitch = go.AddOrGet<PressureSwitch>();
@@ -42,10 +42,10 @@ public class PressureSwitchGasConfig : IBuildingConfig
 		pressureSwitch.desiredState = Element.State.Gas;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddComponent<BuildingCellVisualizer>();
 	}
 
-	public static string ID = "PressureSwitchGas";
+		public static string ID = "PressureSwitchGas";
 }

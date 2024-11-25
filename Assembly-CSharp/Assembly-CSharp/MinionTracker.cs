@@ -2,10 +2,10 @@
 
 public abstract class MinionTracker : Tracker
 {
-	public MinionTracker(MinionIdentity identity)
+		public MinionTracker(MinionIdentity identity)
 	{
 		this.identity = identity;
 	}
 
-	public MinionIdentity identity;
+		public MinionIdentity identity;
 }

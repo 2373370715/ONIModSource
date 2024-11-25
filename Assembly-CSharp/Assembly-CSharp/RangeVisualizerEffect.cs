@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class RangeVisualizerEffect : MonoBehaviour
 {
-	private void Start()
+		private void Start()
 	{
 		this.material = new Material(Shader.Find("Klei/PostFX/Range"));
 	}
 
-	private void OnPostRender()
+		private void OnPostRender()
 	{
 		RangeVisualizer rangeVisualizer = null;
 		Vector2I u = new Vector2I(0, 0);
@@ -174,7 +174,7 @@ public class RangeVisualizerEffect : MonoBehaviour
 		}
 	}
 
-	private void FindWorldBounds(out Vector2I world_min, out Vector2I world_max)
+		private void FindWorldBounds(out Vector2I world_min, out Vector2I world_max)
 	{
 		if (ClusterManager.Instance != null)
 		{
@@ -189,13 +189,13 @@ public class RangeVisualizerEffect : MonoBehaviour
 		world_max.y = Grid.HeightInCells;
 	}
 
-	private Material material;
+		private Material material;
 
-	private Camera myCamera;
+		private Camera myCamera;
 
-	public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
+		public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
 
-	private Texture2D OcclusionTex;
+		private Texture2D OcclusionTex;
 
-	private int LastVisibleTileCount;
+		private int LastVisibleTileCount;
 }

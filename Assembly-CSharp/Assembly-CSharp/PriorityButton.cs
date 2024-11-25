@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/PriorityButton")]
 public class PriorityButton : KMonoBehaviour
 {
-			public PrioritySetting priority
+				public PrioritySetting priority
 	{
 		get
 		{
@@ -29,12 +29,12 @@ public class PriorityButton : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.toggle.onClick += this.OnClick;
 	}
 
-	private void OnClick()
+		private void OnClick()
 	{
 		if (this.playSelectionSound)
 		{
@@ -46,22 +46,22 @@ public class PriorityButton : KMonoBehaviour
 		}
 	}
 
-	public KToggle toggle;
+		public KToggle toggle;
 
-	public LocText text;
+		public LocText text;
 
-	public ToolTip tooltip;
+		public ToolTip tooltip;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ImageToggleState its;
 
-	public ColorStyleSetting normalStyle;
+		public ColorStyleSetting normalStyle;
 
-	public ColorStyleSetting highStyle;
+		public ColorStyleSetting highStyle;
 
-	public bool playSelectionSound = true;
+		public bool playSelectionSound = true;
 
-	public Action<PrioritySetting> onClick;
+		public Action<PrioritySetting> onClick;
 
-	private PrioritySetting _priority;
+		private PrioritySetting _priority;
 }

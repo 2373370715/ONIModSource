@@ -1,76 +1,60 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/ConduitOverflow")]
-public class ConduitOverflow : KMonoBehaviour, ISecondaryOutput
-{
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		Building component = base.GetComponent<Building>();
-		this.inputCell = component.GetUtilityInputCell();
-		this.outputCell = component.GetUtilityOutputCell();
-		int cell = Grid.PosToCell(base.transform.GetPosition());
-		CellOffset rotatedOffset = component.GetRotatedOffset(this.portInfo.offset);
-		int cell2 = Grid.OffsetCell(cell, rotatedOffset);
-		Conduit.GetFlowManager(this.portInfo.conduitType).AddConduitUpdater(new Action<float>(this.ConduitUpdate), ConduitFlowPriority.Default);
-		IUtilityNetworkMgr networkManager = Conduit.GetNetworkManager(this.portInfo.conduitType);
-		this.secondaryOutput = new FlowUtilityNetwork.NetworkItem(this.portInfo.conduitType, Endpoint.Sink, cell2, base.gameObject);
-		networkManager.AddToNetworks(this.secondaryOutput.Cell, this.secondaryOutput, true);
-	}
+public class ConduitOverflow : KMonoBehaviour, ISecondaryOutput {
+    private int inputCell;
+    private int outputCell;
 
-	protected override void OnCleanUp()
-	{
-		Conduit.GetNetworkManager(this.portInfo.conduitType).RemoveFromNetworks(this.secondaryOutput.Cell, this.secondaryOutput, true);
-		Conduit.GetFlowManager(this.portInfo.conduitType).RemoveConduitUpdater(new Action<float>(this.ConduitUpdate));
-		base.OnCleanUp();
-	}
+    [SerializeField]
+    public ConduitPortInfo portInfo;
 
-	private void ConduitUpdate(float dt)
-	{
-		ConduitFlow flowManager = Conduit.GetFlowManager(this.portInfo.conduitType);
-		if (!flowManager.HasConduit(this.inputCell))
-		{
-			return;
-		}
-		ConduitFlow.ConduitContents contents = flowManager.GetContents(this.inputCell);
-		if (contents.mass <= 0f)
-		{
-			return;
-		}
-		int cell = this.outputCell;
-		ConduitFlow.ConduitContents contents2 = flowManager.GetContents(cell);
-		if (contents2.mass > 0f)
-		{
-			cell = this.secondaryOutput.Cell;
-			contents2 = flowManager.GetContents(cell);
-		}
-		if (contents2.mass <= 0f)
-		{
-			float num = flowManager.AddElement(cell, contents.element, contents.mass, contents.temperature, contents.diseaseIdx, contents.diseaseCount);
-			if (num > 0f)
-			{
-				flowManager.RemoveElement(this.inputCell, num);
-			}
-		}
-	}
+    private FlowUtilityNetwork.NetworkItem secondaryOutput;
+    public  bool HasSecondaryConduitType(ConduitType type) { return portInfo.conduitType == type; }
+    public  CellOffset GetSecondaryConduitOffset(ConduitType type) { return portInfo.offset; }
 
-	public bool HasSecondaryConduitType(ConduitType type)
-	{
-		return this.portInfo.conduitType == type;
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        var component = GetComponent<Building>();
+        inputCell  = component.GetUtilityInputCell();
+        outputCell = component.GetUtilityOutputCell();
+        var cell          = Grid.PosToCell(transform.GetPosition());
+        var rotatedOffset = component.GetRotatedOffset(portInfo.offset);
+        var cell2         = Grid.OffsetCell(cell, rotatedOffset);
+        Conduit.GetFlowManager(portInfo.conduitType).AddConduitUpdater(ConduitUpdate);
+        var networkManager = Conduit.GetNetworkManager(portInfo.conduitType);
+        secondaryOutput = new FlowUtilityNetwork.NetworkItem(portInfo.conduitType, Endpoint.Sink, cell2, gameObject);
+        networkManager.AddToNetworks(secondaryOutput.Cell, secondaryOutput, true);
+    }
 
-	public CellOffset GetSecondaryConduitOffset(ConduitType type)
-	{
-		return this.portInfo.offset;
-	}
+    protected override void OnCleanUp() {
+        Conduit.GetNetworkManager(portInfo.conduitType).RemoveFromNetworks(secondaryOutput.Cell, secondaryOutput, true);
+        Conduit.GetFlowManager(portInfo.conduitType).RemoveConduitUpdater(ConduitUpdate);
+        base.OnCleanUp();
+    }
 
-	[SerializeField]
-	public ConduitPortInfo portInfo;
+    private void ConduitUpdate(float dt) {
+        var flowManager = Conduit.GetFlowManager(portInfo.conduitType);
+        if (!flowManager.HasConduit(inputCell)) return;
 
-	private int inputCell;
+        var contents = flowManager.GetContents(inputCell);
+        if (contents.mass <= 0f) return;
 
-	private int outputCell;
+        var cell      = outputCell;
+        var contents2 = flowManager.GetContents(cell);
+        if (contents2.mass > 0f) {
+            cell      = secondaryOutput.Cell;
+            contents2 = flowManager.GetContents(cell);
+        }
 
-	private FlowUtilityNetwork.NetworkItem secondaryOutput;
+        if (contents2.mass <= 0f) {
+            var num = flowManager.AddElement(cell,
+                                             contents.element,
+                                             contents.mass,
+                                             contents.temperature,
+                                             contents.diseaseIdx,
+                                             contents.diseaseCount);
+
+            if (num > 0f) flowManager.RemoveElement(inputCell, num);
+        }
+    }
 }

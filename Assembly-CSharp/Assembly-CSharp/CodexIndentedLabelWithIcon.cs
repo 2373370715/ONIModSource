@@ -5,27 +5,27 @@ using UnityEngine.UI;
 
 public class CodexIndentedLabelWithIcon : CodexWidget<CodexIndentedLabelWithIcon>
 {
-			public CodexImage icon { get; set; }
+				public CodexImage icon { get; set; }
 
-			public CodexText label { get; set; }
+				public CodexText label { get; set; }
 
-	public CodexIndentedLabelWithIcon()
+		public CodexIndentedLabelWithIcon()
 	{
 	}
 
-	public CodexIndentedLabelWithIcon(string text, CodexTextStyle style, global::Tuple<Sprite, Color> coloredSprite)
+		public CodexIndentedLabelWithIcon(string text, CodexTextStyle style, global::Tuple<Sprite, Color> coloredSprite)
 	{
 		this.icon = new CodexImage(coloredSprite);
 		this.label = new CodexText(text, style, null);
 	}
 
-	public CodexIndentedLabelWithIcon(string text, CodexTextStyle style, global::Tuple<Sprite, Color> coloredSprite, int iconWidth, int iconHeight)
+		public CodexIndentedLabelWithIcon(string text, CodexTextStyle style, global::Tuple<Sprite, Color> coloredSprite, int iconWidth, int iconHeight)
 	{
 		this.icon = new CodexImage(iconWidth, iconHeight, coloredSprite);
 		this.label = new CodexText(text, style, null);
 	}
 
-	public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		Image componentInChildren = contentGameObject.GetComponentInChildren<Image>();
 		this.icon.ConfigureImage(componentInChildren);

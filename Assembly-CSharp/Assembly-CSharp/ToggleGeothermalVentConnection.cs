@@ -2,7 +2,7 @@
 
 public class ToggleGeothermalVentConnection : Toggleable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.SetWorkTime(10f);
@@ -25,7 +25,7 @@ public class ToggleGeothermalVentConnection : Toggleable
 		});
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		this.buildingAnimController.Play(GeothermalVentConfig.TOGGLE_ANIMATION, KAnim.PlayMode.Once, 1f, 0f);
@@ -35,7 +35,7 @@ public class ToggleGeothermalVentConnection : Toggleable
 		}
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		if (this.workerFacing != null)
 		{
@@ -44,8 +44,8 @@ public class ToggleGeothermalVentConnection : Toggleable
 		return base.OnWorkTick(worker, dt);
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimController buildingAnimController;
 
-	private Facing workerFacing;
+		private Facing workerFacing;
 }

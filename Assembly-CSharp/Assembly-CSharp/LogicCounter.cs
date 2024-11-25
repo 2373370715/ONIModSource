@@ -5,13 +5,13 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicCounter : Switch, ISaveLoadable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicCounter>(-905833192, LogicCounter.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicCounter component = ((GameObject)data).GetComponent<LogicCounter>();
 		if (component != null)
@@ -22,7 +22,7 @@ public class LogicCounter : Switch, ISaveLoadable
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.OnSwitchToggled;
@@ -41,19 +41,19 @@ public class LogicCounter : Switch, ISaveLoadable
 		this.UpdateMeter();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
 		logicCircuitManager.onLogicTick = (System.Action)Delegate.Remove(logicCircuitManager.onLogicTick, new System.Action(this.LogicTick));
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateLogicCircuit();
 		this.UpdateVisualState(false);
 	}
 
-	public void UpdateLogicCircuit()
+		public void UpdateLogicCircuit()
 	{
 		if (this.receivedFirstSignal)
 		{
@@ -61,13 +61,13 @@ public class LogicCounter : Switch, ISaveLoadable
 		}
 	}
 
-	public void UpdateMeter()
+		public void UpdateMeter()
 	{
 		float num = (float)(this.currentCount % (this.advancedMode ? this.maxCount : 10));
 		this.meter.SetPositionPercent(num / 9f);
 	}
 
-	public void UpdateVisualState(bool force = false)
+		public void UpdateVisualState(bool force = false)
 	{
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 		if (!this.receivedFirstSignal)
@@ -83,7 +83,7 @@ public class LogicCounter : Switch, ISaveLoadable
 		}
 	}
 
-	public void OnLogicValueChanged(object data)
+		public void OnLogicValueChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 		if (logicValueChanged.portID == LogicCounter.INPUT_PORT_ID)
@@ -141,23 +141,28 @@ public class LogicCounter : Switch, ISaveLoadable
 		this.UpdateLogicCircuit();
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-	public void ResetCounter()
+		public void ResetCounter()
 	{
 		this.resetRequested = false;
 		this.currentCount = 0;
-		this.SetCounterState();
+		this.SetState(false);
+		if (this.advancedMode)
+		{
+			this.pulsingActive = false;
+			this.pulseTicksRemaining = 0;
+		}
 		this.UpdateVisualState(true);
 		this.UpdateMeter();
 		this.UpdateLogicCircuit();
 	}
 
-	public void LogicTick()
+		public void LogicTick()
 	{
 		if (this.resetRequested)
 		{
@@ -177,7 +182,7 @@ public class LogicCounter : Switch, ISaveLoadable
 		}
 	}
 
-	public void SetCounterState()
+		public void SetCounterState()
 	{
 		this.SetState(this.advancedMode ? (this.currentCount % this.maxCount == 0) : (this.currentCount == this.maxCount));
 		if (this.advancedMode && this.currentCount % this.maxCount == 0)
@@ -187,55 +192,55 @@ public class LogicCounter : Switch, ISaveLoadable
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	public int maxCount;
 
-	[Serialize]
+		[Serialize]
 	public int currentCount;
 
-	[Serialize]
+		[Serialize]
 	public bool resetCountAtMax;
 
-	[Serialize]
+		[Serialize]
 	public bool advancedMode;
 
-	private bool wasOn;
+		private bool wasOn;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicCounter> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicCounter>(delegate(LogicCounter component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicCounter> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicCounter>(delegate(LogicCounter component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<LogicCounter> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicCounter>(delegate(LogicCounter component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicCounter> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicCounter>(delegate(LogicCounter component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	public static readonly HashedString INPUT_PORT_ID = new HashedString("LogicCounterInput");
+		public static readonly HashedString INPUT_PORT_ID = new HashedString("LogicCounterInput");
 
-	public static readonly HashedString RESET_PORT_ID = new HashedString("LogicCounterReset");
+		public static readonly HashedString RESET_PORT_ID = new HashedString("LogicCounterReset");
 
-	public static readonly HashedString OUTPUT_PORT_ID = new HashedString("LogicCounterOutput");
+		public static readonly HashedString OUTPUT_PORT_ID = new HashedString("LogicCounterOutput");
 
-	private bool resetRequested;
+		private bool resetRequested;
 
-	[Serialize]
+		[Serialize]
 	private bool wasResetting;
 
-	[Serialize]
+		[Serialize]
 	private bool wasIncrementing;
 
-	[Serialize]
+		[Serialize]
 	public bool receivedFirstSignal;
 
-	private bool pulsingActive;
+		private bool pulsingActive;
 
-	private const int pulseLength = 1;
+		private const int pulseLength = 1;
 
-	private int pulseTicksRemaining;
+		private int pulseTicksRemaining;
 
-	private MeterController meter;
+		private MeterController meter;
 }

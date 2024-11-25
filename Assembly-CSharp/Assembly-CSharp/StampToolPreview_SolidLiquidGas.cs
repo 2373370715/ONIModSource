@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StampToolPreview_SolidLiquidGas : IStampToolPreviewPlugin
 {
-	public void Setup(StampToolPreviewContext context)
+		public void Setup(StampToolPreviewContext context)
 	{
 		this.SetupMaterials(context);
 		using (HashSetPool<int, StampToolPreview_SolidLiquidGas>.PooledHashSet pooledHashSet = PoolsFor<StampToolPreview_SolidLiquidGas>.AllocateHashSet<int>())
@@ -101,7 +101,7 @@ public class StampToolPreview_SolidLiquidGas : IStampToolPreviewPlugin
 		}
 	}
 
-	private void SetupMaterials(StampToolPreviewContext context)
+		private void SetupMaterials(StampToolPreviewContext context)
 	{
 		if (StampToolPreview_SolidLiquidGas.solidMaterial.IsNullOrDestroyed())
 		{
@@ -136,20 +136,20 @@ public class StampToolPreview_SolidLiquidGas : IStampToolPreviewPlugin
 		}));
 	}
 
-	private static int CellHash(int x, int y)
+		private static int CellHash(int x, int y)
 	{
 		return x + y * 10000;
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static Color <SetupMaterials>g__WithAlpha|4_1(Color c, float a)
 	{
 		return new Color(c.r, c.g, c.b, a);
 	}
 
-	public static Material solidMaterial;
+		public static Material solidMaterial;
 
-	public static Material liquidMaterial;
+		public static Material liquidMaterial;
 
-	public static Material gasMaterial;
+		public static Material gasMaterial;
 }

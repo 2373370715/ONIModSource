@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class ClothingAlterationStationConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ClothingAlterationStation";
 		int width = 4;
@@ -29,7 +29,7 @@ public class ClothingAlterationStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		go.AddOrGet<DropAllWorkable>();
@@ -52,7 +52,7 @@ public class ClothingAlterationStationConfig : IBuildingConfig
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
 	}
 
-	private void ConfigureRecipes()
+		private void ConfigureRecipes()
 	{
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[]
 		{
@@ -77,7 +77,7 @@ public class ClothingAlterationStationConfig : IBuildingConfig
 		}
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
@@ -92,5 +92,5 @@ public class ClothingAlterationStationConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "ClothingAlterationStation";
+		public const string ID = "ClothingAlterationStation";
 }

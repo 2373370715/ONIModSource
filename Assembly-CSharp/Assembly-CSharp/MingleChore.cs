@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MingleChore : Chore<MingleChore.StatesInstance>, IWorkerPrioritizable
 {
-	public MingleChore(IStateMachineTarget target)
+		public MingleChore(IStateMachineTarget target)
 	{
 		Chore.Precondition hasMingleCell = default(Chore.Precondition);
 		hasMingleCell.id = "HasMingleCell";
@@ -18,30 +18,30 @@ public class MingleChore : Chore<MingleChore.StatesInstance>, IWorkerPrioritizab
 		base..ctor(Db.Get().ChoreTypes.Relax, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.high, 5, false, true, 0, false, ReportManager.ReportType.PersonalTime);
 		this.showAvailabilityInHoverText = false;
 		base.smi = new MingleChore.StatesInstance(this, target.gameObject);
-		base.AddPrecondition(this.HasMingleCell, this);
-		base.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
-		base.AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Recreation);
-		base.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, this);
+		this.AddPrecondition(this.HasMingleCell, this);
+		this.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
+		this.AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Recreation);
+		this.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, this);
 	}
 
-	protected override StatusItem GetStatusItem()
+		protected override StatusItem GetStatusItem()
 	{
 		return Db.Get().DuplicantStatusItems.Mingling;
 	}
 
-	public bool GetWorkerPriority(Worker worker, out int priority)
+		public bool GetWorkerPriority(WorkerBase worker, out int priority)
 	{
 		priority = this.basePriority;
 		return true;
 	}
 
-	private int basePriority = RELAXATION.PRIORITY.TIER1;
+		private int basePriority = RELAXATION.PRIORITY.TIER1;
 
-	private Chore.Precondition HasMingleCell;
+		private Chore.Precondition HasMingleCell;
 
-	public class States : GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore>
+		public class States : GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.mingle;
 			base.Target(this.mingler);
@@ -53,44 +53,44 @@ public class MingleChore : Chore<MingleChore.StatesInstance>, IWorkerPrioritizab
 			this.success.ReturnSuccess();
 		}
 
-		public StateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.TargetParameter mingler;
+				public StateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.TargetParameter mingler;
 
-		public GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.State mingle;
+				public GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.State mingle;
 
-		public GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.State move;
+				public GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.State move;
 
-		public GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.State walk;
+				public GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.State walk;
 
-		public GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.State onfloor;
+				public GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.State onfloor;
 
-		public GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.State success;
+				public GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.State success;
 	}
 
-	public class StatesInstance : GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<MingleChore.States, MingleChore.StatesInstance, MingleChore, object>.GameInstance
 	{
-		public StatesInstance(MingleChore master, GameObject mingler) : base(master)
+				public StatesInstance(MingleChore master, GameObject mingler) : base(master)
 		{
 			this.mingler = mingler;
 			base.sm.mingler.Set(mingler, base.smi, false);
 			this.mingleCellSensor = base.GetComponent<Sensors>().GetSensor<MingleCellSensor>();
 		}
 
-		public bool IsRecTime()
+				public bool IsRecTime()
 		{
 			return base.master.GetComponent<Schedulable>().IsAllowed(Db.Get().ScheduleBlockTypes.Recreation);
 		}
 
-		public int GetMingleCell()
+				public int GetMingleCell()
 		{
 			return this.mingleCellSensor.GetCell();
 		}
 
-		public bool HasMingleCell()
+				public bool HasMingleCell()
 		{
 			return this.mingleCellSensor.GetCell() != Grid.InvalidCell;
 		}
 
-		public bool IsSameRoom()
+				public bool IsSameRoom()
 		{
 			int cell = Grid.PosToCell(this.mingler);
 			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(cell);
@@ -98,8 +98,8 @@ public class MingleChore : Chore<MingleChore.StatesInstance>, IWorkerPrioritizab
 			return cavityForCell != null && cavityForCell2 != null && cavityForCell.handle == cavityForCell2.handle;
 		}
 
-		private MingleCellSensor mingleCellSensor;
+				private MingleCellSensor mingleCellSensor;
 
-		private GameObject mingler;
+				private GameObject mingler;
 	}
 }

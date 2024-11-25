@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class EightDirectionController
 {
-			public KBatchedAnimController controller { get; private set; }
+				public KBatchedAnimController controller { get; private set; }
 
-	public EightDirectionController(KAnimControllerBase buildingController, string targetSymbol, string defaultAnim, EightDirectionController.Offset frontBank)
+		public EightDirectionController(KAnimControllerBase buildingController, string targetSymbol, string defaultAnim, EightDirectionController.Offset frontBank)
 	{
 		this.Initialize(buildingController, targetSymbol, defaultAnim, frontBank, Grid.SceneLayer.NoLayer);
 	}
 
-	private void Initialize(KAnimControllerBase buildingController, string targetSymbol, string defaultAnim, EightDirectionController.Offset frontBack, Grid.SceneLayer userSpecifiedRenderLayer)
+		private void Initialize(KAnimControllerBase buildingController, string targetSymbol, string defaultAnim, EightDirectionController.Offset frontBack, Grid.SceneLayer userSpecifiedRenderLayer)
 	{
 		string name = buildingController.name + ".eight_direction";
 		this.gameObject = new GameObject(name);
@@ -50,7 +50,7 @@ public class EightDirectionController
 		this.link = new KAnimLink(buildingController, this.controller);
 	}
 
-	public void SetPositionPercent(float percent_full)
+		public void SetPositionPercent(float percent_full)
 	{
 		if (this.controller == null)
 		{
@@ -59,7 +59,7 @@ public class EightDirectionController
 		this.controller.SetPositionPercent(percent_full);
 	}
 
-	public void SetSymbolTint(KAnimHashedString symbol, Color32 colour)
+		public void SetSymbolTint(KAnimHashedString symbol, Color32 colour)
 	{
 		if (this.controller != null)
 		{
@@ -67,7 +67,7 @@ public class EightDirectionController
 		}
 	}
 
-	public void SetRotation(float rot)
+		public void SetRotation(float rot)
 	{
 		if (this.controller == null)
 		{
@@ -76,21 +76,21 @@ public class EightDirectionController
 		this.controller.Rotation = rot;
 	}
 
-	public void PlayAnim(string anim, KAnim.PlayMode mode = KAnim.PlayMode.Once)
+		public void PlayAnim(string anim, KAnim.PlayMode mode = KAnim.PlayMode.Once)
 	{
 		this.controller.Play(anim, mode, 1f, 0f);
 	}
 
-	public GameObject gameObject;
+		public GameObject gameObject;
 
-	private string defaultAnim;
+		private string defaultAnim;
 
-	private KAnimLink link;
+		private KAnimLink link;
 
-	public enum Offset
+		public enum Offset
 	{
-		Infront,
-		Behind,
-		UserSpecified
+				Infront,
+				Behind,
+				UserSpecified
 	}
 }

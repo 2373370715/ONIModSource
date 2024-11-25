@@ -2,14 +2,14 @@
 
 namespace ImGuiObjectDrawer
 {
-	public sealed class KAnimHashedStringDrawer : InlineDrawer
+		public sealed class KAnimHashedStringDrawer : InlineDrawer
 	{
-		public override bool CanDraw(in MemberDrawContext context, in MemberDetails member)
+				public override bool CanDraw(in MemberDrawContext context, in MemberDetails member)
 		{
 			return member.value is KAnimHashedString;
 		}
 
-		protected override void DrawInline(in MemberDrawContext context, in MemberDetails member)
+				protected override void DrawInline(in MemberDrawContext context, in MemberDetails member)
 		{
 			KAnimHashedString kanimHashedString = (KAnimHashedString)member.value;
 			string str = kanimHashedString.ToString();

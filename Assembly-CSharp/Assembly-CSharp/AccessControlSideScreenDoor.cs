@@ -5,14 +5,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/AccessControlSideScreenDoor")]
 public class AccessControlSideScreenDoor : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.leftButton.onClick += this.OnPermissionButtonClicked;
 		this.rightButton.onClick += this.OnPermissionButtonClicked;
 	}
 
-	private void OnPermissionButtonClicked()
+		private void OnPermissionButtonClicked()
 	{
 		AccessControl.Permission arg;
 		if (this.leftButton.isOn)
@@ -38,7 +38,7 @@ public class AccessControlSideScreenDoor : KMonoBehaviour
 		this.permissionChangedCallback(this.targetIdentity, arg);
 	}
 
-	protected virtual void UpdateButtonStates(bool isDefault)
+		protected virtual void UpdateButtonStates(bool isDefault)
 	{
 		ToolTip component = this.leftButton.GetComponent<ToolTip>();
 		ToolTip component2 = this.rightButton.GetComponent<ToolTip>();
@@ -52,12 +52,12 @@ public class AccessControlSideScreenDoor : KMonoBehaviour
 		component2.SetSimpleTooltip(this.rightButton.isOn ? UI.UISIDESCREENS.ACCESS_CONTROL_SIDE_SCREEN.GO_RIGHT_ENABLED : UI.UISIDESCREENS.ACCESS_CONTROL_SIDE_SCREEN.GO_RIGHT_DISABLED);
 	}
 
-	public void SetRotated(bool rotated)
+		public void SetRotated(bool rotated)
 	{
 		this.isUpDown = rotated;
 	}
 
-	public void SetContent(AccessControl.Permission permission, Action<MinionAssignablesProxy, AccessControl.Permission> onPermissionChange)
+		public void SetContent(AccessControl.Permission permission, Action<MinionAssignablesProxy, AccessControl.Permission> onPermissionChange)
 	{
 		this.permissionChangedCallback = onPermissionChange;
 		this.leftButton.isOn = (permission == AccessControl.Permission.Both || permission == AccessControl.Permission.GoLeft);
@@ -65,13 +65,13 @@ public class AccessControlSideScreenDoor : KMonoBehaviour
 		this.UpdateButtonStates(false);
 	}
 
-	public KToggle leftButton;
+		public KToggle leftButton;
 
-	public KToggle rightButton;
+		public KToggle rightButton;
 
-	private Action<MinionAssignablesProxy, AccessControl.Permission> permissionChangedCallback;
+		private Action<MinionAssignablesProxy, AccessControl.Permission> permissionChangedCallback;
 
-	private bool isUpDown;
+		private bool isUpDown;
 
-	protected MinionAssignablesProxy targetIdentity;
+		protected MinionAssignablesProxy targetIdentity;
 }

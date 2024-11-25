@@ -5,12 +5,12 @@ using UnityEngine;
 
 public static class ReachedDistantPlanetSequence
 {
-	public static void Start(KMonoBehaviour controller)
+		public static void Start(KMonoBehaviour controller)
 	{
 		controller.StartCoroutine(ReachedDistantPlanetSequence.Sequence());
 	}
 
-	private static IEnumerator Sequence()
+		private static IEnumerator Sequence()
 	{
 		Vector3 cameraTagetMid = Vector3.zero;
 		Vector3 cameraTargetTop = Vector3.zero;

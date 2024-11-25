@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Door")]
 public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 {
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		Door component = ((GameObject)data).GetComponent<Door>();
 		if (component != null)
@@ -16,12 +16,12 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	public Door()
+		public Door()
 	{
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTable);
 	}
 
-		public Door.ControlState CurrentState
+			public Door.ControlState CurrentState
 	{
 		get
 		{
@@ -29,7 +29,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-		public Door.ControlState RequestedState
+			public Door.ControlState RequestedState
 	{
 		get
 		{
@@ -37,7 +37,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-		public bool ShouldBlockFallingSand
+			public bool ShouldBlockFallingSand
 	{
 		get
 		{
@@ -45,7 +45,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-		public bool isSealed
+			public bool isSealed
 	{
 		get
 		{
@@ -53,7 +53,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.overrideAnims = Door.OVERRIDE_ANIMS;
@@ -70,17 +70,17 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		base.Subscribe<Door>(-905833192, Door.OnCopySettingsDelegate);
 	}
 
-	private Door.ControlState GetNextState(Door.ControlState wantedState)
+		private Door.ControlState GetNextState(Door.ControlState wantedState)
 	{
 		return (wantedState + 1) % Door.ControlState.NumStates;
 	}
 
-	private static bool DisplacesGas(Door.DoorType type)
+		private static bool DisplacesGas(Door.DoorType type)
 	{
 		return type != Door.DoorType.Internal;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (base.GetComponent<KPrefabID>() != null)
@@ -139,7 +139,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.UpdateDoorState(true);
 		List<int> list = new List<int>();
@@ -175,17 +175,17 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		base.OnCleanUp();
 	}
 
-	public void Seal()
+		public void Seal()
 	{
 		this.controller.sm.isSealed.Set(true, this.controller, false);
 	}
 
-	public void OrderUnseal()
+		public void OrderUnseal()
 	{
 		this.controller.GoTo(this.controller.sm.Sealed.awaiting_unlock);
 	}
 
-	private void RefreshControlState()
+		private void RefreshControlState()
 	{
 		switch (this.controlState)
 		{
@@ -204,7 +204,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.CurrentDoorControlState, this);
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		bool isOperational = this.operational.IsOperational;
 		if (isOperational != this.on)
@@ -219,7 +219,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	private void UpdateDoorSpeed(bool powered)
+		private void UpdateDoorSpeed(bool powered)
 	{
 		this.on = powered;
 		this.UpdateAnimAndSoundParams(powered);
@@ -228,7 +228,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		this.animController.SetPositionPercent(positionPercent);
 	}
 
-	private void UpdateAnimAndSoundParams(bool powered)
+		private void UpdateAnimAndSoundParams(bool powered)
 	{
 		if (powered)
 		{
@@ -257,7 +257,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	private void SetActive(bool active)
+		private void SetActive(bool active)
 	{
 		if (this.operational.IsOperational)
 		{
@@ -265,7 +265,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	private void SetWorldState()
+		private void SetWorldState()
 	{
 		int[] placementCells = this.building.PlacementCells;
 		bool is_door_open = this.IsOpen();
@@ -273,7 +273,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		this.SetSimState(is_door_open, placementCells);
 	}
 
-	private void SetPassableState(bool is_door_open, IList<int> cells)
+		private void SetPassableState(bool is_door_open, IList<int> cells)
 	{
 		for (int i = 0; i < cells.Count; i++)
 		{
@@ -304,7 +304,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	private void SetSimState(bool is_door_open, IList<int> cells)
+		private void SetSimState(bool is_door_open, IList<int> cells)
 	{
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
 		float mass = component.Mass / (float)cells.Count;
@@ -342,7 +342,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	private void UpdateDoorState(bool cleaningUp)
+		private void UpdateDoorState(bool cleaningUp)
 	{
 		foreach (int num in this.building.PlacementCells)
 		{
@@ -353,7 +353,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	public void QueueStateChange(Door.ControlState nextState)
+		public void QueueStateChange(Door.ControlState nextState)
 	{
 		if (this.requestedState != nextState)
 		{
@@ -391,7 +391,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		this.changeStateChore = new WorkChore<Door>(Db.Get().ChoreTypes.Toggle, this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 	}
 
-	private void OnSimDoorOpened()
+		private void OnSimDoorOpened()
 	{
 		if (this == null || !Door.DisplacesGas(this.doorType))
 		{
@@ -403,7 +403,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		this.do_melt_check = false;
 	}
 
-	private void OnSimDoorClosed()
+		private void OnSimDoorClosed()
 	{
 		if (this == null || !Door.DisplacesGas(this.doorType))
 		{
@@ -415,14 +415,14 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		this.do_melt_check = true;
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		this.changeStateChore = null;
 		this.ApplyRequestedControlState(false);
 	}
 
-	public void Open()
+		public void Open()
 	{
 		if (this.openCount == 0 && Door.DisplacesGas(this.doorType))
 		{
@@ -459,7 +459,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		this.controller.sm.isOpen.Set(true, this.controller, false);
 	}
 
-	public void Close()
+		public void Close()
 	{
 		this.openCount = Mathf.Max(0, this.openCount - 1);
 		if (this.openCount == 0 && Door.DisplacesGas(this.doorType))
@@ -492,17 +492,17 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	public bool IsPendingClose()
+		public bool IsPendingClose()
 	{
 		return this.controller.IsInsideState(this.controller.sm.closedelay);
 	}
 
-	public bool IsOpen()
+		public bool IsOpen()
 	{
 		return this.controller.IsInsideState(this.controller.sm.open) || this.controller.IsInsideState(this.controller.sm.closedelay) || this.controller.IsInsideState(this.controller.sm.closeblocked);
 	}
 
-	private void ApplyRequestedControlState(bool force = false)
+		private void ApplyRequestedControlState(bool force = false)
 	{
 		if (this.requestedState == this.controlState && !force)
 		{
@@ -520,7 +520,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	public void OnLogicValueChanged(object data)
+		public void OnLogicValueChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 		if (logicValueChanged.portID != Door.OPEN_CLOSE_PORT_ID)
@@ -537,7 +537,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		this.applyLogicChange = true;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this == null)
 		{
@@ -578,129 +578,129 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 		}
 	}
 
-	bool INavDoor.get_isSpawned()
+		bool INavDoor.get_isSpawned()
 	{
 		return base.isSpawned;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Rotatable rotatable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KBatchedAnimController animController;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Building building;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private EnergyConsumer consumer;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private LoopingSounds loopingSounds;
 
-	public Orientation verticalOrientation;
+		public Orientation verticalOrientation;
 
-	[SerializeField]
+		[SerializeField]
 	public bool hasComplexUserControls;
 
-	[SerializeField]
+		[SerializeField]
 	public float unpoweredAnimSpeed = 0.25f;
 
-	[SerializeField]
+		[SerializeField]
 	public float poweredAnimSpeed = 1f;
 
-	[SerializeField]
+		[SerializeField]
 	public Door.DoorType doorType;
 
-	[SerializeField]
+		[SerializeField]
 	public bool allowAutoControl = true;
 
-	[SerializeField]
+		[SerializeField]
 	public string doorClosingSoundEventName;
 
-	[SerializeField]
+		[SerializeField]
 	public string doorOpeningSoundEventName;
 
-	private string doorClosingSound;
+		private string doorClosingSound;
 
-	private string doorOpeningSound;
+		private string doorOpeningSound;
 
-	private static readonly HashedString SOUND_POWERED_PARAMETER = "doorPowered";
+		private static readonly HashedString SOUND_POWERED_PARAMETER = "doorPowered";
 
-	private static readonly HashedString SOUND_PROGRESS_PARAMETER = "doorProgress";
+		private static readonly HashedString SOUND_PROGRESS_PARAMETER = "doorProgress";
 
-	[Serialize]
+		[Serialize]
 	private bool hasBeenUnsealed;
 
-	[Serialize]
+		[Serialize]
 	private Door.ControlState controlState;
 
-	private bool on;
+		private bool on;
 
-	private bool do_melt_check;
+		private bool do_melt_check;
 
-	private int openCount;
+		private int openCount;
 
-	private Door.ControlState requestedState;
+		private Door.ControlState requestedState;
 
-	private Chore changeStateChore;
+		private Chore changeStateChore;
 
-	private Door.Controller.Instance controller;
+		private Door.Controller.Instance controller;
 
-	private LoggerFSS log;
+		private LoggerFSS log;
 
-	private const float REFRESH_HACK_DELAY = 1f;
+		private const float REFRESH_HACK_DELAY = 1f;
 
-	private bool doorOpenLiquidRefreshHack;
+		private bool doorOpenLiquidRefreshHack;
 
-	private float doorOpenLiquidRefreshTime;
+		private float doorOpenLiquidRefreshTime;
 
-	private static readonly EventSystem.IntraObjectHandler<Door> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Door> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	public static readonly HashedString OPEN_CLOSE_PORT_ID = new HashedString("DoorOpenClose");
+		public static readonly HashedString OPEN_CLOSE_PORT_ID = new HashedString("DoorOpenClose");
 
-	private static readonly KAnimFile[] OVERRIDE_ANIMS = new KAnimFile[]
+		private static readonly KAnimFile[] OVERRIDE_ANIMS = new KAnimFile[]
 	{
 		Assets.GetAnim("anim_use_remote_kanim")
 	};
 
-	private static readonly EventSystem.IntraObjectHandler<Door> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Door> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Door> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Door> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<Door>(delegate(Door component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	private bool applyLogicChange;
+		private bool applyLogicChange;
 
-	public enum DoorType
+		public enum DoorType
 	{
-		Pressure,
-		ManualPressure,
-		Internal,
-		Sealed
+				Pressure,
+				ManualPressure,
+				Internal,
+				Sealed
 	}
 
-	public enum ControlState
+		public enum ControlState
 	{
-		Auto,
-		Opened,
-		Locked,
-		NumStates
+				Auto,
+				Opened,
+				Locked,
+				NumStates
 	}
 
-	public class Controller : GameStateMachine<Door.Controller, Door.Controller.Instance, Door>
+		public class Controller : GameStateMachine<Door.Controller, Door.Controller.Instance, Door>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
 			default_state = this.closed;
@@ -799,64 +799,64 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 			});
 		}
 
-		private Chore CreateUnsealChore(Door.Controller.Instance smi, bool approach_right)
+				private Chore CreateUnsealChore(Door.Controller.Instance smi, bool approach_right)
 		{
 			return new WorkChore<Unsealable>(Db.Get().ChoreTypes.Toggle, smi.master, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 
-		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State open;
+				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State open;
 
-		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State opening;
+				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State opening;
 
-		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closed;
+				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closed;
 
-		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closing;
+				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closing;
 
-		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closedelay;
+				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closedelay;
 
-		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closeblocked;
+				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closeblocked;
 
-		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State locking;
+				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State locking;
 
-		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State locked;
-
-		public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State unlocking;
-
-		public Door.Controller.SealedStates Sealed;
-
-		public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isOpen;
-
-		public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isLocked;
-
-		public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isBlocked;
-
-		public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isSealed;
-
-		public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter sealDirectionRight;
-
-		public class SealedStates : GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State
-		{
-			public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closed;
-
-			public Door.Controller.SealedStates.AwaitingUnlock awaiting_unlock;
-
-			public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State chore_pst;
-
-			public class AwaitingUnlock : GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State
-			{
-				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State awaiting_arrival;
+				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State locked;
 
 				public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State unlocking;
+
+				public Door.Controller.SealedStates Sealed;
+
+				public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isOpen;
+
+				public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isLocked;
+
+				public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isBlocked;
+
+				public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter isSealed;
+
+				public StateMachine<Door.Controller, Door.Controller.Instance, Door, object>.BoolParameter sealDirectionRight;
+
+				public class SealedStates : GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State
+		{
+						public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State closed;
+
+						public Door.Controller.SealedStates.AwaitingUnlock awaiting_unlock;
+
+						public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State chore_pst;
+
+						public class AwaitingUnlock : GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State
+			{
+								public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State awaiting_arrival;
+
+								public GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.State unlocking;
 			}
 		}
 
-		public new class Instance : GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.GameInstance
+				public new class Instance : GameStateMachine<Door.Controller, Door.Controller.Instance, Door, object>.GameInstance
 		{
-			public Instance(Door door) : base(door)
+						public Instance(Door door) : base(door)
 			{
 			}
 
-			public void RefreshIsBlocked()
+						public void RefreshIsBlocked()
 			{
 				bool value = false;
 				foreach (int cell in this.building.PlacementCells)
@@ -870,7 +870,7 @@ public class Door : Workable, ISaveLoadable, ISim200ms, INavDoor
 				base.sm.isBlocked.Set(value, base.smi, false);
 			}
 
-			[MyCmpReq]
+						[MyCmpReq]
 			public Building building;
 		}
 	}

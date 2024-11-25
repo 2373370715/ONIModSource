@@ -6,18 +6,18 @@ using UnityEngine;
 
 public class Sauna : StateMachineComponent<Sauna.StatesInstance>, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	private void AddRequirementDesc(List<Descriptor> descs, Tag tag, float mass)
+		private void AddRequirementDesc(List<Descriptor> descs, Tag tag, float mass)
 	{
 		string arg = tag.ProperName();
 		Descriptor item = default(Descriptor);
@@ -25,7 +25,7 @@ public class Sauna : StateMachineComponent<Sauna.StatesInstance>, IGameObjectEff
 		descs.Add(item);
 	}
 
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
+		List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Element element = ElementLoader.FindElementByHash(SimHashes.Steam);
@@ -38,19 +38,19 @@ public class Sauna : StateMachineComponent<Sauna.StatesInstance>, IGameObjectEff
 		return list;
 	}
 
-	public string specificEffect;
+		public string specificEffect;
 
-	public string trackingEffect;
+		public string trackingEffect;
 
-	public float steamPerUseKG;
+		public float steamPerUseKG;
 
-	public float waterOutputTemp;
+		public float waterOutputTemp;
 
-	public static readonly Operational.Flag sufficientSteam = new Operational.Flag("sufficientSteam", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag sufficientSteam = new Operational.Flag("sufficientSteam", Operational.Flag.Type.Requirement);
 
-	public class States : GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna>
+		public class States : GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.inoperational;
 			this.inoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.operational, false).ToggleMainStatusItem(Db.Get().BuildingStatusItems.MissingRequirements, null);
@@ -60,7 +60,7 @@ public class Sauna : StateMachineComponent<Sauna.StatesInstance>, IGameObjectEff
 			this.ready.working.WorkableCompleteTransition((Sauna.StatesInstance smi) => smi.master.GetComponent<SaunaWorkable>(), this.ready.idle).WorkableStopTransition((Sauna.StatesInstance smi) => smi.master.GetComponent<SaunaWorkable>(), this.ready.idle);
 		}
 
-		private Chore CreateChore(Sauna.StatesInstance smi)
+				private Chore CreateChore(Sauna.StatesInstance smi)
 		{
 			Workable component = smi.master.GetComponent<SaunaWorkable>();
 			WorkChore<SaunaWorkable> workChore = new WorkChore<SaunaWorkable>(Db.Get().ChoreTypes.Relax, component, null, true, null, null, null, false, Db.Get().ScheduleBlockTypes.Recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
@@ -68,29 +68,29 @@ public class Sauna : StateMachineComponent<Sauna.StatesInstance>, IGameObjectEff
 			return workChore;
 		}
 
-		private bool IsReady(Sauna.StatesInstance smi)
+				private bool IsReady(Sauna.StatesInstance smi)
 		{
 			PrimaryElement primaryElement = smi.GetComponent<Storage>().FindPrimaryElement(SimHashes.Steam);
 			return primaryElement != null && primaryElement.Mass >= smi.master.steamPerUseKG;
 		}
 
-		private GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.State inoperational;
+				private GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.State inoperational;
 
-		private GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.State operational;
+				private GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.State operational;
 
-		private Sauna.States.ReadyStates ready;
+				private Sauna.States.ReadyStates ready;
 
-		public class ReadyStates : GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.State
+				public class ReadyStates : GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.State
 		{
-			public GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.State idle;
+						public GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.State idle;
 
-			public GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.State working;
+						public GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.State working;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Sauna.States, Sauna.StatesInstance, Sauna, object>.GameInstance
 	{
-		public StatesInstance(Sauna smi) : base(smi)
+				public StatesInstance(Sauna smi) : base(smi)
 		{
 		}
 	}

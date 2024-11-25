@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/LogicRibbonDisplayUI")]
 public class LogicRibbonDisplayUI : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.colourOn = GlobalAssets.Instance.colorSet.logicOn;
@@ -18,7 +18,7 @@ public class LogicRibbonDisplayUI : KMonoBehaviour
 		this.wire4.raycastTarget = false;
 	}
 
-	public void SetContent(LogicCircuitNetwork network)
+		public void SetContent(LogicCircuitNetwork network)
 	{
 		Color32 color = this.colourDisconnected;
 		List<Color32> list = new List<Color32>();
@@ -44,26 +44,26 @@ public class LogicRibbonDisplayUI : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Image wire1;
 
-	[SerializeField]
+		[SerializeField]
 	private Image wire2;
 
-	[SerializeField]
+		[SerializeField]
 	private Image wire3;
 
-	[SerializeField]
+		[SerializeField]
 	private Image wire4;
 
-	[SerializeField]
+		[SerializeField]
 	private LogicModeUI uiAsset;
 
-	private Color32 colourOn;
+		private Color32 colourOn;
 
-	private Color32 colourOff;
+		private Color32 colourOff;
 
-	private Color32 colourDisconnected = new Color(255f, 255f, 255f, 255f);
+		private Color32 colourDisconnected = new Color(255f, 255f, 255f, 255f);
 
-	private int bitDepth = 4;
+		private int bitDepth = 4;
 }

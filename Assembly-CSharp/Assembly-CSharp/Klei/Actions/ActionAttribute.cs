@@ -2,14 +2,14 @@
 
 namespace Klei.Actions
 {
-	[AttributeUsage(AttributeTargets.Class)]
+		[AttributeUsage(AttributeTargets.Class)]
 	public class ActionAttribute : Attribute
 	{
-		public ActionAttribute(string actionName)
+				public ActionAttribute(string actionName)
 		{
 			this.ActionName = actionName;
 		}
 
-		public readonly string ActionName;
+				public readonly string ActionName;
 	}
 }

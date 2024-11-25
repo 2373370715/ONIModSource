@@ -3,29 +3,29 @@ using UnityEngine;
 
 public class MotdData_Box
 {
-	public bool ShouldDisplay()
+		public bool ShouldDisplay()
 	{
 		long num = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 		return num >= this.startTime && this.finishTime >= num;
 	}
 
-	public string category;
+		public string category;
 
-	public string guid;
+		public string guid;
 
-	public long startTime;
+		public long startTime;
 
-	public long finishTime;
+		public long finishTime;
 
-	public string title;
+		public string title;
 
-	public string text;
+		public string text;
 
-	public string image;
+		public string image;
 
-	public string href;
+		public string href;
 
-	public Texture2D resolvedImage;
+		public Texture2D resolvedImage;
 
-	public bool resolvedImageIsFromDisk;
+		public bool resolvedImageIsFromDisk;
 }

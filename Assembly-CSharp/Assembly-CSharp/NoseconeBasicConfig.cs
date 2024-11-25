@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class NoseconeBasicConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "NoseconeBasic";
 		int width = 5;
@@ -42,7 +42,7 @@ public class NoseconeBasicConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -50,11 +50,11 @@ public class NoseconeBasicConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.NoseRocketModule, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		BuildingTemplates.ExtendBuildingToRocketModuleCluster(go, null, ROCKETRY.BURDEN.MINOR, 0f, 0f);
 		go.GetComponent<ReorderableBuilding>().buildConditions.Add(new TopOnly());
 	}
 
-	public const string ID = "NoseconeBasic";
+		public const string ID = "NoseconeBasic";
 }

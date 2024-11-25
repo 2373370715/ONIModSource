@@ -7,7 +7,7 @@ using System.Text;
 using TUNING;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 
 public static partial class MyUtils {
     public static MyIdGenerate ID = new();

@@ -2,14 +2,14 @@
 
 public class SafetyQuery : PathFinderQuery
 {
-	public SafetyQuery(SafetyChecker checker, KMonoBehaviour cmp, int max_cost)
+		public SafetyQuery(SafetyChecker checker, KMonoBehaviour cmp, int max_cost)
 	{
 		this.checker = checker;
 		this.cmp = cmp;
 		this.maxCost = max_cost;
 	}
 
-	public void Reset()
+		public void Reset()
 	{
 		this.targetCell = PathFinder.InvalidCell;
 		this.targetCost = int.MaxValue;
@@ -17,7 +17,7 @@ public class SafetyQuery : PathFinderQuery
 		this.context = new SafetyChecker.Context(this.cmp);
 	}
 
-	public override bool IsMatch(int cell, int parent_cell, int cost)
+		public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
 		bool flag = false;
 		int safetyConditions = this.checker.GetSafetyConditions(cell, cost, this.context, out flag);
@@ -34,22 +34,22 @@ public class SafetyQuery : PathFinderQuery
 		return cost >= this.maxCost;
 	}
 
-	public override int GetResultCell()
+		public override int GetResultCell()
 	{
 		return this.targetCell;
 	}
 
-	private int targetCell;
+		private int targetCell;
 
-	private int targetCost;
+		private int targetCost;
 
-	private int targetConditions;
+		private int targetConditions;
 
-	private int maxCost;
+		private int maxCost;
 
-	private SafetyChecker checker;
+		private SafetyChecker checker;
 
-	private KMonoBehaviour cmp;
+		private KMonoBehaviour cmp;
 
-	private SafetyChecker.Context context;
+		private SafetyChecker.Context context;
 }

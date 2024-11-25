@@ -6,14 +6,14 @@ using UnityEngine.UI;
 
 public class UIMinionOrMannequin : KMonoBehaviour
 {
-			public UIMinionOrMannequin.ITarget current { get; private set; }
+				public UIMinionOrMannequin.ITarget current { get; private set; }
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.TrySpawn();
 	}
 
-	public bool TrySpawn()
+		public bool TrySpawn()
 	{
 		bool flag = false;
 		if (this.mannequin.IsNullOrDestroyed())
@@ -49,7 +49,7 @@ public class UIMinionOrMannequin : KMonoBehaviour
 		return flag;
 	}
 
-	public UIMinionOrMannequin.ITarget SetFrom(Option<Personality> personality)
+		public UIMinionOrMannequin.ITarget SetFrom(Option<Personality> personality)
 	{
 		if (personality.IsSome())
 		{
@@ -58,7 +58,7 @@ public class UIMinionOrMannequin : KMonoBehaviour
 		return this.SetAsMannequin();
 	}
 
-	public UIMinion SetAsMinion(Personality personality)
+		public UIMinion SetAsMinion(Personality personality)
 	{
 		this.mannequin.gameObject.SetActive(false);
 		this.minion.gameObject.SetActive(true);
@@ -67,7 +67,7 @@ public class UIMinionOrMannequin : KMonoBehaviour
 		return this.minion;
 	}
 
-	public UIMannequin SetAsMannequin()
+		public UIMannequin SetAsMannequin()
 	{
 		this.minion.gameObject.SetActive(false);
 		this.mannequin.gameObject.SetActive(true);
@@ -75,23 +75,23 @@ public class UIMinionOrMannequin : KMonoBehaviour
 		return this.mannequin;
 	}
 
-	public MinionVoice GetMinionVoice()
+		public MinionVoice GetMinionVoice()
 	{
 		return MinionVoice.ByObject(this.current.SpawnedAvatar).UnwrapOr(MinionVoice.Random(), null);
 	}
 
-	public UIMinion minion;
+		public UIMinion minion;
 
-	public UIMannequin mannequin;
+		public UIMannequin mannequin;
 
-	public interface ITarget
+		public interface ITarget
 	{
-				GameObject SpawnedAvatar { get; }
+						GameObject SpawnedAvatar { get; }
 
-				Option<Personality> Personality { get; }
+						Option<Personality> Personality { get; }
 
-		void SetOutfit(ClothingOutfitUtility.OutfitType outfitType, IEnumerable<ClothingItemResource> clothingItems);
+				void SetOutfit(ClothingOutfitUtility.OutfitType outfitType, IEnumerable<ClothingItemResource> clothingItems);
 
-		void React(UIMinionOrMannequinReactSource source);
+				void React(UIMinionOrMannequinReactSource source);
 	}
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class RocketInteriorGasOutputPortConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "RocketInteriorGasOutputPort";
 		int width = 1;
@@ -37,12 +37,12 @@ public class RocketInteriorGasOutputPortConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	private void AttachPort(GameObject go)
+		private void AttachPort(GameObject go)
 	{
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.gasOutputPort;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -51,7 +51,7 @@ public class RocketInteriorGasOutputPortConfig : IBuildingConfig
 		go.AddComponent<RocketConduitReceiver>().conduitPortInfo = this.gasOutputPort;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
 		KPrefabID component = go.GetComponent<KPrefabID>();
@@ -66,21 +66,21 @@ public class RocketInteriorGasOutputPortConfig : IBuildingConfig
 		go.GetComponent<Deconstructable>().allowDeconstruction = false;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		go.AddOrGet<BuildingCellVisualizer>();
 		this.AttachPort(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.AddOrGet<BuildingCellVisualizer>();
 		this.AttachPort(go);
 	}
 
-	public const string ID = "RocketInteriorGasOutputPort";
+		public const string ID = "RocketInteriorGasOutputPort";
 
-	private ConduitPortInfo gasOutputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(0, 0));
+		private ConduitPortInfo gasOutputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(0, 0));
 }

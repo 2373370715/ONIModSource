@@ -3,12 +3,12 @@ using STRINGS;
 
 public class LogicGateDemultiplexerConfig : LogicGateBaseConfig
 {
-	protected override LogicGateBase.Op GetLogicOp()
+		protected override LogicGateBase.Op GetLogicOp()
 	{
 		return LogicGateBase.Op.Demultiplexer;
 	}
 
-		protected override CellOffset[] InputPortOffsets
+			protected override CellOffset[] InputPortOffsets
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class LogicGateDemultiplexerConfig : LogicGateBaseConfig
 		}
 	}
 
-		protected override CellOffset[] OutputPortOffsets
+			protected override CellOffset[] OutputPortOffsets
 	{
 		get
 		{
@@ -33,7 +33,7 @@ public class LogicGateDemultiplexerConfig : LogicGateBaseConfig
 		}
 	}
 
-		protected override CellOffset[] ControlPortOffsets
+			protected override CellOffset[] ControlPortOffsets
 	{
 		get
 		{
@@ -45,7 +45,7 @@ public class LogicGateDemultiplexerConfig : LogicGateBaseConfig
 		}
 	}
 
-	protected override LogicGate.LogicGateDescriptions GetDescriptions()
+		protected override LogicGate.LogicGateDescriptions GetDescriptions()
 	{
 		return new LogicGate.LogicGateDescriptions
 		{
@@ -58,10 +58,10 @@ public class LogicGateDemultiplexerConfig : LogicGateBaseConfig
 		};
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		return base.CreateBuildingDef("LogicGateDemultiplexer", "logic_demultiplexer_kanim", 3, 4);
 	}
 
-	public const string ID = "LogicGateDemultiplexer";
+		public const string ID = "LogicGateDemultiplexer";
 }

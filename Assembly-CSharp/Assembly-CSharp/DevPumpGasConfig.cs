@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DevPumpGasConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "DevPumpGas";
 		int width = 2;
@@ -32,13 +32,13 @@ public class DevPumpGasConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		base.ConfigureBuildingTemplate(go, prefab_tag);
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddTag(GameTags.DevBuilding);
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
@@ -54,9 +54,9 @@ public class DevPumpGasConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits, false);
 	}
 
-	public const string ID = "DevPumpGas";
+		public const string ID = "DevPumpGas";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
 
-	private ConduitPortInfo primaryPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(1, 1));
+		private ConduitPortInfo primaryPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(1, 1));
 }

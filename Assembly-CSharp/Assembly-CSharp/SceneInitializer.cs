@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class SceneInitializer : MonoBehaviour
 {
-			public static SceneInitializer Instance { get; private set; }
+				public static SceneInitializer Instance { get; private set; }
 
-	private void Awake()
+		private void Awake()
 	{
 		Localization.SwapToLocalizedFont();
 		string environmentVariable = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
@@ -20,12 +20,12 @@ public class SceneInitializer : MonoBehaviour
 		this.PreLoadPrefabs();
 	}
 
-	private void OnDestroy()
+		private void OnDestroy()
 	{
 		SceneInitializer.Instance = null;
 	}
 
-	private void PreLoadPrefabs()
+		private void PreLoadPrefabs()
 	{
 		foreach (GameObject gameObject in this.preloadPrefabs)
 		{
@@ -36,7 +36,7 @@ public class SceneInitializer : MonoBehaviour
 		}
 	}
 
-	public void NewSaveGamePrefab()
+		public void NewSaveGamePrefab()
 	{
 		if (this.prefab_NewSaveGame != null && SaveGame.Instance == null)
 		{
@@ -44,7 +44,7 @@ public class SceneInitializer : MonoBehaviour
 		}
 	}
 
-	public void PostLoadPrefabs()
+		public void PostLoadPrefabs()
 	{
 		foreach (GameObject gameObject in this.prefabs)
 		{
@@ -55,13 +55,13 @@ public class SceneInitializer : MonoBehaviour
 		}
 	}
 
-	public const int MAXDEPTH = -30000;
+		public const int MAXDEPTH = -30000;
 
-	public const int SCREENDEPTH = -1000;
+		public const int SCREENDEPTH = -1000;
 
-	public GameObject prefab_NewSaveGame;
+		public GameObject prefab_NewSaveGame;
 
-	public List<GameObject> preloadPrefabs = new List<GameObject>();
+		public List<GameObject> preloadPrefabs = new List<GameObject>();
 
-	public List<GameObject> prefabs = new List<GameObject>();
+		public List<GameObject> prefabs = new List<GameObject>();
 }

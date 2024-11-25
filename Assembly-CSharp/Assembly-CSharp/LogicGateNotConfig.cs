@@ -3,12 +3,12 @@ using STRINGS;
 
 public class LogicGateNotConfig : LogicGateBaseConfig
 {
-	protected override LogicGateBase.Op GetLogicOp()
+		protected override LogicGateBase.Op GetLogicOp()
 	{
 		return LogicGateBase.Op.Not;
 	}
 
-		protected override CellOffset[] InputPortOffsets
+			protected override CellOffset[] InputPortOffsets
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class LogicGateNotConfig : LogicGateBaseConfig
 		}
 	}
 
-		protected override CellOffset[] OutputPortOffsets
+			protected override CellOffset[] OutputPortOffsets
 	{
 		get
 		{
@@ -30,7 +30,7 @@ public class LogicGateNotConfig : LogicGateBaseConfig
 		}
 	}
 
-		protected override CellOffset[] ControlPortOffsets
+			protected override CellOffset[] ControlPortOffsets
 	{
 		get
 		{
@@ -38,7 +38,7 @@ public class LogicGateNotConfig : LogicGateBaseConfig
 		}
 	}
 
-	protected override LogicGate.LogicGateDescriptions GetDescriptions()
+		protected override LogicGate.LogicGateDescriptions GetDescriptions()
 	{
 		return new LogicGate.LogicGateDescriptions
 		{
@@ -51,10 +51,10 @@ public class LogicGateNotConfig : LogicGateBaseConfig
 		};
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		return base.CreateBuildingDef("LogicGateNOT", "logic_not_kanim", 2, 1);
 	}
 
-	public const string ID = "LogicGateNOT";
+		public const string ID = "LogicGateNOT";
 }

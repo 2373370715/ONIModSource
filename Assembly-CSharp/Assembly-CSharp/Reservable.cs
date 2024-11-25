@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Reservable")]
 public class Reservable : KMonoBehaviour
 {
-		public GameObject ReservedBy
+			public GameObject ReservedBy
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class Reservable : KMonoBehaviour
 		}
 	}
 
-		public bool isReserved
+			public bool isReserved
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class Reservable : KMonoBehaviour
 		}
 	}
 
-	public bool Reserve(GameObject reserver)
+		public bool Reserve(GameObject reserver)
 	{
 		if (this.reservedBy == null)
 		{
@@ -30,7 +30,7 @@ public class Reservable : KMonoBehaviour
 		return false;
 	}
 
-	public void ClearReservation(GameObject reserver)
+		public void ClearReservation(GameObject reserver)
 	{
 		if (this.reservedBy == reserver)
 		{
@@ -38,5 +38,5 @@ public class Reservable : KMonoBehaviour
 		}
 	}
 
-	private GameObject reservedBy;
+		private GameObject reservedBy;
 }

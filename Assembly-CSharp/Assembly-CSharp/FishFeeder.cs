@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.notoperational;
 		this.root.Enter(new StateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.State.Callback(FishFeeder.SetupFishFeederTopAndBot)).Exit(new StateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.State.Callback(FishFeeder.CleanupFishFeederTopAndBot)).EventHandler(GameHashes.OnStorageChange, new GameStateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.GameEvent.Callback(FishFeeder.OnStorageChange)).EventHandler(GameHashes.RefreshUserMenu, new GameStateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.GameEvent.Callback(FishFeeder.OnRefreshUserMenu));
@@ -20,7 +20,7 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 		}
 	}
 
-	private static void SetupFishFeederTopAndBot(FishFeeder.Instance smi)
+		private static void SetupFishFeederTopAndBot(FishFeeder.Instance smi)
 	{
 		Storage storage = smi.Get<Storage>();
 		smi.fishFeederTop = new FishFeeder.FishFeederTop(smi, FishFeeder.ballSymbols, storage.Capacity());
@@ -31,12 +31,12 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 		smi.UpdateMutantSeedStatusItem();
 	}
 
-	private static void CleanupFishFeederTopAndBot(FishFeeder.Instance smi)
+		private static void CleanupFishFeederTopAndBot(FishFeeder.Instance smi)
 	{
 		smi.fishFeederTop.Cleanup();
 	}
 
-	private static void MoveStoredContentsToConsumeOffset(FishFeeder.Instance smi)
+		private static void MoveStoredContentsToConsumeOffset(FishFeeder.Instance smi)
 	{
 		foreach (GameObject gameObject in smi.GetComponent<Storage>().items)
 		{
@@ -47,7 +47,7 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 		}
 	}
 
-	private static void OnStorageChange(FishFeeder.Instance smi, object data)
+		private static void OnStorageChange(FishFeeder.Instance smi, object data)
 	{
 		if ((GameObject)data == null)
 		{
@@ -57,7 +57,7 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 		smi.fishFeederBot.RefreshStorage();
 	}
 
-	private static void OnRefreshUserMenu(FishFeeder.Instance smi, object data)
+		private static void OnRefreshUserMenu(FishFeeder.Instance smi, object data)
 	{
 		if (DlcManager.FeatureRadiationEnabled())
 		{
@@ -69,24 +69,24 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 		}
 	}
 
-	public GameStateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.State notoperational;
+		public GameStateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.State notoperational;
 
-	public FishFeeder.OperationalState operational;
+		public FishFeeder.OperationalState operational;
 
-	public static HashedString[] ballSymbols;
+		public static HashedString[] ballSymbols;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public class OperationalState : GameStateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.State
+		public class OperationalState : GameStateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.State
 	{
-		public GameStateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.State on;
+				public GameStateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.State on;
 	}
 
-	public new class Instance : GameStateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.GameInstance
+		public new class Instance : GameStateMachine<FishFeeder, FishFeeder.Instance, IStateMachineTarget, FishFeeder.Def>.GameInstance
 	{
-						public bool ForbidMutantSeeds
+								public bool ForbidMutantSeeds
 		{
 			get
 			{
@@ -100,13 +100,13 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 			}
 		}
 
-		public Instance(IStateMachineTarget master, FishFeeder.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, FishFeeder.Def def) : base(master, def)
 		{
 			this.mutantSeedStatusItem = new StatusItem("FISHFEEDERACCEPTSMUTANTSEEDS", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
 			base.Subscribe(-905833192, new Action<object>(this.OnCopySettingsDelegate));
 		}
 
-		private void OnCopySettingsDelegate(object data)
+				private void OnCopySettingsDelegate(object data)
 		{
 			GameObject gameObject = (GameObject)data;
 			if (gameObject == null)
@@ -121,24 +121,24 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 			this.ForbidMutantSeeds = smi.ForbidMutantSeeds;
 		}
 
-		public void UpdateMutantSeedStatusItem()
+				public void UpdateMutantSeedStatusItem()
 		{
 			base.gameObject.GetComponent<KSelectable>().ToggleStatusItem(this.mutantSeedStatusItem, SaveLoader.Instance.IsDLCActiveForCurrentSave("EXPANSION1_ID") && !this.forbidMutantSeeds, null);
 		}
 
-		private StatusItem mutantSeedStatusItem;
+				private StatusItem mutantSeedStatusItem;
 
-		public FishFeeder.FishFeederTop fishFeederTop;
+				public FishFeeder.FishFeederTop fishFeederTop;
 
-		public FishFeeder.FishFeederBot fishFeederBot;
+				public FishFeeder.FishFeederBot fishFeederBot;
 
-		[Serialize]
+				[Serialize]
 		private bool forbidMutantSeeds;
 	}
 
-	public class FishFeederTop : IRenderEveryTick
+		public class FishFeederTop : IRenderEveryTick
 	{
-		public FishFeederTop(FishFeeder.Instance smi, HashedString[] ball_symbols, float capacity)
+				public FishFeederTop(FishFeeder.Instance smi, HashedString[] ball_symbols, float capacity)
 		{
 			this.smi = smi;
 			this.ballSymbols = ball_symbols;
@@ -147,7 +147,7 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 			SimAndRenderScheduler.instance.Add(this, false);
 		}
 
-		private void FillFeeder(float mass)
+				private void FillFeeder(float mass)
 		{
 			KBatchedAnimController component = this.smi.GetComponent<KBatchedAnimController>();
 			for (int i = 0; i < this.ballSymbols.Length; i++)
@@ -157,7 +157,7 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 			}
 		}
 
-		public void RefreshStorage()
+				public void RefreshStorage()
 		{
 			float num = 0f;
 			foreach (GameObject gameObject in this.smi.GetComponent<Storage>().items)
@@ -170,7 +170,7 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 			this.targetMass = num;
 		}
 
-		public void RenderEveryTick(float dt)
+				public void RenderEveryTick(float dt)
 		{
 			this.timeSinceLastBallAppeared += dt;
 			if (this.targetMass > this.mass && this.timeSinceLastBallAppeared > 0.025f)
@@ -182,12 +182,12 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 			}
 		}
 
-		public void Cleanup()
+				public void Cleanup()
 		{
 			SimAndRenderScheduler.instance.Remove(this);
 		}
 
-		public void ToggleMutantSeedFetches(bool allow)
+				public void ToggleMutantSeedFetches(bool allow)
 		{
 			StorageLocker component = this.smi.GetComponent<StorageLocker>();
 			if (component != null)
@@ -196,22 +196,22 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 			}
 		}
 
-		private FishFeeder.Instance smi;
+				private FishFeeder.Instance smi;
 
-		private float mass;
+				private float mass;
 
-		private float targetMass;
+				private float targetMass;
 
-		private HashedString[] ballSymbols;
+				private HashedString[] ballSymbols;
 
-		private float massPerBall;
+				private float massPerBall;
 
-		private float timeSinceLastBallAppeared;
+				private float timeSinceLastBallAppeared;
 	}
 
-	public class FishFeederBot
+		public class FishFeederBot
 	{
-		public FishFeederBot(FishFeeder.Instance smi, float mass_per_ball, HashedString[] ball_symbols)
+				public FishFeederBot(FishFeeder.Instance smi, float mass_per_ball, HashedString[] ball_symbols)
 		{
 			this.smi = smi;
 			this.massPerBall = mass_per_ball;
@@ -235,7 +235,7 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 			}
 		}
 
-		public void RefreshStorage()
+				public void RefreshStorage()
 		{
 			if (this.refreshingStorage)
 			{
@@ -275,7 +275,7 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 			this.refreshingStorage = false;
 		}
 
-		private void SetBallSymbol(GameObject stored_go)
+				private void SetBallSymbol(GameObject stored_go)
 		{
 			if (stored_go == null)
 			{
@@ -294,18 +294,18 @@ public class FishFeeder : GameStateMachine<FishFeeder, FishFeeder.Instance, ISta
 			stored_go.transform.SetPosition(Grid.CellToPosCBC(cell, Grid.SceneLayer.BuildingUse));
 		}
 
-		private KBatchedAnimController anim;
+				private KBatchedAnimController anim;
 
-		private Storage topStorage;
+				private Storage topStorage;
 
-		private Storage botStorage;
+				private Storage botStorage;
 
-		private bool refreshingStorage;
+				private bool refreshingStorage;
 
-		private FishFeeder.Instance smi;
+				private FishFeeder.Instance smi;
 
-		private float massPerBall;
+				private float massPerBall;
 
-		private static readonly HashedString HASH_FEEDBALL = "feedball";
+				private static readonly HashedString HASH_FEEDBALL = "feedball";
 	}
 }

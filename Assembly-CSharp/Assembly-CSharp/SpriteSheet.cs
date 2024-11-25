@@ -4,17 +4,17 @@ using UnityEngine;
 [Serializable]
 public struct SpriteSheet
 {
-	public string name;
+		public string name;
 
-	public int numFrames;
+		public int numFrames;
 
-	public int numXFrames;
+		public int numXFrames;
 
-	public Vector2 uvFrameSize;
+		public Vector2 uvFrameSize;
 
-	public int renderLayer;
+		public int renderLayer;
 
-	public Material material;
+		public Material material;
 
-	public Texture2D texture;
+		public Texture2D texture;
 }

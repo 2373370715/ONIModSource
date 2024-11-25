@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SwitchConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = SwitchConfig.ID;
 		int width = 1;
@@ -28,7 +28,7 @@ public class SwitchConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = false;
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
@@ -37,10 +37,10 @@ public class SwitchConfig : IBuildingConfig
 		circuitSwitch.manuallyControlled = false;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddComponent<BuildingCellVisualizer>();
 	}
 
-	public static string ID = "Switch";
+		public static string ID = "Switch";
 }

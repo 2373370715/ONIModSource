@@ -3,12 +3,12 @@ using Database;
 
 public abstract class BlueprintProvider
 {
-	protected void AddBuilding(string prefabConfigId, PermitRarity rarity, string permitId, string animFile)
+		protected void AddBuilding(string prefabConfigId, PermitRarity rarity, string permitId, string animFile)
 	{
 		this.blueprintCollection.buildingFacades.Add(new BuildingFacadeInfo(permitId, Strings.Get("STRINGS.BLUEPRINTS." + permitId.ToUpper() + ".NAME"), Strings.Get("STRINGS.BLUEPRINTS." + permitId.ToUpper() + ".DESC"), rarity, prefabConfigId, animFile, this.dlcIds, null));
 	}
 
-	protected void AddClothing(BlueprintProvider.ClothingType clothingType, PermitRarity rarity, string permitId, string animFile)
+		protected void AddClothing(BlueprintProvider.ClothingType clothingType, PermitRarity rarity, string permitId, string animFile)
 	{
 		this.blueprintCollection.clothingItems.Add(new ClothingItemInfo(permitId, Strings.Get("STRINGS.BLUEPRINTS." + permitId.ToUpper() + ".NAME"), Strings.Get("STRINGS.BLUEPRINTS." + permitId.ToUpper() + ".DESC"), (PermitCategory)clothingType, rarity, animFile)
 		{
@@ -16,7 +16,7 @@ public abstract class BlueprintProvider
 		});
 	}
 
-	protected BlueprintProvider.ArtableInfoAuthoringHelper AddArtable(BlueprintProvider.ArtableType artableType, PermitRarity rarity, string permitId, string animFile)
+		protected BlueprintProvider.ArtableInfoAuthoringHelper AddArtable(BlueprintProvider.ArtableType artableType, PermitRarity rarity, string permitId, string animFile)
 	{
 		string text;
 		switch (artableType)
@@ -77,7 +77,7 @@ public abstract class BlueprintProvider
 		return result;
 	}
 
-	protected void AddJoyResponse(BlueprintProvider.JoyResponseType joyResponseType, PermitRarity rarity, string permitId, string animFile)
+		protected void AddJoyResponse(BlueprintProvider.JoyResponseType joyResponseType, PermitRarity rarity, string permitId, string animFile)
 	{
 		if (joyResponseType == BlueprintProvider.JoyResponseType.BallonSet)
 		{
@@ -90,7 +90,7 @@ public abstract class BlueprintProvider
 		throw new NotImplementedException("Missing case for " + joyResponseType.ToString());
 	}
 
-	protected void AddOutfit(BlueprintProvider.OutfitType outfitType, string outfitId, string[] permitIdList)
+		protected void AddOutfit(BlueprintProvider.OutfitType outfitType, string outfitId, string[] permitIdList)
 	{
 		this.blueprintCollection.outfits.Add(new ClothingOutfitResource(outfitId, permitIdList, Strings.Get("STRINGS.BLUEPRINTS." + outfitId.ToUpper() + ".NAME"), (ClothingOutfitUtility.OutfitType)outfitType)
 		{
@@ -98,77 +98,77 @@ public abstract class BlueprintProvider
 		});
 	}
 
-	public virtual string[] GetDlcIds()
+		public virtual string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public abstract void SetupBlueprints();
+		public abstract void SetupBlueprints();
 
-	public void Interal_PreSetupBlueprints()
+		public void Interal_PreSetupBlueprints()
 	{
 		this.dlcIds = this.GetDlcIds();
 	}
 
-	public BlueprintCollection blueprintCollection;
+		public BlueprintCollection blueprintCollection;
 
-	private string[] dlcIds;
+		private string[] dlcIds;
 
-	public enum ArtableType
+		public enum ArtableType
 	{
-		Painting,
-		PaintingTall,
-		PaintingWide,
-		Sculpture,
-		SculptureSmall,
-		SculptureIce,
-		SculptureMetal,
-		SculptureMarble,
-		SculptureWood
+				Painting,
+				PaintingTall,
+				PaintingWide,
+				Sculpture,
+				SculptureSmall,
+				SculptureIce,
+				SculptureMetal,
+				SculptureMarble,
+				SculptureWood
 	}
 
-	public enum ArtableQuality
+		public enum ArtableQuality
 	{
-		LookingGreat,
-		LookingOkay,
-		LookingUgly
+				LookingGreat,
+				LookingOkay,
+				LookingUgly
 	}
 
-	public enum ClothingType
+		public enum ClothingType
 	{
-		DupeTops = 1,
-		DupeBottoms,
-		DupeGloves,
-		DupeShoes,
-		DupeHats,
-		DupeAccessories,
-		AtmoSuitHelmet,
-		AtmoSuitBody,
-		AtmoSuitGloves,
-		AtmoSuitBelt,
-		AtmoSuitShoes
+				DupeTops = 1,
+				DupeBottoms,
+				DupeGloves,
+				DupeShoes,
+				DupeHats,
+				DupeAccessories,
+				AtmoSuitHelmet,
+				AtmoSuitBody,
+				AtmoSuitGloves,
+				AtmoSuitBelt,
+				AtmoSuitShoes
 	}
 
-	public enum OutfitType
+		public enum OutfitType
 	{
-		Clothing,
-		AtmoSuit = 2
+				Clothing,
+				AtmoSuit = 2
 	}
 
-	public enum JoyResponseType
+		public enum JoyResponseType
 	{
-		BallonSet
+				BallonSet
 	}
 
-	protected readonly ref struct ArtableInfoAuthoringHelper
+		protected readonly ref struct ArtableInfoAuthoringHelper
 	{
-		public ArtableInfoAuthoringHelper(BlueprintProvider.ArtableType artableType, ArtableInfo artableInfo)
+				public ArtableInfoAuthoringHelper(BlueprintProvider.ArtableType artableType, ArtableInfo artableInfo)
 		{
 			this.artableType = artableType;
 			this.artableInfo = artableInfo;
 		}
 
-		public void Quality(BlueprintProvider.ArtableQuality artableQuality)
+				public void Quality(BlueprintProvider.ArtableQuality artableQuality)
 		{
 			if (this.artableInfo == null)
 			{
@@ -217,8 +217,8 @@ public abstract class BlueprintProvider
 			this.artableInfo.status_id = status_id;
 		}
 
-		private readonly BlueprintProvider.ArtableType artableType;
+				private readonly BlueprintProvider.ArtableType artableType;
 
-		private readonly ArtableInfo artableInfo;
+				private readonly ArtableInfo artableInfo;
 	}
 }

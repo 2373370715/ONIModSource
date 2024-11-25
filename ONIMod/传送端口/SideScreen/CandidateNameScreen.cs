@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using RsLib;
 using RsLib.Adapter;
 using RsLib.Components;
-using RsTransferPort;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 
 // 定义一个候选名称屏幕类，继承自KScreen
 public class CandidateNameScreen : KScreen {

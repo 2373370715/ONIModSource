@@ -5,20 +5,20 @@ using UnityEngine.UI;
 
 public class KIconToggleMenu : KScreen
 {
-			public event KIconToggleMenu.OnSelect onSelect;
+				public event KIconToggleMenu.OnSelect onSelect;
 
-	public void Setup(IList<KIconToggleMenu.ToggleInfo> toggleInfo)
+		public void Setup(IList<KIconToggleMenu.ToggleInfo> toggleInfo)
 	{
 		this.toggleInfo = toggleInfo;
 		this.RefreshButtons();
 	}
 
-	protected void Setup()
+		protected void Setup()
 	{
 		this.RefreshButtons();
 	}
 
-	protected virtual void RefreshButtons()
+		protected virtual void RefreshButtons()
 	{
 		foreach (KToggle ktoggle in this.toggles)
 		{
@@ -84,7 +84,7 @@ public class KIconToggleMenu : KScreen
 		}
 	}
 
-	public Sprite GetIcon(string name)
+		public Sprite GetIcon(string name)
 	{
 		foreach (Sprite sprite in this.icons)
 		{
@@ -96,7 +96,7 @@ public class KIconToggleMenu : KScreen
 		return null;
 	}
 
-	public virtual void ClearSelection()
+		public virtual void ClearSelection()
 	{
 		if (this.toggles == null)
 		{
@@ -110,7 +110,7 @@ public class KIconToggleMenu : KScreen
 		this.selected = -1;
 	}
 
-	private void OnClick(int i)
+		private void OnClick(int i)
 	{
 		if (this.onSelect == null)
 		{
@@ -131,7 +131,7 @@ public class KIconToggleMenu : KScreen
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.toggles == null)
 		{
@@ -164,48 +164,48 @@ public class KIconToggleMenu : KScreen
 		}
 	}
 
-	public virtual void Close()
+		public virtual void Close()
 	{
 		this.ClearSelection();
 		this.Show(false);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Transform toggleParent;
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle prefab;
 
-	[SerializeField]
+		[SerializeField]
 	private ToggleGroup group;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite[] icons;
 
-	[SerializeField]
+		[SerializeField]
 	public TextStyleSetting ToggleToolTipTextStyleSetting;
 
-	[SerializeField]
+		[SerializeField]
 	public TextStyleSetting ToggleToolTipHeaderTextStyleSetting;
 
-	[SerializeField]
+		[SerializeField]
 	protected bool repeatKeyDownToggles = true;
 
-	protected KToggle currentlySelectedToggle;
+		protected KToggle currentlySelectedToggle;
 
-	protected IList<KIconToggleMenu.ToggleInfo> toggleInfo;
+		protected IList<KIconToggleMenu.ToggleInfo> toggleInfo;
 
-	protected List<KToggle> toggles = new List<KToggle>();
+		protected List<KToggle> toggles = new List<KToggle>();
 
-	private List<KToggle> dontDestroyToggles = new List<KToggle>();
+		private List<KToggle> dontDestroyToggles = new List<KToggle>();
 
-	protected int selected = -1;
+		protected int selected = -1;
 
-		public delegate void OnSelect(KIconToggleMenu.ToggleInfo toggleInfo);
+			public delegate void OnSelect(KIconToggleMenu.ToggleInfo toggleInfo);
 
-	public class ToggleInfo
+		public class ToggleInfo
 	{
-		public ToggleInfo(string text, string icon, object user_data = null, global::Action hotkey = global::Action.NumActions, string tooltip = "", string tooltip_header = "")
+				public ToggleInfo(string text, string icon, object user_data = null, global::Action hotkey = global::Action.NumActions, string tooltip = "", string tooltip_header = "")
 		{
 			this.text = text;
 			this.userData = user_data;
@@ -216,7 +216,7 @@ public class KIconToggleMenu : KScreen
 			this.getTooltipText = new ToolTip.ComplexTooltipDelegate(this.DefaultGetTooltipText);
 		}
 
-		public ToggleInfo(string text, object user_data, global::Action hotkey, Func<Sprite> get_sprite_cb)
+				public ToggleInfo(string text, object user_data, global::Action hotkey, Func<Sprite> get_sprite_cb)
 		{
 			this.text = text;
 			this.userData = user_data;
@@ -224,13 +224,13 @@ public class KIconToggleMenu : KScreen
 			this.getSpriteCB = get_sprite_cb;
 		}
 
-		public virtual void SetToggle(KToggle toggle)
+				public virtual void SetToggle(KToggle toggle)
 		{
 			this.toggle = toggle;
 			toggle.GetComponent<ToolTip>().OnComplexToolTip = this.getTooltipText;
 		}
 
-		protected virtual List<global::Tuple<string, TextStyleSetting>> DefaultGetTooltipText()
+				protected virtual List<global::Tuple<string, TextStyleSetting>> DefaultGetTooltipText()
 		{
 			List<global::Tuple<string, TextStyleSetting>> list = new List<global::Tuple<string, TextStyleSetting>>();
 			if (this.tooltipHeader != null)
@@ -241,26 +241,26 @@ public class KIconToggleMenu : KScreen
 			return list;
 		}
 
-		public string text;
+				public string text;
 
-		public object userData;
+				public object userData;
 
-		public string icon;
+				public string icon;
 
-		public string tooltip;
+				public string tooltip;
 
-		public string tooltipHeader;
+				public string tooltipHeader;
 
-		public KToggle toggle;
+				public KToggle toggle;
 
-		public global::Action hotKey;
+				public global::Action hotKey;
 
-		public ToolTip.ComplexTooltipDelegate getTooltipText;
+				public ToolTip.ComplexTooltipDelegate getTooltipText;
 
-		public Func<Sprite> getSpriteCB;
+				public Func<Sprite> getSpriteCB;
 
-		public KToggle prefabOverride;
+				public KToggle prefabOverride;
 
-		public KToggle instanceOverride;
+				public KToggle instanceOverride;
 	}
 }

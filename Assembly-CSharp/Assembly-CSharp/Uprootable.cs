@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Uprootable")]
 public class Uprootable : Workable, IDigActionEntity
 {
-		public bool IsMarkedForUproot
+			public bool IsMarkedForUproot
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class Uprootable : Workable, IDigActionEntity
 		}
 	}
 
-		public Storage GetPlanterStorage
+			public Storage GetPlanterStorage
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class Uprootable : Workable, IDigActionEntity
 		}
 	}
 
-	protected Uprootable()
+		protected Uprootable()
 	{
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTable);
 		this.buttonLabel = UI.USERMENUACTIONS.UPROOT.NAME;
@@ -34,7 +34,7 @@ public class Uprootable : Workable, IDigActionEntity
 		this.workerStatusItem = Db.Get().DuplicantStatusItems.Uprooting;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.pendingStatusItem = Db.Get().MiscStatusItems.PendingUproot;
@@ -48,7 +48,7 @@ public class Uprootable : Workable, IDigActionEntity
 		base.Subscribe<Uprootable>(1309017699, Uprootable.OnPlanterStorageDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<Uprootable>(2127324410, Uprootable.ForceCancelUprootDelegate);
@@ -68,7 +68,7 @@ public class Uprootable : Workable, IDigActionEntity
 		}
 	}
 
-	private void OnPlanterStorage(object data)
+		private void OnPlanterStorage(object data)
 	{
 		this.planterStorage = (Storage)data;
 		Prioritizable component = base.GetComponent<Prioritizable>();
@@ -78,12 +78,12 @@ public class Uprootable : Workable, IDigActionEntity
 		}
 	}
 
-	public bool IsInPlanterBox()
+		public bool IsInPlanterBox()
 	{
 		return this.planterStorage != null;
 	}
 
-	public void Uproot()
+		public void Uproot()
 	{
 		this.isMarkedForUproot = false;
 		this.chore = null;
@@ -94,7 +94,7 @@ public class Uprootable : Workable, IDigActionEntity
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	public void SetCanBeUprooted(bool state)
+		public void SetCanBeUprooted(bool state)
 	{
 		this.canBeUprooted = state;
 		if (this.canBeUprooted)
@@ -104,12 +104,12 @@ public class Uprootable : Workable, IDigActionEntity
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	public void SetUprootedComplete(bool state)
+		public void SetUprootedComplete(bool state)
 	{
 		this.uprootComplete = state;
 	}
 
-	public void MarkForUproot(bool instantOnDebug = true)
+		public void MarkForUproot(bool instantOnDebug = true)
 	{
 		if (!this.canBeUprooted)
 		{
@@ -127,12 +127,12 @@ public class Uprootable : Workable, IDigActionEntity
 		this.isMarkedForUproot = true;
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.Uproot();
 	}
 
-	private void OnCancel(object data)
+		private void OnCancel(object data)
 	{
 		if (this.chore != null)
 		{
@@ -144,27 +144,27 @@ public class Uprootable : Workable, IDigActionEntity
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	public bool HasChore()
+		public bool HasChore()
 	{
 		return this.chore != null;
 	}
 
-	private void OnClickUproot()
+		private void OnClickUproot()
 	{
 		this.MarkForUproot(true);
 	}
 
-	protected void OnClickCancelUproot()
+		protected void OnClickCancelUproot()
 	{
 		this.OnCancel(null);
 	}
 
-	public virtual void ForceCancelUproot(object data = null)
+		public virtual void ForceCancelUproot(object data = null)
 	{
 		this.OnCancel(null);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (!this.showUserMenuButtons)
 		{
@@ -190,78 +190,78 @@ public class Uprootable : Workable, IDigActionEntity
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		Components.Uprootables.Remove(this);
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.PendingUproot, false);
 	}
 
-	public void Dig()
+		public void Dig()
 	{
 		this.Uproot();
 	}
 
-	public void MarkForDig(bool instantOnDebug = true)
+		public void MarkForDig(bool instantOnDebug = true)
 	{
 		this.MarkForUproot(instantOnDebug);
 	}
 
-	[Serialize]
+		[Serialize]
 	protected bool isMarkedForUproot;
 
-	protected bool uprootComplete;
+		protected bool uprootComplete;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Prioritizable prioritizable;
 
-	[Serialize]
+		[Serialize]
 	protected bool canBeUprooted = true;
 
-	public bool deselectOnUproot = true;
+		public bool deselectOnUproot = true;
 
-	protected Chore chore;
+		protected Chore chore;
 
-	private string buttonLabel;
+		private string buttonLabel;
 
-	private string buttonTooltip;
+		private string buttonTooltip;
 
-	private string cancelButtonLabel;
+		private string cancelButtonLabel;
 
-	private string cancelButtonTooltip;
+		private string cancelButtonTooltip;
 
-	private StatusItem pendingStatusItem;
+		private StatusItem pendingStatusItem;
 
-	public OccupyArea area;
+		public OccupyArea area;
 
-	private Storage planterStorage;
+		private Storage planterStorage;
 
-	public bool showUserMenuButtons = true;
+		public bool showUserMenuButtons = true;
 
-	public HandleVector<int>.Handle partitionerEntry;
+		public HandleVector<int>.Handle partitionerEntry;
 
-	private static readonly EventSystem.IntraObjectHandler<Uprootable> OnPlanterStorageDelegate = new EventSystem.IntraObjectHandler<Uprootable>(delegate(Uprootable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Uprootable> OnPlanterStorageDelegate = new EventSystem.IntraObjectHandler<Uprootable>(delegate(Uprootable component, object data)
 	{
 		component.OnPlanterStorage(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Uprootable> ForceCancelUprootDelegate = new EventSystem.IntraObjectHandler<Uprootable>(delegate(Uprootable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Uprootable> ForceCancelUprootDelegate = new EventSystem.IntraObjectHandler<Uprootable>(delegate(Uprootable component, object data)
 	{
 		component.ForceCancelUproot(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Uprootable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Uprootable>(delegate(Uprootable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Uprootable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Uprootable>(delegate(Uprootable component, object data)
 	{
 		component.OnCancel(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Uprootable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Uprootable>(delegate(Uprootable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Uprootable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Uprootable>(delegate(Uprootable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});

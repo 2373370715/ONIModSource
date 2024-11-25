@@ -3,7 +3,7 @@ using STRINGS;
 
 public class ClustercraftInteriorDoor : KMonoBehaviour, ISidescreenButtonControl
 {
-		public string SidescreenButtonText
+			public string SidescreenButtonText
 	{
 		get
 		{
@@ -11,7 +11,7 @@ public class ClustercraftInteriorDoor : KMonoBehaviour, ISidescreenButtonControl
 		}
 	}
 
-		public string SidescreenButtonTooltip
+			public string SidescreenButtonTooltip
 	{
 		get
 		{
@@ -19,45 +19,45 @@ public class ClustercraftInteriorDoor : KMonoBehaviour, ISidescreenButtonControl
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Components.ClusterCraftInteriorDoors.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.ClusterCraftInteriorDoors.Remove(this);
 		base.OnCleanUp();
 	}
 
-	public bool SidescreenEnabled()
+		public bool SidescreenEnabled()
 	{
 		return true;
 	}
 
-	public bool SidescreenButtonInteractable()
+		public bool SidescreenButtonInteractable()
 	{
 		WorldContainer myWorld = base.gameObject.GetMyWorld();
 		return myWorld.ParentWorldId != 255 && myWorld.ParentWorldId != myWorld.id;
 	}
 
-	public void OnSidescreenButtonPressed()
+		public void OnSidescreenButtonPressed()
 	{
 		ClusterManager.Instance.SetActiveWorld(base.gameObject.GetMyWorld().ParentWorldId);
 	}
 
-	public int ButtonSideScreenSortOrder()
+		public int ButtonSideScreenSortOrder()
 	{
 		return 20;
 	}
 
-	public void SetButtonTextOverride(ButtonMenuTextOverride text)
+		public void SetButtonTextOverride(ButtonMenuTextOverride text)
 	{
 		throw new NotImplementedException();
 	}
 
-	public int HorizontalGroupID()
+		public int HorizontalGroupID()
 	{
 		return -1;
 	}

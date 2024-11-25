@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class LaunchPadConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LaunchPad";
 		int width = 7;
@@ -47,7 +47,7 @@ public class LaunchPadConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -83,17 +83,17 @@ public class LaunchPadConfig : IBuildingConfig
 		modularConduitPortTiler.leftCapDefaultSceneLayerAdjust = 1;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "LaunchPad";
+		public const string ID = "LaunchPad";
 
-	public const int WIDTH = 7;
+		public const int WIDTH = 7;
 
-	private const string TRIGGER_LAUNCH_PORT_ID = "TriggerLaunch";
+		private const string TRIGGER_LAUNCH_PORT_ID = "TriggerLaunch";
 
-	private const string LAUNCH_READY_PORT_ID = "LaunchReady";
+		private const string LAUNCH_READY_PORT_ID = "LaunchReady";
 
-	private const string LANDED_ROCKET_ID = "LandedRocket";
+		private const string LANDED_ROCKET_ID = "LandedRocket";
 }

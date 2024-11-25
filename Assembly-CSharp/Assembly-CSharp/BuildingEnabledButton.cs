@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/BuildingEnabledButton")]
 public class BuildingEnabledButton : KMonoBehaviour, ISaveLoadable, IToggleHandler
 {
-			public bool IsEnabled
+				public bool IsEnabled
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class BuildingEnabledButton : KMonoBehaviour, ISaveLoadable, IToggleHandl
 		}
 	}
 
-		public bool WaitingForDisable
+			public bool WaitingForDisable
 	{
 		get
 		{
@@ -31,13 +31,13 @@ public class BuildingEnabledButton : KMonoBehaviour, ISaveLoadable, IToggleHandl
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.ToggleIdx = this.Toggleable.SetTarget(this);
 		base.Subscribe<BuildingEnabledButton>(493375141, BuildingEnabledButton.OnRefreshUserMenuDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.IsEnabled = this.buildingEnabled;
 		if (this.queuedToggle)
@@ -46,25 +46,25 @@ public class BuildingEnabledButton : KMonoBehaviour, ISaveLoadable, IToggleHandl
 		}
 	}
 
-	public void HandleToggle()
+		public void HandleToggle()
 	{
 		this.queuedToggle = false;
 		Prioritizable.RemoveRef(base.gameObject);
 		this.OnToggle();
 	}
 
-	public bool IsHandlerOn()
+		public bool IsHandlerOn()
 	{
 		return this.IsEnabled;
 	}
 
-	private void OnToggle()
+		private void OnToggle()
 	{
 		this.IsEnabled = !this.IsEnabled;
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	private void OnMenuToggle()
+		private void OnMenuToggle()
 	{
 		if (!this.Toggleable.IsToggleQueued(this.ToggleIdx))
 		{
@@ -84,7 +84,7 @@ public class BuildingEnabledButton : KMonoBehaviour, ISaveLoadable, IToggleHandl
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		bool isEnabled = this.IsEnabled;
 		bool flag = this.Toggleable.IsToggleQueued(this.ToggleIdx);
@@ -100,23 +100,23 @@ public class BuildingEnabledButton : KMonoBehaviour, ISaveLoadable, IToggleHandl
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Toggleable Toggleable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational Operational;
 
-	private int ToggleIdx;
+		private int ToggleIdx;
 
-	[Serialize]
+		[Serialize]
 	private bool buildingEnabled = true;
 
-	[Serialize]
+		[Serialize]
 	private bool queuedToggle;
 
-	public static readonly Operational.Flag EnabledFlag = new Operational.Flag("building_enabled", Operational.Flag.Type.Functional);
+		public static readonly Operational.Flag EnabledFlag = new Operational.Flag("building_enabled", Operational.Flag.Type.Functional);
 
-	private static readonly EventSystem.IntraObjectHandler<BuildingEnabledButton> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<BuildingEnabledButton>(delegate(BuildingEnabledButton component, object data)
+		private static readonly EventSystem.IntraObjectHandler<BuildingEnabledButton> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<BuildingEnabledButton>(delegate(BuildingEnabledButton component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});

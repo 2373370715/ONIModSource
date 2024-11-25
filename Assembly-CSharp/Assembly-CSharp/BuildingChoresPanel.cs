@@ -6,41 +6,41 @@ using UnityEngine.UI;
 
 public class BuildingChoresPanel : TargetPanel
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		KPrefabID component = target.GetComponent<KPrefabID>();
-		return component != null && component.HasTag(GameTags.HasChores) && !component.IsPrefabID(GameTags.Minion);
+		return component != null && component.HasTag(GameTags.HasChores) && !component.HasTag(GameTags.BaseMinion);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.choreGroup = Util.KInstantiateUI<HierarchyReferences>(this.choreGroupPrefab, base.gameObject, false);
 		this.choreGroup.gameObject.SetActive(true);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.Refresh();
 	}
 
-	protected override void OnSelectTarget(GameObject target)
+		protected override void OnSelectTarget(GameObject target)
 	{
 		base.OnSelectTarget(target);
 		this.Refresh();
 	}
 
-	public override void OnDeselectTarget(GameObject target)
+		public override void OnDeselectTarget(GameObject target)
 	{
 		base.OnDeselectTarget(target);
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		this.RefreshDetails();
 	}
 
-	private void RefreshDetails()
+		private void RefreshDetails()
 	{
 		int myParentWorldId = this.selectedTarget.GetMyParentWorldId();
 		List<Chore> list = null;
@@ -79,7 +79,7 @@ public class BuildingChoresPanel : TargetPanel
 		this.activeChoreEntries = 0;
 	}
 
-	private void AddChoreEntry(Chore chore)
+		private void AddChoreEntry(Chore chore)
 	{
 		HierarchyReferences choreEntry = this.GetChoreEntry(GameUtil.GetChoreName(chore, null), chore.choreType, this.choreGroup.GetReference<RectTransform>("EntriesContainer"));
 		FetchChore fetchChore = chore as FetchChore;
@@ -146,7 +146,7 @@ public class BuildingChoresPanel : TargetPanel
 		this.DupeEntryDatas.Clear();
 	}
 
-	private HierarchyReferences GetChoreEntry(string label, ChoreType choreType, RectTransform parent)
+		private HierarchyReferences GetChoreEntry(string label, ChoreType choreType, RectTransform parent)
 	{
 		HierarchyReferences hierarchyReferences;
 		if (this.activeChoreEntries >= this.choreEntries.Count)
@@ -191,7 +191,7 @@ public class BuildingChoresPanel : TargetPanel
 		return hierarchyReferences;
 	}
 
-	private BuildingChoresPanelDupeRow GetDupeEntry(BuildingChoresPanel.DupeEntryData data, RectTransform parent)
+		private BuildingChoresPanelDupeRow GetDupeEntry(BuildingChoresPanel.DupeEntryData data, RectTransform parent)
 	{
 		BuildingChoresPanelDupeRow buildingChoresPanelDupeRow;
 		if (this.activeDupeEntries >= this.dupeEntries.Count)
@@ -211,31 +211,31 @@ public class BuildingChoresPanel : TargetPanel
 		return buildingChoresPanelDupeRow;
 	}
 
-	public GameObject choreGroupPrefab;
+		public GameObject choreGroupPrefab;
 
-	public GameObject chorePrefab;
+		public GameObject chorePrefab;
 
-	public BuildingChoresPanelDupeRow dupePrefab;
+		public BuildingChoresPanelDupeRow dupePrefab;
 
-	private GameObject detailsPanel;
+		private GameObject detailsPanel;
 
-	private DetailsPanelDrawer drawer;
+		private DetailsPanelDrawer drawer;
 
-	private HierarchyReferences choreGroup;
+		private HierarchyReferences choreGroup;
 
-	private List<HierarchyReferences> choreEntries = new List<HierarchyReferences>();
+		private List<HierarchyReferences> choreEntries = new List<HierarchyReferences>();
 
-	private int activeChoreEntries;
+		private int activeChoreEntries;
 
-	private List<BuildingChoresPanelDupeRow> dupeEntries = new List<BuildingChoresPanelDupeRow>();
+		private List<BuildingChoresPanelDupeRow> dupeEntries = new List<BuildingChoresPanelDupeRow>();
 
-	private int activeDupeEntries;
+		private int activeDupeEntries;
 
-	private List<BuildingChoresPanel.DupeEntryData> DupeEntryDatas = new List<BuildingChoresPanel.DupeEntryData>();
+		private List<BuildingChoresPanel.DupeEntryData> DupeEntryDatas = new List<BuildingChoresPanel.DupeEntryData>();
 
-	public class DupeEntryData : IComparable<BuildingChoresPanel.DupeEntryData>
+		public class DupeEntryData : IComparable<BuildingChoresPanel.DupeEntryData>
 	{
-		public int CompareTo(BuildingChoresPanel.DupeEntryData other)
+				public int CompareTo(BuildingChoresPanel.DupeEntryData other)
 		{
 			if (this.personalPriority != other.personalPriority)
 			{
@@ -252,12 +252,12 @@ public class BuildingChoresPanel : TargetPanel
 			return this.consumer.GetInstanceID().CompareTo(other.consumer.GetInstanceID());
 		}
 
-		public ChoreConsumer consumer;
+				public ChoreConsumer consumer;
 
-		public Chore.Precondition.Context context;
+				public Chore.Precondition.Context context;
 
-		public int personalPriority;
+				public int personalPriority;
 
-		public int rank;
+				public int rank;
 	}
 }

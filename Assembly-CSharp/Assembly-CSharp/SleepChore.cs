@@ -1,11 +1,12 @@
 ﻿using System;
 using Klei.AI;
 using STRINGS;
+using TUNING;
 using UnityEngine;
 
 public class SleepChore : Chore<SleepChore.StatesInstance>
 {
-	public static void DisplayCustomStatusItemsWhenAsleep(SleepChore.StatesInstance smi)
+		public static void DisplayCustomStatusItemsWhenAsleep(SleepChore.StatesInstance smi)
 	{
 		if (smi.optional_StatusItemsDisplayedWhileAsleep == null)
 		{
@@ -19,7 +20,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 		}
 	}
 
-	public static void RemoveCustomStatusItemsWhenAsleep(SleepChore.StatesInstance smi)
+		public static void RemoveCustomStatusItemsWhenAsleep(SleepChore.StatesInstance smi)
 	{
 		if (smi.optional_StatusItemsDisplayedWhileAsleep == null)
 		{
@@ -33,27 +34,27 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 		}
 	}
 
-	public SleepChore(ChoreType choreType, IStateMachineTarget target, GameObject bed, bool bedIsLocator, bool isInterruptable) : this(choreType, target, bed, bedIsLocator, isInterruptable, null)
+		public SleepChore(ChoreType choreType, IStateMachineTarget target, GameObject bed, bool bedIsLocator, bool isInterruptable) : this(choreType, target, bed, bedIsLocator, isInterruptable, null)
 	{
 	}
 
-	public SleepChore(ChoreType choreType, IStateMachineTarget target, GameObject bed, bool bedIsLocator, bool isInterruptable, StatusItem[] optional_StatusItemsDisplayedWhileAsleep) : base(choreType, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.PersonalTime)
+		public SleepChore(ChoreType choreType, IStateMachineTarget target, GameObject bed, bool bedIsLocator, bool isInterruptable, StatusItem[] optional_StatusItemsDisplayedWhileAsleep) : base(choreType, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.PersonalTime)
 	{
 		base.smi = new SleepChore.StatesInstance(this, target.gameObject, bed, bedIsLocator, isInterruptable);
 		base.smi.optional_StatusItemsDisplayedWhileAsleep = optional_StatusItemsDisplayedWhileAsleep;
 		if (isInterruptable)
 		{
-			base.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
+			this.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
 		}
-		base.AddPrecondition(SleepChore.IsOkayTimeToSleep, null);
+		this.AddPrecondition(SleepChore.IsOkayTimeToSleep, null);
 		Operational component = bed.GetComponent<Operational>();
 		if (component != null)
 		{
-			base.AddPrecondition(ChorePreconditions.instance.IsOperational, component);
+			this.AddPrecondition(ChorePreconditions.instance.IsOperational, component);
 		}
 	}
 
-	public static Sleepable GetSafeFloorLocator(GameObject sleeper)
+		public static Sleepable GetSafeFloorLocator(GameObject sleeper)
 	{
 		int num = sleeper.GetComponent<Sensors>().GetSensor<SafeCellSensor>().GetSleepCellQuery();
 		if (num == Grid.InvalidCell)
@@ -63,12 +64,12 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 		return ChoreHelpers.CreateSleepLocator(Grid.CellToPosCBC(num, Grid.SceneLayer.Move)).GetComponent<Sleepable>();
 	}
 
-	public static bool IsDarkAtCell(int cell)
+		public static bool IsDarkAtCell(int cell)
 	{
-		return Grid.LightIntensity[cell] < 500;
+		return Grid.LightIntensity[cell] < DUPLICANTSTATS.STANDARD.Light.LOW_LIGHT;
 	}
 
-	public static readonly Chore.Precondition IsOkayTimeToSleep = new Chore.Precondition
+		public static readonly Chore.Precondition IsOkayTimeToSleep = new Chore.Precondition
 	{
 		id = "IsOkayTimeToSleep",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.IS_OKAY_TIME_TO_SLEEP,
@@ -83,9 +84,9 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 		}
 	};
 
-	public class StatesInstance : GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.GameInstance
 	{
-		public StatesInstance(SleepChore master, GameObject sleeper, GameObject bed, bool bedIsLocator, bool isInterruptable) : base(master)
+				public StatesInstance(SleepChore master, GameObject sleeper, GameObject bed, bool bedIsLocator, bool isInterruptable) : base(master)
 		{
 			base.sm.sleeper.Set(sleeper, base.smi, false);
 			base.sm.isInterruptable.Set(isInterruptable, base.smi, false);
@@ -102,7 +103,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 			base.sm.bed.Set(bed, base.smi, false);
 		}
 
-		public void CheckLightLevel()
+				public void CheckLightLevel()
 		{
 			GameObject go = base.sm.sleeper.Get(base.smi);
 			int cell = Grid.PosToCell(go);
@@ -124,7 +125,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 			}
 		}
 
-		public void CheckTemperature()
+				public void CheckTemperature()
 		{
 			GameObject go = base.sm.sleeper.Get(base.smi);
 			if (go.GetSMI<ExternalTemperatureMonitor.Instance>().IsTooCold())
@@ -133,21 +134,21 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 			}
 		}
 
-		public bool IsLoudSleeper()
+				public bool IsLoudSleeper()
 		{
 			return base.sm.sleeper.Get(base.smi).GetComponent<Snorer>() != null;
 		}
 
-		public bool IsGlowStick()
+				public bool IsGlowStick()
 		{
 			return base.sm.sleeper.Get(base.smi).GetComponent<GlowStick>() != null;
 		}
 
-		public void EvaluateSleepQuality()
+				public void EvaluateSleepQuality()
 		{
 		}
 
-		public void AddLocator(GameObject sleepable)
+				public void AddLocator(GameObject sleepable)
 		{
 			this.locator = sleepable;
 			int i = Grid.PosToCell(this.locator);
@@ -155,7 +156,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 			base.sm.bed.Set(this.locator, this, false);
 		}
 
-		public void DestroyLocator()
+				public void DestroyLocator()
 		{
 			if (this.locator != null)
 			{
@@ -166,7 +167,7 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 			}
 		}
 
-		public void SetAnim()
+				public void SetAnim()
 		{
 			Sleepable sleepable = base.sm.bed.Get<Sleepable>(base.smi);
 			if (sleepable.GetComponent<Building>() == null)
@@ -195,28 +196,28 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 			}
 		}
 
-		public bool hadPeacefulSleep;
+				public bool hadPeacefulSleep;
 
-		public bool hadNormalSleep;
+				public bool hadNormalSleep;
 
-		public bool hadBadSleep;
+				public bool hadBadSleep;
 
-		public bool hadTerribleSleep;
+				public bool hadTerribleSleep;
 
-		public int lastEvaluatedDay = -1;
+				public int lastEvaluatedDay = -1;
 
-		public float wakeUpBuffer = 2f;
+				public float wakeUpBuffer = 2f;
 
-		public string stateChangeNoiseSource;
+				public string stateChangeNoiseSource;
 
-		public StatusItem[] optional_StatusItemsDisplayedWhileAsleep;
+				public StatusItem[] optional_StatusItemsDisplayedWhileAsleep;
 
-		private GameObject locator;
+				private GameObject locator;
 	}
 
-	public class States : GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore>
+		public class States : GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.approach;
 			base.Target(this.sleeper);
@@ -327,59 +328,59 @@ public class SleepChore : Chore<SleepChore.StatesInstance>
 			}).ReturnSuccess();
 		}
 
-		public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.TargetParameter sleeper;
+				public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.TargetParameter sleeper;
 
-		public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.TargetParameter bed;
+				public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.TargetParameter bed;
 
-		public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isInterruptable;
+				public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isInterruptable;
 
-		public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isDisturbedByNoise;
+				public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isDisturbedByNoise;
 
-		public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isDisturbedByLight;
+				public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isDisturbedByLight;
 
-		public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isDisturbedByMovement;
+				public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isDisturbedByMovement;
 
-		public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isDisturbedByCold;
+				public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isDisturbedByCold;
 
-		public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isScaredOfDark;
+				public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter isScaredOfDark;
 
-		public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter needsNightLight;
+				public StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.BoolParameter needsNightLight;
 
-		public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.ApproachSubState<IApproachable> approach;
+				public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.ApproachSubState<IApproachable> approach;
 
-		public SleepChore.States.SleepStates sleep;
+				public SleepChore.States.SleepStates sleep;
 
-		public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State success;
+				public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State success;
 
-		public class SleepStates : GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State
+				public class SleepStates : GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State
 		{
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State condition_transition;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State condition_transition;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State condition_transition_pre;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State condition_transition_pre;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State uninterruptable;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State uninterruptable;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State normal;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State normal;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_noise;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_noise;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_noise_transition;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_noise_transition;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_light;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_light;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_light_transition;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_light_transition;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_scared;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_scared;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_scared_transition;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_scared_transition;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_movement;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_movement;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_movement_transition;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_movement_transition;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_cold;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_cold;
 
-			public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_cold_transition;
+						public GameStateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.State interrupt_cold_transition;
 		}
 	}
 }

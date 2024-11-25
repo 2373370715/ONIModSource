@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Room : IAssignableIdentity
 {
-		public List<KPrefabID> buildings
+			public List<KPrefabID> buildings
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class Room : IAssignableIdentity
 		}
 	}
 
-		public List<KPrefabID> plants
+			public List<KPrefabID> plants
 	{
 		get
 		{
@@ -20,12 +20,12 @@ public class Room : IAssignableIdentity
 		}
 	}
 
-	public string GetProperName()
+		public string GetProperName()
 	{
 		return this.roomType.Name;
 	}
 
-	public List<Ownables> GetOwners()
+		public List<Ownables> GetOwners()
 	{
 		this.current_owners.Clear();
 		foreach (KPrefabID kprefabID in this.GetPrimaryEntities())
@@ -48,7 +48,7 @@ public class Room : IAssignableIdentity
 		return this.current_owners;
 	}
 
-	public List<GameObject> GetBuildingsOnFloor()
+		public List<GameObject> GetBuildingsOnFloor()
 	{
 		List<GameObject> list = new List<GameObject>();
 		for (int i = 0; i < this.buildings.Count; i++)
@@ -61,7 +61,7 @@ public class Room : IAssignableIdentity
 		return list;
 	}
 
-	public Ownables GetSoleOwner()
+		public Ownables GetSoleOwner()
 	{
 		List<Ownables> owners = this.GetOwners();
 		if (owners.Count <= 0)
@@ -71,17 +71,17 @@ public class Room : IAssignableIdentity
 		return owners[0];
 	}
 
-	public bool HasOwner(Assignables owner)
+		public bool HasOwner(Assignables owner)
 	{
 		return this.GetOwners().Find((Ownables x) => x == owner) != null;
 	}
 
-	public int NumOwners()
+		public int NumOwners()
 	{
 		return this.GetOwners().Count;
 	}
 
-	public List<KPrefabID> GetPrimaryEntities()
+		public List<KPrefabID> GetPrimaryEntities()
 	{
 		this.primary_buildings.Clear();
 		RoomType roomType = this.roomType;
@@ -105,7 +105,7 @@ public class Room : IAssignableIdentity
 		return this.primary_buildings;
 	}
 
-	public void RetriggerBuildings()
+		public void RetriggerBuildings()
 	{
 		foreach (KPrefabID kprefabID in this.buildings)
 		{
@@ -123,21 +123,21 @@ public class Room : IAssignableIdentity
 		}
 	}
 
-	public bool IsNull()
+		public bool IsNull()
 	{
 		return false;
 	}
 
-	public void CleanUp()
+		public void CleanUp()
 	{
 		Game.Instance.assignmentManager.RemoveFromAllGroups(this);
 	}
 
-	public CavityInfo cavity;
+		public CavityInfo cavity;
 
-	public RoomType roomType;
+		public RoomType roomType;
 
-	private List<KPrefabID> primary_buildings = new List<KPrefabID>();
+		private List<KPrefabID> primary_buildings = new List<KPrefabID>();
 
-	private List<Ownables> current_owners = new List<Ownables>();
+		private List<Ownables> current_owners = new List<Ownables>();
 }

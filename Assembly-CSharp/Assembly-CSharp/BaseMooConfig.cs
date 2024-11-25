@@ -7,7 +7,7 @@ using UnityEngine;
 
 public static class BaseMooConfig
 {
-	public static GameObject BaseMoo(string id, string name, string desc, string traitId, string anim_file, bool is_baby, string symbol_override_prefix)
+		public static GameObject BaseMoo(string id, string name, string desc, string traitId, string anim_file, bool is_baby, string symbol_override_prefix)
 	{
 		float mass = 50f;
 		EffectorValues tier = DECOR.BONUS.TIER0;
@@ -64,14 +64,14 @@ public static class BaseMooConfig
 		return gameObject;
 	}
 
-	public static GameObject SetupDiet(GameObject prefab, Tag consumed_tag, Tag producedTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced, float minPoopSizeInKg)
+		public static GameObject SetupDiet(GameObject prefab, Tag consumed_tag, Tag producedTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced, float minPoopSizeInKg)
 	{
 		Diet diet = new Diet(new Diet.Info[]
 		{
 			new Diet.Info(new HashSet<Tag>
 			{
 				consumed_tag
-			}, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false, false)
+			}, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, Diet.Info.FoodType.EatSolid, false, null)
 		});
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();
 		def.diet = diet;
@@ -80,13 +80,13 @@ public static class BaseMooConfig
 		return prefab;
 	}
 
-	private static HashedString CustomIdleAnim(IdleStates.Instance smi, ref HashedString pre_anim)
+		private static HashedString CustomIdleAnim(IdleStates.Instance smi, ref HashedString pre_anim)
 	{
 		CreatureCalorieMonitor.Instance smi2 = smi.GetSMI<CreatureCalorieMonitor.Instance>();
 		return (smi2 != null && smi2.stomach.IsReadyToPoop()) ? "idle_loop_full" : "idle_loop";
 	}
 
-	public static void OnSpawn(GameObject inst)
+		public static void OnSpawn(GameObject inst)
 	{
 		Navigator component = inst.GetComponent<Navigator>();
 		component.transitionDriver.overrideLayers.Add(new FullPuftTransitionLayer(component));

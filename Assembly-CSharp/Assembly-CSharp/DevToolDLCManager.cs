@@ -3,7 +3,7 @@ using ImGuiNET;
 
 public class DevToolDLCManager : DevTool
 {
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		string name = DistributionPlatform.Inst.Name;
 		if (!DistributionPlatform.Initialized)

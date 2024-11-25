@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class DevToolBatchedAnimDebug : DevTool
 {
-	public DevToolBatchedAnimDebug()
+		public DevToolBatchedAnimDebug()
 	{
 		this.drawFlags = ImGuiWindowFlags.MenuBar;
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (ImGui.BeginMenuBar())
 		{
@@ -165,16 +165,16 @@ public class DevToolBatchedAnimDebug : DevTool
 		}
 	}
 
-	private bool StringContains(string target, string query)
+		private bool StringContains(string target, string query)
 	{
 		return this.Filter == "" || target.IndexOf(query, 0, StringComparison.CurrentCultureIgnoreCase) != -1;
 	}
 
-	private GameObject Selection;
+		private GameObject Selection;
 
-	private bool LockSelection;
+		private bool LockSelection;
 
-	private string Filter = "";
+		private string Filter = "";
 
-	private int FrameIndex;
+		private int FrameIndex;
 }

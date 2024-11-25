@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class BabyMonitor : GameStateMachine<BabyMonitor, BabyMonitor.Instance, IStateMachineTarget, BabyMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.baby;
 		this.root.Enter(new StateMachine<BabyMonitor, BabyMonitor.Instance, IStateMachineTarget, BabyMonitor.Def>.State.Callback(BabyMonitor.AddBabyEffect));
@@ -17,12 +17,12 @@ public class BabyMonitor : GameStateMachine<BabyMonitor, BabyMonitor.Instance, I
 		this.babyEffect.Add(new AttributeModifier(Db.Get().CritterAttributes.Happiness.Id, 5f, CREATURES.MODIFIERS.BABY.NAME, false, false, true));
 	}
 
-	private static void AddBabyEffect(BabyMonitor.Instance smi)
+		private static void AddBabyEffect(BabyMonitor.Instance smi)
 	{
 		smi.Get<Effects>().Add(smi.sm.babyEffect, false);
 	}
 
-	private static bool IsReadyToSpawnAdult(BabyMonitor.Instance smi)
+		private static bool IsReadyToSpawnAdult(BabyMonitor.Instance smi)
 	{
 		AmountInstance amountInstance = Db.Get().Amounts.Age.Lookup(smi.gameObject);
 		float num = smi.def.adultThreshold;
@@ -33,32 +33,32 @@ public class BabyMonitor : GameStateMachine<BabyMonitor, BabyMonitor.Instance, I
 		return amountInstance.value > num;
 	}
 
-	public GameStateMachine<BabyMonitor, BabyMonitor.Instance, IStateMachineTarget, BabyMonitor.Def>.State baby;
+		public GameStateMachine<BabyMonitor, BabyMonitor.Instance, IStateMachineTarget, BabyMonitor.Def>.State baby;
 
-	public GameStateMachine<BabyMonitor, BabyMonitor.Instance, IStateMachineTarget, BabyMonitor.Def>.State spawnadult;
+		public GameStateMachine<BabyMonitor, BabyMonitor.Instance, IStateMachineTarget, BabyMonitor.Def>.State spawnadult;
 
-	public Effect babyEffect;
+		public Effect babyEffect;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Tag adultPrefab;
+				public Tag adultPrefab;
 
-		public string onGrowDropID;
+				public string onGrowDropID;
 
-		public bool forceAdultNavType;
+				public bool forceAdultNavType;
 
-		public float adultThreshold = 5f;
+				public float adultThreshold = 5f;
 
-		public Action<GameObject> configureAdultOnMaturation;
+				public Action<GameObject> configureAdultOnMaturation;
 	}
 
-	public new class Instance : GameStateMachine<BabyMonitor, BabyMonitor.Instance, IStateMachineTarget, BabyMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<BabyMonitor, BabyMonitor.Instance, IStateMachineTarget, BabyMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, BabyMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, BabyMonitor.Def def) : base(master, def)
 		{
 		}
 
-		public void SpawnAdult()
+				public void SpawnAdult()
 		{
 			Vector3 position = base.smi.transform.GetPosition();
 			position.z = Grid.GetLayerZ(Grid.SceneLayer.Creatures);

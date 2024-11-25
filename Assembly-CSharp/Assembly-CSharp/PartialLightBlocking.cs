@@ -4,19 +4,19 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class PartialLightBlocking : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.SetLightBlocking();
 		base.OnSpawn();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.ClearLightBlocking();
 		base.OnCleanUp();
 	}
 
-	public void SetLightBlocking()
+		public void SetLightBlocking()
 	{
 		int[] placementCells = base.GetComponent<Building>().PlacementCells;
 		for (int i = 0; i < placementCells.Length; i++)
@@ -25,7 +25,7 @@ public class PartialLightBlocking : KMonoBehaviour
 		}
 	}
 
-	public void ClearLightBlocking()
+		public void ClearLightBlocking()
 	{
 		int[] placementCells = base.GetComponent<Building>().PlacementCells;
 		for (int i = 0; i < placementCells.Length; i++)
@@ -34,5 +34,5 @@ public class PartialLightBlocking : KMonoBehaviour
 		}
 	}
 
-	private const byte PartialLightBlockingProperties = 48;
+		private const byte PartialLightBlockingProperties = 48;
 }

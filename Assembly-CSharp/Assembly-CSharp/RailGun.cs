@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms, ISecondaryInput
 {
-		public float MaxLaunchMass
+			public float MaxLaunchMass
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		}
 	}
 
-		public float EnergyCost
+			public float EnergyCost
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		}
 	}
 
-		public float CurrentEnergy
+			public float CurrentEnergy
 	{
 		get
 		{
@@ -30,7 +30,7 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		}
 	}
 
-		public bool AllowLaunchingFromLogic
+			public bool AllowLaunchingFromLogic
 	{
 		get
 		{
@@ -38,7 +38,7 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		}
 	}
 
-		public bool HasLogicWire
+			public bool HasLogicWire
 	{
 		get
 		{
@@ -46,7 +46,7 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		}
 	}
 
-		public bool IsLogicActive
+			public bool IsLogicActive
 	{
 		get
 		{
@@ -54,7 +54,7 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.destinationSelector = base.GetComponent<ClusterDestinationSelector>();
@@ -85,7 +85,7 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		base.Subscribe<RailGun>(-801688580, RailGun.OnLogicValueChangedDelegate);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Conduit.GetNetworkManager(this.liquidPortInfo.conduitType).RemoveFromNetworks(this.liquidInputCell, this.liquidNetworkItem, true);
 		Conduit.GetNetworkManager(this.gasPortInfo.conduitType).RemoveFromNetworks(this.gasInputCell, this.gasNetworkItem, true);
@@ -93,18 +93,18 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		base.OnCleanUp();
 	}
 
-	private void CreateMeters()
+		private void CreateMeters()
 	{
 		this.resourceMeter = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_storage_target", "meter_storage", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, Array.Empty<string>());
 		this.particleMeter = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_orb_target", "meter_orb", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, Array.Empty<string>());
 	}
 
-	bool ISecondaryInput.HasSecondaryConduitType(ConduitType type)
+		bool ISecondaryInput.HasSecondaryConduitType(ConduitType type)
 	{
 		return this.liquidPortInfo.conduitType == type || this.gasPortInfo.conduitType == type || this.solidPortInfo.conduitType == type;
 	}
 
-	public CellOffset GetSecondaryConduitOffset(ConduitType type)
+		public CellOffset GetSecondaryConduitOffset(ConduitType type)
 	{
 		if (this.liquidPortInfo.conduitType == type)
 		{
@@ -121,13 +121,13 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		return CellOffset.none;
 	}
 
-	private LogicCircuitNetwork GetNetwork()
+		private LogicCircuitNetwork GetNetwork()
 	{
 		int portCell = base.GetComponent<LogicPorts>().GetPortCell(RailGun.PORT_ID);
 		return Game.Instance.logicCircuitManager.GetNetworkForCell(portCell);
 	}
 
-	private void CheckLogicWireState()
+		private void CheckLogicWireState()
 	{
 		LogicCircuitNetwork network = this.GetNetwork();
 		this.hasLogicWire = (network != null);
@@ -138,7 +138,7 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		base.GetComponent<KSelectable>().ToggleStatusItem(RailGun.infoStatusItemLogic, network != null, this);
 	}
 
-	private void OnLogicValueChanged(object data)
+		private void OnLogicValueChanged(object data)
 	{
 		if (((LogicValueChanged)data).portID == RailGun.PORT_ID)
 		{
@@ -146,14 +146,14 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		}
 	}
 
-	private static string ResolveInfoStatusItemString(string format_str, object data)
+		private static string ResolveInfoStatusItemString(string format_str, object data)
 	{
 		RailGun railGun = (RailGun)data;
 		Operational operational = railGun.operational;
 		return railGun.AllowLaunchingFromLogic ? BUILDING.STATUSITEMS.LOGIC.LOGIC_CONTROLLED_ENABLED : BUILDING.STATUSITEMS.LOGIC.LOGIC_CONTROLLED_DISABLED;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		WorldContainer myWorld = this.GetMyWorld();
 		Extents extents = base.GetComponent<Building>().GetExtents();
@@ -185,13 +185,13 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		this.UpdateMeters();
 	}
 
-	private void UpdateMeters()
+		private void UpdateMeters()
 	{
 		this.resourceMeter.SetPositionPercent(Mathf.Clamp01(this.resourceStorage.MassStored() / this.resourceStorage.capacityKg));
 		this.particleMeter.SetPositionPercent(Mathf.Clamp01(this.particleStorage.Particles / this.particleStorage.capacity));
 	}
 
-	private void LaunchProjectile()
+		private void LaunchProjectile()
 	{
 		Extents extents = base.GetComponent<Building>().GetExtents();
 		Vector2I vector2I = Grid.PosToXY(base.transform.position);
@@ -216,7 +216,7 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		}
 	}
 
-	private ConduitConsumer CreateConduitConsumer(ConduitType inputType, int inputCell, out FlowUtilityNetwork.NetworkItem flowNetworkItem)
+		private ConduitConsumer CreateConduitConsumer(ConduitType inputType, int inputCell, out FlowUtilityNetwork.NetworkItem flowNetworkItem)
 	{
 		ConduitConsumer conduitConsumer = base.gameObject.AddComponent<ConduitConsumer>();
 		conduitConsumer.conduitType = inputType;
@@ -227,7 +227,7 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		return conduitConsumer;
 	}
 
-	private SolidConduitConsumer CreateSolidConduitConsumer(int inputCell, out FlowUtilityNetwork.NetworkItem flowNetworkItem)
+		private SolidConduitConsumer CreateSolidConduitConsumer(int inputCell, out FlowUtilityNetwork.NetworkItem flowNetworkItem)
 	{
 		SolidConduitConsumer solidConduitConsumer = base.gameObject.AddComponent<SolidConduitConsumer>();
 		solidConduitConsumer.useSecondaryInput = true;
@@ -236,104 +236,104 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 		return solidConduitConsumer;
 	}
 
-	[Serialize]
+		[Serialize]
 	public float launchMass = 200f;
 
-	public float MinLaunchMass = 2f;
+		public float MinLaunchMass = 2f;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KAnimControllerBase kac;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public HighEnergyParticleStorage hepStorage;
 
-	public Storage resourceStorage;
+		public Storage resourceStorage;
 
-	private MeterController resourceMeter;
+		private MeterController resourceMeter;
 
-	private HighEnergyParticleStorage particleStorage;
+		private HighEnergyParticleStorage particleStorage;
 
-	private MeterController particleMeter;
+		private MeterController particleMeter;
 
-	private ClusterDestinationSelector destinationSelector;
+		private ClusterDestinationSelector destinationSelector;
 
-	public static readonly Operational.Flag noSurfaceSight = new Operational.Flag("noSurfaceSight", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag noSurfaceSight = new Operational.Flag("noSurfaceSight", Operational.Flag.Type.Requirement);
 
-	private static StatusItem noSurfaceSightStatusItem;
+		private static StatusItem noSurfaceSightStatusItem;
 
-	public static readonly Operational.Flag noDestination = new Operational.Flag("noDestination", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag noDestination = new Operational.Flag("noDestination", Operational.Flag.Type.Requirement);
 
-	private static StatusItem noDestinationStatusItem;
+		private static StatusItem noDestinationStatusItem;
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo liquidPortInfo;
 
-	private int liquidInputCell = -1;
+		private int liquidInputCell = -1;
 
-	private FlowUtilityNetwork.NetworkItem liquidNetworkItem;
+		private FlowUtilityNetwork.NetworkItem liquidNetworkItem;
 
-	private ConduitConsumer liquidConsumer;
+		private ConduitConsumer liquidConsumer;
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo gasPortInfo;
 
-	private int gasInputCell = -1;
+		private int gasInputCell = -1;
 
-	private FlowUtilityNetwork.NetworkItem gasNetworkItem;
+		private FlowUtilityNetwork.NetworkItem gasNetworkItem;
 
-	private ConduitConsumer gasConsumer;
+		private ConduitConsumer gasConsumer;
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo solidPortInfo;
 
-	private int solidInputCell = -1;
+		private int solidInputCell = -1;
 
-	private FlowUtilityNetwork.NetworkItem solidNetworkItem;
+		private FlowUtilityNetwork.NetworkItem solidNetworkItem;
 
-	private SolidConduitConsumer solidConsumer;
+		private SolidConduitConsumer solidConsumer;
 
-	public static readonly HashedString PORT_ID = "LogicLaunching";
+		public static readonly HashedString PORT_ID = "LogicLaunching";
 
-	private bool hasLogicWire;
+		private bool hasLogicWire;
 
-	private bool isLogicActive;
+		private bool isLogicActive;
 
-	private static StatusItem infoStatusItemLogic;
+		private static StatusItem infoStatusItemLogic;
 
-	public bool FreeStartHex;
+		public bool FreeStartHex;
 
-	public bool FreeDestinationHex;
+		public bool FreeDestinationHex;
 
-	private static readonly EventSystem.IntraObjectHandler<RailGun> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<RailGun>(delegate(RailGun component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RailGun> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<RailGun>(delegate(RailGun component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	public class StatesInstance : GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.GameInstance
+		public class StatesInstance : GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.GameInstance
 	{
-		public StatesInstance(RailGun smi) : base(smi)
+				public StatesInstance(RailGun smi) : base(smi)
 		{
 		}
 
-		public bool HasResources()
+				public bool HasResources()
 		{
 			return base.smi.master.resourceStorage.MassStored() >= base.smi.master.launchMass;
 		}
 
-		public bool HasEnergy()
+				public bool HasEnergy()
 		{
 			return base.smi.master.particleStorage.Particles > this.EnergyCost();
 		}
 
-		public bool HasDestination()
+				public bool HasDestination()
 		{
 			return base.smi.master.destinationSelector.GetDestinationWorld() != base.smi.master.GetMyWorldId();
 		}
 
-		public bool IsDestinationReachable(bool forceRefresh = false)
+				public bool IsDestinationReachable(bool forceRefresh = false)
 		{
 			if (forceRefresh)
 			{
@@ -342,7 +342,7 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 			return base.smi.master.destinationSelector.GetDestinationWorld() != base.smi.master.GetMyWorldId() && this.PathLength() != -1;
 		}
 
-		public int PathLength()
+				public int PathLength()
 		{
 			if (base.smi.m_cachedPath == null)
 			{
@@ -364,29 +364,29 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 			return num;
 		}
 
-		public void UpdatePath()
+				public void UpdatePath()
 		{
 			this.m_cachedPath = ClusterGrid.Instance.GetPath(base.gameObject.GetMyWorldLocation(), base.smi.master.destinationSelector.GetDestination(), base.smi.master.destinationSelector);
 		}
 
-		public float EnergyCost()
+				public float EnergyCost()
 		{
 			return Mathf.Max(0f, 0f + (float)this.PathLength() * 10f);
 		}
 
-		public bool MayTurnOn()
+				public bool MayTurnOn()
 		{
 			return this.HasEnergy() && this.IsDestinationReachable(false) && base.master.operational.IsOperational && base.sm.allowedFromLogic.Get(this);
 		}
 
-		public const int INVALID_PATH_LENGTH = -1;
+				public const int INVALID_PATH_LENGTH = -1;
 
-		private List<AxialI> m_cachedPath;
+				private List<AxialI> m_cachedPath;
 	}
 
-	public class States : GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun>
+		public class States : GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.off;
 			base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -434,51 +434,51 @@ public class RailGun : StateMachineComponent<RailGun.StatesInstance>, ISim200ms,
 			});
 		}
 
-		public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State off;
+				public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State off;
 
-		public RailGun.States.OnStates on;
+				public RailGun.States.OnStates on;
 
-		public StateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.FloatParameter cooldownTimer;
+				public StateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.FloatParameter cooldownTimer;
 
-		public StateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.IntParameter payloadsFiredSinceCooldown;
+				public StateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.IntParameter payloadsFiredSinceCooldown;
 
-		public StateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.BoolParameter allowedFromLogic;
+				public StateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.BoolParameter allowedFromLogic;
 
-		public StateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.BoolParameter updatePath;
+				public StateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.BoolParameter updatePath;
 
-		public class WorkingStates : GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State
+				public class WorkingStates : GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State
 		{
-			public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State pre;
+						public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State pre;
 
-			public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State loop;
+						public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State loop;
 
-			public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State fire;
+						public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State fire;
 
-			public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State bounce;
+						public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State bounce;
 
-			public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State pst;
+						public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State pst;
 		}
 
-		public class CooldownStates : GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State
+				public class CooldownStates : GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State
 		{
-			public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State pre;
+						public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State pre;
 
-			public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State loop;
+						public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State loop;
 
-			public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State pst;
+						public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State pst;
 		}
 
-		public class OnStates : GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State
+				public class OnStates : GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State
 		{
-			public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State power_on;
+						public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State power_on;
 
-			public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State wait_for_storage;
+						public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State wait_for_storage;
 
-			public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State power_off;
+						public GameStateMachine<RailGun.States, RailGun.StatesInstance, RailGun, object>.State power_off;
 
-			public RailGun.States.WorkingStates working;
+						public RailGun.States.WorkingStates working;
 
-			public RailGun.States.CooldownStates cooldown;
+						public RailGun.States.CooldownStates cooldown;
 		}
 	}
 }

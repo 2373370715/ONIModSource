@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 public abstract class NotificationDisplayer : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.displayedNotifications = new List<Notification>();
 		NotificationManager.Instance.notificationAdded += this.NotificationAdded;
 		NotificationManager.Instance.notificationRemoved += this.NotificationRemoved;
 	}
 
-	public void NotificationAdded(Notification notification)
+		public void NotificationAdded(Notification notification)
 	{
 		if (this.ShouldDisplayNotification(notification))
 		{
@@ -19,9 +19,9 @@ public abstract class NotificationDisplayer : KMonoBehaviour
 		}
 	}
 
-	protected abstract void OnNotificationAdded(Notification notification);
+		protected abstract void OnNotificationAdded(Notification notification);
 
-	public void NotificationRemoved(Notification notification)
+		public void NotificationRemoved(Notification notification)
 	{
 		if (this.displayedNotifications.Contains(notification))
 		{
@@ -30,9 +30,9 @@ public abstract class NotificationDisplayer : KMonoBehaviour
 		}
 	}
 
-	protected abstract void OnNotificationRemoved(Notification notification);
+		protected abstract void OnNotificationRemoved(Notification notification);
 
-	protected abstract bool ShouldDisplayNotification(Notification notification);
+		protected abstract bool ShouldDisplayNotification(Notification notification);
 
-	protected List<Notification> displayedNotifications;
+		protected List<Notification> displayedNotifications;
 }

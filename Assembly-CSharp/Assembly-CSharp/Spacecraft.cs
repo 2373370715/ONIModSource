@@ -9,16 +9,16 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Spacecraft
 {
-	public Spacecraft(LaunchConditionManager launchConditions)
+		public Spacecraft(LaunchConditionManager launchConditions)
 	{
 		this.launchConditions = launchConditions;
 	}
 
-	public Spacecraft()
+		public Spacecraft()
 	{
 	}
 
-			public LaunchConditionManager launchConditions
+				public LaunchConditionManager launchConditions
 	{
 		get
 		{
@@ -30,18 +30,18 @@ public class Spacecraft
 		}
 	}
 
-	public void SetRocketName(string newName)
+		public void SetRocketName(string newName)
 	{
 		this.rocketName = newName;
 		this.UpdateNameOnRocketModules();
 	}
 
-	public string GetRocketName()
+		public string GetRocketName()
 	{
 		return this.rocketName;
 	}
 
-	public void UpdateNameOnRocketModules()
+		public void UpdateNameOnRocketModules()
 	{
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.launchConditions.GetComponent<AttachableBuilding>()))
 		{
@@ -53,58 +53,74 @@ public class Spacecraft
 		}
 	}
 
-	public bool HasInvalidID()
+		public bool HasInvalidID()
 	{
 		return this.id == -1;
 	}
 
-	public void SetID(int id)
+		public void SetID(int id)
 	{
 		this.id = id;
 	}
 
-	public void SetState(Spacecraft.MissionState state)
+		public void SetState(Spacecraft.MissionState state)
 	{
 		this.state = state;
 	}
 
-	public void BeginMission(SpaceDestination destination)
+		public void BeginMission(SpaceDestination destination)
 	{
 		this.missionElapsed = 0f;
 		this.missionDuration = (float)destination.OneBasedDistance * ROCKETRY.MISSION_DURATION_SCALE / this.GetPilotNavigationEfficiency();
 		this.SetState(Spacecraft.MissionState.Launching);
 	}
 
-	private float GetPilotNavigationEfficiency()
+		private float GetPilotNavigationEfficiency()
 	{
-		List<MinionStorage.Info> storedMinionInfo = this.launchConditions.GetComponent<MinionStorage>().GetStoredMinionInfo();
-		if (storedMinionInfo.Count < 1)
-		{
-			return 1f;
-		}
-		StoredMinionIdentity component = storedMinionInfo[0].serializedMinion.Get().GetComponent<StoredMinionIdentity>();
-		string b = Db.Get().Attributes.SpaceNavigation.Id;
 		float num = 1f;
-		foreach (KeyValuePair<string, bool> keyValuePair in component.MasteryBySkillID)
+		if (!this.launchConditions.GetComponent<CommandModule>().robotPilotControlled)
 		{
-			foreach (SkillPerk skillPerk in Db.Get().Skills.Get(keyValuePair.Key).perks)
+			List<MinionStorage.Info> storedMinionInfo = this.launchConditions.GetComponent<MinionStorage>().GetStoredMinionInfo();
+			if (storedMinionInfo.Count < 1)
 			{
-				SkillAttributePerk skillAttributePerk = skillPerk as SkillAttributePerk;
-				if (skillAttributePerk != null && skillAttributePerk.modifier.AttributeId == b)
-				{
-					num += skillAttributePerk.modifier.Value;
-				}
+				return 1f;
 			}
+			StoredMinionIdentity component = storedMinionInfo[0].serializedMinion.Get().GetComponent<StoredMinionIdentity>();
+			string b = Db.Get().Attributes.SpaceNavigation.Id;
+			using (Dictionary<string, bool>.Enumerator enumerator = component.MasteryBySkillID.GetEnumerator())
+			{
+				while (enumerator.MoveNext())
+				{
+					KeyValuePair<string, bool> keyValuePair = enumerator.Current;
+					foreach (SkillPerk skillPerk in Db.Get().Skills.Get(keyValuePair.Key).perks)
+					{
+						if (SaveLoader.Instance.IsAllDlcActiveForCurrentSave(skillPerk.requiredDlcIds))
+						{
+							SkillAttributePerk skillAttributePerk = skillPerk as SkillAttributePerk;
+							if (skillAttributePerk != null && skillAttributePerk.modifier.AttributeId == b)
+							{
+								num += skillAttributePerk.modifier.Value;
+							}
+						}
+					}
+				}
+				return num;
+			}
+		}
+		RoboPilotModule component2 = this.launchConditions.GetComponent<RoboPilotModule>();
+		if (component2 != null && component2.GetDataBanksStored() >= 1f)
+		{
+			num += component2.FlightEfficiencyModifier();
 		}
 		return num;
 	}
 
-	public void ForceComplete()
+		public void ForceComplete()
 	{
 		this.missionElapsed = this.missionDuration;
 	}
 
-	public void ProgressMission(float deltaTime)
+		public void ProgressMission(float deltaTime)
 	{
 		if (this.state == Spacecraft.MissionState.Underway)
 		{
@@ -125,24 +141,24 @@ public class Spacecraft
 		}
 	}
 
-	public float GetTimeLeft()
+		public float GetTimeLeft()
 	{
 		return this.missionDuration - this.missionElapsed;
 	}
 
-	public float GetDuration()
+		public float GetDuration()
 	{
 		return this.missionDuration;
 	}
 
-	public void CompleteMission()
+		public void CompleteMission()
 	{
 		SpacecraftManager.instance.PushReadyToLandNotification(this);
 		this.SetState(Spacecraft.MissionState.WaitingToLand);
 		this.Land();
 	}
 
-	private void Land()
+		private void Land()
 	{
 		this.launchConditions.Trigger(-1165815793, SpacecraftManager.instance.GetSpacecraftDestination(this.id));
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.launchConditions.GetComponent<AttachableBuilding>()))
@@ -154,7 +170,7 @@ public class Spacecraft
 		}
 	}
 
-	public void TemporallyTear()
+		public void TemporallyTear()
 	{
 		SpacecraftManager.instance.hasVisitedWormHole = true;
 		LaunchConditionManager launchConditions = this.launchConditions;
@@ -178,39 +194,39 @@ public class Spacecraft
 		}
 	}
 
-	public void GenerateName()
+		public void GenerateName()
 	{
 		this.SetRocketName(GameUtil.GenerateRandomRocketName());
 	}
 
-	[Serialize]
+		[Serialize]
 	public int id = -1;
 
-	[Serialize]
+		[Serialize]
 	public string rocketName = UI.STARMAP.DEFAULT_NAME;
 
-	[Serialize]
+		[Serialize]
 	public float controlStationBuffTimeRemaining;
 
-	[Serialize]
+		[Serialize]
 	public Ref<LaunchConditionManager> refLaunchConditions = new Ref<LaunchConditionManager>();
 
-	[Serialize]
+		[Serialize]
 	public Spacecraft.MissionState state;
 
-	[Serialize]
+		[Serialize]
 	private float missionElapsed;
 
-	[Serialize]
+		[Serialize]
 	private float missionDuration;
 
-	public enum MissionState
+		public enum MissionState
 	{
-		Grounded,
-		Launching,
-		Underway,
-		WaitingToLand,
-		Landing,
-		Destroyed
+				Grounded,
+				Launching,
+				Underway,
+				WaitingToLand,
+				Landing,
+				Destroyed
 	}
 }

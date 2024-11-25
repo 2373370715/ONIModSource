@@ -1,50 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using Klei.AI;
+﻿using Klei.AI;
 
-namespace Database
-{
-	public class Sicknesses : ResourceSet<Sickness>
-	{
-		public Sicknesses(ResourceSet parent) : base("Sicknesses", parent)
-		{
-			this.FoodSickness = base.Add(new FoodSickness());
-			this.SlimeSickness = base.Add(new SlimeSickness());
-			this.ZombieSickness = base.Add(new ZombieSickness());
-			if (DlcManager.FeatureRadiationEnabled())
-			{
-				this.RadiationSickness = base.Add(new RadiationSickness());
-			}
-			this.Allergies = base.Add(new Allergies());
-			this.Sunburn = base.Add(new Sunburn());
-		}
+namespace Database {
+    public class Sicknesses : ResourceSet<Sickness> {
+        public Sickness Allergies;
+        public Sickness FoodSickness;
+        public Sickness RadiationSickness;
+        public Sickness SlimeSickness;
+        public Sickness Sunburn;
+        public Sickness ZombieSickness;
 
-		public static bool IsValidID(string id)
-		{
-			bool result = false;
-			using (List<Sickness>.Enumerator enumerator = Db.Get().Sicknesses.resources.GetEnumerator())
-			{
-				while (enumerator.MoveNext())
-				{
-					if (enumerator.Current.Id == id)
-					{
-						result = true;
-					}
-				}
-			}
-			return result;
-		}
+        public Sicknesses(ResourceSet parent) : base("Sicknesses", parent) {
+            FoodSickness   = Add(new FoodSickness());
+            SlimeSickness  = Add(new SlimeSickness());
+            ZombieSickness = Add(new ZombieSickness());
+            if (DlcManager.FeatureRadiationEnabled()) RadiationSickness = Add(new RadiationSickness());
+            Allergies = Add(new Allergies());
+            Sunburn   = Add(new Sunburn());
+        }
 
-		public Sickness FoodSickness;
+        public static bool IsValidID(string id) {
+            var result = false;
+            using (var enumerator = Db.Get().Sicknesses.resources.GetEnumerator()) {
+                while (enumerator.MoveNext())
+                    if (enumerator.Current.Id == id)
+                        result = true;
+            }
 
-		public Sickness SlimeSickness;
-
-		public Sickness ZombieSickness;
-
-		public Sickness Allergies;
-
-		public Sickness RadiationSickness;
-
-		public Sickness Sunburn;
-	}
+            return result;
+        }
+    }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FilterSideScreenRow")]
 public class FilterSideScreenRow : SingleItemSelectionRow
 {
-		public override string InvalidTagTitle
+			public override string InvalidTagTitle
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class FilterSideScreenRow : SingleItemSelectionRow
 		}
 	}
 
-	protected override void SetIcon(Sprite sprite, Color color)
+		protected override void SetIcon(Sprite sprite, Color color)
 	{
 		if (this.icon != null)
 		{

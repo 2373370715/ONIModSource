@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace Rendering.World
 {
-	public class Brush
+		public class Brush
 	{
-						public int Id { get; private set; }
+								public int Id { get; private set; }
 
-		public Brush(int id, string name, Material material, Mask mask, List<Brush> active_brushes, List<Brush> dirty_brushes, int width_in_tiles, MaterialPropertyBlock property_block)
+				public Brush(int id, string name, Material material, Mask mask, List<Brush> active_brushes, List<Brush> dirty_brushes, int width_in_tiles, MaterialPropertyBlock property_block)
 		{
 			this.Id = id;
 			this.material = material;
@@ -21,7 +21,7 @@ namespace Rendering.World
 			this.propertyBlock = property_block;
 		}
 
-		public void Add(int tile_idx)
+				public void Add(int tile_idx)
 		{
 			this.tiles.Add(tile_idx);
 			if (!this.dirty)
@@ -31,7 +31,7 @@ namespace Rendering.World
 			}
 		}
 
-		public void Remove(int tile_idx)
+				public void Remove(int tile_idx)
 		{
 			this.tiles.Remove(tile_idx);
 			if (!this.dirty)
@@ -41,12 +41,12 @@ namespace Rendering.World
 			}
 		}
 
-		public void SetMaskOffset(int offset)
+				public void SetMaskOffset(int offset)
 		{
 			this.mask.SetOffset(offset);
 		}
 
-		public void Refresh()
+				public void Refresh()
 		{
 			bool flag = this.mesh.Meshes.Length != 0;
 			int count = this.tiles.Count;
@@ -103,36 +103,36 @@ namespace Rendering.World
 			}
 		}
 
-		public void Render()
+				public void Render()
 		{
 			Vector3 position = new Vector3(0f, 0f, Grid.GetLayerZ(Grid.SceneLayer.Ground));
 			this.mesh.Render(position, Quaternion.identity, this.material, this.layer, this.propertyBlock);
 		}
 
-		public void SetMaterial(Material material, MaterialPropertyBlock property_block)
+				public void SetMaterial(Material material, MaterialPropertyBlock property_block)
 		{
 			this.material = material;
 			this.propertyBlock = property_block;
 		}
 
-		private bool dirty;
+				private bool dirty;
 
-		private Material material;
+				private Material material;
 
-		private int layer;
+				private int layer;
 
-		private HashSet<int> tiles = new HashSet<int>();
+				private HashSet<int> tiles = new HashSet<int>();
 
-		private List<Brush> activeBrushes;
+				private List<Brush> activeBrushes;
 
-		private List<Brush> dirtyBrushes;
+				private List<Brush> dirtyBrushes;
 
-		private int widthInTiles;
+				private int widthInTiles;
 
-		private Mask mask;
+				private Mask mask;
 
-		private DynamicMesh mesh;
+				private DynamicMesh mesh;
 
-		private MaterialPropertyBlock propertyBlock;
+				private MaterialPropertyBlock propertyBlock;
 	}
 }

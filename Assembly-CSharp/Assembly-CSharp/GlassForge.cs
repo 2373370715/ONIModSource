@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class GlassForge : ComplexFabricator
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<GlassForge>(-2094018600, GlassForge.CheckPipesDelegate);
 	}
 
-	private void CheckPipes(object data)
+		private void CheckPipes(object data)
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		int cell = Grid.OffsetCell(Grid.PosToCell(this), GlassForgeConfig.outPipeOffset);
@@ -27,9 +27,9 @@ public class GlassForge : ComplexFabricator
 		this.statusHandle = component.AddStatusItem(Db.Get().BuildingStatusItems.PipeMayMelt, null);
 	}
 
-	private Guid statusHandle;
+		private Guid statusHandle;
 
-	private static readonly EventSystem.IntraObjectHandler<GlassForge> CheckPipesDelegate = new EventSystem.IntraObjectHandler<GlassForge>(delegate(GlassForge component, object data)
+		private static readonly EventSystem.IntraObjectHandler<GlassForge> CheckPipesDelegate = new EventSystem.IntraObjectHandler<GlassForge>(delegate(GlassForge component, object data)
 	{
 		component.CheckPipes(data);
 	});

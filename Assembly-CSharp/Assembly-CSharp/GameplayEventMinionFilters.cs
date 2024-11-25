@@ -3,7 +3,7 @@ using Database;
 
 public class GameplayEventMinionFilters
 {
-		public static GameplayEventMinionFilters Instance
+			public static GameplayEventMinionFilters Instance
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class GameplayEventMinionFilters
 		}
 	}
 
-	public GameplayEventMinionFilter HasMasteredSkill(Skill skill)
+		public GameplayEventMinionFilter HasMasteredSkill(Skill skill)
 	{
 		return new GameplayEventMinionFilter
 		{
@@ -24,7 +24,7 @@ public class GameplayEventMinionFilters
 		};
 	}
 
-	public GameplayEventMinionFilter HasSkillAptitude(Skill skill)
+		public GameplayEventMinionFilter HasSkillAptitude(Skill skill)
 	{
 		return new GameplayEventMinionFilter
 		{
@@ -33,7 +33,7 @@ public class GameplayEventMinionFilters
 		};
 	}
 
-	public GameplayEventMinionFilter HasChoreGroupPriorityOrHigher(ChoreGroup choreGroup, int priority)
+		public GameplayEventMinionFilter HasChoreGroupPriorityOrHigher(ChoreGroup choreGroup, int priority)
 	{
 		return new GameplayEventMinionFilter
 		{
@@ -46,7 +46,7 @@ public class GameplayEventMinionFilters
 		};
 	}
 
-	public GameplayEventMinionFilter AgeRange(float min = 0f, float max = float.PositiveInfinity)
+		public GameplayEventMinionFilter AgeRange(float min = 0f, float max = float.PositiveInfinity)
 	{
 		return new GameplayEventMinionFilter
 		{
@@ -55,7 +55,7 @@ public class GameplayEventMinionFilters
 		};
 	}
 
-	public GameplayEventMinionFilter PriorityIn()
+		public GameplayEventMinionFilter PriorityIn()
 	{
 		GameplayEventMinionFilter gameplayEventMinionFilter = new GameplayEventMinionFilter();
 		gameplayEventMinionFilter.filter = ((MinionIdentity minion) => true);
@@ -63,7 +63,7 @@ public class GameplayEventMinionFilters
 		return gameplayEventMinionFilter;
 	}
 
-	public GameplayEventMinionFilter Not(GameplayEventMinionFilter filter)
+		public GameplayEventMinionFilter Not(GameplayEventMinionFilter filter)
 	{
 		return new GameplayEventMinionFilter
 		{
@@ -72,7 +72,7 @@ public class GameplayEventMinionFilters
 		};
 	}
 
-	public GameplayEventMinionFilter Or(GameplayEventMinionFilter precondition1, GameplayEventMinionFilter precondition2)
+		public GameplayEventMinionFilter Or(GameplayEventMinionFilter precondition1, GameplayEventMinionFilter precondition2)
 	{
 		return new GameplayEventMinionFilter
 		{
@@ -88,5 +88,5 @@ public class GameplayEventMinionFilters
 		};
 	}
 
-	private static GameplayEventMinionFilters _instance;
+		private static GameplayEventMinionFilters _instance;
 }

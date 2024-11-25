@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class BatchAnimCamera : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		this.cam = base.GetComponent<Camera>();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (Input.GetKey(KeyCode.RightArrow))
 		{
@@ -54,7 +54,7 @@ public class BatchAnimCamera : MonoBehaviour
 		}
 	}
 
-	private void ClampToBounds()
+		private void ClampToBounds()
 	{
 		Vector3 position = base.transform.GetPosition();
 		position.x = Mathf.Clamp(base.transform.GetPosition().x, BatchAnimCamera.bounds.min.x, BatchAnimCamera.bounds.max.x);
@@ -63,24 +63,24 @@ public class BatchAnimCamera : MonoBehaviour
 		base.transform.SetPosition(position);
 	}
 
-	private void OnDrawGizmosSelected()
+		private void OnDrawGizmosSelected()
 	{
 		DebugExtension.DebugBounds(BatchAnimCamera.bounds, Color.red, 0f, true);
 	}
 
-	private static readonly float pan_speed = 5f;
+		private static readonly float pan_speed = 5f;
 
-	private static readonly float zoom_speed = 5f;
+		private static readonly float zoom_speed = 5f;
 
-	public static Bounds bounds = new Bounds(new Vector3(0f, 0f, -50f), new Vector3(0f, 0f, 50f));
+		public static Bounds bounds = new Bounds(new Vector3(0f, 0f, -50f), new Vector3(0f, 0f, 50f));
 
-	private float zoom_min = 1f;
+		private float zoom_min = 1f;
 
-	private float zoom_max = 100f;
+		private float zoom_max = 100f;
 
-	private Camera cam;
+		private Camera cam;
 
-	private bool do_pan;
+		private bool do_pan;
 
-	private Vector3 last_pan;
+		private Vector3 last_pan;
 }

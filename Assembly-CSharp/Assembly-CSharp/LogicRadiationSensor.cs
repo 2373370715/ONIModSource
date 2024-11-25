@@ -6,13 +6,13 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicRadiationSensor>(-905833192, LogicRadiationSensor.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicRadiationSensor component = ((GameObject)data).GetComponent<LogicRadiationSensor>();
 		if (component != null)
@@ -22,7 +22,7 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.OnSwitchToggled;
@@ -31,7 +31,7 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		this.wasOn = this.switchedOn;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this.simUpdateCounter < 8 && !this.dirty)
 		{
@@ -62,23 +62,23 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-	public float GetAverageRads()
+		public float GetAverageRads()
 	{
 		return this.averageRads;
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateVisualState(false);
 		this.UpdateLogicCircuit();
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, this.switchedOn ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -89,13 +89,13 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-			public float Threshold
+				public float Threshold
 	{
 		get
 		{
@@ -108,7 +108,7 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-			public bool ActivateAboveThreshold
+				public bool ActivateAboveThreshold
 	{
 		get
 		{
@@ -121,7 +121,7 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-		public float CurrentValue
+			public float CurrentValue
 	{
 		get
 		{
@@ -129,7 +129,7 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-		public float RangeMin
+			public float RangeMin
 	{
 		get
 		{
@@ -137,7 +137,7 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-		public float RangeMax
+			public float RangeMax
 	{
 		get
 		{
@@ -145,17 +145,17 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-	public float GetRangeMinInputField()
+		public float GetRangeMinInputField()
 	{
 		return GameUtil.GetConvertedTemperature(this.RangeMin, false);
 	}
 
-	public float GetRangeMaxInputField()
+		public float GetRangeMaxInputField()
 	{
 		return GameUtil.GetConvertedTemperature(this.RangeMax, false);
 	}
 
-		public LocString Title
+			public LocString Title
 	{
 		get
 		{
@@ -163,7 +163,7 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-		public LocString ThresholdValueName
+			public LocString ThresholdValueName
 	{
 		get
 		{
@@ -171,7 +171,7 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-		public string AboveToolTip
+			public string AboveToolTip
 	{
 		get
 		{
@@ -179,7 +179,7 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-		public string BelowToolTip
+			public string BelowToolTip
 	{
 		get
 		{
@@ -187,27 +187,27 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-	public string Format(float value, bool units)
+		public string Format(float value, bool units)
 	{
 		return GameUtil.GetFormattedRads(value, GameUtil.TimeSlice.None);
 	}
 
-	public float ProcessedSliderValue(float input)
+		public float ProcessedSliderValue(float input)
 	{
 		return Mathf.Round(input);
 	}
 
-	public float ProcessedInputValue(float input)
+		public float ProcessedInputValue(float input)
 	{
 		return input;
 	}
 
-	public LocString ThresholdValueUnits()
+		public LocString ThresholdValueUnits()
 	{
 		return "";
 	}
 
-		public ThresholdScreenLayoutType LayoutType
+			public ThresholdScreenLayoutType LayoutType
 	{
 		get
 		{
@@ -215,7 +215,7 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-		public int IncrementScale
+			public int IncrementScale
 	{
 		get
 		{
@@ -223,7 +223,7 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-		public NonLinearSlider.Range[] GetRanges
+			public NonLinearSlider.Range[] GetRanges
 	{
 		get
 		{
@@ -236,33 +236,33 @@ public class LogicRadiationSensor : Switch, ISaveLoadable, IThresholdSwitch, ISi
 		}
 	}
 
-	private int simUpdateCounter;
+		private int simUpdateCounter;
 
-	[Serialize]
+		[Serialize]
 	public float thresholdRads = 280f;
 
-	[Serialize]
+		[Serialize]
 	public bool activateOnWarmerThan;
 
-	[Serialize]
+		[Serialize]
 	private bool dirty = true;
 
-	public float minRads;
+		public float minRads;
 
-	public float maxRads = 5000f;
+		public float maxRads = 5000f;
 
-	private const int NumFrameDelay = 8;
+		private const int NumFrameDelay = 8;
 
-	private float[] radHistory = new float[8];
+		private float[] radHistory = new float[8];
 
-	private float averageRads;
+		private float averageRads;
 
-	private bool wasOn;
+		private bool wasOn;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicRadiationSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicRadiationSensor>(delegate(LogicRadiationSensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicRadiationSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicRadiationSensor>(delegate(LogicRadiationSensor component, object data)
 	{
 		component.OnCopySettings(data);
 	});

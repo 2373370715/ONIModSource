@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using Klei;
 using Klei.AI;
 using STRINGS;
+using TUNING;
 using UnityEngine;
 
 public class CreatureSimTemperatureTransfer : SimTemperatureTransfer, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.primaryElement = base.GetComponent<PrimaryElement>();
 		this.average_kilowatts_exchanged = new RunningWeightedAverage(-10f, 10f, 20, true);
@@ -16,7 +17,7 @@ public class CreatureSimTemperatureTransfer : SimTemperatureTransfer, ISim200ms
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		AttributeInstance attributeInstance = base.gameObject.GetAttributes().Add(Db.Get().Attributes.ThermalConductivityBarrier);
 		AttributeModifier modifier = new AttributeModifier(Db.Get().Attributes.ThermalConductivityBarrier.Id, this.skinThickness, this.skinThicknessAttributeModifierName, false, false, true);
@@ -24,7 +25,7 @@ public class CreatureSimTemperatureTransfer : SimTemperatureTransfer, ISim200ms
 		base.OnSpawn();
 	}
 
-		public bool LastTemperatureRecordIsReliable
+			public bool LastTemperatureRecordIsReliable
 	{
 		get
 		{
@@ -32,7 +33,7 @@ public class CreatureSimTemperatureTransfer : SimTemperatureTransfer, ISim200ms
 		}
 	}
 
-	protected unsafe void unsafeUpdateAverageKiloWattsExchanged(float dt)
+		protected unsafe void unsafeUpdateAverageKiloWattsExchanged(float dt)
 	{
 		if (Time.time < this.lastTemperatureRecordTime + 0.2f)
 		{
@@ -50,12 +51,12 @@ public class CreatureSimTemperatureTransfer : SimTemperatureTransfer, ISim200ms
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.unsafeUpdateAverageKiloWattsExchanged(Time.deltaTime);
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		this.averageTemperatureTransferPerSecond.SetValue(SimUtil.EnergyFlowToTemperatureDelta(this.average_kilowatts_exchanged.GetUnweightedAverage, this.primaryElement.Element.specificHeatCapacity, this.primaryElement.Mass));
 		float num = 0f;
@@ -74,7 +75,7 @@ public class CreatureSimTemperatureTransfer : SimTemperatureTransfer, ISim200ms
 		this.heatEffect.SetHeatBeingProducedValue(0f);
 	}
 
-	public void RefreshRegistration()
+		public void RefreshRegistration()
 	{
 		base.SimUnregister();
 		AttributeInstance attributeInstance = base.gameObject.GetAttributes().Get(Db.Get().Attributes.ThermalConductivityBarrier);
@@ -83,27 +84,27 @@ public class CreatureSimTemperatureTransfer : SimTemperatureTransfer, ISim200ms
 		base.SimRegister();
 	}
 
-	public static float PotentialEnergyFlowToCreature(int cell, PrimaryElement transfererPrimaryElement, SimTemperatureTransfer temperatureTransferer, float deltaTime = 1f)
+		public static float PotentialEnergyFlowToCreature(int cell, PrimaryElement transfererPrimaryElement, SimTemperatureTransfer temperatureTransferer, float deltaTime = 1f)
 	{
 		return SimUtil.CalculateEnergyFlowCreatures(cell, transfererPrimaryElement.Temperature, transfererPrimaryElement.Element.specificHeatCapacity, transfererPrimaryElement.Element.thermalConductivity, temperatureTransferer.SurfaceArea, temperatureTransferer.Thickness);
 	}
 
-	public string temperatureAttributeName = "Temperature";
+		public string temperatureAttributeName = "Temperature";
 
-	public float skinThickness = 0.002f;
+		public float skinThickness = DUPLICANTSTATS.STANDARD.Temperature.SKIN_THICKNESS;
 
-	public string skinThicknessAttributeModifierName = DUPLICANTS.MODIFIERS.BASEDUPLICANT.NAME;
+		public string skinThicknessAttributeModifierName = DUPLICANTS.MODEL.STANDARD.NAME;
 
-	public AttributeModifier averageTemperatureTransferPerSecond;
+		public AttributeModifier averageTemperatureTransferPerSecond;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private KBatchedAnimHeatPostProcessingEffect heatEffect;
 
-	private PrimaryElement primaryElement;
+		private PrimaryElement primaryElement;
 
-	public RunningWeightedAverage average_kilowatts_exchanged;
+		public RunningWeightedAverage average_kilowatts_exchanged;
 
-	public List<AttributeModifier> NonSimTemperatureModifiers = new List<AttributeModifier>();
+		public List<AttributeModifier> NonSimTemperatureModifiers = new List<AttributeModifier>();
 
-	private float lastTemperatureRecordTime;
+		private float lastTemperatureRecordTime;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HappySinger : GameStateMachine<HappySinger, HappySinger.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.neutral;
 		this.root.TagTransition(GameTags.Dead, null, false);
@@ -32,28 +32,28 @@ public class HappySinger : GameStateMachine<HappySinger, HappySinger.Instance>
 		});
 	}
 
-	private Vector3 offset = new Vector3(0f, 0f, 0.1f);
+		private Vector3 offset = new Vector3(0f, 0f, 0.1f);
 
-	public GameStateMachine<HappySinger, HappySinger.Instance, IStateMachineTarget, object>.State neutral;
+		public GameStateMachine<HappySinger, HappySinger.Instance, IStateMachineTarget, object>.State neutral;
 
-	public HappySinger.OverjoyedStates overjoyed;
+		public HappySinger.OverjoyedStates overjoyed;
 
-	public string soundPath = GlobalAssets.GetSound("DupeSinging_NotesFX_LP", false);
+		public string soundPath = GlobalAssets.GetSound("DupeSinging_NotesFX_LP", false);
 
-	public class OverjoyedStates : GameStateMachine<HappySinger, HappySinger.Instance, IStateMachineTarget, object>.State
+		public class OverjoyedStates : GameStateMachine<HappySinger, HappySinger.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<HappySinger, HappySinger.Instance, IStateMachineTarget, object>.State idle;
+				public GameStateMachine<HappySinger, HappySinger.Instance, IStateMachineTarget, object>.State idle;
 
-		public GameStateMachine<HappySinger, HappySinger.Instance, IStateMachineTarget, object>.State moving;
+				public GameStateMachine<HappySinger, HappySinger.Instance, IStateMachineTarget, object>.State moving;
 	}
 
-	public new class Instance : GameStateMachine<HappySinger, HappySinger.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<HappySinger, HappySinger.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 
-		public void CreatePasserbyReactable()
+				public void CreatePasserbyReactable()
 		{
 			if (this.passerbyReactable == null)
 			{
@@ -65,7 +65,7 @@ public class HappySinger : GameStateMachine<HappySinger, HappySinger.Instance>
 			}
 		}
 
-		public SpeechMonitor.Instance GetSpeechMonitor()
+				public SpeechMonitor.Instance GetSpeechMonitor()
 		{
 			if (this.speechMonitor == null)
 			{
@@ -74,17 +74,17 @@ public class HappySinger : GameStateMachine<HappySinger, HappySinger.Instance>
 			return this.speechMonitor;
 		}
 
-		private void AddReactionEffect(GameObject reactor)
+				private void AddReactionEffect(GameObject reactor)
 		{
 			reactor.Trigger(-1278274506, null);
 		}
 
-		private bool ReactorIsOnFloor(GameObject reactor, Navigator.ActiveTransition transition)
+				private bool ReactorIsOnFloor(GameObject reactor, Navigator.ActiveTransition transition)
 		{
 			return transition.end == NavType.Floor;
 		}
 
-		public void ClearPasserbyReactable()
+				public void ClearPasserbyReactable()
 		{
 			if (this.passerbyReactable != null)
 			{
@@ -93,10 +93,10 @@ public class HappySinger : GameStateMachine<HappySinger, HappySinger.Instance>
 			}
 		}
 
-		private Reactable passerbyReactable;
+				private Reactable passerbyReactable;
 
-		public GameObject musicParticleFX;
+				public GameObject musicParticleFX;
 
-		public SpeechMonitor.Instance speechMonitor;
+				public SpeechMonitor.Instance speechMonitor;
 	}
 }

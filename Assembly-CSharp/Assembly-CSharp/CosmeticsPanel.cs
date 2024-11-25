@@ -8,12 +8,12 @@ using UnityEngine.UI;
 
 public class CosmeticsPanel : TargetPanel
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return true;
 	}
 
-	protected override void OnSelectTarget(GameObject target)
+		protected override void OnSelectTarget(GameObject target)
 	{
 		base.OnSelectTarget(target);
 		BuildingFacade buildingFacade = this.selectedTarget.GetComponent<BuildingFacade>();
@@ -59,12 +59,12 @@ public class CosmeticsPanel : TargetPanel
 		this.Refresh();
 	}
 
-	public override void OnDeselectTarget(GameObject target)
+		public override void OnDeselectTarget(GameObject target)
 	{
 		base.OnDeselectTarget(target);
 	}
 
-	public void Refresh()
+		public void Refresh()
 	{
 		UnityEngine.Object component = this.selectedTarget.GetComponent<MinionIdentity>();
 		BuildingFacade component2 = this.selectedTarget.GetComponent<BuildingFacade>();
@@ -130,7 +130,7 @@ public class CosmeticsPanel : TargetPanel
 		this.selectionPanel.Refresh();
 	}
 
-	public void OnClickEditOutfit()
+		public void OnClickEditOutfit()
 	{
 		AudioMixer.instance.Start(AudioMixerSnapshots.Get().FrontEndSupplyClosetSnapshot);
 		MinionBrowserScreenConfig.MinionInstances(this.selectedTarget).ApplyAndOpenScreen(delegate
@@ -139,7 +139,7 @@ public class CosmeticsPanel : TargetPanel
 		});
 	}
 
-	private void RefreshOutfitCategories()
+		private void RefreshOutfitCategories()
 	{
 		foreach (KeyValuePair<ClothingOutfitUtility.OutfitType, GameObject> keyValuePair in this.outfitCategories)
 		{
@@ -174,35 +174,35 @@ public class CosmeticsPanel : TargetPanel
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject cosmeticSlotContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private FacadeSelectionPanel selectionPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText nameLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText descriptionLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton editButton;
 
-	[SerializeField]
+		[SerializeField]
 	private UIMannequin mannequin;
 
-	[SerializeField]
+		[SerializeField]
 	private Image buildingIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private Dictionary<ClothingOutfitUtility.OutfitType, GameObject> outfitCategories = new Dictionary<ClothingOutfitUtility.OutfitType, GameObject>();
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject outfitCategoryButtonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject outfitCategoryButtonContainer;
 
-	private ClothingOutfitUtility.OutfitType selectedOutfitCategory;
+		private ClothingOutfitUtility.OutfitType selectedOutfitCategory;
 }

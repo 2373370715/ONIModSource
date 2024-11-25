@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-
+namespace RsTransferPort;
 
 public static partial class MyUtils {
     public static void SetPositionXY(this Transform transform, Vector3 xy) {

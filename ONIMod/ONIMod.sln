@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store", "Store\Store.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XRay", "XRay\XRay.csproj", "{EE31289F-D035-4600-9425-EBA0AB12EB6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "传送端口", "传送端口\传送端口.csproj", "{16D85140-0D80-4FF8-B0EF-A80B93F0546D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransferPort", "传送端口\TransferPort.csproj", "{78B14B4E-9A9E-44AB-9A26-7378CB9EF332}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,9 +19,8 @@ Global
 		{D56138A0-C3A4-4E12-9D00-74D51661F8A4}.usually|Any CPU.Build.0 = usually|Any CPU
 		{DD80806D-E428-4008-864A-B5F0FE142770}.usually|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE31289F-D035-4600-9425-EBA0AB12EB6B}.usually|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C40B37A-4082-47A6-A82D-CEF5AFA4633A}.usually|Any CPU.ActiveCfg = 挖机|Any CPU
-		{7C40B37A-4082-47A6-A82D-CEF5AFA4633A}.usually|Any CPU.Build.0 = 挖机|Any CPU
-		{16D85140-0D80-4FF8-B0EF-A80B93F0546D}.usually|Any CPU.ActiveCfg = Debug|Any CPU
-		{16D85140-0D80-4FF8-B0EF-A80B93F0546D}.usually|Any CPU.Build.0 = Debug|Any CPU
+		{7C40B37A-4082-47A6-A82D-CEF5AFA4633A}.usually|Any CPU.ActiveCfg = usually|Any CPU
+		{7C40B37A-4082-47A6-A82D-CEF5AFA4633A}.usually|Any CPU.Build.0 = usually|Any CPU
+		{78B14B4E-9A9E-44AB-9A26-7378CB9EF332}.usually|Any CPU.ActiveCfg = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -4,20 +4,20 @@ using STRINGS;
 
 namespace Database
 {
-	public class EatXCaloriesFromY : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class EatXCaloriesFromY : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public EatXCaloriesFromY(int numCalories, List<string> fromFoodType)
+				public EatXCaloriesFromY(int numCalories, List<string> fromFoodType)
 		{
 			this.numCalories = numCalories;
 			this.fromFoodType = fromFoodType;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
-			return RationTracker.Get().GetCaloiresConsumedByFood(this.fromFoodType) / 1000f > (float)this.numCalories;
+			return WorldResourceAmountTracker<RationTracker>.Get().GetAmountConsumedForIDs(this.fromFoodType) / 1000f > (float)this.numCalories;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			this.numCalories = reader.ReadInt32();
 			int num = reader.ReadInt32();
@@ -29,13 +29,13 @@ namespace Database
 			}
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
-			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CALORIES_FROM_MEAT, GameUtil.GetFormattedCalories(complete ? ((float)this.numCalories * 1000f) : RationTracker.Get().GetCaloiresConsumedByFood(this.fromFoodType), GameUtil.TimeSlice.None, true), GameUtil.GetFormattedCalories((float)this.numCalories * 1000f, GameUtil.TimeSlice.None, true));
+			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CALORIES_FROM_MEAT, GameUtil.GetFormattedCalories(complete ? ((float)this.numCalories * 1000f) : WorldResourceAmountTracker<RationTracker>.Get().GetAmountConsumedForIDs(this.fromFoodType), GameUtil.TimeSlice.None, true), GameUtil.GetFormattedCalories((float)this.numCalories * 1000f, GameUtil.TimeSlice.None, true));
 		}
 
-		private int numCalories;
+				private int numCalories;
 
-		private List<string> fromFoodType = new List<string>();
+				private List<string> fromFoodType = new List<string>();
 	}
 }

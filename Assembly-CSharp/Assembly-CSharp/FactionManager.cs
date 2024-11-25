@@ -4,23 +4,23 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FactionManager")]
 public class FactionManager : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		FactionManager.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		FactionManager.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	public Faction GetFaction(FactionManager.FactionID faction)
+		public Faction GetFaction(FactionManager.FactionID faction)
 	{
 		switch (faction)
 		{
@@ -41,7 +41,7 @@ public class FactionManager : KMonoBehaviour
 		}
 	}
 
-	public FactionManager.Disposition GetDisposition(FactionManager.FactionID of_faction, FactionManager.FactionID to_faction)
+		public FactionManager.Disposition GetDisposition(FactionManager.FactionID of_faction, FactionManager.FactionID to_faction)
 	{
 		if (FactionManager.Instance.GetFaction(of_faction).Dispositions.ContainsKey(to_faction))
 		{
@@ -50,35 +50,35 @@ public class FactionManager : KMonoBehaviour
 		return FactionManager.Disposition.Neutral;
 	}
 
-	public static FactionManager Instance;
+		public static FactionManager Instance;
 
-	public Faction Duplicant = new Faction(FactionManager.FactionID.Duplicant);
+		public Faction Duplicant = new Faction(FactionManager.FactionID.Duplicant);
 
-	public Faction Friendly = new Faction(FactionManager.FactionID.Friendly);
+		public Faction Friendly = new Faction(FactionManager.FactionID.Friendly);
 
-	public Faction Hostile = new Faction(FactionManager.FactionID.Hostile);
+		public Faction Hostile = new Faction(FactionManager.FactionID.Hostile);
 
-	public Faction Predator = new Faction(FactionManager.FactionID.Predator);
+		public Faction Predator = new Faction(FactionManager.FactionID.Predator);
 
-	public Faction Prey = new Faction(FactionManager.FactionID.Prey);
+		public Faction Prey = new Faction(FactionManager.FactionID.Prey);
 
-	public Faction Pest = new Faction(FactionManager.FactionID.Pest);
+		public Faction Pest = new Faction(FactionManager.FactionID.Pest);
 
-	public enum FactionID
+		public enum FactionID
 	{
-		Duplicant,
-		Friendly,
-		Hostile,
-		Prey,
-		Predator,
-		Pest,
-		NumberOfFactions
+				Duplicant,
+				Friendly,
+				Hostile,
+				Prey,
+				Predator,
+				Pest,
+				NumberOfFactions
 	}
 
-	public enum Disposition
+		public enum Disposition
 	{
-		Assist,
-		Neutral,
-		Attack
+				Assist,
+				Neutral,
+				Attack
 	}
 }

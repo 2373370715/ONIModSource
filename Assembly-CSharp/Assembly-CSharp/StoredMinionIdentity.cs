@@ -11,16 +11,16 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/StoredMinionIdentity")]
 public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableIdentity, IListableOption, IPersonalPriorityManager
 {
-			[Serialize]
+				[Serialize]
 	public string genderStringKey { get; set; }
 
-			[Serialize]
+				[Serialize]
 	public string nameStringKey { get; set; }
 
-			[Serialize]
+				[Serialize]
 	public HashedString personalityResourceId { get; set; }
 
-	[OnDeserialized]
+		[OnDeserialized]
 	[Obsolete]
 	private void OnDeserializedMethod()
 	{
@@ -44,6 +44,10 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		{
 			this.forbiddenTagSet = new HashSet<Tag>(this.forbiddenTags);
 			this.forbiddenTags = null;
+		}
+		if (!this.model.IsValid)
+		{
+			this.model = MinionConfig.MODEL;
 		}
 		if (SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 30))
 		{
@@ -72,7 +76,7 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		this.OnDeserializeModifiers();
 	}
 
-	public bool HasPerk(SkillPerk perk)
+		public bool HasPerk(SkillPerk perk)
 	{
 		foreach (KeyValuePair<string, bool> keyValuePair in this.MasteryBySkillID)
 		{
@@ -84,19 +88,19 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		return false;
 	}
 
-	public bool HasMasteredSkill(string skillId)
+		public bool HasMasteredSkill(string skillId)
 	{
 		return this.MasteryBySkillID.ContainsKey(skillId) && this.MasteryBySkillID[skillId];
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.assignableProxy = new Ref<MinionAssignablesProxy>();
 		this.minionModifiers = base.GetComponent<MinionModifiers>();
 		this.savedAttributeValues = new Dictionary<string, float>();
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerialize()
 	{
 		this.savedAttributeValues.Clear();
@@ -106,15 +110,25 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
-		MinionConfig.AddMinionAmounts(this.minionModifiers);
-		MinionConfig.AddMinionTraits(DUPLICANTS.MODIFIERS.BASEDUPLICANT.NAME, this.minionModifiers);
+		string[] attributes = MinionConfig.GetAttributes();
+		string[] amounts = MinionConfig.GetAmounts();
+		AttributeModifier[] traits = MinionConfig.GetTraits();
+		if (this.model == BionicMinionConfig.MODEL)
+		{
+			attributes = BionicMinionConfig.GetAttributes();
+			amounts = BionicMinionConfig.GetAmounts();
+			traits = BionicMinionConfig.GetTraits();
+		}
+		BaseMinionConfig.AddMinionAttributes(this.minionModifiers, attributes);
+		BaseMinionConfig.AddMinionAmounts(this.minionModifiers, amounts);
+		BaseMinionConfig.AddMinionTraits(BaseMinionConfig.GetMinionNameForModel(this.model), BaseMinionConfig.GetMinionBaseTraitIDForModel(this.model), this.minionModifiers, traits);
 		this.ValidateProxy();
 		this.CleanupLimboMinions();
 	}
 
-	public void OnHardDelete()
+		public void OnHardDelete()
 	{
 		if (this.assignableProxy.Get() != null)
 		{
@@ -124,7 +138,7 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		Components.StoredMinionIdentities.Remove(this);
 	}
 
-	private void OnDeserializeModifiers()
+		private void OnDeserializeModifiers()
 	{
 		foreach (KeyValuePair<string, float> keyValuePair in this.savedAttributeValues)
 		{
@@ -149,12 +163,12 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		}
 	}
 
-	public void ValidateProxy()
+		public void ValidateProxy()
 	{
 		this.assignableProxy = MinionAssignablesProxy.InitAssignableProxy(this.assignableProxy, this);
 	}
 
-	public string[] GetClothingItemIds(ClothingOutfitUtility.OutfitType outfitType)
+		public string[] GetClothingItemIds(ClothingOutfitUtility.OutfitType outfitType)
 	{
 		if (this.customClothingItems.ContainsKey(outfitType))
 		{
@@ -168,7 +182,7 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		return null;
 	}
 
-	private void CleanupLimboMinions()
+		private void CleanupLimboMinions()
 	{
 		KPrefabID component = base.GetComponent<KPrefabID>();
 		bool flag = false;
@@ -262,32 +276,32 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		}
 	}
 
-	public string GetProperName()
+		public string GetProperName()
 	{
 		return this.storedName;
 	}
 
-	public List<Ownables> GetOwners()
+		public List<Ownables> GetOwners()
 	{
 		return this.assignableProxy.Get().ownables;
 	}
 
-	public Ownables GetSoleOwner()
+		public Ownables GetSoleOwner()
 	{
 		return this.assignableProxy.Get().GetComponent<Ownables>();
 	}
 
-	public bool HasOwner(Assignables owner)
+		public bool HasOwner(Assignables owner)
 	{
 		return this.GetOwners().Contains(owner as Ownables);
 	}
 
-	public int NumOwners()
+		public int NumOwners()
 	{
 		return this.GetOwners().Count;
 	}
 
-	public Accessory GetAccessory(AccessorySlot slot)
+		public Accessory GetAccessory(AccessorySlot slot)
 	{
 		for (int i = 0; i < this.accessories.Count; i++)
 		{
@@ -299,12 +313,12 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		return null;
 	}
 
-	public bool IsNull()
+		public bool IsNull()
 	{
 		return this == null;
 	}
 
-	public string GetStorageReason()
+		public string GetStorageReason()
 	{
 		KPrefabID component = base.GetComponent<KPrefabID>();
 		foreach (MinionStorage minionStorage in Components.MinionStorages.Items)
@@ -323,12 +337,12 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		return "";
 	}
 
-	public bool IsPermittedToConsume(string consumable)
+		public bool IsPermittedToConsume(string consumable)
 	{
 		return !this.forbiddenTagSet.Contains(consumable);
 	}
 
-	public bool IsChoreGroupDisabled(ChoreGroup chore_group)
+		public bool IsChoreGroupDisabled(ChoreGroup chore_group)
 	{
 		foreach (string id in this.traitIDs)
 		{
@@ -351,7 +365,7 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		return false;
 	}
 
-	public int GetPersonalPriority(ChoreGroup chore_group)
+		public int GetPersonalPriority(ChoreGroup chore_group)
 	{
 		ChoreConsumer.PriorityInfo priorityInfo;
 		if (this.choreGroupPriorities.TryGetValue(chore_group.IdHash, out priorityInfo))
@@ -361,105 +375,108 @@ public class StoredMinionIdentity : KMonoBehaviour, ISaveLoadable, IAssignableId
 		return 0;
 	}
 
-	public int GetAssociatedSkillLevel(ChoreGroup group)
+		public int GetAssociatedSkillLevel(ChoreGroup group)
 	{
 		return 0;
 	}
 
-	public void SetPersonalPriority(ChoreGroup group, int value)
+		public void SetPersonalPriority(ChoreGroup group, int value)
 	{
 	}
 
-	public void ResetPersonalPriorities()
+		public void ResetPersonalPriorities()
 	{
 	}
 
-	[Serialize]
+		[Serialize]
 	public string storedName;
 
-	[Serialize]
+		[Serialize]
+	public Tag model;
+
+		[Serialize]
 	public string gender;
 
-	[Serialize]
+		[Serialize]
 	[ReadOnly]
 	public float arrivalTime;
 
-	[Serialize]
+		[Serialize]
 	public int voiceIdx;
 
-	[Serialize]
+		[Serialize]
 	public KCompBuilder.BodyData bodyData;
 
-	[Serialize]
+		[Serialize]
 	public List<Ref<KPrefabID>> assignedItems;
 
-	[Serialize]
+		[Serialize]
 	public List<Ref<KPrefabID>> equippedItems;
 
-	[Serialize]
+		[Serialize]
 	public List<string> traitIDs;
 
-	[Serialize]
+		[Serialize]
 	public List<ResourceRef<Accessory>> accessories;
 
-	[Obsolete("Deprecated, use customClothingItems")]
+		[Obsolete("Deprecated, use customClothingItems")]
 	[Serialize]
 	public List<ResourceRef<ClothingItemResource>> clothingItems = new List<ResourceRef<ClothingItemResource>>();
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> customClothingItems = new Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>>();
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable> wearables = new Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable>();
 
-	[Obsolete("Deprecated, use forbiddenTagSet")]
+		[Obsolete("Deprecated, use forbiddenTagSet")]
 	[Serialize]
 	public List<Tag> forbiddenTags;
 
-	[Serialize]
+		[Serialize]
 	public HashSet<Tag> forbiddenTagSet;
 
-	[Serialize]
+		[Serialize]
 	public Ref<MinionAssignablesProxy> assignableProxy;
 
-	[Serialize]
+		[Serialize]
 	public List<Effects.SaveLoadEffect> saveLoadEffects;
 
-	[Serialize]
+		[Serialize]
 	public List<Effects.SaveLoadImmunities> saveLoadImmunities;
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<string, bool> MasteryByRoleID = new Dictionary<string, bool>();
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<string, bool> MasteryBySkillID = new Dictionary<string, bool>();
 
-	[Serialize]
+		[Serialize]
 	public List<string> grantedSkillIDs = new List<string>();
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<HashedString, float> AptitudeByRoleGroup = new Dictionary<HashedString, float>();
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<HashedString, float> AptitudeBySkillGroup = new Dictionary<HashedString, float>();
 
-	[Serialize]
+		[Serialize]
 	public float TotalExperienceGained;
 
-	[Serialize]
+		[Serialize]
 	public string currentHat;
 
-	[Serialize]
+		[Serialize]
 	public string targetHat;
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<HashedString, ChoreConsumer.PriorityInfo> choreGroupPriorities = new Dictionary<HashedString, ChoreConsumer.PriorityInfo>();
 
-	[Serialize]
+		[Serialize]
 	public List<AttributeLevels.LevelSaveLoad> attributeLevels;
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<string, float> savedAttributeValues;
 
-	public MinionModifiers minionModifiers;
+		public MinionModifiers minionModifiers;
 }

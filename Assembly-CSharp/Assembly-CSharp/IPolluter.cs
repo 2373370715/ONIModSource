@@ -3,19 +3,19 @@ using UnityEngine;
 
 public interface IPolluter
 {
-	int GetRadius();
+		int GetRadius();
 
-	int GetNoise();
+		int GetNoise();
 
-	GameObject GetGameObject();
+		GameObject GetGameObject();
 
-	void SetAttributes(Vector2 pos, int dB, GameObject go, string name = null);
+		void SetAttributes(Vector2 pos, int dB, GameObject go, string name = null);
 
-	string GetName();
+		string GetName();
 
-	Vector2 GetPosition();
+		Vector2 GetPosition();
 
-	void Clear();
+		void Clear();
 
-	void SetSplat(NoiseSplat splat);
+		void SetSplat(NoiseSplat splat);
 }

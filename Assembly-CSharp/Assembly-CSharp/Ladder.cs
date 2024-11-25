@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Ladder")]
 public class Ladder : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Rotatable component = base.GetComponent<Rotatable>();
@@ -26,13 +26,13 @@ public class Ladder : KMonoBehaviour, IGameObjectEffectDescriptor
 		Components.Ladders.Add(this);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.Normal, null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Rotatable component = base.GetComponent<Rotatable>();
@@ -53,7 +53,7 @@ public class Ladder : KMonoBehaviour, IGameObjectEffectDescriptor
 		Components.Ladders.Remove(this);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = null;
 		if (this.upwardsMovementSpeedMultiplier != 1f)
@@ -66,13 +66,13 @@ public class Ladder : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	public float upwardsMovementSpeedMultiplier = 1f;
+		public float upwardsMovementSpeedMultiplier = 1f;
 
-	public float downwardsMovementSpeedMultiplier = 1f;
+		public float downwardsMovementSpeedMultiplier = 1f;
 
-	public bool isPole;
+		public bool isPole;
 
-	public CellOffset[] offsets = new CellOffset[]
+		public CellOffset[] offsets = new CellOffset[]
 	{
 		CellOffset.none
 	};

@@ -6,13 +6,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SolidConduit")]
 public class SolidConduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetworkMgr
 {
-	public void SetFirstFrameCallback(System.Action ffCb)
+		public void SetFirstFrameCallback(System.Action ffCb)
 	{
 		this.firstFrameCallback = ffCb;
 		base.StartCoroutine(this.RunCallback());
 	}
 
-	private IEnumerator RunCallback()
+		private IEnumerator RunCallback()
 	{
 		yield return null;
 		if (this.firstFrameCallback != null)
@@ -24,22 +24,22 @@ public class SolidConduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNet
 		yield break;
 	}
 
-	public IUtilityNetworkMgr GetNetworkManager()
+		public IUtilityNetworkMgr GetNetworkManager()
 	{
 		return Game.Instance.solidConduitSystem;
 	}
 
-	public UtilityNetwork GetNetwork()
+		public UtilityNetwork GetNetwork()
 	{
 		return this.GetNetworkManager().GetNetworkForCell(Grid.PosToCell(this));
 	}
 
-	public static SolidConduitFlow GetFlowManager()
+		public static SolidConduitFlow GetFlowManager()
 	{
 		return Game.Instance.solidConduitFlow;
 	}
 
-		public Vector3 Position
+			public Vector3 Position
 	{
 		get
 		{
@@ -47,13 +47,13 @@ public class SolidConduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNet
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.Conveyor, this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		int cell = Grid.PosToCell(this);
 		BuildingComplete component = base.GetComponent<BuildingComplete>();
@@ -65,8 +65,8 @@ public class SolidConduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNet
 		base.OnCleanUp();
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KAnimGraphTileVisualizer graphTileDependency;
 
-	private System.Action firstFrameCallback;
+		private System.Action firstFrameCallback;
 }

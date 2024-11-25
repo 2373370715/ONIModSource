@@ -2,5 +2,5 @@
 
 public interface IWattageRating
 {
-	Wire.WattageRating GetMaxWattageRating();
+		Wire.WattageRating GetMaxWattageRating();
 }

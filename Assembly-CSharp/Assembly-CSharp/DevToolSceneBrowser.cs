@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class DevToolSceneBrowser : DevTool
 {
-	public DevToolSceneBrowser()
+		public DevToolSceneBrowser()
 	{
 		this.drawFlags = ImGuiWindowFlags.MenuBar;
 		DevToolSceneBrowser.StackItem stackItem = new DevToolSceneBrowser.StackItem();
@@ -16,7 +16,7 @@ public class DevToolSceneBrowser : DevTool
 		this.Stack.Add(stackItem);
 	}
 
-	private void PushGameObject(GameObject go)
+		private void PushGameObject(GameObject go)
 	{
 		if (this.StackIndex < this.Stack.Count && go == this.Stack[this.StackIndex].Root)
 		{
@@ -34,7 +34,7 @@ public class DevToolSceneBrowser : DevTool
 		this.StackIndex++;
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		for (int i = this.Stack.Count - 1; i > 0; i--)
 		{
@@ -227,24 +227,24 @@ public class DevToolSceneBrowser : DevTool
 		}
 	}
 
-	private List<DevToolSceneBrowser.StackItem> Stack = new List<DevToolSceneBrowser.StackItem>();
+		private List<DevToolSceneBrowser.StackItem> Stack = new List<DevToolSceneBrowser.StackItem>();
 
-	private int StackIndex;
+		private int StackIndex;
 
-	private static int SelectedIndex = -1;
+		private static int SelectedIndex = -1;
 
-	private static string SearchFilter = "";
+		private static string SearchFilter = "";
 
-	private static List<GameObject> SearchResults = new List<GameObject>();
+		private static List<GameObject> SearchResults = new List<GameObject>();
 
-	private static int SearchSelectedIndex = -1;
+		private static int SearchSelectedIndex = -1;
 
-	private class StackItem
+		private class StackItem
 	{
-		public bool SceneRoot;
+				public bool SceneRoot;
 
-		public GameObject Root;
+				public GameObject Root;
 
-		public string Filter;
+				public string Filter;
 	}
 }

@@ -7,12 +7,12 @@ using UnityEngine.UI;
 
 public class EventInfoScreen : KModalScreen
 {
-	public override bool IsModal()
+		public override bool IsModal()
 	{
 		return true;
 	}
 
-	public void SetEventData(EventInfoData data)
+		public void SetEventData(EventInfoData data)
 	{
 		data.FinalizeText();
 		this.eventHeader.text = data.title;
@@ -32,7 +32,7 @@ public class EventInfoScreen : KModalScreen
 		this.SetEventDataVisuals(data);
 	}
 
-	private void SetEventDataOptions(EventInfoData data)
+		private void SetEventDataOptions(EventInfoData data)
 	{
 		using (List<EventInfoData.Option>.Enumerator enumerator = data.options.GetEnumerator())
 		{
@@ -80,13 +80,13 @@ public class EventInfoScreen : KModalScreen
 		}
 	}
 
-	public override void Deactivate()
+		public override void Deactivate()
 	{
 		AudioMixer.instance.Stop(AudioMixerSnapshots.Get().EventPopupSnapshot, STOP_MODE.ALLOWFADEOUT);
 		base.Deactivate();
 	}
 
-	private void CreateOptionIcon(GameObject option, EventInfoData.OptionIcon optionIcon)
+		private void CreateOptionIcon(GameObject option, EventInfoData.OptionIcon optionIcon)
 	{
 		GameObject gameObject = global::Util.KInstantiateUI(this.optionIconPrefab, option, false);
 		gameObject.GetComponent<ToolTip>().SetSimpleTooltip(optionIcon.tooltip);
@@ -143,7 +143,7 @@ public class EventInfoScreen : KModalScreen
 		}
 	}
 
-	private void SetEventDataVisuals(EventInfoData data)
+		private void SetEventDataVisuals(EventInfoData data)
 	{
 		this.createdAnimations.ForEach(delegate(KBatchedAnimController x)
 		{
@@ -185,7 +185,7 @@ public class EventInfoScreen : KModalScreen
 		}
 	}
 
-	private GameObject CreateAnimLayer(Transform parent, KAnimFile animFile, HashedString animName, GameObject minion = null, GameObject artifact = null, string targetSymbol = null)
+		private GameObject CreateAnimLayer(Transform parent, KAnimFile animFile, HashedString animName, GameObject minion = null, GameObject artifact = null, string targetSymbol = null)
 	{
 		GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.animPrefab, parent);
 		KBatchedAnimController component = gameObject.GetComponent<KBatchedAnimController>();
@@ -222,7 +222,7 @@ public class EventInfoScreen : KModalScreen
 					component2.AddSymbolOverride(symbolEntry.targetSymbol, symbolEntry.sourceSymbol, symbolEntry.priority);
 				}
 			}
-			MinionConfig.CopyVisibleSymbols(gameObject, minion);
+			BaseMinionConfig.CopyVisibleSymbols(gameObject, minion);
 		}
 		if (artifact != null)
 		{
@@ -246,7 +246,7 @@ public class EventInfoScreen : KModalScreen
 		return gameObject;
 	}
 
-	public static EventInfoScreen ShowPopup(EventInfoData eventInfoData)
+		public static EventInfoScreen ShowPopup(EventInfoData eventInfoData)
 	{
 		EventInfoScreen eventInfoScreen = (EventInfoScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.eventInfoScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject);
 		eventInfoScreen.SetEventData(eventInfoData);
@@ -267,7 +267,7 @@ public class EventInfoScreen : KModalScreen
 		return eventInfoScreen;
 	}
 
-	public static Notification CreateNotification(EventInfoData eventInfoData, Notification.ClickCallback clickCallback = null)
+		public static Notification CreateNotification(EventInfoData eventInfoData, Notification.ClickCallback clickCallback = null)
 	{
 		if (eventInfoData == null)
 		{
@@ -293,68 +293,68 @@ public class EventInfoScreen : KModalScreen
 		return notification;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private float baseCharacterScale = 0.0057f;
 
-	[FormerlySerializedAs("midgroundPrefab")]
+		[FormerlySerializedAs("midgroundPrefab")]
 	[FormerlySerializedAs("mid")]
 	[Header("Prefabs")]
 	[SerializeField]
 	private GameObject animPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject optionPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject optionIconPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject optionTextPrefab;
 
-	[Header("Groups")]
+		[Header("Groups")]
 	[SerializeField]
 	private Transform artSection;
 
-	[SerializeField]
+		[SerializeField]
 	private Transform midgroundGroup;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject timeGroup;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject buttonsGroup;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject chainGroup;
 
-	[Header("Text")]
+		[Header("Text")]
 	[SerializeField]
 	private LocText eventHeader;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText eventTimeLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText eventLocationLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText eventDescriptionLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private bool loadMinionFromPersonalities = true;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText chainCount;
 
-	[Header("Button Colour Styles")]
+		[Header("Button Colour Styles")]
 	[SerializeField]
 	private ColorStyleSetting neutralButtonSetting;
 
-	[SerializeField]
+		[SerializeField]
 	private ColorStyleSetting badButtonSetting;
 
-	[SerializeField]
+		[SerializeField]
 	private ColorStyleSetting goodButtonSetting;
 
-	private List<KBatchedAnimController> createdAnimations = new List<KBatchedAnimController>();
+		private List<KBatchedAnimController> createdAnimations = new List<KBatchedAnimController>();
 }

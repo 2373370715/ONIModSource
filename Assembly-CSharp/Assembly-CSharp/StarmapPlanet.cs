@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/StarmapPlanet")]
 public class StarmapPlanet : KMonoBehaviour
 {
-	public void SetSprite(Sprite sprite, Color color)
+		public void SetSprite(Sprite sprite, Color color)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -15,7 +15,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void SetFillAmount(float amount)
+		public void SetFillAmount(float amount)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -23,7 +23,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void SetUnknownBGActive(bool active, Color color)
+		public void SetUnknownBGActive(bool active, Color color)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -32,7 +32,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void SetSelectionActive(bool active)
+		public void SetSelectionActive(bool active)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -40,7 +40,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void SetAnalysisActive(bool active)
+		public void SetAnalysisActive(bool active)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -48,7 +48,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void SetLabel(string text)
+		public void SetLabel(string text)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -57,7 +57,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void ShowLabel(bool show)
+		public void ShowLabel(bool show)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -65,7 +65,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void SetOnClick(System.Action del)
+		public void SetOnClick(System.Action del)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -73,7 +73,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void SetOnEnter(System.Action del)
+		public void SetOnEnter(System.Action del)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -81,7 +81,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void SetOnExit(System.Action del)
+		public void SetOnExit(System.Action del)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -89,7 +89,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void AnimateSelector(float time)
+		public void AnimateSelector(float time)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -97,7 +97,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void ShowAsCurrentRocketDestination(bool show)
+		public void ShowAsCurrentRocketDestination(bool show)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -109,7 +109,7 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public void SetRocketIcons(int numRockets, GameObject iconPrefab)
+		public void SetRocketIcons(int numRockets, GameObject iconPrefab)
 	{
 		foreach (StarmapPlanetVisualizer starmapPlanetVisualizer in this.visualizers)
 		{
@@ -131,5 +131,5 @@ public class StarmapPlanet : KMonoBehaviour
 		}
 	}
 
-	public List<StarmapPlanetVisualizer> visualizers;
+		public List<StarmapPlanetVisualizer> visualizers;
 }

@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace Database
 {
-	public class TechTreeTitles : ResourceSet<TechTreeTitle>
+		public class TechTreeTitles : ResourceSet<TechTreeTitle>
 	{
-		public TechTreeTitles(ResourceSet parent) : base("TreeTitles", parent)
+				public TechTreeTitles(ResourceSet parent) : base("TreeTitles", parent)
 		{
 		}
 
-		public void Load(TextAsset tree_file)
+				public void Load(TextAsset tree_file)
 		{
 			foreach (ResourceTreeNode resourceTreeNode in new ResourceTreeLoader<ResourceTreeNode>(tree_file))
 			{

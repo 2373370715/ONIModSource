@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LogicRibbonReader")]
 public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRender200ms
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<LogicRibbonReader>(-801688580, LogicRibbonReader.OnLogicValueChangedDelegate);
@@ -16,13 +16,13 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		this.kbac.Play("idle", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicRibbonReader>(-905833192, LogicRibbonReader.OnCopySettingsDelegate);
 	}
 
-	public void OnLogicValueChanged(object data)
+		public void OnLogicValueChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 		if (logicValueChanged.portID != LogicRibbonReader.INPUT_PORT_ID)
@@ -34,7 +34,7 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		this.UpdateVisuals();
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicRibbonReader component = ((GameObject)data).GetComponent<LogicRibbonReader>();
 		if (component != null)
@@ -43,7 +43,7 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		}
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		LogicPorts component = base.GetComponent<LogicPorts>();
 		LogicWire.BitDepth bitDepth = LogicWire.BitDepth.NumRatings;
@@ -70,28 +70,28 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		this.UpdateVisuals();
 	}
 
-	public void Render200ms(float dt)
+		public void Render200ms(float dt)
 	{
 		this.UpdateVisuals();
 	}
 
-	public void SetBitSelection(int bit)
+		public void SetBitSelection(int bit)
 	{
 		this.selectedBit = bit;
 		this.UpdateLogicCircuit();
 	}
 
-	public int GetBitSelection()
+		public int GetBitSelection()
 	{
 		return this.selectedBit;
 	}
 
-	public int GetBitDepth()
+		public int GetBitDepth()
 	{
 		return this.bitDepth;
 	}
 
-		public string SideScreenTitle
+			public string SideScreenTitle
 	{
 		get
 		{
@@ -99,7 +99,7 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		}
 	}
 
-		public string SideScreenDescription
+			public string SideScreenDescription
 	{
 		get
 		{
@@ -107,17 +107,17 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		}
 	}
 
-	public bool SideScreenDisplayWriterDescription()
+		public bool SideScreenDisplayWriterDescription()
 	{
 		return false;
 	}
 
-	public bool SideScreenDisplayReaderDescription()
+		public bool SideScreenDisplayReaderDescription()
 	{
 		return true;
 	}
 
-	public bool IsBitActive(int bit)
+		public bool IsBitActive(int bit)
 	{
 		LogicCircuitNetwork logicCircuitNetwork = null;
 		if (this.ports != null)
@@ -128,7 +128,7 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		return logicCircuitNetwork != null && logicCircuitNetwork.IsBitActive(bit);
 	}
 
-	public int GetInputValue()
+		public int GetInputValue()
 	{
 		LogicPorts component = base.GetComponent<LogicPorts>();
 		if (!(component != null))
@@ -138,7 +138,7 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		return component.GetInputValue(LogicRibbonReader.INPUT_PORT_ID);
 	}
 
-	public int GetOutputValue()
+		public int GetOutputValue()
 	{
 		LogicPorts component = base.GetComponent<LogicPorts>();
 		if (!(component != null))
@@ -148,7 +148,7 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		return component.GetOutputValue(LogicRibbonReader.OUTPUT_PORT_ID);
 	}
 
-	private LogicCircuitNetwork GetInputNetwork()
+		private LogicCircuitNetwork GetInputNetwork()
 	{
 		LogicCircuitNetwork result = null;
 		if (this.ports != null)
@@ -159,7 +159,7 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		return result;
 	}
 
-	private LogicCircuitNetwork GetOutputNetwork()
+		private LogicCircuitNetwork GetOutputNetwork()
 	{
 		LogicCircuitNetwork result = null;
 		if (this.ports != null)
@@ -170,7 +170,7 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		return result;
 	}
 
-	public void UpdateVisuals()
+		public void UpdateVisuals()
 	{
 		bool inputNetwork = this.GetInputNetwork() != null;
 		LogicCircuitNetwork outputNetwork = this.GetOutputNetwork();
@@ -192,46 +192,46 @@ public class LogicRibbonReader : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		this.kbac.Play(num.ToString() + "_" + (this.GetBitSelection() + 1).ToString(), KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	public static readonly HashedString INPUT_PORT_ID = new HashedString("LogicRibbonReaderInput");
+		public static readonly HashedString INPUT_PORT_ID = new HashedString("LogicRibbonReaderInput");
 
-	public static readonly HashedString OUTPUT_PORT_ID = new HashedString("LogicRibbonReaderOutput");
+		public static readonly HashedString OUTPUT_PORT_ID = new HashedString("LogicRibbonReaderOutput");
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicRibbonReader> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicRibbonReader>(delegate(LogicRibbonReader component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicRibbonReader> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicRibbonReader>(delegate(LogicRibbonReader component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<LogicRibbonReader> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicRibbonReader>(delegate(LogicRibbonReader component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicRibbonReader> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicRibbonReader>(delegate(LogicRibbonReader component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private KAnimHashedString BIT_ONE_SYMBOL = "bit1_bloom";
+		private KAnimHashedString BIT_ONE_SYMBOL = "bit1_bloom";
 
-	private KAnimHashedString BIT_TWO_SYMBOL = "bit2_bloom";
+		private KAnimHashedString BIT_TWO_SYMBOL = "bit2_bloom";
 
-	private KAnimHashedString BIT_THREE_SYMBOL = "bit3_bloom";
+		private KAnimHashedString BIT_THREE_SYMBOL = "bit3_bloom";
 
-	private KAnimHashedString BIT_FOUR_SYMBOL = "bit4_bloom";
+		private KAnimHashedString BIT_FOUR_SYMBOL = "bit4_bloom";
 
-	private KAnimHashedString OUTPUT_SYMBOL = "output_light_bloom";
+		private KAnimHashedString OUTPUT_SYMBOL = "output_light_bloom";
 
-	private KBatchedAnimController kbac;
+		private KBatchedAnimController kbac;
 
-	private Color colorOn = new Color(0.34117648f, 0.7254902f, 0.36862746f);
+		private Color colorOn = new Color(0.34117648f, 0.7254902f, 0.36862746f);
 
-	private Color colorOff = new Color(0.9529412f, 0.2901961f, 0.2784314f);
+		private Color colorOff = new Color(0.9529412f, 0.2901961f, 0.2784314f);
 
-	private LogicPorts ports;
+		private LogicPorts ports;
 
-	public int bitDepth = 4;
+		public int bitDepth = 4;
 
-	[Serialize]
+		[Serialize]
 	public int selectedBit;
 
-	[Serialize]
+		[Serialize]
 	private int currentValue;
 }

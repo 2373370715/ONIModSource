@@ -2,7 +2,7 @@
 
 public class Blueprints
 {
-	public static Blueprints Get()
+		public static Blueprints Get()
 	{
 		if (Blueprints.instance == null)
 		{
@@ -19,15 +19,15 @@ public class Blueprints
 		return Blueprints.instance;
 	}
 
-	public BlueprintCollection all = new BlueprintCollection();
+		public BlueprintCollection all = new BlueprintCollection();
 
-	public BlueprintCollection skinsRelease = new BlueprintCollection();
+		public BlueprintCollection skinsRelease = new BlueprintCollection();
 
-	public BlueprintProvider[] skinsReleaseProviders = new BlueprintProvider[]
+		public BlueprintProvider[] skinsReleaseProviders = new BlueprintProvider[]
 	{
 		new Blueprints_U51AndBefore(),
 		new Blueprints_DlcPack2()
 	};
 
-	private static Blueprints instance;
+		private static Blueprints instance;
 }

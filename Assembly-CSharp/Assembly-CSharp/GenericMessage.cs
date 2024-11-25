@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GenericMessage : Message
 {
-	public GenericMessage(string _title, string _body, string _tooltip, KMonoBehaviour click_focus = null)
+		public GenericMessage(string _title, string _body, string _tooltip, KMonoBehaviour click_focus = null)
 	{
 		this.title = _title;
 		this.body = _body;
@@ -12,31 +12,31 @@ public class GenericMessage : Message
 		this.clickFocus.Set(click_focus);
 	}
 
-	public GenericMessage()
+		public GenericMessage()
 	{
 	}
 
-	public override string GetSound()
+		public override string GetSound()
 	{
 		return null;
 	}
 
-	public override string GetMessageBody()
+		public override string GetMessageBody()
 	{
 		return this.body;
 	}
 
-	public override string GetTooltip()
+		public override string GetTooltip()
 	{
 		return this.tooltip;
 	}
 
-	public override string GetTitle()
+		public override string GetTitle()
 	{
 		return this.title;
 	}
 
-	public override void OnClick()
+		public override void OnClick()
 	{
 		KMonoBehaviour kmonoBehaviour = this.clickFocus.Get();
 		if (kmonoBehaviour == null)
@@ -57,15 +57,15 @@ public class GenericMessage : Message
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private string title;
 
-	[Serialize]
+		[Serialize]
 	private string tooltip;
 
-	[Serialize]
+		[Serialize]
 	private string body;
 
-	[Serialize]
+		[Serialize]
 	private Ref<KMonoBehaviour> clickFocus = new Ref<KMonoBehaviour>();
 }

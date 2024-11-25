@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ShadowRect : MonoBehaviour
 {
-	private void OnEnable()
+		private void OnEnable()
 	{
 		if (this.RectShadow != null)
 		{
@@ -15,12 +15,12 @@ public class ShadowRect : MonoBehaviour
 		global::Debug.LogWarning("Shadowrect is missing rectshadow: " + base.gameObject.name);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.MatchRect();
 	}
 
-	protected virtual void MatchRect()
+		protected virtual void MatchRect()
 	{
 		if (this.RectShadow == null || this.RectMain == null)
 		{
@@ -69,15 +69,15 @@ public class ShadowRect : MonoBehaviour
 		}
 	}
 
-	public RectTransform RectMain;
+		public RectTransform RectMain;
 
-	public RectTransform RectShadow;
+		public RectTransform RectShadow;
 
-	[SerializeField]
+		[SerializeField]
 	protected Color shadowColor = new Color(0f, 0f, 0f, 0.6f);
 
-	[SerializeField]
+		[SerializeField]
 	protected Vector2 ShadowOffset = new Vector2(1.5f, -1.5f);
 
-	private LayoutElement shadowLayoutElement;
+		private LayoutElement shadowLayoutElement;
 }

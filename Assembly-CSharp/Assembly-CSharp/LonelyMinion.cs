@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>
 {
-	private bool HahCheckedMail(LonelyMinion.Instance smi)
+		private bool HahCheckedMail(LonelyMinion.Instance smi)
 	{
 		if (smi.AnimController.currentAnim == LonelyMinionConfig.CHECK_MAIL)
 		{
@@ -29,7 +29,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 		}
 	}
 
-	private void CheckForMail(LonelyMinion.Instance smi)
+		private void CheckForMail(LonelyMinion.Instance smi)
 	{
 		Tag prefabTag = this.Mail.Get(smi).GetComponent<KPrefabID>().PrefabTag;
 		QuestInstance instance = QuestManager.GetInstance(smi.def.QuestOwnerId, Db.Get().Quests.LonelyMinionFoodQuest);
@@ -67,7 +67,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 		smi.transform.parent.gameObject.AddOrGet<Notifier>().Add(notification, "");
 	}
 
-	private void EvaluateCurrentDecor(LonelyMinion.Instance smi, float dt)
+		private void EvaluateCurrentDecor(LonelyMinion.Instance smi, float dt)
 	{
 		QuestInstance instance = QuestManager.GetInstance(smi.def.QuestOwnerId, Db.Get().Quests.LonelyMinionDecorQuest);
 		if (smi.GetCurrentState() == this.Inactive || instance.IsComplete)
@@ -89,7 +89,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 		}, out flag2, out flag3);
 	}
 
-	private void DelayIdle(LonelyMinion.Instance smi, float dt)
+		private void DelayIdle(LonelyMinion.Instance smi, float dt)
 	{
 		if (smi.AnimController.currentAnim != smi.AnimController.defaultAnim)
 		{
@@ -106,7 +106,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 		}
 	}
 
-	private void PlayIdle(LonelyMinion.Instance smi, HashedString idleAnim)
+		private void PlayIdle(LonelyMinion.Instance smi, HashedString idleAnim)
 	{
 		if (!idleAnim.IsValid)
 		{
@@ -137,7 +137,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 		smi.AnimController.Play(idleAnim, KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	private void OnIdleAnimComplete(LonelyMinion.Instance smi)
+		private void OnIdleAnimComplete(LonelyMinion.Instance smi)
 	{
 		if (smi.AnimController.currentAnim == smi.AnimController.defaultAnim)
 		{
@@ -159,13 +159,13 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 		}
 	}
 
-	private void OnBecomeInactive(LonelyMinion.Instance smi)
+		private void OnBecomeInactive(LonelyMinion.Instance smi)
 	{
 		smi.AnimController.GetSynchronizer().Clear();
 		smi.AnimController.Play(smi.AnimController.initialAnim, smi.AnimController.initialMode, 1f, 0f);
 	}
 
-	private void OnBecomeActive(LonelyMinion.Instance smi)
+		private void OnBecomeActive(LonelyMinion.Instance smi)
 	{
 		LonelyMinionHouse.Instance smi2 = smi.transform.parent.GetSMI<LonelyMinionHouse.Instance>();
 		if (smi2 == null)
@@ -179,7 +179,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 		}
 	}
 
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.Inactive;
 		this.root.ParamTransition<bool>(this.Active, this.Inactive, (LonelyMinion.Instance smi, bool p) => !this.Active.Get(smi)).ParamTransition<bool>(this.Active, this.Idle, (LonelyMinion.Instance smi, bool p) => this.Active.Get(smi)).Update(new Action<LonelyMinion.Instance, float>(this.EvaluateCurrentDecor), UpdateRate.SIM_1000ms, false);
@@ -209,28 +209,28 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 		});
 	}
 
-	public StateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.TargetParameter Mail;
+		public StateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.TargetParameter Mail;
 
-	public StateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.BoolParameter Active;
+		public StateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.BoolParameter Active;
 
-	public GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State Idle;
+		public GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State Idle;
 
-	public GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State Inactive;
+		public GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State Inactive;
 
-	public LonelyMinion.MailStates CheckMail;
+		public LonelyMinion.MailStates CheckMail;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Personality Personality;
+				public Personality Personality;
 
-		public HashedString QuestOwnerId;
+				public HashedString QuestOwnerId;
 
-		public Extents DecorInspectionArea;
+				public Extents DecorInspectionArea;
 	}
 
-	public new class Instance : GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.GameInstance
+		public new class Instance : GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.GameInstance
 	{
-				public KBatchedAnimController AnimController
+						public KBatchedAnimController AnimController
 		{
 			get
 			{
@@ -238,7 +238,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			}
 		}
 
-				public KBatchedAnimController PackageSnapPoint
+						public KBatchedAnimController PackageSnapPoint
 		{
 			get
 			{
@@ -246,7 +246,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			}
 		}
 
-		public Instance(StateMachineController master, LonelyMinion.Def def) : base(master, def)
+				public Instance(StateMachineController master, LonelyMinion.Def def) : base(master, def)
 		{
 			this.animControllers = base.gameObject.GetComponentsInChildren<KBatchedAnimController>(true);
 			this.storage = base.GetComponent<Storage>();
@@ -256,7 +256,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			storyInstance.StoryStateChanged = (Action<StoryInstance.State>)Delegate.Combine(storyInstance.StoryStateChanged, new Action<StoryInstance.State>(this.OnStoryStateChanged));
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			LonelyMinionHouse.Instance smi = base.smi.transform.parent.GetSMI<LonelyMinionHouse.Instance>();
 			base.smi.AnimController.GetSynchronizer().Add(smi.AnimController);
@@ -267,7 +267,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			base.StartSM();
 		}
 
-		public override void StopSM(string reason)
+				public override void StopSM(string reason)
 		{
 			QuestInstance instance = QuestManager.GetInstance(base.def.QuestOwnerId, Db.Get().Quests.LonelyMinionGreetingQuest);
 			instance.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Remove(instance.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(this.ShowQuestCompleteNotification));
@@ -277,7 +277,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			this.ResetHandle.FreeResources();
 		}
 
-		public HashedString ChooseIdle()
+				public HashedString ChooseIdle()
 		{
 			if (this.availableIdles.Count > 1)
 			{
@@ -286,7 +286,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			return this.availableIdles[0];
 		}
 
-		public void Pickup(Pickupable pickupable, bool store)
+				public void Pickup(Pickupable pickupable, bool store)
 		{
 			base.sm.Mail.Set(null, this, true);
 			pickupable.storage.GetComponent<SingleEntityReceptacle>().OrderRemoveOccupant();
@@ -299,12 +299,12 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			UnityEngine.Object.Destroy(pickupable.gameObject);
 		}
 
-		public void Drop()
+				public void Drop()
 		{
 			this.storage.DropAll(this.PackageSnapPoint.transform.position, false, false, default(Vector3), true, null);
 		}
 
-		private void OnStoryStateChanged(StoryInstance.State state)
+				private void OnStoryStateChanged(StoryInstance.State state)
 		{
 			if (state != StoryInstance.State.COMPLETE)
 			{
@@ -313,14 +313,14 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			this.StoryCleanUp();
 		}
 
-		private void StoryCleanUp()
+				private void StoryCleanUp()
 		{
 			this.AnimController.GetSynchronizer().Clear();
 			StoryInstance storyInstance = StoryManager.Instance.GetStoryInstance(Db.Get().Stories.LonelyMinion.HashId);
 			storyInstance.StoryStateChanged = (Action<StoryInstance.State>)Delegate.Remove(storyInstance.StoryStateChanged, new Action<StoryInstance.State>(this.OnStoryStateChanged));
 		}
 
-		private void InitializeIdles()
+				private void InitializeIdles()
 		{
 			QuestInstance instance = QuestManager.GetInstance(base.def.QuestOwnerId, Db.Get().Quests.LonelyMinionFoodQuest);
 			if (instance.IsStarted)
@@ -358,7 +358,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			}
 		}
 
-		public void UnlockQuestIdle(QuestInstance quest, Quest.State prevState, float delta)
+				public void UnlockQuestIdle(QuestInstance quest, Quest.State prevState, float delta)
 		{
 			if (prevState == Quest.State.NotStarted && quest.IsStarted)
 			{
@@ -394,7 +394,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			this.availableIdles.Remove(LonelyMinionConfig.BLINDS_IDLE_0);
 		}
 
-		public void ShowQuestCompleteNotification(QuestInstance quest, Quest.State prevState, float delta = 0f)
+				public void ShowQuestCompleteNotification(QuestInstance quest, Quest.State prevState, float delta = 0f)
 		{
 			if (!quest.IsComplete)
 			{
@@ -410,7 +410,7 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			base.transform.parent.gameObject.AddOrGet<Notifier>().Add(notification, "");
 		}
 
-		private void ShowQuestCompletePopup(object data)
+				private void ShowQuestCompletePopup(object data)
 		{
 			global::Tuple<string, string> tuple = data as global::Tuple<string, string>;
 			InfoDialogScreen infoDialogScreen = LoreBearer.ShowPopupDialog().SetHeader(CODEX.STORY_TRAITS.LONELYMINION.QUESTCOMPLETE_POPUP.NAME).AddPlainText(tuple.second).AddDefaultOK(false);
@@ -420,24 +420,24 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			}
 		}
 
-		public SchedulerHandle ResetHandle;
+				public SchedulerHandle ResetHandle;
 
-		public float StartingAverageDecor = float.NegativeInfinity;
+				public float StartingAverageDecor = float.NegativeInfinity;
 
-		public float IdleDelayTimer;
+				public float IdleDelayTimer;
 
-		private KBatchedAnimController[] animControllers;
+				private KBatchedAnimController[] animControllers;
 
-		private Storage storage;
+				private Storage storage;
 
-		private const int maxIdles = 8;
+				private const int maxIdles = 8;
 
-		private List<HashedString> availableIdles = new List<HashedString>(8);
+				private List<HashedString> availableIdles = new List<HashedString>(8);
 	}
 
-	public class MailStates : GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State
+		public class MailStates : GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State
 	{
-		public static void OnEnter(LonelyMinion.Instance smi)
+				public static void OnEnter(LonelyMinion.Instance smi)
 		{
 			KBatchedAnimController component = smi.sm.Mail.Get(smi).GetComponent<KBatchedAnimController>();
 			smi.PackageSnapPoint.gameObject.SetActive(component.gameObject != smi.gameObject);
@@ -448,19 +448,19 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			smi.AnimController.Play(LonelyMinionConfig.CHECK_MAIL, KAnim.PlayMode.Once, 1f, 0f);
 		}
 
-		public static void OnExit(LonelyMinion.Instance smi)
+				public static void OnExit(LonelyMinion.Instance smi)
 		{
 			smi.ResetHandle = smi.ScheduleNextFrame(new Action<object>(LonelyMinion.MailStates.ResetState), smi);
 		}
 
-		private static void ResetState(object data)
+				private static void ResetState(object data)
 		{
 			LonelyMinion.Instance instance = data as LonelyMinion.Instance;
 			instance.AnimController.Play(instance.AnimController.initialAnim, instance.AnimController.initialMode, 1f, 0f);
 			instance.Drop();
 		}
 
-		public static void PlayAnims(LonelyMinion.Instance smi, HashedString anim)
+				public static void PlayAnims(LonelyMinion.Instance smi, HashedString anim)
 		{
 			if (anim.IsValid)
 			{
@@ -470,10 +470,10 @@ public class LonelyMinion : GameStateMachine<LonelyMinion, LonelyMinion.Instance
 			smi.GoTo(smi.sm.Idle);
 		}
 
-		public GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State Success;
+				public GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State Success;
 
-		public GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State Failure;
+				public GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State Failure;
 
-		public GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State Duplicate;
+				public GameStateMachine<LonelyMinion, LonelyMinion.Instance, StateMachineController, LonelyMinion.Def>.State Duplicate;
 	}
 }

@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class BlueGrassConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "BlueGrass";
 		string name = STRINGS.CREATURES.SPECIES.BLUE_GRASS.NAME;
@@ -24,11 +24,11 @@ public class BlueGrassConfig : IEntityConfig
 		float temperature_warning_low = 193.15f;
 		float temperature_warning_high = 273.15f;
 		float temperature_lethal_high = 273.15f;
-		string baseTraitName = STRINGS.CREATURES.SPECIES.BLUE_GRASS.NAME;
+		string text = STRINGS.CREATURES.SPECIES.BLUE_GRASS.NAME;
 		EntityTemplates.ExtendEntityToBasicPlant(template, temperature_lethal_low, temperature_warning_low, temperature_warning_high, temperature_lethal_high, new SimHashes[]
 		{
 			SimHashes.CarbonDioxide
-		}, true, 0f, 0f, "OxyRock", true, true, true, true, 2400f, 0f, 2200f, "BlueGrassOriginal", baseTraitName);
+		}, true, 0f, 0f, "OxyRock", true, true, true, true, 2400f, 0f, 2200f, "BlueGrassOriginal", text);
 		ElementConsumer elementConsumer = gameObject.AddOrGet<ElementConsumer>();
 		elementConsumer.showInStatusPanel = true;
 		elementConsumer.storeOnConsume = false;
@@ -49,26 +49,36 @@ public class BlueGrassConfig : IEntityConfig
 		gameObject.GetComponent<UprootedMonitor>();
 		gameObject.AddOrGet<StandardCropPlant>();
 		gameObject.AddOrGet<BlueGrass>();
-		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Harvest, "BlueGrassSeed", STRINGS.CREATURES.SPECIES.SEEDS.BLUE_GRASS.NAME, STRINGS.CREATURES.SPECIES.SEEDS.BLUE_GRASS.DESC, Assets.GetAnim("seed_bluegrass_kanim"), "object", 1, new List<Tag>
-		{
-			GameTags.CropSeed
-		}, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 4, STRINGS.CREATURES.SPECIES.BLUE_GRASS.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, this.GetDlcIds()), "BlueGrass_preview", Assets.GetAnim("bluegrass_kanim"), "place", 1, 1);
+		GameObject plant = gameObject;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Harvest;
+		string id2 = "BlueGrassSeed";
+		string name2 = STRINGS.CREATURES.SPECIES.SEEDS.BLUE_GRASS.NAME;
+		string desc2 = STRINGS.CREATURES.SPECIES.SEEDS.BLUE_GRASS.DESC;
+		KAnimFile anim = Assets.GetAnim("seed_bluegrass_kanim");
+		string initialAnim = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.CropSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		text = STRINGS.CREATURES.SPECIES.BLUE_GRASS.DOMESTICATEDDESC;
+		string[] dlcIds = this.GetDlcIds();
+		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id2, name2, desc2, anim, initialAnim, numberOfSeeds, list, planterDirection, default(Tag), 4, text, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, dlcIds), "BlueGrass_preview", Assets.GetAnim("bluegrass_kanim"), "place", 1, 1);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "BlueGrass";
+		public const string ID = "BlueGrass";
 
-	public const string SEED_ID = "BlueGrassSeed";
+		public const string SEED_ID = "BlueGrassSeed";
 
-	public const float CO2_RATE = 0.002f;
+		public const float CO2_RATE = 0.002f;
 
-	public const float FERTILIZATION_RATE = 20f;
+		public const float FERTILIZATION_RATE = 20f;
 }

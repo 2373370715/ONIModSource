@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SolidConduitInboxConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SolidConduitInbox";
 		int width = 1;
@@ -35,12 +35,12 @@ public class SolidConduitInboxConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		go.GetComponent<Constructable>().requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		Prioritizable.AddRef(go);
@@ -63,5 +63,5 @@ public class SolidConduitInboxConfig : IBuildingConfig
 		go.AddOrGet<SolidConduitDispenser>();
 	}
 
-	public const string ID = "SolidConduitInbox";
+		public const string ID = "SolidConduitInbox";
 }

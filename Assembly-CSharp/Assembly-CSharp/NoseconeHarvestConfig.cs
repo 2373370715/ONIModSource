@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class NoseconeHarvestConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "NoseconeHarvest";
 		int width = 5;
@@ -42,7 +42,7 @@ public class NoseconeHarvestConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -61,19 +61,19 @@ public class NoseconeHarvestConfig : IBuildingConfig
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		BuildingTemplates.ExtendBuildingToRocketModuleCluster(go, null, ROCKETRY.BURDEN.MINOR, 0f, 0f);
 		go.GetComponent<ReorderableBuilding>().buildConditions.Add(new TopOnly());
 	}
 
-	public const string ID = "NoseconeHarvest";
+		public const string ID = "NoseconeHarvest";
 
-	private float timeToFill = 3600f;
+		private float timeToFill = 3600f;
 
-	private float solidCapacity = ROCKETRY.SOLID_CARGO_BAY_CLUSTER_CAPACITY * ROCKETRY.CARGO_CAPACITY_SCALE;
+		private float solidCapacity = ROCKETRY.SOLID_CARGO_BAY_CLUSTER_CAPACITY * ROCKETRY.CARGO_CAPACITY_SCALE;
 
-	public const float DIAMOND_CONSUMED_PER_HARVEST_KG = 0.05f;
+		public const float DIAMOND_CONSUMED_PER_HARVEST_KG = 0.05f;
 
-	public const float DIAMOND_STORAGE_CAPACITY_KG = 1000f;
+		public const float DIAMOND_STORAGE_CAPACITY_KG = 1000f;
 }

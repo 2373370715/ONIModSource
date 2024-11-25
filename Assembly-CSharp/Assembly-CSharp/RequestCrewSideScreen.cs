@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RequestCrewSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.changeCrewButton.onClick += this.OnChangeCrewButtonPressed;
 		this.crewReleaseButton.onClick += this.CrewRelease;
@@ -15,12 +15,12 @@ public class RequestCrewSideScreen : SideScreenContent
 		this.Refresh();
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		return 100;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		PassengerRocketModule component = target.GetComponent<PassengerRocketModule>();
 		RocketControlStation component2 = target.GetComponent<RocketControlStation>();
@@ -36,7 +36,7 @@ public class RequestCrewSideScreen : SideScreenContent
 		return false;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		if (target.GetComponent<RocketControlStation>() != null)
 		{
@@ -49,24 +49,24 @@ public class RequestCrewSideScreen : SideScreenContent
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		this.RefreshRequestButtons();
 	}
 
-	private void CrewRelease()
+		private void CrewRelease()
 	{
 		this.rocketModule.RequestCrewBoard(PassengerRocketModule.RequestCrewState.Release);
 		this.RefreshRequestButtons();
 	}
 
-	private void CrewRequest()
+		private void CrewRequest()
 	{
 		this.rocketModule.RequestCrewBoard(PassengerRocketModule.RequestCrewState.Request);
 		this.RefreshRequestButtons();
 	}
 
-	private void RefreshRequestButtons()
+		private void RefreshRequestButtons()
 	{
 		foreach (KeyValuePair<KToggle, PassengerRocketModule.RequestCrewState> keyValuePair in this.toggleMap)
 		{
@@ -74,7 +74,7 @@ public class RequestCrewSideScreen : SideScreenContent
 		}
 	}
 
-	private void RefreshRequestButton(KToggle button)
+		private void RefreshRequestButton(KToggle button)
 	{
 		ImageToggleState[] componentsInChildren;
 		if (this.toggleMap[button] == this.rocketModule.PassengersRequested)
@@ -97,7 +97,7 @@ public class RequestCrewSideScreen : SideScreenContent
 		button.GetComponent<ImageToggleStateThrobber>().enabled = false;
 	}
 
-	private void OnChangeCrewButtonPressed()
+		private void OnChangeCrewButtonPressed()
 	{
 		if (this.activeChangeCrewSideScreen == null)
 		{
@@ -109,7 +109,7 @@ public class RequestCrewSideScreen : SideScreenContent
 		this.activeChangeCrewSideScreen = null;
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (!show)
@@ -119,17 +119,17 @@ public class RequestCrewSideScreen : SideScreenContent
 		}
 	}
 
-	private PassengerRocketModule rocketModule;
+		private PassengerRocketModule rocketModule;
 
-	public KToggle crewReleaseButton;
+		public KToggle crewReleaseButton;
 
-	public KToggle crewRequestButton;
+		public KToggle crewRequestButton;
 
-	private Dictionary<KToggle, PassengerRocketModule.RequestCrewState> toggleMap = new Dictionary<KToggle, PassengerRocketModule.RequestCrewState>();
+		private Dictionary<KToggle, PassengerRocketModule.RequestCrewState> toggleMap = new Dictionary<KToggle, PassengerRocketModule.RequestCrewState>();
 
-	public KButton changeCrewButton;
+		public KButton changeCrewButton;
 
-	public KScreen changeCrewSideScreenPrefab;
+		public KScreen changeCrewSideScreenPrefab;
 
-	private AssignmentGroupControllerSideScreen activeChangeCrewSideScreen;
+		private AssignmentGroupControllerSideScreen activeChangeCrewSideScreen;
 }

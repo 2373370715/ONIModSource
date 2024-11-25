@@ -3,19 +3,19 @@ using UnityEngine;
 
 public class PlayerControlledToggleSideScreen : SideScreenContent, IRenderEveryTick
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.toggleButton.onClick += this.ClickToggle;
 		this.togglePendingStatusItem = new StatusItem("PlayerControlledToggleSideScreen", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022, null);
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<IPlayerControlledToggle>() != null;
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		if (base.isActiveAndEnabled)
 		{
@@ -39,7 +39,7 @@ public class PlayerControlledToggleSideScreen : SideScreenContent, IRenderEveryT
 		}
 	}
 
-	private void ClickToggle()
+		private void ClickToggle()
 	{
 		if (SpeedControlScreen.Instance.IsPaused)
 		{
@@ -49,7 +49,7 @@ public class PlayerControlledToggleSideScreen : SideScreenContent, IRenderEveryT
 		this.Toggle();
 	}
 
-	private void RequestToggle()
+		private void RequestToggle()
 	{
 		this.target.ToggleRequested = !this.target.ToggleRequested;
 		if (this.target.ToggleRequested && SpeedControlScreen.Instance.IsPaused)
@@ -63,7 +63,7 @@ public class PlayerControlledToggleSideScreen : SideScreenContent, IRenderEveryT
 		this.UpdateVisuals(this.target.ToggleRequested ? (!this.target.ToggledOn()) : this.target.ToggledOn(), true);
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -80,7 +80,7 @@ public class PlayerControlledToggleSideScreen : SideScreenContent, IRenderEveryT
 		this.titleKey = this.target.SideScreenTitleKey;
 	}
 
-	private void Toggle()
+		private void Toggle()
 	{
 		this.target.ToggledByPlayer();
 		this.UpdateVisuals(this.target.ToggledOn(), true);
@@ -88,7 +88,7 @@ public class PlayerControlledToggleSideScreen : SideScreenContent, IRenderEveryT
 		this.target.GetSelectable().RemoveStatusItem(this.togglePendingStatusItem, false);
 	}
 
-	private void UpdateVisuals(bool state, bool smooth)
+		private void UpdateVisuals(bool state, bool smooth)
 	{
 		if (state != this.currentState)
 		{
@@ -104,34 +104,34 @@ public class PlayerControlledToggleSideScreen : SideScreenContent, IRenderEveryT
 		this.currentState = state;
 	}
 
-	public IPlayerControlledToggle target;
+		public IPlayerControlledToggle target;
 
-	public KButton toggleButton;
+		public KButton toggleButton;
 
-	protected static readonly HashedString[] ON_ANIMS = new HashedString[]
+		protected static readonly HashedString[] ON_ANIMS = new HashedString[]
 	{
 		"on_pre",
 		"on"
 	};
 
-	protected static readonly HashedString[] OFF_ANIMS = new HashedString[]
+		protected static readonly HashedString[] OFF_ANIMS = new HashedString[]
 	{
 		"off_pre",
 		"off"
 	};
 
-	public float animScaleBase = 0.25f;
+		public float animScaleBase = 0.25f;
 
-	private StatusItem togglePendingStatusItem;
+		private StatusItem togglePendingStatusItem;
 
-	[SerializeField]
+		[SerializeField]
 	private KBatchedAnimController kbac;
 
-	private float lastKeyboardShortcutTime;
+		private float lastKeyboardShortcutTime;
 
-	private const float KEYBOARD_COOLDOWN = 0.1f;
+		private const float KEYBOARD_COOLDOWN = 0.1f;
 
-	private bool keyDown;
+		private bool keyDown;
 
-	private bool currentState;
+		private bool currentState;
 }

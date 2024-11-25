@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 public class TagNameComparer : IComparer<Tag>
 {
-	public TagNameComparer()
+		public TagNameComparer()
 	{
 	}
 
-	public TagNameComparer(Tag firstTag)
+		public TagNameComparer(Tag firstTag)
 	{
 		this.firstTag = firstTag;
 	}
 
-	public int Compare(Tag x, Tag y)
+		public int Compare(Tag x, Tag y)
 	{
 		if (x == y)
 		{
@@ -32,5 +32,5 @@ public class TagNameComparer : IComparer<Tag>
 		return x.ProperNameStripLink().CompareTo(y.ProperNameStripLink());
 	}
 
-	private Tag firstTag;
+		private Tag firstTag;
 }

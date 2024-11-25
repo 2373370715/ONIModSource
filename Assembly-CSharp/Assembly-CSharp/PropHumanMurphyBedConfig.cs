@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PropHumanMurphyBedConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PropHumanMurphyBed";
 		string name = STRINGS.BUILDINGS.PREFABS.PROPHUMANMURPHYBED.NAME;
@@ -30,7 +30,7 @@ public class PropHumanMurphyBedConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
 		{
@@ -38,7 +38,7 @@ public class PropHumanMurphyBedConfig : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 }

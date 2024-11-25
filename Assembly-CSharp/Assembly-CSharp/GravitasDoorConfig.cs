@@ -6,12 +6,7 @@ using UnityEngine;
 
 public class GravitasDoorConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_ALL_VERSIONS;
-	}
-
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "GravitasDoor";
 		int width = 1;
@@ -39,7 +34,7 @@ public class GravitasDoorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public static List<LogicPorts.Port> CreateSingleInputPortList(CellOffset offset)
+		public static List<LogicPorts.Port> CreateSingleInputPortList(CellOffset offset)
 	{
 		return new List<LogicPorts.Port>
 		{
@@ -47,7 +42,7 @@ public class GravitasDoorConfig : IBuildingConfig
 		};
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddTag(GameTags.Gravitas);
 		Door door = go.AddOrGet<Door>();
@@ -64,9 +59,9 @@ public class GravitasDoorConfig : IBuildingConfig
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "GravitasDoor";
+		public const string ID = "GravitasDoor";
 }

@@ -2,7 +2,7 @@
 
 public class NavTable
 {
-	public NavTable(int cell_count)
+		public NavTable(int cell_count)
 	{
 		this.ValidCells = new short[cell_count];
 		this.NavTypeMasks = new short[11];
@@ -12,12 +12,12 @@ public class NavTable
 		}
 	}
 
-	public bool IsValid(int cell, NavType nav_type = NavType.Floor)
+		public bool IsValid(int cell, NavType nav_type = NavType.Floor)
 	{
 		return Grid.IsValidCell(cell) && (this.NavTypeMasks[(int)nav_type] & this.ValidCells[cell]) != 0;
 	}
 
-	public void SetValid(int cell, NavType nav_type, bool is_valid)
+		public void SetValid(int cell, NavType nav_type, bool is_valid)
 	{
 		short num = this.NavTypeMasks[(int)nav_type];
 		short num2 = this.ValidCells[cell];
@@ -38,9 +38,9 @@ public class NavTable
 		}
 	}
 
-	public Action<int, NavType> OnValidCellChanged;
+		public Action<int, NavType> OnValidCellChanged;
 
-	private short[] NavTypeMasks;
+		private short[] NavTypeMasks;
 
-	private short[] ValidCells;
+		private short[] ValidCells;
 }

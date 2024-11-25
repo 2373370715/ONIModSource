@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DirectionControl")]
 public class DirectionControl : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.allowedDirection = WorkableReactable.AllowedDirection.Any;
@@ -40,7 +40,7 @@ public class DirectionControl : KMonoBehaviour
 		base.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.DirectionControl, this);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.SetAllowedDirection(this.allowedDirection);
@@ -48,7 +48,7 @@ public class DirectionControl : KMonoBehaviour
 		base.Subscribe<DirectionControl>(-905833192, DirectionControl.OnCopySettingsDelegate);
 	}
 
-	private void SetAllowedDirection(WorkableReactable.AllowedDirection new_direction)
+		private void SetAllowedDirection(WorkableReactable.AllowedDirection new_direction)
 	{
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 		DirectionControl.DirectionInfo directionInfo = this.directionInfos[(int)new_direction];
@@ -68,54 +68,54 @@ public class DirectionControl : KMonoBehaviour
 		}
 	}
 
-	private void OnChangeWorkableDirection()
+		private void OnChangeWorkableDirection()
 	{
 		this.SetAllowedDirection((WorkableReactable.AllowedDirection.Left + (int)this.allowedDirection) % (WorkableReactable.AllowedDirection)this.directionInfos.Length);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		DirectionControl component = ((GameObject)data).GetComponent<DirectionControl>();
 		this.SetAllowedDirection(component.allowedDirection);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		int num = (int)((WorkableReactable.AllowedDirection.Left + (int)this.allowedDirection) % (WorkableReactable.AllowedDirection)this.directionInfos.Length);
 		DirectionControl.DirectionInfo directionInfo = this.directionInfos[num];
 		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo(directionInfo.iconName, directionInfo.name, new System.Action(this.OnChangeWorkableDirection), global::Action.NumActions, null, null, null, directionInfo.tooltip, true), 0.4f);
 	}
 
-	[Serialize]
+		[Serialize]
 	public WorkableReactable.AllowedDirection allowedDirection;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private DirectionControl.DirectionInfo[] directionInfos;
+		private DirectionControl.DirectionInfo[] directionInfos;
 
-	public Action<WorkableReactable.AllowedDirection> onDirectionChanged;
+		public Action<WorkableReactable.AllowedDirection> onDirectionChanged;
 
-	private static readonly EventSystem.IntraObjectHandler<DirectionControl> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<DirectionControl>(delegate(DirectionControl component, object data)
+		private static readonly EventSystem.IntraObjectHandler<DirectionControl> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<DirectionControl>(delegate(DirectionControl component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<DirectionControl> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<DirectionControl>(delegate(DirectionControl component, object data)
+		private static readonly EventSystem.IntraObjectHandler<DirectionControl> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<DirectionControl>(delegate(DirectionControl component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private struct DirectionInfo
+		private struct DirectionInfo
 	{
-		public bool allowLeft;
+				public bool allowLeft;
 
-		public bool allowRight;
+				public bool allowRight;
 
-		public string iconName;
+				public string iconName;
 
-		public string name;
+				public string name;
 
-		public string tooltip;
+				public string tooltip;
 	}
 }

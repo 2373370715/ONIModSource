@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class NativeAnimBatchLoader : MonoBehaviour
 {
-	private void Start()
+		private void Start()
 	{
 		if (this.generateObjects)
 		{
@@ -26,7 +26,7 @@ public class NativeAnimBatchLoader : MonoBehaviour
 		}
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (this.destroySelf)
 		{
@@ -43,17 +43,17 @@ public class NativeAnimBatchLoader : MonoBehaviour
 		}
 	}
 
-	public bool performTimeUpdate;
+		public bool performTimeUpdate;
 
-	public bool performUpdate;
+		public bool performUpdate;
 
-	public bool performRender;
+		public bool performRender;
 
-	public bool setTimeScale;
+		public bool setTimeScale;
 
-	public bool destroySelf;
+		public bool destroySelf;
 
-	public bool generateObjects;
+		public bool generateObjects;
 
-	public GameObject[] enableObjects;
+		public GameObject[] enableObjects;
 }

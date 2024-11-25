@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class URLOpenFunction : MonoBehaviour
 {
-	private void Start()
+		private void Start()
 	{
 		if (this.triggerButton != null)
 		{
@@ -15,7 +15,7 @@ public class URLOpenFunction : MonoBehaviour
 		}
 	}
 
-	public void OpenUrl(string url)
+		public void OpenUrl(string url)
 	{
 		if (url == "blueprints")
 		{
@@ -31,14 +31,14 @@ public class URLOpenFunction : MonoBehaviour
 		}
 	}
 
-	public void SetURL(string url)
+		public void SetURL(string url)
 	{
 		this.fixedURL = url;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton triggerButton;
 
-	[SerializeField]
+		[SerializeField]
 	private string fixedURL;
 }

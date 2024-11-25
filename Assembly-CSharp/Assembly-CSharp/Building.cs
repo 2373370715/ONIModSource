@@ -9,7 +9,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Building")]
 public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGridObject, IApproachable
 {
-		public Orientation Orientation
+			public Orientation Orientation
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		}
 	}
 
-		public int[] PlacementCells
+			public int[] PlacementCells
 	{
 		get
 		{
@@ -33,7 +33,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		}
 	}
 
-	public Extents GetExtents()
+		public Extents GetExtents()
 	{
 		if (this.extents.width == 0 || this.extents.height == 0)
 		{
@@ -42,7 +42,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		return this.extents;
 	}
 
-	public Extents GetValidPlacementExtents()
+		public Extents GetValidPlacementExtents()
 	{
 		Extents result = this.GetExtents();
 		result.x--;
@@ -52,7 +52,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		return result;
 	}
 
-	public bool PlacementCellsContainCell(int cell)
+		public bool PlacementCellsContainCell(int cell)
 	{
 		for (int i = 0; i < this.PlacementCells.Length; i++)
 		{
@@ -64,7 +64,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		return false;
 	}
 
-	public void RefreshCells()
+		public void RefreshCells()
 	{
 		this.placementCells = new int[this.Def.PlacementOffsets.Length];
 		int num = Grid.PosToCell(this);
@@ -104,7 +104,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		this.extents.height = num6 - num4 + 1;
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	internal void OnDeserialized()
 	{
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
@@ -123,7 +123,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		}
 	}
 
-	public static void CreateBuildingMeltedNotification(GameObject building)
+		public static void CreateBuildingMeltedNotification(GameObject building)
 	{
 		Vector3 pos = building.transform.GetPosition();
 		Notifier notifier = building.AddOrGet<Notifier>();
@@ -134,12 +134,12 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		notifier.Add(notification, "");
 	}
 
-	public void SetDescription(string desc)
+		public void SetDescription(string desc)
 	{
 		this.description = desc;
 	}
 
-		public string Desc
+			public string Desc
 	{
 		get
 		{
@@ -147,7 +147,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		}
 	}
 
-		public string DescFlavour
+			public string DescFlavour
 	{
 		get
 		{
@@ -155,7 +155,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		}
 	}
 
-		public string DescEffect
+			public string DescEffect
 	{
 		get
 		{
@@ -163,12 +163,12 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		}
 	}
 
-	public void SetDescriptionFlavour(string descriptionFlavour)
+		public void SetDescriptionFlavour(string descriptionFlavour)
 	{
 		this.descriptionFlavour = descriptionFlavour;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (this.Def == null)
 		{
@@ -197,19 +197,19 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.scenePartitionerEntry);
 		base.OnCleanUp();
 	}
 
-	public virtual void UpdatePosition()
+		public virtual void UpdatePosition()
 	{
 		this.RefreshCells();
 		GameScenePartitioner.Instance.UpdatePosition(this.scenePartitionerEntry, this.GetExtents());
 	}
 
-	protected void RegisterBlockTileRenderer()
+		protected void RegisterBlockTileRenderer()
 	{
 		if (this.Def.BlockTileAtlas != null)
 		{
@@ -225,7 +225,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		}
 	}
 
-	public CellOffset GetRotatedOffset(CellOffset offset)
+		public CellOffset GetRotatedOffset(CellOffset offset)
 	{
 		if (!(this.rotatable != null))
 		{
@@ -234,68 +234,68 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		return this.rotatable.GetRotatedCellOffset(offset);
 	}
 
-	public int GetBottomLeftCell()
+		public int GetBottomLeftCell()
 	{
 		return Grid.PosToCell(base.transform.GetPosition());
 	}
 
-	public int GetPowerInputCell()
+		public int GetPowerInputCell()
 	{
 		CellOffset rotatedOffset = this.GetRotatedOffset(this.Def.PowerInputOffset);
 		return Grid.OffsetCell(this.GetBottomLeftCell(), rotatedOffset);
 	}
 
-	public int GetPowerOutputCell()
+		public int GetPowerOutputCell()
 	{
 		CellOffset rotatedOffset = this.GetRotatedOffset(this.Def.PowerOutputOffset);
 		return Grid.OffsetCell(this.GetBottomLeftCell(), rotatedOffset);
 	}
 
-	public int GetUtilityInputCell()
+		public int GetUtilityInputCell()
 	{
 		CellOffset rotatedOffset = this.GetRotatedOffset(this.Def.UtilityInputOffset);
 		return Grid.OffsetCell(this.GetBottomLeftCell(), rotatedOffset);
 	}
 
-	public int GetHighEnergyParticleInputCell()
+		public int GetHighEnergyParticleInputCell()
 	{
 		CellOffset rotatedOffset = this.GetRotatedOffset(this.Def.HighEnergyParticleInputOffset);
 		return Grid.OffsetCell(this.GetBottomLeftCell(), rotatedOffset);
 	}
 
-	public int GetHighEnergyParticleOutputCell()
+		public int GetHighEnergyParticleOutputCell()
 	{
 		CellOffset rotatedOffset = this.GetRotatedOffset(this.Def.HighEnergyParticleOutputOffset);
 		return Grid.OffsetCell(this.GetBottomLeftCell(), rotatedOffset);
 	}
 
-	public int GetUtilityOutputCell()
+		public int GetUtilityOutputCell()
 	{
 		CellOffset rotatedOffset = this.GetRotatedOffset(this.Def.UtilityOutputOffset);
 		return Grid.OffsetCell(this.GetBottomLeftCell(), rotatedOffset);
 	}
 
-	public CellOffset GetUtilityInputOffset()
+		public CellOffset GetUtilityInputOffset()
 	{
 		return this.GetRotatedOffset(this.Def.UtilityInputOffset);
 	}
 
-	public CellOffset GetUtilityOutputOffset()
+		public CellOffset GetUtilityOutputOffset()
 	{
 		return this.GetRotatedOffset(this.Def.UtilityOutputOffset);
 	}
 
-	public CellOffset GetHighEnergyParticleInputOffset()
+		public CellOffset GetHighEnergyParticleInputOffset()
 	{
 		return this.GetRotatedOffset(this.Def.HighEnergyParticleInputOffset);
 	}
 
-	public CellOffset GetHighEnergyParticleOutputOffset()
+		public CellOffset GetHighEnergyParticleOutputOffset()
 	{
 		return this.GetRotatedOffset(this.Def.HighEnergyParticleOutputOffset);
 	}
 
-	protected void UnregisterBlockTileRenderer()
+		protected void UnregisterBlockTileRenderer()
 	{
 		if (this.Def.BlockTileAtlas != null)
 		{
@@ -311,7 +311,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		}
 	}
 
-	private SimHashes GetVisualizationElementID(PrimaryElement pe)
+		private SimHashes GetVisualizationElementID(PrimaryElement pe)
 	{
 		if (!(this is BuildingComplete))
 		{
@@ -320,12 +320,12 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		return pe.ElementID;
 	}
 
-	public void RunOnArea(Action<int> callback)
+		public void RunOnArea(Action<int> callback)
 	{
 		this.Def.RunOnArea(Grid.PosToCell(this), this.Orientation, callback);
 	}
 
-	public List<Descriptor> RequirementDescriptors(BuildingDef def)
+		public List<Descriptor> RequirementDescriptors(BuildingDef def)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		BuildingComplete component = def.BuildingComplete.GetComponent<BuildingComplete>();
@@ -398,7 +398,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		return list;
 	}
 
-	public List<Descriptor> EffectDescriptors(BuildingDef def)
+		public List<Descriptor> EffectDescriptors(BuildingDef def)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (def.EffectDescription != null)
@@ -421,7 +421,7 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		return list;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		foreach (Descriptor item in this.RequirementDescriptors(this.Def))
@@ -435,45 +435,45 @@ public class Building : KMonoBehaviour, IGameObjectEffectDescriptor, IUniformGri
 		return list;
 	}
 
-	public override Vector2 PosMin()
+		public override Vector2 PosMin()
 	{
 		Extents extents = this.GetExtents();
 		return new Vector2((float)extents.x, (float)extents.y);
 	}
 
-	public override Vector2 PosMax()
+		public override Vector2 PosMax()
 	{
 		Extents extents = this.GetExtents();
 		return new Vector2((float)(extents.x + extents.width), (float)(extents.y + extents.height));
 	}
 
-	public CellOffset[] GetOffsets()
+		public CellOffset[] GetOffsets()
 	{
 		return OffsetGroups.Use;
 	}
 
-	public int GetCell()
+		public int GetCell()
 	{
 		return Grid.PosToCell(this);
 	}
 
-	public BuildingDef Def;
+		public BuildingDef Def;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Rotatable rotatable;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private StateMachineController stateMachineController;
 
-	private int[] placementCells;
+		private int[] placementCells;
 
-	private Extents extents;
+		private Extents extents;
 
-	private static StatusItem deprecatedBuildingStatusItem;
+		private static StatusItem deprecatedBuildingStatusItem;
 
-	private string description;
+		private string description;
 
-	private string descriptionFlavour;
+		private string descriptionFlavour;
 
-	private HandleVector<int>.Handle scenePartitionerEntry;
+		private HandleVector<int>.Handle scenePartitionerEntry;
 }

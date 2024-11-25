@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class HydrogenEngineConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetForbiddenDlcIds()
 	{
-		return DlcManager.AVAILABLE_VANILLA_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "HydrogenEngine";
 		int width = 7;
@@ -38,7 +38,7 @@ public class HydrogenEngineConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -49,15 +49,15 @@ public class HydrogenEngineConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		RocketEngine rocketEngine = go.AddOrGet<RocketEngine>();
 		rocketEngine.fuelTag = ElementLoader.FindElementByHash(SimHashes.LiquidHydrogen).tag;
@@ -68,5 +68,5 @@ public class HydrogenEngineConfig : IBuildingConfig
 		BuildingTemplates.ExtendBuildingToRocketModule(go, "rocket_hydrogen_engine_bg_kanim", false);
 	}
 
-	public const string ID = "HydrogenEngine";
+		public const string ID = "HydrogenEngine";
 }

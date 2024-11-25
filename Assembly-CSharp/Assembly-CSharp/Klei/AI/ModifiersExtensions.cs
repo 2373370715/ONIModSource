@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public static class ModifiersExtensions
+		public static class ModifiersExtensions
 	{
-		public static Attributes GetAttributes(this KMonoBehaviour cmp)
+				public static Attributes GetAttributes(this KMonoBehaviour cmp)
 		{
 			return cmp.gameObject.GetAttributes();
 		}
 
-		public static Attributes GetAttributes(this GameObject go)
+				public static Attributes GetAttributes(this GameObject go)
 		{
 			Modifiers component = go.GetComponent<Modifiers>();
 			if (component != null)
@@ -20,7 +20,7 @@ namespace Klei.AI
 			return null;
 		}
 
-		public static Amounts GetAmounts(this KMonoBehaviour cmp)
+				public static Amounts GetAmounts(this KMonoBehaviour cmp)
 		{
 			if (cmp is Modifiers)
 			{
@@ -29,7 +29,7 @@ namespace Klei.AI
 			return cmp.gameObject.GetAmounts();
 		}
 
-		public static Amounts GetAmounts(this GameObject go)
+				public static Amounts GetAmounts(this GameObject go)
 		{
 			Modifiers component = go.GetComponent<Modifiers>();
 			if (component != null)
@@ -39,12 +39,12 @@ namespace Klei.AI
 			return null;
 		}
 
-		public static Sicknesses GetSicknesses(this KMonoBehaviour cmp)
+				public static Sicknesses GetSicknesses(this KMonoBehaviour cmp)
 		{
 			return cmp.gameObject.GetSicknesses();
 		}
 
-		public static Sicknesses GetSicknesses(this GameObject go)
+				public static Sicknesses GetSicknesses(this GameObject go)
 		{
 			Modifiers component = go.GetComponent<Modifiers>();
 			if (component != null)

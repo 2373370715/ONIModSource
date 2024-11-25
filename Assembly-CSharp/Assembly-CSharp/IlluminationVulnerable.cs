@@ -7,7 +7,7 @@ using UnityEngine;
 [SkipSaveFileSerialization]
 public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerable.StatesInstance>, IGameObjectEffectDescriptor, IWiltCause, IIlluminationTracker
 {
-		public int LightIntensityThreshold
+			public int LightIntensityThreshold
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 		}
 	}
 
-	public string GetIlluminationUITooltip()
+		public string GetIlluminationUITooltip()
 	{
 		if ((this.prefersDarkness && this.IsComfortable()) || (!this.prefersDarkness && !this.IsComfortable()))
 		{
@@ -28,17 +28,17 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 		return UI.TOOLTIPS.VITALS_CHECKBOX_ILLUMINATION_LIGHT;
 	}
 
-	public string GetIlluminationUILabel()
+		public string GetIlluminationUILabel()
 	{
 		return Db.Get().Amounts.Illumination.Name + "\n    • " + (this.prefersDarkness ? UI.GAMEOBJECTEFFECTS.DARKNESS.ToString() : GameUtil.GetFormattedLux(this.LightIntensityThreshold));
 	}
 
-	public bool ShouldIlluminationUICheckboxBeChecked()
+		public bool ShouldIlluminationUICheckboxBeChecked()
 	{
 		return this.IsComfortable();
 	}
 
-		private OccupyArea occupyArea
+			private OccupyArea occupyArea
 	{
 		get
 		{
@@ -50,31 +50,31 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.gameObject.GetAmounts().Add(new AmountInstance(Db.Get().Amounts.Illumination, base.gameObject));
 		this.minLuxAttributeInstance = base.gameObject.GetAttributes().Add(Db.Get().PlantAttributes.MinLightLux);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	public void SetPrefersDarkness(bool prefersDarkness = false)
+		public void SetPrefersDarkness(bool prefersDarkness = false)
 	{
 		this.prefersDarkness = prefersDarkness;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.handle.ClearScheduler();
 		base.OnCleanUp();
 	}
 
-	public bool IsCellSafe(int cell)
+		public bool IsCellSafe(int cell)
 	{
 		if (!Grid.IsValidCell(cell))
 		{
@@ -87,7 +87,7 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 		return Grid.LightIntensity[cell] >= this.LightIntensityThreshold;
 	}
 
-		WiltCondition.Condition[] IWiltCause.Conditions
+			WiltCondition.Condition[] IWiltCause.Conditions
 	{
 		get
 		{
@@ -99,7 +99,7 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 		}
 	}
 
-		public string WiltStateString
+			public string WiltStateString
 	{
 		get
 		{
@@ -115,12 +115,12 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 		}
 	}
 
-	public bool IsComfortable()
+		public bool IsComfortable()
 	{
 		return base.smi.IsInsideState(base.smi.sm.comfortable);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		if (this.prefersDarkness)
 		{
@@ -135,26 +135,26 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 		};
 	}
 
-	private OccupyArea _occupyArea;
+		private OccupyArea _occupyArea;
 
-	private SchedulerHandle handle;
+		private SchedulerHandle handle;
 
-	public bool prefersDarkness;
+		public bool prefersDarkness;
 
-	private AttributeInstance minLuxAttributeInstance;
+		private AttributeInstance minLuxAttributeInstance;
 
-	public class StatesInstance : GameStateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable, object>.GameInstance
+		public class StatesInstance : GameStateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable, object>.GameInstance
 	{
-		public StatesInstance(IlluminationVulnerable master) : base(master)
+				public StatesInstance(IlluminationVulnerable master) : base(master)
 		{
 		}
 
-		public bool hasMaturity;
+				public bool hasMaturity;
 	}
 
-	public class States : GameStateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable>
+		public class States : GameStateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.comfortable;
 			this.root.Update("Illumination", delegate(IlluminationVulnerable.StatesInstance smi, float dt)
@@ -197,12 +197,12 @@ public class IlluminationVulnerable : StateMachineComponent<IlluminationVulnerab
 			}, UpdateRate.SIM_1000ms, false);
 		}
 
-		public StateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable, object>.BoolParameter illuminated;
+				public StateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable, object>.BoolParameter illuminated;
 
-		public GameStateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable, object>.State comfortable;
+				public GameStateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable, object>.State comfortable;
 
-		public GameStateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable, object>.State too_dark;
+				public GameStateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable, object>.State too_dark;
 
-		public GameStateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable, object>.State too_bright;
+				public GameStateMachine<IlluminationVulnerable.States, IlluminationVulnerable.StatesInstance, IlluminationVulnerable, object>.State too_bright;
 	}
 }

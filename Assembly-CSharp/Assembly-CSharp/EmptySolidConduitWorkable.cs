@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/EmptySolidConduitWorkable")]
 public class EmptySolidConduitWorkable : Workable, IEmptyConduitWorkable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTable);
@@ -23,7 +23,7 @@ public class EmptySolidConduitWorkable : Workable, IEmptyConduitWorkable
 		this.shouldShowSkillPerkStatusItem = false;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.elapsedTime != -1f)
@@ -32,7 +32,7 @@ public class EmptySolidConduitWorkable : Workable, IEmptyConduitWorkable
 		}
 	}
 
-	public void MarkForEmptying()
+		public void MarkForEmptying()
 	{
 		if (this.chore == null && this.HasContents())
 		{
@@ -42,13 +42,13 @@ public class EmptySolidConduitWorkable : Workable, IEmptyConduitWorkable
 		}
 	}
 
-	private bool HasContents()
+		private bool HasContents()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		return this.GetFlowManager().GetContents(cell).pickupableHandle.IsValid();
 	}
 
-	private void CancelEmptying()
+		private void CancelEmptying()
 	{
 		this.CleanUpVisualization();
 		if (this.chore != null)
@@ -60,7 +60,7 @@ public class EmptySolidConduitWorkable : Workable, IEmptyConduitWorkable
 		}
 	}
 
-	private void CleanUpVisualization()
+		private void CleanUpVisualization()
 	{
 		StatusItem statusItem = this.GetStatusItem();
 		KSelectable component = base.GetComponent<KSelectable>();
@@ -75,28 +75,28 @@ public class EmptySolidConduitWorkable : Workable, IEmptyConduitWorkable
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.CancelEmptying();
 		base.OnCleanUp();
 	}
 
-	private SolidConduitFlow GetFlowManager()
+		private SolidConduitFlow GetFlowManager()
 	{
 		return Game.Instance.solidConduitFlow;
 	}
 
-	private void OnEmptyConduitCancelled(object data)
+		private void OnEmptyConduitCancelled(object data)
 	{
 		this.CancelEmptying();
 	}
 
-	private StatusItem GetStatusItem()
+		private StatusItem GetStatusItem()
 	{
 		return EmptySolidConduitWorkable.emptySolidConduitStatusItem;
 	}
 
-	private void CreateWorkChore()
+		private void CreateWorkChore()
 	{
 		base.GetComponent<Prioritizable>().AddRef();
 		this.chore = new WorkChore<EmptySolidConduitWorkable>(Db.Get().ChoreTypes.EmptyStorage, this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
@@ -107,7 +107,7 @@ public class EmptySolidConduitWorkable : Workable, IEmptyConduitWorkable
 		this.UpdateStatusItem(null);
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		if (this.elapsedTime == -1f)
 		{
@@ -144,43 +144,43 @@ public class EmptySolidConduitWorkable : Workable, IEmptyConduitWorkable
 		return result;
 	}
 
-	public override bool InstantlyFinish(Worker worker)
+		public override bool InstantlyFinish(WorkerBase worker)
 	{
 		worker.Work(4f);
 		return true;
 	}
 
-	public void EmptyContents()
+		public void EmptyContents()
 	{
 		int cell_idx = Grid.PosToCell(base.transform.GetPosition());
 		this.GetFlowManager().RemovePickupable(cell_idx);
 		this.elapsedTime = 0f;
 	}
 
-	public override float GetPercentComplete()
+		public override float GetPercentComplete()
 	{
 		return Mathf.Clamp01(this.elapsedTime / 4f);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private SolidConduit conduit;
 
-	private static StatusItem emptySolidConduitStatusItem;
+		private static StatusItem emptySolidConduitStatusItem;
 
-	private Chore chore;
+		private Chore chore;
 
-	private const float RECHECK_PIPE_INTERVAL = 2f;
+		private const float RECHECK_PIPE_INTERVAL = 2f;
 
-	private const float TIME_TO_EMPTY_PIPE = 4f;
+		private const float TIME_TO_EMPTY_PIPE = 4f;
 
-	private const float NO_EMPTY_SCHEDULED = -1f;
+		private const float NO_EMPTY_SCHEDULED = -1f;
 
-	[Serialize]
+		[Serialize]
 	private float elapsedTime = -1f;
 
-	private bool emptiedPipe = true;
+		private bool emptiedPipe = true;
 
-	private static readonly EventSystem.IntraObjectHandler<EmptySolidConduitWorkable> OnEmptyConduitCancelledDelegate = new EventSystem.IntraObjectHandler<EmptySolidConduitWorkable>(delegate(EmptySolidConduitWorkable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<EmptySolidConduitWorkable> OnEmptyConduitCancelledDelegate = new EventSystem.IntraObjectHandler<EmptySolidConduitWorkable>(delegate(EmptySolidConduitWorkable component, object data)
 	{
 		component.OnEmptyConduitCancelled(data);
 	});

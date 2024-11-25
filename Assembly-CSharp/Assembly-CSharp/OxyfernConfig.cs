@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class OxyfernConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "Oxyfern";
 		string name = STRINGS.CREATURES.SPECIES.OXYFERN.NAME;
@@ -65,35 +65,44 @@ public class OxyfernConfig : IEntityConfig
 		{
 			new ElementConverter.OutputElement(0.031250004f, SimHashes.Oxygen, 0f, true, false, 0f, 1f, 0.75f, byte.MaxValue, 0, true)
 		};
-		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Hidden, "OxyfernSeed", STRINGS.CREATURES.SPECIES.SEEDS.OXYFERN.NAME, STRINGS.CREATURES.SPECIES.SEEDS.OXYFERN.DESC, Assets.GetAnim("seed_oxyfern_kanim"), "object", 1, new List<Tag>
-		{
-			GameTags.CropSeed
-		}, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 20, STRINGS.CREATURES.SPECIES.OXYFERN.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, null), "Oxyfern_preview", Assets.GetAnim("oxy_fern_kanim"), "place", 1, 2);
+		GameObject plant = gameObject;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Hidden;
+		string id2 = "OxyfernSeed";
+		string name2 = STRINGS.CREATURES.SPECIES.SEEDS.OXYFERN.NAME;
+		string desc2 = STRINGS.CREATURES.SPECIES.SEEDS.OXYFERN.DESC;
+		KAnimFile anim = Assets.GetAnim("seed_oxyfern_kanim");
+		string initialAnim = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.CropSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		string domesticatedDescription = STRINGS.CREATURES.SPECIES.OXYFERN.DOMESTICATEDDESC;
+		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id2, name2, desc2, anim, initialAnim, numberOfSeeds, list, planterDirection, default(Tag), 20, domesticatedDescription, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, null), "Oxyfern_preview", Assets.GetAnim("oxy_fern_kanim"), "place", 1, 2);
 		SoundEventVolumeCache.instance.AddVolume("oxy_fern_kanim", "MealLice_harvest", NOISE_POLLUTION.CREATURES.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("oxy_fern_kanim", "MealLice_LP", NOISE_POLLUTION.CREATURES.TIER4);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		inst.GetComponent<Oxyfern>().SetConsumptionRate();
 	}
 
-	public const string ID = "Oxyfern";
+		public const string ID = "Oxyfern";
 
-	public const string SEED_ID = "OxyfernSeed";
+		public const string SEED_ID = "OxyfernSeed";
 
-	public const float WATER_CONSUMPTION_RATE = 0.031666666f;
+		public const float WATER_CONSUMPTION_RATE = 0.031666666f;
 
-	public const float FERTILIZATION_RATE = 0.006666667f;
+		public const float FERTILIZATION_RATE = 0.006666667f;
 
-	public const float CO2_RATE = 0.00062500004f;
+		public const float CO2_RATE = 0.00062500004f;
 
-	private const float CONVERSION_RATIO = 50f;
+		private const float CONVERSION_RATIO = 50f;
 
-	public const float OXYGEN_RATE = 0.031250004f;
+		public const float OXYGEN_RATE = 0.031250004f;
 }

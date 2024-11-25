@@ -2,9 +2,9 @@
 
 public interface ILogicEventSender : ILogicNetworkConnection
 {
-	void LogicTick();
+		void LogicTick();
 
-	int GetLogicCell();
+		int GetLogicCell();
 
-	int GetLogicValue();
+		int GetLogicValue();
 }

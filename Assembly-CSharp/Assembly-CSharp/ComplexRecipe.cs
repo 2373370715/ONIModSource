@@ -5,14 +5,16 @@ using UnityEngine;
 
 public class ComplexRecipe
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return this.dlcIds;
 	}
 
-			public bool ProductHasFacade { get; set; }
+				public bool ProductHasFacade { get; set; }
 
-		public Tag FirstResult
+				public bool RequiresAllIngredientsDiscovered { get; set; }
+
+			public Tag FirstResult
 	{
 		get
 		{
@@ -20,7 +22,7 @@ public class ComplexRecipe
 		}
 	}
 
-	public ComplexRecipe(string id, ComplexRecipe.RecipeElement[] ingredients, ComplexRecipe.RecipeElement[] results)
+		public ComplexRecipe(string id, ComplexRecipe.RecipeElement[] ingredients, ComplexRecipe.RecipeElement[] results)
 	{
 		this.id = id;
 		this.ingredients = ingredients;
@@ -28,27 +30,27 @@ public class ComplexRecipe
 		ComplexRecipeManager.Get().Add(this);
 	}
 
-	public ComplexRecipe(string id, ComplexRecipe.RecipeElement[] ingredients, ComplexRecipe.RecipeElement[] results, int consumedHEP, int producedHEP) : this(id, ingredients, results)
+		public ComplexRecipe(string id, ComplexRecipe.RecipeElement[] ingredients, ComplexRecipe.RecipeElement[] results, int consumedHEP, int producedHEP) : this(id, ingredients, results)
 	{
 		this.consumedHEP = consumedHEP;
 		this.producedHEP = producedHEP;
 	}
 
-	public ComplexRecipe(string id, ComplexRecipe.RecipeElement[] ingredients, ComplexRecipe.RecipeElement[] results, int consumedHEP) : this(id, ingredients, results, consumedHEP, 0)
+		public ComplexRecipe(string id, ComplexRecipe.RecipeElement[] ingredients, ComplexRecipe.RecipeElement[] results, int consumedHEP) : this(id, ingredients, results, consumedHEP, 0)
 	{
 	}
 
-	public ComplexRecipe(string id, ComplexRecipe.RecipeElement[] ingredients, ComplexRecipe.RecipeElement[] results, string[] dlcIds) : this(id, ingredients, results)
-	{
-		this.dlcIds = dlcIds;
-	}
-
-	public ComplexRecipe(string id, ComplexRecipe.RecipeElement[] ingredients, ComplexRecipe.RecipeElement[] results, int consumedHEP, int producedHEP, string[] dlcIds) : this(id, ingredients, results, consumedHEP, producedHEP)
+		public ComplexRecipe(string id, ComplexRecipe.RecipeElement[] ingredients, ComplexRecipe.RecipeElement[] results, string[] dlcIds) : this(id, ingredients, results)
 	{
 		this.dlcIds = dlcIds;
 	}
 
-	public float TotalResultUnits()
+		public ComplexRecipe(string id, ComplexRecipe.RecipeElement[] ingredients, ComplexRecipe.RecipeElement[] results, int consumedHEP, int producedHEP, string[] dlcIds) : this(id, ingredients, results, consumedHEP, producedHEP)
+	{
+		this.dlcIds = dlcIds;
+	}
+
+		public float TotalResultUnits()
 	{
 		float num = 0f;
 		foreach (ComplexRecipe.RecipeElement recipeElement in this.results)
@@ -58,17 +60,17 @@ public class ComplexRecipe
 		return num;
 	}
 
-	public bool RequiresTechUnlock()
+		public bool RequiresTechUnlock()
 	{
 		return !string.IsNullOrEmpty(this.requiredTech);
 	}
 
-	public bool IsRequiredTechUnlocked()
+		public bool IsRequiredTechUnlocked()
 	{
 		return string.IsNullOrEmpty(this.requiredTech) || Db.Get().Techs.Get(this.requiredTech).IsComplete();
 	}
 
-	public Sprite GetUIIcon()
+		public Sprite GetUIIcon()
 	{
 		Sprite result = null;
 		KBatchedAnimController component = Assets.GetPrefab((this.nameDisplay == ComplexRecipe.RecipeNameDisplay.Ingredient) ? this.ingredients[0].material : this.results[0].material).GetComponent<KBatchedAnimController>();
@@ -79,12 +81,12 @@ public class ComplexRecipe
 		return result;
 	}
 
-	public Color GetUIColor()
+		public Color GetUIColor()
 	{
 		return Color.white;
 	}
 
-	public string GetUIName(bool includeAmounts)
+		public string GetUIName(bool includeAmounts)
 	{
 		string text = this.results[0].facadeID.IsNullOrWhiteSpace() ? this.results[0].material.ProperName() : this.results[0].facadeID.ProperName();
 		switch (this.nameDisplay)
@@ -156,50 +158,50 @@ public class ComplexRecipe
 		return this.ingredients[0].material.ProperName();
 	}
 
-	public string id;
+		public string id;
 
-	public ComplexRecipe.RecipeElement[] ingredients;
+		public ComplexRecipe.RecipeElement[] ingredients;
 
-	public ComplexRecipe.RecipeElement[] results;
+		public ComplexRecipe.RecipeElement[] results;
 
-	public float time;
+		public float time;
 
-	public GameObject FabricationVisualizer;
+		public GameObject FabricationVisualizer;
 
-	public int consumedHEP;
+		public int consumedHEP;
 
-	public int producedHEP;
+		public int producedHEP;
 
-	public string recipeCategoryID = "";
+		public string recipeCategoryID = "";
 
-	private string[] dlcIds = DlcManager.AVAILABLE_ALL_VERSIONS;
+		private string[] dlcIds = DlcManager.AVAILABLE_ALL_VERSIONS;
 
-	public ComplexRecipe.RecipeNameDisplay nameDisplay;
+		public ComplexRecipe.RecipeNameDisplay nameDisplay;
 
-	public string customName;
+		public string customName;
 
-	public string description;
+		public string description;
 
-	public List<Tag> fabricators;
+		public List<Tag> fabricators;
 
-	public int sortOrder;
+		public int sortOrder;
 
-	public string requiredTech;
+		public string requiredTech;
 
-	public enum RecipeNameDisplay
+		public enum RecipeNameDisplay
 	{
-		Ingredient,
-		Result,
-		IngredientToResult,
-		ResultWithIngredient,
-		Composite,
-		HEP,
-		Custom
+				Ingredient,
+				Result,
+				IngredientToResult,
+				ResultWithIngredient,
+				Composite,
+				HEP,
+				Custom
 	}
 
-	public class RecipeElement
+		public class RecipeElement
 	{
-		public RecipeElement(Tag material, float amount, bool inheritElement)
+				public RecipeElement(Tag material, float amount, bool inheritElement)
 		{
 			this.material = material;
 			this.amount = amount;
@@ -207,14 +209,14 @@ public class ComplexRecipe
 			this.inheritElement = inheritElement;
 		}
 
-		public RecipeElement(Tag material, float amount)
+				public RecipeElement(Tag material, float amount)
 		{
 			this.material = material;
 			this.amount = amount;
 			this.temperatureOperation = ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature;
 		}
 
-		public RecipeElement(Tag material, float amount, ComplexRecipe.RecipeElement.TemperatureOperation temperatureOperation, bool storeElement = false)
+				public RecipeElement(Tag material, float amount, ComplexRecipe.RecipeElement.TemperatureOperation temperatureOperation, bool storeElement = false)
 		{
 			this.material = material;
 			this.amount = amount;
@@ -222,7 +224,7 @@ public class ComplexRecipe
 			this.storeElement = storeElement;
 		}
 
-		public RecipeElement(Tag material, float amount, ComplexRecipe.RecipeElement.TemperatureOperation temperatureOperation, string facadeID, bool storeElement = false)
+				public RecipeElement(Tag material, float amount, ComplexRecipe.RecipeElement.TemperatureOperation temperatureOperation, string facadeID, bool storeElement = false)
 		{
 			this.material = material;
 			this.amount = amount;
@@ -231,33 +233,33 @@ public class ComplexRecipe
 			this.facadeID = facadeID;
 		}
 
-		public RecipeElement(EdiblesManager.FoodInfo foodInfo, float amount)
+				public RecipeElement(EdiblesManager.FoodInfo foodInfo, float amount)
 		{
 			this.material = foodInfo.Id;
 			this.amount = amount;
 			this.Edible = true;
 		}
 
-						public float amount { get; private set; }
+								public float amount { get; private set; }
 
-		public Tag material;
+				public Tag material;
 
-		public ComplexRecipe.RecipeElement.TemperatureOperation temperatureOperation;
+				public ComplexRecipe.RecipeElement.TemperatureOperation temperatureOperation;
 
-		public bool storeElement;
+				public bool storeElement;
 
-		public bool inheritElement;
+				public bool inheritElement;
 
-		public string facadeID;
+				public string facadeID;
 
-		public bool Edible;
+				public bool Edible;
 
-		public enum TemperatureOperation
+				public enum TemperatureOperation
 		{
-			AverageTemperature,
-			Heated,
-			Melted,
-			Dehydrated
+						AverageTemperature,
+						Heated,
+						Melted,
+						Dehydrated
 		}
 	}
 }

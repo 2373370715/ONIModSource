@@ -7,17 +7,17 @@ using UnityEngine;
 
 public static class ModUtil
 {
-	public static void AddBuildingToPlanScreen(HashedString category, string building_id)
+		public static void AddBuildingToPlanScreen(HashedString category, string building_id)
 	{
 		ModUtil.AddBuildingToPlanScreen(category, building_id, "uncategorized");
 	}
 
-	public static void AddBuildingToPlanScreen(HashedString category, string building_id, string subcategoryID)
+		public static void AddBuildingToPlanScreen(HashedString category, string building_id, string subcategoryID)
 	{
 		ModUtil.AddBuildingToPlanScreen(category, building_id, subcategoryID, null, ModUtil.BuildingOrdering.After);
 	}
 
-	public static void AddBuildingToPlanScreen(HashedString category, string building_id, string subcategoryID, string relativeBuildingId, ModUtil.BuildingOrdering ordering = ModUtil.BuildingOrdering.After)
+		public static void AddBuildingToPlanScreen(HashedString category, string building_id, string subcategoryID, string relativeBuildingId, ModUtil.BuildingOrdering ordering = ModUtil.BuildingOrdering.After)
 	{
 		int num = BUILDINGS.PLANORDER.FindIndex((PlanScreen.PlanInfo x) => x.category == category);
 		if (num < 0)
@@ -50,7 +50,7 @@ public static class ModUtil
 		buildingAndSubcategoryData.Insert(index, item);
 	}
 
-	[Obsolete("Use PlanScreen instead")]
+		[Obsolete("Use PlanScreen instead")]
 	public static void AddBuildingToHotkeyBuildMenu(HashedString category, string building_id, global::Action hotkey)
 	{
 		BuildMenu.DisplayInfo info = BuildMenu.OrderedBuildings.GetInfo(category);
@@ -61,7 +61,7 @@ public static class ModUtil
 		(info.data as IList<BuildMenu.BuildingInfo>).Add(new BuildMenu.BuildingInfo(building_id, hotkey));
 	}
 
-	public static KAnimFile AddKAnimMod(string name, KAnimFile.Mod anim_mod)
+		public static KAnimFile AddKAnimMod(string name, KAnimFile.Mod anim_mod)
 	{
 		KAnimFile kanimFile = ScriptableObject.CreateInstance<KAnimFile>();
 		kanimFile.mod = anim_mod;
@@ -78,7 +78,7 @@ public static class ModUtil
 		return kanimFile;
 	}
 
-	public static KAnimFile AddKAnim(string name, TextAsset anim_file, TextAsset build_file, IList<Texture2D> textures)
+		public static KAnimFile AddKAnim(string name, TextAsset anim_file, TextAsset build_file, IList<Texture2D> textures)
 	{
 		KAnimFile kanimFile = ScriptableObject.CreateInstance<KAnimFile>();
 		kanimFile.Initialize(anim_file, build_file, textures);
@@ -93,7 +93,7 @@ public static class ModUtil
 		return kanimFile;
 	}
 
-	public static KAnimFile AddKAnim(string name, TextAsset anim_file, TextAsset build_file, Texture2D texture)
+		public static KAnimFile AddKAnim(string name, TextAsset anim_file, TextAsset build_file, Texture2D texture)
 	{
 		return ModUtil.AddKAnim(name, anim_file, build_file, new List<Texture2D>
 		{
@@ -101,7 +101,7 @@ public static class ModUtil
 		});
 	}
 
-	public static Substance CreateSubstance(string name, Element.State state, KAnimFile kanim, Material material, Color32 colour, Color32 ui_colour, Color32 conduit_colour)
+		public static Substance CreateSubstance(string name, Element.State state, KAnimFile kanim, Material material, Color32 colour, Color32 ui_colour, Color32 conduit_colour)
 	{
 		return new Substance
 		{
@@ -117,15 +117,15 @@ public static class ModUtil
 		};
 	}
 
-	public static void RegisterForTranslation(Type locstring_tree_root)
+		public static void RegisterForTranslation(Type locstring_tree_root)
 	{
 		Localization.RegisterForTranslation(locstring_tree_root);
 		Localization.GenerateStringsTemplate(locstring_tree_root, Path.Combine(Manager.GetDirectory(), "strings_templates"));
 	}
 
-	public enum BuildingOrdering
+		public enum BuildingOrdering
 	{
-		Before,
-		After
+				Before,
+				After
 	}
 }

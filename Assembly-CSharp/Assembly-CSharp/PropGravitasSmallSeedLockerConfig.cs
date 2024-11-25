@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PropGravitasSmallSeedLockerConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PropGravitasSmallSeedLocker";
 		string name = STRINGS.BUILDINGS.PREFABS.PROPGRAVITASSMALLSEEDLOCKER.NAME;
@@ -59,7 +59,7 @@ public class PropGravitasSmallSeedLockerConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.AddOrGet<Workable>().SetOffsets(new CellOffset[]
 		{
@@ -68,7 +68,7 @@ public class PropGravitasSmallSeedLockerConfig : IEntityConfig
 		});
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 }

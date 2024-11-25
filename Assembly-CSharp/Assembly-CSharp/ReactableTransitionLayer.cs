@@ -2,16 +2,16 @@
 
 public class ReactableTransitionLayer : TransitionDriver.InterruptOverrideLayer
 {
-	public ReactableTransitionLayer(Navigator navigator) : base(navigator)
+		public ReactableTransitionLayer(Navigator navigator) : base(navigator)
 	{
 	}
 
-	protected override bool IsOverrideComplete()
+		protected override bool IsOverrideComplete()
 	{
 		return !this.reactionMonitor.IsReacting() && base.IsOverrideComplete();
 	}
 
-	public override void BeginTransition(Navigator navigator, Navigator.ActiveTransition transition)
+		public override void BeginTransition(Navigator navigator, Navigator.ActiveTransition transition)
 	{
 		if (this.reactionMonitor == null)
 		{
@@ -26,5 +26,5 @@ public class ReactableTransitionLayer : TransitionDriver.InterruptOverrideLayer
 		}
 	}
 
-	private ReactionMonitor.Instance reactionMonitor;
+		private ReactionMonitor.Instance reactionMonitor;
 }

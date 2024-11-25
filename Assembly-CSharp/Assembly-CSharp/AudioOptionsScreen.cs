@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class AudioOptionsScreen : KModalScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.closeButton.onClick += delegate()
@@ -76,7 +76,7 @@ public class AudioOptionsScreen : KModalScreen
 		component3.GetReference("CheckMark").gameObject.SetActive(KPlayerPrefs.GetInt(AudioOptionsScreen.MuteOnFocusLost) == 1);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape) || e.TryConsume(global::Action.MouseRight))
 		{
@@ -86,36 +86,36 @@ public class AudioOptionsScreen : KModalScreen
 		base.OnKeyDown(e);
 	}
 
-	private void CheckMasterValue(float value)
+		private void CheckMasterValue(float value)
 	{
 		this.jambell.enabled = (value == 0f);
 	}
 
-	private void OnReleaseHandle(KSlider slider)
+		private void OnReleaseHandle(KSlider slider)
 	{
 		AudioMixer.instance.SetUserVolume(this.sliderBusMap[slider], slider.value);
 	}
 
-	private void ToggleAlwaysPlayMusic()
+		private void ToggleAlwaysPlayMusic()
 	{
 		MusicManager.instance.alwaysPlayMusic = !MusicManager.instance.alwaysPlayMusic;
 		this.alwaysPlayMusicButton.GetComponent<HierarchyReferences>().GetReference("CheckMark").gameObject.SetActive(MusicManager.instance.alwaysPlayMusic);
 		KPlayerPrefs.SetInt(AudioOptionsScreen.AlwaysPlayMusicKey, MusicManager.instance.alwaysPlayMusic ? 1 : 0);
 	}
 
-	private void ToggleAlwaysPlayAutomation()
+		private void ToggleAlwaysPlayAutomation()
 	{
 		KPlayerPrefs.SetInt(AudioOptionsScreen.AlwaysPlayAutomation, (KPlayerPrefs.GetInt(AudioOptionsScreen.AlwaysPlayAutomation) == 1) ? 0 : 1);
 		this.alwaysPlayAutomationButton.GetComponent<HierarchyReferences>().GetReference("CheckMark").gameObject.SetActive(KPlayerPrefs.GetInt(AudioOptionsScreen.AlwaysPlayAutomation) == 1);
 	}
 
-	private void ToggleMuteOnFocusLost()
+		private void ToggleMuteOnFocusLost()
 	{
 		KPlayerPrefs.SetInt(AudioOptionsScreen.MuteOnFocusLost, (KPlayerPrefs.GetInt(AudioOptionsScreen.MuteOnFocusLost) == 1) ? 0 : 1);
 		this.muteOnFocusLostToggle.GetComponent<HierarchyReferences>().GetReference("CheckMark").gameObject.SetActive(KPlayerPrefs.GetInt(AudioOptionsScreen.MuteOnFocusLost) == 1);
 	}
 
-	private void BuildAudioDeviceList()
+		private void BuildAudioDeviceList()
 	{
 		this.audioDevices.Clear();
 		this.audioDeviceOptions.Clear();
@@ -133,7 +133,7 @@ public class AudioOptionsScreen : KModalScreen
 		}
 	}
 
-	private void OnAudioDeviceChanged(int idx)
+		private void OnAudioDeviceChanged(int idx)
 	{
 		RuntimeManager.CoreSystem.setDriver(idx);
 		for (int i = 0; i < this.audioDevices.Count; i++)
@@ -147,51 +147,51 @@ public class AudioOptionsScreen : KModalScreen
 		}
 	}
 
-	private void OnClose(GameObject go)
+		private void OnClose(GameObject go)
 	{
 		this.alwaysPlayMusicMetric[AudioOptionsScreen.AlwaysPlayMusicKey] = MusicManager.instance.alwaysPlayMusic;
 		ThreadedHttps<KleiMetrics>.Instance.SendEvent(this.alwaysPlayMusicMetric, "AudioOptionsScreen");
 		UnityEngine.Object.Destroy(go);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton doneButton;
 
-	[SerializeField]
+		[SerializeField]
 	private SliderContainer sliderPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject sliderGroup;
 
-	[SerializeField]
+		[SerializeField]
 	private Image jambell;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject alwaysPlayMusicButton;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject alwaysPlayAutomationButton;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject muteOnFocusLostToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private Dropdown deviceDropdown;
 
-	private UIPool<SliderContainer> sliderPool;
+		private UIPool<SliderContainer> sliderPool;
 
-	private Dictionary<KSlider, string> sliderBusMap = new Dictionary<KSlider, string>();
+		private Dictionary<KSlider, string> sliderBusMap = new Dictionary<KSlider, string>();
 
-	public static readonly string AlwaysPlayMusicKey = "AlwaysPlayMusic";
+		public static readonly string AlwaysPlayMusicKey = "AlwaysPlayMusic";
 
-	public static readonly string AlwaysPlayAutomation = "AlwaysPlayAutomation";
+		public static readonly string AlwaysPlayAutomation = "AlwaysPlayAutomation";
 
-	public static readonly string MuteOnFocusLost = "MuteOnFocusLost";
+		public static readonly string MuteOnFocusLost = "MuteOnFocusLost";
 
-	private Dictionary<string, object> alwaysPlayMusicMetric = new Dictionary<string, object>
+		private Dictionary<string, object> alwaysPlayMusicMetric = new Dictionary<string, object>
 	{
 		{
 			AudioOptionsScreen.AlwaysPlayMusicKey,
@@ -199,7 +199,7 @@ public class AudioOptionsScreen : KModalScreen
 		}
 	};
 
-	private List<KFMOD.AudioDevice> audioDevices = new List<KFMOD.AudioDevice>();
+		private List<KFMOD.AudioDevice> audioDevices = new List<KFMOD.AudioDevice>();
 
-	private List<Dropdown.OptionData> audioDeviceOptions = new List<Dropdown.OptionData>();
+		private List<Dropdown.OptionData> audioDeviceOptions = new List<Dropdown.OptionData>();
 }

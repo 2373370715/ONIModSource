@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace Database
 {
-	public class RevealAsteriod : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class RevealAsteriod : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public RevealAsteriod(float percentToReveal)
+				public RevealAsteriod(float percentToReveal)
 		{
 			this.percentToReveal = percentToReveal;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			this.amountRevealed = 0f;
 			float num = 0f;
@@ -36,18 +36,18 @@ namespace Database
 			return this.amountRevealed > this.percentToReveal;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			this.percentToReveal = reader.ReadSingle();
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.REVEALED, this.amountRevealed * 100f, this.percentToReveal * 100f);
 		}
 
-		private float percentToReveal;
+				private float percentToReveal;
 
-		private float amountRevealed;
+				private float amountRevealed;
 	}
 }

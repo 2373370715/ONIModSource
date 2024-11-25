@@ -4,23 +4,23 @@ using UnityEngine;
 
 public class SelfDestructButtonSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.Refresh();
 		this.button.onClick += this.TriggerDestruct;
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		return -150;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<CraftModuleInterface>() != null && target.HasTag(GameTags.RocketInSpace);
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.craftInterface = target.GetComponent<CraftModuleInterface>();
 		this.acknowledgeWarnings = false;
@@ -28,7 +28,7 @@ public class SelfDestructButtonSideScreen : SideScreenContent
 		this.Refresh();
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 		if (this.craftInterface != null)
 		{
@@ -37,7 +37,7 @@ public class SelfDestructButtonSideScreen : SideScreenContent
 		}
 	}
 
-	private void OnTagsChanged(object data)
+		private void OnTagsChanged(object data)
 	{
 		if (((TagChangedEventData)data).tag == GameTags.RocketStranded)
 		{
@@ -45,7 +45,7 @@ public class SelfDestructButtonSideScreen : SideScreenContent
 		}
 	}
 
-	private void TriggerDestruct()
+		private void TriggerDestruct()
 	{
 		if (this.acknowledgeWarnings)
 		{
@@ -59,7 +59,7 @@ public class SelfDestructButtonSideScreen : SideScreenContent
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		if (this.craftInterface == null)
 		{
@@ -76,15 +76,15 @@ public class SelfDestructButtonSideScreen : SideScreenContent
 		this.button.GetComponentInChildren<ToolTip>().toolTip = UI.UISIDESCREENS.SELFDESTRUCTSIDESCREEN.BUTTON_TOOLTIP;
 	}
 
-	public KButton button;
+		public KButton button;
 
-	public LocText statusText;
+		public LocText statusText;
 
-	private CraftModuleInterface craftInterface;
+		private CraftModuleInterface craftInterface;
 
-	private bool acknowledgeWarnings;
+		private bool acknowledgeWarnings;
 
-	private static readonly EventSystem.IntraObjectHandler<SelfDestructButtonSideScreen> TagsChangedDelegate = new EventSystem.IntraObjectHandler<SelfDestructButtonSideScreen>(delegate(SelfDestructButtonSideScreen cmp, object data)
+		private static readonly EventSystem.IntraObjectHandler<SelfDestructButtonSideScreen> TagsChangedDelegate = new EventSystem.IntraObjectHandler<SelfDestructButtonSideScreen>(delegate(SelfDestructButtonSideScreen cmp, object data)
 	{
 		cmp.OnTagsChanged(data);
 	});

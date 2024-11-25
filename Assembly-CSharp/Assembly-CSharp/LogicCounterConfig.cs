@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicCounterConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicCounterConfig.ID;
 		int width = 1;
@@ -44,12 +44,12 @@ public class LogicCounterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicCounter>().manuallyControlled = false;
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 		go.GetComponent<Switch>().defaultState = false;
 	}
 
-	public static string ID = "LogicCounter";
+		public static string ID = "LogicCounter";
 }

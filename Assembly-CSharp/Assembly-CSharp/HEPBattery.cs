@@ -3,255 +3,167 @@ using KSerialization;
 using STRINGS;
 using UnityEngine;
 
-public class HEPBattery : GameStateMachine<HEPBattery, HEPBattery.Instance, IStateMachineTarget, HEPBattery.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.inoperational;
-		this.inoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.operational, false).Update(delegate(HEPBattery.Instance smi, float dt)
-		{
-			smi.DoConsumeParticlesWhileDisabled(dt);
-			smi.UpdateDecayStatusItem(false);
-		}, UpdateRate.SIM_200ms, false);
-		this.operational.Enter("SetActive(true)", delegate(HEPBattery.Instance smi)
-		{
-			smi.operational.SetActive(true, false);
-		}).Exit("SetActive(false)", delegate(HEPBattery.Instance smi)
-		{
-			smi.operational.SetActive(false, false);
-		}).PlayAnim("on", KAnim.PlayMode.Loop).TagTransition(GameTags.Operational, this.inoperational, true).Update(new Action<HEPBattery.Instance, float>(this.LauncherUpdate), UpdateRate.SIM_200ms, false);
-	}
+public class HEPBattery : GameStateMachine<HEPBattery, HEPBattery.Instance, IStateMachineTarget, HEPBattery.Def> {
+    public static readonly HashedString FIRE_PORT_ID = "HEPBatteryFire";
+    public                 State        inoperational;
+    public                 State        operational;
 
-	public void LauncherUpdate(HEPBattery.Instance smi, float dt)
-	{
-		smi.UpdateDecayStatusItem(true);
-		smi.UpdateMeter(null);
-		smi.operational.SetActive(smi.particleStorage.Particles > 0f, false);
-		smi.launcherTimer += dt;
-		if (smi.launcherTimer < smi.def.minLaunchInterval || !smi.AllowSpawnParticles)
-		{
-			return;
-		}
-		if (smi.particleStorage.Particles >= smi.particleThreshold)
-		{
-			smi.launcherTimer = 0f;
-			this.Fire(smi);
-		}
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = inoperational;
+        inoperational.PlayAnim("off")
+                     .TagTransition(GameTags.Operational, operational)
+                     .Update(delegate(Instance smi, float dt) {
+                                 smi.DoConsumeParticlesWhileDisabled(dt);
+                                 smi.UpdateDecayStatusItem(false);
+                             });
 
-	public void Fire(HEPBattery.Instance smi)
-	{
-		int highEnergyParticleOutputCell = smi.GetComponent<Building>().GetHighEnergyParticleOutputCell();
-		GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab("HighEnergyParticle"), Grid.CellToPosCCC(highEnergyParticleOutputCell, Grid.SceneLayer.FXFront2), Grid.SceneLayer.FXFront2, null, 0);
-		gameObject.SetActive(true);
-		if (gameObject != null)
-		{
-			HighEnergyParticle component = gameObject.GetComponent<HighEnergyParticle>();
-			component.payload = smi.particleStorage.ConsumeAndGet(smi.particleThreshold);
-			component.SetDirection(smi.def.direction);
-		}
-	}
+        operational.Enter("SetActive(true)", delegate(Instance smi) { smi.operational.SetActive(true); })
+                   .Exit("SetActive(false)", delegate(Instance smi) { smi.operational.SetActive(false); })
+                   .PlayAnim("on", KAnim.PlayMode.Loop)
+                   .TagTransition(GameTags.Operational, inoperational, true)
+                   .Update(LauncherUpdate);
+    }
 
-	public static readonly HashedString FIRE_PORT_ID = "HEPBatteryFire";
+    public void LauncherUpdate(Instance smi, float dt) {
+        smi.UpdateDecayStatusItem(true);
+        smi.UpdateMeter();
+        smi.operational.SetActive(smi.particleStorage.Particles > 0f);
+        smi.launcherTimer += dt;
+        if (smi.launcherTimer < smi.def.minLaunchInterval || !smi.AllowSpawnParticles) return;
 
-	public GameStateMachine<HEPBattery, HEPBattery.Instance, IStateMachineTarget, HEPBattery.Def>.State inoperational;
+        if (smi.particleStorage.Particles >= smi.particleThreshold) {
+            smi.launcherTimer = 0f;
+            Fire(smi);
+        }
+    }
 
-	public GameStateMachine<HEPBattery, HEPBattery.Instance, IStateMachineTarget, HEPBattery.Def>.State operational;
+    public void Fire(Instance smi) {
+        var highEnergyParticleOutputCell = smi.GetComponent<Building>().GetHighEnergyParticleOutputCell();
+        var gameObject = GameUtil.KInstantiate(Assets.GetPrefab("HighEnergyParticle"),
+                                               Grid.CellToPosCCC(highEnergyParticleOutputCell,
+                                                                 Grid.SceneLayer.FXFront2),
+                                               Grid.SceneLayer.FXFront2);
 
-	public class Def : StateMachine.BaseDef
-	{
-		public float particleDecayRate;
+        gameObject.SetActive(true);
+        if (gameObject != null) {
+            var component = gameObject.GetComponent<HighEnergyParticle>();
+            component.payload = smi.particleStorage.ConsumeAndGet(smi.particleThreshold);
+            component.SetDirection(smi.def.direction);
+        }
+    }
 
-		public float minLaunchInterval;
+    public class Def : BaseDef {
+        public EightDirection direction;
+        public float          maxSlider;
+        public float          minLaunchInterval;
+        public float          minSlider;
+        public float          particleDecayRate;
+    }
 
-		public float minSlider;
+    public new class Instance : GameInstance, ISingleSliderControl, ISliderControl {
+        [MyCmpAdd]
+        public CopyBuildingSettings copyBuildingSettings;
 
-		public float maxSlider;
+        [Serialize]
+        public float launcherTimer;
 
-		public EightDirection direction;
-	}
+        private          bool            m_skipFirstUpdate = true;
+        private readonly MeterController meterController;
 
-	public new class Instance : GameStateMachine<HEPBattery, HEPBattery.Instance, IStateMachineTarget, HEPBattery.Def>.GameInstance, ISingleSliderControl, ISliderControl
-	{
-		public Instance(IStateMachineTarget master, HEPBattery.Def def) : base(master, def)
-		{
-			base.Subscribe(-801688580, new Action<object>(this.OnLogicValueChanged));
-			base.Subscribe(-905833192, new Action<object>(this.OnCopySettings));
-			this.meterController = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, Array.Empty<string>());
-			this.UpdateMeter(null);
-		}
+        [MyCmpGet]
+        public Operational operational;
 
-		public void DoConsumeParticlesWhileDisabled(float dt)
-		{
-			if (this.m_skipFirstUpdate)
-			{
-				this.m_skipFirstUpdate = false;
-				return;
-			}
-			this.particleStorage.ConsumeAndGet(dt * base.def.particleDecayRate);
-			this.UpdateMeter(null);
-		}
+        [MyCmpReq]
+        public HighEnergyParticleStorage particleStorage;
 
-		public void UpdateMeter(object data = null)
-		{
-			this.meterController.SetPositionPercent(this.particleStorage.Particles / this.particleStorage.Capacity());
-		}
+        [Serialize]
+        public float particleThreshold = 50f;
 
-		public void UpdateDecayStatusItem(bool hasPower)
-		{
-			if (!hasPower)
-			{
-				if (this.particleStorage.Particles > 0f)
-				{
-					if (this.statusHandle == Guid.Empty)
-					{
-						this.statusHandle = base.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.LosingRadbolts, null);
-						return;
-					}
-				}
-				else if (this.statusHandle != Guid.Empty)
-				{
-					base.GetComponent<KSelectable>().RemoveStatusItem(this.statusHandle, false);
-					this.statusHandle = Guid.Empty;
-					return;
-				}
-			}
-			else if (this.statusHandle != Guid.Empty)
-			{
-				base.GetComponent<KSelectable>().RemoveStatusItem(this.statusHandle, false);
-				this.statusHandle = Guid.Empty;
-			}
-		}
+        public  bool ShowWorkingStatus;
+        private Guid statusHandle = Guid.Empty;
 
-				public bool AllowSpawnParticles
-		{
-			get
-			{
-				return this.hasLogicWire && this.isLogicActive;
-			}
-		}
+        public Instance(IStateMachineTarget master, Def def) : base(master, def) {
+            Subscribe(-801688580, OnLogicValueChanged);
+            Subscribe(-905833192, OnCopySettings);
+            meterController = new MeterController(GetComponent<KBatchedAnimController>(),
+                                                  "meter_target",
+                                                  "meter",
+                                                  Meter.Offset.Infront,
+                                                  Grid.SceneLayer.NoLayer,
+                                                  Array.Empty<string>());
 
-				public bool HasLogicWire
-		{
-			get
-			{
-				return this.hasLogicWire;
-			}
-		}
+            UpdateMeter();
+        }
 
-				public bool IsLogicActive
-		{
-			get
-			{
-				return this.isLogicActive;
-			}
-		}
+        public bool   AllowSpawnParticles => HasLogicWire && IsLogicActive;
+        public bool   HasLogicWire { get; private set; }
+        public bool   IsLogicActive { get; private set; }
+        public string SliderTitleKey => "STRINGS.UI.UISIDESCREENS.RADBOLTTHRESHOLDSIDESCREEN.TITLE";
+        public string SliderUnits => UI.UNITSUFFIXES.HIGHENERGYPARTICLES.PARTRICLES;
+        public int    SliderDecimalPlaces(int index) { return 0; }
+        public float  GetSliderMin(int        index) { return def.minSlider; }
+        public float  GetSliderMax(int        index) { return def.maxSlider; }
+        public float  GetSliderValue(int      index) { return particleThreshold; }
+        public void   SetSliderValue(float    value, int index) { particleThreshold = value; }
 
-		private LogicCircuitNetwork GetNetwork()
-		{
-			int portCell = base.GetComponent<LogicPorts>().GetPortCell(HEPBattery.FIRE_PORT_ID);
-			return Game.Instance.logicCircuitManager.GetNetworkForCell(portCell);
-		}
+        public string GetSliderTooltipKey(int index) {
+            return "STRINGS.UI.UISIDESCREENS.RADBOLTTHRESHOLDSIDESCREEN.TOOLTIP";
+        }
 
-		private void OnLogicValueChanged(object data)
-		{
-			LogicValueChanged logicValueChanged = (LogicValueChanged)data;
-			if (logicValueChanged.portID == HEPBattery.FIRE_PORT_ID)
-			{
-				this.isLogicActive = (logicValueChanged.newValue > 0);
-				this.hasLogicWire = (this.GetNetwork() != null);
-			}
-		}
+        string ISliderControl.GetSliderTooltip(int index) {
+            return string.Format(Strings.Get("STRINGS.UI.UISIDESCREENS.RADBOLTTHRESHOLDSIDESCREEN.TOOLTIP"),
+                                 particleThreshold);
+        }
 
-		private void OnCopySettings(object data)
-		{
-			GameObject gameObject = data as GameObject;
-			if (gameObject != null)
-			{
-				HEPBattery.Instance smi = gameObject.GetSMI<HEPBattery.Instance>();
-				if (smi != null)
-				{
-					this.particleThreshold = smi.particleThreshold;
-				}
-			}
-		}
+        public void DoConsumeParticlesWhileDisabled(float dt) {
+            if (m_skipFirstUpdate) {
+                m_skipFirstUpdate = false;
+                return;
+            }
 
-				public string SliderTitleKey
-		{
-			get
-			{
-				return "STRINGS.UI.UISIDESCREENS.RADBOLTTHRESHOLDSIDESCREEN.TITLE";
-			}
-		}
+            particleStorage.ConsumeAndGet(dt * def.particleDecayRate);
+            UpdateMeter();
+        }
 
-				public string SliderUnits
-		{
-			get
-			{
-				return UI.UNITSUFFIXES.HIGHENERGYPARTICLES.PARTRICLES;
-			}
-		}
+        public void UpdateMeter(object data = null) {
+            meterController.SetPositionPercent(particleStorage.Particles / particleStorage.Capacity());
+        }
 
-		public int SliderDecimalPlaces(int index)
-		{
-			return 0;
-		}
+        public void UpdateDecayStatusItem(bool hasPower) {
+            if (!hasPower) {
+                if (particleStorage.Particles > 0f) {
+                    if (statusHandle == Guid.Empty)
+                        statusHandle = GetComponent<KSelectable>()
+                            .AddStatusItem(Db.Get().BuildingStatusItems.LosingRadbolts);
+                } else if (statusHandle != Guid.Empty) {
+                    GetComponent<KSelectable>().RemoveStatusItem(statusHandle);
+                    statusHandle = Guid.Empty;
+                }
+            } else if (statusHandle != Guid.Empty) {
+                GetComponent<KSelectable>().RemoveStatusItem(statusHandle);
+                statusHandle = Guid.Empty;
+            }
+        }
 
-		public float GetSliderMin(int index)
-		{
-			return base.def.minSlider;
-		}
+        private LogicCircuitNetwork GetNetwork() {
+            var portCell = GetComponent<LogicPorts>().GetPortCell(FIRE_PORT_ID);
+            return Game.Instance.logicCircuitManager.GetNetworkForCell(portCell);
+        }
 
-		public float GetSliderMax(int index)
-		{
-			return base.def.maxSlider;
-		}
+        private void OnLogicValueChanged(object data) {
+            var logicValueChanged = (LogicValueChanged)data;
+            if (logicValueChanged.portID == FIRE_PORT_ID) {
+                IsLogicActive = logicValueChanged.newValue > 0;
+                HasLogicWire  = GetNetwork()               != null;
+            }
+        }
 
-		public float GetSliderValue(int index)
-		{
-			return this.particleThreshold;
-		}
-
-		public void SetSliderValue(float value, int index)
-		{
-			this.particleThreshold = value;
-		}
-
-		public string GetSliderTooltipKey(int index)
-		{
-			return "STRINGS.UI.UISIDESCREENS.RADBOLTTHRESHOLDSIDESCREEN.TOOLTIP";
-		}
-
-		string ISliderControl.GetSliderTooltip(int index)
-		{
-			return string.Format(Strings.Get("STRINGS.UI.UISIDESCREENS.RADBOLTTHRESHOLDSIDESCREEN.TOOLTIP"), this.particleThreshold);
-		}
-
-		[MyCmpReq]
-		public HighEnergyParticleStorage particleStorage;
-
-		[MyCmpGet]
-		public Operational operational;
-
-		[MyCmpAdd]
-		public CopyBuildingSettings copyBuildingSettings;
-
-		[Serialize]
-		public float launcherTimer;
-
-		[Serialize]
-		public float particleThreshold = 50f;
-
-		public bool ShowWorkingStatus;
-
-		private bool m_skipFirstUpdate = true;
-
-		private MeterController meterController;
-
-		private Guid statusHandle = Guid.Empty;
-
-		private bool hasLogicWire;
-
-		private bool isLogicActive;
-	}
+        private void OnCopySettings(object data) {
+            var gameObject = data as GameObject;
+            if (gameObject != null) {
+                var smi                            = gameObject.GetSMI<Instance>();
+                if (smi != null) particleThreshold = smi.particleThreshold;
+            }
+        }
+    }
 }

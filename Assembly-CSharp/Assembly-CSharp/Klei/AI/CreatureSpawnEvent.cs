@@ -6,28 +6,28 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class CreatureSpawnEvent : GameplayEvent<CreatureSpawnEvent.StatesInstance>
+		public class CreatureSpawnEvent : GameplayEvent<CreatureSpawnEvent.StatesInstance>
 	{
-		public CreatureSpawnEvent() : base("HatchSpawnEvent", 0, 0)
+				public CreatureSpawnEvent() : base("HatchSpawnEvent", 0, 0)
 		{
 			this.title = GAMEPLAY_EVENTS.EVENT_TYPES.CREATURE_SPAWN.NAME;
 			this.description = GAMEPLAY_EVENTS.EVENT_TYPES.CREATURE_SPAWN.DESCRIPTION;
 		}
 
-		public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
+				public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
 		{
 			return new CreatureSpawnEvent.StatesInstance(manager, eventInstance, this);
 		}
 
-		public const string ID = "HatchSpawnEvent";
+				public const string ID = "HatchSpawnEvent";
 
-		public const float UPDATE_TIME = 4f;
+				public const float UPDATE_TIME = 4f;
 
-		public const float NUM_TO_SPAWN = 10f;
+				public const float NUM_TO_SPAWN = 10f;
 
-		public const float duration = 40f;
+				public const float duration = 40f;
 
-		public static List<string> CreatureSpawnEventIDs = new List<string>
+				public static List<string> CreatureSpawnEventIDs = new List<string>
 		{
 			"Hatch",
 			"Squirrel",
@@ -39,18 +39,18 @@ namespace Klei.AI
 			"Pacu"
 		};
 
-		public class StatesInstance : GameplayEventStateMachine<CreatureSpawnEvent.States, CreatureSpawnEvent.StatesInstance, GameplayEventManager, CreatureSpawnEvent>.GameplayEventStateMachineInstance
+				public class StatesInstance : GameplayEventStateMachine<CreatureSpawnEvent.States, CreatureSpawnEvent.StatesInstance, GameplayEventManager, CreatureSpawnEvent>.GameplayEventStateMachineInstance
 		{
-			public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, CreatureSpawnEvent creatureEvent) : base(master, eventInstance, creatureEvent)
+						public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, CreatureSpawnEvent creatureEvent) : base(master, eventInstance, creatureEvent)
 			{
 			}
 
-			private void PickCreatureToSpawn()
+						private void PickCreatureToSpawn()
 			{
 				this.creatureID = CreatureSpawnEvent.CreatureSpawnEventIDs.GetRandom<string>();
 			}
 
-			private void PickSpawnLocations()
+						private void PickSpawnLocations()
 			{
 				Vector3 position = Components.Telepads.Items.GetRandom<Telepad>().transform.GetPosition();
 				int num = 100;
@@ -67,19 +67,19 @@ namespace Klei.AI
 				pooledList.Recycle();
 			}
 
-			public void InitializeEvent()
+						public void InitializeEvent()
 			{
 				this.PickCreatureToSpawn();
 				this.PickSpawnLocations();
 			}
 
-			public void EndEvent()
+						public void EndEvent()
 			{
 				this.creatureID = null;
 				this.spawnPositions.Clear();
 			}
 
-			public void SpawnCreature()
+						public void SpawnCreature()
 			{
 				if (this.spawnPositions.Count > 0)
 				{
@@ -88,16 +88,16 @@ namespace Klei.AI
 				}
 			}
 
-			[Serialize]
+						[Serialize]
 			private List<Vector3> spawnPositions = new List<Vector3>();
 
-			[Serialize]
+						[Serialize]
 			private string creatureID;
 		}
 
-		public class States : GameplayEventStateMachine<CreatureSpawnEvent.States, CreatureSpawnEvent.StatesInstance, GameplayEventManager, CreatureSpawnEvent>
+				public class States : GameplayEventStateMachine<CreatureSpawnEvent.States, CreatureSpawnEvent.StatesInstance, GameplayEventManager, CreatureSpawnEvent>
 		{
-			public override void InitializeStates(out StateMachine.BaseState default_state)
+						public override void InitializeStates(out StateMachine.BaseState default_state)
 			{
 				default_state = this.initialize_event;
 				base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -116,7 +116,7 @@ namespace Klei.AI
 				});
 			}
 
-			public override EventInfoData GenerateEventPopupData(CreatureSpawnEvent.StatesInstance smi)
+						public override EventInfoData GenerateEventPopupData(CreatureSpawnEvent.StatesInstance smi)
 			{
 				return new EventInfoData(smi.gameplayEvent.title, smi.gameplayEvent.description, smi.gameplayEvent.animFileName)
 				{
@@ -125,11 +125,11 @@ namespace Klei.AI
 				};
 			}
 
-			public GameStateMachine<CreatureSpawnEvent.States, CreatureSpawnEvent.StatesInstance, GameplayEventManager, object>.State initialize_event;
+						public GameStateMachine<CreatureSpawnEvent.States, CreatureSpawnEvent.StatesInstance, GameplayEventManager, object>.State initialize_event;
 
-			public GameStateMachine<CreatureSpawnEvent.States, CreatureSpawnEvent.StatesInstance, GameplayEventManager, object>.State spawn_season;
+						public GameStateMachine<CreatureSpawnEvent.States, CreatureSpawnEvent.StatesInstance, GameplayEventManager, object>.State spawn_season;
 
-			public GameStateMachine<CreatureSpawnEvent.States, CreatureSpawnEvent.StatesInstance, GameplayEventManager, object>.State start;
+						public GameStateMachine<CreatureSpawnEvent.States, CreatureSpawnEvent.StatesInstance, GameplayEventManager, object>.State start;
 		}
 	}
 }

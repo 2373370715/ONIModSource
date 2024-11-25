@@ -1,132 +1,103 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using KSerialization;
 using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/ArtifactPOIStates")]
-public class ArtifactPOIStates : GameStateMachine<ArtifactPOIStates, ArtifactPOIStates.Instance, IStateMachineTarget, ArtifactPOIStates.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		base.serializable = StateMachine.SerializeType.ParamsOnly;
-		default_state = this.idle;
-		this.root.Enter(delegate(ArtifactPOIStates.Instance smi)
-		{
-			if (smi.configuration == null || smi.configuration.typeId == HashedString.Invalid)
-			{
-				smi.configuration = smi.GetComponent<ArtifactPOIConfigurator>().MakeConfiguration();
-				smi.PickNewArtifactToHarvest();
-				smi.poiCharge = 1f;
-			}
-		});
-		this.idle.ParamTransition<float>(this.poiCharge, this.recharging, (ArtifactPOIStates.Instance smi, float f) => f < 1f);
-		this.recharging.ParamTransition<float>(this.poiCharge, this.idle, (ArtifactPOIStates.Instance smi, float f) => f >= 1f).EventHandler(GameHashes.NewDay, (ArtifactPOIStates.Instance smi) => GameClock.Instance, delegate(ArtifactPOIStates.Instance smi)
-		{
-			smi.RechargePOI(600f);
-		});
-	}
+public class ArtifactPOIStates
+    : GameStateMachine<ArtifactPOIStates, ArtifactPOIStates.Instance, IStateMachineTarget, ArtifactPOIStates.Def> {
+    public State          idle;
+    public FloatParameter poiCharge = new FloatParameter(1f);
+    public State          recharging;
 
-	public GameStateMachine<ArtifactPOIStates, ArtifactPOIStates.Instance, IStateMachineTarget, ArtifactPOIStates.Def>.State idle;
+    public override void InitializeStates(out BaseState default_state) {
+        serializable  = SerializeType.ParamsOnly;
+        default_state = idle;
+        root.Enter(delegate(Instance smi) {
+                       if (smi.configuration == null || smi.configuration.typeId == HashedString.Invalid) {
+                           smi.configuration = smi.GetComponent<ArtifactPOIConfigurator>().MakeConfiguration();
+                           smi.PickNewArtifactToHarvest();
+                           smi.poiCharge = 1f;
+                       }
+                   });
 
-	public GameStateMachine<ArtifactPOIStates, ArtifactPOIStates.Instance, IStateMachineTarget, ArtifactPOIStates.Def>.State recharging;
+        idle.ParamTransition(poiCharge, recharging, (smi, f) => f < 1f);
+        recharging.ParamTransition(poiCharge, idle, (smi, f) => f >= 1f)
+                  .EventHandler(GameHashes.NewDay,
+                                smi => GameClock.Instance,
+                                delegate(Instance smi) { smi.RechargePOI(600f); });
+    }
 
-	public StateMachine<ArtifactPOIStates, ArtifactPOIStates.Instance, IStateMachineTarget, ArtifactPOIStates.Def>.FloatParameter poiCharge = new StateMachine<ArtifactPOIStates, ArtifactPOIStates.Instance, IStateMachineTarget, ArtifactPOIStates.Def>.FloatParameter(1f);
+    public class Def : BaseDef { }
 
-	public class Def : StateMachine.BaseDef
-	{
-	}
+    public new class Instance : GameInstance, IGameObjectEffectDescriptor {
+        [Serialize]
+        private float _poiCharge;
 
-	public new class Instance : GameStateMachine<ArtifactPOIStates, ArtifactPOIStates.Instance, IStateMachineTarget, ArtifactPOIStates.Def>.GameInstance, IGameObjectEffectDescriptor
-	{
-						public float poiCharge
-		{
-			get
-			{
-				return this._poiCharge;
-			}
-			set
-			{
-				this._poiCharge = value;
-				base.smi.sm.poiCharge.Set(value, base.smi, false);
-			}
-		}
+        [Serialize]
+        public string artifactToHarvest;
 
-		public Instance(IStateMachineTarget target, ArtifactPOIStates.Def def) : base(target, def)
-		{
-		}
+        [Serialize]
+        public ArtifactPOIConfigurator.ArtifactPOIInstanceConfiguration configuration;
 
-		public void PickNewArtifactToHarvest()
-		{
-			if (this.numHarvests <= 0 && !string.IsNullOrEmpty(this.configuration.GetArtifactID()))
-			{
-				this.artifactToHarvest = this.configuration.GetArtifactID();
-				ArtifactSelector.Instance.ReserveArtifactID(this.artifactToHarvest, ArtifactType.Any);
-				return;
-			}
-			this.artifactToHarvest = ArtifactSelector.Instance.GetUniqueArtifactID(ArtifactType.Space);
-		}
+        [Serialize]
+        private int numHarvests;
 
-		public string GetArtifactToHarvest()
-		{
-			if (this.CanHarvestArtifact())
-			{
-				if (string.IsNullOrEmpty(this.artifactToHarvest))
-				{
-					this.PickNewArtifactToHarvest();
-				}
-				return this.artifactToHarvest;
-			}
-			return null;
-		}
+        public Instance(IStateMachineTarget target, Def def) : base(target, def) { }
 
-		public void HarvestArtifact()
-		{
-			if (this.CanHarvestArtifact())
-			{
-				this.numHarvests++;
-				this.poiCharge = 0f;
-				this.artifactToHarvest = null;
-				this.PickNewArtifactToHarvest();
-			}
-		}
+        public float poiCharge {
+            get => _poiCharge;
+            set {
+                _poiCharge = value;
+                smi.sm.poiCharge.Set(value, smi);
+            }
+        }
 
-		public void RechargePOI(float dt)
-		{
-			float delta = dt / this.configuration.GetRechargeTime();
-			this.DeltaPOICharge(delta);
-		}
+        public List<Descriptor> GetDescriptors(GameObject go) { return new List<Descriptor>(); }
 
-		public float RechargeTimeRemaining()
-		{
-			return (float)Mathf.CeilToInt((this.configuration.GetRechargeTime() - this.configuration.GetRechargeTime() * this.poiCharge) / 600f) * 600f;
-		}
+        public void PickNewArtifactToHarvest() {
+            if (numHarvests <= 0 && !string.IsNullOrEmpty(configuration.GetArtifactID())) {
+                artifactToHarvest = configuration.GetArtifactID();
+                ArtifactSelector.Instance.ReserveArtifactID(artifactToHarvest);
+                return;
+            }
 
-		public void DeltaPOICharge(float delta)
-		{
-			this.poiCharge += delta;
-			this.poiCharge = Mathf.Min(1f, this.poiCharge);
-		}
+            artifactToHarvest = ArtifactSelector.Instance.GetUniqueArtifactID(ArtifactType.Space);
+        }
 
-		public bool CanHarvestArtifact()
-		{
-			return this.poiCharge >= 1f;
-		}
+        public string GetArtifactToHarvest() {
+            if (CanHarvestArtifact()) {
+                if (string.IsNullOrEmpty(artifactToHarvest)) PickNewArtifactToHarvest();
+                return artifactToHarvest;
+            }
 
-		public List<Descriptor> GetDescriptors(GameObject go)
-		{
-			return new List<Descriptor>();
-		}
+            return null;
+        }
 
-		[Serialize]
-		public ArtifactPOIConfigurator.ArtifactPOIInstanceConfiguration configuration;
+        public void HarvestArtifact() {
+            if (CanHarvestArtifact()) {
+                numHarvests++;
+                poiCharge         = 0f;
+                artifactToHarvest = null;
+                PickNewArtifactToHarvest();
+            }
+        }
 
-		[Serialize]
-		private float _poiCharge;
+        public void RechargePOI(float dt) {
+            var delta = dt / configuration.GetRechargeTime();
+            DeltaPOICharge(delta);
+        }
 
-		[Serialize]
-		public string artifactToHarvest;
+        public float RechargeTimeRemaining() {
+            return Mathf.CeilToInt((configuration.GetRechargeTime() - configuration.GetRechargeTime() * poiCharge) /
+                                   600f) *
+                   600f;
+        }
 
-		[Serialize]
-		private int numHarvests;
-	}
+        public void DeltaPOICharge(float delta) {
+            poiCharge += delta;
+            poiCharge =  Mathf.Min(1f, poiCharge);
+        }
+
+        public bool CanHarvestArtifact() { return poiCharge >= 1f; }
+    }
 }

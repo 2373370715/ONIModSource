@@ -2,7 +2,7 @@
 
 public class StandardOffsetTracker : OffsetTracker
 {
-	public StandardOffsetTracker(CellOffset[] offsets)
+		public StandardOffsetTracker(CellOffset[] offsets)
 	{
 		this.offsets = offsets;
 	}

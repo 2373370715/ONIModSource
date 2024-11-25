@@ -3,18 +3,18 @@ using Klei.AI;
 
 public class CaloriesDisplayer : StandardAmountDisplayer
 {
-	public CaloriesDisplayer() : base(GameUtil.UnitClass.Calories, GameUtil.TimeSlice.PerCycle, null, GameUtil.IdentityDescriptorTense.Normal)
+		public CaloriesDisplayer() : base(GameUtil.UnitClass.Calories, GameUtil.TimeSlice.PerCycle, null, GameUtil.IdentityDescriptorTense.Normal)
 	{
 		this.formatter = new CaloriesDisplayer.CaloriesAttributeFormatter();
 	}
 
-	public class CaloriesAttributeFormatter : StandardAttributeFormatter
+		public class CaloriesAttributeFormatter : StandardAttributeFormatter
 	{
-		public CaloriesAttributeFormatter() : base(GameUtil.UnitClass.Calories, GameUtil.TimeSlice.PerCycle)
+				public CaloriesAttributeFormatter() : base(GameUtil.UnitClass.Calories, GameUtil.TimeSlice.PerCycle)
 		{
 		}
 
-		public override string GetFormattedModifier(AttributeModifier modifier)
+				public override string GetFormattedModifier(AttributeModifier modifier)
 		{
 			if (modifier.IsMultiplier)
 			{

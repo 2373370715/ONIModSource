@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class TelephoneConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Telephone";
 		int width = 1;
@@ -34,7 +34,7 @@ public class TelephoneConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding, false);
 		Telephone telephone = go.AddOrGet<Telephone>();
@@ -49,13 +49,13 @@ public class TelephoneConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "Telephone";
+		public const string ID = "Telephone";
 
-	public const float ringTime = 15f;
+		public const float ringTime = 15f;
 
-	public const float callTime = 25f;
+		public const float callTime = 25f;
 }

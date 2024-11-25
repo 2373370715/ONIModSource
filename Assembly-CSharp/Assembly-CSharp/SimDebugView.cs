@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Klei;
 using Klei.AI;
+using TUNING;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering;
 using UnityEngine.Rendering;
@@ -9,19 +10,19 @@ using UnityEngine.Rendering;
 [AddComponentMenu("KMonoBehaviour/scripts/SimDebugView")]
 public class SimDebugView : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SimDebugView.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		SimDebugView.Instance = this;
 		this.material = UnityEngine.Object.Instantiate<Material>(this.material);
 		this.diseaseMaterial = UnityEngine.Object.Instantiate<Material>(this.diseaseMaterial);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		SimDebugViewCompositor.Instance.material.SetColor("_Color0", GlobalAssets.Instance.colorSet.GetColorByName(this.temperatureThresholds[0].colorName));
 		SimDebugViewCompositor.Instance.material.SetColor("_Color1", GlobalAssets.Instance.colorSet.GetColorByName(this.temperatureThresholds[1].colorName));
@@ -37,7 +38,7 @@ public class SimDebugView : KMonoBehaviour
 		this.SetMode(global::OverlayModes.None.ID);
 	}
 
-	public void OnReset()
+		public void OnReset()
 	{
 		this.plane = SimDebugView.CreatePlane("SimDebugView", base.transform);
 		this.tex = SimDebugView.CreateTexture(out this.texBytes, Grid.WidthInCells, Grid.HeightInCells);
@@ -47,7 +48,7 @@ public class SimDebugView : KMonoBehaviour
 		this.SetMode(global::OverlayModes.None.ID);
 	}
 
-	public static Texture2D CreateTexture(int width, int height)
+		public static Texture2D CreateTexture(int width, int height)
 	{
 		return new Texture2D(width, height)
 		{
@@ -57,7 +58,7 @@ public class SimDebugView : KMonoBehaviour
 		};
 	}
 
-	public static Texture2D CreateTexture(out byte[] textureBytes, int width, int height)
+		public static Texture2D CreateTexture(out byte[] textureBytes, int width, int height)
 	{
 		textureBytes = new byte[width * height * 4];
 		return new Texture2D(width, height, TextureUtil.TextureFormatToGraphicsFormat(TextureFormat.RGBA32), TextureCreationFlags.None)
@@ -68,7 +69,7 @@ public class SimDebugView : KMonoBehaviour
 		};
 	}
 
-	public static Texture2D CreateTexture(int width, int height, Color col)
+		public static Texture2D CreateTexture(int width, int height, Color col)
 	{
 		Color[] array = new Color[width * height];
 		for (int i = 0; i < array.Length; i++)
@@ -81,7 +82,7 @@ public class SimDebugView : KMonoBehaviour
 		return texture2D;
 	}
 
-	public static GameObject CreatePlane(string layer, Transform parent)
+		public static GameObject CreatePlane(string layer, Transform parent)
 	{
 		GameObject gameObject = new GameObject();
 		gameObject.name = "overlayViewDisplayPlane";
@@ -128,7 +129,7 @@ public class SimDebugView : KMonoBehaviour
 		return gameObject;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.plane == null)
 		{
@@ -151,7 +152,7 @@ public class SimDebugView : KMonoBehaviour
 		}
 	}
 
-	private static void SetDefaultBilinear(SimDebugView instance, Texture texture)
+		private static void SetDefaultBilinear(SimDebugView instance, Texture texture)
 	{
 		Renderer component = instance.plane.GetComponent<Renderer>();
 		component.sharedMaterial = instance.material;
@@ -159,7 +160,7 @@ public class SimDebugView : KMonoBehaviour
 		texture.filterMode = FilterMode.Bilinear;
 	}
 
-	private static void SetDefaultPoint(SimDebugView instance, Texture texture)
+		private static void SetDefaultPoint(SimDebugView instance, Texture texture)
 	{
 		Renderer component = instance.plane.GetComponent<Renderer>();
 		component.sharedMaterial = instance.material;
@@ -167,7 +168,7 @@ public class SimDebugView : KMonoBehaviour
 		texture.filterMode = FilterMode.Point;
 	}
 
-	private static void SetDisease(SimDebugView instance, Texture texture)
+		private static void SetDisease(SimDebugView instance, Texture texture)
 	{
 		Renderer component = instance.plane.GetComponent<Renderer>();
 		component.sharedMaterial = instance.diseaseMaterial;
@@ -175,7 +176,7 @@ public class SimDebugView : KMonoBehaviour
 		texture.filterMode = FilterMode.Bilinear;
 	}
 
-	public void UpdateData(Texture2D texture, byte[] textureBytes, HashedString viewMode, byte alpha)
+		public void UpdateData(Texture2D texture, byte[] textureBytes, HashedString viewMode, byte alpha)
 	{
 		Action<SimDebugView, Texture> action;
 		if (!this.dataUpdateFuncs.TryGetValue(viewMode, out action))
@@ -208,34 +209,34 @@ public class SimDebugView : KMonoBehaviour
 		texture.Apply();
 	}
 
-	public void SetGameGridMode(SimDebugView.GameGridMode mode)
+		public void SetGameGridMode(SimDebugView.GameGridMode mode)
 	{
 		this.gameGridMode = mode;
 	}
 
-	public SimDebugView.GameGridMode GetGameGridMode()
+		public SimDebugView.GameGridMode GetGameGridMode()
 	{
 		return this.gameGridMode;
 	}
 
-	public void SetMode(HashedString mode)
+		public void SetMode(HashedString mode)
 	{
 		this.mode = mode;
 		Game.Instance.gameObject.Trigger(1798162660, mode);
 	}
 
-	public HashedString GetMode()
+		public HashedString GetMode()
 	{
 		return this.mode;
 	}
 
-	public static Color TemperatureToColor(float temperature, float minTempExpected, float maxTempExpected)
+		public static Color TemperatureToColor(float temperature, float minTempExpected, float maxTempExpected)
 	{
 		float num = Mathf.Clamp((temperature - minTempExpected) / (maxTempExpected - minTempExpected), 0f, 1f);
 		return Color.HSVToRGB((10f + (1f - num) * 171f) / 360f, 1f, 1f);
 	}
 
-	public static Color LiquidTemperatureToColor(float temperature, float minTempExpected, float maxTempExpected)
+		public static Color LiquidTemperatureToColor(float temperature, float minTempExpected, float maxTempExpected)
 	{
 		float value = (temperature - minTempExpected) / (maxTempExpected - minTempExpected);
 		float num = Mathf.Clamp(value, 0.5f, 1f);
@@ -243,21 +244,21 @@ public class SimDebugView : KMonoBehaviour
 		return Color.HSVToRGB((10f + (1f - num) * 171f) / 360f, s, 1f);
 	}
 
-	public static Color SolidTemperatureToColor(float temperature, float minTempExpected, float maxTempExpected)
+		public static Color SolidTemperatureToColor(float temperature, float minTempExpected, float maxTempExpected)
 	{
 		float num = Mathf.Clamp((temperature - minTempExpected) / (maxTempExpected - minTempExpected), 0.5f, 1f);
 		float s = 1f;
 		return Color.HSVToRGB((10f + (1f - num) * 171f) / 360f, s, 1f);
 	}
 
-	public static Color GasTemperatureToColor(float temperature, float minTempExpected, float maxTempExpected)
+		public static Color GasTemperatureToColor(float temperature, float minTempExpected, float maxTempExpected)
 	{
 		float num = Mathf.Clamp((temperature - minTempExpected) / (maxTempExpected - minTempExpected), 0f, 0.5f);
 		float s = 1f;
 		return Color.HSVToRGB((10f + (1f - num) * 171f) / 360f, s, 1f);
 	}
 
-	public Color NormalizedTemperature(float actualTemperature)
+		public Color NormalizedTemperature(float actualTemperature)
 	{
 		float num = this.user_temperatureThresholds[0];
 		float num2 = this.user_temperatureThresholds[1];
@@ -307,11 +308,11 @@ public class SimDebugView : KMonoBehaviour
 		return Color.Lerp(GlobalAssets.Instance.colorSet.GetColorByName(this.temperatureThresholds[num4].colorName), GlobalAssets.Instance.colorSet.GetColorByName(this.temperatureThresholds[num4 + 1].colorName), t);
 	}
 
-	public Color NormalizedHeatFlow(int cell)
+		public Color NormalizedHeatFlow(int cell)
 	{
 		int num = 0;
 		int num2 = 0;
-		float thermalComfort = GameUtil.GetThermalComfort(cell, -0.08368001f);
+		float thermalComfort = GameUtil.GetThermalComfort(GameTags.Minions.Models.Standard, cell, -DUPLICANTSTATS.STANDARD.BaseStats.DUPLICANT_BASE_GENERATION_KILOWATTS);
 		for (int i = 0; i < this.heatFlowThresholds.Length; i++)
 		{
 			if (thermalComfort <= this.heatFlowThresholds[i].value)
@@ -337,12 +338,12 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	private static bool IsInsulated(int cell)
+		private static bool IsInsulated(int cell)
 	{
 		return (Grid.Element[cell].state & Element.State.TemperatureInsulated) > Element.State.Vacuum;
 	}
 
-	private static Color GetDiseaseColour(SimDebugView instance, int cell)
+		private static Color GetDiseaseColour(SimDebugView instance, int cell)
 	{
 		Color result = Color.black;
 		if (Grid.DiseaseIdx[cell] != 255)
@@ -358,36 +359,36 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	private static Color GetHeatFlowColour(SimDebugView instance, int cell)
+		private static Color GetHeatFlowColour(SimDebugView instance, int cell)
 	{
 		return instance.NormalizedHeatFlow(cell);
 	}
 
-	private static Color GetBlack(SimDebugView instance, int cell)
+		private static Color GetBlack(SimDebugView instance, int cell)
 	{
 		return Color.black;
 	}
 
-	public static Color GetLightColour(SimDebugView instance, int cell)
+		public static Color GetLightColour(SimDebugView instance, int cell)
 	{
 		Color result = GlobalAssets.Instance.colorSet.lightOverlay;
 		result.a = Mathf.Clamp(Mathf.Sqrt((float)(Grid.LightIntensity[cell] + LightGridManager.previewLux[cell])) / Mathf.Sqrt(80000f), 0f, 1f);
-		if (Grid.LightIntensity[cell] > 72000)
+		if (Grid.LightIntensity[cell] > DUPLICANTSTATS.STANDARD.Light.LUX_SUNBURN)
 		{
-			float num = ((float)Grid.LightIntensity[cell] + (float)LightGridManager.previewLux[cell] - 72000f) / 8000f;
+			float num = ((float)Grid.LightIntensity[cell] + (float)LightGridManager.previewLux[cell] - (float)DUPLICANTSTATS.STANDARD.Light.LUX_SUNBURN) / (float)(80000 - DUPLICANTSTATS.STANDARD.Light.LUX_SUNBURN);
 			num /= 10f;
 			result.r += Mathf.Min(0.1f, PerlinSimplexNoise.noise(Grid.CellToPos2D(cell).x / 8f, Grid.CellToPos2D(cell).y / 8f + (float)instance.currentFrame / 32f) * num);
 		}
 		return result;
 	}
 
-	public static Color GetRadiationColour(SimDebugView instance, int cell)
+		public static Color GetRadiationColour(SimDebugView instance, int cell)
 	{
 		float a = Mathf.Clamp(Mathf.Sqrt(Grid.Radiation[cell]) / 30f, 0f, 1f);
 		return new Color(0.2f, 0.9f, 0.3f, a);
 	}
 
-	public static Color GetRoomsColour(SimDebugView instance, int cell)
+		public static Color GetRoomsColour(SimDebugView instance, int cell)
 	{
 		Color result = Color.black;
 		if (Grid.IsValidCell(instance.selectedCell))
@@ -407,14 +408,14 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	public static Color GetJoulesColour(SimDebugView instance, int cell)
+		public static Color GetJoulesColour(SimDebugView instance, int cell)
 	{
 		float num = Grid.Element[cell].specificHeatCapacity * Grid.Temperature[cell] * (Grid.Mass[cell] * 1000f);
 		float t = 0.5f * num / (ElementLoader.FindElementByHash(SimHashes.SandStone).specificHeatCapacity * 294f * 1000000f);
 		return Color.Lerp(Color.black, Color.red, t);
 	}
 
-	public static Color GetNormalizedTemperatureColourMode(SimDebugView instance, int cell)
+		public static Color GetNormalizedTemperatureColourMode(SimDebugView instance, int cell)
 	{
 		switch (Game.Instance.temperatureOverlayMode)
 		{
@@ -431,7 +432,7 @@ public class SimDebugView : KMonoBehaviour
 		}
 	}
 
-	public static Color GetStateChangeProximityColour(SimDebugView instance, int cell)
+		public static Color GetStateChangeProximityColour(SimDebugView instance, int cell)
 	{
 		float temperature = Grid.Temperature[cell];
 		Element element = Grid.Element[cell];
@@ -450,13 +451,13 @@ public class SimDebugView : KMonoBehaviour
 		return SimDebugView.TemperatureToColor(temperature, num, num2);
 	}
 
-	public static Color GetNormalizedTemperatureColour(SimDebugView instance, int cell)
+		public static Color GetNormalizedTemperatureColour(SimDebugView instance, int cell)
 	{
 		float actualTemperature = Grid.Temperature[cell];
 		return instance.NormalizedTemperature(actualTemperature);
 	}
 
-	private static Color GetGameGridColour(SimDebugView instance, int cell)
+		private static Color GetGameGridColour(SimDebugView instance, int cell)
 	{
 		Color result = new Color32(0, 0, 0, byte.MaxValue);
 		switch (instance.gameGridMode)
@@ -481,12 +482,12 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	public Color32 GetColourForID(int id)
+		public Color32 GetColourForID(int id)
 	{
 		return this.networkColours[id % this.networkColours.Length];
 	}
 
-	private static Color GetThermalConductivityColour(SimDebugView instance, int cell)
+		private static Color GetThermalConductivityColour(SimDebugView instance, int cell)
 	{
 		bool flag = SimDebugView.IsInsulated(cell);
 		Color black = Color.black;
@@ -501,7 +502,7 @@ public class SimDebugView : KMonoBehaviour
 		return black;
 	}
 
-	private static Color GetPressureMapColour(SimDebugView instance, int cell)
+		private static Color GetPressureMapColour(SimDebugView instance, int cell)
 	{
 		Color32 c = Color.black;
 		if (Grid.Pressure[cell] > 0f)
@@ -512,7 +513,7 @@ public class SimDebugView : KMonoBehaviour
 		return c;
 	}
 
-	private static Color GetOxygenMapColour(SimDebugView instance, int cell)
+		private static Color GetOxygenMapColour(SimDebugView instance, int cell)
 	{
 		Color result = Color.black;
 		if (!Grid.IsLiquid(cell) && !Grid.Solid[cell])
@@ -530,7 +531,7 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	private static Color GetTileColour(SimDebugView instance, int cell)
+		private static Color GetTileColour(SimDebugView instance, int cell)
 	{
 		float num = 0.33f;
 		Color result = new Color(num, num, num);
@@ -550,12 +551,12 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	private static Color GetTileTypeColour(SimDebugView instance, int cell)
+		private static Color GetTileTypeColour(SimDebugView instance, int cell)
 	{
 		return Grid.Element[cell].substance.uiColour;
 	}
 
-	private static Color GetStateMapColour(SimDebugView instance, int cell)
+		private static Color GetStateMapColour(SimDebugView instance, int cell)
 	{
 		Color result = Color.black;
 		switch (Grid.Element[cell].state & Element.State.Solid)
@@ -573,7 +574,7 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	private static Color GetSolidLiquidMapColour(SimDebugView instance, int cell)
+		private static Color GetSolidLiquidMapColour(SimDebugView instance, int cell)
 	{
 		Color result = Color.black;
 		switch (Grid.Element[cell].state & Element.State.Solid)
@@ -588,7 +589,7 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	private static Color GetStateChangeColour(SimDebugView instance, int cell)
+		private static Color GetStateChangeColour(SimDebugView instance, int cell)
 	{
 		Color result = Color.black;
 		Element element = Grid.Element[cell];
@@ -605,7 +606,7 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	private static Color GetDecorColour(SimDebugView instance, int cell)
+		private static Color GetDecorColour(SimDebugView instance, int cell)
 	{
 		Color result = Color.black;
 		if (!Grid.Solid[cell])
@@ -623,7 +624,7 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	private static Color GetDangerColour(SimDebugView instance, int cell)
+		private static Color GetDangerColour(SimDebugView instance, int cell)
 	{
 		Color result = Color.black;
 		SimDebugView.DangerAmount dangerAmount = SimDebugView.DangerAmount.None;
@@ -678,7 +679,7 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	private static Color GetSimCheckErrorMapColour(SimDebugView instance, int cell)
+		private static Color GetSimCheckErrorMapColour(SimDebugView instance, int cell)
 	{
 		Color result = Color.black;
 		Element element = Grid.Element[cell];
@@ -722,7 +723,7 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	private static Color GetFakeFloorColour(SimDebugView instance, int cell)
+		private static Color GetFakeFloorColour(SimDebugView instance, int cell)
 	{
 		if (!Grid.FakeFloor[cell])
 		{
@@ -731,7 +732,7 @@ public class SimDebugView : KMonoBehaviour
 		return Color.cyan;
 	}
 
-	private static Color GetFoundationColour(SimDebugView instance, int cell)
+		private static Color GetFoundationColour(SimDebugView instance, int cell)
 	{
 		if (!Grid.Foundation[cell])
 		{
@@ -740,7 +741,7 @@ public class SimDebugView : KMonoBehaviour
 		return Color.white;
 	}
 
-	private static Color GetDupePassableColour(SimDebugView instance, int cell)
+		private static Color GetDupePassableColour(SimDebugView instance, int cell)
 	{
 		if (!Grid.DupePassable[cell])
 		{
@@ -749,7 +750,7 @@ public class SimDebugView : KMonoBehaviour
 		return Color.green;
 	}
 
-	private static Color GetCritterImpassableColour(SimDebugView instance, int cell)
+		private static Color GetCritterImpassableColour(SimDebugView instance, int cell)
 	{
 		if (!Grid.CritterImpassable[cell])
 		{
@@ -758,7 +759,7 @@ public class SimDebugView : KMonoBehaviour
 		return Color.yellow;
 	}
 
-	private static Color GetDupeImpassableColour(SimDebugView instance, int cell)
+		private static Color GetDupeImpassableColour(SimDebugView instance, int cell)
 	{
 		if (!Grid.DupeImpassable[cell])
 		{
@@ -767,7 +768,7 @@ public class SimDebugView : KMonoBehaviour
 		return Color.red;
 	}
 
-	private static Color GetMinionOccupiedColour(SimDebugView instance, int cell)
+		private static Color GetMinionOccupiedColour(SimDebugView instance, int cell)
 	{
 		if (!(Grid.Objects[cell, 0] != null))
 		{
@@ -776,7 +777,7 @@ public class SimDebugView : KMonoBehaviour
 		return Color.white;
 	}
 
-	private static Color GetMinionGroupProberColour(SimDebugView instance, int cell)
+		private static Color GetMinionGroupProberColour(SimDebugView instance, int cell)
 	{
 		if (!MinionGroupProber.Get().IsReachable(cell))
 		{
@@ -785,7 +786,7 @@ public class SimDebugView : KMonoBehaviour
 		return Color.white;
 	}
 
-	private static Color GetPathProberColour(SimDebugView instance, int cell)
+		private static Color GetPathProberColour(SimDebugView instance, int cell)
 	{
 		if (!(instance.selectedPathProber != null) || instance.selectedPathProber.GetCost(cell) == -1)
 		{
@@ -794,7 +795,7 @@ public class SimDebugView : KMonoBehaviour
 		return Color.white;
 	}
 
-	private static Color GetReservedColour(SimDebugView instance, int cell)
+		private static Color GetReservedColour(SimDebugView instance, int cell)
 	{
 		if (!Grid.Reserved[cell])
 		{
@@ -803,7 +804,7 @@ public class SimDebugView : KMonoBehaviour
 		return Color.white;
 	}
 
-	private static Color GetAllowPathFindingColour(SimDebugView instance, int cell)
+		private static Color GetAllowPathFindingColour(SimDebugView instance, int cell)
 	{
 		if (!Grid.AllowPathfinding[cell])
 		{
@@ -812,7 +813,7 @@ public class SimDebugView : KMonoBehaviour
 		return Color.white;
 	}
 
-	private static Color GetMassColour(SimDebugView instance, int cell)
+		private static Color GetMassColour(SimDebugView instance, int cell)
 	{
 		Color result = Color.black;
 		if (!SimDebugView.IsInsulated(cell))
@@ -827,7 +828,7 @@ public class SimDebugView : KMonoBehaviour
 		return result;
 	}
 
-	public static Color GetScenePartitionerColour(SimDebugView instance, int cell)
+		public static Color GetScenePartitionerColour(SimDebugView instance, int cell)
 	{
 		if (!GameScenePartitioner.Instance.DoDebugLayersContainItemsOnCell(cell))
 		{
@@ -836,80 +837,80 @@ public class SimDebugView : KMonoBehaviour
 		return Color.white;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public Material material;
 
-	public Material diseaseMaterial;
+		public Material diseaseMaterial;
 
-	public bool hideFOW;
+		public bool hideFOW;
 
-	public const int colourSize = 4;
+		public const int colourSize = 4;
 
-	private byte[] texBytes;
+		private byte[] texBytes;
 
-	private int currentFrame;
+		private int currentFrame;
 
-	[SerializeField]
+		[SerializeField]
 	private Texture2D tex;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject plane;
 
-	private HashedString mode = global::OverlayModes.Power.ID;
+		private HashedString mode = global::OverlayModes.Power.ID;
 
-	private SimDebugView.GameGridMode gameGridMode = SimDebugView.GameGridMode.DigAmount;
+		private SimDebugView.GameGridMode gameGridMode = SimDebugView.GameGridMode.DigAmount;
 
-	private PathProber selectedPathProber;
+		private PathProber selectedPathProber;
 
-	public float minTempExpected = 173.15f;
+		public float minTempExpected = 173.15f;
 
-	public float maxTempExpected = 423.15f;
+		public float maxTempExpected = 423.15f;
 
-	public float minMassExpected = 1.0001f;
+		public float minMassExpected = 1.0001f;
 
-	public float maxMassExpected = 10000f;
+		public float maxMassExpected = 10000f;
 
-	public float minPressureExpected = 1.300003f;
+		public float minPressureExpected = 1.300003f;
 
-	public float maxPressureExpected = 201.3f;
+		public float maxPressureExpected = 201.3f;
 
-	public float minThermalConductivity;
+		public float minThermalConductivity;
 
-	public float maxThermalConductivity = 30f;
+		public float maxThermalConductivity = 30f;
 
-	public float thresholdRange = 0.001f;
+		public float thresholdRange = 0.001f;
 
-	public float thresholdOpacity = 0.8f;
+		public float thresholdOpacity = 0.8f;
 
-	public static float minimumBreathable = 0.05f;
+		public static float minimumBreathable = 0.05f;
 
-	public static float optimallyBreathable = 1f;
+		public static float optimallyBreathable = 1f;
 
-	public SimDebugView.ColorThreshold[] temperatureThresholds;
+		public SimDebugView.ColorThreshold[] temperatureThresholds;
 
-	public Vector2 user_temperatureThresholds = Vector2.zero;
+		public Vector2 user_temperatureThresholds = Vector2.zero;
 
-	public SimDebugView.ColorThreshold[] heatFlowThresholds;
+		public SimDebugView.ColorThreshold[] heatFlowThresholds;
 
-	public Color32[] networkColours;
+		public Color32[] networkColours;
 
-	public Gradient breathableGradient = new Gradient();
+		public Gradient breathableGradient = new Gradient();
 
-	public Color32 unbreathableColour = new Color(0.5f, 0f, 0f);
+		public Color32 unbreathableColour = new Color(0.5f, 0f, 0f);
 
-	public Color32[] toxicColour = new Color32[]
+		public Color32[] toxicColour = new Color32[]
 	{
 		new Color(0.5f, 0f, 0.5f),
 		new Color(1f, 0f, 1f)
 	};
 
-	public static SimDebugView Instance;
+		public static SimDebugView Instance;
 
-	private WorkItemCollection<SimDebugView.UpdateSimViewWorkItem, SimDebugView.UpdateSimViewSharedData> updateSimViewWorkItems = new WorkItemCollection<SimDebugView.UpdateSimViewWorkItem, SimDebugView.UpdateSimViewSharedData>();
+		private WorkItemCollection<SimDebugView.UpdateSimViewWorkItem, SimDebugView.UpdateSimViewSharedData> updateSimViewWorkItems = new WorkItemCollection<SimDebugView.UpdateSimViewWorkItem, SimDebugView.UpdateSimViewSharedData>();
 
-	private int selectedCell;
+		private int selectedCell;
 
-	private Dictionary<HashedString, Action<SimDebugView, Texture>> dataUpdateFuncs = new Dictionary<HashedString, Action<SimDebugView, Texture>>
+		private Dictionary<HashedString, Action<SimDebugView, Texture>> dataUpdateFuncs = new Dictionary<HashedString, Action<SimDebugView, Texture>>
 	{
 		{
 			global::OverlayModes.Temperature.ID,
@@ -933,7 +934,7 @@ public class SimDebugView : KMonoBehaviour
 		}
 	};
 
-	private static float[] relativeTemperatureColorIntervals = new float[]
+		private static float[] relativeTemperatureColorIntervals = new float[]
 	{
 		0.4f,
 		0.05f,
@@ -944,7 +945,7 @@ public class SimDebugView : KMonoBehaviour
 		0.2f
 	};
 
-	private static float[] absoluteTemperatureColorIntervals = new float[]
+		private static float[] absoluteTemperatureColorIntervals = new float[]
 	{
 		273.15f,
 		10f,
@@ -956,7 +957,7 @@ public class SimDebugView : KMonoBehaviour
 		10000f
 	};
 
-	private Dictionary<HashedString, Func<SimDebugView, int, Color>> getColourFuncs = new Dictionary<HashedString, Func<SimDebugView, int, Color>>
+		private Dictionary<HashedString, Func<SimDebugView, int, Color>> getColourFuncs = new Dictionary<HashedString, Func<SimDebugView, int, Color>>
 	{
 		{
 			global::OverlayModes.ThermalConductivity.ID,
@@ -1096,7 +1097,7 @@ public class SimDebugView : KMonoBehaviour
 		}
 	};
 
-	public static readonly Color[] dbColours = new Color[]
+		public static readonly Color[] dbColours = new Color[]
 	{
 		new Color(0f, 0f, 0f, 0f),
 		new Color(1f, 1f, 1f, 0.3f),
@@ -1113,83 +1114,83 @@ public class SimDebugView : KMonoBehaviour
 		new Color(1f, 0f, 0f, 1f)
 	};
 
-	private static float minMinionTemperature = 260f;
+		private static float minMinionTemperature = 260f;
 
-	private static float maxMinionTemperature = 310f;
+		private static float maxMinionTemperature = 310f;
 
-	private static float minMinionPressure = 80f;
+		private static float minMinionPressure = 80f;
 
-	public static class OverlayModes
+		public static class OverlayModes
 	{
-		public static readonly HashedString Mass = "Mass";
+				public static readonly HashedString Mass = "Mass";
 
-		public static readonly HashedString Pressure = "Pressure";
+				public static readonly HashedString Pressure = "Pressure";
 
-		public static readonly HashedString GameGrid = "GameGrid";
+				public static readonly HashedString GameGrid = "GameGrid";
 
-		public static readonly HashedString ScenePartitioner = "ScenePartitioner";
+				public static readonly HashedString ScenePartitioner = "ScenePartitioner";
 
-		public static readonly HashedString ConduitUpdates = "ConduitUpdates";
+				public static readonly HashedString ConduitUpdates = "ConduitUpdates";
 
-		public static readonly HashedString Flow = "Flow";
+				public static readonly HashedString Flow = "Flow";
 
-		public static readonly HashedString StateChange = "StateChange";
+				public static readonly HashedString StateChange = "StateChange";
 
-		public static readonly HashedString SimCheckErrorMap = "SimCheckErrorMap";
+				public static readonly HashedString SimCheckErrorMap = "SimCheckErrorMap";
 
-		public static readonly HashedString DupePassable = "DupePassable";
+				public static readonly HashedString DupePassable = "DupePassable";
 
-		public static readonly HashedString Foundation = "Foundation";
+				public static readonly HashedString Foundation = "Foundation";
 
-		public static readonly HashedString FakeFloor = "FakeFloor";
+				public static readonly HashedString FakeFloor = "FakeFloor";
 
-		public static readonly HashedString CritterImpassable = "CritterImpassable";
+				public static readonly HashedString CritterImpassable = "CritterImpassable";
 
-		public static readonly HashedString DupeImpassable = "DupeImpassable";
+				public static readonly HashedString DupeImpassable = "DupeImpassable";
 
-		public static readonly HashedString MinionGroupProber = "MinionGroupProber";
+				public static readonly HashedString MinionGroupProber = "MinionGroupProber";
 
-		public static readonly HashedString PathProber = "PathProber";
+				public static readonly HashedString PathProber = "PathProber";
 
-		public static readonly HashedString Reserved = "Reserved";
+				public static readonly HashedString Reserved = "Reserved";
 
-		public static readonly HashedString AllowPathFinding = "AllowPathFinding";
+				public static readonly HashedString AllowPathFinding = "AllowPathFinding";
 
-		public static readonly HashedString Danger = "Danger";
+				public static readonly HashedString Danger = "Danger";
 
-		public static readonly HashedString MinionOccupied = "MinionOccupied";
+				public static readonly HashedString MinionOccupied = "MinionOccupied";
 
-		public static readonly HashedString TileType = "TileType";
+				public static readonly HashedString TileType = "TileType";
 
-		public static readonly HashedString State = "State";
+				public static readonly HashedString State = "State";
 
-		public static readonly HashedString SolidLiquid = "SolidLiquid";
+				public static readonly HashedString SolidLiquid = "SolidLiquid";
 
-		public static readonly HashedString Joules = "Joules";
+				public static readonly HashedString Joules = "Joules";
 	}
 
-	public enum GameGridMode
+		public enum GameGridMode
 	{
-		GameSolidMap,
-		Lighting,
-		RoomMap,
-		Style,
-		PlantDensity,
-		DigAmount,
-		DupePassable
+				GameSolidMap,
+				Lighting,
+				RoomMap,
+				Style,
+				PlantDensity,
+				DigAmount,
+				DupePassable
 	}
 
-	[Serializable]
+		[Serializable]
 	public struct ColorThreshold
 	{
-		public string colorName;
+				public string colorName;
 
-		public float value;
+				public float value;
 	}
 
-	private struct UpdateSimViewSharedData
+		private struct UpdateSimViewSharedData
 	{
-		public UpdateSimViewSharedData(SimDebugView instance, byte[] texture_bytes, HashedString sim_view_mode, SimDebugView sim_debug_view)
+				public UpdateSimViewSharedData(SimDebugView instance, byte[] texture_bytes, HashedString sim_view_mode, SimDebugView sim_debug_view)
 		{
 			this.instance = instance;
 			this.textureBytes = texture_bytes;
@@ -1197,18 +1198,18 @@ public class SimDebugView : KMonoBehaviour
 			this.simDebugView = sim_debug_view;
 		}
 
-		public SimDebugView instance;
+				public SimDebugView instance;
 
-		public HashedString simViewMode;
+				public HashedString simViewMode;
 
-		public SimDebugView simDebugView;
+				public SimDebugView simDebugView;
 
-		public byte[] textureBytes;
+				public byte[] textureBytes;
 	}
 
-	private struct UpdateSimViewWorkItem : IWorkItem<SimDebugView.UpdateSimViewSharedData>
+		private struct UpdateSimViewWorkItem : IWorkItem<SimDebugView.UpdateSimViewSharedData>
 	{
-		public UpdateSimViewWorkItem(int x0, int y0, int x1, int y1)
+				public UpdateSimViewWorkItem(int x0, int y0, int x1, int y1)
 		{
 			this.x0 = Mathf.Clamp(x0, 0, Grid.WidthInCells - 1);
 			this.x1 = Mathf.Clamp(x1, 0, Grid.WidthInCells - 1);
@@ -1216,7 +1217,7 @@ public class SimDebugView : KMonoBehaviour
 			this.y1 = Mathf.Clamp(y1, 0, Grid.HeightInCells - 1);
 		}
 
-		public void Run(SimDebugView.UpdateSimViewSharedData shared_data)
+				public void Run(SimDebugView.UpdateSimViewSharedData shared_data)
 		{
 			Func<SimDebugView, int, Color> func;
 			if (!shared_data.instance.getColourFuncs.TryGetValue(shared_data.simViewMode, out func))
@@ -1249,24 +1250,24 @@ public class SimDebugView : KMonoBehaviour
 			}
 		}
 
-		private int x0;
+				private int x0;
 
-		private int y0;
+				private int y0;
 
-		private int x1;
+				private int x1;
 
-		private int y1;
+				private int y1;
 	}
 
-	public enum DangerAmount
+		public enum DangerAmount
 	{
-		None,
-		VeryLow,
-		Low,
-		Moderate,
-		High,
-		VeryHigh,
-		Extreme,
-		MAX_DANGERAMOUNT = 6
+				None,
+				VeryLow,
+				Low,
+				Moderate,
+				High,
+				VeryHigh,
+				Extreme,
+				MAX_DANGERAMOUNT = 6
 	}
 }

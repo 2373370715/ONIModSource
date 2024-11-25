@@ -4,316 +4,205 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [AddComponentMenu("KMonoBehaviour/scripts/Slideshow")]
-public class Slideshow : KMonoBehaviour
-{
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.timeUntilNextSlide = this.timePerSlide;
-		if (this.transparentIfEmpty && this.sprites != null && this.sprites.Length == 0)
-		{
-			this.imageTarget.color = Color.clear;
-		}
-		if (this.isExpandable)
-		{
-			this.button = base.GetComponent<KButton>();
-			this.button.onClick += delegate()
-			{
-				if (this.onBeforePlay != null)
-				{
-					this.onBeforePlay();
-				}
-				SlideshowUpdateType slideshowUpdateType = this.updateType;
-				if (slideshowUpdateType == SlideshowUpdateType.preloadedSprites)
-				{
-					VideoScreen.Instance.PlaySlideShow(this.sprites);
-					return;
-				}
-				if (slideshowUpdateType != SlideshowUpdateType.loadOnDemand)
-				{
-					return;
-				}
-				VideoScreen.Instance.PlaySlideShow(this.files);
-			};
-		}
-		if (this.nextButton != null)
-		{
-			this.nextButton.onClick += delegate()
-			{
-				this.nextSlide();
-			};
-		}
-		if (this.prevButton != null)
-		{
-			this.prevButton.onClick += delegate()
-			{
-				this.prevSlide();
-			};
-		}
-		if (this.pauseButton != null)
-		{
-			this.pauseButton.onClick += delegate()
-			{
-				this.SetPaused(!this.paused);
-			};
-		}
-		if (this.closeButton != null)
-		{
-			this.closeButton.onClick += delegate()
-			{
-				VideoScreen.Instance.Stop();
-				if (this.onEndingPlay != null)
-				{
-					this.onEndingPlay();
-				}
-			};
-		}
-	}
+public class Slideshow : KMonoBehaviour {
+    public delegate void onBeforeAndEndPlayDelegate();
 
-	public void SetPaused(bool state)
-	{
-		this.paused = state;
-		if (this.pauseIcon != null)
-		{
-			this.pauseIcon.gameObject.SetActive(!this.paused);
-		}
-		if (this.unpauseIcon != null)
-		{
-			this.unpauseIcon.gameObject.SetActive(this.paused);
-		}
-		if (this.prevButton != null)
-		{
-			this.prevButton.gameObject.SetActive(this.paused);
-		}
-		if (this.nextButton != null)
-		{
-			this.nextButton.gameObject.SetActive(this.paused);
-		}
-	}
+    [SerializeField]
+    private KButton button;
 
-	private void resetSlide(bool enable)
-	{
-		this.timeUntilNextSlide = this.timePerSlide;
-		this.currentSlide = 0;
-		if (enable)
-		{
-			this.imageTarget.color = Color.white;
-			return;
-		}
-		if (this.transparentIfEmpty)
-		{
-			this.imageTarget.color = Color.clear;
-		}
-	}
+    [SerializeField]
+    private KButton closeButton;
 
-	private Sprite loadSlide(string file)
-	{
-		float realtimeSinceStartup = Time.realtimeSinceStartup;
-		Texture2D texture2D = new Texture2D(512, 768);
-		texture2D.filterMode = FilterMode.Point;
-		texture2D.LoadImage(File.ReadAllBytes(file));
-		return Sprite.Create(texture2D, new Rect(Vector2.zero, new Vector2((float)texture2D.width, (float)texture2D.height)), new Vector2(0.5f, 0.5f), 100f, 0U, SpriteMeshType.FullRect);
-	}
+    private int      currentSlide;
+    private Sprite   currentSlideImage;
+    private string[] files;
+    public  RawImage imageTarget;
 
-	public void SetFiles(string[] files, int loadFrame = -1)
-	{
-		if (files == null)
-		{
-			return;
-		}
-		this.files = files;
-		bool flag = files.Length != 0 && files[0] != null;
-		this.resetSlide(flag);
-		if (flag)
-		{
-			int num = (loadFrame != -1) ? loadFrame : (files.Length - 1);
-			string file = files[num];
-			Sprite slide = this.loadSlide(file);
-			this.setSlide(slide);
-			this.currentSlideImage = slide;
-		}
-	}
+    [SerializeField]
+    private bool isExpandable;
 
-	public void updateSize(Sprite sprite)
-	{
-		Vector2 fittedSize = this.GetFittedSize(sprite, 960f, 960f);
-		base.GetComponent<RectTransform>().sizeDelta = fittedSize;
-	}
+    [SerializeField]
+    private KButton nextButton;
 
-	public void SetSprites(Sprite[] sprites)
-	{
-		if (sprites == null)
-		{
-			return;
-		}
-		this.sprites = sprites;
-		this.resetSlide(sprites.Length != 0 && sprites[0] != null);
-		if (sprites.Length != 0 && sprites[0] != null)
-		{
-			this.setSlide(sprites[0]);
-		}
-	}
+    public onBeforeAndEndPlayDelegate onBeforePlay;
+    public onBeforeAndEndPlayDelegate onEndingPlay;
 
-	public Vector2 GetFittedSize(Sprite sprite, float maxWidth, float maxHeight)
-	{
-		if (sprite == null || sprite.texture == null)
-		{
-			return Vector2.zero;
-		}
-		int width = sprite.texture.width;
-		int height = sprite.texture.height;
-		float num = maxWidth / (float)width;
-		float num2 = maxHeight / (float)height;
-		if (num < num2)
-		{
-			return new Vector2((float)width * num, (float)height * num);
-		}
-		return new Vector2((float)width * num2, (float)height * num2);
-	}
+    [SerializeField]
+    private KButton pauseButton;
 
-	public void setSlide(Sprite slide)
-	{
-		if (slide == null)
-		{
-			return;
-		}
-		this.imageTarget.texture = slide.texture;
-		this.updateSize(slide);
-	}
+    private bool paused;
 
-	public void nextSlide()
-	{
-		this.setSlideIndex(this.currentSlide + 1);
-	}
+    [SerializeField]
+    private Image pauseIcon;
 
-	public void prevSlide()
-	{
-		this.setSlideIndex(this.currentSlide - 1);
-	}
+    public bool playInThumbnail;
 
-	private void setSlideIndex(int slideIndex)
-	{
-		this.timeUntilNextSlide = this.timePerSlide;
-		SlideshowUpdateType slideshowUpdateType = this.updateType;
-		if (slideshowUpdateType != SlideshowUpdateType.preloadedSprites)
-		{
-			if (slideshowUpdateType != SlideshowUpdateType.loadOnDemand)
-			{
-				return;
-			}
-			if (slideIndex < 0)
-			{
-				slideIndex = this.files.Length + slideIndex;
-			}
-			this.currentSlide = slideIndex % this.files.Length;
-			if (this.currentSlide == this.files.Length - 1)
-			{
-				this.timeUntilNextSlide *= this.timeFactorForLastSlide;
-			}
-			if (this.playInThumbnail)
-			{
-				if (this.currentSlideImage != null)
-				{
-					UnityEngine.Object.Destroy(this.currentSlideImage.texture);
-					UnityEngine.Object.Destroy(this.currentSlideImage);
-					GC.Collect();
-				}
-				this.currentSlideImage = this.loadSlide(this.files[this.currentSlide]);
-				this.setSlide(this.currentSlideImage);
-			}
-		}
-		else
-		{
-			if (slideIndex < 0)
-			{
-				slideIndex = this.sprites.Length + slideIndex;
-			}
-			this.currentSlide = slideIndex % this.sprites.Length;
-			if (this.currentSlide == this.sprites.Length - 1)
-			{
-				this.timeUntilNextSlide *= this.timeFactorForLastSlide;
-			}
-			if (this.playInThumbnail)
-			{
-				this.setSlide(this.sprites[this.currentSlide]);
-				return;
-			}
-		}
-	}
+    [SerializeField]
+    private KButton prevButton;
 
-	private void Update()
-	{
-		if (this.updateType == SlideshowUpdateType.preloadedSprites && (this.sprites == null || this.sprites.Length == 0))
-		{
-			return;
-		}
-		if (this.updateType == SlideshowUpdateType.loadOnDemand && (this.files == null || this.files.Length == 0))
-		{
-			return;
-		}
-		if (this.paused)
-		{
-			return;
-		}
-		this.timeUntilNextSlide -= Time.unscaledDeltaTime;
-		if (this.timeUntilNextSlide <= 0f)
-		{
-			this.nextSlide();
-		}
-	}
+    private Sprite[] sprites;
+    public  float    timeFactorForLastSlide = 3f;
+    public  float    timePerSlide           = 1f;
+    private float    timeUntilNextSlide;
 
-	public RawImage imageTarget;
+    [SerializeField]
+    private readonly bool transparentIfEmpty = true;
 
-	private string[] files;
+    [SerializeField]
+    private Image unpauseIcon;
 
-	private Sprite currentSlideImage;
+    public SlideshowUpdateType updateType;
 
-	private Sprite[] sprites;
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        timeUntilNextSlide = timePerSlide;
+        if (transparentIfEmpty && sprites != null && sprites.Length == 0) imageTarget.color = Color.clear;
+        if (isExpandable) {
+            button = GetComponent<KButton>();
+            button.onClick += delegate {
+                                  if (onBeforePlay != null) onBeforePlay();
+                                  var slideshowUpdateType = updateType;
+                                  if (slideshowUpdateType == SlideshowUpdateType.preloadedSprites) {
+                                      VideoScreen.Instance.PlaySlideShow(sprites);
+                                      return;
+                                  }
 
-	public float timePerSlide = 1f;
+                                  if (slideshowUpdateType != SlideshowUpdateType.loadOnDemand) return;
 
-	public float timeFactorForLastSlide = 3f;
+                                  VideoScreen.Instance.PlaySlideShow(files);
+                              };
+        }
 
-	private int currentSlide;
+        if (nextButton != null) nextButton.onClick += delegate { nextSlide(); };
 
-	private float timeUntilNextSlide;
+        if (prevButton != null) prevButton.onClick += delegate { prevSlide(); };
 
-	private bool paused;
+        if (pauseButton != null) pauseButton.onClick += delegate { SetPaused(!paused); };
 
-	public bool playInThumbnail;
+        if (closeButton != null)
+            closeButton.onClick += delegate {
+                                       VideoScreen.Instance.Stop();
+                                       if (onEndingPlay != null) onEndingPlay();
+                                   };
+    }
 
-	public SlideshowUpdateType updateType;
+    public void SetPaused(bool state) {
+        paused = state;
+        if (pauseIcon   != null) pauseIcon.gameObject.SetActive(!paused);
+        if (unpauseIcon != null) unpauseIcon.gameObject.SetActive(paused);
+        if (prevButton  != null) prevButton.gameObject.SetActive(paused);
+        if (nextButton  != null) nextButton.gameObject.SetActive(paused);
+    }
 
-	[SerializeField]
-	private bool isExpandable;
+    private void resetSlide(bool enable) {
+        timeUntilNextSlide = timePerSlide;
+        currentSlide       = 0;
+        if (enable) {
+            imageTarget.color = Color.white;
+            return;
+        }
 
-	[SerializeField]
-	private KButton button;
+        if (transparentIfEmpty) imageTarget.color = Color.clear;
+    }
 
-	[SerializeField]
-	private bool transparentIfEmpty = true;
+    private Sprite loadSlide(string file) {
+        var realtimeSinceStartup = Time.realtimeSinceStartup;
+        var texture2D            = new Texture2D(512, 768);
+        texture2D.filterMode = FilterMode.Point;
+        texture2D.LoadImage(File.ReadAllBytes(file));
+        return Sprite.Create(texture2D,
+                             new Rect(Vector2.zero, new Vector2(texture2D.width, texture2D.height)),
+                             new Vector2(0.5f, 0.5f),
+                             100f,
+                             0U,
+                             SpriteMeshType.FullRect);
+    }
 
-	[SerializeField]
-	private KButton closeButton;
+    public void SetFiles(string[] files, int loadFrame = -1) {
+        if (files == null) return;
 
-	[SerializeField]
-	private KButton prevButton;
+        this.files = files;
+        var flag = files.Length != 0 && files[0] != null;
+        resetSlide(flag);
+        if (flag) {
+            var num   = loadFrame != -1 ? loadFrame : files.Length - 1;
+            var file  = files[num];
+            var slide = loadSlide(file);
+            setSlide(slide);
+            currentSlideImage = slide;
+        }
+    }
 
-	[SerializeField]
-	private KButton nextButton;
+    public void updateSize(Sprite sprite) {
+        var fittedSize = GetFittedSize(sprite, 960f, 960f);
+        GetComponent<RectTransform>().sizeDelta = fittedSize;
+    }
 
-	[SerializeField]
-	private KButton pauseButton;
+    public void SetSprites(Sprite[] sprites) {
+        if (sprites == null) return;
 
-	[SerializeField]
-	private Image pauseIcon;
+        this.sprites = sprites;
+        resetSlide(sprites.Length != 0 && sprites[0] != null);
+        if (sprites.Length != 0 && sprites[0] != null) setSlide(sprites[0]);
+    }
 
-	[SerializeField]
-	private Image unpauseIcon;
+    public Vector2 GetFittedSize(Sprite sprite, float maxWidth, float maxHeight) {
+        if (sprite == null || sprite.texture == null) return Vector2.zero;
 
-	public Slideshow.onBeforeAndEndPlayDelegate onBeforePlay;
+        var width  = sprite.texture.width;
+        var height = sprite.texture.height;
+        var num    = maxWidth  / width;
+        var num2   = maxHeight / height;
+        if (num < num2) return new Vector2(width * num, height * num);
 
-	public Slideshow.onBeforeAndEndPlayDelegate onEndingPlay;
+        return new Vector2(width * num2, height * num2);
+    }
 
-		public delegate void onBeforeAndEndPlayDelegate();
+    public void setSlide(Sprite slide) {
+        if (slide == null) return;
+
+        imageTarget.texture = slide.texture;
+        updateSize(slide);
+    }
+
+    public void nextSlide() { setSlideIndex(currentSlide + 1); }
+    public void prevSlide() { setSlideIndex(currentSlide - 1); }
+
+    private void setSlideIndex(int slideIndex) {
+        timeUntilNextSlide = timePerSlide;
+        var slideshowUpdateType = updateType;
+        if (slideshowUpdateType != SlideshowUpdateType.preloadedSprites) {
+            if (slideshowUpdateType != SlideshowUpdateType.loadOnDemand) return;
+
+            if (slideIndex < 0) slideIndex = files.Length + slideIndex;
+            currentSlide = slideIndex % files.Length;
+            if (currentSlide == files.Length - 1) timeUntilNextSlide *= timeFactorForLastSlide;
+            if (playInThumbnail) {
+                if (currentSlideImage != null) {
+                    Destroy(currentSlideImage.texture);
+                    Destroy(currentSlideImage);
+                    GC.Collect();
+                }
+
+                currentSlideImage = loadSlide(files[currentSlide]);
+                setSlide(currentSlideImage);
+            }
+        } else {
+            if (slideIndex < 0) slideIndex = sprites.Length + slideIndex;
+            currentSlide = slideIndex % sprites.Length;
+            if (currentSlide == sprites.Length - 1) timeUntilNextSlide *= timeFactorForLastSlide;
+            if (playInThumbnail) setSlide(sprites[currentSlide]);
+        }
+    }
+
+    private void Update() {
+        if (updateType == SlideshowUpdateType.preloadedSprites && (sprites == null || sprites.Length == 0)) return;
+
+        if (updateType == SlideshowUpdateType.loadOnDemand && (files == null || files.Length == 0)) return;
+
+        if (paused) return;
+
+        timeUntilNextSlide -= Time.unscaledDeltaTime;
+        if (timeUntilNextSlide <= 0f) nextSlide();
+    }
 }

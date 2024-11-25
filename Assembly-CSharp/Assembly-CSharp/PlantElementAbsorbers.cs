@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlantElementAbsorbers : KCompactedVector<PlantElementAbsorber>
 {
-	public HandleVector<int>.Handle Add(Storage storage, PlantElementAbsorber.ConsumeInfo[] consumed_elements)
+		public HandleVector<int>.Handle Add(Storage storage, PlantElementAbsorber.ConsumeInfo[] consumed_elements)
 	{
 		if (consumed_elements == null || consumed_elements.Length == 0)
 		{
@@ -47,7 +47,7 @@ public class PlantElementAbsorbers : KCompactedVector<PlantElementAbsorber>
 		return result;
 	}
 
-	public HandleVector<int>.Handle Remove(HandleVector<int>.Handle h)
+		public HandleVector<int>.Handle Remove(HandleVector<int>.Handle h)
 	{
 		if (this.updating)
 		{
@@ -60,7 +60,7 @@ public class PlantElementAbsorbers : KCompactedVector<PlantElementAbsorber>
 		return HandleVector<int>.InvalidHandle;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		int count = this.data.Count;
 		this.updating = true;
@@ -115,7 +115,7 @@ public class PlantElementAbsorbers : KCompactedVector<PlantElementAbsorber>
 		this.queuedRemoves.Clear();
 	}
 
-	public override void Clear()
+		public override void Clear()
 	{
 		base.Clear();
 		for (int i = 0; i < this.data.Count; i++)
@@ -126,11 +126,11 @@ public class PlantElementAbsorbers : KCompactedVector<PlantElementAbsorber>
 		this.handles.Clear();
 	}
 
-	public PlantElementAbsorbers() : base(0)
+		public PlantElementAbsorbers() : base(0)
 	{
 	}
 
-	private bool updating;
+		private bool updating;
 
-	private List<HandleVector<int>.Handle> queuedRemoves = new List<HandleVector<int>.Handle>();
+		private List<HandleVector<int>.Handle> queuedRemoves = new List<HandleVector<int>.Handle>();
 }

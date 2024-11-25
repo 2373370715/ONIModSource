@@ -6,7 +6,7 @@ using KSerialization;
 
 public class GameplaySeasonManager : GameStateMachine<GameplaySeasonManager, GameplaySeasonManager.Instance, IStateMachineTarget, GameplaySeasonManager.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState defaultState)
+		public override void InitializeStates(out StateMachine.BaseState defaultState)
 	{
 		defaultState = this.root;
 		this.root.Enter(delegate(GameplaySeasonManager.Instance smi)
@@ -18,18 +18,18 @@ public class GameplaySeasonManager : GameStateMachine<GameplaySeasonManager, Gam
 		}, UpdateRate.SIM_4000ms, false);
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<GameplaySeasonManager, GameplaySeasonManager.Instance, IStateMachineTarget, GameplaySeasonManager.Def>.GameInstance
+		public new class Instance : GameStateMachine<GameplaySeasonManager, GameplaySeasonManager.Instance, IStateMachineTarget, GameplaySeasonManager.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, GameplaySeasonManager.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, GameplaySeasonManager.Def def) : base(master, def)
 		{
 			this.activeSeasons = new List<GameplaySeasonInstance>();
 		}
 
-		public void Initialize()
+				public void Initialize()
 		{
 			this.activeSeasons.RemoveAll((GameplaySeasonInstance item) => item.Season == null);
 			List<GameplaySeason> list = new List<GameplaySeason>();
@@ -86,7 +86,7 @@ public class GameplaySeasonManager : GameStateMachine<GameplaySeasonManager, Gam
 			}
 		}
 
-		private int GetWorldId()
+				private int GetWorldId()
 		{
 			if (this.m_worldContainer != null)
 			{
@@ -95,7 +95,7 @@ public class GameplaySeasonManager : GameStateMachine<GameplaySeasonManager, Gam
 			return -1;
 		}
 
-		public void Update(float dt)
+				public void Update(float dt)
 		{
 			foreach (GameplaySeasonInstance gameplaySeasonInstance in this.activeSeasons)
 			{
@@ -110,7 +110,7 @@ public class GameplaySeasonManager : GameStateMachine<GameplaySeasonManager, Gam
 			}
 		}
 
-		public void StartNewSeason(GameplaySeason seasonType)
+				public void StartNewSeason(GameplaySeason seasonType)
 		{
 			if (SaveLoader.Instance.IsDLCActiveForCurrentSave(seasonType.dlcId))
 			{
@@ -118,15 +118,15 @@ public class GameplaySeasonManager : GameStateMachine<GameplaySeasonManager, Gam
 			}
 		}
 
-		public bool SeasonExists(GameplaySeason seasonType)
+				public bool SeasonExists(GameplaySeason seasonType)
 		{
 			return this.activeSeasons.Find((GameplaySeasonInstance e) => e.Season.IdHash == seasonType.IdHash) != null;
 		}
 
-		[Serialize]
+				[Serialize]
 		public List<GameplaySeasonInstance> activeSeasons;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private WorldContainer m_worldContainer;
 	}
 }

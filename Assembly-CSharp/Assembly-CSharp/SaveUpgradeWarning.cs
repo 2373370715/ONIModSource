@@ -10,21 +10,21 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SaveUpgradeWarning")]
 public class SaveUpgradeWarning : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Game game = this.game;
 		game.OnLoad = (Action<Game.GameSaveData>)Delegate.Combine(game.OnLoad, new Action<Game.GameSaveData>(this.OnLoad));
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game game = this.game;
 		game.OnLoad = (Action<Game.GameSaveData>)Delegate.Remove(game.OnLoad, new Action<Game.GameSaveData>(this.OnLoad));
 		base.OnCleanUp();
 	}
 
-	private void OnLoad(Game.GameSaveData data)
+		private void OnLoad(Game.GameSaveData data)
 	{
 		List<SaveUpgradeWarning.Upgrade> list = new List<SaveUpgradeWarning.Upgrade>
 		{
@@ -47,7 +47,7 @@ public class SaveUpgradeWarning : KMonoBehaviour
 		}
 	}
 
-	private void SuddenMoraleHelper()
+		private void SuddenMoraleHelper()
 	{
 		Effect morale_effect = Db.Get().effects.Get("SuddenMoraleHelper");
 		CustomizableDialogScreen screen = Util.KInstantiateUI<CustomizableDialogScreen>(ScreenPrefabs.Instance.CustomizableDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject, true);
@@ -69,7 +69,7 @@ public class SaveUpgradeWarning : KMonoBehaviour
 		screen.PopupConfirmDialog(string.Format(UI.FRONTEND.SAVEUPGRADEWARNINGS.SUDDENMORALEHELPER, Mathf.RoundToInt(morale_effect.duration / 600f)), UI.FRONTEND.SAVEUPGRADEWARNINGS.SUDDENMORALEHELPER_TITLE, null);
 	}
 
-	private void BedAndBathHelper()
+		private void BedAndBathHelper()
 	{
 		if (SaveGame.Instance == null)
 		{
@@ -88,7 +88,7 @@ public class SaveUpgradeWarning : KMonoBehaviour
 		}
 	}
 
-	private void NewAutomationWarning()
+		private void NewAutomationWarning()
 	{
 		SpriteListDialogScreen screen = Util.KInstantiateUI<SpriteListDialogScreen>(ScreenPrefabs.Instance.SpriteListDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject, true);
 		screen.AddOption(UI.CONFIRMDIALOG.OK, delegate
@@ -105,7 +105,7 @@ public class SaveUpgradeWarning : KMonoBehaviour
 		base.StartCoroutine(this.SendAutomationWarningNotifications());
 	}
 
-	private IEnumerator SendAutomationWarningNotifications()
+		private IEnumerator SendAutomationWarningNotifications()
 	{
 		yield return SequenceUtil.WaitForEndOfFrame;
 		if (Components.BuildingCompletes.Count == 0)
@@ -150,7 +150,7 @@ public class SaveUpgradeWarning : KMonoBehaviour
 		yield break;
 	}
 
-	private IEnumerator TemporaryDisableMeteorShowers(float timeOffDurationInCycles)
+		private IEnumerator TemporaryDisableMeteorShowers(float timeOffDurationInCycles)
 	{
 		yield return SequenceUtil.WaitForEndOfFrame;
 		float sleepTimer = GameUtil.GetCurrentTimeInCycles() + timeOffDurationInCycles;
@@ -178,7 +178,7 @@ public class SaveUpgradeWarning : KMonoBehaviour
 		yield break;
 	}
 
-	private void SpaceScannersAndTelescopeUpdateWarning()
+		private void SpaceScannersAndTelescopeUpdateWarning()
 	{
 		SpriteListDialogScreen screen = Util.KInstantiateUI<SpriteListDialogScreen>(ScreenPrefabs.Instance.SpriteListDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject, true);
 		screen.AddOption(UI.CONFIRMDIALOG.OK, delegate
@@ -191,7 +191,7 @@ public class SaveUpgradeWarning : KMonoBehaviour
 		base.StartCoroutine(this.TemporaryDisableMeteorShowers(20f));
 	}
 
-	private void U50CritterWarning()
+		private void U50CritterWarning()
 	{
 		SpriteListDialogScreen screen = Util.KInstantiateUI<SpriteListDialogScreen>(ScreenPrefabs.Instance.SpriteListDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject, true);
 		screen.AddOption(UI.CONFIRMDIALOG.OK, delegate
@@ -204,7 +204,7 @@ public class SaveUpgradeWarning : KMonoBehaviour
 		screen.PopupConfirmDialog(UI.FRONTEND.SAVEUPGRADEWARNINGS.U50_CHANGES_SUMMARY, UI.FRONTEND.SAVEUPGRADEWARNINGS.U50_CHANGES_TITLE);
 	}
 
-	private void MergedownWarning()
+		private void MergedownWarning()
 	{
 		SpriteListDialogScreen screen = Util.KInstantiateUI<SpriteListDialogScreen>(ScreenPrefabs.Instance.SpriteListDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject, true);
 		screen.AddOption(UI.DEVELOPMENTBUILDS.FULL_PATCH_NOTES, delegate
@@ -223,10 +223,10 @@ public class SaveUpgradeWarning : KMonoBehaviour
 		base.StartCoroutine(this.SendAutomationWarningNotifications());
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Game game;
 
-	private static string[] buildingIDsWithNewPorts = new string[]
+		private static string[] buildingIDsWithNewPorts = new string[]
 	{
 		"LiquidVent",
 		"GasVent",
@@ -236,19 +236,19 @@ public class SaveUpgradeWarning : KMonoBehaviour
 		"GasReservoir"
 	};
 
-	private struct Upgrade
+		private struct Upgrade
 	{
-		public Upgrade(int major, int minor, System.Action action)
+				public Upgrade(int major, int minor, System.Action action)
 		{
 			this.major = major;
 			this.minor = minor;
 			this.action = action;
 		}
 
-		public int major;
+				public int major;
 
-		public int minor;
+				public int minor;
 
-		public System.Action action;
+				public System.Action action;
 	}
 }

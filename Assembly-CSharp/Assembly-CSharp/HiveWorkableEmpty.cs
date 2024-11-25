@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/HiveWorkableEmpty")]
 public class HiveWorkableEmpty : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workerStatusItem = Db.Get().DuplicantStatusItems.Emptying;
@@ -24,7 +24,7 @@ public class HiveWorkableEmpty : Workable
 		};
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		if (!this.wasStung)
@@ -33,13 +33,13 @@ public class HiveWorkableEmpty : Workable
 		}
 	}
 
-	private static readonly HashedString[] WORK_ANIMS = new HashedString[]
+		private static readonly HashedString[] WORK_ANIMS = new HashedString[]
 	{
 		"working_pre",
 		"working_loop"
 	};
 
-	private static readonly HashedString PST_ANIM = new HashedString("working_pst");
+		private static readonly HashedString PST_ANIM = new HashedString("working_pst");
 
-	public bool wasStung;
+		public bool wasStung;
 }

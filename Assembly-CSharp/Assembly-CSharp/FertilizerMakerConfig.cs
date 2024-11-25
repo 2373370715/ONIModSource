@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FertilizerMakerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "FertilizerMaker";
 		int width = 4;
@@ -31,7 +31,7 @@ public class FertilizerMakerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		Storage storage = BuildingTemplates.CreateDefaultStorage(go, false);
@@ -79,25 +79,25 @@ public class FertilizerMakerConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "FertilizerMaker";
+		public const string ID = "FertilizerMaker";
 
-	private const float FERTILIZER_PER_LOAD = 10f;
+		private const float FERTILIZER_PER_LOAD = 10f;
 
-	private const float FERTILIZER_PRODUCTION_RATE = 0.12f;
+		private const float FERTILIZER_PRODUCTION_RATE = 0.12f;
 
-	private const float METHANE_PRODUCTION_RATE = 0.01f;
+		private const float METHANE_PRODUCTION_RATE = 0.01f;
 
-	private const float _TOTAL_PRODUCTION = 0.13f;
+		private const float _TOTAL_PRODUCTION = 0.13f;
 
-	private const float DIRT_CONSUMPTION_RATE = 0.065f;
+		private const float DIRT_CONSUMPTION_RATE = 0.065f;
 
-	private const float DIRTY_WATER_CONSUMPTION_RATE = 0.039f;
+		private const float DIRTY_WATER_CONSUMPTION_RATE = 0.039f;
 
-	private const float PHOSPHORITE_CONSUMPTION_RATE = 0.025999999f;
+		private const float PHOSPHORITE_CONSUMPTION_RATE = 0.025999999f;
 }

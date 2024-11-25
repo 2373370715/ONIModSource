@@ -6,19 +6,26 @@ using UnityEngine;
 
 public class ForestTreeConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "ForestTree";
 		string name = STRINGS.CREATURES.SPECIES.WOOD_TREE.NAME;
 		string desc = STRINGS.CREATURES.SPECIES.WOOD_TREE.DESC;
 		float mass = 2f;
 		EffectorValues tier = DECOR.BONUS.TIER1;
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, Assets.GetAnim("tree_kanim"), "idle_empty", Grid.SceneLayer.Building, 1, 2, tier, default(EffectorValues), SimHashes.Creature, new List<Tag>(), 298.15f);
+		KAnimFile anim = Assets.GetAnim("tree_kanim");
+		string initialAnim = "idle_empty";
+		Grid.SceneLayer sceneLayer = Grid.SceneLayer.Building;
+		int width = 1;
+		int height = 2;
+		EffectorValues decor = tier;
+		List<Tag> additionalTags = new List<Tag>();
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, sceneLayer, width, height, decor, default(EffectorValues), SimHashes.Creature, additionalTags, 298.15f);
 		EntityTemplates.ExtendEntityToBasicPlant(gameObject, 258.15f, 288.15f, 313.15f, 448.15f, null, true, 0f, 0.15f, "WoodLog", true, true, true, false, 2400f, 0f, 9800f, "ForestTreeOriginal", STRINGS.CREATURES.SPECIES.WOOD_TREE.NAME);
 		PlantBranchGrower.Def def = gameObject.AddOrGetDef<PlantBranchGrower.Def>();
 		def.preventStartSMIOnSpawn = true;
@@ -60,19 +67,28 @@ public class ForestTreeConfig : IEntityConfig
 		});
 		gameObject.AddComponent<StandardCropPlant>().wiltsOnReadyToHarvest = true;
 		gameObject.AddComponent<ForestTreeSeedMonitor>();
-		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Hidden, "ForestTreeSeed", STRINGS.CREATURES.SPECIES.SEEDS.WOOD_TREE.NAME, STRINGS.CREATURES.SPECIES.SEEDS.WOOD_TREE.DESC, Assets.GetAnim("seed_tree_kanim"), "object", 1, new List<Tag>
-		{
-			GameTags.CropSeed
-		}, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 4, STRINGS.CREATURES.SPECIES.WOOD_TREE.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, null), "ForestTree_preview", Assets.GetAnim("tree_kanim"), "place", 3, 3);
+		GameObject plant = gameObject;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Hidden;
+		string id2 = "ForestTreeSeed";
+		string name2 = STRINGS.CREATURES.SPECIES.SEEDS.WOOD_TREE.NAME;
+		string desc2 = STRINGS.CREATURES.SPECIES.SEEDS.WOOD_TREE.DESC;
+		KAnimFile anim2 = Assets.GetAnim("seed_tree_kanim");
+		string initialAnim2 = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.CropSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		string domesticatedDescription = STRINGS.CREATURES.SPECIES.WOOD_TREE.DOMESTICATEDDESC;
+		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id2, name2, desc2, anim2, initialAnim2, numberOfSeeds, list, planterDirection, default(Tag), 4, domesticatedDescription, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, null), "ForestTree_preview", Assets.GetAnim("tree_kanim"), "place", 3, 3);
 		return gameObject;
 	}
 
-	public void RollChancesForSeed(PlantBranch.Instance branch_smi, PlantBranchGrower.Instance trunk_smi)
+		public void RollChancesForSeed(PlantBranch.Instance branch_smi, PlantBranchGrower.Instance trunk_smi)
 	{
 		trunk_smi.GetComponent<ForestTreeSeedMonitor>().TryRollNewSeed();
 	}
 
-	public void TranslateOldBranchesToNewSystem(PlantBranchGrower.Instance smi)
+		public void TranslateOldBranchesToNewSystem(PlantBranchGrower.Instance smi)
 	{
 		KPrefabID[] andForgetOldSerializedBranches = smi.GetComponent<BuddingTrunk>().GetAndForgetOldSerializedBranches();
 		if (andForgetOldSerializedBranches != null)
@@ -81,23 +97,23 @@ public class ForestTreeConfig : IEntityConfig
 		}
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "ForestTree";
+		public const string ID = "ForestTree";
 
-	public const string SEED_ID = "ForestTreeSeed";
+		public const string SEED_ID = "ForestTreeSeed";
 
-	public const float FERTILIZATION_RATE = 0.016666668f;
+		public const float FERTILIZATION_RATE = 0.016666668f;
 
-	public const float WATER_RATE = 0.11666667f;
+		public const float WATER_RATE = 0.11666667f;
 
-	public const float BRANCH_GROWTH_TIME = 2100f;
+		public const float BRANCH_GROWTH_TIME = 2100f;
 
-	public const int NUM_BRANCHES = 7;
+		public const int NUM_BRANCHES = 7;
 }

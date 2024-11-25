@@ -6,9 +6,9 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class GameplayEventInstance : ISaveLoadable
 {
-			public StateMachine.Instance smi { get; private set; }
+				public StateMachine.Instance smi { get; private set; }
 
-			public bool seenNotification
+				public bool seenNotification
 	{
 		get
 		{
@@ -24,7 +24,7 @@ public class GameplayEventInstance : ISaveLoadable
 		}
 	}
 
-		public GameplayEvent gameplayEvent
+			public GameplayEvent gameplayEvent
 	{
 		get
 		{
@@ -36,7 +36,7 @@ public class GameplayEventInstance : ISaveLoadable
 		}
 	}
 
-	public GameplayEventInstance(GameplayEvent gameplayEvent, int worldId)
+		public GameplayEventInstance(GameplayEvent gameplayEvent, int worldId)
 	{
 		this.eventID = gameplayEvent.Id;
 		this.tags = new List<Tag>();
@@ -44,13 +44,13 @@ public class GameplayEventInstance : ISaveLoadable
 		this.worldId = worldId;
 	}
 
-	public StateMachine.Instance PrepareEvent(GameplayEventManager manager)
+		public StateMachine.Instance PrepareEvent(GameplayEventManager manager)
 	{
 		this.smi = this.gameplayEvent.GetSMI(manager, this);
 		return this.smi;
 	}
 
-	public void StartEvent()
+		public void StartEvent()
 	{
 		GameplayEventManager.Instance.Trigger(1491341646, this);
 		StateMachine.Instance smi = this.smi;
@@ -58,7 +58,7 @@ public class GameplayEventInstance : ISaveLoadable
 		this.smi.StartSM();
 	}
 
-	public void RegisterMonitorCallback(GameObject go)
+		public void RegisterMonitorCallback(GameObject go)
 	{
 		if (this.monitorCallbackObjects == null)
 		{
@@ -70,7 +70,7 @@ public class GameplayEventInstance : ISaveLoadable
 		}
 	}
 
-	public void UnregisterMonitorCallback(GameObject go)
+		public void UnregisterMonitorCallback(GameObject go)
 	{
 		if (this.monitorCallbackObjects == null)
 		{
@@ -79,7 +79,7 @@ public class GameplayEventInstance : ISaveLoadable
 		this.monitorCallbackObjects.Remove(go);
 	}
 
-	public void OnStop(string reason, StateMachine.Status status)
+		public void OnStop(string reason, StateMachine.Status status)
 	{
 		GameplayEventManager.Instance.Trigger(1287635015, this);
 		if (this.monitorCallbackObjects != null)
@@ -120,31 +120,31 @@ public class GameplayEventInstance : ISaveLoadable
 		}
 	}
 
-	public float AgeInCycles()
+		public float AgeInCycles()
 	{
 		return GameUtil.GetCurrentTimeInCycles() - this.eventStartTime;
 	}
 
-	[Serialize]
+		[Serialize]
 	public readonly HashedString eventID;
 
-	[Serialize]
+		[Serialize]
 	public List<Tag> tags;
 
-	[Serialize]
+		[Serialize]
 	public float eventStartTime;
 
-	[Serialize]
+		[Serialize]
 	public readonly int worldId;
 
-	[Serialize]
+		[Serialize]
 	private bool _seenNotification;
 
-	public List<GameObject> monitorCallbackObjects;
+		public List<GameObject> monitorCallbackObjects;
 
-	public GameplayEventInstance.GameplayEventPopupDataCallback GetEventPopupData;
+		public GameplayEventInstance.GameplayEventPopupDataCallback GetEventPopupData;
 
-	private GameplayEvent _gameplayEvent;
+		private GameplayEvent _gameplayEvent;
 
-		public delegate EventInfoData GameplayEventPopupDataCallback();
+			public delegate EventInfoData GameplayEventPopupDataCallback();
 }

@@ -5,26 +5,26 @@ using UnityEngine;
 
 public class CarrotConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
-		return EntityTemplates.ExtendEntityToFood(EntityTemplates.CreateLooseEntity(CarrotConfig.ID, ITEMS.FOOD.CARROT.NAME, ITEMS.FOOD.CARROT.DESC, 1f, false, Assets.GetAnim("purplerootVegetable_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.4f, true, 0, SimHashes.Creature, null), FOOD.FOOD_TYPES.CARROT);
+		return EntityTemplates.ExtendEntityToFood(EntityTemplates.CreateLooseEntity(CarrotConfig.ID, STRINGS.ITEMS.FOOD.CARROT.NAME, STRINGS.ITEMS.FOOD.CARROT.DESC, 1f, false, Assets.GetAnim("purplerootVegetable_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.4f, true, 0, SimHashes.Creature, null), FOOD.FOOD_TYPES.CARROT);
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		inst.Subscribe(-10536414, CarrotConfig.OnEatCompleteDelegate);
 	}
 
-	private static void OnEatComplete(Edible edible)
+		private static void OnEatComplete(Edible edible)
 	{
 		if (edible != null)
 		{
@@ -57,11 +57,11 @@ public class CarrotConfig : IEntityConfig
 		}
 	}
 
-	public static float SEEDS_PER_FRUIT_CHANCE = 0.05f;
+		public static float SEEDS_PER_FRUIT_CHANCE = 0.05f;
 
-	public static string ID = "Carrot";
+		public static string ID = "Carrot";
 
-	private static readonly EventSystem.IntraObjectHandler<Edible> OnEatCompleteDelegate = new EventSystem.IntraObjectHandler<Edible>(delegate(Edible component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Edible> OnEatCompleteDelegate = new EventSystem.IntraObjectHandler<Edible>(delegate(Edible component, object data)
 	{
 		CarrotConfig.OnEatComplete(component);
 	});

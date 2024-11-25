@@ -7,7 +7,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 {
-	protected override void UpdateVisualState(bool force = false)
+		protected override void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -32,7 +32,7 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-	private void GetContentsDisease(out int diseaseIdx, out int diseaseCount, out bool hasMass)
+		private void GetContentsDisease(out int diseaseIdx, out int diseaseCount, out bool hasMass)
 	{
 		int cell = Grid.PosToCell(this);
 		if (this.conduitType == ConduitType.Liquid || this.conduitType == ConduitType.Gas)
@@ -58,7 +58,7 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		hasMass = false;
 	}
 
-		public override float CurrentValue
+			public override float CurrentValue
 	{
 		get
 		{
@@ -74,7 +74,7 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public float RangeMin
+			public float RangeMin
 	{
 		get
 		{
@@ -82,7 +82,7 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public float RangeMax
+			public float RangeMax
 	{
 		get
 		{
@@ -90,17 +90,17 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-	public float GetRangeMinInputField()
+		public float GetRangeMinInputField()
 	{
 		return 0f;
 	}
 
-	public float GetRangeMaxInputField()
+		public float GetRangeMaxInputField()
 	{
 		return 100000f;
 	}
 
-		public LocString Title
+			public LocString Title
 	{
 		get
 		{
@@ -108,7 +108,7 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public LocString ThresholdValueName
+			public LocString ThresholdValueName
 	{
 		get
 		{
@@ -116,7 +116,7 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public string AboveToolTip
+			public string AboveToolTip
 	{
 		get
 		{
@@ -124,7 +124,7 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public string BelowToolTip
+			public string BelowToolTip
 	{
 		get
 		{
@@ -132,27 +132,27 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-	public string Format(float value, bool units)
+		public string Format(float value, bool units)
 	{
 		return GameUtil.GetFormattedInt((float)((int)value), GameUtil.TimeSlice.None);
 	}
 
-	public float ProcessedSliderValue(float input)
+		public float ProcessedSliderValue(float input)
 	{
 		return input;
 	}
 
-	public float ProcessedInputValue(float input)
+		public float ProcessedInputValue(float input)
 	{
 		return input;
 	}
 
-	public LocString ThresholdValueUnits()
+		public LocString ThresholdValueUnits()
 	{
 		return UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.DISEASE_UNITS;
 	}
 
-		public ThresholdScreenLayoutType LayoutType
+			public ThresholdScreenLayoutType LayoutType
 	{
 		get
 		{
@@ -160,7 +160,7 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public int IncrementScale
+			public int IncrementScale
 	{
 		get
 		{
@@ -168,7 +168,7 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public NonLinearSlider.Range[] GetRanges
+			public NonLinearSlider.Range[] GetRanges
 	{
 		get
 		{
@@ -176,12 +176,12 @@ public class ConduitDiseaseSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-	private const float rangeMin = 0f;
+		private const float rangeMin = 0f;
 
-	private const float rangeMax = 100000f;
+		private const float rangeMax = 100000f;
 
-	[Serialize]
+		[Serialize]
 	private float lastValue;
 
-	private static readonly HashedString TINT_SYMBOL = "germs";
+		private static readonly HashedString TINT_SYMBOL = "germs";
 }

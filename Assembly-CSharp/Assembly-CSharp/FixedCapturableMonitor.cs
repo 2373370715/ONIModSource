@@ -2,7 +2,7 @@
 
 public class FixedCapturableMonitor : GameStateMachine<FixedCapturableMonitor, FixedCapturableMonitor.Instance, IStateMachineTarget, FixedCapturableMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.ToggleBehaviour(GameTags.Creatures.WantsToGetCaptured, (FixedCapturableMonitor.Instance smi) => smi.ShouldGoGetCaptured(), null).Enter(delegate(FixedCapturableMonitor.Instance smi)
@@ -14,13 +14,13 @@ public class FixedCapturableMonitor : GameStateMachine<FixedCapturableMonitor, F
 		});
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<FixedCapturableMonitor, FixedCapturableMonitor.Instance, IStateMachineTarget, FixedCapturableMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<FixedCapturableMonitor, FixedCapturableMonitor.Instance, IStateMachineTarget, FixedCapturableMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, FixedCapturableMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, FixedCapturableMonitor.Def def) : base(master, def)
 		{
 			this.ChoreConsumer = base.GetComponent<ChoreConsumer>();
 			this.Navigator = base.GetComponent<Navigator>();
@@ -29,19 +29,19 @@ public class FixedCapturableMonitor : GameStateMachine<FixedCapturableMonitor, F
 			this.isBaby = (def2 != null);
 		}
 
-		public bool ShouldGoGetCaptured()
+				public bool ShouldGoGetCaptured()
 		{
 			return this.targetCapturePoint != null && this.targetCapturePoint.IsRunning() && this.targetCapturePoint.shouldCreatureGoGetCaptured && (!this.isBaby || this.targetCapturePoint.def.allowBabies);
 		}
 
-		public FixedCapturePoint.Instance targetCapturePoint;
+				public FixedCapturePoint.Instance targetCapturePoint;
 
-		public ChoreConsumer ChoreConsumer;
+				public ChoreConsumer ChoreConsumer;
 
-		public Navigator Navigator;
+				public Navigator Navigator;
 
-		public Tag PrefabTag;
+				public Tag PrefabTag;
 
-		public bool isBaby;
+				public bool isBaby;
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.operational;
@@ -21,27 +21,27 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 		this.operational.capture.release.Enter(new StateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State.Callback(ReusableTrap.RefreshLogicOutput)).QueueAnim(new Func<ReusableTrap.Instance, string>(ReusableTrap.GetReleaseAnimationName), false, null).OnAnimQueueComplete(this.operational.unarmed);
 	}
 
-	public static void RefreshLogicOutput(ReusableTrap.Instance smi)
+		public static void RefreshLogicOutput(ReusableTrap.Instance smi)
 	{
 		smi.RefreshLogicOutput();
 	}
 
-	public static void Release(ReusableTrap.Instance smi)
+		public static void Release(ReusableTrap.Instance smi)
 	{
 		smi.Release();
 	}
 
-	public static void StartArmTrapWorkChore(ReusableTrap.Instance smi)
+		public static void StartArmTrapWorkChore(ReusableTrap.Instance smi)
 	{
 		smi.CreateWorkableChore();
 	}
 
-	public static void CancelArmTrapWorkChore(ReusableTrap.Instance smi)
+		public static void CancelArmTrapWorkChore(ReusableTrap.Instance smi)
 	{
 		smi.CancelWorkChore();
 	}
 
-	public static string GetIdleAnimationName(ReusableTrap.Instance smi)
+		public static string GetIdleAnimationName(ReusableTrap.Instance smi)
 	{
 		if (!smi.IsCapturingLargeCritter)
 		{
@@ -50,7 +50,7 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 		return "capture_idle_large";
 	}
 
-	public static string GetCaptureAnimationName(ReusableTrap.Instance smi)
+		public static string GetCaptureAnimationName(ReusableTrap.Instance smi)
 	{
 		if (!smi.IsCapturingLargeCritter)
 		{
@@ -59,7 +59,7 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 		return "capture_large";
 	}
 
-	public static string GetReleaseAnimationName(ReusableTrap.Instance smi)
+		public static string GetReleaseAnimationName(ReusableTrap.Instance smi)
 	{
 		if (!smi.WasLastCritterLarge)
 		{
@@ -68,62 +68,62 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 		return "release_large";
 	}
 
-	public static bool OnStorageEmptied(ReusableTrap.Instance smi, object obj)
+		public static bool OnStorageEmptied(ReusableTrap.Instance smi, object obj)
 	{
 		return !smi.HasCritter;
 	}
 
-	public static bool HasCritter_OnTrapTriggered(ReusableTrap.Instance smi, object capturedItem)
+		public static bool HasCritter_OnTrapTriggered(ReusableTrap.Instance smi, object capturedItem)
 	{
 		return smi.HasCritter;
 	}
 
-	public static bool StorageContainsCritter(ReusableTrap.Instance smi)
+		public static bool StorageContainsCritter(ReusableTrap.Instance smi)
 	{
 		return smi.HasCritter;
 	}
 
-	public static bool StorageIsEmpty(ReusableTrap.Instance smi)
+		public static bool StorageIsEmpty(ReusableTrap.Instance smi)
 	{
 		return !smi.HasCritter;
 	}
 
-	public static void EnableTrapTrigger(ReusableTrap.Instance smi)
+		public static void EnableTrapTrigger(ReusableTrap.Instance smi)
 	{
 		smi.SetTrapTriggerActiveState(true);
 	}
 
-	public static void DisableTrapTrigger(ReusableTrap.Instance smi)
+		public static void DisableTrapTrigger(ReusableTrap.Instance smi)
 	{
 		smi.SetTrapTriggerActiveState(false);
 	}
 
-	public static ArmTrapWorkable GetWorkable(ReusableTrap.Instance smi)
+		public static ArmTrapWorkable GetWorkable(ReusableTrap.Instance smi)
 	{
 		return smi.GetWorkable();
 	}
 
-	public static void ActivateLure(ReusableTrap.Instance smi)
+		public static void ActivateLure(ReusableTrap.Instance smi)
 	{
 		smi.SetLureActiveState(true);
 	}
 
-	public static void DisableLure(ReusableTrap.Instance smi)
+		public static void DisableLure(ReusableTrap.Instance smi)
 	{
 		smi.SetLureActiveState(false);
 	}
 
-	public static void SetupCapturingAnimations(ReusableTrap.Instance smi)
+		public static void SetupCapturingAnimations(ReusableTrap.Instance smi)
 	{
 		smi.SetupCapturingAnimations();
 	}
 
-	public static void UnsetCapturingAnimations(ReusableTrap.Instance smi)
+		public static void UnsetCapturingAnimations(ReusableTrap.Instance smi)
 	{
 		smi.UnsetCapturingAnimations();
 	}
 
-	public static void OptionalCapturingAnimationUpdate(ReusableTrap.Instance smi, float dt)
+		public static void OptionalCapturingAnimationUpdate(ReusableTrap.Instance smi, float dt)
 	{
 		if (smi.def.usingSymbolChaseCapturingAnimations && smi.lastCritterCapturedAnimController != null)
 		{
@@ -137,45 +137,45 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 		}
 	}
 
-	public static void MarkAsArmed(ReusableTrap.Instance smi)
+		public static void MarkAsArmed(ReusableTrap.Instance smi)
 	{
 		smi.sm.IsArmed.Set(true, smi, false);
 		smi.gameObject.AddTag(GameTags.TrapArmed);
 	}
 
-	public static void MarkAsUnarmed(ReusableTrap.Instance smi)
+		public static void MarkAsUnarmed(ReusableTrap.Instance smi)
 	{
 		smi.sm.IsArmed.Set(false, smi, false);
 		smi.gameObject.RemoveTag(GameTags.TrapArmed);
 	}
 
-	public const string CAPTURE_ANIMATION_NAME = "capture";
+		public const string CAPTURE_ANIMATION_NAME = "capture";
 
-	public const string CAPTURE_LARGE_ANIMATION_NAME = "capture_large";
+		public const string CAPTURE_LARGE_ANIMATION_NAME = "capture_large";
 
-	public const string CAPTURE_IDLE_ANIMATION_NAME = "capture_idle";
+		public const string CAPTURE_IDLE_ANIMATION_NAME = "capture_idle";
 
-	public const string CAPTURE_IDLE_LARGE_ANIMATION_NAME = "capture_idle_large";
+		public const string CAPTURE_IDLE_LARGE_ANIMATION_NAME = "capture_idle_large";
 
-	public const string CAPTURE_RELEASE_ANIMATION_NAME = "release";
+		public const string CAPTURE_RELEASE_ANIMATION_NAME = "release";
 
-	public const string CAPTURE_RELEASE_LARGE_ANIMATION_NAME = "release_large";
+		public const string CAPTURE_RELEASE_LARGE_ANIMATION_NAME = "release_large";
 
-	public const string UNARMED_ANIMATION_NAME = "unarmed";
+		public const string UNARMED_ANIMATION_NAME = "unarmed";
 
-	public const string ARMED_ANIMATION_NAME = "armed";
+		public const string ARMED_ANIMATION_NAME = "armed";
 
-	public const string ABORT_ARMED_ANIMATION = "abort_armed";
+		public const string ABORT_ARMED_ANIMATION = "abort_armed";
 
-	public StateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.BoolParameter IsArmed;
+		public StateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.BoolParameter IsArmed;
 
-	public ReusableTrap.NonOperationalStates noOperational;
+		public ReusableTrap.NonOperationalStates noOperational;
 
-	public ReusableTrap.OperationalStates operational;
+		public ReusableTrap.OperationalStates operational;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-				public bool usingLure
+						public bool usingLure
 		{
 			get
 			{
@@ -183,47 +183,47 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			}
 		}
 
-		public string OUTPUT_LOGIC_PORT_ID;
+				public string OUTPUT_LOGIC_PORT_ID;
 
-		public Tag[] lures;
+				public Tag[] lures;
 
-		public CellOffset releaseCellOffset = CellOffset.none;
+				public CellOffset releaseCellOffset = CellOffset.none;
 
-		public bool usingSymbolChaseCapturingAnimations;
+				public bool usingSymbolChaseCapturingAnimations;
 
-		public Func<string> getTrappedAnimationNameCallback;
+				public Func<string> getTrappedAnimationNameCallback;
 	}
 
-	public class CaptureStates : GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State
+		public class CaptureStates : GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State
 	{
-		public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State capturing;
+				public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State capturing;
 
-		public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State idle;
+				public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State idle;
 
-		public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State release;
+				public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State release;
 	}
 
-	public class OperationalStates : GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State
+		public class OperationalStates : GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State
 	{
-		public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State unarmed;
+				public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State unarmed;
 
-		public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State armed;
+				public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State armed;
 
-		public ReusableTrap.CaptureStates capture;
+				public ReusableTrap.CaptureStates capture;
 	}
 
-	public class NonOperationalStates : GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State
+		public class NonOperationalStates : GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State
 	{
-		public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State idle;
+				public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State idle;
 
-		public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State releasing;
+				public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State releasing;
 
-		public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State disarming;
+				public GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.State disarming;
 	}
 
-	public new class Instance : GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.GameInstance, TrappedStates.ITrapStateAnimationInstructions
+		public new class Instance : GameStateMachine<ReusableTrap, ReusableTrap.Instance, IStateMachineTarget, ReusableTrap.Def>.GameInstance, TrappedStates.ITrapStateAnimationInstructions
 	{
-				public bool IsCapturingLargeCritter
+						public bool IsCapturingLargeCritter
 		{
 			get
 			{
@@ -231,7 +231,7 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			}
 		}
 
-				public bool HasCritter
+						public bool HasCritter
 		{
 			get
 			{
@@ -239,7 +239,7 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			}
 		}
 
-				public GameObject CapturedCritter
+						public GameObject CapturedCritter
 		{
 			get
 			{
@@ -251,22 +251,22 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			}
 		}
 
-		public ArmTrapWorkable GetWorkable()
+				public ArmTrapWorkable GetWorkable()
 		{
 			return this.workable;
 		}
 
-		public void RefreshLogicOutput()
+				public void RefreshLogicOutput()
 		{
 			bool flag = base.IsInsideState(base.sm.operational) && this.HasCritter;
 			this.logicPorts.SendSignal(base.def.OUTPUT_LOGIC_PORT_ID, flag ? 1 : 0);
 		}
 
-		public Instance(IStateMachineTarget master, ReusableTrap.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ReusableTrap.Def def) : base(master, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			if (this.HasCritter)
@@ -277,7 +277,7 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			armTrapWorkable.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(armTrapWorkable.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(this.OnWorkEvent));
 		}
 
-		private void OnWorkEvent(Workable workable, Workable.WorkableEvent state)
+				private void OnWorkEvent(Workable workable, Workable.WorkableEvent state)
 		{
 			if (state == Workable.WorkableEvent.WorkStopped && workable.GetPercentComplete() < 1f && workable.GetPercentComplete() != 0f && base.IsInsideState(base.sm.operational.unarmed))
 			{
@@ -285,12 +285,12 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			}
 		}
 
-		public void SetTrapTriggerActiveState(bool active)
+				public void SetTrapTriggerActiveState(bool active)
 		{
 			this.trapTrigger.enabled = active;
 		}
 
-		public void SetLureActiveState(bool activate)
+				public void SetLureActiveState(bool activate)
 		{
 			if (base.def.usingLure)
 			{
@@ -302,7 +302,7 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			}
 		}
 
-		public void SetupCapturingAnimations()
+				public void SetupCapturingAnimations()
 		{
 			if (this.HasCritter)
 			{
@@ -311,7 +311,7 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			}
 		}
 
-		public void UnsetCapturingAnimations()
+				public void UnsetCapturingAnimations()
 		{
 			this.trapTrigger.SetStoredPosition(this.CapturedCritter);
 			if (base.def.usingSymbolChaseCapturingAnimations && this.lastCritterCapturedAnimController != null)
@@ -321,7 +321,7 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			this.lastCritterCapturedAnimController = null;
 		}
 
-		public void CreateWorkableChore()
+				public void CreateWorkableChore()
 		{
 			if (this.chore == null)
 			{
@@ -329,7 +329,7 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			}
 		}
 
-		public void CancelWorkChore()
+				public void CancelWorkChore()
 		{
 			if (this.chore != null)
 			{
@@ -338,14 +338,18 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			}
 		}
 
-		public void Release()
+				public void Release()
 		{
 			if (this.HasCritter)
 			{
 				this.WasLastCritterLarge = this.IsCapturingLargeCritter;
 				Vector3 position = Grid.CellToPosCBC(Grid.OffsetCell(Grid.PosToCell(base.smi.transform.GetPosition()), base.def.releaseCellOffset), Grid.SceneLayer.Creatures);
 				List<GameObject> list = new List<GameObject>();
-				this.storage.DropAll(false, false, default(Vector3), true, list);
+				Storage storage = this.storage;
+				bool vent_gas = false;
+				bool dump_liquid = false;
+				List<GameObject> collect_dropped_items = list;
+				storage.DropAll(vent_gas, dump_liquid, default(Vector3), true, collect_dropped_items);
 				foreach (GameObject gameObject in list)
 				{
 					gameObject.transform.SetPosition(position);
@@ -358,7 +362,7 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			}
 		}
 
-		public string GetTrappedAnimationName()
+				public string GetTrappedAnimationName()
 		{
 			if (base.def.getTrappedAnimationNameCallback != null)
 			{
@@ -367,29 +371,29 @@ public class ReusableTrap : GameStateMachine<ReusableTrap, ReusableTrap.Instance
 			return null;
 		}
 
-		public string CAPTURING_CRITTER_ANIMATION_NAME = "caught_loop";
+				public string CAPTURING_CRITTER_ANIMATION_NAME = "caught_loop";
 
-		public string CAPTURING_SYMBOL_NAME = "creatureSymbol";
+				public string CAPTURING_SYMBOL_NAME = "creatureSymbol";
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Storage storage;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private ArmTrapWorkable workable;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private TrapTrigger trapTrigger;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public KBatchedAnimController animController;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public LogicPorts logicPorts;
 
-		public bool WasLastCritterLarge;
+				public bool WasLastCritterLarge;
 
-		public KBatchedAnimController lastCritterCapturedAnimController;
+				public KBatchedAnimController lastCritterCapturedAnimController;
 
-		private Chore chore;
+				private Chore chore;
 	}
 }

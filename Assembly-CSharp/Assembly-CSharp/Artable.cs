@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using Database;
 using Klei.AI;
 using KSerialization;
@@ -8,176 +6,144 @@ using TUNING;
 using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/Workable/Artable")]
-public class Artable : Workable
-{
-		public string CurrentStage
-	{
-		get
-		{
-			return this.currentStage;
-		}
-	}
+public class Artable : Workable {
+    private          AttributeModifier  artQualityDecorModifier;
+    private          WorkChore<Artable> chore;
+    public           string             defaultAnimName;
+    private readonly string             defaultArtworkId = "Default";
 
-	protected Artable()
-	{
-		this.faceTargetWhenWorking = true;
-	}
+    [Serialize]
+    private string userChosenTargetStage;
 
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		this.workerStatusItem = Db.Get().DuplicantStatusItems.Arting;
-		this.attributeConverter = Db.Get().AttributeConverters.ArtSpeed;
-		this.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
-		this.skillExperienceSkillGroup = Db.Get().SkillGroups.Art.Id;
-		this.skillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
-		this.requiredSkillPerk = Db.Get().SkillPerks.CanArt.Id;
-		base.SetWorkTime(80f);
-	}
+    protected Artable() { faceTargetWhenWorking = true; }
 
-	protected override void OnSpawn()
-	{
-		base.GetComponent<KPrefabID>().PrefabID();
-		if (string.IsNullOrEmpty(this.currentStage) || this.currentStage == this.defaultArtworkId)
-		{
-			this.SetDefault();
-		}
-		else
-		{
-			this.SetStage(this.currentStage, true);
-		}
-		this.shouldShowSkillPerkStatusItem = false;
-		base.OnSpawn();
-	}
+    [field: Serialize]
+    public string CurrentStage { get; private set; }
 
-	[OnDeserialized]
-	public void OnDeserialized()
-	{
-		if (Db.GetArtableStages().TryGet(this.currentStage) == null && this.currentStage != this.defaultArtworkId)
-		{
-			string id = string.Format("{0}_{1}", base.GetComponent<KPrefabID>().PrefabID().ToString(), this.currentStage);
-			if (Db.GetArtableStages().TryGet(id) == null)
-			{
-				global::Debug.LogWarning("Failed up to update " + this.currentStage + " to ArtableStages");
-				this.currentStage = this.defaultArtworkId;
-				return;
-			}
-			this.currentStage = id;
-		}
-	}
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        workerStatusItem              = Db.Get().DuplicantStatusItems.Arting;
+        attributeConverter            = Db.Get().AttributeConverters.ArtSpeed;
+        attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
+        skillExperienceSkillGroup     = Db.Get().SkillGroups.Art.Id;
+        skillExperienceMultiplier     = SKILLS.MOST_DAY_EXPERIENCE;
+        requiredSkillPerk             = Db.Get().SkillPerks.CanArt.Id;
+        SetWorkTime(80f);
+    }
 
-	protected override void OnCompleteWork(Worker worker)
-	{
-		if (string.IsNullOrEmpty(this.userChosenTargetStage))
-		{
-			Db db = Db.Get();
-			Tag prefab_id = base.GetComponent<KPrefabID>().PrefabID();
-			List<ArtableStage> prefabStages = Db.GetArtableStages().GetPrefabStages(prefab_id);
-			ArtableStatusItem artist_skill = db.ArtableStatuses.LookingUgly;
-			MinionResume component = worker.GetComponent<MinionResume>();
-			if (component != null)
-			{
-				if (component.HasPerk(db.SkillPerks.CanArtGreat.Id))
-				{
-					artist_skill = db.ArtableStatuses.LookingGreat;
-				}
-				else if (component.HasPerk(db.SkillPerks.CanArtOkay.Id))
-				{
-					artist_skill = db.ArtableStatuses.LookingOkay;
-				}
-			}
-			prefabStages.RemoveAll((ArtableStage stage) => stage.statusItem.StatusType > artist_skill.StatusType || stage.statusItem.StatusType == ArtableStatuses.ArtableStatusType.AwaitingArting);
-			prefabStages.Sort((ArtableStage x, ArtableStage y) => y.statusItem.StatusType.CompareTo(x.statusItem.StatusType));
-			ArtableStatuses.ArtableStatusType highest_type = prefabStages[0].statusItem.StatusType;
-			prefabStages.RemoveAll((ArtableStage stage) => stage.statusItem.StatusType < highest_type);
-			prefabStages.RemoveAll((ArtableStage stage) => !stage.IsUnlocked());
-			prefabStages.Shuffle<ArtableStage>();
-			this.SetStage(prefabStages[0].id, false);
-			if (prefabStages[0].cheerOnComplete)
-			{
-				new EmoteChore(worker.GetComponent<ChoreProvider>(), db.ChoreTypes.EmoteHighPriority, db.Emotes.Minion.Cheer, 1, null);
-			}
-			else
-			{
-				new EmoteChore(worker.GetComponent<ChoreProvider>(), db.ChoreTypes.EmoteHighPriority, db.Emotes.Minion.Disappointed, 1, null);
-			}
-		}
-		else
-		{
-			this.SetStage(this.userChosenTargetStage, false);
-			this.userChosenTargetStage = null;
-		}
-		this.shouldShowSkillPerkStatusItem = false;
-		this.UpdateStatusItem(null);
-		Prioritizable.RemoveRef(base.gameObject);
-	}
+    protected override void OnSpawn() {
+        GetComponent<KPrefabID>().PrefabID();
+        if (string.IsNullOrEmpty(CurrentStage) || CurrentStage == defaultArtworkId)
+            SetDefault();
+        else
+            SetStage(CurrentStage, true);
 
-	public void SetDefault()
-	{
-		this.currentStage = this.defaultArtworkId;
-		base.GetComponent<KBatchedAnimController>().SwapAnims(base.GetComponent<Building>().Def.AnimFiles);
-		base.GetComponent<KAnimControllerBase>().Play(this.defaultAnimName, KAnim.PlayMode.Once, 1f, 0f);
-		KSelectable component = base.GetComponent<KSelectable>();
-		BuildingDef def = base.GetComponent<Building>().Def;
-		component.SetName(def.Name);
-		component.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().ArtableStatuses.AwaitingArting, this);
-		this.GetAttributes().Remove(this.artQualityDecorModifier);
-		this.shouldShowSkillPerkStatusItem = false;
-		this.UpdateStatusItem(null);
-		if (this.currentStage == this.defaultArtworkId)
-		{
-			this.shouldShowSkillPerkStatusItem = true;
-			Prioritizable.AddRef(base.gameObject);
-			this.chore = new WorkChore<Artable>(Db.Get().ChoreTypes.Art, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
-			this.chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, this.requiredSkillPerk);
-		}
-	}
+        shouldShowSkillPerkStatusItem = false;
+        base.OnSpawn();
+    }
 
-	public virtual void SetStage(string stage_id, bool skip_effect)
-	{
-		ArtableStage artableStage = Db.GetArtableStages().Get(stage_id);
-		if (artableStage == null)
-		{
-			global::Debug.LogError("Missing stage: " + stage_id);
-			return;
-		}
-		this.currentStage = artableStage.id;
-		base.GetComponent<KBatchedAnimController>().SwapAnims(new KAnimFile[]
-		{
-			Assets.GetAnim(artableStage.animFile)
-		});
-		base.GetComponent<KAnimControllerBase>().Play(artableStage.anim, KAnim.PlayMode.Once, 1f, 0f);
-		this.GetAttributes().Remove(this.artQualityDecorModifier);
-		if (artableStage.decor != 0)
-		{
-			this.artQualityDecorModifier = new AttributeModifier(Db.Get().BuildingAttributes.Decor.Id, (float)artableStage.decor, "Art Quality", false, false, true);
-			this.GetAttributes().Add(this.artQualityDecorModifier);
-		}
-		KSelectable component = base.GetComponent<KSelectable>();
-		component.SetName(artableStage.Name);
-		component.SetStatusItem(Db.Get().StatusItemCategories.Main, artableStage.statusItem, this);
-		base.gameObject.GetComponent<BuildingComplete>().SetDescriptionFlavour(artableStage.Description);
-		this.shouldShowSkillPerkStatusItem = false;
-		this.UpdateStatusItem(null);
-	}
+    [OnDeserialized]
+    public void OnDeserialized() {
+        if (Db.GetArtableStages().TryGet(CurrentStage) == null && CurrentStage != defaultArtworkId) {
+            var id = string.Format("{0}_{1}", GetComponent<KPrefabID>().PrefabID().ToString(), CurrentStage);
+            if (Db.GetArtableStages().TryGet(id) == null) {
+                Debug.LogWarning("Failed up to update " + CurrentStage + " to ArtableStages");
+                CurrentStage = defaultArtworkId;
+                return;
+            }
 
-	public void SetUserChosenTargetState(string stageID)
-	{
-		this.SetDefault();
-		this.userChosenTargetStage = stageID;
-	}
+            CurrentStage = id;
+        }
+    }
 
-	[Serialize]
-	private string currentStage;
+    protected override void OnCompleteWork(WorkerBase worker) {
+        if (string.IsNullOrEmpty(userChosenTargetStage)) {
+            var db           = Db.Get();
+            var prefab_id    = GetComponent<KPrefabID>().PrefabID();
+            var prefabStages = Db.GetArtableStages().GetPrefabStages(prefab_id);
+            var artist_skill = db.ArtableStatuses.LookingUgly;
+            var component    = worker.GetComponent<MinionResume>();
+            if (component != null) {
+                if (component.HasPerk(db.SkillPerks.CanArtGreat.Id))
+                    artist_skill                                                      = db.ArtableStatuses.LookingGreat;
+                else if (component.HasPerk(db.SkillPerks.CanArtOkay.Id)) artist_skill = db.ArtableStatuses.LookingOkay;
+            }
 
-	[Serialize]
-	private string userChosenTargetStage;
+            prefabStages.RemoveAll(stage => stage.statusItem.StatusType > artist_skill.StatusType ||
+                                            stage.statusItem.StatusType ==
+                                            ArtableStatuses.ArtableStatusType.AwaitingArting);
 
-	private AttributeModifier artQualityDecorModifier;
+            prefabStages.Sort((x, y) => y.statusItem.StatusType.CompareTo(x.statusItem.StatusType));
+            var highest_type = prefabStages[0].statusItem.StatusType;
+            prefabStages.RemoveAll(stage => stage.statusItem.StatusType < highest_type);
+            prefabStages.RemoveAll(stage => !stage.IsUnlocked());
+            prefabStages.Shuffle();
+            SetStage(prefabStages[0].id, false);
+            if (prefabStages[0].cheerOnComplete)
+                new EmoteChore(worker.GetComponent<ChoreProvider>(),
+                               db.ChoreTypes.EmoteHighPriority,
+                               db.Emotes.Minion.Cheer);
+            else
+                new EmoteChore(worker.GetComponent<ChoreProvider>(),
+                               db.ChoreTypes.EmoteHighPriority,
+                               db.Emotes.Minion.Disappointed);
+        } else {
+            SetStage(userChosenTargetStage, false);
+            userChosenTargetStage = null;
+        }
 
-	private string defaultArtworkId = "Default";
+        shouldShowSkillPerkStatusItem = false;
+        UpdateStatusItem();
+        Prioritizable.RemoveRef(gameObject);
+    }
 
-	public string defaultAnimName;
+    public void SetDefault() {
+        CurrentStage = defaultArtworkId;
+        GetComponent<KBatchedAnimController>().SwapAnims(GetComponent<Building>().Def.AnimFiles);
+        GetComponent<KAnimControllerBase>().Play(defaultAnimName);
+        var component = GetComponent<KSelectable>();
+        var def       = GetComponent<Building>().Def;
+        component.SetName(def.Name);
+        component.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().ArtableStatuses.AwaitingArting, this);
+        this.GetAttributes().Remove(artQualityDecorModifier);
+        shouldShowSkillPerkStatusItem = false;
+        UpdateStatusItem();
+        if (CurrentStage == defaultArtworkId) {
+            shouldShowSkillPerkStatusItem = true;
+            Prioritizable.AddRef(gameObject);
+            chore = new WorkChore<Artable>(Db.Get().ChoreTypes.Art, this);
+            chore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, requiredSkillPerk);
+        }
+    }
 
-	private WorkChore<Artable> chore;
+    public virtual void SetStage(string stage_id, bool skip_effect) {
+        var artableStage = Db.GetArtableStages().Get(stage_id);
+        if (artableStage == null) {
+            Debug.LogError("Missing stage: " + stage_id);
+            return;
+        }
+
+        CurrentStage = artableStage.id;
+        GetComponent<KBatchedAnimController>().SwapAnims(new[] { Assets.GetAnim(artableStage.animFile) });
+        GetComponent<KAnimControllerBase>().Play(artableStage.anim);
+        this.GetAttributes().Remove(artQualityDecorModifier);
+        if (artableStage.decor != 0) {
+            artQualityDecorModifier
+                = new AttributeModifier(Db.Get().BuildingAttributes.Decor.Id, artableStage.decor, "Art Quality");
+
+            this.GetAttributes().Add(artQualityDecorModifier);
+        }
+
+        var component = GetComponent<KSelectable>();
+        component.SetName(artableStage.Name);
+        component.SetStatusItem(Db.Get().StatusItemCategories.Main, artableStage.statusItem, this);
+        gameObject.GetComponent<BuildingComplete>().SetDescriptionFlavour(artableStage.Description);
+        shouldShowSkillPerkStatusItem = false;
+        UpdateStatusItem();
+    }
+
+    public void SetUserChosenTargetState(string stageID) {
+        SetDefault();
+        userChosenTargetStage = stageID;
+    }
 }

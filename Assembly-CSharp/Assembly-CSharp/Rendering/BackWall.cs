@@ -1,19 +1,13 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace rendering
-{
-	public class BackWall : MonoBehaviour
-	{
-		private void Awake()
-		{
-			this.backwallMaterial.SetTexture("images", this.array);
-		}
+namespace rendering {
+    public class BackWall : MonoBehaviour {
+        [SerializeField]
+        public Texture2DArray array;
 
-		[SerializeField]
-		public Material backwallMaterial;
+        [SerializeField]
+        public Material backwallMaterial;
 
-		[SerializeField]
-		public Texture2DArray array;
-	}
+        private void Awake() { backwallMaterial.SetTexture("images", array); }
+    }
 }

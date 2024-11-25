@@ -4,24 +4,24 @@ using UnityEngine;
 
 public class AutomatableSideScreen : SideScreenContent
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.allowManualToggle.transform.parent.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.AUTOMATABLE_SIDE_SCREEN.ALLOWMANUALBUTTONTOOLTIP);
 		this.allowManualToggle.onValueChanged += this.OnAllowManualChanged;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<Automatable>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		if (target == null)
@@ -39,21 +39,21 @@ public class AutomatableSideScreen : SideScreenContent
 		this.allowManualToggleCheckMark.enabled = this.allowManualToggle.isOn;
 	}
 
-	private void OnAllowManualChanged(bool value)
+		private void OnAllowManualChanged(bool value)
 	{
 		this.targetAutomatable.SetAutomationOnly(!value);
 		this.allowManualToggleCheckMark.enabled = value;
 	}
 
-	public KToggle allowManualToggle;
+		public KToggle allowManualToggle;
 
-	public KImage allowManualToggleCheckMark;
+		public KImage allowManualToggleCheckMark;
 
-	public GameObject content;
+		public GameObject content;
 
-	private GameObject target;
+		private GameObject target;
 
-	public LocText DescriptionText;
+		public LocText DescriptionText;
 
-	private Automatable targetAutomatable;
+		private Automatable targetAutomatable;
 }

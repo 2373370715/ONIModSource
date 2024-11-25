@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class ResearchSideScreen : SideScreenContent
 {
-	public ResearchSideScreen()
+		public ResearchSideScreen()
 	{
 		this.refreshDisplayStateDelegate = new Action<object>(this.RefreshDisplayState);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.selectResearchButton.onClick += delegate()
@@ -23,7 +23,7 @@ public class ResearchSideScreen : SideScreenContent
 		this.RefreshDisplayState(null);
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		this.RefreshDisplayState(null);
@@ -32,7 +32,7 @@ public class ResearchSideScreen : SideScreenContent
 		this.target.gameObject.Subscribe(-592767678, this.refreshDisplayStateDelegate);
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		if (this.target)
@@ -43,7 +43,7 @@ public class ResearchSideScreen : SideScreenContent
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Research.Instance.Unsubscribe(-1914338957, this.refreshDisplayStateDelegate);
@@ -56,12 +56,12 @@ public class ResearchSideScreen : SideScreenContent
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<ResearchCenter>() != null || target.GetComponent<NuclearResearchCenter>() != null;
 	}
 
-	private void RefreshDisplayState(object data = null)
+		private void RefreshDisplayState(object data = null)
 	{
 		if (SelectTool.Instance.selected == null)
 		{
@@ -130,15 +130,15 @@ public class ResearchSideScreen : SideScreenContent
 		this.DescriptionText.text = text2;
 	}
 
-	public KButton selectResearchButton;
+		public KButton selectResearchButton;
 
-	public Image researchButtonIcon;
+		public Image researchButtonIcon;
 
-	public GameObject content;
+		public GameObject content;
 
-	private GameObject target;
+		private GameObject target;
 
-	private Action<object> refreshDisplayStateDelegate;
+		private Action<object> refreshDisplayStateDelegate;
 
-	public LocText DescriptionText;
+		public LocText DescriptionText;
 }

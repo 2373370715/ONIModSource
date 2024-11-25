@@ -6,25 +6,25 @@ using UnityEngine;
 
 public class StandardAttributeFormatter : IAttributeFormatter
 {
-			public GameUtil.TimeSlice DeltaTimeSlice { get; set; }
+				public GameUtil.TimeSlice DeltaTimeSlice { get; set; }
 
-	public StandardAttributeFormatter(GameUtil.UnitClass unitClass, GameUtil.TimeSlice deltaTimeSlice)
+		public StandardAttributeFormatter(GameUtil.UnitClass unitClass, GameUtil.TimeSlice deltaTimeSlice)
 	{
 		this.unitClass = unitClass;
 		this.DeltaTimeSlice = deltaTimeSlice;
 	}
 
-	public virtual string GetFormattedAttribute(AttributeInstance instance)
+		public virtual string GetFormattedAttribute(AttributeInstance instance)
 	{
 		return this.GetFormattedValue(instance.GetTotalDisplayValue(), GameUtil.TimeSlice.None);
 	}
 
-	public virtual string GetFormattedModifier(AttributeModifier modifier)
+		public virtual string GetFormattedModifier(AttributeModifier modifier)
 	{
 		return this.GetFormattedValue(modifier.Value, (modifier.OverrideTimeSlice != null) ? modifier.OverrideTimeSlice.Value : this.DeltaTimeSlice);
 	}
 
-	public virtual string GetFormattedValue(float value, GameUtil.TimeSlice timeSlice = GameUtil.TimeSlice.None)
+		public virtual string GetFormattedValue(float value, GameUtil.TimeSlice timeSlice = GameUtil.TimeSlice.None)
 	{
 		switch (this.unitClass)
 		{
@@ -60,12 +60,12 @@ public class StandardAttributeFormatter : IAttributeFormatter
 		return GameUtil.GetFormattedSimple(value, timeSlice, null);
 	}
 
-	public virtual string GetTooltipDescription(Klei.AI.Attribute master)
+		public virtual string GetTooltipDescription(Klei.AI.Attribute master)
 	{
 		return master.Description;
 	}
 
-	public virtual string GetTooltip(Klei.AI.Attribute master, AttributeInstance instance)
+		public virtual string GetTooltip(Klei.AI.Attribute master, AttributeInstance instance)
 	{
 		List<AttributeModifier> list = new List<AttributeModifier>();
 		for (int i = 0; i < instance.Modifiers.Count; i++)
@@ -75,7 +75,7 @@ public class StandardAttributeFormatter : IAttributeFormatter
 		return this.GetTooltip(master, list, instance.GetComponent<AttributeConverters>());
 	}
 
-	public string GetTooltip(Klei.AI.Attribute master, List<AttributeModifier> modifiers, AttributeConverters converters)
+		public string GetTooltip(Klei.AI.Attribute master, List<AttributeModifier> modifiers, AttributeConverters converters)
 	{
 		string text = this.GetTooltipDescription(master);
 		text += string.Format(DUPLICANTS.ATTRIBUTES.TOTAL_VALUE, this.GetFormattedValue(AttributeInstance.GetTotalDisplayValue(master, modifiers), GameUtil.TimeSlice.None), master.Name);
@@ -116,5 +116,5 @@ public class StandardAttributeFormatter : IAttributeFormatter
 		return text;
 	}
 
-	public GameUtil.UnitClass unitClass;
+		public GameUtil.UnitClass unitClass;
 }

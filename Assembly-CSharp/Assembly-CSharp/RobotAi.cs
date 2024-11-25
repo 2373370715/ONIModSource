@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class RobotAi : GameStateMachine<RobotAi, RobotAi.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.ToggleStateMachine((RobotAi.Instance smi) => new DeathMonitor.Instance(smi.master, new DeathMonitor.Def())).Enter(delegate(RobotAi.Instance smi)
@@ -22,7 +22,20 @@ public class RobotAi : GameStateMachine<RobotAi, RobotAi.Instance>
 		{
 			RobotAi.ToggleRegistration(smi, false);
 		});
-		this.alive.normal.TagTransition(GameTags.Stored, this.alive.stored, false).ToggleStateMachine((RobotAi.Instance smi) => new FallMonitor.Instance(smi.master, false, null));
+		this.alive.normal.TagTransition(GameTags.Stored, this.alive.stored, false).Enter(delegate(RobotAi.Instance smi)
+		{
+			if (!smi.HasTag(GameTags.Robots.Models.FetchDrone))
+			{
+				smi.fallMonitor = new FallMonitor.Instance(smi.master, false, null);
+				smi.fallMonitor.StartSM();
+			}
+		}).Exit(delegate(RobotAi.Instance smi)
+		{
+			if (smi.fallMonitor != null)
+			{
+				smi.fallMonitor.StopSM("StoredRobotAI");
+			}
+		});
 		this.alive.stored.PlayAnim("in_storage").TagTransition(GameTags.Stored, this.alive.normal, true).ToggleBrain("stored").Enter(delegate(RobotAi.Instance smi)
 		{
 			smi.GetComponent<Navigator>().Pause("stored");
@@ -39,7 +52,7 @@ public class RobotAi : GameStateMachine<RobotAi, RobotAi.Instance>
 		}).Enter("Delete", new StateMachine<RobotAi, RobotAi.Instance, IStateMachineTarget, object>.State.Callback(RobotAi.DeleteOnDeath));
 	}
 
-	public static void DeleteOnDeath(RobotAi.Instance smi)
+		public static void DeleteOnDeath(RobotAi.Instance smi)
 	{
 		if (((RobotAi.Def)smi.def).DeleteOnDead)
 		{
@@ -47,7 +60,7 @@ public class RobotAi : GameStateMachine<RobotAi, RobotAi.Instance>
 		}
 	}
 
-	private static void ToggleRegistration(RobotAi.Instance smi, bool register)
+		private static void ToggleRegistration(RobotAi.Instance smi, bool register)
 	{
 		if (register)
 		{
@@ -57,25 +70,25 @@ public class RobotAi : GameStateMachine<RobotAi, RobotAi.Instance>
 		Components.LiveRobotsIdentities.Remove(smi);
 	}
 
-	public RobotAi.AliveStates alive;
+		public RobotAi.AliveStates alive;
 
-	public GameStateMachine<RobotAi, RobotAi.Instance, IStateMachineTarget, object>.State dead;
+		public GameStateMachine<RobotAi, RobotAi.Instance, IStateMachineTarget, object>.State dead;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public bool DeleteOnDead;
+				public bool DeleteOnDead;
 	}
 
-	public class AliveStates : GameStateMachine<RobotAi, RobotAi.Instance, IStateMachineTarget, object>.State
+		public class AliveStates : GameStateMachine<RobotAi, RobotAi.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<RobotAi, RobotAi.Instance, IStateMachineTarget, object>.State normal;
+				public GameStateMachine<RobotAi, RobotAi.Instance, IStateMachineTarget, object>.State normal;
 
-		public GameStateMachine<RobotAi, RobotAi.Instance, IStateMachineTarget, object>.State stored;
+				public GameStateMachine<RobotAi, RobotAi.Instance, IStateMachineTarget, object>.State stored;
 	}
 
-	public new class Instance : GameStateMachine<RobotAi, RobotAi.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<RobotAi, RobotAi.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, RobotAi.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, RobotAi.Def def) : base(master, def)
 		{
 			ChoreConsumer component = base.GetComponent<ChoreConsumer>();
 			component.AddUrge(Db.Get().Urges.EmoteHighPriority);
@@ -83,7 +96,7 @@ public class RobotAi : GameStateMachine<RobotAi, RobotAi.Instance>
 			base.Subscribe(-1988963660, new Action<object>(this.OnBeginChore));
 		}
 
-		private void OnBeginChore(object data)
+				private void OnBeginChore(object data)
 		{
 			Storage component = base.GetComponent<Storage>();
 			if (component != null)
@@ -92,15 +105,17 @@ public class RobotAi : GameStateMachine<RobotAi, RobotAi.Instance>
 			}
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.Unsubscribe(-1988963660, new Action<object>(this.OnBeginChore));
 			base.OnCleanUp();
 		}
 
-		public void RefreshUserMenu()
+				public void RefreshUserMenu()
 		{
 			Game.Instance.userMenu.Refresh(base.master.gameObject);
 		}
+
+				public FallMonitor.Instance fallMonitor;
 	}
 }

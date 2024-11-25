@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace Database
 {
-	public class RobotStatusItems : StatusItems
+		public class RobotStatusItems : StatusItems
 	{
-		public RobotStatusItems(ResourceSet parent) : base("RobotStatusItems", parent)
+				public RobotStatusItems(ResourceSet parent) : base("RobotStatusItems", parent)
 		{
 			this.CreateStatusItems();
 		}
 
-		private void CreateStatusItems()
+				private void CreateStatusItems()
 		{
 			this.CantReachStation = new StatusItem("CantReachStation", "ROBOTS", "status_item_exclamation", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 129022, null);
 			this.CantReachStation.resolveStringCallback = delegate(string str, object data)
@@ -32,6 +32,12 @@ namespace Database
 			};
 			this.DeadBattery = new StatusItem("DeadBattery", "ROBOTS", "status_item_need_power", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 129022, null);
 			this.DeadBattery.resolveStringCallback = delegate(string str, object data)
+			{
+				GameObject go = (GameObject)data;
+				return str.Replace("{0}", go.GetProperName());
+			};
+			this.DeadBatteryFlydo = new StatusItem("DeadBatteryFlydo", "ROBOTS", "status_item_need_power", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 129022, null);
+			this.DeadBatteryFlydo.resolveStringCallback = delegate(string str, object data)
 			{
 				GameObject go = (GameObject)data;
 				return str.Replace("{0}", go.GetProperName());
@@ -66,24 +72,26 @@ namespace Database
 			this.ReactNegative.resolveStringCallback = ((string str, object data) => str);
 		}
 
-		public StatusItem LowBattery;
+				public StatusItem LowBattery;
 
-		public StatusItem LowBatteryNoCharge;
+				public StatusItem LowBatteryNoCharge;
 
-		public StatusItem DeadBattery;
+				public StatusItem DeadBattery;
 
-		public StatusItem CantReachStation;
+				public StatusItem DeadBatteryFlydo;
 
-		public StatusItem DustBinFull;
+				public StatusItem CantReachStation;
 
-		public StatusItem Working;
+				public StatusItem DustBinFull;
 
-		public StatusItem UnloadingStorage;
+				public StatusItem Working;
 
-		public StatusItem ReactPositive;
+				public StatusItem UnloadingStorage;
 
-		public StatusItem ReactNegative;
+				public StatusItem ReactPositive;
 
-		public StatusItem MovingToChargeStation;
+				public StatusItem ReactNegative;
+
+				public StatusItem MovingToChargeStation;
 	}
 }

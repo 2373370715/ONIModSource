@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class VerticalWindTunnelConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "VerticalWindTunnel";
 		int width = 5;
@@ -29,7 +29,7 @@ public class VerticalWindTunnelConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding, false);
 		VerticalWindTunnel verticalWindTunnel = go.AddOrGet<VerticalWindTunnel>();
@@ -59,11 +59,11 @@ public class VerticalWindTunnelConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "VerticalWindTunnel";
+		public const string ID = "VerticalWindTunnel";
 
-	private const float DISPLACEMENT_AMOUNT = 3f;
+		private const float DISPLACEMENT_AMOUNT = 3f;
 }

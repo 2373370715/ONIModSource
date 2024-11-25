@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BallisticClusterGridEntity : ClusterGridEntity
 {
-		public override string Name
+			public override string Name
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class BallisticClusterGridEntity : ClusterGridEntity
 		}
 	}
 
-		public override EntityLayer Layer
+			public override EntityLayer Layer
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class BallisticClusterGridEntity : ClusterGridEntity
 		}
 	}
 
-		public override List<ClusterGridEntity.AnimConfig> AnimConfigs
+			public override List<ClusterGridEntity.AnimConfig> AnimConfigs
 	{
 		get
 		{
@@ -37,7 +37,7 @@ public class BallisticClusterGridEntity : ClusterGridEntity
 		}
 	}
 
-		public override bool IsVisible
+			public override bool IsVisible
 	{
 		get
 		{
@@ -45,7 +45,7 @@ public class BallisticClusterGridEntity : ClusterGridEntity
 		}
 	}
 
-		public override ClusterRevealLevel IsVisibleInFOW
+			public override ClusterRevealLevel IsVisibleInFOW
 	{
 		get
 		{
@@ -53,12 +53,12 @@ public class BallisticClusterGridEntity : ClusterGridEntity
 		}
 	}
 
-	public override bool SpaceOutInSameHex()
+		public override bool SpaceOutInSameHex()
 	{
 		return true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.m_clusterTraveler.getSpeedCB = new Func<float>(this.GetSpeed);
@@ -66,56 +66,56 @@ public class BallisticClusterGridEntity : ClusterGridEntity
 		this.m_clusterTraveler.onTravelCB = null;
 	}
 
-	private float GetSpeed()
+		private float GetSpeed()
 	{
 		return 10f;
 	}
 
-	private bool CanTravel(bool tryingToLand)
+		private bool CanTravel(bool tryingToLand)
 	{
 		return this.HasTag(GameTags.EntityInSpace);
 	}
 
-	public void Configure(AxialI source, AxialI destination)
+		public void Configure(AxialI source, AxialI destination)
 	{
 		this.m_location = source;
 		this.m_destionationSelector.SetDestination(destination);
 	}
 
-	public override bool ShowPath()
+		public override bool ShowPath()
 	{
 		return this.m_selectable.IsSelected;
 	}
 
-	public override bool ShowProgressBar()
+		public override bool ShowProgressBar()
 	{
 		return this.m_selectable.IsSelected && this.m_clusterTraveler.IsTraveling();
 	}
 
-	public override float GetProgress()
+		public override float GetProgress()
 	{
 		return this.m_clusterTraveler.GetMoveProgress();
 	}
 
-	public void SwapSymbolFromSameAnim(string targetSymbolName, string swappedSymbolName)
+		public void SwapSymbolFromSameAnim(string targetSymbolName, string swappedSymbolName)
 	{
 		this.clusterAnimSymbolSwapTarget = targetSymbolName;
 		this.clusterAnimSymbolSwapSymbol = swappedSymbolName;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ClusterDestinationSelector m_destionationSelector;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ClusterTraveler m_clusterTraveler;
 
-	[SerializeField]
+		[SerializeField]
 	public string clusterAnimName;
 
-	[SerializeField]
+		[SerializeField]
 	public StringKey nameKey;
 
-	private string clusterAnimSymbolSwapTarget;
+		private string clusterAnimSymbolSwapTarget;
 
-	private string clusterAnimSymbolSwapSymbol;
+		private string clusterAnimSymbolSwapSymbol;
 }

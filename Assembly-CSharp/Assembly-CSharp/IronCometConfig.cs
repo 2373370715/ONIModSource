@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class IronCometConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(IronCometConfig.ID, UI.SPACEDESTINATIONS.COMETS.IRONCOMET.NAME, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
@@ -42,13 +42,13 @@ public class IronCometConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static string ID = "IronComet";
+		public static string ID = "IronComet";
 }

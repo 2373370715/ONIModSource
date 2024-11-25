@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CrewCapsuleConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "CrewCapsule";
 		int width = 5;
@@ -34,7 +34,7 @@ public class CrewCapsuleConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
@@ -42,7 +42,7 @@ public class CrewCapsuleConfig : IBuildingConfig
 		go.AddOrGet<RocketLaunchConditionVisualizer>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddComponent<Storage>();
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
@@ -54,5 +54,5 @@ public class CrewCapsuleConfig : IBuildingConfig
 		conduitConsumer.wrongElementResult = ConduitConsumer.WrongElementResult.Dump;
 	}
 
-	public const string ID = "CrewCapsule";
+		public const string ID = "CrewCapsule";
 }

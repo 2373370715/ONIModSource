@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RunningWeightedAverage
 {
-	public RunningWeightedAverage(float minValue = -3.4028235E+38f, float maxValue = 3.4028235E+38f, int sampleCount = 20, bool allowZero = true)
+		public RunningWeightedAverage(float minValue = -3.4028235E+38f, float maxValue = 3.4028235E+38f, int sampleCount = 20, bool allowZero = true)
 	{
 		this.min = minValue;
 		this.max = maxValue;
@@ -12,7 +12,7 @@ public class RunningWeightedAverage
 		this.samples = new List<global::Tuple<float, float>>();
 	}
 
-		public float GetUnweightedAverage
+			public float GetUnweightedAverage
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class RunningWeightedAverage
 		}
 	}
 
-		public bool HasEverHadValidValues
+			public bool HasEverHadValidValues
 	{
 		get
 		{
@@ -28,7 +28,7 @@ public class RunningWeightedAverage
 		}
 	}
 
-	public void AddSample(float value, float timeOfRecord)
+		public void AddSample(float value, float timeOfRecord)
 	{
 		if (this.ignoreZero && value == 0f)
 		{
@@ -53,7 +53,7 @@ public class RunningWeightedAverage
 		}
 	}
 
-	public int ValidRecordsInLastSeconds(float seconds)
+		public int ValidRecordsInLastSeconds(float seconds)
 	{
 		int num = 0;
 		int num2 = this.samples.Count - 1;
@@ -65,7 +65,7 @@ public class RunningWeightedAverage
 		return num;
 	}
 
-	private float GetAverageOfLastSeconds(float seconds)
+		private float GetAverageOfLastSeconds(float seconds)
 	{
 		float num = 0f;
 		int num2 = 0;
@@ -83,15 +83,15 @@ public class RunningWeightedAverage
 		return num / (float)num2;
 	}
 
-	private List<global::Tuple<float, float>> samples = new List<global::Tuple<float, float>>();
+		private List<global::Tuple<float, float>> samples = new List<global::Tuple<float, float>>();
 
-	private float min;
+		private float min;
 
-	private float max;
+		private float max;
 
-	private bool ignoreZero;
+		private bool ignoreZero;
 
-	private int validSampleCount;
+		private int validSampleCount;
 
-	private int maxSamples = 20;
+		private int maxSamples = 20;
 }

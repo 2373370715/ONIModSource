@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 [Serializable]
 public class Substance
 {
-	public GameObject SpawnResource(Vector3 position, float mass, float temperature, byte disease_idx, int disease_count, bool prevent_merge = false, bool forceTemperature = false, bool manual_activation = false)
+		public GameObject SpawnResource(Vector3 position, float mass, float temperature, byte disease_idx, int disease_count, bool prevent_merge = false, bool forceTemperature = false, bool manual_activation = false)
 	{
 		GameObject gameObject = null;
 		PrimaryElement primaryElement = null;
@@ -59,7 +59,7 @@ public class Substance
 				primaryElement.Mass += mass;
 			}
 		}
-		primaryElement.InternalTemperature = temperature;
+		primaryElement.Temperature = temperature;
 		position.z = Grid.GetLayerZ(Grid.SceneLayer.Ore);
 		gameObject.transform.SetPosition(position);
 		if (!manual_activation)
@@ -69,13 +69,13 @@ public class Substance
 		return gameObject;
 	}
 
-	public void ActivateSubstanceGameObject(GameObject obj, byte disease_idx, int disease_count)
+		public void ActivateSubstanceGameObject(GameObject obj, byte disease_idx, int disease_count)
 	{
 		obj.SetActive(true);
 		obj.GetComponent<PrimaryElement>().AddDisease(disease_idx, disease_count, "Substances.SpawnResource");
 	}
 
-	private void SetTexture(MaterialPropertyBlock block, string texture_name)
+		private void SetTexture(MaterialPropertyBlock block, string texture_name)
 	{
 		Texture texture = this.material.GetTexture(texture_name);
 		if (texture != null)
@@ -84,7 +84,7 @@ public class Substance
 		}
 	}
 
-	public void RefreshPropertyBlock()
+		public void RefreshPropertyBlock()
 	{
 		if (this.propertyBlock == null)
 		{
@@ -106,7 +106,7 @@ public class Substance
 		}
 	}
 
-	internal AmbienceType GetAmbience()
+		internal AmbienceType GetAmbience()
 	{
 		if (this.audioConfig == null)
 		{
@@ -115,7 +115,7 @@ public class Substance
 		return this.audioConfig.ambienceType;
 	}
 
-	internal SolidAmbienceType GetSolidAmbience()
+		internal SolidAmbienceType GetSolidAmbience()
 	{
 		if (this.audioConfig == null)
 		{
@@ -124,7 +124,7 @@ public class Substance
 		return this.audioConfig.solidAmbienceType;
 	}
 
-	internal string GetMiningSound()
+		internal string GetMiningSound()
 	{
 		if (this.audioConfig == null)
 		{
@@ -133,7 +133,7 @@ public class Substance
 		return this.audioConfig.miningSound;
 	}
 
-	internal string GetMiningBreakSound()
+		internal string GetMiningBreakSound()
 	{
 		if (this.audioConfig == null)
 		{
@@ -142,7 +142,7 @@ public class Substance
 		return this.audioConfig.miningBreakSound;
 	}
 
-	internal string GetOreBumpSound()
+		internal string GetOreBumpSound()
 	{
 		if (this.audioConfig == null)
 		{
@@ -151,7 +151,7 @@ public class Substance
 		return this.audioConfig.oreBumpSound;
 	}
 
-	internal string GetFloorEventAudioCategory()
+		internal string GetFloorEventAudioCategory()
 	{
 		if (this.audioConfig == null)
 		{
@@ -160,7 +160,7 @@ public class Substance
 		return this.audioConfig.floorEventAudioCategory;
 	}
 
-	internal string GetCreatureChewSound()
+		internal string GetCreatureChewSound()
 	{
 		if (this.audioConfig == null)
 		{
@@ -169,43 +169,43 @@ public class Substance
 		return this.audioConfig.creatureChewSound;
 	}
 
-	public string name;
+		public string name;
 
-	public SimHashes elementID;
+		public SimHashes elementID;
 
-	internal Tag nameTag;
+		internal Tag nameTag;
 
-	public Color32 colour;
+		public Color32 colour;
 
-	[FormerlySerializedAs("debugColour")]
+		[FormerlySerializedAs("debugColour")]
 	public Color32 uiColour;
 
-	[FormerlySerializedAs("overlayColour")]
+		[FormerlySerializedAs("overlayColour")]
 	public Color32 conduitColour = Color.white;
 
-	[NonSerialized]
+		[NonSerialized]
 	internal bool renderedByWorld;
 
-	[NonSerialized]
+		[NonSerialized]
 	internal int idx;
 
-	public Material material;
+		public Material material;
 
-	public KAnimFile anim;
+		public KAnimFile anim;
 
-	[SerializeField]
+		[SerializeField]
 	internal bool showInEditor = true;
 
-	[NonSerialized]
+		[NonSerialized]
 	internal KAnimFile[] anims;
 
-	[NonSerialized]
+		[NonSerialized]
 	internal ElementsAudio.ElementAudioConfig audioConfig;
 
-	[NonSerialized]
+		[NonSerialized]
 	internal MaterialPropertyBlock propertyBlock;
 
-	public EventReference fallingStartSound;
+		public EventReference fallingStartSound;
 
-	public EventReference fallingStopSound;
+		public EventReference fallingStopSound;
 }

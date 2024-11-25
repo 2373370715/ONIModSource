@@ -4,7 +4,7 @@ using KSerialization;
 
 public class ClusterCometDetector : GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.off;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -54,44 +54,44 @@ public class ClusterCometDetector : GameStateMachine<ClusterCometDetector, Clust
 		this.on.working.pst.PlayAnim("detect_pst").OnAnimQueueComplete(this.on.loop);
 	}
 
-	public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State off;
+		public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State off;
 
-	public ClusterCometDetector.OnStates on;
+		public ClusterCometDetector.OnStates on;
 
-	public StateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.BoolParameter lastIsTargetDetected;
+		public StateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.BoolParameter lastIsTargetDetected;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public class OnStates : GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State
+		public class OnStates : GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State
 	{
-		public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State pre;
+				public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State pre;
 
-		public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State loop;
+				public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State loop;
 
-		public ClusterCometDetector.WorkingStates working;
+				public ClusterCometDetector.WorkingStates working;
 
-		public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State pst;
+				public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State pst;
 	}
 
-	public class WorkingStates : GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State
+		public class WorkingStates : GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State
 	{
-		public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State pre;
+				public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State pre;
 
-		public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State loop;
+				public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State loop;
 
-		public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State pst;
+				public GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.State pst;
 	}
 
-	public new class Instance : GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.GameInstance
+		public new class Instance : GameStateMachine<ClusterCometDetector, ClusterCometDetector.Instance, IStateMachineTarget, ClusterCometDetector.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, ClusterCometDetector.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ClusterCometDetector.Def def) : base(master, def)
 		{
 			this.detectorNetworkDef = new DetectorNetwork.Def();
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			if (this.detectorNetwork == null)
 			{
@@ -101,13 +101,13 @@ public class ClusterCometDetector : GameStateMachine<ClusterCometDetector, Clust
 			base.StartSM();
 		}
 
-		public override void StopSM(string reason)
+				public override void StopSM(string reason)
 		{
 			base.StopSM(reason);
 			this.detectorNetwork.StopSM(reason);
 		}
 
-		public void UpdateDetectionState(bool currentDetection, bool expectedDetectionForState)
+				public void UpdateDetectionState(bool currentDetection, bool expectedDetectionForState)
 		{
 			KPrefabID component = base.GetComponent<KPrefabID>();
 			if (currentDetection)
@@ -124,7 +124,7 @@ public class ClusterCometDetector : GameStateMachine<ClusterCometDetector, Clust
 			}
 		}
 
-		public void ScanSky(bool expectedDetectionForState)
+				public void ScanSky(bool expectedDetectionForState)
 		{
 			Option<SpaceScannerTarget> option;
 			switch (this.GetDetectorState())
@@ -153,22 +153,22 @@ public class ClusterCometDetector : GameStateMachine<ClusterCometDetector, Clust
 			this.UpdateDetectionState(flag, expectedDetectionForState);
 		}
 
-		public void SetLogicSignal(bool on)
+				public void SetLogicSignal(bool on)
 		{
 			base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, on ? 1 : 0);
 		}
 
-		public void SetDetectorState(ClusterCometDetector.Instance.ClusterCometDetectorState newState)
+				public void SetDetectorState(ClusterCometDetector.Instance.ClusterCometDetectorState newState)
 		{
 			this.detectorState = newState;
 		}
 
-		public ClusterCometDetector.Instance.ClusterCometDetectorState GetDetectorState()
+				public ClusterCometDetector.Instance.ClusterCometDetectorState GetDetectorState()
 		{
 			return this.detectorState;
 		}
 
-		public void SetClustercraftTarget(Clustercraft target)
+				public void SetClustercraftTarget(Clustercraft target)
 		{
 			if (target)
 			{
@@ -178,7 +178,7 @@ public class ClusterCometDetector : GameStateMachine<ClusterCometDetector, Clust
 			this.targetCraft = null;
 		}
 
-		public Clustercraft GetClustercraftTarget()
+				public Clustercraft GetClustercraftTarget()
 		{
 			if (this.targetCraft == null)
 			{
@@ -187,28 +187,28 @@ public class ClusterCometDetector : GameStateMachine<ClusterCometDetector, Clust
 			return this.targetCraft.Get();
 		}
 
-		public bool ShowWorkingStatus;
+				public bool ShowWorkingStatus;
 
-		[Serialize]
+				[Serialize]
 		private ClusterCometDetector.Instance.ClusterCometDetectorState detectorState;
 
-		[Serialize]
+				[Serialize]
 		private Ref<Clustercraft> targetCraft;
 
-		[NonSerialized]
+				[NonSerialized]
 		public float remainingSecondsToFreezeLogicSignal;
 
-		private DetectorNetwork.Def detectorNetworkDef;
+				private DetectorNetwork.Def detectorNetworkDef;
 
-		private DetectorNetwork.Instance detectorNetwork;
+				private DetectorNetwork.Instance detectorNetwork;
 
-		private List<GameplayEventInstance> meteorShowers = new List<GameplayEventInstance>();
+				private List<GameplayEventInstance> meteorShowers = new List<GameplayEventInstance>();
 
-		public enum ClusterCometDetectorState
+				public enum ClusterCometDetectorState
 		{
-			MeteorShower,
-			BallisticObject,
-			Rocket
+						MeteorShower,
+						BallisticObject,
+						Rocket
 		}
 	}
 }

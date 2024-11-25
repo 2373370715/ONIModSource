@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/InstantiateUIPrefabChild")]
 public class InstantiateUIPrefabChild : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		if (this.InstantiateOnAwake)
 		{
@@ -12,7 +12,7 @@ public class InstantiateUIPrefabChild : KMonoBehaviour
 		}
 	}
 
-	public void Instantiate()
+		public void Instantiate()
 	{
 		if (this.alreadyInstantiated)
 		{
@@ -37,11 +37,11 @@ public class InstantiateUIPrefabChild : KMonoBehaviour
 		}
 	}
 
-	public GameObject[] prefabs;
+		public GameObject[] prefabs;
 
-	public bool InstantiateOnAwake = true;
+		public bool InstantiateOnAwake = true;
 
-	private bool alreadyInstantiated;
+		private bool alreadyInstantiated;
 
-	public bool setAsFirstSibling;
+		public bool setAsFirstSibling;
 }

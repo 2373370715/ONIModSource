@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BuildingUnderConstruction : Building
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Vector3 position = base.transform.GetPosition();
 		position.z = Grid.GetLayerZ(this.Def.SceneLayer);
@@ -24,7 +24,7 @@ public class BuildingUnderConstruction : Building
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.Def.IsTilePiece)
@@ -38,18 +38,18 @@ public class BuildingUnderConstruction : Building
 		base.RegisterBlockTileRenderer();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.UnregisterBlockTileRenderer();
 		base.OnCleanUp();
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private KSelectable selectable;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private SaveLoadRoot saveLoadRoot;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private KPrefabID kPrefabID;
 }

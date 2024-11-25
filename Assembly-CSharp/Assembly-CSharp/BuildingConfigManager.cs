@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/BuildingConfigManager")]
 public class BuildingConfigManager : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		BuildingConfigManager.Instance = this;
 		this.baseTemplate = new GameObject("BuildingTemplate");
@@ -31,19 +31,26 @@ public class BuildingConfigManager : KMonoBehaviour
 		this.defaultBuildingCompleteKComponents.Add(typeof(RequiresFoundation));
 	}
 
-	public static string GetUnderConstructionName(string name)
+		public static string GetUnderConstructionName(string name)
 	{
 		return name + "UnderConstruction";
 	}
 
-	public void RegisterBuilding(IBuildingConfig config)
+		public void RegisterBuilding(IBuildingConfig config)
 	{
-		if (!DlcManager.IsDlcListValidForCurrentContent(config.GetDlcIds()))
+		string[] requiredDlcIds = config.GetRequiredDlcIds();
+		string[] forbiddenDlcIds = config.GetForbiddenDlcIds();
+		if (config.GetDlcIds() != null)
+		{
+			DlcManager.ConvertAvailableToRequireAndForbidden(config.GetDlcIds(), out requiredDlcIds, out forbiddenDlcIds);
+		}
+		if (!DlcManager.IsCorrectDlcSubscribed(requiredDlcIds, forbiddenDlcIds))
 		{
 			return;
 		}
 		BuildingDef buildingDef = config.CreateBuildingDef();
-		buildingDef.RequiredDlcIds = config.GetDlcIds();
+		buildingDef.RequiredDlcIds = requiredDlcIds;
+		buildingDef.ForbiddenDlcIds = forbiddenDlcIds;
 		this.configTable[config] = buildingDef;
 		GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.baseTemplate);
 		UnityEngine.Object.DontDestroyOnLoad(gameObject);
@@ -85,7 +92,7 @@ public class BuildingConfigManager : KMonoBehaviour
 		Assets.AddBuildingDef(buildingDef);
 	}
 
-	public void ConfigurePost()
+		public void ConfigurePost()
 	{
 		foreach (KeyValuePair<IBuildingConfig, BuildingDef> keyValuePair in this.configTable)
 		{
@@ -93,7 +100,7 @@ public class BuildingConfigManager : KMonoBehaviour
 		}
 	}
 
-	public void IgnoreDefaultKComponent(Type type_to_ignore, Tag building_tag)
+		public void IgnoreDefaultKComponent(Type type_to_ignore, Tag building_tag)
 	{
 		HashSet<Tag> hashSet;
 		if (!this.ignoredDefaultKComponents.TryGetValue(type_to_ignore, out hashSet))
@@ -104,7 +111,7 @@ public class BuildingConfigManager : KMonoBehaviour
 		hashSet.Add(building_tag);
 	}
 
-	private bool IsIgnoredDefaultKComponent(Tag building_tag, Type type)
+		private bool IsIgnoredDefaultKComponent(Tag building_tag, Type type)
 	{
 		bool result = false;
 		HashSet<Tag> hashSet;
@@ -115,7 +122,7 @@ public class BuildingConfigManager : KMonoBehaviour
 		return result;
 	}
 
-	public void AddBuildingCompleteKComponents(GameObject go, Tag prefab_tag)
+		public void AddBuildingCompleteKComponents(GameObject go, Tag prefab_tag)
 	{
 		foreach (Type type in this.defaultBuildingCompleteKComponents)
 		{
@@ -134,7 +141,7 @@ public class BuildingConfigManager : KMonoBehaviour
 		}
 	}
 
-	public void DestroyBuildingCompleteKComponents(GameObject go, Tag prefab_tag)
+		public void DestroyBuildingCompleteKComponents(GameObject go, Tag prefab_tag)
 	{
 		foreach (Type type in this.defaultBuildingCompleteKComponents)
 		{
@@ -153,12 +160,12 @@ public class BuildingConfigManager : KMonoBehaviour
 		}
 	}
 
-	public void AddDefaultBuildingCompleteKComponent(Type kcomponent_type)
+		public void AddDefaultBuildingCompleteKComponent(Type kcomponent_type)
 	{
 		this.defaultKComponents.Add(kcomponent_type);
 	}
 
-	public void AddBuildingCompleteKComponent(Tag prefab_tag, Type kcomponent_type)
+		public void AddBuildingCompleteKComponent(Tag prefab_tag, Type kcomponent_type)
 	{
 		HashSet<Type> hashSet;
 		if (!this.buildingCompleteKComponents.TryGetValue(prefab_tag, out hashSet))
@@ -169,22 +176,22 @@ public class BuildingConfigManager : KMonoBehaviour
 		hashSet.Add(kcomponent_type);
 	}
 
-	public static BuildingConfigManager Instance;
+		public static BuildingConfigManager Instance;
 
-	private GameObject baseTemplate;
+		private GameObject baseTemplate;
 
-	private Dictionary<IBuildingConfig, BuildingDef> configTable = new Dictionary<IBuildingConfig, BuildingDef>();
+		private Dictionary<IBuildingConfig, BuildingDef> configTable = new Dictionary<IBuildingConfig, BuildingDef>();
 
-	private string[] NonBuildableBuildings = new string[]
+		private string[] NonBuildableBuildings = new string[]
 	{
 		"Headquarters"
 	};
 
-	private HashSet<Type> defaultKComponents = new HashSet<Type>();
+		private HashSet<Type> defaultKComponents = new HashSet<Type>();
 
-	private HashSet<Type> defaultBuildingCompleteKComponents = new HashSet<Type>();
+		private HashSet<Type> defaultBuildingCompleteKComponents = new HashSet<Type>();
 
-	private Dictionary<Type, HashSet<Tag>> ignoredDefaultKComponents = new Dictionary<Type, HashSet<Tag>>();
+		private Dictionary<Type, HashSet<Tag>> ignoredDefaultKComponents = new Dictionary<Type, HashSet<Tag>>();
 
-	private Dictionary<Tag, HashSet<Type>> buildingCompleteKComponents = new Dictionary<Tag, HashSet<Type>>();
+		private Dictionary<Tag, HashSet<Type>> buildingCompleteKComponents = new Dictionary<Tag, HashSet<Type>>();
 }

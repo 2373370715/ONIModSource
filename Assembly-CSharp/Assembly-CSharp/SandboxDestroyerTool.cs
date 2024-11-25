@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SandboxDestroyerTool : BrushTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SandboxDestroyerTool.instance = null;
 	}
 
-		private SandboxSettings settings
+			private SandboxSettings settings
 	{
 		get
 		{
@@ -17,24 +17,24 @@ public class SandboxDestroyerTool : BrushTool
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		SandboxDestroyerTool.instance = this;
 		this.affectFoundation = true;
 	}
 
-	protected override string GetDragSound()
+		protected override string GetDragSound()
 	{
 		return "SandboxTool_Delete_Add";
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		PlayerController.Instance.ActivateTool(this);
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		SandboxToolParameterMenu.instance.gameObject.SetActive(true);
@@ -42,13 +42,13 @@ public class SandboxDestroyerTool : BrushTool
 		SandboxToolParameterMenu.instance.brushRadiusSlider.row.SetActive(true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		SandboxToolParameterMenu.instance.gameObject.SetActive(false);
 	}
 
-	public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
+		public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
 	{
 		colors = new HashSet<ToolMenu.CellColorData>();
 		foreach (int cell in this.recentlyAffectedCells)
@@ -61,18 +61,18 @@ public class SandboxDestroyerTool : BrushTool
 		}
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		base.OnLeftClickDown(cursor_pos);
 		KFMOD.PlayUISound(GlobalAssets.GetSound("SandboxTool_Delete", false));
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		base.OnMouseMove(cursorPos);
 	}
 
-	protected override void OnPaintCell(int cell, int distFromOrigin)
+		protected override void OnPaintCell(int cell, int distFromOrigin)
 	{
 		base.OnPaintCell(cell, distFromOrigin);
 		this.recentlyAffectedCells.Add(cell);
@@ -129,9 +129,9 @@ public class SandboxDestroyerTool : BrushTool
 		pooledHashSet.Recycle();
 	}
 
-	public static SandboxDestroyerTool instance;
+		public static SandboxDestroyerTool instance;
 
-	protected HashSet<int> recentlyAffectedCells = new HashSet<int>();
+		protected HashSet<int> recentlyAffectedCells = new HashSet<int>();
 
-	protected Color recentlyAffectedCellColor = new Color(1f, 1f, 1f, 0.1f);
+		protected Color recentlyAffectedCellColor = new Color(1f, 1f, 1f, 0.1f);
 }

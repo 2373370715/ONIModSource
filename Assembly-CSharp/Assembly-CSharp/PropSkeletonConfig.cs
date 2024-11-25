@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PropSkeletonConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PropSkeleton";
 		string name = STRINGS.BUILDINGS.PREFABS.PROPSKELETON.NAME;
@@ -30,7 +30,7 @@ public class PropSkeletonConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
 		{
@@ -38,7 +38,7 @@ public class PropSkeletonConfig : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 }

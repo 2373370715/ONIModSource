@@ -2,12 +2,12 @@
 
 public class UtilityBuildTool : BaseUtilityBuildTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		UtilityBuildTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		UtilityBuildTool.Instance = this;
 		base.OnPrefabInit();
@@ -15,7 +15,7 @@ public class UtilityBuildTool : BaseUtilityBuildTool
 		this.canChangeDragAxis = false;
 	}
 
-	protected override void ApplyPathToConduitSystem()
+		protected override void ApplyPathToConduitSystem()
 	{
 		if (this.path.Count < 2)
 		{
@@ -47,7 +47,7 @@ public class UtilityBuildTool : BaseUtilityBuildTool
 		this.lastPathHead = this.path.Count - 1;
 	}
 
-	public static UtilityBuildTool Instance;
+		public static UtilityBuildTool Instance;
 
-	private int lastPathHead = -1;
+		private int lastPathHead = -1;
 }

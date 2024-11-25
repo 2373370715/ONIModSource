@@ -1,5 +1,1 @@
-﻿using System;
-
-public class SlotSet : ResourceSet<EquipmentSlot>
-{
-}
+﻿public class SlotSet : ResourceSet<EquipmentSlot> { }

@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class SteamTurbine : Generator
 {
-			public int BlockedInputs { get; private set; }
+				public int BlockedInputs { get; private set; }
 
-		public int TotalInputs
+			public int TotalInputs
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class SteamTurbine : Generator
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.accumulator = Game.Instance.accumulators.Add("Power", this);
@@ -35,7 +35,7 @@ public class SteamTurbine : Generator
 		this.CreateMeter();
 	}
 
-	private void CreateMeter()
+		private void CreateMeter()
 	{
 		this.meter = new MeterController(base.gameObject.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new string[]
 		{
@@ -45,7 +45,7 @@ public class SteamTurbine : Generator
 		});
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.smi != null)
 		{
@@ -56,7 +56,7 @@ public class SteamTurbine : Generator
 		base.OnCleanUp();
 	}
 
-	private void Pump(float dt)
+		private void Pump(float dt)
 	{
 		float mass = this.pumpKGRate * dt / (float)this.srcCells.Length;
 		foreach (int gameCell in this.srcCells)
@@ -66,12 +66,12 @@ public class SteamTurbine : Generator
 		}
 	}
 
-	private static void OnSimConsumeCallback(Sim.MassConsumedCallback mass_cb_info, object data)
+		private static void OnSimConsumeCallback(Sim.MassConsumedCallback mass_cb_info, object data)
 	{
 		((SteamTurbine)data).OnSimConsume(mass_cb_info);
 	}
 
-	private void OnSimConsume(Sim.MassConsumedCallback mass_cb_info)
+		private void OnSimConsume(Sim.MassConsumedCallback mass_cb_info)
 	{
 		if (mass_cb_info.mass > 0f)
 		{
@@ -92,12 +92,12 @@ public class SteamTurbine : Generator
 		}
 	}
 
-	private static void OnSimEmittedCallback(Sim.MassEmittedCallback info, object data)
+		private static void OnSimEmittedCallback(Sim.MassEmittedCallback info, object data)
 	{
 		((SteamTurbine)data).OnSimEmitted(info);
 	}
 
-	private void OnSimEmitted(Sim.MassEmittedCallback info)
+		private void OnSimEmitted(Sim.MassEmittedCallback info)
 	{
 		if (info.suceeded != 1)
 		{
@@ -122,7 +122,7 @@ public class SteamTurbine : Generator
 		}
 	}
 
-	public static void InitializeStatusItems()
+		public static void InitializeStatusItems()
 	{
 		SteamTurbine.activeStatusItem = new StatusItem("TURBINE_ACTIVE", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 129022, null);
 		SteamTurbine.inputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_INPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022, null);
@@ -139,20 +139,20 @@ public class SteamTurbine : Generator
 		SteamTurbine.activeWattageStatusItem.resolveStringCallback = new Func<string, object, string>(SteamTurbine.ResolveWattageStatus);
 	}
 
-	private static string ResolveWattageStatus(string str, object data)
+		private static string ResolveWattageStatus(string str, object data)
 	{
 		SteamTurbine steamTurbine = (SteamTurbine)data;
 		float num = Game.Instance.accumulators.GetAverageRate(steamTurbine.accumulator) / steamTurbine.WattageRating;
 		return str.Replace("{Wattage}", GameUtil.GetFormattedWattage(steamTurbine.CurrentWattage, GameUtil.WattageFormatterUnit.Automatic, true)).Replace("{Max_Wattage}", GameUtil.GetFormattedWattage(steamTurbine.WattageRating, GameUtil.WattageFormatterUnit.Automatic, true)).Replace("{Efficiency}", GameUtil.GetFormattedPercent(num * 100f, GameUtil.TimeSlice.None)).Replace("{Src_Element}", ElementLoader.FindElementByHash(steamTurbine.srcElem).name);
 	}
 
-	private static string ResolvePartialBlockedStatus(string str, object data)
+		private static string ResolvePartialBlockedStatus(string str, object data)
 	{
 		SteamTurbine steamTurbine = (SteamTurbine)data;
 		return str.Replace("{Blocked}", steamTurbine.BlockedInputs.ToString()).Replace("{Total}", steamTurbine.TotalInputs.ToString());
 	}
 
-	private static string ResolveStrings(string str, object data)
+		private static string ResolveStrings(string str, object data)
 	{
 		SteamTurbine steamTurbine = (SteamTurbine)data;
 		str = str.Replace("{Src_Element}", ElementLoader.FindElementByHash(steamTurbine.srcElem).name);
@@ -163,13 +163,13 @@ public class SteamTurbine : Generator
 		return str;
 	}
 
-	public void SetStorage(Storage steamStorage, Storage waterStorage)
+		public void SetStorage(Storage steamStorage, Storage waterStorage)
 	{
 		this.gasStorage = steamStorage;
 		this.liquidStorage = waterStorage;
 	}
 
-	public override void EnergySim200ms(float dt)
+		public override void EnergySim200ms(float dt)
 	{
 		base.EnergySim200ms(dt);
 		ushort circuitID = base.CircuitID;
@@ -212,19 +212,19 @@ public class SteamTurbine : Generator
 		this.meter.SetSymbolTint(SteamTurbine.TINT_SYMBOL, Color.Lerp(Color.red, Color.green, Game.Instance.accumulators.GetAverageRate(this.accumulator) / base.WattageRating));
 	}
 
-	public float HeatFromCoolingSteam(PrimaryElement steam)
+		public float HeatFromCoolingSteam(PrimaryElement steam)
 	{
 		float temperature = steam.Temperature;
 		return -GameUtil.CalculateEnergyDeltaForElement(steam, temperature, this.outputElementTemperature);
 	}
 
-	public float JoulesToGenerate(PrimaryElement steam)
+		public float JoulesToGenerate(PrimaryElement steam)
 	{
 		float num = (steam.Temperature - this.outputElementTemperature) / (this.idealSourceElementTemperature - this.outputElementTemperature);
 		return base.WattageRating * (float)Math.Pow((double)num, 1.0);
 	}
 
-		public float CurrentWattage
+			public float CurrentWattage
 	{
 		get
 		{
@@ -232,83 +232,83 @@ public class SteamTurbine : Generator
 		}
 	}
 
-	private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
+		private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
 
-	public SimHashes srcElem;
+		public SimHashes srcElem;
 
-	public SimHashes destElem;
+		public SimHashes destElem;
 
-	public float requiredMass = 0.001f;
+		public float requiredMass = 0.001f;
 
-	public float minActiveTemperature = 398.15f;
+		public float minActiveTemperature = 398.15f;
 
-	public float idealSourceElementTemperature = 473.15f;
+		public float idealSourceElementTemperature = 473.15f;
 
-	public float maxBuildingTemperature = 373.15f;
+		public float maxBuildingTemperature = 373.15f;
 
-	public float outputElementTemperature = 368.15f;
+		public float outputElementTemperature = 368.15f;
 
-	public float minConvertMass;
+		public float minConvertMass;
 
-	public float pumpKGRate;
+		public float pumpKGRate;
 
-	public float maxSelfHeat;
+		public float maxSelfHeat;
 
-	public float wasteHeatToTurbinePercent;
+		public float wasteHeatToTurbinePercent;
 
-	private static readonly HashedString TINT_SYMBOL = new HashedString("meter_fill");
+		private static readonly HashedString TINT_SYMBOL = new HashedString("meter_fill");
 
-	[Serialize]
+		[Serialize]
 	private float storedMass;
 
-	[Serialize]
+		[Serialize]
 	private float storedTemperature;
 
-	[Serialize]
+		[Serialize]
 	private byte diseaseIdx = byte.MaxValue;
 
-	[Serialize]
+		[Serialize]
 	private int diseaseCount;
 
-	private static StatusItem inputBlockedStatusItem;
+		private static StatusItem inputBlockedStatusItem;
 
-	private static StatusItem inputPartiallyBlockedStatusItem;
+		private static StatusItem inputPartiallyBlockedStatusItem;
 
-	private static StatusItem insufficientMassStatusItem;
+		private static StatusItem insufficientMassStatusItem;
 
-	private static StatusItem insufficientTemperatureStatusItem;
+		private static StatusItem insufficientTemperatureStatusItem;
 
-	private static StatusItem activeWattageStatusItem;
+		private static StatusItem activeWattageStatusItem;
 
-	private static StatusItem buildingTooHotItem;
+		private static StatusItem buildingTooHotItem;
 
-	private static StatusItem activeStatusItem;
+		private static StatusItem activeStatusItem;
 
-	private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
+		private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle simEmitCBHandle = HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.InvalidHandle;
+		private HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle simEmitCBHandle = HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.InvalidHandle;
 
-	private SteamTurbine.Instance smi;
+		private SteamTurbine.Instance smi;
 
-	private int[] srcCells;
+		private int[] srcCells;
 
-	private Storage gasStorage;
+		private Storage gasStorage;
 
-	private Storage liquidStorage;
+		private Storage liquidStorage;
 
-	private ElementConsumer consumer;
+		private ElementConsumer consumer;
 
-	private Guid statusHandle;
+		private Guid statusHandle;
 
-	private HandleVector<int>.Handle structureTemperature;
+		private HandleVector<int>.Handle structureTemperature;
 
-	private float lastSampleTime = -1f;
+		private float lastSampleTime = -1f;
 
-	public class States : GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine>
+		public class States : GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			SteamTurbine.InitializeStatusItems();
 			default_state = this.operational;
@@ -343,38 +343,38 @@ public class SteamTurbine : Generator
 			});
 		}
 
-		public GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.State inoperational;
+				public GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.State inoperational;
 
-		public SteamTurbine.States.OperationalStates operational;
+				public SteamTurbine.States.OperationalStates operational;
 
-		private static readonly HashedString[] ACTIVE_ANIMS = new HashedString[]
+				private static readonly HashedString[] ACTIVE_ANIMS = new HashedString[]
 		{
 			"working_pre",
 			"working_loop"
 		};
 
-		private static readonly HashedString[] TOOHOT_ANIMS = new HashedString[]
+				private static readonly HashedString[] TOOHOT_ANIMS = new HashedString[]
 		{
 			"working_pre"
 		};
 
-		public class OperationalStates : GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.State
+				public class OperationalStates : GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.State
 		{
-			public GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.State idle;
+						public GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.State idle;
 
-			public GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.State active;
+						public GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.State active;
 
-			public GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.State tooHot;
+						public GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.State tooHot;
 		}
 	}
 
-	public class Instance : GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.GameInstance
+		public class Instance : GameStateMachine<SteamTurbine.States, SteamTurbine.Instance, SteamTurbine, object>.GameInstance
 	{
-		public Instance(SteamTurbine master) : base(master)
+				public Instance(SteamTurbine master) : base(master)
 		{
 		}
 
-		public void UpdateBlocked(float dt)
+				public void UpdateBlocked(float dt)
 		{
 			base.master.BlockedInputs = 0;
 			for (int i = 0; i < base.master.TotalInputs; i++)
@@ -393,7 +393,7 @@ public class SteamTurbine : Generator
 			this.inputPartiallyBlockedHandle = this.UpdateStatusItem(SteamTurbine.inputPartiallyBlockedStatusItem, base.master.BlockedInputs > 0 && base.master.BlockedInputs < base.master.TotalInputs, this.inputPartiallyBlockedHandle, component);
 		}
 
-		public void UpdateState(float dt)
+				public void UpdateState(float dt)
 		{
 			bool flag = this.CanSteamFlow(ref this.insufficientMass, ref this.insufficientTemperature);
 			bool flag2 = this.IsTooHot(ref this.buildingTooHot);
@@ -421,13 +421,13 @@ public class SteamTurbine : Generator
 			}
 		}
 
-		private bool IsTooHot(ref bool building_too_hot)
+				private bool IsTooHot(ref bool building_too_hot)
 		{
 			building_too_hot = (base.gameObject.GetComponent<PrimaryElement>().Temperature > base.smi.master.maxBuildingTemperature);
 			return building_too_hot;
 		}
 
-		private bool CanSteamFlow(ref bool insufficient_mass, ref bool insufficient_temperature)
+				private bool CanSteamFlow(ref bool insufficient_mass, ref bool insufficient_temperature)
 		{
 			float num = 0f;
 			float num2 = 0f;
@@ -447,7 +447,7 @@ public class SteamTurbine : Generator
 			return !insufficient_mass && !insufficient_temperature;
 		}
 
-		public void UpdateStatusItems()
+				public void UpdateStatusItems()
 		{
 			KSelectable component = base.GetComponent<KSelectable>();
 			this.insufficientMassHandle = this.UpdateStatusItem(SteamTurbine.insufficientMassStatusItem, this.insufficientMass, this.insufficientMassHandle, component);
@@ -457,7 +457,7 @@ public class SteamTurbine : Generator
 			this.activeWattageHandle = component.SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, base.master);
 		}
 
-		private Guid UpdateStatusItem(StatusItem item, bool show, Guid current_handle, KSelectable ksel)
+				private Guid UpdateStatusItem(StatusItem item, bool show, Guid current_handle, KSelectable ksel)
 		{
 			Guid result = current_handle;
 			if (show != (current_handle != Guid.Empty))
@@ -474,7 +474,7 @@ public class SteamTurbine : Generator
 			return result;
 		}
 
-		public void DisableStatusItems()
+				public void DisableStatusItems()
 		{
 			KSelectable component = base.GetComponent<KSelectable>();
 			component.RemoveStatusItem(this.buildingTooHotHandle, false);
@@ -483,22 +483,22 @@ public class SteamTurbine : Generator
 			component.RemoveStatusItem(this.activeWattageHandle, false);
 		}
 
-		public bool insufficientMass;
+				public bool insufficientMass;
 
-		public bool insufficientTemperature;
+				public bool insufficientTemperature;
 
-		public bool buildingTooHot;
+				public bool buildingTooHot;
 
-		private Guid inputBlockedHandle = Guid.Empty;
+				private Guid inputBlockedHandle = Guid.Empty;
 
-		private Guid inputPartiallyBlockedHandle = Guid.Empty;
+				private Guid inputPartiallyBlockedHandle = Guid.Empty;
 
-		private Guid insufficientMassHandle = Guid.Empty;
+				private Guid insufficientMassHandle = Guid.Empty;
 
-		private Guid insufficientTemperatureHandle = Guid.Empty;
+				private Guid insufficientTemperatureHandle = Guid.Empty;
 
-		private Guid buildingTooHotHandle = Guid.Empty;
+				private Guid buildingTooHotHandle = Guid.Empty;
 
-		private Guid activeWattageHandle = Guid.Empty;
+				private Guid activeWattageHandle = Guid.Empty;
 	}
 }

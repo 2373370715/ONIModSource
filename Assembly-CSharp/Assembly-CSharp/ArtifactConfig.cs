@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ArtifactConfig : IMultiEntityConfig
 {
-	public List<GameObject> CreatePrefabs()
+		public List<GameObject> CreatePrefabs()
 	{
 		List<GameObject> list = new List<GameObject>();
 		ArtifactConfig.artifactItems.Add(ArtifactType.Terrestrial, new List<string>());
@@ -101,7 +101,7 @@ public class ArtifactConfig : IMultiEntityConfig
 		return list;
 	}
 
-	public static GameObject CreateArtifact(string id, string name, string desc, string initial_anim, string ui_anim, ArtifactTier artifact_tier, string[] dlcIDs, string animFile = "artifacts_kanim", ArtifactConfig.PostInitFn postInitFn = null, SimHashes element = SimHashes.Creature, ArtifactType artifact_type = ArtifactType.Any)
+		public static GameObject CreateArtifact(string id, string name, string desc, string initial_anim, string ui_anim, ArtifactTier artifact_tier, string[] dlcIDs, string animFile = "artifacts_kanim", ArtifactConfig.PostInitFn postInitFn = null, SimHashes element = SimHashes.Creature, ArtifactType artifact_type = ArtifactType.Any)
 	{
 		if (!DlcManager.IsDlcListValidForCurrentContent(dlcIDs))
 		{
@@ -137,15 +137,15 @@ public class ArtifactConfig : IMultiEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public static Dictionary<ArtifactType, List<string>> artifactItems = new Dictionary<ArtifactType, List<string>>();
+		public static Dictionary<ArtifactType, List<string>> artifactItems = new Dictionary<ArtifactType, List<string>>();
 
-		public delegate void PostInitFn(GameObject gameObject);
+			public delegate void PostInitFn(GameObject gameObject);
 }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public interface IKleiPermitDioramaVisTarget
 {
-	GameObject GetGameObject();
+		GameObject GetGameObject();
 
-	void ConfigureSetup();
+		void ConfigureSetup();
 
-	void ConfigureWith(PermitResource permit);
+		void ConfigureWith(PermitResource permit);
 }

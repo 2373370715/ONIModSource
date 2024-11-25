@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DiseaseEmitter")]
 public class DiseaseEmitter : KMonoBehaviour
 {
-		public float EmitRate
+			public float EmitRate
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class DiseaseEmitter : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.emitDiseases != null)
@@ -29,13 +29,13 @@ public class DiseaseEmitter : KMonoBehaviour
 		this.SimRegister();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.SimUnregister();
 		base.OnCleanUp();
 	}
 
-	public void SetEnable(bool enable)
+		public void SetEnable(bool enable)
 	{
 		if (this.enableEmitter == enable)
 		{
@@ -50,7 +50,7 @@ public class DiseaseEmitter : KMonoBehaviour
 		this.SimUnregister();
 	}
 
-	private void OnCellChanged()
+		private void OnCellChanged()
 	{
 		if (this.simHandles == null || !this.enableEmitter)
 		{
@@ -69,7 +69,7 @@ public class DiseaseEmitter : KMonoBehaviour
 		}
 	}
 
-	private void SimRegister()
+		private void SimRegister()
 	{
 		if (this.simHandles == null || !this.enableEmitter)
 		{
@@ -86,7 +86,7 @@ public class DiseaseEmitter : KMonoBehaviour
 		}
 	}
 
-	private void SimUnregister()
+		private void SimUnregister()
 	{
 		if (this.simHandles == null)
 		{
@@ -103,12 +103,12 @@ public class DiseaseEmitter : KMonoBehaviour
 		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, new System.Action(this.OnCellChanged));
 	}
 
-	private static void OnSimRegisteredCallback(int handle, object data)
+		private static void OnSimRegisteredCallback(int handle, object data)
 	{
 		((DiseaseEmitter)data).OnSimRegistered(handle);
 	}
 
-	private void OnSimRegistered(int handle)
+		private void OnSimRegistered(int handle)
 	{
 		bool flag = false;
 		if (this != null)
@@ -130,7 +130,7 @@ public class DiseaseEmitter : KMonoBehaviour
 		}
 	}
 
-	public void SetDiseases(List<Disease> diseases)
+		public void SetDiseases(List<Disease> diseases)
 	{
 		this.emitDiseases = new byte[diseases.Count];
 		for (int i = 0; i < diseases.Count; i++)
@@ -139,20 +139,20 @@ public class DiseaseEmitter : KMonoBehaviour
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	public float emitRate = 1f;
 
-	[Serialize]
+		[Serialize]
 	public byte emitRange;
 
-	[Serialize]
+		[Serialize]
 	public int emitCount;
 
-	[Serialize]
+		[Serialize]
 	public byte[] emitDiseases;
 
-	public int[] simHandles;
+		public int[] simHandles;
 
-	[Serialize]
+		[Serialize]
 	private bool enableEmitter;
 }

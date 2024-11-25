@@ -2,9 +2,9 @@
 
 namespace Database
 {
-	public abstract class PermitResource : Resource
+		public abstract class PermitResource : Resource
 	{
-		public PermitResource(string id, string Name, string Desc, PermitCategory permitCategory, PermitRarity rarity, string[] DLCIds) : base(id, Name)
+				public PermitResource(string id, string Name, string Desc, PermitCategory permitCategory, PermitRarity rarity, string[] DLCIds) : base(id, Name)
 		{
 			DebugUtil.DevAssert(Name != null, "Name must be provided for permit with id \"" + id + "\" of type " + base.GetType().Name, null);
 			DebugUtil.DevAssert(Desc != null, "Description must be provided for permit with id \"" + id + "\" of type " + base.GetType().Name, null);
@@ -14,19 +14,19 @@ namespace Database
 			this.DlcIds = DLCIds;
 		}
 
-		public abstract PermitPresentationInfo GetPermitPresentationInfo();
+				public abstract PermitPresentationInfo GetPermitPresentationInfo();
 
-		public bool IsOwnableOnServer()
+				public bool IsOwnableOnServer()
 		{
 			return this.Rarity != PermitRarity.Universal && this.Rarity != PermitRarity.UniversalLocked;
 		}
 
-		public bool IsUnlocked()
+				public bool IsUnlocked()
 		{
 			return this.Rarity == PermitRarity.Universal || PermitItems.IsPermitUnlocked(this);
 		}
 
-		public string GetDlcIdFrom()
+				public string GetDlcIdFrom()
 		{
 			if (this.DlcIds == DlcManager.AVAILABLE_ALL_VERSIONS || this.DlcIds == DlcManager.AVAILABLE_VANILLA_ONLY)
 			{
@@ -39,12 +39,12 @@ namespace Database
 			return this.DlcIds[0];
 		}
 
-		public string Description;
+				public string Description;
 
-		public PermitCategory Category;
+				public PermitCategory Category;
 
-		public PermitRarity Rarity;
+				public PermitRarity Rarity;
 
-		public string[] DlcIds;
+				public string[] DlcIds;
 	}
 }

@@ -4,63 +4,63 @@ using UnityEngine;
 
 public class CritterCondo : GameStateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.inoperational;
 		this.inoperational.PlayAnim("off").EventTransition(GameHashes.UpdateRoom, this.operational, new StateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.Transition.ConditionCallback(CritterCondo.IsOperational)).EventTransition(GameHashes.OperationalChanged, this.operational, new StateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.Transition.ConditionCallback(CritterCondo.IsOperational));
 		this.operational.PlayAnim("on", KAnim.PlayMode.Loop).EventTransition(GameHashes.UpdateRoom, this.inoperational, GameStateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.Not(new StateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.Transition.ConditionCallback(CritterCondo.IsOperational))).EventTransition(GameHashes.OperationalChanged, this.inoperational, GameStateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.Not(new StateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.Transition.ConditionCallback(CritterCondo.IsOperational)));
 	}
 
-	private static bool IsOperational(CritterCondo.Instance smi)
+		private static bool IsOperational(CritterCondo.Instance smi)
 	{
 		return smi.def.IsCritterCondoOperationalCb(smi);
 	}
 
-	public GameStateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.State inoperational;
+		public GameStateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.State inoperational;
 
-	public GameStateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.State operational;
+		public GameStateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.State operational;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject go)
+				public List<Descriptor> GetDescriptors(GameObject go)
 		{
 			return new List<Descriptor>();
 		}
 
-		public Func<CritterCondo.Instance, bool> IsCritterCondoOperationalCb;
+				public Func<CritterCondo.Instance, bool> IsCritterCondoOperationalCb;
 
-		public StatusItem moveToStatusItem;
+				public StatusItem moveToStatusItem;
 
-		public StatusItem interactStatusItem;
+				public StatusItem interactStatusItem;
 
-		public Tag condoTag = "CritterCondo";
+				public Tag condoTag = "CritterCondo";
 
-		public string effectId;
+				public string effectId;
 	}
 
-	public new class Instance : GameStateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.GameInstance
+		public new class Instance : GameStateMachine<CritterCondo, CritterCondo.Instance, IStateMachineTarget, CritterCondo.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, CritterCondo.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, CritterCondo.Def def) : base(master, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			Components.CritterCondos.Add(base.smi.GetMyWorldId(), this);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			Components.CritterCondos.Remove(base.smi.GetMyWorldId(), this);
 		}
 
-		public bool IsReserved()
+				public bool IsReserved()
 		{
 			return base.HasTag(GameTags.Creatures.ReservedByCreature);
 		}
 
-		public void SetReserved(bool isReserved)
+				public void SetReserved(bool isReserved)
 		{
 			if (isReserved)
 			{
@@ -75,12 +75,12 @@ public class CritterCondo : GameStateMachine<CritterCondo, CritterCondo.Instance
 			global::Debug.LogWarningFormat(base.smi.gameObject, "Tried to unreserve a condo that wasn't reserved", Array.Empty<object>());
 		}
 
-		public int GetInteractStartCell()
+				public int GetInteractStartCell()
 		{
 			return Grid.PosToCell(this);
 		}
 
-		public bool CanBeReserved()
+				public bool CanBeReserved()
 		{
 			return !this.IsReserved() && CritterCondo.IsOperational(this);
 		}

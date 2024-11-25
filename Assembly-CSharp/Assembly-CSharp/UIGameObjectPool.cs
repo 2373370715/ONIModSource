@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIGameObjectPool
 {
-		public int ActiveElementsCount
+			public int ActiveElementsCount
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class UIGameObjectPool
 		}
 	}
 
-		public int FreeElementsCount
+			public int FreeElementsCount
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class UIGameObjectPool
 		}
 	}
 
-		public int TotalElementsCount
+			public int TotalElementsCount
 	{
 		get
 		{
@@ -28,14 +28,14 @@ public class UIGameObjectPool
 		}
 	}
 
-	public UIGameObjectPool(GameObject prefab)
+		public UIGameObjectPool(GameObject prefab)
 	{
 		this.prefab = prefab;
 		this.freeElements = new List<GameObject>();
 		this.activeElements = new List<GameObject>();
 	}
 
-	public GameObject GetFreeElement(GameObject instantiateParent = null, bool forceActive = false)
+		public GameObject GetFreeElement(GameObject instantiateParent = null, bool forceActive = false)
 	{
 		if (this.freeElements.Count == 0)
 		{
@@ -59,7 +59,7 @@ public class UIGameObjectPool
 		return gameObject2;
 	}
 
-	public void ClearElement(GameObject element)
+		public void ClearElement(GameObject element)
 	{
 		if (!this.activeElements.Contains(element))
 		{
@@ -81,7 +81,7 @@ public class UIGameObjectPool
 		this.activeElements.Remove(element);
 	}
 
-	public void ClearAll()
+		public void ClearAll()
 	{
 		while (this.activeElements.Count > 0)
 		{
@@ -95,13 +95,13 @@ public class UIGameObjectPool
 		}
 	}
 
-	public void DestroyAll()
+		public void DestroyAll()
 	{
 		this.DestroyAllActive();
 		this.DestroyAllFree();
 	}
 
-	public void DestroyAllActive()
+		public void DestroyAllActive()
 	{
 		this.activeElements.ForEach(delegate(GameObject ae)
 		{
@@ -110,7 +110,7 @@ public class UIGameObjectPool
 		this.activeElements.Clear();
 	}
 
-	public void DestroyAllFree()
+		public void DestroyAllFree()
 	{
 		this.freeElements.ForEach(delegate(GameObject ae)
 		{
@@ -119,21 +119,21 @@ public class UIGameObjectPool
 		this.freeElements.Clear();
 	}
 
-	public void ForEachActiveElement(Action<GameObject> predicate)
+		public void ForEachActiveElement(Action<GameObject> predicate)
 	{
 		this.activeElements.ForEach(predicate);
 	}
 
-	public void ForEachFreeElement(Action<GameObject> predicate)
+		public void ForEachFreeElement(Action<GameObject> predicate)
 	{
 		this.freeElements.ForEach(predicate);
 	}
 
-	private GameObject prefab;
+		private GameObject prefab;
 
-	private List<GameObject> freeElements = new List<GameObject>();
+		private List<GameObject> freeElements = new List<GameObject>();
 
-	private List<GameObject> activeElements = new List<GameObject>();
+		private List<GameObject> activeElements = new List<GameObject>();
 
-	public Transform disabledElementParent;
+		public Transform disabledElementParent;
 }

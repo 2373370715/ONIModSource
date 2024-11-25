@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class FullScreenQuad
 {
-	public FullScreenQuad(string name, Camera camera, bool invert = false)
+		public FullScreenQuad(string name, Camera camera, bool invert = false)
 	{
 		this.Camera = camera;
 		this.Layer = LayerMask.NameToLayer("ForceDraw");
@@ -47,17 +47,17 @@ public class FullScreenQuad
 		}));
 	}
 
-	public void Draw(Texture texture)
+		public void Draw(Texture texture)
 	{
 		this.Material.mainTexture = texture;
 		Graphics.DrawMesh(this.Mesh, Vector3.zero, Quaternion.identity, this.Material, this.Layer, this.Camera, 0, null, false, false);
 	}
 
-	private Mesh Mesh;
+		private Mesh Mesh;
 
-	private Camera Camera;
+		private Camera Camera;
 
-	private Material Material;
+		private Material Material;
 
-	private int Layer;
+		private int Layer;
 }

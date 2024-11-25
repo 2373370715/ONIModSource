@@ -8,12 +8,12 @@ using UnityEngine.UI;
 
 public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 {
-	public GameObject GetGameObject()
+		public GameObject GetGameObject()
 	{
 		return base.gameObject;
 	}
 
-		public CarePackageInfo Info
+			public CarePackageInfo Info
 	{
 		get
 		{
@@ -21,19 +21,19 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.Initialize();
 		base.StartCoroutine(this.DelayedGeneration());
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 50f;
 	}
 
-	private IEnumerator DelayedGeneration()
+		private IEnumerator DelayedGeneration()
 	{
 		yield return SequenceUtil.WaitForEndOfFrame;
 		if (this.controller != null)
@@ -43,7 +43,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		yield break;
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		if (this.animController != null)
@@ -53,7 +53,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (this.controller != null)
@@ -67,7 +67,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		}
 	}
 
-	private void Initialize()
+		private void Initialize()
 	{
 		this.professionIconMap = new Dictionary<string, Sprite>();
 		this.professionIcons.ForEach(delegate(CarePackageContainer.ProfessionIcon ic)
@@ -81,7 +81,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		CarePackageContainer.containers.Add(this);
 	}
 
-	private void GenerateCharacter(bool is_starter)
+		private void GenerateCharacter(bool is_starter)
 	{
 		int num = 0;
 		do
@@ -117,7 +117,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		}
 	}
 
-	private void SetAnimator()
+		private void SetAnimator()
 	{
 		GameObject prefab = Assets.GetPrefab(this.info.id.ToTag());
 		EdiblesManager.FoodInfo foodInfo = EdiblesManager.GetFoodInfo(this.info.id);
@@ -201,7 +201,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		this.entryIcons.Add(gameObject2);
 	}
 
-	private string GetSpawnableName()
+		private string GetSpawnableName()
 	{
 		GameObject prefab = Assets.GetPrefab(this.info.id);
 		if (prefab == null)
@@ -223,7 +223,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		}
 	}
 
-	private string GetSpawnableQuantityOnly()
+		private string GetSpawnableQuantityOnly()
 	{
 		if (ElementLoader.GetElement(this.info.id.ToTag()) != null)
 		{
@@ -236,7 +236,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT_ONLY, this.info.quantity.ToString());
 	}
 
-	private string GetCurrentQuantity(WorldInventory inventory)
+		private string GetCurrentQuantity(WorldInventory inventory)
 	{
 		if (ElementLoader.GetElement(this.info.id.ToTag()) != null)
 		{
@@ -245,14 +245,14 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		}
 		if (EdiblesManager.GetFoodInfo(this.info.id) != null)
 		{
-			float calories = RationTracker.Get().CountRationsByFoodType(this.info.id, inventory, true);
+			float calories = WorldResourceAmountTracker<RationTracker>.Get().CountAmountForItemWithID(this.info.id, inventory, true);
 			return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_CURRENT_AMOUNT, GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true));
 		}
 		float amount2 = inventory.GetAmount(this.info.id.ToTag(), false);
 		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_CURRENT_AMOUNT, amount2.ToString());
 	}
 
-	private string GetSpawnableQuantity()
+		private string GetSpawnableQuantity()
 	{
 		if (ElementLoader.GetElement(this.info.id.ToTag()) != null)
 		{
@@ -265,7 +265,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		return string.Format(UI.IMMIGRANTSCREEN.CARE_PACKAGE_ELEMENT_COUNT, Assets.GetPrefab(this.info.id).GetProperName(), this.info.quantity.ToString());
 	}
 
-	private string GetSpawnableDescription()
+		private string GetSpawnableDescription()
 	{
 		Element element = ElementLoader.GetElement(this.info.id.ToTag());
 		if (element != null)
@@ -285,7 +285,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		return prefab.GetProperName();
 	}
 
-	private void SetInfoText()
+		private void SetInfoText()
 	{
 		this.characterName.SetText(this.GetSpawnableName());
 		this.description.SetText(this.GetSpawnableDescription());
@@ -294,7 +294,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		this.currentQuantity.SetText(this.GetCurrentQuantity(ClusterManager.Instance.activeWorld.worldInventory));
 	}
 
-	public void SelectDeliverable()
+		public void SelectDeliverable()
 	{
 		if (this.controller != null)
 		{
@@ -318,7 +318,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		this.titleBar.color = this.selectedTitleColor;
 	}
 
-	public void DeselectDeliverable()
+		public void DeselectDeliverable()
 	{
 		if (this.controller != null)
 		{
@@ -335,7 +335,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		this.titleBar.color = this.deselectedTitleColor;
 	}
 
-	private void OnReplacedEvent(ITelepadDeliverable stats)
+		private void OnReplacedEvent(ITelepadDeliverable stats)
 	{
 		if (stats == this.carePackageInstanceData)
 		{
@@ -343,7 +343,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		}
 	}
 
-	private void OnCharacterSelectionLimitReached()
+		private void OnCharacterSelectionLimitReached()
 	{
 		if (this.controller != null && this.controller.IsSelected(this.info))
 		{
@@ -358,12 +358,12 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		this.selectButton.onClick += this.CantSelectCharacter;
 	}
 
-	private void CantSelectCharacter()
+		private void CantSelectCharacter()
 	{
 		KMonoBehaviour.PlaySound(GlobalAssets.GetSound("Negative", false));
 	}
 
-	private void ReplaceCharacterSelection()
+		private void ReplaceCharacterSelection()
 	{
 		if (this.controller == null)
 		{
@@ -373,7 +373,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		this.SelectDeliverable();
 	}
 
-	private void OnCharacterSelectionLimitUnReached()
+		private void OnCharacterSelectionLimitUnReached()
 	{
 		if (this.controller != null && this.controller.IsSelected(this.info))
 		{
@@ -386,12 +386,12 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		};
 	}
 
-	public void SetReshufflingState(bool enable)
+		public void SetReshufflingState(bool enable)
 	{
 		this.reshuffleButton.gameObject.SetActive(enable);
 	}
 
-	private void Reshuffle(bool is_starter)
+		private void Reshuffle(bool is_starter)
 	{
 		if (this.controller != null && this.controller.IsSelected(this.info))
 		{
@@ -401,7 +401,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		this.GenerateCharacter(is_starter);
 	}
 
-	public void SetController(CharacterSelectionController csc)
+		public void SetController(CharacterSelectionController csc)
 	{
 		if (csc == this.controller)
 		{
@@ -418,14 +418,14 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		characterSelectionController4.OnReplacedEvent = (Action<ITelepadDeliverable>)Delegate.Combine(characterSelectionController4.OnReplacedEvent, new Action<ITelepadDeliverable>(this.OnReplacedEvent));
 	}
 
-	public void DisableSelectButton()
+		public void DisableSelectButton()
 	{
 		this.selectButton.soundPlayer.AcceptClickCondition = (() => false);
 		this.selectButton.GetComponent<ImageToggleState>().SetDisabled();
 		this.selectButton.soundPlayer.Enabled = false;
 	}
 
-	private bool IsCharacterRedundant()
+		private bool IsCharacterRedundant()
 	{
 		foreach (ITelepadDeliverableContainer telepadDeliverableContainer in CarePackageContainer.containers)
 		{
@@ -441,7 +441,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		return false;
 	}
 
-	public string GetValueColor(bool isPositive)
+		public string GetValueColor(bool isPositive)
 	{
 		if (!isPositive)
 		{
@@ -450,7 +450,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		return "<color=green>";
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.IsAction(global::Action.Escape))
 		{
@@ -462,7 +462,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		}
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (!KInputManager.currentControllerIsGamepad)
 		{
@@ -470,7 +470,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		}
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnActivate();
 		if (this.info == null)
@@ -482,7 +482,7 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		this.SetInfoText();
 	}
 
-	private void ClearEntryIcons()
+		private void ClearEntryIcons()
 	{
 		for (int i = 0; i < this.entryIcons.Count; i++)
 		{
@@ -490,83 +490,83 @@ public class CarePackageContainer : KScreen, ITelepadDeliverableContainer
 		}
 	}
 
-	[Header("UI References")]
+		[Header("UI References")]
 	[SerializeField]
 	private GameObject contentBody;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText characterName;
 
-	public GameObject selectedBorder;
+		public GameObject selectedBorder;
 
-	[SerializeField]
+		[SerializeField]
 	private Image titleBar;
 
-	[SerializeField]
+		[SerializeField]
 	private Color selectedTitleColor;
 
-	[SerializeField]
+		[SerializeField]
 	private Color deselectedTitleColor;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton reshuffleButton;
 
-	private KBatchedAnimController animController;
+		private KBatchedAnimController animController;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText itemName;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText quantity;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText currentQuantity;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText description;
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle selectButton;
 
-	private CarePackageInfo info;
+		private CarePackageInfo info;
 
-	public CarePackageContainer.CarePackageInstanceData carePackageInstanceData;
+		public CarePackageContainer.CarePackageInstanceData carePackageInstanceData;
 
-	private CharacterSelectionController controller;
+		private CharacterSelectionController controller;
 
-	private static List<ITelepadDeliverableContainer> containers;
+		private static List<ITelepadDeliverableContainer> containers;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite enabledSpr;
 
-	[SerializeField]
+		[SerializeField]
 	private List<CarePackageContainer.ProfessionIcon> professionIcons;
 
-	private Dictionary<string, Sprite> professionIconMap;
+		private Dictionary<string, Sprite> professionIconMap;
 
-	public float baseCharacterScale = 0.38f;
+		public float baseCharacterScale = 0.38f;
 
-	private List<GameObject> entryIcons = new List<GameObject>();
+		private List<GameObject> entryIcons = new List<GameObject>();
 
-	[Serializable]
+		[Serializable]
 	public struct ProfessionIcon
 	{
-		public string professionName;
+				public string professionName;
 
-		public Sprite iconImg;
+				public Sprite iconImg;
 	}
 
-	public class CarePackageInstanceData : ITelepadDeliverable
+		public class CarePackageInstanceData : ITelepadDeliverable
 	{
-		public GameObject Deliver(Vector3 position)
+				public GameObject Deliver(Vector3 position)
 		{
 			GameObject gameObject = this.info.Deliver(position);
 			gameObject.GetComponent<CarePackage>().SetFacade(this.facadeID);
 			return gameObject;
 		}
 
-		public CarePackageInfo info;
+				public CarePackageInfo info;
 
-		public string facadeID;
+				public string facadeID;
 	}
 }

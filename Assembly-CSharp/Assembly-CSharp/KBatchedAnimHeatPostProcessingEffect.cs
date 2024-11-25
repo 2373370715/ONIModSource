@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class KBatchedAnimHeatPostProcessingEffect : KMonoBehaviour
 {
-		public float HeatProduction
+			public float HeatProduction
 	{
 		get
 		{
@@ -11,7 +11,7 @@ public class KBatchedAnimHeatPostProcessingEffect : KMonoBehaviour
 		}
 	}
 
-		public bool IsHeatProductionEnoughToShowEffect
+			public bool IsHeatProductionEnoughToShowEffect
 	{
 		get
 		{
@@ -19,19 +19,19 @@ public class KBatchedAnimHeatPostProcessingEffect : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.animController.postProcessingEffectsAllowed |= KAnimConverter.PostProcessingEffects.TemperatureOverlay;
 	}
 
-	public void SetHeatBeingProducedValue(float heat)
+		public void SetHeatBeingProducedValue(float heat)
 	{
 		this.heatProduction = heat;
 		this.RefreshEffectVisualState();
 	}
 
-	public void RefreshEffectVisualState()
+		public void RefreshEffectVisualState()
 	{
 		if (base.enabled && this.IsHeatProductionEnoughToShowEffect)
 		{
@@ -41,7 +41,7 @@ public class KBatchedAnimHeatPostProcessingEffect : KMonoBehaviour
 		this.SetParameterValue(0f);
 	}
 
-	private void SetParameterValue(float value)
+		private void SetParameterValue(float value)
 	{
 		if (this.animController != null)
 		{
@@ -49,17 +49,17 @@ public class KBatchedAnimHeatPostProcessingEffect : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		this.RefreshEffectVisualState();
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		this.RefreshEffectVisualState();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		int num = Mathf.FloorToInt(Time.timeSinceLevelLoad / 1f);
 		if (num != this.loopsPlayed)
@@ -69,7 +69,7 @@ public class KBatchedAnimHeatPostProcessingEffect : KMonoBehaviour
 		}
 	}
 
-	private void OnNewLoopReached()
+		private void OnNewLoopReached()
 	{
 		if (OverlayScreen.Instance != null && OverlayScreen.Instance.mode == OverlayModes.Temperature.ID && this.IsHeatProductionEnoughToShowEffect)
 		{
@@ -80,18 +80,18 @@ public class KBatchedAnimHeatPostProcessingEffect : KMonoBehaviour
 		}
 	}
 
-	public const float SHOW_EFFECT_HEAT_TRESHOLD = 1f;
+		public const float SHOW_EFFECT_HEAT_TRESHOLD = 1f;
 
-	private const float DISABLING_VALUE = 0f;
+		private const float DISABLING_VALUE = 0f;
 
-	private const float ENABLING_VALUE = 1f;
+		private const float ENABLING_VALUE = 1f;
 
-	private float heatProduction;
+		private float heatProduction;
 
-	public const float ANIM_DURATION = 1f;
+		public const float ANIM_DURATION = 1f;
 
-	private int loopsPlayed;
+		private int loopsPlayed;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimController animController;
 }

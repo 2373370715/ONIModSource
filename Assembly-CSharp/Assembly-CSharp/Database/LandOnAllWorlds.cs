@@ -3,9 +3,9 @@ using STRINGS;
 
 namespace Database
 {
-	public class LandOnAllWorlds : ColonyAchievementRequirement
+		public class LandOnAllWorlds : ColonyAchievementRequirement
 	{
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			int num = 0;
 			int num2 = 0;
@@ -23,7 +23,7 @@ namespace Database
 			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.LAND_DUPES_ON_ALL_WORLDS, num2, num);
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
 			{

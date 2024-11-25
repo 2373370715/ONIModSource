@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-
+namespace RsTransferPort;
 
 public interface ISelectableChannel {
     IEnumerable GetSelectableList();

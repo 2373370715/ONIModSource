@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BuildingFacadeAnimateIn : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		this.placeAnimController.TintColour = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 1);
 		this.colorAnimController.TintColour = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 1);
@@ -17,7 +17,7 @@ public class BuildingFacadeAnimateIn : MonoBehaviour
 		});
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.sourceAnimController.IsNullOrDestroyed())
 		{
@@ -28,7 +28,7 @@ public class BuildingFacadeAnimateIn : MonoBehaviour
 		this.updater.Internal_Update(Time.unscaledDeltaTime);
 	}
 
-	private void OnDisable()
+		private void OnDisable()
 	{
 		if (!this.sourceAnimController.IsNullOrDestroyed())
 		{
@@ -39,7 +39,7 @@ public class BuildingFacadeAnimateIn : MonoBehaviour
 		UnityEngine.Object.Destroy(base.gameObject);
 	}
 
-	public static BuildingFacadeAnimateIn MakeFor(KBatchedAnimController sourceAnimController)
+		public static BuildingFacadeAnimateIn MakeFor(KBatchedAnimController sourceAnimController)
 	{
 		BuildingFacadeAnimateIn.SetVisibilityOn(sourceAnimController, false);
 		KBatchedAnimController kbatchedAnimController = BuildingFacadeAnimateIn.SpawnAnimFrom(sourceAnimController);
@@ -61,7 +61,7 @@ public class BuildingFacadeAnimateIn : MonoBehaviour
 		return buildingFacadeAnimateIn;
 	}
 
-	private static void SetVisibilityOn(KBatchedAnimController animController, bool isVisible)
+		private static void SetVisibilityOn(KBatchedAnimController animController, bool isVisible)
 	{
 		animController.SetVisiblity(isVisible);
 		foreach (KBatchedAnimController kbatchedAnimController in animController.GetComponentsInChildren<KBatchedAnimController>(true))
@@ -73,7 +73,7 @@ public class BuildingFacadeAnimateIn : MonoBehaviour
 		}
 	}
 
-	private static KBatchedAnimController SpawnAnimFrom(KBatchedAnimController sourceAnimController)
+		private static KBatchedAnimController SpawnAnimFrom(KBatchedAnimController sourceAnimController)
 	{
 		GameObject gameObject = new GameObject();
 		gameObject.SetActive(false);
@@ -99,11 +99,11 @@ public class BuildingFacadeAnimateIn : MonoBehaviour
 		return kbatchedAnimController;
 	}
 
-	private KBatchedAnimController sourceAnimController;
+		private KBatchedAnimController sourceAnimController;
 
-	private KBatchedAnimController placeAnimController;
+		private KBatchedAnimController placeAnimController;
 
-	private KBatchedAnimController colorAnimController;
+		private KBatchedAnimController colorAnimController;
 
-	private Updater updater;
+		private Updater updater;
 }

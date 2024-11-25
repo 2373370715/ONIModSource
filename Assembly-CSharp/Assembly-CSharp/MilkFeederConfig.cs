@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MilkFeederConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MilkFeeder";
 		int width = 3;
@@ -26,11 +26,11 @@ public class MilkFeederConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
 		go.AddOrGet<LogicOperationalController>();
@@ -55,24 +55,24 @@ public class MilkFeederConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RanchStationType, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<MilkFeeder.Def>();
 	}
 
-	public override void ConfigurePost(BuildingDef def)
+		public override void ConfigurePost(BuildingDef def)
 	{
 	}
 
-	public const string ID = "MilkFeeder";
+		public const string ID = "MilkFeeder";
 
-	public const string HAD_CONSUMED_MILK_RECENTLY_EFFECT_ID = "HadMilk";
+		public const string HAD_CONSUMED_MILK_RECENTLY_EFFECT_ID = "HadMilk";
 
-	public const float EFFECT_DURATION_IN_SECONDS = 600f;
+		public const float EFFECT_DURATION_IN_SECONDS = 600f;
 
-	public static readonly CellOffset DRINK_FROM_OFFSET = new CellOffset(1, 0);
+		public static readonly CellOffset DRINK_FROM_OFFSET = new CellOffset(1, 0);
 
-	public static readonly Tag MILK_TAG = SimHashes.Milk.CreateTag();
+		public static readonly Tag MILK_TAG = SimHashes.Milk.CreateTag();
 
-	public const float UNITS_OF_MILK_CONSUMED_PER_FEEDING = 5f;
+		public const float UNITS_OF_MILK_CONSUMED_PER_FEEDING = 5f;
 }

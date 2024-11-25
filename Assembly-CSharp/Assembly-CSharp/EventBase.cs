@@ -2,15 +2,15 @@
 
 public class EventBase : Resource
 {
-	public EventBase(string id) : base(id, id)
+		public EventBase(string id) : base(id, id)
 	{
 		this.hash = Hash.SDBMLower(id);
 	}
 
-	public virtual string GetDescription(EventInstanceBase ev)
+		public virtual string GetDescription(EventInstanceBase ev)
 	{
 		return "";
 	}
 
-	public int hash;
+		public int hash;
 }

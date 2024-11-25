@@ -5,11 +5,19 @@ using UnityEngine;
 
 public class SapTree : GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.alive;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
-		this.dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).ToggleTag(GameTags.PreventEmittingDisease).Enter(delegate(SapTree.StatesInstance smi)
+		GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State state = this.dead;
+		string name = CREATURES.STATUSITEMS.DEAD.NAME;
+		string tooltip = CREATURES.STATUSITEMS.DEAD.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).ToggleTag(GameTags.PreventEmittingDisease).Enter(delegate(SapTree.StatesInstance smi)
 		{
 			GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 			smi.master.Trigger(1623392196, null);
@@ -20,7 +28,15 @@ public class SapTree : GameStateMachine<SapTree, SapTree.StatesInstance, IStateM
 		{
 			smi.CheckForFood();
 		}, UpdateRate.SIM_1000ms, false);
-		this.alive.normal.idle.PlayAnim("idle", KAnim.PlayMode.Loop).ToggleStatusItem(CREATURES.STATUSITEMS.IDLE.NAME, CREATURES.STATUSITEMS.IDLE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).ParamTransition<bool>(this.hasNearbyEnemy, this.alive.normal.attacking_pre, GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.IsTrue).ParamTransition<float>(this.storedSap, this.alive.normal.oozing, (SapTree.StatesInstance smi, float p) => p >= smi.def.stomachSize).ParamTransition<GameObject>(this.foodItem, this.alive.normal.eating, GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.IsNotNull);
+		GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State state2 = this.alive.normal.idle.PlayAnim("idle", KAnim.PlayMode.Loop);
+		string name2 = CREATURES.STATUSITEMS.IDLE.NAME;
+		string tooltip2 = CREATURES.STATUSITEMS.IDLE.TOOLTIP;
+		string icon2 = "";
+		StatusItem.IconType icon_type2 = StatusItem.IconType.Info;
+		NotificationType notification_type2 = NotificationType.Neutral;
+		bool allow_multiples2 = false;
+		main = Db.Get().StatusItemCategories.Main;
+		state2.ToggleStatusItem(name2, tooltip2, icon2, icon_type2, notification_type2, allow_multiples2, default(HashedString), 129022, null, null, main).ParamTransition<bool>(this.hasNearbyEnemy, this.alive.normal.attacking_pre, GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.IsTrue).ParamTransition<float>(this.storedSap, this.alive.normal.oozing, (SapTree.StatesInstance smi, float p) => p >= smi.def.stomachSize).ParamTransition<GameObject>(this.foodItem, this.alive.normal.eating, GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.IsNotNull);
 		this.alive.normal.eating.PlayAnim("eat_pre", KAnim.PlayMode.Once).QueueAnim("eat_loop", true, null).Update(delegate(SapTree.StatesInstance smi, float dt)
 		{
 			smi.EatFoodItem(dt);
@@ -41,75 +57,75 @@ public class SapTree : GameStateMachine<SapTree, SapTree.StatesInstance, IStateM
 		this.alive.wilting.PlayAnim("withered", KAnim.PlayMode.Loop).EventTransition(GameHashes.WiltRecover, this.alive.normal, null).ToggleTag(GameTags.PreventEmittingDisease);
 	}
 
-	public SapTree.AliveStates alive;
+		public SapTree.AliveStates alive;
 
-	public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State dead;
+		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State dead;
 
-	private StateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.TargetParameter foodItem;
+		private StateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.TargetParameter foodItem;
 
-	private StateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.BoolParameter hasNearbyEnemy;
+		private StateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.BoolParameter hasNearbyEnemy;
 
-	private StateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.FloatParameter storedSap;
+		private StateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.FloatParameter storedSap;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Vector2I foodSenseArea;
+				public Vector2I foodSenseArea;
 
-		public float massEatRate;
+				public float massEatRate;
 
-		public float kcalorieToKGConversionRatio;
+				public float kcalorieToKGConversionRatio;
 
-		public float stomachSize;
+				public float stomachSize;
 
-		public float oozeRate;
+				public float oozeRate;
 
-		public List<Vector3> oozeOffsets;
+				public List<Vector3> oozeOffsets;
 
-		public Vector2I attackSenseArea;
+				public Vector2I attackSenseArea;
 
-		public float attackCooldown;
+				public float attackCooldown;
 	}
 
-	public class AliveStates : GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.PlantAliveSubState
+		public class AliveStates : GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.PlantAliveSubState
 	{
-		public SapTree.NormalStates normal;
+				public SapTree.NormalStates normal;
 
-		public SapTree.WiltingState wilting;
+				public SapTree.WiltingState wilting;
 	}
 
-	public class NormalStates : GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State
+		public class NormalStates : GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State
 	{
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State idle;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State idle;
 
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State eating;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State eating;
 
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State eating_pst;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State eating_pst;
 
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State oozing;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State oozing;
 
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State oozing_pst;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State oozing_pst;
 
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State attacking_pre;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State attacking_pre;
 
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State attacking;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State attacking;
 
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State attacking_cooldown;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State attacking_cooldown;
 
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State attacking_done;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State attacking_done;
 	}
 
-	public class WiltingState : GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State
+		public class WiltingState : GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State
 	{
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State wilting_pre;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State wilting_pre;
 
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State wilting;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State wilting;
 
-		public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State wilting_pst;
+				public GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.State wilting_pst;
 	}
 
-	public class StatesInstance : GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<SapTree, SapTree.StatesInstance, IStateMachineTarget, SapTree.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, SapTree.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, SapTree.Def def) : base(master, def)
 		{
 			Vector2I vector2I = Grid.PosToXY(base.gameObject.transform.GetPosition());
 			Vector2I vector2I2 = new Vector2I(vector2I.x - def.attackSenseArea.x / 2, vector2I.y);
@@ -119,12 +135,12 @@ public class SapTree : GameStateMachine<SapTree, SapTree.StatesInstance, IStateM
 			this.feedExtents = new Extents(vector2I3.x, vector2I3.y, def.foodSenseArea.x, def.foodSenseArea.y);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		}
 
-		public void EatFoodItem(float dt)
+				public void EatFoodItem(float dt)
 		{
 			Pickupable pickupable = base.sm.foodItem.Get(this).GetComponent<Pickupable>().Take(base.def.massEatRate * dt);
 			if (pickupable != null)
@@ -137,7 +153,7 @@ public class SapTree : GameStateMachine<SapTree, SapTree.StatesInstance, IStateM
 			}
 		}
 
-		public void Ooze(float dt)
+				public void Ooze(float dt)
 		{
 			float num = Mathf.Min(base.sm.storedSap.Get(this), dt * base.def.oozeRate);
 			if (num <= 0f)
@@ -149,7 +165,7 @@ public class SapTree : GameStateMachine<SapTree, SapTree.StatesInstance, IStateM
 			base.sm.storedSap.Set(this.storage.GetMassAvailable(SimHashes.Resin.CreateTag()), this, false);
 		}
 
-		public void CheckForFood()
+				public void CheckForFood()
 		{
 			ListPool<ScenePartitionerEntry, SapTree>.PooledList pooledList = ListPool<ScenePartitionerEntry, SapTree>.Allocate();
 			GameScenePartitioner.Instance.GatherEntries(this.feedExtents, GameScenePartitioner.Instance.pickupablesLayer, pooledList);
@@ -167,14 +183,14 @@ public class SapTree : GameStateMachine<SapTree, SapTree.StatesInstance, IStateM
 			pooledList.Recycle();
 		}
 
-		public bool DoAttack()
+				public bool DoAttack()
 		{
 			int num = this.weapon.AttackArea(base.transform.GetPosition());
 			base.sm.hasNearbyEnemy.Set(num > 0, this, false);
 			return true;
 		}
 
-		private void OnMinionChanged(object obj)
+				private void OnMinionChanged(object obj)
 		{
 			if (obj as GameObject != null)
 			{
@@ -182,22 +198,22 @@ public class SapTree : GameStateMachine<SapTree, SapTree.StatesInstance, IStateM
 			}
 		}
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public WiltCondition wiltCondition;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public EntombVulnerable entombVulnerable;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		private Storage storage;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		private Weapon weapon;
 
-		private HandleVector<int>.Handle partitionerEntry;
+				private HandleVector<int>.Handle partitionerEntry;
 
-		private Extents feedExtents;
+				private Extents feedExtents;
 
-		private Extents attackExtents;
+				private Extents attackExtents;
 	}
 }

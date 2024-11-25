@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class HugMinionReactable : Reactable
 {
-	public HugMinionReactable(GameObject gameObject) : base(gameObject, "HugMinionReactable", Db.Get().ChoreTypes.Hug, 1, 1, true, 1f, 0f, float.PositiveInfinity, 0f, ObjectLayer.Minion)
+		public HugMinionReactable(GameObject gameObject) : base(gameObject, "HugMinionReactable", Db.Get().ChoreTypes.Hug, 1, 1, true, 1f, 0f, float.PositiveInfinity, 0f, ObjectLayer.Minion)
 	{
 	}
 
-	public override bool InternalCanBegin(GameObject newReactor, Navigator.ActiveTransition transition)
+		public override bool InternalCanBegin(GameObject newReactor, Navigator.ActiveTransition transition)
 	{
 		if (this.reactor != null)
 		{
@@ -18,12 +18,12 @@ public class HugMinionReactable : Reactable
 		return !(component == null) && component.IsMoving();
 	}
 
-	public override void Update(float dt)
+		public override void Update(float dt)
 	{
 		this.gameObject.GetComponent<Facing>().SetFacing(this.reactor.GetComponent<Facing>().GetFacing());
 	}
 
-	protected override void InternalBegin()
+		protected override void InternalBegin()
 	{
 		KAnimControllerBase component = this.reactor.GetComponent<KAnimControllerBase>();
 		component.AddAnimOverrides(Assets.GetAnim("anim_react_pip_kanim"), 0f);
@@ -39,7 +39,7 @@ public class HugMinionReactable : Reactable
 		});
 	}
 
-	private void Finish(HashedString anim)
+		private void Finish(HashedString anim)
 	{
 		if (anim == "hug_dupe_pst")
 		{
@@ -59,7 +59,7 @@ public class HugMinionReactable : Reactable
 		}
 	}
 
-	private void ApplyEffects()
+		private void ApplyEffects()
 	{
 		this.reactor.GetComponent<Effects>().Add("Hugged", true);
 		HugMonitor.Instance smi = this.gameObject.GetSMI<HugMonitor.Instance>();
@@ -69,11 +69,11 @@ public class HugMinionReactable : Reactable
 		}
 	}
 
-	protected override void InternalEnd()
+		protected override void InternalEnd()
 	{
 	}
 
-	protected override void InternalCleanup()
+		protected override void InternalCleanup()
 	{
 	}
 }

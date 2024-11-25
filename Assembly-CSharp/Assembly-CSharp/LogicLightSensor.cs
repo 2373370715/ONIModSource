@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200ms
 {
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicLightSensor component = ((GameObject)data).GetComponent<LogicLightSensor>();
 		if (component != null)
@@ -16,13 +16,13 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicLightSensor>(-905833192, LogicLightSensor.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.OnSwitchToggled;
@@ -31,7 +31,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		this.wasOn = this.switchedOn;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this.simUpdateCounter < 4)
 		{
@@ -60,18 +60,18 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateVisualState(false);
 		this.UpdateLogicCircuit();
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, this.switchedOn ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -82,7 +82,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-			public float Threshold
+				public float Threshold
 	{
 		get
 		{
@@ -94,7 +94,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-			public bool ActivateAboveThreshold
+				public bool ActivateAboveThreshold
 	{
 		get
 		{
@@ -106,7 +106,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-		public float CurrentValue
+			public float CurrentValue
 	{
 		get
 		{
@@ -114,7 +114,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-		public float RangeMin
+			public float RangeMin
 	{
 		get
 		{
@@ -122,7 +122,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-		public float RangeMax
+			public float RangeMax
 	{
 		get
 		{
@@ -130,17 +130,17 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-	public float GetRangeMinInputField()
+		public float GetRangeMinInputField()
 	{
 		return this.RangeMin;
 	}
 
-	public float GetRangeMaxInputField()
+		public float GetRangeMaxInputField()
 	{
 		return this.RangeMax;
 	}
 
-		public LocString Title
+			public LocString Title
 	{
 		get
 		{
@@ -148,7 +148,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-		public LocString ThresholdValueName
+			public LocString ThresholdValueName
 	{
 		get
 		{
@@ -156,7 +156,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-		public string AboveToolTip
+			public string AboveToolTip
 	{
 		get
 		{
@@ -164,7 +164,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-		public string BelowToolTip
+			public string BelowToolTip
 	{
 		get
 		{
@@ -172,7 +172,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-	public string Format(float value, bool units)
+		public string Format(float value, bool units)
 	{
 		if (units)
 		{
@@ -181,22 +181,22 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		return string.Format("{0}", (int)value);
 	}
 
-	public float ProcessedSliderValue(float input)
+		public float ProcessedSliderValue(float input)
 	{
 		return Mathf.Round(input);
 	}
 
-	public float ProcessedInputValue(float input)
+		public float ProcessedInputValue(float input)
 	{
 		return input;
 	}
 
-	public LocString ThresholdValueUnits()
+		public LocString ThresholdValueUnits()
 	{
 		return UI.UNITSUFFIXES.LIGHT.LUX;
 	}
 
-		public ThresholdScreenLayoutType LayoutType
+			public ThresholdScreenLayoutType LayoutType
 	{
 		get
 		{
@@ -204,7 +204,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-		public int IncrementScale
+			public int IncrementScale
 	{
 		get
 		{
@@ -212,7 +212,7 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-		public NonLinearSlider.Range[] GetRanges
+			public NonLinearSlider.Range[] GetRanges
 	{
 		get
 		{
@@ -220,36 +220,36 @@ public class LogicLightSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-	private int simUpdateCounter;
+		private int simUpdateCounter;
 
-	[Serialize]
+		[Serialize]
 	public float thresholdBrightness = 280f;
 
-	[Serialize]
+		[Serialize]
 	public bool activateOnBrighterThan = true;
 
-	public float minBrightness;
+		public float minBrightness;
 
-	public float maxBrightness = 15000f;
+		public float maxBrightness = 15000f;
 
-	private const int NumFrameDelay = 4;
+		private const int NumFrameDelay = 4;
 
-	private float[] levels = new float[4];
+		private float[] levels = new float[4];
 
-	private float averageBrightness;
+		private float averageBrightness;
 
-	private bool wasOn;
+		private bool wasOn;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicLightSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicLightSensor>(delegate(LogicLightSensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicLightSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicLightSensor>(delegate(LogicLightSensor component, object data)
 	{
 		component.OnCopySettings(data);
 	});

@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class ConfigureConsumerSideScreen : SideScreenContent
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<IConfigurableConsumer>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.targetProducer = target.GetComponent<IConfigurableConsumer>();
@@ -22,7 +22,7 @@ public class ConfigureConsumerSideScreen : SideScreenContent
 		this.PopulateOptions();
 	}
 
-	private void ClearOldOptions()
+		private void ClearOldOptions()
 	{
 		if (this.descriptor != null)
 		{
@@ -34,7 +34,7 @@ public class ConfigureConsumerSideScreen : SideScreenContent
 		}
 	}
 
-	private void PopulateOptions()
+		private void PopulateOptions()
 	{
 		this.ClearOldOptions();
 		for (int i = this.settingToggles.Count; i < this.settings.Length; i++)
@@ -54,14 +54,14 @@ public class ConfigureConsumerSideScreen : SideScreenContent
 		this.RefreshDetails();
 	}
 
-	private void SelectOption(IConfigurableConsumerOption option)
+		private void SelectOption(IConfigurableConsumerOption option)
 	{
 		this.targetProducer.SetSelectedOption(option);
 		this.RefreshToggles();
 		this.RefreshDetails();
 	}
 
-	private void RefreshToggles()
+		private void RefreshToggles()
 	{
 		for (int i = 0; i < this.settingToggles.Count; i++)
 		{
@@ -71,7 +71,7 @@ public class ConfigureConsumerSideScreen : SideScreenContent
 		}
 	}
 
-	private void RefreshDetails()
+		private void RefreshDetails()
 	{
 		if (this.descriptor == null)
 		{
@@ -89,36 +89,36 @@ public class ConfigureConsumerSideScreen : SideScreenContent
 		this.selectedOptionNameLabel.text = UI.UISIDESCREENS.FABRICATORSIDESCREEN.NORECIPESELECTED;
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		return 1;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform consumptionSettingToggleContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject consumptionSettingTogglePrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform settingRequirementRowsContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform settingEffectRowsContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText selectedOptionNameLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject settingDescriptorPrefab;
 
-	private IConfigurableConsumer targetProducer;
+		private IConfigurableConsumer targetProducer;
 
-	private IConfigurableConsumerOption[] settings;
+		private IConfigurableConsumerOption[] settings;
 
-	private LocText descriptor;
+		private LocText descriptor;
 
-	private List<HierarchyReferences> settingToggles = new List<HierarchyReferences>();
+		private List<HierarchyReferences> settingToggles = new List<HierarchyReferences>();
 
-	private List<GameObject> requirementRows = new List<GameObject>();
+		private List<GameObject> requirementRows = new List<GameObject>();
 }

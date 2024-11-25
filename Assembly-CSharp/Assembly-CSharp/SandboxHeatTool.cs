@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SandboxHeatTool : BrushTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SandboxHeatTool.instance = null;
 	}
 
-		private SandboxSettings settings
+			private SandboxSettings settings
 	{
 		get
 		{
@@ -17,24 +17,24 @@ public class SandboxHeatTool : BrushTool
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		SandboxHeatTool.instance = this;
 		this.viewMode = OverlayModes.Temperature.ID;
 	}
 
-	protected override string GetDragSound()
+		protected override string GetDragSound()
 	{
 		return "";
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		PlayerController.Instance.ActivateTool(this);
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		SandboxToolParameterMenu.instance.gameObject.SetActive(true);
@@ -43,13 +43,13 @@ public class SandboxHeatTool : BrushTool
 		SandboxToolParameterMenu.instance.temperatureAdditiveSlider.row.SetActive(true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		SandboxToolParameterMenu.instance.gameObject.SetActive(false);
 	}
 
-	public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
+		public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
 	{
 		colors = new HashSet<ToolMenu.CellColorData>();
 		foreach (int cell in this.recentlyAffectedCells)
@@ -62,12 +62,12 @@ public class SandboxHeatTool : BrushTool
 		}
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		base.OnMouseMove(cursorPos);
 	}
 
-	protected override void OnPaintCell(int cell, int distFromOrigin)
+		protected override void OnPaintCell(int cell, int distFromOrigin)
 	{
 		base.OnPaintCell(cell, distFromOrigin);
 		if (this.recentlyAffectedCells.Contains(cell))
@@ -106,9 +106,9 @@ public class SandboxHeatTool : BrushTool
 		KFMOD.PlayUISoundWithLabeledParameter(GlobalAssets.GetSound("SandboxTool_HeatGun", false), "TemperatureSetting", (currentValue <= 0f) ? "Cooling" : "Heating");
 	}
 
-	public static SandboxHeatTool instance;
+		public static SandboxHeatTool instance;
 
-	protected HashSet<int> recentlyAffectedCells = new HashSet<int>();
+		protected HashSet<int> recentlyAffectedCells = new HashSet<int>();
 
-	protected Color recentlyAffectedCellColor = new Color(1f, 1f, 1f, 0.1f);
+		protected Color recentlyAffectedCellColor = new Color(1f, 1f, 1f, 0.1f);
 }

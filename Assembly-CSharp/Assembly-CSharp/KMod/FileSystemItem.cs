@@ -2,16 +2,16 @@
 
 namespace KMod
 {
-	public struct FileSystemItem
+		public struct FileSystemItem
 	{
-		public string name;
+				public string name;
 
-		public FileSystemItem.ItemType type;
+				public FileSystemItem.ItemType type;
 
-		public enum ItemType
+				public enum ItemType
 		{
-			Directory,
-			File
+						Directory,
+						File
 		}
 	}
 }

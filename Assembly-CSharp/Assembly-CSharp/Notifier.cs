@@ -5,17 +5,17 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Notifier")]
 public class Notifier : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Components.Notifiers.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.Notifiers.Remove(this);
 	}
 
-	public void Add(Notification notification, string suffix = "")
+		public void Add(Notification notification, string suffix = "")
 	{
 		if (KScreenManager.Instance == null)
 		{
@@ -59,7 +59,7 @@ public class Notifier : KMonoBehaviour
 		notification.Time = KTime.Instance.UnscaledGameTime;
 	}
 
-	public void Remove(Notification notification)
+		public void Remove(Notification notification)
 	{
 		if (notification == null)
 		{
@@ -75,10 +75,10 @@ public class Notifier : KMonoBehaviour
 		}
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KSelectable Selectable;
 
-	public bool DisableNotifications;
+		public bool DisableNotifications;
 
-	public bool AutoClickFocus = true;
+		public bool AutoClickFocus = true;
 }

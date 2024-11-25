@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/ArcadeMachineWorkable")]
 public class ArcadeMachineWorkable : Workable, IWorkerPrioritizable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.SetReportType(ReportManager.ReportType.PersonalTime);
@@ -16,19 +16,19 @@ public class ArcadeMachineWorkable : Workable, IWorkerPrioritizable
 		base.SetWorkTime(15f);
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		worker.GetComponent<Effects>().Add("ArcadePlaying", false);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		worker.GetComponent<Effects>().Remove("ArcadePlaying");
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		Effects component = worker.GetComponent<Effects>();
 		if (!string.IsNullOrEmpty(ArcadeMachineWorkable.trackingEffect))
@@ -41,7 +41,7 @@ public class ArcadeMachineWorkable : Workable, IWorkerPrioritizable
 		}
 	}
 
-	public bool GetWorkerPriority(Worker worker, out int priority)
+		public bool GetWorkerPriority(WorkerBase worker, out int priority)
 	{
 		priority = this.basePriority;
 		Effects component = worker.GetComponent<Effects>();
@@ -57,11 +57,11 @@ public class ArcadeMachineWorkable : Workable, IWorkerPrioritizable
 		return true;
 	}
 
-	public ArcadeMachine owner;
+		public ArcadeMachine owner;
 
-	public int basePriority = RELAXATION.PRIORITY.TIER3;
+		public int basePriority = RELAXATION.PRIORITY.TIER3;
 
-	private static string specificEffect = "PlayedArcade";
+		private static string specificEffect = "PlayedArcade";
 
-	private static string trackingEffect = "RecentlyPlayedArcade";
+		private static string trackingEffect = "RecentlyPlayedArcade";
 }

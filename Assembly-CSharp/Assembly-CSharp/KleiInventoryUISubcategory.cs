@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class KleiInventoryUISubcategory : KMonoBehaviour
 {
-		public bool IsOpen
+			public bool IsOpen
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class KleiInventoryUISubcategory : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.expandButton.onClick = delegate()
@@ -22,13 +22,13 @@ public class KleiInventoryUISubcategory : KMonoBehaviour
 		};
 	}
 
-	public void SetIdentity(string label, Sprite icon)
+		public void SetIdentity(string label, Sprite icon)
 	{
 		this.label.SetText(label);
 		this.icon.sprite = icon;
 	}
 
-	public void RefreshDisplay()
+		public void RefreshDisplay()
 	{
 		foreach (GameObject gameObject in this.dummyItems)
 		{
@@ -61,33 +61,33 @@ public class KleiInventoryUISubcategory : KMonoBehaviour
 		this.headerLayout.minWidth = base.transform.parent.rectTransform().rect.width - 8f;
 	}
 
-	public void ToggleOpen(bool open)
+		public void ToggleOpen(bool open)
 	{
 		this.gridLayout.gameObject.SetActive(open);
 		this.stateExpanded = open;
 		this.expandButton.ChangeState(this.stateExpanded ? 1 : 0);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject dummyPrefab;
 
-	public string subcategoryID;
+		public string subcategoryID;
 
-	public GridLayoutGroup gridLayout;
+		public GridLayoutGroup gridLayout;
 
-	public List<GameObject> dummyItems;
+		public List<GameObject> dummyItems;
 
-	[SerializeField]
+		[SerializeField]
 	private LayoutElement headerLayout;
 
-	[SerializeField]
+		[SerializeField]
 	private Image icon;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText label;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle expandButton;
 
-	private bool stateExpanded = true;
+		private bool stateExpanded = true;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BottleEmptierGasConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "BottleEmptierGas";
 		int width = 1;
@@ -25,7 +25,7 @@ public class BottleEmptierGasConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
 		Storage storage = go.AddOrGet<Storage>();
@@ -33,15 +33,16 @@ public class BottleEmptierGasConfig : IBuildingConfig
 		storage.showInUI = true;
 		storage.showDescriptor = true;
 		storage.capacityKg = 200f;
+		storage.gunTargetOffset = new Vector2(0f, 2f);
 		go.AddOrGet<TreeFilterable>();
 		BottleEmptier bottleEmptier = go.AddOrGet<BottleEmptier>();
 		bottleEmptier.isGasEmptier = true;
 		bottleEmptier.emptyRate = 0.25f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "BottleEmptierGas";
+		public const string ID = "BottleEmptierGas";
 }

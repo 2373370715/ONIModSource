@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LimitValveSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.resetButton.onClick += this.ResetCounter;
@@ -29,17 +29,17 @@ public class LimitValveSideScreen : SideScreenContent
 		this.numberInput.decimalPlaces = 3;
 	}
 
-	public void OnReleaseHandle()
+		public void OnReleaseHandle()
 	{
 		this.targetLimitValve.Limit = this.targetLimit;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<LimitValve>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.targetLimitValve = target.GetComponent<LimitValve>();
 		if (this.targetLimitValve == null)
@@ -79,7 +79,7 @@ public class LimitValveSideScreen : SideScreenContent
 		this.UpdateAmountLabel(null);
 	}
 
-	private void UpdateAmountLabel(object obj = null)
+		private void UpdateAmountLabel(object obj = null)
 	{
 		if (this.targetLimitValve.displayUnitsInsteadOfMass)
 		{
@@ -91,25 +91,25 @@ public class LimitValveSideScreen : SideScreenContent
 		this.amountLabel.text = string.Format(UI.UISIDESCREENS.LIMIT_VALVE_SIDE_SCREEN.AMOUNT, formattedMass);
 	}
 
-	private void ResetCounter()
+		private void ResetCounter()
 	{
 		this.targetLimitValve.ResetAmount();
 	}
 
-	private void ReceiveValueFromSlider(float sliderPercentage)
+		private void ReceiveValueFromSlider(float sliderPercentage)
 	{
 		float num = this.limitSlider.GetValueForPercentage(sliderPercentage);
 		num = (float)Mathf.RoundToInt(num);
 		this.UpdateLimitValue(num);
 	}
 
-	private void ReceiveValueFromInput(float input)
+		private void ReceiveValueFromInput(float input)
 	{
 		this.UpdateLimitValue(input);
 		this.targetLimitValve.Limit = this.targetLimit;
 	}
 
-	private void UpdateLimitValue(float newValue)
+		private void UpdateLimitValue(float newValue)
 	{
 		this.targetLimit = newValue;
 		this.limitSlider.value = this.limitSlider.GetPercentageFromValue(newValue);
@@ -121,38 +121,38 @@ public class LimitValveSideScreen : SideScreenContent
 		this.numberInput.SetDisplayValue(GameUtil.GetFormattedMass(newValue, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Kilogram, false, LimitValveSideScreen.FLOAT_FORMAT));
 	}
 
-	public static readonly string FLOAT_FORMAT = "{0:0.#####}";
+		public static readonly string FLOAT_FORMAT = "{0:0.#####}";
 
-	private LimitValve targetLimitValve;
+		private LimitValve targetLimitValve;
 
-	[Header("State")]
+		[Header("State")]
 	[SerializeField]
 	private LocText amountLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton resetButton;
 
-	[Header("Slider")]
+		[Header("Slider")]
 	[SerializeField]
 	private NonLinearSlider limitSlider;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText minLimitLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText maxLimitLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip toolTip;
 
-	[Header("Input Field")]
+		[Header("Input Field")]
 	[SerializeField]
 	private KNumberInputField numberInput;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText unitsLabel;
 
-	private float targetLimit;
+		private float targetLimit;
 
-	private int targetLimitValveSubHandle = -1;
+		private int targetLimitValveSubHandle = -1;
 }

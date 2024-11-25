@@ -3,7 +3,7 @@
 [Serializable]
 public struct ButtonMenuTextOverride
 {
-		public bool IsValid
+			public bool IsValid
 	{
 		get
 		{
@@ -11,7 +11,7 @@ public struct ButtonMenuTextOverride
 		}
 	}
 
-		public bool HasCancelText
+			public bool HasCancelText
 	{
 		get
 		{
@@ -19,11 +19,11 @@ public struct ButtonMenuTextOverride
 		}
 	}
 
-	public LocString Text;
+		public LocString Text;
 
-	public LocString CancelText;
+		public LocString CancelText;
 
-	public LocString ToolTip;
+		public LocString ToolTip;
 
-	public LocString CancelToolTip;
+		public LocString CancelToolTip;
 }

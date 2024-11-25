@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Sculpture : Artable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (Sculpture.sculptureOverrides == null)
@@ -17,7 +17,7 @@ public class Sculpture : Artable
 		this.synchronizeAnims = false;
 	}
 
-	public override void SetStage(string stage_id, bool skip_effect)
+		public override void SetStage(string stage_id, bool skip_effect)
 	{
 		base.SetStage(stage_id, skip_effect);
 		bool flag = base.CurrentStage == "Default";
@@ -34,5 +34,5 @@ public class Sculpture : Artable
 		}
 	}
 
-	private static KAnimFile[] sculptureOverrides;
+		private static KAnimFile[] sculptureOverrides;
 }

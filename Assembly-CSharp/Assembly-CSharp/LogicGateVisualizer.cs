@@ -5,19 +5,19 @@ using UnityEngine;
 [SkipSaveFileSerialization]
 public class LogicGateVisualizer : LogicGateBase
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.Register();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		this.Unregister();
 	}
 
-	private void Register()
+		private void Register()
 	{
 		this.Unregister();
 		this.visChildren.Add(new LogicGateVisualizer.IOVisualizer(base.OutputCellOne, false));
@@ -50,7 +50,7 @@ public class LogicGateVisualizer : LogicGateBase
 		}
 	}
 
-	private void Unregister()
+		private void Unregister()
 	{
 		LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
 		foreach (LogicGateVisualizer.IOVisualizer elem in this.visChildren)
@@ -60,22 +60,22 @@ public class LogicGateVisualizer : LogicGateBase
 		this.visChildren.Clear();
 	}
 
-	private List<LogicGateVisualizer.IOVisualizer> visChildren = new List<LogicGateVisualizer.IOVisualizer>();
+		private List<LogicGateVisualizer.IOVisualizer> visChildren = new List<LogicGateVisualizer.IOVisualizer>();
 
-	private class IOVisualizer : ILogicUIElement, IUniformGridObject
+		private class IOVisualizer : ILogicUIElement, IUniformGridObject
 	{
-		public IOVisualizer(int cell, bool input)
+				public IOVisualizer(int cell, bool input)
 		{
 			this.cell = cell;
 			this.input = input;
 		}
 
-		public int GetLogicUICell()
+				public int GetLogicUICell()
 		{
 			return this.cell;
 		}
 
-		public LogicPortSpriteType GetLogicPortSpriteType()
+				public LogicPortSpriteType GetLogicPortSpriteType()
 		{
 			if (!this.input)
 			{
@@ -84,18 +84,18 @@ public class LogicGateVisualizer : LogicGateBase
 			return LogicPortSpriteType.Input;
 		}
 
-		public Vector2 PosMin()
+				public Vector2 PosMin()
 		{
 			return Grid.CellToPos2D(this.cell);
 		}
 
-		public Vector2 PosMax()
+				public Vector2 PosMax()
 		{
 			return this.PosMin();
 		}
 
-		private int cell;
+				private int cell;
 
-		private bool input;
+				private bool input;
 	}
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/TravelTubeBridge")]
 public class TravelTubeBridge : KMonoBehaviour, ITravelTubePiece
 {
-		public Vector3 Position
+			public Vector3 Position
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class TravelTubeBridge : KMonoBehaviour, ITravelTubePiece
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Grid.HasTube[Grid.PosToCell(this)] = true;
@@ -22,7 +22,7 @@ public class TravelTubeBridge : KMonoBehaviour, ITravelTubePiece
 		base.Subscribe<TravelTubeBridge>(-1735440190, TravelTubeBridge.OnBuildingFullyRepairedDelegate);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.Unsubscribe<TravelTubeBridge>(774203113, TravelTubeBridge.OnBuildingBrokenDelegate, false);
 		base.Unsubscribe<TravelTubeBridge>(-1735440190, TravelTubeBridge.OnBuildingFullyRepairedDelegate, false);
@@ -31,20 +31,20 @@ public class TravelTubeBridge : KMonoBehaviour, ITravelTubePiece
 		base.OnCleanUp();
 	}
 
-	private void OnBuildingBroken(object data)
+		private void OnBuildingBroken(object data)
 	{
 	}
 
-	private void OnBuildingFullyRepaired(object data)
+		private void OnBuildingFullyRepaired(object data)
 	{
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<TravelTubeBridge> OnBuildingBrokenDelegate = new EventSystem.IntraObjectHandler<TravelTubeBridge>(delegate(TravelTubeBridge component, object data)
+		private static readonly EventSystem.IntraObjectHandler<TravelTubeBridge> OnBuildingBrokenDelegate = new EventSystem.IntraObjectHandler<TravelTubeBridge>(delegate(TravelTubeBridge component, object data)
 	{
 		component.OnBuildingBroken(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<TravelTubeBridge> OnBuildingFullyRepairedDelegate = new EventSystem.IntraObjectHandler<TravelTubeBridge>(delegate(TravelTubeBridge component, object data)
+		private static readonly EventSystem.IntraObjectHandler<TravelTubeBridge> OnBuildingFullyRepairedDelegate = new EventSystem.IntraObjectHandler<TravelTubeBridge>(delegate(TravelTubeBridge component, object data)
 	{
 		component.OnBuildingFullyRepaired(data);
 	});

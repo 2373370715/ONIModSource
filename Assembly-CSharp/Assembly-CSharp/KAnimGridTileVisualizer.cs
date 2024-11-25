@@ -6,14 +6,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/KAnimGridTileVisualizer")]
 public class KAnimGridTileVisualizer : KMonoBehaviour, IBlockTileInfo
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<KAnimGridTileVisualizer>(-1503271301, KAnimGridTileVisualizer.OnSelectionChangedDelegate);
 		base.Subscribe<KAnimGridTileVisualizer>(-1201923725, KAnimGridTileVisualizer.OnHighlightChangedDelegate);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Building component = base.GetComponent<Building>();
 		if (component != null)
@@ -29,32 +29,32 @@ public class KAnimGridTileVisualizer : KMonoBehaviour, IBlockTileInfo
 		base.OnCleanUp();
 	}
 
-	private void OnSelectionChanged(object data)
+		private void OnSelectionChanged(object data)
 	{
 		bool enabled = (bool)data;
 		World.Instance.blockTileRenderer.SelectCell(Grid.PosToCell(base.transform.GetPosition()), enabled);
 	}
 
-	private void OnHighlightChanged(object data)
+		private void OnHighlightChanged(object data)
 	{
 		bool enabled = (bool)data;
 		World.Instance.blockTileRenderer.HighlightCell(Grid.PosToCell(base.transform.GetPosition()), enabled);
 	}
 
-	public int GetBlockTileConnectorID()
+		public int GetBlockTileConnectorID()
 	{
 		return this.blockTileConnectorID;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public int blockTileConnectorID;
 
-	private static readonly EventSystem.IntraObjectHandler<KAnimGridTileVisualizer> OnSelectionChangedDelegate = new EventSystem.IntraObjectHandler<KAnimGridTileVisualizer>(delegate(KAnimGridTileVisualizer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<KAnimGridTileVisualizer> OnSelectionChangedDelegate = new EventSystem.IntraObjectHandler<KAnimGridTileVisualizer>(delegate(KAnimGridTileVisualizer component, object data)
 	{
 		component.OnSelectionChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<KAnimGridTileVisualizer> OnHighlightChangedDelegate = new EventSystem.IntraObjectHandler<KAnimGridTileVisualizer>(delegate(KAnimGridTileVisualizer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<KAnimGridTileVisualizer> OnHighlightChangedDelegate = new EventSystem.IntraObjectHandler<KAnimGridTileVisualizer>(delegate(KAnimGridTileVisualizer component, object data)
 	{
 		component.OnHighlightChanged(data);
 	});

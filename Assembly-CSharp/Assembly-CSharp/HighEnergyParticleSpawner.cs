@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class HighEnergyParticleSpawner : StateMachineComponent<HighEnergyParticleSpawner.StatesInstance>, IHighEnergyParticleDirection, IProgressBarSideScreen, ISingleSliderControl, ISliderControl
 {
-		public float PredictedPerCycleConsumptionRate
+			public float PredictedPerCycleConsumptionRate
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class HighEnergyParticleSpawner : StateMachineComponent<HighEnergyParticl
 		}
 	}
 
-			public EightDirection Direction
+				public EightDirection Direction
 	{
 		get
 		{
@@ -32,7 +32,7 @@ public class HighEnergyParticleSpawner : StateMachineComponent<HighEnergyParticl
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		HighEnergyParticleSpawner component = ((GameObject)data).GetComponent<HighEnergyParticleSpawner>();
 		if (component != null)
@@ -42,13 +42,13 @@ public class HighEnergyParticleSpawner : StateMachineComponent<HighEnergyParticl
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<HighEnergyParticleSpawner>(-905833192, HighEnergyParticleSpawner.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -60,38 +60,38 @@ public class HighEnergyParticleSpawner : StateMachineComponent<HighEnergyParticl
 		Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Radiation, true);
 	}
 
-	public float GetProgressBarMaxValue()
+		public float GetProgressBarMaxValue()
 	{
 		return this.particleThreshold;
 	}
 
-	public float GetProgressBarFillPercentage()
+		public float GetProgressBarFillPercentage()
 	{
 		return this.particleStorage.Particles / this.particleThreshold;
 	}
 
-	public string GetProgressBarTitleLabel()
+		public string GetProgressBarTitleLabel()
 	{
 		return UI.UISIDESCREENS.RADBOLTTHRESHOLDSIDESCREEN.PROGRESS_BAR_LABEL;
 	}
 
-	public string GetProgressBarLabel()
+		public string GetProgressBarLabel()
 	{
 		return Mathf.FloorToInt(this.particleStorage.Particles).ToString() + "/" + Mathf.FloorToInt(this.particleThreshold).ToString();
 	}
 
-	public string GetProgressBarTooltip()
+		public string GetProgressBarTooltip()
 	{
 		return UI.UISIDESCREENS.RADBOLTTHRESHOLDSIDESCREEN.PROGRESS_BAR_TOOLTIP;
 	}
 
-	public void DoConsumeParticlesWhileDisabled(float dt)
+		public void DoConsumeParticlesWhileDisabled(float dt)
 	{
 		this.particleStorage.ConsumeAndGet(dt * 1f);
 		this.progressMeterController.SetPositionPercent(this.GetProgressBarFillPercentage());
 	}
 
-	public void LauncherUpdate(float dt)
+		public void LauncherUpdate(float dt)
 	{
 		this.radiationSampleTimer += dt;
 		if (this.radiationSampleTimer >= this.radiationSampleRate)
@@ -143,7 +143,7 @@ public class HighEnergyParticleSpawner : StateMachineComponent<HighEnergyParticl
 		}
 	}
 
-		public string SliderTitleKey
+			public string SliderTitleKey
 	{
 		get
 		{
@@ -151,7 +151,7 @@ public class HighEnergyParticleSpawner : StateMachineComponent<HighEnergyParticl
 		}
 	}
 
-		public string SliderUnits
+			public string SliderUnits
 	{
 		get
 		{
@@ -159,96 +159,96 @@ public class HighEnergyParticleSpawner : StateMachineComponent<HighEnergyParticl
 		}
 	}
 
-	public int SliderDecimalPlaces(int index)
+		public int SliderDecimalPlaces(int index)
 	{
 		return 0;
 	}
 
-	public float GetSliderMin(int index)
+		public float GetSliderMin(int index)
 	{
 		return (float)this.minSlider;
 	}
 
-	public float GetSliderMax(int index)
+		public float GetSliderMax(int index)
 	{
 		return (float)this.maxSlider;
 	}
 
-	public float GetSliderValue(int index)
+		public float GetSliderValue(int index)
 	{
 		return this.particleThreshold;
 	}
 
-	public void SetSliderValue(float value, int index)
+		public void SetSliderValue(float value, int index)
 	{
 		this.particleThreshold = value;
 	}
 
-	public string GetSliderTooltipKey(int index)
+		public string GetSliderTooltipKey(int index)
 	{
 		return "STRINGS.UI.UISIDESCREENS.RADBOLTTHRESHOLDSIDESCREEN.TOOLTIP";
 	}
 
-	string ISliderControl.GetSliderTooltip(int index)
+		string ISliderControl.GetSliderTooltip(int index)
 	{
 		return string.Format(Strings.Get("STRINGS.UI.UISIDESCREENS.RADBOLTTHRESHOLDSIDESCREEN.TOOLTIP"), this.particleThreshold);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private HighEnergyParticleStorage particleStorage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private float recentPerSecondConsumptionRate;
+		private float recentPerSecondConsumptionRate;
 
-	public int minSlider;
+		public int minSlider;
 
-	public int maxSlider;
+		public int maxSlider;
 
-	[Serialize]
+		[Serialize]
 	private EightDirection _direction;
 
-	public float minLaunchInterval;
+		public float minLaunchInterval;
 
-	public float radiationSampleRate;
+		public float radiationSampleRate;
 
-	[Serialize]
+		[Serialize]
 	public float particleThreshold = 50f;
 
-	private EightDirectionController directionController;
+		private EightDirectionController directionController;
 
-	private float launcherTimer;
+		private float launcherTimer;
 
-	private float radiationSampleTimer;
+		private float radiationSampleTimer;
 
-	private MeterController particleController;
+		private MeterController particleController;
 
-	private bool particleVisualPlaying;
+		private bool particleVisualPlaying;
 
-	private MeterController progressMeterController;
+		private MeterController progressMeterController;
 
-	[Serialize]
+		[Serialize]
 	public Ref<HighEnergyParticlePort> capturedByRef = new Ref<HighEnergyParticlePort>();
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<HighEnergyParticleSpawner> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<HighEnergyParticleSpawner>(delegate(HighEnergyParticleSpawner component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HighEnergyParticleSpawner> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<HighEnergyParticleSpawner>(delegate(HighEnergyParticleSpawner component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	public class StatesInstance : GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.GameInstance
+		public class StatesInstance : GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.GameInstance
 	{
-		public StatesInstance(HighEnergyParticleSpawner smi) : base(smi)
+				public StatesInstance(HighEnergyParticleSpawner smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner>
+		public class States : GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.inoperational;
 			this.inoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.ready, false).DefaultState(this.inoperational.empty);
@@ -271,24 +271,24 @@ public class HighEnergyParticleSpawner : StateMachineComponent<HighEnergyParticl
 			}).ParamTransition<bool>(this.isAbsorbingRadiation, this.ready.idle, GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.IsFalse).ToggleStatusItem(Db.Get().BuildingStatusItems.CollectingHEP, (HighEnergyParticleSpawner.StatesInstance smi) => smi.master).PlayAnim("working_loop", KAnim.PlayMode.Loop);
 		}
 
-		public StateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.BoolParameter isAbsorbingRadiation;
+				public StateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.BoolParameter isAbsorbingRadiation;
 
-		public HighEnergyParticleSpawner.States.ReadyStates ready;
+				public HighEnergyParticleSpawner.States.ReadyStates ready;
 
-		public HighEnergyParticleSpawner.States.InoperationalStates inoperational;
+				public HighEnergyParticleSpawner.States.InoperationalStates inoperational;
 
-		public class InoperationalStates : GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State
+				public class InoperationalStates : GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State
 		{
-			public GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State empty;
+						public GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State empty;
 
-			public GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State losing;
+						public GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State losing;
 		}
 
-		public class ReadyStates : GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State
+				public class ReadyStates : GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State
 		{
-			public GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State idle;
+						public GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State idle;
 
-			public GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State absorbing;
+						public GameStateMachine<HighEnergyParticleSpawner.States, HighEnergyParticleSpawner.StatesInstance, HighEnergyParticleSpawner, object>.State absorbing;
 		}
 	}
 }

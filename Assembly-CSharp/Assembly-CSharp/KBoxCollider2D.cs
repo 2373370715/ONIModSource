@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class KBoxCollider2D : KCollider2D
 {
-			public Vector2 size
+				public Vector2 size
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class KBoxCollider2D : KCollider2D
 		}
 	}
 
-	public override Extents GetExtents()
+		public override Extents GetExtents()
 	{
 		Vector3 vector = base.transform.GetPosition() + new Vector3(base.offset.x, base.offset.y, 0f);
 		Vector2 vector2 = this.size * 0.9999f;
@@ -29,7 +29,7 @@ public class KBoxCollider2D : KCollider2D
 		return new Extents(vector2I.x, vector2I.y, width, height);
 	}
 
-	public override bool Intersects(Vector2 intersect_pos)
+		public override bool Intersects(Vector2 intersect_pos)
 	{
 		Vector3 vector = base.transform.GetPosition() + new Vector3(base.offset.x, base.offset.y, 0f);
 		Vector2 vector2 = new Vector2(vector.x - this.size.x * 0.5f, vector.y - this.size.y * 0.5f);
@@ -37,7 +37,7 @@ public class KBoxCollider2D : KCollider2D
 		return intersect_pos.x >= vector2.x && intersect_pos.x <= vector3.x && intersect_pos.y >= vector2.y && intersect_pos.y <= vector3.y;
 	}
 
-		public override Bounds bounds
+			public override Bounds bounds
 	{
 		get
 		{
@@ -45,12 +45,12 @@ public class KBoxCollider2D : KCollider2D
 		}
 	}
 
-	private void OnDrawGizmosSelected()
+		private void OnDrawGizmosSelected()
 	{
 		Gizmos.color = Color.green;
 		Gizmos.DrawWireCube(this.bounds.center, new Vector3(this._size.x, this._size.y, 0f));
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Vector2 _size;
 }

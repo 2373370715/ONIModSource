@@ -2,11 +2,11 @@
 
 public class NavTeleportTransitionLayer : TransitionDriver.OverrideLayer
 {
-	public NavTeleportTransitionLayer(Navigator navigator) : base(navigator)
+		public NavTeleportTransitionLayer(Navigator navigator) : base(navigator)
 	{
 	}
 
-	public override void BeginTransition(Navigator navigator, Navigator.ActiveTransition transition)
+		public override void BeginTransition(Navigator navigator, Navigator.ActiveTransition transition)
 	{
 		base.BeginTransition(navigator, transition);
 		if (transition.start == NavType.Teleport)

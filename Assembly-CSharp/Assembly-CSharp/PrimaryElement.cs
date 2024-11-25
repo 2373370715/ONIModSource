@@ -10,12 +10,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/PrimaryElement")]
 public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 {
-	public void SetUseSimDiseaseInfo(bool use)
+		public void SetUseSimDiseaseInfo(bool use)
 	{
 		this.useSimDiseaseInfo = use;
 	}
 
-			[Serialize]
+				[Serialize]
 	public float Units
 	{
 		get
@@ -40,7 +40,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-			public float Temperature
+				public float Temperature
 	{
 		get
 		{
@@ -52,7 +52,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-			public float InternalTemperature
+				public float InternalTemperature
 	{
 		get
 		{
@@ -64,7 +64,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerializing()
 	{
 		this._Temperature = this.Temperature;
@@ -92,7 +92,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (this.ElementID == (SimHashes)351109216)
@@ -152,12 +152,12 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected override void OnLoadLevel()
+		protected override void OnLoadLevel()
 	{
 		base.OnLoadLevel();
 	}
 
-	private void SanitizeMassAndTemperature()
+		private void SanitizeMassAndTemperature()
 	{
 		if (this._Temperature <= 0f)
 		{
@@ -171,7 +171,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-			public float Mass
+				public float Mass
 	{
 		get
 		{
@@ -187,7 +187,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void SetMass(float mass)
+		private void SetMass(float mass)
 	{
 		if ((mass > PrimaryElement.MAX_MASS || mass < 0f) && this.ElementID != SimHashes.Regolith)
 		{
@@ -205,7 +205,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void SetTemperature(float temperature)
+		private void SetTemperature(float temperature)
 	{
 		if (float.IsNaN(temperature) || float.IsInfinity(temperature))
 		{
@@ -222,13 +222,13 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		this.setTemperatureCallback(this, temperature);
 	}
 
-	public void SetMassTemperature(float mass, float temperature)
+		public void SetMassTemperature(float mass, float temperature)
 	{
 		this.SetMass(mass);
 		this.SetTemperature(temperature);
 	}
 
-		public Element Element
+			public Element Element
 	{
 		get
 		{
@@ -240,7 +240,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-		public byte DiseaseIdx
+			public byte DiseaseIdx
 	{
 		get
 		{
@@ -262,7 +262,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-		public int DiseaseCount
+			public int DiseaseCount
 	{
 		get
 		{
@@ -284,7 +284,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		GameComps.InfraredVisualizers.Add(base.gameObject);
@@ -292,7 +292,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		base.Subscribe<PrimaryElement>(-2064133523, PrimaryElement.OnAbsorbDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		Attributes attributes = this.GetAttributes();
 		if (attributes != null)
@@ -304,7 +304,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void ForcePermanentDiseaseContainer(bool force_on)
+		public void ForcePermanentDiseaseContainer(bool force_on)
 	{
 		if (force_on)
 		{
@@ -321,7 +321,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		this.forcePermanentDiseaseContainer = force_on;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameComps.InfraredVisualizers.Remove(base.gameObject);
 		if (this.diseaseHandle.IsValid())
@@ -332,7 +332,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		base.OnCleanUp();
 	}
 
-	public void SetElement(SimHashes element_id, bool addTags = true)
+		public void SetElement(SimHashes element_id, bool addTags = true)
 	{
 		this.ElementID = element_id;
 		if (addTags)
@@ -341,7 +341,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void UpdateTags()
+		public void UpdateTags()
 	{
 		if (this.ElementID == (SimHashes)0)
 		{
@@ -367,7 +367,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void ModifyDiseaseCount(int delta, string reason)
+		public void ModifyDiseaseCount(int delta, string reason)
 	{
 		if (this.diseaseRedirectTarget)
 		{
@@ -387,7 +387,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void AddDisease(byte disease_idx, int delta, string reason)
+		public void AddDisease(byte disease_idx, int delta, string reason)
 	{
 		if (delta == 0)
 		{
@@ -420,12 +420,12 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private static float OnGetTemperature(PrimaryElement primary_element)
+		private static float OnGetTemperature(PrimaryElement primary_element)
 	{
 		return primary_element._Temperature;
 	}
 
-	private static void OnSetTemperature(PrimaryElement primary_element, float temperature)
+		private static void OnSetTemperature(PrimaryElement primary_element, float temperature)
 	{
 		global::Debug.Assert(!float.IsNaN(temperature));
 		if (temperature <= 0f)
@@ -438,7 +438,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		primary_element._Temperature = temperature;
 	}
 
-	private void OnSplitFromChunk(object data)
+		private void OnSplitFromChunk(object data)
 	{
 		Pickupable pickupable = (Pickupable)data;
 		if (pickupable == null)
@@ -451,7 +451,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		pickupable.PrimaryElement.ModifyDiseaseCount(-percentOfDisease.count, "PrimaryElement.SplitFromChunk");
 	}
 
-	private void OnAbsorb(object data)
+		private void OnAbsorb(object data)
 	{
 		Pickupable pickupable = (Pickupable)data;
 		if (pickupable == null)
@@ -461,7 +461,7 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		this.AddDisease(pickupable.PrimaryElement.DiseaseIdx, pickupable.PrimaryElement.DiseaseCount, "PrimaryElement.OnAbsorb");
 	}
 
-	private void SetDiseaseVisualProvider(GameObject visualizer)
+		private void SetDiseaseVisualProvider(GameObject visualizer)
 	{
 		HandleVector<int>.Handle handle = GameComps.DiseaseContainers.GetHandle(base.gameObject);
 		if (handle != HandleVector<int>.InvalidHandle)
@@ -472,75 +472,77 @@ public class PrimaryElement : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void RedirectDisease(GameObject target)
+		public void RedirectDisease(GameObject target)
 	{
 		this.SetDiseaseVisualProvider(target);
 		this.diseaseRedirectTarget = (target ? target.GetComponent<PrimaryElement>() : null);
 		global::Debug.Assert(this.diseaseRedirectTarget != this, "Disease redirect target set to myself");
 	}
 
-	public static float MAX_MASS = 100000f;
+		public static float MAX_MASS = 100000f;
 
-	public PrimaryElement.GetTemperatureCallback getTemperatureCallback = new PrimaryElement.GetTemperatureCallback(PrimaryElement.OnGetTemperature);
+		public SimTemperatureTransfer sttOptimizationHook;
 
-	public PrimaryElement.SetTemperatureCallback setTemperatureCallback = new PrimaryElement.SetTemperatureCallback(PrimaryElement.OnSetTemperature);
+		public PrimaryElement.GetTemperatureCallback getTemperatureCallback = new PrimaryElement.GetTemperatureCallback(PrimaryElement.OnGetTemperature);
 
-	private PrimaryElement diseaseRedirectTarget;
+		public PrimaryElement.SetTemperatureCallback setTemperatureCallback = new PrimaryElement.SetTemperatureCallback(PrimaryElement.OnSetTemperature);
 
-	private bool useSimDiseaseInfo;
+		private PrimaryElement diseaseRedirectTarget;
 
-	public const float DefaultChunkMass = 400f;
+		private bool useSimDiseaseInfo;
 
-	private static readonly Tag[] metalTags = new Tag[]
+		public const float DefaultChunkMass = 400f;
+
+		private static readonly Tag[] metalTags = new Tag[]
 	{
 		GameTags.Metal,
 		GameTags.RefinedMetal
 	};
 
-	[Serialize]
+		[Serialize]
 	[HashedEnum]
 	public SimHashes ElementID;
 
-	private float _units = 1f;
+		private float _units = 1f;
 
-	[Serialize]
+		[Serialize]
 	[SerializeField]
 	private float _Temperature;
 
-	[Serialize]
+		[Serialize]
 	[NonSerialized]
 	public bool KeepZeroMassObject;
 
-	[Serialize]
+		[Serialize]
 	private HashedString diseaseID;
 
-	[Serialize]
+		[Serialize]
 	private int diseaseCount;
 
-	private HandleVector<int>.Handle diseaseHandle = HandleVector<int>.InvalidHandle;
+		private HandleVector<int>.Handle diseaseHandle = HandleVector<int>.InvalidHandle;
 
-	public float MassPerUnit = 1f;
+		public float MassPerUnit = 1f;
 
-	[NonSerialized]
+		[NonSerialized]
 	private Element _Element;
 
-	[NonSerialized]
+		[NonSerialized]
 	public Action<PrimaryElement> onDataChanged;
 
-	[NonSerialized]
+		[NonSerialized]
 	private bool forcePermanentDiseaseContainer;
 
-	private static readonly EventSystem.IntraObjectHandler<PrimaryElement> OnSplitFromChunkDelegate = new EventSystem.IntraObjectHandler<PrimaryElement>(delegate(PrimaryElement component, object data)
+		private static readonly EventSystem.IntraObjectHandler<PrimaryElement> OnSplitFromChunkDelegate = new EventSystem.IntraObjectHandler<PrimaryElement>(delegate(PrimaryElement component, object data)
 	{
 		component.OnSplitFromChunk(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<PrimaryElement> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<PrimaryElement>(delegate(PrimaryElement component, object data)
+		private static readonly EventSystem.IntraObjectHandler<PrimaryElement> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<PrimaryElement>(delegate(PrimaryElement component, object data)
 	{
 		component.OnAbsorb(data);
 	});
 
-		public delegate float GetTemperatureCallback(PrimaryElement primary_element);
+			public delegate float GetTemperatureCallback(PrimaryElement primary_element);
 
-		public delegate void SetTemperatureCallback(PrimaryElement primary_element, float temperature);
+			public delegate void SetTemperatureCallback(PrimaryElement primary_element, float temperature);
 }

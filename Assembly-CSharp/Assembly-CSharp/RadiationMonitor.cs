@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class RadiationMonitor : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.init;
@@ -36,20 +36,20 @@ public class RadiationMonitor : GameStateMachine<RadiationMonitor, RadiationMoni
 		});
 	}
 
-	private Chore CreateVomitChore(RadiationMonitor.Instance smi)
+		private Chore CreateVomitChore(RadiationMonitor.Instance smi)
 	{
 		Notification notification = new Notification(DUPLICANTS.STATUSITEMS.RADIATIONVOMITING.NOTIFICATION_NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => DUPLICANTS.STATUSITEMS.RADIATIONVOMITING.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null, true, false, false);
 		return new VomitChore(Db.Get().ChoreTypes.Vomit, smi.master, Db.Get().DuplicantStatusItems.Vomiting, notification, null);
 	}
 
-	private static void RadiationRecovery(RadiationMonitor.Instance smi, float dt)
+		private static void RadiationRecovery(RadiationMonitor.Instance smi, float dt)
 	{
 		float num = Db.Get().Attributes.RadiationRecovery.Lookup(smi.gameObject).GetTotalValue() * dt;
 		smi.master.gameObject.GetAmounts().Get(Db.Get().Amounts.RadiationBalance).ApplyDelta(num);
 		smi.master.Trigger(1556680150, num);
 	}
 
-	private static void CheckRadiationLevel(RadiationMonitor.Instance smi, float dt)
+		private static void CheckRadiationLevel(RadiationMonitor.Instance smi, float dt)
 	{
 		RadiationMonitor.RadiationRecovery(smi, dt);
 		smi.sm.timeUntilNextExposureReact.Delta(-dt, smi);
@@ -78,92 +78,92 @@ public class RadiationMonitor : GameStateMachine<RadiationMonitor, RadiationMoni
 		smi.sm.radiationExposure.Set(smi.master.gameObject.GetComponent<KSelectable>().GetAmounts().GetValue("RadiationBalance"), smi, false);
 	}
 
-	public const float BASE_ABSORBTION_RATE = 1f;
+		public const float BASE_ABSORBTION_RATE = 1f;
 
-	public const float MIN_TIME_BETWEEN_EXPOSURE_REACTS = 120f;
+		public const float MIN_TIME_BETWEEN_EXPOSURE_REACTS = 120f;
 
-	public const float MIN_TIME_BETWEEN_SICK_REACTS = 60f;
+		public const float MIN_TIME_BETWEEN_SICK_REACTS = 60f;
 
-	public const int VOMITS_PER_CYCLE_MAJOR = 5;
+		public const int VOMITS_PER_CYCLE_MAJOR = 5;
 
-	public const int VOMITS_PER_CYCLE_EXTREME = 10;
+		public const int VOMITS_PER_CYCLE_EXTREME = 10;
 
-	public StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.FloatParameter radiationExposure;
+		public StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.FloatParameter radiationExposure;
 
-	public StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.FloatParameter currentExposurePerCycle;
+		public StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.FloatParameter currentExposurePerCycle;
 
-	public StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.BoolParameter isSick;
+		public StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.BoolParameter isSick;
 
-	public StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.FloatParameter timeUntilNextExposureReact;
+		public StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.FloatParameter timeUntilNextExposureReact;
 
-	public StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.FloatParameter timeUntilNextSickReact;
+		public StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.FloatParameter timeUntilNextSickReact;
 
-	public static string minorSicknessEffect = "RadiationExposureMinor";
+		public static string minorSicknessEffect = "RadiationExposureMinor";
 
-	public static string majorSicknessEffect = "RadiationExposureMajor";
+		public static string majorSicknessEffect = "RadiationExposureMajor";
 
-	public static string extremeSicknessEffect = "RadiationExposureExtreme";
+		public static string extremeSicknessEffect = "RadiationExposureExtreme";
 
-	public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State init;
+		public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State init;
 
-	public RadiationMonitor.ActiveStates active;
+		public RadiationMonitor.ActiveStates active;
 
-	public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_RECOVERY_IMMEDIATE = (RadiationMonitor.Instance smi, float p) => p > 100f * smi.difficultySettingMod / 2f;
+		public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_RECOVERY_IMMEDIATE = (RadiationMonitor.Instance smi, float p) => p > 100f * smi.difficultySettingMod / 2f;
 
-	public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_REACT = (RadiationMonitor.Instance smi, float p) => p >= 133f * smi.difficultySettingMod;
+		public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_REACT = (RadiationMonitor.Instance smi, float p) => p >= 133f * smi.difficultySettingMod;
 
-	public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_LT_MINOR = (RadiationMonitor.Instance smi, float p) => p < 100f * smi.difficultySettingMod;
+		public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_LT_MINOR = (RadiationMonitor.Instance smi, float p) => p < 100f * smi.difficultySettingMod;
 
-	public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_GTE_MINOR = (RadiationMonitor.Instance smi, float p) => p >= 100f * smi.difficultySettingMod;
+		public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_GTE_MINOR = (RadiationMonitor.Instance smi, float p) => p >= 100f * smi.difficultySettingMod;
 
-	public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_GTE_MAJOR = (RadiationMonitor.Instance smi, float p) => p >= 300f * smi.difficultySettingMod;
+		public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_GTE_MAJOR = (RadiationMonitor.Instance smi, float p) => p >= 300f * smi.difficultySettingMod;
 
-	public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_GTE_EXTREME = (RadiationMonitor.Instance smi, float p) => p >= 600f * smi.difficultySettingMod;
+		public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_GTE_EXTREME = (RadiationMonitor.Instance smi, float p) => p >= 600f * smi.difficultySettingMod;
 
-	public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_GTE_DEADLY = (RadiationMonitor.Instance smi, float p) => p >= 900f * smi.difficultySettingMod;
+		public static readonly StateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.Parameter<float>.Callback COMPARE_GTE_DEADLY = (RadiationMonitor.Instance smi, float p) => p >= 900f * smi.difficultySettingMod;
 
-	public class ActiveStates : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State
+		public class ActiveStates : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State idle;
+				public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State idle;
 
-		public RadiationMonitor.SickStates sick;
+				public RadiationMonitor.SickStates sick;
 	}
 
-	public class SickStates : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State
+		public class SickStates : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public RadiationMonitor.SickStates.MinorStates minor;
+				public RadiationMonitor.SickStates.MinorStates minor;
 
-		public RadiationMonitor.SickStates.MajorStates major;
+				public RadiationMonitor.SickStates.MajorStates major;
 
-		public RadiationMonitor.SickStates.ExtremeStates extreme;
+				public RadiationMonitor.SickStates.ExtremeStates extreme;
 
-		public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State deadly;
+				public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State deadly;
 
-		public class MinorStates : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State
+				public class MinorStates : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State
 		{
-			public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State waiting;
+						public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State waiting;
 
-			public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State reacting;
+						public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State reacting;
 		}
 
-		public class MajorStates : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State
+				public class MajorStates : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State
 		{
-			public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State waiting;
+						public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State waiting;
 
-			public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State vomiting;
+						public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State vomiting;
 		}
 
-		public class ExtremeStates : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State
+				public class ExtremeStates : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State
 		{
-			public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State waiting;
+						public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State waiting;
 
-			public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State vomiting;
+						public GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.State vomiting;
 		}
 	}
 
-	public new class Instance : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<RadiationMonitor, RadiationMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.effects = base.GetComponent<Effects>();
 			if (Sim.IsRadiationEnabled())
@@ -172,39 +172,36 @@ public class RadiationMonitor : GameStateMachine<RadiationMonitor, RadiationMoni
 				if (currentQualitySetting != null)
 				{
 					string id = currentQualitySetting.id;
-					if (id != null)
+					if (id == "Easiest")
 					{
-						if (id == "Easiest")
-						{
-							this.difficultySettingMod = DUPLICANTSTATS.RADIATION_DIFFICULTY_MODIFIERS.EASIEST;
-							return;
-						}
-						if (id == "Easier")
-						{
-							this.difficultySettingMod = DUPLICANTSTATS.RADIATION_DIFFICULTY_MODIFIERS.EASIER;
-							return;
-						}
-						if (id == "Harder")
-						{
-							this.difficultySettingMod = DUPLICANTSTATS.RADIATION_DIFFICULTY_MODIFIERS.HARDER;
-							return;
-						}
-						if (!(id == "Hardest"))
-						{
-							return;
-						}
-						this.difficultySettingMod = DUPLICANTSTATS.RADIATION_DIFFICULTY_MODIFIERS.HARDEST;
+						this.difficultySettingMod = DUPLICANTSTATS.RADIATION_DIFFICULTY_MODIFIERS.EASIEST;
+						return;
 					}
+					if (id == "Easier")
+					{
+						this.difficultySettingMod = DUPLICANTSTATS.RADIATION_DIFFICULTY_MODIFIERS.EASIER;
+						return;
+					}
+					if (id == "Harder")
+					{
+						this.difficultySettingMod = DUPLICANTSTATS.RADIATION_DIFFICULTY_MODIFIERS.HARDER;
+						return;
+					}
+					if (!(id == "Hardest"))
+					{
+						return;
+					}
+					this.difficultySettingMod = DUPLICANTSTATS.RADIATION_DIFFICULTY_MODIFIERS.HARDEST;
 				}
 			}
 		}
 
-		public float SicknessSecondsRemaining()
+				public float SicknessSecondsRemaining()
 		{
 			return 600f * (Mathf.Max(0f, base.sm.radiationExposure.Get(base.smi) - 100f * this.difficultySettingMod) / 100f);
 		}
 
-		public string GetEffectStatusTooltip()
+				public string GetEffectStatusTooltip()
 		{
 			if (this.effects.HasEffect(RadiationMonitor.minorSicknessEffect))
 			{
@@ -221,8 +218,8 @@ public class RadiationMonitor : GameStateMachine<RadiationMonitor, RadiationMoni
 			return DUPLICANTS.MODIFIERS.RADIATIONEXPOSUREDEADLY.TOOLTIP;
 		}
 
-		public Effects effects;
+				public Effects effects;
 
-		public float difficultySettingMod = 1f;
+				public float difficultySettingMod = 1f;
 	}
 }

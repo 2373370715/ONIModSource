@@ -4,23 +4,23 @@ using UnityEngine;
 
 public interface IStorage
 {
-	bool ShouldShowInUI();
+		bool ShouldShowInUI();
 
-			bool allowUIItemRemoval { get; set; }
+				bool allowUIItemRemoval { get; set; }
 
-	GameObject Drop(GameObject go, bool do_disease_transfer = true);
+		GameObject Drop(GameObject go, bool do_disease_transfer = true);
 
-	List<GameObject> GetItems();
+		List<GameObject> GetItems();
 
-	bool IsFull();
+		bool IsFull();
 
-	bool IsEmpty();
+		bool IsEmpty();
 
-	float Capacity();
+		float Capacity();
 
-	float RemainingCapacity();
+		float RemainingCapacity();
 
-	float GetAmountAvailable(Tag tag);
+		float GetAmountAvailable(Tag tag);
 
-	void ConsumeIgnoringDisease(Tag tag, float amount);
+		void ConsumeIgnoringDisease(Tag tag, float amount);
 }

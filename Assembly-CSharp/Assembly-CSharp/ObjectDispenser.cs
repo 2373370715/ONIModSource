@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ObjectDispenser : Switch, IUserControlledCapacity
 {
-			public virtual float UserMaxCapacity
+				public virtual float UserMaxCapacity
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		}
 	}
 
-		public float AmountStored
+			public float AmountStored
 	{
 		get
 		{
@@ -26,7 +26,7 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		}
 	}
 
-		public float MinCapacity
+			public float MinCapacity
 	{
 		get
 		{
@@ -34,7 +34,7 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		}
 	}
 
-		public float MaxCapacity
+			public float MaxCapacity
 	{
 		get
 		{
@@ -42,7 +42,7 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		}
 	}
 
-		public bool WholeValues
+			public bool WholeValues
 	{
 		get
 		{
@@ -50,7 +50,7 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		}
 	}
 
-		public LocString CapacityUnits
+			public LocString CapacityUnits
 	{
 		get
 		{
@@ -58,12 +58,12 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.Initialize();
 	}
 
-	protected void Initialize()
+		protected void Initialize()
 	{
 		base.OnPrefabInit();
 		this.log = new LoggerFS("ObjectDispenser", 35);
@@ -71,7 +71,7 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		base.Subscribe<ObjectDispenser>(-905833192, ObjectDispenser.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.smi = new ObjectDispenser.Instance(this, base.IsSwitchedOn);
@@ -85,13 +85,13 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		base.GetComponent<KSelectable>().ToggleStatusItem(ObjectDispenser.infoStatusItem, true, this.smi);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.filteredStorage.CleanUp();
 		base.OnCleanUp();
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		if (gameObject == null)
@@ -106,7 +106,7 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		this.UserMaxCapacity = component.UserMaxCapacity;
 	}
 
-	public void DropHeldItems()
+		public void DropHeldItems()
 	{
 		while (this.storage.Count > 0)
 		{
@@ -123,12 +123,12 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		this.smi.GetMaster().GetComponent<Storage>().DropAll(false, false, default(Vector3), true, null);
 	}
 
-	protected override void Toggle()
+		protected override void Toggle()
 	{
 		base.Toggle();
 	}
 
-	protected override void OnRefreshUserMenu(object data)
+		protected override void OnRefreshUserMenu(object data)
 	{
 		if (!this.smi.IsAutomated())
 		{
@@ -136,7 +136,7 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		}
 	}
 
-	private static string ResolveInfoStatusItemString(string format_str, object data)
+		private static string ResolveInfoStatusItemString(string format_str, object data)
 	{
 		ObjectDispenser.Instance instance = (ObjectDispenser.Instance)data;
 		string format = instance.IsAutomated() ? BUILDING.STATUSITEMS.OBJECTDISPENSER.AUTOMATION_CONTROL : BUILDING.STATUSITEMS.OBJECTDISPENSER.MANUAL_CONTROL;
@@ -144,38 +144,38 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 		return string.Format(format, arg);
 	}
 
-	public static readonly HashedString PORT_ID = "ObjectDispenser";
+		public static readonly HashedString PORT_ID = "ObjectDispenser";
 
-	private LoggerFS log;
+		private LoggerFS log;
 
-	public CellOffset dropOffset;
+		public CellOffset dropOffset;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Rotatable rotatable;
 
-	private ObjectDispenser.Instance smi;
+		private ObjectDispenser.Instance smi;
 
-	private static StatusItem infoStatusItem;
+		private static StatusItem infoStatusItem;
 
-	[Serialize]
+		[Serialize]
 	private float userMaxCapacity = float.PositiveInfinity;
 
-	protected FilteredStorage filteredStorage;
+		protected FilteredStorage filteredStorage;
 
-	private static readonly EventSystem.IntraObjectHandler<ObjectDispenser> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ObjectDispenser>(delegate(ObjectDispenser component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ObjectDispenser> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ObjectDispenser>(delegate(ObjectDispenser component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	public class States : GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser>
+		public class States : GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -191,20 +191,20 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 			});
 		}
 
-		public GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.State load_item;
+				public GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.State load_item;
 
-		public GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.State load_item_pst;
+				public GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.State load_item_pst;
 
-		public GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.State drop_item;
+				public GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.State drop_item;
 
-		public GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.State idle;
+				public GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.State idle;
 
-		public StateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.BoolParameter should_open;
+				public StateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.BoolParameter should_open;
 	}
 
-	public class Instance : GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.GameInstance
+		public class Instance : GameStateMachine<ObjectDispenser.States, ObjectDispenser.Instance, ObjectDispenser, object>.GameInstance
 	{
-		public Instance(ObjectDispenser master, bool manual_start_state) : base(master)
+				public Instance(ObjectDispenser master, bool manual_start_state) : base(master)
 		{
 			this.manual_on = manual_start_state;
 			this.operational = base.GetComponent<Operational>();
@@ -214,17 +214,17 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 			base.smi.sm.should_open.Set(true, base.smi, false);
 		}
 
-		public void UpdateState()
+				public void UpdateState()
 		{
 			base.smi.GoTo(base.sm.load_item);
 		}
 
-		public bool IsAutomated()
+				public bool IsAutomated()
 		{
 			return this.logic.IsPortConnected(ObjectDispenser.PORT_ID);
 		}
 
-				public bool IsOpened
+						public bool IsOpened
 		{
 			get
 			{
@@ -236,23 +236,23 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 			}
 		}
 
-		public void SetSwitchState(bool on)
+				public void SetSwitchState(bool on)
 		{
 			this.manual_on = on;
 			this.UpdateShouldOpen();
 		}
 
-		public void SetActive(bool active)
+				public void SetActive(bool active)
 		{
 			this.operational.SetActive(active, false);
 		}
 
-		private void OnOperationalChanged(object data)
+				private void OnOperationalChanged(object data)
 		{
 			this.UpdateShouldOpen();
 		}
 
-		private void OnLogicValueChanged(object data)
+				private void OnLogicValueChanged(object data)
 		{
 			LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 			if (logicValueChanged.portID != ObjectDispenser.PORT_ID)
@@ -263,7 +263,7 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 			this.UpdateShouldOpen();
 		}
 
-		private void UpdateShouldOpen()
+				private void UpdateShouldOpen()
 		{
 			this.SetActive(this.operational.IsOperational);
 			if (!this.operational.IsOperational)
@@ -278,12 +278,12 @@ public class ObjectDispenser : Switch, IUserControlledCapacity
 			base.smi.sm.should_open.Set(this.manual_on, base.smi, false);
 		}
 
-		private Operational operational;
+				private Operational operational;
 
-		public LogicPorts logic;
+				public LogicPorts logic;
 
-		public bool logic_on = true;
+				public bool logic_on = true;
 
-		private bool manual_on;
+				private bool manual_on;
 	}
 }

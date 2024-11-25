@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TravelTubeWallBridgeConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "TravelTubeWallBridge";
 		int width = 1;
@@ -34,40 +34,40 @@ public class TravelTubeWallBridgeConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		SimCellOccupier simCellOccupier = go.AddOrGet<SimCellOccupier>();
 		simCellOccupier.doReplaceElement = true;
-		simCellOccupier.movementSpeedMultiplier = DUPLICANTSTATS.MOVEMENT.PENALTY_3;
+		simCellOccupier.movementSpeedMultiplier = DUPLICANTSTATS.MOVEMENT_MODIFIERS.PENALTY_3;
 		simCellOccupier.notifyOnMelt = true;
 		go.AddOrGet<BuildingHP>().destroyOnDamaged = true;
 		go.AddOrGet<TileTemperature>();
 		go.AddOrGet<TravelTubeBridge>();
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		this.AddNetworkLink(go).visualizeOnly = true;
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		this.AddNetworkLink(go).visualizeOnly = true;
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		this.AddNetworkLink(go).visualizeOnly = false;
 		go.AddOrGet<BuildingCellVisualizer>();
 		go.AddOrGet<KPrefabID>().AddTag(GameTags.TravelTubeBridges, false);
 	}
 
-	protected virtual TravelTubeUtilityNetworkLink AddNetworkLink(GameObject go)
+		protected virtual TravelTubeUtilityNetworkLink AddNetworkLink(GameObject go)
 	{
 		TravelTubeUtilityNetworkLink travelTubeUtilityNetworkLink = go.AddOrGet<TravelTubeUtilityNetworkLink>();
 		travelTubeUtilityNetworkLink.link1 = new CellOffset(-1, 0);
@@ -75,5 +75,5 @@ public class TravelTubeWallBridgeConfig : IBuildingConfig
 		return travelTubeUtilityNetworkLink;
 	}
 
-	public const string ID = "TravelTubeWallBridge";
+		public const string ID = "TravelTubeWallBridge";
 }

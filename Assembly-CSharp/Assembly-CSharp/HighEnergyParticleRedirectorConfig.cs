@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class HighEnergyParticleRedirectorConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "HighEnergyParticleRedirector";
 		int width = 1;
@@ -43,7 +43,7 @@ public class HighEnergyParticleRedirectorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		Prioritizable.AddRef(go);
@@ -54,13 +54,13 @@ public class HighEnergyParticleRedirectorConfig : IBuildingConfig
 		go.AddOrGet<HighEnergyParticleRedirector>().directorDelay = 0.5f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "HighEnergyParticleRedirector";
+		public const string ID = "HighEnergyParticleRedirector";
 
-	public const float TRAVEL_DELAY = 0.5f;
+		public const float TRAVEL_DELAY = 0.5f;
 
-	public const float REDIRECT_PARTICLE_COST = 0.1f;
+		public const float REDIRECT_PARTICLE_COST = 0.1f;
 }

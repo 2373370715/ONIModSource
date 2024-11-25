@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LoopingSounds")]
 public class LoopingSounds : KMonoBehaviour
 {
-	public bool IsSoundPlaying(string path)
+		public bool IsSoundPlaying(string path)
 	{
 		using (List<LoopingSounds.LoopingSoundEvent>.Enumerator enumerator = this.loopingSounds.GetEnumerator())
 		{
@@ -22,7 +22,7 @@ public class LoopingSounds : KMonoBehaviour
 		return false;
 	}
 
-	public bool StartSound(string asset, AnimEventManager.EventPlayerData behaviour, EffectorValues noiseValues, bool ignore_pause = false, bool enable_camera_scaled_position = true)
+		public bool StartSound(string asset, AnimEventManager.EventPlayerData behaviour, EffectorValues noiseValues, bool ignore_pause = false, bool enable_camera_scaled_position = true)
 	{
 		if (asset == null || asset == "")
 		{
@@ -44,7 +44,7 @@ public class LoopingSounds : KMonoBehaviour
 			}
 			else
 			{
-				this.sound_pos = behaviour.GetComponent<Transform>().GetPosition();
+				this.sound_pos = behaviour.position;
 				this.sound_pos.z = 0f;
 			}
 			item.handle = LoopingSoundManager.Get().Add(asset, this.sound_pos, base.transform, !ignore_pause, true, enable_camera_scaled_position, this.vol, this.objectIsSelectedAndVisible);
@@ -53,13 +53,13 @@ public class LoopingSounds : KMonoBehaviour
 		return true;
 	}
 
-	public bool StartSound(EventReference event_ref)
+		public bool StartSound(EventReference event_ref)
 	{
 		string eventReferencePath = KFMOD.GetEventReferencePath(event_ref);
 		return this.StartSound(eventReferencePath);
 	}
 
-	public bool StartSound(string asset)
+		public bool StartSound(string asset)
 	{
 		if (asset.IsNullOrWhiteSpace())
 		{
@@ -90,7 +90,7 @@ public class LoopingSounds : KMonoBehaviour
 		return true;
 	}
 
-	public bool StartSound(string asset, bool pause_on_game_pause = true, bool enable_culling = true, bool enable_camera_scaled_position = true)
+		public bool StartSound(string asset, bool pause_on_game_pause = true, bool enable_culling = true, bool enable_camera_scaled_position = true)
 	{
 		if (asset.IsNullOrWhiteSpace())
 		{
@@ -121,7 +121,7 @@ public class LoopingSounds : KMonoBehaviour
 		return true;
 	}
 
-	public void UpdateVelocity(string asset, Vector2 value)
+		public void UpdateVelocity(string asset, Vector2 value)
 	{
 		foreach (LoopingSounds.LoopingSoundEvent loopingSoundEvent in this.loopingSounds)
 		{
@@ -133,7 +133,7 @@ public class LoopingSounds : KMonoBehaviour
 		}
 	}
 
-	public void UpdateFirstParameter(string asset, HashedString parameter, float value)
+		public void UpdateFirstParameter(string asset, HashedString parameter, float value)
 	{
 		foreach (LoopingSounds.LoopingSoundEvent loopingSoundEvent in this.loopingSounds)
 		{
@@ -145,7 +145,7 @@ public class LoopingSounds : KMonoBehaviour
 		}
 	}
 
-	public void UpdateSecondParameter(string asset, HashedString parameter, float value)
+		public void UpdateSecondParameter(string asset, HashedString parameter, float value)
 	{
 		foreach (LoopingSounds.LoopingSoundEvent loopingSoundEvent in this.loopingSounds)
 		{
@@ -157,18 +157,18 @@ public class LoopingSounds : KMonoBehaviour
 		}
 	}
 
-	private void StopSoundAtIndex(int i)
+		private void StopSoundAtIndex(int i)
 	{
 		LoopingSoundManager.StopSound(this.loopingSounds[i].handle);
 	}
 
-	public void StopSound(EventReference event_ref)
+		public void StopSound(EventReference event_ref)
 	{
 		string eventReferencePath = KFMOD.GetEventReferencePath(event_ref);
 		this.StopSound(eventReferencePath);
 	}
 
-	public void StopSound(string asset)
+		public void StopSound(string asset)
 	{
 		for (int i = 0; i < this.loopingSounds.Count; i++)
 		{
@@ -181,7 +181,7 @@ public class LoopingSounds : KMonoBehaviour
 		}
 	}
 
-	public void PauseSound(string asset, bool paused)
+		public void PauseSound(string asset, bool paused)
 	{
 		for (int i = 0; i < this.loopingSounds.Count; i++)
 		{
@@ -193,7 +193,7 @@ public class LoopingSounds : KMonoBehaviour
 		}
 	}
 
-	public void StopAllSounds()
+		public void StopAllSounds()
 	{
 		for (int i = 0; i < this.loopingSounds.Count; i++)
 		{
@@ -202,19 +202,19 @@ public class LoopingSounds : KMonoBehaviour
 		this.loopingSounds.Clear();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		this.StopAllSounds();
 	}
 
-	public void SetParameter(EventReference event_ref, HashedString parameter, float value)
+		public void SetParameter(EventReference event_ref, HashedString parameter, float value)
 	{
 		string eventReferencePath = KFMOD.GetEventReferencePath(event_ref);
 		this.SetParameter(eventReferencePath, parameter, value);
 	}
 
-	public void SetParameter(string path, HashedString parameter, float value)
+		public void SetParameter(string path, HashedString parameter, float value)
 	{
 		foreach (LoopingSounds.LoopingSoundEvent loopingSoundEvent in this.loopingSounds)
 		{
@@ -226,7 +226,7 @@ public class LoopingSounds : KMonoBehaviour
 		}
 	}
 
-	public void PlayEvent(GameSoundEvents.Event ev)
+		public void PlayEvent(GameSoundEvents.Event ev)
 	{
 		if (AudioDebug.Get().debugGameEventSounds)
 		{
@@ -270,7 +270,7 @@ public class LoopingSounds : KMonoBehaviour
 		}
 	}
 
-	public void UpdateObjectSelection(bool selected)
+		public void UpdateObjectSelection(bool selected)
 	{
 		GameObject gameObject = base.gameObject;
 		if (selected && gameObject != null && CameraController.Instance.IsVisiblePos(gameObject.transform.position))
@@ -292,23 +292,23 @@ public class LoopingSounds : KMonoBehaviour
 		}
 	}
 
-	private List<LoopingSounds.LoopingSoundEvent> loopingSounds = new List<LoopingSounds.LoopingSoundEvent>();
+		private List<LoopingSounds.LoopingSoundEvent> loopingSounds = new List<LoopingSounds.LoopingSoundEvent>();
 
-	private Dictionary<HashedString, float> lastTimePlayed = new Dictionary<HashedString, float>();
+		private Dictionary<HashedString, float> lastTimePlayed = new Dictionary<HashedString, float>();
 
-	[SerializeField]
+		[SerializeField]
 	public bool updatePosition;
 
-	public float vol = 1f;
+		public float vol = 1f;
 
-	public bool objectIsSelectedAndVisible;
+		public bool objectIsSelectedAndVisible;
 
-	public Vector3 sound_pos;
+		public Vector3 sound_pos;
 
-	private struct LoopingSoundEvent
+		private struct LoopingSoundEvent
 	{
-		public string asset;
+				public string asset;
 
-		public HandleVector<int>.Handle handle;
+				public HandleVector<int>.Handle handle;
 	}
 }

@@ -4,11 +4,11 @@ using FMOD.Studio;
 
 internal class UpdateConsumedMassParameter : LoopingSoundParameterUpdater
 {
-	public UpdateConsumedMassParameter() : base("consumedMass")
+		public UpdateConsumedMassParameter() : base("consumedMass")
 	{
 	}
 
-	public override void Add(LoopingSoundParameterUpdater.Sound sound)
+		public override void Add(LoopingSoundParameterUpdater.Sound sound)
 	{
 		UpdateConsumedMassParameter.Entry item = new UpdateConsumedMassParameter.Entry
 		{
@@ -19,7 +19,7 @@ internal class UpdateConsumedMassParameter : LoopingSoundParameterUpdater
 		this.entries.Add(item);
 	}
 
-	public override void Update(float dt)
+		public override void Update(float dt)
 	{
 		foreach (UpdateConsumedMassParameter.Entry entry in this.entries)
 		{
@@ -32,7 +32,7 @@ internal class UpdateConsumedMassParameter : LoopingSoundParameterUpdater
 		}
 	}
 
-	public override void Remove(LoopingSoundParameterUpdater.Sound sound)
+		public override void Remove(LoopingSoundParameterUpdater.Sound sound)
 	{
 		for (int i = 0; i < this.entries.Count; i++)
 		{
@@ -44,14 +44,14 @@ internal class UpdateConsumedMassParameter : LoopingSoundParameterUpdater
 		}
 	}
 
-	private List<UpdateConsumedMassParameter.Entry> entries = new List<UpdateConsumedMassParameter.Entry>();
+		private List<UpdateConsumedMassParameter.Entry> entries = new List<UpdateConsumedMassParameter.Entry>();
 
-	private struct Entry
+		private struct Entry
 	{
-		public CreatureCalorieMonitor.Instance creatureCalorieMonitor;
+				public CreatureCalorieMonitor.Instance creatureCalorieMonitor;
 
-		public EventInstance ev;
+				public EventInstance ev;
 
-		public PARAMETER_ID parameterId;
+				public PARAMETER_ID parameterId;
 	}
 }

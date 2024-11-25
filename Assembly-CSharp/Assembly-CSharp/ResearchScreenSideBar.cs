@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ResearchScreenSideBar : KScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.PopualteProjects();
@@ -34,7 +34,7 @@ public class ResearchScreenSideBar : KScreen
 		Game.Instance.Subscribe(-107300940, new Action<object>(this.UpdateProjectFilter));
 	}
 
-	private void Update()
+		private void Update()
 	{
 		for (int i = 0; i < Math.Min(this.QueuedActivations.Count, this.activationPerFrame); i++)
 		{
@@ -48,7 +48,7 @@ public class ResearchScreenSideBar : KScreen
 		this.QueuedDeactivations.RemoveRange(0, Math.Min(this.QueuedDeactivations.Count, this.activationPerFrame));
 	}
 
-	private void ConfigCompletionFilters()
+		private void ConfigCompletionFilters()
 	{
 		MultiToggle multiToggle = this.allFilter;
 		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(delegate()
@@ -68,7 +68,7 @@ public class ResearchScreenSideBar : KScreen
 		this.SetCompletionFilter(ResearchScreenSideBar.CompletionState.All);
 	}
 
-	private void SetCompletionFilter(ResearchScreenSideBar.CompletionState state)
+		private void SetCompletionFilter(ResearchScreenSideBar.CompletionState state)
 	{
 		this.completionFilter = state;
 		this.allFilter.GetComponent<MultiToggle>().ChangeState((this.completionFilter == ResearchScreenSideBar.CompletionState.All) ? 1 : 0);
@@ -77,7 +77,7 @@ public class ResearchScreenSideBar : KScreen
 		this.UpdateProjectFilter(null);
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		if (base.isEditing)
 		{
@@ -86,7 +86,7 @@ public class ResearchScreenSideBar : KScreen
 		return 21f;
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.researchScreen != null && this.researchScreen.canvas && !this.researchScreen.canvas.enabled)
 		{
@@ -123,13 +123,13 @@ public class ResearchScreenSideBar : KScreen
 		}
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		this.RefreshWidgets();
 	}
 
-	private void UpdateCurrentSearch(string newValue)
+		private void UpdateCurrentSearch(string newValue)
 	{
 		if (base.isEditing)
 		{
@@ -143,7 +143,7 @@ public class ResearchScreenSideBar : KScreen
 		this.UpdateProjectFilter(null);
 	}
 
-	private void UpdateProjectFilter(object data = null)
+		private void UpdateProjectFilter(object data = null)
 	{
 		Dictionary<string, bool> dictionary = new Dictionary<string, bool>();
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.projectCategories)
@@ -166,7 +166,7 @@ public class ResearchScreenSideBar : KScreen
 		this.RefreshCategoriesContentExpanded();
 	}
 
-	private void RefreshProjectsActive()
+		private void RefreshProjectsActive()
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.projectTechs)
 		{
@@ -183,7 +183,7 @@ public class ResearchScreenSideBar : KScreen
 		}
 	}
 
-	private void RefreshCategoriesContentExpanded()
+		private void RefreshCategoriesContentExpanded()
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.projectCategories)
 		{
@@ -192,7 +192,7 @@ public class ResearchScreenSideBar : KScreen
 		}
 	}
 
-	private void PopualteProjects()
+		private void PopualteProjects()
 	{
 		List<global::Tuple<global::Tuple<string, GameObject>, int>> list = new List<global::Tuple<global::Tuple<string, GameObject>, int>>();
 		for (int i = 0; i < Db.Get().Techs.Count; i++)
@@ -241,7 +241,7 @@ public class ResearchScreenSideBar : KScreen
 		}
 	}
 
-	private void PopulateFilterButtons()
+		private void PopulateFilterButtons()
 	{
 		using (Dictionary<string, List<Tag>>.Enumerator enumerator = this.filterPresets.GetEnumerator())
 		{
@@ -278,11 +278,11 @@ public class ResearchScreenSideBar : KScreen
 		}
 	}
 
-	public void RefreshQueue()
+		public void RefreshQueue()
 	{
 	}
 
-	private void RefreshWidgets()
+		private void RefreshWidgets()
 	{
 		List<TechInstance> researchQueue = Research.Instance.GetResearchQueue();
 		using (Dictionary<string, GameObject>.Enumerator enumerator = this.projectTechs.GetEnumerator())
@@ -306,7 +306,7 @@ public class ResearchScreenSideBar : KScreen
 		}
 	}
 
-	private void RefreshWidgetProgressBars(string techID, GameObject widget)
+		private void RefreshWidgetProgressBars(string techID, GameObject widget)
 	{
 		HierarchyReferences component = widget.GetComponent<HierarchyReferences>();
 		ResearchPointInventory progressInventory = Research.Instance.GetTechInstance(techID).progressInventory;
@@ -325,7 +325,7 @@ public class ResearchScreenSideBar : KScreen
 		}
 	}
 
-	private GameObject SpawnTechWidget(string techID, GameObject parentContainer)
+		private GameObject SpawnTechWidget(string techID, GameObject parentContainer)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.techWidgetRootAltPrefab, parentContainer, true);
 		HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
@@ -339,7 +339,7 @@ public class ResearchScreenSideBar : KScreen
 		System.Action <>9__0;
 		foreach (TechItem techItem in Db.Get().Techs.Get(techID).unlockedItems)
 		{
-			if (SaveLoader.Instance.IsDlcListActiveForCurrentSave(techItem.dlcIds))
+			if (SaveLoader.Instance.IsCorrectDlcActiveForCurrentSave(techItem.requiredDlcIds, techItem.forbiddenDlcIds))
 			{
 				GameObject gameObject2 = Util.KInstantiateUI(this.techItemPrefab, reference.gameObject, true);
 				gameObject2.GetComponentsInChildren<Image>()[1].sprite = techItem.UISprite();
@@ -371,7 +371,7 @@ public class ResearchScreenSideBar : KScreen
 		return gameObject;
 	}
 
-	private void ChangeGameObjectActive(GameObject target, bool targetActiveState)
+		private void ChangeGameObjectActive(GameObject target, bool targetActiveState)
 	{
 		if (target.activeSelf != targetActiveState)
 		{
@@ -395,7 +395,7 @@ public class ResearchScreenSideBar : KScreen
 		}
 	}
 
-	private bool CheckTechItemPassesFilters(string techItemID)
+		private bool CheckTechItemPassesFilters(string techItemID)
 	{
 		TechItem techItem = Db.Get().TechItems.Get(techItemID);
 		bool flag = true;
@@ -419,7 +419,7 @@ public class ResearchScreenSideBar : KScreen
 		return flag;
 	}
 
-	private bool CheckTechPassesFilters(string techID)
+		private bool CheckTechPassesFilters(string techID)
 	{
 		Tech tech = Db.Get().Techs.Get(techID);
 		bool flag = true;
@@ -443,7 +443,7 @@ public class ResearchScreenSideBar : KScreen
 		return flag;
 	}
 
-	public void ResetFilter()
+		public void ResetFilter()
 	{
 		this.UpdateCurrentSearch("");
 		this.searchBox.text = "";
@@ -455,88 +455,88 @@ public class ResearchScreenSideBar : KScreen
 		this.SetCompletionFilter(ResearchScreenSideBar.CompletionState.All);
 	}
 
-	[Header("Containers")]
+		[Header("Containers")]
 	[SerializeField]
 	private GameObject queueContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject projectsContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject searchFiltersContainer;
 
-	[Header("Prefabs")]
+		[Header("Prefabs")]
 	[SerializeField]
 	private GameObject headerTechTypePrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject filterButtonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject techWidgetRootPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject techWidgetRootAltPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject techItemPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject techWidgetUnlockedItemPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject techWidgetRowPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject techCategoryPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject techCategoryPrefabAlt;
 
-	[Header("Other references")]
+		[Header("Other references")]
 	[SerializeField]
 	private KInputTextField searchBox;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle allFilter;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle availableFilter;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle completedFilter;
 
-	[SerializeField]
+		[SerializeField]
 	private ResearchScreen researchScreen;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton clearSearchButton;
 
-	[SerializeField]
+		[SerializeField]
 	private Color evenRowColor;
 
-	[SerializeField]
+		[SerializeField]
 	private Color oddRowColor;
 
-	private ResearchScreenSideBar.CompletionState completionFilter;
+		private ResearchScreenSideBar.CompletionState completionFilter;
 
-	private Dictionary<string, bool> filterStates = new Dictionary<string, bool>();
+		private Dictionary<string, bool> filterStates = new Dictionary<string, bool>();
 
-	private Dictionary<string, bool> categoryExpanded = new Dictionary<string, bool>();
+		private Dictionary<string, bool> categoryExpanded = new Dictionary<string, bool>();
 
-	private string currentSearchString = "";
+		private string currentSearchString = "";
 
-	private Dictionary<string, GameObject> queueTechs = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> queueTechs = new Dictionary<string, GameObject>();
 
-	private Dictionary<string, GameObject> projectTechs = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> projectTechs = new Dictionary<string, GameObject>();
 
-	private Dictionary<string, GameObject> projectCategories = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> projectCategories = new Dictionary<string, GameObject>();
 
-	private Dictionary<string, GameObject> filterButtons = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> filterButtons = new Dictionary<string, GameObject>();
 
-	private Dictionary<string, Dictionary<string, GameObject>> projectTechItems = new Dictionary<string, Dictionary<string, GameObject>>();
+		private Dictionary<string, Dictionary<string, GameObject>> projectTechItems = new Dictionary<string, Dictionary<string, GameObject>>();
 
-	private Dictionary<string, List<Tag>> filterPresets = new Dictionary<string, List<Tag>>
+		private Dictionary<string, List<Tag>> filterPresets = new Dictionary<string, List<Tag>>
 	{
 		{
 			"Oxygen",
@@ -588,21 +588,21 @@ public class ResearchScreenSideBar : KScreen
 		}
 	};
 
-	private List<GameObject> QueuedActivations = new List<GameObject>();
+		private List<GameObject> QueuedActivations = new List<GameObject>();
 
-	private List<GameObject> QueuedDeactivations = new List<GameObject>();
+		private List<GameObject> QueuedDeactivations = new List<GameObject>();
 
-	public ButtonSoundPlayer soundPlayer;
+		public ButtonSoundPlayer soundPlayer;
 
-	[SerializeField]
+		[SerializeField]
 	private int activationPerFrame = 5;
 
-	private bool evenRow;
+		private bool evenRow;
 
-	private enum CompletionState
+		private enum CompletionState
 	{
-		All,
-		Available,
-		Completed
+				All,
+				Available,
+				Completed
 	}
 }

@@ -8,13 +8,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ArtifactFinder")]
 public class ArtifactFinder : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<ArtifactFinder>(-887025858, ArtifactFinder.OnLandDelegate);
 	}
 
-	public ArtifactTier GetArtifactDropTier(StoredMinionIdentity minionID, SpaceDestination destination)
+		public ArtifactTier GetArtifactDropTier(StoredMinionIdentity minionID, SpaceDestination destination)
 	{
 		ArtifactDropRate artifactDropTable = destination.GetDestinationType().artifactDropTable;
 		bool flag = minionID.traitIDs.Contains("Archaeologist");
@@ -41,7 +41,7 @@ public class ArtifactFinder : KMonoBehaviour
 		return DECOR.SPACEARTIFACT.TIER0;
 	}
 
-	public List<string> GetArtifactsOfTier(ArtifactTier tier)
+		public List<string> GetArtifactsOfTier(ArtifactTier tier)
 	{
 		List<string> list = new List<string>();
 		foreach (KeyValuePair<ArtifactType, List<string>> keyValuePair in ArtifactConfig.artifactItems)
@@ -57,7 +57,7 @@ public class ArtifactFinder : KMonoBehaviour
 		return list;
 	}
 
-	public string SearchForArtifact(StoredMinionIdentity minionID, SpaceDestination destination)
+		public string SearchForArtifact(StoredMinionIdentity minionID, SpaceDestination destination)
 	{
 		ArtifactTier artifactDropTier = this.GetArtifactDropTier(minionID, destination);
 		if (artifactDropTier == DECOR.SPACEARTIFACT.TIER_NONE)
@@ -68,7 +68,7 @@ public class ArtifactFinder : KMonoBehaviour
 		return artifactsOfTier[UnityEngine.Random.Range(0, artifactsOfTier.Count)];
 	}
 
-	public void OnLand(object data)
+		public void OnLand(object data)
 	{
 		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(SpacecraftManager.instance.GetSpacecraftID(base.GetComponent<RocketModule>().conditionManager.GetComponent<ILaunchableRocket>()));
 		foreach (MinionStorage.Info info in this.minionStorage.GetStoredMinionInfo())
@@ -82,12 +82,12 @@ public class ArtifactFinder : KMonoBehaviour
 		}
 	}
 
-	public const string ID = "ArtifactFinder";
+		public const string ID = "ArtifactFinder";
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private MinionStorage minionStorage;
 
-	private static readonly EventSystem.IntraObjectHandler<ArtifactFinder> OnLandDelegate = new EventSystem.IntraObjectHandler<ArtifactFinder>(delegate(ArtifactFinder component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ArtifactFinder> OnLandDelegate = new EventSystem.IntraObjectHandler<ArtifactFinder>(delegate(ArtifactFinder component, object data)
 	{
 		component.OnLand(data);
 	});

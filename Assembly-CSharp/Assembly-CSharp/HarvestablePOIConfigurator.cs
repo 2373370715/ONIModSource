@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/HarvestablePOIConfigurator")]
 public class HarvestablePOIConfigurator : KMonoBehaviour
 {
-	public static HarvestablePOIConfigurator.HarvestablePOIType FindType(HashedString typeId)
+		public static HarvestablePOIConfigurator.HarvestablePOIType FindType(HashedString typeId)
 	{
 		HarvestablePOIConfigurator.HarvestablePOIType harvestablePOIType = null;
 		if (typeId != HashedString.Invalid)
@@ -19,12 +19,12 @@ public class HarvestablePOIConfigurator : KMonoBehaviour
 		return harvestablePOIType;
 	}
 
-	public HarvestablePOIConfigurator.HarvestablePOIInstanceConfiguration MakeConfiguration()
+		public HarvestablePOIConfigurator.HarvestablePOIInstanceConfiguration MakeConfiguration()
 	{
 		return this.CreateRandomInstance(this.presetType, this.presetMin, this.presetMax);
 	}
 
-	private HarvestablePOIConfigurator.HarvestablePOIInstanceConfiguration CreateRandomInstance(HashedString typeId, float min, float max)
+		private HarvestablePOIConfigurator.HarvestablePOIInstanceConfiguration CreateRandomInstance(HashedString typeId, float min, float max)
 	{
 		int globalWorldSeed = SaveLoader.Instance.clusterDetailSave.globalWorldSeed;
 		ClusterGridEntity component = base.GetComponent<ClusterGridEntity>();
@@ -38,22 +38,22 @@ public class HarvestablePOIConfigurator : KMonoBehaviour
 		};
 	}
 
-	private float Roll(KRandom randomSource, float min, float max)
+		private float Roll(KRandom randomSource, float min, float max)
 	{
 		return (float)(randomSource.NextDouble() * (double)(max - min)) + min;
 	}
 
-	private static List<HarvestablePOIConfigurator.HarvestablePOIType> _poiTypes;
+		private static List<HarvestablePOIConfigurator.HarvestablePOIType> _poiTypes;
 
-	public HashedString presetType;
+		public HashedString presetType;
 
-	public float presetMin;
+		public float presetMin;
 
-	public float presetMax = 1f;
+		public float presetMax = 1f;
 
-	public class HarvestablePOIType
+		public class HarvestablePOIType
 	{
-		public HarvestablePOIType(string id, Dictionary<SimHashes, float> harvestableElements, float poiCapacityMin = 54000f, float poiCapacityMax = 81000f, float poiRechargeMin = 30000f, float poiRechargeMax = 60000f, bool canProvideArtifacts = true, List<string> orbitalObject = null, int maxNumOrbitingObjects = 20, string dlcID = "EXPANSION1_ID")
+				public HarvestablePOIType(string id, Dictionary<SimHashes, float> harvestableElements, float poiCapacityMin = 54000f, float poiCapacityMax = 81000f, float poiRechargeMin = 30000f, float poiRechargeMax = 60000f, bool canProvideArtifacts = true, List<string> orbitalObject = null, int maxNumOrbitingObjects = 20, string dlcID = "EXPANSION1_ID")
 		{
 			this.id = id;
 			this.idHash = id;
@@ -73,33 +73,33 @@ public class HarvestablePOIConfigurator : KMonoBehaviour
 			HarvestablePOIConfigurator._poiTypes.Add(this);
 		}
 
-		public string id;
+				public string id;
 
-		public HashedString idHash;
+				public HashedString idHash;
 
-		public Dictionary<SimHashes, float> harvestableElements;
+				public Dictionary<SimHashes, float> harvestableElements;
 
-		public float poiCapacityMin;
+				public float poiCapacityMin;
 
-		public float poiCapacityMax;
+				public float poiCapacityMax;
 
-		public float poiRechargeMin;
+				public float poiRechargeMin;
 
-		public float poiRechargeMax;
+				public float poiRechargeMax;
 
-		public bool canProvideArtifacts;
+				public bool canProvideArtifacts;
 
-		public string dlcID;
+				public string dlcID;
 
-		public List<string> orbitalObject;
+				public List<string> orbitalObject;
 
-		public int maxNumOrbitingObjects;
+				public int maxNumOrbitingObjects;
 	}
 
-	[Serializable]
+		[Serializable]
 	public class HarvestablePOIInstanceConfiguration
 	{
-		private void Init()
+				private void Init()
 		{
 			if (this.didInit)
 			{
@@ -110,7 +110,7 @@ public class HarvestablePOIConfigurator : KMonoBehaviour
 			this.poiRecharge = MathUtil.ReRange(this.rechargeRoll, 0f, 1f, this.poiType.poiRechargeMin, this.poiType.poiRechargeMax);
 		}
 
-				public HarvestablePOIConfigurator.HarvestablePOIType poiType
+						public HarvestablePOIConfigurator.HarvestablePOIType poiType
 		{
 			get
 			{
@@ -118,40 +118,40 @@ public class HarvestablePOIConfigurator : KMonoBehaviour
 			}
 		}
 
-		public Dictionary<SimHashes, float> GetElementsWithWeights()
+				public Dictionary<SimHashes, float> GetElementsWithWeights()
 		{
 			this.Init();
 			return this.poiType.harvestableElements;
 		}
 
-		public bool CanProvideArtifacts()
+				public bool CanProvideArtifacts()
 		{
 			this.Init();
 			return this.poiType.canProvideArtifacts;
 		}
 
-		public float GetMaxCapacity()
+				public float GetMaxCapacity()
 		{
 			this.Init();
 			return this.poiTotalCapacity;
 		}
 
-		public float GetRechargeTime()
+				public float GetRechargeTime()
 		{
 			this.Init();
 			return this.poiRecharge;
 		}
 
-		public HashedString typeId;
+				public HashedString typeId;
 
-		private bool didInit;
+				private bool didInit;
 
-		public float capacityRoll;
+				public float capacityRoll;
 
-		public float rechargeRoll;
+				public float rechargeRoll;
 
-		private float poiTotalCapacity;
+				private float poiTotalCapacity;
 
-		private float poiRecharge;
+				private float poiRecharge;
 	}
 }

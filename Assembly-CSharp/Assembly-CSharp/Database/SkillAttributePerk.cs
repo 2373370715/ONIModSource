@@ -4,11 +4,11 @@ using STRINGS;
 
 namespace Database
 {
-	public class SkillAttributePerk : SkillPerk
+		public class SkillAttributePerk : SkillPerk
 	{
-		public SkillAttributePerk(string id, string attributeId, float modifierBonus, string modifierDesc) : base(id, "", null, null, delegate(MinionResume identity)
+				public SkillAttributePerk(string id, string attributeId, float modifierBonus, string modifierDesc) : base(id, "", null, null, delegate(MinionResume identity)
 		{
-		}, false)
+		}, null, false)
 		{
 			Klei.AI.Attribute attribute = Db.Get().Attributes.Get(attributeId);
 			this.modifier = new AttributeModifier(attributeId, modifierBonus, modifierDesc, false, false, true);
@@ -26,6 +26,6 @@ namespace Database
 			};
 		}
 
-		public AttributeModifier modifier;
+				public AttributeModifier modifier;
 	}
 }

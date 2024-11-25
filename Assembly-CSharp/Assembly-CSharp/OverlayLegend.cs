@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class OverlayLegend : KScreen
 {
-	[ContextMenu("Set all fonts color")]
+		[ContextMenu("Set all fonts color")]
 	public void SetAllFontsColor()
 	{
 		foreach (OverlayLegend.OverlayInfo overlayInfo in this.overlayInfoList)
@@ -21,7 +21,7 @@ public class OverlayLegend : KScreen
 		}
 	}
 
-	[ContextMenu("Set all tooltips")]
+		[ContextMenu("Set all tooltips")]
 	public void SetAllTooltips()
 	{
 		foreach (OverlayLegend.OverlayInfo overlayInfo in this.overlayInfoList)
@@ -38,7 +38,7 @@ public class OverlayLegend : KScreen
 		}
 	}
 
-	[ContextMenu("Set Sliced for empty icons")]
+		[ContextMenu("Set Sliced for empty icons")]
 	public void SetSlicedForEmptyIcons()
 	{
 		foreach (OverlayLegend.OverlayInfo overlayInfo in this.overlayInfoList)
@@ -53,7 +53,7 @@ public class OverlayLegend : KScreen
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.ConsumeMouseScroll = true;
 		base.OnSpawn();
@@ -81,7 +81,7 @@ public class OverlayLegend : KScreen
 		UnityEngine.Object.Destroy(base.gameObject);
 	}
 
-	protected override void OnLoadLevel()
+		protected override void OnLoadLevel()
 	{
 		OverlayLegend.Instance = null;
 		this.activeDiagrams.Clear();
@@ -89,7 +89,7 @@ public class OverlayLegend : KScreen
 		base.OnLoadLevel();
 	}
 
-	private void SetLegend(OverlayLegend.OverlayInfo overlayInfo)
+		private void SetLegend(OverlayLegend.OverlayInfo overlayInfo)
 	{
 		if (overlayInfo == null)
 		{
@@ -115,7 +115,7 @@ public class OverlayLegend : KScreen
 		this.ConfigureUIHeight();
 	}
 
-	public void SetLegend(OverlayModes.Mode mode, bool refreshing = false)
+		public void SetLegend(OverlayModes.Mode mode, bool refreshing = false)
 	{
 		if (this.currentMode != null && this.currentMode.ViewMode() == mode.ViewMode() && !refreshing)
 		{
@@ -127,7 +127,7 @@ public class OverlayLegend : KScreen
 		this.SetLegend(legend);
 	}
 
-	public GameObject GetFreeUnitObject()
+		public GameObject GetFreeUnitObject()
 	{
 		if (this.inactiveUnitObjs.Count == 0)
 		{
@@ -139,7 +139,7 @@ public class OverlayLegend : KScreen
 		return gameObject;
 	}
 
-	private void RemoveActiveObjects()
+		private void RemoveActiveObjects()
 	{
 		while (this.activeUnitObjs.Count > 0)
 		{
@@ -152,7 +152,7 @@ public class OverlayLegend : KScreen
 		}
 	}
 
-	public void ClearLegend()
+		public void ClearLegend()
 	{
 		this.RemoveActiveObjects();
 		this.ClearFilters();
@@ -160,7 +160,7 @@ public class OverlayLegend : KScreen
 		this.Show(false);
 	}
 
-	public void ClearFilters()
+		public void ClearFilters()
 	{
 		if (this.filterMenu != null)
 		{
@@ -169,7 +169,7 @@ public class OverlayLegend : KScreen
 		this.filterMenu = null;
 	}
 
-	public void ClearDiagrams()
+		public void ClearDiagrams()
 	{
 		for (int i = 0; i < this.activeDiagrams.Count; i++)
 		{
@@ -184,7 +184,7 @@ public class OverlayLegend : KScreen
 		this.diagramsParent.GetComponent<RectTransform>().sizeDelta = sizeDelta;
 	}
 
-	public OverlayLegend.OverlayInfo GetOverlayInfo(OverlayModes.Mode mode)
+		public OverlayLegend.OverlayInfo GetOverlayInfo(OverlayModes.Mode mode)
 	{
 		for (int i = 0; i < this.overlayInfoList.Count; i++)
 		{
@@ -196,7 +196,7 @@ public class OverlayLegend : KScreen
 		return null;
 	}
 
-	private void PopulateOverlayInfoUnits(OverlayLegend.OverlayInfo overlayInfo, bool isRefresh = false)
+		private void PopulateOverlayInfoUnits(OverlayLegend.OverlayInfo overlayInfo, bool isRefresh = false)
 	{
 		if (overlayInfo.infoUnits != null && overlayInfo.infoUnits.Count > 0)
 		{
@@ -246,7 +246,7 @@ public class OverlayLegend : KScreen
 		this.activeUnitsParent.SetActive(false);
 	}
 
-	private void PopulateOverlayDiagrams(OverlayLegend.OverlayInfo overlayInfo, bool isRefresh = false)
+		private void PopulateOverlayDiagrams(OverlayLegend.OverlayInfo overlayInfo, bool isRefresh = false)
 	{
 		if (!isRefresh)
 		{
@@ -285,7 +285,7 @@ public class OverlayLegend : KScreen
 		}
 	}
 
-	private void PopulateGeneratedLegend(OverlayLegend.OverlayInfo info, bool isRefresh = false)
+		private void PopulateGeneratedLegend(OverlayLegend.OverlayInfo info, bool isRefresh = false)
 	{
 		if (isRefresh)
 		{
@@ -340,14 +340,14 @@ public class OverlayLegend : KScreen
 		this.ConfigureUIHeight();
 	}
 
-	private void OnFiltersChanged()
+		private void OnFiltersChanged()
 	{
 		this.currentMode.OnFiltersChanged();
 		this.PopulateGeneratedLegend(this.GetOverlayInfo(this.currentMode), true);
 		Game.Instance.ForceOverlayUpdate(false);
 	}
 
-	private void DisableOverlay()
+		private void DisableOverlay()
 	{
 		this.filterMenu.onParametersChanged -= this.OnFiltersChanged;
 		this.filterMenu.ClearMenu();
@@ -355,7 +355,7 @@ public class OverlayLegend : KScreen
 		this.filterMenu = null;
 	}
 
-	private void ConfigureUIHeight()
+		private void ConfigureUIHeight()
 	{
 		this.scrollRectLayout.enabled = false;
 		this.scrollRectLayout.GetComponent<VerticalLayoutGroup>().enabled = true;
@@ -368,49 +368,49 @@ public class OverlayLegend : KScreen
 		LayoutRebuilder.ForceRebuildLayoutImmediate(base.gameObject.rectTransform());
 	}
 
-	public static OverlayLegend Instance;
+		public static OverlayLegend Instance;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText title;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite emptySprite;
 
-	[SerializeField]
+		[SerializeField]
 	private List<OverlayLegend.OverlayInfo> overlayInfoList;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject unitPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject activeUnitsParent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject diagramsParent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject inactiveUnitsParent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject toolParameterMenuPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private LayoutElement scrollRectLayout;
 
-	private ToolParameterMenu filterMenu;
+		private ToolParameterMenu filterMenu;
 
-	private OverlayModes.Mode currentMode;
+		private OverlayModes.Mode currentMode;
 
-	private List<GameObject> inactiveUnitObjs;
+		private List<GameObject> inactiveUnitObjs;
 
-	private List<GameObject> activeUnitObjs;
+		private List<GameObject> activeUnitObjs;
 
-	private List<GameObject> activeDiagrams = new List<GameObject>();
+		private List<GameObject> activeDiagrams = new List<GameObject>();
 
-	[Serializable]
+		[Serializable]
 	public class OverlayInfoUnit
 	{
-		public OverlayInfoUnit(Sprite icon, string description, Color color, Color fontColor, object formatData = null, bool sliceIcon = false)
+				public OverlayInfoUnit(Sprite icon, string description, Color color, Color fontColor, object formatData = null, bool sliceIcon = false)
 		{
 			this.icon = icon;
 			this.description = description;
@@ -420,34 +420,34 @@ public class OverlayLegend : KScreen
 			this.sliceIcon = sliceIcon;
 		}
 
-		public Sprite icon;
+				public Sprite icon;
 
-		public string description;
+				public string description;
 
-		public string tooltip;
+				public string tooltip;
 
-		public Color color;
+				public Color color;
 
-		public Color fontColor;
+				public Color fontColor;
 
-		public object formatData;
+				public object formatData;
 
-		public object tooltipFormatData;
+				public object tooltipFormatData;
 
-		public bool sliceIcon;
+				public bool sliceIcon;
 	}
 
-	[Serializable]
+		[Serializable]
 	public class OverlayInfo
 	{
-		public string name;
+				public string name;
 
-		public HashedString mode;
+				public HashedString mode;
 
-		public List<OverlayLegend.OverlayInfoUnit> infoUnits;
+				public List<OverlayLegend.OverlayInfoUnit> infoUnits;
 
-		public List<GameObject> diagrams;
+				public List<GameObject> diagrams;
 
-		public bool isProgrammaticallyPopulated;
+				public bool isProgrammaticallyPopulated;
 	}
 }

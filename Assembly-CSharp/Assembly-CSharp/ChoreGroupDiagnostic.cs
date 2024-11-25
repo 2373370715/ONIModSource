@@ -3,7 +3,7 @@ using STRINGS;
 
 public class ChoreGroupDiagnostic : ColonyDiagnostic
 {
-	public ChoreGroupDiagnostic(int worldID, ChoreGroup choreGroup) : base(worldID, UI.COLONY_DIAGNOSTICS.CHOREGROUPDIAGNOSTIC.ALL_NAME)
+		public ChoreGroupDiagnostic(int worldID, ChoreGroup choreGroup) : base(worldID, UI.COLONY_DIAGNOSTICS.CHOREGROUPDIAGNOSTIC.ALL_NAME)
 	{
 		this.choreGroup = choreGroup;
 		this.tracker = TrackerTool.Instance.GetChoreGroupTracker(worldID, choreGroup);
@@ -12,7 +12,7 @@ public class ChoreGroupDiagnostic : ColonyDiagnostic
 		this.id = "ChoreGroupDiagnostic_" + choreGroup.Id;
 	}
 
-	public override ColonyDiagnostic.DiagnosticResult Evaluate()
+		public override ColonyDiagnostic.DiagnosticResult Evaluate()
 	{
 		return new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null)
 		{
@@ -21,5 +21,5 @@ public class ChoreGroupDiagnostic : ColonyDiagnostic
 		};
 	}
 
-	public ChoreGroup choreGroup;
+		public ChoreGroup choreGroup;
 }

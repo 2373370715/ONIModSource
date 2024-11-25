@@ -2,13 +2,13 @@
 
 public interface ICheckboxControl
 {
-		string CheckboxTitleKey { get; }
+			string CheckboxTitleKey { get; }
 
-		string CheckboxLabel { get; }
+			string CheckboxLabel { get; }
 
-		string CheckboxTooltip { get; }
+			string CheckboxTooltip { get; }
 
-	bool GetCheckboxValue();
+		bool GetCheckboxValue();
 
-	void SetCheckboxValue(bool value);
+		void SetCheckboxValue(bool value);
 }

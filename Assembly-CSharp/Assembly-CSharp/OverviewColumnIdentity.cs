@@ -4,13 +4,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/OverviewColumnIdentity")]
 public class OverviewColumnIdentity : KMonoBehaviour
 {
-	public string columnID = "";
+		public string columnID = "";
 
-	public string Column_DisplayName = "";
+		public string Column_DisplayName = "";
 
-	public bool Sortable;
+		public bool Sortable;
 
-	public float xPivot;
+		public float xPivot;
 
-	public bool StringLookup;
+		public bool StringLookup;
 }

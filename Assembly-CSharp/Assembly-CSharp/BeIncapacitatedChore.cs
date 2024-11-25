@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 {
-	public void FindAvailableMedicalBed(Navigator navigator)
+		public void FindAvailableMedicalBed(Navigator navigator)
 	{
 		Clinic clinic = null;
 		AssignableSlot clinic2 = Db.Get().AssignableSlots.Clinic;
@@ -28,36 +28,36 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 		}
 	}
 
-	public GameObject GetChosenClinic()
+		public GameObject GetChosenClinic()
 	{
 		return base.smi.sm.clinic.Get(base.smi);
 	}
 
-	public BeIncapacitatedChore(IStateMachineTarget master) : base(Db.Get().ChoreTypes.BeIncapacitated, master, master.GetComponent<ChoreProvider>(), true, null, null, null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+		public BeIncapacitatedChore(IStateMachineTarget master) : base(Db.Get().ChoreTypes.BeIncapacitated, master, master.GetComponent<ChoreProvider>(), true, null, null, null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new BeIncapacitatedChore.StatesInstance(this);
 	}
 
-	private static string IncapacitatedDuplicantAnim_pre = "incapacitate_pre";
+		private static string IncapacitatedDuplicantAnim_pre = "incapacitate_pre";
 
-	private static string IncapacitatedDuplicantAnim_loop = "incapacitate_loop";
+		private static string IncapacitatedDuplicantAnim_loop = "incapacitate_loop";
 
-	private static string IncapacitatedDuplicantAnim_death = "incapacitate_death";
+		private static string IncapacitatedDuplicantAnim_death = "incapacitate_death";
 
-	private static string IncapacitatedDuplicantAnim_carry = "carry_loop";
+		private static string IncapacitatedDuplicantAnim_carry = "carry_loop";
 
-	private static string IncapacitatedDuplicantAnim_place = "place";
+		private static string IncapacitatedDuplicantAnim_place = "place";
 
-	public class StatesInstance : GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.GameInstance
 	{
-		public StatesInstance(BeIncapacitatedChore master) : base(master)
+				public StatesInstance(BeIncapacitatedChore master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore>
+		public class States : GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.root;
 			this.root.ToggleAnims("anim_incapacitated_kanim", 0f).ToggleStatusItem(Db.Get().DuplicantStatusItems.Incapacitated, (BeIncapacitatedChore.StatesInstance smi) => smi.master.gameObject.GetSMI<IncapacitationMonitor.Instance>()).Enter(delegate(BeIncapacitatedChore.StatesInstance smi)
@@ -135,26 +135,26 @@ public class BeIncapacitatedChore : Chore<BeIncapacitatedChore.StatesInstance>
 			});
 		}
 
-		public BeIncapacitatedChore.States.IncapacitatedStates incapacitation_root;
+				public BeIncapacitatedChore.States.IncapacitatedStates incapacitation_root;
 
-		public StateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.TargetParameter clinic;
+				public StateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.TargetParameter clinic;
 
-		public class IncapacitatedStates : GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State
+				public class IncapacitatedStates : GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State
 		{
-			public GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State lookingForBed;
+						public GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State lookingForBed;
 
-			public BeIncapacitatedChore.States.BeingRescued rescue;
+						public BeIncapacitatedChore.States.BeingRescued rescue;
 
-			public GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State death;
+						public GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State death;
 
-			public GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State recovering;
+						public GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State recovering;
 		}
 
-		public class BeingRescued : GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State
+				public class BeingRescued : GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State
 		{
-			public GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State waitingForPickup;
+						public GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State waitingForPickup;
 
-			public GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State carried;
+						public GameStateMachine<BeIncapacitatedChore.States, BeIncapacitatedChore.StatesInstance, BeIncapacitatedChore, object>.State carried;
 		}
 	}
 }

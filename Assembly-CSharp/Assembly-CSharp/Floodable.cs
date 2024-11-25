@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Floodable")]
 public class Floodable : KMonoBehaviour
 {
-		public bool IsFlooded
+			public bool IsFlooded
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class Floodable : KMonoBehaviour
 		}
 	}
 
-		public BuildingDef Def
+			public BuildingDef Def
 	{
 		get
 		{
@@ -21,14 +21,14 @@ public class Floodable : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.partitionerEntry = GameScenePartitioner.Instance.Add("Floodable.OnSpawn", base.gameObject, this.building.GetExtents(), GameScenePartitioner.Instance.liquidChangedLayer, new Action<object>(this.OnElementChanged));
 		this.OnElementChanged(null);
 	}
 
-	private void OnElementChanged(object data)
+		private void OnElementChanged(object data)
 	{
 		bool flag = false;
 		for (int i = 0; i < this.building.PlacementCells.Length; i++)
@@ -47,26 +47,26 @@ public class Floodable : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private PrimaryElement primaryElement;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private SimCellOccupier simCellOccupier;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	public static Operational.Flag notFloodedFlag = new Operational.Flag("not_flooded", Operational.Flag.Type.Functional);
+		public static Operational.Flag notFloodedFlag = new Operational.Flag("not_flooded", Operational.Flag.Type.Functional);
 
-	private bool isFlooded;
+		private bool isFlooded;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 }

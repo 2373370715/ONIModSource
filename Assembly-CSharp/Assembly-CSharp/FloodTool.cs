@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FloodTool : InterfaceTool
 {
-	public HashSet<int> Flood(int startCell)
+		public HashSet<int> Flood(int startCell)
 	{
 		HashSet<int> visited_cells = new HashSet<int>();
 		HashSet<int> hashSet = new HashSet<int>();
@@ -12,23 +12,23 @@ public class FloodTool : InterfaceTool
 		return hashSet;
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		base.OnLeftClickDown(cursor_pos);
 		this.paintArea(this.Flood(Grid.PosToCell(cursor_pos)));
 	}
 
-	public override void OnMouseMove(Vector3 cursor_pos)
+		public override void OnMouseMove(Vector3 cursor_pos)
 	{
 		base.OnMouseMove(cursor_pos);
 		this.mouseCell = Grid.PosToCell(cursor_pos);
 	}
 
-	public Func<int, bool> floodCriteria;
+		public Func<int, bool> floodCriteria;
 
-	public Action<HashSet<int>> paintArea;
+		public Action<HashSet<int>> paintArea;
 
-	protected Color32 areaColour = new Color(0.5f, 0.7f, 0.5f, 0.2f);
+		protected Color32 areaColour = new Color(0.5f, 0.7f, 0.5f, 0.2f);
 
-	protected int mouseCell = -1;
+		protected int mouseCell = -1;
 }

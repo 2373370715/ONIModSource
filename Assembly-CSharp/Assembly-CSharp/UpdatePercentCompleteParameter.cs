@@ -1,61 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using FMOD.Studio;
 
-internal class UpdatePercentCompleteParameter : LoopingSoundParameterUpdater
-{
-	public UpdatePercentCompleteParameter() : base("percentComplete")
-	{
-	}
+internal class UpdatePercentCompleteParameter : LoopingSoundParameterUpdater {
+    private readonly List<Entry> entries = new List<Entry>();
+    public UpdatePercentCompleteParameter() : base("percentComplete") { }
 
-	public override void Add(LoopingSoundParameterUpdater.Sound sound)
-	{
-		UpdatePercentCompleteParameter.Entry item = new UpdatePercentCompleteParameter.Entry
-		{
-			worker = sound.transform.GetComponent<Worker>(),
-			ev = sound.ev,
-			parameterId = sound.description.GetParameterId(base.parameter)
-		};
-		this.entries.Add(item);
-	}
+    public override void Add(Sound sound) {
+        var item = new Entry {
+            worker      = sound.transform.GetComponent<WorkerBase>(),
+            ev          = sound.ev,
+            parameterId = sound.description.GetParameterId(parameter)
+        };
 
-	public override void Update(float dt)
-	{
-		foreach (UpdatePercentCompleteParameter.Entry entry in this.entries)
-		{
-			if (!(entry.worker == null))
-			{
-				Workable workable = entry.worker.workable;
-				if (!(workable == null))
-				{
-					float percentComplete = workable.GetPercentComplete();
-					EventInstance ev = entry.ev;
-					ev.setParameterByID(entry.parameterId, percentComplete, false);
-				}
-			}
-		}
-	}
+        entries.Add(item);
+    }
 
-	public override void Remove(LoopingSoundParameterUpdater.Sound sound)
-	{
-		for (int i = 0; i < this.entries.Count; i++)
-		{
-			if (this.entries[i].ev.handle == sound.ev.handle)
-			{
-				this.entries.RemoveAt(i);
-				return;
-			}
-		}
-	}
+    public override void Update(float dt) {
+        foreach (var entry in entries)
+            if (!(entry.worker == null)) {
+                var workable = entry.worker.GetWorkable();
+                if (!(workable == null)) {
+                    var percentComplete = workable.GetPercentComplete();
+                    var ev              = entry.ev;
+                    ev.setParameterByID(entry.parameterId, percentComplete);
+                }
+            }
+    }
 
-	private List<UpdatePercentCompleteParameter.Entry> entries = new List<UpdatePercentCompleteParameter.Entry>();
+    public override void Remove(Sound sound) {
+        for (var i = 0; i < entries.Count; i++)
+            if (entries[i].ev.handle == sound.ev.handle) {
+                entries.RemoveAt(i);
+                return;
+            }
+    }
 
-	private struct Entry
-	{
-		public Worker worker;
-
-		public EventInstance ev;
-
-		public PARAMETER_ID parameterId;
-	}
+    private struct Entry {
+        public WorkerBase    worker;
+        public EventInstance ev;
+        public PARAMETER_ID  parameterId;
+    }
 }

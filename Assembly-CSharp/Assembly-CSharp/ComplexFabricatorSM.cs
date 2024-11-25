@@ -2,33 +2,33 @@
 
 public class ComplexFabricatorSM : StateMachineComponent<ComplexFabricatorSM.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ComplexFabricator fabricator;
 
-	public StatusItem idleQueue_StatusItem = Db.Get().BuildingStatusItems.FabricatorIdle;
+		public StatusItem idleQueue_StatusItem = Db.Get().BuildingStatusItems.FabricatorIdle;
 
-	public StatusItem waitingForMaterial_StatusItem = Db.Get().BuildingStatusItems.FabricatorEmpty;
+		public StatusItem waitingForMaterial_StatusItem = Db.Get().BuildingStatusItems.FabricatorEmpty;
 
-	public StatusItem waitingForWorker_StatusItem = Db.Get().BuildingStatusItems.PendingWork;
+		public StatusItem waitingForWorker_StatusItem = Db.Get().BuildingStatusItems.PendingWork;
 
-	public string idleAnimationName = "off";
+		public string idleAnimationName = "off";
 
-	public class StatesInstance : GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.GameInstance
 	{
-		public StatesInstance(ComplexFabricatorSM master) : base(master)
+				public StatesInstance(ComplexFabricatorSM master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM>
+		public class States : GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.off;
 			this.off.PlayAnim("off").EventTransition(GameHashes.OperationalChanged, this.idle, (ComplexFabricatorSM.StatesInstance smi) => smi.GetComponent<Operational>().IsOperational);
@@ -49,7 +49,7 @@ public class ComplexFabricatorSM : StateMachineComponent<ComplexFabricatorSM.Sta
 			this.operating.working_pst_complete.PlayAnim("working_pst_complete").OnAnimQueueComplete(this.idle);
 		}
 
-		public void RefreshHEPStatus(ComplexFabricatorSM.StatesInstance smi)
+				public void RefreshHEPStatus(ComplexFabricatorSM.StatesInstance smi)
 		{
 			if (smi.master.GetComponent<HighEnergyParticleStorage>() != null && smi.master.fabricator.NeedsMoreHEPForQueuedRecipe())
 			{
@@ -59,35 +59,35 @@ public class ComplexFabricatorSM : StateMachineComponent<ComplexFabricatorSM.Sta
 			smi.master.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.FabricatorLacksHEP, false);
 		}
 
-		public static string GetIdleAnimName(ComplexFabricatorSM.StatesInstance smi)
+				public static string GetIdleAnimName(ComplexFabricatorSM.StatesInstance smi)
 		{
 			return smi.master.idleAnimationName;
 		}
 
-		public ComplexFabricatorSM.States.IdleStates off;
+				public ComplexFabricatorSM.States.IdleStates off;
 
-		public ComplexFabricatorSM.States.IdleStates idle;
+				public ComplexFabricatorSM.States.IdleStates idle;
 
-		public ComplexFabricatorSM.States.OperatingStates operating;
+				public ComplexFabricatorSM.States.OperatingStates operating;
 
-		public class IdleStates : GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State
+				public class IdleStates : GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State
 		{
-			public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State idleQueue;
+						public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State idleQueue;
 
-			public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State waitingForMaterial;
+						public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State waitingForMaterial;
 
-			public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State waitingForWorker;
+						public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State waitingForWorker;
 		}
 
-		public class OperatingStates : GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State
+				public class OperatingStates : GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State
 		{
-			public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State working_pre;
+						public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State working_pre;
 
-			public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State working_loop;
+						public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State working_loop;
 
-			public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State working_pst;
+						public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State working_pst;
 
-			public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State working_pst_complete;
+						public GameStateMachine<ComplexFabricatorSM.States, ComplexFabricatorSM.StatesInstance, ComplexFabricatorSM, object>.State working_pst_complete;
 		}
 	}
 }

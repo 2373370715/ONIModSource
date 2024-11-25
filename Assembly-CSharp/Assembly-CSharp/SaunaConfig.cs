@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SaunaConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Sauna";
 		int width = 3;
@@ -41,7 +41,7 @@ public class SaunaConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding, false);
 		go.AddOrGet<Storage>().SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
@@ -69,18 +69,18 @@ public class SaunaConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<RequireInputs>().requireConduitHasMass = false;
 	}
 
-	public const string ID = "Sauna";
+		public const string ID = "Sauna";
 
-	public const string COLD_IMMUNITY_EFFECT_NAME = "WarmTouch";
+		public const string COLD_IMMUNITY_EFFECT_NAME = "WarmTouch";
 
-	public const float COLD_IMMUNITY_DURATION = 1800f;
+		public const float COLD_IMMUNITY_DURATION = 1800f;
 
-	private const float STEAM_PER_USE_KG = 25f;
+		private const float STEAM_PER_USE_KG = 25f;
 
-	private const float WATER_OUTPUT_TEMP = 353.15f;
+		private const float WATER_OUTPUT_TEMP = 353.15f;
 }

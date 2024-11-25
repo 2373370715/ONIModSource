@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class CustomGameSettingSeed : CustomGameSettingWidget
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.Input.onEndEdit.AddListener(new UnityAction<string>(this.OnEndEdit));
@@ -15,7 +15,7 @@ public class CustomGameSettingSeed : CustomGameSettingWidget
 		this.RandomizeButton.onClick += this.GetNewRandomSeed;
 	}
 
-	public void Initialize(SeedSettingConfig config)
+		public void Initialize(SeedSettingConfig config)
 	{
 		this.config = config;
 		this.Label.text = config.label;
@@ -23,7 +23,7 @@ public class CustomGameSettingSeed : CustomGameSettingWidget
 		this.GetNewRandomSeed();
 	}
 
-	public override void Refresh()
+		public override void Refresh()
 	{
 		base.Refresh();
 		string currentQualitySettingLevelId = CustomGameSettings.Instance.GetCurrentQualitySettingLevelId(this.config);
@@ -46,7 +46,7 @@ public class CustomGameSettingSeed : CustomGameSettingWidget
 		this.Input.text = currentQualitySettingLevelId;
 	}
 
-	private char ValidateInput(string text, int charIndex, char addedChar)
+		private char ValidateInput(string text, int charIndex, char addedChar)
 	{
 		if ('0' > addedChar || addedChar > '9')
 		{
@@ -55,7 +55,7 @@ public class CustomGameSettingSeed : CustomGameSettingWidget
 		return addedChar;
 	}
 
-	private void OnEndEdit(string text)
+		private void OnEndEdit(string text)
 	{
 		int seed;
 		try
@@ -69,14 +69,14 @@ public class CustomGameSettingSeed : CustomGameSettingWidget
 		this.SetSeed(seed);
 	}
 
-	public void SetSeed(int seed)
+		public void SetSeed(int seed)
 	{
 		seed = Mathf.Min(seed, int.MaxValue);
 		CustomGameSettings.Instance.SetQualitySetting(this.config, seed.ToString());
 		this.Refresh();
 	}
 
-	private void OnValueChanged(string text)
+		private void OnValueChanged(string text)
 	{
 		int num = 0;
 		try
@@ -100,33 +100,33 @@ public class CustomGameSettingSeed : CustomGameSettingWidget
 		}
 	}
 
-	private void GetNewRandomSeed()
+		private void GetNewRandomSeed()
 	{
 		int seed = UnityEngine.Random.Range(0, int.MaxValue);
 		this.SetSeed(seed);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText Label;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip ToolTip;
 
-	[SerializeField]
+		[SerializeField]
 	private KInputTextField Input;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton RandomizeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip InputToolTip;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip RandomizeButtonToolTip;
 
-	private const int MAX_VALID_SEED = 2147483647;
+		private const int MAX_VALID_SEED = 2147483647;
 
-	private SeedSettingConfig config;
+		private SeedSettingConfig config;
 
-	private bool allowChange = true;
+		private bool allowChange = true;
 }

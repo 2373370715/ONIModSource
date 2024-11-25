@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlanSubCategoryToggle : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		MultiToggle multiToggle = this.toggle;
@@ -15,11 +15,11 @@ public class PlanSubCategoryToggle : KMonoBehaviour
 		}));
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle toggle;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject gridContainer;
 
-	private bool open = true;
+		private bool open = true;
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MonumentMiddleConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MonumentMiddle";
 		int width = 5;
@@ -42,7 +42,7 @@ public class MonumentMiddleConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -53,15 +53,15 @@ public class MonumentMiddleConfig : IBuildingConfig
 		go.AddOrGet<MonumentPart>().part = MonumentPartResource.Part.Middle;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<KBatchedAnimController>().initialAnim = "option_a";
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
@@ -72,5 +72,5 @@ public class MonumentMiddleConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "MonumentMiddle";
+		public const string ID = "MonumentMiddle";
 }

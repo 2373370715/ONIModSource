@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EquipmentTemplates
 {
-	public static EquipmentDef CreateEquipmentDef(string Id, string Slot, SimHashes OutputElement, float Mass, string Anim, string SnapOn, string BuildOverride, int BuildOverridePriority, List<AttributeModifier> AttributeModifiers, string SnapOn1 = null, bool IsBody = false, EntityTemplates.CollisionShape CollisionShape = EntityTemplates.CollisionShape.CIRCLE, float width = 0.325f, float height = 0.325f, Tag[] additional_tags = null, string RecipeTechUnlock = null)
+		public static EquipmentDef CreateEquipmentDef(string Id, string Slot, SimHashes OutputElement, float Mass, string Anim, string SnapOn, string BuildOverride, int BuildOverridePriority, List<AttributeModifier> AttributeModifiers, string SnapOn1 = null, bool IsBody = false, EntityTemplates.CollisionShape CollisionShape = EntityTemplates.CollisionShape.CIRCLE, float width = 0.325f, float height = 0.325f, Tag[] additional_tags = null, string RecipeTechUnlock = null)
 	{
 		EquipmentDef equipmentDef = ScriptableObject.CreateInstance<EquipmentDef>();
 		equipmentDef.Id = Id;

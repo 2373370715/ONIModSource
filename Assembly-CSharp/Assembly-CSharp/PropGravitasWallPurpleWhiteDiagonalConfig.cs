@@ -4,12 +4,7 @@ using UnityEngine;
 
 public class PropGravitasWallPurpleWhiteDiagonalConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_ALL_VERSIONS;
-	}
-
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "PropGravitasWallPurpleWhiteDiagonal";
 		int width = 1;
@@ -36,7 +31,7 @@ public class PropGravitasWallPurpleWhiteDiagonalConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<AnimTileable>().objectLayer = ObjectLayer.Backwall;
 		go.AddComponent<ZoneTile>();
@@ -46,9 +41,9 @@ public class PropGravitasWallPurpleWhiteDiagonalConfig : IBuildingConfig
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "PropGravitasWallPurpleWhiteDiagonal";
+		public const string ID = "PropGravitasWallPurpleWhiteDiagonal";
 }

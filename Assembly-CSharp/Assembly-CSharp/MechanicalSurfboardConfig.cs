@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MechanicalSurfboardConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MechanicalSurfboard";
 		int width = 2;
@@ -31,7 +31,7 @@ public class MechanicalSurfboardConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding, false);
 		go.AddOrGet<Storage>().SetDefaultStoredItemModifiers(Storage.StandardFabricatorStorage);
@@ -52,13 +52,13 @@ public class MechanicalSurfboardConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "MechanicalSurfboard";
+		public const string ID = "MechanicalSurfboard";
 
-	private const float TANK_SIZE_KG = 20f;
+		private const float TANK_SIZE_KG = 20f;
 
-	private const float SPILL_RATE_KG = 0.05f;
+		private const float SPILL_RATE_KG = 0.05f;
 }

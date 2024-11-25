@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>
 {
-	private static StatusItem CreateColoniesStatusItem()
+		private static StatusItem CreateColoniesStatusItem()
 	{
 		StatusItem statusItem = new StatusItem("Temporal_Tear_Opener_Insufficient_Colonies", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
 		statusItem.resolveStringCallback = delegate(string str, object data)
@@ -19,7 +19,7 @@ public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalT
 		return statusItem;
 	}
 
-	private static StatusItem CreateProgressStatusItem()
+		private static StatusItem CreateProgressStatusItem()
 	{
 		StatusItem statusItem = new StatusItem("Temporal_Tear_Opener_Progress", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
 		statusItem.resolveStringCallback = delegate(string str, object data)
@@ -31,7 +31,7 @@ public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalT
 		return statusItem;
 	}
 
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.Enter(delegate(TemporalTearOpener.Instance smi)
@@ -73,60 +73,60 @@ public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalT
 		});
 	}
 
-	private const float MIN_SUNLIGHT_EXPOSURE = 15f;
+		private const float MIN_SUNLIGHT_EXPOSURE = 15f;
 
-	private static StatusItem s_noLosStatus = new StatusItem("Temporal_Tear_Opener_No_Los", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
+		private static StatusItem s_noLosStatus = new StatusItem("Temporal_Tear_Opener_No_Los", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
 
-	private static StatusItem s_insufficient_colonies = TemporalTearOpener.CreateColoniesStatusItem();
+		private static StatusItem s_insufficient_colonies = TemporalTearOpener.CreateColoniesStatusItem();
 
-	private static StatusItem s_noTargetStatus = new StatusItem("Temporal_Tear_Opener_No_Target", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
+		private static StatusItem s_noTargetStatus = new StatusItem("Temporal_Tear_Opener_No_Target", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
 
-	private static StatusItem s_progressStatus = TemporalTearOpener.CreateProgressStatusItem();
+		private static StatusItem s_progressStatus = TemporalTearOpener.CreateProgressStatusItem();
 
-	private TemporalTearOpener.CheckRequirementsState check_requirements;
+		private TemporalTearOpener.CheckRequirementsState check_requirements;
 
-	private TemporalTearOpener.ChargingState charging;
+		private TemporalTearOpener.ChargingState charging;
 
-	private GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State opening_tear_beam_pre;
+		private GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State opening_tear_beam_pre;
 
-	private GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State opening_tear_beam;
+		private GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State opening_tear_beam;
 
-	private GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State opening_tear_finish;
+		private GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State opening_tear_finish;
 
-	private GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State ready;
+		private GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State ready;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public float consumeRate;
+				public float consumeRate;
 
-		public float numParticlesToOpen;
+				public float numParticlesToOpen;
 	}
 
-	private class ChargingState : GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State
+		private class ChargingState : GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State
 	{
-		public GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State idle;
+				public GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State idle;
 
-		public GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State consuming;
+				public GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State consuming;
 	}
 
-	private class CheckRequirementsState : GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State
+		private class CheckRequirementsState : GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State
 	{
-		public GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State has_target;
+				public GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State has_target;
 
-		public GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State has_los;
+				public GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State has_los;
 
-		public GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State enough_colonies;
+				public GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.State enough_colonies;
 	}
 
-	public new class Instance : GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.GameInstance, ISidescreenButtonControl
+		public new class Instance : GameStateMachine<TemporalTearOpener, TemporalTearOpener.Instance, IStateMachineTarget, TemporalTearOpener.Def>.GameInstance, ISidescreenButtonControl
 	{
-		public Instance(IStateMachineTarget master, TemporalTearOpener.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, TemporalTearOpener.Def def) : base(master, def)
 		{
 			this.m_meter = new MeterController(base.gameObject.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, Array.Empty<string>());
 			EnterTemporalTearSequence.tearOpenerGameObject = base.gameObject;
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			if (EnterTemporalTearSequence.tearOpenerGameObject == base.gameObject)
 			{
@@ -135,7 +135,7 @@ public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalT
 			base.OnCleanUp();
 		}
 
-		public bool HasLineOfSight()
+				public bool HasLineOfSight()
 		{
 			Extents extents = base.GetComponent<Building>().GetExtents();
 			int x = extents.x;
@@ -151,12 +151,12 @@ public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalT
 			return true;
 		}
 
-		public bool HasSufficientColonies()
+				public bool HasSufficientColonies()
 		{
 			return this.CountColonies() >= EstablishColonies.BASE_COUNT;
 		}
 
-		public int CountColonies()
+				public int CountColonies()
 		{
 			int num = 0;
 			for (int i = 0; i < Components.Telepads.Count; i++)
@@ -170,7 +170,7 @@ public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalT
 			return num;
 		}
 
-		public bool ConsumeParticlesAndCheckComplete(float dt)
+				public bool ConsumeParticlesAndCheckComplete(float dt)
 		{
 			float amount = Mathf.Min(dt * base.def.consumeRate, base.def.numParticlesToOpen - this.m_particlesConsumed);
 			float num = base.GetComponent<HighEnergyParticleStorage>().ConsumeAndGet(amount);
@@ -179,22 +179,22 @@ public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalT
 			return this.m_particlesConsumed >= base.def.numParticlesToOpen;
 		}
 
-		public void UpdateMeter()
+				public void UpdateMeter()
 		{
 			this.m_meter.SetPositionPercent(this.GetAmountComplete());
 		}
 
-		private float GetAmountComplete()
+				private float GetAmountComplete()
 		{
 			return Mathf.Min(this.m_particlesConsumed / base.def.numParticlesToOpen, 1f);
 		}
 
-		public float GetPercentComplete()
+				public float GetPercentComplete()
 		{
 			return this.GetAmountComplete() * 100f;
 		}
 
-		public void CreateBeamFX()
+				public void CreateBeamFX()
 		{
 			Vector3 position = base.gameObject.transform.position;
 			position.y += 3.25f;
@@ -202,13 +202,13 @@ public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalT
 			Util.KInstantiate(EffectPrefabs.Instance.OpenTemporalTearBeam, position, rotation, base.gameObject, null, true, 0);
 		}
 
-		public void OpenTemporalTear()
+				public void OpenTemporalTear()
 		{
 			ClusterManager.Instance.GetClusterPOIManager().RevealTemporalTear();
 			ClusterManager.Instance.GetClusterPOIManager().OpenTemporalTear(this.GetMyWorldId());
 		}
 
-				public string SidescreenButtonText
+						public string SidescreenButtonText
 		{
 			get
 			{
@@ -216,7 +216,7 @@ public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalT
 			}
 		}
 
-				public string SidescreenButtonTooltip
+						public string SidescreenButtonTooltip
 		{
 			get
 			{
@@ -224,17 +224,17 @@ public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalT
 			}
 		}
 
-		public bool SidescreenEnabled()
+				public bool SidescreenEnabled()
 		{
 			return this.GetCurrentState() == base.sm.ready || DebugHandler.InstantBuildMode;
 		}
 
-		public bool SidescreenButtonInteractable()
+				public bool SidescreenButtonInteractable()
 		{
 			return this.GetCurrentState() == base.sm.ready || DebugHandler.InstantBuildMode;
 		}
 
-		public void OnSidescreenButtonPressed()
+				public void OnSidescreenButtonPressed()
 		{
 			ConfirmDialogScreen component = GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, null, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay).GetComponent<ConfirmDialogScreen>();
 			string text = UI.UISIDESCREENS.TEMPORALTEARSIDESCREEN.CONFIRM_POPUP_MESSAGE;
@@ -252,29 +252,29 @@ public class TemporalTearOpener : GameStateMachine<TemporalTearOpener, TemporalT
 			component.PopupConfirmDialog(text, on_confirm, on_cancel, configurable_text, on_configurable_clicked, UI.UISIDESCREENS.TEMPORALTEARSIDESCREEN.CONFIRM_POPUP_TITLE, confirm_text, cancel_text, null);
 		}
 
-		private void FireTemporalTearOpener(TemporalTearOpener.Instance smi)
+				private void FireTemporalTearOpener(TemporalTearOpener.Instance smi)
 		{
 			smi.GoTo(base.sm.opening_tear_beam_pre);
 		}
 
-		public int ButtonSideScreenSortOrder()
+				public int ButtonSideScreenSortOrder()
 		{
 			return 20;
 		}
 
-		public void SetButtonTextOverride(ButtonMenuTextOverride text)
+				public void SetButtonTextOverride(ButtonMenuTextOverride text)
 		{
 			throw new NotImplementedException();
 		}
 
-		public int HorizontalGroupID()
+				public int HorizontalGroupID()
 		{
 			return -1;
 		}
 
-		[Serialize]
+				[Serialize]
 		private float m_particlesConsumed;
 
-		private MeterController m_meter;
+				private MeterController m_meter;
 	}
 }

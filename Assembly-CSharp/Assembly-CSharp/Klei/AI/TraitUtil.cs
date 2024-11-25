@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class TraitUtil
+		public class TraitUtil
 	{
-		public static System.Action CreateDisabledTaskTrait(string id, string name, string desc, string disabled_chore_group, bool is_valid_starter_trait)
+				public static System.Action CreateDisabledTaskTrait(string id, string name, string desc, string disabled_chore_group, bool is_valid_starter_trait)
 		{
 			return delegate()
 			{
@@ -19,7 +19,7 @@ namespace Klei.AI
 			};
 		}
 
-		public static System.Action CreateTrait(string id, string name, string desc, string attributeId, float delta, string[] chore_groups, bool positiveTrait = false)
+				public static System.Action CreateTrait(string id, string name, string desc, string attributeId, float delta, string[] chore_groups, bool positiveTrait = false)
 		{
 			return delegate()
 			{
@@ -32,7 +32,7 @@ namespace Klei.AI
 			};
 		}
 
-		public static System.Action CreateAttributeEffectTrait(string id, string name, string desc, string attributeId, float delta, string attributeId2, float delta2, bool positiveTrait = false)
+				public static System.Action CreateAttributeEffectTrait(string id, string name, string desc, string attributeId, float delta, string attributeId2, float delta2, bool positiveTrait = false)
 		{
 			return delegate()
 			{
@@ -42,7 +42,20 @@ namespace Klei.AI
 			};
 		}
 
-		public static System.Action CreateAttributeEffectTrait(string id, string name, string desc, string attributeId, float delta, bool positiveTrait = false, Action<GameObject> on_add = null, bool is_valid_starter_trait = true)
+				public static System.Action CreateAttributeEffectTrait(string id, string name, string desc, string[] attributeIds, float[] deltas, bool positiveTrait = false)
+		{
+			return delegate()
+			{
+				global::Debug.Assert(attributeIds.Length == deltas.Length, "CreateAttributeEffectTrait must have an equal number of attributeIds and deltas");
+				Trait trait = Db.Get().CreateTrait(id, name, desc, null, true, null, positiveTrait, true);
+				for (int i = 0; i < attributeIds.Length; i++)
+				{
+					trait.Add(new AttributeModifier(attributeIds[i], deltas[i], name, false, false, true));
+				}
+			};
+		}
+
+				public static System.Action CreateAttributeEffectTrait(string id, string name, string desc, string attributeId, float delta, bool positiveTrait = false, Action<GameObject> on_add = null, bool is_valid_starter_trait = true)
 		{
 			return delegate()
 			{
@@ -52,7 +65,7 @@ namespace Klei.AI
 			};
 		}
 
-		public static System.Action CreateEffectModifierTrait(string id, string name, string desc, string[] ignoredEffects, bool positiveTrait = false)
+				public static System.Action CreateEffectModifierTrait(string id, string name, string desc, string[] ignoredEffects, bool positiveTrait = false)
 		{
 			return delegate()
 			{
@@ -60,7 +73,7 @@ namespace Klei.AI
 			};
 		}
 
-		public static System.Action CreateNamedTrait(string id, string name, string desc, bool positiveTrait = false)
+				public static System.Action CreateNamedTrait(string id, string name, string desc, bool positiveTrait = false)
 		{
 			return delegate()
 			{
@@ -68,7 +81,7 @@ namespace Klei.AI
 			};
 		}
 
-		public static System.Action CreateTrait(string id, string name, string desc, Action<GameObject> on_add, ChoreGroup[] disabled_chore_groups = null, bool positiveTrait = false, Func<string> extendedDescFn = null)
+				public static System.Action CreateTrait(string id, string name, string desc, Action<GameObject> on_add, ChoreGroup[] disabled_chore_groups = null, bool positiveTrait = false, Func<string> extendedDescFn = null)
 		{
 			return delegate()
 			{
@@ -82,7 +95,7 @@ namespace Klei.AI
 			};
 		}
 
-		public static System.Action CreateComponentTrait<T>(string id, string name, string desc, bool positiveTrait = false, Func<string> extendedDescFn = null) where T : KMonoBehaviour
+				public static System.Action CreateComponentTrait<T>(string id, string name, string desc, bool positiveTrait = false, Func<string> extendedDescFn = null) where T : KMonoBehaviour
 		{
 			return delegate()
 			{
@@ -99,7 +112,7 @@ namespace Klei.AI
 			};
 		}
 
-		public static System.Action CreateSkillGrantingTrait(string id, string name, string desc, string skillId)
+				public static System.Action CreateSkillGrantingTrait(string id, string name, string desc, string skillId)
 		{
 			return delegate()
 			{
@@ -116,7 +129,7 @@ namespace Klei.AI
 			};
 		}
 
-		public static string GetSkillGrantingTraitNameById(string id)
+				public static string GetSkillGrantingTraitNameById(string id)
 		{
 			string result = "";
 			StringEntry stringEntry;

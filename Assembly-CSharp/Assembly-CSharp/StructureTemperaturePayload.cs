@@ -4,7 +4,7 @@ using UnityEngine;
 
 public struct StructureTemperaturePayload
 {
-			public PrimaryElement primaryElement
+				public PrimaryElement primaryElement
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public struct StructureTemperaturePayload
 		}
 	}
 
-	public StructureTemperaturePayload(GameObject go)
+		public StructureTemperaturePayload(GameObject go)
 	{
 		this.simHandleCopy = -1;
 		this.enabled = true;
@@ -38,7 +38,7 @@ public struct StructureTemperaturePayload
 		this.isActiveStatusItemSet = false;
 	}
 
-		public float TotalEnergyProducedKW
+			public float TotalEnergyProducedKW
 	{
 		get
 		{
@@ -55,13 +55,13 @@ public struct StructureTemperaturePayload
 		}
 	}
 
-	public void OverrideExtents(Extents newExtents)
+		public void OverrideExtents(Extents newExtents)
 	{
 		this.overrideExtents = true;
 		this.overriddenExtents = newExtents;
 	}
 
-	public Extents GetExtents()
+		public Extents GetExtents()
 	{
 		if (!this.overrideExtents)
 		{
@@ -70,7 +70,7 @@ public struct StructureTemperaturePayload
 		return this.overriddenExtents;
 	}
 
-		public float Temperature
+			public float Temperature
 	{
 		get
 		{
@@ -78,7 +78,7 @@ public struct StructureTemperaturePayload
 		}
 	}
 
-		public float ExhaustKilowatts
+			public float ExhaustKilowatts
 	{
 		get
 		{
@@ -86,7 +86,7 @@ public struct StructureTemperaturePayload
 		}
 	}
 
-		public float OperatingKilowatts
+			public float OperatingKilowatts
 	{
 		get
 		{
@@ -98,43 +98,43 @@ public struct StructureTemperaturePayload
 		}
 	}
 
-	public int simHandleCopy;
+		public int simHandleCopy;
 
-	public bool enabled;
+		public bool enabled;
 
-	public bool bypass;
+		public bool bypass;
 
-	public bool isActiveStatusItemSet;
+		public bool isActiveStatusItemSet;
 
-	public bool overrideExtents;
+		public bool overrideExtents;
 
-	private PrimaryElement primaryElementBacking;
+		private PrimaryElement primaryElementBacking;
 
-	public Overheatable overheatable;
+		public Overheatable overheatable;
 
-	public Building building;
+		public Building building;
 
-	public Operational operational;
+		public Operational operational;
 
-	public KBatchedAnimHeatPostProcessingEffect heatEffect;
+		public KBatchedAnimHeatPostProcessingEffect heatEffect;
 
-	public List<StructureTemperaturePayload.EnergySource> energySourcesKW;
+		public List<StructureTemperaturePayload.EnergySource> energySourcesKW;
 
-	public float pendingEnergyModifications;
+		public float pendingEnergyModifications;
 
-	public float maxTemperature;
+		public float maxTemperature;
 
-	public Extents overriddenExtents;
+		public Extents overriddenExtents;
 
-	public class EnergySource
+		public class EnergySource
 	{
-		public EnergySource(float kj, string source)
+				public EnergySource(float kj, string source)
 		{
 			this.source = source;
 			this.kw_accumulator = new RunningAverage(float.MinValue, float.MaxValue, Mathf.RoundToInt(186f), true);
 		}
 
-				public float value
+						public float value
 		{
 			get
 			{
@@ -142,13 +142,13 @@ public struct StructureTemperaturePayload
 			}
 		}
 
-		public void Accumulate(float value)
+				public void Accumulate(float value)
 		{
 			this.kw_accumulator.AddSample(value);
 		}
 
-		public string source;
+				public string source;
 
-		public RunningAverage kw_accumulator;
+				public RunningAverage kw_accumulator;
 	}
 }

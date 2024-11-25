@@ -7,13 +7,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/PixelPack")]
 public class PixelPack : KMonoBehaviour, ISaveLoadable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<PixelPack>(-905833192, PixelPack.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		PixelPack component = ((GameObject)data).GetComponent<PixelPack>();
 		if (component != null)
@@ -26,7 +26,7 @@ public class PixelPack : KMonoBehaviour, ISaveLoadable
 		this.UpdateColors();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.animController = base.GetComponent<KBatchedAnimController>();
@@ -62,7 +62,7 @@ public class PixelPack : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void OnLogicValueChanged(object data)
+		private void OnLogicValueChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 		if (logicValueChanged.portID == PixelPack.PORT_ID)
@@ -72,7 +72,7 @@ public class PixelPack : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		if (this.operational.IsOperational)
 		{
@@ -86,7 +86,7 @@ public class PixelPack : KMonoBehaviour, ISaveLoadable
 		this.operational.SetActive(this.operational.IsOperational, false);
 	}
 
-	public void UpdateColors()
+		public void UpdateColors()
 	{
 		if (this.operational.IsOperational)
 		{
@@ -113,64 +113,64 @@ public class PixelPack : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected KBatchedAnimController animController;
+		protected KBatchedAnimController animController;
 
-	private static readonly EventSystem.IntraObjectHandler<PixelPack> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<PixelPack>(delegate(PixelPack component, object data)
+		private static readonly EventSystem.IntraObjectHandler<PixelPack> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<PixelPack>(delegate(PixelPack component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<PixelPack> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<PixelPack>(delegate(PixelPack component, object data)
+		private static readonly EventSystem.IntraObjectHandler<PixelPack> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<PixelPack>(delegate(PixelPack component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});
 
-	public static readonly HashedString PORT_ID = new HashedString("PixelPackInput");
+		public static readonly HashedString PORT_ID = new HashedString("PixelPackInput");
 
-	public static readonly HashedString SYMBOL_ONE_NAME = "screen1";
+		public static readonly HashedString SYMBOL_ONE_NAME = "screen1";
 
-	public static readonly HashedString SYMBOL_TWO_NAME = "screen2";
+		public static readonly HashedString SYMBOL_TWO_NAME = "screen2";
 
-	public static readonly HashedString SYMBOL_THREE_NAME = "screen3";
+		public static readonly HashedString SYMBOL_THREE_NAME = "screen3";
 
-	public static readonly HashedString SYMBOL_FOUR_NAME = "screen4";
+		public static readonly HashedString SYMBOL_FOUR_NAME = "screen4";
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<PixelPack> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<PixelPack>(delegate(PixelPack component, object data)
+		private static readonly EventSystem.IntraObjectHandler<PixelPack> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<PixelPack>(delegate(PixelPack component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	public int logicValue;
+		public int logicValue;
 
-	[Serialize]
+		[Serialize]
 	public List<PixelPack.ColorPair> colorSettings;
 
-	private Color defaultActive = new Color(0.34509805f, 0.84705883f, 0.32941177f);
+		private Color defaultActive = new Color(0.34509805f, 0.84705883f, 0.32941177f);
 
-	private Color defaultStandby = new Color(0.972549f, 0.47058824f, 0.34509805f);
+		private Color defaultStandby = new Color(0.972549f, 0.47058824f, 0.34509805f);
 
-	protected static readonly HashedString[] ON_ANIMS = new HashedString[]
+		protected static readonly HashedString[] ON_ANIMS = new HashedString[]
 	{
 		"on_pre",
 		"on"
 	};
 
-	protected static readonly HashedString[] OFF_ANIMS = new HashedString[]
+		protected static readonly HashedString[] OFF_ANIMS = new HashedString[]
 	{
 		"off_pre",
 		"off"
 	};
 
-	public struct ColorPair
+		public struct ColorPair
 	{
-		public Color activeColor;
+				public Color activeColor;
 
-		public Color standbyColor;
+				public Color standbyColor;
 	}
 }

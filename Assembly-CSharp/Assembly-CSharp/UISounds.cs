@@ -4,24 +4,24 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/UISounds")]
 public class UISounds : KMonoBehaviour
 {
-			public static UISounds Instance { get; private set; }
+				public static UISounds Instance { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		UISounds.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		UISounds.Instance = this;
 	}
 
-	public static void PlaySound(UISounds.Sound sound)
+		public static void PlaySound(UISounds.Sound sound)
 	{
 		UISounds.Instance.PlaySoundInternal(sound);
 	}
 
-	private void PlaySoundInternal(UISounds.Sound sound)
+		private void PlaySoundInternal(UISounds.Sound sound)
 	{
 		for (int i = 0; i < this.soundData.Length; i++)
 		{
@@ -40,31 +40,31 @@ public class UISounds : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private bool logSounds;
 
-	[SerializeField]
+		[SerializeField]
 	private UISounds.SoundData[] soundData;
 
-	public enum Sound
+		public enum Sound
 	{
-		NegativeNotification,
-		PositiveNotification,
-		Select,
-		Negative,
-		Back,
-		ClickObject,
-		HUD_Mouseover,
-		Object_Mouseover,
-		ClickHUD,
-		Object_AutoSelected
+				NegativeNotification,
+				PositiveNotification,
+				Select,
+				Negative,
+				Back,
+				ClickObject,
+				HUD_Mouseover,
+				Object_Mouseover,
+				ClickHUD,
+				Object_AutoSelected
 	}
 
-	[Serializable]
+		[Serializable]
 	private struct SoundData
 	{
-		public string name;
+				public string name;
 
-		public UISounds.Sound sound;
+				public UISounds.Sound sound;
 	}
 }

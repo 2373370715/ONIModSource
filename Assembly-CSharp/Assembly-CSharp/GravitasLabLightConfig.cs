@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GravitasLabLightConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "GravitasLabLight";
 		int width = 1;
@@ -26,14 +26,14 @@ public class GravitasLabLightConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddTag(GameTags.Gravitas);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "GravitasLabLight";
+		public const string ID = "GravitasLabLight";
 }

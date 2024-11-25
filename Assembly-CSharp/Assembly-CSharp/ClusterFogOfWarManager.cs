@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ClusterFogOfWarManager : GameStateMachine<ClusterFogOfWarManager, ClusterFogOfWarManager.Instance, IStateMachineTarget, ClusterFogOfWarManager.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState defaultState)
+		public override void InitializeStates(out StateMachine.BaseState defaultState)
 	{
 		defaultState = this.root;
 		this.root.Enter(delegate(ClusterFogOfWarManager.Instance smi)
@@ -18,25 +18,25 @@ public class ClusterFogOfWarManager : GameStateMachine<ClusterFogOfWarManager, C
 		});
 	}
 
-	public const int AUTOMATIC_PEEK_RADIUS = 2;
+		public const int AUTOMATIC_PEEK_RADIUS = 2;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<ClusterFogOfWarManager, ClusterFogOfWarManager.Instance, IStateMachineTarget, ClusterFogOfWarManager.Def>.GameInstance
+		public new class Instance : GameStateMachine<ClusterFogOfWarManager, ClusterFogOfWarManager.Instance, IStateMachineTarget, ClusterFogOfWarManager.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, ClusterFogOfWarManager.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ClusterFogOfWarManager.Def def) : base(master, def)
 		{
 		}
 
-		public void Initialize()
+				public void Initialize()
 		{
 			this.UpdateRevealedCellsFromDiscoveredWorlds();
 			this.EnsureRevealedTilesHavePeek();
 		}
 
-		public ClusterRevealLevel GetCellRevealLevel(AxialI location)
+				public ClusterRevealLevel GetCellRevealLevel(AxialI location)
 		{
 			if (this.GetRevealCompleteFraction(location) >= 1f)
 			{
@@ -49,17 +49,17 @@ public class ClusterFogOfWarManager : GameStateMachine<ClusterFogOfWarManager, C
 			return ClusterRevealLevel.Hidden;
 		}
 
-		public void DEBUG_REVEAL_ENTIRE_MAP()
+				public void DEBUG_REVEAL_ENTIRE_MAP()
 		{
 			this.RevealLocation(AxialI.ZERO, 100);
 		}
 
-		public bool IsLocationRevealed(AxialI location)
+				public bool IsLocationRevealed(AxialI location)
 		{
 			return this.GetRevealCompleteFraction(location) >= 1f;
 		}
 
-		private void EnsureRevealedTilesHavePeek()
+				private void EnsureRevealedTilesHavePeek()
 		{
 			foreach (KeyValuePair<AxialI, List<ClusterGridEntity>> keyValuePair in ClusterGrid.Instance.cellContents)
 			{
@@ -70,7 +70,7 @@ public class ClusterFogOfWarManager : GameStateMachine<ClusterFogOfWarManager, C
 			}
 		}
 
-		public void PeekLocation(AxialI location, int radius)
+				public void PeekLocation(AxialI location, int radius)
 		{
 			foreach (AxialI key in AxialUtil.GetAllPointsWithinRadius(location, radius))
 			{
@@ -85,7 +85,7 @@ public class ClusterFogOfWarManager : GameStateMachine<ClusterFogOfWarManager, C
 			}
 		}
 
-		public void RevealLocation(AxialI location, int radius = 0)
+				public void RevealLocation(AxialI location, int radius = 0)
 		{
 			if (ClusterGrid.Instance.GetHiddenEntitiesOfLayerAtCell(location, EntityLayer.Asteroid).Count > 0 || ClusterGrid.Instance.GetVisibleEntityOfLayerAtCell(location, EntityLayer.Asteroid) != null)
 			{
@@ -102,7 +102,7 @@ public class ClusterFogOfWarManager : GameStateMachine<ClusterFogOfWarManager, C
 			}
 		}
 
-		public void EarnRevealPointsForLocation(AxialI location, float points)
+				public void EarnRevealPointsForLocation(AxialI location, float points)
 		{
 			global::Debug.Assert(ClusterGrid.Instance.IsValidCell(location), string.Format("EarnRevealPointsForLocation called with invalid location: {0}", location));
 			if (this.IsLocationRevealed(location))
@@ -127,7 +127,7 @@ public class ClusterFogOfWarManager : GameStateMachine<ClusterFogOfWarManager, C
 			}
 		}
 
-		public float GetRevealCompleteFraction(AxialI location)
+				public float GetRevealCompleteFraction(AxialI location)
 		{
 			if (!ClusterGrid.Instance.IsValidCell(location))
 			{
@@ -145,7 +145,7 @@ public class ClusterFogOfWarManager : GameStateMachine<ClusterFogOfWarManager, C
 			return 0f;
 		}
 
-		private bool RevealCellIfValid(AxialI cell)
+				private bool RevealCellIfValid(AxialI cell)
 		{
 			if (!ClusterGrid.Instance.IsValidCell(cell))
 			{
@@ -160,7 +160,7 @@ public class ClusterFogOfWarManager : GameStateMachine<ClusterFogOfWarManager, C
 			return true;
 		}
 
-		public bool GetUnrevealedLocationWithinRadius(AxialI center, int radius, out AxialI result)
+				public bool GetUnrevealedLocationWithinRadius(AxialI center, int radius, out AxialI result)
 		{
 			for (int i = 0; i <= radius; i++)
 			{
@@ -177,7 +177,7 @@ public class ClusterFogOfWarManager : GameStateMachine<ClusterFogOfWarManager, C
 			return false;
 		}
 
-		public void UpdateRevealedCellsFromDiscoveredWorlds()
+				public void UpdateRevealedCellsFromDiscoveredWorlds()
 		{
 			int radius = DlcManager.IsExpansion1Active() ? 0 : 2;
 			foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
@@ -189,7 +189,7 @@ public class ClusterFogOfWarManager : GameStateMachine<ClusterFogOfWarManager, C
 			}
 		}
 
-		[Serialize]
+				[Serialize]
 		private Dictionary<AxialI, float> m_revealPointsByCell = new Dictionary<AxialI, float>();
 	}
 }

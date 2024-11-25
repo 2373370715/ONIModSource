@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Klei.AI
 {
-	public class Emote : Resource
+		public class Emote : Resource
 	{
-				public int StepCount
+						public int StepCount
 		{
 			get
 			{
@@ -17,7 +17,7 @@ namespace Klei.AI
 			}
 		}
 
-				public KAnimFile AnimSet
+						public KAnimFile AnimSet
 		{
 			get
 			{
@@ -29,13 +29,13 @@ namespace Klei.AI
 			}
 		}
 
-		public Emote(ResourceSet parent, string emoteId, EmoteStep[] defaultSteps, string animSetName = null) : base(emoteId, parent, null)
+				public Emote(ResourceSet parent, string emoteId, EmoteStep[] defaultSteps, string animSetName = null) : base(emoteId, parent, null)
 		{
 			this.emoteSteps.AddRange(defaultSteps);
 			this.animSetName = animSetName;
 		}
 
-		public bool IsValidForController(KBatchedAnimController animController)
+				public bool IsValidForController(KBatchedAnimController animController)
 		{
 			bool flag = true;
 			int num = 0;
@@ -61,7 +61,7 @@ namespace Klei.AI
 			return flag;
 		}
 
-		public void ApplyAnimOverrides(KBatchedAnimController animController, KAnimFile overrideSet)
+				public void ApplyAnimOverrides(KBatchedAnimController animController, KAnimFile overrideSet)
 		{
 			KAnimFile kanimFile = (overrideSet != null) ? overrideSet : this.AnimSet;
 			if (kanimFile == null || animController == null)
@@ -71,7 +71,7 @@ namespace Klei.AI
 			animController.AddAnimOverrides(kanimFile, 0f);
 		}
 
-		public void RemoveAnimOverrides(KBatchedAnimController animController, KAnimFile overrideSet)
+				public void RemoveAnimOverrides(KBatchedAnimController animController, KAnimFile overrideSet)
 		{
 			KAnimFile kanimFile = (overrideSet != null) ? overrideSet : this.AnimSet;
 			if (kanimFile == null || animController == null)
@@ -81,7 +81,7 @@ namespace Klei.AI
 			animController.RemoveAnimOverrides(kanimFile);
 		}
 
-		public void CollectStepAnims(out HashedString[] emoteAnims, int iterations)
+				public void CollectStepAnims(out HashedString[] emoteAnims, int iterations)
 		{
 			emoteAnims = new HashedString[this.emoteSteps.Count * iterations];
 			for (int i = 0; i < emoteAnims.Length; i++)
@@ -90,12 +90,12 @@ namespace Klei.AI
 			}
 		}
 
-		public bool IsValidStep(int stepIdx)
+				public bool IsValidStep(int stepIdx)
 		{
 			return stepIdx >= 0 && stepIdx < this.emoteSteps.Count;
 		}
 
-		public EmoteStep this[int stepIdx]
+				public EmoteStep this[int stepIdx]
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Klei.AI
 			}
 		}
 
-		public int GetStepIndex(HashedString animName)
+				public int GetStepIndex(HashedString animName)
 		{
 			int i = 0;
 			bool condition = false;
@@ -124,10 +124,10 @@ namespace Klei.AI
 			return i;
 		}
 
-		private HashedString animSetName = null;
+				private HashedString animSetName = null;
 
-		private KAnimFile animSet;
+				private KAnimFile animSet;
 
-		private List<EmoteStep> emoteSteps = new List<EmoteStep>();
+				private List<EmoteStep> emoteSteps = new List<EmoteStep>();
 	}
 }

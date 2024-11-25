@@ -2,7 +2,7 @@
 
 public interface IShearable
 {
-	bool IsFullyGrown();
+		bool IsFullyGrown();
 
-	void Shear();
+		void Shear();
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/CargoBay")]
 public class CargoBayConduit : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (CargoBayConduit.connectedPortStatus == null)
@@ -25,7 +25,7 @@ public class CargoBayConduit : KMonoBehaviour
 		this.UpdateStatusItems();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		LaunchPad currentPad = base.GetComponent<RocketModuleCluster>().CraftInterface.CurrentPad;
 		if (currentPad != null)
@@ -35,7 +35,7 @@ public class CargoBayConduit : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	public void OnLaunch(object data)
+		public void OnLaunch(object data)
 	{
 		ConduitDispenser component = base.GetComponent<ConduitDispenser>();
 		if (component != null)
@@ -45,7 +45,7 @@ public class CargoBayConduit : KMonoBehaviour
 		base.GetComponent<RocketModuleCluster>().CraftInterface.CurrentPad.Unsubscribe(-1009905786, new Action<object>(this.OnLaunchpadChainChanged));
 	}
 
-	public void OnLand(object data)
+		public void OnLand(object data)
 	{
 		ConduitDispenser component = base.GetComponent<ConduitDispenser>();
 		if (component != null)
@@ -71,12 +71,12 @@ public class CargoBayConduit : KMonoBehaviour
 		this.UpdateStatusItems();
 	}
 
-	private void OnLaunchpadChainChanged(object data)
+		private void OnLaunchpadChainChanged(object data)
 	{
 		this.UpdateStatusItems();
 	}
 
-	private void UpdateStatusItems()
+		private void UpdateStatusItems()
 	{
 		bool flag;
 		bool flag2;
@@ -95,7 +95,7 @@ public class CargoBayConduit : KMonoBehaviour
 		this.connectedConduitPortStatusItem = component.ReplaceStatusItem(this.connectedConduitPortStatusItem, CargoBayConduit.connectedNoPortStatus, this);
 	}
 
-	private void HasMatchingConduitPort(out bool hasMatch, out bool hasAny)
+		private void HasMatchingConduitPort(out bool hasMatch, out bool hasAny)
 	{
 		hasMatch = false;
 		hasAny = false;
@@ -127,7 +127,7 @@ public class CargoBayConduit : KMonoBehaviour
 		pooledHashSet.Recycle();
 	}
 
-	public static Dictionary<ConduitType, CargoBay.CargoType> ElementToCargoMap = new Dictionary<ConduitType, CargoBay.CargoType>
+		public static Dictionary<ConduitType, CargoBay.CargoType> ElementToCargoMap = new Dictionary<ConduitType, CargoBay.CargoType>
 	{
 		{
 			ConduitType.Solid,
@@ -143,23 +143,23 @@ public class CargoBayConduit : KMonoBehaviour
 		}
 	};
 
-	private static readonly EventSystem.IntraObjectHandler<CargoBayConduit> OnLaunchDelegate = new EventSystem.IntraObjectHandler<CargoBayConduit>(delegate(CargoBayConduit component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CargoBayConduit> OnLaunchDelegate = new EventSystem.IntraObjectHandler<CargoBayConduit>(delegate(CargoBayConduit component, object data)
 	{
 		component.OnLaunch(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<CargoBayConduit> OnLandDelegate = new EventSystem.IntraObjectHandler<CargoBayConduit>(delegate(CargoBayConduit component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CargoBayConduit> OnLandDelegate = new EventSystem.IntraObjectHandler<CargoBayConduit>(delegate(CargoBayConduit component, object data)
 	{
 		component.OnLand(data);
 	});
 
-	private static StatusItem connectedPortStatus;
+		private static StatusItem connectedPortStatus;
 
-	private static StatusItem connectedWrongPortStatus;
+		private static StatusItem connectedWrongPortStatus;
 
-	private static StatusItem connectedNoPortStatus;
+		private static StatusItem connectedNoPortStatus;
 
-	private CargoBay.CargoType storageType;
+		private CargoBay.CargoType storageType;
 
-	private Guid connectedConduitPortStatusItem;
+		private Guid connectedConduitPortStatusItem;
 }

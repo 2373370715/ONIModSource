@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType> : StateMachine where StateMachineInstanceType : StateMachine.Instance where MasterType : IStateMachineTarget
 {
-	public override string[] GetStateNames()
+		public override string[] GetStateNames()
 	{
 		List<string> list = new List<string>();
 		foreach (StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State state in this.states)
@@ -19,12 +19,12 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		return list.ToArray();
 	}
 
-	public void Target(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.TargetParameter target)
+		public void Target(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.TargetParameter target)
 	{
 		this.stateTarget = target;
 	}
 
-	public void BindState(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State parent_state, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State state, string state_name)
+		public void BindState(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State parent_state, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State state, string state_name)
 	{
 		if (parent_state != null)
 		{
@@ -51,7 +51,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		this.states.Add(state);
 	}
 
-	public void BindStates(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State parent_state, object state_machine)
+		public void BindStates(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State parent_state, object state_machine)
 	{
 		foreach (FieldInfo fieldInfo in state_machine.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy))
 		{
@@ -68,22 +68,22 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		}
 	}
 
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.InitializeStates(out default_state);
 	}
 
-	public override void BindStates()
+		public override void BindStates()
 	{
 		this.BindStates(null, this);
 	}
 
-	public override Type GetStateMachineInstanceType()
+		public override Type GetStateMachineInstanceType()
 	{
 		return typeof(StateMachineInstanceType);
 	}
 
-	public override StateMachine.BaseState GetState(string state_name)
+		public override StateMachine.BaseState GetState(string state_name)
 	{
 		foreach (StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State state in this.states)
 		{
@@ -95,7 +95,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		return null;
 	}
 
-	public override void FreeResources()
+		public override void FreeResources()
 	{
 		for (int i = 0; i < this.states.Count; i++)
 		{
@@ -105,18 +105,18 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		base.FreeResources();
 	}
 
-	private List<StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State> states = new List<StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State>();
+		private List<StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State> states = new List<StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State>();
 
-	public StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.TargetParameter masterTarget;
+		public StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.TargetParameter masterTarget;
 
-	[StateMachine.DoNotAutoCreate]
+		[StateMachine.DoNotAutoCreate]
 	protected StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.TargetParameter stateTarget;
 
-	public class GenericInstance : StateMachine.Instance
+		public class GenericInstance : StateMachine.Instance
 	{
-						public StateMachineType sm { get; private set; }
+								public StateMachineType sm { get; private set; }
 
-				protected StateMachineInstanceType smi
+						protected StateMachineInstanceType smi
 		{
 			get
 			{
@@ -124,11 +124,11 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			}
 		}
 
-						public MasterType master { get; private set; }
+								public MasterType master { get; private set; }
 
-						public DefType def { get; set; }
+								public DefType def { get; set; }
 
-				public bool isMasterNull
+						public bool isMasterNull
 		{
 			get
 			{
@@ -136,7 +136,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			}
 		}
 
-				private StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType> internalSm
+						private StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType> internalSm
 		{
 			get
 			{
@@ -144,11 +144,11 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			}
 		}
 
-		protected virtual void OnCleanUp()
+				protected virtual void OnCleanUp()
 		{
 		}
 
-				public override float timeinstate
+						public override float timeinstate
 		{
 			get
 			{
@@ -156,7 +156,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			}
 		}
 
-		public override void FreeResources()
+				public override void FreeResources()
 		{
 			this.updateHandle.FreeResources();
 			this.updateHandle = default(SchedulerHandle);
@@ -190,7 +190,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			base.FreeResources();
 		}
 
-		public GenericInstance(MasterType master) : base((StateMachine)((object)Singleton<StateMachineManager>.Instance.CreateStateMachine<StateMachineType>()), master)
+				public GenericInstance(MasterType master) : base((StateMachine)((object)Singleton<StateMachineManager>.Instance.CreateStateMachine<StateMachineType>()), master)
 		{
 			this.master = master;
 			this.stateStack = new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.GenericInstance.StackEntry[this.stateMachine.GetMaxDepth()];
@@ -210,24 +210,24 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			this.controller.AddStateMachineInstance(this);
 		}
 
-		public override IStateMachineTarget GetMaster()
+				public override IStateMachineTarget GetMaster()
 		{
 			return this.master;
 		}
 
-		private void PushEvent(StateEvent evt)
+				private void PushEvent(StateEvent evt)
 		{
 			StateEvent.Context item = evt.Subscribe(this);
 			this.subscribedEvents.Push(item);
 		}
 
-		private void PopEvent()
+				private void PopEvent()
 		{
 			StateEvent.Context context = this.subscribedEvents.Pop();
 			context.stateEvent.Unsubscribe(this, context);
 		}
 
-		private bool TryEvaluateTransitions(StateMachine.BaseState state, int goto_id)
+				private bool TryEvaluateTransitions(StateMachine.BaseState state, int goto_id)
 		{
 			if (state.transitions == null)
 			{
@@ -247,7 +247,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			return result;
 		}
 
-		private void PushTransitions(StateMachine.BaseState state)
+				private void PushTransitions(StateMachine.BaseState state)
 		{
 			if (state.transitions == null)
 			{
@@ -260,19 +260,19 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			}
 		}
 
-		private void PushTransition(StateMachine.BaseTransition transition)
+				private void PushTransition(StateMachine.BaseTransition transition)
 		{
 			StateMachine.BaseTransition.Context item = transition.Register(this.smi);
 			this.transitionStack.Push(item);
 		}
 
-		private void PopTransition(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State state)
+				private void PopTransition(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State state)
 		{
 			StateMachine.BaseTransition.Context context = this.transitionStack.Pop();
 			state.transitions[context.idx].Unregister(this.smi, context);
 		}
 
-		private void PushState(StateMachine.BaseState state)
+				private void PushState(StateMachine.BaseState state)
 		{
 			int num = this.gotoId;
 			this.currentActionIdx = -1;
@@ -316,7 +316,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			int num2 = this.gotoId;
 		}
 
-		private void ExecuteActions(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State state, List<StateMachine.Action> actions)
+				private void ExecuteActions(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State state, List<StateMachine.Action> actions)
 		{
 			if (actions == null)
 			{
@@ -371,7 +371,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			this.currentActionIdx = 2147483646;
 		}
 
-		private void PopState()
+				private void PopState()
 		{
 			this.currentActionIdx = -1;
 			StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.GenericInstance.StackEntry[] array = this.stateStack;
@@ -407,19 +407,19 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			this.ExecuteActions((StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State)state, state.exitActions);
 		}
 
-		public override SchedulerHandle Schedule(float time, Action<object> callback, object callback_data = null)
+				public override SchedulerHandle Schedule(float time, Action<object> callback, object callback_data = null)
 		{
 			string name = null;
 			return Singleton<StateMachineManager>.Instance.Schedule(name, time, callback, callback_data, this.currentSchedulerGroup);
 		}
 
-		public override SchedulerHandle ScheduleNextFrame(Action<object> callback, object callback_data = null)
+				public override SchedulerHandle ScheduleNextFrame(Action<object> callback, object callback_data = null)
 		{
 			string name = null;
 			return Singleton<StateMachineManager>.Instance.ScheduleNextFrame(name, callback, callback_data, this.currentSchedulerGroup);
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			if (this.controller != null && !this.controller.HasStateMachineInstance(this))
 			{
@@ -428,7 +428,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			base.StartSM();
 		}
 
-		public override void StopSM(string reason)
+				public override void StopSM(string reason)
 		{
 			if (StateMachine.Instance.error)
 			{
@@ -466,7 +466,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			this.OnCleanUp();
 		}
 
-		private void FinishStateInProgress(StateMachine.BaseState state)
+				private void FinishStateInProgress(StateMachine.BaseState state)
 		{
 			if (state.enterActions == null)
 			{
@@ -475,7 +475,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			this.ExecuteActions((StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State)state, state.enterActions);
 		}
 
-		public override void GoTo(StateMachine.BaseState base_state)
+				public override void GoTo(StateMachine.BaseState base_state)
 		{
 			if (App.IsExiting)
 			{
@@ -590,7 +590,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			}
 		}
 
-		public override StateMachine.BaseState GetCurrentState()
+				public override StateMachine.BaseState GetCurrentState()
 		{
 			if (this.stackSize > 0)
 			{
@@ -599,54 +599,54 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			return null;
 		}
 
-		private float stateEnterTime;
+				private float stateEnterTime;
 
-		private int gotoId;
+				private int gotoId;
 
-		private int currentActionIdx = -1;
+				private int currentActionIdx = -1;
 
-		private SchedulerHandle updateHandle;
+				private SchedulerHandle updateHandle;
 
-		private Stack<StateMachine.BaseState> gotoStack = new Stack<StateMachine.BaseState>();
+				private Stack<StateMachine.BaseState> gotoStack = new Stack<StateMachine.BaseState>();
 
-		protected Stack<StateMachine.BaseTransition.Context> transitionStack = new Stack<StateMachine.BaseTransition.Context>();
+				protected Stack<StateMachine.BaseTransition.Context> transitionStack = new Stack<StateMachine.BaseTransition.Context>();
 
-		protected StateMachineController controller;
+				protected StateMachineController controller;
 
-		private SchedulerGroup currentSchedulerGroup;
+				private SchedulerGroup currentSchedulerGroup;
 
-		private StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.GenericInstance.StackEntry[] stateStack;
+				private StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.GenericInstance.StackEntry[] stateStack;
 
-		public struct StackEntry
+				public struct StackEntry
 		{
-			public StateMachine.BaseState state;
+						public StateMachine.BaseState state;
 
-			public SchedulerGroup schedulerGroup;
+						public SchedulerGroup schedulerGroup;
 		}
 	}
 
-	public class State : StateMachine.BaseState
+		public class State : StateMachine.BaseState
 	{
-		protected StateMachineType sm;
+				protected StateMachineType sm;
 
-				public delegate void Callback(StateMachineInstanceType smi);
+						public delegate void Callback(StateMachineInstanceType smi);
 	}
 
-	public new abstract class ParameterTransition : StateMachine.ParameterTransition
+		public new abstract class ParameterTransition : StateMachine.ParameterTransition
 	{
-		public ParameterTransition(int idx, string name, StateMachine.BaseState source_state, StateMachine.BaseState target_state) : base(idx, name, source_state, target_state)
+				public ParameterTransition(int idx, string name, StateMachine.BaseState source_state, StateMachine.BaseState target_state) : base(idx, name, source_state, target_state)
 		{
 		}
 	}
 
-	public class Transition : StateMachine.BaseTransition
+		public class Transition : StateMachine.BaseTransition
 	{
-		public Transition(string name, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State source_state, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State target_state, int idx, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Transition.ConditionCallback condition) : base(idx, name, source_state, target_state)
+				public Transition(string name, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State source_state, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State target_state, int idx, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Transition.ConditionCallback condition) : base(idx, name, source_state, target_state)
 		{
 			this.condition = condition;
 		}
 
-		public override string ToString()
+				public override string ToString()
 		{
 			if (this.targetState != null)
 			{
@@ -655,53 +655,53 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			return this.name + "->(Stop)";
 		}
 
-		public StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Transition.ConditionCallback condition;
+				public StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Transition.ConditionCallback condition;
 
-				public delegate bool ConditionCallback(StateMachineInstanceType smi);
+						public delegate bool ConditionCallback(StateMachineInstanceType smi);
 	}
 
-	public abstract class Parameter<ParameterType> : StateMachine.Parameter
+		public abstract class Parameter<ParameterType> : StateMachine.Parameter
 	{
-		public Parameter()
+				public Parameter()
 		{
 		}
 
-		public Parameter(ParameterType default_value)
+				public Parameter(ParameterType default_value)
 		{
 			this.defaultValue = default_value;
 		}
 
-		public ParameterType Set(ParameterType value, StateMachineInstanceType smi, bool silenceEvents = false)
+				public ParameterType Set(ParameterType value, StateMachineInstanceType smi, bool silenceEvents = false)
 		{
 			((StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Context)smi.GetParameterContext(this)).Set(value, smi, silenceEvents);
 			return value;
 		}
 
-		public ParameterType Get(StateMachineInstanceType smi)
+				public ParameterType Get(StateMachineInstanceType smi)
 		{
 			return ((StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Context)smi.GetParameterContext(this)).value;
 		}
 
-		public StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Context GetContext(StateMachineInstanceType smi)
+				public StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Context GetContext(StateMachineInstanceType smi)
 		{
 			return (StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Context)smi.GetParameterContext(this);
 		}
 
-		public ParameterType defaultValue;
+				public ParameterType defaultValue;
 
-		public bool isSignal;
+				public bool isSignal;
 
-				public delegate bool Callback(StateMachineInstanceType smi, ParameterType p);
+						public delegate bool Callback(StateMachineInstanceType smi, ParameterType p);
 
-		public class Transition : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.ParameterTransition
+				public class Transition : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.ParameterTransition
 		{
-			public Transition(int idx, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType> parameter, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State state, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Callback callback) : base(idx, parameter.name, null, state)
+						public Transition(int idx, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType> parameter, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.State state, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Callback callback) : base(idx, parameter.name, null, state)
 			{
 				this.parameter = parameter;
 				this.callback = callback;
 			}
 
-			public override void Evaluate(StateMachine.Instance smi)
+						public override void Evaluate(StateMachine.Instance smi)
 			{
 				StateMachineInstanceType stateMachineInstanceType = smi as StateMachineInstanceType;
 				global::Debug.Assert(stateMachineInstanceType != null);
@@ -716,12 +716,12 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				}
 			}
 
-			private void Trigger(StateMachineInstanceType smi)
+						private void Trigger(StateMachineInstanceType smi)
 			{
 				smi.GoTo(this.targetState);
 			}
 
-			public override StateMachine.BaseTransition.Context Register(StateMachine.Instance smi)
+						public override StateMachine.BaseTransition.Context Register(StateMachine.Instance smi)
 			{
 				StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Context context = (StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Context)smi.GetParameterContext(this.parameter);
 				if (this.parameter.isSignal && this.callback == null)
@@ -737,7 +737,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				return new StateMachine.BaseTransition.Context(this);
 			}
 
-			public override void Unregister(StateMachine.Instance smi, StateMachine.BaseTransition.Context transitionContext)
+						public override void Unregister(StateMachine.Instance smi, StateMachine.BaseTransition.Context transitionContext)
 			{
 				StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Context context = (StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Context)smi.GetParameterContext(this.parameter);
 				if (this.parameter.isSignal && this.callback == null)
@@ -750,7 +750,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				context3.onDirty = (Action<StateMachineInstanceType>)Delegate.Remove(context3.onDirty, new Action<StateMachineInstanceType>(this.Evaluate));
 			}
 
-			public override string ToString()
+						public override string ToString()
 			{
 				if (this.targetState != null)
 				{
@@ -759,19 +759,19 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				return this.parameter.name + "->(Stop)";
 			}
 
-			private StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType> parameter;
+						private StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType> parameter;
 
-			private StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Callback callback;
+						private StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ParameterType>.Callback callback;
 		}
 
-		public new abstract class Context : StateMachine.Parameter.Context
+				public new abstract class Context : StateMachine.Parameter.Context
 		{
-			public Context(StateMachine.Parameter parameter, ParameterType default_value) : base(parameter)
+						public Context(StateMachine.Parameter parameter, ParameterType default_value) : base(parameter)
 			{
 				this.value = default_value;
 			}
 
-			public virtual void Set(ParameterType value, StateMachineInstanceType smi, bool silenceEvents = false)
+						public virtual void Set(ParameterType value, StateMachineInstanceType smi, bool silenceEvents = false)
 			{
 				if (!EqualityComparer<ParameterType>.Default.Equals(value, this.value))
 				{
@@ -783,48 +783,48 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				}
 			}
 
-			public ParameterType value;
+						public ParameterType value;
 
-			public Action<StateMachineInstanceType> onDirty;
+						public Action<StateMachineInstanceType> onDirty;
 		}
 	}
 
-	public class BoolParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<bool>
+		public class BoolParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<bool>
 	{
-		public BoolParameter()
+				public BoolParameter()
 		{
 		}
 
-		public BoolParameter(bool default_value) : base(default_value)
+				public BoolParameter(bool default_value) : base(default_value)
 		{
 		}
 
-		public override StateMachine.Parameter.Context CreateContext()
+				public override StateMachine.Parameter.Context CreateContext()
 		{
 			return new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.BoolParameter.Context(this, this.defaultValue);
 		}
 
-		public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<bool>.Context
+				public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<bool>.Context
 		{
-			public Context(StateMachine.Parameter parameter, bool default_value) : base(parameter, default_value)
+						public Context(StateMachine.Parameter parameter, bool default_value) : base(parameter, default_value)
 			{
 			}
 
-			public override void Serialize(BinaryWriter writer)
+						public override void Serialize(BinaryWriter writer)
 			{
 				writer.Write(this.value ? 1 : 0);
 			}
 
-			public override void Deserialize(IReader reader, StateMachine.Instance smi)
+						public override void Deserialize(IReader reader, StateMachine.Instance smi)
 			{
 				this.value = (reader.ReadByte() > 0);
 			}
 
-			public override void ShowEditor(StateMachine.Instance base_smi)
+						public override void ShowEditor(StateMachine.Instance base_smi)
 			{
 			}
 
-			public override void ShowDevTool(StateMachine.Instance base_smi)
+						public override void ShowDevTool(StateMachine.Instance base_smi)
 			{
 				bool value = this.value;
 				if (ImGui.Checkbox(this.parameter.name, ref value))
@@ -836,46 +836,46 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		}
 	}
 
-	public class Vector3Parameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<Vector3>
+		public class Vector3Parameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<Vector3>
 	{
-		public Vector3Parameter()
+				public Vector3Parameter()
 		{
 		}
 
-		public Vector3Parameter(Vector3 default_value) : base(default_value)
+				public Vector3Parameter(Vector3 default_value) : base(default_value)
 		{
 		}
 
-		public override StateMachine.Parameter.Context CreateContext()
+				public override StateMachine.Parameter.Context CreateContext()
 		{
 			return new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Vector3Parameter.Context(this, this.defaultValue);
 		}
 
-		public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<Vector3>.Context
+				public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<Vector3>.Context
 		{
-			public Context(StateMachine.Parameter parameter, Vector3 default_value) : base(parameter, default_value)
+						public Context(StateMachine.Parameter parameter, Vector3 default_value) : base(parameter, default_value)
 			{
 			}
 
-			public override void Serialize(BinaryWriter writer)
+						public override void Serialize(BinaryWriter writer)
 			{
 				writer.Write(this.value.x);
 				writer.Write(this.value.y);
 				writer.Write(this.value.z);
 			}
 
-			public override void Deserialize(IReader reader, StateMachine.Instance smi)
+						public override void Deserialize(IReader reader, StateMachine.Instance smi)
 			{
 				this.value.x = reader.ReadSingle();
 				this.value.y = reader.ReadSingle();
 				this.value.z = reader.ReadSingle();
 			}
 
-			public override void ShowEditor(StateMachine.Instance base_smi)
+						public override void ShowEditor(StateMachine.Instance base_smi)
 			{
 			}
 
-			public override void ShowDevTool(StateMachine.Instance base_smi)
+						public override void ShowDevTool(StateMachine.Instance base_smi)
 			{
 				Vector3 value = this.value;
 				if (ImGui.InputFloat3(this.parameter.name, ref value))
@@ -887,38 +887,38 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		}
 	}
 
-	public class EnumParameter<EnumType> : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<EnumType>
+		public class EnumParameter<EnumType> : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<EnumType>
 	{
-		public EnumParameter(EnumType default_value) : base(default_value)
+				public EnumParameter(EnumType default_value) : base(default_value)
 		{
 		}
 
-		public override StateMachine.Parameter.Context CreateContext()
+				public override StateMachine.Parameter.Context CreateContext()
 		{
 			return new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.EnumParameter<EnumType>.Context(this, this.defaultValue);
 		}
 
-		public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<EnumType>.Context
+				public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<EnumType>.Context
 		{
-			public Context(StateMachine.Parameter parameter, EnumType default_value) : base(parameter, default_value)
+						public Context(StateMachine.Parameter parameter, EnumType default_value) : base(parameter, default_value)
 			{
 			}
 
-			public override void Serialize(BinaryWriter writer)
+						public override void Serialize(BinaryWriter writer)
 			{
 				writer.Write((int)((object)this.value));
 			}
 
-			public override void Deserialize(IReader reader, StateMachine.Instance smi)
+						public override void Deserialize(IReader reader, StateMachine.Instance smi)
 			{
 				this.value = (EnumType)((object)reader.ReadInt32());
 			}
 
-			public override void ShowEditor(StateMachine.Instance base_smi)
+						public override void ShowEditor(StateMachine.Instance base_smi)
 			{
 			}
 
-			public override void ShowDevTool(StateMachine.Instance base_smi)
+						public override void ShowDevTool(StateMachine.Instance base_smi)
 			{
 				string[] names = Enum.GetNames(typeof(EnumType));
 				Array values = Enum.GetValues(typeof(EnumType));
@@ -932,17 +932,17 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		}
 	}
 
-	public class FloatParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<float>
+		public class FloatParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<float>
 	{
-		public FloatParameter()
+				public FloatParameter()
 		{
 		}
 
-		public FloatParameter(float default_value) : base(default_value)
+				public FloatParameter(float default_value) : base(default_value)
 		{
 		}
 
-		public float Delta(float delta_value, StateMachineInstanceType smi)
+				public float Delta(float delta_value, StateMachineInstanceType smi)
 		{
 			float num = base.Get(smi);
 			num += delta_value;
@@ -950,7 +950,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			return num;
 		}
 
-		public float DeltaClamp(float delta_value, float min_value, float max_value, StateMachineInstanceType smi)
+				public float DeltaClamp(float delta_value, float min_value, float max_value, StateMachineInstanceType smi)
 		{
 			float num = base.Get(smi);
 			num += delta_value;
@@ -959,32 +959,32 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			return num;
 		}
 
-		public override StateMachine.Parameter.Context CreateContext()
+				public override StateMachine.Parameter.Context CreateContext()
 		{
 			return new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.FloatParameter.Context(this, this.defaultValue);
 		}
 
-		public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<float>.Context
+				public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<float>.Context
 		{
-			public Context(StateMachine.Parameter parameter, float default_value) : base(parameter, default_value)
+						public Context(StateMachine.Parameter parameter, float default_value) : base(parameter, default_value)
 			{
 			}
 
-			public override void Serialize(BinaryWriter writer)
+						public override void Serialize(BinaryWriter writer)
 			{
 				writer.Write(this.value);
 			}
 
-			public override void Deserialize(IReader reader, StateMachine.Instance smi)
+						public override void Deserialize(IReader reader, StateMachine.Instance smi)
 			{
 				this.value = reader.ReadSingle();
 			}
 
-			public override void ShowEditor(StateMachine.Instance base_smi)
+						public override void ShowEditor(StateMachine.Instance base_smi)
 			{
 			}
 
-			public override void ShowDevTool(StateMachine.Instance base_smi)
+						public override void ShowDevTool(StateMachine.Instance base_smi)
 			{
 				float value = this.value;
 				if (ImGui.InputFloat(this.parameter.name, ref value))
@@ -996,17 +996,17 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		}
 	}
 
-	public class IntParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<int>
+		public class IntParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<int>
 	{
-		public IntParameter()
+				public IntParameter()
 		{
 		}
 
-		public IntParameter(int default_value) : base(default_value)
+				public IntParameter(int default_value) : base(default_value)
 		{
 		}
 
-		public int Delta(int delta_value, StateMachineInstanceType smi)
+				public int Delta(int delta_value, StateMachineInstanceType smi)
 		{
 			int num = base.Get(smi);
 			num += delta_value;
@@ -1014,32 +1014,32 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			return num;
 		}
 
-		public override StateMachine.Parameter.Context CreateContext()
+				public override StateMachine.Parameter.Context CreateContext()
 		{
 			return new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.IntParameter.Context(this, this.defaultValue);
 		}
 
-		public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<int>.Context
+				public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<int>.Context
 		{
-			public Context(StateMachine.Parameter parameter, int default_value) : base(parameter, default_value)
+						public Context(StateMachine.Parameter parameter, int default_value) : base(parameter, default_value)
 			{
 			}
 
-			public override void Serialize(BinaryWriter writer)
+						public override void Serialize(BinaryWriter writer)
 			{
 				writer.Write(this.value);
 			}
 
-			public override void Deserialize(IReader reader, StateMachine.Instance smi)
+						public override void Deserialize(IReader reader, StateMachine.Instance smi)
 			{
 				this.value = reader.ReadInt32();
 			}
 
-			public override void ShowEditor(StateMachine.Instance base_smi)
+						public override void ShowEditor(StateMachine.Instance base_smi)
 			{
 			}
 
-			public override void ShowDevTool(StateMachine.Instance base_smi)
+						public override void ShowDevTool(StateMachine.Instance base_smi)
 			{
 				int value = this.value;
 				if (ImGui.InputInt(this.parameter.name, ref value))
@@ -1051,17 +1051,17 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		}
 	}
 
-	public class LongParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<long>
+		public class LongParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<long>
 	{
-		public LongParameter()
+				public LongParameter()
 		{
 		}
 
-		public LongParameter(long default_value) : base(default_value)
+				public LongParameter(long default_value) : base(default_value)
 		{
 		}
 
-		public long Delta(long delta_value, StateMachineInstanceType smi)
+				public long Delta(long delta_value, StateMachineInstanceType smi)
 		{
 			long num = base.Get(smi);
 			num += delta_value;
@@ -1069,56 +1069,56 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			return num;
 		}
 
-		public override StateMachine.Parameter.Context CreateContext()
+				public override StateMachine.Parameter.Context CreateContext()
 		{
 			return new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.LongParameter.Context(this, this.defaultValue);
 		}
 
-		public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<long>.Context
+				public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<long>.Context
 		{
-			public Context(StateMachine.Parameter parameter, long default_value) : base(parameter, default_value)
+						public Context(StateMachine.Parameter parameter, long default_value) : base(parameter, default_value)
 			{
 			}
 
-			public override void Serialize(BinaryWriter writer)
+						public override void Serialize(BinaryWriter writer)
 			{
 				writer.Write(this.value);
 			}
 
-			public override void Deserialize(IReader reader, StateMachine.Instance smi)
+						public override void Deserialize(IReader reader, StateMachine.Instance smi)
 			{
 				this.value = reader.ReadInt64();
 			}
 
-			public override void ShowEditor(StateMachine.Instance base_smi)
+						public override void ShowEditor(StateMachine.Instance base_smi)
 			{
 			}
 
-			public override void ShowDevTool(StateMachine.Instance base_smi)
+						public override void ShowDevTool(StateMachine.Instance base_smi)
 			{
 				long value = this.value;
 			}
 		}
 	}
 
-	public class ResourceParameter<ResourceType> : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ResourceType> where ResourceType : Resource
+		public class ResourceParameter<ResourceType> : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ResourceType> where ResourceType : Resource
 	{
-		public ResourceParameter() : base(default(ResourceType))
+				public ResourceParameter() : base(default(ResourceType))
 		{
 		}
 
-		public override StateMachine.Parameter.Context CreateContext()
+				public override StateMachine.Parameter.Context CreateContext()
 		{
 			return new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.ResourceParameter<ResourceType>.Context(this, this.defaultValue);
 		}
 
-		public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ResourceType>.Context
+				public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ResourceType>.Context
 		{
-			public Context(StateMachine.Parameter parameter, ResourceType default_value) : base(parameter, default_value)
+						public Context(StateMachine.Parameter parameter, ResourceType default_value) : base(parameter, default_value)
 			{
 			}
 
-			public override void Serialize(BinaryWriter writer)
+						public override void Serialize(BinaryWriter writer)
 			{
 				string str = "";
 				if (this.value != null)
@@ -1135,7 +1135,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				writer.WriteKleiString(str);
 			}
 
-			public override void Deserialize(IReader reader, StateMachine.Instance smi)
+						public override void Deserialize(IReader reader, StateMachine.Instance smi)
 			{
 				string text = reader.ReadKleiString();
 				if (text != "")
@@ -1145,11 +1145,11 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				}
 			}
 
-			public override void ShowEditor(StateMachine.Instance base_smi)
+						public override void ShowEditor(StateMachine.Instance base_smi)
 			{
 			}
 
-			public override void ShowDevTool(StateMachine.Instance base_smi)
+						public override void ShowDevTool(StateMachine.Instance base_smi)
 			{
 				string fmt = "None";
 				if (this.value != null)
@@ -1161,80 +1161,80 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		}
 	}
 
-	public class TagParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<Tag>
+		public class TagParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<Tag>
 	{
-		public TagParameter()
+				public TagParameter()
 		{
 		}
 
-		public TagParameter(Tag default_value) : base(default_value)
+				public TagParameter(Tag default_value) : base(default_value)
 		{
 		}
 
-		public override StateMachine.Parameter.Context CreateContext()
+				public override StateMachine.Parameter.Context CreateContext()
 		{
 			return new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.TagParameter.Context(this, this.defaultValue);
 		}
 
-		public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<Tag>.Context
+				public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<Tag>.Context
 		{
-			public Context(StateMachine.Parameter parameter, Tag default_value) : base(parameter, default_value)
+						public Context(StateMachine.Parameter parameter, Tag default_value) : base(parameter, default_value)
 			{
 			}
 
-			public override void Serialize(BinaryWriter writer)
+						public override void Serialize(BinaryWriter writer)
 			{
 				writer.Write(this.value.GetHash());
 			}
 
-			public override void Deserialize(IReader reader, StateMachine.Instance smi)
+						public override void Deserialize(IReader reader, StateMachine.Instance smi)
 			{
 				this.value = new Tag(reader.ReadInt32());
 			}
 
-			public override void ShowEditor(StateMachine.Instance base_smi)
+						public override void ShowEditor(StateMachine.Instance base_smi)
 			{
 			}
 
-			public override void ShowDevTool(StateMachine.Instance base_smi)
+						public override void ShowDevTool(StateMachine.Instance base_smi)
 			{
 				ImGui.LabelText(this.parameter.name, this.value.ToString());
 			}
 		}
 	}
 
-	public class ObjectParameter<ObjectType> : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ObjectType> where ObjectType : class
+		public class ObjectParameter<ObjectType> : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ObjectType> where ObjectType : class
 	{
-		public ObjectParameter() : base(default(ObjectType))
+				public ObjectParameter() : base(default(ObjectType))
 		{
 		}
 
-		public override StateMachine.Parameter.Context CreateContext()
+				public override StateMachine.Parameter.Context CreateContext()
 		{
 			return new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.ObjectParameter<ObjectType>.Context(this, this.defaultValue);
 		}
 
-		public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ObjectType>.Context
+				public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<ObjectType>.Context
 		{
-			public Context(StateMachine.Parameter parameter, ObjectType default_value) : base(parameter, default_value)
+						public Context(StateMachine.Parameter parameter, ObjectType default_value) : base(parameter, default_value)
 			{
 			}
 
-			public override void Serialize(BinaryWriter writer)
-			{
-				DebugUtil.DevLogError("ObjectParameter cannot be serialized");
-			}
-
-			public override void Deserialize(IReader reader, StateMachine.Instance smi)
+						public override void Serialize(BinaryWriter writer)
 			{
 				DebugUtil.DevLogError("ObjectParameter cannot be serialized");
 			}
 
-			public override void ShowEditor(StateMachine.Instance base_smi)
+						public override void Deserialize(IReader reader, StateMachine.Instance smi)
+			{
+				DebugUtil.DevLogError("ObjectParameter cannot be serialized");
+			}
+
+						public override void ShowEditor(StateMachine.Instance base_smi)
 			{
 			}
 
-			public override void ShowDevTool(StateMachine.Instance base_smi)
+						public override void ShowDevTool(StateMachine.Instance base_smi)
 			{
 				string fmt = "None";
 				if (this.value != null)
@@ -1246,13 +1246,13 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 		}
 	}
 
-	public class TargetParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<GameObject>
+		public class TargetParameter : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<GameObject>
 	{
-		public TargetParameter() : base(null)
+				public TargetParameter() : base(null)
 		{
 		}
 
-		public SMT GetSMI<SMT>(StateMachineInstanceType smi) where SMT : StateMachine.Instance
+				public SMT GetSMI<SMT>(StateMachineInstanceType smi) where SMT : StateMachine.Instance
 		{
 			GameObject gameObject = base.Get(smi);
 			if (gameObject != null)
@@ -1267,12 +1267,12 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			return default(SMT);
 		}
 
-		public bool IsNull(StateMachineInstanceType smi)
+				public bool IsNull(StateMachineInstanceType smi)
 		{
 			return base.Get(smi) == null;
 		}
 
-		public ComponentType Get<ComponentType>(StateMachineInstanceType smi)
+				public ComponentType Get<ComponentType>(StateMachineInstanceType smi)
 		{
 			GameObject gameObject = base.Get(smi);
 			if (gameObject != null)
@@ -1287,7 +1287,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			return default(ComponentType);
 		}
 
-		public ComponentType AddOrGet<ComponentType>(StateMachineInstanceType smi) where ComponentType : Component
+				public ComponentType AddOrGet<ComponentType>(StateMachineInstanceType smi) where ComponentType : Component
 		{
 			GameObject gameObject = base.Get(smi);
 			if (gameObject != null)
@@ -1302,7 +1302,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			return default(ComponentType);
 		}
 
-		public void Set(KMonoBehaviour value, StateMachineInstanceType smi)
+				public void Set(KMonoBehaviour value, StateMachineInstanceType smi)
 		{
 			GameObject value2 = null;
 			if (value != null)
@@ -1312,18 +1312,18 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 			base.Set(value2, smi, false);
 		}
 
-		public override StateMachine.Parameter.Context CreateContext()
+				public override StateMachine.Parameter.Context CreateContext()
 		{
 			return new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.TargetParameter.Context(this, this.defaultValue);
 		}
 
-		public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<GameObject>.Context
+				public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<GameObject>.Context
 		{
-			public Context(StateMachine.Parameter parameter, GameObject default_value) : base(parameter, default_value)
+						public Context(StateMachine.Parameter parameter, GameObject default_value) : base(parameter, default_value)
 			{
 			}
 
-			public override void Serialize(BinaryWriter writer)
+						public override void Serialize(BinaryWriter writer)
 			{
 				if (this.value != null)
 				{
@@ -1334,7 +1334,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				writer.Write(0);
 			}
 
-			public override void Deserialize(IReader reader, StateMachine.Instance smi)
+						public override void Deserialize(IReader reader, StateMachine.Instance smi)
 			{
 				try
 				{
@@ -1359,7 +1359,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				}
 			}
 
-			public override void Cleanup()
+						public override void Cleanup()
 			{
 				base.Cleanup();
 				if (this.value != null)
@@ -1369,7 +1369,7 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				}
 			}
 
-			public override void Set(GameObject value, StateMachineInstanceType smi, bool silenceEvents = false)
+						public override void Set(GameObject value, StateMachineInstanceType smi, bool silenceEvents = false)
 			{
 				this.m_smi = smi;
 				if (this.value != null)
@@ -1384,16 +1384,16 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				base.Set(value, smi, silenceEvents);
 			}
 
-			private void OnObjectDestroyed(object data)
+						private void OnObjectDestroyed(object data)
 			{
 				this.Set(null, this.m_smi, false);
 			}
 
-			public override void ShowEditor(StateMachine.Instance base_smi)
+						public override void ShowEditor(StateMachine.Instance base_smi)
 			{
 			}
 
-			public override void ShowDevTool(StateMachine.Instance base_smi)
+						public override void ShowDevTool(StateMachine.Instance base_smi)
 			{
 				if (this.value != null)
 				{
@@ -1403,48 +1403,48 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				ImGui.LabelText(this.parameter.name, "null");
 			}
 
-			private StateMachineInstanceType m_smi;
+						private StateMachineInstanceType m_smi;
 
-			private int objectDestroyedHandler;
+						private int objectDestroyedHandler;
 		}
 	}
 
-	public class SignalParameter
+		public class SignalParameter
 	{
 	}
 
-	public class Signal : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.SignalParameter>
+		public class Signal : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.SignalParameter>
 	{
-		public Signal() : base(null)
+				public Signal() : base(null)
 		{
 			this.isSignal = true;
 		}
 
-		public void Trigger(StateMachineInstanceType smi)
+				public void Trigger(StateMachineInstanceType smi)
 		{
 			((StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Signal.Context)smi.GetParameterContext(this)).Set(null, smi, false);
 		}
 
-		public override StateMachine.Parameter.Context CreateContext()
+				public override StateMachine.Parameter.Context CreateContext()
 		{
 			return new StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Signal.Context(this, this.defaultValue);
 		}
 
-		public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.SignalParameter>.Context
+				public new class Context : StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.Parameter<StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.SignalParameter>.Context
 		{
-			public Context(StateMachine.Parameter parameter, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.SignalParameter default_value) : base(parameter, default_value)
+						public Context(StateMachine.Parameter parameter, StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.SignalParameter default_value) : base(parameter, default_value)
 			{
 			}
 
-			public override void Serialize(BinaryWriter writer)
+						public override void Serialize(BinaryWriter writer)
 			{
 			}
 
-			public override void Deserialize(IReader reader, StateMachine.Instance smi)
+						public override void Deserialize(IReader reader, StateMachine.Instance smi)
 			{
 			}
 
-			public override void Set(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.SignalParameter value, StateMachineInstanceType smi, bool silenceEvents = false)
+						public override void Set(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, DefType>.SignalParameter value, StateMachineInstanceType smi, bool silenceEvents = false)
 			{
 				if (!silenceEvents && this.onDirty != null)
 				{
@@ -1452,11 +1452,11 @@ public class StateMachine<StateMachineType, StateMachineInstanceType, MasterType
 				}
 			}
 
-			public override void ShowEditor(StateMachine.Instance base_smi)
+						public override void ShowEditor(StateMachine.Instance base_smi)
 			{
 			}
 
-			public override void ShowDevTool(StateMachine.Instance base_smi)
+						public override void ShowDevTool(StateMachine.Instance base_smi)
 			{
 				if (ImGui.Button(this.parameter.name))
 				{

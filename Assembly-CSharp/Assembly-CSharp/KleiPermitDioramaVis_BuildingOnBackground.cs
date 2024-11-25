@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class KleiPermitDioramaVis_BuildingOnBackground : KMonoBehaviour, IKleiPermitDioramaVisTarget
 {
-	public void ConfigureSetup()
+		public void ConfigureSetup()
 	{
 		this.buildingKAnimPrefab.gameObject.SetActive(false);
 		this.buildingKAnimArray = new KBatchedAnimController[9];
@@ -29,12 +29,12 @@ public class KleiPermitDioramaVis_BuildingOnBackground : KMonoBehaviour, IKleiPe
 		}
 	}
 
-	public GameObject GetGameObject()
+		public GameObject GetGameObject()
 	{
 		return base.gameObject;
 	}
 
-	public void ConfigureWith(PermitResource permit)
+		public void ConfigureWith(PermitResource permit)
 	{
 		BuildingFacadeResource buildingPermit = (BuildingFacadeResource)permit;
 		BuildingDef buildingDef = KleiPermitVisUtil.GetBuildingDef(permit);
@@ -47,8 +47,8 @@ public class KleiPermitDioramaVis_BuildingOnBackground : KMonoBehaviour, IKleiPe
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KBatchedAnimController buildingKAnimPrefab;
 
-	private KBatchedAnimController[] buildingKAnimArray;
+		private KBatchedAnimController[] buildingKAnimArray;
 }

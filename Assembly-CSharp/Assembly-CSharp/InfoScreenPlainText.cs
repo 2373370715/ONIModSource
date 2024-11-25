@@ -1,14 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/InfoScreenPlainText")]
-public class InfoScreenPlainText : KMonoBehaviour
-{
-	public void SetText(string text)
-	{
-		this.locText.text = text;
-	}
+public class InfoScreenPlainText : KMonoBehaviour {
+    [SerializeField]
+    private LocText locText;
 
-	[SerializeField]
-	private LocText locText;
+    public void SetText(string text) { locText.text = text; }
 }

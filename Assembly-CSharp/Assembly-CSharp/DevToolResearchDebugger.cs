@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class DevToolResearchDebugger : DevTool
 {
-	public DevToolResearchDebugger()
+		public DevToolResearchDebugger()
 	{
 		this.RequiresGameRunning = true;
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		TechInstance activeResearch = Research.Instance.GetActiveResearch();
 		if (activeResearch == null)

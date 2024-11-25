@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DevToolGeyserModifiers : DevTool
 {
-		private float GraphHeight
+			private float GraphHeight
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class DevToolGeyserModifiers : DevTool
 		}
 	}
 
-	private void DrawGeyserVariable(string variableTitle, float currentValue, float modifier, string modifierFormating = "+0.##; -0.##; +0", string unit = "", string modifierUnit = "", float altValue = 0f, string altUnit = "")
+		private void DrawGeyserVariable(string variableTitle, float currentValue, float modifier, string modifierFormating = "+0.##; -0.##; +0", string unit = "", string modifierUnit = "", float altValue = 0f, string altUnit = "")
 	{
 		ImGui.BulletText(variableTitle + ": " + currentValue.ToString() + unit);
 		if (modifier != 0f)
@@ -29,12 +29,12 @@ public class DevToolGeyserModifiers : DevTool
 		}
 	}
 
-	public static uint Color(byte r, byte g, byte b, byte a)
+		public static uint Color(byte r, byte g, byte b, byte a)
 	{
 		return (uint)((int)a << 24 | (int)b << 16 | (int)g << 8 | (int)r);
 	}
 
-	private void DrawYearAndIterationsGraph(Geyser geyser)
+		private void DrawYearAndIterationsGraph(Geyser geyser)
 	{
 		Vector2 windowContentRegionMin = ImGui.GetWindowContentRegionMin();
 		Vector2 windowContentRegionMax = ImGui.GetWindowContentRegionMax();
@@ -100,7 +100,7 @@ public class DevToolGeyserModifiers : DevTool
 		ImGui.GetForegroundDrawList().AddRectFilled(vector3, vector4, this.CURRENT_TIME_COLOR);
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		this.Update();
 		string fmt = (this.selectedGeyser == null) ? "No Geyser Selected" : (UI.StripLinkFormatting(this.selectedGeyser.gameObject.GetProperName()) + " -");
@@ -367,7 +367,7 @@ public class DevToolGeyserModifiers : DevTool
 		}
 	}
 
-	private void PrepareSummaryForModification(Geyser.GeyserModification modification)
+		private void PrepareSummaryForModification(Geyser.GeyserModification modification)
 	{
 		float num = (float)((Geyser.massModificationMethod == Geyser.ModificationMethod.Percentages) ? 100 : 1);
 		float num2 = (float)((Geyser.temperatureModificationMethod == Geyser.ModificationMethod.Percentages) ? 100 : 1);
@@ -394,7 +394,7 @@ public class DevToolGeyserModifiers : DevTool
 		this.modifiers_FormatedList[8] = this.modifiers_FormatedList_Titles[8] + ": " + (modification.IsNewElementInUse() ? modification.newElement.ToString() : "None");
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.Setup();
 		SelectTool instance = SelectTool.Instance;
@@ -417,7 +417,7 @@ public class DevToolGeyserModifiers : DevTool
 		this.lastSelectedGameObject = gameObject2;
 	}
 
-	private void Setup()
+		private void Setup()
 	{
 		if (this.AllSimHashesValues == null)
 		{
@@ -444,53 +444,53 @@ public class DevToolGeyserModifiers : DevTool
 		}
 	}
 
-	private const string DEV_MODIFIER_ID = "DEV MODIFIER";
+		private const string DEV_MODIFIER_ID = "DEV MODIFIER";
 
-	private const string NO_SELECTED_STR = "No Geyser Selected";
+		private const string NO_SELECTED_STR = "No Geyser Selected";
 
-	private int DevModifierID;
+		private int DevModifierID;
 
-	private const float ITERATION_BAR_HEIGHT = 10f;
+		private const float ITERATION_BAR_HEIGHT = 10f;
 
-	private const float YEAR_BAR_HEIGHT = 10f;
+		private const float YEAR_BAR_HEIGHT = 10f;
 
-	private const float BAR_SPACING = 2f;
+		private const float BAR_SPACING = 2f;
 
-	private const float CURRENT_TIME_PADDING = 2f;
+		private const float CURRENT_TIME_PADDING = 2f;
 
-	private const float CURRENT_TIME_LINE_WIDTH = 2f;
+		private const float CURRENT_TIME_LINE_WIDTH = 2f;
 
-	private uint YEAR_ACTIVE_COLOR = DevToolGeyserModifiers.Color(220, 15, 65, 175);
+		private uint YEAR_ACTIVE_COLOR = DevToolGeyserModifiers.Color(220, 15, 65, 175);
 
-	private uint YEAR_DORMANT_COLOR = DevToolGeyserModifiers.Color(byte.MaxValue, 0, 65, 60);
+		private uint YEAR_DORMANT_COLOR = DevToolGeyserModifiers.Color(byte.MaxValue, 0, 65, 60);
 
-	private uint ITERATION_ERUPTION_COLOR = DevToolGeyserModifiers.Color(60, 80, byte.MaxValue, 200);
+		private uint ITERATION_ERUPTION_COLOR = DevToolGeyserModifiers.Color(60, 80, byte.MaxValue, 200);
 
-	private uint ITERATION_QUIET_COLOR = DevToolGeyserModifiers.Color(60, 80, byte.MaxValue, 80);
+		private uint ITERATION_QUIET_COLOR = DevToolGeyserModifiers.Color(60, 80, byte.MaxValue, 80);
 
-	private uint CURRENT_TIME_COLOR = DevToolGeyserModifiers.Color(byte.MaxValue, 0, 0, byte.MaxValue);
+		private uint CURRENT_TIME_COLOR = DevToolGeyserModifiers.Color(byte.MaxValue, 0, 0, byte.MaxValue);
 
-	private Vector4 MODFIED_VALUE_TEXT_COLOR = new Vector4(0.8f, 0.7f, 0.1f, 1f);
+		private Vector4 MODFIED_VALUE_TEXT_COLOR = new Vector4(0.8f, 0.7f, 0.1f, 1f);
 
-	private Vector4 COMMENT_COLOR = new Vector4(0.1f, 0.5f, 0.1f, 1f);
+		private Vector4 COMMENT_COLOR = new Vector4(0.1f, 0.5f, 0.1f, 1f);
 
-	private Vector4 SUBTITLE_SLEEP_COLOR = new Vector4(0.15f, 0.35f, 0.7f, 1f);
+		private Vector4 SUBTITLE_SLEEP_COLOR = new Vector4(0.15f, 0.35f, 0.7f, 1f);
 
-	private Vector4 SUBTITLE_OVERPRESSURE_COLOR = new Vector4(0.7f, 0f, 0f, 1f);
+		private Vector4 SUBTITLE_OVERPRESSURE_COLOR = new Vector4(0.7f, 0f, 0f, 1f);
 
-	private Vector4 SUBTITLE_ERUPTING_COLOR = new Vector4(1f, 0.7f, 0f, 1f);
+		private Vector4 SUBTITLE_ERUPTING_COLOR = new Vector4(1f, 0.7f, 0f, 1f);
 
-	private Vector4 ALT_COLOR = new Vector4(0.5f, 0.5f, 0.5f, 1f);
+		private Vector4 ALT_COLOR = new Vector4(0.5f, 0.5f, 0.5f, 1f);
 
-	private List<bool> modificationListUnfold = new List<bool>();
+		private List<bool> modificationListUnfold = new List<bool>();
 
-	private GameObject lastSelectedGameObject;
+		private GameObject lastSelectedGameObject;
 
-	private Geyser selectedGeyser;
+		private Geyser selectedGeyser;
 
-	private Geyser.GeyserModification dev_modification;
+		private Geyser.GeyserModification dev_modification;
 
-	private string[] modifiers_FormatedList_Titles = new string[]
+		private string[] modifiers_FormatedList_Titles = new string[]
 	{
 		"Mass per cycle",
 		"Temperature",
@@ -503,13 +503,13 @@ public class DevToolGeyserModifiers : DevTool
 		"Secondary element"
 	};
 
-	private string[] modifiers_FormatedList = new string[9];
+		private string[] modifiers_FormatedList = new string[9];
 
-	private string[] modifiers_FormatedList_Tooltip = new string[9];
+		private string[] modifiers_FormatedList_Tooltip = new string[9];
 
-	private string[] AllSimHashesValues;
+		private string[] AllSimHashesValues;
 
-	private int modifierSelected = -1;
+		private int modifierSelected = -1;
 
-	private int modifierFormatting_ValuePadding = -1;
+		private int modifierFormatting_ValuePadding = -1;
 }

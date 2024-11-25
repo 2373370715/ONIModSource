@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ConditionFlightPathIsClear : ProcessCondition
 {
-	public ConditionFlightPathIsClear(GameObject module, int bufferWidth)
+		public ConditionFlightPathIsClear(GameObject module, int bufferWidth)
 	{
 		this.module = module.GetComponent<RocketModule>();
 		if (this.module is RocketModuleCluster)
@@ -15,7 +15,7 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		this.bufferWidth = bufferWidth;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		this.Update();
 		if (!this.hasClearSky)
@@ -25,7 +25,7 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		return ProcessCondition.Status.Ready;
 	}
 
-	public override StatusItem GetStatusItem(ProcessCondition.Status status)
+		public override StatusItem GetStatusItem(ProcessCondition.Status status)
 	{
 		if (status == ProcessCondition.Status.Failure)
 		{
@@ -34,7 +34,7 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		return null;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		if (DlcManager.FeatureClusterSpaceEnabled())
 		{
@@ -48,7 +48,7 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		return "";
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		if (DlcManager.FeatureClusterSpaceEnabled())
 		{
@@ -62,12 +62,12 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		return "";
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return DlcManager.FeatureClusterSpaceEnabled();
 	}
 
-	public void Update()
+		public void Update()
 	{
 		List<Building> list = new List<Building>();
 		if (this.moduleInterface != null)
@@ -109,7 +109,7 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		}
 	}
 
-	public static bool HasModuleAccessToSpace(Building module, out int obstructionCell)
+		public static bool HasModuleAccessToSpace(Building module, out int obstructionCell)
 	{
 		WorldContainer myWorld = module.GetMyWorld();
 		obstructionCell = -1;
@@ -138,7 +138,7 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		return result;
 	}
 
-	public static int PadTopEdgeDistanceToOutOfScreenEdge(GameObject launchpad)
+		public static int PadTopEdgeDistanceToOutOfScreenEdge(GameObject launchpad)
 	{
 		WorldContainer myWorld = launchpad.GetMyWorld();
 		Vector2 maximumBounds = myWorld.maximumBounds;
@@ -146,7 +146,7 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		return (int)CameraController.GetHighestVisibleCell_Height((byte)myWorld.ParentWorldId) - y + 10;
 	}
 
-	public static int PadTopEdgeDistanceToCeilingEdge(GameObject launchpad)
+		public static int PadTopEdgeDistanceToCeilingEdge(GameObject launchpad)
 	{
 		Vector2 maximumBounds = launchpad.GetMyWorld().maximumBounds;
 		int num = (int)launchpad.GetMyWorld().maximumBounds.y;
@@ -154,7 +154,7 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		return num - Grid.TopBorderHeight - y + 1;
 	}
 
-	public static bool CheckFlightPathClear(CraftModuleInterface craft, GameObject launchpad, out int obstruction)
+		public static bool CheckFlightPathClear(CraftModuleInterface craft, GameObject launchpad, out int obstruction)
 	{
 		Vector2I vector2I = Grid.CellToXY(launchpad.GetComponent<LaunchPad>().RocketBottomPosition);
 		int num = ConditionFlightPathIsClear.PadTopEdgeDistanceToCeilingEdge(launchpad);
@@ -187,7 +187,7 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		return true;
 	}
 
-	private static bool CanReachSpace(int startCell, out int obstruction, out int highestCellInSky)
+		private static bool CanReachSpace(int startCell, out int obstruction, out int highestCellInSky)
 	{
 		WorldContainer worldContainer = (startCell >= 0) ? ClusterManager.Instance.GetWorld((int)Grid.WorldIdx[startCell]) : null;
 		int num = (worldContainer == null) ? Grid.HeightInCells : ((int)worldContainer.maximumBounds.y);
@@ -206,7 +206,7 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		return true;
 	}
 
-	public string GetObstruction()
+		public string GetObstruction()
 	{
 		if (this.obstructedTile == -1)
 		{
@@ -219,17 +219,17 @@ public class ConditionFlightPathIsClear : ProcessCondition
 		return string.Format(BUILDING.STATUSITEMS.PATH_NOT_CLEAR.TILE_FORMAT, Grid.Element[this.obstructedTile].tag.ProperName());
 	}
 
-	private CraftModuleInterface moduleInterface;
+		private CraftModuleInterface moduleInterface;
 
-	private RocketModule module;
+		private RocketModule module;
 
-	private int bufferWidth;
+		private int bufferWidth;
 
-	private bool hasClearSky;
+		private bool hasClearSky;
 
-	private int obstructedTile = -1;
+		private int obstructedTile = -1;
 
-	public const int MAXIMUM_ROCKET_HEIGHT = 35;
+		public const int MAXIMUM_ROCKET_HEIGHT = 35;
 
-	public const float FIRE_FX_HEIGHT = 10f;
+		public const float FIRE_FX_HEIGHT = 10f;
 }

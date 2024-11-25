@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class WarpReceiverConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = WarpReceiverConfig.ID;
 		string name = STRINGS.BUILDINGS.PREFABS.WARPRECEIVER.NAME;
@@ -37,7 +37,7 @@ public class WarpReceiverConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<WarpReceiver>().workLayer = Grid.SceneLayer.Building;
 		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
@@ -47,9 +47,9 @@ public class WarpReceiverConfig : IEntityConfig
 		inst.GetComponent<Deconstructable>();
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public static string ID = "WarpReceiver";
+		public static string ID = "WarpReceiver";
 }

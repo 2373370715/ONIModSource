@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EggIncubatorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "EggIncubator";
 		int width = 2;
@@ -30,7 +30,7 @@ public class EggIncubatorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
 		BuildingTemplates.CreateDefaultStorage(go, false).SetDefaultStoredItemModifiers(EggIncubatorConfig.IncubatorStorage);
@@ -39,13 +39,13 @@ public class EggIncubatorConfig : IBuildingConfig
 		eggIncubator.SetWorkTime(5f);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "EggIncubator";
+		public const string ID = "EggIncubator";
 
-	public static readonly List<Storage.StoredItemModifier> IncubatorStorage = new List<Storage.StoredItemModifier>
+		public static readonly List<Storage.StoredItemModifier> IncubatorStorage = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Preserve
 	};

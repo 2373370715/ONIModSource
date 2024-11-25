@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Baggable")]
 public class Baggable : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.minionAnimOverride = Assets.GetAnim("anim_restrain_creature_kanim");
@@ -52,13 +52,13 @@ public class Baggable : KMonoBehaviour
 		}
 	}
 
-	private void OnStore(object data)
+		private void OnStore(object data)
 	{
 		Storage storage = data as Storage;
 		if (storage != null || (data != null && (bool)data))
 		{
 			base.gameObject.AddTag(GameTags.Creatures.Bagged);
-			if (storage && storage.IsPrefabID(GameTags.Minion))
+			if (storage && storage.HasTag(GameTags.BaseMinion))
 			{
 				this.SetVisible(false);
 				return;
@@ -74,7 +74,7 @@ public class Baggable : KMonoBehaviour
 		}
 	}
 
-	private void SetVisible(bool visible)
+		private void SetVisible(bool visible)
 	{
 		KAnimControllerBase component = base.gameObject.GetComponent<KAnimControllerBase>();
 		if (component != null && component.enabled != visible)
@@ -88,7 +88,7 @@ public class Baggable : KMonoBehaviour
 		}
 	}
 
-	public static string GetBaggedAnimName(GameObject baggableObject)
+		public static string GetBaggedAnimName(GameObject baggableObject)
 	{
 		string result = "trussed";
 		Pickupable pickupable = baggableObject.AddOrGet<Pickupable>();
@@ -107,7 +107,7 @@ public class Baggable : KMonoBehaviour
 		return result;
 	}
 
-	public void SetWrangled()
+		public void SetWrangled()
 	{
 		this.wrangled = true;
 		Navigator component = base.GetComponent<Navigator>();
@@ -119,30 +119,30 @@ public class Baggable : KMonoBehaviour
 		base.GetComponent<KAnimControllerBase>().Play(Baggable.GetBaggedAnimName(base.gameObject), KAnim.PlayMode.Loop, 1f, 0f);
 	}
 
-	public void Free()
+		public void Free()
 	{
 		base.gameObject.RemoveTag(GameTags.Creatures.Bagged);
 		this.wrangled = false;
 		this.SetVisible(true);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KAnimFile minionAnimOverride;
 
-	public bool mustStandOntopOfTrapForPickup;
+		public bool mustStandOntopOfTrapForPickup;
 
-	[Serialize]
+		[Serialize]
 	public bool wrangled;
 
-	[Serialize]
+		[Serialize]
 	public bool keepWrangledNextTimeRemovedFromStorage;
 
-	public bool useGunForPickup;
+		public bool useGunForPickup;
 
-	private static readonly EventSystem.IntraObjectHandler<Baggable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Baggable>(delegate(Baggable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Baggable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Baggable>(delegate(Baggable component, object data)
 	{
 		component.OnStore(data);
 	});
 
-	public const string DEFAULT_BAGGED_ANIM_NAME = "trussed";
+		public const string DEFAULT_BAGGED_ANIM_NAME = "trussed";
 }

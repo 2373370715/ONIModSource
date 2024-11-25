@@ -2,9 +2,9 @@
 
 public enum NotificationValence
 {
-	Good,
-	Neutral,
-	BadMinor,
-	Bad,
-	DuplicantThreatening
+		Good,
+		Neutral,
+		BadMinor,
+		Bad,
+		DuplicantThreatening
 }

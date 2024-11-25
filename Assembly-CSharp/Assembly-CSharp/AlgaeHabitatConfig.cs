@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AlgaeHabitatConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "AlgaeHabitat";
 		int width = 1;
@@ -30,7 +30,7 @@ public class AlgaeHabitatConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.showInUI = true;
@@ -103,25 +103,25 @@ public class AlgaeHabitatConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "AlgaeHabitat";
+		public const string ID = "AlgaeHabitat";
 
-	private const float ALGAE_RATE = 0.030000001f;
+		private const float ALGAE_RATE = 0.030000001f;
 
-	private const float WATER_RATE = 0.3f;
+		private const float WATER_RATE = 0.3f;
 
-	private const float OXYGEN_RATE = 0.040000003f;
+		private const float OXYGEN_RATE = 0.040000003f;
 
-	private const float CO2_RATE = 0.0003333333f;
+		private const float CO2_RATE = 0.0003333333f;
 
-	private const float ALGAE_CAPACITY = 90f;
+		private const float ALGAE_CAPACITY = 90f;
 
-	private const float WATER_CAPACITY = 360f;
+		private const float WATER_CAPACITY = 360f;
 
-	private static readonly List<Storage.StoredItemModifier> PollutedWaterStorageModifiers = new List<Storage.StoredItemModifier>
+		private static readonly List<Storage.StoredItemModifier> PollutedWaterStorageModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Seal

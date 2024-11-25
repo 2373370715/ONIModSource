@@ -1,4 +1,4 @@
-﻿
+﻿namespace RsTransferPort;
 
 public enum InOutType {
     None,

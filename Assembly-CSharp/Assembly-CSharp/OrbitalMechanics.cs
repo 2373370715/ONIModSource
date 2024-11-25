@@ -7,18 +7,18 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/OrbitalMechanics")]
 public class OrbitalMechanics : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.Subscribe<OrbitalMechanics>(-1298331547, this.OnClusterLocationChangedDelegate);
 	}
 
-	private void OnClusterLocationChanged(object data)
+		private void OnClusterLocationChanged(object data)
 	{
 		ClusterLocationChangedEvent clusterLocationChangedEvent = (ClusterLocationChangedEvent)data;
 		this.UpdateLocation(clusterLocationChangedEvent.newLocation);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.orbitingObjects != null)
 		{
@@ -32,7 +32,7 @@ public class OrbitalMechanics : KMonoBehaviour
 		}
 	}
 
-	[ContextMenu("Rebuild")]
+		[ContextMenu("Rebuild")]
 	private void Rebuild()
 	{
 		List<string> list = new List<string>();
@@ -57,7 +57,7 @@ public class OrbitalMechanics : KMonoBehaviour
 		}
 	}
 
-	private void UpdateLocation(AxialI location)
+		private void UpdateLocation(AxialI location)
 	{
 		if (this.orbitingObjects.Count > 0)
 		{
@@ -123,7 +123,7 @@ public class OrbitalMechanics : KMonoBehaviour
 		}
 	}
 
-	public void CreateOrbitalObject(string orbit_db_name)
+		public void CreateOrbitalObject(string orbit_db_name)
 	{
 		WorldContainer component = base.GetComponent<WorldContainer>();
 		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(OrbitalBGConfig.ID), base.gameObject, null);
@@ -133,10 +133,10 @@ public class OrbitalMechanics : KMonoBehaviour
 		this.orbitingObjects.Add(new Ref<OrbitalObject>(component2));
 	}
 
-	[Serialize]
+		[Serialize]
 	private List<Ref<OrbitalObject>> orbitingObjects = new List<Ref<OrbitalObject>>();
 
-	private EventSystem.IntraObjectHandler<OrbitalMechanics> OnClusterLocationChangedDelegate = new EventSystem.IntraObjectHandler<OrbitalMechanics>(delegate(OrbitalMechanics cmp, object data)
+		private EventSystem.IntraObjectHandler<OrbitalMechanics> OnClusterLocationChangedDelegate = new EventSystem.IntraObjectHandler<OrbitalMechanics>(delegate(OrbitalMechanics cmp, object data)
 	{
 		cmp.OnClusterLocationChanged(data);
 	});

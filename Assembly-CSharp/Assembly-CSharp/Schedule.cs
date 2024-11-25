@@ -6,39 +6,80 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Schedule : ISaveLoadable, IListableOption
 {
-	public static int GetBlockIdx()
+				public int ProgressTimetableIdx
 	{
-		return Math.Min((int)(GameClock.Instance.GetCurrentCycleAsPercentage() * 24f), 23);
+		get
+		{
+			return this.progressTimetableIdx;
+		}
+		set
+		{
+			this.progressTimetableIdx = value;
+		}
 	}
 
-	public static int GetLastBlockIdx()
+		public ScheduleBlock GetCurrentScheduleBlock()
 	{
-		return (Schedule.GetBlockIdx() + 24 - 1) % 24;
+		return this.GetBlock(this.GetCurrentBlockIdx());
 	}
 
-	public void ClearNullReferences()
+		public int GetCurrentBlockIdx()
+	{
+		return Math.Min((int)(GameClock.Instance.GetCurrentCycleAsPercentage() * 24f), 23) + this.progressTimetableIdx * 24;
+	}
+
+		public ScheduleBlock GetPreviousScheduleBlock()
+	{
+		return this.GetBlock(this.GetPreviousBlockIdx());
+	}
+
+		public int GetPreviousBlockIdx()
+	{
+		int num = this.GetCurrentBlockIdx() - 1;
+		if (num == -1)
+		{
+			num = this.blocks.Count - 1;
+		}
+		return num;
+	}
+
+		public void ClearNullReferences()
 	{
 		this.assigned.RemoveAll((Ref<Schedulable> x) => x.Get() == null);
 	}
 
-	public Schedule(string name, List<ScheduleGroup> defaultGroups, bool alarmActivated)
+		public Schedule(string name, List<ScheduleGroup> defaultGroups, bool alarmActivated)
 	{
 		this.name = name;
 		this.alarmActivated = alarmActivated;
-		this.blocks = new List<ScheduleBlock>(24);
+		this.blocks = new List<ScheduleBlock>(defaultGroups.Count);
 		this.assigned = new List<Ref<Schedulable>>();
 		this.tones = this.GenerateTones();
 		this.SetBlocksToGroupDefaults(defaultGroups);
 	}
 
-	public void SetBlocksToGroupDefaults(List<ScheduleGroup> defaultGroups)
+		public Schedule(string name, List<ScheduleBlock> sourceBlocks, bool alarmActivated)
+	{
+		this.name = name;
+		this.alarmActivated = alarmActivated;
+		this.blocks = new List<ScheduleBlock>();
+		for (int i = 0; i < sourceBlocks.Count; i++)
+		{
+			this.blocks.Add(new ScheduleBlock(sourceBlocks[i].name, sourceBlocks[i].GroupId));
+		}
+		this.assigned = new List<Ref<Schedulable>>();
+		this.tones = this.GenerateTones();
+		this.Changed();
+	}
+
+		public void SetBlocksToGroupDefaults(List<ScheduleGroup> defaultGroups)
 	{
 		this.blocks = Schedule.GetScheduleBlocksFromGroupDefaults(defaultGroups);
 		global::Debug.Assert(this.blocks.Count == 24);
 		this.Changed();
 	}
 
-	public static List<ScheduleBlock> GetScheduleBlocksFromGroupDefaults(List<ScheduleGroup> defaultGroups)
+		public static List<ScheduleBlock> GetScheduleBlocksFromGroupDefaults(List<ScheduleGroup> defaultGroups)
 	{
 		List<ScheduleBlock> list = new List<ScheduleBlock>();
 		for (int i = 0; i < defaultGroups.Count; i++)
@@ -46,23 +87,36 @@ public class Schedule : ISaveLoadable, IListableOption
 			ScheduleGroup scheduleGroup = defaultGroups[i];
 			for (int j = 0; j < scheduleGroup.defaultSegments; j++)
 			{
-				list.Add(new ScheduleBlock(scheduleGroup.Name, scheduleGroup.allowedTypes, scheduleGroup.Id));
+				list.Add(new ScheduleBlock(scheduleGroup.Name, scheduleGroup.Id));
 			}
 		}
 		return list;
 	}
 
-	public void Tick()
+		public void Tick()
 	{
-		ScheduleBlock block = this.GetBlock(Schedule.GetBlockIdx());
-		ScheduleBlock block2 = this.GetBlock(Schedule.GetLastBlockIdx());
-		if (!Schedule.AreScheduleTypesIdentical(block.allowed_types, block2.allowed_types))
+		ScheduleBlock currentScheduleBlock = this.GetCurrentScheduleBlock();
+		ScheduleBlock block = this.GetBlock(this.GetPreviousBlockIdx());
+		global::Debug.Assert(block != currentScheduleBlock);
+		if (this.GetCurrentBlockIdx() % 24 == 0)
 		{
-			ScheduleGroup scheduleGroup = Db.Get().ScheduleGroups.FindGroupForScheduleTypes(block.allowed_types);
-			ScheduleGroup scheduleGroup2 = Db.Get().ScheduleGroups.FindGroupForScheduleTypes(block2.allowed_types);
+			this.progressTimetableIdx++;
+			if (this.progressTimetableIdx >= this.blocks.Count / 24)
+			{
+				this.progressTimetableIdx = 0;
+			}
+			if (ScheduleScreen.Instance != null)
+			{
+				ScheduleScreen.Instance.OnChangeCurrentTimetable();
+			}
+		}
+		if (!Schedule.AreScheduleTypesIdentical(currentScheduleBlock.allowed_types, block.allowed_types))
+		{
+			ScheduleGroup scheduleGroup = Db.Get().ScheduleGroups.FindGroupForScheduleTypes(currentScheduleBlock.allowed_types);
+			ScheduleGroup scheduleGroup2 = Db.Get().ScheduleGroups.FindGroupForScheduleTypes(block.allowed_types);
 			if (this.alarmActivated && scheduleGroup2.alarm != scheduleGroup.alarm)
 			{
-				ScheduleManager.Instance.PlayScheduleAlarm(this, block, scheduleGroup.alarm);
+				ScheduleManager.Instance.PlayScheduleAlarm(this, currentScheduleBlock, scheduleGroup.alarm);
 			}
 			foreach (Ref<Schedulable> @ref in this.GetAssigned())
 			{
@@ -75,12 +129,12 @@ public class Schedule : ISaveLoadable, IListableOption
 		}
 	}
 
-	string IListableOption.GetProperName()
+		string IListableOption.GetProperName()
 	{
 		return this.name;
 	}
 
-	public int[] GenerateTones()
+		public int[] GenerateTones()
 	{
 		int minToneIndex = TuningData<ScheduleManager.Tuning>.Get().minToneIndex;
 		int maxToneIndex = TuningData<ScheduleManager.Tuning>.Get().maxToneIndex;
@@ -93,7 +147,7 @@ public class Schedule : ISaveLoadable, IListableOption
 		return array;
 	}
 
-	public List<Ref<Schedulable>> GetAssigned()
+		public List<Ref<Schedulable>> GetAssigned()
 	{
 		if (this.assigned == null)
 		{
@@ -102,7 +156,7 @@ public class Schedule : ISaveLoadable, IListableOption
 		return this.assigned;
 	}
 
-	public int[] GetTones()
+		public int[] GetTones()
 	{
 		if (this.tones == null)
 		{
@@ -111,16 +165,16 @@ public class Schedule : ISaveLoadable, IListableOption
 		return this.tones;
 	}
 
-	public void SetGroup(int idx, ScheduleGroup group)
+		public void SetBlockGroup(int idx, ScheduleGroup group)
 	{
 		if (0 <= idx && idx < this.blocks.Count)
 		{
-			this.blocks[idx] = new ScheduleBlock(group.Name, group.allowedTypes, group.Id);
+			this.blocks[idx] = new ScheduleBlock(group.Name, group.Id);
 			this.Changed();
 		}
 	}
 
-	private void Changed()
+		private void Changed()
 	{
 		foreach (Ref<Schedulable> @ref in this.GetAssigned())
 		{
@@ -132,17 +186,45 @@ public class Schedule : ISaveLoadable, IListableOption
 		}
 	}
 
-	public List<ScheduleBlock> GetBlocks()
+		public List<ScheduleBlock> GetBlocks()
 	{
 		return this.blocks;
 	}
 
-	public ScheduleBlock GetBlock(int idx)
+		public ScheduleBlock GetBlock(int idx)
 	{
 		return this.blocks[idx];
 	}
 
-	public void Assign(Schedulable schedulable)
+		public void InsertTimetable(int timetableIdx, List<ScheduleBlock> newBlocks)
+	{
+		this.blocks.InsertRange(timetableIdx * 24, newBlocks);
+		if (timetableIdx <= this.progressTimetableIdx)
+		{
+			this.progressTimetableIdx++;
+		}
+	}
+
+		public void AddTimetable(List<ScheduleBlock> newBlocks)
+	{
+		this.blocks.AddRange(newBlocks);
+	}
+
+		public void RemoveTimetable(int TimetableToRemoveIdx)
+	{
+		int index = TimetableToRemoveIdx * 24;
+		int num = this.blocks.Count / 24;
+		this.blocks.RemoveRange(index, 24);
+		bool flag = TimetableToRemoveIdx == this.progressTimetableIdx;
+		bool flag2 = this.progressTimetableIdx == num - 1;
+		if (TimetableToRemoveIdx < this.progressTimetableIdx || (flag && flag2))
+		{
+			this.progressTimetableIdx--;
+		}
+		ScheduleScreen.Instance.OnChangeCurrentTimetable();
+	}
+
+		public void Assign(Schedulable schedulable)
 	{
 		if (!this.IsAssigned(schedulable))
 		{
@@ -151,7 +233,7 @@ public class Schedule : ISaveLoadable, IListableOption
 		this.Changed();
 	}
 
-	public void Unassign(Schedulable schedulable)
+		public void Unassign(Schedulable schedulable)
 	{
 		for (int i = 0; i < this.GetAssigned().Count; i++)
 		{
@@ -164,7 +246,7 @@ public class Schedule : ISaveLoadable, IListableOption
 		this.Changed();
 	}
 
-	public bool IsAssigned(Schedulable schedulable)
+		public bool IsAssigned(Schedulable schedulable)
 	{
 		using (List<Ref<Schedulable>>.Enumerator enumerator = this.GetAssigned().GetEnumerator())
 		{
@@ -179,7 +261,7 @@ public class Schedule : ISaveLoadable, IListableOption
 		return false;
 	}
 
-	public static bool AreScheduleTypesIdentical(List<ScheduleBlockType> a, List<ScheduleBlockType> b)
+		public static bool AreScheduleTypesIdentical(List<ScheduleBlockType> a, List<ScheduleBlockType> b)
 	{
 		if (a.Count != b.Count)
 		{
@@ -204,20 +286,89 @@ public class Schedule : ISaveLoadable, IListableOption
 		return true;
 	}
 
-	[Serialize]
+		public bool ShiftTimetable(bool up, int timetableToShiftIdx = 0)
+	{
+		if (timetableToShiftIdx == 0 && up)
+		{
+			return false;
+		}
+		if (timetableToShiftIdx == this.blocks.Count / 24 - 1 && !up)
+		{
+			return false;
+		}
+		int num = timetableToShiftIdx * 24;
+		List<ScheduleBlock> collection = new List<ScheduleBlock>();
+		List<ScheduleBlock> collection2 = new List<ScheduleBlock>();
+		if (up)
+		{
+			collection = this.blocks.GetRange(num, 24);
+			collection2 = this.blocks.GetRange(num - 24, 24);
+			this.blocks.RemoveRange(num - 24, 48);
+			this.blocks.InsertRange(num - 24, collection2);
+			this.blocks.InsertRange(num - 24, collection);
+		}
+		else
+		{
+			collection = this.blocks.GetRange(num, 24);
+			collection2 = this.blocks.GetRange(num + 24, 24);
+			this.blocks.RemoveRange(num, 48);
+			this.blocks.InsertRange(num, collection);
+			this.blocks.InsertRange(num, collection2);
+		}
+		this.Changed();
+		return true;
+	}
+
+		public void RotateBlocks(bool directionLeft, int timetableToRotateIdx = 0)
+	{
+		List<ScheduleBlock> list = new List<ScheduleBlock>();
+		int index = timetableToRotateIdx * 24;
+		list = this.blocks.GetRange(index, 24);
+		if (!directionLeft)
+		{
+			ScheduleGroup scheduleGroup = Db.Get().ScheduleGroups.Get(list[list.Count - 1].GroupId);
+			for (int i = list.Count - 1; i >= 1; i--)
+			{
+				ScheduleGroup scheduleGroup2 = Db.Get().ScheduleGroups.Get(list[i - 1].GroupId);
+				list[i].GroupId = scheduleGroup2.Id;
+			}
+			list[0].GroupId = scheduleGroup.Id;
+		}
+		else
+		{
+			ScheduleGroup scheduleGroup3 = Db.Get().ScheduleGroups.Get(list[0].GroupId);
+			for (int j = 0; j < list.Count - 1; j++)
+			{
+				ScheduleGroup scheduleGroup4 = Db.Get().ScheduleGroups.Get(list[j + 1].GroupId);
+				list[j].GroupId = scheduleGroup4.Id;
+			}
+			list[list.Count - 1].GroupId = scheduleGroup3.Id;
+		}
+		this.blocks.RemoveRange(index, 24);
+		this.blocks.InsertRange(index, list);
+		this.Changed();
+	}
+
+		[Serialize]
 	private List<ScheduleBlock> blocks;
 
-	[Serialize]
+		[Serialize]
 	private List<Ref<Schedulable>> assigned;
 
-	[Serialize]
+		[Serialize]
 	public string name;
 
-	[Serialize]
+		[Serialize]
 	public bool alarmActivated = true;
 
-	[Serialize]
+		[Serialize]
 	private int[] tones;
 
-	public Action<Schedule> onChanged;
+		[Serialize]
+	public bool isDefaultForBionics;
+
+		[Serialize]
+	private int progressTimetableIdx;
+
+		public Action<Schedule> onChanged;
 }

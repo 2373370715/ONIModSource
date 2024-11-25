@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class RockCometConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(RockCometConfig.ID, UI.SPACEDESTINATIONS.COMETS.ROCKCOMET.NAME, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
@@ -43,17 +43,17 @@ public class RockCometConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static readonly string ID = "RockComet";
+		public static readonly string ID = "RockComet";
 
-	private const SimHashes element = SimHashes.Regolith;
+		private const SimHashes element = SimHashes.Regolith;
 
-	private const int ADDED_CELLS = 6;
+		private const int ADDED_CELLS = 6;
 }

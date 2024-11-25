@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class OilEater : StateMachineComponent<OilEater.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	public void Exhaust(float dt)
+		public void Exhaust(float dt)
 	{
 		if (base.smi.master.wiltCondition.IsWilting())
 		{
@@ -27,41 +27,49 @@ public class OilEater : StateMachineComponent<OilEater.StatesInstance>
 		}
 	}
 
-	private const SimHashes srcElement = SimHashes.CrudeOil;
+		private const SimHashes srcElement = SimHashes.CrudeOil;
 
-	private const SimHashes emitElement = SimHashes.CarbonDioxide;
+		private const SimHashes emitElement = SimHashes.CarbonDioxide;
 
-	public float emitRate = 1f;
+		public float emitRate = 1f;
 
-	public float minEmitMass;
+		public float minEmitMass;
 
-	public Vector3 emitOffset = Vector3.zero;
+		public Vector3 emitOffset = Vector3.zero;
 
-	[Serialize]
+		[Serialize]
 	private float emittedMass;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private WiltCondition wiltCondition;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ReceptacleMonitor receptacleMonitor;
 
-	public class StatesInstance : GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.GameInstance
+		public class StatesInstance : GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.GameInstance
 	{
-		public StatesInstance(OilEater master) : base(master)
+				public StatesInstance(OilEater master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater>
+		public class States : GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.grow;
-			this.dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).Enter(delegate(OilEater.StatesInstance smi)
+			GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.State state = this.dead;
+			string name = CREATURES.STATUSITEMS.DEAD.NAME;
+			string tooltip = CREATURES.STATUSITEMS.DEAD.TOOLTIP;
+			string icon = "";
+			StatusItem.IconType icon_type = StatusItem.IconType.Info;
+			NotificationType notification_type = NotificationType.Neutral;
+			bool allow_multiples = false;
+			StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+			state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).Enter(delegate(OilEater.StatesInstance smi)
 			{
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);
@@ -90,19 +98,19 @@ public class OilEater : StateMachineComponent<OilEater.StatesInstance>
 			this.alive.wilting.PlayAnim("wilt1").EventTransition(GameHashes.WiltRecover, this.alive.mature, (OilEater.StatesInstance smi) => !smi.master.wiltCondition.IsWilting());
 		}
 
-		public GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.State grow;
+				public GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.State grow;
 
-		public GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.State blocked_from_growing;
+				public GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.State blocked_from_growing;
 
-		public OilEater.States.AliveStates alive;
+				public OilEater.States.AliveStates alive;
 
-		public GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.State dead;
+				public GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.State dead;
 
-		public class AliveStates : GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.PlantAliveSubState
+				public class AliveStates : GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.PlantAliveSubState
 		{
-			public GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.State mature;
+						public GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.State mature;
 
-			public GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.State wilting;
+						public GameStateMachine<OilEater.States, OilEater.StatesInstance, OilEater, object>.State wilting;
 		}
 	}
 }

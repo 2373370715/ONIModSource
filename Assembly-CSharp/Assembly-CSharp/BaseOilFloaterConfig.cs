@@ -6,11 +6,18 @@ using UnityEngine;
 
 public static class BaseOilFloaterConfig
 {
-	public static GameObject BaseOilFloater(string id, string name, string desc, string anim_file, string traitId, float warnLowTemp, float warnHighTemp, float lethalLowTemp, float lethalHighTemp, bool is_baby, string symbolOverridePrefix = null)
+		public static GameObject BaseOilFloater(string id, string name, string desc, string anim_file, string traitId, float warnLowTemp, float warnHighTemp, float lethalLowTemp, float lethalHighTemp, bool is_baby, string symbolOverridePrefix = null)
 	{
 		float mass = 50f;
 		EffectorValues tier = DECOR.BONUS.TIER1;
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, Assets.GetAnim(anim_file), "idle_loop", Grid.SceneLayer.Creatures, 1, 1, tier, default(EffectorValues), SimHashes.Creature, null, (warnLowTemp + warnHighTemp) / 2f);
+		KAnimFile anim = Assets.GetAnim(anim_file);
+		string initialAnim = "idle_loop";
+		Grid.SceneLayer sceneLayer = Grid.SceneLayer.Creatures;
+		int width = 1;
+		int height = 1;
+		EffectorValues decor = tier;
+		float defaultTemperature = (warnLowTemp + warnHighTemp) / 2f;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, sceneLayer, width, height, decor, default(EffectorValues), SimHashes.Creature, null, defaultTemperature);
 		gameObject.GetComponent<KPrefabID>().AddTag(GameTags.Creatures.Hoverer, false);
 		gameObject.GetComponent<KPrefabID>().prefabInitFn += delegate(GameObject inst)
 		{
@@ -50,14 +57,14 @@ public static class BaseOilFloaterConfig
 		return gameObject;
 	}
 
-	public static GameObject SetupDiet(GameObject prefab, Tag consumed_tag, Tag producedTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced, float minPoopSizeInKg)
+		public static GameObject SetupDiet(GameObject prefab, Tag consumed_tag, Tag producedTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced, float minPoopSizeInKg)
 	{
 		Diet diet = new Diet(new Diet.Info[]
 		{
 			new Diet.Info(new HashSet<Tag>
 			{
 				consumed_tag
-			}, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, false, false)
+			}, producedTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, Diet.Info.FoodType.EatSolid, false, null)
 		});
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();
 		def.diet = diet;

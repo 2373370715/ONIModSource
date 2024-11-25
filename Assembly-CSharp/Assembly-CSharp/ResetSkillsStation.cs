@@ -6,20 +6,20 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/ResetSkillsStation")]
 public class ResetSkillsStation : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.lightEfficiencyBonus = false;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.OnAssign(this.assignable.assignee);
 		this.assignable.OnAssign += this.OnAssign;
 	}
 
-	private void OnAssign(IAssignableIdentity obj)
+		private void OnAssign(IAssignableIdentity obj)
 	{
 		if (obj != null)
 		{
@@ -33,19 +33,19 @@ public class ResetSkillsStation : Workable
 		}
 	}
 
-	private void CreateChore()
+		private void CreateChore()
 	{
 		this.chore = new WorkChore<ResetSkillsStation>(Db.Get().ChoreTypes.UnlearnSkill, this, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		base.GetComponent<Operational>().SetActive(true, false);
 		base.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.ComplexFabricatorTraining, this);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		this.assignable.Unassign();
@@ -60,7 +60,7 @@ public class ResetSkillsStation : Workable
 		}
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		base.GetComponent<Operational>().SetActive(false, false);
@@ -68,10 +68,10 @@ public class ResetSkillsStation : Workable
 		this.chore = null;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Assignable assignable;
 
-	private Notification notification;
+		private Notification notification;
 
-	private Chore chore;
+		private Chore chore;
 }

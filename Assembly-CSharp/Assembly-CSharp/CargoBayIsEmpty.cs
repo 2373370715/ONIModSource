@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class CargoBayIsEmpty : ProcessCondition
 {
-	public CargoBayIsEmpty(CommandModule module)
+		public CargoBayIsEmpty(CommandModule module)
 	{
 		this.commandModule = module;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.commandModule.GetComponent<AttachableBuilding>()))
 		{
@@ -22,20 +22,20 @@ public class CargoBayIsEmpty : ProcessCondition
 		return ProcessCondition.Status.Ready;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		return UI.STARMAP.CARGOEMPTY.NAME;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		return UI.STARMAP.CARGOEMPTY.TOOLTIP;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private CommandModule commandModule;
+		private CommandModule commandModule;
 }

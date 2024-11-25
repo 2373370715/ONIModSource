@@ -6,14 +6,14 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.operational = base.GetComponent<Operational>();
 		base.Subscribe<CreatureLure>(-905833192, CreatureLure.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		CreatureLure component = ((GameObject)data).GetComponent<CreatureLure>();
 		if (component != null)
@@ -22,7 +22,7 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -38,13 +38,13 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 		base.Subscribe<CreatureLure>(-1697596308, CreatureLure.OnStorageChangeDelegate);
 	}
 
-	private void OnStorageChange(object data = null)
+		private void OnStorageChange(object data = null)
 	{
 		bool value = this.baitStorage.GetAmountAvailable(this.activeBaitSetting) > 0f;
 		this.operational.SetFlag(CreatureLure.baited, value);
 	}
 
-	public void ChangeBaitSetting(Tag baitSetting)
+		public void ChangeBaitSetting(Tag baitSetting)
 	{
 		if (this.fetchChore != null)
 		{
@@ -75,7 +75,7 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 		}
 	}
 
-	protected void CreateFetchChore()
+		protected void CreateFetchChore()
 	{
 		if (this.fetchChore != null)
 		{
@@ -93,44 +93,44 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 		base.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.AwaitingBaitDelivery, null);
 	}
 
-	public static float CONSUMPTION_RATE = 1f;
+		public static float CONSUMPTION_RATE = 1f;
 
-	[Serialize]
+		[Serialize]
 	public Tag activeBaitSetting;
 
-	public List<Tag> baitTypes;
+		public List<Tag> baitTypes;
 
-	public Storage baitStorage;
+		public Storage baitStorage;
 
-	protected FetchChore fetchChore;
+		protected FetchChore fetchChore;
 
-	private Operational operational;
+		private Operational operational;
 
-	private static readonly Operational.Flag baited = new Operational.Flag("Baited", Operational.Flag.Type.Requirement);
+		private static readonly Operational.Flag baited = new Operational.Flag("Baited", Operational.Flag.Type.Requirement);
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<CreatureLure> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<CreatureLure>(delegate(CreatureLure component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CreatureLure> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<CreatureLure>(delegate(CreatureLure component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<CreatureLure> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<CreatureLure>(delegate(CreatureLure component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CreatureLure> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<CreatureLure>(delegate(CreatureLure component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	public class StatesInstance : GameStateMachine<CreatureLure.States, CreatureLure.StatesInstance, CreatureLure, object>.GameInstance
+		public class StatesInstance : GameStateMachine<CreatureLure.States, CreatureLure.StatesInstance, CreatureLure, object>.GameInstance
 	{
-		public StatesInstance(CreatureLure master) : base(master)
+				public StatesInstance(CreatureLure master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<CreatureLure.States, CreatureLure.StatesInstance, CreatureLure>
+		public class States : GameStateMachine<CreatureLure.States, CreatureLure.StatesInstance, CreatureLure>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.idle.PlayAnim("off", KAnim.PlayMode.Loop).Enter(delegate(CreatureLure.StatesInstance smi)
@@ -169,7 +169,7 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 			}).EventTransition(GameHashes.OnStorageChange, this.working, (CreatureLure.StatesInstance smi) => !smi.master.baitStorage.IsEmpty() && smi.master.operational.IsOperational).EventTransition(GameHashes.OperationalChanged, this.working, (CreatureLure.StatesInstance smi) => !smi.master.baitStorage.IsEmpty() && smi.master.operational.IsOperational);
 		}
 
-		private static void ClearBait(StateMachine.Instance smi)
+				private static void ClearBait(StateMachine.Instance smi)
 		{
 			if (smi.GetSMI<Lure.Instance>() != null)
 			{
@@ -177,10 +177,10 @@ public class CreatureLure : StateMachineComponent<CreatureLure.StatesInstance>
 			}
 		}
 
-		public GameStateMachine<CreatureLure.States, CreatureLure.StatesInstance, CreatureLure, object>.State idle;
+				public GameStateMachine<CreatureLure.States, CreatureLure.StatesInstance, CreatureLure, object>.State idle;
 
-		public GameStateMachine<CreatureLure.States, CreatureLure.StatesInstance, CreatureLure, object>.State working;
+				public GameStateMachine<CreatureLure.States, CreatureLure.StatesInstance, CreatureLure, object>.State working;
 
-		public GameStateMachine<CreatureLure.States, CreatureLure.StatesInstance, CreatureLure, object>.State empty;
+				public GameStateMachine<CreatureLure.States, CreatureLure.StatesInstance, CreatureLure, object>.State empty;
 	}
 }

@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 public class LabelTableColumn : TableColumn
 {
-	public LabelTableColumn(Action<IAssignableIdentity, GameObject> on_load_action, Func<IAssignableIdentity, GameObject, string> get_value_action, Comparison<IAssignableIdentity> sort_comparison, Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip, Action<IAssignableIdentity, GameObject, ToolTip> on_sort_tooltip, int widget_width = 128, bool should_refresh_columns = false) : base(on_load_action, sort_comparison, on_tooltip, on_sort_tooltip, null, should_refresh_columns, "")
+		public LabelTableColumn(Action<IAssignableIdentity, GameObject> on_load_action, Func<IAssignableIdentity, GameObject, string> get_value_action, Comparison<IAssignableIdentity> sort_comparison, Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip, Action<IAssignableIdentity, GameObject, ToolTip> on_sort_tooltip, int widget_width = 128, bool should_refresh_columns = false) : base(on_load_action, sort_comparison, on_tooltip, on_sort_tooltip, null, should_refresh_columns, "")
 	{
 		this.get_value_action = get_value_action;
 		this.widget_width = widget_width;
 	}
 
-	public override GameObject GetDefaultWidget(GameObject parent)
+		public override GameObject GetDefaultWidget(GameObject parent)
 	{
 		GameObject gameObject = Util.KInstantiateUI(Assets.UIPrefabs.TableScreenWidgets.Label, parent, true);
 		LayoutElement component = gameObject.GetComponentInChildren<LocText>().GetComponent<LayoutElement>();
@@ -18,7 +18,7 @@ public class LabelTableColumn : TableColumn
 		return gameObject;
 	}
 
-	public override GameObject GetMinionWidget(GameObject parent)
+		public override GameObject GetMinionWidget(GameObject parent)
 	{
 		GameObject gameObject = Util.KInstantiateUI(Assets.UIPrefabs.TableScreenWidgets.Label, parent, true);
 		ToolTip tt = gameObject.GetComponent<ToolTip>();
@@ -28,7 +28,7 @@ public class LabelTableColumn : TableColumn
 		return gameObject;
 	}
 
-	public override GameObject GetHeaderWidget(GameObject parent)
+		public override GameObject GetHeaderWidget(GameObject parent)
 	{
 		GameObject widget_go = null;
 		widget_go = Util.KInstantiateUI(Assets.UIPrefabs.TableScreenWidgets.LabelHeader, parent, true);
@@ -57,7 +57,7 @@ public class LabelTableColumn : TableColumn
 		return widget_go;
 	}
 
-	public Func<IAssignableIdentity, GameObject, string> get_value_action;
+		public Func<IAssignableIdentity, GameObject, string> get_value_action;
 
-	private int widget_width = 128;
+		private int widget_width = 128;
 }

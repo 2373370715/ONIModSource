@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class StressTracker : WorldTracker
 {
-	public StressTracker(int worldID) : base(worldID)
+		public StressTracker(int worldID) : base(worldID)
 	{
 	}
 
-	public override void UpdateData()
+		public override void UpdateData()
 	{
 		float num = 0f;
 		for (int i = 0; i < Components.LiveMinionIdentities.Count; i++)
@@ -21,7 +21,7 @@ public class StressTracker : WorldTracker
 		base.AddPoint(Mathf.Round(num));
 	}
 
-	public override string FormatValueString(float value)
+		public override string FormatValueString(float value)
 	{
 		return value.ToString() + "%";
 	}

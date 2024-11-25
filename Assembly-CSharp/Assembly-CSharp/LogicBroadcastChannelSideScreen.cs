@@ -6,19 +6,19 @@ using UnityEngine.UI;
 
 public class LogicBroadcastChannelSideScreen : SideScreenContent
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<LogicBroadcastReceiver>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.sensor = target.GetComponent<LogicBroadcastReceiver>();
 		this.Build();
 	}
 
-	private void ClearRows()
+		private void ClearRows()
 	{
 		if (this.emptySpaceRow != null)
 		{
@@ -31,7 +31,7 @@ public class LogicBroadcastChannelSideScreen : SideScreenContent
 		this.broadcasterRows.Clear();
 	}
 
-	private void Build()
+		private void Build()
 	{
 		this.headerLabel.SetText(UI.UISIDESCREENS.LOGICBROADCASTCHANNELSIDESCREEN.HEADER);
 		this.ClearRows();
@@ -51,7 +51,7 @@ public class LogicBroadcastChannelSideScreen : SideScreenContent
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		using (Dictionary<LogicBroadcaster, GameObject>.Enumerator enumerator = this.broadcasterRows.GetEnumerator())
 		{
@@ -75,21 +75,21 @@ public class LogicBroadcastChannelSideScreen : SideScreenContent
 		}
 	}
 
-	private LogicBroadcastReceiver sensor;
+		private LogicBroadcastReceiver sensor;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject rowPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject listContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText headerLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject noChannelRow;
 
-	private Dictionary<LogicBroadcaster, GameObject> broadcasterRows = new Dictionary<LogicBroadcaster, GameObject>();
+		private Dictionary<LogicBroadcaster, GameObject> broadcasterRows = new Dictionary<LogicBroadcaster, GameObject>();
 
-	private GameObject emptySpaceRow;
+		private GameObject emptySpaceRow;
 }

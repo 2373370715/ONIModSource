@@ -3,19 +3,19 @@ using UnityEngine;
 
 public class StampToolPreviewContext
 {
-	public Transform previewParent;
+		public Transform previewParent;
 
-	public InterfaceTool tool;
+		public InterfaceTool tool;
 
-	public TemplateContainer stampTemplate;
+		public TemplateContainer stampTemplate;
 
-	public System.Action frameAfterSetupFn;
+		public System.Action frameAfterSetupFn;
 
-	public Action<int> refreshFn;
+		public Action<int> refreshFn;
 
-	public System.Action onPlaceFn;
+		public System.Action onPlaceFn;
 
-	public Action<string> onErrorChangeFn;
+		public Action<string> onErrorChangeFn;
 
-	public System.Action cleanupFn;
+		public System.Action cleanupFn;
 }

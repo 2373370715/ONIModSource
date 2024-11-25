@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-
+namespace RsTransferPort;
 
 public class PriorityImage : MonoBehaviour {
     [SerializeField]

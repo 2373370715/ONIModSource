@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SimulatedTemperatureAdjuster
 {
-	public SimulatedTemperatureAdjuster(float simulated_temperature, float heat_capacity, float thermal_conductivity, Storage storage)
+		public SimulatedTemperatureAdjuster(float simulated_temperature, float heat_capacity, float thermal_conductivity, Storage storage)
 	{
 		this.temperature = simulated_temperature;
 		this.heatCapacity = heat_capacity;
@@ -17,12 +17,12 @@ public class SimulatedTemperatureAdjuster
 		this.OnActivechanged(component);
 	}
 
-	public List<Descriptor> GetDescriptors()
+		public List<Descriptor> GetDescriptors()
 	{
 		return SimulatedTemperatureAdjuster.GetDescriptors(this.temperature);
 	}
 
-	public static List<Descriptor> GetDescriptors(float temperature)
+		public static List<Descriptor> GetDescriptors(float temperature)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		string formattedTemperature = GameUtil.GetFormattedTemperature(temperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false);
@@ -31,7 +31,7 @@ public class SimulatedTemperatureAdjuster
 		return list;
 	}
 
-	private void Register(SimTemperatureTransfer stt)
+		private void Register(SimTemperatureTransfer stt)
 	{
 		stt.onSimRegistered = (Action<SimTemperatureTransfer>)Delegate.Remove(stt.onSimRegistered, new Action<SimTemperatureTransfer>(this.OnItemSimRegistered));
 		stt.onSimRegistered = (Action<SimTemperatureTransfer>)Delegate.Combine(stt.onSimRegistered, new Action<SimTemperatureTransfer>(this.OnItemSimRegistered));
@@ -41,7 +41,7 @@ public class SimulatedTemperatureAdjuster
 		}
 	}
 
-	private void Unregister(SimTemperatureTransfer stt)
+		private void Unregister(SimTemperatureTransfer stt)
 	{
 		stt.onSimRegistered = (Action<SimTemperatureTransfer>)Delegate.Remove(stt.onSimRegistered, new Action<SimTemperatureTransfer>(this.OnItemSimRegistered));
 		if (Sim.IsValidHandle(stt.SimHandle))
@@ -50,7 +50,7 @@ public class SimulatedTemperatureAdjuster
 		}
 	}
 
-	private void OnItemSimRegistered(SimTemperatureTransfer stt)
+		private void OnItemSimRegistered(SimTemperatureTransfer stt)
 	{
 		if (stt == null)
 		{
@@ -71,7 +71,7 @@ public class SimulatedTemperatureAdjuster
 		}
 	}
 
-	private void OnActivechanged(object data)
+		private void OnActivechanged(object data)
 	{
 		Operational operational = (Operational)data;
 		this.active = operational.IsActive;
@@ -101,7 +101,7 @@ public class SimulatedTemperatureAdjuster
 		}
 	}
 
-	public void CleanUp()
+		public void CleanUp()
 	{
 		this.storage.gameObject.Unsubscribe(-1697596308, new Action<object>(this.OnStorageChanged));
 		foreach (GameObject gameObject in this.storage.items)
@@ -114,7 +114,7 @@ public class SimulatedTemperatureAdjuster
 		}
 	}
 
-	private void OnStorageChanged(object data)
+		private void OnStorageChanged(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		SimTemperatureTransfer component = gameObject.GetComponent<SimTemperatureTransfer>();
@@ -135,13 +135,13 @@ public class SimulatedTemperatureAdjuster
 		this.Unregister(component);
 	}
 
-	private float temperature;
+		private float temperature;
 
-	private float heatCapacity;
+		private float heatCapacity;
 
-	private float thermalConductivity;
+		private float thermalConductivity;
 
-	private bool active;
+		private bool active;
 
-	private Storage storage;
+		private Storage storage;
 }

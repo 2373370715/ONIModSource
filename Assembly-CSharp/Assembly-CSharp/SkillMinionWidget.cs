@@ -9,27 +9,27 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/SkillMinionWidget")]
 public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IEventSystemHandler, IPointerExitHandler, IPointerClickHandler
 {
-			public IAssignableIdentity assignableIdentity { get; private set; }
+				public IAssignableIdentity assignableIdentity { get; private set; }
 
-	public void SetMinon(IAssignableIdentity identity)
+		public void SetMinon(IAssignableIdentity identity)
 	{
 		this.assignableIdentity = identity;
 		this.portrait.SetIdentityObject(this.assignableIdentity, true);
 		base.GetComponent<NotificationHighlightTarget>().targetKey = identity.GetSoleOwner().gameObject.GetInstanceID().ToString();
 	}
 
-	public void OnPointerEnter(PointerEventData eventData)
+		public void OnPointerEnter(PointerEventData eventData)
 	{
 		this.ToggleHover(true);
 		this.soundPlayer.Play(1);
 	}
 
-	public void OnPointerExit(PointerEventData eventData)
+		public void OnPointerExit(PointerEventData eventData)
 	{
 		this.ToggleHover(false);
 	}
 
-	private void ToggleHover(bool on)
+		private void ToggleHover(bool on)
 	{
 		if (this.skillsScreen.CurrentlySelectedMinion != this.assignableIdentity)
 		{
@@ -37,7 +37,7 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IEventSys
 		}
 	}
 
-	private void SetColor(Color color)
+		private void SetColor(Color color)
 	{
 		this.background.color = color;
 		if (this.assignableIdentity != null && this.assignableIdentity as StoredMinionIdentity != null)
@@ -46,14 +46,14 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IEventSys
 		}
 	}
 
-	public void OnPointerClick(PointerEventData eventData)
+		public void OnPointerClick(PointerEventData eventData)
 	{
 		this.skillsScreen.CurrentlySelectedMinion = this.assignableIdentity;
 		base.GetComponent<NotificationHighlightTarget>().View();
 		KFMOD.PlayUISound(GlobalAssets.GetSound("HUD_Click", false));
 	}
 
-	public void Refresh()
+		public void Refresh()
 	{
 		if (this.assignableIdentity.IsNullOrDestroyed())
 		{
@@ -106,7 +106,7 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IEventSys
 		component3.GetReference("openButton").gameObject.SetActive(minionIdentity != null);
 	}
 
-	private void RefreshToolTip(MinionResume resume)
+		private void RefreshToolTip(MinionResume resume)
 	{
 		if (resume != null)
 		{
@@ -144,12 +144,12 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IEventSys
 		}
 	}
 
-	public void RefreshHat(string hat)
+		public void RefreshHat(string hat)
 	{
 		base.GetComponent<HierarchyReferences>().GetReference("selectedHat").GetComponent<Image>().sprite = Assets.GetSprite(string.IsNullOrEmpty(hat) ? "hat_role_none" : hat);
 	}
 
-	private void OnHatDropEntryClick(IListableOption skill, object data)
+		private void OnHatDropEntryClick(IListableOption skill, object data)
 	{
 		MinionIdentity minionIdentity;
 		StoredMinionIdentity storedMinionIdentity;
@@ -184,7 +184,7 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IEventSys
 		this.skillsScreen.RefreshAll();
 	}
 
-	private void hatDropEntryRefreshAction(DropDownEntry entry, object targetData)
+		private void hatDropEntryRefreshAction(DropDownEntry entry, object targetData)
 	{
 		if (entry.entryData != null)
 		{
@@ -193,46 +193,46 @@ public class SkillMinionWidget : KMonoBehaviour, IPointerEnterHandler, IEventSys
 		}
 	}
 
-	private int hatDropDownSort(IListableOption a, IListableOption b, object targetData)
+		private int hatDropDownSort(IListableOption a, IListableOption b, object targetData)
 	{
 		return 0;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private SkillsScreen skillsScreen;
 
-	[SerializeField]
+		[SerializeField]
 	private CrewPortrait portrait;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText masteryPoints;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText morale;
 
-	[SerializeField]
+		[SerializeField]
 	private Image background;
 
-	[SerializeField]
+		[SerializeField]
 	private Image hat_background;
 
-	[SerializeField]
+		[SerializeField]
 	private Color selected_color;
 
-	[SerializeField]
+		[SerializeField]
 	private Color unselected_color;
 
-	[SerializeField]
+		[SerializeField]
 	private Color hover_color;
 
-	[SerializeField]
+		[SerializeField]
 	private DropDown hatDropDown;
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting TooltipTextStyle_Header;
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting TooltipTextStyle_AbilityNegativeModifier;
 
-	public ButtonSoundPlayer soundPlayer;
+		public ButtonSoundPlayer soundPlayer;
 }

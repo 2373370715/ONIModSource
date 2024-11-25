@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SnapOn")]
 public class SnapOn : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.kanimController = base.GetComponent<KAnimControllerBase>();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		foreach (SnapOn.SnapPoint snapPoint in this.snapPoints)
 		{
@@ -21,7 +21,7 @@ public class SnapOn : KMonoBehaviour
 		}
 	}
 
-	public void AttachSnapOnByName(string name)
+		public void AttachSnapOnByName(string name)
 	{
 		foreach (SnapOn.SnapPoint snapPoint in this.snapPoints)
 		{
@@ -36,7 +36,7 @@ public class SnapOn : KMonoBehaviour
 		}
 	}
 
-	public void DetachSnapOnByName(string name)
+		public void DetachSnapOnByName(string name)
 	{
 		foreach (SnapOn.SnapPoint snapPoint in this.snapPoints)
 		{
@@ -53,7 +53,7 @@ public class SnapOn : KMonoBehaviour
 		}
 	}
 
-	private void DoAttachSnapOn(SnapOn.SnapPoint point)
+		private void DoAttachSnapOn(SnapOn.SnapPoint point)
 	{
 		SnapOn.OverrideEntry overrideEntry = null;
 		KAnimFile buildFile = point.buildFile;
@@ -68,7 +68,7 @@ public class SnapOn : KMonoBehaviour
 		this.kanimController.SetSymbolVisiblity(point.overrideSymbol, true);
 	}
 
-	private static KAnim.Build.Symbol GetSymbol(KAnimFile anim_file, string symbol_name)
+		private static KAnim.Build.Symbol GetSymbol(KAnimFile anim_file, string symbol_name)
 	{
 		KAnim.Build.Symbol result = anim_file.GetData().build.symbols[0];
 		KAnimHashedString y = new KAnimHashedString(symbol_name);
@@ -83,7 +83,7 @@ public class SnapOn : KMonoBehaviour
 		return result;
 	}
 
-	public void AddOverride(string point_name, KAnimFile build_override, string symbol_name)
+		public void AddOverride(string point_name, KAnimFile build_override, string symbol_name)
 	{
 		this.overrideMap[point_name] = new SnapOn.OverrideEntry
 		{
@@ -92,35 +92,35 @@ public class SnapOn : KMonoBehaviour
 		};
 	}
 
-	public void RemoveOverride(string point_name)
+		public void RemoveOverride(string point_name)
 	{
 		this.overrideMap.Remove(point_name);
 	}
 
-	private KAnimControllerBase kanimController;
+		private KAnimControllerBase kanimController;
 
-	public List<SnapOn.SnapPoint> snapPoints = new List<SnapOn.SnapPoint>();
+		public List<SnapOn.SnapPoint> snapPoints = new List<SnapOn.SnapPoint>();
 
-	private Dictionary<string, SnapOn.OverrideEntry> overrideMap = new Dictionary<string, SnapOn.OverrideEntry>();
+		private Dictionary<string, SnapOn.OverrideEntry> overrideMap = new Dictionary<string, SnapOn.OverrideEntry>();
 
-	[Serializable]
+		[Serializable]
 	public class SnapPoint
 	{
-		public string pointName;
+				public string pointName;
 
-		public bool automatic = true;
+				public bool automatic = true;
 
-		public HashedString context;
+				public HashedString context;
 
-		public KAnimFile buildFile;
+				public KAnimFile buildFile;
 
-		public HashedString overrideSymbol;
+				public HashedString overrideSymbol;
 	}
 
-	public class OverrideEntry
+		public class OverrideEntry
 	{
-		public KAnimFile buildFile;
+				public KAnimFile buildFile;
 
-		public string symbolName;
+				public string symbolName;
 	}
 }

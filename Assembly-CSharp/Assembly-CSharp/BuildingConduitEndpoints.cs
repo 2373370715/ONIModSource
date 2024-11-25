@@ -4,19 +4,19 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/BuildingConduitEndpoints")]
 public class BuildingConduitEndpoints : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.AddEndpoint();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.RemoveEndPoint();
 		base.OnCleanUp();
 	}
 
-	public void RemoveEndPoint()
+		public void RemoveEndPoint()
 	{
 		if (this.itemInput != null)
 		{
@@ -44,7 +44,7 @@ public class BuildingConduitEndpoints : KMonoBehaviour
 		}
 	}
 
-	public void AddEndpoint()
+		public void AddEndpoint()
 	{
 		Building component = base.GetComponent<Building>();
 		BuildingDef def = component.Def;
@@ -75,7 +75,7 @@ public class BuildingConduitEndpoints : KMonoBehaviour
 		}
 	}
 
-	private FlowUtilityNetwork.NetworkItem itemInput;
+		private FlowUtilityNetwork.NetworkItem itemInput;
 
-	private FlowUtilityNetwork.NetworkItem itemOutput;
+		private FlowUtilityNetwork.NetworkItem itemOutput;
 }

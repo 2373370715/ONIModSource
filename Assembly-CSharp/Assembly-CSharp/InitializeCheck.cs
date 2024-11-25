@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class InitializeCheck : MonoBehaviour
 {
-			public static InitializeCheck.SavePathIssue savePathState { get; private set; }
+				public static InitializeCheck.SavePathIssue savePathState { get; private set; }
 
-	private void Awake()
+		private void Awake()
 	{
 		this.CheckForSavePathIssue();
 		if (InitializeCheck.savePathState == InitializeCheck.SavePathIssue.Ok && !KCrashReporter.hasCrash)
@@ -32,18 +32,18 @@ public class InitializeCheck : MonoBehaviour
 		this.ShowFileErrorDialogs();
 	}
 
-	private GameObject CreateUIRoot()
+		private GameObject CreateUIRoot()
 	{
 		return Util.KInstantiate(this.rootCanvasPrefab, null, "CanvasRoot");
 	}
 
-	private void ShowErrorDialog(string msg)
+		private void ShowErrorDialog(string msg)
 	{
 		GameObject parent = this.CreateUIRoot();
 		Util.KInstantiateUI<ConfirmDialogScreen>(this.confirmDialogScreen.gameObject, parent, true).PopupConfirmDialog(msg, new System.Action(this.Quit), null, null, null, null, null, null, this.sadDupe);
 	}
 
-	private void ShowFileErrorDialogs()
+		private void ShowFileErrorDialogs()
 	{
 		string text = null;
 		switch (InitializeCheck.savePathState)
@@ -64,7 +64,7 @@ public class InitializeCheck : MonoBehaviour
 		}
 	}
 
-	private void CheckForSavePathIssue()
+		private void CheckForSavePathIssue()
 	{
 		if (this.test_issue != InitializeCheck.SavePathIssue.Ok)
 		{
@@ -129,29 +129,29 @@ public class InitializeCheck : MonoBehaviour
 		}
 	}
 
-	private void Quit()
+		private void Quit()
 	{
 		global::Debug.Log("Quitting...");
 		App.Quit();
 	}
 
-	private static readonly string testFile = "testfile";
+		private static readonly string testFile = "testfile";
 
-	private static readonly string testSave = "testsavefile";
+		private static readonly string testSave = "testsavefile";
 
-	public Canvas rootCanvasPrefab;
+		public Canvas rootCanvasPrefab;
 
-	public ConfirmDialogScreen confirmDialogScreen;
+		public ConfirmDialogScreen confirmDialogScreen;
 
-	public Sprite sadDupe;
+		public Sprite sadDupe;
 
-	private InitializeCheck.SavePathIssue test_issue;
+		private InitializeCheck.SavePathIssue test_issue;
 
-	public enum SavePathIssue
+		public enum SavePathIssue
 	{
-		Ok,
-		WriteTestFail,
-		SpaceTestFail,
-		WorldGenFilesFail
+				Ok,
+				WriteTestFail,
+				SpaceTestFail,
+				WorldGenFilesFail
 	}
 }

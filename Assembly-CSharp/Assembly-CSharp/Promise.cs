@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Promise : IEnumerator
 {
-		public bool IsResolved
+			public bool IsResolved
 	{
 		get
 		{
@@ -11,7 +11,7 @@ public class Promise : IEnumerator
 		}
 	}
 
-	public Promise(Action<System.Action> fn)
+		public Promise(Action<System.Action> fn)
 	{
 		fn(delegate
 		{
@@ -19,11 +19,11 @@ public class Promise : IEnumerator
 		});
 	}
 
-	public Promise()
+		public Promise()
 	{
 	}
 
-	public void EnsureResolved()
+		public void EnsureResolved()
 	{
 		if (this.IsResolved)
 		{
@@ -32,7 +32,7 @@ public class Promise : IEnumerator
 		this.Resolve();
 	}
 
-	public void Resolve()
+		public void Resolve()
 	{
 		DebugUtil.Assert(!this.m_is_resolved, "Can only resolve a promise once");
 		this.m_is_resolved = true;
@@ -43,7 +43,7 @@ public class Promise : IEnumerator
 		}
 	}
 
-	public Promise Then(System.Action callback)
+		public Promise Then(System.Action callback)
 	{
 		if (this.m_is_resolved)
 		{
@@ -56,7 +56,7 @@ public class Promise : IEnumerator
 		return this;
 	}
 
-	public Promise ThenWait(Func<Promise> callback)
+		public Promise ThenWait(Func<Promise> callback)
 	{
 		if (this.m_is_resolved)
 		{
@@ -71,7 +71,7 @@ public class Promise : IEnumerator
 		});
 	}
 
-	public Promise<T> ThenWait<T>(Func<Promise<T>> callback)
+		public Promise<T> ThenWait<T>(Func<Promise<T>> callback)
 	{
 		if (this.m_is_resolved)
 		{
@@ -86,7 +86,7 @@ public class Promise : IEnumerator
 		});
 	}
 
-		object IEnumerator.Current
+			object IEnumerator.Current
 	{
 		get
 		{
@@ -94,21 +94,21 @@ public class Promise : IEnumerator
 		}
 	}
 
-	bool IEnumerator.MoveNext()
+		bool IEnumerator.MoveNext()
 	{
 		return !this.IsResolved;
 	}
 
-	void IEnumerator.Reset()
+		void IEnumerator.Reset()
 	{
 	}
 
-	static Promise()
+		static Promise()
 	{
 		Promise.m_instant.Resolve();
 	}
 
-		public static Promise Instant
+			public static Promise Instant
 	{
 		get
 		{
@@ -116,7 +116,7 @@ public class Promise : IEnumerator
 		}
 	}
 
-		public static Promise Fail
+			public static Promise Fail
 	{
 		get
 		{
@@ -124,7 +124,7 @@ public class Promise : IEnumerator
 		}
 	}
 
-	public static Promise All(params Promise[] promises)
+		public static Promise All(params Promise[] promises)
 	{
 		Promise.<>c__DisplayClass21_0 CS$<>8__locals1 = new Promise.<>c__DisplayClass21_0();
 		CS$<>8__locals1.promises = promises;
@@ -141,7 +141,7 @@ public class Promise : IEnumerator
 		return CS$<>8__locals1.all_resolved_promise;
 	}
 
-	public static Promise Chain(params Func<Promise>[] make_promise_fns)
+		public static Promise Chain(params Func<Promise>[] make_promise_fns)
 	{
 		Promise.<>c__DisplayClass22_0 CS$<>8__locals1 = new Promise.<>c__DisplayClass22_0();
 		CS$<>8__locals1.make_promise_fns = make_promise_fns;
@@ -151,9 +151,9 @@ public class Promise : IEnumerator
 		return CS$<>8__locals1.all_resolve_promise;
 	}
 
-	private System.Action on_complete;
+		private System.Action on_complete;
 
-	private bool m_is_resolved;
+		private bool m_is_resolved;
 
-	private static Promise m_instant = new Promise();
+		private static Promise m_instant = new Promise();
 }

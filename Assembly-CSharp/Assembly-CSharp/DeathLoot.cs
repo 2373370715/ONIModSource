@@ -4,47 +4,47 @@ using UnityEngine;
 
 public class DeathLoot : GameStateMachine<DeathLoot, DeathLoot.Instance, IStateMachineTarget, DeathLoot.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.root;
 	}
 
-	private StateMachine<DeathLoot, DeathLoot.Instance, IStateMachineTarget, DeathLoot.Def>.BoolParameter WasLoopDropped;
+		private StateMachine<DeathLoot, DeathLoot.Instance, IStateMachineTarget, DeathLoot.Def>.BoolParameter WasLoopDropped;
 
-	public class Loot
+		public class Loot
 	{
-						public Tag Id { get; private set; } = Tag.Invalid;
+								public Tag Id { get; private set; } = Tag.Invalid;
 
-						public bool IsElement { get; private set; }
+								public bool IsElement { get; private set; }
 
-		public Loot(Tag tag)
+				public Loot(Tag tag)
 		{
 			this.Id = tag;
 			this.IsElement = false;
 			this.Quantity = 1f;
 		}
 
-		public Loot(SimHashes element, float quantity)
+				public Loot(SimHashes element, float quantity)
 		{
 			this.Id = element.CreateTag();
 			this.IsElement = true;
 			this.Quantity = quantity;
 		}
 
-		public float Quantity;
+				public float Quantity;
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public DeathLoot.Loot[] loot;
+				public DeathLoot.Loot[] loot;
 
-		public CellOffset lootSpawnOffset;
+				public CellOffset lootSpawnOffset;
 	}
 
-	public new class Instance : GameStateMachine<DeathLoot, DeathLoot.Instance, IStateMachineTarget, DeathLoot.Def>.GameInstance
+		public new class Instance : GameStateMachine<DeathLoot, DeathLoot.Instance, IStateMachineTarget, DeathLoot.Def>.GameInstance
 	{
-				public bool WasLoopDropped
+						public bool WasLoopDropped
 		{
 			get
 			{
@@ -52,12 +52,12 @@ public class DeathLoot : GameStateMachine<DeathLoot, DeathLoot.Instance, IStateM
 			}
 		}
 
-		public Instance(IStateMachineTarget master, DeathLoot.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, DeathLoot.Def def) : base(master, def)
 		{
 			base.Subscribe(1623392196, new Action<object>(this.OnDeath));
 		}
 
-		private void OnDeath(object obj)
+				private void OnDeath(object obj)
 		{
 			if (!this.WasLoopDropped)
 			{
@@ -66,7 +66,7 @@ public class DeathLoot : GameStateMachine<DeathLoot, DeathLoot.Instance, IStateM
 			}
 		}
 
-		public GameObject[] CreateLoot()
+				public GameObject[] CreateLoot()
 		{
 			if (base.def.loot == null)
 			{
@@ -99,7 +99,7 @@ public class DeathLoot : GameStateMachine<DeathLoot, DeathLoot.Instance, IStateM
 			return array;
 		}
 
-		public int GetLootSpawnCell()
+				public int GetLootSpawnCell()
 		{
 			int num = Grid.PosToCell(base.gameObject);
 			int num2 = Grid.OffsetCell(num, base.def.lootSpawnOffset);
@@ -110,7 +110,7 @@ public class DeathLoot : GameStateMachine<DeathLoot, DeathLoot.Instance, IStateM
 			return num;
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.Unsubscribe(1623392196, new Action<object>(this.OnDeath));
 		}

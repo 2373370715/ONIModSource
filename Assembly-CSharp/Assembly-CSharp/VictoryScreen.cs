@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class VictoryScreen : KModalScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.Init();
 	}
 
-	private void Init()
+		private void Init()
 	{
 		if (this.DismissButton)
 		{
@@ -20,7 +20,7 @@ public class VictoryScreen : KModalScreen
 		}
 	}
 
-	private void Retire()
+		private void Retire()
 	{
 		if (RetireColonyUtility.SaveColonySummaryData())
 		{
@@ -28,12 +28,12 @@ public class VictoryScreen : KModalScreen
 		}
 	}
 
-	private void Dismiss()
+		private void Dismiss()
 	{
 		this.Show(false);
 	}
 
-	public void SetAchievements(string[] achievementIDs)
+		public void SetAchievements(string[] achievementIDs)
 	{
 		string text = "";
 		for (int i = 0; i < achievementIDs.Length; i++)
@@ -48,9 +48,9 @@ public class VictoryScreen : KModalScreen
 		this.descriptionText.text = text;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton DismissButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText descriptionText;
 }

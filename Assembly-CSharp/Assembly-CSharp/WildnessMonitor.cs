@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WildnessMonitor : GameStateMachine<WildnessMonitor, WildnessMonitor.Instance, IStateMachineTarget, WildnessMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.tame;
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -15,7 +15,7 @@ public class WildnessMonitor : GameStateMachine<WildnessMonitor, WildnessMonitor
 		});
 	}
 
-	private static void HideDomesticationSymbol(WildnessMonitor.Instance smi)
+		private static void HideDomesticationSymbol(WildnessMonitor.Instance smi)
 	{
 		foreach (KAnimHashedString symbol in WildnessMonitor.DOMESTICATION_SYMBOLS)
 		{
@@ -23,7 +23,7 @@ public class WildnessMonitor : GameStateMachine<WildnessMonitor, WildnessMonitor
 		}
 	}
 
-	private static void ShowDomesticationSymbol(WildnessMonitor.Instance smi)
+		private static void ShowDomesticationSymbol(WildnessMonitor.Instance smi)
 	{
 		foreach (KAnimHashedString symbol in WildnessMonitor.DOMESTICATION_SYMBOLS)
 		{
@@ -31,12 +31,12 @@ public class WildnessMonitor : GameStateMachine<WildnessMonitor, WildnessMonitor
 		}
 	}
 
-	private static bool IsWild(WildnessMonitor.Instance smi)
+		private static bool IsWild(WildnessMonitor.Instance smi)
 	{
 		return smi.wildness.value > 0f;
 	}
 
-	private static void RefreshAmounts(WildnessMonitor.Instance smi)
+		private static void RefreshAmounts(WildnessMonitor.Instance smi)
 	{
 		bool flag = WildnessMonitor.IsWild(smi);
 		smi.wildness.hide = !flag;
@@ -77,36 +77,36 @@ public class WildnessMonitor : GameStateMachine<WildnessMonitor, WildnessMonitor
 		}
 	}
 
-	public GameStateMachine<WildnessMonitor, WildnessMonitor.Instance, IStateMachineTarget, WildnessMonitor.Def>.State wild;
+		public GameStateMachine<WildnessMonitor, WildnessMonitor.Instance, IStateMachineTarget, WildnessMonitor.Def>.State wild;
 
-	public GameStateMachine<WildnessMonitor, WildnessMonitor.Instance, IStateMachineTarget, WildnessMonitor.Def>.State tame;
+		public GameStateMachine<WildnessMonitor, WildnessMonitor.Instance, IStateMachineTarget, WildnessMonitor.Def>.State tame;
 
-	private static readonly KAnimHashedString[] DOMESTICATION_SYMBOLS = new KAnimHashedString[]
+		private static readonly KAnimHashedString[] DOMESTICATION_SYMBOLS = new KAnimHashedString[]
 	{
 		"tag",
 		"snapto_tag"
 	};
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public override void Configure(GameObject prefab)
+				public override void Configure(GameObject prefab)
 		{
 			prefab.GetComponent<Modifiers>().initialAmounts.Add(Db.Get().Amounts.Wildness.Id);
 		}
 
-		public Effect wildEffect;
+				public Effect wildEffect;
 
-		public Effect tameEffect;
+				public Effect tameEffect;
 	}
 
-	public new class Instance : GameStateMachine<WildnessMonitor, WildnessMonitor.Instance, IStateMachineTarget, WildnessMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<WildnessMonitor, WildnessMonitor.Instance, IStateMachineTarget, WildnessMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, WildnessMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, WildnessMonitor.Def def) : base(master, def)
 		{
 			this.wildness = Db.Get().Amounts.Wildness.Lookup(base.gameObject);
 			this.wildness.value = this.wildness.GetMax();
 		}
 
-		public AmountInstance wildness;
+				public AmountInstance wildness;
 	}
 }

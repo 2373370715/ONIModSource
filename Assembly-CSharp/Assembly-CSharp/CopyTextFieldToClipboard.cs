@@ -4,12 +4,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/CopyTextFieldToClipboard")]
 public class CopyTextFieldToClipboard : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.button.onClick += this.OnClick;
 	}
 
-	private void OnClick()
+		private void OnClick()
 	{
 		TextEditor textEditor = new TextEditor();
 		textEditor.text = this.GetText();
@@ -17,7 +17,7 @@ public class CopyTextFieldToClipboard : KMonoBehaviour
 		textEditor.Copy();
 	}
 
-	public KButton button;
+		public KButton button;
 
-	public Func<string> GetText;
+		public Func<string> GetText;
 }

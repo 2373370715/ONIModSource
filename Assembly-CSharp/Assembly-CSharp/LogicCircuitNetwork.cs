@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class LogicCircuitNetwork : UtilityNetwork
 {
-	public override void AddItem(object item)
+		public override void AddItem(object item)
 	{
 		if (item is LogicWire)
 		{
@@ -35,7 +35,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-	public override void RemoveItem(object item)
+		public override void RemoveItem(object item)
 	{
 		if (item is LogicWire)
 		{
@@ -56,7 +56,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-	public override void ConnectItem(object item)
+		public override void ConnectItem(object item)
 	{
 		if (item is ILogicEventReceiver)
 		{
@@ -69,7 +69,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-	public override void DisconnectItem(object item)
+		public override void DisconnectItem(object item)
 	{
 		if (item is ILogicEventReceiver)
 		{
@@ -84,7 +84,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-	public override void Reset(UtilityNetworkGridNode[] grid)
+		public override void Reset(UtilityNetworkGridNode[] grid)
 	{
 		this.resetting = true;
 		this.previousValue = -1;
@@ -114,7 +114,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		this.RemoveOverloadedNotification();
 	}
 
-	public void UpdateLogicValue()
+		public void UpdateLogicValue()
 	{
 		if (this.resetting)
 		{
@@ -133,7 +133,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-	public int GetBitsUsed()
+		public int GetBitsUsed()
 	{
 		int result;
 		if (this.outputValue > 1)
@@ -147,22 +147,22 @@ public class LogicCircuitNetwork : UtilityNetwork
 		return result;
 	}
 
-	public bool IsBitActive(int bit)
+		public bool IsBitActive(int bit)
 	{
 		return (this.OutputValue & 1 << bit) > 0;
 	}
 
-	public static bool IsBitActive(int bit, int value)
+		public static bool IsBitActive(int bit, int value)
 	{
 		return (value & 1 << bit) > 0;
 	}
 
-	public static int GetBitValue(int bit, int value)
+		public static int GetBitValue(int bit, int value)
 	{
 		return value & 1 << bit;
 	}
 
-	public void SendLogicEvents(bool force_send, int id)
+		public void SendLogicEvents(bool force_send, int id)
 	{
 		if (this.resetting)
 		{
@@ -181,7 +181,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-	private void TriggerAudio(int old_value, int id)
+		private void TriggerAudio(int old_value, int id)
 	{
 		SpeedControlScreen instance = SpeedControlScreen.Instance;
 		if (old_value != this.outputValue && instance != null && !instance.IsPaused)
@@ -242,7 +242,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-	public void UpdateOverloadTime(float dt, int bits_used)
+		public void UpdateOverloadTime(float dt, int bits_used)
 	{
 		bool flag = false;
 		List<LogicWire> list = null;
@@ -319,7 +319,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-	private void RemoveOverloadedNotification()
+		private void RemoveOverloadedNotification()
 	{
 		if (this.overloadedNotification != null)
 		{
@@ -328,7 +328,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-	public void UpdateRelevantBridges(List<LogicUtilityNetworkLink>[] bridgeGroups)
+		public void UpdateRelevantBridges(List<LogicUtilityNetworkLink>[] bridgeGroups)
 	{
 		LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
 		for (int i = 0; i < bridgeGroups.Length; i++)
@@ -351,7 +351,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-		public int OutputValue
+			public int OutputValue
 	{
 		get
 		{
@@ -359,7 +359,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-		public int WireCount
+			public int WireCount
 	{
 		get
 		{
@@ -375,7 +375,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-		public ReadOnlyCollection<ILogicEventSender> Senders
+			public ReadOnlyCollection<ILogicEventSender> Senders
 	{
 		get
 		{
@@ -383,7 +383,7 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-		public ReadOnlyCollection<ILogicEventReceiver> Receivers
+			public ReadOnlyCollection<ILogicEventReceiver> Receivers
 	{
 		get
 		{
@@ -391,44 +391,44 @@ public class LogicCircuitNetwork : UtilityNetwork
 		}
 	}
 
-	private List<LogicWire>[] wireGroups = new List<LogicWire>[2];
+		private List<LogicWire>[] wireGroups = new List<LogicWire>[2];
 
-	private List<LogicUtilityNetworkLink>[] relevantBridges = new List<LogicUtilityNetworkLink>[2];
+		private List<LogicUtilityNetworkLink>[] relevantBridges = new List<LogicUtilityNetworkLink>[2];
 
-	private List<ILogicEventReceiver> receivers = new List<ILogicEventReceiver>();
+		private List<ILogicEventReceiver> receivers = new List<ILogicEventReceiver>();
 
-	private List<ILogicEventSender> senders = new List<ILogicEventSender>();
+		private List<ILogicEventSender> senders = new List<ILogicEventSender>();
 
-	private int previousValue = -1;
+		private int previousValue = -1;
 
-	private int outputValue;
+		private int outputValue;
 
-	private bool resetting;
+		private bool resetting;
 
-	public static float logicSoundLastPlayedTime = 0f;
+		public static float logicSoundLastPlayedTime = 0f;
 
-	private const float MIN_OVERLOAD_TIME_FOR_DAMAGE = 6f;
+		private const float MIN_OVERLOAD_TIME_FOR_DAMAGE = 6f;
 
-	private const float MIN_OVERLOAD_NOTIFICATION_DISPLAY_TIME = 5f;
+		private const float MIN_OVERLOAD_NOTIFICATION_DISPLAY_TIME = 5f;
 
-	public const int VALID_LOGIC_SIGNAL_MASK = 15;
+		public const int VALID_LOGIC_SIGNAL_MASK = 15;
 
-	public const int UNINITIALIZED_LOGIC_STATE = -16;
+		public const int UNINITIALIZED_LOGIC_STATE = -16;
 
-	private GameObject targetOverloadedWire;
+		private GameObject targetOverloadedWire;
 
-	private float timeOverloaded;
+		private float timeOverloaded;
 
-	private float timeOverloadNotificationDisplayed;
+		private float timeOverloadNotificationDisplayed;
 
-	private Notification overloadedNotification;
+		private Notification overloadedNotification;
 
-	public static Dictionary<int, LogicCircuitNetwork.LogicSoundPair> logicSoundRegister = new Dictionary<int, LogicCircuitNetwork.LogicSoundPair>();
+		public static Dictionary<int, LogicCircuitNetwork.LogicSoundPair> logicSoundRegister = new Dictionary<int, LogicCircuitNetwork.LogicSoundPair>();
 
-	public class LogicSoundPair
+		public class LogicSoundPair
 	{
-		public int playedIndex;
+				public int playedIndex;
 
-		public float lastPlayed;
+				public float lastPlayed;
 	}
 }

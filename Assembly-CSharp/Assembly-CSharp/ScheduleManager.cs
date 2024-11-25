@@ -10,14 +10,19 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ScheduleManager")]
 public class ScheduleManager : KMonoBehaviour, ISim33ms
 {
-			public event Action<List<Schedule>> onSchedulesChanged;
+				public event Action<List<Schedule>> onSchedulesChanged;
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ScheduleManager.Instance = null;
 	}
 
-	[OnDeserialized]
+		public Schedule GetDefaultBionicSchedule()
+	{
+		return this.schedules.Find((Schedule match) => match.isDefaultForBionics);
+	}
+
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (this.schedules.Count == 0)
@@ -26,14 +31,14 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.schedules = new List<Schedule>();
 		ScheduleManager.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (this.schedules.Count == 0)
 		{
@@ -53,7 +58,7 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 				if (Db.Get().ScheduleGroups.FindGroupForScheduleTypes(scheduleBlock.allowed_types) == null)
 				{
 					ScheduleGroup group = Db.Get().ScheduleGroups.FindGroupForScheduleTypes(scheduleBlocksFromGroupDefaults[i].allowed_types);
-					schedule2.SetGroup(i, group);
+					schedule2.SetBlockGroup(i, group);
 				}
 			}
 		}
@@ -69,16 +74,52 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 		Components.LiveMinionIdentities.OnRemove += this.OnRemoveDupe;
 	}
 
-	private void OnAddDupe(MinionIdentity minion)
+		private void OnAddDupe(MinionIdentity minion)
 	{
 		Schedulable component = minion.GetComponent<Schedulable>();
-		if (this.GetSchedule(component) == null)
+		Schedule schedule = this.schedules[0];
+		if (minion.model == GameTags.Minions.Models.Bionic)
 		{
-			this.schedules[0].Assign(component);
+			if (this.GetDefaultBionicSchedule() == null)
+			{
+				if (!this.hasDeletedDefaultBionicSchedule)
+				{
+					Schedule schedule2 = this.AddSchedule(Db.Get().ScheduleGroups.allGroups, "_Bionics Default", false);
+					schedule2.AddTimetable(Schedule.GetScheduleBlocksFromGroupDefaults(Db.Get().ScheduleGroups.allGroups));
+					schedule2.AddTimetable(Schedule.GetScheduleBlocksFromGroupDefaults(Db.Get().ScheduleGroups.allGroups));
+					for (int i = 0; i < schedule2.GetBlocks().Count; i++)
+					{
+						schedule2.SetBlockGroup(i, Db.Get().ScheduleGroups.Worktime);
+					}
+					for (int j = 1; j <= 6; j++)
+					{
+						schedule2.SetBlockGroup(schedule2.GetBlocks().Count - j, Db.Get().ScheduleGroups.Sleep);
+					}
+					for (int k = 7; k <= 10; k++)
+					{
+						schedule2.SetBlockGroup(schedule2.GetBlocks().Count - k, Db.Get().ScheduleGroups.Recreation);
+					}
+					for (int l = 11; l <= 11; l++)
+					{
+						schedule2.SetBlockGroup(schedule2.GetBlocks().Count - l, Db.Get().ScheduleGroups.Hygene);
+					}
+					schedule = schedule2;
+					schedule2.isDefaultForBionics = true;
+				}
+			}
+			else
+			{
+				schedule = this.GetDefaultBionicSchedule();
+			}
 		}
+		else if (this.GetSchedule(component) != null)
+		{
+			schedule = this.GetSchedule(component);
+		}
+		schedule.Assign(component);
 	}
 
-	private void OnRemoveDupe(MinionIdentity minion)
+		private void OnRemoveDupe(MinionIdentity minion)
 	{
 		Schedulable component = minion.GetComponent<Schedulable>();
 		Schedule schedule = this.GetSchedule(component);
@@ -88,7 +129,7 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	public void OnStoredDupeDestroyed(StoredMinionIdentity dupe)
+		public void OnStoredDupeDestroyed(StoredMinionIdentity dupe)
 	{
 		foreach (Schedule schedule in this.schedules)
 		{
@@ -96,26 +137,26 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	public void AddDefaultSchedule(bool alarmOn)
+		public void AddDefaultSchedule(bool alarmOn)
 	{
 		Schedule schedule = this.AddSchedule(Db.Get().ScheduleGroups.allGroups, UI.SCHEDULESCREEN.SCHEDULE_NAME_DEFAULT, alarmOn);
 		if (Game.Instance.FastWorkersModeActive)
 		{
 			for (int i = 0; i < 21; i++)
 			{
-				schedule.SetGroup(i, Db.Get().ScheduleGroups.Worktime);
+				schedule.SetBlockGroup(i, Db.Get().ScheduleGroups.Worktime);
 			}
-			schedule.SetGroup(21, Db.Get().ScheduleGroups.Recreation);
-			schedule.SetGroup(22, Db.Get().ScheduleGroups.Recreation);
-			schedule.SetGroup(23, Db.Get().ScheduleGroups.Sleep);
+			schedule.SetBlockGroup(21, Db.Get().ScheduleGroups.Recreation);
+			schedule.SetBlockGroup(22, Db.Get().ScheduleGroups.Recreation);
+			schedule.SetBlockGroup(23, Db.Get().ScheduleGroups.Sleep);
 		}
 	}
 
-	public Schedule AddSchedule(List<ScheduleGroup> groups, string name = null, bool alarmOn = false)
+		public Schedule AddSchedule(List<ScheduleGroup> groups, string name = null, bool alarmOn = false)
 	{
-		this.scheduleNameIncrementor++;
 		if (name == null)
 		{
+			this.scheduleNameIncrementor++;
 			name = string.Format(UI.SCHEDULESCREEN.SCHEDULE_NAME_FORMAT, this.scheduleNameIncrementor.ToString());
 		}
 		Schedule schedule = new Schedule(name, groups, alarmOn);
@@ -127,13 +168,34 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 		return schedule;
 	}
 
-	public void DeleteSchedule(Schedule schedule)
+		public Schedule DuplicateSchedule(Schedule source)
+	{
+		if (base.name == null)
+		{
+			this.scheduleNameIncrementor++;
+			base.name = string.Format(UI.SCHEDULESCREEN.SCHEDULE_NAME_FORMAT, this.scheduleNameIncrementor.ToString());
+		}
+		Schedule schedule = new Schedule("copy of " + source.name, source.GetBlocks(), source.alarmActivated);
+		schedule.ProgressTimetableIdx = source.ProgressTimetableIdx;
+		this.schedules.Add(schedule);
+		if (this.onSchedulesChanged != null)
+		{
+			this.onSchedulesChanged(this.schedules);
+		}
+		return schedule;
+	}
+
+		public void DeleteSchedule(Schedule schedule)
 	{
 		if (this.schedules.Count == 1)
 		{
 			return;
 		}
 		List<Ref<Schedulable>> assigned = schedule.GetAssigned();
+		if (schedule.isDefaultForBionics)
+		{
+			this.hasDeletedDefaultBionicSchedule = true;
+		}
 		this.schedules.Remove(schedule);
 		foreach (Ref<Schedulable> @ref in assigned)
 		{
@@ -145,7 +207,7 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	public Schedule GetSchedule(Schedulable schedulable)
+		public Schedule GetSchedule(Schedulable schedulable)
 	{
 		foreach (Schedule schedule in this.schedules)
 		{
@@ -157,39 +219,43 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 		return null;
 	}
 
-	public List<Schedule> GetSchedules()
+		public List<Schedule> GetSchedules()
 	{
 		return this.schedules;
 	}
 
-	public bool IsAllowed(Schedulable schedulable, ScheduleBlockType schedule_block_type)
+		public bool IsAllowed(Schedulable schedulable, ScheduleBlockType schedule_block_type)
 	{
-		int blockIdx = Schedule.GetBlockIdx();
 		Schedule schedule = this.GetSchedule(schedulable);
-		return schedule != null && schedule.GetBlock(blockIdx).IsAllowed(schedule_block_type);
+		return schedule != null && schedule.GetCurrentScheduleBlock().IsAllowed(schedule_block_type);
 	}
 
-	public void Sim33ms(float dt)
+		public static int GetCurrentHour()
 	{
-		int blockIdx = Schedule.GetBlockIdx();
-		if (blockIdx != this.lastIdx)
+		return Math.Min((int)(GameClock.Instance.GetCurrentCycleAsPercentage() * 24f), 23);
+	}
+
+		public void Sim33ms(float dt)
+	{
+		int currentHour = ScheduleManager.GetCurrentHour();
+		if (ScheduleManager.GetCurrentHour() != this.lastHour)
 		{
 			foreach (Schedule schedule in this.schedules)
 			{
 				schedule.Tick();
 			}
-			this.lastIdx = blockIdx;
+			this.lastHour = currentHour;
 		}
 	}
 
-	public void PlayScheduleAlarm(Schedule schedule, ScheduleBlock block, bool forwards)
+		public void PlayScheduleAlarm(Schedule schedule, ScheduleBlock block, bool forwards)
 	{
 		Notification notification = new Notification(string.Format(MISC.NOTIFICATIONS.SCHEDULE_CHANGED.NAME, schedule.name, block.name), NotificationType.Good, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.SCHEDULE_CHANGED.TOOLTIP.Replace("{0}", schedule.name).Replace("{1}", block.name).Replace("{2}", Db.Get().ScheduleGroups.Get(block.GroupId).notificationTooltip), null, true, 0f, null, null, null, true, false, false);
 		base.GetComponent<Notifier>().Add(notification, "");
 		base.StartCoroutine(this.PlayScheduleTone(schedule, forwards));
 	}
 
-	private IEnumerator PlayScheduleTone(Schedule schedule, bool forwards)
+		private IEnumerator PlayScheduleTone(Schedule schedule, bool forwards)
 	{
 		int[] tones = schedule.GetTones();
 		int num2;
@@ -203,7 +269,7 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 		yield break;
 	}
 
-	private void PlayTone(int pitch, bool forwards)
+		private void PlayTone(int pitch, bool forwards)
 	{
 		EventInstance instance = KFMOD.BeginOneShot(GlobalAssets.GetSound("WorkChime_tone", false), Vector3.zero, 1f);
 		instance.setParameterByName("WorkChime_pitch", (float)pitch, false);
@@ -211,25 +277,28 @@ public class ScheduleManager : KMonoBehaviour, ISim33ms
 		KFMOD.EndOneShot(instance);
 	}
 
-	[Serialize]
+		[Serialize]
 	private List<Schedule> schedules;
 
-	[Serialize]
-	private int lastIdx;
+		[Serialize]
+	private int lastHour;
 
-	[Serialize]
+		[Serialize]
 	private int scheduleNameIncrementor;
 
-	public static ScheduleManager Instance;
+		public static ScheduleManager Instance;
 
-	public class Tuning : TuningData<ScheduleManager.Tuning>
+		[Serialize]
+	private bool hasDeletedDefaultBionicSchedule;
+
+		public class Tuning : TuningData<ScheduleManager.Tuning>
 	{
-		public float toneSpacingSeconds;
+				public float toneSpacingSeconds;
 
-		public int minToneIndex;
+				public int minToneIndex;
 
-		public int maxToneIndex;
+				public int maxToneIndex;
 
-		public int firstLastToneSpacing;
+				public int firstLastToneSpacing;
 	}
 }

@@ -1,4 +1,4 @@
-﻿
+﻿namespace RsTransferPort;
 
 public class UniqueUserNameable : UserNameable {
     public string firstName = "";

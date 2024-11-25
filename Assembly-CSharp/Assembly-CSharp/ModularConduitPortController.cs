@@ -2,7 +2,7 @@
 
 public class ModularConduitPortController : GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.off;
 		ModularConduitPortController.InitializeStatusItems();
@@ -28,7 +28,7 @@ public class ModularConduitPortController : GameStateMachine<ModularConduitPortC
 		this.on.loading_pst.PlayAnim("loading_pst").OnAnimQueueComplete(this.on.finished);
 	}
 
-	private static void InitializeStatusItems()
+		private static void InitializeStatusItems()
 	{
 		if (ModularConduitPortController.idleStatusItem == null)
 		{
@@ -39,54 +39,54 @@ public class ModularConduitPortController : GameStateMachine<ModularConduitPortC
 		}
 	}
 
-	private GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State off;
+		private GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State off;
 
-	private ModularConduitPortController.OnStates on;
+		private ModularConduitPortController.OnStates on;
 
-	public StateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.BoolParameter isUnloading;
+		public StateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.BoolParameter isUnloading;
 
-	public StateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.BoolParameter isLoading;
+		public StateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.BoolParameter isLoading;
 
-	public StateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.BoolParameter hasRocket;
+		public StateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.BoolParameter hasRocket;
 
-	private static StatusItem idleStatusItem;
+		private static StatusItem idleStatusItem;
 
-	private static StatusItem unloadingStatusItem;
+		private static StatusItem unloadingStatusItem;
 
-	private static StatusItem loadingStatusItem;
+		private static StatusItem loadingStatusItem;
 
-	private static StatusItem loadedStatusItem;
+		private static StatusItem loadedStatusItem;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public ModularConduitPortController.Mode mode;
+				public ModularConduitPortController.Mode mode;
 	}
 
-	public enum Mode
+		public enum Mode
 	{
-		Unload,
-		Both,
-		Load
+				Unload,
+				Both,
+				Load
 	}
 
-	private class OnStates : GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State
+		private class OnStates : GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State
 	{
-		public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State idle;
+				public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State idle;
 
-		public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State unloading;
+				public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State unloading;
 
-		public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State unloading_pst;
+				public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State unloading_pst;
 
-		public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State loading;
+				public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State loading;
 
-		public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State loading_pst;
+				public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State loading_pst;
 
-		public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State finished;
+				public GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.State finished;
 	}
 
-	public new class Instance : GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.GameInstance
+		public new class Instance : GameStateMachine<ModularConduitPortController, ModularConduitPortController.Instance, IStateMachineTarget, ModularConduitPortController.Def>.GameInstance
 	{
-				public ModularConduitPortController.Mode SelectedMode
+						public ModularConduitPortController.Mode SelectedMode
 		{
 			get
 			{
@@ -94,36 +94,36 @@ public class ModularConduitPortController : GameStateMachine<ModularConduitPortC
 			}
 		}
 
-		public Instance(IStateMachineTarget master, ModularConduitPortController.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ModularConduitPortController.Def def) : base(master, def)
 		{
 		}
 
-		public ConduitType GetConduitType()
+				public ConduitType GetConduitType()
 		{
 			return base.GetComponent<IConduitConsumer>().ConduitType;
 		}
 
-		public void SetUnloading(bool isUnloading)
+				public void SetUnloading(bool isUnloading)
 		{
 			base.sm.isUnloading.Set(isUnloading, this, false);
 		}
 
-		public void SetLoading(bool isLoading)
+				public void SetLoading(bool isLoading)
 		{
 			base.sm.isLoading.Set(isLoading, this, false);
 		}
 
-		public void SetRocket(bool hasRocket)
+				public void SetRocket(bool hasRocket)
 		{
 			base.sm.hasRocket.Set(hasRocket, this, false);
 		}
 
-		public bool IsLoading()
+				public bool IsLoading()
 		{
 			return base.sm.isLoading.Get(this);
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public Operational operational;
 	}
 }

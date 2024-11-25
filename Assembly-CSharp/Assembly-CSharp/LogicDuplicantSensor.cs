@@ -5,13 +5,13 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.simRenderLoadBalance = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.OnSwitchToggled;
@@ -35,24 +35,24 @@ public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 		this.pickupablesDirty = true;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.pickupablesChangedEntry);
 		MinionGroupProber.Get().ReleaseProber(this);
 		base.OnCleanUp();
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		this.RefreshReachableCells();
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		this.RefreshPickupables();
 	}
 
-	private void RefreshReachableCells()
+		private void RefreshReachableCells()
 	{
 		ListPool<int, LogicDuplicantSensor>.PooledList pooledList = ListPool<int, LogicDuplicantSensor>.Allocate(this.reachableCells);
 		this.reachableCells.Clear();
@@ -88,12 +88,12 @@ public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 		pooledList.Recycle();
 	}
 
-	public bool IsCellReachable(int cell)
+		public bool IsCellReachable(int cell)
 	{
 		return this.reachableCells.Contains(cell);
 	}
 
-	private void RefreshPickupables()
+		private void RefreshPickupables()
 	{
 		if (!this.pickupablesDirty)
 		{
@@ -117,7 +117,7 @@ public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 		this.pickupablesDirty = false;
 	}
 
-	private void OnPickupablesChanged(object data)
+		private void OnPickupablesChanged(object data)
 	{
 		Pickupable pickupable = data as Pickupable;
 		if (pickupable && this.IsPickupableRelevantToMyInterests(pickupable))
@@ -126,12 +126,12 @@ public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 		}
 	}
 
-	private bool IsPickupableRelevantToMyInterests(Pickupable pickupable)
+		private bool IsPickupableRelevantToMyInterests(Pickupable pickupable)
 	{
 		return pickupable.KPrefabID.HasTag(GameTags.DupeBrain);
 	}
 
-	private bool IsPickupableRelevantToMyInterestsAndReachable(Pickupable pickupable)
+		private bool IsPickupableRelevantToMyInterestsAndReachable(Pickupable pickupable)
 	{
 		if (!this.IsPickupableRelevantToMyInterests(pickupable))
 		{
@@ -141,23 +141,23 @@ public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 		return this.IsCellReachable(pickupableCell);
 	}
 
-	private int GetPickupableCell(Pickupable pickupable)
+		private int GetPickupableCell(Pickupable pickupable)
 	{
 		return pickupable.cachedCell;
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateLogicCircuit();
 		this.UpdateVisualState(false);
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, this.switchedOn ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -168,29 +168,29 @@ public class LogicDuplicantSensor : Switch, ISim1000ms, ISim200ms
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KSelectable selectable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Rotatable rotatable;
 
-	public int pickupRange = 4;
+		public int pickupRange = 4;
 
-	private bool wasOn;
+		private bool wasOn;
 
-	private List<Pickupable> duplicants = new List<Pickupable>();
+		private List<Pickupable> duplicants = new List<Pickupable>();
 
-	private HandleVector<int>.Handle pickupablesChangedEntry;
+		private HandleVector<int>.Handle pickupablesChangedEntry;
 
-	private bool pickupablesDirty;
+		private bool pickupablesDirty;
 
-	private Extents pickupableExtents;
+		private Extents pickupableExtents;
 
-	private List<int> reachableCells = new List<int>(100);
+		private List<int> reachableCells = new List<int>(100);
 }

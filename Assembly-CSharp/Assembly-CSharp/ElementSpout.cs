@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ElementSpout : StateMachineComponent<ElementSpout.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		int cell = Grid.PosToCell(base.transform.GetPosition());
@@ -11,12 +11,12 @@ public class ElementSpout : StateMachineComponent<ElementSpout.StatesInstance>
 		base.smi.StartSM();
 	}
 
-	public void SetEmitter(ElementEmitter emitter)
+		public void SetEmitter(ElementEmitter emitter)
 	{
 		this.emitter = emitter;
 	}
 
-	public void ConfigureEmissionSettings(float emissionPollFrequency = 3f, float emissionIrregularity = 1.5f, float maxPressure = 1.5f, float perEmitAmount = 0.5f)
+		public void ConfigureEmissionSettings(float emissionPollFrequency = 3f, float emissionIrregularity = 1.5f, float maxPressure = 1.5f, float perEmitAmount = 0.5f)
 	{
 		this.maxPressure = maxPressure;
 		this.emissionPollFrequency = emissionPollFrequency;
@@ -24,32 +24,32 @@ public class ElementSpout : StateMachineComponent<ElementSpout.StatesInstance>
 		this.perEmitAmount = perEmitAmount;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private ElementEmitter emitter;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private KBatchedAnimController anim;
 
-	public float maxPressure = 1.5f;
+		public float maxPressure = 1.5f;
 
-	public float emissionPollFrequency = 3f;
+		public float emissionPollFrequency = 3f;
 
-	public float emissionIrregularity = 1.5f;
+		public float emissionIrregularity = 1.5f;
 
-	public float perEmitAmount = 0.5f;
+		public float perEmitAmount = 0.5f;
 
-	public class StatesInstance : GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.GameInstance
 	{
-		public StatesInstance(ElementSpout smi) : base(smi)
+				public StatesInstance(ElementSpout smi) : base(smi)
 		{
 		}
 
-		private bool CanEmitOnCell(int cell, float max_pressure, Element.State expected_state)
+				private bool CanEmitOnCell(int cell, float max_pressure, Element.State expected_state)
 		{
 			return Grid.Mass[cell] < max_pressure && (Grid.Element[cell].IsState(expected_state) || Grid.Element[cell].IsVacuum);
 		}
 
-		public bool CanEmitAnywhere()
+				public bool CanEmitAnywhere()
 		{
 			int cell = Grid.PosToCell(base.smi.transform.GetPosition());
 			int cell2 = Grid.CellLeft(cell);
@@ -60,9 +60,9 @@ public class ElementSpout : StateMachineComponent<ElementSpout.StatesInstance>
 		}
 	}
 
-	public class States : GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout>
+		public class States : GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.idle.DefaultState(this.idle.unblocked).Enter(delegate(ElementSpout.StatesInstance smi)
@@ -92,22 +92,22 @@ public class ElementSpout : StateMachineComponent<ElementSpout.StatesInstance>
 			}).Transition(this.emit.unblocked, (ElementSpout.StatesInstance smi) => smi.CanEmitAnywhere(), UpdateRate.SIM_200ms);
 		}
 
-		public ElementSpout.States.Idle idle;
+				public ElementSpout.States.Idle idle;
 
-		public ElementSpout.States.Emitting emit;
+				public ElementSpout.States.Emitting emit;
 
-		public class Idle : GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State
+				public class Idle : GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State
 		{
-			public GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State unblocked;
+						public GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State unblocked;
 
-			public GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State blocked;
+						public GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State blocked;
 		}
 
-		public class Emitting : GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State
+				public class Emitting : GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State
 		{
-			public GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State unblocked;
+						public GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State unblocked;
 
-			public GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State blocked;
+						public GameStateMachine<ElementSpout.States, ElementSpout.StatesInstance, ElementSpout, object>.State blocked;
 		}
 	}
 }

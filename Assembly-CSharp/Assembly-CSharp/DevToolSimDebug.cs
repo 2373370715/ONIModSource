@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DevToolSimDebug : DevTool
 {
-	public DevToolSimDebug()
+		public DevToolSimDebug()
 	{
 		this.elementNames = Enum.GetNames(typeof(SimHashes));
 		Array.Sort<string>(this.elementNames);
@@ -59,7 +59,7 @@ public class DevToolSimDebug : DevTool
 		this.gameGridModes = Enum.GetNames(typeof(SimDebugView.GameGridMode));
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (Game.Instance == null)
 		{
@@ -403,7 +403,7 @@ public class DevToolSimDebug : DevTool
 		}
 	}
 
-	private void DrawElem(Element element)
+		private void DrawElem(Element element)
 	{
 		ImGui.Indent();
 		ImGui.Text("State: " + element.state.ToString());
@@ -458,7 +458,7 @@ public class DevToolSimDebug : DevTool
 		ImGui.Unindent();
 	}
 
-	private void DrawConduitFlow(ConduitFlow flow_mgr, int cell)
+		private void DrawConduitFlow(ConduitFlow flow_mgr, int cell)
 	{
 		ImGui.Indent();
 		ConduitFlow.ConduitContents contents = flow_mgr.GetContents(cell);
@@ -499,7 +499,7 @@ public class DevToolSimDebug : DevTool
 		ImGui.Unindent();
 	}
 
-	private void DrawBoundingBoxOverlay()
+		private void DrawBoundingBoxOverlay()
 	{
 		ImGui.InputInt("Width:", ref this.xBound, 2);
 		ImGui.InputInt("Height:", ref this.yBound, 2);
@@ -524,64 +524,64 @@ public class DevToolSimDebug : DevTool
 		}
 	}
 
-	public void SetCell(int cell)
+		public void SetCell(int cell)
 	{
 		this.worldPos = Grid.CellToPosCCC(cell, Grid.SceneLayer.Move);
 	}
 
-	private Vector3 worldPos = Vector3.zero;
+		private Vector3 worldPos = Vector3.zero;
 
-	private string[] elementNames;
+		private string[] elementNames;
 
-	private Dictionary<SimHashes, double> elementCounts = new Dictionary<SimHashes, double>();
+		private Dictionary<SimHashes, double> elementCounts = new Dictionary<SimHashes, double>();
 
-	public static DevToolSimDebug Instance;
+		public static DevToolSimDebug Instance;
 
-	private const string INVALID_OVERLAY_MODE_STR = "None";
+		private const string INVALID_OVERLAY_MODE_STR = "None";
 
-	private bool shouldDrawBoundingBox = true;
+		private bool shouldDrawBoundingBox = true;
 
-	private Option<DevToolEntityTarget.ForSimCell> boundBoxSimCellTarget;
+		private Option<DevToolEntityTarget.ForSimCell> boundBoxSimCellTarget;
 
-	private int xBound = 8;
+		private int xBound = 8;
 
-	private int yBound = 8;
+		private int yBound = 8;
 
-	private bool showElementData;
+		private bool showElementData;
 
-	private bool showMouseData = true;
+		private bool showMouseData = true;
 
-	private bool showAccessRestrictions;
+		private bool showAccessRestrictions;
 
-	private bool showGridContents;
+		private bool showGridContents;
 
-	private bool showScenePartitionerContents;
+		private bool showScenePartitionerContents;
 
-	private bool showLayerToggles;
+		private bool showLayerToggles;
 
-	private bool showCavityInfo;
+		private bool showCavityInfo;
 
-	private bool showPropertyInfo;
+		private bool showPropertyInfo;
 
-	private bool showBuildings;
+		private bool showBuildings;
 
-	private bool showCreatures;
+		private bool showCreatures;
 
-	private bool showPhysicsData;
+		private bool showPhysicsData;
 
-	private bool showGasConduitData;
+		private bool showGasConduitData;
 
-	private bool showLiquidConduitData;
+		private bool showLiquidConduitData;
 
-	private string[] overlayModes;
+		private string[] overlayModes;
 
-	private int selectedOverlayMode;
+		private int selectedOverlayMode;
 
-	private string[] gameGridModes;
+		private string[] gameGridModes;
 
-	private Dictionary<string, HashedString> modeLookup;
+		private Dictionary<string, HashedString> modeLookup;
 
-	private Dictionary<HashedString, string> revModeLookup;
+		private Dictionary<HashedString, string> revModeLookup;
 
-	private HashSet<ScenePartitionerLayer> toggledLayers = new HashSet<ScenePartitionerLayer>();
+		private HashSet<ScenePartitionerLayer> toggledLayers = new HashSet<ScenePartitionerLayer>();
 }

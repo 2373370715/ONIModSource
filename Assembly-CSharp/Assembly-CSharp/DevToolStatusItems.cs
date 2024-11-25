@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class DevToolStatusItems : DevTool
 {
-	public DevToolStatusItems() : this(Option.None)
+		public DevToolStatusItems() : this(Option.None)
 	{
 	}
 
-	public DevToolStatusItems(Option<DevToolEntityTarget.ForWorldGameObject> target)
+		public DevToolStatusItems(Option<DevToolEntityTarget.ForWorldGameObject> target)
 	{
 		this.targetOpt = target;
 		this.tableDrawer = ImGuiObjectTableDrawer<StatusItemGroup.Entry>.New().RemoveFlags(ImGuiTableFlags.SizingFixedFit).AddFlags(ImGuiTableFlags.Resizable).Column("Text", (StatusItemGroup.Entry entry) => entry.GetName()).Column("Id Name", (StatusItemGroup.Entry entry) => entry.item.Id).Column("Notification Type", (StatusItemGroup.Entry entry) => entry.item.notificationType).Column("Category", delegate(StatusItemGroup.Entry entry)
@@ -36,7 +36,7 @@ public class DevToolStatusItems : DevTool
 		};
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		this.statusItemStackTraceWatcher.SetTarget(this.targetOpt.AndThen<GameObject>((DevToolEntityTarget.ForWorldGameObject t) => t.gameObject).AndThen<KSelectable>((GameObject go) => go.GetComponent<KSelectable>()).AndThen<StatusItemGroup>((KSelectable s) => s.GetStatusItemGroup()));
 		if (ImGui.BeginMenuBar())
@@ -98,7 +98,7 @@ public class DevToolStatusItems : DevTool
 		}
 	}
 
-	public static Option<string> GetErrorForCandidateTarget(DevToolEntityTarget uncastTarget)
+		public static Option<string> GetErrorForCandidateTarget(DevToolEntityTarget uncastTarget)
 	{
 		if (!(uncastTarget is DevToolEntityTarget.ForWorldGameObject))
 		{
@@ -121,11 +121,11 @@ public class DevToolStatusItems : DevTool
 		return Option.None;
 	}
 
-	private Option<DevToolEntityTarget.ForWorldGameObject> targetOpt;
+		private Option<DevToolEntityTarget.ForWorldGameObject> targetOpt;
 
-	private ImGuiObjectTableDrawer<StatusItemGroup.Entry> tableDrawer;
+		private ImGuiObjectTableDrawer<StatusItemGroup.Entry> tableDrawer;
 
-	private StatusItemStackTraceWatcher statusItemStackTraceWatcher = new StatusItemStackTraceWatcher();
+		private StatusItemStackTraceWatcher statusItemStackTraceWatcher = new StatusItemStackTraceWatcher();
 
-	private bool shouldDrawBoundingBox = true;
+		private bool shouldDrawBoundingBox = true;
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class DragMe : MonoBehaviour, IBeginDragHandler, IEventSystemHandler, IDragHandler, IEndDragHandler
 {
-	public void OnBeginDrag(PointerEventData eventData)
+		public void OnBeginDrag(PointerEventData eventData)
 	{
 		Canvas canvas = DragMe.FindInParents<Canvas>(base.gameObject);
 		if (canvas == null)
@@ -34,7 +34,7 @@ public class DragMe : MonoBehaviour, IBeginDragHandler, IEventSystemHandler, IDr
 		this.listener.OnBeginDrag(eventData.position);
 	}
 
-	public void OnDrag(PointerEventData data)
+		public void OnDrag(PointerEventData data)
 	{
 		if (this.m_DraggingIcon != null)
 		{
@@ -42,7 +42,7 @@ public class DragMe : MonoBehaviour, IBeginDragHandler, IEventSystemHandler, IDr
 		}
 	}
 
-	private void SetDraggedPosition(PointerEventData data)
+		private void SetDraggedPosition(PointerEventData data)
 	{
 		if (this.dragOnSurfaces && data.pointerEnter != null && data.pointerEnter.transform as RectTransform != null)
 		{
@@ -57,7 +57,7 @@ public class DragMe : MonoBehaviour, IBeginDragHandler, IEventSystemHandler, IDr
 		}
 	}
 
-	public void OnEndDrag(PointerEventData eventData)
+		public void OnEndDrag(PointerEventData eventData)
 	{
 		this.listener.OnEndDrag(eventData.position);
 		if (this.m_DraggingIcon != null)
@@ -66,7 +66,7 @@ public class DragMe : MonoBehaviour, IBeginDragHandler, IEventSystemHandler, IDr
 		}
 	}
 
-	public static T FindInParents<T>(GameObject go) where T : Component
+		public static T FindInParents<T>(GameObject go) where T : Component
 	{
 		if (go == null)
 		{
@@ -82,18 +82,18 @@ public class DragMe : MonoBehaviour, IBeginDragHandler, IEventSystemHandler, IDr
 		return t;
 	}
 
-	public bool dragOnSurfaces = true;
+		public bool dragOnSurfaces = true;
 
-	private GameObject m_DraggingIcon;
+		private GameObject m_DraggingIcon;
 
-	private RectTransform m_DraggingPlane;
+		private RectTransform m_DraggingPlane;
 
-	public DragMe.IDragListener listener;
+		public DragMe.IDragListener listener;
 
-	public interface IDragListener
+		public interface IDragListener
 	{
-		void OnBeginDrag(Vector2 position);
+				void OnBeginDrag(Vector2 position);
 
-		void OnEndDrag(Vector2 position);
+				void OnEndDrag(Vector2 position);
 	}
 }

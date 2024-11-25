@@ -7,14 +7,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ConsumerManager")]
 public class ConsumerManager : KMonoBehaviour, ISaveLoadable
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ConsumerManager.instance = null;
 	}
 
-			public event Action<Tag> OnDiscover;
+				public event Action<Tag> OnDiscover;
 
-		public List<Tag> DefaultForbiddenTagsList
+			public List<Tag> DefaultForbiddenTagsList
 	{
 		get
 		{
@@ -22,7 +22,33 @@ public class ConsumerManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected override void OnSpawn()
+			public List<Tag> StandardDuplicantDietaryRestrictions
+	{
+		get
+		{
+			List<Tag> list = new List<Tag>();
+			foreach (GameObject go in Assets.GetPrefabsWithTag(GameTags.ChargedPortableBattery))
+			{
+				list.Add(go.PrefabID());
+			}
+			return list;
+		}
+	}
+
+			public List<Tag> BionicDuplicantDietaryRestrictions
+	{
+		get
+		{
+			List<Tag> list = new List<Tag>();
+			foreach (GameObject go in Assets.GetPrefabsWithTag(GameTags.Edible))
+			{
+				list.Add(go.PrefabID());
+			}
+			return list;
+		}
+	}
+
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		ConsumerManager.instance = this;
@@ -31,12 +57,12 @@ public class ConsumerManager : KMonoBehaviour, ISaveLoadable
 		Game.Instance.Subscribe(-107300940, new Action<object>(this.RefreshDiscovered));
 	}
 
-	public bool isDiscovered(Tag id)
+		public bool isDiscovered(Tag id)
 	{
 		return !this.undiscoveredConsumableTags.Contains(id);
 	}
 
-	private void OnWorldInventoryDiscover(Tag category_tag, Tag tag)
+		private void OnWorldInventoryDiscover(Tag category_tag, Tag tag)
 	{
 		if (this.undiscoveredConsumableTags.Contains(tag))
 		{
@@ -44,7 +70,7 @@ public class ConsumerManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void RefreshDiscovered(object data = null)
+		public void RefreshDiscovered(object data = null)
 	{
 		foreach (EdiblesManager.FoodInfo foodInfo in EdiblesManager.GetAllFoodTypes())
 		{
@@ -78,7 +104,7 @@ public class ConsumerManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private bool ShouldBeDiscovered(Tag food_id)
+		private bool ShouldBeDiscovered(Tag food_id)
 	{
 		if (DiscoveredResources.Instance.IsDiscovered(food_id))
 		{
@@ -107,11 +133,11 @@ public class ConsumerManager : KMonoBehaviour, ISaveLoadable
 		return false;
 	}
 
-	public static ConsumerManager instance;
+		public static ConsumerManager instance;
 
-	[Serialize]
+		[Serialize]
 	private List<Tag> undiscoveredConsumableTags = new List<Tag>();
 
-	[Serialize]
+		[Serialize]
 	private List<Tag> defaultForbiddenTagsList = new List<Tag>();
 }

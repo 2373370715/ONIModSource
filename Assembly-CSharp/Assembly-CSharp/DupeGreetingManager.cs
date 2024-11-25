@@ -6,14 +6,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DupeGreetingManager")]
 public class DupeGreetingManager : KMonoBehaviour, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.candidateCells = new Dictionary<int, MinionIdentity>();
 		this.activeSetups = new List<DupeGreetingManager.GreetingSetup>();
 		this.cooldowns = new Dictionary<MinionIdentity, float>();
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (GameClock.Instance.GetTime() / 600f < TuningData<DupeGreetingManager.Tuning>.Get().cyclesBeforeFirstGreeting)
 		{
@@ -48,7 +48,7 @@ public class DupeGreetingManager : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	private int GetOffsetCell(MinionIdentity minion, int offset)
+		private int GetOffsetCell(MinionIdentity minion, int offset)
 	{
 		if (!minion.GetComponent<Facing>().GetFacing())
 		{
@@ -57,7 +57,7 @@ public class DupeGreetingManager : KMonoBehaviour, ISim200ms
 		return Grid.OffsetCell(Grid.PosToCell(minion), -offset, 0);
 	}
 
-	private bool ValidNavigatingMinion(MinionIdentity minion)
+		private bool ValidNavigatingMinion(MinionIdentity minion)
 	{
 		if (minion == null)
 		{
@@ -67,7 +67,7 @@ public class DupeGreetingManager : KMonoBehaviour, ISim200ms
 		return component != null && component.IsMoving() && component.CurrentNavType == NavType.Floor;
 	}
 
-	private bool ValidOppositionalMinion(MinionIdentity reference_minion, MinionIdentity minion)
+		private bool ValidOppositionalMinion(MinionIdentity reference_minion, MinionIdentity minion)
 	{
 		if (reference_minion == null)
 		{
@@ -82,7 +82,7 @@ public class DupeGreetingManager : KMonoBehaviour, ISim200ms
 		return this.ValidNavigatingMinion(minion) && component != null && component2 != null && component.GetFacing() != component2.GetFacing();
 	}
 
-	private void BeginNewGreeting(MinionIdentity minion_a, MinionIdentity minion_b, int cell)
+		private void BeginNewGreeting(MinionIdentity minion_a, MinionIdentity minion_b, int cell)
 	{
 		DupeGreetingManager.GreetingSetup greetingSetup = new DupeGreetingManager.GreetingSetup();
 		greetingSetup.cell = cell;
@@ -91,7 +91,7 @@ public class DupeGreetingManager : KMonoBehaviour, ISim200ms
 		this.activeSetups.Add(greetingSetup);
 	}
 
-	private Reactable GetReactable(MinionIdentity minion)
+		private Reactable GetReactable(MinionIdentity minion)
 	{
 		if (DupeGreetingManager.emotes == null)
 		{
@@ -109,7 +109,7 @@ public class DupeGreetingManager : KMonoBehaviour, ISim200ms
 		return selfEmoteReactable;
 	}
 
-	private void BeginReacting(GameObject minionGO)
+		private void BeginReacting(GameObject minionGO)
 	{
 		if (minionGO == null)
 		{
@@ -145,42 +145,42 @@ public class DupeGreetingManager : KMonoBehaviour, ISim200ms
 		this.cooldowns[component] = GameClock.Instance.GetTime();
 	}
 
-	private const float COOLDOWN_TIME = 720f;
+		private const float COOLDOWN_TIME = 720f;
 
-	private Dictionary<int, MinionIdentity> candidateCells;
+		private Dictionary<int, MinionIdentity> candidateCells;
 
-	private List<DupeGreetingManager.GreetingSetup> activeSetups;
+		private List<DupeGreetingManager.GreetingSetup> activeSetups;
 
-	private Dictionary<MinionIdentity, float> cooldowns;
+		private Dictionary<MinionIdentity, float> cooldowns;
 
-	private static List<Emote> emotes;
+		private static List<Emote> emotes;
 
-	public class Tuning : TuningData<DupeGreetingManager.Tuning>
+		public class Tuning : TuningData<DupeGreetingManager.Tuning>
 	{
-		public float cyclesBeforeFirstGreeting;
+				public float cyclesBeforeFirstGreeting;
 
-		public float greetingDelayMultiplier;
+				public float greetingDelayMultiplier;
 	}
 
-	private class GreetingUnit
+		private class GreetingUnit
 	{
-		public GreetingUnit(MinionIdentity minion, Reactable reactable)
+				public GreetingUnit(MinionIdentity minion, Reactable reactable)
 		{
 			this.minion = minion;
 			this.reactable = reactable;
 		}
 
-		public MinionIdentity minion;
+				public MinionIdentity minion;
 
-		public Reactable reactable;
+				public Reactable reactable;
 	}
 
-	private class GreetingSetup
+		private class GreetingSetup
 	{
-		public int cell;
+				public int cell;
 
-		public DupeGreetingManager.GreetingUnit A;
+				public DupeGreetingManager.GreetingUnit A;
 
-		public DupeGreetingManager.GreetingUnit B;
+				public DupeGreetingManager.GreetingUnit B;
 	}
 }

@@ -3,24 +3,24 @@ using ImGuiNET;
 
 namespace ImGuiObjectDrawer
 {
-	public class PlainCSharpObjectDrawer : MemberDrawer
+		public class PlainCSharpObjectDrawer : MemberDrawer
 	{
-		public override bool CanDraw(in MemberDrawContext context, in MemberDetails member)
+				public override bool CanDraw(in MemberDrawContext context, in MemberDetails member)
 		{
 			return true;
 		}
 
-		public override MemberDrawType GetDrawType(in MemberDrawContext context, in MemberDetails member)
+				public override MemberDrawType GetDrawType(in MemberDrawContext context, in MemberDetails member)
 		{
 			return MemberDrawType.Custom;
 		}
 
-		protected override void DrawInline(in MemberDrawContext context, in MemberDetails member)
+				protected override void DrawInline(in MemberDrawContext context, in MemberDetails member)
 		{
 			throw new InvalidOperationException();
 		}
 
-		protected override void DrawCustom(in MemberDrawContext context, in MemberDetails member, int depth)
+				protected override void DrawCustom(in MemberDrawContext context, in MemberDetails member, int depth)
 		{
 			ImGuiTreeNodeFlags imGuiTreeNodeFlags = ImGuiTreeNodeFlags.None;
 			if (context.default_open && depth <= 0)
@@ -36,7 +36,7 @@ namespace ImGuiObjectDrawer
 			}
 		}
 
-		protected virtual void DrawContents(in MemberDrawContext context, in MemberDetails member, int depth)
+				protected virtual void DrawContents(in MemberDrawContext context, in MemberDetails member, int depth)
 		{
 			DrawerUtil.DrawObjectContents(member.value, context, depth + 1);
 		}

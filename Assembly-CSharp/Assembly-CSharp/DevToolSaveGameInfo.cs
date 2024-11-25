@@ -3,7 +3,7 @@ using ImGuiNET;
 
 public class DevToolSaveGameInfo : DevTool
 {
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (Game.Instance == null)
 		{
@@ -34,5 +34,5 @@ public class DevToolSaveGameInfo : DevTool
 		ImGui.NewLine();
 	}
 
-	private string clSearch = "";
+		private string clSearch = "";
 }

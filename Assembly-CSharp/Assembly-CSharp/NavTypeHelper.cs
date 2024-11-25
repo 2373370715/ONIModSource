@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class NavTypeHelper
 {
-	public static Vector3 GetNavPos(int cell, NavType nav_type)
+		public static Vector3 GetNavPos(int cell, NavType nav_type)
 	{
 		Vector3 zero = Vector3.zero;
 		switch (nav_type)
@@ -28,7 +28,7 @@ public static class NavTypeHelper
 		return Grid.CellToPosCCC(cell, Grid.SceneLayer.Move);
 	}
 
-	public static int GetAnchorCell(NavType nav_type, int cell)
+		public static int GetAnchorCell(NavType nav_type, int cell)
 	{
 		int result = Grid.InvalidCell;
 		if (Grid.IsValidCell(cell))

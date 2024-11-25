@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class DisinfectTool : DragTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		DisinfectTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		DisinfectTool.Instance = this;
@@ -16,12 +16,12 @@ public class DisinfectTool : DragTool
 		this.viewMode = OverlayModes.Disease.ID;
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		PlayerController.Instance.ActivateTool(this);
 	}
 
-	protected override void OnDragTool(int cell, int distFromOrigin)
+		protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		for (int i = 0; i < 45; i++)
 		{
@@ -37,5 +37,5 @@ public class DisinfectTool : DragTool
 		}
 	}
 
-	public static DisinfectTool Instance;
+		public static DisinfectTool Instance;
 }

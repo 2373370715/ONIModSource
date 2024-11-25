@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class CavityInfo
 {
-	public CavityInfo()
+		public CavityInfo()
 	{
 		this.handle = HandleVector<int>.InvalidHandle;
 		this.dirty = true;
 	}
 
-	public void AddBuilding(KPrefabID bc)
+		public void AddBuilding(KPrefabID bc)
 	{
 		this.buildings.Add(bc);
 		this.dirty = true;
 	}
 
-	public void AddPlants(KPrefabID plant)
+		public void AddPlants(KPrefabID plant)
 	{
 		this.plants.Add(plant);
 		this.dirty = true;
 	}
 
-	public void RemoveFromCavity(KPrefabID id, List<KPrefabID> listToRemove)
+		public void RemoveFromCavity(KPrefabID id, List<KPrefabID> listToRemove)
 	{
 		int num = -1;
 		for (int i = 0; i < listToRemove.Count; i++)
@@ -39,7 +39,7 @@ public class CavityInfo
 		}
 	}
 
-	public void OnEnter(object data)
+		public void OnEnter(object data)
 	{
 		foreach (KPrefabID kprefabID in this.buildings)
 		{
@@ -50,32 +50,32 @@ public class CavityInfo
 		}
 	}
 
-	public Vector3 GetCenter()
+		public Vector3 GetCenter()
 	{
 		return new Vector3((float)(this.minX + (this.maxX - this.minX) / 2), (float)(this.minY + (this.maxY - this.minY) / 2));
 	}
 
-	public HandleVector<int>.Handle handle;
+		public HandleVector<int>.Handle handle;
 
-	public bool dirty;
+		public bool dirty;
 
-	public int numCells;
+		public int numCells;
 
-	public int maxX;
+		public int maxX;
 
-	public int maxY;
+		public int maxY;
 
-	public int minX;
+		public int minX;
 
-	public int minY;
+		public int minY;
 
-	public Room room;
+		public Room room;
 
-	public List<KPrefabID> buildings = new List<KPrefabID>();
+		public List<KPrefabID> buildings = new List<KPrefabID>();
 
-	public List<KPrefabID> plants = new List<KPrefabID>();
+		public List<KPrefabID> plants = new List<KPrefabID>();
 
-	public List<KPrefabID> creatures = new List<KPrefabID>();
+		public List<KPrefabID> creatures = new List<KPrefabID>();
 
-	public List<KPrefabID> eggs = new List<KPrefabID>();
+		public List<KPrefabID> eggs = new List<KPrefabID>();
 }

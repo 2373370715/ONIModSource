@@ -10,7 +10,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ColonyAchievementTracker")]
 public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IRenderEveryTick
 {
-			public bool GeothermalFacilityDiscovered
+				public bool GeothermalFacilityDiscovered
 	{
 		get
 		{
@@ -28,7 +28,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-			public bool GeothermalControllerRepaired
+				public bool GeothermalControllerRepaired
 	{
 		get
 		{
@@ -46,7 +46,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-			public bool GeothermalControllerHasVented
+				public bool GeothermalControllerHasVented
 	{
 		get
 		{
@@ -64,7 +64,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-			public bool GeothermalClearedEntombedVent
+				public bool GeothermalClearedEntombedVent
 	{
 		get
 		{
@@ -82,7 +82,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-			public bool GeothermalVictoryPopupDismissed
+				public bool GeothermalVictoryPopupDismissed
 	{
 		get
 		{
@@ -100,7 +100,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-		public List<string> achievementsToDisplay
+			public List<string> achievementsToDisplay
 	{
 		get
 		{
@@ -108,12 +108,12 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-	public void ClearDisplayAchievements()
+		public void ClearDisplayAchievements()
 	{
 		this.achievementsToDisplay.Clear();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		foreach (ColonyAchievement colonyAchievement in Db.Get().ColonyAchievements.resources)
@@ -129,7 +129,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		this.UpgradeTamedCritterAchievements();
 	}
 
-	private void UpgradeTamedCritterAchievements()
+		private void UpgradeTamedCritterAchievements()
 	{
 		foreach (ColonyAchievementRequirement colonyAchievementRequirement in Db.Get().ColonyAchievements.TameAllBasicCritters.requirementChecklist)
 		{
@@ -149,7 +149,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		if (this.updatingAchievement >= this.achievements.Count)
 		{
@@ -170,7 +170,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-	private void CheckAchievements(object data = null)
+		private void CheckAchievements(object data = null)
 	{
 		foreach (KeyValuePair<string, ColonyAchievementStatus> keyValuePair in this.achievements)
 		{
@@ -188,7 +188,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		RetireColonyUtility.SaveColonySummaryData();
 	}
 
-	private static void UnlockPlatformAchievement(string achievement_id)
+		private static void UnlockPlatformAchievement(string achievement_id)
 	{
 		if (DebugHandler.InstantBuildMode)
 		{
@@ -229,13 +229,13 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-	public void DebugTriggerAchievement(string id)
+		public void DebugTriggerAchievement(string id)
 	{
 		this.achievements[id].failed = false;
 		this.achievements[id].success = true;
 	}
 
-	private void BeginVictorySequence(string achievementID)
+		private void BeginVictorySequence(string achievementID)
 	{
 		RootMenu.Instance.canTogglePauseScreen = false;
 		CameraController.Instance.DisableUserCameraControl = true;
@@ -264,7 +264,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}));
 	}
 
-	public bool IsAchievementUnlocked(ColonyAchievement achievement)
+		public bool IsAchievementUnlocked(ColonyAchievement achievement)
 	{
 		foreach (KeyValuePair<string, ColonyAchievementStatus> keyValuePair in this.achievements)
 		{
@@ -281,7 +281,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		return false;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.victorySchedulerHandle.ClearScheduler();
 		Game.Instance.Unsubscribe(this.forceCheckAchievementHandle);
@@ -289,7 +289,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		base.OnCleanUp();
 	}
 
-	private void TriggerNewAchievementCompleted(string achievement, GameObject cameraTarget = null)
+		private void TriggerNewAchievementCompleted(string achievement, GameObject cameraTarget = null)
 	{
 		this.unlockedAchievementMetric[ColonyAchievementTracker.UnlockedAchievementKey] = achievement;
 		ThreadedHttps<KleiMetrics>.Instance.SendEvent(this.unlockedAchievementMetric, "TriggerNewAchievementCompleted");
@@ -306,7 +306,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-	private void ToggleVictoryUI(bool victoryUIActive)
+		private void ToggleVictoryUI(bool victoryUIActive)
 	{
 		List<KScreen> list = new List<KScreen>();
 		list.Add(NotificationScreen.Instance);
@@ -340,7 +340,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-	public void Serialize(BinaryWriter writer)
+		public void Serialize(BinaryWriter writer)
 	{
 		writer.Write(this.achievements.Count);
 		foreach (KeyValuePair<string, ColonyAchievementStatus> keyValuePair in this.achievements)
@@ -350,7 +350,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-	public void Deserialize(IReader reader)
+		public void Deserialize(IReader reader)
 	{
 		if (SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 10))
 		{
@@ -368,7 +368,7 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-	public void LogFetchChore(GameObject fetcher, ChoreType choreType)
+		public void LogFetchChore(GameObject fetcher, ChoreType choreType)
 	{
 		if (choreType == Db.Get().ChoreTypes.StorageFetch || choreType == Db.Get().ChoreTypes.BuildFetch || choreType == Db.Get().ChoreTypes.RepairFetch || choreType == Db.Get().ChoreTypes.FoodFetch || choreType == Db.Get().ChoreTypes.Transport)
 		{
@@ -397,12 +397,12 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-	public void LogCritterTamed(Tag prefabId)
+		public void LogCritterTamed(Tag prefabId)
 	{
 		this.tamedCritterTypes.Add(prefabId);
 	}
 
-	public void LogSuitChore(ChoreDriver driver)
+		public void LogSuitChore(ChoreDriver driver)
 	{
 		if (driver == null || driver.GetComponent<MinionIdentity>() == null)
 		{
@@ -437,12 +437,12 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-	public void LogAnalyzedSeed(Tag seed)
+		public void LogAnalyzedSeed(Tag seed)
 	{
 		this.analyzedSeeds.Add(seed);
 	}
 
-	public void OnNewDay(object data)
+		public void OnNewDay(object data)
 	{
 		foreach (MinionStorage minionStorage in Components.MinionStorages.Items)
 		{
@@ -506,66 +506,66 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	}
 
-	public Dictionary<string, ColonyAchievementStatus> achievements = new Dictionary<string, ColonyAchievementStatus>();
+		public Dictionary<string, ColonyAchievementStatus> achievements = new Dictionary<string, ColonyAchievementStatus>();
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<int, int> fetchAutomatedChoreDeliveries = new Dictionary<int, int>();
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<int, int> fetchDupeChoreDeliveries = new Dictionary<int, int>();
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<int, List<int>> dupesCompleteChoresInSuits = new Dictionary<int, List<int>>();
 
-	[Serialize]
+		[Serialize]
 	public HashSet<Tag> tamedCritterTypes = new HashSet<Tag>();
 
-	[Serialize]
+		[Serialize]
 	public bool defrostedDuplicant;
 
-	[Serialize]
+		[Serialize]
 	public HashSet<Tag> analyzedSeeds = new HashSet<Tag>();
 
-	[Serialize]
+		[Serialize]
 	public float totalMaterialsHarvestFromPOI;
 
-	[Serialize]
+		[Serialize]
 	public float radBoltTravelDistance;
 
-	[Serialize]
+		[Serialize]
 	public bool harvestAHiveWithoutGettingStung;
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<int, int> cyclesRocketDupeMoraleAboveRequirement = new Dictionary<int, int>();
 
-	[Serialize]
+		[Serialize]
 	private int geothermalProgress;
 
-	private const int GEO_DISCOVERED_BIT = 1;
+		private const int GEO_DISCOVERED_BIT = 1;
 
-	private const int GEO_CONTROLLER_REPAIRED_BIT = 2;
+		private const int GEO_CONTROLLER_REPAIRED_BIT = 2;
 
-	private const int GEO_CONTROLLER_VENTED_BIT = 4;
+		private const int GEO_CONTROLLER_VENTED_BIT = 4;
 
-	private const int GEO_CLEARED_ENTOMBED_BIT = 8;
+		private const int GEO_CLEARED_ENTOMBED_BIT = 8;
 
-	private const int GEO_VICTORY_ACK_BIT = 16;
+		private const int GEO_VICTORY_ACK_BIT = 16;
 
-	private SchedulerHandle checkAchievementsHandle;
+		private SchedulerHandle checkAchievementsHandle;
 
-	private int forceCheckAchievementHandle = -1;
+		private int forceCheckAchievementHandle = -1;
 
-	[Serialize]
+		[Serialize]
 	private int updatingAchievement;
 
-	[Serialize]
+		[Serialize]
 	private List<string> completedAchievementsToDisplay = new List<string>();
 
-	private SchedulerHandle victorySchedulerHandle;
+		private SchedulerHandle victorySchedulerHandle;
 
-	public static readonly string UnlockedAchievementKey = "UnlockedAchievement";
+		public static readonly string UnlockedAchievementKey = "UnlockedAchievement";
 
-	private Dictionary<string, object> unlockedAchievementMetric = new Dictionary<string, object>
+		private Dictionary<string, object> unlockedAchievementMetric = new Dictionary<string, object>
 	{
 		{
 			ColonyAchievementTracker.UnlockedAchievementKey,
@@ -573,14 +573,14 @@ public class ColonyAchievementTracker : KMonoBehaviour, ISaveLoadableDetails, IR
 		}
 	};
 
-	private static readonly Tag[] SuitTags = new Tag[]
+		private static readonly Tag[] SuitTags = new Tag[]
 	{
 		GameTags.AtmoSuit,
 		GameTags.JetSuit,
 		GameTags.LeadSuit
 	};
 
-	private static readonly EventSystem.IntraObjectHandler<ColonyAchievementTracker> OnNewDayDelegate = new EventSystem.IntraObjectHandler<ColonyAchievementTracker>(delegate(ColonyAchievementTracker component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ColonyAchievementTracker> OnNewDayDelegate = new EventSystem.IntraObjectHandler<ColonyAchievementTracker>(delegate(ColonyAchievementTracker component, object data)
 	{
 		component.OnNewDay(data);
 	});

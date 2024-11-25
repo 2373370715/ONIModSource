@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class OxygenMask : KMonoBehaviour, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<OxygenMask>(608245985, OxygenMask.OnSuitTankDeltaDelegate);
 	}
 
-	private void CheckOxygenLevels(object data)
+		private void CheckOxygenLevels(object data)
 	{
 		if (this.suitTank.IsEmpty())
 		{
@@ -25,7 +25,7 @@ public class OxygenMask : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (base.GetComponent<Equippable>().assignee == null)
 		{
@@ -40,16 +40,16 @@ public class OxygenMask : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<OxygenMask> OnSuitTankDeltaDelegate = new EventSystem.IntraObjectHandler<OxygenMask>(delegate(OxygenMask component, object data)
+		private static readonly EventSystem.IntraObjectHandler<OxygenMask> OnSuitTankDeltaDelegate = new EventSystem.IntraObjectHandler<OxygenMask>(delegate(OxygenMask component, object data)
 	{
 		component.CheckOxygenLevels(data);
 	});
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private SuitTank suitTank;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	private float leakRate = 0.1f;
+		private float leakRate = 0.1f;
 }

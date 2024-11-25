@@ -1,9 +1,8 @@
 ﻿using System;
 using KSerialization;
-using RsTransferPort;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 
 public class TransferPortChannel : KMonoBehaviour, ISaveLoadable {
     public delegate void PriorityChangeDelegate(TransferPortChannel target, int newPriority, int oldPriority);

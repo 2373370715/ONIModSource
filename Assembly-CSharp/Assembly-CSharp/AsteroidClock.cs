@@ -4,16 +4,16 @@ using UnityEngine.UI;
 
 public class AsteroidClock : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		this.UpdateOverlay();
 	}
 
-	private void Start()
+		private void Start()
 	{
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (GameClock.Instance != null)
 		{
@@ -21,13 +21,13 @@ public class AsteroidClock : MonoBehaviour
 		}
 	}
 
-	private void UpdateOverlay()
+		private void UpdateOverlay()
 	{
 		float fillAmount = 0.125f;
 		this.NightOverlay.fillAmount = fillAmount;
 	}
 
-	public Transform rotationTransform;
+		public Transform rotationTransform;
 
-	public Image NightOverlay;
+		public Image NightOverlay;
 }

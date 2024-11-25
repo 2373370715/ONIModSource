@@ -7,9 +7,9 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/MinionAssignablesProxy")]
 public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 {
-			public IAssignableIdentity target { get; private set; }
+				public IAssignableIdentity target { get; private set; }
 
-		public bool IsConfigured
+			public bool IsConfigured
 	{
 		get
 		{
@@ -17,7 +17,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		}
 	}
 
-		public int TargetInstanceID
+			public int TargetInstanceID
 	{
 		get
 		{
@@ -25,7 +25,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		}
 	}
 
-	public GameObject GetTargetGameObject()
+		public GameObject GetTargetGameObject()
 	{
 		if (this.target == null && this.target_instance_id != -1)
 		{
@@ -39,7 +39,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		return null;
 	}
 
-	public float GetArrivalTime()
+		public float GetArrivalTime()
 	{
 		if (this.GetTargetGameObject().GetComponent<MinionIdentity>() != null)
 		{
@@ -53,7 +53,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		return -1f;
 	}
 
-	public int GetTotalSkillpoints()
+		public int GetTotalSkillpoints()
 	{
 		if (this.GetTargetGameObject().GetComponent<MinionIdentity>() != null)
 		{
@@ -67,7 +67,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		return -1;
 	}
 
-	public void SetTarget(IAssignableIdentity target, GameObject targetGO)
+		public void SetTarget(IAssignableIdentity target, GameObject targetGO)
 	{
 		global::Debug.Assert(target != null, "target was null");
 		if (targetGO == null)
@@ -86,7 +86,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		base.gameObject.name = "Minion Assignables Proxy : " + targetGO.name;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.ownables = new List<Ownables>
@@ -98,12 +98,12 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		this.ConfigureAssignableSlots();
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 	}
 
-	public void ConfigureAssignableSlots()
+		public void ConfigureAssignableSlots()
 	{
 		if (this.slotsConfigured)
 		{
@@ -130,7 +130,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		this.slotsConfigured = true;
 	}
 
-	public void RestoreTargetFromInstanceID()
+		public void RestoreTargetFromInstanceID()
 	{
 		if (this.target_instance_id != -1 && this.target == null)
 		{
@@ -161,7 +161,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.RestoreTargetFromInstanceID();
@@ -172,12 +172,12 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		}
 	}
 
-	private void OnQueueDestroyObject(object data)
+		private void OnQueueDestroyObject(object data)
 	{
 		Components.MinionAssignablesProxy.Remove(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Game.Instance.assignmentManager.RemoveFromAllGroups(this);
@@ -185,7 +185,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		base.GetComponent<Equipment>().UnequipAll();
 	}
 
-	private void OnAssignablesChanged(object data)
+		private void OnAssignablesChanged(object data)
 	{
 		if (!this.target.IsNull())
 		{
@@ -193,7 +193,7 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		}
 	}
 
-	private void CheckTarget()
+		private void CheckTarget()
 	{
 		if (this.target == null)
 		{
@@ -219,43 +219,43 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		}
 	}
 
-	public List<Ownables> GetOwners()
+		public List<Ownables> GetOwners()
 	{
 		this.CheckTarget();
 		return this.target.GetOwners();
 	}
 
-	public string GetProperName()
+		public string GetProperName()
 	{
 		this.CheckTarget();
 		return this.target.GetProperName();
 	}
 
-	public Ownables GetSoleOwner()
+		public Ownables GetSoleOwner()
 	{
 		this.CheckTarget();
 		return this.target.GetSoleOwner();
 	}
 
-	public bool HasOwner(Assignables owner)
+		public bool HasOwner(Assignables owner)
 	{
 		this.CheckTarget();
 		return this.target.HasOwner(owner);
 	}
 
-	public int NumOwners()
+		public int NumOwners()
 	{
 		this.CheckTarget();
 		return this.target.NumOwners();
 	}
 
-	public bool IsNull()
+		public bool IsNull()
 	{
 		this.CheckTarget();
 		return this.target.IsNull();
 	}
 
-	public static Ref<MinionAssignablesProxy> InitAssignableProxy(Ref<MinionAssignablesProxy> assignableProxyRef, IAssignableIdentity source)
+		public static Ref<MinionAssignablesProxy> InitAssignableProxy(Ref<MinionAssignablesProxy> assignableProxyRef, IAssignableIdentity source)
 	{
 		if (assignableProxyRef == null)
 		{
@@ -278,19 +278,19 @@ public class MinionAssignablesProxy : KMonoBehaviour, IAssignableIdentity
 		return assignableProxyRef;
 	}
 
-	public List<Ownables> ownables;
+		public List<Ownables> ownables;
 
-	[Serialize]
+		[Serialize]
 	private int target_instance_id = -1;
 
-	private bool slotsConfigured;
+		private bool slotsConfigured;
 
-	private static readonly EventSystem.IntraObjectHandler<MinionAssignablesProxy> OnAssignablesChangedDelegate = new EventSystem.IntraObjectHandler<MinionAssignablesProxy>(delegate(MinionAssignablesProxy component, object data)
+		private static readonly EventSystem.IntraObjectHandler<MinionAssignablesProxy> OnAssignablesChangedDelegate = new EventSystem.IntraObjectHandler<MinionAssignablesProxy>(delegate(MinionAssignablesProxy component, object data)
 	{
 		component.OnAssignablesChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<MinionAssignablesProxy> OnQueueDestroyObjectDelegate = new EventSystem.IntraObjectHandler<MinionAssignablesProxy>(delegate(MinionAssignablesProxy component, object data)
+		private static readonly EventSystem.IntraObjectHandler<MinionAssignablesProxy> OnQueueDestroyObjectDelegate = new EventSystem.IntraObjectHandler<MinionAssignablesProxy>(delegate(MinionAssignablesProxy component, object data)
 	{
 		component.OnQueueDestroyObject(data);
 	});

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace TemplateClasses
 {
-	[Serializable]
+		[Serializable]
 	public class Prefab
 	{
-		public Prefab()
+				public Prefab()
 		{
 			this.type = Prefab.Type.Other;
 		}
 
-		public Prefab(string _id, Prefab.Type _type, int loc_x, int loc_y, SimHashes _element, float _temperature = -1f, float _units = 1f, string _disease = null, int _disease_count = 0, Orientation _rotation = Orientation.Neutral, Prefab.template_amount_value[] _amount_values = null, Prefab.template_amount_value[] _other_values = null, int _connections = 0, string facadeIdId = null)
+				public Prefab(string _id, Prefab.Type _type, int loc_x, int loc_y, SimHashes _element, float _temperature = -1f, float _units = 1f, string _disease = null, int _disease_count = 0, Orientation _rotation = Orientation.Neutral, Prefab.template_amount_value[] _amount_values = null, Prefab.template_amount_value[] _other_values = null, int _connections = 0, string facadeIdId = null)
 		{
 			this.id = _id;
 			this.type = _type;
@@ -35,7 +35,7 @@ namespace TemplateClasses
 			}
 		}
 
-		public Prefab Clone(Vector2I offset)
+				public Prefab Clone(Vector2I offset)
 		{
 			Prefab prefab = new Prefab(this.id, this.type, offset.x + this.location_x, offset.y + this.location_y, this.element, this.temperature, this.units, this.diseaseName, this.diseaseCount, this.rotationOrientation, this.amounts, this.other_values, this.connections, this.facadeId);
 			if (this.rottable != null)
@@ -54,7 +54,7 @@ namespace TemplateClasses
 			return prefab;
 		}
 
-		public void AssignStorage(StorageItem _storage)
+				public void AssignStorage(StorageItem _storage)
 		{
 			if (this.storage == null)
 			{
@@ -63,62 +63,62 @@ namespace TemplateClasses
 			this.storage.Add(_storage);
 		}
 
-						public string id { get; set; }
+								public string id { get; set; }
 
-						public int location_x { get; set; }
+								public int location_x { get; set; }
 
-						public int location_y { get; set; }
+								public int location_y { get; set; }
 
-						public SimHashes element { get; set; }
+								public SimHashes element { get; set; }
 
-						public float temperature { get; set; }
+								public float temperature { get; set; }
 
-						public float units { get; set; }
+								public float units { get; set; }
 
-						public string diseaseName { get; set; }
+								public string diseaseName { get; set; }
 
-						public int diseaseCount { get; set; }
+								public int diseaseCount { get; set; }
 
-						public Orientation rotationOrientation { get; set; }
+								public Orientation rotationOrientation { get; set; }
 
-						public List<StorageItem> storage { get; set; }
+								public List<StorageItem> storage { get; set; }
 
-						public Prefab.Type type { get; set; }
+								public Prefab.Type type { get; set; }
 
-						public string facadeId { get; set; }
+								public string facadeId { get; set; }
 
-						public int connections { get; set; }
+								public int connections { get; set; }
 
-						public Rottable rottable { get; set; }
+								public Rottable rottable { get; set; }
 
-						public Prefab.template_amount_value[] amounts { get; set; }
+								public Prefab.template_amount_value[] amounts { get; set; }
 
-						public Prefab.template_amount_value[] other_values { get; set; }
+								public Prefab.template_amount_value[] other_values { get; set; }
 
-		public enum Type
+				public enum Type
 		{
-			Building,
-			Ore,
-			Pickupable,
-			Other
+						Building,
+						Ore,
+						Pickupable,
+						Other
 		}
 
-		[Serializable]
+				[Serializable]
 		public class template_amount_value
 		{
-			public template_amount_value()
+						public template_amount_value()
 			{
 			}
 
-			public template_amount_value(string id, float value)
+						public template_amount_value(string id, float value)
 			{
 				this.id = id;
 				this.value = value;
 			}
 
-									public string id { get; set; }
+												public string id { get; set; }
 
-									public float value { get; set; }
+												public float value { get; set; }
 		}
 	}
 }

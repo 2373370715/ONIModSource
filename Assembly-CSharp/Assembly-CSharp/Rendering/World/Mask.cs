@@ -3,19 +3,19 @@ using UnityEngine;
 
 namespace Rendering.World
 {
-	public struct Mask
+		public struct Mask
 	{
-						public Vector2 UV0 { readonly get; private set; }
+								public Vector2 UV0 { readonly get; private set; }
 
-						public Vector2 UV1 { readonly get; private set; }
+								public Vector2 UV1 { readonly get; private set; }
 
-						public Vector2 UV2 { readonly get; private set; }
+								public Vector2 UV2 { readonly get; private set; }
 
-						public Vector2 UV3 { readonly get; private set; }
+								public Vector2 UV3 { readonly get; private set; }
 
-						public bool IsOpaque { readonly get; private set; }
+								public bool IsOpaque { readonly get; private set; }
 
-		public Mask(TextureAtlas atlas, int texture_idx, bool transpose, bool flip_x, bool flip_y, bool is_opaque)
+				public Mask(TextureAtlas atlas, int texture_idx, bool transpose, bool flip_x, bool flip_y, bool is_opaque)
 		{
 			this = default(Mask);
 			this.atlas = atlas;
@@ -28,13 +28,13 @@ namespace Rendering.World
 			this.Refresh();
 		}
 
-		public void SetOffset(int offset)
+				public void SetOffset(int offset)
 		{
 			this.atlas_offset = offset;
 			this.Refresh();
 		}
 
-		public void Refresh()
+				public void Refresh()
 		{
 			int num = this.atlas_offset * 4 + this.atlas_offset;
 			if (num + this.texture_idx >= this.atlas.items.Length)
@@ -102,18 +102,18 @@ namespace Rendering.World
 			this.UV3 = zero4;
 		}
 
-		private TextureAtlas atlas;
+				private TextureAtlas atlas;
 
-		private int texture_idx;
+				private int texture_idx;
 
-		private bool transpose;
+				private bool transpose;
 
-		private bool flip_x;
+				private bool flip_x;
 
-		private bool flip_y;
+				private bool flip_y;
 
-		private int atlas_offset;
+				private int atlas_offset;
 
-		private const int TILES_PER_SET = 4;
+				private const int TILES_PER_SET = 4;
 	}
 }

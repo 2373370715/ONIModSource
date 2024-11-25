@@ -4,20 +4,20 @@ using UnityEngine;
 [Serializable]
 public class AnimEvent
 {
-			[SerializeField]
+				[SerializeField]
 	public string name { get; private set; }
 
-			[SerializeField]
+				[SerializeField]
 	public string file { get; private set; }
 
-			[SerializeField]
+				[SerializeField]
 	public int frame { get; private set; }
 
-	public AnimEvent()
+		public AnimEvent()
 	{
 	}
 
-	public AnimEvent(string file, string name, int frame)
+		public AnimEvent(string file, string name, int frame)
 	{
 		this.file = ((file == "") ? null : file);
 		if (this.file != null)
@@ -28,7 +28,7 @@ public class AnimEvent
 		this.frame = frame;
 	}
 
-	public void Play(AnimEventManager.EventPlayerData behaviour)
+		public void Play(AnimEventManager.EventPlayerData behaviour)
 	{
 		if (this.IsFilteredOut(behaviour))
 		{
@@ -48,29 +48,29 @@ public class AnimEvent
 		}
 	}
 
-	private void DebugAnimEvent(string ev_name, AnimEventManager.EventPlayerData behaviour)
+		private void DebugAnimEvent(string ev_name, AnimEventManager.EventPlayerData behaviour)
 	{
 	}
 
-	public virtual void OnPlay(AnimEventManager.EventPlayerData behaviour)
+		public virtual void OnPlay(AnimEventManager.EventPlayerData behaviour)
 	{
 	}
 
-	public virtual void OnUpdate(AnimEventManager.EventPlayerData behaviour)
+		public virtual void OnUpdate(AnimEventManager.EventPlayerData behaviour)
 	{
 	}
 
-	public virtual void Stop(AnimEventManager.EventPlayerData behaviour)
+		public virtual void Stop(AnimEventManager.EventPlayerData behaviour)
 	{
 	}
 
-	protected bool IsFilteredOut(AnimEventManager.EventPlayerData behaviour)
+		protected bool IsFilteredOut(AnimEventManager.EventPlayerData behaviour)
 	{
 		return this.file != null && !behaviour.controller.HasAnimationFile(this.fileHash);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KAnimHashedString fileHash;
 
-	public bool OnExit;
+		public bool OnExit;
 }

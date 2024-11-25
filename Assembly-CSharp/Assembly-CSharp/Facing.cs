@@ -5,19 +5,19 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Facing")]
 public class Facing : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.log = new LoggerFS("Facing", 35);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.UpdateMirror();
 	}
 
-	public void Face(float target_x)
+		public void Face(float target_x)
 	{
 		float x = base.transform.GetLocalPosition().x;
 		if (target_x < x)
@@ -31,7 +31,7 @@ public class Facing : KMonoBehaviour
 		}
 	}
 
-	public void Face(Vector3 target_pos)
+		public void Face(Vector3 target_pos)
 	{
 		int num = Grid.CellColumn(Grid.PosToCell(base.transform.GetLocalPosition()));
 		int num2 = Grid.CellColumn(Grid.PosToCell(target_pos));
@@ -46,13 +46,13 @@ public class Facing : KMonoBehaviour
 		}
 	}
 
-	[ContextMenu("Flip")]
+		[ContextMenu("Flip")]
 	public void SwapFacing()
 	{
 		this.SetFacing(!this.facingLeft);
 	}
 
-	private void UpdateMirror()
+		private void UpdateMirror()
 	{
 		if (this.kanimController != null && this.kanimController.FlipX != this.facingLeft)
 		{
@@ -61,18 +61,18 @@ public class Facing : KMonoBehaviour
 		}
 	}
 
-	public bool GetFacing()
+		public bool GetFacing()
 	{
 		return this.facingLeft;
 	}
 
-	public void SetFacing(bool mirror_x)
+		public void SetFacing(bool mirror_x)
 	{
 		this.facingLeft = mirror_x;
 		this.UpdateMirror();
 	}
 
-	public int GetFrontCell()
+		public int GetFrontCell()
 	{
 		int cell = Grid.PosToCell(this);
 		if (this.GetFacing())
@@ -82,7 +82,7 @@ public class Facing : KMonoBehaviour
 		return Grid.CellRight(cell);
 	}
 
-	public int GetBackCell()
+		public int GetBackCell()
 	{
 		int cell = Grid.PosToCell(this);
 		if (!this.GetFacing())
@@ -92,11 +92,11 @@ public class Facing : KMonoBehaviour
 		return Grid.CellRight(cell);
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KAnimControllerBase kanimController;
 
-	private LoggerFS log;
+		private LoggerFS log;
 
-	[Serialize]
+		[Serialize]
 	public bool facingLeft;
 }

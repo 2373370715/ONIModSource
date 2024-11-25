@@ -10,9 +10,9 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Battery")]
 public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGameObjectEffectDescriptor, IEnergyProducer
 {
-			public float WattsUsed { get; private set; }
+				public float WattsUsed { get; private set; }
 
-		public float WattsNeededWhenActive
+			public float WattsNeededWhenActive
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		}
 	}
 
-		public float PercentFull
+			public float PercentFull
 	{
 		get
 		{
@@ -28,7 +28,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		}
 	}
 
-		public float PreviousPercentFull
+			public float PreviousPercentFull
 	{
 		get
 		{
@@ -36,7 +36,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		}
 	}
 
-		public float JoulesAvailable
+			public float JoulesAvailable
 	{
 		get
 		{
@@ -44,7 +44,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		}
 	}
 
-		public float Capacity
+			public float Capacity
 	{
 		get
 		{
@@ -52,9 +52,9 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		}
 	}
 
-			public float ChargeCapacity { get; private set; }
+				public float ChargeCapacity { get; private set; }
 
-		public int PowerSortOrder
+			public int PowerSortOrder
 	{
 		get
 		{
@@ -62,7 +62,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		}
 	}
 
-		public string Name
+			public string Name
 	{
 		get
 		{
@@ -70,9 +70,9 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		}
 	}
 
-			public int PowerCell { get; private set; }
+				public int PowerCell { get; private set; }
 
-		public ushort CircuitID
+			public ushort CircuitID
 	{
 		get
 		{
@@ -80,7 +80,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		}
 	}
 
-		public bool IsConnected
+			public bool IsConnected
 	{
 		get
 		{
@@ -88,7 +88,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		}
 	}
 
-		public bool IsPowered
+			public bool IsPowered
 	{
 		get
 		{
@@ -96,11 +96,11 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		}
 	}
 
-			public bool IsVirtual { get; protected set; }
+				public bool IsVirtual { get; protected set; }
 
-			public object VirtualCircuitKey { get; protected set; }
+				public object VirtualCircuitKey { get; protected set; }
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.Batteries.Add(this);
@@ -119,19 +119,19 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		Game.Instance.energySim.AddBattery(this);
 	}
 
-	private void OnTagsChanged(object data)
+		private void OnTagsChanged(object data)
 	{
 		if (this.HasAllTags(this.connectedTags))
 		{
 			Game.Instance.circuitManager.Connect(this);
-			base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, Db.Get().BuildingStatusItems.JoulesAvailable, this);
+			base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, Db.Get().BuildingStatusItems.BatteryJoulesAvailable, this);
 			return;
 		}
 		Game.Instance.circuitManager.Disconnect(this, false);
-		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.JoulesAvailable, false);
+		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.BatteryJoulesAvailable, false);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.energySim.RemoveBattery(this);
 		Game.Instance.circuitManager.Disconnect(this, true);
@@ -139,7 +139,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		base.OnCleanUp();
 	}
 
-	public virtual void EnergySim200ms(float dt)
+		public virtual void EnergySim200ms(float dt)
 	{
 		this.dt = dt;
 		this.joulesConsumed = 0f;
@@ -155,7 +155,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		this.ConsumeEnergy(this.joulesLostPerSecond * dt, true);
 	}
 
-	private void UpdateSounds()
+		private void UpdateSounds()
 	{
 		float previousPercentFull = this.PreviousPercentFull;
 		float percentFull = this.PercentFull;
@@ -173,7 +173,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		}
 	}
 
-	public void SetConnectionStatus(CircuitManager.ConnectionStatus status)
+		public void SetConnectionStatus(CircuitManager.ConnectionStatus status)
 	{
 		this.connectionStatus = status;
 		if (status == CircuitManager.ConnectionStatus.NotConnected)
@@ -184,7 +184,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		this.operational.SetActive(this.operational.IsOperational && this.JoulesAvailable > 0f, false);
 	}
 
-	public void AddEnergy(float joules)
+		public void AddEnergy(float joules)
 	{
 		this.joulesAvailable = Mathf.Min(this.capacity, this.JoulesAvailable + joules);
 		this.joulesConsumed += joules;
@@ -192,7 +192,7 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		this.WattsUsed = this.joulesConsumed / this.dt;
 	}
 
-	public void ConsumeEnergy(float joules, bool report = false)
+		public void ConsumeEnergy(float joules, bool report = false)
 	{
 		if (report)
 		{
@@ -202,12 +202,12 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		this.joulesAvailable = Mathf.Max(0f, this.JoulesAvailable - joules);
 	}
 
-	public void ConsumeEnergy(float joules)
+		public void ConsumeEnergy(float joules)
 	{
 		this.ConsumeEnergy(joules, false);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.powerTransformer == null)
@@ -224,52 +224,52 @@ public class Battery : KMonoBehaviour, IEnergyConsumer, ICircuitConnected, IGame
 		return list;
 	}
 
-	[ContextMenu("Refill Power")]
+		[ContextMenu("Refill Power")]
 	public void DEBUG_RefillPower()
 	{
 		this.joulesAvailable = this.capacity;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public float capacity;
 
-	[SerializeField]
+		[SerializeField]
 	public float chargeWattage = float.PositiveInfinity;
 
-	[Serialize]
+		[Serialize]
 	private float joulesAvailable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	protected Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public PowerTransformer powerTransformer;
 
-	protected MeterController meter;
+		protected MeterController meter;
 
-	public float joulesLostPerSecond;
+		public float joulesLostPerSecond;
 
-	[SerializeField]
+		[SerializeField]
 	public int powerSortOrder;
 
-	private float PreviousJoulesAvailable;
+		private float PreviousJoulesAvailable;
 
-	private CircuitManager.ConnectionStatus connectionStatus;
+		private CircuitManager.ConnectionStatus connectionStatus;
 
-	public static readonly Tag[] DEFAULT_CONNECTED_TAGS = new Tag[]
+		public static readonly Tag[] DEFAULT_CONNECTED_TAGS = new Tag[]
 	{
 		GameTags.Operational
 	};
 
-	[SerializeField]
+		[SerializeField]
 	public Tag[] connectedTags = Battery.DEFAULT_CONNECTED_TAGS;
 
-	private static readonly EventSystem.IntraObjectHandler<Battery> OnTagsChangedDelegate = new EventSystem.IntraObjectHandler<Battery>(delegate(Battery component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Battery> OnTagsChangedDelegate = new EventSystem.IntraObjectHandler<Battery>(delegate(Battery component, object data)
 	{
 		component.OnTagsChanged(data);
 	});
 
-	private float dt;
+		private float dt;
 
-	private float joulesConsumed;
+		private float joulesConsumed;
 }

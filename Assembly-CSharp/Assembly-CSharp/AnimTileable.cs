@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/AnimTileable")]
 public class AnimTileable : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (this.tags == null || this.tags.Length == 0)
@@ -17,7 +17,7 @@ public class AnimTileable : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		OccupyArea component = base.GetComponent<OccupyArea>();
 		if (component != null)
@@ -34,13 +34,13 @@ public class AnimTileable : KMonoBehaviour
 		this.UpdateEndCaps();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		base.OnCleanUp();
 	}
 
-	private void UpdateEndCaps()
+		private void UpdateEndCaps()
 	{
 		int cell = Grid.PosToCell(this);
 		bool is_visible = true;
@@ -103,7 +103,7 @@ public class AnimTileable : KMonoBehaviour
 		}
 	}
 
-	private bool HasTileableNeighbour(int neighbour_cell)
+		private bool HasTileableNeighbour(int neighbour_cell)
 	{
 		bool result = false;
 		GameObject gameObject = Grid.Objects[neighbour_cell, (int)this.objectLayer];
@@ -118,7 +118,7 @@ public class AnimTileable : KMonoBehaviour
 		return result;
 	}
 
-	private void OnNeighbourCellsUpdated(object data)
+		private void OnNeighbourCellsUpdated(object data)
 	{
 		if (this == null || base.gameObject == null)
 		{
@@ -130,36 +130,36 @@ public class AnimTileable : KMonoBehaviour
 		}
 	}
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	public ObjectLayer objectLayer = ObjectLayer.Building;
+		public ObjectLayer objectLayer = ObjectLayer.Building;
 
-	public Tag[] tags;
+		public Tag[] tags;
 
-	private Extents extents;
+		private Extents extents;
 
-	private static readonly KAnimHashedString[] leftSymbols = new KAnimHashedString[]
+		private static readonly KAnimHashedString[] leftSymbols = new KAnimHashedString[]
 	{
 		new KAnimHashedString("cap_left"),
 		new KAnimHashedString("cap_left_fg"),
 		new KAnimHashedString("cap_left_place")
 	};
 
-	private static readonly KAnimHashedString[] rightSymbols = new KAnimHashedString[]
+		private static readonly KAnimHashedString[] rightSymbols = new KAnimHashedString[]
 	{
 		new KAnimHashedString("cap_right"),
 		new KAnimHashedString("cap_right_fg"),
 		new KAnimHashedString("cap_right_place")
 	};
 
-	private static readonly KAnimHashedString[] topSymbols = new KAnimHashedString[]
+		private static readonly KAnimHashedString[] topSymbols = new KAnimHashedString[]
 	{
 		new KAnimHashedString("cap_top"),
 		new KAnimHashedString("cap_top_fg"),
 		new KAnimHashedString("cap_top_place")
 	};
 
-	private static readonly KAnimHashedString[] bottomSymbols = new KAnimHashedString[]
+		private static readonly KAnimHashedString[] bottomSymbols = new KAnimHashedString[]
 	{
 		new KAnimHashedString("cap_bottom"),
 		new KAnimHashedString("cap_bottom_fg"),

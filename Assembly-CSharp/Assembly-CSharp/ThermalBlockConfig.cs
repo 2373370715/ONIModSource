@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ThermalBlockConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ThermalBlock";
 		int width = 1;
@@ -42,14 +42,14 @@ public class ThermalBlockConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<AnimTileable>().objectLayer = ObjectLayer.Backwall;
 		go.AddComponent<ZoneTile>();
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		KPrefabID component = go.GetComponent<KPrefabID>();
 		component.AddTag(GameTags.Backwall, false);
@@ -63,9 +63,9 @@ public class ThermalBlockConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "ThermalBlock";
+		public const string ID = "ThermalBlock";
 
-	private static readonly CellOffset[] overrideOffsets = new CellOffset[]
+		private static readonly CellOffset[] overrideOffsets = new CellOffset[]
 	{
 		new CellOffset(-1, -1),
 		new CellOffset(1, -1),

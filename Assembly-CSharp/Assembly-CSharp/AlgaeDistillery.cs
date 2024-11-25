@@ -5,36 +5,36 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class AlgaeDistillery : StateMachineComponent<AlgaeDistillery.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public Tag emitTag;
 
-	[SerializeField]
+		[SerializeField]
 	public float emitMass;
 
-	[SerializeField]
+		[SerializeField]
 	public Vector3 emitOffset;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ElementConverter emitter;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	public class StatesInstance : GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery, object>.GameInstance
+		public class StatesInstance : GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery, object>.GameInstance
 	{
-		public StatesInstance(AlgaeDistillery smi) : base(smi)
+				public StatesInstance(AlgaeDistillery smi) : base(smi)
 		{
 		}
 
-		public void TryEmit()
+				public void TryEmit()
 		{
 			Storage storage = base.smi.master.storage;
 			GameObject gameObject = storage.FindFirst(base.smi.master.emitTag);
@@ -45,9 +45,9 @@ public class AlgaeDistillery : StateMachineComponent<AlgaeDistillery.StatesInsta
 		}
 	}
 
-	public class States : GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery>
+		public class States : GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.disabled;
 			this.root.EventTransition(GameHashes.OperationalChanged, this.disabled, (AlgaeDistillery.StatesInstance smi) => !smi.master.operational.IsOperational);
@@ -65,12 +65,12 @@ public class AlgaeDistillery : StateMachineComponent<AlgaeDistillery.StatesInsta
 			});
 		}
 
-		public GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery, object>.State disabled;
+				public GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery, object>.State disabled;
 
-		public GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery, object>.State waiting;
+				public GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery, object>.State waiting;
 
-		public GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery, object>.State converting;
+				public GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery, object>.State converting;
 
-		public GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery, object>.State overpressure;
+				public GameStateMachine<AlgaeDistillery.States, AlgaeDistillery.StatesInstance, AlgaeDistillery, object>.State overpressure;
 	}
 }

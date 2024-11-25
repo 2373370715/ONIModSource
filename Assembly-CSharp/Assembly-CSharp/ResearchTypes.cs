@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ResearchTypes
 {
-	public ResearchTypes()
+		public ResearchTypes()
 	{
 		ResearchType item = new ResearchType("basic", RESEARCH.TYPES.ALPHA.NAME, RESEARCH.TYPES.ALPHA.DESC, Assets.GetSprite("research_type_alpha_icon"), new Color(0.59607846f, 0.6666667f, 0.9137255f), new Recipe.Ingredient[]
 		{
@@ -41,7 +41,7 @@ public class ResearchTypes
 		this.Types.Add(item5);
 	}
 
-	public ResearchType GetResearchType(string id)
+		public ResearchType GetResearchType(string id)
 	{
 		foreach (ResearchType researchType in this.Types)
 		{
@@ -54,18 +54,18 @@ public class ResearchTypes
 		return null;
 	}
 
-	public List<ResearchType> Types = new List<ResearchType>();
+		public List<ResearchType> Types = new List<ResearchType>();
 
-	public class ID
+		public class ID
 	{
-		public const string BASIC = "basic";
+				public const string BASIC = "basic";
 
-		public const string ADVANCED = "advanced";
+				public const string ADVANCED = "advanced";
 
-		public const string SPACE = "space";
+				public const string SPACE = "space";
 
-		public const string NUCLEAR = "nuclear";
+				public const string NUCLEAR = "nuclear";
 
-		public const string ORBITAL = "orbital";
+				public const string ORBITAL = "orbital";
 	}
 }

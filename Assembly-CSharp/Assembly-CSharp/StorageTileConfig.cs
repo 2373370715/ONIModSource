@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StorageTileConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "StorageTile";
 		int width = 1;
@@ -40,12 +40,12 @@ public class StorageTileConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		SimCellOccupier simCellOccupier = go.AddOrGet<SimCellOccupier>();
-		simCellOccupier.movementSpeedMultiplier = DUPLICANTSTATS.MOVEMENT.PENALTY_2;
+		simCellOccupier.movementSpeedMultiplier = DUPLICANTSTATS.MOVEMENT_MODIFIERS.PENALTY_2;
 		simCellOccupier.notifyOnMelt = true;
 		Storage storage = go.AddOrGet<Storage>();
 		storage.SetDefaultStoredItemModifiers(StorageTileConfig.StoredItemModifiers);
@@ -75,19 +75,19 @@ public class StorageTileConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>().restrictOperational = false;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
 		go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles, false);
 	}
 
-	public const string ANIM_NAME = "storagetile_kanim";
+		public const string ANIM_NAME = "storagetile_kanim";
 
-	public const string ID = "StorageTile";
+		public const string ID = "StorageTile";
 
-	public static float CAPACITY = 1000f;
+		public static float CAPACITY = 1000f;
 
-	private static readonly List<Storage.StoredItemModifier> StoredItemModifiers = new List<Storage.StoredItemModifier>
+		private static readonly List<Storage.StoredItemModifier> StoredItemModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Insulate,
 		Storage.StoredItemModifier.Seal,

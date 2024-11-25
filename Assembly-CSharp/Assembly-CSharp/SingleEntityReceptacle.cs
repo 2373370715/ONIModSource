@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/SingleEntityReceptacle")]
 public class SingleEntityReceptacle : Workable, IRender1000ms
 {
-		public FetchChore GetActiveRequest
+			public FetchChore GetActiveRequest
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 	}
 
-			protected GameObject occupyingObject
+				protected GameObject occupyingObject
 	{
 		get
 		{
@@ -35,7 +35,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 	}
 
-		public GameObject Occupant
+			public GameObject Occupant
 	{
 		get
 		{
@@ -43,7 +43,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 	}
 
-		public IReadOnlyList<Tag> possibleDepositObjectTags
+			public IReadOnlyList<Tag> possibleDepositObjectTags
 	{
 		get
 		{
@@ -51,12 +51,12 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 	}
 
-	public bool HasDepositTag(Tag tag)
+		public bool HasDepositTag(Tag tag)
 	{
 		return this.possibleDepositTagsList.Contains(tag);
 	}
 
-	public bool IsValidEntity(GameObject candidate)
+		public bool IsValidEntity(GameObject candidate)
 	{
 		KPrefabID component = candidate.GetComponent<KPrefabID>();
 		if (!SaveLoader.Instance.IsDlcListActiveForCurrentSave(component.requiredDlcIds))
@@ -74,7 +74,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		return flag;
 	}
 
-		public SingleEntityReceptacle.ReceptacleDirection Direction
+			public SingleEntityReceptacle.ReceptacleDirection Direction
 	{
 		get
 		{
@@ -82,12 +82,12 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.occupyingObject != null)
@@ -107,26 +107,26 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		base.Subscribe<SingleEntityReceptacle>(-592767678, SingleEntityReceptacle.OnOperationalChangedDelegate);
 	}
 
-	public void AddDepositTag(Tag t)
+		public void AddDepositTag(Tag t)
 	{
 		this.possibleDepositTagsList.Add(t);
 	}
 
-	public void AddAdditionalCriteria(Func<GameObject, bool> criteria)
+		public void AddAdditionalCriteria(Func<GameObject, bool> criteria)
 	{
 		this.additionalCriteria.Add(criteria);
 	}
 
-	public void SetReceptacleDirection(SingleEntityReceptacle.ReceptacleDirection d)
+		public void SetReceptacleDirection(SingleEntityReceptacle.ReceptacleDirection d)
 	{
 		this.direction = d;
 	}
 
-	public virtual void SetPreview(Tag entityTag, bool solid = false)
+		public virtual void SetPreview(Tag entityTag, bool solid = false)
 	{
 	}
 
-	public virtual void CreateOrder(Tag entityTag, Tag additionalFilterTag)
+		public virtual void CreateOrder(Tag entityTag, Tag additionalFilterTag)
 	{
 		this.requestedEntityTag = entityTag;
 		this.requestedEntityAdditionalFilterTag = additionalFilterTag;
@@ -135,12 +135,12 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		this.UpdateStatusItem();
 	}
 
-	public void Render1000ms(float dt)
+		public void Render1000ms(float dt)
 	{
 		this.UpdateStatusItem();
 	}
 
-	protected virtual void UpdateStatusItem()
+		protected virtual void UpdateStatusItem()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		if (this.Occupant != null)
@@ -178,7 +178,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		component.SetStatusItem(Db.Get().StatusItemCategories.EntityReceptacle, this.statusItemNoneAvailable, null);
 	}
 
-	protected void CreateFetchChore(Tag entityTag, Tag additionalRequiredTag)
+		protected void CreateFetchChore(Tag entityTag, Tag additionalRequiredTag)
 	{
 		if (this.fetchChore == null && entityTag.IsValid && entityTag != GameTags.Empty)
 		{
@@ -197,12 +197,12 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 	}
 
-	public virtual void OrderRemoveOccupant()
+		public virtual void OrderRemoveOccupant()
 	{
 		this.ClearOccupant();
 	}
 
-	protected virtual void ClearOccupant()
+		protected virtual void ClearOccupant()
 	{
 		if (this.occupyingObject)
 		{
@@ -215,7 +215,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		base.Trigger(-731304873, this.occupyingObject);
 	}
 
-	public void CancelActiveRequest()
+		public void CancelActiveRequest()
 	{
 		if (this.fetchChore != null)
 		{
@@ -229,7 +229,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		this.SetPreview(Tag.Invalid, false);
 	}
 
-	private void OnOccupantDestroyed(object data)
+		private void OnOccupantDestroyed(object data)
 	{
 		this.occupyingObject = null;
 		this.ClearOccupant();
@@ -239,7 +239,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 	}
 
-	protected virtual void SubscribeToOccupant()
+		protected virtual void SubscribeToOccupant()
 	{
 		if (this.occupyingObject != null)
 		{
@@ -247,7 +247,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 	}
 
-	protected virtual void UnsubscribeFromOccupant()
+		protected virtual void UnsubscribeFromOccupant()
 	{
 		if (this.occupyingObject != null)
 		{
@@ -255,7 +255,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 	}
 
-	private void OnFetchComplete(Chore chore)
+		private void OnFetchComplete(Chore chore)
 	{
 		if (this.fetchChore == null)
 		{
@@ -276,7 +276,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		this.OnDepositObject(this.fetchChore.fetchTarget.gameObject);
 	}
 
-	public void ForceDeposit(GameObject depositedObject)
+		public void ForceDeposit(GameObject depositedObject)
 	{
 		if (this.occupyingObject != null)
 		{
@@ -285,7 +285,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		this.OnDepositObject(depositedObject);
 	}
 
-	private void OnDepositObject(GameObject depositedObject)
+		private void OnDepositObject(GameObject depositedObject)
 	{
 		this.SetPreview(Tag.Invalid, false);
 		MaterialNeeds.UpdateNeed(this.requestedEntityTag, -1f, base.gameObject.GetMyWorldId());
@@ -325,16 +325,16 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		base.Trigger(-731304873, this.occupyingObject);
 	}
 
-	protected virtual GameObject SpawnOccupyingObject(GameObject depositedEntity)
+		protected virtual GameObject SpawnOccupyingObject(GameObject depositedEntity)
 	{
 		return depositedEntity;
 	}
 
-	protected virtual void ConfigureOccupyingObject(GameObject source)
+		protected virtual void ConfigureOccupyingObject(GameObject source)
 	{
 	}
 
-	protected virtual void PositionOccupyingObject()
+		protected virtual void PositionOccupyingObject()
 	{
 		if (this.rotatable != null)
 		{
@@ -349,7 +349,7 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		component.enabled = true;
 	}
 
-	protected void UpdateActive()
+		protected void UpdateActive()
 	{
 		if (this.Equals(null) || this == null || base.gameObject.Equals(null) || base.gameObject == null)
 		{
@@ -361,14 +361,14 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.CancelActiveRequest();
 		this.UnsubscribeFromOccupant();
 		base.OnCleanUp();
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		this.UpdateActive();
 		if (this.occupyingObject)
@@ -377,60 +377,60 @@ public class SingleEntityReceptacle : Workable, IRender1000ms
 		}
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	protected Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	protected Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public Rotatable rotatable;
 
-	protected FetchChore fetchChore;
+		protected FetchChore fetchChore;
 
-	public ChoreType choreType = Db.Get().ChoreTypes.Fetch;
+		public ChoreType choreType = Db.Get().ChoreTypes.Fetch;
 
-	[Serialize]
+		[Serialize]
 	public bool autoReplaceEntity;
 
-	[Serialize]
+		[Serialize]
 	public Tag requestedEntityTag;
 
-	[Serialize]
+		[Serialize]
 	public Tag requestedEntityAdditionalFilterTag;
 
-	[Serialize]
+		[Serialize]
 	protected Ref<KSelectable> occupyObjectRef = new Ref<KSelectable>();
 
-	[SerializeField]
+		[SerializeField]
 	private List<Tag> possibleDepositTagsList = new List<Tag>();
 
-	[SerializeField]
+		[SerializeField]
 	private List<Func<GameObject, bool>> additionalCriteria = new List<Func<GameObject, bool>>();
 
-	[SerializeField]
+		[SerializeField]
 	protected bool destroyEntityOnDeposit;
 
-	[SerializeField]
+		[SerializeField]
 	protected SingleEntityReceptacle.ReceptacleDirection direction;
 
-	public Vector3 occupyingObjectRelativePosition = new Vector3(0f, 1f, 3f);
+		public Vector3 occupyingObjectRelativePosition = new Vector3(0f, 1f, 3f);
 
-	protected StatusItem statusItemAwaitingDelivery;
+		protected StatusItem statusItemAwaitingDelivery;
 
-	protected StatusItem statusItemNeed;
+		protected StatusItem statusItemNeed;
 
-	protected StatusItem statusItemNoneAvailable;
+		protected StatusItem statusItemNoneAvailable;
 
-	private static readonly EventSystem.IntraObjectHandler<SingleEntityReceptacle> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<SingleEntityReceptacle>(delegate(SingleEntityReceptacle component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SingleEntityReceptacle> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<SingleEntityReceptacle>(delegate(SingleEntityReceptacle component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});
 
-	public enum ReceptacleDirection
+		public enum ReceptacleDirection
 	{
-		Top,
-		Side,
-		Bottom
+				Top,
+				Side,
+				Bottom
 	}
 }

@@ -1,19 +1,20 @@
 ﻿using System;
 using Klei.AI;
+using TUNING;
 
 public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance>
 {
-	public static float GetExternalColdThreshold(Attributes affected_attributes)
+		public static float GetExternalColdThreshold(Attributes affected_attributes)
 	{
 		return -0.039f;
 	}
 
-	public static float GetExternalWarmThreshold(Attributes affected_attributes)
+		public static float GetExternalWarmThreshold(Attributes affected_attributes)
 	{
 		return 0.008f;
 	}
 
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.comfortable;
 		this.comfortable.Transition(this.transitionToTooWarm, (ExternalTemperatureMonitor.Instance smi) => smi.IsTooHot() && smi.timeinstate > 6f, UpdateRate.SIM_200ms).Transition(this.transitionToTooCool, (ExternalTemperatureMonitor.Instance smi) => smi.IsTooCold() && smi.timeinstate > 6f, UpdateRate.SIM_200ms);
@@ -29,31 +30,31 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 		});
 	}
 
-	public GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.State comfortable;
+		public GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.State comfortable;
 
-	public GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.State transitionToTooWarm;
+		public GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.State transitionToTooWarm;
 
-	public GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.State tooWarm;
+		public GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.State tooWarm;
 
-	public GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.State transitionToTooCool;
+		public GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.State transitionToTooCool;
 
-	public GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.State tooCool;
+		public GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.State tooCool;
 
-	private const float BODY_TEMPERATURE_AFFECT_EXTERNAL_FEEL_THRESHOLD = 0.5f;
+		private const float BODY_TEMPERATURE_AFFECT_EXTERNAL_FEEL_THRESHOLD = 0.5f;
 
-	public const float BASE_STRESS_TOLERANCE_COLD = 0.11157334f;
+		public static readonly float BASE_STRESS_TOLERANCE_COLD = DUPLICANTSTATS.STANDARD.BaseStats.DUPLICANT_WARMING_KILOWATTS * 0.2f;
 
-	public const float BASE_STRESS_TOLERANCE_WARM = 0.11157334f;
+		public static readonly float BASE_STRESS_TOLERANCE_WARM = DUPLICANTSTATS.STANDARD.BaseStats.DUPLICANT_COOLING_KILOWATTS * 0.2f;
 
-	private const float START_GAME_AVERAGING_DELAY = 6f;
+		private const float START_GAME_AVERAGING_DELAY = 6f;
 
-	private const float TRANSITION_TO_DELAY = 1f;
+		private const float TRANSITION_TO_DELAY = 1f;
 
-	private const float TRANSITION_OUT_DELAY = 6f;
+		private const float TRANSITION_OUT_DELAY = 6f;
 
-	public new class Instance : GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<ExternalTemperatureMonitor, ExternalTemperatureMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-				public float GetCurrentColdThreshold
+						public float GetCurrentColdThreshold
 		{
 			get
 			{
@@ -65,7 +66,7 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 			}
 		}
 
-				public float GetCurrentHotThreshold
+						public float GetCurrentHotThreshold
 		{
 			get
 			{
@@ -73,7 +74,7 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 			}
 		}
 
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.attributes = base.gameObject.GetAttributes();
 			this.internalTemperatureMonitor = base.gameObject.GetSMI<TemperatureMonitor.Instance>();
@@ -84,34 +85,47 @@ public class ExternalTemperatureMonitor : GameStateMachine<ExternalTemperatureMo
 			this.traits = base.gameObject.GetComponent<Traits>();
 		}
 
-		public bool IsTooHot()
+				public bool IsTooHot()
 		{
 			return !this.effects.HasEffect("RefreshingTouch") && !this.effects.HasImmunityTo(this.warmAirEffect) && this.temperatureTransferer.LastTemperatureRecordIsReliable && base.smi.temperatureTransferer.average_kilowatts_exchanged.GetUnweightedAverage > ExternalTemperatureMonitor.GetExternalWarmThreshold(base.smi.attributes);
 		}
 
-		public bool IsTooCold()
+				public bool IsTooCold()
 		{
-			return !this.effects.HasEffect("WarmTouch") && !this.effects.HasImmunityTo(this.coldAirEffect) && (!(this.traits != null) || !this.traits.IsEffectIgnored(this.coldAirEffect)) && !WarmthProvider.IsWarmCell(Grid.PosToCell(this)) && this.temperatureTransferer.LastTemperatureRecordIsReliable && base.smi.temperatureTransferer.average_kilowatts_exchanged.GetUnweightedAverage < ExternalTemperatureMonitor.GetExternalColdThreshold(base.smi.attributes);
+			for (int i = 0; i < this.immunityToColdEffects.Length; i++)
+			{
+				if (this.effects.HasEffect(this.immunityToColdEffects[i]))
+				{
+					return false;
+				}
+			}
+			return !this.effects.HasImmunityTo(this.coldAirEffect) && (!(this.traits != null) || !this.traits.IsEffectIgnored(this.coldAirEffect)) && !WarmthProvider.IsWarmCell(Grid.PosToCell(this)) && this.temperatureTransferer.LastTemperatureRecordIsReliable && base.smi.temperatureTransferer.average_kilowatts_exchanged.GetUnweightedAverage < ExternalTemperatureMonitor.GetExternalColdThreshold(base.smi.attributes);
 		}
 
-		public float HotThreshold = 306.15f;
+				public float HotThreshold = 306.15f;
 
-		public Effects effects;
+				public Effects effects;
 
-		public Traits traits;
+				public Traits traits;
 
-		public Attributes attributes;
+				public Attributes attributes;
 
-		public AmountInstance internalTemperature;
+				public AmountInstance internalTemperature;
 
-		private TemperatureMonitor.Instance internalTemperatureMonitor;
+				private TemperatureMonitor.Instance internalTemperatureMonitor;
 
-		public CreatureSimTemperatureTransfer temperatureTransferer;
+				public CreatureSimTemperatureTransfer temperatureTransferer;
 
-		public PrimaryElement primaryElement;
+				public PrimaryElement primaryElement;
 
-		private Effect warmAirEffect = Db.Get().effects.Get("WarmAir");
+				private Effect warmAirEffect = Db.Get().effects.Get("WarmAir");
 
-		private Effect coldAirEffect = Db.Get().effects.Get("ColdAir");
+				private Effect coldAirEffect = Db.Get().effects.Get("ColdAir");
+
+				private Effect[] immunityToColdEffects = new Effect[]
+		{
+			Db.Get().effects.Get("WarmTouch"),
+			Db.Get().effects.Get("WarmTouchFood")
+		};
 	}
 }

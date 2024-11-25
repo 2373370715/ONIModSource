@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/BuildingCellVisualizer")]
 public class BuildingCellVisualizer : EntityCellVisualizer
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void LoadDiseaseIcon()
+		protected override void LoadDiseaseIcon()
 	{
 		DiseaseVisualization.Info info = Assets.instance.DiseaseVisualization.GetInfo(this.building.Def.DiseaseCellVisName);
 		if (info.name != null)
@@ -20,7 +20,7 @@ public class BuildingCellVisualizer : EntityCellVisualizer
 		}
 	}
 
-	protected override void DefinePorts()
+		protected override void DefinePorts()
 	{
 		BuildingDef def = this.building.Def;
 		if (def.CheckRequiresPowerInput())
@@ -133,12 +133,12 @@ public class BuildingCellVisualizer : EntityCellVisualizer
 		}
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		this.enableRaycast = (this.building as BuildingComplete != null);
 		base.OnCmpEnable();
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 }

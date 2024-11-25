@@ -2,6 +2,6 @@
 
 public enum ThresholdScreenLayoutType
 {
-	SliderBar,
-	InputField
+		SliderBar,
+		InputField
 }

@@ -3,12 +3,12 @@ using Database;
 
 public class Blueprints_DlcPack2 : BlueprintProvider
 {
-	public override string[] GetDlcIds()
+		public override string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public override void SetupBlueprints()
+		public override void SetupBlueprints()
 	{
 		base.AddBuilding("Headquarters", PermitRarity.Universal, "permit_headquarters_ceres", "hqbase_ice_kanim");
 		base.AddBuilding("Bed", PermitRarity.Universal, "permit_bed_jorge", "bed_jorge_kanim");

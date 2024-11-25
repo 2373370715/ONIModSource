@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Deconstructable")]
 public class Deconstructable : Workable
 {
-		private CellOffset[] placementOffsets
+			private CellOffset[] placementOffsets
 	{
 		get
 		{
@@ -44,7 +44,7 @@ public class Deconstructable : Workable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.faceTargetWhenWorking = true;
@@ -73,7 +73,7 @@ public class Deconstructable : Workable
 		base.SetWorkTime(30f);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		CellOffset[] filter = null;
@@ -102,14 +102,14 @@ public class Deconstructable : Workable
 		this.reconstructable = base.GetComponent<Reconstructable>();
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		this.progressBar.barColor = ProgressBarsConfig.Instance.GetBarColor("DeconstructBar");
 		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.PendingDeconstruction, false);
 		base.Trigger(1830962028, this);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.Trigger(-702296337, this);
 		if (this.reconstructable != null)
@@ -158,7 +158,7 @@ public class Deconstructable : Workable
 		}
 	}
 
-		public bool HasBeenDestroyed
+			public bool HasBeenDestroyed
 	{
 		get
 		{
@@ -166,7 +166,7 @@ public class Deconstructable : Workable
 		}
 	}
 
-	public List<GameObject> ForceDestroyAndGetMaterials()
+		public List<GameObject> ForceDestroyAndGetMaterials()
 	{
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
 		float temperature = component.Temperature;
@@ -175,11 +175,19 @@ public class Deconstructable : Workable
 		return this.TriggerDestroy(temperature, diseaseIdx, diseaseCount);
 	}
 
-	private List<GameObject> TriggerDestroy(float temperature, byte disease_idx, int disease_count, Worker tile_worker)
+		private List<GameObject> TriggerDestroy(float temperature, byte disease_idx, int disease_count, WorkerBase tile_worker)
 	{
 		if (this == null || this.destroyed)
 		{
 			return null;
+		}
+		if (base.transform.parent != null)
+		{
+			Storage component = base.transform.parent.GetComponent<Storage>();
+			if (component != null)
+			{
+				component.Remove(base.gameObject, true);
+			}
 		}
 		List<GameObject> result = this.SpawnItemsFromConstruction(temperature, disease_idx, disease_count, tile_worker);
 		this.destroyed = true;
@@ -187,12 +195,12 @@ public class Deconstructable : Workable
 		return result;
 	}
 
-	private List<GameObject> TriggerDestroy(float temperature, byte disease_idx, int disease_count)
+		private List<GameObject> TriggerDestroy(float temperature, byte disease_idx, int disease_count)
 	{
 		return this.TriggerDestroy(temperature, disease_idx, disease_count, base.worker);
 	}
 
-	public void QueueDeconstruction(bool userTriggered)
+		public void QueueDeconstruction(bool userTriggered)
 	{
 		if (userTriggered && DebugHandler.InstantBuildMode)
 		{
@@ -218,12 +226,12 @@ public class Deconstructable : Workable
 		}
 	}
 
-	private void QueueDeconstruction()
+		private void QueueDeconstruction()
 	{
 		this.QueueDeconstruction(true);
 	}
 
-	private void OnDeconstruct()
+		private void OnDeconstruct()
 	{
 		if (this.chore == null)
 		{
@@ -233,12 +241,12 @@ public class Deconstructable : Workable
 		this.CancelDeconstruction();
 	}
 
-	public bool IsMarkedForDeconstruction()
+		public bool IsMarkedForDeconstruction()
 	{
 		return this.chore != null;
 	}
 
-	public void SetAllowDeconstruction(bool allow)
+		public void SetAllowDeconstruction(bool allow)
 	{
 		this.allowDeconstruction = allow;
 		if (!this.allowDeconstruction)
@@ -247,7 +255,7 @@ public class Deconstructable : Workable
 		}
 	}
 
-	public void SpawnItemsFromConstruction(Worker chore_worker)
+		public void SpawnItemsFromConstruction(WorkerBase chore_worker)
 	{
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
 		float temperature = component.Temperature;
@@ -256,7 +264,7 @@ public class Deconstructable : Workable
 		this.SpawnItemsFromConstruction(temperature, diseaseIdx, diseaseCount, chore_worker);
 	}
 
-	private List<GameObject> SpawnItemsFromConstruction(float temperature, byte disease_idx, int disease_count, Worker construction_worker)
+		private List<GameObject> SpawnItemsFromConstruction(float temperature, byte disease_idx, int disease_count, WorkerBase construction_worker)
 	{
 		List<GameObject> list = new List<GameObject>();
 		if (!this.allowDeconstruction)
@@ -302,7 +310,7 @@ public class Deconstructable : Workable
 		return list;
 	}
 
-	public GameObject SpawnItem(Vector3 position, Tag src_element, float src_mass, float src_temperature, byte disease_idx, int disease_count, Worker chore_worker)
+		public GameObject SpawnItem(Vector3 position, Tag src_element, float src_mass, float src_temperature, byte disease_idx, int disease_count, WorkerBase chore_worker)
 	{
 		GameObject gameObject = null;
 		int cell = Grid.PosToCell(position);
@@ -343,7 +351,7 @@ public class Deconstructable : Workable
 		return gameObject;
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (!this.allowDeconstruction)
 		{
@@ -353,7 +361,7 @@ public class Deconstructable : Workable
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 0f);
 	}
 
-	public void CancelDeconstruction()
+		public void CancelDeconstruction()
 	{
 		if (this.chore != null)
 		{
@@ -371,12 +379,12 @@ public class Deconstructable : Workable
 		}
 	}
 
-	private void OnCancel(object data)
+		private void OnCancel(object data)
 	{
 		this.CancelDeconstruction();
 	}
 
-	private void OnDeconstruct(object data)
+		private void OnDeconstruct(object data)
 	{
 		if (this.allowDeconstruction || DebugHandler.InstantBuildMode)
 		{
@@ -384,40 +392,40 @@ public class Deconstructable : Workable
 		}
 	}
 
-	public Chore chore;
+		public Chore chore;
 
-	public bool allowDeconstruction = true;
+		public bool allowDeconstruction = true;
 
-	public string audioSize;
+		public string audioSize;
 
-	public float customWorkTime = -1f;
+		public float customWorkTime = -1f;
 
-	private Reconstructable reconstructable;
+		private Reconstructable reconstructable;
 
-	[Serialize]
+		[Serialize]
 	private bool isMarkedForDeconstruction;
 
-	[Serialize]
+		[Serialize]
 	public Tag[] constructionElements;
 
-	public bool looseEntityDeconstructable;
+		public bool looseEntityDeconstructable;
 
-	private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
 	{
 		component.OnCancel(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnDeconstructDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Deconstructable> OnDeconstructDelegate = new EventSystem.IntraObjectHandler<Deconstructable>(delegate(Deconstructable component, object data)
 	{
 		component.OnDeconstruct(data);
 	});
 
-	private static readonly Vector2 INITIAL_VELOCITY_RANGE = new Vector2(0.5f, 4f);
+		private static readonly Vector2 INITIAL_VELOCITY_RANGE = new Vector2(0.5f, 4f);
 
-	private bool destroyed;
+		private bool destroyed;
 }

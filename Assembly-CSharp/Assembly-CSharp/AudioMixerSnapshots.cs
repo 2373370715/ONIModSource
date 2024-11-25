@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AudioMixerSnapshots : ScriptableObject
 {
-	[ContextMenu("Reload")]
+		[ContextMenu("Reload")]
 	public void ReloadSnapshots()
 	{
 		this.snapshotMap.Clear();
@@ -20,7 +20,7 @@ public class AudioMixerSnapshots : ScriptableObject
 		}
 	}
 
-	public static AudioMixerSnapshots Get()
+		public static AudioMixerSnapshots Get()
 	{
 		if (AudioMixerSnapshots.instance == null)
 		{
@@ -29,93 +29,93 @@ public class AudioMixerSnapshots : ScriptableObject
 		return AudioMixerSnapshots.instance;
 	}
 
-	public EventReference TechFilterOnMigrated;
+		public EventReference TechFilterOnMigrated;
 
-	public EventReference TechFilterLogicOn;
+		public EventReference TechFilterLogicOn;
 
-	public EventReference NightStartedMigrated;
+		public EventReference NightStartedMigrated;
 
-	public EventReference MenuOpenMigrated;
+		public EventReference MenuOpenMigrated;
 
-	public EventReference MenuOpenHalfEffect;
+		public EventReference MenuOpenHalfEffect;
 
-	public EventReference SpeedPausedMigrated;
+		public EventReference SpeedPausedMigrated;
 
-	public EventReference DuplicantCountAttenuatorMigrated;
+		public EventReference DuplicantCountAttenuatorMigrated;
 
-	public EventReference NewBaseSetupSnapshot;
+		public EventReference NewBaseSetupSnapshot;
 
-	public EventReference FrontEndSnapshot;
+		public EventReference FrontEndSnapshot;
 
-	public EventReference FrontEndWelcomeScreenSnapshot;
+		public EventReference FrontEndWelcomeScreenSnapshot;
 
-	public EventReference FrontEndWorldGenerationSnapshot;
+		public EventReference FrontEndWorldGenerationSnapshot;
 
-	public EventReference IntroNIS;
+		public EventReference IntroNIS;
 
-	public EventReference PulseSnapshot;
+		public EventReference PulseSnapshot;
 
-	public EventReference ESCPauseSnapshot;
+		public EventReference ESCPauseSnapshot;
 
-	public EventReference MENUNewDuplicantSnapshot;
+		public EventReference MENUNewDuplicantSnapshot;
 
-	public EventReference UserVolumeSettingsSnapshot;
+		public EventReference UserVolumeSettingsSnapshot;
 
-	public EventReference DuplicantCountMovingSnapshot;
+		public EventReference DuplicantCountMovingSnapshot;
 
-	public EventReference DuplicantCountSleepingSnapshot;
+		public EventReference DuplicantCountSleepingSnapshot;
 
-	public EventReference PortalLPDimmedSnapshot;
+		public EventReference PortalLPDimmedSnapshot;
 
-	public EventReference DynamicMusicPlayingSnapshot;
+		public EventReference DynamicMusicPlayingSnapshot;
 
-	public EventReference FabricatorSideScreenOpenSnapshot;
+		public EventReference FabricatorSideScreenOpenSnapshot;
 
-	public EventReference SpaceVisibleSnapshot;
+		public EventReference SpaceVisibleSnapshot;
 
-	public EventReference MENUStarmapSnapshot;
+		public EventReference MENUStarmapSnapshot;
 
-	public EventReference MENUStarmapNotPausedSnapshot;
+		public EventReference MENUStarmapNotPausedSnapshot;
 
-	public EventReference GameNotFocusedSnapshot;
+		public EventReference GameNotFocusedSnapshot;
 
-	public EventReference FacilityVisibleSnapshot;
+		public EventReference FacilityVisibleSnapshot;
 
-	public EventReference TutorialVideoPlayingSnapshot;
+		public EventReference TutorialVideoPlayingSnapshot;
 
-	public EventReference VictoryMessageSnapshot;
+		public EventReference VictoryMessageSnapshot;
 
-	public EventReference VictoryNISGenericSnapshot;
+		public EventReference VictoryNISGenericSnapshot;
 
-	public EventReference VictoryNISRocketSnapshot;
+		public EventReference VictoryNISRocketSnapshot;
 
-	public EventReference VictoryCinematicSnapshot;
+		public EventReference VictoryCinematicSnapshot;
 
-	public EventReference VictoryFadeToBlackSnapshot;
+		public EventReference VictoryFadeToBlackSnapshot;
 
-	public EventReference MuteDynamicMusicSnapshot;
+		public EventReference MuteDynamicMusicSnapshot;
 
-	public EventReference ActiveBaseChangeSnapshot;
+		public EventReference ActiveBaseChangeSnapshot;
 
-	public EventReference EventPopupSnapshot;
+		public EventReference EventPopupSnapshot;
 
-	public EventReference SmallRocketInteriorReverbSnapshot;
+		public EventReference SmallRocketInteriorReverbSnapshot;
 
-	public EventReference MediumRocketInteriorReverbSnapshot;
+		public EventReference MediumRocketInteriorReverbSnapshot;
 
-	public EventReference MainMenuVideoPlayingSnapshot;
+		public EventReference MainMenuVideoPlayingSnapshot;
 
-	public EventReference TechFilterRadiationOn;
+		public EventReference TechFilterRadiationOn;
 
-	public EventReference FrontEndSupplyClosetSnapshot;
+		public EventReference FrontEndSupplyClosetSnapshot;
 
-	public EventReference FrontEndItemDropScreenSnapshot;
+		public EventReference FrontEndItemDropScreenSnapshot;
 
-	[SerializeField]
+		[SerializeField]
 	private EventReference[] snapshots;
 
-	[NonSerialized]
+		[NonSerialized]
 	public List<string> snapshotMap = new List<string>();
 
-	private static AudioMixerSnapshots instance;
+		private static AudioMixerSnapshots instance;
 }

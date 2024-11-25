@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FlatTagFilterable : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		TreeFilterable component = base.GetComponent<TreeFilterable>();
@@ -14,7 +14,7 @@ public class FlatTagFilterable : KMonoBehaviour
 		base.Subscribe(-905833192, new Action<object>(this.OnCopySettings));
 	}
 
-	public void SelectTag(Tag tag, bool state)
+		public void SelectTag(Tag tag, bool state)
 	{
 		global::Debug.Assert(this.tagOptions.Contains(tag), "The tag " + tag.Name + " is not valid for this filterable - it must be added to tagOptions");
 		if (state)
@@ -31,17 +31,17 @@ public class FlatTagFilterable : KMonoBehaviour
 		base.GetComponent<TreeFilterable>().UpdateFilters(new HashSet<Tag>(this.selectedTags));
 	}
 
-	public void ToggleTag(Tag tag)
+		public void ToggleTag(Tag tag)
 	{
 		this.SelectTag(tag, !this.selectedTags.Contains(tag));
 	}
 
-	public string GetHeaderText()
+		public string GetHeaderText()
 	{
 		return this.headerText;
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		if (base.GetComponent<KPrefabID>().PrefabID() != gameObject.GetComponent<KPrefabID>().PrefabID())
@@ -56,12 +56,12 @@ public class FlatTagFilterable : KMonoBehaviour
 		base.GetComponent<TreeFilterable>().UpdateFilters(new HashSet<Tag>(this.selectedTags));
 	}
 
-	[Serialize]
+		[Serialize]
 	public List<Tag> selectedTags = new List<Tag>();
 
-	public List<Tag> tagOptions = new List<Tag>();
+		public List<Tag> tagOptions = new List<Tag>();
 
-	public string headerText;
+		public string headerText;
 
-	public bool displayOnlyDiscoveredTags = true;
+		public bool displayOnlyDiscoveredTags = true;
 }

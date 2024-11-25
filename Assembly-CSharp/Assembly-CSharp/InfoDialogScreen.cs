@@ -4,204 +4,158 @@ using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InfoDialogScreen : KModalScreen
-{
-	public InfoScreenPlainText GetSubHeaderPrefab()
-	{
-		return this.subHeaderTemplate;
-	}
+public class InfoDialogScreen : KModalScreen {
+    [SerializeField]
+    private GameObject contentContainer;
 
-	public InfoScreenPlainText GetPlainTextPrefab()
-	{
-		return this.plainTextTemplate;
-	}
+    private bool escapeCloses;
 
-	public InfoScreenLineItem GetLineItemPrefab()
-	{
-		return this.lineItemTemplate;
-	}
+    [Space(10f), SerializeField]
+    private LocText header;
 
-	public GameObject GetPrimaryButtonPrefab()
-	{
-		return this.leftButtonPrefab;
-	}
+    [SerializeField]
+    private GameObject leftButtonPanel;
 
-	public GameObject GetSecondaryButtonPrefab()
-	{
-		return this.rightButtonPrefab;
-	}
+    [SerializeField]
+    private GameObject leftButtonPrefab;
 
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		base.gameObject.SetActive(false);
-	}
+    [SerializeField]
+    private InfoScreenLineItem lineItemTemplate;
 
-	public override bool IsModal()
-	{
-		return true;
-	}
+    public System.Action onDeactivateFn;
 
-	public override void OnKeyDown(KButtonEvent e)
-	{
-		if (!this.escapeCloses)
-		{
-			e.TryConsume(global::Action.Escape);
-			return;
-		}
-		if (e.TryConsume(global::Action.Escape))
-		{
-			this.Deactivate();
-			return;
-		}
-		if (PlayerController.Instance != null && PlayerController.Instance.ConsumeIfNotDragging(e, global::Action.MouseRight))
-		{
-			this.Deactivate();
-			return;
-		}
-		base.OnKeyDown(e);
-	}
+    [SerializeField]
+    private InfoScreenPlainText plainTextTemplate;
 
-	protected override void OnShow(bool show)
-	{
-		base.OnShow(show);
-		if (!show && this.onDeactivateFn != null)
-		{
-			this.onDeactivateFn();
-		}
-	}
+    [SerializeField]
+    private GameObject rightButtonPanel;
 
-	public InfoDialogScreen AddDefaultOK(bool escapeCloses = false)
-	{
-		this.AddOption(UI.CONFIRMDIALOG.OK, delegate(InfoDialogScreen d)
-		{
-			d.Deactivate();
-		}, true);
-		this.escapeCloses = escapeCloses;
-		return this;
-	}
+    [SerializeField]
+    private GameObject rightButtonPrefab;
 
-	public InfoDialogScreen AddDefaultCancel()
-	{
-		this.AddOption(UI.CONFIRMDIALOG.CANCEL, delegate(InfoDialogScreen d)
-		{
-			d.Deactivate();
-		}, false);
-		this.escapeCloses = true;
-		return this;
-	}
+    [SerializeField]
+    private InfoScreenSpriteItem spriteItemTemplate;
 
-	public InfoDialogScreen AddOption(string text, Action<InfoDialogScreen> action, bool rightSide = false)
-	{
-		GameObject gameObject = Util.KInstantiateUI(rightSide ? this.rightButtonPrefab : this.leftButtonPrefab, rightSide ? this.rightButtonPanel : this.leftButtonPanel, true);
-		gameObject.gameObject.GetComponentInChildren<LocText>().text = text;
-		gameObject.gameObject.GetComponent<KButton>().onClick += delegate()
-		{
-			action(this);
-		};
-		return this;
-	}
+    [SerializeField]
+    private InfoScreenPlainText subHeaderTemplate;
 
-	public InfoDialogScreen AddOption(bool rightSide, out KButton button, out LocText buttonText)
-	{
-		GameObject gameObject = Util.KInstantiateUI(rightSide ? this.rightButtonPrefab : this.leftButtonPrefab, rightSide ? this.rightButtonPanel : this.leftButtonPanel, true);
-		button = gameObject.GetComponent<KButton>();
-		buttonText = gameObject.GetComponentInChildren<LocText>();
-		return this;
-	}
+    public InfoScreenPlainText GetSubHeaderPrefab()       { return subHeaderTemplate; }
+    public InfoScreenPlainText GetPlainTextPrefab()       { return plainTextTemplate; }
+    public InfoScreenLineItem  GetLineItemPrefab()        { return lineItemTemplate; }
+    public GameObject          GetPrimaryButtonPrefab()   { return leftButtonPrefab; }
+    public GameObject          GetSecondaryButtonPrefab() { return rightButtonPrefab; }
 
-	public InfoDialogScreen SetHeader(string header)
-	{
-		this.header.text = header;
-		return this;
-	}
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        gameObject.SetActive(false);
+    }
 
-	public InfoDialogScreen AddSprite(Sprite sprite)
-	{
-		Util.KInstantiateUI<InfoScreenSpriteItem>(this.spriteItemTemplate.gameObject, this.contentContainer, false).SetSprite(sprite);
-		return this;
-	}
+    public override bool IsModal() { return true; }
 
-	public InfoDialogScreen AddPlainText(string text)
-	{
-		Util.KInstantiateUI<InfoScreenPlainText>(this.plainTextTemplate.gameObject, this.contentContainer, false).SetText(text);
-		return this;
-	}
+    public override void OnKeyDown(KButtonEvent e) {
+        if (!escapeCloses) {
+            e.TryConsume(Action.Escape);
+            return;
+        }
 
-	public InfoDialogScreen AddLineItem(string text, string tooltip)
-	{
-		InfoScreenLineItem infoScreenLineItem = Util.KInstantiateUI<InfoScreenLineItem>(this.lineItemTemplate.gameObject, this.contentContainer, false);
-		infoScreenLineItem.SetText(text);
-		infoScreenLineItem.SetTooltip(tooltip);
-		return this;
-	}
+        if (e.TryConsume(Action.Escape)) {
+            Deactivate();
+            return;
+        }
 
-	public InfoDialogScreen AddSubHeader(string text)
-	{
-		Util.KInstantiateUI<InfoScreenPlainText>(this.subHeaderTemplate.gameObject, this.contentContainer, false).SetText(text);
-		return this;
-	}
+        if (PlayerController.Instance != null && PlayerController.Instance.ConsumeIfNotDragging(e, Action.MouseRight)) {
+            Deactivate();
+            return;
+        }
 
-	public InfoDialogScreen AddSpacer(float height)
-	{
-		GameObject gameObject = new GameObject("spacer");
-		gameObject.SetActive(false);
-		gameObject.transform.SetParent(this.contentContainer.transform, false);
-		LayoutElement layoutElement = gameObject.AddComponent<LayoutElement>();
-		layoutElement.minHeight = height;
-		layoutElement.preferredHeight = height;
-		layoutElement.flexibleHeight = 0f;
-		gameObject.SetActive(true);
-		return this;
-	}
+        base.OnKeyDown(e);
+    }
 
-	public InfoDialogScreen AddUI<T>(T prefab, out T spawn) where T : MonoBehaviour
-	{
-		spawn = Util.KInstantiateUI<T>(prefab.gameObject, this.contentContainer, true);
-		return this;
-	}
+    protected override void OnShow(bool show) {
+        base.OnShow(show);
+        if (!show && onDeactivateFn != null) onDeactivateFn();
+    }
 
-	public InfoDialogScreen AddDescriptors(List<Descriptor> descriptors)
-	{
-		for (int i = 0; i < descriptors.Count; i++)
-		{
-			this.AddLineItem(descriptors[i].IndentedText(), descriptors[i].tooltipText);
-		}
-		return this;
-	}
+    public InfoDialogScreen AddDefaultOK(bool escapeCloses = false) {
+        AddOption(UI.CONFIRMDIALOG.OK, delegate(InfoDialogScreen d) { d.Deactivate(); }, true);
+        this.escapeCloses = escapeCloses;
+        return this;
+    }
 
-	[SerializeField]
-	private InfoScreenPlainText subHeaderTemplate;
+    public InfoDialogScreen AddDefaultCancel() {
+        AddOption(UI.CONFIRMDIALOG.CANCEL, delegate(InfoDialogScreen d) { d.Deactivate(); });
+        escapeCloses = true;
+        return this;
+    }
 
-	[SerializeField]
-	private InfoScreenPlainText plainTextTemplate;
+    public InfoDialogScreen AddOption(string text, Action<InfoDialogScreen> action, bool rightSide = false) {
+        var gameObject = Util.KInstantiateUI(rightSide ? rightButtonPrefab : leftButtonPrefab,
+                                             rightSide ? rightButtonPanel : leftButtonPanel,
+                                             true);
 
-	[SerializeField]
-	private InfoScreenLineItem lineItemTemplate;
+        gameObject.gameObject.GetComponentInChildren<LocText>().text =  text;
+        gameObject.gameObject.GetComponent<KButton>().onClick        += delegate { action(this); };
+        return this;
+    }
 
-	[SerializeField]
-	private InfoScreenSpriteItem spriteItemTemplate;
+    public InfoDialogScreen AddOption(bool rightSide, out KButton button, out LocText buttonText) {
+        var gameObject = Util.KInstantiateUI(rightSide ? rightButtonPrefab : leftButtonPrefab,
+                                             rightSide ? rightButtonPanel : leftButtonPanel,
+                                             true);
 
-	[Space(10f)]
-	[SerializeField]
-	private LocText header;
+        button     = gameObject.GetComponent<KButton>();
+        buttonText = gameObject.GetComponentInChildren<LocText>();
+        return this;
+    }
 
-	[SerializeField]
-	private GameObject contentContainer;
+    public InfoDialogScreen SetHeader(string header) {
+        this.header.text = header;
+        return this;
+    }
 
-	[SerializeField]
-	private GameObject leftButtonPrefab;
+    public InfoDialogScreen AddSprite(Sprite sprite) {
+        Util.KInstantiateUI<InfoScreenSpriteItem>(spriteItemTemplate.gameObject, contentContainer).SetSprite(sprite);
+        return this;
+    }
 
-	[SerializeField]
-	private GameObject rightButtonPrefab;
+    public InfoDialogScreen AddPlainText(string text) {
+        Util.KInstantiateUI<InfoScreenPlainText>(plainTextTemplate.gameObject, contentContainer).SetText(text);
+        return this;
+    }
 
-	[SerializeField]
-	private GameObject leftButtonPanel;
+    public InfoDialogScreen AddLineItem(string text, string tooltip) {
+        var infoScreenLineItem = Util.KInstantiateUI<InfoScreenLineItem>(lineItemTemplate.gameObject, contentContainer);
+        infoScreenLineItem.SetText(text);
+        infoScreenLineItem.SetTooltip(tooltip);
+        return this;
+    }
 
-	[SerializeField]
-	private GameObject rightButtonPanel;
+    public InfoDialogScreen AddSubHeader(string text) {
+        Util.KInstantiateUI<InfoScreenPlainText>(subHeaderTemplate.gameObject, contentContainer).SetText(text);
+        return this;
+    }
 
-	private bool escapeCloses;
+    public InfoDialogScreen AddSpacer(float height) {
+        var gameObject = new GameObject("spacer");
+        gameObject.SetActive(false);
+        gameObject.transform.SetParent(contentContainer.transform, false);
+        var layoutElement = gameObject.AddComponent<LayoutElement>();
+        layoutElement.minHeight       = height;
+        layoutElement.preferredHeight = height;
+        layoutElement.flexibleHeight  = 0f;
+        gameObject.SetActive(true);
+        return this;
+    }
 
-	public System.Action onDeactivateFn;
+    public InfoDialogScreen AddUI<T>(T prefab, out T spawn) where T : MonoBehaviour {
+        spawn = Util.KInstantiateUI<T>(prefab.gameObject, contentContainer, true);
+        return this;
+    }
+
+    public InfoDialogScreen AddDescriptors(List<Descriptor> descriptors) {
+        for (var i = 0; i < descriptors.Count; i++)
+            AddLineItem(descriptors[i].IndentedText(), descriptors[i].tooltipText);
+
+        return this;
+    }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RocketUsageRestriction : GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -35,12 +35,12 @@ public class RocketUsageRestriction : GameStateMachine<RocketUsageRestriction, R
 		this.restriction.controlled.controlled.OnTargetLost(this.rocketControlStation, this.restriction.controlled.nostation).Enter(new StateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State.Callback(this.OnRocketRestrictionChanged)).Target(this.rocketControlStation).EventHandler(GameHashes.RocketRestrictionChanged, new StateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State.Callback(this.OnRocketRestrictionChanged)).Target(this.masterTarget);
 	}
 
-	private void OnRocketRestrictionChanged(RocketUsageRestriction.StatesInstance smi)
+		private void OnRocketRestrictionChanged(RocketUsageRestriction.StatesInstance smi)
 	{
 		this.RestrictUsage(smi, smi.BuildingRestrictionsActive());
 	}
 
-	private void RestrictUsage(RocketUsageRestriction.StatesInstance smi, bool restrict)
+		private void RestrictUsage(RocketUsageRestriction.StatesInstance smi, bool restrict)
 	{
 		smi.master.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.RocketRestrictionInactive, !restrict && smi.isControlled, null);
 		if (smi.isRestrictionApplied == restrict)
@@ -78,7 +78,7 @@ public class RocketUsageRestriction : GameStateMachine<RocketUsageRestriction, R
 		}
 	}
 
-	private void AquireRocketControlStation(RocketUsageRestriction.StatesInstance smi)
+		private void AquireRocketControlStation(RocketUsageRestriction.StatesInstance smi)
 	{
 		if (!this.rocketControlStation.IsNull(smi))
 		{
@@ -94,46 +94,46 @@ public class RocketUsageRestriction : GameStateMachine<RocketUsageRestriction, R
 		}
 	}
 
-	public static readonly Operational.Flag rocketUsageAllowed = new Operational.Flag("rocketUsageAllowed", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag rocketUsageAllowed = new Operational.Flag("rocketUsageAllowed", Operational.Flag.Type.Requirement);
 
-	private StateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.TargetParameter rocketControlStation;
+		private StateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.TargetParameter rocketControlStation;
 
-	public RocketUsageRestriction.RestrictionStates restriction;
+		public RocketUsageRestriction.RestrictionStates restriction;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public override void Configure(GameObject prefab)
+				public override void Configure(GameObject prefab)
 		{
 			RocketControlStation.CONTROLLED_BUILDINGS.Add(prefab.PrefabID());
 		}
 
-		public bool initialControlledStateWhenBuilt = true;
+				public bool initialControlledStateWhenBuilt = true;
 
-		public bool restrictOperational = true;
+				public bool restrictOperational = true;
 	}
 
-	public class ControlledStates : GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State
+		public class ControlledStates : GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State
 	{
-		public GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State nostation;
+				public GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State nostation;
 
-		public GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State controlled;
+				public GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State controlled;
 	}
 
-	public class RestrictionStates : GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State
+		public class RestrictionStates : GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State
 	{
-		public GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State uncontrolled;
+				public GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.State uncontrolled;
 
-		public RocketUsageRestriction.ControlledStates controlled;
+				public RocketUsageRestriction.ControlledStates controlled;
 	}
 
-	public class StatesInstance : GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<RocketUsageRestriction, RocketUsageRestriction.StatesInstance, IStateMachineTarget, RocketUsageRestriction.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, RocketUsageRestriction.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, RocketUsageRestriction.Def def) : base(master, def)
 		{
 			this.isControlled = def.initialControlledStateWhenBuilt;
 		}
 
-		public void OnRefreshUserMenu(object data)
+				public void OnRefreshUserMenu(object data)
 		{
 			KIconButtonMenu.ButtonInfo button;
 			if (this.isControlled)
@@ -147,18 +147,18 @@ public class RocketUsageRestriction : GameStateMachine<RocketUsageRestriction, R
 			Game.Instance.userMenu.AddButton(base.gameObject, button, 11f);
 		}
 
-		public void ControlStationBuilt(object o)
+				public void ControlStationBuilt(object o)
 		{
 			base.sm.AquireRocketControlStation(base.smi);
 		}
 
-		private void OnChange()
+				private void OnChange()
 		{
 			this.isControlled = !this.isControlled;
 			this.GoToRestrictionState();
 		}
 
-		public void GoToRestrictionState()
+				public void GoToRestrictionState()
 		{
 			if (base.smi.isControlled)
 			{
@@ -168,19 +168,19 @@ public class RocketUsageRestriction : GameStateMachine<RocketUsageRestriction, R
 			base.smi.GoTo(base.sm.restriction.uncontrolled);
 		}
 
-		public bool BuildingRestrictionsActive()
+				public bool BuildingRestrictionsActive()
 		{
 			return this.isControlled && !base.sm.rocketControlStation.IsNull(base.smi) && base.sm.rocketControlStation.Get<RocketControlStation>(base.smi).BuildingRestrictionsActive;
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public Operational operational;
 
-		public bool[] previousStorageAllowItemRemovalStates;
+				public bool[] previousStorageAllowItemRemovalStates;
 
-		[Serialize]
+				[Serialize]
 		public bool isControlled = true;
 
-		public bool isRestrictionApplied;
+				public bool isRestrictionApplied;
 	}
 }

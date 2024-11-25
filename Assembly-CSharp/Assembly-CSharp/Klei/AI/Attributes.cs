@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class Attributes
+		public class Attributes
 	{
-		public IEnumerator<AttributeInstance> GetEnumerator()
+				public IEnumerator<AttributeInstance> GetEnumerator()
 		{
 			return this.AttributeTable.GetEnumerator();
 		}
 
-				public int Count
+						public int Count
 		{
 			get
 			{
@@ -20,12 +20,12 @@ namespace Klei.AI
 			}
 		}
 
-		public Attributes(GameObject game_object)
+				public Attributes(GameObject game_object)
 		{
 			this.gameObject = game_object;
 		}
 
-		public AttributeInstance Add(Attribute attribute)
+				public AttributeInstance Add(Attribute attribute)
 		{
 			AttributeInstance attributeInstance = this.Get(attribute.Id);
 			if (attributeInstance == null)
@@ -36,7 +36,7 @@ namespace Klei.AI
 			return attributeInstance;
 		}
 
-		public void Add(AttributeModifier modifier)
+				public void Add(AttributeModifier modifier)
 		{
 			AttributeInstance attributeInstance = this.Get(modifier.AttributeId);
 			if (attributeInstance != null)
@@ -45,7 +45,7 @@ namespace Klei.AI
 			}
 		}
 
-		public void Remove(AttributeModifier modifier)
+				public void Remove(AttributeModifier modifier)
 		{
 			if (modifier == null)
 			{
@@ -58,7 +58,7 @@ namespace Klei.AI
 			}
 		}
 
-		public float GetValuePercent(string attribute_id)
+				public float GetValuePercent(string attribute_id)
 		{
 			float result = 1f;
 			AttributeInstance attributeInstance = this.Get(attribute_id);
@@ -73,7 +73,7 @@ namespace Klei.AI
 			return result;
 		}
 
-		public AttributeInstance Get(string attribute_id)
+				public AttributeInstance Get(string attribute_id)
 		{
 			for (int i = 0; i < this.AttributeTable.Count; i++)
 			{
@@ -85,12 +85,12 @@ namespace Klei.AI
 			return null;
 		}
 
-		public AttributeInstance Get(Attribute attribute)
+				public AttributeInstance Get(Attribute attribute)
 		{
 			return this.Get(attribute.Id);
 		}
 
-		public float GetValue(string id)
+				public float GetValue(string id)
 		{
 			float result = 0f;
 			AttributeInstance attributeInstance = this.Get(id);
@@ -105,7 +105,7 @@ namespace Klei.AI
 			return result;
 		}
 
-		public AttributeInstance GetProfession()
+				public AttributeInstance GetProfession()
 		{
 			AttributeInstance attributeInstance = null;
 			foreach (AttributeInstance attributeInstance2 in this)
@@ -125,7 +125,7 @@ namespace Klei.AI
 			return attributeInstance;
 		}
 
-		public string GetProfessionString(bool longform = true)
+				public string GetProfessionString(bool longform = true)
 		{
 			AttributeInstance profession = this.GetProfession();
 			if ((int)profession.GetTotalValue() == 0)
@@ -135,7 +135,7 @@ namespace Klei.AI
 			return string.Format(longform ? UI.ATTRIBUTELEVEL : UI.ATTRIBUTELEVEL_SHORT, (int)profession.GetTotalValue(), profession.modifier.ProfessionName);
 		}
 
-		public string GetProfessionDescriptionString()
+				public string GetProfessionDescriptionString()
 		{
 			AttributeInstance profession = this.GetProfession();
 			if ((int)profession.GetTotalValue() == 0)
@@ -145,8 +145,8 @@ namespace Klei.AI
 			return string.Format(DUPLICANTS.ATTRIBUTES.PROFESSION_DESC, profession.modifier.Name);
 		}
 
-		public List<AttributeInstance> AttributeTable = new List<AttributeInstance>();
+				public List<AttributeInstance> AttributeTable = new List<AttributeInstance>();
 
-		public GameObject gameObject;
+				public GameObject gameObject;
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class SequenceUtil
 {
-		public static YieldInstruction WaitForNextFrame
+			public static YieldInstruction WaitForNextFrame
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public static class SequenceUtil
 		}
 	}
 
-		public static YieldInstruction WaitForEndOfFrame
+			public static YieldInstruction WaitForEndOfFrame
 	{
 		get
 		{
@@ -24,7 +24,7 @@ public static class SequenceUtil
 		}
 	}
 
-		public static YieldInstruction WaitForFixedUpdate
+			public static YieldInstruction WaitForFixedUpdate
 	{
 		get
 		{
@@ -36,7 +36,7 @@ public static class SequenceUtil
 		}
 	}
 
-	public static YieldInstruction WaitForSeconds(float duration)
+		public static YieldInstruction WaitForSeconds(float duration)
 	{
 		WaitForSeconds result;
 		if (!SequenceUtil.scaledTimeCache.TryGetValue(duration, out result))
@@ -46,7 +46,7 @@ public static class SequenceUtil
 		return result;
 	}
 
-	public static WaitForSecondsRealtime WaitForSecondsRealtime(float duration)
+		public static WaitForSecondsRealtime WaitForSecondsRealtime(float duration)
 	{
 		WaitForSecondsRealtime result;
 		if (!SequenceUtil.reailTimeWaitCache.TryGetValue(duration, out result))
@@ -56,11 +56,11 @@ public static class SequenceUtil
 		return result;
 	}
 
-	private static WaitForEndOfFrame waitForEndOfFrame = null;
+		private static WaitForEndOfFrame waitForEndOfFrame = null;
 
-	private static WaitForFixedUpdate waitForFixedUpdate = null;
+		private static WaitForFixedUpdate waitForFixedUpdate = null;
 
-	private static Dictionary<float, WaitForSeconds> scaledTimeCache = new Dictionary<float, WaitForSeconds>();
+		private static Dictionary<float, WaitForSeconds> scaledTimeCache = new Dictionary<float, WaitForSeconds>();
 
-	private static Dictionary<float, WaitForSecondsRealtime> reailTimeWaitCache = new Dictionary<float, WaitForSecondsRealtime>();
+		private static Dictionary<float, WaitForSecondsRealtime> reailTimeWaitCache = new Dictionary<float, WaitForSecondsRealtime>();
 }

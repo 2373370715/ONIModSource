@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class LogicGateBufferConfig : LogicGateBaseConfig
 {
-	protected override LogicGateBase.Op GetLogicOp()
+		protected override LogicGateBase.Op GetLogicOp()
 	{
 		return LogicGateBase.Op.CustomSingle;
 	}
 
-		protected override CellOffset[] InputPortOffsets
+			protected override CellOffset[] InputPortOffsets
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class LogicGateBufferConfig : LogicGateBaseConfig
 		}
 	}
 
-		protected override CellOffset[] OutputPortOffsets
+			protected override CellOffset[] OutputPortOffsets
 	{
 		get
 		{
@@ -31,7 +31,7 @@ public class LogicGateBufferConfig : LogicGateBaseConfig
 		}
 	}
 
-		protected override CellOffset[] ControlPortOffsets
+			protected override CellOffset[] ControlPortOffsets
 	{
 		get
 		{
@@ -39,7 +39,7 @@ public class LogicGateBufferConfig : LogicGateBaseConfig
 		}
 	}
 
-	protected override LogicGate.LogicGateDescriptions GetDescriptions()
+		protected override LogicGate.LogicGateDescriptions GetDescriptions()
 	{
 		return new LogicGate.LogicGateDescriptions
 		{
@@ -52,12 +52,12 @@ public class LogicGateBufferConfig : LogicGateBaseConfig
 		};
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		return base.CreateBuildingDef("LogicGateBUFFER", "logic_buffer_kanim", 2, 1);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		LogicGateBuffer logicGateBuffer = go.AddComponent<LogicGateBuffer>();
 		logicGateBuffer.op = this.GetLogicOp();
@@ -71,5 +71,5 @@ public class LogicGateBufferConfig : LogicGateBaseConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits, false);
 	}
 
-	public const string ID = "LogicGateBUFFER";
+		public const string ID = "LogicGateBUFFER";
 }

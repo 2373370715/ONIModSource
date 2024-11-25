@@ -2,5 +2,5 @@
 
 public interface IStampToolPreviewPlugin
 {
-	void Setup(StampToolPreviewContext context);
+		void Setup(StampToolPreviewContext context);
 }

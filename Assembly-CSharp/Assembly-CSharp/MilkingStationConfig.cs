@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MilkingStationConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MilkingStation";
 		int width = 2;
@@ -40,7 +40,7 @@ public class MilkingStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RanchStationType, false);
@@ -51,7 +51,7 @@ public class MilkingStationConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		RoomTracker roomTracker = go.AddOrGet<RoomTracker>();
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.CreaturePen.Id;
@@ -105,5 +105,5 @@ public class MilkingStationConfig : IBuildingConfig
 		conduitDispenser.elementFilter = null;
 	}
 
-	public const string ID = "MilkingStation";
+		public const string ID = "MilkingStation";
 }

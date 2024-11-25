@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SolidCargoBayConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetForbiddenDlcIds()
 	{
-		return DlcManager.AVAILABLE_VANILLA_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "CargoBay";
 		int width = 5;
@@ -46,7 +46,7 @@ public class SolidCargoBayConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -57,7 +57,7 @@ public class SolidCargoBayConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		CargoBay cargoBay = go.AddOrGet<CargoBay>();
 		cargoBay.storage = go.AddOrGet<Storage>();
@@ -68,5 +68,5 @@ public class SolidCargoBayConfig : IBuildingConfig
 		go.AddOrGet<SolidConduitDispenser>();
 	}
 
-	public const string ID = "CargoBay";
+		public const string ID = "CargoBay";
 }

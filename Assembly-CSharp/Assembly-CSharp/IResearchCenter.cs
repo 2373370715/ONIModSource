@@ -2,5 +2,5 @@
 
 public interface IResearchCenter
 {
-	string GetResearchType();
+		string GetResearchType();
 }

@@ -9,7 +9,7 @@ using UnityEngine.Video;
 
 public class VideoScreen : KModalScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.ConsumeMouseScroll = true;
@@ -38,27 +38,27 @@ public class VideoScreen : KModalScreen
 		this.Show(false);
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		VideoScreen.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.transform.SetAsLastSibling();
 		base.OnShow(show);
 		this.screen = this.videoPlayer.gameObject.GetComponent<RawImage>();
 	}
 
-	public void DisableAllMedia()
+		public void DisableAllMedia()
 	{
 		this.overlayContainer.gameObject.SetActive(false);
 		this.videoPlayer.gameObject.SetActive(false);
 		this.slideshow.gameObject.SetActive(false);
 	}
 
-	public void PlaySlideShow(Sprite[] sprites)
+		public void PlaySlideShow(Sprite[] sprites)
 	{
 		this.Show(true);
 		this.DisableAllMedia();
@@ -68,7 +68,7 @@ public class VideoScreen : KModalScreen
 		this.slideshow.SetPaused(false);
 	}
 
-	public void PlaySlideShow(string[] files)
+		public void PlaySlideShow(string[] files)
 	{
 		this.Show(true);
 		this.DisableAllMedia();
@@ -78,7 +78,7 @@ public class VideoScreen : KModalScreen
 		this.slideshow.SetPaused(false);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.IsAction(global::Action.Escape))
 		{
@@ -99,7 +99,7 @@ public class VideoScreen : KModalScreen
 		base.OnKeyDown(e);
 	}
 
-	public void PlayVideo(VideoClip clip, bool unskippable = false, EventReference overrideAudioSnapshot = default(EventReference), bool showProceedButton = false)
+		public void PlayVideo(VideoClip clip, bool unskippable = false, EventReference overrideAudioSnapshot = default(EventReference), bool showProceedButton = false)
 	{
 		global::Debug.Assert(clip != null);
 		for (int i = 0; i < this.overlayContainer.childCount; i++)
@@ -117,6 +117,7 @@ public class VideoScreen : KModalScreen
 		this.videoPlayer.targetTexture = this.renderTexture;
 		this.videoPlayer.audioOutputMode = VideoAudioOutputMode.None;
 		this.videoPlayer.clip = clip;
+		this.videoPlayer.timeReference = VideoTimeReference.ExternalTime;
 		this.videoPlayer.Play();
 		if (this.audioHandle.isValid())
 		{
@@ -130,7 +131,7 @@ public class VideoScreen : KModalScreen
 		this.proceedButton.gameObject.SetActive(showProceedButton && this.videoSkippable);
 	}
 
-	public void QueueVictoryVideoLoop(bool queue, string message = "", string victoryAchievement = "", string loopVideo = "")
+		public void QueueVictoryVideoLoop(bool queue, string message = "", string victoryAchievement = "", string loopVideo = "")
 	{
 		this.victoryLoopQueued = queue;
 		this.victoryLoopMessage = message;
@@ -142,7 +143,7 @@ public class VideoScreen : KModalScreen
 		}));
 	}
 
-	public void SetOverlayText(string overlayTemplate, List<string> strings)
+		public void SetOverlayText(string overlayTemplate, List<string> strings)
 	{
 		VideoOverlay videoOverlay = null;
 		foreach (VideoOverlay videoOverlay2 in this.overlayPrefabs)
@@ -158,7 +159,7 @@ public class VideoScreen : KModalScreen
 		this.overlayContainer.gameObject.SetActive(true);
 	}
 
-	private IEnumerator SwitchToVictoryLoop()
+		private IEnumerator SwitchToVictoryLoop()
 	{
 		this.victoryLoopQueued = false;
 		Color color = this.fadeOverlay.color;
@@ -190,7 +191,7 @@ public class VideoScreen : KModalScreen
 		yield break;
 	}
 
-	public void Stop()
+		public void Stop()
 	{
 		this.videoPlayer.Stop();
 		this.screen.texture = null;
@@ -207,68 +208,55 @@ public class VideoScreen : KModalScreen
 		this.Show(false);
 	}
 
-	public override void ScreenUpdate(bool topLevel)
+		public override void ScreenUpdate(bool topLevel)
 	{
 		base.ScreenUpdate(topLevel);
 		if (this.audioHandle.isValid())
 		{
 			int num;
 			this.audioHandle.getTimelinePosition(out num);
-			double num2 = this.videoPlayer.time * 1000.0;
-			if ((double)num - num2 > 33.0)
-			{
-				VideoPlayer videoPlayer = this.videoPlayer;
-				long frame = videoPlayer.frame;
-				videoPlayer.frame = frame + 1L;
-				return;
-			}
-			if (num2 - (double)num > 33.0)
-			{
-				VideoPlayer videoPlayer2 = this.videoPlayer;
-				long frame = videoPlayer2.frame;
-				videoPlayer2.frame = frame - 1L;
-			}
+			this.videoPlayer.externalReferenceTime = (double)((float)num / 1000f);
 		}
 	}
 
-	public static VideoScreen Instance;
+		public static VideoScreen Instance;
 
-	[SerializeField]
+		[SerializeField]
 	private VideoPlayer videoPlayer;
 
-	[SerializeField]
+		[SerializeField]
 	private Slideshow slideshow;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton proceedButton;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform overlayContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private List<VideoOverlay> overlayPrefabs;
 
-	private RawImage screen;
+		private RawImage screen;
 
-	private RenderTexture renderTexture;
+		private RenderTexture renderTexture;
 
-	private EventReference activeAudioSnapshot;
+		private EventReference activeAudioSnapshot;
 
-	[SerializeField]
+		[SerializeField]
 	private Image fadeOverlay;
 
-	private EventInstance audioHandle;
+		private EventInstance audioHandle;
 
-	private bool victoryLoopQueued;
+		private bool victoryLoopQueued;
 
-	private string victoryLoopMessage = "";
+		private string victoryLoopMessage = "";
 
-	private string victoryLoopClip = "";
+		private string victoryLoopClip = "";
 
-	private bool videoSkippable = true;
+		private bool videoSkippable = true;
 
-	public System.Action OnStop;
+		public System.Action OnStop;
 }

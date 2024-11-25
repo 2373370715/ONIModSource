@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class InputModuleSwitch : MonoBehaviour
 {
-	private void Update()
+		private void Update()
 	{
 		if (this.lastMousePosition != Input.mousePosition && KInputManager.currentControllerIsGamepad)
 		{
@@ -17,7 +17,6 @@ public class InputModuleSwitch : MonoBehaviour
 			if (this.standaloneInput.enabled)
 			{
 				this.standaloneInput.enabled = false;
-				this.virtualInput.forceModuleActive = true;
 				this.ChangeInputHandler();
 				return;
 			}
@@ -29,13 +28,12 @@ public class InputModuleSwitch : MonoBehaviour
 			if (this.virtualInput.enabled)
 			{
 				this.virtualInput.enabled = false;
-				this.standaloneInput.forceModuleActive = true;
 				this.ChangeInputHandler();
 			}
 		}
 	}
 
-	private void ChangeInputHandler()
+		private void ChangeInputHandler()
 	{
 		GameInputManager inputManager = Global.GetInputManager();
 		for (int i = 0; i < inputManager.usedMenus.Count; i++)
@@ -58,9 +56,9 @@ public class InputModuleSwitch : MonoBehaviour
 		}
 	}
 
-	public VirtualInputModule virtualInput;
+		public VirtualInputModule virtualInput;
 
-	public StandaloneInputModule standaloneInput;
+		public StandaloneInputModule standaloneInput;
 
-	private Vector3 lastMousePosition;
+		private Vector3 lastMousePosition;
 }

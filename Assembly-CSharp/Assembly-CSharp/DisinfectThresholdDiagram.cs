@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class DisinfectThresholdDiagram : MonoBehaviour
 {
-	private void Start()
+		private void Start()
 	{
 		this.inputField.minValue = 0f;
 		this.inputField.maxValue = (float)DisinfectThresholdDiagram.MAX_VALUE;
@@ -57,59 +57,59 @@ public class DisinfectThresholdDiagram : MonoBehaviour
 		this.toggle.onValueChanged += this.OnClickToggle;
 	}
 
-	private void OnReleaseHandle()
+		private void OnReleaseHandle()
 	{
 		float num = (float)((int)this.slider.value * DisinfectThresholdDiagram.SLIDER_CONVERSION);
 		SaveGame.Instance.minGermCountForDisinfect = (int)num;
 		this.inputField.SetDisplayValue(num.ToString());
 	}
 
-	private void ReceiveValueFromSlider(float new_value)
+		private void ReceiveValueFromSlider(float new_value)
 	{
 		SaveGame.Instance.minGermCountForDisinfect = (int)new_value * DisinfectThresholdDiagram.SLIDER_CONVERSION;
 		this.inputField.SetDisplayValue((new_value * (float)DisinfectThresholdDiagram.SLIDER_CONVERSION).ToString());
 	}
 
-	private void ReceiveValueFromInput(float new_value)
+		private void ReceiveValueFromInput(float new_value)
 	{
 		this.slider.value = new_value / (float)DisinfectThresholdDiagram.SLIDER_CONVERSION;
 		SaveGame.Instance.minGermCountForDisinfect = (int)new_value;
 	}
 
-	private void OnClickToggle(bool new_value)
+		private void OnClickToggle(bool new_value)
 	{
 		SaveGame.Instance.enableAutoDisinfect = new_value;
 		this.disabledImage.gameObject.SetActive(!SaveGame.Instance.enableAutoDisinfect);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KNumberInputField inputField;
 
-	[SerializeField]
+		[SerializeField]
 	private KSlider slider;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText minLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText maxLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText unitsLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText thresholdPrefix;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip toolTip;
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle toggle;
 
-	[SerializeField]
+		[SerializeField]
 	private Image disabledImage;
 
-	private static int MAX_VALUE = 1000000;
+		private static int MAX_VALUE = 1000000;
 
-	private static int SLIDER_CONVERSION = 1000;
+		private static int SLIDER_CONVERSION = 1000;
 }

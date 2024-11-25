@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DevToolStringsTable : DevTool
 {
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (this.m_cached_entries == null)
 		{
@@ -57,7 +57,7 @@ public class DevToolStringsTable : DevTool
 		}
 	}
 
-	public static void RegenerateCacheWithFilter([TupleElementNames(new string[]
+		public static void RegenerateCacheWithFilter([TupleElementNames(new string[]
 	{
 		"id",
 		"value"
@@ -83,14 +83,14 @@ public class DevToolStringsTable : DevTool
 		});
 	}
 
-	[TupleElementNames(new string[]
+		[TupleElementNames(new string[]
 	{
 		"id",
 		"value"
 	})]
 	private List<ValueTuple<string, string>> m_cached_entries;
 
-	private const int MAX_ENTRIES_TO_DRAW = 3000;
+		private const int MAX_ENTRIES_TO_DRAW = 3000;
 
-	private string m_search_filter = "";
+		private string m_search_filter = "";
 }

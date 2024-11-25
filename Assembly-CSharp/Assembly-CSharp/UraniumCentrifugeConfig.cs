@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class UraniumCentrifugeConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "UraniumCentrifuge";
 		int width = 3;
@@ -48,7 +48,7 @@ public class UraniumCentrifugeConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		UraniumCentrifuge uraniumCentrifuge = go.AddOrGet<UraniumCentrifuge>();
@@ -85,21 +85,21 @@ public class UraniumCentrifugeConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "UraniumCentrifuge";
+		public const string ID = "UraniumCentrifuge";
 
-	public const float OUTPUT_TEMP = 1173.15f;
+		public const float OUTPUT_TEMP = 1173.15f;
 
-	public const float REFILL_RATE = 2400f;
+		public const float REFILL_RATE = 2400f;
 
-	public static readonly CellOffset outPipeOffset = new CellOffset(1, 3);
+		public static readonly CellOffset outPipeOffset = new CellOffset(1, 3);
 
-	private static readonly List<Storage.StoredItemModifier> storedItemModifiers = new List<Storage.StoredItemModifier>
+		private static readonly List<Storage.StoredItemModifier> storedItemModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Preserve,

@@ -5,19 +5,19 @@ using UnityEngine.EventSystems;
 
 public class RootMenu : KScreen
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		RootMenu.Instance = null;
 	}
 
-			public static RootMenu Instance { get; private set; }
+				public static RootMenu Instance { get; private set; }
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return -1f;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		RootMenu.Instance = this;
 		base.Subscribe(Game.Instance.gameObject, -1503271301, new Action<object>(this.OnSelectObject));
@@ -26,7 +26,7 @@ public class RootMenu : KScreen
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.detailsScreen = Util.KInstantiateUI(this.detailsScreenPrefab, base.gameObject, true).GetComponent<DetailsScreen>();
@@ -37,12 +37,12 @@ public class RootMenu : KScreen
 		this.userMenu.gameObject.SetActive(false);
 	}
 
-	private void OnClickCommon()
+		private void OnClickCommon()
 	{
 		this.CloseSubMenus();
 	}
 
-	public void AddSubMenu(KScreen sub_menu)
+		public void AddSubMenu(KScreen sub_menu)
 	{
 		if (sub_menu.activateOnSpawn)
 		{
@@ -51,12 +51,12 @@ public class RootMenu : KScreen
 		this.subMenus.Add(sub_menu);
 	}
 
-	public void RemoveSubMenu(KScreen sub_menu)
+		public void RemoveSubMenu(KScreen sub_menu)
 	{
 		this.subMenus.Remove(sub_menu);
 	}
 
-	private void CloseSubMenus()
+		private void CloseSubMenus()
 	{
 		foreach (KScreen kscreen in this.subMenus)
 		{
@@ -75,7 +75,7 @@ public class RootMenu : KScreen
 		this.subMenus.Clear();
 	}
 
-	private void OnSelectObject(object data)
+		private void OnSelectObject(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		bool flag = false;
@@ -108,12 +108,12 @@ public class RootMenu : KScreen
 		this.Refresh();
 	}
 
-	public void TriggerRefresh(object obj)
+		public void TriggerRefresh(object obj)
 	{
 		this.Refresh();
 	}
 
-	public void Refresh()
+		public void Refresh()
 	{
 		if (this.selectedGO == null)
 		{
@@ -123,7 +123,7 @@ public class RootMenu : KScreen
 		this.userMenu.Refresh(this.selectedGO);
 	}
 
-	private void OnBuildingStatechanged(object data)
+		private void OnBuildingStatechanged(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		if (gameObject == this.selectedGO)
@@ -132,7 +132,7 @@ public class RootMenu : KScreen
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (!e.Consumed && e.TryConsume(global::Action.Escape) && SelectTool.Instance.enabled)
 		{
@@ -175,7 +175,7 @@ public class RootMenu : KScreen
 		base.OnKeyDown(e);
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		base.OnKeyUp(e);
 		if (!e.Consumed && e.TryConsume(global::Action.AlternateView) && this.tileScreenInst != null)
@@ -185,17 +185,17 @@ public class RootMenu : KScreen
 		}
 	}
 
-	public void TogglePauseScreen()
+		public void TogglePauseScreen()
 	{
 		PauseScreen.Instance.Show(true);
 	}
 
-	public void ExternalClose()
+		public void ExternalClose()
 	{
 		this.OnClickCommon();
 	}
 
-	private void OnUIClear(object data)
+		private void OnUIClear(object data)
 	{
 		this.CloseSubMenus();
 		SelectTool.Instance.Select(null, true);
@@ -207,17 +207,17 @@ public class RootMenu : KScreen
 		global::Debug.LogWarning("OnUIClear() Event system is null");
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 	}
 
-	private bool AreSubMenusOpen()
+		private bool AreSubMenusOpen()
 	{
 		return this.subMenus.Count > 0;
 	}
 
-	private KToggleMenu.ToggleInfo[] GetFillers()
+		private KToggleMenu.ToggleInfo[] GetFillers()
 	{
 		HashSet<Tag> hashSet = new HashSet<Tag>();
 		List<KToggleMenu.ToggleInfo> list = new List<KToggleMenu.ToggleInfo>();
@@ -233,33 +233,33 @@ public class RootMenu : KScreen
 		return list.ToArray();
 	}
 
-	public bool IsBuildingChorePanelActive()
+		public bool IsBuildingChorePanelActive()
 	{
 		return this.detailsScreen != null && this.detailsScreen.GetActiveTab() is BuildingChoresPanel;
 	}
 
-	private DetailsScreen detailsScreen;
+		private DetailsScreen detailsScreen;
 
-	private UserMenuScreen userMenu;
+		private UserMenuScreen userMenu;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject detailsScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private UserMenuScreen userMenuPrefab;
 
-	private GameObject userMenuParent;
+		private GameObject userMenuParent;
 
-	[SerializeField]
+		[SerializeField]
 	private TileScreen tileScreen;
 
-	public KScreen buildMenu;
+		public KScreen buildMenu;
 
-	private List<KScreen> subMenus = new List<KScreen>();
+		private List<KScreen> subMenus = new List<KScreen>();
 
-	private TileScreen tileScreenInst;
+		private TileScreen tileScreenInst;
 
-	public bool canTogglePauseScreen = true;
+		public bool canTogglePauseScreen = true;
 
-	public GameObject selectedGO;
+		public GameObject selectedGO;
 }

@@ -3,42 +3,42 @@
 [SkipSaveFileSerialization]
 public class BlightVulnerable : StateMachineComponent<BlightVulnerable.StatesInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	public void MakeBlighted()
+		public void MakeBlighted()
 	{
 		Debug.Log("Blighting plant", this);
 		base.smi.sm.isBlighted.Set(true, base.smi, false);
 	}
 
-	private SchedulerHandle handle;
+		private SchedulerHandle handle;
 
-	public bool prefersDarkness;
+		public bool prefersDarkness;
 
-	public class StatesInstance : GameStateMachine<BlightVulnerable.States, BlightVulnerable.StatesInstance, BlightVulnerable, object>.GameInstance
+		public class StatesInstance : GameStateMachine<BlightVulnerable.States, BlightVulnerable.StatesInstance, BlightVulnerable, object>.GameInstance
 	{
-		public StatesInstance(BlightVulnerable master) : base(master)
+				public StatesInstance(BlightVulnerable master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<BlightVulnerable.States, BlightVulnerable.StatesInstance, BlightVulnerable>
+		public class States : GameStateMachine<BlightVulnerable.States, BlightVulnerable.StatesInstance, BlightVulnerable>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.comfortable;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -52,10 +52,10 @@ public class BlightVulnerable : StateMachineComponent<BlightVulnerable.StatesIns
 			});
 		}
 
-		public StateMachine<BlightVulnerable.States, BlightVulnerable.StatesInstance, BlightVulnerable, object>.BoolParameter isBlighted;
+				public StateMachine<BlightVulnerable.States, BlightVulnerable.StatesInstance, BlightVulnerable, object>.BoolParameter isBlighted;
 
-		public GameStateMachine<BlightVulnerable.States, BlightVulnerable.StatesInstance, BlightVulnerable, object>.State comfortable;
+				public GameStateMachine<BlightVulnerable.States, BlightVulnerable.StatesInstance, BlightVulnerable, object>.State comfortable;
 
-		public GameStateMachine<BlightVulnerable.States, BlightVulnerable.StatesInstance, BlightVulnerable, object>.State blighted;
+				public GameStateMachine<BlightVulnerable.States, BlightVulnerable.StatesInstance, BlightVulnerable, object>.State blighted;
 	}
 }

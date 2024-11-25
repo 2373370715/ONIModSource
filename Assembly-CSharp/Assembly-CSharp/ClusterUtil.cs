@@ -4,17 +4,17 @@ using UnityEngine;
 
 public static class ClusterUtil
 {
-	public static WorldContainer GetMyWorld(this StateMachine.Instance smi)
+		public static WorldContainer GetMyWorld(this StateMachine.Instance smi)
 	{
 		return smi.GetComponent<StateMachineController>().GetMyWorld();
 	}
 
-	public static WorldContainer GetMyWorld(this KMonoBehaviour component)
+		public static WorldContainer GetMyWorld(this KMonoBehaviour component)
 	{
 		return component.gameObject.GetMyWorld();
 	}
 
-	public static WorldContainer GetMyWorld(this GameObject gameObject)
+		public static WorldContainer GetMyWorld(this GameObject gameObject)
 	{
 		int num = Grid.PosToCell(gameObject);
 		if (Grid.IsValidCell(num) && Grid.WorldIdx[num] != 255)
@@ -24,17 +24,17 @@ public static class ClusterUtil
 		return null;
 	}
 
-	public static int GetMyWorldId(this StateMachine.Instance smi)
+		public static int GetMyWorldId(this StateMachine.Instance smi)
 	{
 		return smi.GetComponent<StateMachineController>().GetMyWorldId();
 	}
 
-	public static int GetMyWorldId(this KMonoBehaviour component)
+		public static int GetMyWorldId(this KMonoBehaviour component)
 	{
 		return component.gameObject.GetMyWorldId();
 	}
 
-	public static int GetMyWorldId(this GameObject gameObject)
+		public static int GetMyWorldId(this GameObject gameObject)
 	{
 		int num = Grid.PosToCell(gameObject);
 		if (Grid.IsValidCell(num) && Grid.WorldIdx[num] != 255)
@@ -44,17 +44,17 @@ public static class ClusterUtil
 		return -1;
 	}
 
-	public static int GetMyParentWorldId(this StateMachine.Instance smi)
+		public static int GetMyParentWorldId(this StateMachine.Instance smi)
 	{
 		return smi.GetComponent<StateMachineController>().GetMyParentWorldId();
 	}
 
-	public static int GetMyParentWorldId(this KMonoBehaviour component)
+		public static int GetMyParentWorldId(this KMonoBehaviour component)
 	{
 		return component.gameObject.GetMyParentWorldId();
 	}
 
-	public static int GetMyParentWorldId(this GameObject gameObject)
+		public static int GetMyParentWorldId(this GameObject gameObject)
 	{
 		WorldContainer myWorld = gameObject.GetMyWorld();
 		if (myWorld == null)
@@ -64,17 +64,17 @@ public static class ClusterUtil
 		return myWorld.ParentWorldId;
 	}
 
-	public static AxialI GetMyWorldLocation(this StateMachine.Instance smi)
+		public static AxialI GetMyWorldLocation(this StateMachine.Instance smi)
 	{
 		return smi.GetComponent<StateMachineController>().GetMyWorldLocation();
 	}
 
-	public static AxialI GetMyWorldLocation(this KMonoBehaviour component)
+		public static AxialI GetMyWorldLocation(this KMonoBehaviour component)
 	{
 		return component.gameObject.GetMyWorldLocation();
 	}
 
-	public static AxialI GetMyWorldLocation(this GameObject gameObject)
+		public static AxialI GetMyWorldLocation(this GameObject gameObject)
 	{
 		ClusterGridEntity component = gameObject.GetComponent<ClusterGridEntity>();
 		if (component != null)
@@ -90,25 +90,25 @@ public static class ClusterUtil
 		return myWorld.GetComponent<ClusterGridEntity>().Location;
 	}
 
-	public static bool IsMyWorld(this GameObject go, GameObject otherGo)
+		public static bool IsMyWorld(this GameObject go, GameObject otherGo)
 	{
 		int otherCell = Grid.PosToCell(otherGo);
 		return go.IsMyWorld(otherCell);
 	}
 
-	public static bool IsMyWorld(this GameObject go, int otherCell)
+		public static bool IsMyWorld(this GameObject go, int otherCell)
 	{
 		int num = Grid.PosToCell(go);
 		return Grid.IsValidCell(num) && Grid.IsValidCell(otherCell) && Grid.WorldIdx[num] == Grid.WorldIdx[otherCell];
 	}
 
-	public static bool IsMyParentWorld(this GameObject go, GameObject otherGo)
+		public static bool IsMyParentWorld(this GameObject go, GameObject otherGo)
 	{
 		int otherCell = Grid.PosToCell(otherGo);
 		return go.IsMyParentWorld(otherCell);
 	}
 
-	public static bool IsMyParentWorld(this GameObject go, int otherCell)
+		public static bool IsMyParentWorld(this GameObject go, int otherCell)
 	{
 		int num = Grid.PosToCell(go);
 		if (Grid.IsValidCell(num) && Grid.IsValidCell(otherCell))
@@ -135,7 +135,7 @@ public static class ClusterUtil
 		return false;
 	}
 
-	public static int GetAsteroidWorldIdAtLocation(AxialI location)
+		public static int GetAsteroidWorldIdAtLocation(AxialI location)
 	{
 		foreach (ClusterGridEntity clusterGridEntity in ClusterGrid.Instance.cellContents[location])
 		{
@@ -151,17 +151,17 @@ public static class ClusterUtil
 		return -1;
 	}
 
-	public static bool ActiveWorldIsRocketInterior()
+		public static bool ActiveWorldIsRocketInterior()
 	{
 		return ClusterManager.Instance.activeWorld.IsModuleInterior;
 	}
 
-	public static bool ActiveWorldHasPrinter()
+		public static bool ActiveWorldHasPrinter()
 	{
 		return ClusterManager.Instance.activeWorld.IsModuleInterior || Components.Telepads.GetWorldItems(ClusterManager.Instance.activeWorldId, false).Count > 0;
 	}
 
-	public static float GetAmountFromRelatedWorlds(WorldInventory worldInventory, Tag element)
+		public static float GetAmountFromRelatedWorlds(WorldInventory worldInventory, Tag element)
 	{
 		WorldContainer worldContainer = worldInventory.WorldContainer;
 		float num = 0f;
@@ -176,7 +176,7 @@ public static class ClusterUtil
 		return num;
 	}
 
-	public static List<Pickupable> GetPickupablesFromRelatedWorlds(WorldInventory worldInventory, Tag tag)
+		public static List<Pickupable> GetPickupablesFromRelatedWorlds(WorldInventory worldInventory, Tag tag)
 	{
 		List<Pickupable> list = new List<Pickupable>();
 		int parentWorldId = worldInventory.GetComponent<WorldContainer>().ParentWorldId;
@@ -194,7 +194,7 @@ public static class ClusterUtil
 		return list;
 	}
 
-	public static string DebugGetMyWorldName(this GameObject gameObject)
+		public static string DebugGetMyWorldName(this GameObject gameObject)
 	{
 		WorldContainer myWorld = gameObject.GetMyWorld();
 		if (myWorld != null)
@@ -204,7 +204,7 @@ public static class ClusterUtil
 		return string.Format("InvalidWorld(pos={0})", gameObject.transform.GetPosition());
 	}
 
-	public static ClusterGridEntity ClosestVisibleAsteroidToLocation(AxialI location)
+		public static ClusterGridEntity ClosestVisibleAsteroidToLocation(AxialI location)
 	{
 		foreach (AxialI cell in AxialUtil.SpiralOut(location, ClusterGrid.Instance.numRings))
 		{

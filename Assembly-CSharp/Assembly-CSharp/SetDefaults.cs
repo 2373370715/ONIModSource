@@ -2,7 +2,7 @@
 
 public class SetDefaults
 {
-	public static void Initialize()
+		public static void Initialize()
 	{
 		KSlider.DefaultSounds[0] = GlobalAssets.GetSound("Slider_Start", false);
 		KSlider.DefaultSounds[1] = GlobalAssets.GetSound("Slider_Move", false);
@@ -13,7 +13,7 @@ public class SetDefaults
 		WidgetSoundPlayer.getSoundPath = new Func<string, string>(SetDefaults.GetSoundPath);
 	}
 
-	private static string GetSoundPath(string sound_name)
+		private static string GetSoundPath(string sound_name)
 	{
 		return GlobalAssets.GetSound(sound_name, false);
 	}

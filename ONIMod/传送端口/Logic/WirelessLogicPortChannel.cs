@@ -1,4 +1,4 @@
-﻿
+﻿namespace RsTransferPort;
 
 public class WirelessLogicPortChannel : SingleChannelController {
     public WirelessLogicPortChannel(BuildingType buildingType, string channelName, int worldIdAG) :

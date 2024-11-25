@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CritterCondoInteractMontior : GameStateMachine<CritterCondoInteractMontior, CritterCondoInteractMontior.Instance, IStateMachineTarget, CritterCondoInteractMontior.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.lookingForCondo;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -19,7 +19,7 @@ public class CritterCondoInteractMontior : GameStateMachine<CritterCondoInteract
 		}).ScheduleGoTo((CritterCondoInteractMontior.Instance smi) => this.remainingSecondsForEffect.Get(smi), this.lookingForCondo);
 	}
 
-	private static void FindCondoTarget(CritterCondoInteractMontior.Instance smi)
+		private static void FindCondoTarget(CritterCondoInteractMontior.Instance smi)
 	{
 		using (ListPool<CritterCondo.Instance, CritterCondoInteractMontior>.PooledList pooledList = PoolsFor<CritterCondoInteractMontior>.AllocateList<CritterCondo.Instance>())
 		{
@@ -71,25 +71,25 @@ public class CritterCondoInteractMontior : GameStateMachine<CritterCondoInteract
 		}
 	}
 
-	public GameStateMachine<CritterCondoInteractMontior, CritterCondoInteractMontior.Instance, IStateMachineTarget, CritterCondoInteractMontior.Def>.State lookingForCondo;
+		public GameStateMachine<CritterCondoInteractMontior, CritterCondoInteractMontior.Instance, IStateMachineTarget, CritterCondoInteractMontior.Def>.State lookingForCondo;
 
-	public GameStateMachine<CritterCondoInteractMontior, CritterCondoInteractMontior.Instance, IStateMachineTarget, CritterCondoInteractMontior.Def>.State satisfied;
+		public GameStateMachine<CritterCondoInteractMontior, CritterCondoInteractMontior.Instance, IStateMachineTarget, CritterCondoInteractMontior.Def>.State satisfied;
 
-	private StateMachine<CritterCondoInteractMontior, CritterCondoInteractMontior.Instance, IStateMachineTarget, CritterCondoInteractMontior.Def>.FloatParameter remainingSecondsForEffect;
+		private StateMachine<CritterCondoInteractMontior, CritterCondoInteractMontior.Instance, IStateMachineTarget, CritterCondoInteractMontior.Def>.FloatParameter remainingSecondsForEffect;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public bool requireCavity = true;
+				public bool requireCavity = true;
 
-		public Tag condoPrefabTag = "CritterCondo";
+				public Tag condoPrefabTag = "CritterCondo";
 	}
 
-	public new class Instance : GameStateMachine<CritterCondoInteractMontior, CritterCondoInteractMontior.Instance, IStateMachineTarget, CritterCondoInteractMontior.Def>.GameInstance
+		public new class Instance : GameStateMachine<CritterCondoInteractMontior, CritterCondoInteractMontior.Instance, IStateMachineTarget, CritterCondoInteractMontior.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, CritterCondoInteractMontior.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, CritterCondoInteractMontior.Def def) : base(master, def)
 		{
 		}
 
-		public CritterCondo.Instance targetCondo;
+				public CritterCondo.Instance targetCondo;
 	}
 }

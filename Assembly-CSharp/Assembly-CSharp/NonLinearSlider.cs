@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class NonLinearSlider : KSlider
 {
-	public static NonLinearSlider.Range[] GetDefaultRange(float maxValue)
+		public static NonLinearSlider.Range[] GetDefaultRange(float maxValue)
 	{
 		return new NonLinearSlider.Range[]
 		{
@@ -11,19 +11,19 @@ public class NonLinearSlider : KSlider
 		};
 	}
 
-	protected override void Start()
+		protected override void Start()
 	{
 		base.Start();
 		base.minValue = 0f;
 		base.maxValue = 100f;
 	}
 
-	public void SetRanges(NonLinearSlider.Range[] ranges)
+		public void SetRanges(NonLinearSlider.Range[] ranges)
 	{
 		this.ranges = ranges;
 	}
 
-	public float GetPercentageFromValue(float value)
+		public float GetPercentageFromValue(float value)
 	{
 		float num = 0f;
 		float num2 = 0f;
@@ -40,7 +40,7 @@ public class NonLinearSlider : KSlider
 		return 100f;
 	}
 
-	public float GetValueForPercentage(float percentage)
+		public float GetValueForPercentage(float percentage)
 	{
 		float num = 0f;
 		float num2 = 0f;
@@ -57,24 +57,24 @@ public class NonLinearSlider : KSlider
 		return num2;
 	}
 
-	protected override void Set(float input, bool sendCallback)
+		protected override void Set(float input, bool sendCallback)
 	{
 		base.Set(input, sendCallback);
 	}
 
-	public NonLinearSlider.Range[] ranges;
+		public NonLinearSlider.Range[] ranges;
 
-	[Serializable]
+		[Serializable]
 	public struct Range
 	{
-		public Range(float width, float peakValue)
+				public Range(float width, float peakValue)
 		{
 			this.width = width;
 			this.peakValue = peakValue;
 		}
 
-		public float width;
+				public float width;
 
-		public float peakValue;
+				public float peakValue;
 	}
 }

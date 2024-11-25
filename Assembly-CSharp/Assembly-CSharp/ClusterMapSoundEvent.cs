@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class ClusterMapSoundEvent : SoundEvent
 {
-	public ClusterMapSoundEvent(string file_name, string sound_name, int frame, bool looping) : base(file_name, sound_name, frame, true, looping, (float)SoundEvent.IGNORE_INTERVAL, false)
+		public ClusterMapSoundEvent(string file_name, string sound_name, int frame, bool looping) : base(file_name, sound_name, frame, true, looping, (float)SoundEvent.IGNORE_INTERVAL, false)
 	{
 	}
 
-	public override void OnPlay(AnimEventManager.EventPlayerData behaviour)
+		public override void OnPlay(AnimEventManager.EventPlayerData behaviour)
 	{
 		if (ClusterMapScreen.Instance.IsActive())
 		{
@@ -16,7 +16,7 @@ public class ClusterMapSoundEvent : SoundEvent
 		}
 	}
 
-	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
+		public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
 	{
 		if (base.looping)
 		{
@@ -45,7 +45,7 @@ public class ClusterMapSoundEvent : SoundEvent
 		}
 	}
 
-	public override void Stop(AnimEventManager.EventPlayerData behaviour)
+		public override void Stop(AnimEventManager.EventPlayerData behaviour)
 	{
 		if (base.looping)
 		{
@@ -57,9 +57,9 @@ public class ClusterMapSoundEvent : SoundEvent
 		}
 	}
 
-	private static string X_POSITION_PARAMETER = "Starmap_Position_X";
+		private static string X_POSITION_PARAMETER = "Starmap_Position_X";
 
-	private static string Y_POSITION_PARAMETER = "Starmap_Position_Y";
+		private static string Y_POSITION_PARAMETER = "Starmap_Position_Y";
 
-	private static string ZOOM_PARAMETER = "Starmap_Zoom_Percentage";
+		private static string ZOOM_PARAMETER = "Starmap_Zoom_Percentage";
 }

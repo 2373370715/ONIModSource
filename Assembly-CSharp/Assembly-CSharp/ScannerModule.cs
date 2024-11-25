@@ -2,7 +2,7 @@
 
 public class ScannerModule : GameStateMachine<ScannerModule, ScannerModule.Instance, IStateMachineTarget, ScannerModule.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.Enter(delegate(ScannerModule.Instance smi)
@@ -23,18 +23,18 @@ public class ScannerModule : GameStateMachine<ScannerModule, ScannerModule.Insta
 		});
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public int scanRadius = 1;
+				public int scanRadius = 1;
 	}
 
-	public new class Instance : GameStateMachine<ScannerModule, ScannerModule.Instance, IStateMachineTarget, ScannerModule.Def>.GameInstance
+		public new class Instance : GameStateMachine<ScannerModule, ScannerModule.Instance, IStateMachineTarget, ScannerModule.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, ScannerModule.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ScannerModule.Def def) : base(master, def)
 		{
 		}
 
-		public void Scan()
+				public void Scan()
 		{
 			Clustercraft component = base.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>();
 			if (component.Status == Clustercraft.CraftStatus.InFlight)
@@ -49,7 +49,7 @@ public class ScannerModule : GameStateMachine<ScannerModule, ScannerModule.Insta
 			}
 		}
 
-		public void SetFogOfWarAllowed()
+				public void SetFogOfWarAllowed()
 		{
 			CraftModuleInterface craftInterface = base.GetComponent<RocketModuleCluster>().CraftInterface;
 			if (craftInterface.HasClusterDestinationSelector())

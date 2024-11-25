@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class StatusItemRenderer
 {
-			public int layer { get; private set; }
+				public int layer { get; private set; }
 
-			public int selectedHandle { get; private set; }
+				public int selectedHandle { get; private set; }
 
-			public int highlightHandle { get; private set; }
+				public int highlightHandle { get; private set; }
 
-			public Color32 backgroundColor { get; private set; }
+				public Color32 backgroundColor { get; private set; }
 
-			public Color32 selectedColor { get; private set; }
+				public Color32 selectedColor { get; private set; }
 
-			public Color32 neutralColor { get; private set; }
+				public Color32 neutralColor { get; private set; }
 
-			public Sprite arrowSprite { get; private set; }
+				public Sprite arrowSprite { get; private set; }
 
-			public Sprite backgroundSprite { get; private set; }
+				public Sprite backgroundSprite { get; private set; }
 
-			public float scale { get; private set; }
+				public float scale { get; private set; }
 
-	public StatusItemRenderer()
+		public StatusItemRenderer()
 	{
 		this.layer = LayerMask.NameToLayer("UI");
 		this.entries = new StatusItemRenderer.Entry[100];
@@ -42,7 +42,7 @@ public class StatusItemRenderer
 		Game.Instance.Subscribe(2095258329, new Action<object>(this.OnHighlightObject));
 	}
 
-	public int GetIdx(Transform transform)
+		public int GetIdx(Transform transform)
 	{
 		int instanceID = transform.GetInstanceID();
 		int num = 0;
@@ -64,7 +64,7 @@ public class StatusItemRenderer
 		return num;
 	}
 
-	public void Add(Transform transform, StatusItem status_item)
+		public void Add(Transform transform, StatusItem status_item)
 	{
 		if (this.entryCount == this.entries.Length)
 		{
@@ -85,7 +85,7 @@ public class StatusItemRenderer
 		this.entries[idx] = entry;
 	}
 
-	public void Remove(Transform transform, StatusItem status_item)
+		public void Remove(Transform transform, StatusItem status_item)
 	{
 		int instanceID = transform.GetInstanceID();
 		int num = 0;
@@ -106,7 +106,7 @@ public class StatusItemRenderer
 		}
 	}
 
-	private void ClearIdx(int idx)
+		private void ClearIdx(int idx)
 	{
 		StatusItemRenderer.Entry entry = this.entries[idx];
 		this.handleTable.Remove(entry.handle);
@@ -122,7 +122,7 @@ public class StatusItemRenderer
 		this.entryCount--;
 	}
 
-	private HashedString GetMode()
+		private HashedString GetMode()
 	{
 		if (OverlayScreen.Instance != null)
 		{
@@ -131,7 +131,7 @@ public class StatusItemRenderer
 		return OverlayModes.None.ID;
 	}
 
-	public void MarkAllDirty()
+		public void MarkAllDirty()
 	{
 		for (int i = 0; i < this.entryCount; i++)
 		{
@@ -139,7 +139,7 @@ public class StatusItemRenderer
 		}
 	}
 
-	public void RenderEveryTick()
+		public void RenderEveryTick()
 	{
 		if (DebugHandler.HideUI)
 		{
@@ -157,7 +157,7 @@ public class StatusItemRenderer
 		}
 	}
 
-	public void GetIntersections(Vector2 pos, List<InterfaceTool.Intersection> intersections)
+		public void GetIntersections(Vector2 pos, List<InterfaceTool.Intersection> intersections)
 	{
 		foreach (StatusItemRenderer.Entry entry in this.visibleEntries)
 		{
@@ -165,7 +165,7 @@ public class StatusItemRenderer
 		}
 	}
 
-	public void GetIntersections(Vector2 pos, List<KSelectable> selectables)
+		public void GetIntersections(Vector2 pos, List<KSelectable> selectables)
 	{
 		foreach (StatusItemRenderer.Entry entry in this.visibleEntries)
 		{
@@ -173,7 +173,7 @@ public class StatusItemRenderer
 		}
 	}
 
-	public void SetOffset(Transform transform, Vector3 offset)
+		public void SetOffset(Transform transform, Vector3 offset)
 	{
 		int num = 0;
 		if (this.handleTable.TryGetValue(transform.GetInstanceID(), out num))
@@ -182,7 +182,7 @@ public class StatusItemRenderer
 		}
 	}
 
-	private void OnSelectObject(object data)
+		private void OnSelectObject(object data)
 	{
 		int num = 0;
 		if (this.handleTable.TryGetValue(this.selectedHandle, out num))
@@ -205,7 +205,7 @@ public class StatusItemRenderer
 		}
 	}
 
-	private void OnHighlightObject(object data)
+		private void OnHighlightObject(object data)
 	{
 		int num = 0;
 		if (this.handleTable.TryGetValue(this.highlightHandle, out num))
@@ -232,7 +232,7 @@ public class StatusItemRenderer
 		}
 	}
 
-	public void Destroy()
+		public void Destroy()
 	{
 		Game.Instance.Unsubscribe(-1503271301, new Action<object>(this.OnSelectObject));
 		Game.Instance.Unsubscribe(-1201923725, new Action<object>(this.OnHighlightObject));
@@ -243,19 +243,19 @@ public class StatusItemRenderer
 		}
 	}
 
-	private StatusItemRenderer.Entry[] entries;
+		private StatusItemRenderer.Entry[] entries;
 
-	private int entryCount;
+		private int entryCount;
 
-	private Dictionary<int, int> handleTable = new Dictionary<int, int>();
+		private Dictionary<int, int> handleTable = new Dictionary<int, int>();
 
-	private Shader shader;
+		private Shader shader;
 
-	public List<StatusItemRenderer.Entry> visibleEntries = new List<StatusItemRenderer.Entry>();
+		public List<StatusItemRenderer.Entry> visibleEntries = new List<StatusItemRenderer.Entry>();
 
-	public struct Entry
+		public struct Entry
 	{
-		public void Init(Shader shader)
+				public void Init(Shader shader)
 		{
 			this.statusItems = new List<StatusItem>();
 			this.mesh = new Mesh();
@@ -264,7 +264,7 @@ public class StatusItemRenderer
 			this.material = new Material(shader);
 		}
 
-		public void Render(StatusItemRenderer renderer, Vector3 camera_bl, Vector3 camera_tr, HashedString overlay, Camera camera)
+				public void Render(StatusItemRenderer renderer, Vector3 camera_bl, Vector3 camera_tr, HashedString overlay, Camera camera)
 		{
 			if (this.transform == null)
 			{
@@ -378,19 +378,19 @@ public class StatusItemRenderer
 			}
 		}
 
-		public void Add(StatusItem status_item)
+				public void Add(StatusItem status_item)
 		{
 			this.statusItems.Add(status_item);
 			this.dirty = true;
 		}
 
-		public void Remove(StatusItem status_item)
+				public void Remove(StatusItem status_item)
 		{
 			this.statusItems.Remove(status_item);
 			this.dirty = true;
 		}
 
-		public void Replace(StatusItemRenderer.Entry entry)
+				public void Replace(StatusItemRenderer.Entry entry)
 		{
 			this.handle = entry.handle;
 			this.transform = entry.transform;
@@ -404,7 +404,7 @@ public class StatusItemRenderer
 			this.statusItems.AddRange(entry.statusItems);
 		}
 
-		private bool Intersects(Vector2 pos, float scale)
+				private bool Intersects(Vector2 pos, float scale)
 		{
 			if (this.transform == null)
 			{
@@ -420,7 +420,7 @@ public class StatusItemRenderer
 			return pos.x >= vector2.x && pos.x <= vector3.x && pos.y >= vector2.y && pos.y <= vector3.y;
 		}
 
-		public void GetIntersection(Vector2 pos, List<InterfaceTool.Intersection> intersections, float scale)
+				public void GetIntersection(Vector2 pos, List<InterfaceTool.Intersection> intersections, float scale)
 		{
 			if (this.Intersects(pos, scale) && this.selectable.IsSelectable)
 			{
@@ -432,7 +432,7 @@ public class StatusItemRenderer
 			}
 		}
 
-		public void GetIntersection(Vector2 pos, List<KSelectable> selectables, float scale)
+				public void GetIntersection(Vector2 pos, List<KSelectable> selectables, float scale)
 		{
 			if (this.Intersects(pos, scale) && this.selectable.IsSelectable && !selectables.Contains(this.selectable))
 			{
@@ -440,14 +440,14 @@ public class StatusItemRenderer
 			}
 		}
 
-		public void Clear()
+				public void Clear()
 		{
 			this.statusItems.Clear();
 			this.offset = Vector3.zero;
 			this.dirty = false;
 		}
 
-		public void FreeResources()
+				public void FreeResources()
 		{
 			if (this.mesh != null)
 			{
@@ -460,46 +460,46 @@ public class StatusItemRenderer
 			}
 		}
 
-		public void MarkDirty()
+				public void MarkDirty()
 		{
 			this.dirty = true;
 		}
 
-		public int handle;
+				public int handle;
 
-		public Transform transform;
+				public Transform transform;
 
-		public Building building;
+				public Building building;
 
-		public Vector3 buildingPos;
+				public Vector3 buildingPos;
 
-		public KSelectable selectable;
+				public KSelectable selectable;
 
-		public List<StatusItem> statusItems;
+				public List<StatusItem> statusItems;
 
-		public Mesh mesh;
+				public Mesh mesh;
 
-		public bool dirty;
+				public bool dirty;
 
-		public int layer;
+				public int layer;
 
-		public Material material;
+				public Material material;
 
-		public Vector3 offset;
+				public Vector3 offset;
 
-		public bool hasVisibleStatusItems;
+				public bool hasVisibleStatusItems;
 
-		public bool isBuilding;
+				public bool isBuilding;
 
-		private const int STATUS_ICONS_LIMIT = 12;
+				private const int STATUS_ICONS_LIMIT = 12;
 
-		public static List<Sprite> spritesListedToRender = new List<Sprite>(12);
+				public static List<Sprite> spritesListedToRender = new List<Sprite>(12);
 
-		public static List<int> statusItemsToRender_Index = new List<int>(12);
+				public static List<int> statusItemsToRender_Index = new List<int>(12);
 
-		private struct MeshBuilder
+				private struct MeshBuilder
 		{
-			public MeshBuilder(int quad_count, Material material)
+						public MeshBuilder(int quad_count, Material material)
 			{
 				this.vertices = new Vector3[4 * quad_count];
 				this.uvs = new Vector2[4 * quad_count];
@@ -510,7 +510,7 @@ public class StatusItemRenderer
 				this.quadIdx = 0;
 			}
 
-			public void AddQuad(Vector2 center, Vector2 half_size, float z, Sprite sprite, Color color)
+						public void AddQuad(Vector2 center, Vector2 half_size, float z, Sprite sprite, Color color)
 			{
 				if (this.quadIdx == StatusItemRenderer.Entry.MeshBuilder.textureIds.Length)
 				{
@@ -553,7 +553,7 @@ public class StatusItemRenderer
 				this.quadIdx++;
 			}
 
-			public void End(Mesh mesh)
+						public void End(Mesh mesh)
 			{
 				mesh.Clear();
 				mesh.vertices = this.vertices;
@@ -564,21 +564,21 @@ public class StatusItemRenderer
 				mesh.RecalculateBounds();
 			}
 
-			private Vector3[] vertices;
+						private Vector3[] vertices;
 
-			private Vector2[] uvs;
+						private Vector2[] uvs;
 
-			private Vector2[] uv2s;
+						private Vector2[] uv2s;
 
-			private int[] triangles;
+						private int[] triangles;
 
-			private Color32[] colors;
+						private Color32[] colors;
 
-			private int quadIdx;
+						private int quadIdx;
 
-			private Material material;
+						private Material material;
 
-			private static int[] textureIds = new int[]
+						private static int[] textureIds = new int[]
 			{
 				Shader.PropertyToID("_Tex0"),
 				Shader.PropertyToID("_Tex1"),

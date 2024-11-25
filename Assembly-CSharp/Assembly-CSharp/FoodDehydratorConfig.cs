@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class FoodDehydratorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "FoodDehydrator";
 		int width = 3;
@@ -39,7 +39,7 @@ public class FoodDehydratorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -86,7 +86,7 @@ public class FoodDehydratorConfig : IBuildingConfig
 		go.AddOrGetDef<FoodDehydrator.Def>();
 	}
 
-	private void ConfigureRecipes()
+		private void ConfigureRecipes()
 	{
 		List<ValueTuple<EdiblesManager.FoodInfo, Tag>> list = new List<ValueTuple<EdiblesManager.FoodInfo, Tag>>
 		{
@@ -132,15 +132,15 @@ public class FoodDehydratorConfig : IBuildingConfig
 		}
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "FoodDehydrator";
+		public const string ID = "FoodDehydrator";
 
-	public ComplexRecipe DehydratedFoodRecipe;
+		public ComplexRecipe DehydratedFoodRecipe;
 
-	private static readonly List<Storage.StoredItemModifier> GourmetCookingStationStoredItemModifiers = new List<Storage.StoredItemModifier>
+		private static readonly List<Storage.StoredItemModifier> GourmetCookingStationStoredItemModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Preserve,

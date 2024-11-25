@@ -5,29 +5,29 @@ using UnityEngine;
 
 public class StandardCropPlant : StateMachineComponent<StandardCropPlant.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	protected void DestroySelf(object callbackParam)
+		protected void DestroySelf(object callbackParam)
 	{
 		CreatureHelpers.DeselectCreature(base.gameObject);
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	public Notification CreateDeathNotification()
+		public Notification CreateDeathNotification()
 	{
 		return new Notification(CREATURES.STATUSITEMS.PLANTDEATH.NOTIFICATION, NotificationType.Bad, (List<Notification> notificationList, object data) => CREATURES.STATUSITEMS.PLANTDEATH.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), "/t• " + base.gameObject.GetProperName(), true, 0f, null, null, null, true, false, false);
 	}
 
-	public void RefreshPositionPercent()
+		public void RefreshPositionPercent()
 	{
 		this.animController.SetPositionPercent(this.growing.PercentOfCurrentHarvest());
 	}
 
-	private static string ToolTipResolver(List<Notification> notificationList, object data)
+		private static string ToolTipResolver(List<Notification> notificationList, object data)
 	{
 		string text = "";
 		for (int i = 0; i < notificationList.Count; i++)
@@ -42,29 +42,29 @@ public class StandardCropPlant : StateMachineComponent<StandardCropPlant.StatesI
 		return string.Format(CREATURES.STATUSITEMS.PLANTDEATH.NOTIFICATION_TOOLTIP, text);
 	}
 
-	private const int WILT_LEVELS = 3;
+		private const int WILT_LEVELS = 3;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Crop crop;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private WiltCondition wiltCondition;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ReceptacleMonitor rm;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Growing growing;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KAnimControllerBase animController;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Harvestable harvestable;
 
-	public bool wiltsOnReadyToHarvest;
+		public bool wiltsOnReadyToHarvest;
 
-	public static StandardCropPlant.AnimSet defaultAnimSet = new StandardCropPlant.AnimSet
+		public static StandardCropPlant.AnimSet defaultAnimSet = new StandardCropPlant.AnimSet
 	{
 		grow = "grow",
 		grow_pst = "grow_pst",
@@ -74,11 +74,11 @@ public class StandardCropPlant : StateMachineComponent<StandardCropPlant.StatesI
 		waning = "waning"
 	};
 
-	public StandardCropPlant.AnimSet anims = StandardCropPlant.defaultAnimSet;
+		public StandardCropPlant.AnimSet anims = StandardCropPlant.defaultAnimSet;
 
-	public class AnimSet
+		public class AnimSet
 	{
-		public string GetWiltLevel(int level)
+				public string GetWiltLevel(int level)
 		{
 			if (this.m_wilt == null)
 			{
@@ -91,24 +91,24 @@ public class StandardCropPlant : StateMachineComponent<StandardCropPlant.StatesI
 			return this.m_wilt[level - 1];
 		}
 
-		public string grow;
+				public string grow;
 
-		public string grow_pst;
+				public string grow_pst;
 
-		public string idle_full;
+				public string idle_full;
 
-		public string wilt_base;
+				public string wilt_base;
 
-		public string harvest;
+				public string harvest;
 
-		public string waning;
+				public string waning;
 
-		private string[] m_wilt;
+				private string[] m_wilt;
 	}
 
-	public class States : GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant>
+		public class States : GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
 			default_state = this.alive;
@@ -167,7 +167,7 @@ public class StandardCropPlant : StateMachineComponent<StandardCropPlant.StatesI
 			}).OnAnimQueueComplete(this.alive.idle);
 		}
 
-		private static string GetWiltAnim(StandardCropPlant.StatesInstance smi)
+				private static string GetWiltAnim(StandardCropPlant.StatesInstance smi)
 		{
 			float num = smi.master.growing.PercentOfCurrentHarvest();
 			int level;
@@ -186,53 +186,53 @@ public class StandardCropPlant : StateMachineComponent<StandardCropPlant.StatesI
 			return smi.master.anims.GetWiltLevel(level);
 		}
 
-		private static void RefreshPositionPercent(StandardCropPlant.StatesInstance smi, float dt)
+				private static void RefreshPositionPercent(StandardCropPlant.StatesInstance smi, float dt)
 		{
 			smi.master.RefreshPositionPercent();
 		}
 
-		private static void RefreshPositionPercent(StandardCropPlant.StatesInstance smi)
+				private static void RefreshPositionPercent(StandardCropPlant.StatesInstance smi)
 		{
 			smi.master.RefreshPositionPercent();
 		}
 
-		public bool IsSleeping(StandardCropPlant.StatesInstance smi)
+				public bool IsSleeping(StandardCropPlant.StatesInstance smi)
 		{
 			CropSleepingMonitor.Instance smi2 = smi.master.GetSMI<CropSleepingMonitor.Instance>();
 			return smi2 != null && smi2.IsSleeping();
 		}
 
-		public StandardCropPlant.States.AliveStates alive;
+				public StandardCropPlant.States.AliveStates alive;
 
-		public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State dead;
+				public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State dead;
 
-		public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.PlantAliveSubState blighted;
+				public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.PlantAliveSubState blighted;
 
-		public class AliveStates : GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.PlantAliveSubState
+				public class AliveStates : GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.PlantAliveSubState
 		{
-			public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State idle;
+						public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State idle;
 
-			public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State pre_fruiting;
+						public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State pre_fruiting;
 
-			public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State fruiting_lost;
+						public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State fruiting_lost;
 
-			public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State barren;
+						public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State barren;
 
-			public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State fruiting;
+						public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State fruiting;
 
-			public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State wilting;
+						public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State wilting;
 
-			public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State destroy;
+						public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State destroy;
 
-			public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State harvest;
+						public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State harvest;
 
-			public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State sleeping;
+						public GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.State sleeping;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.GameInstance
+		public class StatesInstance : GameStateMachine<StandardCropPlant.States, StandardCropPlant.StatesInstance, StandardCropPlant, object>.GameInstance
 	{
-		public StatesInstance(StandardCropPlant master) : base(master)
+				public StatesInstance(StandardCropPlant master) : base(master)
 		{
 		}
 	}

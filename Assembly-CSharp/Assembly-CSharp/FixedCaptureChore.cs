@@ -3,7 +3,7 @@ using STRINGS;
 
 public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates.Instance>
 {
-	public FixedCaptureChore(KPrefabID capture_point)
+		public FixedCaptureChore(KPrefabID capture_point)
 	{
 		Chore.Precondition isCreatureAvailableForFixedCapture = default(Chore.Precondition);
 		isCreatureAvailableForFixedCapture.id = "IsCreatureAvailableForFixedCapture";
@@ -14,32 +14,32 @@ public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates
 		};
 		this.IsCreatureAvailableForFixedCapture = isCreatureAvailableForFixedCapture;
 		base..ctor(Db.Get().ChoreTypes.Ranch, capture_point, null, false, null, null, null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime);
-		base.AddPrecondition(this.IsCreatureAvailableForFixedCapture, capture_point.GetSMI<FixedCapturePoint.Instance>());
-		base.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanWrangleCreatures.Id);
-		base.AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Work);
-		base.AddPrecondition(ChorePreconditions.instance.CanMoveTo, capture_point.GetComponent<Building>());
+		this.AddPrecondition(this.IsCreatureAvailableForFixedCapture, capture_point.GetSMI<FixedCapturePoint.Instance>());
+		this.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanWrangleCreatures.Id);
+		this.AddPrecondition(ChorePreconditions.instance.IsScheduledTime, Db.Get().ScheduleBlockTypes.Work);
+		this.AddPrecondition(ChorePreconditions.instance.CanMoveTo, capture_point.GetComponent<Building>());
 		Operational component = capture_point.GetComponent<Operational>();
-		base.AddPrecondition(ChorePreconditions.instance.IsOperational, component);
+		this.AddPrecondition(ChorePreconditions.instance.IsOperational, component);
 		Deconstructable component2 = capture_point.GetComponent<Deconstructable>();
-		base.AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDeconstruction, component2);
+		this.AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDeconstruction, component2);
 		BuildingEnabledButton component3 = capture_point.GetComponent<BuildingEnabledButton>();
-		base.AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component3);
+		this.AddPrecondition(ChorePreconditions.instance.IsNotMarkedForDisable, component3);
 		base.smi = new FixedCaptureChore.FixedCaptureChoreStates.Instance(capture_point);
 		base.SetPrioritizable(capture_point.GetComponent<Prioritizable>());
 	}
 
-	public override void Begin(Chore.Precondition.Context context)
+		public override void Begin(Chore.Precondition.Context context)
 	{
 		base.smi.sm.rancher.Set(context.consumerState.gameObject, base.smi, false);
 		base.smi.sm.creature.Set(base.smi.fixedCapturePoint.targetCapturable.gameObject, base.smi, false);
 		base.Begin(context);
 	}
 
-	public Chore.Precondition IsCreatureAvailableForFixedCapture;
+		public Chore.Precondition IsCreatureAvailableForFixedCapture;
 
-	public class FixedCaptureChoreStates : GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance>
+		public class FixedCaptureChoreStates : GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.movetopoint;
 			base.Target(this.rancher);
@@ -61,35 +61,35 @@ public class FixedCaptureChore : Chore<FixedCaptureChore.FixedCaptureChoreStates
 			this.success.ReturnSuccess();
 		}
 
-		private static bool HasCreatureLeft(FixedCaptureChore.FixedCaptureChoreStates.Instance smi)
+				private static bool HasCreatureLeft(FixedCaptureChore.FixedCaptureChoreStates.Instance smi)
 		{
 			return smi.fixedCapturePoint.targetCapturable.IsNullOrStopped() || !smi.fixedCapturePoint.targetCapturable.GetComponent<ChoreConsumer>().IsChoreEqualOrAboveCurrentChorePriority<FixedCaptureStates>();
 		}
 
-		public StateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.TargetParameter rancher;
+				public StateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.TargetParameter rancher;
 
-		public StateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.TargetParameter creature;
+				public StateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.TargetParameter creature;
 
-		private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State movetopoint;
+				private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State movetopoint;
 
-		private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State waitforcreature_pre;
+				private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State waitforcreature_pre;
 
-		private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State waitforcreature;
+				private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State waitforcreature;
 
-		private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State capturecreature;
+				private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State capturecreature;
 
-		private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State failed;
+				private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State failed;
 
-		private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State success;
+				private GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.State success;
 
-		public new class Instance : GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.GameInstance
+				public new class Instance : GameStateMachine<FixedCaptureChore.FixedCaptureChoreStates, FixedCaptureChore.FixedCaptureChoreStates.Instance, IStateMachineTarget, object>.GameInstance
 		{
-			public Instance(KPrefabID capture_point) : base(capture_point)
+						public Instance(KPrefabID capture_point) : base(capture_point)
 			{
 				this.fixedCapturePoint = capture_point.GetSMI<FixedCapturePoint.Instance>();
 			}
 
-			public FixedCapturePoint.Instance fixedCapturePoint;
+						public FixedCapturePoint.Instance fixedCapturePoint;
 		}
 	}
 }

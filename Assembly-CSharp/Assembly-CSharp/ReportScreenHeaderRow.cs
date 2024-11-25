@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/ReportScreenHeaderRow")]
 public class ReportScreenHeaderRow : KMonoBehaviour
 {
-	public void SetLine(ReportManager.ReportGroup reportGroup)
+		public void SetLine(ReportManager.ReportGroup reportGroup)
 	{
 		LayoutElement component = this.name.GetComponent<LayoutElement>();
 		component.minWidth = (component.preferredWidth = this.nameWidth);
@@ -13,19 +13,19 @@ public class ReportScreenHeaderRow : KMonoBehaviour
 		this.name.text = reportGroup.stringKey;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public new LocText name;
 
-	[SerializeField]
+		[SerializeField]
 	private LayoutElement spacer;
 
-	[SerializeField]
+		[SerializeField]
 	private Image bgImage;
 
-	public float groupSpacerWidth;
+		public float groupSpacerWidth;
 
-	private float nameWidth = 164f;
+		private float nameWidth = 164f;
 
-	[SerializeField]
+		[SerializeField]
 	private Color oddRowColor;
 }

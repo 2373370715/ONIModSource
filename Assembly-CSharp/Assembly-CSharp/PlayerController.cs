@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 [AddComponentMenu("KMonoBehaviour/scripts/PlayerController")]
 public class PlayerController : KMonoBehaviour, IInputHandler
 {
-		public string handlerName
+			public string handlerName
 	{
 		get
 		{
@@ -15,9 +15,9 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-			public KInputHandler inputHandler { get; set; }
+				public KInputHandler inputHandler { get; set; }
 
-		public InterfaceTool ActiveTool
+			public InterfaceTool ActiveTool
 	{
 		get
 		{
@@ -25,14 +25,14 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-			public static PlayerController Instance { get; private set; }
+				public static PlayerController Instance { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		PlayerController.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		PlayerController.Instance = this;
 		InterfaceTool.InitializeConfigs(this.defaultConfigKey, this.interfaceConfigs);
@@ -49,7 +49,7 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (this.tools.Length == 0)
 		{
@@ -58,16 +58,16 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		this.ActivateTool(this.tools[0]);
 	}
 
-	private void InitializeConfigs()
+		private void InitializeConfigs()
 	{
 	}
 
-	private Vector3 GetCursorPos()
+		private Vector3 GetCursorPos()
 	{
 		return PlayerController.GetCursorPos(KInputManager.GetMousePos());
 	}
 
-	public static Vector3 GetCursorPos(Vector3 mouse_pos)
+		public static Vector3 GetCursorPos(Vector3 mouse_pos)
 	{
 		RaycastHit raycastHit;
 		Vector3 vector;
@@ -91,7 +91,7 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		return vector;
 	}
 
-	private void UpdateHover()
+		private void UpdateHover()
 	{
 		UnityEngine.EventSystems.EventSystem current = UnityEngine.EventSystems.EventSystem.current;
 		if (current != null)
@@ -100,7 +100,7 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.UpdateDrag();
 		if (this.activeTool && this.activeTool.enabled)
@@ -121,12 +121,12 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-	private void OnCleanup()
+		private void OnCleanup()
 	{
 		Global.GetInputManager().usedMenus.Remove(this);
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (this.queueStopDrag)
 		{
@@ -138,7 +138,7 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-	public void ActivateTool(InterfaceTool tool)
+		public void ActivateTool(InterfaceTool tool)
 	{
 		if (this.activeTool == tool)
 		{
@@ -152,7 +152,7 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		this.UpdateHover();
 	}
 
-	public void ToolDeactivated(InterfaceTool tool)
+		public void ToolDeactivated(InterfaceTool tool)
 	{
 		if (this.activeTool == tool && this.activeTool != null)
 		{
@@ -164,7 +164,7 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-	private void DeactivateTool(InterfaceTool new_tool = null)
+		private void DeactivateTool(InterfaceTool new_tool = null)
 	{
 		if (this.activeTool != null)
 		{
@@ -176,12 +176,12 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-	public bool IsUsingDefaultTool()
+		public bool IsUsingDefaultTool()
 	{
 		return this.tools.Length != 0 && this.activeTool == this.tools[0];
 	}
 
-	private void StartDrag(global::Action action)
+		private void StartDrag(global::Action action)
 	{
 		if (this.dragAction == global::Action.Invalid)
 		{
@@ -191,7 +191,7 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-	private void UpdateDrag()
+		private void UpdateDrag()
 	{
 		this.dragDelta = Vector2.zero;
 		Vector3 mousePos = KInputManager.GetMousePos();
@@ -211,7 +211,7 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-	private void StopDrag(global::Action action)
+		private void StopDrag(global::Action action)
 	{
 		if (this.dragAction == action)
 		{
@@ -223,7 +223,7 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-	public void CancelDragging()
+		public void CancelDragging()
 	{
 		this.queueStopDrag = true;
 		if (this.activeTool != null)
@@ -236,12 +236,12 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-	public void OnCancelInput()
+		public void OnCancelInput()
 	{
 		this.CancelDragging();
 	}
 
-	public void OnKeyDown(KButtonEvent e)
+		public void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.ToggleScreenshotMode))
 		{
@@ -304,7 +304,7 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		this.activeTool.OnKeyDown(e);
 	}
 
-	public void OnKeyUp(KButtonEvent e)
+		public void OnKeyUp(KButtonEvent e)
 	{
 		bool flag = true;
 		if (e.IsAction(global::Action.MouseLeft) || e.IsAction(global::Action.ShiftMouseLeft))
@@ -368,32 +368,32 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		}
 	}
 
-	public bool ConsumeIfNotDragging(KButtonEvent e, global::Action action)
+		public bool ConsumeIfNotDragging(KButtonEvent e, global::Action action)
 	{
 		return (this.dragAction != action || !this.dragging) && e.TryConsume(action);
 	}
 
-	public bool IsDragging()
+		public bool IsDragging()
 	{
 		return this.dragging && this.CanDrag();
 	}
 
-	public bool CanDrag()
+		public bool CanDrag()
 	{
 		return this.draggingAllowed && this.dragAction > global::Action.Invalid;
 	}
 
-	public void AllowDragging(bool allow)
+		public void AllowDragging(bool allow)
 	{
 		this.draggingAllowed = allow;
 	}
 
-	public Vector3 GetDragDelta()
+		public Vector3 GetDragDelta()
 	{
 		return this.dragDelta;
 	}
 
-	public Vector3 GetWorldDragDelta()
+		public Vector3 GetWorldDragDelta()
 	{
 		if (!this.draggingAllowed)
 		{
@@ -402,39 +402,39 @@ public class PlayerController : KMonoBehaviour, IInputHandler
 		return this.worldDragDelta;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private global::Action defaultConfigKey;
 
-	[SerializeField]
+		[SerializeField]
 	private List<InterfaceToolConfig> interfaceConfigs;
 
-	public InterfaceTool[] tools;
+		public InterfaceTool[] tools;
 
-	private InterfaceTool activeTool;
+		private InterfaceTool activeTool;
 
-	public VirtualInputModule vim;
+		public VirtualInputModule vim;
 
-	private bool DebugHidingCursor;
+		private bool DebugHidingCursor;
 
-	private Vector3 prevMousePos = new Vector3(float.PositiveInfinity, 0f, 0f);
+		private Vector3 prevMousePos = new Vector3(float.PositiveInfinity, 0f, 0f);
 
-	private const float MIN_DRAG_DIST_SQR = 36f;
+		private const float MIN_DRAG_DIST_SQR = 36f;
 
-	private const float MIN_DRAG_TIME = 0.3f;
+		private const float MIN_DRAG_TIME = 0.3f;
 
-	private global::Action dragAction;
+		private global::Action dragAction;
 
-	private bool draggingAllowed = true;
+		private bool draggingAllowed = true;
 
-	private bool dragging;
+		private bool dragging;
 
-	private bool queueStopDrag;
+		private bool queueStopDrag;
 
-	private Vector3 startDragPos;
+		private Vector3 startDragPos;
 
-	private float startDragTime;
+		private float startDragTime;
 
-	private Vector3 dragDelta;
+		private Vector3 dragDelta;
 
-	private Vector3 worldDragDelta;
+		private Vector3 worldDragDelta;
 }

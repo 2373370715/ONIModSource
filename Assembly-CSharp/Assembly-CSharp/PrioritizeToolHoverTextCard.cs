@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PrioritizeToolHoverTextCard : HoverTextConfiguration
 {
-	public override void UpdateHoverElements(List<KSelectable> selected)
+		public override void UpdateHoverElements(List<KSelectable> selected)
 	{
 		if (ToolMenu.Instance.PriorityScreen == null)
 		{
@@ -33,7 +33,7 @@ public class PrioritizeToolHoverTextCard : HoverTextConfiguration
 		hoverTextDrawer.EndDrawing();
 	}
 
-	protected override void ConfigureTitle(HoverTextScreen screen)
+		protected override void ConfigureTitle(HoverTextScreen screen)
 	{
 		string lastEnabledFilter = ToolMenu.Instance.toolParameterMenu.GetLastEnabledFilter();
 		if (string.IsNullOrEmpty(this.ToolName) || lastEnabledFilter == "ALL")

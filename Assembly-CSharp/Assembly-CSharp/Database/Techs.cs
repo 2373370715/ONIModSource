@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Database
 {
-	public class Techs : ResourceSet<Tech>
+		public class Techs : ResourceSet<Tech>
 	{
-		public Techs(ResourceSet parent) : base("Techs", parent)
+				public Techs(ResourceSet parent) : base("Techs", parent)
 		{
 			if (!DlcManager.IsExpansion1Active())
 			{
@@ -143,14 +143,15 @@ namespace Database
 			};
 		}
 
-		public void Init()
+				public void Init()
 		{
 			new Tech("FarmingTech", new List<string>
 			{
 				"AlgaeHabitat",
 				"PlanterBox",
 				"RationBox",
-				"Compost"
+				"Compost",
+				"DisposableElectrobank_BasicSingleHarvestPlant"
 			}, this, null);
 			new Tech("FineDining", new List<string>
 			{
@@ -305,17 +306,20 @@ namespace Database
 				"FlushToilet",
 				"WashSink",
 				ShowerConfig.ID,
-				"MeshTile"
+				"MeshTile",
+				"GunkEmptier"
 			}, this, null);
 			new Tech("FlowRedirection", new List<string>
 			{
 				"MechanicalSurfboard",
+				"LiquidBottler",
 				"ModularLaunchpadPortLiquid",
 				"ModularLaunchpadPortLiquidUnloader",
 				"LiquidCargoBaySmall"
 			}, this, null);
 			new Tech("LiquidDistribution", new List<string>
 			{
+				"BottleEmptierConduitLiquid",
 				"RocketInteriorLiquidInput",
 				"RocketInteriorLiquidOutput",
 				"WallToilet"
@@ -328,7 +332,8 @@ namespace Database
 			{
 				"GasFilter",
 				"LiquidFilter",
-				"SludgePress"
+				"SludgePress",
+				"OilChanger"
 			}, this, null);
 			new Tech("Distillation", new List<string>
 			{
@@ -352,7 +357,8 @@ namespace Database
 			{
 				"BatteryMedium",
 				SwitchConfig.ID,
-				"WireBridge"
+				"WireBridge",
+				"SmallElectrobankDischarger"
 			}, this, null);
 			new Tech("AdvancedPowerRegulation", new List<string>
 			{
@@ -415,13 +421,16 @@ namespace Database
 			{
 				"BatterySmart",
 				"Phonobox",
-				"PowerControlStation"
+				"PowerControlStation",
+				"ElectrobankCharger",
+				"Electrobank"
 			}, this, null);
 			new Tech("SpacePower", new List<string>
 			{
 				"BatteryModule",
 				"SolarPanelModule",
-				"RocketInteriorPowerPlug"
+				"RocketInteriorPowerPlug",
+				"LargeElectrobankDischarger"
 			}, this, null);
 			new Tech("NuclearRefinement", new List<string>
 			{
@@ -539,7 +548,8 @@ namespace Database
 			{
 				"DeltaResearchPoint",
 				"NuclearResearchCenter",
-				"ManualHighEnergyParticleSpawner"
+				"ManualHighEnergyParticleSpawner",
+				"DisposableElectrobank_UraniumOre"
 			}, this, null);
 			new Tech("AdvancedNuclearResearch", new List<string>
 			{
@@ -563,7 +573,8 @@ namespace Database
 			new Tech("ArtificialFriends", new List<string>
 			{
 				"SweepBotStation",
-				"ScoutModule"
+				"ScoutModule",
+				"RoboPilotModule"
 			}, this, null);
 			new Tech("BasicRefinement", new List<string>
 			{
@@ -785,7 +796,8 @@ namespace Database
 			new Tech("RoboticTools", new List<string>
 			{
 				"AutoMiner",
-				"RailGunPayloadOpener"
+				"RailGunPayloadOpener",
+				"AdvancedCraftingTable"
 			}, this, null);
 			new Tech("PortableGasses", new List<string>
 			{
@@ -796,10 +808,35 @@ namespace Database
 				"OxygenMaskMarker",
 				"Oxysconce"
 			}, this, null);
+			new Tech("GasDistribution", new List<string>
+			{
+				"BottleEmptierConduitGas",
+				"RocketInteriorGasInput",
+				"RocketInteriorGasOutput",
+				"OxidizerTankCluster"
+			}, this, null);
+			this.InitBaseGameOnly();
 			this.InitExpansion1();
 		}
 
-		private void InitExpansion1()
+				private void InitBaseGameOnly()
+		{
+			if (DlcManager.IsExpansion1Active())
+			{
+				return;
+			}
+			if (DlcManager.IsContentSubscribed("DLC3_ID"))
+			{
+				new Tech("DataScienceBaseGame", new List<string>
+				{
+					"DataMiner",
+					RemoteWorkerDockConfig.ID,
+					RemoteWorkTerminalConfig.ID
+				}, this, null);
+			}
+		}
+
+				private void InitExpansion1()
 		{
 			if (!DlcManager.IsExpansion1Active())
 			{
@@ -822,21 +859,24 @@ namespace Database
 			{
 				"NoseconeHarvest"
 			}, this, null);
-			new Tech("GasDistribution", new List<string>
-			{
-				"RocketInteriorGasInput",
-				"RocketInteriorGasOutput",
-				"OxidizerTankCluster"
-			}, this, null);
 			new Tech("AdvancedScanners", new List<string>
 			{
 				"ScannerModule",
 				"LogicInterasteroidSender",
 				"LogicInterasteroidReceiver"
 			}, this, null);
+			if (DlcManager.IsContentSubscribed("DLC3_ID"))
+			{
+				new Tech("DataScience", new List<string>
+				{
+					"DataMiner",
+					RemoteWorkerDockConfig.ID,
+					RemoteWorkTerminalConfig.ID
+				}, this, null);
+			}
 		}
 
-		public void PostProcess()
+				public void PostProcess()
 		{
 			foreach (Tech tech in this.resources)
 			{
@@ -853,7 +893,7 @@ namespace Database
 			}
 		}
 
-		public void Load(TextAsset tree_file)
+				public void Load(TextAsset tree_file)
 		{
 			ResourceTreeLoader<ResourceTreeNode> resourceTreeLoader = new ResourceTreeLoader<ResourceTreeNode>(tree_file);
 			List<TechTreeTitle> list = new List<TechTreeTitle>();
@@ -867,33 +907,37 @@ namespace Database
 				if (!string.Equals(resourceTreeNode.Id.Substring(0, 1), "_"))
 				{
 					Tech tech = base.TryGet(resourceTreeNode.Id);
-					global::Debug.Assert(tech != null, "Tech node found in yEd that is not found in DbTechs constructor: " + resourceTreeNode.Id);
-					string categoryID = "";
-					for (int j = 0; j < list.Count; j++)
+					if (tech != null)
 					{
-						if (list[j].center.y >= resourceTreeNode.center.y)
+						string categoryID = "";
+						for (int j = 0; j < list.Count; j++)
 						{
-							categoryID = list[j].Id;
-							break;
-						}
-					}
-					tech.SetNode(resourceTreeNode, categoryID);
-					foreach (ResourceTreeNode resourceTreeNode2 in resourceTreeNode.references)
-					{
-						Tech tech2 = base.TryGet(resourceTreeNode2.Id);
-						global::Debug.Assert(tech2 != null, "Tech node found in yEd that is not found in DbTechs constructor: " + resourceTreeNode2.Id);
-						categoryID = "";
-						for (int k = 0; k < list.Count; k++)
-						{
-							if (list[k].center.y >= resourceTreeNode.center.y)
+							if (list[j].center.y >= resourceTreeNode.center.y)
 							{
-								categoryID = list[k].Id;
+								categoryID = list[j].Id;
 								break;
 							}
 						}
-						tech2.SetNode(resourceTreeNode2, categoryID);
-						tech2.requiredTech.Add(tech);
-						tech.unlockedTech.Add(tech2);
+						tech.SetNode(resourceTreeNode, categoryID);
+						foreach (ResourceTreeNode resourceTreeNode2 in resourceTreeNode.references)
+						{
+							Tech tech2 = base.TryGet(resourceTreeNode2.Id);
+							if (tech2 != null)
+							{
+								categoryID = "";
+								for (int k = 0; k < list.Count; k++)
+								{
+									if (list[k].center.y >= resourceTreeNode.center.y)
+									{
+										categoryID = list[k].Id;
+										break;
+									}
+								}
+								tech2.SetNode(resourceTreeNode2, categoryID);
+								tech2.requiredTech.Add(tech);
+								tech.unlockedTech.Add(tech2);
+							}
+						}
 					}
 				}
 			}
@@ -917,7 +961,7 @@ namespace Database
 			}
 		}
 
-		public static int GetTier(Tech tech)
+				public static int GetTier(Tech tech)
 		{
 			if (tech == null)
 			{
@@ -931,7 +975,7 @@ namespace Database
 			return num + 1;
 		}
 
-		private void AddPrerequisite(Tech tech, string prerequisite_name)
+				private void AddPrerequisite(Tech tech, string prerequisite_name)
 		{
 			Tech tech2 = base.TryGet(prerequisite_name);
 			if (tech2 != null)
@@ -941,7 +985,7 @@ namespace Database
 			}
 		}
 
-		public Tech TryGetTechForTechItem(string itemId)
+				public Tech TryGetTechForTechItem(string itemId)
 		{
 			Predicate<string> <>9__0;
 			for (int i = 0; i < this.Count; i++)
@@ -961,7 +1005,7 @@ namespace Database
 			return null;
 		}
 
-		public bool IsTechItemComplete(string id)
+				public bool IsTechItemComplete(string id)
 		{
 			foreach (Tech tech in this.resources)
 			{
@@ -979,6 +1023,6 @@ namespace Database
 			return true;
 		}
 
-		private readonly List<List<global::Tuple<string, float>>> TECH_TIERS;
+				private readonly List<List<global::Tuple<string, float>>> TECH_TIERS;
 	}
 }

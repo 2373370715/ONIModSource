@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class DragTool : InterfaceTool
 {
-		public bool Dragging
+			public bool Dragging
 	{
 		get
 		{
@@ -14,21 +14,24 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	protected virtual DragTool.Mode GetMode()
+		protected virtual DragTool.Mode GetMode()
 	{
 		return this.mode;
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		this.dragging = false;
 		this.SetMode(this.mode);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
-		KScreenManager.Instance.SetEventSystemEnabled(true);
+		if (KScreenManager.Instance != null)
+		{
+			KScreenManager.Instance.SetEventSystemEnabled(true);
+		}
 		if (KInputManager.currentControllerIsGamepad)
 		{
 			base.SetCurrentVirtualInputModuleMousMovementMode(false, null);
@@ -37,7 +40,7 @@ public class DragTool : InterfaceTool
 		base.OnDeactivateTool(new_tool);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Game.Instance.Subscribe(1634669191, new Action<object>(this.OnTutorialOpened));
 		base.OnPrefabInit();
@@ -55,12 +58,12 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		this.dragging = false;
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		if (this.visualizer != null)
 		{
@@ -72,7 +75,7 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		cursor_pos = this.ClampPositionToWorld(cursor_pos, ClusterManager.Instance.activeWorld);
 		this.dragging = true;
@@ -127,7 +130,7 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	public void RemoveCurrentAreaText()
+		public void RemoveCurrentAreaText()
 	{
 		if (this.areaVisualizerText != Guid.Empty)
 		{
@@ -136,7 +139,7 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	public void CancelDragging()
+		public void CancelDragging()
 	{
 		KScreenManager.Instance.SetEventSystemEnabled(true);
 		if (this.currentVirtualInputInUse != null)
@@ -162,7 +165,7 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	public override void OnLeftClickUp(Vector3 cursor_pos)
+		public override void OnLeftClickUp(Vector3 cursor_pos)
 	{
 		KScreenManager.Instance.SetEventSystemEnabled(true);
 		if (this.currentVirtualInputInUse != null)
@@ -226,29 +229,29 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	protected virtual string GetConfirmSound()
+		protected virtual string GetConfirmSound()
 	{
 		return "Tile_Confirm";
 	}
 
-	protected virtual string GetDragSound()
+		protected virtual string GetDragSound()
 	{
 		return "Tile_Drag";
 	}
 
-	public override string GetDeactivateSound()
+		public override string GetDeactivateSound()
 	{
 		return "Tile_Cancel";
 	}
 
-	protected Vector3 ClampPositionToWorld(Vector3 position, WorldContainer world)
+		protected Vector3 ClampPositionToWorld(Vector3 position, WorldContainer world)
 	{
 		position.x = Mathf.Clamp(position.x, world.minimumBounds.x, world.maximumBounds.x);
 		position.y = Mathf.Clamp(position.y, world.minimumBounds.y, world.maximumBounds.y);
 		return position;
 	}
 
-	protected Vector3 SnapToLine(Vector3 cursorPos)
+		protected Vector3 SnapToLine(Vector3 cursorPos)
 	{
 		Vector3 vector = cursorPos - this.downPos;
 		if (this.canChangeDragAxis || (!this.canChangeDragAxis && !this.cellChangedSinceDown) || this.dragAxis == DragTool.DragAxis.Invalid)
@@ -286,7 +289,7 @@ public class DragTool : InterfaceTool
 		return cursorPos;
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		cursorPos = this.ClampPositionToWorld(cursorPos, ClusterManager.Instance.activeWorld);
 		if (this.dragging && (Input.GetKey((KeyCode)Global.GetInputManager().GetDefaultController().GetInputForAction(global::Action.DragStraight)) || this.GetMode() == DragTool.Mode.Line))
@@ -360,20 +363,20 @@ public class DragTool : InterfaceTool
 		this.previousCursorPos = cursorPos;
 	}
 
-	protected virtual void OnDragTool(int cell, int distFromOrigin)
+		protected virtual void OnDragTool(int cell, int distFromOrigin)
 	{
 	}
 
-	protected virtual void OnDragComplete(Vector3 cursorDown, Vector3 cursorUp)
+		protected virtual void OnDragComplete(Vector3 cursorDown, Vector3 cursorUp)
 	{
 	}
 
-	protected virtual int GetDragLength()
+		protected virtual int GetDragLength()
 	{
 		return 0;
 	}
 
-	private void AddDragPoint(Vector3 cursorPos)
+		private void AddDragPoint(Vector3 cursorPos)
 	{
 		cursorPos = this.ClampPositionToWorld(cursorPos, ClusterManager.Instance.activeWorld);
 		int cell = Grid.PosToCell(cursorPos);
@@ -383,7 +386,7 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	private void AddDragPoints(Vector3 cursorPos, Vector3 previousCursorPos)
+		private void AddDragPoints(Vector3 cursorPos, Vector3 previousCursorPos)
 	{
 		cursorPos = this.ClampPositionToWorld(cursorPos, ClusterManager.Instance.activeWorld);
 		Vector3 a = cursorPos - previousCursorPos;
@@ -398,7 +401,7 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.interceptNumberKeysForPriority)
 		{
@@ -410,7 +413,7 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (this.interceptNumberKeysForPriority)
 		{
@@ -422,7 +425,7 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	private void HandlePriortyKeysDown(KButtonEvent e)
+		private void HandlePriortyKeysDown(KButtonEvent e)
 	{
 		global::Action action = e.GetAction();
 		if (global::Action.Plan1 > action || action > global::Action.Plan10 || !e.TryConsume(action))
@@ -438,7 +441,7 @@ public class DragTool : InterfaceTool
 		ToolMenu.Instance.PriorityScreen.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.topPriority, 1), true);
 	}
 
-	private void HandlePriorityKeysUp(KButtonEvent e)
+		private void HandlePriorityKeysUp(KButtonEvent e)
 	{
 		global::Action action = e.GetAction();
 		if (global::Action.Plan1 <= action && action <= global::Action.Plan10)
@@ -447,7 +450,7 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	protected void SetMode(DragTool.Mode newMode)
+		protected void SetMode(DragTool.Mode newMode)
 	{
 		this.mode = newMode;
 		switch (this.mode)
@@ -484,7 +487,7 @@ public class DragTool : InterfaceTool
 		}
 	}
 
-	public override void OnFocus(bool focus)
+		public override void OnFocus(bool focus)
 	{
 		DragTool.Mode mode = this.GetMode();
 		if (mode == DragTool.Mode.Brush)
@@ -507,66 +510,66 @@ public class DragTool : InterfaceTool
 		this.hasFocus = (focus || this.dragging);
 	}
 
-	private void OnTutorialOpened(object data)
+		private void OnTutorialOpened(object data)
 	{
 		this.dragging = false;
 	}
 
-	public override bool ShowHoverUI()
+		public override bool ShowHoverUI()
 	{
 		return this.dragging || base.ShowHoverUI();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Texture2D boxCursor;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject areaVisualizer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject areaVisualizerTextPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private Color32 areaColour = new Color(1f, 1f, 1f, 0.5f);
 
-	protected SpriteRenderer areaVisualizerSpriteRenderer;
+		protected SpriteRenderer areaVisualizerSpriteRenderer;
 
-	protected Guid areaVisualizerText;
+		protected Guid areaVisualizerText;
 
-	protected Vector3 placementPivot;
+		protected Vector3 placementPivot;
 
-	protected bool interceptNumberKeysForPriority;
+		protected bool interceptNumberKeysForPriority;
 
-	private bool dragging;
+		private bool dragging;
 
-	private Vector3 previousCursorPos;
+		private Vector3 previousCursorPos;
 
-	private DragTool.Mode mode = DragTool.Mode.Box;
+		private DragTool.Mode mode = DragTool.Mode.Box;
 
-	private DragTool.DragAxis dragAxis = DragTool.DragAxis.Invalid;
+		private DragTool.DragAxis dragAxis = DragTool.DragAxis.Invalid;
 
-	protected bool canChangeDragAxis = true;
+		protected bool canChangeDragAxis = true;
 
-	protected int lineModeMaxLength = -1;
+		protected int lineModeMaxLength = -1;
 
-	protected Vector3 downPos;
+		protected Vector3 downPos;
 
-	private bool cellChangedSinceDown;
+		private bool cellChangedSinceDown;
 
-	private VirtualInputModule currentVirtualInputInUse;
+		private VirtualInputModule currentVirtualInputInUse;
 
-	private enum DragAxis
+		private enum DragAxis
 	{
-		Invalid = -1,
-		None,
-		Horizontal,
-		Vertical
+				Invalid = -1,
+				None,
+				Horizontal,
+				Vertical
 	}
 
-	public enum Mode
+		public enum Mode
 	{
-		Brush,
-		Box,
-		Line
+				Brush,
+				Box,
+				Line
 	}
 }

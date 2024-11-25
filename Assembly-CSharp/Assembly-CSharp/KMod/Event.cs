@@ -3,9 +3,9 @@ using STRINGS;
 
 namespace KMod
 {
-	public struct Event
+		public struct Event
 	{
-		public static void GetUIStrings(EventType err_type, out string title, out string title_tooltip)
+				public static void GetUIStrings(EventType err_type, out string title, out string title_tooltip)
 		{
 			title = string.Empty;
 			title_tooltip = string.Empty;
@@ -84,10 +84,10 @@ namespace KMod
 			}
 		}
 
-		public EventType event_type;
+				public EventType event_type;
 
-		public Label mod;
+				public Label mod;
 
-		public string details;
+				public string details;
 	}
 }

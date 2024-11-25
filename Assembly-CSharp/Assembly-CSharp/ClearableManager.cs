@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 internal class ClearableManager
 {
-	public HandleVector<int>.Handle RegisterClearable(Clearable clearable)
+		public HandleVector<int>.Handle RegisterClearable(Clearable clearable)
 	{
 		return this.markedClearables.Allocate(new ClearableManager.MarkedClearable
 		{
@@ -13,12 +13,12 @@ internal class ClearableManager
 		});
 	}
 
-	public void UnregisterClearable(HandleVector<int>.Handle handle)
+		public void UnregisterClearable(HandleVector<int>.Handle handle)
 	{
 		this.markedClearables.Free(handle);
 	}
 
-	public void CollectAndSortClearables(Navigator navigator)
+		public void CollectAndSortClearables(Navigator navigator)
 	{
 		this.sortedClearables.Clear();
 		foreach (ClearableManager.MarkedClearable markedClearable in this.markedClearables.GetDataList())
@@ -37,7 +37,7 @@ internal class ClearableManager
 		this.sortedClearables.Sort(ClearableManager.SortedClearable.comparer);
 	}
 
-	public void CollectChores(List<GlobalChoreProvider.Fetch> fetches, ChoreConsumerState consumer_state, List<Chore.Precondition.Context> succeeded, List<Chore.Precondition.Context> failed_contexts)
+		public void CollectChores(List<GlobalChoreProvider.Fetch> fetches, ChoreConsumerState consumer_state, List<Chore.Precondition.Context> succeeded, List<Chore.Precondition.Context> failed_contexts)
 	{
 		ChoreType transport = Db.Get().ChoreTypes.Transport;
 		int personalPriority = consumer_state.consumer.GetPersonalPriority(transport);
@@ -79,32 +79,32 @@ internal class ClearableManager
 		}
 	}
 
-	private KCompactedVector<ClearableManager.MarkedClearable> markedClearables = new KCompactedVector<ClearableManager.MarkedClearable>(0);
+		private KCompactedVector<ClearableManager.MarkedClearable> markedClearables = new KCompactedVector<ClearableManager.MarkedClearable>(0);
 
-	private List<ClearableManager.SortedClearable> sortedClearables = new List<ClearableManager.SortedClearable>();
+		private List<ClearableManager.SortedClearable> sortedClearables = new List<ClearableManager.SortedClearable>();
 
-	private struct MarkedClearable
+		private struct MarkedClearable
 	{
-		public Clearable clearable;
+				public Clearable clearable;
 
-		public Pickupable pickupable;
+				public Pickupable pickupable;
 
-		public Prioritizable prioritizable;
+				public Prioritizable prioritizable;
 	}
 
-	private struct SortedClearable
+		private struct SortedClearable
 	{
-		public Pickupable pickupable;
+				public Pickupable pickupable;
 
-		public PrioritySetting masterPriority;
+				public PrioritySetting masterPriority;
 
-		public int cost;
+				public int cost;
 
-		public static ClearableManager.SortedClearable.Comparer comparer = new ClearableManager.SortedClearable.Comparer();
+				public static ClearableManager.SortedClearable.Comparer comparer = new ClearableManager.SortedClearable.Comparer();
 
-		public class Comparer : IComparer<ClearableManager.SortedClearable>
+				public class Comparer : IComparer<ClearableManager.SortedClearable>
 		{
-			public int Compare(ClearableManager.SortedClearable a, ClearableManager.SortedClearable b)
+						public int Compare(ClearableManager.SortedClearable a, ClearableManager.SortedClearable b)
 			{
 				int num = b.masterPriority.priority_value - a.masterPriority.priority_value;
 				if (num == 0)

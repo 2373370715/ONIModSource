@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.aboveToggle.onClick += delegate()
@@ -39,7 +39,7 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 		this.numberInput.decimalPlaces = 1;
 	}
 
-	public void Render200ms(float dt)
+		public void Render200ms(float dt)
 	{
 		if (this.target == null)
 		{
@@ -49,12 +49,12 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 		this.UpdateLabels();
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<IThresholdSwitch>() != null;
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		this.target = null;
 		if (new_target == null)
@@ -132,13 +132,13 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 		this.OnConditionButtonClicked(this.thresholdSwitch.ActivateAboveThreshold);
 	}
 
-	private void OnThresholdValueChanged(float new_value)
+		private void OnThresholdValueChanged(float new_value)
 	{
 		this.thresholdSwitch.Threshold = new_value;
 		this.UpdateTargetThresholdLabel();
 	}
 
-	private void OnConditionButtonClicked(bool activate_above_threshold)
+		private void OnConditionButtonClicked(bool activate_above_threshold)
 	{
 		this.thresholdSwitch.ActivateAboveThreshold = activate_above_threshold;
 		if (activate_above_threshold)
@@ -158,7 +158,7 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 		this.UpdateTargetThresholdLabel();
 	}
 
-	private void UpdateTargetThresholdLabel()
+		private void UpdateTargetThresholdLabel()
 	{
 		this.numberInput.SetDisplayValue(this.thresholdSwitch.Format(this.thresholdSwitch.Threshold, false) + this.thresholdSwitch.ThresholdValueUnits());
 		if (this.thresholdSwitch.ActivateAboveThreshold)
@@ -171,17 +171,17 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 		this.thresholdSlider.GetComponentInChildren<ToolTip>().tooltipPositionOffset = new Vector2(0f, 25f);
 	}
 
-	private void ReceiveValueFromSlider(float newValue)
+		private void ReceiveValueFromSlider(float newValue)
 	{
 		this.UpdateThresholdValue(this.thresholdSwitch.ProcessedSliderValue(newValue));
 	}
 
-	private void ReceiveValueFromInput(float newValue)
+		private void ReceiveValueFromInput(float newValue)
 	{
 		this.UpdateThresholdValue(this.thresholdSwitch.ProcessedInputValue(newValue));
 	}
 
-	private void UpdateThresholdValue(float newValue)
+		private void UpdateThresholdValue(float newValue)
 	{
 		if (newValue < this.thresholdSwitch.RangeMin)
 		{
@@ -204,12 +204,12 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 		this.UpdateTargetThresholdLabel();
 	}
 
-	private void UpdateLabels()
+		private void UpdateLabels()
 	{
 		this.currentValue.text = string.Format(UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.CURRENT_VALUE, this.thresholdSwitch.ThresholdValueName, this.thresholdSwitch.Format(this.thresholdSwitch.CurrentValue, true));
 	}
 
-	public override string GetTitle()
+		public override string GetTitle()
 	{
 		if (this.target != null)
 		{
@@ -218,43 +218,43 @@ public class ThresholdSwitchSideScreen : SideScreenContent, IRender200ms
 		return UI.UISIDESCREENS.THRESHOLD_SWITCH_SIDESCREEN.TITLE;
 	}
 
-	private GameObject target;
+		private GameObject target;
 
-	private IThresholdSwitch thresholdSwitch;
+		private IThresholdSwitch thresholdSwitch;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText currentValue;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText thresholdValue;
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle aboveToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle belowToggle;
 
-	[Header("Slider")]
+		[Header("Slider")]
 	[SerializeField]
 	private NonLinearSlider thresholdSlider;
 
-	[Header("Number Input")]
+		[Header("Number Input")]
 	[SerializeField]
 	private KNumberInputField numberInput;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText unitsLabel;
 
-	[Header("Increment Buttons")]
+		[Header("Increment Buttons")]
 	[SerializeField]
 	private GameObject incrementMinor;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject incrementMajor;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject decrementMinor;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject decrementMajor;
 }

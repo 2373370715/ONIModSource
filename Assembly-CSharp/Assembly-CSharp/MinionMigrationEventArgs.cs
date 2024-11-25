@@ -2,9 +2,9 @@
 
 public class MinionMigrationEventArgs
 {
-	public MinionIdentity minionId;
+		public MinionIdentity minionId;
 
-	public int prevWorldId;
+		public int prevWorldId;
 
-	public int targetWorldId;
+		public int targetWorldId;
 }

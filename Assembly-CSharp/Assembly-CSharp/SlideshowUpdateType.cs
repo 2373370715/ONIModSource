@@ -2,6 +2,6 @@
 
 public enum SlideshowUpdateType
 {
-	preloadedSprites,
-	loadOnDemand
+		preloadedSprites,
+		loadOnDemand
 }

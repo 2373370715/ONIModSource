@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class HatchDrillSoundEvent : SoundEvent
 {
-	public HatchDrillSoundEvent(string file_name, string sound_name, int frame, float min_interval) : base(file_name, sound_name, frame, true, true, min_interval, false)
+		public HatchDrillSoundEvent(string file_name, string sound_name, int frame, float min_interval) : base(file_name, sound_name, frame, true, true, min_interval, false)
 	{
 	}
 
-	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
+		public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
 	{
-		Vector3 vector = behaviour.GetComponent<Transform>().GetPosition();
+		Vector3 vector = behaviour.position;
 		vector.z = 0f;
 		if (SoundEvent.ObjectIsSelectedAndVisible(behaviour.controller.gameObject))
 		{
@@ -22,7 +22,7 @@ public class HatchDrillSoundEvent : SoundEvent
 		SoundEvent.EndOneShot(instance);
 	}
 
-	private static int GetAudioCategory(int cell)
+		private static int GetAudioCategory(int cell)
 	{
 		if (!Grid.IsValidCell(cell))
 		{

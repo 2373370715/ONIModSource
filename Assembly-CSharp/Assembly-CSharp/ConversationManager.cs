@@ -7,14 +7,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ConversationManager")]
 public class ConversationManager : KMonoBehaviour, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.activeSetups = new List<Conversation>();
 		this.lastConvoTimeByMinion = new Dictionary<MinionIdentity, float>();
 		this.simRenderLoadBalance = true;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		for (int i = this.activeSetups.Count - 1; i >= 0; i--)
 		{
@@ -98,7 +98,7 @@ public class ConversationManager : KMonoBehaviour, ISim200ms
 		this.setupsByMinion.Clear();
 	}
 
-	private bool DoTalking(Conversation setup, MinionIdentity new_speaker)
+		private bool DoTalking(Conversation setup, MinionIdentity new_speaker)
 	{
 		DebugUtil.Assert(setup != null, "setup was null");
 		DebugUtil.Assert(new_speaker != null, "new_speaker was null");
@@ -153,12 +153,12 @@ public class ConversationManager : KMonoBehaviour, ISim200ms
 		return true;
 	}
 
-	public bool TryGetConversation(MinionIdentity minion, out Conversation conversation)
+		public bool TryGetConversation(MinionIdentity minion, out Conversation conversation)
 	{
 		return this.setupsByMinion.TryGetValue(minion, out conversation);
 	}
 
-	private Vector3 GetCentroid(Conversation setup)
+		private Vector3 GetCentroid(Conversation setup)
 	{
 		Vector3 a = Vector3.zero;
 		foreach (MinionIdentity minionIdentity in setup.minions)
@@ -171,7 +171,7 @@ public class ConversationManager : KMonoBehaviour, ISim200ms
 		return a / (float)setup.minions.Count;
 	}
 
-	private Thought GetThoughtForTopic(Conversation setup, Conversation.Topic topic)
+		private Thought GetThoughtForTopic(Conversation setup, Conversation.Topic topic)
 	{
 		if (string.IsNullOrEmpty(topic.topic))
 		{
@@ -187,64 +187,64 @@ public class ConversationManager : KMonoBehaviour, ISim200ms
 		return null;
 	}
 
-	private bool ValidMinionTags(MinionIdentity minion)
+		private bool ValidMinionTags(MinionIdentity minion)
 	{
 		return !(minion == null) && !minion.GetComponent<KPrefabID>().HasAnyTags(ConversationManager.invalidConvoTags);
 	}
 
-	private bool MinionCloseEnoughToConvo(MinionIdentity minion, Conversation setup)
+		private bool MinionCloseEnoughToConvo(MinionIdentity minion, Conversation setup)
 	{
 		return (this.GetCentroid(setup) - minion.transform.GetPosition()).magnitude < TuningData<ConversationManager.Tuning>.Get().maxDistance * 0.5f;
 	}
 
-	private bool MinionOnCooldown(MinionIdentity minion)
+		private bool MinionOnCooldown(MinionIdentity minion)
 	{
 		return !minion.GetComponent<KPrefabID>().HasTag(GameTags.AlwaysConverse) && ((this.lastConvoTimeByMinion.ContainsKey(minion) && GameClock.Instance.GetTime() < this.lastConvoTimeByMinion[minion] + TuningData<ConversationManager.Tuning>.Get().minionCooldownTime) || GameClock.Instance.GetTime() / 600f < TuningData<ConversationManager.Tuning>.Get().cyclesBeforeFirstConversation);
 	}
 
-	private List<Conversation> activeSetups;
+		private List<Conversation> activeSetups;
 
-	private Dictionary<MinionIdentity, float> lastConvoTimeByMinion;
+		private Dictionary<MinionIdentity, float> lastConvoTimeByMinion;
 
-	private Dictionary<MinionIdentity, Conversation> setupsByMinion = new Dictionary<MinionIdentity, Conversation>();
+		private Dictionary<MinionIdentity, Conversation> setupsByMinion = new Dictionary<MinionIdentity, Conversation>();
 
-	private List<Type> convoTypes = new List<Type>
+		private List<Type> convoTypes = new List<Type>
 	{
 		typeof(RecentThingConversation),
 		typeof(AmountStateConversation),
 		typeof(CurrentJobConversation)
 	};
 
-	private static readonly Tag[] invalidConvoTags = new Tag[]
+		private static readonly Tag[] invalidConvoTags = new Tag[]
 	{
 		GameTags.Asleep,
 		GameTags.HoldingBreath,
 		GameTags.Dead
 	};
 
-	public class Tuning : TuningData<ConversationManager.Tuning>
+		public class Tuning : TuningData<ConversationManager.Tuning>
 	{
-		public float cyclesBeforeFirstConversation;
+				public float cyclesBeforeFirstConversation;
 
-		public float maxDistance;
+				public float maxDistance;
 
-		public int maxDupesPerConvo;
+				public int maxDupesPerConvo;
 
-		public float minionCooldownTime;
+				public float minionCooldownTime;
 
-		public float speakTime;
+				public float speakTime;
 
-		public float delayBetweenUtterances;
+				public float delayBetweenUtterances;
 
-		public float delayBeforeStart;
+				public float delayBeforeStart;
 
-		public int maxUtterances;
+				public int maxUtterances;
 	}
 
-	public class StartedTalkingEvent
+		public class StartedTalkingEvent
 	{
-		public GameObject talker;
+				public GameObject talker;
 
-		public string anim;
+				public string anim;
 	}
 }

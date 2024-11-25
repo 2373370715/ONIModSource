@@ -7,14 +7,14 @@ using UnityEngine;
 
 public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Instance>
 {
-	public void InitModifiers()
+		public void InitModifiers()
 	{
 		this.modifiers.Add(new AttributeModifier(Db.Get().Attributes.Insulation.Id, (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_INSULATION, STRINGS.BUILDINGS.PREFABS.TRAVELTUBE.NAME, false, false, true));
 		this.modifiers.Add(new AttributeModifier(Db.Get().Attributes.ThermalConductivityBarrier.Id, TUNING.EQUIPMENT.SUITS.ATMOSUIT_THERMAL_CONDUCTIVITY_BARRIER, STRINGS.BUILDINGS.PREFABS.TRAVELTUBE.NAME, false, false, true));
 		this.modifiers.Add(new AttributeModifier(Db.Get().Amounts.Bladder.deltaAttribute.Id, TUNING.EQUIPMENT.SUITS.ATMOSUIT_BLADDER, STRINGS.BUILDINGS.PREFABS.TRAVELTUBE.NAME, false, false, true));
 		this.modifiers.Add(new AttributeModifier(Db.Get().Attributes.ScaldingThreshold.Id, (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_SCALDING, STRINGS.BUILDINGS.PREFABS.TRAVELTUBE.NAME, false, false, true));
 		this.modifiers.Add(new AttributeModifier(Db.Get().Attributes.ScoldingThreshold.Id, (float)TUNING.EQUIPMENT.SUITS.ATMOSUIT_SCOLDING, STRINGS.BUILDINGS.PREFABS.TRAVELTUBE.NAME, false, false, true));
-		this.waxSpeedBoostModifier = new AttributeModifier(Db.Get().Attributes.TransitTubeTravelSpeed.Id, 4.5f, STRINGS.BUILDINGS.PREFABS.TRAVELTUBE.NAME, false, false, true);
+		this.waxSpeedBoostModifier = new AttributeModifier(Db.Get().Attributes.TransitTubeTravelSpeed.Id, DUPLICANTSTATS.STANDARD.BaseStats.TRANSIT_TUBE_TRAVEL_SPEED * 0.25f, STRINGS.BUILDINGS.PREFABS.TRAVELTUBE.NAME, false, false, true);
 		this.immunities.Add(Db.Get().effects.Get("SoakingWet"));
 		this.immunities.Add(Db.Get().effects.Get("WetFeet"));
 		this.immunities.Add(Db.Get().effects.Get("PoppedEarDrums"));
@@ -22,47 +22,47 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 		this.immunities.Add(Db.Get().effects.Get("MajorIrritation"));
 	}
 
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		this.InitModifiers();
 		default_state = this.root;
 		this.root.DoNothing();
 	}
 
-	public void OnSetOxygenBreather(OxygenBreather oxygen_breather)
+		public void OnSetOxygenBreather(OxygenBreather oxygen_breather)
 	{
 	}
 
-	public void OnClearOxygenBreather(OxygenBreather oxygen_breather)
+		public void OnClearOxygenBreather(OxygenBreather oxygen_breather)
 	{
 	}
 
-	public bool ConsumeGas(OxygenBreather oxygen_breather, float amount)
+		public bool ConsumeGas(OxygenBreather oxygen_breather, float amount)
 	{
 		return false;
 	}
 
-	public bool ShouldEmitCO2()
+		public bool ShouldEmitCO2()
 	{
 		return false;
 	}
 
-	public bool ShouldStoreCO2()
+		public bool ShouldStoreCO2()
 	{
 		return false;
 	}
 
-	private List<Effect> immunities = new List<Effect>();
+		private List<Effect> immunities = new List<Effect>();
 
-	private List<AttributeModifier> modifiers = new List<AttributeModifier>();
+		private List<AttributeModifier> modifiers = new List<AttributeModifier>();
 
-	private AttributeModifier waxSpeedBoostModifier;
+		private AttributeModifier waxSpeedBoostModifier;
 
-	private const float WaxSpeedBoost = 0.25f;
+		private const float WaxSpeedBoost = 0.25f;
 
-	public new class Instance : GameStateMachine<TubeTraveller, TubeTraveller.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<TubeTraveller, TubeTraveller.Instance, IStateMachineTarget, object>.GameInstance
 	{
-				public int prefabInstanceID
+						public int prefabInstanceID
 		{
 			get
 			{
@@ -70,17 +70,17 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 			}
 		}
 
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 
-		public void OnPathAdvanced(object data)
+				public void OnPathAdvanced(object data)
 		{
 			this.UnreserveEntrances();
 			this.ReserveEntrances();
 		}
 
-		public void ReserveEntrances()
+				public void ReserveEntrances()
 		{
 			PathFinder.Path path = base.GetComponent<Navigator>().path;
 			if (path.nodes == null)
@@ -109,7 +109,7 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 			}
 		}
 
-		public void UnreserveEntrances()
+				public void UnreserveEntrances()
 		{
 			foreach (TravelTubeEntrance travelTubeEntrance in this.reservations)
 			{
@@ -121,7 +121,7 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 			this.reservations.Clear();
 		}
 
-		public void ApplyEnteringTubeEffects()
+				public void ApplyEnteringTubeEffects()
 		{
 			Effects component = base.GetComponent<Effects>();
 			Attributes attributes = base.gameObject.GetAttributes();
@@ -146,7 +146,7 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 			}
 		}
 
-		public void ClearAllEffects()
+				public void ClearAllEffects()
 		{
 			Effects component = base.GetComponent<Effects>();
 			Attributes attributes = base.gameObject.GetAttributes();
@@ -169,7 +169,7 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 			}
 		}
 
-		public void SetWaxState(bool isWaxed)
+				public void SetWaxState(bool isWaxed)
 		{
 			this.isWaxed = isWaxed;
 			KSelectable component = base.GetComponent<KSelectable>();
@@ -184,7 +184,7 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 			}
 		}
 
-		public void OnTubeTransition(bool nowInTube)
+				public void OnTubeTransition(bool nowInTube)
 		{
 			if (nowInTube != this.inTube)
 			{
@@ -200,10 +200,10 @@ public class TubeTraveller : GameStateMachine<TubeTraveller, TubeTraveller.Insta
 			}
 		}
 
-		private List<TravelTubeEntrance> reservations = new List<TravelTubeEntrance>();
+				private List<TravelTubeEntrance> reservations = new List<TravelTubeEntrance>();
 
-		public bool inTube;
+				public bool inTube;
 
-		public bool isWaxed;
+				public bool isWaxed;
 	}
 }

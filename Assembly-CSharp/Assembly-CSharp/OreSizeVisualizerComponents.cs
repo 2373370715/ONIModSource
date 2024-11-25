@@ -3,14 +3,26 @@ using UnityEngine;
 
 public class OreSizeVisualizerComponents : KGameObjectComponentManager<OreSizeVisualizerData>
 {
-	public HandleVector<int>.Handle Add(GameObject go)
+		public HandleVector<int>.Handle Add(GameObject go)
 	{
 		HandleVector<int>.Handle handle = base.Add(go, new OreSizeVisualizerData(go));
 		this.OnPrefabInit(handle);
 		return handle;
 	}
 
-	protected override void OnPrefabInit(HandleVector<int>.Handle handle)
+		public static HashedString GetAnimForMass(float mass)
+	{
+		for (int i = 0; i < OreSizeVisualizerComponents.MassTiers.Length; i++)
+		{
+			if (mass <= OreSizeVisualizerComponents.MassTiers[i].massRequired)
+			{
+				return OreSizeVisualizerComponents.MassTiers[i].animName;
+			}
+		}
+		return HashedString.Invalid;
+	}
+
+		protected override void OnPrefabInit(HandleVector<int>.Handle handle)
 	{
 		Action<object> action = delegate(object ev_data)
 		{
@@ -23,13 +35,13 @@ public class OreSizeVisualizerComponents : KGameObjectComponentManager<OreSizeVi
 		base.SetData(handle, data);
 	}
 
-	protected override void OnSpawn(HandleVector<int>.Handle handle)
+		protected override void OnSpawn(HandleVector<int>.Handle handle)
 	{
 		OreSizeVisualizerData data = base.GetData(handle);
 		OreSizeVisualizerComponents.OnMassChanged(handle, data.primaryElement.GetComponent<Pickupable>());
 	}
 
-	protected override void OnCleanUp(HandleVector<int>.Handle handle)
+		protected override void OnCleanUp(HandleVector<int>.Handle handle)
 	{
 		OreSizeVisualizerData data = base.GetData(handle);
 		if (data.primaryElement != null)
@@ -40,7 +52,7 @@ public class OreSizeVisualizerComponents : KGameObjectComponentManager<OreSizeVi
 		}
 	}
 
-	private static void OnMassChanged(HandleVector<int>.Handle handle, object other_data)
+		private static void OnMassChanged(HandleVector<int>.Handle handle, object other_data)
 	{
 		PrimaryElement primaryElement = GameComps.OreSizeVisualizers.GetData(handle).primaryElement;
 		float num = primaryElement.Mass;
@@ -67,7 +79,7 @@ public class OreSizeVisualizerComponents : KGameObjectComponentManager<OreSizeVi
 		primaryElement.Trigger(1807976145, null);
 	}
 
-	private static readonly OreSizeVisualizerComponents.MassTier[] MassTiers = new OreSizeVisualizerComponents.MassTier[]
+		private static readonly OreSizeVisualizerComponents.MassTier[] MassTiers = new OreSizeVisualizerComponents.MassTier[]
 	{
 		new OreSizeVisualizerComponents.MassTier
 		{
@@ -89,12 +101,12 @@ public class OreSizeVisualizerComponents : KGameObjectComponentManager<OreSizeVi
 		}
 	};
 
-	private struct MassTier
+		private struct MassTier
 	{
-		public HashedString animName;
+				public HashedString animName;
 
-		public float massRequired;
+				public float massRequired;
 
-		public float colliderRadius;
+				public float colliderRadius;
 	}
 }

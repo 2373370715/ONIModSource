@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class EntombedDiagnostic : ColonyDiagnostic
 {
-	public EntombedDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.ENTOMBEDDIAGNOSTIC.ALL_NAME)
+		public EntombedDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.ENTOMBEDDIAGNOSTIC.ALL_NAME)
 	{
 		this.icon = "icon_action_dig";
 		base.AddCriterion("CheckEntombed", new DiagnosticCriterion(UI.COLONY_DIAGNOSTICS.ENTOMBEDDIAGNOSTIC.CRITERIA.CHECKENTOMBED, new Func<ColonyDiagnostic.DiagnosticResult>(this.CheckEntombed)));
 	}
 
-	private ColonyDiagnostic.DiagnosticResult CheckEntombed()
+		private ColonyDiagnostic.DiagnosticResult CheckEntombed()
 	{
 		List<BuildingComplete> worldItems = Components.EntombedBuildings.GetWorldItems(base.worldID, false);
 		this.m_entombedCount = 0;
@@ -31,10 +31,10 @@ public class EntombedDiagnostic : ColonyDiagnostic
 		return result;
 	}
 
-	public override string GetAverageValueString()
+		public override string GetAverageValueString()
 	{
 		return this.m_entombedCount.ToString();
 	}
 
-	private int m_entombedCount;
+		private int m_entombedCount;
 }

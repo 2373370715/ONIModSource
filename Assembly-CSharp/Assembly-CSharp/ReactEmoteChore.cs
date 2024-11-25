@@ -3,17 +3,17 @@ using UnityEngine;
 
 public class ReactEmoteChore : Chore<ReactEmoteChore.StatesInstance>
 {
-	public ReactEmoteChore(IStateMachineTarget target, ChoreType chore_type, EmoteReactable reactable, HashedString emote_kanim, HashedString[] emote_anims, KAnim.PlayMode play_mode, Func<StatusItem> get_status_item) : base(chore_type, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+		public ReactEmoteChore(IStateMachineTarget target, ChoreType chore_type, EmoteReactable reactable, HashedString emote_kanim, HashedString[] emote_anims, KAnim.PlayMode play_mode, Func<StatusItem> get_status_item) : base(chore_type, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
-		base.AddPrecondition(ChorePreconditions.instance.IsMoving, null);
-		base.AddPrecondition(ChorePreconditions.instance.IsOffLadder, null);
-		base.AddPrecondition(ChorePreconditions.instance.NotInTube, null);
-		base.AddPrecondition(ChorePreconditions.instance.IsAwake, null);
+		this.AddPrecondition(ChorePreconditions.instance.IsMoving, null);
+		this.AddPrecondition(ChorePreconditions.instance.IsOffLadder, null);
+		this.AddPrecondition(ChorePreconditions.instance.NotInTube, null);
+		this.AddPrecondition(ChorePreconditions.instance.IsAwake, null);
 		this.getStatusItem = get_status_item;
 		base.smi = new ReactEmoteChore.StatesInstance(this, target.gameObject, reactable, emote_kanim, emote_anims, play_mode);
 	}
 
-	protected override StatusItem GetStatusItem()
+		protected override StatusItem GetStatusItem()
 	{
 		if (this.getStatusItem == null)
 		{
@@ -22,7 +22,7 @@ public class ReactEmoteChore : Chore<ReactEmoteChore.StatesInstance>
 		return this.getStatusItem();
 	}
 
-	public override string ToString()
+		public override string ToString()
 	{
 		HashedString hashedString;
 		if (base.smi.emoteKAnim.IsValid)
@@ -36,11 +36,11 @@ public class ReactEmoteChore : Chore<ReactEmoteChore.StatesInstance>
 		return str2 + hashedString.ToString() + ">";
 	}
 
-	private Func<StatusItem> getStatusItem;
+		private Func<StatusItem> getStatusItem;
 
-	public class StatesInstance : GameStateMachine<ReactEmoteChore.States, ReactEmoteChore.StatesInstance, ReactEmoteChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ReactEmoteChore.States, ReactEmoteChore.StatesInstance, ReactEmoteChore, object>.GameInstance
 	{
-		public StatesInstance(ReactEmoteChore master, GameObject emoter, EmoteReactable reactable, HashedString emote_kanim, HashedString[] emote_anims, KAnim.PlayMode mode) : base(master)
+				public StatesInstance(ReactEmoteChore master, GameObject emoter, EmoteReactable reactable, HashedString emote_kanim, HashedString[] emote_anims, KAnim.PlayMode mode) : base(master)
 		{
 			this.emoteKAnim = emote_kanim;
 			this.emoteAnims = emote_anims;
@@ -49,16 +49,16 @@ public class ReactEmoteChore : Chore<ReactEmoteChore.StatesInstance>
 			base.sm.emoter.Set(emoter, base.smi, false);
 		}
 
-		public HashedString[] emoteAnims;
+				public HashedString[] emoteAnims;
 
-		public HashedString emoteKAnim;
+				public HashedString emoteKAnim;
 
-		public KAnim.PlayMode mode = KAnim.PlayMode.Once;
+				public KAnim.PlayMode mode = KAnim.PlayMode.Once;
 	}
 
-	public class States : GameStateMachine<ReactEmoteChore.States, ReactEmoteChore.StatesInstance, ReactEmoteChore>
+		public class States : GameStateMachine<ReactEmoteChore.States, ReactEmoteChore.StatesInstance, ReactEmoteChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.root;
 			base.Target(this.emoter);
@@ -68,8 +68,8 @@ public class ReactEmoteChore : Chore<ReactEmoteChore.StatesInstance>
 			});
 		}
 
-		public StateMachine<ReactEmoteChore.States, ReactEmoteChore.StatesInstance, ReactEmoteChore, object>.TargetParameter emoter;
+				public StateMachine<ReactEmoteChore.States, ReactEmoteChore.StatesInstance, ReactEmoteChore, object>.TargetParameter emoter;
 
-		public StateMachine<ReactEmoteChore.States, ReactEmoteChore.StatesInstance, ReactEmoteChore, object>.ObjectParameter<EmoteReactable> reactable;
+				public StateMachine<ReactEmoteChore.States, ReactEmoteChore.StatesInstance, ReactEmoteChore, object>.ObjectParameter<EmoteReactable> reactable;
 	}
 }

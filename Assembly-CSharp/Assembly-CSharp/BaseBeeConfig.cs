@@ -5,9 +5,16 @@ using UnityEngine;
 
 public static class BaseBeeConfig
 {
-	public static GameObject BaseBee(string id, string name, string desc, string anim_file, string traitId, EffectorValues decor, bool is_baby, string symbolOverridePrefix = null)
+		public static GameObject BaseBee(string id, string name, string desc, string anim_file, string traitId, EffectorValues decor, bool is_baby, string symbolOverridePrefix = null)
 	{
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, 5f, Assets.GetAnim(anim_file), "idle_loop", Grid.SceneLayer.Creatures, 1, 1, decor, default(EffectorValues), SimHashes.Creature, null, CREATURES.TEMPERATURE.FREEZING_3);
+		float mass = 5f;
+		KAnimFile anim = Assets.GetAnim(anim_file);
+		string initialAnim = "idle_loop";
+		Grid.SceneLayer sceneLayer = Grid.SceneLayer.Creatures;
+		int width = 1;
+		int height = 1;
+		float freezing_ = CREATURES.TEMPERATURE.FREEZING_3;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, sceneLayer, width, height, decor, default(EffectorValues), SimHashes.Creature, null, freezing_);
 		string navGridName = "FlyerNavGrid1x1";
 		NavType navType = NavType.Hover;
 		int num = 5;
@@ -37,6 +44,7 @@ public static class BaseBeeConfig
 		Bee bee = gameObject.AddOrGet<Bee>();
 		RadiationEmitter radiationEmitter = gameObject.AddComponent<RadiationEmitter>();
 		radiationEmitter.emitRate = 0.1f;
+		gameObject.AddOrGet<DiseaseSourceVisualizer>().alwaysShowDisease = "RadiationSickness";
 		if (!is_baby)
 		{
 			component.AddTag(GameTags.Creatures.Flyer, false);
@@ -85,7 +93,7 @@ public static class BaseBeeConfig
 		return gameObject;
 	}
 
-	public static void SetupLoopingSounds(GameObject inst)
+		public static void SetupLoopingSounds(GameObject inst)
 	{
 		inst.GetComponent<LoopingSounds>().StartSound(GlobalAssets.GetSound("Bee_wings_LP", false));
 	}

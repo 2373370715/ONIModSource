@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PrioritizableRenderer
 {
-			public PrioritizeTool currentTool
+				public PrioritizeTool currentTool
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class PrioritizableRenderer
 		}
 	}
 
-	public PrioritizableRenderer()
+		public PrioritizableRenderer()
 	{
 		this.layer = LayerMask.NameToLayer("UI");
 		Shader shader = Shader.Find("Klei/Prioritizable");
@@ -29,7 +29,7 @@ public class PrioritizableRenderer
 		this.mesh.MarkDynamic();
 	}
 
-	public void Cleanup()
+		public void Cleanup()
 	{
 		this.material = null;
 		this.vertices = null;
@@ -40,7 +40,7 @@ public class PrioritizableRenderer
 		this.mesh = null;
 	}
 
-	public void RenderEveryTick()
+		public void RenderEveryTick()
 	{
 		using (new KProfiler.Region("PrioritizableRenderer", null))
 		{
@@ -136,21 +136,21 @@ public class PrioritizableRenderer
 		}
 	}
 
-	private Mesh mesh;
+		private Mesh mesh;
 
-	private int layer;
+		private int layer;
 
-	private Material material;
+		private Material material;
 
-	private int prioritizableCount;
+		private int prioritizableCount;
 
-	private Vector3[] vertices;
+		private Vector3[] vertices;
 
-	private Vector2[] uvs;
+		private Vector2[] uvs;
 
-	private int[] triangles;
+		private int[] triangles;
 
-	private List<Prioritizable> prioritizables;
+		private List<Prioritizable> prioritizables;
 
-	private PrioritizeTool tool;
+		private PrioritizeTool tool;
 }

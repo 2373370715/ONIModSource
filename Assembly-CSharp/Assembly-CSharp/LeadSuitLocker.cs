@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LeadSuitLocker : StateMachineComponent<LeadSuitLocker.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.o2_meter = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_target_top", "meter_oxygen", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, Vector3.zero, new string[]
@@ -18,17 +18,17 @@ public class LeadSuitLocker : StateMachineComponent<LeadSuitLocker.StatesInstanc
 		base.smi.StartSM();
 	}
 
-	public bool IsSuitFullyCharged()
+		public bool IsSuitFullyCharged()
 	{
 		return this.suit_locker.IsSuitFullyCharged();
 	}
 
-	public KPrefabID GetStoredOutfit()
+		public KPrefabID GetStoredOutfit()
 	{
 		return this.suit_locker.GetStoredOutfit();
 	}
 
-	private void FillBattery(float dt)
+		private void FillBattery(float dt)
 	{
 		KPrefabID storedOutfit = this.suit_locker.GetStoredOutfit();
 		if (storedOutfit == null)
@@ -42,7 +42,7 @@ public class LeadSuitLocker : StateMachineComponent<LeadSuitLocker.StatesInstanc
 		}
 	}
 
-	private void RefreshMeter()
+		private void RefreshMeter()
 	{
 		this.o2_meter.SetPositionPercent(this.suit_locker.OxygenAvailable);
 		this.battery_meter.SetPositionPercent(this.suit_locker.BatteryAvailable);
@@ -50,7 +50,7 @@ public class LeadSuitLocker : StateMachineComponent<LeadSuitLocker.StatesInstanc
 		this.anim_controller.SetSymbolVisiblity("petrol_yes_bloom", this.IsBatteryAboveMinimumLevel());
 	}
 
-	public bool IsOxygenTankAboveMinimumLevel()
+		public bool IsOxygenTankAboveMinimumLevel()
 	{
 		KPrefabID storedOutfit = this.GetStoredOutfit();
 		if (storedOutfit != null)
@@ -61,7 +61,7 @@ public class LeadSuitLocker : StateMachineComponent<LeadSuitLocker.StatesInstanc
 		return false;
 	}
 
-	public bool IsBatteryAboveMinimumLevel()
+		public bool IsBatteryAboveMinimumLevel()
 	{
 		KPrefabID storedOutfit = this.GetStoredOutfit();
 		if (storedOutfit != null)
@@ -72,27 +72,27 @@ public class LeadSuitLocker : StateMachineComponent<LeadSuitLocker.StatesInstanc
 		return false;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private SuitLocker suit_locker;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KBatchedAnimController anim_controller;
 
-	private MeterController o2_meter;
+		private MeterController o2_meter;
 
-	private MeterController battery_meter;
+		private MeterController battery_meter;
 
-	private float batteryChargeTime = 60f;
+		private float batteryChargeTime = 60f;
 
-	public class States : GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker>
+		public class States : GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.empty;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -110,23 +110,23 @@ public class LeadSuitLocker : StateMachineComponent<LeadSuitLocker.StatesInstanc
 			this.charged.EventTransition(GameHashes.OnStorageChange, this.empty, (LeadSuitLocker.StatesInstance smi) => smi.master.GetStoredOutfit() == null);
 		}
 
-		public GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.State empty;
+				public GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.State empty;
 
-		public LeadSuitLocker.States.ChargingStates charging;
+				public LeadSuitLocker.States.ChargingStates charging;
 
-		public GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.State charged;
+				public GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.State charged;
 
-		public class ChargingStates : GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.State
+				public class ChargingStates : GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.State
 		{
-			public GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.State notoperational;
+						public GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.State notoperational;
 
-			public GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.State operational;
+						public GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.State operational;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.GameInstance
+		public class StatesInstance : GameStateMachine<LeadSuitLocker.States, LeadSuitLocker.StatesInstance, LeadSuitLocker, object>.GameInstance
 	{
-		public StatesInstance(LeadSuitLocker lead_suit_locker) : base(lead_suit_locker)
+				public StatesInstance(LeadSuitLocker lead_suit_locker) : base(lead_suit_locker)
 		{
 		}
 	}

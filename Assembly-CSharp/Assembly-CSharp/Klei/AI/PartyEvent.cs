@@ -6,33 +6,33 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class PartyEvent : GameplayEvent<PartyEvent.StatesInstance>
+		public class PartyEvent : GameplayEvent<PartyEvent.StatesInstance>
 	{
-		public PartyEvent() : base("Party", 0, 0)
+				public PartyEvent() : base("Party", 0, 0)
 		{
 			this.animFileName = "event_pop_up_assets_kanim";
 			this.title = GAMEPLAY_EVENTS.EVENT_TYPES.PARTY.NAME;
 			this.description = GAMEPLAY_EVENTS.EVENT_TYPES.PARTY.DESCRIPTION;
 		}
 
-		public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
+				public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
 		{
 			return new PartyEvent.StatesInstance(manager, eventInstance, this);
 		}
 
-		public const string cancelEffect = "NoFunAllowed";
+				public const string cancelEffect = "NoFunAllowed";
 
-		public const float FUTURE_TIME = 60f;
+				public const float FUTURE_TIME = 60f;
 
-		public const float DURATION = 60f;
+				public const float DURATION = 60f;
 
-		public class StatesInstance : GameplayEventStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, PartyEvent>.GameplayEventStateMachineInstance
+				public class StatesInstance : GameplayEventStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, PartyEvent>.GameplayEventStateMachineInstance
 		{
-			public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, PartyEvent partyEvent) : base(master, eventInstance, partyEvent)
+						public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, PartyEvent partyEvent) : base(master, eventInstance, partyEvent)
 			{
 			}
 
-			public void AddNewChore(Room room)
+						public void AddNewChore(Room room)
 			{
 				List<KPrefabID> list = room.buildings.FindAll((KPrefabID match) => match.HasTag(RoomConstraints.ConstraintTags.RecBuilding));
 				if (list.Count == 0)
@@ -89,7 +89,7 @@ namespace Klei.AI
 				this.chores.Add(item);
 			}
 
-			public void ClearChores()
+						public void ClearChores()
 			{
 				if (this.chores != null)
 				{
@@ -104,7 +104,7 @@ namespace Klei.AI
 				this.chores = null;
 			}
 
-			public void UpdateChores(Room room)
+						public void UpdateChores(Room room)
 			{
 				if (room == null)
 				{
@@ -120,14 +120,14 @@ namespace Klei.AI
 				}
 			}
 
-			private List<Chore> chores;
+						private List<Chore> chores;
 
-			public Notification mainNotification;
+						public Notification mainNotification;
 		}
 
-		public class States : GameplayEventStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, PartyEvent>
+				public class States : GameplayEventStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, PartyEvent>
 		{
-			public override void InitializeStates(out StateMachine.BaseState default_state)
+						public override void InitializeStates(out StateMachine.BaseState default_state)
 			{
 				base.InitializeStates(out default_state);
 				default_state = this.planning.prepare_entities;
@@ -173,12 +173,12 @@ namespace Klei.AI
 				}).ReturnFailure();
 			}
 
-			public Room GetChosenRoom(PartyEvent.StatesInstance smi)
+						public Room GetChosenRoom(PartyEvent.StatesInstance smi)
 			{
 				return Game.Instance.roomProber.GetRoomOfGameObject(this.roomObject.Get(smi));
 			}
 
-			public override EventInfoData GenerateEventPopupData(PartyEvent.StatesInstance smi)
+						public override EventInfoData GenerateEventPopupData(PartyEvent.StatesInstance smi)
 			{
 				EventInfoData eventInfoData = new EventInfoData(smi.gameplayEvent.title, smi.gameplayEvent.description, smi.gameplayEvent.animFileName);
 				Room chosenRoom = this.GetChosenRoom(smi);
@@ -220,7 +220,7 @@ namespace Klei.AI
 				return eventInfoData;
 			}
 
-			public void PopulateTargetsAndText(PartyEvent.StatesInstance smi)
+						public void PopulateTargetsAndText(PartyEvent.StatesInstance smi)
 			{
 				if (this.roomObject.Get(smi) == null)
 				{
@@ -242,34 +242,34 @@ namespace Klei.AI
 				}
 			}
 
-			public StateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.TargetParameter roomObject;
+						public StateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.TargetParameter roomObject;
 
-			public StateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.TargetParameter planner;
+						public StateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.TargetParameter planner;
 
-			public StateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.TargetParameter guest;
+						public StateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.TargetParameter guest;
 
-			public PartyEvent.States.PlanningStates planning;
+						public PartyEvent.States.PlanningStates planning;
 
-			public PartyEvent.States.WarmupStates warmup;
+						public PartyEvent.States.WarmupStates warmup;
 
-			public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State partying;
+						public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State partying;
 
-			public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State ending;
+						public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State ending;
 
-			public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State canceled;
+						public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State canceled;
 
-			public class PlanningStates : GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State
+						public class PlanningStates : GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State
 			{
-				public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State prepare_entities;
+								public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State prepare_entities;
 
-				public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State wait_for_input;
+								public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State wait_for_input;
 			}
 
-			public class WarmupStates : GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State
+						public class WarmupStates : GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State
 			{
-				public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State wait;
+								public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State wait;
 
-				public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State start;
+								public GameStateMachine<PartyEvent.States, PartyEvent.StatesInstance, GameplayEventManager, object>.State start;
 			}
 		}
 	}

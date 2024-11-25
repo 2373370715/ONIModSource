@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlaceToolHoverTextCard : HoverTextConfiguration
 {
-	public override void UpdateHoverElements(List<KSelectable> hoverObjects)
+		public override void UpdateHoverElements(List<KSelectable> hoverObjects)
 	{
 		HoverTextScreen instance = HoverTextScreen.Instance;
 		HoverTextDrawer hoverTextDrawer = instance.BeginDrawing();
@@ -36,5 +36,5 @@ public class PlaceToolHoverTextCard : HoverTextConfiguration
 		hoverTextDrawer.EndDrawing();
 	}
 
-	public Placeable currentPlaceable;
+		public Placeable currentPlaceable;
 }

@@ -3,13 +3,13 @@ using Klei.AI.DiseaseGrowthRules;
 
 namespace Klei.AI
 {
-	public class ZombieSpores : Disease
+		public class ZombieSpores : Disease
 	{
-		public ZombieSpores(bool statsOnly) : base("ZombieSpores", 50f, new Disease.RangeInfo(168.15f, 258.15f, 513.15f, 563.15f), new Disease.RangeInfo(10f, 1200f, 1200f, 10f), new Disease.RangeInfo(0f, 0f, 1000f, 1000f), Disease.RangeInfo.Idempotent(), 1f, statsOnly)
+				public ZombieSpores(bool statsOnly) : base("ZombieSpores", 50f, new Disease.RangeInfo(168.15f, 258.15f, 513.15f, 563.15f), new Disease.RangeInfo(10f, 1200f, 1200f, 10f), new Disease.RangeInfo(0f, 0f, 1000f, 1000f), Disease.RangeInfo.Idempotent(), 1f, statsOnly)
 		{
 		}
 
-		protected override void PopulateElemGrowthInfo()
+				protected override void PopulateElemGrowthInfo()
 		{
 			base.InitializeElemGrowthArray(ref this.elemGrowthInfo, Disease.DEFAULT_GROWTH_INFO);
 			base.AddGrowthRule(new GrowthRule
@@ -129,6 +129,6 @@ namespace Klei.AI
 			});
 		}
 
-		public const string ID = "ZombieSpores";
+				public const string ID = "ZombieSpores";
 	}
 }

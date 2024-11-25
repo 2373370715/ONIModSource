@@ -4,42 +4,42 @@ using UnityEngine;
 
 public class PlantElementEmitter : StateMachineComponent<PlantElementEmitter.StatesInstance>, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return new List<Descriptor>();
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private WiltCondition wiltCondition;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	public SimHashes emittedElement;
+		public SimHashes emittedElement;
 
-	public float emitRate;
+		public float emitRate;
 
-	public class StatesInstance : GameStateMachine<PlantElementEmitter.States, PlantElementEmitter.StatesInstance, PlantElementEmitter, object>.GameInstance
+		public class StatesInstance : GameStateMachine<PlantElementEmitter.States, PlantElementEmitter.StatesInstance, PlantElementEmitter, object>.GameInstance
 	{
-		public StatesInstance(PlantElementEmitter master) : base(master)
+				public StatesInstance(PlantElementEmitter master) : base(master)
 		{
 		}
 
-		public bool IsWilting()
+				public bool IsWilting()
 		{
 			return !(base.master.wiltCondition == null) && base.master.wiltCondition != null && base.master.wiltCondition.IsWilting();
 		}
 	}
 
-	public class States : GameStateMachine<PlantElementEmitter.States, PlantElementEmitter.StatesInstance, PlantElementEmitter>
+		public class States : GameStateMachine<PlantElementEmitter.States, PlantElementEmitter.StatesInstance, PlantElementEmitter>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.healthy;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -50,8 +50,8 @@ public class PlantElementEmitter : StateMachineComponent<PlantElementEmitter.Sta
 			this.wilted.EventTransition(GameHashes.WiltRecover, this.healthy, null);
 		}
 
-		public GameStateMachine<PlantElementEmitter.States, PlantElementEmitter.StatesInstance, PlantElementEmitter, object>.State wilted;
+				public GameStateMachine<PlantElementEmitter.States, PlantElementEmitter.StatesInstance, PlantElementEmitter, object>.State wilted;
 
-		public GameStateMachine<PlantElementEmitter.States, PlantElementEmitter.StatesInstance, PlantElementEmitter, object>.State healthy;
+				public GameStateMachine<PlantElementEmitter.States, PlantElementEmitter.StatesInstance, PlantElementEmitter, object>.State healthy;
 	}
 }

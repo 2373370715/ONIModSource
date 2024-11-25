@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class IceFlowerConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "IceFlower";
 		string name = STRINGS.CREATURES.SPECIES.ICEFLOWER.NAME;
@@ -30,26 +30,36 @@ public class IceFlowerConfig : IEntityConfig
 		PrickleGrass prickleGrass = gameObject.AddOrGet<PrickleGrass>();
 		prickleGrass.positive_decor_effect = this.POSITIVE_DECOR_EFFECT;
 		prickleGrass.negative_decor_effect = this.NEGATIVE_DECOR_EFFECT;
-		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Hidden, "IceFlowerSeed", STRINGS.CREATURES.SPECIES.SEEDS.ICEFLOWER.NAME, STRINGS.CREATURES.SPECIES.SEEDS.ICEFLOWER.DESC, Assets.GetAnim("seed_ice_flower_kanim"), "object", 1, new List<Tag>
-		{
-			GameTags.DecorSeed
-		}, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 12, STRINGS.CREATURES.SPECIES.ICEFLOWER.DOMESTICATEDDESC, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.6f, null, "", false, this.GetDlcIds()), "IceFlower_preview", Assets.GetAnim("potted_ice_flower_kanim"), "place", 1, 1);
+		GameObject plant = gameObject;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Hidden;
+		string id2 = "IceFlowerSeed";
+		string name2 = STRINGS.CREATURES.SPECIES.SEEDS.ICEFLOWER.NAME;
+		string desc2 = STRINGS.CREATURES.SPECIES.SEEDS.ICEFLOWER.DESC;
+		KAnimFile anim = Assets.GetAnim("seed_ice_flower_kanim");
+		string initialAnim = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.DecorSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		string domesticatedDescription = STRINGS.CREATURES.SPECIES.ICEFLOWER.DOMESTICATEDDESC;
+		string[] dlcIds = this.GetDlcIds();
+		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id2, name2, desc2, anim, initialAnim, numberOfSeeds, list, planterDirection, default(Tag), 12, domesticatedDescription, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.6f, null, "", false, dlcIds), "IceFlower_preview", Assets.GetAnim("potted_ice_flower_kanim"), "place", 1, 1);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "IceFlower";
+		public const string ID = "IceFlower";
 
-	public const string SEED_ID = "IceFlowerSeed";
+		public const string SEED_ID = "IceFlowerSeed";
 
-	public readonly EffectorValues POSITIVE_DECOR_EFFECT = DECOR.BONUS.TIER3;
+		public readonly EffectorValues POSITIVE_DECOR_EFFECT = DECOR.BONUS.TIER3;
 
-	public readonly EffectorValues NEGATIVE_DECOR_EFFECT = DECOR.PENALTY.TIER3;
+		public readonly EffectorValues NEGATIVE_DECOR_EFFECT = DECOR.PENALTY.TIER3;
 }

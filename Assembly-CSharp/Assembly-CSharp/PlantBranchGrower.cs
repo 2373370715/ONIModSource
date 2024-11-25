@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.wilt;
@@ -16,27 +16,27 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 		this.fullyGrown.TagTransition(GameTags.Wilting, this.wilt, false).EventTransition(GameHashes.ConsumePlant, this.maturing, GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.Not(new StateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.Transition.ConditionCallback(PlantBranchGrower.IsMature))).EventTransition(GameHashes.TreeBranchCountChanged, this.growingBranches, new StateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.Transition.ConditionCallback(PlantBranchGrower.NotAllBranchesCreated));
 	}
 
-	public static bool NotAllBranchesCreated(PlantBranchGrower.Instance smi)
+		public static bool NotAllBranchesCreated(PlantBranchGrower.Instance smi)
 	{
 		return smi.CurrentBranchCount < smi.MaxBranchesAllowedAtOnce;
 	}
 
-	public static bool AllBranchesCreated(PlantBranchGrower.Instance smi)
+		public static bool AllBranchesCreated(PlantBranchGrower.Instance smi)
 	{
 		return smi.CurrentBranchCount >= smi.MaxBranchesAllowedAtOnce;
 	}
 
-	public static bool IsMature(PlantBranchGrower.Instance smi)
+		public static bool IsMature(PlantBranchGrower.Instance smi)
 	{
 		return smi.IsGrown;
 	}
 
-	public static void GrowBranchUpdate(PlantBranchGrower.Instance smi, float dt)
+		public static void GrowBranchUpdate(PlantBranchGrower.Instance smi, float dt)
 	{
 		smi.SpawnRandomBranch(0f);
 	}
 
-	public static void WorldGenUpdate(PlantBranchGrower.Instance smi, float dt)
+		public static void WorldGenUpdate(PlantBranchGrower.Instance smi, float dt)
 	{
 		float growth_percentage = UnityEngine.Random.Range(0f, 1f);
 		if (!smi.SpawnRandomBranch(growth_percentage))
@@ -45,42 +45,42 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 		}
 	}
 
-	public GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.State worldgen;
+		public GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.State worldgen;
 
-	public GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.State wilt;
+		public GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.State wilt;
 
-	public GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.State maturing;
+		public GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.State maturing;
 
-	public GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.State growingBranches;
+		public GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.State growingBranches;
 
-	public GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.State fullyGrown;
+		public GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.State fullyGrown;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public string BRANCH_PREFAB_NAME;
+				public string BRANCH_PREFAB_NAME;
 
-		public int MAX_BRANCH_COUNT = -1;
+				public int MAX_BRANCH_COUNT = -1;
 
-		public CellOffset[] BRANCH_OFFSETS;
+				public CellOffset[] BRANCH_OFFSETS;
 
-		public bool harvestOnDrown;
+				public bool harvestOnDrown;
 
-		public bool propagateHarvestDesignation = true;
+				public bool propagateHarvestDesignation = true;
 
-		public Func<int, bool> additionalBranchGrowRequirements;
+				public Func<int, bool> additionalBranchGrowRequirements;
 
-		public Action<PlantBranch.Instance, PlantBranchGrower.Instance> onBranchHarvested;
+				public Action<PlantBranch.Instance, PlantBranchGrower.Instance> onBranchHarvested;
 
-		public Action<PlantBranch.Instance, PlantBranchGrower.Instance> onBranchSpawned;
+				public Action<PlantBranch.Instance, PlantBranchGrower.Instance> onBranchSpawned;
 
-		public StatusItem growingBranchesStatusItem = Db.Get().MiscStatusItems.GrowingBranches;
+				public StatusItem growingBranchesStatusItem = Db.Get().MiscStatusItems.GrowingBranches;
 
-		public Action<PlantBranchGrower.Instance> onEarlySpawn;
+				public Action<PlantBranchGrower.Instance> onEarlySpawn;
 	}
 
-	public new class Instance : GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.GameInstance
+		public new class Instance : GameStateMachine<PlantBranchGrower, PlantBranchGrower.Instance, IStateMachineTarget, PlantBranchGrower.Def>.GameInstance
 	{
-				public bool IsUprooted
+						public bool IsUprooted
 		{
 			get
 			{
@@ -88,7 +88,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-				public bool IsGrown
+						public bool IsGrown
 		{
 			get
 			{
@@ -96,7 +96,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-				public int MaxBranchesAllowedAtOnce
+						public int MaxBranchesAllowedAtOnce
 		{
 			get
 			{
@@ -108,7 +108,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-				public int CurrentBranchCount
+						public int CurrentBranchCount
 		{
 			get
 			{
@@ -125,7 +125,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-		public GameObject GetBranch(int idx)
+				public GameObject GetBranch(int idx)
 		{
 			if (this.branches != null && this.branches[idx] != null)
 			{
@@ -138,13 +138,13 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			return null;
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			this.SetTrunkOccupyingCellsAsPlant(false);
 			base.OnCleanUp();
 		}
 
-		public Instance(IStateMachineTarget master, PlantBranchGrower.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, PlantBranchGrower.Def def) : base(master, def)
 		{
 			this.growing = base.GetComponent<IManageGrowingStates>();
 			this.growing = ((this.growing != null) ? this.growing : base.gameObject.GetSMI<IManageGrowingStates>());
@@ -153,7 +153,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			base.Subscribe(144050788, new Action<object>(this.OnUpdateRoom));
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			Action<PlantBranchGrower.Instance> onEarlySpawn = base.def.onEarlySpawn;
@@ -173,7 +173,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-		private void OnUpdateRoom(object data)
+				private void OnUpdateRoom(object data)
 		{
 			if (this.branches == null)
 			{
@@ -185,7 +185,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			});
 		}
 
-		private void SetTrunkOccupyingCellsAsPlant(bool doSet)
+				private void SetTrunkOccupyingCellsAsPlant(bool doSet)
 		{
 			CellOffset[] occupiedCellsOffsets = base.GetComponent<OccupyArea>().OccupiedCellsOffsets;
 			int cell = Grid.PosToCell(base.gameObject);
@@ -203,7 +203,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-		private void OnNewGameSpawn(object data)
+				private void OnNewGameSpawn(object data)
 		{
 			this.DefineBranchArray();
 			float percentage = 1f;
@@ -218,7 +218,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			this.growing.OverrideMaturityLevel(percentage);
 		}
 
-		public void ManuallyDefineBranchArray(KPrefabID[] _branches)
+				public void ManuallyDefineBranchArray(KPrefabID[] _branches)
 		{
 			this.DefineBranchArray();
 			for (int i = 0; i < Mathf.Min(this.branches.Length, _branches.Length); i++)
@@ -239,7 +239,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-		private void DefineBranchArray()
+				private void DefineBranchArray()
 		{
 			if (this.branches == null)
 			{
@@ -247,7 +247,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-		public void ActionPerBranch(Action<GameObject> action)
+				public void ActionPerBranch(Action<GameObject> action)
 		{
 			for (int i = 0; i < this.branches.Length; i++)
 			{
@@ -259,7 +259,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-		public GameObject[] GetExistingBranches()
+				public GameObject[] GetExistingBranches()
 		{
 			List<GameObject> list = new List<GameObject>();
 			for (int i = 0; i < this.branches.Length; i++)
@@ -273,7 +273,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			return list.ToArray();
 		}
 
-		public void OnBranchRemoved(GameObject _branch)
+				public void OnBranchRemoved(GameObject _branch)
 		{
 			for (int i = 0; i < this.branches.Length; i++)
 			{
@@ -286,7 +286,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			base.gameObject.Trigger(-1586842875, null);
 		}
 
-		public void OnBrancHarvested(PlantBranch.Instance branch)
+				public void OnBrancHarvested(PlantBranch.Instance branch)
 		{
 			Action<PlantBranch.Instance, PlantBranchGrower.Instance> onBranchHarvested = base.def.onBranchHarvested;
 			if (onBranchHarvested == null)
@@ -296,7 +296,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			onBranchHarvested(branch, this);
 		}
 
-		private void OnUprooted(object data = null)
+				private void OnUprooted(object data = null)
 		{
 			for (int i = 0; i < this.branches.Length; i++)
 			{
@@ -308,7 +308,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-		public List<int> GetAvailableSpawnPositions()
+				public List<int> GetAvailableSpawnPositions()
 		{
 			PlantBranchGrower.Instance.spawn_choices.Clear();
 			int cell = Grid.PosToCell(this);
@@ -323,7 +323,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			return PlantBranchGrower.Instance.spawn_choices;
 		}
 
-		public void RefreshBranchZPositionOffset(GameObject _branch)
+				public void RefreshBranchZPositionOffset(GameObject _branch)
 		{
 			if (this.branches != null)
 			{
@@ -340,7 +340,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-		public bool SpawnRandomBranch(float growth_percentage = 0f)
+				public bool SpawnRandomBranch(float growth_percentage = 0f)
 		{
 			if (this.IsUprooted)
 			{
@@ -374,7 +374,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			return false;
 		}
 
-		private PlantBranch.Instance SpawnBranchAtIndex(int idx)
+				private PlantBranch.Instance SpawnBranchAtIndex(int idx)
 		{
 			if (idx < 0 || idx >= this.branches.Length)
 			{
@@ -408,7 +408,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			return smi;
 		}
 
-		private bool CanBranchGrowInCell(int cell)
+				private bool CanBranchGrowInCell(int cell)
 		{
 			if (!Grid.IsValidCell(cell))
 			{
@@ -434,7 +434,7 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			return Grid.IsValidCell(cell2) && !Grid.IsSubstantialLiquid(cell2, 0.35f) && (base.def.additionalBranchGrowRequirements == null || base.def.additionalBranchGrowRequirements(cell));
 		}
 
-		public void UpdateAutoHarvestValue(PlantBranch.Instance specificBranch = null)
+				public void UpdateAutoHarvestValue(PlantBranch.Instance specificBranch = null)
 		{
 			HarvestDesignatable component = base.GetComponent<HarvestDesignatable>();
 			if (component != null && this.branches != null)
@@ -466,14 +466,14 @@ public class PlantBranchGrower : GameStateMachine<PlantBranchGrower, PlantBranch
 			}
 		}
 
-		private IManageGrowingStates growing;
+				private IManageGrowingStates growing;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private UprootedMonitor uprootMonitor;
 
-		[Serialize]
+				[Serialize]
 		private Ref<KPrefabID>[] branches;
 
-		private static List<int> spawn_choices = new List<int>();
+				private static List<int> spawn_choices = new List<int>();
 	}
 }

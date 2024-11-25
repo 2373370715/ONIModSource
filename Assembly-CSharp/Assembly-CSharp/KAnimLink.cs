@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class KAnimLink
 {
-	public KAnimLink(KAnimControllerBase master, KAnimControllerBase slave)
+		public KAnimLink(KAnimControllerBase master, KAnimControllerBase slave)
 	{
 		this.slave = slave;
 		this.master = master;
 		this.Register();
 	}
 
-	private void Register()
+		private void Register()
 	{
 		this.master.OnOverlayColourChanged += this.OnOverlayColourChanged;
 		KAnimControllerBase kanimControllerBase = this.master;
@@ -20,7 +20,7 @@ public class KAnimLink
 		this.master.onLayerChanged += this.slave.SetLayer;
 	}
 
-	public void Unregister()
+		public void Unregister()
 	{
 		if (this.master != null)
 		{
@@ -36,7 +36,7 @@ public class KAnimLink
 		}
 	}
 
-	private void OnOverlayColourChanged(Color32 c)
+		private void OnOverlayColourChanged(Color32 c)
 	{
 		if (this.slave != null)
 		{
@@ -44,7 +44,7 @@ public class KAnimLink
 		}
 	}
 
-	private void OnTintColourChanged(Color c)
+		private void OnTintColourChanged(Color c)
 	{
 		if (this.syncTint && this.slave != null)
 		{
@@ -52,7 +52,7 @@ public class KAnimLink
 		}
 	}
 
-	private void OnHighlightColourChanged(Color c)
+		private void OnHighlightColourChanged(Color c)
 	{
 		if (this.slave != null)
 		{
@@ -60,9 +60,9 @@ public class KAnimLink
 		}
 	}
 
-	public bool syncTint = true;
+		public bool syncTint = true;
 
-	private KAnimControllerBase master;
+		private KAnimControllerBase master;
 
-	private KAnimControllerBase slave;
+		private KAnimControllerBase slave;
 }

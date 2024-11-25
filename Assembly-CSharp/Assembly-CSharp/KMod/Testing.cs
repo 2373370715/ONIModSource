@@ -2,42 +2,42 @@
 
 namespace KMod
 {
-	public static class Testing
+		public static class Testing
 	{
-		public static Testing.DLLLoading dll_loading;
+				public static Testing.DLLLoading dll_loading;
 
-		public const Testing.SaveLoad SAVE_LOAD = Testing.SaveLoad.NoTesting;
+				public const Testing.SaveLoad SAVE_LOAD = Testing.SaveLoad.NoTesting;
 
-		public const Testing.Install INSTALL = Testing.Install.NoTesting;
+				public const Testing.Install INSTALL = Testing.Install.NoTesting;
 
-		public const Testing.Boot BOOT = Testing.Boot.NoTesting;
+				public const Testing.Boot BOOT = Testing.Boot.NoTesting;
 
-		public enum DLLLoading
+				public enum DLLLoading
 		{
-			NoTesting,
-			Fail,
-			UseModLoaderDLLExclusively
+						NoTesting,
+						Fail,
+						UseModLoaderDLLExclusively
 		}
 
-		public enum SaveLoad
+				public enum SaveLoad
 		{
-			NoTesting,
-			FailSave,
-			FailLoad
+						NoTesting,
+						FailSave,
+						FailLoad
 		}
 
-		public enum Install
+				public enum Install
 		{
-			NoTesting,
-			ForceUninstall,
-			ForceReinstall,
-			ForceUpdate
+						NoTesting,
+						ForceUninstall,
+						ForceReinstall,
+						ForceUpdate
 		}
 
-		public enum Boot
+				public enum Boot
 		{
-			NoTesting,
-			Crash
+						NoTesting,
+						Crash
 		}
 	}
 }

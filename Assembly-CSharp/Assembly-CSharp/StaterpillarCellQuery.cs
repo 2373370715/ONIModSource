@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StaterpillarCellQuery : PathFinderQuery
 {
-	public StaterpillarCellQuery Reset(int max_results, GameObject tester, ObjectLayer conduitLayer)
+		public StaterpillarCellQuery Reset(int max_results, GameObject tester, ObjectLayer conduitLayer)
 	{
 		this.max_results = max_results;
 		this.tester = tester;
@@ -42,7 +42,7 @@ public class StaterpillarCellQuery : PathFinderQuery
 		return this;
 	}
 
-	public override bool IsMatch(int cell, int parent_cell, int cost)
+		public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
 		if (!this.result_cells.Contains(cell) && this.CheckValidRoofCell(cell))
 		{
@@ -51,7 +51,7 @@ public class StaterpillarCellQuery : PathFinderQuery
 		return this.result_cells.Count >= this.max_results;
 	}
 
-	private bool CheckValidRoofCell(int testCell)
+		private bool CheckValidRoofCell(int testCell)
 	{
 		if (!this.tester.GetComponent<Navigator>().NavGrid.NavTable.IsValid(testCell, NavType.Ceiling))
 		{
@@ -61,11 +61,11 @@ public class StaterpillarCellQuery : PathFinderQuery
 		return !Grid.ObjectLayers[1].ContainsKey(testCell) && !Grid.ObjectLayers[1].ContainsKey(cellInDirection) && !Grid.Objects[cellInDirection, (int)this.connectorLayer] && Grid.IsValidBuildingCell(testCell) && Grid.IsValidCell(cellInDirection) && Grid.IsValidBuildingCell(cellInDirection) && !Grid.IsSolidCell(cellInDirection);
 	}
 
-	public List<int> result_cells = new List<int>();
+		public List<int> result_cells = new List<int>();
 
-	private int max_results;
+		private int max_results;
 
-	private GameObject tester;
+		private GameObject tester;
 
-	private ObjectLayer connectorLayer;
+		private ObjectLayer connectorLayer;
 }

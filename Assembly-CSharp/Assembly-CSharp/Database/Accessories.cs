@@ -2,13 +2,13 @@
 
 namespace Database
 {
-	public class Accessories : ResourceSet<Accessory>
+		public class Accessories : ResourceSet<Accessory>
 	{
-		public Accessories(ResourceSet parent) : base("Accessories", parent)
+				public Accessories(ResourceSet parent) : base("Accessories", parent)
 		{
 		}
 
-		public void AddAccessories(string id, KAnimFile anim_file)
+				public void AddAccessories(string id, KAnimFile anim_file)
 		{
 			if (anim_file != null)
 			{
@@ -27,7 +27,7 @@ namespace Database
 			}
 		}
 
-		public void AddCustomAccessories(KAnimFile anim_file, ResourceSet parent, AccessorySlots slots)
+				public void AddCustomAccessories(KAnimFile anim_file, ResourceSet parent, AccessorySlots slots)
 		{
 			if (anim_file != null)
 			{

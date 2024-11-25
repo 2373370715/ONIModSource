@@ -6,12 +6,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/PhonoboxWorkable")]
 public class PhonoboxWorkable : Workable, IWorkerPrioritizable
 {
-	private PhonoboxWorkable()
+		private PhonoboxWorkable()
 	{
 		base.SetReportType(ReportManager.ReportType.PersonalTime);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.synchronizeAnims = false;
@@ -20,7 +20,7 @@ public class PhonoboxWorkable : Workable, IWorkerPrioritizable
 		base.SetWorkTime(15f);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		Effects component = worker.GetComponent<Effects>();
 		if (!string.IsNullOrEmpty(this.trackingEffect))
@@ -33,7 +33,7 @@ public class PhonoboxWorkable : Workable, IWorkerPrioritizable
 		}
 	}
 
-	public bool GetWorkerPriority(Worker worker, out int priority)
+		public bool GetWorkerPriority(WorkerBase worker, out int priority)
 	{
 		priority = this.basePriority;
 		Effects component = worker.GetComponent<Effects>();
@@ -49,34 +49,34 @@ public class PhonoboxWorkable : Workable, IWorkerPrioritizable
 		return true;
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		this.owner.AddWorker(worker);
 		worker.GetComponent<Effects>().Add("Dancing", false);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		this.owner.RemoveWorker(worker);
 		worker.GetComponent<Effects>().Remove("Dancing");
 	}
 
-	public override Workable.AnimInfo GetAnim(Worker worker)
+		public override Workable.AnimInfo GetAnim(WorkerBase worker)
 	{
 		int num = UnityEngine.Random.Range(0, this.workerOverrideAnims.Length);
 		this.overrideAnims = this.workerOverrideAnims[num];
 		return base.GetAnim(worker);
 	}
 
-	public Phonobox owner;
+		public Phonobox owner;
 
-	public int basePriority = RELAXATION.PRIORITY.TIER3;
+		public int basePriority = RELAXATION.PRIORITY.TIER3;
 
-	public string specificEffect = "Danced";
+		public string specificEffect = "Danced";
 
-	public string trackingEffect = "RecentlyDanced";
+		public string trackingEffect = "RecentlyDanced";
 
-	public KAnimFile[][] workerOverrideAnims = new KAnimFile[][]
+		public KAnimFile[][] workerOverrideAnims = new KAnimFile[][]
 	{
 		new KAnimFile[]
 		{

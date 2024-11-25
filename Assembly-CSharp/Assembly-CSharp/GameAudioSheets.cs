@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameAudioSheets : AudioSheets
 {
-	public static GameAudioSheets Get()
+		public static GameAudioSheets Get()
 	{
 		if (GameAudioSheets._Instance == null)
 		{
@@ -13,7 +13,7 @@ public class GameAudioSheets : AudioSheets
 		return GameAudioSheets._Instance;
 	}
 
-	public override void Initialize()
+		public override void Initialize()
 	{
 		this.validFileNames.Add("game_triggered");
 		foreach (KAnimFile kanimFile in Assets.instance.AnimAssets)
@@ -42,7 +42,7 @@ public class GameAudioSheets : AudioSheets
 		}
 	}
 
-	protected override AnimEvent CreateSoundOfType(string type, string file_name, string sound_name, int frame, float min_interval, string dlcId)
+		protected override AnimEvent CreateSoundOfType(string type, string file_name, string sound_name, int frame, float min_interval, string dlcId)
 	{
 		SoundEvent soundEvent = null;
 		bool shouldCameraScalePosition = true;
@@ -58,10 +58,7 @@ public class GameAudioSheets : AudioSheets
 		else if (type == "SoundEvent" || type == "LoopingSoundEvent")
 		{
 			bool is_looping = type == "LoopingSoundEvent";
-			string[] array = sound_name.Split(new char[]
-			{
-				':'
-			});
+			string[] array = sound_name.Split(':', StringSplitOptions.None);
 			sound_name = array[0];
 			soundEvent = new SoundEvent(file_name, sound_name, frame, true, is_looping, min_interval, false);
 			for (int i = 1; i < array.Length; i++)
@@ -163,35 +160,35 @@ public class GameAudioSheets : AudioSheets
 		return soundEvent;
 	}
 
-	public bool IsAnimAllowedToPlaySpeech(KAnim.Anim anim)
+		public bool IsAnimAllowedToPlaySpeech(KAnim.Anim anim)
 	{
 		HashSet<HashedString> hashSet = null;
 		return !this.animsNotAllowedToPlaySpeech.TryGetValue(anim.animFile.name, out hashSet) || !hashSet.Contains(anim.hash);
 	}
 
-	private static GameAudioSheets _Instance;
+		private static GameAudioSheets _Instance;
 
-	private HashSet<HashedString> validFileNames = new HashSet<HashedString>();
+		private HashSet<HashedString> validFileNames = new HashSet<HashedString>();
 
-	private Dictionary<HashedString, HashSet<HashedString>> animsNotAllowedToPlaySpeech = new Dictionary<HashedString, HashSet<HashedString>>();
+		private Dictionary<HashedString, HashSet<HashedString>> animsNotAllowedToPlaySpeech = new Dictionary<HashedString, HashSet<HashedString>>();
 
-	private class SingleAudioSheetLoader : AsyncLoader
+		private class SingleAudioSheetLoader : AsyncLoader
 	{
-		public override void Run()
+				public override void Run()
 		{
 			this.sheet.soundInfos = new ResourceLoader<AudioSheet.SoundInfo>(this.text, this.name).resources.ToArray();
 		}
 
-		public AudioSheet sheet;
+				public AudioSheet sheet;
 
-		public string text;
+				public string text;
 
-		public string name;
+				public string name;
 	}
 
-	private class GameAudioSheetLoader : GlobalAsyncLoader<GameAudioSheets.GameAudioSheetLoader>
+		private class GameAudioSheetLoader : GlobalAsyncLoader<GameAudioSheets.GameAudioSheetLoader>
 	{
-		public override void CollectLoaders(List<AsyncLoader> loaders)
+				public override void CollectLoaders(List<AsyncLoader> loaders)
 		{
 			foreach (AudioSheet audioSheet in GameAudioSheets.Get().sheets)
 			{
@@ -204,7 +201,7 @@ public class GameAudioSheets : AudioSheets
 			}
 		}
 
-		public override void Run()
+				public override void Run()
 		{
 		}
 	}

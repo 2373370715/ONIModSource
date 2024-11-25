@@ -2,9 +2,9 @@
 
 namespace Database
 {
-	public enum BalloonArtistFacadeType
+		public enum BalloonArtistFacadeType
 	{
-		Single,
-		ThreeSet
+				Single,
+				ThreeSet
 	}
 }

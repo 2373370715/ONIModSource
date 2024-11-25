@@ -6,12 +6,12 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class EventLogger<EventInstanceType, EventType> : KMonoBehaviour, ISaveLoadable where EventInstanceType : EventInstanceBase where EventType : EventBase
 {
-	public IEnumerator<EventInstanceType> GetEnumerator()
+		public IEnumerator<EventInstanceType> GetEnumerator()
 	{
 		return this.EventInstances.GetEnumerator();
 	}
 
-	public EventType AddEvent(EventType ev)
+		public EventType AddEvent(EventType ev)
 	{
 		for (int i = 0; i < this.Events.Count; i++)
 		{
@@ -25,7 +25,7 @@ public class EventLogger<EventInstanceType, EventType> : KMonoBehaviour, ISaveLo
 		return ev;
 	}
 
-	public EventInstanceType Add(EventInstanceType ev)
+		public EventInstanceType Add(EventInstanceType ev)
 	{
 		if (this.EventInstances.Count > 10000)
 		{
@@ -35,7 +35,7 @@ public class EventLogger<EventInstanceType, EventType> : KMonoBehaviour, ISaveLo
 		return ev;
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	protected internal void OnDeserialized()
 	{
 		if (this.EventInstances.Count > 10000)
@@ -55,15 +55,15 @@ public class EventLogger<EventInstanceType, EventType> : KMonoBehaviour, ISaveLo
 		}
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		this.EventInstances.Clear();
 	}
 
-	private const int MAX_NUM_EVENTS = 10000;
+		private const int MAX_NUM_EVENTS = 10000;
 
-	private List<EventType> Events = new List<EventType>();
+		private List<EventType> Events = new List<EventType>();
 
-	[Serialize]
+		[Serialize]
 	private List<EventInstanceType> EventInstances = new List<EventInstanceType>();
 }

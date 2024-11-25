@@ -6,141 +6,141 @@ using STRINGS;
 
 namespace TUNING
 {
-	public class CREATURES
+		public class CREATURES
 	{
-		public const float WILD_GROWTH_RATE_MODIFIER = 0.25f;
+				public const float WILD_GROWTH_RATE_MODIFIER = 0.25f;
 
-		public const int DEFAULT_PROBING_RADIUS = 32;
+				public const int DEFAULT_PROBING_RADIUS = 32;
 
-		public const float CREATURES_BASE_GENERATION_KILOWATTS = 10f;
+				public const float CREATURES_BASE_GENERATION_KILOWATTS = 10f;
 
-		public const float FERTILITY_TIME_BY_LIFESPAN = 0.6f;
+				public const float FERTILITY_TIME_BY_LIFESPAN = 0.6f;
 
-		public const float INCUBATION_TIME_BY_LIFESPAN = 0.2f;
+				public const float INCUBATION_TIME_BY_LIFESPAN = 0.2f;
 
-		public const float INCUBATOR_INCUBATION_MULTIPLIER = 4f;
+				public const float INCUBATOR_INCUBATION_MULTIPLIER = 4f;
 
-		public const float WILD_CALORIE_BURN_RATIO = 0.25f;
+				public const float WILD_CALORIE_BURN_RATIO = 0.25f;
 
-		public const float HUG_INCUBATION_MULTIPLIER = 1f;
+				public const float HUG_INCUBATION_MULTIPLIER = 1f;
 
-		public const float VIABILITY_LOSS_RATE = -0.016666668f;
+				public const float VIABILITY_LOSS_RATE = -0.016666668f;
 
-		public const float STATERPILLAR_POWER_CHARGE_LOSS_RATE = -0.055555556f;
+				public const float STATERPILLAR_POWER_CHARGE_LOSS_RATE = -0.055555556f;
 
-		public class HITPOINTS
+				public class HITPOINTS
 		{
-			public const float TIER0 = 5f;
+						public const float TIER0 = 5f;
 
-			public const float TIER1 = 25f;
+						public const float TIER1 = 25f;
 
-			public const float TIER2 = 50f;
+						public const float TIER2 = 50f;
 
-			public const float TIER3 = 100f;
+						public const float TIER3 = 100f;
 
-			public const float TIER4 = 150f;
+						public const float TIER4 = 150f;
 
-			public const float TIER5 = 200f;
+						public const float TIER5 = 200f;
 
-			public const float TIER6 = 400f;
+						public const float TIER6 = 400f;
 		}
 
-		public class MASS_KG
+				public class MASS_KG
 		{
-			public const float TIER0 = 5f;
+						public const float TIER0 = 5f;
 
-			public const float TIER1 = 25f;
+						public const float TIER1 = 25f;
 
-			public const float TIER2 = 50f;
+						public const float TIER2 = 50f;
 
-			public const float TIER3 = 100f;
+						public const float TIER3 = 100f;
 
-			public const float TIER4 = 200f;
+						public const float TIER4 = 200f;
 
-			public const float TIER5 = 400f;
+						public const float TIER5 = 400f;
 		}
 
-		public class TEMPERATURE
+				public class TEMPERATURE
 		{
-			public const float SKIN_THICKNESS = 0.025f;
+						public const float SKIN_THICKNESS = 0.025f;
 
-			public const float SURFACE_AREA = 17.5f;
+						public const float SURFACE_AREA = 17.5f;
 
-			public const float GROUND_TRANSFER_SCALE = 0f;
+						public const float GROUND_TRANSFER_SCALE = 0f;
 
-			public static float FREEZING_10 = 173f;
+						public static float FREEZING_10 = 173f;
 
-			public static float FREEZING_9 = 183f;
+						public static float FREEZING_9 = 183f;
 
-			public static float FREEZING_3 = 243f;
+						public static float FREEZING_3 = 243f;
 
-			public static float FREEZING_2 = 253f;
+						public static float FREEZING_2 = 253f;
 
-			public static float FREEZING_1 = 263f;
+						public static float FREEZING_1 = 263f;
 
-			public static float FREEZING = 273f;
+						public static float FREEZING = 273f;
 
-			public static float COOL = 283f;
+						public static float COOL = 283f;
 
-			public static float MODERATE = 293f;
+						public static float MODERATE = 293f;
 
-			public static float HOT = 303f;
+						public static float HOT = 303f;
 
-			public static float HOT_1 = 313f;
+						public static float HOT_1 = 313f;
 
-			public static float HOT_2 = 323f;
+						public static float HOT_2 = 323f;
 
-			public static float HOT_3 = 333f;
+						public static float HOT_3 = 333f;
 
-			public static float HOT_7 = 373f;
+						public static float HOT_7 = 373f;
 		}
 
-		public class LIFESPAN
+				public class LIFESPAN
 		{
-			public const float TIER0 = 5f;
+						public const float TIER0 = 5f;
 
-			public const float TIER1 = 25f;
+						public const float TIER1 = 25f;
 
-			public const float TIER2 = 75f;
+						public const float TIER2 = 75f;
 
-			public const float TIER3 = 100f;
+						public const float TIER3 = 100f;
 
-			public const float TIER4 = 150f;
+						public const float TIER4 = 150f;
 
-			public const float TIER5 = 200f;
+						public const float TIER5 = 200f;
 
-			public const float TIER6 = 400f;
+						public const float TIER6 = 400f;
 		}
 
-		public class CONVERSION_EFFICIENCY
+				public class CONVERSION_EFFICIENCY
 		{
-			public static float BAD_2 = 0.1f;
+						public static float BAD_2 = 0.1f;
 
-			public static float BAD_1 = 0.25f;
+						public static float BAD_1 = 0.25f;
 
-			public static float NORMAL = 0.5f;
+						public static float NORMAL = 0.5f;
 
-			public static float GOOD_1 = 0.75f;
+						public static float GOOD_1 = 0.75f;
 
-			public static float GOOD_2 = 0.95f;
+						public static float GOOD_2 = 0.95f;
 
-			public static float GOOD_3 = 1f;
+						public static float GOOD_3 = 1f;
 		}
 
-		public class SPACE_REQUIREMENTS
+				public class SPACE_REQUIREMENTS
 		{
-			public static int TIER1 = 4;
+						public static int TIER1 = 4;
 
-			public static int TIER2 = 8;
+						public static int TIER2 = 8;
 
-			public static int TIER3 = 12;
+						public static int TIER3 = 12;
 
-			public static int TIER4 = 16;
+						public static int TIER4 = 16;
 		}
 
-		public class EGG_CHANCE_MODIFIERS
+				public class EGG_CHANCE_MODIFIERS
 		{
-			private static System.Action CreateDietaryModifier(string id, Tag eggTag, HashSet<Tag> foodTags, float modifierPerCal)
+						private static System.Action CreateDietaryModifier(string id, Tag eggTag, HashSet<Tag> foodTags, float modifierPerCal)
 			{
 				Func<string, string> <>9__1;
 				FertilityModifier.FertilityModFn <>9__2;
@@ -183,7 +183,7 @@ namespace TUNING
 				};
 			}
 
-			private static System.Action CreateDietaryModifier(string id, Tag eggTag, Tag foodTag, float modifierPerCal)
+						private static System.Action CreateDietaryModifier(string id, Tag eggTag, Tag foodTag, float modifierPerCal)
 			{
 				return CREATURES.EGG_CHANCE_MODIFIERS.CreateDietaryModifier(id, eggTag, new HashSet<Tag>
 				{
@@ -191,7 +191,7 @@ namespace TUNING
 				}, modifierPerCal);
 			}
 
-			private static System.Action CreateNearbyCreatureModifier(string id, Tag eggTag, Tag nearbyCreatureBaby, Tag nearbyCreatureAdult, float modifierPerSecond, bool alsoInvert)
+						private static System.Action CreateNearbyCreatureModifier(string id, Tag eggTag, Tag nearbyCreatureBaby, Tag nearbyCreatureAdult, float modifierPerSecond, bool alsoInvert)
 			{
 				Func<string, string> <>9__1;
 				FertilityModifier.FertilityModFn <>9__2;
@@ -247,7 +247,7 @@ namespace TUNING
 				};
 			}
 
-			private static System.Action CreateElementCreatureModifier(string id, Tag eggTag, Tag element, float modifierPerSecond, bool alsoInvert, bool checkSubstantialLiquid, string tooltipOverride = null)
+						private static System.Action CreateElementCreatureModifier(string id, Tag eggTag, Tag element, float modifierPerSecond, bool alsoInvert, bool checkSubstantialLiquid, string tooltipOverride = null)
 			{
 				Func<string, string> <>9__1;
 				FertilityModifier.FertilityModFn <>9__2;
@@ -306,7 +306,7 @@ namespace TUNING
 				};
 			}
 
-			private static System.Action CreateCropTendedModifier(string id, Tag eggTag, HashSet<Tag> cropTags, float modifierPerEvent)
+						private static System.Action CreateCropTendedModifier(string id, Tag eggTag, HashSet<Tag> cropTags, float modifierPerEvent)
 			{
 				Func<string, string> <>9__1;
 				FertilityModifier.FertilityModFn <>9__2;
@@ -349,7 +349,7 @@ namespace TUNING
 				};
 			}
 
-			private static System.Action CreateTemperatureModifier(string id, Tag eggTag, float minTemp, float maxTemp, float modifierPerSecond, bool alsoInvert)
+						private static System.Action CreateTemperatureModifier(string id, Tag eggTag, float minTemp, float maxTemp, float modifierPerSecond, bool alsoInvert)
 			{
 				Func<string, string> <>9__1;
 				FertilityModifier.FertilityModFn <>9__2;
@@ -403,7 +403,7 @@ namespace TUNING
 				};
 			}
 
-			public static List<System.Action> MODIFIER_CREATORS = new List<System.Action>
+						public static List<System.Action> MODIFIER_CREATORS = new List<System.Action>
 			{
 				CREATURES.EGG_CHANCE_MODIFIERS.CreateDietaryModifier("HatchHard", "HatchHardEgg".ToTag(), SimHashes.SedimentaryRock.CreateTag(), 0.05f / HatchTuning.STANDARD_CALORIES_PER_CYCLE),
 				CREATURES.EGG_CHANCE_MODIFIERS.CreateDietaryModifier("HatchVeggie", "HatchVeggieEgg".ToTag(), SimHashes.Dirt.CreateTag(), 0.05f / HatchTuning.STANDARD_CALORIES_PER_CYCLE),
@@ -432,13 +432,14 @@ namespace TUNING
 				CREATURES.EGG_CHANCE_MODIFIERS.CreateElementCreatureModifier("PokeFreshWater", "CrabFreshWaterEgg".ToTag(), SimHashes.Water.CreateTag(), 0.00025f, true, true, null),
 				CREATURES.EGG_CHANCE_MODIFIERS.CreateTemperatureModifier("MoleDelicacy", "MoleDelicacyEgg".ToTag(), MoleDelicacyConfig.EGG_CHANCES_TEMPERATURE_MIN, MoleDelicacyConfig.EGG_CHANCES_TEMPERATURE_MAX, 8.333333E-05f, false),
 				CREATURES.EGG_CHANCE_MODIFIERS.CreateElementCreatureModifier("StaterpillarGas", "StaterpillarGasEgg".ToTag(), GameTags.Unbreathable, 0.00025f, true, false, CREATURES.FERTILITY_MODIFIERS.LIVING_IN_ELEMENT.UNBREATHABLE),
-				CREATURES.EGG_CHANCE_MODIFIERS.CreateElementCreatureModifier("StaterpillarLiquid", "StaterpillarLiquidEgg".ToTag(), GameTags.Liquid, 0.00025f, true, false, CREATURES.FERTILITY_MODIFIERS.LIVING_IN_ELEMENT.LIQUID)
+				CREATURES.EGG_CHANCE_MODIFIERS.CreateElementCreatureModifier("StaterpillarLiquid", "StaterpillarLiquidEgg".ToTag(), GameTags.Liquid, 0.00025f, true, false, CREATURES.FERTILITY_MODIFIERS.LIVING_IN_ELEMENT.LIQUID),
+				CREATURES.EGG_CHANCE_MODIFIERS.CreateDietaryModifier("BellyGold", "GoldBellyEgg".ToTag(), "FriesCarrot".ToTag(), 0.05f / BellyTuning.STANDARD_CALORIES_PER_CYCLE)
 			};
 		}
 
-		public class SORTING
+				public class SORTING
 		{
-			public static Dictionary<string, int> CRITTER_ORDER = new Dictionary<string, int>
+						public static Dictionary<string, int> CRITTER_ORDER = new Dictionary<string, int>
 			{
 				{
 					"Hatch",

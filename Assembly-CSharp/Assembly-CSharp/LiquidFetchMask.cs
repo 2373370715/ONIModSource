@@ -2,7 +2,7 @@
 
 public class LiquidFetchMask
 {
-	public LiquidFetchMask(CellOffset[][] offset_table)
+		public LiquidFetchMask(CellOffset[][] offset_table)
 	{
 		for (int i = 0; i < offset_table.Length; i++)
 		{
@@ -19,7 +19,7 @@ public class LiquidFetchMask
 		}
 	}
 
-	private void RefreshCell(int cell)
+		private void RefreshCell(int cell)
 	{
 		CellOffset offset = Grid.GetOffset(cell);
 		int num = Math.Max(0, offset.y - this.maxOffset.y);
@@ -40,22 +40,22 @@ public class LiquidFetchMask
 		this.isLiquidAvailable[cell] = false;
 	}
 
-	public void MarkDirty(int cell)
+		public void MarkDirty(int cell)
 	{
 		this.RefreshCell(cell);
 	}
 
-	public bool IsLiquidAvailable(int cell)
+		public bool IsLiquidAvailable(int cell)
 	{
 		return this.isLiquidAvailable[cell];
 	}
 
-	public void Destroy()
+		public void Destroy()
 	{
 		this.isLiquidAvailable = null;
 	}
 
-	private bool[] isLiquidAvailable;
+		private bool[] isLiquidAvailable;
 
-	private CellOffset maxOffset;
+		private CellOffset maxOffset;
 }

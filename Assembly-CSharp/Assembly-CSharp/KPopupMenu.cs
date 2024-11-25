@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class KPopupMenu : KScreen
 {
-	public void SetOptions(IList<string> options)
+		public void SetOptions(IList<string> options)
 	{
 		List<KButtonMenu.ButtonInfo> list = new List<KButtonMenu.ButtonInfo>();
 		for (int i = 0; i < options.Count; i++)
@@ -19,7 +19,7 @@ public class KPopupMenu : KScreen
 		this.Buttons = list.ToArray();
 	}
 
-	public void OnClick()
+		public void OnClick()
 	{
 		if (this.Buttons != null)
 		{
@@ -34,7 +34,7 @@ public class KPopupMenu : KScreen
 		}
 	}
 
-	public void SelectOption(string option, int index)
+		public void SelectOption(string option, int index)
 	{
 		if (this.OnSelect != null)
 		{
@@ -43,15 +43,15 @@ public class KPopupMenu : KScreen
 		base.gameObject.SetActive(false);
 	}
 
-	public IList<KButtonMenu.ButtonInfo> GetButtons()
+		public IList<KButtonMenu.ButtonInfo> GetButtons()
 	{
 		return this.Buttons;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButtonMenu buttonMenu;
 
-	private KButtonMenu.ButtonInfo[] Buttons;
+		private KButtonMenu.ButtonInfo[] Buttons;
 
-	public Action<string, int> OnSelect;
+		public Action<string, int> OnSelect;
 }

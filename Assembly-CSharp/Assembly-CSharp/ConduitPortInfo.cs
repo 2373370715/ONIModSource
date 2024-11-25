@@ -3,13 +3,13 @@
 [Serializable]
 public class ConduitPortInfo
 {
-	public ConduitPortInfo(ConduitType type, CellOffset offset)
+		public ConduitPortInfo(ConduitType type, CellOffset offset)
 	{
 		this.conduitType = type;
 		this.offset = offset;
 	}
 
-	public ConduitType conduitType;
+		public ConduitType conduitType;
 
-	public CellOffset offset;
+		public CellOffset offset;
 }

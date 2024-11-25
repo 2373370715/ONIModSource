@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbackReceiver
 {
-	protected KAnimControllerBase()
+		protected KAnimControllerBase()
 	{
 		this.previousFrame = -1;
 		this.currentFrame = -1;
@@ -14,15 +14,15 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		this.isVisible = true;
 	}
 
-	public abstract KAnim.Anim GetAnim(int index);
+		public abstract KAnim.Anim GetAnim(int index);
 
-			public string debugName { get; private set; }
+				public string debugName { get; private set; }
 
-			public KAnim.Build curBuild { get; protected set; }
+				public KAnim.Build curBuild { get; protected set; }
 
-			public event Action<Color32> OnOverlayColourChanged;
+				public event Action<Color32> OnOverlayColourChanged;
 
-			public new bool enabled
+				public new bool enabled
 	{
 		get
 		{
@@ -44,7 +44,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-		public bool HasBatchInstanceData
+			public bool HasBatchInstanceData
 	{
 		get
 		{
@@ -52,11 +52,11 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public SymbolInstanceGpuData symbolInstanceGpuData { get; protected set; }
+				public SymbolInstanceGpuData symbolInstanceGpuData { get; protected set; }
 
-			public SymbolOverrideInfoGpuData symbolOverrideInfoGpuData { get; protected set; }
+				public SymbolOverrideInfoGpuData symbolOverrideInfoGpuData { get; protected set; }
 
-			public Color32 TintColour
+				public Color32 TintColour
 	{
 		get
 		{
@@ -76,7 +76,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public Color32 HighlightColour
+				public Color32 HighlightColour
 	{
 		get
 		{
@@ -96,7 +96,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public Color OverlayColour
+				public Color OverlayColour
 	{
 		get
 		{
@@ -116,17 +116,17 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public event KAnimControllerBase.KAnimEvent onAnimEnter;
+				public event KAnimControllerBase.KAnimEvent onAnimEnter;
 
-			public event KAnimControllerBase.KAnimEvent onAnimComplete;
+				public event KAnimControllerBase.KAnimEvent onAnimComplete;
 
-			public event Action<int> onLayerChanged;
+				public event Action<int> onLayerChanged;
 
-			public int previousFrame { get; protected set; }
+				public int previousFrame { get; protected set; }
 
-			public int currentFrame { get; protected set; }
+				public int currentFrame { get; protected set; }
 
-		public HashedString currentAnim
+			public HashedString currentAnim
 	{
 		get
 		{
@@ -138,9 +138,9 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public float PlaySpeedMultiplier { get; set; }
+				public float PlaySpeedMultiplier { get; set; }
 
-	public void SetFGLayer(Grid.SceneLayer layer)
+		public void SetFGLayer(Grid.SceneLayer layer)
 	{
 		this.fgLayer = layer;
 		this.GetLayering();
@@ -150,7 +150,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public KAnim.PlayMode PlayMode
+				public KAnim.PlayMode PlayMode
 	{
 		get
 		{
@@ -162,7 +162,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public bool FlipX
+				public bool FlipX
 	{
 		get
 		{
@@ -179,7 +179,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public bool FlipY
+				public bool FlipY
 	{
 		get
 		{
@@ -196,7 +196,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public Vector3 Offset
+				public Vector3 Offset
 	{
 		get
 		{
@@ -216,7 +216,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public float Rotation
+				public float Rotation
 	{
 		get
 		{
@@ -233,7 +233,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public Vector3 Pivot
+				public Vector3 Pivot
 	{
 		get
 		{
@@ -250,7 +250,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-		public Vector3 PositionIncludingOffset
+			public Vector3 PositionIncludingOffset
 	{
 		get
 		{
@@ -258,12 +258,12 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	public KAnimBatchGroup.MaterialType GetMaterialType()
+		public KAnimBatchGroup.MaterialType GetMaterialType()
 	{
 		return this.materialType;
 	}
 
-	public Vector3 GetWorldPivot()
+		public Vector3 GetWorldPivot()
 	{
 		Vector3 position = base.transform.GetPosition();
 		KBoxCollider2D component = base.GetComponent<KBoxCollider2D>();
@@ -275,12 +275,12 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		return position;
 	}
 
-	public KAnim.Anim GetCurrentAnim()
+		public KAnim.Anim GetCurrentAnim()
 	{
 		return this.curAnim;
 	}
 
-	public KAnimHashedString GetBuildHash()
+		public KAnimHashedString GetBuildHash()
 	{
 		if (this.curBuild == null)
 		{
@@ -289,7 +289,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		return this.curBuild.fileHash;
 	}
 
-	protected float GetDuration()
+		protected float GetDuration()
 	{
 		if (this.curAnim != null)
 		{
@@ -298,7 +298,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		return 0f;
 	}
 
-	protected int GetFrameIdxFromOffset(int offset)
+		protected int GetFrameIdxFromOffset(int offset)
 	{
 		int result = -1;
 		if (this.curAnim != null)
@@ -308,7 +308,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		return result;
 	}
 
-	public int GetFrameIdx(float time, bool absolute)
+		public int GetFrameIdx(float time, bool absolute)
 	{
 		int result = -1;
 		if (this.curAnim != null)
@@ -318,12 +318,12 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		return result;
 	}
 
-	public bool IsStopped()
+		public bool IsStopped()
 	{
 		return this.stopped;
 	}
 
-		public KAnim.Anim CurrentAnim
+			public KAnim.Anim CurrentAnim
 	{
 		get
 		{
@@ -331,12 +331,12 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	public KAnimSynchronizer GetSynchronizer()
+		public KAnimSynchronizer GetSynchronizer()
 	{
 		return this.synchronizer;
 	}
 
-	public KAnimLayering GetLayering()
+		public KAnimLayering GetLayering()
 	{
 		if (this.layering == null && this.fgLayer != Grid.SceneLayer.NoLayer)
 		{
@@ -345,12 +345,12 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		return this.layering;
 	}
 
-	public KAnim.PlayMode GetMode()
+		public KAnim.PlayMode GetMode()
 	{
 		return this.mode;
 	}
 
-	public static string GetModeString(KAnim.PlayMode mode)
+		public static string GetModeString(KAnim.PlayMode mode)
 	{
 		switch (mode)
 		{
@@ -365,58 +365,58 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	public float GetPlaySpeed()
+		public float GetPlaySpeed()
 	{
 		return this.playSpeed;
 	}
 
-	public void SetElapsedTime(float value)
+		public void SetElapsedTime(float value)
 	{
 		this.elapsedTime = value;
 	}
 
-	public float GetElapsedTime()
+		public float GetElapsedTime()
 	{
 		return this.elapsedTime;
 	}
 
-	protected abstract void SuspendUpdates(bool suspend);
+		protected abstract void SuspendUpdates(bool suspend);
 
-	protected abstract void OnStartQueuedAnim();
+		protected abstract void OnStartQueuedAnim();
 
-	public abstract void SetDirty();
+		public abstract void SetDirty();
 
-	protected abstract void RefreshVisibilityListener();
+		protected abstract void RefreshVisibilityListener();
 
-	protected abstract void DeRegister();
+		protected abstract void DeRegister();
 
-	protected abstract void Register();
+		protected abstract void Register();
 
-	protected abstract void OnAwake();
+		protected abstract void OnAwake();
 
-	protected abstract void OnStart();
+		protected abstract void OnStart();
 
-	protected abstract void OnStop();
+		protected abstract void OnStop();
 
-	protected abstract void Enable();
+		protected abstract void Enable();
 
-	protected abstract void Disable();
+		protected abstract void Disable();
 
-	protected abstract void UpdateFrame(float t);
+		protected abstract void UpdateFrame(float t);
 
-	public abstract Matrix2x3 GetTransformMatrix();
+		public abstract Matrix2x3 GetTransformMatrix();
 
-	public abstract Matrix2x3 GetSymbolLocalTransform(HashedString symbol, out bool symbolVisible);
+		public abstract Matrix2x3 GetSymbolLocalTransform(HashedString symbol, out bool symbolVisible);
 
-	public abstract void UpdateAllHiddenSymbols();
+		public abstract void UpdateAllHiddenSymbols();
 
-	public abstract void UpdateHiddenSymbol(KAnimHashedString specificSymbol);
+		public abstract void UpdateHiddenSymbol(KAnimHashedString specificSymbol);
 
-	public abstract void UpdateHiddenSymbolSet(HashSet<KAnimHashedString> specificSymbols);
+		public abstract void UpdateHiddenSymbolSet(HashSet<KAnimHashedString> specificSymbols);
 
-	public abstract void TriggerStop();
+		public abstract void TriggerStop();
 
-	public virtual void SetLayer(int layer)
+		public virtual void SetLayer(int layer)
 	{
 		if (this.onLayerChanged != null)
 		{
@@ -424,7 +424,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	public Vector3 GetPivotSymbolPosition()
+		public Vector3 GetPivotSymbolPosition()
 	{
 		bool flag = false;
 		Matrix4x4 symbolTransform = this.GetSymbolTransform(KAnimControllerBase.snaptoPivot, out flag);
@@ -436,13 +436,13 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		return position;
 	}
 
-	public virtual Matrix4x4 GetSymbolTransform(HashedString symbol, out bool symbolVisible)
+		public virtual Matrix4x4 GetSymbolTransform(HashedString symbol, out bool symbolVisible)
 	{
 		symbolVisible = false;
 		return Matrix4x4.identity;
 	}
 
-	private void Awake()
+		private void Awake()
 	{
 		this.aem = Singleton<AnimEventManager>.Instance;
 		this.debugName = base.name;
@@ -456,12 +456,12 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		this.hasAwakeRun = true;
 	}
 
-	private void Start()
+		private void Start()
 	{
 		this.OnStart();
 	}
 
-	protected virtual void OnDestroy()
+		protected virtual void OnDestroy()
 	{
 		this.animFiles = null;
 		this.curAnim = null;
@@ -476,7 +476,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		this.overrideAnimFiles = null;
 	}
 
-	protected void AnimEnter(HashedString hashed_name)
+		protected void AnimEnter(HashedString hashed_name)
 	{
 		if (this.onAnimEnter != null)
 		{
@@ -484,7 +484,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	public void Play(HashedString anim_name, KAnim.PlayMode mode = KAnim.PlayMode.Once, float speed = 1f, float time_offset = 0f)
+		public void Play(HashedString anim_name, KAnim.PlayMode mode = KAnim.PlayMode.Once, float speed = 1f, float time_offset = 0f)
 	{
 		if (!this.stopped)
 		{
@@ -493,7 +493,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		this.Queue(anim_name, mode, speed, time_offset);
 	}
 
-	public void Play(HashedString[] anim_names, KAnim.PlayMode mode = KAnim.PlayMode.Once)
+		public void Play(HashedString[] anim_names, KAnim.PlayMode mode = KAnim.PlayMode.Once)
 	{
 		if (!this.stopped)
 		{
@@ -507,7 +507,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		this.Queue(anim_names[anim_names.Length - 1], mode, 1f, 0f);
 	}
 
-	public void Queue(HashedString anim_name, KAnim.PlayMode mode = KAnim.PlayMode.Once, float speed = 1f, float time_offset = 0f)
+		public void Queue(HashedString anim_name, KAnim.PlayMode mode = KAnim.PlayMode.Once, float speed = 1f, float time_offset = 0f)
 	{
 		this.animQueue.Enqueue(new KAnimControllerBase.AnimData
 		{
@@ -527,23 +527,23 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	public void QueueAndSyncTransition(HashedString anim_name, KAnim.PlayMode mode = KAnim.PlayMode.Once, float speed = 1f, float time_offset = 0f)
+		public void QueueAndSyncTransition(HashedString anim_name, KAnim.PlayMode mode = KAnim.PlayMode.Once, float speed = 1f, float time_offset = 0f)
 	{
 		this.SyncTransition();
 		this.Queue(anim_name, mode, speed, time_offset);
 	}
 
-	public void SyncTransition()
+		public void SyncTransition()
 	{
 		this.elapsedTime %= Mathf.Max(float.Epsilon, this.GetDuration());
 	}
 
-	public void ClearQueue()
+		public void ClearQueue()
 	{
 		this.animQueue.Clear();
 	}
 
-	private void Restart(HashedString anim_name, KAnim.PlayMode mode = KAnim.PlayMode.Once, float speed = 1f, float time_offset = 0f)
+		private void Restart(HashedString anim_name, KAnim.PlayMode mode = KAnim.PlayMode.Once, float speed = 1f, float time_offset = 0f)
 	{
 		if (this.curBuild == null)
 		{
@@ -577,7 +577,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	protected void StartQueuedAnim()
+		protected void StartQueuedAnim()
 	{
 		this.StopAnimEventSequence();
 		this.previousFrame = -1;
@@ -628,12 +628,12 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		this.AnimEnter(animData.anim);
 	}
 
-	public bool GetSymbolVisiblity(KAnimHashedString symbol)
+		public bool GetSymbolVisiblity(KAnimHashedString symbol)
 	{
 		return !this.hiddenSymbolsSet.Contains(symbol);
 	}
 
-	public void SetSymbolVisiblity(KAnimHashedString symbol, bool is_visible)
+		public void SetSymbolVisiblity(KAnimHashedString symbol, bool is_visible)
 	{
 		if (is_visible)
 		{
@@ -649,7 +649,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	public void BatchSetSymbolsVisiblity(HashSet<KAnimHashedString> symbols, bool is_visible)
+		public void BatchSetSymbolsVisiblity(HashSet<KAnimHashedString> symbols, bool is_visible)
 	{
 		foreach (KAnimHashedString item in symbols)
 		{
@@ -668,9 +668,12 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	public void AddAnimOverrides(KAnimFile kanim_file, float priority = 0f)
+		public void AddAnimOverrides(KAnimFile kanim_file, float priority = 0f)
 	{
-		global::Debug.Assert(kanim_file != null);
+		if (kanim_file == null)
+		{
+			global::Debug.LogError(string.Format("AddAnimOverrides tried to add a null override to {0} at position {1}", base.gameObject.name, base.transform.position));
+		}
 		if (kanim_file.GetData().build != null && kanim_file.GetData().build.symbols.Length != 0)
 		{
 			SymbolOverrideController component = base.GetComponent<SymbolOverrideController>();
@@ -686,9 +689,12 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		this.RebuildOverrides(kanim_file);
 	}
 
-	public void RemoveAnimOverrides(KAnimFile kanim_file)
+		public void RemoveAnimOverrides(KAnimFile kanim_file)
 	{
-		global::Debug.Assert(kanim_file != null);
+		if (kanim_file == null)
+		{
+			global::Debug.LogError(string.Format("RemoveAnimOverrides tried to add a null override to {0} at position {1}", base.gameObject.name, base.transform.position));
+		}
 		if (kanim_file.GetData().build != null && kanim_file.GetData().build.symbols.Length != 0)
 		{
 			SymbolOverrideController component = base.GetComponent<SymbolOverrideController>();
@@ -706,7 +712,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		this.RebuildOverrides(kanim_file);
 	}
 
-	private void RebuildOverrides(KAnimFile kanim_file)
+		private void RebuildOverrides(KAnimFile kanim_file)
 	{
 		bool flag = false;
 		this.overrideAnims.Clear();
@@ -740,7 +746,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	public bool HasAnimation(HashedString anim_name)
+		public bool HasAnimation(HashedString anim_name)
 	{
 		bool flag = anim_name.IsValid;
 		if (flag)
@@ -752,13 +758,13 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		return flag;
 	}
 
-	public bool HasAnimationFile(KAnimHashedString anim_file_name)
+		public bool HasAnimationFile(KAnimHashedString anim_file_name)
 	{
 		KAnimFile kanimFile = null;
 		return this.TryGetAnimationFile(anim_file_name, out kanimFile);
 	}
 
-	public bool TryGetAnimationFile(KAnimHashedString anim_file_name, out KAnimFile match)
+		public bool TryGetAnimationFile(KAnimHashedString anim_file_name, out KAnimFile match)
 	{
 		match = null;
 		if (!anim_file_name.IsValid())
@@ -845,7 +851,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		return match != null;
 	}
 
-	public void AddAnims(KAnimFile anim_file)
+		public void AddAnims(KAnimFile anim_file)
 	{
 		KAnimFileData data = anim_file.GetData();
 		if (data == null)
@@ -877,7 +883,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-			public KAnimFile[] AnimFiles
+				public KAnimFile[] AnimFiles
 	{
 		get
 		{
@@ -916,7 +922,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-		public IReadOnlyList<KAnimControllerBase.OverrideAnimFileData> OverrideAnimFiles
+			public IReadOnlyList<KAnimControllerBase.OverrideAnimFileData> OverrideAnimFiles
 	{
 		get
 		{
@@ -924,7 +930,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	public void Stop()
+		public void Stop()
 	{
 		if (this.curAnim != null)
 		{
@@ -939,7 +945,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		this.OnStop();
 	}
 
-	public void StopAndClear()
+		public void StopAndClear()
 	{
 		if (!this.stopped)
 		{
@@ -953,12 +959,12 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	public float GetPositionPercent()
+		public float GetPositionPercent()
 	{
 		return this.GetElapsedTime() / this.GetDuration();
 	}
 
-	public void SetPositionPercent(float percent)
+		public void SetPositionPercent(float percent)
 	{
 		if (this.curAnim == null)
 		{
@@ -974,7 +980,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	protected void StartAnimEventSequence()
+		protected void StartAnimEventSequence()
 	{
 		if (!this.layering.GetIsForeground() && this.aem != null)
 		{
@@ -982,7 +988,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	protected void UpdateAnimEventSequenceTime()
+		protected void UpdateAnimEventSequenceTime()
 	{
 		if (this.eventManagerHandle.IsValid() && this.aem != null)
 		{
@@ -990,7 +996,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	protected void StopAnimEventSequence()
+		protected void StopAnimEventSequence()
 	{
 		if (this.eventManagerHandle.IsValid() && this.aem != null)
 		{
@@ -1003,7 +1009,7 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		}
 	}
 
-	protected void DestroySelf()
+		protected void DestroySelf()
 	{
 		if (this.onDestroySelf != null)
 		{
@@ -1013,163 +1019,163 @@ public abstract class KAnimControllerBase : MonoBehaviour, ISerializationCallbac
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	void ISerializationCallbackReceiver.OnBeforeSerialize()
+		void ISerializationCallbackReceiver.OnBeforeSerialize()
 	{
 		this.hiddenSymbols.Clear();
 		this.hiddenSymbols = new List<KAnimHashedString>(this.hiddenSymbolsSet);
 	}
 
-	void ISerializationCallbackReceiver.OnAfterDeserialize()
+		void ISerializationCallbackReceiver.OnAfterDeserialize()
 	{
 		this.hiddenSymbolsSet = new HashSet<KAnimHashedString>(this.hiddenSymbols);
 		this.hiddenSymbols.Clear();
 	}
 
-	[NonSerialized]
+		[NonSerialized]
 	public GameObject showWhenMissing;
 
-	[SerializeField]
+		[SerializeField]
 	public KAnimBatchGroup.MaterialType materialType;
 
-	[SerializeField]
+		[SerializeField]
 	public string initialAnim;
 
-	[SerializeField]
+		[SerializeField]
 	public KAnim.PlayMode initialMode = KAnim.PlayMode.Once;
 
-	[SerializeField]
+		[SerializeField]
 	protected KAnimFile[] animFiles = new KAnimFile[0];
 
-	[SerializeField]
+		[SerializeField]
 	protected Vector3 offset;
 
-	[SerializeField]
+		[SerializeField]
 	protected Vector3 pivot;
 
-	[SerializeField]
+		[SerializeField]
 	protected float rotation;
 
-	[SerializeField]
+		[SerializeField]
 	public bool destroyOnAnimComplete;
 
-	[SerializeField]
+		[SerializeField]
 	public bool inactiveDisable;
 
-	[SerializeField]
+		[SerializeField]
 	protected bool flipX;
 
-	[SerializeField]
+		[SerializeField]
 	protected bool flipY;
 
-	[SerializeField]
+		[SerializeField]
 	public bool forceUseGameTime;
 
-	public string defaultAnim;
+		public string defaultAnim;
 
-	protected KAnim.Anim curAnim;
+		protected KAnim.Anim curAnim;
 
-	protected int curAnimFrameIdx = -1;
+		protected int curAnimFrameIdx = -1;
 
-	protected int prevAnimFrame = -1;
+		protected int prevAnimFrame = -1;
 
-	public bool usingNewSymbolOverrideSystem;
+		public bool usingNewSymbolOverrideSystem;
 
-	protected HandleVector<int>.Handle eventManagerHandle = HandleVector<int>.InvalidHandle;
+		protected HandleVector<int>.Handle eventManagerHandle = HandleVector<int>.InvalidHandle;
 
-	protected List<KAnimControllerBase.OverrideAnimFileData> overrideAnimFiles = new List<KAnimControllerBase.OverrideAnimFileData>();
+		protected List<KAnimControllerBase.OverrideAnimFileData> overrideAnimFiles = new List<KAnimControllerBase.OverrideAnimFileData>();
 
-	protected DeepProfiler DeepProfiler = new DeepProfiler(false);
+		protected DeepProfiler DeepProfiler = new DeepProfiler(false);
 
-	public bool randomiseLoopedOffset;
+		public bool randomiseLoopedOffset;
 
-	protected float elapsedTime;
+		protected float elapsedTime;
 
-	protected float playSpeed = 1f;
+		protected float playSpeed = 1f;
 
-	protected KAnim.PlayMode mode = KAnim.PlayMode.Once;
+		protected KAnim.PlayMode mode = KAnim.PlayMode.Once;
 
-	protected bool stopped = true;
+		protected bool stopped = true;
 
-	public float animHeight = 1f;
+		public float animHeight = 1f;
 
-	public float animWidth = 1f;
+		public float animWidth = 1f;
 
-	protected bool isVisible;
+		protected bool isVisible;
 
-	protected Bounds bounds;
+		protected Bounds bounds;
 
-	public Action<Bounds> OnUpdateBounds;
+		public Action<Bounds> OnUpdateBounds;
 
-	public Action<Color> OnTintChanged;
+		public Action<Color> OnTintChanged;
 
-	public Action<Color> OnHighlightChanged;
+		public Action<Color> OnHighlightChanged;
 
-	protected KAnimSynchronizer synchronizer;
+		protected KAnimSynchronizer synchronizer;
 
-	protected KAnimLayering layering;
+		protected KAnimLayering layering;
 
-	[SerializeField]
+		[SerializeField]
 	protected bool _enabled = true;
 
-	protected bool hasEnableRun;
+		protected bool hasEnableRun;
 
-	protected bool hasAwakeRun;
+		protected bool hasAwakeRun;
 
-	protected KBatchedAnimInstanceData batchInstanceData;
+		protected KBatchedAnimInstanceData batchInstanceData;
 
-	public KAnimControllerBase.VisibilityType visibilityType;
+		public KAnimControllerBase.VisibilityType visibilityType;
 
-	public Action<GameObject> onDestroySelf;
+		public Action<GameObject> onDestroySelf;
 
-	[SerializeField]
+		[SerializeField]
 	protected List<KAnimHashedString> hiddenSymbols = new List<KAnimHashedString>();
 
-	[SerializeField]
+		[SerializeField]
 	protected HashSet<KAnimHashedString> hiddenSymbolsSet = new HashSet<KAnimHashedString>();
 
-	protected Dictionary<HashedString, KAnimControllerBase.AnimLookupData> anims = new Dictionary<HashedString, KAnimControllerBase.AnimLookupData>();
+		protected Dictionary<HashedString, KAnimControllerBase.AnimLookupData> anims = new Dictionary<HashedString, KAnimControllerBase.AnimLookupData>();
 
-	protected Dictionary<HashedString, KAnimControllerBase.AnimLookupData> overrideAnims = new Dictionary<HashedString, KAnimControllerBase.AnimLookupData>();
+		protected Dictionary<HashedString, KAnimControllerBase.AnimLookupData> overrideAnims = new Dictionary<HashedString, KAnimControllerBase.AnimLookupData>();
 
-	protected Queue<KAnimControllerBase.AnimData> animQueue = new Queue<KAnimControllerBase.AnimData>();
+		protected Queue<KAnimControllerBase.AnimData> animQueue = new Queue<KAnimControllerBase.AnimData>();
 
-	protected int maxSymbols;
+		protected int maxSymbols;
 
-	public Grid.SceneLayer fgLayer = Grid.SceneLayer.NoLayer;
+		public Grid.SceneLayer fgLayer = Grid.SceneLayer.NoLayer;
 
-	protected AnimEventManager aem;
+		protected AnimEventManager aem;
 
-	private static HashedString snaptoPivot = new HashedString("snapTo_pivot");
+		private static HashedString snaptoPivot = new HashedString("snapTo_pivot");
 
-	public struct OverrideAnimFileData
+		public struct OverrideAnimFileData
 	{
-		public float priority;
+				public float priority;
 
-		public KAnimFile file;
+				public KAnimFile file;
 	}
 
-	public struct AnimLookupData
+		public struct AnimLookupData
 	{
-		public int animIndex;
+				public int animIndex;
 	}
 
-	public struct AnimData
+		public struct AnimData
 	{
-		public HashedString anim;
+				public HashedString anim;
 
-		public KAnim.PlayMode mode;
+				public KAnim.PlayMode mode;
 
-		public float speed;
+				public float speed;
 
-		public float timeOffset;
+				public float timeOffset;
 	}
 
-	public enum VisibilityType
+		public enum VisibilityType
 	{
-		Default,
-		OffscreenUpdate,
-		Always
+				Default,
+				OffscreenUpdate,
+				Always
 	}
 
-		public delegate void KAnimEvent(HashedString name);
+			public delegate void KAnimEvent(HashedString name);
 }

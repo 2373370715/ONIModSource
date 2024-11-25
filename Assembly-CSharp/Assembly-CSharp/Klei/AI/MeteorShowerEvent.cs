@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class MeteorShowerEvent : GameplayEvent<MeteorShowerEvent.StatesInstance>
+		public class MeteorShowerEvent : GameplayEvent<MeteorShowerEvent.StatesInstance>
 	{
-				public bool canStarTravel
+						public bool canStarTravel
 		{
 			get
 			{
@@ -16,17 +16,17 @@ namespace Klei.AI
 			}
 		}
 
-		public string GetClusterMapMeteorShowerID()
+				public string GetClusterMapMeteorShowerID()
 		{
 			return this.clusterMapMeteorShowerID;
 		}
 
-		public List<MeteorShowerEvent.BombardmentInfo> GetMeteorsInfo()
+				public List<MeteorShowerEvent.BombardmentInfo> GetMeteorsInfo()
 		{
 			return new List<MeteorShowerEvent.BombardmentInfo>(this.bombardmentInfo);
 		}
 
-		public MeteorShowerEvent(string id, float duration, float secondsPerMeteor, MathUtil.MinMax secondsBombardmentOff = default(MathUtil.MinMax), MathUtil.MinMax secondsBombardmentOn = default(MathUtil.MinMax), string clusterMapMeteorShowerID = null, bool affectedByDifficulty = true) : base(id, 0, 0)
+				public MeteorShowerEvent(string id, float duration, float secondsPerMeteor, MathUtil.MinMax secondsBombardmentOff = default(MathUtil.MinMax), MathUtil.MinMax secondsBombardmentOn = default(MathUtil.MinMax), string clusterMapMeteorShowerID = null, bool affectedByDifficulty = true) : base(id, 0, 0)
 		{
 			this.allowMultipleEventInstances = true;
 			this.clusterMapMeteorShowerID = clusterMapMeteorShowerID;
@@ -39,7 +39,7 @@ namespace Klei.AI
 			this.tags.Add(GameTags.SpaceDanger);
 		}
 
-		public MeteorShowerEvent AddMeteor(string prefab, float weight)
+				public MeteorShowerEvent AddMeteor(string prefab, float weight)
 		{
 			this.bombardmentInfo.Add(new MeteorShowerEvent.BombardmentInfo
 			{
@@ -49,40 +49,40 @@ namespace Klei.AI
 			return this;
 		}
 
-		public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
+				public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
 		{
 			return new MeteorShowerEvent.StatesInstance(manager, eventInstance, this);
 		}
 
-		public override bool IsAllowed()
+				public override bool IsAllowed()
 		{
 			return base.IsAllowed() && (!this.affectedByDifficulty || CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.MeteorShowers).id != "ClearSkies");
 		}
 
-		private List<MeteorShowerEvent.BombardmentInfo> bombardmentInfo;
+				private List<MeteorShowerEvent.BombardmentInfo> bombardmentInfo;
 
-		private MathUtil.MinMax secondsBombardmentOff;
+				private MathUtil.MinMax secondsBombardmentOff;
 
-		private MathUtil.MinMax secondsBombardmentOn;
+				private MathUtil.MinMax secondsBombardmentOn;
 
-		private float secondsPerMeteor = 0.33f;
+				private float secondsPerMeteor = 0.33f;
 
-		private float duration;
+				private float duration;
 
-		private string clusterMapMeteorShowerID;
+				private string clusterMapMeteorShowerID;
 
-		private bool affectedByDifficulty = true;
+				private bool affectedByDifficulty = true;
 
-		public struct BombardmentInfo
+				public struct BombardmentInfo
 		{
-			public string prefab;
+						public string prefab;
 
-			public float weight;
+						public float weight;
 		}
 
-		public class States : GameplayEventStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, MeteorShowerEvent>
+				public class States : GameplayEventStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, MeteorShowerEvent>
 		{
-			public override void InitializeStates(out StateMachine.BaseState default_state)
+						public override void InitializeStates(out StateMachine.BaseState default_state)
 			{
 				base.InitializeStates(out default_state);
 				default_state = this.planning;
@@ -138,12 +138,12 @@ namespace Klei.AI
 				this.finished.ReturnSuccess();
 			}
 
-			public static void TriggerMeteorGlobalEvent(MeteorShowerEvent.StatesInstance smi, GameHashes hash)
+						public static void TriggerMeteorGlobalEvent(MeteorShowerEvent.StatesInstance smi, GameHashes hash)
 			{
 				Game.Instance.Trigger((int)hash, smi.eventInstance.worldId);
 			}
 
-			public static void CreateClusterMapMeteorShower(MeteorShowerEvent.StatesInstance smi)
+						public static void CreateClusterMapMeteorShower(MeteorShowerEvent.StatesInstance smi)
 			{
 				if (smi.sm.clusterMapMeteorShower.Get(smi) == null)
 				{
@@ -163,47 +163,47 @@ namespace Klei.AI
 				go.Subscribe(1796608350, new Action<object>(smi.OnClusterMapDestinationReached));
 			}
 
-			public MeteorShowerEvent.States.ClusterMapStates starMap;
+						public MeteorShowerEvent.States.ClusterMapStates starMap;
 
-			public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State planning;
+						public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State planning;
 
-			public MeteorShowerEvent.States.RunningStates running;
+						public MeteorShowerEvent.States.RunningStates running;
 
-			public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State finished;
+						public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State finished;
 
-			public StateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.TargetParameter clusterMapMeteorShower;
+						public StateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.TargetParameter clusterMapMeteorShower;
 
-			public StateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.FloatParameter runTimeRemaining;
+						public StateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.FloatParameter runTimeRemaining;
 
-			public StateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.FloatParameter bombardTimeRemaining;
+						public StateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.FloatParameter bombardTimeRemaining;
 
-			public StateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.FloatParameter snoozeTimeRemaining;
+						public StateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.FloatParameter snoozeTimeRemaining;
 
-			public StateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.Signal OnClusterMapDestinationReached;
+						public StateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.Signal OnClusterMapDestinationReached;
 
-			public class ClusterMapStates : GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State
+						public class ClusterMapStates : GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State
 			{
-				public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State travelling;
+								public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State travelling;
 
-				public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State arrive;
+								public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State arrive;
 			}
 
-			public class RunningStates : GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State
+						public class RunningStates : GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State
 			{
-				public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State bombarding;
+								public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State bombarding;
 
-				public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State snoozing;
+								public GameStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, object>.State snoozing;
 			}
 		}
 
-		public class StatesInstance : GameplayEventStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, MeteorShowerEvent>.GameplayEventStateMachineInstance
+				public class StatesInstance : GameplayEventStateMachine<MeteorShowerEvent.States, MeteorShowerEvent.StatesInstance, GameplayEventManager, MeteorShowerEvent>.GameplayEventStateMachineInstance
 		{
-			public float GetSleepTimerValue()
+						public float GetSleepTimerValue()
 			{
 				return Mathf.Clamp(GameplayEventManager.Instance.GetSleepTimer(this.gameplayEvent) - GameUtil.GetCurrentTimeInCycles(), 0f, float.MaxValue);
 			}
 
-			public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, MeteorShowerEvent meteorShowerEvent) : base(master, eventInstance, meteorShowerEvent)
+						public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, MeteorShowerEvent meteorShowerEvent) : base(master, eventInstance, meteorShowerEvent)
 			{
 				this.world = ClusterManager.Instance.GetWorld(this.m_worldId);
 				this.difficultyLevel = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.MeteorShowers);
@@ -211,12 +211,12 @@ namespace Klei.AI
 				Game.Instance.Subscribe(1983128072, new Action<object>(this.OnActiveWorldChanged));
 			}
 
-			public void OnClusterMapDestinationReached(object obj)
+						public void OnClusterMapDestinationReached(object obj)
 			{
 				base.smi.sm.OnClusterMapDestinationReached.Trigger(this);
 			}
 
-			private void OnActiveWorldChanged(object data)
+						private void OnActiveWorldChanged(object data)
 			{
 				int first = ((global::Tuple<int, int>)data).first;
 				if (this.activeMeteorBackground != null)
@@ -225,20 +225,20 @@ namespace Klei.AI
 				}
 			}
 
-			public override void StopSM(string reason)
+						public override void StopSM(string reason)
 			{
 				this.StopBackgroundEffects();
 				base.StopSM(reason);
 			}
 
-			protected override void OnCleanUp()
+						protected override void OnCleanUp()
 			{
 				Game.Instance.Unsubscribe(1983128072, new Action<object>(this.OnActiveWorldChanged));
 				this.DestroyClusterMapMeteorShowerObject();
 				base.OnCleanUp();
 			}
 
-			private void DestroyClusterMapMeteorShowerObject()
+						private void DestroyClusterMapMeteorShowerObject()
 			{
 				if (base.sm.clusterMapMeteorShower.Get(this) != null)
 				{
@@ -251,7 +251,7 @@ namespace Klei.AI
 				}
 			}
 
-			public void StartBackgroundEffects()
+						public void StartBackgroundEffects()
 			{
 				if (this.activeMeteorBackground == null)
 				{
@@ -264,7 +264,7 @@ namespace Klei.AI
 				}
 			}
 
-			public void StopBackgroundEffects()
+						public void StopBackgroundEffects()
 			{
 				if (this.activeMeteorBackground != null)
 				{
@@ -279,7 +279,7 @@ namespace Klei.AI
 				}
 			}
 
-			public float TimeUntilNextShower()
+						public float TimeUntilNextShower()
 			{
 				if (base.IsInsideState(base.sm.running.bombarding))
 				{
@@ -297,7 +297,7 @@ namespace Klei.AI
 				return 0f;
 			}
 
-			public void Bombarding(float dt)
+						public void Bombarding(float dt)
 			{
 				this.nextMeteorTime -= dt;
 				while (this.nextMeteorTime < 0f)
@@ -310,7 +310,7 @@ namespace Klei.AI
 				}
 			}
 
-			private void DoBombardment(List<MeteorShowerEvent.BombardmentInfo> bombardment_info)
+						private void DoBombardment(List<MeteorShowerEvent.BombardmentInfo> bombardment_info)
 			{
 				float num = 0f;
 				foreach (MeteorShowerEvent.BombardmentInfo bombardmentInfo in bombardment_info)
@@ -329,7 +329,7 @@ namespace Klei.AI
 				this.SpawnBombard(bombardmentInfo2.prefab);
 			}
 
-			private GameObject SpawnBombard(string prefab)
+						private GameObject SpawnBombard(string prefab)
 			{
 				WorldContainer worldContainer = ClusterManager.Instance.GetWorld(this.m_worldId);
 				float x = (float)(worldContainer.Width - 1) * UnityEngine.Random.value + (float)worldContainer.WorldOffset.x;
@@ -351,31 +351,24 @@ namespace Klei.AI
 				return gameObject;
 			}
 
-			public float BombardTimeRemaining()
+						public float BombardTimeRemaining()
 			{
 				return Mathf.Min(base.sm.bombardTimeRemaining.Get(this), base.sm.runTimeRemaining.Get(this));
 			}
 
-			public float GetBombardOffTime()
+						public float GetBombardOffTime()
 			{
 				float num = this.gameplayEvent.secondsBombardmentOff.Get();
 				if (this.gameplayEvent.affectedByDifficulty && this.difficultyLevel != null)
 				{
 					string id = this.difficultyLevel.id;
-					if (id != null)
+					if (!(id == "Infrequent"))
 					{
-						if (!(id == "Infrequent"))
+						if (!(id == "Intense"))
 						{
-							if (!(id == "Intense"))
+							if (id == "Doomed")
 							{
-								if (id == "Doomed")
-								{
-									num *= 0.5f;
-								}
-							}
-							else
-							{
-								num *= 1f;
+								num *= 0.5f;
 							}
 						}
 						else
@@ -383,28 +376,25 @@ namespace Klei.AI
 							num *= 1f;
 						}
 					}
+					else
+					{
+						num *= 1f;
+					}
 				}
 				return num;
 			}
 
-			public float GetBombardOnTime()
+						public float GetBombardOnTime()
 			{
 				float num = this.gameplayEvent.secondsBombardmentOn.Get();
 				if (this.gameplayEvent.affectedByDifficulty && this.difficultyLevel != null)
 				{
 					string id = this.difficultyLevel.id;
-					if (id != null)
+					if (!(id == "Infrequent"))
 					{
-						if (!(id == "Infrequent"))
+						if (!(id == "Intense"))
 						{
-							if (!(id == "Intense"))
-							{
-								if (id == "Doomed")
-								{
-									num *= 1f;
-								}
-							}
-							else
+							if (id == "Doomed")
 							{
 								num *= 1f;
 							}
@@ -414,56 +404,57 @@ namespace Klei.AI
 							num *= 1f;
 						}
 					}
+					else
+					{
+						num *= 1f;
+					}
 				}
 				return num;
 			}
 
-			private float GetNextMeteorTime()
+						private float GetNextMeteorTime()
 			{
 				float num = this.gameplayEvent.secondsPerMeteor;
 				num *= 256f / (float)this.world.Width;
 				if (this.gameplayEvent.affectedByDifficulty && this.difficultyLevel != null)
 				{
 					string id = this.difficultyLevel.id;
-					if (id != null)
+					if (!(id == "Infrequent"))
 					{
-						if (!(id == "Infrequent"))
+						if (!(id == "Intense"))
 						{
-							if (!(id == "Intense"))
+							if (id == "Doomed")
 							{
-								if (id == "Doomed")
-								{
-									num *= 0.5f;
-								}
-							}
-							else
-							{
-								num *= 0.8f;
+								num *= 0.5f;
 							}
 						}
 						else
 						{
-							num *= 1.5f;
+							num *= 0.8f;
 						}
+					}
+					else
+					{
+						num *= 1.5f;
 					}
 				}
 				return num;
 			}
 
-			public GameObject activeMeteorBackground;
+						public GameObject activeMeteorBackground;
 
-			[Serialize]
+						[Serialize]
 			public float clusterTravelDuration = -1f;
 
-			[Serialize]
+						[Serialize]
 			private float nextMeteorTime;
 
-			[Serialize]
+						[Serialize]
 			private int m_worldId;
 
-			private WorldContainer world;
+						private WorldContainer world;
 
-			private SettingLevel difficultyLevel;
+						private SettingLevel difficultyLevel;
 		}
 	}
 }

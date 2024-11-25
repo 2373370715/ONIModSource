@@ -6,7 +6,7 @@ using UnityEngine.UI.Extensions;
 [Serializable]
 public class GraphedLine : KMonoBehaviour
 {
-		public int PointCount
+			public int PointCount
 	{
 		get
 		{
@@ -14,13 +14,13 @@ public class GraphedLine : KMonoBehaviour
 		}
 	}
 
-	public void SetPoints(Vector2[] points)
+		public void SetPoints(Vector2[] points)
 	{
 		this.points = points;
 		this.UpdatePoints();
 	}
 
-	private void UpdatePoints()
+		private void UpdatePoints()
 	{
 		Vector2[] array = new Vector2[this.points.Length];
 		for (int i = 0; i < array.Length; i++)
@@ -30,7 +30,7 @@ public class GraphedLine : KMonoBehaviour
 		this.line_renderer.Points = array;
 	}
 
-	public Vector2 GetClosestDataToPointOnXAxis(Vector2 toPoint)
+		public Vector2 GetClosestDataToPointOnXAxis(Vector2 toPoint)
 	{
 		float num = toPoint.x / this.layer.graph.rectTransform().sizeDelta.x;
 		float num2 = this.layer.graph.axis_x.min_value + this.layer.graph.axis_x.range * num;
@@ -45,7 +45,7 @@ public class GraphedLine : KMonoBehaviour
 		return vector;
 	}
 
-	public void HidePointHighlight()
+		public void HidePointHighlight()
 	{
 		if (this.highlightPoint != null)
 		{
@@ -53,7 +53,7 @@ public class GraphedLine : KMonoBehaviour
 		}
 	}
 
-	public void SetPointHighlight(Vector2 point)
+		public void SetPointHighlight(Vector2 point)
 	{
 		if (this.highlightPoint == null)
 		{
@@ -78,12 +78,12 @@ public class GraphedLine : KMonoBehaviour
 		ToolTipScreen.Instance.SetToolTip(component);
 	}
 
-	public UILineRenderer line_renderer;
+		public UILineRenderer line_renderer;
 
-	public LineLayer layer;
+		public LineLayer layer;
 
-	private Vector2[] points = new Vector2[0];
+		private Vector2[] points = new Vector2[0];
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject highlightPoint;
 }

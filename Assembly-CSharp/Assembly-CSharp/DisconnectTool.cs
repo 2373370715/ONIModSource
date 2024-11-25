@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class DisconnectTool : FilteredDragTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		DisconnectTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		DisconnectTool.Instance = this;
@@ -20,12 +20,12 @@ public class DisconnectTool : FilteredDragTool
 		}
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		PlayerController.Instance.ActivateTool(this);
 	}
 
-	protected override DragTool.Mode GetMode()
+		protected override DragTool.Mode GetMode()
 	{
 		if (!this.singleDisconnectMode)
 		{
@@ -34,7 +34,7 @@ public class DisconnectTool : FilteredDragTool
 		return DragTool.Mode.Line;
 	}
 
-	protected override void OnDragComplete(Vector3 downPos, Vector3 upPos)
+		protected override void OnDragComplete(Vector3 downPos, Vector3 upPos)
 	{
 		if (this.singleDisconnectMode)
 		{
@@ -44,13 +44,13 @@ public class DisconnectTool : FilteredDragTool
 		this.ClearVisualizers();
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		this.lastRefreshedCell = -1;
 	}
 
-	private void DisconnectCellsAction(int cell, GameObject objectOnCell, IHaveUtilityNetworkMgr utilityComponent, UtilityConnections removeConnections)
+		private void DisconnectCellsAction(int cell, GameObject objectOnCell, IHaveUtilityNetworkMgr utilityComponent, UtilityConnections removeConnections)
 	{
 		Building component = objectOnCell.GetComponent<Building>();
 		KAnimGraphTileVisualizer component2 = objectOnCell.GetComponent<KAnimGraphTileVisualizer>();
@@ -64,7 +64,7 @@ public class DisconnectTool : FilteredDragTool
 		utilityComponent.GetNetworkManager().ForceRebuildNetworks();
 	}
 
-	private void RunOnRegion(Vector3 pos1, Vector3 pos2, Action<int, GameObject, IHaveUtilityNetworkMgr, UtilityConnections> action)
+		private void RunOnRegion(Vector3 pos1, Vector3 pos2, Action<int, GameObject, IHaveUtilityNetworkMgr, UtilityConnections> action)
 	{
 		Vector2 regularizedPos = base.GetRegularizedPos(Vector2.Min(pos1, pos2), true);
 		Vector2 regularizedPos2 = base.GetRegularizedPos(Vector2.Max(pos1, pos2), false);
@@ -123,7 +123,7 @@ public class DisconnectTool : FilteredDragTool
 		}
 	}
 
-	private bool IsInsideRegion(Vector2I min, Vector2I max, int cell, int xoff, int yoff)
+		private bool IsInsideRegion(Vector2I min, Vector2I max, int cell, int xoff, int yoff)
 	{
 		int num;
 		int num2;
@@ -131,7 +131,7 @@ public class DisconnectTool : FilteredDragTool
 		return num >= min.x && num < max.x && num2 >= min.y && num2 < max.y;
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		base.OnMouseMove(cursorPos);
 		if (!base.Dragging)
@@ -153,14 +153,14 @@ public class DisconnectTool : FilteredDragTool
 		this.RunOnRegion(this.downPos, cursorPos, new Action<int, GameObject, IHaveUtilityNetworkMgr, UtilityConnections>(this.VisualizeAction));
 	}
 
-	private GameObject InstantiateDisconnectVis()
+		private GameObject InstantiateDisconnectVis()
 	{
 		GameObject gameObject = GameUtil.KInstantiate(this.singleDisconnectMode ? this.disconnectVisSingleModePrefab : this.disconnectVisMultiModePrefab, Grid.SceneLayer.FXFront, null, 0);
 		gameObject.SetActive(false);
 		return gameObject;
 	}
 
-	private void VisualizeAction(int cell, GameObject objectOnCell, IHaveUtilityNetworkMgr utilityComponent, UtilityConnections removeConnections)
+		private void VisualizeAction(int cell, GameObject objectOnCell, IHaveUtilityNetworkMgr utilityComponent, UtilityConnections removeConnections)
 	{
 		if ((removeConnections & UtilityConnections.Down) != (UtilityConnections)0)
 		{
@@ -172,7 +172,7 @@ public class DisconnectTool : FilteredDragTool
 		}
 	}
 
-	private void CreateVisualizer(int cell1, int cell2, bool rotate)
+		private void CreateVisualizer(int cell1, int cell2, bool rotate)
 	{
 		foreach (DisconnectTool.VisData visData in this.visualizersInUse)
 		{
@@ -190,7 +190,7 @@ public class DisconnectTool : FilteredDragTool
 		this.visualizersInUse.Add(new DisconnectTool.VisData(cell1, cell2, instance));
 	}
 
-	private void ClearVisualizers()
+		private void ClearVisualizers()
 	{
 		foreach (DisconnectTool.VisData visData in this.visualizersInUse)
 		{
@@ -200,23 +200,23 @@ public class DisconnectTool : FilteredDragTool
 		this.visualizersInUse.Clear();
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		this.ClearVisualizers();
 	}
 
-	protected override string GetConfirmSound()
+		protected override string GetConfirmSound()
 	{
 		return "OutletDisconnected";
 	}
 
-	protected override string GetDragSound()
+		protected override string GetDragSound()
 	{
 		return "Tile_Drag_NegativeTool";
 	}
 
-	protected override void GetDefaultFilters(Dictionary<string, ToolParameterMenu.ToggleState> filters)
+		protected override void GetDefaultFilters(Dictionary<string, ToolParameterMenu.ToggleState> filters)
 	{
 		filters.Add(ToolParameterMenu.FILTERLAYERS.ALL, ToolParameterMenu.ToggleState.On);
 		filters.Add(ToolParameterMenu.FILTERLAYERS.WIRES, ToolParameterMenu.ToggleState.Off);
@@ -227,40 +227,40 @@ public class DisconnectTool : FilteredDragTool
 		filters.Add(ToolParameterMenu.FILTERLAYERS.LOGIC, ToolParameterMenu.ToggleState.Off);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject disconnectVisSingleModePrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject disconnectVisMultiModePrefab;
 
-	private GameObjectPool disconnectVisPool;
+		private GameObjectPool disconnectVisPool;
 
-	private List<DisconnectTool.VisData> visualizersInUse = new List<DisconnectTool.VisData>();
+		private List<DisconnectTool.VisData> visualizersInUse = new List<DisconnectTool.VisData>();
 
-	private int lastRefreshedCell;
+		private int lastRefreshedCell;
 
-	private bool singleDisconnectMode = true;
+		private bool singleDisconnectMode = true;
 
-	public static DisconnectTool Instance;
+		public static DisconnectTool Instance;
 
-	public struct VisData
+		public struct VisData
 	{
-		public VisData(int cell1, int cell2, GameObject go)
+				public VisData(int cell1, int cell2, GameObject go)
 		{
 			this.cell1 = cell1;
 			this.cell2 = cell2;
 			this.go = go;
 		}
 
-		public bool Equals(int cell1, int cell2)
+				public bool Equals(int cell1, int cell2)
 		{
 			return (this.cell1 == cell1 && this.cell2 == cell2) || (this.cell1 == cell2 && this.cell2 == cell1);
 		}
 
-		public readonly int cell1;
+				public readonly int cell1;
 
-		public readonly int cell2;
+				public readonly int cell2;
 
-		public GameObject go;
+				public GameObject go;
 	}
 }

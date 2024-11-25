@@ -1,61 +1,45 @@
-﻿using System;
-using STRINGS;
-using TUNING;
+﻿using STRINGS;
+using EQUIPMENT = TUNING.EQUIPMENT;
 
-namespace Database
-{
-	public class AssignableSlots : ResourceSet<AssignableSlot>
-	{
-		public AssignableSlots()
-		{
-			this.Bed = base.Add(new OwnableSlot("Bed", MISC.TAGS.BED));
-			this.MessStation = base.Add(new OwnableSlot("MessStation", MISC.TAGS.MESSSTATION));
-			this.Clinic = base.Add(new OwnableSlot("Clinic", MISC.TAGS.CLINIC));
-			this.MedicalBed = base.Add(new OwnableSlot("MedicalBed", MISC.TAGS.CLINIC));
-			this.MedicalBed.showInUI = false;
-			this.GeneShuffler = base.Add(new OwnableSlot("GeneShuffler", MISC.TAGS.GENE_SHUFFLER));
-			this.GeneShuffler.showInUI = false;
-			this.Toilet = base.Add(new OwnableSlot("Toilet", MISC.TAGS.TOILET));
-			this.MassageTable = base.Add(new OwnableSlot("MassageTable", MISC.TAGS.MASSAGE_TABLE));
-			this.RocketCommandModule = base.Add(new OwnableSlot("RocketCommandModule", MISC.TAGS.COMMAND_MODULE));
-			this.HabitatModule = base.Add(new OwnableSlot("HabitatModule", MISC.TAGS.HABITAT_MODULE));
-			this.ResetSkillsStation = base.Add(new OwnableSlot("ResetSkillsStation", "ResetSkillsStation"));
-			this.WarpPortal = base.Add(new OwnableSlot("WarpPortal", MISC.TAGS.WARP_PORTAL));
-			this.WarpPortal.showInUI = false;
-			this.Toy = base.Add(new EquipmentSlot(TUNING.EQUIPMENT.TOYS.SLOT, MISC.TAGS.TOY, false));
-			this.Suit = base.Add(new EquipmentSlot(TUNING.EQUIPMENT.SUITS.SLOT, MISC.TAGS.SUIT, true));
-			this.Tool = base.Add(new EquipmentSlot(TUNING.EQUIPMENT.TOOLS.TOOLSLOT, MISC.TAGS.MULTITOOL, false));
-			this.Outfit = base.Add(new EquipmentSlot(TUNING.EQUIPMENT.CLOTHING.SLOT, MISC.TAGS.CLOTHES, true));
-		}
+namespace Database {
+    public class AssignableSlots : ResourceSet<AssignableSlot> {
+        public AssignableSlot Bed;
+        public AssignableSlot BionicUpgrade;
+        public AssignableSlot Clinic;
+        public AssignableSlot GeneShuffler;
+        public AssignableSlot HabitatModule;
+        public AssignableSlot MassageTable;
+        public AssignableSlot MedicalBed;
+        public AssignableSlot MessStation;
+        public AssignableSlot Outfit;
+        public AssignableSlot ResetSkillsStation;
+        public AssignableSlot RocketCommandModule;
+        public AssignableSlot Suit;
+        public AssignableSlot Toilet;
+        public AssignableSlot Tool;
+        public AssignableSlot Toy;
+        public AssignableSlot WarpPortal;
 
-		public AssignableSlot Bed;
-
-		public AssignableSlot MessStation;
-
-		public AssignableSlot Clinic;
-
-		public AssignableSlot GeneShuffler;
-
-		public AssignableSlot MedicalBed;
-
-		public AssignableSlot Toilet;
-
-		public AssignableSlot MassageTable;
-
-		public AssignableSlot RocketCommandModule;
-
-		public AssignableSlot HabitatModule;
-
-		public AssignableSlot ResetSkillsStation;
-
-		public AssignableSlot WarpPortal;
-
-		public AssignableSlot Toy;
-
-		public AssignableSlot Suit;
-
-		public AssignableSlot Tool;
-
-		public AssignableSlot Outfit;
-	}
+        public AssignableSlots() {
+            Bed = Add(new OwnableSlot("Bed", MISC.TAGS.BED));
+            MessStation = Add(new OwnableSlot("MessStation", MISC.TAGS.MESSSTATION));
+            Clinic = Add(new OwnableSlot("Clinic", MISC.TAGS.CLINIC));
+            MedicalBed = Add(new OwnableSlot("MedicalBed", MISC.TAGS.CLINIC));
+            MedicalBed.showInUI = false;
+            GeneShuffler = Add(new OwnableSlot("GeneShuffler", MISC.TAGS.GENE_SHUFFLER));
+            GeneShuffler.showInUI = false;
+            Toilet = Add(new OwnableSlot("Toilet", MISC.TAGS.TOILET));
+            MassageTable = Add(new OwnableSlot("MassageTable", MISC.TAGS.MASSAGE_TABLE));
+            RocketCommandModule = Add(new OwnableSlot("RocketCommandModule", MISC.TAGS.COMMAND_MODULE));
+            HabitatModule = Add(new OwnableSlot("HabitatModule", MISC.TAGS.HABITAT_MODULE));
+            ResetSkillsStation = Add(new OwnableSlot("ResetSkillsStation", "ResetSkillsStation"));
+            WarpPortal = Add(new OwnableSlot("WarpPortal", MISC.TAGS.WARP_PORTAL));
+            WarpPortal.showInUI = false;
+            BionicUpgrade = Add(new OwnableSlot("BionicUpgrade", MISC.TAGS.BIONIC_UPGRADE));
+            Toy = Add(new EquipmentSlot(EQUIPMENT.TOYS.SLOT, MISC.TAGS.TOY, false));
+            Suit = Add(new EquipmentSlot(EQUIPMENT.SUITS.SLOT, MISC.TAGS.SUIT));
+            Tool = Add(new EquipmentSlot(EQUIPMENT.TOOLS.TOOLSLOT, MISC.TAGS.MULTITOOL, false));
+            Outfit = Add(new EquipmentSlot(EQUIPMENT.CLOTHING.SLOT, UI.StripLinkFormatting(MISC.TAGS.CLOTHES)));
+        }
+    }
 }

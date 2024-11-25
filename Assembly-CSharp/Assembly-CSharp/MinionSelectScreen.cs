@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class MinionSelectScreen : CharacterSelectionController
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.IsStarterMinion = true;
 		base.OnPrefabInit();
@@ -30,7 +30,7 @@ public class MinionSelectScreen : CharacterSelectionController
 		base.StartCoroutine(this.SetDefaultMinionsRoutine());
 	}
 
-	private IEnumerator SetDefaultMinionsRoutine()
+		private IEnumerator SetDefaultMinionsRoutine()
 	{
 		yield return SequenceUtil.WaitForNextFrame;
 		SettingLevel currentQualitySetting = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.ClusterLayout);
@@ -43,7 +43,7 @@ public class MinionSelectScreen : CharacterSelectionController
 		yield break;
 	}
 
-	public void SetProceedButtonActive(bool state, string tooltip = null)
+		public void SetProceedButtonActive(bool state, string tooltip = null)
 	{
 		if (state)
 		{
@@ -65,7 +65,7 @@ public class MinionSelectScreen : CharacterSelectionController
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.OnDeliverableAdded();
 		base.EnableProceedButton();
@@ -80,7 +80,7 @@ public class MinionSelectScreen : CharacterSelectionController
 		});
 	}
 
-	protected override void OnProceed()
+		protected override void OnProceed()
 	{
 		global::Util.KInstantiateUI(this.newBasePrefab.gameObject, GameScreenManager.Instance.ssOverlayCanvas, false);
 		MusicManager.instance.StopSong("Music_FrontEnd", true, STOP_MODE.ALLOWFADEOUT);
@@ -102,7 +102,7 @@ public class MinionSelectScreen : CharacterSelectionController
 		this.Deactivate();
 	}
 
-	private void OnBaseAlreadyCreated(object data)
+		private void OnBaseAlreadyCreated(object data)
 	{
 		Game.Instance.StopFE();
 		Game.Instance.StartBE();
@@ -110,7 +110,7 @@ public class MinionSelectScreen : CharacterSelectionController
 		this.Deactivate();
 	}
 
-	private void ReshuffleAll()
+		private void ReshuffleAll()
 	{
 		if (this.OnReshuffleEvent != null)
 		{
@@ -118,7 +118,7 @@ public class MinionSelectScreen : CharacterSelectionController
 		}
 	}
 
-	public override void OnPressBack()
+		public override void OnPressBack()
 	{
 		foreach (ITelepadDeliverableContainer telepadDeliverableContainer in this.containers)
 		{
@@ -130,13 +130,13 @@ public class MinionSelectScreen : CharacterSelectionController
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private NewBaseScreen newBasePrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private WattsonMessage wattsonMessagePrefab;
 
-	public const string WattsonGameObjName = "WattsonMessage";
+		public const string WattsonGameObjName = "WattsonMessage";
 
-	public KButton backButton;
+		public KButton backButton;
 }

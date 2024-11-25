@@ -5,19 +5,19 @@ using UnityEngine.UI;
 
 public class CustomizableDialogScreen : KModalScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.gameObject.SetActive(false);
 		this.buttons = new List<CustomizableDialogScreen.Button>();
 	}
 
-	public override bool IsModal()
+		public override bool IsModal()
 	{
 		return true;
 	}
 
-	public void AddOption(string text, System.Action action)
+		public void AddOption(string text, System.Action action)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.buttonPrefab, this.buttonPanel, true);
 		this.buttons.Add(new CustomizableDialogScreen.Button
@@ -28,7 +28,7 @@ public class CustomizableDialogScreen : KModalScreen
 		});
 	}
 
-	public void PopupConfirmDialog(string text, string title_text = null, Sprite image_sprite = null)
+		public void PopupConfirmDialog(string text, string title_text = null, Sprite image_sprite = null)
 	{
 		foreach (CustomizableDialogScreen.Button button in this.buttons)
 		{
@@ -47,7 +47,7 @@ public class CustomizableDialogScreen : KModalScreen
 		this.popupMessage.text = text;
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		if (this.onDeactivateCB != null)
 		{
@@ -56,31 +56,31 @@ public class CustomizableDialogScreen : KModalScreen
 		base.OnDeactivate();
 	}
 
-	public System.Action onDeactivateCB;
+		public System.Action onDeactivateCB;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject buttonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject buttonPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText titleText;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText popupMessage;
 
-	[SerializeField]
+		[SerializeField]
 	private Image image;
 
-	private List<CustomizableDialogScreen.Button> buttons;
+		private List<CustomizableDialogScreen.Button> buttons;
 
-	private struct Button
+		private struct Button
 	{
-		public System.Action action;
+				public System.Action action;
 
-		public GameObject gameObject;
+				public GameObject gameObject;
 
-		public string label;
+				public string label;
 	}
 }

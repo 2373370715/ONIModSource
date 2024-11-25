@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DestinationSelectPanel")]
 public class DestinationSelectPanel : KMonoBehaviour
 {
-			public static int ChosenClusterCategorySetting
+				public static int ChosenClusterCategorySetting
 	{
 		get
 		{
@@ -20,9 +20,9 @@ public class DestinationSelectPanel : KMonoBehaviour
 		}
 	}
 
-			public event Action<ColonyDestinationAsteroidBeltData> OnAsteroidClicked;
+				public event Action<ColonyDestinationAsteroidBeltData> OnAsteroidClicked;
 
-		private float min
+			private float min
 	{
 		get
 		{
@@ -30,7 +30,7 @@ public class DestinationSelectPanel : KMonoBehaviour
 		}
 	}
 
-		private float max
+			private float max
 	{
 		get
 		{
@@ -38,7 +38,7 @@ public class DestinationSelectPanel : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.dragTarget.onBeginDrag += this.BeginDrag;
@@ -50,7 +50,7 @@ public class DestinationSelectPanel : KMonoBehaviour
 		multiToggle2.onClick = (System.Action)Delegate.Combine(multiToggle2.onClick, new System.Action(this.ClickRight));
 	}
 
-	private void BeginDrag()
+		private void BeginDrag()
 	{
 		this.dragStartPos = KInputManager.GetMousePos();
 		this.dragLastPos = this.dragStartPos;
@@ -58,7 +58,7 @@ public class DestinationSelectPanel : KMonoBehaviour
 		KFMOD.PlayUISound(GlobalAssets.GetSound("DestinationSelect_Scroll_Start", false));
 	}
 
-	private void Drag()
+		private void Drag()
 	{
 		Vector2 vector = KInputManager.GetMousePos();
 		float num = vector.x - this.dragLastPos.x;
@@ -74,37 +74,37 @@ public class DestinationSelectPanel : KMonoBehaviour
 		}
 	}
 
-	private void EndDrag()
+		private void EndDrag()
 	{
 		this.Drag();
 		this.isDragging = false;
 		KFMOD.PlayUISound(GlobalAssets.GetSound("DestinationSelect_Scroll_Stop", false));
 	}
 
-	private void ClickLeft()
+		private void ClickLeft()
 	{
 		this.selectedIndex = Mathf.Clamp(this.selectedIndex - 1, 0, this.clusterKeys.Count - 1);
 		this.OnAsteroidClicked(this.asteroidData[this.clusterKeys[this.selectedIndex]]);
 	}
 
-	private void ClickRight()
+		private void ClickRight()
 	{
 		this.selectedIndex = Mathf.Clamp(this.selectedIndex + 1, 0, this.clusterKeys.Count - 1);
 		this.OnAsteroidClicked(this.asteroidData[this.clusterKeys[this.selectedIndex]]);
 	}
 
-	public void Init()
+		public void Init()
 	{
 		this.clusterKeys = new List<string>();
 		this.clusterStartWorlds = new Dictionary<string, string>();
 		this.UpdateDisplayedClusters();
 	}
 
-	public void Uninit()
+		public void Uninit()
 	{
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!this.isDragging)
 		{
@@ -140,7 +140,7 @@ public class DestinationSelectPanel : KMonoBehaviour
 		}
 	}
 
-	public void UpdateDisplayedClusters()
+		public void UpdateDisplayedClusters()
 	{
 		this.clusterKeys.Clear();
 		this.clusterStartWorlds.Clear();
@@ -158,7 +158,7 @@ public class DestinationSelectPanel : KMonoBehaviour
 		this.clusterKeys.Sort((string a, string b) => SettingsCache.clusterLayouts.clusterCache[a].menuOrder.CompareTo(SettingsCache.clusterLayouts.clusterCache[b].menuOrder));
 	}
 
-	[ContextMenu("RePlaceAsteroids")]
+		[ContextMenu("RePlaceAsteroids")]
 	public void RePlaceAsteroids()
 	{
 		this.BeginAsteroidDrawing();
@@ -172,12 +172,12 @@ public class DestinationSelectPanel : KMonoBehaviour
 		this.EndAsteroidDrawing();
 	}
 
-	private void BeginAsteroidDrawing()
+		private void BeginAsteroidDrawing()
 	{
 		this.numAsteroids = 0;
 	}
 
-	private void ShowMoons(ColonyDestinationAsteroidBeltData asteroid)
+		private void ShowMoons(ColonyDestinationAsteroidBeltData asteroid)
 	{
 		if (asteroid.worlds.Count > 0)
 		{
@@ -226,7 +226,7 @@ public class DestinationSelectPanel : KMonoBehaviour
 		}
 	}
 
-	private DestinationAsteroid2 GetAsteroid(string name, float scale)
+		private DestinationAsteroid2 GetAsteroid(string name, float scale)
 	{
 		DestinationAsteroid2 destinationAsteroid;
 		if (this.numAsteroids < this.asteroids.Count)
@@ -247,7 +247,7 @@ public class DestinationSelectPanel : KMonoBehaviour
 		return destinationAsteroid;
 	}
 
-	private void EndAsteroidDrawing()
+		private void EndAsteroidDrawing()
 	{
 		for (int i = 0; i < this.asteroids.Count; i++)
 		{
@@ -255,14 +255,14 @@ public class DestinationSelectPanel : KMonoBehaviour
 		}
 	}
 
-	public ColonyDestinationAsteroidBeltData SelectCluster(string name, int seed)
+		public ColonyDestinationAsteroidBeltData SelectCluster(string name, int seed)
 	{
 		this.selectedIndex = this.clusterKeys.IndexOf(name);
 		this.asteroidData[name].ReInitialize(seed);
 		return this.asteroidData[name];
 	}
 
-	public string GetDefaultAsteroid()
+		public string GetDefaultAsteroid()
 	{
 		foreach (string text in this.clusterKeys)
 		{
@@ -274,7 +274,7 @@ public class DestinationSelectPanel : KMonoBehaviour
 		return this.clusterKeys.First<string>();
 	}
 
-	public ColonyDestinationAsteroidBeltData SelectDefaultAsteroid(int seed)
+		public ColonyDestinationAsteroidBeltData SelectDefaultAsteroid(int seed)
 	{
 		this.selectedIndex = 0;
 		string key = this.asteroidData.Keys.First<string>();
@@ -282,19 +282,19 @@ public class DestinationSelectPanel : KMonoBehaviour
 		return this.asteroidData[key];
 	}
 
-	public void ScrollLeft()
+		public void ScrollLeft()
 	{
 		int index = Mathf.Max(this.selectedIndex - 1, 0);
 		this.OnAsteroidClicked(this.asteroidData[this.clusterKeys[index]]);
 	}
 
-	public void ScrollRight()
+		public void ScrollRight()
 	{
 		int index = Mathf.Min(this.selectedIndex + 1, this.clusterStartWorlds.Count - 1);
 		this.OnAsteroidClicked(this.asteroidData[this.clusterKeys[index]]);
 	}
 
-	private void DebugCurrentSetting()
+		private void DebugCurrentSetting()
 	{
 		ColonyDestinationAsteroidBeltData colonyDestinationAsteroidBeltData = this.asteroidData[this.clusterKeys[this.selectedIndex]];
 		string text = "{world}: {seed} [{traits}] {{settings}}";
@@ -344,60 +344,60 @@ public class DestinationSelectPanel : KMonoBehaviour
 		global::Debug.Log(text);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject asteroidPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private KButtonDrag dragTarget;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle leftArrowButton;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle rightArrowButton;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform asteroidContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private float asteroidFocusScale = 2f;
 
-	[SerializeField]
+		[SerializeField]
 	private float asteroidXSeparation = 240f;
 
-	[SerializeField]
+		[SerializeField]
 	private float focusScaleSpeed = 0.5f;
 
-	[SerializeField]
+		[SerializeField]
 	private float centeringSpeed = 0.5f;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject moonContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject moonPrefab;
 
-	private static int chosenClusterCategorySetting;
+		private static int chosenClusterCategorySetting;
 
-	private float offset;
+		private float offset;
 
-	private int selectedIndex = -1;
+		private int selectedIndex = -1;
 
-	private List<DestinationAsteroid2> asteroids = new List<DestinationAsteroid2>();
+		private List<DestinationAsteroid2> asteroids = new List<DestinationAsteroid2>();
 
-	private int numAsteroids;
+		private int numAsteroids;
 
-	private List<string> clusterKeys;
+		private List<string> clusterKeys;
 
-	private Dictionary<string, string> clusterStartWorlds;
+		private Dictionary<string, string> clusterStartWorlds;
 
-	private Dictionary<string, ColonyDestinationAsteroidBeltData> asteroidData = new Dictionary<string, ColonyDestinationAsteroidBeltData>();
+		private Dictionary<string, ColonyDestinationAsteroidBeltData> asteroidData = new Dictionary<string, ColonyDestinationAsteroidBeltData>();
 
-	private Vector2 dragStartPos;
+		private Vector2 dragStartPos;
 
-	private Vector2 dragLastPos;
+		private Vector2 dragLastPos;
 
-	private bool isDragging;
+		private bool isDragging;
 
-	private const string debugFmt = "{world}: {seed} [{traits}] {{settings}}";
+		private const string debugFmt = "{world}: {seed} [{traits}] {{settings}}";
 }

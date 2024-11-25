@@ -7,24 +7,24 @@ using UnityEngine.UI;
 
 public class RocketModuleSideScreen : SideScreenContent
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		RocketModuleSideScreen.instance = this;
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		RocketModuleSideScreen.instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		return 500;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.addNewModuleButton.onClick += delegate()
@@ -55,23 +55,23 @@ public class RocketModuleSideScreen : SideScreenContent
 		this.moduleDescriptionLabel.ApplySettings();
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		DetailsScreen.Instance.ClearSecondarySideScreen();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<ReorderableBuilding>() != null;
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -85,7 +85,7 @@ public class RocketModuleSideScreen : SideScreenContent
 		this.UpdateButtonStates();
 	}
 
-	public void UpdateButtonStates()
+		public void UpdateButtonStates()
 	{
 		this.changeModuleButton.isInteractable = this.reorderable.CanChangeModule();
 		this.changeModuleButton.GetComponent<ToolTip>().SetSimpleTooltip(this.changeModuleButton.isInteractable ? UI.UISIDESCREENS.ROCKETMODULESIDESCREEN.BUTTONCHANGEMODULE.DESC.text : UI.UISIDESCREENS.ROCKETMODULESIDESCREEN.BUTTONCHANGEMODULE.INVALID.text);
@@ -122,7 +122,7 @@ public class RocketModuleSideScreen : SideScreenContent
 		this.viewInteriorButton.GetComponent<ToolTip>().SetSimpleTooltip(this.viewInteriorButton.isInteractable ? UI.UISIDESCREENS.ROCKETMODULESIDESCREEN.BUTTONVIEWINTERIOR.DESC.text : UI.UISIDESCREENS.ROCKETMODULESIDESCREEN.BUTTONVIEWINTERIOR.INVALID.text);
 	}
 
-	public void ClickAddNew(float scrollViewPosition, BuildingDef autoSelectDef = null)
+		public void ClickAddNew(float scrollViewPosition, BuildingDef autoSelectDef = null)
 	{
 		SelectModuleSideScreen selectModuleSideScreen = (SelectModuleSideScreen)DetailsScreen.Instance.SetSecondarySideScreen(this.changeModuleSideScreen, UI.UISIDESCREENS.ROCKETMODULESIDESCREEN.CHANGEMODULEPANEL);
 		selectModuleSideScreen.addingNewModule = true;
@@ -134,7 +134,7 @@ public class RocketModuleSideScreen : SideScreenContent
 		this.ScrollToTargetPoint(scrollViewPosition);
 	}
 
-	private void ScrollToTargetPoint(float scrollViewPosition)
+		private void ScrollToTargetPoint(float scrollViewPosition)
 	{
 		if (SelectModuleSideScreen.Instance != null)
 		{
@@ -146,7 +146,7 @@ public class RocketModuleSideScreen : SideScreenContent
 		}
 	}
 
-	private IEnumerator DelayedScrollToTargetPoint(float scrollViewPosition)
+		private IEnumerator DelayedScrollToTargetPoint(float scrollViewPosition)
 	{
 		if (SelectModuleSideScreen.Instance != null)
 		{
@@ -156,25 +156,25 @@ public class RocketModuleSideScreen : SideScreenContent
 		yield break;
 	}
 
-	private void ClickRemove()
+		private void ClickRemove()
 	{
 		this.reorderable.Trigger(-790448070, null);
 		this.UpdateButtonStates();
 	}
 
-	private void ClickSwapUp()
+		private void ClickSwapUp()
 	{
 		this.reorderable.SwapWithAbove(true);
 		this.UpdateButtonStates();
 	}
 
-	private void ClickSwapDown()
+		private void ClickSwapDown()
 	{
 		this.reorderable.SwapWithBelow(true);
 		this.UpdateButtonStates();
 	}
 
-	private void ClickChangeModule(float scrollViewPosition)
+		private void ClickChangeModule(float scrollViewPosition)
 	{
 		SelectModuleSideScreen selectModuleSideScreen = (SelectModuleSideScreen)DetailsScreen.Instance.SetSecondarySideScreen(this.changeModuleSideScreen, UI.UISIDESCREENS.ROCKETMODULESIDESCREEN.CHANGEMODULEPANEL);
 		selectModuleSideScreen.addingNewModule = false;
@@ -182,7 +182,7 @@ public class RocketModuleSideScreen : SideScreenContent
 		this.ScrollToTargetPoint(scrollViewPosition);
 	}
 
-	private void ClickViewInterior()
+		private void ClickViewInterior()
 	{
 		ClustercraftExteriorDoor component = this.reorderable.GetComponent<ClustercraftExteriorDoor>();
 		PassengerRocketModule component2 = this.reorderable.GetComponent<PassengerRocketModule>();
@@ -207,33 +207,33 @@ public class RocketModuleSideScreen : SideScreenContent
 		this.UpdateButtonStates();
 	}
 
-	public static RocketModuleSideScreen instance;
+		public static RocketModuleSideScreen instance;
 
-	private ReorderableBuilding reorderable;
+		private ReorderableBuilding reorderable;
 
-	public KScreen changeModuleSideScreen;
+		public KScreen changeModuleSideScreen;
 
-	public Image moduleIcon;
+		public Image moduleIcon;
 
-	[Header("Buttons")]
+		[Header("Buttons")]
 	public KButton addNewModuleButton;
 
-	public KButton removeModuleButton;
+		public KButton removeModuleButton;
 
-	public KButton changeModuleButton;
+		public KButton changeModuleButton;
 
-	public KButton moveModuleUpButton;
+		public KButton moveModuleUpButton;
 
-	public KButton moveModuleDownButton;
+		public KButton moveModuleDownButton;
 
-	public KButton viewInteriorButton;
+		public KButton viewInteriorButton;
 
-	[Header("Labels")]
+		[Header("Labels")]
 	public LocText moduleNameLabel;
 
-	public LocText moduleDescriptionLabel;
+		public LocText moduleDescriptionLabel;
 
-	public TextStyleSetting nameSetting;
+		public TextStyleSetting nameSetting;
 
-	public TextStyleSetting descriptionSetting;
+		public TextStyleSetting descriptionSetting;
 }

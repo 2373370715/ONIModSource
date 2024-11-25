@@ -6,7 +6,7 @@ using UnityEngine;
 
 internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.goingtopoop;
 		this.goingtopoop.MoveTo((NestingPoopState.Instance smi) => smi.GetPoopPosition(), this.pooping, this.failedtonest, false);
@@ -14,47 +14,55 @@ internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoop
 		{
 			smi.SetLastPoopCell();
 		}).GoTo(this.pooping);
-		this.pooping.Enter(delegate(NestingPoopState.Instance smi)
+		GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>.State state = this.pooping.Enter(delegate(NestingPoopState.Instance smi)
 		{
 			smi.master.GetComponent<Facing>().SetFacing(Grid.PosToCell(smi.master.gameObject) > smi.targetPoopCell);
-		}).ToggleStatusItem(CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME, CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).PlayAnim("poop").OnAnimQueueComplete(this.behaviourcomplete);
+		});
+		string name = CREATURES.STATUSITEMS.EXPELLING_SOLID.NAME;
+		string tooltip = CREATURES.STATUSITEMS.EXPELLING_SOLID.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).PlayAnim("poop").OnAnimQueueComplete(this.behaviourcomplete);
 		this.behaviourcomplete.Enter(delegate(NestingPoopState.Instance smi)
 		{
 			smi.SetLastPoopCell();
 		}).PlayAnim("idle_loop", KAnim.PlayMode.Loop).BehaviourComplete(GameTags.Creatures.Poop, false);
 	}
 
-	public GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>.State goingtopoop;
+		public GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>.State goingtopoop;
 
-	public GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>.State pooping;
+		public GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>.State pooping;
 
-	public GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>.State behaviourcomplete;
+		public GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>.State behaviourcomplete;
 
-	public GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>.State failedtonest;
+		public GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>.State failedtonest;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Def(Tag tag)
+				public Def(Tag tag)
 		{
 			this.nestingPoopElement = tag;
 		}
 
-		public Tag nestingPoopElement = Tag.Invalid;
+				public Tag nestingPoopElement = Tag.Invalid;
 	}
 
-	public new class Instance : GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>.GameInstance
+		public new class Instance : GameStateMachine<NestingPoopState, NestingPoopState.Instance, IStateMachineTarget, NestingPoopState.Def>.GameInstance
 	{
-		public Instance(Chore<NestingPoopState.Instance> chore, NestingPoopState.Def def) : base(chore, def)
+				public Instance(Chore<NestingPoopState.Instance> chore, NestingPoopState.Def def) : base(chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.Poop);
 		}
 
-		private static bool IsValidNestingCell(int cell, object arg)
+				private static bool IsValidNestingCell(int cell, object arg)
 		{
 			return Grid.IsValidCell(cell) && !Grid.Solid[cell] && Grid.IsValidCell(Grid.CellBelow(cell)) && Grid.Solid[Grid.CellBelow(cell)] && (NestingPoopState.Instance.IsValidPoopFromCell(cell, true) || NestingPoopState.Instance.IsValidPoopFromCell(cell, false));
 		}
 
-		private static bool IsValidPoopFromCell(int cell, bool look_left)
+				private static bool IsValidPoopFromCell(int cell, bool look_left)
 		{
 			if (look_left)
 			{
@@ -67,7 +75,7 @@ internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoop
 			return Grid.IsValidCell(num3) && Grid.Solid[num3] && Grid.IsValidCell(num4) && !Grid.Solid[num4];
 		}
 
-		public int GetPoopPosition()
+				public int GetPoopPosition()
 		{
 			this.targetPoopCell = this.GetTargetPoopCell();
 			List<Direction> list = new List<Direction>();
@@ -99,7 +107,7 @@ internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoop
 			return Grid.PosToCell(this);
 		}
 
-		private int GetTargetPoopCell()
+				private int GetTargetPoopCell()
 		{
 			CreatureCalorieMonitor.Instance smi = base.smi.GetSMI<CreatureCalorieMonitor.Instance>();
 			this.currentlyPoopingElement = smi.stomach.GetNextPoopEntry();
@@ -134,7 +142,7 @@ internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoop
 			return num;
 		}
 
-		public void SetLastPoopCell()
+				public void SetLastPoopCell()
 		{
 			if (this.currentlyPoopingElement == base.smi.def.nestingPoopElement)
 			{
@@ -142,11 +150,11 @@ internal class NestingPoopState : GameStateMachine<NestingPoopState, NestingPoop
 			}
 		}
 
-		[Serialize]
+				[Serialize]
 		private int lastPoopCell = -1;
 
-		public int targetPoopCell = -1;
+				public int targetPoopCell = -1;
 
-		private Tag currentlyPoopingElement = Tag.Invalid;
+				private Tag currentlyPoopingElement = Tag.Invalid;
 	}
 }

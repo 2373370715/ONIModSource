@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SuitMarkerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SuitMarker";
 		int width = 1;
@@ -26,7 +26,7 @@ public class SuitMarkerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		SuitMarker suitMarker = go.AddOrGet<SuitMarker>();
 		suitMarker.LockerTags = new Tag[]
@@ -42,10 +42,10 @@ public class SuitMarkerConfig : IBuildingConfig
 		go.AddTag(GameTags.JetSuitBlocker);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 	}
 
-	public const string ID = "SuitMarker";
+		public const string ID = "SuitMarker";
 }

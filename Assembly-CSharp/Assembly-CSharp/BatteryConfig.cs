@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BatteryConfig : BaseBatteryConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Battery";
 		int width = 1;
@@ -24,7 +24,7 @@ public class BatteryConfig : BaseBatteryConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Battery battery = go.AddOrGet<Battery>();
 		battery.capacity = 10000f;
@@ -32,5 +32,11 @@ public class BatteryConfig : BaseBatteryConfig
 		base.DoPostConfigureComplete(go);
 	}
 
-	public const string ID = "Battery";
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+	{
+		base.ConfigureBuildingTemplate(go, prefab_tag);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.PowerBuilding, false);
+	}
+
+		public const string ID = "Battery";
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class StateMachineDebuggerSettings : ScriptableObject
 {
-	public IEnumerator<StateMachineDebuggerSettings.Entry> GetEnumerator()
+		public IEnumerator<StateMachineDebuggerSettings.Entry> GetEnumerator()
 	{
 		return this.entries.GetEnumerator();
 	}
 
-	public static StateMachineDebuggerSettings Get()
+		public static StateMachineDebuggerSettings Get()
 	{
 		if (StateMachineDebuggerSettings._Instance == null)
 		{
@@ -19,7 +19,7 @@ public class StateMachineDebuggerSettings : ScriptableObject
 		return StateMachineDebuggerSettings._Instance;
 	}
 
-	private void Initialize()
+		private void Initialize()
 	{
 		foreach (Type type in App.GetCurrentDomainTypes())
 		{
@@ -31,7 +31,7 @@ public class StateMachineDebuggerSettings : ScriptableObject
 		this.entries.RemoveAll((StateMachineDebuggerSettings.Entry x) => x.type == null);
 	}
 
-	public StateMachineDebuggerSettings.Entry CreateEntry(Type type)
+		public StateMachineDebuggerSettings.Entry CreateEntry(Type type)
 	{
 		foreach (StateMachineDebuggerSettings.Entry entry in this.entries)
 		{
@@ -46,33 +46,33 @@ public class StateMachineDebuggerSettings : ScriptableObject
 		return entry2;
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		this.entries.Clear();
 		this.Initialize();
 	}
 
-	public List<StateMachineDebuggerSettings.Entry> entries = new List<StateMachineDebuggerSettings.Entry>();
+		public List<StateMachineDebuggerSettings.Entry> entries = new List<StateMachineDebuggerSettings.Entry>();
 
-	private static StateMachineDebuggerSettings _Instance;
+		private static StateMachineDebuggerSettings _Instance;
 
-	[Serializable]
+		[Serializable]
 	public class Entry
 	{
-		public Entry(Type type)
+				public Entry(Type type)
 		{
 			this.typeName = type.FullName;
 			this.type = type;
 		}
 
-		public Type type;
+				public Type type;
 
-		public string typeName;
+				public string typeName;
 
-		public bool breakOnGoTo;
+				public bool breakOnGoTo;
 
-		public bool enableConsoleLogging;
+				public bool enableConsoleLogging;
 
-		public bool saveHistory;
+				public bool saveHistory;
 	}
 }

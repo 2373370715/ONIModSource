@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class StickerBomb : StateMachineComponent<StickerBomb.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (this.stickerName.IsNullOrWhiteSpace())
 		{
@@ -31,15 +31,12 @@ public class StickerBomb : StateMachineComponent<StickerBomb.StatesInstance>
 		base.OnSpawn();
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	public void OnDeserialized()
 	{
 		if (this.stickerName.IsNullOrWhiteSpace() && !this.stickerType.IsNullOrWhiteSpace())
 		{
-			string[] array = this.stickerType.Split(new char[]
-			{
-				'_'
-			});
+			string[] array = this.stickerType.Split('_', StringSplitOptions.None);
 			if (array.Length == 2)
 			{
 				this.stickerName = array[1];
@@ -47,13 +44,13 @@ public class StickerBomb : StateMachineComponent<StickerBomb.StatesInstance>
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		base.OnCleanUp();
 	}
 
-	private void OnFoundationCellChanged(object data)
+		private void OnFoundationCellChanged(object data)
 	{
 		if (!StickerBomb.CanPlaceSticker(this.cellOffsets))
 		{
@@ -61,7 +58,7 @@ public class StickerBomb : StateMachineComponent<StickerBomb.StatesInstance>
 		}
 	}
 
-	public static List<int> BuildCellOffsets(Vector3 position)
+		public static List<int> BuildCellOffsets(Vector3 position)
 	{
 		List<int> list = new List<int>();
 		bool flag = position.x % 1f < 0.5f;
@@ -99,7 +96,7 @@ public class StickerBomb : StateMachineComponent<StickerBomb.StatesInstance>
 		return list;
 	}
 
-	public static bool CanPlaceSticker(List<int> offsets)
+		public static bool CanPlaceSticker(List<int> offsets)
 	{
 		using (List<int>.Enumerator enumerator = offsets.GetEnumerator())
 		{
@@ -114,7 +111,7 @@ public class StickerBomb : StateMachineComponent<StickerBomb.StatesInstance>
 		return true;
 	}
 
-	public void SetStickerType(string newStickerType)
+		public void SetStickerType(string newStickerType)
 	{
 		if (newStickerType == null)
 		{
@@ -129,34 +126,34 @@ public class StickerBomb : StateMachineComponent<StickerBomb.StatesInstance>
 		});
 	}
 
-	[Serialize]
+		[Serialize]
 	public string stickerType;
 
-	[Serialize]
+		[Serialize]
 	public string stickerName;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private List<int> cellOffsets;
+		private List<int> cellOffsets;
 
-	public class StatesInstance : GameStateMachine<StickerBomb.States, StickerBomb.StatesInstance, StickerBomb, object>.GameInstance
+		public class StatesInstance : GameStateMachine<StickerBomb.States, StickerBomb.StatesInstance, StickerBomb, object>.GameInstance
 	{
-		public StatesInstance(StickerBomb master) : base(master)
+				public StatesInstance(StickerBomb master) : base(master)
 		{
 		}
 
-		public string GetStickerAnim(string type)
+				public string GetStickerAnim(string type)
 		{
 			return string.Format("{0}_{1}", type, base.master.stickerType);
 		}
 
-		[Serialize]
+				[Serialize]
 		public float destroyTime;
 	}
 
-	public class States : GameStateMachine<StickerBomb.States, StickerBomb.StatesInstance, StickerBomb>
+		public class States : GameStateMachine<StickerBomb.States, StickerBomb.StatesInstance, StickerBomb>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -169,10 +166,10 @@ public class StickerBomb : StateMachineComponent<StickerBomb.StatesInstance>
 			});
 		}
 
-		public GameStateMachine<StickerBomb.States, StickerBomb.StatesInstance, StickerBomb, object>.State destroy;
+				public GameStateMachine<StickerBomb.States, StickerBomb.StatesInstance, StickerBomb, object>.State destroy;
 
-		public GameStateMachine<StickerBomb.States, StickerBomb.StatesInstance, StickerBomb, object>.State sparkle;
+				public GameStateMachine<StickerBomb.States, StickerBomb.StatesInstance, StickerBomb, object>.State sparkle;
 
-		public GameStateMachine<StickerBomb.States, StickerBomb.StatesInstance, StickerBomb, object>.State idle;
+				public GameStateMachine<StickerBomb.States, StickerBomb.StatesInstance, StickerBomb, object>.State idle;
 	}
 }

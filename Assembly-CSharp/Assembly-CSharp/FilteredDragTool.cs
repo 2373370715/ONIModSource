@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class FilteredDragTool : DragTool
 {
-	public bool IsActiveLayer(string layer)
+		public bool IsActiveLayer(string layer)
 	{
 		return this.currentFilterTargets[ToolParameterMenu.FILTERLAYERS.ALL] == ToolParameterMenu.ToggleState.On || (this.currentFilterTargets.ContainsKey(layer.ToUpper()) && this.currentFilterTargets[layer.ToUpper()] == ToolParameterMenu.ToggleState.On);
 	}
 
-	public bool IsActiveLayer(ObjectLayer layer)
+		public bool IsActiveLayer(ObjectLayer layer)
 	{
 		if (this.currentFilterTargets.ContainsKey(ToolParameterMenu.FILTERLAYERS.ALL) && this.currentFilterTargets[ToolParameterMenu.FILTERLAYERS.ALL] == ToolParameterMenu.ToggleState.On)
 		{
@@ -27,7 +27,7 @@ public class FilteredDragTool : DragTool
 		return result;
 	}
 
-	protected virtual void GetDefaultFilters(Dictionary<string, ToolParameterMenu.ToggleState> filters)
+		protected virtual void GetDefaultFilters(Dictionary<string, ToolParameterMenu.ToggleState> filters)
 	{
 		filters.Add(ToolParameterMenu.FILTERLAYERS.ALL, ToolParameterMenu.ToggleState.On);
 		filters.Add(ToolParameterMenu.FILTERLAYERS.WIRES, ToolParameterMenu.ToggleState.Off);
@@ -39,53 +39,53 @@ public class FilteredDragTool : DragTool
 		filters.Add(ToolParameterMenu.FILTERLAYERS.BACKWALL, ToolParameterMenu.ToggleState.Off);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.ResetFilter(this.filterTargets);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		OverlayScreen instance = OverlayScreen.Instance;
 		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Combine(instance.OnOverlayChanged, new Action<HashedString>(this.OnOverlayChanged));
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
 		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(this.OnOverlayChanged));
 		base.OnCleanUp();
 	}
 
-	public void ResetFilter()
+		public void ResetFilter()
 	{
 		this.ResetFilter(this.filterTargets);
 	}
 
-	protected void ResetFilter(Dictionary<string, ToolParameterMenu.ToggleState> filters)
+		protected void ResetFilter(Dictionary<string, ToolParameterMenu.ToggleState> filters)
 	{
 		filters.Clear();
 		this.GetDefaultFilters(filters);
 		this.currentFilterTargets = filters;
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		this.active = true;
 		base.OnActivateTool();
 		this.OnOverlayChanged(OverlayScreen.Instance.mode);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		this.active = false;
 		ToolMenu.Instance.toolParameterMenu.ClearMenu();
 		base.OnDeactivateTool(new_tool);
 	}
 
-	public virtual string GetFilterLayerFromGameObject(GameObject input)
+		public virtual string GetFilterLayerFromGameObject(GameObject input)
 	{
 		BuildingComplete component = input.GetComponent<BuildingComplete>();
 		BuildingUnderConstruction component2 = input.GetComponent<BuildingUnderConstruction>();
@@ -108,7 +108,7 @@ public class FilteredDragTool : DragTool
 		return "Default";
 	}
 
-	public string GetFilterLayerFromObjectLayer(ObjectLayer gamer_layer)
+		public string GetFilterLayerFromObjectLayer(ObjectLayer gamer_layer)
 	{
 		if (gamer_layer > ObjectLayer.FoundationTile)
 		{
@@ -172,109 +172,79 @@ public class FilteredDragTool : DragTool
 		return "Default";
 	}
 
-	private ObjectLayer GetObjectLayerFromFilterLayer(string filter_layer)
+		private ObjectLayer GetObjectLayerFromFilterLayer(string filter_layer)
 	{
 		string text = filter_layer.ToLower();
-		if (text != null)
+		uint num = <PrivateImplementationDetails>.ComputeStringHash(text);
+		if (num <= 2200975418U)
 		{
-			uint num = <PrivateImplementationDetails>.ComputeStringHash(text);
-			ObjectLayer result;
-			if (num <= 2200975418U)
+			if (num <= 388608975U)
 			{
-				if (num <= 388608975U)
+				if (num != 25076977U)
 				{
-					if (num != 25076977U)
+					if (num == 388608975U)
 					{
-						if (num != 388608975U)
+						if (text == "solidconduits")
 						{
-							goto IL_12D;
+							return ObjectLayer.SolidConduit;
 						}
-						if (!(text == "solidconduits"))
-						{
-							goto IL_12D;
-						}
-						result = ObjectLayer.SolidConduit;
-					}
-					else
-					{
-						if (!(text == "wires"))
-						{
-							goto IL_12D;
-						}
-						result = ObjectLayer.Wire;
 					}
 				}
-				else if (num != 614364310U)
+				else if (text == "wires")
 				{
-					if (num != 2200975418U)
-					{
-						goto IL_12D;
-					}
-					if (!(text == "backwall"))
-					{
-						goto IL_12D;
-					}
-					result = ObjectLayer.Backwall;
-				}
-				else
-				{
-					if (!(text == "liquidpipes"))
-					{
-						goto IL_12D;
-					}
-					result = ObjectLayer.LiquidConduit;
+					return ObjectLayer.Wire;
 				}
 			}
-			else if (num <= 2875565775U)
+			else if (num != 614364310U)
 			{
-				if (num != 2366751346U)
+				if (num == 2200975418U)
 				{
-					if (num != 2875565775U)
+					if (text == "backwall")
 					{
-						goto IL_12D;
+						return ObjectLayer.Backwall;
 					}
-					if (!(text == "gaspipes"))
-					{
-						goto IL_12D;
-					}
-					result = ObjectLayer.GasConduit;
-				}
-				else
-				{
-					if (!(text == "buildings"))
-					{
-						goto IL_12D;
-					}
-					result = ObjectLayer.Building;
 				}
 			}
-			else if (num != 3464443665U)
+			else if (text == "liquidpipes")
 			{
-				if (num != 4178729166U)
-				{
-					goto IL_12D;
-				}
-				if (!(text == "tiles"))
-				{
-					goto IL_12D;
-				}
-				result = ObjectLayer.FoundationTile;
+				return ObjectLayer.LiquidConduit;
 			}
-			else
-			{
-				if (!(text == "logic"))
-				{
-					goto IL_12D;
-				}
-				result = ObjectLayer.LogicWire;
-			}
-			return result;
 		}
-		IL_12D:
+		else if (num <= 2875565775U)
+		{
+			if (num != 2366751346U)
+			{
+				if (num == 2875565775U)
+				{
+					if (text == "gaspipes")
+					{
+						return ObjectLayer.GasConduit;
+					}
+				}
+			}
+			else if (text == "buildings")
+			{
+				return ObjectLayer.Building;
+			}
+		}
+		else if (num != 3464443665U)
+		{
+			if (num == 4178729166U)
+			{
+				if (text == "tiles")
+				{
+					return ObjectLayer.FoundationTile;
+				}
+			}
+		}
+		else if (text == "logic")
+		{
+			return ObjectLayer.LogicWire;
+		}
 		throw new ArgumentException("Invalid filter layer: " + filter_layer);
 	}
 
-	private void OnOverlayChanged(HashedString overlay)
+		private void OnOverlayChanged(HashedString overlay)
 	{
 		if (!this.active)
 		{
@@ -327,11 +297,11 @@ public class FilteredDragTool : DragTool
 		ToolMenu.Instance.toolParameterMenu.PopulateMenu(this.currentFilterTargets);
 	}
 
-	private Dictionary<string, ToolParameterMenu.ToggleState> filterTargets = new Dictionary<string, ToolParameterMenu.ToggleState>();
+		private Dictionary<string, ToolParameterMenu.ToggleState> filterTargets = new Dictionary<string, ToolParameterMenu.ToggleState>();
 
-	private Dictionary<string, ToolParameterMenu.ToggleState> overlayFilterTargets = new Dictionary<string, ToolParameterMenu.ToggleState>();
+		private Dictionary<string, ToolParameterMenu.ToggleState> overlayFilterTargets = new Dictionary<string, ToolParameterMenu.ToggleState>();
 
-	private Dictionary<string, ToolParameterMenu.ToggleState> currentFilterTargets;
+		private Dictionary<string, ToolParameterMenu.ToggleState> currentFilterTargets;
 
-	private bool active;
+		private bool active;
 }

@@ -9,17 +9,17 @@ using UnityEngine;
 
 public static class GarbageProfiler
 {
-	private static void UnloadUnusedAssets()
+		private static void UnloadUnusedAssets()
 	{
 		Resources.UnloadUnusedAssets();
 	}
 
-	private static void ClearFileName()
+		private static void ClearFileName()
 	{
 		GarbageProfiler.filename_suffix = null;
 	}
 
-	public static string GetFileName(string name)
+		public static string GetFileName(string name)
 	{
 		string fullPath = Path.GetFullPath(GarbageProfiler.ROOT_MEMORY_DUMP_PATH);
 		if (GarbageProfiler.filename_suffix == null)
@@ -49,7 +49,7 @@ public static class GarbageProfiler
 		return Path.Combine(fullPath, name + GarbageProfiler.filename_suffix);
 	}
 
-	private static void Dump()
+		private static void Dump()
 	{
 		global::Debug.Log("Writing snapshot...");
 		MemorySnapshot memorySnapshot = new MemorySnapshot();
@@ -122,7 +122,7 @@ public static class GarbageProfiler
 		global::Debug.Log("Done writing snapshot!");
 	}
 
-	public static void DebugDumpGarbageStats()
+		public static void DebugDumpGarbageStats()
 	{
 		global::Debug.Log("Writing reference stats...");
 		MemorySnapshot memorySnapshot = new MemorySnapshot();
@@ -214,7 +214,7 @@ public static class GarbageProfiler
 		global::Debug.Log("Done writing reference stats!");
 	}
 
-	public static void DebugDumpRootItems()
+		public static void DebugDumpRootItems()
 	{
 		global::Debug.Log("Writing root items...");
 		Type[] array = new Type[]
@@ -334,33 +334,33 @@ public static class GarbageProfiler
 		global::Debug.Log("Done writing reference stats!");
 	}
 
-	private static MemorySnapshot previousSnapshot;
+		private static MemorySnapshot previousSnapshot;
 
-	private static string ROOT_MEMORY_DUMP_PATH = "./memory/";
+		private static string ROOT_MEMORY_DUMP_PATH = "./memory/";
 
-	private static string filename_suffix = null;
+		private static string filename_suffix = null;
 
-	private static Type DEBUG_STATIC_TYPE = null;
+		private static Type DEBUG_STATIC_TYPE = null;
 
-	private class InstanceCountComparer : IComparer<MemorySnapshot.TypeData>
+		private class InstanceCountComparer : IComparer<MemorySnapshot.TypeData>
 	{
-		public int Compare(MemorySnapshot.TypeData a, MemorySnapshot.TypeData b)
+				public int Compare(MemorySnapshot.TypeData a, MemorySnapshot.TypeData b)
 		{
 			return b.instanceCount - a.instanceCount;
 		}
 	}
 
-	private class RefCountComparer : IComparer<MemorySnapshot.TypeData>
+		private class RefCountComparer : IComparer<MemorySnapshot.TypeData>
 	{
-		public int Compare(MemorySnapshot.TypeData a, MemorySnapshot.TypeData b)
+				public int Compare(MemorySnapshot.TypeData a, MemorySnapshot.TypeData b)
 		{
 			return b.refCount - a.refCount;
 		}
 	}
 
-	private class FieldCountComparer : IComparer<MemorySnapshot.FieldCount>
+		private class FieldCountComparer : IComparer<MemorySnapshot.FieldCount>
 	{
-		public int Compare(MemorySnapshot.FieldCount a, MemorySnapshot.FieldCount b)
+				public int Compare(MemorySnapshot.FieldCount a, MemorySnapshot.FieldCount b)
 		{
 			return b.count - a.count;
 		}

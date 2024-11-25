@@ -9,9 +9,9 @@ using STRINGS;
 
 namespace ProcGenGame
 {
-	public class WorldgenMixing
+		public class WorldgenMixing
 	{
-		public static bool RefreshWorldMixing(MutatedClusterLayout mutatedLayout, int seed, bool isRunningWorldgenDebug, bool muteErrors)
+				public static bool RefreshWorldMixing(MutatedClusterLayout mutatedLayout, int seed, bool isRunningWorldgenDebug, bool muteErrors)
 		{
 			if (mutatedLayout == null)
 			{
@@ -24,12 +24,12 @@ namespace ProcGenGame
 			return WorldgenMixing.DoWorldMixingInternal(mutatedLayout, seed, isRunningWorldgenDebug, muteErrors) != null;
 		}
 
-		public static MutatedClusterLayout DoWorldMixing(ClusterLayout layout, int seed, bool isRunningWorldgenDebug, bool muteErrors)
+				public static MutatedClusterLayout DoWorldMixing(ClusterLayout layout, int seed, bool isRunningWorldgenDebug, bool muteErrors)
 		{
 			return WorldgenMixing.DoWorldMixingInternal(new MutatedClusterLayout(layout), seed, isRunningWorldgenDebug, muteErrors);
 		}
 
-		private static MutatedClusterLayout DoWorldMixingInternal(MutatedClusterLayout mutatedClusterLayout, int seed, bool isRunningWorldgenDebug, bool muteErrors)
+				private static MutatedClusterLayout DoWorldMixingInternal(MutatedClusterLayout mutatedClusterLayout, int seed, bool isRunningWorldgenDebug, bool muteErrors)
 		{
 			List<WorldgenMixing.WorldMixingOption> list = new List<WorldgenMixing.WorldMixingOption>();
 			if (CustomGameSettings.Instance != null && !GenericGameSettings.instance.devAutoWorldGen)
@@ -106,7 +106,7 @@ namespace ProcGenGame
 			return mutatedClusterLayout;
 		}
 
-		private static WorldgenMixing.WorldMixingOption FindWorldMixingOption(WorldPlacement worldPlacement, List<WorldgenMixing.WorldMixingOption> options)
+				private static WorldgenMixing.WorldMixingOption FindWorldMixingOption(WorldPlacement worldPlacement, List<WorldgenMixing.WorldMixingOption> options)
 		{
 			options = options.StableSort<WorldgenMixing.WorldMixingOption>().ToList<WorldgenMixing.WorldMixingOption>();
 			foreach (WorldgenMixing.WorldMixingOption worldMixingOption in options)
@@ -139,7 +139,7 @@ namespace ProcGenGame
 			return null;
 		}
 
-		private static bool ValidateWorldMixingOptions(List<WorldgenMixing.WorldMixingOption> options, bool isRunningWorldgenDebug, bool muteErrors)
+				private static bool ValidateWorldMixingOptions(List<WorldgenMixing.WorldMixingOption> options, bool isRunningWorldgenDebug, bool muteErrors)
 		{
 			List<string> list = new List<string>();
 			foreach (WorldgenMixing.WorldMixingOption worldMixingOption in options)
@@ -173,7 +173,7 @@ namespace ProcGenGame
 			return false;
 		}
 
-		public static void DoSubworldMixing(Cluster cluster, int seed, Func<int, WorldGen, bool> ShouldSkipWorldCallback, bool isRunningWorldgenDebug)
+				public static void DoSubworldMixing(Cluster cluster, int seed, Func<int, WorldGen, bool> ShouldSkipWorldCallback, bool isRunningWorldgenDebug)
 		{
 			List<WorldgenMixing.MixingOption<SubworldMixingSettings>> list = new List<WorldgenMixing.MixingOption<SubworldMixingSettings>>();
 			if (CustomGameSettings.Instance != null && !GenericGameSettings.instance.devAutoWorldGen)
@@ -224,7 +224,7 @@ namespace ProcGenGame
 			WorldgenMixing.ValidateSubworldMixingOptions(list, isRunningWorldgenDebug);
 		}
 
-		private static void ValidateSubworldMixingOptions(List<WorldgenMixing.MixingOption<SubworldMixingSettings>> options, bool isRunningWorldgenDebug)
+				private static void ValidateSubworldMixingOptions(List<WorldgenMixing.MixingOption<SubworldMixingSettings>> options, bool isRunningWorldgenDebug)
 		{
 			List<string> list = new List<string>();
 			foreach (WorldgenMixing.MixingOption<SubworldMixingSettings> mixingOption in options)
@@ -252,7 +252,7 @@ namespace ProcGenGame
 			}
 		}
 
-		private static void ApplySubworldMixingToWorld(ProcGen.World world, List<WorldgenMixing.MixingOption<SubworldMixingSettings>> availableSubworldsForMixing)
+				private static void ApplySubworldMixingToWorld(ProcGen.World world, List<WorldgenMixing.MixingOption<SubworldMixingSettings>> availableSubworldsForMixing)
 		{
 			List<ProcGen.World.SubworldMixingRule> list = new List<ProcGen.World.SubworldMixingRule>();
 			foreach (ProcGen.World.SubworldMixingRule subworldMixingRule in world.subworldMixingRules)
@@ -307,7 +307,7 @@ namespace ProcGenGame
 			WorldgenMixing.CleanupUnusedMixing(world);
 		}
 
-		private static WorldgenMixing.MixingOption<SubworldMixingSettings> FindSubworldMixing(ProcGen.World.SubworldMixingRule rule, List<WorldgenMixing.MixingOption<SubworldMixingSettings>> options)
+				private static WorldgenMixing.MixingOption<SubworldMixingSettings> FindSubworldMixing(ProcGen.World.SubworldMixingRule rule, List<WorldgenMixing.MixingOption<SubworldMixingSettings>> options)
 		{
 			options = options.StableSort<WorldgenMixing.MixingOption<SubworldMixingSettings>>().ToList<WorldgenMixing.MixingOption<SubworldMixingSettings>>();
 			foreach (WorldgenMixing.MixingOption<SubworldMixingSettings> mixingOption in options)
@@ -344,7 +344,7 @@ namespace ProcGenGame
 			return null;
 		}
 
-		private static void CleanupUnusedMixing(ProcGen.World world)
+				private static void CleanupUnusedMixing(ProcGen.World world)
 		{
 			foreach (ProcGen.World.AllowedCellsFilter allowedCellsFilter in world.unknownCellsAllowedSubworlds)
 			{
@@ -352,16 +352,16 @@ namespace ProcGenGame
 			}
 		}
 
-		private static bool IsMixingProxyName(string name)
+				private static bool IsMixingProxyName(string name)
 		{
 			return name.StartsWith("(");
 		}
 
-		private const int NUM_WORLD_TO_TRY_SUBWORLDMIXING = 3;
+				private const int NUM_WORLD_TO_TRY_SUBWORLDMIXING = 3;
 
-		public class MixingOption<T> : IComparable<WorldgenMixing.MixingOption<T>>
+				public class MixingOption<T> : IComparable<WorldgenMixing.MixingOption<T>>
 		{
-						public bool IsExhausted
+									public bool IsExhausted
 			{
 				get
 				{
@@ -369,7 +369,7 @@ namespace ProcGenGame
 				}
 			}
 
-						public bool IsSatisfied
+									public bool IsSatisfied
 			{
 				get
 				{
@@ -377,13 +377,13 @@ namespace ProcGenGame
 				}
 			}
 
-			public void Consume()
+						public void Consume()
 			{
 				this.minCount--;
 				this.maxCount--;
 			}
 
-			public int CompareTo(WorldgenMixing.MixingOption<T> other)
+						public int CompareTo(WorldgenMixing.MixingOption<T> other)
 			{
 				int num = other.minCount.CompareTo(this.minCount);
 				if (num != 0)
@@ -393,18 +393,18 @@ namespace ProcGenGame
 				return other.maxCount.CompareTo(this.maxCount);
 			}
 
-			public string worldgenPath;
+						public string worldgenPath;
 
-			public T mixingSettings;
+						public T mixingSettings;
 
-			public int minCount;
+						public int minCount;
 
-			public int maxCount;
+						public int maxCount;
 		}
 
-		public class WorldMixingOption : WorldgenMixing.MixingOption<WorldMixingSettings>
+				public class WorldMixingOption : WorldgenMixing.MixingOption<WorldMixingSettings>
 		{
-			public ProcGen.World cachedWorld;
+						public ProcGen.World cachedWorld;
 		}
 	}
 }

@@ -6,13 +6,13 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicWattageSensor>(-905833192, LogicWattageSensor.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicWattageSensor component = ((GameObject)data).GetComponent<LogicWattageSensor>();
 		if (component != null)
@@ -22,7 +22,7 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.OnSwitchToggled;
@@ -31,7 +31,7 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		this.wasOn = this.switchedOn;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		this.currentWattage = Game.Instance.circuitManager.GetWattsUsedByCircuit(Game.Instance.circuitManager.GetCircuitID(Grid.PosToCell(this)));
 		this.currentWattage = Mathf.Max(0f, this.currentWattage);
@@ -49,23 +49,23 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-	public float GetWattageUsed()
+		public float GetWattageUsed()
 	{
 		return this.currentWattage;
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateVisualState(false);
 		this.UpdateLogicCircuit();
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, this.switchedOn ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -76,13 +76,13 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-			public float Threshold
+				public float Threshold
 	{
 		get
 		{
@@ -95,7 +95,7 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-			public bool ActivateAboveThreshold
+				public bool ActivateAboveThreshold
 	{
 		get
 		{
@@ -108,7 +108,7 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-		public float CurrentValue
+			public float CurrentValue
 	{
 		get
 		{
@@ -116,7 +116,7 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-		public float RangeMin
+			public float RangeMin
 	{
 		get
 		{
@@ -124,7 +124,7 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-		public float RangeMax
+			public float RangeMax
 	{
 		get
 		{
@@ -132,17 +132,17 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-	public float GetRangeMinInputField()
+		public float GetRangeMinInputField()
 	{
 		return this.minWattage;
 	}
 
-	public float GetRangeMaxInputField()
+		public float GetRangeMaxInputField()
 	{
 		return this.maxWattage;
 	}
 
-		public LocString Title
+			public LocString Title
 	{
 		get
 		{
@@ -150,7 +150,7 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-		public LocString ThresholdValueName
+			public LocString ThresholdValueName
 	{
 		get
 		{
@@ -158,7 +158,7 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-		public string AboveToolTip
+			public string AboveToolTip
 	{
 		get
 		{
@@ -166,7 +166,7 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-		public string BelowToolTip
+			public string BelowToolTip
 	{
 		get
 		{
@@ -174,27 +174,27 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-	public string Format(float value, bool units)
+		public string Format(float value, bool units)
 	{
 		return GameUtil.GetFormattedWattage(value, GameUtil.WattageFormatterUnit.Watts, units);
 	}
 
-	public float ProcessedSliderValue(float input)
+		public float ProcessedSliderValue(float input)
 	{
 		return Mathf.Round(input);
 	}
 
-	public float ProcessedInputValue(float input)
+		public float ProcessedInputValue(float input)
 	{
 		return input;
 	}
 
-	public LocString ThresholdValueUnits()
+		public LocString ThresholdValueUnits()
 	{
 		return UI.UNITSUFFIXES.ELECTRICAL.WATT;
 	}
 
-		public ThresholdScreenLayoutType LayoutType
+			public ThresholdScreenLayoutType LayoutType
 	{
 		get
 		{
@@ -202,7 +202,7 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-		public int IncrementScale
+			public int IncrementScale
 	{
 		get
 		{
@@ -210,7 +210,7 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-		public NonLinearSlider.Range[] GetRanges
+			public NonLinearSlider.Range[] GetRanges
 	{
 		get
 		{
@@ -224,27 +224,27 @@ public class LogicWattageSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim2
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	public float thresholdWattage;
 
-	[Serialize]
+		[Serialize]
 	public bool activateOnHigherThan;
 
-	[Serialize]
+		[Serialize]
 	public bool dirty = true;
 
-	private readonly float minWattage;
+		private readonly float minWattage;
 
-	private readonly float maxWattage = 1.5f * Wire.GetMaxWattageAsFloat(Wire.WattageRating.Max50000);
+		private readonly float maxWattage = 1.5f * Wire.GetMaxWattageAsFloat(Wire.WattageRating.Max50000);
 
-	private float currentWattage;
+		private float currentWattage;
 
-	private bool wasOn;
+		private bool wasOn;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicWattageSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicWattageSensor>(delegate(LogicWattageSensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicWattageSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicWattageSensor>(delegate(LogicWattageSensor component, object data)
 	{
 		component.OnCopySettings(data);
 	});

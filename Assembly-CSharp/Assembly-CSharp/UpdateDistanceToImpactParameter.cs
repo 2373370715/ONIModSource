@@ -4,11 +4,11 @@ using FMOD.Studio;
 
 internal class UpdateDistanceToImpactParameter : LoopingSoundParameterUpdater
 {
-	public UpdateDistanceToImpactParameter() : base("distanceToImpact")
+		public UpdateDistanceToImpactParameter() : base("distanceToImpact")
 	{
 	}
 
-	public override void Add(LoopingSoundParameterUpdater.Sound sound)
+		public override void Add(LoopingSoundParameterUpdater.Sound sound)
 	{
 		UpdateDistanceToImpactParameter.Entry item = new UpdateDistanceToImpactParameter.Entry
 		{
@@ -19,7 +19,7 @@ internal class UpdateDistanceToImpactParameter : LoopingSoundParameterUpdater
 		this.entries.Add(item);
 	}
 
-	public override void Update(float dt)
+		public override void Update(float dt)
 	{
 		foreach (UpdateDistanceToImpactParameter.Entry entry in this.entries)
 		{
@@ -32,7 +32,7 @@ internal class UpdateDistanceToImpactParameter : LoopingSoundParameterUpdater
 		}
 	}
 
-	public override void Remove(LoopingSoundParameterUpdater.Sound sound)
+		public override void Remove(LoopingSoundParameterUpdater.Sound sound)
 	{
 		for (int i = 0; i < this.entries.Count; i++)
 		{
@@ -44,14 +44,14 @@ internal class UpdateDistanceToImpactParameter : LoopingSoundParameterUpdater
 		}
 	}
 
-	private List<UpdateDistanceToImpactParameter.Entry> entries = new List<UpdateDistanceToImpactParameter.Entry>();
+		private List<UpdateDistanceToImpactParameter.Entry> entries = new List<UpdateDistanceToImpactParameter.Entry>();
 
-	private struct Entry
+		private struct Entry
 	{
-		public Comet comet;
+				public Comet comet;
 
-		public EventInstance ev;
+				public EventInstance ev;
 
-		public PARAMETER_ID parameterId;
+				public PARAMETER_ID parameterId;
 	}
 }

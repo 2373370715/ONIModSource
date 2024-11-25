@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class SubstanceTable : ScriptableObject, ISerializationCallbackReceiver
 {
-	public List<Substance> GetList()
+		public List<Substance> GetList()
 	{
 		return this.list;
 	}
 
-	public Substance GetSubstance(SimHashes substance)
+		public Substance GetSubstance(SimHashes substance)
 	{
 		int count = this.list.Count;
 		for (int i = 0; i < count; i++)
@@ -23,17 +23,17 @@ public class SubstanceTable : ScriptableObject, ISerializationCallbackReceiver
 		return null;
 	}
 
-	public void OnBeforeSerialize()
+		public void OnBeforeSerialize()
 	{
 		this.BindAnimList();
 	}
 
-	public void OnAfterDeserialize()
+		public void OnAfterDeserialize()
 	{
 		this.BindAnimList();
 	}
 
-	private void BindAnimList()
+		private void BindAnimList()
 	{
 		foreach (Substance substance in this.list)
 		{
@@ -45,26 +45,26 @@ public class SubstanceTable : ScriptableObject, ISerializationCallbackReceiver
 		}
 	}
 
-	public void RemoveDuplicates()
+		public void RemoveDuplicates()
 	{
 		this.list = this.list.Distinct(new SubstanceTable.SubstanceEqualityComparer()).ToList<Substance>();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private List<Substance> list;
 
-	public Material solidMaterial;
+		public Material solidMaterial;
 
-	public Material liquidMaterial;
+		public Material liquidMaterial;
 
-	private class SubstanceEqualityComparer : IEqualityComparer<Substance>
+		private class SubstanceEqualityComparer : IEqualityComparer<Substance>
 	{
-		public bool Equals(Substance x, Substance y)
+				public bool Equals(Substance x, Substance y)
 		{
 			return x.elementID.Equals(y.elementID);
 		}
 
-		public int GetHashCode(Substance obj)
+				public int GetHashCode(Substance obj)
 		{
 			return obj.elementID.GetHashCode();
 		}

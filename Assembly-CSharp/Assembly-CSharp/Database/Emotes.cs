@@ -3,15 +3,15 @@ using Klei.AI;
 
 namespace Database
 {
-	public class Emotes : ResourceSet<Resource>
+		public class Emotes : ResourceSet<Resource>
 	{
-		public Emotes(ResourceSet parent) : base("Emotes", parent)
+				public Emotes(ResourceSet parent) : base("Emotes", parent)
 		{
 			this.Minion = new Emotes.MinionEmotes(this);
 			this.Critter = new Emotes.CritterEmotes(this);
 		}
 
-		public void ResetProblematicReferences()
+				public void ResetProblematicReferences()
 		{
 			for (int i = 0; i < this.Minion.resources.Count; i++)
 			{
@@ -31,13 +31,13 @@ namespace Database
 			}
 		}
 
-		public Emotes.MinionEmotes Minion;
+				public Emotes.MinionEmotes Minion;
 
-		public Emotes.CritterEmotes Critter;
+				public Emotes.CritterEmotes Critter;
 
-		public class MinionEmotes : ResourceSet<Emote>
+				public class MinionEmotes : ResourceSet<Emote>
 		{
-			public MinionEmotes(ResourceSet parent) : base("Minion", parent)
+						public MinionEmotes(ResourceSet parent) : base("Minion", parent)
 			{
 				this.InitializeCelebrations();
 				this.InitializePhysicalStatus();
@@ -45,7 +45,7 @@ namespace Database
 				this.InitializeGreetings();
 			}
 
-			public void InitializeCelebrations()
+						public void InitializeCelebrations()
 			{
 				this.ClapCheer = new Emote(this, "ClapCheer", new EmoteStep[]
 				{
@@ -88,7 +88,7 @@ namespace Database
 				this.ThumbsUp = new Emote(this, "ThumbsUp", Emotes.MinionEmotes.DEFAULT_STEPS, "anim_react_thumbsup_kanim");
 			}
 
-			private void InitializePhysicalStatus()
+						private void InitializePhysicalStatus()
 			{
 				this.CloseCall_Fall = new Emote(this, "Near Fall", Emotes.MinionEmotes.DEFAULT_STEPS, "anim_react_floor_missing_kanim");
 				this.Cold = new Emote(this, "Cold", Emotes.MinionEmotes.DEFAULT_IDLE_STEPS, "anim_idle_cold_kanim");
@@ -136,6 +136,13 @@ namespace Database
 						anim = "sneeze_pst"
 					}
 				}, "anim_sneeze_kanim");
+				this.WaterDamage = new Emote(this, "WaterDamage", new EmoteStep[]
+				{
+					new EmoteStep
+					{
+						anim = "zapped"
+					}
+				}, "anim_bionic_kanim");
 				this.Sneeze_Short = new Emote(this, "Short Sneeze", new EmoteStep[]
 				{
 					new EmoteStep
@@ -149,7 +156,7 @@ namespace Database
 				}, "anim_sneeze_kanim");
 			}
 
-			private void InitializeEmotionalStatus()
+						private void InitializeEmotionalStatus()
 			{
 				this.Concern = new Emote(this, "Concern", Emotes.MinionEmotes.DEFAULT_STEPS, "anim_react_concern_kanim");
 				this.Cringe = new Emote(this, "Cringe", new EmoteStep[]
@@ -172,14 +179,14 @@ namespace Database
 				this.Sing = new Emote(this, "Sing", Emotes.MinionEmotes.DEFAULT_STEPS, "anim_react_singer_kanim");
 			}
 
-			private void InitializeGreetings()
+						private void InitializeGreetings()
 			{
 				this.FingerGuns = new Emote(this, "Finger Guns", Emotes.MinionEmotes.DEFAULT_STEPS, "anim_react_fingerguns_kanim");
 				this.Wave = new Emote(this, "Wave", Emotes.MinionEmotes.DEFAULT_STEPS, "anim_react_wave_kanim");
 				this.Wave_Shy = new Emote(this, "Shy Wave", Emotes.MinionEmotes.DEFAULT_STEPS, "anim_react_wave_shy_kanim");
 			}
 
-			private static EmoteStep[] DEFAULT_STEPS = new EmoteStep[]
+						private static EmoteStep[] DEFAULT_STEPS = new EmoteStep[]
 			{
 				new EmoteStep
 				{
@@ -187,7 +194,7 @@ namespace Database
 				}
 			};
 
-			private static EmoteStep[] DEFAULT_IDLE_STEPS = new EmoteStep[]
+						private static EmoteStep[] DEFAULT_IDLE_STEPS = new EmoteStep[]
 			{
 				new EmoteStep
 				{
@@ -203,68 +210,70 @@ namespace Database
 				}
 			};
 
-			public Emote ClapCheer;
+						public Emote ClapCheer;
 
-			public Emote Cheer;
+						public Emote Cheer;
 
-			public Emote ProductiveCheer;
+						public Emote ProductiveCheer;
 
-			public Emote ResearchComplete;
+						public Emote ResearchComplete;
 
-			public Emote ThumbsUp;
+						public Emote ThumbsUp;
 
-			public Emote CloseCall_Fall;
+						public Emote CloseCall_Fall;
 
-			public Emote Cold;
+						public Emote Cold;
 
-			public Emote Cough;
+						public Emote Cough;
 
-			public Emote Cough_Small;
+						public Emote Cough_Small;
 
-			public Emote FoodPoisoning;
+						public Emote FoodPoisoning;
 
-			public Emote Hot;
+						public Emote Hot;
 
-			public Emote IritatedEyes;
+						public Emote IritatedEyes;
 
-			public Emote MorningStretch;
+						public Emote MorningStretch;
 
-			public Emote Radiation_Glare;
+						public Emote Radiation_Glare;
 
-			public Emote Radiation_Itch;
+						public Emote Radiation_Itch;
 
-			public Emote Sick;
+						public Emote Sick;
 
-			public Emote Sneeze;
+						public Emote Sneeze;
 
-			public Emote Sneeze_Short;
+						public Emote WaterDamage;
 
-			public Emote Concern;
+						public Emote Sneeze_Short;
 
-			public Emote Cringe;
+						public Emote Concern;
 
-			public Emote Disappointed;
+						public Emote Cringe;
 
-			public Emote Shock;
+						public Emote Disappointed;
 
-			public Emote Sing;
+						public Emote Shock;
 
-			public Emote FingerGuns;
+						public Emote Sing;
 
-			public Emote Wave;
+						public Emote FingerGuns;
 
-			public Emote Wave_Shy;
+						public Emote Wave;
+
+						public Emote Wave_Shy;
 		}
 
-		public class CritterEmotes : ResourceSet<Emote>
+				public class CritterEmotes : ResourceSet<Emote>
 		{
-			public CritterEmotes(ResourceSet parent) : base("Critter", parent)
+						public CritterEmotes(ResourceSet parent) : base("Critter", parent)
 			{
 				this.InitializePhysicalState();
 				this.InitializeEmotionalState();
 			}
 
-			private void InitializePhysicalState()
+						private void InitializePhysicalState()
 			{
 				this.Hungry = new Emote(this, "Hungry", new EmoteStep[]
 				{
@@ -275,7 +284,7 @@ namespace Database
 				}, null);
 			}
 
-			private void InitializeEmotionalState()
+						private void InitializeEmotionalState()
 			{
 				this.Angry = new Emote(this, "Angry", new EmoteStep[]
 				{
@@ -307,15 +316,15 @@ namespace Database
 				}, null);
 			}
 
-			public Emote Hungry;
+						public Emote Hungry;
 
-			public Emote Angry;
+						public Emote Angry;
 
-			public Emote Happy;
+						public Emote Happy;
 
-			public Emote Idle;
+						public Emote Idle;
 
-			public Emote Sad;
+						public Emote Sad;
 		}
 	}
 }

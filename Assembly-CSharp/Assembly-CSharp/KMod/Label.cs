@@ -6,11 +6,11 @@ using Newtonsoft.Json;
 
 namespace KMod
 {
-	[JsonObject(MemberSerialization.Fields)]
+		[JsonObject(MemberSerialization.Fields)]
 	[DebuggerDisplay("{title}")]
 	public struct Label
 	{
-				[JsonIgnore]
+						[JsonIgnore]
 		private string distribution_platform_name
 		{
 			get
@@ -19,7 +19,7 @@ namespace KMod
 			}
 		}
 
-				[JsonIgnore]
+						[JsonIgnore]
 		public string install_path
 		{
 			get
@@ -28,7 +28,7 @@ namespace KMod
 			}
 		}
 
-				[JsonIgnore]
+						[JsonIgnore]
 		public string defaultStaticID
 		{
 			get
@@ -37,31 +37,31 @@ namespace KMod
 			}
 		}
 
-		public override string ToString()
+				public override string ToString()
 		{
 			return this.title;
 		}
 
-		public bool Match(Label rhs)
+				public bool Match(Label rhs)
 		{
 			return this.id == rhs.id && this.distribution_platform == rhs.distribution_platform;
 		}
 
-		public Label.DistributionPlatform distribution_platform;
+				public Label.DistributionPlatform distribution_platform;
 
-		public string id;
+				public string id;
 
-		public string title;
+				public string title;
 
-		public long version;
+				public long version;
 
-		public enum DistributionPlatform
+				public enum DistributionPlatform
 		{
-			Local,
-			Steam,
-			Epic,
-			Rail,
-			Dev
+						Local,
+						Steam,
+						Epic,
+						Rail,
+						Dev
 		}
 	}
 }

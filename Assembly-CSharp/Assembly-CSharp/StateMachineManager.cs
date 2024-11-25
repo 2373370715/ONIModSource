@@ -3,27 +3,27 @@ using System.Collections.Generic;
 
 public class StateMachineManager : Singleton<StateMachineManager>, IScheduler
 {
-	public void RegisterScheduler(Scheduler scheduler)
+		public void RegisterScheduler(Scheduler scheduler)
 	{
 		this.scheduler = scheduler;
 	}
 
-	public SchedulerHandle Schedule(string name, float time, Action<object> callback, object callback_data = null, SchedulerGroup group = null)
+		public SchedulerHandle Schedule(string name, float time, Action<object> callback, object callback_data = null, SchedulerGroup group = null)
 	{
 		return this.scheduler.Schedule(name, time, callback, callback_data, group);
 	}
 
-	public SchedulerHandle ScheduleNextFrame(string name, Action<object> callback, object callback_data = null, SchedulerGroup group = null)
+		public SchedulerHandle ScheduleNextFrame(string name, Action<object> callback, object callback_data = null, SchedulerGroup group = null)
 	{
 		return this.scheduler.Schedule(name, 0f, callback, callback_data, group);
 	}
 
-	public SchedulerGroup CreateSchedulerGroup()
+		public SchedulerGroup CreateSchedulerGroup()
 	{
 		return new SchedulerGroup(this.scheduler);
 	}
 
-	public StateMachine CreateStateMachine(Type type)
+		public StateMachine CreateStateMachine(Type type)
 	{
 		StateMachine stateMachine = null;
 		if (!this.stateMachines.TryGetValue(type, out stateMachine))
@@ -45,12 +45,12 @@ public class StateMachineManager : Singleton<StateMachineManager>, IScheduler
 		return stateMachine;
 	}
 
-	public T CreateStateMachine<T>()
+		public T CreateStateMachine<T>()
 	{
 		return (T)((object)this.CreateStateMachine(typeof(T)));
 	}
 
-	public static void ResetParameters()
+		public static void ResetParameters()
 	{
 		for (int i = 0; i < StateMachineManager.parameters.Length; i++)
 		{
@@ -58,14 +58,14 @@ public class StateMachineManager : Singleton<StateMachineManager>, IScheduler
 		}
 	}
 
-	public StateMachine.Instance CreateSMIFromDef(IStateMachineTarget master, StateMachine.BaseDef def)
+		public StateMachine.Instance CreateSMIFromDef(IStateMachineTarget master, StateMachine.BaseDef def)
 	{
 		StateMachineManager.parameters[0] = master;
 		StateMachineManager.parameters[1] = def;
 		return (StateMachine.Instance)Activator.CreateInstance(Singleton<StateMachineManager>.Instance.CreateStateMachine(def.GetStateMachineType()).GetStateMachineInstanceType(), StateMachineManager.parameters);
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		if (this.scheduler != null)
 		{
@@ -77,7 +77,7 @@ public class StateMachineManager : Singleton<StateMachineManager>, IScheduler
 		}
 	}
 
-	public void AddStateMachineCreatedCallback(Type sm_type, Action<StateMachine> cb)
+		public void AddStateMachineCreatedCallback(Type sm_type, Action<StateMachine> cb)
 	{
 		List<Action<StateMachine>> list;
 		if (!this.stateMachineCreatedCBs.TryGetValue(sm_type, out list))
@@ -88,7 +88,7 @@ public class StateMachineManager : Singleton<StateMachineManager>, IScheduler
 		list.Add(cb);
 	}
 
-	public void RemoveStateMachineCreatedCallback(Type sm_type, Action<StateMachine> cb)
+		public void RemoveStateMachineCreatedCallback(Type sm_type, Action<StateMachine> cb)
 	{
 		List<Action<StateMachine>> list;
 		if (this.stateMachineCreatedCBs.TryGetValue(sm_type, out list))
@@ -97,11 +97,11 @@ public class StateMachineManager : Singleton<StateMachineManager>, IScheduler
 		}
 	}
 
-	private Scheduler scheduler;
+		private Scheduler scheduler;
 
-	private Dictionary<Type, StateMachine> stateMachines = new Dictionary<Type, StateMachine>();
+		private Dictionary<Type, StateMachine> stateMachines = new Dictionary<Type, StateMachine>();
 
-	private Dictionary<Type, List<Action<StateMachine>>> stateMachineCreatedCBs = new Dictionary<Type, List<Action<StateMachine>>>();
+		private Dictionary<Type, List<Action<StateMachine>>> stateMachineCreatedCBs = new Dictionary<Type, List<Action<StateMachine>>>();
 
-	private static object[] parameters = new object[2];
+		private static object[] parameters = new object[2];
 }

@@ -4,9 +4,9 @@ using Klei.AI;
 
 namespace Database
 {
-	public class Diseases : ResourceSet<Disease>
+		public class Diseases : ResourceSet<Disease>
 	{
-		public Diseases(ResourceSet parent, bool statsOnly = false) : base("Diseases", parent)
+				public Diseases(ResourceSet parent, bool statsOnly = false) : base("Diseases", parent)
 		{
 			this.FoodGerms = base.Add(new FoodGerms(statsOnly));
 			this.SlimeGerms = base.Add(new SlimeGerms(statsOnly));
@@ -18,7 +18,7 @@ namespace Database
 			}
 		}
 
-		public bool IsValidID(string id)
+				public bool IsValidID(string id)
 		{
 			bool result = false;
 			using (List<Disease>.Enumerator enumerator = this.resources.GetEnumerator())
@@ -34,7 +34,7 @@ namespace Database
 			return result;
 		}
 
-		public byte GetIndex(int hash)
+				public byte GetIndex(int hash)
 		{
 			byte b = 0;
 			while ((int)b < this.resources.Count)
@@ -49,19 +49,19 @@ namespace Database
 			return byte.MaxValue;
 		}
 
-		public byte GetIndex(HashedString id)
+				public byte GetIndex(HashedString id)
 		{
 			return this.GetIndex(id.GetHashCode());
 		}
 
-		public Disease FoodGerms;
+				public Disease FoodGerms;
 
-		public Disease SlimeGerms;
+				public Disease SlimeGerms;
 
-		public Disease PollenGerms;
+				public Disease PollenGerms;
 
-		public Disease ZombieSpores;
+				public Disease ZombieSpores;
 
-		public Disease RadiationPoisoning;
+				public Disease RadiationPoisoning;
 	}
 }

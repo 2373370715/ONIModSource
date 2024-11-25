@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class AttributeConverter : Resource
+		public class AttributeConverter : Resource
 	{
-		public AttributeConverter(string id, string name, string description, float multiplier, float base_value, Attribute attribute, IAttributeFormatter formatter = null) : base(id, name)
+				public AttributeConverter(string id, string name, string description, float multiplier, float base_value, Attribute attribute, IAttributeFormatter formatter = null) : base(id, name)
 		{
 			this.description = description;
 			this.multiplier = multiplier;
@@ -14,12 +14,12 @@ namespace Klei.AI
 			this.formatter = formatter;
 		}
 
-		public AttributeConverterInstance Lookup(Component cmp)
+				public AttributeConverterInstance Lookup(Component cmp)
 		{
 			return this.Lookup(cmp.gameObject);
 		}
 
-		public AttributeConverterInstance Lookup(GameObject go)
+				public AttributeConverterInstance Lookup(GameObject go)
 		{
 			AttributeConverters component = go.GetComponent<AttributeConverters>();
 			if (component != null)
@@ -29,7 +29,7 @@ namespace Klei.AI
 			return null;
 		}
 
-		public string DescriptionFromAttribute(float value, GameObject go)
+				public string DescriptionFromAttribute(float value, GameObject go)
 		{
 			string text;
 			if (this.formatter != null)
@@ -52,14 +52,14 @@ namespace Klei.AI
 			return null;
 		}
 
-		public string description;
+				public string description;
 
-		public float multiplier;
+				public float multiplier;
 
-		public float baseValue;
+				public float baseValue;
 
-		public Attribute attribute;
+				public Attribute attribute;
 
-		public IAttributeFormatter formatter;
+				public IAttributeFormatter formatter;
 	}
 }

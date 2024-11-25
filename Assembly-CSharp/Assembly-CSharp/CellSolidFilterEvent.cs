@@ -3,11 +3,11 @@ using System.Diagnostics;
 
 public class CellSolidFilterEvent : CellEvent
 {
-	public CellSolidFilterEvent(string id, bool enable_logging = true) : base(id, "filtered", false, enable_logging)
+		public CellSolidFilterEvent(string id, bool enable_logging = true) : base(id, "filtered", false, enable_logging)
 	{
 	}
 
-	[Conditional("ENABLE_CELL_EVENT_LOGGER")]
+		[Conditional("ENABLE_CELL_EVENT_LOGGER")]
 	public void Log(int cell, bool solid)
 	{
 		if (!this.enableLogging)
@@ -18,7 +18,7 @@ public class CellSolidFilterEvent : CellEvent
 		CellEventLogger.Instance.Add(ev);
 	}
 
-	public override string GetDescription(EventInstanceBase ev)
+		public override string GetDescription(EventInstanceBase ev)
 	{
 		CellEventInstance cellEventInstance = ev as CellEventInstance;
 		return base.GetMessagePrefix() + "Filtered Solid Event solid=" + cellEventInstance.data.ToString();

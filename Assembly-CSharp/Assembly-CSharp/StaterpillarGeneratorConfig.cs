@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class StaterpillarGeneratorConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = StaterpillarGeneratorConfig.ID;
 		int width = 1;
@@ -26,7 +26,7 @@ public class StaterpillarGeneratorConfig : IBuildingConfig
 		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER0;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, tier2, 0.2f);
 		buildingDef.GeneratorWattageRating = 1600f;
-		buildingDef.GeneratorBaseCapacity = 5000f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
 		buildingDef.ExhaustKilowattsWhenActive = 2f;
 		buildingDef.SelfHeatKilowattsWhenActive = 4f;
 		buildingDef.Overheatable = false;
@@ -42,20 +42,20 @@ public class StaterpillarGeneratorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<StaterpillarGenerator>().powerDistributionOrder = 9;
 		go.GetComponent<Deconstructable>().SetAllowDeconstruction(false);
@@ -64,9 +64,9 @@ public class StaterpillarGeneratorConfig : IBuildingConfig
 		go.GetComponent<KSelectable>().IsSelectable = false;
 	}
 
-	public static readonly string ID = "StaterpillarGenerator";
+		public static readonly string ID = "StaterpillarGenerator";
 
-	private const int WIDTH = 1;
+		private const int WIDTH = 1;
 
-	private const int HEIGHT = 2;
+		private const int HEIGHT = 2;
 }

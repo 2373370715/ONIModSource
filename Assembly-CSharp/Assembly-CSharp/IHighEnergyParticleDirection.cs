@@ -2,5 +2,5 @@
 
 public interface IHighEnergyParticleDirection
 {
-			EightDirection Direction { get; set; }
+				EightDirection Direction { get; set; }
 }

@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 namespace UnityEngine.EventSystems
 {
-	[AddComponentMenu("Event/Virtual Input Module")]
+		[AddComponentMenu("Event/Virtual Input Module")]
 	public class VirtualInputModule : PointerInputModule, IInputHandler
 	{
-				public string handlerName
+						public string handlerName
 		{
 			get
 			{
@@ -16,13 +16,13 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-						public KInputHandler inputHandler { get; set; }
+								public KInputHandler inputHandler { get; set; }
 
-		protected VirtualInputModule()
+				protected VirtualInputModule()
 		{
 		}
 
-				[Obsolete("Mode is no longer needed on input module as it handles both mouse and keyboard simultaneously.", false)]
+						[Obsolete("Mode is no longer needed on input module as it handles both mouse and keyboard simultaneously.", false)]
 		public VirtualInputModule.InputMode inputMode
 		{
 			get
@@ -31,7 +31,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-						[Obsolete("allowActivationOnMobileDevice has been deprecated. Use forceModuleActive instead (UnityUpgradable) -> forceModuleActive")]
+								[Obsolete("allowActivationOnMobileDevice has been deprecated. Use forceModuleActive instead (UnityUpgradable) -> forceModuleActive")]
 		public bool allowActivationOnMobileDevice
 		{
 			get
@@ -44,7 +44,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-						public bool forceModuleActive
+								public bool forceModuleActive
 		{
 			get
 			{
@@ -56,7 +56,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-						public float inputActionsPerSecond
+								public float inputActionsPerSecond
 		{
 			get
 			{
@@ -68,7 +68,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-						public float repeatDelay
+								public float repeatDelay
 		{
 			get
 			{
@@ -80,7 +80,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-						public string horizontalAxis
+								public string horizontalAxis
 		{
 			get
 			{
@@ -92,7 +92,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-						public string verticalAxis
+								public string verticalAxis
 		{
 			get
 			{
@@ -104,7 +104,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-						public string submitButton
+								public string submitButton
 		{
 			get
 			{
@@ -116,7 +116,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-						public string cancelButton
+								public string cancelButton
 		{
 			get
 			{
@@ -128,7 +128,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-		public void SetCursor(Texture2D tex)
+				public void SetCursor(Texture2D tex)
 		{
 			this.UpdateModule();
 			if (this.m_VirtualCursor)
@@ -137,7 +137,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-		public override void UpdateModule()
+				public override void UpdateModule()
 		{
 			GameInputManager inputManager = Global.GetInputManager();
 			if (inputManager.GetControllerCount() <= 1)
@@ -221,12 +221,12 @@ namespace UnityEngine.EventSystems
 			this.m_MousePosition = this.m_VirtualCursor.anchoredPosition;
 		}
 
-		public override bool IsModuleSupported()
+				public override bool IsModuleSupported()
 		{
 			return this.m_ForceModuleActive || Input.mousePresent;
 		}
 
-		public override bool ShouldActivateModule()
+				public override bool ShouldActivateModule()
 		{
 			if (!base.ShouldActivateModule())
 			{
@@ -241,7 +241,7 @@ namespace UnityEngine.EventSystems
 			return forceModuleActive | Input.GetButtonDown(this.m_CancelButton) | !Mathf.Approximately(Input.GetAxisRaw(this.m_HorizontalAxis), 0f) | !Mathf.Approximately(Input.GetAxisRaw(this.m_VerticalAxis), 0f) | (this.m_MousePosition - this.m_LastMousePosition).sqrMagnitude > 0f | Input.GetMouseButtonDown(0);
 		}
 
-		public override void ActivateModule()
+				public override void ActivateModule()
 		{
 			base.ActivateModule();
 			if (this.m_canvasCamera == null)
@@ -277,7 +277,7 @@ namespace UnityEngine.EventSystems
 			base.eventSystem.SetSelectedGameObject(gameObject, this.GetBaseEventData());
 		}
 
-		public override void DeactivateModule()
+				public override void DeactivateModule()
 		{
 			base.DeactivateModule();
 			base.ClearSelection();
@@ -287,7 +287,7 @@ namespace UnityEngine.EventSystems
 			this.conButtonStates.negativeHoldTime = 0f;
 		}
 
-		public override void Process()
+				public override void Process()
 		{
 			bool flag = this.SendUpdateEventToSelectedObject();
 			if (base.eventSystem.sendNavigationEvents)
@@ -304,7 +304,7 @@ namespace UnityEngine.EventSystems
 			this.ProcessMouseEvent();
 		}
 
-		protected bool SendSubmitEventToSelectedObject()
+				protected bool SendSubmitEventToSelectedObject()
 		{
 			if (base.eventSystem.currentSelectedGameObject == null)
 			{
@@ -322,7 +322,7 @@ namespace UnityEngine.EventSystems
 			return baseEventData.used;
 		}
 
-		private Vector2 GetRawMoveVector()
+				private Vector2 GetRawMoveVector()
 		{
 			Vector2 zero = Vector2.zero;
 			zero.x = Input.GetAxisRaw(this.m_HorizontalAxis);
@@ -352,7 +352,7 @@ namespace UnityEngine.EventSystems
 			return zero;
 		}
 
-		protected bool SendMoveEventToSelectedObject()
+				protected bool SendMoveEventToSelectedObject()
 		{
 			float unscaledTime = Time.unscaledTime;
 			Vector2 rawMoveVector = this.GetRawMoveVector();
@@ -390,12 +390,12 @@ namespace UnityEngine.EventSystems
 			return axisEventData.used;
 		}
 
-		protected void ProcessMouseEvent()
+				protected void ProcessMouseEvent()
 		{
 			this.ProcessMouseEvent(0);
 		}
 
-		protected void ProcessMouseEvent(int id)
+				protected void ProcessMouseEvent(int id)
 		{
 			if (this.mouseMovementOnly)
 			{
@@ -416,7 +416,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-		protected bool SendUpdateEventToSelectedObject()
+				protected bool SendUpdateEventToSelectedObject()
 		{
 			if (base.eventSystem.currentSelectedGameObject == null)
 			{
@@ -427,7 +427,7 @@ namespace UnityEngine.EventSystems
 			return baseEventData.used;
 		}
 
-		protected void ProcessMousePress(PointerInputModule.MouseButtonEventData data)
+				protected void ProcessMousePress(PointerInputModule.MouseButtonEventData data)
 		{
 			PointerEventData buttonData = data.buttonData;
 			GameObject gameObject = buttonData.pointerCurrentRaycast.gameObject;
@@ -503,7 +503,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-		public void OnKeyDown(KButtonEvent e)
+				public void OnKeyDown(KButtonEvent e)
 		{
 			if (KInputManager.currentControllerIsGamepad)
 			{
@@ -537,7 +537,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-		public void OnKeyUp(KButtonEvent e)
+				public void OnKeyUp(KButtonEvent e)
 		{
 			if (KInputManager.currentControllerIsGamepad)
 			{
@@ -559,7 +559,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-		protected void ProcessControllerPress(PointerInputModule.MouseButtonEventData data, bool leftClick)
+				protected void ProcessControllerPress(PointerInputModule.MouseButtonEventData data, bool leftClick)
 		{
 			if (this.leftClickData == null)
 			{
@@ -734,7 +734,7 @@ namespace UnityEngine.EventSystems
 			}
 		}
 
-		protected override PointerInputModule.MouseState GetMousePointerEventData(int id)
+				protected override PointerInputModule.MouseState GetMousePointerEventData(int id)
 		{
 			PointerEventData pointerEventData;
 			bool pointerData = base.GetPointerData(-1, out pointerEventData, true);
@@ -767,96 +767,96 @@ namespace UnityEngine.EventSystems
 			return this.m_MouseState;
 		}
 
-		private float m_PrevActionTime;
+				private float m_PrevActionTime;
 
-		private Vector2 m_LastMoveVector;
+				private Vector2 m_LastMoveVector;
 
-		private int m_ConsecutiveMoveCount;
+				private int m_ConsecutiveMoveCount;
 
-		private string debugName;
+				private string debugName;
 
-		private Vector2 m_LastMousePosition;
+				private Vector2 m_LastMousePosition;
 
-		private Vector2 m_MousePosition;
+				private Vector2 m_MousePosition;
 
-		public bool mouseMovementOnly;
+				public bool mouseMovementOnly;
 
-		[SerializeField]
+				[SerializeField]
 		private RectTransform m_VirtualCursor;
 
-		[SerializeField]
+				[SerializeField]
 		private float m_VirtualCursorSpeed = 1f;
 
-		[SerializeField]
+				[SerializeField]
 		private Vector2 m_VirtualCursorOffset = Vector2.zero;
 
-		[SerializeField]
+				[SerializeField]
 		private Camera m_canvasCamera;
 
-		private Camera VCcam;
+				private Camera VCcam;
 
-		public bool CursorCanvasShouldBeOverlay;
+				public bool CursorCanvasShouldBeOverlay;
 
-		private Canvas m_virtualCursorCanvas;
+				private Canvas m_virtualCursorCanvas;
 
-		private CanvasScaler m_virtualCursorScaler;
+				private CanvasScaler m_virtualCursorScaler;
 
-		private PointerEventData leftClickData;
+				private PointerEventData leftClickData;
 
-		private PointerEventData rightClickData;
+				private PointerEventData rightClickData;
 
-		private VirtualInputModule.ControllerButtonStates conButtonStates;
+				private VirtualInputModule.ControllerButtonStates conButtonStates;
 
-		private GameObject m_CurrentFocusedGameObject;
+				private GameObject m_CurrentFocusedGameObject;
 
-		private bool leftReleased;
+				private bool leftReleased;
 
-		private bool rightReleased;
+				private bool rightReleased;
 
-		private bool leftFirstClick;
+				private bool leftFirstClick;
 
-		private bool rightFirstClick;
+				private bool rightFirstClick;
 
-		[SerializeField]
+				[SerializeField]
 		private string m_HorizontalAxis = "Horizontal";
 
-		[SerializeField]
+				[SerializeField]
 		private string m_VerticalAxis = "Vertical";
 
-		[SerializeField]
+				[SerializeField]
 		private string m_SubmitButton = "Submit";
 
-		[SerializeField]
+				[SerializeField]
 		private string m_CancelButton = "Cancel";
 
-		[SerializeField]
+				[SerializeField]
 		private float m_InputActionsPerSecond = 10f;
 
-		[SerializeField]
+				[SerializeField]
 		private float m_RepeatDelay = 0.5f;
 
-		[SerializeField]
+				[SerializeField]
 		[FormerlySerializedAs("m_AllowActivationOnMobileDevice")]
 		private bool m_ForceModuleActive;
 
-		private readonly PointerInputModule.MouseState m_MouseState = new PointerInputModule.MouseState();
+				private readonly PointerInputModule.MouseState m_MouseState = new PointerInputModule.MouseState();
 
-		[Obsolete("Mode is no longer needed on input module as it handles both mouse and keyboard simultaneously.", false)]
+				[Obsolete("Mode is no longer needed on input module as it handles both mouse and keyboard simultaneously.", false)]
 		public enum InputMode
 		{
-			Mouse,
-			Buttons
+						Mouse,
+						Buttons
 		}
 
-		private struct ControllerButtonStates
+				private struct ControllerButtonStates
 		{
-			public bool affirmativeDown;
+						public bool affirmativeDown;
 
-			public float affirmativeHoldTime;
+						public float affirmativeHoldTime;
 
-			public bool negativeDown;
+						public bool negativeDown;
 
-			public float negativeHoldTime;
+						public float negativeHoldTime;
 		}
 	}
 }

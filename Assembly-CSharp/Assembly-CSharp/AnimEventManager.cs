@@ -1,209 +1,300 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
-public class AnimEventManager : Singleton<AnimEventManager> {
-    private const           int                               INITIAL_VECTOR_SIZE = 256;
-    private static readonly List<AnimEvent>                   emptyEventList = new List<AnimEvent>();
-    private readonly        KCompactedVector<AnimData>        animData = new KCompactedVector<AnimData>(256);
-    private readonly        KCompactedVector<EventPlayerData> eventData = new KCompactedVector<EventPlayerData>(256);
-    private readonly        List<KBatchedAnimController>      finishedCalls = new List<KBatchedAnimController>();
-    private readonly        KCompactedVector<IndirectionData> indirectionData = new KCompactedVector<IndirectionData>();
-    private readonly        KCompactedVector<AnimData>        uiAnimData = new KCompactedVector<AnimData>(256);
-    private readonly        KCompactedVector<EventPlayerData> uiEventData = new KCompactedVector<EventPlayerData>(256);
-    public                  void                              FreeResources() { }
+public class AnimEventManager : Singleton<AnimEventManager>
+{
+		public void FreeResources()
+	{
+	}
 
-    public HandleVector<int>.Handle PlayAnim(KAnimControllerBase controller,
-                                             KAnim.Anim          anim,
-                                             KAnim.PlayMode      mode,
-                                             float               time,
-                                             bool                use_unscaled_time) {
-        var animData = default(AnimData);
-        animData.frameRate       = anim.frameRate;
-        animData.totalTime       = anim.totalTime;
-        animData.numFrames       = anim.numFrames;
-        animData.useUnscaledTime = use_unscaled_time;
-        var eventPlayerData = default(EventPlayerData);
-        eventPlayerData.elapsedTime    = time;
-        eventPlayerData.mode           = mode;
-        eventPlayerData.controller     = controller as KBatchedAnimController;
-        eventPlayerData.currentFrame   = eventPlayerData.controller.GetFrameIdx(eventPlayerData.elapsedTime, false);
-        eventPlayerData.previousFrame  = -1;
-        eventPlayerData.events         = null;
-        eventPlayerData.updatingEvents = null;
-        eventPlayerData.events         = GameAudioSheets.Get().GetEvents(anim.id);
-        if (eventPlayerData.events == null) eventPlayerData.events = emptyEventList;
-        HandleVector<int>.Handle result;
-        if (animData.useUnscaledTime) {
-            var anim_data_handle  = uiAnimData.Allocate(animData);
-            var event_data_handle = uiEventData.Allocate(eventPlayerData);
-            result = indirectionData.Allocate(new IndirectionData(anim_data_handle, event_data_handle, true));
-        } else {
-            var anim_data_handle2  = this.animData.Allocate(animData);
-            var event_data_handle2 = eventData.Allocate(eventPlayerData);
-            result = indirectionData.Allocate(new IndirectionData(anim_data_handle2, event_data_handle2, false));
-        }
+		public HandleVector<int>.Handle PlayAnim(KAnimControllerBase controller, KAnim.Anim anim, KAnim.PlayMode mode, float time, bool use_unscaled_time)
+	{
+		AnimEventManager.AnimData animData = default(AnimEventManager.AnimData);
+		animData.frameRate = anim.frameRate;
+		animData.totalTime = anim.totalTime;
+		animData.numFrames = anim.numFrames;
+		animData.useUnscaledTime = use_unscaled_time;
+		AnimEventManager.EventPlayerData eventPlayerData = default(AnimEventManager.EventPlayerData);
+		eventPlayerData.elapsedTime = time;
+		eventPlayerData.mode = mode;
+		eventPlayerData.controller = (controller as KBatchedAnimController);
+		eventPlayerData.currentFrame = eventPlayerData.controller.GetFrameIdx(eventPlayerData.elapsedTime, false);
+		eventPlayerData.previousFrame = -1;
+		eventPlayerData.events = null;
+		eventPlayerData.updatingEvents = null;
+		eventPlayerData.events = GameAudioSheets.Get().GetEvents(anim.id);
+		if (eventPlayerData.events == null)
+		{
+			eventPlayerData.events = AnimEventManager.emptyEventList;
+		}
+		HandleVector<int>.Handle result;
+		if (animData.useUnscaledTime)
+		{
+			HandleVector<int>.Handle anim_data_handle = this.uiAnimData.Allocate(animData);
+			HandleVector<int>.Handle event_data_handle = this.uiEventData.Allocate(eventPlayerData);
+			result = this.indirectionData.Allocate(new AnimEventManager.IndirectionData(anim_data_handle, event_data_handle, true));
+		}
+		else
+		{
+			HandleVector<int>.Handle anim_data_handle2 = this.animData.Allocate(animData);
+			HandleVector<int>.Handle event_data_handle2 = this.eventData.Allocate(eventPlayerData);
+			result = this.indirectionData.Allocate(new AnimEventManager.IndirectionData(anim_data_handle2, event_data_handle2, false));
+		}
+		return result;
+	}
 
-        return result;
-    }
+		public void SetMode(HandleVector<int>.Handle handle, KAnim.PlayMode mode)
+	{
+		if (!handle.IsValid())
+		{
+			return;
+		}
+		AnimEventManager.IndirectionData data = this.indirectionData.GetData(handle);
+		KCompactedVector<AnimEventManager.EventPlayerData> kcompactedVector = data.isUIData ? this.uiEventData : this.eventData;
+		AnimEventManager.EventPlayerData data2 = kcompactedVector.GetData(data.eventDataHandle);
+		data2.mode = mode;
+		kcompactedVector.SetData(data.eventDataHandle, data2);
+	}
 
-    public void SetMode(HandleVector<int>.Handle handle, KAnim.PlayMode mode) {
-        if (!handle.IsValid()) return;
+		public void StopAnim(HandleVector<int>.Handle handle)
+	{
+		if (!handle.IsValid())
+		{
+			return;
+		}
+		AnimEventManager.IndirectionData data = this.indirectionData.GetData(handle);
+		KCompactedVector<AnimEventManager.AnimData> kcompactedVector = data.isUIData ? this.uiAnimData : this.animData;
+		KCompactedVector<AnimEventManager.EventPlayerData> kcompactedVector2 = data.isUIData ? this.uiEventData : this.eventData;
+		AnimEventManager.EventPlayerData data2 = kcompactedVector2.GetData(data.eventDataHandle);
+		this.StopEvents(data2);
+		kcompactedVector.Free(data.animDataHandle);
+		kcompactedVector2.Free(data.eventDataHandle);
+		this.indirectionData.Free(handle);
+	}
 
-        var data             = indirectionData.GetData(handle);
-        var kcompactedVector = data.isUIData ? uiEventData : eventData;
-        var data2            = kcompactedVector.GetData(data.eventDataHandle);
-        data2.mode = mode;
-        kcompactedVector.SetData(data.eventDataHandle, data2);
-    }
+		public float GetElapsedTime(HandleVector<int>.Handle handle)
+	{
+		AnimEventManager.IndirectionData data = this.indirectionData.GetData(handle);
+		return (data.isUIData ? this.uiEventData : this.eventData).GetData(data.eventDataHandle).elapsedTime;
+	}
 
-    public void StopAnim(HandleVector<int>.Handle handle) {
-        if (!handle.IsValid()) return;
+		public void SetElapsedTime(HandleVector<int>.Handle handle, float elapsed_time)
+	{
+		AnimEventManager.IndirectionData data = this.indirectionData.GetData(handle);
+		KCompactedVector<AnimEventManager.EventPlayerData> kcompactedVector = data.isUIData ? this.uiEventData : this.eventData;
+		AnimEventManager.EventPlayerData data2 = kcompactedVector.GetData(data.eventDataHandle);
+		data2.elapsedTime = elapsed_time;
+		kcompactedVector.SetData(data.eventDataHandle, data2);
+	}
 
-        var data              = indirectionData.GetData(handle);
-        var kcompactedVector  = data.isUIData ? uiAnimData : animData;
-        var kcompactedVector2 = data.isUIData ? uiEventData : eventData;
-        var data2             = kcompactedVector2.GetData(data.eventDataHandle);
-        StopEvents(data2);
-        kcompactedVector.Free(data.animDataHandle);
-        kcompactedVector2.Free(data.eventDataHandle);
-        indirectionData.Free(handle);
-    }
+		public void Update()
+	{
+		float deltaTime = Time.deltaTime;
+		float unscaledDeltaTime = Time.unscaledDeltaTime;
+		this.Update(deltaTime, this.animData.GetDataList(), this.eventData.GetDataList());
+		this.Update(unscaledDeltaTime, this.uiAnimData.GetDataList(), this.uiEventData.GetDataList());
+		for (int i = 0; i < this.finishedCalls.Count; i++)
+		{
+			this.finishedCalls[i].TriggerStop();
+		}
+		this.finishedCalls.Clear();
+	}
 
-    public float GetElapsedTime(HandleVector<int>.Handle handle) {
-        var data = indirectionData.GetData(handle);
-        return (data.isUIData ? uiEventData : eventData).GetData(data.eventDataHandle).elapsedTime;
-    }
+		private void Update(float dt, List<AnimEventManager.AnimData> anim_data, List<AnimEventManager.EventPlayerData> event_data)
+	{
+		if (dt <= 0f)
+		{
+			return;
+		}
+		for (int i = 0; i < event_data.Count; i++)
+		{
+			AnimEventManager.EventPlayerData eventPlayerData = event_data[i];
+			if (!(eventPlayerData.controller == null) && eventPlayerData.mode != KAnim.PlayMode.Paused)
+			{
+				eventPlayerData.currentFrame = eventPlayerData.controller.GetFrameIdx(eventPlayerData.elapsedTime, false);
+				event_data[i] = eventPlayerData;
+				this.PlayEvents(eventPlayerData);
+				eventPlayerData.previousFrame = eventPlayerData.currentFrame;
+				eventPlayerData.elapsedTime += dt * eventPlayerData.controller.GetPlaySpeed();
+				event_data[i] = eventPlayerData;
+				if (eventPlayerData.updatingEvents != null)
+				{
+					for (int j = 0; j < eventPlayerData.updatingEvents.Count; j++)
+					{
+						eventPlayerData.updatingEvents[j].OnUpdate(eventPlayerData);
+					}
+				}
+				event_data[i] = eventPlayerData;
+				if (eventPlayerData.mode != KAnim.PlayMode.Loop && eventPlayerData.currentFrame >= anim_data[i].numFrames - 1)
+				{
+					this.StopEvents(eventPlayerData);
+					this.finishedCalls.Add(eventPlayerData.controller);
+				}
+			}
+		}
+	}
 
-    public void SetElapsedTime(HandleVector<int>.Handle handle, float elapsed_time) {
-        var data             = indirectionData.GetData(handle);
-        var kcompactedVector = data.isUIData ? uiEventData : eventData;
-        var data2            = kcompactedVector.GetData(data.eventDataHandle);
-        data2.elapsedTime = elapsed_time;
-        kcompactedVector.SetData(data.eventDataHandle, data2);
-    }
+		private void PlayEvents(AnimEventManager.EventPlayerData data)
+	{
+		for (int i = 0; i < data.events.Count; i++)
+		{
+			data.events[i].Play(data);
+		}
+	}
 
-    public void Update() {
-        var deltaTime         = Time.deltaTime;
-        var unscaledDeltaTime = Time.unscaledDeltaTime;
-        Update(deltaTime,         animData.GetDataList(),   eventData.GetDataList());
-        Update(unscaledDeltaTime, uiAnimData.GetDataList(), uiEventData.GetDataList());
-        for (var i = 0; i < finishedCalls.Count; i++) finishedCalls[i].TriggerStop();
-        finishedCalls.Clear();
-    }
+		private void StopEvents(AnimEventManager.EventPlayerData data)
+	{
+		for (int i = 0; i < data.events.Count; i++)
+		{
+			data.events[i].Stop(data);
+		}
+		if (data.updatingEvents != null)
+		{
+			data.updatingEvents.Clear();
+		}
+	}
 
-    private void Update(float dt, List<AnimData> anim_data, List<EventPlayerData> event_data) {
-        if (dt <= 0f) return;
+		public AnimEventManager.DevTools_DebugInfo DevTools_GetDebugInfo()
+	{
+		return new AnimEventManager.DevTools_DebugInfo(this, this.animData, this.eventData, this.uiAnimData, this.uiEventData);
+	}
 
-        for (var i = 0; i < event_data.Count; i++) {
-            var eventPlayerData = event_data[i];
-            if (!(eventPlayerData.controller == null) && eventPlayerData.mode != KAnim.PlayMode.Paused) {
-                eventPlayerData.currentFrame
-                    = eventPlayerData.controller.GetFrameIdx(eventPlayerData.elapsedTime, false);
+		private static readonly List<AnimEvent> emptyEventList = new List<AnimEvent>();
 
-                event_data[i] = eventPlayerData;
-                PlayEvents(eventPlayerData);
-                eventPlayerData.previousFrame =  eventPlayerData.currentFrame;
-                eventPlayerData.elapsedTime   += dt * eventPlayerData.controller.GetPlaySpeed();
-                event_data[i]                 =  eventPlayerData;
-                if (eventPlayerData.updatingEvents != null)
-                    for (var j = 0; j < eventPlayerData.updatingEvents.Count; j++)
-                        eventPlayerData.updatingEvents[j].OnUpdate(eventPlayerData);
+		private const int INITIAL_VECTOR_SIZE = 256;
 
-                event_data[i] = eventPlayerData;
-                if (eventPlayerData.mode         != KAnim.PlayMode.Loop &&
-                    eventPlayerData.currentFrame >= anim_data[i].numFrames - 1) {
-                    StopEvents(eventPlayerData);
-                    finishedCalls.Add(eventPlayerData.controller);
-                }
-            }
-        }
-    }
+		private KCompactedVector<AnimEventManager.AnimData> animData = new KCompactedVector<AnimEventManager.AnimData>(256);
 
-    private void PlayEvents(EventPlayerData data) {
-        for (var i = 0; i < data.events.Count; i++) data.events[i].Play(data);
-    }
+		private KCompactedVector<AnimEventManager.EventPlayerData> eventData = new KCompactedVector<AnimEventManager.EventPlayerData>(256);
 
-    private void StopEvents(EventPlayerData data) {
-        for (var i = 0; i       < data.events.Count; i++) data.events[i].Stop(data);
-        if (data.updatingEvents != null) data.updatingEvents.Clear();
-    }
+		private KCompactedVector<AnimEventManager.AnimData> uiAnimData = new KCompactedVector<AnimEventManager.AnimData>(256);
 
-    public DevTools_DebugInfo DevTools_GetDebugInfo() {
-        return new DevTools_DebugInfo(this, animData, eventData, uiAnimData, uiEventData);
-    }
+		private KCompactedVector<AnimEventManager.EventPlayerData> uiEventData = new KCompactedVector<AnimEventManager.EventPlayerData>(256);
 
-    public struct AnimData {
-        public float frameRate;
-        public float totalTime;
-        public int   numFrames;
-        public bool  useUnscaledTime;
-    }
+		private KCompactedVector<AnimEventManager.IndirectionData> indirectionData = new KCompactedVector<AnimEventManager.IndirectionData>(0);
 
-    [DebuggerDisplay("{controller.name}, Anim={currentAnim}, Frame={currentFrame}, Mode={mode}")]
-    public struct EventPlayerData {
-        public int           currentFrame                  { get; set; }
-        public int           previousFrame                 { get; set; }
-        public ComponentType GetComponent<ComponentType>() { return controller.GetComponent<ComponentType>(); }
-        public string        name                          => controller.name;
-        public float         normalizedTime                => elapsedTime / controller.CurrentAnim.totalTime;
-        public Vector3       position                      => controller.transform.GetPosition();
+		private List<KBatchedAnimController> finishedCalls = new List<KBatchedAnimController>();
 
-        public void AddUpdatingEvent(AnimEvent ev) {
-            if (updatingEvents == null) updatingEvents = new List<AnimEvent>();
-            updatingEvents.Add(ev);
-        }
+		public struct AnimData
+	{
+				public float frameRate;
 
-        public void SetElapsedTime(float elapsedTime) { this.elapsedTime = elapsedTime; }
+				public float totalTime;
 
-        public void FreeResources() {
-            elapsedTime    = 0f;
-            mode           = KAnim.PlayMode.Once;
-            currentFrame   = 0;
-            previousFrame  = 0;
-            events         = null;
-            updatingEvents = null;
-            controller     = null;
-        }
+				public int numFrames;
 
-        public float                  elapsedTime;
-        public KAnim.PlayMode         mode;
-        public List<AnimEvent>        events;
-        public List<AnimEvent>        updatingEvents;
-        public KBatchedAnimController controller;
-    }
+				public bool useUnscaledTime;
+	}
 
-    private struct IndirectionData {
-        public IndirectionData(HandleVector<int>.Handle anim_data_handle,
-                               HandleVector<int>.Handle event_data_handle,
-                               bool                     is_ui_data) {
-            isUIData        = is_ui_data;
-            animDataHandle  = anim_data_handle;
-            eventDataHandle = event_data_handle;
-        }
+		[DebuggerDisplay("{controller.name}, Anim={currentAnim}, Frame={currentFrame}, Mode={mode}")]
+	public struct EventPlayerData
+	{
+								public int currentFrame { readonly get; set; }
 
-        public readonly bool                     isUIData;
-        public readonly HandleVector<int>.Handle animDataHandle;
-        public readonly HandleVector<int>.Handle eventDataHandle;
-    }
+								public int previousFrame { readonly get; set; }
 
-    public readonly struct DevTools_DebugInfo {
-        public DevTools_DebugInfo(AnimEventManager                  eventManager,
-                                  KCompactedVector<AnimData>        animData,
-                                  KCompactedVector<EventPlayerData> eventData,
-                                  KCompactedVector<AnimData>        uiAnimData,
-                                  KCompactedVector<EventPlayerData> uiEventData) {
-            this.eventManager = eventManager;
-            this.animData     = animData;
-            this.eventData    = eventData;
-            this.uiAnimData   = uiAnimData;
-            this.uiEventData  = uiEventData;
-        }
+				public ComponentType GetComponent<ComponentType>()
+		{
+			return this.controller.GetComponent<ComponentType>();
+		}
 
-        public readonly AnimEventManager                  eventManager;
-        public readonly KCompactedVector<AnimData>        animData;
-        public readonly KCompactedVector<EventPlayerData> eventData;
-        public readonly KCompactedVector<AnimData>        uiAnimData;
-        public readonly KCompactedVector<EventPlayerData> uiEventData;
-    }
+						public string name
+		{
+			get
+			{
+				return this.controller.name;
+			}
+		}
+
+						public float normalizedTime
+		{
+			get
+			{
+				return this.elapsedTime / this.controller.CurrentAnim.totalTime;
+			}
+		}
+
+						public Vector3 position
+		{
+			get
+			{
+				return this.controller.transform.GetPosition();
+			}
+		}
+
+				public void AddUpdatingEvent(AnimEvent ev)
+		{
+			if (this.updatingEvents == null)
+			{
+				this.updatingEvents = new List<AnimEvent>();
+			}
+			this.updatingEvents.Add(ev);
+		}
+
+				public void SetElapsedTime(float elapsedTime)
+		{
+			this.elapsedTime = elapsedTime;
+		}
+
+				public void FreeResources()
+		{
+			this.elapsedTime = 0f;
+			this.mode = KAnim.PlayMode.Once;
+			this.currentFrame = 0;
+			this.previousFrame = 0;
+			this.events = null;
+			this.updatingEvents = null;
+			this.controller = null;
+		}
+
+				public float elapsedTime;
+
+				public KAnim.PlayMode mode;
+
+				public List<AnimEvent> events;
+
+				public List<AnimEvent> updatingEvents;
+
+				public KBatchedAnimController controller;
+	}
+
+		private struct IndirectionData
+	{
+				public IndirectionData(HandleVector<int>.Handle anim_data_handle, HandleVector<int>.Handle event_data_handle, bool is_ui_data)
+		{
+			this.isUIData = is_ui_data;
+			this.animDataHandle = anim_data_handle;
+			this.eventDataHandle = event_data_handle;
+		}
+
+				public bool isUIData;
+
+				public HandleVector<int>.Handle animDataHandle;
+
+				public HandleVector<int>.Handle eventDataHandle;
+	}
+
+		public readonly struct DevTools_DebugInfo
+	{
+				public DevTools_DebugInfo(AnimEventManager eventManager, KCompactedVector<AnimEventManager.AnimData> animData, KCompactedVector<AnimEventManager.EventPlayerData> eventData, KCompactedVector<AnimEventManager.AnimData> uiAnimData, KCompactedVector<AnimEventManager.EventPlayerData> uiEventData)
+		{
+			this.eventManager = eventManager;
+			this.animData = animData;
+			this.eventData = eventData;
+			this.uiAnimData = uiAnimData;
+			this.uiEventData = uiEventData;
+		}
+
+				public readonly AnimEventManager eventManager;
+
+				public readonly KCompactedVector<AnimEventManager.AnimData> animData;
+
+				public readonly KCompactedVector<AnimEventManager.EventPlayerData> eventData;
+
+				public readonly KCompactedVector<AnimEventManager.AnimData> uiAnimData;
+
+				public readonly KCompactedVector<AnimEventManager.EventPlayerData> uiEventData;
+	}
 }

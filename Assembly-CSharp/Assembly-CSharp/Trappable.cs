@@ -6,38 +6,38 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Trappable")]
 public class Trappable : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.Register();
 		this.OnCellChange();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.Unregister();
 		base.OnCleanUp();
 	}
 
-	private void OnCellChange()
+		private void OnCellChange()
 	{
 		int cell = Grid.PosToCell(this);
 		GameScenePartitioner.Instance.TriggerEvent(cell, GameScenePartitioner.Instance.trapsLayer, this);
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		this.Register();
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		this.Unregister();
 		base.OnCmpDisable();
 	}
 
-	private void Register()
+		private void Register()
 	{
 		if (this.registered)
 		{
@@ -48,7 +48,7 @@ public class Trappable : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.registered = true;
 	}
 
-	private void Unregister()
+		private void Unregister()
 	{
 		if (!this.registered)
 		{
@@ -59,7 +59,7 @@ public class Trappable : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.registered = false;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return new List<Descriptor>
 		{
@@ -67,7 +67,7 @@ public class Trappable : KMonoBehaviour, IGameObjectEffectDescriptor
 		};
 	}
 
-	public void OnStore(object data)
+		public void OnStore(object data)
 	{
 		Storage storage = data as Storage;
 		if (storage && (storage.GetComponent<Trap>() != null || storage.GetSMI<ReusableTrap.Instance>() != null))
@@ -78,9 +78,9 @@ public class Trappable : KMonoBehaviour, IGameObjectEffectDescriptor
 		base.gameObject.RemoveTag(GameTags.Trapped);
 	}
 
-	private bool registered;
+		private bool registered;
 
-	private static readonly EventSystem.IntraObjectHandler<Trappable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Trappable>(delegate(Trappable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Trappable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Trappable>(delegate(Trappable component, object data)
 	{
 		component.OnStore(data);
 	});

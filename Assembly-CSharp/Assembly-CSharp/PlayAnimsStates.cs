@@ -2,10 +2,18 @@
 
 public class PlayAnimsStates : GameStateMachine<PlayAnimsStates, PlayAnimsStates.Instance, IStateMachineTarget, PlayAnimsStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.animating;
-		this.root.ToggleStatusItem("Unused", "Unused", "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, (string str, PlayAnimsStates.Instance smi) => smi.def.statusItemName, (string str, PlayAnimsStates.Instance smi) => smi.def.statusItemTooltip, Db.Get().StatusItemCategories.Main);
+		GameStateMachine<PlayAnimsStates, PlayAnimsStates.Instance, IStateMachineTarget, PlayAnimsStates.Def>.State root = this.root;
+		string name = "Unused";
+		string tooltip = "Unused";
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		root.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, (string str, PlayAnimsStates.Instance smi) => smi.def.statusItemName, (string str, PlayAnimsStates.Instance smi) => smi.def.statusItemTooltip, main);
 		this.animating.Enter("PlayAnims", delegate(PlayAnimsStates.Instance smi)
 		{
 			smi.PlayAnims();
@@ -16,20 +24,20 @@ public class PlayAnimsStates : GameStateMachine<PlayAnimsStates, PlayAnimsStates
 		this.done.PlayAnim("idle_loop", KAnim.PlayMode.Loop).BehaviourComplete((PlayAnimsStates.Instance smi) => smi.def.tag, false);
 	}
 
-	public GameStateMachine<PlayAnimsStates, PlayAnimsStates.Instance, IStateMachineTarget, PlayAnimsStates.Def>.State animating;
+		public GameStateMachine<PlayAnimsStates, PlayAnimsStates.Instance, IStateMachineTarget, PlayAnimsStates.Def>.State animating;
 
-	public GameStateMachine<PlayAnimsStates, PlayAnimsStates.Instance, IStateMachineTarget, PlayAnimsStates.Def>.State done;
+		public GameStateMachine<PlayAnimsStates, PlayAnimsStates.Instance, IStateMachineTarget, PlayAnimsStates.Def>.State done;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Def(Tag tag, bool loop, string anim, string status_item_name, string status_item_tooltip) : this(tag, loop, new string[]
+				public Def(Tag tag, bool loop, string anim, string status_item_name, string status_item_tooltip) : this(tag, loop, new string[]
 		{
 			anim
 		}, status_item_name, status_item_tooltip)
 		{
 		}
 
-		public Def(Tag tag, bool loop, string[] anims, string status_item_name, string status_item_tooltip)
+				public Def(Tag tag, bool loop, string[] anims, string status_item_name, string status_item_tooltip)
 		{
 			this.tag = tag;
 			this.loop = loop;
@@ -38,30 +46,30 @@ public class PlayAnimsStates : GameStateMachine<PlayAnimsStates, PlayAnimsStates
 			this.statusItemTooltip = status_item_tooltip;
 		}
 
-		public override string ToString()
+				public override string ToString()
 		{
 			return this.tag.ToString() + "(PlayAnimsStates)";
 		}
 
-		public Tag tag;
+				public Tag tag;
 
-		public string[] anims;
+				public string[] anims;
 
-		public bool loop;
+				public bool loop;
 
-		public string statusItemName;
+				public string statusItemName;
 
-		public string statusItemTooltip;
+				public string statusItemTooltip;
 	}
 
-	public new class Instance : GameStateMachine<PlayAnimsStates, PlayAnimsStates.Instance, IStateMachineTarget, PlayAnimsStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<PlayAnimsStates, PlayAnimsStates.Instance, IStateMachineTarget, PlayAnimsStates.Def>.GameInstance
 	{
-		public Instance(Chore<PlayAnimsStates.Instance> chore, PlayAnimsStates.Def def) : base(chore, def)
+				public Instance(Chore<PlayAnimsStates.Instance> chore, PlayAnimsStates.Def def) : base(chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, def.tag);
 		}
 
-		public void PlayAnims()
+				public void PlayAnims()
 		{
 			if (base.def.anims == null || base.def.anims.Length == 0)
 			{
@@ -86,7 +94,7 @@ public class PlayAnimsStates : GameStateMachine<PlayAnimsStates, PlayAnimsStates
 			}
 		}
 
-		public void HandleTagsChanged(object obj)
+				public void HandleTagsChanged(object obj)
 		{
 			if (!base.smi.HasTag(base.smi.def.tag))
 			{

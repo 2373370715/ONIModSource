@@ -3,11 +3,11 @@ using UnityEngine;
 
 public interface IEntityConfig
 {
-	GameObject CreatePrefab();
+		GameObject CreatePrefab();
 
-	void OnPrefabInit(GameObject inst);
+		void OnPrefabInit(GameObject inst);
 
-	void OnSpawn(GameObject inst);
+		void OnSpawn(GameObject inst);
 
-	string[] GetDlcIds();
+		string[] GetDlcIds();
 }

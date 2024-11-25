@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CompostConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Compost";
 		int width = 2;
@@ -29,7 +29,7 @@ public class CompostConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 2000f;
@@ -64,21 +64,21 @@ public class CompostConfig : IBuildingConfig
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "Compost";
+		public const string ID = "Compost";
 
-	public static readonly Tag COMPOST_TAG = GameTags.Compostable;
+		public static readonly Tag COMPOST_TAG = GameTags.Compostable;
 
-	public const float SAND_INPUT_PER_SECOND = 0.1f;
+		public const float SAND_INPUT_PER_SECOND = 0.1f;
 
-	public const float FERTILIZER_OUTPUT_PER_SECOND = 0.1f;
+		public const float FERTILIZER_OUTPUT_PER_SECOND = 0.1f;
 
-	public const float FERTILIZER_OUTPUT_TEMP = 348.15f;
+		public const float FERTILIZER_OUTPUT_TEMP = 348.15f;
 
-	public const float INPUT_CAPACITY = 300f;
+		public const float INPUT_CAPACITY = 300f;
 
-	private const SimHashes OUTPUT_ELEMENT = SimHashes.Dirt;
+		private const SimHashes OUTPUT_ELEMENT = SimHashes.Dirt;
 }

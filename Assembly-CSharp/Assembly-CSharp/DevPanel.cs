@@ -3,221 +3,155 @@ using System.Collections.Generic;
 using ImGuiNET;
 using UnityEngine;
 
-public class DevPanel
-{
-			public bool isRequestingToClose { get; private set; }
+public class DevPanel {
+    public readonly  uint          idPostfixNumber;
+    public readonly  Type          initialDevToolType;
+    public readonly  DevPanelList  manager;
+    public readonly  string        uniquePanelId;
+    private          int           currentDevToolIndex;
+    private readonly List<DevTool> devTools;
 
-			public Option<ValueTuple<Vector2, ImGuiCond>> nextImGuiWindowPosition { get; private set; }
+    public DevPanel(DevTool devTool, DevPanelList manager) {
+        this.manager = manager;
+        devTools     = new List<DevTool>();
+        devTools.Add(devTool);
+        currentDevToolIndex = 0;
+        initialDevToolType  = devTool.GetType();
+        manager.Internal_InitPanelId(initialDevToolType, out uniquePanelId, out idPostfixNumber);
+    }
 
-			public Option<ValueTuple<Vector2, ImGuiCond>> nextImGuiWindowSize { get; private set; }
+    public bool isRequestingToClose { get; private set; }
+    public Option<ValueTuple<Vector2, ImGuiCond>> nextImGuiWindowPosition { get; private set; }
+    public Option<ValueTuple<Vector2, ImGuiCond>> nextImGuiWindowSize { get; private set; }
+    public void PushValue<T>(T value) where T : class { PushDevTool(new DevToolObjectViewer<T>(() => value)); }
+    public void PushValue<T>(Func<T> value) { PushDevTool(new DevToolObjectViewer<T>(value)); }
+    public void PushDevTool<T>() where T : DevTool, new() { PushDevTool(Activator.CreateInstance<T>()); }
 
-	public DevPanel(DevTool devTool, DevPanelList manager)
-	{
-		this.manager = manager;
-		this.devTools = new List<DevTool>();
-		this.devTools.Add(devTool);
-		this.currentDevToolIndex = 0;
-		this.initialDevToolType = devTool.GetType();
-		manager.Internal_InitPanelId(this.initialDevToolType, out this.uniquePanelId, out this.idPostfixNumber);
-	}
+    public void PushDevTool(DevTool devTool) {
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            manager.AddPanelFor(devTool);
+            return;
+        }
 
-	public void PushValue<T>(T value) where T : class
-	{
-		this.PushDevTool(new DevToolObjectViewer<T>(() => value));
-	}
+        for (var i = devTools.Count - 1; i > currentDevToolIndex; i--) {
+            devTools[i].Internal_Uninit();
+            devTools.RemoveAt(i);
+        }
 
-	public void PushValue<T>(Func<T> value)
-	{
-		this.PushDevTool(new DevToolObjectViewer<T>(value));
-	}
+        devTools.Add(devTool);
+        currentDevToolIndex = devTools.Count - 1;
+    }
 
-	public void PushDevTool<T>() where T : DevTool, new()
-	{
-		this.PushDevTool(Activator.CreateInstance<T>());
-	}
+    public bool NavGoBack() {
+        var option = TryGetDevToolIndexByOffset(-1);
+        if (option.IsNone()) return false;
 
-	public void PushDevTool(DevTool devTool)
-	{
-		if (Input.GetKey(KeyCode.LeftShift))
-		{
-			this.manager.AddPanelFor(devTool);
-			return;
-		}
-		for (int i = this.devTools.Count - 1; i > this.currentDevToolIndex; i--)
-		{
-			this.devTools[i].Internal_Uninit();
-			this.devTools.RemoveAt(i);
-		}
-		this.devTools.Add(devTool);
-		this.currentDevToolIndex = this.devTools.Count - 1;
-	}
+        currentDevToolIndex = option.Unwrap();
+        return true;
+    }
 
-	public bool NavGoBack()
-	{
-		Option<int> option = this.TryGetDevToolIndexByOffset(-1);
-		if (option.IsNone())
-		{
-			return false;
-		}
-		this.currentDevToolIndex = option.Unwrap();
-		return true;
-	}
+    public bool NavGoForward() {
+        var option = TryGetDevToolIndexByOffset(1);
+        if (option.IsNone()) return false;
 
-	public bool NavGoForward()
-	{
-		Option<int> option = this.TryGetDevToolIndexByOffset(1);
-		if (option.IsNone())
-		{
-			return false;
-		}
-		this.currentDevToolIndex = option.Unwrap();
-		return true;
-	}
+        currentDevToolIndex = option.Unwrap();
+        return true;
+    }
 
-	public DevTool GetCurrentDevTool()
-	{
-		return this.devTools[this.currentDevToolIndex];
-	}
+    public DevTool GetCurrentDevTool() { return devTools[currentDevToolIndex]; }
 
-	public Option<int> TryGetDevToolIndexByOffset(int offsetFromCurrentIndex)
-	{
-		int num = this.currentDevToolIndex + offsetFromCurrentIndex;
-		if (num < 0)
-		{
-			return Option.None;
-		}
-		if (num >= this.devTools.Count)
-		{
-			return Option.None;
-		}
-		return num;
-	}
+    public Option<int> TryGetDevToolIndexByOffset(int offsetFromCurrentIndex) {
+        var num = currentDevToolIndex + offsetFromCurrentIndex;
+        if (num < 0) return Option.None;
 
-	public void RenderPanel()
-	{
-		DevTool currentDevTool = this.GetCurrentDevTool();
-		currentDevTool.Internal_TryInit();
-		if (currentDevTool.isRequestingToClosePanel)
-		{
-			this.isRequestingToClose = true;
-			return;
-		}
-		ImGuiWindowFlags flags;
-		this.ConfigureImGuiWindowFor(currentDevTool, out flags);
-		currentDevTool.Internal_Update();
-		bool flag = true;
-		if (ImGui.Begin(currentDevTool.Name + "###ID_" + this.uniquePanelId, ref flag, flags))
-		{
-			if (!flag)
-			{
-				this.isRequestingToClose = true;
-				ImGui.End();
-				return;
-			}
-			if (ImGui.BeginMenuBar())
-			{
-				this.DrawNavigation();
-				ImGui.SameLine(0f, 20f);
-				this.DrawMenuBarContents();
-				ImGui.EndMenuBar();
-			}
-			currentDevTool.DoImGui(this);
-			if (this.GetCurrentDevTool() != currentDevTool)
-			{
-				ImGui.SetScrollY(0f);
-			}
-		}
-		ImGui.End();
-		if (this.GetCurrentDevTool().isRequestingToClosePanel)
-		{
-			this.isRequestingToClose = true;
-		}
-	}
+        if (num >= devTools.Count) return Option.None;
 
-	private void DrawNavigation()
-	{
-		Option<int> option = this.TryGetDevToolIndexByOffset(-1);
-		if (ImGuiEx.Button(" < ", option.IsSome()))
-		{
-			this.currentDevToolIndex = option.Unwrap();
-		}
-		if (option.IsSome())
-		{
-			ImGuiEx.TooltipForPrevious("Go back to " + this.devTools[option.Unwrap()].Name);
-		}
-		else
-		{
-			ImGuiEx.TooltipForPrevious("Go back");
-		}
-		ImGui.SameLine(0f, 5f);
-		Option<int> option2 = this.TryGetDevToolIndexByOffset(1);
-		if (ImGuiEx.Button(" > ", option2.IsSome()))
-		{
-			this.currentDevToolIndex = option2.Unwrap();
-		}
-		if (option2.IsSome())
-		{
-			ImGuiEx.TooltipForPrevious("Go forward to " + this.devTools[option2.Unwrap()].Name);
-			return;
-		}
-		ImGuiEx.TooltipForPrevious("Go forward");
-	}
+        return num;
+    }
 
-	private void DrawMenuBarContents()
-	{
-	}
+    public void RenderPanel() {
+        var currentDevTool = GetCurrentDevTool();
+        currentDevTool.Internal_TryInit();
+        if (currentDevTool.isRequestingToClosePanel) {
+            isRequestingToClose = true;
+            return;
+        }
 
-	private void ConfigureImGuiWindowFor(DevTool currentDevTool, out ImGuiWindowFlags drawFlags)
-	{
-		drawFlags = (ImGuiWindowFlags.MenuBar | currentDevTool.drawFlags);
-		if (this.nextImGuiWindowPosition.HasValue)
-		{
-			ValueTuple<Vector2, ImGuiCond> value = this.nextImGuiWindowPosition.Value;
-			Vector2 item = value.Item1;
-			ImGuiCond item2 = value.Item2;
-			ImGui.SetNextWindowPos(item, item2);
-			this.nextImGuiWindowPosition = default(Option<ValueTuple<Vector2, ImGuiCond>>);
-		}
-		if (this.nextImGuiWindowSize.HasValue)
-		{
-			Vector2 item3 = this.nextImGuiWindowSize.Value.Item1;
-			ImGui.SetNextWindowSize(item3);
-			this.nextImGuiWindowSize = default(Option<ValueTuple<Vector2, ImGuiCond>>);
-		}
-	}
+        ImGuiWindowFlags flags;
+        ConfigureImGuiWindowFor(currentDevTool, out flags);
+        currentDevTool.Internal_Update();
+        var flag = true;
+        if (ImGui.Begin(currentDevTool.Name + "###ID_" + uniquePanelId, ref flag, flags)) {
+            if (!flag) {
+                isRequestingToClose = true;
+                ImGui.End();
+                return;
+            }
 
-	public void SetPosition(Vector2 position, ImGuiCond condition = ImGuiCond.None)
-	{
-		this.nextImGuiWindowPosition = new ValueTuple<Vector2, ImGuiCond>(position, condition);
-	}
+            if (ImGui.BeginMenuBar()) {
+                DrawNavigation();
+                ImGui.SameLine(0f, 20f);
+                DrawMenuBarContents();
+                ImGui.EndMenuBar();
+            }
 
-	public void SetSize(Vector2 size, ImGuiCond condition = ImGuiCond.None)
-	{
-		this.nextImGuiWindowSize = new ValueTuple<Vector2, ImGuiCond>(size, condition);
-	}
+            currentDevTool.DoImGui(this);
+            if (GetCurrentDevTool() != currentDevTool) ImGui.SetScrollY(0f);
+        }
 
-	public void Close()
-	{
-		this.isRequestingToClose = true;
-	}
+        ImGui.End();
+        if (GetCurrentDevTool().isRequestingToClosePanel) isRequestingToClose = true;
+    }
 
-	public void Internal_Uninit()
-	{
-		foreach (DevTool devTool in this.devTools)
-		{
-			devTool.Internal_Uninit();
-		}
-	}
+    private void DrawNavigation() {
+        var option                                                      = TryGetDevToolIndexByOffset(-1);
+        if (ImGuiEx.Button(" < ", option.IsSome())) currentDevToolIndex = option.Unwrap();
+        if (option.IsSome())
+            ImGuiEx.TooltipForPrevious("Go back to " + devTools[option.Unwrap()].Name);
+        else
+            ImGuiEx.TooltipForPrevious("Go back");
 
-	public readonly string uniquePanelId;
+        ImGui.SameLine(0f, 5f);
+        var option2                                                      = TryGetDevToolIndexByOffset(1);
+        if (ImGuiEx.Button(" > ", option2.IsSome())) currentDevToolIndex = option2.Unwrap();
+        if (option2.IsSome()) {
+            ImGuiEx.TooltipForPrevious("Go forward to " + devTools[option2.Unwrap()].Name);
+            return;
+        }
 
-	public readonly DevPanelList manager;
+        ImGuiEx.TooltipForPrevious("Go forward");
+    }
 
-	public readonly Type initialDevToolType;
+    private void DrawMenuBarContents() { }
 
-	public readonly uint idPostfixNumber;
+    private void ConfigureImGuiWindowFor(DevTool currentDevTool, out ImGuiWindowFlags drawFlags) {
+        drawFlags = ImGuiWindowFlags.MenuBar | currentDevTool.drawFlags;
+        if (nextImGuiWindowPosition.HasValue) {
+            var value = nextImGuiWindowPosition.Value;
+            var item  = value.Item1;
+            var item2 = value.Item2;
+            ImGui.SetNextWindowPos(item, item2);
+            nextImGuiWindowPosition = default(Option<ValueTuple<Vector2, ImGuiCond>>);
+        }
 
-	private List<DevTool> devTools;
+        if (nextImGuiWindowSize.HasValue) {
+            var item3 = nextImGuiWindowSize.Value.Item1;
+            ImGui.SetNextWindowSize(item3);
+            nextImGuiWindowSize = default(Option<ValueTuple<Vector2, ImGuiCond>>);
+        }
+    }
 
-	private int currentDevToolIndex;
+    public void SetPosition(Vector2 position, ImGuiCond condition = ImGuiCond.None) {
+        nextImGuiWindowPosition = new ValueTuple<Vector2, ImGuiCond>(position, condition);
+    }
+
+    public void SetSize(Vector2 size, ImGuiCond condition = ImGuiCond.None) {
+        nextImGuiWindowSize = new ValueTuple<Vector2, ImGuiCond>(size, condition);
+    }
+
+    public void Close() { isRequestingToClose = true; }
+
+    public void Internal_Uninit() {
+        foreach (var devTool in devTools) devTool.Internal_Uninit();
+    }
 }

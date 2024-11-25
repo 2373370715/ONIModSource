@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class ImmigrantScreen : CharacterSelectionController
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ImmigrantScreen.instance = null;
 	}
 
-		public Telepad Telepad
+			public Telepad Telepad
 	{
 		get
 		{
@@ -18,12 +18,12 @@ public class ImmigrantScreen : CharacterSelectionController
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.activateOnSpawn = false;
 		base.ConsumeMouseScroll = false;
@@ -42,7 +42,7 @@ public class ImmigrantScreen : CharacterSelectionController
 		this.Show(false);
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		if (show)
 		{
@@ -66,13 +66,13 @@ public class ImmigrantScreen : CharacterSelectionController
 		base.OnShow(show);
 	}
 
-	public void DebugShuffleOptions()
+		public void DebugShuffleOptions()
 	{
 		this.OnRejectionConfirmed();
 		Immigration.Instance.timeBeforeSpawn = 0f;
 	}
 
-	public override void OnPressBack()
+		public override void OnPressBack()
 	{
 		if (this.rejectConfirmationScreen.activeSelf)
 		{
@@ -82,18 +82,18 @@ public class ImmigrantScreen : CharacterSelectionController
 		base.OnPressBack();
 	}
 
-	public override void Deactivate()
+		public override void Deactivate()
 	{
 		this.Show(false);
 	}
 
-	public static void InitializeImmigrantScreen(Telepad telepad)
+		public static void InitializeImmigrantScreen(Telepad telepad)
 	{
 		ImmigrantScreen.instance.Initialize(telepad);
 		ImmigrantScreen.instance.Show(true);
 	}
 
-	private void Initialize(Telepad telepad)
+		private void Initialize(Telepad telepad)
 	{
 		this.InitializeContainers();
 		foreach (ITelepadDeliverableContainer telepadDeliverableContainer in this.containers)
@@ -107,7 +107,7 @@ public class ImmigrantScreen : CharacterSelectionController
 		this.telepad = telepad;
 	}
 
-	protected override void OnProceed()
+		protected override void OnProceed()
 	{
 		this.telepad.OnAcceptDelivery(this.selectedDeliverables[0]);
 		this.Show(false);
@@ -121,18 +121,18 @@ public class ImmigrantScreen : CharacterSelectionController
 		MusicManager.instance.PlaySong("Stinger_NewDuplicant", false);
 	}
 
-	private void OnRejectAll()
+		private void OnRejectAll()
 	{
 		this.rejectConfirmationScreen.transform.SetAsLastSibling();
 		this.rejectConfirmationScreen.SetActive(true);
 	}
 
-	private void OnRejectionCancelled()
+		private void OnRejectionCancelled()
 	{
 		this.rejectConfirmationScreen.SetActive(false);
 	}
 
-	private void OnRejectionConfirmed()
+		private void OnRejectionConfirmed()
 	{
 		this.telepad.RejectAll();
 		this.containers.ForEach(delegate(ITelepadDeliverableContainer cc)
@@ -146,27 +146,27 @@ public class ImmigrantScreen : CharacterSelectionController
 		AudioMixer.instance.Stop(AudioMixerSnapshots.Get().PortalLPDimmedSnapshot, STOP_MODE.ALLOWFADEOUT);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton rejectButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText title;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject rejectConfirmationScreen;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton confirmRejectionBtn;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton cancelRejectionBtn;
 
-	public static ImmigrantScreen instance;
+		public static ImmigrantScreen instance;
 
-	private Telepad telepad;
+		private Telepad telepad;
 
-	private bool hasShown;
+		private bool hasShown;
 }

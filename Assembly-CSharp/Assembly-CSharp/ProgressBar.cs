@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/ProgressBar")]
 public class ProgressBar : KMonoBehaviour
 {
-			public Color barColor
+				public Color barColor
 	{
 		get
 		{
@@ -17,7 +17,7 @@ public class ProgressBar : KMonoBehaviour
 		}
 	}
 
-			public float PercentFull
+				public float PercentFull
 	{
 		get
 		{
@@ -29,13 +29,13 @@ public class ProgressBar : KMonoBehaviour
 		}
 	}
 
-	public void SetVisibility(bool visible)
+		public void SetVisibility(bool visible)
 	{
 		this.lastVisibilityValue = visible;
 		this.RefreshVisibility();
 	}
 
-	private void RefreshVisibility()
+		private void RefreshVisibility()
 	{
 		int myWorldId = base.gameObject.GetMyWorldId();
 		bool flag = this.lastVisibilityValue;
@@ -48,7 +48,7 @@ public class ProgressBar : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.hasBeenInitialize = true;
@@ -66,24 +66,24 @@ public class ProgressBar : KMonoBehaviour
 		this.RefreshVisibility();
 	}
 
-	private void OnActiveWorldChanged(object data)
+		private void OnActiveWorldChanged(object data)
 	{
 		global::Tuple<int, int> tuple = (global::Tuple<int, int>)data;
 		this.SetWorldActive(tuple.first);
 	}
 
-	private void SetWorldActive(int worldId)
+		private void SetWorldActive(int worldId)
 	{
 		this.RefreshVisibility();
 	}
 
-	public void SetUpdateFunc(Func<float> func)
+		public void SetUpdateFunc(Func<float> func)
 	{
 		this.updatePercentFull = func;
 		base.enabled = (this.updatePercentFull != null);
 	}
 
-	public virtual void Update()
+		public virtual void Update()
 	{
 		if (this.updatePercentFull != null && !this.updatePercentFull.Target.IsNullOrDestroyed())
 		{
@@ -91,12 +91,12 @@ public class ProgressBar : KMonoBehaviour
 		}
 	}
 
-	public virtual void OnOverlayChanged(object data = null)
+		public virtual void OnOverlayChanged(object data = null)
 	{
 		this.RefreshVisibility();
 	}
 
-	public void Retarget(GameObject entity)
+		public void Retarget(GameObject entity)
 	{
 		Vector3 vector = entity.transform.GetPosition() + Vector3.down * 0.5f;
 		Building component = entity.GetComponent<Building>();
@@ -111,7 +111,7 @@ public class ProgressBar : KMonoBehaviour
 		base.transform.SetPosition(vector);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.overlayUpdateHandle != -1)
 		{
@@ -121,17 +121,17 @@ public class ProgressBar : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	private void OnBecameInvisible()
+		private void OnBecameInvisible()
 	{
 		base.enabled = false;
 	}
 
-	private void OnBecameVisible()
+		private void OnBecameVisible()
 	{
 		base.enabled = true;
 	}
 
-	public static ProgressBar CreateProgressBar(GameObject entity, Func<float> updateFunc)
+		public static ProgressBar CreateProgressBar(GameObject entity, Func<float> updateFunc)
 	{
 		ProgressBar progressBar = Util.KInstantiateUI<ProgressBar>(ProgressBarsConfig.Instance.progressBarPrefab, null, false);
 		progressBar.SetUpdateFunc(updateFunc);
@@ -143,15 +143,15 @@ public class ProgressBar : KMonoBehaviour
 		return progressBar;
 	}
 
-	public Image bar;
+		public Image bar;
 
-	private Func<float> updatePercentFull;
+		private Func<float> updatePercentFull;
 
-	private int overlayUpdateHandle = -1;
+		private int overlayUpdateHandle = -1;
 
-	public bool autoHide = true;
+		public bool autoHide = true;
 
-	private bool lastVisibilityValue = true;
+		private bool lastVisibilityValue = true;
 
-	private bool hasBeenInitialize;
+		private bool hasBeenInitialize;
 }

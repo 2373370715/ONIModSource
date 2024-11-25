@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class GameOptionsScreen : KModalButtonMenu
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.unitConfiguration.Init();
@@ -56,7 +56,7 @@ public class GameOptionsScreen : KModalButtonMenu
 		this.RefreshCameraSliderLabel();
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (SaveGame.Instance != null)
@@ -75,12 +75,12 @@ public class GameOptionsScreen : KModalButtonMenu
 		}
 	}
 
-	private float CameraSpeedToSlider(float prefsValue)
+		private float CameraSpeedToSlider(float prefsValue)
 	{
 		return prefsValue * 10f;
 	}
 
-	private void OnCameraSpeedValueChanged(int sliderValue)
+		private void OnCameraSpeedValueChanged(int sliderValue)
 	{
 		KPlayerPrefs.SetFloat("CameraSpeed", (float)sliderValue / 10f);
 		this.RefreshCameraSliderLabel();
@@ -90,24 +90,24 @@ public class GameOptionsScreen : KModalButtonMenu
 		}
 	}
 
-	private void RefreshCameraSliderLabel()
+		private void RefreshCameraSliderLabel()
 	{
 		this.cameraSpeedSliderLabel.text = string.Format(UI.FRONTEND.GAME_OPTIONS_SCREEN.CAMERA_SPEED_LABEL, (KPlayerPrefs.GetFloat("CameraSpeed") * 10f * 10f).ToString());
 	}
 
-	private void OnDefaultToCloudSaveToggle()
+		private void OnDefaultToCloudSaveToggle()
 	{
 		SaveLoader.SetCloudSavesDefault(!SaveLoader.GetCloudSavesDefault());
 		this.RefreshCloudSaveToggle();
 	}
 
-	private void RefreshCloudSaveToggle()
+		private void RefreshCloudSaveToggle()
 	{
 		bool cloudSavesDefault = SaveLoader.GetCloudSavesDefault();
 		this.defaultToCloudSaveToggle.GetComponent<HierarchyReferences>().GetReference("Checkmark").gameObject.SetActive(cloudSavesDefault);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape) || e.TryConsume(global::Action.MouseRight))
 		{
@@ -117,7 +117,7 @@ public class GameOptionsScreen : KModalButtonMenu
 		base.OnKeyDown(e);
 	}
 
-	private void OnTutorialReset()
+		private void OnTutorialReset()
 	{
 		ConfirmDialogScreen component = base.ActivateChildScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject).GetComponent<ConfirmDialogScreen>();
 		component.PopupConfirmDialog(UI.FRONTEND.OPTIONS_SCREEN.RESET_TUTORIAL_WARNING, delegate
@@ -129,7 +129,7 @@ public class GameOptionsScreen : KModalButtonMenu
 		component.Activate();
 	}
 
-	private void OnUnlockSandboxMode()
+		private void OnUnlockSandboxMode()
 	{
 		ConfirmDialogScreen component = base.ActivateChildScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject).GetComponent<ConfirmDialogScreen>();
 		string text = UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.UNLOCK_SANDBOX_WARNING;
@@ -157,61 +157,61 @@ public class GameOptionsScreen : KModalButtonMenu
 		component.Activate();
 	}
 
-	private void OnKeyBindings()
+		private void OnKeyBindings()
 	{
 		base.ActivateChildScreen(this.inputBindingsScreenPrefab.gameObject);
 	}
 
-	private void SetSandboxModeActive(bool active)
+		private void SetSandboxModeActive(bool active)
 	{
 		this.sandboxButton.GetComponent<HierarchyReferences>().GetReference("Checkmark").gameObject.SetActive(active);
 		this.sandboxButton.isInteractable = !active;
 		this.sandboxButton.gameObject.GetComponentInParent<CanvasGroup>().alpha = (active ? 0.5f : 1f);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private SaveConfigurationScreen saveConfiguration;
 
-	[SerializeField]
+		[SerializeField]
 	private UnitConfigurationScreen unitConfiguration;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton resetTutorialButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton controlsButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton sandboxButton;
 
-	[SerializeField]
+		[SerializeField]
 	private ConfirmDialogScreen confirmPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton doneButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject cloudSavesPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject defaultToCloudSaveToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject savePanel;
 
-	[SerializeField]
+		[SerializeField]
 	private InputBindingsScreen inputBindingsScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private KSlider cameraSpeedSlider;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText cameraSpeedSliderLabel;
 
-	private const int cameraSliderNotchScale = 10;
+		private const int cameraSliderNotchScale = 10;
 
-	public const string PREFS_KEY_CAMERA_SPEED = "CameraSpeed";
+		public const string PREFS_KEY_CAMERA_SPEED = "CameraSpeed";
 }

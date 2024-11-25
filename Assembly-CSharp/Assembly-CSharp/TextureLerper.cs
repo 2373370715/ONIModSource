@@ -4,14 +4,14 @@ using UnityEngine.Rendering;
 
 public class TextureLerper
 {
-	public TextureLerper(Texture target_texture, string name, FilterMode filter_mode = FilterMode.Bilinear, TextureFormat texture_format = TextureFormat.ARGB32)
+		public TextureLerper(Texture target_texture, string name, FilterMode filter_mode = FilterMode.Bilinear, TextureFormat texture_format = TextureFormat.ARGB32)
 	{
 		this.name = name;
 		this.Init(target_texture.width, target_texture.height, name, filter_mode, texture_format);
 		this.Material.SetTexture("_TargetTex", target_texture);
 	}
 
-	private void Init(int width, int height, string name, FilterMode filter_mode, TextureFormat texture_format)
+		private void Init(int width, int height, string name, FilterMode filter_mode, TextureFormat texture_format)
 	{
 		for (int i = 0; i < 2; i++)
 		{
@@ -83,13 +83,13 @@ public class TextureLerper
 		TextureLerper.offsetCounter++;
 	}
 
-	public void LongUpdate(float dt)
+		public void LongUpdate(float dt)
 	{
 		this.BlendDt = dt;
 		this.BlendTime = 0f;
 	}
 
-	public Texture Update()
+		public Texture Update()
 	{
 		float num = Time.deltaTime * this.Speed;
 		if (Time.deltaTime == 0f)
@@ -114,7 +114,7 @@ public class TextureLerper
 		return this.dest;
 	}
 
-	private Vector4 GetVisibleCellRange()
+		private Vector4 GetVisibleCellRange()
 	{
 		Camera main = Camera.main;
 		float cellSizeInMeters = Grid.CellSizeInMeters;
@@ -136,33 +136,33 @@ public class TextureLerper
 		return new Vector4((float)num2, (float)num3, (float)num4, (float)num5);
 	}
 
-	private static int offsetCounter;
+		private static int offsetCounter;
 
-	public string name;
+		public string name;
 
-	private RenderTexture[] BlendTextures = new RenderTexture[2];
+		private RenderTexture[] BlendTextures = new RenderTexture[2];
 
-	private float BlendDt;
+		private float BlendDt;
 
-	private float BlendTime;
+		private float BlendTime;
 
-	private int BlendIdx;
+		private int BlendIdx;
 
-	private Material Material;
+		private Material Material;
 
-	public float Speed = 1f;
+		public float Speed = 1f;
 
-	private Mesh mesh;
+		private Mesh mesh;
 
-	private RenderTexture source;
+		private RenderTexture source;
 
-	private RenderTexture dest;
+		private RenderTexture dest;
 
-	private GameObject meshGO;
+		private GameObject meshGO;
 
-	private GameObject cameraGO;
+		private GameObject cameraGO;
 
-	private Camera textureCam;
+		private Camera textureCam;
 
-	private float blend;
+		private float blend;
 }

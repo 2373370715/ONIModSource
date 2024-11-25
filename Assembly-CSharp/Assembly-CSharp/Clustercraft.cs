@@ -10,7 +10,7 @@ using UnityEngine;
 
 public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim1000ms
 {
-		public override string Name
+			public override string Name
 	{
 		get
 		{
@@ -18,9 +18,9 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-			public bool Exploding { get; protected set; }
+				public bool Exploding { get; protected set; }
 
-		public override EntityLayer Layer
+			public override EntityLayer Layer
 	{
 		get
 		{
@@ -28,7 +28,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-		public override List<ClusterGridEntity.AnimConfig> AnimConfigs
+			public override List<ClusterGridEntity.AnimConfig> AnimConfigs
 	{
 		get
 		{
@@ -43,12 +43,17 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-	public override Sprite GetUISprite()
+		public override Sprite GetUISprite()
 	{
-		return Def.GetUISprite(this.m_moduleInterface.GetPassengerModule().gameObject, "ui", false).first;
+		PassengerRocketModule passengerModule = this.m_moduleInterface.GetPassengerModule();
+		if (passengerModule != null)
+		{
+			return Def.GetUISprite(passengerModule.gameObject, "ui", false).first;
+		}
+		return Assets.GetSprite("ic_rocket");
 	}
 
-		public override bool IsVisible
+			public override bool IsVisible
 	{
 		get
 		{
@@ -56,7 +61,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-		public override ClusterRevealLevel IsVisibleInFOW
+			public override ClusterRevealLevel IsVisibleInFOW
 	{
 		get
 		{
@@ -64,12 +69,12 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-	public override bool SpaceOutInSameHex()
+		public override bool SpaceOutInSameHex()
 	{
 		return true;
 	}
 
-		public CraftModuleInterface ModuleInterface
+			public CraftModuleInterface ModuleInterface
 	{
 		get
 		{
@@ -77,7 +82,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-		public AxialI Destination
+			public AxialI Destination
 	{
 		get
 		{
@@ -85,12 +90,19 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-		public float Speed
+			public float Speed
 	{
 		get
 		{
 			float num = this.EnginePower / this.TotalBurden;
 			float num2 = num * this.AutoPilotMultiplier * this.PilotSkillMultiplier;
+			float num3 = 1f;
+			RoboPilotModule robotPilotModule = this.ModuleInterface.GetRobotPilotModule();
+			if (robotPilotModule != null)
+			{
+				num3 += robotPilotModule.FlightEfficiencyModifier();
+			}
+			num2 *= num3;
 			if (this.controlStationBuffTimeRemaining > 0f)
 			{
 				num2 += num * 0.20000005f;
@@ -99,7 +111,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-		public float EnginePower
+			public float EnginePower
 	{
 		get
 		{
@@ -112,7 +124,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-		public float FuelPerDistance
+			public float FuelPerDistance
 	{
 		get
 		{
@@ -125,7 +137,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-		public float TotalBurden
+			public float TotalBurden
 	{
 		get
 		{
@@ -139,7 +151,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-			public bool LaunchRequested
+				public bool LaunchRequested
 	{
 		get
 		{
@@ -152,7 +164,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-		public Clustercraft.CraftStatus Status
+			public Clustercraft.CraftStatus Status
 	{
 		get
 		{
@@ -160,25 +172,25 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-	public void SetCraftStatus(Clustercraft.CraftStatus craft_status)
+		public void SetCraftStatus(Clustercraft.CraftStatus craft_status)
 	{
 		this.status = craft_status;
 		this.UpdateGroundTags();
 		this.m_moduleInterface.TriggerEventOnCraftAndRocket(GameHashes.ClustercraftStateChanged, craft_status);
 	}
 
-	public void SetExploding()
+		public void SetExploding()
 	{
 		this.Exploding = true;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Components.Clustercrafts.Add(this);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.m_clusterTraveler.getSpeedCB = new Func<float>(this.GetSpeed);
@@ -198,7 +210,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		this.UpdateStatusItem();
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		this.controlStationBuffTimeRemaining = Mathf.Max(this.controlStationBuffTimeRemaining - dt, 0f);
 		if (this.controlStationBuffTimeRemaining > 0f)
@@ -210,7 +222,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		this.missionControlStatusHandle = Guid.Empty;
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
 		RocketClusterDestinationSelector clusterDestinationSelector = this.m_moduleInterface.GetClusterDestinationSelector();
 		if (this.Status == Clustercraft.CraftStatus.InFlight && this.m_location == clusterDestinationSelector.GetDestination())
@@ -219,7 +231,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-	public void Init(AxialI location, LaunchPad pad)
+		public void Init(AxialI location, LaunchPad pad)
 	{
 		this.m_location = location;
 		base.GetComponent<RocketClusterDestinationSelector>().SetDestination(this.m_location);
@@ -231,28 +243,28 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		this.UpdateStatusItem();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.Clustercrafts.Remove(this);
 		base.OnCleanUp();
 	}
 
-	private bool CanTravel(bool tryingToLand)
+		private bool CanTravel(bool tryingToLand)
 	{
 		return this.HasTag(GameTags.RocketInSpace) && (tryingToLand || this.HasResourcesToMove(1, Clustercraft.CombustionResource.All));
 	}
 
-	private bool CanTravelToCell(AxialI location)
+		private bool CanTravelToCell(AxialI location)
 	{
 		return !(ClusterGrid.Instance.GetVisibleEntityOfLayerAtCell(location, EntityLayer.Asteroid) != null) || this.CanLandAtAsteroid(location, true);
 	}
 
-	private float GetSpeed()
+		private float GetSpeed()
 	{
 		return this.Speed;
 	}
 
-	private void RocketModuleChanged(object data)
+		private void RocketModuleChanged(object data)
 	{
 		RocketModuleCluster rocketModuleCluster = (RocketModuleCluster)data;
 		if (rocketModuleCluster != null)
@@ -261,12 +273,12 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-	private void OnClusterDestinationChanged(object data)
+		private void OnClusterDestinationChanged(object data)
 	{
 		this.UpdateStatusItem();
 	}
 
-	private void OnClusterDestinationReached(object data)
+		private void OnClusterDestinationReached(object data)
 	{
 		RocketClusterDestinationSelector clusterDestinationSelector = this.m_moduleInterface.GetClusterDestinationSelector();
 		global::Debug.Assert(base.Location == clusterDestinationSelector.GetDestination());
@@ -278,12 +290,12 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		this.UpdateStatusItem();
 	}
 
-	public void SetRocketName(object newName)
+		public void SetRocketName(object newName)
 	{
 		this.SetRocketName((string)newName);
 	}
 
-	public void SetRocketName(string newName)
+		public void SetRocketName(string newName)
 	{
 		this.m_name = newName;
 		base.name = "Clustercraft: " + newName;
@@ -299,22 +311,22 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		ClusterManager.Instance.Trigger(1943181844, newName);
 	}
 
-	public bool CheckPreppedForLaunch()
+		public bool CheckPreppedForLaunch()
 	{
 		return this.m_moduleInterface.CheckPreppedForLaunch();
 	}
 
-	public bool CheckReadyToLaunch()
+		public bool CheckReadyToLaunch()
 	{
 		return this.m_moduleInterface.CheckReadyToLaunch();
 	}
 
-	public bool IsFlightInProgress()
+		public bool IsFlightInProgress()
 	{
 		return this.Status == Clustercraft.CraftStatus.InFlight && this.m_clusterTraveler.IsTraveling();
 	}
 
-	public ClusterGridEntity GetPOIAtCurrentLocation()
+		public ClusterGridEntity GetPOIAtCurrentLocation()
 	{
 		if (this.status != Clustercraft.CraftStatus.InFlight || this.IsFlightInProgress())
 		{
@@ -323,7 +335,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		return ClusterGrid.Instance.GetVisibleEntityOfLayerAtCell(this.m_location, EntityLayer.POI);
 	}
 
-	public ClusterGridEntity GetStableOrbitAsteroid()
+		public ClusterGridEntity GetStableOrbitAsteroid()
 	{
 		if (this.status != Clustercraft.CraftStatus.InFlight || this.IsFlightInProgress())
 		{
@@ -332,7 +344,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		return ClusterGrid.Instance.GetVisibleEntityOfLayerAtAdjacentCell(this.m_location, EntityLayer.Asteroid);
 	}
 
-	public ClusterGridEntity GetOrbitAsteroid()
+		public ClusterGridEntity GetOrbitAsteroid()
 	{
 		if (this.status != Clustercraft.CraftStatus.InFlight)
 		{
@@ -341,17 +353,17 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		return ClusterGrid.Instance.GetVisibleEntityOfLayerAtAdjacentCell(this.m_location, EntityLayer.Asteroid);
 	}
 
-	public ClusterGridEntity GetAdjacentAsteroid()
+		public ClusterGridEntity GetAdjacentAsteroid()
 	{
 		return ClusterGrid.Instance.GetVisibleEntityOfLayerAtAdjacentCell(this.m_location, EntityLayer.Asteroid);
 	}
 
-	private bool CheckDesinationInRange()
+		private bool CheckDesinationInRange()
 	{
 		return this.m_clusterTraveler.CurrentPath != null && this.Speed * this.m_clusterTraveler.TravelETA() <= this.ModuleInterface.Range;
 	}
 
-	public bool HasResourcesToMove(int hexes = 1, Clustercraft.CombustionResource combustionResource = Clustercraft.CombustionResource.All)
+		public bool HasResourcesToMove(int hexes = 1, Clustercraft.CombustionResource combustionResource = Clustercraft.CombustionResource.All)
 	{
 		switch (combustionResource)
 		{
@@ -366,12 +378,13 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-	private void BurnFuelForTravel()
+		private void BurnFuelForTravel()
 	{
 		float num = 600f;
 		foreach (Ref<RocketModuleCluster> @ref in this.m_moduleInterface.ClusterModules)
 		{
-			RocketEngineCluster component = @ref.Get().GetComponent<RocketEngineCluster>();
+			RocketModuleCluster rocketModuleCluster = @ref.Get();
+			RocketEngineCluster component = rocketModuleCluster.GetComponent<RocketEngineCluster>();
 			if (component != null)
 			{
 				Tag fuelTag = component.fuelTag;
@@ -396,11 +409,16 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 					}
 				}
 			}
+			RoboPilotModule component3 = rocketModuleCluster.GetComponent<RoboPilotModule>();
+			if (component3 != null)
+			{
+				component3.ConsumeDataBanksInFlight();
+			}
 		}
 		this.UpdateStatusItem();
 	}
 
-	private float BurnFromTank(float attemptTravelAmount, RocketEngineCluster engine, Tag fuelTag, IStorage storage, ref float totalOxidizerRemaining)
+		private float BurnFromTank(float attemptTravelAmount, RocketEngineCluster engine, Tag fuelTag, IStorage storage, ref float totalOxidizerRemaining)
 	{
 		float num = attemptTravelAmount * engine.GetComponent<RocketModuleCluster>().performanceStats.FuelKilogramPerDistance;
 		num = Mathf.Min(storage.GetAmountAvailable(fuelTag), num);
@@ -417,7 +435,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		return num / engine.GetComponent<RocketModuleCluster>().performanceStats.FuelKilogramPerDistance;
 	}
 
-	private void BurnOxidizer(float fuelEquivalentKGs)
+		private void BurnOxidizer(float fuelEquivalentKGs)
 	{
 		foreach (Ref<RocketModuleCluster> @ref in this.m_moduleInterface.ClusterModules)
 		{
@@ -442,7 +460,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-	public List<ResourceHarvestModule.StatesInstance> GetAllResourceHarvestModules()
+		public List<ResourceHarvestModule.StatesInstance> GetAllResourceHarvestModules()
 	{
 		List<ResourceHarvestModule.StatesInstance> list = new List<ResourceHarvestModule.StatesInstance>();
 		foreach (Ref<RocketModuleCluster> @ref in this.m_moduleInterface.ClusterModules)
@@ -456,7 +474,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		return list;
 	}
 
-	public List<ArtifactHarvestModule.StatesInstance> GetAllArtifactHarvestModules()
+		public List<ArtifactHarvestModule.StatesInstance> GetAllArtifactHarvestModules()
 	{
 		List<ArtifactHarvestModule.StatesInstance> list = new List<ArtifactHarvestModule.StatesInstance>();
 		foreach (Ref<RocketModuleCluster> @ref in this.m_moduleInterface.ClusterModules)
@@ -470,7 +488,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		return list;
 	}
 
-	public List<CargoBayCluster> GetAllCargoBays()
+		public List<CargoBayCluster> GetAllCargoBays()
 	{
 		List<CargoBayCluster> list = new List<CargoBayCluster>();
 		foreach (Ref<RocketModuleCluster> @ref in this.m_moduleInterface.ClusterModules)
@@ -484,7 +502,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		return list;
 	}
 
-	public List<CargoBayCluster> GetCargoBaysOfType(CargoBay.CargoType cargoType)
+		public List<CargoBayCluster> GetCargoBaysOfType(CargoBay.CargoType cargoType)
 	{
 		List<CargoBayCluster> list = new List<CargoBayCluster>();
 		foreach (Ref<RocketModuleCluster> @ref in this.m_moduleInterface.ClusterModules)
@@ -498,7 +516,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		return list;
 	}
 
-	public void DestroyCraftAndModules()
+		public void DestroyCraftAndModules()
 	{
 		WorldContainer interiorWorld = this.m_moduleInterface.GetInteriorWorld();
 		if (interiorWorld != null)
@@ -529,7 +547,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	public void CancelLaunch()
+		public void CancelLaunch()
 	{
 		if (this.LaunchRequested)
 		{
@@ -538,7 +556,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-	public void RequestLaunch(bool automated = false)
+		public void RequestLaunch(bool automated = false)
 	{
 		if (this.HasTag(GameTags.RocketNotOnGround) || this.m_moduleInterface.GetClusterDestinationSelector().IsAtDestination())
 		{
@@ -557,10 +575,14 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 			return;
 		}
 		global::Debug.Log("Triggering launch!");
+		if (this.m_moduleInterface.GetRobotPilotModule() != null)
+		{
+			this.Launch(automated);
+		}
 		this.LaunchRequested = true;
 	}
 
-	public void Launch(bool automated = false)
+		public void Launch(bool automated = false)
 	{
 		if (this.HasTag(GameTags.RocketNotOnGround) || this.m_moduleInterface.GetClusterDestinationSelector().IsAtDestination())
 		{
@@ -584,12 +606,12 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		this.UpdateStatusItem();
 	}
 
-	public void LandAtPad(LaunchPad pad)
+		public void LandAtPad(LaunchPad pad)
 	{
 		this.m_moduleInterface.GetClusterDestinationSelector().SetDestinationPad(pad);
 	}
 
-	public Clustercraft.PadLandingStatus CanLandAtPad(LaunchPad pad, out string failReason)
+		public Clustercraft.PadLandingStatus CanLandAtPad(LaunchPad pad, out string failReason)
 	{
 		if (pad == null)
 		{
@@ -644,7 +666,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		return Clustercraft.PadLandingStatus.CanLandImmediately;
 	}
 
-	private LaunchPad FindValidLandingPad(AxialI location, bool mustLandImmediately)
+		private LaunchPad FindValidLandingPad(AxialI location, bool mustLandImmediately)
 	{
 		LaunchPad result = null;
 		int asteroidWorldIdAtLocation = ClusterUtil.GetAsteroidWorldIdAtLocation(location);
@@ -674,7 +696,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		return result;
 	}
 
-	public bool CanLandAtAsteroid(AxialI location, bool mustLandImmediately)
+		public bool CanLandAtAsteroid(AxialI location, bool mustLandImmediately)
 	{
 		LaunchPad destinationPad = this.m_moduleInterface.GetClusterDestinationSelector().GetDestinationPad();
 		global::Debug.Assert(destinationPad == null || destinationPad.GetMyWorldLocation() == location, "A rocket is trying to travel to an asteroid but has selected a landing pad at a different asteroid!");
@@ -687,7 +709,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		return this.FindValidLandingPad(location, mustLandImmediately) != null;
 	}
 
-	private void Land(LaunchPad pad, bool forceGrounded)
+		private void Land(LaunchPad pad, bool forceGrounded)
 	{
 		string text;
 		if (this.CanLandAtPad(pad, out text) != Clustercraft.PadLandingStatus.CanLandImmediately)
@@ -701,7 +723,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		this.UpdateStatusItem();
 	}
 
-	private void Land(AxialI destination, LaunchPad chosenPad)
+		private void Land(AxialI destination, LaunchPad chosenPad)
 	{
 		if (chosenPad == null)
 		{
@@ -711,7 +733,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		this.Land(chosenPad, false);
 	}
 
-	public void UpdateStatusItem()
+		public void UpdateStatusItem()
 	{
 		if (ClusterGrid.Instance == null)
 		{
@@ -798,7 +820,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		this.cargoStatusHandle = this.selectable.AddStatusItem(Db.Get().BuildingStatusItems.FlightCargoRemaining, num2);
 	}
 
-	private void UpdateGroundTags()
+		private void UpdateGroundTags()
 	{
 		foreach (Ref<RocketModuleCluster> @ref in this.ModuleInterface.ClusterModules)
 		{
@@ -810,7 +832,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		this.UpdateGroundTags(base.gameObject);
 	}
 
-	private void UpdateGroundTags(GameObject go)
+		private void UpdateGroundTags(GameObject go)
 	{
 		this.SetTagOnGameObject(go, GameTags.RocketOnGround, this.status == Clustercraft.CraftStatus.Grounded);
 		this.SetTagOnGameObject(go, GameTags.RocketNotOnGround, this.status > Clustercraft.CraftStatus.Grounded);
@@ -818,7 +840,7 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		this.SetTagOnGameObject(go, GameTags.EntityInSpace, this.status == Clustercraft.CraftStatus.InFlight);
 	}
 
-	private void SetTagOnGameObject(GameObject go, Tag tag, bool set)
+		private void SetTagOnGameObject(GameObject go, Tag tag, bool set)
 	{
 		if (set)
 		{
@@ -828,32 +850,32 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		go.RemoveTag(tag);
 	}
 
-	public override bool ShowName()
+		public override bool ShowName()
 	{
 		return this.status > Clustercraft.CraftStatus.Grounded;
 	}
 
-	public override bool ShowPath()
+		public override bool ShowPath()
 	{
 		return this.status > Clustercraft.CraftStatus.Grounded;
 	}
 
-	public bool IsTravellingAndFueled()
+		public bool IsTravellingAndFueled()
 	{
 		return this.HasResourcesToMove(1, Clustercraft.CombustionResource.All) && this.m_clusterTraveler.IsTraveling();
 	}
 
-	public override bool ShowProgressBar()
+		public override bool ShowProgressBar()
 	{
 		return this.IsTravellingAndFueled();
 	}
 
-	public override float GetProgress()
+		public override float GetProgress()
 	{
 		return this.m_clusterTraveler.GetMoveProgress();
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (this.Status != Clustercraft.CraftStatus.Grounded && SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 27))
@@ -889,32 +911,32 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	}
 
-	public float GetRange()
+		public float GetRange()
 	{
 		return this.ModuleInterface.Range;
 	}
 
-	public int GetRangeInTiles()
+		public int GetRangeInTiles()
 	{
 		return this.ModuleInterface.RangeInTiles;
 	}
 
-	[Serialize]
+		[Serialize]
 	private string m_name;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ClusterTraveler m_clusterTraveler;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private CraftModuleInterface m_moduleInterface;
 
-	private Guid mainStatusHandle;
+		private Guid mainStatusHandle;
 
-	private Guid cargoStatusHandle;
+		private Guid cargoStatusHandle;
 
-	private Guid missionControlStatusHandle = Guid.Empty;
+		private Guid missionControlStatusHandle = Guid.Empty;
 
-	public static Dictionary<Tag, float> dlc1OxidizerEfficiencies = new Dictionary<Tag, float>
+		public static Dictionary<Tag, float> dlc1OxidizerEfficiencies = new Dictionary<Tag, float>
 	{
 		{
 			SimHashes.OxyRock.CreateTag(),
@@ -930,65 +952,65 @@ public class Clustercraft : ClusterGridEntity, IClusterRange, ISim4000ms, ISim10
 		}
 	};
 
-	[Serialize]
+		[Serialize]
 	[Range(0f, 1f)]
 	public float AutoPilotMultiplier = 1f;
 
-	[Serialize]
+		[Serialize]
 	[Range(0f, 2f)]
 	public float PilotSkillMultiplier = 1f;
 
-	[Serialize]
+		[Serialize]
 	public float controlStationBuffTimeRemaining;
 
-	[Serialize]
+		[Serialize]
 	private bool m_launchRequested;
 
-	[Serialize]
+		[Serialize]
 	private Clustercraft.CraftStatus status;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KSelectable selectable;
 
-	private static EventSystem.IntraObjectHandler<Clustercraft> RocketModuleChangedHandler = new EventSystem.IntraObjectHandler<Clustercraft>(delegate(Clustercraft cmp, object data)
+		private static EventSystem.IntraObjectHandler<Clustercraft> RocketModuleChangedHandler = new EventSystem.IntraObjectHandler<Clustercraft>(delegate(Clustercraft cmp, object data)
 	{
 		cmp.RocketModuleChanged(data);
 	});
 
-	private static EventSystem.IntraObjectHandler<Clustercraft> ClusterDestinationChangedHandler = new EventSystem.IntraObjectHandler<Clustercraft>(delegate(Clustercraft cmp, object data)
+		private static EventSystem.IntraObjectHandler<Clustercraft> ClusterDestinationChangedHandler = new EventSystem.IntraObjectHandler<Clustercraft>(delegate(Clustercraft cmp, object data)
 	{
 		cmp.OnClusterDestinationChanged(data);
 	});
 
-	private static EventSystem.IntraObjectHandler<Clustercraft> ClusterDestinationReachedHandler = new EventSystem.IntraObjectHandler<Clustercraft>(delegate(Clustercraft cmp, object data)
+		private static EventSystem.IntraObjectHandler<Clustercraft> ClusterDestinationReachedHandler = new EventSystem.IntraObjectHandler<Clustercraft>(delegate(Clustercraft cmp, object data)
 	{
 		cmp.OnClusterDestinationReached(data);
 	});
 
-	private static EventSystem.IntraObjectHandler<Clustercraft> NameChangedHandler = new EventSystem.IntraObjectHandler<Clustercraft>(delegate(Clustercraft cmp, object data)
+		private static EventSystem.IntraObjectHandler<Clustercraft> NameChangedHandler = new EventSystem.IntraObjectHandler<Clustercraft>(delegate(Clustercraft cmp, object data)
 	{
 		cmp.SetRocketName(data);
 	});
 
-	public enum CraftStatus
+		public enum CraftStatus
 	{
-		Grounded,
-		Launching,
-		InFlight,
-		Landing
+				Grounded,
+				Launching,
+				InFlight,
+				Landing
 	}
 
-	public enum CombustionResource
+		public enum CombustionResource
 	{
-		Fuel,
-		Oxidizer,
-		All
+				Fuel,
+				Oxidizer,
+				All
 	}
 
-	public enum PadLandingStatus
+		public enum PadLandingStatus
 	{
-		CanLandImmediately,
-		CanLandEventually,
-		CanNeverLand
+				CanLandImmediately,
+				CanLandEventually,
+				CanNeverLand
 	}
 }

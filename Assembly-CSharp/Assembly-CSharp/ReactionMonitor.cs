@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ReactionMonitor : GameStateMachine<ReactionMonitor, ReactionMonitor.Instance, IStateMachineTarget, ReactionMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.idle;
 		base.serializable = StateMachine.SerializeType.Never;
@@ -51,41 +51,41 @@ public class ReactionMonitor : GameStateMachine<ReactionMonitor, ReactionMonitor
 		this.dead.DoNothing();
 	}
 
-	private static bool ShouldReact(ReactionMonitor.Instance smi)
+		private static bool ShouldReact(ReactionMonitor.Instance smi)
 	{
 		return smi.ImmediateReactable != null;
 	}
 
-	public GameStateMachine<ReactionMonitor, ReactionMonitor.Instance, IStateMachineTarget, ReactionMonitor.Def>.State idle;
+		public GameStateMachine<ReactionMonitor, ReactionMonitor.Instance, IStateMachineTarget, ReactionMonitor.Def>.State idle;
 
-	public GameStateMachine<ReactionMonitor, ReactionMonitor.Instance, IStateMachineTarget, ReactionMonitor.Def>.State reacting;
+		public GameStateMachine<ReactionMonitor, ReactionMonitor.Instance, IStateMachineTarget, ReactionMonitor.Def>.State reacting;
 
-	public GameStateMachine<ReactionMonitor, ReactionMonitor.Instance, IStateMachineTarget, ReactionMonitor.Def>.State dead;
+		public GameStateMachine<ReactionMonitor, ReactionMonitor.Instance, IStateMachineTarget, ReactionMonitor.Def>.State dead;
 
-	public StateMachine<ReactionMonitor, ReactionMonitor.Instance, IStateMachineTarget, ReactionMonitor.Def>.ObjectParameter<Reactable> reactable;
+		public StateMachine<ReactionMonitor, ReactionMonitor.Instance, IStateMachineTarget, ReactionMonitor.Def>.ObjectParameter<Reactable> reactable;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public ObjectLayer ReactionLayer;
+				public ObjectLayer ReactionLayer;
 	}
 
-	public new class Instance : GameStateMachine<ReactionMonitor, ReactionMonitor.Instance, IStateMachineTarget, ReactionMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<ReactionMonitor, ReactionMonitor.Instance, IStateMachineTarget, ReactionMonitor.Def>.GameInstance
 	{
-						public Reactable ImmediateReactable { get; private set; }
+								public Reactable ImmediateReactable { get; private set; }
 
-		public Instance(IStateMachineTarget master, ReactionMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ReactionMonitor.Def def) : base(master, def)
 		{
 			this.animController = base.GetComponent<KBatchedAnimController>();
 			this.lastReactTimes = new Dictionary<HashedString, float>();
 			this.oneshotReactables = new List<Reactable>();
 		}
 
-		public bool CanReact(Emote e)
+				public bool CanReact(Emote e)
 		{
 			return this.animController != null && e.IsValidForController(this.animController);
 		}
 
-		public bool TryReact(Reactable reactable, float clockTime, Navigator.ActiveTransition transition = null)
+				public bool TryReact(Reactable reactable, float clockTime, Navigator.ActiveTransition transition = null)
 		{
 			if (reactable == null)
 			{
@@ -106,7 +106,7 @@ public class ReactionMonitor : GameStateMachine<ReactionMonitor, ReactionMonitor
 			return true;
 		}
 
-		public void PollForReactables(Navigator.ActiveTransition transition)
+				public void PollForReactables(Navigator.ActiveTransition transition)
 		{
 			if (this.IsReacting())
 			{
@@ -140,12 +140,12 @@ public class ReactionMonitor : GameStateMachine<ReactionMonitor, ReactionMonitor
 			pooledList.Recycle();
 		}
 
-		public void ClearLastReaction()
+				public void ClearLastReaction()
 		{
 			this.lastReaction = float.NaN;
 		}
 
-		public void StopReaction()
+				public void StopReaction()
 		{
 			for (int i = this.oneshotReactables.Count - 1; i >= 0; i--)
 			{
@@ -159,12 +159,12 @@ public class ReactionMonitor : GameStateMachine<ReactionMonitor, ReactionMonitor
 			base.smi.GoTo(base.sm.idle);
 		}
 
-		public bool IsReacting()
+				public bool IsReacting()
 		{
 			return base.smi.IsInsideState(base.sm.reacting);
 		}
 
-		public SelfEmoteReactable AddSelfEmoteReactable(GameObject target, HashedString reactionId, Emote emote, bool isOneShot, ChoreType choreType, float globalCooldown = 0f, float localCooldown = 20f, float lifeSpan = float.NegativeInfinity, float maxInitialDelay = 0f, List<Reactable.ReactablePrecondition> emotePreconditions = null)
+				public SelfEmoteReactable AddSelfEmoteReactable(GameObject target, HashedString reactionId, Emote emote, bool isOneShot, ChoreType choreType, float globalCooldown = 0f, float localCooldown = 20f, float lifeSpan = float.NegativeInfinity, float maxInitialDelay = 0f, List<Reactable.ReactablePrecondition> emotePreconditions = null)
 		{
 			if (!this.CanReact(emote))
 			{
@@ -185,7 +185,7 @@ public class ReactionMonitor : GameStateMachine<ReactionMonitor, ReactionMonitor
 			return selfEmoteReactable;
 		}
 
-		public SelfEmoteReactable AddSelfEmoteReactable(GameObject target, string reactionId, string emoteAnim, bool isOneShot, ChoreType choreType, float globalCooldown = 0f, float localCooldown = 20f, float maxTriggerTime = float.NegativeInfinity, float maxInitialDelay = 0f, List<Reactable.ReactablePrecondition> emotePreconditions = null)
+				public SelfEmoteReactable AddSelfEmoteReactable(GameObject target, string reactionId, string emoteAnim, bool isOneShot, ChoreType choreType, float globalCooldown = 0f, float localCooldown = 20f, float maxTriggerTime = float.NegativeInfinity, float maxInitialDelay = 0f, List<Reactable.ReactablePrecondition> emotePreconditions = null)
 		{
 			Emote emote = new Emote(null, reactionId, new EmoteStep[]
 			{
@@ -197,7 +197,7 @@ public class ReactionMonitor : GameStateMachine<ReactionMonitor, ReactionMonitor
 			return this.AddSelfEmoteReactable(target, reactionId, emote, isOneShot, choreType, globalCooldown, localCooldown, maxTriggerTime, maxInitialDelay, emotePreconditions);
 		}
 
-		public void AddOneshotReactable(SelfEmoteReactable reactable)
+				public void AddOneshotReactable(SelfEmoteReactable reactable)
 		{
 			if (reactable == null)
 			{
@@ -206,7 +206,7 @@ public class ReactionMonitor : GameStateMachine<ReactionMonitor, ReactionMonitor
 			this.oneshotReactables.Add(reactable);
 		}
 
-		public void CancelOneShotReactable(SelfEmoteReactable cancel_target)
+				public void CancelOneShotReactable(SelfEmoteReactable cancel_target)
 		{
 			for (int i = this.oneshotReactables.Count - 1; i >= 0; i--)
 			{
@@ -220,7 +220,7 @@ public class ReactionMonitor : GameStateMachine<ReactionMonitor, ReactionMonitor
 			}
 		}
 
-		public void CancelOneShotReactables(Emote reactionEmote)
+				public void CancelOneShotReactables(Emote reactionEmote)
 		{
 			for (int i = this.oneshotReactables.Count - 1; i >= 0; i--)
 			{
@@ -233,12 +233,12 @@ public class ReactionMonitor : GameStateMachine<ReactionMonitor, ReactionMonitor
 			}
 		}
 
-		private KBatchedAnimController animController;
+				private KBatchedAnimController animController;
 
-		private float lastReaction = float.NaN;
+				private float lastReaction = float.NaN;
 
-		private Dictionary<HashedString, float> lastReactTimes;
+				private Dictionary<HashedString, float> lastReactTimes;
 
-		private List<Reactable> oneshotReactables;
+				private List<Reactable> oneshotReactables;
 	}
 }

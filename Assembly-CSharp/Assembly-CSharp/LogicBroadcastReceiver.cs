@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LogicBroadcastReceiver : KMonoBehaviour, ISimEveryTick
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe(-592767678, new Action<object>(this.OnOperationalChanged));
@@ -16,7 +16,7 @@ public class LogicBroadcastReceiver : KMonoBehaviour, ISimEveryTick
 		this.OnOperationalChanged(null);
 	}
 
-	public void SimEveryTick(float dt)
+		public void SimEveryTick(float dt)
 	{
 		bool flag = this.IsSpaceVisible();
 		this.operational.SetFlag(LogicBroadcastReceiver.spaceVisible, flag);
@@ -40,22 +40,22 @@ public class LogicBroadcastReceiver : KMonoBehaviour, ISimEveryTick
 		}
 	}
 
-	public bool IsSpaceVisible()
+		public bool IsSpaceVisible()
 	{
 		return base.gameObject.GetMyWorld().IsModuleInterior || Grid.ExposedToSunlight[Grid.PosToCell(base.gameObject)] > 0;
 	}
 
-	private bool CheckChannelValid()
+		private bool CheckChannelValid()
 	{
 		return this.channel.Get() != null && this.channel.Get().GetComponent<LogicPorts>().inputPorts != null;
 	}
 
-	public LogicBroadcaster GetChannel()
+		public LogicBroadcaster GetChannel()
 	{
 		return this.channel.Get();
 	}
 
-	public void SetChannel(LogicBroadcaster broadcaster)
+		public void SetChannel(LogicBroadcaster broadcaster)
 	{
 		this.ClearChannel();
 		if (broadcaster == null)
@@ -69,7 +69,7 @@ public class LogicBroadcastReceiver : KMonoBehaviour, ISimEveryTick
 		this.SyncWithBroadcast();
 	}
 
-	private void ClearChannel()
+		private void ClearChannel()
 	{
 		if (this.CheckChannelValid())
 		{
@@ -81,7 +81,7 @@ public class LogicBroadcastReceiver : KMonoBehaviour, ISimEveryTick
 		this.channelEventListeners.Clear();
 	}
 
-	private void OnChannelLogicEvent(object data)
+		private void OnChannelLogicEvent(object data)
 	{
 		if (!this.channel.Get().GetComponent<Operational>().IsOperational)
 		{
@@ -90,7 +90,7 @@ public class LogicBroadcastReceiver : KMonoBehaviour, ISimEveryTick
 		this.SyncWithBroadcast();
 	}
 
-	private void SyncWithBroadcast()
+		private void SyncWithBroadcast()
 	{
 		if (!this.CheckChannelValid())
 		{
@@ -106,12 +106,12 @@ public class LogicBroadcastReceiver : KMonoBehaviour, ISimEveryTick
 		this.syncToChannelComplete = true;
 	}
 
-	public static bool CheckRange(GameObject broadcaster, GameObject receiver)
+		public static bool CheckRange(GameObject broadcaster, GameObject receiver)
 	{
 		return AxialUtil.GetDistance(broadcaster.GetMyWorldLocation(), receiver.GetMyWorldLocation()) <= LogicBroadcaster.RANGE;
 	}
 
-	private void UpdateRangeStatus(bool inRange)
+		private void UpdateRangeStatus(bool inRange)
 	{
 		if (!inRange && this.rangeStatusItem == Guid.Empty)
 		{
@@ -126,7 +126,7 @@ public class LogicBroadcastReceiver : KMonoBehaviour, ISimEveryTick
 		}
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		if (this.operational.IsOperational)
 		{
@@ -146,34 +146,34 @@ public class LogicBroadcastReceiver : KMonoBehaviour, ISimEveryTick
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.ClearChannel();
 		base.OnCleanUp();
 	}
 
-	[Serialize]
+		[Serialize]
 	private Ref<LogicBroadcaster> channel = new Ref<LogicBroadcaster>();
 
-	public string PORT_ID = "";
+		public string PORT_ID = "";
 
-	private List<int> channelEventListeners = new List<int>();
+		private List<int> channelEventListeners = new List<int>();
 
-	private bool syncToChannelComplete;
+		private bool syncToChannelComplete;
 
-	public static readonly Operational.Flag spaceVisible = new Operational.Flag("spaceVisible", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag spaceVisible = new Operational.Flag("spaceVisible", Operational.Flag.Type.Requirement);
 
-	public static readonly Operational.Flag validChannelInRange = new Operational.Flag("validChannelInRange", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag validChannelInRange = new Operational.Flag("validChannelInRange", Operational.Flag.Type.Requirement);
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private bool wasOperational;
+		private bool wasOperational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimController animController;
 
-	private Guid rangeStatusItem = Guid.Empty;
+		private Guid rangeStatusItem = Guid.Empty;
 
-	private Guid spaceNotVisibleStatusItem = Guid.Empty;
+		private Guid spaceNotVisibleStatusItem = Guid.Empty;
 }

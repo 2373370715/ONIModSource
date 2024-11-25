@@ -2,7 +2,7 @@
 
 public class NonEssentialEnergyConsumer : EnergyConsumer
 {
-			public override bool IsPowered
+				public override bool IsPowered
 	{
 		get
 		{
@@ -24,7 +24,7 @@ public class NonEssentialEnergyConsumer : EnergyConsumer
 		}
 	}
 
-	public Action<bool> PoweredStateChanged;
+		public Action<bool> PoweredStateChanged;
 
-	private bool isPowered;
+		private bool isPowered;
 }

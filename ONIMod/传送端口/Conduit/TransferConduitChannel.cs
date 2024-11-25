@@ -1,4 +1,6 @@
-﻿public class TransferConduitChannel : SingleChannelController {
+﻿namespace RsTransferPort;
+
+public class TransferConduitChannel : SingleChannelController {
     public PriorityChannelItemList receiverPriorityList = new();
     public PriorityChannelItemList senderPriorityList   = new();
 

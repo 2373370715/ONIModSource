@@ -1,97 +1,61 @@
-﻿using System;
+﻿public class SimpleDoorController
+    : GameStateMachine<SimpleDoorController, SimpleDoorController.StatesInstance, IStateMachineTarget,
+        SimpleDoorController.Def> {
+    public ActiveStates active;
+    public State        inactive;
+    public IntParameter numOpens;
 
-public class SimpleDoorController : GameStateMachine<SimpleDoorController, SimpleDoorController.StatesInstance, IStateMachineTarget, SimpleDoorController.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.inactive;
-		this.inactive.TagTransition(GameTags.RocketOnGround, this.active, false);
-		this.active.DefaultState(this.active.closed).TagTransition(GameTags.RocketOnGround, this.inactive, true).Enter(delegate(SimpleDoorController.StatesInstance smi)
-		{
-			smi.Register();
-		}).Exit(delegate(SimpleDoorController.StatesInstance smi)
-		{
-			smi.Unregister();
-		});
-		this.active.closed.PlayAnim((SimpleDoorController.StatesInstance smi) => smi.GetDefaultAnim(), KAnim.PlayMode.Loop).ParamTransition<int>(this.numOpens, this.active.opening, (SimpleDoorController.StatesInstance smi, int p) => p > 0);
-		this.active.opening.PlayAnim("enter_pre", KAnim.PlayMode.Once).OnAnimQueueComplete(this.active.open);
-		this.active.open.PlayAnim("enter_loop", KAnim.PlayMode.Loop).ParamTransition<int>(this.numOpens, this.active.closedelay, (SimpleDoorController.StatesInstance smi, int p) => p == 0);
-		this.active.closedelay.ParamTransition<int>(this.numOpens, this.active.open, (SimpleDoorController.StatesInstance smi, int p) => p > 0).ScheduleGoTo(0.5f, this.active.closing);
-		this.active.closing.PlayAnim("enter_pst", KAnim.PlayMode.Once).OnAnimQueueComplete(this.active.closed);
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = inactive;
+        inactive.TagTransition(GameTags.RocketOnGround, active);
+        active.DefaultState(active.closed)
+              .TagTransition(GameTags.RocketOnGround, inactive, true)
+              .Enter(delegate(StatesInstance smi) { smi.Register(); })
+              .Exit(delegate(StatesInstance  smi) { smi.Unregister(); });
 
-	public GameStateMachine<SimpleDoorController, SimpleDoorController.StatesInstance, IStateMachineTarget, SimpleDoorController.Def>.State inactive;
+        active.closed.PlayAnim(smi => smi.GetDefaultAnim(), KAnim.PlayMode.Loop)
+              .ParamTransition(numOpens, active.opening, (smi, p) => p > 0);
 
-	public SimpleDoorController.ActiveStates active;
+        active.opening.PlayAnim("enter_pre", KAnim.PlayMode.Once).OnAnimQueueComplete(active.open);
+        active.open.PlayAnim("enter_loop", KAnim.PlayMode.Loop)
+              .ParamTransition(numOpens, active.closedelay, (smi, p) => p == 0);
 
-	public StateMachine<SimpleDoorController, SimpleDoorController.StatesInstance, IStateMachineTarget, SimpleDoorController.Def>.IntParameter numOpens;
+        active.closedelay.ParamTransition(numOpens, active.open, (smi, p) => p > 0).ScheduleGoTo(0.5f, active.closing);
+        active.closing.PlayAnim("enter_pst", KAnim.PlayMode.Once).OnAnimQueueComplete(active.closed);
+    }
 
-	public class Def : StateMachine.BaseDef
-	{
-	}
+    public class Def : BaseDef { }
 
-	public class ActiveStates : GameStateMachine<SimpleDoorController, SimpleDoorController.StatesInstance, IStateMachineTarget, SimpleDoorController.Def>.State
-	{
-		public GameStateMachine<SimpleDoorController, SimpleDoorController.StatesInstance, IStateMachineTarget, SimpleDoorController.Def>.State closed;
+    public class ActiveStates : State {
+        public State closed;
+        public State closedelay;
+        public State closing;
+        public State open;
+        public State opening;
+    }
 
-		public GameStateMachine<SimpleDoorController, SimpleDoorController.StatesInstance, IStateMachineTarget, SimpleDoorController.Def>.State opening;
+    public class StatesInstance : GameInstance, INavDoor {
+        public StatesInstance(IStateMachineTarget master, Def def) : base(master, def) { }
+        public bool isSpawned => master.gameObject.GetComponent<KMonoBehaviour>().isSpawned;
+        public void Close()   { sm.numOpens.Delta(-1, smi); }
+        public bool IsOpen()  { return IsInsideState(sm.active.open) || IsInsideState(sm.active.closedelay); }
+        public void Open()    { sm.numOpens.Delta(1, smi); }
 
-		public GameStateMachine<SimpleDoorController, SimpleDoorController.StatesInstance, IStateMachineTarget, SimpleDoorController.Def>.State open;
+        public string GetDefaultAnim() {
+            var component = master.GetComponent<KBatchedAnimController>();
+            if (component != null) return component.initialAnim;
 
-		public GameStateMachine<SimpleDoorController, SimpleDoorController.StatesInstance, IStateMachineTarget, SimpleDoorController.Def>.State closedelay;
+            return "idle_loop";
+        }
 
-		public GameStateMachine<SimpleDoorController, SimpleDoorController.StatesInstance, IStateMachineTarget, SimpleDoorController.Def>.State closing;
-	}
+        public void Register() {
+            var i = Grid.PosToCell(gameObject.transform.GetPosition());
+            Grid.HasDoor[i] = true;
+        }
 
-	public class StatesInstance : GameStateMachine<SimpleDoorController, SimpleDoorController.StatesInstance, IStateMachineTarget, SimpleDoorController.Def>.GameInstance, INavDoor
-	{
-		public StatesInstance(IStateMachineTarget master, SimpleDoorController.Def def) : base(master, def)
-		{
-		}
-
-		public string GetDefaultAnim()
-		{
-			KBatchedAnimController component = base.master.GetComponent<KBatchedAnimController>();
-			if (component != null)
-			{
-				return component.initialAnim;
-			}
-			return "idle_loop";
-		}
-
-		public void Register()
-		{
-			int i = Grid.PosToCell(base.gameObject.transform.GetPosition());
-			Grid.HasDoor[i] = true;
-		}
-
-		public void Unregister()
-		{
-			int i = Grid.PosToCell(base.gameObject.transform.GetPosition());
-			Grid.HasDoor[i] = false;
-		}
-
-				public bool isSpawned
-		{
-			get
-			{
-				return base.master.gameObject.GetComponent<KMonoBehaviour>().isSpawned;
-			}
-		}
-
-		public void Close()
-		{
-			base.sm.numOpens.Delta(-1, base.smi);
-		}
-
-		public bool IsOpen()
-		{
-			return base.IsInsideState(base.sm.active.open) || base.IsInsideState(base.sm.active.closedelay);
-		}
-
-		public void Open()
-		{
-			base.sm.numOpens.Delta(1, base.smi);
-		}
-	}
+        public void Unregister() {
+            var i = Grid.PosToCell(gameObject.transform.GetPosition());
+            Grid.HasDoor[i] = false;
+        }
+    }
 }

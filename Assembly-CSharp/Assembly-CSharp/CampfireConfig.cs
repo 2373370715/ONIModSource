@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class CampfireConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_DLC_2;
+		return DlcManager.DLC2;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Campfire";
 		int width = 1;
@@ -40,7 +40,7 @@ public class CampfireConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -100,21 +100,21 @@ public class CampfireConfig : IBuildingConfig
 		directVolumeHeater.maximumExternalTemperature = 343.15f;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		this.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		this.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	private void AddVisualizer(GameObject go)
+		private void AddVisualizer(GameObject go)
 	{
 		RangeVisualizer rangeVisualizer = go.AddOrGet<RangeVisualizer>();
 		rangeVisualizer.RangeMax = new Vector2I(4, 3);
@@ -123,27 +123,27 @@ public class CampfireConfig : IBuildingConfig
 		go.AddOrGet<EntityCellVisualizer>().AddPort(EntityCellVisualizer.Ports.HeatSource, default(CellOffset));
 	}
 
-	public const string ID = "Campfire";
+		public const string ID = "Campfire";
 
-	public const int RANGE_X = 4;
+		public const int RANGE_X = 4;
 
-	public const int RANGE_Y = 3;
+		public const int RANGE_Y = 3;
 
-	public static Tag FUEL_TAG = SimHashes.WoodLog.ToString();
+		public static Tag FUEL_TAG = SimHashes.WoodLog.ToString();
 
-	public const float FUEL_CONSUMPTION_RATE = 0.025f;
+		public const float FUEL_CONSUMPTION_RATE = 0.025f;
 
-	public const float FUEL_CONSTRUCTION_MASS = 5f;
+		public const float FUEL_CONSTRUCTION_MASS = 5f;
 
-	public const float FUEL_CAPACITY = 45f;
+		public const float FUEL_CAPACITY = 45f;
 
-	public const float EXHAUST_RATE = 0.004f;
+		public const float EXHAUST_RATE = 0.004f;
 
-	public const SimHashes EXHAUST_TAG = SimHashes.CarbonDioxide;
+		public const SimHashes EXHAUST_TAG = SimHashes.CarbonDioxide;
 
-	private const float EXHAUST_TEMPERATURE = 303.15f;
+		private const float EXHAUST_TEMPERATURE = 303.15f;
 
-	public static readonly EffectorValues DECOR_ON = BUILDINGS.DECOR.BONUS.TIER3;
+		public static readonly EffectorValues DECOR_ON = BUILDINGS.DECOR.BONUS.TIER3;
 
-	public static readonly EffectorValues DECOR_OFF = BUILDINGS.DECOR.NONE;
+		public static readonly EffectorValues DECOR_OFF = BUILDINGS.DECOR.NONE;
 }

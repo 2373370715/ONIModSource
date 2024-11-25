@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-
+namespace RsTransferPort;
 
 [CreateAssetMenu(fileName = "LineCenterAsset", menuName = "TransferPor/Line Center Asset", order = 1)]
 public class LineCenterAsset : ScriptableObject {

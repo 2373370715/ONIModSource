@@ -2,5 +2,5 @@
 
 public interface IListableOption
 {
-	string GetProperName();
+		string GetProperName();
 }

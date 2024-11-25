@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class CustomClothingOutfits
 {
-		public static CustomClothingOutfits Instance
+			public static CustomClothingOutfits Instance
 	{
 		get
 		{
@@ -15,17 +15,17 @@ public class CustomClothingOutfits
 		}
 	}
 
-	public SerializableOutfitData.Version2 Internal_GetOutfitData()
+		public SerializableOutfitData.Version2 Internal_GetOutfitData()
 	{
 		return this.serializableOutfitData;
 	}
 
-	public void Internal_SetOutfitData(SerializableOutfitData.Version2 data)
+		public void Internal_SetOutfitData(SerializableOutfitData.Version2 data)
 	{
 		this.serializableOutfitData = data;
 	}
 
-	public void Internal_EditOutfit(ClothingOutfitUtility.OutfitType outfit_type, string outfit_name, string[] outfit_items)
+		public void Internal_EditOutfit(ClothingOutfitUtility.OutfitType outfit_type, string outfit_name, string[] outfit_items)
 	{
 		SerializableOutfitData.Version2.CustomTemplateOutfitEntry customTemplateOutfitEntry;
 		if (!this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.TryGetValue(outfit_name, out customTemplateOutfitEntry))
@@ -58,7 +58,7 @@ public class CustomClothingOutfits
 		ClothingOutfitUtility.SaveClothingOutfitData();
 	}
 
-	public void Internal_RenameOutfit(ClothingOutfitUtility.OutfitType outfit_type, string old_outfit_name, string new_outfit_name)
+		public void Internal_RenameOutfit(ClothingOutfitUtility.OutfitType outfit_type, string old_outfit_name, string new_outfit_name)
 	{
 		if (!this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.ContainsKey(old_outfit_name))
 		{
@@ -87,20 +87,20 @@ public class CustomClothingOutfits
 			}));
 		}
 		this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.Add(new_outfit_name, this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit[old_outfit_name]);
-		foreach (KeyValuePair<string, Dictionary<string, string>> self in this.serializableOutfitData.PersonalityIdToAssignedOutfits)
+		foreach (KeyValuePair<string, Dictionary<string, string>> keyValuePair in this.serializableOutfitData.PersonalityIdToAssignedOutfits)
 		{
 			string text;
 			Dictionary<string, string> dictionary;
-			self.Deconstruct(out text, out dictionary);
+			keyValuePair.Deconstruct(out text, out dictionary);
 			Dictionary<string, string> dictionary2 = dictionary;
 			if (dictionary2 != null)
 			{
 				using (ListPool<string, CustomClothingOutfits>.PooledList pooledList = PoolsFor<CustomClothingOutfits>.AllocateList<string>())
 				{
-					foreach (KeyValuePair<string, string> self2 in dictionary2)
+					foreach (KeyValuePair<string, string> keyValuePair2 in dictionary2)
 					{
 						string a;
-						self2.Deconstruct(out text, out a);
+						keyValuePair2.Deconstruct(out text, out a);
 						string item = text;
 						if (a == old_outfit_name)
 						{
@@ -118,24 +118,24 @@ public class CustomClothingOutfits
 		ClothingOutfitUtility.SaveClothingOutfitData();
 	}
 
-	public void Internal_RemoveOutfit(ClothingOutfitUtility.OutfitType outfit_type, string outfit_name)
+		public void Internal_RemoveOutfit(ClothingOutfitUtility.OutfitType outfit_type, string outfit_name)
 	{
 		if (this.serializableOutfitData.OutfitIdToUserAuthoredTemplateOutfit.Remove(outfit_name))
 		{
-			foreach (KeyValuePair<string, Dictionary<string, string>> self in this.serializableOutfitData.PersonalityIdToAssignedOutfits)
+			foreach (KeyValuePair<string, Dictionary<string, string>> keyValuePair in this.serializableOutfitData.PersonalityIdToAssignedOutfits)
 			{
 				string text;
 				Dictionary<string, string> dictionary;
-				self.Deconstruct(out text, out dictionary);
+				keyValuePair.Deconstruct(out text, out dictionary);
 				Dictionary<string, string> dictionary2 = dictionary;
 				if (dictionary2 != null)
 				{
 					using (ListPool<string, CustomClothingOutfits>.PooledList pooledList = PoolsFor<CustomClothingOutfits>.AllocateList<string>())
 					{
-						foreach (KeyValuePair<string, string> self2 in dictionary2)
+						foreach (KeyValuePair<string, string> keyValuePair2 in dictionary2)
 						{
 							string a;
-							self2.Deconstruct(out text, out a);
+							keyValuePair2.Deconstruct(out text, out a);
 							string item = text;
 							if (a == outfit_name)
 							{
@@ -153,7 +153,7 @@ public class CustomClothingOutfits
 		}
 	}
 
-	public bool Internal_TryGetDuplicantPersonalityOutfit(ClothingOutfitUtility.OutfitType outfit_type, string personalityId, out string outfitId)
+		public bool Internal_TryGetDuplicantPersonalityOutfit(ClothingOutfitUtility.OutfitType outfit_type, string personalityId, out string outfitId)
 	{
 		if (this.serializableOutfitData.PersonalityIdToAssignedOutfits.ContainsKey(personalityId))
 		{
@@ -168,7 +168,7 @@ public class CustomClothingOutfits
 		return false;
 	}
 
-	public void Internal_SetDuplicantPersonalityOutfit(ClothingOutfitUtility.OutfitType outfit_type, string personalityId, Option<string> outfit_id)
+		public void Internal_SetDuplicantPersonalityOutfit(ClothingOutfitUtility.OutfitType outfit_type, string personalityId, Option<string> outfit_id)
 	{
 		string name = Enum.GetName(typeof(ClothingOutfitUtility.OutfitType), outfit_type);
 		Dictionary<string, string> dictionary;
@@ -191,7 +191,7 @@ public class CustomClothingOutfits
 		ClothingOutfitUtility.SaveClothingOutfitData();
 	}
 
-	private static CustomClothingOutfits _instance;
+		private static CustomClothingOutfits _instance;
 
-	private SerializableOutfitData.Version2 serializableOutfitData = new SerializableOutfitData.Version2();
+		private SerializableOutfitData.Version2 serializableOutfitData = new SerializableOutfitData.Version2();
 }

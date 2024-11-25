@@ -2,10 +2,10 @@
 
 public class EntityConfigOrder : Attribute
 {
-	public EntityConfigOrder(int sort_order)
+		public EntityConfigOrder(int sort_order)
 	{
 		this.sortOrder = sort_order;
 	}
 
-	public int sortOrder;
+		public int sortOrder;
 }

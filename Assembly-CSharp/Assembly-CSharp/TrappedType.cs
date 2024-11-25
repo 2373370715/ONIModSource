@@ -1,7 +1,4 @@
-﻿using System;
-
-public enum TrappedType
-{
-	Invalid,
-	Ice
+﻿public enum TrappedType {
+    Invalid,
+    Ice
 }

@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Butcherable")]
 public class Butcherable : Workable, ISaveLoadable
 {
-	public void SetDrops(string[] drops)
+		public void SetDrops(string[] drops)
 	{
 		this.drops = drops;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<Butcherable>(1272413801, Butcherable.SetReadyToButcherDelegate);
@@ -20,17 +20,17 @@ public class Butcherable : Workable, ISaveLoadable
 		this.multitoolHitEffectTag = "fx_harvest_splash";
 	}
 
-	public void SetReadyToButcher(object param)
+		public void SetReadyToButcher(object param)
 	{
 		this.readyToButcher = true;
 	}
 
-	public void SetReadyToButcher(bool ready)
+		public void SetReadyToButcher(bool ready)
 	{
 		this.readyToButcher = ready;
 	}
 
-	public void ActivateChore(object param)
+		public void ActivateChore(object param)
 	{
 		if (this.chore != null)
 		{
@@ -40,7 +40,7 @@ public class Butcherable : Workable, ISaveLoadable
 		this.OnRefreshUserMenu(null);
 	}
 
-	public void CancelChore(object param)
+		public void CancelChore(object param)
 	{
 		if (this.chore == null)
 		{
@@ -50,12 +50,12 @@ public class Butcherable : Workable, ISaveLoadable
 		this.chore = null;
 	}
 
-	private void OnClickCancel()
+		private void OnClickCancel()
 	{
 		this.CancelChore(null);
 	}
 
-	private void OnClickButcher()
+		private void OnClickButcher()
 	{
 		if (DebugHandler.InstantBuildMode)
 		{
@@ -65,7 +65,7 @@ public class Butcherable : Workable, ISaveLoadable
 		this.ActivateChore(null);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (!this.readyToButcher)
 		{
@@ -75,12 +75,12 @@ public class Butcherable : Workable, ISaveLoadable
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.OnButcherComplete();
 	}
 
-	public GameObject[] CreateDrops()
+		public GameObject[] CreateDrops()
 	{
 		GameObject[] array = new GameObject[this.drops.Length];
 		for (int i = 0; i < this.drops.Length; i++)
@@ -97,7 +97,7 @@ public class Butcherable : Workable, ISaveLoadable
 		return array;
 	}
 
-	public void OnButcherComplete()
+		public void OnButcherComplete()
 	{
 		if (this.butchered)
 		{
@@ -128,7 +128,7 @@ public class Butcherable : Workable, ISaveLoadable
 		base.Trigger(395373363, array);
 	}
 
-	private int GetDropSpawnLocation()
+		private int GetDropSpawnLocation()
 	{
 		int num = Grid.PosToCell(base.gameObject);
 		int num2 = Grid.CellAbove(num);
@@ -139,26 +139,26 @@ public class Butcherable : Workable, ISaveLoadable
 		return num;
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KAnimControllerBase controller;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Harvestable harvestable;
 
-	private bool readyToButcher;
+		private bool readyToButcher;
 
-	private bool butchered;
+		private bool butchered;
 
-	public string[] drops;
+		public string[] drops;
 
-	private Chore chore;
+		private Chore chore;
 
-	private static readonly EventSystem.IntraObjectHandler<Butcherable> SetReadyToButcherDelegate = new EventSystem.IntraObjectHandler<Butcherable>(delegate(Butcherable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Butcherable> SetReadyToButcherDelegate = new EventSystem.IntraObjectHandler<Butcherable>(delegate(Butcherable component, object data)
 	{
 		component.SetReadyToButcher(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Butcherable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Butcherable>(delegate(Butcherable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Butcherable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Butcherable>(delegate(Butcherable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});

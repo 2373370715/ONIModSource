@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class SymbolOverrideControllerUtil
 {
-	public static SymbolOverrideController AddToPrefab(GameObject prefab)
+		public static SymbolOverrideController AddToPrefab(GameObject prefab)
 	{
 		SymbolOverrideController result = prefab.AddComponent<SymbolOverrideController>();
 		KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
@@ -12,7 +12,7 @@ public static class SymbolOverrideControllerUtil
 		return result;
 	}
 
-	public static void AddBuildOverride(this SymbolOverrideController symbol_override_controller, KAnimFileData anim_file_data, int priority = 0)
+		public static void AddBuildOverride(this SymbolOverrideController symbol_override_controller, KAnimFileData anim_file_data, int priority = 0)
 	{
 		for (int i = 0; i < anim_file_data.build.symbols.Length; i++)
 		{
@@ -21,7 +21,7 @@ public static class SymbolOverrideControllerUtil
 		}
 	}
 
-	public static void RemoveBuildOverride(this SymbolOverrideController symbol_override_controller, KAnimFileData anim_file_data, int priority = 0)
+		public static void RemoveBuildOverride(this SymbolOverrideController symbol_override_controller, KAnimFileData anim_file_data, int priority = 0)
 	{
 		for (int i = 0; i < anim_file_data.build.symbols.Length; i++)
 		{
@@ -30,7 +30,7 @@ public static class SymbolOverrideControllerUtil
 		}
 	}
 
-	public static void TryRemoveBuildOverride(this SymbolOverrideController symbol_override_controller, KAnimFileData anim_file_data, int priority = 0)
+		public static void TryRemoveBuildOverride(this SymbolOverrideController symbol_override_controller, KAnimFileData anim_file_data, int priority = 0)
 	{
 		for (int i = 0; i < anim_file_data.build.symbols.Length; i++)
 		{
@@ -39,12 +39,12 @@ public static class SymbolOverrideControllerUtil
 		}
 	}
 
-	public static bool TryRemoveSymbolOverride(this SymbolOverrideController symbol_override_controller, HashedString target_symbol, int priority = 0)
+		public static bool TryRemoveSymbolOverride(this SymbolOverrideController symbol_override_controller, HashedString target_symbol, int priority = 0)
 	{
 		return symbol_override_controller.GetSymbolOverrideIdx(target_symbol, priority) >= 0 && symbol_override_controller.RemoveSymbolOverride(target_symbol, priority);
 	}
 
-	public static void ApplySymbolOverridesByAffix(this SymbolOverrideController symbol_override_controller, KAnimFile anim_file, string prefix = null, string postfix = null, int priority = 0)
+		public static void ApplySymbolOverridesByAffix(this SymbolOverrideController symbol_override_controller, KAnimFile anim_file, string prefix = null, string postfix = null, int priority = 0)
 	{
 		for (int i = 0; i < anim_file.GetData().build.symbols.Length; i++)
 		{

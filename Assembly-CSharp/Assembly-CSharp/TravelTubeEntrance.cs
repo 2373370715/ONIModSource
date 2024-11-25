@@ -8,7 +8,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMInstance>, ISaveLoadable, ISim200ms
 {
-		public float AvailableJoules
+			public float AvailableJoules
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-		public float TotalCapacity
+			public float TotalCapacity
 	{
 		get
 		{
@@ -24,7 +24,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-		public float UsageJoules
+			public float UsageJoules
 	{
 		get
 		{
@@ -32,7 +32,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-		public bool HasLaunchPower
+			public bool HasLaunchPower
 	{
 		get
 		{
@@ -40,7 +40,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-		public bool HasWaxForGreasyLaunch
+			public bool HasWaxForGreasyLaunch
 	{
 		get
 		{
@@ -48,7 +48,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-		public int WaxLaunchesAvailable
+			public int WaxLaunchesAvailable
 	{
 		get
 		{
@@ -56,7 +56,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-		private bool ShouldUseWaxLaunchAnimation
+			private bool ShouldUseWaxLaunchAnimation
 	{
 		get
 		{
@@ -64,7 +64,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-	public static void SetTravelerGleamEffect(TravelTubeEntrance.SMInstance smi)
+		public static void SetTravelerGleamEffect(TravelTubeEntrance.SMInstance smi)
 	{
 		TravelTubeEntrance.Work component = smi.GetComponent<TravelTubeEntrance.Work>();
 		if (component.worker != null)
@@ -73,7 +73,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-	public static string GetLaunchAnimName(TravelTubeEntrance.SMInstance smi)
+		public static string GetLaunchAnimName(TravelTubeEntrance.SMInstance smi)
 	{
 		if (!smi.master.ShouldUseWaxLaunchAnimation)
 		{
@@ -82,13 +82,13 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		return "wax";
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.energyConsumer.OnConnectionChanged += this.OnConnectionChanged;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.SetWaxUse(this.deliverAndUseWax);
@@ -110,12 +110,12 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		base.Subscribe<TravelTubeEntrance>(493375141, TravelTubeEntrance.OnRefreshUserMenuDelegate);
 	}
 
-	private void OnStorageChanged(object obj)
+		private void OnStorageChanged(object obj)
 	{
 		this.UpdateWaxCharge();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.travelTube != null)
 		{
@@ -128,7 +128,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		base.OnCleanUp();
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (!this.deliverAndUseWax)
 		{
@@ -157,7 +157,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-	public void SetWaxUse(bool usingWax)
+		public void SetWaxUse(bool usingWax)
 	{
 		this.deliverAndUseWax = usingWax;
 		this.manualDelivery.AbortDelivery("Switching to new delivery request");
@@ -171,7 +171,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		this.OnRefreshUserMenu(null);
 	}
 
-	private void TubeChanged(object data)
+		private void TubeChanged(object data)
 	{
 		if (this.travelTube != null)
 		{
@@ -194,18 +194,18 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		this.TubeConnectionsChanged(0);
 	}
 
-	private void TubeConnectionsChanged(object data)
+		private void TubeConnectionsChanged(object data)
 	{
 		bool value = (UtilityConnections)data == UtilityConnections.Up;
 		this.operational.SetFlag(TravelTubeEntrance.tubeConnected, value);
 	}
 
-	private bool CanAcceptMorePower()
+		private bool CanAcceptMorePower()
 	{
 		return this.operational.IsOperational && (this.button == null || this.button.IsEnabled) && this.energyConsumer.IsExternallyPowered && this.availableJoules < this.jouleCapacity;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this.CanAcceptMorePower())
 		{
@@ -217,37 +217,37 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		this.UpdateConnectionStatus();
 	}
 
-	public void Reserve(TubeTraveller.Instance traveller, int prefabInstanceID)
+		public void Reserve(TubeTraveller.Instance traveller, int prefabInstanceID)
 	{
 		Grid.ReserveTubeEntrance(Grid.PosToCell(this), prefabInstanceID, true);
 	}
 
-	public void Unreserve(TubeTraveller.Instance traveller, int prefabInstanceID)
+		public void Unreserve(TubeTraveller.Instance traveller, int prefabInstanceID)
 	{
 		Grid.ReserveTubeEntrance(Grid.PosToCell(this), prefabInstanceID, false);
 	}
 
-	public bool IsTraversable(Navigator agent)
+		public bool IsTraversable(Navigator agent)
 	{
 		return Grid.HasUsableTubeEntrance(Grid.PosToCell(this), agent.gameObject.GetComponent<KPrefabID>().InstanceID);
 	}
 
-	public bool HasChargeSlotReserved(Navigator agent)
+		public bool HasChargeSlotReserved(Navigator agent)
 	{
 		return Grid.HasReservedTubeEntrance(Grid.PosToCell(this), agent.gameObject.GetComponent<KPrefabID>().InstanceID);
 	}
 
-	public bool HasChargeSlotReserved(TubeTraveller.Instance tube_traveller, int prefabInstanceID)
+		public bool HasChargeSlotReserved(TubeTraveller.Instance tube_traveller, int prefabInstanceID)
 	{
 		return Grid.HasReservedTubeEntrance(Grid.PosToCell(this), prefabInstanceID);
 	}
 
-	public bool IsChargedSlotAvailable(TubeTraveller.Instance tube_traveller, int prefabInstanceID)
+		public bool IsChargedSlotAvailable(TubeTraveller.Instance tube_traveller, int prefabInstanceID)
 	{
 		return Grid.HasUsableTubeEntrance(Grid.PosToCell(this), prefabInstanceID);
 	}
 
-	public bool ShouldWait(GameObject reactor)
+		public bool ShouldWait(GameObject reactor)
 	{
 		if (!this.operational.IsOperational)
 		{
@@ -265,7 +265,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		return this.HasChargeSlotReserved(smi, reactor.GetComponent<KPrefabID>().InstanceID);
 	}
 
-	public void ConsumeCharge(GameObject reactor)
+		public void ConsumeCharge(GameObject reactor)
 	{
 		if (this.HasLaunchPower)
 		{
@@ -293,7 +293,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-	private void CreateNewWaitReactable()
+		private void CreateNewWaitReactable()
 	{
 		if (this.wait_reactable == null)
 		{
@@ -301,12 +301,12 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-	private void OrphanWaitReactable()
+		private void OrphanWaitReactable()
 	{
 		this.wait_reactable = null;
 	}
 
-	private void ClearWaitReactable()
+		private void ClearWaitReactable()
 	{
 		if (this.wait_reactable != null)
 		{
@@ -315,25 +315,25 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		bool flag = (bool)data;
 		Grid.SetTubeEntranceOperational(Grid.PosToCell(this), flag);
 		this.UpdateActive();
 	}
 
-	private void OnConnectionChanged()
+		private void OnConnectionChanged()
 	{
 		this.UpdateActive();
 		this.UpdateConnectionStatus();
 	}
 
-	private void UpdateActive()
+		private void UpdateActive()
 	{
 		this.operational.SetActive(this.CanAcceptMorePower(), false);
 	}
 
-	private void UpdateCharge()
+		private void UpdateCharge()
 	{
 		base.smi.sm.hasLaunchCharges.Set(this.HasLaunchPower, base.smi, false);
 		float positionPercent = Mathf.Clamp01(this.availableJoules / this.jouleCapacity);
@@ -343,13 +343,13 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		this.OnRefreshUserMenu(null);
 	}
 
-	private void UpdateWaxCharge()
+		private void UpdateWaxCharge()
 	{
 		float positionPercent = Mathf.Clamp01(this.storage.MassStored() / this.storage.capacityKg);
 		this.waxMeter.SetPositionPercent(positionPercent);
 	}
 
-	private void UpdateConnectionStatus()
+		private void UpdateConnectionStatus()
 	{
 		bool flag = this.button != null && !this.button.IsEnabled;
 		bool isConnected = this.energyConsumer.IsConnected;
@@ -365,77 +365,77 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private TravelTubeEntrance.Work launch_workable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private EnergyConsumerSelfSustaining energyConsumer;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private BuildingEnabledButton button;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ManualDeliveryKG manualDelivery;
 
-	public float jouleCapacity = 1f;
+		public float jouleCapacity = 1f;
 
-	public float joulesPerLaunch = 1f;
+		public float joulesPerLaunch = 1f;
 
-	public float waxPerLaunch;
+		public float waxPerLaunch;
 
-	[Serialize]
+		[Serialize]
 	private float availableJoules;
 
-	[Serialize]
+		[Serialize]
 	private bool deliverAndUseWax;
 
-	private TravelTube travelTube;
+		private TravelTube travelTube;
 
-	public const string WAX_LAUNCH_ANIM_NAME = "wax";
+		public const string WAX_LAUNCH_ANIM_NAME = "wax";
 
-	private TravelTubeEntrance.WaitReactable wait_reactable;
+		private TravelTubeEntrance.WaitReactable wait_reactable;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private MeterController waxMeter;
+		private MeterController waxMeter;
 
-	private const int MAX_CHARGES = 3;
+		private const int MAX_CHARGES = 3;
 
-	private const float RECHARGE_TIME = 10f;
+		private const float RECHARGE_TIME = 10f;
 
-	private static readonly Operational.Flag tubeConnected = new Operational.Flag("tubeConnected", Operational.Flag.Type.Functional);
+		private static readonly Operational.Flag tubeConnected = new Operational.Flag("tubeConnected", Operational.Flag.Type.Functional);
 
-	private HandleVector<int>.Handle tubeChangedEntry;
+		private HandleVector<int>.Handle tubeChangedEntry;
 
-	private static readonly EventSystem.IntraObjectHandler<TravelTubeEntrance> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<TravelTubeEntrance>(delegate(TravelTubeEntrance component, object data)
+		private static readonly EventSystem.IntraObjectHandler<TravelTubeEntrance> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<TravelTubeEntrance>(delegate(TravelTubeEntrance component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<TravelTubeEntrance> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<TravelTubeEntrance>(delegate(TravelTubeEntrance component, object data)
+		private static readonly EventSystem.IntraObjectHandler<TravelTubeEntrance> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<TravelTubeEntrance>(delegate(TravelTubeEntrance component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});
 
-	private Guid connectedStatus;
+		private Guid connectedStatus;
 
-	private class LaunchReactable : WorkableReactable
+		private class LaunchReactable : WorkableReactable
 	{
-		public LaunchReactable(Workable workable, TravelTubeEntrance entrance) : base(workable, "LaunchReactable", Db.Get().ChoreTypes.TravelTubeEntrance, WorkableReactable.AllowedDirection.Any)
+				public LaunchReactable(Workable workable, TravelTubeEntrance entrance) : base(workable, "LaunchReactable", Db.Get().ChoreTypes.TravelTubeEntrance, WorkableReactable.AllowedDirection.Any)
 		{
 			this.entrance = entrance;
 		}
 
-		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
+				public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
 			if (base.InternalCanBegin(new_reactor, transition))
 			{
@@ -445,18 +445,18 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 			return false;
 		}
 
-		private TravelTubeEntrance entrance;
+				private TravelTubeEntrance entrance;
 	}
 
-	private class WaitReactable : Reactable
+		private class WaitReactable : Reactable
 	{
-		public WaitReactable(TravelTubeEntrance entrance) : base(entrance.gameObject, "WaitReactable", Db.Get().ChoreTypes.TravelTubeEntrance, 2, 1, false, 0f, 0f, float.PositiveInfinity, 0f, ObjectLayer.NumLayers)
+				public WaitReactable(TravelTubeEntrance entrance) : base(entrance.gameObject, "WaitReactable", Db.Get().ChoreTypes.TravelTubeEntrance, 2, 1, false, 0f, 0f, float.PositiveInfinity, 0f, ObjectLayer.NumLayers)
 		{
 			this.entrance = entrance;
 			this.preventChoreInterruption = false;
 		}
 
-		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
+				public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
 			if (this.reactor != null)
 			{
@@ -470,7 +470,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 			return this.entrance.ShouldWait(new_reactor);
 		}
 
-		protected override void InternalBegin()
+				protected override void InternalBegin()
 		{
 			KBatchedAnimController component = this.reactor.GetComponent<KBatchedAnimController>();
 			component.AddAnimOverrides(Assets.GetAnim("anim_idle_distracted_kanim"), 1f);
@@ -480,7 +480,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 			this.entrance.CreateNewWaitReactable();
 		}
 
-		public override void Update(float dt)
+				public override void Update(float dt)
 		{
 			if (this.entrance == null)
 			{
@@ -493,7 +493,7 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 			}
 		}
 
-		protected override void InternalEnd()
+				protected override void InternalEnd()
 		{
 			if (this.reactor != null)
 			{
@@ -501,23 +501,23 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 			}
 		}
 
-		protected override void InternalCleanup()
+				protected override void InternalCleanup()
 		{
 		}
 
-		private TravelTubeEntrance entrance;
+				private TravelTubeEntrance entrance;
 	}
 
-	public class SMInstance : GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.GameInstance
+		public class SMInstance : GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.GameInstance
 	{
-		public SMInstance(TravelTubeEntrance master) : base(master)
+				public SMInstance(TravelTubeEntrance master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance>
+		public class States : GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.notoperational;
 			this.root.ToggleStatusItem(Db.Get().BuildingStatusItems.StoredCharge, null);
@@ -531,35 +531,35 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 			this.ready.post.PlayAnim("working_pst").OnAnimQueueComplete(this.ready);
 		}
 
-		public StateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.BoolParameter hasLaunchCharges;
+				public StateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.BoolParameter hasLaunchCharges;
 
-		public TravelTubeEntrance.States.NotOperationalStates notoperational;
+				public TravelTubeEntrance.States.NotOperationalStates notoperational;
 
-		public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State notready;
+				public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State notready;
 
-		public TravelTubeEntrance.States.ReadyStates ready;
+				public TravelTubeEntrance.States.ReadyStates ready;
 
-		public class NotOperationalStates : GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State
+				public class NotOperationalStates : GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State
 		{
-			public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State normal;
+						public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State normal;
 
-			public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State notube;
+						public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State notube;
 		}
 
-		public class ReadyStates : GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State
+				public class ReadyStates : GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State
 		{
-			public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State free;
+						public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State free;
 
-			public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State occupied;
+						public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State occupied;
 
-			public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State post;
+						public GameStateMachine<TravelTubeEntrance.States, TravelTubeEntrance.SMInstance, TravelTubeEntrance, object>.State post;
 		}
 	}
 
-	[AddComponentMenu("KMonoBehaviour/Workable/Work")]
+		[AddComponentMenu("KMonoBehaviour/Workable/Work")]
 	public class Work : Workable, IGameObjectEffectDescriptor
 	{
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			base.OnPrefabInit();
 			this.resetProgressOnStop = true;
@@ -571,11 +571,11 @@ public class TravelTubeEntrance : StateMachineComponent<TravelTubeEntrance.SMIns
 			this.workLayer = Grid.SceneLayer.BuildingUse;
 		}
 
-		protected override void OnStartWork(Worker worker)
+				protected override void OnStartWork(WorkerBase worker)
 		{
 			base.SetWorkTime(1f);
 		}
 
-		public const string DEFAULT_LAUNCH_ANIM_NAME = "anim_interacts_tube_launcher_kanim";
+				public const string DEFAULT_LAUNCH_ANIM_NAME = "anim_interacts_tube_launcher_kanim";
 	}
 }

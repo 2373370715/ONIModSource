@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 public class HashMapObjectPool<PoolKey, PoolValue>
 {
-	public HashMapObjectPool(Func<PoolKey, PoolValue> instantiator, int initialCount = 0)
+		public HashMapObjectPool(Func<PoolKey, PoolValue> instantiator, int initialCount = 0)
 	{
 		this.initialCount = initialCount;
 		this.instantiator = instantiator;
 	}
 
-	public HashMapObjectPool(HashMapObjectPool<PoolKey, PoolValue>.IPoolDescriptor[] descriptors, int initialCount = 0)
+		public HashMapObjectPool(HashMapObjectPool<PoolKey, PoolValue>.IPoolDescriptor[] descriptors, int initialCount = 0)
 	{
 		this.initialCount = initialCount;
 		for (int i = 0; i < descriptors.Length; i++)
@@ -25,7 +25,7 @@ public class HashMapObjectPool<PoolKey, PoolValue>
 		}
 	}
 
-	public PoolValue GetInstance(PoolKey poolId)
+		public PoolValue GetInstance(PoolKey poolId)
 	{
 		ObjectPool<PoolValue> objectPool;
 		if (!this.objectPoolMap.TryGetValue(poolId, out objectPool))
@@ -36,7 +36,7 @@ public class HashMapObjectPool<PoolKey, PoolValue>
 		return objectPool.GetInstance();
 	}
 
-	public void ReleaseInstance(PoolKey poolId, PoolValue inst)
+		public void ReleaseInstance(PoolKey poolId, PoolValue inst)
 	{
 		ObjectPool<PoolValue> objectPool;
 		if (inst == null || !this.objectPoolMap.TryGetValue(poolId, out objectPool))
@@ -46,7 +46,7 @@ public class HashMapObjectPool<PoolKey, PoolValue>
 		objectPool.ReleaseInstance(inst);
 	}
 
-	private PoolValue PoolInstantiator()
+		private PoolValue PoolInstantiator()
 	{
 		if (this.instantiator == null)
 		{
@@ -55,18 +55,18 @@ public class HashMapObjectPool<PoolKey, PoolValue>
 		return this.instantiator(this.currentPoolId);
 	}
 
-	private Dictionary<PoolKey, ObjectPool<PoolValue>> objectPoolMap = new Dictionary<PoolKey, ObjectPool<PoolValue>>();
+		private Dictionary<PoolKey, ObjectPool<PoolValue>> objectPoolMap = new Dictionary<PoolKey, ObjectPool<PoolValue>>();
 
-	private int initialCount;
+		private int initialCount;
 
-	private PoolKey currentPoolId;
+		private PoolKey currentPoolId;
 
-	private Func<PoolKey, PoolValue> instantiator;
+		private Func<PoolKey, PoolValue> instantiator;
 
-	public interface IPoolDescriptor
+		public interface IPoolDescriptor
 	{
-				PoolKey PoolId { get; }
+						PoolKey PoolId { get; }
 
-		PoolValue GetInstance();
+				PoolValue GetInstance();
 	}
 }

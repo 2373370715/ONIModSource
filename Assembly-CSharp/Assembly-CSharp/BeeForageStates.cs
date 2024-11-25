@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.collect.findTarget;
-		this.root.ToggleStatusItem(CREATURES.STATUSITEMS.FORAGINGMATERIAL.NAME, CREATURES.STATUSITEMS.FORAGINGMATERIAL.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).Exit(new StateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State.Callback(BeeForageStates.UnreserveTarget)).Exit(new StateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State.Callback(BeeForageStates.DropAll));
+		GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State root = this.root;
+		string name = CREATURES.STATUSITEMS.FORAGINGMATERIAL.NAME;
+		string tooltip = CREATURES.STATUSITEMS.FORAGINGMATERIAL.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		root.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).Exit(new StateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State.Callback(BeeForageStates.UnreserveTarget)).Exit(new StateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State.Callback(BeeForageStates.DropAll));
 		this.collect.findTarget.Enter(delegate(BeeForageStates.Instance smi)
 		{
 			BeeForageStates.FindTarget(smi);
@@ -54,7 +62,7 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 		this.behaviourcomplete.pst.BehaviourComplete(GameTags.Creatures.WantsToForage, false);
 	}
 
-	private static void FindTarget(BeeForageStates.Instance smi)
+		private static void FindTarget(BeeForageStates.Instance smi)
 	{
 		if (BeeForageStates.FindOre(smi))
 		{
@@ -63,7 +71,7 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 		BeeForageStates.FindMineableCell(smi);
 	}
 
-	private void HoldOre(BeeForageStates.Instance smi)
+		private void HoldOre(BeeForageStates.Instance smi)
 	{
 		GameObject gameObject = smi.GetComponent<Storage>().FindFirst(smi.def.oreTag);
 		if (!gameObject)
@@ -78,7 +86,7 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 		component.SetSymbolVisiblity(smi.noOreLegSymbolHash, false);
 	}
 
-	private void DropOre(BeeForageStates.Instance smi)
+		private void DropOre(BeeForageStates.Instance smi)
 	{
 		KBatchedAnimController component = smi.GetComponent<KBatchedAnimController>();
 		component.SetSymbolVisiblity(smi.oreSymbolHash, false);
@@ -86,7 +94,7 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 		component.SetSymbolVisiblity(smi.noOreLegSymbolHash, true);
 	}
 
-	private static void PickupComplete(BeeForageStates.Instance smi)
+		private static void PickupComplete(BeeForageStates.Instance smi)
 	{
 		if (!smi.forageTarget)
 		{
@@ -123,7 +131,7 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 		smi.GetComponent<Storage>().Store(smi.forageTarget.gameObject, false, false, true, false);
 	}
 
-	private static void MineTarget(BeeForageStates.Instance smi)
+		private static void MineTarget(BeeForageStates.Instance smi)
 	{
 		Storage storage = smi.master.GetComponent<Storage>();
 		HandleVector<Game.ComplexCallbackInfo<Sim.MassConsumedCallback>>.Handle handle = Game.Instance.massConsumedCallbackManager.Add(delegate(Sim.MassConsumedCallback mass_cb_info, object data)
@@ -136,7 +144,7 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 		SimMessages.ConsumeMass(smi.cellToMine, Grid.Element[smi.cellToMine].id, smi.def.amountToMine, 1, handle.index);
 	}
 
-	private static void StoreOre(BeeForageStates.Instance smi)
+		private static void StoreOre(BeeForageStates.Instance smi)
 	{
 		if (smi.targetHive.IsNullOrDestroyed())
 		{
@@ -151,12 +159,12 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 		smi.targetHive = null;
 	}
 
-	private static void DropAll(BeeForageStates.Instance smi)
+		private static void DropAll(BeeForageStates.Instance smi)
 	{
 		smi.GetComponent<Storage>().DropAll(false, false, default(Vector3), true, null);
 	}
 
-	private static bool FindMineableCell(BeeForageStates.Instance smi)
+		private static bool FindMineableCell(BeeForageStates.Instance smi)
 	{
 		smi.targetMiningCell = Grid.InvalidCell;
 		MineableCellQuery mineableCellQuery = PathFinderQueries.mineableCellQuery.Reset(smi.def.oreTag, 20);
@@ -178,7 +186,7 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 		return false;
 	}
 
-	private static bool FindOre(BeeForageStates.Instance smi)
+		private static bool FindOre(BeeForageStates.Instance smi)
 	{
 		Navigator component = smi.GetComponent<Navigator>();
 		Vector3 position = smi.transform.GetPosition();
@@ -207,7 +215,7 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 		return smi.forageTarget != null;
 	}
 
-	private static void ReserveTarget(BeeForageStates.Instance smi)
+		private static void ReserveTarget(BeeForageStates.Instance smi)
 	{
 		GameObject gameObject = smi.forageTarget ? smi.forageTarget.gameObject : null;
 		if (gameObject != null)
@@ -217,7 +225,7 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 		}
 	}
 
-	private static void UnreserveTarget(BeeForageStates.Instance smi)
+		private static void UnreserveTarget(BeeForageStates.Instance smi)
 	{
 		GameObject go = smi.forageTarget ? smi.forageTarget.gameObject : null;
 		if (smi.forageTarget != null)
@@ -226,43 +234,43 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 		}
 	}
 
-	private static int GetOreCell(BeeForageStates.Instance smi)
+		private static int GetOreCell(BeeForageStates.Instance smi)
 	{
 		global::Debug.Assert(smi.forageTarget);
 		global::Debug.Assert(smi.forageTarget_cell != Grid.InvalidCell);
 		return smi.forageTarget_cell;
 	}
 
-	private const int MAX_NAVIGATE_DISTANCE = 100;
+		private const int MAX_NAVIGATE_DISTANCE = 100;
 
-	private const string oreSymbol = "snapto_thing";
+		private const string oreSymbol = "snapto_thing";
 
-	private const string oreLegSymbol = "legBeeOre";
+		private const string oreLegSymbol = "legBeeOre";
 
-	private const string noOreLegSymbol = "legBeeNoOre";
+		private const string noOreLegSymbol = "legBeeNoOre";
 
-	public BeeForageStates.CollectionBehaviourStates collect;
+		public BeeForageStates.CollectionBehaviourStates collect;
 
-	public BeeForageStates.StorageBehaviourStates storage;
+		public BeeForageStates.StorageBehaviourStates storage;
 
-	public BeeForageStates.ExitStates behaviourcomplete;
+		public BeeForageStates.ExitStates behaviourcomplete;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Def(Tag tag, float amount_to_mine)
+				public Def(Tag tag, float amount_to_mine)
 		{
 			this.oreTag = tag;
 			this.amountToMine = amount_to_mine;
 		}
 
-		public Tag oreTag;
+				public Tag oreTag;
 
-		public float amountToMine;
+				public float amountToMine;
 	}
 
-	public new class Instance : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.GameInstance
 	{
-		public Instance(Chore<BeeForageStates.Instance> chore, BeeForageStates.Def def) : base(chore, def)
+				public Instance(Chore<BeeForageStates.Instance> chore, BeeForageStates.Def def) : base(chore, def)
 		{
 			this.oreSymbolHash = new KAnimHashedString("snapto_thing");
 			this.oreLegSymbolHash = new KAnimHashedString("legBeeOre");
@@ -273,61 +281,61 @@ public class BeeForageStates : GameStateMachine<BeeForageStates, BeeForageStates
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.WantsToForage);
 		}
 
-		public int targetMiningCell = Grid.InvalidCell;
+				public int targetMiningCell = Grid.InvalidCell;
 
-		public int cellToMine = Grid.InvalidCell;
+				public int cellToMine = Grid.InvalidCell;
 
-		public Pickupable forageTarget;
+				public Pickupable forageTarget;
 
-		public int forageTarget_cell = Grid.InvalidCell;
+				public int forageTarget_cell = Grid.InvalidCell;
 
-		public KPrefabID targetHive;
+				public KPrefabID targetHive;
 
-		public KAnimHashedString oreSymbolHash;
+				public KAnimHashedString oreSymbolHash;
 
-		public KAnimHashedString oreLegSymbolHash;
+				public KAnimHashedString oreLegSymbolHash;
 
-		public KAnimHashedString noOreLegSymbolHash;
+				public KAnimHashedString noOreLegSymbolHash;
 
-		public CellOffset hiveCellOffset = new CellOffset(1, 1);
+				public CellOffset hiveCellOffset = new CellOffset(1, 1);
 	}
 
-	public class ForageBehaviourStates : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State
+		public class ForageBehaviourStates : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State
 	{
-		public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State moveToTarget;
+				public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State moveToTarget;
 
-		public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State pickupTarget;
+				public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State pickupTarget;
 	}
 
-	public class MiningBehaviourStates : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State
+		public class MiningBehaviourStates : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State
 	{
-		public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State moveToTarget;
+				public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State moveToTarget;
 
-		public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State mineTarget;
+				public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State mineTarget;
 	}
 
-	public class CollectionBehaviourStates : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State
+		public class CollectionBehaviourStates : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State
 	{
-		public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State findTarget;
+				public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State findTarget;
 
-		public BeeForageStates.ForageBehaviourStates forage;
+				public BeeForageStates.ForageBehaviourStates forage;
 
-		public BeeForageStates.MiningBehaviourStates mine;
+				public BeeForageStates.MiningBehaviourStates mine;
 	}
 
-	public class StorageBehaviourStates : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State
+		public class StorageBehaviourStates : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State
 	{
-		public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State moveToHive;
+				public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State moveToHive;
 
-		public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State storeMaterial;
+				public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State storeMaterial;
 
-		public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State dropMaterial;
+				public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State dropMaterial;
 	}
 
-	public class ExitStates : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State
+		public class ExitStates : GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State
 	{
-		public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State pre;
+				public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State pre;
 
-		public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State pst;
+				public GameStateMachine<BeeForageStates, BeeForageStates.Instance, IStateMachineTarget, BeeForageStates.Def>.State pst;
 	}
 }

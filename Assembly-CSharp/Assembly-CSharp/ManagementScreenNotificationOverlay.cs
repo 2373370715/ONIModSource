@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class ManagementScreenNotificationOverlay : KMonoBehaviour
 {
-	protected void OnEnable()
+		protected void OnEnable()
 	{
 	}
 
-	protected override void OnDisable()
+		protected override void OnDisable()
 	{
 	}
 
-	private NotificationAlertBar CreateAlertBar(ManagementMenuNotification notification)
+		private NotificationAlertBar CreateAlertBar(ManagementMenuNotification notification)
 	{
 		NotificationAlertBar notificationAlertBar = Util.KInstantiateUI<NotificationAlertBar>(this.alertBarPrefab.gameObject, this.alertContainer.gameObject, false);
 		notificationAlertBar.Init(notification);
@@ -20,15 +20,15 @@ public class ManagementScreenNotificationOverlay : KMonoBehaviour
 		return notificationAlertBar;
 	}
 
-	private void NotificationsChanged()
+		private void NotificationsChanged()
 	{
 	}
 
-	public global::Action currentMenu;
+		public global::Action currentMenu;
 
-	public NotificationAlertBar alertBarPrefab;
+		public NotificationAlertBar alertBarPrefab;
 
-	public RectTransform alertContainer;
+		public RectTransform alertContainer;
 
-	private List<NotificationAlertBar> alertBars = new List<NotificationAlertBar>();
+		private List<NotificationAlertBar> alertBars = new List<NotificationAlertBar>();
 }

@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class FetchOrder2
 {
-			public float TotalAmount { get; set; }
+				public float TotalAmount { get; set; }
 
-			public int PriorityMod { get; set; }
+				public int PriorityMod { get; set; }
 
-			public HashSet<Tag> Tags { get; protected set; }
+				public HashSet<Tag> Tags { get; protected set; }
 
-			public FetchChore.MatchCriteria Criteria { get; protected set; }
+				public FetchChore.MatchCriteria Criteria { get; protected set; }
 
-			public Tag RequiredTag { get; protected set; }
+				public Tag RequiredTag { get; protected set; }
 
-			public Tag[] ForbiddenTags { get; protected set; }
+				public Tag[] ForbiddenTags { get; protected set; }
 
-			public Storage Destination { get; set; }
+				public Storage Destination { get; set; }
 
-			private float UnfetchedAmount
+				private float UnfetchedAmount
 	{
 		get
 		{
@@ -32,7 +32,7 @@ public class FetchOrder2
 		}
 	}
 
-	public FetchOrder2(ChoreType chore_type, HashSet<Tag> tags, FetchChore.MatchCriteria criteria, Tag required_tag, Tag[] forbidden_tags, Storage destination, float amount, Operational.State operationalRequirementDEPRECATED = Operational.State.None, int priorityMod = 0)
+		public FetchOrder2(ChoreType chore_type, HashSet<Tag> tags, FetchChore.MatchCriteria criteria, Tag required_tag, Tag[] forbidden_tags, Storage destination, float amount, Operational.State operationalRequirementDEPRECATED = Operational.State.None, int priorityMod = 0)
 	{
 		if (amount <= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
 		{
@@ -59,7 +59,7 @@ public class FetchOrder2
 		this.operationalRequirement = operationalRequirementDEPRECATED;
 	}
 
-		public bool InProgress
+			public bool InProgress
 	{
 		get
 		{
@@ -79,7 +79,7 @@ public class FetchOrder2
 		}
 	}
 
-	private void IssueTask()
+		private void IssueTask()
 	{
 		if (this.UnfetchedAmount > 0f)
 		{
@@ -88,7 +88,7 @@ public class FetchOrder2
 		}
 	}
 
-	public void SetPriorityMod(int priorityMod)
+		public void SetPriorityMod(int priorityMod)
 	{
 		this.PriorityMod = priorityMod;
 		for (int i = 0; i < this.Chores.Count; i++)
@@ -97,14 +97,14 @@ public class FetchOrder2
 		}
 	}
 
-	private void SetFetchTask(float amount)
+		private void SetFetchTask(float amount)
 	{
 		FetchChore fetchChore = new FetchChore(this.choreType, this.Destination, amount, this.Tags, this.Criteria, this.RequiredTag, this.ForbiddenTags, null, true, new Action<Chore>(this.OnFetchChoreComplete), new Action<Chore>(this.OnFetchChoreBegin), new Action<Chore>(this.OnFetchChoreEnd), this.operationalRequirement, this.PriorityMod);
 		fetchChore.validateRequiredTagOnTagChange = this.validateRequiredTagOnTagChange;
 		this.Chores.Add(fetchChore);
 	}
 
-	private void OnFetchChoreEnd(Chore chore)
+		private void OnFetchChoreEnd(Chore chore)
 	{
 		FetchChore fetchChore = (FetchChore)chore;
 		if (this.Chores.Contains(fetchChore))
@@ -116,7 +116,7 @@ public class FetchOrder2
 		}
 	}
 
-	private void OnFetchChoreComplete(Chore chore)
+		private void OnFetchChoreComplete(Chore chore)
 	{
 		FetchChore fetchChore = (FetchChore)chore;
 		this.Chores.Remove(fetchChore);
@@ -126,7 +126,7 @@ public class FetchOrder2
 		}
 	}
 
-	private void OnFetchChoreBegin(Chore chore)
+		private void OnFetchChoreBegin(Chore chore)
 	{
 		FetchChore fetchChore = (FetchChore)chore;
 		this.UnfetchedAmount += fetchChore.originalAmount - fetchChore.amount;
@@ -137,7 +137,7 @@ public class FetchOrder2
 		}
 	}
 
-	public void Cancel(string reason)
+		public void Cancel(string reason)
 	{
 		while (this.Chores.Count > 0)
 		{
@@ -147,17 +147,17 @@ public class FetchOrder2
 		}
 	}
 
-	public void Suspend(string reason)
+		public void Suspend(string reason)
 	{
 		global::Debug.LogError("UNIMPLEMENTED!");
 	}
 
-	public void Resume(string reason)
+		public void Resume(string reason)
 	{
 		global::Debug.LogError("UNIMPLEMENTED!");
 	}
 
-	public void Submit(Action<FetchOrder2, Pickupable> on_complete, bool check_storage_contents, Action<FetchOrder2, Pickupable> on_begin = null)
+		public void Submit(Action<FetchOrder2, Pickupable> on_complete, bool check_storage_contents, Action<FetchOrder2, Pickupable> on_begin = null)
 	{
 		this.OnComplete = on_complete;
 		this.OnBegin = on_begin;
@@ -183,7 +183,7 @@ public class FetchOrder2
 		}
 	}
 
-	public bool IsMaterialOnStorage(Storage storage, ref float amount, ref Pickupable out_item)
+		public bool IsMaterialOnStorage(Storage storage, ref float amount, ref Pickupable out_item)
 	{
 		foreach (GameObject gameObject in this.Destination.items)
 		{
@@ -208,7 +208,7 @@ public class FetchOrder2
 		return false;
 	}
 
-	public float AmountWaitingToFetch()
+		public float AmountWaitingToFetch()
 	{
 		if (!this.checkStorageContents)
 		{
@@ -223,7 +223,7 @@ public class FetchOrder2
 		return this.GetRemaining(out pickupable);
 	}
 
-	public float GetRemaining(out Pickupable out_item)
+		public float GetRemaining(out Pickupable out_item)
 	{
 		float num = this.TotalAmount;
 		float num2 = 0f;
@@ -235,7 +235,7 @@ public class FetchOrder2
 		return num;
 	}
 
-	public bool IsComplete()
+		public bool IsComplete()
 	{
 		for (int i = 0; i < this.Chores.Count; i++)
 		{
@@ -247,7 +247,7 @@ public class FetchOrder2
 		return true;
 	}
 
-	private void Assert(bool condition, string message)
+		private void Assert(bool condition, string message)
 	{
 		if (condition)
 		{
@@ -267,19 +267,19 @@ public class FetchOrder2
 		global::Debug.LogError(text);
 	}
 
-	public Action<FetchOrder2, Pickupable> OnComplete;
+		public Action<FetchOrder2, Pickupable> OnComplete;
 
-	public Action<FetchOrder2, Pickupable> OnBegin;
+		public Action<FetchOrder2, Pickupable> OnBegin;
 
-	public bool validateRequiredTagOnTagChange;
+		public bool validateRequiredTagOnTagChange;
 
-	public List<FetchChore> Chores = new List<FetchChore>();
+		public List<FetchChore> Chores = new List<FetchChore>();
 
-	private ChoreType choreType;
+		private ChoreType choreType;
 
-	private float _UnfetchedAmount;
+		private float _UnfetchedAmount;
 
-	private bool checkStorageContents;
+		private bool checkStorageContents;
 
-	private Operational.State operationalRequirement = Operational.State.None;
+		private Operational.State operationalRequirement = Operational.State.None;
 }

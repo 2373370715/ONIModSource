@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FoodDehydrator : GameStateMachine<FoodDehydrator, FoodDehydrator.StatesInstance, IStateMachineTarget, FoodDehydrator.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		this.waitingForFuelStatus.resolveStringCallback = ((string str, object obj) => string.Format(str, FOODDEHYDRATORTUNING.FUEL_TAG.ProperName(), GameUtil.GetFormattedMass(5.0000005f, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")));
 		default_state = this.waitingForFuel;
@@ -31,26 +31,26 @@ public class FoodDehydrator : GameStateMachine<FoodDehydrator, FoodDehydrator.St
 		}).ToggleStatusItem(Db.Get().BuildingStatusItems.AwaitingEmptyBuilding, null);
 	}
 
-	private Chore CreateChore(FoodDehydrator.StatesInstance smi)
+		private Chore CreateChore(FoodDehydrator.StatesInstance smi)
 	{
 		WorkChore<FoodDehydratorWorkableEmpty> workChore = new WorkChore<FoodDehydratorWorkableEmpty>(Db.Get().ChoreTypes.FoodFetch, smi.master.GetComponent<FoodDehydratorWorkableEmpty>(), null, true, new Action<Chore>(smi.OnEmptyComplete), null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		workChore.AddPrecondition(ChorePreconditions.instance.IsNotARobot, null);
 		return workChore;
 	}
 
-	private StatusItem waitingForFuelStatus = new StatusItem("waitingForFuelStatus", BUILDING.STATUSITEMS.ENOUGH_FUEL.NAME, BUILDING.STATUSITEMS.ENOUGH_FUEL.TOOLTIP, "status_item_no_gas_to_pump", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, 129022, true, null);
+		private StatusItem waitingForFuelStatus = new StatusItem("waitingForFuelStatus", BUILDING.STATUSITEMS.ENOUGH_FUEL.NAME, BUILDING.STATUSITEMS.ENOUGH_FUEL.TOOLTIP, "status_item_no_gas_to_pump", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, 129022, true, null);
 
-	private static readonly Operational.Flag foodDehydratorFlag = new Operational.Flag("food_dehydrator", Operational.Flag.Type.Requirement);
+		private static readonly Operational.Flag foodDehydratorFlag = new Operational.Flag("food_dehydrator", Operational.Flag.Type.Requirement);
 
-	private GameStateMachine<FoodDehydrator, FoodDehydrator.StatesInstance, IStateMachineTarget, FoodDehydrator.Def>.State waitingForFuel;
+		private GameStateMachine<FoodDehydrator, FoodDehydrator.StatesInstance, IStateMachineTarget, FoodDehydrator.Def>.State waitingForFuel;
 
-	private GameStateMachine<FoodDehydrator, FoodDehydrator.StatesInstance, IStateMachineTarget, FoodDehydrator.Def>.State working;
+		private GameStateMachine<FoodDehydrator, FoodDehydrator.StatesInstance, IStateMachineTarget, FoodDehydrator.Def>.State working;
 
-	private GameStateMachine<FoodDehydrator, FoodDehydrator.StatesInstance, IStateMachineTarget, FoodDehydrator.Def>.State requestEmpty;
+		private GameStateMachine<FoodDehydrator, FoodDehydrator.StatesInstance, IStateMachineTarget, FoodDehydrator.Def>.State requestEmpty;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject go)
+				public List<Descriptor> GetDescriptors(GameObject go)
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			Descriptor item = new Descriptor(UI.BUILDINGEFFECTS.FOOD_DEHYDRATOR_WATER_OUTPUT, UI.BUILDINGEFFECTS.TOOLTIPS.FOOD_DEHYDRATOR_WATER_OUTPUT, Descriptor.DescriptorType.Effect, false);
@@ -59,30 +59,30 @@ public class FoodDehydrator : GameStateMachine<FoodDehydrator, FoodDehydrator.St
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<FoodDehydrator, FoodDehydrator.StatesInstance, IStateMachineTarget, FoodDehydrator.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<FoodDehydrator, FoodDehydrator.StatesInstance, IStateMachineTarget, FoodDehydrator.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, FoodDehydrator.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, FoodDehydrator.Def def) : base(master, def)
 		{
 			this.SetupFoodSymbol();
 		}
 
-		public float GetAvailableFuel()
+				public float GetAvailableFuel()
 		{
 			return this.complexFabricator.inStorage.GetMassAvailable(FOODDEHYDRATORTUNING.FUEL_TAG);
 		}
 
-		public bool RequiresEmptying()
+				public bool RequiresEmptying()
 		{
 			return !this.complexFabricator.outStorage.IsEmpty();
 		}
 
-		public void OnEmptyComplete(Chore obj)
+				public void OnEmptyComplete(Chore obj)
 		{
 			Vector3 position = Grid.CellToPosLCC(Grid.PosToCell(this), Grid.SceneLayer.Ore);
 			this.complexFabricator.outStorage.DropAll(position, false, true, default(Vector3), true, null);
 		}
 
-		public void SetupFoodSymbol()
+				public void SetupFoodSymbol()
 		{
 			GameObject gameObject = Util.NewGameObject(base.gameObject, "food_symbol");
 			gameObject.SetActive(false);
@@ -104,7 +104,7 @@ public class FoodDehydrator : GameStateMachine<FoodDehydrator, FoodDehydrator.St
 			kbatchedAnimTracker.offset = Vector3.zero;
 		}
 
-		public void UpdateFoodSymbol()
+				public void UpdateFoodSymbol()
 		{
 			ComplexRecipe currentWorkingOrder = this.complexFabricator.CurrentWorkingOrder;
 			if (this.complexFabricator.CurrentWorkingOrder != null)
@@ -125,16 +125,16 @@ public class FoodDehydrator : GameStateMachine<FoodDehydrator, FoodDehydrator.St
 			this.foodKBAC.gameObject.SetActive(false);
 		}
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public Operational operational;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public ComplexFabricator complexFabricator;
 
-		private static string HASH_FOOD = "food";
+				private static string HASH_FOOD = "food";
 
-		private KBatchedAnimController foodKBAC;
+				private KBatchedAnimController foodKBAC;
 
-		private int foodIngredientIdx;
+				private int foodIngredientIdx;
 	}
 }

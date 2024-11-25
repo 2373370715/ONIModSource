@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class SandboxStoryTraitTool : InterfaceTool
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.preview = new StampToolPreview(this, new IStampToolPreviewPlugin[]
@@ -31,7 +31,7 @@ public class SandboxStoryTraitTool : InterfaceTool
 		};
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		SandboxToolParameterMenu.instance.gameObject.SetActive(true);
@@ -44,7 +44,7 @@ public class SandboxStoryTraitTool : InterfaceTool
 		settings2.OnChangeStory = (System.Action)Delegate.Combine(settings2.OnChangeStory, this.setupPreviewFn);
 	}
 
-	public void Update()
+		public void Update()
 	{
 		Vector3 cursorPos = PlayerController.GetCursorPos(KInputManager.GetMousePos());
 		int originCell = Grid.PosToCell(cursorPos);
@@ -64,7 +64,7 @@ public class SandboxStoryTraitTool : InterfaceTool
 		}
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		SandboxToolParameterMenu.instance.gameObject.SetActive(false);
@@ -73,7 +73,7 @@ public class SandboxStoryTraitTool : InterfaceTool
 		this.preview.Cleanup();
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		base.OnLeftClickDown(cursor_pos);
 		if (this.isPlacingTemplate)
@@ -97,7 +97,7 @@ public class SandboxStoryTraitTool : InterfaceTool
 		});
 	}
 
-	public static void Stamp(Vector2 pos, TemplateContainer stampTemplate, System.Action onCompleteFn)
+		public static void Stamp(Vector2 pos, TemplateContainer stampTemplate, System.Action onCompleteFn)
 	{
 		bool shouldPauseOnComplete = SpeedControlScreen.Instance.IsPaused;
 		if (SpeedControlScreen.Instance.IsPaused)
@@ -138,7 +138,7 @@ public class SandboxStoryTraitTool : InterfaceTool
 		KFMOD.PlayUISound(GlobalAssets.GetSound("SandboxTool_Stamp", false));
 	}
 
-	public static bool TryGetStoryAndTemplate(out Story story, out TemplateContainer stampTemplate)
+		public static bool TryGetStoryAndTemplate(out Story story, out TemplateContainer stampTemplate)
 	{
 		stampTemplate = null;
 		string stringSetting = SandboxToolParameterMenu.instance.settings.GetStringSetting("SandboxTools.SelectedStory");
@@ -155,7 +155,7 @@ public class SandboxStoryTraitTool : InterfaceTool
 		return stampTemplate != null;
 	}
 
-	public string GetError(Vector3 stampPos, out Story story, out TemplateContainer stampTemplate)
+		public string GetError(Vector3 stampPos, out Story story, out TemplateContainer stampTemplate)
 	{
 		SandboxStoryTraitTool.<>c__DisplayClass13_0 CS$<>8__locals1;
 		CS$<>8__locals1.stampPos = stampPos;
@@ -216,7 +216,7 @@ public class SandboxStoryTraitTool : InterfaceTool
 					return false;
 				}, ref CS$<>8__locals1))
 				{
-					if (brain.HasTag(GameTags.Minion))
+					if (brain.HasTag(GameTags.BaseMinion))
 					{
 						flag2 = true;
 						break;
@@ -258,7 +258,7 @@ public class SandboxStoryTraitTool : InterfaceTool
 		return null;
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static bool <GetError>g__IsTrueForAnyStampCell|13_0(Func<Cell, int, bool> isTrueFn, ref SandboxStoryTraitTool.<>c__DisplayClass13_0 A_1)
 	{
 		foreach (Cell cell in A_1._stampTemplate.cells)
@@ -272,15 +272,15 @@ public class SandboxStoryTraitTool : InterfaceTool
 		return false;
 	}
 
-	private System.Action setupPreviewFn;
+		private System.Action setupPreviewFn;
 
-	private StampToolPreview preview;
+		private StampToolPreview preview;
 
-	private bool isPlacingTemplate;
+		private bool isPlacingTemplate;
 
-	private string prevError;
+		private string prevError;
 
-	private const float ERROR_UPDATE_FREQUENCY = 0.1f;
+		private const float ERROR_UPDATE_FREQUENCY = 0.1f;
 
-	private float timeUntilNextErrorUpdate = -1f;
+		private float timeUntilNextErrorUpdate = -1f;
 }

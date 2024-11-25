@@ -5,19 +5,19 @@ using UnityEngine.Rendering;
 [AddComponentMenu("KMonoBehaviour/scripts/WaterCubes")]
 public class WaterCubes : KMonoBehaviour
 {
-			public static WaterCubes Instance { get; private set; }
+				public static WaterCubes Instance { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		WaterCubes.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		WaterCubes.Instance = this;
 	}
 
-	public void Init()
+		public void Init()
 	{
 		this.cubes = Util.NewGameObject(base.gameObject, "WaterCubes");
 		GameObject gameObject = new GameObject();
@@ -38,7 +38,7 @@ public class WaterCubes : KMonoBehaviour
 		meshRenderer.gameObject.transform.SetPosition(new Vector3(0f, 0f, Grid.GetLayerZ(Grid.SceneLayer.Liquid)));
 	}
 
-	private Mesh CreateNewMesh()
+		private Mesh CreateNewMesh()
 	{
 		Mesh mesh = new Mesh();
 		mesh.name = "WaterCubes";
@@ -96,9 +96,9 @@ public class WaterCubes : KMonoBehaviour
 		return mesh;
 	}
 
-	public Material material;
+		public Material material;
 
-	public Texture2D waveTexture;
+		public Texture2D waveTexture;
 
-	private GameObject cubes;
+		private GameObject cubes;
 }

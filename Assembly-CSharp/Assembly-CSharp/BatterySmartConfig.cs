@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class BatterySmartConfig : BaseBatteryConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "BatterySmart";
 		int width = 2;
@@ -29,7 +29,7 @@ public class BatterySmartConfig : BaseBatteryConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		BatterySmart batterySmart = go.AddOrGet<BatterySmart>();
 		batterySmart.capacity = 20000f;
@@ -38,5 +38,11 @@ public class BatterySmartConfig : BaseBatteryConfig
 		base.DoPostConfigureComplete(go);
 	}
 
-	public const string ID = "BatterySmart";
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+	{
+		base.ConfigureBuildingTemplate(go, prefab_tag);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.PowerBuilding, false);
+	}
+
+		public const string ID = "BatterySmart";
 }

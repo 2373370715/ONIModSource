@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/MingleCellTracker")]
 public class MingleCellTracker : KMonoBehaviour, ISim1000ms
 {
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		this.mingleCells.Clear();
 		RoomProber roomProber = Game.Instance.roomProber;
@@ -29,5 +29,5 @@ public class MingleCellTracker : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public List<int> mingleCells = new List<int>();
+		public List<int> mingleCells = new List<int>();
 }

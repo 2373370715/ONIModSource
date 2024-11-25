@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WireRefinedConfig : BaseWireConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "WireRefined";
 		string anim = "utilities_electric_conduct_kanim";
@@ -17,10 +17,10 @@ public class WireRefinedConfig : BaseWireConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		base.DoPostConfigureComplete(Wire.WattageRating.Max2000, go);
 	}
 
-	public const string ID = "WireRefined";
+		public const string ID = "WireRefined";
 }

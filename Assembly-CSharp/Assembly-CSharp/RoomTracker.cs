@@ -6,9 +6,9 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/RoomTracker")]
 public class RoomTracker : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-			public Room room { get; private set; }
+				public Room room { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		global::Debug.Assert(!string.IsNullOrEmpty(this.requiredRoomType) && this.requiredRoomType != Db.Get().RoomTypes.Neutral.Id, "RoomTracker must have a requiredRoomType!");
@@ -16,7 +16,7 @@ public class RoomTracker : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.FindAndSetRoom();
 	}
 
-	public void FindAndSetRoom()
+		public void FindAndSetRoom()
 	{
 		CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell(base.gameObject));
 		if (cavityForCell != null && cavityForCell.room != null)
@@ -27,12 +27,12 @@ public class RoomTracker : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.OnUpdateRoom(null);
 	}
 
-	public bool IsInCorrectRoom()
+		public bool IsInCorrectRoom()
 	{
 		return this.room != null && this.room.roomType.Id == this.requiredRoomType;
 	}
 
-	public bool SufficientBuildLocation(int cell)
+		public bool SufficientBuildLocation(int cell)
 	{
 		if (!Grid.IsValidCell(cell))
 		{
@@ -49,7 +49,7 @@ public class RoomTracker : KMonoBehaviour, IGameObjectEffectDescriptor
 		return true;
 	}
 
-	private void OnUpdateRoom(object data)
+		private void OnUpdateRoom(object data)
 	{
 		this.room = (Room)data;
 		if (this.room != null && !(this.room.roomType.Id != this.requiredRoomType))
@@ -77,7 +77,7 @@ public class RoomTracker : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (!string.IsNullOrEmpty(this.requiredRoomType))
@@ -98,25 +98,25 @@ public class RoomTracker : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	public RoomTracker.Requirement requirement;
+		public RoomTracker.Requirement requirement;
 
-	public string requiredRoomType;
+		public string requiredRoomType;
 
-	public string customStatusItemID;
+		public string customStatusItemID;
 
-	private Guid statusItemGuid;
+		private Guid statusItemGuid;
 
-	private static readonly EventSystem.IntraObjectHandler<RoomTracker> OnUpdateRoomDelegate = new EventSystem.IntraObjectHandler<RoomTracker>(delegate(RoomTracker component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RoomTracker> OnUpdateRoomDelegate = new EventSystem.IntraObjectHandler<RoomTracker>(delegate(RoomTracker component, object data)
 	{
 		component.OnUpdateRoom(data);
 	});
 
-	public enum Requirement
+		public enum Requirement
 	{
-		TrackingOnly,
-		Recommended,
-		Required,
-		CustomRecommended,
-		CustomRequired
+				TrackingOnly,
+				Recommended,
+				Required,
+				CustomRecommended,
+				CustomRequired
 	}
 }

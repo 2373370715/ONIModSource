@@ -2,7 +2,7 @@
 
 public struct BuildingAnimEvent
 {
-	public string Name;
+		public string Name;
 
-	public bool Value;
+		public bool Value;
 }

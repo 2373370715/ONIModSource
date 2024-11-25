@@ -5,25 +5,25 @@ using UnityEngine;
 
 public class DeepFriedNoshConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
-		return EntityTemplates.ExtendEntityToFood(EntityTemplates.CreateLooseEntity("DeepFriedNosh", ITEMS.FOOD.DEEPFRIEDNOSH.NAME, ITEMS.FOOD.DEEPFRIEDNOSH.DESC, 1f, false, Assets.GetAnim("deepfried_nosh_beans_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.4f, true, 0, SimHashes.Creature, null), FOOD.FOOD_TYPES.DEEP_FRIED_NOSH);
+		return EntityTemplates.ExtendEntityToFood(EntityTemplates.CreateLooseEntity("DeepFriedNosh", STRINGS.ITEMS.FOOD.DEEPFRIEDNOSH.NAME, STRINGS.ITEMS.FOOD.DEEPFRIEDNOSH.DESC, 1f, false, Assets.GetAnim("deepfried_nosh_beans_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.4f, true, 0, SimHashes.Creature, null), FOOD.FOOD_TYPES.DEEP_FRIED_NOSH);
 	}
 
-	public void OnPrefabInit(GameObject inst)
-	{
-	}
-
-	public void OnSpawn(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public const string ID = "DeepFriedNosh";
+		public void OnSpawn(GameObject inst)
+	{
+	}
 
-	public static ComplexRecipe recipe;
+		public const string ID = "DeepFriedNosh";
+
+		public static ComplexRecipe recipe;
 }

@@ -5,15 +5,15 @@ using STRINGS;
 
 namespace Database
 {
-	public class EatXKCalProducedByY : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class EatXKCalProducedByY : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public EatXKCalProducedByY(int numCalories, List<Tag> foodProducers)
+				public EatXKCalProducedByY(int numCalories, List<Tag> foodProducers)
 		{
 			this.numCalories = numCalories;
 			this.foodProducers = foodProducers;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			List<string> list = new List<string>();
 			foreach (ComplexRecipe complexRecipe in ComplexRecipeManager.Get().recipes)
@@ -32,10 +32,10 @@ namespace Database
 					}
 				}
 			}
-			return RationTracker.Get().GetCaloiresConsumedByFood(list.Distinct<string>().ToList<string>()) / 1000f > (float)this.numCalories;
+			return WorldResourceAmountTracker<RationTracker>.Get().GetAmountConsumedForIDs(list.Distinct<string>().ToList<string>()) / 1000f > (float)this.numCalories;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			int num = reader.ReadInt32();
 			this.foodProducers = new List<Tag>(num);
@@ -47,7 +47,7 @@ namespace Database
 			this.numCalories = reader.ReadInt32();
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			string text = "";
 			for (int i = 0; i < this.foodProducers.Count; i++)
@@ -65,8 +65,8 @@ namespace Database
 			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CONSUME_ITEM, text);
 		}
 
-		private int numCalories;
+				private int numCalories;
 
-		private List<Tag> foodProducers;
+				private List<Tag> foodProducers;
 	}
 }

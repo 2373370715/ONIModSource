@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.Idle;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -41,42 +41,42 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 		}).PlayAnim("object").Enter(new StateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State.Callback(MinorFossilDigSite.DestroyUIExcavateButton)).Enter(new StateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State.Callback(MinorFossilDigSite.MakeItDemolishable));
 	}
 
-	public static void MakeItDemolishable(MinorFossilDigSite.Instance smi)
+		public static void MakeItDemolishable(MinorFossilDigSite.Instance smi)
 	{
 		smi.gameObject.GetComponent<Demolishable>().allowDemolition = true;
 	}
 
-	public static void DestroyUIExcavateButton(MinorFossilDigSite.Instance smi)
+		public static void DestroyUIExcavateButton(MinorFossilDigSite.Instance smi)
 	{
 		smi.DestroyExcavateButton();
 	}
 
-	public static void SetEntombedStatusItemVisibility(MinorFossilDigSite.Instance smi, bool val)
+		public static void SetEntombedStatusItemVisibility(MinorFossilDigSite.Instance smi, bool val)
 	{
 		smi.SetEntombStatusItemVisibility(val);
 	}
 
-	public static void UnregisterFromComponents(MinorFossilDigSite.Instance smi)
+		public static void UnregisterFromComponents(MinorFossilDigSite.Instance smi)
 	{
 		Components.MinorFossilDigSites.Remove(smi);
 	}
 
-	public static void SelfDestroy(MinorFossilDigSite.Instance smi)
+		public static void SelfDestroy(MinorFossilDigSite.Instance smi)
 	{
 		Util.KDestroyGameObject(smi.gameObject);
 	}
 
-	public static void StartWorkChore(MinorFossilDigSite.Instance smi)
+		public static void StartWorkChore(MinorFossilDigSite.Instance smi)
 	{
 		smi.CreateWorkableChore();
 	}
 
-	public static void CancelWorkChore(MinorFossilDigSite.Instance smi)
+		public static void CancelWorkChore(MinorFossilDigSite.Instance smi)
 	{
 		smi.CancelWorkChore();
 	}
 
-	public static void Reveal(MinorFossilDigSite.Instance smi)
+		public static void Reveal(MinorFossilDigSite.Instance smi)
 	{
 		bool flag = !smi.sm.IsRevealed.Get(smi);
 		smi.sm.IsRevealed.Set(true, smi, false);
@@ -87,7 +87,7 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 		}
 	}
 
-	public static void DropLoot(MinorFossilDigSite.Instance smi)
+		public static void DropLoot(MinorFossilDigSite.Instance smi)
 	{
 		PrimaryElement component = smi.GetComponent<PrimaryElement>();
 		int cell = Grid.PosToCell(smi.transform.GetPosition());
@@ -111,12 +111,12 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 		}
 	}
 
-	public static void ProgressStoryTrait(MinorFossilDigSite.Instance smi)
+		public static void ProgressStoryTrait(MinorFossilDigSite.Instance smi)
 	{
 		MinorFossilDigSite.ProgressQuest(smi);
 	}
 
-	public static QuestInstance ProgressQuest(MinorFossilDigSite.Instance smi)
+		public static QuestInstance ProgressQuest(MinorFossilDigSite.Instance smi)
 	{
 		QuestInstance instance = QuestManager.GetInstance(FossilDigSiteConfig.hashID, Db.Get().Quests.FossilHuntQuest);
 		if (instance != null)
@@ -134,45 +134,45 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 		return null;
 	}
 
-	public GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State Idle;
+		public GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State Idle;
 
-	public GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State Completed;
+		public GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State Completed;
 
-	public GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State WaitingForQuestCompletion;
+		public GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State WaitingForQuestCompletion;
 
-	public MinorFossilDigSite.ReadyToBeWorked Workable;
+		public MinorFossilDigSite.ReadyToBeWorked Workable;
 
-	public StateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.BoolParameter MarkedForDig;
+		public StateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.BoolParameter MarkedForDig;
 
-	public StateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.BoolParameter IsRevealed;
+		public StateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.BoolParameter IsRevealed;
 
-	public StateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.BoolParameter IsQuestCompleted;
+		public StateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.BoolParameter IsQuestCompleted;
 
-	private const string UNEXCAVATED_ANIM_NAME = "object_dirty";
+		private const string UNEXCAVATED_ANIM_NAME = "object_dirty";
 
-	private const string EXCAVATED_ANIM_NAME = "object";
+		private const string EXCAVATED_ANIM_NAME = "object";
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public HashedString fossilQuestCriteriaID;
+				public HashedString fossilQuestCriteriaID;
 	}
 
-	public class ReadyToBeWorked : GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State
+		public class ReadyToBeWorked : GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State
 	{
-		public GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State Operational;
+				public GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State Operational;
 
-		public GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State NonOperational;
+				public GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.State NonOperational;
 	}
 
-	public new class Instance : GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.GameInstance, ICheckboxListGroupControl
+		public new class Instance : GameStateMachine<MinorFossilDigSite, MinorFossilDigSite.Instance, IStateMachineTarget, MinorFossilDigSite.Def>.GameInstance, ICheckboxListGroupControl
 	{
-		public Instance(IStateMachineTarget master, MinorFossilDigSite.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, MinorFossilDigSite.Def def) : base(master, def)
 		{
 			Components.MinorFossilDigSites.Add(this);
 			this.negativeDecorModifier = new AttributeModifier(Db.Get().Attributes.Decor.Id, -1f, CODEX.STORY_TRAITS.FOSSILHUNT.MISC.DECREASE_DECOR_ATTRIBUTE, true, false, true);
 		}
 
-		public void SetDecorState(bool isDusty)
+				public void SetDecorState(bool isDusty)
 		{
 			if (isDusty)
 			{
@@ -182,7 +182,7 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			base.gameObject.GetComponent<DecorProvider>().decor.Remove(this.negativeDecorModifier);
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			StoryInstance storyInstance = StoryManager.Instance.GetStoryInstance(Db.Get().Stories.FossilHunt.HashId);
 			if (storyInstance != null)
@@ -201,7 +201,7 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			this.RefreshUI();
 		}
 
-		private void OnQuestProgressChanged(QuestInstance quest, Quest.State previousState, float progressIncreased)
+				private void OnQuestProgressChanged(QuestInstance quest, Quest.State previousState, float progressIncreased)
 		{
 			if (quest.CurrentState == Quest.State.Completed && base.sm.IsRevealed.Get(this))
 			{
@@ -210,13 +210,13 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			this.RefreshUI();
 		}
 
-		public void OnQuestCompleted(QuestInstance quest)
+				public void OnQuestCompleted(QuestInstance quest)
 		{
 			base.sm.IsQuestCompleted.Set(true, this, false);
 			quest.QuestProgressChanged = (Action<QuestInstance, Quest.State, float>)Delegate.Remove(quest.QuestProgressChanged, new Action<QuestInstance, Quest.State, float>(this.OnQuestProgressChanged));
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			MinorFossilDigSite.ProgressQuest(base.smi);
 			StoryInstance storyInstance = StoryManager.Instance.GetStoryInstance(Db.Get().Stories.FossilHunt.HashId);
@@ -235,7 +235,7 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			base.OnCleanUp();
 		}
 
-		public void OnStorytraitProgressChanged(StoryInstance.State state)
+				public void OnStorytraitProgressChanged(StoryInstance.State state)
 		{
 			if (state != StoryInstance.State.IN_PROGRESS)
 			{
@@ -244,17 +244,17 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			this.RefreshUI();
 		}
 
-		public void RefreshUI()
+				public void RefreshUI()
 		{
 			base.Trigger(1980521255, null);
 		}
 
-		public Workable GetWorkable()
+				public Workable GetWorkable()
 		{
 			return this.workable;
 		}
 
-		public void CreateWorkableChore()
+				public void CreateWorkableChore()
 		{
 			if (this.chore == null)
 			{
@@ -262,7 +262,7 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			}
 		}
 
-		public void CancelWorkChore()
+				public void CancelWorkChore()
 		{
 			if (this.chore != null)
 			{
@@ -271,12 +271,12 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			}
 		}
 
-		public void SetEntombStatusItemVisibility(bool visible)
+				public void SetEntombStatusItemVisibility(bool visible)
 		{
 			this.entombComponent.SetShowStatusItemOnEntombed(visible);
 		}
 
-		public void ShowCompletionNotification()
+				public void ShowCompletionNotification()
 		{
 			FossilHuntInitializer.Instance smi = base.gameObject.GetSMI<FossilHuntInitializer.Instance>();
 			if (smi != null)
@@ -285,13 +285,13 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			}
 		}
 
-		public void OnExcavateButtonPressed()
+				public void OnExcavateButtonPressed()
 		{
 			base.sm.MarkedForDig.Set(!base.sm.MarkedForDig.Get(this), this, false);
 			this.workable.SetShouldShowSkillPerkStatusItem(base.sm.MarkedForDig.Get(this));
 		}
 
-		public ExcavateButton CreateExcavateButton()
+				public ExcavateButton CreateExcavateButton()
 		{
 			if (this.excavateButton == null)
 			{
@@ -303,7 +303,7 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			return this.excavateButton;
 		}
 
-		public void DestroyExcavateButton()
+				public void DestroyExcavateButton()
 		{
 			this.workable.SetShouldShowSkillPerkStatusItem(false);
 			if (this.excavateButton != null)
@@ -313,7 +313,7 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			}
 		}
 
-				public string Title
+						public string Title
 		{
 			get
 			{
@@ -321,7 +321,7 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			}
 		}
 
-				public string Description
+						public string Description
 		{
 			get
 			{
@@ -333,31 +333,31 @@ public class MinorFossilDigSite : GameStateMachine<MinorFossilDigSite, MinorFoss
 			}
 		}
 
-		public bool SidescreenEnabled()
+				public bool SidescreenEnabled()
 		{
 			return !base.sm.IsQuestCompleted.Get(this);
 		}
 
-		public ICheckboxListGroupControl.ListGroup[] GetData()
+				public ICheckboxListGroupControl.ListGroup[] GetData()
 		{
 			return FossilHuntInitializer.GetFossilHuntQuestData();
 		}
 
-		public int CheckboxSideScreenSortOrder()
+				public int CheckboxSideScreenSortOrder()
 		{
 			return 20;
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private MinorDigSiteWorkable workable;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private EntombVulnerable entombComponent;
 
-		private ExcavateButton excavateButton;
+				private ExcavateButton excavateButton;
 
-		private Chore chore;
+				private Chore chore;
 
-		private AttributeModifier negativeDecorModifier;
+				private AttributeModifier negativeDecorModifier;
 	}
 }

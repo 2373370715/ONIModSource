@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class ElementSplitterComponents : KGameObjectComponentManager<ElementSplitter>
 {
-	public HandleVector<int>.Handle Add(GameObject go)
+		public HandleVector<int>.Handle Add(GameObject go)
 	{
 		return base.Add(go, new ElementSplitter(go));
 	}
 
-	protected override void OnPrefabInit(HandleVector<int>.Handle handle)
+		protected override void OnPrefabInit(HandleVector<int>.Handle handle)
 	{
 		ElementSplitter data = base.GetData(handle);
 		Pickupable component = data.primaryElement.GetComponent<Pickupable>();
@@ -26,11 +26,11 @@ public class ElementSplitterComponents : KGameObjectComponentManager<ElementSpli
 		base.SetData(handle, data);
 	}
 
-	protected override void OnSpawn(HandleVector<int>.Handle handle)
+		protected override void OnSpawn(HandleVector<int>.Handle handle)
 	{
 	}
 
-	protected override void OnCleanUp(HandleVector<int>.Handle handle)
+		protected override void OnCleanUp(HandleVector<int>.Handle handle)
 	{
 		ElementSplitter data = base.GetData(handle);
 		if (data.primaryElement != null)
@@ -46,7 +46,7 @@ public class ElementSplitterComponents : KGameObjectComponentManager<ElementSpli
 		}
 	}
 
-	private static bool CanFirstAbsorbSecond(HandleVector<int>.Handle first, HandleVector<int>.Handle second)
+		private static bool CanFirstAbsorbSecond(HandleVector<int>.Handle first, HandleVector<int>.Handle second)
 	{
 		if (first == HandleVector<int>.InvalidHandle || second == HandleVector<int>.InvalidHandle)
 		{
@@ -57,7 +57,7 @@ public class ElementSplitterComponents : KGameObjectComponentManager<ElementSpli
 		return data.primaryElement.ElementID == data2.primaryElement.ElementID && data.primaryElement.Units + data2.primaryElement.Units < 25000f && !data.kPrefabID.HasTag(GameTags.MarkedForMove) && !data2.kPrefabID.HasTag(GameTags.MarkedForMove);
 	}
 
-	private static Pickupable OnTake(Pickupable pickupable, HandleVector<int>.Handle handle, float amount)
+		private static Pickupable OnTake(Pickupable pickupable, HandleVector<int>.Handle handle, float amount)
 	{
 		ElementSplitter data = GameComps.ElementSplitters.GetData(handle);
 		Storage storage = pickupable.storage;
@@ -74,7 +74,7 @@ public class ElementSplitterComponents : KGameObjectComponentManager<ElementSpli
 		return component;
 	}
 
-	private static void CopyRenderSettings(KBatchedAnimController src, KBatchedAnimController dest)
+		private static void CopyRenderSettings(KBatchedAnimController src, KBatchedAnimController dest)
 	{
 		if (src != null && dest != null)
 		{
@@ -82,5 +82,5 @@ public class ElementSplitterComponents : KGameObjectComponentManager<ElementSpli
 		}
 	}
 
-	private const float MAX_STACK_SIZE = 25000f;
+		private const float MAX_STACK_SIZE = 25000f;
 }

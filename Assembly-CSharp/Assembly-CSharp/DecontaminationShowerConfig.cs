@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class DecontaminationShowerConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "DecontaminationShower";
 		int width = 2;
@@ -35,7 +35,7 @@ public class DecontaminationShowerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		KBatchedAnimController kbatchedAnimController = go.AddOrGet<KBatchedAnimController>();
 		kbatchedAnimController.sceneLayer = Grid.SceneLayer.BuildingBack;
@@ -72,23 +72,23 @@ public class DecontaminationShowerConfig : IBuildingConfig
 		go.AddOrGet<Storage>().SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "DecontaminationShower";
+		public const string ID = "DecontaminationShower";
 
-	private const float MASS_PER_USE = 100f;
+		private const float MASS_PER_USE = 100f;
 
-	private const int DISEASE_REMOVAL_COUNT = 1000000;
+		private const int DISEASE_REMOVAL_COUNT = 1000000;
 
-	private const float WATER_PER_USE = 100f;
+		private const float WATER_PER_USE = 100f;
 
-	private const int USES_PER_FLUSH = 1;
+		private const int USES_PER_FLUSH = 1;
 
-	private const float WORK_TIME = 15f;
+		private const float WORK_TIME = 15f;
 
-	private const SimHashes CONSUMED_ELEMENT = SimHashes.Water;
+		private const SimHashes CONSUMED_ELEMENT = SimHashes.Water;
 
-	private const SimHashes PRODUCED_ELEMENT = SimHashes.DirtyWater;
+		private const SimHashes PRODUCED_ELEMENT = SimHashes.DirtyWater;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FloorSwitchActivator")]
 public class FloorSwitchActivator : KMonoBehaviour
 {
-		public PrimaryElement PrimaryElement
+			public PrimaryElement PrimaryElement
 	{
 		get
 		{
@@ -12,20 +12,20 @@ public class FloorSwitchActivator : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.Register();
 		this.OnCellChange();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.Unregister();
 		base.OnCleanUp();
 	}
 
-	private void OnCellChange()
+		private void OnCellChange()
 	{
 		int num = Grid.PosToCell(this);
 		GameScenePartitioner.Instance.UpdatePosition(this.partitionerEntry, num);
@@ -37,24 +37,24 @@ public class FloorSwitchActivator : KMonoBehaviour
 		this.last_cell_occupied = num;
 	}
 
-	private void NotifyChanged(int cell)
+		private void NotifyChanged(int cell)
 	{
 		GameScenePartitioner.Instance.TriggerEvent(cell, GameScenePartitioner.Instance.floorSwitchActivatorChangedLayer, this);
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		this.Register();
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		this.Unregister();
 		base.OnCmpDisable();
 	}
 
-	private void Register()
+		private void Register()
 	{
 		if (this.registered)
 		{
@@ -66,7 +66,7 @@ public class FloorSwitchActivator : KMonoBehaviour
 		this.registered = true;
 	}
 
-	private void Unregister()
+		private void Unregister()
 	{
 		if (!this.registered)
 		{
@@ -81,12 +81,12 @@ public class FloorSwitchActivator : KMonoBehaviour
 		this.registered = false;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private PrimaryElement primaryElement;
 
-	private bool registered;
+		private bool registered;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private int last_cell_occupied = -1;
+		private int last_cell_occupied = -1;
 }

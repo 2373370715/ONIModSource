@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class RocketControlStation : StateMachineComponent<RocketControlStation.StatesInstance>, IGameObjectEffectDescriptor
 {
-			public bool RestrictWhenGrounded
+				public bool RestrictWhenGrounded
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -31,13 +31,13 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 		this.UpdateRestrictionAnimSymbol(null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.RocketControlStations.Remove(this);
 	}
 
-		public bool BuildingRestrictionsActive
+			public bool BuildingRestrictionsActive
 	{
 		get
 		{
@@ -51,12 +51,12 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 		}
 	}
 
-	public bool IsLogicInputConnected()
+		public bool IsLogicInputConnected()
 	{
 		return this.GetNetwork() != null;
 	}
 
-	public void OnLogicValueChanged(object data)
+		public void OnLogicValueChanged(object data)
 	{
 		if (((LogicValueChanged)data).portID == RocketControlStation.PORT_ID)
 		{
@@ -68,7 +68,7 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 		}
 	}
 
-	public void OnTagsChanged(object obj)
+		public void OnTagsChanged(object obj)
 	{
 		if (((TagChangedEventData)obj).tag == GameTags.RocketOnGround)
 		{
@@ -76,18 +76,18 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 		}
 	}
 
-	private LogicCircuitNetwork GetNetwork()
+		private LogicCircuitNetwork GetNetwork()
 	{
 		int portCell = base.GetComponent<LogicPorts>().GetPortCell(RocketControlStation.PORT_ID);
 		return Game.Instance.logicCircuitManager.GetNetworkForCell(portCell);
 	}
 
-	private void UpdateRestrictionAnimSymbol(object o = null)
+		private void UpdateRestrictionAnimSymbol(object o = null)
 	{
 		base.GetComponent<KAnimControllerBase>().SetSymbolVisiblity("restriction_sign", this.BuildingRestrictionsActive);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		list.Add(new Descriptor(UI.BUILDINGEFFECTS.ROCKETRESTRICTION_HEADER, UI.BUILDINGEFFECTS.TOOLTIPS.ROCKETRESTRICTION_HEADER, Descriptor.DescriptorType.Effect, false));
@@ -97,33 +97,33 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 		return list;
 	}
 
-	public static List<Tag> CONTROLLED_BUILDINGS = new List<Tag>();
+		public static List<Tag> CONTROLLED_BUILDINGS = new List<Tag>();
 
-	private const int UNNETWORKED_VALUE = 1;
+		private const int UNNETWORKED_VALUE = 1;
 
-	[Serialize]
+		[Serialize]
 	public float TimeRemaining;
 
-	private bool m_logicUsageRestrictionState;
+		private bool m_logicUsageRestrictionState;
 
-	[Serialize]
+		[Serialize]
 	private bool m_restrictWhenGrounded;
 
-	public static readonly HashedString PORT_ID = "LogicUsageRestriction";
+		public static readonly HashedString PORT_ID = "LogicUsageRestriction";
 
-	private static readonly EventSystem.IntraObjectHandler<RocketControlStation> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<RocketControlStation>(delegate(RocketControlStation component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RocketControlStation> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<RocketControlStation>(delegate(RocketControlStation component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<RocketControlStation> OnRocketRestrictionChanged = new EventSystem.IntraObjectHandler<RocketControlStation>(delegate(RocketControlStation component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RocketControlStation> OnRocketRestrictionChanged = new EventSystem.IntraObjectHandler<RocketControlStation>(delegate(RocketControlStation component, object data)
 	{
 		component.UpdateRestrictionAnimSymbol(data);
 	});
 
-	public class States : GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation>
+		public class States : GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.ParamsOnly;
 			default_state = this.unoperational;
@@ -177,7 +177,7 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 			});
 		}
 
-		public void AquireClustercraft(RocketControlStation.StatesInstance smi, bool force = false)
+				public void AquireClustercraft(RocketControlStation.StatesInstance smi, bool force = false)
 		{
 			if (force || this.clusterCraft.IsNull(smi))
 			{
@@ -190,18 +190,18 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 			}
 		}
 
-		private void DecrementTime(RocketControlStation.StatesInstance smi, float dt)
+				private void DecrementTime(RocketControlStation.StatesInstance smi, float dt)
 		{
 			this.timeRemaining.Delta(-dt, smi);
 		}
 
-		private bool RocketReadyForLaunch(RocketControlStation.StatesInstance smi)
+				private bool RocketReadyForLaunch(RocketControlStation.StatesInstance smi)
 		{
 			Clustercraft component = this.clusterCraft.Get(smi).GetComponent<Clustercraft>();
 			return component.LaunchRequested && component.CheckReadyToLaunch();
 		}
 
-		private GameObject GetRocket(RocketControlStation.StatesInstance smi)
+				private GameObject GetRocket(RocketControlStation.StatesInstance smi)
 		{
 			WorldContainer world = ClusterManager.Instance.GetWorld(smi.GetMyWorldId());
 			if (world == null)
@@ -211,13 +211,13 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 			return world.gameObject.GetComponent<Clustercraft>().gameObject;
 		}
 
-		private void SetRocketSpeedModifiers(RocketControlStation.StatesInstance smi, float autoPilotSpeedMultiplier, float pilotSkillMultiplier = 1f)
+				private void SetRocketSpeedModifiers(RocketControlStation.StatesInstance smi, float autoPilotSpeedMultiplier, float pilotSkillMultiplier = 1f)
 		{
 			this.clusterCraft.Get(smi).GetComponent<Clustercraft>().AutoPilotMultiplier = autoPilotSpeedMultiplier;
 			this.clusterCraft.Get(smi).GetComponent<Clustercraft>().PilotSkillMultiplier = pilotSkillMultiplier;
 		}
 
-		private Chore CreateChore(RocketControlStation.StatesInstance smi)
+				private Chore CreateChore(RocketControlStation.StatesInstance smi)
 		{
 			Workable component = smi.master.GetComponent<RocketControlStationIdleWorkable>();
 			WorkChore<RocketControlStationIdleWorkable> workChore = new WorkChore<RocketControlStationIdleWorkable>(Db.Get().ChoreTypes.RocketControl, component, null, true, null, null, null, false, Db.Get().ScheduleBlockTypes.Work, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
@@ -226,7 +226,7 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 			return workChore;
 		}
 
-		private Chore CreateLaunchChore(RocketControlStation.StatesInstance smi)
+				private Chore CreateLaunchChore(RocketControlStation.StatesInstance smi)
 		{
 			Workable component = smi.master.GetComponent<RocketControlStationLaunchWorkable>();
 			WorkChore<RocketControlStationLaunchWorkable> workChore = new WorkChore<RocketControlStationLaunchWorkable>(Db.Get().ChoreTypes.RocketControl, component, null, true, null, null, null, true, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.topPriority, 5, false, true);
@@ -234,70 +234,70 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 			return workChore;
 		}
 
-		public void LaunchRocket(RocketControlStation.StatesInstance smi)
+				public void LaunchRocket(RocketControlStation.StatesInstance smi)
 		{
 			this.clusterCraft.Get(smi).GetComponent<Clustercraft>().Launch(false);
 		}
 
-		public bool IsInFlight(RocketControlStation.StatesInstance smi)
+				public bool IsInFlight(RocketControlStation.StatesInstance smi)
 		{
 			return this.clusterCraft.Get(smi).GetComponent<Clustercraft>().Status == Clustercraft.CraftStatus.InFlight;
 		}
 
-		public bool IsLaunching(RocketControlStation.StatesInstance smi)
+				public bool IsLaunching(RocketControlStation.StatesInstance smi)
 		{
 			return this.clusterCraft.Get(smi).GetComponent<Clustercraft>().Status == Clustercraft.CraftStatus.Launching;
 		}
 
-		public StateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.TargetParameter clusterCraft;
+				public StateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.TargetParameter clusterCraft;
 
-		private GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State unoperational;
+				private GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State unoperational;
 
-		private GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State operational;
+				private GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State operational;
 
-		private GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State running;
+				private GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State running;
 
-		private RocketControlStation.States.ReadyStates ready;
+				private RocketControlStation.States.ReadyStates ready;
 
-		private RocketControlStation.States.LaunchStates launch;
+				private RocketControlStation.States.LaunchStates launch;
 
-		public StateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.Signal pilotSuccessful;
+				public StateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.Signal pilotSuccessful;
 
-		public StateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.FloatParameter timeRemaining;
+				public StateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.FloatParameter timeRemaining;
 
-		public class ReadyStates : GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State
+				public class ReadyStates : GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State
 		{
-			public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State idle;
+						public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State idle;
 
-			public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State working;
+						public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State working;
 
-			public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State post;
+						public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State post;
 
-			public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State warning;
+						public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State warning;
 
-			public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State autopilot;
+						public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State autopilot;
 		}
 
-		public class LaunchStates : GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State
+				public class LaunchStates : GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State
 		{
-			public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State launch;
+						public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State launch;
 
-			public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State fadein;
+						public GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.State fadein;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.GameInstance
+		public class StatesInstance : GameStateMachine<RocketControlStation.States, RocketControlStation.StatesInstance, RocketControlStation, object>.GameInstance
 	{
-		public StatesInstance(RocketControlStation smi) : base(smi)
+				public StatesInstance(RocketControlStation smi) : base(smi)
 		{
 		}
 
-		public void LaunchRocket()
+				public void LaunchRocket()
 		{
 			base.sm.LaunchRocket(this);
 		}
 
-		public void SetPilotSpeedMult(Worker pilot)
+				public void SetPilotSpeedMult(WorkerBase pilot)
 		{
 			AttributeConverter pilotingSpeed = Db.Get().AttributeConverters.PilotingSpeed;
 			AttributeConverterInstance converter = pilot.GetComponent<AttributeConverters>().GetConverter(pilotingSpeed.Id);
@@ -305,6 +305,6 @@ public class RocketControlStation : StateMachineComponent<RocketControlStation.S
 			this.pilotSpeedMult = Mathf.Max(a, 0.1f);
 		}
 
-		public float pilotSpeedMult = 1f;
+				public float pilotSpeedMult = 1f;
 	}
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Polluter : IPolluter
 {
-			public int radius
+				public int radius
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class Polluter : IPolluter
 		}
 	}
 
-	public void SetAttributes(Vector2 pos, int dB, GameObject go, string name)
+		public void SetAttributes(Vector2 pos, int dB, GameObject go, string name)
 	{
 		this.position = pos;
 		this.sourceName = name;
@@ -31,32 +31,32 @@ public class Polluter : IPolluter
 		this.gameObject = go;
 	}
 
-	public string GetName()
+		public string GetName()
 	{
 		return this.sourceName;
 	}
 
-	public int GetRadius()
+		public int GetRadius()
 	{
 		return this.radius;
 	}
 
-	public int GetNoise()
+		public int GetNoise()
 	{
 		return this.decibels;
 	}
 
-	public GameObject GetGameObject()
+		public GameObject GetGameObject()
 	{
 		return this.gameObject;
 	}
 
-	public Polluter(int radius)
+		public Polluter(int radius)
 	{
 		this.radius = radius;
 	}
 
-	public void SetSplat(NoiseSplat new_splat)
+		public void SetSplat(NoiseSplat new_splat)
 	{
 		if (new_splat == null && this.splat != null)
 		{
@@ -69,7 +69,7 @@ public class Polluter : IPolluter
 		}
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		if (this.splat != null)
 		{
@@ -79,20 +79,20 @@ public class Polluter : IPolluter
 		}
 	}
 
-	public Vector2 GetPosition()
+		public Vector2 GetPosition()
 	{
 		return this.position;
 	}
 
-	private int _radius;
+		private int _radius;
 
-	private int decibels;
+		private int decibels;
 
-	private Vector2 position;
+		private Vector2 position;
 
-	private string sourceName;
+		private string sourceName;
 
-	private GameObject gameObject;
+		private GameObject gameObject;
 
-	private NoiseSplat splat;
+		private NoiseSplat splat;
 }

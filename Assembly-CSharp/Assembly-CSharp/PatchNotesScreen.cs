@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PatchNotesScreen : KModalScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.changesLabel.text = PatchNotesScreen.m_patchNotesText;
@@ -18,23 +18,23 @@ public class PatchNotesScreen : KModalScreen
 		PatchNotesScreen.instance = this;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		PatchNotesScreen.instance = null;
 	}
 
-	public static bool ShouldShowScreen()
+		public static bool ShouldShowScreen()
 	{
 		return false;
 	}
 
-	private void MarkAsReadAndClose()
+		private void MarkAsReadAndClose()
 	{
 		KPlayerPrefs.SetInt("PatchNotesVersion", PatchNotesScreen.PatchNotesVersion);
 		this.Deactivate();
 	}
 
-	public static void UpdatePatchNotes(string patchNotesSummary, string url)
+		public static void UpdatePatchNotes(string patchNotesSummary, string url)
 	{
 		PatchNotesScreen.m_patchNotesUrl = url;
 		PatchNotesScreen.m_patchNotesText = patchNotesSummary;
@@ -44,12 +44,12 @@ public class PatchNotesScreen : KModalScreen
 		}
 	}
 
-	private void OnPatchNotesClick()
+		private void OnPatchNotesClick()
 	{
 		App.OpenWebURL(PatchNotesScreen.m_patchNotesUrl);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape) || e.TryConsume(global::Action.MouseRight))
 		{
@@ -59,26 +59,26 @@ public class PatchNotesScreen : KModalScreen
 		base.OnKeyDown(e);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton okButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton fullPatchNotes;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton previousVersion;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText changesLabel;
 
-	private static string m_patchNotesUrl;
+		private static string m_patchNotesUrl;
 
-	private static string m_patchNotesText;
+		private static string m_patchNotesText;
 
-	private static int PatchNotesVersion = 9;
+		private static int PatchNotesVersion = 9;
 
-	private static PatchNotesScreen instance;
+		private static PatchNotesScreen instance;
 }

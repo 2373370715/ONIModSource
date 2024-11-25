@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class ColdBreatherConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "ColdBreather";
 		string name = STRINGS.CREATURES.SPECIES.COLDBREATHER.NAME;
@@ -66,40 +66,49 @@ public class ColdBreatherConfig : IEntityConfig
 			radiationEmitter.emitRads = 480f;
 			radiationEmitter.emissionOffset = new Vector3(0f, 0f, 0f);
 		}
-		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Hidden, "ColdBreatherSeed", STRINGS.CREATURES.SPECIES.SEEDS.COLDBREATHER.NAME, STRINGS.CREATURES.SPECIES.SEEDS.COLDBREATHER.DESC, Assets.GetAnim("seed_coldbreather_kanim"), "object", 1, new List<Tag>
-		{
-			GameTags.CropSeed
-		}, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 21, STRINGS.CREATURES.SPECIES.COLDBREATHER.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, null), "ColdBreather_preview", Assets.GetAnim("coldbreather_kanim"), "place", 1, 2);
+		GameObject plant = gameObject;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Hidden;
+		string id2 = "ColdBreatherSeed";
+		string name2 = STRINGS.CREATURES.SPECIES.SEEDS.COLDBREATHER.NAME;
+		string desc2 = STRINGS.CREATURES.SPECIES.SEEDS.COLDBREATHER.DESC;
+		KAnimFile anim = Assets.GetAnim("seed_coldbreather_kanim");
+		string initialAnim = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.CropSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		string domesticatedDescription = STRINGS.CREATURES.SPECIES.COLDBREATHER.DOMESTICATEDDESC;
+		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id2, name2, desc2, anim, initialAnim, numberOfSeeds, list, planterDirection, default(Tag), 21, domesticatedDescription, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, null), "ColdBreather_preview", Assets.GetAnim("coldbreather_kanim"), "place", 1, 2);
 		SoundEventVolumeCache.instance.AddVolume("coldbreather_kanim", "ColdBreather_grow", NOISE_POLLUTION.CREATURES.TIER3);
 		SoundEventVolumeCache.instance.AddVolume("coldbreather_kanim", "ColdBreather_intake", NOISE_POLLUTION.CREATURES.TIER3);
 		gameObject.AddOrGet<EntityCellVisualizer>();
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.AddOrGet<EntityCellVisualizer>().AddPort(EntityCellVisualizer.Ports.HeatSink, default(CellOffset));
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "ColdBreather";
+		public const string ID = "ColdBreather";
 
-	public static readonly Tag TAG = TagManager.Create("ColdBreather");
+		public static readonly Tag TAG = TagManager.Create("ColdBreather");
 
-	public const float FERTILIZATION_RATE = 0.006666667f;
+		public const float FERTILIZATION_RATE = 0.006666667f;
 
-	public const SimHashes FERTILIZER = SimHashes.Phosphorite;
+		public const SimHashes FERTILIZER = SimHashes.Phosphorite;
 
-	public const float TEMP_DELTA = -5f;
+		public const float TEMP_DELTA = -5f;
 
-	public const float CONSUMPTION_RATE = 1f;
+		public const float CONSUMPTION_RATE = 1f;
 
-	public const float RADIATION_STRENGTH = 480f;
+		public const float RADIATION_STRENGTH = 480f;
 
-	public const string SEED_ID = "ColdBreatherSeed";
+		public const string SEED_ID = "ColdBreatherSeed";
 
-	public static readonly Tag SEED_TAG = TagManager.Create("ColdBreatherSeed");
+		public static readonly Tag SEED_TAG = TagManager.Create("ColdBreatherSeed");
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Scheduler : IScheduler
 {
-		public int Count
+			public int Count
 	{
 		get
 		{
@@ -11,29 +11,29 @@ public class Scheduler : IScheduler
 		}
 	}
 
-	public Scheduler(SchedulerClock clock)
+		public Scheduler(SchedulerClock clock)
 	{
 		this.clock = clock;
 	}
 
-	public float GetTime()
+		public float GetTime()
 	{
 		return this.clock.GetTime();
 	}
 
-	private SchedulerHandle Schedule(SchedulerEntry entry)
+		private SchedulerHandle Schedule(SchedulerEntry entry)
 	{
 		this.entries.Enqueue(entry.time, entry);
 		return new SchedulerHandle(this, entry);
 	}
 
-	private SchedulerHandle Schedule(string name, float time, float time_interval, Action<object> callback, object callback_data, GameObject profiler_obj)
+		private SchedulerHandle Schedule(string name, float time, float time_interval, Action<object> callback, object callback_data, GameObject profiler_obj)
 	{
 		SchedulerEntry entry = new SchedulerEntry(name, time + this.clock.GetTime(), time_interval, callback, callback_data, profiler_obj);
 		return this.Schedule(entry);
 	}
 
-	public void FreeResources()
+		public void FreeResources()
 	{
 		this.clock = null;
 		if (this.entries != null)
@@ -46,7 +46,7 @@ public class Scheduler : IScheduler
 		this.entries = null;
 	}
 
-	public SchedulerHandle Schedule(string name, float time, Action<object> callback, object callback_data = null, SchedulerGroup group = null)
+		public SchedulerHandle Schedule(string name, float time, Action<object> callback, object callback_data = null, SchedulerGroup group = null)
 	{
 		if (group != null && group.scheduler != this)
 		{
@@ -60,12 +60,12 @@ public class Scheduler : IScheduler
 		return schedulerHandle;
 	}
 
-	public void Clear(SchedulerHandle handle)
+		public void Clear(SchedulerHandle handle)
 	{
 		handle.entry.Clear();
 	}
 
-	public void Update()
+		public void Update()
 	{
 		if (this.Count == 0)
 		{
@@ -92,9 +92,9 @@ public class Scheduler : IScheduler
 		}
 	}
 
-	public FloatHOTQueue<SchedulerEntry> entries = new FloatHOTQueue<SchedulerEntry>();
+		public FloatHOTQueue<SchedulerEntry> entries = new FloatHOTQueue<SchedulerEntry>();
 
-	private SchedulerClock clock;
+		private SchedulerClock clock;
 
-	private float previousTime = float.NegativeInfinity;
+		private float previousTime = float.NegativeInfinity;
 }

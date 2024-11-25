@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class MonumentSideScreen : SideScreenContent
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<MonumentPart>() != null;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.debugVictoryButton.onClick += delegate()
@@ -31,7 +31,7 @@ public class MonumentSideScreen : SideScreenContent
 		};
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.target = target.GetComponent<MonumentPart>();
@@ -39,7 +39,7 @@ public class MonumentSideScreen : SideScreenContent
 		this.GenerateStateButtons();
 	}
 
-	public void GenerateStateButtons()
+		public void GenerateStateButtons()
 	{
 		for (int i = this.buttons.Count - 1; i >= 0; i--)
 		{
@@ -64,16 +64,16 @@ public class MonumentSideScreen : SideScreenContent
 		}
 	}
 
-	private MonumentPart target;
+		private MonumentPart target;
 
-	public KButton debugVictoryButton;
+		public KButton debugVictoryButton;
 
-	public KButton flipButton;
+		public KButton flipButton;
 
-	public GameObject stateButtonPrefab;
+		public GameObject stateButtonPrefab;
 
-	private List<GameObject> buttons = new List<GameObject>();
+		private List<GameObject> buttons = new List<GameObject>();
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform buttonContainer;
 }

@@ -2,7 +2,7 @@
 
 public class GeoTunerSwitchGeyserWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.overrideAnims = new KAnimFile[]
@@ -13,11 +13,11 @@ public class GeoTunerSwitchGeyserWorkable : Workable
 		this.synchronizeAnims = false;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.SetWorkTime(3f);
 	}
 
-	private const string animName = "anim_use_remote_kanim";
+		private const string animName = "anim_use_remote_kanim";
 }

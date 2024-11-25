@@ -4,42 +4,42 @@ using STRINGS;
 
 public class WorldDetectedMessage : Message
 {
-	public WorldDetectedMessage()
+		public WorldDetectedMessage()
 	{
 	}
 
-	public WorldDetectedMessage(WorldContainer world)
+		public WorldDetectedMessage(WorldContainer world)
 	{
 		this.worldID = world.id;
 	}
 
-	public override string GetSound()
+		public override string GetSound()
 	{
 		return "AI_Notification_ResearchComplete";
 	}
 
-	public override string GetMessageBody()
+		public override string GetMessageBody()
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(this.worldID);
 		return string.Format(MISC.NOTIFICATIONS.WORLDDETECTED.MESSAGEBODY, world.GetProperName());
 	}
 
-	public override string GetTitle()
+		public override string GetTitle()
 	{
 		return MISC.NOTIFICATIONS.WORLDDETECTED.NAME;
 	}
 
-	public override string GetTooltip()
+		public override string GetTooltip()
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(this.worldID);
 		return string.Format(MISC.NOTIFICATIONS.WORLDDETECTED.TOOLTIP, world.GetProperName());
 	}
 
-	public override bool IsValid()
+		public override bool IsValid()
 	{
 		return this.worldID != 255;
 	}
 
-	[Serialize]
+		[Serialize]
 	private int worldID;
 }

@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Klei.Input
 {
-	[ActionType("InterfaceTool", "Dig", true)]
+		[ActionType("InterfaceTool", "Dig", true)]
 	public abstract class DigAction
 	{
-		public void Uproot(int cell)
+				public void Uproot(int cell)
 		{
 			ListPool<ScenePartitionerEntry, GameScenePartitioner>.PooledList pooledList = ListPool<ScenePartitionerEntry, GameScenePartitioner>.Allocate();
 			int x_bottomLeft;
@@ -21,8 +21,8 @@ namespace Klei.Input
 			pooledList.Recycle();
 		}
 
-		public abstract void Dig(int cell, int distFromOrigin);
+				public abstract void Dig(int cell, int distFromOrigin);
 
-		protected abstract void EntityDig(IDigActionEntity digAction);
+				protected abstract void EntityDig(IDigActionEntity digAction);
 	}
 }

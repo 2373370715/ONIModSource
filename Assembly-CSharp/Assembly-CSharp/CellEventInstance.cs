@@ -4,19 +4,19 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class CellEventInstance : EventInstanceBase, ISaveLoadable
 {
-	public CellEventInstance(int cell, int data, int data2, CellEvent ev) : base(ev)
+		public CellEventInstance(int cell, int data, int data2, CellEvent ev) : base(ev)
 	{
 		this.cell = cell;
 		this.data = data;
 		this.data2 = data2;
 	}
 
-	[Serialize]
+		[Serialize]
 	public int cell;
 
-	[Serialize]
+		[Serialize]
 	public int data;
 
-	[Serialize]
+		[Serialize]
 	public int data2;
 }

@@ -5,25 +5,25 @@ using UnityEngine.UI;
 
 public abstract class CodexWidget<SubClass> : ICodexWidget
 {
-			public int preferredWidth { get; set; }
+				public int preferredWidth { get; set; }
 
-			public int preferredHeight { get; set; }
+				public int preferredHeight { get; set; }
 
-	protected CodexWidget()
+		protected CodexWidget()
 	{
 		this.preferredWidth = -1;
 		this.preferredHeight = -1;
 	}
 
-	protected CodexWidget(int preferredWidth, int preferredHeight)
+		protected CodexWidget(int preferredWidth, int preferredHeight)
 	{
 		this.preferredWidth = preferredWidth;
 		this.preferredHeight = preferredHeight;
 	}
 
-	public abstract void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles);
+		public abstract void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles);
 
-	protected void ConfigurePreferredLayout(GameObject contentGameObject)
+		protected void ConfigurePreferredLayout(GameObject contentGameObject)
 	{
 		LayoutElement componentInChildren = contentGameObject.GetComponentInChildren<LayoutElement>();
 		componentInChildren.preferredHeight = (float)this.preferredHeight;

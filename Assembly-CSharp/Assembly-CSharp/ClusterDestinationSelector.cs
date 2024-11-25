@@ -3,12 +3,12 @@ using KSerialization;
 
 public class ClusterDestinationSelector : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.Subscribe<ClusterDestinationSelector>(-1298331547, this.OnClusterLocationChangedDelegate);
 	}
 
-	protected virtual void OnClusterLocationChanged(object data)
+		protected virtual void OnClusterLocationChanged(object data)
 	{
 		if (((ClusterLocationChangedEvent)data).newLocation == this.m_destination)
 		{
@@ -16,17 +16,17 @@ public class ClusterDestinationSelector : KMonoBehaviour
 		}
 	}
 
-	public int GetDestinationWorld()
+		public int GetDestinationWorld()
 	{
 		return ClusterUtil.GetAsteroidWorldIdAtLocation(this.m_destination);
 	}
 
-	public AxialI GetDestination()
+		public AxialI GetDestination()
 	{
 		return this.m_destination;
 	}
 
-	public virtual void SetDestination(AxialI location)
+		public virtual void SetDestination(AxialI location)
 	{
 		if (this.requireAsteroidDestination)
 		{
@@ -36,33 +36,33 @@ public class ClusterDestinationSelector : KMonoBehaviour
 		base.Trigger(543433792, location);
 	}
 
-	public bool HasAsteroidDestination()
+		public bool HasAsteroidDestination()
 	{
 		return ClusterUtil.GetAsteroidWorldIdAtLocation(this.m_destination) != -1;
 	}
 
-	public virtual bool IsAtDestination()
+		public virtual bool IsAtDestination()
 	{
 		return this.GetMyWorldLocation() == this.m_destination;
 	}
 
-	[Serialize]
+		[Serialize]
 	protected AxialI m_destination;
 
-	public bool assignable;
+		public bool assignable;
 
-	public bool requireAsteroidDestination;
+		public bool requireAsteroidDestination;
 
-	[Serialize]
+		[Serialize]
 	public bool canNavigateFogOfWar;
 
-	public bool dodgesHiddenAsteroids;
+		public bool dodgesHiddenAsteroids;
 
-	public bool requireLaunchPadOnAsteroidDestination;
+		public bool requireLaunchPadOnAsteroidDestination;
 
-	public bool shouldPointTowardsPath;
+		public bool shouldPointTowardsPath;
 
-	private EventSystem.IntraObjectHandler<ClusterDestinationSelector> OnClusterLocationChangedDelegate = new EventSystem.IntraObjectHandler<ClusterDestinationSelector>(delegate(ClusterDestinationSelector cmp, object data)
+		private EventSystem.IntraObjectHandler<ClusterDestinationSelector> OnClusterLocationChangedDelegate = new EventSystem.IntraObjectHandler<ClusterDestinationSelector>(delegate(ClusterDestinationSelector cmp, object data)
 	{
 		cmp.OnClusterLocationChanged(data);
 	});

@@ -6,7 +6,7 @@ using TUNING;
 [SkipSaveFileSerialization]
 public class NightOwl : StateMachineComponent<NightOwl.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.attributeModifiers = new AttributeModifier[]
 		{
@@ -25,7 +25,7 @@ public class NightOwl : StateMachineComponent<NightOwl.StatesInstance>
 		base.smi.StartSM();
 	}
 
-	public void ApplyModifiers()
+		public void ApplyModifiers()
 	{
 		Attributes attributes = base.gameObject.GetAttributes();
 		for (int i = 0; i < this.attributeModifiers.Length; i++)
@@ -35,7 +35,7 @@ public class NightOwl : StateMachineComponent<NightOwl.StatesInstance>
 		}
 	}
 
-	public void RemoveModifiers()
+		public void RemoveModifiers()
 	{
 		Attributes attributes = base.gameObject.GetAttributes();
 		for (int i = 0; i < this.attributeModifiers.Length; i++)
@@ -45,26 +45,26 @@ public class NightOwl : StateMachineComponent<NightOwl.StatesInstance>
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KPrefabID kPrefabID;
 
-	private AttributeModifier[] attributeModifiers;
+		private AttributeModifier[] attributeModifiers;
 
-	public class StatesInstance : GameStateMachine<NightOwl.States, NightOwl.StatesInstance, NightOwl, object>.GameInstance
+		public class StatesInstance : GameStateMachine<NightOwl.States, NightOwl.StatesInstance, NightOwl, object>.GameInstance
 	{
-		public StatesInstance(NightOwl master) : base(master)
+				public StatesInstance(NightOwl master) : base(master)
 		{
 		}
 
-		public bool IsNight()
+				public bool IsNight()
 		{
 			return !(GameClock.Instance == null) && !(base.master.kPrefabID.PrefabTag == GameTags.MinionSelectPreview) && GameClock.Instance.IsNighttime();
 		}
 	}
 
-	public class States : GameStateMachine<NightOwl.States, NightOwl.StatesInstance, NightOwl>
+		public class States : GameStateMachine<NightOwl.States, NightOwl.StatesInstance, NightOwl>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.root.TagTransition(GameTags.Dead, null, false);
@@ -78,8 +78,8 @@ public class NightOwl : StateMachineComponent<NightOwl.StatesInstance>
 			}).ToggleStatusItem(Db.Get().DuplicantStatusItems.NightTime, null).ToggleExpression(Db.Get().Expressions.Happy, null).Transition(this.idle, (NightOwl.StatesInstance smi) => !smi.IsNight(), UpdateRate.SIM_200ms);
 		}
 
-		public GameStateMachine<NightOwl.States, NightOwl.StatesInstance, NightOwl, object>.State idle;
+				public GameStateMachine<NightOwl.States, NightOwl.StatesInstance, NightOwl, object>.State idle;
 
-		public GameStateMachine<NightOwl.States, NightOwl.StatesInstance, NightOwl, object>.State early;
+				public GameStateMachine<NightOwl.States, NightOwl.StatesInstance, NightOwl, object>.State early;
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DevLifeSupportConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "DevLifeSupport";
 		int width = 1;
@@ -26,7 +26,7 @@ public class DevLifeSupportConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddTag(GameTags.DevBuilding);
 		Storage storage = BuildingTemplates.CreateDefaultStorage(go, false);
@@ -52,17 +52,17 @@ public class DevLifeSupportConfig : IBuildingConfig
 		go.AddOrGet<DevLifeSupport>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "DevLifeSupport";
+		public const string ID = "DevLifeSupport";
 
-	private const float OXYGEN_GENERATION_RATE = 50.000004f;
+		private const float OXYGEN_GENERATION_RATE = 50.000004f;
 
-	private const float OXYGEN_TEMPERATURE = 303.15f;
+		private const float OXYGEN_TEMPERATURE = 303.15f;
 
-	private const float OXYGEN_MAX_PRESSURE = 1.5f;
+		private const float OXYGEN_MAX_PRESSURE = 1.5f;
 
-	private const float CO2_CONSUMPTION_RATE = 50.000004f;
+		private const float CO2_CONSUMPTION_RATE = 50.000004f;
 }

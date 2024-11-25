@@ -5,7 +5,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ManualHighEnergyParticleSpawner : StateMachineComponent<ManualHighEnergyParticleSpawner.StatesInstance>, IHighEnergyParticleDirection
 {
-			public EightDirection Direction
+				public EightDirection Direction
 	{
 		get
 		{
@@ -23,13 +23,13 @@ public class ManualHighEnergyParticleSpawner : StateMachineComponent<ManualHighE
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<ManualHighEnergyParticleSpawner>(-905833192, ManualHighEnergyParticleSpawner.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -39,7 +39,7 @@ public class ManualHighEnergyParticleSpawner : StateMachineComponent<ManualHighE
 		Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Radiation, true);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		ManualHighEnergyParticleSpawner component = ((GameObject)data).GetComponent<ManualHighEnergyParticleSpawner>();
 		if (component != null)
@@ -48,7 +48,7 @@ public class ManualHighEnergyParticleSpawner : StateMachineComponent<ManualHighE
 		}
 	}
 
-	public void LauncherUpdate()
+		public void LauncherUpdate()
 	{
 		if (this.particleStorage.Particles > 0f)
 		{
@@ -66,40 +66,40 @@ public class ManualHighEnergyParticleSpawner : StateMachineComponent<ManualHighE
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private HighEnergyParticleStorage particleStorage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private RadiationEmitter radiationEmitter;
 
-	[Serialize]
+		[Serialize]
 	private EightDirection _direction;
 
-	private EightDirectionController directionController;
+		private EightDirectionController directionController;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<ManualHighEnergyParticleSpawner> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ManualHighEnergyParticleSpawner>(delegate(ManualHighEnergyParticleSpawner component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ManualHighEnergyParticleSpawner> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ManualHighEnergyParticleSpawner>(delegate(ManualHighEnergyParticleSpawner component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	public class StatesInstance : GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner, object>.GameInstance
 	{
-		public StatesInstance(ManualHighEnergyParticleSpawner smi) : base(smi)
+				public StatesInstance(ManualHighEnergyParticleSpawner smi) : base(smi)
 		{
 		}
 
-		public bool IsComplexFabricatorWorkable(object data)
+				public bool IsComplexFabricatorWorkable(object data)
 		{
 			return data as ComplexFabricatorWorkable != null;
 		}
 	}
 
-	public class States : GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner>
+		public class States : GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.inoperational;
 			this.inoperational.Enter(delegate(ManualHighEnergyParticleSpawner.StatesInstance smi)
@@ -120,15 +120,15 @@ public class ManualHighEnergyParticleSpawner : StateMachineComponent<ManualHighE
 			});
 		}
 
-		public GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner, object>.State inoperational;
+				public GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner, object>.State inoperational;
 
-		public ManualHighEnergyParticleSpawner.States.ReadyStates ready;
+				public ManualHighEnergyParticleSpawner.States.ReadyStates ready;
 
-		public class ReadyStates : GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner, object>.State
+				public class ReadyStates : GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner, object>.State
 		{
-			public GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner, object>.State idle;
+						public GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner, object>.State idle;
 
-			public GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner, object>.State working;
+						public GameStateMachine<ManualHighEnergyParticleSpawner.States, ManualHighEnergyParticleSpawner.StatesInstance, ManualHighEnergyParticleSpawner, object>.State working;
 		}
 	}
 }

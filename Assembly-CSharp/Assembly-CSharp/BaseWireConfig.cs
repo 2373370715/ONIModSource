@@ -6,9 +6,9 @@ using UnityEngine;
 
 public abstract class BaseWireConfig : IBuildingConfig
 {
-	public abstract override BuildingDef CreateBuildingDef();
+		public abstract override BuildingDef CreateBuildingDef();
 
-	public BuildingDef CreateBuildingDef(string id, string anim, float construction_time, float[] construction_mass, float insulation, EffectorValues decor, EffectorValues noise)
+		public BuildingDef CreateBuildingDef(string id, string anim, float construction_time, float[] construction_mass, float insulation, EffectorValues decor, EffectorValues noise)
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, 1, 1, anim, 10, construction_time, construction_mass, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.Anywhere, decor, noise, 0.2f);
 		buildingDef.ThermalConductivity = insulation;
@@ -32,7 +32,7 @@ public abstract class BaseWireConfig : IBuildingConfig
 		return buildingDef3;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -42,7 +42,7 @@ public abstract class BaseWireConfig : IBuildingConfig
 		kanimGraphTileVisualizer.connectionSource = KAnimGraphTileVisualizer.ConnectionSource.Electrical;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.GetComponent<Constructable>().isDiggingRequired = false;
@@ -51,7 +51,7 @@ public abstract class BaseWireConfig : IBuildingConfig
 		kanimGraphTileVisualizer.connectionSource = KAnimGraphTileVisualizer.ConnectionSource.Electrical;
 	}
 
-	protected void DoPostConfigureComplete(Wire.WattageRating rating, GameObject go)
+		protected void DoPostConfigureComplete(Wire.WattageRating rating, GameObject go)
 	{
 		go.GetComponent<Wire>().MaxWattageRating = rating;
 		float maxWattageAsFloat = Wire.GetMaxWattageAsFloat(rating);

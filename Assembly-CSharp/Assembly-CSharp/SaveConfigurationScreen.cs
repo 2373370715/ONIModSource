@@ -3,155 +3,131 @@ using STRINGS;
 using UnityEngine;
 
 [Serializable]
-public class SaveConfigurationScreen
-{
-	public void ToggleDisabledContent(bool enable)
-	{
-		if (enable)
-		{
-			this.disabledContentPanel.SetActive(true);
-			this.disabledContentWarning.SetActive(false);
-			this.perSaveWarning.SetActive(true);
-			return;
-		}
-		this.disabledContentPanel.SetActive(false);
-		this.disabledContentWarning.SetActive(true);
-		this.perSaveWarning.SetActive(false);
-	}
+public class SaveConfigurationScreen {
+    [SerializeField]
+    private LocText autosaveDescriptionLabel;
 
-	public void Init()
-	{
-		this.autosaveFrequencySlider.minValue = 0f;
-		this.autosaveFrequencySlider.maxValue = (float)(this.sliderValueToCycleCount.Length - 1);
-		this.autosaveFrequencySlider.onValueChanged.AddListener(delegate(float val)
-		{
-			this.OnAutosaveValueChanged(Mathf.FloorToInt(val));
-		});
-		this.autosaveFrequencySlider.value = (float)this.CycleCountToSlider(SaveGame.Instance.AutoSaveCycleInterval);
-		this.timelapseResolutionSlider.minValue = 0f;
-		this.timelapseResolutionSlider.maxValue = (float)(this.sliderValueToResolution.Length - 1);
-		this.timelapseResolutionSlider.onValueChanged.AddListener(delegate(float val)
-		{
-			this.OnTimelapseValueChanged(Mathf.FloorToInt(val));
-		});
-		this.timelapseResolutionSlider.value = (float)this.ResolutionToSliderValue(SaveGame.Instance.TimelapseResolution);
-		this.OnTimelapseValueChanged(Mathf.FloorToInt(this.timelapseResolutionSlider.value));
-	}
+    [SerializeField]
+    private KSlider autosaveFrequencySlider;
 
-	public void Show(bool show)
-	{
-		if (show)
-		{
-			this.autosaveFrequencySlider.value = (float)this.CycleCountToSlider(SaveGame.Instance.AutoSaveCycleInterval);
-			this.timelapseResolutionSlider.value = (float)this.ResolutionToSliderValue(SaveGame.Instance.TimelapseResolution);
-			this.OnAutosaveValueChanged(Mathf.FloorToInt(this.autosaveFrequencySlider.value));
-			this.OnTimelapseValueChanged(Mathf.FloorToInt(this.timelapseResolutionSlider.value));
-		}
-	}
+    [SerializeField]
+    private GameObject disabledContentPanel;
 
-	private void OnTimelapseValueChanged(int sliderValue)
-	{
-		Vector2I vector2I = this.SliderValueToResolution(sliderValue);
-		if (vector2I.x <= 0)
-		{
-			this.timelapseDescriptionLabel.SetText(UI.FRONTEND.COLONY_SAVE_OPTIONS_SCREEN.TIMELAPSE_DISABLED_DESCRIPTION);
-		}
-		else
-		{
-			this.timelapseDescriptionLabel.SetText(string.Format(UI.FRONTEND.COLONY_SAVE_OPTIONS_SCREEN.TIMELAPSE_RESOLUTION_DESCRIPTION, vector2I.x, vector2I.y));
-		}
-		SaveGame.Instance.TimelapseResolution = vector2I;
-		Game.Instance.Trigger(75424175, null);
-	}
+    [SerializeField]
+    private GameObject disabledContentWarning;
 
-	private void OnAutosaveValueChanged(int sliderValue)
-	{
-		int num = this.SliderValueToCycleCount(sliderValue);
-		if (sliderValue == 0)
-		{
-			this.autosaveDescriptionLabel.SetText(UI.FRONTEND.COLONY_SAVE_OPTIONS_SCREEN.AUTOSAVE_NEVER);
-		}
-		else
-		{
-			this.autosaveDescriptionLabel.SetText(string.Format(UI.FRONTEND.COLONY_SAVE_OPTIONS_SCREEN.AUTOSAVE_FREQUENCY_DESCRIPTION, num));
-		}
-		SaveGame.Instance.AutoSaveCycleInterval = num;
-	}
+    [SerializeField]
+    private GameObject perSaveWarning;
 
-	private int SliderValueToCycleCount(int sliderValue)
-	{
-		return this.sliderValueToCycleCount[sliderValue];
-	}
+    private int[] sliderValueToCycleCount = {
+        -1,
+        50,
+        20,
+        10,
+        5,
+        2,
+        1
+    };
 
-	private int CycleCountToSlider(int count)
-	{
-		for (int i = 0; i < this.sliderValueToCycleCount.Length; i++)
-		{
-			if (this.sliderValueToCycleCount[i] == count)
-			{
-				return i;
-			}
-		}
-		return 0;
-	}
+    private Vector2I[] sliderValueToResolution = {
+        new Vector2I(-1,   -1),
+        new Vector2I(256,  384),
+        new Vector2I(512,  768),
+        new Vector2I(1024, 1536),
+        new Vector2I(2048, 3072),
+        new Vector2I(4096, 6144),
+        new Vector2I(8192, 12288)
+    };
 
-	private Vector2I SliderValueToResolution(int sliderValue)
-	{
-		return this.sliderValueToResolution[sliderValue];
-	}
+    [SerializeField]
+    private LocText timelapseDescriptionLabel;
 
-	private int ResolutionToSliderValue(Vector2I resolution)
-	{
-		for (int i = 0; i < this.sliderValueToResolution.Length; i++)
-		{
-			if (this.sliderValueToResolution[i] == resolution)
-			{
-				return i;
-			}
-		}
-		return 0;
-	}
+    [SerializeField]
+    private KSlider timelapseResolutionSlider;
 
-	[SerializeField]
-	private KSlider autosaveFrequencySlider;
+    public void ToggleDisabledContent(bool enable) {
+        if (enable) {
+            disabledContentPanel.SetActive(true);
+            disabledContentWarning.SetActive(false);
+            perSaveWarning.SetActive(true);
+            return;
+        }
 
-	[SerializeField]
-	private LocText timelapseDescriptionLabel;
+        disabledContentPanel.SetActive(false);
+        disabledContentWarning.SetActive(true);
+        perSaveWarning.SetActive(false);
+    }
 
-	[SerializeField]
-	private KSlider timelapseResolutionSlider;
+    public void Init() {
+        autosaveFrequencySlider.minValue = 0f;
+        autosaveFrequencySlider.maxValue = sliderValueToCycleCount.Length - 1;
+        autosaveFrequencySlider.onValueChanged.AddListener(delegate(float val) {
+                                                               OnAutosaveValueChanged(Mathf.FloorToInt(val));
+                                                           });
 
-	[SerializeField]
-	private LocText autosaveDescriptionLabel;
+        autosaveFrequencySlider.value      = CycleCountToSlider(SaveGame.Instance.AutoSaveCycleInterval);
+        timelapseResolutionSlider.minValue = 0f;
+        timelapseResolutionSlider.maxValue = sliderValueToResolution.Length - 1;
+        timelapseResolutionSlider.onValueChanged.AddListener(delegate(float val) {
+                                                                 OnTimelapseValueChanged(Mathf.FloorToInt(val));
+                                                             });
 
-	private int[] sliderValueToCycleCount = new int[]
-	{
-		-1,
-		50,
-		20,
-		10,
-		5,
-		2,
-		1
-	};
+        timelapseResolutionSlider.value = ResolutionToSliderValue(SaveGame.Instance.TimelapseResolution);
+        OnTimelapseValueChanged(Mathf.FloorToInt(timelapseResolutionSlider.value));
+    }
 
-	private Vector2I[] sliderValueToResolution = new Vector2I[]
-	{
-		new Vector2I(-1, -1),
-		new Vector2I(256, 384),
-		new Vector2I(512, 768),
-		new Vector2I(1024, 1536),
-		new Vector2I(2048, 3072),
-		new Vector2I(4096, 6144),
-		new Vector2I(8192, 12288)
-	};
+    public void Show(bool show) {
+        if (show) {
+            autosaveFrequencySlider.value   = CycleCountToSlider(SaveGame.Instance.AutoSaveCycleInterval);
+            timelapseResolutionSlider.value = ResolutionToSliderValue(SaveGame.Instance.TimelapseResolution);
+            OnAutosaveValueChanged(Mathf.FloorToInt(autosaveFrequencySlider.value));
+            OnTimelapseValueChanged(Mathf.FloorToInt(timelapseResolutionSlider.value));
+        }
+    }
 
-	[SerializeField]
-	private GameObject disabledContentPanel;
+    private void OnTimelapseValueChanged(int sliderValue) {
+        var vector2I = SliderValueToResolution(sliderValue);
+        if (vector2I.x <= 0)
+            timelapseDescriptionLabel.SetText(UI.FRONTEND.COLONY_SAVE_OPTIONS_SCREEN.TIMELAPSE_DISABLED_DESCRIPTION);
+        else
+            timelapseDescriptionLabel.SetText(string.Format(UI.FRONTEND.COLONY_SAVE_OPTIONS_SCREEN
+                                                              .TIMELAPSE_RESOLUTION_DESCRIPTION,
+                                                            vector2I.x,
+                                                            vector2I.y));
 
-	[SerializeField]
-	private GameObject disabledContentWarning;
+        SaveGame.Instance.TimelapseResolution = vector2I;
+        Game.Instance.Trigger(75424175);
+    }
 
-	[SerializeField]
-	private GameObject perSaveWarning;
+    private void OnAutosaveValueChanged(int sliderValue) {
+        var num = SliderValueToCycleCount(sliderValue);
+        if (sliderValue == 0)
+            autosaveDescriptionLabel.SetText(UI.FRONTEND.COLONY_SAVE_OPTIONS_SCREEN.AUTOSAVE_NEVER);
+        else
+            autosaveDescriptionLabel.SetText(string.Format(UI.FRONTEND.COLONY_SAVE_OPTIONS_SCREEN
+                                                             .AUTOSAVE_FREQUENCY_DESCRIPTION,
+                                                           num));
+
+        SaveGame.Instance.AutoSaveCycleInterval = num;
+    }
+
+    private int SliderValueToCycleCount(int sliderValue) { return sliderValueToCycleCount[sliderValue]; }
+
+    private int CycleCountToSlider(int count) {
+        for (var i = 0; i < sliderValueToCycleCount.Length; i++)
+            if (sliderValueToCycleCount[i] == count)
+                return i;
+
+        return 0;
+    }
+
+    private Vector2I SliderValueToResolution(int sliderValue) { return sliderValueToResolution[sliderValue]; }
+
+    private int ResolutionToSliderValue(Vector2I resolution) {
+        for (var i = 0; i < sliderValueToResolution.Length; i++)
+            if (sliderValueToResolution[i] == resolution)
+                return i;
+
+        return 0;
+    }
 }

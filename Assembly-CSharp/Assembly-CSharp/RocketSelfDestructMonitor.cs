@@ -2,7 +2,7 @@
 
 public class RocketSelfDestructMonitor : GameStateMachine<RocketSelfDestructMonitor, RocketSelfDestructMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.idle;
 		this.idle.EventTransition(GameHashes.RocketSelfDestructRequested, this.exploding, null);
@@ -16,20 +16,20 @@ public class RocketSelfDestructMonitor : GameStateMachine<RocketSelfDestructMoni
 		}, UpdateRate.SIM_200ms, false);
 	}
 
-	public GameStateMachine<RocketSelfDestructMonitor, RocketSelfDestructMonitor.Instance, IStateMachineTarget, object>.State idle;
+		public GameStateMachine<RocketSelfDestructMonitor, RocketSelfDestructMonitor.Instance, IStateMachineTarget, object>.State idle;
 
-	public GameStateMachine<RocketSelfDestructMonitor, RocketSelfDestructMonitor.Instance, IStateMachineTarget, object>.State exploding;
+		public GameStateMachine<RocketSelfDestructMonitor, RocketSelfDestructMonitor.Instance, IStateMachineTarget, object>.State exploding;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<RocketSelfDestructMonitor, RocketSelfDestructMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<RocketSelfDestructMonitor, RocketSelfDestructMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, RocketSelfDestructMonitor.Def def) : base(master)
+				public Instance(IStateMachineTarget master, RocketSelfDestructMonitor.Def def) : base(master)
 		{
 		}
 
-		public KBatchedAnimController eyes;
+				public KBatchedAnimController eyes;
 	}
 }

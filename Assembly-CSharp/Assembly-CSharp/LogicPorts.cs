@@ -9,13 +9,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LogicPorts")]
 public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEveryTick
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.autoRegisterSimRender = false;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Building component = base.GetComponent<Building>();
@@ -38,7 +38,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		this.CreateVisualizers();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
 		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(this.OnOverlayChanged));
@@ -50,17 +50,17 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		base.OnCleanUp();
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		this.CreateVisualizers();
 	}
 
-	public void HackRefreshVisualizers()
+		public void HackRefreshVisualizers()
 	{
 		this.CreateVisualizers();
 	}
 
-	private void CreateVisualizers()
+		private void CreateVisualizers()
 	{
 		int num = Grid.PosToCell(base.transform.GetPosition());
 		bool flag = num != this.cell;
@@ -104,7 +104,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		}
 	}
 
-	private void DestroyVisualizers()
+		private void DestroyVisualizers()
 	{
 		if (this.outputPorts != null)
 		{
@@ -122,7 +122,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		}
 	}
 
-	private void CreatePhysicalPorts(bool forceCreate = false)
+		private void CreatePhysicalPorts(bool forceCreate = false)
 	{
 		int num = Grid.PosToCell(base.transform.GetPosition());
 		if (num == this.cell && !forceCreate)
@@ -184,7 +184,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		}
 	}
 
-	private bool ShowMissingWireIcon()
+		private bool ShowMissingWireIcon()
 	{
 		LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
 		if (this.outputPortInfo != null)
@@ -220,23 +220,23 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return false;
 	}
 
-	public void OnMove()
+		public void OnMove()
 	{
 		this.DestroyPhysicalPorts();
 		this.CreatePhysicalPorts(false);
 	}
 
-	private void OnLogicNetworkConnectionChanged(int cell, bool connected)
+		private void OnLogicNetworkConnectionChanged(int cell, bool connected)
 	{
 		this.UpdateMissingWireIcon();
 	}
 
-	private void UpdateMissingWireIcon()
+		private void UpdateMissingWireIcon()
 	{
 		LogicCircuitManager.ToggleNoWireConnected(this.ShowMissingWireIcon(), base.gameObject);
 	}
 
-	private void DestroyPhysicalPorts()
+		private void DestroyPhysicalPorts()
 	{
 		if (this.outputPorts != null)
 		{
@@ -259,7 +259,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		}
 	}
 
-	private void OnLogicValueChanged(HashedString port_id, int new_value, int prev_value)
+		private void OnLogicValueChanged(HashedString port_id, int new_value, int prev_value)
 	{
 		if (base.gameObject != null)
 		{
@@ -272,7 +272,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		}
 	}
 
-	private int GetActualCell(CellOffset offset)
+		private int GetActualCell(CellOffset offset)
 	{
 		Rotatable component = base.GetComponent<Rotatable>();
 		if (component != null)
@@ -282,7 +282,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return Grid.OffsetCell(Grid.PosToCell(base.transform.GetPosition()), offset);
 	}
 
-	public bool TryGetPortAtCell(int cell, out LogicPorts.Port port, out bool isInput)
+		public bool TryGetPortAtCell(int cell, out LogicPorts.Port port, out bool isInput)
 	{
 		foreach (LogicPorts.Port port2 in this.inputPortInfo)
 		{
@@ -307,7 +307,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return false;
 	}
 
-	public void SendSignal(HashedString port_id, int new_value)
+		public void SendSignal(HashedString port_id, int new_value)
 	{
 		if (this.outputPortInfo != null && this.outputPorts == null)
 		{
@@ -324,7 +324,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		}
 	}
 
-	public int GetPortCell(HashedString port_id)
+		public int GetPortCell(HashedString port_id)
 	{
 		foreach (LogicPorts.Port port in this.inputPortInfo)
 		{
@@ -343,7 +343,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return -1;
 	}
 
-	public int GetInputValue(HashedString port_id)
+		public int GetInputValue(HashedString port_id)
 	{
 		int num = 0;
 		while (num < this.inputPortInfo.Length && this.inputPorts != null)
@@ -365,7 +365,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return 0;
 	}
 
-	public int GetOutputValue(HashedString port_id)
+		public int GetOutputValue(HashedString port_id)
 	{
 		for (int i = 0; i < this.outputPorts.Count; i++)
 		{
@@ -382,13 +382,13 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return 0;
 	}
 
-	public bool IsPortConnected(HashedString port_id)
+		public bool IsPortConnected(HashedString port_id)
 	{
 		int portCell = this.GetPortCell(port_id);
 		return Game.Instance.logicCircuitManager.GetNetworkForCell(portCell) != null;
 	}
 
-	private void OnOverlayChanged(HashedString mode)
+		private void OnOverlayChanged(HashedString mode)
 	{
 		if (mode == OverlayModes.Logic.ID)
 		{
@@ -400,7 +400,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		this.DestroyVisualizers();
 	}
 
-	public LogicWire.BitDepth GetConnectedWireBitDepth(HashedString port_id)
+		public LogicWire.BitDepth GetConnectedWireBitDepth(HashedString port_id)
 	{
 		LogicWire.BitDepth result = LogicWire.BitDepth.NumRatings;
 		int portCell = this.GetPortCell(port_id);
@@ -416,7 +416,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return result;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		LogicPorts component = go.GetComponent<LogicPorts>();
@@ -450,7 +450,7 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		return list;
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerializing()
 	{
 		if (this.isPhysical && this.outputPorts != null)
@@ -464,35 +464,35 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 		}
 	}
 
-	[OnSerialized]
+		[OnSerialized]
 	private void OnSerialized()
 	{
 		this.serializedOutputValues = null;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public LogicPorts.Port[] outputPortInfo;
 
-	[SerializeField]
+		[SerializeField]
 	public LogicPorts.Port[] inputPortInfo;
 
-	public List<ILogicUIElement> outputPorts;
+		public List<ILogicUIElement> outputPorts;
 
-	public List<ILogicUIElement> inputPorts;
+		public List<ILogicUIElement> inputPorts;
 
-	private int cell = -1;
+		private int cell = -1;
 
-	private Orientation orientation = Orientation.NumRotations;
+		private Orientation orientation = Orientation.NumRotations;
 
-	[Serialize]
+		[Serialize]
 	private int[] serializedOutputValues;
 
-	private bool isPhysical;
+		private bool isPhysical;
 
-	[Serializable]
+		[Serializable]
 	public struct Port
 	{
-		public Port(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon, LogicPortSpriteType sprite_type, bool display_custom_name = false)
+				public Port(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon, LogicPortSpriteType sprite_type, bool display_custom_name = false)
 		{
 			this.id = id;
 			this.cellOffset = cell_offset;
@@ -504,40 +504,40 @@ public class LogicPorts : KMonoBehaviour, IGameObjectEffectDescriptor, IRenderEv
 			this.displayCustomName = display_custom_name;
 		}
 
-		public static LogicPorts.Port InputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
+				public static LogicPorts.Port InputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
 		{
 			return new LogicPorts.Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.Input, display_custom_name);
 		}
 
-		public static LogicPorts.Port OutputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
+				public static LogicPorts.Port OutputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
 		{
 			return new LogicPorts.Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.Output, display_custom_name);
 		}
 
-		public static LogicPorts.Port RibbonInputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
+				public static LogicPorts.Port RibbonInputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
 		{
 			return new LogicPorts.Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.RibbonInput, display_custom_name);
 		}
 
-		public static LogicPorts.Port RibbonOutputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
+				public static LogicPorts.Port RibbonOutputPort(HashedString id, CellOffset cell_offset, string description, string activeDescription, string inactiveDescription, bool show_wire_missing_icon = false, bool display_custom_name = false)
 		{
 			return new LogicPorts.Port(id, cell_offset, description, activeDescription, inactiveDescription, show_wire_missing_icon, LogicPortSpriteType.RibbonOutput, display_custom_name);
 		}
 
-		public HashedString id;
+				public HashedString id;
 
-		public CellOffset cellOffset;
+				public CellOffset cellOffset;
 
-		public string description;
+				public string description;
 
-		public string activeDescription;
+				public string activeDescription;
 
-		public string inactiveDescription;
+				public string inactiveDescription;
 
-		public bool requiresConnection;
+				public bool requiresConnection;
 
-		public LogicPortSpriteType spriteType;
+				public LogicPortSpriteType spriteType;
 
-		public bool displayCustomName;
+				public bool displayCustomName;
 	}
 }

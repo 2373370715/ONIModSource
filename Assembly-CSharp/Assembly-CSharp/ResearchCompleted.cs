@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class ResearchCompleted : SelectModuleCondition
 {
-	public override bool IgnoreInSanboxMode()
+		public override bool IgnoreInSanboxMode()
 	{
 		return true;
 	}
 
-	public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
+		public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
 	{
 		if (existingModule == null)
 		{
@@ -19,7 +19,7 @@ public class ResearchCompleted : SelectModuleCondition
 		return DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive || techItem == null || techItem.IsComplete();
 	}
 
-	public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
+		public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
 	{
 		if (ready)
 		{

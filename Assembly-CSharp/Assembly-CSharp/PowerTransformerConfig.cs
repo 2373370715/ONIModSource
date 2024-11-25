@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PowerTransformerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "PowerTransformer";
 		int width = 3;
@@ -34,9 +34,10 @@ public class PowerTransformerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.PowerBuilding, false);
 		go.AddComponent<RequireInputs>();
 		BuildingDef def = go.GetComponent<Building>().Def;
 		Battery battery = go.AddOrGet<Battery>();
@@ -46,11 +47,11 @@ public class PowerTransformerConfig : IBuildingConfig
 		go.AddComponent<PowerTransformer>().powerDistributionOrder = 9;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<EnergyConsumer>());
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "PowerTransformer";
+		public const string ID = "PowerTransformer";
 }

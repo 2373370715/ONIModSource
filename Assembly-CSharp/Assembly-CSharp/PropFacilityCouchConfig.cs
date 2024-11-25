@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PropFacilityCouchConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PropFacilityCouch";
 		string name = STRINGS.BUILDINGS.PREFABS.PROPFACILITYCOUCH.NAME;
@@ -34,11 +34,11 @@ public class PropFacilityCouchConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		OccupyArea component = inst.GetComponent<OccupyArea>();
 		int cell = Grid.PosToCell(inst);

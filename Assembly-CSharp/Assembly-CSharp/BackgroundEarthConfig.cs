@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class BackgroundEarthConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(BackgroundEarthConfig.ID, BackgroundEarthConfig.ID, true);
 		KBatchedAnimController kbatchedAnimController = gameObject.AddOrGet<KBatchedAnimController>();
@@ -24,13 +24,13 @@ public class BackgroundEarthConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static string ID = "BackgroundEarth";
+		public static string ID = "BackgroundEarth";
 }

@@ -5,9 +5,9 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Clinic Dreamable")]
 public class ClinicDreamable : Workable
 {
-			public bool DreamIsDisturbed { get; private set; }
+				public bool DreamIsDisturbed { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.resetProgressOnStop = false;
@@ -15,7 +15,7 @@ public class ClinicDreamable : Workable
 		this.workingStatusItem = null;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (ClinicDreamable.dreamJournalPrefab == null)
@@ -32,7 +32,7 @@ public class ClinicDreamable : Workable
 		this.OnEquipPajamas(this.equippable);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (this.equippable == null)
@@ -45,7 +45,7 @@ public class ClinicDreamable : Workable
 		def2.OnUnequipCallBack = (Action<Equippable>)Delegate.Remove(def2.OnUnequipCallBack, new Action<Equippable>(this.OnUnequipPajamas));
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		if (this.GetPercentComplete() >= 1f)
 		{
@@ -58,7 +58,7 @@ public class ClinicDreamable : Workable
 		return false;
 	}
 
-	public void OnEquipPajamas(Equippable eq)
+		public void OnEquipPajamas(Equippable eq)
 	{
 		if (this.equippable == null || this.equippable != eq)
 		{
@@ -83,7 +83,7 @@ public class ClinicDreamable : Workable
 		this.selectable.AddStatusItem(Db.Get().DuplicantStatusItems.MegaBrainTank_Pajamas_Wearing, null);
 	}
 
-	public void OnUnequipPajamas(Equippable eq)
+		public void OnUnequipPajamas(Equippable eq)
 	{
 		if (this.dreamer == null)
 		{
@@ -104,7 +104,7 @@ public class ClinicDreamable : Workable
 		this.effects = null;
 	}
 
-	public void WorkerStartedSleeping(object data)
+		public void WorkerStartedSleeping(object data)
 	{
 		SleepChore sleepChore = this.dreamer.GetCurrentChore() as SleepChore;
 		StateMachine<SleepChore.States, SleepChore.StatesInstance, SleepChore, object>.Parameter<bool>.Context context = sleepChore.smi.sm.isDisturbedByLight.GetContext(sleepChore.smi);
@@ -123,7 +123,7 @@ public class ClinicDreamable : Workable
 		this.StartDreamingThought();
 	}
 
-	public void WorkerStoppedSleeping(object data)
+		public void WorkerStoppedSleeping(object data)
 	{
 		this.selectable.RemoveStatusItem(Db.Get().DuplicantStatusItems.MegaBrainTank_Pajamas_Sleeping, false);
 		SleepChore sleepChore = this.dreamer.GetCurrentChore() as SleepChore;
@@ -151,7 +151,7 @@ public class ClinicDreamable : Workable
 		}
 	}
 
-	private void OnSleepDisturbed(SleepChore.StatesInstance smi)
+		private void OnSleepDisturbed(SleepChore.StatesInstance smi)
 	{
 		SleepChore sleepChore = this.dreamer.GetCurrentChore() as SleepChore;
 		bool flag = sleepChore.smi.sm.isDisturbedByLight.Get(sleepChore.smi);
@@ -165,7 +165,7 @@ public class ClinicDreamable : Workable
 		}
 	}
 
-	private void StartDreamingThought()
+		private void StartDreamingThought()
 	{
 		if (this.dreamer != null && !this.HasStartedThoughts_Dreaming)
 		{
@@ -175,7 +175,7 @@ public class ClinicDreamable : Workable
 		}
 	}
 
-	private void StopDreamingThought()
+		private void StopDreamingThought()
 	{
 		if (this.dreamer != null && this.HasStartedThoughts_Dreaming)
 		{
@@ -184,21 +184,21 @@ public class ClinicDreamable : Workable
 		}
 	}
 
-	private static GameObject dreamJournalPrefab;
+		private static GameObject dreamJournalPrefab;
 
-	private static Effect sleepClinic;
+		private static Effect sleepClinic;
 
-	public bool HasStartedThoughts_Dreaming;
+		public bool HasStartedThoughts_Dreaming;
 
-	private ChoreDriver dreamer;
+		private ChoreDriver dreamer;
 
-	private Equippable equippable;
+		private Equippable equippable;
 
-	private Effects effects;
+		private Effects effects;
 
-	private Sleepable sleepable;
+		private Sleepable sleepable;
 
-	private KSelectable selectable;
+		private KSelectable selectable;
 
-	private HashedString dreamAnimName = "portal rocket comp";
+		private HashedString dreamAnimName = "portal rocket comp";
 }

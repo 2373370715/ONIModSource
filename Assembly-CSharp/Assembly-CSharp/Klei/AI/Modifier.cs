@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Klei.AI
 {
-	public class Modifier : Resource
+		public class Modifier : Resource
 	{
-		public Modifier(string id, string name, string description) : base(id, name)
+				public Modifier(string id, string name, string description) : base(id, name)
 		{
 			this.description = description;
 		}
 
-		public void Add(AttributeModifier modifier)
+				public void Add(AttributeModifier modifier)
 		{
 			if (modifier.AttributeId != "")
 			{
@@ -18,7 +18,7 @@ namespace Klei.AI
 			}
 		}
 
-		public virtual void AddTo(Attributes attributes)
+				public virtual void AddTo(Attributes attributes)
 		{
 			foreach (AttributeModifier modifier in this.SelfModifiers)
 			{
@@ -26,7 +26,7 @@ namespace Klei.AI
 			}
 		}
 
-		public virtual void RemoveFrom(Attributes attributes)
+				public virtual void RemoveFrom(Attributes attributes)
 		{
 			foreach (AttributeModifier modifier in this.SelfModifiers)
 			{
@@ -34,8 +34,8 @@ namespace Klei.AI
 			}
 		}
 
-		public string description;
+				public string description;
 
-		public List<AttributeModifier> SelfModifiers = new List<AttributeModifier>();
+				public List<AttributeModifier> SelfModifiers = new List<AttributeModifier>();
 	}
 }

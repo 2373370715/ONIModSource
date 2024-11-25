@@ -3,21 +3,21 @@ using System.Collections.Generic;
 
 public class Accumulators
 {
-	public Accumulators()
+		public Accumulators()
 	{
 		this.elapsedTime = 0f;
 		this.accumulated = new KCompactedVector<float>(0);
 		this.average = new KCompactedVector<float>(0);
 	}
 
-	public HandleVector<int>.Handle Add(string name, KMonoBehaviour owner)
+		public HandleVector<int>.Handle Add(string name, KMonoBehaviour owner)
 	{
 		HandleVector<int>.Handle result = this.accumulated.Allocate(0f);
 		this.average.Allocate(0f);
 		return result;
 	}
 
-	public HandleVector<int>.Handle Remove(HandleVector<int>.Handle handle)
+		public HandleVector<int>.Handle Remove(HandleVector<int>.Handle handle)
 	{
 		if (!handle.IsValid())
 		{
@@ -28,7 +28,7 @@ public class Accumulators
 		return HandleVector<int>.InvalidHandle;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		this.elapsedTime += dt;
 		if (this.elapsedTime < 3f)
@@ -47,7 +47,7 @@ public class Accumulators
 		}
 	}
 
-	public float GetAverageRate(HandleVector<int>.Handle handle)
+		public float GetAverageRate(HandleVector<int>.Handle handle)
 	{
 		if (!handle.IsValid())
 		{
@@ -56,17 +56,17 @@ public class Accumulators
 		return this.average.GetData(handle);
 	}
 
-	public void Accumulate(HandleVector<int>.Handle handle, float amount)
+		public void Accumulate(HandleVector<int>.Handle handle, float amount)
 	{
 		float data = this.accumulated.GetData(handle);
 		this.accumulated.SetData(handle, data + amount);
 	}
 
-	private const float TIME_WINDOW = 3f;
+		private const float TIME_WINDOW = 3f;
 
-	private float elapsedTime;
+		private float elapsedTime;
 
-	private KCompactedVector<float> accumulated;
+		private KCompactedVector<float> accumulated;
 
-	private KCompactedVector<float> average;
+		private KCompactedVector<float> average;
 }

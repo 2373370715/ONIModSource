@@ -1,89 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
 
-[SkipSaveFileSerialization]
-[AddComponentMenu("KMonoBehaviour/scripts/MinimumOperatingTemperature")]
-public class MinimumOperatingTemperature : KMonoBehaviour, ISim200ms, IGameObjectEffectDescriptor
-{
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.TestTemperature(true);
-	}
+[SkipSaveFileSerialization, AddComponentMenu("KMonoBehaviour/scripts/MinimumOperatingTemperature")]
+public class MinimumOperatingTemperature : KMonoBehaviour, ISim200ms, IGameObjectEffectDescriptor {
+    private const float TURN_ON_DELAY = 5f;
 
-	public void Sim200ms(float dt)
-	{
-		this.TestTemperature(false);
-	}
+    public static readonly Operational.Flag warmEnoughFlag
+        = new Operational.Flag("warm_enough", Operational.Flag.Type.Functional);
 
-	private void TestTemperature(bool force)
-	{
-		bool flag;
-		if (this.primaryElement.Temperature < this.minimumTemperature)
-		{
-			flag = false;
-		}
-		else
-		{
-			flag = true;
-			for (int i = 0; i < this.building.PlacementCells.Length; i++)
-			{
-				int i2 = this.building.PlacementCells[i];
-				float num = Grid.Temperature[i2];
-				float num2 = Grid.Mass[i2];
-				if ((num != 0f || num2 != 0f) && num < this.minimumTemperature)
-				{
-					flag = false;
-					break;
-				}
-			}
-		}
-		if (!flag)
-		{
-			this.lastOffTime = Time.time;
-		}
-		if ((flag != this.isWarm && !flag) || (flag != this.isWarm && flag && Time.time > this.lastOffTime + 5f) || force)
-		{
-			this.isWarm = flag;
-			this.operational.SetFlag(MinimumOperatingTemperature.warmEnoughFlag, this.isWarm);
-			base.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.TooCold, !this.isWarm, this);
-		}
-	}
+    [MyCmpReq]
+    private Building building;
 
-	protected override void OnCleanUp()
-	{
-		base.OnCleanUp();
-		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
-	}
+    private bool  isWarm;
+    private float lastOffTime;
+    public  float minimumTemperature = 275.15f;
 
-	public List<Descriptor> GetDescriptors(GameObject go)
-	{
-		List<Descriptor> list = new List<Descriptor>();
-		Descriptor item = new Descriptor(string.Format(UI.BUILDINGEFFECTS.MINIMUM_TEMP, GameUtil.GetFormattedTemperature(this.minimumTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.MINIMUM_TEMP, GameUtil.GetFormattedTemperature(this.minimumTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), Descriptor.DescriptorType.Effect, false);
-		list.Add(item);
-		return list;
-	}
+    [MyCmpReq]
+    private Operational operational;
 
-	[MyCmpReq]
-	private Building building;
+    private HandleVector<int>.Handle partitionerEntry;
 
-	[MyCmpReq]
-	private Operational operational;
+    [MyCmpReq]
+    private PrimaryElement primaryElement;
 
-	[MyCmpReq]
-	private PrimaryElement primaryElement;
+    public List<Descriptor> GetDescriptors(GameObject go) {
+        var list = new List<Descriptor>();
+        var item
+            = new Descriptor(string.Format(UI.BUILDINGEFFECTS.MINIMUM_TEMP,
+                                           GameUtil.GetFormattedTemperature(minimumTemperature)),
+                             string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.MINIMUM_TEMP,
+                                           GameUtil.GetFormattedTemperature(minimumTemperature)));
 
-	public float minimumTemperature = 275.15f;
+        list.Add(item);
+        return list;
+    }
 
-	private const float TURN_ON_DELAY = 5f;
+    public void Sim200ms(float dt) { TestTemperature(false); }
 
-	private float lastOffTime;
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        TestTemperature(true);
+    }
 
-	public static readonly Operational.Flag warmEnoughFlag = new Operational.Flag("warm_enough", Operational.Flag.Type.Functional);
+    private void TestTemperature(bool force) {
+        bool flag;
+        if (primaryElement.Temperature < minimumTemperature)
+            flag = false;
+        else {
+            flag = true;
+            for (var i = 0; i < building.PlacementCells.Length; i++) {
+                var i2   = building.PlacementCells[i];
+                var num  = Grid.Temperature[i2];
+                var num2 = Grid.Mass[i2];
+                if ((num != 0f || num2 != 0f) && num < minimumTemperature) {
+                    flag = false;
+                    break;
+                }
+            }
+        }
 
-	private bool isWarm;
+        if (!flag) lastOffTime = Time.time;
+        if ((flag != isWarm && !flag) || (flag != isWarm && flag && Time.time > lastOffTime + 5f) || force) {
+            isWarm = flag;
+            operational.SetFlag(warmEnoughFlag, isWarm);
+            GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.TooCold, !isWarm, this);
+        }
+    }
 
-	private HandleVector<int>.Handle partitionerEntry;
+    protected override void OnCleanUp() {
+        base.OnCleanUp();
+        GameScenePartitioner.Instance.Free(ref partitionerEntry);
+    }
 }

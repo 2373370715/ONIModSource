@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class UserMenu
 {
-	public void Refresh(GameObject go)
+		public void Refresh(GameObject go)
 	{
 		Game.Instance.Trigger(1980521255, go);
 	}
 
-	public void AddButton(GameObject go, KIconButtonMenu.ButtonInfo button, float sort_order = 1f)
+		public void AddButton(GameObject go, KIconButtonMenu.ButtonInfo button, float sort_order = 1f)
 	{
 		if (button.onClick != null)
 		{
@@ -24,12 +24,12 @@ public class UserMenu
 		this.buttons.Add(new KeyValuePair<KIconButtonMenu.ButtonInfo, float>(button, sort_order));
 	}
 
-	public void AddSlider(GameObject go, UserMenu.SliderInfo slider)
+		public void AddSlider(GameObject go, UserMenu.SliderInfo slider)
 	{
 		this.sliders.Add(slider);
 	}
 
-	public void AppendToScreen(GameObject go, UserMenuScreen screen)
+		public void AppendToScreen(GameObject go, UserMenuScreen screen)
 	{
 		this.buttons.Clear();
 		this.sliders.Clear();
@@ -61,62 +61,62 @@ public class UserMenu
 		}
 	}
 
-	public const float DECONSTRUCT_PRIORITY = 0f;
+		public const float DECONSTRUCT_PRIORITY = 0f;
 
-	public const float DRAWPATHS_PRIORITY = 0.1f;
+		public const float DRAWPATHS_PRIORITY = 0.1f;
 
-	public const float FOLLOWCAM_PRIORITY = 0.3f;
+		public const float FOLLOWCAM_PRIORITY = 0.3f;
 
-	public const float SETDIRECTION_PRIORITY = 0.4f;
+		public const float SETDIRECTION_PRIORITY = 0.4f;
 
-	public const float AUTOBOTTLE_PRIORITY = 0.4f;
+		public const float AUTOBOTTLE_PRIORITY = 0.4f;
 
-	public const float AUTOREPAIR_PRIORITY = 0.5f;
+		public const float AUTOREPAIR_PRIORITY = 0.5f;
 
-	public const float DEFAULT_PRIORITY = 1f;
+		public const float DEFAULT_PRIORITY = 1f;
 
-	public const float SUITEQUIP_PRIORITY = 2f;
+		public const float SUITEQUIP_PRIORITY = 2f;
 
-	public const float AUTODISINFECT_PRIORITY = 10f;
+		public const float AUTODISINFECT_PRIORITY = 10f;
 
-	public const float ROCKETUSAGERESTRICTION_PRIORITY = 11f;
+		public const float ROCKETUSAGERESTRICTION_PRIORITY = 11f;
 
-	private List<KeyValuePair<KIconButtonMenu.ButtonInfo, float>> buttons = new List<KeyValuePair<KIconButtonMenu.ButtonInfo, float>>();
+		private List<KeyValuePair<KIconButtonMenu.ButtonInfo, float>> buttons = new List<KeyValuePair<KIconButtonMenu.ButtonInfo, float>>();
 
-	private List<UserMenu.SliderInfo> sliders = new List<UserMenu.SliderInfo>();
+		private List<UserMenu.SliderInfo> sliders = new List<UserMenu.SliderInfo>();
 
-	private List<KIconButtonMenu.ButtonInfo> sortedButtons = new List<KIconButtonMenu.ButtonInfo>();
+		private List<KIconButtonMenu.ButtonInfo> sortedButtons = new List<KIconButtonMenu.ButtonInfo>();
 
-	public class SliderInfo
+		public class SliderInfo
 	{
-		public MinMaxSlider.LockingType lockType = MinMaxSlider.LockingType.Drag;
+				public MinMaxSlider.LockingType lockType = MinMaxSlider.LockingType.Drag;
 
-		public MinMaxSlider.Mode mode;
+				public MinMaxSlider.Mode mode;
 
-		public Slider.Direction direction;
+				public Slider.Direction direction;
 
-		public bool interactable = true;
+				public bool interactable = true;
 
-		public bool lockRange;
+				public bool lockRange;
 
-		public string toolTip;
+				public string toolTip;
 
-		public string toolTipMin;
+				public string toolTipMin;
 
-		public string toolTipMax;
+				public string toolTipMax;
 
-		public float minLimit;
+				public float minLimit;
 
-		public float maxLimit = 100f;
+				public float maxLimit = 100f;
 
-		public float currentMinValue = 10f;
+				public float currentMinValue = 10f;
 
-		public float currentMaxValue = 90f;
+				public float currentMaxValue = 90f;
 
-		public GameObject sliderGO;
+				public GameObject sliderGO;
 
-		public Action<MinMaxSlider> onMinChange;
+				public Action<MinMaxSlider> onMinChange;
 
-		public Action<MinMaxSlider> onMaxChange;
+				public Action<MinMaxSlider> onMaxChange;
 	}
 }

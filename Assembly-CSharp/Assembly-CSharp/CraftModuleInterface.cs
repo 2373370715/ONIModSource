@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 {
-		public IList<Ref<RocketModuleCluster>> ClusterModules
+			public IList<Ref<RocketModuleCluster>> ClusterModules
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-	public LaunchPad GetPreferredLaunchPadForWorld(int world_id)
+		public LaunchPad GetPreferredLaunchPadForWorld(int world_id)
 	{
 		if (this.preferredLaunchPad.ContainsKey(world_id))
 		{
@@ -23,7 +23,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return null;
 	}
 
-	private void SetPreferredLaunchPadForWorld(LaunchPad pad)
+		private void SetPreferredLaunchPadForWorld(LaunchPad pad)
 	{
 		if (!this.preferredLaunchPad.ContainsKey(pad.GetMyWorldId()))
 		{
@@ -32,7 +32,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		this.preferredLaunchPad[this.CurrentPad.GetMyWorldId()].Set(this.CurrentPad);
 	}
 
-		public LaunchPad CurrentPad
+			public LaunchPad CurrentPad
 	{
 		get
 		{
@@ -58,7 +58,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public float Speed
+			public float Speed
 	{
 		get
 		{
@@ -66,7 +66,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public float Range
+			public float Range
 	{
 		get
 		{
@@ -79,7 +79,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public int RangeInTiles
+			public int RangeInTiles
 	{
 		get
 		{
@@ -87,7 +87,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public float FuelPerHex
+			public float FuelPerHex
 	{
 		get
 		{
@@ -100,7 +100,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public float BurnableMassRemaining
+			public float BurnableMassRemaining
 	{
 		get
 		{
@@ -117,7 +117,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public float FuelRemaining
+			public float FuelRemaining
 	{
 		get
 		{
@@ -139,7 +139,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public float OxidizerPowerRemaining
+			public float OxidizerPowerRemaining
 	{
 		get
 		{
@@ -156,7 +156,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public int MaxHeight
+			public int MaxHeight
 	{
 		get
 		{
@@ -169,7 +169,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public float TotalBurden
+			public float TotalBurden
 	{
 		get
 		{
@@ -177,7 +177,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public float EnginePower
+			public float EnginePower
 	{
 		get
 		{
@@ -185,7 +185,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public int RocketHeight
+			public int RocketHeight
 	{
 		get
 		{
@@ -198,7 +198,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-		public bool HasCargoModule
+			public bool HasCargoModule
 	{
 		get
 		{
@@ -216,13 +216,13 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Game instance = Game.Instance;
 		instance.OnLoad = (Action<Game.GameSaveData>)Delegate.Combine(instance.OnLoad, new Action<Game.GameSaveData>(this.OnLoad));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		Game instance = Game.Instance;
 		instance.OnLoad = (Action<Game.GameSaveData>)Delegate.Remove(instance.OnLoad, new Action<Game.GameSaveData>(this.OnLoad));
@@ -234,7 +234,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		base.Subscribe(-1311384361, new Action<object>(this.CompleteSelfDestruct));
 	}
 
-	private void OnLoad(Game.GameSaveData data)
+		private void OnLoad(Game.GameSaveData data)
 	{
 		foreach (Ref<RocketModule> @ref in this.modules)
 		{
@@ -294,7 +294,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-	public void AddModule(RocketModuleCluster newModule)
+		public void AddModule(RocketModuleCluster newModule)
 	{
 		for (int i = 0; i < this.clusterModules.Count; i++)
 		{
@@ -325,7 +325,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		this.SetBottomModule();
 	}
 
-	public void RemoveModule(RocketModuleCluster module)
+		public void RemoveModule(RocketModuleCluster module)
 	{
 		for (int i = this.clusterModules.Count - 1; i >= 0; i--)
 		{
@@ -347,7 +347,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-	private void SortModuleListByPosition()
+		private void SortModuleListByPosition()
 	{
 		this.clusterModules.Sort(delegate(Ref<RocketModuleCluster> a, Ref<RocketModuleCluster> b)
 		{
@@ -359,7 +359,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		});
 	}
 
-	private void SetBottomModule()
+		private void SetBottomModule()
 	{
 		if (this.clusterModules.Count > 0)
 		{
@@ -383,7 +383,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		this.bottomModule = null;
 	}
 
-	public int GetHeightOfModuleTop(GameObject module)
+		public int GetHeightOfModuleTop(GameObject module)
 	{
 		int num = 0;
 		for (int i = 0; i < this.ClusterModules.Count; i++)
@@ -398,7 +398,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return 0;
 	}
 
-	public int GetModuleRelativeVerticalPosition(GameObject module)
+		public int GetModuleRelativeVerticalPosition(GameObject module)
 	{
 		int num = 0;
 		for (int i = 0; i < this.ClusterModules.Count; i++)
@@ -413,7 +413,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return 0;
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
 		int num = 0;
 		foreach (ProcessCondition.ProcessConditionType conditionType in this.conditionsToCheck)
@@ -430,37 +430,37 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-	public bool IsLaunchRequested()
+		public bool IsLaunchRequested()
 	{
 		return this.m_clustercraft.LaunchRequested;
 	}
 
-	public bool CheckPreppedForLaunch()
+		public bool CheckPreppedForLaunch()
 	{
 		return this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketPrep) != ProcessCondition.Status.Failure && this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketStorage) != ProcessCondition.Status.Failure && this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketFlight) > ProcessCondition.Status.Failure;
 	}
 
-	public bool CheckReadyToLaunch()
+		public bool CheckReadyToLaunch()
 	{
 		return this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketPrep) != ProcessCondition.Status.Failure && this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketStorage) != ProcessCondition.Status.Failure && this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketFlight) != ProcessCondition.Status.Failure && this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketBoard) > ProcessCondition.Status.Failure;
 	}
 
-	public bool HasLaunchWarnings()
+		public bool HasLaunchWarnings()
 	{
 		return this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketPrep) == ProcessCondition.Status.Warning || this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketStorage) == ProcessCondition.Status.Warning || this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketBoard) == ProcessCondition.Status.Warning;
 	}
 
-	public bool CheckReadyForAutomatedLaunchCommand()
+		public bool CheckReadyForAutomatedLaunchCommand()
 	{
 		return this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketPrep) == ProcessCondition.Status.Ready && this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketStorage) == ProcessCondition.Status.Ready;
 	}
 
-	public bool CheckReadyForAutomatedLaunch()
+		public bool CheckReadyForAutomatedLaunch()
 	{
 		return this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketPrep) == ProcessCondition.Status.Ready && this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketStorage) == ProcessCondition.Status.Ready && this.EvaluateConditionSet(ProcessCondition.ProcessConditionType.RocketBoard) == ProcessCondition.Status.Ready;
 	}
 
-	public void TriggerEventOnCraftAndRocket(GameHashes evt, object data)
+		public void TriggerEventOnCraftAndRocket(GameHashes evt, object data)
 	{
 		base.Trigger((int)evt, data);
 		foreach (Ref<RocketModuleCluster> @ref in this.clusterModules)
@@ -469,17 +469,17 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-	public void CancelLaunch()
+		public void CancelLaunch()
 	{
 		this.m_clustercraft.CancelLaunch();
 	}
 
-	public void TriggerLaunch(bool automated = false)
+		public void TriggerLaunch(bool automated = false)
 	{
 		this.m_clustercraft.RequestLaunch(automated);
 	}
 
-	public void DoLaunch()
+		public void DoLaunch()
 	{
 		this.SortModuleListByPosition();
 		this.CurrentPad.Trigger(705820818, this);
@@ -490,7 +490,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-	public void DoLand(LaunchPad pad)
+		public void DoLand(LaunchPad pad)
 	{
 		int num = pad.RocketBottomPosition;
 		for (int i = 0; i < this.clusterModules.Count; i++)
@@ -506,7 +506,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		pad.Trigger(-1165815793, this);
 	}
 
-	public LaunchConditionManager FindLaunchConditionManager()
+		public LaunchConditionManager FindLaunchConditionManager()
 	{
 		foreach (Ref<RocketModuleCluster> @ref in this.clusterModules)
 		{
@@ -519,7 +519,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return null;
 	}
 
-	public LaunchableRocketCluster FindLaunchableRocket()
+		public LaunchableRocketCluster FindLaunchableRocket()
 	{
 		foreach (Ref<RocketModuleCluster> @ref in this.clusterModules)
 		{
@@ -533,7 +533,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return null;
 	}
 
-	public List<GameObject> GetParts()
+		public List<GameObject> GetParts()
 	{
 		List<GameObject> list = new List<GameObject>();
 		foreach (Ref<RocketModuleCluster> @ref in this.clusterModules)
@@ -543,7 +543,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return list;
 	}
 
-	public RocketEngineCluster GetEngine()
+		public RocketEngineCluster GetEngine()
 	{
 		foreach (Ref<RocketModuleCluster> @ref in this.clusterModules)
 		{
@@ -556,7 +556,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return null;
 	}
 
-	public PassengerRocketModule GetPassengerModule()
+		public PassengerRocketModule GetPassengerModule()
 	{
 		foreach (Ref<RocketModuleCluster> @ref in this.clusterModules)
 		{
@@ -569,7 +569,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return null;
 	}
 
-	public WorldContainer GetInteriorWorld()
+		public WorldContainer GetInteriorWorld()
 	{
 		PassengerRocketModule passengerModule = this.GetPassengerModule();
 		if (passengerModule == null)
@@ -584,17 +584,30 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return interiorDoor.GetMyWorld();
 	}
 
-	public RocketClusterDestinationSelector GetClusterDestinationSelector()
+		public RoboPilotModule GetRobotPilotModule()
+	{
+		foreach (Ref<RocketModuleCluster> @ref in this.clusterModules)
+		{
+			RoboPilotModule component = @ref.Get().GetComponent<RoboPilotModule>();
+			if (component != null)
+			{
+				return component;
+			}
+		}
+		return null;
+	}
+
+		public RocketClusterDestinationSelector GetClusterDestinationSelector()
 	{
 		return base.GetComponent<RocketClusterDestinationSelector>();
 	}
 
-	public bool HasClusterDestinationSelector()
+		public bool HasClusterDestinationSelector()
 	{
 		return base.GetComponent<RocketClusterDestinationSelector>() != null;
 	}
 
-	public List<ProcessCondition> GetConditionSet(ProcessCondition.ProcessConditionType conditionType)
+		public List<ProcessCondition> GetConditionSet(ProcessCondition.ProcessConditionType conditionType)
 	{
 		this.returnConditions.Clear();
 		foreach (Ref<RocketModuleCluster> @ref in this.clusterModules)
@@ -616,7 +629,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return this.returnConditions;
 	}
 
-	private ProcessCondition.Status EvaluateConditionSet(ProcessCondition.ProcessConditionType conditionType)
+		private ProcessCondition.Status EvaluateConditionSet(ProcessCondition.ProcessConditionType conditionType)
 	{
 		ProcessCondition.Status status = ProcessCondition.Status.Ready;
 		foreach (ProcessCondition processCondition in this.GetConditionSet(conditionType))
@@ -634,7 +647,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return status;
 	}
 
-	private void ForceAttachmentNetwork()
+		private void ForceAttachmentNetwork()
 	{
 		RocketModuleCluster rocketModuleCluster = null;
 		foreach (Ref<RocketModuleCluster> @ref in this.clusterModules)
@@ -650,7 +663,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		}
 	}
 
-	public static Storage SpawnRocketDebris(string nameSuffix, SimHashes element)
+		public static Storage SpawnRocketDebris(string nameSuffix, SimHashes element)
 	{
 		Vector3 position = new Vector3(-1f, -1f, 0f);
 		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab("DebrisPayload"), position);
@@ -660,7 +673,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		return gameObject.GetComponent<Storage>();
 	}
 
-	public void CompleteSelfDestruct(object data = null)
+		public void CompleteSelfDestruct(object data = null)
 	{
 		global::Debug.Assert(this.HasTag(GameTags.RocketInSpace), "Self Destruct is only valid for in-space rockets!");
 		SimHashes elementID = this.GetPassengerModule().GetComponent<PrimaryElement>().ElementID;
@@ -673,10 +686,12 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		List<GameObject> list3 = new List<GameObject>();
 		foreach (RocketModule rocketModule in list)
 		{
-			Storage[] components = rocketModule.GetComponents<Storage>();
-			for (int i = 0; i < components.Length; i++)
+			foreach (Storage storage in rocketModule.GetComponents<Storage>())
 			{
-				components[i].DropAll(false, false, default(Vector3), true, list3);
+				bool vent_gas = false;
+				bool dump_liquid = false;
+				List<GameObject> collect_dropped_items = list3;
+				storage.DropAll(vent_gas, dump_liquid, default(Vector3), true, collect_dropped_items);
 				foreach (GameObject gameObject in list3)
 				{
 					if (gameObject.HasTag(GameTags.Creature))
@@ -710,17 +725,17 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 				{
 					list4.Add(CraftModuleInterface.SpawnRocketDebris(" from CMI", elementID));
 				}
-				Storage storage = list4[list4.Count - 1];
-				while (component3.PrimaryElement.Mass > storage.RemainingCapacity())
+				Storage storage2 = list4[list4.Count - 1];
+				while (component3.PrimaryElement.Mass > storage2.RemainingCapacity())
 				{
-					Pickupable pickupable = component3.Take(storage.RemainingCapacity());
-					storage.Store(pickupable.gameObject, false, false, true, false);
-					storage = CraftModuleInterface.SpawnRocketDebris(" from CMI", elementID);
-					list4.Add(storage);
+					Pickupable pickupable = component3.Take(storage2.RemainingCapacity());
+					storage2.Store(pickupable.gameObject, false, false, true, false);
+					storage2 = CraftModuleInterface.SpawnRocketDebris(" from CMI", elementID);
+					list4.Add(storage2);
 				}
 				if (component3.PrimaryElement.Mass > 0f)
 				{
-					storage.Store(component3.gameObject, false, false, true, false);
+					storage2.Store(component3.gameObject, false, false, true, false);
 				}
 			}
 		}
@@ -733,21 +748,21 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		this.m_clustercraft.SetExploding();
 	}
 
-	[Serialize]
+		[Serialize]
 	private List<Ref<RocketModule>> modules = new List<Ref<RocketModule>>();
 
-	[Serialize]
+		[Serialize]
 	private List<Ref<RocketModuleCluster>> clusterModules = new List<Ref<RocketModuleCluster>>();
 
-	private Ref<RocketModuleCluster> bottomModule;
+		private Ref<RocketModuleCluster> bottomModule;
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<int, Ref<LaunchPad>> preferredLaunchPad = new Dictionary<int, Ref<LaunchPad>>();
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Clustercraft m_clustercraft;
 
-	private List<ProcessCondition.ProcessConditionType> conditionsToCheck = new List<ProcessCondition.ProcessConditionType>
+		private List<ProcessCondition.ProcessConditionType> conditionsToCheck = new List<ProcessCondition.ProcessConditionType>
 	{
 		ProcessCondition.ProcessConditionType.RocketPrep,
 		ProcessCondition.ProcessConditionType.RocketStorage,
@@ -755,7 +770,7 @@ public class CraftModuleInterface : KMonoBehaviour, ISim4000ms
 		ProcessCondition.ProcessConditionType.RocketFlight
 	};
 
-	private int lastConditionTypeSucceeded = -1;
+		private int lastConditionTypeSucceeded = -1;
 
-	private List<ProcessCondition> returnConditions = new List<ProcessCondition>();
+		private List<ProcessCondition> returnConditions = new List<ProcessCondition>();
 }

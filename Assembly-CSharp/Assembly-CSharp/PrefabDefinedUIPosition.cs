@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PrefabDefinedUIPosition
 {
-	public void SetOn(GameObject gameObject)
+		public void SetOn(GameObject gameObject)
 	{
 		if (this.position.HasValue)
 		{
@@ -13,7 +13,7 @@ public class PrefabDefinedUIPosition
 		this.position = gameObject.rectTransform().anchoredPosition;
 	}
 
-	public void SetOn(Component component)
+		public void SetOn(Component component)
 	{
 		if (this.position.HasValue)
 		{
@@ -23,5 +23,5 @@ public class PrefabDefinedUIPosition
 		this.position = component.rectTransform().anchoredPosition;
 	}
 
-	private Option<Vector2> position;
+		private Option<Vector2> position;
 }

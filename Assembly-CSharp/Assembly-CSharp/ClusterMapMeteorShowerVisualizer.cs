@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 {
-		public override string Name
+			public override string Name
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-		public override EntityLayer Layer
+			public override EntityLayer Layer
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-		public override bool IsVisible
+			public override bool IsVisible
 	{
 		get
 		{
@@ -28,7 +28,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-		public override ClusterRevealLevel IsVisibleInFOW
+			public override ClusterRevealLevel IsVisibleInFOW
 	{
 		get
 		{
@@ -36,7 +36,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-		public override List<ClusterGridEntity.AnimConfig> AnimConfigs
+			public override List<ClusterGridEntity.AnimConfig> AnimConfigs
 	{
 		get
 		{
@@ -59,7 +59,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-		public ClusterRevealLevel clusterCellRevealLevel
+			public ClusterRevealLevel clusterCellRevealLevel
 	{
 		get
 		{
@@ -67,7 +67,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-		public string AnimName
+			public string AnimName
 	{
 		get
 		{
@@ -79,7 +79,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-		public string QuestionMarkAnimName
+			public string QuestionMarkAnimName
 	{
 		get
 		{
@@ -91,7 +91,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-	public KBatchedAnimController CreateQuestionMarkInstance(KBatchedAnimController origin, Transform parent)
+		public KBatchedAnimController CreateQuestionMarkInstance(KBatchedAnimController origin, Transform parent)
 	{
 		KBatchedAnimController kbatchedAnimController = UnityEngine.Object.Instantiate<KBatchedAnimController>(origin, parent);
 		kbatchedAnimController.gameObject.SetActive(true);
@@ -104,7 +104,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		return kbatchedAnimController;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (ClusterMapScreen.Instance != null)
 		{
@@ -117,28 +117,28 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		base.OnCleanUp();
 	}
 
-	public void SetInitialLocation(AxialI startLocation)
+		public void SetInitialLocation(AxialI startLocation)
 	{
 		this.m_location = startLocation;
 		this.RefreshVisuals();
 	}
 
-	public override bool SpaceOutInSameHex()
+		public override bool SpaceOutInSameHex()
 	{
 		return true;
 	}
 
-	public override bool KeepRotationWhenSpacingOutInHex()
+		public override bool KeepRotationWhenSpacingOutInHex()
 	{
 		return true;
 	}
 
-	public override bool ShowPath()
+		public override bool ShowPath()
 	{
 		return this.m_selectable.IsSelected;
 	}
 
-	public override void OnClusterMapIconShown(ClusterRevealLevel levelUsed)
+		public override void OnClusterMapIconShown(ClusterRevealLevel levelUsed)
 	{
 		ClusterMapVisualizer entityVisAnim = ClusterMapScreen.Instance.GetEntityVisAnim(this);
 		switch (levelUsed)
@@ -173,7 +173,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-	public void Deselect()
+		public void Deselect()
 	{
 		if (this.m_selectable.IsSelected)
 		{
@@ -181,7 +181,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-	public void RefreshVisuals()
+		public void RefreshVisuals()
 	{
 		ClusterMapVisualizer entityVisAnim = ClusterMapScreen.Instance.GetEntityVisAnim(this);
 		if (entityVisAnim != null)
@@ -199,7 +199,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-	public void PlayRevealAnimation(bool playIdentifyAnimationIfVisible)
+		public void PlayRevealAnimation(bool playIdentifyAnimationIfVisible)
 	{
 		this.revealed = true;
 		this.RefreshVisuals();
@@ -215,7 +215,7 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-	public void PlayHideAnimation()
+		public void PlayHideAnimation()
 	{
 		this.revealed = false;
 		if (ClusterMapScreen.Instance.GetEntityVisAnim(this) != null)
@@ -224,16 +224,16 @@ public class ClusterMapMeteorShowerVisualizer : ClusterGridEntity
 		}
 	}
 
-	private ClusterGridEntity.AnimConfig questionMarkAnimConfig = new ClusterGridEntity.AnimConfig
+		private ClusterGridEntity.AnimConfig questionMarkAnimConfig = new ClusterGridEntity.AnimConfig
 	{
 		animFile = Assets.GetAnim("shower_question_mark_kanim"),
 		initialAnim = "idle",
 		playMode = KAnim.PlayMode.Once
 	};
 
-	public string p_name;
+		public string p_name;
 
-	public string clusterAnimName;
+		public string clusterAnimName;
 
-	public bool revealed;
+		public bool revealed;
 }

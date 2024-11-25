@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class WarpPortalSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.buttonLabel.SetText(UI.UISIDESCREENS.WARPPORTALSIDESCREEN.BUTTON);
@@ -15,12 +15,12 @@ public class WarpPortalSideScreen : SideScreenContent
 		this.Refresh(null);
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<WarpPortal>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		WarpPortal component = target.GetComponent<WarpPortal>();
 		if (component == null)
@@ -33,7 +33,7 @@ public class WarpPortalSideScreen : SideScreenContent
 		this.Refresh(null);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.progressBar.activeSelf)
 		{
@@ -44,7 +44,7 @@ public class WarpPortalSideScreen : SideScreenContent
 		}
 	}
 
-	private void OnButtonClick()
+		private void OnButtonClick()
 	{
 		if (this.target.ReadyToWarp)
 		{
@@ -53,13 +53,13 @@ public class WarpPortalSideScreen : SideScreenContent
 		}
 	}
 
-	private void OnCancelClick()
+		private void OnCancelClick()
 	{
 		this.target.CancelAssignment();
 		this.Refresh(null);
 	}
 
-	private void Refresh(object data = null)
+		private void Refresh(object data = null)
 	{
 		this.progressBar.SetActive(false);
 		this.cancelButton.gameObject.SetActive(false);
@@ -94,30 +94,30 @@ public class WarpPortalSideScreen : SideScreenContent
 		this.button.gameObject.SetActive(false);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText label;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton button;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText buttonLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton cancelButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText cancelButtonLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private WarpPortal target;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject contents;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject progressBar;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText progressLabel;
 }

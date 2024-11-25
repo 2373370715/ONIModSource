@@ -3,11 +3,11 @@ using System.Diagnostics;
 
 public class CellAddRemoveSubstanceEvent : CellEvent
 {
-	public CellAddRemoveSubstanceEvent(string id, string reason, bool enable_logging = false) : base(id, reason, true, enable_logging)
+		public CellAddRemoveSubstanceEvent(string id, string reason, bool enable_logging = false) : base(id, reason, true, enable_logging)
 	{
 	}
 
-	[Conditional("ENABLE_CELL_EVENT_LOGGER")]
+		[Conditional("ENABLE_CELL_EVENT_LOGGER")]
 	public void Log(int cell, SimHashes element, float amount, int callback_id)
 	{
 		if (!this.enableLogging)
@@ -18,7 +18,7 @@ public class CellAddRemoveSubstanceEvent : CellEvent
 		CellEventLogger.Instance.Add(ev);
 	}
 
-	public override string GetDescription(EventInstanceBase ev)
+		public override string GetDescription(EventInstanceBase ev)
 	{
 		CellEventInstance cellEventInstance = ev as CellEventInstance;
 		SimHashes data = (SimHashes)cellEventInstance.data;

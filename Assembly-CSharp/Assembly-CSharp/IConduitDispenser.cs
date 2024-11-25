@@ -2,7 +2,7 @@
 
 public interface IConduitDispenser
 {
-		Storage Storage { get; }
+			Storage Storage { get; }
 
-		ConduitType ConduitType { get; }
+			ConduitType ConduitType { get; }
 }

@@ -5,13 +5,13 @@ using UnityEngine;
 [Serializable]
 public class RadiationGridEmitter
 {
-	public RadiationGridEmitter(int originCell, int intensity)
+		public RadiationGridEmitter(int originCell, int intensity)
 	{
 		this.originCell = originCell;
 		this.intensity = intensity;
 	}
 
-	public void Emit()
+		public void Emit()
 	{
 		this.scanCells.Clear();
 		Vector2 a = Grid.CellToPosCCC(this.originCell, Grid.SceneLayer.Building);
@@ -42,24 +42,24 @@ public class RadiationGridEmitter
 		}
 	}
 
-	private int CalculateFalloff(float falloffRate, int cell, int origin)
+		private int CalculateFalloff(float falloffRate, int cell, int origin)
 	{
 		return Mathf.Max(1, Mathf.RoundToInt(falloffRate * (float)Mathf.Max(Grid.GetCellDistance(origin, cell), 1)));
 	}
 
-	private static int MAX_EMIT_DISTANCE = 128;
+		private static int MAX_EMIT_DISTANCE = 128;
 
-	public int originCell = -1;
+		public int originCell = -1;
 
-	public int intensity = 1;
+		public int intensity = 1;
 
-	public int projectionCount = 20;
+		public int projectionCount = 20;
 
-	public int direction;
+		public int direction;
 
-	public int angle = 360;
+		public int angle = 360;
 
-	public bool enabled;
+		public bool enabled;
 
-	private HashSet<int> scanCells = new HashSet<int>();
+		private HashSet<int> scanCells = new HashSet<int>();
 }

@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/PreventFOWRevealTracker")]
 public class PreventFOWRevealTracker : KMonoBehaviour
 {
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerialize()
 	{
 		this.preventFOWRevealCells.Clear();
@@ -21,7 +21,7 @@ public class PreventFOWRevealTracker : KMonoBehaviour
 		}
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		foreach (int i in this.preventFOWRevealCells)
@@ -30,6 +30,6 @@ public class PreventFOWRevealTracker : KMonoBehaviour
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	public List<int> preventFOWRevealCells;
 }

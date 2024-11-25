@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/AutoDisinfectable")]
 public class AutoDisinfectable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTableWithCorners);
@@ -19,7 +19,7 @@ public class AutoDisinfectable : Workable
 		this.multitoolHitEffectTag = "fx_disinfect_splash";
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<AutoDisinfectable>(493375141, AutoDisinfectable.OnRefreshUserMenuDelegate);
@@ -31,7 +31,7 @@ public class AutoDisinfectable : Workable
 		this.shouldTransferDiseaseWithWorker = false;
 	}
 
-	public void CancelChore()
+		public void CancelChore()
 	{
 		if (this.chore != null)
 		{
@@ -40,7 +40,7 @@ public class AutoDisinfectable : Workable
 		}
 	}
 
-	public void RefreshChore()
+		public void RefreshChore()
 	{
 		if (KMonoBehaviour.isLoadingScene)
 		{
@@ -71,13 +71,13 @@ public class AutoDisinfectable : Workable
 		}
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		this.diseasePerSecond = (float)base.GetComponent<PrimaryElement>().DiseaseCount / 10f;
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		base.OnWorkTick(worker, dt);
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
@@ -85,7 +85,7 @@ public class AutoDisinfectable : Workable
 		return false;
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
@@ -95,19 +95,19 @@ public class AutoDisinfectable : Workable
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	private void EnableAutoDisinfect()
+		private void EnableAutoDisinfect()
 	{
 		this.enableAutoDisinfect = true;
 		this.RefreshChore();
 	}
 
-	private void DisableAutoDisinfect()
+		private void DisableAutoDisinfect()
 	{
 		this.enableAutoDisinfect = false;
 		this.RefreshChore();
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		KIconButtonMenu.ButtonInfo button;
 		if (!this.enableAutoDisinfect)
@@ -121,19 +121,19 @@ public class AutoDisinfectable : Workable
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 10f);
 	}
 
-	private Chore chore;
+		private Chore chore;
 
-	private const float MAX_WORK_TIME = 10f;
+		private const float MAX_WORK_TIME = 10f;
 
-	private float diseasePerSecond;
+		private float diseasePerSecond;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private PrimaryElement primaryElement;
 
-	[Serialize]
+		[Serialize]
 	private bool enableAutoDisinfect = true;
 
-	private static readonly EventSystem.IntraObjectHandler<AutoDisinfectable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<AutoDisinfectable>(delegate(AutoDisinfectable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<AutoDisinfectable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<AutoDisinfectable>(delegate(AutoDisinfectable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});

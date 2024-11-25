@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/RocketControlStationIdleWorkable")]
 public class RocketControlStationIdleWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.overrideAnims = new KAnimFile[]
@@ -22,7 +22,7 @@ public class RocketControlStationIdleWorkable : Workable
 		base.SetWorkTime(30f);
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		RocketControlStation.StatesInstance smi = this.GetSMI<RocketControlStation.StatesInstance>();
@@ -32,6 +32,6 @@ public class RocketControlStationIdleWorkable : Workable
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 }

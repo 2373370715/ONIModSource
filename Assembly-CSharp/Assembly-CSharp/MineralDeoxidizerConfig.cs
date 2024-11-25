@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MineralDeoxidizerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MineralDeoxidizer";
 		int width = 1;
@@ -29,7 +29,7 @@ public class MineralDeoxidizerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		CellOffset cellOffset = new CellOffset(0, 1);
 		Prioritizable.AddRef(go);
@@ -57,19 +57,19 @@ public class MineralDeoxidizerConfig : IBuildingConfig
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "MineralDeoxidizer";
+		public const string ID = "MineralDeoxidizer";
 
-	private const float ALGAE_BURN_RATE = 0.55f;
+		private const float ALGAE_BURN_RATE = 0.55f;
 
-	private const float ALGAE_STORAGE = 330f;
+		private const float ALGAE_STORAGE = 330f;
 
-	private const float OXYGEN_GENERATION_RATE = 0.5f;
+		private const float OXYGEN_GENERATION_RATE = 0.5f;
 
-	private const float OXYGEN_TEMPERATURE = 303.15f;
+		private const float OXYGEN_TEMPERATURE = 303.15f;
 }

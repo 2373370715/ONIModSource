@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GeoTunerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "GeoTuner";
 		int width = 4;
@@ -41,7 +41,7 @@ public class GeoTunerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.ScienceBuilding, false);
 		Storage storage = go.AddOrGet<Storage>();
@@ -71,11 +71,11 @@ public class GeoTunerConfig : IBuildingConfig
 		roomTracker.requirement = RoomTracker.Requirement.Required;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	// Note: this type is marked as 'beforefieldinit'.
+		// Note: this type is marked as 'beforefieldinit'.
 	static GeoTunerConfig()
 	{
 		Dictionary<GeoTunerConfig.Category, GeoTunerConfig.GeotunedGeyserSettings> dictionary = new Dictionary<GeoTunerConfig.Category, GeoTunerConfig.GeotunedGeyserSettings>();
@@ -297,23 +297,23 @@ public class GeoTunerConfig : IBuildingConfig
 		};
 	}
 
-	public const int MAX_GEOTUNED = 5;
+		public const int MAX_GEOTUNED = 5;
 
-	public static Dictionary<GeoTunerConfig.Category, GeoTunerConfig.GeotunedGeyserSettings> CategorySettings;
+		public static Dictionary<GeoTunerConfig.Category, GeoTunerConfig.GeotunedGeyserSettings> CategorySettings;
 
-	public static Dictionary<HashedString, GeoTunerConfig.GeotunedGeyserSettings> geotunerGeyserSettings;
+		public static Dictionary<HashedString, GeoTunerConfig.GeotunedGeyserSettings> geotunerGeyserSettings;
 
-	public const string ID = "GeoTuner";
+		public const string ID = "GeoTuner";
 
-	public const string OUTPUT_LOGIC_PORT_ID = "GEYSER_ERUPTION_STATUS_PORT";
+		public const string OUTPUT_LOGIC_PORT_ID = "GEYSER_ERUPTION_STATUS_PORT";
 
-	public const string GeyserAnimationModelTarget = "geyser_target";
+		public const string GeyserAnimationModelTarget = "geyser_target";
 
-	public const string GeyserAnimation_GeyserSymbols_LogicLightSymbol = "light_bloom";
+		public const string GeyserAnimation_GeyserSymbols_LogicLightSymbol = "light_bloom";
 
-	public struct GeotunedGeyserSettings
+		public struct GeotunedGeyserSettings
 	{
-		public GeotunedGeyserSettings(Tag material, float quantity, float duration, Geyser.GeyserModification template)
+				public GeotunedGeyserSettings(Tag material, float quantity, float duration, Geyser.GeyserModification template)
 		{
 			this.quantity = quantity;
 			this.material = material;
@@ -321,23 +321,23 @@ public class GeoTunerConfig : IBuildingConfig
 			this.duration = duration;
 		}
 
-		public Tag material;
+				public Tag material;
 
-		public float quantity;
+				public float quantity;
 
-		public Geyser.GeyserModification template;
+				public Geyser.GeyserModification template;
 
-		public float duration;
+				public float duration;
 	}
 
-	public enum Category
+		public enum Category
 	{
-		DEFAULT_CATEGORY,
-		WATER_CATEGORY,
-		ORGANIC_CATEGORY,
-		HYDROCARBON_CATEGORY,
-		VOLCANO_CATEGORY,
-		METALS_CATEGORY,
-		CO2_CATEGORY
+				DEFAULT_CATEGORY,
+				WATER_CATEGORY,
+				ORGANIC_CATEGORY,
+				HYDROCARBON_CATEGORY,
+				VOLCANO_CATEGORY,
+				METALS_CATEGORY,
+				CO2_CATEGORY
 	}
 }

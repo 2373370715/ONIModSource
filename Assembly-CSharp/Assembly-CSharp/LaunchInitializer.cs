@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class LaunchInitializer : MonoBehaviour
 {
-	public static string BuildPrefix()
+		public static string BuildPrefix()
 	{
 		return LaunchInitializer.BUILD_PREFIX;
 	}
 
-	public static int UpdateNumber()
+		public static int UpdateNumber()
 	{
-		return 52;
+		return 53;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.numWaitFrames > Time.renderedFrameCount)
 		{
@@ -74,7 +74,7 @@ public class LaunchInitializer : MonoBehaviour
 		base.enabled = false;
 	}
 
-	private static void DeleteLingeringFiles()
+		private static void DeleteLingeringFiles()
 	{
 		string[] array = new string[]
 		{
@@ -100,14 +100,14 @@ public class LaunchInitializer : MonoBehaviour
 		}
 	}
 
-	private const string PREFIX = "U";
+		private const string PREFIX = "U";
 
-	private const int UPDATE_NUMBER = 52;
+		private const int UPDATE_NUMBER = 53;
 
-	private static readonly string BUILD_PREFIX = "U" + 52.ToString();
+		private static readonly string BUILD_PREFIX = "U" + 53.ToString();
 
-	public GameObject[] SpawnPrefabs;
+		public GameObject[] SpawnPrefabs;
 
-	[SerializeField]
+		[SerializeField]
 	private int numWaitFrames = 1;
 }

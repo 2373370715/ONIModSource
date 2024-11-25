@@ -3,18 +3,18 @@ using STRINGS;
 
 public class RocketOxidizerDiagnostic : ColonyDiagnostic
 {
-	public RocketOxidizerDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.ROCKETOXIDIZERDIAGNOSTIC.ALL_NAME)
+		public RocketOxidizerDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.ROCKETOXIDIZERDIAGNOSTIC.ALL_NAME)
 	{
 		this.tracker = TrackerTool.Instance.GetWorldTracker<RocketOxidizerTracker>(worldID);
 		this.icon = "rocket_oxidizer";
 	}
 
-	public override string[] GetDlcIds()
+		public override string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public override ColonyDiagnostic.DiagnosticResult Evaluate()
+		public override ColonyDiagnostic.DiagnosticResult Evaluate()
 	{
 		Clustercraft component = ClusterManager.Instance.GetWorld(base.worldID).gameObject.GetComponent<Clustercraft>();
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, base.NO_MINIONS, null);

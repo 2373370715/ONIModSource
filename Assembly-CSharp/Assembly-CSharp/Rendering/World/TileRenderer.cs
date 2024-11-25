@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Rendering.World
 {
-	public abstract class TileRenderer : KMonoBehaviour
+		public abstract class TileRenderer : KMonoBehaviour
 	{
-		protected override void OnSpawn()
+				protected override void OnSpawn()
 		{
 			this.Masks = this.GetMasks();
 			this.TileGridWidth = Grid.WidthInCells + 1;
@@ -26,7 +26,7 @@ namespace Rendering.World
 			this.VisibleAreaUpdater = new VisibleAreaUpdater(new Action<int>(this.UpdateOutsideView), new Action<int>(this.UpdateInsideView), "TileRenderer");
 		}
 
-		protected virtual Mask[] GetMasks()
+				protected virtual Mask[] GetMasks()
 		{
 			return new Mask[]
 			{
@@ -49,7 +49,7 @@ namespace Rendering.World
 			};
 		}
 
-		private void UpdateInsideView(int cell)
+				private void UpdateInsideView(int cell)
 		{
 			foreach (int item in this.GetCellTiles(cell))
 			{
@@ -58,7 +58,7 @@ namespace Rendering.World
 			}
 		}
 
-		private void UpdateOutsideView(int cell)
+				private void UpdateOutsideView(int cell)
 		{
 			foreach (int item in this.GetCellTiles(cell))
 			{
@@ -66,7 +66,7 @@ namespace Rendering.World
 			}
 		}
 
-		private int[] GetCellTiles(int cell)
+				private int[] GetCellTiles(int cell)
 		{
 			int num = 0;
 			int num2 = 0;
@@ -78,14 +78,14 @@ namespace Rendering.World
 			return this.CellTiles;
 		}
 
-		public abstract void LoadBrushes();
+				public abstract void LoadBrushes();
 
-		public void MarkDirty(int cell)
+				public void MarkDirty(int cell)
 		{
 			this.VisibleAreaUpdater.UpdateCell(cell);
 		}
 
-		private void LateUpdate()
+				private void LateUpdate()
 		{
 			foreach (int num in this.ClearTiles)
 			{
@@ -109,9 +109,9 @@ namespace Rendering.World
 			}
 		}
 
-		public abstract void MarkDirty(ref Tile tile, Brush[] brush_array, int[] brush_grid);
+				public abstract void MarkDirty(ref Tile tile, Brush[] brush_array, int[] brush_grid);
 
-		public void Clear(ref Tile tile, Brush[] brush_array, int[] brush_grid)
+				public void Clear(ref Tile tile, Brush[] brush_array, int[] brush_grid)
 		{
 			for (int i = 0; i < 4; i++)
 			{
@@ -123,30 +123,30 @@ namespace Rendering.World
 			}
 		}
 
-		private Tile[] TileGrid;
+				private Tile[] TileGrid;
 
-		private int[] BrushGrid;
+				private int[] BrushGrid;
 
-		protected int TileGridWidth;
+				protected int TileGridWidth;
 
-		protected int TileGridHeight;
+				protected int TileGridHeight;
 
-		private int[] CellTiles = new int[4];
+				private int[] CellTiles = new int[4];
 
-		protected Brush[] Brushes;
+				protected Brush[] Brushes;
 
-		protected Mask[] Masks;
+				protected Mask[] Masks;
 
-		protected List<Brush> DirtyBrushes = new List<Brush>();
+				protected List<Brush> DirtyBrushes = new List<Brush>();
 
-		protected List<Brush> ActiveBrushes = new List<Brush>();
+				protected List<Brush> ActiveBrushes = new List<Brush>();
 
-		private VisibleAreaUpdater VisibleAreaUpdater;
+				private VisibleAreaUpdater VisibleAreaUpdater;
 
-		private HashSet<int> ClearTiles = new HashSet<int>();
+				private HashSet<int> ClearTiles = new HashSet<int>();
 
-		private HashSet<int> DirtyTiles = new HashSet<int>();
+				private HashSet<int> DirtyTiles = new HashSet<int>();
 
-		public TextureAtlas Atlas;
+				public TextureAtlas Atlas;
 	}
 }

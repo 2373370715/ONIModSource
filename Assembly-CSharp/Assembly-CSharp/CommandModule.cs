@@ -7,16 +7,16 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.rocketStats = new RocketStats(this);
-		this.conditions = base.GetComponent<RocketCommandConditions>();
+		this.conditions = base.GetComponent<CommandConditions>();
 	}
 
-	public void ReleaseAstronaut(bool fill_bladder)
+		public void ReleaseAstronaut(bool fill_bladder)
 	{
-		if (this.releasingAstronaut)
+		if (this.releasingAstronaut || this.robotPilotControlled)
 		{
 			return;
 		}
@@ -46,19 +46,22 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		this.releasingAstronaut = false;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.storage = base.GetComponent<Storage>();
-		this.assignable = base.GetComponent<Assignable>();
-		this.assignable.AddAssignPrecondition(new Func<MinionAssignablesProxy, bool>(this.CanAssignTo));
+		if (!this.robotPilotControlled)
+		{
+			this.assignable = base.GetComponent<Assignable>();
+			this.assignable.AddAssignPrecondition(new Func<MinionAssignablesProxy, bool>(this.CanAssignTo));
+			int cell = Grid.PosToCell(base.gameObject);
+			this.partitionerEntry = GameScenePartitioner.Instance.Add("CommandModule.gantryChanged", base.gameObject, cell, GameScenePartitioner.Instance.validNavCellChangedLayer, new Action<object>(this.OnGantryChanged));
+			this.OnGantryChanged(null);
+		}
 		base.smi.StartSM();
-		int cell = Grid.PosToCell(base.gameObject);
-		this.partitionerEntry = GameScenePartitioner.Instance.Add("CommandModule.gantryChanged", base.gameObject, cell, GameScenePartitioner.Instance.validNavCellChangedLayer, new Action<object>(this.OnGantryChanged));
-		this.OnGantryChanged(null);
 	}
 
-	private bool CanAssignTo(MinionAssignablesProxy worker)
+		private bool CanAssignTo(MinionAssignablesProxy worker)
 	{
 		if (worker.target is MinionIdentity)
 		{
@@ -67,13 +70,13 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		return worker.target is StoredMinionIdentity && (worker.target as StoredMinionIdentity).HasPerk(Db.Get().SkillPerks.CanUseRockets);
 	}
 
-	private static bool HasValidGantry(GameObject go)
+		private static bool HasValidGantry(GameObject go)
 	{
 		int num = Grid.OffsetCell(Grid.PosToCell(go), 0, -1);
 		return Grid.IsValidCell(num) && Grid.FakeFloor[num];
 	}
 
-	private void OnGantryChanged(object data)
+		private void OnGantryChanged(object data)
 	{
 		if (base.gameObject != null)
 		{
@@ -92,7 +95,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		}
 	}
 
-	private Chore CreateWorkChore()
+		private Chore CreateWorkChore()
 	{
 		WorkChore<CommandModuleWorkable> workChore = new WorkChore<CommandModuleWorkable>(Db.Get().ChoreTypes.Astronaut, this, null, true, null, null, null, false, null, false, true, Assets.GetAnim("anim_hat_kanim"), false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, true);
 		workChore.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanUseRockets);
@@ -100,7 +103,7 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		return workChore;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		this.partitionerEntry.Clear();
@@ -108,27 +111,29 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		base.smi.StopSM("cleanup");
 	}
 
-	public Storage storage;
+		public Storage storage;
 
-	public RocketStats rocketStats;
+		public RocketStats rocketStats;
 
-	public RocketCommandConditions conditions;
+		public CommandConditions conditions;
 
-	private bool releasingAstronaut;
+		private bool releasingAstronaut;
 
-	private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
+		private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
 
-	public Assignable assignable;
+		public Assignable assignable;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		public bool robotPilotControlled;
 
-	public class StatesInstance : GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.GameInstance
+		private HandleVector<int>.Handle partitionerEntry;
+
+		public class StatesInstance : GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.GameInstance
 	{
-		public StatesInstance(CommandModule master) : base(master)
+				public StatesInstance(CommandModule master) : base(master)
 		{
 		}
 
-		public void SetSuspended(bool suspended)
+				public void SetSuspended(bool suspended)
 		{
 			Storage component = base.GetComponent<Storage>();
 			if (component != null)
@@ -142,8 +147,12 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 			}
 		}
 
-		public bool CheckStoredMinionIsAssignee()
+				public bool CheckStoredMinionIsAssignee()
 		{
+			if (base.smi.master.robotPilotControlled)
+			{
+				return true;
+			}
 			foreach (MinionStorage.Info info in base.GetComponent<MinionStorage>().GetStoredMinionInfo())
 			{
 				if (info.serializedMinion != null)
@@ -163,9 +172,9 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 		}
 	}
 
-	public class States : GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule>
+		public class States : GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.grounded;
 			this.grounded.PlayAnim("grounded", KAnim.PlayMode.Loop).DefaultState(this.grounded.awaitingAstronaut).TagTransition(GameTags.RocketNotOnGround, this.spaceborne, false);
@@ -221,32 +230,32 @@ public class CommandModule : StateMachineComponent<CommandModule.StatesInstance>
 			}).GoTo(this.grounded.waitingToRelease);
 		}
 
-		public StateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.Signal gantryChanged;
+				public StateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.Signal gantryChanged;
 
-		public StateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.BoolParameter accumulatedPee;
+				public StateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.BoolParameter accumulatedPee;
 
-		public CommandModule.States.GroundedStates grounded;
+				public CommandModule.States.GroundedStates grounded;
 
-		public CommandModule.States.SpaceborneStates spaceborne;
+				public CommandModule.States.SpaceborneStates spaceborne;
 
-		public class GroundedStates : GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State
+				public class GroundedStates : GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State
 		{
-			public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State refreshChore;
+						public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State refreshChore;
 
-			public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State awaitingAstronaut;
+						public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State awaitingAstronaut;
 
-			public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State hasAstronaut;
+						public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State hasAstronaut;
 
-			public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State waitingToRelease;
+						public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State waitingToRelease;
 		}
 
-		public class SpaceborneStates : GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State
+				public class SpaceborneStates : GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State
 		{
-			public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State launch;
+						public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State launch;
 
-			public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State idle;
+						public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State idle;
 
-			public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State land;
+						public GameStateMachine<CommandModule.States, CommandModule.StatesInstance, CommandModule, object>.State land;
 		}
 	}
 }

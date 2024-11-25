@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class SplashTransitionLayer : TransitionDriver.OverrideLayer
 {
-	public SplashTransitionLayer(Navigator navigator) : base(navigator)
+		public SplashTransitionLayer(Navigator navigator) : base(navigator)
 	{
 		this.lastSplashTime = Time.time;
 	}
 
-	private void RefreshSplashes(Navigator navigator, Navigator.ActiveTransition transition)
+		private void RefreshSplashes(Navigator navigator, Navigator.ActiveTransition transition)
 	{
 		if (navigator == null)
 		{
@@ -28,25 +28,25 @@ public class SplashTransitionLayer : TransitionDriver.OverrideLayer
 		}
 	}
 
-	public override void BeginTransition(Navigator navigator, Navigator.ActiveTransition transition)
+		public override void BeginTransition(Navigator navigator, Navigator.ActiveTransition transition)
 	{
 		base.BeginTransition(navigator, transition);
 		this.RefreshSplashes(navigator, transition);
 	}
 
-	public override void UpdateTransition(Navigator navigator, Navigator.ActiveTransition transition)
+		public override void UpdateTransition(Navigator navigator, Navigator.ActiveTransition transition)
 	{
 		base.UpdateTransition(navigator, transition);
 		this.RefreshSplashes(navigator, transition);
 	}
 
-	public override void EndTransition(Navigator navigator, Navigator.ActiveTransition transition)
+		public override void EndTransition(Navigator navigator, Navigator.ActiveTransition transition)
 	{
 		base.EndTransition(navigator, transition);
 		this.RefreshSplashes(navigator, transition);
 	}
 
-	private float lastSplashTime;
+		private float lastSplashTime;
 
-	private const float SPLASH_INTERVAL = 1f;
+		private const float SPLASH_INTERVAL = 1f;
 }

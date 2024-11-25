@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ConsumableConsumer")]
 public class ConsumableConsumer : KMonoBehaviour
 {
-	[OnDeserialized]
+		[OnDeserialized]
 	[Obsolete]
 	private void OnDeserialized()
 	{
@@ -18,26 +18,46 @@ public class ConsumableConsumer : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (ConsumerManager.instance != null)
 		{
 			this.forbiddenTagSet = new HashSet<Tag>(ConsumerManager.instance.DefaultForbiddenTagsList);
-			return;
+			if (this.HasTag(GameTags.Minions.Models.Standard))
+			{
+				this.dietaryRestrictionTagSet = new HashSet<Tag>(ConsumerManager.instance.StandardDuplicantDietaryRestrictions);
+				return;
+			}
+			if (this.HasTag(GameTags.Minions.Models.Bionic))
+			{
+				this.dietaryRestrictionTagSet = new HashSet<Tag>(ConsumerManager.instance.BionicDuplicantDietaryRestrictions);
+				return;
+			}
 		}
-		this.forbiddenTagSet = new HashSet<Tag>();
+		else
+		{
+			this.forbiddenTagSet = new HashSet<Tag>();
+			this.dietaryRestrictionTagSet = new HashSet<Tag>();
+		}
 	}
 
-	public bool IsPermitted(string consumable_id)
+		public bool IsPermitted(string consumable_id)
 	{
 		Tag item = new Tag(consumable_id);
-		return !this.forbiddenTagSet.Contains(item);
+		return !this.forbiddenTagSet.Contains(item) && !this.dietaryRestrictionTagSet.Contains(item);
 	}
 
-	public void SetPermitted(string consumable_id, bool is_allowed)
+		public bool IsDietRestricted(string consumable_id)
 	{
 		Tag item = new Tag(consumable_id);
+		return this.dietaryRestrictionTagSet.Contains(item);
+	}
+
+		public void SetPermitted(string consumable_id, bool is_allowed)
+	{
+		Tag item = new Tag(consumable_id);
+		is_allowed = (is_allowed && !this.dietaryRestrictionTagSet.Contains(consumable_id));
 		if (is_allowed)
 		{
 			this.forbiddenTagSet.Remove(item);
@@ -49,12 +69,16 @@ public class ConsumableConsumer : KMonoBehaviour
 		this.consumableRulesChanged.Signal();
 	}
 
-	[Obsolete("Deprecated, use forbiddenTagSet")]
+		[Obsolete("Deprecated, use forbiddenTagSet")]
 	[Serialize]
+	[HideInInspector]
 	public Tag[] forbiddenTags;
 
-	[Serialize]
+		[Serialize]
 	public HashSet<Tag> forbiddenTagSet;
 
-	public System.Action consumableRulesChanged;
+		[Serialize]
+	public HashSet<Tag> dietaryRestrictionTagSet;
+
+		public System.Action consumableRulesChanged;
 }

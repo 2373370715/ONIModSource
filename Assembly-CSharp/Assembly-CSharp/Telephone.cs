@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -17,13 +17,13 @@ public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameO
 		}, null, null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.Telephones.Remove(this);
 		base.OnCleanUp();
 	}
 
-	public void AddModifierDescriptions(List<Descriptor> descs, string effect_id)
+		public void AddModifierDescriptions(List<Descriptor> descs, string effect_id)
 	{
 		Effect effect = Db.Get().effects.Get(effect_id);
 		string text;
@@ -51,7 +51,7 @@ public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameO
 		}
 	}
 
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
+		List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Descriptor item = default(Descriptor);
@@ -63,28 +63,28 @@ public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameO
 		return list;
 	}
 
-	public void HangUp()
+		public void HangUp()
 	{
 		this.isInUse = false;
 		this.wasAnswered = false;
 		this.RemoveTag(GameTags.LongDistanceCall);
 	}
 
-	public string babbleEffect;
+		public string babbleEffect;
 
-	public string chatEffect;
+		public string chatEffect;
 
-	public string longDistanceEffect;
+		public string longDistanceEffect;
 
-	public string trackingEffect;
+		public string trackingEffect;
 
-	public bool isInUse;
+		public bool isInUse;
 
-	public bool wasAnswered;
+		public bool wasAnswered;
 
-	public class States : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone>
+		public class States : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			Telephone.States.CreateStatusItems();
 			default_state = this.unoperational;
@@ -129,7 +129,7 @@ public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameO
 			this.ready.hangup.OnAnimQueueComplete(this.ready);
 		}
 
-		private Chore CreateChore(Telephone.StatesInstance smi)
+				private Chore CreateChore(Telephone.StatesInstance smi)
 		{
 			Workable component = smi.master.GetComponent<TelephoneCallerWorkable>();
 			WorkChore<TelephoneCallerWorkable> workChore = new WorkChore<TelephoneCallerWorkable>(Db.Get().ChoreTypes.Relax, component, null, true, null, null, null, false, Db.Get().ScheduleBlockTypes.Recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
@@ -137,7 +137,7 @@ public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameO
 			return workChore;
 		}
 
-		public void UpdatePartyLine(Telephone.StatesInstance smi)
+				public void UpdatePartyLine(Telephone.StatesInstance smi)
 		{
 			int myWorldId = smi.GetMyWorldId();
 			bool flag = false;
@@ -158,7 +158,7 @@ public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameO
 			}
 		}
 
-		public void RingAllTelephones(Telephone.StatesInstance smi)
+				public void RingAllTelephones(Telephone.StatesInstance smi)
 		{
 			Telephone component = smi.master.GetComponent<Telephone>();
 			foreach (Telephone telephone in Components.Telephones.Items)
@@ -174,7 +174,7 @@ public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameO
 			}
 		}
 
-		private static void CreateStatusItems()
+				private static void CreateStatusItems()
 		{
 			if (Telephone.States.partyLine == null)
 			{
@@ -229,57 +229,57 @@ public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameO
 			}
 		}
 
-		private GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State unoperational;
+				private GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State unoperational;
 
-		private Telephone.States.ReadyStates ready;
+				private Telephone.States.ReadyStates ready;
 
-		private static StatusItem partyLine;
+				private static StatusItem partyLine;
 
-		private static StatusItem babbling;
+				private static StatusItem babbling;
 
-		public class ReadyStates : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State
+				public class ReadyStates : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State
 		{
-			public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State idle;
+						public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State idle;
 
-			public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State ringing;
+						public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State ringing;
 
-			public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State answer;
+						public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State answer;
 
-			public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State speaker;
+						public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State speaker;
 
-			public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State hangup;
+						public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State hangup;
 
-			public Telephone.States.ReadyStates.CallingStates calling;
+						public Telephone.States.ReadyStates.CallingStates calling;
 
-			public Telephone.States.ReadyStates.TalkingStates talking;
+						public Telephone.States.ReadyStates.TalkingStates talking;
 
-			public class CallingStates : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State
+						public class CallingStates : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State
 			{
-				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State dial;
+								public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State dial;
 
-				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State animHack;
+								public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State animHack;
 
-				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State pre;
+								public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State pre;
 
-				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State wait;
+								public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State wait;
 			}
 
-			public class TalkingStates : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State
+						public class TalkingStates : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State
 			{
-				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State babbling;
+								public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State babbling;
 
-				public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State chatting;
+								public GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.State chatting;
 			}
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Telephone.States, Telephone.StatesInstance, Telephone, object>.GameInstance
 	{
-		public StatesInstance(Telephone smi) : base(smi)
+				public StatesInstance(Telephone smi) : base(smi)
 		{
 		}
 
-		public bool CallAnswered()
+				public bool CallAnswered()
 		{
 			foreach (Telephone telephone in Components.Telephones.Items)
 			{
@@ -292,7 +292,7 @@ public class Telephone : StateMachineComponent<Telephone.StatesInstance>, IGameO
 			return false;
 		}
 
-		public bool CallEnded()
+				public bool CallEnded()
 		{
 			using (List<Telephone>.Enumerator enumerator = Components.Telephones.Items.GetEnumerator())
 			{

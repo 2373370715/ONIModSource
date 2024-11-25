@@ -6,12 +6,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/TravelTube")]
 public class TravelTube : KMonoBehaviour, IFirstFrameCallback, ITravelTubePiece, IHaveUtilityNetworkMgr
 {
-	public IUtilityNetworkMgr GetNetworkManager()
+		public IUtilityNetworkMgr GetNetworkManager()
 	{
 		return Game.Instance.travelTubeSystem;
 	}
 
-		public Vector3 Position
+			public Vector3 Position
 	{
 		get
 		{
@@ -19,14 +19,14 @@ public class TravelTube : KMonoBehaviour, IFirstFrameCallback, ITravelTubePiece,
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Grid.HasTube[Grid.PosToCell(this)] = true;
 		Components.ITravelTubePieces.Add(this);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		int cell = Grid.PosToCell(base.transform.GetPosition());
@@ -34,7 +34,7 @@ public class TravelTube : KMonoBehaviour, IFirstFrameCallback, ITravelTubePiece,
 		base.Subscribe<TravelTube>(-1041684577, TravelTube.OnConnectionsChangedDelegate);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		BuildingComplete component = base.GetComponent<BuildingComplete>();
@@ -49,7 +49,7 @@ public class TravelTube : KMonoBehaviour, IFirstFrameCallback, ITravelTubePiece,
 		base.OnCleanUp();
 	}
 
-	private void OnConnectionsChanged(object data)
+		private void OnConnectionsChanged(object data)
 	{
 		this.connections = (UtilityConnections)data;
 		bool flag = this.connections == UtilityConnections.Up || this.connections == UtilityConnections.Down || this.connections == UtilityConnections.Left || this.connections == UtilityConnections.Right;
@@ -61,7 +61,7 @@ public class TravelTube : KMonoBehaviour, IFirstFrameCallback, ITravelTubePiece,
 		}
 	}
 
-	private void UpdateExitListener(bool enable)
+		private void UpdateExitListener(bool enable)
 	{
 		if (enable && !this.dirtyNavCellUpdatedEntry.IsValid())
 		{
@@ -76,7 +76,7 @@ public class TravelTube : KMonoBehaviour, IFirstFrameCallback, ITravelTubePiece,
 		}
 	}
 
-	private void OnDirtyNavCellUpdated(object data)
+		private void OnDirtyNavCellUpdated(object data)
 	{
 		int num = Grid.PosToCell(base.transform.GetPosition());
 		NavGrid navGrid = Pathfinding.Instance.GetNavGrid("MinionNavGrid");
@@ -112,7 +112,7 @@ public class TravelTube : KMonoBehaviour, IFirstFrameCallback, ITravelTubePiece,
 		}
 	}
 
-	private void UpdateExitStatus()
+		private void UpdateExitStatus()
 	{
 		if (!this.isExitTube || this.hasValidExitTransitions)
 		{
@@ -125,13 +125,13 @@ public class TravelTube : KMonoBehaviour, IFirstFrameCallback, ITravelTubePiece,
 		}
 	}
 
-	public void SetFirstFrameCallback(System.Action ffCb)
+		public void SetFirstFrameCallback(System.Action ffCb)
 	{
 		this.firstFrameCallback = ffCb;
 		base.StartCoroutine(this.RunCallback());
 	}
 
-	private IEnumerator RunCallback()
+		private IEnumerator RunCallback()
 	{
 		yield return null;
 		if (this.firstFrameCallback != null)
@@ -143,23 +143,23 @@ public class TravelTube : KMonoBehaviour, IFirstFrameCallback, ITravelTubePiece,
 		yield break;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	private HandleVector<int>.Handle dirtyNavCellUpdatedEntry;
+		private HandleVector<int>.Handle dirtyNavCellUpdatedEntry;
 
-	private bool isExitTube;
+		private bool isExitTube;
 
-	private bool hasValidExitTransitions;
+		private bool hasValidExitTransitions;
 
-	private UtilityConnections connections;
+		private UtilityConnections connections;
 
-	private static readonly EventSystem.IntraObjectHandler<TravelTube> OnConnectionsChangedDelegate = new EventSystem.IntraObjectHandler<TravelTube>(delegate(TravelTube component, object data)
+		private static readonly EventSystem.IntraObjectHandler<TravelTube> OnConnectionsChangedDelegate = new EventSystem.IntraObjectHandler<TravelTube>(delegate(TravelTube component, object data)
 	{
 		component.OnConnectionsChanged(data);
 	});
 
-	private Guid connectedStatus;
+		private Guid connectedStatus;
 
-	private System.Action firstFrameCallback;
+		private System.Action firstFrameCallback;
 }

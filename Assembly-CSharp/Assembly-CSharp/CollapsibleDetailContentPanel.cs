@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/CollapsibleDetailContentPanel")]
 public class CollapsibleDetailContentPanel : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		MultiToggle multiToggle = this.collapseButton;
@@ -17,12 +17,12 @@ public class CollapsibleDetailContentPanel : KMonoBehaviour
 		this.Commit();
 	}
 
-	public void SetTitle(string title)
+		public void SetTitle(string title)
 	{
 		this.HeaderLabel.text = title;
 	}
 
-	public void Commit()
+		public void Commit()
 	{
 		int num = 0;
 		foreach (CollapsibleDetailContentPanel.Label<DetailLabel> label in this.labels.Values)
@@ -68,7 +68,7 @@ public class CollapsibleDetailContentPanel : KMonoBehaviour
 		}
 	}
 
-	public void SetLabel(string id, string text, string tooltip)
+		public void SetLabel(string id, string text, string tooltip)
 	{
 		CollapsibleDetailContentPanel.Label<DetailLabel> label;
 		if (!this.labels.TryGetValue(id, out label))
@@ -87,7 +87,7 @@ public class CollapsibleDetailContentPanel : KMonoBehaviour
 		label.used = true;
 	}
 
-	public void SetLabelWithButton(string id, string text, string tooltip, System.Action buttonCb)
+		public void SetLabelWithButton(string id, string text, string tooltip, System.Action buttonCb)
 	{
 		CollapsibleDetailContentPanel.Label<DetailLabelWithButton> label;
 		if (!this.buttonLabels.TryGetValue(id, out label))
@@ -109,7 +109,7 @@ public class CollapsibleDetailContentPanel : KMonoBehaviour
 		label.used = true;
 	}
 
-	private void ToggleOpen()
+		private void ToggleOpen()
 	{
 		bool flag = this.scalerMask.gameObject.activeSelf;
 		flag = !flag;
@@ -123,7 +123,7 @@ public class CollapsibleDetailContentPanel : KMonoBehaviour
 		this.ArrowIcon.SetInactive();
 	}
 
-	public void ForceLocTextsMeshRebuild()
+		public void ForceLocTextsMeshRebuild()
 	{
 		LocText[] componentsInChildren = base.GetComponentsInChildren<LocText>();
 		for (int i = 0; i < componentsInChildren.Length; i++)
@@ -132,7 +132,7 @@ public class CollapsibleDetailContentPanel : KMonoBehaviour
 		}
 	}
 
-	public void SetActive(bool active)
+		public void SetActive(bool active)
 	{
 		if (base.gameObject.activeSelf != active)
 		{
@@ -140,31 +140,31 @@ public class CollapsibleDetailContentPanel : KMonoBehaviour
 		}
 	}
 
-	public ImageToggleState ArrowIcon;
+		public ImageToggleState ArrowIcon;
 
-	public LocText HeaderLabel;
+		public LocText HeaderLabel;
 
-	public MultiToggle collapseButton;
+		public MultiToggle collapseButton;
 
-	public Transform Content;
+		public Transform Content;
 
-	public ScalerMask scalerMask;
+		public ScalerMask scalerMask;
 
-	[Space(10f)]
+		[Space(10f)]
 	public DetailLabel labelTemplate;
 
-	public DetailLabelWithButton labelWithActionButtonTemplate;
+		public DetailLabelWithButton labelWithActionButtonTemplate;
 
-	private Dictionary<string, CollapsibleDetailContentPanel.Label<DetailLabel>> labels;
+		private Dictionary<string, CollapsibleDetailContentPanel.Label<DetailLabel>> labels;
 
-	private Dictionary<string, CollapsibleDetailContentPanel.Label<DetailLabelWithButton>> buttonLabels;
+		private Dictionary<string, CollapsibleDetailContentPanel.Label<DetailLabelWithButton>> buttonLabels;
 
-	private LoggerFSS log;
+		private LoggerFSS log;
 
-	private class Label<T>
+		private class Label<T>
 	{
-		public T obj;
+				public T obj;
 
-		public bool used;
+				public bool used;
 	}
 }

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 public interface IAssignableIdentity
 {
-	string GetProperName();
+		string GetProperName();
 
-	List<Ownables> GetOwners();
+		List<Ownables> GetOwners();
 
-	Ownables GetSoleOwner();
+		Ownables GetSoleOwner();
 
-	bool IsNull();
+		bool IsNull();
 
-	bool HasOwner(Assignables owner);
+		bool HasOwner(Assignables owner);
 
-	int NumOwners();
+		int NumOwners();
 }

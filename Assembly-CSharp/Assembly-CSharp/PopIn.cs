@@ -3,18 +3,18 @@ using UnityEngine;
 
 public class PopIn : MonoBehaviour
 {
-	private void OnEnable()
+		private void OnEnable()
 	{
 		this.StartPopIn(true);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		float num = Mathf.Lerp(base.transform.localScale.x, this.targetScale, Time.unscaledDeltaTime * this.speed);
 		base.transform.localScale = new Vector3(num, num, 1f);
 	}
 
-	public void StartPopIn(bool force_reset = false)
+		public void StartPopIn(bool force_reset = false)
 	{
 		if (force_reset)
 		{
@@ -23,12 +23,12 @@ public class PopIn : MonoBehaviour
 		this.targetScale = 1f;
 	}
 
-	public void StartPopOut()
+		public void StartPopOut()
 	{
 		this.targetScale = 0f;
 	}
 
-	private float targetScale;
+		private float targetScale;
 
-	public float speed;
+		public float speed;
 }

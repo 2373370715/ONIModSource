@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjectEffectDescriptor
 {
-			private float ReactionMassTarget
+				private float ReactionMassTarget
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-		public float FuelTemperature
+			public float FuelTemperature
 	{
 		get
 		{
@@ -33,7 +33,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-		public float ReserveCoolantMass
+			public float ReserveCoolantMass
 	{
 		get
 		{
@@ -46,7 +46,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-		public bool On
+			public bool On
 	{
 		get
 		{
@@ -54,7 +54,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.NuclearReactors.Add(this);
@@ -68,31 +68,31 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		this.CheckLogicInputValueChanged(true);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.NuclearReactors.Remove(this);
 		base.OnCleanUp();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.CheckLogicInputValueChanged(false);
 	}
 
-	public Notification CreateMeltdownNotification()
+		public Notification CreateMeltdownNotification()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		return new Notification(MISC.NOTIFICATIONS.REACTORMELTDOWN.NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.REACTORMELTDOWN.TOOLTIP + notificationList.ReduceMessages(false), "/t• " + component.GetProperName(), false, 0f, null, null, null, true, false, false);
 	}
 
-	public void SetStorages(Storage supply, Storage reaction, Storage waste)
+		public void SetStorages(Storage supply, Storage reaction, Storage waste)
 	{
 		this.supplyStorage = supply;
 		this.reactionStorage = reaction;
 		this.wasteStorage = waste;
 	}
 
-	private void CheckLogicInputValueChanged(bool onLoad = false)
+		private void CheckLogicInputValueChanged(bool onLoad = false)
 	{
 		int num = 1;
 		if (this.logicPorts.IsPortConnected("CONTROL_FUEL_DELIVERY"))
@@ -113,11 +113,11 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-	private void OnLogicConnectionChanged(int value, bool connection)
+		private void OnLogicConnectionChanged(int value, bool connection)
 	{
 	}
 
-	private void CreateMeters()
+		private void CreateMeters()
 	{
 		this.temperatureMeter = new MeterController(base.GetComponent<KBatchedAnimController>(), "temperature_meter_target", "meter_temperature", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new string[]
 		{
@@ -129,7 +129,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		});
 	}
 
-	private void TransferFuel()
+		private void TransferFuel()
 	{
 		PrimaryElement activeFuel = this.GetActiveFuel();
 		PrimaryElement storedFuel = this.GetStoredFuel();
@@ -143,7 +143,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-	private void TransferCoolant()
+		private void TransferCoolant()
 	{
 		PrimaryElement activeCoolant = this.GetActiveCoolant();
 		PrimaryElement storedCoolant = this.GetStoredCoolant();
@@ -157,7 +157,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-	private PrimaryElement GetStoredFuel()
+		private PrimaryElement GetStoredFuel()
 	{
 		GameObject gameObject = this.supplyStorage.FindFirst(this.fuelTag);
 		if (gameObject && gameObject.GetComponent<PrimaryElement>())
@@ -167,7 +167,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		return null;
 	}
 
-	private PrimaryElement GetActiveFuel()
+		private PrimaryElement GetActiveFuel()
 	{
 		GameObject gameObject = this.reactionStorage.FindFirst(this.fuelTag);
 		if (gameObject && gameObject.GetComponent<PrimaryElement>())
@@ -177,7 +177,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		return null;
 	}
 
-	private PrimaryElement GetStoredCoolant()
+		private PrimaryElement GetStoredCoolant()
 	{
 		GameObject gameObject = this.supplyStorage.FindFirst(this.coolantTag);
 		if (gameObject && gameObject.GetComponent<PrimaryElement>())
@@ -187,7 +187,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		return null;
 	}
 
-	private PrimaryElement GetActiveCoolant()
+		private PrimaryElement GetActiveCoolant()
 	{
 		GameObject gameObject = this.reactionStorage.FindFirst(this.coolantTag);
 		if (gameObject && gameObject.GetComponent<PrimaryElement>())
@@ -197,14 +197,14 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		return null;
 	}
 
-	private bool CanStartReaction()
+		private bool CanStartReaction()
 	{
 		PrimaryElement activeCoolant = this.GetActiveCoolant();
 		PrimaryElement activeFuel = this.GetActiveFuel();
 		return activeCoolant && activeFuel && activeCoolant.Mass >= 30f && activeFuel.Mass >= 0.5f;
 	}
 
-	private void Cool(float dt)
+		private void Cool(float dt)
 	{
 		PrimaryElement activeFuel = this.GetActiveFuel();
 		if (activeFuel == null)
@@ -223,7 +223,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-	private void React(float dt)
+		private void React(float dt)
 	{
 		PrimaryElement activeFuel = this.GetActiveFuel();
 		if (activeFuel != null && activeFuel.Mass >= 0.25f)
@@ -234,19 +234,19 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-	private void SetEmitRads(float rads)
+		private void SetEmitRads(float rads)
 	{
 		base.smi.master.radEmitter.emitRads = rads;
 		base.smi.master.radEmitter.Refresh();
 	}
 
-	private bool ReadyToCool()
+		private bool ReadyToCool()
 	{
 		PrimaryElement activeCoolant = this.GetActiveCoolant();
 		return activeCoolant != null && activeCoolant.Mass > 0f;
 	}
 
-	private void DumpSpentFuel()
+		private void DumpSpentFuel()
 	{
 		PrimaryElement activeFuel = this.GetActiveFuel();
 		if (activeFuel != null)
@@ -275,7 +275,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-	private void UpdateVentStatus()
+		private void UpdateVentStatus()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		if (this.ClearToVent())
@@ -294,7 +294,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-	private void UpdateCoolantStatus()
+		private void UpdateCoolantStatus()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		if (this.GetStoredCoolant() != null || base.smi.GetCurrentState() == base.smi.sm.meltdown || base.smi.GetCurrentState() == base.smi.sm.dead)
@@ -311,7 +311,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-	private void InitVentCells()
+		private void InitVentCells()
 	{
 		if (this.ventCells == null)
 		{
@@ -331,7 +331,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		}
 	}
 
-	public int GetVentCell()
+		public int GetVentCell()
 	{
 		this.InitVentCells();
 		for (int i = 0; i < this.ventCells.Length; i++)
@@ -344,7 +344,7 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		return -1;
 	}
 
-	private bool ClearToVent()
+		private bool ClearToVent()
 	{
 		this.InitVentCells();
 		for (int i = 0; i < this.ventCells.Length; i++)
@@ -357,73 +357,73 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 		return false;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return new List<Descriptor>();
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private RadiationEmitter radEmitter;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ManualDeliveryKG fuelDelivery;
 
-	private MeterController temperatureMeter;
+		private MeterController temperatureMeter;
 
-	private MeterController waterMeter;
+		private MeterController waterMeter;
 
-	private Storage supplyStorage;
+		private Storage supplyStorage;
 
-	private Storage reactionStorage;
+		private Storage reactionStorage;
 
-	private Storage wasteStorage;
+		private Storage wasteStorage;
 
-	private Tag fuelTag = SimHashes.EnrichedUranium.CreateTag();
+		private Tag fuelTag = SimHashes.EnrichedUranium.CreateTag();
 
-	private Tag coolantTag = GameTags.AnyWater;
+		private Tag coolantTag = GameTags.AnyWater;
 
-	private Vector3 dumpOffset = new Vector3(0f, 5f, 0f);
+		private Vector3 dumpOffset = new Vector3(0f, 5f, 0f);
 
-	public static string MELTDOWN_STINGER = "Stinger_Loop_NuclearMeltdown";
+		public static string MELTDOWN_STINGER = "Stinger_Loop_NuclearMeltdown";
 
-	private static float meterFrameScaleHack = 3f;
+		private static float meterFrameScaleHack = 3f;
 
-	[Serialize]
+		[Serialize]
 	private float spentFuel;
 
-	private float timeSinceMeltdownEmit;
+		private float timeSinceMeltdownEmit;
 
-	private const float reactorMeltDownBonusMassAmount = 10f;
+		private const float reactorMeltDownBonusMassAmount = 10f;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private LogicPorts logicPorts;
 
-	private LogicEventHandler fuelControlPort;
+		private LogicEventHandler fuelControlPort;
 
-	private bool fuelDeliveryEnabled = true;
+		private bool fuelDeliveryEnabled = true;
 
-	public Guid refuelStausHandle;
+		public Guid refuelStausHandle;
 
-	[Serialize]
+		[Serialize]
 	public int numCyclesRunning;
 
-	private float reactionMassTarget = 60f;
+		private float reactionMassTarget = 60f;
 
-	private int[] ventCells;
+		private int[] ventCells;
 
-	public class StatesInstance : GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.GameInstance
 	{
-		public StatesInstance(Reactor smi) : base(smi)
+				public StatesInstance(Reactor smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor>
+		public class States : GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.ParamsOnly;
 			default_state = this.off;
@@ -602,57 +602,57 @@ public class Reactor : StateMachineComponent<Reactor.StatesInstance>, IGameObjec
 			}, UpdateRate.SIM_200ms, false);
 		}
 
-		public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.Signal doVent;
+				public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.Signal doVent;
 
-		public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter canVent = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter(true);
+				public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter canVent = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter(true);
 
-		public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter reactionUnderway = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter();
+				public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter reactionUnderway = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter();
 
-		public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.FloatParameter meltdownMassRemaining = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.FloatParameter(0f);
+				public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.FloatParameter meltdownMassRemaining = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.FloatParameter(0f);
 
-		public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.FloatParameter timeSinceMeltdown = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.FloatParameter(0f);
+				public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.FloatParameter timeSinceMeltdown = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.FloatParameter(0f);
 
-		public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter meltingDown = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter(false);
+				public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter meltingDown = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter(false);
 
-		public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter melted = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter(false);
+				public StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter melted = new StateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.BoolParameter(false);
 
-		public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State off;
+				public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State off;
 
-		public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State off_pre;
+				public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State off_pre;
 
-		public Reactor.States.ReactingStates on;
+				public Reactor.States.ReactingStates on;
 
-		public Reactor.States.MeltdownStates meltdown;
+				public Reactor.States.MeltdownStates meltdown;
 
-		public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State dead;
+				public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State dead;
 
-		public class ReactingStates : GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State
+				public class ReactingStates : GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State
 		{
-			public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State pre;
+						public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State pre;
 
-			public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State reacting;
+						public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State reacting;
 
-			public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State pst;
+						public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State pst;
 
-			public Reactor.States.ReactingStates.VentingStates venting;
+						public Reactor.States.ReactingStates.VentingStates venting;
 
-			public class VentingStates : GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State
+						public class VentingStates : GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State
 			{
-				public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State ventIssue;
+								public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State ventIssue;
 
-				public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State vent;
+								public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State vent;
 			}
 		}
 
-		public class MeltdownStates : GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State
+				public class MeltdownStates : GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State
 		{
-			public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State almost_pre;
+						public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State almost_pre;
 
-			public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State almost_loop;
+						public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State almost_loop;
 
-			public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State pre;
+						public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State pre;
 
-			public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State loop;
+						public GameStateMachine<Reactor.States, Reactor.StatesInstance, Reactor, object>.State loop;
 		}
 	}
 }

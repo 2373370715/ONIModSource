@@ -1,187 +1,140 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Klei.AI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CrewRationsScreen : CrewListScreen<CrewRationsEntry>
-{
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.closebutton.onClick += delegate()
-		{
-			ManagementMenu.Instance.CloseAll();
-		};
-	}
+public class CrewRationsScreen : CrewListScreen<CrewRationsEntry> {
+    [SerializeField]
+    private KButton closebutton;
 
-	protected override void OnCmpEnable()
-	{
-		base.OnCmpEnable();
-		base.RefreshCrewPortraitContent();
-		this.SortByPreviousSelected();
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        closebutton.onClick += delegate { ManagementMenu.Instance.CloseAll(); };
+    }
 
-	private void SortByPreviousSelected()
-	{
-		if (this.sortToggleGroup == null)
-		{
-			return;
-		}
-		if (this.lastSortToggle == null)
-		{
-			return;
-		}
-		for (int i = 0; i < this.ColumnTitlesContainer.childCount; i++)
-		{
-			OverviewColumnIdentity component = this.ColumnTitlesContainer.GetChild(i).GetComponent<OverviewColumnIdentity>();
-			if (this.ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>() == this.lastSortToggle)
-			{
-				if (component.columnID == "name")
-				{
-					base.SortByName(this.lastSortReversed);
-				}
-				if (component.columnID == "health")
-				{
-					this.SortByAmount("HitPoints", this.lastSortReversed);
-				}
-				if (component.columnID == "stress")
-				{
-					this.SortByAmount("Stress", this.lastSortReversed);
-				}
-				if (component.columnID == "calories")
-				{
-					this.SortByAmount("Calories", this.lastSortReversed);
-				}
-			}
-		}
-	}
+    protected override void OnCmpEnable() {
+        base.OnCmpEnable();
+        RefreshCrewPortraitContent();
+        SortByPreviousSelected();
+    }
 
-	protected override void PositionColumnTitles()
-	{
-		base.PositionColumnTitles();
-		for (int i = 0; i < this.ColumnTitlesContainer.childCount; i++)
-		{
-			OverviewColumnIdentity component = this.ColumnTitlesContainer.GetChild(i).GetComponent<OverviewColumnIdentity>();
-			if (component.Sortable)
-			{
-				Toggle toggle = this.ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>();
-				toggle.group = this.sortToggleGroup;
-				ImageToggleState toggleImage = toggle.GetComponentInChildren<ImageToggleState>(true);
-				if (component.columnID == "name")
-				{
-					toggle.onValueChanged.AddListener(delegate(bool value)
-					{
-						this.SortByName(!toggle.isOn);
-						this.lastSortToggle = toggle;
-						this.lastSortReversed = !toggle.isOn;
-						this.ResetSortToggles(toggle);
-						if (toggle.isOn)
-						{
-							toggleImage.SetActive();
-							return;
-						}
-						toggleImage.SetInactive();
-					});
-				}
-				if (component.columnID == "health")
-				{
-					toggle.onValueChanged.AddListener(delegate(bool value)
-					{
-						this.SortByAmount("HitPoints", !toggle.isOn);
-						this.lastSortToggle = toggle;
-						this.lastSortReversed = !toggle.isOn;
-						this.ResetSortToggles(toggle);
-						if (toggle.isOn)
-						{
-							toggleImage.SetActive();
-							return;
-						}
-						toggleImage.SetInactive();
-					});
-				}
-				if (component.columnID == "stress")
-				{
-					toggle.onValueChanged.AddListener(delegate(bool value)
-					{
-						this.SortByAmount("Stress", !toggle.isOn);
-						this.lastSortToggle = toggle;
-						this.lastSortReversed = !toggle.isOn;
-						this.ResetSortToggles(toggle);
-						if (toggle.isOn)
-						{
-							toggleImage.SetActive();
-							return;
-						}
-						toggleImage.SetInactive();
-					});
-				}
-				if (component.columnID == "calories")
-				{
-					toggle.onValueChanged.AddListener(delegate(bool value)
-					{
-						this.SortByAmount("Calories", !toggle.isOn);
-						this.lastSortToggle = toggle;
-						this.lastSortReversed = !toggle.isOn;
-						this.ResetSortToggles(toggle);
-						if (toggle.isOn)
-						{
-							toggleImage.SetActive();
-							return;
-						}
-						toggleImage.SetInactive();
-					});
-				}
-			}
-		}
-	}
+    private void SortByPreviousSelected() {
+        if (sortToggleGroup == null) return;
 
-	protected override void SpawnEntries()
-	{
-		base.SpawnEntries();
-		foreach (MinionIdentity identity in Components.LiveMinionIdentities.Items)
-		{
-			CrewRationsEntry component = Util.KInstantiateUI(this.Prefab_CrewEntry, this.EntriesPanelTransform.gameObject, false).GetComponent<CrewRationsEntry>();
-			component.Populate(identity);
-			this.EntryObjects.Add(component);
-		}
-		this.SortByPreviousSelected();
-	}
+        if (lastSortToggle == null) return;
 
-	public override void ScreenUpdate(bool topLevel)
-	{
-		base.ScreenUpdate(topLevel);
-		foreach (CrewRationsEntry crewRationsEntry in this.EntryObjects)
-		{
-			crewRationsEntry.Refresh();
-		}
-	}
+        for (var i = 0; i < ColumnTitlesContainer.childCount; i++) {
+            var component = ColumnTitlesContainer.GetChild(i).GetComponent<OverviewColumnIdentity>();
+            if (ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>() == lastSortToggle) {
+                if (component.columnID == "name") SortByName(lastSortReversed);
+                if (component.columnID == "health") SortByAmount("HitPoints",  lastSortReversed);
+                if (component.columnID == "stress") SortByAmount("Stress",     lastSortReversed);
+                if (component.columnID == "calories") SortByAmount("Calories", lastSortReversed);
+            }
+        }
+    }
 
-	private void SortByAmount(string amount_id, bool reverse)
-	{
-		List<CrewRationsEntry> list = new List<CrewRationsEntry>(this.EntryObjects);
-		list.Sort(delegate(CrewRationsEntry a, CrewRationsEntry b)
-		{
-			float value = a.Identity.GetAmounts().GetValue(amount_id);
-			float value2 = b.Identity.GetAmounts().GetValue(amount_id);
-			return value.CompareTo(value2);
-		});
-		base.ReorderEntries(list, reverse);
-	}
+    protected override void PositionColumnTitles() {
+        base.PositionColumnTitles();
+        for (var i = 0; i < ColumnTitlesContainer.childCount; i++) {
+            var component = ColumnTitlesContainer.GetChild(i).GetComponent<OverviewColumnIdentity>();
+            if (component.Sortable) {
+                var toggle = ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>();
+                toggle.group = sortToggleGroup;
+                var toggleImage = toggle.GetComponentInChildren<ImageToggleState>(true);
+                if (component.columnID == "name")
+                    toggle.onValueChanged.AddListener(delegate {
+                                                          SortByName(!toggle.isOn);
+                                                          lastSortToggle   = toggle;
+                                                          lastSortReversed = !toggle.isOn;
+                                                          ResetSortToggles(toggle);
+                                                          if (toggle.isOn) {
+                                                              toggleImage.SetActive();
+                                                              return;
+                                                          }
 
-	private void ResetSortToggles(Toggle exceptToggle)
-	{
-		for (int i = 0; i < this.ColumnTitlesContainer.childCount; i++)
-		{
-			Toggle component = this.ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>();
-			ImageToggleState componentInChildren = component.GetComponentInChildren<ImageToggleState>(true);
-			if (component != exceptToggle)
-			{
-				componentInChildren.SetDisabled();
-			}
-		}
-	}
+                                                          toggleImage.SetInactive();
+                                                      });
 
-	[SerializeField]
-	private KButton closebutton;
+                if (component.columnID == "health")
+                    toggle.onValueChanged.AddListener(delegate {
+                                                          SortByAmount("HitPoints", !toggle.isOn);
+                                                          lastSortToggle   = toggle;
+                                                          lastSortReversed = !toggle.isOn;
+                                                          ResetSortToggles(toggle);
+                                                          if (toggle.isOn) {
+                                                              toggleImage.SetActive();
+                                                              return;
+                                                          }
+
+                                                          toggleImage.SetInactive();
+                                                      });
+
+                if (component.columnID == "stress")
+                    toggle.onValueChanged.AddListener(delegate {
+                                                          SortByAmount("Stress", !toggle.isOn);
+                                                          lastSortToggle   = toggle;
+                                                          lastSortReversed = !toggle.isOn;
+                                                          ResetSortToggles(toggle);
+                                                          if (toggle.isOn) {
+                                                              toggleImage.SetActive();
+                                                              return;
+                                                          }
+
+                                                          toggleImage.SetInactive();
+                                                      });
+
+                if (component.columnID == "calories")
+                    toggle.onValueChanged.AddListener(delegate {
+                                                          SortByAmount("Calories", !toggle.isOn);
+                                                          lastSortToggle   = toggle;
+                                                          lastSortReversed = !toggle.isOn;
+                                                          ResetSortToggles(toggle);
+                                                          if (toggle.isOn) {
+                                                              toggleImage.SetActive();
+                                                              return;
+                                                          }
+
+                                                          toggleImage.SetInactive();
+                                                      });
+            }
+        }
+    }
+
+    protected override void SpawnEntries() {
+        base.SpawnEntries();
+        foreach (var identity in Components.LiveMinionIdentities.Items) {
+            var component = Util.KInstantiateUI(Prefab_CrewEntry, EntriesPanelTransform.gameObject)
+                                .GetComponent<CrewRationsEntry>();
+
+            component.Populate(identity);
+            EntryObjects.Add(component);
+        }
+
+        SortByPreviousSelected();
+    }
+
+    public override void ScreenUpdate(bool topLevel) {
+        base.ScreenUpdate(topLevel);
+        foreach (var crewRationsEntry in EntryObjects) crewRationsEntry.Refresh();
+    }
+
+    private void SortByAmount(string amount_id, bool reverse) {
+        var list = new List<CrewRationsEntry>(EntryObjects);
+        list.Sort(delegate(CrewRationsEntry a, CrewRationsEntry b) {
+                      var value  = a.Identity.GetAmounts().GetValue(amount_id);
+                      var value2 = b.Identity.GetAmounts().GetValue(amount_id);
+                      return value.CompareTo(value2);
+                  });
+
+        ReorderEntries(list, reverse);
+    }
+
+    private void ResetSortToggles(Toggle exceptToggle) {
+        for (var i = 0; i < ColumnTitlesContainer.childCount; i++) {
+            var component           = ColumnTitlesContainer.GetChild(i).GetComponent<Toggle>();
+            var componentInChildren = component.GetComponentInChildren<ImageToggleState>(true);
+            if (component != exceptToggle) componentInChildren.SetDisabled();
+        }
+    }
 }

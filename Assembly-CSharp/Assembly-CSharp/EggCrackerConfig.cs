@@ -5,7 +5,7 @@ using UnityEngine;
 [EntityConfigOrder(2)]
 public class EggCrackerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "EggCracker";
 		int width = 2;
@@ -26,7 +26,7 @@ public class EggCrackerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -48,10 +48,10 @@ public class EggCrackerConfig : IBuildingConfig
 		go.AddOrGet<EggCracker>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 	}
 
-	public const string ID = "EggCracker";
+		public const string ID = "EggCracker";
 }

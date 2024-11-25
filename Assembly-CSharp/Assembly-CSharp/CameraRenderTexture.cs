@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class CameraRenderTexture : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		this.material = new Material(Shader.Find("Klei/PostFX/CameraRenderTexture"));
 	}
 
-	private void Start()
+		private void Start()
 	{
 		if (ScreenResize.Instance != null)
 		{
@@ -18,7 +18,7 @@ public class CameraRenderTexture : MonoBehaviour
 		this.OnResize();
 	}
 
-	private void OnResize()
+		private void OnResize()
 	{
 		if (this.resultTexture != null)
 		{
@@ -34,24 +34,24 @@ public class CameraRenderTexture : MonoBehaviour
 		}
 	}
 
-	private void OnRenderImage(RenderTexture source, RenderTexture dest)
+		private void OnRenderImage(RenderTexture source, RenderTexture dest)
 	{
 		Graphics.Blit(source, this.resultTexture, this.material);
 	}
 
-	public RenderTexture GetTexture()
+		public RenderTexture GetTexture()
 	{
 		return this.resultTexture;
 	}
 
-	public bool ShouldFlip()
+		public bool ShouldFlip()
 	{
 		return false;
 	}
 
-	public string TextureName;
+		public string TextureName;
 
-	private RenderTexture resultTexture;
+		private RenderTexture resultTexture;
 
-	private Material material;
+		private Material material;
 }

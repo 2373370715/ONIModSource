@@ -4,13 +4,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FogOfWarMask")]
 public class FogOfWarMask : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Grid.OnReveal = (Action<int>)Delegate.Combine(Grid.OnReveal, new Action<int>(this.OnReveal));
 	}
 
-	private void OnReveal(int cell)
+		private void OnReveal(int cell)
 	{
 		if (Grid.PosToCell(this) == cell)
 		{
@@ -19,7 +19,7 @@ public class FogOfWarMask : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		GameUtil.FloodCollectCells(Grid.PosToCell(this), delegate(int cell)
@@ -46,7 +46,7 @@ public class FogOfWarMask : KMonoBehaviour
 		}, 300, null, true);
 	}
 
-	public static void ClearMask(int cell)
+		public static void ClearMask(int cell)
 	{
 		if (Grid.PreventFogOfWarReveal[cell])
 		{
@@ -54,7 +54,7 @@ public class FogOfWarMask : KMonoBehaviour
 		}
 	}
 
-	public static bool RevealFogOfWarMask(int cell)
+		public static bool RevealFogOfWarMask(int cell)
 	{
 		bool flag = Grid.PreventFogOfWarReveal[cell];
 		if (flag)

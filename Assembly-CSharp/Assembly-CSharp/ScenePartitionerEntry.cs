@@ -2,7 +2,7 @@
 
 public class ScenePartitionerEntry
 {
-	public ScenePartitionerEntry(string name, object obj, int x, int y, int width, int height, ScenePartitionerLayer layer, ScenePartitioner partitioner, Action<object> event_callback)
+		public ScenePartitionerEntry(string name, object obj, int x, int y, int width, int height, ScenePartitionerLayer layer, ScenePartitioner partitioner, Action<object> event_callback)
 	{
 		if (x < 0 || y < 0 || width >= 0)
 		{
@@ -17,17 +17,17 @@ public class ScenePartitionerEntry
 		this.obj = obj;
 	}
 
-	public void UpdatePosition(int x, int y)
+		public void UpdatePosition(int x, int y)
 	{
 		this.partitioner.UpdatePosition(x, y, this);
 	}
 
-	public void UpdatePosition(Extents e)
+		public void UpdatePosition(Extents e)
 	{
 		this.partitioner.UpdatePosition(e, this);
 	}
 
-	public void Release()
+		public void Release()
 	{
 		if (this.partitioner != null)
 		{
@@ -35,21 +35,21 @@ public class ScenePartitionerEntry
 		}
 	}
 
-	public int x;
+		public int x;
 
-	public int y;
+		public int y;
 
-	public int width;
+		public int width;
 
-	public int height;
+		public int height;
 
-	public int layer;
+		public int layer;
 
-	public int queryId;
+		public int queryId;
 
-	public ScenePartitioner partitioner;
+		public ScenePartitioner partitioner;
 
-	public Action<object> eventCallback;
+		public Action<object> eventCallback;
 
-	public object obj;
+		public object obj;
 }

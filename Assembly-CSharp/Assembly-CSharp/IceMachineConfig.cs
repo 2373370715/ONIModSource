@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class IceMachineConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "IceMachine";
 		int width = 2;
@@ -27,7 +27,7 @@ public class IceMachineConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
@@ -55,31 +55,31 @@ public class IceMachineConfig : IBuildingConfig
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.MachineFetch.IdHash;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "IceMachine";
+		public const string ID = "IceMachine";
 
-	private const float WATER_STORAGE = 60f;
+		private const float WATER_STORAGE = 60f;
 
-	private const float ICE_STORAGE = 300f;
+		private const float ICE_STORAGE = 300f;
 
-	private const float WATER_INPUT_RATE = 0.5f;
+		private const float WATER_INPUT_RATE = 0.5f;
 
-	private const float ICE_OUTPUT_RATE = 0.5f;
+		private const float ICE_OUTPUT_RATE = 0.5f;
 
-	private const float ICE_PER_LOAD = 30f;
+		private const float ICE_PER_LOAD = 30f;
 
-	private const float TARGET_ICE_TEMP = 253.15f;
+		private const float TARGET_ICE_TEMP = 253.15f;
 
-	private const float KDTU_TRANSFER_RATE = 80f;
+		private const float KDTU_TRANSFER_RATE = 80f;
 
-	private const float THERMAL_CONSERVATION = 0.2f;
+		private const float THERMAL_CONSERVATION = 0.2f;
 
-	private float energyConsumption = 240f;
+		private float energyConsumption = 240f;
 
-	public static Tag[] ELEMENT_OPTIONS = new Tag[]
+		public static Tag[] ELEMENT_OPTIONS = new Tag[]
 	{
 		SimHashes.Ice.CreateTag(),
 		SimHashes.Snow.CreateTag()

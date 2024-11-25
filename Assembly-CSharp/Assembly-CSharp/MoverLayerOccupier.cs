@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/AntiCluster")]
 public class MoverLayerOccupier : KMonoBehaviour, ISim200ms
 {
-	private void RefreshCellOccupy()
+		private void RefreshCellOccupy()
 	{
 		int cell = Grid.PosToCell(this);
 		foreach (CellOffset offset in this.cellOffsets)
@@ -23,12 +23,12 @@ public class MoverLayerOccupier : KMonoBehaviour, ISim200ms
 		this.previousCell = cell;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		this.RefreshCellOccupy();
 	}
 
-	private void UpdateCell(int previous_cell, int current_cell)
+		private void UpdateCell(int previous_cell, int current_cell)
 	{
 		foreach (ObjectLayer layer in this.objectLayers)
 		{
@@ -53,7 +53,7 @@ public class MoverLayerOccupier : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	private void CleanUpOccupiedCells()
+		private void CleanUpOccupiedCells()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		foreach (CellOffset offset in this.cellOffsets)
@@ -69,21 +69,21 @@ public class MoverLayerOccupier : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.RefreshCellOccupy();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.CleanUpOccupiedCells();
 		base.OnCleanUp();
 	}
 
-	private int previousCell = Grid.InvalidCell;
+		private int previousCell = Grid.InvalidCell;
 
-	public ObjectLayer[] objectLayers;
+		public ObjectLayer[] objectLayers;
 
-	public CellOffset[] cellOffsets;
+		public CellOffset[] cellOffsets;
 }

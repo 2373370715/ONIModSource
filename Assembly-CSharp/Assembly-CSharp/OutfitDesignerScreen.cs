@@ -10,15 +10,15 @@ using UnityEngine.UI;
 
 public class OutfitDesignerScreen : KMonoBehaviour
 {
-			public OutfitDesignerScreenConfig Config { get; private set; }
+				public OutfitDesignerScreenConfig Config { get; private set; }
 
-			public PermitResource SelectedPermit { get; private set; }
+				public PermitResource SelectedPermit { get; private set; }
 
-			public PermitCategory SelectedCategory { get; private set; }
+				public PermitCategory SelectedCategory { get; private set; }
 
-			public OutfitDesignerScreen_OutfitState outfitState { get; private set; }
+				public OutfitDesignerScreen_OutfitState outfitState { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		global::Debug.Assert(this.categoryRowPrefab.transform.parent == this.categoryListContent.transform);
@@ -46,12 +46,12 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		InventoryOrganization.Initialize();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.galleryGridLayouter.CheckIfShouldResizeGrid();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.postponeConfiguration = false;
 		this.minionOrMannequin.TrySpawn();
@@ -62,7 +62,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		this.Configure(this.Config);
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		KleiItemsStatusRefresher.AddOrGetListener(this).OnRefreshUI(delegate
@@ -73,13 +73,13 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		});
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		this.UnregisterPreventScreenPop();
 	}
 
-	private void UpdateSaveButtons()
+		private void UpdateSaveButtons()
 	{
 		if (this.updateSaveButtonsFn != null)
 		{
@@ -87,7 +87,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		}
 	}
 
-	public void Configure(OutfitDesignerScreenConfig config)
+		public void Configure(OutfitDesignerScreenConfig config)
 	{
 		this.Config = config;
 		if (config.targetMinionInstance.HasValue)
@@ -228,14 +228,14 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		this.UpdateSaveButtons();
 	}
 
-	private void RefreshOutfitState()
+		private void RefreshOutfitState()
 	{
 		this.selectionHeaderLabel.text = this.outfitState.name;
 		this.outfitDescriptionPanel.Refresh(this.outfitState, this.Config.minionPersonality);
 		this.UpdateSaveButtons();
 	}
 
-	private void RefreshCategories()
+		private void RefreshCategories()
 	{
 		if (this.RefreshCategoriesFn != null)
 		{
@@ -243,7 +243,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		}
 	}
 
-	public void PopulateCategories()
+		public void PopulateCategories()
 	{
 		this.RefreshCategoriesFn = null;
 		this.categoryRowPool.ReturnAll();
@@ -272,7 +272,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		}
 	}
 
-	public void SelectCategory(PermitCategory permitCategory)
+		public void SelectCategory(PermitCategory permitCategory)
 	{
 		this.SelectedCategory = permitCategory;
 		this.galleryHeaderLabel.text = PermitCategories.GetDisplayName(permitCategory);
@@ -287,7 +287,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		this.SelectPermit(null);
 	}
 
-	private void RefreshGallery()
+		private void RefreshGallery()
 	{
 		if (this.RefreshGalleryFn != null)
 		{
@@ -295,7 +295,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		}
 	}
 
-	public void PopulateGallery()
+		public void PopulateGallery()
 	{
 		OutfitDesignerScreen.<>c__DisplayClass51_0 CS$<>8__locals1 = new OutfitDesignerScreen.<>c__DisplayClass51_0();
 		CS$<>8__locals1.<>4__this = this;
@@ -333,7 +333,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		this.RefreshGallery();
 	}
 
-	public void SelectPermit(PermitResource permit)
+		public void SelectPermit(PermitResource permit)
 	{
 		this.SelectedPermit = permit;
 		this.RefreshGallery();
@@ -341,7 +341,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		this.UpdateSaveButtons();
 	}
 
-	public void UpdateSelectedItemDetails()
+		public void UpdateSelectedItemDetails()
 	{
 		Option<ClothingItemResource> item = Option.None;
 		if (this.SelectedPermit != null)
@@ -359,7 +359,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		this.dioramaBG.sprite = KleiPermitDioramaVis.GetDioramaBackground(this.SelectedCategory);
 	}
 
-	private void RegisterPreventScreenPop()
+		private void RegisterPreventScreenPop()
 	{
 		this.UnregisterPreventScreenPop();
 		this.preventScreenPopFn = delegate()
@@ -379,7 +379,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		LockerNavigator.Instance.preventScreenPop.Add(this.preventScreenPopFn);
 	}
 
-	private void UnregisterPreventScreenPop()
+		private void UnregisterPreventScreenPop()
 	{
 		if (this.preventScreenPopFn != null)
 		{
@@ -388,7 +388,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		}
 	}
 
-	public static void MakeSaveWarningPopup(OutfitDesignerScreen_OutfitState outfitState, System.Action discardChangesFn)
+		public static void MakeSaveWarningPopup(OutfitDesignerScreen_OutfitState outfitState, System.Action discardChangesFn)
 	{
 		Action<InfoDialogScreen> <>9__1;
 		LockerNavigator.Instance.ShowDialogPopup(delegate(InfoDialogScreen dialog)
@@ -411,7 +411,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		});
 	}
 
-	public static void MakeApplyToTemplatePopup(KInputTextField inputFieldPrefab, OutfitDesignerScreen_OutfitState outfitState, GameObject targetMinionInstance, Option<ClothingOutfitTarget> existingOutfitTemplate, Action<ClothingOutfitTarget> onWriteToOutfitTargetFn)
+		public static void MakeApplyToTemplatePopup(KInputTextField inputFieldPrefab, OutfitDesignerScreen_OutfitState outfitState, GameObject targetMinionInstance, Option<ClothingOutfitTarget> existingOutfitTemplate, Action<ClothingOutfitTarget> onWriteToOutfitTargetFn)
 	{
 		ClothingOutfitNameProposal proposal = default(ClothingOutfitNameProposal);
 		Color errorTextColor = Util.ColorFromHex("F44A47");
@@ -471,7 +471,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		});
 	}
 
-	public static void MakeCopyPopup(OutfitDesignerScreen screen, KInputTextField inputFieldPrefab, OutfitDesignerScreen_OutfitState outfitState, ClothingOutfitTarget outfitTemplate, Option<Personality> minionPersonality, Action<ClothingOutfitTarget> onWriteToOutfitTargetFn)
+		public static void MakeCopyPopup(OutfitDesignerScreen screen, KInputTextField inputFieldPrefab, OutfitDesignerScreen_OutfitState outfitState, ClothingOutfitTarget outfitTemplate, Option<Personality> minionPersonality, Action<ClothingOutfitTarget> onWriteToOutfitTargetFn)
 	{
 		ClothingOutfitNameProposal proposal = default(ClothingOutfitNameProposal);
 		KInputTextField inputField;
@@ -517,13 +517,13 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		});
 	}
 
-	private void SetCatogoryClickUISound(PermitCategory category, MultiToggle toggle)
+		private void SetCatogoryClickUISound(PermitCategory category, MultiToggle toggle)
 	{
 		toggle.states[1].on_click_override_sound_path = category.ToString() + "_Click";
 		toggle.states[0].on_click_override_sound_path = category.ToString() + "_Click";
 	}
 
-	private void SetItemClickUISound(PermitResource permit, MultiToggle toggle)
+		private void SetItemClickUISound(PermitResource permit, MultiToggle toggle)
 	{
 		if (permit == null)
 		{
@@ -542,7 +542,7 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		toggle.states[0].has_sound_parameter = true;
 	}
 
-	public static string GetClothingItemSoundName(PermitResource permit)
+		public static string GetClothingItemSoundName(PermitResource permit)
 	{
 		if (permit == null)
 		{
@@ -565,77 +565,77 @@ public class OutfitDesignerScreen : KMonoBehaviour
 		}
 	}
 
-	private void OnMouseOverToggle()
+		private void OnMouseOverToggle()
 	{
 		KFMOD.PlayUISound(GlobalAssets.GetSound("HUD_Mouseover", false));
 	}
 
-	[Header("CategoryColumn")]
+		[Header("CategoryColumn")]
 	[SerializeField]
 	private RectTransform categoryListContent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject categoryRowPrefab;
 
-	private UIPrefabLocalPool categoryRowPool;
+		private UIPrefabLocalPool categoryRowPool;
 
-	[Header("ItemGalleryColumn")]
+		[Header("ItemGalleryColumn")]
 	[SerializeField]
 	private LocText galleryHeaderLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform galleryGridContent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject subcategoryUiPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject gridItemPrefab;
 
-	private UIPrefabLocalPool subcategoryUiPool;
+		private UIPrefabLocalPool subcategoryUiPool;
 
-	private UIPrefabLocalPool galleryGridItemPool;
+		private UIPrefabLocalPool galleryGridItemPool;
 
-	private GridLayouter galleryGridLayouter;
+		private GridLayouter galleryGridLayouter;
 
-	[Header("SelectionDetailsColumn")]
+		[Header("SelectionDetailsColumn")]
 	[SerializeField]
 	private LocText selectionHeaderLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private UIMinionOrMannequin minionOrMannequin;
 
-	[SerializeField]
+		[SerializeField]
 	private Image dioramaBG;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton primaryButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton secondaryButton;
 
-	[SerializeField]
+		[SerializeField]
 	private OutfitDescriptionPanel outfitDescriptionPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private KInputTextField inputFieldPrefab;
 
-	public static Dictionary<ClothingOutfitUtility.OutfitType, PermitCategory[]> outfitTypeToCategoriesDict;
+		public static Dictionary<ClothingOutfitUtility.OutfitType, PermitCategory[]> outfitTypeToCategoriesDict;
 
-	private bool postponeConfiguration = true;
+		private bool postponeConfiguration = true;
 
-	private System.Action updateSaveButtonsFn;
+		private System.Action updateSaveButtonsFn;
 
-	private System.Action RefreshCategoriesFn;
+		private System.Action RefreshCategoriesFn;
 
-	private System.Action RefreshGalleryFn;
+		private System.Action RefreshGalleryFn;
 
-	private Func<bool> preventScreenPopFn;
+		private Func<bool> preventScreenPopFn;
 
-	private enum MultiToggleState
+		private enum MultiToggleState
 	{
-		Default,
-		Selected,
-		NonInteractable
+				Default,
+				Selected,
+				NonInteractable
 	}
 }

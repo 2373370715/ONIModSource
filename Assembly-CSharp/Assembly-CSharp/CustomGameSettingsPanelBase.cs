@@ -4,20 +4,20 @@ using UnityEngine;
 
 public abstract class CustomGameSettingsPanelBase : MonoBehaviour
 {
-	public virtual void Init()
+		public virtual void Init()
 	{
 	}
 
-	public virtual void Uninit()
+		public virtual void Uninit()
 	{
 	}
 
-	private void OnEnable()
+		private void OnEnable()
 	{
 		this.isDirty = true;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.isDirty)
 		{
@@ -26,18 +26,18 @@ public abstract class CustomGameSettingsPanelBase : MonoBehaviour
 		}
 	}
 
-	protected void AddWidget(CustomGameSettingWidget widget)
+		protected void AddWidget(CustomGameSettingWidget widget)
 	{
 		widget.onSettingChanged += this.OnWidgetChanged;
 		this.widgets.Add(widget);
 	}
 
-	private void OnWidgetChanged(CustomGameSettingWidget widget)
+		private void OnWidgetChanged(CustomGameSettingWidget widget)
 	{
 		this.isDirty = true;
 	}
 
-	public virtual void Refresh()
+		public virtual void Refresh()
 	{
 		foreach (CustomGameSettingWidget customGameSettingWidget in this.widgets)
 		{
@@ -45,7 +45,7 @@ public abstract class CustomGameSettingsPanelBase : MonoBehaviour
 		}
 	}
 
-	protected List<CustomGameSettingWidget> widgets = new List<CustomGameSettingWidget>();
+		protected List<CustomGameSettingWidget> widgets = new List<CustomGameSettingWidget>();
 
-	private bool isDirty;
+		private bool isDirty;
 }

@@ -6,7 +6,7 @@ using STRINGS;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class TelescopeTarget : ClusterGridEntity
 {
-		public override string Name
+			public override string Name
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class TelescopeTarget : ClusterGridEntity
 		}
 	}
 
-		public override EntityLayer Layer
+			public override EntityLayer Layer
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class TelescopeTarget : ClusterGridEntity
 		}
 	}
 
-		public override List<ClusterGridEntity.AnimConfig> AnimConfigs
+			public override List<ClusterGridEntity.AnimConfig> AnimConfigs
 	{
 		get
 		{
@@ -37,7 +37,7 @@ public class TelescopeTarget : ClusterGridEntity
 		}
 	}
 
-		public override bool IsVisible
+			public override bool IsVisible
 	{
 		get
 		{
@@ -45,7 +45,7 @@ public class TelescopeTarget : ClusterGridEntity
 		}
 	}
 
-		public override ClusterRevealLevel IsVisibleInFOW
+			public override ClusterRevealLevel IsVisibleInFOW
 	{
 		get
 		{
@@ -53,27 +53,27 @@ public class TelescopeTarget : ClusterGridEntity
 		}
 	}
 
-	public void Init(AxialI location)
+		public void Init(AxialI location)
 	{
 		base.Location = location;
 	}
 
-	public void SetTargetMeteorShower(ClusterMapMeteorShower.Instance meteorShower)
+		public void SetTargetMeteorShower(ClusterMapMeteorShower.Instance meteorShower)
 	{
 		this.targetMeteorShower = meteorShower;
 	}
 
-	public override bool ShowName()
+		public override bool ShowName()
 	{
 		return true;
 	}
 
-	public override bool ShowProgressBar()
+		public override bool ShowProgressBar()
 	{
 		return true;
 	}
 
-	public override float GetProgress()
+		public override float GetProgress()
 	{
 		if (this.targetMeteorShower != null)
 		{
@@ -82,5 +82,5 @@ public class TelescopeTarget : ClusterGridEntity
 		return SaveGame.Instance.GetSMI<ClusterFogOfWarManager.Instance>().GetRevealCompleteFraction(base.Location);
 	}
 
-	private ClusterMapMeteorShower.Instance targetMeteorShower;
+		private ClusterMapMeteorShower.Instance targetMeteorShower;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SolidConduitOutboxConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SolidConduitOutbox";
 		int width = 1;
@@ -29,7 +29,7 @@ public class SolidConduitOutboxConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		go.AddOrGet<SolidConduitOutbox>();
@@ -41,17 +41,17 @@ public class SolidConduitOutboxConfig : IBuildingConfig
 		go.AddOrGet<SimpleVent>();
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.GetComponent<Constructable>().requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Prioritizable.AddRef(go);
 		go.AddOrGet<Automatable>();
 	}
 
-	public const string ID = "SolidConduitOutbox";
+		public const string ID = "SolidConduitOutbox";
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class BaseMoleConfig
 {
-	public static GameObject BaseMole(string id, string name, string desc, string traitId, string anim_file, bool is_baby, float warningLowTemperature, float warningHighTemperature, float lethalLowTemperature, float lethalHighTemperature, string symbolOverridePrefix = null, int on_death_drop_count = 10)
+		public static GameObject BaseMole(string id, string name, string desc, string traitId, string anim_file, bool is_baby, float warningLowTemperature, float warningHighTemperature, float lethalLowTemperature, float lethalHighTemperature, string symbolOverridePrefix = null, int on_death_drop_count = 10)
 	{
 		float mass = 25f;
 		EffectorValues none = TUNING.BUILDINGS.DECOR.NONE;
@@ -35,7 +35,7 @@ public static class BaseMoleConfig
 		return gameObject;
 	}
 
-	public static List<Diet.Info> SimpleOreDiet(List<Tag> elementTags, float caloriesPerKg, float producedConversionRate)
+		public static List<Diet.Info> SimpleOreDiet(List<Tag> elementTags, float caloriesPerKg, float producedConversionRate)
 	{
 		List<Diet.Info> list = new List<Diet.Info>();
 		foreach (Tag tag in elementTags)
@@ -43,12 +43,12 @@ public static class BaseMoleConfig
 			list.Add(new Diet.Info(new HashSet<Tag>
 			{
 				tag
-			}, tag, caloriesPerKg, producedConversionRate, null, 0f, true, false, false));
+			}, tag, caloriesPerKg, producedConversionRate, null, 0f, true, Diet.Info.FoodType.EatSolid, false, null));
 		}
 		return list;
 	}
 
-	private static HashedString CustomIdleAnim(IdleStates.Instance smi, ref HashedString pre_anim)
+		private static HashedString CustomIdleAnim(IdleStates.Instance smi, ref HashedString pre_anim)
 	{
 		if (smi.gameObject.GetComponent<Navigator>().CurrentNavType == NavType.Solid)
 		{
@@ -62,7 +62,7 @@ public static class BaseMoleConfig
 		return "idle_loop";
 	}
 
-	private static readonly string[] SolidIdleAnims = new string[]
+		private static readonly string[] SolidIdleAnims = new string[]
 	{
 		"idle1",
 		"idle2",

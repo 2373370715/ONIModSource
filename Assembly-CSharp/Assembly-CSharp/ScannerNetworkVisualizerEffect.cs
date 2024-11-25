@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class ScannerNetworkVisualizerEffect : VisualizerEffect
 {
-	protected override void SetupMaterial()
+		protected override void SetupMaterial()
 	{
 		this.material = new Material(Shader.Find("Klei/PostFX/ScannerNetwork"));
 	}
 
-	protected override void SetupOcclusionTex()
+		protected override void SetupOcclusionTex()
 	{
 		this.OcclusionTex = new Texture2D(512, 1, TextureFormat.RGFloat, false);
 		this.OcclusionTex.filterMode = FilterMode.Point;
 		this.OcclusionTex.wrapMode = TextureWrapMode.Clamp;
 	}
 
-	protected override void OnPostRender()
+		protected override void OnPostRender()
 	{
 		ScannerNetworkVisualizer scannerNetworkVisualizer = null;
 		if (SelectTool.Instance.selected != null)
@@ -117,7 +117,7 @@ public class ScannerNetworkVisualizerEffect : VisualizerEffect
 		}
 	}
 
-	private static void ComputeVisibility(ScannerNetworkVisualizer scan, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max, ref int visible_column_count)
+		private static void ComputeVisibility(ScannerNetworkVisualizer scan, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max, ref int visible_column_count)
 	{
 		Vector2I u = Grid.PosToXY(scan.transform.GetPosition());
 		int rangeMin = scan.RangeMin;
@@ -147,7 +147,7 @@ public class ScannerNetworkVisualizerEffect : VisualizerEffect
 		}
 	}
 
-	private static void ComputeVisibility(int x_abs, int y_abs, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max, ref bool visible)
+		private static void ComputeVisibility(int x_abs, int y_abs, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max, ref bool visible)
 	{
 		int num = x_abs - world_min.x;
 		if (x_abs < world_min.x || x_abs > world_max.x || y_abs < world_min.y || y_abs >= world_max.y)
@@ -173,7 +173,7 @@ public class ScannerNetworkVisualizerEffect : VisualizerEffect
 		pixels[2 * num + 1] = (float)(y_abs + 1);
 	}
 
-	private static void FindWorldBounds(out Vector2I world_min, out Vector2I world_max)
+		private static void FindWorldBounds(out Vector2I world_min, out Vector2I world_max)
 	{
 		if (ClusterManager.Instance != null)
 		{
@@ -188,14 +188,14 @@ public class ScannerNetworkVisualizerEffect : VisualizerEffect
 		world_max.y = Grid.HeightInCells;
 	}
 
-	private static bool HasSkyVisibility(int cell)
+		private static bool HasSkyVisibility(int cell)
 	{
 		return Grid.ExposedToSunlight[cell] >= 1;
 	}
 
-	public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
+		public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
 
-	public Color highlightColor2 = new Color(1f, 0.32f, 0f, 1f);
+		public Color highlightColor2 = new Color(1f, 0.32f, 0f, 1f);
 
-	private int LastVisibleColumnCount;
+		private int LastVisibleColumnCount;
 }

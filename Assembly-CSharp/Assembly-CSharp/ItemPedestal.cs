@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ItemPedestal")]
 public class ItemPedestal : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<ItemPedestal>(-731304873, ItemPedestal.OnOccupantChangedDelegate);
@@ -22,7 +22,7 @@ public class ItemPedestal : KMonoBehaviour
 		}
 	}
 
-	private void OnOccupantChanged(object data)
+		private void OnOccupantChanged(object data)
 	{
 		Attributes attributes = this.GetAttributes();
 		if (this.decorModifier != null)
@@ -51,23 +51,23 @@ public class ItemPedestal : KMonoBehaviour
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	protected SingleEntityReceptacle receptacle;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private DecorProvider decorProvider;
 
-	private const float MINIMUM_DECOR = 5f;
+		private const float MINIMUM_DECOR = 5f;
 
-	private const float STORED_DECOR_MODIFIER = 2f;
+		private const float STORED_DECOR_MODIFIER = 2f;
 
-	private const int RADIUS_BONUS = 2;
+		private const int RADIUS_BONUS = 2;
 
-	private AttributeModifier decorModifier;
+		private AttributeModifier decorModifier;
 
-	private AttributeModifier decorRadiusModifier;
+		private AttributeModifier decorRadiusModifier;
 
-	private static readonly EventSystem.IntraObjectHandler<ItemPedestal> OnOccupantChangedDelegate = new EventSystem.IntraObjectHandler<ItemPedestal>(delegate(ItemPedestal component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ItemPedestal> OnOccupantChangedDelegate = new EventSystem.IntraObjectHandler<ItemPedestal>(delegate(ItemPedestal component, object data)
 	{
 		component.OnOccupantChanged(data);
 	});

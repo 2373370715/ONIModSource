@@ -8,7 +8,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectEffectDescriptor
 {
-			public KPrefabID plant
+				public KPrefabID plant
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-		public bool ValidPlant
+			public bool ValidPlant
 	{
 		get
 		{
@@ -28,7 +28,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-		public bool AcceptsFertilizer
+			public bool AcceptsFertilizer
 	{
 		get
 		{
@@ -36,7 +36,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-		public bool AcceptsIrrigation
+			public bool AcceptsIrrigation
 	{
 		get
 		{
@@ -44,7 +44,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (!DlcManager.FeaturePlantMutationsEnabled())
@@ -58,7 +58,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.choreType = Db.Get().ChoreTypes.FarmFetch;
@@ -84,7 +84,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		PlantablePlot component = ((GameObject)data).GetComponent<PlantablePlot>();
 		if (component != null)
@@ -121,7 +121,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-	public override void CreateOrder(Tag entityTag, Tag additionalFilterTag)
+		public override void CreateOrder(Tag entityTag, Tag additionalFilterTag)
 	{
 		this.SetPreview(entityTag, false);
 		if (this.ValidPlant)
@@ -132,7 +132,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		this.SetPreview(Tag.Invalid, false);
 	}
 
-	private void SyncPriority(PrioritySetting priority)
+		private void SyncPriority(PrioritySetting priority)
 	{
 		Prioritizable component = base.GetComponent<Prioritizable>();
 		if (!object.Equals(component.GetMasterPriority(), priority))
@@ -149,7 +149,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (this.plant != null)
 		{
@@ -162,13 +162,13 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		component.onPriorityChanged = (Action<PrioritySetting>)Delegate.Combine(component.onPriorityChanged, new Action<PrioritySetting>(this.SyncPriority));
 	}
 
-	public void SetFertilizationFlags(bool fertilizer, bool liquid_piping)
+		public void SetFertilizationFlags(bool fertilizer, bool liquid_piping)
 	{
 		this.accepts_fertilizer = fertilizer;
 		this.has_liquid_pipe_input = liquid_piping;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (this.plantPreview != null)
@@ -182,7 +182,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		Components.PlantablePlots.Remove(base.gameObject.GetMyWorldId(), this);
 	}
 
-	protected override GameObject SpawnOccupyingObject(GameObject depositedEntity)
+		protected override GameObject SpawnOccupyingObject(GameObject depositedEntity)
 	{
 		PlantableSeed component = depositedEntity.GetComponent<PlantableSeed>();
 		if (component != null)
@@ -202,7 +202,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		return depositedEntity;
 	}
 
-	protected override void ConfigureOccupyingObject(GameObject newPlant)
+		protected override void ConfigureOccupyingObject(GameObject newPlant)
 	{
 		KPrefabID component = newPlant.GetComponent<KPrefabID>();
 		this.plantRef.Set(component);
@@ -226,7 +226,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-	public void ReplacePlant(GameObject plant, bool keepStorage)
+		public void ReplacePlant(GameObject plant, bool keepStorage)
 	{
 		if (keepStorage)
 		{
@@ -236,7 +236,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		base.ForceDeposit(plant);
 	}
 
-	protected override void PositionOccupyingObject()
+		protected override void PositionOccupyingObject()
 	{
 		base.PositionOccupyingObject();
 		KBatchedAnimController component = base.occupyingObject.GetComponent<KBatchedAnimController>();
@@ -244,7 +244,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		this.OffsetAnim(component, this.occupyingObjectVisualOffset);
 	}
 
-	private void RegisterWithPlant(GameObject plant)
+		private void RegisterWithPlant(GameObject plant)
 	{
 		base.occupyingObject = plant;
 		ReceptacleMonitor component = plant.GetComponent<ReceptacleMonitor>();
@@ -259,7 +259,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		plant.Trigger(1309017699, this.storage);
 	}
 
-	protected override void SubscribeToOccupant()
+		protected override void SubscribeToOccupant()
 	{
 		base.SubscribeToOccupant();
 		if (base.occupyingObject != null)
@@ -268,7 +268,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-	protected override void UnsubscribeFromOccupant()
+		protected override void UnsubscribeFromOccupant()
 	{
 		base.UnsubscribeFromOccupant();
 		if (base.occupyingObject != null)
@@ -277,14 +277,14 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-	private void OnOccupantUprooted(object data)
+		private void OnOccupantUprooted(object data)
 	{
 		this.autoReplaceEntity = false;
 		this.requestedEntityTag = Tag.Invalid;
 		this.requestedEntityAdditionalFilterTag = Tag.Invalid;
 	}
 
-	public override void OrderRemoveOccupant()
+		public override void OrderRemoveOccupant()
 	{
 		if (base.Occupant == null)
 		{
@@ -298,7 +298,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		component.MarkForUproot(true);
 	}
 
-	public override void SetPreview(Tag entityTag, bool solid = false)
+		public override void SetPreview(Tag entityTag, bool solid = false)
 	{
 		PlantableSeed plantableSeed = null;
 		if (entityTag.IsValid)
@@ -363,7 +363,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-	private void OffsetAnim(KBatchedAnimController kanim, Vector3 offset)
+		private void OffsetAnim(KBatchedAnimController kanim, Vector3 offset)
 	{
 		if (this.rotatable != null)
 		{
@@ -372,7 +372,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		kanim.Offset = offset;
 	}
 
-	private void OnValidChanged(object obj)
+		private void OnValidChanged(object obj)
 	{
 		base.Trigger(-1820564715, obj);
 		if (!this.plantPreview.Valid && base.GetActiveRequest != null)
@@ -381,7 +381,7 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		}
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Descriptor item = default(Descriptor);
@@ -390,35 +390,35 @@ public class PlantablePlot : SingleEntityReceptacle, ISaveLoadable, IGameObjectE
 		return list;
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	public Tag tagOnPlanted = Tag.Invalid;
+		public Tag tagOnPlanted = Tag.Invalid;
 
-	[Serialize]
+		[Serialize]
 	private Ref<KPrefabID> plantRef;
 
-	public Vector3 occupyingObjectVisualOffset = Vector3.zero;
+		public Vector3 occupyingObjectVisualOffset = Vector3.zero;
 
-	public Grid.SceneLayer plantLayer = Grid.SceneLayer.BuildingBack;
+		public Grid.SceneLayer plantLayer = Grid.SceneLayer.BuildingBack;
 
-	private EntityPreview plantPreview;
+		private EntityPreview plantPreview;
 
-	[SerializeField]
+		[SerializeField]
 	private bool accepts_fertilizer;
 
-	[SerializeField]
+		[SerializeField]
 	private bool accepts_irrigation = true;
 
-	[SerializeField]
+		[SerializeField]
 	public bool has_liquid_pipe_input;
 
-	private static readonly EventSystem.IntraObjectHandler<PlantablePlot> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<PlantablePlot>(delegate(PlantablePlot component, object data)
+		private static readonly EventSystem.IntraObjectHandler<PlantablePlot> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<PlantablePlot>(delegate(PlantablePlot component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<PlantablePlot> OnUpdateRoomDelegate = new EventSystem.IntraObjectHandler<PlantablePlot>(delegate(PlantablePlot component, object data)
+		private static readonly EventSystem.IntraObjectHandler<PlantablePlot> OnUpdateRoomDelegate = new EventSystem.IntraObjectHandler<PlantablePlot>(delegate(PlantablePlot component, object data)
 	{
 		if (component.plantRef.Get() != null)
 		{

@@ -6,7 +6,7 @@ using TUNING;
 [SkipSaveFileSerialization]
 public class EarlyBird : StateMachineComponent<EarlyBird.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.attributeModifiers = new AttributeModifier[]
 		{
@@ -25,7 +25,7 @@ public class EarlyBird : StateMachineComponent<EarlyBird.StatesInstance>
 		base.smi.StartSM();
 	}
 
-	public void ApplyModifiers()
+		public void ApplyModifiers()
 	{
 		Attributes attributes = base.gameObject.GetAttributes();
 		for (int i = 0; i < this.attributeModifiers.Length; i++)
@@ -35,7 +35,7 @@ public class EarlyBird : StateMachineComponent<EarlyBird.StatesInstance>
 		}
 	}
 
-	public void RemoveModifiers()
+		public void RemoveModifiers()
 	{
 		Attributes attributes = base.gameObject.GetAttributes();
 		for (int i = 0; i < this.attributeModifiers.Length; i++)
@@ -45,26 +45,26 @@ public class EarlyBird : StateMachineComponent<EarlyBird.StatesInstance>
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KPrefabID kPrefabID;
 
-	private AttributeModifier[] attributeModifiers;
+		private AttributeModifier[] attributeModifiers;
 
-	public class StatesInstance : GameStateMachine<EarlyBird.States, EarlyBird.StatesInstance, EarlyBird, object>.GameInstance
+		public class StatesInstance : GameStateMachine<EarlyBird.States, EarlyBird.StatesInstance, EarlyBird, object>.GameInstance
 	{
-		public StatesInstance(EarlyBird master) : base(master)
+				public StatesInstance(EarlyBird master) : base(master)
 		{
 		}
 
-		public bool IsMorning()
+				public bool IsMorning()
 		{
-			return !(ScheduleManager.Instance == null) && !(base.master.kPrefabID.PrefabTag == GameTags.MinionSelectPreview) && global::Schedule.GetBlockIdx() < TRAITS.EARLYBIRD_SCHEDULEBLOCK;
+			return !(ScheduleManager.Instance == null) && !(base.master.kPrefabID.PrefabTag == GameTags.MinionSelectPreview) && Math.Min((int)(GameClock.Instance.GetCurrentCycleAsPercentage() * 24f), 23) < TRAITS.EARLYBIRD_SCHEDULEBLOCK;
 		}
 	}
 
-	public class States : GameStateMachine<EarlyBird.States, EarlyBird.StatesInstance, EarlyBird>
+		public class States : GameStateMachine<EarlyBird.States, EarlyBird.StatesInstance, EarlyBird>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.root.TagTransition(GameTags.Dead, null, false);
@@ -78,8 +78,8 @@ public class EarlyBird : StateMachineComponent<EarlyBird.StatesInstance>
 			}).ToggleStatusItem(Db.Get().DuplicantStatusItems.EarlyMorning, null).ToggleExpression(Db.Get().Expressions.Happy, null).Transition(this.idle, (EarlyBird.StatesInstance smi) => !smi.IsMorning(), UpdateRate.SIM_200ms);
 		}
 
-		public GameStateMachine<EarlyBird.States, EarlyBird.StatesInstance, EarlyBird, object>.State idle;
+				public GameStateMachine<EarlyBird.States, EarlyBird.StatesInstance, EarlyBird, object>.State idle;
 
-		public GameStateMachine<EarlyBird.States, EarlyBird.StatesInstance, EarlyBird, object>.State early;
+				public GameStateMachine<EarlyBird.States, EarlyBird.StatesInstance, EarlyBird, object>.State early;
 	}
 }

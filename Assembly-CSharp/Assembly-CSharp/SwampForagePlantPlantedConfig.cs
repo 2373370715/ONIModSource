@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class SwampForagePlantPlantedConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "SwampForagePlantPlanted";
 		string name = STRINGS.CREATURES.SPECIES.SWAMPFORAGEPLANTPLANTED.NAME;
@@ -35,13 +35,13 @@ public class SwampForagePlantPlantedConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "SwampForagePlantPlanted";
+		public const string ID = "SwampForagePlantPlanted";
 }

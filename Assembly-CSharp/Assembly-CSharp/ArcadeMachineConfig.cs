@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ArcadeMachineConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ArcadeMachine";
 		int width = 3;
@@ -28,7 +28,7 @@ public class ArcadeMachineConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding, false);
 		go.AddOrGet<ArcadeMachine>();
@@ -38,13 +38,13 @@ public class ArcadeMachineConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "ArcadeMachine";
+		public const string ID = "ArcadeMachine";
 
-	public const string SPECIFIC_EFFECT = "PlayedArcade";
+		public const string SPECIFIC_EFFECT = "PlayedArcade";
 
-	public const string TRACKING_EFFECT = "RecentlyPlayedArcade";
+		public const string TRACKING_EFFECT = "RecentlyPlayedArcade";
 }

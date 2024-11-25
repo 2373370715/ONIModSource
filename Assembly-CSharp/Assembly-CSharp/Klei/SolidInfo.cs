@@ -2,16 +2,16 @@
 
 namespace Klei
 {
-	public struct SolidInfo
+		public struct SolidInfo
 	{
-		public SolidInfo(int cellIdx, bool isSolid)
+				public SolidInfo(int cellIdx, bool isSolid)
 		{
 			this.cellIdx = cellIdx;
 			this.isSolid = isSolid;
 		}
 
-		public int cellIdx;
+				public int cellIdx;
 
-		public bool isSolid;
+				public bool isSolid;
 	}
 }

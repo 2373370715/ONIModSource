@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RoomProber : ISim1000ms
 {
-	public RoomProber()
+		public RoomProber()
 	{
 		this.CellCavityID = new HandleVector<int>.Handle[Grid.CellCount];
 		this.floodFiller = new RoomProber.CavityFloodFiller(this.CellCavityID);
@@ -22,18 +22,18 @@ public class RoomProber : ISim1000ms
 		GameScenePartitioner.Instance.AddGlobalLayerListener(GameScenePartitioner.Instance.objectLayers[2], new Action<int, object>(this.OnBuildingsChanged));
 	}
 
-	public void Refresh()
+		public void Refresh()
 	{
 		this.ProcessSolidChanges();
 		this.RefreshRooms();
 	}
 
-	private void SolidChangedEvent(int cell)
+		private void SolidChangedEvent(int cell)
 	{
 		this.SolidChangedEvent(cell, true);
 	}
 
-	private void OnBuildingsChanged(int cell, object building)
+		private void OnBuildingsChanged(int cell, object building)
 	{
 		if (this.GetCavityForCell(cell) != null)
 		{
@@ -42,7 +42,7 @@ public class RoomProber : ISim1000ms
 		}
 	}
 
-	public void SolidChangedEvent(int cell, bool ignoreDoors)
+		public void SolidChangedEvent(int cell, bool ignoreDoors)
 	{
 		if (ignoreDoors && Grid.HasDoor[cell])
 		{
@@ -52,14 +52,14 @@ public class RoomProber : ISim1000ms
 		this.dirty = true;
 	}
 
-	private CavityInfo CreateNewCavity()
+		private CavityInfo CreateNewCavity()
 	{
 		CavityInfo cavityInfo = new CavityInfo();
 		cavityInfo.handle = this.cavityInfos.Allocate(cavityInfo);
 		return cavityInfo;
 	}
 
-	private unsafe void ProcessSolidChanges()
+		private unsafe void ProcessSolidChanges()
 	{
 		int* ptr = stackalloc int[(UIntPtr)20];
 		*ptr = 0;
@@ -128,7 +128,7 @@ public class RoomProber : ISim1000ms
 		this.floodFillSet.Clear();
 	}
 
-	private void RebuildDirtyCavities(ICollection<int> visited_cells)
+		private void RebuildDirtyCavities(ICollection<int> visited_cells)
 	{
 		int maxRoomSize = TuningData<RoomProber.Tuning>.Get().maxRoomSize;
 		foreach (int num in visited_cells)
@@ -178,7 +178,7 @@ public class RoomProber : ISim1000ms
 		visited_cells.Clear();
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		if (this.dirty)
 		{
@@ -187,7 +187,7 @@ public class RoomProber : ISim1000ms
 		}
 	}
 
-	private void CreateRoom(CavityInfo cavity)
+		private void CreateRoom(CavityInfo cavity)
 	{
 		global::Debug.Assert(cavity.room == null);
 		Room room = new Room();
@@ -198,14 +198,14 @@ public class RoomProber : ISim1000ms
 		this.AssignBuildingsToRoom(room);
 	}
 
-	private void ClearRoom(Room room)
+		private void ClearRoom(Room room)
 	{
 		this.UnassignBuildingsToRoom(room);
 		room.CleanUp();
 		this.rooms.Remove(room);
 	}
 
-	private void RefreshRooms()
+		private void RefreshRooms()
 	{
 		int maxRoomSize = TuningData<RoomProber.Tuning>.Get().maxRoomSize;
 		foreach (CavityInfo cavityInfo in this.cavityInfos.GetDataList())
@@ -246,7 +246,7 @@ public class RoomProber : ISim1000ms
 		this.dirty = false;
 	}
 
-	private void AssignBuildingsToRoom(Room room)
+		private void AssignBuildingsToRoom(Room room)
 	{
 		global::Debug.Assert(room != null);
 		RoomType roomType = room.roomType;
@@ -267,7 +267,7 @@ public class RoomProber : ISim1000ms
 		}
 	}
 
-	private void UnassignKPrefabIDs(Room room, List<KPrefabID> list)
+		private void UnassignKPrefabIDs(Room room, List<KPrefabID> list)
 	{
 		foreach (KPrefabID kprefabID in list)
 		{
@@ -283,14 +283,14 @@ public class RoomProber : ISim1000ms
 		}
 	}
 
-	private void UnassignBuildingsToRoom(Room room)
+		private void UnassignBuildingsToRoom(Room room)
 	{
 		global::Debug.Assert(room != null);
 		this.UnassignKPrefabIDs(room, room.buildings);
 		this.UnassignKPrefabIDs(room, room.plants);
 	}
 
-	public void UpdateRoom(CavityInfo cavity)
+		public void UpdateRoom(CavityInfo cavity)
 	{
 		if (cavity == null)
 		{
@@ -318,7 +318,7 @@ public class RoomProber : ISim1000ms
 		}
 	}
 
-	public Room GetRoomOfGameObject(GameObject go)
+		public Room GetRoomOfGameObject(GameObject go)
 	{
 		if (go == null)
 		{
@@ -337,7 +337,7 @@ public class RoomProber : ISim1000ms
 		return cavityForCell.room;
 	}
 
-	public bool IsInRoomType(GameObject go, RoomType checkType)
+		public bool IsInRoomType(GameObject go, RoomType checkType)
 	{
 		Room roomOfGameObject = this.GetRoomOfGameObject(go);
 		if (roomOfGameObject != null)
@@ -348,7 +348,7 @@ public class RoomProber : ISim1000ms
 		return false;
 	}
 
-	private CavityInfo GetCavityInfo(HandleVector<int>.Handle id)
+		private CavityInfo GetCavityInfo(HandleVector<int>.Handle id)
 	{
 		CavityInfo result = null;
 		if (id.IsValid())
@@ -358,7 +358,7 @@ public class RoomProber : ISim1000ms
 		return result;
 	}
 
-	public CavityInfo GetCavityForCell(int cell)
+		public CavityInfo GetCavityForCell(int cell)
 	{
 		if (!Grid.IsValidCell(cell))
 		{
@@ -368,39 +368,39 @@ public class RoomProber : ISim1000ms
 		return this.GetCavityInfo(id);
 	}
 
-	public List<Room> rooms = new List<Room>();
+		public List<Room> rooms = new List<Room>();
 
-	private KCompactedVector<CavityInfo> cavityInfos = new KCompactedVector<CavityInfo>(1024);
+		private KCompactedVector<CavityInfo> cavityInfos = new KCompactedVector<CavityInfo>(1024);
 
-	private HandleVector<int>.Handle[] CellCavityID;
+		private HandleVector<int>.Handle[] CellCavityID;
 
-	private bool dirty = true;
+		private bool dirty = true;
 
-	private HashSet<int> solidChanges = new HashSet<int>();
+		private HashSet<int> solidChanges = new HashSet<int>();
 
-	private HashSet<int> visitedCells = new HashSet<int>();
+		private HashSet<int> visitedCells = new HashSet<int>();
 
-	private HashSet<int> floodFillSet = new HashSet<int>();
+		private HashSet<int> floodFillSet = new HashSet<int>();
 
-	private HashSet<HandleVector<int>.Handle> releasedIDs = new HashSet<HandleVector<int>.Handle>();
+		private HashSet<HandleVector<int>.Handle> releasedIDs = new HashSet<HandleVector<int>.Handle>();
 
-	private RoomProber.CavityFloodFiller floodFiller;
+		private RoomProber.CavityFloodFiller floodFiller;
 
-	private List<KPrefabID> releasedCritters = new List<KPrefabID>();
+		private List<KPrefabID> releasedCritters = new List<KPrefabID>();
 
-	public class Tuning : TuningData<RoomProber.Tuning>
+		public class Tuning : TuningData<RoomProber.Tuning>
 	{
-		public int maxRoomSize;
+				public int maxRoomSize;
 	}
 
-	private class CavityFloodFiller
+		private class CavityFloodFiller
 	{
-		public CavityFloodFiller(HandleVector<int>.Handle[] grid)
+				public CavityFloodFiller(HandleVector<int>.Handle[] grid)
 		{
 			this.grid = grid;
 		}
 
-		public void Reset(HandleVector<int>.Handle search_id)
+				public void Reset(HandleVector<int>.Handle search_id)
 		{
 			this.cavityID = search_id;
 			this.numCells = 0;
@@ -410,12 +410,12 @@ public class RoomProber : ISim1000ms
 			this.maxY = 0;
 		}
 
-		private static bool IsWall(int cell)
+				private static bool IsWall(int cell)
 		{
 			return (Grid.BuildMasks[cell] & (Grid.BuildFlags.Solid | Grid.BuildFlags.Foundation)) > ~(Grid.BuildFlags.Solid | Grid.BuildFlags.Foundation | Grid.BuildFlags.Door | Grid.BuildFlags.DupePassable | Grid.BuildFlags.DupeImpassable | Grid.BuildFlags.CritterImpassable | Grid.BuildFlags.FakeFloor) || Grid.HasDoor[cell];
 		}
 
-		public bool ShouldContinue(int flood_cell)
+				public bool ShouldContinue(int flood_cell)
 		{
 			if (RoomProber.CavityFloodFiller.IsWall(flood_cell))
 			{
@@ -434,7 +434,7 @@ public class RoomProber : ISim1000ms
 			return true;
 		}
 
-				public int NumCells
+						public int NumCells
 		{
 			get
 			{
@@ -442,7 +442,7 @@ public class RoomProber : ISim1000ms
 			}
 		}
 
-				public int MinX
+						public int MinX
 		{
 			get
 			{
@@ -450,7 +450,7 @@ public class RoomProber : ISim1000ms
 			}
 		}
 
-				public int MinY
+						public int MinY
 		{
 			get
 			{
@@ -458,7 +458,7 @@ public class RoomProber : ISim1000ms
 			}
 		}
 
-				public int MaxX
+						public int MaxX
 		{
 			get
 			{
@@ -466,7 +466,7 @@ public class RoomProber : ISim1000ms
 			}
 		}
 
-				public int MaxY
+						public int MaxY
 		{
 			get
 			{
@@ -474,18 +474,18 @@ public class RoomProber : ISim1000ms
 			}
 		}
 
-		private HandleVector<int>.Handle[] grid;
+				private HandleVector<int>.Handle[] grid;
 
-		private HandleVector<int>.Handle cavityID;
+				private HandleVector<int>.Handle cavityID;
 
-		private int numCells;
+				private int numCells;
 
-		private int minX;
+				private int minX;
 
-		private int minY;
+				private int minY;
 
-		private int maxX;
+				private int maxX;
 
-		private int maxY;
+				private int maxY;
 	}
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class StoredMinionConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(StoredMinionConfig.ID, StoredMinionConfig.ID, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
@@ -22,13 +22,13 @@ public class StoredMinionConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static string ID = "StoredMinion";
+		public static string ID = "StoredMinion";
 }

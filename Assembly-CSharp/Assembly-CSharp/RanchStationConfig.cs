@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RanchStationConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "RanchStation";
 		int width = 2;
@@ -27,13 +27,13 @@ public class RanchStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RanchStationType, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		RanchStation.Def def = go.AddOrGetDef<RanchStation.Def>();
@@ -71,5 +71,5 @@ public class RanchStationConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public const string ID = "RanchStation";
+		public const string ID = "RanchStation";
 }

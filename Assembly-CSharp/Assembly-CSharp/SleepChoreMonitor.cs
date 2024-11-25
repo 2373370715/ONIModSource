@@ -1,154 +1,139 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class SleepChoreMonitor : GameStateMachine<SleepChoreMonitor, SleepChoreMonitor.Instance>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.satisfied;
-		base.serializable = StateMachine.SerializeType.Never;
-		this.root.EventHandler(GameHashes.AssignablesChanged, delegate(SleepChoreMonitor.Instance smi)
-		{
-			smi.UpdateBed();
-		});
-		this.satisfied.EventTransition(GameHashes.AddUrge, this.checkforbed, (SleepChoreMonitor.Instance smi) => smi.HasSleepUrge());
-		this.checkforbed.Enter("SetBed", delegate(SleepChoreMonitor.Instance smi)
-		{
-			smi.UpdateBed();
-			if (smi.GetSMI<StaminaMonitor.Instance>().NeedsToSleep())
-			{
-				if (this.bed.Get(smi) != null && smi.IsBedReachable())
-				{
-					smi.GoTo(this.passingout_bedassigned);
-					return;
-				}
-				smi.GoTo(this.passingout);
-				return;
-			}
-			else
-			{
-				if (this.bed.Get(smi) == null || !smi.IsBedReachable())
-				{
-					smi.GoTo(this.sleeponfloor);
-					return;
-				}
-				smi.GoTo(this.bedassigned);
-				return;
-			}
-		});
-		this.passingout.EventTransition(GameHashes.AssignablesChanged, this.checkforbed, null).EventHandlerTransition(GameHashes.AssignableReachabilityChanged, this.checkforbed, (SleepChoreMonitor.Instance smi, object data) => smi.IsBedReachable()).ToggleChore(new Func<SleepChoreMonitor.Instance, Chore>(this.CreatePassingOutChore), this.satisfied, this.satisfied);
-		this.passingout_bedassigned.ParamTransition<GameObject>(this.bed, this.checkforbed, (SleepChoreMonitor.Instance smi, GameObject p) => p == null).EventTransition(GameHashes.AssignablesChanged, this.checkforbed, null).EventTransition(GameHashes.AssignableReachabilityChanged, this.checkforbed, (SleepChoreMonitor.Instance smi) => !smi.IsBedReachable()).ToggleChore(new Func<SleepChoreMonitor.Instance, Chore>(this.CreateExhaustedSleepChore), this.satisfied, this.satisfied);
-		this.sleeponfloor.EventTransition(GameHashes.AssignablesChanged, this.checkforbed, null).EventHandlerTransition(GameHashes.AssignableReachabilityChanged, this.checkforbed, (SleepChoreMonitor.Instance smi, object data) => smi.IsBedReachable()).ToggleChore(new Func<SleepChoreMonitor.Instance, Chore>(this.CreateSleepOnFloorChore), this.satisfied, this.satisfied);
-		this.bedassigned.ParamTransition<GameObject>(this.bed, this.checkforbed, (SleepChoreMonitor.Instance smi, GameObject p) => p == null).EventTransition(GameHashes.AssignablesChanged, this.checkforbed, null).EventTransition(GameHashes.AssignableReachabilityChanged, this.checkforbed, (SleepChoreMonitor.Instance smi) => !smi.IsBedReachable()).ToggleChore(new Func<SleepChoreMonitor.Instance, Chore>(this.CreateSleepChore), this.satisfied, this.satisfied);
-	}
+public class SleepChoreMonitor : GameStateMachine<SleepChoreMonitor, SleepChoreMonitor.Instance> {
+    public TargetParameter bed;
+    public State           bedassigned;
+    public State           checkforbed;
+    public State           passingout;
+    public State           passingout_bedassigned;
+    public State           satisfied;
+    public State           sleeponfloor;
 
-	private Chore CreatePassingOutChore(SleepChoreMonitor.Instance smi)
-	{
-		GameObject gameObject = smi.CreatePassedOutLocator();
-		return new SleepChore(Db.Get().ChoreTypes.Sleep, smi.master, gameObject, true, false);
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = satisfied;
+        serializable  = SerializeType.Never;
+        root.EventHandler(GameHashes.AssignablesChanged, delegate(Instance smi) { smi.UpdateBed(); });
+        satisfied.EventTransition(GameHashes.AddUrge, checkforbed, smi => smi.HasSleepUrge());
+        checkforbed.Enter("SetBed",
+                          delegate(Instance smi) {
+                              smi.UpdateBed();
+                              if (smi.GetSMI<StaminaMonitor.Instance>().NeedsToSleep()) {
+                                  if (bed.Get(smi) != null && smi.IsBedReachable()) {
+                                      smi.GoTo(passingout_bedassigned);
+                                      return;
+                                  }
 
-	private Chore CreateSleepOnFloorChore(SleepChoreMonitor.Instance smi)
-	{
-		GameObject gameObject = smi.CreateFloorLocator();
-		return new SleepChore(Db.Get().ChoreTypes.Sleep, smi.master, gameObject, true, true);
-	}
+                                  smi.GoTo(passingout);
+                                  return;
+                              }
 
-	private Chore CreateSleepChore(SleepChoreMonitor.Instance smi)
-	{
-		return new SleepChore(Db.Get().ChoreTypes.Sleep, smi.master, this.bed.Get(smi), false, true);
-	}
+                              if (bed.Get(smi) == null || !smi.IsBedReachable()) {
+                                  smi.GoTo(sleeponfloor);
+                                  return;
+                              }
 
-	private Chore CreateExhaustedSleepChore(SleepChoreMonitor.Instance smi)
-	{
-		return new SleepChore(Db.Get().ChoreTypes.Sleep, smi.master, this.bed.Get(smi), false, true, new StatusItem[]
-		{
-			Db.Get().DuplicantStatusItems.SleepingExhausted
-		});
-	}
+                              smi.GoTo(bedassigned);
+                          });
 
-	public GameStateMachine<SleepChoreMonitor, SleepChoreMonitor.Instance, IStateMachineTarget, object>.State satisfied;
+        passingout.EventTransition(GameHashes.AssignablesChanged, checkforbed)
+                  .EventHandlerTransition(GameHashes.AssignableReachabilityChanged,
+                                          checkforbed,
+                                          (smi, data) => smi.IsBedReachable())
+                  .ToggleChore(CreatePassingOutChore, satisfied, satisfied);
 
-	public GameStateMachine<SleepChoreMonitor, SleepChoreMonitor.Instance, IStateMachineTarget, object>.State checkforbed;
+        passingout_bedassigned.ParamTransition(bed, checkforbed, (smi, p) => p == null)
+                              .EventTransition(GameHashes.AssignablesChanged, checkforbed)
+                              .EventTransition(GameHashes.AssignableReachabilityChanged,
+                                               checkforbed,
+                                               smi => !smi.IsBedReachable())
+                              .ToggleChore(CreateExhaustedSleepChore, satisfied, satisfied);
 
-	public GameStateMachine<SleepChoreMonitor, SleepChoreMonitor.Instance, IStateMachineTarget, object>.State passingout;
+        sleeponfloor.EventTransition(GameHashes.AssignablesChanged, checkforbed)
+                    .EventHandlerTransition(GameHashes.AssignableReachabilityChanged,
+                                            checkforbed,
+                                            (smi, data) => smi.IsBedReachable())
+                    .ToggleChore(CreateSleepOnFloorChore, satisfied, satisfied);
 
-	public GameStateMachine<SleepChoreMonitor, SleepChoreMonitor.Instance, IStateMachineTarget, object>.State passingout_bedassigned;
+        bedassigned.ParamTransition(bed, checkforbed, (smi, p) => p == null)
+                   .EventTransition(GameHashes.AssignablesChanged,            checkforbed)
+                   .EventTransition(GameHashes.AssignableReachabilityChanged, checkforbed, smi => !smi.IsBedReachable())
+                   .ToggleChore(CreateSleepChore, satisfied, satisfied);
+    }
 
-	public GameStateMachine<SleepChoreMonitor, SleepChoreMonitor.Instance, IStateMachineTarget, object>.State sleeponfloor;
+    private Chore CreatePassingOutChore(Instance smi) {
+        var gameObject = smi.CreatePassedOutLocator();
+        return new SleepChore(Db.Get().ChoreTypes.Sleep, smi.master, gameObject, true, false);
+    }
 
-	public GameStateMachine<SleepChoreMonitor, SleepChoreMonitor.Instance, IStateMachineTarget, object>.State bedassigned;
+    private Chore CreateSleepOnFloorChore(Instance smi) {
+        var gameObject = smi.CreateFloorLocator();
+        return new SleepChore(Db.Get().ChoreTypes.Sleep, smi.master, gameObject, true, true);
+    }
 
-	public StateMachine<SleepChoreMonitor, SleepChoreMonitor.Instance, IStateMachineTarget, object>.TargetParameter bed;
+    private Chore CreateSleepChore(Instance smi) {
+        return new SleepChore(Db.Get().ChoreTypes.Sleep, smi.master, bed.Get(smi), false, true);
+    }
 
-	public new class Instance : GameStateMachine<SleepChoreMonitor, SleepChoreMonitor.Instance, IStateMachineTarget, object>.GameInstance
-	{
-		public Instance(IStateMachineTarget master) : base(master)
-		{
-		}
+    private Chore CreateExhaustedSleepChore(Instance smi) {
+        return new SleepChore(Db.Get().ChoreTypes.Sleep,
+                              smi.master,
+                              bed.Get(smi),
+                              false,
+                              true,
+                              new[] { Db.Get().DuplicantStatusItems.SleepingExhausted });
+    }
 
-		public void UpdateBed()
-		{
-			Ownables soleOwner = base.sm.masterTarget.Get(base.smi).GetComponent<MinionIdentity>().GetSoleOwner();
-			Assignable assignable = soleOwner.GetAssignable(Db.Get().AssignableSlots.MedicalBed);
-			Assignable assignable2;
-			if (assignable != null && assignable.CanAutoAssignTo(base.sm.masterTarget.Get(base.smi).GetComponent<MinionIdentity>().assignableProxy.Get()))
-			{
-				assignable2 = assignable;
-			}
-			else
-			{
-				assignable2 = soleOwner.GetAssignable(Db.Get().AssignableSlots.Bed);
-				if (assignable2 == null)
-				{
-					assignable2 = soleOwner.AutoAssignSlot(Db.Get().AssignableSlots.Bed);
-					if (assignable2 != null)
-					{
-						base.GetComponent<Sensors>().GetSensor<AssignableReachabilitySensor>().Update();
-					}
-				}
-			}
-			base.smi.sm.bed.Set(assignable2, base.smi);
-		}
+    public new class Instance : GameInstance {
+        public  GameObject locator;
+        private int        locatorCell;
+        public Instance(IStateMachineTarget master) : base(master) { }
 
-		public bool HasSleepUrge()
-		{
-			return base.GetComponent<ChoreConsumer>().HasUrge(Db.Get().Urges.Sleep);
-		}
+        public void UpdateBed() {
+            var        soleOwner  = sm.masterTarget.Get(smi).GetComponent<MinionIdentity>().GetSoleOwner();
+            var        assignable = soleOwner.GetAssignable(Db.Get().AssignableSlots.MedicalBed);
+            Assignable assignable2;
+            if (assignable != null &&
+                assignable.CanAutoAssignTo(sm.masterTarget.Get(smi)
+                                             .GetComponent<MinionIdentity>()
+                                             .assignableProxy.Get()))
+                assignable2 = assignable;
+            else {
+                assignable2 = soleOwner.GetAssignable(Db.Get().AssignableSlots.Bed);
+                if (assignable2 == null) {
+                    assignable2 = soleOwner.AutoAssignSlot(Db.Get().AssignableSlots.Bed);
+                    if (assignable2 != null) {
+                        var sensor = GetComponent<Sensors>().GetSensor<AssignableReachabilitySensor>();
+                        if (sensor.IsEnabled) sensor.Update();
+                    }
+                }
+            }
 
-		public bool IsBedReachable()
-		{
-			AssignableReachabilitySensor sensor = base.GetComponent<Sensors>().GetSensor<AssignableReachabilitySensor>();
-			return sensor.IsReachable(Db.Get().AssignableSlots.Bed) || sensor.IsReachable(Db.Get().AssignableSlots.MedicalBed);
-		}
+            smi.sm.bed.Set(assignable2, smi);
+        }
 
-		public GameObject CreatePassedOutLocator()
-		{
-			Sleepable safeFloorLocator = SleepChore.GetSafeFloorLocator(base.master.gameObject);
-			safeFloorLocator.effectName = "PassedOutSleep";
-			safeFloorLocator.wakeEffects = new List<string>
-			{
-				"SoreBack"
-			};
-			safeFloorLocator.stretchOnWake = false;
-			return safeFloorLocator.gameObject;
-		}
+        public bool HasSleepUrge() { return GetComponent<ChoreConsumer>().HasUrge(Db.Get().Urges.Sleep); }
 
-		public GameObject CreateFloorLocator()
-		{
-			Sleepable safeFloorLocator = SleepChore.GetSafeFloorLocator(base.master.gameObject);
-			safeFloorLocator.effectName = "FloorSleep";
-			safeFloorLocator.wakeEffects = new List<string>
-			{
-				"SoreBack"
-			};
-			safeFloorLocator.stretchOnWake = false;
-			return safeFloorLocator.gameObject;
-		}
+        public bool IsBedReachable() {
+            var sensor = GetComponent<Sensors>().GetSensor<AssignableReachabilitySensor>();
+            return sensor.IsReachable(Db.Get().AssignableSlots.Bed) ||
+                   sensor.IsReachable(Db.Get().AssignableSlots.MedicalBed);
+        }
 
-		private int locatorCell;
+        public GameObject CreatePassedOutLocator() {
+            var safeFloorLocator = SleepChore.GetSafeFloorLocator(master.gameObject);
+            safeFloorLocator.effectName    = "PassedOutSleep";
+            safeFloorLocator.wakeEffects   = new List<string> { "SoreBack" };
+            safeFloorLocator.stretchOnWake = false;
+            return safeFloorLocator.gameObject;
+        }
 
-		public GameObject locator;
-	}
+        public GameObject CreateFloorLocator() {
+            var safeFloorLocator = SleepChore.GetSafeFloorLocator(master.gameObject);
+            safeFloorLocator.effectName    = "FloorSleep";
+            safeFloorLocator.wakeEffects   = new List<string> { "SoreBack" };
+            safeFloorLocator.stretchOnWake = false;
+            return safeFloorLocator.gameObject;
+        }
+    }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.inoperational;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -54,23 +54,23 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 		StatusItem.IconType icon_type = StatusItem.IconType.Info;
 		NotificationType notification_type = NotificationType.Neutral;
 		bool allow_multiples = false;
-		HashedString render_overlay = default(HashedString);
-		int status_overlays = 129022;
 		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
-		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, render_overlay, status_overlays, new Func<string, GravitasCreatureManipulator.Instance, string>(GravitasCreatureManipulator.Processing), new Func<string, GravitasCreatureManipulator.Instance, string>(GravitasCreatureManipulator.ProcessingTooltip), main);
+		Func<string, GravitasCreatureManipulator.Instance, string> resolve_string_callback = new Func<string, GravitasCreatureManipulator.Instance, string>(GravitasCreatureManipulator.Processing);
+		Func<string, GravitasCreatureManipulator.Instance, string> resolve_tooltip_callback = new Func<string, GravitasCreatureManipulator.Instance, string>(GravitasCreatureManipulator.ProcessingTooltip);
+		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, resolve_string_callback, resolve_tooltip_callback, main);
 	}
 
-	private static string Processing(string str, GravitasCreatureManipulator.Instance smi)
+		private static string Processing(string str, GravitasCreatureManipulator.Instance smi)
 	{
 		return str.Replace("{percent}", GameUtil.GetFormattedPercent((1f - smi.sm.cooldownTimer.Get(smi) / smi.def.cooldownDuration) * 100f, GameUtil.TimeSlice.None));
 	}
 
-	private static string ProcessingTooltip(string str, GravitasCreatureManipulator.Instance smi)
+		private static string ProcessingTooltip(string str, GravitasCreatureManipulator.Instance smi)
 	{
 		return str.Replace("{timeleft}", GameUtil.GetFormattedTime(smi.sm.cooldownTimer.Get(smi), "F0"));
 	}
 
-	private static void CheckForCritter(GravitasCreatureManipulator.Instance smi)
+		private static void CheckForCritter(GravitasCreatureManipulator.Instance smi)
 	{
 		if (smi.sm.creatureTarget.IsNull(smi))
 		{
@@ -92,52 +92,52 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 		}
 	}
 
-	public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State inoperational;
+		public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State inoperational;
 
-	public GravitasCreatureManipulator.ActiveStates operational;
+		public GravitasCreatureManipulator.ActiveStates operational;
 
-	public StateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.TargetParameter creatureTarget;
+		public StateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.TargetParameter creatureTarget;
 
-	public StateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.FloatParameter cooldownTimer;
+		public StateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.FloatParameter cooldownTimer;
 
-	public StateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.FloatParameter workingTimer;
+		public StateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.FloatParameter workingTimer;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public CellOffset pickupOffset;
+				public CellOffset pickupOffset;
 
-		public CellOffset dropOffset;
+				public CellOffset dropOffset;
 
-		public int numSpeciesToUnlockMorphMode;
+				public int numSpeciesToUnlockMorphMode;
 
-		public float workingDuration;
+				public float workingDuration;
 
-		public float cooldownDuration;
+				public float cooldownDuration;
 	}
 
-	public class WorkingStates : GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State
+		public class WorkingStates : GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State
 	{
-		public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State pre;
+				public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State pre;
 
-		public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State loop;
+				public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State loop;
 
-		public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State pst;
+				public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State pst;
 	}
 
-	public class ActiveStates : GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State
+		public class ActiveStates : GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State
 	{
-		public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State idle;
+				public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State idle;
 
-		public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State capture;
+				public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State capture;
 
-		public GravitasCreatureManipulator.WorkingStates working;
+				public GravitasCreatureManipulator.WorkingStates working;
 
-		public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State cooldown;
+				public GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.State cooldown;
 	}
 
-	public new class Instance : GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.GameInstance
+		public new class Instance : GameStateMachine<GravitasCreatureManipulator, GravitasCreatureManipulator.Instance, IStateMachineTarget, GravitasCreatureManipulator.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, GravitasCreatureManipulator.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, GravitasCreatureManipulator.Def def) : base(master, def)
 		{
 			this.pickupCell = Grid.OffsetCell(Grid.PosToCell(master.gameObject), base.smi.def.pickupOffset);
 			this.m_partitionEntry = GameScenePartitioner.Instance.Add("GravitasCreatureManipulator", base.gameObject, this.pickupCell, GameScenePartitioner.Instance.pickupablesChangedLayer, new Action<object>(this.DetectCreature));
@@ -145,7 +145,7 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			this.m_progressMeter = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.UserSpecified, Grid.SceneLayer.TileFront, Array.Empty<string>());
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			this.UpdateStatusItems();
@@ -160,13 +160,13 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			StoryManager.Instance.DiscoverStoryEvent(Db.Get().Stories.CreatureManipulator);
 		}
 
-		public override void StopSM(string reason)
+				public override void StopSM(string reason)
 		{
 			base.Unsubscribe(-1503271301, new Action<object>(this.OnBuildingSelect));
 			base.StopSM(reason);
 		}
 
-		private void OnBuildingSelect(object obj)
+				private void OnBuildingSelect(object obj)
 		{
 			if (!(bool)obj)
 			{
@@ -182,7 +182,7 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			}
 		}
 
-				public bool IsMorphMode
+						public bool IsMorphMode
 		{
 			get
 			{
@@ -190,7 +190,7 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			}
 		}
 
-				public bool IsCritterStored
+						public bool IsCritterStored
 		{
 			get
 			{
@@ -198,7 +198,7 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			}
 		}
 
-		private void UpdateStatusItems()
+				private void UpdateStatusItems()
 		{
 			KSelectable component = base.gameObject.GetComponent<KSelectable>();
 			component.ToggleStatusItem(Db.Get().BuildingStatusItems.CreatureManipulatorProgress, !this.IsMorphMode, this);
@@ -206,18 +206,18 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			component.ToggleStatusItem(Db.Get().BuildingStatusItems.CreatureManipulatorMorphModeLocked, !this.IsMorphMode, this);
 		}
 
-		public void UpdateMeter()
+				public void UpdateMeter()
 		{
 			this.m_progressMeter.SetPositionPercent(Mathf.Clamp01((float)this.ScannedSpecies.Count / (float)base.smi.def.numSpeciesToUnlockMorphMode));
 		}
 
-		public bool IsAccepted(GameObject go)
+				public bool IsAccepted(GameObject go)
 		{
 			KPrefabID component = go.GetComponent<KPrefabID>();
 			return component.HasTag(GameTags.Creature) && !component.HasTag(GameTags.Robot) && component.PrefabTag != GameTags.Creature;
 		}
 
-		private void DetectLargeCreature(object obj)
+				private void DetectLargeCreature(object obj)
 		{
 			Pickupable pickupable = obj as Pickupable;
 			if (pickupable == null)
@@ -230,7 +230,7 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			}
 		}
 
-		private void DetectCreature(object obj)
+				private void DetectCreature(object obj)
 		{
 			Pickupable pickupable = obj as Pickupable;
 			if (pickupable != null && this.IsAccepted(pickupable.gameObject) && base.smi.sm.creatureTarget.IsNull(base.smi) && base.smi.IsInsideState(base.smi.sm.operational.idle))
@@ -239,18 +239,18 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			}
 		}
 
-		public void SetCritterTarget(GameObject go)
+				public void SetCritterTarget(GameObject go)
 		{
 			base.smi.sm.creatureTarget.Set(go.gameObject, base.smi, false);
 		}
 
-		public void StoreCreature()
+				public void StoreCreature()
 		{
 			GameObject go = base.smi.sm.creatureTarget.Get(base.smi);
 			this.m_storage.Store(go, false, false, true, false);
 		}
 
-		public void DropCritter()
+				public void DropCritter()
 		{
 			List<GameObject> list = new List<GameObject>();
 			Vector3 position = Grid.CellToPosCBC(Grid.PosToCell(base.smi), Grid.SceneLayer.Creatures);
@@ -274,7 +274,7 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			base.smi.sm.creatureTarget.Set(null, base.smi);
 		}
 
-		private void Scan(Tag species)
+				private void Scan(Tag species)
 		{
 			if (this.ScannedSpecies.Add(species))
 			{
@@ -286,7 +286,7 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			this.TryShowCompletedNotification();
 		}
 
-		public void SpawnMorph(Brain brain)
+				public void SpawnMorph(Brain brain)
 		{
 			Tag tag = Tag.Invalid;
 			BabyMonitor.Instance smi = brain.GetSMI<BabyMonitor.Instance>();
@@ -339,14 +339,14 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			brain.gameObject.DeleteObject();
 		}
 
-		public void ShowIntroNotification()
+				public void ShowIntroNotification()
 		{
 			Game.Instance.unlocks.Unlock("story_trait_critter_manipulator_initial", true);
 			this.m_introPopupSeen = true;
 			EventInfoScreen.ShowPopup(EventInfoDataHelper.GenerateStoryTraitData(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.BEGIN_POPUP.NAME, CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.BEGIN_POPUP.DESCRIPTION, CODEX.STORY_TRAITS.CLOSE_BUTTON, "crittermanipulatoractivate_kanim", EventInfoDataHelper.PopupType.BEGIN, null, null, null));
 		}
 
-		public void ShowCritterScannedNotification(Tag species)
+				public void ShowCritterScannedNotification(Tag species)
 		{
 			GravitasCreatureManipulator.Instance.<>c__DisplayClass29_0 CS$<>8__locals1 = new GravitasCreatureManipulator.Instance.<>c__DisplayClass29_0();
 			CS$<>8__locals1.species = species;
@@ -359,7 +359,7 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			});
 		}
 
-		public static void ShowLoreUnlockedPopup(Tag species)
+				public static void ShowLoreUnlockedPopup(Tag species)
 		{
 			InfoDialogScreen infoDialogScreen = LoreBearer.ShowPopupDialog().SetHeader(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.UNLOCK_SPECIES_POPUP.NAME).AddDefaultOK(false);
 			bool flag = CodexCache.GetEntryForLock(GravitasCreatureManipulatorConfig.CRITTER_LORE_UNLOCK_ID.For(species)) != null;
@@ -372,7 +372,7 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			infoDialogScreen.AddPlainText(GravitasCreatureManipulatorConfig.GetBodyContentForUnknownSpecies());
 		}
 
-		public void TryShowCompletedNotification()
+				public void TryShowCompletedNotification()
 		{
 			if (this.ScannedSpecies.Count < base.smi.def.numSpeciesToUnlockMorphMode)
 			{
@@ -388,7 +388,7 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			base.gameObject.GetComponent<KSelectable>().AddStatusItem(Db.Get().MiscStatusItems.AttentionRequired, base.smi);
 		}
 
-		public void ClearEndNotification()
+				public void ClearEndNotification()
 		{
 			base.gameObject.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.AttentionRequired, false);
 			if (this.m_endNotification != null)
@@ -398,7 +398,7 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			this.m_endNotification = null;
 		}
 
-		public void UnlockMorphMode(object _)
+				public void UnlockMorphMode(object _)
 		{
 			if (this.m_morphModeUnlocked)
 			{
@@ -425,14 +425,14 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			});
 		}
 
-		private void OnStorySequenceComplete()
+				private void OnStorySequenceComplete()
 		{
 			Vector3 keepsakeSpawnPosition = Grid.CellToPosCCC(Grid.OffsetCell(Grid.PosToCell(base.smi), new CellOffset(-1, 1)), Grid.SceneLayer.Ore);
 			StoryManager.Instance.CompleteStoryEvent(Db.Get().Stories.CreatureManipulator, keepsakeSpawnPosition);
 			this.eventInfo = null;
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			GameScenePartitioner.Instance.Free(ref this.m_partitionEntry);
 			GameScenePartitioner.Instance.Free(ref this.m_largeCreaturePartitionEntry);
@@ -442,28 +442,28 @@ public class GravitasCreatureManipulator : GameStateMachine<GravitasCreatureMani
 			}
 		}
 
-		public int pickupCell;
+				public int pickupCell;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Storage m_storage;
 
-		[Serialize]
+				[Serialize]
 		public HashSet<Tag> ScannedSpecies = new HashSet<Tag>();
 
-		[Serialize]
+				[Serialize]
 		private bool m_introPopupSeen;
 
-		[Serialize]
+				[Serialize]
 		private bool m_morphModeUnlocked;
 
-		private EventInfoData eventInfo;
+				private EventInfoData eventInfo;
 
-		private Notification m_endNotification;
+				private Notification m_endNotification;
 
-		private MeterController m_progressMeter;
+				private MeterController m_progressMeter;
 
-		private HandleVector<int>.Handle m_partitionEntry;
+				private HandleVector<int>.Handle m_partitionEntry;
 
-		private HandleVector<int>.Handle m_largeCreaturePartitionEntry;
+				private HandleVector<int>.Handle m_largeCreaturePartitionEntry;
 	}
 }

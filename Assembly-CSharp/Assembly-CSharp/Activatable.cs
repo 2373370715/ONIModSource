@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Activatable")]
 public class Activatable : Workable, ISidescreenButtonControl
 {
-		public bool IsActivated
+			public bool IsActivated
 	{
 		get
 		{
@@ -14,12 +14,12 @@ public class Activatable : Workable, ISidescreenButtonControl
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.UpdateFlag();
 		if (this.awaitingActivation && this.activateChore == null)
@@ -28,7 +28,7 @@ public class Activatable : Workable, ISidescreenButtonControl
 		}
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.activated = true;
 		if (this.onActivate != null)
@@ -41,14 +41,14 @@ public class Activatable : Workable, ISidescreenButtonControl
 		base.OnCompleteWork(worker);
 	}
 
-	private void UpdateFlag()
+		private void UpdateFlag()
 	{
 		base.GetComponent<Operational>().SetFlag(this.Required ? Activatable.activatedFlagRequirement : Activatable.activatedFlagFunctional, this.activated);
 		base.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.DuplicantActivationRequired, !this.activated, null);
 		base.Trigger(-1909216579, this.IsActivated);
 	}
 
-	private void CreateChore()
+		private void CreateChore()
 	{
 		if (this.activateChore != null)
 		{
@@ -64,7 +64,7 @@ public class Activatable : Workable, ISidescreenButtonControl
 		}
 	}
 
-	private void CancelChore()
+		private void CancelChore()
 	{
 		if (this.activateChore == null)
 		{
@@ -74,12 +74,12 @@ public class Activatable : Workable, ISidescreenButtonControl
 		this.activateChore = null;
 	}
 
-	public int HorizontalGroupID()
+		public int HorizontalGroupID()
 	{
 		return -1;
 	}
 
-		public string SidescreenButtonText
+			public string SidescreenButtonText
 	{
 		get
 		{
@@ -91,7 +91,7 @@ public class Activatable : Workable, ISidescreenButtonControl
 		}
 	}
 
-		public string SidescreenButtonTooltip
+			public string SidescreenButtonTooltip
 	{
 		get
 		{
@@ -103,17 +103,17 @@ public class Activatable : Workable, ISidescreenButtonControl
 		}
 	}
 
-	public bool SidescreenEnabled()
+		public bool SidescreenEnabled()
 	{
 		return !this.activated;
 	}
 
-	public void SetButtonTextOverride(ButtonMenuTextOverride text)
+		public void SetButtonTextOverride(ButtonMenuTextOverride text)
 	{
 		this.textOverride = text;
 	}
 
-	public void OnSidescreenButtonPressed()
+		public void OnSidescreenButtonPressed()
 	{
 		if (this.activateChore == null)
 		{
@@ -126,34 +126,34 @@ public class Activatable : Workable, ISidescreenButtonControl
 		this.awaitingActivation = (this.activateChore != null);
 	}
 
-	public bool SidescreenButtonInteractable()
+		public bool SidescreenButtonInteractable()
 	{
 		return !this.activated;
 	}
 
-	public int ButtonSideScreenSortOrder()
+		public int ButtonSideScreenSortOrder()
 	{
 		return 20;
 	}
 
-	public bool Required = true;
+		public bool Required = true;
 
-	private static readonly Operational.Flag activatedFlagRequirement = new Operational.Flag("activated", Operational.Flag.Type.Requirement);
+		private static readonly Operational.Flag activatedFlagRequirement = new Operational.Flag("activated", Operational.Flag.Type.Requirement);
 
-	private static readonly Operational.Flag activatedFlagFunctional = new Operational.Flag("activated", Operational.Flag.Type.Functional);
+		private static readonly Operational.Flag activatedFlagFunctional = new Operational.Flag("activated", Operational.Flag.Type.Functional);
 
-	[Serialize]
+		[Serialize]
 	private bool activated;
 
-	[Serialize]
+		[Serialize]
 	private bool awaitingActivation;
 
-	private Guid statusItem;
+		private Guid statusItem;
 
-	private Chore activateChore;
+		private Chore activateChore;
 
-	public System.Action onActivate;
+		public System.Action onActivate;
 
-	[SerializeField]
+		[SerializeField]
 	private ButtonMenuTextOverride textOverride;
 }

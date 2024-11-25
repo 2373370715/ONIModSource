@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GasConduitTemperatureSensorConfig : ConduitSensorConfig
 {
-		protected override ConduitType ConduitType
+			protected override ConduitType ConduitType
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class GasConduitTemperatureSensorConfig : ConduitSensorConfig
 		}
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef result = base.CreateBuildingDef(GasConduitTemperatureSensorConfig.ID, "gas_temperature_sensor_kanim", TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER0, MATERIALS.REFINED_METALS, new List<LogicPorts.Port>
 		{
@@ -24,7 +24,7 @@ public class GasConduitTemperatureSensorConfig : ConduitSensorConfig
 		return result;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		base.DoPostConfigureComplete(go);
 		ConduitTemperatureSensor conduitTemperatureSensor = go.AddComponent<ConduitTemperatureSensor>();
@@ -38,5 +38,5 @@ public class GasConduitTemperatureSensorConfig : ConduitSensorConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "GasConduitTemperatureSensor";
+		public static string ID = "GasConduitTemperatureSensor";
 }

@@ -1,168 +1,120 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-public class KAnimSynchronizer
-{
-	public KAnimSynchronizer(KAnimControllerBase master_controller)
-	{
-		this.masterController = master_controller;
-	}
+public class KAnimSynchronizer {
+    private readonly KAnimControllerBase               masterController;
+    private readonly List<KAnimSynchronizedController> SyncedControllers = new List<KAnimSynchronizedController>();
+    private readonly List<KAnimControllerBase>         Targets           = new List<KAnimControllerBase>();
+    public KAnimSynchronizer(KAnimControllerBase master_controller) { masterController = master_controller; }
+    public  string IdleAnim                              { get; set; } = "idle_default";
+    private void   Clear(KAnimControllerBase controller) { controller.Play(IdleAnim, KAnim.PlayMode.Loop); }
+    public  void   Add(KAnimControllerBase   controller) { Targets.Add(controller); }
 
-	private void Clear(KAnimControllerBase controller)
-	{
-		controller.Play("idle_default", KAnim.PlayMode.Loop, 1f, 0f);
-	}
+    public void Remove(KAnimControllerBase controller) {
+        Clear(controller);
+        Targets.Remove(controller);
+    }
 
-	public void Add(KAnimControllerBase controller)
-	{
-		this.Targets.Add(controller);
-	}
+    public  void RemoveWithoutIdleAnim(KAnimControllerBase controller) { Targets.Remove(controller); }
+    private void Clear(KAnimSynchronizedController controller) { controller.Play(IdleAnim, KAnim.PlayMode.Loop); }
+    public  void Add(KAnimSynchronizedController controller) { SyncedControllers.Add(controller); }
 
-	public void Remove(KAnimControllerBase controller)
-	{
-		this.Clear(controller);
-		this.Targets.Remove(controller);
-	}
+    public void Remove(KAnimSynchronizedController controller) {
+        Clear(controller);
+        SyncedControllers.Remove(controller);
+    }
 
-	private void Clear(KAnimSynchronizedController controller)
-	{
-		controller.Play("idle_default", KAnim.PlayMode.Loop, 1f, 0f);
-	}
+    public void Clear() {
+        foreach (var kanimControllerBase in Targets)
+            if (!(kanimControllerBase == null) && kanimControllerBase.AnimFiles != null)
+                Clear(kanimControllerBase);
 
-	public void Add(KAnimSynchronizedController controller)
-	{
-		this.SyncedControllers.Add(controller);
-	}
+        Targets.Clear();
+        foreach (var kanimSynchronizedController in SyncedControllers)
+            if (!(kanimSynchronizedController.synchronizedController == null) &&
+                kanimSynchronizedController.synchronizedController.AnimFiles != null)
+                Clear(kanimSynchronizedController);
 
-	public void Remove(KAnimSynchronizedController controller)
-	{
-		this.Clear(controller);
-		this.SyncedControllers.Remove(controller);
-	}
+        SyncedControllers.Clear();
+    }
 
-	public void Clear()
-	{
-		foreach (KAnimControllerBase kanimControllerBase in this.Targets)
-		{
-			if (!(kanimControllerBase == null) && kanimControllerBase.AnimFiles != null)
-			{
-				this.Clear(kanimControllerBase);
-			}
-		}
-		this.Targets.Clear();
-		foreach (KAnimSynchronizedController kanimSynchronizedController in this.SyncedControllers)
-		{
-			if (!(kanimSynchronizedController.synchronizedController == null) && kanimSynchronizedController.synchronizedController.AnimFiles != null)
-			{
-				this.Clear(kanimSynchronizedController);
-			}
-		}
-		this.SyncedControllers.Clear();
-	}
+    public void Sync(KAnimControllerBase controller) {
+        if (masterController == null) return;
 
-	public void Sync(KAnimControllerBase controller)
-	{
-		if (this.masterController == null)
-		{
-			return;
-		}
-		if (controller == null)
-		{
-			return;
-		}
-		KAnim.Anim currentAnim = this.masterController.GetCurrentAnim();
-		if (currentAnim != null && !string.IsNullOrEmpty(controller.defaultAnim) && !controller.HasAnimation(currentAnim.name))
-		{
-			controller.Play(controller.defaultAnim, KAnim.PlayMode.Loop, 1f, 0f);
-			return;
-		}
-		if (currentAnim == null)
-		{
-			return;
-		}
-		KAnim.PlayMode mode = this.masterController.GetMode();
-		float playSpeed = this.masterController.GetPlaySpeed();
-		float elapsedTime = this.masterController.GetElapsedTime();
-		controller.Play(currentAnim.name, mode, playSpeed, elapsedTime);
-		Facing component = controller.GetComponent<Facing>();
-		if (component != null)
-		{
-			float num = component.transform.GetPosition().x;
-			num += (this.masterController.FlipX ? -0.5f : 0.5f);
-			component.Face(num);
-			return;
-		}
-		controller.FlipX = this.masterController.FlipX;
-		controller.FlipY = this.masterController.FlipY;
-	}
+        if (controller == null) return;
 
-	public void SyncController(KAnimSynchronizedController controller)
-	{
-		if (this.masterController == null)
-		{
-			return;
-		}
-		if (controller == null)
-		{
-			return;
-		}
-		KAnim.Anim currentAnim = this.masterController.GetCurrentAnim();
-		string s = (currentAnim != null) ? (currentAnim.name + controller.Postfix) : string.Empty;
-		if (!string.IsNullOrEmpty(controller.synchronizedController.defaultAnim) && !controller.synchronizedController.HasAnimation(s))
-		{
-			controller.Play(controller.synchronizedController.defaultAnim, KAnim.PlayMode.Loop, 1f, 0f);
-			return;
-		}
-		if (currentAnim == null)
-		{
-			return;
-		}
-		KAnim.PlayMode mode = this.masterController.GetMode();
-		float playSpeed = this.masterController.GetPlaySpeed();
-		float elapsedTime = this.masterController.GetElapsedTime();
-		controller.Play(s, mode, playSpeed, elapsedTime);
-		Facing component = controller.synchronizedController.GetComponent<Facing>();
-		if (component != null)
-		{
-			float num = component.transform.GetPosition().x;
-			num += (this.masterController.FlipX ? -0.5f : 0.5f);
-			component.Face(num);
-			return;
-		}
-		controller.synchronizedController.FlipX = this.masterController.FlipX;
-		controller.synchronizedController.FlipY = this.masterController.FlipY;
-	}
+        var currentAnim = masterController.GetCurrentAnim();
+        if (currentAnim != null                           &&
+            !string.IsNullOrEmpty(controller.defaultAnim) &&
+            !controller.HasAnimation(currentAnim.name)) {
+            controller.Play(controller.defaultAnim, KAnim.PlayMode.Loop);
+            return;
+        }
 
-	public void Sync()
-	{
-		for (int i = 0; i < this.Targets.Count; i++)
-		{
-			KAnimControllerBase controller = this.Targets[i];
-			this.Sync(controller);
-		}
-		for (int j = 0; j < this.SyncedControllers.Count; j++)
-		{
-			KAnimSynchronizedController controller2 = this.SyncedControllers[j];
-			this.SyncController(controller2);
-		}
-	}
+        if (currentAnim == null) return;
 
-	public void SyncTime()
-	{
-		float elapsedTime = this.masterController.GetElapsedTime();
-		for (int i = 0; i < this.Targets.Count; i++)
-		{
-			this.Targets[i].SetElapsedTime(elapsedTime);
-		}
-		for (int j = 0; j < this.SyncedControllers.Count; j++)
-		{
-			this.SyncedControllers[j].synchronizedController.SetElapsedTime(elapsedTime);
-		}
-	}
+        var mode        = masterController.GetMode();
+        var playSpeed   = masterController.GetPlaySpeed();
+        var elapsedTime = masterController.GetElapsedTime();
+        controller.Play(currentAnim.name, mode, playSpeed, elapsedTime);
+        var component = controller.GetComponent<Facing>();
+        if (component != null) {
+            var num = component.transform.GetPosition().x;
+            num += masterController.FlipX ? -0.5f : 0.5f;
+            component.Face(num);
+            return;
+        }
 
-	private KAnimControllerBase masterController;
+        controller.FlipX = masterController.FlipX;
+        controller.FlipY = masterController.FlipY;
+    }
 
-	private List<KAnimControllerBase> Targets = new List<KAnimControllerBase>();
+    public void SyncController(KAnimSynchronizedController controller) {
+        if (masterController == null) return;
 
-	private List<KAnimSynchronizedController> SyncedControllers = new List<KAnimSynchronizedController>();
+        if (controller == null) return;
+
+        var currentAnim = masterController.GetCurrentAnim();
+        var s           = currentAnim != null ? currentAnim.name + controller.Postfix : string.Empty;
+        if (!string.IsNullOrEmpty(controller.synchronizedController.defaultAnim) &&
+            !controller.synchronizedController.HasAnimation(s)) {
+            controller.Play(controller.synchronizedController.defaultAnim, KAnim.PlayMode.Loop);
+            return;
+        }
+
+        if (currentAnim == null) return;
+
+        var mode        = masterController.GetMode();
+        var playSpeed   = masterController.GetPlaySpeed();
+        var elapsedTime = masterController.GetElapsedTime();
+        controller.Play(s, mode, playSpeed, elapsedTime);
+        var component = controller.synchronizedController.GetComponent<Facing>();
+        if (component != null) {
+            var num = component.transform.GetPosition().x;
+            num += masterController.FlipX ? -0.5f : 0.5f;
+            component.Face(num);
+            return;
+        }
+
+        controller.synchronizedController.FlipX = masterController.FlipX;
+        controller.synchronizedController.FlipY = masterController.FlipY;
+    }
+
+    public void Sync() {
+        for (var i = 0; i < Targets.Count; i++) {
+            var controller = Targets[i];
+            Sync(controller);
+        }
+
+        for (var j = 0; j < SyncedControllers.Count; j++) {
+            var controller2 = SyncedControllers[j];
+            SyncController(controller2);
+        }
+    }
+
+    public void SyncTime() {
+        var elapsedTime = masterController.GetElapsedTime();
+        for (var i = 0; i < Targets.Count; i++) Targets[i].SetElapsedTime(elapsedTime);
+        for (var j = 0; j < SyncedControllers.Count; j++)
+            SyncedControllers[j].synchronizedController.SetElapsedTime(elapsedTime);
+    }
 }

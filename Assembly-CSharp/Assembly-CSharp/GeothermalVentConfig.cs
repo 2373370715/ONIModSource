@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class GeothermalVentConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public virtual GameObject CreatePrefab()
+		public virtual GameObject CreatePrefab()
 	{
 		string id = "GeothermalVentEntity";
 		string name = STRINGS.BUILDINGS.PREFABS.GEOTHERMALVENT.NAME;
@@ -38,7 +38,7 @@ public class GeothermalVentConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		LogicPorts logicPorts = inst.AddOrGet<LogicPorts>();
 		logicPorts.inputPortInfo = new LogicPorts.Port[0];
@@ -48,63 +48,63 @@ public class GeothermalVentConfig : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "GeothermalVentEntity";
+		public const string ID = "GeothermalVentEntity";
 
-	public const string OUTPUT_LOGIC_PORT_ID = "GEOTHERMAL_VENT_STATUS_PORT";
+		public const string OUTPUT_LOGIC_PORT_ID = "GEOTHERMAL_VENT_STATUS_PORT";
 
-	private const string ANIM_FILE = "gravitas_geospout_kanim";
+		private const string ANIM_FILE = "gravitas_geospout_kanim";
 
-	public const string OFFLINE_ANIM = "off";
+		public const string OFFLINE_ANIM = "off";
 
-	public const string QUEST_ENTOMBED_ANIM = "pooped";
+		public const string QUEST_ENTOMBED_ANIM = "pooped";
 
-	public const string IDLE_ANIM = "on";
+		public const string IDLE_ANIM = "on";
 
-	public const string OBSTRUCTED_ANIM = "over_pressure";
+		public const string OBSTRUCTED_ANIM = "over_pressure";
 
-	public const int EMISSION_RANGE = 1;
+		public const int EMISSION_RANGE = 1;
 
-	public const float EMISSION_INTERVAL_SEC = 0.2f;
+		public const float EMISSION_INTERVAL_SEC = 0.2f;
 
-	public const float EMISSION_MAX_PRESSURE_KG = 120f;
+		public const float EMISSION_MAX_PRESSURE_KG = 120f;
 
-	public const float EMISSION_MAX_RATE_PER_TICK = 3f;
+		public const float EMISSION_MAX_RATE_PER_TICK = 3f;
 
-	public static string TOGGLE_ANIMATION = "working_loop";
+		public static string TOGGLE_ANIMATION = "working_loop";
 
-	public static HashedString TOGGLE_ANIM_OVERRIDE = "anim_interacts_geospout_kanim";
+		public static HashedString TOGGLE_ANIM_OVERRIDE = "anim_interacts_geospout_kanim";
 
-	public const float TOGGLE_CHORE_DURATION_SECONDS = 10f;
+		public const float TOGGLE_CHORE_DURATION_SECONDS = 10f;
 
-	public static MathUtil.MinMax INITIAL_DEBRIS_VELOCIOTY = new MathUtil.MinMax(1f, 5f);
+		public static MathUtil.MinMax INITIAL_DEBRIS_VELOCIOTY = new MathUtil.MinMax(1f, 5f);
 
-	public static MathUtil.MinMax INITIAL_DEBRIS_ANGLE = new MathUtil.MinMax(200f, 340f);
+		public static MathUtil.MinMax INITIAL_DEBRIS_ANGLE = new MathUtil.MinMax(200f, 340f);
 
-	public static MathUtil.MinMax DEBRIS_MASS_KG = new MathUtil.MinMax(30f, 34f);
+		public static MathUtil.MinMax DEBRIS_MASS_KG = new MathUtil.MinMax(30f, 34f);
 
-	public const string BAROMETER_ANIM = "meter";
+		public const string BAROMETER_ANIM = "meter";
 
-	public const string BAROMETER_TARGET = "meter_target";
+		public const string BAROMETER_TARGET = "meter_target";
 
-	public static string[] BAROMETER_SYMBOLS = new string[]
+		public static string[] BAROMETER_SYMBOLS = new string[]
 	{
 		"meter_target"
 	};
 
-	public const string CONNECTED_ANIM = "meter_connected";
+		public const string CONNECTED_ANIM = "meter_connected";
 
-	public const string CONNECTED_TARGET = "meter_connected_target";
+		public const string CONNECTED_TARGET = "meter_connected_target";
 
-	public static string[] CONNECTED_SYMBOLS = new string[]
+		public static string[] CONNECTED_SYMBOLS = new string[]
 	{
 		"meter_connected_target"
 	};
 
-	public const float CONNECTED_PROGRESS = 1f;
+		public const float CONNECTED_PROGRESS = 1f;
 
-	public const float DISCONNECTED_PROGRESS = 0f;
+		public const float DISCONNECTED_PROGRESS = 0f;
 }

@@ -2,6 +2,6 @@
 
 public enum LaunchableRocketRegisterType
 {
-	Spacecraft,
-	Clustercraft
+		Spacecraft,
+		Clustercraft
 }

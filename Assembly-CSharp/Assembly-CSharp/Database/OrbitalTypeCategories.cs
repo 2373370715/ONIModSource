@@ -2,9 +2,9 @@
 
 namespace Database
 {
-	public class OrbitalTypeCategories : ResourceSet<OrbitalData>
+		public class OrbitalTypeCategories : ResourceSet<OrbitalData>
 	{
-		public OrbitalTypeCategories(ResourceSet parent) : base("OrbitalTypeCategories", parent)
+				public OrbitalTypeCategories(ResourceSet parent) : base("OrbitalTypeCategories", parent)
 		{
 			this.backgroundEarth = new OrbitalData("backgroundEarth", this, "earth_kanim", "", OrbitalData.OrbitalType.world, 1f, 0.5f, 0.95f, 10f, 10f, 1.05f, true, 0.05f, 25f, 1f);
 			this.backgroundEarth.GetRenderZ = (() => Grid.GetLayerZ(Grid.SceneLayer.Background) + 0.9f);
@@ -20,26 +20,26 @@ namespace Database
 			this.landed = new OrbitalData("landed", this, "starmap_landed_surface_kanim", "", OrbitalData.OrbitalType.landed, 0f, 0.5f, 0.35f, -350f, 350f, 1.05f, false, 0.05f, 4f, 1f);
 		}
 
-		public OrbitalData backgroundEarth;
+				public OrbitalData backgroundEarth;
 
-		public OrbitalData frozenOre;
+				public OrbitalData frozenOre;
 
-		public OrbitalData heliumCloud;
+				public OrbitalData heliumCloud;
 
-		public OrbitalData iceCloud;
+				public OrbitalData iceCloud;
 
-		public OrbitalData iceRock;
+				public OrbitalData iceRock;
 
-		public OrbitalData purpleGas;
+				public OrbitalData purpleGas;
 
-		public OrbitalData radioactiveGas;
+				public OrbitalData radioactiveGas;
 
-		public OrbitalData rocky;
+				public OrbitalData rocky;
 
-		public OrbitalData gravitas;
+				public OrbitalData gravitas;
 
-		public OrbitalData orbit;
+				public OrbitalData orbit;
 
-		public OrbitalData landed;
+				public OrbitalData landed;
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/CavityVisualizer")]
 public class CavityVisualizer : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		foreach (TerrainCell key in MobSpawning.NaturalCavities.Keys)
@@ -21,7 +21,7 @@ public class CavityVisualizer : KMonoBehaviour
 		}
 	}
 
-	private void OnDrawGizmosSelected()
+		private void OnDrawGizmosSelected()
 	{
 		if (this.drawCavity)
 		{
@@ -55,11 +55,11 @@ public class CavityVisualizer : KMonoBehaviour
 		}
 	}
 
-	public List<int> cavityCells = new List<int>();
+		public List<int> cavityCells = new List<int>();
 
-	public List<int> spawnCells = new List<int>();
+		public List<int> spawnCells = new List<int>();
 
-	public bool drawCavity = true;
+		public bool drawCavity = true;
 
-	public bool drawSpawnCells = true;
+		public bool drawSpawnCells = true;
 }

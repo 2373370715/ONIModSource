@@ -6,16 +6,16 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Spawner")]
 public class Spawner : KMonoBehaviour, ISaveLoadable
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		SaveGame.Instance.worldGenSpawner.AddLegacySpawner(this.prefabTag, Grid.PosToCell(this));
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	[Serialize]
+		[Serialize]
 	public Tag prefabTag;
 
-	[Serialize]
+		[Serialize]
 	public int units = 1;
 }

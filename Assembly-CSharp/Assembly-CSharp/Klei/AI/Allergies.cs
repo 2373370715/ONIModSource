@@ -4,9 +4,9 @@ using STRINGS;
 
 namespace Klei.AI
 {
-	public class Allergies : Sickness
+		public class Allergies : Sickness
 	{
-		public Allergies() : base("Allergies", Sickness.SicknessType.Pathogen, Sickness.Severity.Minor, 0.00025f, new List<Sickness.InfectionVector>
+				public Allergies() : base("Allergies", Sickness.SicknessType.Pathogen, Sickness.Severity.Minor, 0.00025f, new List<Sickness.InfectionVector>
 		{
 			Sickness.InfectionVector.Inhalation
 		}, 60f, null)
@@ -24,8 +24,8 @@ namespace Klei.AI
 			}));
 		}
 
-		public const string ID = "Allergies";
+				public const string ID = "Allergies";
 
-		public const float STRESS_PER_CYCLE = 15f;
+				public const float STRESS_PER_CYCLE = 15f;
 	}
 }

@@ -3,25 +3,25 @@ using UnityEngine;
 
 public class ObjectLayerListItem
 {
-			public ObjectLayerListItem previousItem { get; private set; }
+				public ObjectLayerListItem previousItem { get; private set; }
 
-			public ObjectLayerListItem nextItem { get; private set; }
+				public ObjectLayerListItem nextItem { get; private set; }
 
-			public GameObject gameObject { get; private set; }
+				public GameObject gameObject { get; private set; }
 
-	public ObjectLayerListItem(GameObject gameObject, ObjectLayer layer, int new_cell)
+		public ObjectLayerListItem(GameObject gameObject, ObjectLayer layer, int new_cell)
 	{
 		this.gameObject = gameObject;
 		this.layer = layer;
 		this.Refresh(new_cell);
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		this.Refresh(Grid.InvalidCell);
 	}
 
-	public bool Refresh(int new_cell)
+		public bool Refresh(int new_cell)
 	{
 		if (this.cell != new_cell)
 		{
@@ -61,12 +61,12 @@ public class ObjectLayerListItem
 		return false;
 	}
 
-	public bool Update(int cell)
+		public bool Update(int cell)
 	{
 		return this.Refresh(cell);
 	}
 
-	private int cell = Grid.InvalidCell;
+		private int cell = Grid.InvalidCell;
 
-	private ObjectLayer layer;
+		private ObjectLayer layer;
 }

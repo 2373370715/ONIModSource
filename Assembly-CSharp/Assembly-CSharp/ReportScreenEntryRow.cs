@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/ReportScreenEntryRow")]
 public class ReportScreenEntryRow : KMonoBehaviour
 {
-	private List<ReportManager.ReportEntry.Note> Sort(List<ReportManager.ReportEntry.Note> notes, ReportManager.ReportEntry.Order order)
+		private List<ReportManager.ReportEntry.Note> Sort(List<ReportManager.ReportEntry.Note> notes, ReportManager.ReportEntry.Order order)
 	{
 		if (order == ReportManager.ReportEntry.Order.Ascending)
 		{
@@ -20,12 +20,12 @@ public class ReportScreenEntryRow : KMonoBehaviour
 		return notes;
 	}
 
-	public static void DestroyStatics()
+		public static void DestroyStatics()
 	{
 		ReportScreenEntryRow.notes = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.added.GetComponent<ToolTip>().OnToolTip = new Func<string>(this.OnPositiveNoteTooltip);
@@ -34,7 +34,7 @@ public class ReportScreenEntryRow : KMonoBehaviour
 		this.name.GetComponent<ToolTip>().OnToolTip = new Func<string>(this.OnNetNoteTooltip);
 	}
 
-	private string OnNoteTooltip(float total_accumulation, string tooltip_text, ReportManager.ReportEntry.Order order, ReportManager.FormattingFn format_fn, Func<ReportManager.ReportEntry.Note, bool> is_note_applicable_cb, ReportManager.GroupFormattingFn group_format_fn = null)
+		private string OnNoteTooltip(float total_accumulation, string tooltip_text, ReportManager.ReportEntry.Order order, ReportManager.FormattingFn format_fn, Func<ReportManager.ReportEntry.Note, bool> is_note_applicable_cb, ReportManager.GroupFormattingFn group_format_fn = null)
 	{
 		ReportScreenEntryRow.notes.Clear();
 		this.entry.IterateNotes(delegate(ReportManager.ReportEntry.Note note)
@@ -77,17 +77,17 @@ public class ReportScreenEntryRow : KMonoBehaviour
 		return string.Format(tooltip_text + "\n" + text, arg2, UI.ENDOFDAYREPORT.MY_COLONY);
 	}
 
-	private string OnNegativeNoteTooltip()
+		private string OnNegativeNoteTooltip()
 	{
 		return this.OnNoteTooltip(-this.entry.Negative, this.reportGroup.negativeTooltip, this.reportGroup.negNoteOrder, this.reportGroup.formatfn, (ReportManager.ReportEntry.Note note) => this.IsNegativeNote(note), this.reportGroup.groupFormatfn);
 	}
 
-	private string OnPositiveNoteTooltip()
+		private string OnPositiveNoteTooltip()
 	{
 		return this.OnNoteTooltip(this.entry.Positive, this.reportGroup.positiveTooltip, this.reportGroup.posNoteOrder, this.reportGroup.formatfn, (ReportManager.ReportEntry.Note note) => this.IsPositiveNote(note), this.reportGroup.groupFormatfn);
 	}
 
-	private string OnNetNoteTooltip()
+		private string OnNetNoteTooltip()
 	{
 		if (this.entry.Net > 0f)
 		{
@@ -96,17 +96,17 @@ public class ReportScreenEntryRow : KMonoBehaviour
 		return this.OnNegativeNoteTooltip();
 	}
 
-	private bool IsPositiveNote(ReportManager.ReportEntry.Note note)
+		private bool IsPositiveNote(ReportManager.ReportEntry.Note note)
 	{
 		return note.value > 0f;
 	}
 
-	private bool IsNegativeNote(ReportManager.ReportEntry.Note note)
+		private bool IsNegativeNote(ReportManager.ReportEntry.Note note)
 	{
 		return note.value < 0f;
 	}
 
-	public void SetLine(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup)
+		public void SetLine(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup)
 	{
 		this.entry = entry;
 		this.reportGroup = reportGroup;
@@ -217,47 +217,47 @@ public class ReportScreenEntryRow : KMonoBehaviour
 		neg_notes.Recycle();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public new LocText name;
 
-	[SerializeField]
+		[SerializeField]
 	public LocText added;
 
-	[SerializeField]
+		[SerializeField]
 	public LocText removed;
 
-	[SerializeField]
+		[SerializeField]
 	public LocText net;
 
-	private float addedValue = float.NegativeInfinity;
+		private float addedValue = float.NegativeInfinity;
 
-	private float removedValue = float.NegativeInfinity;
+		private float removedValue = float.NegativeInfinity;
 
-	private float netValue = float.NegativeInfinity;
+		private float netValue = float.NegativeInfinity;
 
-	[SerializeField]
+		[SerializeField]
 	public MultiToggle toggle;
 
-	[SerializeField]
+		[SerializeField]
 	private LayoutElement spacer;
 
-	[SerializeField]
+		[SerializeField]
 	private Image bgImage;
 
-	public float groupSpacerWidth;
+		public float groupSpacerWidth;
 
-	public float contextSpacerWidth;
+		public float contextSpacerWidth;
 
-	private float nameWidth = 164f;
+		private float nameWidth = 164f;
 
-	private float indentWidth = 6f;
+		private float indentWidth = 6f;
 
-	[SerializeField]
+		[SerializeField]
 	private Color oddRowColor;
 
-	private static List<ReportManager.ReportEntry.Note> notes = new List<ReportManager.ReportEntry.Note>();
+		private static List<ReportManager.ReportEntry.Note> notes = new List<ReportManager.ReportEntry.Note>();
 
-	private ReportManager.ReportEntry entry;
+		private ReportManager.ReportEntry entry;
 
-	private ReportManager.ReportGroup reportGroup;
+		private ReportManager.ReportGroup reportGroup;
 }

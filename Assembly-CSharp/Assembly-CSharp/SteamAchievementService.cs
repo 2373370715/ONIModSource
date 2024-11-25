@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SteamAchievementService : MonoBehaviour
 {
-		public static SteamAchievementService Instance
+			public static SteamAchievementService Instance
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class SteamAchievementService : MonoBehaviour
 		}
 	}
 
-	public static void Initialize()
+		public static void Initialize()
 	{
 		if (SteamAchievementService.instance == null)
 		{
@@ -26,20 +26,20 @@ public class SteamAchievementService : MonoBehaviour
 		}
 	}
 
-	public void Awake()
+		public void Awake()
 	{
 		this.setupComplete = false;
 		global::Debug.Assert(SteamAchievementService.instance == null);
 		SteamAchievementService.instance = this;
 	}
 
-	private void OnDestroy()
+		private void OnDestroy()
 	{
 		global::Debug.Assert(SteamAchievementService.instance == this);
 		SteamAchievementService.instance = null;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!SteamManager.Initialized)
 		{
@@ -55,7 +55,7 @@ public class SteamAchievementService : MonoBehaviour
 		}
 	}
 
-	private void Setup()
+		private void Setup()
 	{
 		this.cbUserStatsReceived = Callback<UserStatsReceived_t>.Create(new Callback<UserStatsReceived_t>.DispatchDelegate(this.OnUserStatsReceived));
 		this.cbUserStatsStored = Callback<UserStatsStored_t>.Create(new Callback<UserStatsStored_t>.DispatchDelegate(this.OnUserStatsStored));
@@ -64,12 +64,12 @@ public class SteamAchievementService : MonoBehaviour
 		this.RefreshStats();
 	}
 
-	private void RefreshStats()
+		private void RefreshStats()
 	{
 		SteamUserStats.RequestCurrentStats();
 	}
 
-	private void OnUserStatsReceived(UserStatsReceived_t data)
+		private void OnUserStatsReceived(UserStatsReceived_t data)
 	{
 		if (data.m_eResult != EResult.k_EResultOK)
 		{
@@ -83,7 +83,7 @@ public class SteamAchievementService : MonoBehaviour
 		}
 	}
 
-	private void OnUserStatsStored(UserStatsStored_t data)
+		private void OnUserStatsStored(UserStatsStored_t data)
 	{
 		if (data.m_eResult != EResult.k_EResultOK)
 		{
@@ -96,11 +96,11 @@ public class SteamAchievementService : MonoBehaviour
 		}
 	}
 
-	private void OnUserAchievementStored(UserAchievementStored_t data)
+		private void OnUserAchievementStored(UserAchievementStored_t data)
 	{
 	}
 
-	public void Unlock(string achievement_id)
+		public void Unlock(string achievement_id)
 	{
 		bool flag = SteamUserStats.SetAchievement(achievement_id);
 		global::Debug.LogFormat("SetAchievement {0} {1}", new object[]
@@ -115,7 +115,7 @@ public class SteamAchievementService : MonoBehaviour
 		});
 	}
 
-	[Conditional("UNITY_EDITOR")]
+		[Conditional("UNITY_EDITOR")]
 	[ContextMenu("Reset All Achievements")]
 	private void ResetAllAchievements()
 	{
@@ -130,13 +130,13 @@ public class SteamAchievementService : MonoBehaviour
 		}
 	}
 
-	private Callback<UserStatsReceived_t> cbUserStatsReceived;
+		private Callback<UserStatsReceived_t> cbUserStatsReceived;
 
-	private Callback<UserStatsStored_t> cbUserStatsStored;
+		private Callback<UserStatsStored_t> cbUserStatsStored;
 
-	private Callback<UserAchievementStored_t> cbUserAchievementStored;
+		private Callback<UserAchievementStored_t> cbUserAchievementStored;
 
-	private bool setupComplete;
+		private bool setupComplete;
 
-	private static SteamAchievementService instance;
+		private static SteamAchievementService instance;
 }

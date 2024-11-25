@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SparkleStreaker : GameStateMachine<SparkleStreaker, SparkleStreaker.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.neutral;
 		this.root.TagTransition(GameTags.Dead, null, false);
@@ -30,30 +30,30 @@ public class SparkleStreaker : GameStateMachine<SparkleStreaker, SparkleStreaker
 		}).EventTransition(GameHashes.ObjectMovementStateChanged, this.overjoyed.idle, (SparkleStreaker.Instance smi) => !smi.IsMoving());
 	}
 
-	private Vector3 offset = new Vector3(0f, 0f, 0.1f);
+		private Vector3 offset = new Vector3(0f, 0f, 0.1f);
 
-	public GameStateMachine<SparkleStreaker, SparkleStreaker.Instance, IStateMachineTarget, object>.State neutral;
+		public GameStateMachine<SparkleStreaker, SparkleStreaker.Instance, IStateMachineTarget, object>.State neutral;
 
-	public SparkleStreaker.OverjoyedStates overjoyed;
+		public SparkleStreaker.OverjoyedStates overjoyed;
 
-	public string soundPath = GlobalAssets.GetSound("SparkleStreaker_lp", false);
+		public string soundPath = GlobalAssets.GetSound("SparkleStreaker_lp", false);
 
-	public HashedString SPARKLE_STREAKER_MOVING_PARAMETER = "sparkleStreaker_moving";
+		public HashedString SPARKLE_STREAKER_MOVING_PARAMETER = "sparkleStreaker_moving";
 
-	public class OverjoyedStates : GameStateMachine<SparkleStreaker, SparkleStreaker.Instance, IStateMachineTarget, object>.State
+		public class OverjoyedStates : GameStateMachine<SparkleStreaker, SparkleStreaker.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<SparkleStreaker, SparkleStreaker.Instance, IStateMachineTarget, object>.State idle;
+				public GameStateMachine<SparkleStreaker, SparkleStreaker.Instance, IStateMachineTarget, object>.State idle;
 
-		public GameStateMachine<SparkleStreaker, SparkleStreaker.Instance, IStateMachineTarget, object>.State moving;
+				public GameStateMachine<SparkleStreaker, SparkleStreaker.Instance, IStateMachineTarget, object>.State moving;
 	}
 
-	public new class Instance : GameStateMachine<SparkleStreaker, SparkleStreaker.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<SparkleStreaker, SparkleStreaker.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 
-		public void CreatePasserbyReactable()
+				public void CreatePasserbyReactable()
 		{
 			if (this.passerbyReactable == null)
 			{
@@ -65,17 +65,17 @@ public class SparkleStreaker : GameStateMachine<SparkleStreaker, SparkleStreaker
 			}
 		}
 
-		private void AddReactionEffect(GameObject reactor)
+				private void AddReactionEffect(GameObject reactor)
 		{
 			reactor.GetComponent<Effects>().Add("SawSparkleStreaker", true);
 		}
 
-		private bool ReactorIsOnFloor(GameObject reactor, Navigator.ActiveTransition transition)
+				private bool ReactorIsOnFloor(GameObject reactor, Navigator.ActiveTransition transition)
 		{
 			return transition.end == NavType.Floor;
 		}
 
-		public void ClearPasserbyReactable()
+				public void ClearPasserbyReactable()
 		{
 			if (this.passerbyReactable != null)
 			{
@@ -84,18 +84,18 @@ public class SparkleStreaker : GameStateMachine<SparkleStreaker, SparkleStreaker
 			}
 		}
 
-		public bool IsMoving()
+				public bool IsMoving()
 		{
 			return base.smi.master.GetComponent<Navigator>().IsMoving();
 		}
 
-		public void SetSparkleSoundParam(float val)
+				public void SetSparkleSoundParam(float val)
 		{
 			base.GetComponent<LoopingSounds>().SetParameter(GlobalAssets.GetSound("SparkleStreaker_lp", false), "sparkleStreaker_moving", val);
 		}
 
-		private Reactable passerbyReactable;
+				private Reactable passerbyReactable;
 
-		public GameObject sparkleStreakFX;
+				public GameObject sparkleStreakFX;
 	}
 }

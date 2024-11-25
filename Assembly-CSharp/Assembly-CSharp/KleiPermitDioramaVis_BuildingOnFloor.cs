@@ -4,22 +4,22 @@ using UnityEngine;
 
 public class KleiPermitDioramaVis_BuildingOnFloor : KMonoBehaviour, IKleiPermitDioramaVisTarget
 {
-	public GameObject GetGameObject()
+		public GameObject GetGameObject()
 	{
 		return base.gameObject;
 	}
 
-	public void ConfigureSetup()
+		public void ConfigureSetup()
 	{
 	}
 
-	public void ConfigureWith(PermitResource permit)
+		public void ConfigureWith(PermitResource permit)
 	{
 		BuildingFacadeResource buildingPermit = (BuildingFacadeResource)permit;
 		KleiPermitVisUtil.ConfigureToRenderBuilding(this.buildingKAnim, buildingPermit);
 		KleiPermitVisUtil.AnimateIn(this.buildingKAnim, default(Updater));
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KBatchedAnimController buildingKAnim;
 }

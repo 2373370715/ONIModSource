@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PropSurfaceSatellite1Config : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PropSurfaceSatellite1";
 		string name = STRINGS.BUILDINGS.PREFABS.PROPSURFACESATELLITE1.NAME;
@@ -42,7 +42,7 @@ public class PropSurfaceSatellite1Config : IEntityConfig
 		return gameObject;
 	}
 
-	public static string[][] GetLockerBaseContents()
+		public static string[][] GetLockerBaseContents()
 	{
 		string text = DlcManager.FeatureClusterSpaceEnabled() ? "OrbitalResearchDatabank" : "ResearchDatabank";
 		return new string[][]
@@ -69,7 +69,7 @@ public class PropSurfaceSatellite1Config : IEntityConfig
 		};
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		SetLocker component = inst.GetComponent<SetLocker>();
 		component.possible_contents_ids = PropSurfaceSatellite1Config.GetLockerBaseContents();
@@ -86,7 +86,7 @@ public class PropSurfaceSatellite1Config : IEntityConfig
 		radiationEmitter.emitRads = 2400f / ((float)radiationEmitter.emitRadiusX / 6f);
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		RadiationEmitter component = inst.GetComponent<RadiationEmitter>();
 		if (component != null)
@@ -95,5 +95,5 @@ public class PropSurfaceSatellite1Config : IEntityConfig
 		}
 	}
 
-	public const string ID = "PropSurfaceSatellite1";
+		public const string ID = "PropSurfaceSatellite1";
 }

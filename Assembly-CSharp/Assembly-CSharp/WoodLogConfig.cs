@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class WoodLogConfig : IOreConfig
 {
-		public SimHashes ElementID
+			public SimHashes ElementID
 	{
 		get
 		{
@@ -11,12 +11,12 @@ public class WoodLogConfig : IOreConfig
 		}
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateSolidOreEntity(this.ElementID, null);
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
@@ -26,25 +26,25 @@ public class WoodLogConfig : IOreConfig
 		return gameObject;
 	}
 
-	public void OnInit(GameObject inst)
+		public void OnInit(GameObject inst)
 	{
 		PrimaryElement component = inst.GetComponent<PrimaryElement>();
 		component.SetElement(this.ElementID, true);
 		Element element = component.Element;
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		inst.GetComponent<PrimaryElement>().SetElement(this.ElementID, true);
 	}
 
-	public const string ID = "WoodLog";
+		public const string ID = "WoodLog";
 
-	public const float C02MassEmissionWhenBurned = 0.142f;
+		public const float C02MassEmissionWhenBurned = 0.142f;
 
-	public const float HeatWhenBurned = 7500f;
+		public const float HeatWhenBurned = 7500f;
 
-	public const float EnergyWhenBurned = 250f;
+		public const float EnergyWhenBurned = 250f;
 
-	public static readonly Tag TAG = TagManager.Create("WoodLog");
+		public static readonly Tag TAG = TagManager.Create("WoodLog");
 }

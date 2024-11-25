@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class BuildWatermark : KScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		BuildWatermark.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.RefreshText();
 	}
 
-	public static string GetBuildText()
+		public static string GetBuildText()
 	{
 		string text = DistributionPlatform.Initialized ? (LaunchInitializer.BuildPrefix() + "-") : "??-";
 		if (Application.isEditor)
@@ -26,7 +26,7 @@ public class BuildWatermark : KScreen
 		}
 		else
 		{
-			text += 626616U.ToString();
+			text += 642695U.ToString();
 		}
 		if (DistributionPlatform.Initialized)
 		{
@@ -43,7 +43,7 @@ public class BuildWatermark : KScreen
 		return text;
 	}
 
-	public void RefreshText()
+		public void RefreshText()
 	{
 		bool flag = true;
 		bool flag2 = DistributionPlatform.Initialized && DistributionPlatform.Inst.IsArchiveBranch;
@@ -69,7 +69,7 @@ public class BuildWatermark : KScreen
 		}
 	}
 
-	private void ShowTestingMessage()
+		private void ShowTestingMessage()
 	{
 		Util.KInstantiateUI<ConfirmDialogScreen>(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, Global.Instance.globalCanvas, true).PopupConfirmDialog(UI.DEVELOPMENTBUILDS.TESTING_MESSAGE, delegate
 		{
@@ -79,15 +79,15 @@ public class BuildWatermark : KScreen
 		}, null, null, UI.DEVELOPMENTBUILDS.TESTING_MESSAGE_TITLE, UI.DEVELOPMENTBUILDS.TESTING_MORE_INFO, null, null);
 	}
 
-	public bool interactable = true;
+		public bool interactable = true;
 
-	public LocText textDisplay;
+		public LocText textDisplay;
 
-	public ToolTip toolTip;
+		public ToolTip toolTip;
 
-	public KButton button;
+		public KButton button;
 
-	public List<GameObject> archiveIcons;
+		public List<GameObject> archiveIcons;
 
-	public static BuildWatermark Instance;
+		public static BuildWatermark Instance;
 }

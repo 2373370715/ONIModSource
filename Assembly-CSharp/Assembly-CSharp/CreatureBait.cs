@@ -4,12 +4,12 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class CreatureBait : StateMachineComponent<CreatureBait.StatesInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Tag[] constructionElements = base.GetComponent<Deconstructable>().constructionElements;
@@ -21,19 +21,19 @@ public class CreatureBait : StateMachineComponent<CreatureBait.StatesInstance>
 		base.smi.StartSM();
 	}
 
-	[Serialize]
+		[Serialize]
 	public Tag baitElement;
 
-	public class StatesInstance : GameStateMachine<CreatureBait.States, CreatureBait.StatesInstance, CreatureBait, object>.GameInstance
+		public class StatesInstance : GameStateMachine<CreatureBait.States, CreatureBait.StatesInstance, CreatureBait, object>.GameInstance
 	{
-		public StatesInstance(CreatureBait master) : base(master)
+				public StatesInstance(CreatureBait master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<CreatureBait.States, CreatureBait.StatesInstance, CreatureBait>
+		public class States : GameStateMachine<CreatureBait.States, CreatureBait.StatesInstance, CreatureBait>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.idle.ToggleMainStatusItem(Db.Get().BuildingStatusItems.Baited, null).Enter(delegate(CreatureBait.StatesInstance smi)
@@ -49,8 +49,8 @@ public class CreatureBait : StateMachineComponent<CreatureBait.StatesInstance>
 			});
 		}
 
-		public GameStateMachine<CreatureBait.States, CreatureBait.StatesInstance, CreatureBait, object>.State idle;
+				public GameStateMachine<CreatureBait.States, CreatureBait.StatesInstance, CreatureBait, object>.State idle;
 
-		public GameStateMachine<CreatureBait.States, CreatureBait.StatesInstance, CreatureBait, object>.State destroy;
+				public GameStateMachine<CreatureBait.States, CreatureBait.StatesInstance, CreatureBait, object>.State destroy;
 	}
 }

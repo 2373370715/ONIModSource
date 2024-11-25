@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class SoundUtil
 {
-	public static float GetLiquidDepth(int cell)
+		public static float GetLiquidDepth(int cell)
 	{
 		float num = 0f;
 		num += Grid.Mass[cell] * (Grid.Element[cell].IsLiquid ? 1f : 0f);
@@ -15,7 +15,7 @@ public static class SoundUtil
 		return Mathf.Min(num / 1000f, 1f);
 	}
 
-	public static float GetLiquidVolume(float mass)
+		public static float GetLiquidVolume(float mass)
 	{
 		return Mathf.Min(mass / 100f, 1f);
 	}

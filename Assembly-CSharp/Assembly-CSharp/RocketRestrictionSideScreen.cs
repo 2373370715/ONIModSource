@@ -3,30 +3,30 @@ using UnityEngine;
 
 public class RocketRestrictionSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.unrestrictedButton.onClick += this.ClickNone;
 		this.spaceRestrictedButton.onClick += this.ClickSpace;
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		return 0;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetSMI<RocketControlStation.StatesInstance>() != null;
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		this.controlStation = new_target.GetComponent<RocketControlStation>();
 		this.controlStationLogicSubHandle = this.controlStation.Subscribe(1861523068, new Action<object>(this.UpdateButtonStates));
 		this.UpdateButtonStates(null);
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 		if (this.controlStationLogicSubHandle != -1 && this.controlStation != null)
 		{
@@ -36,7 +36,7 @@ public class RocketRestrictionSideScreen : SideScreenContent
 		this.controlStation = null;
 	}
 
-	private void UpdateButtonStates(object data = null)
+		private void UpdateButtonStates(object data = null)
 	{
 		bool flag = this.controlStation.IsLogicInputConnected();
 		if (!flag)
@@ -49,26 +49,26 @@ public class RocketRestrictionSideScreen : SideScreenContent
 		this.automationControlled.gameObject.SetActive(flag);
 	}
 
-	private void ClickNone()
+		private void ClickNone()
 	{
 		this.controlStation.RestrictWhenGrounded = false;
 		this.UpdateButtonStates(null);
 	}
 
-	private void ClickSpace()
+		private void ClickSpace()
 	{
 		this.controlStation.RestrictWhenGrounded = true;
 		this.UpdateButtonStates(null);
 	}
 
-	private RocketControlStation controlStation;
+		private RocketControlStation controlStation;
 
-	[Header("Buttons")]
+		[Header("Buttons")]
 	public KToggle unrestrictedButton;
 
-	public KToggle spaceRestrictedButton;
+		public KToggle spaceRestrictedButton;
 
-	public GameObject automationControlled;
+		public GameObject automationControlled;
 
-	private int controlStationLogicSubHandle = -1;
+		private int controlStationLogicSubHandle = -1;
 }

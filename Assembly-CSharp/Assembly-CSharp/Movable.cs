@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Movable")]
 public class Movable : Workable
 {
-		public bool IsMarkedForMove
+			public bool IsMarkedForMove
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class Movable : Workable
 		}
 	}
 
-		public Storage StorageProxy
+			public Storage StorageProxy
 	{
 		get
 		{
@@ -27,14 +27,14 @@ public class Movable : Workable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe(493375141, new Action<object>(this.OnRefreshUserMenu));
 		base.Subscribe(1335436905, new Action<object>(this.OnSplitFromChunk));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.isMarkedForMove)
@@ -69,7 +69,7 @@ public class Movable : Workable
 		}
 	}
 
-	private void OnReachableChanged(object data)
+		private void OnReachableChanged(object data)
 	{
 		if (this.isMarkedForMove)
 		{
@@ -97,7 +97,7 @@ public class Movable : Workable
 		}
 	}
 
-	private void OnSplitFromChunk(object data)
+		private void OnSplitFromChunk(object data)
 	{
 		Pickupable pickupable = data as Pickupable;
 		if (pickupable != null)
@@ -111,7 +111,7 @@ public class Movable : Workable
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (this.isMarkedForMove && this.StorageProxy != null)
@@ -121,7 +121,7 @@ public class Movable : Workable
 		}
 	}
 
-	private void CleanupMove(object data)
+		private void CleanupMove(object data)
 	{
 		if (this.StorageProxy != null)
 		{
@@ -129,7 +129,7 @@ public class Movable : Workable
 		}
 	}
 
-	public void ClearMove()
+		public void ClearMove()
 	{
 		if (this.isMarkedForMove)
 		{
@@ -153,7 +153,7 @@ public class Movable : Workable
 		this.UpdateStatusItem();
 	}
 
-	private void ClearStorageProxy()
+		private void ClearStorageProxy()
 	{
 		if (this.storageReachableChangedHandle != -1)
 		{
@@ -163,12 +163,12 @@ public class Movable : Workable
 		this.storageProxy = null;
 	}
 
-	private void OnClickMove()
+		private void OnClickMove()
 	{
 		MoveToLocationTool.Instance.Activate(this);
 	}
 
-	private void OnClickCancel()
+		private void OnClickCancel()
 	{
 		if (this.StorageProxy != null)
 		{
@@ -176,7 +176,7 @@ public class Movable : Workable
 		}
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (this.pickupable.KPrefabID.HasTag(GameTags.Stored))
 		{
@@ -186,14 +186,14 @@ public class Movable : Workable
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	public void MoveToLocation(int cell)
+		public void MoveToLocation(int cell)
 	{
 		this.CreateStorageProxy(cell);
 		this.MarkForMove();
 		base.gameObject.Trigger(1122777325, base.gameObject);
 	}
 
-	private void MarkForMove()
+		private void MarkForMove()
 	{
 		base.Trigger(2127324410, null);
 		this.isMarkedForMove = true;
@@ -206,7 +206,7 @@ public class Movable : Workable
 		this.UpdateStatusItem();
 	}
 
-	private void UpdateStatusItem()
+		private void UpdateStatusItem()
 	{
 		if (this.IsCritter())
 		{
@@ -215,17 +215,17 @@ public class Movable : Workable
 		}
 	}
 
-	private bool IsCritter()
+		private bool IsCritter()
 	{
 		return base.GetComponent<Capturable>() != null;
 	}
 
-	public bool CanMoveTo(int cell)
+		public bool CanMoveTo(int cell)
 	{
 		return !Grid.IsSolidCell(cell) && Grid.IsWorldValidCell(cell) && base.gameObject.IsMyParentWorld(cell);
 	}
 
-	private void CreateStorageProxy(int cell)
+		private void CreateStorageProxy(int cell)
 	{
 		if (this.storageProxy == null || this.storageProxy.Get() == null)
 		{
@@ -243,22 +243,22 @@ public class Movable : Workable
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Pickupable pickupable;
 
-	[Serialize]
+		[Serialize]
 	private bool isMarkedForMove;
 
-	[Serialize]
+		[Serialize]
 	private Ref<Storage> storageProxy;
 
-	private int storageReachableChangedHandle = -1;
+		private int storageReachableChangedHandle = -1;
 
-	private int reachableChangedHandle = -1;
+		private int reachableChangedHandle = -1;
 
-	private int cancelHandle = -1;
+		private int cancelHandle = -1;
 
-	private Guid pendingMoveGuid;
+		private Guid pendingMoveGuid;
 
-	private Guid storageUnreachableGuid;
+		private Guid storageUnreachableGuid;
 }

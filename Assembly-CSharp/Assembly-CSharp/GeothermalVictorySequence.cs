@@ -5,12 +5,12 @@ using UnityEngine;
 
 public static class GeothermalVictorySequence
 {
-	public static void Start(KMonoBehaviour controller)
+		public static void Start(KMonoBehaviour controller)
 	{
 		controller.StartCoroutine(GeothermalVictorySequence.Sequence());
 	}
 
-	private static IEnumerator Sequence()
+		private static IEnumerator Sequence()
 	{
 		if (GeothermalVictorySequence.VictoryVent == null)
 		{
@@ -77,5 +77,5 @@ public static class GeothermalVictorySequence
 		yield break;
 	}
 
-	public static GeothermalVent VictoryVent;
+		public static GeothermalVent VictoryVent;
 }

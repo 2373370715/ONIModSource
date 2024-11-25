@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class CodexScreen : KScreen
 {
-			public string activeEntryID
+				public string activeEntryID
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class CodexScreen : KScreen
 		}
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.ConsumeMouseScroll = true;
 		base.OnActivate();
@@ -51,7 +51,7 @@ public class CodexScreen : KScreen
 		});
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.editingSearch)
 		{
@@ -60,12 +60,12 @@ public class CodexScreen : KScreen
 		base.OnKeyDown(e);
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 50f;
 	}
 
-	public void RefreshTutorialMessages()
+		public void RefreshTutorialMessages()
 	{
 		if (!this.HasFocus)
 		{
@@ -103,7 +103,7 @@ public class CodexScreen : KScreen
 		}
 	}
 
-	private void CodexScreenInit()
+		private void CodexScreenInit()
 	{
 		this.textStyles[CodexTextStyle.Title] = this.textStyleTitle;
 		this.textStyles[CodexTextStyle.Subtitle] = this.textStyleSubtitle;
@@ -132,7 +132,7 @@ public class CodexScreen : KScreen
 		KInputManager.InputChange.AddListener(new UnityAction(this.RefreshTutorialMessages));
 	}
 
-	private void SetupPrefabs()
+		private void SetupPrefabs()
 	{
 		this.contentContainerPool = new UIGameObjectPool(this.prefabContentContainer);
 		this.contentContainerPool.disabledElementParent = this.widgetPool;
@@ -153,35 +153,17 @@ public class CodexScreen : KScreen
 		this.ContentPrefabs[typeof(CodexConversionPanel)] = this.prefabConversionPanel;
 		this.ContentPrefabs[typeof(CodexCollapsibleHeader)] = this.prefabCollapsibleHeader;
 		this.ContentPrefabs[typeof(CodexCritterLifecycleWidget)] = this.prefabCritterLifecycleWidget;
+		this.ContentPrefabs[typeof(CodexElementCategoryList)] = this.prefabElementCategoryList;
 	}
 
-	private List<CodexEntry> FilterSearch(string input)
+		private List<CodexEntry> FilterSearch(string input)
 	{
 		this.searchResults.Clear();
 		this.subEntrySearchResults.Clear();
 		input = input.ToLower();
 		foreach (KeyValuePair<string, CodexEntry> keyValuePair in CodexCache.entries)
 		{
-			bool flag = false;
-			string[] dlcIds = keyValuePair.Value.GetDlcIds();
-			for (int i = 0; i < dlcIds.Length; i++)
-			{
-				if (SaveLoader.Instance.IsDLCActiveForCurrentSave(dlcIds[i]))
-				{
-					flag = true;
-					break;
-				}
-			}
-			string[] forbiddenDLCs = keyValuePair.Value.GetForbiddenDLCs();
-			for (int j = 0; j < forbiddenDLCs.Length; j++)
-			{
-				if (SaveLoader.Instance.IsDLCActiveForCurrentSave(forbiddenDLCs[j]))
-				{
-					flag = false;
-					break;
-				}
-			}
-			if (flag)
+			if (SaveLoader.Instance.IsCorrectDlcActiveForCurrentSave(keyValuePair.Value.GetDlcIds(), keyValuePair.Value.GetForbiddenDLCs()))
 			{
 				if (input == "")
 				{
@@ -207,7 +189,7 @@ public class CodexScreen : KScreen
 		return this.searchResults;
 	}
 
-	private bool HasUnlockedCategoryEntries(string entryID)
+		private bool HasUnlockedCategoryEntries(string entryID)
 	{
 		foreach (ContentContainer contentContainer in CodexCache.entries[entryID].contentContainers)
 		{
@@ -219,7 +201,7 @@ public class CodexScreen : KScreen
 		return false;
 	}
 
-	private void FilterEntries(bool allowOpenCategories = true)
+		private void FilterEntries(bool allowOpenCategories = true)
 	{
 		foreach (KeyValuePair<CodexEntry, GameObject> keyValuePair in this.entryButtons)
 		{
@@ -255,13 +237,13 @@ public class CodexScreen : KScreen
 		}
 	}
 
-	private void ToggleCategoryOpen(GameObject header, bool open)
+		private void ToggleCategoryOpen(GameObject header, bool open)
 	{
 		header.GetComponent<HierarchyReferences>().GetReference<MultiToggle>("ExpandToggle").ChangeState(open ? 1 : 0);
 		header.GetComponent<HierarchyReferences>().GetReference("Content").gameObject.SetActive(open);
 	}
 
-	private void PopulatePools()
+		private void PopulatePools()
 	{
 		foreach (KeyValuePair<Type, GameObject> keyValuePair in this.ContentPrefabs)
 		{
@@ -271,7 +253,7 @@ public class CodexScreen : KScreen
 		}
 	}
 
-	private GameObject NewCategoryHeader(KeyValuePair<string, CodexEntry> entryKVP, Dictionary<string, GameObject> categories)
+		private GameObject NewCategoryHeader(KeyValuePair<string, CodexEntry> entryKVP, Dictionary<string, GameObject> categories)
 	{
 		if (entryKVP.Value.category == "")
 		{
@@ -298,7 +280,7 @@ public class CodexScreen : KScreen
 		return categoryHeader;
 	}
 
-	private void CategorizeEntries()
+		private void CategorizeEntries()
 	{
 		GameObject gameObject = this.navigatorContent.gameObject;
 		Dictionary<string, GameObject> dictionary = new Dictionary<string, GameObject>();
@@ -383,7 +365,7 @@ public class CodexScreen : KScreen
 		CodexScreen.SetupCategory(dictionary, "Root");
 	}
 
-	private static void SetupCategory(Dictionary<string, GameObject> categories, string category_name)
+		private static void SetupCategory(Dictionary<string, GameObject> categories, string category_name)
 	{
 		if (!categories.ContainsKey(category_name))
 		{
@@ -392,7 +374,7 @@ public class CodexScreen : KScreen
 		categories[category_name].transform.parent.SetAsFirstSibling();
 	}
 
-	public void ChangeArticle(string id, bool playClickSound = false, Vector3 targetPosition = default(Vector3), CodexScreen.HistoryDirection historyMovement = CodexScreen.HistoryDirection.NewArticle)
+		public void ChangeArticle(string id, bool playClickSound = false, Vector3 targetPosition = default(Vector3), CodexScreen.HistoryDirection historyMovement = CodexScreen.HistoryDirection.NewArticle)
 	{
 		global::Debug.Assert(id != null);
 		if (playClickSound)
@@ -611,7 +593,7 @@ public class CodexScreen : KScreen
 		this.displayScrollRect.content.SetLocalPosition(Vector3.zero);
 	}
 
-	private void HistoryStepBack()
+		private void HistoryStepBack()
 	{
 		if (this.currentHistoryIdx == 0)
 		{
@@ -620,7 +602,7 @@ public class CodexScreen : KScreen
 		this.ChangeArticle(this.history[this.currentHistoryIdx - 1].id, false, this.history[this.currentHistoryIdx - 1].position, CodexScreen.HistoryDirection.Back);
 	}
 
-	private void HistoryStepForward()
+		private void HistoryStepForward()
 	{
 		if (this.currentHistoryIdx == this.history.Count - 1)
 		{
@@ -629,7 +611,7 @@ public class CodexScreen : KScreen
 		this.ChangeArticle(this.history[this.currentHistoryIdx + 1].id, false, this.history[this.currentHistoryIdx + 1].position, CodexScreen.HistoryDirection.Forward);
 	}
 
-	private void HistoryStepUp()
+		private void HistoryStepUp()
 	{
 		if (string.IsNullOrEmpty(CodexCache.entries[this.activeEntryID].parentId))
 		{
@@ -638,7 +620,7 @@ public class CodexScreen : KScreen
 		this.ChangeArticle(CodexCache.entries[this.activeEntryID].parentId, false, default(Vector3), CodexScreen.HistoryDirection.Up);
 	}
 
-	private IEnumerator ScrollToTarget(RectTransform targetWidgetTransform)
+		private IEnumerator ScrollToTarget(RectTransform targetWidgetTransform)
 	{
 		yield return 0;
 		this.displayScrollRect.content.SetLocalPosition(Vector3.down * (this.displayScrollRect.content.InverseTransformPoint(targetWidgetTransform.GetPosition()).y + 12f));
@@ -646,7 +628,7 @@ public class CodexScreen : KScreen
 		yield break;
 	}
 
-	private IEnumerator ScrollToTarget(Vector3 position)
+		private IEnumerator ScrollToTarget(Vector3 position)
 	{
 		yield return 0;
 		this.displayScrollRect.content.SetLocalPosition(position);
@@ -654,7 +636,7 @@ public class CodexScreen : KScreen
 		yield break;
 	}
 
-	public void FocusContainer(ContentContainer target)
+		public void FocusContainer(ContentContainer target)
 	{
 		if (target == null || target.go == null)
 		{
@@ -672,7 +654,7 @@ public class CodexScreen : KScreen
 		this.scrollToTargetRoutine = base.StartCoroutine(this.ScrollToTarget(rectTransform));
 	}
 
-	private void ConfigureContentContainer(ContentContainer container, GameObject containerGameObject, bool bgColor = false)
+		private void ConfigureContentContainer(ContentContainer container, GameObject containerGameObject, bool bgColor = false)
 	{
 		container.go = containerGameObject;
 		LayoutGroup layoutGroup = containerGameObject.GetComponent<LayoutGroup>();
@@ -726,188 +708,191 @@ public class CodexScreen : KScreen
 		}
 	}
 
-	private string _activeEntryID;
+		private string _activeEntryID;
 
-	private Dictionary<Type, UIGameObjectPool> ContentUIPools = new Dictionary<Type, UIGameObjectPool>();
+		private Dictionary<Type, UIGameObjectPool> ContentUIPools = new Dictionary<Type, UIGameObjectPool>();
 
-	private Dictionary<Type, GameObject> ContentPrefabs = new Dictionary<Type, GameObject>();
+		private Dictionary<Type, GameObject> ContentPrefabs = new Dictionary<Type, GameObject>();
 
-	private List<GameObject> categoryHeaders = new List<GameObject>();
+		private List<GameObject> categoryHeaders = new List<GameObject>();
 
-	private Dictionary<CodexEntry, GameObject> entryButtons = new Dictionary<CodexEntry, GameObject>();
+		private Dictionary<CodexEntry, GameObject> entryButtons = new Dictionary<CodexEntry, GameObject>();
 
-	private Dictionary<SubEntry, GameObject> subEntryButtons = new Dictionary<SubEntry, GameObject>();
+		private Dictionary<SubEntry, GameObject> subEntryButtons = new Dictionary<SubEntry, GameObject>();
 
-	private UIGameObjectPool contentContainerPool;
+		private UIGameObjectPool contentContainerPool;
 
-	[SerializeField]
+		[SerializeField]
 	private KScrollRect displayScrollRect;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform scrollContentPane;
 
-	private bool editingSearch;
+		private bool editingSearch;
 
-	private List<CodexScreen.HistoryEntry> history = new List<CodexScreen.HistoryEntry>();
+		private List<CodexScreen.HistoryEntry> history = new List<CodexScreen.HistoryEntry>();
 
-	private int currentHistoryIdx;
+		private int currentHistoryIdx;
 
-	[Header("Hierarchy")]
+		[Header("Hierarchy")]
 	[SerializeField]
 	private Transform navigatorContent;
 
-	[SerializeField]
+		[SerializeField]
 	private Transform displayPane;
 
-	[SerializeField]
+		[SerializeField]
 	private Transform contentContainers;
 
-	[SerializeField]
+		[SerializeField]
 	private Transform widgetPool;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KInputTextField searchInputField;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton clearSearchButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText backButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton backButtonButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton fwdButtonButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText currentLocationText;
 
-	[Header("Prefabs")]
+		[Header("Prefabs")]
 	[SerializeField]
 	private GameObject prefabNavigatorEntry;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabCategoryHeader;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabContentContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabTextWidget;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabTextWithTooltipWidget;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabImageWidget;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabDividerLineWidget;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabSpacer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabLargeSpacer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabLabelWithIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabLabelWithLargeIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabContentLocked;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabVideoWidget;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabIndentedLabelWithIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabRecipePanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject PrefabConfigurableConsumerRecipePanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject PrefabTemperatureTransitionPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabConversionPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabCollapsibleHeader;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabCritterLifecycleWidget;
 
-	[Header("Text Styles")]
+		[SerializeField]
+	private GameObject prefabElementCategoryList;
+
+		[Header("Text Styles")]
 	[SerializeField]
 	private TextStyleSetting textStyleTitle;
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting textStyleSubtitle;
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting textStyleBody;
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting textStyleBodyWhite;
 
-	private Dictionary<CodexTextStyle, TextStyleSetting> textStyles = new Dictionary<CodexTextStyle, TextStyleSetting>();
+		private Dictionary<CodexTextStyle, TextStyleSetting> textStyles = new Dictionary<CodexTextStyle, TextStyleSetting>();
 
-	private List<CodexEntry> searchResults = new List<CodexEntry>();
+		private List<CodexEntry> searchResults = new List<CodexEntry>();
 
-	private List<SubEntry> subEntrySearchResults = new List<SubEntry>();
+		private List<SubEntry> subEntrySearchResults = new List<SubEntry>();
 
-	private Coroutine scrollToTargetRoutine;
+		private Coroutine scrollToTargetRoutine;
 
-	public enum PlanCategory
+		public enum PlanCategory
 	{
-		Home,
-		Tips,
-		MyLog,
-		Investigations,
-		Emails,
-		Journals,
-		ResearchNotes,
-		Creatures,
-		Plants,
-		Food,
-		Tech,
-		Diseases,
-		Roles,
-		Buildings,
-		Elements
+				Home,
+				Tips,
+				MyLog,
+				Investigations,
+				Emails,
+				Journals,
+				ResearchNotes,
+				Creatures,
+				Plants,
+				Food,
+				Tech,
+				Diseases,
+				Roles,
+				Buildings,
+				Elements
 	}
 
-	public enum HistoryDirection
+		public enum HistoryDirection
 	{
-		Back,
-		Forward,
-		Up,
-		NewArticle
+				Back,
+				Forward,
+				Up,
+				NewArticle
 	}
 
-	public class HistoryEntry
+		public class HistoryEntry
 	{
-		public HistoryEntry(string entry, Vector3 pos, string articleName)
+				public HistoryEntry(string entry, Vector3 pos, string articleName)
 		{
 			this.id = entry;
 			this.position = pos;
 			this.name = articleName;
 		}
 
-		public string id;
+				public string id;
 
-		public Vector3 position;
+				public Vector3 position;
 
-		public string name;
+				public string name;
 	}
 }

@@ -3,13 +3,13 @@ using Klei.AI.DiseaseGrowthRules;
 
 namespace Klei.AI
 {
-	public class RadiationPoisoning : Disease
+		public class RadiationPoisoning : Disease
 	{
-		public RadiationPoisoning(bool statsOnly) : base("RadiationSickness", 100f, Disease.RangeInfo.Idempotent(), Disease.RangeInfo.Idempotent(), Disease.RangeInfo.Idempotent(), Disease.RangeInfo.Idempotent(), 0f, statsOnly)
+				public RadiationPoisoning(bool statsOnly) : base("RadiationSickness", 100f, Disease.RangeInfo.Idempotent(), Disease.RangeInfo.Idempotent(), Disease.RangeInfo.Idempotent(), Disease.RangeInfo.Idempotent(), 0f, statsOnly)
 		{
 		}
 
-		protected override void PopulateElemGrowthInfo()
+				protected override void PopulateElemGrowthInfo()
 		{
 			base.InitializeElemGrowthArray(ref this.elemGrowthInfo, Disease.DEFAULT_GROWTH_INFO);
 			base.AddGrowthRule(new GrowthRule
@@ -26,6 +26,6 @@ namespace Klei.AI
 			base.InitializeElemExposureArray(ref this.elemExposureInfo, Disease.DEFAULT_EXPOSURE_INFO);
 		}
 
-		public const string ID = "RadiationSickness";
+				public const string ID = "RadiationSickness";
 	}
 }

@@ -5,12 +5,12 @@ using UnityEngine.Events;
 
 public class ActiveRangeSideScreen : SideScreenContent
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.activateValueLabel.maxValue = this.target.MaxValue;
@@ -21,7 +21,7 @@ public class ActiveRangeSideScreen : SideScreenContent
 		this.deactivateValueSlider.onValueChanged.AddListener(new UnityAction<float>(this.OnDeactivateValueChanged));
 	}
 
-	private void OnActivateValueChanged(float new_value)
+		private void OnActivateValueChanged(float new_value)
 	{
 		this.target.ActivateValue = new_value;
 		if (this.target.ActivateValue < this.target.DeactivateValue)
@@ -33,7 +33,7 @@ public class ActiveRangeSideScreen : SideScreenContent
 		this.RefreshTooltips();
 	}
 
-	private void OnDeactivateValueChanged(float new_value)
+		private void OnDeactivateValueChanged(float new_value)
 	{
 		this.target.DeactivateValue = new_value;
 		if (this.target.DeactivateValue > this.target.ActivateValue)
@@ -45,18 +45,18 @@ public class ActiveRangeSideScreen : SideScreenContent
 		this.RefreshTooltips();
 	}
 
-	private void RefreshTooltips()
+		private void RefreshTooltips()
 	{
 		this.activateValueSlider.GetComponentInChildren<ToolTip>().SetSimpleTooltip(string.Format(this.target.ActivateTooltip, this.activateValueSlider.value, this.deactivateValueSlider.value));
 		this.deactivateValueSlider.GetComponentInChildren<ToolTip>().SetSimpleTooltip(string.Format(this.target.DeactivateTooltip, this.deactivateValueSlider.value, this.activateValueSlider.value));
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<IActivationRangeTarget>() != null;
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -104,7 +104,7 @@ public class ActiveRangeSideScreen : SideScreenContent
 		this.RefreshTooltips();
 	}
 
-	public override string GetTitle()
+		public override string GetTitle()
 	{
 		if (this.target != null)
 		{
@@ -113,24 +113,24 @@ public class ActiveRangeSideScreen : SideScreenContent
 		return UI.UISIDESCREENS.ACTIVATION_RANGE_SIDE_SCREEN.NAME;
 	}
 
-	private IActivationRangeTarget target;
+		private IActivationRangeTarget target;
 
-	[SerializeField]
+		[SerializeField]
 	private KSlider activateValueSlider;
 
-	[SerializeField]
+		[SerializeField]
 	private KSlider deactivateValueSlider;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText activateLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText deactivateLabel;
 
-	[Header("Number Input")]
+		[Header("Number Input")]
 	[SerializeField]
 	private KNumberInputField activateValueLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private KNumberInputField deactivateValueLabel;
 }

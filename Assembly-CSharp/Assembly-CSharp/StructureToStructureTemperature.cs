@@ -4,33 +4,33 @@ using UnityEngine;
 
 public class StructureToStructureTemperature : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<StructureToStructureTemperature>(-1555603773, StructureToStructureTemperature.OnStructureTemperatureRegisteredDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.DefineConductiveCells();
 		GameScenePartitioner.Instance.AddGlobalLayerListener(GameScenePartitioner.Instance.contactConductiveLayer, new Action<int, object>(this.OnAnyBuildingChanged));
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.RemoveGlobalLayerListener(GameScenePartitioner.Instance.contactConductiveLayer, new Action<int, object>(this.OnAnyBuildingChanged));
 		this.UnregisterToSIM();
 		base.OnCleanUp();
 	}
 
-	private void OnStructureTemperatureRegistered(object _sim_handle)
+		private void OnStructureTemperatureRegistered(object _sim_handle)
 	{
 		int sim_handle = (int)_sim_handle;
 		this.RegisterToSIM(sim_handle);
 	}
 
-	private void RegisterToSIM(int sim_handle)
+		private void RegisterToSIM(int sim_handle)
 	{
 		string name = this.building.Def.Name;
 		SimMessages.RegisterBuildingToBuildingHeatExchange(sim_handle2, Game.Instance.simComponentCallbackManager.Add(delegate(int sim_handle, object callback_data)
@@ -39,7 +39,7 @@ public class StructureToStructureTemperature : KMonoBehaviour
 		}, null, "StructureToStructureTemperature.SimRegister").index);
 	}
 
-	private void OnSimRegistered(int sim_handle)
+		private void OnSimRegistered(int sim_handle)
 	{
 		if (sim_handle != -1)
 		{
@@ -54,7 +54,7 @@ public class StructureToStructureTemperature : KMonoBehaviour
 		}
 	}
 
-	private void UnregisterToSIM()
+		private void UnregisterToSIM()
 	{
 		if (this.hasBeenRegister)
 		{
@@ -63,14 +63,14 @@ public class StructureToStructureTemperature : KMonoBehaviour
 		this.buildingDestroyed = true;
 	}
 
-	private void DefineConductiveCells()
+		private void DefineConductiveCells()
 	{
 		this.conductiveCells = new List<int>(this.building.PlacementCells);
 		this.conductiveCells.Remove(this.building.GetUtilityInputCell());
 		this.conductiveCells.Remove(this.building.GetUtilityOutputCell());
 	}
 
-	private void Add(StructureToStructureTemperature.InContactBuildingData buildingData)
+		private void Add(StructureToStructureTemperature.InContactBuildingData buildingData)
 	{
 		if (this.inContactBuildings.Add(buildingData.buildingInContact))
 		{
@@ -78,7 +78,7 @@ public class StructureToStructureTemperature : KMonoBehaviour
 		}
 	}
 
-	private void Remove(int building)
+		private void Remove(int building)
 	{
 		if (this.inContactBuildings.Contains(building))
 		{
@@ -87,7 +87,7 @@ public class StructureToStructureTemperature : KMonoBehaviour
 		}
 	}
 
-	private void OnAnyBuildingChanged(int _cell, object _data)
+		private void OnAnyBuildingChanged(int _cell, object _data)
 	{
 		if (this.hasBeenRegister)
 		{
@@ -126,7 +126,7 @@ public class StructureToStructureTemperature : KMonoBehaviour
 		}
 	}
 
-	private void Refresh_InContactBuildings()
+		private void Refresh_InContactBuildings()
 	{
 		foreach (StructureToStructureTemperature.InContactBuildingData buildingData in this.GetAll_InContact_Buildings())
 		{
@@ -134,7 +134,7 @@ public class StructureToStructureTemperature : KMonoBehaviour
 		}
 	}
 
-	private List<StructureToStructureTemperature.InContactBuildingData> GetAll_InContact_Buildings()
+		private List<StructureToStructureTemperature.InContactBuildingData> GetAll_InContact_Buildings()
 	{
 		Dictionary<Building, int> dictionary = new Dictionary<Building, int>();
 		List<StructureToStructureTemperature.InContactBuildingData> list = new List<StructureToStructureTemperature.InContactBuildingData>();
@@ -199,51 +199,51 @@ public class StructureToStructureTemperature : KMonoBehaviour
 		return list;
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Building building;
 
-	private List<int> conductiveCells;
+		private List<int> conductiveCells;
 
-	private HashSet<int> inContactBuildings = new HashSet<int>();
+		private HashSet<int> inContactBuildings = new HashSet<int>();
 
-	private bool hasBeenRegister;
+		private bool hasBeenRegister;
 
-	private bool buildingDestroyed;
+		private bool buildingDestroyed;
 
-	private int selfHandle;
+		private int selfHandle;
 
-	protected static readonly EventSystem.IntraObjectHandler<StructureToStructureTemperature> OnStructureTemperatureRegisteredDelegate = new EventSystem.IntraObjectHandler<StructureToStructureTemperature>(delegate(StructureToStructureTemperature component, object data)
+		protected static readonly EventSystem.IntraObjectHandler<StructureToStructureTemperature> OnStructureTemperatureRegisteredDelegate = new EventSystem.IntraObjectHandler<StructureToStructureTemperature>(delegate(StructureToStructureTemperature component, object data)
 	{
 		component.OnStructureTemperatureRegistered(data);
 	});
 
-	public enum BuildingChangeType
+		public enum BuildingChangeType
 	{
-		Created,
-		Destroyed,
-		Moved
+				Created,
+				Destroyed,
+				Moved
 	}
 
-	public struct InContactBuildingData
+		public struct InContactBuildingData
 	{
-		public int buildingInContact;
+				public int buildingInContact;
 
-		public int cellsInContact;
+				public int cellsInContact;
 	}
 
-	public struct BuildingChangedObj
+		public struct BuildingChangedObj
 	{
-		public BuildingChangedObj(StructureToStructureTemperature.BuildingChangeType _changeType, Building _building, int sim_handler)
+				public BuildingChangedObj(StructureToStructureTemperature.BuildingChangeType _changeType, Building _building, int sim_handler)
 		{
 			this.changeType = _changeType;
 			this.building = _building;
 			this.simHandler = sim_handler;
 		}
 
-		public StructureToStructureTemperature.BuildingChangeType changeType;
+				public StructureToStructureTemperature.BuildingChangeType changeType;
 
-		public int simHandler;
+				public int simHandler;
 
-		public Building building;
+				public Building building;
 	}
 }

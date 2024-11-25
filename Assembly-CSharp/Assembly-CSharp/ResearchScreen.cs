@@ -8,12 +8,12 @@ using UnityEngine.UI;
 
 public class ResearchScreen : KModalScreen
 {
-	public bool IsBeingResearched(Tech tech)
+		public bool IsBeingResearched(Tech tech)
 	{
 		return Research.Instance.IsBeingResearched(tech);
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		if (base.isEditing)
 		{
@@ -22,7 +22,7 @@ public class ResearchScreen : KModalScreen
 		return 20f;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.ConsumeMouseScroll = true;
@@ -37,19 +37,19 @@ public class ResearchScreen : KModalScreen
 		}
 	}
 
-	private void ZoomOut()
+		private void ZoomOut()
 	{
 		this.targetZoom = Mathf.Clamp(this.targetZoom - this.zoomAmountPerButton, this.minZoom, this.maxZoom);
 		this.zoomCenterLock = true;
 	}
 
-	private void ZoomIn()
+		private void ZoomIn()
 	{
 		this.targetZoom = Mathf.Clamp(this.targetZoom + this.zoomAmountPerButton, this.minZoom, this.maxZoom);
 		this.zoomCenterLock = true;
 	}
 
-	public void ZoomToTech(string techID)
+		public void ZoomToTech(string techID)
 	{
 		Vector2 a = this.entryMap[Db.Get().Techs.Get(techID)].rectTransform().GetLocalPosition() + new Vector2(-this.foreground.rectTransform().rect.size.x / 2f, this.foreground.rectTransform().rect.size.y / 2f);
 		this.forceTargetPosition = -a;
@@ -57,7 +57,7 @@ public class ResearchScreen : KModalScreen
 		this.targetZoom = this.maxZoom;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!base.canvas.enabled)
 		{
@@ -155,7 +155,7 @@ public class ResearchScreen : KModalScreen
 		component.anchoredPosition = vector2;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.Subscribe(Research.Instance.gameObject, -1914338957, new Action<object>(this.OnActiveResearchChanged));
 		base.Subscribe(Game.Instance.gameObject, -107300940, new Action<object>(this.OnResearchComplete));
@@ -275,19 +275,19 @@ public class ResearchScreen : KModalScreen
 		this.Show(false);
 	}
 
-	public override void OnBeginDrag(PointerEventData eventData)
+		public override void OnBeginDrag(PointerEventData eventData)
 	{
 		base.OnBeginDrag(eventData);
 		this.isDragging = true;
 	}
 
-	public override void OnEndDrag(PointerEventData eventData)
+		public override void OnEndDrag(PointerEventData eventData)
 	{
 		base.OnEndDrag(eventData);
 		this.AbortDragging();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		base.Unsubscribe(Game.Instance.gameObject, -1974454597, delegate(object o)
@@ -296,7 +296,7 @@ public class ResearchScreen : KModalScreen
 		});
 	}
 
-	private IEnumerator WaitAndSetActiveResearch()
+		private IEnumerator WaitAndSetActiveResearch()
 	{
 		yield return SequenceUtil.WaitForEndOfFrame;
 		TechInstance targetResearch = Research.Instance.GetTargetResearch();
@@ -307,7 +307,7 @@ public class ResearchScreen : KModalScreen
 		yield break;
 	}
 
-	public Vector3 GetEntryPosition(Tech tech)
+		public Vector3 GetEntryPosition(Tech tech)
 	{
 		if (!this.entryMap.ContainsKey(tech))
 		{
@@ -317,7 +317,7 @@ public class ResearchScreen : KModalScreen
 		return this.entryMap[tech].transform.GetPosition();
 	}
 
-	public ResearchEntry GetEntry(Tech tech)
+		public ResearchEntry GetEntry(Tech tech)
 	{
 		if (this.entryMap == null)
 		{
@@ -331,7 +331,7 @@ public class ResearchScreen : KModalScreen
 		return this.entryMap[tech];
 	}
 
-	public void SetEntryPercentage(Tech tech, float percent)
+		public void SetEntryPercentage(Tech tech, float percent)
 	{
 		ResearchEntry entry = this.GetEntry(tech);
 		if (entry != null)
@@ -340,7 +340,7 @@ public class ResearchScreen : KModalScreen
 		}
 	}
 
-	public void TurnEverythingOff()
+		public void TurnEverythingOff()
 	{
 		foreach (KeyValuePair<Tech, ResearchEntry> keyValuePair in this.entryMap)
 		{
@@ -348,7 +348,7 @@ public class ResearchScreen : KModalScreen
 		}
 	}
 
-	public void TurnEverythingOn()
+		public void TurnEverythingOn()
 	{
 		foreach (KeyValuePair<Tech, ResearchEntry> keyValuePair in this.entryMap)
 		{
@@ -356,7 +356,7 @@ public class ResearchScreen : KModalScreen
 		}
 	}
 
-	private void SelectAllEntries(Tech tech, bool isSelected)
+		private void SelectAllEntries(Tech tech, bool isSelected)
 	{
 		ResearchEntry entry = this.GetEntry(tech);
 		if (entry != null)
@@ -369,7 +369,7 @@ public class ResearchScreen : KModalScreen
 		}
 	}
 
-	private void OnResearchComplete(object data)
+		private void OnResearchComplete(object data)
 	{
 		if (data is Tech)
 		{
@@ -384,7 +384,7 @@ public class ResearchScreen : KModalScreen
 		}
 	}
 
-	private void UpdatePointDisplay()
+		private void UpdatePointDisplay()
 	{
 		foreach (ResearchType researchType in Research.Instance.researchTypes.Types)
 		{
@@ -392,7 +392,7 @@ public class ResearchScreen : KModalScreen
 		}
 	}
 
-	private void OnActiveResearchChanged(object data)
+		private void OnActiveResearchChanged(object data)
 	{
 		List<TechInstance> list = (List<TechInstance>)data;
 		foreach (TechInstance techInstance in list)
@@ -411,7 +411,7 @@ public class ResearchScreen : KModalScreen
 		}
 	}
 
-	private void UpdateProgressBars()
+		private void UpdateProgressBars()
 	{
 		foreach (KeyValuePair<Tech, ResearchEntry> keyValuePair in this.entryMap)
 		{
@@ -419,7 +419,7 @@ public class ResearchScreen : KModalScreen
 		}
 	}
 
-	public void CancelResearch()
+		public void CancelResearch()
 	{
 		List<TechInstance> researchQueue = Research.Instance.GetResearchQueue();
 		foreach (TechInstance techInstance in researchQueue)
@@ -433,7 +433,7 @@ public class ResearchScreen : KModalScreen
 		researchQueue.Clear();
 	}
 
-	private void SetActiveResearch(Tech newResearch)
+		private void SetActiveResearch(Tech newResearch)
 	{
 		if (newResearch != this.currentResearch && this.currentResearch != null)
 		{
@@ -446,7 +446,7 @@ public class ResearchScreen : KModalScreen
 		}
 	}
 
-	public override void Show(bool show = true)
+		public override void Show(bool show = true)
 	{
 		this.mouseOver = false;
 		this.scrollContentChildFitter.enabled = show;
@@ -467,7 +467,7 @@ public class ResearchScreen : KModalScreen
 		this.OnShow(show);
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (show)
@@ -476,32 +476,37 @@ public class ResearchScreen : KModalScreen
 		}
 		if (show)
 		{
+			CameraController.Instance.DisableUserCameraControl = true;
 			if (DetailsScreen.Instance != null)
 			{
 				DetailsScreen.Instance.gameObject.SetActive(false);
 			}
 		}
-		else if (SelectTool.Instance.selected != null && !DetailsScreen.Instance.gameObject.activeSelf)
+		else
 		{
-			DetailsScreen.Instance.gameObject.SetActive(true);
-			DetailsScreen.Instance.Refresh(SelectTool.Instance.selected.gameObject);
+			CameraController.Instance.DisableUserCameraControl = false;
+			if (SelectTool.Instance.selected != null && !DetailsScreen.Instance.gameObject.activeSelf)
+			{
+				DetailsScreen.Instance.gameObject.SetActive(true);
+				DetailsScreen.Instance.Refresh(SelectTool.Instance.selected.gameObject);
+			}
 		}
 		this.UpdateProgressBars();
 		this.UpdatePointDisplay();
 	}
 
-	private void AbortDragging()
+		private void AbortDragging()
 	{
 		this.isDragging = false;
 		this.draggingJustEnded = true;
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		this.draggingJustEnded = false;
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (!base.canvas.enabled)
 		{
@@ -541,7 +546,7 @@ public class ResearchScreen : KModalScreen
 		base.OnKeyUp(e);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (!base.canvas.enabled)
 		{
@@ -561,7 +566,7 @@ public class ResearchScreen : KModalScreen
 				this.dragLastPosition = KInputManager.GetMousePos();
 				return;
 			}
-			if (KInputManager.GetMousePos().x > this.sideBar.rectTransform().sizeDelta.x)
+			if (KInputManager.GetMousePos().x > this.sideBar.rectTransform().sizeDelta.x && CameraController.IsMouseOverGameWindow)
 			{
 				if (e.TryConsume(global::Action.ZoomIn))
 				{
@@ -605,7 +610,7 @@ public class ResearchScreen : KModalScreen
 		base.OnKeyDown(e);
 	}
 
-	public static bool TechPassesSearchFilter(string techID, string filterString)
+		public static bool TechPassesSearchFilter(string techID, string filterString)
 	{
 		if (!string.IsNullOrEmpty(filterString))
 		{
@@ -618,7 +623,7 @@ public class ResearchScreen : KModalScreen
 				flag = tech.category.ToUpper().Contains(filterString);
 				foreach (TechItem techItem in tech.unlockedItems)
 				{
-					if (SaveLoader.Instance.IsDlcListActiveForCurrentSave(techItem.dlcIds))
+					if (SaveLoader.Instance.IsCorrectDlcActiveForCurrentSave(techItem.requiredDlcIds, techItem.forbiddenDlcIds))
 					{
 						if (UI.StripLinkFormatting(techItem.Name).ToLower().ToUpper().Contains(filterString))
 						{
@@ -638,7 +643,7 @@ public class ResearchScreen : KModalScreen
 		return true;
 	}
 
-	public static bool TechItemPassesSearchFilter(string techItemID, string filterString)
+		public static bool TechItemPassesSearchFilter(string techItemID, string filterString)
 	{
 		if (!string.IsNullOrEmpty(filterString))
 		{
@@ -655,111 +660,111 @@ public class ResearchScreen : KModalScreen
 		return true;
 	}
 
-	private const float SCROLL_BUFFER = 250f;
+		private const float SCROLL_BUFFER = 250f;
 
-	[SerializeField]
+		[SerializeField]
 	private Image BG;
 
-	public ResearchEntry entryPrefab;
+		public ResearchEntry entryPrefab;
 
-	public ResearchTreeTitle researchTreeTitlePrefab;
+		public ResearchTreeTitle researchTreeTitlePrefab;
 
-	public GameObject foreground;
+		public GameObject foreground;
 
-	public GameObject scrollContent;
+		public GameObject scrollContent;
 
-	public GameObject treeTitles;
+		public GameObject treeTitles;
 
-	public GameObject pointDisplayCountPrefab;
+		public GameObject pointDisplayCountPrefab;
 
-	public GameObject pointDisplayContainer;
+		public GameObject pointDisplayContainer;
 
-	private Dictionary<string, LocText> pointDisplayMap;
+		private Dictionary<string, LocText> pointDisplayMap;
 
-	private Dictionary<Tech, ResearchEntry> entryMap;
+		private Dictionary<Tech, ResearchEntry> entryMap;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton zoomOutButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton zoomInButton;
 
-	[SerializeField]
+		[SerializeField]
 	private ResearchScreenSideBar sideBar;
 
-	private Tech currentResearch;
+		private Tech currentResearch;
 
-	public KButton CloseButton;
+		public KButton CloseButton;
 
-	private GraphicRaycaster m_Raycaster;
+		private GraphicRaycaster m_Raycaster;
 
-	private PointerEventData m_PointerEventData;
+		private PointerEventData m_PointerEventData;
 
-	private Vector3 currentScrollPosition;
+		private Vector3 currentScrollPosition;
 
-	private bool panUp;
+		private bool panUp;
 
-	private bool panDown;
+		private bool panDown;
 
-	private bool panLeft;
+		private bool panLeft;
 
-	private bool panRight;
+		private bool panRight;
 
-	[SerializeField]
+		[SerializeField]
 	private KChildFitter scrollContentChildFitter;
 
-	private bool isDragging;
+		private bool isDragging;
 
-	private Vector3 dragStartPosition;
+		private Vector3 dragStartPosition;
 
-	private Vector3 dragLastPosition;
+		private Vector3 dragLastPosition;
 
-	private Vector2 dragInteria;
+		private Vector2 dragInteria;
 
-	private Vector2 forceTargetPosition;
+		private Vector2 forceTargetPosition;
 
-	private bool zoomingToTarget;
+		private bool zoomingToTarget;
 
-	private bool draggingJustEnded;
+		private bool draggingJustEnded;
 
-	private float targetZoom = 1f;
+		private float targetZoom = 1f;
 
-	private float currentZoom = 1f;
+		private float currentZoom = 1f;
 
-	private bool zoomCenterLock;
+		private bool zoomCenterLock;
 
-	private Vector2 keyPanDelta = Vector3.zero;
+		private Vector2 keyPanDelta = Vector3.zero;
 
-	[SerializeField]
+		[SerializeField]
 	private float effectiveZoomSpeed = 5f;
 
-	[SerializeField]
+		[SerializeField]
 	private float zoomAmountPerScroll = 0.05f;
 
-	[SerializeField]
+		[SerializeField]
 	private float zoomAmountPerButton = 0.5f;
 
-	[SerializeField]
+		[SerializeField]
 	private float minZoom = 0.15f;
 
-	[SerializeField]
+		[SerializeField]
 	private float maxZoom = 1f;
 
-	[SerializeField]
+		[SerializeField]
 	private float keyboardScrollSpeed = 200f;
 
-	[SerializeField]
+		[SerializeField]
 	private float keyPanEasing = 1f;
 
-	[SerializeField]
+		[SerializeField]
 	private float edgeClampFactor = 0.5f;
 
-	public enum ResearchState
+		public enum ResearchState
 	{
-		Available,
-		ActiveResearch,
-		ResearchComplete,
-		MissingPrerequisites,
-		StateCount
+				Available,
+				ActiveResearch,
+				ResearchComplete,
+				MissingPrerequisites,
+				StateCount
 	}
 }

@@ -2,7 +2,7 @@
 
 public class OffsetTableTracker : OffsetTracker
 {
-		private static NavGrid navGrid
+			private static NavGrid navGrid
 	{
 		get
 		{
@@ -14,13 +14,13 @@ public class OffsetTableTracker : OffsetTracker
 		}
 	}
 
-	public OffsetTableTracker(CellOffset[][] table, KMonoBehaviour cmp)
+		public OffsetTableTracker(CellOffset[][] table, KMonoBehaviour cmp)
 	{
 		this.table = table;
 		this.cmp = cmp;
 	}
 
-	protected override void UpdateCell(int previous_cell, int current_cell)
+		protected override void UpdateCell(int previous_cell, int current_cell)
 	{
 		if (previous_cell == current_cell)
 		{
@@ -43,7 +43,7 @@ public class OffsetTableTracker : OffsetTracker
 		this.offsets = null;
 	}
 
-	private static bool IsValidRow(int current_cell, CellOffset[] row, int rowIdx, int[] debugIdxs)
+		private static bool IsValidRow(int current_cell, CellOffset[] row, int rowIdx, int[] debugIdxs)
 	{
 		for (int i = 1; i < row.Length; i++)
 		{
@@ -60,7 +60,7 @@ public class OffsetTableTracker : OffsetTracker
 		return true;
 	}
 
-	private void UpdateOffsets(int cell, CellOffset[][] table)
+		private void UpdateOffsets(int cell, CellOffset[][] table)
 	{
 		HashSetPool<CellOffset, OffsetTableTracker>.PooledHashSet pooledHashSet = HashSetPool<CellOffset, OffsetTableTracker>.Allocate();
 		if (Grid.IsValidCell(cell))
@@ -91,37 +91,37 @@ public class OffsetTableTracker : OffsetTracker
 		pooledHashSet.Recycle();
 	}
 
-	protected override void UpdateOffsets(int current_cell)
+		protected override void UpdateOffsets(int current_cell)
 	{
 		base.UpdateOffsets(current_cell);
 		this.UpdateOffsets(current_cell, this.table);
 	}
 
-	private void OnCellChanged(object data)
+		private void OnCellChanged(object data)
 	{
 		this.offsets = null;
 	}
 
-	public override void Clear()
+		public override void Clear()
 	{
 		GameScenePartitioner.Instance.Free(ref this.solidPartitionerEntry);
 		GameScenePartitioner.Instance.Free(ref this.validNavCellChangedPartitionerEntry);
 	}
 
-	public static void OnPathfindingInvalidated()
+		public static void OnPathfindingInvalidated()
 	{
 		OffsetTableTracker.navGridImpl = null;
 	}
 
-	private readonly CellOffset[][] table;
+		private readonly CellOffset[][] table;
 
-	public HandleVector<int>.Handle solidPartitionerEntry;
+		public HandleVector<int>.Handle solidPartitionerEntry;
 
-	public HandleVector<int>.Handle validNavCellChangedPartitionerEntry;
+		public HandleVector<int>.Handle validNavCellChangedPartitionerEntry;
 
-	private static NavGrid navGridImpl;
+		private static NavGrid navGridImpl;
 
-	private KMonoBehaviour cmp;
+		private KMonoBehaviour cmp;
 
-	private int[] DEBUG_rowValidIdx;
+		private int[] DEBUG_rowValidIdx;
 }

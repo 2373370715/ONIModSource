@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class SuperCheckboxTableColumn : CheckboxTableColumn
 {
-	public SuperCheckboxTableColumn(CheckboxTableColumn[] columns_affected, Action<IAssignableIdentity, GameObject> on_load_action, Func<IAssignableIdentity, GameObject, TableScreen.ResultValues> get_value_action, Action<GameObject> on_press_action, Action<GameObject, TableScreen.ResultValues> set_value_action, Comparison<IAssignableIdentity> sort_comparison, Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip) : base(on_load_action, get_value_action, on_press_action, set_value_action, sort_comparison, on_tooltip, null, null)
+		public SuperCheckboxTableColumn(CheckboxTableColumn[] columns_affected, Action<IAssignableIdentity, GameObject> on_load_action, Func<IAssignableIdentity, GameObject, TableScreen.ResultValues> get_value_action, Action<GameObject> on_press_action, Action<GameObject, TableScreen.ResultValues> set_value_action, Comparison<IAssignableIdentity> sort_comparison, Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip) : base(on_load_action, get_value_action, on_press_action, set_value_action, sort_comparison, on_tooltip, null, null)
 	{
 		this.columns_affected = columns_affected;
 	}
 
-	public override GameObject GetDefaultWidget(GameObject parent)
+		public override GameObject GetDefaultWidget(GameObject parent)
 	{
 		GameObject widget_go = Util.KInstantiateUI(this.prefab_super_checkbox, parent, true);
 		if (widget_go.GetComponent<ToolTip>() != null)
@@ -23,7 +23,7 @@ public class SuperCheckboxTableColumn : CheckboxTableColumn
 		return widget_go;
 	}
 
-	public override GameObject GetHeaderWidget(GameObject parent)
+		public override GameObject GetHeaderWidget(GameObject parent)
 	{
 		GameObject widget_go = Util.KInstantiateUI(this.prefab_super_checkbox, parent, true);
 		if (widget_go.GetComponent<ToolTip>() != null)
@@ -38,7 +38,7 @@ public class SuperCheckboxTableColumn : CheckboxTableColumn
 		return widget_go;
 	}
 
-	public override GameObject GetMinionWidget(GameObject parent)
+		public override GameObject GetMinionWidget(GameObject parent)
 	{
 		GameObject widget_go = Util.KInstantiateUI(this.prefab_super_checkbox, parent, true);
 		if (widget_go.GetComponent<ToolTip>() != null)
@@ -53,7 +53,7 @@ public class SuperCheckboxTableColumn : CheckboxTableColumn
 		return widget_go;
 	}
 
-	public GameObject prefab_super_checkbox = Assets.UIPrefabs.TableScreenWidgets.SuperCheckbox_Horizontal;
+		public GameObject prefab_super_checkbox = Assets.UIPrefabs.TableScreenWidgets.SuperCheckbox_Horizontal;
 
-	public CheckboxTableColumn[] columns_affected;
+		public CheckboxTableColumn[] columns_affected;
 }

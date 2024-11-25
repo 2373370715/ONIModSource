@@ -1,30 +1,27 @@
-﻿using System;
-using STRINGS;
+﻿using STRINGS;
 using UnityEngine;
 
 [EntityConfigOrder(2)]
-public class BabyStaterpillarLiquidConfig : IEntityConfig
-{
-	public string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
-	}
+public class BabyStaterpillarLiquidConfig : IEntityConfig {
+    public const string   ID = "StaterpillarLiquidBaby";
+    public       string[] GetDlcIds() { return DlcManager.AVAILABLE_EXPANSION1_ONLY; }
 
-	public GameObject CreatePrefab()
-	{
-		GameObject gameObject = StaterpillarLiquidConfig.CreateStaterpillarLiquid("StaterpillarLiquidBaby", CREATURES.SPECIES.STATERPILLAR.VARIANT_LIQUID.BABY.NAME, CREATURES.SPECIES.STATERPILLAR.VARIANT_LIQUID.BABY.DESC, "baby_caterpillar_kanim", true);
-		EntityTemplates.ExtendEntityToBeingABaby(gameObject, "StaterpillarLiquid", null, false, 5f);
-		return gameObject;
-	}
+    public GameObject CreatePrefab() {
+        var gameObject = StaterpillarLiquidConfig.CreateStaterpillarLiquid("StaterpillarLiquidBaby",
+                                                                           CREATURES.SPECIES.STATERPILLAR.VARIANT_LIQUID
+                                                                               .BABY.NAME,
+                                                                           CREATURES.SPECIES.STATERPILLAR.VARIANT_LIQUID
+                                                                               .BABY.DESC,
+                                                                           "baby_caterpillar_kanim",
+                                                                           true);
 
-	public void OnPrefabInit(GameObject prefab)
-	{
-		prefab.GetComponent<KBatchedAnimController>().SetSymbolVisiblity("electric_bolt_c_bloom", false);
-	}
+        EntityTemplates.ExtendEntityToBeingABaby(gameObject, "StaterpillarLiquid");
+        return gameObject;
+    }
 
-	public void OnSpawn(GameObject inst)
-	{
-	}
+    public void OnPrefabInit(GameObject prefab) {
+        prefab.GetComponent<KBatchedAnimController>().SetSymbolVisiblity("electric_bolt_c_bloom", false);
+    }
 
-	public const string ID = "StaterpillarLiquidBaby";
+    public void OnSpawn(GameObject inst) { }
 }

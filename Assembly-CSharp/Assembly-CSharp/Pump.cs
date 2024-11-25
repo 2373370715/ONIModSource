@@ -2,120 +2,101 @@
 using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/Pump")]
-public class Pump : KMonoBehaviour, ISim1000ms
-{
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		this.consumer.EnableConsumption(false);
-	}
+public class Pump : KMonoBehaviour, ISim1000ms {
+    private const float OperationalUpdateInterval = 1f;
 
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.elapsedTime = 0f;
-		this.pumpable = this.UpdateOperational();
-		this.dispenser.GetConduitManager().AddConduitUpdater(new Action<float>(this.OnConduitUpdate), ConduitFlowPriority.LastPostUpdate);
-	}
+    public static readonly Operational.Flag PumpableFlag
+        = new Operational.Flag("vent", Operational.Flag.Type.Requirement);
 
-	protected override void OnCleanUp()
-	{
-		this.dispenser.GetConduitManager().RemoveConduitUpdater(new Action<float>(this.OnConduitUpdate));
-		base.OnCleanUp();
-	}
+    private Guid conduitBlockedStatusGuid;
 
-	public void Sim1000ms(float dt)
-	{
-		this.elapsedTime += dt;
-		if (this.elapsedTime >= 1f)
-		{
-			this.pumpable = this.UpdateOperational();
-			this.elapsedTime = 0f;
-		}
-		if (this.operational.IsOperational && this.pumpable)
-		{
-			this.operational.SetActive(true, false);
-			return;
-		}
-		this.operational.SetActive(false, false);
-	}
+    [MyCmpGet]
+    private ElementConsumer consumer;
 
-	private bool UpdateOperational()
-	{
-		Element.State state = Element.State.Vacuum;
-		ConduitType conduitType = this.dispenser.conduitType;
-		if (conduitType != ConduitType.Gas)
-		{
-			if (conduitType == ConduitType.Liquid)
-			{
-				state = Element.State.Liquid;
-			}
-		}
-		else
-		{
-			state = Element.State.Gas;
-		}
-		bool flag = this.IsPumpable(state, (int)this.consumer.consumptionRadius);
-		StatusItem status_item = (state == Element.State.Gas) ? Db.Get().BuildingStatusItems.NoGasElementToPump : Db.Get().BuildingStatusItems.NoLiquidElementToPump;
-		this.noElementStatusGuid = this.selectable.ToggleStatusItem(status_item, this.noElementStatusGuid, !flag, null);
-		this.operational.SetFlag(Pump.PumpableFlag, !this.storage.IsFull() && flag);
-		return flag;
-	}
+    [MyCmpGet]
+    private ConduitDispenser dispenser;
 
-	private bool IsPumpable(Element.State expected_state, int radius)
-	{
-		int num = Grid.PosToCell(base.transform.GetPosition());
-		for (int i = 0; i < (int)this.consumer.consumptionRadius; i++)
-		{
-			for (int j = 0; j < (int)this.consumer.consumptionRadius; j++)
-			{
-				int num2 = num + j + Grid.WidthInCells * i;
-				if (Grid.Element[num2].IsState(expected_state))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    private float elapsedTime;
+    private Guid  noElementStatusGuid;
 
-	private void OnConduitUpdate(float dt)
-	{
-		this.conduitBlockedStatusGuid = this.selectable.ToggleStatusItem(Db.Get().BuildingStatusItems.ConduitBlocked, this.conduitBlockedStatusGuid, this.dispenser.blocked, null);
-	}
+    [MyCmpReq]
+    private Operational operational;
 
-		public ConduitType conduitType
-	{
-		get
-		{
-			return this.dispenser.conduitType;
-		}
-	}
+    private bool pumpable;
 
-	public static readonly Operational.Flag PumpableFlag = new Operational.Flag("vent", Operational.Flag.Type.Requirement);
+    [MyCmpGet]
+    private KSelectable selectable;
 
-	[MyCmpReq]
-	private Operational operational;
+    [MyCmpGet]
+    private Storage storage;
 
-	[MyCmpGet]
-	private KSelectable selectable;
+    public ConduitType conduitType => dispenser.conduitType;
 
-	[MyCmpGet]
-	private ElementConsumer consumer;
+    public void Sim1000ms(float dt) {
+        elapsedTime += dt;
+        if (elapsedTime >= 1f) {
+            pumpable    = UpdateOperational();
+            elapsedTime = 0f;
+        }
 
-	[MyCmpGet]
-	private ConduitDispenser dispenser;
+        if (operational.IsOperational && pumpable) {
+            operational.SetActive(true);
+            return;
+        }
 
-	[MyCmpGet]
-	private Storage storage;
+        operational.SetActive(false);
+    }
 
-	private const float OperationalUpdateInterval = 1f;
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        consumer.EnableConsumption(false);
+    }
 
-	private float elapsedTime;
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        elapsedTime = 0f;
+        pumpable    = UpdateOperational();
+        dispenser.GetConduitManager().AddConduitUpdater(OnConduitUpdate, ConduitFlowPriority.LastPostUpdate);
+    }
 
-	private bool pumpable;
+    protected override void OnCleanUp() {
+        dispenser.GetConduitManager().RemoveConduitUpdater(OnConduitUpdate);
+        base.OnCleanUp();
+    }
 
-	private Guid conduitBlockedStatusGuid;
+    private bool UpdateOperational() {
+        var state       = Element.State.Vacuum;
+        var conduitType = dispenser.conduitType;
+        if (conduitType != ConduitType.Gas) {
+            if (conduitType == ConduitType.Liquid) state = Element.State.Liquid;
+        } else
+            state = Element.State.Gas;
 
-	private Guid noElementStatusGuid;
+        var flag = IsPumpable(state, consumer.consumptionRadius);
+        var status_item = state == Element.State.Gas
+                              ? Db.Get().BuildingStatusItems.NoGasElementToPump
+                              : Db.Get().BuildingStatusItems.NoLiquidElementToPump;
+
+        noElementStatusGuid = selectable.ToggleStatusItem(status_item, noElementStatusGuid, !flag);
+        operational.SetFlag(PumpableFlag, !storage.IsFull() && flag);
+        return flag;
+    }
+
+    private bool IsPumpable(Element.State expected_state, int radius) {
+        var num = Grid.PosToCell(transform.GetPosition());
+        for (var i = 0; i < consumer.consumptionRadius; i++) {
+            for (var j = 0; j < consumer.consumptionRadius; j++) {
+                var num2 = num + j + Grid.WidthInCells * i;
+                if (Grid.Element[num2].IsState(expected_state)) return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void OnConduitUpdate(float dt) {
+        conduitBlockedStatusGuid = selectable.ToggleStatusItem(Db.Get().BuildingStatusItems.ConduitBlocked,
+                                                               conduitBlockedStatusGuid,
+                                                               dispenser.blocked);
+    }
 }

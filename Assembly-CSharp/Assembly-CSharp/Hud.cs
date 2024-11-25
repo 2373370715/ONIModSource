@@ -2,7 +2,7 @@
 
 public class Hud : KScreen
 {
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Help))
 		{

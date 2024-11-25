@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicDuplicantSensorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("LogicDuplicantSensor", 1, 1, "presence_sensor_kanim", 30, 30f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER0, MATERIALS.REFINED_METALS, 1600f, BuildLocationRule.OnFoundationRotatable, TUNING.BUILDINGS.DECOR.PENALTY.TIER0, NOISE_POLLUTION.NOISY.TIER0, 0.2f);
 		buildingDef.Floodable = false;
@@ -25,12 +25,12 @@ public class LogicDuplicantSensorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		LogicDuplicantSensorConfig.AddVisualizer(go, true);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		LogicDuplicantSensor logicDuplicantSensor = go.AddOrGet<LogicDuplicantSensor>();
 		logicDuplicantSensor.defaultState = false;
@@ -40,7 +40,7 @@ public class LogicDuplicantSensorConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	private static void AddVisualizer(GameObject prefab, bool movable)
+		private static void AddVisualizer(GameObject prefab, bool movable)
 	{
 		RangeVisualizer rangeVisualizer = prefab.AddOrGet<RangeVisualizer>();
 		rangeVisualizer.OriginOffset = new Vector2I(0, 0);
@@ -51,7 +51,7 @@ public class LogicDuplicantSensorConfig : IBuildingConfig
 		rangeVisualizer.BlockingTileVisible = true;
 	}
 
-	public const string ID = "LogicDuplicantSensor";
+		public const string ID = "LogicDuplicantSensor";
 
-	private const int RANGE = 4;
+		private const int RANGE = 4;
 }

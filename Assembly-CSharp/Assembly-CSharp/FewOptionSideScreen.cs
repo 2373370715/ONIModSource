@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class FewOptionSideScreen : SideScreenContent
 {
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (show)
@@ -14,7 +14,7 @@ public class FewOptionSideScreen : SideScreenContent
 		}
 	}
 
-	private void RefreshOptions()
+		private void RefreshOptions()
 	{
 		foreach (KeyValuePair<Tag, GameObject> keyValuePair in this.rows)
 		{
@@ -22,7 +22,7 @@ public class FewOptionSideScreen : SideScreenContent
 		}
 	}
 
-	private void ClearRows()
+		private void ClearRows()
 	{
 		for (int i = this.rowContainer.childCount - 1; i >= 0; i--)
 		{
@@ -31,7 +31,7 @@ public class FewOptionSideScreen : SideScreenContent
 		this.rows.Clear();
 	}
 
-	private void SpawnRows()
+		private void SpawnRows()
 	{
 		FewOptionSideScreen.IFewOptionSideScreen.Option[] options = this.targetFewOptions.GetOptions();
 		for (int i = 0; i < options.Length; i++)
@@ -53,37 +53,37 @@ public class FewOptionSideScreen : SideScreenContent
 		this.RefreshOptions();
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.ClearRows();
 		this.targetFewOptions = target.GetComponent<FewOptionSideScreen.IFewOptionSideScreen>();
 		this.SpawnRows();
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<FewOptionSideScreen.IFewOptionSideScreen>() != null;
 	}
 
-	public GameObject rowPrefab;
+		public GameObject rowPrefab;
 
-	public RectTransform rowContainer;
+		public RectTransform rowContainer;
 
-	public Dictionary<Tag, GameObject> rows = new Dictionary<Tag, GameObject>();
+		public Dictionary<Tag, GameObject> rows = new Dictionary<Tag, GameObject>();
 
-	private FewOptionSideScreen.IFewOptionSideScreen targetFewOptions;
+		private FewOptionSideScreen.IFewOptionSideScreen targetFewOptions;
 
-	public interface IFewOptionSideScreen
+		public interface IFewOptionSideScreen
 	{
-		FewOptionSideScreen.IFewOptionSideScreen.Option[] GetOptions();
+				FewOptionSideScreen.IFewOptionSideScreen.Option[] GetOptions();
 
-		void OnOptionSelected(FewOptionSideScreen.IFewOptionSideScreen.Option option);
+				void OnOptionSelected(FewOptionSideScreen.IFewOptionSideScreen.Option option);
 
-		Tag GetSelectedOption();
+				Tag GetSelectedOption();
 
-		public struct Option
+				public struct Option
 		{
-			public Option(Tag tag, string labelText, global::Tuple<Sprite, Color> iconSpriteColorTuple, string tooltipText = "")
+						public Option(Tag tag, string labelText, global::Tuple<Sprite, Color> iconSpriteColorTuple, string tooltipText = "")
 			{
 				this.tag = tag;
 				this.labelText = labelText;
@@ -91,13 +91,13 @@ public class FewOptionSideScreen : SideScreenContent
 				this.tooltipText = tooltipText;
 			}
 
-			public Tag tag;
+						public Tag tag;
 
-			public string labelText;
+						public string labelText;
 
-			public string tooltipText;
+						public string tooltipText;
 
-			public global::Tuple<Sprite, Color> iconSpriteColorTuple;
+						public global::Tuple<Sprite, Color> iconSpriteColorTuple;
 		}
 	}
 }

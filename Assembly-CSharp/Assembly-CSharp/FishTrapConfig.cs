@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FishTrapConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("FishTrap", 1, 2, "fishtrap_kanim", 10, 10f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.PLASTICS, 1600f, BuildLocationRule.Anywhere, BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NOISY.TIER0, 0.2f);
 		buildingDef.AudioCategory = "Metal";
@@ -14,7 +14,7 @@ public class FishTrapConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.allowItemRemoval = true;
@@ -29,7 +29,7 @@ public class FishTrapConfig : IBuildingConfig
 		go.AddOrGet<Trap>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Lure.Def def = go.AddOrGetDef<Lure.Def>();
 		def.defaultLurePoints = new CellOffset[]
@@ -43,7 +43,7 @@ public class FishTrapConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "FishTrap";
+		public const string ID = "FishTrap";
 
-	private static readonly List<Storage.StoredItemModifier> StoredItemModifiers = new List<Storage.StoredItemModifier>();
+		private static readonly List<Storage.StoredItemModifier> StoredItemModifiers = new List<Storage.StoredItemModifier>();
 }

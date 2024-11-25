@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SkillPerkMissingComplainer")]
 public class SkillPerkMissingComplainer : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (!string.IsNullOrEmpty(this.requiredSkillPerk))
@@ -14,7 +14,7 @@ public class SkillPerkMissingComplainer : KMonoBehaviour
 		this.UpdateStatusItem(null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.skillUpdateHandle != -1)
 		{
@@ -23,7 +23,7 @@ public class SkillPerkMissingComplainer : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	protected virtual void UpdateStatusItem(object data = null)
+		protected virtual void UpdateStatusItem(object data = null)
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		if (component == null)
@@ -47,9 +47,9 @@ public class SkillPerkMissingComplainer : KMonoBehaviour
 		}
 	}
 
-	public string requiredSkillPerk;
+		public string requiredSkillPerk;
 
-	private int skillUpdateHandle = -1;
+		private int skillUpdateHandle = -1;
 
-	private Guid workStatusItemHandle;
+		private Guid workStatusItemHandle;
 }

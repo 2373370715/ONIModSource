@@ -1,72 +1,51 @@
-﻿using System;
-using KSerialization;
+﻿using KSerialization;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class MessageTarget : ISaveLoadable
-{
-	public MessageTarget(KPrefabID prefab_id)
-	{
-		this.prefabId.Set(prefab_id);
-		this.position = prefab_id.transform.GetPosition();
-		this.name = "Unknown";
-		KSelectable component = prefab_id.GetComponent<KSelectable>();
-		if (component != null)
-		{
-			this.name = component.GetName();
-		}
-		prefab_id.Subscribe(-1940207677, new Action<object>(this.OnAbsorbedBy));
-	}
+public class MessageTarget : ISaveLoadable {
+    [Serialize]
+    private readonly string name;
 
-	public Vector3 GetPosition()
-	{
-		if (this.prefabId.Get() != null)
-		{
-			return this.prefabId.Get().transform.GetPosition();
-		}
-		return this.position;
-	}
+    [Serialize]
+    private readonly Vector3 position;
 
-	public KSelectable GetSelectable()
-	{
-		if (this.prefabId.Get() != null)
-		{
-			return this.prefabId.Get().transform.GetComponent<KSelectable>();
-		}
-		return null;
-	}
+    [Serialize]
+    private readonly Ref<KPrefabID> prefabId = new Ref<KPrefabID>();
 
-	public string GetName()
-	{
-		return this.name;
-	}
+    public MessageTarget(KPrefabID prefab_id) {
+        prefabId.Set(prefab_id);
+        position = prefab_id.transform.GetPosition();
+        name     = "Unknown";
+        var component               = prefab_id.GetComponent<KSelectable>();
+        if (component != null) name = component.GetName();
+        prefab_id.Subscribe(-1940207677, OnAbsorbedBy);
+    }
 
-	private void OnAbsorbedBy(object data)
-	{
-		if (this.prefabId.Get() != null)
-		{
-			this.prefabId.Get().Unsubscribe(-1940207677, new Action<object>(this.OnAbsorbedBy));
-		}
-		KPrefabID component = ((GameObject)data).GetComponent<KPrefabID>();
-		component.Subscribe(-1940207677, new Action<object>(this.OnAbsorbedBy));
-		this.prefabId.Set(component);
-	}
+    public Vector3 GetPosition() {
+        if (prefabId.Get() != null) return prefabId.Get().transform.GetPosition();
 
-	public void OnCleanUp()
-	{
-		if (this.prefabId.Get() != null)
-		{
-			this.prefabId.Get().Unsubscribe(-1940207677, new Action<object>(this.OnAbsorbedBy));
-			this.prefabId.Set(null);
-		}
-	}
+        return position;
+    }
 
-	[Serialize]
-	private Ref<KPrefabID> prefabId = new Ref<KPrefabID>();
+    public KSelectable GetSelectable() {
+        if (prefabId.Get() != null) return prefabId.Get().transform.GetComponent<KSelectable>();
 
-	[Serialize]
-	private Vector3 position;
+        return null;
+    }
 
-	[Serialize]
-	private string name;
+    public string GetName() { return name; }
+
+    private void OnAbsorbedBy(object data) {
+        if (prefabId.Get() != null) prefabId.Get().Unsubscribe(-1940207677, OnAbsorbedBy);
+        var component = ((GameObject)data).GetComponent<KPrefabID>();
+        component.Subscribe(-1940207677, OnAbsorbedBy);
+        prefabId.Set(component);
+    }
+
+    public void OnCleanUp() {
+        if (prefabId.Get() != null) {
+            prefabId.Get().Unsubscribe(-1940207677, OnAbsorbedBy);
+            prefabId.Set(null);
+        }
+    }
 }

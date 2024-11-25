@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HeatCompressor : StateMachineComponent<HeatCompressor.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.meter = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Behind, Grid.SceneLayer.NoLayer, new string[]
@@ -21,14 +21,14 @@ public class HeatCompressor : StateMachineComponent<HeatCompressor.StatesInstanc
 		base.smi.StartSM();
 	}
 
-	public void SetStorage(Storage inputStorage, Storage outputStorage, Storage heatCubeStorage)
+		public void SetStorage(Storage inputStorage, Storage outputStorage, Storage heatCubeStorage)
 	{
 		this.inputStorage = inputStorage;
 		this.outputStorage = outputStorage;
 		this.heatCubeStorage = heatCubeStorage;
 	}
 
-	public void CompressHeat(HeatCompressor.StatesInstance smi, float dt)
+		public void CompressHeat(HeatCompressor.StatesInstance smi, float dt)
 	{
 		smi.heatRemovalTimer -= dt;
 		float num = this.heatRemovalRate * dt / (float)this.inputStorage.items.Count;
@@ -58,49 +58,49 @@ public class HeatCompressor : StateMachineComponent<HeatCompressor.StatesInstanc
 		this.energyCompressed = 0f;
 	}
 
-	public void EjectHeatCube()
+		public void EjectHeatCube()
 	{
 		this.heatCubeStorage.DropAll(base.transform.GetPosition(), false, false, default(Vector3), true, null);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	public Storage inputStorage;
+		public Storage inputStorage;
 
-	public Storage outputStorage;
+		public Storage outputStorage;
 
-	public Storage heatCubeStorage;
+		public Storage heatCubeStorage;
 
-	public float heatRemovalRate = 100f;
+		public float heatRemovalRate = 100f;
 
-	public float heatRemovalTime = 100f;
+		public float heatRemovalTime = 100f;
 
-	[Serialize]
+		[Serialize]
 	public float energyCompressed;
 
-	public float heat_sink_active_time = 9000f;
+		public float heat_sink_active_time = 9000f;
 
-	[Serialize]
+		[Serialize]
 	public float time_active;
 
-	public float MAX_CUBE_TEMPERATURE = 3000f;
+		public float MAX_CUBE_TEMPERATURE = 3000f;
 
-	public class StatesInstance : GameStateMachine<HeatCompressor.States, HeatCompressor.StatesInstance, HeatCompressor, object>.GameInstance
+		public class StatesInstance : GameStateMachine<HeatCompressor.States, HeatCompressor.StatesInstance, HeatCompressor, object>.GameInstance
 	{
-		public StatesInstance(HeatCompressor master) : base(master)
+				public StatesInstance(HeatCompressor master) : base(master)
 		{
 		}
 
-		public void UpdateMeter()
+				public void UpdateMeter()
 		{
 			float remainingCharge = this.GetRemainingCharge();
 			base.master.meter.SetPositionPercent(remainingCharge);
 		}
 
-		public float GetRemainingCharge()
+				public float GetRemainingCharge()
 		{
 			PrimaryElement primaryElement = base.smi.master.heatCubeStorage.FindFirstWithMass(GameTags.IndustrialIngredient, 0f);
 			float result = 1f;
@@ -111,23 +111,23 @@ public class HeatCompressor : StateMachineComponent<HeatCompressor.StatesInstanc
 			return result;
 		}
 
-		public bool CanWork()
+				public bool CanWork()
 		{
 			return this.GetRemainingCharge() < 1f && base.smi.master.heatCubeStorage.items.Count > 0;
 		}
 
-		public void StartNewHeatRemoval()
+				public void StartNewHeatRemoval()
 		{
 			this.heatRemovalTimer = base.smi.master.heatRemovalTime;
 		}
 
-		[Serialize]
+				[Serialize]
 		public float heatRemovalTimer;
 	}
 
-	public class States : GameStateMachine<HeatCompressor.States, HeatCompressor.StatesInstance, HeatCompressor>
+		public class States : GameStateMachine<HeatCompressor.States, HeatCompressor.StatesInstance, HeatCompressor>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.inactive;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -156,10 +156,10 @@ public class HeatCompressor : StateMachineComponent<HeatCompressor.StatesInstanc
 			});
 		}
 
-		public GameStateMachine<HeatCompressor.States, HeatCompressor.StatesInstance, HeatCompressor, object>.State active;
+				public GameStateMachine<HeatCompressor.States, HeatCompressor.StatesInstance, HeatCompressor, object>.State active;
 
-		public GameStateMachine<HeatCompressor.States, HeatCompressor.StatesInstance, HeatCompressor, object>.State inactive;
+				public GameStateMachine<HeatCompressor.States, HeatCompressor.StatesInstance, HeatCompressor, object>.State inactive;
 
-		public GameStateMachine<HeatCompressor.States, HeatCompressor.StatesInstance, HeatCompressor, object>.State dropCube;
+				public GameStateMachine<HeatCompressor.States, HeatCompressor.StatesInstance, HeatCompressor, object>.State dropCube;
 	}
 }

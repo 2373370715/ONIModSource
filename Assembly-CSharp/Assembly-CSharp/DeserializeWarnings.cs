@@ -4,29 +4,29 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DeserializeWarnings")]
 public class DeserializeWarnings : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		DeserializeWarnings.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		DeserializeWarnings.Instance = this;
 	}
 
-	public DeserializeWarnings.Warning BuildingTemeperatureIsZeroKelvin;
+		public DeserializeWarnings.Warning BuildingTemeperatureIsZeroKelvin;
 
-	public DeserializeWarnings.Warning PipeContentsTemperatureIsNan;
+		public DeserializeWarnings.Warning PipeContentsTemperatureIsNan;
 
-	public DeserializeWarnings.Warning PrimaryElementTemperatureIsNan;
+		public DeserializeWarnings.Warning PrimaryElementTemperatureIsNan;
 
-	public DeserializeWarnings.Warning PrimaryElementHasNoElement;
+		public DeserializeWarnings.Warning PrimaryElementHasNoElement;
 
-	public static DeserializeWarnings Instance;
+		public static DeserializeWarnings Instance;
 
-	public struct Warning
+		public struct Warning
 	{
-		public void Warn(string message, GameObject obj = null)
+				public void Warn(string message, GameObject obj = null)
 		{
 			if (!this.isSet)
 			{
@@ -35,6 +35,6 @@ public class DeserializeWarnings : KMonoBehaviour
 			}
 		}
 
-		private bool isSet;
+				private bool isSet;
 	}
 }

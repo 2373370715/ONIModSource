@@ -6,11 +6,11 @@ using UnityEngine;
 
 public class DevToolCommandPalette : DevTool
 {
-	public DevToolCommandPalette() : this(null)
+		public DevToolCommandPalette() : this(null)
 	{
 	}
 
-	public DevToolCommandPalette(List<DevToolCommandPalette.Command> commands = null)
+		public DevToolCommandPalette(List<DevToolCommandPalette.Command> commands = null)
 	{
 		this.drawFlags |= ImGuiWindowFlags.NoResize;
 		this.drawFlags |= ImGuiWindowFlags.NoScrollbar;
@@ -23,17 +23,17 @@ public class DevToolCommandPalette : DevTool
 		this.commands.allValues = commands;
 	}
 
-	public static void Init()
+		public static void Init()
 	{
 		DevToolCommandPalette.InitWithCommands(DevToolCommandPaletteUtil.GenerateDefaultCommandPalette());
 	}
 
-	public static void InitWithCommands(List<DevToolCommandPalette.Command> commands)
+		public static void InitWithCommands(List<DevToolCommandPalette.Command> commands)
 	{
 		DevToolManager.Instance.panels.AddPanelFor(new DevToolCommandPalette(commands));
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		DevToolCommandPalette.Resize(panel);
 		if (this.commands.allValues == null)
@@ -143,7 +143,7 @@ public class DevToolCommandPalette : DevTool
 		}
 	}
 
-	private static void Resize(DevPanel devToolPanel)
+		private static void Resize(DevPanel devToolPanel)
 	{
 		float num = 800f;
 		float num2 = 400f;
@@ -159,27 +159,27 @@ public class DevToolCommandPalette : DevTool
 		devToolPanel.SetSize(rect2.size, ImGuiCond.None);
 	}
 
-	private int m_selected_index;
+		private int m_selected_index;
 
-	private StringSearchableList<DevToolCommandPalette.Command> commands = new StringSearchableList<DevToolCommandPalette.Command>(delegate(DevToolCommandPalette.Command command, in string filter)
+		private StringSearchableList<DevToolCommandPalette.Command> commands = new StringSearchableList<DevToolCommandPalette.Command>(delegate(DevToolCommandPalette.Command command, in string filter)
 	{
 		return !StringSearchableListUtil.DoAnyTagsMatchFilter(command.tags, filter);
 	});
 
-	private bool m_should_focus_search = true;
+		private bool m_should_focus_search = true;
 
-	private bool shouldScrollToSelectedCommandFlag;
+		private bool shouldScrollToSelectedCommandFlag;
 
-	public class Command
+		public class Command
 	{
-		public Command(string primary_tag, System.Action on_select) : this(new string[]
+				public Command(string primary_tag, System.Action on_select) : this(new string[]
 		{
 			primary_tag
 		}, on_select)
 		{
 		}
 
-		public Command(string primary_tag, string tag_a, System.Action on_select) : this(new string[]
+				public Command(string primary_tag, string tag_a, System.Action on_select) : this(new string[]
 		{
 			primary_tag,
 			tag_a
@@ -187,7 +187,7 @@ public class DevToolCommandPalette : DevTool
 		{
 		}
 
-		public Command(string primary_tag, string tag_a, string tag_b, System.Action on_select) : this(new string[]
+				public Command(string primary_tag, string tag_a, string tag_b, System.Action on_select) : this(new string[]
 		{
 			primary_tag,
 			tag_a,
@@ -196,7 +196,7 @@ public class DevToolCommandPalette : DevTool
 		{
 		}
 
-		public Command(string primary_tag, string tag_a, string tag_b, string tag_c, System.Action on_select) : this(new string[]
+				public Command(string primary_tag, string tag_a, string tag_b, string tag_c, System.Action on_select) : this(new string[]
 		{
 			primary_tag,
 			tag_a,
@@ -206,7 +206,7 @@ public class DevToolCommandPalette : DevTool
 		{
 		}
 
-		public Command(string primary_tag, string tag_a, string tag_b, string tag_c, string tag_d, System.Action on_select) : this(new string[]
+				public Command(string primary_tag, string tag_a, string tag_b, string tag_c, string tag_d, System.Action on_select) : this(new string[]
 		{
 			primary_tag,
 			tag_a,
@@ -217,7 +217,7 @@ public class DevToolCommandPalette : DevTool
 		{
 		}
 
-		public Command(string primary_tag, string tag_a, string tag_b, string tag_c, string tag_d, string tag_e, System.Action on_select) : this(new string[]
+				public Command(string primary_tag, string tag_a, string tag_b, string tag_c, string tag_d, string tag_e, System.Action on_select) : this(new string[]
 		{
 			primary_tag,
 			tag_a,
@@ -229,7 +229,7 @@ public class DevToolCommandPalette : DevTool
 		{
 		}
 
-		public Command(string primary_tag, string tag_a, string tag_b, string tag_c, string tag_d, string tag_e, string tag_f, System.Action on_select) : this(new string[]
+				public Command(string primary_tag, string tag_a, string tag_b, string tag_c, string tag_d, string tag_e, string tag_f, System.Action on_select) : this(new string[]
 		{
 			primary_tag,
 			tag_a,
@@ -242,14 +242,14 @@ public class DevToolCommandPalette : DevTool
 		{
 		}
 
-		public Command(string primary_tag, string[] additional_tags, System.Action on_select) : this(new string[]
+				public Command(string primary_tag, string[] additional_tags, System.Action on_select) : this(new string[]
 		{
 			primary_tag
 		}.Concat(additional_tags).ToArray<string>(), on_select)
 		{
 		}
 
-		public Command(string[] tags, System.Action on_select)
+				public Command(string[] tags, System.Action on_select)
 		{
 			this.display_name = tags[0];
 			this.tags = (from t in tags
@@ -257,15 +257,15 @@ public class DevToolCommandPalette : DevTool
 			this.m_on_select = on_select;
 		}
 
-		public void Internal_Select()
+				public void Internal_Select()
 		{
 			this.m_on_select();
 		}
 
-		public string display_name;
+				public string display_name;
 
-		public string[] tags;
+				public string[] tags;
 
-		private System.Action m_on_select;
+				private System.Action m_on_select;
 	}
 }

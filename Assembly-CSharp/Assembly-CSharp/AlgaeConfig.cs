@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AlgaeConfig : IOreConfig
 {
-		public SimHashes ElementID
+			public SimHashes ElementID
 	{
 		get
 		{
@@ -12,12 +12,12 @@ public class AlgaeConfig : IOreConfig
 		}
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		return EntityTemplates.CreateSolidOreEntity(this.ElementID, new List<Tag>
 		{

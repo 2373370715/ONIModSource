@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 
 public class ResearchPointInventory
 {
-	public ResearchPointInventory()
+		public ResearchPointInventory()
 	{
 		foreach (ResearchType researchType in Research.Instance.researchTypes.Types)
 		{
@@ -12,7 +12,7 @@ public class ResearchPointInventory
 		}
 	}
 
-	public void AddResearchPoints(string researchTypeID, float points)
+		public void AddResearchPoints(string researchTypeID, float points)
 	{
 		if (!this.PointsByTypeID.ContainsKey(researchTypeID))
 		{
@@ -23,12 +23,12 @@ public class ResearchPointInventory
 		pointsByTypeID[researchTypeID] += points;
 	}
 
-	public void RemoveResearchPoints(string researchTypeID, float points)
+		public void RemoveResearchPoints(string researchTypeID, float points)
 	{
 		this.AddResearchPoints(researchTypeID, -points);
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		foreach (ResearchType researchType in Research.Instance.researchTypes.Types)
@@ -40,5 +40,5 @@ public class ResearchPointInventory
 		}
 	}
 
-	public Dictionary<string, float> PointsByTypeID = new Dictionary<string, float>();
+		public Dictionary<string, float> PointsByTypeID = new Dictionary<string, float>();
 }

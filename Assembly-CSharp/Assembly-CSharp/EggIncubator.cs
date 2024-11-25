@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.autoReplaceEntity = true;
@@ -22,7 +22,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		base.Subscribe<EggIncubator>(-905833192, EggIncubator.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (base.occupyingObject)
@@ -41,7 +41,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		this.smi.StartSM();
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		EggIncubator component = ((GameObject)data).GetComponent<EggIncubator>();
 		if (component != null)
@@ -74,13 +74,13 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.smi.StopSM("cleanup");
 		base.OnCleanUp();
 	}
 
-	protected override void SubscribeToOccupant()
+		protected override void SubscribeToOccupant()
 	{
 		base.SubscribeToOccupant();
 		if (base.occupyingObject != null)
@@ -92,7 +92,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		this.UpdateProgress();
 	}
 
-	protected override void UnsubscribeFromOccupant()
+		protected override void UnsubscribeFromOccupant()
 	{
 		base.UnsubscribeFromOccupant();
 		UnityEngine.Object.Destroy(this.tracker);
@@ -100,7 +100,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		this.UpdateProgress();
 	}
 
-	private void OnOperationalChanged(object data = null)
+		private void OnOperationalChanged(object data = null)
 	{
 		if (!base.occupyingObject)
 		{
@@ -108,7 +108,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		}
 	}
 
-	private void OnOccupantChanged(object data = null)
+		private void OnOccupantChanged(object data = null)
 	{
 		if (!base.occupyingObject)
 		{
@@ -116,7 +116,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		}
 	}
 
-	private void OnStorageChange(object data = null)
+		private void OnStorageChange(object data = null)
 	{
 		if (base.occupyingObject && !this.storage.items.Contains(base.occupyingObject))
 		{
@@ -125,7 +125,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		}
 	}
 
-	protected override void ClearOccupant()
+		protected override void ClearOccupant()
 	{
 		bool flag = false;
 		if (base.occupyingObject != null)
@@ -139,7 +139,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		}
 	}
 
-	protected override void PositionOccupyingObject()
+		protected override void PositionOccupyingObject()
 	{
 		base.PositionOccupyingObject();
 		base.occupyingObject.GetComponent<KBatchedAnimController>().SetSceneLayer(Grid.SceneLayer.BuildingUse);
@@ -150,7 +150,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		}
 	}
 
-	public override void OrderRemoveOccupant()
+		public override void OrderRemoveOccupant()
 	{
 		UnityEngine.Object.Destroy(this.tracker);
 		this.tracker = null;
@@ -159,7 +159,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		this.ClearOccupant();
 	}
 
-	public float GetProgress()
+		public float GetProgress()
 	{
 		float result = 0f;
 		if (base.occupyingObject)
@@ -177,18 +177,18 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		return result;
 	}
 
-	private void UpdateProgress()
+		private void UpdateProgress()
 	{
 		this.meter.SetPositionPercent(this.GetProgress());
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		this.UpdateProgress();
 		this.UpdateChore();
 	}
 
-	public void StoreBaby(GameObject baby)
+		public void StoreBaby(GameObject baby)
 	{
 		this.UnsubscribeFromOccupant();
 		this.storage.DropAll(false, false, default(Vector3), true, null);
@@ -199,7 +199,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		base.Trigger(-731304873, base.occupyingObject);
 	}
 
-	private void UpdateChore()
+		private void UpdateChore()
 	{
 		if (this.operational.IsOperational && this.EggNeedsAttention())
 		{
@@ -216,7 +216,7 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		}
 	}
 
-	private bool EggNeedsAttention()
+		private bool EggNeedsAttention()
 	{
 		if (!base.Occupant)
 		{
@@ -226,36 +226,36 @@ public class EggIncubator : SingleEntityReceptacle, ISaveLoadable, ISim1000ms
 		return instance != null && !instance.HasSongBuff();
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private EggIncubatorWorkable workable;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copySettings;
 
-	private Chore chore;
+		private Chore chore;
 
-	private EggIncubatorStates.Instance smi;
+		private EggIncubatorStates.Instance smi;
 
-	private KBatchedAnimTracker tracker;
+		private KBatchedAnimTracker tracker;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private static readonly EventSystem.IntraObjectHandler<EggIncubator> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<EggIncubator>(delegate(EggIncubator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<EggIncubator> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<EggIncubator>(delegate(EggIncubator component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<EggIncubator> OnOccupantChangedDelegate = new EventSystem.IntraObjectHandler<EggIncubator>(delegate(EggIncubator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<EggIncubator> OnOccupantChangedDelegate = new EventSystem.IntraObjectHandler<EggIncubator>(delegate(EggIncubator component, object data)
 	{
 		component.OnOccupantChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<EggIncubator> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<EggIncubator>(delegate(EggIncubator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<EggIncubator> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<EggIncubator>(delegate(EggIncubator component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<EggIncubator> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<EggIncubator>(delegate(EggIncubator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<EggIncubator> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<EggIncubator>(delegate(EggIncubator component, object data)
 	{
 		component.OnCopySettings(data);
 	});

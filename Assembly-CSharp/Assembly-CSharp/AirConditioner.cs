@@ -8,11 +8,11 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/AirConditioner")]
 public class AirConditioner : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDescriptor, ISim200ms
 {
-			public float lastEnvTemp { get; private set; }
+				public float lastEnvTemp { get; private set; }
 
-			public float lastGasTemp { get; private set; }
+				public float lastGasTemp { get; private set; }
 
-		public float TargetTemperature
+			public float TargetTemperature
 	{
 		get
 		{
@@ -20,14 +20,14 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDe
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<AirConditioner>(-592767678, AirConditioner.OnOperationalChangedDelegate);
 		base.Subscribe<AirConditioner>(824508782, AirConditioner.OnActiveChangedDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		GameScheduler.Instance.Schedule("InsulationTutorial", 2f, delegate(object obj)
@@ -39,7 +39,7 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDe
 		this.cooledAirOutputCell = this.building.GetUtilityOutputCell();
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this.operational != null && !this.operational.IsOperational)
 		{
@@ -49,7 +49,7 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDe
 		this.UpdateState(dt);
 	}
 
-	private static bool UpdateStateCb(int cell, object data)
+		private static bool UpdateStateCb(int cell, object data)
 	{
 		AirConditioner airConditioner = data as AirConditioner;
 		airConditioner.cellCount++;
@@ -57,7 +57,7 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDe
 		return true;
 	}
 
-	private void UpdateState(float dt)
+		private void UpdateState(float dt)
 	{
 		bool value = this.consumer.IsSatisfied;
 		this.envTemp = 0f;
@@ -109,7 +109,7 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDe
 		this.UpdateStatus();
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		if (this.operational.IsOperational)
 		{
@@ -117,7 +117,7 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDe
 		}
 	}
 
-	private void OnActiveChanged(object data)
+		private void OnActiveChanged(object data)
 	{
 		this.UpdateStatus();
 		if (this.operational.IsActive)
@@ -128,7 +128,7 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDe
 		this.heatEffect.enabled = false;
 	}
 
-	private void UpdateStatus()
+		private void UpdateStatus()
 	{
 		if (this.operational.IsActive)
 		{
@@ -160,7 +160,7 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDe
 		}
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		string formattedTemperature = GameUtil.GetFormattedTemperature(this.temperatureDelta, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Relative, true, false);
@@ -186,63 +186,63 @@ public class AirConditioner : KMonoBehaviour, ISaveLoadable, IGameObjectEffectDe
 		return list;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	protected Storage storage;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	protected Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ConduitConsumer consumer;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private BuildingComplete building;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private OccupyArea occupyArea;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimHeatPostProcessingEffect heatEffect;
 
-	private HandleVector<int>.Handle structureTemperature;
+		private HandleVector<int>.Handle structureTemperature;
 
-	public float temperatureDelta = -14f;
+		public float temperatureDelta = -14f;
 
-	public float maxEnvironmentDelta = -50f;
+		public float maxEnvironmentDelta = -50f;
 
-	private float lowTempLag;
+		private float lowTempLag;
 
-	private bool showingLowTemp;
+		private bool showingLowTemp;
 
-	public bool isLiquidConditioner;
+		public bool isLiquidConditioner;
 
-	private bool showingHotEnv;
+		private bool showingHotEnv;
 
-	private Guid statusHandle;
+		private Guid statusHandle;
 
-	[Serialize]
+		[Serialize]
 	private float targetTemperature;
 
-	private int cooledAirOutputCell = -1;
+		private int cooledAirOutputCell = -1;
 
-	private static readonly EventSystem.IntraObjectHandler<AirConditioner> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<AirConditioner>(delegate(AirConditioner component, object data)
+		private static readonly EventSystem.IntraObjectHandler<AirConditioner> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<AirConditioner>(delegate(AirConditioner component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<AirConditioner> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<AirConditioner>(delegate(AirConditioner component, object data)
+		private static readonly EventSystem.IntraObjectHandler<AirConditioner> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<AirConditioner>(delegate(AirConditioner component, object data)
 	{
 		component.OnActiveChanged(data);
 	});
 
-	private float lastSampleTime = -1f;
+		private float lastSampleTime = -1f;
 
-	private float envTemp;
+		private float envTemp;
 
-	private int cellCount;
+		private int cellCount;
 
-	private static readonly Func<int, object, bool> UpdateStateCbDelegate = (int cell, object data) => AirConditioner.UpdateStateCb(cell, data);
+		private static readonly Func<int, object, bool> UpdateStateCbDelegate = (int cell, object data) => AirConditioner.UpdateStateCb(cell, data);
 }

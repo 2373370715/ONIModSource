@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class ConditionAllModulesComplete : ProcessCondition
 {
-	public ConditionAllModulesComplete(ILaunchableRocket launchable)
+		public ConditionAllModulesComplete(ILaunchableRocket launchable)
 	{
 		this.launchable = launchable;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		using (List<GameObject>.Enumerator enumerator = AttachableBuilding.GetAttachedNetwork(this.launchable.LaunchableGameObject.GetComponent<AttachableBuilding>()).GetEnumerator())
 		{
@@ -25,7 +25,7 @@ public class ConditionAllModulesComplete : ProcessCondition
 		return ProcessCondition.Status.Ready;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		string result;
 		if (status != ProcessCondition.Status.Failure)
@@ -46,7 +46,7 @@ public class ConditionAllModulesComplete : ProcessCondition
 		return result;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		string result;
 		if (status != ProcessCondition.Status.Failure)
@@ -67,10 +67,10 @@ public class ConditionAllModulesComplete : ProcessCondition
 		return result;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private ILaunchableRocket launchable;
+		private ILaunchableRocket launchable;
 }

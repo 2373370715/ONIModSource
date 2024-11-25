@@ -4,9 +4,9 @@ using STRINGS;
 
 namespace Klei.AI
 {
-	public class RadiationSickness : Sickness
+		public class RadiationSickness : Sickness
 	{
-		public RadiationSickness() : base("RadiationSickness", Sickness.SicknessType.Pathogen, Sickness.Severity.Major, 0.00025f, new List<Sickness.InfectionVector>
+				public RadiationSickness() : base("RadiationSickness", Sickness.SicknessType.Pathogen, Sickness.Severity.Major, 0.00025f, new List<Sickness.InfectionVector>
 		{
 			Sickness.InfectionVector.Inhalation,
 			Sickness.InfectionVector.Contact
@@ -34,10 +34,10 @@ namespace Klei.AI
 			}));
 		}
 
-		public const string ID = "RadiationSickness";
+				public const string ID = "RadiationSickness";
 
-		public const string RECOVERY_ID = "RadiationSicknessRecovery";
+				public const string RECOVERY_ID = "RadiationSicknessRecovery";
 
-		public const int ATTRIBUTE_PENALTY = -10;
+				public const int ATTRIBUTE_PENALTY = -10;
 	}
 }

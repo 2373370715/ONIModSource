@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class DetailsScreenMaterialPanel : TargetScreen
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return true;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.openChangeMaterialPanelButton.onClick += delegate()
@@ -22,7 +22,7 @@ public class DetailsScreenMaterialPanel : TargetScreen
 		};
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		if (this.selectedTarget != null)
 		{
@@ -47,7 +47,7 @@ public class DetailsScreenMaterialPanel : TargetScreen
 		Game.Instance.Subscribe(1980521255, new Action<object>(this.Refresh));
 	}
 
-	private void OpenMaterialSelectionPanel()
+		private void OpenMaterialSelectionPanel()
 	{
 		this.openChangeMaterialPanelButton.gameObject.SetActive(false);
 		this.materialSelectionPanel.gameObject.SetActive(true);
@@ -58,26 +58,26 @@ public class DetailsScreenMaterialPanel : TargetScreen
 		}
 	}
 
-	private void CloseMaterialSelectionPanel()
+		private void CloseMaterialSelectionPanel()
 	{
 		this.currentMaterialDescriptionRow.gameObject.SetActive(true);
 		this.openChangeMaterialPanelButton.gameObject.SetActive(true);
 		this.materialSelectionPanel.gameObject.SetActive(false);
 	}
 
-	public override void OnDeselectTarget(GameObject target)
+		public override void OnDeselectTarget(GameObject target)
 	{
 		base.OnDeselectTarget(target);
 		this.Refresh(null);
 	}
 
-	private void Refresh(object data = null)
+		private void Refresh(object data = null)
 	{
 		this.RefreshCurrentMaterial();
 		this.RefreshMaterialSelectionPanel();
 	}
 
-	private void RefreshCurrentMaterial()
+		private void RefreshCurrentMaterial()
 	{
 		if (this.selectedTarget == null)
 		{
@@ -110,7 +110,7 @@ public class DetailsScreenMaterialPanel : TargetScreen
 		this.descriptorPanel.gameObject.SetActive(false);
 	}
 
-	private void RefreshMaterialSelectionPanel()
+		private void RefreshMaterialSelectionPanel()
 	{
 		if (this.selectedTarget == null)
 		{
@@ -135,12 +135,12 @@ public class DetailsScreenMaterialPanel : TargetScreen
 		this.confirmChangeRow.transform.SetAsLastSibling();
 	}
 
-	private void RefreshOrderChangeMaterialButton()
+		private void RefreshOrderChangeMaterialButton()
 	{
 		this.RefreshOrderChangeMaterialButton(null);
 	}
 
-	private void RefreshOrderChangeMaterialButton(object data = null)
+		private void RefreshOrderChangeMaterialButton(object data = null)
 	{
 		if (this.selectedTarget == null)
 		{
@@ -159,36 +159,36 @@ public class DetailsScreenMaterialPanel : TargetScreen
 		this.orderChangeMaterialButton.GetComponent<ToolTip>().SetSimpleTooltip(reconstructable.ReconstructRequested ? UI.USERMENUACTIONS.RECONSTRUCT.CANCEL_RECONSTRUCT_TOOLTIP : UI.USERMENUACTIONS.RECONSTRUCT.REQUEST_RECONSTRUCT_TOOLTIP);
 	}
 
-	[Header("Current Material")]
+		[Header("Current Material")]
 	[SerializeField]
 	private Image currentMaterialIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform currentMaterialDescriptionRow;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText currentMaterialLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText currentMaterialDescription;
 
-	[SerializeField]
+		[SerializeField]
 	private DescriptorPanel descriptorPanel;
 
-	[Header("Change Material")]
+		[Header("Change Material")]
 	[SerializeField]
 	private MaterialSelectionPanel materialSelectionPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform confirmChangeRow;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton orderChangeMaterialButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton openChangeMaterialPanelButton;
 
-	private int subHandle = -1;
+		private int subHandle = -1;
 
-	private Building building;
+		private Building building;
 }

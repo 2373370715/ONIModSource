@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Placeable")]
 public class Placeable : KMonoBehaviour
 {
-	public bool IsValidPlaceLocation(int cell, out string reason)
+		public bool IsValidPlaceLocation(int cell, out string reason)
 	{
 		if (this.placementRules.Contains(Placeable.PlacementRules.RestrictToWorld) && (int)Grid.WorldIdx[cell] != this.restrictWorldId)
 		{
@@ -50,7 +50,7 @@ public class Placeable : KMonoBehaviour
 		return true;
 	}
 
-	private bool SunnySpaceTest(int cell, object data)
+		private bool SunnySpaceTest(int cell, object data)
 	{
 		if (!Grid.IsValidCell(cell))
 		{
@@ -69,7 +69,7 @@ public class Placeable : KMonoBehaviour
 		return !Grid.Solid[cell] && !Grid.Foundation[cell] && (Grid.ExposedToSunlight[cell] >= 253 || this.ClearPathToSky(x, startY, top));
 	}
 
-	private bool ClearPathToSky(int x, int startY, int top)
+		private bool ClearPathToSky(int x, int startY, int top)
 	{
 		for (int i = startY; i < top; i++)
 		{
@@ -82,29 +82,29 @@ public class Placeable : KMonoBehaviour
 		return true;
 	}
 
-	private bool FoundationTest(int cell, object data)
+		private bool FoundationTest(int cell, object data)
 	{
 		return Grid.IsValidBuildingCell(cell) && (Grid.Solid[cell] || Grid.Foundation[cell]);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private OccupyArea occupyArea;
 
-	public string kAnimName;
+		public string kAnimName;
 
-	public string animName;
+		public string animName;
 
-	public List<Placeable.PlacementRules> placementRules = new List<Placeable.PlacementRules>();
+		public List<Placeable.PlacementRules> placementRules = new List<Placeable.PlacementRules>();
 
-	[NonSerialized]
+		[NonSerialized]
 	public int restrictWorldId;
 
-	public bool checkRootCellOnly;
+		public bool checkRootCellOnly;
 
-	public enum PlacementRules
+		public enum PlacementRules
 	{
-		OnFoundation,
-		VisibleToSpace,
-		RestrictToWorld
+				OnFoundation,
+				VisibleToSpace,
+				RestrictToWorld
 	}
 }

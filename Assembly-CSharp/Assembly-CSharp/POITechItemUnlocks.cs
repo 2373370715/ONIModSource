@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.locked;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -20,7 +20,7 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 		this.unlocked.done.PlayAnim("off");
 	}
 
-	private static string GetMessageBody(POITechItemUnlocks.Instance smi)
+		private static string GetMessageBody(POITechItemUnlocks.Instance smi)
 	{
 		string text = "";
 		foreach (TechItem techItem in smi.unlockTechItems)
@@ -30,7 +30,7 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 		return string.Format(MISC.NOTIFICATIONS.POIRESEARCHUNLOCKCOMPLETE.MESSAGEBODY, text);
 	}
 
-	private static EventInfoData GenerateEventPopupData(POITechItemUnlocks.Instance smi)
+		private static EventInfoData GenerateEventPopupData(POITechItemUnlocks.Instance smi)
 	{
 		EventInfoData eventInfoData = new EventInfoData(MISC.NOTIFICATIONS.POIRESEARCHUNLOCKCOMPLETE.NAME, POITechItemUnlocks.GetMessageBody(smi), smi.def.animName);
 		int num = Mathf.Max(2, Components.LiveMinionIdentities.Count);
@@ -68,30 +68,30 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 		return eventInfoData;
 	}
 
-	public GameStateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.State locked;
+		public GameStateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.State locked;
 
-	public POITechItemUnlocks.UnlockedStates unlocked;
+		public POITechItemUnlocks.UnlockedStates unlocked;
 
-	public StateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.BoolParameter isUnlocked;
+		public StateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.BoolParameter isUnlocked;
 
-	public StateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.BoolParameter pendingChore;
+		public StateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.BoolParameter pendingChore;
 
-	public StateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.BoolParameter seenNotification;
+		public StateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.BoolParameter seenNotification;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public List<string> POITechUnlockIDs;
+				public List<string> POITechUnlockIDs;
 
-		public LocString PopUpName;
+				public LocString PopUpName;
 
-		public string animName;
+				public string animName;
 
-		public string loreUnlockId;
+				public string loreUnlockId;
 	}
 
-	public new class Instance : GameStateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.GameInstance, ISidescreenButtonControl
+		public new class Instance : GameStateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.GameInstance, ISidescreenButtonControl
 	{
-		public Instance(IStateMachineTarget master, POITechItemUnlocks.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, POITechItemUnlocks.Def def) : base(master, def)
 		{
 			this.unlockTechItems = new List<TechItem>(def.POITechUnlockIDs.Count);
 			foreach (string text in def.POITechUnlockIDs)
@@ -108,7 +108,7 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 			}
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.Subscribe(-1503271301, new Action<object>(this.OnBuildingSelect));
 			this.UpdateUnlocked();
@@ -119,13 +119,13 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 			}
 		}
 
-		public override void StopSM(string reason)
+				public override void StopSM(string reason)
 		{
 			base.Unsubscribe(-1503271301, new Action<object>(this.OnBuildingSelect));
 			base.StopSM(reason);
 		}
 
-		public void OnBuildingSelect(object obj)
+				public void OnBuildingSelect(object obj)
 		{
 			if (!(bool)obj)
 			{
@@ -137,11 +137,11 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 			}
 		}
 
-		private void ShowPopup()
+				private void ShowPopup()
 		{
 		}
 
-		public void UnlockTechItems()
+				public void UnlockTechItems()
 		{
 			foreach (TechItem techItem in this.unlockTechItems)
 			{
@@ -154,7 +154,7 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 			this.UpdateUnlocked();
 		}
 
-		private void UpdateUnlocked()
+				private void UpdateUnlocked()
 		{
 			bool value = true;
 			using (List<TechItem>.Enumerator enumerator = this.unlockTechItems.GetEnumerator())
@@ -171,7 +171,7 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 			base.sm.isUnlocked.Set(value, base.smi, false);
 		}
 
-				public string SidescreenButtonText
+						public string SidescreenButtonText
 		{
 			get
 			{
@@ -187,7 +187,7 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 			}
 		}
 
-				public string SidescreenButtonTooltip
+						public string SidescreenButtonTooltip
 		{
 			get
 			{
@@ -203,22 +203,22 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 			}
 		}
 
-		public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
+				public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
 		{
 			throw new NotImplementedException();
 		}
 
-		public bool SidescreenEnabled()
+				public bool SidescreenEnabled()
 		{
 			return base.smi.IsInsideState(base.sm.locked);
 		}
 
-		public bool SidescreenButtonInteractable()
+				public bool SidescreenButtonInteractable()
 		{
 			return base.smi.IsInsideState(base.sm.locked);
 		}
 
-		public void OnSidescreenButtonPressed()
+				public void OnSidescreenButtonPressed()
 		{
 			if (this.unlockChore == null)
 			{
@@ -230,7 +230,7 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 			base.smi.CancelChore();
 		}
 
-		private void CreateChore()
+				private void CreateChore()
 		{
 			Workable component = base.smi.master.GetComponent<POITechItemUnlockWorkable>();
 			Prioritizable.AddRef(base.gameObject);
@@ -238,7 +238,7 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 			this.unlockChore = new WorkChore<POITechItemUnlockWorkable>(Db.Get().ChoreTypes.Research, component, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 
-		private void CancelChore()
+				private void CancelChore()
 		{
 			this.unlockChore.Cancel("UserCancel");
 			this.unlockChore = null;
@@ -246,27 +246,27 @@ public class POITechItemUnlocks : GameStateMachine<POITechItemUnlocks, POITechIt
 			base.Trigger(1980521255, null);
 		}
 
-		public int HorizontalGroupID()
+				public int HorizontalGroupID()
 		{
 			return -1;
 		}
 
-		public int ButtonSideScreenSortOrder()
+				public int ButtonSideScreenSortOrder()
 		{
 			return 20;
 		}
 
-		public List<TechItem> unlockTechItems;
+				public List<TechItem> unlockTechItems;
 
-		public Notification notificationReference;
+				public Notification notificationReference;
 
-		private Chore unlockChore;
+				private Chore unlockChore;
 	}
 
-	public class UnlockedStates : GameStateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.State
+		public class UnlockedStates : GameStateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.State
 	{
-		public GameStateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.State notify;
+				public GameStateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.State notify;
 
-		public GameStateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.State done;
+				public GameStateMachine<POITechItemUnlocks, POITechItemUnlocks.Instance, IStateMachineTarget, POITechItemUnlocks.Def>.State done;
 	}
 }

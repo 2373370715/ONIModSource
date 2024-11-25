@@ -16,10 +16,10 @@ public class 自动清扫器 {
     [HarmonyPatch(typeof(SolidTransferArmConfig), "AddVisualizer"), HarmonyPostfix]
     public static void AddVisualizer(ref GameObject prefab) {
         var rangeVisualizer = prefab.AddOrGet<RangeVisualizer>();
-        rangeVisualizer.RangeMin.x          = -10;
-        rangeVisualizer.RangeMin.y          = -10;
-        rangeVisualizer.RangeMax.x          = 10;
-        rangeVisualizer.RangeMax.y          = 10;
+        rangeVisualizer.RangeMin.x          = -30;
+        rangeVisualizer.RangeMin.y          = -30;
+        rangeVisualizer.RangeMax.x          = 30;
+        rangeVisualizer.RangeMax.y          = 30;
         rangeVisualizer.BlockingTileVisible = false;
     }
 

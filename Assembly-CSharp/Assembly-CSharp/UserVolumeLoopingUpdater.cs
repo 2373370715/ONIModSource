@@ -4,12 +4,12 @@ using FMOD.Studio;
 
 internal abstract class UserVolumeLoopingUpdater : LoopingSoundParameterUpdater
 {
-	public UserVolumeLoopingUpdater(string parameter, string player_pref) : base(parameter)
+		public UserVolumeLoopingUpdater(string parameter, string player_pref) : base(parameter)
 	{
 		this.playerPref = player_pref;
 	}
 
-	public override void Add(LoopingSoundParameterUpdater.Sound sound)
+		public override void Add(LoopingSoundParameterUpdater.Sound sound)
 	{
 		UserVolumeLoopingUpdater.Entry item = new UserVolumeLoopingUpdater.Entry
 		{
@@ -19,7 +19,7 @@ internal abstract class UserVolumeLoopingUpdater : LoopingSoundParameterUpdater
 		this.entries.Add(item);
 	}
 
-	public override void Update(float dt)
+		public override void Update(float dt)
 	{
 		if (string.IsNullOrEmpty(this.playerPref))
 		{
@@ -33,7 +33,7 @@ internal abstract class UserVolumeLoopingUpdater : LoopingSoundParameterUpdater
 		}
 	}
 
-	public override void Remove(LoopingSoundParameterUpdater.Sound sound)
+		public override void Remove(LoopingSoundParameterUpdater.Sound sound)
 	{
 		for (int i = 0; i < this.entries.Count; i++)
 		{
@@ -45,14 +45,14 @@ internal abstract class UserVolumeLoopingUpdater : LoopingSoundParameterUpdater
 		}
 	}
 
-	private List<UserVolumeLoopingUpdater.Entry> entries = new List<UserVolumeLoopingUpdater.Entry>();
+		private List<UserVolumeLoopingUpdater.Entry> entries = new List<UserVolumeLoopingUpdater.Entry>();
 
-	private string playerPref;
+		private string playerPref;
 
-	private struct Entry
+		private struct Entry
 	{
-		public EventInstance ev;
+				public EventInstance ev;
 
-		public PARAMETER_ID parameterId;
+				public PARAMETER_ID parameterId;
 	}
 }

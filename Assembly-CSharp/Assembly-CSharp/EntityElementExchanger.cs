@@ -3,23 +3,23 @@ using UnityEngine;
 
 public class EntityElementExchanger : StateMachineComponent<EntityElementExchanger.StatesInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	public void SetConsumptionRate(float consumptionRate)
+		public void SetConsumptionRate(float consumptionRate)
 	{
 		this.consumeRate = consumptionRate;
 	}
 
-	private static void OnSimConsumeCallback(Sim.MassConsumedCallback mass_cb_info, object data)
+		private static void OnSimConsumeCallback(Sim.MassConsumedCallback mass_cb_info, object data)
 	{
 		EntityElementExchanger entityElementExchanger = (EntityElementExchanger)data;
 		if (entityElementExchanger != null)
@@ -28,7 +28,7 @@ public class EntityElementExchanger : StateMachineComponent<EntityElementExchang
 		}
 	}
 
-	private void OnSimConsume(Sim.MassConsumedCallback mass_cb_info)
+		private void OnSimConsume(Sim.MassConsumedCallback mass_cb_info)
 	{
 		float num = mass_cb_info.mass * base.smi.master.exchangeRatio;
 		if (this.reportExchange && base.smi.master.emittedElement == SimHashes.Oxygen)
@@ -44,31 +44,31 @@ public class EntityElementExchanger : StateMachineComponent<EntityElementExchang
 		SimMessages.EmitMass(Grid.PosToCell(base.smi.master.transform.GetPosition() + this.outputOffset), ElementLoader.FindElementByHash(base.smi.master.emittedElement).idx, num, ElementLoader.FindElementByHash(base.smi.master.emittedElement).defaultValues.temperature, byte.MaxValue, 0, -1);
 	}
 
-	public Vector3 outputOffset = Vector3.zero;
+		public Vector3 outputOffset = Vector3.zero;
 
-	public bool reportExchange;
+		public bool reportExchange;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	public SimHashes consumedElement;
+		public SimHashes consumedElement;
 
-	public SimHashes emittedElement;
+		public SimHashes emittedElement;
 
-	public float consumeRate;
+		public float consumeRate;
 
-	public float exchangeRatio;
+		public float exchangeRatio;
 
-	public class StatesInstance : GameStateMachine<EntityElementExchanger.States, EntityElementExchanger.StatesInstance, EntityElementExchanger, object>.GameInstance
+		public class StatesInstance : GameStateMachine<EntityElementExchanger.States, EntityElementExchanger.StatesInstance, EntityElementExchanger, object>.GameInstance
 	{
-		public StatesInstance(EntityElementExchanger master) : base(master)
+				public StatesInstance(EntityElementExchanger master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<EntityElementExchanger.States, EntityElementExchanger.StatesInstance, EntityElementExchanger>
+		public class States : GameStateMachine<EntityElementExchanger.States, EntityElementExchanger.StatesInstance, EntityElementExchanger>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.exchanging;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -87,8 +87,8 @@ public class EntityElementExchanger : StateMachineComponent<EntityElementExchang
 			this.paused.EventTransition(GameHashes.WiltRecover, this.exchanging, null);
 		}
 
-		public GameStateMachine<EntityElementExchanger.States, EntityElementExchanger.StatesInstance, EntityElementExchanger, object>.State exchanging;
+				public GameStateMachine<EntityElementExchanger.States, EntityElementExchanger.StatesInstance, EntityElementExchanger, object>.State exchanging;
 
-		public GameStateMachine<EntityElementExchanger.States, EntityElementExchanger.StatesInstance, EntityElementExchanger, object>.State paused;
+				public GameStateMachine<EntityElementExchanger.States, EntityElementExchanger.StatesInstance, EntityElementExchanger, object>.State paused;
 	}
 }

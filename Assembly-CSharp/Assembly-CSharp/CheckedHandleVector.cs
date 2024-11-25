@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class CheckedHandleVector<T> where T : new()
 {
-	public CheckedHandleVector(int initial_size)
+		public CheckedHandleVector(int initial_size)
 	{
 		this.handleVector = new HandleVector<T>(initial_size);
 		this.isFree = new List<bool>(initial_size);
@@ -13,7 +13,7 @@ public class CheckedHandleVector<T> where T : new()
 		}
 	}
 
-	public HandleVector<T>.Handle Add(T item, string debug_info)
+		public HandleVector<T>.Handle Add(T item, string debug_info)
 	{
 		HandleVector<T>.Handle result = this.handleVector.Add(item);
 		if (result.index >= this.isFree.Count)
@@ -33,7 +33,7 @@ public class CheckedHandleVector<T> where T : new()
 		return result;
 	}
 
-	public T Release(HandleVector<T>.Handle handle)
+		public T Release(HandleVector<T>.Handle handle)
 	{
 		if (this.isFree[handle.index])
 		{
@@ -49,14 +49,14 @@ public class CheckedHandleVector<T> where T : new()
 		return this.handleVector.Release(handle);
 	}
 
-	public T Get(HandleVector<T>.Handle handle)
+		public T Get(HandleVector<T>.Handle handle)
 	{
 		return this.handleVector.GetItem(handle);
 	}
 
-	private HandleVector<T> handleVector;
+		private HandleVector<T> handleVector;
 
-	private List<string> debugInfo = new List<string>();
+		private List<string> debugInfo = new List<string>();
 
-	private List<bool> isFree;
+		private List<bool> isFree;
 }

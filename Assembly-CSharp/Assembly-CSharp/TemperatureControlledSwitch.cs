@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresholdSwitch, ISim200ms
 {
-		public float StructureTemperature
+			public float StructureTemperature
 	{
 		get
 		{
@@ -14,13 +14,13 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.structureTemperature = GameComps.StructureTemperatures.GetHandle(base.gameObject);
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this.simUpdateCounter < 8)
 		{
@@ -49,12 +49,12 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-	public float GetTemperature()
+		public float GetTemperature()
 	{
 		return this.averageTemp;
 	}
 
-			public float Threshold
+				public float Threshold
 	{
 		get
 		{
@@ -66,7 +66,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-			public bool ActivateAboveThreshold
+				public bool ActivateAboveThreshold
 	{
 		get
 		{
@@ -78,7 +78,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-		public float CurrentValue
+			public float CurrentValue
 	{
 		get
 		{
@@ -86,7 +86,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-		public float RangeMin
+			public float RangeMin
 	{
 		get
 		{
@@ -94,7 +94,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-		public float RangeMax
+			public float RangeMax
 	{
 		get
 		{
@@ -102,17 +102,17 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-	public float GetRangeMinInputField()
+		public float GetRangeMinInputField()
 	{
 		return GameUtil.GetConvertedTemperature(this.RangeMin, false);
 	}
 
-	public float GetRangeMaxInputField()
+		public float GetRangeMaxInputField()
 	{
 		return GameUtil.GetConvertedTemperature(this.RangeMax, false);
 	}
 
-		public LocString Title
+			public LocString Title
 	{
 		get
 		{
@@ -120,7 +120,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-		public LocString ThresholdValueName
+			public LocString ThresholdValueName
 	{
 		get
 		{
@@ -128,7 +128,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-		public string AboveToolTip
+			public string AboveToolTip
 	{
 		get
 		{
@@ -136,7 +136,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-		public string BelowToolTip
+			public string BelowToolTip
 	{
 		get
 		{
@@ -144,22 +144,22 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-	public string Format(float value, bool units)
+		public string Format(float value, bool units)
 	{
 		return GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, units, false);
 	}
 
-	public float ProcessedSliderValue(float input)
+		public float ProcessedSliderValue(float input)
 	{
 		return Mathf.Round(input);
 	}
 
-	public float ProcessedInputValue(float input)
+		public float ProcessedInputValue(float input)
 	{
 		return GameUtil.GetTemperatureConvertedToKelvin(input);
 	}
 
-	public LocString ThresholdValueUnits()
+		public LocString ThresholdValueUnits()
 	{
 		LocString result = null;
 		switch (GameUtil.temperatureUnit)
@@ -177,7 +177,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		return result;
 	}
 
-		public ThresholdScreenLayoutType LayoutType
+			public ThresholdScreenLayoutType LayoutType
 	{
 		get
 		{
@@ -185,7 +185,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-		public int IncrementScale
+			public int IncrementScale
 	{
 		get
 		{
@@ -193,7 +193,7 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-		public NonLinearSlider.Range[] GetRanges
+			public NonLinearSlider.Range[] GetRanges
 	{
 		get
 		{
@@ -201,23 +201,23 @@ public class TemperatureControlledSwitch : CircuitSwitch, ISaveLoadable, IThresh
 		}
 	}
 
-	private HandleVector<int>.Handle structureTemperature;
+		private HandleVector<int>.Handle structureTemperature;
 
-	private int simUpdateCounter;
+		private int simUpdateCounter;
 
-	[Serialize]
+		[Serialize]
 	public float thresholdTemperature = 280f;
 
-	[Serialize]
+		[Serialize]
 	public bool activateOnWarmerThan;
 
-	public float minTemp;
+		public float minTemp;
 
-	public float maxTemp = 373.15f;
+		public float maxTemp = 373.15f;
 
-	private const int NumFrameDelay = 8;
+		private const int NumFrameDelay = 8;
 
-	private float[] temperatures = new float[8];
+		private float[] temperatures = new float[8];
 
-	private float averageTemp;
+		private float averageTemp;
 }

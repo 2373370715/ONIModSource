@@ -9,7 +9,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/OilWellCap")]
 public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IElementEmitter
 {
-		public SimHashes Element
+			public SimHashes Element
 	{
 		get
 		{
@@ -17,7 +17,7 @@ public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IEleme
 		}
 	}
 
-		public float AverageEmitRate
+			public float AverageEmitRate
 	{
 		get
 		{
@@ -25,7 +25,7 @@ public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IEleme
 		}
 	}
 
-		public string SliderTitleKey
+			public string SliderTitleKey
 	{
 		get
 		{
@@ -33,7 +33,7 @@ public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IEleme
 		}
 	}
 
-		public string SliderUnits
+			public string SliderUnits
 	{
 		get
 		{
@@ -41,48 +41,48 @@ public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IEleme
 		}
 	}
 
-	public int SliderDecimalPlaces(int index)
+		public int SliderDecimalPlaces(int index)
 	{
 		return 0;
 	}
 
-	public float GetSliderMin(int index)
+		public float GetSliderMin(int index)
 	{
 		return 0f;
 	}
 
-	public float GetSliderMax(int index)
+		public float GetSliderMax(int index)
 	{
 		return 100f;
 	}
 
-	public float GetSliderValue(int index)
+		public float GetSliderValue(int index)
 	{
 		return this.depressurizePercent * 100f;
 	}
 
-	public void SetSliderValue(float value, int index)
+		public void SetSliderValue(float value, int index)
 	{
 		this.depressurizePercent = value / 100f;
 	}
 
-	public string GetSliderTooltipKey(int index)
+		public string GetSliderTooltipKey(int index)
 	{
 		return "STRINGS.UI.UISIDESCREENS.OIL_WELL_CAP_SIDE_SCREEN.TOOLTIP";
 	}
 
-	string ISliderControl.GetSliderTooltip(int index)
+		string ISliderControl.GetSliderTooltip(int index)
 	{
 		return string.Format(Strings.Get("STRINGS.UI.UISIDESCREENS.OIL_WELL_CAP_SIDE_SCREEN.TOOLTIP"), this.depressurizePercent * 100f);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<OilWellCap>(-905833192, OilWellCap.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		OilWellCap component = ((GameObject)data).GetComponent<OilWellCap>();
 		if (component != null)
@@ -91,7 +91,7 @@ public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IEleme
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Prioritizable.AddRef(base.gameObject);
@@ -114,20 +114,20 @@ public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IEleme
 		this.UpdatePressurePercent();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.accumulators.Remove(this.accumulator);
 		Prioritizable.RemoveRef(base.gameObject);
 		base.OnCleanUp();
 	}
 
-	public void AddGasPressure(float dt)
+		public void AddGasPressure(float dt)
 	{
 		this.storage.AddGasChunk(this.gasElement, this.addGasRate * dt, this.gasTemperature, 0, 0, true, true);
 		this.UpdatePressurePercent();
 	}
 
-	public void ReleaseGasPressure(float dt)
+		public void ReleaseGasPressure(float dt)
 	{
 		PrimaryElement primaryElement = this.storage.FindPrimaryElement(this.gasElement);
 		if (primaryElement != null && primaryElement.Mass > 0f)
@@ -146,7 +146,7 @@ public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IEleme
 		this.UpdatePressurePercent();
 	}
 
-	private void UpdatePressurePercent()
+		private void UpdatePressurePercent()
 	{
 		float num = this.storage.GetMassAvailable(this.gasElement) / this.maxGasPressure;
 		num = Mathf.Clamp01(num);
@@ -154,19 +154,19 @@ public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IEleme
 		this.pressureMeter.SetPositionPercent(num);
 	}
 
-	public bool NeedsDepressurizing()
+		public bool NeedsDepressurizing()
 	{
 		return this.smi.GetPressurePercent() >= this.depressurizePercent;
 	}
 
-	private WorkChore<OilWellCap> CreateWorkChore()
+		private WorkChore<OilWellCap> CreateWorkChore()
 	{
 		this.DepressurizeChore = new WorkChore<OilWellCap>(Db.Get().ChoreTypes.Depressurize, this, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		this.DepressurizeChore.AddPrecondition(OilWellCap.AllowedToDepressurize, this);
 		return this.DepressurizeChore;
 	}
 
-	private void CancelChore(string reason)
+		private void CancelChore(string reason)
 	{
 		if (this.DepressurizeChore != null)
 		{
@@ -174,66 +174,66 @@ public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IEleme
 		}
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		this.smi.sm.working.Set(true, this.smi, false);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		this.smi.sm.working.Set(false, this.smi, false);
 		this.DepressurizeChore = null;
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		return this.smi.GetPressurePercent() <= 0f;
 	}
 
-	public override bool InstantlyFinish(Worker worker)
+		public override bool InstantlyFinish(WorkerBase worker)
 	{
 		this.ReleaseGasPressure(60f);
 		return true;
 	}
 
-	private OilWellCap.StatesInstance smi;
+		private OilWellCap.StatesInstance smi;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	public SimHashes gasElement;
+		public SimHashes gasElement;
 
-	public float gasTemperature;
+		public float gasTemperature;
 
-	public float addGasRate = 1f;
+		public float addGasRate = 1f;
 
-	public float maxGasPressure = 10f;
+		public float maxGasPressure = 10f;
 
-	public float releaseGasRate = 10f;
+		public float releaseGasRate = 10f;
 
-	[Serialize]
+		[Serialize]
 	private float depressurizePercent = 0.75f;
 
-	private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
+		private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
 
-	private MeterController pressureMeter;
+		private MeterController pressureMeter;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<OilWellCap> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<OilWellCap>(delegate(OilWellCap component, object data)
+		private static readonly EventSystem.IntraObjectHandler<OilWellCap> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<OilWellCap>(delegate(OilWellCap component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private WorkChore<OilWellCap> DepressurizeChore;
+		private WorkChore<OilWellCap> DepressurizeChore;
 
-	private static readonly Chore.Precondition AllowedToDepressurize = new Chore.Precondition
+		private static readonly Chore.Precondition AllowedToDepressurize = new Chore.Precondition
 	{
 		id = "AllowedToDepressurize",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.ALLOWED_TO_DEPRESSURIZE,
@@ -243,21 +243,21 @@ public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IEleme
 		}
 	};
 
-	public class StatesInstance : GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.GameInstance
+		public class StatesInstance : GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.GameInstance
 	{
-		public StatesInstance(OilWellCap master) : base(master)
+				public StatesInstance(OilWellCap master) : base(master)
 		{
 		}
 
-		public float GetPressurePercent()
+				public float GetPressurePercent()
 		{
 			return base.sm.pressurePercent.Get(base.smi);
 		}
 	}
 
-	public class States : GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap>
+		public class States : GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.inoperational;
 			this.inoperational.PlayAnim("off").EventTransition(GameHashes.OperationalChanged, this.operational, new StateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.Transition.ConditionCallback(this.IsOperational));
@@ -289,38 +289,38 @@ public class OilWellCap : Workable, ISingleSliderControl, ISliderControl, IEleme
 			this.operational.releasing_pressure.pst.PlayAnim("steam_out_pst").OnAnimQueueComplete(this.operational.idle);
 		}
 
-		private bool IsOperational(OilWellCap.StatesInstance smi)
+				private bool IsOperational(OilWellCap.StatesInstance smi)
 		{
 			return smi.master.operational.IsOperational;
 		}
 
-		private bool IsAbleToPump(OilWellCap.StatesInstance smi)
+				private bool IsAbleToPump(OilWellCap.StatesInstance smi)
 		{
 			return smi.master.operational.IsOperational && smi.GetComponent<ElementConverter>().HasEnoughMassToStartConverting(false);
 		}
 
-		private bool MustStopPumping(OilWellCap.StatesInstance smi)
+				private bool MustStopPumping(OilWellCap.StatesInstance smi)
 		{
 			return !smi.master.operational.IsOperational || !smi.GetComponent<ElementConverter>().CanConvertAtAll();
 		}
 
-		public StateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.FloatParameter pressurePercent;
+				public StateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.FloatParameter pressurePercent;
 
-		public StateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.BoolParameter working;
+				public StateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.BoolParameter working;
 
-		public GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.State inoperational;
+				public GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.State inoperational;
 
-		public OilWellCap.States.OperationalStates operational;
+				public OilWellCap.States.OperationalStates operational;
 
-		public class OperationalStates : GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.State
+				public class OperationalStates : GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.State
 		{
-			public GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.State idle;
+						public GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.State idle;
 
-			public GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.PreLoopPostState active;
+						public GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.PreLoopPostState active;
 
-			public GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.State overpressure;
+						public GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.State overpressure;
 
-			public GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.PreLoopPostState releasing_pressure;
+						public GameStateMachine<OilWellCap.States, OilWellCap.StatesInstance, OilWellCap, object>.PreLoopPostState releasing_pressure;
 		}
 	}
 }

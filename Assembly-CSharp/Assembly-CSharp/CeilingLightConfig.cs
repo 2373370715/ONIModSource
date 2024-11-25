@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CeilingLightConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "CeilingLight";
 		int width = 1;
@@ -26,7 +26,7 @@ public class CeilingLightConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		LightShapePreview lightShapePreview = go.AddComponent<LightShapePreview>();
 		lightShapePreview.lux = 1800;
@@ -34,12 +34,12 @@ public class CeilingLightConfig : IBuildingConfig
 		lightShapePreview.shape = global::LightShape.Cone;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.LightSource, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LoopingSounds>();
 		Light2D light2D = go.AddOrGet<Light2D>();
@@ -55,5 +55,5 @@ public class CeilingLightConfig : IBuildingConfig
 		go.AddOrGetDef<LightController.Def>();
 	}
 
-	public const string ID = "CeilingLight";
+		public const string ID = "CeilingLight";
 }

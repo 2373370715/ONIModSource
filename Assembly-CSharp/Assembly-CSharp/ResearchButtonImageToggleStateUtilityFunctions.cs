@@ -4,14 +4,14 @@ using UnityEngine.UI;
 
 public static class ResearchButtonImageToggleStateUtilityFunctions
 {
-	public static void Opacity(this Graphic graphic, float opacity)
+		public static void Opacity(this Graphic graphic, float opacity)
 	{
 		Color color = graphic.color;
 		color.a = opacity;
 		graphic.color = color;
 	}
 
-	public static WaitUntil FadeAway(this Graphic graphic, float duration, Func<bool> assertCondition = null)
+		public static WaitUntil FadeAway(this Graphic graphic, float duration, Func<bool> assertCondition = null)
 	{
 		float timer = 0f;
 		float startingOpacity = graphic.color.a;
@@ -30,7 +30,7 @@ public static class ResearchButtonImageToggleStateUtilityFunctions
 		});
 	}
 
-	public static WaitUntil FadeToVisible(this Graphic graphic, float duration, Func<bool> assertCondition = null)
+		public static WaitUntil FadeToVisible(this Graphic graphic, float duration, Func<bool> assertCondition = null)
 	{
 		float timer = 0f;
 		float startingOpacity = graphic.color.a;

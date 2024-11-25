@@ -1,9 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public interface IOreConfig
-{
-		SimHashes ElementID { get; }
-
-	GameObject CreatePrefab();
+public interface IOreConfig {
+    SimHashes  ElementID { get; }
+    GameObject CreatePrefab();
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PowerControlStationConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "PowerControlStation";
 		int width = 2;
@@ -27,14 +27,14 @@ public class PowerControlStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.PowerStation, false);
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.PowerBuilding, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		Storage storage = go.AddOrGet<Storage>();
@@ -44,19 +44,19 @@ public class PowerControlStationConfig : IBuildingConfig
 		{
 			PowerControlStationConfig.MATERIAL_FOR_TINKER
 		};
-		TinkerStation tinkerStation = go.AddOrGet<TinkerStation>();
-		tinkerStation.overrideAnims = new KAnimFile[]
+		TinkerStation tinkerstation = go.AddOrGet<TinkerStation>();
+		tinkerstation.overrideAnims = new KAnimFile[]
 		{
 			Assets.GetAnim("anim_interacts_electricianworkdesk_kanim")
 		};
-		tinkerStation.inputMaterial = PowerControlStationConfig.MATERIAL_FOR_TINKER;
-		tinkerStation.massPerTinker = 5f;
-		tinkerStation.outputPrefab = PowerControlStationConfig.TINKER_TOOLS;
-		tinkerStation.outputTemperature = 308.15f;
-		tinkerStation.requiredSkillPerk = PowerControlStationConfig.ROLE_PERK;
-		tinkerStation.choreType = Db.Get().ChoreTypes.PowerFabricate.IdHash;
-		tinkerStation.useFilteredStorage = true;
-		tinkerStation.fetchChoreType = Db.Get().ChoreTypes.PowerFetch.IdHash;
+		tinkerstation.inputMaterial = PowerControlStationConfig.MATERIAL_FOR_TINKER;
+		tinkerstation.massPerTinker = 5f;
+		tinkerstation.outputPrefab = PowerControlStationConfig.TINKER_TOOLS;
+		tinkerstation.outputTemperature = 308.15f;
+		tinkerstation.requiredSkillPerk = PowerControlStationConfig.ROLE_PERK;
+		tinkerstation.choreType = Db.Get().ChoreTypes.PowerFabricate.IdHash;
+		tinkerstation.useFilteredStorage = true;
+		tinkerstation.fetchChoreType = Db.Get().ChoreTypes.PowerFetch.IdHash;
 		RoomTracker roomTracker = go.AddOrGet<RoomTracker>();
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.PowerPlant.Id;
 		roomTracker.requirement = RoomTracker.Requirement.Required;
@@ -68,18 +68,19 @@ public class PowerControlStationConfig : IBuildingConfig
 			component.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
 			component.SkillExperienceSkillGroup = Db.Get().SkillGroups.Technicals.Id;
 			component.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
+			tinkerstation.SetWorkTime(160f);
 		};
 	}
 
-	public const string ID = "PowerControlStation";
+		public const string ID = "PowerControlStation";
 
-	public static Tag MATERIAL_FOR_TINKER = GameTags.RefinedMetal;
+		public static Tag MATERIAL_FOR_TINKER = GameTags.RefinedMetal;
 
-	public static Tag TINKER_TOOLS = PowerStationToolsConfig.tag;
+		public static Tag TINKER_TOOLS = PowerStationToolsConfig.tag;
 
-	public const float MASS_PER_TINKER = 5f;
+		public const float MASS_PER_TINKER = 5f;
 
-	public static string ROLE_PERK = "CanPowerTinker";
+		public static string ROLE_PERK = "CanPowerTinker";
 
-	public const float OUTPUT_TEMPERATURE = 308.15f;
+		public const float OUTPUT_TEMPERATURE = 308.15f;
 }

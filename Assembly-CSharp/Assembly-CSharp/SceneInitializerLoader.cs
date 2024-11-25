@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SceneInitializerLoader : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		Camera[] array = UnityEngine.Object.FindObjectsOfType<Camera>();
 		for (int i = 0; i < array.Length; i++)
@@ -20,15 +20,15 @@ public class SceneInitializerLoader : MonoBehaviour
 		}
 	}
 
-	public SceneInitializer sceneInitializer;
+		public SceneInitializer sceneInitializer;
 
-	public static SceneInitializerLoader.DeferredError deferred_error;
+		public static SceneInitializerLoader.DeferredError deferred_error;
 
-	public static SceneInitializerLoader.DeferredErrorDelegate ReportDeferredError;
+		public static SceneInitializerLoader.DeferredErrorDelegate ReportDeferredError;
 
-	public struct DeferredError
+		public struct DeferredError
 	{
-				public bool IsValid
+						public bool IsValid
 		{
 			get
 			{
@@ -36,10 +36,10 @@ public class SceneInitializerLoader : MonoBehaviour
 			}
 		}
 
-		public string msg;
+				public string msg;
 
-		public string stack_trace;
+				public string stack_trace;
 	}
 
-		public delegate void DeferredErrorDelegate(SceneInitializerLoader.DeferredError deferred_error);
+			public delegate void DeferredErrorDelegate(SceneInitializerLoader.DeferredError deferred_error);
 }

@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class LogicInterasteroidReceiverConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("LogicInterasteroidReceiver", 1, 1, "inter_asteroid_automation_signal_receiver_kanim", 30, 30f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER2, MATERIALS.REFINED_METALS, 1600f, BuildLocationRule.OnFloor, TUNING.BUILDINGS.DECOR.PENALTY.TIER0, NOISE_POLLUTION.NOISY.TIER0, 0.2f);
 		buildingDef.Floodable = false;
@@ -30,23 +30,23 @@ public class LogicInterasteroidReceiverConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		LogicInterasteroidReceiverConfig.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicBroadcastReceiver>().PORT_ID = "OutputPort";
 		LogicInterasteroidReceiverConfig.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		LogicInterasteroidReceiverConfig.AddVisualizer(go);
 	}
 
-	private static void AddVisualizer(GameObject prefab)
+		private static void AddVisualizer(GameObject prefab)
 	{
 		SkyVisibilityVisualizer skyVisibilityVisualizer = prefab.AddOrGet<SkyVisibilityVisualizer>();
 		skyVisibilityVisualizer.RangeMin = 0;
@@ -54,7 +54,7 @@ public class LogicInterasteroidReceiverConfig : IBuildingConfig
 		skyVisibilityVisualizer.SkipOnModuleInteriors = true;
 	}
 
-	public const string ID = "LogicInterasteroidReceiver";
+		public const string ID = "LogicInterasteroidReceiver";
 
-	public const string OUTPUT_PORT_ID = "OutputPort";
+		public const string OUTPUT_PORT_ID = "OutputPort";
 }

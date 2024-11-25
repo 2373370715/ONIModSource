@@ -4,7 +4,7 @@ using TUNING;
 
 public static class LightBugTuning
 {
-	public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_BASE = new List<FertilityMonitor.BreedingChance>
+		public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_BASE = new List<FertilityMonitor.BreedingChance>
 	{
 		new FertilityMonitor.BreedingChance
 		{
@@ -18,7 +18,7 @@ public static class LightBugTuning
 		}
 	};
 
-	public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_ORANGE = new List<FertilityMonitor.BreedingChance>
+		public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_ORANGE = new List<FertilityMonitor.BreedingChance>
 	{
 		new FertilityMonitor.BreedingChance
 		{
@@ -37,7 +37,7 @@ public static class LightBugTuning
 		}
 	};
 
-	public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_PURPLE = new List<FertilityMonitor.BreedingChance>
+		public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_PURPLE = new List<FertilityMonitor.BreedingChance>
 	{
 		new FertilityMonitor.BreedingChance
 		{
@@ -56,7 +56,7 @@ public static class LightBugTuning
 		}
 	};
 
-	public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_PINK = new List<FertilityMonitor.BreedingChance>
+		public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_PINK = new List<FertilityMonitor.BreedingChance>
 	{
 		new FertilityMonitor.BreedingChance
 		{
@@ -75,7 +75,7 @@ public static class LightBugTuning
 		}
 	};
 
-	public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_BLUE = new List<FertilityMonitor.BreedingChance>
+		public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_BLUE = new List<FertilityMonitor.BreedingChance>
 	{
 		new FertilityMonitor.BreedingChance
 		{
@@ -94,7 +94,7 @@ public static class LightBugTuning
 		}
 	};
 
-	public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_BLACK = new List<FertilityMonitor.BreedingChance>
+		public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_BLACK = new List<FertilityMonitor.BreedingChance>
 	{
 		new FertilityMonitor.BreedingChance
 		{
@@ -113,7 +113,7 @@ public static class LightBugTuning
 		}
 	};
 
-	public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_CRYSTAL = new List<FertilityMonitor.BreedingChance>
+		public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_CRYSTAL = new List<FertilityMonitor.BreedingChance>
 	{
 		new FertilityMonitor.BreedingChance
 		{
@@ -127,13 +127,13 @@ public static class LightBugTuning
 		}
 	};
 
-	public static float STANDARD_CALORIES_PER_CYCLE = 40000f;
+		public static float STANDARD_CALORIES_PER_CYCLE = 40000f;
 
-	public static float STANDARD_STARVE_CYCLES = 8f;
+		public static float STANDARD_STARVE_CYCLES = 8f;
 
-	public static float STANDARD_STOMACH_SIZE = LightBugTuning.STANDARD_CALORIES_PER_CYCLE * LightBugTuning.STANDARD_STARVE_CYCLES;
+		public static float STANDARD_STOMACH_SIZE = LightBugTuning.STANDARD_CALORIES_PER_CYCLE * LightBugTuning.STANDARD_STARVE_CYCLES;
 
-	public static int PEN_SIZE_PER_CREATURE = CREATURES.SPACE_REQUIREMENTS.TIER3;
+		public static int PEN_SIZE_PER_CREATURE = CREATURES.SPACE_REQUIREMENTS.TIER3;
 
-	public static float EGG_MASS = 0.2f;
+		public static float EGG_MASS = 0.2f;
 }

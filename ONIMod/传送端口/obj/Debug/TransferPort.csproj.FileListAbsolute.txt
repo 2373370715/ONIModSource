@@ -1,0 +1,10 @@
+C:\Users\admin\Documents\Klei\OxygenNotIncluded\mods\dev\传送端口\TransferPort.dll
+C:\Users\admin\Documents\Klei\OxygenNotIncluded\mods\dev\传送端口\TransferPort.pdb
+C:\Users\admin\Desktop\ONIModSource\新建文件夹\TransferPort\obj\Debug\TransferPort.csproj.AssemblyReference.cache
+C:\Users\admin\Desktop\ONIModSource\新建文件夹\TransferPort\obj\Debug\TransferPort.csproj.CoreCompileInputs.cache
+C:\Users\admin\Desktop\ONIModSource\新建文件夹\TransferPort\obj\Debug\TransferPort.dll
+C:\Users\admin\Desktop\ONIModSource\新建文件夹\TransferPort\obj\Debug\TransferPort.pdb
+C:\Users\admin\Desktop\ONIModSource\ONIMod\传送端口\obj\Debug\TransferPort.csproj.AssemblyReference.cache
+C:\Users\admin\Desktop\ONIModSource\ONIMod\传送端口\obj\Debug\TransferPort.csproj.CoreCompileInputs.cache
+C:\Users\admin\Desktop\ONIModSource\ONIMod\传送端口\obj\Debug\TransferPort.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\传送端口\obj\Debug\TransferPort.pdb

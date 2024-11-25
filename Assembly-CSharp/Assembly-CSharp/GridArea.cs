@@ -3,7 +3,7 @@ using UnityEngine;
 
 public struct GridArea
 {
-		public Vector2I Min
+			public Vector2I Min
 	{
 		get
 		{
@@ -11,7 +11,7 @@ public struct GridArea
 		}
 	}
 
-		public Vector2I Max
+			public Vector2I Max
 	{
 		get
 		{
@@ -19,14 +19,14 @@ public struct GridArea
 		}
 	}
 
-	public void SetArea(int cell, int width, int height)
+		public void SetArea(int cell, int width, int height)
 	{
 		Vector2I vector2I = Grid.CellToXY(cell);
 		Vector2I vector2I2 = new Vector2I(vector2I.x + width, vector2I.y + height);
 		this.SetExtents(vector2I.x, vector2I.y, vector2I2.x, vector2I2.y);
 	}
 
-	public void SetExtents(int min_x, int min_y, int max_x, int max_y)
+		public void SetExtents(int min_x, int min_y, int max_x, int max_y)
 	{
 		this.min.x = Math.Max(min_x, 0);
 		this.min.y = Math.Max(min_y, 0);
@@ -36,7 +36,7 @@ public struct GridArea
 		this.MaxCell = Grid.XYToCell(this.max.x, this.max.y);
 	}
 
-	public bool Contains(int cell)
+		public bool Contains(int cell)
 	{
 		if (cell >= this.MinCell && cell < this.MaxCell)
 		{
@@ -46,17 +46,17 @@ public struct GridArea
 		return false;
 	}
 
-	public bool Contains(int x, int y)
+		public bool Contains(int x, int y)
 	{
 		return x >= this.min.x && x < this.max.x && y >= this.min.y && y < this.max.y;
 	}
 
-	public bool Contains(Vector3 pos)
+		public bool Contains(Vector3 pos)
 	{
 		return (float)this.min.x <= pos.x && pos.x < (float)this.max.x && (float)this.min.y <= pos.y && pos.y <= (float)this.max.y;
 	}
 
-	public void RunIfInside(int cell, Action<int> action)
+		public void RunIfInside(int cell, Action<int> action)
 	{
 		if (this.Contains(cell))
 		{
@@ -64,7 +64,7 @@ public struct GridArea
 		}
 	}
 
-	public void Run(Action<int> action)
+		public void Run(Action<int> action)
 	{
 		for (int i = this.min.y; i < this.max.y; i++)
 		{
@@ -76,7 +76,7 @@ public struct GridArea
 		}
 	}
 
-	public void RunOnDifference(GridArea subtract_area, Action<int> action)
+		public void RunOnDifference(GridArea subtract_area, Action<int> action)
 	{
 		for (int i = this.min.y; i < this.max.y; i++)
 		{
@@ -91,16 +91,16 @@ public struct GridArea
 		}
 	}
 
-	public int GetCellCount()
+		public int GetCellCount()
 	{
 		return (this.max.x - this.min.x) * (this.max.y - this.min.y);
 	}
 
-	private Vector2I min;
+		private Vector2I min;
 
-	private Vector2I max;
+		private Vector2I max;
 
-	private int MinCell;
+		private int MinCell;
 
-	private int MaxCell;
+		private int MaxCell;
 }

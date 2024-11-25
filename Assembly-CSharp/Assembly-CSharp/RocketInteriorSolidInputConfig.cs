@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class RocketInteriorSolidInputConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "RocketInteriorSolidInput";
 		int width = 1;
@@ -39,14 +39,14 @@ public class RocketInteriorSolidInputConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		base.ConfigureBuildingTemplate(go, prefab_tag);
 		go.GetComponent<KPrefabID>().AddTag(GameTags.RocketInteriorBuilding, false);
 		go.AddComponent<RequireInputs>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<ActiveController.Def>();
 		Storage storage = go.AddOrGet<Storage>();
@@ -60,9 +60,9 @@ public class RocketInteriorSolidInputConfig : IBuildingConfig
 		solidConduitConsumer.capacityKG = storage.capacityKg;
 	}
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
 
-	private const CargoBay.CargoType CARGO_TYPE = CargoBay.CargoType.Solids;
+		private const CargoBay.CargoType CARGO_TYPE = CargoBay.CargoType.Solids;
 
-	public const string ID = "RocketInteriorSolidInput";
+		public const string ID = "RocketInteriorSolidInput";
 }

@@ -6,51 +6,51 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class AirFilter : StateMachineComponent<AirFilter.StatesInstance>, IGameObjectEffectDescriptor
 {
-	public bool HasFilter()
+		public bool HasFilter()
 	{
 		return this.elementConverter.HasEnoughMass(this.filterTag, false);
 	}
 
-	public bool IsConvertable()
+		public bool IsConvertable()
 	{
 		return this.elementConverter.HasEnoughMassToStartConverting(false);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return null;
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ElementConverter elementConverter;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ElementConsumer elementConsumer;
 
-	public Tag filterTag;
+		public Tag filterTag;
 
-	public class StatesInstance : GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter, object>.GameInstance
+		public class StatesInstance : GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter, object>.GameInstance
 	{
-		public StatesInstance(AirFilter smi) : base(smi)
+				public StatesInstance(AirFilter smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter>
+		public class States : GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.waiting;
 			this.waiting.EventTransition(GameHashes.OnStorageChange, this.hasFilter, (AirFilter.StatesInstance smi) => smi.master.HasFilter() && smi.master.operational.IsOperational).EventTransition(GameHashes.OperationalChanged, this.hasFilter, (AirFilter.StatesInstance smi) => smi.master.HasFilter() && smi.master.operational.IsOperational);
@@ -71,15 +71,15 @@ public class AirFilter : StateMachineComponent<AirFilter.StatesInstance>, IGameO
 			}).EventTransition(GameHashes.OnStorageChange, this.hasFilter.idle, (AirFilter.StatesInstance smi) => !smi.master.IsConvertable());
 		}
 
-		public AirFilter.States.ReadyStates hasFilter;
+				public AirFilter.States.ReadyStates hasFilter;
 
-		public GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter, object>.State waiting;
+				public GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter, object>.State waiting;
 
-		public class ReadyStates : GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter, object>.State
+				public class ReadyStates : GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter, object>.State
 		{
-			public GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter, object>.State idle;
+						public GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter, object>.State idle;
 
-			public GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter, object>.State converting;
+						public GameStateMachine<AirFilter.States, AirFilter.StatesInstance, AirFilter, object>.State converting;
 		}
 	}
 }

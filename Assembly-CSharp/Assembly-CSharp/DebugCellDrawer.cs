@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DebugCellDrawer")]
 public class DebugCellDrawer : KMonoBehaviour
 {
-	private void Update()
+		private void Update()
 	{
 		for (int i = 0; i < this.cells.Count; i++)
 		{
@@ -16,5 +16,5 @@ public class DebugCellDrawer : KMonoBehaviour
 		}
 	}
 
-	public List<int> cells;
+		public List<int> cells;
 }

@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class SuitLockerSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<SuitLocker>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.suitLocker = target.GetComponent<SuitLocker>();
 		this.initialConfigRequestSuitButton.GetComponentInChildren<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.SUIT_SIDE_SCREEN.CONFIG_REQUEST_SUIT_TOOLTIP);
@@ -46,7 +46,7 @@ public class SuitLockerSideScreen : SideScreenContent
 		};
 	}
 
-	private void Update()
+		private void Update()
 	{
 		bool flag = this.suitLocker.smi.sm.isConfigured.Get(this.suitLocker.smi);
 		this.initialConfigScreen.gameObject.SetActive(!flag);
@@ -86,29 +86,29 @@ public class SuitLockerSideScreen : SideScreenContent
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject initialConfigScreen;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject regularConfigScreen;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText initialConfigLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton initialConfigRequestSuitButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton initialConfigNoSuitButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText regularConfigLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton regularConfigRequestSuitButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton regularConfigDropSuitButton;
 
-	private SuitLocker suitLocker;
+		private SuitLocker suitLocker;
 }

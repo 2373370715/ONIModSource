@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicHammer : Switch
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.animController = base.GetComponent<KBatchedAnimController>();
@@ -21,7 +21,7 @@ public class LogicHammer : Switch
 		base.OnToggle += this.OnSwitchToggled;
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		bool connected = false;
 		if (this.operational.IsOperational && toggled_on)
@@ -36,7 +36,7 @@ public class LogicHammer : Switch
 		this.UpdateVisualState(connected, false);
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		if (this.operational.IsOperational)
 		{
@@ -46,7 +46,7 @@ public class LogicHammer : Switch
 		this.UpdateVisualState(false, false);
 	}
 
-	private bool TriggerAudio()
+		private bool TriggerAudio()
 	{
 		if (this.wasOn || !this.switchedOn)
 		{
@@ -154,7 +154,7 @@ public class LogicHammer : Switch
 		return false;
 	}
 
-	private void UpdateVisualState(bool connected, bool force = false)
+		private void UpdateVisualState(bool connected, bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -176,7 +176,7 @@ public class LogicHammer : Switch
 		}
 	}
 
-	private void OnLogicValueChanged(object data)
+		private void OnLogicValueChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 		if (logicValueChanged.portID == LogicHammer.PORT_ID)
@@ -186,50 +186,50 @@ public class LogicHammer : Switch
 		}
 	}
 
-	protected KBatchedAnimController animController;
+		protected KBatchedAnimController animController;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicHammer> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicHammer>(delegate(LogicHammer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicHammer> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicHammer>(delegate(LogicHammer component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<LogicHammer> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<LogicHammer>(delegate(LogicHammer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicHammer> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<LogicHammer>(delegate(LogicHammer component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});
 
-	public static readonly HashedString PORT_ID = new HashedString("LogicHammerInput");
+		public static readonly HashedString PORT_ID = new HashedString("LogicHammerInput");
 
-	private static string PARAMETER_NAME = "hammerObjectCount";
+		private static string PARAMETER_NAME = "hammerObjectCount";
 
-	private static string SOUND_EVENT_PREFIX = "Hammer_strike_";
+		private static string SOUND_EVENT_PREFIX = "Hammer_strike_";
 
-	private static string DEFAULT_NO_SOUND_EVENT = "Hammer_strike_default";
+		private static string DEFAULT_NO_SOUND_EVENT = "Hammer_strike_default";
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private int resonator_cell;
+		private int resonator_cell;
 
-	private CellOffset target_offset = new CellOffset(-1, 0);
+		private CellOffset target_offset = new CellOffset(-1, 0);
 
-	private Rotatable rotatable;
+		private Rotatable rotatable;
 
-	private int logic_value;
+		private int logic_value;
 
-	private bool wasOn;
+		private bool wasOn;
 
-	protected static readonly HashedString[] ON_HIT_ANIMS = new HashedString[]
+		protected static readonly HashedString[] ON_HIT_ANIMS = new HashedString[]
 	{
 		"on_hit"
 	};
 
-	protected static readonly HashedString[] ON_MISS_ANIMS = new HashedString[]
+		protected static readonly HashedString[] ON_MISS_ANIMS = new HashedString[]
 	{
 		"on_miss"
 	};
 
-	protected static readonly HashedString[] OFF_ANIMS = new HashedString[]
+		protected static readonly HashedString[] OFF_ANIMS = new HashedString[]
 	{
 		"off_pre",
 		"off"

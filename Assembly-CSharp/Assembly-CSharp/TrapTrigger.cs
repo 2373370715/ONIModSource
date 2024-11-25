@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TrapTrigger : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		GameObject gameObject = base.gameObject;
@@ -19,14 +19,14 @@ public class TrapTrigger : KMonoBehaviour
 		}
 	}
 
-	public void SetTriggerCell(int cell)
+		public void SetTriggerCell(int cell)
 	{
 		HandleVector<int>.Handle handle = this.partitionerEntry;
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		this.partitionerEntry = GameScenePartitioner.Instance.Add("Trap", base.gameObject, cell, GameScenePartitioner.Instance.trapsLayer, new Action<object>(this.OnCreatureOnTrap));
 	}
 
-	public void SetStoredPosition(GameObject go)
+		public void SetStoredPosition(GameObject go)
 	{
 		if (go == null)
 		{
@@ -49,7 +49,7 @@ public class TrapTrigger : KMonoBehaviour
 		component.SetSceneLayer(Grid.SceneLayer.BuildingFront);
 	}
 
-	public void OnCreatureOnTrap(object data)
+		public void OnCreatureOnTrap(object data)
 	{
 		if (!base.enabled)
 		{
@@ -90,20 +90,20 @@ public class TrapTrigger : KMonoBehaviour
 		base.Trigger(-358342870, trappable.gameObject);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 	}
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	public Tag[] trappableCreatures;
+		public Tag[] trappableCreatures;
 
-	public Vector2 trappedOffset = Vector2.zero;
+		public Vector2 trappedOffset = Vector2.zero;
 
-	public bool addTrappedAnimationOffset = true;
+		public bool addTrappedAnimationOffset = true;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 }

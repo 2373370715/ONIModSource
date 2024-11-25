@@ -4,7 +4,7 @@ using UnityEngine;
 
 public struct AsteroidDescriptor
 {
-	public AsteroidDescriptor(string text, string tooltip, Color associatedColor, List<global::Tuple<string, Color, float>> bands = null, string associatedIcon = null)
+		public AsteroidDescriptor(string text, string tooltip, Color associatedColor, List<global::Tuple<string, Color, float>> bands = null, string associatedIcon = null)
 	{
 		this.text = text;
 		this.tooltip = tooltip;
@@ -13,13 +13,13 @@ public struct AsteroidDescriptor
 		this.associatedIcon = associatedIcon;
 	}
 
-	public string text;
+		public string text;
 
-	public string tooltip;
+		public string tooltip;
 
-	public List<global::Tuple<string, Color, float>> bands;
+		public List<global::Tuple<string, Color, float>> bands;
 
-	public Color associatedColor;
+		public Color associatedColor;
 
-	public string associatedIcon;
+		public string associatedIcon;
 }

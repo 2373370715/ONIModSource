@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DevRadiationGeneratorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "DevRadiationGenerator";
 		int width = 1;
@@ -27,7 +27,7 @@ public class DevRadiationGeneratorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddTag(GameTags.DevBuilding);
 		RadiationEmitter radiationEmitter = go.AddOrGet<RadiationEmitter>();
@@ -39,10 +39,10 @@ public class DevRadiationGeneratorConfig : IBuildingConfig
 		go.AddOrGet<DevRadiationEmitter>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "DevRadiationGenerator";
+		public const string ID = "DevRadiationGenerator";
 }

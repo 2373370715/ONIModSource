@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CameraReferenceTexture : MonoBehaviour
 {
-	private void OnPreCull()
+		private void OnPreCull()
 	{
 		if (this.quad == null)
 		{
@@ -15,7 +15,7 @@ public class CameraReferenceTexture : MonoBehaviour
 		}
 	}
 
-	public Camera referenceCamera;
+		public Camera referenceCamera;
 
-	private FullScreenQuad quad;
+		private FullScreenQuad quad;
 }

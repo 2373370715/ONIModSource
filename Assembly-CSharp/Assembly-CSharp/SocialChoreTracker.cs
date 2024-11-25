@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SocialChoreTracker
 {
-	public SocialChoreTracker(GameObject owner, CellOffset[] chore_offsets)
+		public SocialChoreTracker(GameObject owner, CellOffset[] chore_offsets)
 	{
 		this.owner = owner;
 		this.choreOffsets = chore_offsets;
@@ -12,7 +12,7 @@ public class SocialChoreTracker
 		this.validNavCellChangedPartitionerEntry = GameScenePartitioner.Instance.Add("PrintingPodSocialize", owner, extents, GameScenePartitioner.Instance.validNavCellChangedLayer, new Action<object>(this.OnCellChanged));
 	}
 
-	public void Update(bool update = true)
+		public void Update(bool update = true)
 	{
 		if (this.updating)
 		{
@@ -41,7 +41,7 @@ public class SocialChoreTracker
 		this.updating = false;
 	}
 
-	private void OnCellChanged(object data)
+		private void OnCellChanged(object data)
 	{
 		if (this.owner.HasTag(GameTags.Operational))
 		{
@@ -49,30 +49,30 @@ public class SocialChoreTracker
 		}
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		GameScenePartitioner.Instance.Free(ref this.validNavCellChangedPartitionerEntry);
 		this.Update(false);
 	}
 
-	private bool IsOffsetValid(CellOffset offset)
+		private bool IsOffsetValid(CellOffset offset)
 	{
 		int cell = Grid.OffsetCell(Grid.PosToCell(this.owner), offset);
 		int anchor_cell = Grid.CellBelow(cell);
 		return GameNavGrids.FloorValidator.IsWalkableCell(cell, anchor_cell, true);
 	}
 
-	public Func<int, Chore> CreateChoreCB;
+		public Func<int, Chore> CreateChoreCB;
 
-	public int choreCount;
+		public int choreCount;
 
-	private GameObject owner;
+		private GameObject owner;
 
-	private CellOffset[] choreOffsets;
+		private CellOffset[] choreOffsets;
 
-	private Chore[] chores;
+		private Chore[] chores;
 
-	private HandleVector<int>.Handle validNavCellChangedPartitionerEntry;
+		private HandleVector<int>.Handle validNavCellChangedPartitionerEntry;
 
-	private bool updating;
+		private bool updating;
 }

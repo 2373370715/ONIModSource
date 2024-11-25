@@ -1,9 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ScheduleScreenToggle : MonoBehaviour
-{
-	public KToggle toggle;
-
-	public LocText text;
+public class ScheduleScreenToggle : MonoBehaviour {
+    public LocText text;
+    public KToggle toggle;
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class KleiPermitBuildingAnimateIn : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		this.placeAnimController.TintColour = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 1);
 		this.colorAnimController.TintColour = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, 1);
@@ -14,13 +14,13 @@ public class KleiPermitBuildingAnimateIn : MonoBehaviour
 		});
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.sourceAnimController.gameObject.SetActive(false);
 		this.updater.Internal_Update(Time.unscaledDeltaTime);
 	}
 
-	private void OnDisable()
+		private void OnDisable()
 	{
 		this.sourceAnimController.gameObject.SetActive(true);
 		UnityEngine.Object.Destroy(this.placeAnimController.gameObject);
@@ -28,7 +28,7 @@ public class KleiPermitBuildingAnimateIn : MonoBehaviour
 		UnityEngine.Object.Destroy(base.gameObject);
 	}
 
-	public static KleiPermitBuildingAnimateIn MakeFor(KBatchedAnimController sourceAnimController, Updater extraUpdater = default(Updater))
+		public static KleiPermitBuildingAnimateIn MakeFor(KBatchedAnimController sourceAnimController, Updater extraUpdater = default(Updater))
 	{
 		sourceAnimController.gameObject.SetActive(false);
 		KBatchedAnimController kbatchedAnimController = UnityEngine.Object.Instantiate<KBatchedAnimController>(sourceAnimController, sourceAnimController.transform.parent, false);
@@ -61,7 +61,7 @@ public class KleiPermitBuildingAnimateIn : MonoBehaviour
 		return kleiPermitBuildingAnimateIn;
 	}
 
-	public static Updater MakeAnimInUpdater(KBatchedAnimController sourceAnimController, KBatchedAnimController placeAnimController, KBatchedAnimController colorAnimController)
+		public static Updater MakeAnimInUpdater(KBatchedAnimController sourceAnimController, KBatchedAnimController placeAnimController, KBatchedAnimController colorAnimController)
 	{
 		return Updater.Parallel(new Updater[]
 		{
@@ -95,13 +95,13 @@ public class KleiPermitBuildingAnimateIn : MonoBehaviour
 		});
 	}
 
-	private KBatchedAnimController sourceAnimController;
+		private KBatchedAnimController sourceAnimController;
 
-	private KBatchedAnimController placeAnimController;
+		private KBatchedAnimController placeAnimController;
 
-	private KBatchedAnimController colorAnimController;
+		private KBatchedAnimController colorAnimController;
 
-	private Updater updater;
+		private Updater updater;
 
-	private Updater extraUpdater;
+		private Updater extraUpdater;
 }

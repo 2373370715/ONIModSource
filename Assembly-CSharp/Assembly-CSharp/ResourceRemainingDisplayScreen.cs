@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class ResourceRemainingDisplayScreen : KScreen
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ResourceRemainingDisplayScreen.instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Activate();
@@ -17,18 +17,18 @@ public class ResourceRemainingDisplayScreen : KScreen
 		this.dispayPrefab.SetActive(false);
 	}
 
-	public void ActivateDisplay(GameObject target)
+		public void ActivateDisplay(GameObject target)
 	{
 		this.numberOfPendingConstructions = 0;
 		this.dispayPrefab.SetActive(true);
 	}
 
-	public void DeactivateDisplay()
+		public void DeactivateDisplay()
 	{
 		this.dispayPrefab.SetActive(false);
 	}
 
-	public void SetResources(IList<Tag> _selected_elements, Recipe recipe)
+		public void SetResources(IList<Tag> _selected_elements, Recipe recipe)
 	{
 		this.selected_elements.Clear();
 		foreach (Tag item in _selected_elements)
@@ -39,12 +39,12 @@ public class ResourceRemainingDisplayScreen : KScreen
 		global::Debug.Assert(this.selected_elements.Count == recipe.Ingredients.Count, string.Format("{0} Mismatch number of selected elements {1} and recipe requirements {2}", recipe.Name, this.selected_elements.Count, recipe.Ingredients.Count));
 	}
 
-	public void SetNumberOfPendingConstructions(int number)
+		public void SetNumberOfPendingConstructions(int number)
 	{
 		this.numberOfPendingConstructions = number;
 	}
 
-	public void Update()
+		public void Update()
 	{
 		if (!this.dispayPrefab.activeSelf)
 		{
@@ -66,7 +66,7 @@ public class ResourceRemainingDisplayScreen : KScreen
 		this.displayedConstructionCostMultiplier = this.numberOfPendingConstructions;
 	}
 
-	public string GetString()
+		public string GetString()
 	{
 		string text = "";
 		if (this.selected_elements != null && this.currentRecipe != null)
@@ -111,19 +111,19 @@ public class ResourceRemainingDisplayScreen : KScreen
 		return text;
 	}
 
-	public static ResourceRemainingDisplayScreen instance;
+		public static ResourceRemainingDisplayScreen instance;
 
-	public GameObject dispayPrefab;
+		public GameObject dispayPrefab;
 
-	public LocText label;
+		public LocText label;
 
-	private Recipe currentRecipe;
+		private Recipe currentRecipe;
 
-	private List<Tag> selected_elements = new List<Tag>();
+		private List<Tag> selected_elements = new List<Tag>();
 
-	private int numberOfPendingConstructions;
+		private int numberOfPendingConstructions;
 
-	private int displayedConstructionCostMultiplier;
+		private int displayedConstructionCostMultiplier;
 
-	private RectTransform rect;
+		private RectTransform rect;
 }

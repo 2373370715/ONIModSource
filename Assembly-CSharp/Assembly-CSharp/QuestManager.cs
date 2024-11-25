@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class QuestManager : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		if (QuestManager.instance != null)
 		{
@@ -17,7 +17,7 @@ public class QuestManager : KMonoBehaviour
 		base.OnPrefabInit();
 	}
 
-	public static QuestInstance InitializeQuest(Tag ownerId, Quest quest)
+		public static QuestInstance InitializeQuest(Tag ownerId, Quest quest)
 	{
 		QuestInstance questInstance;
 		if (!QuestManager.TryGetQuest(ownerId.GetHash(), quest, out questInstance))
@@ -28,7 +28,7 @@ public class QuestManager : KMonoBehaviour
 		return questInstance;
 	}
 
-	public static QuestInstance InitializeQuest(HashedString ownerId, Quest quest)
+		public static QuestInstance InitializeQuest(HashedString ownerId, Quest quest)
 	{
 		QuestInstance questInstance;
 		if (!QuestManager.TryGetQuest(ownerId.HashValue, quest, out questInstance))
@@ -39,35 +39,35 @@ public class QuestManager : KMonoBehaviour
 		return questInstance;
 	}
 
-	public static QuestInstance GetInstance(Tag ownerId, Quest quest)
+		public static QuestInstance GetInstance(Tag ownerId, Quest quest)
 	{
 		QuestInstance result;
 		QuestManager.TryGetQuest(ownerId.GetHash(), quest, out result);
 		return result;
 	}
 
-	public static QuestInstance GetInstance(HashedString ownerId, Quest quest)
+		public static QuestInstance GetInstance(HashedString ownerId, Quest quest)
 	{
 		QuestInstance result;
 		QuestManager.TryGetQuest(ownerId.HashValue, quest, out result);
 		return result;
 	}
 
-	public static bool CheckState(HashedString ownerId, Quest quest, Quest.State state)
+		public static bool CheckState(HashedString ownerId, Quest quest, Quest.State state)
 	{
 		QuestInstance questInstance;
 		QuestManager.TryGetQuest(ownerId.HashValue, quest, out questInstance);
 		return questInstance != null && questInstance.CurrentState == state;
 	}
 
-	public static bool CheckState(Tag ownerId, Quest quest, Quest.State state)
+		public static bool CheckState(Tag ownerId, Quest quest, Quest.State state)
 	{
 		QuestInstance questInstance;
 		QuestManager.TryGetQuest(ownerId.GetHash(), quest, out questInstance);
 		return questInstance != null && questInstance.CurrentState == state;
 	}
 
-	private static bool TryGetQuest(int ownerId, Quest quest, out QuestInstance qInst)
+		private static bool TryGetQuest(int ownerId, Quest quest, out QuestInstance qInst)
 	{
 		qInst = null;
 		Dictionary<HashedString, QuestInstance> dictionary;
@@ -78,8 +78,8 @@ public class QuestManager : KMonoBehaviour
 		return dictionary.TryGetValue(quest.IdHash, out qInst);
 	}
 
-	private static QuestManager instance;
+		private static QuestManager instance;
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<int, Dictionary<HashedString, QuestInstance>> ownerToQuests = new Dictionary<int, Dictionary<HashedString, QuestInstance>>();
 }

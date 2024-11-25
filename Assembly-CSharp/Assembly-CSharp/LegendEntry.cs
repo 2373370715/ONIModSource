@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class LegendEntry
 {
-	public LegendEntry(string name, string desc, Color colour, string desc_arg = null, Sprite sprite = null, bool displaySprite = true)
+		public LegendEntry(string name, string desc, Color colour, string desc_arg = null, Sprite sprite = null, bool displaySprite = true)
 	{
 		this.name = name;
 		this.desc = desc;
@@ -13,15 +13,15 @@ public class LegendEntry
 		this.displaySprite = displaySprite;
 	}
 
-	public string name;
+		public string name;
 
-	public string desc;
+		public string desc;
 
-	public string desc_arg;
+		public string desc_arg;
 
-	public Color colour;
+		public Color colour;
 
-	public Sprite sprite;
+		public Sprite sprite;
 
-	public bool displaySprite;
+		public bool displaySprite;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SuitLockerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SuitLocker";
 		int width = 1;
@@ -28,7 +28,7 @@ public class SuitLockerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<SuitLocker>().OutfitTags = new Tag[]
 		{
@@ -50,10 +50,10 @@ public class SuitLockerConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 	}
 
-	public const string ID = "SuitLocker";
+		public const string ID = "SuitLocker";
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Tracker
 {
-	public global::Tuple<float, float>[] ChartableData(float periodLength)
+		public global::Tuple<float, float>[] ChartableData(float periodLength)
 	{
 		float time = GameClock.Instance.GetTime();
 		List<global::Tuple<float, float>> list = new List<global::Tuple<float, float>>();
@@ -29,7 +29,7 @@ public abstract class Tracker
 		return list.ToArray();
 	}
 
-	public float GetDataTimeLength()
+		public float GetDataTimeLength()
 	{
 		float num = 0f;
 		for (int i = this.dataPoints.Count - 1; i >= 0; i--)
@@ -39,11 +39,11 @@ public abstract class Tracker
 		return num;
 	}
 
-	public abstract void UpdateData();
+		public abstract void UpdateData();
 
-	public abstract string FormatValueString(float value);
+		public abstract string FormatValueString(float value);
 
-	public float GetCurrentValue()
+		public float GetCurrentValue()
 	{
 		if (this.dataPoints.Count == 0)
 		{
@@ -52,7 +52,7 @@ public abstract class Tracker
 		return this.dataPoints[this.dataPoints.Count - 1].periodValue;
 	}
 
-	public float GetMinValue(float sampleHistoryLengthSeconds)
+		public float GetMinValue(float sampleHistoryLengthSeconds)
 	{
 		float time = GameClock.Instance.GetTime();
 		global::Tuple<float, float>[] array = this.ChartableData(sampleHistoryLengthSeconds);
@@ -74,7 +74,7 @@ public abstract class Tracker
 		return num;
 	}
 
-	public float GetMaxValue(int sampleHistoryLengthSeconds)
+		public float GetMaxValue(int sampleHistoryLengthSeconds)
 	{
 		float time = GameClock.Instance.GetTime();
 		global::Tuple<float, float>[] array = this.ChartableData((float)sampleHistoryLengthSeconds);
@@ -96,7 +96,7 @@ public abstract class Tracker
 		return num;
 	}
 
-	public float GetAverageValue(float sampleHistoryLengthSeconds)
+		public float GetAverageValue(float sampleHistoryLengthSeconds)
 	{
 		float time = GameClock.Instance.GetTime();
 		global::Tuple<float, float>[] array = this.ChartableData(sampleHistoryLengthSeconds);
@@ -133,7 +133,7 @@ public abstract class Tracker
 		return result;
 	}
 
-	public float GetDelta(float secondsAgo)
+		public float GetDelta(float secondsAgo)
 	{
 		float time = GameClock.Instance.GetTime();
 		global::Tuple<float, float>[] array = this.ChartableData(secondsAgo);
@@ -153,7 +153,7 @@ public abstract class Tracker
 		return second - num;
 	}
 
-	protected void AddPoint(float value)
+		protected void AddPoint(float value)
 	{
 		if (float.IsNaN(value))
 		{
@@ -164,7 +164,7 @@ public abstract class Tracker
 		this.dataPoints.RemoveRange(0, count);
 	}
 
-	public List<DataPoint> GetCompressedData()
+		public List<DataPoint> GetCompressedData()
 	{
 		int num = 10;
 		List<DataPoint> list = new List<DataPoint>();
@@ -184,18 +184,18 @@ public abstract class Tracker
 		return list;
 	}
 
-	public void OverwriteData(List<DataPoint> newData)
+		public void OverwriteData(List<DataPoint> newData)
 	{
 		this.dataPoints = newData;
 	}
 
-	private const int standardSampleRate = 4;
+		private const int standardSampleRate = 4;
 
-	private const int defaultCyclesTracked = 5;
+		private const int defaultCyclesTracked = 5;
 
-	public List<GameObject> objectsOfInterest = new List<GameObject>();
+		public List<GameObject> objectsOfInterest = new List<GameObject>();
 
-	protected List<DataPoint> dataPoints = new List<DataPoint>();
+		protected List<DataPoint> dataPoints = new List<DataPoint>();
 
-	private int maxPoints = Mathf.CeilToInt(750f);
+		private int maxPoints = Mathf.CeilToInt(750f);
 }

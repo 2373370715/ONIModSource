@@ -4,325 +4,306 @@ using Klei.AI;
 using KSerialization;
 using UnityEngine;
 
-/// <summary>
-///     完成建筑的基类，继承自 Building。
-/// </summary>
-public class BuildingComplete : Building {
-    /// <summary>
-    ///     用于处理被埋葬状态变化事件的委托。
-    /// </summary>
-    private static readonly EventSystem.IntraObjectHandler<BuildingComplete> OnEntombedChange
-        = new EventSystem.IntraObjectHandler<BuildingComplete>(delegate(BuildingComplete component, object data) {
-                                                                   component.OnEntombedChanged();
-                                                               });
+public class BuildingComplete : Building
+{
+		private bool WasReplaced()
+	{
+		return this.replacingTileLayer != ObjectLayer.NumLayers;
+	}
 
-    /// <summary>
-    ///     用于处理对象替换事件的委托。
-    /// </summary>
-    private static readonly EventSystem.IntraObjectHandler<BuildingComplete> OnObjectReplacedDelegate
-        = new EventSystem.IntraObjectHandler<BuildingComplete>(delegate(BuildingComplete component, object data) {
-                                                                   component.OnObjectReplaced(data);
-                                                               });
+		protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		Vector3 position = base.transform.GetPosition();
+		position.z = Grid.GetLayerZ(this.Def.SceneLayer);
+		base.transform.SetPosition(position);
+		base.gameObject.SetLayerRecursively(LayerMask.NameToLayer("Default"));
+		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
+		Rotatable component2 = base.GetComponent<Rotatable>();
+		if (component != null && component2 == null)
+		{
+			component.Offset = this.Def.GetVisualizerOffset();
+		}
+		KBoxCollider2D component3 = base.GetComponent<KBoxCollider2D>();
+		if (component3 != null)
+		{
+			Vector3 visualizerOffset = this.Def.GetVisualizerOffset();
+			component3.offset += new Vector2(visualizerOffset.x, visualizerOffset.y);
+		}
+		Attributes attributes = this.GetAttributes();
+		foreach (Klei.AI.Attribute attribute in this.Def.attributes)
+		{
+			attributes.Add(attribute);
+		}
+		foreach (AttributeModifier attributeModifier in this.Def.attributeModifiers)
+		{
+			Klei.AI.Attribute attribute2 = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId);
+			if (attributes.Get(attribute2) == null)
+			{
+				attributes.Add(attribute2);
+			}
+			attributes.Add(attributeModifier);
+		}
+		foreach (AttributeInstance attributeInstance in attributes)
+		{
+			AttributeModifier item = new AttributeModifier(attributeInstance.Id, attributeInstance.GetTotalValue(), null, false, false, true);
+			this.regionModifiers.Add(item);
+		}
+		if (this.Def.SelfHeatKilowattsWhenActive != 0f || this.Def.ExhaustKilowattsWhenActive != 0f)
+		{
+			base.gameObject.AddOrGet<KBatchedAnimHeatPostProcessingEffect>();
+		}
+		if (this.Def.UseStructureTemperature)
+		{
+			GameComps.StructureTemperatures.Add(base.gameObject);
+		}
+		base.Subscribe<BuildingComplete>(1606648047, BuildingComplete.OnObjectReplacedDelegate);
+		if (this.Def.Entombable)
+		{
+			base.Subscribe<BuildingComplete>(-1089732772, BuildingComplete.OnEntombedChange);
+		}
+	}
 
-    /// <summary>
-    ///     记录游戏中见过的最低温度。
-    /// </summary>
-    public static float MinKelvinSeen = float.MaxValue;
+		private void OnEntombedChanged()
+	{
+		if (base.gameObject.HasTag(GameTags.Entombed))
+		{
+			Components.EntombedBuildings.Add(this);
+			return;
+		}
+		Components.EntombedBuildings.Remove(this);
+	}
 
-    /// <summary>
-    ///     建筑创建的时间。
-    /// </summary>
-    [Serialize]
-    public float creationTime = -1f;
+		public override void UpdatePosition()
+	{
+		base.UpdatePosition();
+		GameScenePartitioner.Instance.UpdatePosition(this.scenePartitionerEntry, base.GetExtents());
+	}
 
-    private bool hasSpawnedKComponents;
+		private void OnObjectReplaced(object data)
+	{
+		Constructable.ReplaceCallbackParameters replaceCallbackParameters = (Constructable.ReplaceCallbackParameters)data;
+		this.replacingTileLayer = replaceCallbackParameters.TileLayer;
+	}
 
-    /// <summary>
-    ///     建筑是否可作为艺术品。
-    /// </summary>
-    public bool isArtable;
+		protected override void OnSpawn()
+	{
+		base.OnSpawn();
+		this.primaryElement = base.GetComponent<PrimaryElement>();
+		int cell = Grid.PosToCell(base.transform.GetPosition());
+		if (this.Def.IsFoundation)
+		{
+			foreach (int num in base.PlacementCells)
+			{
+				Grid.Foundation[num] = true;
+				Game.Instance.roomProber.SolidChangedEvent(num, false);
+			}
+		}
+		if (Grid.IsValidCell(cell))
+		{
+			Vector3 position = Grid.CellToPosCBC(cell, this.Def.SceneLayer);
+			base.transform.SetPosition(position);
+		}
+		if (this.primaryElement != null)
+		{
+			if (this.primaryElement.Mass == 0f)
+			{
+				this.primaryElement.Mass = this.Def.Mass[0];
+			}
+			float temperature = this.primaryElement.Temperature;
+			if (temperature > 0f && !float.IsNaN(temperature) && !float.IsInfinity(temperature))
+			{
+				BuildingComplete.MinKelvinSeen = Mathf.Min(BuildingComplete.MinKelvinSeen, temperature);
+			}
+			PrimaryElement primaryElement = this.primaryElement;
+			primaryElement.setTemperatureCallback = (PrimaryElement.SetTemperatureCallback)Delegate.Combine(primaryElement.setTemperatureCallback, new PrimaryElement.SetTemperatureCallback(this.OnSetTemperature));
+		}
+		if (!base.gameObject.HasTag(GameTags.RocketInSpace))
+		{
+			this.Def.MarkArea(cell, base.Orientation, this.Def.ObjectLayer, base.gameObject);
+			if (this.Def.IsTilePiece)
+			{
+				this.Def.MarkArea(cell, base.Orientation, this.Def.TileLayer, base.gameObject);
+				this.Def.RunOnArea(cell, base.Orientation, delegate(int c)
+				{
+					TileVisualizer.RefreshCell(c, this.Def.TileLayer, this.Def.ReplacementLayer);
+				});
+			}
+		}
+		base.RegisterBlockTileRenderer();
+		if (this.Def.PreventIdleTraversalPastBuilding)
+		{
+			for (int j = 0; j < base.PlacementCells.Length; j++)
+			{
+				Grid.PreventIdleTraversal[base.PlacementCells[j]] = true;
+			}
+		}
+		Components.BuildingCompletes.Add(this);
+		BuildingConfigManager.Instance.AddBuildingCompleteKComponents(base.gameObject, this.Def.Tag);
+		this.hasSpawnedKComponents = true;
+		this.scenePartitionerEntry = GameScenePartitioner.Instance.Add(base.name, this, base.GetExtents(), GameScenePartitioner.Instance.completeBuildings, null);
+		if (this.prefabid.HasTag(GameTags.TemplateBuilding))
+		{
+			Components.TemplateBuildings.Add(this);
+		}
+		Attributes attributes = this.GetAttributes();
+		if (attributes != null)
+		{
+			Deconstructable component = base.GetComponent<Deconstructable>();
+			if (component != null)
+			{
+				int k = 1;
+				while (k < component.constructionElements.Length)
+				{
+					Tag tag = component.constructionElements[k];
+					Element element = ElementLoader.GetElement(tag);
+					if (element != null)
+					{
+						using (List<AttributeModifier>.Enumerator enumerator = element.attributeModifiers.GetEnumerator())
+						{
+							while (enumerator.MoveNext())
+							{
+								AttributeModifier modifier = enumerator.Current;
+								attributes.Add(modifier);
+							}
+							goto IL_341;
+						}
+						goto IL_2E1;
+					}
+					goto IL_2E1;
+					IL_341:
+					k++;
+					continue;
+					IL_2E1:
+					GameObject gameObject = Assets.TryGetPrefab(tag);
+					if (!(gameObject != null))
+					{
+						goto IL_341;
+					}
+					PrefabAttributeModifiers component2 = gameObject.GetComponent<PrefabAttributeModifiers>();
+					if (component2 != null)
+					{
+						foreach (AttributeModifier modifier2 in component2.descriptors)
+						{
+							attributes.Add(modifier2);
+						}
+						goto IL_341;
+					}
+					goto IL_341;
+				}
+			}
+		}
+		BuildingInventory.Instance.RegisterBuilding(this);
+	}
 
-    /// <summary>
-    ///     建筑是否需要手动操作。
-    /// </summary>
-    public bool isManuallyOperated;
+		private void OnSetTemperature(PrimaryElement primary_element, float temperature)
+	{
+		BuildingComplete.MinKelvinSeen = Mathf.Min(BuildingComplete.MinKelvinSeen, temperature);
+	}
 
-    /// <summary>
-    ///     建筑的修饰器组件。
-    /// </summary>
-    [MyCmpReq]
-    private Modifiers modifiers;
+		public void SetCreationTime(float time)
+	{
+		this.creationTime = time;
+	}
 
-    /// <summary>
-    ///     建筑的预制体ID组件。
-    /// </summary>
-    [MyCmpGet]
-    public KPrefabID prefabid;
+		private string GetInspectSound()
+	{
+		return GlobalAssets.GetSound("AI_Inspect_" + base.GetComponent<KPrefabID>().PrefabTag.Name, false);
+	}
 
-    /// <summary>
-    ///     建筑的主要元素。
-    /// </summary>
-    public PrimaryElement primaryElement;
+		protected override void OnCleanUp()
+	{
+		if (Game.quitting)
+		{
+			return;
+		}
+		GameScenePartitioner.Instance.Free(ref this.scenePartitionerEntry);
+		if (this.hasSpawnedKComponents)
+		{
+			BuildingConfigManager.Instance.DestroyBuildingCompleteKComponents(base.gameObject, this.Def.Tag);
+		}
+		if (this.Def.UseStructureTemperature)
+		{
+			GameComps.StructureTemperatures.Remove(base.gameObject);
+		}
+		base.OnCleanUp();
+		if (!this.WasReplaced() && base.gameObject.GetMyWorldId() != 255)
+		{
+			int cell = Grid.PosToCell(this);
+			this.Def.UnmarkArea(cell, base.Orientation, this.Def.ObjectLayer, base.gameObject);
+			if (this.Def.IsTilePiece)
+			{
+				this.Def.UnmarkArea(cell, base.Orientation, this.Def.TileLayer, base.gameObject);
+				this.Def.RunOnArea(cell, base.Orientation, delegate(int c)
+				{
+					TileVisualizer.RefreshCell(c, this.Def.TileLayer, this.Def.ReplacementLayer);
+				});
+			}
+			if (this.Def.IsFoundation)
+			{
+				foreach (int num in base.PlacementCells)
+				{
+					Grid.Foundation[num] = false;
+					Game.Instance.roomProber.SolidChangedEvent(num, false);
+				}
+			}
+			if (this.Def.PreventIdleTraversalPastBuilding)
+			{
+				for (int j = 0; j < base.PlacementCells.Length; j++)
+				{
+					Grid.PreventIdleTraversal[base.PlacementCells[j]] = false;
+				}
+			}
+		}
+		if (this.WasReplaced() && this.Def.IsTilePiece && this.replacingTileLayer != this.Def.TileLayer)
+		{
+			int cell2 = Grid.PosToCell(this);
+			this.Def.UnmarkArea(cell2, base.Orientation, this.Def.TileLayer, base.gameObject);
+			this.Def.RunOnArea(cell2, base.Orientation, delegate(int c)
+			{
+				TileVisualizer.RefreshCell(c, this.Def.TileLayer, this.Def.ReplacementLayer);
+			});
+		}
+		Components.BuildingCompletes.Remove(this);
+		Components.EntombedBuildings.Remove(this);
+		Components.TemplateBuildings.Remove(this);
+		base.UnregisterBlockTileRenderer();
+		BuildingInventory.Instance.UnregisterBuilding(this);
+		base.Trigger(-21016276, this);
+	}
 
-    /// <summary>
-    ///     建筑的区域属性修饰器列表。
-    /// </summary>
-    public List<AttributeModifier> regionModifiers = new List<AttributeModifier>();
+		[MyCmpReq]
+	private Modifiers modifiers;
 
-    /// <summary>
-    ///     被替换的地砖层。
-    /// </summary>
-    private ObjectLayer replacingTileLayer = ObjectLayer.NumLayers;
+		[MyCmpGet]
+	public KPrefabID prefabid;
 
-    /// <summary>
-    ///     场景分区器的入口句柄。
-    /// </summary>
-    private HandleVector<int>.Handle scenePartitionerEntry;
+		public bool isManuallyOperated;
 
-    /// <summary>
-    ///     检查建筑是否被替换过。
-    /// </summary>
-    /// <returns>是否被替换过。</returns>
-    private bool WasReplaced() { return replacingTileLayer != ObjectLayer.NumLayers; }
+		public bool isArtable;
 
-    /// <summary>
-    ///     初始化预制件时调用的方法。
-    /// </summary>
-    protected override void OnPrefabInit() {
-        base.OnPrefabInit();
+		public PrimaryElement primaryElement;
 
-        // 设置位置
-        var position = transform.GetPosition();
-        position.z = Grid.GetLayerZ(Def.SceneLayer);
-        transform.SetPosition(position);
+		[Serialize]
+	public float creationTime = -1f;
 
-        // 设置层级
-        gameObject.SetLayerRecursively(LayerMask.NameToLayer("Default"));
+		private bool hasSpawnedKComponents;
 
-        // 设置动画控制器偏移
-        var component                                                 = GetComponent<KBatchedAnimController>();
-        var component2                                                = GetComponent<Rotatable>();
-        if (component != null && component2 == null) component.Offset = Def.GetVisualizerOffset();
+		private ObjectLayer replacingTileLayer = ObjectLayer.NumLayers;
 
-        // 设置碰撞器偏移
-        var component3 = GetComponent<KBoxCollider2D>();
-        if (component3 != null) {
-            var visualizerOffset = Def.GetVisualizerOffset();
-            component3.offset += new Vector2(visualizerOffset.x, visualizerOffset.y);
-        }
+		public List<AttributeModifier> regionModifiers = new List<AttributeModifier>();
 
-        // 添加属性和属性修饰器
-        var attributes = this.GetAttributes();
-        foreach (var attribute in Def.attributes) attributes.Add(attribute);
-        foreach (var attributeModifier in Def.attributeModifiers) {
-            var attribute2 = Db.Get().BuildingAttributes.Get(attributeModifier.AttributeId);
-            if (attributes.Get(attribute2) == null) attributes.Add(attribute2);
-            attributes.Add(attributeModifier);
-        }
+		private static readonly EventSystem.IntraObjectHandler<BuildingComplete> OnEntombedChange = new EventSystem.IntraObjectHandler<BuildingComplete>(delegate(BuildingComplete component, object data)
+	{
+		component.OnEntombedChanged();
+	});
 
-        foreach (var attributeInstance in attributes) {
-            var item = new AttributeModifier(attributeInstance.Id, attributeInstance.GetTotalValue());
-            regionModifiers.Add(item);
-        }
+		private static readonly EventSystem.IntraObjectHandler<BuildingComplete> OnObjectReplacedDelegate = new EventSystem.IntraObjectHandler<BuildingComplete>(delegate(BuildingComplete component, object data)
+	{
+		component.OnObjectReplaced(data);
+	});
 
-        // 添加热效应和结构温度管理
-        if (Def.SelfHeatKilowattsWhenActive != 0f || Def.ExhaustKilowattsWhenActive != 0f)
-            gameObject.AddOrGet<KBatchedAnimHeatPostProcessingEffect>();
+		private HandleVector<int>.Handle scenePartitionerEntry;
 
-        if (Def.UseStructureTemperature) GameComps.StructureTemperatures.Add(gameObject);
-
-        // 订阅对象替换和被埋葬事件
-        Subscribe(1606648047, OnObjectReplacedDelegate);
-        if (Def.Entombable) Subscribe(-1089732772, OnEntombedChange);
-    }
-
-    /// <summary>
-    ///     处理被埋葬状态变化事件。
-    /// </summary>
-    private void OnEntombedChanged() {
-        if (gameObject.HasTag(GameTags.Entombed)) {
-            Components.EntombedBuildings.Add(this);
-            return;
-        }
-
-        Components.EntombedBuildings.Remove(this);
-    }
-
-    /// <summary>
-    ///     更新建筑的位置。
-    /// </summary>
-    public override void UpdatePosition() {
-        base.UpdatePosition();
-        GameScenePartitioner.Instance.UpdatePosition(scenePartitionerEntry, GetExtents());
-    }
-
-    /// <summary>
-    ///     处理对象替换事件。
-    /// </summary>
-    /// <param name="data">事件数据。</param>
-    private void OnObjectReplaced(object data) {
-        var replaceCallbackParameters = (Constructable.ReplaceCallbackParameters)data;
-        replacingTileLayer = replaceCallbackParameters.TileLayer;
-    }
-
-    /// <summary>
-    ///     实例化时调用的方法。
-    /// </summary>
-    protected override void OnSpawn() {
-        base.OnSpawn();
-        this.primaryElement = GetComponent<PrimaryElement>();
-        var cell = Grid.PosToCell(transform.GetPosition());
-        if (Def.IsFoundation)
-            foreach (var num in PlacementCells) {
-                Grid.Foundation[num] = true;
-                Game.Instance.roomProber.SolidChangedEvent(num, false);
-            }
-
-        if (Grid.IsValidCell(cell)) {
-            var position = Grid.CellToPosCBC(cell, Def.SceneLayer);
-            transform.SetPosition(position);
-        }
-
-        if (this.primaryElement != null) {
-            if (this.primaryElement.Mass == 0f) this.primaryElement.Mass = Def.Mass[0];
-            var temperature                                              = this.primaryElement.Temperature;
-            if (temperature > 0f && !float.IsNaN(temperature) && !float.IsInfinity(temperature))
-                MinKelvinSeen = Mathf.Min(MinKelvinSeen, temperature);
-
-            var primaryElement = this.primaryElement;
-            primaryElement.setTemperatureCallback
-                = (PrimaryElement.SetTemperatureCallback)Delegate.Combine(primaryElement.setTemperatureCallback,
-                                                                          new PrimaryElement.
-                                                                              SetTemperatureCallback(OnSetTemperature));
-        }
-
-        if (!this.gameObject.HasTag(GameTags.RocketInSpace)) {
-            Def.MarkArea(cell, Orientation, Def.ObjectLayer, gameObject);
-            if (Def.IsTilePiece) {
-                Def.MarkArea(cell, Orientation, Def.TileLayer, gameObject);
-                Def.RunOnArea(cell,
-                              Orientation,
-                              delegate(int c) { TileVisualizer.RefreshCell(c, Def.TileLayer, Def.ReplacementLayer); });
-            }
-        }
-
-        RegisterBlockTileRenderer();
-        if (Def.PreventIdleTraversalPastBuilding)
-            for (var j = 0; j < PlacementCells.Length; j++)
-                Grid.PreventIdleTraversal[PlacementCells[j]] = true;
-
-        Components.BuildingCompletes.Add(this);
-        BuildingConfigManager.Instance.AddBuildingCompleteKComponents(this.gameObject, Def.Tag);
-        hasSpawnedKComponents = true;
-        scenePartitionerEntry
-            = GameScenePartitioner.Instance.Add(name,
-                                                this,
-                                                GetExtents(),
-                                                GameScenePartitioner.Instance.completeBuildings,
-                                                null);
-
-        if (prefabid.HasTag(GameTags.TemplateBuilding)) Components.TemplateBuildings.Add(this);
-        var attributes = this.GetAttributes();
-        if (attributes != null) {
-            var component = GetComponent<Deconstructable>();
-            if (component != null) {
-                var k = 1;
-                while (k < component.constructionElements.Length) {
-                    var tag     = component.constructionElements[k];
-                    var element = ElementLoader.GetElement(tag);
-                    if (element != null)
-                        using (var enumerator = element.attributeModifiers.GetEnumerator()) {
-                            while (enumerator.MoveNext()) {
-                                var modifier = enumerator.Current;
-                                attributes.Add(modifier);
-                            }
-                        }
-
-                    var gameObject = Assets.TryGetPrefab(tag);
-                    if (gameObject != null) {
-                        var component2 = gameObject.GetComponent<PrefabAttributeModifiers>();
-                        if (component2 != null)
-                            foreach (var modifier2 in component2.descriptors)
-                                attributes.Add(modifier2);
-                    }
-
-                    k++;
-                }
-            }
-        }
-
-        BuildingInventory.Instance.RegisterBuilding(this);
-    }
-
-    /// <summary>
-    ///     设置建筑的创建时间。
-    /// </summary>
-    /// <param name="time">创建时间。</param>
-    public void SetCreationTime(float time) { creationTime = time; }
-
-    /// <summary>
-    ///     获取检查声音。
-    /// </summary>
-    /// <returns>检查声音的路径。</returns>
-    private string GetInspectSound() {
-        return GlobalAssets.GetSound("AI_Inspect_" + GetComponent<KPrefabID>().PrefabTag.Name);
-    }
-
-    /// <summary>
-    ///     清理资源时调用的方法。
-    /// </summary>
-    protected override void OnCleanUp() {
-        if (Game.quitting) return;
-
-        GameScenePartitioner.Instance.Free(ref scenePartitionerEntry);
-        if (hasSpawnedKComponents)
-            BuildingConfigManager.Instance.DestroyBuildingCompleteKComponents(gameObject, Def.Tag);
-
-        if (Def.UseStructureTemperature) GameComps.StructureTemperatures.Remove(gameObject);
-        base.OnCleanUp();
-        if (!WasReplaced() && gameObject.GetMyWorldId() != 255) {
-            var cell = Grid.PosToCell(this);
-            Def.UnmarkArea(cell, Orientation, Def.ObjectLayer, gameObject);
-            if (Def.IsTilePiece) {
-                Def.UnmarkArea(cell, Orientation, Def.TileLayer, gameObject);
-                Def.RunOnArea(cell,
-                              Orientation,
-                              delegate(int c) { TileVisualizer.RefreshCell(c, Def.TileLayer, Def.ReplacementLayer); });
-            }
-
-            if (Def.IsFoundation)
-                foreach (var num in PlacementCells) {
-                    Grid.Foundation[num] = false;
-                    Game.Instance.roomProber.SolidChangedEvent(num, false);
-                }
-
-            if (Def.PreventIdleTraversalPastBuilding)
-                for (var j = 0; j < PlacementCells.Length; j++)
-                    Grid.PreventIdleTraversal[PlacementCells[j]] = false;
-        }
-
-        if (WasReplaced() && Def.IsTilePiece && replacingTileLayer != Def.TileLayer) {
-            var cell2 = Grid.PosToCell(this);
-            Def.UnmarkArea(cell2, Orientation, Def.TileLayer, gameObject);
-            Def.RunOnArea(cell2,
-                          Orientation,
-                          delegate(int c) { TileVisualizer.RefreshCell(c, Def.TileLayer, Def.ReplacementLayer); });
-        }
-
-        Components.BuildingCompletes.Remove(this);
-        Components.EntombedBuildings.Remove(this);
-        Components.TemplateBuildings.Remove(this);
-        UnregisterBlockTileRenderer();
-        BuildingInventory.Instance.UnregisterBuilding(this);
-        Trigger(-21016276, this);
-    }
-
-    /// <summary>
-    ///     处理温度变化事件。
-    /// </summary>
-    /// <param name="primary_element">主要元素。</param>
-    /// <param name="temperature">新温度。</param>
-    private void OnSetTemperature(PrimaryElement primary_element, float temperature) {
-        MinKelvinSeen = Mathf.Min(MinKelvinSeen, temperature);
-    }
+		public static float MinKelvinSeen = float.MaxValue;
 }

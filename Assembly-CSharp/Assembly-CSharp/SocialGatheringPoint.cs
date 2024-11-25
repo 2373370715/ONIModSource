@@ -1,139 +1,117 @@
 ﻿using System;
 using KSerialization;
-using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class SocialGatheringPoint : StateMachineComponent<SocialGatheringPoint.StatesInstance>
-{
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.workables = new SocialGatheringPointWorkable[this.choreOffsets.Length];
-		for (int i = 0; i < this.workables.Length; i++)
-		{
-			Vector3 pos = Grid.CellToPosCBC(Grid.OffsetCell(Grid.PosToCell(this), this.choreOffsets[i]), Grid.SceneLayer.Move);
-			SocialGatheringPointWorkable socialGatheringPointWorkable = ChoreHelpers.CreateLocator("SocialGatheringPointWorkable", pos).AddOrGet<SocialGatheringPointWorkable>();
-			socialGatheringPointWorkable.basePriority = this.basePriority;
-			socialGatheringPointWorkable.specificEffect = this.socialEffect;
-			socialGatheringPointWorkable.OnWorkableEventCB = new Action<Workable, Workable.WorkableEvent>(this.OnWorkableEvent);
-			socialGatheringPointWorkable.SetWorkTime(this.workTime);
-			this.workables[i] = socialGatheringPointWorkable;
-		}
-		this.tracker = new SocialChoreTracker(base.gameObject, this.choreOffsets);
-		this.tracker.choreCount = this.choreCount;
-		this.tracker.CreateChoreCB = new Func<int, Chore>(this.CreateChore);
-		base.smi.StartSM();
-	}
+public class SocialGatheringPoint : StateMachineComponent<SocialGatheringPoint.StatesInstance> {
+    public  int                            basePriority;
+    public  int                            choreCount   = 2;
+    public  CellOffset[]                   choreOffsets = { new CellOffset(0, 0), new CellOffset(1, 0) };
+    public  System.Action                  OnSocializeBeginCB;
+    public  System.Action                  OnSocializeEndCB;
+    public  string                         socialEffect;
+    private SocialChoreTracker             tracker;
+    private SocialGatheringPointWorkable[] workables;
+    public  float                          workTime = 15f;
 
-	protected override void OnCleanUp()
-	{
-		if (this.tracker != null)
-		{
-			this.tracker.Clear();
-			this.tracker = null;
-		}
-		if (this.workables != null)
-		{
-			for (int i = 0; i < this.workables.Length; i++)
-			{
-				if (this.workables[i])
-				{
-					Util.KDestroyGameObject(this.workables[i]);
-					this.workables[i] = null;
-				}
-			}
-		}
-		base.OnCleanUp();
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        workables = new SocialGatheringPointWorkable[choreOffsets.Length];
+        for (var i = 0; i < workables.Length; i++) {
+            var pos = Grid.CellToPosCBC(Grid.OffsetCell(Grid.PosToCell(this), choreOffsets[i]), Grid.SceneLayer.Move);
+            var socialGatheringPointWorkable = ChoreHelpers.CreateLocator("SocialGatheringPointWorkable", pos)
+                                                           .AddOrGet<SocialGatheringPointWorkable>();
 
-	private Chore CreateChore(int i)
-	{
-		Workable workable = this.workables[i];
-		ChoreType relax = Db.Get().ChoreTypes.Relax;
-		IStateMachineTarget target = workable;
-		ChoreProvider chore_provider = null;
-		bool run_until_complete = true;
-		Action<Chore> on_complete = null;
-		Action<Chore> on_begin = null;
-		ScheduleBlockType recreation = Db.Get().ScheduleBlockTypes.Recreation;
-		WorkChore<SocialGatheringPointWorkable> workChore = new WorkChore<SocialGatheringPointWorkable>(relax, target, chore_provider, run_until_complete, on_complete, on_begin, new Action<Chore>(this.OnSocialChoreEnd), false, recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, false);
-		workChore.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
-		workChore.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, workable);
-		workChore.AddPrecondition(ChorePreconditions.instance.IsNotARobot, workable);
-		return workChore;
-	}
+            socialGatheringPointWorkable.basePriority      = basePriority;
+            socialGatheringPointWorkable.specificEffect    = socialEffect;
+            socialGatheringPointWorkable.OnWorkableEventCB = OnWorkableEvent;
+            socialGatheringPointWorkable.SetWorkTime(workTime);
+            workables[i] = socialGatheringPointWorkable;
+        }
 
-	private void OnSocialChoreEnd(Chore chore)
-	{
-		if (base.smi.IsInsideState(base.smi.sm.on))
-		{
-			this.tracker.Update(true);
-		}
-	}
+        tracker               = new SocialChoreTracker(gameObject, choreOffsets);
+        tracker.choreCount    = choreCount;
+        tracker.CreateChoreCB = CreateChore;
+        smi.StartSM();
+        Components.SocialGatheringPoints.Add(Grid.WorldIdx[Grid.PosToCell(this)], this);
+    }
 
-	private void OnWorkableEvent(Workable workable, Workable.WorkableEvent workable_event)
-	{
-		if (workable_event == Workable.WorkableEvent.WorkStarted)
-		{
-			if (this.OnSocializeBeginCB != null)
-			{
-				this.OnSocializeBeginCB();
-				return;
-			}
-		}
-		else if (workable_event == Workable.WorkableEvent.WorkStopped && this.OnSocializeEndCB != null)
-		{
-			this.OnSocializeEndCB();
-		}
-	}
+    protected override void OnCleanUp() {
+        if (tracker != null) {
+            tracker.Clear();
+            tracker = null;
+        }
 
-	public CellOffset[] choreOffsets = new CellOffset[]
-	{
-		new CellOffset(0, 0),
-		new CellOffset(1, 0)
-	};
+        if (workables != null)
+            for (var i = 0; i < workables.Length; i++)
+                if (workables[i]) {
+                    Util.KDestroyGameObject(workables[i]);
+                    workables[i] = null;
+                }
 
-	public int choreCount = 2;
+        Components.SocialGatheringPoints.Remove(Grid.WorldIdx[Grid.PosToCell(this)], this);
+        base.OnCleanUp();
+    }
 
-	public int basePriority;
+    private Chore CreateChore(int i) {
+        Workable            workable           = workables[i];
+        var                 relax              = Db.Get().ChoreTypes.Relax;
+        IStateMachineTarget target             = workable;
+        ChoreProvider       chore_provider     = null;
+        var                 run_until_complete = true;
+        Action<Chore>       on_complete        = null;
+        Action<Chore>       on_begin           = null;
+        var                 recreation         = Db.Get().ScheduleBlockTypes.Recreation;
+        var workChore = new WorkChore<SocialGatheringPointWorkable>(relax,
+                                                                    target,
+                                                                    chore_provider,
+                                                                    run_until_complete,
+                                                                    on_complete,
+                                                                    on_begin,
+                                                                    OnSocialChoreEnd,
+                                                                    false,
+                                                                    recreation,
+                                                                    false,
+                                                                    true,
+                                                                    null,
+                                                                    false,
+                                                                    true,
+                                                                    false,
+                                                                    PriorityScreen.PriorityClass.high,
+                                                                    5,
+                                                                    false,
+                                                                    false);
 
-	public string socialEffect;
+        workChore.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert);
+        workChore.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, workable);
+        workChore.AddPrecondition(ChorePreconditions.instance.IsNotARobot);
+        return workChore;
+    }
 
-	public float workTime = 15f;
+    private void OnSocialChoreEnd(Chore chore) {
+        if (smi.IsInsideState(smi.sm.on)) tracker.Update();
+    }
 
-	public System.Action OnSocializeBeginCB;
+    private void OnWorkableEvent(Workable workable, Workable.WorkableEvent workable_event) {
+        if (workable_event == Workable.WorkableEvent.WorkStarted) {
+            if (OnSocializeBeginCB != null) OnSocializeBeginCB();
+        } else if (workable_event == Workable.WorkableEvent.WorkStopped && OnSocializeEndCB != null) OnSocializeEndCB();
+    }
 
-	public System.Action OnSocializeEndCB;
+    public class States : GameStateMachine<States, StatesInstance, SocialGatheringPoint> {
+        public State off;
+        public State on;
 
-	private SocialChoreTracker tracker;
+        public override void InitializeStates(out BaseState default_state) {
+            default_state = off;
+            root.DoNothing();
+            off.TagTransition(GameTags.Operational, on);
+            on.TagTransition(GameTags.Operational, off, true)
+              .Enter("CreateChore", delegate(StatesInstance smi) { smi.master.tracker.Update(); })
+              .Exit("CancelChore", delegate(StatesInstance  smi) { smi.master.tracker.Update(false); });
+        }
+    }
 
-	private SocialGatheringPointWorkable[] workables;
-
-	public class States : GameStateMachine<SocialGatheringPoint.States, SocialGatheringPoint.StatesInstance, SocialGatheringPoint>
-	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
-		{
-			default_state = this.off;
-			this.root.DoNothing();
-			this.off.TagTransition(GameTags.Operational, this.on, false);
-			this.on.TagTransition(GameTags.Operational, this.off, true).Enter("CreateChore", delegate(SocialGatheringPoint.StatesInstance smi)
-			{
-				smi.master.tracker.Update(true);
-			}).Exit("CancelChore", delegate(SocialGatheringPoint.StatesInstance smi)
-			{
-				smi.master.tracker.Update(false);
-			});
-		}
-
-		public GameStateMachine<SocialGatheringPoint.States, SocialGatheringPoint.StatesInstance, SocialGatheringPoint, object>.State off;
-
-		public GameStateMachine<SocialGatheringPoint.States, SocialGatheringPoint.StatesInstance, SocialGatheringPoint, object>.State on;
-	}
-
-	public class StatesInstance : GameStateMachine<SocialGatheringPoint.States, SocialGatheringPoint.StatesInstance, SocialGatheringPoint, object>.GameInstance
-	{
-		public StatesInstance(SocialGatheringPoint smi) : base(smi)
-		{
-		}
-	}
+    public class StatesInstance : GameStateMachine<States, StatesInstance, SocialGatheringPoint, object>.GameInstance {
+        public StatesInstance(SocialGatheringPoint smi) : base(smi) { }
+    }
 }

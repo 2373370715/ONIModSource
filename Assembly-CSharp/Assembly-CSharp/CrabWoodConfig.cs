@@ -8,7 +8,7 @@ using UnityEngine;
 [EntityConfigOrder(1)]
 public class CrabWoodConfig : IEntityConfig
 {
-	public static GameObject CreateCrabWood(string id, string name, string desc, string anim_file, bool is_baby, string deathDropID = "CrabWoodShell")
+		public static GameObject CreateCrabWood(string id, string name, string desc, string anim_file, bool is_baby, string deathDropID = "CrabWoodShell")
 	{
 		GameObject prefab = EntityTemplates.ExtendEntityToWildCreature(BaseCrabConfig.BaseCrab(id, name, desc, anim_file, "CrabWoodBaseTrait", is_baby, CrabWoodConfig.animPrefix, deathDropID, 5), CrabTuning.PEN_SIZE_PER_CREATURE);
 		Trait trait = Db.Get().CreateTrait("CrabWoodBaseTrait", name, name, null, false, null, true, true);
@@ -20,12 +20,12 @@ public class CrabWoodConfig : IEntityConfig
 		return BaseCrabConfig.SetupDiet(prefab, diet_infos, CrabWoodConfig.CALORIES_PER_KG_OF_ORE, CrabWoodConfig.MIN_POOP_SIZE_IN_KG);
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = CrabWoodConfig.CreateCrabWood("CrabWood", STRINGS.CREATURES.SPECIES.CRAB.VARIANT_WOOD.NAME, STRINGS.CREATURES.SPECIES.CRAB.VARIANT_WOOD.DESC, "pincher_kanim", false, "CrabWoodShell");
 		gameObject = EntityTemplates.ExtendEntityToFertileCreature(gameObject, "CrabWoodEgg", STRINGS.CREATURES.SPECIES.CRAB.VARIANT_WOOD.EGG_NAME, STRINGS.CREATURES.SPECIES.CRAB.VARIANT_WOOD.DESC, "egg_pincher_kanim", CrabTuning.EGG_MASS, "CrabWoodBaby", 60.000004f, 20f, CrabTuning.EGG_CHANCES_WOOD, this.GetDlcIds(), CrabWoodConfig.EGG_SORT_ORDER, true, false, true, 1f, false);
@@ -42,29 +42,29 @@ public class CrabWoodConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "CrabWood";
+		public const string ID = "CrabWood";
 
-	public const string BASE_TRAIT_ID = "CrabWoodBaseTrait";
+		public const string BASE_TRAIT_ID = "CrabWoodBaseTrait";
 
-	public const string EGG_ID = "CrabWoodEgg";
+		public const string EGG_ID = "CrabWoodEgg";
 
-	private const SimHashes EMIT_ELEMENT = SimHashes.Sand;
+		private const SimHashes EMIT_ELEMENT = SimHashes.Sand;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 70f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 70f;
 
-	private static float CALORIES_PER_KG_OF_ORE = CrabTuning.STANDARD_CALORIES_PER_CYCLE / CrabWoodConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = CrabTuning.STANDARD_CALORIES_PER_CYCLE / CrabWoodConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 25f;
+		private static float MIN_POOP_SIZE_IN_KG = 25f;
 
-	public static int EGG_SORT_ORDER = 0;
+		public static int EGG_SORT_ORDER = 0;
 
-	private static string animPrefix = "wood_";
+		private static string animPrefix = "wood_";
 }

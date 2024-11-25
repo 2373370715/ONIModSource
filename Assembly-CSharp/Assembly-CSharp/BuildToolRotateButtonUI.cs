@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BuildToolRotateButtonUI : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		this.tooltip.refreshWhileHovering = true;
 		this.tooltip.SizingSetting = ToolTip.ToolTipSizeSetting.MaxWidthWrapContent;
@@ -15,7 +15,7 @@ public class BuildToolRotateButtonUI : MonoBehaviour
 		this.UpdateTooltip(false);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		bool flag = BuildTool.Instance.CanRotate();
 		this.UpdateTooltip(flag);
@@ -25,7 +25,7 @@ public class BuildToolRotateButtonUI : MonoBehaviour
 		}
 	}
 
-	private void UpdateTooltip(bool can_rotate)
+		private void UpdateTooltip(bool can_rotate)
 	{
 		PermittedRotations? permittedRotations = BuildTool.Instance.GetPermittedRotations();
 		if (permittedRotations == null)
@@ -46,7 +46,7 @@ public class BuildToolRotateButtonUI : MonoBehaviour
 		this.tooltip.SetSimpleTooltip(UI.BUILDTOOL_CANT_ROTATE);
 	}
 
-	private string GetFeedbackString(PermittedRotations permitted_rotations, Orientation current_rotation)
+		private string GetFeedbackString(PermittedRotations permitted_rotations, Orientation current_rotation)
 	{
 		switch (permitted_rotations)
 		{
@@ -98,9 +98,9 @@ public class BuildToolRotateButtonUI : MonoBehaviour
 		return null;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	protected KButton button;
 
-	[SerializeField]
+		[SerializeField]
 	protected ToolTip tooltip;
 }

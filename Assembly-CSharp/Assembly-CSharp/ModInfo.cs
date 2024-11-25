@@ -5,37 +5,37 @@ using Newtonsoft.Json.Converters;
 [Serializable]
 public struct ModInfo
 {
-	[JsonConverter(typeof(StringEnumConverter))]
+		[JsonConverter(typeof(StringEnumConverter))]
 	public ModInfo.Source source;
 
-	[JsonConverter(typeof(StringEnumConverter))]
+		[JsonConverter(typeof(StringEnumConverter))]
 	public ModInfo.ModType type;
 
-	public string assetID;
+		public string assetID;
 
-	public string assetPath;
+		public string assetPath;
 
-	public bool enabled;
+		public bool enabled;
 
-	public bool markedForDelete;
+		public bool markedForDelete;
 
-	public bool markedForUpdate;
+		public bool markedForUpdate;
 
-	public string description;
+		public string description;
 
-	public ulong lastModifiedTime;
+		public ulong lastModifiedTime;
 
-	public enum Source
+		public enum Source
 	{
-		Local,
-		Steam,
-		Rail
+				Local,
+				Steam,
+				Rail
 	}
 
-	public enum ModType
+		public enum ModType
 	{
-		WorldGen,
-		Scenario,
-		Mod
+				WorldGen,
+				Scenario,
+				Mod
 	}
 }

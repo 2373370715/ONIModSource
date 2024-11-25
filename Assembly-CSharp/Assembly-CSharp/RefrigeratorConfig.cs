@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class RefrigeratorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Refrigerator";
 		int width = 1;
@@ -37,12 +37,12 @@ public class RefrigeratorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.showInUI = true;
@@ -67,7 +67,7 @@ public class RefrigeratorConfig : IBuildingConfig
 		go.AddOrGetDef<StorageController.Def>();
 	}
 
-	public const string ID = "Refrigerator";
+		public const string ID = "Refrigerator";
 
-	private const int ENERGY_SAVER_POWER = 20;
+		private const int ENERGY_SAVER_POWER = 20;
 }

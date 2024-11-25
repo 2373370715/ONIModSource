@@ -2,19 +2,19 @@
 
 public interface ICheckboxListGroupControl
 {
-		string Title { get; }
+			string Title { get; }
 
-		string Description { get; }
+			string Description { get; }
 
-	ICheckboxListGroupControl.ListGroup[] GetData();
+		ICheckboxListGroupControl.ListGroup[] GetData();
 
-	bool SidescreenEnabled();
+		bool SidescreenEnabled();
 
-	int CheckboxSideScreenSortOrder();
+		int CheckboxSideScreenSortOrder();
 
-	public struct ListGroup
+		public struct ListGroup
 	{
-		public ListGroup(string title, ICheckboxListGroupControl.CheckboxItem[] checkboxItems, Func<string, string> resolveTitleCallback = null, System.Action onItemClicked = null)
+				public ListGroup(string title, ICheckboxListGroupControl.CheckboxItem[] checkboxItems, Func<string, string> resolveTitleCallback = null, System.Action onItemClicked = null)
 		{
 			this.title = title;
 			this.checkboxItems = checkboxItems;
@@ -22,25 +22,25 @@ public interface ICheckboxListGroupControl
 			this.onItemClicked = onItemClicked;
 		}
 
-		public Func<string, string> resolveTitleCallback;
+				public Func<string, string> resolveTitleCallback;
 
-		public System.Action onItemClicked;
+				public System.Action onItemClicked;
 
-		public string title;
+				public string title;
 
-		public ICheckboxListGroupControl.CheckboxItem[] checkboxItems;
+				public ICheckboxListGroupControl.CheckboxItem[] checkboxItems;
 	}
 
-	public struct CheckboxItem
+		public struct CheckboxItem
 	{
-		public string text;
+				public string text;
 
-		public string tooltip;
+				public string tooltip;
 
-		public bool isOn;
+				public bool isOn;
 
-		public Func<string, bool> overrideLinkActions;
+				public Func<string, bool> overrideLinkActions;
 
-		public Func<string, object, string> resolveTooltipCallback;
+				public Func<string, object, string> resolveTooltipCallback;
 	}
 }

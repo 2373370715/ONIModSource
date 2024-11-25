@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class LiquidCooledRefinery : ComplexFabricator
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LiquidCooledRefinery>(-1697596308, LiquidCooledRefinery.OnStorageChangeDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
@@ -23,32 +23,32 @@ public class LiquidCooledRefinery : ComplexFabricator
 		Game.Instance.liquidConduitFlow.AddConduitUpdater(new Action<float>(this.OnConduitUpdate), ConduitFlowPriority.Default);
 		Building component2 = base.GetComponent<Building>();
 		this.outputCell = component2.GetUtilityOutputCell();
-		this.workable.OnWorkTickActions = delegate(Worker worker, float dt)
+		this.workable.OnWorkTickActions = delegate(WorkerBase worker, float dt)
 		{
 			float percentComplete = this.workable.GetPercentComplete();
 			this.meter_metal.SetPositionPercent(percentComplete);
 		};
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.liquidConduitFlow.RemoveConduitUpdater(new Action<float>(this.OnConduitUpdate));
 		base.OnCleanUp();
 	}
 
-	private void OnConduitUpdate(float dt)
+		private void OnConduitUpdate(float dt)
 	{
 		bool flag = Game.Instance.liquidConduitFlow.GetContents(this.outputCell).mass > 0f;
 		this.smi.sm.outputBlocked.Set(flag, this.smi, false);
 		this.operational.SetFlag(LiquidCooledRefinery.coolantOutputPipeEmpty, !flag);
 	}
 
-	public bool HasEnoughCoolant()
+		public bool HasEnoughCoolant()
 	{
 		return this.inStorage.GetAmountAvailable(this.coolantTag) + this.buildStorage.GetAmountAvailable(this.coolantTag) >= this.minCoolantMass;
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		float amountAvailable = this.inStorage.GetAmountAvailable(this.coolantTag);
 		float capacityKG = this.conduitConsumer.capacityKG;
@@ -59,12 +59,12 @@ public class LiquidCooledRefinery : ComplexFabricator
 		}
 	}
 
-	protected override bool HasIngredients(ComplexRecipe recipe, Storage storage)
+		protected override bool HasIngredients(ComplexRecipe recipe, Storage storage)
 	{
 		return storage.GetAmountAvailable(this.coolantTag) >= this.minCoolantMass && base.HasIngredients(recipe, storage);
 	}
 
-	protected override void TransferCurrentRecipeIngredientsForBuild()
+		protected override void TransferCurrentRecipeIngredientsForBuild()
 	{
 		base.TransferCurrentRecipeIngredientsForBuild();
 		float num = this.minCoolantMass;
@@ -75,7 +75,7 @@ public class LiquidCooledRefinery : ComplexFabricator
 		}
 	}
 
-	protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
+		protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
 	{
 		List<GameObject> list = base.SpawnOrderProduct(recipe);
 		PrimaryElement component = list[0].GetComponent<PrimaryElement>();
@@ -109,14 +109,14 @@ public class LiquidCooledRefinery : ComplexFabricator
 		return list;
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> descriptors = base.GetDescriptors(go);
 		descriptors.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.COOLANT, this.coolantTag.ProperName(), GameUtil.GetFormattedMass(this.minCoolantMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.COOLANT, this.coolantTag.ProperName(), GameUtil.GetFormattedMass(this.minCoolantMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), Descriptor.DescriptorType.Requirement, false));
 		return descriptors;
 	}
 
-	public override List<Descriptor> AdditionalEffectsForRecipe(ComplexRecipe recipe)
+		public override List<Descriptor> AdditionalEffectsForRecipe(ComplexRecipe recipe)
 	{
 		List<Descriptor> list = base.AdditionalEffectsForRecipe(recipe);
 		PrimaryElement component = Assets.GetPrefab(recipe.results[0].material).GetComponent<PrimaryElement>();
@@ -133,42 +133,42 @@ public class LiquidCooledRefinery : ComplexFabricator
 		return list;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ConduitConsumer conduitConsumer;
 
-	public static readonly Operational.Flag coolantOutputPipeEmpty = new Operational.Flag("coolantOutputPipeEmpty", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag coolantOutputPipeEmpty = new Operational.Flag("coolantOutputPipeEmpty", Operational.Flag.Type.Requirement);
 
-	private int outputCell;
+		private int outputCell;
 
-	public Tag coolantTag;
+		public Tag coolantTag;
 
-	public float minCoolantMass = 100f;
+		public float minCoolantMass = 100f;
 
-	public float thermalFudge = 0.8f;
+		public float thermalFudge = 0.8f;
 
-	public float outputTemperature = 313.15f;
+		public float outputTemperature = 313.15f;
 
-	private MeterController meter_coolant;
+		private MeterController meter_coolant;
 
-	private MeterController meter_metal;
+		private MeterController meter_metal;
 
-	private LiquidCooledRefinery.StatesInstance smi;
+		private LiquidCooledRefinery.StatesInstance smi;
 
-	private static readonly EventSystem.IntraObjectHandler<LiquidCooledRefinery> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<LiquidCooledRefinery>(delegate(LiquidCooledRefinery component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LiquidCooledRefinery> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<LiquidCooledRefinery>(delegate(LiquidCooledRefinery component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	public class StatesInstance : GameStateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery, object>.GameInstance
+		public class StatesInstance : GameStateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery, object>.GameInstance
 	{
-		public StatesInstance(LiquidCooledRefinery master) : base(master)
+				public StatesInstance(LiquidCooledRefinery master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery>
+		public class States : GameStateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			if (LiquidCooledRefinery.States.waitingForCoolantStatus == null)
 			{
@@ -188,14 +188,14 @@ public class LiquidCooledRefinery : ComplexFabricator
 			this.output_blocked.ToggleStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, null).ParamTransition<bool>(this.outputBlocked, this.waiting_for_coolant, GameStateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery, object>.IsFalse);
 		}
 
-		public static StatusItem waitingForCoolantStatus;
+				public static StatusItem waitingForCoolantStatus;
 
-		public StateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery, object>.BoolParameter outputBlocked;
+				public StateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery, object>.BoolParameter outputBlocked;
 
-		public GameStateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery, object>.State waiting_for_coolant;
+				public GameStateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery, object>.State waiting_for_coolant;
 
-		public GameStateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery, object>.State ready;
+				public GameStateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery, object>.State ready;
 
-		public GameStateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery, object>.State output_blocked;
+				public GameStateMachine<LiquidCooledRefinery.States, LiquidCooledRefinery.StatesInstance, LiquidCooledRefinery, object>.State output_blocked;
 	}
 }

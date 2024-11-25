@@ -7,9 +7,9 @@ using STRINGS;
 
 namespace KMod
 {
-	public class Steam : IDistributionPlatform, SteamUGCService.IClient
+		public class Steam : IDistributionPlatform, SteamUGCService.IClient
 	{
-		private Mod MakeMod(SteamUGCService.Mod subscribed)
+				private Mod MakeMod(SteamUGCService.Mod subscribed)
 		{
 			if (subscribed == null)
 			{
@@ -61,7 +61,7 @@ namespace KMod
 			});
 		}
 
-		public void UpdateMods(IEnumerable<PublishedFileId_t> added, IEnumerable<PublishedFileId_t> updated, IEnumerable<PublishedFileId_t> removed, IEnumerable<SteamUGCService.Mod> loaded_previews)
+				public void UpdateMods(IEnumerable<PublishedFileId_t> added, IEnumerable<PublishedFileId_t> updated, IEnumerable<PublishedFileId_t> removed, IEnumerable<SteamUGCService.Mod> loaded_previews)
 		{
 			foreach (PublishedFileId_t publishedFileId_t in added)
 			{

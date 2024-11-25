@@ -3,7 +3,7 @@ using Klei.AI;
 
 public class RobotBatteryMonitor : GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.drainingStates;
 		this.drainingStates.DefaultState(this.drainingStates.highBattery).Transition(this.deadBattery, new StateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.Transition.ConditionCallback(RobotBatteryMonitor.BatteryDead), UpdateRate.SIM_200ms).Transition(this.needsRechargeStates, new StateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.Transition.ConditionCallback(RobotBatteryMonitor.NeedsRecharge), UpdateRate.SIM_200ms);
@@ -36,72 +36,72 @@ public class RobotBatteryMonitor : GameStateMachine<RobotBatteryMonitor, RobotBa
 		});
 	}
 
-	public static bool NeedsRecharge(RobotBatteryMonitor.Instance smi)
+		public static bool NeedsRecharge(RobotBatteryMonitor.Instance smi)
 	{
 		return smi.amountInstance.value <= 0f || GameClock.Instance.IsNighttime();
 	}
 
-	public static bool ChargeDecent(RobotBatteryMonitor.Instance smi)
+		public static bool ChargeDecent(RobotBatteryMonitor.Instance smi)
 	{
 		return smi.amountInstance.value >= smi.amountInstance.GetMax() * smi.def.lowBatteryWarningPercent;
 	}
 
-	public static bool ChargeFull(RobotBatteryMonitor.Instance smi)
+		public static bool ChargeFull(RobotBatteryMonitor.Instance smi)
 	{
 		return smi.amountInstance.value >= smi.amountInstance.GetMax();
 	}
 
-	public static bool ChargeComplete(RobotBatteryMonitor.Instance smi)
+		public static bool ChargeComplete(RobotBatteryMonitor.Instance smi)
 	{
 		return smi.amountInstance.value >= smi.amountInstance.GetMax() && !GameClock.Instance.IsNighttime();
 	}
 
-	public static bool BatteryDead(RobotBatteryMonitor.Instance smi)
+		public static bool BatteryDead(RobotBatteryMonitor.Instance smi)
 	{
 		return !smi.def.canCharge && smi.amountInstance.value == 0f;
 	}
 
-	public StateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.ObjectParameter<Storage> internalStorage = new StateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.ObjectParameter<Storage>();
+		public StateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.ObjectParameter<Storage> internalStorage = new StateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.ObjectParameter<Storage>();
 
-	public RobotBatteryMonitor.NeedsRechargeStates needsRechargeStates;
+		public RobotBatteryMonitor.NeedsRechargeStates needsRechargeStates;
 
-	public RobotBatteryMonitor.DrainingStates drainingStates;
+		public RobotBatteryMonitor.DrainingStates drainingStates;
 
-	public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State deadBattery;
+		public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State deadBattery;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public string batteryAmountId;
+				public string batteryAmountId;
 
-		public float lowBatteryWarningPercent;
+				public float lowBatteryWarningPercent;
 
-		public bool canCharge;
+				public bool canCharge;
 	}
 
-	public class DrainingStates : GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State
+		public class DrainingStates : GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State
 	{
-		public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State highBattery;
+				public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State highBattery;
 
-		public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State lowBattery;
+				public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State lowBattery;
 	}
 
-	public class NeedsRechargeStates : GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State
+		public class NeedsRechargeStates : GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State
 	{
-		public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State lowBattery;
+				public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State lowBattery;
 
-		public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State mediumBattery;
+				public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State mediumBattery;
 
-		public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State trickleCharge;
+				public GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.State trickleCharge;
 	}
 
-	public new class Instance : GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<RobotBatteryMonitor, RobotBatteryMonitor.Instance, IStateMachineTarget, RobotBatteryMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, RobotBatteryMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, RobotBatteryMonitor.Def def) : base(master, def)
 		{
 			this.amountInstance = Db.Get().Amounts.Get(def.batteryAmountId).Lookup(base.gameObject);
 			this.amountInstance.SetValue(this.amountInstance.GetMax());
 		}
 
-		public AmountInstance amountInstance;
+				public AmountInstance amountInstance;
 	}
 }

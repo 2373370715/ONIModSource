@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class LoadingOverlay : KModalScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.pause = false;
 		this.fadeIn = false;
 		base.OnPrefabInit();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!this.loadNextFrame && this.showLoad)
 		{
@@ -26,12 +26,12 @@ public class LoadingOverlay : KModalScreen
 		}
 	}
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		LoadingOverlay.instance = null;
 	}
 
-	public static void Load(System.Action cb)
+		public static void Load(System.Action cb)
 	{
 		GameObject gameObject = GameObject.Find("/SceneInitializerFE/FrontEndManager");
 		if (LoadingOverlay.instance == null)
@@ -58,7 +58,7 @@ public class LoadingOverlay : KModalScreen
 		LoadingOverlay.instance.Activate();
 	}
 
-	public static void Clear()
+		public static void Clear()
 	{
 		if (LoadingOverlay.instance != null)
 		{
@@ -66,11 +66,11 @@ public class LoadingOverlay : KModalScreen
 		}
 	}
 
-	private bool loadNextFrame;
+		private bool loadNextFrame;
 
-	private bool showLoad;
+		private bool showLoad;
 
-	private System.Action loadCb;
+		private System.Action loadCb;
 
-	private static LoadingOverlay instance;
+		private static LoadingOverlay instance;
 }

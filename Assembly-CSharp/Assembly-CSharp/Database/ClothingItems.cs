@@ -2,9 +2,9 @@
 
 namespace Database
 {
-	public class ClothingItems : ResourceSet<ClothingItemResource>
+		public class ClothingItems : ResourceSet<ClothingItemResource>
 	{
-		public ClothingItems(ResourceSet parent) : base("ClothingItems", parent)
+				public ClothingItems(ResourceSet parent) : base("ClothingItems", parent)
 		{
 			base.Initialize();
 			foreach (ClothingItemInfo clothingItemInfo in Blueprints.Get().all.clothingItems)
@@ -13,14 +13,11 @@ namespace Database
 			}
 		}
 
-		public ClothingItemResource TryResolveAccessoryResource(ResourceGuid AccessoryGuid)
+				public ClothingItemResource TryResolveAccessoryResource(ResourceGuid AccessoryGuid)
 		{
 			if (AccessoryGuid.Guid != null)
 			{
-				string[] array = AccessoryGuid.Guid.Split(new char[]
-				{
-					'.'
-				});
+				string[] array = AccessoryGuid.Guid.Split('.', StringSplitOptions.None);
 				if (array.Length != 0)
 				{
 					string symbol_name = array[array.Length - 1];
@@ -30,13 +27,13 @@ namespace Database
 			return null;
 		}
 
-		[Obsolete("Please use Add(...) with dlcIds parameter")]
+				[Obsolete("Please use Add(...) with dlcIds parameter")]
 		public void Add(string id, string name, string desc, ClothingOutfitUtility.OutfitType outfitType, PermitCategory category, PermitRarity rarity, string animFile)
 		{
 			this.Add(id, name, desc, outfitType, category, rarity, animFile, DlcManager.AVAILABLE_ALL_VERSIONS);
 		}
 
-		public void Add(string id, string name, string desc, ClothingOutfitUtility.OutfitType outfitType, PermitCategory category, PermitRarity rarity, string animFile, string[] dlcIds)
+				public void Add(string id, string name, string desc, ClothingOutfitUtility.OutfitType outfitType, PermitCategory category, PermitRarity rarity, string animFile, string[] dlcIds)
 		{
 			ClothingItemResource item = new ClothingItemResource(id, name, desc, outfitType, category, rarity, animFile, dlcIds);
 			this.resources.Add(item);

@@ -5,7 +5,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Electrolyzer : StateMachineComponent<Electrolyzer.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 		if (this.hasMeter)
@@ -23,13 +23,13 @@ public class Electrolyzer : StateMachineComponent<Electrolyzer.StatesInstance>
 		Tutorial.Instance.oxygenGenerators.Add(base.gameObject);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Tutorial.Instance.oxygenGenerators.Remove(base.gameObject);
 		base.OnCleanUp();
 	}
 
-	public void UpdateMeter()
+		public void UpdateMeter()
 	{
 		if (this.hasMeter)
 		{
@@ -38,7 +38,7 @@ public class Electrolyzer : StateMachineComponent<Electrolyzer.StatesInstance>
 		}
 	}
 
-		private bool RoomForPressure
+			private bool RoomForPressure
 	{
 		get
 		{
@@ -48,41 +48,41 @@ public class Electrolyzer : StateMachineComponent<Electrolyzer.StatesInstance>
 		}
 	}
 
-	private static bool OverPressure(int cell, Electrolyzer electrolyzer)
+		private static bool OverPressure(int cell, Electrolyzer electrolyzer)
 	{
 		return Grid.Mass[cell] > electrolyzer.maxMass;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public float maxMass = 2.5f;
 
-	[SerializeField]
+		[SerializeField]
 	public bool hasMeter = true;
 
-	[SerializeField]
+		[SerializeField]
 	public CellOffset emissionOffset = CellOffset.none;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ElementConverter emitter;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	public class StatesInstance : GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer, object>.GameInstance
 	{
-		public StatesInstance(Electrolyzer smi) : base(smi)
+				public StatesInstance(Electrolyzer smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer>
+		public class States : GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.disabled;
 			this.root.EventTransition(GameHashes.OperationalChanged, this.disabled, (Electrolyzer.StatesInstance smi) => !smi.master.operational.IsOperational).EventHandler(GameHashes.OnStorageChange, delegate(Electrolyzer.StatesInstance smi)
@@ -104,12 +104,12 @@ public class Electrolyzer : StateMachineComponent<Electrolyzer.StatesInstance>
 			}).ToggleStatusItem(Db.Get().BuildingStatusItems.PressureOk, null).Transition(this.converting, (Electrolyzer.StatesInstance smi) => smi.master.RoomForPressure, UpdateRate.SIM_200ms);
 		}
 
-		public GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer, object>.State disabled;
+				public GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer, object>.State disabled;
 
-		public GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer, object>.State waiting;
+				public GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer, object>.State waiting;
 
-		public GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer, object>.State converting;
+				public GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer, object>.State converting;
 
-		public GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer, object>.State overpressure;
+				public GameStateMachine<Electrolyzer.States, Electrolyzer.StatesInstance, Electrolyzer, object>.State overpressure;
 	}
 }

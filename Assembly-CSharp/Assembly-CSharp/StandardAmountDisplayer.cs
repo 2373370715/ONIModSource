@@ -4,7 +4,7 @@ using STRINGS;
 
 public class StandardAmountDisplayer : IAmountDisplayer
 {
-		public IAttributeFormatter Formatter
+			public IAttributeFormatter Formatter
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class StandardAmountDisplayer : IAmountDisplayer
 		}
 	}
 
-			public GameUtil.TimeSlice DeltaTimeSlice
+				public GameUtil.TimeSlice DeltaTimeSlice
 	{
 		get
 		{
@@ -24,7 +24,7 @@ public class StandardAmountDisplayer : IAmountDisplayer
 		}
 	}
 
-	public StandardAmountDisplayer(GameUtil.UnitClass unitClass, GameUtil.TimeSlice deltaTimeSlice, StandardAttributeFormatter formatter = null, GameUtil.IdentityDescriptorTense tense = GameUtil.IdentityDescriptorTense.Normal)
+		public StandardAmountDisplayer(GameUtil.UnitClass unitClass, GameUtil.TimeSlice deltaTimeSlice, StandardAttributeFormatter formatter = null, GameUtil.IdentityDescriptorTense tense = GameUtil.IdentityDescriptorTense.Normal)
 	{
 		this.tense = tense;
 		if (formatter != null)
@@ -35,7 +35,7 @@ public class StandardAmountDisplayer : IAmountDisplayer
 		this.formatter = new StandardAttributeFormatter(unitClass, deltaTimeSlice);
 	}
 
-	public virtual string GetValueString(Amount master, AmountInstance instance)
+		public virtual string GetValueString(Amount master, AmountInstance instance)
 	{
 		if (!master.showMax)
 		{
@@ -44,12 +44,12 @@ public class StandardAmountDisplayer : IAmountDisplayer
 		return string.Format("{0} / {1}", this.formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None), this.formatter.GetFormattedValue(instance.GetMax(), GameUtil.TimeSlice.None));
 	}
 
-	public virtual string GetDescription(Amount master, AmountInstance instance)
+		public virtual string GetDescription(Amount master, AmountInstance instance)
 	{
 		return string.Format("{0}: {1}", master.Name, this.GetValueString(master, instance));
 	}
 
-	public virtual string GetTooltip(Amount master, AmountInstance instance)
+		public virtual string GetTooltip(Amount master, AmountInstance instance)
 	{
 		string text = "";
 		if (master.description.IndexOf("{1}") > -1)
@@ -77,22 +77,22 @@ public class StandardAmountDisplayer : IAmountDisplayer
 		return text;
 	}
 
-	public string GetFormattedAttribute(AttributeInstance instance)
+		public string GetFormattedAttribute(AttributeInstance instance)
 	{
 		return this.formatter.GetFormattedAttribute(instance);
 	}
 
-	public string GetFormattedModifier(AttributeModifier modifier)
+		public string GetFormattedModifier(AttributeModifier modifier)
 	{
 		return this.formatter.GetFormattedModifier(modifier);
 	}
 
-	public string GetFormattedValue(float value, GameUtil.TimeSlice time_slice)
+		public string GetFormattedValue(float value, GameUtil.TimeSlice time_slice)
 	{
 		return this.formatter.GetFormattedValue(value, time_slice);
 	}
 
-	protected StandardAttributeFormatter formatter;
+		protected StandardAttributeFormatter formatter;
 
-	public GameUtil.IdentityDescriptorTense tense;
+		public GameUtil.IdentityDescriptorTense tense;
 }

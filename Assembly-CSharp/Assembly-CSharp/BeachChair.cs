@@ -6,31 +6,31 @@ using UnityEngine;
 
 public class BeachChair : StateMachineComponent<BeachChair.StatesInstance>, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	public static void AddModifierDescriptions(List<Descriptor> descs, string effect_id, bool high_lux)
+		public static void AddModifierDescriptions(List<Descriptor> descs, string effect_id, bool high_lux)
 	{
 		Klei.AI.Modifier modifier = Db.Get().effects.Get(effect_id);
 		LocString locString = high_lux ? BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_HIGH : BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_LOW;
 		LocString locString2 = high_lux ? BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_HIGH_TOOLTIP : BUILDINGS.PREFABS.BEACHCHAIR.LIGHTEFFECT_LOW_TOOLTIP;
 		foreach (AttributeModifier attributeModifier in modifier.SelfModifiers)
 		{
-			Descriptor item = new Descriptor(locString.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + attributeModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", attributeModifier.GetFormattedString()).Replace("{lux}", GameUtil.GetFormattedLux(10000)), locString2.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + attributeModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", attributeModifier.GetFormattedString()).Replace("{lux}", GameUtil.GetFormattedLux(10000)), Descriptor.DescriptorType.Effect, false);
+			Descriptor item = new Descriptor(locString.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + attributeModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", attributeModifier.GetFormattedString()).Replace("{lux}", GameUtil.GetFormattedLux(BeachChairConfig.TAN_LUX)), locString2.Replace("{attrib}", Strings.Get("STRINGS.DUPLICANTS.ATTRIBUTES." + attributeModifier.AttributeId.ToUpper() + ".NAME")).Replace("{amount}", attributeModifier.GetFormattedString()).Replace("{lux}", GameUtil.GetFormattedLux(BeachChairConfig.TAN_LUX)), Descriptor.DescriptorType.Effect, false);
 			item.IncreaseIndent();
 			descs.Add(item);
 		}
 	}
 
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
+		List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		list.Add(new Descriptor(UI.BUILDINGEFFECTS.RECREATION, UI.BUILDINGEFFECTS.TOOLTIPS.RECREATION, Descriptor.DescriptorType.Effect, false));
@@ -39,27 +39,27 @@ public class BeachChair : StateMachineComponent<BeachChair.StatesInstance>, IGam
 		return list;
 	}
 
-	public void SetLit(bool v)
+		public void SetLit(bool v)
 	{
 		base.smi.sm.lit.Set(v, base.smi, false);
 	}
 
-	public void SetWorker(Worker worker)
+		public void SetWorker(WorkerBase worker)
 	{
 		base.smi.sm.worker.Set(worker, base.smi);
 	}
 
-	public string specificEffectUnlit;
+		public string specificEffectUnlit;
 
-	public string specificEffectLit;
+		public string specificEffectLit;
 
-	public string trackingEffect;
+		public string trackingEffect;
 
-	public const float LIT_RATIO_FOR_POSITIVE_EFFECT = 0.75f;
+		public const float LIT_RATIO_FOR_POSITIVE_EFFECT = 0.75f;
 
-	public class States : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair>
+		public class States : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.inoperational;
 			this.inoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.ready, false).ToggleMainStatusItem(Db.Get().BuildingStatusItems.MissingRequirements, null);
@@ -111,7 +111,7 @@ public class BeachChair : StateMachineComponent<BeachChair.StatesInstance>, IGam
 			}).OnAnimQueueComplete(this.ready);
 		}
 
-		private Chore CreateChore(BeachChair.StatesInstance smi)
+				private Chore CreateChore(BeachChair.StatesInstance smi)
 		{
 			Workable component = smi.master.GetComponent<BeachChairWorkable>();
 			WorkChore<BeachChairWorkable> workChore = new WorkChore<BeachChairWorkable>(Db.Get().ChoreTypes.Relax, component, null, true, null, null, null, false, Db.Get().ScheduleBlockTypes.Recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
@@ -119,66 +119,66 @@ public class BeachChair : StateMachineComponent<BeachChair.StatesInstance>, IGam
 			return workChore;
 		}
 
-		public StateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.BoolParameter lit;
+				public StateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.BoolParameter lit;
 
-		public StateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.TargetParameter worker;
+				public StateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.TargetParameter worker;
 
-		private GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State inoperational;
+				private GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State inoperational;
 
-		private BeachChair.States.ReadyStates ready;
+				private BeachChair.States.ReadyStates ready;
 
-		private HashedString[] UNLIT_PST_ANIMS = new HashedString[]
+				private HashedString[] UNLIT_PST_ANIMS = new HashedString[]
 		{
 			"working_unlit_pst",
 			"working_pst"
 		};
 
-		private HashedString[] LIT_PST_ANIMS = new HashedString[]
+				private HashedString[] LIT_PST_ANIMS = new HashedString[]
 		{
 			"working_lit_pst",
 			"working_pst"
 		};
 
-		private string[] SILLY_ANIMS = new string[]
+				private string[] SILLY_ANIMS = new string[]
 		{
 			"working_lit_loop1",
 			"working_lit_loop2",
 			"working_lit_loop3"
 		};
 
-		public class LitWorkingStates : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State
+				public class LitWorkingStates : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State
 		{
-			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State working;
+						public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State working;
 
-			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State silly;
+						public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State silly;
 
-			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State post;
+						public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State post;
 		}
 
-		public class WorkingStates : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State
+				public class WorkingStates : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State
 		{
-			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State working;
+						public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State working;
 
-			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State post;
+						public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State post;
 		}
 
-		public class ReadyStates : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State
+				public class ReadyStates : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State
 		{
-			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State idle;
+						public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State idle;
 
-			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State working_pre;
+						public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State working_pre;
 
-			public BeachChair.States.WorkingStates working_unlit;
+						public BeachChair.States.WorkingStates working_unlit;
 
-			public BeachChair.States.LitWorkingStates working_lit;
+						public BeachChair.States.LitWorkingStates working_lit;
 
-			public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State post;
+						public GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.State post;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.GameInstance
+		public class StatesInstance : GameStateMachine<BeachChair.States, BeachChair.StatesInstance, BeachChair, object>.GameInstance
 	{
-		public StatesInstance(BeachChair smi) : base(smi)
+				public StatesInstance(BeachChair smi) : base(smi)
 		{
 		}
 	}

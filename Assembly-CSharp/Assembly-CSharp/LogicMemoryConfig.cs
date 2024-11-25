@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicMemoryConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicMemoryConfig.ID;
 		int width = 2;
@@ -46,11 +46,11 @@ public class LogicMemoryConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicMemory>();
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits, false);
 	}
 
-	public static string ID = "LogicMemory";
+		public static string ID = "LogicMemory";
 }

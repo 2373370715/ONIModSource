@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/NavigationReservations")]
 public class NavigationReservations : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		NavigationReservations.Instance = null;
 	}
 
-	public int GetOccupancyCount(int cell)
+		public int GetOccupancyCount(int cell)
 	{
 		if (this.cellOccupancyDensity.ContainsKey(cell))
 		{
@@ -19,7 +19,7 @@ public class NavigationReservations : KMonoBehaviour
 		return 0;
 	}
 
-	public void AddOccupancy(int cell)
+		public void AddOccupancy(int cell)
 	{
 		if (!this.cellOccupancyDensity.ContainsKey(cell))
 		{
@@ -30,7 +30,7 @@ public class NavigationReservations : KMonoBehaviour
 		dictionary[cell]++;
 	}
 
-	public void RemoveOccupancy(int cell)
+		public void RemoveOccupancy(int cell)
 	{
 		int num = 0;
 		if (this.cellOccupancyDensity.TryGetValue(cell, out num))
@@ -44,15 +44,15 @@ public class NavigationReservations : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		NavigationReservations.Instance = this;
 	}
 
-	public static NavigationReservations Instance;
+		public static NavigationReservations Instance;
 
-	public static int InvalidReservation = -1;
+		public static int InvalidReservation = -1;
 
-	private Dictionary<int, int> cellOccupancyDensity = new Dictionary<int, int>();
+		private Dictionary<int, int> cellOccupancyDensity = new Dictionary<int, int>();
 }

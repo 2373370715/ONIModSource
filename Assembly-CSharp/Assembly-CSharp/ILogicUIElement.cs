@@ -2,7 +2,7 @@
 
 public interface ILogicUIElement : IUniformGridObject
 {
-	int GetLogicUICell();
+		int GetLogicUICell();
 
-	LogicPortSpriteType GetLogicPortSpriteType();
+		LogicPortSpriteType GetLogicPortSpriteType();
 }

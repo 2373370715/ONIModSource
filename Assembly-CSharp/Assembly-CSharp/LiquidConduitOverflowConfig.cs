@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LiquidConduitOverflowConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidConduitOverflow";
 		int width = 2;
@@ -34,31 +34,31 @@ public class LiquidConduitOverflowConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		this.AttachPort(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		this.AttachPort(go);
 	}
 
-	private void AttachPort(GameObject go)
+		private void AttachPort(GameObject go)
 	{
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.secondaryPort;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<ConduitOverflow>().portInfo = this.secondaryPort;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<RequireInputs>());
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitConsumer>());
@@ -66,9 +66,9 @@ public class LiquidConduitOverflowConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public const string ID = "LiquidConduitOverflow";
+		public const string ID = "LiquidConduitOverflow";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
 
-	private ConduitPortInfo secondaryPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(1, 1));
+		private ConduitPortInfo secondaryPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(1, 1));
 }

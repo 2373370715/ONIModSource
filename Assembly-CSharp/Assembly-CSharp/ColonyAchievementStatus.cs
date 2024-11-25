@@ -6,7 +6,7 @@ using Database;
 
 public class ColonyAchievementStatus
 {
-		public List<ColonyAchievementRequirement> Requirements
+			public List<ColonyAchievementRequirement> Requirements
 	{
 		get
 		{
@@ -14,12 +14,21 @@ public class ColonyAchievementStatus
 		}
 	}
 
-	public ColonyAchievementStatus(string achievementId)
+		public ColonyAchievementStatus(string achievementId)
 	{
 		this.m_achievement = Db.Get().ColonyAchievements.TryGet(achievementId);
+		if (this.m_achievement == null)
+		{
+			this.m_achievement = new ColonyAchievement();
+			return;
+		}
+		if (!this.m_achievement.IsValidForSave())
+		{
+			this.m_achievement.Disabled = true;
+		}
 	}
 
-	public void UpdateAchievement()
+		public void UpdateAchievement()
 	{
 		if (this.Requirements.Count <= 0)
 		{
@@ -37,7 +46,7 @@ public class ColonyAchievementStatus
 		}
 	}
 
-	public static ColonyAchievementStatus Deserialize(IReader reader, string achievementId)
+		public static ColonyAchievementStatus Deserialize(IReader reader, string achievementId)
 	{
 		bool flag = reader.ReadByte() > 0;
 		bool flag2 = reader.ReadByte() > 0;
@@ -62,15 +71,15 @@ public class ColonyAchievementStatus
 		};
 	}
 
-	public void Serialize(BinaryWriter writer)
+		public void Serialize(BinaryWriter writer)
 	{
 		writer.Write(this.success ? 1 : 0);
 		writer.Write(this.failed ? 1 : 0);
 	}
 
-	public bool success;
+		public bool success;
 
-	public bool failed;
+		public bool failed;
 
-	private ColonyAchievement m_achievement;
+		private ColonyAchievement m_achievement;
 }

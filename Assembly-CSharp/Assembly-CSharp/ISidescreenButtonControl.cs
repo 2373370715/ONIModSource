@@ -2,19 +2,19 @@
 
 public interface ISidescreenButtonControl
 {
-		string SidescreenButtonText { get; }
+			string SidescreenButtonText { get; }
 
-		string SidescreenButtonTooltip { get; }
+			string SidescreenButtonTooltip { get; }
 
-	void SetButtonTextOverride(ButtonMenuTextOverride textOverride);
+		void SetButtonTextOverride(ButtonMenuTextOverride textOverride);
 
-	bool SidescreenEnabled();
+		bool SidescreenEnabled();
 
-	bool SidescreenButtonInteractable();
+		bool SidescreenButtonInteractable();
 
-	void OnSidescreenButtonPressed();
+		void OnSidescreenButtonPressed();
 
-	int HorizontalGroupID();
+		int HorizontalGroupID();
 
-	int ButtonSideScreenSortOrder();
+		int ButtonSideScreenSortOrder();
 }

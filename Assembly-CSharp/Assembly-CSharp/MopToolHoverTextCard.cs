@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MopToolHoverTextCard : HoverTextConfiguration
 {
-	public override void UpdateHoverElements(List<KSelectable> selected)
+		public override void UpdateHoverElements(List<KSelectable> selected)
 	{
 		int num = Grid.PosToCell(Camera.main.ScreenToWorldPoint(KInputManager.GetMousePos()));
 		HoverTextScreen instance = HoverTextScreen.Instance;
@@ -47,22 +47,22 @@ public class MopToolHoverTextCard : HoverTextConfiguration
 		hoverTextDrawer.EndDrawing();
 	}
 
-	private MopToolHoverTextCard.HoverScreenFields hoverScreenElements;
+		private MopToolHoverTextCard.HoverScreenFields hoverScreenElements;
 
-	private struct HoverScreenFields
+		private struct HoverScreenFields
 	{
-		public GameObject UnknownAreaLine;
+				public GameObject UnknownAreaLine;
 
-		public Image ElementStateIcon;
+				public Image ElementStateIcon;
 
-		public LocText ElementCategory;
+				public LocText ElementCategory;
 
-		public LocText ElementName;
+				public LocText ElementName;
 
-		public LocText[] ElementMass;
+				public LocText[] ElementMass;
 
-		public LocText ElementHardness;
+				public LocText ElementHardness;
 
-		public LocText ElementHardnessDescription;
+				public LocText ElementHardnessDescription;
 	}
 }

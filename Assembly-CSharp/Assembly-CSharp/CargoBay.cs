@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/CargoBay")]
 public class CargoBay : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.GetComponent<KBatchedAnimController>().Play("grounded", KAnim.PlayMode.Loop, 1f, 0f);
@@ -26,7 +26,7 @@ public class CargoBay : KMonoBehaviour
 		base.Subscribe<CargoBay>(-1697596308, CargoBay.OnStorageChangeDelegate);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		KIconButtonMenu.ButtonInfo button = new KIconButtonMenu.ButtonInfo("action_empty_contents", UI.USERMENUACTIONS.EMPTYSTORAGE.NAME, delegate()
 		{
@@ -35,12 +35,12 @@ public class CargoBay : KMonoBehaviour
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		this.meter.SetPositionPercent(this.storage.MassStored() / this.storage.Capacity());
 	}
 
-	public void SpawnResources(object data)
+		public void SpawnResources(object data)
 	{
 		if (DlcManager.FeatureClusterSpaceEnabled())
 		{
@@ -101,7 +101,7 @@ public class CargoBay : KMonoBehaviour
 		}
 	}
 
-	public void OnLaunch(object data)
+		public void OnLaunch(object data)
 	{
 		this.ReserveResources();
 		ConduitDispenser component = base.GetComponent<ConduitDispenser>();
@@ -111,7 +111,7 @@ public class CargoBay : KMonoBehaviour
 		}
 	}
 
-	private void ReserveResources()
+		private void ReserveResources()
 	{
 		if (DlcManager.FeatureClusterSpaceEnabled())
 		{
@@ -127,7 +127,7 @@ public class CargoBay : KMonoBehaviour
 		this.reservedResources = spacecraftDestination.ReserveResources(this);
 	}
 
-	public void OnLand(object data)
+		public void OnLand(object data)
 	{
 		this.SpawnResources(data);
 		ConduitDispenser component = base.GetComponent<ConduitDispenser>();
@@ -148,16 +148,16 @@ public class CargoBay : KMonoBehaviour
 		}
 	}
 
-	public Storage storage;
+		public Storage storage;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	[Serialize]
+		[Serialize]
 	public float reservedResources;
 
-	public CargoBay.CargoType storageType;
+		public CargoBay.CargoType storageType;
 
-	public static Dictionary<Element.State, CargoBay.CargoType> ElementStateToCargoTypes = new Dictionary<Element.State, CargoBay.CargoType>
+		public static Dictionary<Element.State, CargoBay.CargoType> ElementStateToCargoTypes = new Dictionary<Element.State, CargoBay.CargoType>
 	{
 		{
 			Element.State.Gas,
@@ -173,31 +173,31 @@ public class CargoBay : KMonoBehaviour
 		}
 	};
 
-	private static readonly EventSystem.IntraObjectHandler<CargoBay> OnLaunchDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CargoBay> OnLaunchDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
 	{
 		component.OnLaunch(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<CargoBay> OnLandDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CargoBay> OnLandDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
 	{
 		component.OnLand(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<CargoBay> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CargoBay> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<CargoBay> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CargoBay> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<CargoBay>(delegate(CargoBay component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	public enum CargoType
+		public enum CargoType
 	{
-		Solids,
-		Liquids,
-		Gasses,
-		Entities
+				Solids,
+				Liquids,
+				Gasses,
+				Entities
 	}
 }

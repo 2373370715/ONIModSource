@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		ColonyDiagnosticScreen.Instance = this;
@@ -21,13 +21,13 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 		}));
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		ColonyDiagnosticScreen.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	private void RefreshSingleWorld(object data = null)
+		private void RefreshSingleWorld(object data = null)
 	{
 		foreach (ColonyDiagnosticScreen.DiagnosticRow diagnosticRow in this.diagnosticRows)
 		{
@@ -38,7 +38,7 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 		this.SpawnTrackerLines(ClusterManager.Instance.activeWorldId);
 	}
 
-	private void SpawnTrackerLines(int world)
+		private void SpawnTrackerLines(int world)
 	{
 		this.AddDiagnostic<BreathabilityDiagnostic>(world, this.contentContainer, this.diagnosticRows);
 		this.AddDiagnostic<FoodDiagnostic>(world, this.contentContainer, this.diagnosticRows);
@@ -73,7 +73,7 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 		this.RefreshAll();
 	}
 
-	private GameObject AddDiagnostic<T>(int worldID, GameObject parent, List<ColonyDiagnosticScreen.DiagnosticRow> parentCollection) where T : ColonyDiagnostic
+		private GameObject AddDiagnostic<T>(int worldID, GameObject parent, List<ColonyDiagnosticScreen.DiagnosticRow> parentCollection) where T : ColonyDiagnostic
 	{
 		T diagnostic = ColonyDiagnosticUtility.Instance.GetDiagnostic<T>(worldID);
 		if (diagnostic == null)
@@ -85,12 +85,12 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 		return gameObject;
 	}
 
-	public static void SetIndication(ColonyDiagnostic.DiagnosticResult.Opinion opinion, GameObject indicatorGameObject)
+		public static void SetIndication(ColonyDiagnostic.DiagnosticResult.Opinion opinion, GameObject indicatorGameObject)
 	{
 		indicatorGameObject.GetComponentInChildren<Image>().color = ColonyDiagnosticScreen.GetDiagnosticIndicationColor(opinion);
 	}
 
-	public static Color GetDiagnosticIndicationColor(ColonyDiagnostic.DiagnosticResult.Opinion opinion)
+		public static Color GetDiagnosticIndicationColor(ColonyDiagnostic.DiagnosticResult.Opinion opinion)
 	{
 		switch (opinion)
 		{
@@ -104,12 +104,12 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 		return Color.white;
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		this.RefreshAll();
 	}
 
-	public void RefreshAll()
+		public void RefreshAll()
 	{
 		foreach (ColonyDiagnosticScreen.DiagnosticRow diagnosticRow in this.diagnosticRows)
 		{
@@ -122,7 +122,7 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 		this.seeAllButton.GetComponentInChildren<LocText>().SetText(string.Format(UI.DIAGNOSTICS_SCREEN.SEE_ALL, AllDiagnosticsScreen.Instance.GetRowCount()));
 	}
 
-	private ColonyDiagnostic.DiagnosticResult.Opinion UpdateDiagnosticRow(ColonyDiagnosticScreen.DiagnosticRow row)
+		private ColonyDiagnostic.DiagnosticResult.Opinion UpdateDiagnosticRow(ColonyDiagnosticScreen.DiagnosticRow row)
 	{
 		ColonyDiagnostic.DiagnosticResult.Opinion currentDisplayedResult = row.currentDisplayedResult;
 		bool activeInHierarchy = row.gameObject.activeInHierarchy;
@@ -152,7 +152,7 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 		return row.diagnostic.LatestResult.opinion;
 	}
 
-	private void SetRowActive(ColonyDiagnosticScreen.DiagnosticRow row, bool active)
+		private void SetRowActive(ColonyDiagnosticScreen.DiagnosticRow row, bool active)
 	{
 		if (row.gameObject.activeSelf != active)
 		{
@@ -161,21 +161,21 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 		}
 	}
 
-	public GameObject linePrefab;
+		public GameObject linePrefab;
 
-	public static ColonyDiagnosticScreen Instance;
+		public static ColonyDiagnosticScreen Instance;
 
-	private List<ColonyDiagnosticScreen.DiagnosticRow> diagnosticRows = new List<ColonyDiagnosticScreen.DiagnosticRow>();
+		private List<ColonyDiagnosticScreen.DiagnosticRow> diagnosticRows = new List<ColonyDiagnosticScreen.DiagnosticRow>();
 
-	public GameObject header;
+		public GameObject header;
 
-	public GameObject contentContainer;
+		public GameObject contentContainer;
 
-	public GameObject rootIndicator;
+		public GameObject rootIndicator;
 
-	public MultiToggle seeAllButton;
+		public MultiToggle seeAllButton;
 
-	public static Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string> notificationSoundsActive = new Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string>
+		public static Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string> notificationSoundsActive = new Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string>
 	{
 		{
 			ColonyDiagnostic.DiagnosticResult.Opinion.DuplicantThreatening,
@@ -211,7 +211,7 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 		}
 	};
 
-	public static Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string> notificationSoundsInactive = new Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string>
+		public static Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string> notificationSoundsInactive = new Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string>
 	{
 		{
 			ColonyDiagnostic.DiagnosticResult.Opinion.DuplicantThreatening,
@@ -247,9 +247,9 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 		}
 	};
 
-	private class DiagnosticRow : ISim4000ms
+		private class DiagnosticRow : ISim4000ms
 	{
-		public DiagnosticRow(int worldID, GameObject gameObject, ColonyDiagnostic diagnostic)
+				public DiagnosticRow(int worldID, GameObject gameObject, ColonyDiagnostic diagnostic)
 		{
 			global::Debug.Assert(diagnostic != null);
 			HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
@@ -302,24 +302,28 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 				SelectTool.Instance.SelectAndFocus(pos, kselectable);
 			}));
 			this.defaultIndicatorSizeDelta = Vector2.zero;
-			this.Update();
+			this.Update(true);
 			SimAndRenderScheduler.instance.Add(this, true);
 		}
 
-		public void OnCleanUp()
+				public void OnCleanUp()
 		{
 			SimAndRenderScheduler.instance.Remove(this);
 		}
 
-		public void Sim4000ms(float dt)
+				public void Sim4000ms(float dt)
 		{
-			this.Update();
+			this.Update(false);
 		}
 
-						public GameObject gameObject { get; private set; }
+								public GameObject gameObject { get; private set; }
 
-		public void Update()
+				public void Update(bool force = false)
 		{
+			if (!force && ClusterManager.Instance.activeWorldId != this.worldID)
+			{
+				return;
+			}
 			Color color = Color.white;
 			global::Debug.Assert(this.diagnostic.LatestResult.opinion > ColonyDiagnostic.DiagnosticResult.Opinion.Unset, string.Format("{0} criteria returned no opinion. Make sure the DiagnosticResult parameters are used or an opinion result is otherwise set in all of its criteria", this.diagnostic));
 			this.currentDisplayedResult = this.diagnostic.LatestResult.opinion;
@@ -352,12 +356,12 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 			this.titleLabel.color = color;
 		}
 
-		public bool CheckAllowVisualNotification()
+				public bool CheckAllowVisualNotification()
 		{
 			return this.timeOfLastNotification == 0f || GameClock.Instance.GetTime() >= this.timeOfLastNotification + 300f;
 		}
 
-		public void TriggerVisualNotification()
+				public void TriggerVisualNotification()
 		{
 			if (DebugHandler.NotificationsDisabled)
 			{
@@ -371,7 +375,7 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 			}
 		}
 
-		private IEnumerator VisualNotificationRoutine()
+				private IEnumerator VisualNotificationRoutine()
 		{
 			this.gameObject.GetComponentInChildren<NotificationAnimator>().Begin(false);
 			RectTransform indicator = this.gameObject.GetComponent<HierarchyReferences>().GetReference<Image>("Indicator").rectTransform;
@@ -397,41 +401,41 @@ public class ColonyDiagnosticScreen : KScreen, ISim1000ms
 			yield break;
 		}
 
-		public void ResolveNotificationRoutine()
+				public void ResolveNotificationRoutine()
 		{
 			this.gameObject.GetComponent<HierarchyReferences>().GetReference<Image>("Indicator").rectTransform.sizeDelta = Vector2.zero;
 			this.gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Content").localPosition = Vector2.zero;
 			this.activeRoutine = null;
 		}
 
-		private const float displayHistoryPeriod = 600f;
+				private const float displayHistoryPeriod = 600f;
 
-		public ColonyDiagnostic diagnostic;
+				public ColonyDiagnostic diagnostic;
 
-		public SparkLayer sparkLayer;
+				public SparkLayer sparkLayer;
 
-		public int worldID;
+				public int worldID;
 
-		private LocText titleLabel;
+				private LocText titleLabel;
 
-		private LocText valueLabel;
+				private LocText valueLabel;
 
-		private Image indicator;
+				private Image indicator;
 
-		private ToolTip tooltip;
+				private ToolTip tooltip;
 
-		private MultiToggle button;
+				private MultiToggle button;
 
-		private Image image;
+				private Image image;
 
-		public ColonyDiagnostic.DiagnosticResult.Opinion currentDisplayedResult;
+				public ColonyDiagnostic.DiagnosticResult.Opinion currentDisplayedResult;
 
-		private Vector2 defaultIndicatorSizeDelta;
+				private Vector2 defaultIndicatorSizeDelta;
 
-		private float timeOfLastNotification;
+				private float timeOfLastNotification;
 
-		private const float MIN_TIME_BETWEEN_NOTIFICATIONS = 300f;
+				private const float MIN_TIME_BETWEEN_NOTIFICATIONS = 300f;
 
-		private Coroutine activeRoutine;
+				private Coroutine activeRoutine;
 	}
 }

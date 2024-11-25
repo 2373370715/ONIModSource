@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SodaFountainConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SodaFountain";
 		int width = 2;
@@ -31,9 +31,10 @@ public class SodaFountainConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
-		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding, false);
+		KPrefabID component = go.GetComponent<KPrefabID>();
+		component.AddTag(RoomConstraints.ConstraintTags.RecBuilding, false);
 		Storage storage = go.AddOrGet<Storage>();
 		storage.SetDefaultStoredItemModifiers(Storage.StandardFabricatorStorage);
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
@@ -59,11 +60,26 @@ public class SodaFountainConfig : IBuildingConfig
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.RecRoom.Id;
 		roomTracker.requirement = RoomTracker.Requirement.Recommended;
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
+		component.prefabInitFn += this.OnInit;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		private void OnInit(GameObject go)
+	{
+		SodaFountainWorkable component = go.GetComponent<SodaFountainWorkable>();
+		KAnimFile[] value = new KAnimFile[]
+		{
+			Assets.GetAnim("anim_interacts_sodamaker_kanim")
+		};
+		component.workerTypeOverrideAnims.Add(MinionConfig.ID, value);
+		component.workerTypeOverrideAnims.Add(BionicMinionConfig.ID, new KAnimFile[]
+		{
+			Assets.GetAnim("anim_bionic_interacts_sodamaker_kanim")
+		});
+	}
+
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "SodaFountain";
+		public const string ID = "SodaFountain";
 }

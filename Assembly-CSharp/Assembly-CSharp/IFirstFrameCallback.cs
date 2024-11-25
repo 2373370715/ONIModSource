@@ -2,5 +2,5 @@
 
 public interface IFirstFrameCallback
 {
-	void SetFirstFrameCallback(System.Action ffCb);
+		void SetFirstFrameCallback(System.Action ffCb);
 }

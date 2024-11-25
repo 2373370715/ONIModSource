@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FabricatorIngredientStatusManager")]
 public class FabricatorIngredientStatusManager : KMonoBehaviour, ISim1000ms
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.selectable = base.GetComponent<KSelectable>();
@@ -13,7 +13,7 @@ public class FabricatorIngredientStatusManager : KMonoBehaviour, ISim1000ms
 		this.InitializeBalances();
 	}
 
-	private void InitializeBalances()
+		private void InitializeBalances()
 	{
 		foreach (ComplexRecipe complexRecipe in this.fabricator.GetRecipes())
 		{
@@ -25,12 +25,12 @@ public class FabricatorIngredientStatusManager : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		this.RefreshStatusItems();
 	}
 
-	private void RefreshStatusItems()
+		private void RefreshStatusItems()
 	{
 		foreach (KeyValuePair<ComplexRecipe, Guid> keyValuePair in this.statusItems)
 		{
@@ -95,7 +95,7 @@ public class FabricatorIngredientStatusManager : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	private bool ChangeRecipeRequiredResourceBalance(ComplexRecipe recipe, Tag tag, float newBalance)
+		private bool ChangeRecipeRequiredResourceBalance(ComplexRecipe recipe, Tag tag, float newBalance)
 	{
 		bool result = false;
 		if (this.recipeRequiredResourceBalances[recipe][tag] >= 0f != newBalance >= 0f)
@@ -106,13 +106,13 @@ public class FabricatorIngredientStatusManager : KMonoBehaviour, ISim1000ms
 		return result;
 	}
 
-	private KSelectable selectable;
+		private KSelectable selectable;
 
-	private ComplexFabricator fabricator;
+		private ComplexFabricator fabricator;
 
-	private Dictionary<ComplexRecipe, Guid> statusItems = new Dictionary<ComplexRecipe, Guid>();
+		private Dictionary<ComplexRecipe, Guid> statusItems = new Dictionary<ComplexRecipe, Guid>();
 
-	private Dictionary<ComplexRecipe, Dictionary<Tag, float>> recipeRequiredResourceBalances = new Dictionary<ComplexRecipe, Dictionary<Tag, float>>();
+		private Dictionary<ComplexRecipe, Dictionary<Tag, float>> recipeRequiredResourceBalances = new Dictionary<ComplexRecipe, Dictionary<Tag, float>>();
 
-	private List<ComplexRecipe> deadOrderKeys = new List<ComplexRecipe>();
+		private List<ComplexRecipe> deadOrderKeys = new List<ComplexRecipe>();
 }

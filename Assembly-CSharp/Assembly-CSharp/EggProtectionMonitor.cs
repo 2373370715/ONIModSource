@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.find_egg;
 		this.find_egg.BatchUpdate(new UpdateBucketWithUpdater<EggProtectionMonitor.Instance>.BatchUpdateDelegate(EggProtectionMonitor.Instance.FindEggToGuard), UpdateRate.SIM_200ms).ParamTransition<bool>(this.hasEggToGuard, this.guard.safe, GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.IsTrue);
@@ -41,7 +41,7 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 		}).Update("Threatened", new Action<EggProtectionMonitor.Instance, float>(EggProtectionMonitor.CritterUpdateThreats), UpdateRate.SIM_200ms, false);
 	}
 
-	private static void CritterUpdateThreats(EggProtectionMonitor.Instance smi, float dt)
+		private static void CritterUpdateThreats(EggProtectionMonitor.Instance smi, float dt)
 	{
 		if (smi.isMasterNull)
 		{
@@ -53,35 +53,35 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 		}
 	}
 
-	public StateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.BoolParameter hasEggToGuard;
+		public StateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.BoolParameter hasEggToGuard;
 
-	public GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.State find_egg;
+		public GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.State find_egg;
 
-	public EggProtectionMonitor.GuardEggStates guard;
+		public EggProtectionMonitor.GuardEggStates guard;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Tag[] allyTags;
+				public Tag[] allyTags;
 
-		public string animPrefix;
+				public string animPrefix;
 	}
 
-	public class GuardEggStates : GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.State
+		public class GuardEggStates : GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.State
 	{
-		public GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.State safe;
+				public GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.State safe;
 
-		public GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.State threatened;
+				public GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.State threatened;
 	}
 
-	public new class Instance : GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<EggProtectionMonitor, EggProtectionMonitor.Instance, IStateMachineTarget, EggProtectionMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, EggProtectionMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, EggProtectionMonitor.Def def) : base(master, def)
 		{
 			this.navigator = master.GetComponent<Navigator>();
 			this.refreshThreatDelegate = new Action<object>(this.RefreshThreat);
 		}
 
-		public void CanProtectEgg()
+				public void CanProtectEgg()
 		{
 			bool flag = true;
 			if (this.eggToProtect == null)
@@ -103,7 +103,7 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 			}
 		}
 
-		public static void FindEggToGuard(List<UpdateBucketWithUpdater<EggProtectionMonitor.Instance>.Entry> instances, float time_delta)
+				public static void FindEggToGuard(List<UpdateBucketWithUpdater<EggProtectionMonitor.Instance>.Entry> instances, float time_delta)
 		{
 			ListPool<KPrefabID, EggProtectionMonitor>.PooledList pooledList = ListPool<KPrefabID, EggProtectionMonitor>.Allocate();
 			pooledList.Capacity = Mathf.Max(pooledList.Capacity, Components.IncubationMonitors.Count);
@@ -143,18 +143,18 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 			pooledList2.Recycle();
 		}
 
-		public void SetEggToGuard(GameObject egg)
+				public void SetEggToGuard(GameObject egg)
 		{
 			this.eggToProtect = egg;
 			base.sm.hasEggToGuard.Set(egg != null, base.smi, false);
 		}
 
-		public void GoToThreatened()
+				public void GoToThreatened()
 		{
 			base.smi.GoTo(base.sm.guard.threatened);
 		}
 
-		public void RefreshThreat(object data)
+				public void RefreshThreat(object data)
 		{
 			if (!base.IsRunning() || this.eggToProtect == null)
 			{
@@ -172,34 +172,34 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 			}
 		}
 
-		[MySmiReq]
+				[MySmiReq]
 		public ThreatMonitor.Instance threatMonitor;
 
-		public GameObject eggToProtect;
+				public GameObject eggToProtect;
 
-		private Navigator navigator;
+				private Navigator navigator;
 
-		private Action<object> refreshThreatDelegate;
+				private Action<object> refreshThreatDelegate;
 
-		private static WorkItemCollection<EggProtectionMonitor.Instance.FindEggsTask, List<KPrefabID>> find_eggs_job = new WorkItemCollection<EggProtectionMonitor.Instance.FindEggsTask, List<KPrefabID>>();
+				private static WorkItemCollection<EggProtectionMonitor.Instance.FindEggsTask, List<KPrefabID>> find_eggs_job = new WorkItemCollection<EggProtectionMonitor.Instance.FindEggsTask, List<KPrefabID>>();
 
-		private struct Egg
+				private struct Egg
 		{
-			public GameObject game_object;
+						public GameObject game_object;
 
-			public int cell;
+						public int cell;
 		}
 
-		private struct FindEggsTask : IWorkItem<List<KPrefabID>>
+				private struct FindEggsTask : IWorkItem<List<KPrefabID>>
 		{
-			public FindEggsTask(int start, int end)
+						public FindEggsTask(int start, int end)
 			{
 				this.start = start;
 				this.end = end;
 				this.eggs = ListPool<int, EggProtectionMonitor>.Allocate();
 			}
 
-			public void Run(List<KPrefabID> prefab_ids)
+						public void Run(List<KPrefabID> prefab_ids)
 			{
 				for (int num = this.start; num != this.end; num++)
 				{
@@ -210,7 +210,7 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 				}
 			}
 
-			public void Finish(List<KPrefabID> prefab_ids, List<EggProtectionMonitor.Instance.Egg> eggs)
+						public void Finish(List<KPrefabID> prefab_ids, List<EggProtectionMonitor.Instance.Egg> eggs)
 			{
 				foreach (int index in this.eggs)
 				{
@@ -224,18 +224,18 @@ public class EggProtectionMonitor : GameStateMachine<EggProtectionMonitor, EggPr
 				this.eggs.Recycle();
 			}
 
-			private static readonly List<Tag> EGG_TAG = new List<Tag>
+						private static readonly List<Tag> EGG_TAG = new List<Tag>
 			{
 				"CrabEgg".ToTag(),
 				"CrabWoodEgg".ToTag(),
 				"CrabFreshWaterEgg".ToTag()
 			};
 
-			private ListPool<int, EggProtectionMonitor>.PooledList eggs;
+						private ListPool<int, EggProtectionMonitor>.PooledList eggs;
 
-			private int start;
+						private int start;
 
-			private int end;
+						private int end;
 		}
 	}
 }

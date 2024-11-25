@@ -11,7 +11,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/EnergyConsumer")]
 public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, ICircuitConnected, IGameObjectEffectDescriptor
 {
-		public int PowerSortOrder
+			public int PowerSortOrder
 	{
 		get
 		{
@@ -19,9 +19,9 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		}
 	}
 
-			public int PowerCell { get; private set; }
+				public int PowerCell { get; private set; }
 
-		public bool HasWire
+			public bool HasWire
 	{
 		get
 		{
@@ -29,7 +29,7 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		}
 	}
 
-			public virtual bool IsPowered
+				public virtual bool IsPowered
 	{
 		get
 		{
@@ -41,7 +41,7 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		}
 	}
 
-		public bool IsConnected
+			public bool IsConnected
 	{
 		get
 		{
@@ -49,7 +49,7 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		}
 	}
 
-		public string Name
+			public string Name
 	{
 		get
 		{
@@ -57,13 +57,13 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		}
 	}
 
-			public bool IsVirtual { get; private set; }
+				public bool IsVirtual { get; private set; }
 
-			public object VirtualCircuitKey { get; private set; }
+				public object VirtualCircuitKey { get; private set; }
 
-			public ushort CircuitID { get; private set; }
+				public ushort CircuitID { get; private set; }
 
-			public float BaseWattageRating
+				public float BaseWattageRating
 	{
 		get
 		{
@@ -75,7 +75,7 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		}
 	}
 
-		public float WattsUsed
+			public float WattsUsed
 	{
 		get
 		{
@@ -87,7 +87,7 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		}
 	}
 
-		public float WattsNeededWhenActive
+			public float WattsNeededWhenActive
 	{
 		get
 		{
@@ -95,14 +95,14 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.CircuitID = ushort.MaxValue;
 		this.IsPowered = false;
 		this.BaseWattageRating = this.building.Def.EnergyConsumptionWhenActive;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.EnergyConsumers.Add(this);
@@ -112,7 +112,7 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		Game.Instance.energySim.AddEnergyConsumer(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.energySim.RemoveEnergyConsumer(this);
 		Game.Instance.circuitManager.Disconnect(this, true);
@@ -120,7 +120,7 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		base.OnCleanUp();
 	}
 
-	public virtual void EnergySim200ms(float dt)
+		public virtual void EnergySim200ms(float dt)
 	{
 		this.CircuitID = Game.Instance.circuitManager.GetCircuitID(this);
 		if (!this.IsConnected)
@@ -130,7 +130,7 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		this.circuitOverloadTime = Mathf.Max(0f, this.circuitOverloadTime - dt);
 	}
 
-	public virtual void SetConnectionStatus(CircuitManager.ConnectionStatus connection_status)
+		public virtual void SetConnectionStatus(CircuitManager.ConnectionStatus connection_status)
 	{
 		switch (connection_status)
 		{
@@ -158,7 +158,7 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		}
 	}
 
-	protected void PlayCircuitSound(string state)
+		protected void PlayCircuitSound(string state)
 	{
 		EventReference event_ref;
 		if (state == "powered")
@@ -192,31 +192,31 @@ public class EnergyConsumer : KMonoBehaviour, ISaveLoadable, IEnergyConsumer, IC
 		this.lastTimeSoundPlayed[state] = Time.time;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return null;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	protected Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KSelectable selectable;
 
-	[SerializeField]
+		[SerializeField]
 	public int powerSortOrder;
 
-	[Serialize]
+		[Serialize]
 	protected float circuitOverloadTime;
 
-	public static readonly Operational.Flag PoweredFlag = new Operational.Flag("powered", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag PoweredFlag = new Operational.Flag("powered", Operational.Flag.Type.Requirement);
 
-	private Dictionary<string, float> lastTimeSoundPlayed = new Dictionary<string, float>();
+		private Dictionary<string, float> lastTimeSoundPlayed = new Dictionary<string, float>();
 
-	private float soundDecayTime = 10f;
+		private float soundDecayTime = 10f;
 
-	private float _BaseWattageRating;
+		private float _BaseWattageRating;
 }

@@ -4,7 +4,7 @@ using System.Reflection;
 
 public class MySmi : MyAttributeManager<StateMachine.Instance>
 {
-	public static void Init()
+		public static void Init()
 	{
 		MyAttributes.Register(new MySmi(new Dictionary<Type, MethodInfo>
 		{
@@ -19,11 +19,11 @@ public class MySmi : MyAttributeManager<StateMachine.Instance>
 		}));
 	}
 
-	public MySmi(Dictionary<Type, MethodInfo> attributeMap) : base(attributeMap, null)
+		public MySmi(Dictionary<Type, MethodInfo> attributeMap) : base(attributeMap, null)
 	{
 	}
 
-	public static StateMachine.Instance FindSmi<T>(KMonoBehaviour c, bool isStart) where T : StateMachine.Instance
+		public static StateMachine.Instance FindSmi<T>(KMonoBehaviour c, bool isStart) where T : StateMachine.Instance
 	{
 		StateMachineController component = c.GetComponent<StateMachineController>();
 		if (component != null)
@@ -33,7 +33,7 @@ public class MySmi : MyAttributeManager<StateMachine.Instance>
 		return null;
 	}
 
-	public static StateMachine.Instance RequireSmi<T>(KMonoBehaviour c, bool isStart) where T : StateMachine.Instance
+		public static StateMachine.Instance RequireSmi<T>(KMonoBehaviour c, bool isStart) where T : StateMachine.Instance
 	{
 		if (isStart)
 		{

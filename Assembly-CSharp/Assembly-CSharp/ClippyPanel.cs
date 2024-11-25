@@ -4,31 +4,31 @@ using UnityEngine.UI;
 
 public class ClippyPanel : KScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		SpeedControlScreen.Instance.Pause(true, false);
 		Game.Instance.Trigger(1634669191, null);
 	}
 
-	public void OnOk()
+		public void OnOk()
 	{
 		SpeedControlScreen.Instance.Unpause(true);
 		UnityEngine.Object.Destroy(base.gameObject);
 	}
 
-	public Text title;
+		public Text title;
 
-	public Text detailText;
+		public Text detailText;
 
-	public Text flavorText;
+		public Text flavorText;
 
-	public Image topicIcon;
+		public Image topicIcon;
 
-	private KButton okButton;
+		private KButton okButton;
 }

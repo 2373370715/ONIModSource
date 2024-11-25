@@ -3,291 +3,250 @@ using KSerialization;
 using STRINGS;
 using UnityEngine;
 
-[SerializationConfig(MemberSerialization.OptIn)]
-[AddComponentMenu("KMonoBehaviour/scripts/Sublimates")]
-public class Sublimates : KMonoBehaviour, ISim200ms
-{
-		public float Temperature
-	{
-		get
-		{
-			return this.primaryElement.Temperature;
-		}
-	}
+[SerializationConfig(MemberSerialization.OptIn), AddComponentMenu("KMonoBehaviour/scripts/Sublimates")]
+public class Sublimates : KMonoBehaviour, ISim200ms {
+    private static readonly EventSystem.IntraObjectHandler<Sublimates> OnAbsorbDelegate
+        = new EventSystem.IntraObjectHandler<Sublimates>(delegate(Sublimates component, object data) {
+                                                             component.OnAbsorb(data);
+                                                         });
 
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		base.Subscribe<Sublimates>(-2064133523, Sublimates.OnAbsorbDelegate);
-		base.Subscribe<Sublimates>(1335436905, Sublimates.OnSplitFromChunkDelegate);
-		this.simRenderLoadBalance = true;
-	}
+    private static readonly EventSystem.IntraObjectHandler<Sublimates> OnSplitFromChunkDelegate
+        = new EventSystem.IntraObjectHandler<Sublimates>(delegate(Sublimates component, object data) {
+                                                             component.OnSplitFromChunk(data);
+                                                         });
 
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.flowAccumulator = Game.Instance.accumulators.Add("EmittedMass", this);
-		this.RefreshStatusItem(Sublimates.EmitState.Emitting);
-	}
+    public  bool                     decayStorage;
+    private HandleVector<int>.Handle flowAccumulator = HandleVector<int>.InvalidHandle;
 
-	protected override void OnCleanUp()
-	{
-		this.flowAccumulator = Game.Instance.accumulators.Remove(this.flowAccumulator);
-		base.OnCleanUp();
-	}
+    [SerializeField]
+    public Info info;
 
-	private void OnAbsorb(object data)
-	{
-		Pickupable pickupable = (Pickupable)data;
-		if (pickupable != null)
-		{
-			Sublimates component = pickupable.GetComponent<Sublimates>();
-			if (component != null)
-			{
-				this.sublimatedMass += component.sublimatedMass;
-			}
-		}
-	}
+    private EmitState lastEmitState = (EmitState)(-1);
 
-	private void OnSplitFromChunk(object data)
-	{
-		Pickupable pickupable = data as Pickupable;
-		PrimaryElement primaryElement = pickupable.PrimaryElement;
-		Sublimates component = pickupable.GetComponent<Sublimates>();
-		if (component == null)
-		{
-			return;
-		}
-		float mass = this.primaryElement.Mass;
-		float mass2 = primaryElement.Mass;
-		float num = mass / (mass2 + mass);
-		this.sublimatedMass = component.sublimatedMass * num;
-		float num2 = 1f - num;
-		component.sublimatedMass *= num2;
-	}
+    [MyCmpReq]
+    private PrimaryElement primaryElement;
 
-	public void Sim200ms(float dt)
-	{
-		int num = Grid.PosToCell(base.transform.GetPosition());
-		if (!Grid.IsValidCell(num))
-		{
-			return;
-		}
-		bool flag = this.HasTag(GameTags.Sealed);
-		Pickupable component = base.GetComponent<Pickupable>();
-		Storage storage = (component != null) ? component.storage : null;
-		if (flag && !this.decayStorage)
-		{
-			return;
-		}
-		if (flag && storage != null && storage.HasTag(GameTags.CorrosionProof))
-		{
-			return;
-		}
-		Element element = ElementLoader.FindElementByHash(this.info.sublimatedElement);
-		if (this.primaryElement.Temperature <= element.lowTemp)
-		{
-			this.RefreshStatusItem(Sublimates.EmitState.BlockedOnTemperature);
-			return;
-		}
-		float num2 = Grid.Mass[num];
-		if (num2 < this.info.maxDestinationMass)
-		{
-			float num3 = this.primaryElement.Mass;
-			if (num3 > 0f)
-			{
-				float num4 = Mathf.Pow(num3, this.info.massPower);
-				float num5 = Mathf.Max(this.info.sublimationRate, this.info.sublimationRate * num4);
-				num5 *= dt;
-				num5 = Mathf.Min(num5, num3);
-				this.sublimatedMass += num5;
-				num3 -= num5;
-				if (this.sublimatedMass > this.info.minSublimationAmount)
-				{
-					float num6 = this.sublimatedMass / this.primaryElement.Mass;
-					byte diseaseIdx;
-					int num7;
-					if (this.info.diseaseIdx == 255)
-					{
-						diseaseIdx = this.primaryElement.DiseaseIdx;
-						num7 = (int)((float)this.primaryElement.DiseaseCount * num6);
-						this.primaryElement.ModifyDiseaseCount(-num7, "Sublimates.SimUpdate");
-					}
-					else
-					{
-						float num8 = this.sublimatedMass / this.info.sublimationRate;
-						diseaseIdx = this.info.diseaseIdx;
-						num7 = (int)((float)this.info.diseaseCount * num8);
-					}
-					float num9 = Mathf.Min(this.sublimatedMass, this.info.maxDestinationMass - num2);
-					if (num9 <= 0f)
-					{
-						this.RefreshStatusItem(Sublimates.EmitState.BlockedOnPressure);
-						return;
-					}
-					this.Emit(num, num9, this.primaryElement.Temperature, diseaseIdx, num7);
-					this.sublimatedMass = Mathf.Max(0f, this.sublimatedMass - num9);
-					this.primaryElement.Mass = Mathf.Max(0f, this.primaryElement.Mass - num9);
-					this.UpdateStorage();
-					this.RefreshStatusItem(Sublimates.EmitState.Emitting);
-					if (flag && this.decayStorage && storage != null)
-					{
-						storage.Trigger(-794517298, new BuildingHP.DamageSourceInfo
-						{
-							damage = 1,
-							source = BUILDINGS.DAMAGESOURCES.CORROSIVE_ELEMENT,
-							popString = UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CORROSIVE_ELEMENT,
-							fullDamageEffectName = "smoke_damage_kanim"
-						});
-						return;
-					}
-				}
-			}
-			else if (this.sublimatedMass > 0f)
-			{
-				float num10 = Mathf.Min(this.sublimatedMass, this.info.maxDestinationMass - num2);
-				if (num10 > 0f)
-				{
-					this.Emit(num, num10, this.primaryElement.Temperature, this.primaryElement.DiseaseIdx, this.primaryElement.DiseaseCount);
-					this.sublimatedMass = Mathf.Max(0f, this.sublimatedMass - num10);
-					this.primaryElement.Mass = Mathf.Max(0f, this.primaryElement.Mass - num10);
-					this.UpdateStorage();
-					this.RefreshStatusItem(Sublimates.EmitState.Emitting);
-					return;
-				}
-				this.RefreshStatusItem(Sublimates.EmitState.BlockedOnPressure);
-				return;
-			}
-			else if (!this.primaryElement.KeepZeroMassObject)
-			{
-				Util.KDestroyGameObject(base.gameObject);
-				return;
-			}
-		}
-		else
-		{
-			this.RefreshStatusItem(Sublimates.EmitState.BlockedOnPressure);
-		}
-	}
+    [MyCmpReq]
+    private KSelectable selectable;
 
-	private void UpdateStorage()
-	{
-		Pickupable component = base.GetComponent<Pickupable>();
-		if (component != null && component.storage != null)
-		{
-			component.storage.Trigger(-1697596308, base.gameObject);
-		}
-	}
+    [SerializeField]
+    public SpawnFXHashes spawnFXHash;
 
-	private void Emit(int cell, float mass, float temperature, byte disease_idx, int disease_count)
-	{
-		SimMessages.AddRemoveSubstance(cell, this.info.sublimatedElement, CellEventLogger.Instance.SublimatesEmit, mass, temperature, disease_idx, disease_count, true, -1);
-		Game.Instance.accumulators.Accumulate(this.flowAccumulator, mass);
-		if (this.spawnFXHash != SpawnFXHashes.None)
-		{
-			base.transform.GetPosition().z = Grid.GetLayerZ(Grid.SceneLayer.Front);
-			Game.Instance.SpawnFX(this.spawnFXHash, base.transform.GetPosition(), 0f);
-		}
-	}
+    [Serialize]
+    private float sublimatedMass;
 
-	public float AvgFlowRate()
-	{
-		return Game.Instance.accumulators.GetAverageRate(this.flowAccumulator);
-	}
+    public float Temperature => primaryElement.Temperature;
 
-	private void RefreshStatusItem(Sublimates.EmitState newEmitState)
-	{
-		if (newEmitState == this.lastEmitState)
-		{
-			return;
-		}
-		switch (newEmitState)
-		{
-		case Sublimates.EmitState.Emitting:
-			if (this.info.sublimatedElement == SimHashes.Oxygen)
-			{
-				this.selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingOxygenAvg, this);
-			}
-			else
-			{
-				this.selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingGasAvg, this);
-			}
-			break;
-		case Sublimates.EmitState.BlockedOnPressure:
-			this.selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingBlockedHighPressure, this);
-			break;
-		case Sublimates.EmitState.BlockedOnTemperature:
-			this.selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmittingBlockedLowTemperature, this);
-			break;
-		}
-		this.lastEmitState = newEmitState;
-	}
+    public void Sim200ms(float dt) {
+        var num = Grid.PosToCell(transform.GetPosition());
+        if (!Grid.IsValidCell(num)) return;
 
-	[MyCmpReq]
-	private PrimaryElement primaryElement;
+        var flag      = this.HasTag(GameTags.Sealed);
+        var component = GetComponent<Pickupable>();
+        var storage   = component != null ? component.storage : null;
+        if (flag && !decayStorage) return;
 
-	[MyCmpReq]
-	private KSelectable selectable;
+        if (flag && storage != null && storage.HasTag(GameTags.CorrosionProof)) return;
 
-	[SerializeField]
-	public SpawnFXHashes spawnFXHash;
+        var element = ElementLoader.FindElementByHash(info.sublimatedElement);
+        if (primaryElement.Temperature <= element.lowTemp) {
+            RefreshStatusItem(EmitState.BlockedOnTemperature);
+            return;
+        }
 
-	public bool decayStorage;
+        var num2 = Grid.Mass[num];
+        if (num2 < info.maxDestinationMass) {
+            var num3 = primaryElement.Mass;
+            if (num3 > 0f) {
+                var num4 = Mathf.Pow(num3, info.massPower);
+                var num5 = Mathf.Max(info.sublimationRate, info.sublimationRate * num4);
+                num5           *= dt;
+                num5           =  Mathf.Min(num5, num3);
+                sublimatedMass += num5;
+                num3           -= num5;
+                if (sublimatedMass > info.minSublimationAmount) {
+                    var  num6 = sublimatedMass / primaryElement.Mass;
+                    byte diseaseIdx;
+                    int  num7;
+                    if (info.diseaseIdx == 255) {
+                        diseaseIdx = primaryElement.DiseaseIdx;
+                        num7       = (int)(primaryElement.DiseaseCount * num6);
+                        primaryElement.ModifyDiseaseCount(-num7, "Sublimates.SimUpdate");
+                    } else {
+                        var num8 = sublimatedMass / info.sublimationRate;
+                        diseaseIdx = info.diseaseIdx;
+                        num7       = (int)(info.diseaseCount * num8);
+                    }
 
-	[SerializeField]
-	public Sublimates.Info info;
+                    var num9 = Mathf.Min(sublimatedMass, info.maxDestinationMass - num2);
+                    if (num9 <= 0f) {
+                        RefreshStatusItem(EmitState.BlockedOnPressure);
+                        return;
+                    }
 
-	[Serialize]
-	private float sublimatedMass;
+                    Emit(num, num9, primaryElement.Temperature, diseaseIdx, num7);
+                    sublimatedMass      = Mathf.Max(0f, sublimatedMass      - num9);
+                    primaryElement.Mass = Mathf.Max(0f, primaryElement.Mass - num9);
+                    UpdateStorage();
+                    RefreshStatusItem(EmitState.Emitting);
+                    if (flag && decayStorage && storage != null)
+                        storage.Trigger(-794517298,
+                                        new BuildingHP.DamageSourceInfo {
+                                            damage               = 1,
+                                            source               = BUILDINGS.DAMAGESOURCES.CORROSIVE_ELEMENT,
+                                            popString            = UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CORROSIVE_ELEMENT,
+                                            fullDamageEffectName = "smoke_damage_kanim"
+                                        });
+                }
+            } else if (sublimatedMass > 0f) {
+                var num10 = Mathf.Min(sublimatedMass, info.maxDestinationMass - num2);
+                if (num10 > 0f) {
+                    Emit(num,
+                         num10,
+                         primaryElement.Temperature,
+                         primaryElement.DiseaseIdx,
+                         primaryElement.DiseaseCount);
 
-	private HandleVector<int>.Handle flowAccumulator = HandleVector<int>.InvalidHandle;
+                    sublimatedMass      = Mathf.Max(0f, sublimatedMass      - num10);
+                    primaryElement.Mass = Mathf.Max(0f, primaryElement.Mass - num10);
+                    UpdateStorage();
+                    RefreshStatusItem(EmitState.Emitting);
+                    return;
+                }
 
-	private Sublimates.EmitState lastEmitState = (Sublimates.EmitState)(-1);
+                RefreshStatusItem(EmitState.BlockedOnPressure);
+            } else if (!primaryElement.KeepZeroMassObject) Util.KDestroyGameObject(gameObject);
+        } else
+            RefreshStatusItem(EmitState.BlockedOnPressure);
+    }
 
-	private static readonly EventSystem.IntraObjectHandler<Sublimates> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<Sublimates>(delegate(Sublimates component, object data)
-	{
-		component.OnAbsorb(data);
-	});
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        Subscribe(-2064133523, OnAbsorbDelegate);
+        Subscribe(1335436905,  OnSplitFromChunkDelegate);
+        simRenderLoadBalance = true;
+    }
 
-	private static readonly EventSystem.IntraObjectHandler<Sublimates> OnSplitFromChunkDelegate = new EventSystem.IntraObjectHandler<Sublimates>(delegate(Sublimates component, object data)
-	{
-		component.OnSplitFromChunk(data);
-	});
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        flowAccumulator = Game.Instance.accumulators.Add("EmittedMass", this);
+        RefreshStatusItem(EmitState.Emitting);
+    }
 
-	[Serializable]
-	public struct Info
-	{
-		public Info(float rate, float min_amount, float max_destination_mass, float mass_power, SimHashes element, byte disease_idx = 255, int disease_count = 0)
-		{
-			this.sublimationRate = rate;
-			this.minSublimationAmount = min_amount;
-			this.maxDestinationMass = max_destination_mass;
-			this.massPower = mass_power;
-			this.sublimatedElement = element;
-			this.diseaseIdx = disease_idx;
-			this.diseaseCount = disease_count;
-		}
+    protected override void OnCleanUp() {
+        flowAccumulator = Game.Instance.accumulators.Remove(flowAccumulator);
+        base.OnCleanUp();
+    }
 
-		public float sublimationRate;
+    private void OnAbsorb(object data) {
+        var pickupable = (Pickupable)data;
+        if (pickupable != null) {
+            var component                         = pickupable.GetComponent<Sublimates>();
+            if (component != null) sublimatedMass += component.sublimatedMass;
+        }
+    }
 
-		public float minSublimationAmount;
+    private void OnSplitFromChunk(object data) {
+        var pickupable     = data as Pickupable;
+        var primaryElement = pickupable.PrimaryElement;
+        var component      = pickupable.GetComponent<Sublimates>();
+        if (component == null) return;
 
-		public float maxDestinationMass;
+        var mass  = this.primaryElement.Mass;
+        var mass2 = primaryElement.Mass;
+        var num   = mass / (mass2 + mass);
+        sublimatedMass = component.sublimatedMass * num;
+        var num2 = 1f - num;
+        component.sublimatedMass *= num2;
+    }
 
-		public float massPower;
+    private void UpdateStorage() {
+        var component = GetComponent<Pickupable>();
+        if (component != null && component.storage != null) component.storage.Trigger(-1697596308, gameObject);
+    }
 
-		public byte diseaseIdx;
+    private void Emit(int cell, float mass, float temperature, byte disease_idx, int disease_count) {
+        SimMessages.AddRemoveSubstance(cell,
+                                       info.sublimatedElement,
+                                       CellEventLogger.Instance.SublimatesEmit,
+                                       mass,
+                                       temperature,
+                                       disease_idx,
+                                       disease_count);
 
-		public int diseaseCount;
+        Game.Instance.accumulators.Accumulate(flowAccumulator, mass);
+        if (spawnFXHash != SpawnFXHashes.None) {
+            transform.GetPosition().z = Grid.GetLayerZ(Grid.SceneLayer.Front);
+            Game.Instance.SpawnFX(spawnFXHash, transform.GetPosition(), 0f);
+        }
+    }
 
-		[HashedEnum]
-		public SimHashes sublimatedElement;
-	}
+    public float AvgFlowRate() { return Game.Instance.accumulators.GetAverageRate(flowAccumulator); }
 
-	private enum EmitState
-	{
-		Emitting,
-		BlockedOnPressure,
-		BlockedOnTemperature
-	}
+    private void RefreshStatusItem(EmitState newEmitState) {
+        if (newEmitState == lastEmitState) return;
+
+        switch (newEmitState) {
+            case EmitState.Emitting:
+                if (info.sublimatedElement == SimHashes.Oxygen)
+                    selectable.SetStatusItem(Db.Get().StatusItemCategories.Main,
+                                             Db.Get().BuildingStatusItems.EmittingOxygenAvg,
+                                             this);
+                else
+                    selectable.SetStatusItem(Db.Get().StatusItemCategories.Main,
+                                             Db.Get().BuildingStatusItems.EmittingGasAvg,
+                                             this);
+
+                break;
+            case EmitState.BlockedOnPressure:
+                selectable.SetStatusItem(Db.Get().StatusItemCategories.Main,
+                                         Db.Get().BuildingStatusItems.EmittingBlockedHighPressure,
+                                         this);
+
+                break;
+            case EmitState.BlockedOnTemperature:
+                selectable.SetStatusItem(Db.Get().StatusItemCategories.Main,
+                                         Db.Get().BuildingStatusItems.EmittingBlockedLowTemperature,
+                                         this);
+
+                break;
+        }
+
+        lastEmitState = newEmitState;
+    }
+
+    [Serializable]
+    public struct Info {
+        public Info(float     rate,
+                    float     min_amount,
+                    float     max_destination_mass,
+                    float     mass_power,
+                    SimHashes element,
+                    byte      disease_idx   = 255,
+                    int       disease_count = 0) {
+            sublimationRate      = rate;
+            minSublimationAmount = min_amount;
+            maxDestinationMass   = max_destination_mass;
+            massPower            = mass_power;
+            sublimatedElement    = element;
+            diseaseIdx           = disease_idx;
+            diseaseCount         = disease_count;
+        }
+
+        public float sublimationRate;
+        public float minSublimationAmount;
+        public float maxDestinationMass;
+        public float massPower;
+        public byte  diseaseIdx;
+        public int   diseaseCount;
+
+        [HashedEnum]
+        public SimHashes sublimatedElement;
+    }
+
+    private enum EmitState {
+        Emitting,
+        BlockedOnPressure,
+        BlockedOnTemperature
+    }
 }

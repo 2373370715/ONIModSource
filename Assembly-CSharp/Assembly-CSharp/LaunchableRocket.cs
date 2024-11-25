@@ -7,7 +7,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesInstance>, ILaunchableRocket
 {
-		public LaunchableRocketRegisterType registerType
+			public LaunchableRocketRegisterType registerType
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 		}
 	}
 
-		public GameObject LaunchableGameObject
+			public GameObject LaunchableGameObject
 	{
 		get
 		{
@@ -23,11 +23,11 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 		}
 	}
 
-			public float rocketSpeed { get; private set; }
+				public float rocketSpeed { get; private set; }
 
-			public bool isLanding { get; private set; }
+				public bool isLanding { get; private set; }
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.master.parts = AttachableBuilding.GetAttachedNetwork(base.smi.master.GetComponent<AttachableBuilding>());
@@ -41,7 +41,7 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 		base.smi.StartSM();
 	}
 
-	public List<GameObject> GetEngines()
+		public List<GameObject> GetEngines()
 	{
 		List<GameObject> list = new List<GameObject>();
 		foreach (GameObject gameObject in this.parts)
@@ -54,42 +54,42 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 		return list;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		SpacecraftManager.instance.UnregisterSpacecraft(base.GetComponent<LaunchConditionManager>());
 		base.OnCleanUp();
 	}
 
-	public List<GameObject> parts = new List<GameObject>();
+		public List<GameObject> parts = new List<GameObject>();
 
-	[Serialize]
+		[Serialize]
 	private int takeOffLocation;
 
-	[Serialize]
+		[Serialize]
 	private float flightAnimOffset;
 
-	private GameObject soundSpeakerObject;
+		private GameObject soundSpeakerObject;
 
-	public class StatesInstance : GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.GameInstance
+		public class StatesInstance : GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.GameInstance
 	{
-		public StatesInstance(LaunchableRocket master) : base(master)
+				public StatesInstance(LaunchableRocket master) : base(master)
 		{
 		}
 
-		public bool IsMissionState(Spacecraft.MissionState state)
+				public bool IsMissionState(Spacecraft.MissionState state)
 		{
 			return SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(base.master.GetComponent<LaunchConditionManager>()).state == state;
 		}
 
-		public void SetMissionState(Spacecraft.MissionState state)
+				public void SetMissionState(Spacecraft.MissionState state)
 		{
 			SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(base.master.GetComponent<LaunchConditionManager>()).SetState(state);
 		}
 	}
 
-	public class States : GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket>
+		public class States : GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.grounded;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -319,7 +319,7 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 			}, UpdateRate.SIM_33ms, false);
 		}
 
-		private static void DoWorldDamage(GameObject part, Vector3 apparentPosition)
+				private static void DoWorldDamage(GameObject part, Vector3 apparentPosition)
 		{
 			OccupyArea component = part.GetComponent<OccupyArea>();
 			component.UpdateOccupiedArea();
@@ -353,21 +353,21 @@ public class LaunchableRocket : StateMachineComponent<LaunchableRocket.StatesIns
 			}
 		}
 
-		public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State grounded;
+				public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State grounded;
 
-		public LaunchableRocket.States.NotGroundedStates not_grounded;
+				public LaunchableRocket.States.NotGroundedStates not_grounded;
 
-		public class NotGroundedStates : GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State
+				public class NotGroundedStates : GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State
 		{
-			public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State launch_pre;
+						public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State launch_pre;
 
-			public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State space;
+						public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State space;
 
-			public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State launch_loop;
+						public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State launch_loop;
 
-			public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State returning;
+						public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State returning;
 
-			public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State landing_loop;
+						public GameStateMachine<LaunchableRocket.States, LaunchableRocket.StatesInstance, LaunchableRocket, object>.State landing_loop;
 		}
 	}
 }

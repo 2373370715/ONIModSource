@@ -5,7 +5,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.ParamTransition<Comet>(this.meteorTarget, this.launch, (MissileProjectile.StatesInstance smi, Comet comet) => comet != null);
@@ -33,30 +33,30 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 		});
 	}
 
-	public GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.State launch;
+		public GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.State launch;
 
-	public GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.State explode;
+		public GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.State explode;
 
-	public StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.BoolParameter triggerexplode = new StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.BoolParameter(false);
+		public StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.BoolParameter triggerexplode = new StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.BoolParameter(false);
 
-	public StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.ObjectParameter<Comet> meteorTarget = new StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.ObjectParameter<Comet>();
+		public StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.ObjectParameter<Comet> meteorTarget = new StateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.ObjectParameter<Comet>();
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public float MeteorDebrisMassModifier = 0.25f;
+				public float MeteorDebrisMassModifier = 0.25f;
 
-		public float ExplosionRange = 2f;
+				public float ExplosionRange = 2f;
 
-		public float debrisSpeed = 6f;
+				public float debrisSpeed = 6f;
 
-		public float debrisMaxAngle = 40f;
+				public float debrisMaxAngle = 40f;
 
-		public string explosionEffectAnim = "missile_explosion_kanim";
+				public string explosionEffectAnim = "missile_explosion_kanim";
 	}
 
-	public class StatesInstance : GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<MissileProjectile, MissileProjectile.StatesInstance, IStateMachineTarget, MissileProjectile.Def>.GameInstance
 	{
-				private Vector3 Position
+						private Vector3 Position
 		{
 			get
 			{
@@ -64,12 +64,12 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			}
 		}
 
-		public StatesInstance(IStateMachineTarget master, MissileProjectile.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, MissileProjectile.Def def) : base(master, def)
 		{
 			this.animController = base.GetComponent<KBatchedAnimController>();
 		}
 
-		public void StartTakeoff()
+				public void StartTakeoff()
 		{
 			if (GameComps.Fallers.Has(base.gameObject))
 			{
@@ -77,7 +77,7 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			}
 		}
 
-		public void UpdateLaunch(float dt)
+				public void UpdateLaunch(float dt)
 		{
 			int myWorldId = base.gameObject.GetMyWorldId();
 			Comet comet = base.sm.meteorTarget.Get(base.smi);
@@ -119,7 +119,7 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			}
 		}
 
-		public void PrepareLaunch(Comet meteor_target, float speed, Vector3 launchPos, float launchAngle)
+				public void PrepareLaunch(Comet meteor_target, float speed, Vector3 launchPos, float launchAngle)
 		{
 			base.gameObject.transform.SetParent(null);
 			base.gameObject.layer = LayerMask.NameToLayer("Default");
@@ -133,7 +133,7 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			this.launchSpeed = speed;
 		}
 
-		public void TriggerExplosion()
+				public void TriggerExplosion()
 		{
 			if (!base.smi.sm.meteorTarget.IsNullOrDestroyed())
 			{
@@ -143,7 +143,7 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			this.Explode();
 		}
 
-		private void SpawnMeteorResources(Comet meteor)
+				private void SpawnMeteorResources(Comet meteor)
 		{
 			PrimaryElement meteorPE = meteor.GetComponent<PrimaryElement>();
 			Element element = meteorPE.Element;
@@ -250,7 +250,7 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			}
 		}
 
-		private void Explode()
+				private void Explode()
 		{
 			if (GameComps.Fallers.Has(base.gameObject))
 			{
@@ -263,12 +263,12 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			this.animController.SetSymbolVisiblity("missile_head", false);
 		}
 
-		private bool InExplosionRange(Vector3 target_pos, Vector3 current_pos)
+				private bool InExplosionRange(Vector3 target_pos, Vector3 current_pos)
 		{
 			return Vector2.Distance(target_pos, current_pos) <= base.def.ExplosionRange;
 		}
 
-		private void SpawnExplosionFX(string anim, Vector3 pos, Vector3 offset)
+				private void SpawnExplosionFX(string anim, Vector3 pos, Vector3 offset)
 		{
 			KBatchedAnimController kbatchedAnimController = FXHelpers.CreateEffect(anim, pos, base.gameObject.transform, false, Grid.SceneLayer.FXFront2, false);
 			kbatchedAnimController.Offset = offset;
@@ -279,10 +279,10 @@ public class MissileProjectile : GameStateMachine<MissileProjectile, MissileProj
 			};
 		}
 
-		public KBatchedAnimController animController;
+				public KBatchedAnimController animController;
 
-		private float launchSpeed;
+				private float launchSpeed;
 
-		public GameObject smokeTrailFX;
+				public GameObject smokeTrailFX;
 	}
 }

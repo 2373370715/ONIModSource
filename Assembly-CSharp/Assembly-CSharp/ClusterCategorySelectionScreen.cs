@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ClusterCategorySelectionScreen : NewGameFlowScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.closeButton.onClick += base.NavigateBackward;
@@ -62,34 +62,34 @@ public class ClusterCategorySelectionScreen : NewGameFlowScreen
 		this.eventStyle.kanim.Play("lab_asteroid_standard", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	private void OnClickOption(ClusterLayout.ClusterCategory clusterCategory)
+		private void OnClickOption(ClusterLayout.ClusterCategory clusterCategory)
 	{
 		this.Deactivate();
 		DestinationSelectPanel.ChosenClusterCategorySetting = (int)clusterCategory;
 		base.NavigateForward();
 	}
 
-	public ClusterCategorySelectionScreen.ButtonConfig vanillaStyle;
+		public ClusterCategorySelectionScreen.ButtonConfig vanillaStyle;
 
-	public ClusterCategorySelectionScreen.ButtonConfig classicStyle;
+		public ClusterCategorySelectionScreen.ButtonConfig classicStyle;
 
-	public ClusterCategorySelectionScreen.ButtonConfig spacedOutStyle;
+		public ClusterCategorySelectionScreen.ButtonConfig spacedOutStyle;
 
-	public ClusterCategorySelectionScreen.ButtonConfig eventStyle;
+		public ClusterCategorySelectionScreen.ButtonConfig eventStyle;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText descriptionArea;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform panel;
 
-	[Serializable]
+		[Serializable]
 	public class ButtonConfig
 	{
-		public void Init(LocText descriptionArea, string hoverDescriptionText, string headerText)
+				public void Init(LocText descriptionArea, string hoverDescriptionText, string headerText)
 		{
 			this.descriptionArea = descriptionArea;
 			this.hoverDescriptionText = hoverDescriptionText;
@@ -103,7 +103,7 @@ public class ClusterCategorySelectionScreen : NewGameFlowScreen
 			this.selectionFrame = component.GetReference<RectTransform>("SelectionFrame").GetComponent<Image>();
 		}
 
-		private void OnHoverEnter()
+				private void OnHoverEnter()
 		{
 			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Mouseover", false));
 			this.selectionFrame.SetAlpha(1f);
@@ -111,7 +111,7 @@ public class ClusterCategorySelectionScreen : NewGameFlowScreen
 			this.descriptionArea.text = this.hoverDescriptionText;
 		}
 
-		private void OnHoverExit()
+				private void OnHoverExit()
 		{
 			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Mouseover", false));
 			this.selectionFrame.SetAlpha(0f);
@@ -119,18 +119,18 @@ public class ClusterCategorySelectionScreen : NewGameFlowScreen
 			this.descriptionArea.text = UI.FRONTEND.CLUSTERCATEGORYSELECTSCREEN.BLANK_DESC;
 		}
 
-		public MultiToggle button;
+				public MultiToggle button;
 
-		public Image headerImage;
+				public Image headerImage;
 
-		public LocText headerLabel;
+				public LocText headerLabel;
 
-		public Image selectionFrame;
+				public Image selectionFrame;
 
-		public KAnimControllerBase kanim;
+				public KAnimControllerBase kanim;
 
-		private string hoverDescriptionText;
+				private string hoverDescriptionText;
 
-		private LocText descriptionArea;
+				private LocText descriptionArea;
 	}
 }

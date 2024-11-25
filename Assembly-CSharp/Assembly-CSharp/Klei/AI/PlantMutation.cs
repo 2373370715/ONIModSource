@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class PlantMutation : Modifier
+		public class PlantMutation : Modifier
 	{
-				public List<string> AdditionalSoundEvents
+						public List<string> AdditionalSoundEvents
 		{
 			get
 			{
@@ -16,11 +16,11 @@ namespace Klei.AI
 			}
 		}
 
-		public PlantMutation(string id, string name, string desc) : base(id, name, desc)
+				public PlantMutation(string id, string name, string desc) : base(id, name, desc)
 		{
 		}
 
-		public void ApplyTo(MutantPlant target)
+				public void ApplyTo(MutantPlant target)
 		{
 			this.ApplyFunctionalTo(target);
 			if (!target.HasTag(GameTags.Seed) && !target.HasTag(GameTags.CropSeed) && !target.HasTag(GameTags.Compostable))
@@ -29,7 +29,7 @@ namespace Klei.AI
 			}
 		}
 
-		private void ApplyFunctionalTo(MutantPlant target)
+				private void ApplyFunctionalTo(MutantPlant target)
 		{
 			SeedProducer component = target.GetComponent<SeedProducer>();
 			if (component != null && component.seedInfo.productionType == SeedProducer.ProductionType.Harvest)
@@ -78,7 +78,7 @@ namespace Klei.AI
 			this.AddTo(attributes);
 		}
 
-		private void ApplyVisualTo(MutantPlant target)
+				private void ApplyVisualTo(MutantPlant target)
 		{
 			KBatchedAnimController component = target.GetComponent<KBatchedAnimController>();
 			if (this.symbolOverrideInfo != null && this.symbolOverrideInfo.Count > 0)
@@ -127,7 +127,7 @@ namespace Klei.AI
 			}
 		}
 
-		private static void CreateFXObject(MutantPlant target, string anim, string nameSuffix, float offset)
+				private static void CreateFXObject(MutantPlant target, string anim, string nameSuffix, float offset)
 		{
 			GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(Assets.GetPrefab(SimpleFXConfig.ID));
 			gameObject.name = target.name + nameSuffix;
@@ -156,17 +156,17 @@ namespace Klei.AI
 			gameObject.SetActive(true);
 		}
 
-		private void OnHarvestBonusCrop(object data)
+				private void OnHarvestBonusCrop(object data)
 		{
 			((Crop)data).SpawnSomeFruit(this.bonusCropID, this.bonusCropAmount);
 		}
 
-		private void OnCropSpawnedAddDisease(object data)
+				private void OnCropSpawnedAddDisease(object data)
 		{
 			((GameObject)data).GetComponent<PrimaryElement>().AddDisease(this.harvestDiseaseID, this.harvestDiseaseAmount, this.Name);
 		}
 
-		public string GetTooltip()
+				public string GetTooltip()
 		{
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.Append(this.desc);
@@ -244,7 +244,7 @@ namespace Klei.AI
 			return stringBuilder.ToString();
 		}
 
-		public void GetDescriptors(ref List<Descriptor> descriptors, GameObject go)
+				public void GetDescriptors(ref List<Descriptor> descriptors, GameObject go)
 		{
 			if (this.harvestDiseaseID != 255)
 			{
@@ -256,39 +256,39 @@ namespace Klei.AI
 			}
 		}
 
-		public PlantMutation Original()
+				public PlantMutation Original()
 		{
 			this.originalMutation = true;
 			return this;
 		}
 
-		public PlantMutation RequiredPrefabID(string requiredID)
+				public PlantMutation RequiredPrefabID(string requiredID)
 		{
 			this.requiredPrefabIDs.Add(requiredID);
 			return this;
 		}
 
-		public PlantMutation RestrictPrefabID(string restrictedID)
+				public PlantMutation RestrictPrefabID(string restrictedID)
 		{
 			this.restrictedPrefabIDs.Add(restrictedID);
 			return this;
 		}
 
-		public PlantMutation AttributeModifier(Attribute attribute, float amount, bool multiplier = false)
+				public PlantMutation AttributeModifier(Attribute attribute, float amount, bool multiplier = false)
 		{
 			DebugUtil.Assert(!this.forcePrefersDarkness || attribute != Db.Get().PlantAttributes.MinLightLux, "A plant mutation has both darkness and light defined!", this.Id);
 			base.Add(new AttributeModifier(attribute.Id, amount, this.Name, multiplier, false, true));
 			return this;
 		}
 
-		public PlantMutation BonusCrop(Tag cropPrefabID, float bonucCropAmount)
+				public PlantMutation BonusCrop(Tag cropPrefabID, float bonucCropAmount)
 		{
 			this.bonusCropID = cropPrefabID;
 			this.bonusCropAmount = bonucCropAmount;
 			return this;
 		}
 
-		public PlantMutation DiseaseDropper(byte diseaseID, int onGrowAmount, int continuousAmount)
+				public PlantMutation DiseaseDropper(byte diseaseID, int onGrowAmount, int continuousAmount)
 		{
 			this.droppedDiseaseID = diseaseID;
 			this.droppedDiseaseOnGrowAmount = onGrowAmount;
@@ -296,34 +296,34 @@ namespace Klei.AI
 			return this;
 		}
 
-		public PlantMutation AddDiseaseToHarvest(byte diseaseID, int amount)
+				public PlantMutation AddDiseaseToHarvest(byte diseaseID, int amount)
 		{
 			this.harvestDiseaseID = diseaseID;
 			this.harvestDiseaseAmount = amount;
 			return this;
 		}
 
-		public PlantMutation ForcePrefersDarkness()
+				public PlantMutation ForcePrefersDarkness()
 		{
 			DebugUtil.Assert(this.SelfModifiers.Find((AttributeModifier m) => m.AttributeId == Db.Get().PlantAttributes.MinLightLux.Id) == null, "A plant mutation has both darkness and light defined!", this.Id);
 			this.forcePrefersDarkness = true;
 			return this;
 		}
 
-		public PlantMutation ForceSelfHarvestOnGrown()
+				public PlantMutation ForceSelfHarvestOnGrown()
 		{
 			this.forceSelfHarvestOnGrown = true;
 			this.AttributeModifier(Db.Get().Amounts.OldAge.maxAttribute, -0.999999f, true);
 			return this;
 		}
 
-		public PlantMutation EnsureIrrigated(PlantElementAbsorber.ConsumeInfo consumeInfo)
+				public PlantMutation EnsureIrrigated(PlantElementAbsorber.ConsumeInfo consumeInfo)
 		{
 			this.ensureIrrigationInfo = consumeInfo;
 			return this;
 		}
 
-		public PlantMutation VisualTint(float r, float g, float b)
+				public PlantMutation VisualTint(float r, float g, float b)
 		{
 			global::Debug.Assert(Mathf.Sign(r) == Mathf.Sign(g) && Mathf.Sign(r) == Mathf.Sign(b), "Vales for tints must be all positive or all negative for the shader to work correctly!");
 			if (r < 0f)
@@ -337,7 +337,7 @@ namespace Klei.AI
 			return this;
 		}
 
-		public PlantMutation VisualSymbolTint(string targetSymbolName, float r, float g, float b)
+				public PlantMutation VisualSymbolTint(string targetSymbolName, float r, float g, float b)
 		{
 			global::Debug.Assert(Mathf.Sign(r) == Mathf.Sign(g) && Mathf.Sign(r) == Mathf.Sign(b), "Vales for tints must be all positive or all negative for the shader to work correctly!");
 			this.symbolTintTargets.Add(targetSymbolName);
@@ -345,7 +345,7 @@ namespace Klei.AI
 			return this;
 		}
 
-		public PlantMutation VisualSymbolOverride(string targetSymbolName, string sourceAnim, string sourceSymbol)
+				public PlantMutation VisualSymbolOverride(string targetSymbolName, string sourceAnim, string sourceSymbol)
 		{
 			if (this.symbolOverrideInfo == null)
 			{
@@ -360,86 +360,86 @@ namespace Klei.AI
 			return this;
 		}
 
-		public PlantMutation VisualSymbolScale(string targetSymbolName, float scale)
+				public PlantMutation VisualSymbolScale(string targetSymbolName, float scale)
 		{
 			this.symbolScaleTargets.Add(targetSymbolName);
 			this.symbolScales.Add(scale);
 			return this;
 		}
 
-		public PlantMutation VisualBGFX(string animName)
+				public PlantMutation VisualBGFX(string animName)
 		{
 			this.bGFXAnim = animName;
 			return this;
 		}
 
-		public PlantMutation VisualFGFX(string animName)
+				public PlantMutation VisualFGFX(string animName)
 		{
 			this.fGFXAnim = animName;
 			return this;
 		}
 
-		public PlantMutation AddSoundEvent(string soundEventName)
+				public PlantMutation AddSoundEvent(string soundEventName)
 		{
 			this.additionalSoundEvents.Add(soundEventName);
 			return this;
 		}
 
-		public string desc;
+				public string desc;
 
-		public string animationSoundEvent;
+				public string animationSoundEvent;
 
-		public bool originalMutation;
+				public bool originalMutation;
 
-		public List<string> requiredPrefabIDs = new List<string>();
+				public List<string> requiredPrefabIDs = new List<string>();
 
-		public List<string> restrictedPrefabIDs = new List<string>();
+				public List<string> restrictedPrefabIDs = new List<string>();
 
-		private Tag bonusCropID;
+				private Tag bonusCropID;
 
-		private float bonusCropAmount;
+				private float bonusCropAmount;
 
-		private byte droppedDiseaseID = byte.MaxValue;
+				private byte droppedDiseaseID = byte.MaxValue;
 
-		private int droppedDiseaseOnGrowAmount;
+				private int droppedDiseaseOnGrowAmount;
 
-		private int droppedDiseaseContinuousAmount;
+				private int droppedDiseaseContinuousAmount;
 
-		private byte harvestDiseaseID = byte.MaxValue;
+				private byte harvestDiseaseID = byte.MaxValue;
 
-		private int harvestDiseaseAmount;
+				private int harvestDiseaseAmount;
 
-		private bool forcePrefersDarkness;
+				private bool forcePrefersDarkness;
 
-		private bool forceSelfHarvestOnGrown;
+				private bool forceSelfHarvestOnGrown;
 
-		private PlantElementAbsorber.ConsumeInfo ensureIrrigationInfo;
+				private PlantElementAbsorber.ConsumeInfo ensureIrrigationInfo;
 
-		private Color plantTint = Color.white;
+				private Color plantTint = Color.white;
 
-		private List<string> symbolTintTargets = new List<string>();
+				private List<string> symbolTintTargets = new List<string>();
 
-		private List<Color> symbolTints = new List<Color>();
+				private List<Color> symbolTints = new List<Color>();
 
-		private List<PlantMutation.SymbolOverrideInfo> symbolOverrideInfo;
+				private List<PlantMutation.SymbolOverrideInfo> symbolOverrideInfo;
 
-		private List<string> symbolScaleTargets = new List<string>();
+				private List<string> symbolScaleTargets = new List<string>();
 
-		private List<float> symbolScales = new List<float>();
+				private List<float> symbolScales = new List<float>();
 
-		private string bGFXAnim;
+				private string bGFXAnim;
 
-		private string fGFXAnim;
+				private string fGFXAnim;
 
-		private List<string> additionalSoundEvents = new List<string>();
+				private List<string> additionalSoundEvents = new List<string>();
 
-		private class SymbolOverrideInfo
+				private class SymbolOverrideInfo
 		{
-			public string targetSymbolName;
+						public string targetSymbolName;
 
-			public string sourceAnim;
+						public string sourceAnim;
 
-			public string sourceSymbol;
+						public string sourceSymbol;
 		}
 	}
 }

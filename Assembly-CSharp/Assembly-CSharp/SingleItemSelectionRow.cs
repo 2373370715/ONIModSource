@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class SingleItemSelectionRow : KMonoBehaviour
 {
-		public virtual string InvalidTagTitle
+			public virtual string InvalidTagTitle
 	{
 		get
 		{
@@ -13,11 +13,11 @@ public class SingleItemSelectionRow : KMonoBehaviour
 		}
 	}
 
-			public Tag InvalidTag { get; protected set; } = GameTags.Void;
+				public Tag InvalidTag { get; protected set; } = GameTags.Void;
 
-			public new Tag tag { get; protected set; }
+				public new Tag tag { get; protected set; }
 
-		public bool IsVisible
+			public bool IsVisible
 	{
 		get
 		{
@@ -25,15 +25,15 @@ public class SingleItemSelectionRow : KMonoBehaviour
 		}
 	}
 
-			public bool IsSelected { get; protected set; }
+				public bool IsSelected { get; protected set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.regularColor = this.outline.color;
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.button != null)
@@ -56,12 +56,12 @@ public class SingleItemSelectionRow : KMonoBehaviour
 		}
 	}
 
-	public virtual void SetVisibleState(bool isVisible)
+		public virtual void SetVisibleState(bool isVisible)
 	{
 		base.gameObject.SetActive(isVisible);
 	}
 
-	protected virtual void OnItemClicked()
+		protected virtual void OnItemClicked()
 	{
 		Action<SingleItemSelectionRow> clicked = this.Clicked;
 		if (clicked == null)
@@ -71,7 +71,7 @@ public class SingleItemSelectionRow : KMonoBehaviour
 		clicked(this);
 	}
 
-	public virtual void SetTag(Tag tag)
+		public virtual void SetTag(Tag tag)
 	{
 		this.tag = tag;
 		this.SetText((tag == this.InvalidTag) ? this.InvalidTagTitle : tag.ProperName());
@@ -84,50 +84,50 @@ public class SingleItemSelectionRow : KMonoBehaviour
 		this.SetIcon(null, Color.white);
 	}
 
-	protected virtual void SetText(string assignmentStr)
+		protected virtual void SetText(string assignmentStr)
 	{
 		this.labelText.text = ((!string.IsNullOrEmpty(assignmentStr)) ? assignmentStr : "-");
 	}
 
-	public virtual void SetSelected(bool selected)
+		public virtual void SetSelected(bool selected)
 	{
 		this.IsSelected = selected;
 		this.outline.color = (selected ? this.outlineHighLightColor : this.outlineDefaultColor);
 		this.BG.color = (selected ? this.BGHighLightColor : Color.white);
 	}
 
-	protected virtual void SetIcon(Sprite sprite, Color color)
+		protected virtual void SetIcon(Sprite sprite, Color color)
 	{
 		this.icon.sprite = sprite;
 		this.icon.color = color;
 		this.icon.gameObject.SetActive(sprite != null);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	protected Image icon;
 
-	[SerializeField]
+		[SerializeField]
 	protected LocText labelText;
 
-	[SerializeField]
+		[SerializeField]
 	protected Image BG;
 
-	[SerializeField]
+		[SerializeField]
 	protected Image outline;
 
-	[SerializeField]
+		[SerializeField]
 	protected Color outlineHighLightColor = new Color32(168, 74, 121, byte.MaxValue);
 
-	[SerializeField]
+		[SerializeField]
 	protected Color BGHighLightColor = new Color32(168, 74, 121, 80);
 
-	[SerializeField]
+		[SerializeField]
 	protected Color outlineDefaultColor = new Color32(204, 204, 204, byte.MaxValue);
 
-	protected Color regularColor = Color.white;
+		protected Color regularColor = Color.white;
 
-	[SerializeField]
+		[SerializeField]
 	public KButton button;
 
-	public Action<SingleItemSelectionRow> Clicked;
+		public Action<SingleItemSelectionRow> Clicked;
 }

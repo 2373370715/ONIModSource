@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class GeneShufflerRechargeConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		return EntityTemplates.CreateLooseEntity("GeneShufflerRecharge", ITEMS.INDUSTRIAL_PRODUCTS.GENE_SHUFFLER_RECHARGE.NAME, ITEMS.INDUSTRIAL_PRODUCTS.GENE_SHUFFLER_RECHARGE.DESC, 5f, true, Assets.GetAnim("vacillator_charge_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.6f, true, 0, SimHashes.Creature, new List<Tag>
 		{
@@ -18,17 +18,17 @@ public class GeneShufflerRechargeConfig : IEntityConfig
 		});
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "GeneShufflerRecharge";
+		public const string ID = "GeneShufflerRecharge";
 
-	public static readonly Tag tag = TagManager.Create("GeneShufflerRecharge");
+		public static readonly Tag tag = TagManager.Create("GeneShufflerRecharge");
 
-	public const float MASS = 5f;
+		public const float MASS = 5f;
 }

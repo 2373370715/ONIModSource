@@ -3,15 +3,15 @@ using STRINGS;
 
 namespace Database
 {
-	public class EquipNDupes : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class EquipNDupes : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public EquipNDupes(AssignableSlot equipmentSlot, int numToEquip)
+				public EquipNDupes(AssignableSlot equipmentSlot, int numToEquip)
 		{
 			this.equipmentSlot = equipmentSlot;
 			this.numToEquip = numToEquip;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			int num = 0;
 			foreach (MinionIdentity minionIdentity in Components.MinionIdentities.Items)
@@ -25,14 +25,14 @@ namespace Database
 			return num >= this.numToEquip;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			string id = reader.ReadKleiString();
 			this.equipmentSlot = Db.Get().AssignableSlots.Get(id);
 			this.numToEquip = reader.ReadInt32();
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			int num = 0;
 			foreach (MinionIdentity minionIdentity in Components.MinionIdentities.Items)
@@ -46,8 +46,8 @@ namespace Database
 			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CLOTHE_DUPES, complete ? this.numToEquip : num, this.numToEquip);
 		}
 
-		private AssignableSlot equipmentSlot;
+				private AssignableSlot equipmentSlot;
 
-		private int numToEquip;
+				private int numToEquip;
 	}
 }

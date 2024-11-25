@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ShadowImage : ShadowRect
 {
-	protected override void MatchRect()
+		protected override void MatchRect()
 	{
 		base.MatchRect();
 		if (this.RectMain == null || this.RectShadow == null)
@@ -46,7 +46,7 @@ public class ShadowImage : ShadowRect
 		}
 	}
 
-	private Image shadowImage;
+		private Image shadowImage;
 
-	private Image mainImage;
+		private Image mainImage;
 }

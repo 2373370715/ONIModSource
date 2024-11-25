@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GameplayEventMonitor : GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.InitializeStates(out default_state);
 		default_state = this.idle;
@@ -28,17 +28,17 @@ public class GameplayEventMonitor : GameStateMachine<GameplayEventMonitor, Gamep
 		this.activeState.seenAllEvents.EventTransition(GameHashes.GameplayEventMonitorStart, this.activeState.unseenEvents, GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.Not(new StateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.Transition.ConditionCallback(this.SeenAll))).Enter(new StateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.State.Callback(this.UpdateEventDisplay));
 	}
 
-	private bool HasEvents(GameplayEventMonitor.Instance smi)
+		private bool HasEvents(GameplayEventMonitor.Instance smi)
 	{
 		return smi.events.Count > 0;
 	}
 
-	private bool SeenAll(GameplayEventMonitor.Instance smi)
+		private bool SeenAll(GameplayEventMonitor.Instance smi)
 	{
 		return smi.UnseenCount() == 0;
 	}
 
-	private void UpdateFX(GameplayEventMonitor.Instance smi)
+		private void UpdateFX(GameplayEventMonitor.Instance smi)
 	{
 		if (smi.fx != null)
 		{
@@ -46,7 +46,7 @@ public class GameplayEventMonitor : GameStateMachine<GameplayEventMonitor, Gamep
 		}
 	}
 
-	private GameplayEventFX.Instance CreateFX(GameplayEventMonitor.Instance smi)
+		private GameplayEventFX.Instance CreateFX(GameplayEventMonitor.Instance smi)
 	{
 		if (!smi.isMasterNull)
 		{
@@ -56,7 +56,7 @@ public class GameplayEventMonitor : GameStateMachine<GameplayEventMonitor, Gamep
 		return null;
 	}
 
-	public void UpdateEventDisplay(GameplayEventMonitor.Instance smi)
+		public void UpdateEventDisplay(GameplayEventMonitor.Instance smi)
 	{
 		if (smi.events.Count == 0 || smi.UnseenCount() > 0)
 		{
@@ -80,29 +80,29 @@ public class GameplayEventMonitor : GameStateMachine<GameplayEventMonitor, Gamep
 		}
 	}
 
-	public GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.State idle;
+		public GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.State idle;
 
-	public GameplayEventMonitor.ActiveState activeState;
+		public GameplayEventMonitor.ActiveState activeState;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public class ActiveState : GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.State
+		public class ActiveState : GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.State
 	{
-		public GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.State unseenEvents;
+				public GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.State unseenEvents;
 
-		public GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.State seenAllEvents;
+				public GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.State seenAllEvents;
 	}
 
-	public new class Instance : GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<GameplayEventMonitor, GameplayEventMonitor.Instance, IStateMachineTarget, GameplayEventMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, GameplayEventMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, GameplayEventMonitor.Def def) : base(master, def)
 		{
 			NameDisplayScreen.Instance.RegisterComponent(base.gameObject, this, false);
 		}
 
-		public void OnMonitorStart(object data)
+				public void OnMonitorStart(object data)
 		{
 			GameplayEventInstance gameplayEventInstance = data as GameplayEventInstance;
 			if (!this.events.Contains(gameplayEventInstance))
@@ -114,7 +114,7 @@ public class GameplayEventMonitor : GameStateMachine<GameplayEventMonitor, Gamep
 			base.smi.sm.UpdateEventDisplay(base.smi);
 		}
 
-		public void OnMonitorEnd(object data)
+				public void OnMonitorEnd(object data)
 		{
 			GameplayEventInstance gameplayEventInstance = data as GameplayEventInstance;
 			if (this.events.Contains(gameplayEventInstance))
@@ -130,7 +130,7 @@ public class GameplayEventMonitor : GameStateMachine<GameplayEventMonitor, Gamep
 			}
 		}
 
-		public void OnSelect(object data)
+				public void OnSelect(object data)
 		{
 			if (!(bool)data)
 			{
@@ -151,13 +151,13 @@ public class GameplayEventMonitor : GameStateMachine<GameplayEventMonitor, Gamep
 			}
 		}
 
-		public int UnseenCount()
+				public int UnseenCount()
 		{
 			return this.events.Count((GameplayEventInstance evt) => !evt.seenNotification);
 		}
 
-		public List<GameplayEventInstance> events = new List<GameplayEventInstance>();
+				public List<GameplayEventInstance> events = new List<GameplayEventInstance>();
 
-		public GameplayEventFX.Instance fx;
+				public GameplayEventFX.Instance fx;
 	}
 }

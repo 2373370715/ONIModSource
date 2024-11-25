@@ -3,18 +3,18 @@ using ImGuiNET;
 
 public abstract class DevTool
 {
-			public event System.Action OnInit;
+				public event System.Action OnInit;
 
-			public event System.Action OnUpdate;
+				public event System.Action OnUpdate;
 
-			public event System.Action OnUninit;
+				public event System.Action OnUninit;
 
-	public DevTool()
+		public DevTool()
 	{
 		this.Name = DevToolUtil.GenerateDevToolName(this);
 	}
 
-	public void DoImGui(DevPanel panel)
+		public void DoImGui(DevPanel panel)
 	{
 		if (this.RequiresGameRunning && Game.Instance == null)
 		{
@@ -24,14 +24,14 @@ public abstract class DevTool
 		this.RenderTo(panel);
 	}
 
-	public void ClosePanel()
+		public void ClosePanel()
 	{
 		this.isRequestingToClosePanel = true;
 	}
 
-	protected abstract void RenderTo(DevPanel panel);
+		protected abstract void RenderTo(DevPanel panel);
 
-	public void Internal_TryInit()
+		public void Internal_TryInit()
 	{
 		if (this.didInit)
 		{
@@ -44,7 +44,7 @@ public abstract class DevTool
 		}
 	}
 
-	public void Internal_Update()
+		public void Internal_Update()
 	{
 		if (this.OnUpdate != null)
 		{
@@ -52,7 +52,7 @@ public abstract class DevTool
 		}
 	}
 
-	public void Internal_Uninit()
+		public void Internal_Uninit()
 	{
 		if (this.OnUninit != null)
 		{
@@ -60,13 +60,13 @@ public abstract class DevTool
 		}
 	}
 
-	public string Name;
+		public string Name;
 
-	public bool RequiresGameRunning;
+		public bool RequiresGameRunning;
 
-	public bool isRequestingToClosePanel;
+		public bool isRequestingToClosePanel;
 
-	public ImGuiWindowFlags drawFlags;
+		public ImGuiWindowFlags drawFlags;
 
-	private bool didInit;
+		private bool didInit;
 }

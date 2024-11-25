@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LiquidValveConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidValve";
 		int width = 1;
@@ -30,7 +30,7 @@ public class LiquidValveConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -47,7 +47,7 @@ public class LiquidValveConfig : IBuildingConfig
 		go.AddOrGet<Workable>().workTime = 5f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<RequireInputs>());
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitConsumer>());
@@ -56,7 +56,7 @@ public class LiquidValveConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public const string ID = "LiquidValve";
+		public const string ID = "LiquidValve";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
 }

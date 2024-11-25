@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ConversationMonitor : GameStateMachine<ConversationMonitor, ConversationMonitor.Instance, IStateMachineTarget, ConversationMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.EventHandler(GameHashes.TopicDiscussed, delegate(ConversationMonitor.Instance smi, object obj)
@@ -17,22 +17,22 @@ public class ConversationMonitor : GameStateMachine<ConversationMonitor, Convers
 		});
 	}
 
-	private const int MAX_RECENT_TOPICS = 5;
+		private const int MAX_RECENT_TOPICS = 5;
 
-	private const int MAX_FAVOURITE_TOPICS = 5;
+		private const int MAX_FAVOURITE_TOPICS = 5;
 
-	private const float FAVOURITE_CHANCE = 0.033333335f;
+		private const float FAVOURITE_CHANCE = 0.033333335f;
 
-	private const float LEARN_CHANCE = 0.33333334f;
+		private const float LEARN_CHANCE = 0.33333334f;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	public new class Instance : GameStateMachine<ConversationMonitor, ConversationMonitor.Instance, IStateMachineTarget, ConversationMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, ConversationMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ConversationMonitor.Def def) : base(master, def)
 		{
 			this.recentTopics = new Queue<string>();
 			this.favouriteTopics = new List<string>
@@ -42,7 +42,7 @@ public class ConversationMonitor : GameStateMachine<ConversationMonitor, Convers
 			this.personalTopics = new List<string>();
 		}
 
-		public string GetATopic()
+				public string GetATopic()
 		{
 			int maxExclusive = this.recentTopics.Count + this.favouriteTopics.Count * 2 + this.personalTopics.Count;
 			int num = UnityEngine.Random.Range(0, maxExclusive);
@@ -68,7 +68,7 @@ public class ConversationMonitor : GameStateMachine<ConversationMonitor, Convers
 			return "";
 		}
 
-		public void OnTopicDiscovered(object data)
+				public void OnTopicDiscovered(object data)
 		{
 			string item = (string)data;
 			if (!this.recentTopics.Contains(item))
@@ -82,7 +82,7 @@ public class ConversationMonitor : GameStateMachine<ConversationMonitor, Convers
 			}
 		}
 
-		public void OnTopicDiscussed(object data)
+				public void OnTopicDiscussed(object data)
 		{
 			string data2 = (string)data;
 			if (UnityEngine.Random.value < 0.33333334f)
@@ -91,7 +91,7 @@ public class ConversationMonitor : GameStateMachine<ConversationMonitor, Convers
 			}
 		}
 
-		private void TryMakeFavouriteTopic(string topic)
+				private void TryMakeFavouriteTopic(string topic)
 		{
 			if (UnityEngine.Random.value < 0.033333335f)
 			{
@@ -104,15 +104,15 @@ public class ConversationMonitor : GameStateMachine<ConversationMonitor, Convers
 			}
 		}
 
-		[Serialize]
+				[Serialize]
 		private Queue<string> recentTopics;
 
-		[Serialize]
+				[Serialize]
 		private List<string> favouriteTopics;
 
-		private List<string> personalTopics;
+				private List<string> personalTopics;
 
-		private static readonly List<string> randomTopics = new List<string>
+				private static readonly List<string> randomTopics = new List<string>
 		{
 			"Headquarters"
 		};

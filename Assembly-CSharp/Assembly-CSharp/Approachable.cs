@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Approachable")]
 public class Approachable : KMonoBehaviour, IApproachable
 {
-	public CellOffset[] GetOffsets()
+		public CellOffset[] GetOffsets()
 	{
 		return OffsetGroups.Use;
 	}
 
-	public int GetCell()
+		public int GetCell()
 	{
 		return Grid.PosToCell(this);
 	}

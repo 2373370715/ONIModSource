@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SideDetailsScreen : KScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		SideDetailsScreen.Instance = this;
@@ -12,13 +12,13 @@ public class SideDetailsScreen : KScreen
 		base.gameObject.SetActive(false);
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		SideDetailsScreen.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	private void Initialize()
+		private void Initialize()
 	{
 		if (this.screens == null)
 		{
@@ -43,12 +43,12 @@ public class SideDetailsScreen : KScreen
 		};
 	}
 
-	public void SetTitle(string newTitle)
+		public void SetTitle(string newTitle)
 	{
 		this.title.text = newTitle;
 	}
 
-	public void SetScreen(string screenName, object content, float x)
+		public void SetScreen(string screenName, object content, float x)
 	{
 		if (!this.screenMap.ContainsKey(screenName))
 		{
@@ -77,23 +77,23 @@ public class SideDetailsScreen : KScreen
 		this.activeScreen.SetTarget(content);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private List<SideTargetScreen> screens;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText title;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton backButton;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform body;
 
-	private RectTransform rectTransform;
+		private RectTransform rectTransform;
 
-	private Dictionary<string, SideTargetScreen> screenMap;
+		private Dictionary<string, SideTargetScreen> screenMap;
 
-	private SideTargetScreen activeScreen;
+		private SideTargetScreen activeScreen;
 
-	public static SideDetailsScreen Instance;
+		public static SideDetailsScreen Instance;
 }

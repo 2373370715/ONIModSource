@@ -1,229 +1,192 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Klei;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/Workable/Shower")]
-public class Shower : Workable, IGameObjectEffectDescriptor
-{
-	private Shower()
-	{
-		base.SetReportType(ReportManager.ReportType.PersonalTime);
-	}
+public class Shower : Workable, IGameObjectEffectDescriptor {
+    public const            float WATER_PER_USE = 5f;
+    public static           string SHOWER_EFFECT = "Showered";
+    private static readonly string[] EffectsRemoved = { "SoakingWet", "WetFeet", "MinorIrritation", "MajorIrritation" };
+    public                  int absoluteDiseaseRemoval;
+    private                 SimUtil.DiseaseInfo accumulatedDisease;
+    public                  float fractionalDiseaseRemoval;
+    public                  SimHashes outputTargetElement;
+    private                 ShowerSM.Instance smi;
+    private Shower() { SetReportType(ReportManager.ReportType.PersonalTime); }
 
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.resetProgressOnStop = true;
-		this.smi = new Shower.ShowerSM.Instance(this);
-		this.smi.StartSM();
-	}
+    public override List<Descriptor> GetDescriptors(GameObject go) {
+        var descriptors = base.GetDescriptors(go);
+        if (EffectsRemoved.Length != 0) {
+            var item = default(Descriptor);
+            item.SetupDescriptor(UI.BUILDINGEFFECTS.REMOVESEFFECTSUBTITLE,
+                                 UI.BUILDINGEFFECTS.TOOLTIPS.REMOVESEFFECTSUBTITLE);
 
-	protected override void OnStartWork(Worker worker)
-	{
-		HygieneMonitor.Instance instance = worker.GetSMI<HygieneMonitor.Instance>();
-		base.WorkTimeRemaining = this.workTime * instance.GetDirtiness();
-		this.accumulatedDisease = SimUtil.DiseaseInfo.Invalid;
-		this.smi.SetActive(true);
-		base.OnStartWork(worker);
-	}
+            descriptors.Add(item);
+            for (var i = 0; i < EffectsRemoved.Length; i++) {
+                var    text  = EffectsRemoved[i];
+                string arg   = Strings.Get("STRINGS.DUPLICANTS.MODIFIERS." + text.ToUpper() + ".NAME");
+                string arg2  = Strings.Get("STRINGS.DUPLICANTS.MODIFIERS." + text.ToUpper() + ".CAUSE");
+                var    item2 = default(Descriptor);
+                item2.IncreaseIndent();
+                item2.SetupDescriptor("• " + string.Format(UI.BUILDINGEFFECTS.REMOVEDEFFECT, arg),
+                                      string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.REMOVEDEFFECT, arg2));
 
-	protected override void OnStopWork(Worker worker)
-	{
-		this.smi.SetActive(false);
-	}
+                descriptors.Add(item2);
+            }
+        }
 
-	protected override void OnCompleteWork(Worker worker)
-	{
-		base.OnCompleteWork(worker);
-		Effects component = worker.GetComponent<Effects>();
-		for (int i = 0; i < Shower.EffectsRemoved.Length; i++)
-		{
-			string effect_id = Shower.EffectsRemoved[i];
-			component.Remove(effect_id);
-		}
-		if (!worker.HasTag(GameTags.HasSuitTank))
-		{
-			GasLiquidExposureMonitor.Instance instance = worker.GetSMI<GasLiquidExposureMonitor.Instance>();
-			if (instance != null)
-			{
-				instance.ResetExposure();
-			}
-		}
-		component.Add(Shower.SHOWER_EFFECT, true);
-		HygieneMonitor.Instance instance2 = worker.GetSMI<HygieneMonitor.Instance>();
-		if (instance2 != null)
-		{
-			instance2.SetDirtiness(0f);
-		}
-	}
+        Effect.AddModifierDescriptions(gameObject, descriptors, SHOWER_EFFECT, true);
+        return descriptors;
+    }
 
-	protected override bool OnWorkTick(Worker worker, float dt)
-	{
-		PrimaryElement component = worker.GetComponent<PrimaryElement>();
-		if (component.DiseaseCount > 0)
-		{
-			SimUtil.DiseaseInfo diseaseInfo = new SimUtil.DiseaseInfo
-			{
-				idx = component.DiseaseIdx,
-				count = Mathf.CeilToInt((float)component.DiseaseCount * (1f - Mathf.Pow(this.fractionalDiseaseRemoval, dt)) - (float)this.absoluteDiseaseRemoval)
-			};
-			component.ModifyDiseaseCount(-diseaseInfo.count, "Shower.RemoveDisease");
-			this.accumulatedDisease = SimUtil.CalculateFinalDiseaseInfo(this.accumulatedDisease, diseaseInfo);
-			PrimaryElement primaryElement = base.GetComponent<Storage>().FindPrimaryElement(this.outputTargetElement);
-			if (primaryElement != null)
-			{
-				primaryElement.GetComponent<PrimaryElement>().AddDisease(this.accumulatedDisease.idx, this.accumulatedDisease.count, "Shower.RemoveDisease");
-				this.accumulatedDisease = SimUtil.DiseaseInfo.Invalid;
-			}
-		}
-		return false;
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        resetProgressOnStop = true;
+        smi                 = new ShowerSM.Instance(this);
+        smi.StartSM();
+    }
 
-	protected override void OnAbortWork(Worker worker)
-	{
-		base.OnAbortWork(worker);
-		HygieneMonitor.Instance instance = worker.GetSMI<HygieneMonitor.Instance>();
-		if (instance != null)
-		{
-			instance.SetDirtiness(1f - this.GetPercentComplete());
-		}
-	}
+    protected override void OnStartWork(WorkerBase worker) {
+        var instance = worker.GetSMI<HygieneMonitor.Instance>();
+        WorkTimeRemaining  = workTime * instance.GetDirtiness();
+        accumulatedDisease = SimUtil.DiseaseInfo.Invalid;
+        smi.SetActive(true);
+        base.OnStartWork(worker);
+    }
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
-	{
-		List<Descriptor> descriptors = base.GetDescriptors(go);
-		if (Shower.EffectsRemoved.Length != 0)
-		{
-			Descriptor item = default(Descriptor);
-			item.SetupDescriptor(UI.BUILDINGEFFECTS.REMOVESEFFECTSUBTITLE, UI.BUILDINGEFFECTS.TOOLTIPS.REMOVESEFFECTSUBTITLE, Descriptor.DescriptorType.Effect);
-			descriptors.Add(item);
-			for (int i = 0; i < Shower.EffectsRemoved.Length; i++)
-			{
-				string text = Shower.EffectsRemoved[i];
-				string arg = Strings.Get("STRINGS.DUPLICANTS.MODIFIERS." + text.ToUpper() + ".NAME");
-				string arg2 = Strings.Get("STRINGS.DUPLICANTS.MODIFIERS." + text.ToUpper() + ".CAUSE");
-				Descriptor item2 = default(Descriptor);
-				item2.IncreaseIndent();
-				item2.SetupDescriptor("• " + string.Format(UI.BUILDINGEFFECTS.REMOVEDEFFECT, arg), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.REMOVEDEFFECT, arg2), Descriptor.DescriptorType.Effect);
-				descriptors.Add(item2);
-			}
-		}
-		Effect.AddModifierDescriptions(base.gameObject, descriptors, Shower.SHOWER_EFFECT, true);
-		return descriptors;
-	}
+    protected override void OnStopWork(WorkerBase worker) { smi.SetActive(false); }
 
-	private Shower.ShowerSM.Instance smi;
+    protected override void OnCompleteWork(WorkerBase worker) {
+        base.OnCompleteWork(worker);
+        var component = worker.GetComponent<Effects>();
+        for (var i = 0; i < EffectsRemoved.Length; i++) {
+            var effect_id = EffectsRemoved[i];
+            component.Remove(effect_id);
+        }
 
-	public static string SHOWER_EFFECT = "Showered";
+        if (!worker.HasTag(GameTags.HasSuitTank)) {
+            var instance = worker.GetSMI<GasLiquidExposureMonitor.Instance>();
+            if (instance != null) instance.ResetExposure();
+        }
 
-	public SimHashes outputTargetElement;
+        component.Add(SHOWER_EFFECT, true);
+        var instance2 = worker.GetSMI<HygieneMonitor.Instance>();
+        if (instance2 != null) instance2.SetDirtiness(0f);
+    }
 
-	public float fractionalDiseaseRemoval;
+    protected override bool OnWorkTick(WorkerBase worker, float dt) {
+        var component = worker.GetComponent<PrimaryElement>();
+        if (component.DiseaseCount > 0) {
+            var diseaseInfo = new SimUtil.DiseaseInfo {
+                idx = component.DiseaseIdx,
+                count = Mathf.CeilToInt(component.DiseaseCount * (1f - Mathf.Pow(fractionalDiseaseRemoval, dt)) -
+                                        absoluteDiseaseRemoval)
+            };
 
-	public int absoluteDiseaseRemoval;
+            component.ModifyDiseaseCount(-diseaseInfo.count, "Shower.RemoveDisease");
+            accumulatedDisease = SimUtil.CalculateFinalDiseaseInfo(accumulatedDisease, diseaseInfo);
+            var primaryElement = GetComponent<Storage>().FindPrimaryElement(outputTargetElement);
+            if (primaryElement != null) {
+                primaryElement.GetComponent<PrimaryElement>()
+                              .AddDisease(accumulatedDisease.idx, accumulatedDisease.count, "Shower.RemoveDisease");
 
-	private SimUtil.DiseaseInfo accumulatedDisease;
+                accumulatedDisease = SimUtil.DiseaseInfo.Invalid;
+            }
+        }
 
-	public const float WATER_PER_USE = 5f;
+        return false;
+    }
 
-	private static readonly string[] EffectsRemoved = new string[]
-	{
-		"SoakingWet",
-		"WetFeet",
-		"MinorIrritation",
-		"MajorIrritation"
-	};
+    protected override void OnAbortWork(WorkerBase worker) {
+        base.OnAbortWork(worker);
+        var instance = worker.GetSMI<HygieneMonitor.Instance>();
+        if (instance != null) instance.SetDirtiness(1f - GetPercentComplete());
+    }
 
-	public class ShowerSM : GameStateMachine<Shower.ShowerSM, Shower.ShowerSM.Instance, Shower>
-	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
-		{
-			default_state = this.unoperational;
-			this.root.Update(new Action<Shower.ShowerSM.Instance, float>(this.UpdateStatusItems), UpdateRate.SIM_200ms, false);
-			this.unoperational.EventTransition(GameHashes.OperationalChanged, this.operational, (Shower.ShowerSM.Instance smi) => smi.IsOperational).PlayAnim("off");
-			this.operational.DefaultState(this.operational.not_ready).EventTransition(GameHashes.OperationalChanged, this.unoperational, (Shower.ShowerSM.Instance smi) => !smi.IsOperational);
-			this.operational.not_ready.EventTransition(GameHashes.OnStorageChange, this.operational.ready, (Shower.ShowerSM.Instance smi) => smi.IsReady()).PlayAnim("off");
-			this.operational.ready.ToggleChore(new Func<Shower.ShowerSM.Instance, Chore>(this.CreateShowerChore), this.operational.not_ready);
-		}
+    public class ShowerSM : GameStateMachine<ShowerSM, ShowerSM.Instance, Shower> {
+        public OperationalState operational;
+        public State            unoperational;
 
-		private Chore CreateShowerChore(Shower.ShowerSM.Instance smi)
-		{
-			return new WorkChore<Shower>(Db.Get().ChoreTypes.Shower, smi.master, null, true, null, null, null, false, Db.Get().ScheduleBlockTypes.Hygiene, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
-		}
+        public override void InitializeStates(out BaseState default_state) {
+            default_state = unoperational;
+            root.Update(UpdateStatusItems);
+            unoperational.EventTransition(GameHashes.OperationalChanged, operational, smi => smi.IsOperational)
+                         .PlayAnim("off");
 
-		private void UpdateStatusItems(Shower.ShowerSM.Instance smi, float dt)
-		{
-			if (smi.OutputFull())
-			{
-				smi.master.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, this);
-				return;
-			}
-			smi.master.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, false);
-		}
+            operational.DefaultState(operational.not_ready)
+                       .EventTransition(GameHashes.OperationalChanged, unoperational, smi => !smi.IsOperational);
 
-		public GameStateMachine<Shower.ShowerSM, Shower.ShowerSM.Instance, Shower, object>.State unoperational;
+            operational.not_ready.EventTransition(GameHashes.OnStorageChange, operational.ready, smi => smi.IsReady())
+                       .PlayAnim("off");
 
-		public Shower.ShowerSM.OperationalState operational;
+            operational.ready.ToggleChore(CreateShowerChore, operational.not_ready);
+        }
 
-		public class OperationalState : GameStateMachine<Shower.ShowerSM, Shower.ShowerSM.Instance, Shower, object>.State
-		{
-			public GameStateMachine<Shower.ShowerSM, Shower.ShowerSM.Instance, Shower, object>.State not_ready;
+        private Chore CreateShowerChore(Instance smi) {
+            var workChore = new WorkChore<Shower>(Db.Get().ChoreTypes.Shower,
+                                                  smi.master,
+                                                  null,
+                                                  true,
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  false,
+                                                  Db.Get().ScheduleBlockTypes.Hygiene,
+                                                  false,
+                                                  true,
+                                                  null,
+                                                  false,
+                                                  true,
+                                                  false,
+                                                  PriorityScreen.PriorityClass.high);
 
-			public GameStateMachine<Shower.ShowerSM, Shower.ShowerSM.Instance, Shower, object>.State ready;
-		}
+            workChore.AddPrecondition(ChorePreconditions.instance.IsNotABionic, smi);
+            return workChore;
+        }
 
-		public new class Instance : GameStateMachine<Shower.ShowerSM, Shower.ShowerSM.Instance, Shower, object>.GameInstance
-		{
-			public Instance(Shower master) : base(master)
-			{
-				this.operational = master.GetComponent<Operational>();
-				this.consumer = master.GetComponent<ConduitConsumer>();
-				this.dispenser = master.GetComponent<ConduitDispenser>();
-			}
+        private void UpdateStatusItems(Instance smi, float dt) {
+            if (smi.OutputFull()) {
+                smi.master.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, this);
+                return;
+            }
 
-						public bool IsOperational
-			{
-				get
-				{
-					return this.operational.IsOperational && this.consumer.IsConnected && this.dispenser.IsConnected;
-				}
-			}
+            smi.master.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull);
+        }
 
-			public void SetActive(bool active)
-			{
-				this.operational.SetActive(active, false);
-			}
+        public class OperationalState : State {
+            public State not_ready;
+            public State ready;
+        }
 
-			private bool HasSufficientMass()
-			{
-				bool result = false;
-				PrimaryElement primaryElement = base.GetComponent<Storage>().FindPrimaryElement(SimHashes.Water);
-				if (primaryElement != null)
-				{
-					result = (primaryElement.Mass >= 5f);
-				}
-				return result;
-			}
+        public new class Instance : GameInstance {
+            private readonly ConduitConsumer  consumer;
+            private readonly ConduitDispenser dispenser;
+            private readonly Operational      operational;
 
-			public bool OutputFull()
-			{
-				PrimaryElement primaryElement = base.GetComponent<Storage>().FindPrimaryElement(SimHashes.DirtyWater);
-				return primaryElement != null && primaryElement.Mass >= 5f;
-			}
+            public Instance(Shower master) : base(master) {
+                operational = master.GetComponent<Operational>();
+                consumer    = master.GetComponent<ConduitConsumer>();
+                dispenser   = master.GetComponent<ConduitDispenser>();
+            }
 
-			public bool IsReady()
-			{
-				return this.HasSufficientMass() && !this.OutputFull();
-			}
+            public bool IsOperational => operational.IsOperational && consumer.IsConnected && dispenser.IsConnected;
+            public void SetActive(bool active) { operational.SetActive(active); }
 
-			private Operational operational;
+            private bool HasSufficientMass() {
+                var result                         = false;
+                var primaryElement                 = GetComponent<Storage>().FindPrimaryElement(SimHashes.Water);
+                if (primaryElement != null) result = primaryElement.Mass >= 5f;
+                return result;
+            }
 
-			private ConduitConsumer consumer;
+            public bool OutputFull() {
+                var primaryElement = GetComponent<Storage>().FindPrimaryElement(SimHashes.DirtyWater);
+                return primaryElement != null && primaryElement.Mass >= 5f;
+            }
 
-			private ConduitDispenser dispenser;
-		}
-	}
+            public bool IsReady() { return HasSufficientMass() && !OutputFull(); }
+        }
+    }
 }

@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class CodexConfigurableConsumerRecipePanel : CodexWidget<CodexConfigurableConsumerRecipePanel>
 {
-	public CodexConfigurableConsumerRecipePanel(IConfigurableConsumerOption data)
+		public CodexConfigurableConsumerRecipePanel(IConfigurableConsumerOption data)
 	{
 		this.data = data;
 	}
 
-	public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		HierarchyReferences component = contentGameObject.GetComponent<HierarchyReferences>();
 		this.title = component.GetReference<LocText>("Title");
@@ -37,7 +37,7 @@ public class CodexConfigurableConsumerRecipePanel : CodexWidget<CodexConfigurabl
 		}
 	}
 
-	public GameObject CreateIngredientRow(IConfigurableConsumerIngredient ingredient)
+		public GameObject CreateIngredientRow(IConfigurableConsumerIngredient ingredient)
 	{
 		Tag[] idsets = ingredient.GetIDSets();
 		if (this.ingredient_original != null && idsets.Length != 0)
@@ -55,7 +55,7 @@ public class CodexConfigurableConsumerRecipePanel : CodexWidget<CodexConfigurabl
 		return null;
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		if (this._ingredientRows != null)
 		{
@@ -67,15 +67,15 @@ public class CodexConfigurableConsumerRecipePanel : CodexWidget<CodexConfigurabl
 		}
 	}
 
-	private LocText title;
+		private LocText title;
 
-	private LocText result_description;
+		private LocText result_description;
 
-	private Image resultIcon;
+		private Image resultIcon;
 
-	private GameObject ingredient_original;
+		private GameObject ingredient_original;
 
-	private IConfigurableConsumerOption data;
+		private IConfigurableConsumerOption data;
 
-	private GameObject[] _ingredientRows;
+		private GameObject[] _ingredientRows;
 }

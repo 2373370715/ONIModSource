@@ -2,11 +2,12 @@
 
 namespace Database
 {
-	public class Urges : ResourceSet<Urge>
+		public class Urges : ResourceSet<Urge>
 	{
-		public Urges()
+				public Urges()
 		{
 			this.HealCritical = base.Add(new Urge("HealCritical"));
+			this.BeOffline = base.Add(new Urge("BeOffline"));
 			this.BeIncapacitated = base.Add(new Urge("BeIncapacitated"));
 			this.PacifyEat = base.Add(new Urge("PacifyEat"));
 			this.PacifySleep = base.Add(new Urge("PacifySleep"));
@@ -19,6 +20,8 @@ namespace Database
 			this.WashHands = base.Add(new Urge("WashHands"));
 			this.Shower = base.Add(new Urge("Shower"));
 			this.Eat = base.Add(new Urge("Eat"));
+			this.ReloadElectrobank = base.Add(new Urge("ReloadElectrobank"));
+			this.RemoveDischargedElectrobank = base.Add(new Urge("RemoveDischargedElectrobank"));
 			this.Pee = base.Add(new Urge("Pee"));
 			this.RestDueToDisease = base.Add(new Urge("RestDueToDisease"));
 			this.Sleep = base.Add(new Urge("Sleep"));
@@ -33,62 +36,77 @@ namespace Database
 			this.CoolDown = base.Add(new Urge("CoolDown"));
 			this.LearnSkill = base.Add(new Urge("LearnSkill"));
 			this.EmoteIdle = base.Add(new Urge("EmoteIdle"));
+			this.OilRefill = base.Add(new Urge("OilRefill"));
+			this.GunkPee = base.Add(new Urge("GunkPee"));
+			this.FindOxygenRefill = base.Add(new Urge("FindOxygenRefill"));
 		}
 
-		public Urge BeIncapacitated;
+				public Urge BeIncapacitated;
 
-		public Urge Sleep;
+				public Urge BeOffline;
 
-		public Urge Narcolepsy;
+				public Urge Sleep;
 
-		public Urge Eat;
+				public Urge Narcolepsy;
 
-		public Urge WashHands;
+				public Urge Eat;
 
-		public Urge Shower;
+				public Urge RemoveDischargedElectrobank;
 
-		public Urge Pee;
+				public Urge ReloadElectrobank;
 
-		public Urge MoveToQuarantine;
+				public Urge WashHands;
 
-		public Urge HealCritical;
+				public Urge Shower;
 
-		public Urge RecoverBreath;
+				public Urge Pee;
 
-		public Urge RecoverWarmth;
+				public Urge MoveToQuarantine;
 
-		public Urge Emote;
+				public Urge HealCritical;
 
-		public Urge Feed;
+				public Urge RecoverBreath;
 
-		public Urge Doctor;
+				public Urge FindOxygenRefill;
 
-		public Urge Flee;
+				public Urge RecoverWarmth;
 
-		public Urge Heal;
+				public Urge Emote;
 
-		public Urge PacifyIdle;
+				public Urge Feed;
 
-		public Urge PacifyEat;
+				public Urge Doctor;
 
-		public Urge PacifySleep;
+				public Urge Flee;
 
-		public Urge PacifyRelocate;
+				public Urge Heal;
 
-		public Urge RestDueToDisease;
+				public Urge PacifyIdle;
 
-		public Urge EmoteHighPriority;
+				public Urge PacifyEat;
 
-		public Urge Aggression;
+				public Urge PacifySleep;
 
-		public Urge MoveToSafety;
+				public Urge PacifyRelocate;
 
-		public Urge WarmUp;
+				public Urge RestDueToDisease;
 
-		public Urge CoolDown;
+				public Urge EmoteHighPriority;
 
-		public Urge LearnSkill;
+				public Urge Aggression;
 
-		public Urge EmoteIdle;
+				public Urge MoveToSafety;
+
+				public Urge WarmUp;
+
+				public Urge CoolDown;
+
+				public Urge LearnSkill;
+
+				public Urge EmoteIdle;
+
+				public Urge OilRefill;
+
+				public Urge GunkPee;
 	}
 }

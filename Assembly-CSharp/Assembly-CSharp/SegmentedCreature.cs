@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.freeMovement.idle;
 		this.root.Enter(new StateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State.Callback(this.SetRetractedPath));
@@ -29,7 +29,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 		});
 	}
 
-	private void PlayBodySegmentsAnim(SegmentedCreature.Instance smi, string animName, KAnim.PlayMode playMode, bool queue = false, int frameOffset = 0)
+		private void PlayBodySegmentsAnim(SegmentedCreature.Instance smi, string animName, KAnim.PlayMode playMode, bool queue = false, int frameOffset = 0)
 	{
 		LinkedListNode<SegmentedCreature.CreatureSegment> linkedListNode = smi.GetFirstBodySegmentNode();
 		int num = 0;
@@ -54,7 +54,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 		}
 	}
 
-	private void UpdateRetractedPre(SegmentedCreature.Instance smi, float dt)
+		private void UpdateRetractedPre(SegmentedCreature.Instance smi, float dt)
 	{
 		if (this.UpdateHeadPosition(smi) == 0f)
 		{
@@ -89,7 +89,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 		}
 	}
 
-	private void UpdateRetractedLoop(SegmentedCreature.Instance smi, float dt)
+		private void UpdateRetractedLoop(SegmentedCreature.Instance smi, float dt)
 	{
 		if (this.UpdateHeadPosition(smi) != 0f)
 		{
@@ -98,7 +98,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 		}
 	}
 
-	private void SetRetractedPath(SegmentedCreature.Instance smi)
+		private void SetRetractedPath(SegmentedCreature.Instance smi)
 	{
 		SegmentedCreature.CreatureSegment value = smi.GetHeadSegmentNode().Value;
 		LinkedListNode<SegmentedCreature.PathNode> linkedListNode = smi.path.First;
@@ -115,7 +115,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 		}
 	}
 
-	private void UpdateFreeMovement(SegmentedCreature.Instance smi, float dt)
+		private void UpdateFreeMovement(SegmentedCreature.Instance smi, float dt)
 	{
 		float num = this.UpdateHeadPosition(smi);
 		if (num != 0f)
@@ -125,7 +125,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 		}
 	}
 
-	private float UpdateHeadPosition(SegmentedCreature.Instance smi)
+		private float UpdateHeadPosition(SegmentedCreature.Instance smi)
 	{
 		SegmentedCreature.CreatureSegment value = smi.GetHeadSegmentNode().Value;
 		if (value.Position == smi.previousHeadPosition)
@@ -158,7 +158,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 		return result;
 	}
 
-	private void AdjustBodySegmentsSpacing(SegmentedCreature.Instance smi, float spacing)
+		private void AdjustBodySegmentsSpacing(SegmentedCreature.Instance smi, float spacing)
 	{
 		for (LinkedListNode<SegmentedCreature.CreatureSegment> linkedListNode = smi.GetFirstBodySegmentNode(); linkedListNode != null; linkedListNode = linkedListNode.Next)
 		{
@@ -180,7 +180,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 		}
 	}
 
-	private void UpdateBodyPosition(SegmentedCreature.Instance smi)
+		private void UpdateBodyPosition(SegmentedCreature.Instance smi)
 	{
 		LinkedListNode<SegmentedCreature.CreatureSegment> linkedListNode = smi.GetFirstBodySegmentNode();
 		LinkedListNode<SegmentedCreature.PathNode> linkedListNode2 = smi.path.First;
@@ -222,7 +222,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 		}
 	}
 
-	private void DrawDebug(SegmentedCreature.Instance smi, float dt)
+		private void DrawDebug(SegmentedCreature.Instance smi, float dt)
 	{
 		SegmentedCreature.CreatureSegment value = smi.GetHeadSegmentNode().Value;
 		DrawUtil.Arrow(value.Position, value.Position + value.Up, 0.05f, Color.red, 0f);
@@ -242,54 +242,54 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 		}
 	}
 
-	public SegmentedCreature.RectractStates retracted;
+		public SegmentedCreature.RectractStates retracted;
 
-	public SegmentedCreature.FreeMovementStates freeMovement;
+		public SegmentedCreature.FreeMovementStates freeMovement;
 
-	private StateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.BoolParameter isRetracted;
+		private StateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.BoolParameter isRetracted;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public HashedString segmentTrackerSymbol;
+				public HashedString segmentTrackerSymbol;
 
-		public Vector3 headOffset = Vector3.zero;
+				public Vector3 headOffset = Vector3.zero;
 
-		public Vector3 bodyPivot = Vector3.zero;
+				public Vector3 bodyPivot = Vector3.zero;
 
-		public Vector3 tailPivot = Vector3.zero;
+				public Vector3 tailPivot = Vector3.zero;
 
-		public int numBodySegments;
+				public int numBodySegments;
 
-		public float minSegmentSpacing;
+				public float minSegmentSpacing;
 
-		public float maxSegmentSpacing;
+				public float maxSegmentSpacing;
 
-		public int numPathNodes;
+				public int numPathNodes;
 
-		public float pathSpacing;
+				public float pathSpacing;
 
-		public KAnimFile midAnim;
+				public KAnimFile midAnim;
 
-		public KAnimFile tailAnim;
+				public KAnimFile tailAnim;
 
-		public string movingAnimName;
+				public string movingAnimName;
 
-		public string idleAnimName;
+				public string idleAnimName;
 
-		public float retractionSegmentSpeed = 1f;
+				public float retractionSegmentSpeed = 1f;
 
-		public float retractionPathSpeed = 1f;
+				public float retractionPathSpeed = 1f;
 
-		public float compressedMaxScale = 1.2f;
+				public float compressedMaxScale = 1.2f;
 
-		public int animFrameOffset;
+				public int animFrameOffset;
 
-		public HashSet<HashedString> hideBoddyWhenStartingAnimNames = new HashSet<HashedString>
+				public HashSet<HashedString> hideBoddyWhenStartingAnimNames = new HashSet<HashedString>
 		{
 			"rocket_biological"
 		};
 
-		public HashSet<HashedString> retractWhenStartingAnimNames = new HashSet<HashedString>
+				public HashSet<HashedString> retractWhenStartingAnimNames = new HashSet<HashedString>
 		{
 			"trapped",
 			"trussed",
@@ -300,7 +300,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			"rocket_biological"
 		};
 
-		public HashSet<HashedString> retractWhenEndingAnimNames = new HashSet<HashedString>
+				public HashSet<HashedString> retractWhenEndingAnimNames = new HashSet<HashedString>
 		{
 			"floor_floor_2_0",
 			"grooming_pst",
@@ -308,35 +308,35 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 		};
 	}
 
-	public class RectractStates : GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State
+		public class RectractStates : GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State
 	{
-		public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State pre;
+				public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State pre;
 
-		public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State loop;
+				public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State loop;
 	}
 
-	public class FreeMovementStates : GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State
+		public class FreeMovementStates : GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State
 	{
-		public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State idle;
+				public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State idle;
 
-		public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State moving;
+				public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State moving;
 
-		public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State layEgg;
+				public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State layEgg;
 
-		public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State poop;
+				public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State poop;
 
-		public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State dead;
+				public GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.State dead;
 	}
 
-	public new class Instance : GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.GameInstance
+		public new class Instance : GameStateMachine<SegmentedCreature, SegmentedCreature.Instance, IStateMachineTarget, SegmentedCreature.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, SegmentedCreature.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, SegmentedCreature.Def def) : base(master, def)
 		{
 			global::Debug.Assert((float)def.numBodySegments * def.maxSegmentSpacing < (float)def.numPathNodes * def.pathSpacing);
 			this.CreateSegments();
 		}
 
-		private void CreateSegments()
+				private void CreateSegments()
 		{
 			float num = (float)SegmentedCreature.Instance.creatureBatchSlot * 0.01f;
 			SegmentedCreature.Instance.creatureBatchSlot = (SegmentedCreature.Instance.creatureBatchSlot + 1) % 10;
@@ -385,7 +385,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			}
 		}
 
-		public void AnimEntered(HashedString name)
+				public void AnimEntered(HashedString name)
 		{
 			if (base.smi.def.retractWhenStartingAnimNames.Contains(name))
 			{
@@ -403,7 +403,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			this.SetBodySegmentsVisibility(true);
 		}
 
-		public void SetBodySegmentsVisibility(bool visible)
+				public void SetBodySegmentsVisibility(bool visible)
 		{
 			for (LinkedListNode<SegmentedCreature.CreatureSegment> linkedListNode = base.smi.GetFirstBodySegmentNode(); linkedListNode != null; linkedListNode = linkedListNode.Next)
 			{
@@ -411,7 +411,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			}
 		}
 
-		public void AnimComplete(HashedString name)
+				public void AnimComplete(HashedString name)
 		{
 			if (base.smi.def.retractWhenEndingAnimNames.Contains(name))
 			{
@@ -419,17 +419,17 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			}
 		}
 
-		public LinkedListNode<SegmentedCreature.CreatureSegment> GetHeadSegmentNode()
+				public LinkedListNode<SegmentedCreature.CreatureSegment> GetHeadSegmentNode()
 		{
 			return base.smi.segments.First;
 		}
 
-		public LinkedListNode<SegmentedCreature.CreatureSegment> GetFirstBodySegmentNode()
+				public LinkedListNode<SegmentedCreature.CreatureSegment> GetFirstBodySegmentNode()
 		{
 			return base.smi.segments.First.Next;
 		}
 
-		public float LengthPercentage()
+				public float LengthPercentage()
 		{
 			float num = 0f;
 			for (LinkedListNode<SegmentedCreature.CreatureSegment> linkedListNode = this.GetFirstBodySegmentNode(); linkedListNode != null; linkedListNode = linkedListNode.Next)
@@ -441,17 +441,17 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			return Mathf.Clamp(num - num2, 0f, num3) / (num3 - num2);
 		}
 
-		public float MinLength()
+				public float MinLength()
 		{
 			return base.smi.def.minSegmentSpacing * (float)base.smi.def.numBodySegments;
 		}
 
-		public float MaxLength()
+				public float MaxLength()
 		{
 			return base.smi.def.maxSegmentSpacing * (float)base.smi.def.numBodySegments;
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			this.GetHeadSegmentNode().Value.animController.onAnimEnter -= this.AnimEntered;
 			this.GetHeadSegmentNode().Value.animController.onAnimComplete -= this.AnimComplete;
@@ -461,37 +461,37 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			}
 		}
 
-		private const int NUM_CREATURE_SLOTS = 10;
+				private const int NUM_CREATURE_SLOTS = 10;
 
-		private static int creatureBatchSlot;
+				private static int creatureBatchSlot;
 
-		public float baseAnimScale;
+				public float baseAnimScale;
 
-		public Vector3 previousHeadPosition;
+				public Vector3 previousHeadPosition;
 
-		public float previousDist;
+				public float previousDist;
 
-		public LinkedList<SegmentedCreature.PathNode> path = new LinkedList<SegmentedCreature.PathNode>();
+				public LinkedList<SegmentedCreature.PathNode> path = new LinkedList<SegmentedCreature.PathNode>();
 
-		public LinkedList<SegmentedCreature.CreatureSegment> segments = new LinkedList<SegmentedCreature.CreatureSegment>();
+				public LinkedList<SegmentedCreature.CreatureSegment> segments = new LinkedList<SegmentedCreature.CreatureSegment>();
 	}
 
-	public class PathNode
+		public class PathNode
 	{
-		public PathNode(Vector3 position)
+				public PathNode(Vector3 position)
 		{
 			this.position = position;
 			this.rotation = Quaternion.identity;
 		}
 
-		public Vector3 position;
+				public Vector3 position;
 
-		public Quaternion rotation;
+				public Quaternion rotation;
 	}
 
-	public class CreatureSegment
+		public class CreatureSegment
 	{
-				public float ZOffset
+						public float ZOffset
 		{
 			get
 			{
@@ -499,7 +499,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			}
 		}
 
-		public CreatureSegment(KBatchedAnimController head, GameObject go, float zRelativeOffset, Vector3 offset, Vector3 pivot)
+				public CreatureSegment(KBatchedAnimController head, GameObject go, float zRelativeOffset, Vector3 offset, Vector3 pivot)
 		{
 			this.head = head;
 			this.m_transform = go.transform;
@@ -509,7 +509,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			this.SetPosition(go.transform.position);
 		}
 
-				public Vector3 Position
+						public Vector3 Position
 		{
 			get
 			{
@@ -530,7 +530,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			}
 		}
 
-		public void SetPosition(Vector3 value)
+				public void SetPosition(Vector3 value)
 		{
 			bool flag = false;
 			if (this.animController != null && this.animController.sceneLayer != this.head.sceneLayer)
@@ -547,12 +547,12 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			}
 		}
 
-		public void SetRotation(Quaternion rotation)
+				public void SetRotation(Quaternion rotation)
 		{
 			this.m_transform.rotation = rotation;
 		}
 
-				public Quaternion Rotation
+						public Quaternion Rotation
 		{
 			get
 			{
@@ -570,7 +570,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			}
 		}
 
-				public Vector3 Forward
+						public Vector3 Forward
 		{
 			get
 			{
@@ -578,7 +578,7 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			}
 		}
 
-				public Vector3 Up
+						public Vector3 Up
 		{
 			get
 			{
@@ -586,27 +586,27 @@ public class SegmentedCreature : GameStateMachine<SegmentedCreature, SegmentedCr
 			}
 		}
 
-		public void CleanUp()
+				public void CleanUp()
 		{
 			UnityEngine.Object.Destroy(this.m_transform.gameObject);
 		}
 
-		public KBatchedAnimController animController;
+				public KBatchedAnimController animController;
 
-		public KAnimLink animLink;
+				public KAnimLink animLink;
 
-		public float distanceToPreviousSegment;
+				public float distanceToPreviousSegment;
 
-		public HashedString symbol;
+				public HashedString symbol;
 
-		public Vector3 offset;
+				public Vector3 offset;
 
-		public Vector3 pivot;
+				public Vector3 pivot;
 
-		public KBatchedAnimController head;
+				public KBatchedAnimController head;
 
-		private float zRelativeOffset;
+				private float zRelativeOffset;
 
-		private Transform m_transform;
+				private Transform m_transform;
 	}
 }

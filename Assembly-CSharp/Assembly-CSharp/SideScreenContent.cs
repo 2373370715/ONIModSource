@@ -3,28 +3,28 @@ using UnityEngine;
 
 public abstract class SideScreenContent : KScreen
 {
-	public virtual void SetTarget(GameObject target)
+		public virtual void SetTarget(GameObject target)
 	{
 	}
 
-	public virtual void ClearTarget()
+		public virtual void ClearTarget()
 	{
 	}
 
-	public abstract bool IsValidForTarget(GameObject target);
+		public abstract bool IsValidForTarget(GameObject target);
 
-	public virtual int GetSideScreenSortOrder()
+		public virtual int GetSideScreenSortOrder()
 	{
 		return 0;
 	}
 
-	public virtual string GetTitle()
+		public virtual string GetTitle()
 	{
 		return Strings.Get(this.titleKey);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	protected string titleKey;
 
-	public GameObject ContentContainer;
+		public GameObject ContentContainer;
 }

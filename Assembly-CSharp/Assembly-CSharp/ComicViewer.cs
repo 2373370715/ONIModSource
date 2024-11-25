@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ComicViewer : KScreen
 {
-	public void ShowComic(ComicData comic, bool isVictoryComic)
+		public void ShowComic(ComicData comic, bool isVictoryComic)
 	{
 		for (int i = 0; i < Mathf.Max(comic.images.Length, comic.stringKeys.Length); i++)
 		{
@@ -30,20 +30,20 @@ public class ComicViewer : KScreen
 		};
 	}
 
-	public void Stop()
+		public void Stop()
 	{
 		this.OnStop();
 		this.Show(false);
 		base.gameObject.SetActive(false);
 	}
 
-	public GameObject panelPrefab;
+		public GameObject panelPrefab;
 
-	public GameObject contentContainer;
+		public GameObject contentContainer;
 
-	public List<GameObject> activePanels = new List<GameObject>();
+		public List<GameObject> activePanels = new List<GameObject>();
 
-	public KButton closeButton;
+		public KButton closeButton;
 
-	public System.Action OnStop;
+		public System.Action OnStop;
 }

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 public class TagCollection : IReadonlyTags
 {
-	public TagCollection()
+		public TagCollection()
 	{
 	}
 
-	public TagCollection(int[] initialTags)
+		public TagCollection(int[] initialTags)
 	{
 		for (int i = 0; i < initialTags.Length; i++)
 		{
@@ -15,7 +15,7 @@ public class TagCollection : IReadonlyTags
 		}
 	}
 
-	public TagCollection(string[] initialTags)
+		public TagCollection(string[] initialTags)
 	{
 		for (int i = 0; i < initialTags.Length; i++)
 		{
@@ -23,7 +23,7 @@ public class TagCollection : IReadonlyTags
 		}
 	}
 
-	public TagCollection(TagCollection initialTags)
+		public TagCollection(TagCollection initialTags)
 	{
 		if (initialTags != null && initialTags.tags != null)
 		{
@@ -31,7 +31,7 @@ public class TagCollection : IReadonlyTags
 		}
 	}
 
-	public TagCollection Append(TagCollection others)
+		public TagCollection Append(TagCollection others)
 	{
 		foreach (int item in others.tags)
 		{
@@ -40,37 +40,37 @@ public class TagCollection : IReadonlyTags
 		return this;
 	}
 
-	public void AddTag(string tag)
+		public void AddTag(string tag)
 	{
 		this.tags.Add(Hash.SDBMLower(tag));
 	}
 
-	public void AddTag(int tag)
+		public void AddTag(int tag)
 	{
 		this.tags.Add(tag);
 	}
 
-	public void RemoveTag(string tag)
+		public void RemoveTag(string tag)
 	{
 		this.tags.Remove(Hash.SDBMLower(tag));
 	}
 
-	public void RemoveTag(int tag)
+		public void RemoveTag(int tag)
 	{
 		this.tags.Remove(tag);
 	}
 
-	public bool HasTag(string tag)
+		public bool HasTag(string tag)
 	{
 		return this.tags.Contains(Hash.SDBMLower(tag));
 	}
 
-	public bool HasTag(int tag)
+		public bool HasTag(int tag)
 	{
 		return this.tags.Contains(tag);
 	}
 
-	public bool HasTags(int[] searchTags)
+		public bool HasTags(int[] searchTags)
 	{
 		for (int i = 0; i < searchTags.Length; i++)
 		{
@@ -82,5 +82,5 @@ public class TagCollection : IReadonlyTags
 		return true;
 	}
 
-	private HashSet<int> tags = new HashSet<int>();
+		private HashSet<int> tags = new HashSet<int>();
 }

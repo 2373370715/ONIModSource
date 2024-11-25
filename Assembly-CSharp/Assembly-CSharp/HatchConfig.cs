@@ -8,7 +8,7 @@ using UnityEngine;
 [EntityConfigOrder(1)]
 public class HatchConfig : IEntityConfig
 {
-	public static GameObject CreateHatch(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreateHatch(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		GameObject prefab = EntityTemplates.ExtendEntityToWildCreature(BaseHatchConfig.BaseHatch(id, name, desc, anim_file, "HatchBaseTrait", is_baby, null), HatchTuning.PEN_SIZE_PER_CREATURE);
 		Trait trait = Db.Get().CreateTrait("HatchBaseTrait", name, name, null, false, null, true, true);
@@ -23,37 +23,37 @@ public class HatchConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		return EntityTemplates.ExtendEntityToFertileCreature(HatchConfig.CreateHatch("Hatch", STRINGS.CREATURES.SPECIES.HATCH.NAME, STRINGS.CREATURES.SPECIES.HATCH.DESC, "hatch_kanim", false), "HatchEgg", STRINGS.CREATURES.SPECIES.HATCH.EGG_NAME, STRINGS.CREATURES.SPECIES.HATCH.DESC, "egg_hatch_kanim", HatchTuning.EGG_MASS, "HatchBaby", 60.000004f, 20f, HatchTuning.EGG_CHANCES_BASE, this.GetDlcIds(), HatchConfig.EGG_SORT_ORDER, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "Hatch";
+		public const string ID = "Hatch";
 
-	public const string BASE_TRAIT_ID = "HatchBaseTrait";
+		public const string BASE_TRAIT_ID = "HatchBaseTrait";
 
-	public const string EGG_ID = "HatchEgg";
+		public const string EGG_ID = "HatchEgg";
 
-	private const SimHashes EMIT_ELEMENT = SimHashes.Carbon;
+		private const SimHashes EMIT_ELEMENT = SimHashes.Carbon;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 140f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 140f;
 
-	private static float CALORIES_PER_KG_OF_ORE = HatchTuning.STANDARD_CALORIES_PER_CYCLE / HatchConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = HatchTuning.STANDARD_CALORIES_PER_CYCLE / HatchConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 25f;
+		private static float MIN_POOP_SIZE_IN_KG = 25f;
 
-	public static int EGG_SORT_ORDER = 0;
+		public static int EGG_SORT_ORDER = 0;
 }

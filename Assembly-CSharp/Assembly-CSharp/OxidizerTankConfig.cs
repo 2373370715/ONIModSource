@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class OxidizerTankConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetForbiddenDlcIds()
 	{
-		return DlcManager.AVAILABLE_VANILLA_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "OxidizerTank";
 		int width = 5;
@@ -41,7 +41,7 @@ public class OxidizerTankConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<BuildingAttachPoint>().points = new BuildingAttachPoint.HardPoint[]
@@ -53,7 +53,7 @@ public class OxidizerTankConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 2700f;
@@ -86,7 +86,7 @@ public class OxidizerTankConfig : IBuildingConfig
 		BuildingTemplates.ExtendBuildingToRocketModule(go, "rocket_oxidizer_tank_bg_kanim", false);
 	}
 
-	public const string ID = "OxidizerTank";
+		public const string ID = "OxidizerTank";
 
-	public const float FuelCapacity = 2700f;
+		public const float FuelCapacity = 2700f;
 }

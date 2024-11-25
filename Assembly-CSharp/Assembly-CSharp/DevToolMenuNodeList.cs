@@ -4,12 +4,9 @@ using ImGuiNET;
 
 public class DevToolMenuNodeList
 {
-	public DevToolMenuNodeParent AddOrGetParentFor(string childPath)
+		public DevToolMenuNodeParent AddOrGetParentFor(string childPath)
 	{
-		string[] array = Path.GetDirectoryName(childPath).Split(new char[]
-		{
-			'/'
-		});
+		string[] array = Path.GetDirectoryName(childPath).Split('/', StringSplitOptions.None);
 		string text = "";
 		DevToolMenuNodeParent devToolMenuNodeParent = this.root;
 		string[] array2 = array;
@@ -38,14 +35,14 @@ public class DevToolMenuNodeList
 		return devToolMenuNodeParent;
 	}
 
-	public DevToolMenuNodeAction AddAction(string path, System.Action onClickFn)
+		public DevToolMenuNodeAction AddAction(string path, System.Action onClickFn)
 	{
 		DevToolMenuNodeAction devToolMenuNodeAction = new DevToolMenuNodeAction(Path.GetFileName(path), onClickFn);
 		this.AddOrGetParentFor(path).AddChild(devToolMenuNodeAction);
 		return devToolMenuNodeAction;
 	}
 
-	public void Draw()
+		public void Draw()
 	{
 		foreach (IMenuNode menuNode in this.root.children)
 		{
@@ -53,7 +50,7 @@ public class DevToolMenuNodeList
 		}
 	}
 
-	public void DrawFull()
+		public void DrawFull()
 	{
 		if (ImGui.BeginMainMenuBar())
 		{
@@ -62,5 +59,5 @@ public class DevToolMenuNodeList
 		}
 	}
 
-	private DevToolMenuNodeParent root = new DevToolMenuNodeParent("<root>");
+		private DevToolMenuNodeParent root = new DevToolMenuNodeParent("<root>");
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LiquidVentConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidVent";
 		int width = 1;
@@ -31,7 +31,7 @@ public class LiquidVentConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<Exhaust>();
@@ -47,7 +47,7 @@ public class LiquidVentConfig : IBuildingConfig
 		go.AddOrGet<SimpleVent>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		VentController.Def def = go.AddOrGetDef<VentController.Def>();
 		def.usingDynamicColor = true;
@@ -55,9 +55,9 @@ public class LiquidVentConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public const string ID = "LiquidVent";
+		public const string ID = "LiquidVent";
 
-	public const float OVERPRESSURE_MASS = 1000f;
+		public const float OVERPRESSURE_MASS = 1000f;
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
 }

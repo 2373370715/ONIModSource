@@ -5,7 +5,7 @@ using UnityEngine;
 
 internal class LogicEventHandler : ILogicEventReceiver, ILogicNetworkConnection, ILogicUIElement, IUniformGridObject
 {
-	public LogicEventHandler(int cell, Action<int, int> on_value_changed, Action<int, bool> on_connection_changed, LogicPortSpriteType sprite_type)
+		public LogicEventHandler(int cell, Action<int, int> on_value_changed, Action<int, bool> on_connection_changed, LogicPortSpriteType sprite_type)
 	{
 		this.cell = cell;
 		this.onValueChanged = on_value_changed;
@@ -13,7 +13,7 @@ internal class LogicEventHandler : ILogicEventReceiver, ILogicNetworkConnection,
 		this.spriteType = sprite_type;
 	}
 
-	public void ReceiveLogicEvent(int value)
+		public void ReceiveLogicEvent(int value)
 	{
 		this.TriggerAudio(value);
 		int arg = this.value;
@@ -21,7 +21,7 @@ internal class LogicEventHandler : ILogicEventReceiver, ILogicNetworkConnection,
 		this.onValueChanged(value, arg);
 	}
 
-		public int Value
+			public int Value
 	{
 		get
 		{
@@ -29,32 +29,32 @@ internal class LogicEventHandler : ILogicEventReceiver, ILogicNetworkConnection,
 		}
 	}
 
-	public int GetLogicUICell()
+		public int GetLogicUICell()
 	{
 		return this.cell;
 	}
 
-	public LogicPortSpriteType GetLogicPortSpriteType()
+		public LogicPortSpriteType GetLogicPortSpriteType()
 	{
 		return this.spriteType;
 	}
 
-	public Vector2 PosMin()
+		public Vector2 PosMin()
 	{
 		return Grid.CellToPos2D(this.cell);
 	}
 
-	public Vector2 PosMax()
+		public Vector2 PosMax()
 	{
 		return Grid.CellToPos2D(this.cell);
 	}
 
-	public int GetLogicCell()
+		public int GetLogicCell()
 	{
 		return this.cell;
 	}
 
-	private void TriggerAudio(int new_value)
+		private void TriggerAudio(int new_value)
 	{
 		LogicCircuitNetwork networkForCell = Game.Instance.logicCircuitManager.GetNetworkForCell(this.cell);
 		SpeedControlScreen instance = SpeedControlScreen.Instance;
@@ -99,7 +99,7 @@ internal class LogicEventHandler : ILogicEventReceiver, ILogicNetworkConnection,
 		}
 	}
 
-	public void OnLogicNetworkConnectionChanged(bool connected)
+		public void OnLogicNetworkConnectionChanged(bool connected)
 	{
 		if (this.onConnectionChanged != null)
 		{
@@ -107,13 +107,13 @@ internal class LogicEventHandler : ILogicEventReceiver, ILogicNetworkConnection,
 		}
 	}
 
-	private int cell;
+		private int cell;
 
-	private int value;
+		private int value;
 
-	private Action<int, int> onValueChanged;
+		private Action<int, int> onValueChanged;
 
-	private Action<int, bool> onConnectionChanged;
+		private Action<int, bool> onConnectionChanged;
 
-	private LogicPortSpriteType spriteType;
+		private LogicPortSpriteType spriteType;
 }

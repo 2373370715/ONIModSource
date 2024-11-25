@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class MigrationEventArgs
 {
-	public GameObject entity;
+		public GameObject entity;
 
-	public int prevWorldId;
+		public int prevWorldId;
 
-	public int targetWorldId;
+		public int targetWorldId;
 }

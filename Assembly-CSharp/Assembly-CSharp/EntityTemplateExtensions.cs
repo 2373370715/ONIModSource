@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class EntityTemplateExtensions
 {
-	public static DefType AddOrGetDef<DefType>(this GameObject go) where DefType : StateMachine.BaseDef
+		public static DefType AddOrGetDef<DefType>(this GameObject go) where DefType : StateMachine.BaseDef
 	{
 		StateMachineController stateMachineController = go.AddOrGet<StateMachineController>();
 		DefType defType = stateMachineController.GetDef<DefType>();
@@ -16,7 +16,7 @@ public static class EntityTemplateExtensions
 		return defType;
 	}
 
-	public static ComponentType AddOrGet<ComponentType>(this GameObject go) where ComponentType : Component
+		public static ComponentType AddOrGet<ComponentType>(this GameObject go) where ComponentType : Component
 	{
 		ComponentType componentType = go.GetComponent<ComponentType>();
 		if (componentType == null)

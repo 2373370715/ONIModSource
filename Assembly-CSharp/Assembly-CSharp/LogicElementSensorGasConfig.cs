@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicElementSensorGasConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicElementSensorGasConfig.ID;
 		int width = 1;
@@ -36,7 +36,7 @@ public class LogicElementSensorGasConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<Filterable>().filterElementState = Filterable.ElementState.Gas;
 		LogicElementSensor logicElementSensor = go.AddOrGet<LogicElementSensor>();
@@ -44,5 +44,5 @@ public class LogicElementSensorGasConfig : IBuildingConfig
 		logicElementSensor.desiredState = Element.State.Gas;
 	}
 
-	public static string ID = "LogicElementSensorGas";
+		public static string ID = "LogicElementSensorGas";
 }

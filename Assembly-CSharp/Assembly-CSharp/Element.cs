@@ -8,12 +8,20 @@ using STRINGS;
 [Serializable]
 public class Element : IComparable<Element>
 {
-	public float PressureToMass(float pressure)
+		public float PressureToMass(float pressure)
 	{
 		return pressure / this.defaultValues.pressure;
 	}
 
-		public bool IsUnstable
+			public bool IsSlippery
+	{
+		get
+		{
+			return this.HasTag(GameTags.Slippery);
+		}
+	}
+
+			public bool IsUnstable
 	{
 		get
 		{
@@ -21,7 +29,7 @@ public class Element : IComparable<Element>
 		}
 	}
 
-		public bool IsLiquid
+			public bool IsLiquid
 	{
 		get
 		{
@@ -29,7 +37,7 @@ public class Element : IComparable<Element>
 		}
 	}
 
-		public bool IsGas
+			public bool IsGas
 	{
 		get
 		{
@@ -37,7 +45,7 @@ public class Element : IComparable<Element>
 		}
 	}
 
-		public bool IsSolid
+			public bool IsSolid
 	{
 		get
 		{
@@ -45,7 +53,7 @@ public class Element : IComparable<Element>
 		}
 	}
 
-		public bool IsVacuum
+			public bool IsVacuum
 	{
 		get
 		{
@@ -53,7 +61,7 @@ public class Element : IComparable<Element>
 		}
 	}
 
-		public bool IsTemperatureInsulated
+			public bool IsTemperatureInsulated
 	{
 		get
 		{
@@ -61,12 +69,12 @@ public class Element : IComparable<Element>
 		}
 	}
 
-	public bool IsState(Element.State expected_state)
+		public bool IsState(Element.State expected_state)
 	{
 		return (this.state & Element.State.Solid) == expected_state;
 	}
 
-		public bool HasTransitionUp
+			public bool HasTransitionUp
 	{
 		get
 		{
@@ -74,18 +82,18 @@ public class Element : IComparable<Element>
 		}
 	}
 
-			public string name { get; set; }
+				public string name { get; set; }
 
-			public string nameUpperCase { get; set; }
+				public string nameUpperCase { get; set; }
 
-			public string description { get; set; }
+				public string description { get; set; }
 
-	public string GetStateString()
+		public string GetStateString()
 	{
 		return Element.GetStateString(this.state);
 	}
 
-	public static string GetStateString(Element.State state)
+		public static string GetStateString(Element.State state)
 	{
 		if ((state & Element.State.Solid) == Element.State.Solid)
 		{
@@ -102,7 +110,7 @@ public class Element : IComparable<Element>
 		return ELEMENTS.STATE.VACUUM;
 	}
 
-	public string FullDescription(bool addHardnessColor = true)
+		public string FullDescription(bool addHardnessColor = true)
 	{
 		string text = this.Description();
 		if (this.IsSolid)
@@ -158,135 +166,135 @@ public class Element : IComparable<Element>
 		return text;
 	}
 
-	public string Description()
+		public string Description()
 	{
 		return this.description;
 	}
 
-	public bool HasTag(Tag search_tag)
+		public bool HasTag(Tag search_tag)
 	{
 		return this.tag == search_tag || Array.IndexOf<Tag>(this.oreTags, search_tag) != -1;
 	}
 
-	public Tag GetMaterialCategoryTag()
+		public Tag GetMaterialCategoryTag()
 	{
 		return this.materialCategory;
 	}
 
-	public int CompareTo(Element other)
+		public int CompareTo(Element other)
 	{
 		return this.id - other.id;
 	}
 
-	public const int INVALID_ID = 0;
+		public const int INVALID_ID = 0;
 
-	public SimHashes id;
+		public SimHashes id;
 
-	public Tag tag;
+		public Tag tag;
 
-	public ushort idx;
+		public ushort idx;
 
-	public float specificHeatCapacity;
+		public float specificHeatCapacity;
 
-	public float thermalConductivity = 1f;
+		public float thermalConductivity = 1f;
 
-	public float molarMass = 1f;
+		public float molarMass = 1f;
 
-	public float strength;
+		public float strength;
 
-	public float flow;
+		public float flow;
 
-	public float maxCompression;
+		public float maxCompression;
 
-	public float viscosity;
+		public float viscosity;
 
-	public float minHorizontalFlow = float.PositiveInfinity;
+		public float minHorizontalFlow = float.PositiveInfinity;
 
-	public float minVerticalFlow = float.PositiveInfinity;
+		public float minVerticalFlow = float.PositiveInfinity;
 
-	public float maxMass = 10000f;
+		public float maxMass = 10000f;
 
-	public float solidSurfaceAreaMultiplier;
+		public float solidSurfaceAreaMultiplier;
 
-	public float liquidSurfaceAreaMultiplier;
+		public float liquidSurfaceAreaMultiplier;
 
-	public float gasSurfaceAreaMultiplier;
+		public float gasSurfaceAreaMultiplier;
 
-	public Element.State state;
+		public Element.State state;
 
-	public byte hardness;
+		public byte hardness;
 
-	public float lowTemp;
+		public float lowTemp;
 
-	public SimHashes lowTempTransitionTarget;
+		public SimHashes lowTempTransitionTarget;
 
-	public Element lowTempTransition;
+		public Element lowTempTransition;
 
-	public float highTemp;
+		public float highTemp;
 
-	public SimHashes highTempTransitionTarget;
+		public SimHashes highTempTransitionTarget;
 
-	public Element highTempTransition;
+		public Element highTempTransition;
 
-	public SimHashes highTempTransitionOreID = SimHashes.Vacuum;
+		public SimHashes highTempTransitionOreID = SimHashes.Vacuum;
 
-	public float highTempTransitionOreMassConversion;
+		public float highTempTransitionOreMassConversion;
 
-	public SimHashes lowTempTransitionOreID = SimHashes.Vacuum;
+		public SimHashes lowTempTransitionOreID = SimHashes.Vacuum;
 
-	public float lowTempTransitionOreMassConversion;
+		public float lowTempTransitionOreMassConversion;
 
-	public SimHashes sublimateId;
+		public SimHashes sublimateId;
 
-	public SimHashes convertId;
+		public SimHashes convertId;
 
-	public SpawnFXHashes sublimateFX;
+		public SpawnFXHashes sublimateFX;
 
-	public float sublimateRate;
+		public float sublimateRate;
 
-	public float sublimateEfficiency;
+		public float sublimateEfficiency;
 
-	public float sublimateProbability;
+		public float sublimateProbability;
 
-	public float offGasPercentage;
+		public float offGasPercentage;
 
-	public float lightAbsorptionFactor;
+		public float lightAbsorptionFactor;
 
-	public float radiationAbsorptionFactor;
+		public float radiationAbsorptionFactor;
 
-	public float radiationPer1000Mass;
+		public float radiationPer1000Mass;
 
-	public Sim.PhysicsData defaultValues;
+		public Sim.PhysicsData defaultValues;
 
-	public float toxicity;
+		public float toxicity;
 
-	public Substance substance;
+		public Substance substance;
 
-	public Tag materialCategory;
+		public Tag materialCategory;
 
-	public int buildMenuSort;
+		public int buildMenuSort;
 
-	public ElementLoader.ElementComposition[] elementComposition;
+		public ElementLoader.ElementComposition[] elementComposition;
 
-	public Tag[] oreTags = new Tag[0];
+		public Tag[] oreTags = new Tag[0];
 
-	public List<AttributeModifier> attributeModifiers = new List<AttributeModifier>();
+		public List<AttributeModifier> attributeModifiers = new List<AttributeModifier>();
 
-	public bool disabled;
+		public bool disabled;
 
-	public string dlcId;
+		public string dlcId;
 
-	public const byte StateMask = 3;
+		public const byte StateMask = 3;
 
-	[Serializable]
+		[Serializable]
 	public enum State : byte
 	{
-		Vacuum,
-		Gas,
-		Liquid,
-		Solid,
-		Unbreakable,
-		Unstable = 8,
-		TemperatureInsulated = 16
+				Vacuum,
+				Gas,
+				Liquid,
+				Solid,
+				Unbreakable,
+				Unstable = 8,
+				TemperatureInsulated = 16
 	}
 }

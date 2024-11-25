@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HEPFuelTank : KMonoBehaviour, IFuelTank, IUserControlledCapacity
 {
-		public IStorage Storage
+			public IStorage Storage
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class HEPFuelTank : KMonoBehaviour, IFuelTank, IUserControlledCapacity
 		}
 	}
 
-		public bool ConsumeFuelOnLand
+			public bool ConsumeFuelOnLand
 	{
 		get
 		{
@@ -20,12 +20,12 @@ public class HEPFuelTank : KMonoBehaviour, IFuelTank, IUserControlledCapacity
 		}
 	}
 
-	public void DEBUG_FillTank()
+		public void DEBUG_FillTank()
 	{
 		this.hepStorage.Store(this.hepStorage.RemainingCapacity());
 	}
 
-			public float UserMaxCapacity
+				public float UserMaxCapacity
 	{
 		get
 		{
@@ -38,7 +38,7 @@ public class HEPFuelTank : KMonoBehaviour, IFuelTank, IUserControlledCapacity
 		}
 	}
 
-		public float MinCapacity
+			public float MinCapacity
 	{
 		get
 		{
@@ -46,7 +46,7 @@ public class HEPFuelTank : KMonoBehaviour, IFuelTank, IUserControlledCapacity
 		}
 	}
 
-		public float MaxCapacity
+			public float MaxCapacity
 	{
 		get
 		{
@@ -54,7 +54,7 @@ public class HEPFuelTank : KMonoBehaviour, IFuelTank, IUserControlledCapacity
 		}
 	}
 
-		public float AmountStored
+			public float AmountStored
 	{
 		get
 		{
@@ -62,7 +62,7 @@ public class HEPFuelTank : KMonoBehaviour, IFuelTank, IUserControlledCapacity
 		}
 	}
 
-		public bool WholeValues
+			public bool WholeValues
 	{
 		get
 		{
@@ -70,7 +70,7 @@ public class HEPFuelTank : KMonoBehaviour, IFuelTank, IUserControlledCapacity
 		}
 	}
 
-		public LocString CapacityUnits
+			public LocString CapacityUnits
 	{
 		get
 		{
@@ -78,7 +78,7 @@ public class HEPFuelTank : KMonoBehaviour, IFuelTank, IUserControlledCapacity
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.GetComponent<RocketModule>().AddModuleCondition(ProcessCondition.ProcessConditionType.RocketStorage, new ConditionProperlyFueled(this));
@@ -95,18 +95,18 @@ public class HEPFuelTank : KMonoBehaviour, IFuelTank, IUserControlledCapacity
 		base.Subscribe<HEPFuelTank>(-1837862626, HEPFuelTank.OnStorageChangedDelegate);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<HEPFuelTank>(-905833192, HEPFuelTank.OnCopySettingsDelegate);
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		this.m_meter.SetPositionPercent(this.hepStorage.Particles / Mathf.Max(1f, this.hepStorage.capacity));
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		HEPFuelTank component = ((GameObject)data).GetComponent<HEPFuelTank>();
 		if (component != null)
@@ -115,24 +115,24 @@ public class HEPFuelTank : KMonoBehaviour, IFuelTank, IUserControlledCapacity
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public HighEnergyParticleStorage hepStorage;
 
-	public float physicalFuelCapacity;
+		public float physicalFuelCapacity;
 
-	private MeterController m_meter;
+		private MeterController m_meter;
 
-	public bool consumeFuelOnLand;
+		public bool consumeFuelOnLand;
 
-	private static readonly EventSystem.IntraObjectHandler<HEPFuelTank> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<HEPFuelTank>(delegate(HEPFuelTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HEPFuelTank> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<HEPFuelTank>(delegate(HEPFuelTank component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<HEPFuelTank> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<HEPFuelTank>(delegate(HEPFuelTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HEPFuelTank> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<HEPFuelTank>(delegate(HEPFuelTank component, object data)
 	{
 		component.OnCopySettings(data);
 	});

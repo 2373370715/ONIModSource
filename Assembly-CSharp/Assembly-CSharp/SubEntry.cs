@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class SubEntry
 {
-	public SubEntry()
+		public SubEntry()
 	{
 	}
 
-	public SubEntry(string id, string parentEntryID, List<ContentContainer> contentContainers, string name)
+		public SubEntry(string id, string parentEntryID, List<ContentContainer> contentContainers, string name)
 	{
 		this.id = id;
 		this.parentEntryID = parentEntryID;
@@ -33,45 +33,45 @@ public class SubEntry
 		}
 	}
 
-			public List<ContentContainer> contentContainers { get; set; }
+				public List<ContentContainer> contentContainers { get; set; }
 
-			public string parentEntryID { get; set; }
+				public string parentEntryID { get; set; }
 
-			public string id { get; set; }
+				public string id { get; set; }
 
-			public string name { get; set; }
+				public string name { get; set; }
 
-			public string title { get; set; }
+				public string title { get; set; }
 
-			public string subtitle { get; set; }
+				public string subtitle { get; set; }
 
-			public Sprite icon { get; set; }
+				public Sprite icon { get; set; }
 
-			public int layoutPriority { get; set; }
+				public int layoutPriority { get; set; }
 
-			public bool disabled { get; set; }
+				public bool disabled { get; set; }
 
-			public string lockID { get; set; }
+				public string lockID { get; set; }
 
-			public string[] dlcIds { get; set; }
+				public string[] dlcIds { get; set; }
 
-			public string[] forbiddenDLCIds { get; set; }
+				public string[] forbiddenDLCIds { get; set; }
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return this.dlcIds;
 	}
 
-	public string[] GetForbiddenDlCIds()
+		public string[] GetForbiddenDlCIds()
 	{
 		return this.forbiddenDLCIds;
 	}
 
-			public string sortString { get; set; }
+				public string sortString { get; set; }
 
-			public bool showBeforeGeneratedCategoryLinks { get; set; }
+				public bool showBeforeGeneratedCategoryLinks { get; set; }
 
-	public ContentContainer lockedContentContainer;
+		public ContentContainer lockedContentContainer;
 
-	public Color iconColor = Color.white;
+		public Color iconColor = Color.white;
 }

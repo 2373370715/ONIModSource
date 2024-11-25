@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RocketEnvelopeWindowTileConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "RocketEnvelopeWindowTile";
 		int width = 1;
@@ -42,7 +42,7 @@ public class RocketEnvelopeWindowTileConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -55,7 +55,7 @@ public class RocketEnvelopeWindowTileConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.Window, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
 		KPrefabID component = go.GetComponent<KPrefabID>();
@@ -65,13 +65,13 @@ public class RocketEnvelopeWindowTileConfig : IBuildingConfig
 		go.GetComponent<Deconstructable>().allowDeconstruction = false;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.AddOrGet<KAnimGridTileVisualizer>();
 	}
 
-	public const string ID = "RocketEnvelopeWindowTile";
+		public const string ID = "RocketEnvelopeWindowTile";
 
-	public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_glass_tops");
+		public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_glass_tops");
 }

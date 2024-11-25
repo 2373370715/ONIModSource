@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class BabyCrabWoodShellConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateLooseEntity("BabyCrabWoodShell", ITEMS.INDUSTRIAL_PRODUCTS.BABY_CRAB_SHELL.VARIANT_WOOD.NAME, ITEMS.INDUSTRIAL_PRODUCTS.BABY_CRAB_SHELL.VARIANT_WOOD.DESC, 10f, true, Assets.GetAnim("crabshells_small_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.9f, 0.6f, true, 0, SimHashes.Creature, new List<Tag>
 		{
@@ -25,19 +25,19 @@ public class BabyCrabWoodShellConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "BabyCrabWoodShell";
+		public const string ID = "BabyCrabWoodShell";
 
-	public static readonly Tag TAG = TagManager.Create("BabyCrabWoodShell");
+		public static readonly Tag TAG = TagManager.Create("BabyCrabWoodShell");
 
-	public const float MASS = 10f;
+		public const float MASS = 10f;
 
-	public const string symbolPrefix = "wood_";
+		public const string symbolPrefix = "wood_";
 }

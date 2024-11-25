@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SolidConduitElementSensorConfig : ConduitSensorConfig
 {
-		protected override ConduitType ConduitType
+			protected override ConduitType ConduitType
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class SolidConduitElementSensorConfig : ConduitSensorConfig
 		}
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef result = base.CreateBuildingDef(SolidConduitElementSensorConfig.ID, "conveyor_element_sensor_kanim", TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER0, MATERIALS.REFINED_METALS, new List<LogicPorts.Port>
 		{
@@ -24,7 +24,7 @@ public class SolidConduitElementSensorConfig : ConduitSensorConfig
 		return result;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		base.DoPostConfigureComplete(go);
 		go.AddOrGet<Filterable>().filterElementState = Filterable.ElementState.Solid;
@@ -34,5 +34,5 @@ public class SolidConduitElementSensorConfig : ConduitSensorConfig
 		conduitElementSensor.defaultState = false;
 	}
 
-	public static string ID = "SolidConduitElementSensor";
+		public static string ID = "SolidConduitElementSensor";
 }

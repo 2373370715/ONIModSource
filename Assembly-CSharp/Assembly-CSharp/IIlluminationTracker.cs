@@ -2,9 +2,9 @@
 
 internal interface IIlluminationTracker
 {
-	string GetIlluminationUILabel();
+		string GetIlluminationUILabel();
 
-	string GetIlluminationUITooltip();
+		string GetIlluminationUITooltip();
 
-	bool ShouldIlluminationUICheckboxBeChecked();
+		bool ShouldIlluminationUICheckboxBeChecked();
 }

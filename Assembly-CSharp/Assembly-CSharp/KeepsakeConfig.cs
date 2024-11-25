@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class KeepsakeConfig : IMultiEntityConfig
 {
-	public List<GameObject> CreatePrefabs()
+		public List<GameObject> CreatePrefabs()
 	{
 		List<GameObject> list = new List<GameObject>();
 		list.Add(KeepsakeConfig.CreateKeepsake("MegaBrain", UI.KEEPSAKES.MEGA_BRAIN.NAME, UI.KEEPSAKES.MEGA_BRAIN.DESCRIPTION, "keepsake_mega_brain_kanim", "idle", "ui", DlcManager.AVAILABLE_ALL_VERSIONS, null, SimHashes.Creature));
@@ -21,7 +21,7 @@ public class KeepsakeConfig : IMultiEntityConfig
 		return list;
 	}
 
-	public static GameObject CreateKeepsake(string id, string name, string desc, string animFile, string initial_anim = "idle", string ui_anim = "ui", string[] dlcIDs = null, KeepsakeConfig.PostInitFn postInitFn = null, SimHashes element = SimHashes.Creature)
+		public static GameObject CreateKeepsake(string id, string name, string desc, string animFile, string initial_anim = "idle", string ui_anim = "ui", string[] dlcIDs = null, KeepsakeConfig.PostInitFn postInitFn = null, SimHashes element = SimHashes.Creature)
 	{
 		if (dlcIDs == null)
 		{
@@ -51,13 +51,13 @@ public class KeepsakeConfig : IMultiEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-		public delegate void PostInitFn(GameObject gameObject);
+			public delegate void PostInitFn(GameObject gameObject);
 }

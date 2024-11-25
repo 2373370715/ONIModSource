@@ -3,12 +3,12 @@ using STRINGS;
 
 public class LogicGateXorConfig : LogicGateBaseConfig
 {
-	protected override LogicGateBase.Op GetLogicOp()
+		protected override LogicGateBase.Op GetLogicOp()
 	{
 		return LogicGateBase.Op.Xor;
 	}
 
-		protected override CellOffset[] InputPortOffsets
+			protected override CellOffset[] InputPortOffsets
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class LogicGateXorConfig : LogicGateBaseConfig
 		}
 	}
 
-		protected override CellOffset[] OutputPortOffsets
+			protected override CellOffset[] OutputPortOffsets
 	{
 		get
 		{
@@ -31,7 +31,7 @@ public class LogicGateXorConfig : LogicGateBaseConfig
 		}
 	}
 
-		protected override CellOffset[] ControlPortOffsets
+			protected override CellOffset[] ControlPortOffsets
 	{
 		get
 		{
@@ -39,7 +39,7 @@ public class LogicGateXorConfig : LogicGateBaseConfig
 		}
 	}
 
-	protected override LogicGate.LogicGateDescriptions GetDescriptions()
+		protected override LogicGate.LogicGateDescriptions GetDescriptions()
 	{
 		return new LogicGate.LogicGateDescriptions
 		{
@@ -52,10 +52,10 @@ public class LogicGateXorConfig : LogicGateBaseConfig
 		};
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		return base.CreateBuildingDef("LogicGateXOR", "logic_xor_kanim", 2, 2);
 	}
 
-	public const string ID = "LogicGateXOR";
+		public const string ID = "LogicGateXOR";
 }

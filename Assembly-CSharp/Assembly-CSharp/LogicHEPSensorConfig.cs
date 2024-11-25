@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class LogicHEPSensorConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicHEPSensorConfig.ID;
 		int width = 1;
@@ -42,7 +42,7 @@ public class LogicHEPSensorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		LogicHEPSensor logicHEPSensor = go.AddOrGet<LogicHEPSensor>();
 		logicHEPSensor.manuallyControlled = false;
@@ -50,7 +50,7 @@ public class LogicHEPSensorConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicHEPSensor";
+		public static string ID = "LogicHEPSensor";
 
-	private static readonly string kanim = "radbolt_sensor_kanim";
+		private static readonly string kanim = "radbolt_sensor_kanim";
 }

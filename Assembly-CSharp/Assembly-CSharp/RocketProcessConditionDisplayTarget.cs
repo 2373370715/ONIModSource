@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class RocketProcessConditionDisplayTarget : KMonoBehaviour, IProcessConditionSet, ISim1000ms
 {
-	public List<ProcessCondition> GetConditionSet(ProcessCondition.ProcessConditionType conditionType)
+		public List<ProcessCondition> GetConditionSet(ProcessCondition.ProcessConditionType conditionType)
 	{
 		if (this.craftModuleInterface == null)
 		{
@@ -12,7 +12,7 @@ public class RocketProcessConditionDisplayTarget : KMonoBehaviour, IProcessCondi
 		return this.craftModuleInterface.GetConditionSet(conditionType);
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		bool flag = false;
 		using (List<ProcessCondition>.Enumerator enumerator = this.GetConditionSet(ProcessCondition.ProcessConditionType.All).GetEnumerator())
@@ -37,7 +37,7 @@ public class RocketProcessConditionDisplayTarget : KMonoBehaviour, IProcessCondi
 		}
 	}
 
-	private CraftModuleInterface craftModuleInterface;
+		private CraftModuleInterface craftModuleInterface;
 
-	private Guid statusHandle = Guid.Empty;
+		private Guid statusHandle = Guid.Empty;
 }

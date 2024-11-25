@@ -10,28 +10,28 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Research")]
 public class Research : KMonoBehaviour, ISaveLoadable
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		Research.Instance = null;
 	}
 
-	public TechInstance GetTechInstance(string techID)
+		public TechInstance GetTechInstance(string techID)
 	{
 		return this.techs.Find((TechInstance match) => match.tech.Id == techID);
 	}
 
-	public bool IsBeingResearched(Tech tech)
+		public bool IsBeingResearched(Tech tech)
 	{
 		return this.activeResearch != null && tech != null && this.activeResearch.tech == tech;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Research.Instance = this;
 		this.researchTypes = new ResearchTypes();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.globalPointInventory == null)
@@ -52,17 +52,17 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public ResearchType GetResearchType(string id)
+		public ResearchType GetResearchType(string id)
 	{
 		return this.researchTypes.GetResearchType(id);
 	}
 
-	public TechInstance GetActiveResearch()
+		public TechInstance GetActiveResearch()
 	{
 		return this.activeResearch;
 	}
 
-	public TechInstance GetTargetResearch()
+		public TechInstance GetTargetResearch()
 	{
 		if (this.queuedTech != null && this.queuedTech.Count > 0)
 		{
@@ -71,7 +71,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		return null;
 	}
 
-	public TechInstance Get(Tech tech)
+		public TechInstance Get(Tech tech)
 	{
 		foreach (TechInstance techInstance in this.techs)
 		{
@@ -83,7 +83,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		return null;
 	}
 
-	public TechInstance GetOrAdd(Tech tech)
+		public TechInstance GetOrAdd(Tech tech)
 	{
 		TechInstance techInstance = this.techs.Find((TechInstance tc) => tc.tech == tech);
 		if (techInstance != null)
@@ -95,7 +95,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		return techInstance2;
 	}
 
-	public void GetNextTech()
+		public void GetNextTech()
 	{
 		if (this.queuedTech.Count > 0)
 		{
@@ -109,7 +109,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		this.SetActiveResearch(null, false);
 	}
 
-	private void AddTechToQueue(Tech tech)
+		private void AddTechToQueue(Tech tech)
 	{
 		TechInstance orAdd = this.GetOrAdd(tech);
 		if (!orAdd.IsComplete() && !this.queuedTech.Contains(orAdd))
@@ -122,7 +122,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		});
 	}
 
-	public void CancelResearch(Tech tech, bool clickedEntry = true)
+		public void CancelResearch(Tech tech, bool clickedEntry = true)
 	{
 		Research.<>c__DisplayClass26_0 CS$<>8__locals1 = new Research.<>c__DisplayClass26_0();
 		CS$<>8__locals1.tech = tech;
@@ -149,7 +149,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void NotifyResearchCenters(GameHashes hash, object data)
+		private void NotifyResearchCenters(GameHashes hash, object data)
 	{
 		foreach (object obj in Components.ResearchCenters)
 		{
@@ -158,7 +158,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		base.Trigger((int)hash, data);
 	}
 
-	public void SetActiveResearch(Tech tech, bool clearQueue = false)
+		public void SetActiveResearch(Tech tech, bool clearQueue = false)
 	{
 		if (clearQueue)
 		{
@@ -187,7 +187,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		this.UpdateResearcherRoleNotification();
 	}
 
-	private void UpdateResearcherRoleNotification()
+		private void UpdateResearcherRoleNotification()
 	{
 		if (this.NoResearcherRoleNotification != null)
 		{
@@ -221,13 +221,13 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private string NoResearcherRoleTooltip(List<Notification> list, object data)
+		private string NoResearcherRoleTooltip(List<Notification> list, object data)
 	{
 		Skill skill = (Skill)data;
 		return RESEARCH.MESSAGING.NO_RESEARCHER_SKILL_TOOLTIP.Replace("{ResearchType}", skill.Name);
 	}
 
-	public void AddResearchPoints(string researchTypeID, float points)
+		public void AddResearchPoints(string researchTypeID, float points)
 	{
 		if (!this.UseGlobalPointInventory && this.activeResearch == null)
 		{
@@ -239,7 +239,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		this.NotifyResearchCenters(GameHashes.ResearchPointsChanged, null);
 	}
 
-	private void CheckBuyResearch()
+		private void CheckBuyResearch()
 	{
 		if (this.activeResearch != null)
 		{
@@ -257,7 +257,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (Game.Instance != null && this.skillsUpdateHandle != -1)
 		{
@@ -268,7 +268,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		base.OnCleanUp();
 	}
 
-	public void CompleteQueue()
+		public void CompleteQueue()
 	{
 		while (this.queuedTech.Count > 0)
 		{
@@ -279,12 +279,12 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public List<TechInstance> GetResearchQueue()
+		public List<TechInstance> GetResearchQueue()
 	{
 		return new List<TechInstance>(this.queuedTech);
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	internal void OnSerializing()
 	{
 		this.saveData = default(Research.SaveData);
@@ -311,7 +311,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	internal void OnDeserialized()
 	{
 		if (this.saveData.techs != null)
@@ -335,12 +335,12 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void OnRolesUpdated(object data)
+		private void OnRolesUpdated(object data)
 	{
 		this.UpdateResearcherRoleNotification();
 	}
 
-	public string GetMissingResearchBuildingName()
+		public string GetMissingResearchBuildingName()
 	{
 		foreach (KeyValuePair<string, float> keyValuePair in this.activeResearch.tech.costsByResearchTypeID)
 		{
@@ -375,7 +375,7 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		return null;
 	}
 
-	private void CheckResearchBuildings(object data)
+		private void CheckResearchBuildings(object data)
 	{
 		if (this.activeResearch == null)
 		{
@@ -390,41 +390,41 @@ public class Research : KMonoBehaviour, ISaveLoadable
 		this.notifier.Add(this.MissingResearchStation, "");
 	}
 
-	public static Research Instance;
+		public static Research Instance;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Notifier notifier;
 
-	private List<TechInstance> techs = new List<TechInstance>();
+		private List<TechInstance> techs = new List<TechInstance>();
 
-	private List<TechInstance> queuedTech = new List<TechInstance>();
+		private List<TechInstance> queuedTech = new List<TechInstance>();
 
-	private TechInstance activeResearch;
+		private TechInstance activeResearch;
 
-	private Notification NoResearcherRoleNotification;
+		private Notification NoResearcherRoleNotification;
 
-	private Notification MissingResearchStation = new Notification(RESEARCH.MESSAGING.MISSING_RESEARCH_STATION, NotificationType.Bad, (List<Notification> list, object data) => RESEARCH.MESSAGING.MISSING_RESEARCH_STATION_TOOLTIP.ToString().Replace("{0}", Research.Instance.GetMissingResearchBuildingName()), null, false, 11f, null, null, null, true, false, false);
+		private Notification MissingResearchStation = new Notification(RESEARCH.MESSAGING.MISSING_RESEARCH_STATION, NotificationType.Bad, (List<Notification> list, object data) => RESEARCH.MESSAGING.MISSING_RESEARCH_STATION_TOOLTIP.ToString().Replace("{0}", Research.Instance.GetMissingResearchBuildingName()), null, false, 11f, null, null, null, true, false, false);
 
-	private List<IResearchCenter> researchCenterPrefabs = new List<IResearchCenter>();
+		private List<IResearchCenter> researchCenterPrefabs = new List<IResearchCenter>();
 
-	protected int skillsUpdateHandle = -1;
+		protected int skillsUpdateHandle = -1;
 
-	public ResearchTypes researchTypes;
+		public ResearchTypes researchTypes;
 
-	public bool UseGlobalPointInventory;
+		public bool UseGlobalPointInventory;
 
-	[Serialize]
+		[Serialize]
 	public ResearchPointInventory globalPointInventory;
 
-	[Serialize]
+		[Serialize]
 	private Research.SaveData saveData;
 
-	private struct SaveData
+		private struct SaveData
 	{
-		public string activeResearchId;
+				public string activeResearchId;
 
-		public string targetResearchId;
+				public string targetResearchId;
 
-		public TechInstance.SaveData[] techs;
+				public TechInstance.SaveData[] techs;
 	}
 }

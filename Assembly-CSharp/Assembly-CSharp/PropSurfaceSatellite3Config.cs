@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PropSurfaceSatellite3Config : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = PropSurfaceSatellite3Config.ID;
 		string name = STRINGS.BUILDINGS.PREFABS.PROPSURFACESATELLITE3.NAME;
@@ -42,7 +42,7 @@ public class PropSurfaceSatellite3Config : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		SetLocker component = inst.GetComponent<SetLocker>();
 		component.possible_contents_ids = PropSurfaceSatellite1Config.GetLockerBaseContents();
@@ -59,7 +59,7 @@ public class PropSurfaceSatellite3Config : IEntityConfig
 		radiationEmitter.emitRads = 2400f / ((float)radiationEmitter.emitRadiusX / 6f);
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		inst.Subscribe(-372600542, delegate(object locker)
 		{
@@ -72,12 +72,12 @@ public class PropSurfaceSatellite3Config : IEntityConfig
 		}
 	}
 
-	private void OnLockerLooted(GameObject inst)
+		private void OnLockerLooted(GameObject inst)
 	{
 		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(ArtifactSelector.Instance.GetUniqueArtifactID(ArtifactType.Any)), inst.transform.position);
 		gameObject.GetComponent<KPrefabID>().AddTag(GameTags.TerrestrialArtifact, true);
 		gameObject.SetActive(true);
 	}
 
-	public static string ID = "PropSurfaceSatellite3";
+		public static string ID = "PropSurfaceSatellite3";
 }

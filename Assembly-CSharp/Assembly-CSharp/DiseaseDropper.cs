@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DiseaseDropper : GameStateMachine<DiseaseDropper, DiseaseDropper.Instance, IStateMachineTarget, DiseaseDropper.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.stopped;
 		this.root.EventHandler(GameHashes.BurstEmitDisease, delegate(DiseaseDropper.Instance smi)
@@ -19,15 +19,15 @@ public class DiseaseDropper : GameStateMachine<DiseaseDropper, DiseaseDropper.In
 		this.stopped.TagTransition(GameTags.PreventEmittingDisease, this.working, true);
 	}
 
-	public GameStateMachine<DiseaseDropper, DiseaseDropper.Instance, IStateMachineTarget, DiseaseDropper.Def>.State working;
+		public GameStateMachine<DiseaseDropper, DiseaseDropper.Instance, IStateMachineTarget, DiseaseDropper.Def>.State working;
 
-	public GameStateMachine<DiseaseDropper, DiseaseDropper.Instance, IStateMachineTarget, DiseaseDropper.Def>.State stopped;
+		public GameStateMachine<DiseaseDropper, DiseaseDropper.Instance, IStateMachineTarget, DiseaseDropper.Def>.State stopped;
 
-	public StateMachine<DiseaseDropper, DiseaseDropper.Instance, IStateMachineTarget, DiseaseDropper.Def>.Signal cellChangedSignal;
+		public StateMachine<DiseaseDropper, DiseaseDropper.Instance, IStateMachineTarget, DiseaseDropper.Def>.Signal cellChangedSignal;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject go)
+				public List<Descriptor> GetDescriptors(GameObject go)
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			if (this.singleEmitQuantity > 0)
@@ -41,32 +41,32 @@ public class DiseaseDropper : GameStateMachine<DiseaseDropper, DiseaseDropper.In
 			return list;
 		}
 
-		public byte diseaseIdx = byte.MaxValue;
+				public byte diseaseIdx = byte.MaxValue;
 
-		public int singleEmitQuantity;
+				public int singleEmitQuantity;
 
-		public int averageEmitPerSecond;
+				public int averageEmitPerSecond;
 
-		public float emitFrequency = 1f;
+				public float emitFrequency = 1f;
 	}
 
-	public new class Instance : GameStateMachine<DiseaseDropper, DiseaseDropper.Instance, IStateMachineTarget, DiseaseDropper.Def>.GameInstance
+		public new class Instance : GameStateMachine<DiseaseDropper, DiseaseDropper.Instance, IStateMachineTarget, DiseaseDropper.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, DiseaseDropper.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, DiseaseDropper.Def def) : base(master, def)
 		{
 		}
 
-		public bool ShouldDropDisease()
+				public bool ShouldDropDisease()
 		{
 			return true;
 		}
 
-		public void DropSingleEmit()
+				public void DropSingleEmit()
 		{
 			this.DropDisease(base.def.diseaseIdx, base.def.singleEmitQuantity);
 		}
 
-		public void DropPeriodic(float dt)
+				public void DropPeriodic(float dt)
 		{
 			this.timeSinceLastDrop += dt;
 			if (base.def.averageEmitPerSecond > 0 && base.def.emitFrequency > 0f)
@@ -79,7 +79,7 @@ public class DiseaseDropper : GameStateMachine<DiseaseDropper, DiseaseDropper.In
 			}
 		}
 
-		public void DropDisease(byte disease_idx, int disease_count)
+				public void DropDisease(byte disease_idx, int disease_count)
 		{
 			if (disease_count <= 0 || disease_idx == 255)
 			{
@@ -93,12 +93,12 @@ public class DiseaseDropper : GameStateMachine<DiseaseDropper, DiseaseDropper.In
 			SimMessages.ModifyDiseaseOnCell(num, disease_idx, disease_count);
 		}
 
-		public bool IsValidDropCell()
+				public bool IsValidDropCell()
 		{
 			int num = Grid.PosToCell(base.transform.GetPosition());
 			return Grid.IsValidCell(num) && Grid.IsGas(num) && Grid.Mass[num] <= 1f;
 		}
 
-		private float timeSinceLastDrop;
+				private float timeSinceLastDrop;
 	}
 }

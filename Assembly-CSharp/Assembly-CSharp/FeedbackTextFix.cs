@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FeedbackTextFix : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		if (!DistributionPlatform.Initialized || !SteamUtils.IsSteamRunningOnSteamDeck())
 		{
@@ -14,7 +14,7 @@ public class FeedbackTextFix : MonoBehaviour
 		this.locText.key = this.newKey;
 	}
 
-	public string newKey;
+		public string newKey;
 
-	public LocText locText;
+		public LocText locText;
 }

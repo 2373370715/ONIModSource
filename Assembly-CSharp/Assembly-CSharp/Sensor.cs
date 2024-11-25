@@ -3,20 +3,29 @@ using UnityEngine;
 
 public class Sensor
 {
-			public string Name { get; private set; }
+				public bool IsEnabled { get; private set; } = true;
 
-	public Sensor(Sensors sensors)
+				public string Name { get; private set; }
+
+		public Sensor(Sensors sensors, bool active)
+	{
+		this.sensors = sensors;
+		this.SetActive(active);
+		this.Name = base.GetType().Name;
+	}
+
+		public Sensor(Sensors sensors)
 	{
 		this.sensors = sensors;
 		this.Name = base.GetType().Name;
 	}
 
-	public ComponentType GetComponent<ComponentType>()
+		public ComponentType GetComponent<ComponentType>()
 	{
 		return this.sensors.GetComponent<ComponentType>();
 	}
 
-		public GameObject gameObject
+			public GameObject gameObject
 	{
 		get
 		{
@@ -24,7 +33,7 @@ public class Sensor
 		}
 	}
 
-		public Transform transform
+			public Transform transform
 	{
 		get
 		{
@@ -32,18 +41,23 @@ public class Sensor
 		}
 	}
 
-	public void Trigger(int hash, object data = null)
+		public void SetActive(bool enabled)
+	{
+		this.IsEnabled = enabled;
+	}
+
+		public void Trigger(int hash, object data = null)
 	{
 		this.sensors.Trigger(hash, data);
 	}
 
-	public virtual void Update()
+		public virtual void Update()
 	{
 	}
 
-	public virtual void ShowEditor()
+		public virtual void ShowEditor()
 	{
 	}
 
-	protected Sensors sensors;
+		protected Sensors sensors;
 }

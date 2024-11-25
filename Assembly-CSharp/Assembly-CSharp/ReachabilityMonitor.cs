@@ -2,7 +2,7 @@
 
 public class ReachabilityMonitor : GameStateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.unreachable;
 		base.serializable = StateMachine.SerializeType.Never;
@@ -17,36 +17,36 @@ public class ReachabilityMonitor : GameStateMachine<ReachabilityMonitor, Reachab
 		}).ParamTransition<bool>(this.isReachable, this.reachable, GameStateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable, object>.IsTrue);
 	}
 
-	public GameStateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable, object>.State reachable;
+		public GameStateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable, object>.State reachable;
 
-	public GameStateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable, object>.State unreachable;
+		public GameStateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable, object>.State unreachable;
 
-	public StateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable, object>.BoolParameter isReachable = new StateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable, object>.BoolParameter(false);
+		public StateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable, object>.BoolParameter isReachable = new StateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable, object>.BoolParameter(false);
 
-	private static ReachabilityMonitor.UpdateReachabilityCB updateReachabilityCB = new ReachabilityMonitor.UpdateReachabilityCB();
+		private static ReachabilityMonitor.UpdateReachabilityCB updateReachabilityCB = new ReachabilityMonitor.UpdateReachabilityCB();
 
-	private class UpdateReachabilityCB : UpdateBucketWithUpdater<ReachabilityMonitor.Instance>.IUpdater
+		private class UpdateReachabilityCB : UpdateBucketWithUpdater<ReachabilityMonitor.Instance>.IUpdater
 	{
-		public void Update(ReachabilityMonitor.Instance smi, float dt)
+				public void Update(ReachabilityMonitor.Instance smi, float dt)
 		{
 			smi.UpdateReachability();
 		}
 	}
 
-	public new class Instance : GameStateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable, object>.GameInstance
+		public new class Instance : GameStateMachine<ReachabilityMonitor, ReachabilityMonitor.Instance, Workable, object>.GameInstance
 	{
-		public Instance(Workable workable) : base(workable)
+				public Instance(Workable workable) : base(workable)
 		{
 			this.UpdateReachability();
 		}
 
-		public void TriggerEvent()
+				public void TriggerEvent()
 		{
 			bool flag = base.sm.isReachable.Get(base.smi);
 			base.Trigger(-1432940121, flag);
 		}
 
-		public void UpdateReachability()
+				public void UpdateReachability()
 		{
 			if (base.master == null)
 			{

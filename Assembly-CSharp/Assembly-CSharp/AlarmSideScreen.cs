@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class AlarmSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.nameInputField.onEndEdit += this.OnEndEditName;
@@ -18,40 +18,40 @@ public class AlarmSideScreen : SideScreenContent
 		this.InitializeToggles();
 	}
 
-	private void OnEndEditName()
+		private void OnEndEditName()
 	{
 		this.targetAlarm.notificationName = this.nameInputField.field.text;
 		this.UpdateNotification(true);
 	}
 
-	private void OnEndEditTooltip()
+		private void OnEndEditTooltip()
 	{
 		this.targetAlarm.notificationTooltip = this.tooltipInputField.field.text;
 		this.UpdateNotification(true);
 	}
 
-	private void TogglePause()
+		private void TogglePause()
 	{
 		this.targetAlarm.pauseOnNotify = !this.targetAlarm.pauseOnNotify;
 		this.pauseCheckmark.enabled = this.targetAlarm.pauseOnNotify;
 		this.UpdateNotification(true);
 	}
 
-	private void ToggleZoom()
+		private void ToggleZoom()
 	{
 		this.targetAlarm.zoomOnNotify = !this.targetAlarm.zoomOnNotify;
 		this.zoomCheckmark.enabled = this.targetAlarm.zoomOnNotify;
 		this.UpdateNotification(true);
 	}
 
-	private void SelectType(NotificationType type)
+		private void SelectType(NotificationType type)
 	{
 		this.targetAlarm.notificationType = type;
 		this.UpdateNotification(true);
 		this.RefreshToggles();
 	}
 
-	private void InitializeToggles()
+		private void InitializeToggles()
 	{
 		if (this.toggles_by_type.Count == 0)
 		{
@@ -107,7 +107,7 @@ public class AlarmSideScreen : SideScreenContent
 		}
 	}
 
-	private void RefreshToggles()
+		private void RefreshToggles()
 	{
 		this.InitializeToggles();
 		foreach (KeyValuePair<NotificationType, MultiToggle> keyValuePair in this.toggles_by_type)
@@ -123,12 +123,12 @@ public class AlarmSideScreen : SideScreenContent
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<LogicAlarm>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.targetAlarm = target.GetComponent<LogicAlarm>();
@@ -136,12 +136,12 @@ public class AlarmSideScreen : SideScreenContent
 		this.UpdateVisuals();
 	}
 
-	private void UpdateNotification(bool clear)
+		private void UpdateNotification(bool clear)
 	{
 		this.targetAlarm.UpdateNotification(clear);
 	}
 
-	private void UpdateVisuals()
+		private void UpdateVisuals()
 	{
 		this.nameInputField.SetDisplayValue(this.targetAlarm.notificationName);
 		this.tooltipInputField.SetDisplayValue(this.targetAlarm.notificationTooltip);
@@ -149,35 +149,35 @@ public class AlarmSideScreen : SideScreenContent
 		this.zoomCheckmark.enabled = this.targetAlarm.zoomOnNotify;
 	}
 
-	public LogicAlarm targetAlarm;
+		public LogicAlarm targetAlarm;
 
-	[SerializeField]
+		[SerializeField]
 	private KInputField nameInputField;
 
-	[SerializeField]
+		[SerializeField]
 	private KInputField tooltipInputField;
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle pauseToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private Image pauseCheckmark;
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle zoomToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private Image zoomCheckmark;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject typeButtonPrefab;
 
-	private List<NotificationType> validTypes = new List<NotificationType>
+		private List<NotificationType> validTypes = new List<NotificationType>
 	{
 		NotificationType.Bad,
 		NotificationType.Neutral,
 		NotificationType.DuplicantThreatening
 	};
 
-	private Dictionary<NotificationType, MultiToggle> toggles_by_type = new Dictionary<NotificationType, MultiToggle>();
+		private Dictionary<NotificationType, MultiToggle> toggles_by_type = new Dictionary<NotificationType, MultiToggle>();
 }

@@ -4,31 +4,31 @@ using UnityEngine;
 [SkipSaveFileSerialization]
 public class Snorer : StateMachineComponent<Snorer.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	private static readonly HashedString HeadHash = "snapTo_mouth";
+		private static readonly HashedString HeadHash = "snapTo_mouth";
 
-	public class StatesInstance : GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer, object>.GameInstance
 	{
-		public StatesInstance(Snorer master) : base(master)
+				public StatesInstance(Snorer master) : base(master)
 		{
 		}
 
-		public bool IsSleeping()
+				public bool IsSleeping()
 		{
 			StaminaMonitor.Instance smi = base.master.GetSMI<StaminaMonitor.Instance>();
 			return smi != null && smi.IsSleeping();
 		}
 
-		public void StartSmallSnore()
+				public void StartSmallSnore()
 		{
 			this.snoreHandle = GameScheduler.Instance.Schedule("snorelines", 2f, new Action<object>(this.StartSmallSnoreInternal), null, null);
 		}
 
-		private void StartSmallSnoreInternal(object data)
+				private void StartSmallSnoreInternal(object data)
 		{
 			this.snoreHandle.ClearScheduler();
 			bool flag;
@@ -43,7 +43,7 @@ public class Snorer : StateMachineComponent<Snorer.StatesInstance>
 			}
 		}
 
-		public void StopSmallSnore()
+				public void StopSmallSnore()
 		{
 			this.snoreHandle.ClearScheduler();
 			if (this.snoreEffect != null)
@@ -53,27 +53,27 @@ public class Snorer : StateMachineComponent<Snorer.StatesInstance>
 			this.snoreEffect = null;
 		}
 
-		public void StartSnoreBGEffect()
+				public void StartSnoreBGEffect()
 		{
 			AcousticDisturbance.Emit(base.smi.master.gameObject, 3);
 		}
 
-		public void StopSnoreBGEffect()
+				public void StopSnoreBGEffect()
 		{
 		}
 
-		private SchedulerHandle snoreHandle;
+				private SchedulerHandle snoreHandle;
 
-		private KBatchedAnimController snoreEffect;
+				private KBatchedAnimController snoreEffect;
 
-		private KBatchedAnimController snoreBGEffect;
+				private KBatchedAnimController snoreBGEffect;
 
-		private const float BGEmissionRadius = 3f;
+				private const float BGEmissionRadius = 3f;
 	}
 
-	public class States : GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer>
+		public class States : GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.root.TagTransition(GameTags.Dead, null, false);
@@ -98,20 +98,20 @@ public class Snorer : StateMachineComponent<Snorer.StatesInstance>
 			});
 		}
 
-		private float GetNewInterval()
+				private float GetNewInterval()
 		{
 			return Mathf.Min(Mathf.Max(Util.GaussianRandom(5f, 1f), 3f), 10f);
 		}
 
-		public GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer, object>.State idle;
+				public GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer, object>.State idle;
 
-		public Snorer.States.SleepStates sleeping;
+				public Snorer.States.SleepStates sleeping;
 
-		public class SleepStates : GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer, object>.State
+				public class SleepStates : GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer, object>.State
 		{
-			public GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer, object>.State quiet;
+						public GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer, object>.State quiet;
 
-			public GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer, object>.State snoring;
+						public GameStateMachine<Snorer.States, Snorer.StatesInstance, Snorer, object>.State snoring;
 		}
 	}
 }

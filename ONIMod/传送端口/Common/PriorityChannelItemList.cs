@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using RsLib.Collections;
 
-
+namespace RsTransferPort;
 
 public class PriorityChannelItemList : IList<PriorityChannelItemInfo> {
     private readonly RsSortedList<PriorityChannelItemInfo> priorityList = new();

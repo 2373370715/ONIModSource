@@ -7,12 +7,12 @@ using UnityEngine;
 
 public class BaseBeeHiveConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreatePlacedEntity("BeeHive", STRINGS.BUILDINGS.PREFABS.BEEHIVE.NAME, STRINGS.BUILDINGS.PREFABS.BEEHIVE.DESC, 100f, Assets.GetAnim("beehive_kanim"), "grow_pre", Grid.SceneLayer.Creatures, 2, 3, TUNING.BUILDINGS.DECOR.BONUS.TIER0, NOISE_POLLUTION.NOISY.TIER0, SimHashes.Creature, null, TUNING.CREATURES.TEMPERATURE.FREEZING_3);
 		gameObject.GetComponent<InfoDescription>().effect = STRINGS.BUILDINGS.PREFABS.BEEHIVE.EFFECT;
@@ -74,7 +74,7 @@ public class BaseBeeHiveConfig : IEntityConfig
 				new Diet.Info(new HashSet<Tag>
 				{
 					BeeHiveTuning.CONSUMED_ORE
-				}, BeeHiveTuning.PRODUCED_ORE, BeeHiveTuning.CALORIES_PER_KG_OF_ORE, BeeHiveTuning.POOP_CONVERSTION_RATE, null, 0f, false, false, false)
+				}, BeeHiveTuning.PRODUCED_ORE, BeeHiveTuning.CALORIES_PER_KG_OF_ORE, BeeHiveTuning.POOP_CONVERSTION_RATE, null, 0f, false, Diet.Info.FoodType.EatSolid, false, null)
 			});
 			gameObject.AddOrGetDef<BeehiveCalorieMonitor.Def>().diet = diet;
 			Trait trait = Db.Get().CreateTrait("BeeHiveBaseTrait", STRINGS.BUILDINGS.PREFABS.BEEHIVE.NAME, STRINGS.BUILDINGS.PREFABS.BEEHIVE.DESC, null, false, null, true, true);
@@ -91,7 +91,7 @@ public class BaseBeeHiveConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
 		{
@@ -99,15 +99,15 @@ public class BaseBeeHiveConfig : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "BeeHive";
+		public const string ID = "BeeHive";
 
-	public const string BASE_TRAIT_ID = "BeeHiveBaseTrait";
+		public const string BASE_TRAIT_ID = "BeeHiveBaseTrait";
 
-	private const int WIDTH = 2;
+		private const int WIDTH = 2;
 
-	private const int HEIGHT = 3;
+		private const int HEIGHT = 3;
 }

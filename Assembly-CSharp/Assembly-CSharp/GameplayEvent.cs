@@ -6,9 +6,9 @@ using UnityEngine;
 [DebuggerDisplay("{base.Id}")]
 public abstract class GameplayEvent : Resource, IComparable<GameplayEvent>
 {
-			public int importance { get; private set; }
+				public int importance { get; private set; }
 
-	public virtual bool IsAllowed()
+		public virtual bool IsAllowed()
 	{
 		if (this.WillNeverRunAgain())
 		{
@@ -29,28 +29,28 @@ public abstract class GameplayEvent : Resource, IComparable<GameplayEvent>
 		return GameUtil.GetCurrentTimeInCycles() >= sleepTimer;
 	}
 
-	public void SetSleepTimer(float timeToSleepUntil)
+		public void SetSleepTimer(float timeToSleepUntil)
 	{
 		GameplayEventManager.Instance.SetSleepTimerForEvent(this, timeToSleepUntil);
 	}
 
-	public virtual bool WillNeverRunAgain()
+		public virtual bool WillNeverRunAgain()
 	{
 		return this.numTimesAllowed != -1 && GameplayEventManager.Instance.NumberOfPastEvents(this.Id) >= this.numTimesAllowed;
 	}
 
-	public int GetCashedPriority()
+		public int GetCashedPriority()
 	{
 		return this.calculatedPriority;
 	}
 
-	public virtual int CalculatePriority()
+		public virtual int CalculatePriority()
 	{
 		this.calculatedPriority = this.basePriority + this.CalculateBoost();
 		return this.calculatedPriority;
 	}
 
-	public int CalculateBoost()
+		public int CalculateBoost()
 	{
 		int num = 0;
 		foreach (GameplayEventPrecondition gameplayEventPrecondition in this.preconditions)
@@ -63,14 +63,14 @@ public abstract class GameplayEvent : Resource, IComparable<GameplayEvent>
 		return num;
 	}
 
-	public GameplayEvent AddPrecondition(GameplayEventPrecondition precondition)
+		public GameplayEvent AddPrecondition(GameplayEventPrecondition precondition)
 	{
 		precondition.required = true;
 		this.preconditions.Add(precondition);
 		return this;
 	}
 
-	public GameplayEvent AddPriorityBoost(GameplayEventPrecondition precondition, int priorityBoost)
+		public GameplayEvent AddPriorityBoost(GameplayEventPrecondition precondition, int priorityBoost)
 	{
 		precondition.required = false;
 		precondition.priorityModifier = priorityBoost;
@@ -78,41 +78,41 @@ public abstract class GameplayEvent : Resource, IComparable<GameplayEvent>
 		return this;
 	}
 
-	public GameplayEvent AddMinionFilter(GameplayEventMinionFilter filter)
+		public GameplayEvent AddMinionFilter(GameplayEventMinionFilter filter)
 	{
 		this.minionFilters.Add(filter);
 		return this;
 	}
 
-	public GameplayEvent TrySpawnEventOnSuccess(HashedString evt)
+		public GameplayEvent TrySpawnEventOnSuccess(HashedString evt)
 	{
 		this.successEvents.Add(evt);
 		return this;
 	}
 
-	public GameplayEvent TrySpawnEventOnFailure(HashedString evt)
+		public GameplayEvent TrySpawnEventOnFailure(HashedString evt)
 	{
 		this.failureEvents.Add(evt);
 		return this;
 	}
 
-	public GameplayEvent SetVisuals(HashedString animFileName)
+		public GameplayEvent SetVisuals(HashedString animFileName)
 	{
 		this.animFileName = animFileName;
 		return this;
 	}
 
-	public virtual Sprite GetDisplaySprite()
+		public virtual Sprite GetDisplaySprite()
 	{
 		return null;
 	}
 
-	public virtual string GetDisplayString()
+		public virtual string GetDisplayString()
 	{
 		return null;
 	}
 
-	public MinionIdentity GetRandomFilteredMinion()
+		public MinionIdentity GetRandomFilteredMinion()
 	{
 		List<MinionIdentity> list = new List<MinionIdentity>(Components.LiveMinionIdentities.Items);
 		using (List<GameplayEventMinionFilter>.Enumerator enumerator = this.minionFilters.GetEnumerator())
@@ -130,7 +130,7 @@ public abstract class GameplayEvent : Resource, IComparable<GameplayEvent>
 		return null;
 	}
 
-	public MinionIdentity GetRandomMinionPrioritizeFiltered()
+		public MinionIdentity GetRandomMinionPrioritizeFiltered()
 	{
 		MinionIdentity randomFilteredMinion = this.GetRandomFilteredMinion();
 		if (!(randomFilteredMinion == null))
@@ -140,12 +140,12 @@ public abstract class GameplayEvent : Resource, IComparable<GameplayEvent>
 		return Components.LiveMinionIdentities.Items[UnityEngine.Random.Range(0, Components.LiveMinionIdentities.Items.Count)];
 	}
 
-	public int CompareTo(GameplayEvent other)
+		public int CompareTo(GameplayEvent other)
 	{
 		return -this.GetCashedPriority().CompareTo(other.GetCashedPriority());
 	}
 
-	public GameplayEvent(string id, int priority, int importance) : base(id, null, null)
+		public GameplayEvent(string id, int priority, int importance) : base(id, null, null)
 	{
 		this.tags = new List<Tag>();
 		this.basePriority = priority;
@@ -157,9 +157,9 @@ public abstract class GameplayEvent : Resource, IComparable<GameplayEvent>
 		this.animFileName = id;
 	}
 
-	public abstract StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance);
+		public abstract StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance);
 
-	public GameplayEventInstance CreateInstance(int worldId)
+		public GameplayEventInstance CreateInstance(int worldId)
 	{
 		GameplayEventInstance gameplayEventInstance = new GameplayEventInstance(this, worldId);
 		if (this.tags != null)
@@ -169,29 +169,29 @@ public abstract class GameplayEvent : Resource, IComparable<GameplayEvent>
 		return gameplayEventInstance;
 	}
 
-	public const int INFINITE = -1;
+		public const int INFINITE = -1;
 
-	public int numTimesAllowed = -1;
+		public int numTimesAllowed = -1;
 
-	public bool allowMultipleEventInstances;
+		public bool allowMultipleEventInstances;
 
-	protected int basePriority;
+		protected int basePriority;
 
-	protected int calculatedPriority;
+		protected int calculatedPriority;
 
-	public List<GameplayEventPrecondition> preconditions;
+		public List<GameplayEventPrecondition> preconditions;
 
-	public List<GameplayEventMinionFilter> minionFilters;
+		public List<GameplayEventMinionFilter> minionFilters;
 
-	public List<HashedString> successEvents;
+		public List<HashedString> successEvents;
 
-	public List<HashedString> failureEvents;
+		public List<HashedString> failureEvents;
 
-	public string title;
+		public string title;
 
-	public string description;
+		public string description;
 
-	public HashedString animFileName;
+		public HashedString animFileName;
 
-	public List<Tag> tags;
+		public List<Tag> tags;
 }

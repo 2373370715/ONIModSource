@@ -2,9 +2,9 @@
 
 namespace Database
 {
-	public class ClothingOutfits : ResourceSet<ClothingOutfitResource>
+		public class ClothingOutfits : ResourceSet<ClothingOutfitResource>
 	{
-		public ClothingOutfits(ResourceSet parent, ClothingItems items_resource) : base("ClothingOutfits", parent)
+				public ClothingOutfits(ResourceSet parent, ClothingItems items_resource) : base("ClothingOutfits", parent)
 		{
 			base.Initialize();
 			this.resources.AddRange(Blueprints.Get().all.outfits);

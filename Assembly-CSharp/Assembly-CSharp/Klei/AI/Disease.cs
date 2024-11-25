@@ -8,10 +8,10 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[DebuggerDisplay("{base.Id}")]
+		[DebuggerDisplay("{base.Id}")]
 	public abstract class Disease : Resource
 	{
-				public new string Name
+						public new string Name
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Klei.AI
 			}
 		}
 
-		public Disease(string id, float strength, Disease.RangeInfo temperature_range, Disease.RangeInfo temperature_half_lives, Disease.RangeInfo pressure_range, Disease.RangeInfo pressure_half_lives, float radiation_kill_rate, bool statsOnly) : base(id, null, null)
+				public Disease(string id, float strength, Disease.RangeInfo temperature_range, Disease.RangeInfo temperature_half_lives, Disease.RangeInfo pressure_range, Disease.RangeInfo pressure_half_lives, float radiation_kill_rate, bool statsOnly) : base(id, null, null)
 		{
 			this.name = new StringKey("STRINGS.DUPLICANTS.DISEASES." + id.ToUpper() + ".NAME");
 			this.id = id;
@@ -50,7 +50,7 @@ namespace Klei.AI
 			}
 		}
 
-		protected virtual void PopulateElemGrowthInfo()
+				protected virtual void PopulateElemGrowthInfo()
 		{
 			this.InitializeElemGrowthArray(ref this.elemGrowthInfo, Disease.DEFAULT_GROWTH_INFO);
 			this.AddGrowthRule(new GrowthRule
@@ -71,7 +71,7 @@ namespace Klei.AI
 			});
 		}
 
-		protected void AddGrowthRule(GrowthRule g)
+				protected void AddGrowthRule(GrowthRule g)
 		{
 			if (this.growthRules == null)
 			{
@@ -93,7 +93,7 @@ namespace Klei.AI
 			this.growthRules.Add(g);
 		}
 
-		protected void AddExposureRule(ExposureRule g)
+				protected void AddExposureRule(ExposureRule g)
 		{
 			if (this.exposureRules == null)
 			{
@@ -108,7 +108,7 @@ namespace Klei.AI
 			this.exposureRules.Add(g);
 		}
 
-		public CompositeGrowthRule GetGrowthRuleForElement(Element e)
+				public CompositeGrowthRule GetGrowthRuleForElement(Element e)
 		{
 			CompositeGrowthRule compositeGrowthRule = new CompositeGrowthRule();
 			if (this.growthRules != null)
@@ -124,7 +124,7 @@ namespace Klei.AI
 			return compositeGrowthRule;
 		}
 
-		public CompositeExposureRule GetExposureRuleForElement(Element e)
+				public CompositeExposureRule GetExposureRuleForElement(Element e)
 		{
 			CompositeExposureRule compositeExposureRule = new CompositeExposureRule();
 			if (this.exposureRules != null)
@@ -140,7 +140,7 @@ namespace Klei.AI
 			return compositeExposureRule;
 		}
 
-		public TagGrowthRule GetGrowthRuleForTag(Tag t)
+				public TagGrowthRule GetGrowthRuleForTag(Tag t)
 		{
 			if (this.growthRules != null)
 			{
@@ -156,7 +156,7 @@ namespace Klei.AI
 			return null;
 		}
 
-		protected void ApplyRules()
+				protected void ApplyRules()
 		{
 			if (this.growthRules != null)
 			{
@@ -174,7 +174,7 @@ namespace Klei.AI
 			}
 		}
 
-		protected void InitializeElemGrowthArray(ref ElemGrowthInfo[] infoArray, ElemGrowthInfo default_value)
+				protected void InitializeElemGrowthArray(ref ElemGrowthInfo[] infoArray, ElemGrowthInfo default_value)
 		{
 			List<Element> elements = ElementLoader.elements;
 			infoArray = new ElemGrowthInfo[elements.Count];
@@ -205,7 +205,7 @@ namespace Klei.AI
 			};
 		}
 
-		protected void InitializeElemExposureArray(ref ElemExposureInfo[] infoArray, ElemExposureInfo default_value)
+				protected void InitializeElemExposureArray(ref ElemExposureInfo[] infoArray, ElemExposureInfo default_value)
 		{
 			List<Element> elements = ElementLoader.elements;
 			infoArray = new ElemExposureInfo[elements.Count];
@@ -215,7 +215,7 @@ namespace Klei.AI
 			}
 		}
 
-		public float GetGrowthRateForTags(HashSet<Tag> tags, bool overpopulated)
+				public float GetGrowthRateForTags(HashSet<Tag> tags, bool overpopulated)
 		{
 			float num = 1f;
 			if (this.growthRules != null)
@@ -232,7 +232,7 @@ namespace Klei.AI
 			return num;
 		}
 
-		public static float HalfLifeToGrowthRate(float half_life_in_seconds, float dt)
+				public static float HalfLifeToGrowthRate(float half_life_in_seconds, float dt)
 		{
 			float result;
 			if (half_life_in_seconds == 0f)
@@ -251,7 +251,7 @@ namespace Klei.AI
 			return result;
 		}
 
-		public static float GrowthRateToHalfLife(float growth_rate)
+				public static float GrowthRateToHalfLife(float growth_rate)
 		{
 			float result;
 			if (growth_rate == 0f)
@@ -269,12 +269,12 @@ namespace Klei.AI
 			return result;
 		}
 
-		public float CalculateTemperatureHalfLife(float temperature)
+				public float CalculateTemperatureHalfLife(float temperature)
 		{
 			return Disease.CalculateRangeHalfLife(temperature, ref this.temperatureRange, ref this.temperatureHalfLives);
 		}
 
-		public static float CalculateRangeHalfLife(float range_value, ref Disease.RangeInfo range, ref Disease.RangeInfo half_lives)
+				public static float CalculateRangeHalfLife(float range_value, ref Disease.RangeInfo range, ref Disease.RangeInfo half_lives)
 		{
 			int num = 3;
 			int num2 = 3;
@@ -312,7 +312,7 @@ namespace Klei.AI
 			return Mathf.Lerp(value, value2, t);
 		}
 
-		public List<Descriptor> GetQuantitativeDescriptors()
+				public List<Descriptor> GetQuantitativeDescriptors()
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			list.Add(new Descriptor(string.Format(DUPLICANTS.DISEASES.DESCRIPTORS.INFO.TEMPERATURE_RANGE, GameUtil.GetFormattedTemperature(this.temperatureRange.minViable, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false), GameUtil.GetFormattedTemperature(this.temperatureRange.maxViable, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false)), string.Format(DUPLICANTS.DISEASES.DESCRIPTORS.INFO.TEMPERATURE_RANGE_TOOLTIP, new object[]
@@ -368,7 +368,7 @@ namespace Klei.AI
 			return list;
 		}
 
-		private List<Descriptor> BuildGrowthInfoDescriptors(List<GrowthRule> rules, string section_text, string section_tooltip, string item_tooltip)
+				private List<Descriptor> BuildGrowthInfoDescriptors(List<GrowthRule> rules, string section_text, string section_tooltip, string item_tooltip)
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			if (rules.Count > 0)
@@ -382,41 +382,41 @@ namespace Klei.AI
 			return list;
 		}
 
-		private StringKey name;
+				private StringKey name;
 
-		public HashedString id;
+				public HashedString id;
 
-		public float strength;
+				public float strength;
 
-		public Disease.RangeInfo temperatureRange;
+				public Disease.RangeInfo temperatureRange;
 
-		public Disease.RangeInfo temperatureHalfLives;
+				public Disease.RangeInfo temperatureHalfLives;
 
-		public Disease.RangeInfo pressureRange;
+				public Disease.RangeInfo pressureRange;
 
-		public Disease.RangeInfo pressureHalfLives;
+				public Disease.RangeInfo pressureHalfLives;
 
-		public List<GrowthRule> growthRules;
+				public List<GrowthRule> growthRules;
 
-		public List<ExposureRule> exposureRules;
+				public List<ExposureRule> exposureRules;
 
-		public ElemGrowthInfo[] elemGrowthInfo;
+				public ElemGrowthInfo[] elemGrowthInfo;
 
-		public ElemExposureInfo[] elemExposureInfo;
+				public ElemExposureInfo[] elemExposureInfo;
 
-		public string overlayColourName;
+				public string overlayColourName;
 
-		public string overlayLegendHovertext;
+				public string overlayLegendHovertext;
 
-		public float radiationKillRate;
+				public float radiationKillRate;
 
-		public Amount amount;
+				public Amount amount;
 
-		public Attribute amountDeltaAttribute;
+				public Attribute amountDeltaAttribute;
 
-		public Attribute cureSpeedBase;
+				public Attribute cureSpeedBase;
 
-		public static readonly ElemGrowthInfo DEFAULT_GROWTH_INFO = new ElemGrowthInfo
+				public static readonly ElemGrowthInfo DEFAULT_GROWTH_INFO = new ElemGrowthInfo
 		{
 			underPopulationDeathRate = 0f,
 			populationHalfLife = float.PositiveInfinity,
@@ -428,14 +428,14 @@ namespace Klei.AI
 			minDiffusionInfestationTickCount = byte.MaxValue
 		};
 
-		public static ElemExposureInfo DEFAULT_EXPOSURE_INFO = new ElemExposureInfo
+				public static ElemExposureInfo DEFAULT_EXPOSURE_INFO = new ElemExposureInfo
 		{
 			populationHalfLife = float.PositiveInfinity
 		};
 
-		public struct RangeInfo
+				public struct RangeInfo
 		{
-			public RangeInfo(float min_viable, float min_growth, float max_growth, float max_viable)
+						public RangeInfo(float min_viable, float min_growth, float max_growth, float max_viable)
 			{
 				this.minViable = min_viable;
 				this.minGrowth = min_growth;
@@ -443,7 +443,7 @@ namespace Klei.AI
 				this.maxViable = max_viable;
 			}
 
-			public void Write(BinaryWriter writer)
+						public void Write(BinaryWriter writer)
 			{
 				writer.Write(this.minViable);
 				writer.Write(this.minGrowth);
@@ -451,7 +451,7 @@ namespace Klei.AI
 				writer.Write(this.maxViable);
 			}
 
-			public float GetValue(int idx)
+						public float GetValue(int idx)
 			{
 				switch (idx)
 				{
@@ -468,18 +468,18 @@ namespace Klei.AI
 				}
 			}
 
-			public static Disease.RangeInfo Idempotent()
+						public static Disease.RangeInfo Idempotent()
 			{
 				return new Disease.RangeInfo(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
 			}
 
-			public float minViable;
+						public float minViable;
 
-			public float minGrowth;
+						public float minGrowth;
 
-			public float maxGrowth;
+						public float maxGrowth;
 
-			public float maxViable;
+						public float maxViable;
 		}
 	}
 }

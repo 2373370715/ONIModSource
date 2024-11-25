@@ -6,12 +6,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/EntitySplitter")]
 public class EntitySplitter : KMonoBehaviour
 {
-	protected static Pickupable OnTakeBehavior(Pickupable p, float a)
+		protected static Pickupable OnTakeBehavior(Pickupable p, float a)
 	{
 		return EntitySplitter.Split(p, a, null);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Pickupable pickupable = base.GetComponent<Pickupable>();
@@ -27,7 +27,7 @@ public class EntitySplitter : KMonoBehaviour
 		base.Subscribe<EntitySplitter>(-2064133523, EntitySplitter.OnAbsorbDelegate);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Pickupable component = base.GetComponent<Pickupable>();
@@ -38,7 +38,7 @@ public class EntitySplitter : KMonoBehaviour
 		}
 	}
 
-	public static bool CanFirstAbsorbSecond(Pickupable pickupable, Rottable.Instance rottable, Pickupable other, float maxStackSize)
+		public static bool CanFirstAbsorbSecond(Pickupable pickupable, Rottable.Instance rottable, Pickupable other, float maxStackSize)
 	{
 		if (other == null)
 		{
@@ -116,7 +116,7 @@ public class EntitySplitter : KMonoBehaviour
 		return true;
 	}
 
-	public static Pickupable Split(Pickupable pickupable, float amount, GameObject prefab = null)
+		public static Pickupable Split(Pickupable pickupable, float amount, GameObject prefab = null)
 	{
 		if (amount >= pickupable.TotalAmount && prefab == null)
 		{
@@ -164,7 +164,7 @@ public class EntitySplitter : KMonoBehaviour
 		return component;
 	}
 
-	private void OnAbsorb(object data)
+		private void OnAbsorb(object data)
 	{
 		Pickupable pickupable = (Pickupable)data;
 		if (pickupable != null)
@@ -199,9 +199,9 @@ public class EntitySplitter : KMonoBehaviour
 		}
 	}
 
-	public float maxStackSize = PrimaryElement.MAX_MASS;
+		public float maxStackSize = PrimaryElement.MAX_MASS;
 
-	private static readonly EventSystem.IntraObjectHandler<EntitySplitter> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<EntitySplitter>(delegate(EntitySplitter component, object data)
+		private static readonly EventSystem.IntraObjectHandler<EntitySplitter> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<EntitySplitter>(delegate(EntitySplitter component, object data)
 	{
 		component.OnAbsorb(data);
 	});

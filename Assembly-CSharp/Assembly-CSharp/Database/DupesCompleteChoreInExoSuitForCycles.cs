@@ -4,14 +4,14 @@ using System.Linq;
 
 namespace Database
 {
-	public class DupesCompleteChoreInExoSuitForCycles : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class DupesCompleteChoreInExoSuitForCycles : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public DupesCompleteChoreInExoSuitForCycles(int numCycles)
+				public DupesCompleteChoreInExoSuitForCycles(int numCycles)
 		{
 			this.numCycles = numCycles;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			Dictionary<int, List<int>> dupesCompleteChoresInSuits = SaveGame.Instance.ColonyAchievementTracker.dupesCompleteChoresInSuits;
 			Dictionary<int, float> dictionary = new Dictionary<int, float>();
@@ -63,12 +63,12 @@ namespace Database
 			return false;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			this.numCycles = reader.ReadInt32();
 		}
 
-		public int GetNumberOfDupesForCycle(int cycle)
+				public int GetNumberOfDupesForCycle(int cycle)
 		{
 			int result = 0;
 			Dictionary<int, List<int>> dupesCompleteChoresInSuits = SaveGame.Instance.ColonyAchievementTracker.dupesCompleteChoresInSuits;
@@ -79,8 +79,8 @@ namespace Database
 			return result;
 		}
 
-		public int currentCycleStreak;
+				public int currentCycleStreak;
 
-		public int numCycles;
+				public int numCycles;
 	}
 }

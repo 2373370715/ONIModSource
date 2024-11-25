@@ -5,7 +5,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class TravellingCargoLander : GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.init;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -59,64 +59,64 @@ public class TravellingCargoLander : GameStateMachine<TravellingCargoLander, Tra
 		this.grounded.empty.PlayAnim("deployed").ParamTransition<bool>(this.hasCargo, this.grounded.loaded, GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.IsTrue);
 	}
 
-	public StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.IntParameter destinationWorld = new StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.IntParameter(-1);
+		public StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.IntParameter destinationWorld = new StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.IntParameter(-1);
 
-	public StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter isLanding = new StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter(false);
+		public StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter isLanding = new StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter(false);
 
-	public StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter isLanded = new StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter(false);
+		public StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter isLanded = new StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter(false);
 
-	public StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter hasCargo = new StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter(false);
+		public StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter hasCargo = new StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.BoolParameter(false);
 
-	public StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.Signal emptyCargo;
+		public StateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.Signal emptyCargo;
 
-	public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State init;
+		public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State init;
 
-	public TravellingCargoLander.TravelStates travel;
+		public TravellingCargoLander.TravelStates travel;
 
-	public TravellingCargoLander.LandingStates landing;
+		public TravellingCargoLander.LandingStates landing;
 
-	public TravellingCargoLander.GroundedStates grounded;
+		public TravellingCargoLander.GroundedStates grounded;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public int landerWidth = 1;
+				public int landerWidth = 1;
 
-		public float landingSpeed = 5f;
+				public float landingSpeed = 5f;
 
-		public bool deployOnLanding;
+				public bool deployOnLanding;
 	}
 
-	public class TravelStates : GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State
+		public class TravelStates : GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State
 	{
-		public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State travelling;
+				public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State travelling;
 
-		public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State transferWorlds;
+				public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State transferWorlds;
 	}
 
-	public class LandingStates : GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State
+		public class LandingStates : GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State
 	{
-		public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State landing;
+				public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State landing;
 
-		public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State impact;
+				public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State impact;
 	}
 
-	public class GroundedStates : GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State
+		public class GroundedStates : GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State
 	{
-		public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State loaded;
+				public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State loaded;
 
-		public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State emptying;
+				public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State emptying;
 
-		public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State empty;
+				public GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.State empty;
 	}
 
-	public class StatesInstance : GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<TravellingCargoLander, TravellingCargoLander.StatesInstance, IStateMachineTarget, TravellingCargoLander.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, TravellingCargoLander.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, TravellingCargoLander.Def def) : base(master, def)
 		{
 			this.animController = base.GetComponent<KBatchedAnimController>();
 		}
 
-		public void Travel(AxialI source, AxialI destination)
+				public void Travel(AxialI source, AxialI destination)
 		{
 			base.GetComponent<BallisticClusterGridEntity>().Configure(source, destination);
 			int asteroidWorldIdAtLocation = ClusterUtil.GetAsteroidWorldIdAtLocation(destination);
@@ -124,14 +124,14 @@ public class TravellingCargoLander : GameStateMachine<TravellingCargoLander, Tra
 			this.GoTo(base.sm.travel);
 		}
 
-		public void StartLand()
+				public void StartLand()
 		{
 			WorldContainer world = ClusterManager.Instance.GetWorld(base.sm.destinationWorld.Get(this));
 			Vector3 position = Grid.CellToPosCBC(ClusterManager.Instance.GetRandomSurfaceCell(world.id, base.def.landerWidth, true), this.animController.sceneLayer);
 			base.transform.SetPosition(position);
 		}
 
-		public bool UpdateLanding(float dt)
+				public bool UpdateLanding(float dt)
 		{
 			if (base.gameObject.GetMyWorld() != null)
 			{
@@ -146,7 +146,7 @@ public class TravellingCargoLander : GameStateMachine<TravellingCargoLander, Tra
 			return false;
 		}
 
-		public void MoveToSpace()
+				public void MoveToSpace()
 		{
 			Pickupable component = base.GetComponent<Pickupable>();
 			if (component != null)
@@ -156,7 +156,7 @@ public class TravellingCargoLander : GameStateMachine<TravellingCargoLander, Tra
 			base.gameObject.transform.SetPosition(new Vector3(-1f, -1f, Grid.GetLayerZ(this.animController.sceneLayer)));
 		}
 
-		public void MoveToWorld()
+				public void MoveToWorld()
 		{
 			Pickupable component = base.GetComponent<Pickupable>();
 			if (component != null)
@@ -165,18 +165,18 @@ public class TravellingCargoLander : GameStateMachine<TravellingCargoLander, Tra
 			}
 		}
 
-		public void ResetAnimPosition()
+				public void ResetAnimPosition()
 		{
 			this.animController.Offset = Vector3.up * this.flightAnimOffset;
 		}
 
-		public void LandingUpdate(float dt)
+				public void LandingUpdate(float dt)
 		{
 			this.flightAnimOffset = Mathf.Max(this.flightAnimOffset - dt * base.def.landingSpeed, 0f);
 			this.ResetAnimPosition();
 		}
 
-		public void DoLand()
+				public void DoLand()
 		{
 			this.animController.Offset = Vector3.zero;
 			OccupyArea component = base.smi.GetComponent<OccupyArea>();
@@ -190,7 +190,7 @@ public class TravellingCargoLander : GameStateMachine<TravellingCargoLander, Tra
 			}
 		}
 
-		public bool CheckIfLoaded()
+				public bool CheckIfLoaded()
 		{
 			bool flag = false;
 			MinionStorage component = base.GetComponent<MinionStorage>();
@@ -210,9 +210,9 @@ public class TravellingCargoLander : GameStateMachine<TravellingCargoLander, Tra
 			return flag;
 		}
 
-		[Serialize]
+				[Serialize]
 		public float flightAnimOffset = 50f;
 
-		public KBatchedAnimController animController;
+				public KBatchedAnimController animController;
 	}
 }

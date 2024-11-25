@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class HoverTextHelper
 {
-	public static void DestroyStatics()
+		public static void DestroyStatics()
 	{
 		HoverTextHelper.cachedElement = null;
 		HoverTextHelper.cachedMass = -1f;
 	}
 
-	public static string[] MassStringsReadOnly(int cell)
+		public static string[] MassStringsReadOnly(int cell)
 	{
 		if (!Grid.IsValidCell(cell))
 		{
@@ -69,9 +69,9 @@ public class HoverTextHelper
 		return HoverTextHelper.massStrings;
 	}
 
-	private static readonly string[] massStrings = new string[4];
+		private static readonly string[] massStrings = new string[4];
 
-	private static readonly string[] invalidCellMassStrings = new string[]
+		private static readonly string[] invalidCellMassStrings = new string[]
 	{
 		"",
 		"",
@@ -79,7 +79,7 @@ public class HoverTextHelper
 		""
 	};
 
-	private static float cachedMass = -1f;
+		private static float cachedMass = -1f;
 
-	private static Element cachedElement;
+		private static Element cachedElement;
 }

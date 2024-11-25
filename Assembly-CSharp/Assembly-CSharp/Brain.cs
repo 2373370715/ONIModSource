@@ -4,12 +4,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Brain")]
 public class Brain : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.prefabId = base.GetComponent<KPrefabID>();
 		this.choreConsumer = base.GetComponent<ChoreConsumer>();
@@ -17,9 +17,9 @@ public class Brain : KMonoBehaviour
 		Components.Brains.Add(this);
 	}
 
-			public event System.Action onPreUpdate;
+				public event System.Action onPreUpdate;
 
-	public virtual void UpdateBrain()
+		public virtual void UpdateBrain()
 	{
 		if (this.onPreUpdate != null)
 		{
@@ -31,12 +31,12 @@ public class Brain : KMonoBehaviour
 		}
 	}
 
-	private bool FindBetterChore(ref Chore.Precondition.Context context)
+		private bool FindBetterChore(ref Chore.Precondition.Context context)
 	{
 		return this.choreConsumer.FindNextChore(ref context);
 	}
 
-	private void UpdateChores()
+		private void UpdateChores()
 	{
 		if (this.prefabId.HasTag(GameTags.PreventChoreInterruption))
 		{
@@ -54,50 +54,50 @@ public class Brain : KMonoBehaviour
 		}
 	}
 
-	public bool IsRunning()
+		public bool IsRunning()
 	{
 		return this.running && !this.suspend;
 	}
 
-	public void Reset(string reason)
+		public void Reset(string reason)
 	{
 		this.Stop("Reset");
 		this.running = true;
 	}
 
-	public void Stop(string reason)
+		public void Stop(string reason)
 	{
 		base.GetComponent<ChoreDriver>().StopChore();
 		this.running = false;
 	}
 
-	public void Resume(string caller)
+		public void Resume(string caller)
 	{
 		this.suspend = false;
 	}
 
-	public void Suspend(string caller)
+		public void Suspend(string caller)
 	{
 		this.suspend = true;
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		this.Stop("OnCmpDisable");
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.Stop("OnCleanUp");
 		Components.Brains.Remove(this);
 	}
 
-	private bool running;
+		private bool running;
 
-	private bool suspend;
+		private bool suspend;
 
-	protected KPrefabID prefabId;
+		protected KPrefabID prefabId;
 
-	protected ChoreConsumer choreConsumer;
+		protected ChoreConsumer choreConsumer;
 }

@@ -8,9 +8,9 @@ using UnityEngine.UI;
 [Serializable]
 public class CrewPortrait : KMonoBehaviour
 {
-			public IAssignableIdentity identityObject { get; private set; }
+				public IAssignableIdentity identityObject { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (this.startTransparent)
@@ -20,7 +20,7 @@ public class CrewPortrait : KMonoBehaviour
 		this.requiresRefresh = true;
 	}
 
-	private IEnumerator AlphaIn()
+		private IEnumerator AlphaIn()
 	{
 		this.SetAlpha(0f);
 		for (float i = 0f; i < 1f; i += Time.unscaledDeltaTime * 4f)
@@ -32,7 +32,7 @@ public class CrewPortrait : KMonoBehaviour
 		yield break;
 	}
 
-	private void OnRoleChanged(object data)
+		private void OnRoleChanged(object data)
 	{
 		if (this.controller == null)
 		{
@@ -41,7 +41,7 @@ public class CrewPortrait : KMonoBehaviour
 		CrewPortrait.RefreshHat(this.identityObject, this.controller);
 	}
 
-	private void RegisterEvents()
+		private void RegisterEvents()
 	{
 		if (this.areEventsRegistered)
 		{
@@ -56,7 +56,7 @@ public class CrewPortrait : KMonoBehaviour
 		this.areEventsRegistered = true;
 	}
 
-	private void UnregisterEvents()
+		private void UnregisterEvents()
 	{
 		if (!this.areEventsRegistered)
 		{
@@ -71,26 +71,26 @@ public class CrewPortrait : KMonoBehaviour
 		kmonoBehaviour.Unsubscribe(540773776, new Action<object>(this.OnRoleChanged));
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		this.RegisterEvents();
 		this.ForceRefresh();
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		this.UnregisterEvents();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		this.UnregisterEvents();
 	}
 
-	public void SetIdentityObject(IAssignableIdentity identity, bool jobEnabled = true)
+		public void SetIdentityObject(IAssignableIdentity identity, bool jobEnabled = true)
 	{
 		this.UnregisterEvents();
 		this.identityObject = identity;
@@ -107,7 +107,7 @@ public class CrewPortrait : KMonoBehaviour
 		this.requiresRefresh = true;
 	}
 
-	public void SetSubTitle(string newTitle)
+		public void SetSubTitle(string newTitle)
 	{
 		if (this.subTitle != null)
 		{
@@ -121,7 +121,7 @@ public class CrewPortrait : KMonoBehaviour
 		}
 	}
 
-	public void SetDuplicantJobTitleActive(bool state)
+		public void SetDuplicantJobTitleActive(bool state)
 	{
 		if (this.duplicantJob != null && this.duplicantJob.gameObject.activeInHierarchy != state)
 		{
@@ -129,12 +129,12 @@ public class CrewPortrait : KMonoBehaviour
 		}
 	}
 
-	public void ForceRefresh()
+		public void ForceRefresh()
 	{
 		this.requiresRefresh = true;
 	}
 
-	public void Update()
+		public void Update()
 	{
 		if (this.requiresRefresh && (this.controller == null || this.controller.enabled))
 		{
@@ -143,7 +143,7 @@ public class CrewPortrait : KMonoBehaviour
 		}
 	}
 
-	private void Rebuild()
+		private void Rebuild()
 	{
 		if (this.controller == null)
 		{
@@ -170,7 +170,7 @@ public class CrewPortrait : KMonoBehaviour
 		}
 	}
 
-	private static void RefreshHat(IAssignableIdentity identityObject, KBatchedAnimController controller)
+		private static void RefreshHat(IAssignableIdentity identityObject, KBatchedAnimController controller)
 	{
 		string hat_id = "";
 		MinionIdentity minionIdentity = identityObject as MinionIdentity;
@@ -185,7 +185,7 @@ public class CrewPortrait : KMonoBehaviour
 		MinionResume.ApplyHat(hat_id, controller);
 	}
 
-	public static void SetPortraitData(IAssignableIdentity identityObject, KBatchedAnimController controller, bool useDefaultExpression = true)
+		public static void SetPortraitData(IAssignableIdentity identityObject, KBatchedAnimController controller, bool useDefaultExpression = true)
 	{
 		if (identityObject == null)
 		{
@@ -272,7 +272,7 @@ public class CrewPortrait : KMonoBehaviour
 		controller.SetSymbolVisiblity("snapTo_goggles", false);
 	}
 
-	public void SetAlpha(float value)
+		public void SetAlpha(float value)
 	{
 		if (this.controller == null)
 		{
@@ -284,26 +284,26 @@ public class CrewPortrait : KMonoBehaviour
 		}
 	}
 
-	public Image targetImage;
+		public Image targetImage;
 
-	public bool startTransparent;
+		public bool startTransparent;
 
-	public bool useLabels = true;
+		public bool useLabels = true;
 
-	[SerializeField]
+		[SerializeField]
 	public KBatchedAnimController controller;
 
-	public float animScaleBase = 0.2f;
+		public float animScaleBase = 0.2f;
 
-	public LocText duplicantName;
+		public LocText duplicantName;
 
-	public LocText duplicantJob;
+		public LocText duplicantJob;
 
-	public LocText subTitle;
+		public LocText subTitle;
 
-	public bool useDefaultExpression = true;
+		public bool useDefaultExpression = true;
 
-	private bool requiresRefresh;
+		private bool requiresRefresh;
 
-	private bool areEventsRegistered;
+		private bool areEventsRegistered;
 }

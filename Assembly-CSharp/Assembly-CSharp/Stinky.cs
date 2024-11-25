@@ -6,12 +6,12 @@ using UnityEngine;
 [SkipSaveFileSerialization]
 public class Stinky : StateMachineComponent<Stinky.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	private void Emit(object data)
+		private void Emit(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		Components.Cmps<MinionIdentity> liveMinionIdentities = Components.LiveMinionIdentities;
@@ -35,7 +35,7 @@ public class Stinky : StateMachineComponent<Stinky.StatesInstance>
 		SimMessages.AddRemoveSubstance(gameCell, SimHashes.ContaminatedOxygen, CellEventLogger.Instance.ElementConsumerSimUpdate, 0.0025000002f, value, byte.MaxValue, 0, true, -1);
 		GameObject gameObject2 = gameObject;
 		bool flag = SoundEvent.ObjectIsSelectedAndVisible(gameObject2);
-		Vector3 vector = gameObject2.GetComponent<Transform>().GetPosition();
+		Vector3 vector = gameObject2.transform.GetPosition();
 		float volume = 1f;
 		if (flag)
 		{
@@ -49,33 +49,33 @@ public class Stinky : StateMachineComponent<Stinky.StatesInstance>
 		KFMOD.PlayOneShot(GlobalAssets.GetSound("Dupe_Flatulence", false), vector, volume);
 	}
 
-	private const float EmitMass = 0.0025000002f;
+		private const float EmitMass = 0.0025000002f;
 
-	private const SimHashes EmitElement = SimHashes.ContaminatedOxygen;
+		private const SimHashes EmitElement = SimHashes.ContaminatedOxygen;
 
-	private const float EmissionRadius = 1.5f;
+		private const float EmissionRadius = 1.5f;
 
-	private const float MaxDistanceSq = 2.25f;
+		private const float MaxDistanceSq = 2.25f;
 
-	private KBatchedAnimController stinkyController;
+		private KBatchedAnimController stinkyController;
 
-	private static readonly HashedString[] WorkLoopAnims = new HashedString[]
+		private static readonly HashedString[] WorkLoopAnims = new HashedString[]
 	{
 		"working_pre",
 		"working_loop",
 		"working_pst"
 	};
 
-	public class StatesInstance : GameStateMachine<Stinky.States, Stinky.StatesInstance, Stinky, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Stinky.States, Stinky.StatesInstance, Stinky, object>.GameInstance
 	{
-		public StatesInstance(Stinky master) : base(master)
+				public StatesInstance(Stinky master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<Stinky.States, Stinky.StatesInstance, Stinky>
+		public class States : GameStateMachine<Stinky.States, Stinky.StatesInstance, Stinky>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.root.TagTransition(GameTags.Dead, null, false).Enter(delegate(Stinky.StatesInstance smi)
@@ -100,13 +100,13 @@ public class Stinky : StateMachineComponent<Stinky.StatesInstance>
 			}).ToggleExpression(Db.Get().Expressions.Relief, null).ScheduleGoTo(3f, this.idle);
 		}
 
-		private float GetNewInterval()
+				private float GetNewInterval()
 		{
 			return Mathf.Min(Mathf.Max(Util.GaussianRandom(TRAITS.STINKY_EMIT_INTERVAL_MAX - TRAITS.STINKY_EMIT_INTERVAL_MIN, 1f), TRAITS.STINKY_EMIT_INTERVAL_MIN), TRAITS.STINKY_EMIT_INTERVAL_MAX);
 		}
 
-		public GameStateMachine<Stinky.States, Stinky.StatesInstance, Stinky, object>.State idle;
+				public GameStateMachine<Stinky.States, Stinky.StatesInstance, Stinky, object>.State idle;
 
-		public GameStateMachine<Stinky.States, Stinky.StatesInstance, Stinky, object>.State emit;
+				public GameStateMachine<Stinky.States, Stinky.StatesInstance, Stinky, object>.State emit;
 	}
 }

@@ -5,12 +5,12 @@ using UnityEngine;
 
 public static class ThrivingSequence
 {
-	public static void Start(KMonoBehaviour controller)
+		public static void Start(KMonoBehaviour controller)
 	{
 		controller.StartCoroutine(ThrivingSequence.Sequence());
 	}
 
-	private static IEnumerator Sequence()
+		private static IEnumerator Sequence()
 	{
 		if (!SpeedControlScreen.Instance.IsPaused)
 		{

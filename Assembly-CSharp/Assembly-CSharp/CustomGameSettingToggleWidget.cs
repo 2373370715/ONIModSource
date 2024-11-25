@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class CustomGameSettingToggleWidget : CustomGameSettingWidget
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		MultiToggle toggle = this.Toggle;
 		toggle.onClick = (System.Action)Delegate.Combine(toggle.onClick, new System.Action(this.ToggleSetting));
 	}
 
-	public void Initialize(ToggleSettingConfig config, Func<SettingConfig, SettingLevel> getCurrentSettingCallback, Func<ToggleSettingConfig, SettingLevel> toggleCallback)
+		public void Initialize(ToggleSettingConfig config, Func<SettingConfig, SettingLevel> getCurrentSettingCallback, Func<ToggleSettingConfig, SettingLevel> toggleCallback)
 	{
 		this.config = config;
 		this.Label.text = config.label;
@@ -20,7 +20,7 @@ public class CustomGameSettingToggleWidget : CustomGameSettingWidget
 		this.toggleCallback = toggleCallback;
 	}
 
-	public override void Refresh()
+		public override void Refresh()
 	{
 		base.Refresh();
 		SettingLevel settingLevel = this.getCurrentSettingCallback(this.config);
@@ -28,27 +28,27 @@ public class CustomGameSettingToggleWidget : CustomGameSettingWidget
 		this.ToggleToolTip.toolTip = settingLevel.tooltip;
 	}
 
-	public void ToggleSetting()
+		public void ToggleSetting()
 	{
 		this.toggleCallback(this.config);
 		base.Notify();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText Label;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip ToolTip;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle Toggle;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip ToggleToolTip;
 
-	private ToggleSettingConfig config;
+		private ToggleSettingConfig config;
 
-	protected Func<SettingConfig, SettingLevel> getCurrentSettingCallback;
+		protected Func<SettingConfig, SettingLevel> getCurrentSettingCallback;
 
-	protected Func<ToggleSettingConfig, SettingLevel> toggleCallback;
+		protected Func<ToggleSettingConfig, SettingLevel> toggleCallback;
 }

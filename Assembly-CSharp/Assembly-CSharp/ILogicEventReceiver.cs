@@ -2,7 +2,7 @@
 
 public interface ILogicEventReceiver : ILogicNetworkConnection
 {
-	void ReceiveLogicEvent(int value);
+		void ReceiveLogicEvent(int value);
 
-	int GetLogicCell();
+		int GetLogicCell();
 }

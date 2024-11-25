@@ -7,12 +7,12 @@ using UnityEngine.UI;
 [Serializable]
 public class GraphedBar : KMonoBehaviour
 {
-	public void SetFormat(GraphedBarFormatting format)
+		public void SetFormat(GraphedBarFormatting format)
 	{
 		this.format = format;
 	}
 
-	public void SetValues(int[] values, float x_position)
+		public void SetValues(int[] values, float x_position)
 	{
 		this.ClearValues();
 		base.gameObject.rectTransform().anchorMin = new Vector2(x_position, 0f);
@@ -29,7 +29,7 @@ public class GraphedBar : KMonoBehaviour
 		}
 	}
 
-	public void ClearValues()
+		public void ClearValues()
 	{
 		foreach (GameObject obj in this.segments)
 		{
@@ -38,11 +38,11 @@ public class GraphedBar : KMonoBehaviour
 		this.segments.Clear();
 	}
 
-	public GameObject segments_container;
+		public GameObject segments_container;
 
-	public GameObject prefab_segment;
+		public GameObject prefab_segment;
 
-	private List<GameObject> segments = new List<GameObject>();
+		private List<GameObject> segments = new List<GameObject>();
 
-	private GraphedBarFormatting format;
+		private GraphedBarFormatting format;
 }

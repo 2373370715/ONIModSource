@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicWireBridgeConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LogicWireBridge";
 		int width = 3;
@@ -42,32 +42,32 @@ public class LogicWireBridgeConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		this.AddNetworkLink(go).visualizeOnly = true;
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		this.AddNetworkLink(go).visualizeOnly = true;
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		this.AddNetworkLink(go).visualizeOnly = false;
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	private LogicUtilityNetworkLink AddNetworkLink(GameObject go)
+		private LogicUtilityNetworkLink AddNetworkLink(GameObject go)
 	{
 		LogicUtilityNetworkLink logicUtilityNetworkLink = go.AddOrGet<LogicUtilityNetworkLink>();
 		logicUtilityNetworkLink.bitDepth = LogicWire.BitDepth.OneBit;
@@ -76,7 +76,7 @@ public class LogicWireBridgeConfig : IBuildingConfig
 		return logicUtilityNetworkLink;
 	}
 
-	public const string ID = "LogicWireBridge";
+		public const string ID = "LogicWireBridge";
 
-	public static readonly HashedString BRIDGE_LOGIC_IO_ID = new HashedString("BRIDGE_LOGIC_IO");
+		public static readonly HashedString BRIDGE_LOGIC_IO_ID = new HashedString("BRIDGE_LOGIC_IO");
 }

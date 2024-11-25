@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using RsLib.Adapter;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 
 public class PriorityBar : MonoBehaviour {
     private readonly int[] statesCache = new int[9];

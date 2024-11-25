@@ -3,7 +3,7 @@ using UnityEngine;
 
 public struct GravityComponent
 {
-	public GravityComponent(Transform transform, System.Action on_landed, Vector2 initial_velocity, bool land_on_fake_floors, bool mayLeaveWorld)
+		public GravityComponent(Transform transform, System.Action on_landed, Vector2 initial_velocity, bool land_on_fake_floors, bool mayLeaveWorld)
 	{
 		this.transform = transform;
 		this.elapsedTime = 0f;
@@ -15,7 +15,7 @@ public struct GravityComponent
 		this.extents = GravityComponent.GetExtents(this.collider2D);
 	}
 
-	public static float GetGroundOffset(KCollider2D collider)
+		public static float GetGroundOffset(KCollider2D collider)
 	{
 		if (collider != null)
 		{
@@ -24,7 +24,7 @@ public struct GravityComponent
 		return 0f;
 	}
 
-	public static float GetGroundOffset(GravityComponent gravityComponent)
+		public static float GetGroundOffset(GravityComponent gravityComponent)
 	{
 		if (gravityComponent.collider2D != null)
 		{
@@ -33,7 +33,7 @@ public struct GravityComponent
 		return 0f;
 	}
 
-	public static Vector2 GetExtents(KCollider2D collider)
+		public static Vector2 GetExtents(KCollider2D collider)
 	{
 		if (collider != null)
 		{
@@ -42,7 +42,7 @@ public struct GravityComponent
 		return Vector2.zero;
 	}
 
-	public static Vector2 GetOffset(KCollider2D collider)
+		public static Vector2 GetOffset(KCollider2D collider)
 	{
 		if (collider != null)
 		{
@@ -51,19 +51,19 @@ public struct GravityComponent
 		return Vector2.zero;
 	}
 
-	public Transform transform;
+		public Transform transform;
 
-	public Vector2 velocity;
+		public Vector2 velocity;
 
-	public float elapsedTime;
+		public float elapsedTime;
 
-	public System.Action onLanded;
+		public System.Action onLanded;
 
-	public bool landOnFakeFloors;
+		public bool landOnFakeFloors;
 
-	public bool mayLeaveWorld;
+		public bool mayLeaveWorld;
 
-	public Vector2 extents;
+		public Vector2 extents;
 
-	public KCollider2D collider2D;
+		public KCollider2D collider2D;
 }

@@ -7,11 +7,11 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	[AddComponentMenu("KMonoBehaviour/scripts/Modifiers")]
 	public class Modifiers : KMonoBehaviour, ISaveLoadableDetails
 	{
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			base.OnPrefabInit();
 			this.amounts = new Amounts(base.gameObject);
@@ -46,29 +46,29 @@ namespace Klei.AI
 			}
 		}
 
-		public float GetPreModifiedAttributeValue(Attribute attribute)
+				public float GetPreModifiedAttributeValue(Attribute attribute)
 		{
 			return AttributeInstance.GetTotalValue(attribute, this.GetPreModifiers(attribute));
 		}
 
-		public string GetPreModifiedAttributeFormattedValue(Attribute attribute)
+				public string GetPreModifiedAttributeFormattedValue(Attribute attribute)
 		{
 			float totalValue = AttributeInstance.GetTotalValue(attribute, this.GetPreModifiers(attribute));
 			return attribute.formatter.GetFormattedValue(totalValue, attribute.formatter.DeltaTimeSlice);
 		}
 
-		public string GetPreModifiedAttributeDescription(Attribute attribute)
+				public string GetPreModifiedAttributeDescription(Attribute attribute)
 		{
 			float totalValue = AttributeInstance.GetTotalValue(attribute, this.GetPreModifiers(attribute));
 			return string.Format(DUPLICANTS.ATTRIBUTES.VALUE, attribute.Name, attribute.formatter.GetFormattedValue(totalValue, GameUtil.TimeSlice.None));
 		}
 
-		public string GetPreModifiedAttributeToolTip(Attribute attribute)
+				public string GetPreModifiedAttributeToolTip(Attribute attribute)
 		{
 			return attribute.formatter.GetTooltip(attribute, this.GetPreModifiers(attribute), null);
 		}
 
-		public List<AttributeModifier> GetPreModifiers(Attribute attribute)
+				public List<AttributeModifier> GetPreModifiers(Attribute attribute)
 		{
 			List<AttributeModifier> list = new List<AttributeModifier>();
 			foreach (string id in this.initialTraits)
@@ -98,29 +98,29 @@ namespace Klei.AI
 			return list;
 		}
 
-		public void Serialize(BinaryWriter writer)
+				public void Serialize(BinaryWriter writer)
 		{
 			this.OnSerialize(writer);
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			this.OnDeserialize(reader);
 		}
 
-		public virtual void OnSerialize(BinaryWriter writer)
+				public virtual void OnSerialize(BinaryWriter writer)
 		{
 			this.amounts.Serialize(writer);
 			this.sicknesses.Serialize(writer);
 		}
 
-		public virtual void OnDeserialize(IReader reader)
+				public virtual void OnDeserialize(IReader reader)
 		{
 			this.amounts.Deserialize(reader);
 			this.sicknesses.Deserialize(reader);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.OnCleanUp();
 			if (this.amounts != null)
@@ -129,16 +129,16 @@ namespace Klei.AI
 			}
 		}
 
-		public Amounts amounts;
+				public Amounts amounts;
 
-		public Attributes attributes;
+				public Attributes attributes;
 
-		public Sicknesses sicknesses;
+				public Sicknesses sicknesses;
 
-		public List<string> initialTraits = new List<string>();
+				public List<string> initialTraits = new List<string>();
 
-		public List<string> initialAmounts = new List<string>();
+				public List<string> initialAmounts = new List<string>();
 
-		public List<string> initialAttributes = new List<string>();
+				public List<string> initialAttributes = new List<string>();
 	}
 }

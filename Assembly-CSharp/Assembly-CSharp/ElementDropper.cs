@@ -4,13 +4,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ElementDropper")]
 public class ElementDropper : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<ElementDropper>(-1697596308, ElementDropper.OnStorageChangedDelegate);
 	}
 
-	private void OnStorageChanged(object data)
+		private void OnStorageChanged(object data)
 	{
 		if (this.storage.GetMassAvailable(this.emitTag) >= this.emitMass)
 		{
@@ -18,19 +18,19 @@ public class ElementDropper : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public Tag emitTag;
 
-	[SerializeField]
+		[SerializeField]
 	public float emitMass;
 
-	[SerializeField]
+		[SerializeField]
 	public Vector3 emitOffset = Vector3.zero;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	private static readonly EventSystem.IntraObjectHandler<ElementDropper> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<ElementDropper>(delegate(ElementDropper component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ElementDropper> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<ElementDropper>(delegate(ElementDropper component, object data)
 	{
 		component.OnStorageChanged(data);
 	});

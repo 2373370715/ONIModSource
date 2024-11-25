@@ -4,14 +4,14 @@ using UnityEngine;
 
 public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 {
-	private static bool TagContainsSearchWord(Tag tag, string search)
+		private static bool TagContainsSearchWord(Tag tag, string search)
 	{
 		return string.IsNullOrEmpty(search) || tag.ProperNameStripLink().ToUpper().Contains(search.ToUpper());
 	}
 
-			private protected SingleItemSelectionRow CurrentSelectedItem { protected get; private set; }
+				private protected SingleItemSelectionRow CurrentSelectedItem { protected get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		if (this.searchbar != null)
 		{
@@ -22,12 +22,12 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		base.OnPrefabInit();
 	}
 
-	protected virtual void OnSearchbarEditStateChanged(bool isEditing)
+		protected virtual void OnSearchbarEditStateChanged(bool isEditing)
 	{
 		base.isEditing = isEditing;
 	}
 
-	protected virtual void OnSearchBarValueChanged(string value)
+		protected virtual void OnSearchBarValueChanged(string value)
 	{
 		foreach (Tag tag in this.categories.Keys)
 		{
@@ -39,7 +39,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		}
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		if (base.isEditing)
 		{
@@ -48,7 +48,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		return base.GetSortKey();
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.Consumed)
 		{
@@ -60,7 +60,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		}
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (e.Consumed)
 		{
@@ -72,7 +72,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		}
 	}
 
-	public virtual void SetData(Dictionary<Tag, HashSet<Tag>> data)
+		public virtual void SetData(Dictionary<Tag, HashSet<Tag>> data)
 	{
 		this.ProhibitAllCategories();
 		foreach (Tag tag in data.Keys)
@@ -87,7 +87,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		}
 	}
 
-	public virtual SingleItemSelectionSideScreenBase.Category CreateCategoryWithItems(Tag categoryTag, ICollection<Tag> items)
+		public virtual SingleItemSelectionSideScreenBase.Category CreateCategoryWithItems(Tag categoryTag, ICollection<Tag> items)
 	{
 		SingleItemSelectionSideScreenBase.Category orCreateEmptyCategory = this.GetOrCreateEmptyCategory(categoryTag);
 		if (!orCreateEmptyCategory.InitializeItemList(items.Count))
@@ -102,7 +102,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		return orCreateEmptyCategory;
 	}
 
-	public virtual SingleItemSelectionSideScreenBase.Category GetOrCreateEmptyCategory(Tag categoryTag)
+		public virtual SingleItemSelectionSideScreenBase.Category GetOrCreateEmptyCategory(Tag categoryTag)
 	{
 		this.original_CategoryRow.gameObject.SetActive(false);
 		SingleItemSelectionSideScreenBase.Category category = null;
@@ -124,7 +124,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		return category;
 	}
 
-	public virtual SingleItemSelectionRow GetOrCreateItemRow(Tag itemTag)
+		public virtual SingleItemSelectionRow GetOrCreateItemRow(Tag itemTag)
 	{
 		this.original_ItemRow.gameObject.SetActive(false);
 		SingleItemSelectionRow singleItemSelectionRow = null;
@@ -147,7 +147,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		return singleItemSelectionRow;
 	}
 
-	public SingleItemSelectionSideScreenBase.Category GetCategoryWithItem(Tag itemTag, bool includeNotVisibleCategories = false)
+		public SingleItemSelectionSideScreenBase.Category GetCategoryWithItem(Tag itemTag, bool includeNotVisibleCategories = false)
 	{
 		foreach (SingleItemSelectionSideScreenBase.Category category in this.categories.Values)
 		{
@@ -159,7 +159,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		return null;
 	}
 
-	public virtual void SetSelectedItem(SingleItemSelectionRow itemRow)
+		public virtual void SetSelectedItem(SingleItemSelectionRow itemRow)
 	{
 		if (this.CurrentSelectedItem != null)
 		{
@@ -172,7 +172,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		}
 	}
 
-	public virtual bool SetSelectedItem(Tag itemTag)
+		public virtual bool SetSelectedItem(Tag itemTag)
 	{
 		foreach (Tag key in this.categories.Keys)
 		{
@@ -190,17 +190,17 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		return false;
 	}
 
-	public virtual void ItemRowClicked(SingleItemSelectionRow rowClicked)
+		public virtual void ItemRowClicked(SingleItemSelectionRow rowClicked)
 	{
 		this.SetSelectedItem(rowClicked);
 	}
 
-	public virtual void CategoryToggleClicked(SingleItemSelectionSideScreenBase.Category categoryClicked)
+		public virtual void CategoryToggleClicked(SingleItemSelectionSideScreenBase.Category categoryClicked)
 	{
 		categoryClicked.ToggleUnfoldedState();
 	}
 
-	private void RecycleItemRow(SingleItemSelectionRow row)
+		private void RecycleItemRow(SingleItemSelectionRow row)
 	{
 		if (this.pooledRows.ContainsKey(row.tag))
 		{
@@ -217,7 +217,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		this.pooledRows.Add(row.tag, row);
 	}
 
-	private void ProhibitAllCategories()
+		private void ProhibitAllCategories()
 	{
 		foreach (SingleItemSelectionSideScreenBase.Category category in this.categories.Values)
 		{
@@ -225,7 +225,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		}
 	}
 
-	public virtual void SortAll()
+		public virtual void SortAll()
 	{
 		foreach (SingleItemSelectionSideScreenBase.Category category in this.categories.Values)
 		{
@@ -237,37 +237,37 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 		}
 	}
 
-	[Space]
+		[Space]
 	[Header("Settings")]
 	[SerializeField]
 	private SearchBar searchbar;
 
-	[SerializeField]
+		[SerializeField]
 	protected HierarchyReferences original_CategoryRow;
 
-	[SerializeField]
+		[SerializeField]
 	protected SingleItemSelectionRow original_ItemRow;
 
-	protected SortedDictionary<Tag, SingleItemSelectionSideScreenBase.Category> categories = new SortedDictionary<Tag, SingleItemSelectionSideScreenBase.Category>(SingleItemSelectionSideScreenBase.categoryComparer);
+		protected SortedDictionary<Tag, SingleItemSelectionSideScreenBase.Category> categories = new SortedDictionary<Tag, SingleItemSelectionSideScreenBase.Category>(SingleItemSelectionSideScreenBase.categoryComparer);
 
-	private Dictionary<Tag, SingleItemSelectionRow> pooledRows = new Dictionary<Tag, SingleItemSelectionRow>();
+		private Dictionary<Tag, SingleItemSelectionRow> pooledRows = new Dictionary<Tag, SingleItemSelectionRow>();
 
-	private static TagNameComparer categoryComparer = new TagNameComparer(GameTags.Void);
+		private static TagNameComparer categoryComparer = new TagNameComparer(GameTags.Void);
 
-	private static SingleItemSelectionSideScreenBase.ItemComparer itemRowComparer = new SingleItemSelectionSideScreenBase.ItemComparer(GameTags.Void);
+		private static SingleItemSelectionSideScreenBase.ItemComparer itemRowComparer = new SingleItemSelectionSideScreenBase.ItemComparer(GameTags.Void);
 
-	public class ItemComparer : IComparer<SingleItemSelectionRow>
+		public class ItemComparer : IComparer<SingleItemSelectionRow>
 	{
-		public ItemComparer()
+				public ItemComparer()
 		{
 		}
 
-		public ItemComparer(Tag firstTag)
+				public ItemComparer(Tag firstTag)
 		{
 			this.firstTag = firstTag;
 		}
 
-		public int Compare(SingleItemSelectionRow x, SingleItemSelectionRow y)
+				public int Compare(SingleItemSelectionRow x, SingleItemSelectionRow y)
 		{
 			if (x == y)
 			{
@@ -287,12 +287,12 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			return x.tag.ProperNameStripLink().CompareTo(y.tag.ProperNameStripLink());
 		}
 
-		private Tag firstTag;
+				private Tag firstTag;
 	}
 
-	public class Category
+		public class Category
 	{
-		public virtual void ToggleUnfoldedState()
+				public virtual void ToggleUnfoldedState()
 		{
 			SingleItemSelectionSideScreenBase.Category.UnfoldedStates currentState = (SingleItemSelectionSideScreenBase.Category.UnfoldedStates)this.toggle.CurrentState;
 			if (currentState == SingleItemSelectionSideScreenBase.Category.UnfoldedStates.Folded)
@@ -307,22 +307,22 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			this.SetUnfoldedState(SingleItemSelectionSideScreenBase.Category.UnfoldedStates.Folded);
 		}
 
-		public virtual void SetUnfoldedState(SingleItemSelectionSideScreenBase.Category.UnfoldedStates new_state)
+				public virtual void SetUnfoldedState(SingleItemSelectionSideScreenBase.Category.UnfoldedStates new_state)
 		{
 			this.toggle.ChangeState((int)new_state);
 			this.entries.gameObject.SetActive(new_state == SingleItemSelectionSideScreenBase.Category.UnfoldedStates.Unfolded);
 		}
 
-		public virtual void SetTitle(string text)
+				public virtual void SetTitle(string text)
 		{
 			this.title.text = text;
 		}
 
-						public Tag CategoryTag { get; protected set; }
+								public Tag CategoryTag { get; protected set; }
 
-						public bool IsProhibited { get; protected set; }
+								public bool IsProhibited { get; protected set; }
 
-				public bool IsVisible
+						public bool IsVisible
 		{
 			get
 			{
@@ -330,7 +330,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			}
 		}
 
-				protected RectTransform entries
+						protected RectTransform entries
 		{
 			get
 			{
@@ -338,7 +338,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			}
 		}
 
-				protected LocText title
+						protected LocText title
 		{
 			get
 			{
@@ -346,7 +346,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			}
 		}
 
-				protected MultiToggle toggle
+						protected MultiToggle toggle
 		{
 			get
 			{
@@ -354,7 +354,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			}
 		}
 
-		public Category(HierarchyReferences references, Tag categoryTag)
+				public Category(HierarchyReferences references, Tag categoryTag)
 		{
 			this.CategoryTag = categoryTag;
 			this.hierarchyReferences = references;
@@ -362,7 +362,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			this.SetTitle(categoryTag.ProperName());
 		}
 
-		public virtual void OnToggleClicked()
+				public virtual void OnToggleClicked()
 		{
 			Action<SingleItemSelectionSideScreenBase.Category> toggleClicked = this.ToggleClicked;
 			if (toggleClicked == null)
@@ -372,7 +372,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			toggleClicked(this);
 		}
 
-		public virtual void AddItems(SingleItemSelectionRow[] _items)
+				public virtual void AddItems(SingleItemSelectionRow[] _items)
 		{
 			if (this.items == null)
 			{
@@ -389,7 +389,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			}
 		}
 
-		public virtual void AddItem(SingleItemSelectionRow item)
+				public virtual void AddItem(SingleItemSelectionRow item)
 		{
 			if (this.items == null)
 			{
@@ -399,7 +399,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			this.items.Add(item);
 		}
 
-		public virtual bool InitializeItemList(int size)
+				public virtual bool InitializeItemList(int size)
 		{
 			if (this.items == null)
 			{
@@ -409,12 +409,12 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			return false;
 		}
 
-		public virtual void SetVisibilityState(bool isVisible)
+				public virtual void SetVisibilityState(bool isVisible)
 		{
 			this.hierarchyReferences.gameObject.SetActive(isVisible && !this.IsProhibited);
 		}
 
-		public virtual void RemoveAllItems()
+				public virtual void RemoveAllItems()
 		{
 			for (int i = 0; i < this.items.Count; i++)
 			{
@@ -429,7 +429,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			this.items = null;
 		}
 
-		public virtual SingleItemSelectionRow RemoveItem(Tag itemTag)
+				public virtual SingleItemSelectionRow RemoveItem(Tag itemTag)
 		{
 			if (this.items != null)
 			{
@@ -447,7 +447,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			return null;
 		}
 
-		public virtual bool RemoveItem(SingleItemSelectionRow itemRow)
+				public virtual bool RemoveItem(SingleItemSelectionRow itemRow)
 		{
 			if (this.items != null && this.items.Remove(itemRow))
 			{
@@ -461,7 +461,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			return false;
 		}
 
-		public SingleItemSelectionRow GetItem(Tag itemTag)
+				public SingleItemSelectionRow GetItem(Tag itemTag)
 		{
 			if (this.items == null)
 			{
@@ -470,7 +470,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			return this.items.Find((SingleItemSelectionRow row) => row.tag == itemTag);
 		}
 
-		public int FilterItemsBySearch(string searchValue)
+				public int FilterItemsBySearch(string searchValue)
 		{
 			int num = 0;
 			if (this.items != null)
@@ -488,7 +488,7 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			return num;
 		}
 
-		public void Sort()
+				public void Sort()
 		{
 			if (this.items != null)
 			{
@@ -500,12 +500,12 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			}
 		}
 
-		public void SendToLastSibiling()
+				public void SendToLastSibiling()
 		{
 			this.hierarchyReferences.transform.SetAsLastSibling();
 		}
 
-		public void SetProihibedState(bool isPohibited)
+				public void SetProihibedState(bool isPohibited)
 		{
 			this.IsProhibited = isPohibited;
 			if (this.IsVisible && isPohibited)
@@ -514,18 +514,18 @@ public abstract class SingleItemSelectionSideScreenBase : SideScreenContent
 			}
 		}
 
-		public Action<SingleItemSelectionRow> ItemRemoved;
+				public Action<SingleItemSelectionRow> ItemRemoved;
 
-		public Action<SingleItemSelectionSideScreenBase.Category> ToggleClicked;
+				public Action<SingleItemSelectionSideScreenBase.Category> ToggleClicked;
 
-		protected HierarchyReferences hierarchyReferences;
+				protected HierarchyReferences hierarchyReferences;
 
-		protected List<SingleItemSelectionRow> items;
+				protected List<SingleItemSelectionRow> items;
 
-		public enum UnfoldedStates
+				public enum UnfoldedStates
 		{
-			Folded,
-			Unfolded
+						Folded,
+						Unfolded
 		}
 	}
 }

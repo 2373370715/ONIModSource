@@ -6,13 +6,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/UnstableGround")]
 public class UnstableGround : KMonoBehaviour
 {
-	public SimHashes element;
+		public SimHashes element;
 
-	public float mass;
+		public float mass;
 
-	public float temperature;
+		public float temperature;
 
-	public byte diseaseIdx;
+		public byte diseaseIdx;
 
-	public int diseaseCount;
+		public int diseaseCount;
 }

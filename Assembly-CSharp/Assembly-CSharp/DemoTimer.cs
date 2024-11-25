@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class DemoTimer : MonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		DemoTimer.Instance = null;
 	}
 
-	private void Start()
+		private void Start()
 	{
 		DemoTimer.Instance = this;
 		if (GenericGameSettings.instance != null)
@@ -40,7 +40,7 @@ public class DemoTimer : MonoBehaviour
 		this.fadeOutScreen.GetComponent<Image>().color = this.fadeOutColor;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if ((Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) && Input.GetKeyDown(KeyCode.BackQuote))
 		{
@@ -69,7 +69,7 @@ public class DemoTimer : MonoBehaviour
 		this.UpdateLabel();
 	}
 
-	private void UpdateLabel()
+		private void UpdateLabel()
 	{
 		int num = Mathf.RoundToInt(this.duration - this.elapsed);
 		int num2 = Mathf.FloorToInt((float)(num / 60));
@@ -88,7 +88,7 @@ public class DemoTimer : MonoBehaviour
 		}
 	}
 
-	public void EndDemo()
+		public void EndDemo()
 	{
 		if (this.demoOver)
 		{
@@ -98,27 +98,27 @@ public class DemoTimer : MonoBehaviour
 		Util.KInstantiateUI(this.Prefab_DemoOverScreen, GameScreenManager.Instance.ssOverlayCanvas.gameObject, false).GetComponent<DemoOverScreen>().Show(true);
 	}
 
-	public static DemoTimer Instance;
+		public static DemoTimer Instance;
 
-	public LocText labelText;
+		public LocText labelText;
 
-	public Image clockImage;
+		public Image clockImage;
 
-	public GameObject Prefab_DemoOverScreen;
+		public GameObject Prefab_DemoOverScreen;
 
-	public GameObject Prefab_FadeOutScreen;
+		public GameObject Prefab_FadeOutScreen;
 
-	private float duration;
+		private float duration;
 
-	private float elapsed;
+		private float elapsed;
 
-	private bool demoOver;
+		private bool demoOver;
 
-	private float beginTime = -1f;
+		private float beginTime = -1f;
 
-	public bool CountdownActive;
+		public bool CountdownActive;
 
-	private GameObject fadeOutScreen;
+		private GameObject fadeOutScreen;
 
-	private Color fadeOutColor;
+		private Color fadeOutColor;
 }

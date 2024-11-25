@@ -7,22 +7,22 @@ using UnityEngine;
 
 public class BansheeChore : Chore<BansheeChore.StatesInstance>
 {
-	public BansheeChore(ChoreType chore_type, IStateMachineTarget target, Notification notification, Action<Chore> on_complete = null) : base(Db.Get().ChoreTypes.BansheeWail, target, target.GetComponent<ChoreProvider>(), false, on_complete, null, null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+		public BansheeChore(ChoreType chore_type, IStateMachineTarget target, Notification notification, Action<Chore> on_complete = null) : base(Db.Get().ChoreTypes.BansheeWail, target, target.GetComponent<ChoreProvider>(), false, on_complete, null, null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new BansheeChore.StatesInstance(this, target.gameObject, notification);
 	}
 
-	private const string audienceEffectName = "WailedAt";
+		private const string audienceEffectName = "WailedAt";
 
-	public class StatesInstance : GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.GameInstance
 	{
-		public StatesInstance(BansheeChore master, GameObject wailer, Notification notification) : base(master)
+				public StatesInstance(BansheeChore master, GameObject wailer, Notification notification) : base(master)
 		{
 			base.sm.wailer.Set(wailer, base.smi, false);
 			this.notification = notification;
 		}
 
-		public void FindAudience()
+				public void FindAudience()
 		{
 			Navigator component = base.GetComponent<Navigator>();
 			int worldId = (int)Grid.WorldIdx[Grid.PosToCell(base.gameObject)];
@@ -53,7 +53,7 @@ public class BansheeChore : Chore<BansheeChore.StatesInstance>
 			this.GoTo(base.sm.moveToAudience);
 		}
 
-		public int FindIdleCell()
+				public int FindIdleCell()
 		{
 			Navigator component = base.smi.master.GetComponent<Navigator>();
 			MinionPathFinderAbilities minionPathFinderAbilities = (MinionPathFinderAbilities)component.GetCurrentAbilities();
@@ -64,7 +64,7 @@ public class BansheeChore : Chore<BansheeChore.StatesInstance>
 			return idleCellQuery.GetResultCell();
 		}
 
-		public void BotherAudience(float dt)
+				public void BotherAudience(float dt)
 		{
 			if (dt <= 0f)
 			{
@@ -101,20 +101,20 @@ public class BansheeChore : Chore<BansheeChore.StatesInstance>
 			}
 		}
 
-		public Notification notification;
+				public Notification notification;
 	}
 
-	public class States : GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore>
+		public class States : GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.findAudience;
 			base.Target(this.wailer);
 			this.wailPreEffect = new Effect("BansheeWailing", DUPLICANTS.MODIFIERS.BANSHEE_WAILING.NAME, DUPLICANTS.MODIFIERS.BANSHEE_WAILING.TOOLTIP, 0f, true, false, true, null, -1f, 0f, null, "");
-			this.wailPreEffect.Add(new AttributeModifier("AirConsumptionRate", 7.5f, null, false, false, true));
+			this.wailPreEffect.Add(new AttributeModifier("AirConsumptionRate", DUPLICANTSTATS.STANDARD.BaseStats.OXYGEN_USED_PER_SECOND * 75f, null, false, false, true));
 			Db.Get().effects.Add(this.wailPreEffect);
 			this.wailRecoverEffect = new Effect("BansheeWailingRecovery", DUPLICANTS.MODIFIERS.BANSHEE_WAILING_RECOVERY.NAME, DUPLICANTS.MODIFIERS.BANSHEE_WAILING_RECOVERY.TOOLTIP, 0f, true, false, true, null, -1f, 0f, null, "");
-			this.wailRecoverEffect.Add(new AttributeModifier("AirConsumptionRate", 1f, null, false, false, true));
+			this.wailRecoverEffect.Add(new AttributeModifier("AirConsumptionRate", DUPLICANTSTATS.STANDARD.BaseStats.OXYGEN_USED_PER_SECOND * 10f, null, false, false, true));
 			Db.Get().effects.Add(this.wailRecoverEffect);
 			this.findAudience.Enter("FindAudience", delegate(BansheeChore.StatesInstance smi)
 			{
@@ -141,35 +141,35 @@ public class BansheeChore : Chore<BansheeChore.StatesInstance>
 			});
 		}
 
-		public StateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.TargetParameter wailer;
+				public StateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.TargetParameter wailer;
 
-		public StateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.IntParameter targetWailLocation;
+				public StateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.IntParameter targetWailLocation;
 
-		public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State findAudience;
+				public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State findAudience;
 
-		public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State moveToAudience;
+				public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State moveToAudience;
 
-		public BansheeChore.States.Wail wail;
+				public BansheeChore.States.Wail wail;
 
-		public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State recover;
+				public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State recover;
 
-		public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State delay;
+				public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State delay;
 
-		public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State wander;
+				public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State wander;
 
-		public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State complete;
+				public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State complete;
 
-		private Effect wailPreEffect;
+				private Effect wailPreEffect;
 
-		private Effect wailRecoverEffect;
+				private Effect wailRecoverEffect;
 
-		public class Wail : GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State
+				public class Wail : GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State
 		{
-			public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State pre;
+						public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State pre;
 
-			public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State loop;
+						public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State loop;
 
-			public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State pst;
+						public GameStateMachine<BansheeChore.States, BansheeChore.StatesInstance, BansheeChore, object>.State pst;
 		}
 	}
 }

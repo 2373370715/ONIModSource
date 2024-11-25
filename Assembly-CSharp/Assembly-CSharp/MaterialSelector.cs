@@ -8,13 +8,13 @@ using UnityEngine.UI;
 
 public class MaterialSelector : KScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.toggleGroup = base.GetComponent<ToggleGroup>();
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.Consumed)
 		{
@@ -23,7 +23,7 @@ public class MaterialSelector : KScreen
 		base.OnKeyDown(e);
 	}
 
-	public void ClearMaterialToggles()
+		public void ClearMaterialToggles()
 	{
 		this.CurrentSelectedElement = null;
 		this.NoMaterialDiscovered.gameObject.SetActive(false);
@@ -35,12 +35,9 @@ public class MaterialSelector : KScreen
 		this.ElementToggles.Clear();
 	}
 
-	public static List<Tag> GetValidMaterials(Tag _materialTypeTag, bool omitDisabledElements = false)
+		public static List<Tag> GetValidMaterials(Tag _materialTypeTag, bool omitDisabledElements = false)
 	{
-		string[] array = _materialTypeTag.ToString().Split(new char[]
-		{
-			'&'
-		});
+		string[] array = _materialTypeTag.ToString().Split('&', StringSplitOptions.None);
 		List<Tag> list = new List<Tag>();
 		for (int i = 0; i < array.Length; i++)
 		{
@@ -70,7 +67,7 @@ public class MaterialSelector : KScreen
 		return list;
 	}
 
-	public void ConfigureScreen(Recipe.Ingredient ingredient, Recipe recipe)
+		public void ConfigureScreen(Recipe.Ingredient ingredient, Recipe recipe)
 	{
 		this.activeIngredient = ingredient;
 		this.activeRecipe = recipe;
@@ -107,7 +104,7 @@ public class MaterialSelector : KScreen
 		this.RefreshToggleContents();
 	}
 
-	private void SetToggleBGImage(KToggle toggle, Tag elem)
+		private void SetToggleBGImage(KToggle toggle, Tag elem)
 	{
 		if (toggle == this.selectedToggle)
 		{
@@ -130,7 +127,7 @@ public class MaterialSelector : KScreen
 		}
 	}
 
-	public void OnSelectMaterial(Tag elem, Recipe recipe, bool focusScrollRect = false)
+		public void OnSelectMaterial(Tag elem, Recipe recipe, bool focusScrollRect = false)
 	{
 		KToggle x = this.ElementToggles[elem];
 		if (x != this.selectedToggle)
@@ -176,7 +173,7 @@ public class MaterialSelector : KScreen
 		this.RefreshToggleContents();
 	}
 
-	public void RefreshToggleContents()
+		public void RefreshToggleContents()
 	{
 		foreach (KeyValuePair<Tag, KToggle> keyValuePair in this.ElementToggles)
 		{
@@ -218,12 +215,12 @@ public class MaterialSelector : KScreen
 		this.UpdateHeader();
 	}
 
-	private bool IsEnoughMass(Tag t)
+		private bool IsEnoughMass(Tag t)
 	{
 		return ClusterManager.Instance.activeWorld.worldInventory.GetAmount(t, true) >= this.activeMass || DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive || MaterialSelector.AllowInsufficientMaterialBuild();
 	}
 
-	public bool AutoSelectAvailableMaterial()
+		public bool AutoSelectAvailableMaterial()
 	{
 		if (this.activeRecipe == null || this.ElementToggles.Count == 0)
 		{
@@ -277,7 +274,7 @@ public class MaterialSelector : KScreen
 		return false;
 	}
 
-	private void SortElementToggles()
+		private void SortElementToggles()
 	{
 		bool flag = false;
 		int num = -1;
@@ -310,7 +307,7 @@ public class MaterialSelector : KScreen
 		this.UpdateScrollBar();
 	}
 
-	private void ConfigureMaterialTooltips()
+		private void ConfigureMaterialTooltips()
 	{
 		foreach (KeyValuePair<Tag, KToggle> keyValuePair in this.ElementToggles)
 		{
@@ -322,7 +319,7 @@ public class MaterialSelector : KScreen
 		}
 	}
 
-	private void UpdateScrollBar()
+		private void UpdateScrollBar()
 	{
 		if (this.Scrollbar == null)
 		{
@@ -343,7 +340,7 @@ public class MaterialSelector : KScreen
 		this.ScrollRect.GetComponent<LayoutElement>().minHeight = (float)(74 * ((num <= 5) ? 1 : 2));
 	}
 
-	private void UpdateHeader()
+		private void UpdateHeader()
 	{
 		if (this.activeIngredient == null)
 		{
@@ -358,10 +355,7 @@ public class MaterialSelector : KScreen
 			}
 		}
 		LocText componentInChildren = this.Headerbar.GetComponentInChildren<LocText>();
-		string[] array = this.activeIngredient.tag.ToString().Split(new char[]
-		{
-			'&'
-		});
+		string[] array = this.activeIngredient.tag.ToString().Split('&', StringSplitOptions.None);
 		string text = array[0].ToTag().ProperName();
 		for (int i = 1; i < array.Length; i++)
 		{
@@ -389,7 +383,7 @@ public class MaterialSelector : KScreen
 		this.UpdateScrollBar();
 	}
 
-	public void ToggleShowDescriptorsPanel(bool show)
+		public void ToggleShowDescriptorsPanel(bool show)
 	{
 		if (this.DescriptorsPanel == null)
 		{
@@ -398,7 +392,7 @@ public class MaterialSelector : KScreen
 		this.DescriptorsPanel.gameObject.SetActive(show);
 	}
 
-	private void SetDescription(Tag element)
+		private void SetDescription(Tag element)
 	{
 		if (this.DescriptorsPanel == null)
 		{
@@ -414,7 +408,7 @@ public class MaterialSelector : KScreen
 		this.MaterialDescriptionPane.SetActive(false);
 	}
 
-	private void SetEffects(Tag element)
+		private void SetEffects(Tag element)
 	{
 		if (this.MaterialDescriptionPane == null)
 		{
@@ -433,12 +427,12 @@ public class MaterialSelector : KScreen
 		this.MaterialEffectsPane.gameObject.SetActive(false);
 	}
 
-	public static bool AllowInsufficientMaterialBuild()
+		public static bool AllowInsufficientMaterialBuild()
 	{
 		return GenericGameSettings.instance.allowInsufficientMaterialBuild;
 	}
 
-	private int ElementSorter(Tag at, Tag bt)
+		private int ElementSorter(Tag at, Tag bt)
 	{
 		GameObject gameObject = Assets.TryGetPrefab(at);
 		IHasSortOrder hasSortOrder = (gameObject != null) ? gameObject.GetComponent<IHasSortOrder>() : null;
@@ -457,56 +451,56 @@ public class MaterialSelector : KScreen
 		return hasSortOrder.sortOrder.CompareTo(hasSortOrder2.sortOrder);
 	}
 
-	public static List<Tag> DeprioritizeAutoSelectElementList = new List<Tag>
+		public static List<Tag> DeprioritizeAutoSelectElementList = new List<Tag>
 	{
 		SimHashes.WoodLog.ToString().ToTag(),
 		SimHashes.SolidMercury.ToString().ToTag(),
 		SimHashes.Lead.ToString().ToTag()
 	};
 
-	public Tag CurrentSelectedElement;
+		public Tag CurrentSelectedElement;
 
-	public Dictionary<Tag, KToggle> ElementToggles = new Dictionary<Tag, KToggle>();
+		public Dictionary<Tag, KToggle> ElementToggles = new Dictionary<Tag, KToggle>();
 
-	public int selectorIndex;
+		public int selectorIndex;
 
-	public MaterialSelector.SelectMaterialActions selectMaterialActions;
+		public MaterialSelector.SelectMaterialActions selectMaterialActions;
 
-	public MaterialSelector.SelectMaterialActions deselectMaterialActions;
+		public MaterialSelector.SelectMaterialActions deselectMaterialActions;
 
-	private ToggleGroup toggleGroup;
+		private ToggleGroup toggleGroup;
 
-	public GameObject TogglePrefab;
+		public GameObject TogglePrefab;
 
-	public GameObject LayoutContainer;
+		public GameObject LayoutContainer;
 
-	public KScrollRect ScrollRect;
+		public KScrollRect ScrollRect;
 
-	public GameObject Scrollbar;
+		public GameObject Scrollbar;
 
-	public GameObject Headerbar;
+		public GameObject Headerbar;
 
-	public GameObject BadBG;
+		public GameObject BadBG;
 
-	public LocText NoMaterialDiscovered;
+		public LocText NoMaterialDiscovered;
 
-	public GameObject MaterialDescriptionPane;
+		public GameObject MaterialDescriptionPane;
 
-	public LocText MaterialDescriptionText;
+		public LocText MaterialDescriptionText;
 
-	public DescriptorPanel MaterialEffectsPane;
+		public DescriptorPanel MaterialEffectsPane;
 
-	public GameObject DescriptorsPanel;
+		public GameObject DescriptorsPanel;
 
-	private KToggle selectedToggle;
+		private KToggle selectedToggle;
 
-	private Recipe.Ingredient activeIngredient;
+		private Recipe.Ingredient activeIngredient;
 
-	private Recipe activeRecipe;
+		private Recipe activeRecipe;
 
-	private float activeMass;
+		private float activeMass;
 
-	private List<Tag> elementsToSort = new List<Tag>();
+		private List<Tag> elementsToSort = new List<Tag>();
 
-		public delegate void SelectMaterialActions();
+			public delegate void SelectMaterialActions();
 }

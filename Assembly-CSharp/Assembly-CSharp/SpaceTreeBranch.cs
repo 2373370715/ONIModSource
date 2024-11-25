@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.growing;
@@ -29,7 +29,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 		this.halt.trunkWilted.EventTransition(GameHashes.RootHealthChanged, this.halt.wilted, new StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.Transition.ConditionCallback(SpaceTreeBranch.IsTrunkHealthy)).PlayAnim((SpaceTreeBranch.Instance smi) => smi.GetAnimationForState(this.halt.trunkWilted), KAnim.PlayMode.Once).EventHandlerTransition(GameHashes.SpaceTreeUnentombDefenseTriggered, this.halt.shaking, (SpaceTreeBranch.Instance o, object smi) => true);
 		this.halt.shaking.PlayAnim((SpaceTreeBranch.Instance smi) => smi.GetAnimationForState(this.halt.shaking), KAnim.PlayMode.Once).ScheduleGoTo(1.8f, this.halt.wilted);
 		this.halt.hidden.PlayAnim((SpaceTreeBranch.Instance smi) => smi.GetAnimationForState(this.halt.hidden), KAnim.PlayMode.Once).TagTransition(SpaceTreePlant.SpaceTreeReadyForHarvest, this.halt.wilted, true);
-		this.grown.InitializeStates(this.masterTarget, this.die).Enter(new StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State.Callback(SpaceTreeBranch.EnableEntombDefenses)).Enter(new StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State.Callback(SpaceTreeBranch.AllowItToBeHarvestForWood)).EventTransition(GameHashes.Harvest, this.harvestedForWood, null).DefaultState(this.grown.spawn);
+		this.grown.InitializeStates(this.masterTarget, this.die).Enter(new StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State.Callback(SpaceTreeBranch.EnableEntombDefenses)).Enter(new StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State.Callback(SpaceTreeBranch.AllowItToBeHarvestForWood)).EventTransition(GameHashes.Harvest, this.harvestedForWood, null).EventTransition(GameHashes.ConsumePlant, this.growing, GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.Not(new StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.Transition.ConditionCallback(SpaceTreeBranch.IsBranchFullyGrown))).DefaultState(this.grown.spawn);
 		this.grown.spawn.EventTransition(GameHashes.Wilt, this.grown.trunkWilted, GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.Not(new StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.Transition.ConditionCallback(SpaceTreeBranch.IsTrunkHealthy))).EventTransition(GameHashes.RootHealthChanged, this.grown.trunkWilted, GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.Not(new StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.Transition.ConditionCallback(SpaceTreeBranch.IsTrunkHealthy))).ParamTransition<bool>(this.HasSpawn, this.grown.healthy, GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.IsTrue).Enter(new StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State.Callback(SpaceTreeBranch.DisableGlowFlowerMeter)).PlayAnim((SpaceTreeBranch.Instance smi) => smi.GetAnimationForState(this.grown.spawn), KAnim.PlayMode.Once).OnAnimQueueComplete(this.grown.spawnPST);
 		this.grown.spawnPST.PlayAnim((SpaceTreeBranch.Instance smi) => smi.GetAnimationForState(this.grown.spawnPST), KAnim.PlayMode.Once).OnAnimQueueComplete(this.grown.healthy);
 		this.grown.healthy.Enter(delegate(SpaceTreeBranch.Instance smi)
@@ -68,102 +68,102 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 		this.die.selfDelete.Enter(new StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State.Callback(SpaceTreeBranch.SelfDestroy));
 	}
 
-	public static bool TransitToManualHarvest_Loop(SpaceTreeBranch.Instance smi)
+		public static bool TransitToManualHarvest_Loop(SpaceTreeBranch.Instance smi)
 	{
 		return smi.GetCurrentTrunkAnim() != null && smi.GetCurrentTrunkAnim() == "syrup_harvest_trunk_loop";
 	}
 
-	public static bool TransitToManualHarvest_Pst(SpaceTreeBranch.Instance smi)
+		public static bool TransitToManualHarvest_Pst(SpaceTreeBranch.Instance smi)
 	{
 		return smi.GetCurrentTrunkAnim() != null && smi.GetCurrentTrunkAnim() == "syrup_harvest_trunk_pst";
 	}
 
-	public static bool IsWiltedConditionReportingWilted(SpaceTreeBranch.Instance smi)
+		public static bool IsWiltedConditionReportingWilted(SpaceTreeBranch.Instance smi)
 	{
 		return smi.wiltCondition.IsWilting();
 	}
 
-	public static bool IsBranchFullyGrown(SpaceTreeBranch.Instance smi)
+		public static bool IsBranchFullyGrown(SpaceTreeBranch.Instance smi)
 	{
 		return smi.IsBranchFullyGrown;
 	}
 
-	public static bool IsTrunkWildPlanted(SpaceTreeBranch.Instance smi)
+		public static bool IsTrunkWildPlanted(SpaceTreeBranch.Instance smi)
 	{
 		return smi.IsTrunkWildPlanted;
 	}
 
-	public static bool IsEntombed(SpaceTreeBranch.Instance smi)
+		public static bool IsEntombed(SpaceTreeBranch.Instance smi)
 	{
 		return smi.IsEntombed;
 	}
 
-	public static bool IsTrunkHealthy(SpaceTreeBranch.Instance smi)
+		public static bool IsTrunkHealthy(SpaceTreeBranch.Instance smi)
 	{
 		return smi.IsTrunkHealthy;
 	}
 
-	public static void PlayFillAnimationForThisState(SpaceTreeBranch.Instance smi)
+		public static void PlayFillAnimationForThisState(SpaceTreeBranch.Instance smi)
 	{
 		smi.PlayFillAnimation();
 	}
 
-	public static void OnTrunkSyrupFullnessChanged(SpaceTreeBranch.Instance smi, object obj)
+		public static void OnTrunkSyrupFullnessChanged(SpaceTreeBranch.Instance smi, object obj)
 	{
 		smi.PlayFillAnimation((float)obj);
 	}
 
-	public static void SynchAnimationWithTrunk(SpaceTreeBranch.Instance smi, HashedString animName)
+		public static void SynchAnimationWithTrunk(SpaceTreeBranch.Instance smi, HashedString animName)
 	{
 		smi.SynchCurrentAnimWithTrunkAnim(animName);
 	}
 
-	public static void EnableGlowFlowerMeter(SpaceTreeBranch.Instance smi)
+		public static void EnableGlowFlowerMeter(SpaceTreeBranch.Instance smi)
 	{
 		smi.ActivateGlowFlowerMeter();
 	}
 
-	public static void DisableGlowFlowerMeter(SpaceTreeBranch.Instance smi)
+		public static void DisableGlowFlowerMeter(SpaceTreeBranch.Instance smi)
 	{
 		smi.DeactivateGlowFlowerMeter();
 	}
 
-	public static void UpdateFlowerOnWilt(SpaceTreeBranch.Instance smi)
+		public static void UpdateFlowerOnWilt(SpaceTreeBranch.Instance smi)
 	{
 		smi.PlayAnimOnFlower(smi.Animations.meterAnim_flowerWilted, KAnim.PlayMode.Loop);
 	}
 
-	public static void UpdateFlowerOnWiltRecover(SpaceTreeBranch.Instance smi)
+		public static void UpdateFlowerOnWiltRecover(SpaceTreeBranch.Instance smi)
 	{
 		smi.PlayAnimOnFlower(smi.Animations.meterAnimNames, KAnim.PlayMode.Loop);
 	}
 
-	public static void EnableEntombDefenses(SpaceTreeBranch.Instance smi)
+		public static void EnableEntombDefenses(SpaceTreeBranch.Instance smi)
 	{
 		smi.GetSMI<UnstableEntombDefense.Instance>().SetActive(true);
 	}
 
-	public static void DisableEntombDefenses(SpaceTreeBranch.Instance smi)
+		public static void DisableEntombDefenses(SpaceTreeBranch.Instance smi)
 	{
 		smi.GetSMI<UnstableEntombDefense.Instance>().SetActive(false);
 	}
 
-	public static void AllowItToBeHarvestForWood(SpaceTreeBranch.Instance smi)
+		public static void AllowItToBeHarvestForWood(SpaceTreeBranch.Instance smi)
 	{
 		smi.harvestable.SetCanBeHarvested(true);
 	}
 
-	public static void ForbidBranchToBeHarvestedForWood(SpaceTreeBranch.Instance smi)
+		public static void ForbidBranchToBeHarvestedForWood(SpaceTreeBranch.Instance smi)
 	{
 		smi.harvestable.SetCanBeHarvested(false);
 	}
 
-	public static void SpawnWoodOnHarvest(SpaceTreeBranch.Instance smi)
+		public static void SpawnWoodOnHarvest(SpaceTreeBranch.Instance smi)
 	{
 		smi.crop.SpawnConfiguredFruit(null);
 	}
 
-	public static void SpawnWoodOnDeath(SpaceTreeBranch.Instance smi)
+		public static void SpawnWoodOnDeath(SpaceTreeBranch.Instance smi)
 	{
 		if (smi.harvestable != null && smi.harvestable.CanBeHarvested)
 		{
@@ -171,12 +171,16 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 		}
 	}
 
-	public static void SelfDestroy(SpaceTreeBranch.Instance smi)
+		public static void OnConsumed(SpaceTreeBranch.Instance smi)
+	{
+	}
+
+		public static void SelfDestroy(SpaceTreeBranch.Instance smi)
 	{
 		Util.KDestroyGameObject(smi.gameObject);
 	}
 
-	public static void PlayFillAnimationOnUnentomb(SpaceTreeBranch.Instance smi)
+		public static void PlayFillAnimationOnUnentomb(SpaceTreeBranch.Instance smi)
 	{
 		if (!smi.IsEntombed)
 		{
@@ -184,7 +188,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 		}
 	}
 
-	public static void PlayReadyForHarvestAnimationOnUnentomb(SpaceTreeBranch.Instance smi)
+		public static void PlayReadyForHarvestAnimationOnUnentomb(SpaceTreeBranch.Instance smi)
 	{
 		if (!smi.IsEntombed)
 		{
@@ -192,146 +196,146 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 		}
 	}
 
-	public const int FILL_ANIM_FRAME_COUNT = 42;
+		public const int FILL_ANIM_FRAME_COUNT = 42;
 
-	public const int SHAKE_ANIM_FRAME_COUNT = 54;
+		public const int SHAKE_ANIM_FRAME_COUNT = 54;
 
-	public const float SHAKE_ANIM_DURATION = 1.8f;
+		public const float SHAKE_ANIM_DURATION = 1.8f;
 
-	private StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.BoolParameter HasSpawn;
+		private StateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.BoolParameter HasSpawn;
 
-	private SpaceTreeBranch.GrowingStates growing;
+		private SpaceTreeBranch.GrowingStates growing;
 
-	private SpaceTreeBranch.GrowHaltState halt;
+		private SpaceTreeBranch.GrowHaltState halt;
 
-	private SpaceTreeBranch.GrownStates grown;
+		private SpaceTreeBranch.GrownStates grown;
 
-	private GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State harvestedForWood;
+		private GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State harvestedForWood;
 
-	private SpaceTreeBranch.DieStates die;
+		private SpaceTreeBranch.DieStates die;
 
-	public class AnimSet
+		public class AnimSet
 	{
-		public string[] meterTargets;
+				public string[] meterTargets;
 
-		public string[] meterAnimNames;
+				public string[] meterAnimNames;
 
-		public string undeveloped;
+				public string undeveloped;
 
-		public string spawn;
+				public string spawn;
 
-		public string spawn_pst;
+				public string spawn_pst;
 
-		public string fill;
+				public string fill;
 
-		public string ready_harvest;
+				public string ready_harvest;
 
-		public string[] meterAnim_flowerWilted;
+				public string[] meterAnim_flowerWilted;
 
-		public string wilted;
+				public string wilted;
 
-		public string wilted_short_trunk_healthy;
+				public string wilted_short_trunk_healthy;
 
-		public string wilted_short_trunk_wilted;
+				public string wilted_short_trunk_wilted;
 
-		public string hidden;
+				public string hidden;
 
-		public string die;
+				public string die;
 
-		public string manual_harvest_pre;
+				public string manual_harvest_pre;
 
-		public string manual_harvest_loop;
+				public string manual_harvest_loop;
 
-		public string manual_harvest_pst;
+				public string manual_harvest_pst;
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public int OPTIMAL_LUX_LEVELS;
+				public int OPTIMAL_LUX_LEVELS;
 
-		public float GROWTH_RATE = 0.0016666667f;
+				public float GROWTH_RATE = 0.0016666667f;
 
-		public float WILD_GROWTH_RATE = 0.00041666668f;
+				public float WILD_GROWTH_RATE = 0.00041666668f;
 	}
 
-	public class GrowingState : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
+		public class GrowingState : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
 	{
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State visible;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State visible;
 
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State hidden;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State hidden;
 	}
 
-	public class GrowingStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.PlantAliveSubState
+		public class GrowingStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.PlantAliveSubState
 	{
-		public SpaceTreeBranch.GrowingState wild;
+				public SpaceTreeBranch.GrowingState wild;
 
-		public SpaceTreeBranch.GrowingState planted;
+				public SpaceTreeBranch.GrowingState planted;
 	}
 
-	public class GrownStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.PlantAliveSubState
+		public class GrownStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.PlantAliveSubState
 	{
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State spawn;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State spawn;
 
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State spawnPST;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State spawnPST;
 
-		public SpaceTreeBranch.HealthyStates healthy;
+				public SpaceTreeBranch.HealthyStates healthy;
 
-		public SpaceTreeBranch.WiltStates trunkWilted;
+				public SpaceTreeBranch.WiltStates trunkWilted;
 	}
 
-	public class GrowHaltState : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.PlantAliveSubState
+		public class GrowHaltState : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.PlantAliveSubState
 	{
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State wilted;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State wilted;
 
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State trunkWilted;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State trunkWilted;
 
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State shaking;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State shaking;
 
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State hidden;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State hidden;
 	}
 
-	public class WiltStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
+		public class WiltStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
 	{
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State wilted;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State wilted;
 
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State shaking;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State shaking;
 	}
 
-	public class DieStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
+		public class DieStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
 	{
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State entering;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State entering;
 
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State selfDelete;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State selfDelete;
 	}
 
-	public class ReadyForHarvest : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
+		public class ReadyForHarvest : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
 	{
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State idle;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State idle;
 
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State shaking;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State shaking;
 
-		public SpaceTreeBranch.ManualHarvestStates harvestInProgress;
+				public SpaceTreeBranch.ManualHarvestStates harvestInProgress;
 	}
 
-	public class ManualHarvestStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
+		public class ManualHarvestStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
 	{
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State pre;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State pre;
 
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State loop;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State loop;
 
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State pst;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State pst;
 	}
 
-	public class HealthyStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
+		public class HealthyStates : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State
 	{
-		public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State filling;
+				public GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.State filling;
 
-		public SpaceTreeBranch.ReadyForHarvest trunkReadyForHarvest;
+				public SpaceTreeBranch.ReadyForHarvest trunkReadyForHarvest;
 	}
 
-	public new class Instance : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.GameInstance, IManageGrowingStates
+		public new class Instance : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch.Instance, IStateMachineTarget, SpaceTreeBranch.Def>.GameInstance, IManageGrowingStates
 	{
-				public int CurrentAmountOfLux
+						public int CurrentAmountOfLux
 		{
 			get
 			{
@@ -339,7 +343,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-				public float Productivity
+						public float Productivity
 		{
 			get
 			{
@@ -351,7 +355,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-				public bool IsTrunkHealthy
+						public bool IsTrunkHealthy
 		{
 			get
 			{
@@ -359,7 +363,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-				public bool IsTrunkWildPlanted
+						public bool IsTrunkWildPlanted
 		{
 			get
 			{
@@ -367,7 +371,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-				public bool IsEntombed
+						public bool IsEntombed
 		{
 			get
 			{
@@ -375,7 +379,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-				public bool IsBranchFullyGrown
+						public bool IsBranchFullyGrown
 		{
 			get
 			{
@@ -383,7 +387,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-				private PlantBranchGrower.Instance trunk
+						private PlantBranchGrower.Instance trunk
 		{
 			get
 			{
@@ -399,13 +403,13 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-		public void OverrideMaturityLevel(float percent)
+				public void OverrideMaturityLevel(float percent)
 		{
 			float value = this.maturity.GetMax() * percent;
 			this.maturity.SetValue(value);
 		}
 
-		public Instance(IStateMachineTarget master, SpaceTreeBranch.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, SpaceTreeBranch.Def def) : base(master, def)
 		{
 			this.cell = Grid.PosToCell(this);
 			Amounts amounts = base.gameObject.GetAmounts();
@@ -415,19 +419,19 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			base.Subscribe(1272413801, new Action<object>(this.ResetGrowth));
 		}
 
-		public float GetcurrentGrowthPercentage()
+				public float GetcurrentGrowthPercentage()
 		{
 			return this.maturity.value / this.maturity.GetMax();
 		}
 
-		public void ResetGrowth(object data = null)
+				public void ResetGrowth(object data = null)
 		{
 			this.maturity.value = 0f;
 			base.sm.HasSpawn.Set(false, this, false);
 			base.smi.gameObject.Trigger(-254803949, null);
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			this.branch = base.smi.GetSMI<PlantBranch.Instance>();
 			this.entombDefenseSMI = base.smi.GetSMI<UnstableEntombDefense.Instance>();
@@ -438,7 +442,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			base.StartSM();
 		}
 
-		public void CreateMeters(string[] meterTargets, string[] meterAnimNames)
+				public void CreateMeters(string[] meterTargets, string[] meterAnimNames)
 		{
 			this.flowerMeters = new MeterController[meterTargets.Length];
 			for (int i = 0; i < this.flowerMeters.Length; i++)
@@ -447,7 +451,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-		public void RefreshAnimation()
+				public void RefreshAnimation()
 		{
 			if (this.flowerMeters == null && this.Animations.meterTargets != null)
 			{
@@ -467,7 +471,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			this.DeactivateGlowFlowerMeter();
 		}
 
-		public HashedString GetCurrentTrunkAnim()
+				public HashedString GetCurrentTrunkAnim()
 		{
 			if (this.trunk != null && this.trunkAnimController != null)
 			{
@@ -476,7 +480,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			return null;
 		}
 
-		public void SynchCurrentAnimWithTrunkAnim(HashedString trunkAnimNameToSynchTo)
+				public void SynchCurrentAnimWithTrunkAnim(HashedString trunkAnimNameToSynchTo)
 		{
 			if (this.trunk != null && this.trunkAnimController != null && this.trunkAnimController.currentAnim == trunkAnimNameToSynchTo)
 			{
@@ -485,7 +489,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-		public string GetAnimationForState(StateMachine.BaseState state)
+				public string GetAnimationForState(StateMachine.BaseState state)
 		{
 			if (state == base.sm.growing.wild.visible)
 			{
@@ -562,7 +566,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			return this.Animations.spawn;
 		}
 
-		public string GetFillAnimNameForState(StateMachine.BaseState state)
+				public string GetFillAnimNameForState(StateMachine.BaseState state)
 		{
 			string fill = this.Animations.fill;
 			if (state == base.sm.grown.healthy.filling)
@@ -584,7 +588,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			return fill;
 		}
 
-		public void PlayReadyForHarvestAnimation()
+				public void PlayReadyForHarvestAnimation()
 		{
 			if (this.animController != null)
 			{
@@ -592,12 +596,12 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-		public void PlayFillAnimation()
+				public void PlayFillAnimation()
 		{
 			this.PlayFillAnimation(this.lastFillAmountRecorded);
 		}
 
-		public void PlayFillAnimation(float fillLevel)
+				public void PlayFillAnimation(float fillLevel)
 		{
 			string fillAnimNameForState = this.GetFillAnimNameForState(base.smi.GetCurrentState());
 			this.lastFillAmountRecorded = fillLevel;
@@ -619,7 +623,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-		public void ActivateGlowFlowerMeter()
+				public void ActivateGlowFlowerMeter()
 		{
 			if (this.flowerMeters != null)
 			{
@@ -631,7 +635,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-		public void PlayAnimOnFlower(string[] animNames, KAnim.PlayMode playMode)
+				public void PlayAnimOnFlower(string[] animNames, KAnim.PlayMode playMode)
 		{
 			if (this.flowerMeters != null)
 			{
@@ -642,7 +646,7 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-		public void DeactivateGlowFlowerMeter()
+				public void DeactivateGlowFlowerMeter()
 		{
 			if (this.flowerMeters != null)
 			{
@@ -653,63 +657,63 @@ public class SpaceTreeBranch : GameStateMachine<SpaceTreeBranch, SpaceTreeBranch
 			}
 		}
 
-		public float TimeUntilNextHarvest()
+				public float TimeUntilNextHarvest()
 		{
 			return (this.maturity.GetMax() - this.maturity.value) / this.maturity.GetDelta();
 		}
 
-		public float PercentGrown()
+				public float PercentGrown()
 		{
 			return this.GetcurrentGrowthPercentage();
 		}
 
-		public Crop GetGropComponent()
+				public Crop GetGropComponent()
 		{
 			return base.GetComponent<Crop>();
 		}
 
-		public float DomesticGrowthTime()
+				public float DomesticGrowthTime()
 		{
 			return this.maturity.GetMax() / base.smi.baseGrowingRate.Value;
 		}
 
-		public float WildGrowthTime()
+				public float WildGrowthTime()
 		{
 			return this.maturity.GetMax() / base.smi.wildGrowingRate.Value;
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public WiltCondition wiltCondition;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public Crop crop;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public Harvestable harvestable;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public KBatchedAnimController animController;
 
-		public SpaceTreeBranch.AnimSet Animations = new SpaceTreeBranch.AnimSet();
+				public SpaceTreeBranch.AnimSet Animations = new SpaceTreeBranch.AnimSet();
 
-		private int cell;
+				private int cell;
 
-		private float lastFillAmountRecorded;
+				private float lastFillAmountRecorded;
 
-		private AmountInstance maturity;
+				private AmountInstance maturity;
 
-		public AttributeModifier baseGrowingRate;
+				public AttributeModifier baseGrowingRate;
 
-		public AttributeModifier wildGrowingRate;
+				public AttributeModifier wildGrowingRate;
 
-		public UnstableEntombDefense.Instance entombDefenseSMI;
+				public UnstableEntombDefense.Instance entombDefenseSMI;
 
-		private MeterController[] flowerMeters;
+				private MeterController[] flowerMeters;
 
-		private PlantBranch.Instance branch;
+				private PlantBranch.Instance branch;
 
-		private KBatchedAnimController trunkAnimController;
+				private KBatchedAnimController trunkAnimController;
 
-		private PlantBranchGrower.Instance _trunk;
+				private PlantBranchGrower.Instance _trunk;
 	}
 }

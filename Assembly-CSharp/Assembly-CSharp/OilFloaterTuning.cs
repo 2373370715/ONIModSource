@@ -4,7 +4,7 @@ using TUNING;
 
 public static class OilFloaterTuning
 {
-	public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_BASE = new List<FertilityMonitor.BreedingChance>
+		public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_BASE = new List<FertilityMonitor.BreedingChance>
 	{
 		new FertilityMonitor.BreedingChance
 		{
@@ -23,7 +23,7 @@ public static class OilFloaterTuning
 		}
 	};
 
-	public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_HIGHTEMP = new List<FertilityMonitor.BreedingChance>
+		public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_HIGHTEMP = new List<FertilityMonitor.BreedingChance>
 	{
 		new FertilityMonitor.BreedingChance
 		{
@@ -42,7 +42,7 @@ public static class OilFloaterTuning
 		}
 	};
 
-	public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_DECOR = new List<FertilityMonitor.BreedingChance>
+		public static List<FertilityMonitor.BreedingChance> EGG_CHANCES_DECOR = new List<FertilityMonitor.BreedingChance>
 	{
 		new FertilityMonitor.BreedingChance
 		{
@@ -61,13 +61,13 @@ public static class OilFloaterTuning
 		}
 	};
 
-	public static float STANDARD_CALORIES_PER_CYCLE = 120000f;
+		public static float STANDARD_CALORIES_PER_CYCLE = 120000f;
 
-	public static float STANDARD_STARVE_CYCLES = 5f;
+		public static float STANDARD_STARVE_CYCLES = 5f;
 
-	public static float STANDARD_STOMACH_SIZE = OilFloaterTuning.STANDARD_CALORIES_PER_CYCLE * OilFloaterTuning.STANDARD_STARVE_CYCLES;
+		public static float STANDARD_STOMACH_SIZE = OilFloaterTuning.STANDARD_CALORIES_PER_CYCLE * OilFloaterTuning.STANDARD_STARVE_CYCLES;
 
-	public static int PEN_SIZE_PER_CREATURE = CREATURES.SPACE_REQUIREMENTS.TIER3;
+		public static int PEN_SIZE_PER_CREATURE = CREATURES.SPACE_REQUIREMENTS.TIER3;
 
-	public static float EGG_MASS = 2f;
+		public static float EGG_MASS = 2f;
 }

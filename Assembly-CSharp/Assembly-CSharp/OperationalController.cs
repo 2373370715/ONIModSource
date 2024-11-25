@@ -2,7 +2,7 @@
 
 public class OperationalController : GameStateMachine<OperationalController, OperationalController.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.off;
 		this.root.EventTransition(GameHashes.OperationalChanged, this.off, (OperationalController.Instance smi) => !smi.GetComponent<Operational>().IsOperational);
@@ -12,21 +12,21 @@ public class OperationalController : GameStateMachine<OperationalController, Ope
 		this.working_pst.PlayAnim("working_pst").OnAnimQueueComplete(this.off);
 	}
 
-	public GameStateMachine<OperationalController, OperationalController.Instance, IStateMachineTarget, object>.State off;
+		public GameStateMachine<OperationalController, OperationalController.Instance, IStateMachineTarget, object>.State off;
 
-	public GameStateMachine<OperationalController, OperationalController.Instance, IStateMachineTarget, object>.State working_pre;
+		public GameStateMachine<OperationalController, OperationalController.Instance, IStateMachineTarget, object>.State working_pre;
 
-	public GameStateMachine<OperationalController, OperationalController.Instance, IStateMachineTarget, object>.State working_loop;
+		public GameStateMachine<OperationalController, OperationalController.Instance, IStateMachineTarget, object>.State working_loop;
 
-	public GameStateMachine<OperationalController, OperationalController.Instance, IStateMachineTarget, object>.State working_pst;
+		public GameStateMachine<OperationalController, OperationalController.Instance, IStateMachineTarget, object>.State working_pst;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<OperationalController, OperationalController.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<OperationalController, OperationalController.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, OperationalController.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, OperationalController.Def def) : base(master, def)
 		{
 		}
 	}

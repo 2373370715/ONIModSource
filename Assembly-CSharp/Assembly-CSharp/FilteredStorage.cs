@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class FilteredStorage
 {
-	public void SetHasMeter(bool has_meter)
+		public void SetHasMeter(bool has_meter)
 	{
 		this.hasMeter = has_meter;
 	}
 
-	public FilteredStorage(KMonoBehaviour root, Tag[] forbidden_tags, IUserControlledCapacity capacity_control, bool use_logic_meter, ChoreType fetch_chore_type)
+		public FilteredStorage(KMonoBehaviour root, Tag[] forbidden_tags, IUserControlledCapacity capacity_control, bool use_logic_meter, ChoreType fetch_chore_type)
 	{
 		this.root = root;
 		this.forbiddenTags = forbidden_tags;
@@ -27,12 +27,12 @@ public class FilteredStorage
 		this.storage.Subscribe(-1852328367, new Action<object>(this.OnFunctionalChanged));
 	}
 
-	private void OnOnlyFetchMarkedItemsSettingChanged(object data)
+		private void OnOnlyFetchMarkedItemsSettingChanged(object data)
 	{
 		this.OnFilterChanged(this.filterable.GetTags());
 	}
 
-	private void CreateMeter()
+		private void CreateMeter()
 	{
 		if (!this.hasMeter)
 		{
@@ -45,7 +45,7 @@ public class FilteredStorage
 		});
 	}
 
-	private void CreateLogicMeter()
+		private void CreateLogicMeter()
 	{
 		if (!this.hasMeter)
 		{
@@ -54,14 +54,14 @@ public class FilteredStorage
 		this.logicMeter = new MeterController(this.root.GetComponent<KBatchedAnimController>(), "logicmeter_target", "logicmeter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, Array.Empty<string>());
 	}
 
-	public void SetMeter(MeterController meter)
+		public void SetMeter(MeterController meter)
 	{
 		this.hasMeter = true;
 		this.meter = meter;
 		this.UpdateMeter();
 	}
 
-	public void CleanUp()
+		public void CleanUp()
 	{
 		if (this.filterable != null)
 		{
@@ -74,7 +74,7 @@ public class FilteredStorage
 		}
 	}
 
-	public void FilterChanged()
+		public void FilterChanged()
 	{
 		if (this.hasMeter)
 		{
@@ -91,13 +91,13 @@ public class FilteredStorage
 		this.UpdateMeter();
 	}
 
-	private void OnUserSettingsChanged(object data)
+		private void OnUserSettingsChanged(object data)
 	{
 		this.OnFilterChanged(this.filterable.GetTags());
 		this.UpdateMeter();
 	}
 
-	private void OnStorageChanged(object data)
+		private void OnStorageChanged(object data)
 	{
 		if (this.fetchList == null)
 		{
@@ -106,12 +106,12 @@ public class FilteredStorage
 		this.UpdateMeter();
 	}
 
-	private void OnFunctionalChanged(object data)
+		private void OnFunctionalChanged(object data)
 	{
 		this.OnFilterChanged(this.filterable.GetTags());
 	}
 
-	private void UpdateMeter()
+		private void UpdateMeter()
 	{
 		float maxCapacityMinusStorageMargin = this.GetMaxCapacityMinusStorageMargin();
 		float positionPercent = Mathf.Clamp01(this.GetAmountStored() / maxCapacityMinusStorageMargin);
@@ -121,7 +121,7 @@ public class FilteredStorage
 		}
 	}
 
-	public bool IsFull()
+		public bool IsFull()
 	{
 		float maxCapacityMinusStorageMargin = this.GetMaxCapacityMinusStorageMargin();
 		float num = Mathf.Clamp01(this.GetAmountStored() / maxCapacityMinusStorageMargin);
@@ -132,12 +132,12 @@ public class FilteredStorage
 		return num >= 1f;
 	}
 
-	private void OnFetchComplete()
+		private void OnFetchComplete()
 	{
 		this.OnFilterChanged(this.filterable.GetTags());
 	}
 
-	private float GetMaxCapacity()
+		private float GetMaxCapacity()
 	{
 		float num = this.storage.capacityKg;
 		if (this.capacityControl != null)
@@ -147,12 +147,12 @@ public class FilteredStorage
 		return num;
 	}
 
-	private float GetMaxCapacityMinusStorageMargin()
+		private float GetMaxCapacityMinusStorageMargin()
 	{
 		return this.GetMaxCapacity() - this.storage.storageFullMargin;
 	}
 
-	private float GetAmountStored()
+		private float GetAmountStored()
 	{
 		float result = this.storage.MassStored();
 		if (this.capacityControl != null)
@@ -162,13 +162,13 @@ public class FilteredStorage
 		return result;
 	}
 
-	private bool IsFunctional()
+		private bool IsFunctional()
 	{
 		Operational component = this.storage.GetComponent<Operational>();
 		return component == null || component.IsFunctional;
 	}
 
-	private void OnFilterChanged(HashSet<Tag> tags)
+		private void OnFilterChanged(HashSet<Tag> tags)
 	{
 		bool flag = tags != null && tags.Count != 0;
 		if (this.fetchList != null)
@@ -189,7 +189,7 @@ public class FilteredStorage
 		}
 	}
 
-	public void SetLogicMeter(bool on)
+		public void SetLogicMeter(bool on)
 	{
 		if (this.logicMeter != null)
 		{
@@ -197,7 +197,7 @@ public class FilteredStorage
 		}
 	}
 
-	public void SetRequiredTag(Tag tag)
+		public void SetRequiredTag(Tag tag)
 	{
 		if (this.requiredTag != tag)
 		{
@@ -206,7 +206,7 @@ public class FilteredStorage
 		}
 	}
 
-	public void AddForbiddenTag(Tag forbidden_tag)
+		public void AddForbiddenTag(Tag forbidden_tag)
 	{
 		if (this.forbiddenTags == null)
 		{
@@ -219,7 +219,7 @@ public class FilteredStorage
 		}
 	}
 
-	public void RemoveForbiddenTag(Tag forbidden_tag)
+		public void RemoveForbiddenTag(Tag forbidden_tag)
 	{
 		if (this.forbiddenTags != null)
 		{
@@ -230,29 +230,29 @@ public class FilteredStorage
 		}
 	}
 
-	public static readonly HashedString FULL_PORT_ID = "FULL";
+		public static readonly HashedString FULL_PORT_ID = "FULL";
 
-	private KMonoBehaviour root;
+		private KMonoBehaviour root;
 
-	private FetchList2 fetchList;
+		private FetchList2 fetchList;
 
-	private IUserControlledCapacity capacityControl;
+		private IUserControlledCapacity capacityControl;
 
-	private TreeFilterable filterable;
+		private TreeFilterable filterable;
 
-	private Storage storage;
+		private Storage storage;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private MeterController logicMeter;
+		private MeterController logicMeter;
 
-	private Tag requiredTag = Tag.Invalid;
+		private Tag requiredTag = Tag.Invalid;
 
-	private Tag[] forbiddenTags;
+		private Tag[] forbiddenTags;
 
-	private bool hasMeter = true;
+		private bool hasMeter = true;
 
-	private bool useLogicMeter;
+		private bool useLogicMeter;
 
-	private ChoreType choreType;
+		private ChoreType choreType;
 }

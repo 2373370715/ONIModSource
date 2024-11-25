@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class TelescopeConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetForbiddenDlcIds()
 	{
-		return DlcManager.AVAILABLE_VANILLA_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Telescope";
 		int width = 4;
@@ -35,7 +35,7 @@ public class TelescopeConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.ScienceBuilding, false);
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -60,22 +60,22 @@ public class TelescopeConfig : IBuildingConfig
 		go.AddOrGetDef<PoweredController.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		TelescopeConfig.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		TelescopeConfig.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		TelescopeConfig.AddVisualizer(go);
 	}
 
-	private static void AddVisualizer(GameObject prefab)
+		private static void AddVisualizer(GameObject prefab)
 	{
 		SkyVisibilityVisualizer skyVisibilityVisualizer = prefab.AddOrGet<SkyVisibilityVisualizer>();
 		skyVisibilityVisualizer.OriginOffset.y = 3;
@@ -85,19 +85,19 @@ public class TelescopeConfig : IBuildingConfig
 		skyVisibilityVisualizer.SkipOnModuleInteriors = true;
 	}
 
-	public const string ID = "Telescope";
+		public const string ID = "Telescope";
 
-	public const float POINTS_PER_DAY = 2f;
+		public const float POINTS_PER_DAY = 2f;
 
-	public const float MASS_PER_POINT = 2f;
+		public const float MASS_PER_POINT = 2f;
 
-	public const float CAPACITY = 30f;
+		public const float CAPACITY = 30f;
 
-	public const int SCAN_RADIUS = 4;
+		public const int SCAN_RADIUS = 4;
 
-	public const int VERTICAL_SCAN_OFFSET = 3;
+		public const int VERTICAL_SCAN_OFFSET = 3;
 
-	public static readonly SkyVisibilityInfo SKY_VISIBILITY_INFO = new SkyVisibilityInfo(new CellOffset(0, 3), 4, new CellOffset(1, 3), 4, 0);
+		public static readonly SkyVisibilityInfo SKY_VISIBILITY_INFO = new SkyVisibilityInfo(new CellOffset(0, 3), 4, new CellOffset(1, 3), 4, 0);
 
-	public static readonly Tag INPUT_MATERIAL = GameTags.Glass;
+		public static readonly Tag INPUT_MATERIAL = GameTags.Glass;
 }

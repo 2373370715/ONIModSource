@@ -11,10 +11,10 @@ using UnityEngine;
 
 namespace ProcGenGame
 {
-	[Serializable]
+		[Serializable]
 	public class Cluster
 	{
-				public ClusterLayout clusterLayout
+						public ClusterLayout clusterLayout
 		{
 			get
 			{
@@ -22,9 +22,9 @@ namespace ProcGenGame
 			}
 		}
 
-						public bool IsGenerationComplete { get; private set; }
+								public bool IsGenerationComplete { get; private set; }
 
-				public bool IsGenerating
+						public bool IsGenerating
 		{
 			get
 			{
@@ -32,11 +32,11 @@ namespace ProcGenGame
 			}
 		}
 
-		private Cluster()
+				private Cluster()
 		{
 		}
 
-		public Cluster(string clusterName, int seed, List<string> chosenStoryTraitIds, bool assertMissingTraits, bool skipWorldTraits, bool isRunningWorldgenDebug = false)
+				public Cluster(string clusterName, int seed, List<string> chosenStoryTraitIds, bool assertMissingTraits, bool skipWorldTraits, bool isRunningWorldgenDebug = false)
 		{
 			DebugUtil.Assert(!string.IsNullOrEmpty(clusterName), "Cluster file is missing");
 			this.seed = seed;
@@ -70,7 +70,7 @@ namespace ProcGenGame
 				foreach (string name2 in CustomGameSettings.Instance.GetCurrentDlcMixingIds())
 				{
 					DlcMixingSettings cachedDlcMixingSettings = SettingsCache.GetCachedDlcMixingSettings(name2);
-					if (this.clusterLayout.poiPlacements != null)
+					if (cachedDlcMixingSettings != null && this.clusterLayout.poiPlacements != null)
 					{
 						this.clusterLayout.poiPlacements.AddRange(cachedDlcMixingSettings.spacePois);
 					}
@@ -82,7 +82,7 @@ namespace ProcGenGame
 			}
 		}
 
-		public void InitializeWorlds(bool reuseWorldgen = false, bool isRunningWorldgenDebug = false)
+				public void InitializeWorlds(bool reuseWorldgen = false, bool isRunningWorldgenDebug = false)
 		{
 			this.mutatedClusterLayout = WorldgenMixing.DoWorldMixing(SettingsCache.clusterLayouts.clusterCache[this.Id], this.seed, isRunningWorldgenDebug, false);
 			for (int i = 0; i < this.clusterLayout.worldPlacements.Count; i++)
@@ -153,12 +153,12 @@ namespace ProcGenGame
 			}
 		}
 
-		public void Reset()
+				public void Reset()
 		{
 			this.worlds.Clear();
 		}
 
-		private void LogBeginGeneration()
+				private void LogBeginGeneration()
 		{
 			string str = (CustomGameSettings.Instance != null) ? CustomGameSettings.Instance.GetSettingsCoordinate() : this.seed.ToString();
 			Console.WriteLine("\n\n");
@@ -195,7 +195,7 @@ namespace ProcGenGame
 			}
 		}
 
-		public void Generate(WorldGen.OfflineCallbackFunction callbackFn, Action<OfflineWorldGen.ErrorInfo> error_cb, int worldSeed = -1, int layoutSeed = -1, int terrainSeed = -1, int noiseSeed = -1, bool doSimSettle = true, bool debug = false, bool skipPlacingTemplates = false)
+				public void Generate(WorldGen.OfflineCallbackFunction callbackFn, Action<OfflineWorldGen.ErrorInfo> error_cb, int worldSeed = -1, int layoutSeed = -1, int terrainSeed = -1, int noiseSeed = -1, bool doSimSettle = true, bool debug = false, bool skipPlacingTemplates = false)
 		{
 			this.doSimSettle = doSimSettle;
 			for (int num = 0; num != this.worlds.Count; num++)
@@ -212,17 +212,17 @@ namespace ProcGenGame
 			this.thread.Start();
 		}
 
-		private void StopThread()
+				private void StopThread()
 		{
 			this.thread = null;
 		}
 
-		private bool IsRunningDebugGen()
+				private bool IsRunningDebugGen()
 		{
 			return !this.ApplicationIsPlaying;
 		}
 
-		private void BeginGeneration()
+				private void BeginGeneration()
 		{
 			this.LogBeginGeneration();
 			try
@@ -353,12 +353,12 @@ namespace ProcGenGame
 			this.IsGenerationComplete = true;
 		}
 
-		private bool IsValidHex(AxialI location)
+				private bool IsValidHex(AxialI location)
 		{
 			return location.IsWithinRadius(AxialI.ZERO, this.numRings - 1);
 		}
 
-		public bool AssignClusterLocations()
+				public bool AssignClusterLocations()
 		{
 			this.myRandom = new SeededRandom(this.seed);
 			List<WorldPlacement> list = new List<WorldPlacement>(SettingsCache.clusterLayouts.clusterCache[this.Id].worldPlacements);
@@ -510,7 +510,7 @@ namespace ProcGenGame
 			return true;
 		}
 
-		public void AbortGeneration()
+				public void AbortGeneration()
 		{
 			if (this.thread != null && this.thread.IsAlive)
 			{
@@ -519,12 +519,12 @@ namespace ProcGenGame
 			}
 		}
 
-		private void ThreadMain()
+				private void ThreadMain()
 		{
 			this.BeginGeneration();
 		}
 
-		private void Save(BinaryWriter fileWriter)
+				private void Save(BinaryWriter fileWriter)
 		{
 			try
 			{
@@ -595,7 +595,7 @@ namespace ProcGenGame
 			}
 		}
 
-		public static Cluster Load(FastReader reader)
+				public static Cluster Load(FastReader reader)
 		{
 			Cluster cluster = new Cluster();
 			try
@@ -652,7 +652,7 @@ namespace ProcGenGame
 			return cluster;
 		}
 
-		public void LoadClusterSim(List<SimSaveFileStructure> loadedWorlds, FastReader reader)
+				public void LoadClusterSim(List<SimSaveFileStructure> loadedWorlds, FastReader reader)
 		{
 			try
 			{
@@ -688,7 +688,7 @@ namespace ProcGenGame
 			}
 		}
 
-		public void SetIsRunningDebug(bool isDebug)
+				public void SetIsRunningDebug(bool isDebug)
 		{
 			foreach (WorldGen worldGen in this.worlds)
 			{
@@ -696,13 +696,13 @@ namespace ProcGenGame
 			}
 		}
 
-		public void DEBUG_UpdateSeed(int seed)
+				public void DEBUG_UpdateSeed(int seed)
 		{
 			this.seed = seed;
 			this.InitializeWorlds(true, true);
 		}
 
-		public int MaxSupportedSubworldMixings()
+				public int MaxSupportedSubworldMixings()
 		{
 			int num = 0;
 			foreach (WorldGen worldGen in this.worlds)
@@ -712,7 +712,7 @@ namespace ProcGenGame
 			return num;
 		}
 
-		public int MaxSupportedWorldMixings()
+				public int MaxSupportedWorldMixings()
 		{
 			int num = 0;
 			foreach (WorldPlacement worldPlacement in this.clusterLayout.worldPlacements)
@@ -725,49 +725,49 @@ namespace ProcGenGame
 			return num;
 		}
 
-		public List<WorldGen> worlds = new List<WorldGen>();
+				public List<WorldGen> worlds = new List<WorldGen>();
 
-		public WorldGen currentWorld;
+				public WorldGen currentWorld;
 
-		public Vector2I size;
+				public Vector2I size;
 
-		public string Id;
+				public string Id;
 
-		public int numRings = 5;
+				public int numRings = 5;
 
-		public bool worldTraitsEnabled;
+				public bool worldTraitsEnabled;
 
-		public bool assertMissingTraits;
+				public bool assertMissingTraits;
 
-		public Dictionary<ClusterLayoutSave.POIType, List<AxialI>> poiLocations = new Dictionary<ClusterLayoutSave.POIType, List<AxialI>>();
+				public Dictionary<ClusterLayoutSave.POIType, List<AxialI>> poiLocations = new Dictionary<ClusterLayoutSave.POIType, List<AxialI>>();
 
-		public Dictionary<AxialI, string> poiPlacements = new Dictionary<AxialI, string>();
+				public Dictionary<AxialI, string> poiPlacements = new Dictionary<AxialI, string>();
 
-		private int seed;
+				private int seed;
 
-		private SeededRandom myRandom;
+				private SeededRandom myRandom;
 
-		private bool doSimSettle = true;
+				private bool doSimSettle = true;
 
-		[NonSerialized]
+				[NonSerialized]
 		public Action<int, WorldGen> PerWorldGenBeginCallback;
 
-		[NonSerialized]
+				[NonSerialized]
 		public Action<int, WorldGen, Sim.Cell[], Sim.DiseaseCell[]> PerWorldGenCompleteCallback;
 
-		[NonSerialized]
+				[NonSerialized]
 		public Func<int, WorldGen, bool> ShouldSkipWorldCallback;
 
-		[NonSerialized]
+				[NonSerialized]
 		public List<WorldTrait> unplacedStoryTraits;
 
-		[NonSerialized]
+				[NonSerialized]
 		public List<string> chosenStoryTraitIds;
 
-		private MutatedClusterLayout mutatedClusterLayout;
+				private MutatedClusterLayout mutatedClusterLayout;
 
-		private Thread thread;
+				private Thread thread;
 
-		private bool ApplicationIsPlaying;
+				private bool ApplicationIsPlaying;
 	}
 }

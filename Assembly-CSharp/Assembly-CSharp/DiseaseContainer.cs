@@ -3,7 +3,7 @@ using UnityEngine;
 
 public struct DiseaseContainer
 {
-	public DiseaseContainer(GameObject go, ushort elemIdx)
+		public DiseaseContainer(GameObject go, ushort elemIdx)
 	{
 		this.elemIdx = elemIdx;
 		this.isContainer = (go.GetComponent<IUserControlledCapacity>() != null && go.GetComponent<Storage>() != null);
@@ -28,26 +28,26 @@ public struct DiseaseContainer
 		}
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		this.controller = null;
 	}
 
-	public AutoDisinfectable autoDisinfectable;
+		public AutoDisinfectable autoDisinfectable;
 
-	public ushort elemIdx;
+		public ushort elemIdx;
 
-	public bool isContainer;
+		public bool isContainer;
 
-	public ConduitType conduitType;
+		public ConduitType conduitType;
 
-	public KBatchedAnimController controller;
+		public KBatchedAnimController controller;
 
-	public GameObject visualDiseaseProvider;
+		public GameObject visualDiseaseProvider;
 
-	public int overpopulationCount;
+		public int overpopulationCount;
 
-	public float instanceGrowthRate;
+		public float instanceGrowthRate;
 
-	public float accumulatedError;
+		public float accumulatedError;
 }

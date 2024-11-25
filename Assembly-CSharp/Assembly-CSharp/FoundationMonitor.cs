@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FoundationMonitor")]
 public class FoundationMonitor : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.position = Grid.PosToCell(base.gameObject);
@@ -21,7 +21,7 @@ public class FoundationMonitor : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		foreach (HandleVector<int>.Handle handle in this.partitionerEntries)
 		{
@@ -30,12 +30,12 @@ public class FoundationMonitor : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	public bool CheckFoundationValid()
+		public bool CheckFoundationValid()
 	{
 		return !this.needsFoundation || this.IsSuitableFoundation(this.position);
 	}
 
-	public bool IsSuitableFoundation(int cell)
+		public bool IsSuitableFoundation(int cell)
 	{
 		bool flag = true;
 		foreach (CellOffset offset in this.monitorCells)
@@ -54,7 +54,7 @@ public class FoundationMonitor : KMonoBehaviour
 		return flag;
 	}
 
-	public void OnGroundChanged(object callbackData)
+		public void OnGroundChanged(object callbackData)
 	{
 		if (!this.hasFoundation && this.CheckFoundationValid())
 		{
@@ -70,18 +70,18 @@ public class FoundationMonitor : KMonoBehaviour
 		}
 	}
 
-	private int position;
+		private int position;
 
-	[Serialize]
+		[Serialize]
 	public bool needsFoundation = true;
 
-	[Serialize]
+		[Serialize]
 	private bool hasFoundation = true;
 
-	public CellOffset[] monitorCells = new CellOffset[]
+		public CellOffset[] monitorCells = new CellOffset[]
 	{
 		new CellOffset(0, -1)
 	};
 
-	private List<HandleVector<int>.Handle> partitionerEntries = new List<HandleVector<int>.Handle>();
+		private List<HandleVector<int>.Handle> partitionerEntries = new List<HandleVector<int>.Handle>();
 }

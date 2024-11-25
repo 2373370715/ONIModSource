@@ -4,12 +4,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/BuildingLoader")]
 public class BuildingLoader : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		BuildingLoader.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		BuildingLoader.Instance = this;
 		this.previewTemplate = this.CreatePreviewTemplate();
@@ -17,7 +17,7 @@ public class BuildingLoader : KMonoBehaviour
 		UnityEngine.Object.DontDestroyOnLoad(this.previewTemplate);
 	}
 
-	private GameObject CreateTemplate()
+		private GameObject CreateTemplate()
 	{
 		GameObject gameObject = new GameObject();
 		gameObject.SetActive(false);
@@ -30,14 +30,14 @@ public class BuildingLoader : KMonoBehaviour
 		return gameObject;
 	}
 
-	private GameObject CreatePreviewTemplate()
+		private GameObject CreatePreviewTemplate()
 	{
 		GameObject gameObject = this.CreateTemplate();
 		gameObject.AddComponent<BuildingPreview>();
 		return gameObject;
 	}
 
-	private GameObject CreateConstructionTemplate()
+		private GameObject CreateConstructionTemplate()
 	{
 		GameObject gameObject = this.CreateTemplate();
 		gameObject.AddOrGet<BuildingUnderConstruction>();
@@ -49,7 +49,7 @@ public class BuildingLoader : KMonoBehaviour
 		return gameObject;
 	}
 
-	public GameObject CreateBuilding(BuildingDef def, GameObject go, GameObject parent = null)
+		public GameObject CreateBuilding(BuildingDef def, GameObject go, GameObject parent = null)
 	{
 		go = UnityEngine.Object.Instantiate<GameObject>(go);
 		go.name = def.PrefabID;
@@ -61,7 +61,7 @@ public class BuildingLoader : KMonoBehaviour
 		return go;
 	}
 
-	private static bool Add2DComponents(BuildingDef def, GameObject go, string initialAnimState = null, bool no_collider = false, int layer = -1)
+		private static bool Add2DComponents(BuildingDef def, GameObject go, string initialAnimState = null, bool no_collider = false, int layer = -1)
 	{
 		bool flag = def.AnimFiles != null && def.AnimFiles.Length != 0;
 		if (layer == -1)
@@ -117,7 +117,7 @@ public class BuildingLoader : KMonoBehaviour
 		return flag;
 	}
 
-	private static T UpdateComponentRequirement<T>(GameObject go, bool required) where T : Component
+		private static T UpdateComponentRequirement<T>(GameObject go, bool required) where T : Component
 	{
 		T t = go.GetComponent(typeof(T)) as T;
 		if (!required && t != null)
@@ -132,7 +132,7 @@ public class BuildingLoader : KMonoBehaviour
 		return t;
 	}
 
-	public static KPrefabID AddID(GameObject go, string str)
+		public static KPrefabID AddID(GameObject go, string str)
 	{
 		KPrefabID kprefabID = go.GetComponent<KPrefabID>();
 		if (kprefabID == null)
@@ -145,7 +145,7 @@ public class BuildingLoader : KMonoBehaviour
 		return kprefabID;
 	}
 
-	public GameObject CreateBuildingUnderConstruction(BuildingDef def)
+		public GameObject CreateBuildingUnderConstruction(BuildingDef def)
 	{
 		GameObject gameObject = this.CreateBuilding(def, this.constructionTemplate, null);
 		UnityEngine.Object.DontDestroyOnLoad(gameObject);
@@ -185,7 +185,7 @@ public class BuildingLoader : KMonoBehaviour
 		return gameObject;
 	}
 
-	public GameObject CreateBuildingComplete(GameObject go, BuildingDef def)
+		public GameObject CreateBuildingComplete(GameObject go, BuildingDef def)
 	{
 		go.name = def.PrefabID + "Complete";
 		go.transform.SetPosition(new Vector3(0f, 0f, Grid.GetLayerZ(def.SceneLayer)));
@@ -286,7 +286,7 @@ public class BuildingLoader : KMonoBehaviour
 		return go;
 	}
 
-	public GameObject CreateBuildingPreview(BuildingDef def)
+		public GameObject CreateBuildingPreview(BuildingDef def)
 	{
 		GameObject gameObject = this.CreateBuilding(def, this.previewTemplate, null);
 		UnityEngine.Object.DontDestroyOnLoad(gameObject);
@@ -323,9 +323,9 @@ public class BuildingLoader : KMonoBehaviour
 		return gameObject;
 	}
 
-	private GameObject previewTemplate;
+		private GameObject previewTemplate;
 
-	private GameObject constructionTemplate;
+		private GameObject constructionTemplate;
 
-	public static BuildingLoader Instance;
+		public static BuildingLoader Instance;
 }

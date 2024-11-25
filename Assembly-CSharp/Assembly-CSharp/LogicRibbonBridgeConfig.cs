@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicRibbonBridgeConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LogicRibbonBridge";
 		int width = 3;
@@ -42,33 +42,33 @@ public class LogicRibbonBridgeConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		this.AddNetworkLink(go).visualizeOnly = true;
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		this.AddNetworkLink(go).visualizeOnly = true;
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		this.AddNetworkLink(go).visualizeOnly = false;
 		go.AddOrGet<BuildingCellVisualizer>();
 		go.AddOrGet<LogicRibbonBridge>();
 	}
 
-	private LogicUtilityNetworkLink AddNetworkLink(GameObject go)
+		private LogicUtilityNetworkLink AddNetworkLink(GameObject go)
 	{
 		LogicUtilityNetworkLink logicUtilityNetworkLink = go.AddOrGet<LogicUtilityNetworkLink>();
 		logicUtilityNetworkLink.bitDepth = LogicWire.BitDepth.FourBit;
@@ -77,7 +77,7 @@ public class LogicRibbonBridgeConfig : IBuildingConfig
 		return logicUtilityNetworkLink;
 	}
 
-	public const string ID = "LogicRibbonBridge";
+		public const string ID = "LogicRibbonBridge";
 
-	public static readonly HashedString BRIDGE_LOGIC_RIBBON_IO_ID = new HashedString("BRIDGE_LOGIC_RIBBON_IO");
+		public static readonly HashedString BRIDGE_LOGIC_RIBBON_IO_ID = new HashedString("BRIDGE_LOGIC_RIBBON_IO");
 }

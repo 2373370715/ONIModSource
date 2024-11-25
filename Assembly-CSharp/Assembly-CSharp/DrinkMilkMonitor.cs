@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DrinkMilkMonitor : GameStateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.lookingToDrinkMilk;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -45,7 +45,7 @@ public class DrinkMilkMonitor : GameStateMachine<DrinkMilkMonitor, DrinkMilkMoni
 		}, UpdateRate.SIM_1000ms, false);
 	}
 
-	private static void FindMilkFeederTarget(DrinkMilkMonitor.Instance smi)
+		private static void FindMilkFeederTarget(DrinkMilkMonitor.Instance smi)
 	{
 		DrinkMilkMonitor.<>c__DisplayClass8_0 CS$<>8__locals1;
 		CS$<>8__locals1.smi = smi;
@@ -97,7 +97,7 @@ public class DrinkMilkMonitor : GameStateMachine<DrinkMilkMonitor, DrinkMilkMoni
 		}
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static bool <FindMilkFeederTarget>g__ConsiderCell|8_0(int cell, ref DrinkMilkMonitor.<>c__DisplayClass8_0 A_1, ref DrinkMilkMonitor.<>c__DisplayClass8_1 A_2, ref DrinkMilkMonitor.<>c__DisplayClass8_2 A_3)
 	{
 		if (A_2.canDrown && !A_1.smi.drowningMonitor.IsCellSafe(cell))
@@ -118,30 +118,30 @@ public class DrinkMilkMonitor : GameStateMachine<DrinkMilkMonitor, DrinkMilkMoni
 		return false;
 	}
 
-	public GameStateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.State lookingToDrinkMilk;
+		public GameStateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.State lookingToDrinkMilk;
 
-	public GameStateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.State applyEffect;
+		public GameStateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.State applyEffect;
 
-	public GameStateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.State satisfied;
+		public GameStateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.State satisfied;
 
-	private StateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.Signal didFinishDrinkingMilk;
+		private StateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.Signal didFinishDrinkingMilk;
 
-	private StateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.FloatParameter remainingSecondsForEffect;
+		private StateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.FloatParameter remainingSecondsForEffect;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public bool consumesMilk = true;
+				public bool consumesMilk = true;
 
-		public DrinkMilkStates.Def.DrinkCellOffsetGetFn drinkCellOffsetGetFn;
+				public DrinkMilkStates.Def.DrinkCellOffsetGetFn drinkCellOffsetGetFn;
 	}
 
-	public new class Instance : GameStateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<DrinkMilkMonitor, DrinkMilkMonitor.Instance, IStateMachineTarget, DrinkMilkMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, DrinkMilkMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, DrinkMilkMonitor.Def def) : base(master, def)
 		{
 		}
 
-		public void NotifyFinishedDrinkingMilkFrom(MilkFeeder.Instance milkFeeder)
+				public void NotifyFinishedDrinkingMilkFrom(MilkFeeder.Instance milkFeeder)
 		{
 			if (milkFeeder != null && base.def.consumesMilk)
 			{
@@ -150,19 +150,19 @@ public class DrinkMilkMonitor : GameStateMachine<DrinkMilkMonitor, DrinkMilkMoni
 			base.sm.didFinishDrinkingMilk.Trigger(base.smi);
 		}
 
-		public int GetDrinkCellOf(MilkFeeder.Instance milkFeeder, bool isTwoByTwoCritterCramped)
+				public int GetDrinkCellOf(MilkFeeder.Instance milkFeeder, bool isTwoByTwoCritterCramped)
 		{
 			return Grid.OffsetCell(Grid.PosToCell(milkFeeder), base.def.drinkCellOffsetGetFn(milkFeeder, this, isTwoByTwoCritterCramped));
 		}
 
-		public MilkFeeder.Instance targetMilkFeeder;
+				public MilkFeeder.Instance targetMilkFeeder;
 
-		public bool doesTargetMilkFeederHaveSpaceForCritter;
+				public bool doesTargetMilkFeederHaveSpaceForCritter;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public Navigator navigator;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public DrowningMonitor drowningMonitor;
 	}
 }

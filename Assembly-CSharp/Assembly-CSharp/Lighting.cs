@@ -4,32 +4,32 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class Lighting : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		Lighting.Instance = this;
 	}
 
-	private void OnDestroy()
+		private void OnDestroy()
 	{
 		Lighting.Instance = null;
 	}
 
-	private Color PremultiplyAlpha(Color c)
+		private Color PremultiplyAlpha(Color c)
 	{
 		return c * c.a;
 	}
 
-	private void Start()
+		private void Start()
 	{
 		this.UpdateLighting();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.UpdateLighting();
 	}
 
-	private void UpdateLighting()
+		private void UpdateLighting()
 	{
 		Shader.SetGlobalInt(Lighting._liquidZ, -28);
 		Shader.SetGlobalVector(Lighting._DigMapMapParameters, new Vector4(this.Settings.DigMapColour.r, this.Settings.DigMapColour.g, this.Settings.DigMapColour.b, this.Settings.DigMapScale));
@@ -123,138 +123,138 @@ public class Lighting : MonoBehaviour
 		}
 	}
 
-	public global::LightingSettings Settings;
+		public global::LightingSettings Settings;
 
-	public static Lighting Instance;
+		public static Lighting Instance;
 
-	[NonSerialized]
+		[NonSerialized]
 	public bool disableLighting;
 
-	private static int _liquidZ = Shader.PropertyToID("_LiquidZ");
+		private static int _liquidZ = Shader.PropertyToID("_LiquidZ");
 
-	private static int _DigMapMapParameters = Shader.PropertyToID("_DigMapMapParameters");
+		private static int _DigMapMapParameters = Shader.PropertyToID("_DigMapMapParameters");
 
-	private static int _DigDamageMap = Shader.PropertyToID("_DigDamageMap");
+		private static int _DigDamageMap = Shader.PropertyToID("_DigDamageMap");
 
-	private static int _StateTransitionMap = Shader.PropertyToID("_StateTransitionMap");
+		private static int _StateTransitionMap = Shader.PropertyToID("_StateTransitionMap");
 
-	private static int _StateTransitionColor = Shader.PropertyToID("_StateTransitionColor");
+		private static int _StateTransitionColor = Shader.PropertyToID("_StateTransitionColor");
 
-	private static int _StateTransitionParameters = Shader.PropertyToID("_StateTransitionParameters");
+		private static int _StateTransitionParameters = Shader.PropertyToID("_StateTransitionParameters");
 
-	private static int _FallingSolidMap = Shader.PropertyToID("_FallingSolidMap");
+		private static int _FallingSolidMap = Shader.PropertyToID("_FallingSolidMap");
 
-	private static int _FallingSolidColor = Shader.PropertyToID("_FallingSolidColor");
+		private static int _FallingSolidColor = Shader.PropertyToID("_FallingSolidColor");
 
-	private static int _FallingSolidParameters = Shader.PropertyToID("_FallingSolidParameters");
+		private static int _FallingSolidParameters = Shader.PropertyToID("_FallingSolidParameters");
 
-	private static int _WaterTrimColor = Shader.PropertyToID("_WaterTrimColor");
+		private static int _WaterTrimColor = Shader.PropertyToID("_WaterTrimColor");
 
-	private static int _WaterParameters2 = Shader.PropertyToID("_WaterParameters2");
+		private static int _WaterParameters2 = Shader.PropertyToID("_WaterParameters2");
 
-	private static int _WaterWaveParameters = Shader.PropertyToID("_WaterWaveParameters");
+		private static int _WaterWaveParameters = Shader.PropertyToID("_WaterWaveParameters");
 
-	private static int _WaterWaveParameters2 = Shader.PropertyToID("_WaterWaveParameters2");
+		private static int _WaterWaveParameters2 = Shader.PropertyToID("_WaterWaveParameters2");
 
-	private static int _WaterDetailParameters = Shader.PropertyToID("_WaterDetailParameters");
+		private static int _WaterDetailParameters = Shader.PropertyToID("_WaterDetailParameters");
 
-	private static int _WaterDistortionParameters = Shader.PropertyToID("_WaterDistortionParameters");
+		private static int _WaterDistortionParameters = Shader.PropertyToID("_WaterDistortionParameters");
 
-	private static int _BloomParameters = Shader.PropertyToID("_BloomParameters");
+		private static int _BloomParameters = Shader.PropertyToID("_BloomParameters");
 
-	private static int _LiquidParameters2 = Shader.PropertyToID("_LiquidParameters2");
+		private static int _LiquidParameters2 = Shader.PropertyToID("_LiquidParameters2");
 
-	private static int _GridParameters = Shader.PropertyToID("_GridParameters");
+		private static int _GridParameters = Shader.PropertyToID("_GridParameters");
 
-	private static int _GridColor = Shader.PropertyToID("_GridColor");
+		private static int _GridColor = Shader.PropertyToID("_GridColor");
 
-	private static int _EdgeGlowParameters = Shader.PropertyToID("_EdgeGlowParameters");
+		private static int _EdgeGlowParameters = Shader.PropertyToID("_EdgeGlowParameters");
 
-	private static int _SubstanceParameters = Shader.PropertyToID("_SubstanceParameters");
+		private static int _SubstanceParameters = Shader.PropertyToID("_SubstanceParameters");
 
-	private static int _TileEdgeParameters = Shader.PropertyToID("_TileEdgeParameters");
+		private static int _TileEdgeParameters = Shader.PropertyToID("_TileEdgeParameters");
 
-	private static int _AnimParameters = Shader.PropertyToID("_AnimParameters");
+		private static int _AnimParameters = Shader.PropertyToID("_AnimParameters");
 
-	private static int _GasOpacity = Shader.PropertyToID("_GasOpacity");
+		private static int _GasOpacity = Shader.PropertyToID("_GasOpacity");
 
-	private static int _DarkenTintBackground = Shader.PropertyToID("_DarkenTintBackground");
+		private static int _DarkenTintBackground = Shader.PropertyToID("_DarkenTintBackground");
 
-	private static int _DarkenTintMidground = Shader.PropertyToID("_DarkenTintMidground");
+		private static int _DarkenTintMidground = Shader.PropertyToID("_DarkenTintMidground");
 
-	private static int _DarkenTintForeground = Shader.PropertyToID("_DarkenTintForeground");
+		private static int _DarkenTintForeground = Shader.PropertyToID("_DarkenTintForeground");
 
-	private static int _BrightenOverlay = Shader.PropertyToID("_BrightenOverlay");
+		private static int _BrightenOverlay = Shader.PropertyToID("_BrightenOverlay");
 
-	private static int _ColdFG = Shader.PropertyToID("_ColdFG");
+		private static int _ColdFG = Shader.PropertyToID("_ColdFG");
 
-	private static int _ColdMG = Shader.PropertyToID("_ColdMG");
+		private static int _ColdMG = Shader.PropertyToID("_ColdMG");
 
-	private static int _ColdBG = Shader.PropertyToID("_ColdBG");
+		private static int _ColdBG = Shader.PropertyToID("_ColdBG");
 
-	private static int _HotFG = Shader.PropertyToID("_HotFG");
+		private static int _HotFG = Shader.PropertyToID("_HotFG");
 
-	private static int _HotMG = Shader.PropertyToID("_HotMG");
+		private static int _HotMG = Shader.PropertyToID("_HotMG");
 
-	private static int _HotBG = Shader.PropertyToID("_HotBG");
+		private static int _HotBG = Shader.PropertyToID("_HotBG");
 
-	private static int _TemperatureParallax = Shader.PropertyToID("_TemperatureParallax");
+		private static int _TemperatureParallax = Shader.PropertyToID("_TemperatureParallax");
 
-	private static int _ColdUVOffset1 = Shader.PropertyToID("_ColdUVOffset1");
+		private static int _ColdUVOffset1 = Shader.PropertyToID("_ColdUVOffset1");
 
-	private static int _ColdUVOffset2 = Shader.PropertyToID("_ColdUVOffset2");
+		private static int _ColdUVOffset2 = Shader.PropertyToID("_ColdUVOffset2");
 
-	private static int _HotUVOffset1 = Shader.PropertyToID("_HotUVOffset1");
+		private static int _HotUVOffset1 = Shader.PropertyToID("_HotUVOffset1");
 
-	private static int _HotUVOffset2 = Shader.PropertyToID("_HotUVOffset2");
+		private static int _HotUVOffset2 = Shader.PropertyToID("_HotUVOffset2");
 
-	private static int _DustColour = Shader.PropertyToID("_DustColour");
+		private static int _DustColour = Shader.PropertyToID("_DustColour");
 
-	private static int _DustInfo = Shader.PropertyToID("_DustInfo");
+		private static int _DustInfo = Shader.PropertyToID("_DustInfo");
 
-	private static int _DustTex = Shader.PropertyToID("_DustTex");
+		private static int _DustTex = Shader.PropertyToID("_DustTex");
 
-	private static int _DebugShowInfo = Shader.PropertyToID("_DebugShowInfo");
+		private static int _DebugShowInfo = Shader.PropertyToID("_DebugShowInfo");
 
-	private static int _HeatHazeParameters = Shader.PropertyToID("_HeatHazeParameters");
+		private static int _HeatHazeParameters = Shader.PropertyToID("_HeatHazeParameters");
 
-	private static int _HeatHazeTexture = Shader.PropertyToID("_HeatHazeTexture");
+		private static int _HeatHazeTexture = Shader.PropertyToID("_HeatHazeTexture");
 
-	private static int _ShineParams = Shader.PropertyToID("_ShineParams");
+		private static int _ShineParams = Shader.PropertyToID("_ShineParams");
 
-	private static int _ShineParams2 = Shader.PropertyToID("_ShineParams2");
+		private static int _ShineParams2 = Shader.PropertyToID("_ShineParams2");
 
-	private static int _WorldZoneGasBlend = Shader.PropertyToID("_WorldZoneGasBlend");
+		private static int _WorldZoneGasBlend = Shader.PropertyToID("_WorldZoneGasBlend");
 
-	private static int _WorldZoneLiquidBlend = Shader.PropertyToID("_WorldZoneLiquidBlend");
+		private static int _WorldZoneLiquidBlend = Shader.PropertyToID("_WorldZoneLiquidBlend");
 
-	private static int _WorldZoneForegroundBlend = Shader.PropertyToID("_WorldZoneForegroundBlend");
+		private static int _WorldZoneForegroundBlend = Shader.PropertyToID("_WorldZoneForegroundBlend");
 
-	private static int _WorldZoneSimpleAnimBlend = Shader.PropertyToID("_WorldZoneSimpleAnimBlend");
+		private static int _WorldZoneSimpleAnimBlend = Shader.PropertyToID("_WorldZoneSimpleAnimBlend");
 
-	private static int _CharacterLitColour = Shader.PropertyToID("_CharacterLitColour");
+		private static int _CharacterLitColour = Shader.PropertyToID("_CharacterLitColour");
 
-	private static int _CharacterUnlitColour = Shader.PropertyToID("_CharacterUnlitColour");
+		private static int _CharacterUnlitColour = Shader.PropertyToID("_CharacterUnlitColour");
 
-	private static int _BuildingDamagedTex = Shader.PropertyToID("_BuildingDamagedTex");
+		private static int _BuildingDamagedTex = Shader.PropertyToID("_BuildingDamagedTex");
 
-	private static int _BuildingDamagedUVParameters = Shader.PropertyToID("_BuildingDamagedUVParameters");
+		private static int _BuildingDamagedUVParameters = Shader.PropertyToID("_BuildingDamagedUVParameters");
 
-	private static int _DiseaseOverlayTex = Shader.PropertyToID("_DiseaseOverlayTex");
+		private static int _DiseaseOverlayTex = Shader.PropertyToID("_DiseaseOverlayTex");
 
-	private static int _DiseaseOverlayTexInfo = Shader.PropertyToID("_DiseaseOverlayTexInfo");
+		private static int _DiseaseOverlayTexInfo = Shader.PropertyToID("_DiseaseOverlayTexInfo");
 
-	private static int _RadHazeColor = Shader.PropertyToID("_RadHazeColor");
+		private static int _RadHazeColor = Shader.PropertyToID("_RadHazeColor");
 
-	private static int _RadUVOffset1 = Shader.PropertyToID("_RadUVOffset1");
+		private static int _RadUVOffset1 = Shader.PropertyToID("_RadUVOffset1");
 
-	private static int _RadUVOffset2 = Shader.PropertyToID("_RadUVOffset2");
+		private static int _RadUVOffset2 = Shader.PropertyToID("_RadUVOffset2");
 
-	private static int _RadUVScales = Shader.PropertyToID("_RadUVScales");
+		private static int _RadUVScales = Shader.PropertyToID("_RadUVScales");
 
-	private static int _RadRange1 = Shader.PropertyToID("_RadRange1");
+		private static int _RadRange1 = Shader.PropertyToID("_RadRange1");
 
-	private static int _RadRange2 = Shader.PropertyToID("_RadRange2");
+		private static int _RadRange2 = Shader.PropertyToID("_RadRange2");
 
-	private static int _LightBufferTex = Shader.PropertyToID("_LightBufferTex");
+		private static int _LightBufferTex = Shader.PropertyToID("_LightBufferTex");
 }

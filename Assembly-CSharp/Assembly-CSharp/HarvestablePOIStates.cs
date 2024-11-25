@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/HarvestablePOIStates")]
 public class HarvestablePOIStates : GameStateMachine<HarvestablePOIStates, HarvestablePOIStates.Instance, IStateMachineTarget, HarvestablePOIStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.idle;
@@ -26,19 +26,19 @@ public class HarvestablePOIStates : GameStateMachine<HarvestablePOIStates, Harve
 		}).ParamTransition<float>(this.poiCapacity, this.idle, (HarvestablePOIStates.Instance smi, float f) => f >= smi.configuration.GetMaxCapacity());
 	}
 
-	public GameStateMachine<HarvestablePOIStates, HarvestablePOIStates.Instance, IStateMachineTarget, HarvestablePOIStates.Def>.State idle;
+		public GameStateMachine<HarvestablePOIStates, HarvestablePOIStates.Instance, IStateMachineTarget, HarvestablePOIStates.Def>.State idle;
 
-	public GameStateMachine<HarvestablePOIStates, HarvestablePOIStates.Instance, IStateMachineTarget, HarvestablePOIStates.Def>.State recharging;
+		public GameStateMachine<HarvestablePOIStates, HarvestablePOIStates.Instance, IStateMachineTarget, HarvestablePOIStates.Def>.State recharging;
 
-	public StateMachine<HarvestablePOIStates, HarvestablePOIStates.Instance, IStateMachineTarget, HarvestablePOIStates.Def>.FloatParameter poiCapacity = new StateMachine<HarvestablePOIStates, HarvestablePOIStates.Instance, IStateMachineTarget, HarvestablePOIStates.Def>.FloatParameter(1f);
+		public StateMachine<HarvestablePOIStates, HarvestablePOIStates.Instance, IStateMachineTarget, HarvestablePOIStates.Def>.FloatParameter poiCapacity = new StateMachine<HarvestablePOIStates, HarvestablePOIStates.Instance, IStateMachineTarget, HarvestablePOIStates.Def>.FloatParameter(1f);
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<HarvestablePOIStates, HarvestablePOIStates.Instance, IStateMachineTarget, HarvestablePOIStates.Def>.GameInstance, IGameObjectEffectDescriptor
+		public new class Instance : GameStateMachine<HarvestablePOIStates, HarvestablePOIStates.Instance, IStateMachineTarget, HarvestablePOIStates.Def>.GameInstance, IGameObjectEffectDescriptor
 	{
-						public float poiCapacity
+								public float poiCapacity
 		{
 			get
 			{
@@ -51,29 +51,29 @@ public class HarvestablePOIStates : GameStateMachine<HarvestablePOIStates, Harve
 			}
 		}
 
-		public Instance(IStateMachineTarget target, HarvestablePOIStates.Def def) : base(target, def)
+				public Instance(IStateMachineTarget target, HarvestablePOIStates.Def def) : base(target, def)
 		{
 		}
 
-		public void RechargePOI(float dt)
+				public void RechargePOI(float dt)
 		{
 			float num = dt / this.configuration.GetRechargeTime();
 			float delta = this.configuration.GetMaxCapacity() * num;
 			this.DeltaPOICapacity(delta);
 		}
 
-		public void DeltaPOICapacity(float delta)
+				public void DeltaPOICapacity(float delta)
 		{
 			this.poiCapacity += delta;
 			this.poiCapacity = Mathf.Min(this.configuration.GetMaxCapacity(), this.poiCapacity);
 		}
 
-		public bool POICanBeHarvested()
+				public bool POICanBeHarvested()
 		{
 			return this.poiCapacity > 0f;
 		}
 
-		public List<Descriptor> GetDescriptors(GameObject go)
+				public List<Descriptor> GetDescriptors(GameObject go)
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			foreach (KeyValuePair<SimHashes, float> keyValuePair in this.configuration.GetElementsWithWeights())
@@ -86,10 +86,10 @@ public class HarvestablePOIStates : GameStateMachine<HarvestablePOIStates, Harve
 			return list;
 		}
 
-		[Serialize]
+				[Serialize]
 		public HarvestablePOIConfigurator.HarvestablePOIInstanceConfiguration configuration;
 
-		[Serialize]
+				[Serialize]
 		private float _poiCapacity;
 	}
 }

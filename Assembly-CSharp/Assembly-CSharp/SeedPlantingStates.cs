@@ -4,10 +4,18 @@ using UnityEngine;
 
 public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.findSeed;
-		this.root.ToggleStatusItem(CREATURES.STATUSITEMS.PLANTINGSEED.NAME, CREATURES.STATUSITEMS.PLANTINGSEED.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).Exit(new StateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State.Callback(SeedPlantingStates.UnreserveSeed)).Exit(new StateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State.Callback(SeedPlantingStates.DropAll)).Exit(new StateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State.Callback(SeedPlantingStates.RemoveMouthOverride));
+		GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State root = this.root;
+		string name = CREATURES.STATUSITEMS.PLANTINGSEED.NAME;
+		string tooltip = CREATURES.STATUSITEMS.PLANTINGSEED.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		root.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).Exit(new StateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State.Callback(SeedPlantingStates.UnreserveSeed)).Exit(new StateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State.Callback(SeedPlantingStates.DropAll)).Exit(new StateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State.Callback(SeedPlantingStates.RemoveMouthOverride));
 		this.findSeed.Enter(delegate(SeedPlantingStates.Instance smi)
 		{
 			SeedPlantingStates.FindSeed(smi);
@@ -67,7 +75,7 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 		this.behaviourcomplete.BehaviourComplete(GameTags.Creatures.WantsToPlantSeed, false);
 	}
 
-	private static void AddMouthOverride(SeedPlantingStates.Instance smi)
+		private static void AddMouthOverride(SeedPlantingStates.Instance smi)
 	{
 		SymbolOverrideController component = smi.GetComponent<SymbolOverrideController>();
 		KAnim.Build.Symbol symbol = smi.GetComponent<KBatchedAnimController>().AnimFiles[0].GetData().build.GetSymbol(smi.def.prefix + "sq_mouth_cheeks");
@@ -77,12 +85,12 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 		}
 	}
 
-	private static void RemoveMouthOverride(SeedPlantingStates.Instance smi)
+		private static void RemoveMouthOverride(SeedPlantingStates.Instance smi)
 	{
 		smi.GetComponent<SymbolOverrideController>().TryRemoveSymbolOverride("sq_mouth", 1);
 	}
 
-	private static void PickupComplete(SeedPlantingStates.Instance smi)
+		private static void PickupComplete(SeedPlantingStates.Instance smi)
 	{
 		if (!smi.targetSeed)
 		{
@@ -120,7 +128,7 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 		SeedPlantingStates.AddMouthOverride(smi);
 	}
 
-	private static void PlantComplete(SeedPlantingStates.Instance smi)
+		private static void PlantComplete(SeedPlantingStates.Instance smi)
 	{
 		PlantableSeed plantableSeed = smi.targetSeed ? smi.targetSeed.GetComponent<PlantableSeed>() : null;
 		PlantablePlot plantablePlot;
@@ -143,12 +151,12 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 		smi.targetPlot = null;
 	}
 
-	private static void DropAll(SeedPlantingStates.Instance smi)
+		private static void DropAll(SeedPlantingStates.Instance smi)
 	{
 		smi.GetComponent<Storage>().DropAll(false, false, default(Vector3), true, null);
 	}
 
-	private static int GetPlantableCell(SeedPlantingStates.Instance smi)
+		private static int GetPlantableCell(SeedPlantingStates.Instance smi)
 	{
 		int num = Grid.PosToCell(smi.targetPlot);
 		if (Grid.IsValidCell(num))
@@ -158,7 +166,7 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 		return num;
 	}
 
-	private static void FindDirtPlot(SeedPlantingStates.Instance smi)
+		private static void FindDirtPlot(SeedPlantingStates.Instance smi)
 	{
 		smi.targetDirtPlotCell = Grid.InvalidCell;
 		PlantableSeed component = smi.targetSeed.GetComponent<PlantableSeed>();
@@ -170,7 +178,7 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 		}
 	}
 
-	private static bool CheckValidPlotCell(SeedPlantingStates.Instance smi, PlantableSeed seed, int cell, out PlantablePlot plot)
+		private static bool CheckValidPlotCell(SeedPlantingStates.Instance smi, PlantableSeed seed, int cell, out PlantablePlot plot)
 	{
 		plot = null;
 		if (!Grid.IsValidCell(cell))
@@ -203,14 +211,14 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 		return seed.TestSuitableGround(cell);
 	}
 
-	private static int GetSeedCell(SeedPlantingStates.Instance smi)
+		private static int GetSeedCell(SeedPlantingStates.Instance smi)
 	{
 		global::Debug.Assert(smi.targetSeed);
 		global::Debug.Assert(smi.seed_cell != Grid.InvalidCell);
 		return smi.seed_cell;
 	}
 
-	private static void FindSeed(SeedPlantingStates.Instance smi)
+		private static void FindSeed(SeedPlantingStates.Instance smi)
 	{
 		Navigator component = smi.GetComponent<Navigator>();
 		Pickupable targetSeed = null;
@@ -232,7 +240,7 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 		smi.seed_cell = (smi.targetSeed ? Grid.PosToCell(smi.targetSeed) : Grid.InvalidCell);
 	}
 
-	private static void ReserveSeed(SeedPlantingStates.Instance smi)
+		private static void ReserveSeed(SeedPlantingStates.Instance smi)
 	{
 		GameObject gameObject = smi.targetSeed ? smi.targetSeed.gameObject : null;
 		if (gameObject != null)
@@ -242,7 +250,7 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 		}
 	}
 
-	private static void UnreserveSeed(SeedPlantingStates.Instance smi)
+		private static void UnreserveSeed(SeedPlantingStates.Instance smi)
 	{
 		GameObject go = smi.targetSeed ? smi.targetSeed.gameObject : null;
 		if (smi.targetSeed != null)
@@ -251,51 +259,51 @@ public class SeedPlantingStates : GameStateMachine<SeedPlantingStates, SeedPlant
 		}
 	}
 
-	private const int MAX_NAVIGATE_DISTANCE = 100;
+		private const int MAX_NAVIGATE_DISTANCE = 100;
 
-	public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State findSeed;
+		public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State findSeed;
 
-	public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State moveToSeed;
+		public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State moveToSeed;
 
-	public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State pickupSeed;
+		public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State pickupSeed;
 
-	public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State findPlantLocation;
+		public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State findPlantLocation;
 
-	public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State moveToPlantLocation;
+		public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State moveToPlantLocation;
 
-	public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State moveToPlot;
+		public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State moveToPlot;
 
-	public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State moveToDirt;
+		public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State moveToDirt;
 
-	public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State planting;
+		public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State planting;
 
-	public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State behaviourcomplete;
+		public GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.State behaviourcomplete;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Def(string prefix)
+				public Def(string prefix)
 		{
 			this.prefix = prefix;
 		}
 
-		public string prefix;
+				public string prefix;
 	}
 
-	public new class Instance : GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<SeedPlantingStates, SeedPlantingStates.Instance, IStateMachineTarget, SeedPlantingStates.Def>.GameInstance
 	{
-		public Instance(Chore<SeedPlantingStates.Instance> chore, SeedPlantingStates.Def def) : base(chore, def)
+				public Instance(Chore<SeedPlantingStates.Instance> chore, SeedPlantingStates.Def def) : base(chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.WantsToPlantSeed);
 		}
 
-		public PlantablePlot targetPlot;
+				public PlantablePlot targetPlot;
 
-		public int targetDirtPlotCell = Grid.InvalidCell;
+				public int targetDirtPlotCell = Grid.InvalidCell;
 
-		public Element plantElement = ElementLoader.FindElementByHash(SimHashes.Dirt);
+				public Element plantElement = ElementLoader.FindElementByHash(SimHashes.Dirt);
 
-		public Pickupable targetSeed;
+				public Pickupable targetSeed;
 
-		public int seed_cell = Grid.InvalidCell;
+				public int seed_cell = Grid.InvalidCell;
 	}
 }

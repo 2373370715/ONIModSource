@@ -3,9 +3,9 @@ using UnityEngine;
 
 public interface IApproachable
 {
-	CellOffset[] GetOffsets();
+		CellOffset[] GetOffsets();
 
-	int GetCell();
+		int GetCell();
 
-		Transform transform { get; }
+			Transform transform { get; }
 }

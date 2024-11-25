@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class AccessControlSideScreenRow : AccessControlSideScreenDoor
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.defaultButton.onValueChanged += this.OnDefaultButtonChanged;
 	}
 
-	private void OnDefaultButtonChanged(bool state)
+		private void OnDefaultButtonChanged(bool state)
 	{
 		this.UpdateButtonStates(!state);
 		if (this.defaultClickedCallback != null)
@@ -19,7 +19,7 @@ public class AccessControlSideScreenRow : AccessControlSideScreenDoor
 		}
 	}
 
-	protected override void UpdateButtonStates(bool isDefault)
+		protected override void UpdateButtonStates(bool isDefault)
 	{
 		base.UpdateButtonStates(isDefault);
 		this.defaultButton.GetComponent<ToolTip>().SetSimpleTooltip(isDefault ? UI.UISIDESCREENS.ACCESS_CONTROL_SIDE_SCREEN.SET_TO_CUSTOM : UI.UISIDESCREENS.ACCESS_CONTROL_SIDE_SCREEN.SET_TO_DEFAULT);
@@ -27,7 +27,7 @@ public class AccessControlSideScreenRow : AccessControlSideScreenDoor
 		this.customControls.SetActive(!isDefault);
 	}
 
-	public void SetMinionContent(MinionAssignablesProxy identity, AccessControl.Permission permission, bool isDefault, Action<MinionAssignablesProxy, AccessControl.Permission> onPermissionChange, Action<MinionAssignablesProxy, bool> onDefaultClick)
+		public void SetMinionContent(MinionAssignablesProxy identity, AccessControl.Permission permission, bool isDefault, Action<MinionAssignablesProxy, AccessControl.Permission> onPermissionChange, Action<MinionAssignablesProxy, bool> onDefaultClick)
 	{
 		base.SetContent(permission, onPermissionChange);
 		if (identity == null)
@@ -48,16 +48,16 @@ public class AccessControlSideScreenRow : AccessControlSideScreenDoor
 		this.defaultClickedCallback = onDefaultClick;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private CrewPortrait crewPortraitPrefab;
 
-	private CrewPortrait portraitInstance;
+		private CrewPortrait portraitInstance;
 
-	public KToggle defaultButton;
+		public KToggle defaultButton;
 
-	public GameObject defaultControls;
+		public GameObject defaultControls;
 
-	public GameObject customControls;
+		public GameObject customControls;
 
-	private Action<MinionAssignablesProxy, bool> defaultClickedCallback;
+		private Action<MinionAssignablesProxy, bool> defaultClickedCallback;
 }

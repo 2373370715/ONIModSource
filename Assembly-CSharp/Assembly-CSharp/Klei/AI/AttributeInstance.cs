@@ -6,10 +6,10 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[DebuggerDisplay("{Attribute.Id}")]
+		[DebuggerDisplay("{Attribute.Id}")]
 	public class AttributeInstance : ModifierInstance<Attribute>
 	{
-				public string Id
+						public string Id
 		{
 			get
 			{
@@ -17,7 +17,7 @@ namespace Klei.AI
 			}
 		}
 
-				public string Name
+						public string Name
 		{
 			get
 			{
@@ -25,7 +25,7 @@ namespace Klei.AI
 			}
 		}
 
-				public string Description
+						public string Description
 		{
 			get
 			{
@@ -33,12 +33,12 @@ namespace Klei.AI
 			}
 		}
 
-		public float GetBaseValue()
+				public float GetBaseValue()
 		{
 			return this.Attribute.BaseValue;
 		}
 
-		public float GetTotalDisplayValue()
+				public float GetTotalDisplayValue()
 		{
 			float num = this.Attribute.BaseValue;
 			float num2 = 0f;
@@ -61,7 +61,7 @@ namespace Klei.AI
 			return num;
 		}
 
-		public float GetTotalValue()
+				public float GetTotalValue()
 		{
 			float num = this.Attribute.BaseValue;
 			float num2 = 0f;
@@ -87,7 +87,7 @@ namespace Klei.AI
 			return num;
 		}
 
-		public static float GetTotalDisplayValue(Attribute attribute, List<AttributeModifier> modifiers)
+				public static float GetTotalDisplayValue(Attribute attribute, List<AttributeModifier> modifiers)
 		{
 			float num = attribute.BaseValue;
 			float num2 = 0f;
@@ -110,7 +110,7 @@ namespace Klei.AI
 			return num;
 		}
 
-		public static float GetTotalValue(Attribute attribute, List<AttributeModifier> modifiers)
+				public static float GetTotalValue(Attribute attribute, List<AttributeModifier> modifiers)
 		{
 			float num = attribute.BaseValue;
 			float num2 = 0f;
@@ -136,7 +136,7 @@ namespace Klei.AI
 			return num;
 		}
 
-		public float GetModifierContribution(AttributeModifier testModifier)
+				public float GetModifierContribution(AttributeModifier testModifier)
 		{
 			if (!testModifier.IsMultiplier)
 			{
@@ -154,13 +154,13 @@ namespace Klei.AI
 			return num * testModifier.Value;
 		}
 
-		public AttributeInstance(GameObject game_object, Attribute attribute) : base(game_object, attribute)
+				public AttributeInstance(GameObject game_object, Attribute attribute) : base(game_object, attribute)
 		{
 			DebugUtil.Assert(attribute != null);
 			this.Attribute = attribute;
 		}
 
-		public void Add(AttributeModifier modifier)
+				public void Add(AttributeModifier modifier)
 		{
 			this.Modifiers.Add(modifier);
 			if (this.OnDirty != null)
@@ -169,7 +169,7 @@ namespace Klei.AI
 			}
 		}
 
-		public void Remove(AttributeModifier modifier)
+				public void Remove(AttributeModifier modifier)
 		{
 			int i = 0;
 			while (i < this.Modifiers.Count)
@@ -191,7 +191,7 @@ namespace Klei.AI
 			}
 		}
 
-		public void ClearModifiers()
+				public void ClearModifiers()
 		{
 			if (this.Modifiers.Count > 0)
 			{
@@ -203,27 +203,27 @@ namespace Klei.AI
 			}
 		}
 
-		public string GetDescription()
+				public string GetDescription()
 		{
 			return string.Format(DUPLICANTS.ATTRIBUTES.VALUE, this.Name, this.GetFormattedValue());
 		}
 
-		public string GetFormattedValue()
+				public string GetFormattedValue()
 		{
 			return this.Attribute.formatter.GetFormattedAttribute(this);
 		}
 
-		public string GetAttributeValueTooltip()
+				public string GetAttributeValueTooltip()
 		{
 			return this.Attribute.GetTooltip(this);
 		}
 
-		public Attribute Attribute;
+				public Attribute Attribute;
 
-		public System.Action OnDirty;
+				public System.Action OnDirty;
 
-		public ArrayRef<AttributeModifier> Modifiers;
+				public ArrayRef<AttributeModifier> Modifiers;
 
-		public bool hide;
+				public bool hide;
 	}
 }

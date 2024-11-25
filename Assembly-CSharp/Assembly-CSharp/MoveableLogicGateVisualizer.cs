@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [SkipSaveFileSerialization]
 public class MoveableLogicGateVisualizer : LogicGateBase
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.cell = -1;
@@ -16,7 +16,7 @@ public class MoveableLogicGateVisualizer : LogicGateBase
 		base.Subscribe<MoveableLogicGateVisualizer>(-1643076535, MoveableLogicGateVisualizer.OnRotatedDelegate);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		OverlayScreen instance = OverlayScreen.Instance;
 		instance.OnOverlayChanged = (Action<HashedString>)Delegate.Remove(instance.OnOverlayChanged, new Action<HashedString>(this.OnOverlayChanged));
@@ -24,7 +24,7 @@ public class MoveableLogicGateVisualizer : LogicGateBase
 		base.OnCleanUp();
 	}
 
-	private void OnOverlayChanged(HashedString mode)
+		private void OnOverlayChanged(HashedString mode)
 	{
 		if (mode == OverlayModes.Logic.ID)
 		{
@@ -34,13 +34,13 @@ public class MoveableLogicGateVisualizer : LogicGateBase
 		this.Unregister();
 	}
 
-	private void OnRotated(object data)
+		private void OnRotated(object data)
 	{
 		this.Unregister();
 		this.OnOverlayChanged(OverlayScreen.Instance.mode);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.visChildren.Count <= 0)
 		{
@@ -56,7 +56,7 @@ public class MoveableLogicGateVisualizer : LogicGateBase
 		this.Register();
 	}
 
-	private GameObject CreateUIElem(int cell, bool is_input)
+		private GameObject CreateUIElem(int cell, bool is_input)
 	{
 		GameObject gameObject = Util.KInstantiate(LogicGateBase.uiSrcData.prefab, Grid.CellToPosCCC(cell, Grid.SceneLayer.Front), Quaternion.identity, GameScreenManager.Instance.worldSpaceCanvas, null, true, 0);
 		Image component = gameObject.GetComponent<Image>();
@@ -65,7 +65,7 @@ public class MoveableLogicGateVisualizer : LogicGateBase
 		return gameObject;
 	}
 
-	private void Register()
+		private void Register()
 	{
 		if (this.visChildren.Count > 0)
 		{
@@ -97,7 +97,7 @@ public class MoveableLogicGateVisualizer : LogicGateBase
 		}
 	}
 
-	private void Unregister()
+		private void Unregister()
 	{
 		if (this.visChildren.Count <= 0)
 		{
@@ -112,11 +112,11 @@ public class MoveableLogicGateVisualizer : LogicGateBase
 		this.visChildren.Clear();
 	}
 
-	private int cell;
+		private int cell;
 
-	protected List<GameObject> visChildren = new List<GameObject>();
+		protected List<GameObject> visChildren = new List<GameObject>();
 
-	private static readonly EventSystem.IntraObjectHandler<MoveableLogicGateVisualizer> OnRotatedDelegate = new EventSystem.IntraObjectHandler<MoveableLogicGateVisualizer>(delegate(MoveableLogicGateVisualizer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<MoveableLogicGateVisualizer> OnRotatedDelegate = new EventSystem.IntraObjectHandler<MoveableLogicGateVisualizer>(delegate(MoveableLogicGateVisualizer component, object data)
 	{
 		component.OnRotated(data);
 	});

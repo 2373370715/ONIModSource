@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Exhaust")]
 public class Exhaust : KMonoBehaviour, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<Exhaust>(-592767678, Exhaust.OnConduitStateChangedDelegate);
@@ -14,23 +14,23 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 		this.simRenderLoadBalance = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.OnConduitStateChanged(null);
 	}
 
-	private void OnConduitStateChanged(object data)
+		private void OnConduitStateChanged(object data)
 	{
 		this.operational.SetActive(this.operational.IsOperational && !this.vent.IsBlocked, false);
 	}
 
-	private void CalculateDiseaseTransfer(PrimaryElement item1, PrimaryElement item2, float transfer_rate, out int disease_to_item1, out int disease_to_item2)
+		private void CalculateDiseaseTransfer(PrimaryElement item1, PrimaryElement item2, float transfer_rate, out int disease_to_item1, out int disease_to_item2)
 	{
 		disease_to_item1 = (int)((float)item2.DiseaseCount * transfer_rate);
 		disease_to_item2 = (int)((float)item1.DiseaseCount * transfer_rate);
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		this.operational.SetFlag(Exhaust.canExhaust, !this.vent.IsBlocked);
 		if (!this.operational.IsOperational)
@@ -57,12 +57,12 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	public bool IsAnimating()
+		public bool IsAnimating()
 	{
 		return this.isAnimating;
 	}
 
-	private void UpdateEmission()
+		private void UpdateEmission()
 	{
 		if (this.consumer.ConsumptionRate == 0f)
 		{
@@ -92,7 +92,7 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	private bool EmitCommon(int cell, PrimaryElement primary_element, Exhaust.EmitDelegate emit)
+		private bool EmitCommon(int cell, PrimaryElement primary_element, Exhaust.EmitDelegate emit)
 	{
 		if (primary_element.Mass <= 0f)
 		{
@@ -125,7 +125,7 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 		return true;
 	}
 
-	private void EmitLiquid(int cell)
+		private void EmitLiquid(int cell)
 	{
 		int num = Grid.CellBelow(cell);
 		Exhaust.EmitDelegate emit = (Grid.IsValidCell(num) && !Grid.Solid[num]) ? Exhaust.emit_particle : Exhaust.emit_element;
@@ -139,7 +139,7 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	private void EmitGas(int cell)
+		private void EmitGas(int cell)
 	{
 		foreach (GameObject gameObject in this.storage.items)
 		{
@@ -151,47 +151,47 @@ public class Exhaust : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Vent vent;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ConduitConsumer consumer;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private PrimaryElement exhaustPE;
 
-	private static readonly Operational.Flag canExhaust = new Operational.Flag("canExhaust", Operational.Flag.Type.Requirement);
+		private static readonly Operational.Flag canExhaust = new Operational.Flag("canExhaust", Operational.Flag.Type.Requirement);
 
-	private bool isAnimating;
+		private bool isAnimating;
 
-	private bool recentlyExhausted;
+		private bool recentlyExhausted;
 
-	private const float MinSwitchTime = 1f;
+		private const float MinSwitchTime = 1f;
 
-	private float elapsedSwitchTime;
+		private float elapsedSwitchTime;
 
-	private SimHashes lastElementEmmited;
+		private SimHashes lastElementEmmited;
 
-	private static readonly EventSystem.IntraObjectHandler<Exhaust> OnConduitStateChangedDelegate = new EventSystem.IntraObjectHandler<Exhaust>(delegate(Exhaust component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Exhaust> OnConduitStateChangedDelegate = new EventSystem.IntraObjectHandler<Exhaust>(delegate(Exhaust component, object data)
 	{
 		component.OnConduitStateChanged(data);
 	});
 
-	private static Exhaust.EmitDelegate emit_element = delegate(int cell, PrimaryElement primary_element)
+		private static Exhaust.EmitDelegate emit_element = delegate(int cell, PrimaryElement primary_element)
 	{
 		SimMessages.AddRemoveSubstance(cell, primary_element.ElementID, CellEventLogger.Instance.ExhaustSimUpdate, primary_element.Mass, primary_element.Temperature, primary_element.DiseaseIdx, primary_element.DiseaseCount, true, -1);
 	};
 
-	private static Exhaust.EmitDelegate emit_particle = delegate(int cell, PrimaryElement primary_element)
+		private static Exhaust.EmitDelegate emit_particle = delegate(int cell, PrimaryElement primary_element)
 	{
 		FallingWater.instance.AddParticle(cell, primary_element.Element.idx, primary_element.Mass, primary_element.Temperature, primary_element.DiseaseIdx, primary_element.DiseaseCount, true, false, true, false);
 	};
 
-		private delegate void EmitDelegate(int cell, PrimaryElement primary_element);
+			private delegate void EmitDelegate(int cell, PrimaryElement primary_element);
 }

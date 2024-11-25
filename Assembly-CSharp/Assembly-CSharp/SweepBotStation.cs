@@ -7,25 +7,25 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SweepBotStation")]
 public class SweepBotStation : KMonoBehaviour
 {
-	public void SetStorages(Storage botMaterialStorage, Storage sweepStorage)
+		public void SetStorages(Storage botMaterialStorage, Storage sweepStorage)
 	{
 		this.botMaterialStorage = botMaterialStorage;
 		this.sweepStorage = sweepStorage;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.Initialize(false);
 		base.Subscribe<SweepBotStation>(-592767678, SweepBotStation.OnOperationalChangedDelegate);
 	}
 
-	protected void Initialize(bool use_logic_meter)
+		protected void Initialize(bool use_logic_meter)
 	{
 		base.OnPrefabInit();
 		base.GetComponent<Operational>().SetFlag(SweepBotStation.dockedRobot, false);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.Subscribe(-1697596308, new Action<object>(this.OnStorageChanged));
 		this.meter = new MeterController(base.gameObject.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new string[]
@@ -47,7 +47,7 @@ public class SweepBotStation : KMonoBehaviour
 		this.UpdateNameDisplay();
 	}
 
-	private void RequestNewSweepBot(object data = null)
+		private void RequestNewSweepBot(object data = null)
 	{
 		if (this.botMaterialStorage.FindFirstWithMass(GameTags.RefinedMetal, SweepBotConfig.MASS) == null)
 		{
@@ -59,7 +59,7 @@ public class SweepBotStation : KMonoBehaviour
 		this.MakeNewSweepBot(null);
 	}
 
-	private void MakeNewSweepBot(object data = null)
+		private void MakeNewSweepBot(object data = null)
 	{
 		if (this.newSweepyHandle.IsValid)
 		{
@@ -105,7 +105,7 @@ public class SweepBotStation : KMonoBehaviour
 		base.GetComponent<KBatchedAnimController>().Play("newsweepy", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	private void RefreshSweepBotSubscription()
+		private void RefreshSweepBotSubscription()
 	{
 		if (this.refreshSweepbotHandle != -1)
 		{
@@ -116,13 +116,13 @@ public class SweepBotStation : KMonoBehaviour
 		this.sweepBotNameChangeHandle = this.sweepBot.Get().Subscribe(1102426921, new Action<object>(this.UpdateStoredName));
 	}
 
-	private void UpdateStoredName(object data)
+		private void UpdateStoredName(object data)
 	{
 		this.storedName = (string)data;
 		this.UpdateNameDisplay();
 	}
 
-	private void UpdateNameDisplay()
+		private void UpdateNameDisplay()
 	{
 		if (string.IsNullOrEmpty(this.storedName))
 		{
@@ -135,24 +135,24 @@ public class SweepBotStation : KMonoBehaviour
 		NameDisplayScreen.Instance.UpdateName(base.gameObject);
 	}
 
-	public void DockRobot(bool docked)
+		public void DockRobot(bool docked)
 	{
 		base.GetComponent<Operational>().SetFlag(SweepBotStation.dockedRobot, docked);
 	}
 
-	public void StartCharging()
+		public void StartCharging()
 	{
 		base.GetComponent<KBatchedAnimController>().Queue("sleep_pre", KAnim.PlayMode.Once, 1f, 0f);
 		base.GetComponent<KBatchedAnimController>().Queue("sleep_idle", KAnim.PlayMode.Loop, 1f, 0f);
 	}
 
-	public void StopCharging()
+		public void StopCharging()
 	{
 		base.GetComponent<KBatchedAnimController>().Play("sleep_pst", KAnim.PlayMode.Once, 1f, 0f);
 		this.UpdateNameDisplay();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.newSweepyHandle.IsValid)
 		{
@@ -164,7 +164,7 @@ public class SweepBotStation : KMonoBehaviour
 		}
 	}
 
-	private void UpdateMeter()
+		private void UpdateMeter()
 	{
 		float maxCapacityMinusStorageMargin = this.GetMaxCapacityMinusStorageMargin();
 		float positionPercent = Mathf.Clamp01(this.GetAmountStored() / maxCapacityMinusStorageMargin);
@@ -174,7 +174,7 @@ public class SweepBotStation : KMonoBehaviour
 		}
 	}
 
-	private void OnStorageChanged(object data)
+		private void OnStorageChanged(object data)
 	{
 		this.UpdateMeter();
 		if (this.sweepBot == null || this.sweepBot.Get() == null)
@@ -192,57 +192,50 @@ public class SweepBotStation : KMonoBehaviour
 		}
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		Operational component = base.GetComponent<Operational>();
-		if (component.Flags.ContainsValue(false))
-		{
-			component.SetActive(false, false);
-		}
-		else
-		{
-			component.SetActive(true, false);
-		}
+		component.SetActive(!component.Flags.ContainsValue(false), false);
 		if (this.sweepBot == null || this.sweepBot.Get() == null)
 		{
 			this.RequestNewSweepBot(null);
 		}
 	}
 
-	private float GetMaxCapacityMinusStorageMargin()
+		private float GetMaxCapacityMinusStorageMargin()
 	{
 		return this.sweepStorage.Capacity() - this.sweepStorage.storageFullMargin;
 	}
 
-	private float GetAmountStored()
+		private float GetAmountStored()
 	{
 		return this.sweepStorage.MassStored();
 	}
 
-	[Serialize]
+		[Serialize]
 	public Ref<KSelectable> sweepBot;
 
-	[Serialize]
+		[Serialize]
 	public string storedName;
 
-	private static readonly Operational.Flag dockedRobot = new Operational.Flag("dockedRobot", Operational.Flag.Type.Functional);
+		private static readonly Operational.Flag dockedRobot = new Operational.Flag("dockedRobot", Operational.Flag.Type.Functional);
 
-	private MeterController meter;
+		private MeterController meter;
 
-	[SerializeField]
+		[SerializeField]
 	private Storage botMaterialStorage;
 
-	[SerializeField]
+		[SerializeField]
 	private Storage sweepStorage;
 
-	private SchedulerHandle newSweepyHandle;
+		private SchedulerHandle newSweepyHandle;
 
-	private static readonly EventSystem.IntraObjectHandler<SweepBotStation> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<SweepBotStation>(delegate(SweepBotStation component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SweepBotStation> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<SweepBotStation>(delegate(SweepBotStation component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});
 
-	private int refreshSweepbotHandle = -1;
+		private int refreshSweepbotHandle = -1;
 
-	private int sweepBotNameChangeHandle = -1;
+		private int sweepBotNameChangeHandle = -1;
 }

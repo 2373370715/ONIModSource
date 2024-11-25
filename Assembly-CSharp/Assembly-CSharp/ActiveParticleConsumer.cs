@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ActiveParticleConsumer : GameStateMachine<ActiveParticleConsumer, ActiveParticleConsumer.Instance, IStateMachineTarget, ActiveParticleConsumer.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.inoperational;
 		this.root.Enter(delegate(ActiveParticleConsumer.Instance smi)
@@ -21,20 +21,20 @@ public class ActiveParticleConsumer : GameStateMachine<ActiveParticleConsumer, A
 		}, UpdateRate.SIM_1000ms, false);
 	}
 
-	public bool IsReady(ActiveParticleConsumer.Instance smi)
+		public bool IsReady(ActiveParticleConsumer.Instance smi)
 	{
 		return smi.storage.Particles >= smi.def.minParticlesForOperational;
 	}
 
-	public static readonly Operational.Flag canConsumeParticlesFlag = new Operational.Flag("canConsumeParticles", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag canConsumeParticlesFlag = new Operational.Flag("canConsumeParticles", Operational.Flag.Type.Requirement);
 
-	public GameStateMachine<ActiveParticleConsumer, ActiveParticleConsumer.Instance, IStateMachineTarget, ActiveParticleConsumer.Def>.State inoperational;
+		public GameStateMachine<ActiveParticleConsumer, ActiveParticleConsumer.Instance, IStateMachineTarget, ActiveParticleConsumer.Def>.State inoperational;
 
-	public ActiveParticleConsumer.OperationalStates operational;
+		public ActiveParticleConsumer.OperationalStates operational;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject go)
+				public List<Descriptor> GetDescriptors(GameObject go)
 		{
 			return new List<Descriptor>
 			{
@@ -42,34 +42,34 @@ public class ActiveParticleConsumer : GameStateMachine<ActiveParticleConsumer, A
 			};
 		}
 
-		public float activeConsumptionRate = 1f;
+				public float activeConsumptionRate = 1f;
 
-		public float minParticlesForOperational = 1f;
+				public float minParticlesForOperational = 1f;
 
-		public string meterSymbolName;
+				public string meterSymbolName;
 	}
 
-	public class OperationalStates : GameStateMachine<ActiveParticleConsumer, ActiveParticleConsumer.Instance, IStateMachineTarget, ActiveParticleConsumer.Def>.State
+		public class OperationalStates : GameStateMachine<ActiveParticleConsumer, ActiveParticleConsumer.Instance, IStateMachineTarget, ActiveParticleConsumer.Def>.State
 	{
-		public GameStateMachine<ActiveParticleConsumer, ActiveParticleConsumer.Instance, IStateMachineTarget, ActiveParticleConsumer.Def>.State waiting;
+				public GameStateMachine<ActiveParticleConsumer, ActiveParticleConsumer.Instance, IStateMachineTarget, ActiveParticleConsumer.Def>.State waiting;
 
-		public GameStateMachine<ActiveParticleConsumer, ActiveParticleConsumer.Instance, IStateMachineTarget, ActiveParticleConsumer.Def>.State consuming;
+				public GameStateMachine<ActiveParticleConsumer, ActiveParticleConsumer.Instance, IStateMachineTarget, ActiveParticleConsumer.Def>.State consuming;
 	}
 
-	public new class Instance : GameStateMachine<ActiveParticleConsumer, ActiveParticleConsumer.Instance, IStateMachineTarget, ActiveParticleConsumer.Def>.GameInstance
+		public new class Instance : GameStateMachine<ActiveParticleConsumer, ActiveParticleConsumer.Instance, IStateMachineTarget, ActiveParticleConsumer.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, ActiveParticleConsumer.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ActiveParticleConsumer.Def def) : base(master, def)
 		{
 			this.storage = master.GetComponent<HighEnergyParticleStorage>();
 		}
 
-		public void Update(float dt)
+				public void Update(float dt)
 		{
 			this.storage.ConsumeAndGet(dt * base.def.activeConsumptionRate);
 		}
 
-		public bool ShowWorkingStatus;
+				public bool ShowWorkingStatus;
 
-		public HighEnergyParticleStorage storage;
+				public HighEnergyParticleStorage storage;
 	}
 }

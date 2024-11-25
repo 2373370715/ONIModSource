@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class LightGridManager
 {
-	public static int ComputeFalloff(float fallOffRate, int cell, int originCell, global::LightShape lightShape, DiscreteShadowCaster.Direction lightDirection)
+		public static int ComputeFalloff(float fallOffRate, int cell, int originCell, global::LightShape lightShape, DiscreteShadowCaster.Direction lightDirection)
 	{
 		int num = originCell;
 		if (lightShape == global::LightShape.Quad)
@@ -32,23 +32,23 @@ public static class LightGridManager
 		return LightGridManager.CalculateFalloff(fallOffRate, cell, num);
 	}
 
-	private static int CalculateFalloff(float falloffRate, int cell, int origin)
+		private static int CalculateFalloff(float falloffRate, int cell, int origin)
 	{
 		return Mathf.Max(1, Mathf.RoundToInt(falloffRate * (float)Mathf.Max(Grid.GetCellDistance(origin, cell), 1)));
 	}
 
-	public static void Initialise()
+		public static void Initialise()
 	{
 		LightGridManager.previewLux = new int[Grid.CellCount];
 	}
 
-	public static void Shutdown()
+		public static void Shutdown()
 	{
 		LightGridManager.previewLux = null;
 		LightGridManager.previewLightCells.Clear();
 	}
 
-	public static void DestroyPreview()
+		public static void DestroyPreview()
 	{
 		foreach (global::Tuple<int, int> tuple in LightGridManager.previewLightCells)
 		{
@@ -57,12 +57,12 @@ public static class LightGridManager
 		LightGridManager.previewLightCells.Clear();
 	}
 
-	public static void CreatePreview(int origin_cell, float radius, global::LightShape shape, int lux)
+		public static void CreatePreview(int origin_cell, float radius, global::LightShape shape, int lux)
 	{
 		LightGridManager.CreatePreview(origin_cell, radius, shape, lux, 0, DiscreteShadowCaster.Direction.South);
 	}
 
-	public static void CreatePreview(int origin_cell, float radius, global::LightShape shape, int lux, int width, DiscreteShadowCaster.Direction direction)
+		public static void CreatePreview(int origin_cell, float radius, global::LightShape shape, int lux, int width, DiscreteShadowCaster.Direction direction)
 	{
 		LightGridManager.previewLightCells.Clear();
 		ListPool<int, LightGridManager.LightGridEmitter>.PooledList pooledList = ListPool<int, LightGridManager.LightGridEmitter>.Allocate();
@@ -80,20 +80,20 @@ public static class LightGridManager
 		pooledList.Recycle();
 	}
 
-	public const float DEFAULT_FALLOFF_RATE = 0.5f;
+		public const float DEFAULT_FALLOFF_RATE = 0.5f;
 
-	public static List<global::Tuple<int, int>> previewLightCells = new List<global::Tuple<int, int>>();
+		public static List<global::Tuple<int, int>> previewLightCells = new List<global::Tuple<int, int>>();
 
-	public static int[] previewLux;
+		public static int[] previewLux;
 
-	public class LightGridEmitter
+		public class LightGridEmitter
 	{
-		public void UpdateLitCells()
+				public void UpdateLitCells()
 		{
 			DiscreteShadowCaster.GetVisibleCells(this.state.origin, this.litCells, (int)this.state.radius, this.state.width, this.state.direction, this.state.shape, true);
 		}
 
-		public void AddToGrid(bool update_lit_cells)
+				public void AddToGrid(bool update_lit_cells)
 		{
 			DebugUtil.DevAssert(!update_lit_cells || this.litCells.Count == 0, "adding an already added emitter", null);
 			if (update_lit_cells)
@@ -111,7 +111,7 @@ public static class LightGridManager
 			}
 		}
 
-		public void RemoveFromGrid()
+				public void RemoveFromGrid()
 		{
 			foreach (int num in this.litCells)
 			{
@@ -124,7 +124,7 @@ public static class LightGridManager
 			this.litCells.Clear();
 		}
 
-		public bool Refresh(LightGridManager.LightGridEmitter.State state, bool force = false)
+				public bool Refresh(LightGridManager.LightGridEmitter.State state, bool force = false)
 		{
 			if (!force && EqualityComparer<LightGridManager.LightGridEmitter.State>.Default.Equals(this.state, state))
 			{
@@ -136,45 +136,45 @@ public static class LightGridManager
 			return true;
 		}
 
-		private int ComputeLux(int cell)
+				private int ComputeLux(int cell)
 		{
 			return this.state.intensity / this.ComputeFalloff(cell);
 		}
 
-		private int ComputeFalloff(int cell)
+				private int ComputeFalloff(int cell)
 		{
 			return LightGridManager.ComputeFalloff(this.state.falloffRate, cell, this.state.origin, this.state.shape, this.state.direction);
 		}
 
-		private LightGridManager.LightGridEmitter.State state = LightGridManager.LightGridEmitter.State.DEFAULT;
+				private LightGridManager.LightGridEmitter.State state = LightGridManager.LightGridEmitter.State.DEFAULT;
 
-		private List<int> litCells = new List<int>();
+				private List<int> litCells = new List<int>();
 
-		[Serializable]
+				[Serializable]
 		public struct State : IEquatable<LightGridManager.LightGridEmitter.State>
 		{
-			public bool Equals(LightGridManager.LightGridEmitter.State rhs)
+						public bool Equals(LightGridManager.LightGridEmitter.State rhs)
 			{
 				return this.origin == rhs.origin && this.shape == rhs.shape && this.radius == rhs.radius && this.intensity == rhs.intensity && this.falloffRate == rhs.falloffRate && this.colour == rhs.colour && this.width == rhs.width && this.direction == rhs.direction;
 			}
 
-			public int origin;
+						public int origin;
 
-			public global::LightShape shape;
+						public global::LightShape shape;
 
-			public int width;
+						public int width;
 
-			public DiscreteShadowCaster.Direction direction;
+						public DiscreteShadowCaster.Direction direction;
 
-			public float radius;
+						public float radius;
 
-			public int intensity;
+						public int intensity;
 
-			public float falloffRate;
+						public float falloffRate;
 
-			public Color colour;
+						public Color colour;
 
-			public static readonly LightGridManager.LightGridEmitter.State DEFAULT = new LightGridManager.LightGridEmitter.State
+						public static readonly LightGridManager.LightGridEmitter.State DEFAULT = new LightGridManager.LightGridEmitter.State
 			{
 				origin = Grid.InvalidCell,
 				shape = global::LightShape.Circle,

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class AirBorneCritterCondoConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "AirBorneCritterCondo";
 		int width = 3;
@@ -24,19 +24,20 @@ public class AirBorneCritterCondoConfig : IBuildingConfig
 		EffectorValues none = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, plastics, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.BONUS.TIER3, none, 0.2f);
 		buildingDef.AudioCategory = "Metal";
+		buildingDef.AudioSize = "small";
 		buildingDef.PermittedRotations = PermittedRotations.FlipH;
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		RoomTracker roomTracker = go.AddOrGet<RoomTracker>();
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.CreaturePen.Id;
@@ -53,9 +54,9 @@ public class AirBorneCritterCondoConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RanchStationType, false);
 	}
 
-	public override void ConfigurePost(BuildingDef def)
+		public override void ConfigurePost(BuildingDef def)
 	{
 	}
 
-	public const string ID = "AirBorneCritterCondo";
+		public const string ID = "AirBorneCritterCondo";
 }

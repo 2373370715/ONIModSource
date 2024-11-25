@@ -10,23 +10,23 @@ using UnityEngine;
 [Serializable]
 public class SpaceScannerNetworkManager : ISim1000ms
 {
-	public Dictionary<int, SpaceScannerWorldData> DEBUG_GetWorldIdToDataMap()
+		public Dictionary<int, SpaceScannerWorldData> DEBUG_GetWorldIdToDataMap()
 	{
 		return this.worldIdToDataMap;
 	}
 
-	public bool IsTargetDetectedOnWorld(int worldId, SpaceScannerTarget target)
+		public bool IsTargetDetectedOnWorld(int worldId, SpaceScannerTarget target)
 	{
 		SpaceScannerWorldData spaceScannerWorldData;
 		return this.worldIdToDataMap.TryGetValue(worldId, out spaceScannerWorldData) && spaceScannerWorldData.targetIdsDetected.Contains(target.id);
 	}
 
-	public MathUtil.MinMax GetDetectTimeRangeForWorld(int worldId)
+		public MathUtil.MinMax GetDetectTimeRangeForWorld(int worldId)
 	{
 		return SpaceScannerNetworkManager.GetDetectTimeRange(this.GetQualityForWorld(worldId));
 	}
 
-	public float GetQualityForWorld(int worldId)
+		public float GetQualityForWorld(int worldId)
 	{
 		SpaceScannerWorldData spaceScannerWorldData;
 		if (this.worldIdToDataMap.TryGetValue(worldId, out spaceScannerWorldData))
@@ -36,7 +36,7 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		return 0f;
 	}
 
-	private SpaceScannerWorldData GetOrCreateWorldData(int worldId)
+		private SpaceScannerWorldData GetOrCreateWorldData(int worldId)
 	{
 		SpaceScannerWorldData spaceScannerWorldData;
 		if (!this.worldIdToDataMap.TryGetValue(worldId, out spaceScannerWorldData))
@@ -47,7 +47,7 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		return spaceScannerWorldData;
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		SpaceScannerNetworkManager.UpdateWorldDataScratchpads(this.worldIdToDataMap);
 		foreach (int id in Components.DetectorNetworks.GetWorldsIds())
@@ -62,7 +62,7 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		}
 	}
 
-	private static void UpdateNetworkQualityFor(SpaceScannerWorldData worldData)
+		private static void UpdateNetworkQualityFor(SpaceScannerWorldData worldData)
 	{
 		float num = SpaceScannerNetworkManager.CalcWorldNetworkQuality(worldData.GetWorld());
 		foreach (object obj in Components.DetectorNetworks.CreateOrGetCmps(worldData.GetWorld().id))
@@ -72,7 +72,7 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		worldData.networkQuality01 = num;
 	}
 
-	private static void UpdateDetectionOfTargetsFor(SpaceScannerWorldData worldData)
+		private static void UpdateDetectionOfTargetsFor(SpaceScannerWorldData worldData)
 	{
 		using (HashSetPool<string, SpaceScannerNetworkManager>.PooledHashSet pooledHashSet = PoolsFor<SpaceScannerNetworkManager>.AllocateHashSet<string>())
 		{
@@ -123,7 +123,7 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		}
 	}
 
-	private static bool IsDetectingAnyMeteorShower(SpaceScannerWorldData worldData)
+		private static bool IsDetectingAnyMeteorShower(SpaceScannerWorldData worldData)
 	{
 		SpaceScannerNetworkManager.meteorShowerInstances.Clear();
 		SaveGame.Instance.GetComponent<GameplayEventManager>().GetActiveEventsOfType<MeteorShowerEvent>(worldData.GetWorld().id, ref SpaceScannerNetworkManager.meteorShowerInstances);
@@ -150,7 +150,7 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		return SpaceScannerNetworkManager.IsDetectedUsingStickyCheck<MeteorShowerEvent.StatesInstance>(candidateTarget, num <= detectTime, worldData.scratchpad.lastDetectedMeteorShowers);
 	}
 
-	private static bool IsDetectingAnyBallisticObject(SpaceScannerWorldData worldData)
+		private static bool IsDetectingAnyBallisticObject(SpaceScannerWorldData worldData)
 	{
 		float num = float.MaxValue;
 		foreach (ClusterTraveler clusterTraveler in worldData.scratchpad.ballisticObjects)
@@ -160,13 +160,13 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		return num < SpaceScannerNetworkManager.GetDetectTime(worldData, SpaceScannerTarget.BallisticObject());
 	}
 
-	private static bool IsDetectingRocketBaseGame(SpaceScannerWorldData worldData, LaunchConditionManager rocket)
+		private static bool IsDetectingRocketBaseGame(SpaceScannerWorldData worldData, LaunchConditionManager rocket)
 	{
 		Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(rocket);
 		return SpaceScannerNetworkManager.IsDetectedUsingStickyCheck<LaunchConditionManager>(rocket, SpaceScannerNetworkManager.<IsDetectingRocketBaseGame>g__IsDetected|12_0(worldData, spacecraftFromLaunchConditionManager, rocket), worldData.scratchpad.lastDetectedRocketsBaseGame);
 	}
 
-	private static bool IsDetectingRocketDlc1(SpaceScannerWorldData worldData, Clustercraft clustercraft)
+		private static bool IsDetectingRocketDlc1(SpaceScannerWorldData worldData, Clustercraft clustercraft)
 	{
 		if (clustercraft.IsNullOrDestroyed())
 		{
@@ -190,7 +190,7 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		return SpaceScannerNetworkManager.IsDetectedUsingStickyCheck<Clustercraft>(clustercraft, flag, worldData.scratchpad.lastDetectedRocketsDLC1);
 	}
 
-	private static bool IsDetectedUsingStickyCheck<T>(T candidateTarget, bool isDetected, HashSet<T> existingDetections)
+		private static bool IsDetectedUsingStickyCheck<T>(T candidateTarget, bool isDetected, HashSet<T> existingDetections)
 	{
 		if (isDetected)
 		{
@@ -203,7 +203,7 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		return isDetected;
 	}
 
-	private static float GetDetectTime(SpaceScannerWorldData worldData, SpaceScannerTarget target)
+		private static float GetDetectTime(SpaceScannerWorldData worldData, SpaceScannerTarget target)
 	{
 		float value;
 		if (!worldData.targetIdToRandomValue01Map.TryGetValue(target.id, out value))
@@ -214,12 +214,12 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		return SpaceScannerNetworkManager.GetDetectTimeRange(worldData.networkQuality01).Lerp(value);
 	}
 
-	private static MathUtil.MinMax GetDetectTimeRange(float networkQuality01)
+		private static MathUtil.MinMax GetDetectTimeRange(float networkQuality01)
 	{
 		return new MathUtil.MinMax(Mathf.Lerp(1f, 200f, networkQuality01), 200f);
 	}
 
-	private static float CalcWorldNetworkQuality(WorldContainer world)
+		private static float CalcWorldNetworkQuality(WorldContainer world)
 	{
 		int width = world.Width;
 		global::Debug.Assert(width <= 1024, "More world columns than expected");
@@ -258,56 +258,53 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		return Mathf.Clamp01(((float)num2 / (float)width).Remap(new ValueTuple<float, float>(0f, 0.5f), new ValueTuple<float, float>(0f, 1f)));
 	}
 
-	private static void UpdateWorldDataScratchpads(Dictionary<int, SpaceScannerWorldData> worldIdToDataMap)
+		private static void UpdateWorldDataScratchpads(Dictionary<int, SpaceScannerWorldData> worldIdToDataMap)
 	{
-		using (Dictionary<int, SpaceScannerWorldData>.Enumerator enumerator = worldIdToDataMap.GetEnumerator())
+		foreach (KeyValuePair<int, SpaceScannerWorldData> keyValuePair in worldIdToDataMap)
 		{
-			while (enumerator.MoveNext())
+			int num;
+			SpaceScannerWorldData worldData2;
+			keyValuePair.Deconstruct(out num, out worldData2);
+			SpaceScannerWorldData worldData = worldData2;
+			if (worldData.scratchpad == null)
 			{
-				int num;
-				SpaceScannerWorldData worldData2;
-				enumerator.Current.Deconstruct(out num, out worldData2);
-				SpaceScannerWorldData worldData = worldData2;
-				if (worldData.scratchpad == null)
-				{
-					worldData.scratchpad = new SpaceScannerWorldData.Scratchpad();
-				}
-				worldData.scratchpad.ballisticObjects.Clear();
-				worldData.scratchpad.lastDetectedMeteorShowers.RemoveWhere((MeteorShowerEvent.StatesInstance meteorShower) => meteorShower.IsNullOrDestroyed() || meteorShower.IsNullOrStopped() || 200f < meteorShower.TimeUntilNextShower());
-				worldData.scratchpad.lastDetectedRocketsBaseGame.RemoveWhere(delegate(LaunchConditionManager rocket)
-				{
-					if (rocket.IsNullOrDestroyed())
-					{
-						return true;
-					}
-					Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(rocket);
-					return spacecraftFromLaunchConditionManager.IsNullOrDestroyed() || spacecraftFromLaunchConditionManager.state == Spacecraft.MissionState.Destroyed || (spacecraftFromLaunchConditionManager.state == Spacecraft.MissionState.Underway && 200f < spacecraftFromLaunchConditionManager.GetTimeLeft()) || spacecraftFromLaunchConditionManager.GetTimeLeft() < 1f;
-				});
-				worldData.scratchpad.lastDetectedRocketsDLC1.RemoveWhere(delegate(Clustercraft clustercraft)
-				{
-					if (clustercraft.IsNullOrDestroyed())
-					{
-						return true;
-					}
-					ClusterTraveler component = clustercraft.GetComponent<ClusterTraveler>();
-					if (component.IsNullOrDestroyed())
-					{
-						return true;
-					}
-					if (component.IsTraveling())
-					{
-						if (component.GetDestinationWorldID() != worldData.worldId)
-						{
-							return true;
-						}
-						if (200f < component.TravelETA())
-						{
-							return true;
-						}
-					}
-					return component.TravelETA() < 1f;
-				});
+				worldData.scratchpad = new SpaceScannerWorldData.Scratchpad();
 			}
+			worldData.scratchpad.ballisticObjects.Clear();
+			worldData.scratchpad.lastDetectedMeteorShowers.RemoveWhere((MeteorShowerEvent.StatesInstance meteorShower) => meteorShower.IsNullOrDestroyed() || meteorShower.IsNullOrStopped() || 200f < meteorShower.TimeUntilNextShower());
+			worldData.scratchpad.lastDetectedRocketsBaseGame.RemoveWhere(delegate(LaunchConditionManager rocket)
+			{
+				if (rocket.IsNullOrDestroyed())
+				{
+					return true;
+				}
+				Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(rocket);
+				return spacecraftFromLaunchConditionManager.IsNullOrDestroyed() || spacecraftFromLaunchConditionManager.state == Spacecraft.MissionState.Destroyed || (spacecraftFromLaunchConditionManager.state == Spacecraft.MissionState.Underway && 200f < spacecraftFromLaunchConditionManager.GetTimeLeft()) || spacecraftFromLaunchConditionManager.GetTimeLeft() < 1f;
+			});
+			worldData.scratchpad.lastDetectedRocketsDLC1.RemoveWhere(delegate(Clustercraft clustercraft)
+			{
+				if (clustercraft.IsNullOrDestroyed())
+				{
+					return true;
+				}
+				ClusterTraveler component = clustercraft.GetComponent<ClusterTraveler>();
+				if (component.IsNullOrDestroyed())
+				{
+					return true;
+				}
+				if (component.IsTraveling())
+				{
+					if (component.GetDestinationWorldID() != worldData.worldId)
+					{
+						return true;
+					}
+					if (200f < component.TravelETA())
+					{
+						return true;
+					}
+				}
+				return component.TravelETA() < 1f;
+			});
 		}
 		if (Components.DetectorNetworks.GetWorldsIds().Count == 0)
 		{
@@ -324,7 +321,7 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		}
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static bool <IsDetectingRocketBaseGame>g__IsDetected|12_0(SpaceScannerWorldData worldData, Spacecraft spacecraft, LaunchConditionManager rocket)
 	{
 		if (spacecraft.IsNullOrDestroyed())
@@ -350,8 +347,8 @@ public class SpaceScannerNetworkManager : ISim1000ms
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<int, SpaceScannerWorldData> worldIdToDataMap = new Dictionary<int, SpaceScannerWorldData>();
 
-	private static List<GameplayEventInstance> meteorShowerInstances = new List<GameplayEventInstance>();
+		private static List<GameplayEventInstance> meteorShowerInstances = new List<GameplayEventInstance>();
 }

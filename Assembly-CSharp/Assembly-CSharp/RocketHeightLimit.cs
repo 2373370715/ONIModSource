@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RocketHeightLimit : SelectModuleCondition
 {
-	public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
+		public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
 	{
 		int num = selectedPart.HeightInCells;
 		if (selectionContext == SelectModuleCondition.SelectionContext.ReplaceModule)
@@ -46,7 +46,7 @@ public class RocketHeightLimit : SelectModuleCondition
 		return num2 == -1 || component.CraftInterface.RocketHeight + num <= num2;
 	}
 
-	public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
+		public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
 	{
 		UnityEngine.Object engine = moduleBase.GetComponent<RocketModuleCluster>().CraftInterface.GetEngine();
 		RocketEngineCluster component = selectedPart.BuildingComplete.GetComponent<RocketEngineCluster>();

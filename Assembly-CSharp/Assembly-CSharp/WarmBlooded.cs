@@ -2,21 +2,22 @@
 using Klei;
 using Klei.AI;
 using STRINGS;
+using TUNING;
 using UnityEngine;
 
 public class WarmBlooded : StateMachineComponent<WarmBlooded.StatesInstance>
 {
-	public static bool IsCold(WarmBlooded.StatesInstance smi)
+		public static bool IsCold(WarmBlooded.StatesInstance smi)
 	{
 		return !smi.IsSimpleHeatProducer() && smi.IsCold();
 	}
 
-	public static bool IsHot(WarmBlooded.StatesInstance smi)
+		public static bool IsHot(WarmBlooded.StatesInstance smi)
 	{
 		return !smi.IsSimpleHeatProducer() && smi.IsHot();
 	}
 
-	public static void WarmingRegulator(WarmBlooded.StatesInstance smi, float dt)
+		public static void WarmingRegulator(WarmBlooded.StatesInstance smi, float dt)
 	{
 		PrimaryElement component = smi.master.GetComponent<PrimaryElement>();
 		float num = SimUtil.EnergyFlowToTemperatureDelta(smi.master.CoolingKW, component.Element.specificHeatCapacity, component.Mass);
@@ -33,7 +34,7 @@ public class WarmBlooded : StateMachineComponent<WarmBlooded.StatesInstance>
 		}
 	}
 
-	public static void CoolingRegulator(WarmBlooded.StatesInstance smi, float dt)
+		public static void CoolingRegulator(WarmBlooded.StatesInstance smi, float dt)
 	{
 		PrimaryElement component = smi.master.GetComponent<PrimaryElement>();
 		float num = SimUtil.EnergyFlowToTemperatureDelta(smi.master.BaseGenerationKW, component.Element.specificHeatCapacity, component.Mass);
@@ -51,63 +52,63 @@ public class WarmBlooded : StateMachineComponent<WarmBlooded.StatesInstance>
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.temperature = Db.Get().Amounts.Get(this.TemperatureAmountName).Lookup(base.gameObject);
 		this.primaryElement = base.GetComponent<PrimaryElement>();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	public void SetTemperatureImmediate(float t)
+		public void SetTemperatureImmediate(float t)
 	{
 		this.temperature.value = t;
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Notifier notifier;
 
-	public AmountInstance temperature;
+		public AmountInstance temperature;
 
-	private PrimaryElement primaryElement;
+		private PrimaryElement primaryElement;
 
-	public WarmBlooded.ComplexityType complexity = WarmBlooded.ComplexityType.FullHomeostasis;
+		public WarmBlooded.ComplexityType complexity = WarmBlooded.ComplexityType.FullHomeostasis;
 
-	public string TemperatureAmountName = "Temperature";
+		public string TemperatureAmountName = "Temperature";
 
-	public float IdealTemperature = 310.15f;
+		public float IdealTemperature = DUPLICANTSTATS.STANDARD.Temperature.Internal.IDEAL;
 
-	public float BaseGenerationKW = 0.08368001f;
+		public float BaseGenerationKW = DUPLICANTSTATS.STANDARD.BaseStats.DUPLICANT_BASE_GENERATION_KILOWATTS;
 
-	public string BaseTemperatureModifierDescription = DUPLICANTS.MODIFIERS.BASEDUPLICANT.NAME;
+		public string BaseTemperatureModifierDescription = DUPLICANTS.MODEL.STANDARD.NAME;
 
-	public float KCal2Joules = 4184f;
+		public float KCal2Joules = DUPLICANTSTATS.STANDARD.BaseStats.KCAL2JOULES;
 
-	public float WarmingKW = 0.5578667f;
+		public float WarmingKW = DUPLICANTSTATS.STANDARD.BaseStats.DUPLICANT_WARMING_KILOWATTS;
 
-	public float CoolingKW = 0.5578667f;
+		public float CoolingKW = DUPLICANTSTATS.STANDARD.BaseStats.DUPLICANT_COOLING_KILOWATTS;
 
-	public string CaloriesModifierDescription = DUPLICANTS.MODIFIERS.BURNINGCALORIES.NAME;
+		public string CaloriesModifierDescription = DUPLICANTS.MODIFIERS.BURNINGCALORIES.NAME;
 
-	public string BodyRegulatorModifierDescription = DUPLICANTS.MODIFIERS.HOMEOSTASIS.NAME;
+		public string BodyRegulatorModifierDescription = DUPLICANTS.MODIFIERS.HOMEOSTASIS.NAME;
 
-	public const float TRANSITION_DELAY_HOT = 3f;
+		public const float TRANSITION_DELAY_HOT = 3f;
 
-	public const float TRANSITION_DELAY_COLD = 3f;
+		public const float TRANSITION_DELAY_COLD = 3f;
 
-	public enum ComplexityType
+		public enum ComplexityType
 	{
-		SimpleHeatProduction,
-		HomeostasisWithoutCaloriesImpact,
-		FullHomeostasis
+				SimpleHeatProduction,
+				HomeostasisWithoutCaloriesImpact,
+				FullHomeostasis
 	}
 
-	public class StatesInstance : GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.GameInstance
+		public class StatesInstance : GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.GameInstance
 	{
-		public StatesInstance(WarmBlooded smi) : base(smi)
+				public StatesInstance(WarmBlooded smi) : base(smi)
 		{
 			this.baseTemperatureModification = new AttributeModifier(base.master.TemperatureAmountName + "Delta", 0f, base.master.BaseTemperatureModifierDescription, false, true, false);
 			base.master.GetAttributes().Add(this.baseTemperatureModification);
@@ -124,7 +125,7 @@ public class WarmBlooded : StateMachineComponent<WarmBlooded.StatesInstance>
 			base.master.SetTemperatureImmediate(this.IdealTemperature);
 		}
 
-				public float IdealTemperature
+						public float IdealTemperature
 		{
 			get
 			{
@@ -132,7 +133,7 @@ public class WarmBlooded : StateMachineComponent<WarmBlooded.StatesInstance>
 			}
 		}
 
-				public float TemperatureDelta
+						public float TemperatureDelta
 		{
 			get
 			{
@@ -140,7 +141,7 @@ public class WarmBlooded : StateMachineComponent<WarmBlooded.StatesInstance>
 			}
 		}
 
-				public float BodyTemperature
+						public float BodyTemperature
 		{
 			get
 			{
@@ -148,31 +149,31 @@ public class WarmBlooded : StateMachineComponent<WarmBlooded.StatesInstance>
 			}
 		}
 
-		public bool IsSimpleHeatProducer()
+				public bool IsSimpleHeatProducer()
 		{
 			return base.master.complexity == WarmBlooded.ComplexityType.SimpleHeatProduction;
 		}
 
-		public bool IsHot()
+				public bool IsHot()
 		{
 			return this.BodyTemperature > this.IdealTemperature;
 		}
 
-		public bool IsCold()
+				public bool IsCold()
 		{
 			return this.BodyTemperature < this.IdealTemperature;
 		}
 
-		public AttributeModifier baseTemperatureModification;
+				public AttributeModifier baseTemperatureModification;
 
-		public AttributeModifier bodyRegulator;
+				public AttributeModifier bodyRegulator;
 
-		public AttributeModifier burningCalories;
+				public AttributeModifier burningCalories;
 	}
 
-	public class States : GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded>
+		public class States : GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.alive.normal;
 			this.root.TagTransition(GameTags.Dead, this.dead, false).Enter(delegate(WarmBlooded.StatesInstance smi)
@@ -208,24 +209,24 @@ public class WarmBlooded : StateMachineComponent<WarmBlooded.StatesInstance>
 			});
 		}
 
-		public WarmBlooded.States.AliveState alive;
+				public WarmBlooded.States.AliveState alive;
 
-		public GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State dead;
+				public GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State dead;
 
-		public class RegulatingState : GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State
+				public class RegulatingState : GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State
 		{
-			public GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State transition;
+						public GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State transition;
 
-			public GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State regulating;
+						public GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State regulating;
 		}
 
-		public class AliveState : GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State
+				public class AliveState : GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State
 		{
-			public GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State normal;
+						public GameStateMachine<WarmBlooded.States, WarmBlooded.StatesInstance, WarmBlooded, object>.State normal;
 
-			public WarmBlooded.States.RegulatingState cold;
+						public WarmBlooded.States.RegulatingState cold;
 
-			public WarmBlooded.States.RegulatingState hot;
+						public WarmBlooded.States.RegulatingState hot;
 		}
 	}
 }

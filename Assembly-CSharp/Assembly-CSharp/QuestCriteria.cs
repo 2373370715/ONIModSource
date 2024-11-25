@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class QuestCriteria
 {
-			public string Text { get; private set; }
+				public string Text { get; private set; }
 
-			public string Tooltip { get; private set; }
+				public string Tooltip { get; private set; }
 
-	public QuestCriteria(Tag id, float[] targetValues = null, int requiredCount = 1, HashSet<Tag> acceptedTags = null, QuestCriteria.BehaviorFlags flags = QuestCriteria.BehaviorFlags.None)
+		public QuestCriteria(Tag id, float[] targetValues = null, int requiredCount = 1, HashSet<Tag> acceptedTags = null, QuestCriteria.BehaviorFlags flags = QuestCriteria.BehaviorFlags.None)
 	{
 		global::Debug.Assert(targetValues == null || (targetValues.Length != 0 && targetValues.Length <= 32));
 		this.CriteriaId = id;
@@ -18,7 +18,7 @@ public class QuestCriteria
 		this.RequiredCount = requiredCount;
 	}
 
-	public bool ValueSatisfies(float value, int valueHandle)
+		public bool ValueSatisfies(float value, int valueHandle)
 	{
 		if (float.IsNaN(value))
 		{
@@ -28,17 +28,17 @@ public class QuestCriteria
 		return this.ValueSatisfies_Internal(value, target);
 	}
 
-	protected virtual bool ValueSatisfies_Internal(float current, float target)
+		protected virtual bool ValueSatisfies_Internal(float current, float target)
 	{
 		return true;
 	}
 
-	public bool IsSatisfied(uint satisfactionState, uint satisfactionMask)
+		public bool IsSatisfied(uint satisfactionState, uint satisfactionMask)
 	{
 		return (satisfactionState & satisfactionMask) == satisfactionMask;
 	}
 
-	public void PopulateStrings(string prefix)
+		public void PopulateStrings(string prefix)
 	{
 		string str = this.CriteriaId.Name.ToUpperInvariant();
 		StringEntry stringEntry;
@@ -52,7 +52,7 @@ public class QuestCriteria
 		}
 	}
 
-	public uint GetSatisfactionMask()
+		public uint GetSatisfactionMask()
 	{
 		if (this.TargetValues == null)
 		{
@@ -61,7 +61,7 @@ public class QuestCriteria
 		return (uint)Mathf.Pow(2f, (float)(this.TargetValues.Length - 1));
 	}
 
-	public uint GetValueMask(int valueHandle)
+		public uint GetValueMask(int valueHandle)
 	{
 		if (this.TargetValues == null)
 		{
@@ -74,32 +74,32 @@ public class QuestCriteria
 		return 1U << valueHandle;
 	}
 
-	public static bool HasBehavior(QuestCriteria.BehaviorFlags flags, QuestCriteria.BehaviorFlags behavior)
+		public static bool HasBehavior(QuestCriteria.BehaviorFlags flags, QuestCriteria.BehaviorFlags behavior)
 	{
 		return (flags & behavior) == behavior;
 	}
 
-	public const int MAX_VALUES = 32;
+		public const int MAX_VALUES = 32;
 
-	public const int INVALID_VALUE = -1;
+		public const int INVALID_VALUE = -1;
 
-	public readonly Tag CriteriaId;
+		public readonly Tag CriteriaId;
 
-	public readonly QuestCriteria.BehaviorFlags EvaluationBehaviors;
+		public readonly QuestCriteria.BehaviorFlags EvaluationBehaviors;
 
-	public readonly float[] TargetValues;
+		public readonly float[] TargetValues;
 
-	public readonly int RequiredCount = 1;
+		public readonly int RequiredCount = 1;
 
-	public readonly HashSet<Tag> AcceptedTags;
+		public readonly HashSet<Tag> AcceptedTags;
 
-	public enum BehaviorFlags
+		public enum BehaviorFlags
 	{
-		None,
-		TrackArea,
-		AllowsRegression,
-		TrackValues = 4,
-		TrackItems = 8,
-		UniqueItems = 24
+				None,
+				TrackArea,
+				AllowsRegression,
+				TrackValues = 4,
+				TrackItems = 8,
+				UniqueItems = 24
 	}
 }

@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class NuclearReactorConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "NuclearReactor";
 		int width = 5;
@@ -26,7 +26,7 @@ public class NuclearReactorConfig : IBuildingConfig
 		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER5;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, refined_METALS, melting_point, build_location_rule, TUNING.BUILDINGS.DECOR.PENALTY.TIER2, tier2, 0.2f);
 		buildingDef.GeneratorWattageRating = 0f;
-		buildingDef.GeneratorBaseCapacity = 10000f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
 		buildingDef.RequiresPowerInput = false;
 		buildingDef.RequiresPowerOutput = false;
 		buildingDef.ThermalConductivity = 0.1f;
@@ -47,11 +47,13 @@ public class NuclearReactorConfig : IBuildingConfig
 		buildingDef.Entombable = false;
 		buildingDef.Breakable = false;
 		buildingDef.Invincible = true;
+		buildingDef.DiseaseCellVisName = "RadiationSickness";
+		buildingDef.UtilityOutputOffset = new CellOffset(0, 2);
 		buildingDef.Deprecated = !Sim.IsRadiationEnabled();
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		UnityEngine.Object.Destroy(go.GetComponent<BuildingEnabledButton>());
@@ -99,52 +101,52 @@ public class NuclearReactorConfig : IBuildingConfig
 		conduitConsumer.storage = storage;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddTag(GameTags.CorrosionProof);
 	}
 
-	public const string ID = "NuclearReactor";
+		public const string ID = "NuclearReactor";
 
-	private const float FUEL_CAPACITY = 180f;
+		private const float FUEL_CAPACITY = 180f;
 
-	public const float VENT_STEAM_TEMPERATURE = 673.15f;
+		public const float VENT_STEAM_TEMPERATURE = 673.15f;
 
-	public const float MELT_DOWN_TEMPERATURE = 3000f;
+		public const float MELT_DOWN_TEMPERATURE = 3000f;
 
-	public const float MAX_VENT_PRESSURE = 150f;
+		public const float MAX_VENT_PRESSURE = 150f;
 
-	public const float INCREASED_CONDUCTION_SCALE = 5f;
+		public const float INCREASED_CONDUCTION_SCALE = 5f;
 
-	public const float REACTION_STRENGTH = 100f;
+		public const float REACTION_STRENGTH = 100f;
 
-	public const int RADIATION_EMITTER_RANGE = 25;
+		public const int RADIATION_EMITTER_RANGE = 25;
 
-	public const float OPERATIONAL_RADIATOR_INTENSITY = 2400f;
+		public const float OPERATIONAL_RADIATOR_INTENSITY = 2400f;
 
-	public const float MELT_DOWN_RADIATOR_INTENSITY = 4800f;
+		public const float MELT_DOWN_RADIATOR_INTENSITY = 4800f;
 
-	public const float FUEL_CONSUMPTION_SPEED = 0.016666668f;
+		public const float FUEL_CONSUMPTION_SPEED = 0.016666668f;
 
-	public const float BEGIN_REACTION_MASS = 0.5f;
+		public const float BEGIN_REACTION_MASS = 0.5f;
 
-	public const float STOP_REACTION_MASS = 0.25f;
+		public const float STOP_REACTION_MASS = 0.25f;
 
-	public const float DUMP_WASTE_AMOUNT = 100f;
+		public const float DUMP_WASTE_AMOUNT = 100f;
 
-	public const float WASTE_MASS_MULTIPLIER = 100f;
+		public const float WASTE_MASS_MULTIPLIER = 100f;
 
-	public const float REACTION_MASS_TARGET = 60f;
+		public const float REACTION_MASS_TARGET = 60f;
 
-	public const float COOLANT_AMOUNT = 30f;
+		public const float COOLANT_AMOUNT = 30f;
 
-	public const float COOLANT_CAPACITY = 90f;
+		public const float COOLANT_CAPACITY = 90f;
 
-	public const float MINIMUM_COOLANT_MASS = 30f;
+		public const float MINIMUM_COOLANT_MASS = 30f;
 
-	public const float WASTE_GERMS_PER_KG = 50f;
+		public const float WASTE_GERMS_PER_KG = 50f;
 
-	public const float PST_MELTDOWN_COOLING_TIME = 3000f;
+		public const float PST_MELTDOWN_COOLING_TIME = 3000f;
 
-	public const string INPUT_PORT_ID = "CONTROL_FUEL_DELIVERY";
+		public const string INPUT_PORT_ID = "CONTROL_FUEL_DELIVERY";
 }

@@ -2,9 +2,9 @@
 
 public enum ConduitType
 {
-	None,
-	Gas,
-	Liquid,
-	Solid,
-	MAX
+		None,
+		Gas,
+		Liquid,
+		Solid,
+		MAX
 }

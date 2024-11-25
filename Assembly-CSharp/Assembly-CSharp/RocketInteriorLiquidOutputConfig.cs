@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class RocketInteriorLiquidOutputConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "RocketInteriorLiquidOutput";
 		int width = 1;
@@ -44,14 +44,14 @@ public class RocketInteriorLiquidOutputConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		base.ConfigureBuildingTemplate(go, prefab_tag);
 		go.GetComponent<KPrefabID>().AddTag(GameTags.RocketInteriorBuilding, false);
 		go.AddComponent<RequireInputs>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveController.Def>();
 		Storage storage = go.AddOrGet<Storage>();
@@ -68,9 +68,9 @@ public class RocketInteriorLiquidOutputConfig : IBuildingConfig
 		conduitDispenser.elementFilter = null;
 	}
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
 
-	private const CargoBay.CargoType CARGO_TYPE = CargoBay.CargoType.Liquids;
+		private const CargoBay.CargoType CARGO_TYPE = CargoBay.CargoType.Liquids;
 
-	public const string ID = "RocketInteriorLiquidOutput";
+		public const string ID = "RocketInteriorLiquidOutput";
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpecialCargoBayCluster : GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.close;
@@ -17,64 +17,64 @@ public class SpecialCargoBayCluster : GameStateMachine<SpecialCargoBayCluster, S
 		this.open.idle.Target(this.Door).PlayAnim("open_idle").Enter(new StateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State.Callback(SpecialCargoBayCluster.DropInventory)).Enter(new StateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State.Callback(SpecialCargoBayCluster.CloseDoorAutomatically)).ParamTransition<bool>(this.IsDoorOpen, this.close.closing, GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.IsFalse).Target(this.masterTarget);
 	}
 
-	public static void CloseDoorAutomatically(SpecialCargoBayCluster.Instance smi)
+		public static void CloseDoorAutomatically(SpecialCargoBayCluster.Instance smi)
 	{
 		smi.CloseDoorAutomatically();
 	}
 
-	public static void DropInventory(SpecialCargoBayCluster.Instance smi)
+		public static void DropInventory(SpecialCargoBayCluster.Instance smi)
 	{
 		smi.DropInventory();
 	}
 
-	public const string DOOR_METER_TARGET_NAME = "fg_meter_target";
+		public const string DOOR_METER_TARGET_NAME = "fg_meter_target";
 
-	public const string TRAPPED_CRITTER_PIVOT_SYMBOL_NAME = "critter";
+		public const string TRAPPED_CRITTER_PIVOT_SYMBOL_NAME = "critter";
 
-	public const string LOOT_SYMBOL_NAME = "loot";
+		public const string LOOT_SYMBOL_NAME = "loot";
 
-	public const string DEATH_CLOUD_ANIM_NAME = "play_cloud";
+		public const string DEATH_CLOUD_ANIM_NAME = "play_cloud";
 
-	private const string OPEN_DOOR_ANIM_NAME = "open";
+		private const string OPEN_DOOR_ANIM_NAME = "open";
 
-	private const string CLOSE_DOOR_ANIM_NAME = "close";
+		private const string CLOSE_DOOR_ANIM_NAME = "close";
 
-	private const string OPEN_DOOR_IDLE_ANIM_NAME = "open_idle";
+		private const string OPEN_DOOR_IDLE_ANIM_NAME = "open_idle";
 
-	private const string CLOSE_DOOR_IDLE_ANIM_NAME = "close_idle";
+		private const string CLOSE_DOOR_IDLE_ANIM_NAME = "close_idle";
 
-	public SpecialCargoBayCluster.OpenStates open;
+		public SpecialCargoBayCluster.OpenStates open;
 
-	public SpecialCargoBayCluster.CloseStates close;
+		public SpecialCargoBayCluster.CloseStates close;
 
-	public StateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.BoolParameter IsDoorOpen;
+		public StateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.BoolParameter IsDoorOpen;
 
-	public StateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.TargetParameter Door;
+		public StateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.TargetParameter Door;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Vector2 trappedOffset = new Vector2(0f, -0.3f);
+				public Vector2 trappedOffset = new Vector2(0f, -0.3f);
 	}
 
-	public class OpenStates : GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State
+		public class OpenStates : GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State
 	{
-		public GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State opening;
+				public GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State opening;
 
-		public GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State idle;
+				public GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State idle;
 	}
 
-	public class CloseStates : GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State
+		public class CloseStates : GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State
 	{
-		public GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State closing;
+				public GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State closing;
 
-		public GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State idle;
+				public GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State idle;
 
-		public GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State cloud;
+				public GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.State cloud;
 	}
 
-	public new class Instance : GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.GameInstance
+		public new class Instance : GameStateMachine<SpecialCargoBayCluster, SpecialCargoBayCluster.Instance, IStateMachineTarget, SpecialCargoBayCluster.Def>.GameInstance
 	{
-		public void PlayDeathCloud()
+				public void PlayDeathCloud()
 		{
 			if (base.IsInsideState(base.sm.close.idle))
 			{
@@ -82,17 +82,17 @@ public class SpecialCargoBayCluster : GameStateMachine<SpecialCargoBayCluster, S
 			}
 		}
 
-		public void CloseDoor()
+				public void CloseDoor()
 		{
 			base.sm.IsDoorOpen.Set(false, base.smi, false);
 		}
 
-		public void OpenDoor()
+				public void OpenDoor()
 		{
 			base.sm.IsDoorOpen.Set(true, base.smi, false);
 		}
 
-		public Instance(IStateMachineTarget master, SpecialCargoBayCluster.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, SpecialCargoBayCluster.Def def) : base(master, def)
 		{
 			this.buildingAnimController = base.GetComponent<KBatchedAnimController>();
 			this.doorMeter = new MeterController(this.buildingAnimController, "fg_meter_target", "close_idle", Meter.Offset.UserSpecified, Grid.SceneLayer.BuildingFront, Array.Empty<string>());
@@ -107,17 +107,17 @@ public class SpecialCargoBayCluster : GameStateMachine<SpecialCargoBayCluster, S
 			base.Subscribe(1655598572, new Action<object>(this.OnLaunchConditionChanged));
 		}
 
-		public void CloseDoorAutomatically()
+				public void CloseDoorAutomatically()
 		{
 			this.CloseDoor();
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 		}
 
-		private void OnLaunchConditionChanged(object obj)
+				private void OnLaunchConditionChanged(object obj)
 		{
 			if (this.rocketModuleCluster.CraftInterface != null)
 			{
@@ -129,7 +129,7 @@ public class SpecialCargoBayCluster : GameStateMachine<SpecialCargoBayCluster, S
 			}
 		}
 
-		public void DropInventory()
+				public void DropInventory()
 		{
 			List<GameObject> list = new List<GameObject>();
 			List<GameObject> list2 = new List<GameObject>();
@@ -144,8 +144,16 @@ public class SpecialCargoBayCluster : GameStateMachine<SpecialCargoBayCluster, S
 					}
 				}
 			}
-			this.critterStorage.DropAll(false, false, default(Vector3), true, list);
-			this.sideProductStorage.DropAll(false, false, default(Vector3), true, list2);
+			Storage storage = this.critterStorage;
+			bool vent_gas = false;
+			bool dump_liquid = false;
+			List<GameObject> collect_dropped_items = list;
+			storage.DropAll(vent_gas, dump_liquid, default(Vector3), true, collect_dropped_items);
+			Storage storage2 = this.sideProductStorage;
+			bool vent_gas2 = false;
+			bool dump_liquid2 = false;
+			collect_dropped_items = list2;
+			storage2.DropAll(vent_gas2, dump_liquid2, default(Vector3), true, collect_dropped_items);
 			foreach (GameObject gameObject2 in list)
 			{
 				KBatchedAnimController component2 = gameObject2.GetComponent<KBatchedAnimController>();
@@ -163,7 +171,7 @@ public class SpecialCargoBayCluster : GameStateMachine<SpecialCargoBayCluster, S
 			}
 		}
 
-		public Vector3 GetCritterPositionOffet(GameObject critter)
+				public Vector3 GetCritterPositionOffet(GameObject critter)
 		{
 			KBatchedAnimController component = critter.GetComponent<KBatchedAnimController>();
 			Vector3 zero = Vector3.zero;
@@ -172,30 +180,30 @@ public class SpecialCargoBayCluster : GameStateMachine<SpecialCargoBayCluster, S
 			return zero;
 		}
 
-		public Vector3 GetStorePositionForCritter(GameObject critter)
+				public Vector3 GetStorePositionForCritter(GameObject critter)
 		{
 			Vector3 critterPositionOffet = this.GetCritterPositionOffet(critter);
 			bool flag;
 			return this.buildingAnimController.GetSymbolTransform("critter", out flag).GetColumn(3) + critterPositionOffet;
 		}
 
-		public Vector3 GetStorePositionForDrops()
+				public Vector3 GetStorePositionForDrops()
 		{
 			bool flag;
 			return this.buildingAnimController.GetSymbolTransform("loot", out flag).GetColumn(3);
 		}
 
-		public MeterController doorMeter;
+				public MeterController doorMeter;
 
-		private Storage critterStorage;
+				private Storage critterStorage;
 
-		private Storage sideProductStorage;
+				private Storage sideProductStorage;
 
-		private KBatchedAnimController buildingAnimController;
+				private KBatchedAnimController buildingAnimController;
 
-		private KBatchedAnimController doorAnimController;
+				private KBatchedAnimController doorAnimController;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private RocketModuleCluster rocketModuleCluster;
 	}
 }

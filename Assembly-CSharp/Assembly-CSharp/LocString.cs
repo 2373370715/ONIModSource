@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public class LocString
 {
-		public string text
+			public string text
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class LocString
 		}
 	}
 
-		public StringKey key
+			public StringKey key
 	{
 		get
 		{
@@ -22,55 +22,55 @@ public class LocString
 		}
 	}
 
-	public LocString(string text)
+		public LocString(string text)
 	{
 		this._text = text;
 		this._key = default(StringKey);
 	}
 
-	public LocString(string text, string keystring)
+		public LocString(string text, string keystring)
 	{
 		this._text = text;
 		this._key = new StringKey(keystring);
 	}
 
-	public LocString(string text, bool isLocalized)
+		public LocString(string text, bool isLocalized)
 	{
 		this._text = text;
 		this._key = default(StringKey);
 	}
 
-	public static implicit operator LocString(string text)
+		public static implicit operator LocString(string text)
 	{
 		return new LocString(text);
 	}
 
-	public static implicit operator string(LocString loc_string)
+		public static implicit operator string(LocString loc_string)
 	{
 		return loc_string.text;
 	}
 
-	public override string ToString()
+		public override string ToString()
 	{
 		return Strings.Get(this.key).String;
 	}
 
-	public void SetKey(string key_name)
+		public void SetKey(string key_name)
 	{
 		this._key = new StringKey(key_name);
 	}
 
-	public void SetKey(StringKey key)
+		public void SetKey(StringKey key)
 	{
 		this._key = key;
 	}
 
-	public string Replace(string search, string replacement)
+		public string Replace(string search, string replacement)
 	{
 		return this.ToString().Replace(search, replacement);
 	}
 
-	public static void CreateLocStringKeys(Type type, string parent_path = "STRINGS.")
+		public static void CreateLocStringKeys(Type type, string parent_path = "STRINGS.")
 	{
 		FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
 		string text = parent_path;
@@ -109,7 +109,7 @@ public class LocString
 		}
 	}
 
-	public static string[] GetStrings(Type type)
+		public static string[] GetStrings(Type type)
 	{
 		List<string> list = new List<string>();
 		FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
@@ -121,11 +121,11 @@ public class LocString
 		return list.ToArray();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private string _text;
 
-	[SerializeField]
+		[SerializeField]
 	private StringKey _key;
 
-	public const BindingFlags data_member_fields = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+		public const BindingFlags data_member_fields = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 }

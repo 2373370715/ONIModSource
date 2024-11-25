@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class RailGunPayloadOpenerConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "RailGunPayloadOpener";
 		int width = 3;
@@ -36,14 +36,14 @@ public class RailGunPayloadOpenerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	private void AttachPorts(GameObject go)
+		private void AttachPorts(GameObject go)
 	{
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.liquidOutputPort;
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.gasOutputPort;
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.solidOutputPort;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		RailGunPayloadOpener railGunPayloadOpener = go.AddOrGet<RailGunPayloadOpener>();
 		railGunPayloadOpener.liquidPortInfo = this.liquidOutputPort;
@@ -73,7 +73,7 @@ public class RailGunPayloadOpenerConfig : IBuildingConfig
 		manualDeliveryKG.operationalRequirement = Operational.State.None;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<BuildingCellVisualizer>();
 		DropAllWorkable dropAllWorkable = go.AddOrGet<DropAllWorkable>();
@@ -85,25 +85,25 @@ public class RailGunPayloadOpenerConfig : IBuildingConfig
 		component.requireConduitHasMass = false;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		this.AttachPorts(go);
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		this.AttachPorts(go);
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	public const string ID = "RailGunPayloadOpener";
+		public const string ID = "RailGunPayloadOpener";
 
-	private ConduitPortInfo liquidOutputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(0, 0));
+		private ConduitPortInfo liquidOutputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(0, 0));
 
-	private ConduitPortInfo gasOutputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(1, 0));
+		private ConduitPortInfo gasOutputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(1, 0));
 
-	private ConduitPortInfo solidOutputPort = new ConduitPortInfo(ConduitType.Solid, new CellOffset(-1, 0));
+		private ConduitPortInfo solidOutputPort = new ConduitPortInfo(ConduitType.Solid, new CellOffset(-1, 0));
 }

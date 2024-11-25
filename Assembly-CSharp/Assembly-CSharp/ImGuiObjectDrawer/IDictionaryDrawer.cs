@@ -3,19 +3,19 @@ using System.Collections;
 
 namespace ImGuiObjectDrawer
 {
-	public sealed class IDictionaryDrawer : CollectionDrawer
+		public sealed class IDictionaryDrawer : CollectionDrawer
 	{
-		public override bool CanDraw(in MemberDrawContext context, in MemberDetails member)
+				public override bool CanDraw(in MemberDrawContext context, in MemberDetails member)
 		{
 			return member.CanAssignToType<IDictionary>();
 		}
 
-		public override bool IsEmpty(in MemberDrawContext context, in MemberDetails member)
+				public override bool IsEmpty(in MemberDrawContext context, in MemberDetails member)
 		{
 			return ((IDictionary)member.value).Count == 0;
 		}
 
-		protected override void VisitElements(CollectionDrawer.ElementVisitor visit, in MemberDrawContext context, in MemberDetails member)
+				protected override void VisitElements(CollectionDrawer.ElementVisitor visit, in MemberDrawContext context, in MemberDetails member)
 		{
 			IDictionary dictionary = (IDictionary)member.value;
 			int num = 0;

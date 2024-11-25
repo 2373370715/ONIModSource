@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpaceTreeSeededComet : Comet
 {
-	protected override void DepositTiles(int cell, Element element, int world, int prev_cell, float temperature)
+		protected override void DepositTiles(int cell, Element element, int world, int prev_cell, float temperature)
 	{
 		float depthOfElement = (float)base.GetDepthOfElement(cell2, element, world);
 		float num = 1f;
@@ -72,7 +72,7 @@ public class SpaceTreeSeededComet : Comet
 		pooledQueue.Recycle();
 	}
 
-	private static void PlantTreeOnSolidTileCreated(int cell, int tileMaxHeight)
+		private static void PlantTreeOnSolidTileCreated(int cell, int tileMaxHeight)
 	{
 		byte worldIdx = Grid.WorldIdx[cell];
 		int num = 2;
@@ -112,7 +112,7 @@ public class SpaceTreeSeededComet : Comet
 		}
 	}
 
-	public static bool CanGrowOnCell(int spawnCell, byte worldIdx)
+		public static bool CanGrowOnCell(int spawnCell, byte worldIdx)
 	{
 		CellOffset[] occupiedCellsOffsets = Assets.GetPrefab("SpaceTree").GetComponent<OccupyArea>().OccupiedCellsOffsets;
 		bool flag = true;

@@ -2,7 +2,7 @@
 
 public interface IWiltCause
 {
-		string WiltStateString { get; }
+			string WiltStateString { get; }
 
-		WiltCondition.Condition[] Conditions { get; }
+			WiltCondition.Condition[] Conditions { get; }
 }

@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 public class MixingContentPanel : CustomGameSettingsPanelBase
 {
-	public override void Init()
+		public override void Init()
 	{
 		MixingContentPanel.<>c__DisplayClass8_0 CS$<>8__locals1 = new MixingContentPanel.<>c__DisplayClass8_0();
 		CS$<>8__locals1.<>4__this = this;
@@ -128,7 +128,7 @@ public class MixingContentPanel : CustomGameSettingsPanelBase
 		this.Refresh();
 	}
 
-	public override void Uninit()
+		public override void Uninit()
 	{
 		if (this.onDestroy != null)
 		{
@@ -136,7 +136,7 @@ public class MixingContentPanel : CustomGameSettingsPanelBase
 		}
 	}
 
-	private GameObject CreateSection(string name)
+		private GameObject CreateSection(string name)
 	{
 		GameObject gameObject = global::Util.KInstantiateUI(this.prefabMixingSection, this.contentPanel, false);
 		gameObject.SetActive(true);
@@ -152,7 +152,7 @@ public class MixingContentPanel : CustomGameSettingsPanelBase
 		return gameObject;
 	}
 
-	private void AddDLCMixingWidget(GameObject prefab, GameObject parent, string name, DlcMixingSettingConfig config)
+		private void AddDLCMixingWidget(GameObject prefab, GameObject parent, string name, DlcMixingSettingConfig config)
 	{
 		MixingContentPanel.<>c__DisplayClass11_0 CS$<>8__locals1 = new MixingContentPanel.<>c__DisplayClass11_0();
 		CS$<>8__locals1.config = config;
@@ -188,7 +188,7 @@ public class MixingContentPanel : CustomGameSettingsPanelBase
 		base.AddWidget(CS$<>8__locals1.widget);
 	}
 
-	private void AddWorldMixingWidget(GameObject prefab, GameObject parent, string name, MixingSettingConfig config)
+		private void AddWorldMixingWidget(GameObject prefab, GameObject parent, string name, MixingSettingConfig config)
 	{
 		MixingContentPanel.<>c__DisplayClass12_0 CS$<>8__locals1 = new MixingContentPanel.<>c__DisplayClass12_0();
 		CS$<>8__locals1.config = config;
@@ -243,7 +243,7 @@ public class MixingContentPanel : CustomGameSettingsPanelBase
 		base.AddWidget(CS$<>8__locals1.widget);
 	}
 
-	public override void Refresh()
+		public override void Refresh()
 	{
 		base.Refresh();
 		RectTransform component = this.contentPanel.GetComponent<RectTransform>();
@@ -255,7 +255,7 @@ public class MixingContentPanel : CustomGameSettingsPanelBase
 		}
 	}
 
-	public int GetMaxNumOfGuaranteedWorldMixings()
+		public int GetMaxNumOfGuaranteedWorldMixings()
 	{
 		SettingLevel currentQualitySetting = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.ClusterLayout);
 		ClusterLayout clusterData = SettingsCache.clusterLayouts.GetClusterData(currentQualitySetting.id);
@@ -273,7 +273,7 @@ public class MixingContentPanel : CustomGameSettingsPanelBase
 		return num;
 	}
 
-	public int GetCurrentNumOfGuaranteedWorldMixings()
+		public int GetCurrentNumOfGuaranteedWorldMixings()
 	{
 		int num = 0;
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in CustomGameSettings.Instance.MixingSettings)
@@ -291,7 +291,7 @@ public class MixingContentPanel : CustomGameSettingsPanelBase
 		return num;
 	}
 
-	public int GetMaxNumOfGuaranteedSubworldMixings()
+		public int GetMaxNumOfGuaranteedSubworldMixings()
 	{
 		SettingLevel currentQualitySetting = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.ClusterLayout);
 		ClusterLayout clusterData = SettingsCache.clusterLayouts.GetClusterData(currentQualitySetting.id);
@@ -303,7 +303,7 @@ public class MixingContentPanel : CustomGameSettingsPanelBase
 		return num;
 	}
 
-	public int GetCurrentNumOfGuaranteedSubworldMixings()
+		public int GetCurrentNumOfGuaranteedSubworldMixings()
 	{
 		int num = 0;
 		foreach (KeyValuePair<string, SettingConfig> keyValuePair in CustomGameSettings.Instance.MixingSettings)
@@ -321,7 +321,7 @@ public class MixingContentPanel : CustomGameSettingsPanelBase
 		return num;
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static bool <AddWorldMixingWidget>g__IsDlcMixedIn|12_2(string dlcId)
 	{
 		SettingConfig settingConfig;
@@ -337,23 +337,23 @@ public class MixingContentPanel : CustomGameSettingsPanelBase
 		return dlcId == "";
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabMixingSection;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabSettingCycle;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabSettingDlcContent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject contentPanel;
 
-	private static Dictionary<string, string> dlcSettingIdToLastSetLevelId = new Dictionary<string, string>();
+		private static Dictionary<string, string> dlcSettingIdToLastSetLevelId = new Dictionary<string, string>();
 
-	private Dictionary<string, bool> settingIdToIsInteractableRecord = new Dictionary<string, bool>();
+		private Dictionary<string, bool> settingIdToIsInteractableRecord = new Dictionary<string, bool>();
 
-	private System.Action onRefresh;
+		private System.Action onRefresh;
 
-	private System.Action onDestroy;
+		private System.Action onDestroy;
 }

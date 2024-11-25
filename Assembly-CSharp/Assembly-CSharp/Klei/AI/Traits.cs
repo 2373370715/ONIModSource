@@ -6,21 +6,21 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	[AddComponentMenu("KMonoBehaviour/scripts/Traits")]
 	public class Traits : KMonoBehaviour, ISaveLoadable
 	{
-		public List<string> GetTraitIds()
+				public List<string> GetTraitIds()
 		{
 			return this.TraitIds;
 		}
 
-		public void SetTraitIds(List<string> traits)
+				public void SetTraitIds(List<string> traits)
 		{
 			this.TraitIds = traits;
 		}
 
-		protected override void OnSpawn()
+				protected override void OnSpawn()
 		{
 			foreach (string id in this.TraitIds)
 			{
@@ -53,7 +53,7 @@ namespace Klei.AI
 			}
 		}
 
-		private void AddInternal(Trait trait)
+				private void AddInternal(Trait trait)
 		{
 			if (!this.HasTrait(trait))
 			{
@@ -66,7 +66,7 @@ namespace Klei.AI
 			}
 		}
 
-		public void Add(Trait trait)
+				public void Add(Trait trait)
 		{
 			DebugUtil.Assert(base.IsInitialized() || base.GetComponent<Modifiers>().IsInitialized(), "Tried adding a trait on a prefab, use Modifiers.initialTraits instead!", trait.Name, base.gameObject.name);
 			if (trait.ShouldSave)
@@ -76,7 +76,7 @@ namespace Klei.AI
 			this.AddInternal(trait);
 		}
 
-		public bool HasTrait(string trait_id)
+				public bool HasTrait(string trait_id)
 		{
 			bool result = false;
 			using (List<Trait>.Enumerator enumerator = this.TraitList.GetEnumerator())
@@ -93,7 +93,7 @@ namespace Klei.AI
 			return result;
 		}
 
-		public bool HasTrait(Trait trait)
+				public bool HasTrait(Trait trait)
 		{
 			using (List<Trait>.Enumerator enumerator = this.TraitList.GetEnumerator())
 			{
@@ -108,7 +108,7 @@ namespace Klei.AI
 			return false;
 		}
 
-		public void Clear()
+				public void Clear()
 		{
 			while (this.TraitList.Count > 0)
 			{
@@ -116,7 +116,7 @@ namespace Klei.AI
 			}
 		}
 
-		public void Remove(Trait trait)
+				public void Remove(Trait trait)
 		{
 			for (int i = 0; i < this.TraitList.Count; i++)
 			{
@@ -130,7 +130,7 @@ namespace Klei.AI
 			}
 		}
 
-		public bool IsEffectIgnored(Effect effect)
+				public bool IsEffectIgnored(Effect effect)
 		{
 			foreach (Trait trait in this.TraitList)
 			{
@@ -142,24 +142,24 @@ namespace Klei.AI
 			return false;
 		}
 
-		public bool IsChoreGroupDisabled(ChoreGroup choreGroup)
+				public bool IsChoreGroupDisabled(ChoreGroup choreGroup)
 		{
 			Trait trait;
 			return this.IsChoreGroupDisabled(choreGroup, out trait);
 		}
 
-		public bool IsChoreGroupDisabled(ChoreGroup choreGroup, out Trait disablingTrait)
+				public bool IsChoreGroupDisabled(ChoreGroup choreGroup, out Trait disablingTrait)
 		{
 			return this.IsChoreGroupDisabled(choreGroup.IdHash, out disablingTrait);
 		}
 
-		public bool IsChoreGroupDisabled(HashedString choreGroupId)
+				public bool IsChoreGroupDisabled(HashedString choreGroupId)
 		{
 			Trait trait;
 			return this.IsChoreGroupDisabled(choreGroupId, out trait);
 		}
 
-		public bool IsChoreGroupDisabled(HashedString choreGroupId, out Trait disablingTrait)
+				public bool IsChoreGroupDisabled(HashedString choreGroupId, out Trait disablingTrait)
 		{
 			foreach (Trait trait in this.TraitList)
 			{
@@ -180,9 +180,9 @@ namespace Klei.AI
 			return false;
 		}
 
-		public List<Trait> TraitList = new List<Trait>();
+				public List<Trait> TraitList = new List<Trait>();
 
-		[Serialize]
+				[Serialize]
 		private List<string> TraitIds = new List<string>();
 	}
 }

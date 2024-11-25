@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Promise<T> : IEnumerator
 {
-		public bool IsResolved
+			public bool IsResolved
 	{
 		get
 		{
@@ -11,7 +11,7 @@ public class Promise<T> : IEnumerator
 		}
 	}
 
-	public Promise(Action<Action<T>> fn)
+		public Promise(Action<Action<T>> fn)
 	{
 		fn(delegate(T value)
 		{
@@ -19,23 +19,23 @@ public class Promise<T> : IEnumerator
 		});
 	}
 
-	public Promise()
+		public Promise()
 	{
 	}
 
-	public void EnsureResolved(T value)
+		public void EnsureResolved(T value)
 	{
 		this.result = value;
 		this.promise.EnsureResolved();
 	}
 
-	public void Resolve(T value)
+		public void Resolve(T value)
 	{
 		this.result = value;
 		this.promise.Resolve();
 	}
 
-	public Promise<T> Then(Action<T> fn)
+		public Promise<T> Then(Action<T> fn)
 	{
 		this.promise.Then(delegate
 		{
@@ -44,17 +44,17 @@ public class Promise<T> : IEnumerator
 		return this;
 	}
 
-	public Promise ThenWait(Func<Promise> fn)
+		public Promise ThenWait(Func<Promise> fn)
 	{
 		return this.promise.ThenWait(fn);
 	}
 
-	public Promise<T> ThenWait(Func<Promise<T>> fn)
+		public Promise<T> ThenWait(Func<Promise<T>> fn)
 	{
 		return this.promise.ThenWait<T>(fn);
 	}
 
-		object IEnumerator.Current
+			object IEnumerator.Current
 	{
 		get
 		{
@@ -62,16 +62,16 @@ public class Promise<T> : IEnumerator
 		}
 	}
 
-	bool IEnumerator.MoveNext()
+		bool IEnumerator.MoveNext()
 	{
 		return !this.promise.IsResolved;
 	}
 
-	void IEnumerator.Reset()
+		void IEnumerator.Reset()
 	{
 	}
 
-	private Promise promise = new Promise();
+		private Promise promise = new Promise();
 
-	private T result;
+		private T result;
 }

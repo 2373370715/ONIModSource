@@ -4,275 +4,230 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class KButtonMenu : KScreen
-{
-	protected override void OnActivate()
-	{
-		base.ConsumeMouseScroll = this.ShouldConsumeMouseScroll;
-		this.RefreshButtons();
-	}
+public class KButtonMenu : KScreen {
+    private static readonly EventSystem.IntraObjectHandler<KButtonMenu> OnSetActivatorDelegate
+        = new EventSystem.IntraObjectHandler<KButtonMenu>(delegate(KButtonMenu component, object data) {
+                                                              component.OnSetActivator(data);
+                                                          });
 
-	public void SetButtons(IList<KButtonMenu.ButtonInfo> buttons)
-	{
-		this.buttons = buttons;
-		if (this.activateOnSpawn)
-		{
-			this.RefreshButtons();
-		}
-	}
+    [NonSerialized]
+    public GameObject[] buttonObjects;
 
-	public virtual void RefreshButtons()
-	{
-		if (this.buttonObjects != null)
-		{
-			for (int i = 0; i < this.buttonObjects.Length; i++)
-			{
-				UnityEngine.Object.Destroy(this.buttonObjects[i]);
-			}
-			this.buttonObjects = null;
-		}
-		if (this.buttons == null)
-		{
-			return;
-		}
-		this.buttonObjects = new GameObject[this.buttons.Count];
-		for (int j = 0; j < this.buttons.Count; j++)
-		{
-			KButtonMenu.ButtonInfo binfo = this.buttons[j];
-			GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(this.buttonPrefab, Vector3.zero, Quaternion.identity);
-			this.buttonObjects[j] = gameObject;
-			Transform parent = (this.buttonParent != null) ? this.buttonParent : base.transform;
-			gameObject.transform.SetParent(parent, false);
-			gameObject.SetActive(true);
-			gameObject.name = binfo.text + "Button";
-			LocText[] componentsInChildren = gameObject.GetComponentsInChildren<LocText>(true);
-			if (componentsInChildren != null)
-			{
-				foreach (LocText locText in componentsInChildren)
-				{
-					locText.text = ((locText.name == "Hotkey") ? GameUtil.GetActionString(binfo.shortcutKey) : binfo.text);
-					locText.color = (binfo.isEnabled ? new Color(1f, 1f, 1f) : new Color(0.5f, 0.5f, 0.5f));
-				}
-			}
-			ToolTip componentInChildren = gameObject.GetComponentInChildren<ToolTip>();
-			if (binfo.toolTip != null && binfo.toolTip != "" && componentInChildren != null)
-			{
-				componentInChildren.toolTip = binfo.toolTip;
-			}
-			KButtonMenu screen = this;
-			KButton button = gameObject.GetComponent<KButton>();
-			button.isInteractable = binfo.isEnabled;
-			if (binfo.popupOptions == null && binfo.onPopulatePopup == null)
-			{
-				UnityAction onClick = binfo.onClick;
-				System.Action value = delegate()
-				{
-					onClick();
-					if (!this.keepMenuOpen && screen != null)
-					{
-						screen.Deactivate();
-					}
-				};
-				button.onClick += value;
-			}
-			else
-			{
-				button.onClick += delegate()
-				{
-					this.SetupPopupMenu(binfo, button);
-				};
-			}
-			binfo.uibutton = button;
-			KButtonMenu.ButtonInfo.HoverCallback onHover = binfo.onHover;
-		}
-		this.Update();
-	}
+    [SerializeField]
+    protected Transform buttonParent;
 
-	protected Button.ButtonClickedEvent SetupPopupMenu(KButtonMenu.ButtonInfo binfo, KButton button)
-	{
-		Button.ButtonClickedEvent buttonClickedEvent = new Button.ButtonClickedEvent();
-		UnityAction unityAction = delegate()
-		{
-			List<KButtonMenu.ButtonInfo> list = new List<KButtonMenu.ButtonInfo>();
-			if (binfo.onPopulatePopup != null)
-			{
-				binfo.popupOptions = binfo.onPopulatePopup();
-			}
-			string[] popupOptions = binfo.popupOptions;
-			for (int i = 0; i < popupOptions.Length; i++)
-			{
-				string delegate_str2 = popupOptions[i];
-				string delegate_str = delegate_str2;
-				list.Add(new KButtonMenu.ButtonInfo(delegate_str, delegate()
-				{
-					binfo.onPopupClick(delegate_str);
-					if (!this.keepMenuOpen)
-					{
-						this.Deactivate();
-					}
-				}, global::Action.NumActions, null, null, null, true, null, null, null));
-			}
-			KButtonMenu component = Util.KInstantiate(ScreenPrefabs.Instance.ButtonGrid.gameObject, null, null).GetComponent<KButtonMenu>();
-			component.SetButtons(list.ToArray());
-			RootMenu.Instance.AddSubMenu(component);
-			Game.Instance.LocalPlayer.ScreenManager.ActivateScreen(component.gameObject, null, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay);
-			Vector3 b = default(Vector3);
-			if (Util.IsOnLeftSideOfScreen(button.transform.GetPosition()))
-			{
-				b.x = button.GetComponent<RectTransform>().rect.width * 0.25f;
-			}
-			else
-			{
-				b.x = -button.GetComponent<RectTransform>().rect.width * 0.25f;
-			}
-			component.transform.SetPosition(button.transform.GetPosition() + b);
-		};
-		binfo.onClick = unityAction;
-		buttonClickedEvent.AddListener(unityAction);
-		return buttonClickedEvent;
-	}
+    public    GameObject        buttonPrefab;
+    protected IList<ButtonInfo> buttons;
 
-	public override void OnKeyDown(KButtonEvent e)
-	{
-		if (this.buttons == null)
-		{
-			return;
-		}
-		for (int i = 0; i < this.buttons.Count; i++)
-		{
-			KButtonMenu.ButtonInfo buttonInfo = this.buttons[i];
-			if (e.TryConsume(buttonInfo.shortcutKey))
-			{
-				this.buttonObjects[i].GetComponent<KButton>().PlayPointerDownSound();
-				this.buttonObjects[i].GetComponent<KButton>().SignalClick(KKeyCode.Mouse0);
-				break;
-			}
-		}
-		base.OnKeyDown(e);
-	}
+    [SerializeField]
+    protected bool followGameObject;
 
-	protected override void OnPrefabInit()
-	{
-		base.Subscribe<KButtonMenu>(315865555, KButtonMenu.OnSetActivatorDelegate);
-	}
+    protected GameObject go;
 
-	private void OnSetActivator(object data)
-	{
-		this.go = (GameObject)data;
-		this.Update();
-	}
+    [SerializeField]
+    protected bool keepMenuOpen;
 
-	protected override void OnDeactivate()
-	{
-	}
+    public bool ShouldConsumeMouseScroll;
 
-	private void Update()
-	{
-		if (!this.followGameObject || this.go == null || base.canvas == null)
-		{
-			return;
-		}
-		Vector3 vector = Camera.main.WorldToViewportPoint(this.go.transform.GetPosition());
-		RectTransform component = base.GetComponent<RectTransform>();
-		RectTransform component2 = base.canvas.GetComponent<RectTransform>();
-		if (component != null)
-		{
-			component.anchoredPosition = new Vector2(vector.x * component2.sizeDelta.x - component2.sizeDelta.x * 0.5f, vector.y * component2.sizeDelta.y - component2.sizeDelta.y * 0.5f);
-		}
-	}
+    protected override void OnActivate() {
+        ConsumeMouseScroll = ShouldConsumeMouseScroll;
+        RefreshButtons();
+    }
 
-	[SerializeField]
-	protected bool followGameObject;
+    public void SetButtons(IList<ButtonInfo> buttons) {
+        this.buttons = buttons;
+        if (activateOnSpawn) RefreshButtons();
+    }
 
-	[SerializeField]
-	protected bool keepMenuOpen;
+    public virtual void RefreshButtons() {
+        if (buttonObjects != null) {
+            for (var i = 0; i < buttonObjects.Length; i++) Destroy(buttonObjects[i]);
+            buttonObjects = null;
+        }
 
-	[SerializeField]
-	protected Transform buttonParent;
+        if (buttons == null) return;
 
-	public GameObject buttonPrefab;
+        buttonObjects = new GameObject[buttons.Count];
+        for (var j = 0; j < buttons.Count; j++) {
+            var binfo      = buttons[j];
+            var gameObject = Instantiate(buttonPrefab, Vector3.zero, Quaternion.identity);
+            buttonObjects[j] = gameObject;
+            var parent = buttonParent != null ? buttonParent : transform;
+            gameObject.transform.SetParent(parent, false);
+            gameObject.SetActive(true);
+            gameObject.name = binfo.text + "Button";
+            var componentsInChildren = gameObject.GetComponentsInChildren<LocText>(true);
+            if (componentsInChildren != null)
+                foreach (var locText in componentsInChildren) {
+                    locText.text  = locText.name == "Hotkey" ? GameUtil.GetActionString(binfo.shortcutKey) : binfo.text;
+                    locText.color = binfo.isEnabled ? new Color(1f, 1f, 1f) : new Color(0.5f, 0.5f, 0.5f);
+                }
 
-	public bool ShouldConsumeMouseScroll;
+            var componentInChildren = gameObject.GetComponentInChildren<ToolTip>();
+            if (binfo.toolTip != null && binfo.toolTip != "" && componentInChildren != null)
+                componentInChildren.toolTip = binfo.toolTip;
 
-	[NonSerialized]
-	public GameObject[] buttonObjects;
+            var screen = this;
+            var button = gameObject.GetComponent<KButton>();
+            button.isInteractable = binfo.isEnabled;
+            if (binfo.popupOptions == null && binfo.onPopulatePopup == null) {
+                var onClick = binfo.onClick;
+                System.Action value = delegate {
+                                          onClick();
+                                          if (!keepMenuOpen && screen != null) screen.Deactivate();
+                                      };
 
-	protected GameObject go;
+                button.onClick += value;
+            } else
+                button.onClick += delegate { SetupPopupMenu(binfo, button); };
 
-	protected IList<KButtonMenu.ButtonInfo> buttons;
+            binfo.uibutton = button;
+            var onHover = binfo.onHover;
+        }
 
-	private static readonly EventSystem.IntraObjectHandler<KButtonMenu> OnSetActivatorDelegate = new EventSystem.IntraObjectHandler<KButtonMenu>(delegate(KButtonMenu component, object data)
-	{
-		component.OnSetActivator(data);
-	});
+        Update();
+    }
 
-	public class ButtonInfo
-	{
-		public ButtonInfo(string text = null, UnityAction on_click = null, global::Action shortcut_key = global::Action.NumActions, KButtonMenu.ButtonInfo.HoverCallback on_hover = null, string tool_tip = null, GameObject visualizer = null, bool is_enabled = true, string[] popup_options = null, Action<string> on_popup_click = null, Func<string[]> on_populate_popup = null)
-		{
-			this.text = text;
-			this.shortcutKey = shortcut_key;
-			this.onClick = on_click;
-			this.onHover = on_hover;
-			this.visualizer = visualizer;
-			this.toolTip = tool_tip;
-			this.isEnabled = is_enabled;
-			this.uibutton = null;
-			this.popupOptions = popup_options;
-			this.onPopupClick = on_popup_click;
-			this.onPopulatePopup = on_populate_popup;
-		}
+    protected Button.ButtonClickedEvent SetupPopupMenu(ButtonInfo binfo, KButton button) {
+        var buttonClickedEvent = new Button.ButtonClickedEvent();
+        UnityAction unityAction = delegate {
+                                      var list                                              = new List<ButtonInfo>();
+                                      if (binfo.onPopulatePopup != null) binfo.popupOptions = binfo.onPopulatePopup();
+                                      var popupOptions                                      = binfo.popupOptions;
+                                      for (var i = 0; i < popupOptions.Length; i++) {
+                                          var delegate_str2 = popupOptions[i];
+                                          var delegate_str  = delegate_str2;
+                                          list.Add(new ButtonInfo(delegate_str,
+                                                                  delegate {
+                                                                      binfo.onPopupClick(delegate_str);
+                                                                      if (!keepMenuOpen) Deactivate();
+                                                                  }));
+                                      }
 
-		public ButtonInfo(string text, global::Action shortcutKey, UnityAction onClick, KButtonMenu.ButtonInfo.HoverCallback onHover = null, object userData = null)
-		{
-			this.text = text;
-			this.shortcutKey = shortcutKey;
-			this.onClick = onClick;
-			this.onHover = onHover;
-			this.userData = userData;
-			this.visualizer = null;
-			this.uibutton = null;
-		}
+                                      var component = Util.KInstantiate(ScreenPrefabs.Instance.ButtonGrid.gameObject)
+                                                          .GetComponent<KButtonMenu>();
 
-		public ButtonInfo(string text, GameObject visualizer, global::Action shortcutKey, UnityAction onClick, KButtonMenu.ButtonInfo.HoverCallback onHover = null, object userData = null)
-		{
-			this.text = text;
-			this.shortcutKey = shortcutKey;
-			this.onClick = onClick;
-			this.onHover = onHover;
-			this.visualizer = visualizer;
-			this.userData = userData;
-			this.uibutton = null;
-		}
+                                      component.SetButtons(list.ToArray());
+                                      RootMenu.Instance.AddSubMenu(component);
+                                      Game.Instance.LocalPlayer.ScreenManager.ActivateScreen(component.gameObject);
+                                      var b = default(Vector3);
+                                      if (Util.IsOnLeftSideOfScreen(button.transform.GetPosition()))
+                                          b.x = button.GetComponent<RectTransform>().rect.width * 0.25f;
+                                      else
+                                          b.x = -button.GetComponent<RectTransform>().rect.width * 0.25f;
 
-		public string text;
+                                      component.transform.SetPosition(button.transform.GetPosition() + b);
+                                  };
 
-		public global::Action shortcutKey;
+        binfo.onClick = unityAction;
+        buttonClickedEvent.AddListener(unityAction);
+        return buttonClickedEvent;
+    }
 
-		public GameObject visualizer;
+    public override void OnKeyDown(KButtonEvent e) {
+        if (buttons == null) return;
 
-		public UnityAction onClick;
+        for (var i = 0; i < buttons.Count; i++) {
+            var buttonInfo = buttons[i];
+            if (e.TryConsume(buttonInfo.shortcutKey)) {
+                buttonObjects[i].GetComponent<KButton>().PlayPointerDownSound();
+                buttonObjects[i].GetComponent<KButton>().SignalClick(KKeyCode.Mouse0);
+                break;
+            }
+        }
 
-		public KButtonMenu.ButtonInfo.HoverCallback onHover;
+        base.OnKeyDown(e);
+    }
 
-		public FMODAsset clickSound;
+    protected override void OnPrefabInit() { Subscribe(315865555, OnSetActivatorDelegate); }
 
-		public KButton uibutton;
+    private void OnSetActivator(object data) {
+        go = (GameObject)data;
+        Update();
+    }
 
-		public string toolTip;
+    protected override void OnDeactivate() { }
 
-		public bool isEnabled = true;
+    private void Update() {
+        if (!followGameObject || go == null || canvas == null) return;
 
-		public string[] popupOptions;
+        var vector     = Camera.main.WorldToViewportPoint(go.transform.GetPosition());
+        var component  = GetComponent<RectTransform>();
+        var component2 = canvas.GetComponent<RectTransform>();
+        if (component != null)
+            component.anchoredPosition = new Vector2(vector.x * component2.sizeDelta.x - component2.sizeDelta.x * 0.5f,
+                                                     vector.y * component2.sizeDelta.y - component2.sizeDelta.y * 0.5f);
+    }
 
-		public Action<string> onPopupClick;
+    public class ButtonInfo {
+        public delegate void Callback();
 
-		public Func<string[]> onPopulatePopup;
+        public delegate void HoverCallback(GameObject hoverTarget);
 
-		public object userData;
+        public FMODAsset      clickSound;
+        public bool           isEnabled = true;
+        public UnityAction    onClick;
+        public HoverCallback  onHover;
+        public Func<string[]> onPopulatePopup;
+        public Action<string> onPopupClick;
+        public string[]       popupOptions;
+        public Action         shortcutKey;
+        public string         text;
+        public string         toolTip;
+        public KButton        uibutton;
+        public object         userData;
+        public GameObject     visualizer;
 
-				public delegate void HoverCallback(GameObject hoverTarget);
+        public ButtonInfo(string         text              = null,
+                          UnityAction    on_click          = null,
+                          Action         shortcut_key      = Action.NumActions,
+                          HoverCallback  on_hover          = null,
+                          string         tool_tip          = null,
+                          GameObject     visualizer        = null,
+                          bool           is_enabled        = true,
+                          string[]       popup_options     = null,
+                          Action<string> on_popup_click    = null,
+                          Func<string[]> on_populate_popup = null) {
+            this.text       = text;
+            shortcutKey     = shortcut_key;
+            onClick         = on_click;
+            onHover         = on_hover;
+            this.visualizer = visualizer;
+            toolTip         = tool_tip;
+            isEnabled       = is_enabled;
+            uibutton        = null;
+            popupOptions    = popup_options;
+            onPopupClick    = on_popup_click;
+            onPopulatePopup = on_populate_popup;
+        }
 
-				public delegate void Callback();
-	}
+        public ButtonInfo(string        text,
+                          Action        shortcutKey,
+                          UnityAction   onClick,
+                          HoverCallback onHover  = null,
+                          object        userData = null) {
+            this.text        = text;
+            this.shortcutKey = shortcutKey;
+            this.onClick     = onClick;
+            this.onHover     = onHover;
+            this.userData    = userData;
+            visualizer       = null;
+            uibutton         = null;
+        }
+
+        public ButtonInfo(string        text,
+                          GameObject    visualizer,
+                          Action        shortcutKey,
+                          UnityAction   onClick,
+                          HoverCallback onHover  = null,
+                          object        userData = null) {
+            this.text        = text;
+            this.shortcutKey = shortcutKey;
+            this.onClick     = onClick;
+            this.onHover     = onHover;
+            this.visualizer  = visualizer;
+            this.userData    = userData;
+            uibutton         = null;
+        }
+    }
 }

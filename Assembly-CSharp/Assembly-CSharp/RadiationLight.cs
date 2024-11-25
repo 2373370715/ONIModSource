@@ -3,44 +3,44 @@ using UnityEngine;
 
 public class RadiationLight : StateMachineComponent<RadiationLight.StatesInstance>
 {
-	public void UpdateMeter()
+		public void UpdateMeter()
 	{
 		this.meter.SetPositionPercent(Mathf.Clamp01(this.storage.MassStored() / this.storage.capacityKg));
 	}
 
-	public bool HasEnoughFuel()
+		public bool HasEnoughFuel()
 	{
 		return this.elementConverter.HasEnoughMassToStartConverting(false);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 		this.UpdateMeter();
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private RadiationEmitter emitter;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ElementConverter elementConverter;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	public Tag elementToConsume;
+		public Tag elementToConsume;
 
-	public float consumptionRate;
+		public float consumptionRate;
 
-	public class StatesInstance : GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight, object>.GameInstance
+		public class StatesInstance : GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight, object>.GameInstance
 	{
-		public StatesInstance(RadiationLight smi) : base(smi)
+				public StatesInstance(RadiationLight smi) : base(smi)
 		{
 			if (base.GetComponent<Rotatable>().IsRotated)
 			{
@@ -56,16 +56,16 @@ public class RadiationLight : StateMachineComponent<RadiationLight.StatesInstanc
 			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Radiation, true);
 		}
 
-		public void ToggleEmitter(bool on)
+				public void ToggleEmitter(bool on)
 		{
 			base.smi.master.operational.SetActive(on, false);
 			base.smi.master.emitter.SetEmitting(on);
 		}
 	}
 
-	public class States : GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight>
+		public class States : GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.ready.idle;
 			this.root.EventHandler(GameHashes.OnStorageChange, delegate(RadiationLight.StatesInstance smi)
@@ -84,15 +84,15 @@ public class RadiationLight : StateMachineComponent<RadiationLight.StatesInstanc
 			});
 		}
 
-		public GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight, object>.State waiting;
+				public GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight, object>.State waiting;
 
-		public RadiationLight.States.ReadyStates ready;
+				public RadiationLight.States.ReadyStates ready;
 
-		public class ReadyStates : GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight, object>.State
+				public class ReadyStates : GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight, object>.State
 		{
-			public GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight, object>.State idle;
+						public GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight, object>.State idle;
 
-			public GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight, object>.State on;
+						public GameStateMachine<RadiationLight.States, RadiationLight.StatesInstance, RadiationLight, object>.State on;
 		}
 	}
 }

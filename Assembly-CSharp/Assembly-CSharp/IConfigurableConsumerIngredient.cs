@@ -2,7 +2,7 @@
 
 public interface IConfigurableConsumerIngredient
 {
-	Tag[] GetIDSets();
+		Tag[] GetIDSets();
 
-	float GetAmount();
+		float GetAmount();
 }

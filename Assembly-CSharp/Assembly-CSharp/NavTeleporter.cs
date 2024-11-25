@@ -1,8 +1,9 @@
 ﻿using System;
+using TUNING;
 
 public class NavTeleporter : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.GetComponent<KPrefabID>().AddTag(GameTags.NavTeleporters, false);
@@ -10,7 +11,7 @@ public class NavTeleporter : KMonoBehaviour
 		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, new System.Action(this.OnCellChanged), "NavTeleporterCellChanged");
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		int cell = this.GetCell();
@@ -22,12 +23,12 @@ public class NavTeleporter : KMonoBehaviour
 		Components.NavTeleporters.Remove(this);
 	}
 
-	public void SetOverrideCell(int cell)
+		public void SetOverrideCell(int cell)
 	{
 		this.overrideCell = cell;
 	}
 
-	public int GetCell()
+		public int GetCell()
 	{
 		if (this.overrideCell >= 0)
 		{
@@ -36,7 +37,7 @@ public class NavTeleporter : KMonoBehaviour
 		return Grid.OffsetCell(Grid.PosToCell(this), this.offset);
 	}
 
-	public void TwoWayTarget(NavTeleporter nt)
+		public void TwoWayTarget(NavTeleporter nt)
 	{
 		if (this.target != null)
 		{
@@ -57,7 +58,7 @@ public class NavTeleporter : KMonoBehaviour
 		}
 	}
 
-	public void EnableTwoWayTarget(bool enable)
+		public void EnableTwoWayTarget(bool enable)
 	{
 		if (enable)
 		{
@@ -69,7 +70,7 @@ public class NavTeleporter : KMonoBehaviour
 		this.BreakLink();
 	}
 
-	public void SetTarget(NavTeleporter nt)
+		public void SetTarget(NavTeleporter nt)
 	{
 		if (this.target != null)
 		{
@@ -82,7 +83,7 @@ public class NavTeleporter : KMonoBehaviour
 		}
 	}
 
-	private void Register()
+		private void Register()
 	{
 		int cell = this.GetCell();
 		if (!Grid.IsValidCell(cell))
@@ -99,14 +100,14 @@ public class NavTeleporter : KMonoBehaviour
 		}
 	}
 
-	private void SetLink()
+		private void SetLink()
 	{
 		int cell = this.target.GetCell();
-		Pathfinding.Instance.GetNavGrid(MinionConfig.MINION_NAV_GRID_NAME).teleportTransitions[this.lastRegisteredCell] = cell;
+		Pathfinding.Instance.GetNavGrid(DUPLICANTSTATS.STANDARD.BaseStats.NAV_GRID_NAME).teleportTransitions[this.lastRegisteredCell] = cell;
 		Pathfinding.Instance.AddDirtyNavGridCell(this.lastRegisteredCell);
 	}
 
-	public void Deregister()
+		public void Deregister()
 	{
 		if (this.lastRegisteredCell != Grid.InvalidCell)
 		{
@@ -117,13 +118,13 @@ public class NavTeleporter : KMonoBehaviour
 		}
 	}
 
-	private void BreakLink()
+		private void BreakLink()
 	{
-		Pathfinding.Instance.GetNavGrid(MinionConfig.MINION_NAV_GRID_NAME).teleportTransitions.Remove(this.lastRegisteredCell);
+		Pathfinding.Instance.GetNavGrid(DUPLICANTSTATS.STANDARD.BaseStats.NAV_GRID_NAME).teleportTransitions.Remove(this.lastRegisteredCell);
 		Pathfinding.Instance.AddDirtyNavGridCell(this.lastRegisteredCell);
 	}
 
-	private void OnCellChanged()
+		private void OnCellChanged()
 	{
 		this.Deregister();
 		this.Register();
@@ -137,11 +138,11 @@ public class NavTeleporter : KMonoBehaviour
 		}
 	}
 
-	private NavTeleporter target;
+		private NavTeleporter target;
 
-	private int lastRegisteredCell = Grid.InvalidCell;
+		private int lastRegisteredCell = Grid.InvalidCell;
 
-	public CellOffset offset;
+		public CellOffset offset;
 
-	private int overrideCell = -1;
+		private int overrideCell = -1;
 }

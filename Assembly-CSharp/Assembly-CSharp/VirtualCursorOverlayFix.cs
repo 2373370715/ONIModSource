@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class VirtualCursorOverlayFix : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		int width = Screen.currentResolution.width;
 		int height = Screen.currentResolution.height;
@@ -16,7 +16,7 @@ public class VirtualCursorOverlayFix : MonoBehaviour
 		base.StartCoroutine(this.RenderVirtualCursor());
 	}
 
-	private IEnumerator RenderVirtualCursor()
+		private IEnumerator RenderVirtualCursor()
 	{
 		bool ShowCursor = KInputManager.currentControllerIsGamepad;
 		while (Application.isPlaying)
@@ -39,11 +39,11 @@ public class VirtualCursorOverlayFix : MonoBehaviour
 		yield break;
 	}
 
-	private RenderTexture cursorRendTex;
+		private RenderTexture cursorRendTex;
 
-	public Camera screenSpaceCamera;
+		public Camera screenSpaceCamera;
 
-	public Image screenSpaceOverlayImage;
+		public Image screenSpaceOverlayImage;
 
-	public RawImage actualCursor;
+		public RawImage actualCursor;
 }

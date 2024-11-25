@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class WireUtilitySemiVirtualNetworkLink : UtilityNetworkLink, IHaveUtilityNetworkMgr, ICircuitConnected
 {
-	public Wire.WattageRating GetMaxWattageRating()
+		public Wire.WattageRating GetMaxWattageRating()
 	{
 		return this.maxWattageRating;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		RocketModuleCluster component = base.GetComponent<RocketModuleCluster>();
 		if (component != null)
@@ -33,7 +33,7 @@ public class WireUtilitySemiVirtualNetworkLink : UtilityNetworkLink, IHaveUtilit
 		base.OnSpawn();
 	}
 
-	public void SetLinkConnected(bool connect)
+		public void SetLinkConnected(bool connect)
 	{
 		if (connect && this.visualizeOnly)
 		{
@@ -54,24 +54,24 @@ public class WireUtilitySemiVirtualNetworkLink : UtilityNetworkLink, IHaveUtilit
 		}
 	}
 
-	protected override void OnDisconnect(int cell1, int cell2)
+		protected override void OnDisconnect(int cell1, int cell2)
 	{
 		Game.Instance.electricalConduitSystem.RemoveSemiVirtualLink(cell1, this.VirtualCircuitKey);
 	}
 
-	protected override void OnConnect(int cell1, int cell2)
+		protected override void OnConnect(int cell1, int cell2)
 	{
 		Game.Instance.electricalConduitSystem.AddSemiVirtualLink(cell1, this.VirtualCircuitKey);
 	}
 
-	public IUtilityNetworkMgr GetNetworkManager()
+		public IUtilityNetworkMgr GetNetworkManager()
 	{
 		return Game.Instance.electricalConduitSystem;
 	}
 
-			public bool IsVirtual { get; private set; }
+				public bool IsVirtual { get; private set; }
 
-		public int PowerCell
+			public int PowerCell
 	{
 		get
 		{
@@ -79,9 +79,9 @@ public class WireUtilitySemiVirtualNetworkLink : UtilityNetworkLink, IHaveUtilit
 		}
 	}
 
-			public object VirtualCircuitKey { get; private set; }
+				public object VirtualCircuitKey { get; private set; }
 
-	public void AddNetworks(ICollection<UtilityNetwork> networks)
+		public void AddNetworks(ICollection<UtilityNetwork> networks)
 	{
 		int networkCell = base.GetNetworkCell();
 		UtilityNetwork networkForCell = this.GetNetworkManager().GetNetworkForCell(networkCell);
@@ -91,13 +91,13 @@ public class WireUtilitySemiVirtualNetworkLink : UtilityNetworkLink, IHaveUtilit
 		}
 	}
 
-	public bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks)
+		public bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks)
 	{
 		int networkCell = base.GetNetworkCell();
 		UtilityNetwork networkForCell = this.GetNetworkManager().GetNetworkForCell(networkCell);
 		return networks.Contains(networkForCell);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public Wire.WattageRating maxWattageRating;
 }

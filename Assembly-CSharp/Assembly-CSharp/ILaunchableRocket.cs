@@ -3,11 +3,11 @@ using UnityEngine;
 
 public interface ILaunchableRocket
 {
-		LaunchableRocketRegisterType registerType { get; }
+			LaunchableRocketRegisterType registerType { get; }
 
-		GameObject LaunchableGameObject { get; }
+			GameObject LaunchableGameObject { get; }
 
-		float rocketSpeed { get; }
+			float rocketSpeed { get; }
 
-		bool isLanding { get; }
+			bool isLanding { get; }
 }

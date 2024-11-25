@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class MotdBox : KMonoBehaviour
 {
-	public void Config(MotdBox.PageData[] data)
+		public void Config(MotdBox.PageData[] data)
 	{
 		this.pageDatas = data;
 		if (this.pageButtons != null)
@@ -31,7 +31,7 @@ public class MotdBox : KMonoBehaviour
 		this.SwitchPage(0);
 	}
 
-	private void SwitchPage(int newPage)
+		private void SwitchPage(int newPage)
 	{
 		this.selectedPage = newPage;
 		for (int i = 0; i < this.pageButtons.Length; i++)
@@ -51,38 +51,38 @@ public class MotdBox : KMonoBehaviour
 		this.imageLabel.SetText(this.pageDatas[newPage].ImageText);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject pageCarouselContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject pageCarouselButtonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private RawImage image;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText headerLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText imageLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private URLOpenFunction urlOpener;
 
-	private int selectedPage;
+		private int selectedPage;
 
-	private GameObject[] pageButtons;
+		private GameObject[] pageButtons;
 
-	private MotdBox.PageData[] pageDatas;
+		private MotdBox.PageData[] pageDatas;
 
-	public class PageData
+		public class PageData
 	{
-						public Texture2D Texture { get; set; }
+								public Texture2D Texture { get; set; }
 
-						public string HeaderText { get; set; }
+								public string HeaderText { get; set; }
 
-						public string ImageText { get; set; }
+								public string ImageText { get; set; }
 
-						public string URL { get; set; }
+								public string URL { get; set; }
 	}
 }

@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class OrbitalResearchCenterConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "OrbitalResearchCenter";
 		int width = 2;
@@ -35,7 +35,7 @@ public class OrbitalResearchCenterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.ScienceBuilding, false);
 		go.GetComponent<KPrefabID>().AddTag(GameTags.RocketInteriorBuilding, false);
@@ -56,7 +56,7 @@ public class OrbitalResearchCenterConfig : IBuildingConfig
 		this.ConfigureRecipes();
 	}
 
-	private void ConfigureRecipes()
+		private void ConfigureRecipes()
 	{
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[]
 		{
@@ -69,7 +69,7 @@ public class OrbitalResearchCenterConfig : IBuildingConfig
 		AtmoSuitConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("OrbitalResearchCenter", array, array2), array, array2)
 		{
 			time = 33f,
-			description = ITEMS.INDUSTRIAL_PRODUCTS.ORBITAL_RESEARCH_DATABANK.RECIPE_DESC,
+			description = STRINGS.ITEMS.INDUSTRIAL_PRODUCTS.ORBITAL_RESEARCH_DATABANK.RECIPE_DESC,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.ResultWithIngredient,
 			fabricators = new List<Tag>
 			{
@@ -78,17 +78,17 @@ public class OrbitalResearchCenterConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "OrbitalResearchCenter";
+		public const string ID = "OrbitalResearchCenter";
 
-	public const float BASE_SECONDS_PER_POINT = 33f;
+		public const float BASE_SECONDS_PER_POINT = 33f;
 
-	public const float MASS_PER_POINT = 5f;
+		public const float MASS_PER_POINT = 5f;
 
-	public static readonly Tag INPUT_MATERIAL = SimHashes.Polypropylene.CreateTag();
+		public static readonly Tag INPUT_MATERIAL = SimHashes.Polypropylene.CreateTag();
 
-	public const float OUTPUT_TEMPERATURE = 308.15f;
+		public const float OUTPUT_TEMPERATURE = 308.15f;
 }

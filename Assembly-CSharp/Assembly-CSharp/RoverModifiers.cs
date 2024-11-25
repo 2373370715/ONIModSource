@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class RoverModifiers : Modifiers, ISaveLoadable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.attributes.Add(Db.Get().Attributes.Construction);
@@ -14,7 +14,7 @@ public class RoverModifiers : Modifiers, ISaveLoadable
 		this.attributes.Add(Db.Get().Attributes.Strength);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (base.GetComponent<ChoreConsumer>() != null)
@@ -28,7 +28,7 @@ public class RoverModifiers : Modifiers, ISaveLoadable
 		}
 	}
 
-	private void SetupDependentAttribute(Klei.AI.Attribute targetAttribute, AttributeConverter attributeConverter)
+		private void SetupDependentAttribute(Klei.AI.Attribute targetAttribute, AttributeConverter attributeConverter)
 	{
 		Klei.AI.Attribute attribute = attributeConverter.attribute;
 		AttributeInstance attributeInstance = attribute.Lookup(this);
@@ -40,7 +40,7 @@ public class RoverModifiers : Modifiers, ISaveLoadable
 		}));
 	}
 
-	private void OnBeginChore(object data)
+		private void OnBeginChore(object data)
 	{
 		Storage component = base.GetComponent<Storage>();
 		if (component != null)
@@ -49,7 +49,7 @@ public class RoverModifiers : Modifiers, ISaveLoadable
 		}
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<RoverModifiers> OnBeginChoreDelegate = new EventSystem.IntraObjectHandler<RoverModifiers>(delegate(RoverModifiers component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RoverModifiers> OnBeginChoreDelegate = new EventSystem.IntraObjectHandler<RoverModifiers>(delegate(RoverModifiers component, object data)
 	{
 		component.OnBeginChore(data);
 	});

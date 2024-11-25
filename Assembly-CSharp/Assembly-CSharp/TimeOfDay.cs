@@ -10,7 +10,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/TimeOfDay")]
 public class TimeOfDay : KMonoBehaviour, ISaveLoadable
 {
-		public static bool IsMilestoneApproaching
+			public static bool IsMilestoneApproaching
 	{
 		get
 		{
@@ -24,7 +24,7 @@ public class TimeOfDay : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-		public static bool IsMilestoneDay
+			public static bool IsMilestoneDay
 	{
 		get
 		{
@@ -38,26 +38,26 @@ public class TimeOfDay : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-			public TimeOfDay.TimeRegion timeRegion { get; private set; }
+				public TimeOfDay.TimeRegion timeRegion { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		TimeOfDay.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		TimeOfDay.Instance = this;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		TimeOfDay.Instance = null;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.timeRegion = this.GetCurrentTimeRegion();
@@ -87,13 +87,13 @@ public class TimeOfDay : KMonoBehaviour, ISaveLoadable
 		this.UpdateSunlightIntensity();
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		this.UpdateVisuals();
 	}
 
-	public TimeOfDay.TimeRegion GetCurrentTimeRegion()
+		public TimeOfDay.TimeRegion GetCurrentTimeRegion()
 	{
 		if (GameClock.Instance.IsNighttime())
 		{
@@ -102,7 +102,7 @@ public class TimeOfDay : KMonoBehaviour, ISaveLoadable
 		return TimeOfDay.TimeRegion.Day;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.UpdateVisuals();
 		TimeOfDay.TimeRegion currentTimeRegion = this.GetCurrentTimeRegion();
@@ -123,7 +123,7 @@ public class TimeOfDay : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void UpdateVisuals()
+		private void UpdateVisuals()
 	{
 		float num = 0.875f;
 		float num2 = 0.2f;
@@ -138,17 +138,17 @@ public class TimeOfDay : KMonoBehaviour, ISaveLoadable
 		Shader.SetGlobalVector("_TimeOfDay", new Vector4(this.scale, y, 0f, 0f));
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
 		this.UpdateSunlightIntensity();
 	}
 
-	public void SetEclipse(bool eclipse)
+		public void SetEclipse(bool eclipse)
 	{
 		this.isEclipse = eclipse;
 	}
 
-	private float UpdateSunlightIntensity()
+		private float UpdateSunlightIntensity()
 	{
 		float daytimeDurationInPercentage = GameClock.Instance.GetDaytimeDurationInPercentage();
 		float num = GameClock.Instance.GetCurrentCycleAsPercentage() / daytimeDurationInPercentage;
@@ -166,7 +166,7 @@ public class TimeOfDay : KMonoBehaviour, ISaveLoadable
 		return num2;
 	}
 
-	private void TriggerSoundChange(TimeOfDay.TimeRegion new_region, bool milestoneReached)
+		private void TriggerSoundChange(TimeOfDay.TimeRegion new_region, bool milestoneReached)
 	{
 		if (new_region == TimeOfDay.TimeRegion.Day)
 		{
@@ -194,36 +194,36 @@ public class TimeOfDay : KMonoBehaviour, ISaveLoadable
 		MusicManager.instance.PlaySong(this.stingerNight, false);
 	}
 
-	public void SetScale(float new_scale)
+		public void SetScale(float new_scale)
 	{
 		this.scale = new_scale;
 	}
 
-	private const string MILESTONE_CYCLE_REACHED_AUDIO_NAME = "Stinger_Day_Celebrate";
+		private const string MILESTONE_CYCLE_REACHED_AUDIO_NAME = "Stinger_Day_Celebrate";
 
-	public static List<int> MILESTONE_CYCLES = new List<int>(2)
+		public static List<int> MILESTONE_CYCLES = new List<int>(2)
 	{
 		99,
 		999
 	};
 
-	[Serialize]
+		[Serialize]
 	private float scale;
 
-	private EventInstance nightLPEvent;
+		private EventInstance nightLPEvent;
 
-	public static TimeOfDay Instance;
+		public static TimeOfDay Instance;
 
-	public string stingerDay;
+		public string stingerDay;
 
-	public string stingerNight;
+		public string stingerNight;
 
-	private bool isEclipse;
+		private bool isEclipse;
 
-	public enum TimeRegion
+		public enum TimeRegion
 	{
-		Invalid,
-		Day,
-		Night
+				Invalid,
+				Day,
+				Night
 	}
 }

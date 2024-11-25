@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ArtifactHarvestModule : GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.grounded;
 		this.root.Enter(delegate(ArtifactHarvestModule.StatesInstance smi)
@@ -25,30 +25,30 @@ public class ArtifactHarvestModule : GameStateMachine<ArtifactHarvestModule, Art
 		}, UpdateRate.SIM_4000ms, false).ParamTransition<bool>(this.canHarvest, this.not_grounded.not_harvesting, GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.IsFalse);
 	}
 
-	public StateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.BoolParameter canHarvest;
+		public StateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.BoolParameter canHarvest;
 
-	public GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.State grounded;
+		public GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.State grounded;
 
-	public ArtifactHarvestModule.NotGroundedStates not_grounded;
+		public ArtifactHarvestModule.NotGroundedStates not_grounded;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public class NotGroundedStates : GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.State
+		public class NotGroundedStates : GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.State
 	{
-		public GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.State not_harvesting;
+				public GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.State not_harvesting;
 
-		public GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.State harvesting;
+				public GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.State harvesting;
 	}
 
-	public class StatesInstance : GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<ArtifactHarvestModule, ArtifactHarvestModule.StatesInstance, IStateMachineTarget, ArtifactHarvestModule.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, ArtifactHarvestModule.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, ArtifactHarvestModule.Def def) : base(master, def)
 		{
 		}
 
-		public void HarvestFromPOI(float dt)
+				public void HarvestFromPOI(float dt)
 		{
 			ClusterGridEntity poiatCurrentLocation = base.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>().GetPOIAtCurrentLocation();
 			if (poiatCurrentLocation.IsNullOrDestroyed())
@@ -79,7 +79,7 @@ public class ArtifactHarvestModule : GameStateMachine<ArtifactHarvestModule, Art
 			}
 		}
 
-		public bool CheckIfCanHarvest()
+				public bool CheckIfCanHarvest()
 		{
 			Clustercraft component = base.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>();
 			if (component == null)
@@ -100,10 +100,10 @@ public class ArtifactHarvestModule : GameStateMachine<ArtifactHarvestModule, Art
 			return false;
 		}
 
-		[MyCmpReq]
+				[MyCmpReq]
 		private Storage storage;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		private SingleEntityReceptacle receptacle;
 	}
 }

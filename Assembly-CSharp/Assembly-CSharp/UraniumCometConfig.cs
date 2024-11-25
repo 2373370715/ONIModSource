@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class UraniumCometConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		float mass = ElementLoader.FindElementByHash(SimHashes.UraniumOre).defaultValues.mass;
 		GameObject gameObject = BaseCometConfig.BaseComet(UraniumCometConfig.ID, UI.SPACEDESTINATIONS.COMETS.URANIUMORECOMET.NAME, "meteor_uranium_kanim", SimHashes.UraniumOre, new Vector2(mass * 0.8f * 6f, mass * 1.2f * 6f), new Vector2(323.15f, 403.15f), "Meteor_Nuclear_Impact", 3, SimHashes.CarbonDioxide, SpawnFXHashes.MeteorImpactUranium, 0.6f);
@@ -23,17 +23,17 @@ public class UraniumCometConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static readonly string ID = "UraniumComet";
+		public static readonly string ID = "UraniumComet";
 
-	private const SimHashes element = SimHashes.UraniumOre;
+		private const SimHashes element = SimHashes.UraniumOre;
 
-	private const int ADDED_CELLS = 6;
+		private const int ADDED_CELLS = 6;
 }

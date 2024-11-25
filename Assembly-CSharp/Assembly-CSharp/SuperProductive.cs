@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SuperProductive : GameStateMachine<SuperProductive, SuperProductive.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.neutral;
 		this.root.TagTransition(GameTags.Dead, null, false);
@@ -26,10 +26,10 @@ public class SuperProductive : GameStateMachine<SuperProductive, SuperProductive
 		this.overjoyed.working.ScheduleGoTo(0.33f, this.overjoyed.superProductive);
 		this.overjoyed.superProductive.Enter(delegate(SuperProductive.Instance smi)
 		{
-			Worker component = smi.GetComponent<Worker>();
-			if (component != null && component.state == Worker.State.Working)
+			WorkerBase component = smi.GetComponent<WorkerBase>();
+			if (component != null && component.GetState() == WorkerBase.State.Working)
 			{
-				Workable workable = component.workable;
+				Workable workable = component.GetWorkable();
 				if (workable != null)
 				{
 					float num = workable.WorkTimeRemaining;
@@ -48,31 +48,31 @@ public class SuperProductive : GameStateMachine<SuperProductive, SuperProductive
 		});
 	}
 
-	public GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.State neutral;
+		public GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.State neutral;
 
-	public SuperProductive.OverjoyedStates overjoyed;
+		public SuperProductive.OverjoyedStates overjoyed;
 
-	public class OverjoyedStates : GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.State
+		public class OverjoyedStates : GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.State idle;
+				public GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.State idle;
 
-		public GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.State working;
+				public GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.State working;
 
-		public GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.State superProductive;
+				public GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.State superProductive;
 	}
 
-	public new class Instance : GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<SuperProductive, SuperProductive.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 
-		public bool ShouldSkipWork()
+				public bool ShouldSkipWork()
 		{
 			return UnityEngine.Random.Range(0f, 100f) <= TRAITS.JOY_REACTIONS.SUPER_PRODUCTIVE.INSTANT_SUCCESS_CHANCE;
 		}
 
-		public void ReactSuperProductive()
+				public void ReactSuperProductive()
 		{
 			ReactionMonitor.Instance smi = base.gameObject.GetSMI<ReactionMonitor.Instance>();
 			if (smi != null)
@@ -81,6 +81,6 @@ public class SuperProductive : GameStateMachine<SuperProductive, SuperProductive
 			}
 		}
 
-		public SuperProductiveFX.Instance fx;
+				public SuperProductiveFX.Instance fx;
 	}
 }

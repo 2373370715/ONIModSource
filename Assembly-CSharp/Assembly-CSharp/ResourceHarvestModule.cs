@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ResourceHarvestModule : GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.grounded;
 		this.root.Enter(delegate(ResourceHarvestModule.StatesInstance smi)
@@ -49,29 +49,29 @@ public class ResourceHarvestModule : GameStateMachine<ResourceHarvestModule, Res
 		}, UpdateRate.SIM_4000ms, false).ParamTransition<bool>(this.canHarvest, this.not_grounded.not_harvesting, GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.IsFalse);
 	}
 
-	public StateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.BoolParameter canHarvest;
+		public StateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.BoolParameter canHarvest;
 
-	public StateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.FloatParameter lastHarvestTime;
+		public StateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.FloatParameter lastHarvestTime;
 
-	public GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.State grounded;
+		public GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.State grounded;
 
-	public ResourceHarvestModule.NotGroundedStates not_grounded;
+		public ResourceHarvestModule.NotGroundedStates not_grounded;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public float harvestSpeed;
+				public float harvestSpeed;
 	}
 
-	public class NotGroundedStates : GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.State
+		public class NotGroundedStates : GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.State
 	{
-		public GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.State not_harvesting;
+				public GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.State not_harvesting;
 
-		public GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.State harvesting;
+				public GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.State harvesting;
 	}
 
-	public class StatesInstance : GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<ResourceHarvestModule, ResourceHarvestModule.StatesInstance, IStateMachineTarget, ResourceHarvestModule.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, ResourceHarvestModule.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, ResourceHarvestModule.Def def) : base(master, def)
 		{
 			this.storage = base.GetComponent<Storage>();
 			base.GetComponent<RocketModule>().AddModuleCondition(ProcessCondition.ProcessConditionType.RocketStorage, new ConditionHasResource(this.storage, SimHashes.Diamond, 1000f));
@@ -89,18 +89,18 @@ public class ResourceHarvestModule : GameStateMachine<ResourceHarvestModule, Res
 			this.UpdateMeter(null);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.OnCleanUp();
 			base.Unsubscribe(-1697596308, new Action<object>(this.UpdateMeter));
 		}
 
-		public void UpdateMeter(object data = null)
+				public void UpdateMeter(object data = null)
 		{
 			this.meter.SetPositionPercent(this.storage.MassStored() / this.storage.Capacity());
 		}
 
-		public void HarvestFromPOI(float dt)
+				public void HarvestFromPOI(float dt)
 		{
 			Clustercraft component = base.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>();
 			if (!this.CheckIfCanHarvest())
@@ -185,17 +185,17 @@ public class ResourceHarvestModule : GameStateMachine<ResourceHarvestModule, Res
 			SaveGame.Instance.ColonyAchievementTracker.totalMaterialsHarvestFromPOI += num3;
 		}
 
-		public void ConsumeDiamond(float amount)
+				public void ConsumeDiamond(float amount)
 		{
 			base.GetComponent<Storage>().ConsumeIgnoringDisease(SimHashes.Diamond.CreateTag(), amount);
 		}
 
-		public float GetMaxExtractKGFromDiamondAvailable()
+				public float GetMaxExtractKGFromDiamondAvailable()
 		{
 			return base.GetComponent<Storage>().GetAmountAvailable(SimHashes.Diamond.CreateTag()) / 0.05f;
 		}
 
-		public bool CheckIfCanHarvest()
+				public bool CheckIfCanHarvest()
 		{
 			Clustercraft component = base.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>();
 			if (component == null)
@@ -246,18 +246,18 @@ public class ResourceHarvestModule : GameStateMachine<ResourceHarvestModule, Res
 			return flag;
 		}
 
-		public static void AddHarvestStatusItems(GameObject statusTarget, float harvestRate)
+				public static void AddHarvestStatusItems(GameObject statusTarget, float harvestRate)
 		{
 			statusTarget.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.SpacePOIHarvesting, harvestRate);
 		}
 
-		public static void RemoveHarvestStatusItems(GameObject statusTarget)
+				public static void RemoveHarvestStatusItems(GameObject statusTarget)
 		{
 			statusTarget.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.SpacePOIHarvesting, false);
 		}
 
-		private MeterController meter;
+				private MeterController meter;
 
-		private Storage storage;
+				private Storage storage;
 	}
 }

@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class WorkableReactable : Reactable
 {
-	public WorkableReactable(Workable workable, HashedString id, ChoreType chore_type, WorkableReactable.AllowedDirection allowed_direction = WorkableReactable.AllowedDirection.Any) : base(workable.gameObject, id, chore_type, 1, 1, false, 0f, 0f, float.PositiveInfinity, 0f, ObjectLayer.NumLayers)
+		public WorkableReactable(Workable workable, HashedString id, ChoreType chore_type, WorkableReactable.AllowedDirection allowed_direction = WorkableReactable.AllowedDirection.Any) : base(workable.gameObject, id, chore_type, 1, 1, false, 0f, 0f, float.PositiveInfinity, 0f, ObjectLayer.NumLayers)
 	{
 		this.workable = workable;
 		this.allowedDirection = allowed_direction;
 	}
 
-	public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
+		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 	{
 		if (this.workable == null)
 		{
@@ -50,26 +50,26 @@ public class WorkableReactable : Reactable
 		return (!facing || this.allowedDirection != WorkableReactable.AllowedDirection.Right) && (facing || this.allowedDirection != WorkableReactable.AllowedDirection.Left);
 	}
 
-	protected override void InternalBegin()
+		protected override void InternalBegin()
 	{
-		this.worker = this.reactor.GetComponent<Worker>();
-		this.worker.StartWork(new Worker.StartWorkInfo(this.workable));
+		this.worker = this.reactor.GetComponent<WorkerBase>();
+		this.worker.StartWork(new WorkerBase.StartWorkInfo(this.workable));
 	}
 
-	public override void Update(float dt)
+		public override void Update(float dt)
 	{
-		if (this.worker.workable == null)
+		if (this.worker.GetWorkable() == null)
 		{
 			base.End();
 			return;
 		}
-		if (this.worker.Work(dt) != Worker.WorkResult.InProgress)
+		if (this.worker.Work(dt) != WorkerBase.WorkResult.InProgress)
 		{
 			base.End();
 		}
 	}
 
-	protected override void InternalEnd()
+		protected override void InternalEnd()
 	{
 		if (this.worker != null)
 		{
@@ -77,20 +77,20 @@ public class WorkableReactable : Reactable
 		}
 	}
 
-	protected override void InternalCleanup()
+		protected override void InternalCleanup()
 	{
 	}
 
-	protected Workable workable;
+		protected Workable workable;
 
-	private Worker worker;
+		private WorkerBase worker;
 
-	public WorkableReactable.AllowedDirection allowedDirection;
+		public WorkableReactable.AllowedDirection allowedDirection;
 
-	public enum AllowedDirection
+		public enum AllowedDirection
 	{
-		Any,
-		Left,
-		Right
+				Any,
+				Left,
+				Right
 	}
 }

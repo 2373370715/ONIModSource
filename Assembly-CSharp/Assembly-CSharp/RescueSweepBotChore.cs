@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RescueSweepBotChore : Chore<RescueSweepBotChore.StatesInstance>
 {
-	public RescueSweepBotChore(IStateMachineTarget master, GameObject sweepBot, GameObject baseStation)
+		public RescueSweepBotChore(IStateMachineTarget master, GameObject sweepBot, GameObject baseStation)
 	{
 		Chore.Precondition canReachBaseStation = default(Chore.Precondition);
 		canReachBaseStation.id = "CanReachBaseStation";
@@ -21,12 +21,12 @@ public class RescueSweepBotChore : Chore<RescueSweepBotChore.StatesInstance>
 		this.CanReachBaseStation = canReachBaseStation;
 		base..ctor(Db.Get().ChoreTypes.RescueIncapacitated, master, null, false, null, null, null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.WorkTime);
 		base.smi = new RescueSweepBotChore.StatesInstance(this);
-		base.runUntilComplete = true;
-		base.AddPrecondition(RescueSweepBotChore.CanReachIncapacitated, sweepBot.GetComponent<Storage>());
-		base.AddPrecondition(this.CanReachBaseStation, baseStation.GetComponent<Storage>());
+		this.runUntilComplete = true;
+		this.AddPrecondition(RescueSweepBotChore.CanReachIncapacitated, sweepBot.GetComponent<Storage>());
+		this.AddPrecondition(this.CanReachBaseStation, baseStation.GetComponent<Storage>());
 	}
 
-	public override void Begin(Chore.Precondition.Context context)
+		public override void Begin(Chore.Precondition.Context context)
 	{
 		base.smi.sm.rescuer.Set(context.consumerState.gameObject, base.smi, false);
 		base.smi.sm.rescueTarget.Set(this.gameObject, base.smi, false);
@@ -34,13 +34,13 @@ public class RescueSweepBotChore : Chore<RescueSweepBotChore.StatesInstance>
 		base.Begin(context);
 	}
 
-	protected override void End(string reason)
+		protected override void End(string reason)
 	{
 		this.DropSweepBot();
 		base.End(reason);
 	}
 
-	private void DropSweepBot()
+		private void DropSweepBot()
 	{
 		if (base.smi.sm.rescuer.Get(base.smi) != null && base.smi.sm.rescueTarget.Get(base.smi) != null)
 		{
@@ -48,9 +48,9 @@ public class RescueSweepBotChore : Chore<RescueSweepBotChore.StatesInstance>
 		}
 	}
 
-	public Chore.Precondition CanReachBaseStation;
+		public Chore.Precondition CanReachBaseStation;
 
-	public static Chore.Precondition CanReachIncapacitated = new Chore.Precondition
+		public static Chore.Precondition CanReachIncapacitated = new Chore.Precondition
 	{
 		id = "CanReachIncapacitated",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.CAN_MOVE_TO,
@@ -71,22 +71,22 @@ public class RescueSweepBotChore : Chore<RescueSweepBotChore.StatesInstance>
 		}
 	};
 
-	public class StatesInstance : GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.GameInstance
 	{
-		public StatesInstance(RescueSweepBotChore master) : base(master)
+				public StatesInstance(RescueSweepBotChore master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore>
+		public class States : GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.approachSweepBot;
 			this.approachSweepBot.InitializeStates(this.rescuer, this.rescueTarget, this.holding.pickup, this.failure, Grid.DefaultOffset, null);
 			this.holding.Target(this.rescuer).Enter(delegate(RescueSweepBotChore.StatesInstance smi)
 			{
-				if (this.rescuer.Get(smi).gameObject.HasTag(GameTags.Minion))
+				if (this.rescuer.Get(smi).gameObject.HasTag(GameTags.BaseMinion))
 				{
 					KAnimFile anim = Assets.GetAnim("anim_incapacitated_carrier_kanim");
 					this.rescuer.Get(smi).GetComponent<KAnimControllerBase>().RemoveAnimOverrides(anim);
@@ -94,7 +94,7 @@ public class RescueSweepBotChore : Chore<RescueSweepBotChore.StatesInstance>
 				}
 			}).Exit(delegate(RescueSweepBotChore.StatesInstance smi)
 			{
-				if (this.rescuer.Get(smi).gameObject.HasTag(GameTags.Minion))
+				if (this.rescuer.Get(smi).gameObject.HasTag(GameTags.BaseMinion))
 				{
 					KAnimFile anim = Assets.GetAnim("anim_incapacitated_carrier_kanim");
 					this.rescuer.Get(smi).GetComponent<KAnimControllerBase>().RemoveAnimOverrides(anim);
@@ -137,27 +137,27 @@ public class RescueSweepBotChore : Chore<RescueSweepBotChore.StatesInstance>
 			});
 		}
 
-		public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.ApproachSubState<Storage> approachSweepBot;
+				public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.ApproachSubState<Storage> approachSweepBot;
 
-		public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.State failure;
+				public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.State failure;
 
-		public RescueSweepBotChore.States.HoldingSweepBot holding;
+				public RescueSweepBotChore.States.HoldingSweepBot holding;
 
-		public StateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.TargetParameter rescueTarget;
+				public StateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.TargetParameter rescueTarget;
 
-		public StateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.TargetParameter deliverTarget;
+				public StateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.TargetParameter deliverTarget;
 
-		public StateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.TargetParameter rescuer;
+				public StateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.TargetParameter rescuer;
 
-		public class HoldingSweepBot : GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.State
+				public class HoldingSweepBot : GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.State
 		{
-			public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.State pickup;
+						public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.State pickup;
 
-			public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.ApproachSubState<IApproachable> delivering;
+						public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.ApproachSubState<IApproachable> delivering;
 
-			public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.State deposit;
+						public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.State deposit;
 
-			public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.State ditch;
+						public GameStateMachine<RescueSweepBotChore.States, RescueSweepBotChore.StatesInstance, RescueSweepBotChore, object>.State ditch;
 		}
 	}
 }

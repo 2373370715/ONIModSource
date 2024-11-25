@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.Off;
 		this.root.Update(delegate(MissileLauncher.Instance smi, float dt)
@@ -101,56 +101,56 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 		}).Target(this.cannonTarget).PlayAnim("Cannon_working_pst");
 	}
 
-	private static StatusItem NoSurfaceSight = new StatusItem("MissileLauncher_NoSurfaceSight", "BUILDING", "status_item_no_sky", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022, null);
+		private static StatusItem NoSurfaceSight = new StatusItem("MissileLauncher_NoSurfaceSight", "BUILDING", "status_item_no_sky", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022, null);
 
-	private static StatusItem PartiallyBlockedStatus = new StatusItem("MissileLauncher_PartiallyBlocked", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
+		private static StatusItem PartiallyBlockedStatus = new StatusItem("MissileLauncher_PartiallyBlocked", "BUILDING", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, false, 129022, null);
 
-	public float shutdownDuration = 50f;
+		public float shutdownDuration = 50f;
 
-	public float shootDelayDuration = 0.25f;
+		public float shootDelayDuration = 0.25f;
 
-	public static float SHELL_MASS = MissileBasicConfig.recipe.ingredients[0].amount / 5f / 2f;
+		public static float SHELL_MASS = MissileBasicConfig.recipe.ingredients[0].amount / 5f / 2f;
 
-	public static float SHELL_TEMPERATURE = 353.15f;
+		public static float SHELL_TEMPERATURE = 353.15f;
 
-	public StateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.BoolParameter rotationComplete;
+		public StateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.BoolParameter rotationComplete;
 
-	public StateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.ObjectParameter<GameObject> meteorTarget = new StateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.ObjectParameter<GameObject>();
+		public StateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.ObjectParameter<GameObject> meteorTarget = new StateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.ObjectParameter<GameObject>();
 
-	public StateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.TargetParameter cannonTarget;
+		public StateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.TargetParameter cannonTarget;
 
-	public StateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.BoolParameter fullyBlocked;
+		public StateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.BoolParameter fullyBlocked;
 
-	public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State Off;
+		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State Off;
 
-	public MissileLauncher.OnState On;
+		public MissileLauncher.OnState On;
 
-	public MissileLauncher.LaunchState Launch;
+		public MissileLauncher.LaunchState Launch;
 
-	public MissileLauncher.CooldownState Cooldown;
+		public MissileLauncher.CooldownState Cooldown;
 
-	public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State Nosurfacesight;
+		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State Nosurfacesight;
 
-	public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State NoAmmo;
+		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State NoAmmo;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public static readonly CellOffset LaunchOffset = new CellOffset(0, 4);
+				public static readonly CellOffset LaunchOffset = new CellOffset(0, 4);
 
-		public float launchSpeed = 30f;
+				public float launchSpeed = 30f;
 
-		public float rotationSpeed = 100f;
+				public float rotationSpeed = 100f;
 
-		public static readonly Vector2I launchRange = new Vector2I(16, 32);
+				public static readonly Vector2I launchRange = new Vector2I(16, 32);
 
-		public float scanningAngle = 50f;
+				public float scanningAngle = 50f;
 
-		public float maxAngle = 80f;
+				public float maxAngle = 80f;
 	}
 
-	public new class Instance : GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.GameInstance
+		public new class Instance : GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.GameInstance
 	{
-				public WorldContainer myWorld
+						public WorldContainer myWorld
 		{
 			get
 			{
@@ -162,7 +162,7 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			}
 		}
 
-		public Instance(IStateMachineTarget master, MissileLauncher.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, MissileLauncher.Def def) : base(master, def)
 		{
 			KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 			string name = component.name + ".cannon";
@@ -215,30 +215,30 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			}
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			this.OnStorage(null);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.Unsubscribe(-1201923725, new Action<object>(this.OnHighlight));
 			base.OnCleanUp();
 		}
 
-		private void OnHighlight(object data)
+				private void OnHighlight(object data)
 		{
 			KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 			base.smi.cannonAnimController.HighlightColour = component.HighlightColour;
 		}
 
-		private void OnStorage(object data)
+				private void OnStorage(object data)
 		{
 			this.meter.SetPositionPercent(Mathf.Clamp01(this.MissileStorage.MassStored() / this.MissileStorage.capacityKg));
 		}
 
-		public void Searching(float dt)
+				public void Searching(float dt)
 		{
 			this.FindMeteor();
 			this.RotateCannon(dt, base.def.rotationSpeed / 2f);
@@ -249,7 +249,7 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			}
 		}
 
-		public void FindMeteor()
+				public void FindMeteor()
 		{
 			GameObject gameObject = this.ChooseClosestInterceptionPoint(this.myWorld.id);
 			if (gameObject != null)
@@ -260,13 +260,13 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			}
 		}
 
-		private float CalculateLaunchAngle(Vector3 targetPosition)
+				private float CalculateLaunchAngle(Vector3 targetPosition)
 		{
 			Vector3 v = Vector3.Normalize(targetPosition - this.launchPosition);
 			return MathUtil.AngleSigned(Vector3.up, v, Vector3.forward);
 		}
 
-		public void LaunchMissile()
+				public void LaunchMissile()
 		{
 			GameObject gameObject = this.MissileStorage.FindFirst("MissileBasic");
 			if (gameObject != null)
@@ -289,7 +289,7 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			}
 		}
 
-		private void SetMissileElement(GameObject missile)
+				private void SetMissileElement(GameObject missile)
 		{
 			this.missileElement = missile.GetComponent<PrimaryElement>().Element.tag;
 			if (Assets.GetPrefab(this.missileElement) == null)
@@ -299,7 +299,7 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			}
 		}
 
-		public GameObject ChooseClosestInterceptionPoint(int world_id)
+				public GameObject ChooseClosestInterceptionPoint(int world_id)
 		{
 			GameObject result = null;
 			List<Comet> items = Components.Meteors.GetItems(world_id);
@@ -323,21 +323,21 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			return result;
 		}
 
-		private bool IsMeteorInRange(Vector3 interception_point)
+				private bool IsMeteorInRange(Vector3 interception_point)
 		{
 			Vector2I vector2I;
 			Grid.PosToXY(interception_point, out vector2I);
 			return Math.Abs(vector2I.X - this.launchXY.X) <= MissileLauncher.Def.launchRange.X && vector2I.Y - this.launchXY.Y > 0 && vector2I.Y - this.launchXY.Y <= MissileLauncher.Def.launchRange.Y;
 		}
 
-		public bool IsPathClear(Vector3 startPoint, Vector3 endPoint)
+				public bool IsPathClear(Vector3 startPoint, Vector3 endPoint)
 		{
 			Vector2I vector2I = Grid.PosToXY(startPoint);
 			Vector2I vector2I2 = Grid.PosToXY(endPoint);
 			return Grid.TestLineOfSight(vector2I.x, vector2I.y, vector2I2.x, vector2I2.y, new Func<int, bool>(this.IsCellBlockedFromSky), false, true);
 		}
 
-		public bool IsCellBlockedFromSky(int cell)
+				public bool IsCellBlockedFromSky(int cell)
 		{
 			if (Grid.IsValidCell(cell) && (int)Grid.WorldIdx[cell] == this.myWorld.id)
 			{
@@ -349,14 +349,14 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			return num2 <= this.launchXY.Y;
 		}
 
-		public Vector3 CalculateCollisionPoint(Vector3 targetPosition, Vector3 targetVelocity, out float timeToCollision)
+				public Vector3 CalculateCollisionPoint(Vector3 targetPosition, Vector3 targetVelocity, out float timeToCollision)
 		{
 			Vector3 vector = targetVelocity - base.smi.def.launchSpeed * (targetPosition - this.launchPosition).normalized;
 			timeToCollision = (targetPosition - this.launchPosition).magnitude / vector.magnitude;
 			return targetPosition + targetVelocity * timeToCollision;
 		}
 
-		public void HasLineOfSight()
+				public void HasLineOfSight()
 		{
 			bool flag = false;
 			bool flag2 = true;
@@ -376,12 +376,12 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			base.smi.sm.fullyBlocked.Set(flag2, base.smi, false);
 		}
 
-		public bool MeteorDetected()
+				public bool MeteorDetected()
 		{
 			return Components.Meteors.GetItems(this.myWorld.id).Count > 0;
 		}
 
-		public void SetOreChunk()
+				public void SetOreChunk()
 		{
 			if (!this.missileElement.IsValid)
 			{
@@ -392,7 +392,7 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			base.gameObject.GetComponent<SymbolOverrideController>().AddSymbolOverride("Shell", symbolByIndex, 0);
 		}
 
-		public void SpawnOre()
+				public void SpawnOre()
 		{
 			bool flag;
 			Vector3 position = base.GetComponent<KBatchedAnimController>().GetSymbolTransform("Shell", out flag).GetColumn(3);
@@ -400,7 +400,7 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			Assets.GetPrefab(this.missileElement).GetComponent<PrimaryElement>().Element.substance.SpawnResource(position, MissileLauncher.SHELL_MASS, MissileLauncher.SHELL_TEMPERATURE, byte.MaxValue, 0, false, false, false);
 		}
 
-		public void RotateCannon(float dt, float rotation_speed)
+				public void RotateCannon(float dt, float rotation_speed)
 		{
 			float num = this.cannonRotation - this.simpleAngle;
 			if (num > 180f)
@@ -429,7 +429,7 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			base.smi.sm.rotationComplete.Set(true, base.smi, false);
 		}
 
-		public void RotateToMeteor(float dt)
+				public void RotateToMeteor(float dt)
 		{
 			GameObject gameObject = base.sm.meteorTarget.Get(this);
 			if (gameObject.IsNullOrDestroyed())
@@ -461,65 +461,65 @@ public class MissileLauncher : GameStateMachine<MissileLauncher, MissileLauncher
 			base.smi.sm.rotationComplete.Set(true, base.smi, false);
 		}
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public Operational Operational;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public Storage MissileStorage;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public KSelectable Selectable;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public FlatTagFilterable TargetFilter;
 
-		private Vector3 launchPosition;
+				private Vector3 launchPosition;
 
-		private Vector2I launchXY;
+				private Vector2I launchXY;
 
-		private float launchAnimTime;
+				private float launchAnimTime;
 
-		public KBatchedAnimController cannonAnimController;
+				public KBatchedAnimController cannonAnimController;
 
-		public GameObject cannonGameObject;
+				public GameObject cannonGameObject;
 
-		public float cannonRotation;
+				public float cannonRotation;
 
-		public float simpleAngle;
+				public float simpleAngle;
 
-		private Tag missileElement;
+				private Tag missileElement;
 
-		private MeterController meter;
+				private MeterController meter;
 
-		private WorldContainer worldContainer;
+				private WorldContainer worldContainer;
 	}
 
-	public class OnState : GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State
+		public class OnState : GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State
 	{
-		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State searching;
+				public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State searching;
 
-		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State opening;
+				public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State opening;
 
-		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State shutdown;
+				public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State shutdown;
 
-		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State idle;
+				public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State idle;
 	}
 
-	public class LaunchState : GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State
+		public class LaunchState : GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State
 	{
-		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State targeting;
+				public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State targeting;
 
-		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State shoot;
+				public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State shoot;
 
-		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State pst;
+				public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State pst;
 	}
 
-	public class CooldownState : GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State
+		public class CooldownState : GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State
 	{
-		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State cooling;
+				public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State cooling;
 
-		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State exit;
+				public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State exit;
 
-		public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State exitNoAmmo;
+				public GameStateMachine<MissileLauncher, MissileLauncher.Instance, IStateMachineTarget, MissileLauncher.Def>.State exitNoAmmo;
 	}
 }

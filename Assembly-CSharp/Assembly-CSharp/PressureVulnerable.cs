@@ -7,7 +7,7 @@ using UnityEngine;
 [SkipSaveFileSerialization]
 public class PressureVulnerable : StateMachineComponent<PressureVulnerable.StatesInstance>, IGameObjectEffectDescriptor, IWiltCause, ISlicedSim1000ms
 {
-		private OccupyArea occupyArea
+			private OccupyArea occupyArea
 	{
 		get
 		{
@@ -19,12 +19,12 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 	}
 
-	public bool IsSafeElement(Element element)
+		public bool IsSafeElement(Element element)
 	{
 		return this.safe_atmospheres == null || this.safe_atmospheres.Count == 0 || this.safe_atmospheres.Contains(element);
 	}
 
-		public PressureVulnerable.PressureState ExternalPressureState
+			public PressureVulnerable.PressureState ExternalPressureState
 	{
 		get
 		{
@@ -32,7 +32,7 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 	}
 
-		public bool IsLethal
+			public bool IsLethal
 	{
 		get
 		{
@@ -40,7 +40,7 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 	}
 
-		public bool IsNormal
+			public bool IsNormal
 	{
 		get
 		{
@@ -48,14 +48,14 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Amounts amounts = base.gameObject.GetAmounts();
 		this.displayPressureAmount = amounts.Add(new AmountInstance(Db.Get().Amounts.AirPressure, base.gameObject));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		SlicedUpdaterSim1000ms<PressureVulnerable>.instance.RegisterUpdate1000ms(this);
@@ -65,13 +65,13 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		SlicedUpdaterSim1000ms<PressureVulnerable>.instance.UnregisterUpdate1000ms(this);
 		base.OnCleanUp();
 	}
 
-	public void Configure(SimHashes[] safeAtmospheres = null)
+		public void Configure(SimHashes[] safeAtmospheres = null)
 	{
 		this.pressure_sensitive = false;
 		this.pressureWarning_Low = float.MinValue;
@@ -88,7 +88,7 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 	}
 
-	public void Configure(float pressureWarningLow = 0.25f, float pressureLethalLow = 0.01f, float pressureWarningHigh = 10f, float pressureLethalHigh = 30f, SimHashes[] safeAtmospheres = null)
+		public void Configure(float pressureWarningLow = 0.25f, float pressureLethalLow = 0.01f, float pressureWarningHigh = 10f, float pressureLethalHigh = 30f, SimHashes[] safeAtmospheres = null)
 	{
 		this.pressure_sensitive = true;
 		this.pressureWarning_Low = pressureWarningLow;
@@ -105,7 +105,7 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 	}
 
-		WiltCondition.Condition[] IWiltCause.Conditions
+			WiltCondition.Condition[] IWiltCause.Conditions
 	{
 		get
 		{
@@ -117,7 +117,7 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 	}
 
-		public string WiltStateString
+			public string WiltStateString
 	{
 		get
 		{
@@ -138,12 +138,12 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		}
 	}
 
-	public bool IsSafePressure(float pressure)
+		public bool IsSafePressure(float pressure)
 	{
 		return !this.pressure_sensitive || (pressure > this.pressureLethal_Low && pressure < this.pressureLethal_High);
 	}
 
-	public void SlicedSim1000ms(float dt)
+		public void SlicedSim1000ms(float dt)
 	{
 		float value = base.smi.sm.pressure.Get(base.smi) * 0.7f + this.GetPressureOverArea(this.cell) * 0.3f;
 		this.safe_element *= 0.7f;
@@ -157,12 +157,12 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		base.smi.sm.pressure.Set(value, base.smi, false);
 	}
 
-	public float GetExternalPressure()
+		public float GetExternalPressure()
 	{
 		return this.GetPressureOverArea(this.cell);
 	}
 
-	private float GetPressureOverArea(int cell)
+		private float GetPressureOverArea(int cell)
 	{
 		bool flag = this.testAreaElementSafe;
 		PressureVulnerable.testAreaPressure = 0f;
@@ -178,7 +178,7 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		return PressureVulnerable.testAreaPressure;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.pressure_sensitive)
@@ -212,33 +212,33 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		return list;
 	}
 
-	private const float kTrailingWeight = 0.7f;
+		private const float kTrailingWeight = 0.7f;
 
-	private const float kLeadingWeight = 0.3f;
+		private const float kLeadingWeight = 0.3f;
 
-	private const float kSafeElementThreshold = 0.06f;
+		private const float kSafeElementThreshold = 0.06f;
 
-	private float safe_element = 1f;
+		private float safe_element = 1f;
 
-	private OccupyArea _occupyArea;
+		private OccupyArea _occupyArea;
 
-	public float pressureLethal_Low;
+		public float pressureLethal_Low;
 
-	public float pressureWarning_Low;
+		public float pressureWarning_Low;
 
-	public float pressureWarning_High;
+		public float pressureWarning_High;
 
-	public float pressureLethal_High;
+		public float pressureLethal_High;
 
-	private static float testAreaPressure;
+		private static float testAreaPressure;
 
-	private static int testAreaCount;
+		private static int testAreaCount;
 
-	public bool testAreaElementSafe = true;
+		public bool testAreaElementSafe = true;
 
-	public Element currentAtmoElement;
+		public Element currentAtmoElement;
 
-	private static Func<int, object, bool> testAreaCB = delegate(int test_cell, object data)
+		private static Func<int, object, bool> testAreaCB = delegate(int test_cell, object data)
 	{
 		PressureVulnerable pressureVulnerable = (PressureVulnerable)data;
 		if (!Grid.IsSolidCell(test_cell))
@@ -259,19 +259,19 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 		return true;
 	};
 
-	private AmountInstance displayPressureAmount;
+		private AmountInstance displayPressureAmount;
 
-	public bool pressure_sensitive = true;
+		public bool pressure_sensitive = true;
 
-	public HashSet<Element> safe_atmospheres = new HashSet<Element>();
+		public HashSet<Element> safe_atmospheres = new HashSet<Element>();
 
-	private int cell;
+		private int cell;
 
-	private PressureVulnerable.PressureState pressureState = PressureVulnerable.PressureState.Normal;
+		private PressureVulnerable.PressureState pressureState = PressureVulnerable.PressureState.Normal;
 
-	public class StatesInstance : GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.GameInstance
+		public class StatesInstance : GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.GameInstance
 	{
-		public StatesInstance(PressureVulnerable master) : base(master)
+				public StatesInstance(PressureVulnerable master) : base(master)
 		{
 			if (Db.Get().Amounts.Maturity.Lookup(base.gameObject) != null)
 			{
@@ -279,12 +279,12 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 			}
 		}
 
-		public bool hasMaturity;
+				public bool hasMaturity;
 	}
 
-	public class States : GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable>
+		public class States : GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.normal;
 			this.lethalLow.ParamTransition<float>(this.pressure, this.warningLow, (PressureVulnerable.StatesInstance smi, float p) => p > smi.master.pressureLethal_Low).ParamTransition<bool>(this.safe_element, this.unsafeElement, GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.IsFalse).Enter(delegate(PressureVulnerable.StatesInstance smi)
@@ -310,29 +310,29 @@ public class PressureVulnerable : StateMachineComponent<PressureVulnerable.State
 			}).TriggerOnEnter(GameHashes.OptimalPressureAchieved, null);
 		}
 
-		public StateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.FloatParameter pressure;
+				public StateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.FloatParameter pressure;
 
-		public StateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.BoolParameter safe_element;
+				public StateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.BoolParameter safe_element;
 
-		public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State unsafeElement;
+				public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State unsafeElement;
 
-		public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State lethalLow;
+				public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State lethalLow;
 
-		public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State lethalHigh;
+				public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State lethalHigh;
 
-		public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State warningLow;
+				public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State warningLow;
 
-		public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State warningHigh;
+				public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State warningHigh;
 
-		public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State normal;
+				public GameStateMachine<PressureVulnerable.States, PressureVulnerable.StatesInstance, PressureVulnerable, object>.State normal;
 	}
 
-	public enum PressureState
+		public enum PressureState
 	{
-		LethalLow,
-		WarningLow,
-		Normal,
-		WarningHigh,
-		LethalHigh
+				LethalLow,
+				WarningLow,
+				Normal,
+				WarningHigh,
+				LethalHigh
 	}
 }

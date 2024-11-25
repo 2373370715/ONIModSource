@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class NotificationAlertBar : KMonoBehaviour
 {
-	public void Init(ManagementMenuNotification notification)
+		public void Init(ManagementMenuNotification notification)
 	{
 		this.notification = notification;
 		this.thisButton.onClick += this.OnThisButtonClicked;
@@ -14,7 +14,7 @@ public class NotificationAlertBar : KMonoBehaviour
 		this.muteButton.onClick += this.OnMuteButtonClicked;
 	}
 
-	private void OnThisButtonClicked()
+		private void OnThisButtonClicked()
 	{
 		NotificationHighlightController componentInParent = base.GetComponentInParent<NotificationHighlightController>();
 		if (componentInParent != null)
@@ -25,21 +25,21 @@ public class NotificationAlertBar : KMonoBehaviour
 		this.notification.View();
 	}
 
-	private void OnMuteButtonClicked()
+		private void OnMuteButtonClicked()
 	{
 	}
 
-	public ManagementMenuNotification notification;
+		public ManagementMenuNotification notification;
 
-	public KButton thisButton;
+		public KButton thisButton;
 
-	public KImage background;
+		public KImage background;
 
-	public LocText text;
+		public LocText text;
 
-	public ToolTip tooltip;
+		public ToolTip tooltip;
 
-	public KButton muteButton;
+		public KButton muteButton;
 
-	public List<ColorStyleSetting> alertColorStyle;
+		public List<ColorStyleSetting> alertColorStyle;
 }

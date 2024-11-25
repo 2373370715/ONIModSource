@@ -4,26 +4,26 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public abstract class SubstanceSource : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.pickupable.SetWorkTime(SubstanceSource.MaxPickupTime);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.pickupable.SetWorkTime(10f);
 	}
 
-	protected abstract CellOffset[] GetOffsetGroup();
+		protected abstract CellOffset[] GetOffsetGroup();
 
-	protected abstract IChunkManager GetChunkManager();
+		protected abstract IChunkManager GetChunkManager();
 
-	public SimHashes GetElementID()
+		public SimHashes GetElementID()
 	{
 		return this.primaryElement.ElementID;
 	}
 
-	public Tag GetElementTag()
+		public Tag GetElementTag()
 	{
 		Tag result = Tag.Invalid;
 		if (base.gameObject != null && this.primaryElement != null && this.primaryElement.Element != null)
@@ -33,7 +33,7 @@ public abstract class SubstanceSource : KMonoBehaviour
 		return result;
 	}
 
-	public Tag GetMaterialCategoryTag()
+		public Tag GetMaterialCategoryTag()
 	{
 		Tag result = Tag.Invalid;
 		if (base.gameObject != null && this.primaryElement != null && this.primaryElement.Element != null)
@@ -43,13 +43,13 @@ public abstract class SubstanceSource : KMonoBehaviour
 		return result;
 	}
 
-	private bool enableRefresh;
+		private bool enableRefresh;
 
-	private static readonly float MaxPickupTime = 8f;
+		private static readonly float MaxPickupTime = 8f;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Pickupable pickupable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private PrimaryElement primaryElement;
 }

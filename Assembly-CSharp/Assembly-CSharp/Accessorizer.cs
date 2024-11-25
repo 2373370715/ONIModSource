@@ -9,19 +9,19 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Accessorizer")]
 public class Accessorizer : KMonoBehaviour
 {
-	public List<ResourceRef<Accessory>> GetAccessories()
+		public List<ResourceRef<Accessory>> GetAccessories()
 	{
 		return this.accessories;
 	}
 
-	public void SetAccessories(List<ResourceRef<Accessory>> data)
+		public void SetAccessories(List<ResourceRef<Accessory>> data)
 	{
 		this.accessories = data;
 	}
 
-			public KCompBuilder.BodyData bodyData { get; set; }
+				public KCompBuilder.BodyData bodyData { get; set; }
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		MinionIdentity component = base.GetComponent<MinionIdentity>();
@@ -42,7 +42,7 @@ public class Accessorizer : KMonoBehaviour
 		this.ApplyAccessories();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		MinionIdentity component = base.GetComponent<MinionIdentity>();
@@ -52,7 +52,7 @@ public class Accessorizer : KMonoBehaviour
 		}
 	}
 
-	public void AddAccessory(Accessory accessory)
+		public void AddAccessory(Accessory accessory)
 	{
 		if (accessory != null)
 		{
@@ -72,13 +72,13 @@ public class Accessorizer : KMonoBehaviour
 		}
 	}
 
-	public void RemoveAccessory(Accessory accessory)
+		public void RemoveAccessory(Accessory accessory)
 	{
 		this.accessories.RemoveAll((ResourceRef<Accessory> x) => x.Get() == accessory);
 		this.animController.GetComponent<SymbolOverrideController>().TryRemoveSymbolOverride(accessory.slot.targetSymbolId, accessory.slot.overrideLayer);
 	}
 
-	public void ApplyAccessories()
+		public void ApplyAccessories()
 	{
 		foreach (ResourceRef<Accessory> resourceRef in this.accessories)
 		{
@@ -90,7 +90,7 @@ public class Accessorizer : KMonoBehaviour
 		}
 	}
 
-	public static KCompBuilder.BodyData UpdateAccessorySlots(string nameString, ref List<ResourceRef<Accessory>> accessories)
+		public static KCompBuilder.BodyData UpdateAccessorySlots(string nameString, ref List<ResourceRef<Accessory>> accessories)
 	{
 		accessories.RemoveAll((ResourceRef<Accessory> acc) => acc.Get() == null);
 		Personality personalityFromNameStringKey = Db.Get().Personalities.GetPersonalityFromNameStringKey(nameString);
@@ -167,12 +167,12 @@ public class Accessorizer : KMonoBehaviour
 		return default(KCompBuilder.BodyData);
 	}
 
-	public bool HasAccessory(Accessory accessory)
+		public bool HasAccessory(Accessory accessory)
 	{
 		return this.accessories.Exists((ResourceRef<Accessory> x) => x.Get() == accessory);
 	}
 
-	public Accessory GetAccessory(AccessorySlot slot)
+		public Accessory GetAccessory(AccessorySlot slot)
 	{
 		for (int i = 0; i < this.accessories.Count; i++)
 		{
@@ -184,7 +184,7 @@ public class Accessorizer : KMonoBehaviour
 		return null;
 	}
 
-	public void ApplyMinionPersonality(Personality personality)
+		public void ApplyMinionPersonality(Personality personality)
 	{
 		this.bodyData = MinionStartingStats.CreateBodyData(personality);
 		this.accessories.Clear();
@@ -229,7 +229,51 @@ public class Accessorizer : KMonoBehaviour
 		this.UpdateHairBasedOnHat();
 	}
 
-	public void UpdateHairBasedOnHat()
+		public void ApplyBodyData(KCompBuilder.BodyData bodyData)
+	{
+		this.accessories.Clear();
+		if (this.animController == null)
+		{
+			this.animController = base.GetComponent<KAnimControllerBase>();
+		}
+		foreach (string text in new string[]
+		{
+			"snapTo_hat",
+			"snapTo_hat_hair",
+			"snapTo_goggles",
+			"snapTo_headFX",
+			"snapTo_neck",
+			"snapTo_chest",
+			"snapTo_pivot",
+			"skirt",
+			"necklace"
+		})
+		{
+			this.animController.GetComponent<SymbolOverrideController>().RemoveSymbolOverride(text, 0);
+			this.animController.SetSymbolVisiblity(text, false);
+		}
+		this.AddAccessory(Db.Get().AccessorySlots.Eyes.Lookup(bodyData.eyes));
+		this.AddAccessory(Db.Get().AccessorySlots.Hair.Lookup(bodyData.hair));
+		this.AddAccessory(Db.Get().AccessorySlots.HatHair.Lookup("hat_" + HashCache.Get().Get(bodyData.hair)));
+		this.AddAccessory(Db.Get().AccessorySlots.HeadShape.Lookup(bodyData.headShape));
+		this.AddAccessory(Db.Get().AccessorySlots.Mouth.Lookup(bodyData.mouth));
+		this.AddAccessory(Db.Get().AccessorySlots.Body.Lookup(bodyData.body));
+		this.AddAccessory(Db.Get().AccessorySlots.Arm.Lookup(bodyData.arms));
+		this.AddAccessory(Db.Get().AccessorySlots.ArmLower.Lookup(bodyData.armslower));
+		this.AddAccessory(Db.Get().AccessorySlots.Neck.Lookup(bodyData.neck));
+		this.AddAccessory(Db.Get().AccessorySlots.Pelvis.Lookup(bodyData.pelvis));
+		this.AddAccessory(Db.Get().AccessorySlots.Leg.Lookup(bodyData.legs));
+		this.AddAccessory(Db.Get().AccessorySlots.Foot.Lookup(bodyData.foot));
+		this.AddAccessory(Db.Get().AccessorySlots.Hand.Lookup(bodyData.hand));
+		this.AddAccessory(Db.Get().AccessorySlots.Cuff.Lookup(bodyData.cuff));
+		this.AddAccessory(Db.Get().AccessorySlots.Belt.Lookup(bodyData.belt));
+		this.AddAccessory(Db.Get().AccessorySlots.ArmLowerSkin.Lookup(bodyData.armLowerSkin));
+		this.AddAccessory(Db.Get().AccessorySlots.ArmUpperSkin.Lookup(bodyData.armUpperSkin));
+		this.AddAccessory(Db.Get().AccessorySlots.LegSkin.Lookup(bodyData.legSkin));
+		this.UpdateHairBasedOnHat();
+	}
+
+		public void UpdateHairBasedOnHat()
 	{
 		if (!this.GetAccessory(Db.Get().AccessorySlots.Hat).IsNullOrDestroyed())
 		{
@@ -242,7 +286,7 @@ public class Accessorizer : KMonoBehaviour
 		this.animController.SetSymbolVisiblity(Db.Get().AccessorySlots.Hat.targetSymbolId, false);
 	}
 
-	public void GetBodySlots(ref KCompBuilder.BodyData fd)
+		public void GetBodySlots(ref KCompBuilder.BodyData fd)
 	{
 		fd.eyes = HashedString.Invalid;
 		fd.hair = HashedString.Invalid;
@@ -353,12 +397,12 @@ public class Accessorizer : KMonoBehaviour
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private List<ResourceRef<Accessory>> accessories = new List<ResourceRef<Accessory>>();
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KAnimControllerBase animController;
 
-	[Serialize]
+		[Serialize]
 	private List<ResourceRef<ClothingItemResource>> clothingItems = new List<ResourceRef<ClothingItemResource>>();
 }

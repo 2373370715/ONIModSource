@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class MainMenu_Motd
 {
-	public void Setup()
+		public void Setup()
 	{
 		this.CleanUp();
 		this.boxA.gameObject.SetActive(false);
@@ -19,7 +19,7 @@ public class MainMenu_Motd
 		});
 	}
 
-	public void CleanUp()
+		public void CleanUp()
 	{
 		if (this.motdDataFetchRequest != null)
 		{
@@ -28,7 +28,7 @@ public class MainMenu_Motd
 		}
 	}
 
-	private void RecieveMotdData(MotdData motdData)
+		private void RecieveMotdData(MotdData motdData)
 	{
 		MainMenu_Motd.<>c__DisplayClass6_0 CS$<>8__locals1 = new MainMenu_Motd.<>c__DisplayClass6_0();
 		CS$<>8__locals1.<>4__this = this;
@@ -70,12 +70,12 @@ public class MainMenu_Motd
 		}
 	}
 
-	private int CalcScore(MotdData_Box box)
+		private int CalcScore(MotdData_Box box)
 	{
 		return 0;
 	}
 
-	private MotdBox.PageData ConvertToPageData(MotdData_Box box)
+		private MotdBox.PageData ConvertToPageData(MotdData_Box box)
 	{
 		return new MotdBox.PageData
 		{
@@ -86,14 +86,14 @@ public class MainMenu_Motd
 		};
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private MotdBox boxA;
 
-	[SerializeField]
+		[SerializeField]
 	private MotdBox boxB;
 
-	[SerializeField]
+		[SerializeField]
 	private MotdBox boxC;
 
-	private MotdDataFetchRequest motdDataFetchRequest;
+		private MotdDataFetchRequest motdDataFetchRequest;
 }

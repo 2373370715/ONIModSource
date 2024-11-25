@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Database
 {
-	public class Quests : ResourceSet<Quest>
+		public class Quests : ResourceSet<Quest>
 	{
-		public Quests(ResourceSet parent) : base("Quests", parent)
+				public Quests(ResourceSet parent) : base("Quests", parent)
 		{
 			this.LonelyMinionGreetingQuest = base.Add(new Quest("KnockQuest", new QuestCriteria[]
 			{
@@ -56,14 +56,14 @@ namespace Database
 			}));
 		}
 
-		public Quest LonelyMinionGreetingQuest;
+				public Quest LonelyMinionGreetingQuest;
 
-		public Quest LonelyMinionFoodQuest;
+				public Quest LonelyMinionFoodQuest;
 
-		public Quest LonelyMinionPowerQuest;
+				public Quest LonelyMinionPowerQuest;
 
-		public Quest LonelyMinionDecorQuest;
+				public Quest LonelyMinionDecorQuest;
 
-		public Quest FossilHuntQuest;
+				public Quest FossilHuntQuest;
 	}
 }

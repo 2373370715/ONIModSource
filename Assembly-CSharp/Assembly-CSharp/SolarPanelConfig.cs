@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SolarPanelConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SolarPanel";
 		int width = 7;
@@ -32,14 +32,17 @@ public class SolarPanelConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.PowerBuilding, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.GeneratorType, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.HeavyDutyGeneratorType, false);
 		go.AddOrGet<LoopingSounds>();
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<Repairable>().expectedRepairTime = 52.5f;
 		go.AddOrGet<SolarPanel>().powerDistributionOrder = 9;
@@ -53,11 +56,11 @@ public class SolarPanelConfig : IBuildingConfig
 		}
 	}
 
-	public const string ID = "SolarPanel";
+		public const string ID = "SolarPanel";
 
-	public const float WATTS_PER_LUX = 0.00053f;
+		public const float WATTS_PER_LUX = 0.00053f;
 
-	public const float MAX_WATTS = 380f;
+		public const float MAX_WATTS = 380f;
 
-	private const int WIDTH = 7;
+		private const int WIDTH = 7;
 }

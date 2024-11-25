@@ -4,23 +4,23 @@ using ImGuiNET;
 
 public class DevToolMenuNodeParent : IMenuNode
 {
-	public DevToolMenuNodeParent(string name)
+		public DevToolMenuNodeParent(string name)
 	{
 		this.name = name;
 		this.children = new List<IMenuNode>();
 	}
 
-	public void AddChild(IMenuNode menuNode)
+		public void AddChild(IMenuNode menuNode)
 	{
 		this.children.Add(menuNode);
 	}
 
-	public string GetName()
+		public string GetName()
 	{
 		return this.name;
 	}
 
-	public void Draw()
+		public void Draw()
 	{
 		if (ImGui.BeginMenu(this.name))
 		{
@@ -32,7 +32,7 @@ public class DevToolMenuNodeParent : IMenuNode
 		}
 	}
 
-	public string name;
+		public string name;
 
-	public List<IMenuNode> children;
+		public List<IMenuNode> children;
 }

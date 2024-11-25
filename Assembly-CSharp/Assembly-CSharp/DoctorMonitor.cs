@@ -2,16 +2,16 @@
 
 public class DoctorMonitor : GameStateMachine<DoctorMonitor, DoctorMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
 		this.root.ToggleUrge(Db.Get().Urges.Doctor);
 	}
 
-	public new class Instance : GameStateMachine<DoctorMonitor, DoctorMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<DoctorMonitor, DoctorMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 	}

@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class Diet
 {
-			public Diet.Info[] infos { get; private set; }
+				public Diet.Info[] infos { get; private set; }
 
-			public Diet.Info[] noPlantInfos { get; private set; }
+				public Diet.Info[] noPlantInfos { get; private set; }
 
-			public Diet.Info[] directlyEatenPlantInfos { get; private set; }
+				public Diet.Info[] directlyEatenPlantInfos { get; private set; }
 
-		public bool CanEatAnyNonDirectlyEdiblePlant
+			public bool CanEatAnyNonDirectlyEdiblePlant
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class Diet
 		}
 	}
 
-		public bool CanEatAnyPlantDirectly
+			public bool CanEatAnyPlantDirectly
 	{
 		get
 		{
@@ -27,7 +27,7 @@ public class Diet
 		}
 	}
 
-		public bool AllConsumablesAreDirectlyEdiblePlants
+			public bool AllConsumablesAreDirectlyEdiblePlants
 	{
 		get
 		{
@@ -35,7 +35,7 @@ public class Diet
 		}
 	}
 
-	public bool IsConsumedTagAbleToBeEatenDirectly(Tag tag)
+		public bool IsConsumedTagAbleToBeEatenDirectly(Tag tag)
 	{
 		if (this.directlyEatenPlantInfos == null)
 		{
@@ -51,13 +51,13 @@ public class Diet
 		return false;
 	}
 
-	private void UpdateSecondaryInfoArrays()
+		private void UpdateSecondaryInfoArrays()
 	{
 		Diet.Info[] directlyEatenPlantInfos;
 		if (this.infos != null)
 		{
 			directlyEatenPlantInfos = (from i in this.infos
-			where i.eatsPlantsDirectly
+			where i.foodType == Diet.Info.FoodType.EatPlantDirectly || i.foodType == Diet.Info.FoodType.EatPlantStorage
 			select i).ToArray<Diet.Info>();
 		}
 		else
@@ -69,7 +69,7 @@ public class Diet
 		if (this.infos != null)
 		{
 			noPlantInfos = (from i in this.infos
-			where !i.eatsPlantsDirectly
+			where i.foodType == Diet.Info.FoodType.EatSolid
 			select i).ToArray<Diet.Info>();
 		}
 		else
@@ -79,7 +79,7 @@ public class Diet
 		this.noPlantInfos = noPlantInfos;
 	}
 
-	public Diet(params Diet.Info[] infos)
+		public Diet(params Diet.Info[] infos)
 	{
 		this.infos = infos;
 		this.consumedTags = new List<KeyValuePair<Tag, float>>();
@@ -113,7 +113,7 @@ public class Diet
 		this.UpdateSecondaryInfoArrays();
 	}
 
-	public Diet(Diet diet)
+		public Diet(Diet diet)
 	{
 		this.infos = new Diet.Info[diet.infos.Length];
 		for (int i = 0; i < diet.infos.Length; i++)
@@ -152,14 +152,14 @@ public class Diet
 		this.UpdateSecondaryInfoArrays();
 	}
 
-	public Diet.Info GetDietInfo(Tag tag)
+		public Diet.Info GetDietInfo(Tag tag)
 	{
 		Diet.Info result = null;
 		this.consumedTagToInfo.TryGetValue(tag, out result);
 		return result;
 	}
 
-	public void FilterDLC()
+		public void FilterDLC()
 	{
 		foreach (Diet.Info info in this.infos)
 		{
@@ -194,33 +194,35 @@ public class Diet
 		this.UpdateSecondaryInfoArrays();
 	}
 
-	public List<KeyValuePair<Tag, float>> consumedTags;
+		public List<KeyValuePair<Tag, float>> consumedTags;
 
-	public List<KeyValuePair<Tag, float>> producedTags;
+		public List<KeyValuePair<Tag, float>> producedTags;
 
-	private Dictionary<Tag, Diet.Info> consumedTagToInfo = new Dictionary<Tag, Diet.Info>();
+		private Dictionary<Tag, Diet.Info> consumedTagToInfo = new Dictionary<Tag, Diet.Info>();
 
-	public class Info
+		public class Info
 	{
-						public HashSet<Tag> consumedTags { get; private set; }
+								public HashSet<Tag> consumedTags { get; private set; }
 
-						public Tag producedElement { get; private set; }
+								public Tag producedElement { get; private set; }
 
-						public float caloriesPerKg { get; private set; }
+								public float caloriesPerKg { get; private set; }
 
-						public float producedConversionRate { get; private set; }
+								public float producedConversionRate { get; private set; }
 
-						public byte diseaseIdx { get; private set; }
+								public byte diseaseIdx { get; private set; }
 
-						public float diseasePerKgProduced { get; private set; }
+								public float diseasePerKgProduced { get; private set; }
 
-						public bool emmitDiseaseOnCell { get; private set; }
+								public bool emmitDiseaseOnCell { get; private set; }
 
-						public bool produceSolidTile { get; private set; }
+								public bool produceSolidTile { get; private set; }
 
-						public bool eatsPlantsDirectly { get; private set; }
+								public Diet.Info.FoodType foodType { get; private set; }
 
-		public Info(HashSet<Tag> consumed_tags, Tag produced_element, float calories_per_kg, float produced_conversion_rate = 1f, string disease_id = null, float disease_per_kg_produced = 0f, bool produce_solid_tile = false, bool eats_plants_directly = false, bool emmit_disease_on_cell = false)
+								public string[] eatAnims { get; set; }
+
+				public Info(HashSet<Tag> consumed_tags, Tag produced_element, float calories_per_kg, float produced_conversion_rate = 1f, string disease_id = null, float disease_per_kg_produced = 0f, bool produce_solid_tile = false, Diet.Info.FoodType food_type = Diet.Info.FoodType.EatSolid, bool emmit_disease_on_cell = false, string[] eat_anims = null)
 		{
 			this.consumedTags = consumed_tags;
 			this.producedElement = produced_element;
@@ -237,10 +239,20 @@ public class Diet
 			this.diseasePerKgProduced = disease_per_kg_produced;
 			this.emmitDiseaseOnCell = emmit_disease_on_cell;
 			this.produceSolidTile = produce_solid_tile;
-			this.eatsPlantsDirectly = eats_plants_directly;
+			this.foodType = food_type;
+			if (eat_anims == null)
+			{
+				eat_anims = new string[]
+				{
+					"eat_pre",
+					"eat_loop",
+					"eat_pst"
+				};
+			}
+			this.eatAnims = eat_anims;
 		}
 
-		public Info(Diet.Info info)
+				public Info(Diet.Info info)
 		{
 			this.consumedTags = new HashSet<Tag>(info.consumedTags);
 			this.producedElement = info.producedElement;
@@ -250,15 +262,16 @@ public class Diet
 			this.diseasePerKgProduced = info.diseasePerKgProduced;
 			this.emmitDiseaseOnCell = info.emmitDiseaseOnCell;
 			this.produceSolidTile = info.produceSolidTile;
-			this.eatsPlantsDirectly = info.eatsPlantsDirectly;
+			this.foodType = info.foodType;
+			this.eatAnims = info.eatAnims;
 		}
 
-		public bool IsMatch(Tag tag)
+				public bool IsMatch(Tag tag)
 		{
 			return this.consumedTags.Contains(tag);
 		}
 
-		public bool IsMatch(HashSet<Tag> tags)
+				public bool IsMatch(HashSet<Tag> tags)
 		{
 			if (tags.Count < this.consumedTags.Count)
 			{
@@ -281,24 +294,31 @@ public class Diet
 			return false;
 		}
 
-		public float ConvertCaloriesToConsumptionMass(float calories)
+				public float ConvertCaloriesToConsumptionMass(float calories)
 		{
 			return calories / this.caloriesPerKg;
 		}
 
-		public float ConvertConsumptionMassToCalories(float mass)
+				public float ConvertConsumptionMassToCalories(float mass)
 		{
 			return this.caloriesPerKg * mass;
 		}
 
-		public float ConvertConsumptionMassToProducedMass(float consumed_mass)
+				public float ConvertConsumptionMassToProducedMass(float consumed_mass)
 		{
 			return consumed_mass * this.producedConversionRate;
 		}
 
-		public float ConvertProducedMassToConsumptionMass(float produced_mass)
+				public float ConvertProducedMassToConsumptionMass(float produced_mass)
 		{
 			return produced_mass / this.producedConversionRate;
+		}
+
+				public enum FoodType
+		{
+						EatSolid,
+						EatPlantDirectly,
+						EatPlantStorage
 		}
 	}
 }

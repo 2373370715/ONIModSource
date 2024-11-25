@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class SteamEngineClusterConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SteamEngineCluster";
 		int width = 7;
@@ -34,7 +34,7 @@ public class SteamEngineClusterConfig : IBuildingConfig
 		buildingDef.UtilityInputOffset = new CellOffset(2, 3);
 		buildingDef.InputConduitType = ConduitType.Gas;
 		buildingDef.GeneratorWattageRating = 600f;
-		buildingDef.GeneratorBaseCapacity = 20000f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
 		buildingDef.RequiresPowerInput = false;
 		buildingDef.RequiresPowerOutput = false;
 		buildingDef.CanMove = true;
@@ -43,7 +43,7 @@ public class SteamEngineClusterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -54,15 +54,15 @@ public class SteamEngineClusterConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		RocketEngineCluster rocketEngineCluster = go.AddOrGet<RocketEngineCluster>();
 		rocketEngineCluster.maxModules = 6;
@@ -102,5 +102,5 @@ public class SteamEngineClusterConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "SteamEngineCluster";
+		public const string ID = "SteamEngineCluster";
 }

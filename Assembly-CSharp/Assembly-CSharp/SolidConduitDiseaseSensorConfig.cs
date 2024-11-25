@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SolidConduitDiseaseSensorConfig : ConduitSensorConfig
 {
-		protected override ConduitType ConduitType
+			protected override ConduitType ConduitType
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class SolidConduitDiseaseSensorConfig : ConduitSensorConfig
 		}
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef result = base.CreateBuildingDef(SolidConduitDiseaseSensorConfig.ID, "conveyor_germs_sensor_kanim", new float[]
 		{
@@ -32,7 +32,7 @@ public class SolidConduitDiseaseSensorConfig : ConduitSensorConfig
 		return result;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		base.DoPostConfigureComplete(go);
 		ConduitDiseaseSensor conduitDiseaseSensor = go.AddComponent<ConduitDiseaseSensor>();
@@ -43,5 +43,5 @@ public class SolidConduitDiseaseSensorConfig : ConduitSensorConfig
 		conduitDiseaseSensor.defaultState = false;
 	}
 
-	public static string ID = "SolidConduitDiseaseSensor";
+		public static string ID = "SolidConduitDiseaseSensor";
 }

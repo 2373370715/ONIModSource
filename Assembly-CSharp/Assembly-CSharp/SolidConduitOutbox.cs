@@ -5,12 +5,12 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class SolidConduitOutbox : StateMachineComponent<SolidConduitOutbox.SMInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.meter = new MeterController(this, Meter.Offset.Infront, Grid.SceneLayer.NoLayer, Array.Empty<string>());
@@ -19,53 +19,53 @@ public class SolidConduitOutbox : StateMachineComponent<SolidConduitOutbox.SMIns
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	private void OnStorageChanged(object data)
+		private void OnStorageChanged(object data)
 	{
 		this.UpdateMeter();
 	}
 
-	private void UpdateMeter()
+		private void UpdateMeter()
 	{
 		float positionPercent = Mathf.Clamp01(this.storage.MassStored() / this.storage.capacityKg);
 		this.meter.SetPositionPercent(positionPercent);
 	}
 
-	private void UpdateConsuming()
+		private void UpdateConsuming()
 	{
 		base.smi.sm.consuming.Set(this.consumer.IsConsuming, base.smi, false);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private SolidConduitConsumer consumer;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Storage storage;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private static readonly EventSystem.IntraObjectHandler<SolidConduitOutbox> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<SolidConduitOutbox>(delegate(SolidConduitOutbox component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SolidConduitOutbox> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<SolidConduitOutbox>(delegate(SolidConduitOutbox component, object data)
 	{
 		component.OnStorageChanged(data);
 	});
 
-	public class SMInstance : GameStateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox, object>.GameInstance
+		public class SMInstance : GameStateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox, object>.GameInstance
 	{
-		public SMInstance(SolidConduitOutbox master) : base(master)
+				public SMInstance(SolidConduitOutbox master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox>
+		public class States : GameStateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.root.Update("RefreshConsuming", delegate(SolidConduitOutbox.SMInstance smi, float dt)
@@ -77,12 +77,12 @@ public class SolidConduitOutbox : StateMachineComponent<SolidConduitOutbox.SMIns
 			this.post.PlayAnim("working_pst").OnAnimQueueComplete(this.idle);
 		}
 
-		public StateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox, object>.BoolParameter consuming;
+				public StateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox, object>.BoolParameter consuming;
 
-		public GameStateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox, object>.State idle;
+				public GameStateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox, object>.State idle;
 
-		public GameStateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox, object>.State working;
+				public GameStateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox, object>.State working;
 
-		public GameStateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox, object>.State post;
+				public GameStateMachine<SolidConduitOutbox.States, SolidConduitOutbox.SMInstance, SolidConduitOutbox, object>.State post;
 	}
 }

@@ -4,17 +4,17 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/VisibilityTester")]
 public class VisibilityTester : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		VisibilityTester.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		VisibilityTester.Instance = this;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (SelectTool.Instance == null || SelectTool.Instance.selected == null || !this.enableTesting)
 		{
@@ -33,7 +33,7 @@ public class VisibilityTester : KMonoBehaviour
 		DebugText.Instance.Draw(text, Grid.CellToPosCCC(mouseCell, Grid.SceneLayer.Move), Color.white);
 	}
 
-	public static VisibilityTester Instance;
+		public static VisibilityTester Instance;
 
-	public bool enableTesting;
+		public bool enableTesting;
 }

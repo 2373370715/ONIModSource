@@ -5,18 +5,18 @@ using STRINGS;
 
 namespace KMod
 {
-	public class Local : IDistributionPlatform
+		public class Local : IDistributionPlatform
 	{
-						public string folder { get; private set; }
+								public string folder { get; private set; }
 
-						public Label.DistributionPlatform distribution_platform { get; private set; }
+								public Label.DistributionPlatform distribution_platform { get; private set; }
 
-		public string GetDirectory()
+				public string GetDirectory()
 		{
 			return FileSystem.Normalize(Path.Combine(Manager.GetDirectory(), this.folder));
 		}
 
-		private void Subscribe(string directoryName, long timestamp, IFileSource file_source, bool isDevMod)
+				private void Subscribe(string directoryName, long timestamp, IFileSource file_source, bool isDevMod)
 		{
 			Label label = new Label
 			{
@@ -38,7 +38,7 @@ namespace KMod
 			Global.Instance.modManager.Subscribe(mod, this);
 		}
 
-		public Local(string folder, Label.DistributionPlatform distribution_platform, bool isDevFolder)
+				public Local(string folder, Label.DistributionPlatform distribution_platform, bool isDevFolder)
 		{
 			this.folder = folder;
 			this.distribution_platform = distribution_platform;

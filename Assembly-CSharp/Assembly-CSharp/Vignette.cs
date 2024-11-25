@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class Vignette : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		Vignette.Instance = null;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.looping_sounds = base.GetComponent<LoopingSounds>();
 		base.OnSpawn();
@@ -22,12 +22,12 @@ public class Vignette : KMonoBehaviour
 		Game.Instance.Subscribe(-2062778933, new Action<object>(this.Refresh));
 	}
 
-	public void SetColor(Color color)
+		public void SetColor(Color color)
 	{
 		this.image.color = color;
 	}
 
-	public void Refresh(object data)
+		public void Refresh(object data)
 	{
 		AlertStateManager.Instance alertManager = ClusterManager.Instance.activeWorld.AlertManager;
 		if (alertManager == null)
@@ -68,7 +68,7 @@ public class Vignette : KMonoBehaviour
 		}
 	}
 
-	public void Reset()
+		public void Reset()
 	{
 		this.SetColor(this.defaultColor);
 		this.showingRedAlert = false;
@@ -77,20 +77,20 @@ public class Vignette : KMonoBehaviour
 		this.looping_sounds.StopSound(GlobalAssets.GetSound("YellowAlert_LP", false));
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Image image;
 
-	public Color defaultColor;
+		public Color defaultColor;
 
-	public Color redAlertColor = new Color(1f, 0f, 0f, 0.3f);
+		public Color redAlertColor = new Color(1f, 0f, 0f, 0.3f);
 
-	public Color yellowAlertColor = new Color(1f, 1f, 0f, 0.3f);
+		public Color yellowAlertColor = new Color(1f, 1f, 0f, 0.3f);
 
-	public static Vignette Instance;
+		public static Vignette Instance;
 
-	private LoopingSounds looping_sounds;
+		private LoopingSounds looping_sounds;
 
-	private bool showingRedAlert;
+		private bool showingRedAlert;
 
-	private bool showingYellowAlert;
+		private bool showingYellowAlert;
 }

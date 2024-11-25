@@ -4,12 +4,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DestroyAfter")]
 public class DestroyAfter : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.particleSystems = base.gameObject.GetComponentsInChildren<ParticleSystem>(true);
 	}
 
-	private bool IsAlive()
+		private bool IsAlive()
 	{
 		for (int i = 0; i < this.particleSystems.Length; i++)
 		{
@@ -21,7 +21,7 @@ public class DestroyAfter : KMonoBehaviour
 		return false;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.particleSystems != null && !this.IsAlive())
 		{
@@ -29,5 +29,5 @@ public class DestroyAfter : KMonoBehaviour
 		}
 	}
 
-	private ParticleSystem[] particleSystems;
+		private ParticleSystem[] particleSystems;
 }

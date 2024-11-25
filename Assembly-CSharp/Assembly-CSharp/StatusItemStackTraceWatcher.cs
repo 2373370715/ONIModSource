@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class StatusItemStackTraceWatcher : IDisposable
 {
-	public bool GetShouldWatch()
+		public bool GetShouldWatch()
 	{
 		return this.shouldWatch;
 	}
 
-	public void SetShouldWatch(bool shouldWatch)
+		public void SetShouldWatch(bool shouldWatch)
 	{
 		if (this.shouldWatch == shouldWatch)
 		{
@@ -20,12 +20,12 @@ public class StatusItemStackTraceWatcher : IDisposable
 		this.Refresh();
 	}
 
-	public Option<StatusItemGroup> GetTarget()
+		public Option<StatusItemGroup> GetTarget()
 	{
 		return this.currentTarget;
 	}
 
-	public void SetTarget(Option<StatusItemGroup> nextTarget)
+		public void SetTarget(Option<StatusItemGroup> nextTarget)
 	{
 		if (this.currentTarget.IsNone() && nextTarget.IsNone())
 		{
@@ -39,7 +39,7 @@ public class StatusItemStackTraceWatcher : IDisposable
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		if (this.onCleanup != null)
 		{
@@ -85,12 +85,12 @@ public class StatusItemStackTraceWatcher : IDisposable
 		}
 	}
 
-	public bool GetStackTraceForEntry(StatusItemGroup.Entry entry, out StackTrace stackTrace)
+		public bool GetStackTraceForEntry(StatusItemGroup.Entry entry, out StackTrace stackTrace)
 	{
 		return this.entryIdToStackTraceMap.TryGetValue(entry.id, out stackTrace);
 	}
 
-	public void Dispose()
+		public void Dispose()
 	{
 		if (this.onCleanup != null)
 		{
@@ -103,17 +103,17 @@ public class StatusItemStackTraceWatcher : IDisposable
 		}
 	}
 
-	private Dictionary<Guid, StackTrace> entryIdToStackTraceMap = new Dictionary<Guid, StackTrace>();
+		private Dictionary<Guid, StackTrace> entryIdToStackTraceMap = new Dictionary<Guid, StackTrace>();
 
-	private Option<StatusItemGroup> currentTarget;
+		private Option<StatusItemGroup> currentTarget;
 
-	private bool shouldWatch;
+		private bool shouldWatch;
 
-	private System.Action onCleanup;
+		private System.Action onCleanup;
 
-	public class StatusItemStackTraceWatcher_OnDestroyListenerMB : MonoBehaviour
+		public class StatusItemStackTraceWatcher_OnDestroyListenerMB : MonoBehaviour
 	{
-		private void OnDestroy()
+				private void OnDestroy()
 		{
 			bool flag = this.owner != null;
 			bool flag2 = this.owner.currentTarget.IsSome() && this.owner.currentTarget.Unwrap().gameObject == base.gameObject;
@@ -123,6 +123,6 @@ public class StatusItemStackTraceWatcher : IDisposable
 			}
 		}
 
-		public StatusItemStackTraceWatcher owner;
+				public StatusItemStackTraceWatcher owner;
 	}
 }

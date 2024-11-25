@@ -7,7 +7,7 @@ using UnityEngine;
 
 public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 {
-		public string OutfitId
+			public string OutfitId
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		}
 	}
 
-		public ClothingOutfitUtility.OutfitType OutfitType
+			public ClothingOutfitUtility.OutfitType OutfitType
 	{
 		get
 		{
@@ -23,17 +23,17 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		}
 	}
 
-	public string[] ReadItems()
+		public string[] ReadItems()
 	{
 		return this.impl.ReadItems(this.OutfitType).Where(new Func<string, bool>(ClothingOutfitTarget.DoesClothingItemExist)).ToArray<string>();
 	}
 
-	public void WriteItems(ClothingOutfitUtility.OutfitType outfitType, string[] items)
+		public void WriteItems(ClothingOutfitUtility.OutfitType outfitType, string[] items)
 	{
 		this.impl.WriteItems(outfitType, items);
 	}
 
-		public bool CanWriteItems
+			public bool CanWriteItems
 	{
 		get
 		{
@@ -41,17 +41,17 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		}
 	}
 
-	public string ReadName()
+		public string ReadName()
 	{
 		return this.impl.ReadName();
 	}
 
-	public void WriteName(string name)
+		public void WriteName(string name)
 	{
 		this.impl.WriteName(name);
 	}
 
-		public bool CanWriteName
+			public bool CanWriteName
 	{
 		get
 		{
@@ -59,12 +59,12 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		}
 	}
 
-	public void Delete()
+		public void Delete()
 	{
 		this.impl.Delete();
 	}
 
-		public bool CanDelete
+			public bool CanDelete
 	{
 		get
 		{
@@ -72,22 +72,22 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		}
 	}
 
-	public bool DoesExist()
+		public bool DoesExist()
 	{
 		return this.impl.DoesExist();
 	}
 
-	public ClothingOutfitTarget(ClothingOutfitTarget.Implementation impl)
+		public ClothingOutfitTarget(ClothingOutfitTarget.Implementation impl)
 	{
 		this.impl = impl;
 	}
 
-	public bool DoesContainLockedItems()
+		public bool DoesContainLockedItems()
 	{
 		return ClothingOutfitTarget.DoesContainLockedItems(this.ReadItems());
 	}
 
-	public static bool DoesContainLockedItems(IList<string> itemIds)
+		public static bool DoesContainLockedItems(IList<string> itemIds)
 	{
 		foreach (string id in itemIds)
 		{
@@ -100,23 +100,23 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		return false;
 	}
 
-	public IEnumerable<ClothingItemResource> ReadItemValues()
+		public IEnumerable<ClothingItemResource> ReadItemValues()
 	{
 		return from i in this.ReadItems()
 		select Db.Get().Permits.ClothingItems.Get(i);
 	}
 
-	public static bool DoesClothingItemExist(string clothingItemId)
+		public static bool DoesClothingItemExist(string clothingItemId)
 	{
 		return !Db.Get().Permits.ClothingItems.TryGet(clothingItemId).IsNullOrDestroyed();
 	}
 
-	public bool Is<T>() where T : ClothingOutfitTarget.Implementation
+		public bool Is<T>() where T : ClothingOutfitTarget.Implementation
 	{
 		return this.impl is T;
 	}
 
-	public bool Is<T>(out T value) where T : ClothingOutfitTarget.Implementation
+		public bool Is<T>(out T value) where T : ClothingOutfitTarget.Implementation
 	{
 		ClothingOutfitTarget.Implementation implementation = this.impl;
 		if (implementation is T)
@@ -129,17 +129,17 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		return false;
 	}
 
-	public bool IsTemplateOutfit()
+		public bool IsTemplateOutfit()
 	{
 		return this.Is<ClothingOutfitTarget.DatabaseAuthoredTemplate>() || this.Is<ClothingOutfitTarget.UserAuthoredTemplate>();
 	}
 
-	public static ClothingOutfitTarget ForNewTemplateOutfit(ClothingOutfitUtility.OutfitType outfitType)
+		public static ClothingOutfitTarget ForNewTemplateOutfit(ClothingOutfitUtility.OutfitType outfitType)
 	{
 		return new ClothingOutfitTarget(new ClothingOutfitTarget.UserAuthoredTemplate(outfitType, ClothingOutfitTarget.GetUniqueNameIdFrom(UI.OUTFIT_NAME.NEW)));
 	}
 
-	public static ClothingOutfitTarget ForNewTemplateOutfit(ClothingOutfitUtility.OutfitType outfitType, string id)
+		public static ClothingOutfitTarget ForNewTemplateOutfit(ClothingOutfitUtility.OutfitType outfitType, string id)
 	{
 		if (ClothingOutfitTarget.DoesTemplateExist(id))
 		{
@@ -148,22 +148,22 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		return new ClothingOutfitTarget(new ClothingOutfitTarget.UserAuthoredTemplate(outfitType, id));
 	}
 
-	public static ClothingOutfitTarget ForTemplateCopyOf(ClothingOutfitTarget sourceTarget)
+		public static ClothingOutfitTarget ForTemplateCopyOf(ClothingOutfitTarget sourceTarget)
 	{
 		return new ClothingOutfitTarget(new ClothingOutfitTarget.UserAuthoredTemplate(sourceTarget.OutfitType, ClothingOutfitTarget.GetUniqueNameIdFrom(UI.OUTFIT_NAME.COPY_OF.Replace("{OutfitName}", sourceTarget.ReadName()))));
 	}
 
-	public static ClothingOutfitTarget FromMinion(ClothingOutfitUtility.OutfitType outfitType, GameObject minionInstance)
+		public static ClothingOutfitTarget FromMinion(ClothingOutfitUtility.OutfitType outfitType, GameObject minionInstance)
 	{
 		return new ClothingOutfitTarget(new ClothingOutfitTarget.MinionInstance(outfitType, minionInstance));
 	}
 
-	public static ClothingOutfitTarget FromTemplateId(string outfitId)
+		public static ClothingOutfitTarget FromTemplateId(string outfitId)
 	{
 		return ClothingOutfitTarget.TryFromTemplateId(outfitId).Value;
 	}
 
-	public static Option<ClothingOutfitTarget> TryFromTemplateId(string outfitId)
+		public static Option<ClothingOutfitTarget> TryFromTemplateId(string outfitId)
 	{
 		if (outfitId == null)
 		{
@@ -183,23 +183,23 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		return Option.None;
 	}
 
-	public static bool DoesTemplateExist(string outfitId)
+		public static bool DoesTemplateExist(string outfitId)
 	{
 		return Db.Get().Permits.ClothingOutfits.TryGet(outfitId) != null || CustomClothingOutfits.Instance.Internal_GetOutfitData().OutfitIdToUserAuthoredTemplateOutfit.ContainsKey(outfitId);
 	}
 
-	public static IEnumerable<ClothingOutfitTarget> GetAllTemplates()
+		public static IEnumerable<ClothingOutfitTarget> GetAllTemplates()
 	{
 		foreach (ClothingOutfitResource outfit in Db.Get().Permits.ClothingOutfits.resources)
 		{
 			yield return new ClothingOutfitTarget(new ClothingOutfitTarget.DatabaseAuthoredTemplate(outfit));
 		}
 		List<ClothingOutfitResource>.Enumerator enumerator = default(List<ClothingOutfitResource>.Enumerator);
-		foreach (KeyValuePair<string, SerializableOutfitData.Version2.CustomTemplateOutfitEntry> self in CustomClothingOutfits.Instance.Internal_GetOutfitData().OutfitIdToUserAuthoredTemplateOutfit)
+		foreach (KeyValuePair<string, SerializableOutfitData.Version2.CustomTemplateOutfitEntry> keyValuePair in CustomClothingOutfits.Instance.Internal_GetOutfitData().OutfitIdToUserAuthoredTemplateOutfit)
 		{
 			string text;
 			SerializableOutfitData.Version2.CustomTemplateOutfitEntry customTemplateOutfitEntry;
-			self.Deconstruct(out text, out customTemplateOutfitEntry);
+			keyValuePair.Deconstruct(out text, out customTemplateOutfitEntry);
 			string outfitId = text;
 			ClothingOutfitUtility.OutfitType outfitType;
 			if (Enum.TryParse<ClothingOutfitUtility.OutfitType>(customTemplateOutfitEntry.outfitType, true, out outfitType))
@@ -212,12 +212,12 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		yield break;
 	}
 
-	public static ClothingOutfitTarget GetRandom()
+		public static ClothingOutfitTarget GetRandom()
 	{
 		return ClothingOutfitTarget.GetAllTemplates().GetRandom<ClothingOutfitTarget>();
 	}
 
-	public static Option<ClothingOutfitTarget> GetRandom(ClothingOutfitUtility.OutfitType onlyOfType)
+		public static Option<ClothingOutfitTarget> GetRandom(ClothingOutfitUtility.OutfitType onlyOfType)
 	{
 		IEnumerable<ClothingOutfitTarget> enumerable = from t in ClothingOutfitTarget.GetAllTemplates()
 		where t.OutfitType == onlyOfType
@@ -229,7 +229,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		return enumerable.GetRandom<ClothingOutfitTarget>();
 	}
 
-	public static string GetUniqueNameIdFrom(string preferredName)
+		public static string GetUniqueNameIdFrom(string preferredName)
 	{
 		if (!ClothingOutfitTarget.DoesTemplateExist(preferredName))
 		{
@@ -258,17 +258,17 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		throw new Exception("Couldn't get a unique name for preferred name: " + preferredName);
 	}
 
-	public static bool operator ==(ClothingOutfitTarget a, ClothingOutfitTarget b)
+		public static bool operator ==(ClothingOutfitTarget a, ClothingOutfitTarget b)
 	{
 		return a.Equals(b);
 	}
 
-	public static bool operator !=(ClothingOutfitTarget a, ClothingOutfitTarget b)
+		public static bool operator !=(ClothingOutfitTarget a, ClothingOutfitTarget b)
 	{
 		return !a.Equals(b);
 	}
 
-	public override bool Equals(object obj)
+		public override bool Equals(object obj)
 	{
 		if (obj is ClothingOutfitTarget)
 		{
@@ -278,7 +278,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		return false;
 	}
 
-	public bool Equals(ClothingOutfitTarget other)
+		public bool Equals(ClothingOutfitTarget other)
 	{
 		if (this.impl == null || other.impl == null)
 		{
@@ -287,45 +287,45 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 		return this.OutfitId == other.OutfitId;
 	}
 
-	public override int GetHashCode()
+		public override int GetHashCode()
 	{
 		return Hash.SDBMLower(this.impl.OutfitId);
 	}
 
-	public readonly ClothingOutfitTarget.Implementation impl;
+		public readonly ClothingOutfitTarget.Implementation impl;
 
-	public static readonly string[] NO_ITEMS = new string[0];
+		public static readonly string[] NO_ITEMS = new string[0];
 
-	public static readonly ClothingItemResource[] NO_ITEM_VALUES = new ClothingItemResource[0];
+		public static readonly ClothingItemResource[] NO_ITEM_VALUES = new ClothingItemResource[0];
 
-	public interface Implementation
+		public interface Implementation
 	{
-				string OutfitId { get; }
+						string OutfitId { get; }
 
-				ClothingOutfitUtility.OutfitType OutfitType { get; }
+						ClothingOutfitUtility.OutfitType OutfitType { get; }
 
-		string[] ReadItems(ClothingOutfitUtility.OutfitType outfitType);
+				string[] ReadItems(ClothingOutfitUtility.OutfitType outfitType);
 
-		void WriteItems(ClothingOutfitUtility.OutfitType outfitType, string[] items);
+				void WriteItems(ClothingOutfitUtility.OutfitType outfitType, string[] items);
 
-				bool CanWriteItems { get; }
+						bool CanWriteItems { get; }
 
-		string ReadName();
+				string ReadName();
 
-		void WriteName(string name);
+				void WriteName(string name);
 
-				bool CanWriteName { get; }
+						bool CanWriteName { get; }
 
-		void Delete();
+				void Delete();
 
-				bool CanDelete { get; }
+						bool CanDelete { get; }
 
-		bool DoesExist();
+				bool DoesExist();
 	}
 
-	public readonly struct MinionInstance : ClothingOutfitTarget.Implementation
+		public readonly struct MinionInstance : ClothingOutfitTarget.Implementation
 	{
-				public bool CanWriteItems
+						public bool CanWriteItems
 		{
 			get
 			{
@@ -333,7 +333,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-				public bool CanWriteName
+						public bool CanWriteName
 		{
 			get
 			{
@@ -341,7 +341,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-				public bool CanDelete
+						public bool CanDelete
 		{
 			get
 			{
@@ -349,12 +349,12 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-		public bool DoesExist()
+				public bool DoesExist()
 		{
 			return !this.minionInstance.IsNullOrDestroyed();
 		}
 
-				public string OutfitId
+						public string OutfitId
 		{
 			get
 			{
@@ -362,7 +362,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-				public ClothingOutfitUtility.OutfitType OutfitType
+						public ClothingOutfitUtility.OutfitType OutfitType
 		{
 			get
 			{
@@ -370,50 +370,50 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-		public MinionInstance(ClothingOutfitUtility.OutfitType outfitType, GameObject minionInstance)
+				public MinionInstance(ClothingOutfitUtility.OutfitType outfitType, GameObject minionInstance)
 		{
 			this.minionInstance = minionInstance;
 			this.m_outfitType = outfitType;
 			this.accessorizer = minionInstance.GetComponent<WearableAccessorizer>();
 		}
 
-		public string[] ReadItems(ClothingOutfitUtility.OutfitType outfitType)
+				public string[] ReadItems(ClothingOutfitUtility.OutfitType outfitType)
 		{
 			return this.accessorizer.GetClothingItemsIds(outfitType);
 		}
 
-		public void WriteItems(ClothingOutfitUtility.OutfitType outfitType, string[] items)
+				public void WriteItems(ClothingOutfitUtility.OutfitType outfitType, string[] items)
 		{
 			this.accessorizer.ClearClothingItems(new ClothingOutfitUtility.OutfitType?(outfitType));
 			this.accessorizer.ApplyClothingItems(outfitType, from i in items
 			select Db.Get().Permits.ClothingItems.Get(i));
 		}
 
-		public string ReadName()
+				public string ReadName()
 		{
 			return UI.OUTFIT_NAME.MINIONS_OUTFIT.Replace("{MinionName}", this.minionInstance.GetProperName());
 		}
 
-		public void WriteName(string name)
+				public void WriteName(string name)
 		{
 			throw new InvalidOperationException("Can not change change the outfit id for a minion instance");
 		}
 
-		public void Delete()
+				public void Delete()
 		{
 			throw new InvalidOperationException("Can not delete a minion instance outfit");
 		}
 
-		private readonly ClothingOutfitUtility.OutfitType m_outfitType;
+				private readonly ClothingOutfitUtility.OutfitType m_outfitType;
 
-		public readonly GameObject minionInstance;
+				public readonly GameObject minionInstance;
 
-		public readonly WearableAccessorizer accessorizer;
+				public readonly WearableAccessorizer accessorizer;
 	}
 
-	public readonly struct UserAuthoredTemplate : ClothingOutfitTarget.Implementation
+		public readonly struct UserAuthoredTemplate : ClothingOutfitTarget.Implementation
 	{
-				public bool CanWriteItems
+						public bool CanWriteItems
 		{
 			get
 			{
@@ -421,7 +421,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-				public bool CanWriteName
+						public bool CanWriteName
 		{
 			get
 			{
@@ -429,7 +429,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-				public bool CanDelete
+						public bool CanDelete
 		{
 			get
 			{
@@ -437,12 +437,12 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-		public bool DoesExist()
+				public bool DoesExist()
 		{
 			return CustomClothingOutfits.Instance.Internal_GetOutfitData().OutfitIdToUserAuthoredTemplateOutfit.ContainsKey(this.OutfitId);
 		}
 
-				public string OutfitId
+						public string OutfitId
 		{
 			get
 			{
@@ -450,7 +450,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-				public ClothingOutfitUtility.OutfitType OutfitType
+						public ClothingOutfitUtility.OutfitType OutfitType
 		{
 			get
 			{
@@ -458,7 +458,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-		public UserAuthoredTemplate(ClothingOutfitUtility.OutfitType outfitType, string outfitId)
+				public UserAuthoredTemplate(ClothingOutfitUtility.OutfitType outfitType, string outfitId)
 		{
 			this.m_outfitId = new string[]
 			{
@@ -467,7 +467,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			this.m_outfitType = outfitType;
 		}
 
-		public string[] ReadItems(ClothingOutfitUtility.OutfitType outfitType)
+				public string[] ReadItems(ClothingOutfitUtility.OutfitType outfitType)
 		{
 			SerializableOutfitData.Version2.CustomTemplateOutfitEntry customTemplateOutfitEntry;
 			if (CustomClothingOutfits.Instance.Internal_GetOutfitData().OutfitIdToUserAuthoredTemplateOutfit.TryGetValue(this.OutfitId, out customTemplateOutfitEntry))
@@ -479,17 +479,17 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			return ClothingOutfitTarget.NO_ITEMS;
 		}
 
-		public void WriteItems(ClothingOutfitUtility.OutfitType outfitType, string[] items)
+				public void WriteItems(ClothingOutfitUtility.OutfitType outfitType, string[] items)
 		{
 			CustomClothingOutfits.Instance.Internal_EditOutfit(outfitType, this.OutfitId, items);
 		}
 
-		public string ReadName()
+				public string ReadName()
 		{
 			return this.OutfitId;
 		}
 
-		public void WriteName(string name)
+				public void WriteName(string name)
 		{
 			if (this.OutfitId == name)
 			{
@@ -519,19 +519,19 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			this.m_outfitId[0] = name;
 		}
 
-		public void Delete()
+				public void Delete()
 		{
 			CustomClothingOutfits.Instance.Internal_RemoveOutfit(this.m_outfitType, this.OutfitId);
 		}
 
-		private readonly string[] m_outfitId;
+				private readonly string[] m_outfitId;
 
-		private readonly ClothingOutfitUtility.OutfitType m_outfitType;
+				private readonly ClothingOutfitUtility.OutfitType m_outfitType;
 	}
 
-	public readonly struct DatabaseAuthoredTemplate : ClothingOutfitTarget.Implementation
+		public readonly struct DatabaseAuthoredTemplate : ClothingOutfitTarget.Implementation
 	{
-				public bool CanWriteItems
+						public bool CanWriteItems
 		{
 			get
 			{
@@ -539,7 +539,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-				public bool CanWriteName
+						public bool CanWriteName
 		{
 			get
 			{
@@ -547,7 +547,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-				public bool CanDelete
+						public bool CanDelete
 		{
 			get
 			{
@@ -555,12 +555,12 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-		public bool DoesExist()
+				public bool DoesExist()
 		{
 			return true;
 		}
 
-				public string OutfitId
+						public string OutfitId
 		{
 			get
 			{
@@ -568,7 +568,7 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-				public ClothingOutfitUtility.OutfitType OutfitType
+						public ClothingOutfitUtility.OutfitType OutfitType
 		{
 			get
 			{
@@ -576,42 +576,42 @@ public readonly struct ClothingOutfitTarget : IEquatable<ClothingOutfitTarget>
 			}
 		}
 
-		public DatabaseAuthoredTemplate(ClothingOutfitResource outfit)
+				public DatabaseAuthoredTemplate(ClothingOutfitResource outfit)
 		{
 			this.m_outfitId = outfit.Id;
 			this.m_outfitType = outfit.outfitType;
 			this.resource = outfit;
 		}
 
-		public string[] ReadItems(ClothingOutfitUtility.OutfitType outfitType)
+				public string[] ReadItems(ClothingOutfitUtility.OutfitType outfitType)
 		{
 			return this.resource.itemsInOutfit;
 		}
 
-		public void WriteItems(ClothingOutfitUtility.OutfitType outfitType, string[] items)
+				public void WriteItems(ClothingOutfitUtility.OutfitType outfitType, string[] items)
 		{
 			throw new InvalidOperationException("Can not set items on a Db authored outfit");
 		}
 
-		public string ReadName()
+				public string ReadName()
 		{
 			return this.resource.Name;
 		}
 
-		public void WriteName(string name)
+				public void WriteName(string name)
 		{
 			throw new InvalidOperationException("Can not set name on a Db authored outfit");
 		}
 
-		public void Delete()
+				public void Delete()
 		{
 			throw new InvalidOperationException("Can not delete a Db authored outfit");
 		}
 
-		public readonly ClothingOutfitResource resource;
+				public readonly ClothingOutfitResource resource;
 
-		private readonly string m_outfitId;
+				private readonly string m_outfitId;
 
-		private readonly ClothingOutfitUtility.OutfitType m_outfitType;
+				private readonly ClothingOutfitUtility.OutfitType m_outfitType;
 	}
 }

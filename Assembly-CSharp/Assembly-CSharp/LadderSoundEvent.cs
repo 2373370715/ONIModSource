@@ -3,17 +3,17 @@ using UnityEngine;
 
 public class LadderSoundEvent : SoundEvent
 {
-	public LadderSoundEvent(string file_name, string sound_name, int frame) : base(file_name, sound_name, frame, false, false, (float)SoundEvent.IGNORE_INTERVAL, true)
+		public LadderSoundEvent(string file_name, string sound_name, int frame) : base(file_name, sound_name, frame, false, false, (float)SoundEvent.IGNORE_INTERVAL, true)
 	{
 	}
 
-	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
+		public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
 	{
 		GameObject gameObject = behaviour.controller.gameObject;
 		base.objectIsSelectedAndVisible = SoundEvent.ObjectIsSelectedAndVisible(gameObject);
 		if (base.objectIsSelectedAndVisible || SoundEvent.ShouldPlaySound(behaviour.controller, base.sound, base.looping, this.isDynamic))
 		{
-			Vector3 vector = behaviour.GetComponent<Transform>().GetPosition();
+			Vector3 vector = behaviour.position;
 			vector.z = 0f;
 			float volume = 1f;
 			if (base.objectIsSelectedAndVisible)

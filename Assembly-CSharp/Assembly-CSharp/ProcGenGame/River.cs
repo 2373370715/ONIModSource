@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace ProcGenGame
 {
-	public class River : River, SymbolicMapElement
+		public class River : River, SymbolicMapElement
 	{
-		public River(River other) : base(other, true)
+				public River(River other) : base(other, true)
 		{
 		}
 
-		public void ConvertToMap(Chunk world, TerrainCell.SetValuesFunction SetValues, float temperatureMin, float temperatureRange, SeededRandom rnd)
+				public void ConvertToMap(Chunk world, TerrainCell.SetValuesFunction SetValues, float temperatureMin, float temperatureRange, SeededRandom rnd)
 		{
 			Element element = ElementLoader.FindElementByName(base.backgroundElement);
 			Sim.PhysicsData defaultValues = element.defaultValues;
@@ -63,7 +63,7 @@ namespace ProcGenGame
 			}
 		}
 
-		public static void ProcessRivers(Chunk world, List<River> rivers, Sim.Cell[] cells, Sim.DiseaseCell[] dcs)
+				public static void ProcessRivers(Chunk world, List<River> rivers, Sim.Cell[] cells, Sim.DiseaseCell[] dcs)
 		{
 			TerrainCell.SetValuesFunction setValues = delegate(int index, object elem, Sim.PhysicsData pd, Sim.DiseaseCell dc)
 			{
@@ -90,12 +90,12 @@ namespace ProcGenGame
 			}
 		}
 
-		public static River GetRiverForCell(List<River> rivers, int cell)
+				public static River GetRiverForCell(List<River> rivers, int cell)
 		{
 			return new River(rivers.Find((River river) => Grid.PosToCell(river.SourcePosition()) == cell || Grid.PosToCell(river.SinkPosition()) == cell));
 		}
 
-		private static void GetRiverLocation(List<River> rivers, ref GameSpawnData gsd)
+				private static void GetRiverLocation(List<River> rivers, ref GameSpawnData gsd)
 		{
 			for (int i = 0; i < rivers.Count; i++)
 			{

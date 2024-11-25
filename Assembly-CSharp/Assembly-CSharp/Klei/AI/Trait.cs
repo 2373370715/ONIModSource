@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class Trait : Modifier
+		public class Trait : Modifier
 	{
-		public Trait(string id, string name, string description, float rating, bool should_save, ChoreGroup[] disallowed_chore_groups, bool positive_trait, bool is_valid_starter_trait) : base(id, name, description)
+				public Trait(string id, string name, string description, float rating, bool should_save, ChoreGroup[] disallowed_chore_groups, bool positive_trait, bool is_valid_starter_trait) : base(id, name, description)
 		{
 			this.Rating = rating;
 			this.ShouldSave = should_save;
@@ -17,14 +17,14 @@ namespace Klei.AI
 			this.ignoredEffects = new string[0];
 		}
 
-		public void AddIgnoredEffects(string[] effects)
+				public void AddIgnoredEffects(string[] effects)
 		{
 			List<string> list = new List<string>(this.ignoredEffects);
 			list.AddRange(effects);
 			this.ignoredEffects = list.ToArray();
 		}
 
-		public string GetTooltip()
+				public string GetTooltip()
 		{
 			string text;
 			if (this.TooltipCB != null)
@@ -42,7 +42,7 @@ namespace Klei.AI
 			return text;
 		}
 
-		public string GetAttributeModifiersString(bool list_entry)
+				public string GetAttributeModifiersString(bool list_entry)
 		{
 			string text = "";
 			foreach (AttributeModifier attributeModifier in this.SelfModifiers)
@@ -57,7 +57,7 @@ namespace Klei.AI
 			return text;
 		}
 
-		public string GetDisabledChoresString(bool list_entry)
+				public string GetDisabledChoresString(bool list_entry)
 		{
 			string text = "";
 			if (this.disabledChoreGroups != null)
@@ -79,7 +79,7 @@ namespace Klei.AI
 			return text;
 		}
 
-		public string GetIgnoredEffectsString(bool list_entry)
+				public string GetIgnoredEffectsString(bool list_entry)
 		{
 			string text = "";
 			if (this.ignoredEffects != null && this.ignoredEffects.Length != 0)
@@ -102,7 +102,7 @@ namespace Klei.AI
 			return text;
 		}
 
-		public string GetExtendedTooltipStr()
+				public string GetExtendedTooltipStr()
 		{
 			string text = "";
 			if (this.ExtendedTooltip != null)
@@ -115,7 +115,7 @@ namespace Klei.AI
 			return text;
 		}
 
-		public override void AddTo(Attributes attributes)
+				public override void AddTo(Attributes attributes)
 		{
 			base.AddTo(attributes);
 			ChoreConsumer component = attributes.gameObject.GetComponent<ChoreConsumer>();
@@ -128,7 +128,7 @@ namespace Klei.AI
 			}
 		}
 
-		public override void RemoveFrom(Attributes attributes)
+				public override void RemoveFrom(Attributes attributes)
 		{
 			base.RemoveFrom(attributes);
 			ChoreConsumer component = attributes.gameObject.GetComponent<ChoreConsumer>();
@@ -141,24 +141,24 @@ namespace Klei.AI
 			}
 		}
 
-		public float Rating;
+				public float Rating;
 
-		public bool ShouldSave;
+				public bool ShouldSave;
 
-		public bool PositiveTrait;
+				public bool PositiveTrait;
 
-		public bool ValidStarterTrait;
+				public bool ValidStarterTrait;
 
-		public Action<GameObject> OnAddTrait;
+				public Action<GameObject> OnAddTrait;
 
-		public Func<string> TooltipCB;
+				public Func<string> TooltipCB;
 
-		public Func<string> ExtendedTooltip;
+				public Func<string> ExtendedTooltip;
 
-		public ChoreGroup[] disabledChoreGroups;
+				public ChoreGroup[] disabledChoreGroups;
 
-		public bool isTaskBeingRefused;
+				public bool isTaskBeingRefused;
 
-		public string[] ignoredEffects;
+				public string[] ignoredEffects;
 	}
 }

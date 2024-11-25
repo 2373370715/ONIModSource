@@ -7,12 +7,12 @@ using UnityEngine.UI;
 
 public class BuildMenuBuildingsScreen : KIconToggleMenu
 {
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 8f;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.UpdateBuildableStates();
@@ -21,7 +21,7 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		Game.Instance.Subscribe(-1190690038, new Action<object>(this.OnBuildToolDeactivated));
 	}
 
-	public void Configure(HashedString category, IList<BuildMenu.BuildingInfo> building_infos)
+		public void Configure(HashedString category, IList<BuildMenu.BuildingInfo> building_infos)
 	{
 		this.ClearButtons();
 		this.SetHasFocus(true);
@@ -64,14 +64,14 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		this.contentSizeLayout.minHeight = vector.y;
 	}
 
-	private void ConfigureToolTip(ToolTip tooltip, BuildingDef def)
+		private void ConfigureToolTip(ToolTip tooltip, BuildingDef def)
 	{
 		tooltip.ClearMultiStringTooltip();
 		tooltip.AddMultiStringTooltip(def.Name, this.buildingToolTipSettings.BuildButtonName);
 		tooltip.AddMultiStringTooltip(def.Effect, this.buildingToolTipSettings.BuildButtonDescription);
 	}
 
-	public void CloseRecipe(bool playSound = false)
+		public void CloseRecipe(bool playSound = false)
 	{
 		if (playSound)
 		{
@@ -87,7 +87,7 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		this.onBuildingSelected(this.selectedBuilding);
 	}
 
-	private void RefreshToggle(KIconToggleMenu.ToggleInfo info)
+		private void RefreshToggle(KIconToggleMenu.ToggleInfo info)
 	{
 		if (info == null || info.toggle == null)
 		{
@@ -201,13 +201,13 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		}
 	}
 
-	public void ClearUI()
+		public void ClearUI()
 	{
 		this.Show(false);
 		this.ClearButtons();
 	}
 
-	private void ClearButtons()
+		private void ClearButtons()
 	{
 		foreach (KToggle ktoggle in this.toggles)
 		{
@@ -225,13 +225,13 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		}
 	}
 
-	private void OnClickBuilding(KIconToggleMenu.ToggleInfo toggle_info)
+		private void OnClickBuilding(KIconToggleMenu.ToggleInfo toggle_info)
 	{
 		BuildMenuBuildingsScreen.UserData userData = toggle_info.userData as BuildMenuBuildingsScreen.UserData;
 		this.OnSelectBuilding(userData.def);
 	}
 
-	private void OnSelectBuilding(BuildingDef def)
+		private void OnSelectBuilding(BuildingDef def)
 	{
 		PlanScreen.RequirementsState requirementsState = BuildMenu.Instance.BuildableState(def);
 		if (requirementsState - PlanScreen.RequirementsState.Materials <= 1)
@@ -259,7 +259,7 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		this.onBuildingSelected(this.selectedBuilding);
 	}
 
-	public void UpdateBuildableStates()
+		public void UpdateBuildableStates()
 	{
 		if (this.toggleInfo == null || this.toggleInfo.Count <= 0)
 		{
@@ -291,12 +291,12 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		}
 	}
 
-	private void OnResearchComplete(object data)
+		private void OnResearchComplete(object data)
 	{
 		this.UpdateBuildableStates();
 	}
 
-	private void DeactivateBuildTools()
+		private void DeactivateBuildTools()
 	{
 		InterfaceTool activeTool = PlayerController.Instance.ActiveTool;
 		if (activeTool != null)
@@ -309,7 +309,7 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.mouseOver && base.ConsumeMouseScroll && !e.TryConsume(global::Action.ZoomIn))
 		{
@@ -336,7 +336,7 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		}
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (!this.HasFocus)
 		{
@@ -359,7 +359,7 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		}
 	}
 
-	public override void Close()
+		public override void Close()
 	{
 		ToolMenu.Instance.ClearSelection();
 		this.DeactivateBuildTools();
@@ -372,7 +372,7 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		base.gameObject.SetActive(false);
 	}
 
-	public override void SetHasFocus(bool has_focus)
+		public override void SetHasFocus(bool has_focus)
 	{
 		base.SetHasFocus(has_focus);
 		if (this.focusIndicator != null)
@@ -381,79 +381,79 @@ public class BuildMenuBuildingsScreen : KIconToggleMenu
 		}
 	}
 
-	private void OnBuildToolDeactivated(object data)
+		private void OnBuildToolDeactivated(object data)
 	{
 		this.CloseRecipe(false);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Image focusIndicator;
 
-	[SerializeField]
+		[SerializeField]
 	private Color32 focusedColour;
 
-	[SerializeField]
+		[SerializeField]
 	private Color32 unfocusedColour;
 
-	public Action<BuildingDef> onBuildingSelected;
+		public Action<BuildingDef> onBuildingSelected;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText titleLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private BuildMenuBuildingsScreen.BuildingToolTipSettings buildingToolTipSettings;
 
-	[SerializeField]
+		[SerializeField]
 	private LayoutElement contentSizeLayout;
 
-	[SerializeField]
+		[SerializeField]
 	private GridLayoutGroup gridSizer;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite Overlay_NeedTech;
 
-	[SerializeField]
+		[SerializeField]
 	private Material defaultUIMaterial;
 
-	[SerializeField]
+		[SerializeField]
 	private Material desaturatedUIMaterial;
 
-	private BuildingDef selectedBuilding;
+		private BuildingDef selectedBuilding;
 
-	[Serializable]
+		[Serializable]
 	public struct BuildingToolTipSettings
 	{
-		public TextStyleSetting BuildButtonName;
+				public TextStyleSetting BuildButtonName;
 
-		public TextStyleSetting BuildButtonDescription;
+				public TextStyleSetting BuildButtonDescription;
 
-		public TextStyleSetting MaterialRequirement;
+				public TextStyleSetting MaterialRequirement;
 
-		public TextStyleSetting ResearchRequirement;
+				public TextStyleSetting ResearchRequirement;
 	}
 
-	[Serializable]
+		[Serializable]
 	public struct BuildingNameTextSetting
 	{
-		public TextStyleSetting ActiveSelected;
+				public TextStyleSetting ActiveSelected;
 
-		public TextStyleSetting ActiveDeselected;
+				public TextStyleSetting ActiveDeselected;
 
-		public TextStyleSetting InactiveSelected;
+				public TextStyleSetting InactiveSelected;
 
-		public TextStyleSetting InactiveDeselected;
+				public TextStyleSetting InactiveDeselected;
 	}
 
-	private class UserData
+		private class UserData
 	{
-		public UserData(BuildingDef def, PlanScreen.RequirementsState state)
+				public UserData(BuildingDef def, PlanScreen.RequirementsState state)
 		{
 			this.def = def;
 			this.requirementsState = state;
 		}
 
-		public BuildingDef def;
+				public BuildingDef def;
 
-		public PlanScreen.RequirementsState requirementsState;
+				public PlanScreen.RequirementsState requirementsState;
 	}
 }

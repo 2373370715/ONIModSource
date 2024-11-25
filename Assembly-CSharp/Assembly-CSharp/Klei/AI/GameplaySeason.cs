@@ -4,10 +4,10 @@ using System.Diagnostics;
 
 namespace Klei.AI
 {
-	[DebuggerDisplay("{base.Id}")]
+		[DebuggerDisplay("{base.Id}")]
 	public class GameplaySeason : Resource
 	{
-		public GameplaySeason(string id, GameplaySeason.Type type, string dlcId, float period, bool synchronizedToPeriod, float randomizedEventStartTime = -1f, bool startActive = false, int finishAfterNumEvents = -1, float minCycle = 0f, float maxCycle = float.PositiveInfinity, int numEventsToStartEachPeriod = 1) : base(id, null, null)
+				public GameplaySeason(string id, GameplaySeason.Type type, string dlcId, float period, bool synchronizedToPeriod, float randomizedEventStartTime = -1f, bool startActive = false, int finishAfterNumEvents = -1, float minCycle = 0f, float maxCycle = float.PositiveInfinity, int numEventsToStartEachPeriod = 1) : base(id, null, null)
 		{
 			this.type = type;
 			this.dlcId = dlcId;
@@ -31,60 +31,60 @@ namespace Klei.AI
 			this.numEventsToStartEachPeriod = numEventsToStartEachPeriod;
 		}
 
-		public virtual void AdditionalEventInstanceSetup(StateMachine.Instance generic_smi)
+				public virtual void AdditionalEventInstanceSetup(StateMachine.Instance generic_smi)
 		{
 		}
 
-		public virtual float GetSeasonPeriod()
+				public virtual float GetSeasonPeriod()
 		{
 			return this.period;
 		}
 
-		public GameplaySeason AddEvent(GameplayEvent evt)
+				public GameplaySeason AddEvent(GameplayEvent evt)
 		{
 			this.events.Add(evt);
 			return this;
 		}
 
-		public virtual GameplaySeasonInstance Instantiate(int worldId)
+				public virtual GameplaySeasonInstance Instantiate(int worldId)
 		{
 			return new GameplaySeasonInstance(this, worldId);
 		}
 
-		public const float DEFAULT_PERCENTAGE_RANDOMIZED_EVENT_START = 0f;
+				public const float DEFAULT_PERCENTAGE_RANDOMIZED_EVENT_START = 0f;
 
-		public const float PERCENTAGE_WARNING = 0.4f;
+				public const float PERCENTAGE_WARNING = 0.4f;
 
-		public const float USE_DEFAULT = -1f;
+				public const float USE_DEFAULT = -1f;
 
-		public const int INFINITE = -1;
+				public const int INFINITE = -1;
 
-		public float period;
+				public float period;
 
-		public bool synchronizedToPeriod;
+				public bool synchronizedToPeriod;
 
-		public MathUtil.MinMax randomizedEventStartTime;
+				public MathUtil.MinMax randomizedEventStartTime;
 
-		public int finishAfterNumEvents = -1;
+				public int finishAfterNumEvents = -1;
 
-		public bool startActive;
+				public bool startActive;
 
-		public int numEventsToStartEachPeriod;
+				public int numEventsToStartEachPeriod;
 
-		public float minCycle;
+				public float minCycle;
 
-		public float maxCycle;
+				public float maxCycle;
 
-		public List<GameplayEvent> events;
+				public List<GameplayEvent> events;
 
-		public GameplaySeason.Type type;
+				public GameplaySeason.Type type;
 
-		public string dlcId;
+				public string dlcId;
 
-		public enum Type
+				public enum Type
 		{
-			World,
-			Cluster
+						World,
+						Cluster
 		}
 	}
 }

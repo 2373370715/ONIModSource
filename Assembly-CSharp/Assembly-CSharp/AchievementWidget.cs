@@ -1,422 +1,514 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Database;
+using FMOD.Studio;
+using Klei.AI;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
 [AddComponentMenu("KMonoBehaviour/scripts/AchievementWidget")]
-public class AchievementWidget : KMonoBehaviour {
-    private readonly Color          color_dark_grey = new Color(0.21568628f, 0.21568628f, 0.21568628f);
-    private readonly Color          color_dark_red  = new Color(0.28235295f, 0.16078432f, 0.14901961f);
-    private readonly Color          color_gold      = new Color(1f,          0.63529414f, 0.28627452f);
-    private readonly Color          color_grey      = new Color(0.6901961f,  0.6901961f,  0.6901961f);
-    public           string         dlcIdFrom;
-    public           AnimationCurve flourish_iconScaleCurve;
-    public           AnimationCurve flourish_sheenPositionCurve;
-    private          int            numRequirementsDisplayed;
-
-    [SerializeField]
-    private RectTransform progressParent;
-
-    [SerializeField]
-    private GameObject requirementPrefab;
-
-    [SerializeField]
-    private RectTransform sheenTransform;
-
-    public KBatchedAnimController[] sparks;
-
-    [SerializeField]
-    private Sprite statusFailureIcon;
-
-    [SerializeField]
-    private Sprite statusSuccessIcon;
-
-    protected override void OnSpawn() {
-        base.OnSpawn();
-        var component = GetComponent<MultiToggle>();
-        component.onClick
-            = (System.Action)Delegate.Combine(component.onClick, new System.Action(delegate { ExpandAchievement(); }));
-    }
-
-    private void Update() { }
-
-    private void ExpandAchievement() {
-        if (SaveGame.Instance != null) progressParent.gameObject.SetActive(!progressParent.gameObject.activeSelf);
-    }
-
-    public void ActivateNewlyAchievedFlourish(float delay = 1f) { StartCoroutine(Flourish(delay)); }
-
-    private IEnumerator Flourish(float startDelay) {
-        SetNeverAchieved();
-        var canvas                 = GetComponent<Canvas>();
-        if (canvas == null) canvas = gameObject.AddComponent<Canvas>();
-        yield return SequenceUtil.WaitForSecondsRealtime(startDelay);
-
-        var component              = transform.parent.parent.GetComponent<KScrollRect>();
-        var num                    = 1.1f;
-        var smoothAutoScrollTarget = 1f + transform.localPosition.y * num / component.content.rect.height;
-        component.SetSmoothAutoScrollTarget(smoothAutoScrollTarget);
-        yield return SequenceUtil.WaitForSecondsRealtime(0.5f);
-
-        canvas.overrideSorting = true;
-        canvas.sortingOrder    = 30;
-        var icon = GetComponent<HierarchyReferences>().GetReference<Image>("icon").transform.parent.gameObject;
-        foreach (var kbatchedAnimController in sparks)
-            if (kbatchedAnimController.transform.parent != icon.transform.parent) {
-                kbatchedAnimController.GetComponent<KBatchedAnimController>().TintColour
-                    = new Color(1f, 0.86f, 0.56f, 1f);
-
-                kbatchedAnimController.transform.SetParent(icon.transform.parent);
-                kbatchedAnimController.transform.SetSiblingIndex(icon.transform.GetSiblingIndex());
-                kbatchedAnimController.GetComponent<KBatchedAnimCanvasRenderer>().compare = CompareFunction.Always;
-            }
-
-        var component2 = GetComponent<HierarchyReferences>();
-        component2.GetReference<Image>("iconBG").color     = color_dark_red;
-        component2.GetReference<Image>("iconBorder").color = color_gold;
-        component2.GetReference<Image>("icon").color       = color_gold;
-        var colorChanged = false;
-        var instance     = KFMOD.BeginOneShot(GlobalAssets.GetSound("AchievementUnlocked"), Vector3.zero);
-        var num2         = Mathf.RoundToInt(MathUtil.Clamp(1f, 7f, startDelay - startDelay % 1f / 1f)) - 1;
-        instance.setParameterByName("num_achievements", num2);
-        KFMOD.EndOneShot(instance);
-        for (var i = 0f; i < 1.2f; i += Time.unscaledDeltaTime) {
-            icon.transform.localScale = Vector3.one * flourish_iconScaleCurve.Evaluate(i);
-            sheenTransform.anchoredPosition
-                = new Vector2(flourish_sheenPositionCurve.Evaluate(i), sheenTransform.anchoredPosition.y);
-
-            if (i > 1f && !colorChanged) {
-                colorChanged = true;
-                var array = sparks;
-                for (var j = 0; j < array.Length; j++) array[j].Play("spark");
-                SetAchievedNow();
-            }
-
-            yield return SequenceUtil.WaitForNextFrame;
-        }
-
-        icon.transform.localScale = Vector3.one;
-        CompleteFlourish();
-        for (var i = 0f; i < 0.6f; i += Time.unscaledDeltaTime) yield return SequenceUtil.WaitForNextFrame;
-
-        transform.localScale = Vector3.one;
-    }
-
-    public void CompleteFlourish() {
-        var canvas                 = GetComponent<Canvas>();
-        if (canvas == null) canvas = gameObject.AddComponent<Canvas>();
-        canvas.overrideSorting = false;
-    }
-
-    public void SetAchievedNow() {
-        GetComponent<MultiToggle>().ChangeState(1);
-        var component = GetComponent<HierarchyReferences>();
-        component.GetReference<Image>("iconBG").color = color_dark_red;
-        component.GetReference<Image>("iconBorder").color = color_gold;
-        component.GetReference<Image>("icon").color = color_gold;
-        var componentsInChildren = GetComponentsInChildren<LocText>();
-        for (var i = 0; i < componentsInChildren.Length; i++) componentsInChildren[i].color = Color.white;
-        ConfigureToolTip(GetComponent<ToolTip>(), COLONY_ACHIEVEMENTS.ACHIEVED_THIS_COLONY_TOOLTIP);
-    }
-
-    public void SetAchievedBefore() {
-        GetComponent<MultiToggle>().ChangeState(1);
-        var component = GetComponent<HierarchyReferences>();
-        component.GetReference<Image>("iconBG").color = color_dark_red;
-        component.GetReference<Image>("iconBorder").color = color_gold;
-        component.GetReference<Image>("icon").color = color_gold;
-        var componentsInChildren = GetComponentsInChildren<LocText>();
-        for (var i = 0; i < componentsInChildren.Length; i++) componentsInChildren[i].color = Color.white;
-        ConfigureToolTip(GetComponent<ToolTip>(), COLONY_ACHIEVEMENTS.ACHIEVED_OTHER_COLONY_TOOLTIP);
-    }
-
-    public void SetNeverAchieved() {
-        GetComponent<MultiToggle>().ChangeState(2);
-        var component = GetComponent<HierarchyReferences>();
-        component.GetReference<Image>("iconBG").color     = color_dark_grey;
-        component.GetReference<Image>("iconBorder").color = color_grey;
-        component.GetReference<Image>("icon").color       = color_grey;
-        foreach (var locText in GetComponentsInChildren<LocText>())
-            locText.color = new Color(locText.color.r, locText.color.g, locText.color.b, 0.6f);
-
-        ConfigureToolTip(GetComponent<ToolTip>(), COLONY_ACHIEVEMENTS.NOT_ACHIEVED_EVER);
-    }
-
-    public void SetNotAchieved() {
-        GetComponent<MultiToggle>().ChangeState(2);
-        var component = GetComponent<HierarchyReferences>();
-        component.GetReference<Image>("iconBG").color     = color_dark_grey;
-        component.GetReference<Image>("iconBorder").color = color_grey;
-        component.GetReference<Image>("icon").color       = color_grey;
-        foreach (var locText in GetComponentsInChildren<LocText>())
-            locText.color = new Color(locText.color.r, locText.color.g, locText.color.b, 0.6f);
-
-        ConfigureToolTip(GetComponent<ToolTip>(), COLONY_ACHIEVEMENTS.NOT_ACHIEVED_THIS_COLONY);
-    }
-
-    public void SetFailed() {
-        GetComponent<MultiToggle>().ChangeState(2);
-        var component = GetComponent<HierarchyReferences>();
-        component.GetReference<Image>("iconBG").color = color_dark_grey;
-        component.GetReference<Image>("iconBG").SetAlpha(0.5f);
-        component.GetReference<Image>("iconBorder").color = color_grey;
-        component.GetReference<Image>("iconBorder").SetAlpha(0.5f);
-        component.GetReference<Image>("icon").color = color_grey;
-        component.GetReference<Image>("icon").SetAlpha(0.5f);
-        foreach (var locText in GetComponentsInChildren<LocText>())
-            locText.color = new Color(locText.color.r, locText.color.g, locText.color.b, 0.25f);
-
-        ConfigureToolTip(GetComponent<ToolTip>(), COLONY_ACHIEVEMENTS.FAILED_THIS_COLONY);
-    }
-
-    private void ConfigureToolTip(ToolTip tooltip, string status) {
-        tooltip.ClearMultiStringTooltip();
-        tooltip.AddMultiStringTooltip(status, null);
-        if (SaveGame.Instance != null && !progressParent.gameObject.activeSelf)
-            tooltip.AddMultiStringTooltip(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.EXPAND_TOOLTIP, null);
-
-        if (DlcManager.IsDlcId(dlcIdFrom))
-            tooltip.AddMultiStringTooltip(string.Format(COLONY_ACHIEVEMENTS.DLC_ACHIEVEMENT,
-                                                        DlcManager.GetDlcTitle(dlcIdFrom)),
-                                          null);
-    }
-
-    public void ShowProgress(ColonyAchievementStatus achievement) {
-        if (progressParent == null) return;
-
-        numRequirementsDisplayed = 0;
-        for (var i = 0; i < achievement.Requirements.Count; i++) {
-            var colonyAchievementRequirement = achievement.Requirements[i];
-            if (colonyAchievementRequirement is CritterTypesWithTraits)
-                ShowCritterChecklist(colonyAchievementRequirement);
-            else if (colonyAchievementRequirement is DupesCompleteChoreInExoSuitForCycles)
-                ShowDupesInExoSuitsRequirement(achievement.success, colonyAchievementRequirement);
-            else if (colonyAchievementRequirement is DupesVsSolidTransferArmFetch)
-                ShowArmsOutPeformingDupesRequirement(achievement.success, colonyAchievementRequirement);
-            else if (colonyAchievementRequirement is ProduceXEngeryWithoutUsingYList)
-                ShowEngeryWithoutUsing(achievement.success, colonyAchievementRequirement);
-            else if (colonyAchievementRequirement is MinimumMorale)
-                ShowMinimumMoraleRequirement(achievement.success, colonyAchievementRequirement);
-            else if (colonyAchievementRequirement is SurviveARocketWithMinimumMorale)
-                ShowRocketMoraleRequirement(achievement.success, colonyAchievementRequirement);
-            else
-                ShowRequirement(achievement.success, colonyAchievementRequirement);
-        }
-    }
-
-    private HierarchyReferences GetNextRequirementWidget() {
-        GameObject gameObject;
-        if (progressParent.childCount <= numRequirementsDisplayed)
-            gameObject = Util.KInstantiateUI(requirementPrefab, progressParent.gameObject, true);
-        else {
-            gameObject = progressParent.GetChild(numRequirementsDisplayed).gameObject;
-            gameObject.SetActive(true);
-        }
-
-        numRequirementsDisplayed++;
-        return gameObject.GetComponent<HierarchyReferences>();
-    }
-
-    private void SetDescription(string str, HierarchyReferences refs) {
-        refs.GetReference<LocText>("Desc").SetText(str);
-    }
-
-    private void SetIcon(Sprite sprite, Color color, HierarchyReferences refs) {
-        var reference = refs.GetReference<Image>("Icon");
-        reference.sprite = sprite;
-        reference.color  = color;
-        reference.gameObject.SetActive(true);
-    }
-
-    private void ShowIcon(bool show, HierarchyReferences refs) {
-        refs.GetReference<Image>("Icon").gameObject.SetActive(show);
-    }
-
-    private void ShowRequirement(bool succeed, ColonyAchievementRequirement req) {
-        var nextRequirementWidget = GetNextRequirementWidget();
-        var flag                  = req.Success() || succeed;
-        var flag2                 = req.Fail();
-        if (flag && !flag2)
-            SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
-        else if (flag2)
-            SetIcon(statusFailureIcon, Color.red, nextRequirementWidget);
-        else
-            ShowIcon(false, nextRequirementWidget);
-
-        SetDescription(req.GetProgress(flag), nextRequirementWidget);
-    }
-
-    private void ShowCritterChecklist(ColonyAchievementRequirement req) {
-        var critterTypesWithTraits = req as CritterTypesWithTraits;
-        if (req == null) return;
-
-        foreach (var keyValuePair in critterTypesWithTraits.critterTypesToCheck) {
-            var nextRequirementWidget = GetNextRequirementWidget();
-            if (keyValuePair.Value)
-                SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
-            else
-                ShowIcon(false, nextRequirementWidget);
-
-            SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.TAME_A_CRITTER,
-                                         keyValuePair.Key.Name),
-                           nextRequirementWidget);
-        }
-    }
-
-    private void ShowArmsOutPeformingDupesRequirement(bool succeed, ColonyAchievementRequirement req) {
-        var dupesVsSolidTransferArmFetch = req as DupesVsSolidTransferArmFetch;
-        if (dupesVsSolidTransferArmFetch == null) return;
-
-        var nextRequirementWidget = GetNextRequirementWidget();
-        if (succeed) SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
-        SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.ARM_PERFORMANCE,
-                                     succeed
-                                         ? dupesVsSolidTransferArmFetch.numCycles
-                                         : dupesVsSolidTransferArmFetch.currentCycleCount,
-                                     dupesVsSolidTransferArmFetch.numCycles),
-                       nextRequirementWidget);
-
-        if (!succeed) {
-            var fetchDupeChoreDeliveries = SaveGame.Instance.ColonyAchievementTracker.fetchDupeChoreDeliveries;
-            var fetchAutomatedChoreDeliveries
-                = SaveGame.Instance.ColonyAchievementTracker.fetchAutomatedChoreDeliveries;
-
-            var num = 0;
-            fetchDupeChoreDeliveries.TryGetValue(GameClock.Instance.GetCycle(), out num);
-            var num2 = 0;
-            fetchAutomatedChoreDeliveries.TryGetValue(GameClock.Instance.GetCycle(), out num2);
-            nextRequirementWidget = GetNextRequirementWidget();
-            if (num < num2 * dupesVsSolidTransferArmFetch.percentage)
-                SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
-            else
-                ShowIcon(false, nextRequirementWidget);
-
-            SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.ARM_VS_DUPE_FETCHES,
-                                         "SolidTransferArm",
-                                         num2,
-                                         num),
-                           nextRequirementWidget);
-        }
-    }
-
-    private void ShowDupesInExoSuitsRequirement(bool succeed, ColonyAchievementRequirement req) {
-        var dupesCompleteChoreInExoSuitForCycles = req as DupesCompleteChoreInExoSuitForCycles;
-        if (dupesCompleteChoreInExoSuitForCycles == null) return;
-
-        var nextRequirementWidget = GetNextRequirementWidget();
-        if (succeed)
-            SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
-        else
-            ShowIcon(false, nextRequirementWidget);
-
-        SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.EXOSUIT_CYCLES,
-                                     succeed
-                                         ? dupesCompleteChoreInExoSuitForCycles.numCycles
-                                         : dupesCompleteChoreInExoSuitForCycles.currentCycleStreak,
-                                     dupesCompleteChoreInExoSuitForCycles.numCycles),
-                       nextRequirementWidget);
-
-        if (!succeed) {
-            nextRequirementWidget = GetNextRequirementWidget();
-            var num = dupesCompleteChoreInExoSuitForCycles.GetNumberOfDupesForCycle(GameClock.Instance.GetCycle());
-            if (num >= Components.LiveMinionIdentities.Count) {
-                num = Components.LiveMinionIdentities.Count;
-                SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
-            }
-
-            SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.EXOSUIT_THIS_CYCLE,
-                                         num,
-                                         Components.LiveMinionIdentities.Count),
-                           nextRequirementWidget);
-        }
-    }
-
-    private void ShowEngeryWithoutUsing(bool succeed, ColonyAchievementRequirement req) {
-        var produceXEngeryWithoutUsingYList = req as ProduceXEngeryWithoutUsingYList;
-        if (req == null) return;
-
-        var nextRequirementWidget = GetNextRequirementWidget();
-        var productionAmount      = produceXEngeryWithoutUsingYList.GetProductionAmount(succeed);
-        SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.GENERATE_POWER,
-                                     GameUtil.GetFormattedRoundedJoules(productionAmount),
-                                     GameUtil.GetFormattedRoundedJoules(produceXEngeryWithoutUsingYList
-                                                                            .amountToProduce *
-                                                                        1000f)),
-                       nextRequirementWidget);
-
-        if (succeed)
-            SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
-        else
-            ShowIcon(false, nextRequirementWidget);
-
-        foreach (var key in produceXEngeryWithoutUsingYList.disallowedBuildings) {
-            nextRequirementWidget = GetNextRequirementWidget();
-            if (Game.Instance.savedInfo.powerCreatedbyGeneratorType.ContainsKey(key))
-                SetIcon(statusFailureIcon, Color.red, nextRequirementWidget);
-            else
-                SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
-
-            var buildingDef = Assets.GetBuildingDef(key.Name);
-            SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.NO_BUILDING, buildingDef.Name),
-                           nextRequirementWidget);
-        }
-    }
-
-    private void ShowMinimumMoraleRequirement(bool success, ColonyAchievementRequirement req) {
-        var minimumMorale = req as MinimumMorale;
-        if (minimumMorale == null) return;
-
-        if (success) {
-            ShowRequirement(success, req);
-            return;
-        }
-
-        foreach (var obj in Components.MinionAssignablesProxy) {
-            var targetGameObject = ((MinionAssignablesProxy)obj).GetTargetGameObject();
-            if (targetGameObject != null && !targetGameObject.HasTag(GameTags.Dead)) {
-                var attributeInstance
-                    = Db.Get().Attributes.QualityOfLife.Lookup(targetGameObject.GetComponent<MinionModifiers>());
-
-                if (attributeInstance != null) {
-                    var nextRequirementWidget = GetNextRequirementWidget();
-                    if (attributeInstance.GetTotalValue() >= minimumMorale.minimumMorale)
-                        SetIcon(statusSuccessIcon, Color.green, nextRequirementWidget);
-                    else
-                        ShowIcon(false, nextRequirementWidget);
-
-                    SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.MORALE,
-                                                 targetGameObject.GetProperName(),
-                                                 attributeInstance.GetTotalDisplayValue()),
-                                   nextRequirementWidget);
-                }
-            }
-        }
-    }
-
-    private void ShowRocketMoraleRequirement(bool success, ColonyAchievementRequirement req) {
-        var surviveARocketWithMinimumMorale = req as SurviveARocketWithMinimumMorale;
-        if (surviveARocketWithMinimumMorale == null) return;
-
-        if (success) {
-            ShowRequirement(success, req);
-            return;
-        }
-
-        foreach (var keyValuePair in
-                 SaveGame.Instance.ColonyAchievementTracker.cyclesRocketDupeMoraleAboveRequirement) {
-            var world = ClusterManager.Instance.GetWorld(keyValuePair.Key);
-            if (world != null) {
-                var nextRequirementWidget = GetNextRequirementWidget();
-                SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.SURVIVE_SPACE,
-                                             surviveARocketWithMinimumMorale.minimumMorale,
-                                             keyValuePair.Value,
-                                             surviveARocketWithMinimumMorale.numberOfCycles,
-                                             world.GetProperName()),
-                               nextRequirementWidget);
-            }
-        }
-    }
+public class AchievementWidget : KMonoBehaviour
+{
+		protected override void OnSpawn()
+	{
+		base.OnSpawn();
+		MultiToggle component = base.GetComponent<MultiToggle>();
+		component.onClick = (System.Action)Delegate.Combine(component.onClick, new System.Action(delegate()
+		{
+			this.ExpandAchievement();
+		}));
+	}
+
+		private void Update()
+	{
+	}
+
+		private void ExpandAchievement()
+	{
+		if (SaveGame.Instance != null)
+		{
+			this.progressParent.gameObject.SetActive(!this.progressParent.gameObject.activeSelf);
+		}
+	}
+
+		public void ActivateNewlyAchievedFlourish(float delay = 1f)
+	{
+		base.StartCoroutine(this.Flourish(delay));
+	}
+
+		private IEnumerator Flourish(float startDelay)
+	{
+		this.SetNeverAchieved();
+		Canvas canvas = base.GetComponent<Canvas>();
+		if (canvas == null)
+		{
+			canvas = base.gameObject.AddComponent<Canvas>();
+		}
+		yield return SequenceUtil.WaitForSecondsRealtime(startDelay);
+		KScrollRect component = base.transform.parent.parent.GetComponent<KScrollRect>();
+		float num = 1.1f;
+		float smoothAutoScrollTarget = 1f + base.transform.localPosition.y * num / component.content.rect.height;
+		component.SetSmoothAutoScrollTarget(smoothAutoScrollTarget);
+		yield return SequenceUtil.WaitForSecondsRealtime(0.5f);
+		canvas.overrideSorting = true;
+		canvas.sortingOrder = 30;
+		GameObject icon = base.GetComponent<HierarchyReferences>().GetReference<Image>("icon").transform.parent.gameObject;
+		foreach (KBatchedAnimController kbatchedAnimController in this.sparks)
+		{
+			if (kbatchedAnimController.transform.parent != icon.transform.parent)
+			{
+				kbatchedAnimController.GetComponent<KBatchedAnimController>().TintColour = new Color(1f, 0.86f, 0.56f, 1f);
+				kbatchedAnimController.transform.SetParent(icon.transform.parent);
+				kbatchedAnimController.transform.SetSiblingIndex(icon.transform.GetSiblingIndex());
+				kbatchedAnimController.GetComponent<KBatchedAnimCanvasRenderer>().compare = CompareFunction.Always;
+			}
+		}
+		HierarchyReferences component2 = base.GetComponent<HierarchyReferences>();
+		component2.GetReference<Image>("iconBG").color = this.color_dark_red;
+		component2.GetReference<Image>("iconBorder").color = this.color_gold;
+		component2.GetReference<Image>("icon").color = this.color_gold;
+		bool colorChanged = false;
+		EventInstance instance = KFMOD.BeginOneShot(GlobalAssets.GetSound("AchievementUnlocked", false), Vector3.zero, 1f);
+		int num2 = Mathf.RoundToInt(MathUtil.Clamp(1f, 7f, startDelay - startDelay % 1f / 1f)) - 1;
+		instance.setParameterByName("num_achievements", (float)num2, false);
+		KFMOD.EndOneShot(instance);
+		for (float i = 0f; i < 1.2f; i += Time.unscaledDeltaTime)
+		{
+			icon.transform.localScale = Vector3.one * this.flourish_iconScaleCurve.Evaluate(i);
+			this.sheenTransform.anchoredPosition = new Vector2(this.flourish_sheenPositionCurve.Evaluate(i), this.sheenTransform.anchoredPosition.y);
+			if (i > 1f && !colorChanged)
+			{
+				colorChanged = true;
+				KBatchedAnimController[] array = this.sparks;
+				for (int j = 0; j < array.Length; j++)
+				{
+					array[j].Play("spark", KAnim.PlayMode.Once, 1f, 0f);
+				}
+				this.SetAchievedNow();
+			}
+			yield return SequenceUtil.WaitForNextFrame;
+		}
+		icon.transform.localScale = Vector3.one;
+		this.CompleteFlourish();
+		for (float i = 0f; i < 0.6f; i += Time.unscaledDeltaTime)
+		{
+			yield return SequenceUtil.WaitForNextFrame;
+		}
+		base.transform.localScale = Vector3.one;
+		yield break;
+	}
+
+		public void CompleteFlourish()
+	{
+		Canvas canvas = base.GetComponent<Canvas>();
+		if (canvas == null)
+		{
+			canvas = base.gameObject.AddComponent<Canvas>();
+		}
+		canvas.overrideSorting = false;
+	}
+
+		public void SetAchievedNow()
+	{
+		base.GetComponent<MultiToggle>().ChangeState(1);
+		HierarchyReferences component = base.GetComponent<HierarchyReferences>();
+		component.GetReference<Image>("iconBG").color = this.color_dark_red;
+		component.GetReference<Image>("iconBorder").color = this.color_gold;
+		component.GetReference<Image>("icon").color = this.color_gold;
+		LocText[] componentsInChildren = base.GetComponentsInChildren<LocText>();
+		for (int i = 0; i < componentsInChildren.Length; i++)
+		{
+			componentsInChildren[i].color = Color.white;
+		}
+		this.ConfigureToolTip(base.GetComponent<ToolTip>(), COLONY_ACHIEVEMENTS.ACHIEVED_THIS_COLONY_TOOLTIP);
+	}
+
+		public void SetAchievedBefore()
+	{
+		base.GetComponent<MultiToggle>().ChangeState(1);
+		HierarchyReferences component = base.GetComponent<HierarchyReferences>();
+		component.GetReference<Image>("iconBG").color = this.color_dark_red;
+		component.GetReference<Image>("iconBorder").color = this.color_gold;
+		component.GetReference<Image>("icon").color = this.color_gold;
+		LocText[] componentsInChildren = base.GetComponentsInChildren<LocText>();
+		for (int i = 0; i < componentsInChildren.Length; i++)
+		{
+			componentsInChildren[i].color = Color.white;
+		}
+		this.ConfigureToolTip(base.GetComponent<ToolTip>(), COLONY_ACHIEVEMENTS.ACHIEVED_OTHER_COLONY_TOOLTIP);
+	}
+
+		public void SetNeverAchieved()
+	{
+		base.GetComponent<MultiToggle>().ChangeState(2);
+		HierarchyReferences component = base.GetComponent<HierarchyReferences>();
+		component.GetReference<Image>("iconBG").color = this.color_dark_grey;
+		component.GetReference<Image>("iconBorder").color = this.color_grey;
+		component.GetReference<Image>("icon").color = this.color_grey;
+		foreach (LocText locText in base.GetComponentsInChildren<LocText>())
+		{
+			locText.color = new Color(locText.color.r, locText.color.g, locText.color.b, 0.6f);
+		}
+		this.ConfigureToolTip(base.GetComponent<ToolTip>(), COLONY_ACHIEVEMENTS.NOT_ACHIEVED_EVER);
+	}
+
+		public void SetNotAchieved()
+	{
+		base.GetComponent<MultiToggle>().ChangeState(2);
+		HierarchyReferences component = base.GetComponent<HierarchyReferences>();
+		component.GetReference<Image>("iconBG").color = this.color_dark_grey;
+		component.GetReference<Image>("iconBorder").color = this.color_grey;
+		component.GetReference<Image>("icon").color = this.color_grey;
+		foreach (LocText locText in base.GetComponentsInChildren<LocText>())
+		{
+			locText.color = new Color(locText.color.r, locText.color.g, locText.color.b, 0.6f);
+		}
+		this.ConfigureToolTip(base.GetComponent<ToolTip>(), COLONY_ACHIEVEMENTS.NOT_ACHIEVED_THIS_COLONY);
+	}
+
+		public void SetFailed()
+	{
+		base.GetComponent<MultiToggle>().ChangeState(2);
+		HierarchyReferences component = base.GetComponent<HierarchyReferences>();
+		component.GetReference<Image>("iconBG").color = this.color_dark_grey;
+		component.GetReference<Image>("iconBG").SetAlpha(0.5f);
+		component.GetReference<Image>("iconBorder").color = this.color_grey;
+		component.GetReference<Image>("iconBorder").SetAlpha(0.5f);
+		component.GetReference<Image>("icon").color = this.color_grey;
+		component.GetReference<Image>("icon").SetAlpha(0.5f);
+		foreach (LocText locText in base.GetComponentsInChildren<LocText>())
+		{
+			locText.color = new Color(locText.color.r, locText.color.g, locText.color.b, 0.25f);
+		}
+		this.ConfigureToolTip(base.GetComponent<ToolTip>(), COLONY_ACHIEVEMENTS.FAILED_THIS_COLONY);
+	}
+
+		private void ConfigureToolTip(ToolTip tooltip, string status)
+	{
+		tooltip.ClearMultiStringTooltip();
+		tooltip.AddMultiStringTooltip(status, null);
+		if (SaveGame.Instance != null && !this.progressParent.gameObject.activeSelf)
+		{
+			tooltip.AddMultiStringTooltip(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.EXPAND_TOOLTIP, null);
+		}
+		if (DlcManager.IsDlcId(this.dlcIdFrom))
+		{
+			tooltip.AddMultiStringTooltip(string.Format(COLONY_ACHIEVEMENTS.DLC_ACHIEVEMENT, DlcManager.GetDlcTitle(this.dlcIdFrom)), null);
+		}
+	}
+
+		public void ShowProgress(ColonyAchievementStatus achievement)
+	{
+		if (this.progressParent == null)
+		{
+			return;
+		}
+		this.numRequirementsDisplayed = 0;
+		for (int i = 0; i < achievement.Requirements.Count; i++)
+		{
+			ColonyAchievementRequirement colonyAchievementRequirement = achievement.Requirements[i];
+			if (colonyAchievementRequirement is CritterTypesWithTraits)
+			{
+				this.ShowCritterChecklist(colonyAchievementRequirement);
+			}
+			else if (colonyAchievementRequirement is DupesCompleteChoreInExoSuitForCycles)
+			{
+				this.ShowDupesInExoSuitsRequirement(achievement.success, colonyAchievementRequirement);
+			}
+			else if (colonyAchievementRequirement is DupesVsSolidTransferArmFetch)
+			{
+				this.ShowArmsOutPeformingDupesRequirement(achievement.success, colonyAchievementRequirement);
+			}
+			else if (colonyAchievementRequirement is ProduceXEngeryWithoutUsingYList)
+			{
+				this.ShowEngeryWithoutUsing(achievement.success, colonyAchievementRequirement);
+			}
+			else if (colonyAchievementRequirement is MinimumMorale)
+			{
+				this.ShowMinimumMoraleRequirement(achievement.success, colonyAchievementRequirement);
+			}
+			else if (colonyAchievementRequirement is SurviveARocketWithMinimumMorale)
+			{
+				this.ShowRocketMoraleRequirement(achievement.success, colonyAchievementRequirement);
+			}
+			else
+			{
+				this.ShowRequirement(achievement.success, colonyAchievementRequirement);
+			}
+		}
+	}
+
+		private HierarchyReferences GetNextRequirementWidget()
+	{
+		GameObject gameObject;
+		if (this.progressParent.childCount <= this.numRequirementsDisplayed)
+		{
+			gameObject = global::Util.KInstantiateUI(this.requirementPrefab, this.progressParent.gameObject, true);
+		}
+		else
+		{
+			gameObject = this.progressParent.GetChild(this.numRequirementsDisplayed).gameObject;
+			gameObject.SetActive(true);
+		}
+		this.numRequirementsDisplayed++;
+		return gameObject.GetComponent<HierarchyReferences>();
+	}
+
+		private void SetDescription(string str, HierarchyReferences refs)
+	{
+		refs.GetReference<LocText>("Desc").SetText(str);
+	}
+
+		private void SetIcon(Sprite sprite, Color color, HierarchyReferences refs)
+	{
+		Image reference = refs.GetReference<Image>("Icon");
+		reference.sprite = sprite;
+		reference.color = color;
+		reference.gameObject.SetActive(true);
+	}
+
+		private void ShowIcon(bool show, HierarchyReferences refs)
+	{
+		refs.GetReference<Image>("Icon").gameObject.SetActive(show);
+	}
+
+		private void ShowRequirement(bool succeed, ColonyAchievementRequirement req)
+	{
+		HierarchyReferences nextRequirementWidget = this.GetNextRequirementWidget();
+		bool flag = req.Success() || succeed;
+		bool flag2 = req.Fail();
+		if (flag && !flag2)
+		{
+			this.SetIcon(this.statusSuccessIcon, Color.green, nextRequirementWidget);
+		}
+		else if (flag2)
+		{
+			this.SetIcon(this.statusFailureIcon, Color.red, nextRequirementWidget);
+		}
+		else
+		{
+			this.ShowIcon(false, nextRequirementWidget);
+		}
+		this.SetDescription(req.GetProgress(flag), nextRequirementWidget);
+	}
+
+		private void ShowCritterChecklist(ColonyAchievementRequirement req)
+	{
+		CritterTypesWithTraits critterTypesWithTraits = req as CritterTypesWithTraits;
+		if (req == null)
+		{
+			return;
+		}
+		foreach (KeyValuePair<Tag, bool> keyValuePair in critterTypesWithTraits.critterTypesToCheck)
+		{
+			HierarchyReferences nextRequirementWidget = this.GetNextRequirementWidget();
+			if (keyValuePair.Value)
+			{
+				this.SetIcon(this.statusSuccessIcon, Color.green, nextRequirementWidget);
+			}
+			else
+			{
+				this.ShowIcon(false, nextRequirementWidget);
+			}
+			this.SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.TAME_A_CRITTER, keyValuePair.Key.Name.ProperName()), nextRequirementWidget);
+		}
+	}
+
+		private void ShowArmsOutPeformingDupesRequirement(bool succeed, ColonyAchievementRequirement req)
+	{
+		DupesVsSolidTransferArmFetch dupesVsSolidTransferArmFetch = req as DupesVsSolidTransferArmFetch;
+		if (dupesVsSolidTransferArmFetch == null)
+		{
+			return;
+		}
+		HierarchyReferences nextRequirementWidget = this.GetNextRequirementWidget();
+		if (succeed)
+		{
+			this.SetIcon(this.statusSuccessIcon, Color.green, nextRequirementWidget);
+		}
+		this.SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.ARM_PERFORMANCE, succeed ? dupesVsSolidTransferArmFetch.numCycles : dupesVsSolidTransferArmFetch.currentCycleCount, dupesVsSolidTransferArmFetch.numCycles), nextRequirementWidget);
+		if (!succeed)
+		{
+			Dictionary<int, int> fetchDupeChoreDeliveries = SaveGame.Instance.ColonyAchievementTracker.fetchDupeChoreDeliveries;
+			Dictionary<int, int> fetchAutomatedChoreDeliveries = SaveGame.Instance.ColonyAchievementTracker.fetchAutomatedChoreDeliveries;
+			int num = 0;
+			fetchDupeChoreDeliveries.TryGetValue(GameClock.Instance.GetCycle(), out num);
+			int num2 = 0;
+			fetchAutomatedChoreDeliveries.TryGetValue(GameClock.Instance.GetCycle(), out num2);
+			nextRequirementWidget = this.GetNextRequirementWidget();
+			if ((float)num < (float)num2 * dupesVsSolidTransferArmFetch.percentage)
+			{
+				this.SetIcon(this.statusSuccessIcon, Color.green, nextRequirementWidget);
+			}
+			else
+			{
+				this.ShowIcon(false, nextRequirementWidget);
+			}
+			this.SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.ARM_VS_DUPE_FETCHES, "SolidTransferArm", num2, num), nextRequirementWidget);
+		}
+	}
+
+		private void ShowDupesInExoSuitsRequirement(bool succeed, ColonyAchievementRequirement req)
+	{
+		DupesCompleteChoreInExoSuitForCycles dupesCompleteChoreInExoSuitForCycles = req as DupesCompleteChoreInExoSuitForCycles;
+		if (dupesCompleteChoreInExoSuitForCycles == null)
+		{
+			return;
+		}
+		HierarchyReferences nextRequirementWidget = this.GetNextRequirementWidget();
+		if (succeed)
+		{
+			this.SetIcon(this.statusSuccessIcon, Color.green, nextRequirementWidget);
+		}
+		else
+		{
+			this.ShowIcon(false, nextRequirementWidget);
+		}
+		this.SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.EXOSUIT_CYCLES, succeed ? dupesCompleteChoreInExoSuitForCycles.numCycles : dupesCompleteChoreInExoSuitForCycles.currentCycleStreak, dupesCompleteChoreInExoSuitForCycles.numCycles), nextRequirementWidget);
+		if (!succeed)
+		{
+			nextRequirementWidget = this.GetNextRequirementWidget();
+			int num = dupesCompleteChoreInExoSuitForCycles.GetNumberOfDupesForCycle(GameClock.Instance.GetCycle());
+			if (num >= Components.LiveMinionIdentities.Count)
+			{
+				num = Components.LiveMinionIdentities.Count;
+				this.SetIcon(this.statusSuccessIcon, Color.green, nextRequirementWidget);
+			}
+			this.SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.EXOSUIT_THIS_CYCLE, num, Components.LiveMinionIdentities.Count), nextRequirementWidget);
+		}
+	}
+
+		private void ShowEngeryWithoutUsing(bool succeed, ColonyAchievementRequirement req)
+	{
+		ProduceXEngeryWithoutUsingYList produceXEngeryWithoutUsingYList = req as ProduceXEngeryWithoutUsingYList;
+		if (req == null)
+		{
+			return;
+		}
+		HierarchyReferences nextRequirementWidget = this.GetNextRequirementWidget();
+		float productionAmount = produceXEngeryWithoutUsingYList.GetProductionAmount(succeed);
+		this.SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.GENERATE_POWER, GameUtil.GetFormattedRoundedJoules(productionAmount), GameUtil.GetFormattedRoundedJoules(produceXEngeryWithoutUsingYList.amountToProduce * 1000f)), nextRequirementWidget);
+		if (succeed)
+		{
+			this.SetIcon(this.statusSuccessIcon, Color.green, nextRequirementWidget);
+		}
+		else
+		{
+			this.ShowIcon(false, nextRequirementWidget);
+		}
+		foreach (Tag key in produceXEngeryWithoutUsingYList.disallowedBuildings)
+		{
+			nextRequirementWidget = this.GetNextRequirementWidget();
+			if (Game.Instance.savedInfo.powerCreatedbyGeneratorType.ContainsKey(key))
+			{
+				this.SetIcon(this.statusFailureIcon, Color.red, nextRequirementWidget);
+			}
+			else
+			{
+				this.SetIcon(this.statusSuccessIcon, Color.green, nextRequirementWidget);
+			}
+			BuildingDef buildingDef = Assets.GetBuildingDef(key.Name);
+			this.SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.NO_BUILDING, buildingDef.Name), nextRequirementWidget);
+		}
+	}
+
+		private void ShowMinimumMoraleRequirement(bool success, ColonyAchievementRequirement req)
+	{
+		MinimumMorale minimumMorale = req as MinimumMorale;
+		if (minimumMorale == null)
+		{
+			return;
+		}
+		if (success)
+		{
+			this.ShowRequirement(success, req);
+			return;
+		}
+		foreach (object obj in Components.MinionAssignablesProxy)
+		{
+			GameObject targetGameObject = ((MinionAssignablesProxy)obj).GetTargetGameObject();
+			if (targetGameObject != null && !targetGameObject.HasTag(GameTags.Dead))
+			{
+				AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLife.Lookup(targetGameObject.GetComponent<MinionModifiers>());
+				if (attributeInstance != null)
+				{
+					HierarchyReferences nextRequirementWidget = this.GetNextRequirementWidget();
+					if (attributeInstance.GetTotalValue() >= (float)minimumMorale.minimumMorale)
+					{
+						this.SetIcon(this.statusSuccessIcon, Color.green, nextRequirementWidget);
+					}
+					else
+					{
+						this.ShowIcon(false, nextRequirementWidget);
+					}
+					this.SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.MORALE, targetGameObject.GetProperName(), attributeInstance.GetTotalDisplayValue()), nextRequirementWidget);
+				}
+			}
+		}
+	}
+
+		private void ShowRocketMoraleRequirement(bool success, ColonyAchievementRequirement req)
+	{
+		SurviveARocketWithMinimumMorale surviveARocketWithMinimumMorale = req as SurviveARocketWithMinimumMorale;
+		if (surviveARocketWithMinimumMorale == null)
+		{
+			return;
+		}
+		if (success)
+		{
+			this.ShowRequirement(success, req);
+			return;
+		}
+		foreach (KeyValuePair<int, int> keyValuePair in SaveGame.Instance.ColonyAchievementTracker.cyclesRocketDupeMoraleAboveRequirement)
+		{
+			WorldContainer world = ClusterManager.Instance.GetWorld(keyValuePair.Key);
+			if (world != null)
+			{
+				HierarchyReferences nextRequirementWidget = this.GetNextRequirementWidget();
+				this.SetDescription(string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.SURVIVE_SPACE, new object[]
+				{
+					surviveARocketWithMinimumMorale.minimumMorale,
+					keyValuePair.Value,
+					surviveARocketWithMinimumMorale.numberOfCycles,
+					world.GetProperName()
+				}), nextRequirementWidget);
+			}
+		}
+	}
+
+		private Color color_dark_red = new Color(0.28235295f, 0.16078432f, 0.14901961f);
+
+		private Color color_gold = new Color(1f, 0.63529414f, 0.28627452f);
+
+		private Color color_dark_grey = new Color(0.21568628f, 0.21568628f, 0.21568628f);
+
+		private Color color_grey = new Color(0.6901961f, 0.6901961f, 0.6901961f);
+
+		[SerializeField]
+	private RectTransform sheenTransform;
+
+		public AnimationCurve flourish_iconScaleCurve;
+
+		public AnimationCurve flourish_sheenPositionCurve;
+
+		public KBatchedAnimController[] sparks;
+
+		[SerializeField]
+	private RectTransform progressParent;
+
+		[SerializeField]
+	private GameObject requirementPrefab;
+
+		[SerializeField]
+	private Sprite statusSuccessIcon;
+
+		[SerializeField]
+	private Sprite statusFailureIcon;
+
+		private int numRequirementsDisplayed;
+
+		public string dlcIdFrom;
 }

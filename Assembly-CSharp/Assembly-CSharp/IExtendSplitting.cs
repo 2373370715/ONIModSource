@@ -2,5 +2,5 @@
 
 internal interface IExtendSplitting
 {
-	void OnSplitTick(Pickupable thePieceTaken);
+		void OnSplitTick(Pickupable thePieceTaken);
 }

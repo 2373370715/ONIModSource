@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/StateMachineController")]
 public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, IStateMachineControllerHack
 {
-		public StateMachineController.CmpDef cmpdef
+			public StateMachineController.CmpDef cmpdef
 	{
 		get
 		{
@@ -16,12 +16,12 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		}
 	}
 
-	public IEnumerator<StateMachine.Instance> GetEnumerator()
+		public IEnumerator<StateMachine.Instance> GetEnumerator()
 	{
 		return this.stateMachines.GetEnumerator();
 	}
 
-	public void AddStateMachineInstance(StateMachine.Instance state_machine)
+		public void AddStateMachineInstance(StateMachine.Instance state_machine)
 	{
 		if (!this.stateMachines.Contains(state_machine))
 		{
@@ -30,7 +30,7 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		}
 	}
 
-	public void RemoveStateMachineInstance(StateMachine.Instance state_machine)
+		public void RemoveStateMachineInstance(StateMachine.Instance state_machine)
 	{
 		if (!state_machine.GetStateMachine().saveHistory && !state_machine.GetStateMachine().debugSettings.saveHistory)
 		{
@@ -38,22 +38,22 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		}
 	}
 
-	public bool HasStateMachineInstance(StateMachine.Instance state_machine)
+		public bool HasStateMachineInstance(StateMachine.Instance state_machine)
 	{
 		return this.stateMachines.Contains(state_machine);
 	}
 
-	public void AddDef(StateMachine.BaseDef def)
+		public void AddDef(StateMachine.BaseDef def)
 	{
 		this.cmpdef.defs.Add(def);
 	}
 
-	public LoggerFSSSS GetLog()
+		public LoggerFSSSS GetLog()
 	{
 		return this.log;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.log.SetName(base.name);
@@ -61,7 +61,7 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		base.Subscribe<StateMachineController>(1502190696, StateMachineController.OnTargetDestroyedDelegate);
 	}
 
-	private void OnTargetDestroyed(object data)
+		private void OnTargetDestroyed(object data)
 	{
 		while (this.stateMachines.Count > 0)
 		{
@@ -71,7 +71,7 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		}
 	}
 
-	protected override void OnLoadLevel()
+		protected override void OnLoadLevel()
 	{
 		while (this.stateMachines.Count > 0)
 		{
@@ -81,7 +81,7 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		while (this.stateMachines.Count > 0)
@@ -92,7 +92,7 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		}
 	}
 
-	public void CreateSMIS()
+		public void CreateSMIS()
 	{
 		if (!this.defHandle.IsValid())
 		{
@@ -104,7 +104,7 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		}
 	}
 
-	public void StartSMIS()
+		public void StartSMIS()
 	{
 		if (!this.defHandle.IsValid())
 		{
@@ -123,22 +123,22 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		}
 	}
 
-	public void Serialize(BinaryWriter writer)
+		public void Serialize(BinaryWriter writer)
 	{
 		this.serializer.Serialize(this.stateMachines, writer);
 	}
 
-	public void Deserialize(IReader reader)
+		public void Deserialize(IReader reader)
 	{
 		this.serializer.Deserialize(reader);
 	}
 
-	public bool Restore(StateMachine.Instance smi)
+		public bool Restore(StateMachine.Instance smi)
 	{
 		return this.serializer.Restore(smi);
 	}
 
-	public DefType GetDef<DefType>() where DefType : StateMachine.BaseDef
+		public DefType GetDef<DefType>() where DefType : StateMachine.BaseDef
 	{
 		if (!this.defHandle.IsValid())
 		{
@@ -155,7 +155,7 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		return default(DefType);
 	}
 
-	public List<DefType> GetDefs<DefType>() where DefType : StateMachine.BaseDef
+		public List<DefType> GetDefs<DefType>() where DefType : StateMachine.BaseDef
 	{
 		List<DefType> list = new List<DefType>();
 		if (!this.defHandle.IsValid())
@@ -173,7 +173,7 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		return list;
 	}
 
-	public StateMachine.Instance GetSMI(Type type)
+		public StateMachine.Instance GetSMI(Type type)
 	{
 		for (int i = 0; i < this.stateMachines.Count; i++)
 		{
@@ -186,12 +186,12 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		return null;
 	}
 
-	public StateMachineInstanceType GetSMI<StateMachineInstanceType>() where StateMachineInstanceType : class
+		public StateMachineInstanceType GetSMI<StateMachineInstanceType>() where StateMachineInstanceType : class
 	{
 		return this.GetSMI(typeof(StateMachineInstanceType)) as StateMachineInstanceType;
 	}
 
-	public List<StateMachineInstanceType> GetAllSMI<StateMachineInstanceType>() where StateMachineInstanceType : class
+		public List<StateMachineInstanceType> GetAllSMI<StateMachineInstanceType>() where StateMachineInstanceType : class
 	{
 		List<StateMachineInstanceType> list = new List<StateMachineInstanceType>();
 		foreach (StateMachine.Instance instance in this.stateMachines)
@@ -205,7 +205,7 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		return list;
 	}
 
-	public List<IGameObjectEffectDescriptor> GetDescriptors()
+		public List<IGameObjectEffectDescriptor> GetDescriptors()
 	{
 		List<IGameObjectEffectDescriptor> list = new List<IGameObjectEffectDescriptor>();
 		if (!this.defHandle.IsValid())
@@ -222,21 +222,21 @@ public class StateMachineController : KMonoBehaviour, ISaveLoadableDetails, ISta
 		return list;
 	}
 
-	public DefHandle defHandle;
+		public DefHandle defHandle;
 
-	private List<StateMachine.Instance> stateMachines = new List<StateMachine.Instance>();
+		private List<StateMachine.Instance> stateMachines = new List<StateMachine.Instance>();
 
-	private LoggerFSSSS log = new LoggerFSSSS("StateMachineController", 35);
+		private LoggerFSSSS log = new LoggerFSSSS("StateMachineController", 35);
 
-	private StateMachineSerializer serializer = new StateMachineSerializer();
+		private StateMachineSerializer serializer = new StateMachineSerializer();
 
-	private static readonly EventSystem.IntraObjectHandler<StateMachineController> OnTargetDestroyedDelegate = new EventSystem.IntraObjectHandler<StateMachineController>(delegate(StateMachineController component, object data)
+		private static readonly EventSystem.IntraObjectHandler<StateMachineController> OnTargetDestroyedDelegate = new EventSystem.IntraObjectHandler<StateMachineController>(delegate(StateMachineController component, object data)
 	{
 		component.OnTargetDestroyed(data);
 	});
 
-	public class CmpDef
+		public class CmpDef
 	{
-		public List<StateMachine.BaseDef> defs = new List<StateMachine.BaseDef>();
+				public List<StateMachine.BaseDef> defs = new List<StateMachine.BaseDef>();
 	}
 }

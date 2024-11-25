@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class DebrisPayloadConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateLooseEntity("DebrisPayload", ITEMS.DEBRISPAYLOAD.NAME, ITEMS.DEBRISPAYLOAD.DESC, 100f, true, Assets.GetAnim("rocket_debris_combined_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 1f, 1f, true, 0, SimHashes.Creature, new List<Tag>
 		{
@@ -58,19 +58,19 @@ public class DebrisPayloadConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "DebrisPayload";
+		public const string ID = "DebrisPayload";
 
-	public const float MASS = 100f;
+		public const float MASS = 100f;
 
-	public const float MAX_STORAGE_KG_MASS = 5000f;
+		public const float MAX_STORAGE_KG_MASS = 5000f;
 
-	public const float STARMAP_SPEED = 10f;
+		public const float STARMAP_SPEED = 10f;
 }

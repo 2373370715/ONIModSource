@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RefrigeratorController : GameStateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.inoperational;
 		this.inoperational.EventTransition(GameHashes.OperationalChanged, this.operational, new StateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>.Transition.ConditionCallback(this.IsOperational));
@@ -32,7 +32,7 @@ public class RefrigeratorController : GameStateMachine<RefrigeratorController, R
 		});
 	}
 
-	private bool AllFoodCool(RefrigeratorController.StatesInstance smi, float dt)
+		private bool AllFoodCool(RefrigeratorController.StatesInstance smi, float dt)
 	{
 		foreach (GameObject gameObject in smi.storage.items)
 		{
@@ -48,7 +48,7 @@ public class RefrigeratorController : GameStateMachine<RefrigeratorController, R
 		return true;
 	}
 
-	private bool AnyWarmFood(RefrigeratorController.StatesInstance smi, float dt)
+		private bool AnyWarmFood(RefrigeratorController.StatesInstance smi, float dt)
 	{
 		foreach (GameObject gameObject in smi.storage.items)
 		{
@@ -64,18 +64,18 @@ public class RefrigeratorController : GameStateMachine<RefrigeratorController, R
 		return false;
 	}
 
-	private bool IsOperational(RefrigeratorController.StatesInstance smi)
+		private bool IsOperational(RefrigeratorController.StatesInstance smi)
 	{
 		return smi.operational.IsOperational;
 	}
 
-	public GameStateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>.State inoperational;
+		public GameStateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>.State inoperational;
 
-	public RefrigeratorController.OperationalStates operational;
+		public RefrigeratorController.OperationalStates operational;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject go)
+				public List<Descriptor> GetDescriptors(GameObject go)
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			list.AddRange(SimulatedTemperatureAdjuster.GetDescriptors(this.simulatedInternalTemperature));
@@ -86,55 +86,55 @@ public class RefrigeratorController : GameStateMachine<RefrigeratorController, R
 			return list;
 		}
 
-		public float activeCoolingStartBuffer = 2f;
+				public float activeCoolingStartBuffer = 2f;
 
-		public float activeCoolingStopBuffer = 0.1f;
+				public float activeCoolingStopBuffer = 0.1f;
 
-		public float simulatedInternalTemperature = 274.15f;
+				public float simulatedInternalTemperature = 274.15f;
 
-		public float simulatedInternalHeatCapacity = 400f;
+				public float simulatedInternalHeatCapacity = 400f;
 
-		public float simulatedThermalConductivity = 1000f;
+				public float simulatedThermalConductivity = 1000f;
 
-		public float powerSaverEnergyUsage;
+				public float powerSaverEnergyUsage;
 
-		public float coolingHeatKW;
+				public float coolingHeatKW;
 
-		public float steadyHeatKW;
+				public float steadyHeatKW;
 	}
 
-	public class OperationalStates : GameStateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>.State
+		public class OperationalStates : GameStateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>.State
 	{
-		public GameStateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>.State cooling;
+				public GameStateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>.State cooling;
 
-		public GameStateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>.State steady;
+				public GameStateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>.State steady;
 	}
 
-	public class StatesInstance : GameStateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<RefrigeratorController, RefrigeratorController.StatesInstance, IStateMachineTarget, RefrigeratorController.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, RefrigeratorController.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, RefrigeratorController.Def def) : base(master, def)
 		{
 			this.temperatureAdjuster = new SimulatedTemperatureAdjuster(def.simulatedInternalTemperature, def.simulatedInternalHeatCapacity, def.simulatedThermalConductivity, this.storage);
 			this.structureTemperature = GameComps.StructureTemperatures.GetHandle(base.gameObject);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			this.temperatureAdjuster.CleanUp();
 			base.OnCleanUp();
 		}
 
-		public float GetSaverPower()
+				public float GetSaverPower()
 		{
 			return base.def.powerSaverEnergyUsage;
 		}
 
-		public float GetNormalPower()
+				public float GetNormalPower()
 		{
 			return base.GetComponent<EnergyConsumer>().WattsNeededWhenActive;
 		}
 
-		public void SetEnergySaver(bool energySaving)
+				public void SetEnergySaver(bool energySaving)
 		{
 			EnergyConsumer component = base.GetComponent<EnergyConsumer>();
 			if (energySaving)
@@ -145,24 +145,24 @@ public class RefrigeratorController : GameStateMachine<RefrigeratorController, R
 			component.BaseWattageRating = this.GetNormalPower();
 		}
 
-		public void ApplyCoolingExhaust(float dt)
+				public void ApplyCoolingExhaust(float dt)
 		{
 			GameComps.StructureTemperatures.ProduceEnergy(this.structureTemperature, base.def.coolingHeatKW * dt, BUILDING.STATUSITEMS.OPERATINGENERGY.FOOD_TRANSFER, dt);
 		}
 
-		public void ApplySteadyExhaust(float dt)
+				public void ApplySteadyExhaust(float dt)
 		{
 			GameComps.StructureTemperatures.ProduceEnergy(this.structureTemperature, base.def.steadyHeatKW * dt, BUILDING.STATUSITEMS.OPERATINGENERGY.FOOD_TRANSFER, dt);
 		}
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public Operational operational;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public Storage storage;
 
-		private HandleVector<int>.Handle structureTemperature;
+				private HandleVector<int>.Handle structureTemperature;
 
-		private SimulatedTemperatureAdjuster temperatureAdjuster;
+				private SimulatedTemperatureAdjuster temperatureAdjuster;
 	}
 }

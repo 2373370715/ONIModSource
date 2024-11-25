@@ -3,7 +3,7 @@ using TUNING;
 
 public class EmptyMilkSeparatorWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workLayer = Grid.SceneLayer.BuildingFront;
@@ -20,7 +20,7 @@ public class EmptyMilkSeparatorWorkable : Workable
 		this.synchronizeAnims = true;
 	}
 
-	public override void OnPendingCompleteWork(Worker worker)
+		public override void OnPendingCompleteWork(WorkerBase worker)
 	{
 		System.Action onWork_PST_Begins = this.OnWork_PST_Begins;
 		if (onWork_PST_Begins != null)
@@ -30,5 +30,5 @@ public class EmptyMilkSeparatorWorkable : Workable
 		base.OnPendingCompleteWork(worker);
 	}
 
-	public System.Action OnWork_PST_Begins;
+		public System.Action OnWork_PST_Begins;
 }

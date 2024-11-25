@@ -8,12 +8,12 @@ using UnityEngine;
 
 public class SandboxFloodTool : FloodTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SandboxFloodTool.instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		SandboxFloodTool.instance = this;
@@ -27,7 +27,7 @@ public class SandboxFloodTool : FloodTool
 		};
 	}
 
-	private void PaintCell(int cell)
+		private void PaintCell(int cell)
 	{
 		this.recentlyAffectedCells.Add(cell);
 		Game.CallbackInfo item = new Game.CallbackInfo(delegate()
@@ -51,7 +51,7 @@ public class SandboxFloodTool : FloodTool
 		SimMessages.ReplaceElement(cell2, id, sandBoxTool, floatSetting, floatSetting2, index, this.settings.GetIntSetting("SandboxTools.DiseaseCount"), callbackIdx);
 	}
 
-		private SandboxSettings settings
+			private SandboxSettings settings
 	{
 		get
 		{
@@ -59,12 +59,12 @@ public class SandboxFloodTool : FloodTool
 		}
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		PlayerController.Instance.ActivateTool(this);
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		SandboxToolParameterMenu.instance.gameObject.SetActive(true);
@@ -76,14 +76,14 @@ public class SandboxFloodTool : FloodTool
 		SandboxToolParameterMenu.instance.diseaseCountSlider.row.SetActive(true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		SandboxToolParameterMenu.instance.gameObject.SetActive(false);
 		this.ev.release();
 	}
 
-	public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
+		public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
 	{
 		colors = new HashSet<ToolMenu.CellColorData>();
 		foreach (int cell in this.recentlyAffectedCells)
@@ -96,13 +96,13 @@ public class SandboxFloodTool : FloodTool
 		}
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		base.OnMouseMove(cursorPos);
 		this.cellsToAffect = base.Flood(Grid.PosToCell(cursorPos));
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		base.OnLeftClickDown(cursor_pos);
 		Element element = ElementLoader.elements[this.settings.GetIntSetting("SandboxTools.SelectedElement")];
@@ -135,7 +135,7 @@ public class SandboxFloodTool : FloodTool
 		KFMOD.PlayUISound(GlobalAssets.GetSound("SandboxTool_Bucket", false));
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.SandboxCopyElement))
 		{
@@ -151,13 +151,13 @@ public class SandboxFloodTool : FloodTool
 		}
 	}
 
-	public static SandboxFloodTool instance;
+		public static SandboxFloodTool instance;
 
-	protected HashSet<int> recentlyAffectedCells = new HashSet<int>();
+		protected HashSet<int> recentlyAffectedCells = new HashSet<int>();
 
-	protected HashSet<int> cellsToAffect = new HashSet<int>();
+		protected HashSet<int> cellsToAffect = new HashSet<int>();
 
-	protected Color recentlyAffectedCellColor = new Color(1f, 1f, 1f, 0.1f);
+		protected Color recentlyAffectedCellColor = new Color(1f, 1f, 1f, 0.1f);
 
-	private EventInstance ev;
+		private EventInstance ev;
 }

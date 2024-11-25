@@ -3,11 +3,11 @@ using UnityEngine;
 
 public struct MaterialVisualizerData
 {
-	public void Update()
+		public void Update()
 	{
 	}
 
-	public MaterialVisualizerData(GameObject go)
+		public MaterialVisualizerData(GameObject go)
 	{
 	}
 }

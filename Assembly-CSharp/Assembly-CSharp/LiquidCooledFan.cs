@@ -8,7 +8,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInstance>, IGameObjectEffectDescriptor
 {
-	public bool HasMaterial()
+		public bool HasMaterial()
 	{
 		ListPool<GameObject, LiquidCooledFan>.PooledList pooledList = ListPool<GameObject, LiquidCooledFan>.Allocate();
 		base.smi.master.gasStorage.Find(GameTags.Water, pooledList);
@@ -25,7 +25,7 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 		return this.liquidStorage.MassStored() > 0f;
 	}
 
-	public void CheckWorking()
+		public void CheckWorking()
 	{
 		if (base.smi.master.workable.worker == null)
 		{
@@ -33,7 +33,7 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 		}
 	}
 
-	private void UpdateUnworkableStatusItems()
+		private void UpdateUnworkableStatusItems()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		if (!base.smi.EnvironmentNeedsCooling())
@@ -61,7 +61,7 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.meter = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Behind, Grid.SceneLayer.NoLayer, new string[]
@@ -77,12 +77,12 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 		base.GetComponent<ManualDeliveryKG>().SetStorage(this.liquidStorage);
 	}
 
-	private void UpdateMeter()
+		private void UpdateMeter()
 	{
 		this.meter.SetPositionPercent(Mathf.Clamp01(this.liquidStorage.MassStored() / this.liquidStorage.capacityKg));
 	}
 
-	private void EmitContents()
+		private void EmitContents()
 	{
 		if (this.gasStorage.items.Count == 0)
 		{
@@ -106,7 +106,7 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 		}
 	}
 
-	private void CoolContents(float dt)
+		private void CoolContents(float dt)
 	{
 		if (this.gasStorage.items.Count == 0)
 		{
@@ -149,7 +149,7 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 		}
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Descriptor item = default(Descriptor);
@@ -158,49 +158,49 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 		return list;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public float coolingKilowatts;
 
-	[SerializeField]
+		[SerializeField]
 	public float minCooledTemperature;
 
-	[SerializeField]
+		[SerializeField]
 	public float minEnvironmentMass;
 
-	[SerializeField]
+		[SerializeField]
 	public float waterKGConsumedPerKJ;
 
-	[SerializeField]
+		[SerializeField]
 	public Vector2I minCoolingRange;
 
-	[SerializeField]
+		[SerializeField]
 	public Vector2I maxCoolingRange;
 
-	private float flowRate = 0.3f;
+		private float flowRate = 0.3f;
 
-	[SerializeField]
+		[SerializeField]
 	public Storage gasStorage;
 
-	[SerializeField]
+		[SerializeField]
 	public Storage liquidStorage;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private LiquidCooledFanWorkable workable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private HandleVector<int>.Handle waterConsumptionAccumulator = HandleVector<int>.InvalidHandle;
+		private HandleVector<int>.Handle waterConsumptionAccumulator = HandleVector<int>.InvalidHandle;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	public class StatesInstance : GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.GameInstance
+		public class StatesInstance : GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.GameInstance
 	{
-		public StatesInstance(LiquidCooledFan smi) : base(smi)
+				public StatesInstance(LiquidCooledFan smi) : base(smi)
 		{
 		}
 
-		public bool IsWorkable()
+				public bool IsWorkable()
 		{
 			bool result = false;
 			if (base.master.operational.IsOperational && this.EnvironmentNeedsCooling() && base.smi.master.HasMaterial() && base.smi.EnvironmentHighEnoughPressure())
@@ -210,7 +210,7 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 			return result;
 		}
 
-		public bool EnvironmentNeedsCooling()
+				public bool EnvironmentNeedsCooling()
 		{
 			bool result = false;
 			int cell = Grid.PosToCell(base.transform.GetPosition());
@@ -230,7 +230,7 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 			return result;
 		}
 
-		public bool EnvironmentHighEnoughPressure()
+				public bool EnvironmentHighEnoughPressure()
 		{
 			int cell = Grid.PosToCell(base.transform.GetPosition());
 			for (int i = base.master.minCoolingRange.y; i < base.master.maxCoolingRange.y; i++)
@@ -249,9 +249,9 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 		}
 	}
 
-	public class States : GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan>
+		public class States : GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.unworkable;
 			this.root.Enter(delegate(LiquidCooledFan.StatesInstance smi)
@@ -306,24 +306,24 @@ public class LiquidCooledFan : StateMachineComponent<LiquidCooledFan.StatesInsta
 			}, UpdateRate.SIM_200ms, false);
 		}
 
-		private Chore CreateUseChore(LiquidCooledFan.StatesInstance smi)
+				private Chore CreateUseChore(LiquidCooledFan.StatesInstance smi)
 		{
 			return new WorkChore<LiquidCooledFanWorkable>(Db.Get().ChoreTypes.LiquidCooledFan, smi.master.workable, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 
-		public LiquidCooledFan.States.Workable workable;
+				public LiquidCooledFan.States.Workable workable;
 
-		public GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State unworkable;
+				public GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State unworkable;
 
-		public GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State work_pst;
+				public GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State work_pst;
 
-		public class Workable : GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State
+				public class Workable : GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State
 		{
-			public GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State waiting;
+						public GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State waiting;
 
-			public GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State consuming;
+						public GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State consuming;
 
-			public GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State emitting;
+						public GameStateMachine<LiquidCooledFan.States, LiquidCooledFan.StatesInstance, LiquidCooledFan, object>.State emitting;
 		}
 	}
 }

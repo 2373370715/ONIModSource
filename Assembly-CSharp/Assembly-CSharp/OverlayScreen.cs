@@ -3,266 +3,208 @@ using System.Collections.Generic;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
+using STOP_MODE = FMOD.Studio.STOP_MODE;
 
 [AddComponentMenu("KMonoBehaviour/scripts/OverlayScreen")]
-public class OverlayScreen : KMonoBehaviour
-{
-		public HashedString mode
-	{
-		get
-		{
-			return this.currentModeInfo.mode.ViewMode();
-		}
-	}
+public class OverlayScreen : KMonoBehaviour {
+    public static HashSet<Tag>  WireIDs          = new HashSet<Tag>();
+    public static HashSet<Tag>  GasVentIDs       = new HashSet<Tag>();
+    public static HashSet<Tag>  LiquidVentIDs    = new HashSet<Tag>();
+    public static HashSet<Tag>  HarvestableIDs   = new HashSet<Tag>();
+    public static HashSet<Tag>  DiseaseIDs       = new HashSet<Tag>();
+    public static HashSet<Tag>  SuitIDs          = new HashSet<Tag>();
+    public static HashSet<Tag>  SolidConveyorIDs = new HashSet<Tag>();
+    public static HashSet<Tag>  RadiationIDs     = new HashSet<Tag>();
+    public static OverlayScreen Instance;
 
-	protected override void OnPrefabInit()
-	{
-		global::Debug.Assert(OverlayScreen.Instance == null);
-		OverlayScreen.Instance = this;
-		this.powerLabelParent = GameObject.Find("WorldSpaceCanvas").GetComponent<Canvas>();
-	}
+    [SerializeField]
+    private Vector3 batteryUIOffset;
 
-	protected override void OnLoadLevel()
-	{
-		this.harvestableNotificationPrefab = null;
-		this.powerLabelParent = null;
-		OverlayScreen.Instance = null;
-		OverlayModes.Mode.Clear();
-		this.modeInfos = null;
-		this.currentModeInfo = default(OverlayScreen.ModeInfo);
-		base.OnLoadLevel();
-	}
+    [SerializeField]
+    private Vector3 batteryUISmallTransformerOffset;
 
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.techViewSound = KFMOD.CreateInstance(this.techViewSoundPath);
-		this.techViewSoundPlaying = false;
-		Shader.SetGlobalVector("_OverlayParams", Vector4.zero);
-		this.RegisterModes();
-		this.currentModeInfo = this.modeInfos[OverlayModes.None.ID];
-	}
+    [SerializeField]
+    private Vector3 batteryUITransformerOffset;
 
-	private void RegisterModes()
-	{
-		this.modeInfos.Clear();
-		OverlayModes.None mode = new OverlayModes.None();
-		this.RegisterMode(mode);
-		this.RegisterMode(new OverlayModes.Oxygen());
-		this.RegisterMode(new OverlayModes.Power(this.powerLabelParent, this.powerLabelPrefab, this.batUIPrefab, this.powerLabelOffset, this.batteryUIOffset, this.batteryUITransformerOffset, this.batteryUISmallTransformerOffset));
-		this.RegisterMode(new OverlayModes.Temperature());
-		this.RegisterMode(new OverlayModes.ThermalConductivity());
-		this.RegisterMode(new OverlayModes.Light());
-		this.RegisterMode(new OverlayModes.LiquidConduits());
-		this.RegisterMode(new OverlayModes.GasConduits());
-		this.RegisterMode(new OverlayModes.Decor());
-		this.RegisterMode(new OverlayModes.Disease(this.powerLabelParent, this.diseaseOverlayPrefab));
-		this.RegisterMode(new OverlayModes.Crop(this.powerLabelParent, this.harvestableNotificationPrefab));
-		this.RegisterMode(new OverlayModes.Harvest());
-		this.RegisterMode(new OverlayModes.Priorities());
-		this.RegisterMode(new OverlayModes.HeatFlow());
-		this.RegisterMode(new OverlayModes.Rooms());
-		this.RegisterMode(new OverlayModes.Suit(this.powerLabelParent, this.suitOverlayPrefab));
-		this.RegisterMode(new OverlayModes.Logic(this.logicModeUIPrefab));
-		this.RegisterMode(new OverlayModes.SolidConveyor());
-		this.RegisterMode(new OverlayModes.TileMode());
-		this.RegisterMode(new OverlayModes.Radiation());
-	}
+    [SerializeField]
+    private BatteryUI batUIPrefab;
 
-	private void RegisterMode(OverlayModes.Mode mode)
-	{
-		this.modeInfos[mode.ViewMode()] = new OverlayScreen.ModeInfo
-		{
-			mode = mode
-		};
-	}
+    [SerializeField]
+    private Color buildingDisabledColour = Color.gray;
 
-	private void LateUpdate()
-	{
-		this.currentModeInfo.mode.Update();
-	}
+    [SerializeField]
+    private Color32 circuitOverloadingColour;
 
-	public void RunPostProcessEffects(RenderTexture src, RenderTexture dest)
-	{
-		this.currentModeInfo.mode.OnRenderImage(src, dest);
-	}
+    [SerializeField]
+    private Color32 circuitSafeColour;
 
-	public void ToggleOverlay(HashedString newMode, bool allowSound = true)
-	{
-		bool flag = allowSound && !(this.currentModeInfo.mode.ViewMode() == newMode);
-		if (newMode != OverlayModes.None.ID)
-		{
-			ManagementMenu.Instance.CloseAll();
-		}
-		this.currentModeInfo.mode.Disable();
-		if (newMode != this.currentModeInfo.mode.ViewMode() && newMode == OverlayModes.None.ID)
-		{
-			ManagementMenu.Instance.CloseAll();
-		}
-		SimDebugView.Instance.SetMode(newMode);
-		if (!this.modeInfos.TryGetValue(newMode, out this.currentModeInfo))
-		{
-			this.currentModeInfo = this.modeInfos[OverlayModes.None.ID];
-		}
-		this.currentModeInfo.mode.Enable();
-		if (flag)
-		{
-			this.UpdateOverlaySounds();
-		}
-		if (OverlayModes.None.ID == this.currentModeInfo.mode.ViewMode())
-		{
-			AudioMixer.instance.Stop(AudioMixerSnapshots.Get().TechFilterOnMigrated, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-			MusicManager.instance.SetDynamicMusicOverlayInactive();
-			this.techViewSound.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-			this.techViewSoundPlaying = false;
-		}
-		else if (!this.techViewSoundPlaying)
-		{
-			AudioMixer.instance.Start(AudioMixerSnapshots.Get().TechFilterOnMigrated);
-			MusicManager.instance.SetDynamicMusicOverlayActive();
-			this.techViewSound.start();
-			this.techViewSoundPlaying = true;
-		}
-		if (this.OnOverlayChanged != null)
-		{
-			this.OnOverlayChanged(this.currentModeInfo.mode.ViewMode());
-		}
-		this.ActivateLegend();
-	}
+    [SerializeField]
+    private Color32 circuitStrainingColour;
 
-	private void ActivateLegend()
-	{
-		if (OverlayLegend.Instance == null)
-		{
-			return;
-		}
-		OverlayLegend.Instance.SetLegend(this.currentModeInfo.mode, false);
-	}
+    [Header("Circuits"), SerializeField]
+    private Color32 circuitUnpoweredColour;
 
-	public void Refresh()
-	{
-		this.LateUpdate();
-	}
+    [SerializeField]
+    private Color consumerColour;
 
-	public HashedString GetMode()
-	{
-		if (this.currentModeInfo.mode == null)
-		{
-			return OverlayModes.None.ID;
-		}
-		return this.currentModeInfo.mode.ViewMode();
-	}
+    private ModeInfo currentModeInfo;
 
-	private void UpdateOverlaySounds()
-	{
-		string text = this.currentModeInfo.mode.GetSoundName();
-		if (text != "")
-		{
-			text = GlobalAssets.GetSound(text, false);
-			KMonoBehaviour.PlaySound(text);
-		}
-	}
+    [Header("Disease"), SerializeField]
+    private GameObject diseaseOverlayPrefab;
 
-	public static HashSet<Tag> WireIDs = new HashSet<Tag>();
+    [SerializeField]
+    private Color generatorColour;
 
-	public static HashSet<Tag> GasVentIDs = new HashSet<Tag>();
+    [Header("Crops"), SerializeField]
+    private GameObject harvestableNotificationPrefab;
 
-	public static HashSet<Tag> LiquidVentIDs = new HashSet<Tag>();
+    [Header("Logic"), SerializeField]
+    private LogicModeUI logicModeUIPrefab;
 
-	public static HashSet<Tag> HarvestableIDs = new HashSet<Tag>();
+    private Dictionary<HashedString, ModeInfo> modeInfos = new Dictionary<HashedString, ModeInfo>();
+    public  Action<HashedString>               OnOverlayChanged;
 
-	public static HashSet<Tag> DiseaseIDs = new HashSet<Tag>();
+    [SerializeField]
+    private Vector3 powerLabelOffset;
 
-	public static HashSet<Tag> SuitIDs = new HashSet<Tag>();
+    [Header("Power"), SerializeField]
+    private Canvas powerLabelParent;
 
-	public static HashSet<Tag> SolidConveyorIDs = new HashSet<Tag>();
+    [SerializeField]
+    private LocText powerLabelPrefab;
 
-	public static HashSet<Tag> RadiationIDs = new HashSet<Tag>();
+    [Header("Suit"), SerializeField]
+    private GameObject suitOverlayPrefab;
 
-	[SerializeField]
-	public EventReference techViewSoundPath;
+    private EventInstance techViewSound;
 
-	private EventInstance techViewSound;
+    [SerializeField]
+    public EventReference techViewSoundPath;
 
-	private bool techViewSoundPlaying;
+    private bool techViewSoundPlaying;
 
-	public static OverlayScreen Instance;
+    [SerializeField]
+    private TextStyleSetting TooltipDescription;
 
-	[Header("Power")]
-	[SerializeField]
-	private Canvas powerLabelParent;
+    [Header("ToolTip"), SerializeField]
+    private TextStyleSetting TooltipHeader;
 
-	[SerializeField]
-	private LocText powerLabelPrefab;
+    public HashedString mode => currentModeInfo.mode.ViewMode();
 
-	[SerializeField]
-	private BatteryUI batUIPrefab;
+    protected override void OnPrefabInit() {
+        Debug.Assert(Instance == null);
+        Instance         = this;
+        powerLabelParent = GameObject.Find("WorldSpaceCanvas").GetComponent<Canvas>();
+    }
 
-	[SerializeField]
-	private Vector3 powerLabelOffset;
+    protected override void OnLoadLevel() {
+        harvestableNotificationPrefab = null;
+        powerLabelParent              = null;
+        Instance                      = null;
+        OverlayModes.Mode.Clear();
+        modeInfos       = null;
+        currentModeInfo = default(ModeInfo);
+        base.OnLoadLevel();
+    }
 
-	[SerializeField]
-	private Vector3 batteryUIOffset;
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        techViewSound        = KFMOD.CreateInstance(techViewSoundPath);
+        techViewSoundPlaying = false;
+        Shader.SetGlobalVector("_OverlayParams", Vector4.zero);
+        RegisterModes();
+        currentModeInfo = modeInfos[OverlayModes.None.ID];
+    }
 
-	[SerializeField]
-	private Vector3 batteryUITransformerOffset;
+    private void RegisterModes() {
+        modeInfos.Clear();
+        var mode = new OverlayModes.None();
+        RegisterMode(mode);
+        RegisterMode(new OverlayModes.Oxygen());
+        RegisterMode(new OverlayModes.Power(powerLabelParent,
+                                            powerLabelPrefab,
+                                            batUIPrefab,
+                                            powerLabelOffset,
+                                            batteryUIOffset,
+                                            batteryUITransformerOffset,
+                                            batteryUISmallTransformerOffset));
 
-	[SerializeField]
-	private Vector3 batteryUISmallTransformerOffset;
+        RegisterMode(new OverlayModes.Temperature());
+        RegisterMode(new OverlayModes.ThermalConductivity());
+        RegisterMode(new OverlayModes.Light());
+        RegisterMode(new OverlayModes.LiquidConduits());
+        RegisterMode(new OverlayModes.GasConduits());
+        RegisterMode(new OverlayModes.Decor());
+        RegisterMode(new OverlayModes.Disease(powerLabelParent, diseaseOverlayPrefab));
+        RegisterMode(new OverlayModes.Crop(powerLabelParent, harvestableNotificationPrefab));
+        RegisterMode(new OverlayModes.Harvest());
+        RegisterMode(new OverlayModes.Priorities());
+        RegisterMode(new OverlayModes.HeatFlow());
+        RegisterMode(new OverlayModes.Rooms());
+        RegisterMode(new OverlayModes.Suit(powerLabelParent, suitOverlayPrefab));
+        RegisterMode(new OverlayModes.Logic(logicModeUIPrefab));
+        RegisterMode(new OverlayModes.SolidConveyor());
+        RegisterMode(new OverlayModes.TileMode());
+        RegisterMode(new OverlayModes.Radiation());
+    }
 
-	[SerializeField]
-	private Color consumerColour;
+    private void RegisterMode(OverlayModes.Mode mode) { modeInfos[mode.ViewMode()] = new ModeInfo { mode = mode }; }
+    private void LateUpdate()                         { currentModeInfo.mode.Update(); }
 
-	[SerializeField]
-	private Color generatorColour;
+    public void RunPostProcessEffects(RenderTexture src, RenderTexture dest) {
+        currentModeInfo.mode.OnRenderImage(src, dest);
+    }
 
-	[SerializeField]
-	private Color buildingDisabledColour = Color.gray;
+    public void ToggleOverlay(HashedString newMode, bool allowSound = true) {
+        var flag = allowSound && !(currentModeInfo.mode.ViewMode() == newMode);
+        if (newMode != OverlayModes.None.ID) ManagementMenu.Instance.CloseAll();
+        currentModeInfo.mode.Disable();
+        if (newMode != currentModeInfo.mode.ViewMode() && newMode == OverlayModes.None.ID)
+            ManagementMenu.Instance.CloseAll();
 
-	[Header("Circuits")]
-	[SerializeField]
-	private Color32 circuitUnpoweredColour;
+        SimDebugView.Instance.SetMode(newMode);
+        if (!modeInfos.TryGetValue(newMode, out currentModeInfo)) currentModeInfo = modeInfos[OverlayModes.None.ID];
+        currentModeInfo.mode.Enable();
+        if (flag) UpdateOverlaySounds();
+        if (OverlayModes.None.ID == currentModeInfo.mode.ViewMode()) {
+            AudioMixer.instance.Stop(AudioMixerSnapshots.Get().TechFilterOnMigrated);
+            MusicManager.instance.SetDynamicMusicOverlayInactive();
+            techViewSound.stop(STOP_MODE.ALLOWFADEOUT);
+            techViewSoundPlaying = false;
+        } else if (!techViewSoundPlaying) {
+            AudioMixer.instance.Start(AudioMixerSnapshots.Get().TechFilterOnMigrated);
+            MusicManager.instance.SetDynamicMusicOverlayActive();
+            techViewSound.start();
+            techViewSoundPlaying = true;
+        }
 
-	[SerializeField]
-	private Color32 circuitSafeColour;
+        if (OnOverlayChanged != null) OnOverlayChanged(currentModeInfo.mode.ViewMode());
+        ActivateLegend();
+    }
 
-	[SerializeField]
-	private Color32 circuitStrainingColour;
+    private void ActivateLegend() {
+        if (OverlayLegend.Instance == null) return;
 
-	[SerializeField]
-	private Color32 circuitOverloadingColour;
+        OverlayLegend.Instance.SetLegend(currentModeInfo.mode);
+    }
 
-	[Header("Crops")]
-	[SerializeField]
-	private GameObject harvestableNotificationPrefab;
+    public void Refresh() { LateUpdate(); }
 
-	[Header("Disease")]
-	[SerializeField]
-	private GameObject diseaseOverlayPrefab;
+    public HashedString GetMode() {
+        if (currentModeInfo.mode == null) return OverlayModes.None.ID;
 
-	[Header("Suit")]
-	[SerializeField]
-	private GameObject suitOverlayPrefab;
+        return currentModeInfo.mode.ViewMode();
+    }
 
-	[Header("ToolTip")]
-	[SerializeField]
-	private TextStyleSetting TooltipHeader;
+    private void UpdateOverlaySounds() {
+        var text = currentModeInfo.mode.GetSoundName();
+        if (text != "") {
+            text = GlobalAssets.GetSound(text);
+            PlaySound(text);
+        }
+    }
 
-	[SerializeField]
-	private TextStyleSetting TooltipDescription;
-
-	[Header("Logic")]
-	[SerializeField]
-	private LogicModeUI logicModeUIPrefab;
-
-	public Action<HashedString> OnOverlayChanged;
-
-	private OverlayScreen.ModeInfo currentModeInfo;
-
-	private Dictionary<HashedString, OverlayScreen.ModeInfo> modeInfos = new Dictionary<HashedString, OverlayScreen.ModeInfo>();
-
-	private struct ModeInfo
-	{
-		public OverlayModes.Mode mode;
-	}
+    private struct ModeInfo {
+        public OverlayModes.Mode mode;
+    }
 }

@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ColonyDiagnosticUtility.Instance = null;
 	}
 
-	public ColonyDiagnostic.DiagnosticResult.Opinion GetWorldDiagnosticResult(int worldID)
+		public ColonyDiagnostic.DiagnosticResult.Opinion GetWorldDiagnosticResult(int worldID)
 	{
 		ColonyDiagnostic.DiagnosticResult.Opinion opinion = ColonyDiagnostic.DiagnosticResult.Opinion.Good;
 		foreach (ColonyDiagnostic colonyDiagnostic in this.worldDiagnostics[worldID])
@@ -34,7 +34,7 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		return opinion;
 	}
 
-	public string GetWorldDiagnosticResultStatus(int worldID)
+		public string GetWorldDiagnosticResultStatus(int worldID)
 	{
 		ColonyDiagnostic colonyDiagnostic = null;
 		foreach (ColonyDiagnostic colonyDiagnostic2 in this.worldDiagnostics[worldID])
@@ -61,7 +61,7 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		return colonyDiagnostic.name;
 	}
 
-	public string GetWorldDiagnosticResultTooltip(int worldID)
+		public string GetWorldDiagnosticResultTooltip(int worldID)
 	{
 		string text = "";
 		foreach (ColonyDiagnostic colonyDiagnostic in this.worldDiagnostics[worldID])
@@ -84,12 +84,12 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		return text;
 	}
 
-	public bool IsDiagnosticTutorialDisabled(string id)
+		public bool IsDiagnosticTutorialDisabled(string id)
 	{
 		return ColonyDiagnosticUtility.Instance.diagnosticTutorialStatus.ContainsKey(id) && GameClock.Instance.GetTime() < ColonyDiagnosticUtility.Instance.diagnosticTutorialStatus[id];
 	}
 
-	public void ClearDiagnosticTutorialSetting(string id)
+		public void ClearDiagnosticTutorialSetting(string id)
 	{
 		if (ColonyDiagnosticUtility.Instance.diagnosticTutorialStatus.ContainsKey(id))
 		{
@@ -97,13 +97,13 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public bool IsCriteriaEnabled(int worldID, string diagnosticID, string criteriaID)
+		public bool IsCriteriaEnabled(int worldID, string diagnosticID, string criteriaID)
 	{
 		Dictionary<string, List<string>> dictionary = this.diagnosticCriteriaDisabled[worldID];
 		return dictionary.ContainsKey(diagnosticID) && !dictionary[diagnosticID].Contains(criteriaID);
 	}
 
-	public void SetCriteriaEnabled(int worldID, string diagnosticID, string criteriaID, bool enabled)
+		public void SetCriteriaEnabled(int worldID, string diagnosticID, string criteriaID, bool enabled)
 	{
 		Dictionary<string, List<string>> dictionary = this.diagnosticCriteriaDisabled[worldID];
 		global::Debug.Assert(dictionary.ContainsKey(diagnosticID), string.Format("Trying to set criteria on World {0} lacks diagnostic {1} that criteria {2} relates to", worldID, diagnosticID, criteriaID));
@@ -118,13 +118,13 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		ColonyDiagnosticUtility.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 33))
@@ -147,13 +147,13 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		ClusterManager.Instance.Subscribe(-1078710002, new Action<object>(this.RemoveWorld));
 	}
 
-	private void Refresh(object data)
+		private void Refresh(object data)
 	{
 		int worldID = (int)data;
 		this.AddWorld(worldID);
 	}
 
-	private void RemoveWorld(object data)
+		private void RemoveWorld(object data)
 	{
 		int key = (int)data;
 		if (this.diagnosticDisplaySettings.Remove(key))
@@ -170,17 +170,17 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public ColonyDiagnostic GetDiagnostic(string id, int worldID)
+		public ColonyDiagnostic GetDiagnostic(string id, int worldID)
 	{
 		return this.worldDiagnostics[worldID].Find((ColonyDiagnostic match) => match.id == id);
 	}
 
-	public T GetDiagnostic<T>(int worldID) where T : ColonyDiagnostic
+		public T GetDiagnostic<T>(int worldID) where T : ColonyDiagnostic
 	{
 		return (T)((object)this.worldDiagnostics[worldID].Find((ColonyDiagnostic match) => match is T));
 	}
 
-	public string GetDiagnosticName(string id)
+		public string GetDiagnosticName(string id)
 	{
 		foreach (KeyValuePair<int, List<ColonyDiagnostic>> keyValuePair in this.worldDiagnostics)
 		{
@@ -196,17 +196,17 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		return "";
 	}
 
-	public ChoreGroupDiagnostic GetChoreGroupDiagnostic(int worldID, ChoreGroup choreGroup)
+		public ChoreGroupDiagnostic GetChoreGroupDiagnostic(int worldID, ChoreGroup choreGroup)
 	{
 		return (ChoreGroupDiagnostic)this.worldDiagnostics[worldID].Find((ColonyDiagnostic match) => match is ChoreGroupDiagnostic && ((ChoreGroupDiagnostic)match).choreGroup == choreGroup);
 	}
 
-	public WorkTimeDiagnostic GetWorkTimeDiagnostic(int worldID, ChoreGroup choreGroup)
+		public WorkTimeDiagnostic GetWorkTimeDiagnostic(int worldID, ChoreGroup choreGroup)
 	{
 		return (WorkTimeDiagnostic)this.worldDiagnostics[worldID].Find((ColonyDiagnostic match) => match is WorkTimeDiagnostic && ((WorkTimeDiagnostic)match).choreGroup == choreGroup);
 	}
 
-	private void TryAddDiagnosticToWorldCollection(ref List<ColonyDiagnostic> newWorldDiagnostics, ColonyDiagnostic newDiagnostic)
+		private void TryAddDiagnosticToWorldCollection(ref List<ColonyDiagnostic> newWorldDiagnostics, ColonyDiagnostic newDiagnostic)
 	{
 		if (!DlcManager.IsDlcListValidForCurrentContent(newDiagnostic.GetDlcIds()))
 		{
@@ -215,7 +215,7 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		newWorldDiagnostics.Add(newDiagnostic);
 	}
 
-	public void AddWorld(int worldID)
+		public void AddWorld(int worldID)
 	{
 		bool flag = false;
 		if (!this.diagnosticDisplaySettings.ContainsKey(worldID))
@@ -281,7 +281,7 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		if (ColonyDiagnosticUtility.IgnoreFirstUpdate)
 		{
@@ -289,13 +289,13 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public static bool PastNewBuildingGracePeriod(Transform building)
+		public static bool PastNewBuildingGracePeriod(Transform building)
 	{
 		BuildingComplete component = building.GetComponent<BuildingComplete>();
 		return !(component != null) || GameClock.Instance.GetTime() - component.creationTime >= 600f;
 	}
 
-	public static bool IgnoreRocketsWithNoCrewRequested(int worldID, out ColonyDiagnostic.DiagnosticResult result)
+		public static bool IgnoreRocketsWithNoCrewRequested(int worldID, out ColonyDiagnostic.DiagnosticResult result)
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(worldID);
 		string message = world.IsModuleInterior ? UI.COLONY_DIAGNOSTICS.NO_MINIONS_ROCKET : UI.COLONY_DIAGNOSTICS.NO_MINIONS_PLANETOID;
@@ -321,17 +321,17 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		return false;
 	}
 
-	public static ColonyDiagnosticUtility Instance;
+		public static ColonyDiagnosticUtility Instance;
 
-	private Dictionary<int, List<ColonyDiagnostic>> worldDiagnostics = new Dictionary<int, List<ColonyDiagnostic>>();
+		private Dictionary<int, List<ColonyDiagnostic>> worldDiagnostics = new Dictionary<int, List<ColonyDiagnostic>>();
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<int, Dictionary<string, ColonyDiagnosticUtility.DisplaySetting>> diagnosticDisplaySettings = new Dictionary<int, Dictionary<string, ColonyDiagnosticUtility.DisplaySetting>>();
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<int, Dictionary<string, List<string>>> diagnosticCriteriaDisabled = new Dictionary<int, Dictionary<string, List<string>>>();
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<string, float> diagnosticTutorialStatus = new Dictionary<string, float>
 	{
 		{
@@ -372,15 +372,15 @@ public class ColonyDiagnosticUtility : KMonoBehaviour, ISim1000ms
 		}
 	};
 
-	public static bool IgnoreFirstUpdate = true;
+		public static bool IgnoreFirstUpdate = true;
 
-	public static ColonyDiagnostic.DiagnosticResult NoDataResult = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.NO_DATA, null);
+		public static ColonyDiagnostic.DiagnosticResult NoDataResult = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.NO_DATA, null);
 
-	public enum DisplaySetting
+		public enum DisplaySetting
 	{
-		Always,
-		AlertOnly,
-		Never,
-		LENGTH
+				Always,
+				AlertOnly,
+				Never,
+				LENGTH
 	}
 }

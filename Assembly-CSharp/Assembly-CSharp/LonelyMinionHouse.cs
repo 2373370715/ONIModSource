@@ -7,19 +7,19 @@ using UnityEngine;
 
 public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, LonelyMinionHouse.Def>
 {
-	private bool ValidateOperationalTransition(LonelyMinionHouse.Instance smi)
+		private bool ValidateOperationalTransition(LonelyMinionHouse.Instance smi)
 	{
 		Operational component = smi.GetComponent<Operational>();
 		bool flag = smi.IsInsideState(smi.sm.Active);
 		return component != null && flag != component.IsOperational;
 	}
 
-	private static bool AllQuestsComplete(LonelyMinionHouse.Instance smi)
+		private static bool AllQuestsComplete(LonelyMinionHouse.Instance smi)
 	{
 		return 1f - smi.sm.QuestProgress.Get(smi) <= Mathf.Epsilon;
 	}
 
-	public static void EvaluateLights(LonelyMinionHouse.Instance smi, float dt)
+		public static void EvaluateLights(LonelyMinionHouse.Instance smi, float dt)
 	{
 		bool flag = smi.IsInsideState(smi.sm.Active);
 		QuestInstance instance = QuestManager.GetInstance(smi.QuestOwnerId, Db.Get().Quests.LonelyMinionPowerQuest);
@@ -36,7 +36,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 		}, out flag2, out flag3);
 	}
 
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.Inactive;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -52,7 +52,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 		this.Active.StoryComplete.Enter(new StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.State.Callback(LonelyMinionHouse.ActiveStates.OnEnterStoryComplete));
 	}
 
-	public static float CalculateAverageDecor(Extents area)
+		public static float CalculateAverageDecor(Extents area)
 	{
 		float num = 0f;
 		int cell = Grid.XYToCell(area.x, area.y);
@@ -64,23 +64,23 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 		return num / (float)(area.width * area.height);
 	}
 
-	public GameStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.State Inactive;
+		public GameStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.State Inactive;
 
-	public LonelyMinionHouse.ActiveStates Active;
+		public LonelyMinionHouse.ActiveStates Active;
 
-	public StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.Signal MailDelivered;
+		public StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.Signal MailDelivered;
 
-	public StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.Signal CompleteStory;
+		public StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.Signal CompleteStory;
 
-	public StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.FloatParameter QuestProgress;
+		public StateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.FloatParameter QuestProgress;
 
-	public class Def : StoryTraitStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, LonelyMinionHouse.Def>.TraitDef
+		public class Def : StoryTraitStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, LonelyMinionHouse.Def>.TraitDef
 	{
 	}
 
-	public new class Instance : StoryTraitStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, LonelyMinionHouse.Def>.TraitInstance, ICheckboxListGroupControl
+		public new class Instance : StoryTraitStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, LonelyMinionHouse.Def>.TraitInstance, ICheckboxListGroupControl
 	{
-				public HashedString QuestOwnerId
+						public HashedString QuestOwnerId
 		{
 			get
 			{
@@ -88,7 +88,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 		}
 
-				public KBatchedAnimController AnimController
+						public KBatchedAnimController AnimController
 		{
 			get
 			{
@@ -96,7 +96,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 		}
 
-				public KBatchedAnimController LightsController
+						public KBatchedAnimController LightsController
 		{
 			get
 			{
@@ -104,7 +104,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 		}
 
-				public KBatchedAnimController BlindsController
+						public KBatchedAnimController BlindsController
 		{
 			get
 			{
@@ -112,7 +112,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 		}
 
-				public Light2D Light
+						public Light2D Light
 		{
 			get
 			{
@@ -120,11 +120,11 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 		}
 
-		public Instance(StateMachineController master, LonelyMinionHouse.Def def) : base(master, def)
+				public Instance(StateMachineController master, LonelyMinionHouse.Def def) : base(master, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			this.animControllers = base.gameObject.GetComponentsInChildren<KBatchedAnimController>(true);
 			this.light = this.LightsController.GetComponent<Light2D>();
@@ -187,7 +187,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			this.blinds.meterController.Play(array, KAnim.PlayMode.Once);
 		}
 
-		public override void StopSM(string reason)
+				public override void StopSM(string reason)
 		{
 			base.StopSM(reason);
 			Activatable component = base.GetComponent<Activatable>();
@@ -196,7 +196,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			base.Unsubscribe(-592767678, new Action<object>(this.OnBuildingActivated));
 		}
 
-		private void OnQuestProgressChanged(QuestInstance quest, Quest.State prevState, float delta)
+				private void OnQuestProgressChanged(QuestInstance quest, Quest.State prevState, float delta)
 		{
 			float num = base.sm.QuestProgress.Get(this);
 			num += delta / 3f;
@@ -221,12 +221,12 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			this.blinds.meterController.Queue(string.Format("{0}_{1}", "meter_blinds", num3 - 1), KAnim.PlayMode.Once, 1f, 0f);
 		}
 
-		public void MailboxContentChanged(GameObject item)
+				public void MailboxContentChanged(GameObject item)
 		{
 			this.lonelyMinion.sm.Mail.Set(item, this.lonelyMinion, false);
 		}
 
-		public override void CompleteEvent()
+				public override void CompleteEvent()
 		{
 			if (this.lonelyMinion == null)
 			{
@@ -263,7 +263,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			base.CompleteEvent();
 		}
 
-		public override void OnCompleteStorySequence()
+				public override void OnCompleteStorySequence()
 		{
 			this.SpawnMinion();
 			base.Unsubscribe(-592767678, new Action<object>(this.OnBuildingActivated));
@@ -292,7 +292,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			RootMenu.Instance.Refresh();
 		}
 
-		private void SpawnMinion()
+				private void SpawnMinion()
 		{
 			if (StoryManager.Instance.IsStoryComplete(Db.Get().Stories.LonelyMinion))
 			{
@@ -323,7 +323,9 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 			UnityEngine.Object.Destroy(this.lonelyMinion.gameObject);
 			this.lonelyMinion = null;
-			MinionIdentity minionIdentity = Util.KInstantiate<MinionIdentity>(Assets.GetPrefab(MinionConfig.ID), null, null);
+			GameObject prefab = Assets.GetPrefab(BaseMinionConfig.GetMinionIDForModel(minionStartingStats.personality.model));
+			MinionIdentity minionIdentity = Util.KInstantiate<MinionIdentity>(prefab, null, null);
+			minionIdentity.name = prefab.name;
 			Immigration.Instance.ApplyDefaultPersonalPriorities(minionIdentity.gameObject);
 			minionIdentity.gameObject.SetActive(true);
 			minionStartingStats.Apply(minionIdentity.gameObject);
@@ -339,7 +341,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			minionIdentity.transform.SetPosition(position);
 		}
 
-		private bool TryFindMailbox()
+				private bool TryFindMailbox()
 		{
 			if (base.sm.QuestProgress.Get(this) == 1f)
 			{
@@ -363,7 +365,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			return flag;
 		}
 
-		private void OnBuildingLayerChanged(int cell, object data)
+				private void OnBuildingLayerChanged(int cell, object data)
 		{
 			GameObject gameObject = data as GameObject;
 			if (gameObject == null)
@@ -378,18 +380,18 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 		}
 
-		public void OnPoweredStateChanged(bool isPowered)
+				public void OnPoweredStateChanged(bool isPowered)
 		{
 			this.light.enabled = (isPowered && base.GetComponent<Operational>().IsOperational);
 			this.LightsController.Play(this.light.enabled ? LonelyMinionHouseConfig.LIGHTS_ON : LonelyMinionHouseConfig.LIGHTS_OFF, KAnim.PlayMode.Loop, 1f, 0f);
 		}
 
-		private void StartStoryTrait()
+				private void StartStoryTrait()
 		{
 			base.TriggerStoryEvent(StoryInstance.State.IN_PROGRESS);
 		}
 
-		protected override void OnBuildingActivated(object data)
+				protected override void OnBuildingActivated(object data)
 		{
 			if (!this.IsIntroSequenceComplete())
 			{
@@ -406,7 +408,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 		}
 
-		protected override void OnObjectSelect(object clicked)
+				protected override void OnObjectSelect(object clicked)
 		{
 			if (!(bool)clicked)
 			{
@@ -433,7 +435,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			base.OnObjectSelect(clicked);
 		}
 
-		private void OnWorkStateChanged(Workable w, Workable.WorkableEvent state)
+				private void OnWorkStateChanged(Workable w, Workable.WorkableEvent state)
 		{
 			Activatable activatable = w as Activatable;
 			if (activatable != null)
@@ -484,7 +486,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 		}
 
-		private void ReleaseKnocker(object _)
+				private void ReleaseKnocker(object _)
 		{
 			Navigator component = this.knocker.GetComponent<Navigator>();
 			NavGrid.NavTypeData navTypeData = component.NavGrid.GetNavTypeData(component.CurrentNavType);
@@ -497,7 +499,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			this.knocker = null;
 		}
 
-		private void PlayIntroSequence(object _ = null)
+				private void PlayIntroSequence(object _ = null)
 		{
 			base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.AttentionRequired, false);
 			Vector3 target = Grid.CellToPosCCC(Grid.OffsetCell(Grid.PosToCell(base.gameObject), base.def.CompletionData.CameraTargetOffset), Grid.SceneLayer.Ore);
@@ -515,7 +517,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			this.knockNotification = null;
 		}
 
-		private void OnIntroSequenceComplete()
+				private void OnIntroSequenceComplete()
 		{
 			this.OnBuildingActivated(null);
 			bool flag;
@@ -526,7 +528,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}, out flag, out flag2);
 		}
 
-		private bool IsIntroSequenceComplete()
+				private bool IsIntroSequenceComplete()
 		{
 			if (this.currentWorkState == Workable.WorkableEvent.WorkStarted)
 			{
@@ -544,7 +546,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			return this.currentWorkState == Workable.WorkableEvent.WorkStopped && this.knocker == null;
 		}
 
-		public Vector3 GetParcelPosition()
+				public Vector3 GetParcelPosition()
 		{
 			int index = -1;
 			KAnimFileData data = Assets.GetAnim("anim_interacts_lonely_dupe_kanim").GetData();
@@ -581,7 +583,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			return result;
 		}
 
-				public string Title
+						public string Title
 		{
 			get
 			{
@@ -589,7 +591,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 		}
 
-				public string Description
+						public string Description
 		{
 			get
 			{
@@ -597,7 +599,7 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			}
 		}
 
-		public ICheckboxListGroupControl.ListGroup[] GetData()
+				public ICheckboxListGroupControl.ListGroup[] GetData()
 		{
 			QuestInstance greetingQuest = QuestManager.GetInstance(this.questOwnerId, Db.Get().Quests.LonelyMinionGreetingQuest);
 			if (!greetingQuest.IsComplete)
@@ -619,13 +621,13 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			};
 		}
 
-		private string ResolveQuestTitle(string title, QuestInstance quest)
+				private string ResolveQuestTitle(string title, QuestInstance quest)
 		{
 			string str = GameUtil.FloatToString(quest.CurrentProgress * 100f, "##0") + UI.UNITSUFFIXES.PERCENT;
 			return title + " - " + str;
 		}
 
-		private string ResolveQuestToolTips(int criteriaId, string toolTip, QuestInstance quest)
+				private string ResolveQuestToolTips(int criteriaId, string toolTip, QuestInstance quest)
 		{
 			if (criteriaId == LonelyMinionConfig.FoodCriteriaId.HashValue)
 			{
@@ -661,46 +663,46 @@ public class LonelyMinionHouse : StoryTraitStateMachine<LonelyMinionHouse, Lonel
 			return string.Format(toolTip, Mathf.CeilToInt(f));
 		}
 
-		public bool SidescreenEnabled()
+				public bool SidescreenEnabled()
 		{
 			return StoryManager.Instance.HasDisplayedPopup(Db.Get().Stories.LonelyMinion, EventInfoDataHelper.PopupType.BEGIN) && !StoryManager.Instance.CheckState(StoryInstance.State.COMPLETE, Db.Get().Stories.LonelyMinion);
 		}
 
-		public int CheckboxSideScreenSortOrder()
+				public int CheckboxSideScreenSortOrder()
 		{
 			return 20;
 		}
 
-		private KAnimLink lightsLink;
+				private KAnimLink lightsLink;
 
-		private HashedString questOwnerId;
+				private HashedString questOwnerId;
 
-		private LonelyMinion.Instance lonelyMinion;
+				private LonelyMinion.Instance lonelyMinion;
 
-		private KBatchedAnimController[] animControllers;
+				private KBatchedAnimController[] animControllers;
 
-		private Light2D light;
+				private Light2D light;
 
-		private FilteredStorage storageFilter;
+				private FilteredStorage storageFilter;
 
-		private MeterController meter;
+				private MeterController meter;
 
-		private MeterController blinds;
+				private MeterController blinds;
 
-		private Workable.WorkableEvent currentWorkState = Workable.WorkableEvent.WorkStopped;
+				private Workable.WorkableEvent currentWorkState = Workable.WorkableEvent.WorkStopped;
 
-		private Notification knockNotification;
+				private Notification knockNotification;
 
-		private KBatchedAnimController knocker;
+				private KBatchedAnimController knocker;
 	}
 
-	public class ActiveStates : GameStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.State
+		public class ActiveStates : GameStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.State
 	{
-		public static void OnEnterStoryComplete(LonelyMinionHouse.Instance smi)
+				public static void OnEnterStoryComplete(LonelyMinionHouse.Instance smi)
 		{
 			smi.CompleteEvent();
 		}
 
-		public GameStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.State StoryComplete;
+				public GameStateMachine<LonelyMinionHouse, LonelyMinionHouse.Instance, StateMachineController, LonelyMinionHouse.Def>.State StoryComplete;
 	}
 }

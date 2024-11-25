@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ReturnToChargeStationStates : GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.emote;
 		this.emote.ToggleStatusItem(Db.Get().RobotStatusItems.MovingToChargeStation, (ReturnToChargeStationStates.Instance smi) => smi.gameObject, Db.Get().StatusItemCategories.Main).PlayAnim("react_lobatt", KAnim.PlayMode.Once).OnAnimQueueComplete(this.movingToChargingStation);
@@ -52,7 +52,7 @@ public class ReturnToChargeStationStates : GameStateMachine<ReturnToChargeStatio
 		this.behaviourcomplete.BehaviourComplete(GameTags.Robots.Behaviours.RechargeBehaviour, false);
 	}
 
-	public Storage GetSweepLocker(ReturnToChargeStationStates.Instance smi)
+		public Storage GetSweepLocker(ReturnToChargeStationStates.Instance smi)
 	{
 		StorageUnloadMonitor.Instance smi2 = smi.master.gameObject.GetSMI<StorageUnloadMonitor.Instance>();
 		if (smi2 == null)
@@ -62,7 +62,7 @@ public class ReturnToChargeStationStates : GameStateMachine<ReturnToChargeStatio
 		return smi2.sm.sweepLocker.Get(smi2);
 	}
 
-	public void Station_StartCharging(ReturnToChargeStationStates.Instance smi)
+		public void Station_StartCharging(ReturnToChargeStationStates.Instance smi)
 	{
 		Storage sweepLocker = this.GetSweepLocker(smi);
 		if (sweepLocker != null)
@@ -71,7 +71,7 @@ public class ReturnToChargeStationStates : GameStateMachine<ReturnToChargeStatio
 		}
 	}
 
-	public void Station_StopCharging(ReturnToChargeStationStates.Instance smi)
+		public void Station_StopCharging(ReturnToChargeStationStates.Instance smi)
 	{
 		Storage sweepLocker = this.GetSweepLocker(smi);
 		if (sweepLocker != null)
@@ -80,7 +80,7 @@ public class ReturnToChargeStationStates : GameStateMachine<ReturnToChargeStatio
 		}
 	}
 
-	public void Station_DockRobot(ReturnToChargeStationStates.Instance smi, bool dockState)
+		public void Station_DockRobot(ReturnToChargeStationStates.Instance smi, bool dockState)
 	{
 		Storage sweepLocker = this.GetSweepLocker(smi);
 		if (sweepLocker != null)
@@ -89,46 +89,46 @@ public class ReturnToChargeStationStates : GameStateMachine<ReturnToChargeStatio
 		}
 	}
 
-	public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State emote;
+		public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State emote;
 
-	public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State idle;
+		public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State idle;
 
-	public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State movingToChargingStation;
+		public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State movingToChargingStation;
 
-	public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State behaviourcomplete;
+		public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State behaviourcomplete;
 
-	public ReturnToChargeStationStates.ChargingStates chargingstates;
+		public ReturnToChargeStationStates.ChargingStates chargingstates;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.GameInstance
 	{
-		public Instance(Chore<ReturnToChargeStationStates.Instance> chore, ReturnToChargeStationStates.Def def) : base(chore, def)
+				public Instance(Chore<ReturnToChargeStationStates.Instance> chore, ReturnToChargeStationStates.Def def) : base(chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Robots.Behaviours.RechargeBehaviour);
 		}
 
-		public bool ChargeAborted()
+				public bool ChargeAborted()
 		{
 			return base.smi.sm.GetSweepLocker(base.smi) == null || !base.smi.sm.GetSweepLocker(base.smi).GetComponent<Operational>().IsActive;
 		}
 
-		public bool StationReadyToCharge()
+				public bool StationReadyToCharge()
 		{
 			return base.smi.sm.GetSweepLocker(base.smi) != null && base.smi.sm.GetSweepLocker(base.smi).GetComponent<Operational>().IsActive;
 		}
 	}
 
-	public class ChargingStates : GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State
+		public class ChargingStates : GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State
 	{
-		public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State waitingForCharging;
+				public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State waitingForCharging;
 
-		public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State charging;
+				public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State charging;
 
-		public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State interupted;
+				public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State interupted;
 
-		public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State completed;
+				public GameStateMachine<ReturnToChargeStationStates, ReturnToChargeStationStates.Instance, IStateMachineTarget, ReturnToChargeStationStates.Def>.State completed;
 	}
 }

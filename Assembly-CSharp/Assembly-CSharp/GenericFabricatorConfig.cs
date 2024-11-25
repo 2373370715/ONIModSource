@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GenericFabricatorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "GenericFabricator";
 		int width = 3;
@@ -29,7 +29,7 @@ public class GenericFabricatorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<DropAllWorkable>();
 		Prioritizable.AddRef(go);
@@ -48,10 +48,10 @@ public class GenericFabricatorConfig : IBuildingConfig
 		go.AddOrGet<LoopingSounds>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveStoppableController.Def>();
 	}
 
-	public const string ID = "GenericFabricator";
+		public const string ID = "GenericFabricator";
 }

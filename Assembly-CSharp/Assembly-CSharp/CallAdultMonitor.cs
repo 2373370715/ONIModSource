@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CallAdultMonitor : GameStateMachine<CallAdultMonitor, CallAdultMonitor.Instance, IStateMachineTarget, CallAdultMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.ToggleBehaviour(GameTags.Creatures.Behaviours.CallAdultBehaviour, new StateMachine<CallAdultMonitor, CallAdultMonitor.Instance, IStateMachineTarget, CallAdultMonitor.Def>.Transition.ConditionCallback(CallAdultMonitor.ShouldCallAdult), delegate(CallAdultMonitor.Instance smi)
@@ -12,30 +12,30 @@ public class CallAdultMonitor : GameStateMachine<CallAdultMonitor, CallAdultMoni
 		});
 	}
 
-	public static bool ShouldCallAdult(CallAdultMonitor.Instance smi)
+		public static bool ShouldCallAdult(CallAdultMonitor.Instance smi)
 	{
 		return Time.time >= smi.nextCallTime;
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public float callMinInterval = 120f;
+				public float callMinInterval = 120f;
 
-		public float callMaxInterval = 240f;
+				public float callMaxInterval = 240f;
 	}
 
-	public new class Instance : GameStateMachine<CallAdultMonitor, CallAdultMonitor.Instance, IStateMachineTarget, CallAdultMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<CallAdultMonitor, CallAdultMonitor.Instance, IStateMachineTarget, CallAdultMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, CallAdultMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, CallAdultMonitor.Def def) : base(master, def)
 		{
 			this.RefreshCallTime();
 		}
 
-		public void RefreshCallTime()
+				public void RefreshCallTime()
 		{
 			this.nextCallTime = Time.time + UnityEngine.Random.value * (base.def.callMaxInterval - base.def.callMinInterval) + base.def.callMinInterval;
 		}
 
-		public float nextCallTime;
+				public float nextCallTime;
 	}
 }

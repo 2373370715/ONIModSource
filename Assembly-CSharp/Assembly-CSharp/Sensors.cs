@@ -5,13 +5,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Sensors")]
 public class Sensors : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.GetComponent<Brain>().onPreUpdate += this.OnBrainPreUpdate;
 	}
 
-	public SensorType GetSensor<SensorType>() where SensorType : Sensor
+		public SensorType GetSensor<SensorType>() where SensorType : Sensor
 	{
 		foreach (Sensor sensor in this.sensors)
 		{
@@ -24,26 +24,32 @@ public class Sensors : KMonoBehaviour
 		return default(SensorType);
 	}
 
-	public void Add(Sensor sensor)
+		public void Add(Sensor sensor)
 	{
 		this.sensors.Add(sensor);
-		sensor.Update();
-	}
-
-	public void UpdateSensors()
-	{
-		foreach (Sensor sensor in this.sensors)
+		if (sensor.IsEnabled)
 		{
 			sensor.Update();
 		}
 	}
 
-	private void OnBrainPreUpdate()
+		public void UpdateSensors()
+	{
+		foreach (Sensor sensor in this.sensors)
+		{
+			if (sensor.IsEnabled)
+			{
+				sensor.Update();
+			}
+		}
+	}
+
+		private void OnBrainPreUpdate()
 	{
 		this.UpdateSensors();
 	}
 
-	public void ShowEditor()
+		public void ShowEditor()
 	{
 		foreach (Sensor sensor in this.sensors)
 		{
@@ -51,5 +57,5 @@ public class Sensors : KMonoBehaviour
 		}
 	}
 
-	public List<Sensor> sensors = new List<Sensor>();
+		public List<Sensor> sensors = new List<Sensor>();
 }

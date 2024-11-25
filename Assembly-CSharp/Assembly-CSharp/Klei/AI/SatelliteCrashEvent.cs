@@ -4,26 +4,26 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class SatelliteCrashEvent : GameplayEvent<SatelliteCrashEvent.StatesInstance>
+		public class SatelliteCrashEvent : GameplayEvent<SatelliteCrashEvent.StatesInstance>
 	{
-		public SatelliteCrashEvent() : base("SatelliteCrash", 0, 0)
+				public SatelliteCrashEvent() : base("SatelliteCrash", 0, 0)
 		{
 			this.title = GAMEPLAY_EVENTS.EVENT_TYPES.SATELLITE_CRASH.NAME;
 			this.description = GAMEPLAY_EVENTS.EVENT_TYPES.SATELLITE_CRASH.DESCRIPTION;
 		}
 
-		public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
+				public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
 		{
 			return new SatelliteCrashEvent.StatesInstance(manager, eventInstance, this);
 		}
 
-		public class StatesInstance : GameplayEventStateMachine<SatelliteCrashEvent.States, SatelliteCrashEvent.StatesInstance, GameplayEventManager, SatelliteCrashEvent>.GameplayEventStateMachineInstance
+				public class StatesInstance : GameplayEventStateMachine<SatelliteCrashEvent.States, SatelliteCrashEvent.StatesInstance, GameplayEventManager, SatelliteCrashEvent>.GameplayEventStateMachineInstance
 		{
-			public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, SatelliteCrashEvent crashEvent) : base(master, eventInstance, crashEvent)
+						public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, SatelliteCrashEvent crashEvent) : base(master, eventInstance, crashEvent)
 			{
 			}
 
-			public Notification Plan()
+						public Notification Plan()
 			{
 				Vector3 position = new Vector3((float)(Grid.WidthInCells / 2 + UnityEngine.Random.Range(-Grid.WidthInCells / 3, Grid.WidthInCells / 3)), (float)(Grid.HeightInCells - 1), Grid.GetLayerZ(Grid.SceneLayer.FXFront));
 				GameObject spawn = Util.KInstantiate(Assets.GetPrefab(SatelliteCometConfig.ID), position);
@@ -42,16 +42,16 @@ namespace Klei.AI
 			}
 		}
 
-		public class States : GameplayEventStateMachine<SatelliteCrashEvent.States, SatelliteCrashEvent.StatesInstance, GameplayEventManager, SatelliteCrashEvent>
+				public class States : GameplayEventStateMachine<SatelliteCrashEvent.States, SatelliteCrashEvent.StatesInstance, GameplayEventManager, SatelliteCrashEvent>
 		{
-			public override void InitializeStates(out StateMachine.BaseState default_state)
+						public override void InitializeStates(out StateMachine.BaseState default_state)
 			{
 				default_state = this.notify;
 				this.notify.ToggleNotification((SatelliteCrashEvent.StatesInstance smi) => smi.Plan());
 				this.ending.ReturnSuccess();
 			}
 
-			public override EventInfoData GenerateEventPopupData(SatelliteCrashEvent.StatesInstance smi)
+						public override EventInfoData GenerateEventPopupData(SatelliteCrashEvent.StatesInstance smi)
 			{
 				EventInfoData eventInfoData = new EventInfoData(smi.gameplayEvent.title, smi.gameplayEvent.description, smi.gameplayEvent.animFileName);
 				eventInfoData.location = GAMEPLAY_EVENTS.LOCATIONS.SURFACE;
@@ -63,9 +63,9 @@ namespace Klei.AI
 				return eventInfoData;
 			}
 
-			public GameStateMachine<SatelliteCrashEvent.States, SatelliteCrashEvent.StatesInstance, GameplayEventManager, object>.State notify;
+						public GameStateMachine<SatelliteCrashEvent.States, SatelliteCrashEvent.StatesInstance, GameplayEventManager, object>.State notify;
 
-			public GameStateMachine<SatelliteCrashEvent.States, SatelliteCrashEvent.StatesInstance, GameplayEventManager, object>.State ending;
+						public GameStateMachine<SatelliteCrashEvent.States, SatelliteCrashEvent.StatesInstance, GameplayEventManager, object>.State ending;
 		}
 	}
 }

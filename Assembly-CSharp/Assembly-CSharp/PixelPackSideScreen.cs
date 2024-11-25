@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PixelPackSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.swatch_object_by_color.Count == 0)
@@ -18,12 +18,12 @@ public class PixelPackSideScreen : SideScreenContent
 		this.swapColorsButton.onClick += this.SwapColors;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<PixelPack>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.targetPixelPack = target.GetComponent<PixelPack>();
@@ -31,7 +31,7 @@ public class PixelPackSideScreen : SideScreenContent
 		this.HighlightUsedColors();
 	}
 
-	private void HighlightUsedColors()
+		private void HighlightUsedColors()
 	{
 		if (this.swatch_object_by_color.Count == 0)
 		{
@@ -51,7 +51,7 @@ public class PixelPackSideScreen : SideScreenContent
 		}
 	}
 
-	private void PopulateColorSelections()
+		private void PopulateColorSelections()
 	{
 		for (int i = 0; i < this.targetPixelPack.colorSettings.Count; i++)
 		{
@@ -79,7 +79,7 @@ public class PixelPackSideScreen : SideScreenContent
 		}
 	}
 
-	private void InitializeColorSwatch()
+		private void InitializeColorSwatch()
 	{
 		bool flag = false;
 		for (int i = 0; i < this.colorSwatch.Count; i++)
@@ -106,7 +106,7 @@ public class PixelPackSideScreen : SideScreenContent
 		}
 	}
 
-	private void SelectColor(Color color, GameObject swatchEntry)
+		private void SelectColor(Color color, GameObject swatchEntry)
 	{
 		this.paintingColor = color;
 		swatchEntry.GetComponent<HierarchyReferences>().GetReference("selected").gameObject.SetActive(true);
@@ -117,7 +117,7 @@ public class PixelPackSideScreen : SideScreenContent
 		this.selectedSwatchEntry = swatchEntry;
 	}
 
-	private void CopyActiveToStandby()
+		private void CopyActiveToStandby()
 	{
 		for (int i = 0; i < this.targetPixelPack.colorSettings.Count; i++)
 		{
@@ -130,7 +130,7 @@ public class PixelPackSideScreen : SideScreenContent
 		this.targetPixelPack.UpdateColors();
 	}
 
-	private void CopyStandbyToActive()
+		private void CopyStandbyToActive()
 	{
 		for (int i = 0; i < this.targetPixelPack.colorSettings.Count; i++)
 		{
@@ -143,7 +143,7 @@ public class PixelPackSideScreen : SideScreenContent
 		this.targetPixelPack.UpdateColors();
 	}
 
-	private void SwapColors()
+		private void SwapColors()
 	{
 		for (int i = 0; i < this.targetPixelPack.colorSettings.Count; i++)
 		{
@@ -158,35 +158,35 @@ public class PixelPackSideScreen : SideScreenContent
 		this.targetPixelPack.UpdateColors();
 	}
 
-	public PixelPack targetPixelPack;
+		public PixelPack targetPixelPack;
 
-	public KButton copyActiveToStandbyButton;
+		public KButton copyActiveToStandbyButton;
 
-	public KButton copyStandbyToActiveButton;
+		public KButton copyStandbyToActiveButton;
 
-	public KButton swapColorsButton;
+		public KButton swapColorsButton;
 
-	public GameObject colorSwatchContainer;
+		public GameObject colorSwatchContainer;
 
-	public GameObject swatchEntry;
+		public GameObject swatchEntry;
 
-	public GameObject activeColorsContainer;
+		public GameObject activeColorsContainer;
 
-	public GameObject standbyColorsContainer;
+		public GameObject standbyColorsContainer;
 
-	public List<GameObject> activeColors = new List<GameObject>();
+		public List<GameObject> activeColors = new List<GameObject>();
 
-	public List<GameObject> standbyColors = new List<GameObject>();
+		public List<GameObject> standbyColors = new List<GameObject>();
 
-	public Color paintingColor;
+		public Color paintingColor;
 
-	public GameObject selectedSwatchEntry;
+		public GameObject selectedSwatchEntry;
 
-	private Dictionary<Color, GameObject> swatch_object_by_color = new Dictionary<Color, GameObject>();
+		private Dictionary<Color, GameObject> swatch_object_by_color = new Dictionary<Color, GameObject>();
 
-	private List<GameObject> highlightedSwatchGameObjects = new List<GameObject>();
+		private List<GameObject> highlightedSwatchGameObjects = new List<GameObject>();
 
-	private List<Color> colorSwatch = new List<Color>
+		private List<Color> colorSwatch = new List<Color>
 	{
 		new Color(0.4862745f, 0.4862745f, 0.4862745f),
 		new Color(0f, 0f, 0.9882353f),

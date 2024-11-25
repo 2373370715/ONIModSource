@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/ResearchCenter")]
 public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, IResearchCenter
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workerStatusItem = Db.Get().DuplicantStatusItems.Researching;
@@ -19,7 +19,7 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		elementConverter.onConvertMass = (Action<float>)Delegate.Combine(elementConverter.onConvertMass, new Action<float>(this.ConvertMassToResearchPoints));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<ResearchCenter>(-1914338957, ResearchCenter.UpdateWorkingStateDelegate);
@@ -30,7 +30,7 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		this.UpdateWorkingState(null);
 	}
 
-	private void ConvertMassToResearchPoints(float mass_consumed)
+		private void ConvertMassToResearchPoints(float mass_consumed)
 	{
 		this.remainder_mass_points += mass_consumed / this.mass_per_point - (float)Mathf.FloorToInt(mass_consumed / this.mass_per_point);
 		int num = Mathf.FloorToInt(mass_consumed / this.mass_per_point);
@@ -47,7 +47,7 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		}
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (!this.operational.IsActive && this.operational.IsOperational && this.chore == null && this.HasMaterial())
 		{
@@ -56,7 +56,7 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		}
 	}
 
-	protected virtual Chore CreateChore()
+		protected virtual Chore CreateChore()
 	{
 		return new WorkChore<ResearchCenter>(Db.Get().ChoreTypes.Research, this, null, true, null, null, null, true, null, false, true, null, true, true, true, PriorityScreen.PriorityClass.basic, 5, false, true)
 		{
@@ -64,15 +64,15 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		};
 	}
 
-	private static bool CanPreemptCB(Chore.Precondition.Context context)
+		private static bool CanPreemptCB(Chore.Precondition.Context context)
 	{
-		Worker component = context.chore.driver.GetComponent<Worker>();
+		WorkerBase component = context.chore.driver.GetComponent<WorkerBase>();
 		float num = Db.Get().AttributeConverters.ResearchSpeed.Lookup(component).Evaluate();
-		Worker worker = context.consumerState.worker;
+		WorkerBase worker = context.consumerState.worker;
 		return Db.Get().AttributeConverters.ResearchSpeed.Lookup(worker).Evaluate() > num && context.chore.gameObject.GetComponent<ResearchCenter>().GetPercentComplete() < 1f;
 	}
 
-	public override float GetPercentComplete()
+		public override float GetPercentComplete()
 	{
 		if (Research.Instance.GetActiveResearch() == null)
 		{
@@ -87,14 +87,14 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		return num / num2;
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		base.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.ComplexFabricatorResearching, this);
 		this.operational.SetActive(true, false);
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		float efficiencyMultiplier = this.GetEfficiencyMultiplier(worker);
 		float num = 2f + efficiencyMultiplier;
@@ -106,7 +106,7 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		return base.OnWorkTick(worker, dt);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		base.ShowProgressBar(false);
@@ -114,7 +114,7 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		this.operational.SetActive(false, false);
 	}
 
-	protected bool ResearchComponentCompleted()
+		protected bool ResearchComponentCompleted()
 	{
 		TechInstance activeResearch = Research.Instance.GetActiveResearch();
 		if (activeResearch != null)
@@ -131,7 +131,7 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		return false;
 	}
 
-	protected bool IsAllResearchComplete()
+		protected bool IsAllResearchComplete()
 	{
 		using (List<Tech>.Enumerator enumerator = Db.Get().Techs.resources.GetEnumerator())
 		{
@@ -146,7 +146,7 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		return true;
 	}
 
-	protected virtual void UpdateWorkingState(object data)
+		protected virtual void UpdateWorkingState(object data)
 	{
 		bool flag = false;
 		bool flag2 = false;
@@ -192,17 +192,17 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		}
 	}
 
-	private void ClearResearchScreen()
+		private void ClearResearchScreen()
 	{
 		Game.Instance.Trigger(-1974454597, null);
 	}
 
-	public string GetResearchType()
+		public string GetResearchType()
 	{
 		return this.research_point_type_id;
 	}
 
-	private void CheckHasMaterial(object o = null)
+		private void CheckHasMaterial(object o = null)
 	{
 		if (!this.HasMaterial() && this.chore != null)
 		{
@@ -211,12 +211,12 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		}
 	}
 
-	private bool HasMaterial()
+		private bool HasMaterial()
 	{
 		return this.storage.MassStored() > 0f;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Research.Instance.Unsubscribe(-1914338957, new Action<object>(this.UpdateWorkingState));
@@ -226,7 +226,7 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		this.ClearResearchScreen();
 	}
 
-	public string GetStatusString()
+		public string GetStatusString()
 	{
 		string text = RESEARCH.MESSAGING.NORESEARCHSELECTED;
 		if (Research.Instance.GetActiveResearch() != null)
@@ -273,7 +273,7 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		return text;
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> descriptors = base.GetDescriptors(go);
 		descriptors.Add(new Descriptor(string.Format(UI.BUILDINGEFFECTS.RESEARCH_MATERIALS, this.inputMaterial.ProperName(), GameUtil.GetFormattedByTag(this.inputMaterial, this.mass_per_point, GameUtil.TimeSlice.None)), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.RESEARCH_MATERIALS, this.inputMaterial.ProperName(), GameUtil.GetFormattedByTag(this.inputMaterial, this.mass_per_point, GameUtil.TimeSlice.None)), Descriptor.DescriptorType.Requirement, false));
@@ -281,45 +281,45 @@ public class ResearchCenter : Workable, IGameObjectEffectDescriptor, ISim200ms, 
 		return descriptors;
 	}
 
-	public override bool InstantlyFinish(Worker worker)
+		public override bool InstantlyFinish(WorkerBase worker)
 	{
 		return false;
 	}
 
-	private Chore chore;
+		private Chore chore;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	protected Notifier notifier;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	protected Operational operational;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	protected Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ElementConverter elementConverter;
 
-	[SerializeField]
+		[SerializeField]
 	public string research_point_type_id;
 
-	[SerializeField]
+		[SerializeField]
 	public Tag inputMaterial;
 
-	[SerializeField]
+		[SerializeField]
 	public float mass_per_point;
 
-	[SerializeField]
+		[SerializeField]
 	private float remainder_mass_points;
 
-	public static readonly Operational.Flag ResearchSelectedFlag = new Operational.Flag("researchSelected", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag ResearchSelectedFlag = new Operational.Flag("researchSelected", Operational.Flag.Type.Requirement);
 
-	private static readonly EventSystem.IntraObjectHandler<ResearchCenter> UpdateWorkingStateDelegate = new EventSystem.IntraObjectHandler<ResearchCenter>(delegate(ResearchCenter component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ResearchCenter> UpdateWorkingStateDelegate = new EventSystem.IntraObjectHandler<ResearchCenter>(delegate(ResearchCenter component, object data)
 	{
 		component.UpdateWorkingState(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<ResearchCenter> CheckHasMaterialDelegate = new EventSystem.IntraObjectHandler<ResearchCenter>(delegate(ResearchCenter component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ResearchCenter> CheckHasMaterialDelegate = new EventSystem.IntraObjectHandler<ResearchCenter>(delegate(ResearchCenter component, object data)
 	{
 		component.CheckHasMaterial(data);
 	});

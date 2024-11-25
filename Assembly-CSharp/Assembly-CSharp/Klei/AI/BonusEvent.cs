@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class BonusEvent : GameplayEvent<BonusEvent.StatesInstance>
+		public class BonusEvent : GameplayEvent<BonusEvent.StatesInstance>
 	{
-		public BonusEvent(string id, string overrideEffect = null, int numTimesAllowed = 1, bool preSelectMinion = false, int priority = 0) : base(id, priority, 0)
+				public BonusEvent(string id, string overrideEffect = null, int numTimesAllowed = 1, bool preSelectMinion = false, int priority = 0) : base(id, priority, 0)
 		{
 			this.title = Strings.Get("STRINGS.GAMEPLAY_EVENTS.BONUS." + id.ToUpper() + ".NAME");
 			this.description = Strings.Get("STRINGS.GAMEPLAY_EVENTS.BONUS." + id.ToUpper() + ".DESCRIPTION");
@@ -19,12 +19,12 @@ namespace Klei.AI
 			base.AddPrecondition(GameplayEventPreconditions.Instance.LiveMinions(1));
 		}
 
-		public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
+				public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
 		{
 			return new BonusEvent.StatesInstance(manager, eventInstance, this);
 		}
 
-		public BonusEvent TriggerOnNewBuilding(int triggerCount, params string[] buildings)
+				public BonusEvent TriggerOnNewBuilding(int triggerCount, params string[] buildings)
 		{
 			DebugUtil.DevAssert(this.triggerType == BonusEvent.TriggerType.None, "Only one trigger per event", null);
 			this.triggerType = BonusEvent.TriggerType.NewBuilding;
@@ -33,7 +33,7 @@ namespace Klei.AI
 			return this;
 		}
 
-		public BonusEvent TriggerOnUseBuilding(int triggerCount, params string[] buildings)
+				public BonusEvent TriggerOnUseBuilding(int triggerCount, params string[] buildings)
 		{
 			DebugUtil.DevAssert(this.triggerType == BonusEvent.TriggerType.None, "Only one trigger per event", null);
 			this.triggerType = BonusEvent.TriggerType.UseBuilding;
@@ -42,7 +42,7 @@ namespace Klei.AI
 			return this;
 		}
 
-		public BonusEvent TriggerOnWorkableComplete(int triggerCount, params Type[] types)
+				public BonusEvent TriggerOnWorkableComplete(int triggerCount, params Type[] types)
 		{
 			DebugUtil.DevAssert(this.triggerType == BonusEvent.TriggerType.None, "Only one trigger per event", null);
 			this.triggerType = BonusEvent.TriggerType.WorkableComplete;
@@ -51,25 +51,25 @@ namespace Klei.AI
 			return this;
 		}
 
-		public BonusEvent SetExtraCondition(BonusEvent.ConditionFn extraCondition)
+				public BonusEvent SetExtraCondition(BonusEvent.ConditionFn extraCondition)
 		{
 			this.extraCondition = extraCondition;
 			return this;
 		}
 
-		public BonusEvent SetRoomConstraints(bool hasOwnableInRoom, params RoomType[] types)
+				public BonusEvent SetRoomConstraints(bool hasOwnableInRoom, params RoomType[] types)
 		{
 			this.roomHasOwnable = hasOwnableInRoom;
 			this.roomRestrictions = ((types == null) ? null : new HashSet<RoomType>(types));
 			return this;
 		}
 
-		public string GetEffectTooltip(Effect effect)
+				public string GetEffectTooltip(Effect effect)
 		{
 			return effect.Name + "\n\n" + Effect.CreateTooltip(effect, true, "\n    • ", true);
 		}
 
-		public override Sprite GetDisplaySprite()
+				public override Sprite GetDisplaySprite()
 		{
 			Effect effect = Db.Get().effects.Get(this.effect);
 			if (effect.SelfModifiers.Count > 0)
@@ -79,7 +79,7 @@ namespace Klei.AI
 			return null;
 		}
 
-		public override string GetDisplayString()
+				public override string GetDisplayString()
 		{
 			Effect effect = Db.Get().effects.Get(this.effect);
 			if (effect.SelfModifiers.Count > 0)
@@ -89,51 +89,51 @@ namespace Klei.AI
 			return null;
 		}
 
-		public const int PRE_SELECT_MINION_TIMEOUT = 5;
+				public const int PRE_SELECT_MINION_TIMEOUT = 5;
 
-		public string effect;
+				public string effect;
 
-		public bool preSelectMinion;
+				public bool preSelectMinion;
 
-		public int numTimesToTrigger;
+				public int numTimesToTrigger;
 
-		public BonusEvent.TriggerType triggerType;
+				public BonusEvent.TriggerType triggerType;
 
-		public HashSet<Tag> buildingTrigger;
+				public HashSet<Tag> buildingTrigger;
 
-		public HashSet<Type> workableType;
+				public HashSet<Type> workableType;
 
-		public HashSet<RoomType> roomRestrictions;
+				public HashSet<RoomType> roomRestrictions;
 
-		public BonusEvent.ConditionFn extraCondition;
+				public BonusEvent.ConditionFn extraCondition;
 
-		public bool roomHasOwnable;
+				public bool roomHasOwnable;
 
-		public enum TriggerType
+				public enum TriggerType
 		{
-			None,
-			NewBuilding,
-			UseBuilding,
-			WorkableComplete,
-			AchievementUnlocked
+						None,
+						NewBuilding,
+						UseBuilding,
+						WorkableComplete,
+						AchievementUnlocked
 		}
 
-				public delegate bool ConditionFn(BonusEvent.GameplayEventData data);
+						public delegate bool ConditionFn(BonusEvent.GameplayEventData data);
 
-		public class GameplayEventData
+				public class GameplayEventData
 		{
-			public GameHashes eventTrigger;
+						public GameHashes eventTrigger;
 
-			public BuildingComplete building;
+						public BuildingComplete building;
 
-			public Workable workable;
+						public Workable workable;
 
-			public Worker worker;
+						public WorkerBase worker;
 		}
 
-		public class States : GameplayEventStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, BonusEvent>
+				public class States : GameplayEventStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, BonusEvent>
 		{
-			public override void InitializeStates(out StateMachine.BaseState default_state)
+						public override void InitializeStates(out StateMachine.BaseState default_state)
 			{
 				default_state = this.load;
 				base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -176,7 +176,7 @@ namespace Klei.AI
 				this.ending.ReturnSuccess();
 			}
 
-			public override EventInfoData GenerateEventPopupData(BonusEvent.StatesInstance smi)
+						public override EventInfoData GenerateEventPopupData(BonusEvent.StatesInstance smi)
 			{
 				EventInfoData eventInfoData = new EventInfoData(smi.gameplayEvent.title, smi.gameplayEvent.description, smi.gameplayEvent.animFileName);
 				GameObject gameObject = smi.sm.chosen.Get(smi);
@@ -219,7 +219,7 @@ namespace Klei.AI
 				return eventInfoData;
 			}
 
-			private void AssignPreSelectedMinionIfNeeded(BonusEvent.StatesInstance smi)
+						private void AssignPreSelectedMinionIfNeeded(BonusEvent.StatesInstance smi)
 			{
 				if (smi.gameplayEvent.preSelectMinion && smi.sm.chosen.Get(smi) == null)
 				{
@@ -228,7 +228,7 @@ namespace Klei.AI
 				}
 			}
 
-			private bool IsCorrectMinion(BonusEvent.StatesInstance smi, BonusEvent.GameplayEventData gameplayEventData)
+						private bool IsCorrectMinion(BonusEvent.StatesInstance smi, BonusEvent.GameplayEventData gameplayEventData)
 			{
 				if (!smi.gameplayEvent.preSelectMinion || !(smi.sm.chosen.Get(smi) != gameplayEventData.worker.gameObject))
 				{
@@ -243,7 +243,7 @@ namespace Klei.AI
 				return false;
 			}
 
-			private bool OtherConditionsAreSatisfied(BonusEvent.StatesInstance smi, BonusEvent.GameplayEventData gameplayEventData)
+						private bool OtherConditionsAreSatisfied(BonusEvent.StatesInstance smi, BonusEvent.GameplayEventData gameplayEventData)
 			{
 				if (smi.gameplayEvent.roomRestrictions != null)
 				{
@@ -279,7 +279,7 @@ namespace Klei.AI
 				return smi.gameplayEvent.extraCondition == null || smi.gameplayEvent.extraCondition(gameplayEventData);
 			}
 
-			private bool IncrementAndTrigger(BonusEvent.StatesInstance smi, BonusEvent.GameplayEventData gameplayEventData)
+						private bool IncrementAndTrigger(BonusEvent.StatesInstance smi, BonusEvent.GameplayEventData gameplayEventData)
 			{
 				smi.timesTriggered++;
 				smi.lastTriggered = GameUtil.GetCurrentTimeInCycles();
@@ -292,7 +292,7 @@ namespace Klei.AI
 				return true;
 			}
 
-			private bool BuildingEventTrigger(BonusEvent.StatesInstance smi, object data)
+						private bool BuildingEventTrigger(BonusEvent.StatesInstance smi, object data)
 			{
 				BonusEvent.GameplayEventData gameplayEventData = data as BonusEvent.GameplayEventData;
 				if (gameplayEventData == null)
@@ -303,7 +303,7 @@ namespace Klei.AI
 				return !(gameplayEventData.building == null) && (smi.gameplayEvent.buildingTrigger.Count <= 0 || smi.gameplayEvent.buildingTrigger.Contains(gameplayEventData.building.prefabid.PrefabID())) && this.OtherConditionsAreSatisfied(smi, gameplayEventData) && this.IsCorrectMinion(smi, gameplayEventData) && this.IncrementAndTrigger(smi, gameplayEventData);
 			}
 
-			private bool WorkableEventTrigger(BonusEvent.StatesInstance smi, object data)
+						private bool WorkableEventTrigger(BonusEvent.StatesInstance smi, object data)
 			{
 				BonusEvent.GameplayEventData gameplayEventData = data as BonusEvent.GameplayEventData;
 				if (gameplayEventData == null)
@@ -314,12 +314,12 @@ namespace Klei.AI
 				return (smi.gameplayEvent.workableType.Count <= 0 || smi.gameplayEvent.workableType.Contains(gameplayEventData.workable.GetType())) && this.OtherConditionsAreSatisfied(smi, gameplayEventData) && this.IsCorrectMinion(smi, gameplayEventData) && this.IncrementAndTrigger(smi, gameplayEventData);
 			}
 
-			private bool ChosenMinionDied(BonusEvent.StatesInstance smi, object data)
+						private bool ChosenMinionDied(BonusEvent.StatesInstance smi, object data)
 			{
 				return smi.sm.chosen.Get(smi) == data as GameObject;
 			}
 
-			private Effect GetEffect(BonusEvent.StatesInstance smi)
+						private Effect GetEffect(BonusEvent.StatesInstance smi)
 			{
 				GameObject gameObject = smi.sm.chosen.Get(smi);
 				if (gameObject == null)
@@ -335,51 +335,51 @@ namespace Klei.AI
 				return effectInstance.effect;
 			}
 
-			public StateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.TargetParameter chosen;
+						public StateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.TargetParameter chosen;
 
-			public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State load;
+						public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State load;
 
-			public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State waitNewBuilding;
+						public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State waitNewBuilding;
 
-			public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State waitUseBuilding;
+						public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State waitUseBuilding;
 
-			public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State waitForAchievement;
+						public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State waitForAchievement;
 
-			public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State waitforWorkables;
+						public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State waitforWorkables;
 
-			public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State immediate;
+						public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State immediate;
 
-			public BonusEvent.States.ActiveStates active;
+						public BonusEvent.States.ActiveStates active;
 
-			public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State ending;
+						public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State ending;
 
-			public class ActiveStates : GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State
+						public class ActiveStates : GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State
 			{
-				public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State notify;
+								public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State notify;
 
-				public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State seenNotification;
+								public GameStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, object>.State seenNotification;
 			}
 		}
 
-		public class StatesInstance : GameplayEventStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, BonusEvent>.GameplayEventStateMachineInstance
+				public class StatesInstance : GameplayEventStateMachine<BonusEvent.States, BonusEvent.StatesInstance, GameplayEventManager, BonusEvent>.GameplayEventStateMachineInstance
 		{
-			public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, BonusEvent bonusEvent) : base(master, eventInstance, bonusEvent)
+						public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, BonusEvent bonusEvent) : base(master, eventInstance, bonusEvent)
 			{
 				this.lastTriggered = GameUtil.GetCurrentTimeInCycles();
 			}
 
-			public float PercentageUntilTriggered()
+						public float PercentageUntilTriggered()
 			{
 				return (float)this.timesTriggered / (float)base.smi.gameplayEvent.numTimesToTrigger;
 			}
 
-			[Serialize]
+						[Serialize]
 			public int timesTriggered;
 
-			[Serialize]
+						[Serialize]
 			public float lastTriggered;
 
-			public BuildingComplete building;
+						public BuildingComplete building;
 		}
 	}
 }

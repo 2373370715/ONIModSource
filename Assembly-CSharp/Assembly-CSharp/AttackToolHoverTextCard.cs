@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AttackToolHoverTextCard : HoverTextConfiguration
 {
-	public override void UpdateHoverElements(List<KSelectable> hover_objects)
+		public override void UpdateHoverElements(List<KSelectable> hover_objects)
 	{
 		HoverTextScreen instance = HoverTextScreen.Instance;
 		HoverTextDrawer hoverTextDrawer = instance.BeginDrawing();

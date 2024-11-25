@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 {
-	public override string GetTitle()
+		public override string GetTitle()
 	{
 		if (this.targetReceptacle == null)
 		{
@@ -14,7 +14,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		return string.Format(Strings.Get(this.titleKey), this.targetReceptacle.GetProperName());
 	}
 
-	public void Initialize(SingleEntityReceptacle target)
+		public void Initialize(SingleEntityReceptacle target)
 	{
 		if (target == null)
 		{
@@ -111,7 +111,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		SimAndRenderScheduler.instance.Add(this, false);
 	}
 
-	protected virtual void UpdateState(object data)
+		protected virtual void UpdateState(object data)
 	{
 		this.requestSelectedEntityBtn.ClearOnClick();
 		if (this.targetReceptacle == null)
@@ -198,7 +198,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		this.UpdateListeners();
 	}
 
-	private void UpdateListeners()
+		private void UpdateListeners()
 	{
 		if (this.CheckReceptacleOccupied())
 		{
@@ -217,7 +217,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		}
 	}
 
-	private void OnOccupantValidChanged(object obj)
+		private void OnOccupantValidChanged(object obj)
 	{
 		if (this.targetReceptacle == null)
 		{
@@ -241,22 +241,22 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		}
 	}
 
-	private bool CanDepositEntity(ReceptacleSideScreen.SelectableEntity entity)
+		private bool CanDepositEntity(ReceptacleSideScreen.SelectableEntity entity)
 	{
 		return this.ValidRotationForDeposit(entity.direction) && (!this.RequiresAvailableAmountToDeposit() || this.GetAvailableAmount(entity.tag) > 0f) && this.AdditionalCanDepositTest();
 	}
 
-	protected virtual bool AdditionalCanDepositTest()
+		protected virtual bool AdditionalCanDepositTest()
 	{
 		return true;
 	}
 
-	protected virtual bool RequiresAvailableAmountToDeposit()
+		protected virtual bool RequiresAvailableAmountToDeposit()
 	{
 		return true;
 	}
 
-	private void ClearSelection()
+		private void ClearSelection()
 	{
 		foreach (KeyValuePair<ReceptacleToggle, ReceptacleSideScreen.SelectableEntity> keyValuePair in this.depositObjectMap)
 		{
@@ -264,7 +264,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		}
 	}
 
-	private void ToggleObjectPicker(bool Show)
+		private void ToggleObjectPicker(bool Show)
 	{
 		this.requestObjectListContainer.SetActive(Show);
 		if (this.scrollBarContainer != null)
@@ -275,19 +275,19 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		this.activeEntityContainer.SetActive(!Show);
 	}
 
-	private void ConfigureActiveEntity(Tag tag)
+		private void ConfigureActiveEntity(Tag tag)
 	{
 		string properName = Assets.GetPrefab(tag).GetProperName();
 		this.activeEntityContainer.GetComponentInChildrenOnly<LocText>().text = properName;
 		this.activeEntityContainer.transform.GetChild(0).gameObject.GetComponentInChildrenOnly<Image>().sprite = this.GetEntityIcon(tag);
 	}
 
-	protected virtual string GetEntityName(Tag prefabTag)
+		protected virtual string GetEntityName(Tag prefabTag)
 	{
 		return Assets.GetPrefab(prefabTag).GetProperName();
 	}
 
-	protected virtual string GetEntityTooltip(Tag prefabTag)
+		protected virtual string GetEntityTooltip(Tag prefabTag)
 	{
 		InfoDescription component = Assets.GetPrefab(prefabTag).GetComponent<InfoDescription>();
 		string text = this.GetEntityName(prefabTag);
@@ -298,18 +298,18 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		return text;
 	}
 
-	protected virtual Sprite GetEntityIcon(Tag prefabTag)
+		protected virtual Sprite GetEntityIcon(Tag prefabTag)
 	{
 		return Def.GetUISprite(Assets.GetPrefab(prefabTag), "ui", false).first;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		SingleEntityReceptacle component = target.GetComponent<SingleEntityReceptacle>();
 		return component != null && component.enabled && target.GetComponent<PlantablePlot>() == null && target.GetComponent<EggIncubator>() == null && target.GetComponent<SpecialCargoBayClusterReceptacle>() == null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		SingleEntityReceptacle component = target.GetComponent<SingleEntityReceptacle>();
 		if (component == null)
@@ -321,11 +321,11 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		this.UpdateState(null);
 	}
 
-	protected virtual void RestoreSelectionFromOccupant()
+		protected virtual void RestoreSelectionFromOccupant()
 	{
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 		if (this.targetReceptacle != null)
 		{
@@ -347,7 +347,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		}
 	}
 
-	protected void SetImageToggleState(KToggle toggle, ImageToggleState.State state)
+		protected void SetImageToggleState(KToggle toggle, ImageToggleState.State state)
 	{
 		switch (state)
 		{
@@ -372,12 +372,12 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		}
 	}
 
-	public void Render1000ms(float dt)
+		public void Render1000ms(float dt)
 	{
 		this.CheckAmountsAndUpdate(null);
 	}
 
-	private void CheckAmountsAndUpdate(object data)
+		private void CheckAmountsAndUpdate(object data)
 	{
 		if (this.targetReceptacle == null)
 		{
@@ -389,7 +389,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		}
 	}
 
-	private bool UpdateAvailableAmounts(object data)
+		private bool UpdateAvailableAmounts(object data)
 	{
 		bool result = false;
 		foreach (KeyValuePair<ReceptacleToggle, ReceptacleSideScreen.SelectableEntity> keyValuePair in this.depositObjectMap)
@@ -432,7 +432,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		return result;
 	}
 
-	protected float GetAvailableAmount(Tag tag)
+		protected float GetAvailableAmount(Tag tag)
 	{
 		if (this.ALLOW_ORDER_IGNORING_WOLRD_NEED)
 		{
@@ -447,12 +447,12 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		return this.targetReceptacle.GetMyWorld().worldInventory.GetAmount(tag, true);
 	}
 
-	private bool ValidRotationForDeposit(SingleEntityReceptacle.ReceptacleDirection depositDir)
+		private bool ValidRotationForDeposit(SingleEntityReceptacle.ReceptacleDirection depositDir)
 	{
 		return this.targetReceptacle.rotatable == null || depositDir == this.targetReceptacle.Direction;
 	}
 
-	protected virtual void ToggleClicked(ReceptacleToggle toggle)
+		protected virtual void ToggleClicked(ReceptacleToggle toggle)
 	{
 		if (!this.depositObjectMap.ContainsKey(toggle))
 		{
@@ -474,17 +474,17 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		this.UpdateState(null);
 	}
 
-	private void CreateOrder(bool isInfinite)
+		private void CreateOrder(bool isInfinite)
 	{
 		this.targetReceptacle.CreateOrder(this.selectedDepositObjectTag, this.selectedDepositObjectAdditionalTag);
 	}
 
-	protected bool CheckReceptacleOccupied()
+		protected bool CheckReceptacleOccupied()
 	{
 		return this.targetReceptacle != null && this.targetReceptacle.Occupant != null;
 	}
 
-	protected virtual void SetResultDescriptions(GameObject go)
+		protected virtual void SetResultDescriptions(GameObject go)
 	{
 		string text = "";
 		InfoDescription component = go.GetComponent<InfoDescription>();
@@ -511,7 +511,7 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		this.descriptionLabel.SetText(text);
 	}
 
-	protected virtual void HideAllDescriptorPanels()
+		protected virtual void HideAllDescriptorPanels()
 	{
 		for (int i = 0; i < this.descriptorPanels.Count; i++)
 		{
@@ -519,110 +519,110 @@ public class ReceptacleSideScreen : SideScreenContent, IRender1000ms
 		}
 	}
 
-	protected bool ALLOW_ORDER_IGNORING_WOLRD_NEED = true;
+		protected bool ALLOW_ORDER_IGNORING_WOLRD_NEED = true;
 
-	[SerializeField]
+		[SerializeField]
 	protected KButton requestSelectedEntityBtn;
 
-	[SerializeField]
+		[SerializeField]
 	private string requestStringDeposit;
 
-	[SerializeField]
+		[SerializeField]
 	private string requestStringCancelDeposit;
 
-	[SerializeField]
+		[SerializeField]
 	private string requestStringRemove;
 
-	[SerializeField]
+		[SerializeField]
 	private string requestStringCancelRemove;
 
-	public GameObject activeEntityContainer;
+		public GameObject activeEntityContainer;
 
-	public GameObject nothingDiscoveredContainer;
+		public GameObject nothingDiscoveredContainer;
 
-	[SerializeField]
+		[SerializeField]
 	protected LocText descriptionLabel;
 
-	protected Dictionary<SingleEntityReceptacle, int> entityPreviousSelectionMap = new Dictionary<SingleEntityReceptacle, int>();
+		protected Dictionary<SingleEntityReceptacle, int> entityPreviousSelectionMap = new Dictionary<SingleEntityReceptacle, int>();
 
-	[SerializeField]
+		[SerializeField]
 	private string subtitleStringSelect;
 
-	[SerializeField]
+		[SerializeField]
 	private string subtitleStringSelectDescription;
 
-	[SerializeField]
+		[SerializeField]
 	private string subtitleStringAwaitingSelection;
 
-	[SerializeField]
+		[SerializeField]
 	private string subtitleStringAwaitingDelivery;
 
-	[SerializeField]
+		[SerializeField]
 	private string subtitleStringEntityDeposited;
 
-	[SerializeField]
+		[SerializeField]
 	private string subtitleStringAwaitingRemoval;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText subtitleLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private List<DescriptorPanel> descriptorPanels;
 
-	public Material defaultMaterial;
+		public Material defaultMaterial;
 
-	public Material desaturatedMaterial;
+		public Material desaturatedMaterial;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject requestObjectList;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject requestObjectListContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject scrollBarContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject entityToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite buttonSelectedBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite buttonNormalBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite elementPlaceholderSpr;
 
-	[SerializeField]
+		[SerializeField]
 	private bool hideUndiscoveredEntities;
 
-	protected ReceptacleToggle selectedEntityToggle;
+		protected ReceptacleToggle selectedEntityToggle;
 
-	protected SingleEntityReceptacle targetReceptacle;
+		protected SingleEntityReceptacle targetReceptacle;
 
-	protected Tag selectedDepositObjectTag;
+		protected Tag selectedDepositObjectTag;
 
-	protected Tag selectedDepositObjectAdditionalTag;
+		protected Tag selectedDepositObjectAdditionalTag;
 
-	protected Dictionary<ReceptacleToggle, ReceptacleSideScreen.SelectableEntity> depositObjectMap;
+		protected Dictionary<ReceptacleToggle, ReceptacleSideScreen.SelectableEntity> depositObjectMap;
 
-	protected List<ReceptacleToggle> entityToggles = new List<ReceptacleToggle>();
+		protected List<ReceptacleToggle> entityToggles = new List<ReceptacleToggle>();
 
-	private int onObjectDestroyedHandle = -1;
+		private int onObjectDestroyedHandle = -1;
 
-	private int onOccupantValidChangedHandle = -1;
+		private int onOccupantValidChangedHandle = -1;
 
-	private int onStorageChangedHandle = -1;
+		private int onStorageChangedHandle = -1;
 
-	protected class SelectableEntity
+		protected class SelectableEntity
 	{
-		public Tag tag;
+				public Tag tag;
 
-		public SingleEntityReceptacle.ReceptacleDirection direction;
+				public SingleEntityReceptacle.ReceptacleDirection direction;
 
-		public GameObject asset;
+				public GameObject asset;
 
-		public float lastAmount = -1f;
+				public float lastAmount = -1f;
 	}
 }

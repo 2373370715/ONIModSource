@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class CommandModuleConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetForbiddenDlcIds()
 	{
-		return DlcManager.AVAILABLE_VANILLA_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "CommandModule";
 		int width = 5;
@@ -48,7 +48,7 @@ public class CommandModuleConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -70,7 +70,7 @@ public class CommandModuleConfig : IBuildingConfig
 		go.AddOrGet<LaunchableRocket>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		BuildingTemplates.ExtendBuildingToRocketModule(go, "rocket_command_module_bg_kanim", false);
 		Ownable ownable = go.AddOrGet<Ownable>();
@@ -79,9 +79,9 @@ public class CommandModuleConfig : IBuildingConfig
 		go.AddOrGet<CharacterOverlay>().shouldShowName = true;
 	}
 
-	public const string ID = "CommandModule";
+		public const string ID = "CommandModule";
 
-	private const string TRIGGER_LAUNCH_PORT_ID = "TriggerLaunch";
+		private const string TRIGGER_LAUNCH_PORT_ID = "TriggerLaunch";
 
-	private const string LAUNCH_READY_PORT_ID = "LaunchReady";
+		private const string LAUNCH_READY_PORT_ID = "LaunchReady";
 }

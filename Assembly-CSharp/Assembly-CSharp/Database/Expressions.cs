@@ -2,9 +2,9 @@
 
 namespace Database
 {
-	public class Expressions : ResourceSet<Expression>
+		public class Expressions : ResourceSet<Expression>
 	{
-		public Expressions(ResourceSet parent) : base("Expressions", parent)
+				public Expressions(ResourceSet parent) : base("Expressions", parent)
 		{
 			Faces faces = Db.Get().Faces;
 			this.Angry = new Expression("Angry", this, faces.Angry);
@@ -44,66 +44,66 @@ namespace Database
 			}
 		}
 
-		public Expression Neutral;
+				public Expression Neutral;
 
-		public Expression Happy;
+				public Expression Happy;
 
-		public Expression Uncomfortable;
+				public Expression Uncomfortable;
 
-		public Expression Cold;
+				public Expression Cold;
 
-		public Expression Hot;
+				public Expression Hot;
 
-		public Expression FullBladder;
+				public Expression FullBladder;
 
-		public Expression Tired;
+				public Expression Tired;
 
-		public Expression Hungry;
+				public Expression Hungry;
 
-		public Expression Angry;
+				public Expression Angry;
 
-		public Expression Unhappy;
+				public Expression Unhappy;
 
-		public Expression RedAlert;
+				public Expression RedAlert;
 
-		public Expression Suffocate;
+				public Expression Suffocate;
 
-		public Expression RecoverBreath;
+				public Expression RecoverBreath;
 
-		public Expression Sick;
+				public Expression Sick;
 
-		public Expression SickSpores;
+				public Expression SickSpores;
 
-		public Expression Zombie;
+				public Expression Zombie;
 
-		public Expression SickFierySkin;
+				public Expression SickFierySkin;
 
-		public Expression SickCold;
+				public Expression SickCold;
 
-		public Expression Pollen;
+				public Expression Pollen;
 
-		public Expression Relief;
+				public Expression Relief;
 
-		public Expression Productive;
+				public Expression Productive;
 
-		public Expression Determined;
+				public Expression Determined;
 
-		public Expression Sticker;
+				public Expression Sticker;
 
-		public Expression Balloon;
+				public Expression Balloon;
 
-		public Expression Sparkle;
+				public Expression Sparkle;
 
-		public Expression Music;
+				public Expression Music;
 
-		public Expression Tickled;
+				public Expression Tickled;
 
-		public Expression Radiation1;
+				public Expression Radiation1;
 
-		public Expression Radiation2;
+				public Expression Radiation2;
 
-		public Expression Radiation3;
+				public Expression Radiation3;
 
-		public Expression Radiation4;
+				public Expression Radiation4;
 	}
 }

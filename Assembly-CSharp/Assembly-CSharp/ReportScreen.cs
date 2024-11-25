@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class ReportScreen : KScreen
 {
-			public static ReportScreen Instance { get; private set; }
+				public static ReportScreen Instance { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ReportScreen.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		ReportScreen.Instance = this;
@@ -36,12 +36,12 @@ public class ReportScreen : KScreen
 		base.ConsumeMouseScroll = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	protected override void OnShow(bool bShow)
+		protected override void OnShow(bool bShow)
 	{
 		base.OnShow(bShow);
 		if (ReportManager.Instance != null)
@@ -50,18 +50,18 @@ public class ReportScreen : KScreen
 		}
 	}
 
-	public void SetTitle(string title)
+		public void SetTitle(string title)
 	{
 		this.title.text = title;
 	}
 
-	public override void ScreenUpdate(bool b)
+		public override void ScreenUpdate(bool b)
 	{
 		base.ScreenUpdate(b);
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		global::Debug.Assert(this.currentReport != null);
 		if (this.currentReport.day == ReportManager.Instance.TodaysReport.day)
@@ -120,14 +120,14 @@ public class ReportScreen : KScreen
 		}
 	}
 
-	public void ShowReport(int day)
+		public void ShowReport(int day)
 	{
 		this.currentReport = ReportManager.Instance.FindReport(day);
 		global::Debug.Assert(this.currentReport != null, "Can't find report for day: " + day.ToString());
 		this.Refresh();
 	}
 
-	private GameObject AddSpacer(int group)
+		private GameObject AddSpacer(int group)
 	{
 		GameObject gameObject;
 		if (this.lineItems.ContainsKey(group.ToString()))
@@ -144,7 +144,7 @@ public class ReportScreen : KScreen
 		return gameObject;
 	}
 
-	private GameObject CreateHeader(ReportManager.ReportGroup reportGroup)
+		private GameObject CreateHeader(ReportManager.ReportGroup reportGroup)
 	{
 		GameObject gameObject = null;
 		this.lineItems.TryGetValue(reportGroup.stringKey, out gameObject);
@@ -159,7 +159,7 @@ public class ReportScreen : KScreen
 		return gameObject;
 	}
 
-	private GameObject CreateOrUpdateLine(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup, bool is_line_active)
+		private GameObject CreateOrUpdateLine(ReportManager.ReportEntry entry, ReportManager.ReportGroup reportGroup, bool is_line_active)
 	{
 		GameObject gameObject = null;
 		this.lineItems.TryGetValue(reportGroup.stringKey, out gameObject);
@@ -184,40 +184,40 @@ public class ReportScreen : KScreen
 		return gameObject;
 	}
 
-	private void OnClickClose()
+		private void OnClickClose()
 	{
 		base.PlaySound3D(GlobalAssets.GetSound("HUD_Click_Close", false));
 		this.Show(false);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText title;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton prevButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton nextButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton summaryButton;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject lineItem;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject lineItemSpacer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject lineItemHeader;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject contentFolder;
 
-	private Dictionary<string, GameObject> lineItems = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> lineItems = new Dictionary<string, GameObject>();
 
-	private ReportManager.DailyReport currentReport;
+		private ReportManager.DailyReport currentReport;
 }

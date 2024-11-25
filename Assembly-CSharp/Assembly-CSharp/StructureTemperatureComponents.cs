@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StructureTemperatureComponents : KGameObjectSplitComponentManager<StructureTemperatureHeader, StructureTemperaturePayload>
 {
-	public HandleVector<int>.Handle Add(GameObject go)
+		public HandleVector<int>.Handle Add(GameObject go)
 	{
 		StructureTemperaturePayload structureTemperaturePayload = new StructureTemperaturePayload(go);
 		return base.Add(go, new StructureTemperatureHeader
@@ -16,12 +16,12 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		}, ref structureTemperaturePayload);
 	}
 
-	public static void ClearInstanceMap()
+		public static void ClearInstanceMap()
 	{
 		StructureTemperatureComponents.handleInstanceMap.Clear();
 	}
 
-	protected override void OnPrefabInit(HandleVector<int>.Handle handle)
+		protected override void OnPrefabInit(HandleVector<int>.Handle handle)
 	{
 		this.InitializeStatusItem();
 		base.OnPrefabInit(handle);
@@ -34,7 +34,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		base.SetHeader(handle, new_data);
 	}
 
-	private void InitializeStatusItem()
+		private void InitializeStatusItem()
 	{
 		if (this.operatingEnergyStatusItem != null)
 		{
@@ -70,7 +70,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		};
 	}
 
-	protected override void OnSpawn(HandleVector<int>.Handle handle)
+		protected override void OnSpawn(HandleVector<int>.Handle handle)
 	{
 		StructureTemperatureHeader structureTemperatureHeader;
 		StructureTemperaturePayload structureTemperaturePayload;
@@ -91,7 +91,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		this.SimRegister(handle, ref structureTemperatureHeader, ref structureTemperaturePayload);
 	}
 
-	private static void OnActiveChanged(HandleVector<int>.Handle handle)
+		private static void OnActiveChanged(HandleVector<int>.Handle handle)
 	{
 		StructureTemperatureHeader new_data;
 		StructureTemperaturePayload structureTemperaturePayload;
@@ -101,13 +101,13 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		GameComps.StructureTemperatures.SetHeader(handle, new_data);
 	}
 
-	protected override void OnCleanUp(HandleVector<int>.Handle handle)
+		protected override void OnCleanUp(HandleVector<int>.Handle handle)
 	{
 		this.SimUnregister(handle);
 		base.OnCleanUp(handle);
 	}
 
-	public override void Sim200ms(float dt)
+		public override void Sim200ms(float dt)
 	{
 		int num = 0;
 		int num2 = 0;
@@ -187,7 +187,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		pooledList.Recycle();
 	}
 
-	public static void ExhaustHeat(Extents extents, float kw, float maxTemperature, float dt)
+		public static void ExhaustHeat(Extents extents, float kw, float maxTemperature, float dt)
 	{
 		int num = extents.width * extents.height;
 		float num2 = kw * dt / (float)num;
@@ -205,7 +205,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		}
 	}
 
-	private static void UpdateSimState(ref StructureTemperaturePayload payload)
+		private static void UpdateSimState(ref StructureTemperaturePayload payload)
 	{
 		DebugUtil.Assert(Sim.IsValidHandle(payload.simHandleCopy));
 		float internalTemperature = payload.primaryElement.InternalTemperature;
@@ -227,7 +227,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		SimMessages.ModifyBuildingHeatExchange(payload.simHandleCopy, extents, mass, internalTemperature, def.ThermalConductivity, overheat_temperature, operatingKilowatts, idx);
 	}
 
-	private unsafe static float OnGetTemperature(PrimaryElement primary_element)
+		private unsafe static float OnGetTemperature(PrimaryElement primary_element)
 	{
 		HandleVector<int>.Handle handle = GameComps.StructureTemperatures.GetHandle(primary_element.gameObject);
 		StructureTemperaturePayload payload = GameComps.StructureTemperatures.GetPayload(handle);
@@ -252,7 +252,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		return result;
 	}
 
-	private static void OnSetTemperature(PrimaryElement primary_element, float temperature)
+		private static void OnSetTemperature(PrimaryElement primary_element, float temperature)
 	{
 		HandleVector<int>.Handle handle = GameComps.StructureTemperatures.GetHandle(primary_element.gameObject);
 		StructureTemperatureHeader structureTemperatureHeader;
@@ -273,7 +273,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		}
 	}
 
-	public void ProduceEnergy(HandleVector<int>.Handle handle, float delta_kilojoules, string source, float display_dt)
+		public void ProduceEnergy(HandleVector<int>.Handle handle, float delta_kilojoules, string source, float display_dt)
 	{
 		StructureTemperaturePayload payload = base.GetPayload(handle);
 		if (Sim.IsValidHandle(payload.simHandleCopy))
@@ -291,7 +291,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		base.SetPayload(handle, ref payload);
 	}
 
-	private List<StructureTemperaturePayload.EnergySource> AccumulateProducedEnergyKW(List<StructureTemperaturePayload.EnergySource> sources, float kw, string source)
+		private List<StructureTemperaturePayload.EnergySource> AccumulateProducedEnergyKW(List<StructureTemperaturePayload.EnergySource> sources, float kw, string source)
 	{
 		if (sources == null)
 		{
@@ -314,7 +314,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		return sources;
 	}
 
-	public static void DoStateTransition(int sim_handle)
+		public static void DoStateTransition(int sim_handle)
 	{
 		HandleVector<int>.Handle invalidHandle = HandleVector<int>.InvalidHandle;
 		if (StructureTemperatureComponents.handleInstanceMap.TryGetValue(sim_handle, out invalidHandle))
@@ -323,7 +323,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		}
 	}
 
-	public static void DoMelt(PrimaryElement primary_element)
+		public static void DoMelt(PrimaryElement primary_element)
 	{
 		Element element = primary_element.Element;
 		if (element.highTempTransitionTarget != SimHashes.Unobtanium)
@@ -334,7 +334,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		}
 	}
 
-	public static void DoOverheat(int sim_handle)
+		public static void DoOverheat(int sim_handle)
 	{
 		HandleVector<int>.Handle invalidHandle = HandleVector<int>.InvalidHandle;
 		if (StructureTemperatureComponents.handleInstanceMap.TryGetValue(sim_handle, out invalidHandle))
@@ -343,7 +343,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		}
 	}
 
-	public static void DoNoLongerOverheated(int sim_handle)
+		public static void DoNoLongerOverheated(int sim_handle)
 	{
 		HandleVector<int>.Handle invalidHandle = HandleVector<int>.InvalidHandle;
 		if (StructureTemperatureComponents.handleInstanceMap.TryGetValue(sim_handle, out invalidHandle))
@@ -352,12 +352,12 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		}
 	}
 
-	public bool IsEnabled(HandleVector<int>.Handle handle)
+		public bool IsEnabled(HandleVector<int>.Handle handle)
 	{
 		return base.GetPayload(handle).enabled;
 	}
 
-	private void Enable(HandleVector<int>.Handle handle, bool isEnabled)
+		private void Enable(HandleVector<int>.Handle handle, bool isEnabled)
 	{
 		StructureTemperatureHeader new_data;
 		StructureTemperaturePayload structureTemperaturePayload;
@@ -367,22 +367,22 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		base.SetData(handle, new_data, ref structureTemperaturePayload);
 	}
 
-	public void Enable(HandleVector<int>.Handle handle)
+		public void Enable(HandleVector<int>.Handle handle)
 	{
 		this.Enable(handle, true);
 	}
 
-	public void Disable(HandleVector<int>.Handle handle)
+		public void Disable(HandleVector<int>.Handle handle)
 	{
 		this.Enable(handle, false);
 	}
 
-	public bool IsBypassed(HandleVector<int>.Handle handle)
+		public bool IsBypassed(HandleVector<int>.Handle handle)
 	{
 		return base.GetPayload(handle).bypass;
 	}
 
-	private void Bypass(HandleVector<int>.Handle handle, bool bypass)
+		private void Bypass(HandleVector<int>.Handle handle, bool bypass)
 	{
 		StructureTemperatureHeader new_data;
 		StructureTemperaturePayload structureTemperaturePayload;
@@ -392,17 +392,17 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		base.SetData(handle, new_data, ref structureTemperaturePayload);
 	}
 
-	public void Bypass(HandleVector<int>.Handle handle)
+		public void Bypass(HandleVector<int>.Handle handle)
 	{
 		this.Bypass(handle, true);
 	}
 
-	public void UnBypass(HandleVector<int>.Handle handle)
+		public void UnBypass(HandleVector<int>.Handle handle)
 	{
 		this.Bypass(handle, false);
 	}
 
-	protected void SimRegister(HandleVector<int>.Handle handle, ref StructureTemperatureHeader header, ref StructureTemperaturePayload payload)
+		protected void SimRegister(HandleVector<int>.Handle handle, ref StructureTemperatureHeader header, ref StructureTemperaturePayload payload)
 	{
 		if (payload.simHandleCopy != -1)
 		{
@@ -434,7 +434,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		base.SetData(handle, header, ref payload);
 	}
 
-	private static void OnSimRegistered(HandleVector<int>.Handle handle, int sim_handle, string dbg_name)
+		private static void OnSimRegistered(HandleVector<int>.Handle handle, int sim_handle, string dbg_name)
 	{
 		if (!GameComps.StructureTemperatures.IsValid(handle))
 		{
@@ -461,7 +461,7 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		SimMessages.RemoveBuildingHeatExchange(sim_handle, -1);
 	}
 
-	protected unsafe void SimUnregister(HandleVector<int>.Handle handle)
+		protected unsafe void SimUnregister(HandleVector<int>.Handle handle)
 	{
 		if (!GameComps.StructureTemperatures.IsVersionValid(handle))
 		{
@@ -492,9 +492,9 @@ public class StructureTemperatureComponents : KGameObjectSplitComponentManager<S
 		}
 	}
 
-	private const float MAX_PRESSURE = 1.5f;
+		private const float MAX_PRESSURE = 1.5f;
 
-	private static Dictionary<int, HandleVector<int>.Handle> handleInstanceMap = new Dictionary<int, HandleVector<int>.Handle>();
+		private static Dictionary<int, HandleVector<int>.Handle> handleInstanceMap = new Dictionary<int, HandleVector<int>.Handle>();
 
-	private StatusItem operatingEnergyStatusItem;
+		private StatusItem operatingEnergyStatusItem;
 }

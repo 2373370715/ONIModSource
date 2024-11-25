@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class BeehiveCalorieMonitor : GameStateMachine<BeehiveCalorieMonitor, BeehiveCalorieMonitor.Instance, IStateMachineTarget, BeehiveCalorieMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.normal;
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -23,28 +23,28 @@ public class BeehiveCalorieMonitor : GameStateMachine<BeehiveCalorieMonitor, Bee
 		this.hungry.ToggleTag(GameTags.Creatures.Hungry).EventTransition(GameHashes.CaloriesConsumed, this.normal, (BeehiveCalorieMonitor.Instance smi) => !smi.IsHungry()).ToggleStatusItem(Db.Get().CreatureStatusItems.HiveHungry, null).Transition(this.normal, (BeehiveCalorieMonitor.Instance smi) => !smi.IsHungry(), UpdateRate.SIM_1000ms);
 	}
 
-	private static bool ReadyToPoop(BeehiveCalorieMonitor.Instance smi)
+		private static bool ReadyToPoop(BeehiveCalorieMonitor.Instance smi)
 	{
 		return smi.stomach.IsReadyToPoop() && Time.time - smi.lastMealOrPoopTime >= smi.def.minimumTimeBeforePooping;
 	}
 
-	private static void UpdateMetabolismCalorieModifier(BeehiveCalorieMonitor.Instance smi, float dt)
+		private static void UpdateMetabolismCalorieModifier(BeehiveCalorieMonitor.Instance smi, float dt)
 	{
 		smi.deltaCalorieMetabolismModifier.SetValue(1f - smi.metabolism.GetTotalValue() / 100f);
 	}
 
-	public GameStateMachine<BeehiveCalorieMonitor, BeehiveCalorieMonitor.Instance, IStateMachineTarget, BeehiveCalorieMonitor.Def>.State normal;
+		public GameStateMachine<BeehiveCalorieMonitor, BeehiveCalorieMonitor.Instance, IStateMachineTarget, BeehiveCalorieMonitor.Def>.State normal;
 
-	public GameStateMachine<BeehiveCalorieMonitor, BeehiveCalorieMonitor.Instance, IStateMachineTarget, BeehiveCalorieMonitor.Def>.State hungry;
+		public GameStateMachine<BeehiveCalorieMonitor, BeehiveCalorieMonitor.Instance, IStateMachineTarget, BeehiveCalorieMonitor.Def>.State hungry;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public override void Configure(GameObject prefab)
+				public override void Configure(GameObject prefab)
 		{
 			prefab.GetComponent<Modifiers>().initialAmounts.Add(Db.Get().Amounts.Calories.Id);
 		}
 
-		public List<Descriptor> GetDescriptors(GameObject obj)
+				public List<Descriptor> GetDescriptors(GameObject obj)
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			list.Add(new Descriptor(UI.BUILDINGEFFECTS.DIET_HEADER, UI.BUILDINGEFFECTS.TOOLTIPS.DIET_HEADER, Descriptor.DescriptorType.Effect, false));
@@ -70,18 +70,18 @@ public class BeehiveCalorieMonitor : GameStateMachine<BeehiveCalorieMonitor, Bee
 			return list;
 		}
 
-		public Diet diet;
+				public Diet diet;
 
-		public float minConsumedCaloriesBeforePooping = 100f;
+				public float minConsumedCaloriesBeforePooping = 100f;
 
-		public float minimumTimeBeforePooping = 10f;
+				public float minimumTimeBeforePooping = 10f;
 
-		public bool storePoop = true;
+				public bool storePoop = true;
 	}
 
-	public new class Instance : GameStateMachine<BeehiveCalorieMonitor, BeehiveCalorieMonitor.Instance, IStateMachineTarget, BeehiveCalorieMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<BeehiveCalorieMonitor, BeehiveCalorieMonitor.Instance, IStateMachineTarget, BeehiveCalorieMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, BeehiveCalorieMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, BeehiveCalorieMonitor.Def def) : base(master, def)
 		{
 			this.calories = Db.Get().Amounts.Calories.Lookup(base.gameObject);
 			this.calories.value = this.calories.GetMax() * 0.9f;
@@ -91,7 +91,7 @@ public class BeehiveCalorieMonitor : GameStateMachine<BeehiveCalorieMonitor, Bee
 			this.calories.deltaAttribute.Add(this.deltaCalorieMetabolismModifier);
 		}
 
-		public void OnCaloriesConsumed(object data)
+				public void OnCaloriesConsumed(object data)
 		{
 			CreatureCalorieMonitor.CaloriesConsumedEvent caloriesConsumedEvent = (CreatureCalorieMonitor.CaloriesConsumedEvent)data;
 			this.calories.value += caloriesConsumedEvent.calories;
@@ -99,33 +99,33 @@ public class BeehiveCalorieMonitor : GameStateMachine<BeehiveCalorieMonitor, Bee
 			this.lastMealOrPoopTime = Time.time;
 		}
 
-		public void Poop()
+				public void Poop()
 		{
 			this.lastMealOrPoopTime = Time.time;
 			this.stomach.Poop();
 		}
 
-		public float GetCalories0to1()
+				public float GetCalories0to1()
 		{
 			return this.calories.value / this.calories.GetMax();
 		}
 
-		public bool IsHungry()
+				public bool IsHungry()
 		{
 			return this.GetCalories0to1() < 0.9f;
 		}
 
-		public const float HUNGRY_RATIO = 0.9f;
+				public const float HUNGRY_RATIO = 0.9f;
 
-		public AmountInstance calories;
+				public AmountInstance calories;
 
-		[Serialize]
+				[Serialize]
 		public CreatureCalorieMonitor.Stomach stomach;
 
-		public float lastMealOrPoopTime;
+				public float lastMealOrPoopTime;
 
-		public AttributeInstance metabolism;
+				public AttributeInstance metabolism;
 
-		public AttributeModifier deltaCalorieMetabolismModifier;
+				public AttributeModifier deltaCalorieMetabolismModifier;
 	}
 }

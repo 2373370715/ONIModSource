@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GasReservoirConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("GasReservoir", 5, 3, "gasstorage_kanim", 100, 120f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.ALL_METALS, 800f, BuildLocationRule.OnFloor, TUNING.BUILDINGS.DECOR.PENALTY.TIER1, NOISE_POLLUTION.NOISY.TIER0, 0.2f);
 		buildingDef.InputConduitType = ConduitType.Gas;
@@ -24,7 +24,7 @@ public class GasReservoirConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<Reservoir>();
 		Storage storage = BuildingTemplates.CreateDefaultStorage(go, false);
@@ -46,21 +46,21 @@ public class GasReservoirConfig : IBuildingConfig
 		conduitDispenser.elementFilter = null;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<StorageController.Def>();
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits, false);
 	}
 
-	public const string ID = "GasReservoir";
+		public const string ID = "GasReservoir";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
 
-	private const int WIDTH = 5;
+		private const int WIDTH = 5;
 
-	private const int HEIGHT = 3;
+		private const int HEIGHT = 3;
 
-	public static readonly List<Storage.StoredItemModifier> ReservoirStoredItemModifiers = new List<Storage.StoredItemModifier>
+		public static readonly List<Storage.StoredItemModifier> ReservoirStoredItemModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Seal

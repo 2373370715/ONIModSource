@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class LiquidCargoBaySmallConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidCargoBaySmall";
 		int width = 3;
@@ -36,7 +36,7 @@ public class LiquidCargoBaySmallConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -47,13 +47,13 @@ public class LiquidCargoBaySmallConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go = BuildingTemplates.ExtendBuildingToClusterCargoBay(go, this.CAPACITY, STORAGEFILTERS.LIQUIDS, CargoBay.CargoType.Liquids);
 		BuildingTemplates.ExtendBuildingToRocketModuleCluster(go, null, ROCKETRY.BURDEN.MINOR_PLUS, 0f, 0f);
 	}
 
-	public const string ID = "LiquidCargoBaySmall";
+		public const string ID = "LiquidCargoBaySmall";
 
-	public float CAPACITY = 900f * ROCKETRY.CARGO_CAPACITY_SCALE;
+		public float CAPACITY = 900f * ROCKETRY.CARGO_CAPACITY_SCALE;
 }

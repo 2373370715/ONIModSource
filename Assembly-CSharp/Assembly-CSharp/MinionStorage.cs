@@ -8,19 +8,19 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/MinionStorage")]
 public class MinionStorage : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Components.MinionStorages.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.MinionStorages.Remove(this);
 		base.OnCleanUp();
 	}
 
-	private KPrefabID CreateSerializedMinion(GameObject src_minion)
+		private KPrefabID CreateSerializedMinion(GameObject src_minion)
 	{
 		GameObject gameObject = Util.KInstantiate(SaveLoader.Instance.saveManager.GetPrefab(StoredMinionConfig.ID), Vector3.zero);
 		gameObject.SetActive(true);
@@ -33,11 +33,12 @@ public class MinionStorage : KMonoBehaviour
 		return gameObject.GetComponent<KPrefabID>();
 	}
 
-	private void CopyMinion(MinionIdentity src_id, StoredMinionIdentity dest_id)
+		private void CopyMinion(MinionIdentity src_id, StoredMinionIdentity dest_id)
 	{
 		dest_id.storedName = src_id.name;
 		dest_id.nameStringKey = src_id.nameStringKey;
 		dest_id.personalityResourceId = src_id.personalityResourceId;
+		dest_id.model = src_id.model;
 		dest_id.gender = src_id.gender;
 		dest_id.genderStringKey = src_id.genderStringKey;
 		dest_id.arrivalTime = src_id.arrivalTime;
@@ -83,7 +84,7 @@ public class MinionStorage : KMonoBehaviour
 		}
 	}
 
-	private static void StoreModifiers(MinionIdentity src_id, StoredMinionIdentity dest_id)
+		private static void StoreModifiers(MinionIdentity src_id, StoredMinionIdentity dest_id)
 	{
 		foreach (AttributeInstance attributeInstance in src_id.GetComponent<MinionModifiers>().attributes)
 		{
@@ -98,10 +99,11 @@ public class MinionStorage : KMonoBehaviour
 		}
 	}
 
-	private static void CopyMinion(StoredMinionIdentity src_id, MinionIdentity dest_id)
+		private static void CopyMinion(StoredMinionIdentity src_id, MinionIdentity dest_id)
 	{
 		dest_id.SetName(src_id.storedName);
 		dest_id.nameStringKey = src_id.nameStringKey;
+		dest_id.model = src_id.model;
 		dest_id.personalityResourceId = src_id.personalityResourceId;
 		dest_id.gender = src_id.gender;
 		dest_id.genderStringKey = src_id.genderStringKey;
@@ -188,14 +190,14 @@ public class MinionStorage : KMonoBehaviour
 		}
 	}
 
-	public static void RedirectInstanceTracker(GameObject src_minion, GameObject dest_minion)
+		public static void RedirectInstanceTracker(GameObject src_minion, GameObject dest_minion)
 	{
 		KPrefabID component = src_minion.GetComponent<KPrefabID>();
 		dest_minion.GetComponent<KPrefabID>().InstanceID = component.InstanceID;
 		component.InstanceID = -1;
 	}
 
-	public void SerializeMinion(GameObject minion)
+		public void SerializeMinion(GameObject minion)
 	{
 		this.CleanupBadReferences();
 		KPrefabID kprefabID = this.CreateSerializedMinion(minion);
@@ -203,7 +205,7 @@ public class MinionStorage : KMonoBehaviour
 		this.serializedMinions.Add(item);
 	}
 
-	private void CleanupBadReferences()
+		private void CleanupBadReferences()
 	{
 		for (int i = this.serializedMinions.Count - 1; i >= 0; i--)
 		{
@@ -214,7 +216,7 @@ public class MinionStorage : KMonoBehaviour
 		}
 	}
 
-	private int GetMinionIndex(Guid id)
+		private int GetMinionIndex(Guid id)
 	{
 		int result = -1;
 		for (int i = 0; i < this.serializedMinions.Count; i++)
@@ -228,7 +230,7 @@ public class MinionStorage : KMonoBehaviour
 		return result;
 	}
 
-	public GameObject DeserializeMinion(Guid id, Vector3 pos)
+		public GameObject DeserializeMinion(Guid id, Vector3 pos)
 	{
 		int minionIndex = this.GetMinionIndex(id);
 		if (minionIndex < 0 || minionIndex >= this.serializedMinions.Count)
@@ -244,10 +246,10 @@ public class MinionStorage : KMonoBehaviour
 		return MinionStorage.DeserializeMinion(kprefabID.gameObject, pos);
 	}
 
-	public static GameObject DeserializeMinion(GameObject sourceMinion, Vector3 pos)
+		public static GameObject DeserializeMinion(GameObject sourceMinion, Vector3 pos)
 	{
-		GameObject gameObject = Util.KInstantiate(SaveLoader.Instance.saveManager.GetPrefab(MinionConfig.ID), pos);
 		StoredMinionIdentity component = sourceMinion.GetComponent<StoredMinionIdentity>();
+		GameObject gameObject = Util.KInstantiate(SaveLoader.Instance.saveManager.GetPrefab(BaseMinionConfig.GetMinionIDForModel(component.model)), pos);
 		MinionIdentity component2 = gameObject.GetComponent<MinionIdentity>();
 		MinionStorage.RedirectInstanceTracker(sourceMinion, gameObject);
 		gameObject.SetActive(true);
@@ -257,7 +259,7 @@ public class MinionStorage : KMonoBehaviour
 		return gameObject;
 	}
 
-	public void DeleteStoredMinion(Guid id)
+		public void DeleteStoredMinion(Guid id)
 	{
 		int minionIndex = this.GetMinionIndex(id);
 		if (minionIndex < 0)
@@ -272,29 +274,29 @@ public class MinionStorage : KMonoBehaviour
 		this.serializedMinions.RemoveAt(minionIndex);
 	}
 
-	public List<MinionStorage.Info> GetStoredMinionInfo()
+		public List<MinionStorage.Info> GetStoredMinionInfo()
 	{
 		return this.serializedMinions;
 	}
 
-	public void SetStoredMinionInfo(List<MinionStorage.Info> info)
+		public void SetStoredMinionInfo(List<MinionStorage.Info> info)
 	{
 		this.serializedMinions = info;
 	}
 
-	[Serialize]
+		[Serialize]
 	private List<MinionStorage.Info> serializedMinions = new List<MinionStorage.Info>();
 
-	public struct Info
+		public struct Info
 	{
-		public Info(string name, Ref<KPrefabID> ref_obj)
+				public Info(string name, Ref<KPrefabID> ref_obj)
 		{
 			this.id = Guid.NewGuid();
 			this.name = name;
 			this.serializedMinion = ref_obj;
 		}
 
-		public static MinionStorage.Info CreateEmpty()
+				public static MinionStorage.Info CreateEmpty()
 		{
 			return new MinionStorage.Info
 			{
@@ -304,10 +306,10 @@ public class MinionStorage : KMonoBehaviour
 			};
 		}
 
-		public Guid id;
+				public Guid id;
 
-		public string name;
+				public string name;
 
-		public Ref<KPrefabID> serializedMinion;
+				public Ref<KPrefabID> serializedMinion;
 	}
 }

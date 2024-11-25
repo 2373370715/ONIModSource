@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GroundMasks : ScriptableObject
 {
-	public void Initialize()
+		public void Initialize()
 	{
 		if (this.maskAtlas == null || this.maskAtlas.items == null)
 		{
@@ -57,7 +57,7 @@ public class GroundMasks : ScriptableObject
 		}
 	}
 
-	[ContextMenu("Print Variations")]
+		[ContextMenu("Print Variations")]
 	private void Regenerate()
 	{
 		this.Initialize();
@@ -75,14 +75,14 @@ public class GroundMasks : ScriptableObject
 		global::Debug.Log(text);
 	}
 
-	public TextureAtlas maskAtlas;
+		public TextureAtlas maskAtlas;
 
-	[NonSerialized]
+		[NonSerialized]
 	public Dictionary<string, GroundMasks.BiomeMaskData> biomeMasks;
 
-	public struct UVData
+		public struct UVData
 	{
-		public UVData(Vector2 bl, Vector2 br, Vector2 tl, Vector2 tr)
+				public UVData(Vector2 bl, Vector2 br, Vector2 tl, Vector2 tr)
 		{
 			this.bl = bl;
 			this.br = br;
@@ -90,31 +90,31 @@ public class GroundMasks : ScriptableObject
 			this.tr = tr;
 		}
 
-		public Vector2 bl;
+				public Vector2 bl;
 
-		public Vector2 br;
+				public Vector2 br;
 
-		public Vector2 tl;
+				public Vector2 tl;
 
-		public Vector2 tr;
+				public Vector2 tr;
 	}
 
-	public struct Tile
+		public struct Tile
 	{
-		public bool isSource;
+				public bool isSource;
 
-		public GroundMasks.UVData[] variationUVs;
+				public GroundMasks.UVData[] variationUVs;
 	}
 
-	public class BiomeMaskData
+		public class BiomeMaskData
 	{
-		public BiomeMaskData(string name)
+				public BiomeMaskData(string name)
 		{
 			this.name = name;
 			this.tiles = new GroundMasks.Tile[16];
 		}
 
-		public void GenerateRotations()
+				public void GenerateRotations()
 		{
 			for (int i = 1; i < 15; i++)
 			{
@@ -127,7 +127,7 @@ public class GroundMasks : ScriptableObject
 			}
 		}
 
-		public GroundMasks.UVData[] GetNonNullRotationUVs(int dest_mask)
+				public GroundMasks.UVData[] GetNonNullRotationUVs(int dest_mask)
 		{
 			GroundMasks.UVData[] array = null;
 			int num = dest_mask;
@@ -168,7 +168,7 @@ public class GroundMasks : ScriptableObject
 			return array;
 		}
 
-		public void Validate()
+				public void Validate()
 		{
 			for (int i = 1; i < this.tiles.Length; i++)
 			{
@@ -184,8 +184,8 @@ public class GroundMasks : ScriptableObject
 			}
 		}
 
-		public string name;
+				public string name;
 
-		public GroundMasks.Tile[] tiles;
+				public GroundMasks.Tile[] tiles;
 	}
 }

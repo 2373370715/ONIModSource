@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SplashMessageScreen")]
 public class OldVersionMessageScreen : KModalScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.forumButton.onClick += delegate()
@@ -23,22 +23,22 @@ public class OldVersionMessageScreen : KModalScreen
 		};
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.messageContainer.sizeDelta = new Vector2(Mathf.Max(384f, (float)Screen.width * 0.25f), this.messageContainer.sizeDelta.y);
 		AudioMixer.instance.Start(AudioMixerSnapshots.Get().FrontEndWelcomeScreenSnapshot);
 	}
 
-	public KButton forumButton;
+		public KButton forumButton;
 
-	public KButton confirmButton;
+		public KButton confirmButton;
 
-	public KButton quitButton;
+		public KButton quitButton;
 
-	public LocText bodyText;
+		public LocText bodyText;
 
-	public bool previewInEditor;
+		public bool previewInEditor;
 
-	public RectTransform messageContainer;
+		public RectTransform messageContainer;
 }

@@ -4,12 +4,12 @@ using STRINGS;
 
 public class MaturityDisplayer : AsPercentAmountDisplayer
 {
-	public MaturityDisplayer() : base(GameUtil.TimeSlice.PerCycle)
+		public MaturityDisplayer() : base(GameUtil.TimeSlice.PerCycle)
 	{
 		this.formatter = new MaturityDisplayer.MaturityAttributeFormatter();
 	}
 
-	public override string GetTooltipDescription(Amount master, AmountInstance instance)
+		public override string GetTooltipDescription(Amount master, AmountInstance instance)
 	{
 		string text = base.GetTooltipDescription(master, instance);
 		Growing component = instance.gameObject.GetComponent<Growing>();
@@ -36,7 +36,7 @@ public class MaturityDisplayer : AsPercentAmountDisplayer
 		return text;
 	}
 
-	public override string GetDescription(Amount master, AmountInstance instance)
+		public override string GetDescription(Amount master, AmountInstance instance)
 	{
 		Growing component = instance.gameObject.GetComponent<Growing>();
 		if (component != null && component.IsGrowing())
@@ -46,13 +46,13 @@ public class MaturityDisplayer : AsPercentAmountDisplayer
 		return base.GetDescription(master, instance);
 	}
 
-	public class MaturityAttributeFormatter : StandardAttributeFormatter
+		public class MaturityAttributeFormatter : StandardAttributeFormatter
 	{
-		public MaturityAttributeFormatter() : base(GameUtil.UnitClass.Percent, GameUtil.TimeSlice.None)
+				public MaturityAttributeFormatter() : base(GameUtil.UnitClass.Percent, GameUtil.TimeSlice.None)
 		{
 		}
 
-		public override string GetFormattedModifier(AttributeModifier modifier)
+				public override string GetFormattedModifier(AttributeModifier modifier)
 		{
 			float num = modifier.Value;
 			GameUtil.TimeSlice timeSlice = base.DeltaTimeSlice;

@@ -11,7 +11,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FallingWater")]
 public class FallingWater : KMonoBehaviour, ISim200ms
 {
-			public static FallingWater instance
+				public static FallingWater instance
 	{
 		get
 		{
@@ -22,12 +22,12 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		FallingWater._instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		FallingWater._instance = this;
 		base.OnPrefabInit();
@@ -35,7 +35,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		this.mistPool = new GameObjectPool(new Func<GameObject>(this.InstantiateMist), 16);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.mesh = new Mesh();
 		this.mesh.MarkDynamic();
@@ -50,24 +50,24 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		this.uvFrameSize = new Vector2(1f / (float)this.numFrames, 1f);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		FallingWater.instance = null;
 		base.OnCleanUp();
 	}
 
-	private float GetTime()
+		private float GetTime()
 	{
 		return Time.time % 360f;
 	}
 
-	public void AddParticle(int cell, ushort elementIdx, float base_mass, float temperature, byte disease_idx, int base_disease_count, bool skip_sound = false, bool skip_decor = false, bool debug_track = false, bool disable_randomness = false)
+		public void AddParticle(int cell, ushort elementIdx, float base_mass, float temperature, byte disease_idx, int base_disease_count, bool skip_sound = false, bool skip_decor = false, bool debug_track = false, bool disable_randomness = false)
 	{
 		Vector2 root_pos = Grid.CellToPos2D(cell);
 		this.AddParticle(root_pos, elementIdx, base_mass, temperature, disease_idx, base_disease_count, skip_sound, skip_decor, debug_track, disable_randomness);
 	}
 
-	public void AddParticle(Vector2 root_pos, ushort elementIdx, float base_mass, float temperature, byte disease_idx, int base_disease_count, bool skip_sound = false, bool skip_decor = false, bool debug_track = false, bool disable_randomness = false)
+		public void AddParticle(Vector2 root_pos, ushort elementIdx, float base_mass, float temperature, byte disease_idx, int base_disease_count, bool skip_sound = false, bool skip_decor = false, bool debug_track = false, bool disable_randomness = false)
 	{
 		int num = Grid.PosToCell(root_pos);
 		if (!Grid.IsValidCell(num))
@@ -141,7 +141,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	private bool SpawnLiquidTopDecor(float time, int cell, bool flip, Element element)
+		private bool SpawnLiquidTopDecor(float time, int cell, bool flip, Element element)
 	{
 		if (Grid.IsValidCell(cell) && Grid.Element[cell] == element)
 		{
@@ -167,7 +167,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		return false;
 	}
 
-	public void SpawnLiquidSplash(float x, int cell, bool forceSplash = false)
+		public void SpawnLiquidSplash(float x, int cell, bool forceSplash = false)
 	{
 		float time = this.GetTime();
 		float num = this.lastSpawnTime[cell];
@@ -182,7 +182,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	public void UpdateParticles(float dt)
+		public void UpdateParticles(float dt)
 	{
 		if (dt <= 0f || this.simUpdateDelay >= 0)
 		{
@@ -297,7 +297,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		this.UpdateMistFX(Time.time);
 	}
 
-	private void UpdateMistFX(float t)
+		private void UpdateMistFX(float t)
 	{
 		this.mistClearList.Clear();
 		foreach (KeyValuePair<Pair<int, bool>, FallingWater.MistInfo> keyValuePair in this.mistAlive)
@@ -315,7 +315,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		this.mistClearList.Clear();
 	}
 
-	private void UpdateSounds(float t)
+		private void UpdateSounds(float t)
 	{
 		this.clearList.Clear();
 		foreach (KeyValuePair<int, FallingWater.SoundInfo> keyValuePair in this.topSounds)
@@ -354,7 +354,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		this.clearList.Clear();
 	}
 
-	public Dictionary<int, float> GetInfo(int cell)
+		public Dictionary<int, float> GetInfo(int cell)
 	{
 		Dictionary<int, float> dictionary = new Dictionary<int, float>();
 		int count = this.physics.Count;
@@ -372,12 +372,12 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		return dictionary;
 	}
 
-	private float GetParticleVolume(float mass)
+		private float GetParticleVolume(float mass)
 	{
 		return Mathf.Clamp01((mass - (this.particleMassToSplit - this.particleMassVariation)) / (2f * this.particleMassVariation));
 	}
 
-	private void AddToSim(int cell, int particleIdx, ref int num_particles)
+		private void AddToSim(int cell, int particleIdx, ref int num_particles)
 	{
 		bool flag = false;
 		for (;;)
@@ -447,7 +447,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	private void RemoveParticle(int particleIdx, ref int num_particles)
+		private void RemoveParticle(int particleIdx, ref int num_particles)
 	{
 		num_particles--;
 		this.physics[particleIdx] = this.physics[num_particles];
@@ -456,7 +456,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		this.particleProperties.RemoveAt(num_particles);
 	}
 
-	public void Render()
+		public void Render()
 	{
 		List<Vector3> vertices = MeshUtil.vertices;
 		List<Color32> colours = MeshUtil.colours32;
@@ -523,7 +523,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		Graphics.DrawMesh(this.mesh, this.renderOffset, Quaternion.identity, this.material, layer, null, 0, this.propertyBlock);
 	}
 
-	private KBatchedAnimController SpawnMist()
+		private KBatchedAnimController SpawnMist()
 	{
 		GameObject instance = this.mistPool.GetInstance();
 		instance.SetActive(true);
@@ -532,7 +532,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		return component;
 	}
 
-	private GameObject InstantiateMist()
+		private GameObject InstantiateMist()
 	{
 		GameObject gameObject = GameUtil.KInstantiate(this.mistEffect, Grid.SceneLayer.BuildingBack, null, 0);
 		gameObject.SetActive(false);
@@ -540,13 +540,13 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		return gameObject;
 	}
 
-	private void ReleaseMist(GameObject go)
+		private void ReleaseMist(GameObject go)
 	{
 		go.SetActive(false);
 		this.mistPool.ReleaseInstance(go);
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this.simUpdateDelay >= 0)
 		{
@@ -556,7 +556,7 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		SimAndRenderScheduler.instance.Remove(this);
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerializing()
 	{
 		List<Element> elements = ElementLoader.elements;
@@ -574,13 +574,13 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	[OnSerialized]
+		[OnSerialized]
 	private void OnSerialized()
 	{
 		this.serializedParticleProperties = null;
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (!SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 26))
@@ -621,143 +621,143 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 		this.properties = null;
 	}
 
-	private const float STATE_TRANSITION_TEMPERATURE_BUFER = 3f;
+		private const float STATE_TRANSITION_TEMPERATURE_BUFER = 3f;
 
-	private const byte FORCED_ALPHA = 191;
+		private const byte FORCED_ALPHA = 191;
 
-	private int simUpdateDelay = 2;
+		private int simUpdateDelay = 2;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector2 particleSize;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector2 initialOffset;
 
-	[SerializeField]
+		[SerializeField]
 	private float jitterStep;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector3 renderOffset;
 
-	[SerializeField]
+		[SerializeField]
 	private float minSpawnDelay;
 
-	[SerializeField]
+		[SerializeField]
 	private float gravityScale = 0.05f;
 
-	[SerializeField]
+		[SerializeField]
 	private float particleMassToSplit = 75f;
 
-	[SerializeField]
+		[SerializeField]
 	private float particleMassVariation = 15f;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector2 multipleOffsetRange;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject mistEffect;
 
-	[SerializeField]
+		[SerializeField]
 	private float mistEffectMinAliveTime = 2f;
 
-	[SerializeField]
+		[SerializeField]
 	private Material material;
 
-	[SerializeField]
+		[SerializeField]
 	private Texture2D texture;
 
-	[SerializeField]
+		[SerializeField]
 	private int numFrames;
 
-	[SerializeField]
+		[SerializeField]
 	private FallingWater.DecorInfo liquid_splash;
 
-	[SerializeField]
+		[SerializeField]
 	private EventReference liquid_top_loop;
 
-	[SerializeField]
+		[SerializeField]
 	private EventReference liquid_splash_initial;
 
-	[SerializeField]
+		[SerializeField]
 	private EventReference liquid_splash_loop;
 
-	[SerializeField]
+		[SerializeField]
 	private float stopTopLoopDelay = 0.2f;
 
-	[SerializeField]
+		[SerializeField]
 	private float stopSplashLoopDelay = 1f;
 
-	[SerializeField]
+		[SerializeField]
 	private int splashCountLoopThreshold = 10;
 
-	[Serialize]
+		[Serialize]
 	private List<FallingWater.ParticlePhysics> physics = new List<FallingWater.ParticlePhysics>();
 
-	private List<FallingWater.ParticleProperties> particleProperties = new List<FallingWater.ParticleProperties>();
+		private List<FallingWater.ParticleProperties> particleProperties = new List<FallingWater.ParticleProperties>();
 
-	[Serialize]
+		[Serialize]
 	private List<FallingWater.SerializedParticleProperties> serializedParticleProperties;
 
-	[Serialize]
+		[Serialize]
 	private List<FallingWater.ParticleProperties> properties = new List<FallingWater.ParticleProperties>();
 
-	private Dictionary<int, FallingWater.SoundInfo> topSounds = new Dictionary<int, FallingWater.SoundInfo>();
+		private Dictionary<int, FallingWater.SoundInfo> topSounds = new Dictionary<int, FallingWater.SoundInfo>();
 
-	private Dictionary<int, FallingWater.SoundInfo> splashSounds = new Dictionary<int, FallingWater.SoundInfo>();
+		private Dictionary<int, FallingWater.SoundInfo> splashSounds = new Dictionary<int, FallingWater.SoundInfo>();
 
-	private GameObjectPool mistPool;
+		private GameObjectPool mistPool;
 
-	private Mesh mesh;
+		private Mesh mesh;
 
-	private float offset;
+		private float offset;
 
-	private float[] lastSpawnTime;
+		private float[] lastSpawnTime;
 
-	private Dictionary<Pair<int, bool>, FallingWater.MistInfo> mistAlive = new Dictionary<Pair<int, bool>, FallingWater.MistInfo>();
+		private Dictionary<Pair<int, bool>, FallingWater.MistInfo> mistAlive = new Dictionary<Pair<int, bool>, FallingWater.MistInfo>();
 
-	private Vector2 uvFrameSize;
+		private Vector2 uvFrameSize;
 
-	private MaterialPropertyBlock propertyBlock;
+		private MaterialPropertyBlock propertyBlock;
 
-	private static FallingWater _instance;
+		private static FallingWater _instance;
 
-	private List<int> clearList = new List<int>();
+		private List<int> clearList = new List<int>();
 
-	private List<Pair<int, bool>> mistClearList = new List<Pair<int, bool>>();
+		private List<Pair<int, bool>> mistClearList = new List<Pair<int, bool>>();
 
-	private static HashedString HASH_LIQUIDDEPTH = "liquidDepth";
+		private static HashedString HASH_LIQUIDDEPTH = "liquidDepth";
 
-	private static HashedString HASH_LIQUIDVOLUME = "liquidVolume";
+		private static HashedString HASH_LIQUIDVOLUME = "liquidVolume";
 
-	[Serializable]
+		[Serializable]
 	private struct DecorInfo
 	{
-		public string[] names;
+				public string[] names;
 
-		public Vector2 offset;
+				public Vector2 offset;
 
-		public Vector2 size;
+				public Vector2 size;
 	}
 
-	private struct SoundInfo
+		private struct SoundInfo
 	{
-		public float startTime;
+				public float startTime;
 
-		public int splashCount;
+				public int splashCount;
 
-		public HandleVector<int>.Handle handle;
+				public HandleVector<int>.Handle handle;
 	}
 
-	private struct MistInfo
+		private struct MistInfo
 	{
-		public KBatchedAnimController fx;
+				public KBatchedAnimController fx;
 
-		public float deathTime;
+				public float deathTime;
 	}
 
-	private struct ParticlePhysics
+		private struct ParticlePhysics
 	{
-		public ParticlePhysics(Vector2 position, Vector2 velocity, int frame, ushort elementIdx, int worldIdx)
+				public ParticlePhysics(Vector2 position, Vector2 velocity, int frame, ushort elementIdx, int worldIdx)
 		{
 			this.position = position;
 			this.velocity = velocity;
@@ -767,33 +767,33 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 			this.worldIdx = worldIdx;
 		}
 
-		public Vector2 position;
+				public Vector2 position;
 
-		public Vector2 velocity;
+				public Vector2 velocity;
 
-		public int frame;
+				public int frame;
 
-		public Color32 colour;
+				public Color32 colour;
 
-		public int worldIdx;
+				public int worldIdx;
 	}
 
-	private struct SerializedParticleProperties
+		private struct SerializedParticleProperties
 	{
-		public SimHashes elementID;
+				public SimHashes elementID;
 
-		public HashedString diseaseID;
+				public HashedString diseaseID;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 
-	private struct ParticleProperties
+		private struct ParticleProperties
 	{
-		public ParticleProperties(ushort elementIdx, float mass, float temperature, byte disease_idx, int disease_count, bool debug_track)
+				public ParticleProperties(ushort elementIdx, float mass, float temperature, byte disease_idx, int disease_count, bool debug_track)
 		{
 			this.elementIdx = elementIdx;
 			this.diseaseIdx = disease_idx;
@@ -802,14 +802,14 @@ public class FallingWater : KMonoBehaviour, ISim200ms
 			this.diseaseCount = disease_count;
 		}
 
-		public ushort elementIdx;
+				public ushort elementIdx;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 }

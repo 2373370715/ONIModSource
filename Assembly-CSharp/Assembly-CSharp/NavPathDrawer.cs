@@ -4,48 +4,48 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/NavPathDrawer")]
 public class NavPathDrawer : KMonoBehaviour
 {
-			public static NavPathDrawer Instance { get; private set; }
+				public static NavPathDrawer Instance { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		NavPathDrawer.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Shader shader = Shader.Find("Lines/Colored Blended");
 		this.material = new Material(shader);
 		NavPathDrawer.Instance = this;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		NavPathDrawer.Instance = null;
 	}
 
-	public void DrawPath(Vector3 navigator_pos, PathFinder.Path path)
+		public void DrawPath(Vector3 navigator_pos, PathFinder.Path path)
 	{
 		this.navigatorPos = navigator_pos;
 		this.navigatorPos.y = this.navigatorPos.y + 0.5f;
 		this.path = path;
 	}
 
-	public Navigator GetNavigator()
+		public Navigator GetNavigator()
 	{
 		return this.navigator;
 	}
 
-	public void SetNavigator(Navigator navigator)
+		public void SetNavigator(Navigator navigator)
 	{
 		this.navigator = navigator;
 	}
 
-	public void ClearNavigator()
+		public void ClearNavigator()
 	{
 		this.navigator = null;
 	}
 
-	private void DrawPath(PathFinder.Path path, Vector3 navigator_pos, Color color)
+		private void DrawPath(PathFinder.Path path, Vector3 navigator_pos, Color color)
 	{
 		if (path.nodes != null && path.nodes.Count > 1)
 		{
@@ -70,7 +70,7 @@ public class NavPathDrawer : KMonoBehaviour
 		}
 	}
 
-	private void OnPostRender()
+		private void OnPostRender()
 	{
 		this.DrawPath(this.path, this.navigatorPos, Color.white);
 		this.path = default(PathFinder.Path);
@@ -87,7 +87,7 @@ public class NavPathDrawer : KMonoBehaviour
 		}
 	}
 
-	private void DebugDrawSelectedNavigator()
+		private void DebugDrawSelectedNavigator()
 	{
 		if (!DebugHandler.DebugPathFinding)
 		{
@@ -121,11 +121,11 @@ public class NavPathDrawer : KMonoBehaviour
 		}
 	}
 
-	private PathFinder.Path path;
+		private PathFinder.Path path;
 
-	public Material material;
+		public Material material;
 
-	private Vector3 navigatorPos;
+		private Vector3 navigatorPos;
 
-	private Navigator navigator;
+		private Navigator navigator;
 }

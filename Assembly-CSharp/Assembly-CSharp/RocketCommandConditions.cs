@@ -1,8 +1,8 @@
 ﻿using System;
 
-public class RocketCommandConditions : KMonoBehaviour
+public class RocketCommandConditions : CommandConditions
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		RocketModule component = base.GetComponent<RocketModule>();
@@ -34,33 +34,15 @@ public class RocketCommandConditions : KMonoBehaviour
 		this.flightPathIsClear = (ConditionFlightPathIsClear)component.AddModuleCondition(ProcessCondition.ProcessConditionType.RocketFlight, new ConditionFlightPathIsClear(base.gameObject, bufferWidth));
 	}
 
-	public ConditionDestinationReachable reachable;
+		public ConditionHasAstronaut hasAstronaut;
 
-	public ConditionHasAstronaut hasAstronaut;
+		public ConditionPilotOnBoard pilotOnBoard;
 
-	public ConditionPilotOnBoard pilotOnBoard;
+		public ConditionPassengersOnBoard passengersOnBoard;
 
-	public ConditionPassengersOnBoard passengersOnBoard;
+		public ConditionNoExtraPassengers noExtraPassengers;
 
-	public ConditionNoExtraPassengers noExtraPassengers;
+		public ConditionHasAtmoSuit hasSuit;
 
-	public ConditionHasAtmoSuit hasSuit;
-
-	public CargoBayIsEmpty cargoEmpty;
-
-	public ConditionHasMinimumMass destHasResources;
-
-	public ConditionAllModulesComplete allModulesComplete;
-
-	public ConditionHasControlStation hasControlStation;
-
-	public ConditionHasCargoBayForNoseconeHarvest HasCargoBayForNoseconeHarvest;
-
-	public ConditionHasEngine hasEngine;
-
-	public ConditionHasNosecone hasNosecone;
-
-	public ConditionOnLaunchPad onLaunchPad;
-
-	public ConditionFlightPathIsClear flightPathIsClear;
+		public ConditionHasControlStation hasControlStation;
 }

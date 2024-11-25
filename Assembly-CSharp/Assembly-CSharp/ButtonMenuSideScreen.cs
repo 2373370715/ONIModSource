@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ButtonMenuSideScreen : SideScreenContent
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		ISidescreenButtonControl sidescreenButtonControl = target.GetComponent<ISidescreenButtonControl>();
 		if (sidescreenButtonControl == null)
@@ -15,7 +15,7 @@ public class ButtonMenuSideScreen : SideScreenContent
 		return sidescreenButtonControl != null && sidescreenButtonControl.SidescreenEnabled();
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		if (this.targets == null)
 		{
@@ -24,7 +24,7 @@ public class ButtonMenuSideScreen : SideScreenContent
 		return this.targets[0].ButtonSideScreenSortOrder();
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -36,7 +36,7 @@ public class ButtonMenuSideScreen : SideScreenContent
 		this.Refresh();
 	}
 
-	public GameObject GetHorizontalGroup(int id)
+		public GameObject GetHorizontalGroup(int id)
 	{
 		if (!this.horizontalGroups.ContainsKey(id))
 		{
@@ -45,7 +45,7 @@ public class ButtonMenuSideScreen : SideScreenContent
 		return this.horizontalGroups[id];
 	}
 
-	public void CopyLayoutSettings(LayoutElement to, LayoutElement from)
+		public void CopyLayoutSettings(LayoutElement to, LayoutElement from)
 	{
 		to.ignoreLayout = from.ignoreLayout;
 		to.minWidth = from.minWidth;
@@ -57,7 +57,7 @@ public class ButtonMenuSideScreen : SideScreenContent
 		to.layoutPriority = from.layoutPriority;
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		while (this.liveButtons.Count < this.targets.Count)
 		{
@@ -106,19 +106,19 @@ public class ButtonMenuSideScreen : SideScreenContent
 		}
 	}
 
-	public const int DefaultButtonMenuSideScreenSortOrder = 20;
+		public const int DefaultButtonMenuSideScreenSortOrder = 20;
 
-	public LayoutElement buttonPrefab;
+		public LayoutElement buttonPrefab;
 
-	public LayoutElement horizontalButtonPrefab;
+		public LayoutElement horizontalButtonPrefab;
 
-	public GameObject horizontalGroupPrefab;
+		public GameObject horizontalGroupPrefab;
 
-	public RectTransform buttonContainer;
+		public RectTransform buttonContainer;
 
-	private List<GameObject> liveButtons = new List<GameObject>();
+		private List<GameObject> liveButtons = new List<GameObject>();
 
-	private Dictionary<int, GameObject> horizontalGroups = new Dictionary<int, GameObject>();
+		private Dictionary<int, GameObject> horizontalGroups = new Dictionary<int, GameObject>();
 
-	private List<ISidescreenButtonControl> targets;
+		private List<ISidescreenButtonControl> targets;
 }

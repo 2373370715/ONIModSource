@@ -4,262 +4,182 @@ using KSerialization;
 using STRINGS;
 using UnityEngine;
 
-/// <summary>
-/// 用于实现游戏对象清空功能的类，继承自 Workable。
-/// </summary>
 [AddComponentMenu("KMonoBehaviour/Workable/DropAllWorkable")]
-public class DropAllWorkable : Workable {
-    /// <summary>
-    /// 用于处理用户菜单刷新事件的委托。
-    /// </summary>
-    private static readonly EventSystem.IntraObjectHandler<DropAllWorkable> OnRefreshUserMenuDelegate
-        = new EventSystem.IntraObjectHandler<DropAllWorkable>(delegate(DropAllWorkable component, object data) {
-            component.OnRefreshUserMenu(data);
-        });
+public class DropAllWorkable : Workable
+{
+				private Chore Chore
+	{
+		get
+		{
+			return this._chore;
+		}
+		set
+		{
+			this._chore = value;
+			this.markedForDrop = (this._chore != null);
+		}
+	}
 
-    /// <summary>
-    /// 用于处理存储变化事件的委托。
-    /// </summary>
-    private static readonly EventSystem.IntraObjectHandler<DropAllWorkable> OnStorageChangeDelegate
-        = new EventSystem.IntraObjectHandler<DropAllWorkable>(delegate(DropAllWorkable component, object data) {
-            component.OnStorageChange(data);
-        });
+		protected DropAllWorkable()
+	{
+		base.SetOffsetTable(OffsetGroups.InvertedStandardTable);
+	}
 
-    /// <summary>
-    /// 当前的清空任务。
-    /// </summary>
-    private Chore _chore;
+		protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		base.Subscribe<DropAllWorkable>(493375141, DropAllWorkable.OnRefreshUserMenuDelegate);
+		base.Subscribe<DropAllWorkable>(-1697596308, DropAllWorkable.OnStorageChangeDelegate);
+		this.workerStatusItem = Db.Get().DuplicantStatusItems.Emptying;
+		this.synchronizeAnims = false;
+		base.SetWorkTime(this.dropWorkTime);
+		Prioritizable.AddRef(base.gameObject);
+	}
 
-    /// <summary>
-    /// 优先级管理组件。
-    /// </summary>
-    [MyCmpAdd]
-    private Prioritizable _prioritizable;
+		private Storage[] GetStorages()
+	{
+		if (this.storages == null)
+		{
+			this.storages = base.GetComponents<Storage>();
+		}
+		return this.storages;
+	}
 
-    /// <summary>
-    /// 清空任务的类型ID。
-    /// </summary>
-    public string choreTypeID;
+		protected override void OnSpawn()
+	{
+		base.OnSpawn();
+		this.showCmd = this.GetNewShowCmd();
+		if (this.markedForDrop)
+		{
+			this.DropAll();
+		}
+	}
 
-    /// <summary>
-    /// 清空操作的工作时间。
-    /// </summary>
-    public float dropWorkTime = 0.1f;
+		public void DropAll()
+	{
+		if (DebugHandler.InstantBuildMode)
+		{
+			this.OnCompleteWork(null);
+		}
+		else if (this.Chore == null)
+		{
+			ChoreType chore_type = (!string.IsNullOrEmpty(this.choreTypeID)) ? Db.Get().ChoreTypes.Get(this.choreTypeID) : Db.Get().ChoreTypes.EmptyStorage;
+			this.Chore = new WorkChore<DropAllWorkable>(chore_type, this, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
+		}
+		else
+		{
+			this.Chore.Cancel("Cancelled emptying");
+			this.Chore = null;
+			base.GetComponent<KSelectable>().RemoveStatusItem(this.workerStatusItem, false);
+			base.ShowProgressBar(false);
+		}
+		this.RefreshStatusItem();
+	}
 
-    /// <summary>
-    /// 标记是否需要清空。
-    /// </summary>
-    [Serialize]
-    private bool markedForDrop;
+		protected override void OnCompleteWork(WorkerBase worker)
+	{
+		Storage[] array = this.GetStorages();
+		for (int i = 0; i < array.Length; i++)
+		{
+			List<GameObject> list = new List<GameObject>(array[i].items);
+			for (int j = 0; j < list.Count; j++)
+			{
+				GameObject gameObject = array[i].Drop(list[j], true);
+				if (gameObject != null)
+				{
+					foreach (Tag tag in this.removeTags)
+					{
+						gameObject.RemoveTag(tag);
+					}
+					gameObject.Trigger(580035959, worker);
+					if (this.resetTargetWorkableOnCompleteWork)
+					{
+						Pickupable component = gameObject.GetComponent<Pickupable>();
+						component.targetWorkable = component;
+						component.SetOffsetTable(OffsetGroups.InvertedStandardTable);
+					}
+				}
+			}
+		}
+		this.Chore = null;
+		this.RefreshStatusItem();
+		base.Trigger(-1957399615, null);
+	}
 
-    /// <summary>
-    /// 清空时需要移除的标签列表。
-    /// </summary>
-    public List<Tag> removeTags;
+		private void OnRefreshUserMenu(object data)
+	{
+		if (this.showCmd)
+		{
+			KIconButtonMenu.ButtonInfo button = (this.Chore == null) ? new KIconButtonMenu.ButtonInfo("action_empty_contents", UI.USERMENUACTIONS.EMPTYSTORAGE.NAME, new System.Action(this.DropAll), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.EMPTYSTORAGE.TOOLTIP, true) : new KIconButtonMenu.ButtonInfo("action_empty_contents", UI.USERMENUACTIONS.EMPTYSTORAGE.NAME_OFF, new System.Action(this.DropAll), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.EMPTYSTORAGE.TOOLTIP_OFF, true);
+			Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
+		}
+	}
 
-    /// <summary>
-    /// 是否显示“清空”命令。
-    /// </summary>
-    private bool showCmd;
+		private bool GetNewShowCmd()
+	{
+		bool flag = false;
+		Storage[] array = this.GetStorages();
+		for (int i = 0; i < array.Length; i++)
+		{
+			flag = (flag || !array[i].IsEmpty());
+		}
+		return flag;
+	}
 
-    /// <summary>
-    /// 与清空任务相关联的状态项ID。
-    /// </summary>
-    private Guid statusItem;
+		private void OnStorageChange(object data)
+	{
+		bool newShowCmd = this.GetNewShowCmd();
+		if (newShowCmd != this.showCmd)
+		{
+			this.showCmd = newShowCmd;
+			Game.Instance.userMenu.Refresh(base.gameObject);
+		}
+	}
 
-    /// <summary>
-    /// 存储组件数组。
-    /// </summary>
-    private Storage[] storages;
+		private void RefreshStatusItem()
+	{
+		if (this.Chore != null && this.statusItem == Guid.Empty)
+		{
+			KSelectable component = base.GetComponent<KSelectable>();
+			this.statusItem = component.AddStatusItem(Db.Get().BuildingStatusItems.AwaitingEmptyBuilding, null);
+			return;
+		}
+		if (this.Chore == null && this.statusItem != Guid.Empty)
+		{
+			KSelectable component2 = base.GetComponent<KSelectable>();
+			this.statusItem = component2.RemoveStatusItem(this.statusItem, false);
+		}
+	}
 
-    /// <summary>
-    /// 构造函数，设置偏移表。
-    /// </summary>
-    protected DropAllWorkable() { 
-        SetOffsetTable(OffsetGroups.InvertedStandardTable); 
-    }
+		[Serialize]
+	private bool markedForDrop;
 
-    /// <summary>
-    /// 获取或设置当前的清空任务。
-    /// </summary>
-    private Chore Chore {
-        get => _chore;
-        set {
-            _chore = value;
-            markedForDrop = _chore != null;
-        }
-    }
+		private Chore _chore;
 
-    /// <summary>
-    /// 初始化预制件时调用的方法。
-    /// </summary>
-    protected override void OnPrefabInit() {
-        base.OnPrefabInit();
-        // 订阅用户菜单刷新事件
-        Subscribe(493375141, OnRefreshUserMenuDelegate);
-        // 订阅存储变化事件
-        Subscribe(-1697596308, OnStorageChangeDelegate);
-        // 设置工人状态项
-        workerStatusItem = Db.Get().DuplicantStatusItems.Emptying;
-        // 不同步动画
-        synchronizeAnims = false;
-        // 设置工作时间
-        SetWorkTime(dropWorkTime);
-        // 添加优先级引用
-        Prioritizable.AddRef(gameObject);
-    }
+		private bool showCmd;
 
-    /// <summary>
-    /// 获取存储组件数组。
-    /// </summary>
-    /// <returns>存储组件数组。</returns>
-    private Storage[] GetStorages() {
-        if (storages == null) storages = GetComponents<Storage>();
-        return storages;
-    }
+		private Storage[] storages;
 
-    /// <summary>
-    /// 实例化时调用的方法。
-    /// </summary>
-    protected override void OnSpawn() {
-        base.OnSpawn();
-        // 检查是否需要显示“清空”命令
-        showCmd = GetNewShowCmd();
-        // 如果标记为需要清空，则执行清空操作
-        if (markedForDrop) DropAll();
-    }
+		public float dropWorkTime = 0.1f;
 
-    /// <summary>
-    /// 执行清空操作。
-    /// </summary>
-    public void DropAll() {
-        if (DebugHandler.InstantBuildMode)
-            OnCompleteWork(null);
-        else if (Chore == null) {
-            // 获取清空任务类型
-            var chore_type = !string.IsNullOrEmpty(choreTypeID)
-                                 ? Db.Get().ChoreTypes.Get(choreTypeID)
-                                 : Db.Get().ChoreTypes.EmptyStorage;
+		public string choreTypeID;
 
-            // 创建新的清空任务
-            Chore = new WorkChore<DropAllWorkable>(chore_type,
-                                                   this,
-                                                   null,
-                                                   true,
-                                                   null,
-                                                   null,
-                                                   null,
-                                                   true,
-                                                   null,
-                                                   false,
-                                                   false);
-        } else {
-            // 取消当前的清空任务
-            Chore.Cancel("Cancelled emptying");
-            Chore = null;
-            // 移除状态项
-            GetComponent<KSelectable>().RemoveStatusItem(workerStatusItem);
-            // 隐藏进度条
-            ShowProgressBar(false);
-        }
+		[MyCmpAdd]
+	private Prioritizable _prioritizable;
 
-        // 刷新状态项
-        RefreshStatusItem();
-    }
+		public List<Tag> removeTags;
 
-    /// <summary>
-    /// 清空任务完成时调用的方法。
-    /// </summary>
-    /// <param name="worker">执行工作的工人。</param>
-    protected override void OnCompleteWork(Worker worker) {
-        var array = GetStorages();
-        for (var i = 0; i < array.Length; i++) {
-            var list = new List<GameObject>(array[i].items);
-            for (var j = 0; j < list.Count; j++) {
-                var gameObject = array[i].Drop(list[j]);
-                if (gameObject != null) {
-                    // 移除指定的标签
-                    foreach (var tag in removeTags) gameObject.RemoveTag(tag);
-                    // 触发事件
-                    gameObject.Trigger(580035959, worker);
-                }
-            }
-        }
+		public bool resetTargetWorkableOnCompleteWork;
 
-        // 重置清空任务
-        Chore = null;
-        // 刷新状态项
-        RefreshStatusItem();
-        // 触发完成事件
-        Trigger(-1957399615);
-    }
+		private static readonly EventSystem.IntraObjectHandler<DropAllWorkable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<DropAllWorkable>(delegate(DropAllWorkable component, object data)
+	{
+		component.OnRefreshUserMenu(data);
+	});
 
-    /// <summary>
-    /// 处理用户菜单刷新事件。
-    /// </summary>
-    /// <param name="data">事件数据。</param>
-    private void OnRefreshUserMenu(object data) {
-        if (showCmd) {
-            var button = Chore == null
-                             ? new KIconButtonMenu.ButtonInfo("action_empty_contents",
-                                                              UI.USERMENUACTIONS.EMPTYSTORAGE.NAME,
-                                                              DropAll,
-                                                              Action.NumActions,
-                                                              null,
-                                                              null,
-                                                              null,
-                                                              UI.USERMENUACTIONS.EMPTYSTORAGE.TOOLTIP)
-                             : new KIconButtonMenu.ButtonInfo("action_empty_contents",
-                                                              UI.USERMENUACTIONS.EMPTYSTORAGE.NAME_OFF,
-                                                              DropAll,
-                                                              Action.NumActions,
-                                                              null,
-                                                              null,
-                                                              null,
-                                                              UI.USERMENUACTIONS.EMPTYSTORAGE.TOOLTIP_OFF);
+		private static readonly EventSystem.IntraObjectHandler<DropAllWorkable> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<DropAllWorkable>(delegate(DropAllWorkable component, object data)
+	{
+		component.OnStorageChange(data);
+	});
 
-            // 添加按钮到用户菜单
-            Game.Instance.userMenu.AddButton(gameObject, button);
-        }
-    }
-
-    /// <summary>
-    /// 检查是否需要显示“清空”命令。
-    /// </summary>
-    /// <returns>是否需要显示“清空”命令。</returns>
-    private bool GetNewShowCmd() {
-        var flag = false;
-        var array = GetStorages();
-        for (var i = 0; i < array.Length; i++) flag = flag || !array[i].IsEmpty();
-        return flag;
-    }
-
-    /// <summary>
-    /// 处理存储变化事件。
-    /// </summary>
-    /// <param name="data">事件数据。</param>
-    private void OnStorageChange(object data) {
-        var newShowCmd = GetNewShowCmd();
-        if (newShowCmd != showCmd) {
-            showCmd = newShowCmd;
-            // 刷新用户菜单
-            Game.Instance.userMenu.Refresh(gameObject);
-        }
-    }
-
-    /// <summary>
-    /// 刷新与清空任务相关联的状态项。
-    /// </summary>
-    private void RefreshStatusItem() {
-        if (Chore != null && statusItem == Guid.Empty) {
-            var component = GetComponent<KSelectable>();
-            statusItem = component.AddStatusItem(Db.Get().BuildingStatusItems.AwaitingEmptyBuilding);
-            return;
-        }
-
-        if (Chore == null && statusItem != Guid.Empty) {
-            var component2 = GetComponent<KSelectable>();
-            statusItem = component2.RemoveStatusItem(statusItem);
-        }
-    }
+		private Guid statusItem;
 }

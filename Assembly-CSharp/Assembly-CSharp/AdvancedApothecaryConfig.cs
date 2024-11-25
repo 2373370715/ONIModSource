@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class AdvancedApothecaryConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "AdvancedApothecary";
 		int width = 3;
@@ -34,7 +34,7 @@ public class AdvancedApothecaryConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
 		HighEnergyParticleStorage highEnergyParticleStorage = go.AddOrGet<HighEnergyParticleStorage>();
@@ -55,12 +55,12 @@ public class AdvancedApothecaryConfig : IBuildingConfig
 		def.meterSymbolName = null;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredController.Def>();
 	}
 
-	public const string ID = "AdvancedApothecary";
+		public const string ID = "AdvancedApothecary";
 
-	public const float PARTICLE_CAPACITY = 400f;
+		public const float PARTICLE_CAPACITY = 400f;
 }

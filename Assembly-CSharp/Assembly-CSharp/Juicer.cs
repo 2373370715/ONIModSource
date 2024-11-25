@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Juicer : StateMachineComponent<Juicer.StatesInstance>, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -16,12 +16,12 @@ public class Juicer : StateMachineComponent<Juicer.StatesInstance>, IGameObjectE
 		}, null, null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	private void AddRequirementDesc(List<Descriptor> descs, Tag tag, float mass)
+		private void AddRequirementDesc(List<Descriptor> descs, Tag tag, float mass)
 	{
 		string arg = tag.ProperName();
 		Descriptor item = default(Descriptor);
@@ -30,7 +30,7 @@ public class Juicer : StateMachineComponent<Juicer.StatesInstance>, IGameObjectE
 		descs.Add(item);
 	}
 
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
+		List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Descriptor item = default(Descriptor);
@@ -45,19 +45,19 @@ public class Juicer : StateMachineComponent<Juicer.StatesInstance>, IGameObjectE
 		return list;
 	}
 
-	public string specificEffect;
+		public string specificEffect;
 
-	public string trackingEffect;
+		public string trackingEffect;
 
-	public Tag[] ingredientTags;
+		public Tag[] ingredientTags;
 
-	public float[] ingredientMassesPerUse;
+		public float[] ingredientMassesPerUse;
 
-	public float waterMassPerUse;
+		public float waterMassPerUse;
 
-	public class States : GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer>
+		public class States : GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.unoperational;
 			this.unoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.operational, false);
@@ -68,7 +68,7 @@ public class Juicer : StateMachineComponent<Juicer.StatesInstance>, IGameObjectE
 			this.ready.post.PlayAnim("working_pst").OnAnimQueueComplete(this.ready);
 		}
 
-		private Chore CreateChore(Juicer.StatesInstance smi)
+				private Chore CreateChore(Juicer.StatesInstance smi)
 		{
 			Workable component = smi.master.GetComponent<JuicerWorkable>();
 			WorkChore<JuicerWorkable> workChore = new WorkChore<JuicerWorkable>(Db.Get().ChoreTypes.Relax, component, null, true, null, null, null, false, Db.Get().ScheduleBlockTypes.Recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
@@ -76,7 +76,7 @@ public class Juicer : StateMachineComponent<Juicer.StatesInstance>, IGameObjectE
 			return workChore;
 		}
 
-		private bool IsReady(Juicer.StatesInstance smi)
+				private bool IsReady(Juicer.StatesInstance smi)
 		{
 			PrimaryElement primaryElement = smi.GetComponent<Storage>().FindPrimaryElement(SimHashes.Water);
 			if (primaryElement == null)
@@ -97,25 +97,25 @@ public class Juicer : StateMachineComponent<Juicer.StatesInstance>, IGameObjectE
 			return true;
 		}
 
-		private GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State unoperational;
+				private GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State unoperational;
 
-		private GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State operational;
+				private GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State operational;
 
-		private Juicer.States.ReadyStates ready;
+				private Juicer.States.ReadyStates ready;
 
-		public class ReadyStates : GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State
+				public class ReadyStates : GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State
 		{
-			public GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State idle;
+						public GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State idle;
 
-			public GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State working;
+						public GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State working;
 
-			public GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State post;
+						public GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.State post;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Juicer.States, Juicer.StatesInstance, Juicer, object>.GameInstance
 	{
-		public StatesInstance(Juicer smi) : base(smi)
+				public StatesInstance(Juicer smi) : base(smi)
 		{
 		}
 	}

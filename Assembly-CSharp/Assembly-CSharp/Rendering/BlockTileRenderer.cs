@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Rendering
 {
-	public class BlockTileRenderer : MonoBehaviour
+		public class BlockTileRenderer : MonoBehaviour
 	{
-		public static BlockTileRenderer.RenderInfoLayer GetRenderInfoLayer(bool isReplacement, SimHashes element)
+				public static BlockTileRenderer.RenderInfoLayer GetRenderInfoLayer(bool isReplacement, SimHashes element)
 		{
 			if (isReplacement)
 			{
@@ -19,7 +19,7 @@ namespace Rendering
 			return BlockTileRenderer.RenderInfoLayer.Built;
 		}
 
-				public bool ForceRebuild
+						public bool ForceRebuild
 		{
 			get
 			{
@@ -27,12 +27,12 @@ namespace Rendering
 			}
 		}
 
-		public BlockTileRenderer()
+				public BlockTileRenderer()
 		{
 			this.forceRebuild = false;
 		}
 
-		public void FreeResources()
+				public void FreeResources()
 		{
 			foreach (KeyValuePair<KeyValuePair<BuildingDef, BlockTileRenderer.RenderInfoLayer>, BlockTileRenderer.RenderInfo> keyValuePair in this.renderInfo)
 			{
@@ -44,12 +44,12 @@ namespace Rendering
 			this.renderInfo.Clear();
 		}
 
-		private static bool MatchesDef(GameObject go, BuildingDef def)
+				private static bool MatchesDef(GameObject go, BuildingDef def)
 		{
 			return go != null && go.GetComponent<Building>().Def == def;
 		}
 
-		public virtual BlockTileRenderer.Bits GetConnectionBits(int x, int y, int query_layer)
+				public virtual BlockTileRenderer.Bits GetConnectionBits(int x, int y, int query_layer)
 		{
 			BlockTileRenderer.Bits bits = (BlockTileRenderer.Bits)0;
 			GameObject gameObject = Grid.Objects[y * Grid.WidthInCells + x, query_layer];
@@ -98,7 +98,7 @@ namespace Rendering
 			return bits;
 		}
 
-		private bool IsDecorConnectable(GameObject src, GameObject target)
+				private bool IsDecorConnectable(GameObject src, GameObject target)
 		{
 			if (src != null && target != null)
 			{
@@ -112,7 +112,7 @@ namespace Rendering
 			return false;
 		}
 
-		public virtual BlockTileRenderer.Bits GetDecorConnectionBits(int x, int y, int query_layer)
+				public virtual BlockTileRenderer.Bits GetDecorConnectionBits(int x, int y, int query_layer)
 		{
 			BlockTileRenderer.Bits bits = (BlockTileRenderer.Bits)0;
 			GameObject src = Grid.Objects[y * Grid.WidthInCells + x, query_layer];
@@ -160,12 +160,12 @@ namespace Rendering
 			return bits;
 		}
 
-		public void LateUpdate()
+				public void LateUpdate()
 		{
 			this.Render();
 		}
 
-		private void Render()
+				private void Render()
 		{
 			Vector2I vector2I;
 			Vector2I vector2I2;
@@ -194,7 +194,7 @@ namespace Rendering
 			}
 		}
 
-		public Color GetCellColour(int cell, SimHashes element)
+				public Color GetCellColour(int cell, SimHashes element)
 		{
 			Color white;
 			if (cell == this.selectedCell)
@@ -216,13 +216,13 @@ namespace Rendering
 			return white;
 		}
 
-		public static Vector2I GetChunkIdx(int cell)
+				public static Vector2I GetChunkIdx(int cell)
 		{
 			Vector2I vector2I = Grid.CellToXY(cell);
 			return new Vector2I(vector2I.x / 16, vector2I.y / 16);
 		}
 
-		public void AddBlock(int renderLayer, BuildingDef def, bool isReplacement, SimHashes element, int cell)
+				public void AddBlock(int renderLayer, BuildingDef def, bool isReplacement, SimHashes element, int cell)
 		{
 			KeyValuePair<BuildingDef, BlockTileRenderer.RenderInfoLayer> key = new KeyValuePair<BuildingDef, BlockTileRenderer.RenderInfoLayer>(def, BlockTileRenderer.GetRenderInfoLayer(isReplacement, element));
 			BlockTileRenderer.RenderInfo renderInfo;
@@ -235,7 +235,7 @@ namespace Rendering
 			renderInfo.AddCell(cell);
 		}
 
-		public void RemoveBlock(BuildingDef def, bool isReplacement, SimHashes element, int cell)
+				public void RemoveBlock(BuildingDef def, bool isReplacement, SimHashes element, int cell)
 		{
 			KeyValuePair<BuildingDef, BlockTileRenderer.RenderInfoLayer> key = new KeyValuePair<BuildingDef, BlockTileRenderer.RenderInfoLayer>(def, BlockTileRenderer.GetRenderInfoLayer(isReplacement, element));
 			BlockTileRenderer.RenderInfo renderInfo;
@@ -245,7 +245,7 @@ namespace Rendering
 			}
 		}
 
-		public void Rebuild(ObjectLayer layer, int cell)
+				public void Rebuild(ObjectLayer layer, int cell)
 		{
 			foreach (KeyValuePair<KeyValuePair<BuildingDef, BlockTileRenderer.RenderInfoLayer>, BlockTileRenderer.RenderInfo> keyValuePair in this.renderInfo)
 			{
@@ -256,22 +256,22 @@ namespace Rendering
 			}
 		}
 
-		public void SelectCell(int cell, bool enabled)
+				public void SelectCell(int cell, bool enabled)
 		{
 			this.UpdateCellStatus(ref this.selectedCell, cell, enabled);
 		}
 
-		public void HighlightCell(int cell, bool enabled)
+				public void HighlightCell(int cell, bool enabled)
 		{
 			this.UpdateCellStatus(ref this.highlightCell, cell, enabled);
 		}
 
-		public void SetInvalidPlaceCell(int cell, bool enabled)
+				public void SetInvalidPlaceCell(int cell, bool enabled)
 		{
 			this.UpdateCellStatus(ref this.invalidPlaceCell, cell, enabled);
 		}
 
-		private void UpdateCellStatus(ref int cell_status, int cell, bool enabled)
+				private void UpdateCellStatus(ref int cell_status, int cell, bool enabled)
 		{
 			if (enabled)
 			{
@@ -307,55 +307,55 @@ namespace Rendering
 			}
 		}
 
-		[SerializeField]
+				[SerializeField]
 		private bool forceRebuild;
 
-		[SerializeField]
+				[SerializeField]
 		private Color highlightColour = new Color(1.25f, 1.25f, 1.25f, 1f);
 
-		[SerializeField]
+				[SerializeField]
 		private Color selectColour = new Color(1.5f, 1.5f, 1.5f, 1f);
 
-		[SerializeField]
+				[SerializeField]
 		private Color invalidPlaceColour = Color.red;
 
-		private const float TILE_ATLAS_WIDTH = 2048f;
+				private const float TILE_ATLAS_WIDTH = 2048f;
 
-		private const float TILE_ATLAS_HEIGHT = 2048f;
+				private const float TILE_ATLAS_HEIGHT = 2048f;
 
-		private const int chunkEdgeSize = 16;
+				private const int chunkEdgeSize = 16;
 
-		protected Dictionary<KeyValuePair<BuildingDef, BlockTileRenderer.RenderInfoLayer>, BlockTileRenderer.RenderInfo> renderInfo = new Dictionary<KeyValuePair<BuildingDef, BlockTileRenderer.RenderInfoLayer>, BlockTileRenderer.RenderInfo>();
+				protected Dictionary<KeyValuePair<BuildingDef, BlockTileRenderer.RenderInfoLayer>, BlockTileRenderer.RenderInfo> renderInfo = new Dictionary<KeyValuePair<BuildingDef, BlockTileRenderer.RenderInfoLayer>, BlockTileRenderer.RenderInfo>();
 
-		private int selectedCell = -1;
+				private int selectedCell = -1;
 
-		private int highlightCell = -1;
+				private int highlightCell = -1;
 
-		private int invalidPlaceCell = -1;
+				private int invalidPlaceCell = -1;
 
-		public enum RenderInfoLayer
+				public enum RenderInfoLayer
 		{
-			Built,
-			UnderConstruction,
-			Replacement
+						Built,
+						UnderConstruction,
+						Replacement
 		}
 
-		[Flags]
+				[Flags]
 		public enum Bits
 		{
-			UpLeft = 128,
-			Up = 64,
-			UpRight = 32,
-			Left = 16,
-			Right = 8,
-			DownLeft = 4,
-			Down = 2,
-			DownRight = 1
+						UpLeft = 128,
+						Up = 64,
+						UpRight = 32,
+						Left = 16,
+						Right = 8,
+						DownLeft = 4,
+						Down = 2,
+						DownRight = 1
 		}
 
-		protected class RenderInfo
+				protected class RenderInfo
 		{
-			public RenderInfo(BlockTileRenderer renderer, int queryLayer, int renderLayer, BuildingDef def, SimHashes element)
+						public RenderInfo(BlockTileRenderer renderer, int queryLayer, int renderLayer, BuildingDef def, SimHashes element)
 			{
 				this.queryLayer = queryLayer;
 				this.renderLayer = renderLayer;
@@ -421,7 +421,7 @@ namespace Rendering
 				this.trimUVSize = new Vector2(0.03125f, 0.03125f);
 			}
 
-			public void FreeResources()
+						public void FreeResources()
 			{
 				UnityEngine.Object.DestroyImmediate(this.material);
 				this.material = null;
@@ -442,7 +442,7 @@ namespace Rendering
 				this.occupiedCells.Clear();
 			}
 
-			public void AddCell(int cell)
+						public void AddCell(int cell)
 			{
 				int num = 0;
 				this.occupiedCells.TryGetValue(cell, out num);
@@ -450,7 +450,7 @@ namespace Rendering
 				this.MarkDirty(cell);
 			}
 
-			public void RemoveCell(int cell)
+						public void RemoveCell(int cell)
 			{
 				int num = 0;
 				this.occupiedCells.TryGetValue(cell, out num);
@@ -465,13 +465,13 @@ namespace Rendering
 				this.MarkDirty(cell);
 			}
 
-			public void MarkDirty(int cell)
+						public void MarkDirty(int cell)
 			{
 				Vector2I chunkIdx = BlockTileRenderer.GetChunkIdx(cell);
 				this.dirtyChunks[chunkIdx.x, chunkIdx.y] = true;
 			}
 
-			public void MarkDirtyIfOccupied(int cell)
+						public void MarkDirtyIfOccupied(int cell)
 			{
 				if (this.occupiedCells.ContainsKey(cell))
 				{
@@ -479,7 +479,7 @@ namespace Rendering
 				}
 			}
 
-			public void Render(int x, int y)
+						public void Render(int x, int y)
 			{
 				if (this.meshChunks[x, y] != null)
 				{
@@ -491,7 +491,7 @@ namespace Rendering
 				}
 			}
 
-			public void Rebuild(BlockTileRenderer renderer, int chunk_x, int chunk_y, List<Vector3> vertices, List<Vector2> uvs, List<int> indices, List<Color> colours)
+						public void Rebuild(BlockTileRenderer renderer, int chunk_x, int chunk_y, List<Vector3> vertices, List<Vector2> uvs, List<int> indices, List<Color> colours)
 			{
 				if (!this.dirtyChunks[chunk_x, chunk_y] && !renderer.ForceRebuild)
 				{
@@ -549,7 +549,7 @@ namespace Rendering
 				}
 			}
 
-			private void AddVertexInfo(BlockTileRenderer.RenderInfo.AtlasInfo atlas_info, Vector2 uv_trim_size, int x, int y, BlockTileRenderer.Bits connection_bits, Color color, List<Vector3> vertices, List<Vector2> uvs, List<int> indices, List<Color> colours)
+						private void AddVertexInfo(BlockTileRenderer.RenderInfo.AtlasInfo atlas_info, Vector2 uv_trim_size, int x, int y, BlockTileRenderer.Bits connection_bits, Color color, List<Vector3> vertices, List<Vector2> uvs, List<int> indices, List<Color> colours)
 			{
 				Vector2 vector = new Vector2((float)x, (float)y);
 				Vector2 vector2 = vector + new Vector2(1f, 1f);
@@ -608,55 +608,55 @@ namespace Rendering
 				colours.Add(color);
 			}
 
-			private BlockTileRenderer.RenderInfo.AtlasInfo[] atlasInfo;
+						private BlockTileRenderer.RenderInfo.AtlasInfo[] atlasInfo;
 
-			private bool[,] dirtyChunks;
+						private bool[,] dirtyChunks;
 
-			private int queryLayer;
+						private int queryLayer;
 
-			private Material material;
+						private Material material;
 
-			private int renderLayer;
+						private int renderLayer;
 
-			private Mesh[,] meshChunks;
+						private Mesh[,] meshChunks;
 
-			private BlockTileRenderer.DecorRenderInfo decorRenderInfo;
+						private BlockTileRenderer.DecorRenderInfo decorRenderInfo;
 
-			private Vector2 trimUVSize;
+						private Vector2 trimUVSize;
 
-			private Vector3 rootPosition;
+						private Vector3 rootPosition;
 
-			private Dictionary<int, int> occupiedCells = new Dictionary<int, int>();
+						private Dictionary<int, int> occupiedCells = new Dictionary<int, int>();
 
-			private SimHashes element;
+						private SimHashes element;
 
-			private float decorZOffset = -1f;
+						private float decorZOffset = -1f;
 
-			private const float scale = 0.5f;
+						private const float scale = 0.5f;
 
-			private const float core_size = 256f;
+						private const float core_size = 256f;
 
-			private const float trim_size = 64f;
+						private const float trim_size = 64f;
 
-			private const float cell_size = 1f;
+						private const float cell_size = 1f;
 
-			private const float world_trim_size = 0.25f;
+						private const float world_trim_size = 0.25f;
 
-			private struct AtlasInfo
+						private struct AtlasInfo
 			{
-				public BlockTileRenderer.Bits requiredConnections;
+								public BlockTileRenderer.Bits requiredConnections;
 
-				public BlockTileRenderer.Bits forbiddenConnections;
+								public BlockTileRenderer.Bits forbiddenConnections;
 
-				public Vector4 uvBox;
+								public Vector4 uvBox;
 
-				public string name;
+								public string name;
 			}
 		}
 
-		private class DecorRenderInfo
+				private class DecorRenderInfo
 		{
-			public DecorRenderInfo(int num_x_chunks, int num_y_chunks, int query_layer, BuildingDef def, BlockTileDecorInfo decorInfo)
+						public DecorRenderInfo(int num_x_chunks, int num_y_chunks, int query_layer, BuildingDef def, BlockTileDecorInfo decorInfo)
 			{
 				this.decorInfo = decorInfo;
 				this.queryLayer = query_layer;
@@ -682,7 +682,7 @@ namespace Rendering
 				this.meshChunks = new Mesh[num_x_chunks, num_y_chunks];
 			}
 
-			public void FreeResources()
+						public void FreeResources()
 			{
 				this.decorInfo = null;
 				UnityEngine.Object.DestroyImmediate(this.material);
@@ -702,7 +702,7 @@ namespace Rendering
 				this.triangles.Clear();
 			}
 
-			public void Render(int x, int y, Vector3 position, int renderLayer)
+						public void Render(int x, int y, Vector3 position, int renderLayer)
 			{
 				if (this.meshChunks[x, y] != null)
 				{
@@ -710,7 +710,7 @@ namespace Rendering
 				}
 			}
 
-			public void Rebuild(BlockTileRenderer renderer, Dictionary<int, int> occupiedCells, int chunk_x, int chunk_y, float z_offset, int chunkEdgeSize, List<Vector3> vertices, List<Vector2> uvs, List<Color> colours, List<int> indices, SimHashes element)
+						public void Rebuild(BlockTileRenderer renderer, Dictionary<int, int> occupiedCells, int chunk_x, int chunk_y, float z_offset, int chunkEdgeSize, List<Vector3> vertices, List<Vector2> uvs, List<Color> colours, List<int> indices, SimHashes element)
 			{
 				vertices.Clear();
 				uvs.Clear();
@@ -756,7 +756,7 @@ namespace Rendering
 				this.meshChunks[chunk_x, chunk_y] = null;
 			}
 
-			private void AddDecor(int x, int y, float z_offset, BlockTileRenderer.Bits connection_bits, Color colour, List<Vector3> vertices, List<Vector2> uvs, List<BlockTileRenderer.DecorRenderInfo.TriangleInfo> triangles, List<Color> colours)
+						private void AddDecor(int x, int y, float z_offset, BlockTileRenderer.Bits connection_bits, Color colour, List<Vector3> vertices, List<Vector2> uvs, List<BlockTileRenderer.DecorRenderInfo.TriangleInfo> triangles, List<Color> colours)
 			{
 				for (int i = 0; i < this.decorInfo.decor.Length; i++)
 				{
@@ -796,27 +796,27 @@ namespace Rendering
 				}
 			}
 
-			private int queryLayer;
+						private int queryLayer;
 
-			private BlockTileDecorInfo decorInfo;
+						private BlockTileDecorInfo decorInfo;
 
-			private Mesh[,] meshChunks;
+						private Mesh[,] meshChunks;
 
-			private Material material;
+						private Material material;
 
-			private List<BlockTileRenderer.DecorRenderInfo.TriangleInfo> triangles = new List<BlockTileRenderer.DecorRenderInfo.TriangleInfo>();
+						private List<BlockTileRenderer.DecorRenderInfo.TriangleInfo> triangles = new List<BlockTileRenderer.DecorRenderInfo.TriangleInfo>();
 
-			private static Vector2 simplex_scale = new Vector2(92.41f, 87.16f);
+						private static Vector2 simplex_scale = new Vector2(92.41f, 87.16f);
 
-			private struct TriangleInfo
+						private struct TriangleInfo
 			{
-				public int sortOrder;
+								public int sortOrder;
 
-				public int i0;
+								public int i0;
 
-				public int i1;
+								public int i1;
 
-				public int i2;
+								public int i2;
 			}
 		}
 	}

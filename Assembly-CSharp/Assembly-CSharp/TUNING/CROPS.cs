@@ -4,29 +4,29 @@ using UnityEngine;
 
 namespace TUNING
 {
-	public class CROPS
+		public class CROPS
 	{
-		public const float WILD_GROWTH_RATE_MODIFIER = 0.25f;
+				public const float WILD_GROWTH_RATE_MODIFIER = 0.25f;
 
-		public const float GROWTH_RATE = 0.0016666667f;
+				public const float GROWTH_RATE = 0.0016666667f;
 
-		public const float WILD_GROWTH_RATE = 0.00041666668f;
+				public const float WILD_GROWTH_RATE = 0.00041666668f;
 
-		public const float PLANTERPLOT_GROWTH_PENTALY = -0.5f;
+				public const float PLANTERPLOT_GROWTH_PENTALY = -0.5f;
 
-		public const float BASE_BONUS_SEED_PROBABILITY = 0.1f;
+				public const float BASE_BONUS_SEED_PROBABILITY = 0.1f;
 
-		public const float SELF_HARVEST_TIME = 2400f;
+				public const float SELF_HARVEST_TIME = 2400f;
 
-		public const float SELF_PLANT_TIME = 2400f;
+				public const float SELF_PLANT_TIME = 2400f;
 
-		public const float TREE_BRANCH_SELF_HARVEST_TIME = 12000f;
+				public const float TREE_BRANCH_SELF_HARVEST_TIME = 12000f;
 
-		public const float FERTILIZATION_GAIN_RATE = 1.6666666f;
+				public const float FERTILIZATION_GAIN_RATE = 1.6666666f;
 
-		public const float FERTILIZATION_LOSS_RATE = -0.16666667f;
+				public const float FERTILIZATION_LOSS_RATE = -0.16666667f;
 
-		public static List<Crop.CropVal> CROP_TYPES = new List<Crop.CropVal>
+				public static List<Crop.CropVal> CROP_TYPES = new List<Crop.CropVal>
 		{
 			new Crop.CropVal("BasicPlantFood", 1800f, 1, true),
 			new Crop.CropVal(PrickleFruitConfig.ID, 3600f, 1, true),
@@ -40,6 +40,7 @@ namespace TUNING
 			new Crop.CropVal("WoodLog", 2700f, 300, true),
 			new Crop.CropVal(SimHashes.WoodLog.ToString(), 2700f, 300, true),
 			new Crop.CropVal(SimHashes.SugarWater.ToString(), 150f, 20, true),
+			new Crop.CropVal("SpaceTreeBranch", 2700f, 1, true),
 			new Crop.CropVal("HardSkinBerry", 1800f, 1, true),
 			new Crop.CropVal(CarrotConfig.ID, 5400f, 1, true),
 			new Crop.CropVal(SimHashes.OxyRock.ToString(), 1200f, 2 * Mathf.RoundToInt(17.76f), true),

@@ -2,10 +2,10 @@
 
 public enum LogicPortSpriteType
 {
-	Input,
-	Output,
-	ResetUpdate,
-	ControlInput,
-	RibbonInput,
-	RibbonOutput
+		Input,
+		Output,
+		ResetUpdate,
+		ControlInput,
+		RibbonInput,
+		RibbonOutput
 }

@@ -5,21 +5,21 @@ using UnityEngine;
 
 public class LogicBitSelectorSideScreen : SideScreenContent, IRenderEveryTick
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.activeColor = GlobalAssets.Instance.colorSet.logicOnText;
 		this.inactiveColor = GlobalAssets.Instance.colorSet.logicOffText;
 	}
 
-	public void SelectToggle(int bit)
+		public void SelectToggle(int bit)
 	{
 		this.target.SetBitSelection(bit);
 		this.target.UpdateVisuals();
 		this.RefreshToggles();
 	}
 
-	private void RefreshToggles()
+		private void RefreshToggles()
 	{
 		for (int i = 0; i < this.target.GetBitDepth(); i++)
 		{
@@ -51,12 +51,12 @@ public class LogicBitSelectorSideScreen : SideScreenContent, IRenderEveryTick
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<ILogicRibbonBitSelector>() != null;
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -80,7 +80,7 @@ public class LogicBitSelectorSideScreen : SideScreenContent, IRenderEveryTick
 		}
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		if (this.target.Equals(null))
 		{
@@ -93,7 +93,7 @@ public class LogicBitSelectorSideScreen : SideScreenContent, IRenderEveryTick
 		this.UpdateInputOutputDisplay();
 	}
 
-	private void UpdateInputOutputDisplay()
+		private void UpdateInputOutputDisplay()
 	{
 		if (this.target.SideScreenDisplayReaderDescription())
 		{
@@ -105,29 +105,29 @@ public class LogicBitSelectorSideScreen : SideScreenContent, IRenderEveryTick
 		}
 	}
 
-	private void UpdateStateVisuals(int bit)
+		private void UpdateStateVisuals(int bit)
 	{
 		MultiToggle multiToggle = this.toggles_by_int[bit];
 		multiToggle.gameObject.GetComponent<HierarchyReferences>().GetReference<KImage>("stateIcon").color = (this.target.IsBitActive(bit) ? this.activeColor : this.inactiveColor);
 		multiToggle.gameObject.GetComponent<HierarchyReferences>().GetReference<LocText>("stateText").SetText(this.target.IsBitActive(bit) ? UI.UISIDESCREENS.LOGICBITSELECTORSIDESCREEN.STATE_ACTIVE : UI.UISIDESCREENS.LOGICBITSELECTORSIDESCREEN.STATE_INACTIVE);
 	}
 
-	private ILogicRibbonBitSelector target;
+		private ILogicRibbonBitSelector target;
 
-	public GameObject rowPrefab;
+		public GameObject rowPrefab;
 
-	public KImage inputDisplayIcon;
+		public KImage inputDisplayIcon;
 
-	public KImage outputDisplayIcon;
+		public KImage outputDisplayIcon;
 
-	public GameObject readerDescriptionContainer;
+		public GameObject readerDescriptionContainer;
 
-	public GameObject writerDescriptionContainer;
+		public GameObject writerDescriptionContainer;
 
-	[NonSerialized]
+		[NonSerialized]
 	public Dictionary<int, MultiToggle> toggles_by_int = new Dictionary<int, MultiToggle>();
 
-	private Color activeColor;
+		private Color activeColor;
 
-	private Color inactiveColor;
+		private Color inactiveColor;
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/EggIncubatorWorkable")]
 public class EggIncubatorWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.synchronizeAnims = false;
@@ -22,7 +22,7 @@ public class EggIncubatorWorkable : Workable
 		this.skillExperienceMultiplier = SKILLS.BARELY_EVER_EXPERIENCE;
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		EggIncubator component = base.GetComponent<EggIncubator>();
 		if (component && component.Occupant)

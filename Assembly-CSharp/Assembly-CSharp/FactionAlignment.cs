@@ -6,12 +6,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FactionAlignment")]
 public class FactionAlignment : KMonoBehaviour
 {
-			[MyCmpAdd]
+				[MyCmpAdd]
 	public Health health { get; private set; }
 
-			public AttackableBase attackable { get; private set; }
+				public AttackableBase attackable { get; private set; }
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.health = base.GetComponent<Health>();
@@ -29,16 +29,16 @@ public class FactionAlignment : KMonoBehaviour
 		this.UpdateStatusItem();
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 	}
 
-	private void OnDeath(object data)
+		private void OnDeath(object data)
 	{
 		this.SetAlignmentActive(false);
 	}
 
-	public void SetAlignmentActive(bool active)
+		public void SetAlignmentActive(bool active)
 	{
 		this.SetPlayerTargetable(active);
 		this.alignmentActive = active;
@@ -50,17 +50,17 @@ public class FactionAlignment : KMonoBehaviour
 		FactionManager.Instance.GetFaction(this.Alignment).Members.Remove(this);
 	}
 
-	public bool IsAlignmentActive()
+		public bool IsAlignmentActive()
 	{
 		return FactionManager.Instance.GetFaction(this.Alignment).Members.Contains(this);
 	}
 
-	public bool IsPlayerTargeted()
+		public bool IsPlayerTargeted()
 	{
 		return this.targeted;
 	}
 
-	public void SetPlayerTargetable(bool state)
+		public void SetPlayerTargetable(bool state)
 	{
 		this.targetable = (state && this.canBePlayerTargeted);
 		if (!state)
@@ -69,7 +69,7 @@ public class FactionAlignment : KMonoBehaviour
 		}
 	}
 
-	public void SetPlayerTargeted(bool state)
+		public void SetPlayerTargeted(bool state)
 	{
 		this.targeted = (this.canBePlayerTargeted && state && this.targetable);
 		if (state)
@@ -88,7 +88,7 @@ public class FactionAlignment : KMonoBehaviour
 		this.UpdateStatusItem();
 	}
 
-	private void UpdateStatusItem()
+		private void UpdateStatusItem()
 	{
 		if (this.targeted)
 		{
@@ -98,7 +98,7 @@ public class FactionAlignment : KMonoBehaviour
 		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.OrderAttack, false);
 	}
 
-	private void SetPrioritizable(bool enable)
+		private void SetPrioritizable(bool enable)
 	{
 		Prioritizable component = base.GetComponent<Prioritizable>();
 		if (component == null || !this.updatePrioritizable)
@@ -118,7 +118,7 @@ public class FactionAlignment : KMonoBehaviour
 		}
 	}
 
-	public void SwitchAlignment(FactionManager.FactionID newAlignment)
+		public void SwitchAlignment(FactionManager.FactionID newAlignment)
 	{
 		this.SetAlignmentActive(false);
 		this.Alignment = newAlignment;
@@ -126,13 +126,13 @@ public class FactionAlignment : KMonoBehaviour
 		base.Trigger(-971105736, newAlignment);
 	}
 
-	private void OnQueueDestroyObject()
+		private void OnQueueDestroyObject()
 	{
 		FactionManager.Instance.GetFaction(this.Alignment).Members.Remove(this);
 		Components.FactionAlignments.Remove(this);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (this.Alignment == FactionManager.FactionID.Duplicant)
 		{
@@ -156,44 +156,44 @@ public class FactionAlignment : KMonoBehaviour
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public KPrefabID kprefabID;
 
-	[SerializeField]
+		[SerializeField]
 	public bool canBePlayerTargeted = true;
 
-	[SerializeField]
+		[SerializeField]
 	public bool updatePrioritizable = true;
 
-	[Serialize]
+		[Serialize]
 	private bool alignmentActive = true;
 
-	public FactionManager.FactionID Alignment;
+		public FactionManager.FactionID Alignment;
 
-	[Serialize]
+		[Serialize]
 	private bool targeted;
 
-	[Serialize]
+		[Serialize]
 	private bool targetable = true;
 
-	private bool hasBeenRegisterInPriority;
+		private bool hasBeenRegisterInPriority;
 
-	private static readonly EventSystem.IntraObjectHandler<FactionAlignment> OnDeadTagAddedDelegate = GameUtil.CreateHasTagHandler<FactionAlignment>(GameTags.Dead, delegate(FactionAlignment component, object data)
+		private static readonly EventSystem.IntraObjectHandler<FactionAlignment> OnDeadTagAddedDelegate = GameUtil.CreateHasTagHandler<FactionAlignment>(GameTags.Dead, delegate(FactionAlignment component, object data)
 	{
 		component.OnDeath(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<FactionAlignment> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<FactionAlignment>(delegate(FactionAlignment component, object data)
+		private static readonly EventSystem.IntraObjectHandler<FactionAlignment> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<FactionAlignment>(delegate(FactionAlignment component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<FactionAlignment> SetPlayerTargetedFalseDelegate = new EventSystem.IntraObjectHandler<FactionAlignment>(delegate(FactionAlignment component, object data)
+		private static readonly EventSystem.IntraObjectHandler<FactionAlignment> SetPlayerTargetedFalseDelegate = new EventSystem.IntraObjectHandler<FactionAlignment>(delegate(FactionAlignment component, object data)
 	{
 		component.SetPlayerTargeted(false);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<FactionAlignment> OnQueueDestroyObjectDelegate = new EventSystem.IntraObjectHandler<FactionAlignment>(delegate(FactionAlignment component, object data)
+		private static readonly EventSystem.IntraObjectHandler<FactionAlignment> OnQueueDestroyObjectDelegate = new EventSystem.IntraObjectHandler<FactionAlignment>(delegate(FactionAlignment component, object data)
 	{
 		component.OnQueueDestroyObject();
 	});

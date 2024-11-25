@@ -6,19 +6,19 @@ using UnityEngine.UI;
 
 public class BuildMenu : KScreen
 {
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 6f;
 	}
 
-			public static BuildMenu Instance { get; private set; }
+				public static BuildMenu Instance { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		BuildMenu.Instance = null;
 	}
 
-		public BuildingDef SelectedBuildingDef
+			public BuildingDef SelectedBuildingDef
 	{
 		get
 		{
@@ -26,17 +26,17 @@ public class BuildMenu : KScreen
 		}
 	}
 
-	private static HashedString CacheHashString(string str)
+		private static HashedString CacheHashString(string str)
 	{
 		return HashCache.Get().Add(str);
 	}
 
-	public static bool UseHotkeyBuildMenu()
+		public static bool UseHotkeyBuildMenu()
 	{
 		return KPlayerPrefs.GetInt("ENABLE_HOTKEY_BUILD_MENU") != 0;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.ConsumeMouseScroll = true;
@@ -62,7 +62,7 @@ public class BuildMenu : KScreen
 		base.gameObject.SetActive(flag);
 	}
 
-	private void Initialize()
+		private void Initialize()
 	{
 		foreach (KeyValuePair<HashedString, BuildMenuCategoriesScreen> keyValuePair in this.submenus)
 		{
@@ -97,7 +97,7 @@ public class BuildMenu : KScreen
 		this.PositionMenus();
 	}
 
-	[ContextMenu("PositionMenus")]
+		[ContextMenu("PositionMenus")]
 	private void PositionMenus()
 	{
 		foreach (KeyValuePair<HashedString, BuildMenuCategoriesScreen> keyValuePair in this.submenus)
@@ -127,7 +127,7 @@ public class BuildMenu : KScreen
 		this.buildingsScreen.rectTransform().anchoredPosition = this.buildingsMenuOffset;
 	}
 
-	public void Refresh()
+		public void Refresh()
 	{
 		foreach (KeyValuePair<HashedString, BuildMenuCategoriesScreen> keyValuePair in this.submenus)
 		{
@@ -135,19 +135,19 @@ public class BuildMenu : KScreen
 		}
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		Game.Instance.Subscribe(-107300940, new Action<object>(this.OnResearchComplete));
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		Game.Instance.Unsubscribe(-107300940, new Action<object>(this.OnResearchComplete));
 		base.OnCmpDisable();
 	}
 
-	private BuildMenuCategoriesScreen CreateCategorySubMenu(HashedString category, int depth, object data, Dictionary<HashedString, List<BuildingDef>> categorized_building_map, Dictionary<HashedString, List<HashedString>> categorized_category_map, Dictionary<Tag, HashedString> tag_category_map, BuildMenuBuildingsScreen buildings_screen)
+		private BuildMenuCategoriesScreen CreateCategorySubMenu(HashedString category, int depth, object data, Dictionary<HashedString, List<BuildingDef>> categorized_building_map, Dictionary<HashedString, List<HashedString>> categorized_category_map, Dictionary<Tag, HashedString> tag_category_map, BuildMenuBuildingsScreen buildings_screen)
 	{
 		BuildMenuCategoriesScreen buildMenuCategoriesScreen = global::Util.KInstantiateUI<BuildMenuCategoriesScreen>(this.categoriesMenuPrefab.gameObject, base.gameObject, true);
 		buildMenuCategoriesScreen.Show(false);
@@ -157,7 +157,7 @@ public class BuildMenu : KScreen
 		return buildMenuCategoriesScreen;
 	}
 
-	private void PopulateCategorizedMaps(HashedString category, int depth, object data, Dictionary<Tag, HashedString> category_map, Dictionary<Tag, int> order_map, ref int building_index, Dictionary<HashedString, List<BuildingDef>> categorized_building_map, Dictionary<HashedString, List<HashedString>> categorized_category_map)
+		private void PopulateCategorizedMaps(HashedString category, int depth, object data, Dictionary<Tag, HashedString> category_map, Dictionary<Tag, int> order_map, ref int building_index, Dictionary<HashedString, List<BuildingDef>> categorized_building_map, Dictionary<HashedString, List<HashedString>> categorized_category_map)
 	{
 		Type type = data.GetType();
 		if (type == typeof(BuildMenu.DisplayInfo))
@@ -215,7 +215,7 @@ public class BuildMenu : KScreen
 		this.submenus[category] = this.CreateCategorySubMenu(category, depth, data, this.categorizedBuildingMap, this.categorizedCategoryMap, this.tagCategoryMap, this.buildingsScreen);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.Consumed)
 		{
@@ -236,7 +236,7 @@ public class BuildMenu : KScreen
 		}
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (this.selectedCategory.IsValid && PlayerController.Instance.ConsumeIfNotDragging(e, global::Action.MouseRight))
 		{
@@ -249,7 +249,7 @@ public class BuildMenu : KScreen
 		}
 	}
 
-	private void OnUIClear(object data)
+		private void OnUIClear(object data)
 	{
 		SelectTool.Instance.Activate();
 		PlayerController.Instance.ActivateTool(SelectTool.Instance);
@@ -258,7 +258,7 @@ public class BuildMenu : KScreen
 		this.CloseMenus();
 	}
 
-	private void OnBuildToolDeactivated(object data)
+		private void OnBuildToolDeactivated(object data)
 	{
 		if (this.updating)
 		{
@@ -269,7 +269,7 @@ public class BuildMenu : KScreen
 		this.productInfoScreen.materialSelectionPanel.PriorityScreen.ResetPriority();
 	}
 
-	private void CloseMenus()
+		private void CloseMenus()
 	{
 		this.productInfoScreen.Close();
 		while (this.submenuStack.Count > 0)
@@ -281,7 +281,7 @@ public class BuildMenu : KScreen
 		this.submenus[BuildMenu.ROOT_HASHSTR].ClearSelection();
 	}
 
-	public override void ScreenUpdate(bool topLevel)
+		public override void ScreenUpdate(bool topLevel)
 	{
 		base.ScreenUpdate(topLevel);
 		if (this.timeSinceNotificationPing < 8f)
@@ -294,7 +294,7 @@ public class BuildMenu : KScreen
 		}
 	}
 
-	public void PlayNewBuildingSounds()
+		public void PlayNewBuildingSounds()
 	{
 		if (KTime.Instance.UnscaledGameTime - this.initTime > 1.5f)
 		{
@@ -318,7 +318,7 @@ public class BuildMenu : KScreen
 		this.notificationPingCount++;
 	}
 
-	public PlanScreen.RequirementsState BuildableState(BuildingDef def)
+		public PlanScreen.RequirementsState BuildableState(BuildingDef def)
 	{
 		PlanScreen.RequirementsState result = PlanScreen.RequirementsState.Complete;
 		if (!DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive)
@@ -335,13 +335,13 @@ public class BuildMenu : KScreen
 		return result;
 	}
 
-	private void CloseProductInfoScreen()
+		private void CloseProductInfoScreen()
 	{
 		this.productInfoScreen.ClearProduct(true);
 		this.productInfoScreen.Show(false);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.deactivateToolQueued)
 		{
@@ -366,7 +366,7 @@ public class BuildMenu : KScreen
 		this.updating = false;
 	}
 
-	private void OnRecipeElementsFullySelected()
+		private void OnRecipeElementsFullySelected()
 	{
 		if (this.selectedBuilding == null)
 		{
@@ -381,7 +381,7 @@ public class BuildMenu : KScreen
 		BuildTool.Instance.Activate(this.selectedBuilding, this.productInfoScreen.materialSelectionPanel.GetSelectedElementAsList);
 	}
 
-	private void OnBuildingSelected(BuildingDef def)
+		private void OnBuildingSelected(BuildingDef def)
 	{
 		if (this.selecting)
 		{
@@ -413,7 +413,7 @@ public class BuildMenu : KScreen
 		this.selecting = false;
 	}
 
-	private void OnCategoryClicked(HashedString new_category, int depth)
+		private void OnCategoryClicked(HashedString new_category, int depth)
 	{
 		while (this.submenuStack.Count > depth)
 		{
@@ -455,7 +455,7 @@ public class BuildMenu : KScreen
 		this.submenus[BuildMenu.ROOT_HASHSTR].UpdateBuildableStates(true);
 	}
 
-	public void RefreshProductInfoScreen(BuildingDef def)
+		public void RefreshProductInfoScreen(BuildingDef def)
 	{
 		if (this.productInfoScreen.currentDef == def)
 		{
@@ -465,7 +465,7 @@ public class BuildMenu : KScreen
 		}
 	}
 
-	private HashedString GetParentCategory(HashedString desired_category)
+		private HashedString GetParentCategory(HashedString desired_category)
 	{
 		foreach (KeyValuePair<HashedString, List<HashedString>> keyValuePair in this.categorizedCategoryMap)
 		{
@@ -483,7 +483,7 @@ public class BuildMenu : KScreen
 		return HashedString.Invalid;
 	}
 
-	private void AddParentCategories(HashedString child_category, ICollection<HashedString> categories)
+		private void AddParentCategories(HashedString child_category, ICollection<HashedString> categories)
 	{
 		for (;;)
 		{
@@ -497,7 +497,7 @@ public class BuildMenu : KScreen
 		}
 	}
 
-	private void OnResearchComplete(object data)
+		private void OnResearchComplete(object data)
 	{
 		HashSet<HashedString> hashSet = new HashSet<HashedString>();
 		if (data is Tech)
@@ -537,7 +537,7 @@ public class BuildMenu : KScreen
 		this.UpdateNotifications(hashSet, BuildMenu.OrderedBuildings);
 	}
 
-	private void UpdateNotifications(ICollection<HashedString> updated_categories, object data)
+		private void UpdateNotifications(ICollection<HashedString> updated_categories, object data)
 	{
 		foreach (KeyValuePair<HashedString, BuildMenuCategoriesScreen> keyValuePair in this.submenus)
 		{
@@ -545,58 +545,58 @@ public class BuildMenu : KScreen
 		}
 	}
 
-	public PrioritySetting GetBuildingPriority()
+		public PrioritySetting GetBuildingPriority()
 	{
 		return this.productInfoScreen.materialSelectionPanel.PriorityScreen.GetLastSelectedPriority();
 	}
 
-	public const string ENABLE_HOTKEY_BUILD_MENU_KEY = "ENABLE_HOTKEY_BUILD_MENU";
+		public const string ENABLE_HOTKEY_BUILD_MENU_KEY = "ENABLE_HOTKEY_BUILD_MENU";
 
-	[SerializeField]
+		[SerializeField]
 	private BuildMenuCategoriesScreen categoriesMenuPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private BuildMenuBuildingsScreen buildingsMenuPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject productInfoScreenPrefab;
 
-	private ProductInfoScreen productInfoScreen;
+		private ProductInfoScreen productInfoScreen;
 
-	private BuildMenuBuildingsScreen buildingsScreen;
+		private BuildMenuBuildingsScreen buildingsScreen;
 
-	private BuildingDef selectedBuilding;
+		private BuildingDef selectedBuilding;
 
-	private HashedString selectedCategory;
+		private HashedString selectedCategory;
 
-	private static readonly HashedString ROOT_HASHSTR = new HashedString("ROOT");
+		private static readonly HashedString ROOT_HASHSTR = new HashedString("ROOT");
 
-	private Dictionary<HashedString, BuildMenuCategoriesScreen> submenus = new Dictionary<HashedString, BuildMenuCategoriesScreen>();
+		private Dictionary<HashedString, BuildMenuCategoriesScreen> submenus = new Dictionary<HashedString, BuildMenuCategoriesScreen>();
 
-	private Stack<KIconToggleMenu> submenuStack = new Stack<KIconToggleMenu>();
+		private Stack<KIconToggleMenu> submenuStack = new Stack<KIconToggleMenu>();
 
-	private bool selecting;
+		private bool selecting;
 
-	private bool updating;
+		private bool updating;
 
-	private bool deactivateToolQueued;
+		private bool deactivateToolQueued;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector2 rootMenuOffset = Vector2.zero;
 
-	[SerializeField]
+		[SerializeField]
 	private BuildMenu.PadInfo rootMenuPadding;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector2 nestedMenuOffset = Vector2.zero;
 
-	[SerializeField]
+		[SerializeField]
 	private BuildMenu.PadInfo nestedMenuPadding;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector2 buildingsMenuOffset = Vector2.zero;
 
-	public static BuildMenu.DisplayInfo OrderedBuildings = new BuildMenu.DisplayInfo(BuildMenu.CacheHashString("ROOT"), "icon_category_base", global::Action.NumActions, KKeyCode.None, new List<BuildMenu.DisplayInfo>
+		public static BuildMenu.DisplayInfo OrderedBuildings = new BuildMenu.DisplayInfo(BuildMenu.CacheHashString("ROOT"), "icon_category_base", global::Action.NumActions, KKeyCode.None, new List<BuildMenu.DisplayInfo>
 	{
 		new BuildMenu.DisplayInfo(BuildMenu.CacheHashString("Base"), "icon_category_base", global::Action.Plan1, KKeyCode.None, new List<BuildMenu.DisplayInfo>
 		{
@@ -983,56 +983,56 @@ public class BuildMenu : KScreen
 		})
 	});
 
-	private Dictionary<HashedString, List<BuildingDef>> categorizedBuildingMap;
+		private Dictionary<HashedString, List<BuildingDef>> categorizedBuildingMap;
 
-	private Dictionary<HashedString, List<HashedString>> categorizedCategoryMap;
+		private Dictionary<HashedString, List<HashedString>> categorizedCategoryMap;
 
-	private Dictionary<Tag, HashedString> tagCategoryMap;
+		private Dictionary<Tag, HashedString> tagCategoryMap;
 
-	private Dictionary<Tag, int> tagOrderMap;
+		private Dictionary<Tag, int> tagOrderMap;
 
-	private const float NotificationPingExpire = 0.5f;
+		private const float NotificationPingExpire = 0.5f;
 
-	private const float SpecialNotificationEmbellishDelay = 8f;
+		private const float SpecialNotificationEmbellishDelay = 8f;
 
-	private float timeSinceNotificationPing;
+		private float timeSinceNotificationPing;
 
-	private int notificationPingCount;
+		private int notificationPingCount;
 
-	private float initTime;
+		private float initTime;
 
-	private float updateInterval = 1f;
+		private float updateInterval = 1f;
 
-	private float elapsedTime;
+		private float elapsedTime;
 
-	[Serializable]
+		[Serializable]
 	private struct PadInfo
 	{
-		public int left;
+				public int left;
 
-		public int right;
+				public int right;
 
-		public int top;
+				public int top;
 
-		public int bottom;
+				public int bottom;
 	}
 
-	public struct BuildingInfo
+		public struct BuildingInfo
 	{
-		public BuildingInfo(string id, global::Action hotkey)
+				public BuildingInfo(string id, global::Action hotkey)
 		{
 			this.id = id;
 			this.hotkey = hotkey;
 		}
 
-		public string id;
+				public string id;
 
-		public global::Action hotkey;
+				public global::Action hotkey;
 	}
 
-	public struct DisplayInfo
+		public struct DisplayInfo
 	{
-		public DisplayInfo(HashedString category, string icon_name, global::Action hotkey, KKeyCode key_code, object data)
+				public DisplayInfo(HashedString category, string icon_name, global::Action hotkey, KKeyCode key_code, object data)
 		{
 			this.category = category;
 			this.iconName = icon_name;
@@ -1041,7 +1041,7 @@ public class BuildMenu : KScreen
 			this.data = data;
 		}
 
-		public BuildMenu.DisplayInfo GetInfo(HashedString category)
+				public BuildMenu.DisplayInfo GetInfo(HashedString category)
 		{
 			BuildMenu.DisplayInfo displayInfo = default(BuildMenu.DisplayInfo);
 			if (this.data != null && typeof(IList<BuildMenu.DisplayInfo>).IsAssignableFrom(this.data.GetType()))
@@ -1063,14 +1063,14 @@ public class BuildMenu : KScreen
 			return displayInfo;
 		}
 
-		public HashedString category;
+				public HashedString category;
 
-		public string iconName;
+				public string iconName;
 
-		public global::Action hotkey;
+				public global::Action hotkey;
 
-		public KKeyCode keyCode;
+				public KKeyCode keyCode;
 
-		public object data;
+				public object data;
 	}
 }

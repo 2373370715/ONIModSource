@@ -3,7 +3,7 @@ using STRINGS;
 
 public class DevLightGenerator : Light2D, IMultiSliderControl
 {
-	public DevLightGenerator()
+		public DevLightGenerator()
 	{
 		this.sliderControls = new ISliderControl[]
 		{
@@ -13,7 +13,7 @@ public class DevLightGenerator : Light2D, IMultiSliderControl
 		};
 	}
 
-		string IMultiSliderControl.SidescreenTitleKey
+			string IMultiSliderControl.SidescreenTitleKey
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class DevLightGenerator : Light2D, IMultiSliderControl
 		}
 	}
 
-		ISliderControl[] IMultiSliderControl.sliderControls
+			ISliderControl[] IMultiSliderControl.sliderControls
 	{
 		get
 		{
@@ -29,21 +29,21 @@ public class DevLightGenerator : Light2D, IMultiSliderControl
 		}
 	}
 
-	bool IMultiSliderControl.SidescreenEnabled()
+		bool IMultiSliderControl.SidescreenEnabled()
 	{
 		return true;
 	}
 
-	protected ISliderControl[] sliderControls;
+		protected ISliderControl[] sliderControls;
 
-	protected class LuxController : ISingleSliderControl, ISliderControl
+		protected class LuxController : ISingleSliderControl, ISliderControl
 	{
-		public LuxController(Light2D t)
+				public LuxController(Light2D t)
 		{
 			this.target = t;
 		}
 
-				public string SliderTitleKey
+						public string SliderTitleKey
 		{
 			get
 			{
@@ -51,7 +51,7 @@ public class DevLightGenerator : Light2D, IMultiSliderControl
 			}
 		}
 
-				public string SliderUnits
+						public string SliderUnits
 		{
 			get
 			{
@@ -59,53 +59,53 @@ public class DevLightGenerator : Light2D, IMultiSliderControl
 			}
 		}
 
-		public float GetSliderMax(int index)
+				public float GetSliderMax(int index)
 		{
 			return 100000f;
 		}
 
-		public float GetSliderMin(int index)
+				public float GetSliderMin(int index)
 		{
 			return 0f;
 		}
 
-		public string GetSliderTooltip(int index)
+				public string GetSliderTooltip(int index)
 		{
 			return string.Format(UI.GAMEOBJECTEFFECTS.EMITS_LIGHT_LUX, this.target.Lux);
 		}
 
-		public string GetSliderTooltipKey(int index)
+				public string GetSliderTooltipKey(int index)
 		{
 			return "<unused>";
 		}
 
-		public float GetSliderValue(int index)
+				public float GetSliderValue(int index)
 		{
 			return (float)this.target.Lux;
 		}
 
-		public void SetSliderValue(float value, int index)
+				public void SetSliderValue(float value, int index)
 		{
 			this.target.Lux = (int)value;
 			this.target.FullRefresh();
 		}
 
-		public int SliderDecimalPlaces(int index)
+				public int SliderDecimalPlaces(int index)
 		{
 			return 0;
 		}
 
-		protected Light2D target;
+				protected Light2D target;
 	}
 
-	protected class RangeController : ISingleSliderControl, ISliderControl
+		protected class RangeController : ISingleSliderControl, ISliderControl
 	{
-		public RangeController(Light2D t)
+				public RangeController(Light2D t)
 		{
 			this.target = t;
 		}
 
-				public string SliderTitleKey
+						public string SliderTitleKey
 		{
 			get
 			{
@@ -113,7 +113,7 @@ public class DevLightGenerator : Light2D, IMultiSliderControl
 			}
 		}
 
-				public string SliderUnits
+						public string SliderUnits
 		{
 			get
 			{
@@ -121,53 +121,53 @@ public class DevLightGenerator : Light2D, IMultiSliderControl
 			}
 		}
 
-		public float GetSliderMax(int index)
+				public float GetSliderMax(int index)
 		{
 			return 20f;
 		}
 
-		public float GetSliderMin(int index)
+				public float GetSliderMin(int index)
 		{
 			return 1f;
 		}
 
-		public string GetSliderTooltip(int index)
+				public string GetSliderTooltip(int index)
 		{
 			return string.Format(UI.GAMEOBJECTEFFECTS.EMITS_LIGHT, this.target.Range);
 		}
 
-		public string GetSliderTooltipKey(int index)
+				public string GetSliderTooltipKey(int index)
 		{
 			return "";
 		}
 
-		public float GetSliderValue(int index)
+				public float GetSliderValue(int index)
 		{
 			return this.target.Range;
 		}
 
-		public void SetSliderValue(float value, int index)
+				public void SetSliderValue(float value, int index)
 		{
 			this.target.Range = (float)((int)value);
 			this.target.FullRefresh();
 		}
 
-		public int SliderDecimalPlaces(int index)
+				public int SliderDecimalPlaces(int index)
 		{
 			return 0;
 		}
 
-		protected Light2D target;
+				protected Light2D target;
 	}
 
-	protected class FalloffController : ISingleSliderControl, ISliderControl
+		protected class FalloffController : ISingleSliderControl, ISliderControl
 	{
-		public FalloffController(Light2D t)
+				public FalloffController(Light2D t)
 		{
 			this.target = t;
 		}
 
-				public string SliderTitleKey
+						public string SliderTitleKey
 		{
 			get
 			{
@@ -175,7 +175,7 @@ public class DevLightGenerator : Light2D, IMultiSliderControl
 			}
 		}
 
-				public string SliderUnits
+						public string SliderUnits
 		{
 			get
 			{
@@ -183,42 +183,42 @@ public class DevLightGenerator : Light2D, IMultiSliderControl
 			}
 		}
 
-		public float GetSliderMax(int index)
+				public float GetSliderMax(int index)
 		{
 			return 100f;
 		}
 
-		public float GetSliderMin(int index)
+				public float GetSliderMin(int index)
 		{
 			return 1f;
 		}
 
-		public string GetSliderTooltip(int index)
+				public string GetSliderTooltip(int index)
 		{
 			return string.Format("{0}", this.target.FalloffRate * 100f);
 		}
 
-		public string GetSliderTooltipKey(int index)
+				public string GetSliderTooltipKey(int index)
 		{
 			return "";
 		}
 
-		public float GetSliderValue(int index)
+				public float GetSliderValue(int index)
 		{
 			return this.target.FalloffRate * 100f;
 		}
 
-		public void SetSliderValue(float value, int index)
+				public void SetSliderValue(float value, int index)
 		{
 			this.target.FalloffRate = value / 100f;
 			this.target.FullRefresh();
 		}
 
-		public int SliderDecimalPlaces(int index)
+				public int SliderDecimalPlaces(int index)
 		{
 			return 0;
 		}
 
-		protected Light2D target;
+				protected Light2D target;
 	}
 }

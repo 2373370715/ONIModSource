@@ -5,24 +5,24 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/CopyBuildingSettings")]
 public class CopyBuildingSettings : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<CopyBuildingSettings>(493375141, CopyBuildingSettings.OnRefreshUserMenuDelegate);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("action_mirror", UI.USERMENUACTIONS.COPY_BUILDING_SETTINGS.NAME, new System.Action(this.ActivateCopyTool), global::Action.BuildingUtility1, null, null, null, UI.USERMENUACTIONS.COPY_BUILDING_SETTINGS.TOOLTIP, true), 1f);
 	}
 
-	private void ActivateCopyTool()
+		private void ActivateCopyTool()
 	{
 		CopySettingsTool.Instance.SetSourceObject(base.gameObject);
 		PlayerController.Instance.ActivateTool(CopySettingsTool.Instance);
 	}
 
-	public static bool ApplyCopy(int targetCell, GameObject sourceGameObject)
+		public static bool ApplyCopy(int targetCell, GameObject sourceGameObject)
 	{
 		ObjectLayer layer = ObjectLayer.Building;
 		Building component = sourceGameObject.GetComponent<BuildingComplete>();
@@ -75,12 +75,12 @@ public class CopyBuildingSettings : KMonoBehaviour
 		return true;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KPrefabID id;
 
-	public Tag copyGroupTag;
+		public Tag copyGroupTag;
 
-	private static readonly EventSystem.IntraObjectHandler<CopyBuildingSettings> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<CopyBuildingSettings>(delegate(CopyBuildingSettings component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CopyBuildingSettings> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<CopyBuildingSettings>(delegate(CopyBuildingSettings component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});

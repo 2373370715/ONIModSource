@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MetalRefineryConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MetalRefinery";
 		int width = 3;
@@ -33,7 +33,7 @@ public class MetalRefineryConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<DropAllWorkable>();
@@ -124,7 +124,7 @@ public class MetalRefineryConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 		go.AddOrGetDef<PoweredActiveStoppableController.Def>();
@@ -139,17 +139,17 @@ public class MetalRefineryConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "MetalRefinery";
+		public const string ID = "MetalRefinery";
 
-	private const float INPUT_KG = 100f;
+		private const float INPUT_KG = 100f;
 
-	private const float LIQUID_COOLED_HEAT_PORTION = 0.8f;
+		private const float LIQUID_COOLED_HEAT_PORTION = 0.8f;
 
-	private static readonly Tag COOLANT_TAG = GameTags.Liquid;
+		private static readonly Tag COOLANT_TAG = GameTags.Liquid;
 
-	private const float COOLANT_MASS = 400f;
+		private const float COOLANT_MASS = 400f;
 
-	private static readonly List<Storage.StoredItemModifier> RefineryStoredItemModifiers = new List<Storage.StoredItemModifier>
+		private static readonly List<Storage.StoredItemModifier> RefineryStoredItemModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Preserve,

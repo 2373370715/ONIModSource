@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/PageView")]
 public class PageView : KMonoBehaviour
 {
-		public int ChildrenPerPage
+			public int ChildrenPerPage
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class PageView : KMonoBehaviour
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.oldChildCount != base.transform.childCount)
 		{
@@ -21,7 +21,7 @@ public class PageView : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		MultiToggle multiToggle = this.nextButton;
@@ -50,7 +50,7 @@ public class PageView : KMonoBehaviour
 		}));
 	}
 
-		private int pageCount
+			private int pageCount
 	{
 		get
 		{
@@ -63,7 +63,7 @@ public class PageView : KMonoBehaviour
 		}
 	}
 
-	private void RefreshPage()
+		private void RefreshPage()
 	{
 		for (int i = 0; i < base.transform.childCount; i++)
 		{
@@ -83,21 +83,21 @@ public class PageView : KMonoBehaviour
 		this.pageLabel.SetText((this.currentPage % this.pageCount + 1).ToString() + "/" + this.pageCount.ToString());
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle nextButton;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle prevButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText pageLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private int childrenPerPage = 8;
 
-	private int currentPage;
+		private int currentPage;
 
-	private int oldChildCount;
+		private int oldChildCount;
 
-	public Action<int> OnChangePage;
+		public Action<int> OnChangePage;
 }

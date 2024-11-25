@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class DetailTabHeader : KMonoBehaviour
 {
-		public TargetPanel ActivePanel
+			public TargetPanel ActivePanel
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class DetailTabHeader : KMonoBehaviour
 		}
 	}
 
-	public void Init()
+		public void Init()
 	{
 		this.detailsScreen = DetailsScreen.Instance;
 		this.MakeTab("SIMPLEINFO", UI.DETAILTABS.SIMPLEINFO.NAME, Assets.GetSprite("icon_display_screen_status"), UI.DETAILTABS.SIMPLEINFO.TOOLTIP, this.simpleInfoScreen);
@@ -28,11 +28,11 @@ public class DetailTabHeader : KMonoBehaviour
 		this.ChangeToDefaultTab();
 	}
 
-	private void MakeTabContents(GameObject panelToActivate)
+		private void MakeTabContents(GameObject panelToActivate)
 	{
 	}
 
-	private void MakeTab(string id, string label, Sprite sprite, string tooltip, GameObject panelToActivate)
+		private void MakeTab(string id, string label, Sprite sprite, string tooltip, GameObject panelToActivate)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.tabPrefab, this.tabContainer, true);
 		gameObject.name = "tab: " + id;
@@ -55,7 +55,7 @@ public class DetailTabHeader : KMonoBehaviour
 		gameObject2.SetActive(false);
 	}
 
-	private void ChangeTab(string id)
+		private void ChangeTab(string id)
 	{
 		this.selectedTabID = id;
 		foreach (KeyValuePair<string, MultiToggle> keyValuePair in this.tabs)
@@ -77,12 +77,12 @@ public class DetailTabHeader : KMonoBehaviour
 		}
 	}
 
-	private void ChangeToDefaultTab()
+		private void ChangeToDefaultTab()
 	{
 		this.ChangeTab("SIMPLEINFO");
 	}
 
-	public void RefreshTabDisplayForTarget(GameObject target)
+		public void RefreshTabDisplayForTarget(GameObject target)
 	{
 		foreach (KeyValuePair<string, TargetPanel> keyValuePair in this.tabPanels)
 		{
@@ -96,39 +96,39 @@ public class DetailTabHeader : KMonoBehaviour
 		this.ChangeToDefaultTab();
 	}
 
-	private Dictionary<string, MultiToggle> tabs = new Dictionary<string, MultiToggle>();
+		private Dictionary<string, MultiToggle> tabs = new Dictionary<string, MultiToggle>();
 
-	private string selectedTabID;
+		private string selectedTabID;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject tabPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject tabContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject panelContainer;
 
-	[Header("Screen Prefabs")]
+		[Header("Screen Prefabs")]
 	[SerializeField]
 	private GameObject simpleInfoScreen;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject minionPersonalityPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject buildingInfoPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject additionalDetailsPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject cosmeticsPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject materialPanel;
 
-	private DetailsScreen detailsScreen;
+		private DetailsScreen detailsScreen;
 
-	private Dictionary<string, TargetPanel> tabPanels = new Dictionary<string, TargetPanel>();
+		private Dictionary<string, TargetPanel> tabPanels = new Dictionary<string, TargetPanel>();
 }

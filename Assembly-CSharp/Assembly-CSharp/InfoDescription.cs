@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/InfoDescription")]
 public class InfoDescription : KMonoBehaviour
 {
-			public string DescriptionLocString
+				public string DescriptionLocString
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class InfoDescription : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (!string.IsNullOrEmpty(this.nameLocString))
@@ -34,13 +34,13 @@ public class InfoDescription : KMonoBehaviour
 		}
 	}
 
-	public string nameLocString = "";
+		public string nameLocString = "";
 
-	private string descriptionLocString = "";
+		private string descriptionLocString = "";
 
-	public string description;
+		public string description;
 
-	public string effect = "";
+		public string effect = "";
 
-	public string displayName;
+		public string displayName;
 }

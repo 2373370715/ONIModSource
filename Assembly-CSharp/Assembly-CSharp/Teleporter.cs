@@ -5,15 +5,15 @@ using UnityEngine;
 
 public class Teleporter : KMonoBehaviour
 {
-			[Serialize]
+				[Serialize]
 	public int teleporterID { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.Teleporters.Add(this);
@@ -21,7 +21,7 @@ public class Teleporter : KMonoBehaviour
 		base.Subscribe<Teleporter>(-801688580, Teleporter.OnLogicValueChangedDelegate);
 	}
 
-	private void OnLogicValueChanged(object data)
+		private void OnLogicValueChanged(object data)
 	{
 		LogicPorts component = base.GetComponent<LogicPorts>();
 		LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
@@ -42,23 +42,23 @@ public class Teleporter : KMonoBehaviour
 		this.SetTeleporterID(num);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.Teleporters.Remove(this);
 		base.OnCleanUp();
 	}
 
-	public bool HasTeleporterTarget()
+		public bool HasTeleporterTarget()
 	{
 		return this.FindTeleportTarget() != null;
 	}
 
-	public bool IsValidTeleportTarget(Teleporter from_tele)
+		public bool IsValidTeleportTarget(Teleporter from_tele)
 	{
 		return from_tele.teleporterID == this.teleporterID && this.operational.IsOperational;
 	}
 
-	public Teleporter FindTeleportTarget()
+		public Teleporter FindTeleportTarget()
 	{
 		List<Teleporter> list = new List<Teleporter>();
 		foreach (object obj in Components.Teleporters)
@@ -77,7 +77,7 @@ public class Teleporter : KMonoBehaviour
 		return result;
 	}
 
-	public void SetTeleporterID(int ID)
+		public void SetTeleporterID(int ID)
 	{
 		this.teleporterID = ID;
 		foreach (object obj in Components.Teleporters)
@@ -86,12 +86,12 @@ public class Teleporter : KMonoBehaviour
 		}
 	}
 
-	public void SetTeleportTarget(Teleporter target)
+		public void SetTeleportTarget(Teleporter target)
 	{
 		this.teleportTarget.Set(target);
 	}
 
-	public void TeleportObjects()
+		public void TeleportObjects()
 	{
 		Teleporter teleporter = this.teleportTarget.Get();
 		int widthInCells = base.GetComponent<Building>().Def.WidthInCells;
@@ -124,15 +124,15 @@ public class Teleporter : KMonoBehaviour
 		this.teleportTarget.Set(null);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[Serialize]
+		[Serialize]
 	public Ref<Teleporter> teleportTarget = new Ref<Teleporter>();
 
-	public int ID_LENGTH = 4;
+		public int ID_LENGTH = 4;
 
-	private static readonly EventSystem.IntraObjectHandler<Teleporter> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<Teleporter>(delegate(Teleporter component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Teleporter> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<Teleporter>(delegate(Teleporter component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});

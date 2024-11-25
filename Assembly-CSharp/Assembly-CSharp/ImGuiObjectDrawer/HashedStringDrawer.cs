@@ -2,14 +2,14 @@
 
 namespace ImGuiObjectDrawer
 {
-	public sealed class HashedStringDrawer : InlineDrawer
+		public sealed class HashedStringDrawer : InlineDrawer
 	{
-		public override bool CanDraw(in MemberDrawContext context, in MemberDetails member)
+				public override bool CanDraw(in MemberDrawContext context, in MemberDetails member)
 		{
 			return member.value is HashedString;
 		}
 
-		protected override void DrawInline(in MemberDrawContext context, in MemberDetails member)
+				protected override void DrawInline(in MemberDrawContext context, in MemberDetails member)
 		{
 			HashedString hashedString = (HashedString)member.value;
 			string str = hashedString.ToString();

@@ -5,17 +5,17 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/EntityConfigManager")]
 public class EntityConfigManager : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		EntityConfigManager.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		EntityConfigManager.Instance = this;
 	}
 
-	private static int GetSortOrder(Type type)
+		private static int GetSortOrder(Type type)
 	{
 		foreach (Attribute attribute in type.GetCustomAttributes(true))
 		{
@@ -27,7 +27,7 @@ public class EntityConfigManager : KMonoBehaviour
 		return 0;
 	}
 
-	public void LoadGeneratedEntities(List<Type> types)
+		public void LoadGeneratedEntities(List<Type> types)
 	{
 		Type typeFromHandle = typeof(IEntityConfig);
 		Type typeFromHandle2 = typeof(IMultiEntityConfig);
@@ -60,7 +60,7 @@ public class EntityConfigManager : KMonoBehaviour
 		}
 	}
 
-	public void RegisterEntity(IEntityConfig config)
+		public void RegisterEntity(IEntityConfig config)
 	{
 		KPrefabID component = config.CreatePrefab().GetComponent<KPrefabID>();
 		component.requiredDlcIds = config.GetDlcIds();
@@ -69,7 +69,7 @@ public class EntityConfigManager : KMonoBehaviour
 		Assets.AddPrefab(component);
 	}
 
-	public void RegisterEntities(IMultiEntityConfig config)
+		public void RegisterEntities(IMultiEntityConfig config)
 	{
 		foreach (GameObject gameObject in config.CreatePrefabs())
 		{
@@ -80,12 +80,12 @@ public class EntityConfigManager : KMonoBehaviour
 		}
 	}
 
-	public static EntityConfigManager Instance;
+		public static EntityConfigManager Instance;
 
-	private struct ConfigEntry
+		private struct ConfigEntry
 	{
-		public Type type;
+				public Type type;
 
-		public int sortOrder;
+				public int sortOrder;
 	}
 }

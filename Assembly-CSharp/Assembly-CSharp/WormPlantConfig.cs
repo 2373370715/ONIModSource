@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class WormPlantConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public static GameObject BaseWormPlant(string id, string name, string desc, string animFile, EffectorValues decor, string cropID)
+		public static GameObject BaseWormPlant(string id, string name, string desc, string animFile, EffectorValues decor, string cropID)
 	{
 		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, 1f, Assets.GetAnim(animFile), "idle_empty", Grid.SceneLayer.BuildingBack, 1, 2, decor, default(EffectorValues), SimHashes.Creature, null, 307.15f);
 		EntityTemplates.ExtendEntityToBasicPlant(gameObject, 273.15f, 288.15f, 323.15f, 373.15f, new SimHashes[]
@@ -33,17 +33,26 @@ public class WormPlantConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = WormPlantConfig.BaseWormPlant("WormPlant", STRINGS.CREATURES.SPECIES.WORMPLANT.NAME, STRINGS.CREATURES.SPECIES.WORMPLANT.DESC, "wormwood_kanim", WormPlantConfig.BASIC_DECOR, "WormBasicFruit");
-		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Harvest, "WormPlantSeed", STRINGS.CREATURES.SPECIES.SEEDS.WORMPLANT.NAME, STRINGS.CREATURES.SPECIES.SEEDS.WORMPLANT.DESC, Assets.GetAnim("seed_wormwood_kanim"), "object", 1, new List<Tag>
-		{
-			GameTags.CropSeed
-		}, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 3, STRINGS.CREATURES.SPECIES.WORMPLANT.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, this.GetDlcIds()), "WormPlant_preview", Assets.GetAnim("wormwood_kanim"), "place", 1, 2);
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Harvest;
+		string id = "WormPlantSeed";
+		string name = STRINGS.CREATURES.SPECIES.SEEDS.WORMPLANT.NAME;
+		string desc = STRINGS.CREATURES.SPECIES.SEEDS.WORMPLANT.DESC;
+		KAnimFile anim = Assets.GetAnim("seed_wormwood_kanim");
+		string initialAnim = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.CropSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		string domesticatedDescription = STRINGS.CREATURES.SPECIES.WORMPLANT.DOMESTICATEDDESC;
+		string[] dlcIds = this.GetDlcIds();
+		EntityTemplates.CreateAndRegisterPreviewForPlant(EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, productionType, id, name, desc, anim, initialAnim, numberOfSeeds, list, planterDirection, default(Tag), 3, domesticatedDescription, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, dlcIds), "WormPlant_preview", Assets.GetAnim("wormwood_kanim"), "place", 1, 2);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 		TransformingPlant transformingPlant = prefab.AddOrGet<TransformingPlant>();
 		transformingPlant.transformPlantId = "SuperWormPlant";
@@ -67,21 +76,21 @@ public class WormPlantConfig : IEntityConfig
 		prefab.AddOrGet<StandardCropPlant>().anims = WormPlantConfig.animSet;
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "WormPlant";
+		public const string ID = "WormPlant";
 
-	public const string SEED_ID = "WormPlantSeed";
+		public const string SEED_ID = "WormPlantSeed";
 
-	public const float SULFUR_CONSUMPTION_RATE = 0.016666668f;
+		public const float SULFUR_CONSUMPTION_RATE = 0.016666668f;
 
-	public static readonly EffectorValues BASIC_DECOR = DECOR.PENALTY.TIER0;
+		public static readonly EffectorValues BASIC_DECOR = DECOR.PENALTY.TIER0;
 
-	public const string BASIC_CROP_ID = "WormBasicFruit";
+		public const string BASIC_CROP_ID = "WormBasicFruit";
 
-	private static StandardCropPlant.AnimSet animSet = new StandardCropPlant.AnimSet
+		private static StandardCropPlant.AnimSet animSet = new StandardCropPlant.AnimSet
 	{
 		grow = "basic_grow",
 		grow_pst = "basic_grow_pst",

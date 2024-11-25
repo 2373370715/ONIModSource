@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class TextLinkHandler : MonoBehaviour, IPointerClickHandler, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler
 {
-	public void OnPointerClick(PointerEventData eventData)
+		public void OnPointerClick(PointerEventData eventData)
 	{
 		if (eventData.button != PointerEventData.InputButton.Left)
 		{
@@ -42,7 +42,7 @@ public class TextLinkHandler : MonoBehaviour, IPointerClickHandler, IEventSystem
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.CheckMouseOver();
 		if (TextLinkHandler.hoveredText == this && this.text.AllowLinks)
@@ -51,17 +51,17 @@ public class TextLinkHandler : MonoBehaviour, IPointerClickHandler, IEventSystem
 		}
 	}
 
-	private void OnEnable()
+		private void OnEnable()
 	{
 		this.CheckMouseOver();
 	}
 
-	private void OnDisable()
+		private void OnDisable()
 	{
 		this.ClearState();
 	}
 
-	private void Awake()
+		private void Awake()
 	{
 		this.text = base.GetComponent<LocText>();
 		if (this.text.AllowLinks && !this.text.raycastTarget)
@@ -70,17 +70,17 @@ public class TextLinkHandler : MonoBehaviour, IPointerClickHandler, IEventSystem
 		}
 	}
 
-	public void OnPointerEnter(PointerEventData eventData)
+		public void OnPointerEnter(PointerEventData eventData)
 	{
 		this.SetMouseOver();
 	}
 
-	public void OnPointerExit(PointerEventData eventData)
+		public void OnPointerExit(PointerEventData eventData)
 	{
 		this.ClearState();
 	}
 
-	private void ClearState()
+		private void ClearState()
 	{
 		if (this == null || this.Equals(null))
 		{
@@ -97,7 +97,7 @@ public class TextLinkHandler : MonoBehaviour, IPointerClickHandler, IEventSystem
 		}
 	}
 
-	public void CheckMouseOver()
+		public void CheckMouseOver()
 	{
 		if (this.text == null)
 		{
@@ -115,7 +115,7 @@ public class TextLinkHandler : MonoBehaviour, IPointerClickHandler, IEventSystem
 		}
 	}
 
-	private void SetMouseOver()
+		private void SetMouseOver()
 	{
 		if (TextLinkHandler.hoveredText != null && TextLinkHandler.hoveredText != this)
 		{
@@ -124,12 +124,12 @@ public class TextLinkHandler : MonoBehaviour, IPointerClickHandler, IEventSystem
 		TextLinkHandler.hoveredText = this;
 	}
 
-	private static TextLinkHandler hoveredText;
+		private static TextLinkHandler hoveredText;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private LocText text;
 
-	private bool hoverLink;
+		private bool hoverLink;
 
-	public Func<string, bool> overrideLinkAction;
+		public Func<string, bool> overrideLinkAction;
 }

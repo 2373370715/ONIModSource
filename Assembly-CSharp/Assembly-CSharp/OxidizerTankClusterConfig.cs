@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class OxidizerTankClusterConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "OxidizerTankCluster";
 		int width = 5;
@@ -43,7 +43,7 @@ public class OxidizerTankClusterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<BuildingAttachPoint>().points = new BuildingAttachPoint.HardPoint[]
@@ -55,7 +55,7 @@ public class OxidizerTankClusterConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 900f;
@@ -85,7 +85,7 @@ public class OxidizerTankClusterConfig : IBuildingConfig
 		BuildingTemplates.ExtendBuildingToRocketModuleCluster(go, null, ROCKETRY.BURDEN.MODERATE_PLUS, 0f, 0f);
 	}
 
-	public const string ID = "OxidizerTankCluster";
+		public const string ID = "OxidizerTankCluster";
 
-	public const float FuelCapacity = 900f;
+		public const float FuelCapacity = 900f;
 }

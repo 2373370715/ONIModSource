@@ -8,14 +8,14 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class StoryManager : KMonoBehaviour
 {
-			public static StoryManager Instance { get; private set; }
+				public static StoryManager Instance { get; private set; }
 
-	public static IReadOnlyList<StoryManager.StoryTelemetry> GetTelemetry()
+		public static IReadOnlyList<StoryManager.StoryTelemetry> GetTelemetry()
 	{
 		return StoryManager.storyTelemetry;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		StoryManager.Instance = this;
 		GameClock.Instance.Subscribe(631075836, new Action<object>(this.OnNewDayStarted));
@@ -23,14 +23,14 @@ public class StoryManager : KMonoBehaviour
 		instance.OnLoad = (Action<Game.GameSaveData>)Delegate.Combine(instance.OnLoad, new Action<Game.GameSaveData>(this.OnGameLoaded));
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameClock.Instance.Unsubscribe(631075836, new Action<object>(this.OnNewDayStarted));
 		Game instance = Game.Instance;
 		instance.OnLoad = (Action<Game.GameSaveData>)Delegate.Remove(instance.OnLoad, new Action<Game.GameSaveData>(this.OnGameLoaded));
 	}
 
-	public void InitialSaveSetup()
+		public void InitialSaveSetup()
 	{
 		this.highestStoryCoordinateWhenGenerated = Db.Get().Stories.GetHighestCoordinate();
 		foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
@@ -44,13 +44,13 @@ public class StoryManager : KMonoBehaviour
 		this.LogInitialSaveSetup();
 	}
 
-	public StoryInstance CreateStory(string id, int worldId)
+		public StoryInstance CreateStory(string id, int worldId)
 	{
 		Story story = Db.Get().Stories.Get(id);
 		return this.CreateStory(story, worldId);
 	}
 
-	public StoryInstance CreateStory(Story story, int worldId)
+		public StoryInstance CreateStory(Story story, int worldId)
 	{
 		StoryInstance storyInstance = new StoryInstance(story, worldId);
 		this._stories.Add(story.HashId, storyInstance);
@@ -62,34 +62,34 @@ public class StoryManager : KMonoBehaviour
 		return storyInstance;
 	}
 
-	public StoryInstance GetStoryInstance(Story story)
+		public StoryInstance GetStoryInstance(Story story)
 	{
 		return this.GetStoryInstance(story.HashId);
 	}
 
-	public StoryInstance GetStoryInstance(int hash)
+		public StoryInstance GetStoryInstance(int hash)
 	{
 		StoryInstance result;
 		this._stories.TryGetValue(hash, out result);
 		return result;
 	}
 
-	public Dictionary<int, StoryInstance> GetStoryInstances()
+		public Dictionary<int, StoryInstance> GetStoryInstances()
 	{
 		return this._stories;
 	}
 
-	public int GetHighestCoordinate()
+		public int GetHighestCoordinate()
 	{
 		return this.highestStoryCoordinateWhenGenerated;
 	}
 
-	private string GetCompleteUnlockId(string id)
+		private string GetCompleteUnlockId(string id)
 	{
 		return id + "_STORY_COMPLETE";
 	}
 
-	public void ForceCreateStory(Story story, int worldId)
+		public void ForceCreateStory(Story story, int worldId)
 	{
 		if (this.GetStoryInstance(story.HashId) == null)
 		{
@@ -97,7 +97,7 @@ public class StoryManager : KMonoBehaviour
 		}
 	}
 
-	public void DiscoverStoryEvent(Story story)
+		public void DiscoverStoryEvent(Story story)
 	{
 		StoryInstance storyInstance = this.GetStoryInstance(story.HashId);
 		if (storyInstance == null || this.CheckState(StoryInstance.State.DISCOVERED, story))
@@ -107,7 +107,7 @@ public class StoryManager : KMonoBehaviour
 		storyInstance.CurrentState = StoryInstance.State.DISCOVERED;
 	}
 
-	public void BeginStoryEvent(Story story)
+		public void BeginStoryEvent(Story story)
 	{
 		StoryInstance storyInstance = this.GetStoryInstance(story.HashId);
 		if (storyInstance == null || this.CheckState(StoryInstance.State.IN_PROGRESS, story))
@@ -117,7 +117,7 @@ public class StoryManager : KMonoBehaviour
 		storyInstance.CurrentState = StoryInstance.State.IN_PROGRESS;
 	}
 
-	public void CompleteStoryEvent(Story story, MonoBehaviour keepsakeSpawnTarget, FocusTargetSequence.Data sequenceData)
+		public void CompleteStoryEvent(Story story, MonoBehaviour keepsakeSpawnTarget, FocusTargetSequence.Data sequenceData)
 	{
 		if (this.GetStoryInstance(story.HashId) == null || this.CheckState(StoryInstance.State.COMPLETE, story))
 		{
@@ -126,7 +126,7 @@ public class StoryManager : KMonoBehaviour
 		FocusTargetSequence.Start(keepsakeSpawnTarget, sequenceData);
 	}
 
-	public void CompleteStoryEvent(Story story, Vector3 keepsakeSpawnPosition)
+		public void CompleteStoryEvent(Story story, Vector3 keepsakeSpawnPosition)
 	{
 		StoryInstance storyInstance = this.GetStoryInstance(story.HashId);
 		if (storyInstance == null)
@@ -145,23 +145,23 @@ public class StoryManager : KMonoBehaviour
 		Game.Instance.unlocks.Unlock(this.GetCompleteUnlockId(story.Id), true);
 	}
 
-	public bool CheckState(StoryInstance.State state, Story story)
+		public bool CheckState(StoryInstance.State state, Story story)
 	{
 		StoryInstance storyInstance = this.GetStoryInstance(story.HashId);
 		return storyInstance != null && storyInstance.CurrentState >= state;
 	}
 
-	public bool IsStoryComplete(Story story)
+		public bool IsStoryComplete(Story story)
 	{
 		return this.CheckState(StoryInstance.State.COMPLETE, story);
 	}
 
-	public bool IsStoryCompleteGlobal(Story story)
+		public bool IsStoryCompleteGlobal(Story story)
 	{
 		return Game.Instance.unlocks.IsUnlocked(this.GetCompleteUnlockId(story.Id));
 	}
 
-	public StoryInstance DisplayPopup(Story story, StoryManager.PopupInfo info, System.Action popupCB = null, Notification.ClickCallback notificationCB = null)
+		public StoryInstance DisplayPopup(Story story, StoryManager.PopupInfo info, System.Action popupCB = null, Notification.ClickCallback notificationCB = null)
 	{
 		StoryInstance storyInstance = this.GetStoryInstance(story.HashId);
 		if (storyInstance == null || storyInstance.HasDisplayedPopup(info.PopupType))
@@ -185,13 +185,13 @@ public class StoryManager : KMonoBehaviour
 		return storyInstance;
 	}
 
-	public bool HasDisplayedPopup(Story story, EventInfoDataHelper.PopupType type)
+		public bool HasDisplayedPopup(Story story, EventInfoDataHelper.PopupType type)
 	{
 		StoryInstance storyInstance = this.GetStoryInstance(story.HashId);
 		return storyInstance != null && storyInstance.HasDisplayedPopup(type);
 	}
 
-	private void LogInitialSaveSetup()
+		private void LogInitialSaveSetup()
 	{
 		int num = 0;
 		StoryManager.StoryCreationTelemetry[] array = new StoryManager.StoryCreationTelemetry[CustomGameSettings.Instance.CurrentStoryLevelsBySetting.Count];
@@ -207,13 +207,13 @@ public class StoryManager : KMonoBehaviour
 		OniMetrics.LogEvent(OniMetrics.Event.NewSave, "StoryTraitsCreation", array);
 	}
 
-	private void OnNewDayStarted(object _)
+		private void OnNewDayStarted(object _)
 	{
 		OniMetrics.LogEvent(OniMetrics.Event.EndOfCycle, "SavedHighestStoryCoordinate", this.highestStoryCoordinateWhenGenerated);
 		OniMetrics.LogEvent(OniMetrics.Event.EndOfCycle, "StoryTraits", StoryManager.storyTelemetry);
 	}
 
-	private static void InitTelemetry(StoryInstance story)
+		private static void InitTelemetry(StoryInstance story)
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(story.worldId);
 		if (world == null)
@@ -225,7 +225,7 @@ public class StoryManager : KMonoBehaviour
 		StoryManager.storyTelemetry.Add(story.Telemetry);
 	}
 
-	private void OnGameLoaded(object _)
+		private void OnGameLoaded(object _)
 	{
 		StoryManager.storyTelemetry.Clear();
 		foreach (KeyValuePair<int, StoryInstance> keyValuePair in this._stories)
@@ -243,62 +243,62 @@ public class StoryManager : KMonoBehaviour
 		}
 	}
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		StoryManager.storyTelemetry.Clear();
 		StoryManager.Instance = null;
 	}
 
-	public const int BEFORE_STORIES = -2;
+		public const int BEFORE_STORIES = -2;
 
-	private static List<StoryManager.StoryTelemetry> storyTelemetry = new List<StoryManager.StoryTelemetry>();
+		private static List<StoryManager.StoryTelemetry> storyTelemetry = new List<StoryManager.StoryTelemetry>();
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<int, StoryInstance> _stories = new Dictionary<int, StoryInstance>();
 
-	[Serialize]
+		[Serialize]
 	private int highestStoryCoordinateWhenGenerated = -2;
 
-	private const string STORY_TRAIT_KEY = "StoryTraits";
+		private const string STORY_TRAIT_KEY = "StoryTraits";
 
-	private const string STORY_CREATION_KEY = "StoryTraitsCreation";
+		private const string STORY_CREATION_KEY = "StoryTraitsCreation";
 
-	private const string STORY_COORDINATE_KEY = "SavedHighestStoryCoordinate";
+		private const string STORY_COORDINATE_KEY = "SavedHighestStoryCoordinate";
 
-	public struct ExtraButtonInfo
+		public struct ExtraButtonInfo
 	{
-		public string ButtonText;
+				public string ButtonText;
 
-		public string ButtonToolTip;
+				public string ButtonToolTip;
 
-		public System.Action OnButtonClick;
+				public System.Action OnButtonClick;
 	}
 
-	public struct PopupInfo
+		public struct PopupInfo
 	{
-		public string Title;
+				public string Title;
 
-		public string Description;
+				public string Description;
 
-		public string CloseButtonText;
+				public string CloseButtonText;
 
-		public string CloseButtonToolTip;
+				public string CloseButtonToolTip;
 
-		public StoryManager.ExtraButtonInfo[] extraButtons;
+				public StoryManager.ExtraButtonInfo[] extraButtons;
 
-		public string TextureName;
+				public string TextureName;
 
-		public GameObject[] Minions;
+				public GameObject[] Minions;
 
-		public bool DisplayImmediate;
+				public bool DisplayImmediate;
 
-		public EventInfoDataHelper.PopupType PopupType;
+				public EventInfoDataHelper.PopupType PopupType;
 	}
 
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	public class StoryTelemetry : ISaveLoadable
 	{
-		public void LogStateChange(StoryInstance.State state, float time)
+				public void LogStateChange(StoryInstance.State state, float time)
 		{
 			switch (state)
 			{
@@ -321,27 +321,27 @@ public class StoryManager : KMonoBehaviour
 			}
 		}
 
-		public string StoryId;
+				public string StoryId;
 
-		public string WorldId;
+				public string WorldId;
 
-		[Serialize]
+				[Serialize]
 		public float Retrofitted = -1f;
 
-		[Serialize]
+				[Serialize]
 		public float Discovered = -1f;
 
-		[Serialize]
+				[Serialize]
 		public float InProgress = -1f;
 
-		[Serialize]
+				[Serialize]
 		public float Completed = -1f;
 	}
 
-	public class StoryCreationTelemetry
+		public class StoryCreationTelemetry
 	{
-		public string StoryId;
+				public string StoryId;
 
-		public bool Enabled;
+				public bool Enabled;
 	}
 }

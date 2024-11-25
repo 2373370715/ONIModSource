@@ -6,26 +6,26 @@ using UnityEngine.UI;
 
 public class NotificationScreen : KScreen
 {
-			public static NotificationScreen Instance { get; private set; }
+				public static NotificationScreen Instance { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		NotificationScreen.Instance = null;
 	}
 
-	public void AddPendingNotification(Notification notification)
+		public void AddPendingNotification(Notification notification)
 	{
 		this.pendingNotifications.Add(notification);
 	}
 
-	public void RemovePendingNotification(Notification notification)
+		public void RemovePendingNotification(Notification notification)
 	{
 		this.dirty = true;
 		this.pendingNotifications.Remove(notification);
 		this.RemoveNotification(notification);
 	}
 
-	public void RemoveNotification(Notification notification)
+		public void RemoveNotification(Notification notification)
 	{
 		NotificationScreen.Entry entry = null;
 		this.entriesByMessage.TryGetValue(notification.titleText, out entry);
@@ -43,7 +43,7 @@ public class NotificationScreen : KScreen
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		NotificationScreen.Instance = this;
@@ -52,13 +52,13 @@ public class NotificationScreen : KScreen
 		this.InitNotificationSounds();
 	}
 
-	private void OnNewMessage(object data)
+		private void OnNewMessage(object data)
 	{
 		Message m = (Message)data;
 		this.notifier.Add(new MessageNotification(m), "");
 	}
 
-	private void ShowMessage(MessageNotification mn)
+		private void ShowMessage(MessageNotification mn)
 	{
 		mn.message.OnClick();
 		if (mn.message.ShowDialog())
@@ -84,13 +84,13 @@ public class NotificationScreen : KScreen
 		mn.Clear();
 	}
 
-	public void OnClickNextMessage()
+		public void OnClickNextMessage()
 	{
 		Notification notification2 = this.notifications.Find((Notification notification) => notification.Type == NotificationType.Messages);
 		this.ShowMessage((MessageNotification)notification2);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.initTime = KTime.Instance.UnscaledGameTime;
@@ -113,13 +113,13 @@ public class NotificationScreen : KScreen
 		}
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		this.dirty = true;
 	}
 
-	public void AddNotification(Notification notification)
+		public void AddNotification(Notification notification)
 	{
 		if (DebugHandler.NotificationsDisabled)
 		{
@@ -257,7 +257,7 @@ public class NotificationScreen : KScreen
 		this.SortNotifications();
 	}
 
-	private void SortNotifications()
+		private void SortNotifications()
 	{
 		this.notifications.Sort(delegate(Notification n1, Notification n2)
 		{
@@ -278,7 +278,7 @@ public class NotificationScreen : KScreen
 		}
 	}
 
-	private void PlayDingSound(Notification notification, int count)
+		private void PlayDingSound(Notification notification, int count)
 	{
 		string text;
 		if (!this.notificationSounds.TryGetValue(notification.Type, out text))
@@ -313,7 +313,7 @@ public class NotificationScreen : KScreen
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		int i = 0;
 		while (i < this.pendingNotifications.Count)
@@ -356,7 +356,7 @@ public class NotificationScreen : KScreen
 		}
 	}
 
-	private void OnClick(NotificationScreen.Entry entry)
+		private void OnClick(NotificationScreen.Entry entry)
 	{
 		Notification nextClickedNotification = entry.NextClickedNotification;
 		base.PlaySound3D(GlobalAssets.GetSound("HUD_Click_Open", false));
@@ -409,11 +409,11 @@ public class NotificationScreen : KScreen
 		}
 	}
 
-	private void PositionLocatorIcon()
+		private void PositionLocatorIcon()
 	{
 	}
 
-	private void InitNotificationSounds()
+		private void InitNotificationSounds()
 	{
 		this.notificationSounds[NotificationType.Good] = "Notification";
 		this.notificationSounds[NotificationType.BadMinor] = "Notification";
@@ -426,7 +426,7 @@ public class NotificationScreen : KScreen
 		this.notificationSounds[NotificationType.MessageImportant] = "Message_Important";
 	}
 
-	public Sprite GetNotificationIcon(NotificationType type)
+		public Sprite GetNotificationIcon(NotificationType type)
 	{
 		switch (type)
 		{
@@ -446,7 +446,7 @@ public class NotificationScreen : KScreen
 		return this.icon_normal;
 	}
 
-	public Color GetNotificationColour(NotificationType type)
+		public Color GetNotificationColour(NotificationType type)
 	{
 		switch (type)
 		{
@@ -466,7 +466,7 @@ public class NotificationScreen : KScreen
 		return GlobalAssets.Instance.colorSet.NotificationNormal;
 	}
 
-	public Color GetNotificationBGColour(NotificationType type)
+		public Color GetNotificationBGColour(NotificationType type)
 	{
 		switch (type)
 		{
@@ -486,121 +486,121 @@ public class NotificationScreen : KScreen
 		return GlobalAssets.Instance.colorSet.NotificationNormalBG;
 	}
 
-	public string GetNotificationSound(NotificationType type)
+		public string GetNotificationSound(NotificationType type)
 	{
 		return this.notificationSounds[type];
 	}
 
-	public float lifetime;
+		public float lifetime;
 
-	public bool dirty;
+		public bool dirty;
 
-	public GameObject LabelPrefab;
+		public GameObject LabelPrefab;
 
-	public GameObject LabelsFolder;
+		public GameObject LabelsFolder;
 
-	public GameObject MessagesPrefab;
+		public GameObject MessagesPrefab;
 
-	public GameObject MessagesFolder;
+		public GameObject MessagesFolder;
 
-	private MessageDialogFrame messageDialog;
+		private MessageDialogFrame messageDialog;
 
-	private float initTime;
+		private float initTime;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Notifier notifier;
 
-	[SerializeField]
+		[SerializeField]
 	private List<MessageDialog> dialogPrefabs = new List<MessageDialog>();
 
-	[SerializeField]
+		[SerializeField]
 	private Color badColorBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Color badColor = Color.red;
 
-	[SerializeField]
+		[SerializeField]
 	private Color normalColorBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Color normalColor = Color.white;
 
-	[SerializeField]
+		[SerializeField]
 	private Color warningColorBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Color warningColor;
 
-	[SerializeField]
+		[SerializeField]
 	private Color messageColorBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Color messageColor;
 
-	[SerializeField]
+		[SerializeField]
 	private Color messageImportantColorBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Color messageImportantColor;
 
-	[SerializeField]
+		[SerializeField]
 	private Color eventColorBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Color eventColor;
 
-	public Sprite icon_normal;
+		public Sprite icon_normal;
 
-	public Sprite icon_warning;
+		public Sprite icon_warning;
 
-	public Sprite icon_bad;
+		public Sprite icon_bad;
 
-	public Sprite icon_threatening;
+		public Sprite icon_threatening;
 
-	public Sprite icon_message;
+		public Sprite icon_message;
 
-	public Sprite icon_message_important;
+		public Sprite icon_message_important;
 
-	public Sprite icon_video;
+		public Sprite icon_video;
 
-	public Sprite icon_event;
+		public Sprite icon_event;
 
-	private List<Notification> pendingNotifications = new List<Notification>();
+		private List<Notification> pendingNotifications = new List<Notification>();
 
-	private List<Notification> notifications = new List<Notification>();
+		private List<Notification> notifications = new List<Notification>();
 
-	public TextStyleSetting TooltipTextStyle;
+		public TextStyleSetting TooltipTextStyle;
 
-	private Dictionary<NotificationType, string> notificationSounds = new Dictionary<NotificationType, string>();
+		private Dictionary<NotificationType, string> notificationSounds = new Dictionary<NotificationType, string>();
 
-	private Dictionary<string, float> timeOfLastNotification = new Dictionary<string, float>();
+		private Dictionary<string, float> timeOfLastNotification = new Dictionary<string, float>();
 
-	private float soundDecayTime = 10f;
+		private float soundDecayTime = 10f;
 
-	private List<NotificationScreen.Entry> entries = new List<NotificationScreen.Entry>();
+		private List<NotificationScreen.Entry> entries = new List<NotificationScreen.Entry>();
 
-	private Dictionary<string, NotificationScreen.Entry> entriesByMessage = new Dictionary<string, NotificationScreen.Entry>();
+		private Dictionary<string, NotificationScreen.Entry> entriesByMessage = new Dictionary<string, NotificationScreen.Entry>();
 
-	private class Entry
+		private class Entry
 	{
-		public Entry(GameObject label)
+				public Entry(GameObject label)
 		{
 			this.label = label;
 		}
 
-		public void Add(Notification notification)
+				public void Add(Notification notification)
 		{
 			this.notifications.Add(notification);
 			this.UpdateMessage(notification, true);
 		}
 
-		public void Remove(Notification notification)
+				public void Remove(Notification notification)
 		{
 			this.notifications.Remove(notification);
 			this.UpdateMessage(notification, false);
 		}
 
-		public void UpdateMessage(Notification notification, bool playSound = true)
+				public void UpdateMessage(Notification notification, bool playSound = true)
 		{
 			if (Game.IsQuitting())
 			{
@@ -621,7 +621,7 @@ public class NotificationScreen : KScreen
 			}
 		}
 
-				public Notification NextClickedNotification
+						public Notification NextClickedNotification
 		{
 			get
 			{
@@ -632,12 +632,12 @@ public class NotificationScreen : KScreen
 			}
 		}
 
-		public string message;
+				public string message;
 
-		public int clickIdx;
+				public int clickIdx;
 
-		public GameObject label;
+				public GameObject label;
 
-		public List<Notification> notifications = new List<Notification>();
+				public List<Notification> notifications = new List<Notification>();
 	}
 }

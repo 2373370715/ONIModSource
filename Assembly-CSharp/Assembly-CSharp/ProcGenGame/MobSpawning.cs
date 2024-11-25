@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace ProcGenGame
 {
-	public static class MobSpawning
+		public static class MobSpawning
 	{
-		public static Dictionary<int, string> PlaceFeatureAmbientMobs(WorldGenSettings settings, TerrainCell tc, SeededRandom rnd, Sim.Cell[] cells, float[] bgTemp, Sim.DiseaseCell[] dc, HashSet<int> avoidCells, bool isDebug)
+				public static Dictionary<int, string> PlaceFeatureAmbientMobs(WorldGenSettings settings, TerrainCell tc, SeededRandom rnd, Sim.Cell[] cells, float[] bgTemp, Sim.DiseaseCell[] dc, HashSet<int> avoidCells, bool isDebug)
 		{
 			Dictionary<int, string> result = new Dictionary<int, string>();
 			Cell node = tc.node;
@@ -79,7 +79,7 @@ namespace ProcGenGame
 			return result;
 		}
 
-		public static Dictionary<int, string> PlaceBiomeAmbientMobs(WorldGenSettings settings, TerrainCell tc, SeededRandom rnd, Sim.Cell[] cells, float[] bgTemp, Sim.DiseaseCell[] dc, HashSet<int> avoidCells, bool isDebug)
+				public static Dictionary<int, string> PlaceBiomeAmbientMobs(WorldGenSettings settings, TerrainCell tc, SeededRandom rnd, Sim.Cell[] cells, float[] bgTemp, Sim.DiseaseCell[] dc, HashSet<int> avoidCells, bool isDebug)
 		{
 			Dictionary<int, string> result = new Dictionary<int, string>();
 			Cell node = tc.node;
@@ -161,14 +161,14 @@ namespace ProcGenGame
 			return result;
 		}
 
-		private static List<int> GetMobPossibleSpawnPoints(Mob mob, List<int> possibleSpawnPoints, Sim.Cell[] cells, HashSet<int> alreadyOccupiedCells, SeededRandom rnd)
+				private static List<int> GetMobPossibleSpawnPoints(Mob mob, List<int> possibleSpawnPoints, Sim.Cell[] cells, HashSet<int> alreadyOccupiedCells, SeededRandom rnd)
 		{
 			List<int> list = possibleSpawnPoints.FindAll((int cell) => MobSpawning.IsSuitableMobSpawnPoint(cell, mob, cells, ref alreadyOccupiedCells));
 			list.ShuffleSeeded(rnd.RandomSource());
 			return list;
 		}
 
-		public static void SpawnCountMobs(Mob mobData, Tag mobPrefab, int count, List<int> mobPossibleSpawnPoints, TerrainCell tc, ref Dictionary<int, string> spawnedMobs, ref HashSet<int> alreadyOccupiedCells)
+				public static void SpawnCountMobs(Mob mobData, Tag mobPrefab, int count, List<int> mobPossibleSpawnPoints, TerrainCell tc, ref Dictionary<int, string> spawnedMobs, ref HashSet<int> alreadyOccupiedCells)
 		{
 			int num = 0;
 			while (num < count && num < mobPossibleSpawnPoints.Count)
@@ -188,12 +188,12 @@ namespace ProcGenGame
 			}
 		}
 
-		public static int MobWidthOffset(int occupiedCell, int widthIterator)
+				public static int MobWidthOffset(int occupiedCell, int widthIterator)
 		{
 			return Grid.OffsetCell(occupiedCell, (widthIterator % 2 == 0) ? (-(widthIterator / 2)) : (widthIterator / 2 + widthIterator % 2), 0);
 		}
 
-		private static bool IsSuitableMobSpawnPoint(int cell, Mob mob, Sim.Cell[] cells, ref HashSet<int> alreadyOccupiedCells)
+				private static bool IsSuitableMobSpawnPoint(int cell, Mob mob, Sim.Cell[] cells, ref HashSet<int> alreadyOccupiedCells)
 		{
 			for (int i = 0; i < mob.width; i++)
 			{
@@ -361,12 +361,12 @@ namespace ProcGenGame
 			return MobSpawning.isNaturalCavity(cell) && !element.IsSolid;
 		}
 
-		public static bool isNaturalCavity(int cell)
+				public static bool isNaturalCavity(int cell)
 		{
 			return MobSpawning.NaturalCavities != null && MobSpawning.allNaturalCavityCells.Contains(cell);
 		}
 
-		public static void DetectNaturalCavities(List<TerrainCell> terrainCells, WorldGen.OfflineCallbackFunction updateProgressFn, Sim.Cell[] cells)
+				public static void DetectNaturalCavities(List<TerrainCell> terrainCells, WorldGen.OfflineCallbackFunction updateProgressFn, Sim.Cell[] cells)
 		{
 			updateProgressFn(UI.WORLDGEN.ANALYZINGWORLD.key, 0f, WorldGenProgressStages.Stages.DetectNaturalCavities);
 			MobSpawning.NaturalCavities.Clear();
@@ -408,8 +408,8 @@ namespace ProcGenGame
 			updateProgressFn(UI.WORLDGEN.ANALYZINGWORLDCOMPLETE.key, 1f, WorldGenProgressStages.Stages.DetectNaturalCavities);
 		}
 
-		public static Dictionary<TerrainCell, List<HashSet<int>>> NaturalCavities = new Dictionary<TerrainCell, List<HashSet<int>>>();
+				public static Dictionary<TerrainCell, List<HashSet<int>>> NaturalCavities = new Dictionary<TerrainCell, List<HashSet<int>>>();
 
-		public static HashSet<int> allNaturalCavityCells = new HashSet<int>();
+				public static HashSet<int> allNaturalCavityCells = new HashSet<int>();
 	}
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FarmStationConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "FarmStation";
 		int width = 2;
@@ -27,13 +27,13 @@ public class FarmStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.FarmStationType, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		Storage storage = go.AddOrGet<Storage>();
@@ -70,16 +70,17 @@ public class FarmStationConfig : IBuildingConfig
 			component.AttributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.MOST_DAY_EXPERIENCE;
 			component.SkillExperienceSkillGroup = Db.Get().SkillGroups.Farming.Id;
 			component.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
+			component.SetWorkTime(15f);
 		};
 	}
 
-	public const string ID = "FarmStation";
+		public const string ID = "FarmStation";
 
-	public static Tag MATERIAL_FOR_TINKER = GameTags.Fertilizer;
+		public static Tag MATERIAL_FOR_TINKER = GameTags.Fertilizer;
 
-	public static Tag TINKER_TOOLS = FarmStationToolsConfig.tag;
+		public static Tag TINKER_TOOLS = FarmStationToolsConfig.tag;
 
-	public const float MASS_PER_TINKER = 5f;
+		public const float MASS_PER_TINKER = 5f;
 
-	public const float OUTPUT_TEMPERATURE = 308.15f;
+		public const float OUTPUT_TEMPERATURE = 308.15f;
 }

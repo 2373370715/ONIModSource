@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FleeChore : Chore<FleeChore.StatesInstance>
 {
-	public FleeChore(IStateMachineTarget target, GameObject enemy) : base(Db.Get().ChoreTypes.Flee, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+		public FleeChore(IStateMachineTarget target, GameObject enemy) : base(Db.Get().ChoreTypes.Flee, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.compulsory, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new FleeChore.StatesInstance(this);
 		base.smi.sm.self.Set(this.gameObject, base.smi, false);
@@ -12,24 +12,24 @@ public class FleeChore : Chore<FleeChore.StatesInstance>
 		base.smi.sm.fleeFromTarget.Set(enemy, base.smi, false);
 	}
 
-	private bool isInFavoredDirection(int cell, int fleeFromCell)
+		private bool isInFavoredDirection(int cell, int fleeFromCell)
 	{
 		bool flag = Grid.CellToPos(fleeFromCell).x < this.gameObject.transform.GetPosition().x;
 		bool flag2 = Grid.CellToPos(fleeFromCell).x < Grid.CellToPos(cell).x;
 		return flag == flag2;
 	}
 
-	private bool CanFleeTo(int cell)
+		private bool CanFleeTo(int cell)
 	{
 		return this.nav.CanReach(cell) || this.nav.CanReach(Grid.OffsetCell(cell, -1, -1)) || this.nav.CanReach(Grid.OffsetCell(cell, 1, -1)) || this.nav.CanReach(Grid.OffsetCell(cell, -1, 1)) || this.nav.CanReach(Grid.OffsetCell(cell, 1, 1));
 	}
 
-	public GameObject CreateLocator(Vector3 pos)
+		public GameObject CreateLocator(Vector3 pos)
 	{
 		return ChoreHelpers.CreateLocator("GoToLocator", pos);
 	}
 
-	protected override void OnStateMachineStop(string reason, StateMachine.Status status)
+		protected override void OnStateMachineStop(string reason, StateMachine.Status status)
 	{
 		if (base.smi.sm.fleeToTarget.Get(base.smi) != null)
 		{
@@ -38,18 +38,18 @@ public class FleeChore : Chore<FleeChore.StatesInstance>
 		base.OnStateMachineStop(reason, status);
 	}
 
-	private Navigator nav;
+		private Navigator nav;
 
-	public class StatesInstance : GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.GameInstance
 	{
-		public StatesInstance(FleeChore master) : base(master)
+				public StatesInstance(FleeChore master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore>
+		public class States : GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.planFleeRoute;
 			this.root.ToggleStatusItem(Db.Get().DuplicantStatusItems.Fleeing, null);
@@ -99,18 +99,18 @@ public class FleeChore : Chore<FleeChore.StatesInstance>
 			});
 		}
 
-		public StateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.TargetParameter fleeFromTarget;
+				public StateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.TargetParameter fleeFromTarget;
 
-		public StateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.TargetParameter fleeToTarget;
+				public StateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.TargetParameter fleeToTarget;
 
-		public StateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.TargetParameter self;
+				public StateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.TargetParameter self;
 
-		public GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.State planFleeRoute;
+				public GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.State planFleeRoute;
 
-		public GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.ApproachSubState<IApproachable> flee;
+				public GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.ApproachSubState<IApproachable> flee;
 
-		public GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.State cower;
+				public GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.State cower;
 
-		public GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.State end;
+				public GameStateMachine<FleeChore.States, FleeChore.StatesInstance, FleeChore, object>.State end;
 	}
 }

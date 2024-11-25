@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Breakable")]
 public class Breakable : Workable
 {
-		public bool IsInvincible
+			public bool IsInvincible
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class Breakable : Workable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.showProgressBar = false;
@@ -25,24 +25,24 @@ public class Breakable : Workable
 		base.SetWorkTime(float.PositiveInfinity);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.Breakables.Add(this);
 	}
 
-	public bool isBroken()
+		public bool isBroken()
 	{
 		return this.hp == null || this.hp.HitPoints <= 0;
 	}
 
-	public Notification CreateDamageNotification()
+		public Notification CreateDamageNotification()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		return new Notification(BUILDING.STATUSITEMS.ANGERDAMAGE.NOTIFICATION, NotificationType.BadMinor, (List<Notification> notificationList, object data) => BUILDING.STATUSITEMS.ANGERDAMAGE.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), component.GetProperName(), false, 0f, null, null, null, true, false, false);
 	}
 
-	private static string ToolTipResolver(List<Notification> notificationList, object data)
+		private static string ToolTipResolver(List<Notification> notificationList, object data)
 	{
 		string text = "";
 		for (int i = 0; i < notificationList.Count; i++)
@@ -57,7 +57,7 @@ public class Breakable : Workable
 		return string.Format(BUILDING.STATUSITEMS.ANGERDAMAGE.NOTIFICATION_TOOLTIP, text);
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		this.secondsPerTenPercentDamage = 2f;
@@ -68,7 +68,7 @@ public class Breakable : Workable
 		this.elapsedDamageTime = 0f;
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		if (this.elapsedDamageTime >= this.secondsPerTenPercentDamage)
 		{
@@ -84,7 +84,7 @@ public class Breakable : Workable
 		return this.hp.HitPoints <= 0;
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.AngerDamage, false);
@@ -95,27 +95,27 @@ public class Breakable : Workable
 		}
 	}
 
-	public override bool InstantlyFinish(Worker worker)
+		public override bool InstantlyFinish(WorkerBase worker)
 	{
 		return false;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.Breakables.Remove(this);
 	}
 
-	private const float TIME_TO_BREAK_AT_FULL_HEALTH = 20f;
+		private const float TIME_TO_BREAK_AT_FULL_HEALTH = 20f;
 
-	private Notification notification;
+		private Notification notification;
 
-	private float secondsPerTenPercentDamage = float.PositiveInfinity;
+		private float secondsPerTenPercentDamage = float.PositiveInfinity;
 
-	private float elapsedDamageTime;
+		private float elapsedDamageTime;
 
-	private int tenPercentDamage = int.MaxValue;
+		private int tenPercentDamage = int.MaxValue;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private BuildingHP hp;
 }

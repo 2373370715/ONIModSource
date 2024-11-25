@@ -2,9 +2,9 @@
 
 namespace Rendering.World
 {
-	public struct TileCells
+		public struct TileCells
 	{
-		public TileCells(int tile_x, int tile_y)
+				public TileCells(int tile_x, int tile_y)
 		{
 			int val = Grid.WidthInCells - 1;
 			int val2 = Grid.HeightInCells - 1;
@@ -14,12 +14,12 @@ namespace Rendering.World
 			this.Cell3 = Grid.XYToCell(Math.Min(tile_x, val), Math.Min(tile_y, val2));
 		}
 
-		public int Cell0;
+				public int Cell0;
 
-		public int Cell1;
+				public int Cell1;
 
-		public int Cell2;
+				public int Cell2;
 
-		public int Cell3;
+				public int Cell3;
 	}
 }

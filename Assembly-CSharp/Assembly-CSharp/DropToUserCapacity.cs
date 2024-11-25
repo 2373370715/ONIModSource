@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/DropToUserCapacity")]
 public class DropToUserCapacity : Workable
 {
-	protected DropToUserCapacity()
+		protected DropToUserCapacity()
 	{
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTable);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workerStatusItem = Db.Get().DuplicantStatusItems.Emptying;
@@ -20,13 +20,13 @@ public class DropToUserCapacity : Workable
 		base.SetWorkTime(0.1f);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.UpdateChore();
 	}
 
-	private Storage[] GetStorages()
+		private Storage[] GetStorages()
 	{
 		if (this.storages == null)
 		{
@@ -35,12 +35,12 @@ public class DropToUserCapacity : Workable
 		return this.storages;
 	}
 
-	private void OnStorageChanged(object data)
+		private void OnStorageChanged(object data)
 	{
 		this.UpdateChore();
 	}
 
-	public void UpdateChore()
+		public void UpdateChore()
 	{
 		IUserControlledCapacity component = base.GetComponent<IUserControlledCapacity>();
 		if (component != null && component.AmountStored > component.UserMaxCapacity)
@@ -60,7 +60,7 @@ public class DropToUserCapacity : Workable
 		}
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		Storage component = base.GetComponent<Storage>();
 		IUserControlledCapacity component2 = base.GetComponent<IUserControlledCapacity>();
@@ -80,18 +80,18 @@ public class DropToUserCapacity : Workable
 		this.chore = null;
 	}
 
-	private Chore chore;
+		private Chore chore;
 
-	private bool showCmd;
+		private bool showCmd;
 
-	private Storage[] storages;
+		private Storage[] storages;
 
-	private static readonly EventSystem.IntraObjectHandler<DropToUserCapacity> OnStorageCapacityChangedHandler = new EventSystem.IntraObjectHandler<DropToUserCapacity>(delegate(DropToUserCapacity component, object data)
+		private static readonly EventSystem.IntraObjectHandler<DropToUserCapacity> OnStorageCapacityChangedHandler = new EventSystem.IntraObjectHandler<DropToUserCapacity>(delegate(DropToUserCapacity component, object data)
 	{
 		component.OnStorageChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<DropToUserCapacity> OnStorageChangedHandler = new EventSystem.IntraObjectHandler<DropToUserCapacity>(delegate(DropToUserCapacity component, object data)
+		private static readonly EventSystem.IntraObjectHandler<DropToUserCapacity> OnStorageChangedHandler = new EventSystem.IntraObjectHandler<DropToUserCapacity>(delegate(DropToUserCapacity component, object data)
 	{
 		component.OnStorageChanged(data);
 	});

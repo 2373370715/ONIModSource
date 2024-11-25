@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/TemperatureCookable")]
 public class TemperatureCookable : KMonoBehaviour, ISim1000ms
 {
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		if (this.element.Temperature > this.cookTemperature && this.cookedID != null)
 		{
@@ -12,7 +12,7 @@ public class TemperatureCookable : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	private void Cook()
+		private void Cook()
 	{
 		Vector3 position = base.transform.GetPosition();
 		position.z = Grid.GetLayerZ(Grid.SceneLayer.Ore);
@@ -29,10 +29,10 @@ public class TemperatureCookable : KMonoBehaviour, ISim1000ms
 		base.gameObject.DeleteObject();
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private PrimaryElement element;
 
-	public float cookTemperature = 273150f;
+		public float cookTemperature = 273150f;
 
-	public string cookedID;
+		public string cookedID;
 }

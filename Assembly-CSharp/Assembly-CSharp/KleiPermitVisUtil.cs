@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class KleiPermitVisUtil
 {
-	public static void ConfigureToRenderBuilding(KBatchedAnimController buildingKAnim, BuildingFacadeResource buildingPermit)
+		public static void ConfigureToRenderBuilding(KBatchedAnimController buildingKAnim, BuildingFacadeResource buildingPermit)
 	{
 		KAnimFile anim = Assets.GetAnim(buildingPermit.AnimFile);
 		buildingKAnim.Stop();
@@ -16,7 +16,7 @@ public static class KleiPermitVisUtil
 		buildingKAnim.rectTransform().sizeDelta = 176f * Vector2.one;
 	}
 
-	public static void ConfigureToRenderBuilding(KBatchedAnimController buildingKAnim, BuildingDef buildingDef)
+		public static void ConfigureToRenderBuilding(KBatchedAnimController buildingKAnim, BuildingDef buildingDef)
 	{
 		buildingKAnim.Stop();
 		buildingKAnim.SwapAnims(buildingDef.AnimFiles);
@@ -24,7 +24,7 @@ public static class KleiPermitVisUtil
 		buildingKAnim.rectTransform().sizeDelta = 176f * Vector2.one;
 	}
 
-	public static void ConfigureToRenderBuilding(KBatchedAnimController buildingKAnim, ArtableStage artablePermit)
+		public static void ConfigureToRenderBuilding(KBatchedAnimController buildingKAnim, ArtableStage artablePermit)
 	{
 		buildingKAnim.Stop();
 		buildingKAnim.SwapAnims(new KAnimFile[]
@@ -35,7 +35,7 @@ public static class KleiPermitVisUtil
 		buildingKAnim.rectTransform().sizeDelta = 176f * Vector2.one;
 	}
 
-	public static void ConfigureToRenderBuilding(KBatchedAnimController buildingKAnim, DbStickerBomb artablePermit)
+		public static void ConfigureToRenderBuilding(KBatchedAnimController buildingKAnim, DbStickerBomb artablePermit)
 	{
 		buildingKAnim.Stop();
 		buildingKAnim.SwapAnims(new KAnimFile[]
@@ -55,18 +55,18 @@ public static class KleiPermitVisUtil
 		buildingKAnim.rectTransform().sizeDelta = 176f * Vector2.one;
 	}
 
-	public static void ConfigureBuildingPosition(RectTransform transform, PrefabDefinedUIPosition anchorPosition, BuildingDef buildingDef, Alignment alignment)
+		public static void ConfigureBuildingPosition(RectTransform transform, PrefabDefinedUIPosition anchorPosition, BuildingDef buildingDef, Alignment alignment)
 	{
 		anchorPosition.SetOn(transform);
 		transform.anchoredPosition += new Vector2(176f * (float)buildingDef.WidthInCells * -(alignment.x - 0.5f), 176f * (float)buildingDef.HeightInCells * -alignment.y);
 	}
 
-	public static void ConfigureBuildingPosition(RectTransform transform, Vector2 anchorPosition, BuildingDef buildingDef, Alignment alignment)
+		public static void ConfigureBuildingPosition(RectTransform transform, Vector2 anchorPosition, BuildingDef buildingDef, Alignment alignment)
 	{
 		transform.anchoredPosition = anchorPosition + new Vector2(176f * (float)buildingDef.WidthInCells * -(alignment.x - 0.5f), 176f * (float)buildingDef.HeightInCells * -alignment.y);
 	}
 
-	public static void ClearAnimation()
+		public static void ClearAnimation()
 	{
 		if (!KleiPermitVisUtil.buildingAnimateIn.IsNullOrDestroyed())
 		{
@@ -74,18 +74,18 @@ public static class KleiPermitVisUtil
 		}
 	}
 
-	public static void AnimateIn(KBatchedAnimController buildingKAnim, Updater extraUpdater = default(Updater))
+		public static void AnimateIn(KBatchedAnimController buildingKAnim, Updater extraUpdater = default(Updater))
 	{
 		KleiPermitVisUtil.ClearAnimation();
 		KleiPermitVisUtil.buildingAnimateIn = KleiPermitBuildingAnimateIn.MakeFor(buildingKAnim, extraUpdater);
 	}
 
-	public static HashedString GetFirstAnimHash(KAnimFile animFile)
+		public static HashedString GetFirstAnimHash(KAnimFile animFile)
 	{
 		return animFile.GetData().GetAnim(0).hash;
 	}
 
-	public static HashedString GetDefaultStickerAnimHash(KAnimFile stickerAnimFile)
+		public static HashedString GetDefaultStickerAnimHash(KAnimFile stickerAnimFile)
 	{
 		KAnimFileData data = stickerAnimFile.GetData();
 		for (int i = 0; i < data.animCount; i++)
@@ -99,7 +99,7 @@ public static class KleiPermitVisUtil
 		return null;
 	}
 
-	public static BuildLocationRule? GetBuildLocationRule(PermitResource permit)
+		public static BuildLocationRule? GetBuildLocationRule(PermitResource permit)
 	{
 		BuildingDef buildingDef = KleiPermitVisUtil.GetBuildingDef(permit);
 		if (buildingDef == null)
@@ -109,7 +109,7 @@ public static class KleiPermitVisUtil
 		return new BuildLocationRule?(buildingDef.BuildLocationRule);
 	}
 
-	public static BuildingDef GetBuildingDef(PermitResource permit)
+		public static BuildingDef GetBuildingDef(PermitResource permit)
 	{
 		BuildingFacadeResource buildingFacadeResource = permit as BuildingFacadeResource;
 		if (buildingFacadeResource != null)
@@ -142,7 +142,7 @@ public static class KleiPermitVisUtil
 		}
 	}
 
-	public const float TILE_SIZE_UI = 176f;
+		public const float TILE_SIZE_UI = 176f;
 
-	public static KleiPermitBuildingAnimateIn buildingAnimateIn;
+		public static KleiPermitBuildingAnimateIn buildingAnimateIn;
 }

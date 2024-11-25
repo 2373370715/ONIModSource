@@ -4,7 +4,7 @@ using TUNING;
 
 public class FossilMine : ComplexFabricator
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.fabricatorSM.idleAnimationName = "idle";
@@ -16,7 +16,7 @@ public class FossilMine : ComplexFabricator
 		this.choreType = Db.Get().ChoreTypes.Art;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.workable.requiredSkillPerk = Db.Get().SkillPerks.CanArtGreat.Id;
@@ -31,7 +31,7 @@ public class FossilMine : ComplexFabricator
 		this.workable.SkillExperienceMultiplier = SKILLS.MOST_DAY_EXPERIENCE;
 	}
 
-	public void SetActiveState(bool active)
+		public void SetActiveState(bool active)
 	{
 		if (active)
 		{
@@ -58,6 +58,6 @@ public class FossilMine : ComplexFabricator
 		base.enabled = false;
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	protected new FossilMineSM fabricatorSM;
 }

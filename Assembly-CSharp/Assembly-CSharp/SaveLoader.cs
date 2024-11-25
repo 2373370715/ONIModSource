@@ -17,18 +17,18 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SaveLoader")]
 public class SaveLoader : KMonoBehaviour
 {
-			public bool loadedFromSave { get; private set; }
+				public bool loadedFromSave { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SaveLoader.Instance = null;
 	}
 
-			public static SaveLoader Instance { get; private set; }
+				public static SaveLoader Instance { get; private set; }
 
-			public Action<Cluster> OnWorldGenComplete { get; set; }
+				public Action<Cluster> OnWorldGenComplete { get; set; }
 
-		public Cluster Cluster
+			public Cluster Cluster
 	{
 		get
 		{
@@ -36,7 +36,7 @@ public class SaveLoader : KMonoBehaviour
 		}
 	}
 
-		public ClusterLayout ClusterLayout
+			public ClusterLayout ClusterLayout
 	{
 		get
 		{
@@ -48,19 +48,19 @@ public class SaveLoader : KMonoBehaviour
 		}
 	}
 
-			public SaveGame.GameInfo GameInfo { get; private set; }
+				public SaveGame.GameInfo GameInfo { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		SaveLoader.Instance = this;
 		this.saveManager = base.GetComponent<SaveManager>();
 	}
 
-	private void MoveCorruptFile(string filename)
+		private void MoveCorruptFile(string filename)
 	{
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		string activeSaveFilePath = SaveLoader.GetActiveSaveFilePath();
 		if (WorldGen.CanLoad(activeSaveFilePath))
@@ -110,7 +110,7 @@ public class SaveLoader : KMonoBehaviour
 		}
 	}
 
-	private static void CompressContents(BinaryWriter fileWriter, byte[] uncompressed, int length)
+		private static void CompressContents(BinaryWriter fileWriter, byte[] uncompressed, int length)
 	{
 		using (ZlibStream zlibStream = new ZlibStream(fileWriter.BaseStream, CompressionMode.Compress, Ionic.Zlib.CompressionLevel.BestSpeed))
 		{
@@ -119,26 +119,26 @@ public class SaveLoader : KMonoBehaviour
 		}
 	}
 
-	private byte[] FloatToBytes(float[] floats)
+		private byte[] FloatToBytes(float[] floats)
 	{
 		byte[] array = new byte[floats.Length * 4];
 		Buffer.BlockCopy(floats, 0, array, 0, array.Length);
 		return array;
 	}
 
-	private static byte[] DecompressContents(byte[] compressed)
+		private static byte[] DecompressContents(byte[] compressed)
 	{
 		return ZlibStream.UncompressBuffer(compressed);
 	}
 
-	private float[] BytesToFloat(byte[] bytes)
+		private float[] BytesToFloat(byte[] bytes)
 	{
 		float[] array = new float[bytes.Length / 4];
 		Buffer.BlockCopy(bytes, 0, array, 0, bytes.Length);
 		return array;
 	}
 
-	private SaveFileRoot PrepSaveFile()
+		private SaveFileRoot PrepSaveFile()
 	{
 		SaveFileRoot saveFileRoot = new SaveFileRoot();
 		saveFileRoot.WidthInCells = Grid.WidthInCells;
@@ -166,7 +166,7 @@ public class SaveLoader : KMonoBehaviour
 		return saveFileRoot;
 	}
 
-	private void Save(BinaryWriter writer)
+		private void Save(BinaryWriter writer)
 	{
 		writer.WriteKleiString("world");
 		Serializer.Serialize(this.PrepSaveFile(), writer);
@@ -176,7 +176,7 @@ public class SaveLoader : KMonoBehaviour
 		Game.Instance.Save(writer);
 	}
 
-	private bool Load(IReader reader)
+		private bool Load(IReader reader)
 	{
 		global::Debug.Assert(reader.ReadKleiString() == "world");
 		Deserializer deserializer = new Deserializer(reader);
@@ -300,7 +300,7 @@ public class SaveLoader : KMonoBehaviour
 		return true;
 	}
 
-	private void LogActiveMods()
+		private void LogActiveMods()
 	{
 		string text = string.Format("Active Mods ({0}):", Global.Instance.modManager.mods.Count((Mod x) => x.IsEnabledForActiveDlc()));
 		foreach (Mod mod in Global.Instance.modManager.mods)
@@ -313,12 +313,12 @@ public class SaveLoader : KMonoBehaviour
 		global::Debug.Log(text);
 	}
 
-	public static string GetSavePrefix()
+		public static string GetSavePrefix()
 	{
 		return System.IO.Path.Combine(global::Util.RootFolder(), string.Format("{0}{1}", "save_files", System.IO.Path.DirectorySeparatorChar));
 	}
 
-	public static string GetCloudSavePrefix()
+		public static string GetCloudSavePrefix()
 	{
 		string text = System.IO.Path.Combine(global::Util.RootFolder(), string.Format("{0}{1}", "cloud_save_files", System.IO.Path.DirectorySeparatorChar));
 		string userID = SaveLoader.GetUserID();
@@ -334,7 +334,7 @@ public class SaveLoader : KMonoBehaviour
 		return text;
 	}
 
-	public static string GetSavePrefixAndCreateFolder()
+		public static string GetSavePrefixAndCreateFolder()
 	{
 		string savePrefix = SaveLoader.GetSavePrefix();
 		if (!System.IO.Directory.Exists(savePrefix))
@@ -344,7 +344,7 @@ public class SaveLoader : KMonoBehaviour
 		return savePrefix;
 	}
 
-	public static string GetUserID()
+		public static string GetUserID()
 	{
 		DistributionPlatform.User localUser = DistributionPlatform.Inst.LocalUser;
 		if (localUser == null)
@@ -354,7 +354,7 @@ public class SaveLoader : KMonoBehaviour
 		return localUser.Id.ToString();
 	}
 
-	public static string GetNextUsableSavePath(string filename)
+		public static string GetNextUsableSavePath(string filename)
 	{
 		int num = 0;
 		string arg = System.IO.Path.ChangeExtension(filename, null);
@@ -366,7 +366,7 @@ public class SaveLoader : KMonoBehaviour
 		return filename;
 	}
 
-	public static string GetOriginalSaveFileName(string filename)
+		public static string GetOriginalSaveFileName(string filename)
 	{
 		if (!filename.Contains("/") && !filename.Contains("\\"))
 		{
@@ -376,25 +376,25 @@ public class SaveLoader : KMonoBehaviour
 		return System.IO.Path.GetFileName(filename);
 	}
 
-	public static bool IsSaveAuto(string filename)
+		public static bool IsSaveAuto(string filename)
 	{
 		filename = filename.Replace('\\', '/');
 		return filename.Contains("/auto_save/");
 	}
 
-	public static bool IsSaveLocal(string filename)
+		public static bool IsSaveLocal(string filename)
 	{
 		filename = filename.Replace('\\', '/');
 		return filename.Contains("/save_files/");
 	}
 
-	public static bool IsSaveCloud(string filename)
+		public static bool IsSaveCloud(string filename)
 	{
 		filename = filename.Replace('\\', '/');
 		return filename.Contains("/cloud_save_files/");
 	}
 
-	public static string GetAutoSavePrefix()
+		public static string GetAutoSavePrefix()
 	{
 		string text = System.IO.Path.Combine(SaveLoader.GetSavePrefixAndCreateFolder(), string.Format("{0}{1}", "auto_save", System.IO.Path.DirectorySeparatorChar));
 		if (!System.IO.Directory.Exists(text))
@@ -404,17 +404,17 @@ public class SaveLoader : KMonoBehaviour
 		return text;
 	}
 
-	public static void SetActiveSaveFilePath(string path)
+		public static void SetActiveSaveFilePath(string path)
 	{
 		KPlayerPrefs.SetString("SaveFilenameKey/", path);
 	}
 
-	public static string GetActiveSaveFilePath()
+		public static string GetActiveSaveFilePath()
 	{
 		return KPlayerPrefs.GetString("SaveFilenameKey/");
 	}
 
-	public static string GetActiveAutoSavePath()
+		public static string GetActiveAutoSavePath()
 	{
 		string activeSaveFilePath = SaveLoader.GetActiveSaveFilePath();
 		if (activeSaveFilePath == null)
@@ -424,12 +424,12 @@ public class SaveLoader : KMonoBehaviour
 		return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(activeSaveFilePath), "auto_save");
 	}
 
-	public static string GetAutosaveFilePath()
+		public static string GetAutosaveFilePath()
 	{
 		return SaveLoader.GetAutoSavePrefix() + "AutoSave Cycle 1.sav";
 	}
 
-	public static string GetActiveSaveColonyFolder()
+		public static string GetActiveSaveColonyFolder()
 	{
 		string text = SaveLoader.GetActiveSaveFolder();
 		if (text == null)
@@ -439,7 +439,7 @@ public class SaveLoader : KMonoBehaviour
 		return text;
 	}
 
-	public static string GetActiveSaveFolder()
+		public static string GetActiveSaveFolder()
 	{
 		string activeSaveFilePath = SaveLoader.GetActiveSaveFilePath();
 		if (!string.IsNullOrEmpty(activeSaveFilePath))
@@ -449,7 +449,7 @@ public class SaveLoader : KMonoBehaviour
 		return null;
 	}
 
-	public static List<SaveLoader.SaveFileEntry> GetSaveFiles(string save_dir, bool sort, SearchOption search = SearchOption.AllDirectories)
+		public static List<SaveLoader.SaveFileEntry> GetSaveFiles(string save_dir, bool sort, SearchOption search = SearchOption.AllDirectories)
 	{
 		List<SaveLoader.SaveFileEntry> list = new List<SaveLoader.SaveFileEntry>();
 		if (string.IsNullOrEmpty(save_dir))
@@ -505,7 +505,7 @@ public class SaveLoader : KMonoBehaviour
 		return list;
 	}
 
-	public static List<SaveLoader.SaveFileEntry> GetAllFiles(bool sort, SaveLoader.SaveType type = SaveLoader.SaveType.both)
+		public static List<SaveLoader.SaveFileEntry> GetAllFiles(bool sort, SaveLoader.SaveType type = SaveLoader.SaveType.both)
 	{
 		switch (type)
 		{
@@ -529,17 +529,17 @@ public class SaveLoader : KMonoBehaviour
 		}
 	}
 
-	public static List<SaveLoader.SaveFileEntry> GetAllColonyFiles(bool sort, SearchOption search = SearchOption.TopDirectoryOnly)
+		public static List<SaveLoader.SaveFileEntry> GetAllColonyFiles(bool sort, SearchOption search = SearchOption.TopDirectoryOnly)
 	{
 		return SaveLoader.GetSaveFiles(SaveLoader.GetActiveSaveColonyFolder(), sort, search);
 	}
 
-	public static bool GetCloudSavesDefault()
+		public static bool GetCloudSavesDefault()
 	{
 		return !(SaveLoader.GetCloudSavesDefaultPref() == "Disabled");
 	}
 
-	public static string GetCloudSavesDefaultPref()
+		public static string GetCloudSavesDefaultPref()
 	{
 		string text = KPlayerPrefs.GetString("SavesDefaultToCloud", "Enabled");
 		if (text != "Enabled" && text != "Disabled")
@@ -549,12 +549,12 @@ public class SaveLoader : KMonoBehaviour
 		return text;
 	}
 
-	public static void SetCloudSavesDefault(bool value)
+		public static void SetCloudSavesDefault(bool value)
 	{
 		SaveLoader.SetCloudSavesDefaultPref(value ? "Enabled" : "Disabled");
 	}
 
-	public static void SetCloudSavesDefaultPref(string pref)
+		public static void SetCloudSavesDefaultPref(string pref)
 	{
 		if (pref != "Enabled" && pref != "Disabled")
 		{
@@ -564,12 +564,12 @@ public class SaveLoader : KMonoBehaviour
 		KPlayerPrefs.SetString("SavesDefaultToCloud", pref);
 	}
 
-	public static bool GetCloudSavesAvailable()
+		public static bool GetCloudSavesAvailable()
 	{
 		return !string.IsNullOrEmpty(SaveLoader.GetUserID()) && SaveLoader.GetCloudSavePrefix() != null;
 	}
 
-	public static string GetLatestSaveForCurrentDLC()
+		public static string GetLatestSaveForCurrentDLC()
 	{
 		List<SaveLoader.SaveFileEntry> allFiles = SaveLoader.GetAllFiles(true, SaveLoader.SaveType.both);
 		for (int i = 0; i < allFiles.Count; i++)
@@ -590,7 +590,7 @@ public class SaveLoader : KMonoBehaviour
 		return null;
 	}
 
-	public void InitialSave()
+		public void InitialSave()
 	{
 		string text = SaveLoader.GetActiveSaveFilePath();
 		if (string.IsNullOrEmpty(text))
@@ -605,7 +605,7 @@ public class SaveLoader : KMonoBehaviour
 		this.Save(text, false, true);
 	}
 
-	public string Save(string filename, bool isAutoSave = false, bool updateSavePointer = true)
+		public string Save(string filename, bool isAutoSave = false, bool updateSavePointer = true)
 	{
 		KSerialization.Manager.Clear();
 		string directoryName = System.IO.Path.GetDirectoryName(filename);
@@ -728,7 +728,7 @@ public class SaveLoader : KMonoBehaviour
 		return filename;
 	}
 
-	public static SaveGame.GameInfo LoadHeader(string filename, out SaveGame.Header header)
+		public static SaveGame.GameInfo LoadHeader(string filename, out SaveGame.Header header)
 	{
 		byte[] array = new byte[512];
 		SaveGame.GameInfo header2;
@@ -740,7 +740,7 @@ public class SaveLoader : KMonoBehaviour
 		return header2;
 	}
 
-	public bool Load(string filename)
+		public bool Load(string filename)
 	{
 		SaveLoader.SetActiveSaveFilePath(filename);
 		try
@@ -877,7 +877,7 @@ public class SaveLoader : KMonoBehaviour
 		return true;
 	}
 
-	public bool LoadFromWorldGen()
+		public bool LoadFromWorldGen()
 	{
 		DebugUtil.LogArgs(new object[]
 		{
@@ -984,16 +984,16 @@ public class SaveLoader : KMonoBehaviour
 		return true;
 	}
 
-			public GameSpawnData cachedGSD { get; private set; }
+				public GameSpawnData cachedGSD { get; private set; }
 
-			public WorldDetailSave clusterDetailSave { get; private set; }
+				public WorldDetailSave clusterDetailSave { get; private set; }
 
-	public void SetWorldDetail(WorldDetailSave worldDetail)
+		public void SetWorldDetail(WorldDetailSave worldDetail)
 	{
 		this.clusterDetailSave = worldDetail;
 	}
 
-	private void ReportSaveMetrics(bool is_auto_save)
+		private void ReportSaveMetrics(bool is_auto_save)
 	{
 		if (ThreadedHttps<KleiMetrics>.Instance == null || !ThreadedHttps<KleiMetrics>.Instance.enabled || this.saveManager == null)
 		{
@@ -1017,7 +1017,7 @@ public class SaveLoader : KMonoBehaviour
 		ThreadedHttps<KleiMetrics>.Instance.SendEvent(dictionary, "ReportSaveMetrics");
 	}
 
-	private List<SaveLoader.MinionMetricsData> GetMinionMetrics()
+		private List<SaveLoader.MinionMetricsData> GetMinionMetrics()
 	{
 		List<SaveLoader.MinionMetricsData> list = new List<SaveLoader.MinionMetricsData>();
 		foreach (MinionIdentity minionIdentity in Components.LiveMinionIdentities.Items)
@@ -1060,7 +1060,7 @@ public class SaveLoader : KMonoBehaviour
 		return list;
 	}
 
-	private List<SaveLoader.SavedPrefabMetricsData> GetSavedPrefabMetrics()
+		private List<SaveLoader.SavedPrefabMetricsData> GetSavedPrefabMetrics()
 	{
 		Dictionary<Tag, List<SaveLoadRoot>> lists = this.saveManager.GetLists();
 		List<SaveLoader.SavedPrefabMetricsData> list = new List<SaveLoader.SavedPrefabMetricsData>(lists.Count);
@@ -1080,7 +1080,7 @@ public class SaveLoader : KMonoBehaviour
 		return list;
 	}
 
-	private List<SaveLoader.WorldInventoryMetricsData> GetWorldInventoryMetrics()
+		private List<SaveLoader.WorldInventoryMetricsData> GetWorldInventoryMetrics()
 	{
 		Dictionary<Tag, float> allWorldsAccessibleAmounts = ClusterManager.Instance.GetAllWorldsAccessibleAmounts();
 		List<SaveLoader.WorldInventoryMetricsData> list = new List<SaveLoader.WorldInventoryMetricsData>(allWorldsAccessibleAmounts.Count);
@@ -1099,7 +1099,7 @@ public class SaveLoader : KMonoBehaviour
 		return list;
 	}
 
-	private List<SaveLoader.DailyReportMetricsData> GetDailyReportMetrics()
+		private List<SaveLoader.DailyReportMetricsData> GetDailyReportMetrics()
 	{
 		List<SaveLoader.DailyReportMetricsData> list = new List<SaveLoader.DailyReportMetricsData>();
 		int cycle = GameClock.Instance.GetCycle();
@@ -1139,7 +1139,7 @@ public class SaveLoader : KMonoBehaviour
 		return list;
 	}
 
-	private List<SaveLoader.PerformanceMeasurement> GetPerformanceMeasurements()
+		private List<SaveLoader.PerformanceMeasurement> GetPerformanceMeasurements()
 	{
 		List<SaveLoader.PerformanceMeasurement> list = new List<SaveLoader.PerformanceMeasurement>();
 		if (Global.Instance != null)
@@ -1160,7 +1160,7 @@ public class SaveLoader : KMonoBehaviour
 		return list;
 	}
 
-	private float GetFrameTime()
+		private float GetFrameTime()
 	{
 		PerformanceMonitor component = Global.Instance.GetComponent<PerformanceMonitor>();
 		DebugUtil.LogArgs(new object[]
@@ -1171,7 +1171,7 @@ public class SaveLoader : KMonoBehaviour
 		return 1f / component.FPS;
 	}
 
-	private List<SaveLoader.WorldMetricsData> GetWorldMetrics()
+		private List<SaveLoader.WorldMetricsData> GetWorldMetrics()
 	{
 		List<SaveLoader.WorldMetricsData> list = new List<SaveLoader.WorldMetricsData>();
 		if (Global.Instance != null)
@@ -1194,12 +1194,12 @@ public class SaveLoader : KMonoBehaviour
 		return list;
 	}
 
-	public bool IsDLCActiveForCurrentSave(string dlcid)
+		public bool IsDLCActiveForCurrentSave(string dlcid)
 	{
 		return DlcManager.IsContentSubscribed(dlcid) && (dlcid == "" || dlcid == "" || this.GameInfo.dlcIds.Contains(dlcid));
 	}
 
-	public bool IsDlcListActiveForCurrentSave(string[] dlcIds)
+		public bool IsDlcListActiveForCurrentSave(string[] dlcIds)
 	{
 		if (dlcIds == null || dlcIds.Length == 0)
 		{
@@ -1219,7 +1219,44 @@ public class SaveLoader : KMonoBehaviour
 		return false;
 	}
 
-	public string GetSaveLoadContentLetters()
+		public bool IsAllDlcActiveForCurrentSave(string[] dlcIds)
+	{
+		if (dlcIds == null || dlcIds.Length == 0)
+		{
+			return true;
+		}
+		foreach (string text in dlcIds)
+		{
+			if (!(text == "") && !this.IsDLCActiveForCurrentSave(text))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+		public bool IsAnyDlcActiveForCurrentSave(string[] dlcIds)
+	{
+		if (dlcIds == null || dlcIds.Length == 0)
+		{
+			return false;
+		}
+		foreach (string text in dlcIds)
+		{
+			if (!(text == "") && this.IsDLCActiveForCurrentSave(text))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+		public bool IsCorrectDlcActiveForCurrentSave(string[] required, string[] forbidden)
+	{
+		return this.IsAllDlcActiveForCurrentSave(required) && !this.IsAnyDlcActiveForCurrentSave(forbidden);
+	}
+
+		public string GetSaveLoadContentLetters()
 	{
 		if (this.GameInfo.dlcIds.Count <= 0)
 		{
@@ -1233,7 +1270,7 @@ public class SaveLoader : KMonoBehaviour
 		return text;
 	}
 
-	public void UpgradeActiveSaveDLCInfo(string dlcId, bool trigger_load = false)
+		public void UpgradeActiveSaveDLCInfo(string dlcId, bool trigger_load = false)
 	{
 		string activeSaveFolder = SaveLoader.GetActiveSaveFolder();
 		string path = SaveGame.Instance.BaseName + UI.FRONTEND.OPTIONS_SCREEN.TOGGLE_SANDBOX_SCREEN.BACKUP_SAVE_GAME_APPEND + ".sav";
@@ -1254,170 +1291,170 @@ public class SaveLoader : KMonoBehaviour
 		}
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private GridSettings gridSettings;
 
-	private bool saveFileCorrupt;
+		private bool saveFileCorrupt;
 
-	private bool compressSaveData = true;
+		private bool compressSaveData = true;
 
-	private int lastUncompressedSize;
+		private int lastUncompressedSize;
 
-	public bool saveAsText;
+		public bool saveAsText;
 
-	public const string MAINMENU_LEVELNAME = "launchscene";
+		public const string MAINMENU_LEVELNAME = "launchscene";
 
-	public const string FRONTEND_LEVELNAME = "frontend";
+		public const string FRONTEND_LEVELNAME = "frontend";
 
-	public const string BACKEND_LEVELNAME = "backend";
+		public const string BACKEND_LEVELNAME = "backend";
 
-	public const string SAVE_EXTENSION = ".sav";
+		public const string SAVE_EXTENSION = ".sav";
 
-	public const string AUTOSAVE_FOLDER = "auto_save";
+		public const string AUTOSAVE_FOLDER = "auto_save";
 
-	public const string CLOUDSAVE_FOLDER = "cloud_save_files";
+		public const string CLOUDSAVE_FOLDER = "cloud_save_files";
 
-	public const string SAVE_FOLDER = "save_files";
+		public const string SAVE_FOLDER = "save_files";
 
-	public const int MAX_AUTOSAVE_FILES = 10;
+		public const int MAX_AUTOSAVE_FILES = 10;
 
-	[NonSerialized]
+		[NonSerialized]
 	public SaveManager saveManager;
 
-	private Cluster m_cluster;
+		private Cluster m_cluster;
 
-	private ClusterLayout m_clusterLayout;
+		private ClusterLayout m_clusterLayout;
 
-	private const string CorruptFileSuffix = "_";
+		private const string CorruptFileSuffix = "_";
 
-	private const float SAVE_BUFFER_HEAD_ROOM = 0.1f;
+		private const float SAVE_BUFFER_HEAD_ROOM = 0.1f;
 
-	private bool mustRestartOnFail;
+		private bool mustRestartOnFail;
 
-	public const string METRIC_SAVED_PREFAB_KEY = "SavedPrefabs";
+		public const string METRIC_SAVED_PREFAB_KEY = "SavedPrefabs";
 
-	public const string METRIC_IS_AUTO_SAVE_KEY = "IsAutoSave";
+		public const string METRIC_IS_AUTO_SAVE_KEY = "IsAutoSave";
 
-	public const string METRIC_WAS_DEBUG_EVER_USED = "WasDebugEverUsed";
+		public const string METRIC_WAS_DEBUG_EVER_USED = "WasDebugEverUsed";
 
-	public const string METRIC_IS_SANDBOX_ENABLED = "IsSandboxEnabled";
+		public const string METRIC_IS_SANDBOX_ENABLED = "IsSandboxEnabled";
 
-	public const string METRIC_RESOURCES_ACCESSIBLE_KEY = "ResourcesAccessible";
+		public const string METRIC_RESOURCES_ACCESSIBLE_KEY = "ResourcesAccessible";
 
-	public const string METRIC_DAILY_REPORT_KEY = "DailyReport";
+		public const string METRIC_DAILY_REPORT_KEY = "DailyReport";
 
-	public const string METRIC_WORLD_METRICS_KEY = "WorldMetrics";
+		public const string METRIC_WORLD_METRICS_KEY = "WorldMetrics";
 
-	public const string METRIC_MINION_METRICS_KEY = "MinionMetrics";
+		public const string METRIC_MINION_METRICS_KEY = "MinionMetrics";
 
-	public const string METRIC_CUSTOM_GAME_SETTINGS = "CustomGameSettings";
+		public const string METRIC_CUSTOM_GAME_SETTINGS = "CustomGameSettings";
 
-	public const string METRIC_CUSTOM_MIXING_SETTINGS = "CustomMixingSettings";
+		public const string METRIC_CUSTOM_MIXING_SETTINGS = "CustomMixingSettings";
 
-	public const string METRIC_PERFORMANCE_MEASUREMENTS = "PerformanceMeasurements";
+		public const string METRIC_PERFORMANCE_MEASUREMENTS = "PerformanceMeasurements";
 
-	public const string METRIC_FRAME_TIME = "AverageFrameTime";
+		public const string METRIC_FRAME_TIME = "AverageFrameTime";
 
-	private static bool force_infinity;
+		private static bool force_infinity;
 
-	public class FlowUtilityNetworkInstance
+		public class FlowUtilityNetworkInstance
 	{
-		public int id = -1;
+				public int id = -1;
 
-		public SimHashes containedElement = SimHashes.Vacuum;
+				public SimHashes containedElement = SimHashes.Vacuum;
 
-		public float containedMass;
+				public float containedMass;
 
-		public float containedTemperature;
+				public float containedTemperature;
 	}
 
-	[SerializationConfig(KSerialization.MemberSerialization.OptOut)]
+		[SerializationConfig(KSerialization.MemberSerialization.OptOut)]
 	public class FlowUtilityNetworkSaver : ISaveLoadable
 	{
-		public FlowUtilityNetworkSaver()
+				public FlowUtilityNetworkSaver()
 		{
 			this.gas = new List<SaveLoader.FlowUtilityNetworkInstance>();
 			this.liquid = new List<SaveLoader.FlowUtilityNetworkInstance>();
 		}
 
-		public List<SaveLoader.FlowUtilityNetworkInstance> gas;
+				public List<SaveLoader.FlowUtilityNetworkInstance> gas;
 
-		public List<SaveLoader.FlowUtilityNetworkInstance> liquid;
+				public List<SaveLoader.FlowUtilityNetworkInstance> liquid;
 	}
 
-	public struct SaveFileEntry
+		public struct SaveFileEntry
 	{
-		public string path;
+				public string path;
 
-		public System.DateTime timeStamp;
+				public System.DateTime timeStamp;
 	}
 
-	public enum SaveType
+		public enum SaveType
 	{
-		local,
-		cloud,
-		both
+				local,
+				cloud,
+				both
 	}
 
-	private struct MinionAttrFloatData
+		private struct MinionAttrFloatData
 	{
-		public string Name;
+				public string Name;
 
-		public float Value;
+				public float Value;
 	}
 
-	private struct MinionMetricsData
+		private struct MinionMetricsData
 	{
-		public string Name;
+				public string Name;
 
-		public List<SaveLoader.MinionAttrFloatData> Modifiers;
+				public List<SaveLoader.MinionAttrFloatData> Modifiers;
 
-		public float TotalExperienceGained;
+				public float TotalExperienceGained;
 
-		public List<string> Skills;
+				public List<string> Skills;
 	}
 
-	private struct SavedPrefabMetricsData
+		private struct SavedPrefabMetricsData
 	{
-		public string PrefabName;
+				public string PrefabName;
 
-		public int Count;
+				public int Count;
 	}
 
-	private struct WorldInventoryMetricsData
+		private struct WorldInventoryMetricsData
 	{
-		public string Name;
+				public string Name;
 
-		public float Amount;
+				public float Amount;
 	}
 
-	private struct DailyReportMetricsData
+		private struct DailyReportMetricsData
 	{
-		public string Name;
+				public string Name;
 
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+				[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public float? Net;
 
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+				[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public float? Positive;
 
-		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+				[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public float? Negative;
 	}
 
-	private struct PerformanceMeasurement
+		private struct PerformanceMeasurement
 	{
-		public string name;
+				public string name;
 
-		public float value;
+				public float value;
 	}
 
-	private struct WorldMetricsData
+		private struct WorldMetricsData
 	{
-		public string Name;
+				public string Name;
 
-		public float DiscoveryTimestamp;
+				public float DiscoveryTimestamp;
 
-		public float DupeVisitedTimestamp;
+				public float DupeVisitedTimestamp;
 	}
 }

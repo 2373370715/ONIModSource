@@ -5,13 +5,13 @@ using UnityEngine;
 
 public static class InventoryOrganization
 {
-	public static string GetPermitSubcategory(PermitResource permit)
+		public static string GetPermitSubcategory(PermitResource permit)
 	{
-		foreach (KeyValuePair<string, HashSet<string>> self in InventoryOrganization.subcategoryIdToPermitIdsMap)
+		foreach (KeyValuePair<string, HashSet<string>> keyValuePair in InventoryOrganization.subcategoryIdToPermitIdsMap)
 		{
 			string text;
 			HashSet<string> hashSet;
-			self.Deconstruct(out text, out hashSet);
+			keyValuePair.Deconstruct(out text, out hashSet);
 			string result = text;
 			if (hashSet.Contains(permit.Id))
 			{
@@ -21,17 +21,17 @@ public static class InventoryOrganization
 		return "UNCATEGORIZED";
 	}
 
-	public static string GetCategoryName(string categoryId)
+		public static string GetCategoryName(string categoryId)
 	{
 		return Strings.Get("STRINGS.UI.KLEI_INVENTORY_SCREEN.TOP_LEVEL_CATEGORIES." + categoryId.ToUpper());
 	}
 
-	public static string GetSubcategoryName(string subcategoryId)
+		public static string GetSubcategoryName(string subcategoryId)
 	{
 		return Strings.Get("STRINGS.UI.KLEI_INVENTORY_SCREEN.SUBCATEGORIES." + subcategoryId.ToUpper());
 	}
 
-	public static void Initialize()
+		public static void Initialize()
 	{
 		if (InventoryOrganization.initialized)
 		{
@@ -40,11 +40,11 @@ public static class InventoryOrganization
 		InventoryOrganization.initialized = true;
 		InventoryOrganization.GenerateTopLevelCategories();
 		InventoryOrganization.GenerateSubcategories();
-		foreach (KeyValuePair<string, List<string>> self in InventoryOrganization.categoryIdToSubcategoryIdsMap)
+		foreach (KeyValuePair<string, List<string>> keyValuePair in InventoryOrganization.categoryIdToSubcategoryIdsMap)
 		{
 			string text;
 			List<string> list;
-			self.Deconstruct(out text, out list);
+			keyValuePair.Deconstruct(out text, out list);
 			string key = text;
 			List<string> list2 = list;
 			bool value = true;
@@ -61,13 +61,13 @@ public static class InventoryOrganization
 		}
 	}
 
-	private static void AddTopLevelCategory(string categoryID, Sprite icon, string[] subcategoryIDs)
+		private static void AddTopLevelCategory(string categoryID, Sprite icon, string[] subcategoryIDs)
 	{
 		InventoryOrganization.categoryIdToSubcategoryIdsMap.Add(categoryID, new List<string>(subcategoryIDs));
 		InventoryOrganization.categoryIdToIconMap.Add(categoryID, icon);
 	}
 
-	private static void AddSubcategory(string subcategoryID, Sprite icon, int sortkey, string[] permitIDs)
+		private static void AddSubcategory(string subcategoryID, Sprite icon, int sortkey, string[] permitIDs)
 	{
 		if (InventoryOrganization.subcategoryIdToPermitIdsMap.ContainsKey(subcategoryID))
 		{
@@ -81,7 +81,7 @@ public static class InventoryOrganization
 		}
 	}
 
-	private static void GenerateTopLevelCategories()
+		private static void GenerateTopLevelCategories()
 	{
 		InventoryOrganization.AddTopLevelCategory("CLOTHING_TOPS", Assets.GetSprite("icon_inventory_tops"), new string[]
 		{
@@ -159,7 +159,7 @@ public static class InventoryOrganization
 		});
 	}
 
-	private static void GenerateSubcategories()
+		private static void GenerateSubcategories()
 	{
 		InventoryOrganization.AddSubcategory("BUILDING_CEILING_LIGHT", Def.GetUISprite("CeilingLight", "ui", false).first, 100, new string[]
 		{
@@ -195,7 +195,9 @@ public static class InventoryOrganization
 			"LuxuryBed_red_rose",
 			"LuxuryBed_green_mush",
 			"LuxuryBed_yellow_tartar",
-			"LuxuryBed_purple_brainfat"
+			"LuxuryBed_purple_brainfat",
+			"permit_elegantbed_hatch",
+			"permit_elegantbed_pipsqueak"
 		});
 		InventoryOrganization.AddSubcategory("BUILDINGS_FLOWER_VASE", Def.GetUISprite("FlowerVase", "ui", false).first, 400, new string[]
 		{
@@ -983,15 +985,15 @@ public static class InventoryOrganization
 		});
 	}
 
-	public static Dictionary<string, List<string>> categoryIdToSubcategoryIdsMap = new Dictionary<string, List<string>>();
+		public static Dictionary<string, List<string>> categoryIdToSubcategoryIdsMap = new Dictionary<string, List<string>>();
 
-	public static Dictionary<string, Sprite> categoryIdToIconMap = new Dictionary<string, Sprite>();
+		public static Dictionary<string, Sprite> categoryIdToIconMap = new Dictionary<string, Sprite>();
 
-	public static Dictionary<string, bool> categoryIdToIsEmptyMap = new Dictionary<string, bool>();
+		public static Dictionary<string, bool> categoryIdToIsEmptyMap = new Dictionary<string, bool>();
 
-	public static bool initialized = false;
+		public static bool initialized = false;
 
-	public static Dictionary<string, HashSet<string>> subcategoryIdToPermitIdsMap = new Dictionary<string, HashSet<string>>
+		public static Dictionary<string, HashSet<string>> subcategoryIdToPermitIdsMap = new Dictionary<string, HashSet<string>>
 	{
 		{
 			"UNCATEGORIZED",
@@ -1003,7 +1005,7 @@ public static class InventoryOrganization
 		}
 	};
 
-	public static Dictionary<string, InventoryOrganization.SubcategoryPresentationData> subcategoryIdToPresentationDataMap = new Dictionary<string, InventoryOrganization.SubcategoryPresentationData>
+		public static Dictionary<string, InventoryOrganization.SubcategoryPresentationData> subcategoryIdToPresentationDataMap = new Dictionary<string, InventoryOrganization.SubcategoryPresentationData>
 	{
 		{
 			"UNCATEGORIZED",
@@ -1015,157 +1017,157 @@ public static class InventoryOrganization
 		}
 	};
 
-	public class SubcategoryPresentationData
+		public class SubcategoryPresentationData
 	{
-		public SubcategoryPresentationData(string subcategoryID, Sprite icon, int sortKey)
+				public SubcategoryPresentationData(string subcategoryID, Sprite icon, int sortKey)
 		{
 			this.subcategoryID = subcategoryID;
 			this.sortKey = sortKey;
 			this.icon = icon;
 		}
 
-		public string subcategoryID;
+				public string subcategoryID;
 
-		public int sortKey;
+				public int sortKey;
 
-		public Sprite icon;
+				public Sprite icon;
 	}
 
-	public static class InventoryPermitCategories
+		public static class InventoryPermitCategories
 	{
-		public const string CLOTHING_TOPS = "CLOTHING_TOPS";
+				public const string CLOTHING_TOPS = "CLOTHING_TOPS";
 
-		public const string CLOTHING_BOTTOMS = "CLOTHING_BOTTOMS";
+				public const string CLOTHING_BOTTOMS = "CLOTHING_BOTTOMS";
 
-		public const string CLOTHING_GLOVES = "CLOTHING_GLOVES";
+				public const string CLOTHING_GLOVES = "CLOTHING_GLOVES";
 
-		public const string CLOTHING_SHOES = "CLOTHING_SHOES";
+				public const string CLOTHING_SHOES = "CLOTHING_SHOES";
 
-		public const string ATMOSUITS = "ATMOSUITS";
+				public const string ATMOSUITS = "ATMOSUITS";
 
-		public const string BUILDINGS = "BUILDINGS";
+				public const string BUILDINGS = "BUILDINGS";
 
-		public const string WALLPAPERS = "WALLPAPERS";
+				public const string WALLPAPERS = "WALLPAPERS";
 
-		public const string ARTWORK = "ARTWORK";
+				public const string ARTWORK = "ARTWORK";
 
-		public const string JOY_RESPONSES = "JOY_RESPONSES";
+				public const string JOY_RESPONSES = "JOY_RESPONSES";
 
-		public const string ATMO_SUIT_HELMET = "ATMO_SUIT_HELMET";
+				public const string ATMO_SUIT_HELMET = "ATMO_SUIT_HELMET";
 
-		public const string ATMO_SUIT_BODY = "ATMO_SUIT_BODY";
+				public const string ATMO_SUIT_BODY = "ATMO_SUIT_BODY";
 
-		public const string ATMO_SUIT_GLOVES = "ATMO_SUIT_GLOVES";
+				public const string ATMO_SUIT_GLOVES = "ATMO_SUIT_GLOVES";
 
-		public const string ATMO_SUIT_BELT = "ATMO_SUIT_BELT";
+				public const string ATMO_SUIT_BELT = "ATMO_SUIT_BELT";
 
-		public const string ATMO_SUIT_SHOES = "ATMO_SUIT_SHOES";
+				public const string ATMO_SUIT_SHOES = "ATMO_SUIT_SHOES";
 	}
 
-	public static class PermitSubcategories
+		public static class PermitSubcategories
 	{
-		public const string YAML = "YAML";
+				public const string YAML = "YAML";
 
-		public const string UNCATEGORIZED = "UNCATEGORIZED";
+				public const string UNCATEGORIZED = "UNCATEGORIZED";
 
-		public const string JOY_BALLOON = "JOY_BALLOON";
+				public const string JOY_BALLOON = "JOY_BALLOON";
 
-		public const string JOY_STICKER = "JOY_STICKER";
+				public const string JOY_STICKER = "JOY_STICKER";
 
-		public const string PRIMO_GARB = "PRIMO_GARB";
+				public const string PRIMO_GARB = "PRIMO_GARB";
 
-		public const string CLOTHING_TOPS_BASIC = "CLOTHING_TOPS_BASIC";
+				public const string CLOTHING_TOPS_BASIC = "CLOTHING_TOPS_BASIC";
 
-		public const string CLOTHING_TOPS_TSHIRT = "CLOTHING_TOPS_TSHIRT";
+				public const string CLOTHING_TOPS_TSHIRT = "CLOTHING_TOPS_TSHIRT";
 
-		public const string CLOTHING_TOPS_FANCY = "CLOTHING_TOPS_FANCY";
+				public const string CLOTHING_TOPS_FANCY = "CLOTHING_TOPS_FANCY";
 
-		public const string CLOTHING_TOPS_JACKET = "CLOTHING_TOPS_JACKET";
+				public const string CLOTHING_TOPS_JACKET = "CLOTHING_TOPS_JACKET";
 
-		public const string CLOTHING_TOPS_UNDERSHIRT = "CLOTHING_TOPS_UNDERSHIRT";
+				public const string CLOTHING_TOPS_UNDERSHIRT = "CLOTHING_TOPS_UNDERSHIRT";
 
-		public const string CLOTHING_TOPS_DRESS = "CLOTHING_TOPS_DRESS";
+				public const string CLOTHING_TOPS_DRESS = "CLOTHING_TOPS_DRESS";
 
-		public const string CLOTHING_BOTTOMS_BASIC = "CLOTHING_BOTTOMS_BASIC";
+				public const string CLOTHING_BOTTOMS_BASIC = "CLOTHING_BOTTOMS_BASIC";
 
-		public const string CLOTHING_BOTTOMS_FANCY = "CLOTHING_BOTTOMS_FANCY";
+				public const string CLOTHING_BOTTOMS_FANCY = "CLOTHING_BOTTOMS_FANCY";
 
-		public const string CLOTHING_BOTTOMS_SHORTS = "CLOTHING_BOTTOMS_SHORTS";
+				public const string CLOTHING_BOTTOMS_SHORTS = "CLOTHING_BOTTOMS_SHORTS";
 
-		public const string CLOTHING_BOTTOMS_SKIRTS = "CLOTHING_BOTTOMS_SKIRTS";
+				public const string CLOTHING_BOTTOMS_SKIRTS = "CLOTHING_BOTTOMS_SKIRTS";
 
-		public const string CLOTHING_BOTTOMS_UNDERWEAR = "CLOTHING_BOTTOMS_UNDERWEAR";
+				public const string CLOTHING_BOTTOMS_UNDERWEAR = "CLOTHING_BOTTOMS_UNDERWEAR";
 
-		public const string CLOTHING_GLOVES_BASIC = "CLOTHING_GLOVES_BASIC";
+				public const string CLOTHING_GLOVES_BASIC = "CLOTHING_GLOVES_BASIC";
 
-		public const string CLOTHING_GLOVES_PRINTS = "CLOTHING_GLOVES_PRINTS";
+				public const string CLOTHING_GLOVES_PRINTS = "CLOTHING_GLOVES_PRINTS";
 
-		public const string CLOTHING_GLOVES_SHORT = "CLOTHING_GLOVES_SHORT";
+				public const string CLOTHING_GLOVES_SHORT = "CLOTHING_GLOVES_SHORT";
 
-		public const string CLOTHING_GLOVES_FORMAL = "CLOTHING_GLOVES_FORMAL";
+				public const string CLOTHING_GLOVES_FORMAL = "CLOTHING_GLOVES_FORMAL";
 
-		public const string CLOTHING_SHOES_BASIC = "CLOTHING_SHOES_BASIC";
+				public const string CLOTHING_SHOES_BASIC = "CLOTHING_SHOES_BASIC";
 
-		public const string CLOTHING_SHOES_FANCY = "CLOTHING_SHOES_FANCY";
+				public const string CLOTHING_SHOES_FANCY = "CLOTHING_SHOES_FANCY";
 
-		public const string CLOTHING_SHOE_SOCKS = "CLOTHING_SHOE_SOCKS";
+				public const string CLOTHING_SHOE_SOCKS = "CLOTHING_SHOE_SOCKS";
 
-		public const string ATMOSUIT_HELMETS_BASIC = "ATMOSUIT_HELMETS_BASIC";
+				public const string ATMOSUIT_HELMETS_BASIC = "ATMOSUIT_HELMETS_BASIC";
 
-		public const string ATMOSUIT_HELMETS_FANCY = "ATMOSUIT_HELMETS_FANCY";
+				public const string ATMOSUIT_HELMETS_FANCY = "ATMOSUIT_HELMETS_FANCY";
 
-		public const string ATMOSUIT_BODIES_BASIC = "ATMOSUIT_BODIES_BASIC";
+				public const string ATMOSUIT_BODIES_BASIC = "ATMOSUIT_BODIES_BASIC";
 
-		public const string ATMOSUIT_BODIES_FANCY = "ATMOSUIT_BODIES_FANCY";
+				public const string ATMOSUIT_BODIES_FANCY = "ATMOSUIT_BODIES_FANCY";
 
-		public const string ATMOSUIT_GLOVES_BASIC = "ATMOSUIT_GLOVES_BASIC";
+				public const string ATMOSUIT_GLOVES_BASIC = "ATMOSUIT_GLOVES_BASIC";
 
-		public const string ATMOSUIT_GLOVES_FANCY = "ATMOSUIT_GLOVES_FANCY";
+				public const string ATMOSUIT_GLOVES_FANCY = "ATMOSUIT_GLOVES_FANCY";
 
-		public const string ATMOSUIT_BELTS_BASIC = "ATMOSUIT_BELTS_BASIC";
+				public const string ATMOSUIT_BELTS_BASIC = "ATMOSUIT_BELTS_BASIC";
 
-		public const string ATMOSUIT_BELTS_FANCY = "ATMOSUIT_BELTS_FANCY";
+				public const string ATMOSUIT_BELTS_FANCY = "ATMOSUIT_BELTS_FANCY";
 
-		public const string ATMOSUIT_SHOES_BASIC = "ATMOSUIT_SHOES_BASIC";
+				public const string ATMOSUIT_SHOES_BASIC = "ATMOSUIT_SHOES_BASIC";
 
-		public const string ATMOSUIT_SHOES_FANCY = "ATMOSUIT_SHOES_FANCY";
+				public const string ATMOSUIT_SHOES_FANCY = "ATMOSUIT_SHOES_FANCY";
 
-		public const string BUILDING_WALLPAPER_BASIC = "BUILDING_WALLPAPER_BASIC";
+				public const string BUILDING_WALLPAPER_BASIC = "BUILDING_WALLPAPER_BASIC";
 
-		public const string BUILDING_WALLPAPER_FANCY = "BUILDING_WALLPAPER_FANCY";
+				public const string BUILDING_WALLPAPER_FANCY = "BUILDING_WALLPAPER_FANCY";
 
-		public const string BUILDING_WALLPAPER_PRINTS = "BUILDING_WALLPAPER_PRINTS";
+				public const string BUILDING_WALLPAPER_PRINTS = "BUILDING_WALLPAPER_PRINTS";
 
-		public const string BUILDINGS_STORAGE = "BUILDINGS_STORAGE";
+				public const string BUILDINGS_STORAGE = "BUILDINGS_STORAGE";
 
-		public const string BUILDINGS_INDUSTRIAL = "BUILDINGS_INDUSTRIAL";
+				public const string BUILDINGS_INDUSTRIAL = "BUILDINGS_INDUSTRIAL";
 
-		public const string BUILDINGS_FOOD = "BUILDINGS_FOOD";
+				public const string BUILDINGS_FOOD = "BUILDINGS_FOOD";
 
-		public const string BUILDINGS_RANCHING = "BUILDINGS_RANCHING";
+				public const string BUILDINGS_RANCHING = "BUILDINGS_RANCHING";
 
-		public const string BUILDINGS_WASHROOM = "BUILDINGS_WASHROOM";
+				public const string BUILDINGS_WASHROOM = "BUILDINGS_WASHROOM";
 
-		public const string BUILDINGS_RECREATION = "BUILDINGS_RECREATION";
+				public const string BUILDINGS_RECREATION = "BUILDINGS_RECREATION";
 
-		public const string BUILDINGS_PRINTING_POD = "BUILDINGS_PRINTING_POD";
+				public const string BUILDINGS_PRINTING_POD = "BUILDINGS_PRINTING_POD";
 
-		public const string BUILDING_CANVAS_STANDARD = "BUILDING_CANVAS_STANDARD";
+				public const string BUILDING_CANVAS_STANDARD = "BUILDING_CANVAS_STANDARD";
 
-		public const string BUILDING_CANVAS_PORTRAIT = "BUILDING_CANVAS_PORTRAIT";
+				public const string BUILDING_CANVAS_PORTRAIT = "BUILDING_CANVAS_PORTRAIT";
 
-		public const string BUILDING_CANVAS_LANDSCAPE = "BUILDING_CANVAS_LANDSCAPE";
+				public const string BUILDING_CANVAS_LANDSCAPE = "BUILDING_CANVAS_LANDSCAPE";
 
-		public const string BUILDING_SCULPTURE = "BUILDING_SCULPTURE";
+				public const string BUILDING_SCULPTURE = "BUILDING_SCULPTURE";
 
-		public const string MONUMENT_PARTS = "MONUMENT_PARTS";
+				public const string MONUMENT_PARTS = "MONUMENT_PARTS";
 
-		public const string BUILDINGS_FLOWER_VASE = "BUILDINGS_FLOWER_VASE";
+				public const string BUILDINGS_FLOWER_VASE = "BUILDINGS_FLOWER_VASE";
 
-		public const string BUILDINGS_BED_COT = "BUILDINGS_BED_COT";
+				public const string BUILDINGS_BED_COT = "BUILDINGS_BED_COT";
 
-		public const string BUILDINGS_BED_LUXURY = "BUILDINGS_BED_LUXURY";
+				public const string BUILDINGS_BED_LUXURY = "BUILDINGS_BED_LUXURY";
 
-		public const string BUILDING_CEILING_LIGHT = "BUILDING_CEILING_LIGHT";
+				public const string BUILDING_CEILING_LIGHT = "BUILDING_CEILING_LIGHT";
 	}
 }

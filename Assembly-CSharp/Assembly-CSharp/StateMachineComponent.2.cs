@@ -4,7 +4,7 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class StateMachineComponent<StateMachineInstanceType> : StateMachineComponent, ISaveLoadable where StateMachineInstanceType : StateMachine.Instance
 {
-		public StateMachineInstanceType smi
+			public StateMachineInstanceType smi
 	{
 		get
 		{
@@ -19,12 +19,12 @@ public class StateMachineComponent<StateMachineInstanceType> : StateMachineCompo
 		}
 	}
 
-	public override StateMachine.Instance GetSMI()
+		public override StateMachine.Instance GetSMI()
 	{
 		return this._smi;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (this._smi != null)
@@ -34,7 +34,7 @@ public class StateMachineComponent<StateMachineInstanceType> : StateMachineCompo
 		}
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		if (base.isSpawned)
@@ -43,7 +43,7 @@ public class StateMachineComponent<StateMachineInstanceType> : StateMachineCompo
 		}
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		if (this._smi != null)
@@ -52,5 +52,5 @@ public class StateMachineComponent<StateMachineInstanceType> : StateMachineCompo
 		}
 	}
 
-	private StateMachineInstanceType _smi;
+		private StateMachineInstanceType _smi;
 }

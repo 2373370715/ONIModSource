@@ -11,9 +11,9 @@ using UnityEngine.UI.Extensions;
 [AddComponentMenu("KMonoBehaviour/scripts/SkillWidget")]
 public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IEventSystemHandler, IPointerExitHandler, IPointerClickHandler, IPointerDownHandler
 {
-			public string skillID { get; private set; }
+				public string skillID { get; private set; }
 
-	public void Refresh(string skillID)
+		public void Refresh(string skillID)
 	{
 		Skill skill = Db.Get().Skills.Get(skillID);
 		if (skill == null)
@@ -71,6 +71,14 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IEventSystemHan
 		}
 		this.aptitudeBox.SetActive(active);
 		this.grantedBox.SetActive(flag2);
+		if (flag2)
+		{
+			Sprite skillGrantSourceIcon = minionResume.GetSkillGrantSourceIcon(skill.Id);
+			if (skillGrantSourceIcon != null)
+			{
+				this.grantedIcon.sprite = skillGrantSourceIcon;
+			}
+		}
 		this.traitDisabledIcon.SetActive(minionResume != null && !minionResume.IsAbleToLearnSkill(skill.Id));
 		string text = "";
 		List<string> list = new List<string>();
@@ -105,7 +113,7 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IEventSystemHan
 		this.masteryCount.GetComponentInChildren<LocText>().text = list.Count.ToString();
 	}
 
-	public void RefreshLines()
+		public void RefreshLines()
 	{
 		this.prerequisiteSkillWidgets.Clear();
 		List<Vector2> list = new List<Vector2>();
@@ -153,7 +161,7 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IEventSystemHan
 		}
 	}
 
-	public void ToggleBorderHighlight(bool on)
+		public void ToggleBorderHighlight(bool on)
 	{
 		this.borderHighlight.SetActive(on);
 		if (this.lines != null)
@@ -171,26 +179,29 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IEventSystemHan
 		}
 	}
 
-	public string SkillTooltip(Skill skill)
+		public string SkillTooltip(Skill skill)
 	{
 		return "" + SkillWidget.SkillPerksString(skill) + "\n" + this.DuplicantSkillString(skill);
 	}
 
-	public static string SkillPerksString(Skill skill)
+		public static string SkillPerksString(Skill skill)
 	{
 		string text = "";
 		foreach (SkillPerk skillPerk in skill.perks)
 		{
-			if (!string.IsNullOrEmpty(text))
+			if (SaveLoader.Instance.IsAllDlcActiveForCurrentSave(skillPerk.requiredDlcIds))
 			{
-				text += "\n";
+				if (!string.IsNullOrEmpty(text))
+				{
+					text += "\n";
+				}
+				text = text + "• " + skillPerk.Name;
 			}
-			text = text + "• " + skillPerk.Name;
 		}
 		return text;
 	}
 
-	public string CriteriaString(Skill skill)
+		public string CriteriaString(Skill skill)
 	{
 		bool flag = false;
 		string text = "";
@@ -227,7 +238,7 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IEventSystemHan
 		return text;
 	}
 
-	public string DuplicantSkillString(Skill skill)
+		public string DuplicantSkillString(Skill skill)
 	{
 		string text = "";
 		MinionIdentity minionIdentity;
@@ -308,20 +319,20 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IEventSystemHan
 		return text;
 	}
 
-	public void OnPointerEnter(PointerEventData eventData)
+		public void OnPointerEnter(PointerEventData eventData)
 	{
 		this.ToggleBorderHighlight(true);
 		this.skillsScreen.HoverSkill(this.skillID);
 		this.soundPlayer.Play(1);
 	}
 
-	public void OnPointerExit(PointerEventData eventData)
+		public void OnPointerExit(PointerEventData eventData)
 	{
 		this.ToggleBorderHighlight(false);
 		this.skillsScreen.HoverSkill(null);
 	}
 
-	public void OnPointerClick(PointerEventData eventData)
+		public void OnPointerClick(PointerEventData eventData)
 	{
 		MinionIdentity minionIdentity;
 		StoredMinionIdentity storedMinionIdentity;
@@ -343,7 +354,7 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IEventSystemHan
 		}
 	}
 
-	public void OnPointerDown(PointerEventData eventData)
+		public void OnPointerDown(PointerEventData eventData)
 	{
 		MinionIdentity minionIdentity;
 		StoredMinionIdentity storedMinionIdentity;
@@ -364,73 +375,76 @@ public class SkillWidget : KMonoBehaviour, IPointerEnterHandler, IEventSystemHan
 		KFMOD.PlayUISound(GlobalAssets.GetSound("Negative", false));
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText Name;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText Description;
 
-	[SerializeField]
+		[SerializeField]
 	private Image TitleBarBG;
 
-	[SerializeField]
+		[SerializeField]
 	private SkillsScreen skillsScreen;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip tooltip;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform lines_left;
 
-	[SerializeField]
+		[SerializeField]
 	public RectTransform lines_right;
 
-	[SerializeField]
+		[SerializeField]
 	private Color header_color_has_skill;
 
-	[SerializeField]
+		[SerializeField]
 	private Color header_color_can_assign;
 
-	[SerializeField]
+		[SerializeField]
 	private Color header_color_disabled;
 
-	[SerializeField]
+		[SerializeField]
 	private Color line_color_default;
 
-	[SerializeField]
+		[SerializeField]
 	private Color line_color_active;
 
-	[SerializeField]
+		[SerializeField]
 	private Image hatImage;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject borderHighlight;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip masteryCount;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject aptitudeBox;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject grantedBox;
 
-	[SerializeField]
+		[SerializeField]
+	private Image grantedIcon;
+
+		[SerializeField]
 	private GameObject traitDisabledIcon;
 
-	public TextStyleSetting TooltipTextStyle_Header;
+		public TextStyleSetting TooltipTextStyle_Header;
 
-	public TextStyleSetting TooltipTextStyle_AbilityNegativeModifier;
+		public TextStyleSetting TooltipTextStyle_AbilityNegativeModifier;
 
-	private List<SkillWidget> prerequisiteSkillWidgets = new List<SkillWidget>();
+		private List<SkillWidget> prerequisiteSkillWidgets = new List<SkillWidget>();
 
-	private UILineRenderer[] lines;
+		private UILineRenderer[] lines;
 
-	private List<Vector2> linePoints = new List<Vector2>();
+		private List<Vector2> linePoints = new List<Vector2>();
 
-	public Material defaultMaterial;
+		public Material defaultMaterial;
 
-	public Material desaturatedMaterial;
+		public Material desaturatedMaterial;
 
-	public ButtonSoundPlayer soundPlayer;
+		public ButtonSoundPlayer soundPlayer;
 }

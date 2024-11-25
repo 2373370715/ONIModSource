@@ -5,17 +5,17 @@ using UnityEngine.UI;
 
 public class KleiPermitDioramaVis_DupeEquipment : KMonoBehaviour, IKleiPermitDioramaVisTarget
 {
-	public GameObject GetGameObject()
+		public GameObject GetGameObject()
 	{
 		return base.gameObject;
 	}
 
-	public void ConfigureSetup()
+		public void ConfigureSetup()
 	{
 		this.uiMannequin.shouldShowOutfitWithDefaultItems = false;
 	}
 
-	public void ConfigureWith(PermitResource permit)
+		public void ConfigureWith(PermitResource permit)
 	{
 		ClothingItemResource clothingItemResource = permit as ClothingItemResource;
 		if (clothingItemResource != null)
@@ -29,16 +29,16 @@ public class KleiPermitDioramaVis_DupeEquipment : KMonoBehaviour, IKleiPermitDio
 		this.dioramaBGImage.sprite = KleiPermitDioramaVis.GetDioramaBackground(permit.Category);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private UIMannequin uiMannequin;
 
-	[Header("Diorama Backgrounds")]
+		[Header("Diorama Backgrounds")]
 	[SerializeField]
 	private Image dioramaBGImage;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite clothingBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite atmosuitBG;
 }

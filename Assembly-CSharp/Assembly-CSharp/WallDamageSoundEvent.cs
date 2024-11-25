@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class WallDamageSoundEvent : SoundEvent
 {
-	public WallDamageSoundEvent(string file_name, string sound_name, int frame, float min_interval) : base(file_name, sound_name, frame, true, false, min_interval, false)
+		public WallDamageSoundEvent(string file_name, string sound_name, int frame, float min_interval) : base(file_name, sound_name, frame, true, false, min_interval, false)
 	{
 	}
 
-	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
+		public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
 	{
 		Vector3 vector = default(Vector3);
 		AggressiveChore.StatesInstance smi = behaviour.controller.gameObject.GetSMI<AggressiveChore.StatesInstance>();
@@ -32,7 +32,7 @@ public class WallDamageSoundEvent : SoundEvent
 		}
 	}
 
-	private static int GetAudioCategory(int tile)
+		private static int GetAudioCategory(int tile)
 	{
 		Element element = Grid.Element[tile];
 		if (Grid.Foundation[tile])
@@ -70,5 +70,5 @@ public class WallDamageSoundEvent : SoundEvent
 		return 7;
 	}
 
-	public int tile;
+		public int tile;
 }

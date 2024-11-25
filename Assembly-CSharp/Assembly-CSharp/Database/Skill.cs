@@ -4,9 +4,9 @@ using TUNING;
 
 namespace Database
 {
-	public class Skill : Resource
+		public class Skill : Resource
 	{
-		public Skill(string id, string name, string description, string dlcId, int tier, string hat, string badge, string skillGroup, List<SkillPerk> perks = null, List<string> priorSkills = null) : base(id, name)
+				public Skill(string id, string name, string description, string dlcId, int tier, string hat, string badge, string skillGroup, List<SkillPerk> perks = null, List<string> priorSkills = null) : base(id, name)
 		{
 			this.description = description;
 			this.dlcId = dlcId;
@@ -26,17 +26,17 @@ namespace Database
 			}
 		}
 
-		public int GetMoraleExpectation()
+				public int GetMoraleExpectation()
 		{
 			return SKILLS.SKILL_TIER_MORALE_COST[this.tier];
 		}
 
-		public bool GivesPerk(SkillPerk perk)
+				public bool GivesPerk(SkillPerk perk)
 		{
 			return this.perks.Contains(perk);
 		}
 
-		public bool GivesPerk(HashedString perkId)
+				public bool GivesPerk(HashedString perkId)
 		{
 			using (List<SkillPerk>.Enumerator enumerator = this.perks.GetEnumerator())
 			{
@@ -51,22 +51,22 @@ namespace Database
 			return false;
 		}
 
-		public string description;
+				public string description;
 
-		public string dlcId;
+				public string dlcId;
 
-		public string skillGroup;
+				public string skillGroup;
 
-		public string hat;
+				public string hat;
 
-		public string badge;
+				public string badge;
 
-		public int tier;
+				public int tier;
 
-		public bool deprecated;
+				public bool deprecated;
 
-		public List<SkillPerk> perks;
+				public List<SkillPerk> perks;
 
-		public List<string> priorSkills;
+				public List<string> priorSkills;
 	}
 }

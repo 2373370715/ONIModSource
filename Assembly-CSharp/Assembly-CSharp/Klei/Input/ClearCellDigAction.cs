@@ -3,10 +3,10 @@ using Klei.Actions;
 
 namespace Klei.Input
 {
-	[Action("Clear Cell")]
+		[Action("Clear Cell")]
 	public class ClearCellDigAction : DigAction
 	{
-		public override void Dig(int cell, int distFromOrigin)
+				public override void Dig(int cell, int distFromOrigin)
 		{
 			if (Grid.Solid[cell] && !Grid.Foundation[cell])
 			{
@@ -14,7 +14,7 @@ namespace Klei.Input
 			}
 		}
 
-		protected override void EntityDig(IDigActionEntity digActionEntity)
+				protected override void EntityDig(IDigActionEntity digActionEntity)
 		{
 			if (digActionEntity == null)
 			{

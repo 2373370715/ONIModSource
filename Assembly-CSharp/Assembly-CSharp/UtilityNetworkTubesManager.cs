@@ -4,22 +4,22 @@ using UnityEngine;
 
 public class UtilityNetworkTubesManager : UtilityNetworkManager<TravelTubeNetwork, TravelTube>
 {
-	public UtilityNetworkTubesManager(int game_width, int game_height, int tile_layer) : base(game_width, game_height, tile_layer)
+		public UtilityNetworkTubesManager(int game_width, int game_height, int tile_layer) : base(game_width, game_height, tile_layer)
 	{
 	}
 
-	public override bool CanAddConnection(UtilityConnections new_connection, int cell, bool is_physical_building, out string fail_reason)
+		public override bool CanAddConnection(UtilityConnections new_connection, int cell, bool is_physical_building, out string fail_reason)
 	{
 		return this.TestForUTurnLeft(cell, new_connection, is_physical_building, out fail_reason) && this.TestForUTurnRight(cell, new_connection, is_physical_building, out fail_reason) && this.TestForNoAdjacentBridge(cell, new_connection, out fail_reason);
 	}
 
-	public override void SetConnections(UtilityConnections connections, int cell, bool is_physical_building)
+		public override void SetConnections(UtilityConnections connections, int cell, bool is_physical_building)
 	{
 		base.SetConnections(connections, cell, is_physical_building);
 		Pathfinding.Instance.AddDirtyNavGridCell(cell);
 	}
 
-	private bool TestForUTurnLeft(int first_cell, UtilityConnections first_connection, bool is_physical_building, out string fail_reason)
+		private bool TestForUTurnLeft(int first_cell, UtilityConnections first_connection, bool is_physical_building, out string fail_reason)
 	{
 		int from_cell = first_cell;
 		UtilityConnections direction = first_connection;
@@ -39,7 +39,7 @@ public class UtilityNetworkTubesManager : UtilityNetworkManager<TravelTubeNetwor
 		return num <= 2;
 	}
 
-	private bool TestForUTurnRight(int first_cell, UtilityConnections first_connection, bool is_physical_building, out string fail_reason)
+		private bool TestForUTurnRight(int first_cell, UtilityConnections first_connection, bool is_physical_building, out string fail_reason)
 	{
 		int from_cell = first_cell;
 		UtilityConnections direction = first_connection;
@@ -59,7 +59,7 @@ public class UtilityNetworkTubesManager : UtilityNetworkManager<TravelTubeNetwor
 		return num <= 2;
 	}
 
-	private bool TestForNoAdjacentBridge(int cell, UtilityConnections connection, out string fail_reason)
+		private bool TestForNoAdjacentBridge(int cell, UtilityConnections connection, out string fail_reason)
 	{
 		UtilityConnections direction = connection.LeftDirection();
 		UtilityConnections direction2 = connection.RightDirection();
@@ -71,7 +71,7 @@ public class UtilityNetworkTubesManager : UtilityNetworkManager<TravelTubeNetwor
 		return (gameObject == null || gameObject.GetComponent<TravelTubeBridge>() == null) && (gameObject2 == null || gameObject2.GetComponent<TravelTubeBridge>() == null);
 	}
 
-	private bool HasConnection(int cell, UtilityConnections connection, bool is_physical_building)
+		private bool HasConnection(int cell, UtilityConnections connection, bool is_physical_building)
 	{
 		return (base.GetConnections(cell, is_physical_building) & connection) > (UtilityConnections)0;
 	}

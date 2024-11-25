@@ -4,237 +4,185 @@ using KSerialization;
 using STRINGS;
 using UnityEngine;
 
-[SerializationConfig(MemberSerialization.OptIn)]
-[AddComponentMenu("KMonoBehaviour/scripts/Vent")]
-public class Vent : KMonoBehaviour, IGameObjectEffectDescriptor
-{
-			public int SortKey
-	{
-		get
-		{
-			return this.sortKey;
-		}
-		set
-		{
-			this.sortKey = value;
-		}
-	}
+[SerializationConfig(MemberSerialization.OptIn), AddComponentMenu("KMonoBehaviour/scripts/Vent")]
+public class Vent : KMonoBehaviour, IGameObjectEffectDescriptor {
+    public enum State {
+        Invalid,
+        Ready,
+        Blocked,
+        OverPressure,
+        Closed
+    }
 
-	public void UpdateVentedMass(SimHashes element, float mass)
-	{
-		if (!this.lifeTimeVentMass.ContainsKey(element))
-		{
-			this.lifeTimeVentMass.Add(element, mass);
-			return;
-		}
-		Dictionary<SimHashes, float> dictionary = this.lifeTimeVentMass;
-		dictionary[element] += mass;
-	}
+    private int cell = -1;
 
-	public float GetVentedMass(SimHashes element)
-	{
-		if (this.lifeTimeVentMass.ContainsKey(element))
-		{
-			return this.lifeTimeVentMass[element];
-		}
-		return 0f;
-	}
+    [SerializeField]
+    public ConduitType conduitType = ConduitType.Gas;
 
-	public bool Closed()
-	{
-		bool flag = false;
-		return (this.operational.Flags.TryGetValue(LogicOperationalController.LogicOperationalFlag, out flag) && !flag) || (this.operational.Flags.TryGetValue(BuildingEnabledButton.EnabledFlag, out flag) && !flag);
-	}
+    [SerializeField]
+    public Endpoint endpointType;
 
-	protected override void OnSpawn()
-	{
-		Building component = base.GetComponent<Building>();
-		this.cell = component.GetUtilityOutputCell();
-		this.smi = new Vent.StatesInstance(this);
-		this.smi.StartSM();
-	}
+    [Serialize]
+    public Dictionary<SimHashes, float> lifeTimeVentMass = new Dictionary<SimHashes, float>();
 
-	public Vent.State GetEndPointState()
-	{
-		Vent.State result = Vent.State.Invalid;
-		Endpoint endpoint = this.endpointType;
-		if (endpoint != Endpoint.Source)
-		{
-			if (endpoint == Endpoint.Sink)
-			{
-				result = Vent.State.Ready;
-				int num = this.cell;
-				if (!this.IsValidOutputCell(num))
-				{
-					result = (Grid.Solid[num] ? Vent.State.Blocked : Vent.State.OverPressure);
-				}
-			}
-		}
-		else
-		{
-			result = (this.IsConnected() ? Vent.State.Ready : Vent.State.Blocked);
-		}
-		return result;
-	}
+    [MyCmpGet, NonSerialized]
+    public Operational operational;
 
-	public bool IsConnected()
-	{
-		UtilityNetwork networkForCell = Conduit.GetNetworkManager(this.conduitType).GetNetworkForCell(this.cell);
-		return networkForCell != null && (networkForCell as FlowUtilityNetwork).HasSinks;
-	}
+    [SerializeField]
+    public float overpressureMass = 1f;
 
-		public bool IsBlocked
-	{
-		get
-		{
-			return this.GetEndPointState() != Vent.State.Ready;
-		}
-	}
+    [NonSerialized]
+    public bool showConnectivityIcons = true;
 
-	private bool IsValidOutputCell(int output_cell)
-	{
-		bool result = false;
-		if ((this.structure == null || !this.structure.IsEntombed() || !this.Closed()) && !Grid.Solid[output_cell])
-		{
-			result = (Grid.Mass[output_cell] < this.overpressureMass);
-		}
-		return result;
-	}
+    private StatesInstance smi;
 
-	public List<Descriptor> GetDescriptors(GameObject go)
-	{
-		string formattedMass = GameUtil.GetFormattedMass(this.overpressureMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}");
-		return new List<Descriptor>
-		{
-			new Descriptor(string.Format(UI.BUILDINGEFFECTS.OVER_PRESSURE_MASS, formattedMass), string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.OVER_PRESSURE_MASS, formattedMass), Descriptor.DescriptorType.Effect, false)
-		};
-	}
+    [MyCmpGet, NonSerialized]
+    public Structure structure;
 
-	private int cell = -1;
+    public int  SortKey   { get; set; }
+    public bool IsBlocked => GetEndPointState() != State.Ready;
 
-	private int sortKey;
+    public List<Descriptor> GetDescriptors(GameObject go) {
+        var formattedMass = GameUtil.GetFormattedMass(overpressureMass);
+        return new List<Descriptor> {
+            new Descriptor(string.Format(UI.BUILDINGEFFECTS.OVER_PRESSURE_MASS,          formattedMass),
+                           string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.OVER_PRESSURE_MASS, formattedMass))
+        };
+    }
 
-	[Serialize]
-	public Dictionary<SimHashes, float> lifeTimeVentMass = new Dictionary<SimHashes, float>();
+    public void UpdateVentedMass(SimHashes element, float mass) {
+        if (!lifeTimeVentMass.ContainsKey(element)) {
+            lifeTimeVentMass.Add(element, mass);
+            return;
+        }
 
-	private Vent.StatesInstance smi;
+        var dictionary = lifeTimeVentMass;
+        dictionary[element] += mass;
+    }
 
-	[SerializeField]
-	public ConduitType conduitType = ConduitType.Gas;
+    public float GetVentedMass(SimHashes element) {
+        if (lifeTimeVentMass.ContainsKey(element)) return lifeTimeVentMass[element];
 
-	[SerializeField]
-	public Endpoint endpointType;
+        return 0f;
+    }
 
-	[SerializeField]
-	public float overpressureMass = 1f;
+    public bool Closed() {
+        var flag = false;
+        return (operational.Flags.TryGetValue(LogicOperationalController.LogicOperationalFlag, out flag) && !flag) ||
+               (operational.Flags.TryGetValue(BuildingEnabledButton.EnabledFlag,               out flag) && !flag);
+    }
 
-	[NonSerialized]
-	public bool showConnectivityIcons = true;
+    protected override void OnSpawn() {
+        var component = GetComponent<Building>();
+        cell = component.GetUtilityOutputCell();
+        smi  = new StatesInstance(this);
+        smi.StartSM();
+    }
 
-	[MyCmpGet]
-	[NonSerialized]
-	public Structure structure;
+    public State GetEndPointState() {
+        var result   = State.Invalid;
+        var endpoint = endpointType;
+        if (endpoint != Endpoint.Source) {
+            if (endpoint == Endpoint.Sink) {
+                result = State.Ready;
+                var num                             = cell;
+                if (!IsValidOutputCell(num)) result = Grid.Solid[num] ? State.Blocked : State.OverPressure;
+            }
+        } else
+            result = IsConnected() ? State.Ready : State.Blocked;
 
-	[MyCmpGet]
-	[NonSerialized]
-	public Operational operational;
+        return result;
+    }
 
-	public enum State
-	{
-		Invalid,
-		Ready,
-		Blocked,
-		OverPressure,
-		Closed
-	}
+    public bool IsConnected() {
+        var networkForCell = Conduit.GetNetworkManager(conduitType).GetNetworkForCell(cell);
+        return networkForCell != null && (networkForCell as FlowUtilityNetwork).HasSinks;
+    }
 
-	public class StatesInstance : GameStateMachine<Vent.States, Vent.StatesInstance, Vent, object>.GameInstance
-	{
-		public StatesInstance(Vent master) : base(master)
-		{
-			this.exhaust = master.GetComponent<Exhaust>();
-		}
+    private bool IsValidOutputCell(int output_cell) {
+        var result = false;
+        if ((structure == null || !structure.IsEntombed() || !Closed()) && !Grid.Solid[output_cell])
+            result = Grid.Mass[output_cell] < overpressureMass;
 
-		public bool NeedsExhaust()
-		{
-			return this.exhaust != null && base.master.GetEndPointState() != Vent.State.Ready && base.master.endpointType == Endpoint.Source;
-		}
+        return result;
+    }
 
-		public bool Blocked()
-		{
-			return base.master.GetEndPointState() == Vent.State.Blocked && base.master.endpointType > Endpoint.Source;
-		}
+    public class StatesInstance : GameStateMachine<States, StatesInstance, Vent, object>.GameInstance {
+        private readonly Exhaust exhaust;
+        public StatesInstance(Vent master) : base(master) { exhaust = master.GetComponent<Exhaust>(); }
 
-		public bool OverPressure()
-		{
-			return this.exhaust != null && base.master.GetEndPointState() == Vent.State.OverPressure && base.master.endpointType > Endpoint.Source;
-		}
+        public bool NeedsExhaust() {
+            return exhaust                   != null        &&
+                   master.GetEndPointState() != State.Ready &&
+                   master.endpointType       == Endpoint.Source;
+        }
 
-		public void CheckTransitions()
-		{
-			if (this.NeedsExhaust())
-			{
-				base.smi.GoTo(base.sm.needExhaust);
-				return;
-			}
-			if (base.master.Closed())
-			{
-				base.smi.GoTo(base.sm.closed);
-				return;
-			}
-			if (this.Blocked())
-			{
-				base.smi.GoTo(base.sm.open.blocked);
-				return;
-			}
-			if (this.OverPressure())
-			{
-				base.smi.GoTo(base.sm.open.overPressure);
-				return;
-			}
-			base.smi.GoTo(base.sm.open.idle);
-		}
+        public bool Blocked() {
+            return master.GetEndPointState() == State.Blocked && master.endpointType > Endpoint.Source;
+        }
 
-		public StatusItem SelectStatusItem(StatusItem gas_status_item, StatusItem liquid_status_item)
-		{
-			if (base.master.conduitType != ConduitType.Gas)
-			{
-				return liquid_status_item;
-			}
-			return gas_status_item;
-		}
+        public bool OverPressure() {
+            return exhaust                   != null               &&
+                   master.GetEndPointState() == State.OverPressure &&
+                   master.endpointType       > Endpoint.Source;
+        }
 
-		private Exhaust exhaust;
-	}
+        public void CheckTransitions() {
+            if (NeedsExhaust()) {
+                smi.GoTo(sm.needExhaust);
+                return;
+            }
 
-	public class States : GameStateMachine<Vent.States, Vent.StatesInstance, Vent>
-	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
-		{
-			default_state = this.open.idle;
-			this.root.Update("CheckTransitions", delegate(Vent.StatesInstance smi, float dt)
-			{
-				smi.CheckTransitions();
-			}, UpdateRate.SIM_200ms, false);
-			this.open.TriggerOnEnter(GameHashes.VentOpen, null);
-			this.closed.TriggerOnEnter(GameHashes.VentClosed, null);
-			this.open.blocked.ToggleStatusItem((Vent.StatesInstance smi) => smi.SelectStatusItem(Db.Get().BuildingStatusItems.GasVentObstructed, Db.Get().BuildingStatusItems.LiquidVentObstructed), null);
-			this.open.overPressure.ToggleStatusItem((Vent.StatesInstance smi) => smi.SelectStatusItem(Db.Get().BuildingStatusItems.GasVentOverPressure, Db.Get().BuildingStatusItems.LiquidVentOverPressure), null);
-		}
+            if (master.Closed()) {
+                smi.GoTo(sm.closed);
+                return;
+            }
 
-		public Vent.States.OpenState open;
+            if (Blocked()) {
+                smi.GoTo(sm.open.blocked);
+                return;
+            }
 
-		public GameStateMachine<Vent.States, Vent.StatesInstance, Vent, object>.State closed;
+            if (OverPressure()) {
+                smi.GoTo(sm.open.overPressure);
+                return;
+            }
 
-		public GameStateMachine<Vent.States, Vent.StatesInstance, Vent, object>.State needExhaust;
+            smi.GoTo(sm.open.idle);
+        }
 
-		public class OpenState : GameStateMachine<Vent.States, Vent.StatesInstance, Vent, object>.State
-		{
-			public GameStateMachine<Vent.States, Vent.StatesInstance, Vent, object>.State idle;
+        public StatusItem SelectStatusItem(StatusItem gas_status_item, StatusItem liquid_status_item) {
+            if (master.conduitType != ConduitType.Gas) return liquid_status_item;
 
-			public GameStateMachine<Vent.States, Vent.StatesInstance, Vent, object>.State blocked;
+            return gas_status_item;
+        }
+    }
 
-			public GameStateMachine<Vent.States, Vent.StatesInstance, Vent, object>.State overPressure;
-		}
-	}
+    public class States : GameStateMachine<States, StatesInstance, Vent> {
+        public State     closed;
+        public State     needExhaust;
+        public OpenState open;
+
+        public override void InitializeStates(out BaseState default_state) {
+            default_state = open.idle;
+            root.Update("CheckTransitions", delegate(StatesInstance smi, float dt) { smi.CheckTransitions(); });
+            open.TriggerOnEnter(GameHashes.VentOpen);
+            closed.TriggerOnEnter(GameHashes.VentClosed);
+            open.blocked.ToggleStatusItem(smi => smi.SelectStatusItem(Db.Get().BuildingStatusItems.GasVentObstructed,
+                                                                      Db.Get()
+                                                                        .BuildingStatusItems.LiquidVentObstructed));
+
+            open.overPressure.ToggleStatusItem(smi =>
+                                                   smi.SelectStatusItem(Db.Get()
+                                                                          .BuildingStatusItems.GasVentOverPressure,
+                                                                        Db.Get()
+                                                                          .BuildingStatusItems.LiquidVentOverPressure));
+        }
+
+        public class OpenState : State {
+            public State blocked;
+            public State idle;
+            public State overPressure;
+        }
+    }
 }

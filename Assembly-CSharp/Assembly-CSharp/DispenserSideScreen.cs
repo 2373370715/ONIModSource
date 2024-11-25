@@ -6,19 +6,19 @@ using UnityEngine.UI;
 
 public class DispenserSideScreen : SideScreenContent
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<IDispenser>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.targetDispenser = target.GetComponent<IDispenser>();
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		this.dispenseButton.ClearOnClick();
 		foreach (KeyValuePair<Tag, GameObject> keyValuePair in this.rows)
@@ -57,22 +57,22 @@ public class DispenserSideScreen : SideScreenContent
 		this.targetDispenser.OnStopWorkEvent += this.Refresh;
 	}
 
-	private void SelectTag(Tag tag)
+		private void SelectTag(Tag tag)
 	{
 		this.targetDispenser.SelectItem(tag);
 		this.Refresh();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton dispenseButton;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform itemRowContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject itemRowPrefab;
 
-	private IDispenser targetDispenser;
+		private IDispenser targetDispenser;
 
-	private Dictionary<Tag, GameObject> rows = new Dictionary<Tag, GameObject>();
+		private Dictionary<Tag, GameObject> rows = new Dictionary<Tag, GameObject>();
 }

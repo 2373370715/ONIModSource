@@ -2,13 +2,13 @@
 
 public class GameOverScreen : KModalScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.Init();
 	}
 
-	private void Init()
+		private void Init()
 	{
 		if (this.QuitButton)
 		{
@@ -26,17 +26,17 @@ public class GameOverScreen : KModalScreen
 		}
 	}
 
-	private void Quit()
+		private void Quit()
 	{
 		PauseScreen.TriggerQuitGame();
 	}
 
-	private void Dismiss()
+		private void Dismiss()
 	{
 		this.Show(false);
 	}
 
-	public KButton DismissButton;
+		public KButton DismissButton;
 
-	public KButton QuitButton;
+		public KButton QuitButton;
 }

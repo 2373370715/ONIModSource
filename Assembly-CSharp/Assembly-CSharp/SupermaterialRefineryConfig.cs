@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SupermaterialRefineryConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SupermaterialRefinery";
 		int width = 4;
@@ -29,7 +29,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -165,7 +165,7 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
@@ -210,13 +210,13 @@ public class SupermaterialRefineryConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "SupermaterialRefinery";
+		public const string ID = "SupermaterialRefinery";
 
-	private const float INPUT_KG = 100f;
+		private const float INPUT_KG = 100f;
 
-	private const float OUTPUT_KG = 100f;
+		private const float OUTPUT_KG = 100f;
 
-	private const float OUTPUT_TEMPERATURE = 313.15f;
+		private const float OUTPUT_TEMPERATURE = 313.15f;
 
-	private HashedString[] dupeInteractAnims;
+		private HashedString[] dupeInteractAnims;
 }

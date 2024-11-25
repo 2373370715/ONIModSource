@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Compostable")]
 public class Compostable : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.isMarkedForCompost = base.GetComponent<KPrefabID>().HasTag(GameTags.Compostable);
@@ -17,7 +17,7 @@ public class Compostable : KMonoBehaviour
 		base.Subscribe<Compostable>(856640610, Compostable.OnStoreDelegate);
 	}
 
-	private void MarkForCompost(bool force = false)
+		private void MarkForCompost(bool force = false)
 	{
 		this.RefreshStatusItem();
 		Storage storage = base.GetComponent<Pickupable>().storage;
@@ -27,7 +27,7 @@ public class Compostable : KMonoBehaviour
 		}
 	}
 
-	private void OnToggleCompost()
+		private void OnToggleCompost()
 	{
 		if (!this.isMarkedForCompost)
 		{
@@ -51,7 +51,7 @@ public class Compostable : KMonoBehaviour
 		}
 	}
 
-	private void RefreshStatusItem()
+		private void RefreshStatusItem()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		component.RemoveStatusItem(Db.Get().MiscStatusItems.MarkedForCompost, false);
@@ -67,12 +67,12 @@ public class Compostable : KMonoBehaviour
 		}
 	}
 
-	private void OnStore(object data)
+		private void OnStore(object data)
 	{
 		this.RefreshStatusItem();
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		KIconButtonMenu.ButtonInfo button;
 		if (!this.isMarkedForCompost)
@@ -86,19 +86,19 @@ public class Compostable : KMonoBehaviour
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public bool isMarkedForCompost;
 
-	public GameObject originalPrefab;
+		public GameObject originalPrefab;
 
-	public GameObject compostPrefab;
+		public GameObject compostPrefab;
 
-	private static readonly EventSystem.IntraObjectHandler<Compostable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Compostable>(delegate(Compostable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Compostable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Compostable>(delegate(Compostable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Compostable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Compostable>(delegate(Compostable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Compostable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Compostable>(delegate(Compostable component, object data)
 	{
 		component.OnStore(data);
 	});

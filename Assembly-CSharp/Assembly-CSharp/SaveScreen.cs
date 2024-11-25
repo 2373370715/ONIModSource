@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SaveScreen : KModalScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.oldSaveButtonPrefab.gameObject.SetActive(false);
@@ -14,7 +14,7 @@ public class SaveScreen : KModalScreen
 		this.closeButton.onClick += this.Deactivate;
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		foreach (SaveLoader.SaveFileEntry saveFileEntry in SaveLoader.GetAllColonyFiles(true, SearchOption.TopDirectoryOnly))
 		{
@@ -23,13 +23,13 @@ public class SaveScreen : KModalScreen
 		SpeedControlScreen.Instance.Pause(true, false);
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		SpeedControlScreen.Instance.Unpause(true);
 		base.OnDeactivate();
 	}
 
-	private void AddExistingSaveFile(string filename)
+		private void AddExistingSaveFile(string filename)
 	{
 		KButton kbutton = Util.KInstantiateUI<KButton>(this.oldSaveButtonPrefab.gameObject, this.oldSavesRoot.gameObject, true);
 		HierarchyReferences component = kbutton.GetComponent<HierarchyReferences>();
@@ -44,7 +44,7 @@ public class SaveScreen : KModalScreen
 		};
 	}
 
-	public static string GetValidSaveFilename(string filename)
+		public static string GetValidSaveFilename(string filename)
 	{
 		string text = ".sav";
 		if (Path.GetExtension(filename).ToLower() != text)
@@ -54,7 +54,7 @@ public class SaveScreen : KModalScreen
 		return filename;
 	}
 
-	public void Save(string filename)
+		public void Save(string filename)
 	{
 		filename = SaveScreen.GetValidSaveFilename(filename);
 		if (File.Exists(filename))
@@ -68,11 +68,12 @@ public class SaveScreen : KModalScreen
 		this.DoSave(filename);
 	}
 
-	private void DoSave(string filename)
+		private void DoSave(string filename)
 	{
 		try
 		{
 			SaveLoader.Instance.Save(filename, false, true);
+			PauseScreen.Instance.OnSaveComplete();
 			this.Deactivate();
 		}
 		catch (IOException ex)
@@ -92,7 +93,7 @@ public class SaveScreen : KModalScreen
 		}
 	}
 
-	public void OnClickNewSave()
+		public void OnClickNewSave()
 	{
 		FileNameDialog fileNameDialog = (FileNameDialog)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.FileNameDialog.gameObject, base.transform.parent.gameObject);
 		string activeSaveFilePath = SaveLoader.GetActiveSaveFilePath();
@@ -109,7 +110,7 @@ public class SaveScreen : KModalScreen
 		};
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape))
 		{
@@ -118,20 +119,20 @@ public class SaveScreen : KModalScreen
 		e.Consumed = true;
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		e.Consumed = true;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton newSaveButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton oldSaveButtonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private Transform oldSavesRoot;
 }

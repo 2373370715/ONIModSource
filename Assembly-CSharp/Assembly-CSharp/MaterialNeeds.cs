@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/MaterialNeeds")]
 public static class MaterialNeeds
 {
-	public static void UpdateNeed(Tag tag, float amount, int worldId)
+		public static void UpdateNeed(Tag tag, float amount, int worldId)
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(worldId);
 		if (world != null)
@@ -22,7 +22,7 @@ public static class MaterialNeeds
 		global::Debug.LogWarning(string.Format("MaterialNeeds.UpdateNeed called with invalid worldId {0}", worldId));
 	}
 
-	public static float GetAmount(Tag tag, int worldId, bool includeRelatedWorlds)
+		public static float GetAmount(Tag tag, int worldId, bool includeRelatedWorlds)
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(worldId);
 		float num = 0f;

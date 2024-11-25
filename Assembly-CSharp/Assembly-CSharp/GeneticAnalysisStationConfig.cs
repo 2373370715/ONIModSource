@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class GeneticAnalysisStationConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "GeneticAnalysisStation";
 		int width = 7;
@@ -34,7 +34,7 @@ public class GeneticAnalysisStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.ScienceBuilding, false);
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -53,11 +53,11 @@ public class GeneticAnalysisStationConfig : IBuildingConfig
 		manualDeliveryKG.capacity = 5f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public override void ConfigurePost(BuildingDef def)
+		public override void ConfigurePost(BuildingDef def)
 	{
 		List<Tag> list = new List<Tag>();
 		foreach (GameObject gameObject in Assets.GetPrefabsWithTag(GameTags.CropSeed))
@@ -70,5 +70,5 @@ public class GeneticAnalysisStationConfig : IBuildingConfig
 		def.BuildingComplete.GetComponent<Storage>().storageFilters = list;
 	}
 
-	public const string ID = "GeneticAnalysisStation";
+		public const string ID = "GeneticAnalysisStation";
 }

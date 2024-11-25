@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GasConduitDiseaseSensorConfig : ConduitSensorConfig
 {
-		protected override ConduitType ConduitType
+			protected override ConduitType ConduitType
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class GasConduitDiseaseSensorConfig : ConduitSensorConfig
 		}
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef result = base.CreateBuildingDef(GasConduitDiseaseSensorConfig.ID, "gas_germs_sensor_kanim", new float[]
 		{
@@ -32,7 +32,7 @@ public class GasConduitDiseaseSensorConfig : ConduitSensorConfig
 		return result;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		base.DoPostConfigureComplete(go);
 		ConduitDiseaseSensor conduitDiseaseSensor = go.AddComponent<ConduitDiseaseSensor>();
@@ -44,5 +44,5 @@ public class GasConduitDiseaseSensorConfig : ConduitSensorConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "GasConduitDiseaseSensor";
+		public static string ID = "GasConduitDiseaseSensor";
 }

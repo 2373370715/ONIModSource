@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIPool<T> where T : MonoBehaviour
 {
-		public int ActiveElementsCount
+			public int ActiveElementsCount
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class UIPool<T> where T : MonoBehaviour
 		}
 	}
 
-		public int FreeElementsCount
+			public int FreeElementsCount
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class UIPool<T> where T : MonoBehaviour
 		}
 	}
 
-		public int TotalElementsCount
+			public int TotalElementsCount
 	{
 		get
 		{
@@ -28,14 +28,14 @@ public class UIPool<T> where T : MonoBehaviour
 		}
 	}
 
-	public UIPool(T prefab)
+		public UIPool(T prefab)
 	{
 		this.prefab = prefab;
 		this.freeElements = new List<T>();
 		this.activeElements = new List<T>();
 	}
 
-	public T GetFreeElement(GameObject instantiateParent = null, bool forceActive = false)
+		public T GetFreeElement(GameObject instantiateParent = null, bool forceActive = false)
 	{
 		if (this.freeElements.Count == 0)
 		{
@@ -59,7 +59,7 @@ public class UIPool<T> where T : MonoBehaviour
 		return t2;
 	}
 
-	public void ClearElement(T element)
+		public void ClearElement(T element)
 	{
 		if (!this.activeElements.Contains(element))
 		{
@@ -75,7 +75,7 @@ public class UIPool<T> where T : MonoBehaviour
 		this.activeElements.Remove(element);
 	}
 
-	public void ClearAll()
+		public void ClearAll()
 	{
 		while (this.activeElements.Count > 0)
 		{
@@ -89,13 +89,13 @@ public class UIPool<T> where T : MonoBehaviour
 		}
 	}
 
-	public void DestroyAll()
+		public void DestroyAll()
 	{
 		this.DestroyAllActive();
 		this.DestroyAllFree();
 	}
 
-	public void DestroyAllActive()
+		public void DestroyAllActive()
 	{
 		this.activeElements.ForEach(delegate(T ae)
 		{
@@ -104,7 +104,7 @@ public class UIPool<T> where T : MonoBehaviour
 		this.activeElements.Clear();
 	}
 
-	public void DestroyAllFree()
+		public void DestroyAllFree()
 	{
 		this.freeElements.ForEach(delegate(T ae)
 		{
@@ -113,21 +113,21 @@ public class UIPool<T> where T : MonoBehaviour
 		this.freeElements.Clear();
 	}
 
-	public void ForEachActiveElement(Action<T> predicate)
+		public void ForEachActiveElement(Action<T> predicate)
 	{
 		this.activeElements.ForEach(predicate);
 	}
 
-	public void ForEachFreeElement(Action<T> predicate)
+		public void ForEachFreeElement(Action<T> predicate)
 	{
 		this.freeElements.ForEach(predicate);
 	}
 
-	private T prefab;
+		private T prefab;
 
-	private List<T> freeElements = new List<T>();
+		private List<T> freeElements = new List<T>();
 
-	private List<T> activeElements = new List<T>();
+		private List<T> activeElements = new List<T>();
 
-	public Transform disabledElementParent;
+		public Transform disabledElementParent;
 }

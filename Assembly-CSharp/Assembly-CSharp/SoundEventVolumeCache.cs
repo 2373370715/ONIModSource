@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class SoundEventVolumeCache : Singleton<SoundEventVolumeCache>
 {
-		public static SoundEventVolumeCache instance
+			public static SoundEventVolumeCache instance
 	{
 		get
 		{
@@ -11,7 +11,7 @@ public class SoundEventVolumeCache : Singleton<SoundEventVolumeCache>
 		}
 	}
 
-	public void AddVolume(string animFile, string eventName, EffectorValues vals)
+		public void AddVolume(string animFile, string eventName, EffectorValues vals)
 	{
 		HashedString key = new HashedString(animFile + ":" + eventName);
 		if (!this.volumeCache.ContainsKey(key))
@@ -22,7 +22,7 @@ public class SoundEventVolumeCache : Singleton<SoundEventVolumeCache>
 		this.volumeCache[key] = vals;
 	}
 
-	public EffectorValues GetVolume(string animFile, string eventName)
+		public EffectorValues GetVolume(string animFile, string eventName)
 	{
 		HashedString key = new HashedString(animFile + ":" + eventName);
 		if (!this.volumeCache.ContainsKey(key))
@@ -32,5 +32,5 @@ public class SoundEventVolumeCache : Singleton<SoundEventVolumeCache>
 		return this.volumeCache[key];
 	}
 
-	public Dictionary<HashedString, EffectorValues> volumeCache = new Dictionary<HashedString, EffectorValues>();
+		public Dictionary<HashedString, EffectorValues> volumeCache = new Dictionary<HashedString, EffectorValues>();
 }

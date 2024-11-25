@@ -3,18 +3,18 @@ using STRINGS;
 
 public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 {
-	public TakeMedicineChore(MedicinalPillWorkable master) : base(Db.Get().ChoreTypes.TakeMedicine, master, null, false, null, null, null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+		public TakeMedicineChore(MedicinalPillWorkable master) : base(Db.Get().ChoreTypes.TakeMedicine, master, null, false, null, null, null, PriorityScreen.PriorityClass.personalNeeds, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		this.medicine = master;
 		this.pickupable = this.medicine.GetComponent<Pickupable>();
 		base.smi = new TakeMedicineChore.StatesInstance(this);
-		base.AddPrecondition(ChorePreconditions.instance.CanPickup, this.pickupable);
-		base.AddPrecondition(TakeMedicineChore.CanCure, this);
-		base.AddPrecondition(TakeMedicineChore.IsConsumptionPermitted, this);
-		base.AddPrecondition(ChorePreconditions.instance.IsNotARobot, this);
+		this.AddPrecondition(ChorePreconditions.instance.CanPickup, this.pickupable);
+		this.AddPrecondition(TakeMedicineChore.CanCure, this);
+		this.AddPrecondition(TakeMedicineChore.IsConsumptionPermitted, this);
+		this.AddPrecondition(ChorePreconditions.instance.IsNotARobot, null);
 	}
 
-	public override void Begin(Chore.Precondition.Context context)
+		public override void Begin(Chore.Precondition.Context context)
 	{
 		base.smi.sm.source.Set(this.pickupable.gameObject, base.smi, false);
 		base.smi.sm.requestedpillcount.Set(1f, base.smi, false);
@@ -23,11 +23,11 @@ public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 		new TakeMedicineChore(this.medicine);
 	}
 
-	private Pickupable pickupable;
+		private Pickupable pickupable;
 
-	private MedicinalPillWorkable medicine;
+		private MedicinalPillWorkable medicine;
 
-	public static readonly Chore.Precondition CanCure = new Chore.Precondition
+		public static readonly Chore.Precondition CanCure = new Chore.Precondition
 	{
 		id = "CanCure",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.CAN_CURE,
@@ -37,7 +37,7 @@ public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 		}
 	};
 
-	public static readonly Chore.Precondition IsConsumptionPermitted = new Chore.Precondition
+		public static readonly Chore.Precondition IsConsumptionPermitted = new Chore.Precondition
 	{
 		id = "IsConsumptionPermitted",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.IS_CONSUMPTION_PERMITTED,
@@ -49,16 +49,16 @@ public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 		}
 	};
 
-	public class StatesInstance : GameStateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.GameInstance
 	{
-		public StatesInstance(TakeMedicineChore master) : base(master)
+				public StatesInstance(TakeMedicineChore master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore>
+		public class States : GameStateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.fetch;
 			base.Target(this.eater);
@@ -66,22 +66,22 @@ public class TakeMedicineChore : Chore<TakeMedicineChore.StatesInstance>
 			this.takemedicine.ToggleAnims("anim_eat_floor_kanim", 0f).ToggleTag(GameTags.TakingMedicine).ToggleWork("TakeMedicine", delegate(TakeMedicineChore.StatesInstance smi)
 			{
 				MedicinalPillWorkable workable = this.chunk.Get<MedicinalPillWorkable>(smi);
-				this.eater.Get<Worker>(smi).StartWork(new Worker.StartWorkInfo(workable));
+				this.eater.Get<WorkerBase>(smi).StartWork(new WorkerBase.StartWorkInfo(workable));
 			}, (TakeMedicineChore.StatesInstance smi) => this.chunk.Get<MedicinalPill>(smi) != null, null, null);
 		}
 
-		public StateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.TargetParameter eater;
+				public StateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.TargetParameter eater;
 
-		public StateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.TargetParameter source;
+				public StateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.TargetParameter source;
 
-		public StateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.TargetParameter chunk;
+				public StateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.TargetParameter chunk;
 
-		public StateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.FloatParameter requestedpillcount;
+				public StateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.FloatParameter requestedpillcount;
 
-		public StateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.FloatParameter actualpillcount;
+				public StateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.FloatParameter actualpillcount;
 
-		public GameStateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.FetchSubState fetch;
+				public GameStateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.FetchSubState fetch;
 
-		public GameStateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.State takemedicine;
+				public GameStateMachine<TakeMedicineChore.States, TakeMedicineChore.StatesInstance, TakeMedicineChore, object>.State takemedicine;
 	}
 }

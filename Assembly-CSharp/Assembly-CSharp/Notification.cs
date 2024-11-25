@@ -5,30 +5,30 @@ using UnityEngine;
 
 public class Notification
 {
-			public NotificationType Type { get; set; }
+				public NotificationType Type { get; set; }
 
-			public Notifier Notifier { get; set; }
+				public Notifier Notifier { get; set; }
 
-			public Transform clickFocus { get; set; }
+				public Transform clickFocus { get; set; }
 
-			public float Time { get; set; }
+				public float Time { get; set; }
 
-			public float GameTime { get; set; }
+				public float GameTime { get; set; }
 
-			public float Delay { get; set; }
+				public float Delay { get; set; }
 
-			public int Idx { get; set; }
+				public int Idx { get; set; }
 
-			public Func<List<Notification>, object, string> ToolTip { get; set; }
+				public Func<List<Notification>, object, string> ToolTip { get; set; }
 
-	public bool IsReady()
+		public bool IsReady()
 	{
 		return UnityEngine.Time.time >= this.GameTime + this.Delay;
 	}
 
-			public string titleText { get; private set; }
+				public string titleText { get; private set; }
 
-			public string NotifierName
+				public string NotifierName
 	{
 		get
 		{
@@ -41,7 +41,7 @@ public class Notification
 		}
 	}
 
-	public Notification(string title, NotificationType type, Func<List<Notification>, object, string> tooltip = null, object tooltip_data = null, bool expires = true, float delay = 0f, Notification.ClickCallback custom_click_callback = null, object custom_click_data = null, Transform click_focus = null, bool volume_attenuation = true, bool clear_on_click = false, bool show_dismiss_button = false)
+		public Notification(string title, NotificationType type, Func<List<Notification>, object, string> tooltip = null, object tooltip_data = null, bool expires = true, float delay = 0f, Notification.ClickCallback custom_click_callback = null, object custom_click_data = null, Transform click_focus = null, bool volume_attenuation = true, bool clear_on_click = false, bool show_dismiss_button = false)
 	{
 		this.titleText = title;
 		this.Type = type;
@@ -60,7 +60,7 @@ public class Notification
 		this.Idx = num;
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		if (this.Notifier != null)
 		{
@@ -70,7 +70,7 @@ public class Notification
 		NotificationManager.Instance.RemoveNotification(this);
 	}
 
-	private string ReplaceTags(string text)
+		private string ReplaceTags(string text)
 	{
 		DebugUtil.Assert(text != null);
 		int num = text.IndexOf('{');
@@ -100,7 +100,7 @@ public class Notification
 		return text;
 	}
 
-	private string GetTagDescription(string tag)
+		private string GetTagDescription(string tag)
 	{
 		string result;
 		if (tag == "NotifierName")
@@ -114,25 +114,25 @@ public class Notification
 		return result;
 	}
 
-	public object tooltipData;
+		public object tooltipData;
 
-	public bool expires = true;
+		public bool expires = true;
 
-	public bool playSound = true;
+		public bool playSound = true;
 
-	public bool volume_attenuation = true;
+		public bool volume_attenuation = true;
 
-	public Notification.ClickCallback customClickCallback;
+		public Notification.ClickCallback customClickCallback;
 
-	public bool clearOnClick;
+		public bool clearOnClick;
 
-	public bool showDismissButton;
+		public bool showDismissButton;
 
-	public object customClickData;
+		public object customClickData;
 
-	private int notificationIncrement;
+		private int notificationIncrement;
 
-	private string notifierName;
+		private string notifierName;
 
-		public delegate void ClickCallback(object data);
+			public delegate void ClickCallback(object data);
 }

@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class SandboxSprinkleTool : BrushTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SandboxSprinkleTool.instance = null;
 	}
 
-		private SandboxSettings settings
+			private SandboxSettings settings
 	{
 		get
 		{
@@ -18,18 +18,18 @@ public class SandboxSprinkleTool : BrushTool
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		SandboxSprinkleTool.instance = this;
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		PlayerController.Instance.ActivateTool(this);
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		SandboxToolParameterMenu.instance.gameObject.SetActive(true);
@@ -45,13 +45,13 @@ public class SandboxSprinkleTool : BrushTool
 		SandboxToolParameterMenu.instance.brushRadiusSlider.SetValue((float)this.settings.GetIntSetting("SandboxTools.BrushSize"), true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		SandboxToolParameterMenu.instance.gameObject.SetActive(false);
 	}
 
-	public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
+		public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
 	{
 		colors = new HashSet<ToolMenu.CellColorData>();
 		foreach (int num in this.recentlyAffectedCells)
@@ -76,7 +76,7 @@ public class SandboxSprinkleTool : BrushTool
 		}
 	}
 
-	public override void SetBrushSize(int radius)
+		public override void SetBrushSize(int radius)
 	{
 		this.brushRadius = radius;
 		this.brushOffsets.Clear();
@@ -97,18 +97,18 @@ public class SandboxSprinkleTool : BrushTool
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.OnMouseMove(Grid.CellToPos(this.currentCell));
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		base.OnMouseMove(cursorPos);
 		this.SetBrushSize(this.settings.GetIntSetting("SandboxTools.BrushSize"));
 	}
 
-	protected override void OnPaintCell(int cell, int distFromOrigin)
+		protected override void OnPaintCell(int cell, int distFromOrigin)
 	{
 		base.OnPaintCell(cell, distFromOrigin);
 		this.recentlyAffectedCells.Add(cell);
@@ -143,7 +143,7 @@ public class SandboxSprinkleTool : BrushTool
 		this.SetBrushSize(this.brushRadius);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.SandboxCopyElement))
 		{
@@ -159,9 +159,9 @@ public class SandboxSprinkleTool : BrushTool
 		}
 	}
 
-	public static SandboxSprinkleTool instance;
+		public static SandboxSprinkleTool instance;
 
-	protected HashSet<int> recentlyAffectedCells = new HashSet<int>();
+		protected HashSet<int> recentlyAffectedCells = new HashSet<int>();
 
-	private Dictionary<int, Color> recentAffectedCellColor = new Dictionary<int, Color>();
+		private Dictionary<int, Color> recentAffectedCellColor = new Dictionary<int, Color>();
 }

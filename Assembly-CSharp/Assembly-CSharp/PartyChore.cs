@@ -2,76 +2,73 @@
 using Klei.AI;
 using TUNING;
 
-public class PartyChore : Chore<PartyChore.StatesInstance>, IWorkerPrioritizable
-{
-	public PartyChore(IStateMachineTarget master, Workable chat_workable, Action<Chore> on_complete = null, Action<Chore> on_begin = null, Action<Chore> on_end = null) : base(Db.Get().ChoreTypes.Party, master, master.GetComponent<ChoreProvider>(), true, on_complete, on_begin, on_end, PriorityScreen.PriorityClass.high, 5, false, true, 0, false, ReportManager.ReportType.PersonalTime)
-	{
-		base.smi = new PartyChore.StatesInstance(this);
-		base.smi.sm.chitchatlocator.Set(chat_workable, base.smi);
-		base.AddPrecondition(ChorePreconditions.instance.CanMoveTo, chat_workable);
-		base.AddPrecondition(ChorePreconditions.instance.IsNotRedAlert, null);
-	}
+public class PartyChore : Chore<PartyChore.StatesInstance>, IWorkerPrioritizable {
+    public const string specificEffect = "Socialized";
+    public const string trackingEffect = "RecentlySocialized";
+    public       int    basePriority   = RELAXATION.PRIORITY.SPECIAL_EVENT;
 
-	public override void Begin(Chore.Precondition.Context context)
-	{
-		base.smi.sm.partyer.Set(context.consumerState.gameObject, base.smi, false);
-		base.Begin(context);
-		base.smi.sm.partyer.Get(base.smi).gameObject.AddTag(GameTags.Partying);
-	}
+    public PartyChore(IStateMachineTarget master,
+                      Workable            chat_workable,
+                      Action<Chore>       on_complete = null,
+                      Action<Chore>       on_begin    = null,
+                      Action<Chore>       on_end      = null) : base(Db.Get().ChoreTypes.Party,
+                                                                     master,
+                                                                     master.GetComponent<ChoreProvider>(),
+                                                                     true,
+                                                                     on_complete,
+                                                                     on_begin,
+                                                                     on_end,
+                                                                     PriorityScreen.PriorityClass.high,
+                                                                     5,
+                                                                     false,
+                                                                     true,
+                                                                     0,
+                                                                     false,
+                                                                     ReportManager.ReportType.PersonalTime) {
+        smi = new StatesInstance(this);
+        smi.sm.chitchatlocator.Set(chat_workable, smi);
+        AddPrecondition(ChorePreconditions.instance.CanMoveTo, chat_workable);
+        AddPrecondition(ChorePreconditions.instance.IsNotRedAlert);
+    }
 
-	protected override void End(string reason)
-	{
-		if (base.smi.sm.partyer.Get(base.smi) != null)
-		{
-			base.smi.sm.partyer.Get(base.smi).gameObject.RemoveTag(GameTags.Partying);
-		}
-		base.End(reason);
-	}
+    public bool GetWorkerPriority(WorkerBase worker, out int priority) {
+        priority = basePriority;
+        return true;
+    }
 
-	public bool GetWorkerPriority(Worker worker, out int priority)
-	{
-		priority = this.basePriority;
-		return true;
-	}
+    public override void Begin(Precondition.Context context) {
+        smi.sm.partyer.Set(context.consumerState.gameObject, smi);
+        base.Begin(context);
+        smi.sm.partyer.Get(smi).gameObject.AddTag(GameTags.Partying);
+    }
 
-	public int basePriority = RELAXATION.PRIORITY.SPECIAL_EVENT;
+    protected override void End(string reason) {
+        if (smi.sm.partyer.Get(smi) != null) smi.sm.partyer.Get(smi).gameObject.RemoveTag(GameTags.Partying);
+        base.End(reason);
+    }
 
-	public const string specificEffect = "Socialized";
+    public class States : GameStateMachine<States, StatesInstance, PartyChore> {
+        public State                           chat;
+        public ApproachSubState<IApproachable> chat_move;
+        public TargetParameter                 chitchatlocator;
+        public TargetParameter                 partyer;
+        public ApproachSubState<IApproachable> stand;
+        public State                           success;
 
-	public const string trackingEffect = "RecentlySocialized";
+        public override void InitializeStates(out BaseState default_state) {
+            default_state = stand;
+            Target(partyer);
+            stand.InitializeStates(partyer, masterTarget, chat);
+            chat_move.InitializeStates(partyer, chitchatlocator, chat);
+            chat.ToggleWork<Workable>(chitchatlocator, success, null, null);
+            success.Enter(delegate(StatesInstance smi) {
+                              partyer.Get(smi).gameObject.GetComponent<Effects>().Add("RecentlyPartied", true);
+                          })
+                   .ReturnSuccess();
+        }
+    }
 
-	public class States : GameStateMachine<PartyChore.States, PartyChore.StatesInstance, PartyChore>
-	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
-		{
-			default_state = this.stand;
-			base.Target(this.partyer);
-			this.stand.InitializeStates(this.partyer, this.masterTarget, this.chat, null, null, null);
-			this.chat_move.InitializeStates(this.partyer, this.chitchatlocator, this.chat, null, null, null);
-			this.chat.ToggleWork<Workable>(this.chitchatlocator, this.success, null, null);
-			this.success.Enter(delegate(PartyChore.StatesInstance smi)
-			{
-				this.partyer.Get(smi).gameObject.GetComponent<Effects>().Add("RecentlyPartied", true);
-			}).ReturnSuccess();
-		}
-
-		public StateMachine<PartyChore.States, PartyChore.StatesInstance, PartyChore, object>.TargetParameter partyer;
-
-		public StateMachine<PartyChore.States, PartyChore.StatesInstance, PartyChore, object>.TargetParameter chitchatlocator;
-
-		public GameStateMachine<PartyChore.States, PartyChore.StatesInstance, PartyChore, object>.ApproachSubState<IApproachable> stand;
-
-		public GameStateMachine<PartyChore.States, PartyChore.StatesInstance, PartyChore, object>.ApproachSubState<IApproachable> chat_move;
-
-		public GameStateMachine<PartyChore.States, PartyChore.StatesInstance, PartyChore, object>.State chat;
-
-		public GameStateMachine<PartyChore.States, PartyChore.StatesInstance, PartyChore, object>.State success;
-	}
-
-	public class StatesInstance : GameStateMachine<PartyChore.States, PartyChore.StatesInstance, PartyChore, object>.GameInstance
-	{
-		public StatesInstance(PartyChore master) : base(master)
-		{
-		}
-	}
+    public class StatesInstance : GameStateMachine<States, StatesInstance, PartyChore, object>.GameInstance {
+        public StatesInstance(PartyChore master) : base(master) { }
+    }
 }

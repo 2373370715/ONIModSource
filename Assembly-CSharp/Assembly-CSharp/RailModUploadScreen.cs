@@ -5,33 +5,33 @@ using UnityEngine;
 
 public class RailModUploadScreen : KModalScreen
 {
-	[SerializeField]
+		[SerializeField]
 	private KButton[] closeButtons;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton submitButton;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip submitButtonTooltip;
 
-	[SerializeField]
+		[SerializeField]
 	private TMP_InputField modName;
 
-	[SerializeField]
+		[SerializeField]
 	private TMP_InputField modDesc;
 
-	[SerializeField]
+		[SerializeField]
 	private TMP_InputField modVersion;
 
-	[SerializeField]
+		[SerializeField]
 	private TMP_InputField contentFolder;
 
-	[SerializeField]
+		[SerializeField]
 	private TMP_InputField previewImage;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle[] shareTypeToggles;
 
-	[Serialize]
+		[Serialize]
 	private string previousFolderPath;
 }

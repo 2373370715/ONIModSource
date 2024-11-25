@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FlowOffsetRenderer")]
 public class FlowOffsetRenderer : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.FlowMaterial = new Material(Shader.Find("Klei/Flow"));
 		ScreenResize instance = ScreenResize.Instance;
@@ -13,7 +13,7 @@ public class FlowOffsetRenderer : KMonoBehaviour
 		this.DoUpdate(0.1f);
 	}
 
-	private void OnResize()
+		private void OnResize()
 	{
 		for (int i = 0; i < this.OffsetTextures.Length; i++)
 		{
@@ -27,7 +27,7 @@ public class FlowOffsetRenderer : KMonoBehaviour
 		}
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if ((Time.deltaTime > 0f && Time.timeScale > 0f) || this.forceUpdate)
 		{
@@ -36,7 +36,7 @@ public class FlowOffsetRenderer : KMonoBehaviour
 		}
 	}
 
-	private void DoUpdate(float dt)
+		private void DoUpdate(float dt)
 	{
 		this.CurrentTime += dt;
 		float num = this.CurrentTime * this.PhaseMultiplier;
@@ -70,39 +70,39 @@ public class FlowOffsetRenderer : KMonoBehaviour
 		Shader.SetGlobalTexture(this.OffsetTextureName, renderTexture2);
 	}
 
-	private float GasPhase0;
+		private float GasPhase0;
 
-	private float GasPhase1;
+		private float GasPhase1;
 
-	public float PhaseMultiplier;
+		public float PhaseMultiplier;
 
-	public float NoiseInfluence;
+		public float NoiseInfluence;
 
-	public float NoiseScale;
+		public float NoiseScale;
 
-	public float OffsetSpeed;
+		public float OffsetSpeed;
 
-	public string OffsetTextureName;
+		public string OffsetTextureName;
 
-	public string ParametersName;
+		public string ParametersName;
 
-	public Vector2 MinFlow0;
+		public Vector2 MinFlow0;
 
-	public Vector2 MinFlow1;
+		public Vector2 MinFlow1;
 
-	public Vector2 LiquidGasMask;
+		public Vector2 LiquidGasMask;
 
-	[SerializeField]
+		[SerializeField]
 	private Material FlowMaterial;
 
-	[SerializeField]
+		[SerializeField]
 	private bool forceUpdate;
 
-	private TextureLerper FlowLerper;
+		private TextureLerper FlowLerper;
 
-	public RenderTexture[] OffsetTextures = new RenderTexture[2];
+		public RenderTexture[] OffsetTextures = new RenderTexture[2];
 
-	private int OffsetIdx;
+		private int OffsetIdx;
 
-	private float CurrentTime;
+		private float CurrentTime;
 }

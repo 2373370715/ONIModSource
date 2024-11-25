@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class ScoutLanderConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "ScoutLander";
 		string name = STRINGS.BUILDINGS.PREFABS.SCOUTLANDER.NAME;
@@ -49,7 +49,7 @@ public class ScoutLanderConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		OccupyArea component = inst.GetComponent<OccupyArea>();
 		component.ApplyToCells = false;
@@ -59,13 +59,13 @@ public class ScoutLanderConfig : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "ScoutLander";
+		public const string ID = "ScoutLander";
 
-	public const string PREVIEW_ID = "ScoutLander_Preview";
+		public const string PREVIEW_ID = "ScoutLander_Preview";
 
-	public const float MASS = 400f;
+		public const float MASS = 400f;
 }

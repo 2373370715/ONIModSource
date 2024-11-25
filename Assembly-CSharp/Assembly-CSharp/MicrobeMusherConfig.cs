@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MicrobeMusherConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MicrobeMusher";
 		int width = 2;
@@ -30,7 +30,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<DropAllWorkable>();
 		Prioritizable.AddRef(go);
@@ -50,7 +50,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		go.AddOrGetDef<PoweredController.Def>();
 	}
 
-	private void ConfigureRecipes()
+		private void ConfigureRecipes()
 	{
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[]
 		{
@@ -64,7 +64,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		MushBarConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MicrobeMusher", array, array2), array, array2)
 		{
 			time = 40f,
-			description = ITEMS.FOOD.MUSHBAR.RECIPEDESC,
+			description = STRINGS.ITEMS.FOOD.MUSHBAR.RECIPEDESC,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.Result,
 			fabricators = new List<Tag>
 			{
@@ -84,7 +84,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		BasicPlantBarConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MicrobeMusher", array3, array4), array3, array4)
 		{
 			time = FOOD.RECIPES.STANDARD_COOK_TIME,
-			description = ITEMS.FOOD.BASICPLANTBAR.RECIPEDESC,
+			description = STRINGS.ITEMS.FOOD.BASICPLANTBAR.RECIPEDESC,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.Result,
 			fabricators = new List<Tag>
 			{
@@ -104,7 +104,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		TofuConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MicrobeMusher", array5, array6), array5, array6)
 		{
 			time = FOOD.RECIPES.STANDARD_COOK_TIME,
-			description = ITEMS.FOOD.TOFU.RECIPEDESC,
+			description = STRINGS.ITEMS.FOOD.TOFU.RECIPEDESC,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.Result,
 			fabricators = new List<Tag>
 			{
@@ -124,7 +124,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		FruitCakeConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MicrobeMusher", array7, array8), array7, array8)
 		{
 			time = FOOD.RECIPES.STANDARD_COOK_TIME,
-			description = ITEMS.FOOD.FRUITCAKE.RECIPEDESC,
+			description = STRINGS.ITEMS.FOOD.FRUITCAKE.RECIPEDESC,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.Result,
 			fabricators = new List<Tag>
 			{
@@ -144,7 +144,7 @@ public class MicrobeMusherConfig : IBuildingConfig
 		PemmicanConfig.recipe = new ComplexRecipe(ComplexRecipeManager.MakeRecipeID("MicrobeMusher", array9, array10), array9, array10, DlcManager.AVAILABLE_DLC_2)
 		{
 			time = FOOD.RECIPES.STANDARD_COOK_TIME,
-			description = ITEMS.FOOD.PEMMICAN.RECIPEDESC,
+			description = STRINGS.ITEMS.FOOD.PEMMICAN.RECIPEDESC,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.Result,
 			fabricators = new List<Tag>
 			{
@@ -154,11 +154,11 @@ public class MicrobeMusherConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "MicrobeMusher";
+		public const string ID = "MicrobeMusher";
 
-	public static EffectorValues DECOR = TUNING.BUILDINGS.DECOR.PENALTY.TIER2;
+		public static EffectorValues DECOR = TUNING.BUILDINGS.DECOR.PENALTY.TIER2;
 }

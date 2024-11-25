@@ -3,14 +3,14 @@ using STRINGS;
 
 namespace Database
 {
-	public class ReachedSpace : VictoryColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class ReachedSpace : VictoryColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public ReachedSpace(SpaceDestinationType destinationType = null)
+				public ReachedSpace(SpaceDestinationType destinationType = null)
 		{
 			this.destinationType = destinationType;
 		}
 
-		public override string Name()
+				public override string Name()
 		{
 			if (this.destinationType != null)
 			{
@@ -19,7 +19,7 @@ namespace Database
 			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.REACH_SPACE_ANY_DESTINATION;
 		}
 
-		public override string Description()
+				public override string Description()
 		{
 			if (this.destinationType != null)
 			{
@@ -28,7 +28,7 @@ namespace Database
 			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.REACH_SPACE_ANY_DESTINATION_DESCRIPTION;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			foreach (Spacecraft spacecraft in SpacecraftManager.instance.GetSpacecraft())
 			{
@@ -48,7 +48,7 @@ namespace Database
 			return SpacecraftManager.instance.hasVisitedWormHole;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			if (reader.ReadByte() <= 0)
 			{
@@ -57,7 +57,7 @@ namespace Database
 			}
 		}
 
-		public override string GetProgress(bool completed)
+				public override string GetProgress(bool completed)
 		{
 			if (this.destinationType == null)
 			{
@@ -66,6 +66,6 @@ namespace Database
 			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.LAUNCHED_ROCKET_TO_WORMHOLE;
 		}
 
-		private SpaceDestinationType destinationType;
+				private SpaceDestinationType destinationType;
 	}
 }

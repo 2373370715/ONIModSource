@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class LeadSuitLockerConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LeadSuitLocker";
 		int width = 2;
@@ -34,7 +34,7 @@ public class LeadSuitLockerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<SuitLocker>().OutfitTags = new Tag[]
 		{
@@ -57,10 +57,10 @@ public class LeadSuitLockerConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 	}
 
-	public const string ID = "LeadSuitLocker";
+		public const string ID = "LeadSuitLocker";
 }

@@ -8,7 +8,7 @@ using UnityEngine.UI.Extensions;
 [AddComponentMenu("KMonoBehaviour/scripts/ResearchEntry")]
 public class ResearchEntry : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.techLineMap = new Dictionary<Tech, UILineRenderer>();
@@ -57,7 +57,7 @@ public class ResearchEntry : KMonoBehaviour
 		}
 	}
 
-	public void SetTech(Tech newTech)
+		public void SetTech(Tech newTech)
 	{
 		if (newTech == null)
 		{
@@ -93,7 +93,7 @@ public class ResearchEntry : KMonoBehaviour
 		string text = "";
 		foreach (TechItem techItem in this.targetTech.unlockedItems)
 		{
-			if (SaveLoader.Instance.IsDlcListActiveForCurrentSave(techItem.dlcIds))
+			if (SaveLoader.Instance.IsCorrectDlcActiveForCurrentSave(techItem.requiredDlcIds, techItem.forbiddenDlcIds))
 			{
 				HierarchyReferences component2 = this.GetFreeIcon().GetComponent<HierarchyReferences>();
 				if (text != "")
@@ -104,16 +104,20 @@ public class ResearchEntry : KMonoBehaviour
 				component2.GetReference<KImage>("Icon").sprite = techItem.UISprite();
 				component2.GetReference<KImage>("Background");
 				KImage reference = component2.GetReference<KImage>("DLCOverlay");
-				bool flag = !DlcManager.IsValidForVanilla(techItem.dlcIds);
+				bool flag = techItem.requiredDlcIds != null;
 				reference.gameObject.SetActive(flag);
 				if (flag)
 				{
-					reference.color = DlcManager.GetDlcBannerColor(techItem.dlcIds[0]);
+					reference.color = DlcManager.GetDlcBannerColor(techItem.requiredDlcIds[techItem.requiredDlcIds.Length - 1]);
 				}
 				string text2 = string.Format("{0}\n{1}", techItem.Name, techItem.description);
-				if (!DlcManager.IsValidForVanilla(techItem.dlcIds))
+				if (flag)
 				{
-					text2 += string.Format(RESEARCH.MESSAGING.DLC.DLC_CONTENT, DlcManager.GetDlcTitle(techItem.dlcIds[0]));
+					text2 += "\n";
+					foreach (string dlcId in techItem.requiredDlcIds)
+					{
+						text2 += string.Format(RESEARCH.MESSAGING.DLC.DLC_CONTENT, DlcManager.GetDlcTitle(dlcId));
+					}
 				}
 				component2.GetComponent<ToolTip>().toolTip = text2;
 			}
@@ -134,7 +138,7 @@ public class ResearchEntry : KMonoBehaviour
 		};
 	}
 
-	public void SetEverythingOff()
+		public void SetEverythingOff()
 	{
 		if (!this.isOn)
 		{
@@ -149,7 +153,7 @@ public class ResearchEntry : KMonoBehaviour
 		this.isOn = false;
 	}
 
-	public void SetEverythingOn()
+		public void SetEverythingOn()
 	{
 		if (this.isOn)
 		{
@@ -166,7 +170,7 @@ public class ResearchEntry : KMonoBehaviour
 		this.isOn = true;
 	}
 
-	public void OnHover(bool entered, Tech hoverSource)
+		public void OnHover(bool entered, Tech hoverSource)
 	{
 		this.SetEverythingOn();
 		foreach (Tech tech in this.targetTech.requiredTech)
@@ -179,7 +183,7 @@ public class ResearchEntry : KMonoBehaviour
 		}
 	}
 
-	private void OnResearchClicked()
+		private void OnResearchClicked()
 	{
 		TechInstance activeResearch = Research.Instance.GetActiveResearch();
 		if (activeResearch != null && activeResearch.tech != this.targetTech)
@@ -194,7 +198,7 @@ public class ResearchEntry : KMonoBehaviour
 		this.UpdateProgressBars();
 	}
 
-	private void OnResearchCanceled()
+		private void OnResearchCanceled()
 	{
 		if (this.targetTech.IsComplete())
 		{
@@ -206,7 +210,7 @@ public class ResearchEntry : KMonoBehaviour
 		Research.Instance.CancelResearch(this.targetTech, true);
 	}
 
-	public void QueueStateChanged(bool isSelected)
+		public void QueueStateChanged(bool isSelected)
 	{
 		if (isSelected)
 		{
@@ -262,16 +266,16 @@ public class ResearchEntry : KMonoBehaviour
 		}
 	}
 
-	public void UpdateFilterState(bool state)
+		public void UpdateFilterState(bool state)
 	{
 		this.filterLowlight.gameObject.SetActive(!state);
 	}
 
-	public void SetPercentage(float percent)
+		public void SetPercentage(float percent)
 	{
 	}
 
-	public void UpdateProgressBars()
+		public void UpdateProgressBars()
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.progressBarsByResearchTypeID)
 		{
@@ -297,19 +301,19 @@ public class ResearchEntry : KMonoBehaviour
 		}
 	}
 
-	private GameObject GetFreeIcon()
+		private GameObject GetFreeIcon()
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.iconPrefab, this.iconPanel, false);
 		gameObject.SetActive(true);
 		return gameObject;
 	}
 
-	private Image GetFreeLine()
+		private Image GetFreeLine()
 	{
 		return Util.KInstantiateUI<Image>(this.linePrefab.gameObject, base.gameObject, false);
 	}
 
-	public void ResearchCompleted(bool notify = true)
+		public void ResearchCompleted(bool notify = true)
 	{
 		this.BG.color = this.completedColor;
 		this.titleBG.color = this.completedHeaderColor;
@@ -328,101 +332,101 @@ public class ResearchEntry : KMonoBehaviour
 		}
 	}
 
-	[Header("Labels")]
+		[Header("Labels")]
 	[SerializeField]
 	private LocText researchName;
 
-	[Header("Transforms")]
+		[Header("Transforms")]
 	[SerializeField]
 	private Transform progressBarContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private Transform lineContainer;
 
-	[Header("Prefabs")]
+		[Header("Prefabs")]
 	[SerializeField]
 	private GameObject iconPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject iconPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject linePrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject progressBarPrefab;
 
-	[Header("Graphics")]
+		[Header("Graphics")]
 	[SerializeField]
 	private Image BG;
 
-	[SerializeField]
+		[SerializeField]
 	private Image titleBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Image borderHighlight;
 
-	[SerializeField]
+		[SerializeField]
 	private Image filterHighlight;
 
-	[SerializeField]
+		[SerializeField]
 	private Image filterLowlight;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite hoverBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite completedBG;
 
-	[Header("Colors")]
+		[Header("Colors")]
 	[SerializeField]
 	private Color defaultColor = Color.blue;
 
-	[SerializeField]
+		[SerializeField]
 	private Color completedColor = Color.yellow;
 
-	[SerializeField]
+		[SerializeField]
 	private Color pendingColor = Color.magenta;
 
-	[SerializeField]
+		[SerializeField]
 	private Color completedHeaderColor = Color.grey;
 
-	[SerializeField]
+		[SerializeField]
 	private Color incompleteHeaderColor = Color.grey;
 
-	[SerializeField]
+		[SerializeField]
 	private Color pendingHeaderColor = Color.grey;
 
-	private Sprite defaultBG;
+		private Sprite defaultBG;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KToggle toggle;
 
-	private ResearchScreen researchScreen;
+		private ResearchScreen researchScreen;
 
-	private Dictionary<Tech, UILineRenderer> techLineMap;
+		private Dictionary<Tech, UILineRenderer> techLineMap;
 
-	private Tech targetTech;
+		private Tech targetTech;
 
-	private bool isOn = true;
+		private bool isOn = true;
 
-	private Coroutine fadeRoutine;
+		private Coroutine fadeRoutine;
 
-	public Color activeLineColor;
+		public Color activeLineColor;
 
-	public Color inactiveLineColor;
+		public Color inactiveLineColor;
 
-	public int lineThickness_active = 6;
+		public int lineThickness_active = 6;
 
-	public int lineThickness_inactive = 2;
+		public int lineThickness_inactive = 2;
 
-	public Material StandardUIMaterial;
+		public Material StandardUIMaterial;
 
-	private Dictionary<string, GameObject> progressBarsByResearchTypeID = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> progressBarsByResearchTypeID = new Dictionary<string, GameObject>();
 
-	public static readonly string UnlockedTechKey = "UnlockedTech";
+		public static readonly string UnlockedTechKey = "UnlockedTech";
 
-	private Dictionary<string, object> unlockedTechMetric = new Dictionary<string, object>
+		private Dictionary<string, object> unlockedTechMetric = new Dictionary<string, object>
 	{
 		{
 			ResearchEntry.UnlockedTechKey,

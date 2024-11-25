@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SolidConduitBridgeConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SolidConduitBridge";
 		int width = 3;
@@ -36,24 +36,24 @@ public class SolidConduitBridgeConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.GetComponent<Constructable>().requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<SolidConduitBridge>();
 	}
 
-	public const string ID = "SolidConduitBridge";
+		public const string ID = "SolidConduitBridge";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
 }

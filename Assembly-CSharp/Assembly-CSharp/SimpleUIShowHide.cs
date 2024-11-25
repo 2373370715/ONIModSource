@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SimpleUIShowHide")]
 public class SimpleUIShowHide : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		MultiToggle multiToggle = this.toggle;
@@ -15,7 +15,7 @@ public class SimpleUIShowHide : KMonoBehaviour
 		}
 	}
 
-	private void OnClick()
+		private void OnClick()
 	{
 		this.toggle.NextState();
 		this.content.SetActive(this.toggle.CurrentState == 0);
@@ -25,14 +25,14 @@ public class SimpleUIShowHide : KMonoBehaviour
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private MultiToggle toggle;
 
-	[SerializeField]
+		[SerializeField]
 	public GameObject content;
 
-	[SerializeField]
+		[SerializeField]
 	private string saveStatePreferenceKey;
 
-	private const int onState = 0;
+		private const int onState = 0;
 }

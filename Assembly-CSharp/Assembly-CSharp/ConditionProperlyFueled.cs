@@ -3,12 +3,12 @@ using STRINGS;
 
 public class ConditionProperlyFueled : ProcessCondition
 {
-	public ConditionProperlyFueled(IFuelTank fuelTank)
+		public ConditionProperlyFueled(IFuelTank fuelTank)
 	{
 		this.fuelTank = fuelTank;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		RocketModuleCluster component = ((KMonoBehaviour)this.fuelTank).GetComponent<RocketModuleCluster>();
 		if (component != null && component.CraftInterface != null)
@@ -45,7 +45,7 @@ public class ConditionProperlyFueled : ProcessCondition
 		return ProcessCondition.Status.Failure;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		string result;
 		if (status != ProcessCondition.Status.Failure)
@@ -66,7 +66,7 @@ public class ConditionProperlyFueled : ProcessCondition
 		return result;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		Clustercraft component = ((KMonoBehaviour)this.fuelTank).GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>();
 		string result;
@@ -95,10 +95,10 @@ public class ConditionProperlyFueled : ProcessCondition
 		return result;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private IFuelTank fuelTank;
+		private IFuelTank fuelTank;
 }

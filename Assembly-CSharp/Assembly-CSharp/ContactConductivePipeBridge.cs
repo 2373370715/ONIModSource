@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class ContactConductivePipeBridge : GameStateMachine<ContactConductivePipeBridge, ContactConductivePipeBridge.Instance, IStateMachineTarget, ContactConductivePipeBridge.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.noLiquid;
 		this.noLiquid.PlayAnim("off", KAnim.PlayMode.Once).ParamTransition<float>(this.noLiquidTimer, this.withLiquid, GameStateMachine<ContactConductivePipeBridge, ContactConductivePipeBridge.Instance, IStateMachineTarget, ContactConductivePipeBridge.Def>.IsGTZero);
 		this.withLiquid.Update(new Action<ContactConductivePipeBridge.Instance, float>(ContactConductivePipeBridge.ExpirationTimerUpdate), UpdateRate.SIM_200ms, false).PlayAnim("on", KAnim.PlayMode.Loop).ParamTransition<float>(this.noLiquidTimer, this.noLiquid, GameStateMachine<ContactConductivePipeBridge, ContactConductivePipeBridge.Instance, IStateMachineTarget, ContactConductivePipeBridge.Def>.IsLTEZero);
 	}
 
-	private static void ExpirationTimerUpdate(ContactConductivePipeBridge.Instance smi, float dt)
+		private static void ExpirationTimerUpdate(ContactConductivePipeBridge.Instance smi, float dt)
 	{
 		float num = smi.sm.noLiquidTimer.Get(smi);
 		num -= dt;
 		smi.sm.noLiquidTimer.Set(num, smi, false);
 	}
 
-	private static float CalculateMaxWattsTransfered(float buildingTemperature, float building_thermal_conductivity, float content_temperature, float content_thermal_conductivity)
+		private static float CalculateMaxWattsTransfered(float buildingTemperature, float building_thermal_conductivity, float content_temperature, float content_thermal_conductivity)
 	{
 		float num = 1f;
 		float num2 = 1f;
@@ -28,7 +28,7 @@ public class ContactConductivePipeBridge : GameStateMachine<ContactConductivePip
 		return num4 * num5 * num * num3 / num2;
 	}
 
-	private static float GetKilloJoulesTransfered(float maxWattsTransfered, float dt, float building_Temperature, float building_heat_capacity, float content_temperature, float content_heat_capacity)
+		private static float GetKilloJoulesTransfered(float maxWattsTransfered, float dt, float building_Temperature, float building_heat_capacity, float content_temperature, float content_heat_capacity)
 	{
 		float num = maxWattsTransfered * dt / 1000f;
 		float min = Mathf.Min(content_temperature, building_Temperature);
@@ -44,7 +44,7 @@ public class ContactConductivePipeBridge : GameStateMachine<ContactConductivePip
 		return Mathf.Min(a, b) * Mathf.Sign(maxWattsTransfered);
 	}
 
-	private static float GetFinalContentTemperature(float KJT, float building_Temperature, float building_heat_capacity, float content_temperature, float content_heat_capacity)
+		private static float GetFinalContentTemperature(float KJT, float building_Temperature, float building_heat_capacity, float content_temperature, float content_heat_capacity)
 	{
 		float num = -KJT;
 		float num2 = Mathf.Max(0f, content_temperature + num / content_heat_capacity);
@@ -56,7 +56,7 @@ public class ContactConductivePipeBridge : GameStateMachine<ContactConductivePip
 		return num2;
 	}
 
-	private static float GetFinalBuildingTemperature(float content_temperature, float content_final_temperature, float content_heat_capacity, float building_temperature, float building_heat_capacity)
+		private static float GetFinalBuildingTemperature(float content_temperature, float content_final_temperature, float content_heat_capacity, float building_temperature, float building_heat_capacity)
 	{
 		float num = (content_temperature - content_final_temperature) * content_heat_capacity;
 		float min = Mathf.Min(content_temperature, building_temperature);
@@ -65,26 +65,26 @@ public class ContactConductivePipeBridge : GameStateMachine<ContactConductivePip
 		return Mathf.Clamp(building_temperature + num2, min, max);
 	}
 
-	private const string loopAnimName = "on";
+		private const string loopAnimName = "on";
 
-	private const string loopAnim_noWater = "off";
+		private const string loopAnim_noWater = "off";
 
-	private GameStateMachine<ContactConductivePipeBridge, ContactConductivePipeBridge.Instance, IStateMachineTarget, ContactConductivePipeBridge.Def>.State withLiquid;
+		private GameStateMachine<ContactConductivePipeBridge, ContactConductivePipeBridge.Instance, IStateMachineTarget, ContactConductivePipeBridge.Def>.State withLiquid;
 
-	private GameStateMachine<ContactConductivePipeBridge, ContactConductivePipeBridge.Instance, IStateMachineTarget, ContactConductivePipeBridge.Def>.State noLiquid;
+		private GameStateMachine<ContactConductivePipeBridge, ContactConductivePipeBridge.Instance, IStateMachineTarget, ContactConductivePipeBridge.Def>.State noLiquid;
 
-	private StateMachine<ContactConductivePipeBridge, ContactConductivePipeBridge.Instance, IStateMachineTarget, ContactConductivePipeBridge.Def>.FloatParameter noLiquidTimer;
+		private StateMachine<ContactConductivePipeBridge, ContactConductivePipeBridge.Instance, IStateMachineTarget, ContactConductivePipeBridge.Def>.FloatParameter noLiquidTimer;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public ConduitType type = ConduitType.Liquid;
+				public ConduitType type = ConduitType.Liquid;
 
-		public float pumpKGRate;
+				public float pumpKGRate;
 	}
 
-	public new class Instance : GameStateMachine<ContactConductivePipeBridge, ContactConductivePipeBridge.Instance, IStateMachineTarget, ContactConductivePipeBridge.Def>.GameInstance
+		public new class Instance : GameStateMachine<ContactConductivePipeBridge, ContactConductivePipeBridge.Instance, IStateMachineTarget, ContactConductivePipeBridge.Def>.GameInstance
 	{
-				public Tag tag
+						public Tag tag
 		{
 			get
 			{
@@ -96,11 +96,11 @@ public class ContactConductivePipeBridge : GameStateMachine<ContactConductivePip
 			}
 		}
 
-		public Instance(IStateMachineTarget master, ContactConductivePipeBridge.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ContactConductivePipeBridge.Def def) : base(master, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			this.inputCell = this.building.GetUtilityInputCell();
@@ -109,13 +109,13 @@ public class ContactConductivePipeBridge : GameStateMachine<ContactConductivePip
 			Conduit.GetFlowManager(this.type).AddConduitUpdater(new Action<float>(this.Flow), ConduitFlowPriority.Default);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.OnCleanUp();
 			Conduit.GetFlowManager(this.type).RemoveConduitUpdater(new Action<float>(this.Flow));
 		}
 
-		private void Flow(float dt)
+				private void Flow(float dt)
 		{
 			ConduitFlow flowManager = Conduit.GetFlowManager(this.type);
 			if (flowManager.HasConduit(this.inputCell) && flowManager.HasConduit(this.outputCell))
@@ -141,7 +141,7 @@ public class ContactConductivePipeBridge : GameStateMachine<ContactConductivePip
 			}
 		}
 
-		private float ExchangeStorageTemperatureWithBuilding(ConduitFlow.ConduitContents content, float mass, float dt)
+				private float ExchangeStorageTemperatureWithBuilding(ConduitFlow.ConduitContents content, float mass, float dt)
 		{
 			PrimaryElement component = this.building.GetComponent<PrimaryElement>();
 			float building_thermal_conductivity = component.Element.thermalConductivity * this.building.Def.ThermalConductivity;
@@ -165,15 +165,15 @@ public class ContactConductivePipeBridge : GameStateMachine<ContactConductivePip
 			return 0f;
 		}
 
-		public ConduitType type = ConduitType.Liquid;
+				public ConduitType type = ConduitType.Liquid;
 
-		public HandleVector<int>.Handle structureHandle;
+				public HandleVector<int>.Handle structureHandle;
 
-		public int inputCell = -1;
+				public int inputCell = -1;
 
-		public int outputCell = -1;
+				public int outputCell = -1;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public Building building;
 	}
 }

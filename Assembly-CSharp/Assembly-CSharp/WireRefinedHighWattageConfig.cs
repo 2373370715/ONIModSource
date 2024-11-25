@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WireRefinedHighWattageConfig : BaseWireConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "WireRefinedHighWattage";
 		string anim = "utilities_electric_conduct_hiwatt_kanim";
@@ -18,16 +18,16 @@ public class WireRefinedHighWattageConfig : BaseWireConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		base.DoPostConfigureComplete(Wire.WattageRating.Max50000, go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.GetComponent<Constructable>().requiredSkillPerk = Db.Get().SkillPerks.CanPowerTinker.Id;
 	}
 
-	public const string ID = "WireRefinedHighWattage";
+		public const string ID = "WireRefinedHighWattage";
 }

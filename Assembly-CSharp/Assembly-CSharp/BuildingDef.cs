@@ -11,7 +11,7 @@ using UnityEngine;
 [Serializable]
 public class BuildingDef : Def
 {
-		public override string Name
+			public override string Name
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class BuildingDef : Def
 		}
 	}
 
-		public string Desc
+			public string Desc
 	{
 		get
 		{
@@ -27,7 +27,7 @@ public class BuildingDef : Def
 		}
 	}
 
-		public string Flavor
+			public string Flavor
 	{
 		get
 		{
@@ -35,7 +35,7 @@ public class BuildingDef : Def
 		}
 	}
 
-		public string Effect
+			public string Effect
 	{
 		get
 		{
@@ -43,7 +43,7 @@ public class BuildingDef : Def
 		}
 	}
 
-		public bool IsTilePiece
+			public bool IsTilePiece
 	{
 		get
 		{
@@ -51,22 +51,22 @@ public class BuildingDef : Def
 		}
 	}
 
-	public bool CanReplace(GameObject go)
+		public bool CanReplace(GameObject go)
 	{
 		return this.ReplacementTags != null && go.GetComponent<KPrefabID>().HasAnyTags(this.ReplacementTags);
 	}
 
-	public bool IsAvailable()
+		public bool IsAvailable()
 	{
 		return !this.Deprecated && (!this.DebugOnly || Game.Instance.DebugOnlyBuildingsAllowed);
 	}
 
-	public bool ShouldShowInBuildMenu()
+		public bool ShouldShowInBuildMenu()
 	{
 		return this.ShowInBuildMenu;
 	}
 
-	public bool IsReplacementLayerOccupied(int cell)
+		public bool IsReplacementLayerOccupied(int cell)
 	{
 		if (Grid.Objects[cell, (int)this.ReplacementLayer] != null)
 		{
@@ -86,7 +86,7 @@ public class BuildingDef : Def
 		return false;
 	}
 
-	public GameObject GetReplacementCandidate(int cell)
+		public GameObject GetReplacementCandidate(int cell)
 	{
 		if (this.ReplacementCandidateLayers != null)
 		{
@@ -115,7 +115,7 @@ public class BuildingDef : Def
 		return null;
 	}
 
-	public GameObject Create(Vector3 pos, Storage resource_storage, IList<Tag> selected_elements, Recipe recipe, float temperature, GameObject obj)
+		public GameObject Create(Vector3 pos, Storage resource_storage, IList<Tag> selected_elements, Recipe recipe, float temperature, GameObject obj)
 	{
 		SimUtil.DiseaseInfo diseaseInfo = SimUtil.DiseaseInfo.Invalid;
 		if (resource_storage != null)
@@ -145,7 +145,7 @@ public class BuildingDef : Def
 		return gameObject;
 	}
 
-	public List<Tag> DefaultElements()
+		public List<Tag> DefaultElements()
 	{
 		List<Tag> list = new List<Tag>();
 		string[] materialCategory = this.MaterialCategory;
@@ -160,7 +160,7 @@ public class BuildingDef : Def
 		return list;
 	}
 
-	public GameObject Build(int cell, Orientation orientation, Storage resource_storage, IList<Tag> selected_elements, float temperature, string facadeID, bool playsound = true, float timeBuilt = -1f)
+		public GameObject Build(int cell, Orientation orientation, Storage resource_storage, IList<Tag> selected_elements, float temperature, string facadeID, bool playsound = true, float timeBuilt = -1f)
 	{
 		GameObject gameObject = this.Build(cell, orientation, resource_storage, selected_elements, temperature, playsound, timeBuilt);
 		if (facadeID != null && facadeID != "DEFAULT_FACADE")
@@ -170,7 +170,7 @@ public class BuildingDef : Def
 		return gameObject;
 	}
 
-	public GameObject Build(int cell, Orientation orientation, Storage resource_storage, IList<Tag> selected_elements, float temperature, bool playsound = true, float timeBuilt = -1f)
+		public GameObject Build(int cell, Orientation orientation, Storage resource_storage, IList<Tag> selected_elements, float temperature, bool playsound = true, float timeBuilt = -1f)
 	{
 		Vector3 pos = Grid.CellToPosCBC(cell, this.SceneLayer);
 		GameObject gameObject = this.Create(pos, resource_storage, selected_elements, this.CraftRecipe, temperature, this.BuildingComplete);
@@ -217,17 +217,17 @@ public class BuildingDef : Def
 		return gameObject;
 	}
 
-	public GameObject TryPlace(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, int layer = 0)
+		public GameObject TryPlace(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, int layer = 0)
 	{
 		return this.TryPlace(src_go, pos, orientation, selected_elements, null, 0);
 	}
 
-	public GameObject TryPlace(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, string facadeID, int layer = 0)
+		public GameObject TryPlace(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, string facadeID, int layer = 0)
 	{
 		return this.TryPlace(src_go, pos, orientation, selected_elements, facadeID, true, layer);
 	}
 
-	public GameObject TryPlace(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, string facadeID, bool restrictToActiveWorld, int layer = 0)
+		public GameObject TryPlace(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, string facadeID, bool restrictToActiveWorld, int layer = 0)
 	{
 		GameObject gameObject = null;
 		string text;
@@ -251,7 +251,7 @@ public class BuildingDef : Def
 		return gameObject;
 	}
 
-	public GameObject TryReplaceTile(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, int layer = 0)
+		public GameObject TryReplaceTile(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, int layer = 0)
 	{
 		GameObject gameObject = null;
 		string text;
@@ -273,7 +273,7 @@ public class BuildingDef : Def
 		return gameObject;
 	}
 
-	public GameObject TryReplaceTile(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, string facadeID, int layer = 0)
+		public GameObject TryReplaceTile(GameObject src_go, Vector3 pos, Orientation orientation, IList<Tag> selected_elements, string facadeID, int layer = 0)
 	{
 		GameObject gameObject = this.TryReplaceTile(src_go, pos, orientation, selected_elements, layer);
 		if (gameObject != null)
@@ -294,7 +294,7 @@ public class BuildingDef : Def
 		return gameObject;
 	}
 
-	public GameObject Instantiate(Vector3 pos, Orientation orientation, IList<Tag> selected_elements, int layer = 0)
+		public GameObject Instantiate(Vector3 pos, Orientation orientation, IList<Tag> selected_elements, int layer = 0)
 	{
 		float num = -0.15f;
 		pos.z += num;
@@ -307,12 +307,12 @@ public class BuildingDef : Def
 		return gameObject;
 	}
 
-	private bool IsAreaClear(GameObject source_go, int cell, Orientation orientation, ObjectLayer layer, ObjectLayer tile_layer, bool replace_tile, out string fail_reason)
+		private bool IsAreaClear(GameObject source_go, int cell, Orientation orientation, ObjectLayer layer, ObjectLayer tile_layer, bool replace_tile, out string fail_reason)
 	{
 		return this.IsAreaClear(source_go, cell, orientation, layer, tile_layer, replace_tile, true, out fail_reason);
 	}
 
-	private bool IsAreaClear(GameObject source_go, int cell, Orientation orientation, ObjectLayer layer, ObjectLayer tile_layer, bool replace_tile, bool restrictToActiveWorld, out string fail_reason)
+		private bool IsAreaClear(GameObject source_go, int cell, Orientation orientation, ObjectLayer layer, ObjectLayer tile_layer, bool replace_tile, bool restrictToActiveWorld, out string fail_reason)
 	{
 		bool flag = true;
 		fail_reason = null;
@@ -534,7 +534,7 @@ public class BuildingDef : Def
 		return flag && this.AreLogicPortsInValidPositions(source_go, cell, out fail_reason);
 	}
 
-	private bool IsValidTileLocation(GameObject source_go, int cell, bool replacement_tile, ref string fail_reason)
+		private bool IsValidTileLocation(GameObject source_go, int cell, bool replacement_tile, ref string fail_reason)
 	{
 		GameObject gameObject = Grid.Objects[cell, 27];
 		if (gameObject != null && gameObject != source_go && gameObject.GetComponent<Building>().Def.BuildLocationRule == BuildLocationRule.NotInTiles)
@@ -561,7 +561,7 @@ public class BuildingDef : Def
 		return true;
 	}
 
-	public void RunOnArea(int cell, Orientation orientation, Action<int> callback)
+		public void RunOnArea(int cell, Orientation orientation, Action<int> callback)
 	{
 		for (int i = 0; i < this.PlacementOffsets.Length; i++)
 		{
@@ -571,7 +571,7 @@ public class BuildingDef : Def
 		}
 	}
 
-	public void MarkArea(int cell, Orientation orientation, ObjectLayer layer, GameObject go)
+		public void MarkArea(int cell, Orientation orientation, ObjectLayer layer, GameObject go)
 	{
 		if (this.BuildLocationRule != BuildLocationRule.Conduit && this.BuildLocationRule != BuildLocationRule.WireBridge && this.BuildLocationRule != BuildLocationRule.LogicBridge)
 		{
@@ -677,7 +677,7 @@ public class BuildingDef : Def
 		}
 	}
 
-	public void MarkOverlappingPorts(GameObject existing, GameObject replaced)
+		public void MarkOverlappingPorts(GameObject existing, GameObject replaced)
 	{
 		if (existing == null)
 		{
@@ -693,7 +693,7 @@ public class BuildingDef : Def
 		}
 	}
 
-	public void MarkOverlappingLogicPorts(GameObject existing, GameObject replaced, int cell)
+		public void MarkOverlappingLogicPorts(GameObject existing, GameObject replaced, int cell)
 	{
 		if (existing == null)
 		{
@@ -717,7 +717,7 @@ public class BuildingDef : Def
 		}
 	}
 
-	public void UnmarkArea(int cell, Orientation orientation, ObjectLayer layer, GameObject go)
+		public void UnmarkArea(int cell, Orientation orientation, ObjectLayer layer, GameObject go)
 	{
 		if (cell == Grid.InvalidCell)
 		{
@@ -828,39 +828,39 @@ public class BuildingDef : Def
 		}
 	}
 
-	public int GetBuildingCell(int cell)
+		public int GetBuildingCell(int cell)
 	{
 		return cell + (this.WidthInCells - 1) / 2;
 	}
 
-	public Vector3 GetVisualizerOffset()
+		public Vector3 GetVisualizerOffset()
 	{
 		return Vector3.right * (0.5f * (float)((this.WidthInCells + 1) % 2));
 	}
 
-	public bool IsValidPlaceLocation(GameObject source_go, Vector3 pos, Orientation orientation, out string fail_reason)
+		public bool IsValidPlaceLocation(GameObject source_go, Vector3 pos, Orientation orientation, out string fail_reason)
 	{
 		int cell = Grid.PosToCell(pos);
 		return this.IsValidPlaceLocation(source_go, cell, orientation, false, out fail_reason);
 	}
 
-	public bool IsValidPlaceLocation(GameObject source_go, Vector3 pos, Orientation orientation, bool replace_tile, out string fail_reason)
+		public bool IsValidPlaceLocation(GameObject source_go, Vector3 pos, Orientation orientation, bool replace_tile, out string fail_reason)
 	{
 		int cell = Grid.PosToCell(pos);
 		return this.IsValidPlaceLocation(source_go, cell, orientation, replace_tile, out fail_reason);
 	}
 
-	public bool IsValidPlaceLocation(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
+		public bool IsValidPlaceLocation(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
 	{
 		return this.IsValidPlaceLocation(source_go, cell, orientation, false, out fail_reason);
 	}
 
-	public bool IsValidPlaceLocation(GameObject source_go, int cell, Orientation orientation, bool replace_tile, out string fail_reason)
+		public bool IsValidPlaceLocation(GameObject source_go, int cell, Orientation orientation, bool replace_tile, out string fail_reason)
 	{
 		return this.IsValidPlaceLocation(source_go, cell, orientation, replace_tile, out fail_reason, false);
 	}
 
-	public bool IsValidPlaceLocation(GameObject source_go, int cell, Orientation orientation, bool replace_tile, out string fail_reason, bool restrictToActiveWorld)
+		public bool IsValidPlaceLocation(GameObject source_go, int cell, Orientation orientation, bool replace_tile, out string fail_reason, bool restrictToActiveWorld)
 	{
 		if (!Grid.IsValidBuildingCell(cell))
 		{
@@ -916,7 +916,7 @@ public class BuildingDef : Def
 		return this.IsAreaClear(source_go, cell, orientation, this.ObjectLayer, this.TileLayer, replace_tile, restrictToActiveWorld, out fail_reason);
 	}
 
-	public bool IsValidReplaceLocation(Vector3 pos, Orientation orientation, ObjectLayer replace_layer, ObjectLayer obj_layer)
+		public bool IsValidReplaceLocation(Vector3 pos, Orientation orientation, ObjectLayer replace_layer, ObjectLayer obj_layer)
 	{
 		if (replace_layer == ObjectLayer.NumLayers)
 		{
@@ -941,19 +941,19 @@ public class BuildingDef : Def
 		return result;
 	}
 
-	public bool IsValidBuildLocation(GameObject source_go, Vector3 pos, Orientation orientation, bool replace_tile = false)
+		public bool IsValidBuildLocation(GameObject source_go, Vector3 pos, Orientation orientation, bool replace_tile = false)
 	{
 		string text = "";
 		return this.IsValidBuildLocation(source_go, pos, orientation, out text, replace_tile);
 	}
 
-	public bool IsValidBuildLocation(GameObject source_go, Vector3 pos, Orientation orientation, out string reason, bool replace_tile = false)
+		public bool IsValidBuildLocation(GameObject source_go, Vector3 pos, Orientation orientation, out string reason, bool replace_tile = false)
 	{
 		int cell = Grid.PosToCell(pos);
 		return this.IsValidBuildLocation(source_go, cell, orientation, replace_tile, out reason);
 	}
 
-	public bool IsValidBuildLocation(GameObject source_go, int cell, Orientation orientation, bool replace_tile, out string fail_reason)
+		public bool IsValidBuildLocation(GameObject source_go, int cell, Orientation orientation, bool replace_tile, out string fail_reason)
 	{
 		if (!Grid.IsValidBuildingCell(cell))
 		{
@@ -1093,7 +1093,7 @@ public class BuildingDef : Def
 		return flag && this.AreConduitPortsInValidPositions(source_go, cell, orientation, out fail_reason);
 	}
 
-	private bool IsAreaValid(int cell, Orientation orientation, out string fail_reason)
+		private bool IsAreaValid(int cell, Orientation orientation, out string fail_reason)
 	{
 		bool result = true;
 		fail_reason = null;
@@ -1123,7 +1123,7 @@ public class BuildingDef : Def
 		return result;
 	}
 
-	private bool ArePowerPortsInValidPositions(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
+		private bool ArePowerPortsInValidPositions(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
 	{
 		fail_reason = null;
 		if (source_go == null)
@@ -1155,7 +1155,7 @@ public class BuildingDef : Def
 		return true;
 	}
 
-	private bool AreConduitPortsInValidPositions(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
+		private bool AreConduitPortsInValidPositions(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
 	{
 		fail_reason = null;
 		if (source_go == null)
@@ -1219,7 +1219,7 @@ public class BuildingDef : Def
 		return flag;
 	}
 
-	private bool IsValidWireBridgeLocation(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
+		private bool IsValidWireBridgeLocation(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
 	{
 		if (source_go == null)
 		{
@@ -1242,7 +1242,7 @@ public class BuildingDef : Def
 		return true;
 	}
 
-	private bool IsValidHighWattBridgeLocation(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
+		private bool IsValidHighWattBridgeLocation(GameObject source_go, int cell, Orientation orientation, out string fail_reason)
 	{
 		if (source_go == null)
 		{
@@ -1292,7 +1292,7 @@ public class BuildingDef : Def
 		return true;
 	}
 
-	private bool AreLogicPortsInValidPositions(GameObject source_go, int cell, out string fail_reason)
+		private bool AreLogicPortsInValidPositions(GameObject source_go, int cell, out string fail_reason)
 	{
 		fail_reason = null;
 		if (source_go == null)
@@ -1322,7 +1322,7 @@ public class BuildingDef : Def
 		return true;
 	}
 
-	private bool DoLogicPortsConflict(IList<ILogicUIElement> ports_a, IList<ILogicUIElement> ports_b)
+		private bool DoLogicPortsConflict(IList<ILogicUIElement> ports_a, IList<ILogicUIElement> ports_b)
 	{
 		if (ports_a == null || ports_b == null)
 		{
@@ -1342,7 +1342,7 @@ public class BuildingDef : Def
 		return false;
 	}
 
-	private bool IsLogicPortObstructed(int cell, IList<ILogicUIElement> ports)
+		private bool IsLogicPortObstructed(int cell, IList<ILogicUIElement> ports)
 	{
 		int num = 0;
 		using (IEnumerator<ILogicUIElement> enumerator = ports.GetEnumerator())
@@ -1358,7 +1358,7 @@ public class BuildingDef : Def
 		return num > 0;
 	}
 
-	private bool IsValidConduitConnection(GameObject source_go, ConduitType conduit_type, int utility_cell, ref string fail_reason)
+		private bool IsValidConduitConnection(GameObject source_go, ConduitType conduit_type, int utility_cell, ref string fail_reason)
 	{
 		bool result = true;
 		switch (conduit_type)
@@ -1397,12 +1397,12 @@ public class BuildingDef : Def
 		return result;
 	}
 
-	public static int GetXOffset(int width)
+		public static int GetXOffset(int width)
 	{
 		return -(width - 1) / 2;
 	}
 
-	public static bool CheckFoundation(int cell, Orientation orientation, BuildLocationRule location_rule, int width, int height, Tag optionalFoundationRequiredTag = default(Tag))
+		public static bool CheckFoundation(int cell, Orientation orientation, BuildLocationRule location_rule, int width, int height, Tag optionalFoundationRequiredTag = default(Tag))
 	{
 		if (location_rule == BuildLocationRule.OnWall)
 		{
@@ -1419,7 +1419,7 @@ public class BuildingDef : Def
 		return BuildingDef.CheckBaseFoundation(cell, orientation, location_rule, width, height, optionalFoundationRequiredTag);
 	}
 
-	public static bool CheckBaseFoundation(int cell, Orientation orientation, BuildLocationRule location_rule, int width, int height, Tag optionalFoundationRequiredTag = default(Tag))
+		public static bool CheckBaseFoundation(int cell, Orientation orientation, BuildLocationRule location_rule, int width, int height, Tag optionalFoundationRequiredTag = default(Tag))
 	{
 		int num = -(width - 1) / 2;
 		int num2 = width / 2;
@@ -1439,7 +1439,7 @@ public class BuildingDef : Def
 		return true;
 	}
 
-	public static bool CheckWallFoundation(int cell, int width, int height, bool leftWall)
+		public static bool CheckWallFoundation(int cell, int width, int height, bool leftWall)
 	{
 		for (int i = 0; i < height; i++)
 		{
@@ -1463,7 +1463,7 @@ public class BuildingDef : Def
 		return true;
 	}
 
-	public static bool AreAllCellsValid(int base_cell, Orientation orientation, int width, int height, Func<int, bool> valid_cell_check)
+		public static bool AreAllCellsValid(int base_cell, Orientation orientation, int width, int height, Func<int, bool> valid_cell_check)
 	{
 		int num = -(width - 1) / 2;
 		int num2 = width / 2;
@@ -1487,17 +1487,17 @@ public class BuildingDef : Def
 		return true;
 	}
 
-	public Sprite GetUISprite(string animName = "ui", bool centered = false)
+		public Sprite GetUISprite(string animName = "ui", bool centered = false)
 	{
 		return Def.GetUISpriteFromMultiObjectAnim(this.AnimFiles[0], animName, centered, "");
 	}
 
-	public void GenerateOffsets()
+		public void GenerateOffsets()
 	{
 		this.GenerateOffsets(this.WidthInCells, this.HeightInCells);
 	}
 
-	public void GenerateOffsets(int width, int height)
+		public void GenerateOffsets(int width, int height)
 	{
 		if (!BuildingDef.placementOffsetsCache.TryGetValue(new CellOffset(width, height), out this.PlacementOffsets))
 		{
@@ -1517,7 +1517,7 @@ public class BuildingDef : Def
 		}
 	}
 
-	public void PostProcess()
+		public void PostProcess()
 	{
 		this.CraftRecipe = new Recipe(this.BuildingComplete.PrefabID().Name, 1f, (SimHashes)0, this.Name, null, 0);
 		this.CraftRecipe.Icon = this.UISprite;
@@ -1537,11 +1537,11 @@ public class BuildingDef : Def
 		}
 		if (!this.Deprecated)
 		{
-			Db.Get().TechItems.AddTechItem(this.PrefabID, this.Name, this.Effect, new Func<string, bool, Sprite>(this.GetUISprite), this.RequiredDlcIds, this.POIUnlockable);
+			Db.Get().TechItems.AddTechItem(this.PrefabID, this.Name, this.Effect, new Func<string, bool, Sprite>(this.GetUISprite), this.RequiredDlcIds, this.ForbiddenDlcIds, this.POIUnlockable);
 		}
 	}
 
-	public bool MaterialsAvailable(IList<Tag> selected_elements, WorldContainer world)
+		public bool MaterialsAvailable(IList<Tag> selected_elements, WorldContainer world)
 	{
 		bool result = true;
 		foreach (Recipe.Ingredient ingredient in this.CraftRecipe.GetAllIngredients(selected_elements))
@@ -1555,62 +1555,62 @@ public class BuildingDef : Def
 		return result;
 	}
 
-	public bool CheckRequiresBuildingCellVisualizer()
+		public bool CheckRequiresBuildingCellVisualizer()
 	{
 		return this.CheckRequiresPowerInput() || this.CheckRequiresPowerOutput() || this.CheckRequiresGasInput() || this.CheckRequiresGasOutput() || this.CheckRequiresLiquidInput() || this.CheckRequiresLiquidOutput() || this.CheckRequiresSolidInput() || this.CheckRequiresSolidOutput() || this.CheckRequiresHighEnergyParticleInput() || this.CheckRequiresHighEnergyParticleOutput() || this.SelfHeatKilowattsWhenActive != 0f || this.ExhaustKilowattsWhenActive != 0f || this.DiseaseCellVisName != null;
 	}
 
-	public bool CheckRequiresPowerInput()
+		public bool CheckRequiresPowerInput()
 	{
 		return this.RequiresPowerInput;
 	}
 
-	public bool CheckRequiresPowerOutput()
+		public bool CheckRequiresPowerOutput()
 	{
 		return this.RequiresPowerOutput;
 	}
 
-	public bool CheckRequiresGasInput()
+		public bool CheckRequiresGasInput()
 	{
 		return this.InputConduitType == ConduitType.Gas;
 	}
 
-	public bool CheckRequiresGasOutput()
+		public bool CheckRequiresGasOutput()
 	{
 		return this.OutputConduitType == ConduitType.Gas;
 	}
 
-	public bool CheckRequiresLiquidInput()
+		public bool CheckRequiresLiquidInput()
 	{
 		return this.InputConduitType == ConduitType.Liquid;
 	}
 
-	public bool CheckRequiresLiquidOutput()
+		public bool CheckRequiresLiquidOutput()
 	{
 		return this.OutputConduitType == ConduitType.Liquid;
 	}
 
-	public bool CheckRequiresSolidInput()
+		public bool CheckRequiresSolidInput()
 	{
 		return this.InputConduitType == ConduitType.Solid;
 	}
 
-	public bool CheckRequiresSolidOutput()
+		public bool CheckRequiresSolidOutput()
 	{
 		return this.OutputConduitType == ConduitType.Solid;
 	}
 
-	public bool CheckRequiresHighEnergyParticleInput()
+		public bool CheckRequiresHighEnergyParticleInput()
 	{
 		return this.UseHighEnergyParticleInputPort;
 	}
 
-	public bool CheckRequiresHighEnergyParticleOutput()
+		public bool CheckRequiresHighEnergyParticleOutput()
 	{
 		return this.UseHighEnergyParticleOutputPort;
 	}
 
-	public void AddFacade(string db_facade_id)
+		public void AddFacade(string db_facade_id)
 	{
 		if (this.AvailableFacades == null)
 		{
@@ -1622,250 +1622,252 @@ public class BuildingDef : Def
 		}
 	}
 
-	public bool IsValidDLC()
+		public bool IsValidDLC()
 	{
-		return SaveLoader.Instance.IsDlcListActiveForCurrentSave(this.RequiredDlcIds);
+		return SaveLoader.Instance.IsCorrectDlcActiveForCurrentSave(this.RequiredDlcIds, this.ForbiddenDlcIds);
 	}
 
-	public string[] RequiredDlcIds;
+		public string[] RequiredDlcIds;
 
-	public float EnergyConsumptionWhenActive;
+		public string[] ForbiddenDlcIds;
 
-	public float GeneratorWattageRating;
+		public float EnergyConsumptionWhenActive;
 
-	public float GeneratorBaseCapacity;
+		public float GeneratorWattageRating;
 
-	public float MassForTemperatureModification;
+		public float GeneratorBaseCapacity;
 
-	public float ExhaustKilowattsWhenActive;
+		public float MassForTemperatureModification;
 
-	public float SelfHeatKilowattsWhenActive;
+		public float ExhaustKilowattsWhenActive;
 
-	public float BaseMeltingPoint;
+		public float SelfHeatKilowattsWhenActive;
 
-	public float ConstructionTime;
+		public float BaseMeltingPoint;
 
-	public float WorkTime;
+		public float ConstructionTime;
 
-	public float ThermalConductivity = 1f;
+		public float WorkTime;
 
-	public int WidthInCells;
+		public float ThermalConductivity = 1f;
 
-	public int HeightInCells;
+		public int WidthInCells;
 
-	public int HitPoints;
+		public int HeightInCells;
 
-	public float Temperature = 293.15f;
+		public int HitPoints;
 
-	public bool RequiresPowerInput;
+		public float Temperature = 293.15f;
 
-	public bool AddLogicPowerPort = true;
+		public bool RequiresPowerInput;
 
-	public bool RequiresPowerOutput;
+		public bool AddLogicPowerPort = true;
 
-	public bool UseWhitePowerOutputConnectorColour;
+		public bool RequiresPowerOutput;
 
-	public CellOffset ElectricalArrowOffset;
+		public bool UseWhitePowerOutputConnectorColour;
 
-	public ConduitType InputConduitType;
+		public CellOffset ElectricalArrowOffset;
 
-	public ConduitType OutputConduitType;
+		public ConduitType InputConduitType;
 
-	public bool ModifiesTemperature;
+		public ConduitType OutputConduitType;
 
-	public bool Floodable = true;
+		public bool ModifiesTemperature;
 
-	public bool Disinfectable = true;
+		public bool Floodable = true;
 
-	public bool Entombable = true;
+		public bool Disinfectable = true;
 
-	public bool Replaceable = true;
+		public bool Entombable = true;
 
-	public bool Invincible;
+		public bool Replaceable = true;
 
-	public bool Overheatable = true;
+		public bool Invincible;
 
-	public bool Repairable = true;
+		public bool Overheatable = true;
 
-	public float OverheatTemperature = 348.15f;
+		public bool Repairable = true;
 
-	public float FatalHot = 533.15f;
+		public float OverheatTemperature = 348.15f;
 
-	public bool Breakable;
+		public float FatalHot = 533.15f;
 
-	public bool ContinuouslyCheckFoundation;
+		public bool Breakable;
 
-	public bool IsFoundation;
+		public bool ContinuouslyCheckFoundation;
 
-	[Obsolete]
+		public bool IsFoundation;
+
+		[Obsolete]
 	public bool isSolidTile;
 
-	public bool DragBuild;
+		public bool DragBuild;
 
-	public bool UseStructureTemperature = true;
+		public bool UseStructureTemperature = true;
 
-	public global::Action HotKey = global::Action.NumActions;
+		public global::Action HotKey = global::Action.NumActions;
 
-	public CellOffset attachablePosition = new CellOffset(0, 0);
+		public CellOffset attachablePosition = new CellOffset(0, 0);
 
-	public bool CanMove;
+		public bool CanMove;
 
-	public bool Cancellable = true;
+		public bool Cancellable = true;
 
-	public bool OnePerWorld;
+		public bool OnePerWorld;
 
-	public bool PlayConstructionSounds = true;
+		public bool PlayConstructionSounds = true;
 
-	public Func<CodexEntry, CodexEntry> ExtendCodexEntry;
+		public Func<CodexEntry, CodexEntry> ExtendCodexEntry;
 
-	public bool POIUnlockable;
+		public bool POIUnlockable;
 
-	public List<Tag> ReplacementTags;
+		public List<Tag> ReplacementTags;
 
-	public List<ObjectLayer> ReplacementCandidateLayers;
+		public List<ObjectLayer> ReplacementCandidateLayers;
 
-	public List<ObjectLayer> EquivalentReplacementLayers;
+		public List<ObjectLayer> EquivalentReplacementLayers;
 
-	[HashedEnum]
+		[HashedEnum]
 	[NonSerialized]
 	public HashedString ViewMode = OverlayModes.None.ID;
 
-	public BuildLocationRule BuildLocationRule;
+		public BuildLocationRule BuildLocationRule;
 
-	public ObjectLayer ObjectLayer = ObjectLayer.Building;
+		public ObjectLayer ObjectLayer = ObjectLayer.Building;
 
-	public ObjectLayer TileLayer = ObjectLayer.NumLayers;
+		public ObjectLayer TileLayer = ObjectLayer.NumLayers;
 
-	public ObjectLayer ReplacementLayer = ObjectLayer.NumLayers;
+		public ObjectLayer ReplacementLayer = ObjectLayer.NumLayers;
 
-	public string DiseaseCellVisName;
+		public string DiseaseCellVisName;
 
-	public string[] MaterialCategory;
+		public string[] MaterialCategory;
 
-	public string AudioCategory = "Metal";
+		public string AudioCategory = "Metal";
 
-	public string AudioSize = "medium";
+		public string AudioSize = "medium";
 
-	public float[] Mass;
+		public float[] Mass;
 
-	public bool AlwaysOperational;
+		public bool AlwaysOperational;
 
-	public List<LogicPorts.Port> LogicInputPorts;
+		public List<LogicPorts.Port> LogicInputPorts;
 
-	public List<LogicPorts.Port> LogicOutputPorts;
+		public List<LogicPorts.Port> LogicOutputPorts;
 
-	public bool Upgradeable;
+		public bool Upgradeable;
 
-	public float BaseTimeUntilRepair = 600f;
+		public float BaseTimeUntilRepair = 600f;
 
-	public bool ShowInBuildMenu = true;
+		public bool ShowInBuildMenu = true;
 
-	public bool DebugOnly;
+		public bool DebugOnly;
 
-	public PermittedRotations PermittedRotations;
+		public PermittedRotations PermittedRotations;
 
-	public Orientation InitialOrientation;
+		public Orientation InitialOrientation;
 
-	public bool Deprecated;
+		public bool Deprecated;
 
-	public bool UseHighEnergyParticleInputPort;
+		public bool UseHighEnergyParticleInputPort;
 
-	public bool UseHighEnergyParticleOutputPort;
+		public bool UseHighEnergyParticleOutputPort;
 
-	public CellOffset HighEnergyParticleInputOffset;
+		public CellOffset HighEnergyParticleInputOffset;
 
-	public CellOffset HighEnergyParticleOutputOffset;
+		public CellOffset HighEnergyParticleOutputOffset;
 
-	public CellOffset PowerInputOffset;
+		public CellOffset PowerInputOffset;
 
-	public CellOffset PowerOutputOffset;
+		public CellOffset PowerOutputOffset;
 
-	public CellOffset UtilityInputOffset = new CellOffset(0, 1);
+		public CellOffset UtilityInputOffset = new CellOffset(0, 1);
 
-	public CellOffset UtilityOutputOffset = new CellOffset(1, 0);
+		public CellOffset UtilityOutputOffset = new CellOffset(1, 0);
 
-	public Grid.SceneLayer SceneLayer = Grid.SceneLayer.Building;
+		public Grid.SceneLayer SceneLayer = Grid.SceneLayer.Building;
 
-	public Grid.SceneLayer ForegroundLayer = Grid.SceneLayer.BuildingFront;
+		public Grid.SceneLayer ForegroundLayer = Grid.SceneLayer.BuildingFront;
 
-	public string RequiredAttribute = "";
+		public string RequiredAttribute = "";
 
-	public int RequiredAttributeLevel;
+		public int RequiredAttributeLevel;
 
-	public List<Descriptor> EffectDescription;
+		public List<Descriptor> EffectDescription;
 
-	public float MassTier;
+		public float MassTier;
 
-	public float HeatTier;
+		public float HeatTier;
 
-	public float ConstructionTimeTier;
+		public float ConstructionTimeTier;
 
-	public string PrimaryUse;
+		public string PrimaryUse;
 
-	public string SecondaryUse;
+		public string SecondaryUse;
 
-	public string PrimarySideEffect;
+		public string PrimarySideEffect;
 
-	public string SecondarySideEffect;
+		public string SecondarySideEffect;
 
-	public Recipe CraftRecipe;
+		public Recipe CraftRecipe;
 
-	public Sprite UISprite;
+		public Sprite UISprite;
 
-	public bool isKAnimTile;
+		public bool isKAnimTile;
 
-	public bool isUtility;
+		public bool isUtility;
 
-	public KAnimFile[] AnimFiles;
+		public KAnimFile[] AnimFiles;
 
-	public string DefaultAnimState = "off";
+		public string DefaultAnimState = "off";
 
-	public bool BlockTileIsTransparent;
+		public bool BlockTileIsTransparent;
 
-	public TextureAtlas BlockTileAtlas;
+		public TextureAtlas BlockTileAtlas;
 
-	public TextureAtlas BlockTilePlaceAtlas;
+		public TextureAtlas BlockTilePlaceAtlas;
 
-	public TextureAtlas BlockTileShineAtlas;
+		public TextureAtlas BlockTileShineAtlas;
 
-	public Material BlockTileMaterial;
+		public Material BlockTileMaterial;
 
-	public BlockTileDecorInfo DecorBlockTileInfo;
+		public BlockTileDecorInfo DecorBlockTileInfo;
 
-	public BlockTileDecorInfo DecorPlaceBlockTileInfo;
+		public BlockTileDecorInfo DecorPlaceBlockTileInfo;
 
-	public List<Klei.AI.Attribute> attributes = new List<Klei.AI.Attribute>();
+		public List<Klei.AI.Attribute> attributes = new List<Klei.AI.Attribute>();
 
-	public List<AttributeModifier> attributeModifiers = new List<AttributeModifier>();
+		public List<AttributeModifier> attributeModifiers = new List<AttributeModifier>();
 
-	public Tag AttachmentSlotTag;
+		public Tag AttachmentSlotTag;
 
-	public bool PreventIdleTraversalPastBuilding;
+		public bool PreventIdleTraversalPastBuilding;
 
-	public GameObject BuildingComplete;
+		public GameObject BuildingComplete;
 
-	public GameObject BuildingPreview;
+		public GameObject BuildingPreview;
 
-	public GameObject BuildingUnderConstruction;
+		public GameObject BuildingUnderConstruction;
 
-	public CellOffset[] PlacementOffsets;
+		public CellOffset[] PlacementOffsets;
 
-	public CellOffset[] ConstructionOffsetFilter;
+		public CellOffset[] ConstructionOffsetFilter;
 
-	public static CellOffset[] ConstructionOffsetFilter_OneDown = new CellOffset[]
+		public static CellOffset[] ConstructionOffsetFilter_OneDown = new CellOffset[]
 	{
 		new CellOffset(0, -1)
 	};
 
-	public float BaseDecor;
+		public float BaseDecor;
 
-	public float BaseDecorRadius;
+		public float BaseDecorRadius;
 
-	public int BaseNoisePollution;
+		public int BaseNoisePollution;
 
-	public int BaseNoisePollutionRadius;
+		public int BaseNoisePollutionRadius;
 
-	public List<string> AvailableFacades = new List<string>();
+		public List<string> AvailableFacades = new List<string>();
 
-	private static Dictionary<CellOffset, CellOffset[]> placementOffsetsCache = new Dictionary<CellOffset, CellOffset[]>();
+		private static Dictionary<CellOffset, CellOffset[]> placementOffsetsCache = new Dictionary<CellOffset, CellOffset[]>();
 }

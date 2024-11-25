@@ -1,5 +1,3 @@
 ﻿using System;
 
-public sealed class MySmiGet : Attribute
-{
-}
+public sealed class MySmiGet : Attribute { }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BeachChairConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "BeachChair";
 		int width = 2;
@@ -32,7 +32,7 @@ public class BeachChairConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding, false);
 		go.AddOrGet<BeachChairWorkable>().basePriority = RELAXATION.PRIORITY.TIER4;
@@ -47,15 +47,15 @@ public class BeachChairConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "BeachChair";
+		public const string ID = "BeachChair";
 
-	public const int TAN_LUX = 10000;
+		public static readonly int TAN_LUX = DUPLICANTSTATS.STANDARD.Light.HIGH_LIGHT;
 
-	private const float TANK_SIZE_KG = 20f;
+		private const float TANK_SIZE_KG = 20f;
 
-	private const float SPILL_RATE_KG = 0.05f;
+		private const float SPILL_RATE_KG = 0.05f;
 }

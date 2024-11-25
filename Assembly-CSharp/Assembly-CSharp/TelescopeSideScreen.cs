@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class TelescopeSideScreen : SideScreenContent
 {
-	public TelescopeSideScreen()
+		public TelescopeSideScreen()
 	{
 		this.refreshDisplayStateDelegate = new Action<object>(this.RefreshDisplayState);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.selectStarmapScreen.onClick += delegate()
@@ -21,14 +21,14 @@ public class TelescopeSideScreen : SideScreenContent
 		this.RefreshDisplayState(null);
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		this.RefreshDisplayState(null);
 		this.target = SelectTool.Instance.selected.GetComponent<KMonoBehaviour>().gameObject;
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		if (this.target)
@@ -37,7 +37,7 @@ public class TelescopeSideScreen : SideScreenContent
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (this.target)
@@ -46,12 +46,12 @@ public class TelescopeSideScreen : SideScreenContent
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<Telescope>() != null;
 	}
 
-	private void RefreshDisplayState(object data = null)
+		private void RefreshDisplayState(object data = null)
 	{
 		if (SelectTool.Instance.selected == null)
 		{
@@ -70,15 +70,15 @@ public class TelescopeSideScreen : SideScreenContent
 		this.DescriptionText.text = text;
 	}
 
-	public KButton selectStarmapScreen;
+		public KButton selectStarmapScreen;
 
-	public Image researchButtonIcon;
+		public Image researchButtonIcon;
 
-	public GameObject content;
+		public GameObject content;
 
-	private GameObject target;
+		private GameObject target;
 
-	private Action<object> refreshDisplayStateDelegate;
+		private Action<object> refreshDisplayStateDelegate;
 
-	public LocText DescriptionText;
+		public LocText DescriptionText;
 }

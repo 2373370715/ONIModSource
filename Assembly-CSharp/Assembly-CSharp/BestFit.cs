@@ -5,7 +5,7 @@ using TUNING;
 
 public class BestFit
 {
-	public static Vector2I BestFitWorlds(List<WorldPlacement> worldsToArrange, bool ignoreBestFitY = false)
+		public static Vector2I BestFitWorlds(List<WorldPlacement> worldsToArrange, bool ignoreBestFitY = false)
 	{
 		List<BestFit.Rect> list = new List<BestFit.Rect>();
 		Vector2I vector2I = default(Vector2I);
@@ -44,7 +44,7 @@ public class BestFit
 		return vector2I;
 	}
 
-	private static bool UnoccupiedSpace(BestFit.Rect RectA, List<BestFit.Rect> placed)
+		private static bool UnoccupiedSpace(BestFit.Rect RectA, List<BestFit.Rect> placed)
 	{
 		foreach (BestFit.Rect rect in placed)
 		{
@@ -56,7 +56,7 @@ public class BestFit
 		return true;
 	}
 
-	public static Vector2I GetGridOffset(IList<WorldContainer> existingWorlds, Vector2I newWorldSize, out Vector2I newWorldOffset)
+		public static Vector2I GetGridOffset(IList<WorldContainer> existingWorlds, Vector2I newWorldSize, out Vector2I newWorldOffset)
 	{
 		List<BestFit.Rect> list = new List<BestFit.Rect>();
 		foreach (WorldContainer worldContainer in existingWorlds)
@@ -84,7 +84,7 @@ public class BestFit
 		return result;
 	}
 
-	public static int CountRocketInteriors(IList<WorldContainer> existingWorlds)
+		public static int CountRocketInteriors(IList<WorldContainer> existingWorlds)
 	{
 		int num = 0;
 		List<BestFit.Rect> list = new List<BestFit.Rect>();
@@ -102,7 +102,7 @@ public class BestFit
 		return num;
 	}
 
-	private static bool PlaceWorld(List<BestFit.Rect> placedWorlds, Vector2I newWorldSize, out Vector2I newWorldOffset)
+		private static bool PlaceWorld(List<BestFit.Rect> placedWorlds, Vector2I newWorldSize, out Vector2I newWorldOffset)
 	{
 		Vector2I vector2I = new Vector2I(Grid.WidthInCells, 0);
 		int widthInCells = Grid.WidthInCells;
@@ -124,9 +124,9 @@ public class BestFit
 		return vector2I2.x + newWorldSize.x <= Grid.WidthInCells && vector2I2.y + newWorldSize.y <= Grid.HeightInCells;
 	}
 
-	private struct Rect
+		private struct Rect
 	{
-				public int X1
+						public int X1
 		{
 			get
 			{
@@ -134,7 +134,7 @@ public class BestFit
 			}
 		}
 
-				public int X2
+						public int X2
 		{
 			get
 			{
@@ -142,7 +142,7 @@ public class BestFit
 			}
 		}
 
-				public int Y1
+						public int Y1
 		{
 			get
 			{
@@ -150,7 +150,7 @@ public class BestFit
 			}
 		}
 
-				public int Y2
+						public int Y2
 		{
 			get
 			{
@@ -158,7 +158,7 @@ public class BestFit
 			}
 		}
 
-		public Rect(int x, int y, int width, int height)
+				public Rect(int x, int y, int width, int height)
 		{
 			this.x = x;
 			this.y = y;
@@ -166,12 +166,12 @@ public class BestFit
 			this.height = height;
 		}
 
-		private int x;
+				private int x;
 
-		private int y;
+				private int y;
 
-		private int width;
+				private int width;
 
-		private int height;
+				private int height;
 	}
 }

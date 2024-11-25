@@ -6,11 +6,11 @@ using UnityEngine;
 [Serializable]
 public class TintedSprite : ISerializationCallbackReceiver
 {
-	public void OnAfterDeserialize()
+		public void OnAfterDeserialize()
 	{
 	}
 
-	public void OnBeforeSerialize()
+		public void OnBeforeSerialize()
 	{
 		if (this.sprite != null)
 		{
@@ -18,10 +18,10 @@ public class TintedSprite : ISerializationCallbackReceiver
 		}
 	}
 
-	[ReadOnly]
+		[ReadOnly]
 	public string name;
 
-	public Sprite sprite;
+		public Sprite sprite;
 
-	public Color color;
+		public Color color;
 }

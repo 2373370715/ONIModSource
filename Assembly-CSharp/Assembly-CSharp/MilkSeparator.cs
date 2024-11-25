@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MilkSeparator : GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.noOperational;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -22,104 +22,104 @@ public class MilkSeparator : GameStateMachine<MilkSeparator, MilkSeparator.Insta
 		});
 	}
 
-	public static void BeginSeparation(MilkSeparator.Instance smi)
+		public static void BeginSeparation(MilkSeparator.Instance smi)
 	{
 		smi.operational.SetActive(true, false);
 	}
 
-	public static void EndSeparation(MilkSeparator.Instance smi)
+		public static void EndSeparation(MilkSeparator.Instance smi)
 	{
 		smi.operational.SetActive(false, false);
 	}
 
-	public static bool CanBeginSeparate(MilkSeparator.Instance smi)
+		public static bool CanBeginSeparate(MilkSeparator.Instance smi)
 	{
 		return !smi.MilkFatLimitReached && smi.elementConverter.HasEnoughMassToStartConverting(false);
 	}
 
-	public static bool CanKeepSeparating(MilkSeparator.Instance smi)
+		public static bool CanKeepSeparating(MilkSeparator.Instance smi)
 	{
 		return !smi.MilkFatLimitReached && smi.elementConverter.CanConvertAtAll();
 	}
 
-	public static bool CanNOTKeepSeparating(MilkSeparator.Instance smi)
+		public static bool CanNOTKeepSeparating(MilkSeparator.Instance smi)
 	{
 		return !MilkSeparator.CanKeepSeparating(smi);
 	}
 
-	public static bool RequiresEmptying(MilkSeparator.Instance smi)
+		public static bool RequiresEmptying(MilkSeparator.Instance smi)
 	{
 		return smi.MilkFatLimitReached;
 	}
 
-	public static bool ThereIsCapacityForMilkFat(MilkSeparator.Instance smi)
+		public static bool ThereIsCapacityForMilkFat(MilkSeparator.Instance smi)
 	{
 		return !smi.MilkFatLimitReached;
 	}
 
-	public static void DropMilkFat(MilkSeparator.Instance smi)
+		public static void DropMilkFat(MilkSeparator.Instance smi)
 	{
 		smi.DropMilkFat();
 	}
 
-	public static void RefreshMeters(MilkSeparator.Instance smi)
+		public static void RefreshMeters(MilkSeparator.Instance smi)
 	{
 		smi.RefreshMeters();
 	}
 
-	private static Chore CreateEmptyChore(MilkSeparator.Instance smi)
+		private static Chore CreateEmptyChore(MilkSeparator.Instance smi)
 	{
 		return new WorkChore<EmptyMilkSeparatorWorkable>(Db.Get().ChoreTypes.EmptyStorage, smi.workable, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 	}
 
-	public const string WORK_PRE_ANIM_NAME = "separating_pre";
+		public const string WORK_PRE_ANIM_NAME = "separating_pre";
 
-	public const string WORK_ANIM_NAME = "separating_loop";
+		public const string WORK_ANIM_NAME = "separating_loop";
 
-	public const string WORK_POST_ANIM_NAME = "separating_pst";
+		public const string WORK_POST_ANIM_NAME = "separating_pst";
 
-	public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State noOperational;
+		public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State noOperational;
 
-	public MilkSeparator.OperationalStates operational;
+		public MilkSeparator.OperationalStates operational;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Def()
+				public Def()
 		{
 			this.MILK_FAT_TAG = ElementLoader.FindElementByHash(SimHashes.MilkFat).tag;
 			this.MILK_TAG = ElementLoader.FindElementByHash(SimHashes.Milk).tag;
 		}
 
-		public float MILK_FAT_CAPACITY = 100f;
+				public float MILK_FAT_CAPACITY = 100f;
 
-		public Tag MILK_TAG;
+				public Tag MILK_TAG;
 
-		public Tag MILK_FAT_TAG;
+				public Tag MILK_FAT_TAG;
 	}
 
-	public class WorkingStates : GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State
+		public class WorkingStates : GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State
 	{
-		public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State pre;
+				public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State pre;
 
-		public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State work;
+				public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State work;
 
-		public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State post;
+				public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State post;
 	}
 
-	public class OperationalStates : GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State
+		public class OperationalStates : GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State
 	{
-		public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State idle;
+				public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State idle;
 
-		public MilkSeparator.WorkingStates working;
+				public MilkSeparator.WorkingStates working;
 
-		public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State full;
+				public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State full;
 
-		public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State emptyComplete;
+				public GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.State emptyComplete;
 	}
 
-	public new class Instance : GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.GameInstance
+		public new class Instance : GameStateMachine<MilkSeparator, MilkSeparator.Instance, IStateMachineTarget, MilkSeparator.Def>.GameInstance
 	{
-				public float MilkFatStored
+						public float MilkFatStored
 		{
 			get
 			{
@@ -127,7 +127,7 @@ public class MilkSeparator : GameStateMachine<MilkSeparator, MilkSeparator.Insta
 			}
 		}
 
-				public float MilkFatStoragePercentage
+						public float MilkFatStoragePercentage
 		{
 			get
 			{
@@ -135,7 +135,7 @@ public class MilkSeparator : GameStateMachine<MilkSeparator, MilkSeparator.Insta
 			}
 		}
 
-				public bool MilkFatLimitReached
+						public bool MilkFatLimitReached
 		{
 			get
 			{
@@ -143,7 +143,7 @@ public class MilkSeparator : GameStateMachine<MilkSeparator, MilkSeparator.Insta
 			}
 		}
 
-		public Instance(IStateMachineTarget master, MilkSeparator.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, MilkSeparator.Def def) : base(master, def)
 		{
 			KAnimControllerBase component = base.GetComponent<KBatchedAnimController>();
 			this.fatMeter = new MeterController(component, "meter_target_1", "meter_fat", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new string[]
@@ -152,20 +152,20 @@ public class MilkSeparator : GameStateMachine<MilkSeparator, MilkSeparator.Insta
 			});
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			this.workable.OnWork_PST_Begins = new System.Action(this.Play_Empty_MeterAnimation);
 			this.RefreshMeters();
 		}
 
-		private void Play_Empty_MeterAnimation()
+				private void Play_Empty_MeterAnimation()
 		{
 			this.fatMeter.SetPositionPercent(0f);
 			this.fatMeter.meterController.Play("meter_fat_empty", KAnim.PlayMode.Once, 1f, 0f);
 		}
 
-		public void DropMilkFat()
+				public void DropMilkFat()
 		{
 			List<GameObject> list = new List<GameObject>();
 			this.storage.Drop(base.def.MILK_FAT_TAG, list);
@@ -176,7 +176,7 @@ public class MilkSeparator : GameStateMachine<MilkSeparator, MilkSeparator.Insta
 			}
 		}
 
-		private Vector3 GetDropSpawnLocation()
+				private Vector3 GetDropSpawnLocation()
 		{
 			bool flag;
 			Vector3 vector = base.GetComponent<KBatchedAnimController>().GetSymbolTransform(new HashedString("milkfat"), out flag).GetColumn(3);
@@ -189,7 +189,7 @@ public class MilkSeparator : GameStateMachine<MilkSeparator, MilkSeparator.Insta
 			return base.transform.GetPosition();
 		}
 
-		public void RefreshMeters()
+				public void RefreshMeters()
 		{
 			if (this.fatMeter.meterController.currentAnim != "meter_fat")
 			{
@@ -198,18 +198,18 @@ public class MilkSeparator : GameStateMachine<MilkSeparator, MilkSeparator.Insta
 			this.fatMeter.SetPositionPercent(this.MilkFatStoragePercentage);
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public EmptyMilkSeparatorWorkable workable;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public Operational operational;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public ElementConverter elementConverter;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Storage storage;
 
-		private MeterController fatMeter;
+				private MeterController fatMeter;
 	}
 }

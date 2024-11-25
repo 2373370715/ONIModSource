@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class KeroseneEngineClusterSmallConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "KeroseneEngineClusterSmall";
 		int width = 3;
@@ -34,7 +34,7 @@ public class KeroseneEngineClusterSmallConfig : IBuildingConfig
 		buildingDef.UtilityInputOffset = new CellOffset(0, 2);
 		buildingDef.InputConduitType = ConduitType.Liquid;
 		buildingDef.GeneratorWattageRating = 240f;
-		buildingDef.GeneratorBaseCapacity = 4000f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
 		buildingDef.RequiresPowerInput = false;
 		buildingDef.RequiresPowerOutput = false;
 		buildingDef.CanMove = true;
@@ -43,7 +43,7 @@ public class KeroseneEngineClusterSmallConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -54,7 +54,7 @@ public class KeroseneEngineClusterSmallConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		RocketEngineCluster rocketEngineCluster = go.AddOrGet<RocketEngineCluster>();
 		rocketEngineCluster.maxModules = 4;
@@ -86,9 +86,9 @@ public class KeroseneEngineClusterSmallConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "KeroseneEngineClusterSmall";
+		public const string ID = "KeroseneEngineClusterSmall";
 
-	public const SimHashes FUEL = SimHashes.Petroleum;
+		public const SimHashes FUEL = SimHashes.Petroleum;
 
-	public const float FUEL_CAPACITY = 450f;
+		public const float FUEL_CAPACITY = 450f;
 }

@@ -4,24 +4,24 @@ using UnityEngine;
 
 public class KleiPermitDioramaVis_BuildingHangingHook : KMonoBehaviour, IKleiPermitDioramaVisTarget
 {
-	public GameObject GetGameObject()
+		public GameObject GetGameObject()
 	{
 		return base.gameObject;
 	}
 
-	public void ConfigureSetup()
+		public void ConfigureSetup()
 	{
 	}
 
-	public void ConfigureWith(PermitResource permit)
+		public void ConfigureWith(PermitResource permit)
 	{
 		KleiPermitVisUtil.ConfigureToRenderBuilding(this.buildingKAnim, (BuildingFacadeResource)permit);
 		KleiPermitVisUtil.ConfigureBuildingPosition(this.buildingKAnim.rectTransform(), this.buildingKAnimPosition, KleiPermitVisUtil.GetBuildingDef(permit), Alignment.Top());
 		KleiPermitVisUtil.AnimateIn(this.buildingKAnim, default(Updater));
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KBatchedAnimController buildingKAnim;
 
-	private PrefabDefinedUIPosition buildingKAnimPosition = new PrefabDefinedUIPosition();
+		private PrefabDefinedUIPosition buildingKAnimPosition = new PrefabDefinedUIPosition();
 }

@@ -6,12 +6,12 @@ using UnityEngine;
 
 public static class KleiItemsUI
 {
-	public static string WrapAsToolTipTitle(string text)
+		public static string WrapAsToolTipTitle(string text)
 	{
 		return "<b><style=\"KLink\">" + text + "</style></b>";
 	}
 
-	public static string WrapWithColor(string text, Color color)
+		public static string WrapWithColor(string text, Color color)
 	{
 		return string.Concat(new string[]
 		{
@@ -23,22 +23,22 @@ public static class KleiItemsUI
 		});
 	}
 
-	public static Sprite GetNoneClothingItemIcon(PermitCategory category, Option<Personality> personality)
+		public static Sprite GetNoneClothingItemIcon(PermitCategory category, Option<Personality> personality)
 	{
 		return KleiItemsUI.GetNoneIconForCategory(category, personality);
 	}
 
-	public static Sprite GetNoneBalloonArtistIcon()
+		public static Sprite GetNoneBalloonArtistIcon()
 	{
 		return KleiItemsUI.GetNoneIconForCategory(PermitCategory.JoyResponse, null);
 	}
 
-	private static Sprite GetNoneIconForCategory(PermitCategory category, Option<Personality> personality)
+		private static Sprite GetNoneIconForCategory(PermitCategory category, Option<Personality> personality)
 	{
 		return Assets.GetSprite(KleiItemsUI.<GetNoneIconForCategory>g__GetIconName|5_0(category, personality));
 	}
 
-	public static string GetNoneOutfitName(ClothingOutfitUtility.OutfitType outfitType)
+		public static string GetNoneOutfitName(ClothingOutfitUtility.OutfitType outfitType)
 	{
 		switch (outfitType)
 		{
@@ -54,7 +54,7 @@ public static class KleiItemsUI
 		}
 	}
 
-	[return: TupleElementNames(new string[]
+		[return: TupleElementNames(new string[]
 	{
 		"name",
 		"desc"
@@ -92,12 +92,12 @@ public static class KleiItemsUI
 		return new ValueTuple<string, string>("-", "-");
 	}
 
-	public static void ConfigureTooltipOn(GameObject gameObject, Option<LocString> tooltipText = default(Option<LocString>))
+		public static void ConfigureTooltipOn(GameObject gameObject, Option<LocString> tooltipText = default(Option<LocString>))
 	{
 		KleiItemsUI.ConfigureTooltipOn(gameObject, tooltipText.HasValue ? Option.Some<string>(tooltipText.Value) : Option.None);
 	}
 
-	public static void ConfigureTooltipOn(GameObject gameObject, Option<string> tooltipText = default(Option<string>))
+		public static void ConfigureTooltipOn(GameObject gameObject, Option<string> tooltipText = default(Option<string>))
 	{
 		ToolTip toolTip = gameObject.GetComponent<ToolTip>();
 		if (toolTip.IsNullOrDestroyed())
@@ -123,7 +123,7 @@ public static class KleiItemsUI
 		toolTip.SetSimpleTooltip(tooltipText.Value);
 	}
 
-	public static string GetTooltipStringFor(PermitResource permit)
+		public static string GetTooltipStringFor(PermitResource permit)
 	{
 		string text = KleiItemsUI.WrapAsToolTipTitle(permit.Name);
 		if (!string.IsNullOrWhiteSpace(permit.Description))
@@ -157,7 +157,7 @@ public static class KleiItemsUI
 		return text;
 	}
 
-	public static string GetNoneTooltipStringFor(PermitCategory category)
+		public static string GetNoneTooltipStringFor(PermitCategory category)
 	{
 		ValueTuple<string, string> noneClothingItemStrings = KleiItemsUI.GetNoneClothingItemStrings(category);
 		string item = noneClothingItemStrings.Item1;
@@ -165,7 +165,7 @@ public static class KleiItemsUI
 		return KleiItemsUI.WrapAsToolTipTitle(item) + "\n" + item2;
 	}
 
-	public static Color GetColor(string input)
+		public static Color GetColor(string input)
 	{
 		if (input[0] == '#')
 		{
@@ -174,7 +174,7 @@ public static class KleiItemsUI
 		return Util.ColorFromHex(input);
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static string <GetNoneIconForCategory>g__GetIconName|5_0(PermitCategory category, Option<Personality> personality)
 	{
 		switch (category)
@@ -218,5 +218,5 @@ public static class KleiItemsUI
 		}
 	}
 
-	public static readonly Color TEXT_COLOR__PERMIT_NOT_OWNED = KleiItemsUI.GetColor("#DD992F");
+		public static readonly Color TEXT_COLOR__PERMIT_NOT_OWNED = KleiItemsUI.GetColor("#DD992F");
 }

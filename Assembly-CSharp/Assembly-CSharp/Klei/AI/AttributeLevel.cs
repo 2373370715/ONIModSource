@@ -6,20 +6,20 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class AttributeLevel
+		public class AttributeLevel
 	{
-		public AttributeLevel(AttributeInstance attribute)
+				public AttributeLevel(AttributeInstance attribute)
 		{
 			this.notification = new Notification(MISC.NOTIFICATIONS.LEVELUP.NAME, NotificationType.Good, new Func<List<Notification>, object, string>(AttributeLevel.OnLevelUpTooltip), null, true, 0f, null, null, null, true, false, false);
 			this.attribute = attribute;
 		}
 
-		public int GetLevel()
+				public int GetLevel()
 		{
 			return this.level;
 		}
 
-		public void Apply(AttributeLevels levels)
+				public void Apply(AttributeLevels levels)
 		{
 			Attributes attributes = levels.GetAttributes();
 			if (this.modifier != null)
@@ -31,28 +31,28 @@ namespace Klei.AI
 			attributes.Add(this.modifier);
 		}
 
-		public void SetExperience(float experience)
+				public void SetExperience(float experience)
 		{
 			this.experience = experience;
 		}
 
-		public void SetLevel(int level)
+				public void SetLevel(int level)
 		{
 			this.level = level;
 		}
 
-		public float GetExperienceForNextLevel()
+				public float GetExperienceForNextLevel()
 		{
 			float num = Mathf.Pow((float)this.level / (float)DUPLICANTSTATS.ATTRIBUTE_LEVELING.MAX_GAINED_ATTRIBUTE_LEVEL, DUPLICANTSTATS.ATTRIBUTE_LEVELING.EXPERIENCE_LEVEL_POWER) * (float)DUPLICANTSTATS.ATTRIBUTE_LEVELING.TARGET_MAX_LEVEL_CYCLE * 600f;
 			return Mathf.Pow(((float)this.level + 1f) / (float)DUPLICANTSTATS.ATTRIBUTE_LEVELING.MAX_GAINED_ATTRIBUTE_LEVEL, DUPLICANTSTATS.ATTRIBUTE_LEVELING.EXPERIENCE_LEVEL_POWER) * (float)DUPLICANTSTATS.ATTRIBUTE_LEVELING.TARGET_MAX_LEVEL_CYCLE * 600f - num;
 		}
 
-		public float GetPercentComplete()
+				public float GetPercentComplete()
 		{
 			return this.experience / this.GetExperienceForNextLevel();
 		}
 
-		public void LevelUp(AttributeLevels levels)
+				public void LevelUp(AttributeLevels levels)
 		{
 			this.level++;
 			this.experience = 0f;
@@ -69,7 +69,7 @@ namespace Klei.AI
 			levels.Trigger(-110704193, this.attribute.Id);
 		}
 
-		public bool AddExperience(AttributeLevels levels, float experience)
+				public bool AddExperience(AttributeLevels levels, float experience)
 		{
 			if (this.level >= DUPLICANTSTATS.ATTRIBUTE_LEVELING.MAX_GAINED_ATTRIBUTE_LEVEL)
 			{
@@ -85,19 +85,19 @@ namespace Klei.AI
 			return false;
 		}
 
-		private static string OnLevelUpTooltip(List<Notification> notifications, object data)
+				private static string OnLevelUpTooltip(List<Notification> notifications, object data)
 		{
 			return MISC.NOTIFICATIONS.LEVELUP.TOOLTIP + notifications.ReduceMessages(false);
 		}
 
-		public float experience;
+				public float experience;
 
-		public int level;
+				public int level;
 
-		public AttributeInstance attribute;
+				public AttributeInstance attribute;
 
-		public AttributeModifier modifier;
+				public AttributeModifier modifier;
 
-		public Notification notification;
+				public Notification notification;
 	}
 }

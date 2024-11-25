@@ -5,30 +5,30 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class FoodFightEvent : GameplayEvent<FoodFightEvent.StatesInstance>
+		public class FoodFightEvent : GameplayEvent<FoodFightEvent.StatesInstance>
 	{
-		public FoodFightEvent() : base("FoodFight", 0, 0)
+				public FoodFightEvent() : base("FoodFight", 0, 0)
 		{
 			this.title = GAMEPLAY_EVENTS.EVENT_TYPES.FOOD_FIGHT.NAME;
 			this.description = GAMEPLAY_EVENTS.EVENT_TYPES.FOOD_FIGHT.DESCRIPTION;
 		}
 
-		public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
+				public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
 		{
 			return new FoodFightEvent.StatesInstance(manager, eventInstance, this);
 		}
 
-		public const float FUTURE_TIME = 60f;
+				public const float FUTURE_TIME = 60f;
 
-		public const float DURATION = 60f;
+				public const float DURATION = 60f;
 
-		public class StatesInstance : GameplayEventStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, FoodFightEvent>.GameplayEventStateMachineInstance
+				public class StatesInstance : GameplayEventStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, FoodFightEvent>.GameplayEventStateMachineInstance
 		{
-			public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, FoodFightEvent foodEvent) : base(master, eventInstance, foodEvent)
+						public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, FoodFightEvent foodEvent) : base(master, eventInstance, foodEvent)
 			{
 			}
 
-			public void CreateChores(FoodFightEvent.StatesInstance smi)
+						public void CreateChores(FoodFightEvent.StatesInstance smi)
 			{
 				this.chores = new List<FoodFightChore>();
 				List<Room> list = Game.Instance.roomProber.rooms.FindAll((Room match) => match.roomType == Db.Get().RoomTypes.MessHall || match.roomType == Db.Get().RoomTypes.GreatHall);
@@ -53,7 +53,7 @@ namespace Klei.AI
 				}
 			}
 
-			public void ClearChores()
+						public void ClearChores()
 			{
 				if (this.chores != null)
 				{
@@ -68,12 +68,12 @@ namespace Klei.AI
 				this.chores = null;
 			}
 
-			public List<FoodFightChore> chores;
+						public List<FoodFightChore> chores;
 		}
 
-		public class States : GameplayEventStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, FoodFightEvent>
+				public class States : GameplayEventStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, FoodFightEvent>
 		{
-			public override void InitializeStates(out StateMachine.BaseState default_state)
+						public override void InitializeStates(out StateMachine.BaseState default_state)
 			{
 				base.InitializeStates(out default_state);
 				default_state = this.planning;
@@ -118,7 +118,7 @@ namespace Klei.AI
 				}).ReturnFailure();
 			}
 
-			public override EventInfoData GenerateEventPopupData(FoodFightEvent.StatesInstance smi)
+						public override EventInfoData GenerateEventPopupData(FoodFightEvent.StatesInstance smi)
 			{
 				EventInfoData eventInfoData = new EventInfoData(smi.gameplayEvent.title, smi.gameplayEvent.description, smi.gameplayEvent.animFileName);
 				eventInfoData.location = GAMEPLAY_EVENTS.LOCATIONS.PRINTING_POD;
@@ -134,21 +134,21 @@ namespace Klei.AI
 				return eventInfoData;
 			}
 
-			public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State planning;
+						public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State planning;
 
-			public FoodFightEvent.States.WarmupStates warmup;
+						public FoodFightEvent.States.WarmupStates warmup;
 
-			public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State partying;
+						public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State partying;
 
-			public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State ending;
+						public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State ending;
 
-			public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State canceled;
+						public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State canceled;
 
-			public class WarmupStates : GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State
+						public class WarmupStates : GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State
 			{
-				public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State wait;
+								public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State wait;
 
-				public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State start;
+								public GameStateMachine<FoodFightEvent.States, FoodFightEvent.StatesInstance, GameplayEventManager, object>.State start;
 			}
 		}
 	}

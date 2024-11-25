@@ -11,7 +11,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Storage")]
 public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescriptor, IStorage
 {
-		public bool ShouldOnlyTransferFromLowerPriority
+			public bool ShouldOnlyTransferFromLowerPriority
 	{
 		get
 		{
@@ -19,9 +19,9 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-			public bool allowUIItemRemoval { get; set; }
+				public bool allowUIItemRemoval { get; set; }
 
-	public GameObject this[int idx]
+		public GameObject this[int idx]
 	{
 		get
 		{
@@ -29,7 +29,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-		public int Count
+			public int Count
 	{
 		get
 		{
@@ -37,7 +37,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-			public bool ShouldSaveItems
+				public bool ShouldSaveItems
 	{
 		get
 		{
@@ -49,22 +49,22 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public bool ShouldShowInUI()
+		public bool ShouldShowInUI()
 	{
 		return this.showInUI;
 	}
 
-	public List<GameObject> GetItems()
+		public List<GameObject> GetItems()
 	{
 		return this.items;
 	}
 
-	public void SetDefaultStoredItemModifiers(List<Storage.StoredItemModifier> modifiers)
+		public void SetDefaultStoredItemModifiers(List<Storage.StoredItemModifier> modifiers)
 	{
 		this.defaultStoredItemModifers = modifiers;
 	}
 
-		public PrioritySetting masterPriority
+			public PrioritySetting masterPriority
 	{
 		get
 		{
@@ -76,9 +76,9 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public override Workable.AnimInfo GetAnim(Worker worker)
+		public override Workable.AnimInfo GetAnim(WorkerBase worker)
 	{
-		if (this.useGunForDelivery && worker.usesMultiTool)
+		if (this.useGunForDelivery && worker.UsesMultiTool())
 		{
 			Workable.AnimInfo anim = base.GetAnim(worker);
 			anim.smi = new MultitoolController.Instance(this, worker, "store", Assets.GetPrefab(EffectConfigs.OreAbsorbId));
@@ -87,7 +87,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return base.GetAnim(worker);
 	}
 
-	public override Vector3 GetTargetPoint()
+		public override Vector3 GetTargetPoint()
 	{
 		Vector3 vector = base.GetTargetPoint();
 		if (this.useGunForDelivery && this.gunTargetOffset != Vector2.zero)
@@ -104,9 +104,9 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return vector;
 	}
 
-			public event System.Action OnStorageIncreased;
+				public event System.Action OnStorageIncreased;
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		if (this.useWideOffsets)
 		{
@@ -130,7 +130,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		this.SetupStorageStatusItems();
 	}
 
-	private void SetupStorageStatusItems()
+		private void SetupStorageStatusItems()
 	{
 		if (Storage.capacityStatusItem == null)
 		{
@@ -179,7 +179,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (!this.allowSettingOnlyFetchMarkedItems)
@@ -189,7 +189,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		this.UpdateFetchCategory();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.SetWorkTime(this.storageWorkTime);
 		foreach (GameObject go in this.items)
@@ -219,7 +219,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public GameObject Store(GameObject go, bool hide_popups = false, bool block_events = false, bool do_disease_transfer = true, bool is_deserializing = false)
+		public GameObject Store(GameObject go, bool hide_popups = false, bool block_events = false, bool do_disease_transfer = true, bool is_deserializing = false)
 	{
 		if (go == null)
 		{
@@ -279,6 +279,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 							if (!block_events)
 							{
 								base.Trigger(-1697596308, go);
+								Action<GameObject> onStorageChange = this.OnStorageChange;
+								if (onStorageChange != null)
+								{
+									onStorageChange(go);
+								}
 								base.Trigger(-778359855, this);
 								if (this.OnStorageIncreased != null)
 								{
@@ -305,6 +310,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 			{
 				go.Trigger(856640610, this);
 				base.Trigger(-1697596308, go);
+				Action<GameObject> onStorageChange2 = this.OnStorageChange;
+				if (onStorageChange2 != null)
+				{
+					onStorageChange2(go);
+				}
 				base.Trigger(-778359855, this);
 				if (this.OnStorageIncreased != null)
 				{
@@ -315,7 +325,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return result;
 	}
 
-	public PrimaryElement AddElement(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, bool keep_zero_mass = false, bool do_disease_transfer = true)
+		public PrimaryElement AddElement(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, bool keep_zero_mass = false, bool do_disease_transfer = true)
 	{
 		Element element2 = ElementLoader.FindElementByHash(element);
 		if (element2.IsGas)
@@ -333,7 +343,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return null;
 	}
 
-	public PrimaryElement AddOre(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, bool keep_zero_mass = false, bool do_disease_transfer = true)
+		public PrimaryElement AddOre(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, bool keep_zero_mass = false, bool do_disease_transfer = true)
 	{
 		if (mass <= 0f)
 		{
@@ -348,6 +358,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 			primaryElement.Temperature = finalTemperature;
 			primaryElement.AddDisease(disease_idx, disease_count, "Storage.AddOre");
 			base.Trigger(-1697596308, primaryElement.gameObject);
+			Action<GameObject> onStorageChange = this.OnStorageChange;
+			if (onStorageChange != null)
+			{
+				onStorageChange(primaryElement.gameObject);
+			}
 		}
 		else
 		{
@@ -360,7 +375,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return primaryElement;
 	}
 
-	public PrimaryElement AddLiquid(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, bool keep_zero_mass = false, bool do_disease_transfer = true)
+		public PrimaryElement AddLiquid(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, bool keep_zero_mass = false, bool do_disease_transfer = true)
 	{
 		if (mass <= 0f)
 		{
@@ -375,6 +390,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 			primaryElement.Temperature = finalTemperature;
 			primaryElement.AddDisease(disease_idx, disease_count, "Storage.AddLiquid");
 			base.Trigger(-1697596308, primaryElement.gameObject);
+			Action<GameObject> onStorageChange = this.OnStorageChange;
+			if (onStorageChange != null)
+			{
+				onStorageChange(primaryElement.gameObject);
+			}
 		}
 		else
 		{
@@ -386,7 +406,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return primaryElement;
 	}
 
-	public PrimaryElement AddGasChunk(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, bool keep_zero_mass, bool do_disease_transfer = true)
+		public PrimaryElement AddGasChunk(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, bool keep_zero_mass, bool do_disease_transfer = true)
 	{
 		if (mass <= 0f)
 		{
@@ -401,6 +421,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 			primaryElement.SetMassTemperature(mass2 + mass, finalTemperature);
 			primaryElement.AddDisease(disease_idx, disease_count, "Storage.AddGasChunk");
 			base.Trigger(-1697596308, primaryElement.gameObject);
+			Action<GameObject> onStorageChange = this.OnStorageChange;
+			if (onStorageChange != null)
+			{
+				onStorageChange(primaryElement.gameObject);
+			}
 		}
 		else
 		{
@@ -412,7 +437,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return primaryElement;
 	}
 
-	public void Transfer(Storage target, bool block_events = false, bool hide_popups = false)
+		public void Transfer(Storage target, bool block_events = false, bool hide_popups = false)
 	{
 		while (this.items.Count > 0)
 		{
@@ -420,7 +445,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public bool TransferMass(Storage dest_storage, Tag tag, float amount, bool flatten = false, bool block_events = false, bool hide_popups = false)
+		public bool TransferMass(Storage dest_storage, Tag tag, float amount, bool flatten = false, bool block_events = false, bool hide_popups = false)
 	{
 		float num = amount;
 		while (num > 0f && this.GetAmountAvailable(tag) > 0f)
@@ -434,7 +459,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return num <= 0f;
 	}
 
-	public float Transfer(Storage dest_storage, Tag tag, float amount, bool block_events = false, bool hide_popups = false)
+		public float Transfer(Storage dest_storage, Tag tag, float amount, bool block_events = false, bool hide_popups = false)
 	{
 		GameObject gameObject = this.FindFirst(tag);
 		if (gameObject != null)
@@ -448,6 +473,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 				if (!block_events)
 				{
 					base.Trigger(-1697596308, component2.gameObject);
+					Action<GameObject> onStorageChange = this.OnStorageChange;
+					if (onStorageChange != null)
+					{
+						onStorageChange(component2.gameObject);
+					}
 				}
 			}
 			else
@@ -460,7 +490,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return 0f;
 	}
 
-	public bool Transfer(GameObject go, Storage target, bool block_events = false, bool hide_popups = false)
+		public bool Transfer(GameObject go, Storage target, bool block_events = false, bool hide_popups = false)
 	{
 		this.items.RemoveAll((GameObject it) => it == null);
 		int count = this.items.Count;
@@ -474,6 +504,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 				if (!block_events)
 				{
 					base.Trigger(-1697596308, go);
+					Action<GameObject> onStorageChange = this.OnStorageChange;
+					if (onStorageChange != null)
+					{
+						onStorageChange(go);
+					}
 				}
 				return true;
 			}
@@ -481,7 +516,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return false;
 	}
 
-	public bool DropSome(Tag tag, float amount, bool ventGas = false, bool dumpLiquid = false, Vector3 offset = default(Vector3), bool doDiseaseTransfer = true, bool showInWorldNotification = false)
+		public bool DropSome(Tag tag, float amount, bool ventGas = false, bool dumpLiquid = false, Vector3 offset = default(Vector3), bool doDiseaseTransfer = true, bool showInWorldNotification = false)
 	{
 		bool result = false;
 		float num = amount;
@@ -507,6 +542,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 								flag = true;
 								num -= pickupable.GetComponent<PrimaryElement>().Mass;
 								base.Trigger(-1697596308, pickupable.gameObject);
+								Action<GameObject> onStorageChange = this.OnStorageChange;
+								if (onStorageChange != null)
+								{
+									onStorageChange(pickupable.gameObject);
+								}
 								result = true;
 								if (showInWorldNotification)
 								{
@@ -519,6 +559,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 								flag = true;
 								num -= pickupable.GetComponent<PrimaryElement>().Mass;
 								base.Trigger(-1697596308, pickupable.gameObject);
+								Action<GameObject> onStorageChange2 = this.OnStorageChange;
+								if (onStorageChange2 != null)
+								{
+									onStorageChange2(pickupable.gameObject);
+								}
 								result = true;
 								if (showInWorldNotification)
 								{
@@ -539,6 +584,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 						num -= pickupable.GetComponent<PrimaryElement>().Mass;
 						this.MakeWorldActive(pickupable.gameObject);
 						base.Trigger(-1697596308, pickupable.gameObject);
+						Action<GameObject> onStorageChange3 = this.OnStorageChange;
+						if (onStorageChange3 != null)
+						{
+							onStorageChange3(pickupable.gameObject);
+						}
 						result = true;
 						if (showInWorldNotification)
 						{
@@ -556,7 +606,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return result;
 	}
 
-	public void DropAll(Vector3 position, bool vent_gas = false, bool dump_liquid = false, Vector3 offset = default(Vector3), bool do_disease_transfer = true, List<GameObject> collect_dropped_items = null)
+		public void DropAll(Vector3 position, bool vent_gas = false, bool dump_liquid = false, Vector3 offset = default(Vector3), bool do_disease_transfer = true, List<GameObject> collect_dropped_items = null)
 	{
 		while (this.items.Count > 0)
 		{
@@ -604,12 +654,12 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public void DropAll(bool vent_gas = false, bool dump_liquid = false, Vector3 offset = default(Vector3), bool do_disease_transfer = true, List<GameObject> collect_dropped_items = null)
+		public void DropAll(bool vent_gas = false, bool dump_liquid = false, Vector3 offset = default(Vector3), bool do_disease_transfer = true, List<GameObject> collect_dropped_items = null)
 	{
 		this.DropAll(Grid.CellToPosCCC(Grid.PosToCell(this), Grid.SceneLayer.Ore), vent_gas, dump_liquid, offset, do_disease_transfer, collect_dropped_items);
 	}
 
-	public void Drop(Tag t, List<GameObject> obj_list)
+		public void Drop(Tag t, List<GameObject> obj_list)
 	{
 		this.Find(t, obj_list);
 		foreach (GameObject go in obj_list)
@@ -618,7 +668,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public void Drop(Tag t)
+		public void Drop(Tag t)
 	{
 		ListPool<GameObject, Storage>.PooledList pooledList = ListPool<GameObject, Storage>.Allocate();
 		this.Find(t, pooledList);
@@ -629,7 +679,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		pooledList.Recycle();
 	}
 
-	public void DropUnlessMatching(FetchChore chore)
+		public void DropUnlessMatching(FetchChore chore)
 	{
 		for (int i = 0; i < this.items.Count; i++)
 		{
@@ -648,7 +698,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public GameObject[] DropUnlessHasTag(Tag tag)
+		public GameObject[] DropUnlessHasTag(Tag tag)
 	{
 		List<GameObject> list = new List<GameObject>();
 		for (int i = 0; i < this.items.Count; i++)
@@ -671,7 +721,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return list.ToArray();
 	}
 
-	public GameObject[] DropHasTags(Tag[] tag)
+		public GameObject[] DropHasTags(Tag[] tag)
 	{
 		List<GameObject> list = new List<GameObject>();
 		for (int i = 0; i < this.items.Count; i++)
@@ -694,7 +744,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return list.ToArray();
 	}
 
-	public GameObject Drop(GameObject go, bool do_disease_transfer = true)
+		public GameObject Drop(GameObject go, bool do_disease_transfer = true)
 	{
 		if (go == null)
 		{
@@ -718,7 +768,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return go;
 	}
 
-	public void RenotifyAll()
+		public void RenotifyAll()
 	{
 		this.items.RemoveAll((GameObject it) => it == null);
 		foreach (GameObject go in this.items)
@@ -727,7 +777,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	private void TransferDiseaseWithObject(GameObject obj)
+		private void TransferDiseaseWithObject(GameObject obj)
 	{
 		if (obj == null || !this.doDiseaseTransfer || this.primaryElement == null)
 		{
@@ -756,7 +806,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	private void MakeWorldActive(GameObject go)
+		private void MakeWorldActive(GameObject go)
 	{
 		go.transform.parent = null;
 		if (this.dropOffset != Vector2.zero)
@@ -765,6 +815,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 		go.Trigger(856640610, null);
 		base.Trigger(-1697596308, go);
+		Action<GameObject> onStorageChange = this.OnStorageChange;
+		if (onStorageChange != null)
+		{
+			onStorageChange(go);
+		}
 		this.ApplyStoredItemModifiers(go, false, false);
 		if (go != null)
 		{
@@ -780,7 +835,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public List<GameObject> Find(Tag tag, List<GameObject> result)
+		public List<GameObject> Find(Tag tag, List<GameObject> result)
 	{
 		for (int i = 0; i < this.items.Count; i++)
 		{
@@ -793,7 +848,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return result;
 	}
 
-	public GameObject FindFirst(Tag tag)
+		public GameObject FindFirst(Tag tag)
 	{
 		GameObject result = null;
 		for (int i = 0; i < this.items.Count; i++)
@@ -808,7 +863,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return result;
 	}
 
-	public PrimaryElement FindFirstWithMass(Tag tag, float mass = 0f)
+		public PrimaryElement FindFirstWithMass(Tag tag, float mass = 0f)
 	{
 		PrimaryElement result = null;
 		for (int i = 0; i < this.items.Count; i++)
@@ -827,9 +882,13 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return result;
 	}
 
-	private void Flatten(Tag tag_to_combine)
+		private void Flatten(Tag tag_to_combine)
 	{
 		GameObject gameObject = this.FindFirst(tag_to_combine);
+		if (gameObject == null)
+		{
+			return;
+		}
 		PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
 		for (int i = this.items.Count - 1; i >= 0; i--)
 		{
@@ -843,7 +902,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public HashSet<Tag> GetAllIDsInStorage()
+		public HashSet<Tag> GetAllIDsInStorage()
 	{
 		HashSet<Tag> hashSet = new HashSet<Tag>();
 		for (int i = 0; i < this.items.Count; i++)
@@ -854,7 +913,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return hashSet;
 	}
 
-	public GameObject Find(int ID)
+		public GameObject Find(int ID)
 	{
 		for (int i = 0; i < this.items.Count; i++)
 		{
@@ -867,12 +926,12 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return null;
 	}
 
-	public void ConsumeAllIgnoringDisease()
+		public void ConsumeAllIgnoringDisease()
 	{
 		this.ConsumeAllIgnoringDisease(Tag.Invalid);
 	}
 
-	public void ConsumeAllIgnoringDisease(Tag tag)
+		public void ConsumeAllIgnoringDisease(Tag tag)
 	{
 		for (int i = this.items.Count - 1; i >= 0; i--)
 		{
@@ -883,7 +942,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public void ConsumeAndGetDisease(Tag tag, float amount, out float amount_consumed, out SimUtil.DiseaseInfo disease_info, out float aggregate_temperature)
+		public void ConsumeAndGetDisease(Tag tag, float amount, out float amount_consumed, out SimUtil.DiseaseInfo disease_info, out float aggregate_temperature)
 	{
 		DebugUtil.Assert(tag.IsValid);
 		amount_consumed = 0f;
@@ -919,6 +978,11 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 					this.deleted_objects.Add(gameObject);
 				}
 				base.Trigger(-1697596308, gameObject);
+				Action<GameObject> onStorageChange = this.OnStorageChange;
+				if (onStorageChange != null)
+				{
+					onStorageChange(gameObject);
+				}
 			}
 			num++;
 		}
@@ -937,13 +1001,13 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public void ConsumeAndGetDisease(Recipe.Ingredient ingredient, out SimUtil.DiseaseInfo disease_info, out float temperature)
+		public void ConsumeAndGetDisease(Recipe.Ingredient ingredient, out SimUtil.DiseaseInfo disease_info, out float temperature)
 	{
 		float num;
 		this.ConsumeAndGetDisease(ingredient.tag, ingredient.amount, out num, out disease_info, out temperature);
 	}
 
-	public void ConsumeIgnoringDisease(Tag tag, float amount)
+		public void ConsumeIgnoringDisease(Tag tag, float amount)
 	{
 		float num;
 		SimUtil.DiseaseInfo diseaseInfo;
@@ -951,7 +1015,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		this.ConsumeAndGetDisease(tag, amount, out num, out diseaseInfo, out num2);
 	}
 
-	public void ConsumeIgnoringDisease(GameObject item_go)
+		public void ConsumeIgnoringDisease(GameObject item_go)
 	{
 		if (this.items.Contains(item_go))
 		{
@@ -961,45 +1025,67 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 				component.Units = 0f;
 				component.ModifyDiseaseCount(-component.DiseaseCount, "consume item");
 				base.Trigger(-1697596308, item_go);
+				Action<GameObject> onStorageChange = this.OnStorageChange;
+				if (onStorageChange == null)
+				{
+					return;
+				}
+				onStorageChange(item_go);
 				return;
 			}
-			this.items.Remove(item_go);
-			base.Trigger(-1697596308, item_go);
-			item_go.DeleteObject();
+			else
+			{
+				this.items.Remove(item_go);
+				base.Trigger(-1697596308, item_go);
+				Action<GameObject> onStorageChange2 = this.OnStorageChange;
+				if (onStorageChange2 != null)
+				{
+					onStorageChange2(item_go);
+				}
+				item_go.DeleteObject();
+			}
 		}
 	}
 
-	public GameObject Drop(int ID)
+		public GameObject Drop(int ID)
 	{
 		return this.Drop(this.Find(ID), true);
 	}
 
-	private void OnDeath(object data)
+		private void OnDeath(object data)
 	{
-		this.DropAll(true, true, default(Vector3), true, null);
+		List<GameObject> list = new List<GameObject>();
+		bool vent_gas = true;
+		bool dump_liquid = true;
+		List<GameObject> collect_dropped_items = list;
+		this.DropAll(vent_gas, dump_liquid, default(Vector3), true, collect_dropped_items);
+		if (this.onDestroyItemsDropped != null)
+		{
+			this.onDestroyItemsDropped(list);
+		}
 	}
 
-	public bool IsFull()
+		public bool IsFull()
 	{
 		return this.RemainingCapacity() <= 0f;
 	}
 
-	public bool IsEmpty()
+		public bool IsEmpty()
 	{
 		return this.items.Count == 0;
 	}
 
-	public float Capacity()
+		public float Capacity()
 	{
 		return this.capacityKg;
 	}
 
-	public bool IsEndOfLife()
+		public bool IsEndOfLife()
 	{
 		return this.endOfLife;
 	}
 
-	public float ExactMassStored()
+		public float ExactMassStored()
 	{
 		float num = 0f;
 		for (int i = 0; i < this.items.Count; i++)
@@ -1016,12 +1102,12 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return num;
 	}
 
-	public float MassStored()
+		public float MassStored()
 	{
 		return (float)Mathf.RoundToInt(this.ExactMassStored() * 1000f) / 1000f;
 	}
 
-	public float UnitsStored()
+		public float UnitsStored()
 	{
 		float num = 0f;
 		for (int i = 0; i < this.items.Count; i++)
@@ -1038,7 +1124,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return (float)Mathf.RoundToInt(num * 1000f) / 1000f;
 	}
 
-	public bool Has(Tag tag)
+		public bool Has(Tag tag)
 	{
 		bool result = false;
 		foreach (GameObject gameObject in this.items)
@@ -1056,7 +1142,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return result;
 	}
 
-	public PrimaryElement AddToPrimaryElement(SimHashes element, float additional_mass, float temperature)
+		public PrimaryElement AddToPrimaryElement(SimHashes element, float additional_mass, float temperature)
 	{
 		PrimaryElement primaryElement = this.FindPrimaryElement(element);
 		if (primaryElement != null)
@@ -1068,7 +1154,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return primaryElement;
 	}
 
-	public PrimaryElement FindPrimaryElement(SimHashes element)
+		public PrimaryElement FindPrimaryElement(SimHashes element)
 	{
 		PrimaryElement result = null;
 		foreach (GameObject gameObject in this.items)
@@ -1086,17 +1172,17 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return result;
 	}
 
-	public float RemainingCapacity()
+		public float RemainingCapacity()
 	{
 		return this.capacityKg - this.MassStored();
 	}
 
-	public bool GetOnlyFetchMarkedItems()
+		public bool GetOnlyFetchMarkedItems()
 	{
 		return this.onlyFetchMarkedItems;
 	}
 
-	public void SetOnlyFetchMarkedItems(bool is_set)
+		public void SetOnlyFetchMarkedItems(bool is_set)
 	{
 		if (is_set != this.onlyFetchMarkedItems)
 		{
@@ -1107,7 +1193,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	private void UpdateFetchCategory()
+		private void UpdateFetchCategory()
 	{
 		if (this.fetchCategory == Storage.FetchCategory.Building)
 		{
@@ -1116,7 +1202,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		this.fetchCategory = (this.onlyFetchMarkedItems ? Storage.FetchCategory.StorageSweepOnly : Storage.FetchCategory.GeneralStorage);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.items.Count != 0)
 		{
@@ -1125,11 +1211,14 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		base.OnCleanUp();
 	}
 
-	private void OnQueueDestroyObject(object data)
+		private void OnQueueDestroyObject(object data)
 	{
 		this.endOfLife = true;
 		List<GameObject> list = new List<GameObject>();
-		this.DropAll(true, false, default(Vector3), true, list);
+		bool vent_gas = true;
+		bool dump_liquid = false;
+		List<GameObject> collect_dropped_items = list;
+		this.DropAll(vent_gas, dump_liquid, default(Vector3), true, collect_dropped_items);
 		if (this.onDestroyItemsDropped != null)
 		{
 			this.onDestroyItemsDropped(list);
@@ -1137,7 +1226,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		this.OnCleanUp();
 	}
 
-	public void Remove(GameObject go, bool do_disease_transfer = true)
+		public void Remove(GameObject go, bool do_disease_transfer = true)
 	{
 		this.items.Remove(go);
 		if (do_disease_transfer)
@@ -1145,10 +1234,15 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 			this.TransferDiseaseWithObject(go);
 		}
 		base.Trigger(-1697596308, go);
+		Action<GameObject> onStorageChange = this.OnStorageChange;
+		if (onStorageChange != null)
+		{
+			onStorageChange(go);
+		}
 		this.ApplyStoredItemModifiers(go, false, false);
 	}
 
-	public bool ForceStore(Tag tag, float amount)
+		public bool ForceStore(Tag tag, float amount)
 	{
 		global::Debug.Assert(amount < PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT);
 		for (int i = 0; i < this.items.Count; i++)
@@ -1163,7 +1257,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return false;
 	}
 
-	public float GetAmountAvailable(Tag tag)
+		public float GetAmountAvailable(Tag tag)
 	{
 		float num = 0f;
 		for (int i = 0; i < this.items.Count; i++)
@@ -1177,7 +1271,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return num;
 	}
 
-	public float GetAmountAvailable(Tag tag, Tag[] forbiddenTags = null)
+		public float GetAmountAvailable(Tag tag, Tag[] forbiddenTags = null)
 	{
 		if (forbiddenTags == null)
 		{
@@ -1195,7 +1289,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return num;
 	}
 
-	public float GetUnitsAvailable(Tag tag)
+		public float GetUnitsAvailable(Tag tag)
 	{
 		float num = 0f;
 		for (int i = 0; i < this.items.Count; i++)
@@ -1209,7 +1303,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return num;
 	}
 
-	public float GetMassAvailable(Tag tag)
+		public float GetMassAvailable(Tag tag)
 	{
 		float num = 0f;
 		for (int i = 0; i < this.items.Count; i++)
@@ -1223,7 +1317,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return num;
 	}
 
-	public float GetMassAvailable(SimHashes element)
+		public float GetMassAvailable(SimHashes element)
 	{
 		float num = 0f;
 		for (int i = 0; i < this.items.Count; i++)
@@ -1241,7 +1335,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return num;
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> descriptors = base.GetDescriptors(go);
 		if (this.showDescriptor)
@@ -1251,7 +1345,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return descriptors;
 	}
 
-	public static void MakeItemTemperatureInsulated(GameObject go, bool is_stored, bool is_initializing)
+		public static void MakeItemTemperatureInsulated(GameObject go, bool is_stored, bool is_initializing)
 	{
 		SimTemperatureTransfer component = go.GetComponent<SimTemperatureTransfer>();
 		if (component == null)
@@ -1261,7 +1355,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		component.enabled = !is_stored;
 	}
 
-	public static void MakeItemInvisible(GameObject go, bool is_stored, bool is_initializing)
+		public static void MakeItemInvisible(GameObject go, bool is_stored, bool is_initializing)
 	{
 		if (is_initializing)
 		{
@@ -1280,7 +1374,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public static void MakeItemSealed(GameObject go, bool is_stored, bool is_initializing)
+		public static void MakeItemSealed(GameObject go, bool is_stored, bool is_initializing)
 	{
 		if (go != null)
 		{
@@ -1293,7 +1387,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public static void MakeItemPreserved(GameObject go, bool is_stored, bool is_initializing)
+		public static void MakeItemPreserved(GameObject go, bool is_stored, bool is_initializing)
 	{
 		if (go != null)
 		{
@@ -1306,7 +1400,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	private void ApplyStoredItemModifiers(GameObject go, bool is_stored, bool is_initializing)
+		private void ApplyStoredItemModifiers(GameObject go, bool is_stored, bool is_initializing)
 	{
 		List<Storage.StoredItemModifier> list = this.defaultStoredItemModifers;
 		for (int i = 0; i < list.Count; i++)
@@ -1324,7 +1418,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	protected virtual void OnCopySettings(object data)
+		protected virtual void OnCopySettings(object data)
 	{
 		Storage component = ((GameObject)data).GetComponent<Storage>();
 		if (component != null)
@@ -1333,7 +1427,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	private void OnPriorityChanged(PrioritySetting priority)
+		private void OnPriorityChanged(PrioritySetting priority)
 	{
 		foreach (GameObject go in this.items)
 		{
@@ -1341,7 +1435,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	private void OnReachableChanged(object data)
+		private void OnReachableChanged(object data)
 	{
 		bool flag = (bool)data;
 		KSelectable component = base.GetComponent<KSelectable>();
@@ -1353,7 +1447,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		component.AddStatusItem(Db.Get().BuildingStatusItems.StorageUnreachable, this);
 	}
 
-	public void SetContentsDeleteOffGrid(bool delete_off_grid)
+		public void SetContentsDeleteOffGrid(bool delete_off_grid)
 	{
 		for (int i = 0; i < this.items.Count; i++)
 		{
@@ -1370,7 +1464,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	private bool ShouldSaveItem(GameObject go)
+		private bool ShouldSaveItem(GameObject go)
 	{
 		if (!this.shouldSaveItems)
 		{
@@ -1384,7 +1478,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		return result;
 	}
 
-	public void Serialize(BinaryWriter writer)
+		public void Serialize(BinaryWriter writer)
 	{
 		int num = 0;
 		int count = this.items.Count;
@@ -1423,7 +1517,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public void Deserialize(IReader reader)
+		public void Deserialize(IReader reader)
 	{
 		float realtimeSinceStartup = Time.realtimeSinceStartup;
 		float num = 0f;
@@ -1478,7 +1572,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	private void ClearItems()
+		private void ClearItems()
 	{
 		foreach (GameObject go in this.items)
 		{
@@ -1487,7 +1581,7 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		this.items.Clear();
 	}
 
-	public void UpdateStoredItemCachedCells()
+		public void UpdateStoredItemCachedCells()
 	{
 		foreach (GameObject gameObject in this.items)
 		{
@@ -1499,92 +1593,96 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		}
 	}
 
-	public bool allowItemRemoval;
+		public bool allowItemRemoval;
 
-	public bool ignoreSourcePriority;
+		public bool ignoreSourcePriority;
 
-	public bool onlyTransferFromLowerPriority;
+		public bool onlyTransferFromLowerPriority;
 
-	public float capacityKg = 20000f;
+		public float capacityKg = 20000f;
 
-	public bool showDescriptor;
+		public bool showDescriptor;
 
-	public bool doDiseaseTransfer = true;
+		public bool doDiseaseTransfer = true;
 
-	public List<Tag> storageFilters;
+		public List<Tag> storageFilters;
 
-	public bool useGunForDelivery = true;
+		public bool useGunForDelivery = true;
 
-	public bool sendOnStoreOnSpawn;
+		public bool sendOnStoreOnSpawn;
 
-	public bool showInUI = true;
+		public bool showInUI = true;
 
-	public bool storeDropsFromButcherables;
+		public bool storeDropsFromButcherables;
 
-	public bool allowClearable;
+		public bool allowClearable;
 
-	public bool showCapacityStatusItem;
+		public bool showCapacityStatusItem;
 
-	public bool showCapacityAsMainStatus;
+		public bool showCapacityAsMainStatus;
 
-	public bool showUnreachableStatus;
+		public bool showUnreachableStatus;
 
-	public bool showSideScreenTitleBar;
+		public bool showSideScreenTitleBar;
 
-	public bool useWideOffsets;
+		public bool useWideOffsets;
 
-	public Action<List<GameObject>> onDestroyItemsDropped;
+		public Action<List<GameObject>> onDestroyItemsDropped;
 
-	public Vector2 dropOffset = Vector2.zero;
+		public Action<GameObject> OnStorageChange;
 
-	[MyCmpGet]
+		public Vector2 dropOffset = Vector2.zero;
+
+		[MyCmpGet]
 	private Rotatable rotatable;
 
-	public Vector2 gunTargetOffset;
+		public Vector2 gunTargetOffset;
 
-	public Storage.FetchCategory fetchCategory;
+		public Storage.FetchCategory fetchCategory;
 
-	public int storageNetworkID = -1;
+		public int storageNetworkID = -1;
 
-	public float storageFullMargin;
+		public Tag storageID = GameTags.StoragesIds.DefaultStorage;
 
-	public Vector3 storageFXOffset = Vector3.zero;
+		public float storageFullMargin;
 
-	private static readonly EventSystem.IntraObjectHandler<Storage> OnReachableChangedDelegate = new EventSystem.IntraObjectHandler<Storage>(delegate(Storage component, object data)
+		public Vector3 storageFXOffset = Vector3.zero;
+
+		private static readonly EventSystem.IntraObjectHandler<Storage> OnReachableChangedDelegate = new EventSystem.IntraObjectHandler<Storage>(delegate(Storage component, object data)
 	{
 		component.OnReachableChanged(data);
 	});
 
-	public Storage.FXPrefix fxPrefix;
+		public Storage.FXPrefix fxPrefix;
 
-	public List<GameObject> items = new List<GameObject>();
+		public List<GameObject> items = new List<GameObject>();
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public Prioritizable prioritizable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public Automatable automatable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	protected PrimaryElement primaryElement;
 
-	public bool dropOnLoad;
+		public bool dropOnLoad;
 
-	protected float maxKGPerItem = float.MaxValue;
+		protected float maxKGPerItem = float.MaxValue;
 
-	private bool endOfLife;
+		private bool endOfLife;
 
-	public bool allowSettingOnlyFetchMarkedItems = true;
+		public bool allowSettingOnlyFetchMarkedItems = true;
 
-	[Serialize]
+		[Serialize]
 	private bool onlyFetchMarkedItems;
 
-	[Serialize]
+		[Serialize]
 	private bool shouldSaveItems = true;
 
-	public float storageWorkTime = 1.5f;
+		public float storageWorkTime = 1.5f;
 
-	private static readonly List<Storage.StoredItemModifierInfo> StoredItemModifierHandlers = new List<Storage.StoredItemModifierInfo>
+		private static readonly List<Storage.StoredItemModifierInfo> StoredItemModifierHandlers = new List<Storage.StoredItemModifierInfo>
 	{
 		new Storage.StoredItemModifierInfo(Storage.StoredItemModifier.Hide, new Action<GameObject, bool, bool>(Storage.MakeItemInvisible)),
 		new Storage.StoredItemModifierInfo(Storage.StoredItemModifier.Insulate, new Action<GameObject, bool, bool>(Storage.MakeItemTemperatureInsulated)),
@@ -1592,81 +1690,81 @@ public class Storage : Workable, ISaveLoadableDetails, IGameObjectEffectDescript
 		new Storage.StoredItemModifierInfo(Storage.StoredItemModifier.Preserve, new Action<GameObject, bool, bool>(Storage.MakeItemPreserved))
 	};
 
-	[SerializeField]
+		[SerializeField]
 	private List<Storage.StoredItemModifier> defaultStoredItemModifers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide
 	};
 
-	public static readonly List<Storage.StoredItemModifier> StandardSealedStorage = new List<Storage.StoredItemModifier>
+		public static readonly List<Storage.StoredItemModifier> StandardSealedStorage = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Seal
 	};
 
-	public static readonly List<Storage.StoredItemModifier> StandardFabricatorStorage = new List<Storage.StoredItemModifier>
+		public static readonly List<Storage.StoredItemModifier> StandardFabricatorStorage = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Preserve
 	};
 
-	public static readonly List<Storage.StoredItemModifier> StandardInsulatedStorage = new List<Storage.StoredItemModifier>
+		public static readonly List<Storage.StoredItemModifier> StandardInsulatedStorage = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Seal,
 		Storage.StoredItemModifier.Insulate
 	};
 
-	private static StatusItem capacityStatusItem;
+		private static StatusItem capacityStatusItem;
 
-	private static readonly EventSystem.IntraObjectHandler<Storage> OnDeadTagAddedDelegate = GameUtil.CreateHasTagHandler<Storage>(GameTags.Dead, delegate(Storage component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Storage> OnDeadTagAddedDelegate = GameUtil.CreateHasTagHandler<Storage>(GameTags.Dead, delegate(Storage component, object data)
 	{
 		component.OnDeath(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Storage> OnQueueDestroyObjectDelegate = new EventSystem.IntraObjectHandler<Storage>(delegate(Storage component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Storage> OnQueueDestroyObjectDelegate = new EventSystem.IntraObjectHandler<Storage>(delegate(Storage component, object data)
 	{
 		component.OnQueueDestroyObject(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Storage> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Storage>(delegate(Storage component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Storage> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Storage>(delegate(Storage component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private List<GameObject> deleted_objects;
+		private List<GameObject> deleted_objects;
 
-	public enum StoredItemModifier
+		public enum StoredItemModifier
 	{
-		Insulate,
-		Hide,
-		Seal,
-		Preserve
+				Insulate,
+				Hide,
+				Seal,
+				Preserve
 	}
 
-	public enum FetchCategory
+		public enum FetchCategory
 	{
-		Building,
-		GeneralStorage,
-		StorageSweepOnly
+				Building,
+				GeneralStorage,
+				StorageSweepOnly
 	}
 
-	public enum FXPrefix
+		public enum FXPrefix
 	{
-		Delivered,
-		PickedUp
+				Delivered,
+				PickedUp
 	}
 
-	private struct StoredItemModifierInfo
+		private struct StoredItemModifierInfo
 	{
-		public StoredItemModifierInfo(Storage.StoredItemModifier modifier, Action<GameObject, bool, bool> toggle_state)
+				public StoredItemModifierInfo(Storage.StoredItemModifier modifier, Action<GameObject, bool, bool> toggle_state)
 		{
 			this.modifier = modifier;
 			this.toggleState = toggle_state;
 		}
 
-		public Storage.StoredItemModifier modifier;
+				public Storage.StoredItemModifier modifier;
 
-		public Action<GameObject, bool, bool> toggleState;
+				public Action<GameObject, bool, bool> toggleState;
 	}
 }

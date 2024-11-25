@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ClothingFabricatorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ClothingFabricator";
 		int width = 4;
@@ -28,7 +28,7 @@ public class ClothingFabricatorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		go.AddOrGet<DropAllWorkable>();
@@ -46,7 +46,7 @@ public class ClothingFabricatorConfig : IBuildingConfig
 		BuildingTemplates.CreateComplexFabricatorStorage(go, complexFabricator);
 	}
 
-	private void ConfigureRecipes()
+		private void ConfigureRecipes()
 	{
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[]
 		{
@@ -88,7 +88,7 @@ public class ClothingFabricatorConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
@@ -101,5 +101,5 @@ public class ClothingFabricatorConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "ClothingFabricator";
+		public const string ID = "ClothingFabricator";
 }

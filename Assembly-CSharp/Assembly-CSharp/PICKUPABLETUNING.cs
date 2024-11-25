@@ -2,5 +2,5 @@
 
 public class PICKUPABLETUNING
 {
-	public static float MINIMUM_PICKABLE_AMOUNT = 0.001f;
+		public static float MINIMUM_PICKABLE_AMOUNT = 0.001f;
 }

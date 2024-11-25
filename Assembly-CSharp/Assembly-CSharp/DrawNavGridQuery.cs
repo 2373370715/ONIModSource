@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class DrawNavGridQuery : PathFinderQuery
 {
-	public DrawNavGridQuery Reset(MinionBrain brain)
+		public DrawNavGridQuery Reset(MinionBrain brain)
 	{
 		return this;
 	}
 
-	public override bool IsMatch(int cell, int parent_cell, int cost)
+		public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
 		if (parent_cell == Grid.InvalidCell || (int)Grid.WorldIdx[parent_cell] != ClusterManager.Instance.activeWorldId || (int)Grid.WorldIdx[cell] != ClusterManager.Instance.activeWorldId)
 		{

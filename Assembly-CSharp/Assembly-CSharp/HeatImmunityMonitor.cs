@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HeatImmunityMonitor : GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.idle;
@@ -16,79 +16,79 @@ public class HeatImmunityMonitor : GameStateMachine<HeatImmunityMonitor, HeatImm
 		this.warm.idle.Enter(new StateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State.Callback(HeatImmunityMonitor.ResetHeatTimer)).ToggleStatusItem(Db.Get().DuplicantStatusItems.Hot, (HeatImmunityMonitor.Instance smi) => smi).TagTransition(GameTags.FeelingWarm, this.warm.exiting, true);
 	}
 
-	public static bool OnEffectAdded(HeatImmunityMonitor.Instance smi, object data)
+		public static bool OnEffectAdded(HeatImmunityMonitor.Instance smi, object data)
 	{
 		return true;
 	}
 
-	public static void ClearTimer(HeatImmunityMonitor.Instance smi)
+		public static void ClearTimer(HeatImmunityMonitor.Instance smi)
 	{
 		smi.sm.heatCountdown.Set(0f, smi, false);
 	}
 
-	public static void ResetHeatTimer(HeatImmunityMonitor.Instance smi)
+		public static void ResetHeatTimer(HeatImmunityMonitor.Instance smi)
 	{
 		smi.sm.heatCountdown.Set(5f, smi, false);
 	}
 
-	public static void HeatTimerUpdate(HeatImmunityMonitor.Instance smi, float dt)
+		public static void HeatTimerUpdate(HeatImmunityMonitor.Instance smi, float dt)
 	{
 		float value = Mathf.Clamp(smi.HeatCountdown - dt, 0f, 5f);
 		smi.sm.heatCountdown.Set(value, smi, false);
 	}
 
-	private static void UpdateShelterCell(HeatImmunityMonitor.Instance smi, float dt)
+		private static void UpdateShelterCell(HeatImmunityMonitor.Instance smi, float dt)
 	{
 		smi.UpdateShelterCell();
 	}
 
-	private static void UpdateShelterCell(HeatImmunityMonitor.Instance smi)
+		private static void UpdateShelterCell(HeatImmunityMonitor.Instance smi)
 	{
 		smi.UpdateShelterCell();
 	}
 
-	public static bool HasImmunityEffect(HeatImmunityMonitor.Instance smi, object data)
+		public static bool HasImmunityEffect(HeatImmunityMonitor.Instance smi, object data)
 	{
 		Effects component = smi.GetComponent<Effects>();
 		return component != null && component.HasEffect("RefreshingTouch");
 	}
 
-	private static Chore CreateRecoverFromOverheatChore(HeatImmunityMonitor.Instance smi)
+		private static Chore CreateRecoverFromOverheatChore(HeatImmunityMonitor.Instance smi)
 	{
 		return new RecoverFromHeatChore(smi.master);
 	}
 
-	private const float EFFECT_DURATION = 5f;
+		private const float EFFECT_DURATION = 5f;
 
-	public HeatImmunityMonitor.IdleStates idle;
+		public HeatImmunityMonitor.IdleStates idle;
 
-	public HeatImmunityMonitor.WarmStates warm;
+		public HeatImmunityMonitor.WarmStates warm;
 
-	public StateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.FloatParameter heatCountdown;
+		public StateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.FloatParameter heatCountdown;
 
-	public class WarmStates : GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State
+		public class WarmStates : GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State idle;
+				public GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State idle;
 
-		public GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State exiting;
+				public GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State exiting;
 
-		public GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State resetChore;
+				public GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State resetChore;
 	}
 
-	public class IdleStates : GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State
+		public class IdleStates : GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State feelingFine;
+				public GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State feelingFine;
 
-		public GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State leftWithDesireToCooldownAfterBeingWarm;
+				public GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.State leftWithDesireToCooldownAfterBeingWarm;
 	}
 
-	public new class Instance : GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<HeatImmunityMonitor, HeatImmunityMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-						public HeatImmunityProvider.Instance NearestImmunityProvider { get; private set; }
+								public HeatImmunityProvider.Instance NearestImmunityProvider { get; private set; }
 
-						public int ShelterCell { get; private set; }
+								public int ShelterCell { get; private set; }
 
-				public float HeatCountdown
+						public float HeatCountdown
 		{
 			get
 			{
@@ -96,17 +96,17 @@ public class HeatImmunityMonitor : GameStateMachine<HeatImmunityMonitor, HeatImm
 			}
 		}
 
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			this.navigator = base.gameObject.GetComponent<Navigator>();
 			base.StartSM();
 		}
 
-		public void UpdateShelterCell()
+				public void UpdateShelterCell()
 		{
 			int myWorldId = this.navigator.GetMyWorldId();
 			int shelterCell = Grid.InvalidCell;
@@ -131,6 +131,6 @@ public class HeatImmunityMonitor : GameStateMachine<HeatImmunityMonitor, HeatImm
 			this.ShelterCell = shelterCell;
 		}
 
-		private Navigator navigator;
+				private Navigator navigator;
 	}
 }

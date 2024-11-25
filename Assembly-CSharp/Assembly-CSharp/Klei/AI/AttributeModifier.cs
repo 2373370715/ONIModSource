@@ -3,22 +3,22 @@ using System.Diagnostics;
 
 namespace Klei.AI
 {
-	[DebuggerDisplay("{AttributeId}")]
+		[DebuggerDisplay("{AttributeId}")]
 	public class AttributeModifier
 	{
-						public string AttributeId { get; private set; }
+								public string AttributeId { get; private set; }
 
-						public float Value { get; private set; }
+								public float Value { get; private set; }
 
-						public bool IsMultiplier { get; private set; }
+								public bool IsMultiplier { get; private set; }
 
-						public GameUtil.TimeSlice? OverrideTimeSlice { get; set; }
+								public GameUtil.TimeSlice? OverrideTimeSlice { get; set; }
 
-						public bool UIOnly { get; private set; }
+								public bool UIOnly { get; private set; }
 
-						public bool IsReadonly { get; private set; }
+								public bool IsReadonly { get; private set; }
 
-		public AttributeModifier(string attribute_id, float value, string description = null, bool is_multiplier = false, bool uiOnly = false, bool is_readonly = true)
+				public AttributeModifier(string attribute_id, float value, string description = null, bool is_multiplier = false, bool uiOnly = false, bool is_readonly = true)
 		{
 			this.AttributeId = attribute_id;
 			this.Value = value;
@@ -30,7 +30,7 @@ namespace Klei.AI
 			this.OverrideTimeSlice = null;
 		}
 
-		public AttributeModifier(string attribute_id, float value, Func<string> description_cb, bool is_multiplier = false, bool uiOnly = false)
+				public AttributeModifier(string attribute_id, float value, Func<string> description_cb, bool is_multiplier = false, bool uiOnly = false)
 		{
 			this.AttributeId = attribute_id;
 			this.Value = value;
@@ -45,12 +45,12 @@ namespace Klei.AI
 			}
 		}
 
-		public void SetValue(float value)
+				public void SetValue(float value)
 		{
 			this.Value = value;
 		}
 
-		public string GetName()
+				public string GetName()
 		{
 			Attribute attribute = Db.Get().Attributes.TryGet(this.AttributeId);
 			if (attribute != null && attribute.ShowInUI != Attribute.Display.Never)
@@ -60,7 +60,7 @@ namespace Klei.AI
 			return "";
 		}
 
-		public string GetDescription()
+				public string GetDescription()
 		{
 			if (this.DescriptionCB == null)
 			{
@@ -69,7 +69,7 @@ namespace Klei.AI
 			return this.DescriptionCB();
 		}
 
-		public string GetFormattedString()
+				public string GetFormattedString()
 		{
 			IAttributeFormatter attributeFormatter = null;
 			Attribute attribute = Db.Get().Attributes.TryGet(this.AttributeId);
@@ -121,13 +121,13 @@ namespace Klei.AI
 			return text;
 		}
 
-		public AttributeModifier Clone()
+				public AttributeModifier Clone()
 		{
 			return new AttributeModifier(this.AttributeId, this.Value, this.Description, false, false, true);
 		}
 
-		public string Description;
+				public string Description;
 
-		public Func<string> DescriptionCB;
+				public Func<string> DescriptionCB;
 	}
 }

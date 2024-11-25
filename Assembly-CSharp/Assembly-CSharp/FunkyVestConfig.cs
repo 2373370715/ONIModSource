@@ -7,12 +7,12 @@ using UnityEngine;
 
 public class FunkyVestConfig : IEquipmentConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public EquipmentDef CreateEquipmentDef()
+		public EquipmentDef CreateEquipmentDef()
 	{
 		new Dictionary<string, float>().Add("BasicFabric", (float)TUNING.EQUIPMENT.VESTS.FUNKY_VEST_MASS);
 		ClothingWearer.ClothingInfo clothingInfo = ClothingWearer.ClothingInfo.FANCY_CLOTHING;
@@ -31,7 +31,7 @@ public class FunkyVestConfig : IEquipmentConfig
 		return equipmentDef;
 	}
 
-	public static void SetupVest(GameObject go)
+		public static void SetupVest(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().AddTag(GameTags.Clothes, false);
 		Equippable equippable = go.GetComponent<Equippable>();
@@ -43,13 +43,13 @@ public class FunkyVestConfig : IEquipmentConfig
 		go.GetComponent<KBatchedAnimController>().sceneLayer = Grid.SceneLayer.BuildingBack;
 	}
 
-	public void DoPostConfigure(GameObject go)
+		public void DoPostConfigure(GameObject go)
 	{
 		FunkyVestConfig.SetupVest(go);
 		go.GetComponent<KPrefabID>().AddTag(GameTags.PedestalDisplayable, false);
 	}
 
-	public const string ID = "Funky_Vest";
+		public const string ID = "Funky_Vest";
 
-	public static ComplexRecipe recipe;
+		public static ComplexRecipe recipe;
 }

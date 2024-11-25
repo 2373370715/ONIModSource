@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ContactConductivePipeBridgeConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ContactConductivePipeBridge";
 		int width = 3;
@@ -41,7 +41,7 @@ public class ContactConductivePipeBridgeConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<StructureToStructureTemperature>();
@@ -50,7 +50,7 @@ public class ContactConductivePipeBridgeConfig : IBuildingConfig
 		def.type = ConduitType.Liquid;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<RequireInputs>());
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<RequireOutputs>());
@@ -58,17 +58,17 @@ public class ContactConductivePipeBridgeConfig : IBuildingConfig
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitDispenser>());
 	}
 
-	public const float LIQUID_CAPACITY_KG = 10f;
+		public const float LIQUID_CAPACITY_KG = 10f;
 
-	public const float GAS_CAPACITY_KG = 0.5f;
+		public const float GAS_CAPACITY_KG = 0.5f;
 
-	public const float TEMPERATURE_EXCHANGE_WITH_STORAGE_MODIFIER = 50f;
+		public const float TEMPERATURE_EXCHANGE_WITH_STORAGE_MODIFIER = 50f;
 
-	public const float BUILDING_TO_BUILDING_TEMPERATURE_SCALE = 0.001f;
+		public const float BUILDING_TO_BUILDING_TEMPERATURE_SCALE = 0.001f;
 
-	public const string ID = "ContactConductivePipeBridge";
+		public const string ID = "ContactConductivePipeBridge";
 
-	public const float NO_LIQUIDS_COOLDOWN = 1.5f;
+		public const float NO_LIQUIDS_COOLDOWN = 1.5f;
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
 }

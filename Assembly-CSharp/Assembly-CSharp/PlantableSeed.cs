@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/PlantableSeed")]
 public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEffectDescriptor
 {
-		public SingleEntityReceptacle.ReceptacleDirection Direction
+			public SingleEntityReceptacle.ReceptacleDirection Direction
 	{
 		get
 		{
@@ -15,25 +15,25 @@ public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEf
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.timeUntilSelfPlant = Util.RandomVariance(2400f, 600f);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.PlantableSeeds.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.PlantableSeeds.Remove(this);
 		base.OnCleanUp();
 	}
 
-	public void TryPlant(bool allow_plant_from_storage = false)
+		public void TryPlant(bool allow_plant_from_storage = false)
 	{
 		this.timeUntilSelfPlant = Util.RandomVariance(2400f, 600f);
 		if (!allow_plant_from_storage && base.gameObject.HasTag(GameTags.Stored))
@@ -62,7 +62,7 @@ public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEf
 		}
 	}
 
-	public bool TestSuitableGround(int cell)
+		public bool TestSuitableGround(int cell)
 	{
 		if (!Grid.IsValidCell(cell))
 		{
@@ -118,7 +118,7 @@ public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEf
 		return !(component5 != null) || component5.CanOccupyArea(cell, ObjectLayer.Building);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.direction == SingleEntityReceptacle.ReceptacleDirection.Bottom)
@@ -134,19 +134,19 @@ public class PlantableSeed : KMonoBehaviour, IReceptacleDirection, IGameObjectEf
 		return list;
 	}
 
-	public Tag PlantID;
+		public Tag PlantID;
 
-	public Tag PreviewID;
+		public Tag PreviewID;
 
-	[Serialize]
+		[Serialize]
 	public float timeUntilSelfPlant;
 
-	public Tag replantGroundTag;
+		public Tag replantGroundTag;
 
-	public string domesticatedDescription;
+		public string domesticatedDescription;
 
-	public SingleEntityReceptacle.ReceptacleDirection direction;
+		public SingleEntityReceptacle.ReceptacleDirection direction;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Pickupable pickupable;
 }

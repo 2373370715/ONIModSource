@@ -6,14 +6,14 @@ using UnityEngine;
 
 public class PinkRockCarvedConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
-		GameObject gameObject = EntityTemplates.CreateLooseEntity("PinkRockCarved", STRINGS.CREATURES.SPECIES.PINKROCKCARVED.NAME, STRINGS.CREATURES.SPECIES.PINKROCKCARVED.DESC, 1f, true, Assets.GetAnim("pinkrock_decor_kanim"), "idle", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.CIRCLE, 0.5f, 0.5f, true, 0, SimHashes.Creature, new List<Tag>
+		GameObject gameObject = EntityTemplates.CreateLooseEntity("PinkRockCarved", STRINGS.CREATURES.SPECIES.PINKROCKCARVED.NAME, STRINGS.CREATURES.SPECIES.PINKROCKCARVED.DESC, 1f, true, Assets.GetAnim("pinkrock_decor_kanim"), "idle", Grid.SceneLayer.Ore, EntityTemplates.CollisionShape.CIRCLE, 0.5f, 0.5f, true, 0, SimHashes.Creature, new List<Tag>
 		{
 			GameTags.RareMaterials,
 			GameTags.MiscPickupable,
@@ -33,17 +33,18 @@ public class PinkRockCarvedConfig : IEntityConfig
 		light2D.Offset = LIGHT2D.PINKROCK_OFFSET;
 		light2D.shape = global::LightShape.Circle;
 		light2D.drawOverlay = true;
+		light2D.disableOnStore = true;
 		gameObject.GetComponent<KCircleCollider2D>().offset = new Vector2(0f, 0.25f);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "PinkRockCarved";
+		public const string ID = "PinkRockCarved";
 }

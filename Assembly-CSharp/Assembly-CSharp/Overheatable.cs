@@ -7,19 +7,19 @@ using UnityEngine;
 [SkipSaveFileSerialization]
 public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, IGameObjectEffectDescriptor
 {
-	public void ResetTemperature()
+		public void ResetTemperature()
 	{
 		base.GetComponent<PrimaryElement>().Temperature = 293.15f;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.overheatTemp = this.GetAttributes().Add(Db.Get().BuildingAttributes.OverheatTemperature);
 		this.fatalTemp = this.GetAttributes().Add(Db.Get().BuildingAttributes.FatalTemperature);
 	}
 
-	private void InitializeModifiers()
+		private void InitializeModifiers()
 	{
 		if (this.modifiersInitialized)
 		{
@@ -35,7 +35,7 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 		this.GetAttributes().Add(modifier2);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.InitializeModifiers();
@@ -48,7 +48,7 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 		base.smi.StartSM();
 	}
 
-		public float OverheatTemperature
+			public float OverheatTemperature
 	{
 		get
 		{
@@ -61,13 +61,13 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 		}
 	}
 
-	public Notification CreateOverheatedNotification()
+		public Notification CreateOverheatedNotification()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		return new Notification(MISC.NOTIFICATIONS.BUILDINGOVERHEATED.NAME, NotificationType.BadMinor, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.BUILDINGOVERHEATED.TOOLTIP + notificationList.ReduceMessages(false), "/t• " + component.GetProperName(), false, 0f, null, null, null, true, false, false);
 	}
 
-	private static string ToolTipResolver(List<Notification> notificationList, object data)
+		private static string ToolTipResolver(List<Notification> notificationList, object data)
 	{
 		string text = "";
 		for (int i = 0; i < notificationList.Count; i++)
@@ -82,7 +82,7 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 		return string.Format(MISC.NOTIFICATIONS.BUILDINGOVERHEATED.TOOLTIP, text);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.overheatTemp != null && this.fatalTemp != null)
@@ -105,23 +105,23 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 		return list;
 	}
 
-	private bool modifiersInitialized;
+		private bool modifiersInitialized;
 
-	private AttributeInstance overheatTemp;
+		private AttributeInstance overheatTemp;
 
-	private AttributeInstance fatalTemp;
+		private AttributeInstance fatalTemp;
 
-	public float baseOverheatTemp;
+		public float baseOverheatTemp;
 
-	public float baseFatalTemp;
+		public float baseFatalTemp;
 
-	public class StatesInstance : GameStateMachine<Overheatable.States, Overheatable.StatesInstance, Overheatable, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Overheatable.States, Overheatable.StatesInstance, Overheatable, object>.GameInstance
 	{
-		public StatesInstance(Overheatable smi) : base(smi)
+				public StatesInstance(Overheatable smi) : base(smi)
 		{
 		}
 
-		public void TryDoOverheatDamage()
+				public void TryDoOverheatDamage()
 		{
 			if (Time.time - this.lastOverheatDamageTime < 7.5f)
 			{
@@ -137,12 +137,12 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 			});
 		}
 
-		public float lastOverheatDamageTime;
+				public float lastOverheatDamageTime;
 	}
 
-	public class States : GameStateMachine<Overheatable.States, Overheatable.StatesInstance, Overheatable>
+		public class States : GameStateMachine<Overheatable.States, Overheatable.StatesInstance, Overheatable>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.safeTemperature;
 			this.root.EventTransition(GameHashes.BuildingBroken, this.invulnerable, null);
@@ -163,10 +163,10 @@ public class Overheatable : StateMachineComponent<Overheatable.StatesInstance>, 
 			}, UpdateRate.SIM_4000ms, false);
 		}
 
-		public GameStateMachine<Overheatable.States, Overheatable.StatesInstance, Overheatable, object>.State invulnerable;
+				public GameStateMachine<Overheatable.States, Overheatable.StatesInstance, Overheatable, object>.State invulnerable;
 
-		public GameStateMachine<Overheatable.States, Overheatable.StatesInstance, Overheatable, object>.State safeTemperature;
+				public GameStateMachine<Overheatable.States, Overheatable.StatesInstance, Overheatable, object>.State safeTemperature;
 
-		public GameStateMachine<Overheatable.States, Overheatable.StatesInstance, Overheatable, object>.State overheated;
+				public GameStateMachine<Overheatable.States, Overheatable.StatesInstance, Overheatable, object>.State overheated;
 	}
 }

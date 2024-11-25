@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RequiresFoundation : KGameObjectComponentManager<RequiresFoundation.Data>, IKComponentManager
 {
-	public HandleVector<int>.Handle Add(GameObject go)
+		public HandleVector<int>.Handle Add(GameObject go)
 	{
 		BuildingDef def = go.GetComponent<Building>().Def;
 		int cell = Grid.PosToCell(go.transform.GetPosition());
@@ -72,7 +72,7 @@ public class RequiresFoundation : KGameObjectComponentManager<RequiresFoundation
 		return h;
 	}
 
-	protected override void OnCleanUp(HandleVector<int>.Handle h)
+		protected override void OnCleanUp(HandleVector<int>.Handle h)
 	{
 		RequiresFoundation.Data data = base.GetData(h);
 		GameScenePartitioner.Instance.Free(ref data.solidPartitionerEntry);
@@ -86,7 +86,7 @@ public class RequiresFoundation : KGameObjectComponentManager<RequiresFoundation
 		base.SetData(h, data);
 	}
 
-	private void OnSolidChanged(HandleVector<int>.Handle h)
+		private void OnSolidChanged(HandleVector<int>.Handle h)
 	{
 		RequiresFoundation.Data data = base.GetData(h);
 		SimCellOccupier component = data.go.GetComponent<SimCellOccupier>();
@@ -113,7 +113,7 @@ public class RequiresFoundation : KGameObjectComponentManager<RequiresFoundation
 		}
 	}
 
-	private void UpdateSolidState(bool is_solid, ref RequiresFoundation.Data data, bool forceUpdate = false)
+		private void UpdateSolidState(bool is_solid, ref RequiresFoundation.Data data, bool forceUpdate = false)
 	{
 		if (data.solid != is_solid || forceUpdate)
 		{
@@ -134,26 +134,26 @@ public class RequiresFoundation : KGameObjectComponentManager<RequiresFoundation
 		}
 	}
 
-	public static readonly Operational.Flag solidFoundation = new Operational.Flag("solid_foundation", Operational.Flag.Type.Functional);
+		public static readonly Operational.Flag solidFoundation = new Operational.Flag("solid_foundation", Operational.Flag.Type.Functional);
 
-	public struct Data
+		public struct Data
 	{
-		public int cell;
+				public int cell;
 
-		public int width;
+				public int width;
 
-		public int height;
+				public int height;
 
-		public BuildLocationRule buildRule;
+				public BuildLocationRule buildRule;
 
-		public HandleVector<int>.Handle solidPartitionerEntry;
+				public HandleVector<int>.Handle solidPartitionerEntry;
 
-		public HandleVector<int>.Handle buildingPartitionerEntry;
+				public HandleVector<int>.Handle buildingPartitionerEntry;
 
-		public bool solid;
+				public bool solid;
 
-		public GameObject go;
+				public GameObject go;
 
-		public Action<object> changeCallback;
+				public Action<object> changeCallback;
 	}
 }

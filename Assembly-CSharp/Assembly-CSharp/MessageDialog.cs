@@ -2,7 +2,7 @@
 
 public abstract class MessageDialog : KMonoBehaviour
 {
-		public virtual bool CanDontShowAgain
+			public virtual bool CanDontShowAgain
 	{
 		get
 		{
@@ -10,13 +10,13 @@ public abstract class MessageDialog : KMonoBehaviour
 		}
 	}
 
-	public abstract bool CanDisplay(Message message);
+		public abstract bool CanDisplay(Message message);
 
-	public abstract void SetMessage(Message message);
+		public abstract void SetMessage(Message message);
 
-	public abstract void OnClickAction();
+		public abstract void OnClickAction();
 
-	public virtual void OnDontShowAgain()
+		public virtual void OnDontShowAgain()
 	{
 	}
 }

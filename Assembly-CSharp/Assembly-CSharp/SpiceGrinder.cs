@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>
 {
-	public static void InitializeSpices()
+		public static void InitializeSpices()
 	{
 		Spices spices = Db.Get().Spices;
 		SpiceGrinder.SettingOptions = new Dictionary<Tag, SpiceGrinder.Option>();
@@ -23,7 +23,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 		}
 	}
 
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.inoperational;
 		this.root.Enter(new StateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.State.Callback(this.OnEnterRoot)).EventHandler(GameHashes.OnStorageChange, new GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.GameEvent.Callback(this.OnStorageChanged));
@@ -50,22 +50,22 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 		this.ready.EventTransition(GameHashes.OperationalChanged, this.inoperational, GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.Not(new StateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.Transition.ConditionCallback(this.IsOperational))).EventHandler(GameHashes.UpdateRoom, new StateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.State.Callback(this.UpdateInKitchen)).ParamTransition<bool>(this.isReady, this.operational, GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.IsFalse).ToggleRecurringChore(new Func<SpiceGrinder.StatesInstance, Chore>(this.CreateChore), null);
 	}
 
-	private void UpdateInKitchen(SpiceGrinder.StatesInstance smi)
+		private void UpdateInKitchen(SpiceGrinder.StatesInstance smi)
 	{
 		smi.GetComponent<Operational>().SetFlag(SpiceGrinder.inKitchen, smi.roomTracker.IsInCorrectRoom());
 	}
 
-	private void OnEnterRoot(SpiceGrinder.StatesInstance smi)
+		private void OnEnterRoot(SpiceGrinder.StatesInstance smi)
 	{
 		smi.Initialize();
 	}
 
-	private bool IsOperational(SpiceGrinder.StatesInstance smi)
+		private bool IsOperational(SpiceGrinder.StatesInstance smi)
 	{
 		return smi.IsOperational;
 	}
 
-	private void OnStorageChanged(SpiceGrinder.StatesInstance smi, object data)
+		private void OnStorageChanged(SpiceGrinder.StatesInstance smi, object data)
 	{
 		smi.UpdateMeter();
 		smi.UpdateFoodSymbol();
@@ -77,28 +77,28 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 		smi.sm.isReady.Set(value, smi, false);
 	}
 
-	private Chore CreateChore(SpiceGrinder.StatesInstance smi)
+		private Chore CreateChore(SpiceGrinder.StatesInstance smi)
 	{
 		return new WorkChore<SpiceGrinderWorkable>(Db.Get().ChoreTypes.Cook, smi.workable, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 	}
 
-	public static Dictionary<Tag, SpiceGrinder.Option> SettingOptions = null;
+		public static Dictionary<Tag, SpiceGrinder.Option> SettingOptions = null;
 
-	public static readonly Operational.Flag spiceSet = new Operational.Flag("spiceSet", Operational.Flag.Type.Functional);
+		public static readonly Operational.Flag spiceSet = new Operational.Flag("spiceSet", Operational.Flag.Type.Functional);
 
-	public static Operational.Flag inKitchen = new Operational.Flag("inKitchen", Operational.Flag.Type.Functional);
+		public static Operational.Flag inKitchen = new Operational.Flag("inKitchen", Operational.Flag.Type.Functional);
 
-	public GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.State inoperational;
+		public GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.State inoperational;
 
-	public GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.State operational;
+		public GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.State operational;
 
-	public GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.State ready;
+		public GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.State ready;
 
-	public StateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.BoolParameter isReady;
+		public StateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.BoolParameter isReady;
 
-	public class Option : IConfigurableConsumerOption
+		public class Option : IConfigurableConsumerOption
 	{
-				public Effect StatBonus
+						public Effect StatBonus
 		{
 			get
 			{
@@ -117,7 +117,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-		public Option(Spice spice)
+				public Option(Spice spice)
 		{
 			this.Id = new Tag(spice.Id);
 			this.Spice = spice;
@@ -129,12 +129,12 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-		public Tag GetID()
+				public Tag GetID()
 		{
 			return this.Spice.Id;
 		}
 
-		public string GetName()
+				public string GetName()
 		{
 			if (string.IsNullOrEmpty(this.name))
 			{
@@ -150,7 +150,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			return this.name;
 		}
 
-		public string GetDetailedDescription()
+				public string GetDetailedDescription()
 		{
 			if (string.IsNullOrEmpty(this.fullDescription))
 			{
@@ -159,7 +159,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			return this.fullDescription;
 		}
 
-		public string GetDescription()
+				public string GetDescription()
 		{
 			if (!string.IsNullOrEmpty(this.spiceDescription))
 			{
@@ -176,7 +176,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			return this.spiceDescription;
 		}
 
-		private void CreateDescription()
+				private void CreateDescription()
 		{
 			string text = "STRINGS.ITEMS.SPICES." + this.Spice.Id.ToUpper() + ".DESC";
 			StringEntry stringEntry;
@@ -202,38 +202,38 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			this.fullDescription = this.spiceDescription + this.ingredientDescriptions;
 		}
 
-		public Sprite GetIcon()
+				public Sprite GetIcon()
 		{
 			return Assets.GetSprite(this.Spice.Image);
 		}
 
-		public IConfigurableConsumerIngredient[] GetIngredients()
+				public IConfigurableConsumerIngredient[] GetIngredients()
 		{
 			return this.Spice.Ingredients;
 		}
 
-		public readonly Tag Id;
+				public readonly Tag Id;
 
-		public readonly Spice Spice;
+				public readonly Spice Spice;
 
-		private string name;
+				private string name;
 
-		private string fullDescription;
+				private string fullDescription;
 
-		private string spiceDescription;
+				private string spiceDescription;
 
-		private string ingredientDescriptions;
+				private string ingredientDescriptions;
 
-		private Effect statBonus;
+				private Effect statBonus;
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public class StatesInstance : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesInstance, IStateMachineTarget, SpiceGrinder.Def>.GameInstance
 	{
-				public bool IsOperational
+						public bool IsOperational
 		{
 			get
 			{
@@ -241,7 +241,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-				public float AvailableFood
+						public float AvailableFood
 		{
 			get
 			{
@@ -253,7 +253,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-				public SpiceGrinder.Option SelectedOption
+						public SpiceGrinder.Option SelectedOption
 		{
 			get
 			{
@@ -265,7 +265,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-				public Edible CurrentFood
+						public Edible CurrentFood
 		{
 			get
 			{
@@ -275,7 +275,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-				public bool HasOpenFetches
+						public bool HasOpenFetches
 		{
 			get
 			{
@@ -283,7 +283,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-						public bool AllowMutantSeeds
+								public bool AllowMutantSeeds
 		{
 			get
 			{
@@ -296,7 +296,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-		public StatesInstance(IStateMachineTarget master, SpiceGrinder.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, SpiceGrinder.Def def) : base(master, def)
 		{
 			this.workable.Grinder = this;
 			Storage[] components = base.gameObject.GetComponents<Storage>();
@@ -319,13 +319,13 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			base.Subscribe(493375141, new Action<object>(this.OnRefreshUserMenu));
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.OnCleanUp();
 			Prioritizable.RemoveRef(base.gameObject);
 		}
 
-		public void Initialize()
+				public void Initialize()
 		{
 			if (DlcManager.IsExpansion1Active())
 			{
@@ -346,7 +346,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			this.UpdateMeter();
 		}
 
-		private void OnRefreshUserMenu(object data)
+				private void OnRefreshUserMenu(object data)
 		{
 			if (DlcManager.FeatureRadiationEnabled())
 			{
@@ -358,7 +358,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-		public void ToggleMutantSeedFetches(bool allow)
+				public void ToggleMutantSeedFetches(bool allow)
 		{
 			if (DlcManager.IsExpansion1Active())
 			{
@@ -389,7 +389,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-		private void UpdateMutantSeedFetches()
+				private void UpdateMutantSeedFetches()
 		{
 			if (this.SpiceFetches != null)
 			{
@@ -419,7 +419,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-		private void OnCopySettings(object data)
+				private void OnCopySettings(object data)
 		{
 			SpiceGrinderWorkable component = ((GameObject)data).GetComponent<SpiceGrinderWorkable>();
 			if (component != null)
@@ -432,7 +432,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-		public void SetupFoodSymbol()
+				public void SetupFoodSymbol()
 		{
 			GameObject gameObject = Util.NewGameObject(base.gameObject, "foodSymbol");
 			gameObject.SetActive(false);
@@ -449,7 +449,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			this.kbac.SetSymbolVisiblity(SpiceGrinder.StatesInstance.HASH_FOOD, false);
 		}
 
-		public void UpdateFoodSymbol()
+				public void UpdateFoodSymbol()
 		{
 			bool flag = this.AvailableFood > 0f && this.CurrentFood != null;
 			this.foodKBAC.gameObject.SetActive(flag);
@@ -460,12 +460,12 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-		public void UpdateMeter()
+				public void UpdateMeter()
 		{
 			this.meter.SetPositionPercent(this.seedStorage.MassStored() / this.seedStorage.capacityKg);
 		}
 
-		public void SpiceFood()
+				public void SpiceFood()
 		{
 			float num = this.CurrentFood.Calories / 1000f;
 			this.CurrentFood.SpiceEdible(this.currentSpice, SpiceGrinderConfig.SpicedStatus);
@@ -490,7 +490,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			base.sm.isReady.Set(false, this, false);
 		}
 
-		public bool CanSpice(float kcalToSpice)
+				public bool CanSpice(float kcalToSpice)
 		{
 			bool flag = true;
 			float num = kcalToSpice / 1000f;
@@ -521,12 +521,12 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			return flag;
 		}
 
-		private FetchChore CreateFetchChore(Tag[] ingredientIngredientSet, float amount)
+				private FetchChore CreateFetchChore(Tag[] ingredientIngredientSet, float amount)
 		{
 			return this.CreateFetchChore(new HashSet<Tag>(ingredientIngredientSet), amount);
 		}
 
-		private FetchChore CreateFetchChore(HashSet<Tag> ingredients, float amount)
+				private FetchChore CreateFetchChore(HashSet<Tag> ingredients, float amount)
 		{
 			float num = Mathf.Max(amount, 1f);
 			ChoreType cookFetch = Db.Get().ChoreTypes.CookFetch;
@@ -547,7 +547,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			return new FetchChore(cookFetch, destination, amount2, ingredients, criteria, invalid, forbidden_tags, null, true, on_complete, null, null, Operational.State.Operational, 0);
 		}
 
-		private void ClearFetchChore(Chore obj)
+				private void ClearFetchChore(Chore obj)
 		{
 			FetchChore fetchChore = obj as FetchChore;
 			if (fetchChore == null || !fetchChore.isComplete || this.SpiceFetches == null)
@@ -575,7 +575,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-		private void UpdateSpiceIngredientStatus(bool can_spice, Dictionary<Tag, float> missing_spices)
+				private void UpdateSpiceIngredientStatus(bool can_spice, Dictionary<Tag, float> missing_spices)
 		{
 			KSelectable component = base.GetComponent<KSelectable>();
 			if (can_spice)
@@ -591,7 +591,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			this.missingResourceStatusItem = component.AddStatusItem(Db.Get().BuildingStatusItems.MaterialsUnavailable, missing_spices);
 		}
 
-		public void OnOptionSelected(SpiceGrinder.Option spiceOption)
+				public void OnOptionSelected(SpiceGrinder.Option spiceOption)
 		{
 			base.smi.GetComponent<Operational>().SetFlag(SpiceGrinder.spiceSet, spiceOption != null);
 			if (spiceOption == null)
@@ -649,7 +649,7 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-		public void CancelFetches(string reason)
+				public void CancelFetches(string reason)
 		{
 			if (this.SpiceFetches != null)
 			{
@@ -664,51 +664,51 @@ public class SpiceGrinder : GameStateMachine<SpiceGrinder, SpiceGrinder.StatesIn
 			}
 		}
 
-		private void SetSpiceSymbolColours(Spice spice)
+				private void SetSpiceSymbolColours(Spice spice)
 		{
 			this.kbac.SetSymbolTint("stripe_anim2", spice.PrimaryColor);
 			this.kbac.SetSymbolTint("stripe_anim1", spice.SecondaryColor);
 			this.kbac.SetSymbolTint("grinder", spice.PrimaryColor);
 		}
 
-		private static string HASH_FOOD = "food";
+				private static string HASH_FOOD = "food";
 
-		private KBatchedAnimController kbac;
+				private KBatchedAnimController kbac;
 
-		private KBatchedAnimController foodKBAC;
+				private KBatchedAnimController foodKBAC;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public RoomTracker roomTracker;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public SpiceGrinderWorkable workable;
 
-		[Serialize]
+				[Serialize]
 		private int spiceHash;
 
-		private SpiceInstance currentSpice;
+				private SpiceInstance currentSpice;
 
-		private Edible currentFood;
+				private Edible currentFood;
 
-		private Storage seedStorage;
+				private Storage seedStorage;
 
-		private Storage foodStorage;
+				private Storage foodStorage;
 
-		private MeterController meter;
+				private MeterController meter;
 
-		private Tag[] foodFilter = new Tag[1];
+				private Tag[] foodFilter = new Tag[1];
 
-		private FilteredStorage foodStorageFilter;
+				private FilteredStorage foodStorageFilter;
 
-		private Operational operational;
+				private Operational operational;
 
-		private Guid missingResourceStatusItem = Guid.Empty;
+				private Guid missingResourceStatusItem = Guid.Empty;
 
-		private StatusItem mutantSeedStatusItem;
+				private StatusItem mutantSeedStatusItem;
 
-		private FetchChore[] SpiceFetches;
+				private FetchChore[] SpiceFetches;
 
-		[Serialize]
+				[Serialize]
 		private bool allowMutantSeeds = true;
 	}
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class ThoughtGraph : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.initialdelay;
 		this.initialdelay.ScheduleGoTo(1f, this.nothoughts);
@@ -20,7 +20,7 @@ public class ThoughtGraph : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance
 		this.cooldown.OnSignal(this.thoughtsChangedImmediate, this.displayingthought, (ThoughtGraph.Instance smi) => smi.HasImmediateThought()).ScheduleGoTo(20f, this.nothoughts);
 	}
 
-	private static void BeginTalking(ThoughtGraph.Instance smi)
+		private static void BeginTalking(ThoughtGraph.Instance smi)
 	{
 		if (smi.currentThought == null)
 		{
@@ -32,45 +32,45 @@ public class ThoughtGraph : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance
 		}
 	}
 
-	public StateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.Signal thoughtsChanged;
+		public StateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.Signal thoughtsChanged;
 
-	public StateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.Signal thoughtsChangedImmediate;
+		public StateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.Signal thoughtsChangedImmediate;
 
-	public StateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.FloatParameter thoughtDisplayTime;
+		public StateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.FloatParameter thoughtDisplayTime;
 
-	public GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State initialdelay;
+		public GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State initialdelay;
 
-	public GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State nothoughts;
+		public GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State nothoughts;
 
-	public ThoughtGraph.DisplayingThoughtState displayingthought;
+		public ThoughtGraph.DisplayingThoughtState displayingthought;
 
-	public GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State cooldown;
+		public GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State cooldown;
 
-	public class Tuning : TuningData<ThoughtGraph.Tuning>
+		public class Tuning : TuningData<ThoughtGraph.Tuning>
 	{
-		public float preLengthInSeconds;
+				public float preLengthInSeconds;
 	}
 
-	public class DisplayingThoughtState : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State
+		public class DisplayingThoughtState : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State pre;
+				public GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State pre;
 
-		public GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State talking;
+				public GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.State talking;
 	}
 
-	public new class Instance : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			NameDisplayScreen.Instance.RegisterComponent(base.gameObject, this, false);
 		}
 
-		public bool HasThoughts()
+				public bool HasThoughts()
 		{
 			return this.thoughts.Count > 0;
 		}
 
-		public bool HasImmediateThought()
+				public bool HasImmediateThought()
 		{
 			bool result = false;
 			for (int i = 0; i < this.thoughts.Count; i++)
@@ -84,7 +84,7 @@ public class ThoughtGraph : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance
 			return result;
 		}
 
-		public void AddThought(Thought thought)
+				public void AddThought(Thought thought)
 		{
 			if (this.thoughts.Contains(thought))
 			{
@@ -99,7 +99,7 @@ public class ThoughtGraph : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance
 			base.sm.thoughtsChanged.Trigger(base.smi);
 		}
 
-		public void RemoveThought(Thought thought)
+				public void RemoveThought(Thought thought)
 		{
 			if (!this.thoughts.Contains(thought))
 			{
@@ -109,7 +109,7 @@ public class ThoughtGraph : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance
 			base.sm.thoughtsChanged.Trigger(base.smi);
 		}
 
-		private int SortThoughts(Thought a, Thought b)
+				private int SortThoughts(Thought a, Thought b)
 		{
 			if (a.showImmediately == b.showImmediately)
 			{
@@ -122,7 +122,7 @@ public class ThoughtGraph : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance
 			return -1;
 		}
 
-		public void CreateBubble()
+				public void CreateBubble()
 		{
 			if (this.thoughts.Count == 0)
 			{
@@ -146,14 +146,14 @@ public class ThoughtGraph : GameStateMachine<ThoughtGraph, ThoughtGraph.Instance
 			}
 		}
 
-		public void DestroyBubble()
+				public void DestroyBubble()
 		{
 			NameDisplayScreen.Instance.SetThoughtBubbleDisplay(base.gameObject, false, null, null, null);
 			NameDisplayScreen.Instance.SetThoughtBubbleConvoDisplay(base.gameObject, false, null, null, null, null);
 		}
 
-		private List<Thought> thoughts = new List<Thought>();
+				private List<Thought> thoughts = new List<Thought>();
 
-		public Thought currentThought;
+				public Thought currentThought;
 	}
 }

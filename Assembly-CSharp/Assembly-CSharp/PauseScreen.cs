@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using FMOD.Studio;
 using Klei;
@@ -10,7 +11,7 @@ using UnityEngine.UI;
 
 public class PauseScreen : KModalButtonMenu
 {
-		public static PauseScreen Instance
+			public static PauseScreen Instance
 	{
 		get
 		{
@@ -18,21 +19,29 @@ public class PauseScreen : KModalButtonMenu
 		}
 	}
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		PauseScreen.instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.keepMenuOpen = true;
 		base.OnPrefabInit();
+		this.ConfigureButtonInfos();
+		this.closeButton.onClick += this.OnResume;
+		PauseScreen.instance = this;
+		this.Show(false);
+	}
+
+		private void ConfigureButtonInfos()
+	{
 		if (!GenericGameSettings.instance.demoMode)
 		{
 			this.buttons = new KButtonMenu.ButtonInfo[]
 			{
 				new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.RESUME, global::Action.NumActions, new UnityAction(this.OnResume), null, null),
-				new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.SAVE, global::Action.NumActions, new UnityAction(this.OnSave), null, null),
+				new KButtonMenu.ButtonInfo(this.recentlySaved ? UI.FRONTEND.PAUSE_SCREEN.ALREADY_SAVED : UI.FRONTEND.PAUSE_SCREEN.SAVE, global::Action.NumActions, new UnityAction(this.OnSave), null, null),
 				new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.SAVEAS, global::Action.NumActions, new UnityAction(this.OnSaveAs), null, null),
 				new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.LOAD, global::Action.NumActions, new UnityAction(this.OnLoad), null, null),
 				new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.OPTIONS, global::Action.NumActions, new UnityAction(this.OnOptions), null, null),
@@ -41,23 +50,18 @@ public class PauseScreen : KModalButtonMenu
 				new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.QUIT, global::Action.NumActions, new UnityAction(this.OnQuit), null, null),
 				new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.DESKTOPQUIT, global::Action.NumActions, new UnityAction(this.OnDesktopQuit), null, null)
 			};
+			return;
 		}
-		else
+		this.buttons = new KButtonMenu.ButtonInfo[]
 		{
-			this.buttons = new KButtonMenu.ButtonInfo[]
-			{
-				new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.RESUME, global::Action.NumActions, new UnityAction(this.OnResume), null, null),
-				new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.OPTIONS, global::Action.NumActions, new UnityAction(this.OnOptions), null, null),
-				new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.QUIT, global::Action.NumActions, new UnityAction(this.OnQuit), null, null),
-				new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.DESKTOPQUIT, global::Action.NumActions, new UnityAction(this.OnDesktopQuit), null, null)
-			};
-		}
-		this.closeButton.onClick += this.OnResume;
-		PauseScreen.instance = this;
-		this.Show(false);
+			new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.RESUME, global::Action.NumActions, new UnityAction(this.OnResume), null, null),
+			new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.OPTIONS, global::Action.NumActions, new UnityAction(this.OnOptions), null, null),
+			new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.QUIT, global::Action.NumActions, new UnityAction(this.OnQuit), null, null),
+			new KButtonMenu.ButtonInfo(UI.FRONTEND.PAUSE_SCREEN.DESKTOPQUIT, global::Action.NumActions, new UnityAction(this.OnDesktopQuit), null, null)
+		};
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.clipboard.GetText = new Func<string>(this.GetClipboardText);
@@ -85,12 +89,12 @@ public class PauseScreen : KModalButtonMenu
 		}
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 30f;
 	}
 
-	private string GetClipboardText()
+		private string GetClipboardText()
 	{
 		string result;
 		try
@@ -104,16 +108,19 @@ public class PauseScreen : KModalButtonMenu
 		return result;
 	}
 
-	private void OnResume()
+		private void OnResume()
 	{
 		this.Show(false);
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
+		this.recentlySaved = false;
+		this.ConfigureButtonInfos();
 		base.OnShow(show);
 		if (show)
 		{
+			this.RefreshButtons();
 			AudioMixer.instance.Start(AudioMixerSnapshots.Get().ESCPauseSnapshot);
 			MusicManager.instance.OnEscapeMenu(true);
 			MusicManager.instance.PlaySong("Music_ESC_Menu", false);
@@ -129,17 +136,17 @@ public class PauseScreen : KModalButtonMenu
 		}
 	}
 
-	private void OnOptions()
+		private void OnOptions()
 	{
 		base.ActivateChildScreen(this.optionsScreen.gameObject);
 	}
 
-	private void OnSaveAs()
+		private void OnSaveAs()
 	{
 		base.ActivateChildScreen(this.saveScreenPrefab.gameObject);
 	}
 
-	private void OnSave()
+		private void OnSave()
 	{
 		string filename = SaveLoader.GetActiveSaveFilePath();
 		if (!string.IsNullOrEmpty(filename) && File.Exists(filename))
@@ -155,11 +162,19 @@ public class PauseScreen : KModalButtonMenu
 		this.OnSaveAs();
 	}
 
-	private void DoSave(string filename)
+		public void OnSaveComplete()
+	{
+		this.recentlySaved = true;
+		this.ConfigureButtonInfos();
+		this.RefreshButtons();
+	}
+
+		private void DoSave(string filename)
 	{
 		try
 		{
 			SaveLoader.Instance.Save(filename, false, true);
+			this.OnSaveComplete();
 		}
 		catch (IOException ex)
 		{
@@ -178,44 +193,56 @@ public class PauseScreen : KModalButtonMenu
 		}
 	}
 
-	private void ConfirmDecision(string text, System.Action onConfirm)
+		private void ConfirmDecision(string questionText, string primaryButtonText, System.Action primaryButtonAction, string alternateButtonText = null, System.Action alternateButtonAction = null)
 	{
 		base.gameObject.SetActive(false);
-		((ConfirmDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.transform.parent.gameObject, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay)).PopupConfirmDialog(text, onConfirm, new System.Action(this.OnCancelPopup), null, null, null, null, null, null);
+		((ConfirmDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, base.transform.parent.gameObject, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay)).PopupConfirmDialog(questionText, primaryButtonAction, new System.Action(this.OnCancelPopup), alternateButtonText, alternateButtonAction, null, primaryButtonText, null, null);
 	}
 
-	private void OnLoad()
+		private void OnLoad()
 	{
 		base.ActivateChildScreen(this.loadScreenPrefab.gameObject);
 	}
 
-	private void OnColonySummary()
+		private void OnColonySummary()
 	{
 		RetiredColonyData currentColonyRetiredColonyData = RetireColonyUtility.GetCurrentColonyRetiredColonyData();
 		MainMenu.ActivateRetiredColoniesScreenFromData(PauseScreen.Instance.transform.parent.gameObject, currentColonyRetiredColonyData);
 	}
 
-	private void OnLockerMenu()
+		private void OnLockerMenu()
 	{
 		LockerMenuScreen.Instance.Show(true);
 	}
 
-	private void OnQuit()
+		private void OnQuit()
 	{
-		this.ConfirmDecision(UI.FRONTEND.MAINMENU.QUITCONFIRM, new System.Action(this.OnQuitConfirm));
+		this.ConfirmDecision(UI.FRONTEND.MAINMENU.QUITCONFIRM, UI.FRONTEND.MAINMENU.SAVEANDQUITTITLE, delegate
+		{
+			this.OnQuitConfirm(true);
+		}, UI.FRONTEND.MAINMENU.QUIT, delegate
+		{
+			this.OnQuitConfirm(false);
+		});
 	}
 
-	private void OnDesktopQuit()
+		private void OnDesktopQuit()
 	{
-		this.ConfirmDecision(UI.FRONTEND.MAINMENU.DESKTOPQUITCONFIRM, new System.Action(this.OnDesktopQuitConfirm));
+		this.ConfirmDecision(UI.FRONTEND.MAINMENU.DESKTOPQUITCONFIRM, UI.FRONTEND.MAINMENU.SAVEANDQUITDESKTOP, delegate
+		{
+			this.OnDesktopQuitConfirm(true);
+		}, UI.FRONTEND.MAINMENU.QUIT, delegate
+		{
+			this.OnDesktopQuitConfirm(false);
+		});
 	}
 
-	private void OnCancelPopup()
+		private void OnCancelPopup()
 	{
 		base.gameObject.SetActive(true);
 	}
 
-	private void OnLoadConfirm()
+		private void OnLoadConfirm()
 	{
 		LoadingOverlay.Load(delegate
 		{
@@ -225,13 +252,25 @@ public class PauseScreen : KModalButtonMenu
 		});
 	}
 
-	private void OnRetireConfirm()
+		private void OnRetireConfirm()
 	{
 		RetireColonyUtility.SaveColonySummaryData();
 	}
 
-	private void OnQuitConfirm()
+		private void OnQuitConfirm(bool saveFirst)
 	{
+		if (saveFirst)
+		{
+			string activeSaveFilePath = SaveLoader.GetActiveSaveFilePath();
+			if (!string.IsNullOrEmpty(activeSaveFilePath) && File.Exists(activeSaveFilePath))
+			{
+				this.DoSave(activeSaveFilePath);
+			}
+			else
+			{
+				this.OnSaveAs();
+			}
+		}
 		LoadingOverlay.Load(delegate
 		{
 			this.Deactivate();
@@ -239,12 +278,24 @@ public class PauseScreen : KModalButtonMenu
 		});
 	}
 
-	private void OnDesktopQuitConfirm()
+		private void OnDesktopQuitConfirm(bool saveFirst)
 	{
+		if (saveFirst)
+		{
+			string activeSaveFilePath = SaveLoader.GetActiveSaveFilePath();
+			if (!string.IsNullOrEmpty(activeSaveFilePath) && File.Exists(activeSaveFilePath))
+			{
+				this.DoSave(activeSaveFilePath);
+			}
+			else
+			{
+				this.OnSaveAs();
+			}
+		}
 		App.Quit();
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape) || e.TryConsume(global::Action.MouseRight))
 		{
@@ -254,20 +305,35 @@ public class PauseScreen : KModalButtonMenu
 		base.OnKeyDown(e);
 	}
 
-	public static void TriggerQuitGame()
+		public static void TriggerQuitGame()
 	{
 		ThreadedHttps<KleiMetrics>.Instance.EndGame();
 		LoadScreen.ForceStopGame();
 		App.LoadScene("frontend");
 	}
 
-	private void RefreshDLCActivationButtons()
+		private void RefreshDLCActivationButtons()
 	{
+		foreach (KeyValuePair<string, DlcManager.DlcInfo> keyValuePair in DlcManager.DLC_PACKS)
+		{
+			if (!(keyValuePair.Value.id == "DLC3_ID") && !this.dlcActivationButtons.ContainsKey(keyValuePair.Key))
+			{
+				GameObject gameObject = global::Util.KInstantiateUI(this.dlcActivationButtonPrefab, this.dlcActivationButtonPrefab.transform.parent.gameObject, true);
+				Sprite sprite = Assets.GetSprite(DlcManager.GetDlcSmallLogo(keyValuePair.Key));
+				gameObject.GetComponent<Image>().sprite = sprite;
+				gameObject.GetComponent<MultiToggle>().states[0].sprite = sprite;
+				gameObject.GetComponent<MultiToggle>().states[1].sprite = sprite;
+				this.dlcActivationButtons.Add(keyValuePair.Key, gameObject);
+			}
+		}
 		this.RefreshDLCButton("EXPANSION1_ID", this.dlc1ActivationButton, false);
-		this.RefreshDLCButton("DLC2_ID", this.dlc2ActivationButton, true);
+		foreach (KeyValuePair<string, GameObject> keyValuePair2 in this.dlcActivationButtons)
+		{
+			this.RefreshDLCButton(keyValuePair2.Key, keyValuePair2.Value.GetComponent<MultiToggle>(), true);
+		}
 	}
 
-	private void RefreshDLCButton(string DLCID, MultiToggle button, bool userEditable)
+		private void RefreshDLCButton(string DLCID, MultiToggle button, bool userEditable)
 	{
 		button.ChangeState(SaveLoader.Instance.IsDLCActiveForCurrentSave(DLCID) ? 1 : 0);
 		button.GetComponent<Image>().material = (SaveLoader.Instance.IsDLCActiveForCurrentSave(DLCID) ? GlobalResources.Instance().AnimUIMaterial : GlobalResources.Instance().AnimMaterialUIDesaturated);
@@ -292,50 +358,54 @@ public class PauseScreen : KModalButtonMenu
 		button.onClick = null;
 	}
 
-	private void OnClickAddDLCButton(string dlcID)
+		private void OnClickAddDLCButton(string dlcID)
 	{
 		if (!SaveLoader.Instance.IsDLCActiveForCurrentSave(dlcID))
 		{
-			this.ConfirmDecision(UI.FRONTEND.PAUSE_SCREEN.ADD_DLC_MENU.CONFIRM, delegate
+			this.ConfirmDecision(UI.FRONTEND.PAUSE_SCREEN.ADD_DLC_MENU.ENABLE_QUESTION, UI.FRONTEND.PAUSE_SCREEN.ADD_DLC_MENU.CONFIRM, delegate
 			{
 				this.OnConfirmAddDLC(dlcID);
-			});
+			}, null, null);
 		}
 	}
 
-	private void OnConfirmAddDLC(string dlcId)
+		private void OnConfirmAddDLC(string dlcId)
 	{
 		SaveLoader.Instance.UpgradeActiveSaveDLCInfo(dlcId, true);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private OptionsMenuScreen optionsScreen;
 
-	[SerializeField]
+		[SerializeField]
 	private SaveScreen saveScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private LoadScreen loadScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText title;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText worldSeed;
 
-	[SerializeField]
+		[SerializeField]
 	private CopyTextFieldToClipboard clipboard;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle dlc1ActivationButton;
 
-	[SerializeField]
-	private MultiToggle dlc2ActivationButton;
+		[SerializeField]
+	private GameObject dlcActivationButtonPrefab;
 
-	private float originalTimeScale;
+		private Dictionary<string, GameObject> dlcActivationButtons = new Dictionary<string, GameObject>();
 
-	private static PauseScreen instance;
+		private float originalTimeScale;
+
+		private bool recentlySaved;
+
+		private static PauseScreen instance;
 }

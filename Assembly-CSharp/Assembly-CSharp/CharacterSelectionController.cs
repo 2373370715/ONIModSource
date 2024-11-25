@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class CharacterSelectionController : KModalScreen
 {
-			public bool IsStarterMinion { get; set; }
+				public bool IsStarterMinion { get; set; }
 
-		public bool AllowsReplacing
+			public bool AllowsReplacing
 	{
 		get
 		{
@@ -15,27 +15,27 @@ public class CharacterSelectionController : KModalScreen
 		}
 	}
 
-	protected virtual void OnProceed()
+		protected virtual void OnProceed()
 	{
 	}
 
-	protected virtual void OnDeliverableAdded()
+		protected virtual void OnDeliverableAdded()
 	{
 	}
 
-	protected virtual void OnDeliverableRemoved()
+		protected virtual void OnDeliverableRemoved()
 	{
 	}
 
-	protected virtual void OnLimitReached()
+		protected virtual void OnLimitReached()
 	{
 	}
 
-	protected virtual void OnLimitUnreached()
+		protected virtual void OnLimitUnreached()
 	{
 	}
 
-	protected virtual void InitializeContainers()
+		protected virtual void InitializeContainers()
 	{
 		this.DisableProceedButton();
 		if (this.containers != null && this.containers.Count > 0)
@@ -58,6 +58,7 @@ public class CharacterSelectionController : KModalScreen
 		{
 			CharacterContainer characterContainer = Util.KInstantiateUI<CharacterContainer>(this.containerPrefab.gameObject, this.containerParent, false);
 			characterContainer.SetController(this);
+			characterContainer.SetReshufflingState(true);
 			this.containers.Add(characterContainer);
 		}
 		for (int j = 0; j < this.numberOfCarePackageOptions; j++)
@@ -70,7 +71,7 @@ public class CharacterSelectionController : KModalScreen
 		this.selectedDeliverables = new List<ITelepadDeliverable>();
 	}
 
-	public virtual void OnPressBack()
+		public virtual void OnPressBack()
 	{
 		foreach (ITelepadDeliverableContainer telepadDeliverableContainer in this.containers)
 		{
@@ -83,7 +84,7 @@ public class CharacterSelectionController : KModalScreen
 		this.Show(false);
 	}
 
-	public void RemoveLast()
+		public void RemoveLast()
 	{
 		if (this.selectedDeliverables == null || this.selectedDeliverables.Count == 0)
 		{
@@ -96,7 +97,7 @@ public class CharacterSelectionController : KModalScreen
 		}
 	}
 
-	public void AddDeliverable(ITelepadDeliverable deliverable)
+		public void AddDeliverable(ITelepadDeliverable deliverable)
 	{
 		if (this.selectedDeliverables.Contains(deliverable))
 		{
@@ -121,7 +122,7 @@ public class CharacterSelectionController : KModalScreen
 		}
 	}
 
-	public void RemoveDeliverable(ITelepadDeliverable deliverable)
+		public void RemoveDeliverable(ITelepadDeliverable deliverable)
 	{
 		bool flag = this.selectedDeliverables.Count >= this.selectableCount;
 		this.selectedDeliverables.Remove(deliverable);
@@ -137,12 +138,12 @@ public class CharacterSelectionController : KModalScreen
 		}
 	}
 
-	public bool IsSelected(ITelepadDeliverable deliverable)
+		public bool IsSelected(ITelepadDeliverable deliverable)
 	{
 		return this.selectedDeliverables.Contains(deliverable);
 	}
 
-	protected void EnableProceedButton()
+		protected void EnableProceedButton()
 	{
 		this.proceedButton.isInteractable = true;
 		this.proceedButton.ClearOnClick();
@@ -152,7 +153,7 @@ public class CharacterSelectionController : KModalScreen
 		};
 	}
 
-	protected void DisableProceedButton()
+		protected void DisableProceedButton()
 	{
 		this.proceedButton.ClearOnClick();
 		this.proceedButton.isInteractable = false;
@@ -162,39 +163,39 @@ public class CharacterSelectionController : KModalScreen
 		};
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private CharacterContainer containerPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private CarePackageContainer carePackageContainerPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject containerParent;
 
-	[SerializeField]
+		[SerializeField]
 	protected KButton proceedButton;
 
-	protected int numberOfDuplicantOptions = 3;
+		protected int numberOfDuplicantOptions = 3;
 
-	protected int numberOfCarePackageOptions;
+		protected int numberOfCarePackageOptions;
 
-	[SerializeField]
+		[SerializeField]
 	protected int selectableCount;
 
-	[SerializeField]
+		[SerializeField]
 	private bool allowsReplacing;
 
-	protected List<ITelepadDeliverable> selectedDeliverables;
+		protected List<ITelepadDeliverable> selectedDeliverables;
 
-	protected List<ITelepadDeliverableContainer> containers;
+		protected List<ITelepadDeliverableContainer> containers;
 
-	public System.Action OnLimitReachedEvent;
+		public System.Action OnLimitReachedEvent;
 
-	public System.Action OnLimitUnreachedEvent;
+		public System.Action OnLimitUnreachedEvent;
 
-	public Action<bool> OnReshuffleEvent;
+		public Action<bool> OnReshuffleEvent;
 
-	public Action<ITelepadDeliverable> OnReplacedEvent;
+		public Action<ITelepadDeliverable> OnReplacedEvent;
 
-	public System.Action OnProceedEvent;
+		public System.Action OnProceedEvent;
 }

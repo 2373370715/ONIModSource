@@ -6,21 +6,21 @@ using UnityEngine;
 [SkipSaveFileSerialization]
 public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.simEmitCBHandle = Game.Instance.massEmitCallbackManager.Add(new Action<Sim.MassEmittedCallback, object>(ColdBreather.OnSimEmittedCallback), this, "ColdBreather");
 		base.smi.StartSM();
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.elementConsumer.EnableConsumption(false);
 		base.Subscribe<ColdBreather>(1309017699, ColdBreather.OnReplantedDelegate);
 		base.OnPrefabInit();
 	}
 
-	private void OnReplanted(object data = null)
+		private void OnReplanted(object data = null)
 	{
 		ReceptacleMonitor component = base.GetComponent<ReceptacleMonitor>();
 		if (component == null)
@@ -43,7 +43,7 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.massEmitCallbackManager.Release(this.simEmitCBHandle, "coldbreather");
 		this.simEmitCBHandle.Clear();
@@ -54,13 +54,13 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 		base.OnCleanUp();
 	}
 
-	protected void DestroySelf(object callbackParam)
+		protected void DestroySelf(object callbackParam)
 	{
 		CreatureHelpers.DeselectCreature(base.gameObject);
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return new List<Descriptor>
 		{
@@ -68,7 +68,7 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 		};
 	}
 
-	private void SetEmitting(bool emitting)
+		private void SetEmitting(bool emitting)
 	{
 		if (this.radiationEmitter != null)
 		{
@@ -76,7 +76,7 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 		}
 	}
 
-	private void Exhale()
+		private void Exhale()
 	{
 		if (this.lastEmitTag != Tag.Invalid)
 		{
@@ -107,12 +107,12 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 		}
 	}
 
-	private static void OnSimEmittedCallback(Sim.MassEmittedCallback info, object data)
+		private static void OnSimEmittedCallback(Sim.MassEmittedCallback info, object data)
 	{
 		((ColdBreather)data).OnSimEmitted(info);
 	}
 
-	private void OnSimEmitted(Sim.MassEmittedCallback info)
+		private void OnSimEmitted(Sim.MassEmittedCallback info)
 	{
 		if (info.suceeded == 1 && this.storage && this.lastEmitTag.IsValid)
 		{
@@ -121,60 +121,68 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 		this.lastEmitTag = Tag.Invalid;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private WiltCondition wiltCondition;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KAnimControllerBase animController;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ElementConsumer elementConsumer;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private RadiationEmitter radiationEmitter;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ReceptacleMonitor receptacleMonitor;
 
-	private const float EXHALE_PERIOD = 1f;
+		private const float EXHALE_PERIOD = 1f;
 
-	public float consumptionRate;
+		public float consumptionRate;
 
-	public float deltaEmitTemperature = -5f;
+		public float deltaEmitTemperature = -5f;
 
-	public Vector3 emitOffsetCell = new Vector3(0f, 0f);
+		public Vector3 emitOffsetCell = new Vector3(0f, 0f);
 
-	private List<GameObject> gases = new List<GameObject>();
+		private List<GameObject> gases = new List<GameObject>();
 
-	private Tag lastEmitTag;
+		private Tag lastEmitTag;
 
-	private int nextGasEmitIndex;
+		private int nextGasEmitIndex;
 
-	private HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle simEmitCBHandle = HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.InvalidHandle;
+		private HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle simEmitCBHandle = HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.InvalidHandle;
 
-	private static readonly EventSystem.IntraObjectHandler<ColdBreather> OnReplantedDelegate = new EventSystem.IntraObjectHandler<ColdBreather>(delegate(ColdBreather component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ColdBreather> OnReplantedDelegate = new EventSystem.IntraObjectHandler<ColdBreather>(delegate(ColdBreather component, object data)
 	{
 		component.OnReplanted(data);
 	});
 
-	public class StatesInstance : GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.GameInstance
 	{
-		public StatesInstance(ColdBreather master) : base(master)
+				public StatesInstance(ColdBreather master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather>
+		public class States : GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
 			default_state = this.grow;
 			this.statusItemCooling = new StatusItem("cooling", CREATURES.STATUSITEMS.COOLING.NAME, CREATURES.STATUSITEMS.COOLING.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, 129022, true, null);
-			this.dead.ToggleStatusItem(CREATURES.STATUSITEMS.DEAD.NAME, CREATURES.STATUSITEMS.DEAD.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).Enter(delegate(ColdBreather.StatesInstance smi)
+			GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.State state = this.dead;
+			string name = CREATURES.STATUSITEMS.DEAD.NAME;
+			string tooltip = CREATURES.STATUSITEMS.DEAD.TOOLTIP;
+			string icon = "";
+			StatusItem.IconType icon_type = StatusItem.IconType.Info;
+			NotificationType notification_type = NotificationType.Neutral;
+			bool allow_multiples = false;
+			StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+			state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).Enter(delegate(ColdBreather.StatesInstance smi)
 			{
 				GameUtil.KInstantiate(Assets.GetPrefab(EffectConfigs.PlantDeathId), smi.master.transform.GetPosition(), Grid.SceneLayer.FXFront, null, 0).SetActive(true);
 				smi.master.Trigger(1623392196, null);
@@ -209,21 +217,21 @@ public class ColdBreather : StateMachineComponent<ColdBreather.StatesInstance>, 
 			});
 		}
 
-		public GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.State grow;
+				public GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.State grow;
 
-		public GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.State blocked_from_growing;
+				public GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.State blocked_from_growing;
 
-		public ColdBreather.States.AliveStates alive;
+				public ColdBreather.States.AliveStates alive;
 
-		public GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.State dead;
+				public GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.State dead;
 
-		private StatusItem statusItemCooling;
+				private StatusItem statusItemCooling;
 
-		public class AliveStates : GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.PlantAliveSubState
+				public class AliveStates : GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.PlantAliveSubState
 		{
-			public GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.State mature;
+						public GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.State mature;
 
-			public GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.State wilting;
+						public GameStateMachine<ColdBreather.States, ColdBreather.StatesInstance, ColdBreather, object>.State wilting;
 		}
 	}
 }

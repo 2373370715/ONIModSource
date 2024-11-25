@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GroupSelectorHeaderWidget : MonoBehaviour
 {
-	public void Initialize(object widget_id, IList<GroupSelectorWidget.ItemData> options, GroupSelectorHeaderWidget.ItemCallbacks item_callbacks)
+		public void Initialize(object widget_id, IList<GroupSelectorWidget.ItemData> options, GroupSelectorHeaderWidget.ItemCallbacks item_callbacks)
 	{
 		GroupSelectorHeaderWidget.<>c__DisplayClass11_0 CS$<>8__locals1 = new GroupSelectorHeaderWidget.<>c__DisplayClass11_0();
 		CS$<>8__locals1.<>4__this = this;
@@ -84,7 +84,7 @@ public class GroupSelectorHeaderWidget : MonoBehaviour
 		}
 	}
 
-	private void RebuildSubPanel(Vector3 pos, Func<object, IList<int>> display_list_query, Action<object> on_item_selected, Func<object, object, string> get_item_hover_text)
+		private void RebuildSubPanel(Vector3 pos, Func<object, IList<int>> display_list_query, Action<object> on_item_selected, Func<object, object, string> get_item_hover_text)
 	{
 		this.itemsPanel.gameObject.transform.SetPosition(pos + new Vector3(2f, 2f, 0f));
 		IList<int> list = display_list_query(this.widgetID);
@@ -116,13 +116,13 @@ public class GroupSelectorHeaderWidget : MonoBehaviour
 		this.CloseSubPanel();
 	}
 
-	public void CloseSubPanel()
+		public void CloseSubPanel()
 	{
 		this.ClearSubPanelOptions();
 		this.itemsPanel.gameObject.SetActive(false);
 	}
 
-	private void ClearSubPanelOptions()
+		private void ClearSubPanelOptions()
 	{
 		foreach (object obj in this.itemsPanel.transform)
 		{
@@ -130,50 +130,50 @@ public class GroupSelectorHeaderWidget : MonoBehaviour
 		}
 	}
 
-	public LocText label;
+		public LocText label;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject itemTemplate;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform itemsPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton addItemButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton removeItemButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton sortButton;
 
-	[SerializeField]
+		[SerializeField]
 	private int numExpectedPanelColumns = 3;
 
-	private object widgetID;
+		private object widgetID;
 
-	private GroupSelectorHeaderWidget.ItemCallbacks itemCallbacks;
+		private GroupSelectorHeaderWidget.ItemCallbacks itemCallbacks;
 
-	private IList<GroupSelectorWidget.ItemData> options;
+		private IList<GroupSelectorWidget.ItemData> options;
 
-	public struct ItemCallbacks
+		public struct ItemCallbacks
 	{
-		public Func<object, string> getTitleHoverText;
+				public Func<object, string> getTitleHoverText;
 
-		public Func<object, bool, string> getTitleButtonHoverText;
+				public Func<object, bool, string> getTitleButtonHoverText;
 
-		public Func<object, bool, IList<int>> getHeaderButtonOptions;
+				public Func<object, bool, IList<int>> getHeaderButtonOptions;
 
-		public Action<object> onItemAdded;
+				public Action<object> onItemAdded;
 
-		public Action<object> onItemRemoved;
+				public Action<object> onItemRemoved;
 
-		public Func<object, bool, object, string> getItemHoverText;
+				public Func<object, bool, object, string> getItemHoverText;
 
-		public Func<object, IList<int>> getValidSortOptionIndices;
+				public Func<object, IList<int>> getValidSortOptionIndices;
 
-		public Func<object, string> getSortHoverText;
+				public Func<object, string> getSortHoverText;
 
-		public Action<object, object> onSort;
+				public Action<object, object> onSort;
 	}
 }

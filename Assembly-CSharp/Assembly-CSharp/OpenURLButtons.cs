@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/OpenURLButtons")]
 public class OpenURLButtons : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		for (int i = 0; i < this.buttonData.Count; i++)
@@ -45,22 +45,22 @@ public class OpenURLButtons : KMonoBehaviour
 		}
 	}
 
-	public void OpenPatchNotes()
+		public void OpenPatchNotes()
 	{
 		Util.KInstantiateUI(this.patchNotesScreenPrefab, FrontEndManager.Instance.gameObject, true);
 	}
 
-	public void OpenFeedbackScreen()
+		public void OpenFeedbackScreen()
 	{
 		Util.KInstantiateUI(this.feedbackScreenPrefab.gameObject, FrontEndManager.Instance.gameObject, true);
 	}
 
-	public void OpenURL(string URL)
+		public void OpenURL(string URL)
 	{
 		App.OpenWebURL(URL);
 	}
 
-	public void OpenPlatformURL(string URL)
+		public void OpenPlatformURL(string URL)
 	{
 		if (DistributionPlatform.Inst.Platform == "Steam" && DistributionPlatform.Inst.Initialized)
 		{
@@ -75,31 +75,31 @@ public class OpenURLButtons : KMonoBehaviour
 		App.OpenWebURL("https://accounts.klei.com/login?goto={gotoUrl}".Replace("{gotoUrl}", WebUtility.HtmlEncode(value)));
 	}
 
-	public GameObject buttonPrefab;
+		public GameObject buttonPrefab;
 
-	public List<OpenURLButtons.URLButtonData> buttonData;
+		public List<OpenURLButtons.URLButtonData> buttonData;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject patchNotesScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private FeedbackScreen feedbackScreenPrefab;
 
-	public enum URLButtonType
+		public enum URLButtonType
 	{
-		url,
-		platformUrl,
-		patchNotes,
-		feedbackScreen
+				url,
+				platformUrl,
+				patchNotes,
+				feedbackScreen
 	}
 
-	[Serializable]
+		[Serializable]
 	public class URLButtonData
 	{
-		public string stringKey;
+				public string stringKey;
 
-		public OpenURLButtons.URLButtonType urlType;
+				public OpenURLButtons.URLButtonType urlType;
 
-		public string url;
+				public string url;
 	}
 }

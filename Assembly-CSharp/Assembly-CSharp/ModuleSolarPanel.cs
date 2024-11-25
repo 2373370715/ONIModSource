@@ -5,13 +5,13 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ModuleSolarPanel : Generator
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.IsVirtual = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		CraftModuleInterface craftInterface = base.GetComponent<RocketModuleCluster>().CraftInterface;
 		base.VirtualCircuitKey = craftInterface;
@@ -32,20 +32,20 @@ public class ModuleSolarPanel : Generator
 		this.meter.gameObject.GetComponent<KBatchedAnimTracker>().matchParentOffset = true;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.smi.StopSM("cleanup");
 		Game.Instance.accumulators.Remove(this.accumulator);
 		base.OnCleanUp();
 	}
 
-	protected void OnActiveChanged(object data)
+		protected void OnActiveChanged(object data)
 	{
 		StatusItem status_item = ((Operational)data).IsActive ? Db.Get().BuildingStatusItems.Wattage : Db.Get().BuildingStatusItems.GeneratorOffline;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, this);
 	}
 
-	private void UpdateStatusItem()
+		private void UpdateStatusItem()
 	{
 		this.selectable.RemoveStatusItem(Db.Get().BuildingStatusItems.Wattage, false);
 		if (this.statusHandle == Guid.Empty)
@@ -59,7 +59,7 @@ public class ModuleSolarPanel : Generator
 		}
 	}
 
-	public override void EnergySim200ms(float dt)
+		public override void EnergySim200ms(float dt)
 	{
 		ushort circuitID = base.CircuitID;
 		this.operational.SetFlag(Generator.wireConnectedFlag, true);
@@ -94,7 +94,7 @@ public class ModuleSolarPanel : Generator
 		this.UpdateStatusItem();
 	}
 
-		public float CurrentWattage
+			public float CurrentWattage
 	{
 		get
 		{
@@ -102,44 +102,44 @@ public class ModuleSolarPanel : Generator
 		}
 	}
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
+		private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
 
-	private ModuleSolarPanel.StatesInstance smi;
+		private ModuleSolarPanel.StatesInstance smi;
 
-	private Guid statusHandle;
+		private Guid statusHandle;
 
-	private CellOffset[] solarCellOffsets = new CellOffset[]
+		private CellOffset[] solarCellOffsets = new CellOffset[]
 	{
 		new CellOffset(-1, 0),
 		new CellOffset(0, 0),
 		new CellOffset(1, 0)
 	};
 
-	private static readonly EventSystem.IntraObjectHandler<ModuleSolarPanel> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<ModuleSolarPanel>(delegate(ModuleSolarPanel component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ModuleSolarPanel> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<ModuleSolarPanel>(delegate(ModuleSolarPanel component, object data)
 	{
 		component.OnActiveChanged(data);
 	});
 
-	public class StatesInstance : GameStateMachine<ModuleSolarPanel.States, ModuleSolarPanel.StatesInstance, ModuleSolarPanel, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ModuleSolarPanel.States, ModuleSolarPanel.StatesInstance, ModuleSolarPanel, object>.GameInstance
 	{
-		public StatesInstance(ModuleSolarPanel master) : base(master)
+				public StatesInstance(ModuleSolarPanel master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<ModuleSolarPanel.States, ModuleSolarPanel.StatesInstance, ModuleSolarPanel>
+		public class States : GameStateMachine<ModuleSolarPanel.States, ModuleSolarPanel.StatesInstance, ModuleSolarPanel>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.idle.EventTransition(GameHashes.DoLaunchRocket, this.launch, null).DoNothing();
 			this.launch.EventTransition(GameHashes.RocketLanded, this.idle, null);
 		}
 
-		public GameStateMachine<ModuleSolarPanel.States, ModuleSolarPanel.StatesInstance, ModuleSolarPanel, object>.State idle;
+				public GameStateMachine<ModuleSolarPanel.States, ModuleSolarPanel.StatesInstance, ModuleSolarPanel, object>.State idle;
 
-		public GameStateMachine<ModuleSolarPanel.States, ModuleSolarPanel.StatesInstance, ModuleSolarPanel, object>.State launch;
+				public GameStateMachine<ModuleSolarPanel.States, ModuleSolarPanel.StatesInstance, ModuleSolarPanel, object>.State launch;
 	}
 }

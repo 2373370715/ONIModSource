@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicPowerRelayConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicPowerRelayConfig.ID;
 		int width = 1;
@@ -36,7 +36,7 @@ public class LogicPowerRelayConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 		go.AddOrGet<LogicOperationalController>();
@@ -44,5 +44,5 @@ public class LogicPowerRelayConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicPowerRelay";
+		public static string ID = "LogicPowerRelay";
 }

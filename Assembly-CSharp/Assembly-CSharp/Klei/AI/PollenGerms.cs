@@ -3,13 +3,13 @@ using Klei.AI.DiseaseGrowthRules;
 
 namespace Klei.AI
 {
-	public class PollenGerms : Disease
+		public class PollenGerms : Disease
 	{
-		public PollenGerms(bool statsOnly) : base("PollenGerms", 5f, new Disease.RangeInfo(263.15f, 273.15f, 363.15f, 373.15f), new Disease.RangeInfo(10f, 100f, 100f, 10f), new Disease.RangeInfo(0f, 0f, 1000f, 1000f), Disease.RangeInfo.Idempotent(), 0f, statsOnly)
+				public PollenGerms(bool statsOnly) : base("PollenGerms", 5f, new Disease.RangeInfo(263.15f, 273.15f, 363.15f, 373.15f), new Disease.RangeInfo(10f, 100f, 100f, 10f), new Disease.RangeInfo(0f, 0f, 1000f, 1000f), Disease.RangeInfo.Idempotent(), 0f, statsOnly)
 		{
 		}
 
-		protected override void PopulateElemGrowthInfo()
+				protected override void PopulateElemGrowthInfo()
 		{
 			base.InitializeElemGrowthArray(ref this.elemGrowthInfo, Disease.DEFAULT_GROWTH_INFO);
 			base.AddGrowthRule(new GrowthRule
@@ -65,6 +65,6 @@ namespace Klei.AI
 			});
 		}
 
-		public const string ID = "PollenGerms";
+				public const string ID = "PollenGerms";
 	}
 }

@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class RocketConduitStorageAccess : KMonoBehaviour, ISim200ms
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		WorldContainer myWorld = this.GetMyWorld();
 		this.craftModuleInterface = myWorld.GetComponent<CraftModuleInterface>();
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this.operational != null && !this.operational.IsOperational)
 		{
@@ -78,22 +78,22 @@ public class RocketConduitStorageAccess : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public Storage storage;
 
-	[SerializeField]
+		[SerializeField]
 	public float targetLevel;
 
-	[SerializeField]
+		[SerializeField]
 	public CargoBay.CargoType cargoType;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Filterable filterable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private const float TOLERANCE = 0.01f;
+		private const float TOLERANCE = 0.01f;
 
-	private CraftModuleInterface craftModuleInterface;
+		private CraftModuleInterface craftModuleInterface;
 }

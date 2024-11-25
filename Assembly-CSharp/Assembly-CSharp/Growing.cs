@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjectEffectDescriptor, IManageGrowingStates
 {
-		private Crop crop
+			private Crop crop
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Amounts amounts = base.gameObject.GetAmounts();
 		this.maturity = amounts.Get(Db.Get().Amounts.Maturity);
@@ -31,14 +31,14 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 		base.Subscribe<Growing>(1272413801, Growing.ResetGrowthDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 		base.gameObject.AddTag(GameTags.GrowingPlant);
 	}
 
-	private void OnNewGameSpawn(object data)
+		private void OnNewGameSpawn(object data)
 	{
 		Prefab prefab = (Prefab)data;
 		if (prefab.amounts != null)
@@ -54,73 +54,73 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 		this.maturity.SetValue(this.maturity.maxAttribute.GetTotalValue() * UnityEngine.Random.Range(0f, 1f));
 	}
 
-	public void OverrideMaturityLevel(float percent)
+		public void OverrideMaturityLevel(float percent)
 	{
 		float value = this.maturity.GetMax() * percent;
 		this.maturity.SetValue(value);
 	}
 
-	public bool ReachedNextHarvest()
+		public bool ReachedNextHarvest()
 	{
 		return this.PercentOfCurrentHarvest() >= 1f;
 	}
 
-	public bool IsGrown()
+		public bool IsGrown()
 	{
 		return this.maturity.value == this.maturity.GetMax();
 	}
 
-	public bool CanGrow()
+		public bool CanGrow()
 	{
 		return !this.IsGrown();
 	}
 
-	public bool IsGrowing()
+		public bool IsGrowing()
 	{
 		return this.maturity.GetDelta() > 0f;
 	}
 
-	public void ClampGrowthToHarvest()
+		public void ClampGrowthToHarvest()
 	{
 		this.maturity.value = this.maturity.GetMax();
 	}
 
-	public float GetMaxMaturity()
+		public float GetMaxMaturity()
 	{
 		return this.maturity.GetMax();
 	}
 
-	public float PercentOfCurrentHarvest()
+		public float PercentOfCurrentHarvest()
 	{
 		return this.maturity.value / this.maturity.GetMax();
 	}
 
-	public float TimeUntilNextHarvest()
+		public float TimeUntilNextHarvest()
 	{
 		return (this.maturity.GetMax() - this.maturity.value) / this.maturity.GetDelta();
 	}
 
-	public float DomesticGrowthTime()
+		public float DomesticGrowthTime()
 	{
 		return this.maturity.GetMax() / base.smi.baseGrowingRate.Value;
 	}
 
-	public float WildGrowthTime()
+		public float WildGrowthTime()
 	{
 		return this.maturity.GetMax() / base.smi.wildGrowingRate.Value;
 	}
 
-	public float PercentGrown()
+		public float PercentGrown()
 	{
 		return this.maturity.value / this.maturity.GetMax();
 	}
 
-	public void ResetGrowth(object data = null)
+		public void ResetGrowth(object data = null)
 	{
 		this.maturity.value = 0f;
 	}
 
-	public float PercentOldAge()
+		public float PercentOldAge()
 	{
 		if (!this.shouldGrowOld)
 		{
@@ -129,7 +129,7 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 		return this.oldAge.value / this.oldAge.GetMax();
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Klei.AI.Attribute maxAttribute = Db.Get().Amounts.Maturity.maxAttribute;
@@ -137,7 +137,7 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 		return list;
 	}
 
-	public void ConsumeMass(float mass_to_consume)
+		public void ConsumeMass(float mass_to_consume)
 	{
 		float value = this.maturity.value;
 		mass_to_consume = Mathf.Min(mass_to_consume, value);
@@ -145,7 +145,7 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 		base.gameObject.Trigger(-1793167409, null);
 	}
 
-	public void ConsumeGrowthUnits(float units_to_consume, float unit_maturity_ratio)
+		public void ConsumeGrowthUnits(float units_to_consume, float unit_maturity_ratio)
 	{
 		float num = units_to_consume / unit_maturity_ratio;
 		global::Debug.Assert(num <= this.maturity.value);
@@ -153,97 +153,97 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 		base.gameObject.Trigger(-1793167409, null);
 	}
 
-	public Crop GetGropComponent()
+		public Crop GetGropComponent()
 	{
 		return base.GetComponent<Crop>();
 	}
 
-	public float GROWTH_RATE = 0.0016666667f;
+		public float GROWTH_RATE = 0.0016666667f;
 
-	public float WILD_GROWTH_RATE = 0.00041666668f;
+		public float WILD_GROWTH_RATE = 0.00041666668f;
 
-	public bool shouldGrowOld = true;
+		public bool shouldGrowOld = true;
 
-	public float maxAge = 2400f;
+		public float maxAge = 2400f;
 
-	private AmountInstance maturity;
+		private AmountInstance maturity;
 
-	private AmountInstance oldAge;
+		private AmountInstance oldAge;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private WiltCondition wiltCondition;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Modifiers modifiers;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ReceptacleMonitor rm;
 
-	private Crop _crop;
+		private Crop _crop;
 
-	private static readonly EventSystem.IntraObjectHandler<Growing> OnNewGameSpawnDelegate = new EventSystem.IntraObjectHandler<Growing>(delegate(Growing component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Growing> OnNewGameSpawnDelegate = new EventSystem.IntraObjectHandler<Growing>(delegate(Growing component, object data)
 	{
 		component.OnNewGameSpawn(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Growing> ResetGrowthDelegate = new EventSystem.IntraObjectHandler<Growing>(delegate(Growing component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Growing> ResetGrowthDelegate = new EventSystem.IntraObjectHandler<Growing>(delegate(Growing component, object data)
 	{
 		component.ResetGrowth(data);
 	});
 
-	public class StatesInstance : GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.GameInstance
 	{
-		public StatesInstance(Growing master) : base(master)
+				public StatesInstance(Growing master) : base(master)
 		{
 			this.baseGrowingRate = new AttributeModifier(master.maturity.deltaAttribute.Id, master.GROWTH_RATE, CREATURES.STATS.MATURITY.GROWING, false, false, true);
 			this.wildGrowingRate = new AttributeModifier(master.maturity.deltaAttribute.Id, master.WILD_GROWTH_RATE, CREATURES.STATS.MATURITY.GROWINGWILD, false, false, true);
 			this.getOldRate = new AttributeModifier(master.oldAge.deltaAttribute.Id, master.shouldGrowOld ? 1f : 0f, null, false, false, true);
 		}
 
-		public bool IsGrown()
+				public bool IsGrown()
 		{
 			return base.master.IsGrown();
 		}
 
-		public bool ReachedNextHarvest()
+				public bool ReachedNextHarvest()
 		{
 			return base.master.ReachedNextHarvest();
 		}
 
-		public void ClampGrowthToHarvest()
+				public void ClampGrowthToHarvest()
 		{
 			base.master.ClampGrowthToHarvest();
 		}
 
-		public bool IsWilting()
+				public bool IsWilting()
 		{
 			return base.master.wiltCondition != null && base.master.wiltCondition.IsWilting();
 		}
 
-		public bool IsSleeping()
+				public bool IsSleeping()
 		{
 			CropSleepingMonitor.Instance smi = base.master.GetSMI<CropSleepingMonitor.Instance>();
 			return smi != null && smi.IsSleeping();
 		}
 
-		public bool CanExitStalled()
+				public bool CanExitStalled()
 		{
 			return !this.IsWilting() && !this.IsSleeping();
 		}
 
-		public AttributeModifier baseGrowingRate;
+				public AttributeModifier baseGrowingRate;
 
-		public AttributeModifier wildGrowingRate;
+				public AttributeModifier wildGrowingRate;
 
-		public AttributeModifier getOldRate;
+				public AttributeModifier getOldRate;
 	}
 
-	public class States : GameStateMachine<Growing.States, Growing.StatesInstance, Growing>
+		public class States : GameStateMachine<Growing.States, Growing.StatesInstance, Growing>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.growing;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -299,24 +299,24 @@ public class Growing : StateMachineComponent<Growing.StatesInstance>, IGameObjec
 			}).GoTo(this.grown.idle);
 		}
 
-		public Growing.States.GrowingStates growing;
+				public Growing.States.GrowingStates growing;
 
-		public GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State stalled;
+				public GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State stalled;
 
-		public Growing.States.GrownStates grown;
+				public Growing.States.GrownStates grown;
 
-		public class GrowingStates : GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State
+				public class GrowingStates : GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State
 		{
-			public GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State wild;
+						public GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State wild;
 
-			public GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State planted;
+						public GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State planted;
 		}
 
-		public class GrownStates : GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State
+				public class GrownStates : GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State
 		{
-			public GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State idle;
+						public GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State idle;
 
-			public GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State try_self_harvest;
+						public GameStateMachine<Growing.States, Growing.StatesInstance, Growing, object>.State try_self_harvest;
 		}
 	}
 }

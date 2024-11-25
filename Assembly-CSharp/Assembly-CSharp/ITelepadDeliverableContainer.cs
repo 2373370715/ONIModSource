@@ -3,9 +3,9 @@ using UnityEngine;
 
 public interface ITelepadDeliverableContainer
 {
-	void SelectDeliverable();
+		void SelectDeliverable();
 
-	void DeselectDeliverable();
+		void DeselectDeliverable();
 
-	GameObject GetGameObject();
+		GameObject GetGameObject();
 }

@@ -2,14 +2,14 @@
 
 public class ModuleGenerator : Generator
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.connectedTags = new Tag[0];
 		base.IsVirtual = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		CraftModuleInterface craftInterface = base.GetComponent<RocketModuleCluster>().CraftInterface;
 		base.VirtualCircuitKey = craftInterface;
@@ -18,18 +18,18 @@ public class ModuleGenerator : Generator
 		base.OnSpawn();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Game.Instance.electricalConduitSystem.RemoveFromVirtualNetworks(base.VirtualCircuitKey, this, true);
 	}
 
-	public override bool IsProducingPower()
+		public override bool IsProducingPower()
 	{
 		return this.clustercraft.IsFlightInProgress();
 	}
 
-	public override void EnergySim200ms(float dt)
+		public override void EnergySim200ms(float dt)
 	{
 		base.EnergySim200ms(dt);
 		if (this.IsProducingPower())
@@ -49,9 +49,9 @@ public class ModuleGenerator : Generator
 		}
 	}
 
-	private Clustercraft clustercraft;
+		private Clustercraft clustercraft;
 
-	private Guid poweringStatusItemHandle;
+		private Guid poweringStatusItemHandle;
 
-	private Guid notPoweringStatusItemHandle;
+		private Guid notPoweringStatusItemHandle;
 }

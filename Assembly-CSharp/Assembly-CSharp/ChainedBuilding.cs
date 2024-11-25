@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ChainedBuilding : GameStateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState defaultState)
+		public override void InitializeStates(out StateMachine.BaseState defaultState)
 	{
 		defaultState = this.unlinked;
 		StatusItem statusItem = new StatusItem("NotLinkedToHeadStatusItem", BUILDING.STATUSITEMS.NOTLINKEDTOHEAD.NAME, BUILDING.STATUSITEMS.NOTLINKEDTOHEAD.TOOLTIP, "status_item_not_linked", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, 129022, true, null);
@@ -23,28 +23,28 @@ public class ChainedBuilding : GameStateMachine<ChainedBuilding, ChainedBuilding
 		});
 	}
 
-	private GameStateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.State unlinked;
+		private GameStateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.State unlinked;
 
-	private GameStateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.State linked;
+		private GameStateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.State linked;
 
-	private GameStateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.State DEBUG_relink;
+		private GameStateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.State DEBUG_relink;
 
-	private StateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.BoolParameter isConnectedToHead = new StateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.BoolParameter();
+		private StateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.BoolParameter isConnectedToHead = new StateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.BoolParameter();
 
-	private StateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.Signal doRelink;
+		private StateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.Signal doRelink;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Tag headBuildingTag;
+				public Tag headBuildingTag;
 
-		public Tag linkBuildingTag;
+				public Tag linkBuildingTag;
 
-		public ObjectLayer objectLayer;
+				public ObjectLayer objectLayer;
 	}
 
-	public class StatesInstance : GameStateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<ChainedBuilding, ChainedBuilding.StatesInstance, IStateMachineTarget, ChainedBuilding.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, ChainedBuilding.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, ChainedBuilding.Def def) : base(master, def)
 		{
 			BuildingDef def2 = master.GetComponent<Building>().Def;
 			this.widthInCells = def2.WidthInCells;
@@ -56,7 +56,7 @@ public class ChainedBuilding : GameStateMachine<ChainedBuilding, ChainedBuilding
 			};
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			bool foundHead = false;
@@ -67,7 +67,7 @@ public class ChainedBuilding : GameStateMachine<ChainedBuilding, ChainedBuilding
 			pooledHashSet.Recycle();
 		}
 
-		public void DEBUG_Relink()
+				public void DEBUG_Relink()
 		{
 			bool foundHead = false;
 			HashSetPool<ChainedBuilding.StatesInstance, ChainedBuilding.StatesInstance>.PooledHashSet pooledHashSet = HashSetPool<ChainedBuilding.StatesInstance, ChainedBuilding.StatesInstance>.Allocate();
@@ -76,7 +76,7 @@ public class ChainedBuilding : GameStateMachine<ChainedBuilding, ChainedBuilding
 			pooledHashSet.Recycle();
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			HashSetPool<ChainedBuilding.StatesInstance, ChainedBuilding.StatesInstance>.PooledHashSet pooledHashSet = HashSetPool<ChainedBuilding.StatesInstance, ChainedBuilding.StatesInstance>.Allocate();
 			foreach (int cell in this.neighbourCheckCells)
@@ -91,14 +91,14 @@ public class ChainedBuilding : GameStateMachine<ChainedBuilding, ChainedBuilding
 			base.OnCleanUp();
 		}
 
-		public HashSet<ChainedBuilding.StatesInstance> GetLinkedBuildings(ref HashSetPool<ChainedBuilding.StatesInstance, ChainedBuilding.StatesInstance>.PooledHashSet chain)
+				public HashSet<ChainedBuilding.StatesInstance> GetLinkedBuildings(ref HashSetPool<ChainedBuilding.StatesInstance, ChainedBuilding.StatesInstance>.PooledHashSet chain)
 		{
 			bool flag = false;
 			this.CollectToChain(ref chain, ref flag, null);
 			return chain;
 		}
 
-		private void PropogateFoundHead(bool foundHead, HashSet<ChainedBuilding.StatesInstance> chain)
+				private void PropogateFoundHead(bool foundHead, HashSet<ChainedBuilding.StatesInstance> chain)
 		{
 			foreach (ChainedBuilding.StatesInstance statesInstance in chain)
 			{
@@ -106,7 +106,7 @@ public class ChainedBuilding : GameStateMachine<ChainedBuilding, ChainedBuilding
 			}
 		}
 
-		private void PropagateChangedEvent(ChainedBuilding.StatesInstance changedLink, HashSet<ChainedBuilding.StatesInstance> chain)
+				private void PropagateChangedEvent(ChainedBuilding.StatesInstance changedLink, HashSet<ChainedBuilding.StatesInstance> chain)
 		{
 			foreach (ChainedBuilding.StatesInstance statesInstance in chain)
 			{
@@ -114,7 +114,7 @@ public class ChainedBuilding : GameStateMachine<ChainedBuilding, ChainedBuilding
 			}
 		}
 
-		private void CollectToChain(ref HashSetPool<ChainedBuilding.StatesInstance, ChainedBuilding.StatesInstance>.PooledHashSet chain, ref bool foundHead, ChainedBuilding.StatesInstance ignoredLink = null)
+				private void CollectToChain(ref HashSetPool<ChainedBuilding.StatesInstance, ChainedBuilding.StatesInstance>.PooledHashSet chain, ref bool foundHead, ChainedBuilding.StatesInstance ignoredLink = null)
 		{
 			if (ignoredLink != null && ignoredLink == this)
 			{
@@ -135,7 +135,7 @@ public class ChainedBuilding : GameStateMachine<ChainedBuilding, ChainedBuilding
 			}
 		}
 
-		private void CollectNeighbourToChain(int cell, ref HashSetPool<ChainedBuilding.StatesInstance, ChainedBuilding.StatesInstance>.PooledHashSet chain, ref bool foundHead, ChainedBuilding.StatesInstance ignoredLink = null)
+				private void CollectNeighbourToChain(int cell, ref HashSetPool<ChainedBuilding.StatesInstance, ChainedBuilding.StatesInstance>.PooledHashSet chain, ref bool foundHead, ChainedBuilding.StatesInstance ignoredLink = null)
 		{
 			GameObject gameObject = Grid.Objects[cell, (int)base.def.objectLayer];
 			if (gameObject == null)
@@ -154,8 +154,8 @@ public class ChainedBuilding : GameStateMachine<ChainedBuilding, ChainedBuilding
 			}
 		}
 
-		private int widthInCells;
+				private int widthInCells;
 
-		private List<int> neighbourCheckCells;
+				private List<int> neighbourCheckCells;
 	}
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Weapon")]
 public class Weapon : KMonoBehaviour
 {
-	public void Configure(float base_damage_min, float base_damage_max, AttackProperties.DamageType attackType = AttackProperties.DamageType.Standard, AttackProperties.TargetType targetType = AttackProperties.TargetType.Single, int maxHits = 1, float aoeRadius = 0f)
+		public void Configure(float base_damage_min, float base_damage_max, AttackProperties.DamageType attackType = AttackProperties.DamageType.Standard, AttackProperties.TargetType targetType = AttackProperties.TargetType.Single, int maxHits = 1, float aoeRadius = 0f)
 	{
 		this.properties = new AttackProperties();
 		this.properties.base_damage_min = base_damage_min;
@@ -16,7 +16,7 @@ public class Weapon : KMonoBehaviour
 		this.properties.attacker = this;
 	}
 
-	public void AddEffect(string effectID = "WasAttacked", float probability = 1f)
+		public void AddEffect(string effectID = "WasAttacked", float probability = 1f)
 	{
 		if (this.properties.effects == null)
 		{
@@ -25,7 +25,7 @@ public class Weapon : KMonoBehaviour
 		this.properties.effects.Add(new AttackEffect(effectID, probability));
 	}
 
-	public int AttackArea(Vector3 centerPoint)
+		public int AttackArea(Vector3 centerPoint)
 	{
 		Vector3 b = Vector3.zero;
 		this.alignment = base.GetComponent<FactionAlignment>();
@@ -54,7 +54,7 @@ public class Weapon : KMonoBehaviour
 		return list.Count;
 	}
 
-	public void AttackTarget(GameObject target)
+		public void AttackTarget(GameObject target)
 	{
 		this.AttackTargets(new GameObject[]
 		{
@@ -62,7 +62,7 @@ public class Weapon : KMonoBehaviour
 		});
 	}
 
-	public void AttackTargets(GameObject[] targets)
+		public void AttackTargets(GameObject[] targets)
 	{
 		if (this.properties == null)
 		{
@@ -72,14 +72,14 @@ public class Weapon : KMonoBehaviour
 		new Attack(this.properties, targets);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.properties.attacker = this;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private FactionAlignment alignment;
 
-	public AttackProperties properties;
+		public AttackProperties properties;
 }

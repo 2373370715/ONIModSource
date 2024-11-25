@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.beginPatrol;
 		this.beginPatrol.Enter(delegate(SweepStates.Instance smi)
@@ -90,14 +90,14 @@ public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, I
 		}, UpdateRate.SIM_1000ms, false);
 	}
 
-	public void StopMoveSound(SweepStates.Instance smi)
+		public void StopMoveSound(SweepStates.Instance smi)
 	{
 		LoopingSounds component = smi.gameObject.GetComponent<LoopingSounds>();
 		component.StopSound(GlobalAssets.GetSound("SweepBot_mvmt_lp", false));
 		component.StopAllSounds();
 	}
 
-	public void StartMoveSound(SweepStates.Instance smi)
+		public void StartMoveSound(SweepStates.Instance smi)
 	{
 		LoopingSounds component = smi.gameObject.GetComponent<LoopingSounds>();
 		if (!component.IsSoundPlaying(GlobalAssets.GetSound("SweepBot_mvmt_lp", false)))
@@ -106,7 +106,7 @@ public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, I
 		}
 	}
 
-	public void TryMop(SweepStates.Instance smi, float dt)
+		public void TryMop(SweepStates.Instance smi, float dt)
 	{
 		int cell = Grid.PosToCell(smi);
 		if (Grid.IsLiquid(cell))
@@ -127,7 +127,7 @@ public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, I
 		}
 	}
 
-	public bool TrySweep(SweepStates.Instance smi)
+		public bool TrySweep(SweepStates.Instance smi)
 	{
 		int cell = Grid.PosToCell(smi);
 		GameObject gameObject = Grid.Objects[cell, 3];
@@ -139,7 +139,7 @@ public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, I
 		return false;
 	}
 
-	public bool TryStore(GameObject go, SweepStates.Instance smi)
+		public bool TryStore(GameObject go, SweepStates.Instance smi)
 	{
 		Pickupable pickupable = go.GetComponent<Pickupable>();
 		if (pickupable == null)
@@ -181,7 +181,7 @@ public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, I
 		return false;
 	}
 
-	public int GetNextCell(SweepStates.Instance smi)
+		public int GetNextCell(SweepStates.Instance smi)
 	{
 		int i = 0;
 		int num = Grid.PosToCell(smi);
@@ -211,47 +211,47 @@ public class SweepStates : GameStateMachine<SweepStates, SweepStates.Instance, I
 		return num;
 	}
 
-	public const float TIME_UNTIL_BORED = 30f;
+		public const float TIME_UNTIL_BORED = 30f;
 
-	public const string MOVE_LOOP_SOUND = "SweepBot_mvmt_lp";
+		public const string MOVE_LOOP_SOUND = "SweepBot_mvmt_lp";
 
-	public StateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.BoolParameter headingRight;
+		public StateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.BoolParameter headingRight;
 
-	private StateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.FloatParameter timeUntilBored;
+		private StateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.FloatParameter timeUntilBored;
 
-	public StateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.BoolParameter bored;
+		public StateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.BoolParameter bored;
 
-	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State beginPatrol;
+		private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State beginPatrol;
 
-	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State moving;
+		private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State moving;
 
-	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State pause;
+		private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State pause;
 
-	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State mopping;
+		private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State mopping;
 
-	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State redirected;
+		private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State redirected;
 
-	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State emoteRedirected;
+		private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State emoteRedirected;
 
-	private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State sweep;
+		private GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.State sweep;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<SweepStates, SweepStates.Instance, IStateMachineTarget, SweepStates.Def>.GameInstance
 	{
-		public Instance(Chore<SweepStates.Instance> chore, SweepStates.Def def) : base(chore, def)
+				public Instance(Chore<SweepStates.Instance> chore, SweepStates.Def def) : base(chore, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().RobotStatusItems.Working, base.gameObject);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.OnCleanUp();
 			base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().RobotStatusItems.Working, false);

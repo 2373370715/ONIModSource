@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class StampTool : InterfaceTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		StampTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		StampTool.Instance = this;
@@ -22,12 +22,12 @@ public class StampTool : InterfaceTool
 		});
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.preview.Refresh(Grid.PosToCell(this.GetCursorPos()));
 	}
 
-	public void Activate(TemplateContainer template, bool SelectAffected = false, bool DeactivateOnStamp = false)
+		public void Activate(TemplateContainer template, bool SelectAffected = false, bool DeactivateOnStamp = false)
 	{
 		this.selectAffected = SelectAffected;
 		this.deactivateOnStamp = DeactivateOnStamp;
@@ -40,18 +40,18 @@ public class StampTool : InterfaceTool
 		base.StartCoroutine(this.preview.Setup(template));
 	}
 
-	private Vector3 GetCursorPos()
+		private Vector3 GetCursorPos()
 	{
 		return PlayerController.GetCursorPos(KInputManager.GetMousePos());
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		base.OnLeftClickDown(cursor_pos);
 		this.Stamp(cursor_pos);
 	}
 
-	private void Stamp(Vector2 pos)
+		private void Stamp(Vector2 pos)
 	{
 		if (!this.ready)
 		{
@@ -115,7 +115,7 @@ public class StampTool : InterfaceTool
 		}
 	}
 
-	private void CompleteStamp(bool pause)
+		private void CompleteStamp(bool pause)
 	{
 		if (pause)
 		{
@@ -125,7 +125,7 @@ public class StampTool : InterfaceTool
 		this.OnDeactivateTool(null);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		if (base.gameObject.activeSelf)
@@ -136,17 +136,17 @@ public class StampTool : InterfaceTool
 		this.stampTemplate = null;
 	}
 
-	public static StampTool Instance;
+		public static StampTool Instance;
 
-	private StampToolPreview preview;
+		private StampToolPreview preview;
 
-	public TemplateContainer stampTemplate;
+		public TemplateContainer stampTemplate;
 
-	public GameObject PlacerPrefab;
+		public GameObject PlacerPrefab;
 
-	private bool ready = true;
+		private bool ready = true;
 
-	private bool selectAffected;
+		private bool selectAffected;
 
-	private bool deactivateOnStamp;
+		private bool deactivateOnStamp;
 }

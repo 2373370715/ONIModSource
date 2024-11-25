@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/KBatchedAnimEventToggler")]
 public class KBatchedAnimEventToggler : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Vector3 position = this.eventSource.transform.GetPosition();
 		position.z = Grid.GetLayerZ(Grid.SceneLayer.Front);
@@ -22,12 +22,12 @@ public class KBatchedAnimEventToggler : KMonoBehaviour
 		base.Subscribe(this.eventSource, hash2, new Action<object>(this.Disable));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.animEventHandler = base.GetComponentInParent<AnimEventHandler>();
 	}
 
-	private void Enable(object data)
+		private void Enable(object data)
 	{
 		this.StopAll();
 		HashedString context = this.animEventHandler.GetContext();
@@ -45,12 +45,12 @@ public class KBatchedAnimEventToggler : KMonoBehaviour
 		}
 	}
 
-	private void Disable(object data)
+		private void Disable(object data)
 	{
 		this.StopAll();
 	}
 
-	private void StopAll()
+		private void StopAll()
 	{
 		foreach (KBatchedAnimEventToggler.Entry entry in this.entries)
 		{
@@ -59,27 +59,27 @@ public class KBatchedAnimEventToggler : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public GameObject eventSource;
 
-	[SerializeField]
+		[SerializeField]
 	public string enableEvent;
 
-	[SerializeField]
+		[SerializeField]
 	public string disableEvent;
 
-	[SerializeField]
+		[SerializeField]
 	public List<KBatchedAnimEventToggler.Entry> entries;
 
-	private AnimEventHandler animEventHandler;
+		private AnimEventHandler animEventHandler;
 
-	[Serializable]
+		[Serializable]
 	public struct Entry
 	{
-		public string anim;
+				public string anim;
 
-		public HashedString context;
+				public HashedString context;
 
-		public KBatchedAnimController controller;
+				public KBatchedAnimController controller;
 	}
 }

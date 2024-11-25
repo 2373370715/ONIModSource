@@ -3,42 +3,42 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class ModifierInstance<ModifierType> : IStateMachineTarget
+		public class ModifierInstance<ModifierType> : IStateMachineTarget
 	{
-						public GameObject gameObject { get; private set; }
+								public GameObject gameObject { get; private set; }
 
-		public ModifierInstance(GameObject game_object, ModifierType modifier)
+				public ModifierInstance(GameObject game_object, ModifierType modifier)
 		{
 			this.gameObject = game_object;
 			this.modifier = modifier;
 		}
 
-		public ComponentType GetComponent<ComponentType>()
+				public ComponentType GetComponent<ComponentType>()
 		{
 			return this.gameObject.GetComponent<ComponentType>();
 		}
 
-		public int Subscribe(int hash, Action<object> handler)
+				public int Subscribe(int hash, Action<object> handler)
 		{
 			return this.gameObject.GetComponent<KMonoBehaviour>().Subscribe(hash, handler);
 		}
 
-		public void Unsubscribe(int hash, Action<object> handler)
+				public void Unsubscribe(int hash, Action<object> handler)
 		{
 			this.gameObject.GetComponent<KMonoBehaviour>().Unsubscribe(hash, handler);
 		}
 
-		public void Unsubscribe(int id)
+				public void Unsubscribe(int id)
 		{
 			this.gameObject.GetComponent<KMonoBehaviour>().Unsubscribe(id);
 		}
 
-		public void Trigger(int hash, object data = null)
+				public void Trigger(int hash, object data = null)
 		{
 			this.gameObject.GetComponent<KPrefabID>().Trigger(hash, data);
 		}
 
-				public Transform transform
+						public Transform transform
 		{
 			get
 			{
@@ -46,7 +46,7 @@ namespace Klei.AI
 			}
 		}
 
-				public bool isNull
+						public bool isNull
 		{
 			get
 			{
@@ -54,7 +54,7 @@ namespace Klei.AI
 			}
 		}
 
-				public string name
+						public string name
 		{
 			get
 			{
@@ -62,10 +62,10 @@ namespace Klei.AI
 			}
 		}
 
-		public virtual void OnCleanUp()
+				public virtual void OnCleanUp()
 		{
 		}
 
-		public ModifierType modifier;
+				public ModifierType modifier;
 	}
 }

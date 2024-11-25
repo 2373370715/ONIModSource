@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class ModuleFlightUtilitySideScreen : SideScreenContent
 {
-		private CraftModuleInterface craftModuleInterface
+			private CraftModuleInterface craftModuleInterface
 	{
 		get
 		{
@@ -14,18 +14,18 @@ public class ModuleFlightUtilitySideScreen : SideScreenContent
 		}
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		base.ConsumeMouseScroll = true;
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 21f;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		if (target.GetComponent<Clustercraft>() != null && this.HasFlightUtilityModule(target.GetComponent<CraftModuleInterface>()))
 		{
@@ -35,7 +35,7 @@ public class ModuleFlightUtilitySideScreen : SideScreenContent
 		return component != null && this.HasFlightUtilityModule(component.GetMyWorld().GetComponent<Clustercraft>().ModuleInterface);
 	}
 
-	private bool HasFlightUtilityModule(CraftModuleInterface craftModuleInterface)
+		private bool HasFlightUtilityModule(CraftModuleInterface craftModuleInterface)
 	{
 		using (IEnumerator<Ref<RocketModuleCluster>> enumerator = craftModuleInterface.ClusterModules.GetEnumerator())
 		{
@@ -50,7 +50,7 @@ public class ModuleFlightUtilitySideScreen : SideScreenContent
 		return false;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		if (target != null)
 		{
@@ -71,7 +71,7 @@ public class ModuleFlightUtilitySideScreen : SideScreenContent
 		this.BuildModules();
 	}
 
-	private void ClearModules()
+		private void ClearModules()
 	{
 		foreach (KeyValuePair<IEmptyableCargo, HierarchyReferences> keyValuePair in this.modulePanels)
 		{
@@ -80,7 +80,7 @@ public class ModuleFlightUtilitySideScreen : SideScreenContent
 		this.modulePanels.Clear();
 	}
 
-	private void BuildModules()
+		private void BuildModules()
 	{
 		this.ClearModules();
 		foreach (Ref<RocketModuleCluster> @ref in this.craftModuleInterface.ClusterModules)
@@ -95,12 +95,12 @@ public class ModuleFlightUtilitySideScreen : SideScreenContent
 		}
 	}
 
-	private void RefreshAll(object data = null)
+		private void RefreshAll(object data = null)
 	{
 		this.BuildModules();
 	}
 
-	private void RefreshModulePanel(IEmptyableCargo module)
+		private void RefreshModulePanel(IEmptyableCargo module)
 	{
 		HierarchyReferences hierarchyReferences = this.modulePanels[module];
 		hierarchyReferences.GetReference<Image>("icon").sprite = Def.GetUISprite(module.master.gameObject, "ui", false).first;
@@ -146,7 +146,7 @@ public class ModuleFlightUtilitySideScreen : SideScreenContent
 		hierarchyReferences.GetReference<LocText>("label").SetText(module.master.gameObject.GetProperName());
 	}
 
-	private string GetDuplicantRowName(MinionIdentity minion)
+		private string GetDuplicantRowName(MinionIdentity minion)
 	{
 		MinionResume component = minion.GetComponent<MinionResume>();
 		if (component != null && component.HasPerk(Db.Get().SkillPerks.CanUseRocketControlStation))
@@ -156,13 +156,13 @@ public class ModuleFlightUtilitySideScreen : SideScreenContent
 		return minion.GetProperName();
 	}
 
-	private void OnRepeatClicked(IEmptyableCargo module)
+		private void OnRepeatClicked(IEmptyableCargo module)
 	{
 		module.AutoDeploy = !module.AutoDeploy;
 		this.StyleRepeatButton(module);
 	}
 
-	private void OnDuplicantEntryClick(IListableOption option, object data)
+		private void OnDuplicantEntryClick(IListableOption option, object data)
 	{
 		MinionIdentity chosenDuplicant = (MinionIdentity)option;
 		IEmptyableCargo emptyableCargo = (IEmptyableCargo)data;
@@ -173,7 +173,7 @@ public class ModuleFlightUtilitySideScreen : SideScreenContent
 		this.RefreshAll(null);
 	}
 
-	private void DropDownEntryRefreshAction(DropDownEntry entry, object targetData)
+		private void DropDownEntryRefreshAction(DropDownEntry entry, object targetData)
 	{
 		MinionIdentity minionIdentity = (MinionIdentity)entry.entryData;
 		entry.label.text = this.GetDuplicantRowName(minionIdentity);
@@ -194,24 +194,24 @@ public class ModuleFlightUtilitySideScreen : SideScreenContent
 		entry.button.isInteractable = !flag;
 	}
 
-	private void StyleRepeatButton(IEmptyableCargo module)
+		private void StyleRepeatButton(IEmptyableCargo module)
 	{
 		KButton reference = this.modulePanels[module].GetReference<KButton>("repeatButton");
 		reference.bgImage.colorStyleSetting = (module.AutoDeploy ? this.repeatOn : this.repeatOff);
 		reference.bgImage.ApplyColorStyleSetting();
 	}
 
-	private Clustercraft targetCraft;
+		private Clustercraft targetCraft;
 
-	public GameObject moduleContentContainer;
+		public GameObject moduleContentContainer;
 
-	public GameObject modulePanelPrefab;
+		public GameObject modulePanelPrefab;
 
-	public ColorStyleSetting repeatOff;
+		public ColorStyleSetting repeatOff;
 
-	public ColorStyleSetting repeatOn;
+		public ColorStyleSetting repeatOn;
 
-	private Dictionary<IEmptyableCargo, HierarchyReferences> modulePanels = new Dictionary<IEmptyableCargo, HierarchyReferences>();
+		private Dictionary<IEmptyableCargo, HierarchyReferences> modulePanels = new Dictionary<IEmptyableCargo, HierarchyReferences>();
 
-	private List<int> refreshHandle = new List<int>();
+		private List<int> refreshHandle = new List<int>();
 }

@@ -8,9 +8,9 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDescriptor
 {
-			public event Action<Sim.ConsumedMassInfo> OnElementConsumed;
+				public event Action<Sim.ConsumedMassInfo> OnElementConsumed;
 
-		public float AverageConsumeRate
+			public float AverageConsumeRate
 	{
 		get
 		{
@@ -18,12 +18,12 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		}
 	}
 
-	public static void ClearInstanceMap()
+		public static void ClearInstanceMap()
 	{
 		ElementConsumer.handleInstanceMap.Clear();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.accumulator = Game.Instance.accumulators.Add("Element", this);
@@ -42,18 +42,18 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.accumulators.Remove(this.accumulator);
 		base.OnCleanUp();
 	}
 
-	protected virtual bool IsActive()
+		protected virtual bool IsActive()
 	{
 		return this.operational == null || this.operational.IsActive;
 	}
 
-	public void EnableConsumption(bool enabled)
+		public void EnableConsumption(bool enabled)
 	{
 		bool flag = this.consumptionEnabled;
 		this.consumptionEnabled = enabled;
@@ -67,13 +67,13 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		}
 	}
 
-	private bool IsStorageFull()
+		private bool IsStorageFull()
 	{
 		PrimaryElement primaryElement = this.storage.FindPrimaryElement(this.elementToConsume);
 		return primaryElement != null && primaryElement.Mass >= this.capacityKG;
 	}
 
-	public void RefreshConsumptionRate()
+		public void RefreshConsumptionRate()
 	{
 		if (!Sim.IsValidHandle(this.simHandle))
 		{
@@ -82,7 +82,7 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		this.UpdateSimData();
 	}
 
-	private void UpdateSimData()
+		private void UpdateSimData()
 	{
 		global::Debug.Assert(Sim.IsValidHandle(this.simHandle));
 		int sampleCell = this.GetSampleCell();
@@ -91,7 +91,7 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		this.UpdateStatusItem();
 	}
 
-	public static void AddMass(Sim.ConsumedMassInfo consumed_info)
+		public static void AddMass(Sim.ConsumedMassInfo consumed_info)
 	{
 		if (!Sim.IsValidHandle(consumed_info.simHandle))
 		{
@@ -104,12 +104,12 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		}
 	}
 
-	private int GetSampleCell()
+		private int GetSampleCell()
 	{
 		return Grid.PosToCell(base.transform.GetPosition() + this.sampleCellOffset);
 	}
 
-	private void AddMassInternal(Sim.ConsumedMassInfo consumed_info)
+		private void AddMassInternal(Sim.ConsumedMassInfo consumed_info)
 	{
 		if (consumed_info.mass > 0f)
 		{
@@ -141,7 +141,7 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		Game.Instance.accumulators.Accumulate(this.accumulator, consumed_info.mass);
 	}
 
-		public bool IsElementAvailable
+			public bool IsElementAvailable
 	{
 		get
 		{
@@ -151,7 +151,7 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		}
 	}
 
-	private void UpdateStatusItem()
+		private void UpdateStatusItem()
 	{
 		if (this.showInStatusPanel)
 		{
@@ -174,7 +174,7 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		}
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		bool flag = !this.IsStorageFull();
 		if (flag != this.hasAvailableCapacity)
@@ -184,7 +184,7 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		}
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		if (!base.isSpawned)
 		{
@@ -197,12 +197,12 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		this.UpdateStatusItem();
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		this.UpdateStatusItem();
 	}
 
-	public List<Descriptor> RequirementDescriptors()
+		public List<Descriptor> RequirementDescriptors()
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.isRequired && this.showDescriptor)
@@ -231,7 +231,7 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		return list;
 	}
 
-	public List<Descriptor> EffectDescriptors()
+		public List<Descriptor> EffectDescriptors()
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.showDescriptor)
@@ -260,7 +260,7 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		return list;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		foreach (Descriptor item in this.RequirementDescriptors())
@@ -274,36 +274,36 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		return list;
 	}
 
-	private void OnActiveChanged(object data)
+		private void OnActiveChanged(object data)
 	{
 		bool isActive = this.operational.IsActive;
 		this.EnableConsumption(isActive);
 	}
 
-	protected override void OnSimUnregister()
+		protected override void OnSimUnregister()
 	{
 		global::Debug.Assert(Sim.IsValidHandle(this.simHandle));
 		ElementConsumer.handleInstanceMap.Remove(this.simHandle);
 		ElementConsumer.StaticUnregister(this.simHandle);
 	}
 
-	protected override void OnSimRegister(HandleVector<Game.ComplexCallbackInfo<int>>.Handle cb_handle)
+		protected override void OnSimRegister(HandleVector<Game.ComplexCallbackInfo<int>>.Handle cb_handle)
 	{
 		SimMessages.AddElementConsumer(this.GetSampleCell(), this.configuration, this.elementToConsume, this.consumptionRadius, cb_handle.index);
 	}
 
-	protected override Action<int> GetStaticUnregister()
+		protected override Action<int> GetStaticUnregister()
 	{
 		return new Action<int>(ElementConsumer.StaticUnregister);
 	}
 
-	private static void StaticUnregister(int sim_handle)
+		private static void StaticUnregister(int sim_handle)
 	{
 		global::Debug.Assert(Sim.IsValidHandle(sim_handle));
 		SimMessages.RemoveElementConsumer(-1, sim_handle);
 	}
 
-	protected override void OnSimRegistered()
+		protected override void OnSimRegistered()
 	{
 		if (this.consumptionEnabled)
 		{
@@ -312,81 +312,81 @@ public class ElementConsumer : SimComponent, ISaveLoadable, IGameObjectEffectDes
 		ElementConsumer.handleInstanceMap[this.simHandle] = this;
 	}
 
-	[HashedEnum]
+		[HashedEnum]
 	[SerializeField]
 	public SimHashes elementToConsume = SimHashes.Vacuum;
 
-	[SerializeField]
+		[SerializeField]
 	public float consumptionRate;
 
-	[SerializeField]
+		[SerializeField]
 	public byte consumptionRadius = 1;
 
-	[SerializeField]
+		[SerializeField]
 	public float minimumMass;
 
-	[SerializeField]
+		[SerializeField]
 	public bool showInStatusPanel = true;
 
-	[SerializeField]
+		[SerializeField]
 	public Vector3 sampleCellOffset;
 
-	[SerializeField]
+		[SerializeField]
 	public float capacityKG = float.PositiveInfinity;
 
-	[SerializeField]
+		[SerializeField]
 	public ElementConsumer.Configuration configuration;
 
-	[Serialize]
+		[Serialize]
 	[NonSerialized]
 	public float consumedMass;
 
-	[Serialize]
+		[Serialize]
 	[NonSerialized]
 	public float consumedTemperature;
 
-	[SerializeField]
+		[SerializeField]
 	public bool storeOnConsume;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KSelectable selectable;
 
-	private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
+		private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
 
-	public bool ignoreActiveChanged;
+		public bool ignoreActiveChanged;
 
-	private Guid statusHandle;
+		private Guid statusHandle;
 
-	public bool showDescriptor = true;
+		public bool showDescriptor = true;
 
-	public bool isRequired = true;
+		public bool isRequired = true;
 
-	private bool consumptionEnabled;
+		private bool consumptionEnabled;
 
-	private bool hasAvailableCapacity = true;
+		private bool hasAvailableCapacity = true;
 
-	private static Dictionary<int, ElementConsumer> handleInstanceMap = new Dictionary<int, ElementConsumer>();
+		private static Dictionary<int, ElementConsumer> handleInstanceMap = new Dictionary<int, ElementConsumer>();
 
-	private static readonly EventSystem.IntraObjectHandler<ElementConsumer> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<ElementConsumer>(delegate(ElementConsumer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ElementConsumer> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<ElementConsumer>(delegate(ElementConsumer component, object data)
 	{
 		component.OnActiveChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<ElementConsumer> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<ElementConsumer>(delegate(ElementConsumer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ElementConsumer> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<ElementConsumer>(delegate(ElementConsumer component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	public enum Configuration
+		public enum Configuration
 	{
-		Element,
-		AllLiquid,
-		AllGas
+				Element,
+				AllLiquid,
+				AllGas
 	}
 }

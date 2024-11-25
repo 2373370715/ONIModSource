@@ -2,13 +2,13 @@
 
 public class RoomMonitor : GameStateMachine<RoomMonitor, RoomMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.EventHandler(GameHashes.PathAdvanced, new StateMachine<RoomMonitor, RoomMonitor.Instance, IStateMachineTarget, object>.State.Callback(RoomMonitor.UpdateRoomType));
 	}
 
-	private static void UpdateRoomType(RoomMonitor.Instance smi)
+		private static void UpdateRoomType(RoomMonitor.Instance smi)
 	{
 		Room roomOfGameObject = Game.Instance.roomProber.GetRoomOfGameObject(smi.master.gameObject);
 		if (roomOfGameObject != smi.currentRoom)
@@ -21,12 +21,12 @@ public class RoomMonitor : GameStateMachine<RoomMonitor, RoomMonitor.Instance>
 		}
 	}
 
-	public new class Instance : GameStateMachine<RoomMonitor, RoomMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<RoomMonitor, RoomMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 
-		public Room currentRoom;
+				public Room currentRoom;
 	}
 }

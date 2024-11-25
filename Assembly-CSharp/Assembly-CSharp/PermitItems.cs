@@ -6,7 +6,7 @@ using STRINGS;
 
 public class PermitItems
 {
-	public static IEnumerable<KleiItems.ItemData> IterateInventory()
+		public static IEnumerable<KleiItems.ItemData> IterateInventory()
 	{
 		foreach (KleiItems.ItemData itemData in KleiItems.IterateInventory(PermitItems.ItemToPermit, PermitItems.BoxSet))
 		{
@@ -17,17 +17,17 @@ public class PermitItems
 		yield break;
 	}
 
-	public static bool HasUnopenedItem()
+		public static bool HasUnopenedItem()
 	{
 		return KleiItems.HasUnopenedItem(PermitItems.ItemToPermit, PermitItems.BoxSet);
 	}
 
-	public static bool IsPermitUnlocked(PermitResource permit)
+		public static bool IsPermitUnlocked(PermitResource permit)
 	{
 		return PermitItems.GetOwnedCount(permit) > 0;
 	}
 
-	public static int GetOwnedCount(PermitResource permit)
+		public static int GetOwnedCount(PermitResource permit)
 	{
 		int result = 0;
 		PermitItems.ItemInfo itemInfo;
@@ -38,7 +38,7 @@ public class PermitItems
 		return result;
 	}
 
-	public static bool TryGetBoxInfo(KleiItems.ItemData item, out string name, out string desc, out string icon_name)
+		public static bool TryGetBoxInfo(KleiItems.ItemData item, out string name, out string desc, out string icon_name)
 	{
 		PermitItems.BoxInfo boxInfo;
 		if (PermitItems.BoxMappings.TryGetValue(item.Id, out boxInfo))
@@ -54,14 +54,14 @@ public class PermitItems
 		return false;
 	}
 
-	public static bool TryGetBarterPrice(string permit_id, out ulong buy_price, out ulong sell_price)
+		public static bool TryGetBarterPrice(string permit_id, out ulong buy_price, out ulong sell_price)
 	{
 		buy_price = (sell_price = 0UL);
 		PermitItems.ItemInfo itemInfo;
 		return PermitItems.Mappings.TryGetValue(permit_id, out itemInfo) && KleiItems.TryGetBarterPrice(itemInfo.ItemType, out buy_price, out sell_price);
 	}
 
-	public static void QueueRequestOpenOrUnboxItem(KleiItems.ItemData item, KleiItems.ResponseCallback cb)
+		public static void QueueRequestOpenOrUnboxItem(KleiItems.ItemData item, KleiItems.ResponseCallback cb)
 	{
 		DebugUtil.DevAssert(!item.IsOpened, "Can't open already opened item.", null);
 		if (item.IsOpened)
@@ -76,7 +76,7 @@ public class PermitItems
 		KleiItems.AddRequestItemOpened(item.ItemId, cb);
 	}
 
-	public static string GetServerTypeFromPermit(PermitResource resource)
+		public static string GetServerTypeFromPermit(PermitResource resource)
 	{
 		foreach (PermitItems.ItemInfo itemInfo in PermitItems.ItemInfos)
 		{
@@ -89,7 +89,7 @@ public class PermitItems
 		return null;
 	}
 
-	private static PermitItems.ItemInfo[] ItemInfos = new PermitItems.ItemInfo[]
+		private static PermitItems.ItemInfo[] ItemInfos = new PermitItems.ItemInfo[]
 	{
 		new PermitItems.ItemInfo("top_basic_black", 1U, "TopBasicBlack"),
 		new PermitItems.ItemInfo("top_basic_white", 2U, "TopBasicWhite"),
@@ -624,14 +624,16 @@ public class PermitItems
 		new PermitItems.ItemInfo("walls_dice_5", 545U, "ExteriorWall_dice_5"),
 		new PermitItems.ItemInfo("walls_dice_6", 546U, "ExteriorWall_dice_6"),
 		new PermitItems.ItemInfo("painting_art_r", 547U, "Canvas_Good16"),
-		new PermitItems.ItemInfo("painting_wide_art_o", 548U, "CanvasWide_Good13")
+		new PermitItems.ItemInfo("painting_wide_art_o", 548U, "CanvasWide_Good13"),
+		new PermitItems.ItemInfo("item_elegantbed_hatch", 549U, "permit_elegantbed_hatch"),
+		new PermitItems.ItemInfo("item_elegantbed_pipsqueak", 550U, "permit_elegantbed_pipsqueak")
 	};
 
-	private static Dictionary<string, PermitItems.ItemInfo> Mappings = PermitItems.ItemInfos.ToDictionary((PermitItems.ItemInfo x) => x.PermitId);
+		private static Dictionary<string, PermitItems.ItemInfo> Mappings = PermitItems.ItemInfos.ToDictionary((PermitItems.ItemInfo x) => x.PermitId);
 
-	private static Dictionary<string, string> ItemToPermit = PermitItems.ItemInfos.ToDictionary((PermitItems.ItemInfo x) => x.ItemType, (PermitItems.ItemInfo x) => x.PermitId);
+		private static Dictionary<string, string> ItemToPermit = PermitItems.ItemInfos.ToDictionary((PermitItems.ItemInfo x) => x.ItemType, (PermitItems.ItemInfo x) => x.PermitId);
 
-	private static PermitItems.BoxInfo[] BoxInfos = new PermitItems.BoxInfo[]
+		private static PermitItems.BoxInfo[] BoxInfos = new PermitItems.BoxInfo[]
 	{
 		new PermitItems.BoxInfo("MYSTERYBOX_u44_box_a", "Shipment X", "Unaddressed packages have been discovered near the Printing Pod. They bear Gravitas logos, and trace amounts of Neutronium have been detected.", 80U, "ONI_giftbox_u44_box_a", true),
 		new PermitItems.BoxInfo("MYSTERYBOX_u44_box_b", "Shipment Y", "Unaddressed packages have been discovered near the Printing Pod. They bear Gravitas logos, and trace amounts of Neutronium have been detected.", 81U, "ONI_giftbox_u44_box_b", true),
@@ -643,36 +645,36 @@ public class PermitItems
 		new PermitItems.BoxInfo("MYSTERYBOX_u50_winter_holiday", EQUIPMENT.PREFABS.HOLIDAY_2023_CRATE.NAME, EQUIPMENT.PREFABS.HOLIDAY_2023_CRATE.DESC, 414U, "Holiday_2023_gift_box", false)
 	};
 
-	private const string MYSTERYBOX_U44_DESC = "Unaddressed packages have been discovered near the Printing Pod. They bear Gravitas logos, and trace amounts of Neutronium have been detected.";
+		private const string MYSTERYBOX_U44_DESC = "Unaddressed packages have been discovered near the Printing Pod. They bear Gravitas logos, and trace amounts of Neutronium have been detected.";
 
-	private const string MYSTERYBOX_U45_DESC = "Unaddressed packages have been discovered near the Printing Pod. They bear Gravitas logos, and trace amounts of Neutronium have been detected.";
+		private const string MYSTERYBOX_U45_DESC = "Unaddressed packages have been discovered near the Printing Pod. They bear Gravitas logos, and trace amounts of Neutronium have been detected.";
 
-	private const string MYSTERYBOX_U46_DESC = "Unaddressed packages have been discovered near the Printing Pod. They bear Gravitas logos, and trace amounts of Neutronium have been detected.";
+		private const string MYSTERYBOX_U46_DESC = "Unaddressed packages have been discovered near the Printing Pod. They bear Gravitas logos, and trace amounts of Neutronium have been detected.";
 
-	private static Dictionary<string, PermitItems.BoxInfo> BoxMappings = PermitItems.BoxInfos.ToDictionary((PermitItems.BoxInfo x) => x.ItemType);
+		private static Dictionary<string, PermitItems.BoxInfo> BoxMappings = PermitItems.BoxInfos.ToDictionary((PermitItems.BoxInfo x) => x.ItemType);
 
-	private static HashSet<string> BoxSet = new HashSet<string>(from x in PermitItems.BoxInfos
+		private static HashSet<string> BoxSet = new HashSet<string>(from x in PermitItems.BoxInfos
 	select x.ItemType);
 
-	private struct ItemInfo
+		private struct ItemInfo
 	{
-		public ItemInfo(string itemType, uint typeId, string permitId)
+				public ItemInfo(string itemType, uint typeId, string permitId)
 		{
 			this.ItemType = itemType;
 			this.PermitId = permitId;
 			this.TypeId = typeId;
 		}
 
-		public string ItemType;
+				public string ItemType;
 
-		public uint TypeId;
+				public uint TypeId;
 
-		public string PermitId;
+				public string PermitId;
 	}
 
-	private struct BoxInfo
+		private struct BoxInfo
 	{
-		public BoxInfo(string type, string name, string desc, uint id, string icon, bool account_reward)
+				public BoxInfo(string type, string name, string desc, uint id, string icon, bool account_reward)
 		{
 			this.ItemType = type;
 			this.Name = name;
@@ -682,16 +684,16 @@ public class PermitItems
 			this.AccountReward = account_reward;
 		}
 
-		public string ItemType;
+				public string ItemType;
 
-		public string Name;
+				public string Name;
 
-		public string Description;
+				public string Description;
 
-		public uint TypeId;
+				public uint TypeId;
 
-		public string IconName;
+				public string IconName;
 
-		public bool AccountReward;
+				public bool AccountReward;
 	}
 }

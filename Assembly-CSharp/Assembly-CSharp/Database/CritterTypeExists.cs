@@ -4,14 +4,14 @@ using STRINGS;
 
 namespace Database
 {
-	public class CritterTypeExists : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class CritterTypeExists : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public CritterTypeExists(List<Tag> critterTypes)
+				public CritterTypeExists(List<Tag> critterTypes)
 		{
 			this.critterTypes = critterTypes;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			foreach (Capturable cmp in Components.Capturables.Items)
 			{
@@ -23,7 +23,7 @@ namespace Database
 			return false;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			int num = reader.ReadInt32();
 			this.critterTypes = new List<Tag>(num);
@@ -34,11 +34,11 @@ namespace Database
 			}
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.HATCH_A_MORPH;
 		}
 
-		private List<Tag> critterTypes = new List<Tag>();
+				private List<Tag> critterTypes = new List<Tag>();
 	}
 }

@@ -6,21 +6,21 @@ using UnityEngine;
 
 public class EntryDevLog
 {
-	[Conditional("UNITY_EDITOR")]
+		[Conditional("UNITY_EDITOR")]
 	public void AddModificationRecord(EntryDevLog.ModificationRecord.ActionType actionType, string target, object newValue)
 	{
 		string author = this.TrimAuthor();
 		this.modificationRecords.Add(new EntryDevLog.ModificationRecord(actionType, target, newValue, author));
 	}
 
-	[Conditional("UNITY_EDITOR")]
+		[Conditional("UNITY_EDITOR")]
 	public void InsertModificationRecord(int index, EntryDevLog.ModificationRecord.ActionType actionType, string target, object newValue)
 	{
 		string author = this.TrimAuthor();
 		this.modificationRecords.Insert(index, new EntryDevLog.ModificationRecord(actionType, target, newValue, author));
 	}
 
-	private string TrimAuthor()
+		private string TrimAuthor()
 	{
 		string text = "";
 		string[] array = new string[]
@@ -83,20 +83,20 @@ public class EntryDevLog
 		return text;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public List<EntryDevLog.ModificationRecord> modificationRecords = new List<EntryDevLog.ModificationRecord>();
 
-	public class ModificationRecord
+		public class ModificationRecord
 	{
-						public EntryDevLog.ModificationRecord.ActionType actionType { get; private set; }
+								public EntryDevLog.ModificationRecord.ActionType actionType { get; private set; }
 
-						public string target { get; private set; }
+								public string target { get; private set; }
 
-						public object newValue { get; private set; }
+								public object newValue { get; private set; }
 
-						public string author { get; private set; }
+								public string author { get; private set; }
 
-		public ModificationRecord(EntryDevLog.ModificationRecord.ActionType actionType, string target, object newValue, string author)
+				public ModificationRecord(EntryDevLog.ModificationRecord.ActionType actionType, string target, object newValue, string author)
 		{
 			this.target = target;
 			this.newValue = newValue;
@@ -104,13 +104,13 @@ public class EntryDevLog
 			this.actionType = actionType;
 		}
 
-		public enum ActionType
+				public enum ActionType
 		{
-			Created,
-			ChangeSubEntry,
-			ChangeContent,
-			ValueChange,
-			YAMLData
+						Created,
+						ChangeSubEntry,
+						ChangeContent,
+						ValueChange,
+						YAMLData
 		}
 	}
 }

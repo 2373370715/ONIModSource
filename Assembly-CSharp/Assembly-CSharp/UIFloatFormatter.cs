@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class UIFloatFormatter
 {
-	public string Format(string format, float value)
+		public string Format(string format, float value)
 	{
 		return this.Replace(format, "{0}", value);
 	}
 
-	private string Replace(string format, string key, float value)
+		private string Replace(string format, string key, float value)
 	{
 		UIFloatFormatter.Entry entry = default(UIFloatFormatter.Entry);
 		if (this.activeStringCount >= this.entries.Count)
@@ -35,27 +35,27 @@ public class UIFloatFormatter
 		return entry.result;
 	}
 
-	public void BeginDrawing()
+		public void BeginDrawing()
 	{
 		this.activeStringCount = 0;
 	}
 
-	public void EndDrawing()
+		public void EndDrawing()
 	{
 	}
 
-	private int activeStringCount;
+		private int activeStringCount;
 
-	private List<UIFloatFormatter.Entry> entries = new List<UIFloatFormatter.Entry>();
+		private List<UIFloatFormatter.Entry> entries = new List<UIFloatFormatter.Entry>();
 
-	private struct Entry
+		private struct Entry
 	{
-		public string format;
+				public string format;
 
-		public string key;
+				public string key;
 
-		public float value;
+				public float value;
 
-		public string result;
+				public string result;
 	}
 }

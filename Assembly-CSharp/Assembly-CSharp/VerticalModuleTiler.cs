@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class VerticalModuleTiler : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		OccupyArea component = base.GetComponent<OccupyArea>();
 		if (component != null)
@@ -22,18 +22,18 @@ public class VerticalModuleTiler : KMonoBehaviour
 		this.PostReorderMove();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		base.OnCleanUp();
 	}
 
-	public void PostReorderMove()
+		public void PostReorderMove()
 	{
 		this.dirty = true;
 	}
 
-	private void OnNeighbourCellsUpdated(object data)
+		private void OnNeighbourCellsUpdated(object data)
 	{
 		if (this == null || base.gameObject == null)
 		{
@@ -45,7 +45,7 @@ public class VerticalModuleTiler : KMonoBehaviour
 		}
 	}
 
-	private void UpdateEndCaps()
+		private void UpdateEndCaps()
 	{
 		int num;
 		int num2;
@@ -84,7 +84,7 @@ public class VerticalModuleTiler : KMonoBehaviour
 		}
 	}
 
-	private int GetCellTop()
+		private int GetCellTop()
 	{
 		int cell = Grid.PosToCell(this);
 		int num;
@@ -94,7 +94,7 @@ public class VerticalModuleTiler : KMonoBehaviour
 		return Grid.OffsetCell(cell, offset);
 	}
 
-	private int GetCellBottom()
+		private int GetCellBottom()
 	{
 		int cell = Grid.PosToCell(this);
 		int num;
@@ -104,7 +104,7 @@ public class VerticalModuleTiler : KMonoBehaviour
 		return Grid.OffsetCell(cell, offset);
 	}
 
-	private bool HasWideNeighbor(int neighbour_cell)
+		private bool HasWideNeighbor(int neighbour_cell)
 	{
 		bool result = false;
 		GameObject gameObject = Grid.Objects[neighbour_cell, (int)this.objectLayer];
@@ -119,7 +119,7 @@ public class VerticalModuleTiler : KMonoBehaviour
 		return result;
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (this.animController.Offset != this.m_previousAnimControllerOffset)
 		{
@@ -145,38 +145,38 @@ public class VerticalModuleTiler : KMonoBehaviour
 		}
 	}
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	public ObjectLayer objectLayer = ObjectLayer.Building;
+		public ObjectLayer objectLayer = ObjectLayer.Building;
 
-	private Extents extents;
+		private Extents extents;
 
-	private VerticalModuleTiler.AnimCapType topCapSetting;
+		private VerticalModuleTiler.AnimCapType topCapSetting;
 
-	private VerticalModuleTiler.AnimCapType bottomCapSetting;
+		private VerticalModuleTiler.AnimCapType bottomCapSetting;
 
-	private bool manageTopCap = true;
+		private bool manageTopCap = true;
 
-	private bool manageBottomCap = true;
+		private bool manageBottomCap = true;
 
-	private KAnimSynchronizedController topCapWide;
+		private KAnimSynchronizedController topCapWide;
 
-	private KAnimSynchronizedController bottomCapWide;
+		private KAnimSynchronizedController bottomCapWide;
 
-	private static readonly string topCapStr = "#cap_top_5";
+		private static readonly string topCapStr = "#cap_top_5";
 
-	private static readonly string bottomCapStr = "#cap_bottom_5";
+		private static readonly string bottomCapStr = "#cap_bottom_5";
 
-	private bool dirty;
+		private bool dirty;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KAnimControllerBase animController;
 
-	private Vector3 m_previousAnimControllerOffset;
+		private Vector3 m_previousAnimControllerOffset;
 
-	private enum AnimCapType
+		private enum AnimCapType
 	{
-		ThreeWide,
-		FiveWide
+				ThreeWide,
+				FiveWide
 	}
 }

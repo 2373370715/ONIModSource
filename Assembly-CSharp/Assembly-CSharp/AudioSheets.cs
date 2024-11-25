@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class AudioSheets : ScriptableObject
 {
-	public virtual void Initialize()
+		public virtual void Initialize()
 	{
 		foreach (AudioSheet audioSheet in this.sheets)
 		{
@@ -34,7 +34,7 @@ public abstract class AudioSheets : ScriptableObject
 		}
 	}
 
-	private void CreateSound(string file_name, string anim_name, string type, float min_interval, string sound_name, int frame, string dlcId)
+		private void CreateSound(string file_name, string anim_name, string type, float min_interval, string sound_name, int frame, string dlcId)
 	{
 		if (string.IsNullOrEmpty(sound_name))
 		{
@@ -56,16 +56,16 @@ public abstract class AudioSheets : ScriptableObject
 		list.Add(animEvent);
 	}
 
-	protected abstract AnimEvent CreateSoundOfType(string type, string file_name, string sound_name, int frame, float min_interval, string dlcId);
+		protected abstract AnimEvent CreateSoundOfType(string type, string file_name, string sound_name, int frame, float min_interval, string dlcId);
 
-	public List<AnimEvent> GetEvents(HashedString anim_id)
+		public List<AnimEvent> GetEvents(HashedString anim_id)
 	{
 		List<AnimEvent> result = null;
 		this.events.TryGetValue(anim_id, out result);
 		return result;
 	}
 
-	public List<AudioSheet> sheets = new List<AudioSheet>();
+		public List<AudioSheet> sheets = new List<AudioSheet>();
 
-	public Dictionary<HashedString, List<AnimEvent>> events = new Dictionary<HashedString, List<AnimEvent>>();
+		public Dictionary<HashedString, List<AnimEvent>> events = new Dictionary<HashedString, List<AnimEvent>>();
 }

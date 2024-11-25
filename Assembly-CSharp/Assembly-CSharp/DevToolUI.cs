@@ -6,14 +6,14 @@ using UnityEngine.EventSystems;
 
 public class DevToolUI : DevTool
 {
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		this.RepopulateRaycastHits();
 		this.DrawPingObject();
 		this.DrawRaycastHits();
 	}
 
-	private void DrawPingObject()
+		private void DrawPingObject()
 	{
 		if (this.m_last_pinged_hit != null)
 		{
@@ -39,13 +39,13 @@ public class DevToolUI : DevTool
 		ImGui.Spacing();
 	}
 
-	private void Internal_Ping(RaycastResult raycastResult)
+		private void Internal_Ping(RaycastResult raycastResult)
 	{
 		GameObject gameObject = raycastResult.gameObject;
 		this.m_last_pinged_hit = new RaycastResult?(raycastResult);
 	}
 
-	public static void PingHoveredObject()
+		public static void PingHoveredObject()
 	{
 		using (ListPool<RaycastResult, DevToolUI>.PooledList pooledList = PoolsFor<DevToolUI>.AllocateList<RaycastResult>())
 		{
@@ -65,7 +65,7 @@ public class DevToolUI : DevTool
 		}
 	}
 
-	private void DrawRaycastHits()
+		private void DrawRaycastHits()
 	{
 		if (this.m_raycast_hits.Count <= 0)
 		{
@@ -82,7 +82,7 @@ public class DevToolUI : DevTool
 		ImGui.Unindent();
 	}
 
-	private void RepopulateRaycastHits()
+		private void RepopulateRaycastHits()
 	{
 		this.m_raycast_hits.Clear();
 		UnityEngine.EventSystems.EventSystem current = UnityEngine.EventSystems.EventSystem.current;
@@ -96,7 +96,7 @@ public class DevToolUI : DevTool
 		}, this.m_raycast_hits);
 	}
 
-	private static string GetQualifiedName(GameObject game_object)
+		private static string GetQualifiedName(GameObject game_object)
 	{
 		KScreen componentInParent = game_object.GetComponentInParent<KScreen>();
 		if (componentInParent != null)
@@ -106,7 +106,7 @@ public class DevToolUI : DevTool
 		return game_object.name ?? "";
 	}
 
-	private List<RaycastResult> m_raycast_hits = new List<RaycastResult>();
+		private List<RaycastResult> m_raycast_hits = new List<RaycastResult>();
 
-	private RaycastResult? m_last_pinged_hit;
+		private RaycastResult? m_last_pinged_hit;
 }

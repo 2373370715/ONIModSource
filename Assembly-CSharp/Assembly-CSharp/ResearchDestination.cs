@@ -6,7 +6,7 @@ using STRINGS;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ResearchDestination : ClusterGridEntity
 {
-		public override string Name
+			public override string Name
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class ResearchDestination : ClusterGridEntity
 		}
 	}
 
-		public override EntityLayer Layer
+			public override EntityLayer Layer
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class ResearchDestination : ClusterGridEntity
 		}
 	}
 
-		public override List<ClusterGridEntity.AnimConfig> AnimConfigs
+			public override List<ClusterGridEntity.AnimConfig> AnimConfigs
 	{
 		get
 		{
@@ -30,7 +30,7 @@ public class ResearchDestination : ClusterGridEntity
 		}
 	}
 
-		public override bool IsVisible
+			public override bool IsVisible
 	{
 		get
 		{
@@ -38,7 +38,7 @@ public class ResearchDestination : ClusterGridEntity
 		}
 	}
 
-		public override ClusterRevealLevel IsVisibleInFOW
+			public override ClusterRevealLevel IsVisibleInFOW
 	{
 		get
 		{
@@ -46,7 +46,7 @@ public class ResearchDestination : ClusterGridEntity
 		}
 	}
 
-	public void Init(AxialI location)
+		public void Init(AxialI location)
 	{
 		this.m_location = location;
 	}

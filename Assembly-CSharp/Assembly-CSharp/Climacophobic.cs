@@ -4,12 +4,12 @@ using UnityEngine;
 [SkipSaveFileSerialization]
 public class Climacophobic : StateMachineComponent<Climacophobic.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	protected bool IsUncomfortable()
+		protected bool IsUncomfortable()
 	{
 		int num = 5;
 		int cell = Grid.PosToCell(base.gameObject);
@@ -44,7 +44,7 @@ public class Climacophobic : StateMachineComponent<Climacophobic.StatesInstance>
 		return false;
 	}
 
-	private bool isCellLadder(int cell)
+		private bool isCellLadder(int cell)
 	{
 		if (!Grid.IsValidCell(cell))
 		{
@@ -54,16 +54,16 @@ public class Climacophobic : StateMachineComponent<Climacophobic.StatesInstance>
 		return !(gameObject == null) && !(gameObject.GetComponent<Ladder>() == null);
 	}
 
-	public class StatesInstance : GameStateMachine<Climacophobic.States, Climacophobic.StatesInstance, Climacophobic, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Climacophobic.States, Climacophobic.StatesInstance, Climacophobic, object>.GameInstance
 	{
-		public StatesInstance(Climacophobic master) : base(master)
+				public StatesInstance(Climacophobic master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<Climacophobic.States, Climacophobic.StatesInstance, Climacophobic>
+		public class States : GameStateMachine<Climacophobic.States, Climacophobic.StatesInstance, Climacophobic>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.satisfied;
 			this.root.Update("ClimacophobicCheck", delegate(Climacophobic.StatesInstance smi, float dt)
@@ -79,8 +79,8 @@ public class Climacophobic : StateMachineComponent<Climacophobic.StatesInstance>
 			this.satisfied.DoNothing();
 		}
 
-		public GameStateMachine<Climacophobic.States, Climacophobic.StatesInstance, Climacophobic, object>.State satisfied;
+				public GameStateMachine<Climacophobic.States, Climacophobic.StatesInstance, Climacophobic, object>.State satisfied;
 
-		public GameStateMachine<Climacophobic.States, Climacophobic.StatesInstance, Climacophobic, object>.State suffering;
+				public GameStateMachine<Climacophobic.States, Climacophobic.StatesInstance, Climacophobic, object>.State suffering;
 	}
 }

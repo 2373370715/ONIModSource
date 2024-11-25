@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Messenger")]
 public class Messenger : KMonoBehaviour
 {
-		public int Count
+			public int Count
 	{
 		get
 		{
@@ -14,17 +14,17 @@ public class Messenger : KMonoBehaviour
 		}
 	}
 
-	public IEnumerator<Message> GetEnumerator()
+		public IEnumerator<Message> GetEnumerator()
 	{
 		return this.messages.GetEnumerator();
 	}
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		Messenger.Instance = null;
 	}
 
-		public SerializedList<Message> Messages
+			public SerializedList<Message> Messages
 	{
 		get
 		{
@@ -32,12 +32,12 @@ public class Messenger : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Messenger.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		int i = 0;
 		while (i < this.messages.Count)
@@ -54,13 +54,13 @@ public class Messenger : KMonoBehaviour
 		base.Trigger(-599791736, null);
 	}
 
-	public void QueueMessage(Message message)
+		public void QueueMessage(Message message)
 	{
 		this.messages.Add(message);
 		base.Trigger(1558809273, message);
 	}
 
-	public Message DequeueMessage()
+		public Message DequeueMessage()
 	{
 		Message result = null;
 		if (this.messages.Count > 0)
@@ -71,7 +71,7 @@ public class Messenger : KMonoBehaviour
 		return result;
 	}
 
-	public void ClearAllMessages()
+		public void ClearAllMessages()
 	{
 		for (int i = this.messages.Count - 1; i >= 0; i--)
 		{
@@ -79,14 +79,14 @@ public class Messenger : KMonoBehaviour
 		}
 	}
 
-	public void RemoveMessage(Message m)
+		public void RemoveMessage(Message m)
 	{
 		this.messages.Remove(m);
 		base.Trigger(-599791736, null);
 	}
 
-	[Serialize]
+		[Serialize]
 	private SerializedList<Message> messages = new SerializedList<Message>();
 
-	public static Messenger Instance;
+		public static Messenger Instance;
 }

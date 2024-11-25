@@ -7,11 +7,11 @@ using UnityEngine.UI;
 
 public class SpacePOISimpleInfoPanel : SimpleInfoPanel
 {
-	public SpacePOISimpleInfoPanel(SimpleInfoScreen simpleInfoScreen) : base(simpleInfoScreen)
+		public SpacePOISimpleInfoPanel(SimpleInfoScreen simpleInfoScreen) : base(simpleInfoScreen)
 	{
 	}
 
-	public override void Refresh(CollapsibleDetailContentPanel spacePOIPanel, GameObject selectedTarget)
+		public override void Refresh(CollapsibleDetailContentPanel spacePOIPanel, GameObject selectedTarget)
 	{
 		spacePOIPanel.SetTitle(UI.CLUSTERMAP.POI.TITLE);
 		if (selectedTarget == null)
@@ -58,7 +58,7 @@ public class SpacePOISimpleInfoPanel : SimpleInfoPanel
 		this.RefreshArtifacts(component2, selectedTarget, spacePOIPanel);
 	}
 
-	private void RefreshMassHeader(HarvestablePOIStates.Instance harvestable, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
+		private void RefreshMassHeader(HarvestablePOIStates.Instance harvestable, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
 	{
 		if (this.massHeader == null)
 		{
@@ -80,7 +80,7 @@ public class SpacePOISimpleInfoPanel : SimpleInfoPanel
 		component.GetReference<LocText>("ValueLabel").alignment = TextAlignmentOptions.MidlineRight;
 	}
 
-	private void RefreshElements(HarvestablePOIStates.Instance harvestable, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
+		private void RefreshElements(HarvestablePOIStates.Instance harvestable, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
 	{
 		foreach (KeyValuePair<Tag, GameObject> keyValuePair in this.elementRows)
 		{
@@ -121,7 +121,7 @@ public class SpacePOISimpleInfoPanel : SimpleInfoPanel
 		}
 	}
 
-	private void RefreshRocketsAtThisLocation(HarvestablePOIStates.Instance harvestable, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
+		private void RefreshRocketsAtThisLocation(HarvestablePOIStates.Instance harvestable, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
 	{
 		if (this.rocketsHeader == null)
 		{
@@ -170,7 +170,7 @@ public class SpacePOISimpleInfoPanel : SimpleInfoPanel
 		this.rocketsSpacer.SetActive(this.rocketsHeader.activeSelf);
 	}
 
-	private void RefreshArtifacts(ArtifactPOIConfigurator artifactConfigurator, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
+		private void RefreshArtifacts(ArtifactPOIConfigurator artifactConfigurator, GameObject selectedTarget, CollapsibleDetailContentPanel spacePOIPanel)
 	{
 		if (this.artifactsSpacer == null)
 		{
@@ -194,17 +194,17 @@ public class SpacePOISimpleInfoPanel : SimpleInfoPanel
 		component.GetReference<LocText>("ValueLabel").text = string.Format(UI.CLUSTERMAP.POI.ARTIFACTS_DEPLETED, GameUtil.GetFormattedCycles(smi.RechargeTimeRemaining(), "F1", true));
 	}
 
-	private Dictionary<Tag, GameObject> elementRows = new Dictionary<Tag, GameObject>();
+		private Dictionary<Tag, GameObject> elementRows = new Dictionary<Tag, GameObject>();
 
-	private Dictionary<Clustercraft, GameObject> rocketRows = new Dictionary<Clustercraft, GameObject>();
+		private Dictionary<Clustercraft, GameObject> rocketRows = new Dictionary<Clustercraft, GameObject>();
 
-	private GameObject massHeader;
+		private GameObject massHeader;
 
-	private GameObject rocketsSpacer;
+		private GameObject rocketsSpacer;
 
-	private GameObject rocketsHeader;
+		private GameObject rocketsHeader;
 
-	private GameObject artifactsSpacer;
+		private GameObject artifactsSpacer;
 
-	private GameObject artifactRow;
+		private GameObject artifactRow;
 }

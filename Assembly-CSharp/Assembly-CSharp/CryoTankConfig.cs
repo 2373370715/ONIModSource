@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class CryoTankConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "CryoTank";
 		string name = STRINGS.BUILDINGS.PREFABS.CRYOTANK.NAME;
@@ -38,13 +38,13 @@ public class CryoTankConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "CryoTank";
+		public const string ID = "CryoTank";
 }

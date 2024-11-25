@@ -1,13 +1,8 @@
-﻿using System;
-using Klei.AI;
+﻿using Klei.AI;
 
-public interface IAmountDisplayer
-{
-	string GetValueString(Amount master, AmountInstance instance);
-
-	string GetDescription(Amount master, AmountInstance instance);
-
-	string GetTooltip(Amount master, AmountInstance instance);
-
-		IAttributeFormatter Formatter { get; }
+public interface IAmountDisplayer {
+    IAttributeFormatter Formatter { get; }
+    string              GetValueString(Amount master, AmountInstance instance);
+    string              GetDescription(Amount master, AmountInstance instance);
+    string              GetTooltip(Amount     master, AmountInstance instance);
 }

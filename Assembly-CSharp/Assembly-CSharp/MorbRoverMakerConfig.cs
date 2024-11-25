@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MorbRoverMakerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MorbRoverMaker";
 		int width = 5;
@@ -36,7 +36,7 @@ public class MorbRoverMakerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddTag(GameTags.Gravitas);
 		go.GetComponent<Deconstructable>().allowDeconstruction = false;
@@ -75,7 +75,7 @@ public class MorbRoverMakerConfig : IBuildingConfig
 		go.AddOrGet<LoopingSounds>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<RequireInputs>());
@@ -85,31 +85,31 @@ public class MorbRoverMakerConfig : IBuildingConfig
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<Disinfectable>());
 	}
 
-	public const string ID = "MorbRoverMaker";
+		public const string ID = "MorbRoverMaker";
 
-	public const float TUNING_MAX_DESIRED_ROVERS_ALIVE_AT_ONCE = 6f;
+		public const float TUNING_MAX_DESIRED_ROVERS_ALIVE_AT_ONCE = 6f;
 
-	public const int TARGET_AMOUNT_FLOWERS = 10;
+		public const int TARGET_AMOUNT_FLOWERS = 10;
 
-	public const float INITIAL_MORB_DEVELOPMENT_PERCENTAGE = 0.5f;
+		public const float INITIAL_MORB_DEVELOPMENT_PERCENTAGE = 0.5f;
 
-	public static Tag ROVER_PREFAB_ID = "MorbRover";
+		public static Tag ROVER_PREFAB_ID = "MorbRover";
 
-	public static SimHashes ROVER_MATERIAL_TAG = SimHashes.Steel;
+		public static SimHashes ROVER_MATERIAL_TAG = SimHashes.Steel;
 
-	public const float MATERIAL_MASS_PER_ROVER = 300f;
+		public const float MATERIAL_MASS_PER_ROVER = 300f;
 
-	public const float ROVER_CRAFTING_DURATION = 15f;
+		public const float ROVER_CRAFTING_DURATION = 15f;
 
-	public const float INPUT_MATERIAL_STORAGE_CAPACITY = 1800f;
+		public const float INPUT_MATERIAL_STORAGE_CAPACITY = 1800f;
 
-	public const int MAX_GERMS_TAKEN_PER_PACKAGE = 10000;
+		public const int MAX_GERMS_TAKEN_PER_PACKAGE = 10000;
 
-	public const long GERMS_PER_ROVER = 9850000L;
+		public const long GERMS_PER_ROVER = 9850000L;
 
-	public static int GERM_TYPE = (int)Db.Get().Diseases.GetIndex("ZombieSpores");
+		public static int GERM_TYPE = (int)Db.Get().Diseases.GetIndex("ZombieSpores");
 
-	public ConduitType GERM_INTAKE_CONDUIT_TYPE = ConduitType.Gas;
+		public ConduitType GERM_INTAKE_CONDUIT_TYPE = ConduitType.Gas;
 
-	public const float PREDICTED_DURATION_TO_GROW_MORB = 985f;
+		public const float PREDICTED_DURATION_TO_GROW_MORB = 985f;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GeneticAnalysisStationWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.requiredSkillPerk = Db.Get().SkillPerks.CanIdentifyMutantSeeds.Id;
@@ -22,25 +22,25 @@ public class GeneticAnalysisStationWorkable : Workable
 		this.lightEfficiencyBonus = true;
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		base.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.ComplexFabricatorResearching, this.storage.FindFirst(GameTags.UnidentifiedSeed));
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.ComplexFabricatorResearching, false);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		this.IdentifyMutant();
 	}
 
-	public void IdentifyMutant()
+		public void IdentifyMutant()
 	{
 		GameObject gameObject = this.storage.FindFirst(GameTags.UnidentifiedSeed);
 		DebugUtil.DevAssertArgs(gameObject != null, new object[]
@@ -67,16 +67,16 @@ public class GeneticAnalysisStationWorkable : Workable
 		}
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	public Notifier notifier;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Storage storage;
 
-	[SerializeField]
+		[SerializeField]
 	public Vector3 finishedSeedDropOffset;
 
-	private Notification notification;
+		private Notification notification;
 
-	public GeneticAnalysisStation.StatesInstance statesInstance;
+		public GeneticAnalysisStation.StatesInstance statesInstance;
 }

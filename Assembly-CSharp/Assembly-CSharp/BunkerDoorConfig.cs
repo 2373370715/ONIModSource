@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BunkerDoorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "BunkerDoor";
 		int width = 4;
@@ -40,7 +40,7 @@ public class BunkerDoorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Door door = go.AddOrGet<Door>();
 		door.unpoweredAnimSpeed = 0.01f;
@@ -61,5 +61,5 @@ public class BunkerDoorConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.Bunker, false);
 	}
 
-	public const string ID = "BunkerDoor";
+		public const string ID = "BunkerDoor";
 }

@@ -2,9 +2,9 @@
 
 public struct StructureTemperatureHeader
 {
-	public int simHandle;
+		public int simHandle;
 
-	public bool dirty;
+		public bool dirty;
 
-	public bool isActiveBuilding;
+		public bool isActiveBuilding;
 }

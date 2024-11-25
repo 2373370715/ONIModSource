@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class Staterpillar : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.dummyElement = new List<Tag>
 		{
@@ -16,7 +16,7 @@ public class Staterpillar : KMonoBehaviour
 		this.connectorDef = Assets.GetBuildingDef(this.connectorDefId);
 	}
 
-	public void SpawnConnectorBuilding(int targetCell)
+		public void SpawnConnectorBuilding(int targetCell)
 	{
 		if (this.conduitLayer == ObjectLayer.Wire)
 		{
@@ -26,7 +26,7 @@ public class Staterpillar : KMonoBehaviour
 		this.SpawnConduitConnector(targetCell);
 	}
 
-	public void DestroyOrphanedConnectorBuilding()
+		public void DestroyOrphanedConnectorBuilding()
 	{
 		KPrefabID building = this.GetConnectorBuilding();
 		if (building != null)
@@ -44,7 +44,7 @@ public class Staterpillar : KMonoBehaviour
 		}
 	}
 
-	public void EnableConnector()
+		public void EnableConnector()
 	{
 		if (this.conduitLayer == ObjectLayer.Wire)
 		{
@@ -54,12 +54,12 @@ public class Staterpillar : KMonoBehaviour
 		this.EnableConduitConnector();
 	}
 
-	public bool IsConnectorBuildingSpawned()
+		public bool IsConnectorBuildingSpawned()
 	{
 		return this.GetConnectorBuilding() != null;
 	}
 
-	public bool IsConnected()
+		public bool IsConnected()
 	{
 		if (this.conduitLayer == ObjectLayer.Wire)
 		{
@@ -68,12 +68,12 @@ public class Staterpillar : KMonoBehaviour
 		return this.GetConduitDispenser().IsConnected;
 	}
 
-	public KPrefabID GetConnectorBuilding()
+		public KPrefabID GetConnectorBuilding()
 	{
 		return this.connectorRef.Get();
 	}
 
-	private void SpawnConduitConnector(int targetCell)
+		private void SpawnConduitConnector(int targetCell)
 	{
 		if (this.GetConduitDispenser() == null)
 		{
@@ -84,7 +84,7 @@ public class Staterpillar : KMonoBehaviour
 		}
 	}
 
-	private void EnableConduitConnector()
+		private void EnableConduitConnector()
 	{
 		ConduitDispenser conduitDispenser = this.GetConduitDispenser();
 		conduitDispenser.GetComponent<BuildingCellVisualizer>().enabled = true;
@@ -92,7 +92,7 @@ public class Staterpillar : KMonoBehaviour
 		conduitDispenser.SetOnState(true);
 	}
 
-	public ConduitDispenser GetConduitDispenser()
+		public ConduitDispenser GetConduitDispenser()
 	{
 		if (this.cachedConduitDispenser == null)
 		{
@@ -105,7 +105,7 @@ public class Staterpillar : KMonoBehaviour
 		return this.cachedConduitDispenser;
 	}
 
-	private void DestroyOrphanedConduitDispenserBuilding()
+		private void DestroyOrphanedConduitDispenserBuilding()
 	{
 		ConduitDispenser dispenser = this.GetConduitDispenser();
 		if (dispenser != null)
@@ -121,7 +121,7 @@ public class Staterpillar : KMonoBehaviour
 		}
 	}
 
-	private void SpawnGenerator(int targetCell)
+		private void SpawnGenerator(int targetCell)
 	{
 		StaterpillarGenerator generator = this.GetGenerator();
 		GameObject gameObject = null;
@@ -180,14 +180,14 @@ public class Staterpillar : KMonoBehaviour
 		}
 	}
 
-	private void EnableGenerator()
+		private void EnableGenerator()
 	{
 		StaterpillarGenerator generator = this.GetGenerator();
 		generator.enabled = true;
 		generator.GetComponent<BuildingCellVisualizer>().enabled = true;
 	}
 
-	public StaterpillarGenerator GetGenerator()
+		public StaterpillarGenerator GetGenerator()
 	{
 		if (this.cachedGenerator == null)
 		{
@@ -200,20 +200,20 @@ public class Staterpillar : KMonoBehaviour
 		return this.cachedGenerator;
 	}
 
-	public ObjectLayer conduitLayer;
+		public ObjectLayer conduitLayer;
 
-	public string connectorDefId;
+		public string connectorDefId;
 
-	private IList<Tag> dummyElement;
+		private IList<Tag> dummyElement;
 
-	private BuildingDef connectorDef;
+		private BuildingDef connectorDef;
 
-	[Serialize]
+		[Serialize]
 	private Ref<KPrefabID> connectorRef = new Ref<KPrefabID>();
 
-	private AttributeModifier wildMod = new AttributeModifier(Db.Get().Attributes.GeneratorOutput.Id, -75f, BUILDINGS.PREFABS.STATERPILLARGENERATOR.MODIFIERS.WILD, false, false, true);
+		private AttributeModifier wildMod = new AttributeModifier(Db.Get().Attributes.GeneratorOutput.Id, -75f, BUILDINGS.PREFABS.STATERPILLARGENERATOR.MODIFIERS.WILD, false, false, true);
 
-	private ConduitDispenser cachedConduitDispenser;
+		private ConduitDispenser cachedConduitDispenser;
 
-	private StaterpillarGenerator cachedGenerator;
+		private StaterpillarGenerator cachedGenerator;
 }

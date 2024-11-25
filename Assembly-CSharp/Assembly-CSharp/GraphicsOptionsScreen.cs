@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 internal class GraphicsOptionsScreen : KModalScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.title.SetText(UI.FRONTEND.GRAPHICS_OPTIONS_SCREEN.TITLE);
@@ -70,13 +70,13 @@ internal class GraphicsOptionsScreen : KModalScreen
 		this.RefreshColorExamples(this.originalSettings.colorSetId);
 	}
 
-	public static void SetSettingsFromPrefs()
+		public static void SetSettingsFromPrefs()
 	{
 		GraphicsOptionsScreen.SetResolutionFromPrefs();
 		GraphicsOptionsScreen.SetLowResFromPrefs();
 	}
 
-	public static void SetLowResFromPrefs()
+		public static void SetLowResFromPrefs()
 	{
 		int num = 0;
 		if (KPlayerPrefs.HasKey(GraphicsOptionsScreen.LowResKey))
@@ -94,18 +94,19 @@ internal class GraphicsOptionsScreen : KModalScreen
 		});
 	}
 
-	public static void SetResolutionFromPrefs()
+		public static void SetResolutionFromPrefs()
 	{
 		int num = Screen.currentResolution.width;
 		int num2 = Screen.currentResolution.height;
-		int num3 = Screen.currentResolution.refreshRate;
-		bool flag = Screen.fullScreen;
+		RefreshRate refreshRate = Screen.currentResolution.refreshRateRatio;
+		FullScreenMode fullScreenMode = Screen.fullScreenMode;
 		if (KPlayerPrefs.HasKey(GraphicsOptionsScreen.ResolutionWidthKey) && KPlayerPrefs.HasKey(GraphicsOptionsScreen.ResolutionHeightKey))
 		{
 			int @int = KPlayerPrefs.GetInt(GraphicsOptionsScreen.ResolutionWidthKey);
 			int int2 = KPlayerPrefs.GetInt(GraphicsOptionsScreen.ResolutionHeightKey);
-			int int3 = KPlayerPrefs.GetInt(GraphicsOptionsScreen.RefreshRateKey, Screen.currentResolution.refreshRate);
-			bool flag2 = KPlayerPrefs.GetInt(GraphicsOptionsScreen.FullScreenKey, Screen.fullScreen ? 1 : 0) == 1;
+			uint int3 = (uint)KPlayerPrefs.GetInt(GraphicsOptionsScreen.RefreshRateKeyNumerator, (int)Screen.currentResolution.refreshRateRatio.numerator);
+			uint int4 = (uint)KPlayerPrefs.GetInt(GraphicsOptionsScreen.RefreshRateKeyDenominator, (int)Screen.currentResolution.refreshRateRatio.denominator);
+			FullScreenMode fullScreenMode2 = (KPlayerPrefs.GetInt(GraphicsOptionsScreen.FullScreenKey, Screen.fullScreen ? 1 : 0) == 1) ? FullScreenMode.MaximizedWindow : FullScreenMode.Windowed;
 			if (int2 <= 1 || @int <= 1)
 			{
 				DebugUtil.LogArgs(new object[]
@@ -117,8 +118,9 @@ internal class GraphicsOptionsScreen : KModalScreen
 			{
 				num = @int;
 				num2 = int2;
-				num3 = int3;
-				flag = flag2;
+				refreshRate.numerator = int3;
+				refreshRate.denominator = int4;
+				fullScreenMode = fullScreenMode2;
 			}
 		}
 		if (num <= 1 || num2 <= 1)
@@ -133,7 +135,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 				{
 					num = resolution.width;
 					num2 = resolution.height;
-					num3 = 0;
+					refreshRate = default(RefreshRate);
 				}
 			}
 			if (num <= 1 || num2 <= 1)
@@ -144,7 +146,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 					{
 						num = resolution2.width;
 						num2 = resolution2.height;
-						num3 = 0;
+						refreshRate = default(RefreshRate);
 					}
 				}
 			}
@@ -152,11 +154,11 @@ internal class GraphicsOptionsScreen : KModalScreen
 			{
 				foreach (Resolution resolution3 in Screen.resolutions)
 				{
-					if (resolution3.width > 1 && resolution3.height > 1 && resolution3.refreshRate > 0)
+					if (resolution3.width > 1 && resolution3.height > 1 && resolution3.refreshRateRatio.value > 0.0)
 					{
 						num = resolution3.width;
 						num2 = resolution3.height;
-						num3 = 0;
+						refreshRate = default(RefreshRate);
 					}
 				}
 			}
@@ -165,13 +167,13 @@ internal class GraphicsOptionsScreen : KModalScreen
 				string text = "Could not find a suitable resolution for this screen! Reported available resolutions are:";
 				foreach (Resolution resolution4 in Screen.resolutions)
 				{
-					text += string.Format("\n{0}x{1} @ {2}hz", resolution4.width, resolution4.height, resolution4.refreshRate);
+					text += string.Format("\n{0}x{1} @ {2}hz", resolution4.width, resolution4.height, resolution4.refreshRateRatio.value);
 				}
 				global::Debug.LogError(text);
 				num = 1280;
 				num2 = 720;
-				flag = false;
-				num3 = 0;
+				fullScreenMode = FullScreenMode.Windowed;
+				refreshRate = default(RefreshRate);
 			}
 		}
 		DebugUtil.LogArgs(new object[]
@@ -180,14 +182,14 @@ internal class GraphicsOptionsScreen : KModalScreen
 			{
 				num,
 				num2,
-				num3,
-				flag
+				refreshRate,
+				fullScreenMode
 			})
 		});
-		Screen.SetResolution(num, num2, flag, num3);
+		Screen.SetResolution(num, num2, fullScreenMode, refreshRate);
 	}
 
-	public static void SetColorModeFromPrefs()
+		public static void SetColorModeFromPrefs()
 	{
 		int num = 0;
 		if (KPlayerPrefs.HasKey(GraphicsOptionsScreen.ColorModeKey))
@@ -197,36 +199,37 @@ internal class GraphicsOptionsScreen : KModalScreen
 		GlobalAssets.Instance.colorSet = GlobalAssets.Instance.colorSetOptions[num];
 	}
 
-	public static void OnResize()
+		public static void OnResize()
 	{
 		GraphicsOptionsScreen.Settings settings = default(GraphicsOptionsScreen.Settings);
 		settings.resolution = Screen.currentResolution;
 		settings.resolution.width = Screen.width;
 		settings.resolution.height = Screen.height;
-		settings.fullscreen = Screen.fullScreen;
+		settings.fullscreen = Screen.fullScreenMode;
 		settings.lowRes = QualitySettings.GetQualityLevel();
 		settings.colorSetId = Array.IndexOf<ColorSet>(GlobalAssets.Instance.colorSetOptions, GlobalAssets.Instance.colorSet);
 		GraphicsOptionsScreen.SaveSettingsToPrefs(settings);
 	}
 
-	private static void SaveSettingsToPrefs(GraphicsOptionsScreen.Settings settings)
+		private static void SaveSettingsToPrefs(GraphicsOptionsScreen.Settings settings)
 	{
 		KPlayerPrefs.SetInt(GraphicsOptionsScreen.LowResKey, settings.lowRes);
 		global::Debug.LogFormat("Screen resolution updated, saving values to prefs: {0}x{1} @ {2}, fullscreen: {3}", new object[]
 		{
 			settings.resolution.width,
 			settings.resolution.height,
-			settings.resolution.refreshRate,
+			settings.resolution.refreshRateRatio,
 			settings.fullscreen
 		});
 		KPlayerPrefs.SetInt(GraphicsOptionsScreen.ResolutionWidthKey, settings.resolution.width);
 		KPlayerPrefs.SetInt(GraphicsOptionsScreen.ResolutionHeightKey, settings.resolution.height);
-		KPlayerPrefs.SetInt(GraphicsOptionsScreen.RefreshRateKey, settings.resolution.refreshRate);
-		KPlayerPrefs.SetInt(GraphicsOptionsScreen.FullScreenKey, settings.fullscreen ? 1 : 0);
+		KPlayerPrefs.SetInt(GraphicsOptionsScreen.RefreshRateKeyNumerator, (int)settings.resolution.refreshRateRatio.numerator);
+		KPlayerPrefs.SetInt(GraphicsOptionsScreen.RefreshRateKeyDenominator, (int)settings.resolution.refreshRateRatio.denominator);
+		KPlayerPrefs.SetInt(GraphicsOptionsScreen.FullScreenKey, (settings.fullscreen == FullScreenMode.Windowed) ? 0 : 1);
 		KPlayerPrefs.SetInt(GraphicsOptionsScreen.ColorModeKey, settings.colorSetId);
 	}
 
-	private void UpdateUIScale(float value)
+		private void UpdateUIScale(float value)
 	{
 		this.CanvasScalers = UnityEngine.Object.FindObjectsOfType<KCanvasScaler>(true);
 		foreach (KCanvasScaler kcanvasScaler in this.CanvasScalers)
@@ -239,7 +242,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 		this.UpdateSliderLabel();
 	}
 
-	private void UpdateSliderLabel()
+		private void UpdateSliderLabel()
 	{
 		if (this.CanvasScalers != null && this.CanvasScalers.Length != 0 && this.CanvasScalers[0] != null)
 		{
@@ -248,7 +251,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape) || e.TryConsume(global::Action.MouseRight))
 		{
@@ -259,27 +262,32 @@ internal class GraphicsOptionsScreen : KModalScreen
 		base.OnKeyDown(e);
 	}
 
-	private void BuildOptions()
+		private void BuildOptions()
 	{
 		this.options.Clear();
 		this.resolutions.Clear();
-		Resolution item = default(Resolution);
-		item.width = Screen.width;
-		item.height = Screen.height;
-		item.refreshRate = Screen.currentResolution.refreshRate;
-		this.options.Add(new Dropdown.OptionData(item.ToString()));
-		this.resolutions.Add(item);
-		foreach (Resolution item2 in Screen.resolutions)
+		Resolution resolution = default(Resolution);
+		resolution.width = Screen.width;
+		resolution.height = Screen.height;
+		resolution.refreshRateRatio = Screen.currentResolution.refreshRateRatio;
+		this.options.Add(new Dropdown.OptionData(this.ResolutionDisplayString(resolution)));
+		this.resolutions.Add(resolution);
+		foreach (Resolution resolution2 in Screen.resolutions)
 		{
-			if (item2.height >= 720)
+			if (resolution2.height >= 720)
 			{
-				this.options.Add(new Dropdown.OptionData(item2.ToString()));
-				this.resolutions.Add(item2);
+				this.options.Add(new Dropdown.OptionData(this.ResolutionDisplayString(resolution2)));
+				this.resolutions.Add(resolution2);
 			}
 		}
 	}
 
-	private void BuildColorModeOptions()
+		private string ResolutionDisplayString(Resolution resolution)
+	{
+		return string.Format("{0} x {1} @ {2}Hz", resolution.width, resolution.height, Mathf.Floor((float)resolution.refreshRateRatio.value));
+	}
+
+		private void BuildColorModeOptions()
 	{
 		this.colorModeOptions.Clear();
 		for (int i = 0; i < GlobalAssets.Instance.colorSetOptions.Length; i++)
@@ -288,7 +296,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 		}
 	}
 
-	private void RefreshColorExamples(int idx)
+		private void RefreshColorExamples(int idx)
 	{
 		Color32 logicOn = GlobalAssets.Instance.colorSetOptions[idx].logicOn;
 		Color32 logicOff = GlobalAssets.Instance.colorSetOptions[idx].logicOff;
@@ -307,18 +315,18 @@ internal class GraphicsOptionsScreen : KModalScreen
 		this.colorExampleCropGrown.color = cropGrown;
 	}
 
-	private int GetResolutionIndex(Resolution resolution)
+		private int GetResolutionIndex(Resolution resolution)
 	{
 		int num = -1;
 		int result = -1;
 		for (int i = 0; i < this.resolutions.Count; i++)
 		{
 			Resolution resolution2 = this.resolutions[i];
-			if (resolution2.width == resolution.width && resolution2.height == resolution.height && resolution2.refreshRate == 0)
+			if (resolution2.width == resolution.width && resolution2.height == resolution.height && resolution2.refreshRateRatio.value == 0.0)
 			{
 				result = i;
 			}
-			if (resolution2.width == resolution.width && resolution2.height == resolution.height && Math.Abs(resolution2.refreshRate - resolution.refreshRate) <= 1)
+			if (resolution2.width == resolution.width && resolution2.height == resolution.height && Math.Abs(resolution2.refreshRateRatio.value - resolution.refreshRateRatio.value) <= 1.0)
 			{
 				num = i;
 				break;
@@ -331,29 +339,29 @@ internal class GraphicsOptionsScreen : KModalScreen
 		return result;
 	}
 
-	private GraphicsOptionsScreen.Settings CaptureSettings()
+		private GraphicsOptionsScreen.Settings CaptureSettings()
 	{
 		return new GraphicsOptionsScreen.Settings
 		{
-			fullscreen = Screen.fullScreen,
+			fullscreen = Screen.fullScreenMode,
 			resolution = new Resolution
 			{
 				width = Screen.width,
 				height = Screen.height,
-				refreshRate = Screen.currentResolution.refreshRate
+				refreshRateRatio = Screen.currentResolution.refreshRateRatio
 			},
 			lowRes = QualitySettings.GetQualityLevel(),
 			colorSetId = Array.IndexOf<ColorSet>(GlobalAssets.Instance.colorSetOptions, GlobalAssets.Instance.colorSet)
 		};
 	}
 
-	private void OnApply()
+		private void OnApply()
 	{
 		try
 		{
 			GraphicsOptionsScreen.Settings new_settings = default(GraphicsOptionsScreen.Settings);
 			new_settings.resolution = this.resolutions[this.resolutionDropdown.value];
-			new_settings.fullscreen = (this.fullscreenToggle.CurrentState != 0);
+			new_settings.fullscreen = ((this.fullscreenToggle.CurrentState == 0) ? FullScreenMode.Windowed : FullScreenMode.MaximizedWindow);
 			new_settings.lowRes = this.lowResToggle.CurrentState;
 			new_settings.colorSetId = this.colorModeId;
 			if (GlobalAssets.Instance.colorSetOptions[this.colorModeId] != GlobalAssets.Instance.colorSet)
@@ -391,20 +399,20 @@ internal class GraphicsOptionsScreen : KModalScreen
 		}
 	}
 
-	public void OnDone()
+		public void OnDone()
 	{
 		UnityEngine.Object.Destroy(base.gameObject);
 	}
 
-	private void RefreshApplyButton()
+		private void RefreshApplyButton()
 	{
 		GraphicsOptionsScreen.Settings settings = this.CaptureSettings();
-		if (settings.fullscreen && this.fullscreenToggle.CurrentState == 0)
+		if (settings.fullscreen != FullScreenMode.Windowed && this.fullscreenToggle.CurrentState == 0)
 		{
 			this.applyButton.isInteractable = true;
 			return;
 		}
-		if (!settings.fullscreen && this.fullscreenToggle.CurrentState == 1)
+		if (settings.fullscreen == FullScreenMode.Windowed && this.fullscreenToggle.CurrentState == 1)
 		{
 			this.applyButton.isInteractable = true;
 			return;
@@ -423,31 +431,31 @@ internal class GraphicsOptionsScreen : KModalScreen
 		this.applyButton.isInteractable = (this.resolutionDropdown.value != resolutionIndex);
 	}
 
-	private void OnFullscreenToggle()
+		private void OnFullscreenToggle()
 	{
 		this.fullscreenToggle.ChangeState((this.fullscreenToggle.CurrentState == 0) ? 1 : 0);
 		this.RefreshApplyButton();
 	}
 
-	private void OnResolutionChanged(int idx)
+		private void OnResolutionChanged(int idx)
 	{
 		this.RefreshApplyButton();
 	}
 
-	private void OnColorModeChanged(int idx)
+		private void OnColorModeChanged(int idx)
 	{
 		this.colorModeId = idx;
 		this.RefreshApplyButton();
 		this.RefreshColorExamples(this.colorModeId);
 	}
 
-	private void OnLowResToggle()
+		private void OnLowResToggle()
 	{
 		this.lowResToggle.ChangeState((this.lowResToggle.CurrentState == 0) ? 1 : 0);
 		this.RefreshApplyButton();
 	}
 
-	private void ApplyConfirmSettings(GraphicsOptionsScreen.Settings new_settings, System.Action on_confirm)
+		private void ApplyConfirmSettings(GraphicsOptionsScreen.Settings new_settings, System.Action on_confirm)
 	{
 		GraphicsOptionsScreen.Settings current_settings = this.CaptureSettings();
 		this.ApplySettings(new_settings);
@@ -468,11 +476,11 @@ internal class GraphicsOptionsScreen : KModalScreen
 		this.confirmDialog.gameObject.SetActive(true);
 	}
 
-	private void ApplySettings(GraphicsOptionsScreen.Settings new_settings)
+		private void ApplySettings(GraphicsOptionsScreen.Settings new_settings)
 	{
 		Resolution resolution = new_settings.resolution;
-		Screen.SetResolution(resolution.width, resolution.height, new_settings.fullscreen, resolution.refreshRate);
-		Screen.fullScreen = new_settings.fullscreen;
+		Screen.SetResolution(resolution.width, resolution.height, new_settings.fullscreen, resolution.refreshRateRatio);
+		Screen.fullScreenMode = new_settings.fullscreen;
 		int resolutionIndex = this.GetResolutionIndex(new_settings.resolution);
 		if (resolutionIndex != -1)
 		{
@@ -486,7 +494,7 @@ internal class GraphicsOptionsScreen : KModalScreen
 		}
 	}
 
-	private IEnumerator Timer(float time, System.Action revert)
+		private IEnumerator Timer(float time, System.Action revert)
 	{
 		yield return new WaitForSecondsRealtime(time);
 		if (this.confirmDialog != null)
@@ -497,100 +505,106 @@ internal class GraphicsOptionsScreen : KModalScreen
 		yield break;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		global::Debug.developerConsoleVisible = false;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Dropdown resolutionDropdown;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle lowResToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle fullscreenToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton applyButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton doneButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private ConfirmDialogScreen confirmPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private ConfirmDialogScreen feedbackPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private KSlider uiScaleSlider;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText sliderLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText title;
 
-	[SerializeField]
+		[SerializeField]
 	private Dropdown colorModeDropdown;
 
-	[SerializeField]
+		[SerializeField]
 	private KImage colorExampleLogicOn;
 
-	[SerializeField]
+		[SerializeField]
 	private KImage colorExampleLogicOff;
 
-	[SerializeField]
+		[SerializeField]
 	private KImage colorExampleCropHalted;
 
-	[SerializeField]
+		[SerializeField]
 	private KImage colorExampleCropGrowing;
 
-	[SerializeField]
+		[SerializeField]
 	private KImage colorExampleCropGrown;
 
-	public static readonly string ResolutionWidthKey = "ResolutionWidth";
+		public static readonly string ResolutionWidthKey = "ResolutionWidth";
 
-	public static readonly string ResolutionHeightKey = "ResolutionHeight";
+		public static readonly string ResolutionHeightKey = "ResolutionHeight";
 
-	public static readonly string RefreshRateKey = "RefreshRate";
+		public static readonly string RefreshRateKeyNumerator = "RefreshRateNumerator";
 
-	public static readonly string FullScreenKey = "FullScreen";
+		public static readonly string RefreshRateKeyDenominator = "RefreshRateNumerator";
 
-	public static readonly string LowResKey = "LowResTextures";
+		public static readonly string FullScreenKey = "FullScreen";
 
-	public static readonly string ColorModeKey = "ColorModeID";
+		public static readonly string LowResKey = "LowResTextures";
 
-	private KCanvasScaler[] CanvasScalers;
+		public static readonly string ColorModeKey = "ColorModeID";
 
-	private ConfirmDialogScreen confirmDialog;
+		private const FullScreenMode FULLSCREEN = FullScreenMode.MaximizedWindow;
 
-	private ConfirmDialogScreen feedbackDialog;
+		private const FullScreenMode WINDOWED = FullScreenMode.Windowed;
 
-	private List<Resolution> resolutions = new List<Resolution>();
+		private KCanvasScaler[] CanvasScalers;
 
-	private List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
+		private ConfirmDialogScreen confirmDialog;
 
-	private List<Dropdown.OptionData> colorModeOptions = new List<Dropdown.OptionData>();
+		private ConfirmDialogScreen feedbackDialog;
 
-	private int colorModeId;
+		private List<Resolution> resolutions = new List<Resolution>();
 
-	private bool colorModeChanged;
+		private List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
 
-	private GraphicsOptionsScreen.Settings originalSettings;
+		private List<Dropdown.OptionData> colorModeOptions = new List<Dropdown.OptionData>();
 
-	private struct Settings
+		private int colorModeId;
+
+		private bool colorModeChanged;
+
+		private GraphicsOptionsScreen.Settings originalSettings;
+
+		private struct Settings
 	{
-		public bool fullscreen;
+				public FullScreenMode fullscreen;
 
-		public Resolution resolution;
+				public Resolution resolution;
 
-		public int lowRes;
+				public int lowRes;
 
-		public int colorSetId;
+				public int colorSetId;
 	}
 }

@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class MeterController
 {
-	public static float StandardLerp(float percentage, int frames)
+		public static float StandardLerp(float percentage, int frames)
 	{
 		return percentage;
 	}
 
-	public static float MinMaxStepLerp(float percentage, int frames)
+		public static float MinMaxStepLerp(float percentage, int frames)
 	{
 		if ((double)percentage <= 0.0 || frames <= 1)
 		{
@@ -21,9 +21,9 @@ public class MeterController
 		return (1f + percentage * (float)(frames - 2)) / (float)frames;
 	}
 
-			public KBatchedAnimController meterController { get; private set; }
+				public KBatchedAnimController meterController { get; private set; }
 
-	public MeterController(KMonoBehaviour target, Meter.Offset front_back, Grid.SceneLayer user_specified_render_layer, params string[] symbols_to_hide)
+		public MeterController(KMonoBehaviour target, Meter.Offset front_back, Grid.SceneLayer user_specified_render_layer, params string[] symbols_to_hide)
 	{
 		string[] array = new string[symbols_to_hide.Length + 1];
 		Array.Copy(symbols_to_hide, array, symbols_to_hide.Length);
@@ -32,17 +32,17 @@ public class MeterController
 		this.Initialize(component, "meter_target", "meter", front_back, user_specified_render_layer, Vector3.zero, array);
 	}
 
-	public MeterController(KAnimControllerBase building_controller, string meter_target, string meter_animation, Meter.Offset front_back, Grid.SceneLayer user_specified_render_layer, params string[] symbols_to_hide)
+		public MeterController(KAnimControllerBase building_controller, string meter_target, string meter_animation, Meter.Offset front_back, Grid.SceneLayer user_specified_render_layer, params string[] symbols_to_hide)
 	{
 		this.Initialize(building_controller, meter_target, meter_animation, front_back, user_specified_render_layer, Vector3.zero, symbols_to_hide);
 	}
 
-	public MeterController(KAnimControllerBase building_controller, string meter_target, string meter_animation, Meter.Offset front_back, Grid.SceneLayer user_specified_render_layer, Vector3 tracker_offset, params string[] symbols_to_hide)
+		public MeterController(KAnimControllerBase building_controller, string meter_target, string meter_animation, Meter.Offset front_back, Grid.SceneLayer user_specified_render_layer, Vector3 tracker_offset, params string[] symbols_to_hide)
 	{
 		this.Initialize(building_controller, meter_target, meter_animation, front_back, user_specified_render_layer, tracker_offset, symbols_to_hide);
 	}
 
-	private void Initialize(KAnimControllerBase building_controller, string meter_target, string meter_animation, Meter.Offset front_back, Grid.SceneLayer user_specified_render_layer, Vector3 tracker_offset, params string[] symbols_to_hide)
+		private void Initialize(KAnimControllerBase building_controller, string meter_target, string meter_animation, Meter.Offset front_back, Grid.SceneLayer user_specified_render_layer, Vector3 tracker_offset, params string[] symbols_to_hide)
 	{
 		if (building_controller.HasAnimation(meter_animation + "_cb") && !GlobalAssets.Instance.colorSet.IsDefaultColorSet())
 		{
@@ -100,7 +100,7 @@ public class MeterController
 		this.link = new KAnimLink(building_controller, component);
 	}
 
-	public MeterController(KAnimControllerBase building_controller, KBatchedAnimController meter_controller, params string[] symbol_names)
+		public MeterController(KAnimControllerBase building_controller, KBatchedAnimController meter_controller, params string[] symbol_names)
 	{
 		if (meter_controller == null)
 		{
@@ -115,7 +115,7 @@ public class MeterController
 		this.meterController.GetComponent<KBatchedAnimTracker>().symbol = new HashedString(symbol_names[0]);
 	}
 
-	public void SetPositionPercent(float percent_full)
+		public void SetPositionPercent(float percent_full)
 	{
 		if (this.meterController == null)
 		{
@@ -124,7 +124,7 @@ public class MeterController
 		this.meterController.SetPositionPercent(this.interpolateFunction(percent_full, this.meterController.GetCurrentNumFrames()));
 	}
 
-	public void SetSymbolTint(KAnimHashedString symbol, Color32 colour)
+		public void SetSymbolTint(KAnimHashedString symbol, Color32 colour)
 	{
 		if (this.meterController != null)
 		{
@@ -132,7 +132,7 @@ public class MeterController
 		}
 	}
 
-	public void SetRotation(float rot)
+		public void SetRotation(float rot)
 	{
 		if (this.meterController == null)
 		{
@@ -141,9 +141,18 @@ public class MeterController
 		this.meterController.Rotation = rot;
 	}
 
-	public GameObject gameObject;
+		public void Unlink()
+	{
+		if (this.link != null)
+		{
+			this.link.Unregister();
+			this.link = null;
+		}
+	}
 
-	public Func<float, int, float> interpolateFunction = new Func<float, int, float>(MeterController.MinMaxStepLerp);
+		public GameObject gameObject;
 
-	private KAnimLink link;
+		public Func<float, int, float> interpolateFunction = new Func<float, int, float>(MeterController.MinMaxStepLerp);
+
+		private KAnimLink link;
 }

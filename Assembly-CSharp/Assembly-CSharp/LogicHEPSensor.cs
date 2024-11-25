@@ -6,13 +6,13 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEveryTick
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicHEPSensor>(-905833192, LogicHEPSensor.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicHEPSensor component = ((GameObject)data).GetComponent<LogicHEPSensor>();
 		if (component != null)
@@ -22,7 +22,7 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.OnSwitchToggled;
@@ -33,14 +33,14 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		logicCircuitManager.onLogicTick = (System.Action)Delegate.Combine(logicCircuitManager.onLogicTick, new System.Action(this.LogicTick));
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		LogicCircuitManager logicCircuitManager = Game.Instance.logicCircuitManager;
 		logicCircuitManager.onLogicTick = (System.Action)Delegate.Remove(logicCircuitManager.onLogicTick, new System.Action(this.LogicTick));
 		base.OnCleanUp();
 	}
 
-	public void SimEveryTick(float dt)
+		public void SimEveryTick(float dt)
 	{
 		if (this.waitForLogicTick)
 		{
@@ -68,23 +68,23 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		this.SetState(flag);
 	}
 
-	private void LogicTick()
+		private void LogicTick()
 	{
 		this.waitForLogicTick = false;
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateLogicCircuit();
 		this.UpdateVisualState(false);
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, this.switchedOn ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -95,13 +95,13 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-			public float Threshold
+				public float Threshold
 	{
 		get
 		{
@@ -114,7 +114,7 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-			public bool ActivateAboveThreshold
+				public bool ActivateAboveThreshold
 	{
 		get
 		{
@@ -127,7 +127,7 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-		public float CurrentValue
+			public float CurrentValue
 	{
 		get
 		{
@@ -135,7 +135,7 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-		public float RangeMin
+			public float RangeMin
 	{
 		get
 		{
@@ -143,7 +143,7 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-		public float RangeMax
+			public float RangeMax
 	{
 		get
 		{
@@ -151,17 +151,17 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-	public float GetRangeMinInputField()
+		public float GetRangeMinInputField()
 	{
 		return this.minPayload;
 	}
 
-	public float GetRangeMaxInputField()
+		public float GetRangeMaxInputField()
 	{
 		return this.maxPayload;
 	}
 
-		public LocString Title
+			public LocString Title
 	{
 		get
 		{
@@ -169,7 +169,7 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-		public LocString ThresholdValueName
+			public LocString ThresholdValueName
 	{
 		get
 		{
@@ -177,7 +177,7 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-		public string AboveToolTip
+			public string AboveToolTip
 	{
 		get
 		{
@@ -185,7 +185,7 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-		public string BelowToolTip
+			public string BelowToolTip
 	{
 		get
 		{
@@ -193,27 +193,27 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-	public string Format(float value, bool units)
+		public string Format(float value, bool units)
 	{
 		return GameUtil.GetFormattedHighEnergyParticles(value, GameUtil.TimeSlice.None, units);
 	}
 
-	public float ProcessedSliderValue(float input)
+		public float ProcessedSliderValue(float input)
 	{
 		return Mathf.Round(input);
 	}
 
-	public float ProcessedInputValue(float input)
+		public float ProcessedInputValue(float input)
 	{
 		return input;
 	}
 
-	public LocString ThresholdValueUnits()
+		public LocString ThresholdValueUnits()
 	{
 		return UI.UNITSUFFIXES.HIGHENERGYPARTICLES.PARTRICLES;
 	}
 
-		public ThresholdScreenLayoutType LayoutType
+			public ThresholdScreenLayoutType LayoutType
 	{
 		get
 		{
@@ -221,7 +221,7 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-		public int IncrementScale
+			public int IncrementScale
 	{
 		get
 		{
@@ -229,7 +229,7 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-		public NonLinearSlider.Range[] GetRanges
+			public NonLinearSlider.Range[] GetRanges
 	{
 		get
 		{
@@ -242,29 +242,29 @@ public class LogicHEPSensor : Switch, ISaveLoadable, IThresholdSwitch, ISimEvery
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	public float thresholdPayload;
 
-	[Serialize]
+		[Serialize]
 	public bool activateOnHigherThan;
 
-	[Serialize]
+		[Serialize]
 	public bool dirty = true;
 
-	private readonly float minPayload;
+		private readonly float minPayload;
 
-	private readonly float maxPayload = 500f;
+		private readonly float maxPayload = 500f;
 
-	private float foundPayload;
+		private float foundPayload;
 
-	private bool waitForLogicTick;
+		private bool waitForLogicTick;
 
-	private bool wasOn;
+		private bool wasOn;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicHEPSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicHEPSensor>(delegate(LogicHEPSensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicHEPSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicHEPSensor>(delegate(LogicHEPSensor component, object data)
 	{
 		component.OnCopySettings(data);
 	});

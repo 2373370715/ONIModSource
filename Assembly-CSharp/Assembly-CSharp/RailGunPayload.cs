@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class RailGunPayload : GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.grounded.idle;
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -57,66 +57,66 @@ public class RailGunPayload : GameStateMachine<RailGunPayload, RailGunPayload.St
 		this.landing.impact.PlayAnim("land").TriggerOnEnter(GameHashes.JettisonCargo, null).OnAnimQueueComplete(this.grounded.crater);
 	}
 
-	public StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.IntParameter destinationWorld = new StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.IntParameter(-1);
+		public StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.IntParameter destinationWorld = new StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.IntParameter(-1);
 
-	public StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.BoolParameter onSurface = new StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.BoolParameter(false);
+		public StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.BoolParameter onSurface = new StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.BoolParameter(false);
 
-	public StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.Signal beginTravelling;
+		public StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.Signal beginTravelling;
 
-	public StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.Signal launch;
+		public StateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.Signal launch;
 
-	public RailGunPayload.TakeoffStates takeoff;
+		public RailGunPayload.TakeoffStates takeoff;
 
-	public RailGunPayload.TravelStates travel;
+		public RailGunPayload.TravelStates travel;
 
-	public RailGunPayload.LandingStates landing;
+		public RailGunPayload.LandingStates landing;
 
-	public RailGunPayload.GroundedStates grounded;
+		public RailGunPayload.GroundedStates grounded;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public bool attractToBeacons;
+				public bool attractToBeacons;
 
-		public string clusterAnimSymbolSwapTarget;
+				public string clusterAnimSymbolSwapTarget;
 
-		public List<string> randomClusterSymbolSwaps;
+				public List<string> randomClusterSymbolSwaps;
 
-		public string worldAnimSymbolSwapTarget;
+				public string worldAnimSymbolSwapTarget;
 
-		public List<string> randomWorldSymbolSwaps;
+				public List<string> randomWorldSymbolSwaps;
 	}
 
-	public class TakeoffStates : GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State
+		public class TakeoffStates : GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State
 	{
-		public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State launch;
+				public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State launch;
 
-		public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State airborne;
+				public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State airborne;
 	}
 
-	public class TravelStates : GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State
+		public class TravelStates : GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State
 	{
-		public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State travelling;
+				public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State travelling;
 
-		public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State transferWorlds;
+				public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State transferWorlds;
 	}
 
-	public class LandingStates : GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State
+		public class LandingStates : GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State
 	{
-		public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State landing;
+				public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State landing;
 
-		public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State impact;
+				public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State impact;
 	}
 
-	public class GroundedStates : GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State
+		public class GroundedStates : GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State
 	{
-		public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State crater;
+				public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State crater;
 
-		public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State idle;
+				public GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.State idle;
 	}
 
-	public class StatesInstance : GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<RailGunPayload, RailGunPayload.StatesInstance, IStateMachineTarget, RailGunPayload.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, RailGunPayload.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, RailGunPayload.Def def) : base(master, def)
 		{
 			this.animController = base.GetComponent<KBatchedAnimController>();
 			DebugUtil.Assert(def.clusterAnimSymbolSwapTarget == null == (def.worldAnimSymbolSwapTarget == null), "Must specify both or neither symbol swap targets!");
@@ -134,7 +134,7 @@ public class RailGunPayload : GameStateMachine<RailGunPayload, RailGunPayload.St
 			}
 		}
 
-		public void Launch(AxialI source, AxialI destination)
+				public void Launch(AxialI source, AxialI destination)
 		{
 			base.GetComponent<BallisticClusterGridEntity>().Configure(source, destination);
 			int asteroidWorldIdAtLocation = ClusterUtil.GetAsteroidWorldIdAtLocation(destination);
@@ -142,7 +142,7 @@ public class RailGunPayload : GameStateMachine<RailGunPayload, RailGunPayload.St
 			this.GoTo(base.sm.takeoff);
 		}
 
-		public void Travel(AxialI source, AxialI destination)
+				public void Travel(AxialI source, AxialI destination)
 		{
 			base.GetComponent<BallisticClusterGridEntity>().Configure(source, destination);
 			int asteroidWorldIdAtLocation = ClusterUtil.GetAsteroidWorldIdAtLocation(destination);
@@ -150,7 +150,7 @@ public class RailGunPayload : GameStateMachine<RailGunPayload, RailGunPayload.St
 			this.GoTo(base.sm.travel);
 		}
 
-		public void StartTakeoff()
+				public void StartTakeoff()
 		{
 			if (GameComps.Fallers.Has(base.gameObject))
 			{
@@ -158,7 +158,7 @@ public class RailGunPayload : GameStateMachine<RailGunPayload, RailGunPayload.St
 			}
 		}
 
-		public void StartLand()
+				public void StartLand()
 		{
 			WorldContainer worldContainer = ClusterManager.Instance.GetWorld(base.sm.destinationWorld.Get(this));
 			if (worldContainer == null)
@@ -194,7 +194,7 @@ public class RailGunPayload : GameStateMachine<RailGunPayload, RailGunPayload.St
 			base.sm.destinationWorld.Set(-1, this, false);
 		}
 
-		public void UpdateLaunch(float dt)
+				public void UpdateLaunch(float dt)
 		{
 			if (base.gameObject.GetMyWorld() != null)
 			{
@@ -210,7 +210,7 @@ public class RailGunPayload : GameStateMachine<RailGunPayload, RailGunPayload.St
 			}
 		}
 
-		public bool UpdateLanding(float dt)
+				public bool UpdateLanding(float dt)
 		{
 			if (base.gameObject.GetMyWorld() != null)
 			{
@@ -225,17 +225,17 @@ public class RailGunPayload : GameStateMachine<RailGunPayload, RailGunPayload.St
 			return false;
 		}
 
-		public void OnDroppedAll()
+				public void OnDroppedAll()
 		{
 			base.gameObject.DeleteObject();
 		}
 
-		public bool IsTraveling()
+				public bool IsTraveling()
 		{
 			return base.IsInsideState(base.sm.travel.travelling);
 		}
 
-		public void MoveToSpace()
+				public void MoveToSpace()
 		{
 			Pickupable component = base.GetComponent<Pickupable>();
 			if (component != null)
@@ -245,7 +245,7 @@ public class RailGunPayload : GameStateMachine<RailGunPayload, RailGunPayload.St
 			base.gameObject.transform.SetPosition(new Vector3(-1f, -1f, 0f));
 		}
 
-		public void MoveToWorld()
+				public void MoveToWorld()
 		{
 			Pickupable component = base.GetComponent<Pickupable>();
 			if (component != null)
@@ -259,12 +259,12 @@ public class RailGunPayload : GameStateMachine<RailGunPayload, RailGunPayload.St
 			}
 		}
 
-		[Serialize]
+				[Serialize]
 		public float takeoffVelocity;
 
-		[Serialize]
+				[Serialize]
 		private int randomSymbolSwapIndex = -1;
 
-		public KBatchedAnimController animController;
+				public KBatchedAnimController animController;
 	}
 }

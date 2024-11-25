@@ -5,12 +5,7 @@ using UnityEngine;
 
 public class OxygenMaskStationConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_ALL_VERSIONS;
-	}
-
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "OxygenMaskStation";
 		int width = 2;
@@ -35,7 +30,7 @@ public class OxygenMaskStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddComponent<Storage>();
 		storage.SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
@@ -82,19 +77,19 @@ public class OxygenMaskStationConfig : IBuildingConfig
 		go.AddOrGet<LoopingSounds>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "OxygenMaskStation";
+		public const string ID = "OxygenMaskStation";
 
-	public const float MATERIAL_PER_MASK = 15f;
+		public const float MATERIAL_PER_MASK = 15f;
 
-	public const float OXYGEN_PER_MASK = 20f;
+		public const float OXYGEN_PER_MASK = 20f;
 
-	public const int MASKS_PER_REFILL = 3;
+		public const int MASKS_PER_REFILL = 3;
 
-	public const float WORK_TIME = 5f;
+		public const float WORK_TIME = 5f;
 
-	public ChoreType fetchChoreType = Db.Get().ChoreTypes.Fetch;
+		public ChoreType fetchChoreType = Db.Get().ChoreTypes.Fetch;
 }

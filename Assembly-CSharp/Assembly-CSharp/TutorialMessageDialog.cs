@@ -6,7 +6,7 @@ using UnityEngine.Video;
 
 public class TutorialMessageDialog : MessageDialog
 {
-		public override bool CanDontShowAgain
+			public override bool CanDontShowAgain
 	{
 		get
 		{
@@ -14,12 +14,12 @@ public class TutorialMessageDialog : MessageDialog
 		}
 	}
 
-	public override bool CanDisplay(Message message)
+		public override bool CanDisplay(Message message)
 	{
 		return typeof(TutorialMessage).IsAssignableFrom(message.GetType());
 	}
 
-	public override void SetMessage(Message base_message)
+		public override void SetMessage(Message base_message)
 	{
 		this.message = (base_message as TutorialMessage);
 		this.description.text = this.message.GetMessageBody();
@@ -30,7 +30,7 @@ public class TutorialMessageDialog : MessageDialog
 		}
 	}
 
-	public void SetVideo(VideoClip clip, string overlayName, string titleText)
+		public void SetVideo(VideoClip clip, string overlayName, string titleText)
 	{
 		if (this.videoWidget == null)
 		{
@@ -44,22 +44,22 @@ public class TutorialMessageDialog : MessageDialog
 		});
 	}
 
-	public override void OnClickAction()
+		public override void OnClickAction()
 	{
 	}
 
-	public override void OnDontShowAgain()
+		public override void OnDontShowAgain()
 	{
 		Tutorial.Instance.HideTutorialMessage(this.message.messageId);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText description;
 
-	private TutorialMessage message;
+		private TutorialMessage message;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject videoWidgetPrefab;
 
-	private VideoWidget videoWidget;
+		private VideoWidget videoWidget;
 }

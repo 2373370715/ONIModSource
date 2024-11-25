@@ -2,7 +2,7 @@
 
 public class LimitValveTuning
 {
-	public static NonLinearSlider.Range[] GetDefaultSlider()
+		public static NonLinearSlider.Range[] GetDefaultSlider()
 	{
 		return new NonLinearSlider.Range[]
 		{
@@ -11,7 +11,7 @@ public class LimitValveTuning
 		};
 	}
 
-	public const float MAX_LIMIT = 500f;
+		public const float MAX_LIMIT = 500f;
 
-	public const float DEFAULT_LIMIT = 100f;
+		public const float DEFAULT_LIMIT = 100f;
 }

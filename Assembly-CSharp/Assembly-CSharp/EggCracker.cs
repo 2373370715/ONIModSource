@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/EggCracker")]
 public class EggCracker : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.refinery.choreType = Db.Get().ChoreTypes.Cook;
@@ -19,14 +19,14 @@ public class EggCracker : KMonoBehaviour
 		complexFabricatorWorkable.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(complexFabricatorWorkable.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(this.OnWorkableEvent));
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		UnityEngine.Object.Destroy(this.tracker);
 		this.tracker = null;
 	}
 
-	private void OnWorkableEvent(Workable workable, Workable.WorkableEvent e)
+		private void OnWorkableEvent(Workable workable, Workable.WorkableEvent e)
 	{
 		if (e == Workable.WorkableEvent.WorkStarted)
 		{
@@ -59,7 +59,7 @@ public class EggCracker : KMonoBehaviour
 		}
 	}
 
-	private void PositionActiveEgg()
+		private void PositionActiveEgg()
 	{
 		if (!this.display_egg)
 		{
@@ -77,13 +77,13 @@ public class EggCracker : KMonoBehaviour
 		this.tracker.symbol = "snapto_egg";
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ComplexFabricator refinery;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ComplexFabricatorWorkable workable;
 
-	private KBatchedAnimTracker tracker;
+		private KBatchedAnimTracker tracker;
 
-	private GameObject display_egg;
+		private GameObject display_egg;
 }

@@ -3,7 +3,7 @@ using TUNING;
 
 public class BuildingInternalConstructorWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.attributeConverter = Db.Get().AttributeConverters.ConstructionSpeed;
@@ -19,16 +19,16 @@ public class BuildingInternalConstructorWorkable : Workable
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTable);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.constructorInstance = this.GetSMI<BuildingInternalConstructor.Instance>();
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.constructorInstance.ConstructionComplete(false);
 	}
 
-	private BuildingInternalConstructor.Instance constructorInstance;
+		private BuildingInternalConstructor.Instance constructorInstance;
 }

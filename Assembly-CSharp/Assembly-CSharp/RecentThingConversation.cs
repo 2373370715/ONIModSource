@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class RecentThingConversation : ConversationType
 {
-	public RecentThingConversation()
+		public RecentThingConversation()
 	{
 		this.id = "RecentThingConversation";
 	}
 
-	public override void NewTarget(MinionIdentity speaker)
+		public override void NewTarget(MinionIdentity speaker)
 	{
 		ConversationMonitor.Instance smi = speaker.GetSMI<ConversationMonitor.Instance>();
 		this.target = smi.GetATopic();
 	}
 
-	public override Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
+		public override Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
 	{
 		if (string.IsNullOrEmpty(this.target))
 		{
@@ -39,7 +39,7 @@ public class RecentThingConversation : ConversationType
 		return new Conversation.Topic(this.target, mode);
 	}
 
-	public override Sprite GetSprite(string topic)
+		public override Sprite GetSprite(string topic)
 	{
 		global::Tuple<Sprite, Color> uisprite = Def.GetUISprite(topic, "ui", true);
 		if (uisprite != null)
@@ -49,7 +49,7 @@ public class RecentThingConversation : ConversationType
 		return null;
 	}
 
-	public static Dictionary<Conversation.ModeType, List<Conversation.ModeType>> transitions = new Dictionary<Conversation.ModeType, List<Conversation.ModeType>>
+		public static Dictionary<Conversation.ModeType, List<Conversation.ModeType>> transitions = new Dictionary<Conversation.ModeType, List<Conversation.ModeType>>
 	{
 		{
 			Conversation.ModeType.Query,

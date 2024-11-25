@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TilePOIConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = TilePOIConfig.ID;
 		int width = 1;
@@ -43,7 +43,7 @@ public class TilePOIConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -52,18 +52,18 @@ public class TilePOIConfig : IBuildingConfig
 		go.AddOrGet<KAnimGridTileVisualizer>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().AddTag(GameTags.Bunker, false);
 		go.AddComponent<SimTemperatureTransfer>();
 		go.GetComponent<Deconstructable>().allowDeconstruction = true;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.AddOrGet<KAnimGridTileVisualizer>();
 	}
 
-	public static string ID = "TilePOI";
+		public static string ID = "TilePOI";
 }

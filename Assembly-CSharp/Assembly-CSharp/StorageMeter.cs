@@ -2,7 +2,7 @@
 
 public class StorageMeter : KMonoBehaviour
 {
-	public void SetInterpolateFunction(Func<float, int, float> func)
+		public void SetInterpolateFunction(Func<float, int, float> func)
 	{
 		this.interpolateFunction = func;
 		if (this.meter != null)
@@ -11,12 +11,12 @@ public class StorageMeter : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.meter = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new string[]
@@ -30,15 +30,15 @@ public class StorageMeter : KMonoBehaviour
 		base.Subscribe(-1697596308, new Action<object>(this.UpdateMeter));
 	}
 
-	private void UpdateMeter(object data)
+		private void UpdateMeter(object data)
 	{
 		this.meter.SetPositionPercent(this.storage.MassStored() / this.storage.Capacity());
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private Func<float, int, float> interpolateFunction = new Func<float, int, float>(MeterController.MinMaxStepLerp);
+		private Func<float, int, float> interpolateFunction = new Func<float, int, float>(MeterController.MinMaxStepLerp);
 }

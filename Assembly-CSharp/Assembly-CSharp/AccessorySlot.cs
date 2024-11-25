@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 public class AccessorySlot : Resource
 {
-			public KAnimHashedString targetSymbolId { get; private set; }
+				public KAnimHashedString targetSymbolId { get; private set; }
 
-			public List<Accessory> accessories { get; private set; }
+				public List<Accessory> accessories { get; private set; }
 
-		public KAnimFile AnimFile
+			public KAnimFile AnimFile
 	{
 		get
 		{
@@ -15,11 +15,11 @@ public class AccessorySlot : Resource
 		}
 	}
 
-			public KAnimFile defaultAnimFile { get; private set; }
+				public KAnimFile defaultAnimFile { get; private set; }
 
-			public int overrideLayer { get; private set; }
+				public int overrideLayer { get; private set; }
 
-	public AccessorySlot(string id, ResourceSet parent, KAnimFile swap_build, int overrideLayer = 0) : base(id, parent, null)
+		public AccessorySlot(string id, ResourceSet parent, KAnimFile swap_build, int overrideLayer = 0) : base(id, parent, null)
 	{
 		if (swap_build == null)
 		{
@@ -35,7 +35,7 @@ public class AccessorySlot : Resource
 		this.defaultAnimFile = swap_build;
 	}
 
-	public AccessorySlot(string id, ResourceSet parent, KAnimHashedString target_symbol_id, KAnimFile swap_build, KAnimFile defaultAnimFile = null, int overrideLayer = 0) : base(id, parent, null)
+		public AccessorySlot(string id, ResourceSet parent, KAnimHashedString target_symbol_id, KAnimFile swap_build, KAnimFile defaultAnimFile = null, int overrideLayer = 0) : base(id, parent, null)
 	{
 		if (swap_build == null)
 		{
@@ -51,7 +51,7 @@ public class AccessorySlot : Resource
 		this.overrideLayer = overrideLayer;
 	}
 
-	public void AddAccessories(KAnimFile default_build, ResourceSet parent)
+		public void AddAccessories(KAnimFile default_build, ResourceSet parent)
 	{
 		KAnim.Build build = default_build.GetData().build;
 		default_build.GetData().build.GetSymbol(this.targetSymbolId);
@@ -68,12 +68,12 @@ public class AccessorySlot : Resource
 		}
 	}
 
-	public Accessory Lookup(string id)
+		public Accessory Lookup(string id)
 	{
 		return this.Lookup(new HashedString(id));
 	}
 
-	public Accessory Lookup(HashedString full_id)
+		public Accessory Lookup(HashedString full_id)
 	{
 		if (!full_id.IsValid)
 		{
@@ -82,5 +82,5 @@ public class AccessorySlot : Resource
 		return this.accessories.Find((Accessory a) => a.IdHash == full_id);
 	}
 
-	private KAnimFile file;
+		private KAnimFile file;
 }

@@ -2,7 +2,7 @@
 
 internal class TaskDivision<Task, SharedData> where Task : DivisibleTask<SharedData>, new()
 {
-	public TaskDivision(int taskCount)
+		public TaskDivision(int taskCount)
 	{
 		this.tasks = new Task[taskCount];
 		for (int num = 0; num != this.tasks.Length; num++)
@@ -11,11 +11,11 @@ internal class TaskDivision<Task, SharedData> where Task : DivisibleTask<SharedD
 		}
 	}
 
-	public TaskDivision() : this(CPUBudget.coreCount)
+		public TaskDivision() : this(CPUBudget.coreCount)
 	{
 	}
 
-	public void Initialize(int count)
+		public void Initialize(int count)
 	{
 		int num = count / this.tasks.Length;
 		for (int num2 = 0; num2 != this.tasks.Length; num2++)
@@ -27,7 +27,7 @@ internal class TaskDivision<Task, SharedData> where Task : DivisibleTask<SharedD
 		this.tasks[this.tasks.Length - 1].end = count;
 	}
 
-	public void Run(SharedData sharedData)
+		public void Run(SharedData sharedData)
 	{
 		Task[] array = this.tasks;
 		for (int i = 0; i < array.Length; i++)
@@ -36,5 +36,5 @@ internal class TaskDivision<Task, SharedData> where Task : DivisibleTask<SharedD
 		}
 	}
 
-	public Task[] tasks;
+		public Task[] tasks;
 }

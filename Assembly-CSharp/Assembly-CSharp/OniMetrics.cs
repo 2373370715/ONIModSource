@@ -1,48 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class OniMetrics : MonoBehaviour
-{
-	private static void EnsureMetrics()
-	{
-		if (OniMetrics.Metrics != null)
-		{
-			return;
-		}
-		OniMetrics.Metrics = new List<Dictionary<string, object>>(2);
-		for (int i = 0; i < 2; i++)
-		{
-			OniMetrics.Metrics.Add(null);
-		}
-	}
+public class OniMetrics : MonoBehaviour {
+    public enum Event : short {
+        NewSave,
+        EndOfCycle,
+        NumEvents
+    }
 
-	public static void LogEvent(OniMetrics.Event eventType, string key, object data)
-	{
-		OniMetrics.EnsureMetrics();
-		if (OniMetrics.Metrics[(int)eventType] == null)
-		{
-			OniMetrics.Metrics[(int)eventType] = new Dictionary<string, object>();
-		}
-		OniMetrics.Metrics[(int)eventType][key] = data;
-	}
+    private static List<Dictionary<string, object>> Metrics;
 
-	public static void SendEvent(OniMetrics.Event eventType, string debugName)
-	{
-		if (OniMetrics.Metrics[(int)eventType] == null || OniMetrics.Metrics[(int)eventType].Count == 0)
-		{
-			return;
-		}
-		ThreadedHttps<KleiMetrics>.Instance.SendEvent(OniMetrics.Metrics[(int)eventType], debugName);
-		OniMetrics.Metrics[(int)eventType].Clear();
-	}
+    private static void EnsureMetrics() {
+        if (Metrics != null) return;
 
-	private static List<Dictionary<string, object>> Metrics;
+        Metrics = new List<Dictionary<string, object>>(2);
+        for (var i = 0; i < 2; i++) Metrics.Add(null);
+    }
 
-	public enum Event : short
-	{
-		NewSave,
-		EndOfCycle,
-		NumEvents
-	}
+    public static void LogEvent(Event eventType, string key, object data) {
+        EnsureMetrics();
+        if (Metrics[(int)eventType] == null) Metrics[(int)eventType] = new Dictionary<string, object>();
+        Metrics[(int)eventType][key] = data;
+    }
+
+    public static void SendEvent(Event eventType, string debugName) {
+        if (Metrics[(int)eventType] == null || Metrics[(int)eventType].Count == 0) return;
+
+        ThreadedHttps<KleiMetrics>.Instance.SendEvent(Metrics[(int)eventType], debugName);
+        Metrics[(int)eventType].Clear();
+    }
 }

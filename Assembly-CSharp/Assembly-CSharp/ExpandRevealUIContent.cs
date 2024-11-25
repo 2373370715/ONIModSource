@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ExpandRevealUIContent : MonoBehaviour
 {
-	private void OnDisable()
+		private void OnDisable()
 	{
 		if (this.BGChildFitter)
 		{
@@ -33,7 +33,7 @@ public class ExpandRevealUIContent : MonoBehaviour
 		}
 	}
 
-	public void Expand(Action<object> completeCallback)
+		public void Expand(Action<object> completeCallback)
 	{
 		if (this.MaskChildFitter && this.MaskRectStretcher)
 		{
@@ -52,7 +52,7 @@ public class ExpandRevealUIContent : MonoBehaviour
 		this.activeRoutine = base.StartCoroutine(this.ExpandRoutine(null));
 	}
 
-	public void Collapse(Action<object> completeCallback)
+		public void Collapse(Action<object> completeCallback)
 	{
 		if (this.activeRoutine != null)
 		{
@@ -75,7 +75,7 @@ public class ExpandRevealUIContent : MonoBehaviour
 		}
 	}
 
-	private IEnumerator ExpandRoutine(Action<object> completeCallback)
+		private IEnumerator ExpandRoutine(Action<object> completeCallback)
 	{
 		this.Collapsing = false;
 		this.Expanding = true;
@@ -103,7 +103,7 @@ public class ExpandRevealUIContent : MonoBehaviour
 		yield break;
 	}
 
-	private void SetStretch(float value)
+		private void SetStretch(float value)
 	{
 		if (this.BGRectStretcher)
 		{
@@ -151,7 +151,7 @@ public class ExpandRevealUIContent : MonoBehaviour
 		}
 	}
 
-	private IEnumerator CollapseRoutine(Action<object> completeCallback)
+		private IEnumerator CollapseRoutine(Action<object> completeCallback)
 	{
 		this.Expanding = false;
 		this.Collapsing = true;
@@ -180,31 +180,31 @@ public class ExpandRevealUIContent : MonoBehaviour
 		yield break;
 	}
 
-	public void CollapsedImmediate()
+		public void CollapsedImmediate()
 	{
 		float time = (float)this.collapseAnimation.length;
 		this.SetStretch(this.collapseAnimation.Evaluate(time));
 	}
 
-	private Coroutine activeRoutine;
+		private Coroutine activeRoutine;
 
-	private Action<object> activeRoutineCompleteCallback;
+		private Action<object> activeRoutineCompleteCallback;
 
-	public AnimationCurve expandAnimation;
+		public AnimationCurve expandAnimation;
 
-	public AnimationCurve collapseAnimation;
+		public AnimationCurve collapseAnimation;
 
-	public KRectStretcher MaskRectStretcher;
+		public KRectStretcher MaskRectStretcher;
 
-	public KRectStretcher BGRectStretcher;
+		public KRectStretcher BGRectStretcher;
 
-	public KChildFitter MaskChildFitter;
+		public KChildFitter MaskChildFitter;
 
-	public KChildFitter BGChildFitter;
+		public KChildFitter BGChildFitter;
 
-	public float speedScale = 1f;
+		public float speedScale = 1f;
 
-	public bool Collapsing;
+		public bool Collapsing;
 
-	public bool Expanding;
+		public bool Expanding;
 }

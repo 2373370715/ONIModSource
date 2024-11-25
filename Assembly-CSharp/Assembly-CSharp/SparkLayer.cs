@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class SparkLayer : LineLayer
 {
-	public void SetColor(ColonyDiagnostic.DiagnosticResult result)
+		public void SetColor(ColonyDiagnostic.DiagnosticResult result)
 	{
 		switch (result.opinion)
 		{
@@ -30,12 +30,12 @@ public class SparkLayer : LineLayer
 		}
 	}
 
-	public void SetColor(Color color)
+		public void SetColor(Color color)
 	{
 		this.line_formatting[0].color = color;
 	}
 
-	public override GraphedLine NewLine(global::Tuple<float, float>[] points, string ID = "")
+		public override GraphedLine NewLine(global::Tuple<float, float>[] points, string ID = "")
 	{
 		Color positive_COLOR = Constants.POSITIVE_COLOR;
 		Color neutral_COLOR = Constants.NEUTRAL_COLOR;
@@ -74,14 +74,14 @@ public class SparkLayer : LineLayer
 		return base.NewLine(points, ID);
 	}
 
-	public override void RefreshLine(global::Tuple<float, float>[] points, string ID)
+		public override void RefreshLine(global::Tuple<float, float>[] points, string ID)
 	{
 		this.SetColor(points);
 		this.ScaleToData(points);
 		base.RefreshLine(points, ID);
 	}
 
-	private void SetColor(global::Tuple<float, float>[] points)
+		private void SetColor(global::Tuple<float, float>[] points)
 	{
 		Color positive_COLOR = Constants.POSITIVE_COLOR;
 		Color neutral_COLOR = Constants.NEUTRAL_COLOR;
@@ -118,7 +118,7 @@ public class SparkLayer : LineLayer
 		}
 	}
 
-	private void ScaleToData(global::Tuple<float, float>[] points)
+		private void ScaleToData(global::Tuple<float, float>[] points)
 	{
 		if (this.scaleWidthToData || this.scaleHeightToData)
 		{
@@ -141,23 +141,23 @@ public class SparkLayer : LineLayer
 		}
 	}
 
-	public Image subZeroAreaFill;
+		public Image subZeroAreaFill;
 
-	public SparkLayer.ColorRules colorRules;
+		public SparkLayer.ColorRules colorRules;
 
-	public bool debugMark;
+		public bool debugMark;
 
-	public bool scaleHeightToData = true;
+		public bool scaleHeightToData = true;
 
-	public bool scaleWidthToData = true;
+		public bool scaleWidthToData = true;
 
-	[Serializable]
+		[Serializable]
 	public struct ColorRules
 	{
-		public bool setOwnColor;
+				public bool setOwnColor;
 
-		public bool positiveIsGood;
+				public bool positiveIsGood;
 
-		public bool zeroIsBad;
+				public bool zeroIsBad;
 	}
 }

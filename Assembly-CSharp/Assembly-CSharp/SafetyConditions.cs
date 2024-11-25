@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class SafetyConditions
 {
-	public SafetyConditions()
+		public SafetyConditions()
 	{
 		int num = 1;
 		this.IsNearby = new SafetyChecker.Condition("IsNearby", num *= 2, (int cell, int cost, SafetyChecker.Context context) => cost > 5);
@@ -27,7 +27,7 @@ public class SafetyConditions
 		this.IsCorrectTemperature = new SafetyChecker.Condition("IsCorrectTemperature", num *= 2, (int cell, int cost, SafetyChecker.Context context) => Grid.Temperature[cell] > 285.15f && Grid.Temperature[cell] < 303.15f);
 		this.IsWarming = new SafetyChecker.Condition("IsWarming", num *= 2, (int cell, int cost, SafetyChecker.Context context) => WarmthProvider.IsWarmCell(cell));
 		this.IsCooling = new SafetyChecker.Condition("IsCooling", num *= 2, (int cell, int cost, SafetyChecker.Context context) => false);
-		this.HasSomeOxygen = new SafetyChecker.Condition("HasSomeOxygen", num *= 2, (int cell, int cost, SafetyChecker.Context context) => context.oxygenBreather.IsBreathableElementAtCell(cell, null));
+		this.HasSomeOxygen = new SafetyChecker.Condition("HasSomeOxygen", num *= 2, (int cell, int cost, SafetyChecker.Context context) => context.oxygenBreather == null || context.oxygenBreather.IsBreathableElementAtCell(cell, null));
 		this.IsClear = new SafetyChecker.Condition("IsClear", num * 2, (int cell, int cost, SafetyChecker.Context context) => context.minionBrain.IsCellClear(cell));
 		this.WarmUpChecker = new SafetyChecker(new List<SafetyChecker.Condition>
 		{
@@ -58,37 +58,37 @@ public class SafetyConditions
 		}.ToArray());
 	}
 
-	public SafetyChecker.Condition IsNotLiquid;
+		public SafetyChecker.Condition IsNotLiquid;
 
-	public SafetyChecker.Condition IsNotLadder;
+		public SafetyChecker.Condition IsNotLadder;
 
-	public SafetyChecker.Condition IsCorrectTemperature;
+		public SafetyChecker.Condition IsCorrectTemperature;
 
-	public SafetyChecker.Condition IsWarming;
+		public SafetyChecker.Condition IsWarming;
 
-	public SafetyChecker.Condition IsCooling;
+		public SafetyChecker.Condition IsCooling;
 
-	public SafetyChecker.Condition HasSomeOxygen;
+		public SafetyChecker.Condition HasSomeOxygen;
 
-	public SafetyChecker.Condition IsClear;
+		public SafetyChecker.Condition IsClear;
 
-	public SafetyChecker.Condition IsNotFoundation;
+		public SafetyChecker.Condition IsNotFoundation;
 
-	public SafetyChecker.Condition IsNotDoor;
+		public SafetyChecker.Condition IsNotDoor;
 
-	public SafetyChecker.Condition IsNotLedge;
+		public SafetyChecker.Condition IsNotLedge;
 
-	public SafetyChecker.Condition IsNearby;
+		public SafetyChecker.Condition IsNearby;
 
-	public SafetyChecker WarmUpChecker;
+		public SafetyChecker WarmUpChecker;
 
-	public SafetyChecker CoolDownChecker;
+		public SafetyChecker CoolDownChecker;
 
-	public SafetyChecker RecoverBreathChecker;
+		public SafetyChecker RecoverBreathChecker;
 
-	public SafetyChecker VomitCellChecker;
+		public SafetyChecker VomitCellChecker;
 
-	public SafetyChecker SafeCellChecker;
+		public SafetyChecker SafeCellChecker;
 
-	public SafetyChecker IdleCellChecker;
+		public SafetyChecker IdleCellChecker;
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DevToolEntity : DevTool
 {
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (ImGui.BeginMenuBar())
 		{
@@ -148,7 +148,7 @@ public class DevToolEntity : DevTool
 		}
 	}
 
-	public Option<GameObject> GetInGameSelectedEntity()
+		public Option<GameObject> GetInGameSelectedEntity()
 	{
 		if (SelectTool.Instance == null)
 		{
@@ -162,7 +162,7 @@ public class DevToolEntity : DevTool
 		return selected.gameObject;
 	}
 
-	public static string GetNameFor(GameObject gameObject)
+		public static string GetNameFor(GameObject gameObject)
 	{
 		if (gameObject.IsNullOrDestroyed())
 		{
@@ -178,7 +178,7 @@ public class DevToolEntity : DevTool
 		});
 	}
 
-	public static Vector2 GetPositionFor(GameObject gameObject)
+		public static Vector2 GetPositionFor(GameObject gameObject)
 	{
 		if (Camera.main != null)
 		{
@@ -190,7 +190,7 @@ public class DevToolEntity : DevTool
 		return Vector2.zero;
 	}
 
-	public static Vector2 GetScreenPosition(Vector3 pos)
+		public static Vector2 GetScreenPosition(Vector3 pos)
 	{
 		if (Camera.main != null)
 		{
@@ -202,7 +202,7 @@ public class DevToolEntity : DevTool
 		return Vector2.zero;
 	}
 
-	public static void DrawBoundingBox([TupleElementNames(new string[]
+		public static void DrawBoundingBox([TupleElementNames(new string[]
 	{
 		"cornerA",
 		"cornerB"
@@ -216,7 +216,7 @@ public class DevToolEntity : DevTool
 		DevToolEntity.DrawScreenRect(screenRect, Option.None, new Color(0.9f, 0f, 0f, 0.6f), default(Option<Color>), default(Option<DevToolUtil.TextAlignment>));
 	}
 
-	public unsafe static void DrawScreenRect([TupleElementNames(new string[]
+		public unsafe static void DrawScreenRect([TupleElementNames(new string[]
 	{
 		"cornerA",
 		"cornerB"
@@ -245,7 +245,7 @@ public class DevToolEntity : DevTool
 		}
 	}
 
-	private Option<DevToolEntityTarget> currentTargetOpt;
+		private Option<DevToolEntityTarget> currentTargetOpt;
 
-	private bool shouldDrawBoundingBox = true;
+		private bool shouldDrawBoundingBox = true;
 }

@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class GeyserConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "Geyser";
 		string name = STRINGS.CREATURES.SPECIES.GEYSER.NAME;
@@ -38,21 +38,21 @@ public class GeyserConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const int GEOTUNERS_REQUIRED_FOR_MAJOR_TRACKER_ANIMATION = 5;
+		public const int GEOTUNERS_REQUIRED_FOR_MAJOR_TRACKER_ANIMATION = 5;
 
-	public enum TrackerMeterAnimNames
+		public enum TrackerMeterAnimNames
 	{
-		tracker,
-		geotracker,
-		geotracker_minor,
-		geotracker_major
+				tracker,
+				geotracker,
+				geotracker_minor,
+				geotracker_major
 	}
 }

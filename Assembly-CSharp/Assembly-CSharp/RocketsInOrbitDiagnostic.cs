@@ -3,18 +3,18 @@ using STRINGS;
 
 public class RocketsInOrbitDiagnostic : ColonyDiagnostic
 {
-	public RocketsInOrbitDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.ROCKETINORBITDIAGNOSTIC.ALL_NAME)
+		public RocketsInOrbitDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.ROCKETINORBITDIAGNOSTIC.ALL_NAME)
 	{
 		this.icon = "icon_errand_rocketry";
 		base.AddCriterion("RocketsOrbiting", new DiagnosticCriterion(UI.COLONY_DIAGNOSTICS.ROCKETINORBITDIAGNOSTIC.CRITERIA.CHECKORBIT, new Func<ColonyDiagnostic.DiagnosticResult>(this.CheckOrbit)));
 	}
 
-	public override string[] GetDlcIds()
+		public override string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public ColonyDiagnostic.DiagnosticResult CheckOrbit()
+		public ColonyDiagnostic.DiagnosticResult CheckOrbit()
 	{
 		AxialI myWorldLocation = ClusterManager.Instance.GetWorld(base.worldID).GetMyWorldLocation();
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, base.NO_MINIONS, null);
@@ -56,5 +56,5 @@ public class RocketsInOrbitDiagnostic : ColonyDiagnostic
 		return result;
 	}
 
-	private int numRocketsInOrbit;
+		private int numRocketsInOrbit;
 }

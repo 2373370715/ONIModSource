@@ -1,47 +1,50 @@
-﻿using System;
-using TUNING;
+﻿using TUNING;
 using UnityEngine;
 
-public class SmallSculptureConfig : IBuildingConfig
-{
-	public override BuildingDef CreateBuildingDef()
-	{
-		string id = "SmallSculpture";
-		int width = 1;
-		int height = 2;
-		string anim = "sculpture_1x2_kanim";
-		int hitpoints = 10;
-		float construction_time = 60f;
-		float[] tier = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
-		string[] raw_MINERALS = MATERIALS.RAW_MINERALS;
-		float melting_point = 1600f;
-		BuildLocationRule build_location_rule = BuildLocationRule.OnFloor;
-		EffectorValues none = NOISE_POLLUTION.NONE;
-		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, raw_MINERALS, melting_point, build_location_rule, new EffectorValues
-		{
-			amount = 5,
-			radius = 4
-		}, none, 0.2f);
-		buildingDef.Floodable = false;
-		buildingDef.Overheatable = false;
-		buildingDef.AudioCategory = "Metal";
-		buildingDef.BaseTimeUntilRepair = -1f;
-		buildingDef.ViewMode = OverlayModes.Decor.ID;
-		buildingDef.DefaultAnimState = "slab";
-		buildingDef.PermittedRotations = PermittedRotations.FlipH;
-		return buildingDef;
-	}
+public class SmallSculptureConfig : IBuildingConfig {
+    public const string ID = "SmallSculpture";
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
-	{
-		go.AddOrGet<BuildingComplete>().isArtable = true;
-		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration, false);
-	}
+    public override BuildingDef CreateBuildingDef() {
+        var id                  = "SmallSculpture";
+        var width               = 1;
+        var height              = 2;
+        var anim                = "sculpture_1x2_kanim";
+        var hitpoints           = 10;
+        var construction_time   = 60f;
+        var tier                = BUILDINGS.CONSTRUCTION_MASS_KG.TIER3;
+        var raw_MINERALS        = MATERIALS.RAW_MINERALS;
+        var melting_point       = 1600f;
+        var build_location_rule = BuildLocationRule.OnFloor;
+        var none                = NOISE_POLLUTION.NONE;
+        var buildingDef = BuildingTemplates.CreateBuildingDef(id,
+                                                              width,
+                                                              height,
+                                                              anim,
+                                                              hitpoints,
+                                                              construction_time,
+                                                              tier,
+                                                              raw_MINERALS,
+                                                              melting_point,
+                                                              build_location_rule,
+                                                              new EffectorValues { amount = 5, radius = 4 },
+                                                              none);
 
-	public override void DoPostConfigureComplete(GameObject go)
-	{
-		go.AddComponent<Sculpture>().defaultAnimName = "slab";
-	}
+        buildingDef.Floodable           = false;
+        buildingDef.Overheatable        = false;
+        buildingDef.AudioCategory       = "Metal";
+        buildingDef.BaseTimeUntilRepair = -1f;
+        buildingDef.ViewMode            = OverlayModes.Decor.ID;
+        buildingDef.DefaultAnimState    = "slab";
+        buildingDef.PermittedRotations  = PermittedRotations.FlipH;
+        return buildingDef;
+    }
 
-	public const string ID = "SmallSculpture";
+    public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag) {
+        go.AddOrGet<BuildingComplete>().isArtable = true;
+        go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration);
+    }
+
+    public override void DoPostConfigureComplete(GameObject go) {
+        go.AddComponent<Sculpture>().defaultAnimName = "slab";
+    }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class BaseCometConfig
 {
-	public static GameObject BaseComet(string id, string name, string animName, SimHashes primaryElement, Vector2 massRange, Vector2 temperatureRange, string impactSound = "Meteor_Large_Impact", int flyingSoundID = 1, SimHashes exhaustElement = SimHashes.CarbonDioxide, SpawnFXHashes explosionEffect = SpawnFXHashes.None, float size = 1f)
+		public static GameObject BaseComet(string id, string name, string animName, SimHashes primaryElement, Vector2 massRange, Vector2 temperatureRange, string impactSound = "Meteor_Large_Impact", int flyingSoundID = 1, SimHashes exhaustElement = SimHashes.CarbonDioxide, SpawnFXHashes explosionEffect = SpawnFXHashes.None, float size = 1f)
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(id, name, true);
 		gameObject.AddOrGet<SaveLoadRoot>();

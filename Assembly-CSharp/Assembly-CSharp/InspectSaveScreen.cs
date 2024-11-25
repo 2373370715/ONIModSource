@@ -8,20 +8,20 @@ using UnityEngine.UI;
 
 public class InspectSaveScreen : KModalScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.closeButton.onClick += this.CloseScreen;
 		this.deleteSaveBtn.onClick += this.DeleteSave;
 	}
 
-	private void CloseScreen()
+		private void CloseScreen()
 	{
 		LoadScreen.Instance.Show(true);
 		this.Show(false);
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (!show)
@@ -31,7 +31,7 @@ public class InspectSaveScreen : KModalScreen
 		}
 	}
 
-	public void SetTarget(string path)
+		public void SetTarget(string path)
 	{
 		if (string.IsNullOrEmpty(path))
 		{
@@ -74,7 +74,7 @@ public class InspectSaveScreen : KModalScreen
 		this.Show(true);
 	}
 
-	private void ConfirmDoAction(string message, System.Action action)
+		private void ConfirmDoAction(string message, System.Action action)
 	{
 		if (this.confirmScreen == null)
 		{
@@ -87,7 +87,7 @@ public class InspectSaveScreen : KModalScreen
 		}
 	}
 
-	private void DeleteSave()
+		private void DeleteSave()
 	{
 		if (string.IsNullOrEmpty(this.currentPath))
 		{
@@ -106,11 +106,11 @@ public class InspectSaveScreen : KModalScreen
 		});
 	}
 
-	private void AddNewSave(KButton btn, string file)
+		private void AddNewSave(KButton btn, string file)
 	{
 	}
 
-	private void ButtonClicked(KButton btn)
+		private void ButtonClicked(KButton btn)
 	{
 		LoadingOverlay.Load(delegate
 		{
@@ -118,7 +118,7 @@ public class InspectSaveScreen : KModalScreen
 		});
 	}
 
-	private void Load(string filename)
+		private void Load(string filename)
 	{
 		if (Game.Instance != null)
 		{
@@ -129,7 +129,7 @@ public class InspectSaveScreen : KModalScreen
 		this.Deactivate();
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape) || e.TryConsume(global::Action.MouseRight))
 		{
@@ -139,26 +139,26 @@ public class InspectSaveScreen : KModalScreen
 		base.OnKeyDown(e);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton mainSaveBtn;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton backupBtnPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton deleteSaveBtn;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject buttonGroup;
 
-	private UIPool<KButton> buttonPool;
+		private UIPool<KButton> buttonPool;
 
-	private Dictionary<KButton, string> buttonFileMap = new Dictionary<KButton, string>();
+		private Dictionary<KButton, string> buttonFileMap = new Dictionary<KButton, string>();
 
-	private ConfirmDialogScreen confirmScreen;
+		private ConfirmDialogScreen confirmScreen;
 
-	private string currentPath = "";
+		private string currentPath = "";
 }

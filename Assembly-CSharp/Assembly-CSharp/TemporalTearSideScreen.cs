@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TemporalTearSideScreen : SideScreenContent
 {
-		private CraftModuleInterface craftModuleInterface
+			private CraftModuleInterface craftModuleInterface
 	{
 		get
 		{
@@ -12,25 +12,25 @@ public class TemporalTearSideScreen : SideScreenContent
 		}
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		base.ConsumeMouseScroll = true;
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 21f;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		Clustercraft component = target.GetComponent<Clustercraft>();
 		TemporalTear temporalTear = ClusterManager.Instance.GetComponent<ClusterPOIManager>().GetTemporalTear();
 		return component != null && temporalTear != null && temporalTear.Location == component.Location;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.targetCraft = target.GetComponent<Clustercraft>();
@@ -44,7 +44,7 @@ public class TemporalTearSideScreen : SideScreenContent
 		this.RefreshPanel(null);
 	}
 
-	private void RefreshPanel(object data = null)
+		private void RefreshPanel(object data = null)
 	{
 		TemporalTear temporalTear = ClusterManager.Instance.GetComponent<ClusterPOIManager>().GetTemporalTear();
 		HierarchyReferences component = base.GetComponent<HierarchyReferences>();
@@ -53,5 +53,5 @@ public class TemporalTearSideScreen : SideScreenContent
 		component.GetReference<KButton>("button").isInteractable = flag;
 	}
 
-	private Clustercraft targetCraft;
+		private Clustercraft targetCraft;
 }

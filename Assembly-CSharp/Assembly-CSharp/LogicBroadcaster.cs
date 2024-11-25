@@ -3,7 +3,7 @@ using KSerialization;
 
 public class LogicBroadcaster : KMonoBehaviour, ISimEveryTick
 {
-			public int BroadCastChannelID
+				public int BroadCastChannelID
 	{
 		get
 		{
@@ -15,19 +15,19 @@ public class LogicBroadcaster : KMonoBehaviour, ISimEveryTick
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Components.LogicBroadcasters.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.LogicBroadcasters.Remove(this);
 		base.OnCleanUp();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<LogicBroadcaster>(-801688580, LogicBroadcaster.OnLogicValueChangedDelegate);
@@ -37,21 +37,21 @@ public class LogicBroadcaster : KMonoBehaviour, ISimEveryTick
 		this.OnOperationalChanged(null);
 	}
 
-	public bool IsSpaceVisible()
+		public bool IsSpaceVisible()
 	{
 		return base.gameObject.GetMyWorld().IsModuleInterior || Grid.ExposedToSunlight[Grid.PosToCell(base.gameObject)] > 0;
 	}
 
-	public int GetCurrentValue()
+		public int GetCurrentValue()
 	{
 		return base.GetComponent<LogicPorts>().GetInputValue(this.PORT_ID);
 	}
 
-	private void OnLogicValueChanged(object data)
+		private void OnLogicValueChanged(object data)
 	{
 	}
 
-	public void SimEveryTick(float dt)
+		public void SimEveryTick(float dt)
 	{
 		bool flag = this.IsSpaceVisible();
 		this.operational.SetFlag(LogicBroadcaster.spaceVisible, flag);
@@ -70,7 +70,7 @@ public class LogicBroadcaster : KMonoBehaviour, ISimEveryTick
 		}
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		if (this.operational.IsOperational)
 		{
@@ -90,29 +90,29 @@ public class LogicBroadcaster : KMonoBehaviour, ISimEveryTick
 		}
 	}
 
-	public static int RANGE = 5;
+		public static int RANGE = 5;
 
-	private static int INVALID_CHANNEL_ID = -1;
+		private static int INVALID_CHANNEL_ID = -1;
 
-	public string PORT_ID = "";
+		public string PORT_ID = "";
 
-	private bool wasOperational;
+		private bool wasOperational;
 
-	[Serialize]
+		[Serialize]
 	private int broadcastChannelID = LogicBroadcaster.INVALID_CHANNEL_ID;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicBroadcaster> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicBroadcaster>(delegate(LogicBroadcaster component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicBroadcaster> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicBroadcaster>(delegate(LogicBroadcaster component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	public static readonly Operational.Flag spaceVisible = new Operational.Flag("spaceVisible", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag spaceVisible = new Operational.Flag("spaceVisible", Operational.Flag.Type.Requirement);
 
-	private Guid spaceNotVisibleStatusItem = Guid.Empty;
+		private Guid spaceNotVisibleStatusItem = Guid.Empty;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimController animController;
 }

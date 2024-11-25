@@ -4,13 +4,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LightColorMenu")]
 public class LightColorMenu : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.Subscribe<LightColorMenu>(493375141, LightColorMenu.OnRefreshUserMenuDelegate);
 		this.SetColor(0);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (this.lightColors.Length != 0)
 		{
@@ -29,7 +29,7 @@ public class LightColorMenu : KMonoBehaviour
 		}
 	}
 
-	private void SetColor(int color_index)
+		private void SetColor(int color_index)
 	{
 		if (this.lightColors.Length != 0 && color_index < this.lightColors.Length)
 		{
@@ -53,26 +53,26 @@ public class LightColorMenu : KMonoBehaviour
 		this.currentColor = color_index;
 	}
 
-	public LightColorMenu.LightColor[] lightColors;
+		public LightColorMenu.LightColor[] lightColors;
 
-	private int currentColor;
+		private int currentColor;
 
-	private static readonly EventSystem.IntraObjectHandler<LightColorMenu> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<LightColorMenu>(delegate(LightColorMenu component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LightColorMenu> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<LightColorMenu>(delegate(LightColorMenu component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	[Serializable]
+		[Serializable]
 	public struct LightColor
 	{
-		public LightColor(string name, Color color)
+				public LightColor(string name, Color color)
 		{
 			this.name = name;
 			this.color = color;
 		}
 
-		public string name;
+				public string name;
 
-		public Color color;
+				public Color color;
 	}
 }

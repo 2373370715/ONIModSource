@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class OneshotReactableLocator : IEntityConfig
 {
-	public static EmoteReactable CreateOneshotReactable(GameObject source, float lifetime, string id, ChoreType chore_type, int range_width = 15, int range_height = 15, float min_reactor_time = 20f)
+		public static EmoteReactable CreateOneshotReactable(GameObject source, float lifetime, string id, ChoreType chore_type, int range_width = 15, int range_height = 15, float min_reactor_time = 20f)
 	{
 		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(OneshotReactableLocator.ID), source.transform.GetPosition());
 		EmoteReactable emoteReactable = new EmoteReactable(gameObject, id, chore_type, range_width, range_height, 100000f, min_reactor_time, float.PositiveInfinity, 0f);
@@ -15,17 +15,17 @@ public class OneshotReactableLocator : IEntityConfig
 		return emoteReactable;
 	}
 
-	private static Reactable.ReactablePrecondition ReactorIsNotSource(GameObject source)
+		private static Reactable.ReactablePrecondition ReactorIsNotSource(GameObject source)
 	{
 		return (GameObject reactor, Navigator.ActiveTransition transition) => reactor != source;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(OneshotReactableLocator.ID, OneshotReactableLocator.ID, false);
 		gameObject.AddTag(GameTags.NotConversationTopic);
@@ -33,13 +33,13 @@ public class OneshotReactableLocator : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static readonly string ID = "OneshotReactableLocator";
+		public static readonly string ID = "OneshotReactableLocator";
 }

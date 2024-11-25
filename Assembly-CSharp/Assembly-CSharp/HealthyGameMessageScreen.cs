@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/HealthyGameMessageScreen")]
 public class HealthyGameMessageScreen : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.confirmButton.onClick += delegate()
@@ -14,7 +14,7 @@ public class HealthyGameMessageScreen : KMonoBehaviour
 		this.confirmButton.gameObject.SetActive(false);
 	}
 
-	private void PlayIntroShort()
+		private void PlayIntroShort()
 	{
 		string @string = KPlayerPrefs.GetString("PlayShortOnLaunch", "");
 		if (!string.IsNullOrEmpty(MainMenu.Instance.IntroShortName) && @string != MainMenu.Instance.IntroShortName)
@@ -34,13 +34,13 @@ public class HealthyGameMessageScreen : KMonoBehaviour
 		UnityEngine.Object.Destroy(base.gameObject);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		UnityEngine.Object.Destroy(base.gameObject);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!DistributionPlatform.Inst.IsDLCStatusReady())
 		{
@@ -71,15 +71,15 @@ public class HealthyGameMessageScreen : KMonoBehaviour
 		}
 	}
 
-	public KButton confirmButton;
+		public KButton confirmButton;
 
-	public CanvasGroup canvasGroup;
+		public CanvasGroup canvasGroup;
 
-	private float spawnTime;
+		private float spawnTime;
 
-	private float totalTime = 10f;
+		private float totalTime = 10f;
 
-	private float fadeTime = 1.5f;
+		private float fadeTime = 1.5f;
 
-	private bool isFirstUpdate = true;
+		private bool isFirstUpdate = true;
 }

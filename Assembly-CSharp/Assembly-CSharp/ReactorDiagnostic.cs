@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class ReactorDiagnostic : ColonyDiagnostic
 {
-	public ReactorDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.REACTORDIAGNOSTIC.ALL_NAME)
+		public ReactorDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.REACTORDIAGNOSTIC.ALL_NAME)
 	{
 		this.icon = "overlay_radiation";
 		base.AddCriterion("CheckTemperature", new DiagnosticCriterion(UI.COLONY_DIAGNOSTICS.REACTORDIAGNOSTIC.CRITERIA.CHECKTEMPERATURE, new Func<ColonyDiagnostic.DiagnosticResult>(this.CheckTemperature)));
 		base.AddCriterion("CheckCoolant", new DiagnosticCriterion(UI.COLONY_DIAGNOSTICS.REACTORDIAGNOSTIC.CRITERIA.CHECKCOOLANT, new Func<ColonyDiagnostic.DiagnosticResult>(this.CheckCoolant)));
 	}
 
-	public override string[] GetDlcIds()
+		public override string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	private ColonyDiagnostic.DiagnosticResult CheckTemperature()
+		private ColonyDiagnostic.DiagnosticResult CheckTemperature()
 	{
 		List<Reactor> worldItems = Components.NuclearReactors.GetWorldItems(base.worldID, false);
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null);
@@ -35,7 +35,7 @@ public class ReactorDiagnostic : ColonyDiagnostic
 		return result;
 	}
 
-	private ColonyDiagnostic.DiagnosticResult CheckCoolant()
+		private ColonyDiagnostic.DiagnosticResult CheckCoolant()
 	{
 		List<Reactor> worldItems = Components.NuclearReactors.GetWorldItems(base.worldID, false);
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null);

@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class ClusterDestinationSideScreen : SideScreenContent
 {
-			private ClusterDestinationSelector targetSelector { get; set; }
+				private ClusterDestinationSelector targetSelector { get; set; }
 
-			private RocketClusterDestinationSelector targetRocketSelector { get; set; }
+				private RocketClusterDestinationSelector targetRocketSelector { get; set; }
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.changeDestinationButton.onClick += this.OnClickChangeDestination;
 		this.clearDestinationButton.onClick += this.OnClickClearDestination;
@@ -19,12 +19,12 @@ public class ClusterDestinationSideScreen : SideScreenContent
 		this.repeatButton.onClick += this.OnRepeatClicked;
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		return 300;
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (show)
@@ -44,13 +44,13 @@ public class ClusterDestinationSideScreen : SideScreenContent
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		ClusterDestinationSelector component = target.GetComponent<ClusterDestinationSelector>();
 		return (component != null && component.assignable) || (target.GetComponent<RocketModule>() != null && target.HasTag(GameTags.LaunchButtonRocketModule)) || (target.GetComponent<RocketControlStation>() != null && target.GetComponent<RocketControlStation>().GetMyWorld().GetComponent<Clustercraft>().Status != Clustercraft.CraftStatus.Launching);
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.targetSelector = target.GetComponent<ClusterDestinationSelector>();
 		if (this.targetSelector == null)
@@ -67,7 +67,7 @@ public class ClusterDestinationSideScreen : SideScreenContent
 		this.targetRocketSelector = (this.targetSelector as RocketClusterDestinationSelector);
 	}
 
-	private void Refresh(object data = null)
+		private void Refresh(object data = null)
 	{
 		if (!this.targetSelector.IsAtDestination())
 		{
@@ -119,7 +119,7 @@ public class ClusterDestinationSideScreen : SideScreenContent
 		this.StyleChangeDestinationButton();
 	}
 
-	private void OnClickChangeDestination()
+		private void OnClickChangeDestination()
 	{
 		if (this.targetSelector.assignable)
 		{
@@ -128,22 +128,22 @@ public class ClusterDestinationSideScreen : SideScreenContent
 		this.StyleChangeDestinationButton();
 	}
 
-	private void StyleChangeDestinationButton()
+		private void StyleChangeDestinationButton()
 	{
 	}
 
-	private void OnClickClearDestination()
+		private void OnClickClearDestination()
 	{
 		this.targetSelector.SetDestination(this.targetSelector.GetMyWorldLocation());
 	}
 
-	private void OnLaunchPadEntryClick(IListableOption option, object data)
+		private void OnLaunchPadEntryClick(IListableOption option, object data)
 	{
 		LaunchPad destinationPad = (LaunchPad)option;
 		this.targetRocketSelector.SetDestinationPad(destinationPad);
 	}
 
-	private void PadDropDownEntryRefreshAction(DropDownEntry entry, object targetData)
+		private void PadDropDownEntryRefreshAction(DropDownEntry entry, object targetData)
 	{
 		LaunchPad launchPad = (LaunchPad)entry.entryData;
 		Clustercraft component = this.targetRocketSelector.GetComponent<Clustercraft>();
@@ -167,42 +167,42 @@ public class ClusterDestinationSideScreen : SideScreenContent
 		entry.tooltip.SetSimpleTooltip(string.Format(UI.UISIDESCREENS.CLUSTERDESTINATIONSIDESCREEN.DROPDOWN_TOOLTIP_VALID_SITE, launchPad.GetProperName()));
 	}
 
-	private int PadDropDownSort(IListableOption a, IListableOption b, object targetData)
+		private int PadDropDownSort(IListableOption a, IListableOption b, object targetData)
 	{
 		return 0;
 	}
 
-	private void OnRepeatClicked()
+		private void OnRepeatClicked()
 	{
 		this.targetRocketSelector.Repeat = !this.targetRocketSelector.Repeat;
 		this.StyleRepeatButton();
 	}
 
-	private void StyleRepeatButton()
+		private void StyleRepeatButton()
 	{
 		this.repeatButton.bgImage.colorStyleSetting = (this.targetRocketSelector.Repeat ? this.repeatOn : this.repeatOff);
 		this.repeatButton.bgImage.ApplyColorStyleSetting();
 	}
 
-	public Image destinationImage;
+		public Image destinationImage;
 
-	public LocText destinationLabel;
+		public LocText destinationLabel;
 
-	public KButton changeDestinationButton;
+		public KButton changeDestinationButton;
 
-	public KButton clearDestinationButton;
+		public KButton clearDestinationButton;
 
-	public DropDown launchPadDropDown;
+		public DropDown launchPadDropDown;
 
-	public KButton repeatButton;
+		public KButton repeatButton;
 
-	public ColorStyleSetting repeatOff;
+		public ColorStyleSetting repeatOff;
 
-	public ColorStyleSetting repeatOn;
+		public ColorStyleSetting repeatOn;
 
-	public ColorStyleSetting defaultButton;
+		public ColorStyleSetting defaultButton;
 
-	public ColorStyleSetting highlightButton;
+		public ColorStyleSetting highlightButton;
 
-	private int m_refreshHandle = -1;
+		private int m_refreshHandle = -1;
 }

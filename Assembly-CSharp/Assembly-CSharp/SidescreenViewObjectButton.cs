@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SidescreenViewObjectButton : KMonoBehaviour, ISidescreenButtonControl
 {
-	public bool IsValid()
+		public bool IsValid()
 	{
 		SidescreenViewObjectButton.Mode trackMode = this.TrackMode;
 		if (trackMode != SidescreenViewObjectButton.Mode.Target)
@@ -13,7 +13,7 @@ public class SidescreenViewObjectButton : KMonoBehaviour, ISidescreenButtonContr
 		return this.Target != null;
 	}
 
-		public string SidescreenButtonText
+			public string SidescreenButtonText
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class SidescreenViewObjectButton : KMonoBehaviour, ISidescreenButtonContr
 		}
 	}
 
-		public string SidescreenButtonTooltip
+			public string SidescreenButtonTooltip
 	{
 		get
 		{
@@ -29,27 +29,27 @@ public class SidescreenViewObjectButton : KMonoBehaviour, ISidescreenButtonContr
 		}
 	}
 
-	public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
+		public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
 	{
 		throw new NotImplementedException();
 	}
 
-	public bool SidescreenEnabled()
+		public bool SidescreenEnabled()
 	{
 		return true;
 	}
 
-	public bool SidescreenButtonInteractable()
+		public bool SidescreenButtonInteractable()
 	{
 		return this.IsValid();
 	}
 
-	public int HorizontalGroupID()
+		public int HorizontalGroupID()
 	{
 		return this.horizontalGroupID;
 	}
 
-	public void OnSidescreenButtonPressed()
+		public void OnSidescreenButtonPressed()
 	{
 		if (this.IsValid())
 		{
@@ -71,26 +71,26 @@ public class SidescreenViewObjectButton : KMonoBehaviour, ISidescreenButtonContr
 		}
 	}
 
-	public int ButtonSideScreenSortOrder()
+		public int ButtonSideScreenSortOrder()
 	{
 		return 20;
 	}
 
-	public string Text;
+		public string Text;
 
-	public string Tooltip;
+		public string Tooltip;
 
-	public SidescreenViewObjectButton.Mode TrackMode;
+		public SidescreenViewObjectButton.Mode TrackMode;
 
-	public GameObject Target;
+		public GameObject Target;
 
-	public int TargetCell;
+		public int TargetCell;
 
-	public int horizontalGroupID = -1;
+		public int horizontalGroupID = -1;
 
-	public enum Mode
+		public enum Mode
 	{
-		Target,
-		Cell
+				Target,
+				Cell
 	}
 }

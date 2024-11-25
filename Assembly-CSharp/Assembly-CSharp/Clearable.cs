@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Clearable")]
 public class Clearable : Workable, ISaveLoadable, IRender1000ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.Subscribe<Clearable>(2127324410, Clearable.OnCancelDelegate);
 		base.Subscribe<Clearable>(856640610, Clearable.OnStoreDelegate);
@@ -19,7 +19,7 @@ public class Clearable : Workable, ISaveLoadable, IRender1000ms
 		this.autoRegisterSimRender = false;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.isMarkedForClear)
@@ -43,12 +43,12 @@ public class Clearable : Workable, ISaveLoadable, IRender1000ms
 		this.RefreshClearableStatus(true);
 	}
 
-	private void OnStore(object data)
+		private void OnStore(object data)
 	{
 		this.CancelClearing();
 	}
 
-	private void OnCancel(object data)
+		private void OnCancel(object data)
 	{
 		for (ObjectLayerListItem objectLayerListItem = this.pickupable.objectLayerListItem; objectLayerListItem != null; objectLayerListItem = objectLayerListItem.nextItem)
 		{
@@ -59,7 +59,7 @@ public class Clearable : Workable, ISaveLoadable, IRender1000ms
 		}
 	}
 
-	public void CancelClearing()
+		public void CancelClearing()
 	{
 		if (this.isMarkedForClear)
 		{
@@ -76,7 +76,7 @@ public class Clearable : Workable, ISaveLoadable, IRender1000ms
 		}
 	}
 
-	public void MarkForClear(bool restoringFromSave = false, bool allowWhenStored = false)
+		public void MarkForClear(bool restoringFromSave = false, bool allowWhenStored = false)
 	{
 		if (!this.isClearable)
 		{
@@ -93,22 +93,22 @@ public class Clearable : Workable, ISaveLoadable, IRender1000ms
 		}
 	}
 
-	private void OnClickClear()
+		private void OnClickClear()
 	{
 		this.MarkForClear(false, false);
 	}
 
-	private void OnClickCancel()
+		private void OnClickCancel()
 	{
 		this.CancelClearing();
 	}
 
-	private void OnEquipped(object data)
+		private void OnEquipped(object data)
 	{
 		this.CancelClearing();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (this.clearHandle.IsValid())
@@ -118,7 +118,7 @@ public class Clearable : Workable, ISaveLoadable, IRender1000ms
 		}
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (!this.isClearable || base.GetComponent<Health>() != null || this.pickupable.KPrefabID.HasTag(GameTags.Stored) || this.pickupable.KPrefabID.HasTag(GameTags.MarkedForMove))
 		{
@@ -128,7 +128,7 @@ public class Clearable : Workable, ISaveLoadable, IRender1000ms
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	private void OnAbsorb(object data)
+		private void OnAbsorb(object data)
 	{
 		Pickupable pickupable = (Pickupable)data;
 		if (pickupable != null)
@@ -141,12 +141,12 @@ public class Clearable : Workable, ISaveLoadable, IRender1000ms
 		}
 	}
 
-	public void Render1000ms(float dt)
+		public void Render1000ms(float dt)
 	{
 		this.RefreshClearableStatus(false);
 	}
 
-	public void RefreshClearableStatus(bool force_update)
+		public void RefreshClearableStatus(bool force_update)
 	{
 		if (force_update || this.isMarkedForClear)
 		{
@@ -161,44 +161,44 @@ public class Clearable : Workable, ISaveLoadable, IRender1000ms
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Pickupable pickupable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[Serialize]
+		[Serialize]
 	private bool isMarkedForClear;
 
-	private HandleVector<int>.Handle clearHandle;
+		private HandleVector<int>.Handle clearHandle;
 
-	public bool isClearable = true;
+		public bool isClearable = true;
 
-	private Guid pendingClearGuid;
+		private Guid pendingClearGuid;
 
-	private Guid pendingClearNoStorageGuid;
+		private Guid pendingClearNoStorageGuid;
 
-	private static readonly EventSystem.IntraObjectHandler<Clearable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Clearable>(delegate(Clearable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Clearable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Clearable>(delegate(Clearable component, object data)
 	{
 		component.OnCancel(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Clearable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Clearable>(delegate(Clearable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Clearable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Clearable>(delegate(Clearable component, object data)
 	{
 		component.OnStore(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Clearable> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<Clearable>(delegate(Clearable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Clearable> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<Clearable>(delegate(Clearable component, object data)
 	{
 		component.OnAbsorb(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Clearable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Clearable>(delegate(Clearable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Clearable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Clearable>(delegate(Clearable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Clearable> OnEquippedDelegate = new EventSystem.IntraObjectHandler<Clearable>(delegate(Clearable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Clearable> OnEquippedDelegate = new EventSystem.IntraObjectHandler<Clearable>(delegate(Clearable component, object data)
 	{
 		component.OnEquipped(data);
 	});

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class HugMonitor : GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.normal;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -16,7 +16,15 @@ public class HugMonitor : GameStateMachine<HugMonitor, HugMonitor.Instance, ISta
 		this.normal.DefaultState(this.normal.idle).ParamTransition<float>(this.hugFrenzyTimer, this.hugFrenzy, GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.IsGTZero);
 		this.normal.idle.ParamTransition<float>(this.wantsHugCooldownTimer, this.normal.hugReady.seekingHug, GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.IsLTEZero).Update(new Action<HugMonitor.Instance, float>(this.UpdateWantsHugCooldownTimer), UpdateRate.SIM_1000ms, false);
 		this.normal.hugReady.ToggleReactable(new Func<HugMonitor.Instance, Reactable>(this.GetHugReactable));
-		this.normal.hugReady.passiveHug.ParamTransition<float>(this.wantsHugCooldownTimer, this.normal.hugReady.seekingHug, GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.IsLTEZero).Update(new Action<HugMonitor.Instance, float>(this.UpdateWantsHugCooldownTimer), UpdateRate.SIM_1000ms, false).ToggleStatusItem(CREATURES.STATUSITEMS.HUGMINIONWAITING.NAME, CREATURES.STATUSITEMS.HUGMINIONWAITING.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main);
+		GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State state = this.normal.hugReady.passiveHug.ParamTransition<float>(this.wantsHugCooldownTimer, this.normal.hugReady.seekingHug, GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.IsLTEZero).Update(new Action<HugMonitor.Instance, float>(this.UpdateWantsHugCooldownTimer), UpdateRate.SIM_1000ms, false);
+		string name = CREATURES.STATUSITEMS.HUGMINIONWAITING.NAME;
+		string tooltip = CREATURES.STATUSITEMS.HUGMINIONWAITING.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main);
 		this.normal.hugReady.seekingHug.ToggleBehaviour(GameTags.Creatures.WantsAHug, (HugMonitor.Instance smi) => true, delegate(HugMonitor.Instance smi)
 		{
 			this.wantsHugCooldownTimer.Set(smi.def.hugFrenzyCooldownFailed, smi, false);
@@ -34,87 +42,87 @@ public class HugMonitor : GameStateMachine<HugMonitor, HugMonitor.Instance, ISta
 		});
 	}
 
-	private Reactable GetHugReactable(HugMonitor.Instance smi)
+		private Reactable GetHugReactable(HugMonitor.Instance smi)
 	{
 		return new HugMinionReactable(smi.gameObject);
 	}
 
-	private void UpdateWantsHugCooldownTimer(HugMonitor.Instance smi, float dt)
+		private void UpdateWantsHugCooldownTimer(HugMonitor.Instance smi, float dt)
 	{
 		this.wantsHugCooldownTimer.DeltaClamp(-dt, 0f, float.MaxValue, smi);
 	}
 
-	private void UpdateHugEggCooldownTimer(HugMonitor.Instance smi, float dt)
+		private void UpdateHugEggCooldownTimer(HugMonitor.Instance smi, float dt)
 	{
 		this.hugEggCooldownTimer.DeltaClamp(-dt, 0f, float.MaxValue, smi);
 	}
 
-	private void UpdateHugFrenzyTimer(HugMonitor.Instance smi, float dt)
+		private void UpdateHugFrenzyTimer(HugMonitor.Instance smi, float dt)
 	{
 		this.hugFrenzyTimer.DeltaClamp(-dt, 0f, float.MaxValue, smi);
 	}
 
-	private static string soundPath = GlobalAssets.GetSound("Squirrel_hug_frenzyFX", false);
+		private static string soundPath = GlobalAssets.GetSound("Squirrel_hug_frenzyFX", false);
 
-	private static Effect hugEffect;
+		private static Effect hugEffect;
 
-	private StateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.FloatParameter hugFrenzyTimer;
+		private StateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.FloatParameter hugFrenzyTimer;
 
-	private StateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.FloatParameter wantsHugCooldownTimer;
+		private StateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.FloatParameter wantsHugCooldownTimer;
 
-	private StateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.FloatParameter hugEggCooldownTimer;
+		private StateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.FloatParameter hugEggCooldownTimer;
 
-	public HugMonitor.NormalStates normal;
+		public HugMonitor.NormalStates normal;
 
-	public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State hugFrenzy;
+		public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State hugFrenzy;
 
-	public class HUGTUNING
+		public class HUGTUNING
 	{
-		public const float HUG_EGG_TIME = 15f;
+				public const float HUG_EGG_TIME = 15f;
 
-		public const float HUG_DUPE_WAIT = 60f;
+				public const float HUG_DUPE_WAIT = 60f;
 
-		public const float FRENZY_EGGS_PER_CYCLE = 6f;
+				public const float FRENZY_EGGS_PER_CYCLE = 6f;
 
-		public const float FRENZY_EGG_TRAVEL_TIME_BUFFER = 5f;
+				public const float FRENZY_EGG_TRAVEL_TIME_BUFFER = 5f;
 
-		public const float HUG_FRENZY_DURATION = 120f;
+				public const float HUG_FRENZY_DURATION = 120f;
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public float hugsPerCycle = 2f;
+				public float hugsPerCycle = 2f;
 
-		public float scanningInterval = 30f;
+				public float scanningInterval = 30f;
 
-		public float hugFrenzyDuration = 120f;
+				public float hugFrenzyDuration = 120f;
 
-		public float hugFrenzyCooldown = 480f;
+				public float hugFrenzyCooldown = 480f;
 
-		public float hugFrenzyCooldownFailed = 120f;
+				public float hugFrenzyCooldownFailed = 120f;
 
-		public float scanningIntervalFrenzy = 15f;
+				public float scanningIntervalFrenzy = 15f;
 
-		public int maxSearchCost = 30;
+				public int maxSearchCost = 30;
 	}
 
-	public class HugReadyStates : GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State
+		public class HugReadyStates : GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State
 	{
-		public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State passiveHug;
+				public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State passiveHug;
 
-		public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State seekingHug;
+				public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State seekingHug;
 	}
 
-	public class NormalStates : GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State
+		public class NormalStates : GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State
 	{
-		public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State idle;
+				public GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.State idle;
 
-		public HugMonitor.HugReadyStates hugReady;
+				public HugMonitor.HugReadyStates hugReady;
 	}
 
-	public new class Instance : GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<HugMonitor, HugMonitor.Instance, IStateMachineTarget, HugMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, HugMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, HugMonitor.Def def) : base(master, def)
 		{
 			this.frenzyEffect = Db.Get().effects.Get("HuggingFrenzy");
 			this.RefreshSearchTime();
@@ -125,7 +133,7 @@ public class HugMonitor : GameStateMachine<HugMonitor, HugMonitor.Instance, ISta
 			base.smi.sm.wantsHugCooldownTimer.Set(UnityEngine.Random.Range(base.smi.def.hugFrenzyCooldownFailed, base.smi.def.hugFrenzyCooldown), base.smi, false);
 		}
 
-		private void RefreshSearchTime()
+				private void RefreshSearchTime()
 		{
 			if (this.hugTarget == null)
 			{
@@ -135,7 +143,7 @@ public class HugMonitor : GameStateMachine<HugMonitor, HugMonitor.Instance, ISta
 			base.smi.sm.hugEggCooldownTimer.Set(this.GetHugInterval(), base.smi, false);
 		}
 
-		private float GetScanningInterval()
+				private float GetScanningInterval()
 		{
 			if (!this.IsHuggingFrenzy())
 			{
@@ -144,7 +152,7 @@ public class HugMonitor : GameStateMachine<HugMonitor, HugMonitor.Instance, ISta
 			return base.def.scanningIntervalFrenzy;
 		}
 
-		private float GetHugInterval()
+				private float GetHugInterval()
 		{
 			if (this.IsHuggingFrenzy())
 			{
@@ -153,17 +161,17 @@ public class HugMonitor : GameStateMachine<HugMonitor, HugMonitor.Instance, ISta
 			return 600f / base.def.hugsPerCycle;
 		}
 
-		public bool IsHuggingFrenzy()
+				public bool IsHuggingFrenzy()
 		{
 			return base.smi.GetCurrentState() == base.smi.sm.hugFrenzy;
 		}
 
-		public bool IsHugging()
+				public bool IsHugging()
 		{
 			return base.smi.GetSMI<AnimInterruptMonitor.Instance>().anims != null;
 		}
 
-		public bool UpdateHasTarget()
+				public bool UpdateHasTarget()
 		{
 			if (this.hugTarget == null)
 			{
@@ -177,13 +185,13 @@ public class HugMonitor : GameStateMachine<HugMonitor, HugMonitor.Instance, ISta
 			return this.hugTarget != null;
 		}
 
-		public void EnterHuggingFrenzy()
+				public void EnterHuggingFrenzy()
 		{
 			base.smi.sm.hugFrenzyTimer.Set(base.smi.def.hugFrenzyDuration, base.smi, false);
 			base.smi.sm.hugEggCooldownTimer.Set(0f, base.smi, false);
 		}
 
-		private void FindEgg()
+				private void FindEgg()
 		{
 			int cell = Grid.PosToCell(base.gameObject);
 			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(cell);
@@ -218,15 +226,15 @@ public class HugMonitor : GameStateMachine<HugMonitor, HugMonitor.Instance, ISta
 			}
 		}
 
-		public GameObject hugParticleFx;
+				public GameObject hugParticleFx;
 
-		public Vector3 hugParticleOffset;
+				public Vector3 hugParticleOffset;
 
-		public Effect frenzyEffect;
+				public Effect frenzyEffect;
 
-		public KPrefabID hugTarget;
+				public KPrefabID hugTarget;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Navigator navigator;
 	}
 }

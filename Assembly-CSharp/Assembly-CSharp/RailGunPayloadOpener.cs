@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class RailGunPayloadOpener : StateMachineComponent<RailGunPayloadOpener.StatesInstance>, ISecondaryOutput
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.gasOutputCell = Grid.OffsetCell(Grid.PosToCell(this), this.gasPortInfo.offset);
@@ -18,7 +18,7 @@ public class RailGunPayloadOpener : StateMachineComponent<RailGunPayloadOpener.S
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Conduit.GetNetworkManager(this.liquidPortInfo.conduitType).RemoveFromNetworks(this.liquidOutputCell, this.liquidNetworkItem, true);
 		Conduit.GetNetworkManager(this.gasPortInfo.conduitType).RemoveFromNetworks(this.gasOutputCell, this.gasNetworkItem, true);
@@ -26,7 +26,7 @@ public class RailGunPayloadOpener : StateMachineComponent<RailGunPayloadOpener.S
 		base.OnCleanUp();
 	}
 
-	private ConduitDispenser CreateConduitDispenser(ConduitType outputType, int outputCell, out FlowUtilityNetwork.NetworkItem flowNetworkItem)
+		private ConduitDispenser CreateConduitDispenser(ConduitType outputType, int outputCell, out FlowUtilityNetwork.NetworkItem flowNetworkItem)
 	{
 		ConduitDispenser conduitDispenser = base.gameObject.AddComponent<ConduitDispenser>();
 		conduitDispenser.conduitType = outputType;
@@ -39,7 +39,7 @@ public class RailGunPayloadOpener : StateMachineComponent<RailGunPayloadOpener.S
 		return conduitDispenser;
 	}
 
-	private SolidConduitDispenser CreateSolidConduitDispenser(int outputCell, out FlowUtilityNetwork.NetworkItem flowNetworkItem)
+		private SolidConduitDispenser CreateSolidConduitDispenser(int outputCell, out FlowUtilityNetwork.NetworkItem flowNetworkItem)
 	{
 		SolidConduitDispenser solidConduitDispenser = base.gameObject.AddComponent<SolidConduitDispenser>();
 		solidConduitDispenser.storage = this.resourceStorage;
@@ -51,7 +51,7 @@ public class RailGunPayloadOpener : StateMachineComponent<RailGunPayloadOpener.S
 		return solidConduitDispenser;
 	}
 
-	public void EmptyPayload()
+		public void EmptyPayload()
 	{
 		Storage component = base.GetComponent<Storage>();
 		if (component != null && component.items.Count > 0)
@@ -63,18 +63,18 @@ public class RailGunPayloadOpener : StateMachineComponent<RailGunPayloadOpener.S
 		}
 	}
 
-	public bool PowerOperationalChanged()
+		public bool PowerOperationalChanged()
 	{
 		EnergyConsumer component = base.GetComponent<EnergyConsumer>();
 		return component != null && component.IsPowered;
 	}
 
-	bool ISecondaryOutput.HasSecondaryConduitType(ConduitType type)
+		bool ISecondaryOutput.HasSecondaryConduitType(ConduitType type)
 	{
 		return type == this.gasPortInfo.conduitType || type == this.liquidPortInfo.conduitType || type == this.solidPortInfo.conduitType;
 	}
 
-	CellOffset ISecondaryOutput.GetSecondaryConduitOffset(ConduitType type)
+		CellOffset ISecondaryOutput.GetSecondaryConduitOffset(ConduitType type)
 	{
 		if (type == this.gasPortInfo.conduitType)
 		{
@@ -91,63 +91,63 @@ public class RailGunPayloadOpener : StateMachineComponent<RailGunPayloadOpener.S
 		return this.solidPortInfo.offset;
 	}
 
-	public static float delivery_time = 10f;
+		public static float delivery_time = 10f;
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo liquidPortInfo;
 
-	private int liquidOutputCell = -1;
+		private int liquidOutputCell = -1;
 
-	private FlowUtilityNetwork.NetworkItem liquidNetworkItem;
+		private FlowUtilityNetwork.NetworkItem liquidNetworkItem;
 
-	private ConduitDispenser liquidDispenser;
+		private ConduitDispenser liquidDispenser;
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo gasPortInfo;
 
-	private int gasOutputCell = -1;
+		private int gasOutputCell = -1;
 
-	private FlowUtilityNetwork.NetworkItem gasNetworkItem;
+		private FlowUtilityNetwork.NetworkItem gasNetworkItem;
 
-	private ConduitDispenser gasDispenser;
+		private ConduitDispenser gasDispenser;
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo solidPortInfo;
 
-	private int solidOutputCell = -1;
+		private int solidOutputCell = -1;
 
-	private FlowUtilityNetwork.NetworkItem solidNetworkItem;
+		private FlowUtilityNetwork.NetworkItem solidNetworkItem;
 
-	private SolidConduitDispenser solidDispenser;
+		private SolidConduitDispenser solidDispenser;
 
-	public Storage payloadStorage;
+		public Storage payloadStorage;
 
-	public Storage resourceStorage;
+		public Storage resourceStorage;
 
-	private ManualDeliveryKG[] deliveryComponents;
+		private ManualDeliveryKG[] deliveryComponents;
 
-	private MeterController payloadMeter;
+		private MeterController payloadMeter;
 
-	public class StatesInstance : GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.GameInstance
+		public class StatesInstance : GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.GameInstance
 	{
-		public StatesInstance(RailGunPayloadOpener master) : base(master)
+				public StatesInstance(RailGunPayloadOpener master) : base(master)
 		{
 		}
 
-		public bool HasPayload()
+				public bool HasPayload()
 		{
 			return base.smi.master.payloadStorage.items.Count > 0;
 		}
 
-		public bool HasResources()
+				public bool HasResources()
 		{
 			return base.smi.master.resourceStorage.MassStored() > 0f;
 		}
 	}
 
-	public class States : GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener>
+		public class States : GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.unoperational;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -176,19 +176,19 @@ public class RailGunPayloadOpener : StateMachineComponent<RailGunPayloadOpener.S
 			}).OnAnimQueueComplete(this.operational.idle);
 		}
 
-		public GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State unoperational;
+				public GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State unoperational;
 
-		public RailGunPayloadOpener.States.OperationalStates operational;
+				public RailGunPayloadOpener.States.OperationalStates operational;
 
-		public class OperationalStates : GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State
+				public class OperationalStates : GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State
 		{
-			public GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State idle;
+						public GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State idle;
 
-			public GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State pre;
+						public GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State pre;
 
-			public GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State loop;
+						public GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State loop;
 
-			public GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State pst;
+						public GameStateMachine<RailGunPayloadOpener.States, RailGunPayloadOpener.StatesInstance, RailGunPayloadOpener, object>.State pst;
 		}
 	}
 }

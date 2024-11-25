@@ -4,7 +4,7 @@ using UnityEngine;
 [Serializable]
 public class SliderSet
 {
-	public void SetupSlider(int index)
+		public void SetupSlider(int index)
 	{
 		this.index = index;
 		this.valueSlider.onReleaseHandle += delegate()
@@ -30,7 +30,7 @@ public class SliderSet
 		};
 	}
 
-	public void SetTarget(ISliderControl target, int index)
+		public void SetTarget(ISliderControl target, int index)
 	{
 		this.index = index;
 		this.target = target;
@@ -63,7 +63,7 @@ public class SliderSet
 		}
 	}
 
-	private void ReceiveValueFromSlider()
+		private void ReceiveValueFromSlider()
 	{
 		float num = this.valueSlider.value;
 		if (this.numberInput.decimalPlaces != -1)
@@ -74,7 +74,7 @@ public class SliderSet
 		this.SetValue(num);
 	}
 
-	private void ReceiveValueFromInput()
+		private void ReceiveValueFromInput()
 	{
 		float num = this.numberInput.currentValue;
 		if (this.numberInput.decimalPlaces != -1)
@@ -86,7 +86,7 @@ public class SliderSet
 		this.SetValue(num);
 	}
 
-	private void SetValue(float value)
+		private void SetValue(float value)
 	{
 		float num = value;
 		if (num > this.target.GetSliderMax(this.index))
@@ -106,26 +106,26 @@ public class SliderSet
 		}
 	}
 
-	private void UpdateLabel(float value)
+		private void UpdateLabel(float value)
 	{
 		float num = Mathf.Round(value * 10f) / 10f;
 		this.numberInput.SetDisplayValue(num.ToString());
 	}
 
-	public KSlider valueSlider;
+		public KSlider valueSlider;
 
-	public KNumberInputField numberInput;
+		public KNumberInputField numberInput;
 
-	public LocText targetLabel;
+		public LocText targetLabel;
 
-	public LocText unitsLabel;
+		public LocText unitsLabel;
 
-	public LocText minLabel;
+		public LocText minLabel;
 
-	public LocText maxLabel;
+		public LocText maxLabel;
 
-	[NonSerialized]
+		[NonSerialized]
 	public int index;
 
-	private ISliderControl target;
+		private ISliderControl target;
 }

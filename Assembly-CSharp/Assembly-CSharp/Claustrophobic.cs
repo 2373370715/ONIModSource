@@ -3,12 +3,12 @@
 [SkipSaveFileSerialization]
 public class Claustrophobic : StateMachineComponent<Claustrophobic.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	protected bool IsUncomfortable()
+		protected bool IsUncomfortable()
 	{
 		int num = 4;
 		int cell = Grid.PosToCell(base.gameObject);
@@ -27,16 +27,16 @@ public class Claustrophobic : StateMachineComponent<Claustrophobic.StatesInstanc
 		return false;
 	}
 
-	public class StatesInstance : GameStateMachine<Claustrophobic.States, Claustrophobic.StatesInstance, Claustrophobic, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Claustrophobic.States, Claustrophobic.StatesInstance, Claustrophobic, object>.GameInstance
 	{
-		public StatesInstance(Claustrophobic master) : base(master)
+				public StatesInstance(Claustrophobic master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<Claustrophobic.States, Claustrophobic.StatesInstance, Claustrophobic>
+		public class States : GameStateMachine<Claustrophobic.States, Claustrophobic.StatesInstance, Claustrophobic>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.satisfied;
 			this.root.Update("ClaustrophobicCheck", delegate(Claustrophobic.StatesInstance smi, float dt)
@@ -52,8 +52,8 @@ public class Claustrophobic : StateMachineComponent<Claustrophobic.StatesInstanc
 			this.satisfied.DoNothing();
 		}
 
-		public GameStateMachine<Claustrophobic.States, Claustrophobic.StatesInstance, Claustrophobic, object>.State satisfied;
+				public GameStateMachine<Claustrophobic.States, Claustrophobic.StatesInstance, Claustrophobic, object>.State satisfied;
 
-		public GameStateMachine<Claustrophobic.States, Claustrophobic.StatesInstance, Claustrophobic, object>.State suffering;
+				public GameStateMachine<Claustrophobic.States, Claustrophobic.StatesInstance, Claustrophobic, object>.State suffering;
 	}
 }

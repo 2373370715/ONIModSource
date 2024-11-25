@@ -4,12 +4,12 @@ using UnityEngine;
 
 public static class FocusTargetSequence
 {
-	public static void Start(MonoBehaviour coroutineRunner, FocusTargetSequence.Data sequenceData)
+		public static void Start(MonoBehaviour coroutineRunner, FocusTargetSequence.Data sequenceData)
 	{
 		FocusTargetSequence.sequenceCoroutine = coroutineRunner.StartCoroutine(FocusTargetSequence.RunSequence(sequenceData));
 	}
 
-	public static void Cancel(MonoBehaviour coroutineRunner)
+		public static void Cancel(MonoBehaviour coroutineRunner)
 	{
 		if (FocusTargetSequence.sequenceCoroutine == null)
 		{
@@ -37,7 +37,7 @@ public static class FocusTargetSequence
 		FocusTargetSequence.prevSpeed = -1;
 	}
 
-	public static IEnumerator RunSequence(FocusTargetSequence.Data sequenceData)
+		public static IEnumerator RunSequence(FocusTargetSequence.Data sequenceData)
 	{
 		SaveGame.Instance.GetComponent<UserNavigation>();
 		CameraController.Instance.FadeOut(1f, 1f, null);
@@ -95,7 +95,7 @@ public static class FocusTargetSequence
 		yield break;
 	}
 
-	private static void SetUIVisible(bool visible)
+		private static void SetUIVisible(bool visible)
 	{
 		NotificationScreen.Instance.Show(visible);
 		OverlayMenu.Instance.Show(visible);
@@ -123,35 +123,35 @@ public static class FocusTargetSequence
 		}
 	}
 
-	private static Coroutine sequenceCoroutine = null;
+		private static Coroutine sequenceCoroutine = null;
 
-	private static KSelectable prevSelected = null;
+		private static KSelectable prevSelected = null;
 
-	private static bool wasPaused = false;
+		private static bool wasPaused = false;
 
-	private static int prevSpeed = -1;
+		private static int prevSpeed = -1;
 
-	public struct Data
+		public struct Data
 	{
-		public void Clear()
+				public void Clear()
 		{
 			this.PopupData = null;
 			this.CompleteCB = null;
 			this.CanCompleteCB = null;
 		}
 
-		public int WorldId;
+				public int WorldId;
 
-		public float OrthographicSize;
+				public float OrthographicSize;
 
-		public float TargetSize;
+				public float TargetSize;
 
-		public Vector3 Target;
+				public Vector3 Target;
 
-		public EventInfoData PopupData;
+				public EventInfoData PopupData;
 
-		public System.Action CompleteCB;
+				public System.Action CompleteCB;
 
-		public Func<bool> CanCompleteCB;
+				public Func<bool> CanCompleteCB;
 	}
 }

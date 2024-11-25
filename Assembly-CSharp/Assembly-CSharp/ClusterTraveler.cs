@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ClusterTraveler : KMonoBehaviour, ISim200ms
 {
-		public List<AxialI> CurrentPath
+			public List<AxialI> CurrentPath
 	{
 		get
 		{
@@ -19,20 +19,20 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Components.ClusterTravelers.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.ClusterTravelers.Remove(this);
 		Game.Instance.Unsubscribe(-1991583975, new Action<object>(this.OnClusterFogOfWarRevealed));
 		base.OnCleanUp();
 	}
 
-	private void ForceRevealLocation(AxialI location)
+		private void ForceRevealLocation(AxialI location)
 	{
 		if (!ClusterGrid.Instance.IsCellVisible(location))
 		{
@@ -40,7 +40,7 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.Subscribe<ClusterTraveler>(543433792, ClusterTraveler.ClusterDestinationChangedHandler);
 		Game.Instance.Subscribe(-1991583975, new Action<object>(this.OnClusterFogOfWarRevealed));
@@ -53,17 +53,17 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	private void MarkPathDirty()
+		private void MarkPathDirty()
 	{
 		this.m_isPathDirty = true;
 	}
 
-	private void OnClusterFogOfWarRevealed(object data)
+		private void OnClusterFogOfWarRevealed(object data)
 	{
 		this.MarkPathDirty();
 	}
 
-	private void OnClusterDestinationChanged(object data)
+		private void OnClusterDestinationChanged(object data)
 	{
 		if (this.m_destinationSelector.IsAtDestination())
 		{
@@ -76,12 +76,12 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		this.MarkPathDirty();
 	}
 
-	public int GetDestinationWorldID()
+		public int GetDestinationWorldID()
 	{
 		return this.m_destinationSelector.GetDestinationWorld();
 	}
 
-	public float TravelETA()
+		public float TravelETA()
 	{
 		if (!this.IsTraveling() || this.getSpeedCB == null)
 		{
@@ -90,7 +90,7 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		return this.RemainingTravelDistance() / this.getSpeedCB();
 	}
 
-	public float RemainingTravelDistance()
+		public float RemainingTravelDistance()
 	{
 		int num = this.RemainingTravelNodes();
 		if (this.GetDestinationWorldID() >= 0)
@@ -101,7 +101,7 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		return (float)num * 600f - this.m_movePotential;
 	}
 
-	public int RemainingTravelNodes()
+		public int RemainingTravelNodes()
 	{
 		if (this.CurrentPath == null)
 		{
@@ -111,17 +111,17 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		return Mathf.Max(0, count);
 	}
 
-	public float GetMoveProgress()
+		public float GetMoveProgress()
 	{
 		return this.m_movePotential / 600f;
 	}
 
-	public bool IsTraveling()
+		public bool IsTraveling()
 	{
 		return !this.m_destinationSelector.IsAtDestination();
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (!this.IsTraveling())
 		{
@@ -167,7 +167,7 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		this.RevalidatePath(true);
 	}
 
-	public bool AdvancePathOneStep()
+		public bool AdvancePathOneStep()
 	{
 		if (this.validateTravelCB != null && !this.validateTravelCB(this.CurrentPath[0]))
 		{
@@ -184,7 +184,7 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		return true;
 	}
 
-	private void UpdateAnimationTags()
+		private void UpdateAnimationTags()
 	{
 		if (this.CurrentPath == null)
 		{
@@ -212,7 +212,7 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		this.m_clusterGridEntity.RemoveTag(GameTags.BallisticEntityMoving);
 	}
 
-	public void RevalidatePath(bool react_to_change = true)
+		public void RevalidatePath(bool react_to_change = true)
 	{
 		string reason;
 		List<AxialI> cachedPath;
@@ -230,7 +230,7 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	private bool HasCurrentPathChanged(out string reason, out List<AxialI> updatedPath)
+		private bool HasCurrentPathChanged(out string reason, out List<AxialI> updatedPath)
 	{
 		if (!this.m_isPathDirty)
 		{
@@ -258,42 +258,42 @@ public class ClusterTraveler : KMonoBehaviour, ISim200ms
 		return false;
 	}
 
-	[ContextMenu("Fill Move Potential")]
+		[ContextMenu("Fill Move Potential")]
 	public void FillMovePotential()
 	{
 		this.m_movePotential = 600f;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ClusterDestinationSelector m_destinationSelector;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ClusterGridEntity m_clusterGridEntity;
 
-	[Serialize]
+		[Serialize]
 	private float m_movePotential;
 
-	public Func<float> getSpeedCB;
+		public Func<float> getSpeedCB;
 
-	public Func<bool, bool> getCanTravelCB;
+		public Func<bool, bool> getCanTravelCB;
 
-	public Func<AxialI, bool> validateTravelCB;
+		public Func<AxialI, bool> validateTravelCB;
 
-	public System.Action onTravelCB;
+		public System.Action onTravelCB;
 
-	private AxialI m_cachedPathDestination;
+		private AxialI m_cachedPathDestination;
 
-	private List<AxialI> m_cachedPath;
+		private List<AxialI> m_cachedPath;
 
-	private bool m_isPathDirty;
+		private bool m_isPathDirty;
 
-	public bool revealsFogOfWarAsItTravels = true;
+		public bool revealsFogOfWarAsItTravels = true;
 
-	public bool quickTravelToAsteroidIfInOrbit = true;
+		public bool quickTravelToAsteroidIfInOrbit = true;
 
-	public bool stopAndNotifyWhenPathChanges;
+		public bool stopAndNotifyWhenPathChanges;
 
-	private static EventSystem.IntraObjectHandler<ClusterTraveler> ClusterDestinationChangedHandler = new EventSystem.IntraObjectHandler<ClusterTraveler>(delegate(ClusterTraveler cmp, object data)
+		private static EventSystem.IntraObjectHandler<ClusterTraveler> ClusterDestinationChangedHandler = new EventSystem.IntraObjectHandler<ClusterTraveler>(delegate(ClusterTraveler cmp, object data)
 	{
 		cmp.OnClusterDestinationChanged(data);
 	});

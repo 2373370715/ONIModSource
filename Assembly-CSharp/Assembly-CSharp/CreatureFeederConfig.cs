@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CreatureFeederConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "CreatureFeeder";
 		int width = 1;
@@ -23,11 +23,11 @@ public class CreatureFeederConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
 		Storage storage = go.AddOrGet<Storage>();
@@ -44,12 +44,12 @@ public class CreatureFeederConfig : IBuildingConfig
 		go.AddOrGet<CreatureFeeder>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<StorageController.Def>();
 	}
 
-	public override void ConfigurePost(BuildingDef def)
+		public override void ConfigurePost(BuildingDef def)
 	{
 		List<Tag> list = new List<Tag>();
 		foreach (KeyValuePair<Tag, Diet> keyValuePair in DietManager.CollectDiets(new Tag[]
@@ -61,7 +61,8 @@ public class CreatureFeederConfig : IBuildingConfig
 			GameTags.Creatures.Species.StaterpillarSpecies,
 			GameTags.Creatures.Species.DivergentSpecies,
 			GameTags.Creatures.Species.DeerSpecies,
-			GameTags.Creatures.Species.BellySpecies
+			GameTags.Creatures.Species.BellySpecies,
+			GameTags.Creatures.Species.SealSpecies
 		}))
 		{
 			list.Add(keyValuePair.Key);
@@ -69,5 +70,5 @@ public class CreatureFeederConfig : IBuildingConfig
 		def.BuildingComplete.GetComponent<Storage>().storageFilters = list;
 	}
 
-	public const string ID = "CreatureFeeder";
+		public const string ID = "CreatureFeeder";
 }

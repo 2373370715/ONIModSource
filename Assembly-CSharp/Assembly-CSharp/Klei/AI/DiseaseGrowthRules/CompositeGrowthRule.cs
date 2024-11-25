@@ -2,14 +2,14 @@
 
 namespace Klei.AI.DiseaseGrowthRules
 {
-	public class CompositeGrowthRule
+		public class CompositeGrowthRule
 	{
-		public string Name()
+				public string Name()
 		{
 			return this.name;
 		}
 
-		public void Overlay(GrowthRule rule)
+				public void Overlay(GrowthRule rule)
 		{
 			if (rule.underPopulationDeathRate != null)
 			{
@@ -46,7 +46,7 @@ namespace Klei.AI.DiseaseGrowthRules
 			this.name = rule.Name();
 		}
 
-		public float GetHalfLifeForCount(int count, float kg)
+				public float GetHalfLifeForCount(int count, float kg)
 		{
 			int num = (int)(this.minCountPerKG * kg);
 			int num2 = (int)(this.maxCountPerKG * kg);
@@ -61,22 +61,22 @@ namespace Klei.AI.DiseaseGrowthRules
 			return this.overPopulationHalfLife;
 		}
 
-		public string name;
+				public string name;
 
-		public float underPopulationDeathRate;
+				public float underPopulationDeathRate;
 
-		public float populationHalfLife;
+				public float populationHalfLife;
 
-		public float overPopulationHalfLife;
+				public float overPopulationHalfLife;
 
-		public float diffusionScale;
+				public float diffusionScale;
 
-		public float minCountPerKG;
+				public float minCountPerKG;
 
-		public float maxCountPerKG;
+				public float maxCountPerKG;
 
-		public int minDiffusionCount;
+				public int minDiffusionCount;
 
-		public byte minDiffusionInfestationTickCount;
+				public byte minDiffusionInfestationTickCount;
 	}
 }

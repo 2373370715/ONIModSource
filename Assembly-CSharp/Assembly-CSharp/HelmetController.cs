@@ -4,14 +4,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/HelmetController")]
 public class HelmetController : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<HelmetController>(-1617557748, HelmetController.OnEquippedDelegate);
 		base.Subscribe<HelmetController>(-170173755, HelmetController.OnUnequippedDelegate);
 	}
 
-	private KBatchedAnimController GetAssigneeController()
+		private KBatchedAnimController GetAssigneeController()
 	{
 		Equippable component = base.GetComponent<Equippable>();
 		if (component.assignee != null)
@@ -25,7 +25,7 @@ public class HelmetController : KMonoBehaviour
 		return null;
 	}
 
-	private GameObject GetAssigneeGameObject(IAssignableIdentity ass_id)
+		private GameObject GetAssigneeGameObject(IAssignableIdentity ass_id)
 	{
 		GameObject result = null;
 		MinionAssignablesProxy minionAssignablesProxy = ass_id as MinionAssignablesProxy;
@@ -44,7 +44,7 @@ public class HelmetController : KMonoBehaviour
 		return result;
 	}
 
-	private void OnEquipped(object data)
+		private void OnEquipped(object data)
 	{
 		Equippable component = base.GetComponent<Equippable>();
 		this.ShowHelmet();
@@ -57,7 +57,7 @@ public class HelmetController : KMonoBehaviour
 		this.owner_navigator = assigneeGameObject.GetComponent<Navigator>();
 	}
 
-	private void OnUnequipped(object data)
+		private void OnUnequipped(object data)
 	{
 		this.owner_navigator = null;
 		Equippable component = base.GetComponent<Equippable>();
@@ -77,7 +77,7 @@ public class HelmetController : KMonoBehaviour
 		}
 	}
 
-	private void ShowHelmet()
+		private void ShowHelmet()
 	{
 		KBatchedAnimController assigneeController = this.GetAssigneeController();
 		if (assigneeController == null)
@@ -95,7 +95,7 @@ public class HelmetController : KMonoBehaviour
 		this.UpdateJets();
 	}
 
-	private void HideHelmet()
+		private void HideHelmet()
 	{
 		this.is_shown = false;
 		KBatchedAnimController assigneeController = this.GetAssigneeController();
@@ -117,7 +117,7 @@ public class HelmetController : KMonoBehaviour
 		this.UpdateJets();
 	}
 
-	private void UpdateJets()
+		private void UpdateJets()
 	{
 		if (this.is_shown && this.is_flying)
 		{
@@ -127,7 +127,7 @@ public class HelmetController : KMonoBehaviour
 		this.DisableJets();
 	}
 
-	private void EnableJets()
+		private void EnableJets()
 	{
 		if (!this.has_jets)
 		{
@@ -141,7 +141,7 @@ public class HelmetController : KMonoBehaviour
 		this.glow_go = this.AddTrackedAnim("glow", Assets.GetAnim("jetsuit_thruster_glow_fx_kanim"), "loop", Grid.SceneLayer.Front, "snapTo_neck");
 	}
 
-	private void DisableJets()
+		private void DisableJets()
 	{
 		if (!this.has_jets)
 		{
@@ -153,7 +153,7 @@ public class HelmetController : KMonoBehaviour
 		this.glow_go = null;
 	}
 
-	private GameObject AddTrackedAnim(string name, KAnimFile tracked_anim_file, string anim_clip, Grid.SceneLayer layer, string symbol_name)
+		private GameObject AddTrackedAnim(string name, KAnimFile tracked_anim_file, string anim_clip, Grid.SceneLayer layer, string symbol_name)
 	{
 		KBatchedAnimController assigneeController = this.GetAssigneeController();
 		if (assigneeController == null)
@@ -183,17 +183,17 @@ public class HelmetController : KMonoBehaviour
 		return gameObject;
 	}
 
-	private void OnBeginRecoverBreath(object data)
+		private void OnBeginRecoverBreath(object data)
 	{
 		this.HideHelmet();
 	}
 
-	private void OnEndRecoverBreath(object data)
+		private void OnEndRecoverBreath(object data)
 	{
 		this.ShowHelmet();
 	}
 
-	private void OnPathAdvanced(object data)
+		private void OnPathAdvanced(object data)
 	{
 		if (this.owner_navigator == null)
 		{
@@ -220,28 +220,28 @@ public class HelmetController : KMonoBehaviour
 		}
 	}
 
-	public string anim_file;
+		public string anim_file;
 
-	public bool has_jets;
+		public bool has_jets;
 
-	private bool is_shown;
+		private bool is_shown;
 
-	private bool in_tube;
+		private bool in_tube;
 
-	private bool is_flying;
+		private bool is_flying;
 
-	private Navigator owner_navigator;
+		private Navigator owner_navigator;
 
-	private GameObject jet_go;
+		private GameObject jet_go;
 
-	private GameObject glow_go;
+		private GameObject glow_go;
 
-	private static readonly EventSystem.IntraObjectHandler<HelmetController> OnEquippedDelegate = new EventSystem.IntraObjectHandler<HelmetController>(delegate(HelmetController component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HelmetController> OnEquippedDelegate = new EventSystem.IntraObjectHandler<HelmetController>(delegate(HelmetController component, object data)
 	{
 		component.OnEquipped(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<HelmetController> OnUnequippedDelegate = new EventSystem.IntraObjectHandler<HelmetController>(delegate(HelmetController component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HelmetController> OnUnequippedDelegate = new EventSystem.IntraObjectHandler<HelmetController>(delegate(HelmetController component, object data)
 	{
 		component.OnUnequipped(data);
 	});

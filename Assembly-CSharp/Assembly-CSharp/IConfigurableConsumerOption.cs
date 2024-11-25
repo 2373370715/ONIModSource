@@ -3,15 +3,15 @@ using UnityEngine;
 
 public interface IConfigurableConsumerOption
 {
-	Tag GetID();
+		Tag GetID();
 
-	string GetName();
+		string GetName();
 
-	string GetDetailedDescription();
+		string GetDetailedDescription();
 
-	string GetDescription();
+		string GetDescription();
 
-	Sprite GetIcon();
+		Sprite GetIcon();
 
-	IConfigurableConsumerIngredient[] GetIngredients();
+		IConfigurableConsumerIngredient[] GetIngredients();
 }

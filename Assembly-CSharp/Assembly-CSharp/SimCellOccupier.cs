@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SimCellOccupier")]
 public class SimCellOccupier : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-		public bool IsVisuallySolid
+			public bool IsVisuallySolid
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class SimCellOccupier : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.Normal, null);
 		if (this.building.Def.IsFoundation)
@@ -24,7 +24,7 @@ public class SimCellOccupier : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		HandleVector<Game.CallbackInfo>.Handle callbackHandle = Game.Instance.callbackManager.Add(new Game.CallbackInfo(new System.Action(this.OnModifyComplete), false));
 		int num = this.building.Def.PlacementOffsets.Length;
@@ -56,12 +56,12 @@ public class SimCellOccupier : KMonoBehaviour, IGameObjectEffectDescriptor
 		base.Subscribe<SimCellOccupier>(-1699355994, SimCellOccupier.OnBuildingRepairedDelegate);
 	}
 
-	private void OnMelted(object o)
+		private void OnMelted(object o)
 	{
 		Building.CreateBuildingMeltedNotification(base.gameObject);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.callDestroy)
 		{
@@ -69,7 +69,7 @@ public class SimCellOccupier : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	private Sim.Cell.Properties GetSimCellProperties()
+		private Sim.Cell.Properties GetSimCellProperties()
 	{
 		Sim.Cell.Properties properties = Sim.Cell.Properties.SolidImpermeable;
 		if (this.setGasImpermeable)
@@ -99,7 +99,7 @@ public class SimCellOccupier : KMonoBehaviour, IGameObjectEffectDescriptor
 		return properties;
 	}
 
-	public void DestroySelf(System.Action onComplete)
+		public void DestroySelf(System.Action onComplete)
 	{
 		this.callDestroy = false;
 		for (int i = 0; i < this.building.PlacementCells.Length; i++)
@@ -139,12 +139,12 @@ public class SimCellOccupier : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public bool IsReady()
+		public bool IsReady()
 	{
 		return this.isReady;
 	}
 
-	private void OnModifyComplete()
+		private void OnModifyComplete()
 	{
 		if (this == null || base.gameObject == null)
 		{
@@ -156,7 +156,7 @@ public class SimCellOccupier : KMonoBehaviour, IGameObjectEffectDescriptor
 		GameScenePartitioner.Instance.TriggerEvent(vector2I.x, vector2I.y, 1, 1, GameScenePartitioner.Instance.solidChangedLayer, null);
 	}
 
-	private void ForceSetGameCellData(int cell)
+		private void ForceSetGameCellData(int cell)
 	{
 		bool solid = !Grid.DupePassable[cell];
 		Grid.SetSolid(cell, solid, CellEventLogger.Instance.SimCellOccupierForceSolid);
@@ -165,7 +165,7 @@ public class SimCellOccupier : KMonoBehaviour, IGameObjectEffectDescriptor
 		Grid.Damage[cell] = 0f;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = null;
 		if (this.movementSpeedMultiplier != 1f)
@@ -178,7 +178,7 @@ public class SimCellOccupier : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	private void OnBuildingRepaired(object data)
+		private void OnBuildingRepaired(object data)
 	{
 		BuildingHP buildingHP = (BuildingHP)data;
 		float damage = 1f - (float)buildingHP.HitPoints / (float)buildingHP.MaxHitPoints;
@@ -188,44 +188,44 @@ public class SimCellOccupier : KMonoBehaviour, IGameObjectEffectDescriptor
 		});
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private PrimaryElement primaryElement;
 
-	[SerializeField]
+		[SerializeField]
 	public bool doReplaceElement = true;
 
-	[SerializeField]
+		[SerializeField]
 	public bool setGasImpermeable;
 
-	[SerializeField]
+		[SerializeField]
 	public bool setLiquidImpermeable;
 
-	[SerializeField]
+		[SerializeField]
 	public bool setTransparent;
 
-	[SerializeField]
+		[SerializeField]
 	public bool setOpaque;
 
-	[SerializeField]
+		[SerializeField]
 	public bool notifyOnMelt;
 
-	[SerializeField]
+		[SerializeField]
 	private bool setConstructedTile;
 
-	[SerializeField]
+		[SerializeField]
 	public float strengthMultiplier = 1f;
 
-	[SerializeField]
+		[SerializeField]
 	public float movementSpeedMultiplier = 1f;
 
-	private bool isReady;
+		private bool isReady;
 
-	private bool callDestroy = true;
+		private bool callDestroy = true;
 
-	private static readonly EventSystem.IntraObjectHandler<SimCellOccupier> OnBuildingRepairedDelegate = new EventSystem.IntraObjectHandler<SimCellOccupier>(delegate(SimCellOccupier component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SimCellOccupier> OnBuildingRepairedDelegate = new EventSystem.IntraObjectHandler<SimCellOccupier>(delegate(SimCellOccupier component, object data)
 	{
 		component.OnBuildingRepaired(data);
 	});

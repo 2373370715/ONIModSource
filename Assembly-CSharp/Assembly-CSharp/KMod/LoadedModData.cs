@@ -5,14 +5,14 @@ using HarmonyLib;
 
 namespace KMod
 {
-	public class LoadedModData
+		public class LoadedModData
 	{
-		public Harmony harmony;
+				public Harmony harmony;
 
-		public Dictionary<Assembly, UserMod2> userMod2Instances;
+				public Dictionary<Assembly, UserMod2> userMod2Instances;
 
-		public ICollection<Assembly> dlls;
+				public ICollection<Assembly> dlls;
 
-		public ICollection<MethodBase> patched_methods;
+				public ICollection<MethodBase> patched_methods;
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AlgaeDistilleryConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "AlgaeDistillery";
 		int width = 3;
@@ -32,7 +32,7 @@ public class AlgaeDistilleryConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		AlgaeDistillery algaeDistillery = go.AddOrGet<AlgaeDistillery>();
@@ -68,23 +68,23 @@ public class AlgaeDistilleryConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "AlgaeDistillery";
+		public const string ID = "AlgaeDistillery";
 
-	public const float INPUT_SLIME_PER_SECOND = 0.6f;
+		public const float INPUT_SLIME_PER_SECOND = 0.6f;
 
-	public const float ALGAE_PER_SECOND = 0.2f;
+		public const float ALGAE_PER_SECOND = 0.2f;
 
-	public const float DIRTY_WATER_PER_SECOND = 0.40000004f;
+		public const float DIRTY_WATER_PER_SECOND = 0.40000004f;
 
-	public const float OUTPUT_TEMP = 303.15f;
+		public const float OUTPUT_TEMP = 303.15f;
 
-	public const float REFILL_RATE = 2400f;
+		public const float REFILL_RATE = 2400f;
 
-	public const float ALGAE_STORAGE_AMOUNT = 480f;
+		public const float ALGAE_STORAGE_AMOUNT = 480f;
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class HarvestTool : DragTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		HarvestTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		HarvestTool.Instance = this;
@@ -18,7 +18,7 @@ public class HarvestTool : DragTool
 		this.viewMode = OverlayModes.Harvest.ID;
 	}
 
-	protected override void OnDragTool(int cell, int distFromOrigin)
+		protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		if (Grid.IsValidCell(cell))
 		{
@@ -50,7 +50,7 @@ public class HarvestTool : DragTool
 		}
 	}
 
-	public void Update()
+		public void Update()
 	{
 		MeshRenderer componentInChildren = this.visualizer.GetComponentInChildren<MeshRenderer>();
 		if (componentInChildren != null)
@@ -67,30 +67,30 @@ public class HarvestTool : DragTool
 		}
 	}
 
-	public override void OnLeftClickUp(Vector3 cursor_pos)
+		public override void OnLeftClickUp(Vector3 cursor_pos)
 	{
 		base.OnLeftClickUp(cursor_pos);
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		ToolMenu.Instance.PriorityScreen.Show(true);
 		ToolMenu.Instance.toolParameterMenu.PopulateMenu(this.options);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		ToolMenu.Instance.PriorityScreen.Show(false);
 		ToolMenu.Instance.toolParameterMenu.ClearMenu();
 	}
 
-	public GameObject Placer;
+		public GameObject Placer;
 
-	public static HarvestTool Instance;
+		public static HarvestTool Instance;
 
-	public Texture2D[] visualizerTextures;
+		public Texture2D[] visualizerTextures;
 
-	private Dictionary<string, ToolParameterMenu.ToggleState> options = new Dictionary<string, ToolParameterMenu.ToggleState>();
+		private Dictionary<string, ToolParameterMenu.ToggleState> options = new Dictionary<string, ToolParameterMenu.ToggleState>();
 }

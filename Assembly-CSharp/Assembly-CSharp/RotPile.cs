@@ -6,18 +6,18 @@ using UnityEngine;
 
 public class RotPile : StateMachineComponent<RotPile.StatesInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	protected void ConvertToElement()
+		protected void ConvertToElement()
 	{
 		PrimaryElement component = base.smi.master.GetComponent<PrimaryElement>();
 		float mass = component.Mass;
@@ -33,7 +33,7 @@ public class RotPile : StateMachineComponent<RotPile.StatesInstance>
 		Util.KDestroyGameObject(base.smi.gameObject);
 	}
 
-	private static string OnRottenTooltip(List<Notification> notifications, object data)
+		private static string OnRottenTooltip(List<Notification> notifications, object data)
 	{
 		string text = "";
 		foreach (Notification notification in notifications)
@@ -46,7 +46,7 @@ public class RotPile : StateMachineComponent<RotPile.StatesInstance>
 		return string.Format(MISC.NOTIFICATIONS.FOODROT.TOOLTIP, text);
 	}
 
-	public void TryClearNotification()
+		public void TryClearNotification()
 	{
 		if (this.notification != null)
 		{
@@ -54,7 +54,7 @@ public class RotPile : StateMachineComponent<RotPile.StatesInstance>
 		}
 	}
 
-	public void TryCreateNotification()
+		public void TryCreateNotification()
 	{
 		WorldContainer myWorld = base.smi.master.GetMyWorld();
 		if (myWorld != null && myWorld.worldInventory.IsReachable(base.smi.master.gameObject.GetComponent<Pickupable>()))
@@ -65,20 +65,20 @@ public class RotPile : StateMachineComponent<RotPile.StatesInstance>
 		}
 	}
 
-	private Notification notification;
+		private Notification notification;
 
-	public class StatesInstance : GameStateMachine<RotPile.States, RotPile.StatesInstance, RotPile, object>.GameInstance
+		public class StatesInstance : GameStateMachine<RotPile.States, RotPile.StatesInstance, RotPile, object>.GameInstance
 	{
-		public StatesInstance(RotPile master) : base(master)
+				public StatesInstance(RotPile master) : base(master)
 		{
 		}
 
-		public AttributeModifier baseDecomposeRate;
+				public AttributeModifier baseDecomposeRate;
 	}
 
-	public class States : GameStateMachine<RotPile.States, RotPile.StatesInstance, RotPile>
+		public class States : GameStateMachine<RotPile.States, RotPile.StatesInstance, RotPile>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.decomposing;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -98,10 +98,10 @@ public class RotPile : StateMachineComponent<RotPile.StatesInstance>
 			});
 		}
 
-		public GameStateMachine<RotPile.States, RotPile.StatesInstance, RotPile, object>.State decomposing;
+				public GameStateMachine<RotPile.States, RotPile.StatesInstance, RotPile, object>.State decomposing;
 
-		public GameStateMachine<RotPile.States, RotPile.StatesInstance, RotPile, object>.State convertDestroy;
+				public GameStateMachine<RotPile.States, RotPile.StatesInstance, RotPile, object>.State convertDestroy;
 
-		public StateMachine<RotPile.States, RotPile.StatesInstance, RotPile, object>.FloatParameter decompositionAmount;
+				public StateMachine<RotPile.States, RotPile.StatesInstance, RotPile, object>.FloatParameter decompositionAmount;
 	}
 }

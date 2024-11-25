@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GeyserGenericConfig : IMultiEntityConfig
 {
-	public List<GameObject> CreatePrefabs()
+		public List<GameObject> CreatePrefabs()
 	{
 		List<GameObject> list = new List<GameObject>();
 		List<GeyserGenericConfig.GeyserPrefabParams> configs = this.GenerateConfigs();
@@ -37,7 +37,7 @@ public class GeyserGenericConfig : IMultiEntityConfig
 		return list;
 	}
 
-	public static GameObject CreateGeyser(string id, string anim, int width, int height, string name, string desc, HashedString presetType, float geyserTemperature)
+		public static GameObject CreateGeyser(string id, string anim, int width, int height, string name, string desc, HashedString presetType, float geyserTemperature)
 	{
 		float mass = 2000f;
 		EffectorValues tier = BUILDINGS.DECOR.BONUS.TIER1;
@@ -66,15 +66,15 @@ public class GeyserGenericConfig : IMultiEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	private List<GeyserGenericConfig.GeyserPrefabParams> GenerateConfigs()
+		private List<GeyserGenericConfig.GeyserPrefabParams> GenerateConfigs()
 	{
 		List<GeyserGenericConfig.GeyserPrefabParams> list = new List<GeyserGenericConfig.GeyserPrefabParams>();
 		list.Add(new GeyserGenericConfig.GeyserPrefabParams("geyser_gas_steam_kanim", 2, 4, new GeyserConfigurator.GeyserType("steam", SimHashes.Steam, GeyserConfigurator.GeyserShape.Gas, 383.15f, 1000f, 2000f, 5f, 60f, 1140f, 0.1f, 0.9f, 15000f, 135000f, 0.4f, 0.8f, 372.15f, ""), true));
@@ -114,61 +114,61 @@ public class GeyserGenericConfig : IMultiEntityConfig
 		return list;
 	}
 
-	public const string ID = "GeyserGeneric";
+		public const string ID = "GeyserGeneric";
 
-	public const string Steam = "steam";
+		public const string Steam = "steam";
 
-	public const string HotSteam = "hot_steam";
+		public const string HotSteam = "hot_steam";
 
-	public const string HotWater = "hot_water";
+		public const string HotWater = "hot_water";
 
-	public const string SlushWater = "slush_water";
+		public const string SlushWater = "slush_water";
 
-	public const string FilthyWater = "filthy_water";
+		public const string FilthyWater = "filthy_water";
 
-	public const string SlushSaltWater = "slush_salt_water";
+		public const string SlushSaltWater = "slush_salt_water";
 
-	public const string SaltWater = "salt_water";
+		public const string SaltWater = "salt_water";
 
-	public const string SmallVolcano = "small_volcano";
+		public const string SmallVolcano = "small_volcano";
 
-	public const string BigVolcano = "big_volcano";
+		public const string BigVolcano = "big_volcano";
 
-	public const string LiquidCO2 = "liquid_co2";
+		public const string LiquidCO2 = "liquid_co2";
 
-	public const string HotCO2 = "hot_co2";
+		public const string HotCO2 = "hot_co2";
 
-	public const string HotHydrogen = "hot_hydrogen";
+		public const string HotHydrogen = "hot_hydrogen";
 
-	public const string HotPO2 = "hot_po2";
+		public const string HotPO2 = "hot_po2";
 
-	public const string SlimyPO2 = "slimy_po2";
+		public const string SlimyPO2 = "slimy_po2";
 
-	public const string ChlorineGas = "chlorine_gas";
+		public const string ChlorineGas = "chlorine_gas";
 
-	public const string Methane = "methane";
+		public const string Methane = "methane";
 
-	public const string MoltenCopper = "molten_copper";
+		public const string MoltenCopper = "molten_copper";
 
-	public const string MoltenIron = "molten_iron";
+		public const string MoltenIron = "molten_iron";
 
-	public const string MoltenGold = "molten_gold";
+		public const string MoltenGold = "molten_gold";
 
-	public const string MoltenAluminum = "molten_aluminum";
+		public const string MoltenAluminum = "molten_aluminum";
 
-	public const string MoltenTungsten = "molten_tungsten";
+		public const string MoltenTungsten = "molten_tungsten";
 
-	public const string MoltenNiobium = "molten_niobium";
+		public const string MoltenNiobium = "molten_niobium";
 
-	public const string MoltenCobalt = "molten_cobalt";
+		public const string MoltenCobalt = "molten_cobalt";
 
-	public const string OilDrip = "oil_drip";
+		public const string OilDrip = "oil_drip";
 
-	public const string LiquidSulfur = "liquid_sulfur";
+		public const string LiquidSulfur = "liquid_sulfur";
 
-	public struct GeyserPrefabParams
+		public struct GeyserPrefabParams
 	{
-		public GeyserPrefabParams(string anim, int width, int height, GeyserConfigurator.GeyserType geyserType, bool isGenericGeyser)
+				public GeyserPrefabParams(string anim, int width, int height, GeyserConfigurator.GeyserType geyserType, bool isGenericGeyser)
 		{
 			this.id = "GeyserGeneric_" + geyserType.id;
 			this.anim = anim;
@@ -180,116 +180,116 @@ public class GeyserGenericConfig : IMultiEntityConfig
 			this.isGenericGeyser = isGenericGeyser;
 		}
 
-		public string id;
+				public string id;
 
-		public string anim;
+				public string anim;
 
-		public int width;
+				public int width;
 
-		public int height;
+				public int height;
 
-		public StringKey nameStringKey;
+				public StringKey nameStringKey;
 
-		public StringKey descStringKey;
+				public StringKey descStringKey;
 
-		public GeyserConfigurator.GeyserType geyserType;
+				public GeyserConfigurator.GeyserType geyserType;
 
-		public bool isGenericGeyser;
+				public bool isGenericGeyser;
 	}
 
-	private static class TEMPERATURES
+		private static class TEMPERATURES
 	{
-		public const float BELOW_FREEZING = 263.15f;
+				public const float BELOW_FREEZING = 263.15f;
 
-		public const float DUPE_NORMAL = 303.15f;
+				public const float DUPE_NORMAL = 303.15f;
 
-		public const float DUPE_HOT = 333.15f;
+				public const float DUPE_HOT = 333.15f;
 
-		public const float BELOW_BOILING = 368.15f;
+				public const float BELOW_BOILING = 368.15f;
 
-		public const float ABOVE_BOILING = 383.15f;
+				public const float ABOVE_BOILING = 383.15f;
 
-		public const float HOT1 = 423.15f;
+				public const float HOT1 = 423.15f;
 
-		public const float HOT2 = 773.15f;
+				public const float HOT2 = 773.15f;
 
-		public const float MOLTEN_MAGMA = 2000f;
+				public const float MOLTEN_MAGMA = 2000f;
 	}
 
-	public static class RATES
+		public static class RATES
 	{
-		public const float GAS_SMALL_MIN = 40f;
+				public const float GAS_SMALL_MIN = 40f;
 
-		public const float GAS_SMALL_MAX = 80f;
+				public const float GAS_SMALL_MAX = 80f;
 
-		public const float GAS_NORMAL_MIN = 70f;
+				public const float GAS_NORMAL_MIN = 70f;
 
-		public const float GAS_NORMAL_MAX = 140f;
+				public const float GAS_NORMAL_MAX = 140f;
 
-		public const float GAS_BIG_MIN = 100f;
+				public const float GAS_BIG_MIN = 100f;
 
-		public const float GAS_BIG_MAX = 200f;
+				public const float GAS_BIG_MAX = 200f;
 
-		public const float LIQUID_SMALL_MIN = 500f;
+				public const float LIQUID_SMALL_MIN = 500f;
 
-		public const float LIQUID_SMALL_MAX = 1000f;
+				public const float LIQUID_SMALL_MAX = 1000f;
 
-		public const float LIQUID_NORMAL_MIN = 1000f;
+				public const float LIQUID_NORMAL_MIN = 1000f;
 
-		public const float LIQUID_NORMAL_MAX = 2000f;
+				public const float LIQUID_NORMAL_MAX = 2000f;
 
-		public const float LIQUID_BIG_MIN = 2000f;
+				public const float LIQUID_BIG_MIN = 2000f;
 
-		public const float LIQUID_BIG_MAX = 4000f;
+				public const float LIQUID_BIG_MAX = 4000f;
 
-		public const float MOLTEN_NORMAL_MIN = 200f;
+				public const float MOLTEN_NORMAL_MIN = 200f;
 
-		public const float MOLTEN_NORMAL_MAX = 400f;
+				public const float MOLTEN_NORMAL_MAX = 400f;
 
-		public const float MOLTEN_BIG_MIN = 400f;
+				public const float MOLTEN_BIG_MIN = 400f;
 
-		public const float MOLTEN_BIG_MAX = 800f;
+				public const float MOLTEN_BIG_MAX = 800f;
 
-		public const float MOLTEN_HUGE_MIN = 800f;
+				public const float MOLTEN_HUGE_MIN = 800f;
 
-		public const float MOLTEN_HUGE_MAX = 1600f;
+				public const float MOLTEN_HUGE_MAX = 1600f;
 	}
 
-	public static class MAX_PRESSURES
+		public static class MAX_PRESSURES
 	{
-		public const float GAS = 5f;
+				public const float GAS = 5f;
 
-		public const float GAS_HIGH = 15f;
+				public const float GAS_HIGH = 15f;
 
-		public const float MOLTEN = 150f;
+				public const float MOLTEN = 150f;
 
-		public const float LIQUID_SMALL = 50f;
+				public const float LIQUID_SMALL = 50f;
 
-		public const float LIQUID = 500f;
+				public const float LIQUID = 500f;
 	}
 
-	public static class ITERATIONS
+		public static class ITERATIONS
 	{
-		public static class INFREQUENT_MOLTEN
+				public static class INFREQUENT_MOLTEN
 		{
-			public const float PCT_MIN = 0.005f;
+						public const float PCT_MIN = 0.005f;
 
-			public const float PCT_MAX = 0.01f;
+						public const float PCT_MAX = 0.01f;
 
-			public const float LEN_MIN = 6000f;
+						public const float LEN_MIN = 6000f;
 
-			public const float LEN_MAX = 12000f;
+						public const float LEN_MAX = 12000f;
 		}
 
-		public static class FREQUENT_MOLTEN
+				public static class FREQUENT_MOLTEN
 		{
-			public const float PCT_MIN = 0.016666668f;
+						public const float PCT_MIN = 0.016666668f;
 
-			public const float PCT_MAX = 0.1f;
+						public const float PCT_MAX = 0.1f;
 
-			public const float LEN_MIN = 480f;
+						public const float LEN_MIN = 480f;
 
-			public const float LEN_MAX = 1080f;
+						public const float LEN_MAX = 1080f;
 		}
 	}
 }

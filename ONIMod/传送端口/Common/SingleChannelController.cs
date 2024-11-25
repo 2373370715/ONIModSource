@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using RsTransferPort;
+
+namespace RsTransferPort;
 
 public class SingleChannelController : IComparable<SingleChannelController> {
     public List<TransferPortChannel> all       = new();

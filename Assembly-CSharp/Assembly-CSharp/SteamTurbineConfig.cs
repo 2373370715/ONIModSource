@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SteamTurbineConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SteamTurbine";
 		int width = 5;
@@ -29,7 +29,7 @@ public class SteamTurbineConfig : IBuildingConfig
 		EffectorValues none = NOISE_POLLUTION.NONE;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, construction_mass, construction_materials, melting_point, build_location_rule, BUILDINGS.DECOR.NONE, none, 1f);
 		buildingDef.GeneratorWattageRating = 2000f;
-		buildingDef.GeneratorBaseCapacity = 2000f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
 		buildingDef.Entombable = true;
 		buildingDef.IsFoundation = false;
 		buildingDef.PermittedRotations = PermittedRotations.FlipH;
@@ -43,13 +43,13 @@ public class SteamTurbineConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.GetComponent<Constructable>().requiredSkillPerk = Db.Get().SkillPerks.CanPowerTinker.Id;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<Storage>().SetDefaultStoredItemModifiers(SteamTurbineConfig.StoredItemModifiers);
 		Turbine turbine = go.AddOrGet<Turbine>();
@@ -83,13 +83,13 @@ public class SteamTurbineConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "SteamTurbine";
+		public const string ID = "SteamTurbine";
 
-	private const int HEIGHT = 4;
+		private const int HEIGHT = 4;
 
-	private const int WIDTH = 5;
+		private const int WIDTH = 5;
 
-	private static readonly List<Storage.StoredItemModifier> StoredItemModifiers = new List<Storage.StoredItemModifier>
+		private static readonly List<Storage.StoredItemModifier> StoredItemModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Insulate,

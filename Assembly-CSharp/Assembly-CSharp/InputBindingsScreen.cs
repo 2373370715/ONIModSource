@@ -6,395 +6,348 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InputBindingsScreen : KModalScreen
-{
-	public override bool IsModal()
-	{
-		return true;
-	}
+public class InputBindingsScreen : KModalScreen {
+    private const           string              ROOT_KEY = "STRINGS.INPUT_BINDINGS.";
+    private static readonly KeyCode[]           validKeys;
+    private                 Action              actionToRebind = Action.NumActions;
+    private                 KButton             activeButton;
+    private                 int                 activeScreen = -1;
+    public                  KButton             backButton;
+    public                  KButton             closeButton;
+    private                 ConfirmDialogScreen confirmDialog;
 
-	private bool IsKeyDown(KeyCode key_code)
-	{
-		return Input.GetKey(key_code) || Input.GetKeyDown(key_code);
-	}
+    [SerializeField]
+    private ConfirmDialogScreen confirmPrefab;
 
-	private string GetModifierString(Modifier modifiers)
-	{
-		string text = "";
-		foreach (object obj in Enum.GetValues(typeof(Modifier)))
-		{
-			Modifier modifier = (Modifier)obj;
-			if ((modifiers & modifier) != Modifier.None)
-			{
-				text = text + " + " + modifier.ToString();
-			}
-		}
-		return text;
-	}
+    private UIPool<HorizontalLayoutGroup> entryPool;
 
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.entryPrefab.SetActive(false);
-		this.prevScreenButton.onClick += this.OnPrevScreen;
-		this.nextScreenButton.onClick += this.OnNextScreen;
-	}
+    [SerializeField]
+    private GameObject entryPrefab;
 
-	protected override void OnActivate()
-	{
-		this.CollectScreens();
-		string text = this.screens[this.activeScreen];
-		string key = "STRINGS.INPUT_BINDINGS." + text.ToUpper() + ".NAME";
-		this.screenTitle.text = Strings.Get(key);
-		this.closeButton.onClick += this.OnBack;
-		this.backButton.onClick += this.OnBack;
-		this.resetButton.onClick += this.OnReset;
-		this.BuildDisplay();
-	}
+    private bool    ignoreRootConflicts;
+    public  KButton nextScreenButton;
 
-	private void CollectScreens()
-	{
-		this.screens.Clear();
-		for (int i = 0; i < GameInputMapping.KeyBindings.Length; i++)
-		{
-			BindingEntry bindingEntry = GameInputMapping.KeyBindings[i];
-			if (bindingEntry.mGroup != null && bindingEntry.mRebindable && !this.screens.Contains(bindingEntry.mGroup) && DlcManager.IsDlcListValidForCurrentContent(bindingEntry.dlcIds))
-			{
-				if (bindingEntry.mGroup == "Root")
-				{
-					this.activeScreen = this.screens.Count;
-				}
-				this.screens.Add(bindingEntry.mGroup);
-			}
-		}
-	}
+    [SerializeField]
+    private OptionsMenuScreen optionsScreen;
 
-	protected override void OnDeactivate()
-	{
-		GameInputMapping.SaveBindings();
-		this.DestroyDisplay();
-	}
+    [SerializeField]
+    private GameObject parent;
 
-	private LocString GetActionString(global::Action action)
-	{
-		return null;
-	}
+    public           KButton      prevScreenButton;
+    public           KButton      resetButton;
+    private readonly List<string> screens = new List<string>();
 
-	private string GetBindingText(BindingEntry binding)
-	{
-		string text = GameUtil.GetKeycodeLocalized(binding.mKeyCode);
-		if (binding.mKeyCode != KKeyCode.LeftAlt && binding.mKeyCode != KKeyCode.RightAlt && binding.mKeyCode != KKeyCode.LeftControl && binding.mKeyCode != KKeyCode.RightControl && binding.mKeyCode != KKeyCode.LeftShift && binding.mKeyCode != KKeyCode.RightShift)
-		{
-			text += this.GetModifierString(binding.mModifier);
-		}
-		return text;
-	}
+    [SerializeField]
+    private LocText screenTitle;
 
-	private void BuildDisplay()
-	{
-		string text = this.screens[this.activeScreen];
-		string key = "STRINGS.INPUT_BINDINGS." + text.ToUpper() + ".NAME";
-		this.screenTitle.text = Strings.Get(key);
-		if (this.entryPool == null)
-		{
-			this.entryPool = new UIPool<HorizontalLayoutGroup>(this.entryPrefab.GetComponent<HorizontalLayoutGroup>());
-		}
-		this.DestroyDisplay();
-		int num = 0;
-		for (int i = 0; i < GameInputMapping.KeyBindings.Length; i++)
-		{
-			BindingEntry binding = GameInputMapping.KeyBindings[i];
-			if (binding.mGroup == this.screens[this.activeScreen] && binding.mRebindable && DlcManager.IsDlcListValidForCurrentContent(binding.dlcIds))
-			{
-				GameObject gameObject = this.entryPool.GetFreeElement(this.parent, true).gameObject;
-				TMP_Text componentInChildren = gameObject.transform.GetChild(0).GetComponentInChildren<LocText>();
-				string key2 = "STRINGS.INPUT_BINDINGS." + binding.mGroup.ToUpper() + "." + binding.mAction.ToString().ToUpper();
-				componentInChildren.text = Strings.Get(key2);
-				LocText key_label = gameObject.transform.GetChild(1).GetComponentInChildren<LocText>();
-				key_label.text = this.GetBindingText(binding);
-				KButton button = gameObject.GetComponentInChildren<KButton>();
-				button.onClick += delegate()
-				{
-					this.waitingForKeyPress = true;
-					this.actionToRebind = binding.mAction;
-					this.ignoreRootConflicts = binding.mIgnoreRootConflics;
-					this.activeButton = button;
-					key_label.text = UI.FRONTEND.INPUT_BINDINGS_SCREEN.WAITING_FOR_INPUT;
-				};
-				gameObject.transform.SetSiblingIndex(num);
-				num++;
-			}
-		}
-	}
+    private bool waitingForKeyPress;
 
-	private void DestroyDisplay()
-	{
-		this.entryPool.ClearAll();
-	}
+    // Note: this type is marked as 'beforefieldinit'.
+    static InputBindingsScreen() {
+        var array = new KeyCode[111];
+        RuntimeHelpers.InitializeArray(array,
+                                       fieldof( <
+                                       PrivateImplementationDetails >
+                                       .4522A529DBF1D30936B6BCC06D2E607CD76E3B0FB1C18D9DA2635843A2840CD7)
+                      .FieldHandle);
+        validKeys = array;
+    }
 
-	private void Update()
-	{
-		if (this.waitingForKeyPress)
-		{
-			Modifier modifier = Modifier.None;
-			modifier |= ((this.IsKeyDown(KeyCode.LeftAlt) || this.IsKeyDown(KeyCode.RightAlt)) ? Modifier.Alt : Modifier.None);
-			modifier |= ((this.IsKeyDown(KeyCode.LeftControl) || this.IsKeyDown(KeyCode.RightControl)) ? Modifier.Ctrl : Modifier.None);
-			modifier |= ((this.IsKeyDown(KeyCode.LeftShift) || this.IsKeyDown(KeyCode.RightShift)) ? Modifier.Shift : Modifier.None);
-			modifier |= (this.IsKeyDown(KeyCode.CapsLock) ? Modifier.CapsLock : Modifier.None);
-			modifier |= (this.IsKeyDown(KeyCode.BackQuote) ? Modifier.Backtick : Modifier.None);
-			bool flag = false;
-			for (int i = 0; i < InputBindingsScreen.validKeys.Length; i++)
-			{
-				KeyCode keyCode = InputBindingsScreen.validKeys[i];
-				if (Input.GetKeyDown(keyCode))
-				{
-					KKeyCode kkey_code = (KKeyCode)keyCode;
-					this.Bind(kkey_code, modifier);
-					flag = true;
-				}
-			}
-			if (!flag)
-			{
-				float axis = Input.GetAxis("Mouse ScrollWheel");
-				KKeyCode kkeyCode = KKeyCode.None;
-				if (axis < 0f)
-				{
-					kkeyCode = KKeyCode.MouseScrollDown;
-				}
-				else if (axis > 0f)
-				{
-					kkeyCode = KKeyCode.MouseScrollUp;
-				}
-				if (kkeyCode != KKeyCode.None)
-				{
-					this.Bind(kkeyCode, modifier);
-				}
-			}
-		}
-	}
+    public override bool IsModal()                   { return true; }
+    private         bool IsKeyDown(KeyCode key_code) { return Input.GetKey(key_code) || Input.GetKeyDown(key_code); }
 
-	private BindingEntry GetDuplicatedBinding(string activeScreen, BindingEntry new_binding)
-	{
-		BindingEntry result = default(BindingEntry);
-		for (int i = 0; i < GameInputMapping.KeyBindings.Length; i++)
-		{
-			BindingEntry bindingEntry = GameInputMapping.KeyBindings[i];
-			if (new_binding.IsBindingEqual(bindingEntry) && (bindingEntry.mGroup == null || bindingEntry.mGroup == activeScreen || bindingEntry.mGroup == "Root" || activeScreen == "Root") && (!(activeScreen == "Root") || !bindingEntry.mIgnoreRootConflics) && (!(bindingEntry.mGroup == "Root") || !new_binding.mIgnoreRootConflics))
-			{
-				result = bindingEntry;
-				break;
-			}
-		}
-		return result;
-	}
+    private string GetModifierString(Modifier modifiers) {
+        var text = "";
+        foreach (var obj in Enum.GetValues(typeof(Modifier))) {
+            var modifier                                      = (Modifier)obj;
+            if ((modifiers & modifier) != Modifier.None) text = text + " + " + modifier;
+        }
 
-	public override void OnKeyDown(KButtonEvent e)
-	{
-		if (this.waitingForKeyPress)
-		{
-			e.Consumed = true;
-			return;
-		}
-		if (e.TryConsume(global::Action.Escape) || e.TryConsume(global::Action.MouseRight))
-		{
-			this.Deactivate();
-			return;
-		}
-		base.OnKeyDown(e);
-	}
+        return text;
+    }
 
-	public override void OnKeyUp(KButtonEvent e)
-	{
-		e.Consumed = true;
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        entryPrefab.SetActive(false);
+        prevScreenButton.onClick += OnPrevScreen;
+        nextScreenButton.onClick += OnNextScreen;
+    }
 
-	private void OnBack()
-	{
-		int num = this.NumUnboundActions();
-		if (num == 0)
-		{
-			this.Deactivate();
-			return;
-		}
-		string text;
-		if (num == 1)
-		{
-			BindingEntry firstUnbound = this.GetFirstUnbound();
-			text = string.Format(UI.FRONTEND.INPUT_BINDINGS_SCREEN.UNBOUND_ACTION, firstUnbound.mAction.ToString());
-		}
-		else
-		{
-			text = UI.FRONTEND.INPUT_BINDINGS_SCREEN.MULTIPLE_UNBOUND_ACTIONS;
-		}
-		this.confirmDialog = Util.KInstantiateUI(this.confirmPrefab.gameObject, base.transform.gameObject, false).GetComponent<ConfirmDialogScreen>();
-		this.confirmDialog.PopupConfirmDialog(text, delegate
-		{
-			this.Deactivate();
-		}, delegate
-		{
-			this.confirmDialog.Deactivate();
-		}, null, null, null, null, null, null);
-		this.confirmDialog.gameObject.SetActive(true);
-	}
+    protected override void OnActivate() {
+        CollectScreens();
+        var text = screens[activeScreen];
+        var key  = "STRINGS.INPUT_BINDINGS." + text.ToUpper() + ".NAME";
+        screenTitle.text    =  Strings.Get(key);
+        closeButton.onClick += OnBack;
+        backButton.onClick  += OnBack;
+        resetButton.onClick += OnReset;
+        BuildDisplay();
+    }
 
-	private int NumUnboundActions()
-	{
-		int num = 0;
-		for (int i = 0; i < GameInputMapping.KeyBindings.Length; i++)
-		{
-			BindingEntry bindingEntry = GameInputMapping.KeyBindings[i];
-			if (bindingEntry.mKeyCode == KKeyCode.None && bindingEntry.mRebindable && (BuildMenu.UseHotkeyBuildMenu() || !bindingEntry.mIgnoreRootConflics))
-			{
-				num++;
-			}
-		}
-		return num;
-	}
+    private void CollectScreens() {
+        screens.Clear();
+        for (var i = 0; i < GameInputMapping.KeyBindings.Length; i++) {
+            var bindingEntry = GameInputMapping.KeyBindings[i];
+            if (bindingEntry.mGroup != null            &&
+                bindingEntry.mRebindable               &&
+                !screens.Contains(bindingEntry.mGroup) &&
+                DlcManager.IsAllContentSubscribed(bindingEntry.dlcIds)) {
+                if (bindingEntry.mGroup == "Root") activeScreen = screens.Count;
+                screens.Add(bindingEntry.mGroup);
+            }
+        }
+    }
 
-	private BindingEntry GetFirstUnbound()
-	{
-		BindingEntry result = default(BindingEntry);
-		for (int i = 0; i < GameInputMapping.KeyBindings.Length; i++)
-		{
-			BindingEntry bindingEntry = GameInputMapping.KeyBindings[i];
-			if (bindingEntry.mKeyCode == KKeyCode.None)
-			{
-				result = bindingEntry;
-				break;
-			}
-		}
-		return result;
-	}
+    protected override void OnDeactivate() {
+        GameInputMapping.SaveBindings();
+        DestroyDisplay();
+    }
 
-	private void OnReset()
-	{
-		GameInputMapping.KeyBindings = (BindingEntry[])GameInputMapping.DefaultBindings.Clone();
-		Global.GetInputManager().RebindControls();
-		this.BuildDisplay();
-	}
+    private LocString GetActionString(Action action) { return null; }
 
-	public void OnPrevScreen()
-	{
-		if (this.activeScreen > 0)
-		{
-			this.activeScreen--;
-		}
-		else
-		{
-			this.activeScreen = this.screens.Count - 1;
-		}
-		this.BuildDisplay();
-	}
+    private string GetBindingText(BindingEntry binding) {
+        var text = GameUtil.GetKeycodeLocalized(binding.mKeyCode);
+        if (binding.mKeyCode != KKeyCode.LeftAlt      &&
+            binding.mKeyCode != KKeyCode.RightAlt     &&
+            binding.mKeyCode != KKeyCode.LeftControl  &&
+            binding.mKeyCode != KKeyCode.RightControl &&
+            binding.mKeyCode != KKeyCode.LeftShift    &&
+            binding.mKeyCode != KKeyCode.RightShift)
+            text += GetModifierString(binding.mModifier);
 
-	public void OnNextScreen()
-	{
-		if (this.activeScreen < this.screens.Count - 1)
-		{
-			this.activeScreen++;
-		}
-		else
-		{
-			this.activeScreen = 0;
-		}
-		this.BuildDisplay();
-	}
+        return text;
+    }
 
-	private void Bind(KKeyCode kkey_code, Modifier modifier)
-	{
-		BindingEntry bindingEntry = new BindingEntry(this.screens[this.activeScreen], GamepadButton.NumButtons, kkey_code, modifier, this.actionToRebind, true, this.ignoreRootConflicts);
-		for (int i = 0; i < GameInputMapping.KeyBindings.Length; i++)
-		{
-			BindingEntry bindingEntry2 = GameInputMapping.KeyBindings[i];
-			if (bindingEntry2.mRebindable && bindingEntry2.mAction == this.actionToRebind)
-			{
-				BindingEntry duplicatedBinding = this.GetDuplicatedBinding(this.screens[this.activeScreen], bindingEntry);
-				bindingEntry.mButton = GameInputMapping.KeyBindings[i].mButton;
-				GameInputMapping.KeyBindings[i] = bindingEntry;
-				this.activeButton.GetComponentInChildren<LocText>().text = this.GetBindingText(bindingEntry);
-				if (duplicatedBinding.mAction != global::Action.Invalid && duplicatedBinding.mAction != this.actionToRebind)
-				{
-					this.confirmDialog = Util.KInstantiateUI(this.confirmPrefab.gameObject, base.transform.gameObject, false).GetComponent<ConfirmDialogScreen>();
-					string arg = Strings.Get("STRINGS.INPUT_BINDINGS." + duplicatedBinding.mGroup.ToUpper() + "." + duplicatedBinding.mAction.ToString().ToUpper());
-					string bindingText = this.GetBindingText(duplicatedBinding);
-					string text = string.Format(UI.FRONTEND.INPUT_BINDINGS_SCREEN.DUPLICATE, arg, bindingText);
-					this.Unbind(duplicatedBinding.mAction);
-					this.confirmDialog.PopupConfirmDialog(text, null, null, null, null, null, null, null, null);
-					this.confirmDialog.gameObject.SetActive(true);
-				}
-				Global.GetInputManager().RebindControls();
-				this.waitingForKeyPress = false;
-				this.actionToRebind = global::Action.NumActions;
-				this.activeButton = null;
-				this.BuildDisplay();
-				return;
-			}
-		}
-	}
+    private void BuildDisplay() {
+        var text = screens[activeScreen];
+        var key  = "STRINGS.INPUT_BINDINGS." + text.ToUpper() + ".NAME";
+        screenTitle.text = Strings.Get(key);
+        if (entryPool == null)
+            entryPool = new UIPool<HorizontalLayoutGroup>(entryPrefab.GetComponent<HorizontalLayoutGroup>());
 
-	private void Unbind(global::Action action)
-	{
-		for (int i = 0; i < GameInputMapping.KeyBindings.Length; i++)
-		{
-			BindingEntry bindingEntry = GameInputMapping.KeyBindings[i];
-			if (bindingEntry.mAction == action)
-			{
-				bindingEntry.mKeyCode = KKeyCode.None;
-				bindingEntry.mModifier = Modifier.None;
-				GameInputMapping.KeyBindings[i] = bindingEntry;
-			}
-		}
-	}
+        DestroyDisplay();
+        var num = 0;
+        for (var i = 0; i < GameInputMapping.KeyBindings.Length; i++) {
+            var binding = GameInputMapping.KeyBindings[i];
+            if (binding.mGroup == screens[activeScreen] &&
+                binding.mRebindable                     &&
+                DlcManager.IsAllContentSubscribed(binding.dlcIds)) {
+                var      gameObject          = entryPool.GetFreeElement(parent, true).gameObject;
+                TMP_Text componentInChildren = gameObject.transform.GetChild(0).GetComponentInChildren<LocText>();
+                var key2 = "STRINGS.INPUT_BINDINGS." +
+                           binding.mGroup.ToUpper()  +
+                           "."                       +
+                           binding.mAction.ToString().ToUpper();
 
-	// Note: this type is marked as 'beforefieldinit'.
-	static InputBindingsScreen()
-	{
-		KeyCode[] array = new KeyCode[111];
-		RuntimeHelpers.InitializeArray(array, fieldof(<PrivateImplementationDetails>.4522A529DBF1D30936B6BCC06D2E607CD76E3B0FB1C18D9DA2635843A2840CD7).FieldHandle);
-		InputBindingsScreen.validKeys = array;
-	}
+                componentInChildren.text = Strings.Get(key2);
+                var key_label = gameObject.transform.GetChild(1).GetComponentInChildren<LocText>();
+                key_label.text = GetBindingText(binding);
+                var button = gameObject.GetComponentInChildren<KButton>();
+                button.onClick += delegate {
+                                      waitingForKeyPress  = true;
+                                      actionToRebind      = binding.mAction;
+                                      ignoreRootConflicts = binding.mIgnoreRootConflics;
+                                      activeButton        = button;
+                                      key_label.text      = UI.FRONTEND.INPUT_BINDINGS_SCREEN.WAITING_FOR_INPUT;
+                                  };
 
-	private const string ROOT_KEY = "STRINGS.INPUT_BINDINGS.";
+                gameObject.transform.SetSiblingIndex(num);
+                num++;
+            }
+        }
+    }
 
-	[SerializeField]
-	private OptionsMenuScreen optionsScreen;
+    private void DestroyDisplay() { entryPool.ClearAll(); }
 
-	[SerializeField]
-	private ConfirmDialogScreen confirmPrefab;
+    private void Update() {
+        if (waitingForKeyPress) {
+            var modifier = Modifier.None;
+            modifier |= IsKeyDown(KeyCode.LeftAlt) || IsKeyDown(KeyCode.RightAlt) ? Modifier.Alt : Modifier.None;
+            modifier |= IsKeyDown(KeyCode.LeftControl) || IsKeyDown(KeyCode.RightControl)
+                            ? Modifier.Ctrl
+                            : Modifier.None;
 
-	public KButton backButton;
+            modifier |= IsKeyDown(KeyCode.LeftShift) || IsKeyDown(KeyCode.RightShift) ? Modifier.Shift : Modifier.None;
+            modifier |= IsKeyDown(KeyCode.CapsLock) ? Modifier.CapsLock : Modifier.None;
+            modifier |= IsKeyDown(KeyCode.BackQuote) ? Modifier.Backtick : Modifier.None;
+            var flag = false;
+            for (var i = 0; i < validKeys.Length; i++) {
+                var keyCode = validKeys[i];
+                if (Input.GetKeyDown(keyCode)) {
+                    var kkey_code = (KKeyCode)keyCode;
+                    Bind(kkey_code, modifier);
+                    flag = true;
+                }
+            }
 
-	public KButton resetButton;
+            if (!flag) {
+                var axis     = Input.GetAxis("Mouse ScrollWheel");
+                var kkeyCode = KKeyCode.None;
+                if (axis < 0f)
+                    kkeyCode                 = KKeyCode.MouseScrollDown;
+                else if (axis > 0f) kkeyCode = KKeyCode.MouseScrollUp;
 
-	public KButton closeButton;
+                if (kkeyCode != KKeyCode.None) Bind(kkeyCode, modifier);
+            }
+        }
+    }
 
-	public KButton prevScreenButton;
+    private BindingEntry GetDuplicatedBinding(string activeScreen, BindingEntry new_binding) {
+        var result = default(BindingEntry);
+        for (var i = 0; i < GameInputMapping.KeyBindings.Length; i++) {
+            var bindingEntry = GameInputMapping.KeyBindings[i];
+            if (new_binding.IsBindingEqual(bindingEntry) &&
+                (bindingEntry.mGroup == null         ||
+                 bindingEntry.mGroup == activeScreen ||
+                 bindingEntry.mGroup == "Root"       ||
+                 activeScreen        == "Root")                                         &&
+                (!(activeScreen        == "Root") || !bindingEntry.mIgnoreRootConflics) &&
+                (!(bindingEntry.mGroup == "Root") || !new_binding.mIgnoreRootConflics)) {
+                result = bindingEntry;
+                break;
+            }
+        }
 
-	public KButton nextScreenButton;
+        return result;
+    }
 
-	private bool waitingForKeyPress;
+    public override void OnKeyDown(KButtonEvent e) {
+        if (waitingForKeyPress) {
+            e.Consumed = true;
+            return;
+        }
 
-	private global::Action actionToRebind = global::Action.NumActions;
+        if (e.TryConsume(Action.Escape) || e.TryConsume(Action.MouseRight)) {
+            Deactivate();
+            return;
+        }
 
-	private bool ignoreRootConflicts;
+        base.OnKeyDown(e);
+    }
 
-	private KButton activeButton;
+    public override void OnKeyUp(KButtonEvent e) { e.Consumed = true; }
 
-	[SerializeField]
-	private LocText screenTitle;
+    private void OnBack() {
+        var num = NumUnboundActions();
+        if (num == 0) {
+            Deactivate();
+            return;
+        }
 
-	[SerializeField]
-	private GameObject parent;
+        string text;
+        if (num == 1) {
+            var firstUnbound = GetFirstUnbound();
+            text = string.Format(UI.FRONTEND.INPUT_BINDINGS_SCREEN.UNBOUND_ACTION, firstUnbound.mAction.ToString());
+        } else
+            text = UI.FRONTEND.INPUT_BINDINGS_SCREEN.MULTIPLE_UNBOUND_ACTIONS;
 
-	[SerializeField]
-	private GameObject entryPrefab;
+        confirmDialog = Util.KInstantiateUI(confirmPrefab.gameObject, transform.gameObject)
+                            .GetComponent<ConfirmDialogScreen>();
 
-	private ConfirmDialogScreen confirmDialog;
+        confirmDialog.PopupConfirmDialog(text, delegate { Deactivate(); }, delegate { confirmDialog.Deactivate(); });
+        confirmDialog.gameObject.SetActive(true);
+    }
 
-	private int activeScreen = -1;
+    private int NumUnboundActions() {
+        var num = 0;
+        for (var i = 0; i < GameInputMapping.KeyBindings.Length; i++) {
+            var bindingEntry = GameInputMapping.KeyBindings[i];
+            if (bindingEntry.mKeyCode == KKeyCode.None &&
+                bindingEntry.mRebindable               &&
+                (BuildMenu.UseHotkeyBuildMenu() || !bindingEntry.mIgnoreRootConflics))
+                num++;
+        }
 
-	private List<string> screens = new List<string>();
+        return num;
+    }
 
-	private UIPool<HorizontalLayoutGroup> entryPool;
+    private BindingEntry GetFirstUnbound() {
+        var result = default(BindingEntry);
+        for (var i = 0; i < GameInputMapping.KeyBindings.Length; i++) {
+            var bindingEntry = GameInputMapping.KeyBindings[i];
+            if (bindingEntry.mKeyCode == KKeyCode.None) {
+                result = bindingEntry;
+                break;
+            }
+        }
 
-	private static readonly KeyCode[] validKeys;
+        return result;
+    }
+
+    private void OnReset() {
+        GameInputMapping.KeyBindings = (BindingEntry[])GameInputMapping.DefaultBindings.Clone();
+        Global.GetInputManager().RebindControls();
+        BuildDisplay();
+    }
+
+    public void OnPrevScreen() {
+        if (activeScreen > 0)
+            activeScreen--;
+        else
+            activeScreen = screens.Count - 1;
+
+        BuildDisplay();
+    }
+
+    public void OnNextScreen() {
+        if (activeScreen < screens.Count - 1)
+            activeScreen++;
+        else
+            activeScreen = 0;
+
+        BuildDisplay();
+    }
+
+    private void Bind(KKeyCode kkey_code, Modifier modifier) {
+        var bindingEntry = new BindingEntry(screens[activeScreen],
+                                            GamepadButton.NumButtons,
+                                            kkey_code,
+                                            modifier,
+                                            actionToRebind,
+                                            true,
+                                            ignoreRootConflicts);
+
+        for (var i = 0; i < GameInputMapping.KeyBindings.Length; i++) {
+            var bindingEntry2 = GameInputMapping.KeyBindings[i];
+            if (bindingEntry2.mRebindable && bindingEntry2.mAction == actionToRebind) {
+                var duplicatedBinding = GetDuplicatedBinding(screens[activeScreen], bindingEntry);
+                bindingEntry.mButton                                = GameInputMapping.KeyBindings[i].mButton;
+                GameInputMapping.KeyBindings[i]                     = bindingEntry;
+                activeButton.GetComponentInChildren<LocText>().text = GetBindingText(bindingEntry);
+                if (duplicatedBinding.mAction != Action.Invalid && duplicatedBinding.mAction != actionToRebind) {
+                    confirmDialog = Util.KInstantiateUI(confirmPrefab.gameObject, transform.gameObject)
+                                        .GetComponent<ConfirmDialogScreen>();
+
+                    string arg = Strings.Get("STRINGS.INPUT_BINDINGS."          +
+                                             duplicatedBinding.mGroup.ToUpper() +
+                                             "."                                +
+                                             duplicatedBinding.mAction.ToString().ToUpper());
+
+                    var bindingText = GetBindingText(duplicatedBinding);
+                    var text        = string.Format(UI.FRONTEND.INPUT_BINDINGS_SCREEN.DUPLICATE, arg, bindingText);
+                    Unbind(duplicatedBinding.mAction);
+                    confirmDialog.PopupConfirmDialog(text, null, null);
+                    confirmDialog.gameObject.SetActive(true);
+                }
+
+                Global.GetInputManager().RebindControls();
+                waitingForKeyPress = false;
+                actionToRebind     = Action.NumActions;
+                activeButton       = null;
+                BuildDisplay();
+                return;
+            }
+        }
+    }
+
+    private void Unbind(Action action) {
+        for (var i = 0; i < GameInputMapping.KeyBindings.Length; i++) {
+            var bindingEntry = GameInputMapping.KeyBindings[i];
+            if (bindingEntry.mAction == action) {
+                bindingEntry.mKeyCode           = KKeyCode.None;
+                bindingEntry.mModifier          = Modifier.None;
+                GameInputMapping.KeyBindings[i] = bindingEntry;
+            }
+        }
+    }
 }

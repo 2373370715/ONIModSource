@@ -7,39 +7,39 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class GameFlowManager : StateMachineComponent<GameFlowManager.StatesInstance>, ISaveLoadable
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		GameFlowManager.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		GameFlowManager.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	public bool IsGameOver()
+		public bool IsGameOver()
 	{
 		return base.smi.IsInsideState(base.smi.sm.gameover);
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Notifier notifier;
 
-	public static GameFlowManager Instance;
+		public static GameFlowManager Instance;
 
-	public class StatesInstance : GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.GameInstance
+		public class StatesInstance : GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.GameInstance
 	{
-		public bool IsIncapacitated(GameObject go)
+				public bool IsIncapacitated(GameObject go)
 		{
 			return false;
 		}
 
-		public void CheckForGameOver()
+				public void CheckForGameOver()
 		{
 			if (!Game.Instance.GameStarted())
 			{
@@ -72,16 +72,16 @@ public class GameFlowManager : StateMachineComponent<GameFlowManager.StatesInsta
 			}
 		}
 
-		public StatesInstance(GameFlowManager smi) : base(smi)
+				public StatesInstance(GameFlowManager smi) : base(smi)
 		{
 		}
 
-		public Notification colonyLostNotification = new Notification(MISC.NOTIFICATIONS.COLONYLOST.NAME, NotificationType.Bad, null, null, false, 0f, null, null, null, true, false, false);
+				public Notification colonyLostNotification = new Notification(MISC.NOTIFICATIONS.COLONYLOST.NAME, NotificationType.Bad, null, null, false, 0f, null, null, null, true, false, false);
 	}
 
-	public class States : GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager>
+		public class States : GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.loading;
 			this.loading.ScheduleGoTo(4f, this.running);
@@ -108,17 +108,17 @@ public class GameFlowManager : StateMachineComponent<GameFlowManager.StatesInsta
 			});
 		}
 
-		public GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.State loading;
+				public GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.State loading;
 
-		public GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.State running;
+				public GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.State running;
 
-		public GameFlowManager.States.GameOverState gameover;
+				public GameFlowManager.States.GameOverState gameover;
 
-		public class GameOverState : GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.State
+				public class GameOverState : GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.State
 		{
-			public GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.State pending;
+						public GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.State pending;
 
-			public GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.State active;
+						public GameStateMachine<GameFlowManager.States, GameFlowManager.StatesInstance, GameFlowManager, object>.State active;
 		}
 	}
 }

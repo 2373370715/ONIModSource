@@ -3,19 +3,19 @@ using Database;
 
 public class StickerBombFacadeInfo : IBlueprintInfo, IBlueprintDlcInfo
 {
-			public string id { get; set; }
+				public string id { get; set; }
 
-			public string name { get; set; }
+				public string name { get; set; }
 
-			public string desc { get; set; }
+				public string desc { get; set; }
 
-			public PermitRarity rarity { get; set; }
+				public PermitRarity rarity { get; set; }
 
-			public string animFile { get; set; }
+				public string animFile { get; set; }
 
-			public string[] dlcIds { get; set; }
+				public string[] dlcIds { get; set; }
 
-	public StickerBombFacadeInfo(string id, string name, string desc, PermitRarity rarity, string animFile, string sticker)
+		public StickerBombFacadeInfo(string id, string name, string desc, PermitRarity rarity, string animFile, string sticker)
 	{
 		this.id = id;
 		this.name = name;
@@ -26,5 +26,5 @@ public class StickerBombFacadeInfo : IBlueprintInfo, IBlueprintDlcInfo
 		this.dlcIds = DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public string sticker;
+		public string sticker;
 }

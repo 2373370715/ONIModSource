@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class OilWellConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "OilWell";
 		string name = STRINGS.CREATURES.SPECIES.OIL_WELL.NAME;
@@ -35,13 +35,13 @@ public class OilWellConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "OilWell";
+		public const string ID = "OilWell";
 }

@@ -4,12 +4,12 @@ using STRINGS;
 
 public class ConditionHasCargoBayForNoseconeHarvest : ProcessCondition
 {
-	public ConditionHasCargoBayForNoseconeHarvest(LaunchableRocketCluster launchable)
+		public ConditionHasCargoBayForNoseconeHarvest(LaunchableRocketCluster launchable)
 	{
 		this.launchable = launchable;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		if (!this.HasHarvestNosecone())
 		{
@@ -28,7 +28,7 @@ public class ConditionHasCargoBayForNoseconeHarvest : ProcessCondition
 		return ProcessCondition.Status.Warning;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		string result = "";
 		switch (status)
@@ -46,7 +46,7 @@ public class ConditionHasCargoBayForNoseconeHarvest : ProcessCondition
 		return result;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		string result = "";
 		switch (status)
@@ -64,12 +64,12 @@ public class ConditionHasCargoBayForNoseconeHarvest : ProcessCondition
 		return result;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return this.HasHarvestNosecone();
 	}
 
-	private bool HasHarvestNosecone()
+		private bool HasHarvestNosecone()
 	{
 		using (IEnumerator<Ref<RocketModuleCluster>> enumerator = this.launchable.parts.GetEnumerator())
 		{
@@ -84,5 +84,5 @@ public class ConditionHasCargoBayForNoseconeHarvest : ProcessCondition
 		return false;
 	}
 
-	private LaunchableRocketCluster launchable;
+		private LaunchableRocketCluster launchable;
 }

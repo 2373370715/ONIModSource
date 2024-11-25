@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DreckoPlasticConfig : IEntityConfig
 {
-	public static GameObject CreateDrecko(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreateDrecko(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		GameObject gameObject = BaseDreckoConfig.BaseDrecko(id, name, desc, anim_file, "DreckoPlasticBaseTrait", is_baby, null, 293.15f, 323.15f, 243.15f, 373.15f);
 		gameObject = EntityTemplates.ExtendEntityToWildCreature(gameObject, DreckoTuning.PEN_SIZE_PER_CREATURE);
@@ -21,7 +21,7 @@ public class DreckoPlasticConfig : IEntityConfig
 			{
 				"BasicSingleHarvestPlant".ToTag(),
 				"PrickleFlower".ToTag()
-			}, DreckoPlasticConfig.POOP_ELEMENT, DreckoPlasticConfig.CALORIES_PER_DAY_OF_PLANT_EATEN, DreckoPlasticConfig.KG_POOP_PER_DAY_OF_PLANT, null, 0f, false, true, false)
+			}, DreckoPlasticConfig.POOP_ELEMENT, DreckoPlasticConfig.CALORIES_PER_DAY_OF_PLANT_EATEN, DreckoPlasticConfig.KG_POOP_PER_DAY_OF_PLANT, null, 0f, false, Diet.Info.FoodType.EatPlantDirectly, false, null)
 		});
 		CreatureCalorieMonitor.Def def = gameObject.AddOrGetDef<CreatureCalorieMonitor.Def>();
 		def.diet = diet;
@@ -36,12 +36,12 @@ public class DreckoPlasticConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public virtual GameObject CreatePrefab()
+		public virtual GameObject CreatePrefab()
 	{
 		GameObject prefab = DreckoPlasticConfig.CreateDrecko("DreckoPlastic", CREATURES.SPECIES.DRECKO.VARIANT_PLASTIC.NAME, CREATURES.SPECIES.DRECKO.VARIANT_PLASTIC.DESC, "drecko_kanim", false);
 		string eggId = "DreckoPlasticEgg";
@@ -56,37 +56,37 @@ public class DreckoPlasticConfig : IEntityConfig
 		return EntityTemplates.ExtendEntityToFertileCreature(prefab, eggId, eggName, eggDesc, egg_anim, egg_MASS, baby_id, fertility_cycles, incubation_cycles, DreckoTuning.EGG_CHANCES_PLASTIC, this.GetDlcIds(), egg_SORT_ORDER, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "DreckoPlastic";
+		public const string ID = "DreckoPlastic";
 
-	public const string BASE_TRAIT_ID = "DreckoPlasticBaseTrait";
+		public const string BASE_TRAIT_ID = "DreckoPlasticBaseTrait";
 
-	public const string EGG_ID = "DreckoPlasticEgg";
+		public const string EGG_ID = "DreckoPlasticEgg";
 
-	public static Tag POOP_ELEMENT = SimHashes.Phosphorite.CreateTag();
+		public static Tag POOP_ELEMENT = SimHashes.Phosphorite.CreateTag();
 
-	public static Tag EMIT_ELEMENT = SimHashes.Polypropylene.CreateTag();
+		public static Tag EMIT_ELEMENT = SimHashes.Polypropylene.CreateTag();
 
-	private static float DAYS_PLANT_GROWTH_EATEN_PER_CYCLE = 1f;
+		private static float DAYS_PLANT_GROWTH_EATEN_PER_CYCLE = 1f;
 
-	private static float CALORIES_PER_DAY_OF_PLANT_EATEN = DreckoTuning.STANDARD_CALORIES_PER_CYCLE / DreckoPlasticConfig.DAYS_PLANT_GROWTH_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_DAY_OF_PLANT_EATEN = DreckoTuning.STANDARD_CALORIES_PER_CYCLE / DreckoPlasticConfig.DAYS_PLANT_GROWTH_EATEN_PER_CYCLE;
 
-	private static float KG_POOP_PER_DAY_OF_PLANT = 9f;
+		private static float KG_POOP_PER_DAY_OF_PLANT = 9f;
 
-	private static float MIN_POOP_SIZE_IN_KG = 1.5f;
+		private static float MIN_POOP_SIZE_IN_KG = 1.5f;
 
-	private static float MIN_POOP_SIZE_IN_CALORIES = DreckoPlasticConfig.CALORIES_PER_DAY_OF_PLANT_EATEN * DreckoPlasticConfig.MIN_POOP_SIZE_IN_KG / DreckoPlasticConfig.KG_POOP_PER_DAY_OF_PLANT;
+		private static float MIN_POOP_SIZE_IN_CALORIES = DreckoPlasticConfig.CALORIES_PER_DAY_OF_PLANT_EATEN * DreckoPlasticConfig.MIN_POOP_SIZE_IN_KG / DreckoPlasticConfig.KG_POOP_PER_DAY_OF_PLANT;
 
-	public static float SCALE_GROWTH_TIME_IN_CYCLES = 3f;
+		public static float SCALE_GROWTH_TIME_IN_CYCLES = 3f;
 
-	public static float PLASTIC_PER_CYCLE = 50f;
+		public static float PLASTIC_PER_CYCLE = 50f;
 
-	public static int EGG_SORT_ORDER = 800;
+		public static int EGG_SORT_ORDER = 800;
 }

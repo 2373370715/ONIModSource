@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class OffsetTracker
 {
-	public virtual CellOffset[] GetOffsets(int current_cell)
+		public virtual CellOffset[] GetOffsets(int current_cell)
 	{
 		if (current_cell != this.previousCell)
 		{
@@ -19,39 +19,44 @@ public class OffsetTracker
 		return this.offsets;
 	}
 
-	public void ForceRefresh()
+		public virtual bool ValidateOffsets(int current_cell)
+	{
+		return current_cell == this.previousCell && this.offsets != null;
+	}
+
+		public void ForceRefresh()
 	{
 		int cell = this.previousCell;
 		this.previousCell = Grid.InvalidCell;
 		this.Refresh(cell);
 	}
 
-	public void Refresh(int cell)
+		public void Refresh(int cell)
 	{
 		this.GetOffsets(cell);
 	}
 
-	protected virtual void UpdateCell(int previous_cell, int current_cell)
+		protected virtual void UpdateCell(int previous_cell, int current_cell)
 	{
 	}
 
-	protected virtual void UpdateOffsets(int current_cell)
+		protected virtual void UpdateOffsets(int current_cell)
 	{
 	}
 
-	public virtual void Clear()
+		public virtual void Clear()
 	{
 	}
 
-	public virtual void DebugDrawExtents()
+		public virtual void DebugDrawExtents()
 	{
 	}
 
-	public virtual void DebugDrawEditor()
+		public virtual void DebugDrawEditor()
 	{
 	}
 
-	public virtual void DebugDrawOffsets(int cell)
+		public virtual void DebugDrawOffsets(int cell)
 	{
 		foreach (CellOffset offset in this.GetOffsets(cell))
 		{
@@ -61,9 +66,9 @@ public class OffsetTracker
 		}
 	}
 
-	public static bool isExecutingWithinJob;
+		public static bool isExecutingWithinJob;
 
-	protected CellOffset[] offsets;
+		protected CellOffset[] offsets;
 
-	protected int previousCell = Grid.InvalidCell;
+		protected int previousCell = Grid.InvalidCell;
 }

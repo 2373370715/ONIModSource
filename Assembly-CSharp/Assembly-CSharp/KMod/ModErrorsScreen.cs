@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace KMod
 {
-	public class ModErrorsScreen : KScreen
+		public class ModErrorsScreen : KScreen
 	{
-		public static bool ShowErrors(List<Event> events)
+				public static bool ShowErrors(List<Event> events)
 		{
 			if (Global.Instance.modManager.events.Count == 0)
 			{
@@ -19,7 +19,7 @@ namespace KMod
 			return true;
 		}
 
-		private void Initialize(List<Event> events)
+				private void Initialize(List<Event> events)
 		{
 			foreach (Event @event in events)
 			{
@@ -57,23 +57,23 @@ namespace KMod
 			}
 		}
 
-		protected override void OnActivate()
+				protected override void OnActivate()
 		{
 			base.OnActivate();
 			this.closeButtonTitle.onClick += this.Deactivate;
 			this.closeButton.onClick += this.Deactivate;
 		}
 
-		[SerializeField]
+				[SerializeField]
 		private KButton closeButtonTitle;
 
-		[SerializeField]
+				[SerializeField]
 		private KButton closeButton;
 
-		[SerializeField]
+				[SerializeField]
 		private GameObject entryPrefab;
 
-		[SerializeField]
+				[SerializeField]
 		private Transform entryParent;
 	}
 }

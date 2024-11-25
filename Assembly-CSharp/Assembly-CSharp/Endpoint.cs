@@ -2,7 +2,7 @@
 
 public enum Endpoint
 {
-	Source,
-	Sink,
-	Conduit
+		Source,
+		Sink,
+		Conduit
 }

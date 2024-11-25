@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FetchList2 : IFetchList
 {
-			public bool ShowStatusItem
+				public bool ShowStatusItem
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-		public bool IsComplete
+			public bool IsComplete
 	{
 		get
 		{
@@ -24,7 +24,7 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-		public bool InProgress
+			public bool InProgress
 	{
 		get
 		{
@@ -48,17 +48,17 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-			public Storage Destination { get; private set; }
+				public Storage Destination { get; private set; }
 
-			public int PriorityMod { get; private set; }
+				public int PriorityMod { get; private set; }
 
-	public FetchList2(Storage destination, ChoreType chore_type)
+		public FetchList2(Storage destination, ChoreType chore_type)
 	{
 		this.Destination = destination;
 		this.choreType = chore_type;
 	}
 
-	public void SetPriorityMod(int priorityMod)
+		public void SetPriorityMod(int priorityMod)
 	{
 		this.PriorityMod = priorityMod;
 		for (int i = 0; i < this.FetchOrders.Count; i++)
@@ -67,7 +67,7 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-	public void Add(HashSet<Tag> tags, Tag requiredTag, Tag[] forbidden_tags = null, float amount = 1f, Operational.State operationalRequirementDEPRECATED = Operational.State.None)
+		public void Add(HashSet<Tag> tags, Tag requiredTag, Tag[] forbidden_tags = null, float amount = 1f, Operational.State operationalRequirementDEPRECATED = Operational.State.None)
 	{
 		foreach (Tag key in tags)
 		{
@@ -80,7 +80,7 @@ public class FetchList2 : IFetchList
 		this.FetchOrders.Add(item);
 	}
 
-	public void Add(HashSet<Tag> tags, Tag[] forbidden_tags = null, float amount = 1f, Operational.State operationalRequirementDEPRECATED = Operational.State.None)
+		public void Add(HashSet<Tag> tags, Tag[] forbidden_tags = null, float amount = 1f, Operational.State operationalRequirementDEPRECATED = Operational.State.None)
 	{
 		foreach (Tag key in tags)
 		{
@@ -93,7 +93,7 @@ public class FetchList2 : IFetchList
 		this.FetchOrders.Add(item);
 	}
 
-	public void Add(Tag tag, Tag[] forbidden_tags = null, float amount = 1f, Operational.State operationalRequirementDEPRECATED = Operational.State.None)
+		public void Add(Tag tag, Tag[] forbidden_tags = null, float amount = 1f, Operational.State operationalRequirementDEPRECATED = Operational.State.None)
 	{
 		if (!this.MinimumAmount.ContainsKey(tag))
 		{
@@ -106,14 +106,14 @@ public class FetchList2 : IFetchList
 		this.FetchOrders.Add(item);
 	}
 
-	public float GetMinimumAmount(Tag tag)
+		public float GetMinimumAmount(Tag tag)
 	{
 		float result = 0f;
 		this.MinimumAmount.TryGetValue(tag, out result);
 		return result;
 	}
 
-	private void OnFetchOrderComplete(FetchOrder2 fetch_order, Pickupable fetched_item)
+		private void OnFetchOrderComplete(FetchOrder2 fetch_order, Pickupable fetched_item)
 	{
 		this.FetchOrders.Remove(fetch_order);
 		if (this.FetchOrders.Count == 0)
@@ -127,7 +127,7 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-	public void Cancel(string reason)
+		public void Cancel(string reason)
 	{
 		FetchListStatusItemUpdater.instance.RemoveFetchList(this);
 		this.ClearStatus();
@@ -137,7 +137,7 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-	public void UpdateRemaining()
+		public void UpdateRemaining()
 	{
 		this.Remaining.Clear();
 		for (int i = 0; i < this.FetchOrders.Count; i++)
@@ -152,12 +152,12 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-	public Dictionary<Tag, float> GetRemaining()
+		public Dictionary<Tag, float> GetRemaining()
 	{
 		return this.Remaining;
 	}
 
-	public Dictionary<Tag, float> GetRemainingMinimum()
+		public Dictionary<Tag, float> GetRemainingMinimum()
 	{
 		Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
 		foreach (FetchOrder2 fetchOrder in this.FetchOrders)
@@ -192,7 +192,7 @@ public class FetchList2 : IFetchList
 		return dictionary;
 	}
 
-	public void Suspend(string reason)
+		public void Suspend(string reason)
 	{
 		foreach (FetchOrder2 fetchOrder in this.FetchOrders)
 		{
@@ -200,7 +200,7 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-	public void Resume(string reason)
+		public void Resume(string reason)
 	{
 		foreach (FetchOrder2 fetchOrder in this.FetchOrders)
 		{
@@ -208,7 +208,7 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-	public void Submit(System.Action on_complete, bool check_storage_contents)
+		public void Submit(System.Action on_complete, bool check_storage_contents)
 	{
 		this.OnComplete = on_complete;
 		foreach (FetchOrder2 fetchOrder in this.FetchOrders.GetRange(0, this.FetchOrders.Count))
@@ -221,7 +221,7 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-	private void ClearStatus()
+		private void ClearStatus()
 	{
 		if (this.Destination != null)
 		{
@@ -235,7 +235,7 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-	public void UpdateStatusItem(MaterialsStatusItem status_item, ref Guid handle, bool should_add)
+		public void UpdateStatusItem(MaterialsStatusItem status_item, ref Guid handle, bool should_add)
 	{
 		bool flag = handle != Guid.Empty;
 		if (should_add != flag)
@@ -264,21 +264,21 @@ public class FetchList2 : IFetchList
 		}
 	}
 
-	private System.Action OnComplete;
+		private System.Action OnComplete;
 
-	private ChoreType choreType;
+		private ChoreType choreType;
 
-	public Guid waitingForMaterialsHandle = Guid.Empty;
+		public Guid waitingForMaterialsHandle = Guid.Empty;
 
-	public Guid materialsUnavailableForRefillHandle = Guid.Empty;
+		public Guid materialsUnavailableForRefillHandle = Guid.Empty;
 
-	public Guid materialsUnavailableHandle = Guid.Empty;
+		public Guid materialsUnavailableHandle = Guid.Empty;
 
-	public Dictionary<Tag, float> MinimumAmount = new Dictionary<Tag, float>();
+		public Dictionary<Tag, float> MinimumAmount = new Dictionary<Tag, float>();
 
-	public List<FetchOrder2> FetchOrders = new List<FetchOrder2>();
+		public List<FetchOrder2> FetchOrders = new List<FetchOrder2>();
 
-	private Dictionary<Tag, float> Remaining = new Dictionary<Tag, float>();
+		private Dictionary<Tag, float> Remaining = new Dictionary<Tag, float>();
 
-	private bool bShowStatusItem = true;
+		private bool bShowStatusItem = true;
 }

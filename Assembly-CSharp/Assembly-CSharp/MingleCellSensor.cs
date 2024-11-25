@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class MingleCellSensor : Sensor
 {
-	public MingleCellSensor(Sensors sensors) : base(sensors)
+		public MingleCellSensor(Sensors sensors) : base(sensors)
 	{
 		this.navigator = base.GetComponent<Navigator>();
 		this.brain = base.GetComponent<MinionBrain>();
 	}
 
-	public override void Update()
+		public override void Update()
 	{
 		this.cell = Grid.InvalidCell;
 		int num = int.MaxValue;
@@ -41,14 +41,14 @@ public class MingleCellSensor : Sensor
 		pooledList.Recycle();
 	}
 
-	public int GetCell()
+		public int GetCell()
 	{
 		return this.cell;
 	}
 
-	private MinionBrain brain;
+		private MinionBrain brain;
 
-	private Navigator navigator;
+		private Navigator navigator;
 
-	private int cell;
+		private int cell;
 }

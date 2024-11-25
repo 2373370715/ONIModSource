@@ -1,7 +1,7 @@
 ﻿using TUNING;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 
 public class TransferPortCenterConfig : IBuildingConfig {
     public const string ID = "RsTransferPortCenter";

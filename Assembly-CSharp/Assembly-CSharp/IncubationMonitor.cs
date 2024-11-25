@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.incubating;
 		this.root.Enter(delegate(IncubationMonitor.Instance smi)
@@ -30,12 +30,12 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 		this.suppressedEffect.Add(new AttributeModifier(Db.Get().Amounts.Viability.deltaAttribute.Id, -0.016666668f, CREATURES.MODIFIERS.INCUBATING_SUPPRESSED.NAME, false, false, true));
 	}
 
-	private static bool IsReadyToHatch(IncubationMonitor.Instance smi)
+		private static bool IsReadyToHatch(IncubationMonitor.Instance smi)
 	{
 		return !smi.gameObject.HasTag(GameTags.Entombed) && smi.incubation.value >= smi.incubation.GetMax();
 	}
 
-	private static void SpawnBaby(IncubationMonitor.Instance smi)
+		private static void SpawnBaby(IncubationMonitor.Instance smi)
 	{
 		Vector3 position = smi.transform.GetPosition();
 		position.z = Grid.GetLayerZ(Grid.SceneLayer.Creatures);
@@ -56,12 +56,12 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 		SaveLoader.Instance.saveManager.Unregister(smi.GetComponent<SaveLoadRoot>());
 	}
 
-	private static bool NoLongerViable(IncubationMonitor.Instance smi)
+		private static bool NoLongerViable(IncubationMonitor.Instance smi)
 	{
 		return !smi.gameObject.HasTag(GameTags.Entombed) && smi.viability.value <= smi.viability.GetMin();
 	}
 
-	private static GameObject SpawnShell(IncubationMonitor.Instance smi)
+		private static GameObject SpawnShell(IncubationMonitor.Instance smi)
 	{
 		Vector3 position = smi.transform.GetPosition();
 		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab("EggShell"), position);
@@ -72,7 +72,7 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 		return gameObject;
 	}
 
-	private static GameObject SpawnEggInnards(IncubationMonitor.Instance smi)
+		private static GameObject SpawnEggInnards(IncubationMonitor.Instance smi)
 	{
 		Vector3 position = smi.transform.GetPosition();
 		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab("RawEgg"), position);
@@ -83,7 +83,7 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 		return gameObject;
 	}
 
-	private static void SpawnGenericEgg(IncubationMonitor.Instance smi)
+		private static void SpawnGenericEgg(IncubationMonitor.Instance smi)
 	{
 		IncubationMonitor.SpawnShell(smi);
 		GameObject gameObject = IncubationMonitor.SpawnEggInnards(smi);
@@ -94,12 +94,12 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 		}
 	}
 
-	private static void DeleteSelf(IncubationMonitor.Instance smi)
+		private static void DeleteSelf(IncubationMonitor.Instance smi)
 	{
 		smi.gameObject.DeleteObject();
 	}
 
-	private static void DropSelfFromStorage(IncubationMonitor.Instance smi)
+		private static void DropSelfFromStorage(IncubationMonitor.Instance smi)
 	{
 		if (!smi.sm.inIncubator.Get(smi))
 		{
@@ -112,29 +112,29 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 		}
 	}
 
-	public StateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.BoolParameter incubatorIsActive;
+		public StateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.BoolParameter incubatorIsActive;
 
-	public StateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.BoolParameter inIncubator;
+		public StateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.BoolParameter inIncubator;
 
-	public StateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.BoolParameter isSuppressed;
+		public StateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.BoolParameter isSuppressed;
 
-	public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State incubating;
+		public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State incubating;
 
-	public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State entombed;
+		public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State entombed;
 
-	public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State suppressed;
+		public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State suppressed;
 
-	public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State hatching_pre;
+		public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State hatching_pre;
 
-	public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State hatching_pst;
+		public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State hatching_pst;
 
-	public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State not_viable;
+		public GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.State not_viable;
 
-	private Effect suppressedEffect;
+		private Effect suppressedEffect;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public override void Configure(GameObject prefab)
+				public override void Configure(GameObject prefab)
 		{
 			List<string> initialAmounts = prefab.GetComponent<Modifiers>().initialAmounts;
 			initialAmounts.Add(Db.Get().Amounts.Wildness.Id);
@@ -142,14 +142,14 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 			initialAmounts.Add(Db.Get().Amounts.Viability.Id);
 		}
 
-		public float baseIncubationRate;
+				public float baseIncubationRate;
 
-		public Tag spawnedCreature;
+				public Tag spawnedCreature;
 	}
 
-	public new class Instance : GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<IncubationMonitor, IncubationMonitor.Instance, IStateMachineTarget, IncubationMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, IncubationMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, IncubationMonitor.Def def) : base(master, def)
 		{
 			this.incubation = Db.Get().Amounts.Incubation.Lookup(base.gameObject);
 			Action<object> handler = new Action<object>(this.OnStore);
@@ -172,7 +172,7 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 			this.incubatingEffect.Add(modifier);
 		}
 
-		public Storage GetStorage()
+				public Storage GetStorage()
 		{
 			if (!(base.transform.parent != null))
 			{
@@ -181,7 +181,7 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 			return base.transform.parent.GetComponent<Storage>();
 		}
 
-		public void OnStore(object data)
+				public void OnStore(object data)
 		{
 			Storage storage = data as Storage;
 			bool stored = storage || (data != null && (bool)data);
@@ -189,7 +189,7 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 			this.UpdateIncubationState(stored, eggIncubator);
 		}
 
-		public void OnOperationalChanged(object data = null)
+				public void OnOperationalChanged(object data = null)
 		{
 			bool stored = base.gameObject.HasTag(GameTags.Stored);
 			Storage storage = this.GetStorage();
@@ -197,7 +197,7 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 			this.UpdateIncubationState(stored, eggIncubator);
 		}
 
-		private void UpdateIncubationState(bool stored, EggIncubator incubator)
+				private void UpdateIncubationState(bool stored, EggIncubator incubator)
 		{
 			this.incubator = incubator;
 			base.smi.sm.inIncubator.Set(incubator != null, base.smi, false);
@@ -208,24 +208,24 @@ public class IncubationMonitor : GameStateMachine<IncubationMonitor, IncubationM
 			base.smi.sm.incubatorIsActive.Set(value2, base.smi, false);
 		}
 
-		public void ApplySongBuff()
+				public void ApplySongBuff()
 		{
 			base.GetComponent<Effects>().Add("EggSong", true);
 		}
 
-		public bool HasSongBuff()
+				public bool HasSongBuff()
 		{
 			return base.GetComponent<Effects>().HasEffect("EggSong");
 		}
 
-		public AmountInstance incubation;
+				public AmountInstance incubation;
 
-		public AmountInstance wildness;
+				public AmountInstance wildness;
 
-		public AmountInstance viability;
+				public AmountInstance viability;
 
-		public EggIncubator incubator;
+				public EggIncubator incubator;
 
-		public Effect incubatingEffect;
+				public Effect incubatingEffect;
 	}
 }

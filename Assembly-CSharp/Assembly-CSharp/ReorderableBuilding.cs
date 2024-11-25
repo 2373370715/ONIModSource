@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ReorderableBuilding : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.animController = base.GetComponent<KBatchedAnimController>();
@@ -39,7 +39,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	private void OnCancel(object data)
+		private void OnCancel(object data)
 	{
 		if (base.GetComponent<BuildingUnderConstruction>() != null && !this.cancelShield && !ReorderableBuilding.toBeRemoved.Contains(this))
 		{
@@ -47,7 +47,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	public GameObject AddModule(BuildingDef def, IList<Tag> buildMaterials)
+		public GameObject AddModule(BuildingDef def, IList<Tag> buildMaterials)
 	{
 		if (Assets.GetPrefab(base.GetComponent<KPrefabID>().PrefabID()).GetComponent<ReorderableBuilding>().buildConditions.Find((SelectModuleCondition match) => match is TopOnly) == null)
 		{
@@ -59,7 +59,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		return this.AddModuleBelow(def, buildMaterials);
 	}
 
-	private GameObject AddModuleAbove(BuildingDef def, IList<Tag> buildMaterials)
+		private GameObject AddModuleAbove(BuildingDef def, IList<Tag> buildMaterials)
 	{
 		BuildingAttachPoint component = base.GetComponent<BuildingAttachPoint>();
 		if (component == null)
@@ -80,7 +80,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		return this.AddModuleCommon(def, buildMaterials, cell);
 	}
 
-	private GameObject AddModuleBelow(BuildingDef def, IList<Tag> buildMaterials)
+		private GameObject AddModuleBelow(BuildingDef def, IList<Tag> buildMaterials)
 	{
 		int cell = Grid.PosToCell(base.gameObject);
 		int heightInCells = def.HeightInCells;
@@ -92,7 +92,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		return this.AddModuleCommon(def, buildMaterials, cell);
 	}
 
-	private GameObject AddModuleCommon(BuildingDef def, IList<Tag> buildMaterials, int cell)
+		private GameObject AddModuleCommon(BuildingDef def, IList<Tag> buildMaterials, int cell)
 	{
 		GameObject gameObject;
 		if (DebugHandler.InstantBuildMode || (Game.Instance.SandboxModeActive && SandboxToolParameterMenu.instance.settings.InstantBuild))
@@ -108,7 +108,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		return gameObject;
 	}
 
-	private void RocketSpecificPostAdd(GameObject obj, int cell)
+		private void RocketSpecificPostAdd(GameObject obj, int cell)
 	{
 		RocketModuleCluster component = base.GetComponent<RocketModuleCluster>();
 		RocketModuleCluster component2 = obj.GetComponent<RocketModuleCluster>();
@@ -118,7 +118,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	public void RemoveModule()
+		public void RemoveModule()
 	{
 		BuildingAttachPoint component = base.GetComponent<BuildingAttachPoint>();
 		AttachableBuilding attachableBuilding = null;
@@ -147,7 +147,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	public void LateUpdate()
+		public void LateUpdate()
 	{
 		this.cancelShield = false;
 		ReorderableBuilding.ProcessToBeRemoved();
@@ -179,7 +179,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	private static void ProcessToBeRemoved()
+		private static void ProcessToBeRemoved()
 	{
 		if (ReorderableBuilding.toBeRemoved.Count > 0)
 		{
@@ -199,7 +199,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	public void MoveVertical(int amount)
+		public void MoveVertical(int amount)
 	{
 		if (amount == 0)
 		{
@@ -230,7 +230,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	public void SwapWithAbove(bool selectOnComplete = true)
+		public void SwapWithAbove(bool selectOnComplete = true)
 	{
 		BuildingAttachPoint component = base.GetComponent<BuildingAttachPoint>();
 		if (component == null || component.points[0].attachedBuilding == null)
@@ -260,7 +260,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (base.GetComponent<BuildingUnderConstruction>() == null && !this.HasTag(GameTags.RocketInSpace))
 		{
@@ -273,7 +273,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	private void ApplyAnimOffset(float amount)
+		private void ApplyAnimOffset(float amount)
 	{
 		this.animController.Offset = new Vector3(this.animController.Offset.x, this.animController.Offset.y + amount, this.animController.Offset.z);
 		this.reorderArmController.Offset = this.animController.Offset;
@@ -286,7 +286,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		this.reorderArmController.onAnimComplete += this.StartReorderingAnim;
 	}
 
-	private void StartReorderingAnim(HashedString data)
+		private void StartReorderingAnim(HashedString data)
 	{
 		this.loopingSounds.StartSound(GlobalAssets.GetSound(this.reorderSound, false));
 		this.reorderingAnimUnderway = true;
@@ -294,7 +294,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		base.gameObject.Trigger(-1447108533, null);
 	}
 
-	public void SwapWithBelow(bool selectOnComplete = true)
+		public void SwapWithBelow(bool selectOnComplete = true)
 	{
 		if (base.GetComponent<AttachableBuilding>() == null || base.GetComponent<AttachableBuilding>().GetAttachedTo() == null)
 		{
@@ -307,7 +307,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	public bool CanMoveVertically(int moveAmount, GameObject ignoreBuilding = null)
+		public bool CanMoveVertically(int moveAmount, GameObject ignoreBuilding = null)
 	{
 		if (moveAmount == 0)
 		{
@@ -340,12 +340,12 @@ public class ReorderableBuilding : KMonoBehaviour
 		return true;
 	}
 
-	public static bool CheckCellClear(int checkCell, GameObject ignoreObject = null)
+		public static bool CheckCellClear(int checkCell, GameObject ignoreObject = null)
 	{
 		return Grid.IsValidCell(checkCell) && Grid.IsValidBuildingCell(checkCell) && !Grid.Solid[checkCell] && Grid.WorldIdx[checkCell] != byte.MaxValue && (!(Grid.Objects[checkCell, 1] != null) || !(Grid.Objects[checkCell, 1] != ignoreObject) || !(Grid.Objects[checkCell, 1].GetComponent<ReorderableBuilding>() == null));
 	}
 
-	public GameObject ConvertModule(BuildingDef toModule, IList<Tag> materials)
+		public GameObject ConvertModule(BuildingDef toModule, IList<Tag> materials)
 	{
 		int cell = Grid.PosToCell(base.gameObject);
 		int num = toModule.HeightInCells - base.GetComponent<Building>().Def.HeightInCells;
@@ -412,7 +412,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		return gameObject2;
 	}
 
-	private CellOffset[] GetOccupiedOffsets()
+		private CellOffset[] GetOccupiedOffsets()
 	{
 		OccupyArea component = base.GetComponent<OccupyArea>();
 		if (component != null)
@@ -422,7 +422,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		return base.GetComponent<BuildingUnderConstruction>().Def.PlacementOffsets;
 	}
 
-	public bool CanChangeModule()
+		public bool CanChangeModule()
 	{
 		if (base.GetComponent<BuildingUnderConstruction>() != null)
 		{
@@ -450,12 +450,12 @@ public class ReorderableBuilding : KMonoBehaviour
 		return true;
 	}
 
-	public bool CanRemoveModule()
+		public bool CanRemoveModule()
 	{
 		return true;
 	}
 
-	public bool CanSwapUp(bool alsoCheckAboveCanSwapDown = true)
+		public bool CanSwapUp(bool alsoCheckAboveCanSwapDown = true)
 	{
 		BuildingAttachPoint component = base.GetComponent<BuildingAttachPoint>();
 		if (component == null)
@@ -470,7 +470,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		return !(attachedBuilding == null) && !(attachedBuilding.GetComponent<BuildingAttachPoint>() == null) && !attachedBuilding.HasTag(GameTags.NoseRocketModule) && this.CanMoveVertically(attachedBuilding.GetComponent<Building>().Def.HeightInCells, attachedBuilding.gameObject) && (!alsoCheckAboveCanSwapDown || attachedBuilding.GetComponent<ReorderableBuilding>().CanSwapDown(false));
 	}
 
-	public bool CanSwapDown(bool alsoCheckBelowCanSwapUp = true)
+		public bool CanSwapDown(bool alsoCheckBelowCanSwapUp = true)
 	{
 		if (base.gameObject.HasTag(GameTags.NoseRocketModule))
 		{
@@ -485,7 +485,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		return !(attachedTo == null) && !(base.GetComponent<BuildingAttachPoint>() == null) && !(attachedTo.GetComponent<AttachableBuilding>() == null) && !(attachedTo.GetComponent<RocketEngineCluster>() != null) && this.CanMoveVertically(attachedTo.GetComponent<Building>().Def.HeightInCells * -1, attachedTo.gameObject) && (!alsoCheckBelowCanSwapUp || attachedTo.GetComponent<ReorderableBuilding>().CanSwapUp(false));
 	}
 
-	public void ShowReorderArm(bool show)
+		public void ShowReorderArm(bool show)
 	{
 		if (this.reorderArmController != null)
 		{
@@ -493,7 +493,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	private static void RebuildNetworks()
+		private static void RebuildNetworks()
 	{
 		Game.Instance.logicCircuitSystem.ForceRebuildNetworks();
 		Game.Instance.gasConduitSystem.ForceRebuildNetworks();
@@ -502,7 +502,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		Game.Instance.solidConduitSystem.ForceRebuildNetworks();
 	}
 
-	private static void UnmarkBuilding(GameObject go, AttachableBuilding aboveBuilding)
+		private static void UnmarkBuilding(GameObject go, AttachableBuilding aboveBuilding)
 	{
 		int cell = Grid.PosToCell(go);
 		Building component = go.GetComponent<Building>();
@@ -541,7 +541,7 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	private static void MarkBuilding(GameObject go, AttachableBuilding aboveBuilding)
+		private static void MarkBuilding(GameObject go, AttachableBuilding aboveBuilding)
 	{
 		int cell = Grid.PosToCell(go);
 		Building component = go.GetComponent<Building>();
@@ -590,28 +590,28 @@ public class ReorderableBuilding : KMonoBehaviour
 		}
 	}
 
-	private bool cancelShield;
+		private bool cancelShield;
 
-	private bool reorderingAnimUnderway;
+		private bool reorderingAnimUnderway;
 
-	private KBatchedAnimController animController;
+		private KBatchedAnimController animController;
 
-	public List<SelectModuleCondition> buildConditions = new List<SelectModuleCondition>();
+		public List<SelectModuleCondition> buildConditions = new List<SelectModuleCondition>();
 
-	private KBatchedAnimController reorderArmController;
+		private KBatchedAnimController reorderArmController;
 
-	private KAnimLink m_animLink;
+		private KAnimLink m_animLink;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private LoopingSounds loopingSounds;
 
-	private string reorderSound = "RocketModuleSwitchingArm_moving_LP";
+		private string reorderSound = "RocketModuleSwitchingArm_moving_LP";
 
-	private static List<ReorderableBuilding> toBeRemoved = new List<ReorderableBuilding>();
+		private static List<ReorderableBuilding> toBeRemoved = new List<ReorderableBuilding>();
 
-	public enum MoveSource
+		public enum MoveSource
 	{
-		Push,
-		Pull
+				Push,
+				Pull
 	}
 }

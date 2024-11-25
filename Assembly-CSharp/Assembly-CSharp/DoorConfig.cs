@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DoorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Door";
 		int width = 1;
@@ -32,7 +32,7 @@ public class DoorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public static List<LogicPorts.Port> CreateSingleInputPortList(CellOffset offset)
+		public static List<LogicPorts.Port> CreateSingleInputPortList(CellOffset offset)
 	{
 		return new List<LogicPorts.Port>
 		{
@@ -40,7 +40,7 @@ public class DoorConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Door door = go.AddOrGet<Door>();
 		door.unpoweredAnimSpeed = 1f;
@@ -57,10 +57,10 @@ public class DoorConfig : IBuildingConfig
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		go.AddTag(GameTags.NoCreatureIdling);
 	}
 
-	public const string ID = "Door";
+		public const string ID = "Door";
 }

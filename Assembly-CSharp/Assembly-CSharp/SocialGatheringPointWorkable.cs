@@ -6,12 +6,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/SocialGatheringPointWorkable")]
 public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 {
-	private SocialGatheringPointWorkable()
+		private SocialGatheringPointWorkable()
 	{
 		base.SetReportType(ReportManager.ReportType.PersonalTime);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.overrideAnims = new KAnimFile[]
@@ -30,7 +30,7 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 		this.lightEfficiencyBonus = false;
 	}
 
-	public override Vector3 GetFacingTarget()
+		public override Vector3 GetFacingTarget()
 	{
 		if (this.lastTalker != null)
 		{
@@ -39,7 +39,7 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 		return base.GetFacingTarget();
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		if (!worker.GetComponent<Schedulable>().IsAllowed(Db.Get().ScheduleBlockTypes.Recreation))
 		{
@@ -52,7 +52,7 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 		return false;
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		worker.GetComponent<KPrefabID>().AddTag(GameTags.AlwaysConverse, false);
@@ -61,7 +61,7 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 		this.timesConversed = 0;
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		worker.GetComponent<KPrefabID>().RemoveTag(GameTags.AlwaysConverse);
@@ -69,7 +69,7 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 		worker.Unsubscribe(25860745, new Action<object>(this.OnStoppedTalking));
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		if (this.timesConversed > 0)
 		{
@@ -81,7 +81,7 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 		}
 	}
 
-	private void OnStartedTalking(object data)
+		private void OnStartedTalking(object data)
 	{
 		ConversationManager.StartedTalkingEvent startedTalkingEvent = data as ConversationManager.StartedTalkingEvent;
 		if (startedTalkingEvent == null)
@@ -105,11 +105,11 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 		this.timesConversed++;
 	}
 
-	private void OnStoppedTalking(object data)
+		private void OnStoppedTalking(object data)
 	{
 	}
 
-	public bool GetWorkerPriority(Worker worker, out int priority)
+		public bool GetWorkerPriority(WorkerBase worker, out int priority)
 	{
 		priority = this.basePriority;
 		if (!string.IsNullOrEmpty(this.specificEffect) && worker.GetComponent<Effects>().HasEffect(this.specificEffect))
@@ -119,11 +119,11 @@ public class SocialGatheringPointWorkable : Workable, IWorkerPrioritizable
 		return true;
 	}
 
-	private GameObject lastTalker;
+		private GameObject lastTalker;
 
-	public int basePriority;
+		public int basePriority;
 
-	public string specificEffect;
+		public string specificEffect;
 
-	public int timesConversed;
+		public int timesConversed;
 }

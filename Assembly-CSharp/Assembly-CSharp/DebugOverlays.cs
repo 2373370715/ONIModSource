@@ -2,9 +2,9 @@
 
 public class DebugOverlays : KScreen
 {
-			public static DebugOverlays instance { get; private set; }
+				public static DebugOverlays instance { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		DebugOverlays.instance = this;
 		KPopupMenu componentInChildren = base.GetComponentInChildren<KPopupMenu>();
@@ -21,31 +21,28 @@ public class DebugOverlays : KScreen
 		base.gameObject.SetActive(false);
 	}
 
-	private void OnSelect(string str, int index)
+		private void OnSelect(string str, int index)
 	{
-		if (str != null)
+		if (str == "None")
 		{
-			if (str == "None")
-			{
-				SimDebugView.Instance.SetMode(OverlayModes.None.ID);
-				return;
-			}
-			if (str == "Flow")
-			{
-				SimDebugView.Instance.SetMode(SimDebugView.OverlayModes.Flow);
-				return;
-			}
-			if (str == "Lighting")
-			{
-				SimDebugView.Instance.SetMode(OverlayModes.Light.ID);
-				return;
-			}
-			if (str == "Rooms")
-			{
-				SimDebugView.Instance.SetMode(OverlayModes.Rooms.ID);
-				return;
-			}
+			SimDebugView.Instance.SetMode(OverlayModes.None.ID);
+			return;
 		}
-		Debug.LogError("Unknown debug view: " + str);
+		if (str == "Flow")
+		{
+			SimDebugView.Instance.SetMode(SimDebugView.OverlayModes.Flow);
+			return;
+		}
+		if (str == "Lighting")
+		{
+			SimDebugView.Instance.SetMode(OverlayModes.Light.ID);
+			return;
+		}
+		if (!(str == "Rooms"))
+		{
+			Debug.LogError("Unknown debug view: " + str);
+			return;
+		}
+		SimDebugView.Instance.SetMode(OverlayModes.Rooms.ID);
 	}
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class KleiItemDropScreen_PermitVis_DupeEquipment : KMonoBehaviour
 {
-	public void ConfigureWith(DropScreenPresentationInfo info)
+		public void ConfigureWith(DropScreenPresentationInfo info)
 	{
 		this.dupeKAnim.GetComponent<UIDupeRandomizer>().Randomize();
 		KAnimFile anim = Assets.GetAnim(info.BuildOverride);
@@ -27,9 +27,9 @@ public class KleiItemDropScreen_PermitVis_DupeEquipment : KMonoBehaviour
 		this.dupeKAnim.Queue("idle_default", KAnim.PlayMode.Loop, 1f, 0f);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KBatchedAnimController droppedItemKAnim;
 
-	[SerializeField]
+		[SerializeField]
 	private KBatchedAnimController dupeKAnim;
 }

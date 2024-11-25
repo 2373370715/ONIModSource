@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class RailGunConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "RailGun";
 		int width = 5;
@@ -49,14 +49,14 @@ public class RailGunConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	private void AttachPorts(GameObject go)
+		private void AttachPorts(GameObject go)
 	{
 		go.AddComponent<ConduitSecondaryInput>().portInfo = this.liquidInputPort;
 		go.AddComponent<ConduitSecondaryInput>().portInfo = this.gasInputPort;
 		go.AddComponent<ConduitSecondaryInput>().portInfo = this.solidInputPort;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		RailGun railGun = go.AddOrGet<RailGun>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
@@ -75,7 +75,7 @@ public class RailGunConfig : IBuildingConfig
 		highEnergyParticleStorage.showCapacityStatusItem = true;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		List<Tag> list = new List<Tag>();
 		list.AddRange(STORAGEFILTERS.STORAGE_LOCKERS_STANDARD);
@@ -92,19 +92,19 @@ public class RailGunConfig : IBuildingConfig
 		RailGunConfig.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		this.AttachPorts(go);
 		RailGunConfig.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		this.AttachPorts(go);
 		RailGunConfig.AddVisualizer(go);
 	}
 
-	private static void AddVisualizer(GameObject prefab)
+		private static void AddVisualizer(GameObject prefab)
 	{
 		SkyVisibilityVisualizer skyVisibilityVisualizer = prefab.AddOrGet<SkyVisibilityVisualizer>();
 		skyVisibilityVisualizer.RangeMin = -2;
@@ -116,7 +116,7 @@ public class RailGunConfig : IBuildingConfig
 		};
 	}
 
-	private static bool RailGunSkyVisibility(int cell)
+		private static bool RailGunSkyVisibility(int cell)
 	{
 		DebugUtil.DevAssert(ClusterManager.Instance != null, "RailGun assumes DLC", null);
 		if (Grid.IsValidCell(cell) && Grid.WorldIdx[cell] != 255)
@@ -136,29 +136,29 @@ public class RailGunConfig : IBuildingConfig
 		return false;
 	}
 
-	public const string ID = "RailGun";
+		public const string ID = "RailGun";
 
-	public const string PORT_ID = "HEP_STORAGE";
+		public const string PORT_ID = "HEP_STORAGE";
 
-	public const int RANGE = 20;
+		public const int RANGE = 20;
 
-	public const float BASE_PARTICLE_COST = 0f;
+		public const float BASE_PARTICLE_COST = 0f;
 
-	public const float HEX_PARTICLE_COST = 10f;
+		public const float HEX_PARTICLE_COST = 10f;
 
-	public const float HEP_CAPACITY = 200f;
+		public const float HEP_CAPACITY = 200f;
 
-	public const float TAKEOFF_VELOCITY = 35f;
+		public const float TAKEOFF_VELOCITY = 35f;
 
-	public const int MAINTENANCE_AFTER_NUM_PAYLOADS = 6;
+		public const int MAINTENANCE_AFTER_NUM_PAYLOADS = 6;
 
-	public const int MAINTENANCE_COOLDOWN = 30;
+		public const int MAINTENANCE_COOLDOWN = 30;
 
-	public const float CAPACITY = 1200f;
+		public const float CAPACITY = 1200f;
 
-	private ConduitPortInfo solidInputPort = new ConduitPortInfo(ConduitType.Solid, new CellOffset(-1, 0));
+		private ConduitPortInfo solidInputPort = new ConduitPortInfo(ConduitType.Solid, new CellOffset(-1, 0));
 
-	private ConduitPortInfo liquidInputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(0, 0));
+		private ConduitPortInfo liquidInputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(0, 0));
 
-	private ConduitPortInfo gasInputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(1, 0));
+		private ConduitPortInfo gasInputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(1, 0));
 }

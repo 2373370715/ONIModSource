@@ -2,14 +2,14 @@
 
 namespace Klei
 {
-	public struct CallbackInfo
+		public struct CallbackInfo
 	{
-		public CallbackInfo(HandleVector<Game.CallbackInfo>.Handle h)
+				public CallbackInfo(HandleVector<Game.CallbackInfo>.Handle h)
 		{
 			this.handle = h;
 		}
 
-		public void Release()
+				public void Release()
 		{
 			if (this.handle.IsValid())
 			{
@@ -23,6 +23,6 @@ namespace Klei
 			}
 		}
 
-		private HandleVector<Game.CallbackInfo>.Handle handle;
+				private HandleVector<Game.CallbackInfo>.Handle handle;
 	}
 }

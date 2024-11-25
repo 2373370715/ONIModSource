@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class CodexTextWithTooltip : CodexWidget<CodexTextWithTooltip>
 {
-			public string text { get; set; }
+				public string text { get; set; }
 
-			public string tooltip { get; set; }
+				public string tooltip { get; set; }
 
-			public CodexTextStyle style { get; set; }
+				public CodexTextStyle style { get; set; }
 
-			public string stringKey
+				public string stringKey
 	{
 		get
 		{
@@ -22,19 +22,19 @@ public class CodexTextWithTooltip : CodexWidget<CodexTextWithTooltip>
 		}
 	}
 
-	public CodexTextWithTooltip()
+		public CodexTextWithTooltip()
 	{
 		this.style = CodexTextStyle.Body;
 	}
 
-	public CodexTextWithTooltip(string text, string tooltip, CodexTextStyle style = CodexTextStyle.Body)
+		public CodexTextWithTooltip(string text, string tooltip, CodexTextStyle style = CodexTextStyle.Body)
 	{
 		this.text = text;
 		this.style = style;
 		this.tooltip = tooltip;
 	}
 
-	public void ConfigureLabel(LocText label, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		public void ConfigureLabel(LocText label, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		label.gameObject.SetActive(true);
 		label.AllowLinks = (this.style == CodexTextStyle.Body);
@@ -43,12 +43,12 @@ public class CodexTextWithTooltip : CodexWidget<CodexTextWithTooltip>
 		label.ApplySettings();
 	}
 
-	public void ConfigureTooltip(ToolTip tooltip)
+		public void ConfigureTooltip(ToolTip tooltip)
 	{
 		tooltip.SetSimpleTooltip(this.tooltip);
 	}
 
-	public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		this.ConfigureLabel(contentGameObject.GetComponent<LocText>(), textStyles);
 		this.ConfigureTooltip(contentGameObject.GetComponent<ToolTip>());

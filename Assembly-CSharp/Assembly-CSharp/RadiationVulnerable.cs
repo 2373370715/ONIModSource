@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class RadiationVulnerable : GameStateMachine<RadiationVulnerable, RadiationVulnerable.StatesInstance, IStateMachineTarget, RadiationVulnerable.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.comfortable;
 		this.comfortable.Transition(this.too_dark, (RadiationVulnerable.StatesInstance smi) => smi.GetRadiationThresholdCrossed() == -1, UpdateRate.SIM_1000ms).Transition(this.too_bright, (RadiationVulnerable.StatesInstance smi) => smi.GetRadiationThresholdCrossed() == 1, UpdateRate.SIM_1000ms).TriggerOnEnter(GameHashes.RadiationComfort, null);
@@ -14,15 +14,15 @@ public class RadiationVulnerable : GameStateMachine<RadiationVulnerable, Radiati
 		this.too_bright.Transition(this.comfortable, (RadiationVulnerable.StatesInstance smi) => smi.GetRadiationThresholdCrossed() != 1, UpdateRate.SIM_1000ms).TriggerOnEnter(GameHashes.RadiationDiscomfort, null);
 	}
 
-	public GameStateMachine<RadiationVulnerable, RadiationVulnerable.StatesInstance, IStateMachineTarget, RadiationVulnerable.Def>.State comfortable;
+		public GameStateMachine<RadiationVulnerable, RadiationVulnerable.StatesInstance, IStateMachineTarget, RadiationVulnerable.Def>.State comfortable;
 
-	public GameStateMachine<RadiationVulnerable, RadiationVulnerable.StatesInstance, IStateMachineTarget, RadiationVulnerable.Def>.State too_dark;
+		public GameStateMachine<RadiationVulnerable, RadiationVulnerable.StatesInstance, IStateMachineTarget, RadiationVulnerable.Def>.State too_dark;
 
-	public GameStateMachine<RadiationVulnerable, RadiationVulnerable.StatesInstance, IStateMachineTarget, RadiationVulnerable.Def>.State too_bright;
+		public GameStateMachine<RadiationVulnerable, RadiationVulnerable.StatesInstance, IStateMachineTarget, RadiationVulnerable.Def>.State too_bright;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject go)
+				public List<Descriptor> GetDescriptors(GameObject go)
 		{
 			Modifiers component = go.GetComponent<Modifiers>();
 			float preModifiedAttributeValue = component.GetPreModifiedAttributeValue(Db.Get().PlantAttributes.MinRadiationThreshold);
@@ -44,15 +44,15 @@ public class RadiationVulnerable : GameStateMachine<RadiationVulnerable, Radiati
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<RadiationVulnerable, RadiationVulnerable.StatesInstance, IStateMachineTarget, RadiationVulnerable.Def>.GameInstance, IWiltCause
+		public class StatesInstance : GameStateMachine<RadiationVulnerable, RadiationVulnerable.StatesInstance, IStateMachineTarget, RadiationVulnerable.Def>.GameInstance, IWiltCause
 	{
-		public StatesInstance(IStateMachineTarget master, RadiationVulnerable.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, RadiationVulnerable.Def def) : base(master, def)
 		{
 			this.minRadiationAttributeInstance = Db.Get().PlantAttributes.MinRadiationThreshold.Lookup(base.gameObject);
 			this.maxRadiationAttributeInstance = Db.Get().PlantAttributes.MaxRadiationThreshold.Lookup(base.gameObject);
 		}
 
-		public int GetRadiationThresholdCrossed()
+				public int GetRadiationThresholdCrossed()
 		{
 			int num = Grid.PosToCell(base.master.gameObject);
 			if (!Grid.IsValidCell(num))
@@ -70,7 +70,7 @@ public class RadiationVulnerable : GameStateMachine<RadiationVulnerable, Radiati
 			return 1;
 		}
 
-				public WiltCondition.Condition[] Conditions
+						public WiltCondition.Condition[] Conditions
 		{
 			get
 			{
@@ -81,7 +81,7 @@ public class RadiationVulnerable : GameStateMachine<RadiationVulnerable, Radiati
 			}
 		}
 
-				public string WiltStateString
+						public string WiltStateString
 		{
 			get
 			{
@@ -97,8 +97,8 @@ public class RadiationVulnerable : GameStateMachine<RadiationVulnerable, Radiati
 			}
 		}
 
-		private AttributeInstance minRadiationAttributeInstance;
+				private AttributeInstance minRadiationAttributeInstance;
 
-		private AttributeInstance maxRadiationAttributeInstance;
+				private AttributeInstance maxRadiationAttributeInstance;
 	}
 }

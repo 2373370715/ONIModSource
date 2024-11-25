@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class TreeFilterableSideScreen : SideScreenContent
 {
-		private bool InputFieldEmpty
+			private bool InputFieldEmpty
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 	}
 
-		public bool IsStorage
+			public bool IsStorage
 	{
 		get
 		{
@@ -24,13 +24,13 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.Initialize();
 	}
 
-	private void Initialize()
+		private void Initialize()
 	{
 		if (this.initialized)
 		{
@@ -60,7 +60,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.initialized = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.allCheckBox.transform.parent.parent.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.ALLBUTTONTOOLTIP);
@@ -71,7 +71,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.InitSearch();
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		if (base.isEditing)
 		{
@@ -80,7 +80,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		return base.GetSortKey();
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.Consumed)
 		{
@@ -92,7 +92,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (e.Consumed)
 		{
@@ -104,12 +104,12 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		return 1;
 	}
 
-	private void UpdateAllCheckBoxVisualState()
+		private void UpdateAllCheckBoxVisualState()
 	{
 		switch (this.GetAllCheckboxState())
 		{
@@ -127,7 +127,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 	}
 
-	public void Update()
+		public void Update()
 	{
 		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
 		{
@@ -149,18 +149,18 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 	}
 
-	private void OnlyAllowTransportItemsClicked()
+		private void OnlyAllowTransportItemsClicked()
 	{
 		this.storage.SetOnlyFetchMarkedItems(!this.storage.GetOnlyFetchMarkedItems());
 	}
 
-	private void OnlyAllowSpicedItemsClicked()
+		private void OnlyAllowSpicedItemsClicked()
 	{
 		FoodStorage component = this.storage.GetComponent<FoodStorage>();
 		component.SpicedFoodOnly = !component.SpicedFoodOnly;
 	}
 
-	private TreeFilterableSideScreenRow.State GetAllCheckboxState()
+		private TreeFilterableSideScreenRow.State GetAllCheckboxState()
 	{
 		bool flag = false;
 		bool flag2 = false;
@@ -202,7 +202,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		return TreeFilterableSideScreenRow.State.Off;
 	}
 
-	private void SetAllCheckboxState(TreeFilterableSideScreenRow.State newState)
+		private void SetAllCheckboxState(TreeFilterableSideScreenRow.State newState)
 	{
 		switch (newState)
 		{
@@ -238,25 +238,25 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.visualDirty = true;
 	}
 
-	public bool GetElementTagAcceptedState(Tag t)
+		public bool GetElementTagAcceptedState(Tag t)
 	{
 		return this.targetFilterable.ContainsTag(t);
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		TreeFilterable component = target.GetComponent<TreeFilterable>();
 		Storage component2 = target.GetComponent<Storage>();
 		return component != null && target.GetComponent<FlatTagFilterable>() == null && component.showUserMenu && (component2 == null || component2.showInUI) && target.GetSMI<StorageTile.Instance>() == null;
 	}
 
-	private void ReconfigureForPreviousTarget()
+		private void ReconfigureForPreviousTarget()
 	{
 		global::Debug.Assert(this.target != null, "TreeFilterableSideScreen trying to restore null target.");
 		this.SetTarget(this.target);
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.Initialize();
 		this.target = target;
@@ -293,7 +293,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.ToggleSearchConfiguration(!this.InputFieldEmpty);
 	}
 
-	private void OnOnlyFetchMarkedItemsSettingChanged(object data)
+		private void OnOnlyFetchMarkedItemsSettingChanged(object data)
 	{
 		this.onlyAllowTransportItemsCheckBox.ChangeState(this.storage.GetOnlyFetchMarkedItems() ? 1 : 0);
 		if (this.storage.allowSettingOnlyFetchMarkedItems)
@@ -304,7 +304,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.onlyallowTransportItemsRow.SetActive(false);
 	}
 
-	private void OnOnlySpicedItemsSettingChanged(object data)
+		private void OnOnlySpicedItemsSettingChanged(object data)
 	{
 		FoodStorage component = this.storage.GetComponent<FoodStorage>();
 		if (component != null)
@@ -316,12 +316,12 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.onlyallowSpicedItemsRow.SetActive(false);
 	}
 
-	public bool IsTagAllowed(Tag tag)
+		public bool IsTagAllowed(Tag tag)
 	{
 		return this.targetFilterable.AcceptedTags.Contains(tag);
 	}
 
-	public void AddTag(Tag tag)
+		public void AddTag(Tag tag)
 	{
 		if (this.targetFilterable == null)
 		{
@@ -330,7 +330,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.targetFilterable.AddTagToFilter(tag);
 	}
 
-	public void RemoveTag(Tag tag)
+		public void RemoveTag(Tag tag)
 	{
 		if (this.targetFilterable == null)
 		{
@@ -339,7 +339,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.targetFilterable.RemoveTagFromFilter(tag);
 	}
 
-	private List<TreeFilterableSideScreen.TagOrderInfo> GetTagsSortedAlphabetically(ICollection<Tag> tags)
+		private List<TreeFilterableSideScreen.TagOrderInfo> GetTagsSortedAlphabetically(ICollection<Tag> tags)
 	{
 		List<TreeFilterableSideScreen.TagOrderInfo> list = new List<TreeFilterableSideScreen.TagOrderInfo>();
 		foreach (Tag tag in tags)
@@ -354,7 +354,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		return list;
 	}
 
-	private TreeFilterableSideScreenRow AddRow(Tag rowTag)
+		private TreeFilterableSideScreenRow AddRow(Tag rowTag)
 	{
 		if (this.tagRowMap.ContainsKey(rowTag))
 		{
@@ -374,7 +374,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		return freeElement;
 	}
 
-	public float GetAmountInStorage(Tag tag)
+		public float GetAmountInStorage(Tag tag)
 	{
 		if (!this.IsStorage)
 		{
@@ -383,7 +383,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		return this.storage.GetMassAvailable(tag);
 	}
 
-	private void CreateCategories()
+		private void CreateCategories()
 	{
 		if (this.storage.storageFilters != null && this.storage.storageFilters.Count >= 1)
 		{
@@ -402,7 +402,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		global::Debug.LogError("If you're filtering, your storage filter should have the filters set on it");
 	}
 
-	private void CreateSpecialItemRows()
+		private void CreateSpecialItemRows()
 	{
 		this.specialItemsHeader.transform.SetAsLastSibling();
 		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
@@ -415,7 +415,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.RefreshSpecialItemsHeader();
 	}
 
-	private void RefreshSpecialItemsHeader()
+		private void RefreshSpecialItemsHeader()
 	{
 		bool active = false;
 		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
@@ -429,7 +429,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.specialItemsHeader.gameObject.SetActive(active);
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		if (this.target != null && (this.tagRowMap == null || this.tagRowMap.Count == 0))
@@ -438,7 +438,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		if (this.storage != null)
@@ -451,7 +451,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.tagRowMap.Clear();
 	}
 
-	private void RecordRowExpandedStatus()
+		private void RecordRowExpandedStatus()
 	{
 		this.rowExpandedStatusMemory.Clear();
 		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
@@ -460,7 +460,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 	}
 
-	private void RestoreRowExpandedStatus()
+		private void RestoreRowExpandedStatus()
 	{
 		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
 		{
@@ -471,7 +471,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 	}
 
-	private void InitSearch()
+		private void InitSearch()
 	{
 		KInputTextField kinputTextField = this.inputField;
 		kinputTextField.onFocus = (System.Action)Delegate.Combine(kinputTextField.onFocus, new System.Action(delegate()
@@ -505,7 +505,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		};
 	}
 
-	private void ToggleSearchConfiguration(bool searching)
+		private void ToggleSearchConfiguration(bool searching)
 	{
 		this.configurationRowsContainer.gameObject.SetActive(!searching);
 		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
@@ -520,14 +520,14 @@ public class TreeFilterableSideScreen : SideScreenContent
 		this.RefreshSpecialItemsHeader();
 	}
 
-	private void ClearSearch()
+		private void ClearSearch()
 	{
 		this.inputField.text = "";
 		this.RestoreRowExpandedStatus();
 		this.ToggleSearchConfiguration(false);
 	}
 
-		public string CurrentSearchValue
+			public string CurrentSearchValue
 	{
 		get
 		{
@@ -539,7 +539,7 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 	}
 
-	private void UpdateSearchFilter()
+		private void UpdateSearchFilter()
 	{
 		foreach (KeyValuePair<Tag, TreeFilterableSideScreenRow> keyValuePair in this.tagRowMap)
 		{
@@ -547,75 +547,75 @@ public class TreeFilterableSideScreen : SideScreenContent
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle allCheckBox;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText allCheckBoxLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject specialItemsHeader;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle onlyAllowTransportItemsCheckBox;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject onlyallowTransportItemsRow;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle onlyAllowSpicedItemsCheckBox;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject onlyallowSpicedItemsRow;
 
-	[SerializeField]
+		[SerializeField]
 	private TreeFilterableSideScreenRow rowPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject rowGroup;
 
-	[SerializeField]
+		[SerializeField]
 	private TreeFilterableSideScreenElement elementPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject titlebar;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject contentMask;
 
-	[SerializeField]
+		[SerializeField]
 	private KInputTextField inputField;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton clearButton;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject configurationRowsContainer;
 
-	private GameObject target;
+		private GameObject target;
 
-	private bool visualDirty;
+		private bool visualDirty;
 
-	private bool initialized;
+		private bool initialized;
 
-	private KImage onlyAllowTransportItemsImg;
+		private KImage onlyAllowTransportItemsImg;
 
-	public UIPool<TreeFilterableSideScreenElement> elementPool;
+		public UIPool<TreeFilterableSideScreenElement> elementPool;
 
-	private UIPool<TreeFilterableSideScreenRow> rowPool;
+		private UIPool<TreeFilterableSideScreenRow> rowPool;
 
-	private TreeFilterable targetFilterable;
+		private TreeFilterable targetFilterable;
 
-	private Dictionary<Tag, TreeFilterableSideScreenRow> tagRowMap = new Dictionary<Tag, TreeFilterableSideScreenRow>();
+		private Dictionary<Tag, TreeFilterableSideScreenRow> tagRowMap = new Dictionary<Tag, TreeFilterableSideScreenRow>();
 
-	private Dictionary<Tag, bool> rowExpandedStatusMemory = new Dictionary<Tag, bool>();
+		private Dictionary<Tag, bool> rowExpandedStatusMemory = new Dictionary<Tag, bool>();
 
-	private Storage storage;
+		private Storage storage;
 
-	private struct TagOrderInfo
+		private struct TagOrderInfo
 	{
-		public Tag tag;
+				public Tag tag;
 
-		public string strippedName;
+				public string strippedName;
 	}
 }

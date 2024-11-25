@@ -8,9 +8,9 @@ using UnityEngine;
 
 namespace KMod
 {
-	internal static class DLLLoader
+		internal static class DLLLoader
 	{
-		public static bool LoadUserModLoaderDLL()
+				public static bool LoadUserModLoaderDLL()
 		{
 			try
 			{
@@ -45,7 +45,7 @@ namespace KMod
 			return false;
 		}
 
-		public static LoadedModData LoadDLLs(Mod ownerMod, string harmonyId, string path, bool isDev)
+				public static LoadedModData LoadDLLs(Mod ownerMod, string harmonyId, string path, bool isDev)
 		{
 			LoadedModData loadedModData = new LoadedModData();
 			LoadedModData result;
@@ -149,7 +149,7 @@ namespace KMod
 			return result;
 		}
 
-		public static void PostLoadDLLs(string harmonyId, LoadedModData modData, IReadOnlyList<Mod> mods)
+				public static void PostLoadDLLs(string harmonyId, LoadedModData modData, IReadOnlyList<Mod> mods)
 		{
 			try
 			{
@@ -164,6 +164,6 @@ namespace KMod
 			}
 		}
 
-		private const string managed_path = "Managed";
+				private const string managed_path = "Managed";
 	}
 }

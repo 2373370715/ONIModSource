@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>, ISecondaryInput
 {
-		public float FuelAvailable
+			public float FuelAvailable
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.fuel_tag = SimHashes.Petroleum.CreateTag();
@@ -52,28 +52,28 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Conduit.GetNetworkManager(this.portInfo.conduitType).RemoveFromNetworks(this.secondaryInputCell, this.flowNetworkItem, true);
 		base.OnCleanUp();
 	}
 
-	private GameObject GetFuel()
+		private GameObject GetFuel()
 	{
 		return this.storage.FindFirst(this.fuel_tag);
 	}
 
-	public bool IsSuitFullyCharged()
+		public bool IsSuitFullyCharged()
 	{
 		return this.suit_locker.IsSuitFullyCharged();
 	}
 
-	public KPrefabID GetStoredOutfit()
+		public KPrefabID GetStoredOutfit()
 	{
 		return this.suit_locker.GetStoredOutfit();
 	}
 
-	private void FuelSuit(float dt)
+		private void FuelSuit(float dt)
 	{
 		KPrefabID storedOutfit = this.suit_locker.GetStoredOutfit();
 		if (storedOutfit == null)
@@ -98,12 +98,12 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 		component2.amount += num;
 	}
 
-	bool ISecondaryInput.HasSecondaryConduitType(ConduitType type)
+		bool ISecondaryInput.HasSecondaryConduitType(ConduitType type)
 	{
 		return this.portInfo.conduitType == type;
 	}
 
-	public CellOffset GetSecondaryConduitOffset(ConduitType type)
+		public CellOffset GetSecondaryConduitOffset(ConduitType type)
 	{
 		if (this.portInfo.conduitType == type)
 		{
@@ -112,13 +112,13 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 		return CellOffset.none;
 	}
 
-	public bool HasFuel()
+		public bool HasFuel()
 	{
 		GameObject fuel = this.GetFuel();
 		return fuel != null && fuel.GetComponent<PrimaryElement>().Mass > 0f;
 	}
 
-	private void RefreshMeter()
+		private void RefreshMeter()
 	{
 		this.o2_meter.SetPositionPercent(this.suit_locker.OxygenAvailable);
 		this.fuel_meter.SetPositionPercent(this.FuelAvailable);
@@ -126,7 +126,7 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 		this.anim_controller.SetSymbolVisiblity("petrol_yes_bloom", this.IsFuelTankAboveMinimumLevel());
 	}
 
-	public bool IsOxygenTankAboveMinimumLevel()
+		public bool IsOxygenTankAboveMinimumLevel()
 	{
 		KPrefabID storedOutfit = this.GetStoredOutfit();
 		if (storedOutfit != null)
@@ -137,7 +137,7 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 		return false;
 	}
 
-	public bool IsFuelTankAboveMinimumLevel()
+		public bool IsFuelTankAboveMinimumLevel()
 	{
 		KPrefabID storedOutfit = this.GetStoredOutfit();
 		if (storedOutfit != null)
@@ -148,38 +148,38 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 		return false;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private SuitLocker suit_locker;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KBatchedAnimController anim_controller;
 
-	public const float FUEL_CAPACITY = 100f;
+		public const float FUEL_CAPACITY = 100f;
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo portInfo;
 
-	private int secondaryInputCell = -1;
+		private int secondaryInputCell = -1;
 
-	private FlowUtilityNetwork.NetworkItem flowNetworkItem;
+		private FlowUtilityNetwork.NetworkItem flowNetworkItem;
 
-	private ConduitConsumer fuel_consumer;
+		private ConduitConsumer fuel_consumer;
 
-	private Tag fuel_tag;
+		private Tag fuel_tag;
 
-	private MeterController o2_meter;
+		private MeterController o2_meter;
 
-	private MeterController fuel_meter;
+		private MeterController fuel_meter;
 
-	public class States : GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker>
+		public class States : GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.empty;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -198,25 +198,25 @@ public class JetSuitLocker : StateMachineComponent<JetSuitLocker.StatesInstance>
 			this.charged.EventTransition(GameHashes.OnStorageChange, this.empty, (JetSuitLocker.StatesInstance smi) => smi.master.GetStoredOutfit() == null);
 		}
 
-		public GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State empty;
+				public GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State empty;
 
-		public JetSuitLocker.States.ChargingStates charging;
+				public JetSuitLocker.States.ChargingStates charging;
 
-		public GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State charged;
+				public GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State charged;
 
-		public class ChargingStates : GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State
+				public class ChargingStates : GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State
 		{
-			public GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State notoperational;
+						public GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State notoperational;
 
-			public GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State operational;
+						public GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State operational;
 
-			public GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State nofuel;
+						public GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.State nofuel;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.GameInstance
+		public class StatesInstance : GameStateMachine<JetSuitLocker.States, JetSuitLocker.StatesInstance, JetSuitLocker, object>.GameInstance
 	{
-		public StatesInstance(JetSuitLocker jet_suit_locker) : base(jet_suit_locker)
+				public StatesInstance(JetSuitLocker jet_suit_locker) : base(jet_suit_locker)
 		{
 		}
 	}

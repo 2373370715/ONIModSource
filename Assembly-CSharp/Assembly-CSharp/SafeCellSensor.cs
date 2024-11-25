@@ -3,7 +3,7 @@ using Klei.AI;
 
 public class SafeCellSensor : Sensor
 {
-	public SafeCellSensor(Sensors sensors) : base(sensors)
+		public SafeCellSensor(Sensors sensors) : base(sensors)
 	{
 		this.navigator = base.GetComponent<Navigator>();
 		this.brain = base.GetComponent<MinionBrain>();
@@ -11,7 +11,7 @@ public class SafeCellSensor : Sensor
 		this.traits = base.GetComponent<Traits>();
 	}
 
-	public override void Update()
+		public override void Update()
 	{
 		if (!this.prefabid.HasTag(GameTags.Idle))
 		{
@@ -32,7 +32,16 @@ public class SafeCellSensor : Sensor
 		}
 	}
 
-	public void RunSafeCellQuery(bool avoid_light)
+		public void RunSafeCellQuery(bool avoid_light)
+	{
+		this.cell = this.RunAndGetSafeCellQueryResult(avoid_light);
+		if (this.cell == Grid.PosToCell(this.navigator))
+		{
+			this.cell = Grid.InvalidCell;
+		}
+	}
+
+		public int RunAndGetSafeCellQueryResult(bool avoid_light)
 	{
 		MinionPathFinderAbilities minionPathFinderAbilities = (MinionPathFinderAbilities)this.navigator.GetCurrentAbilities();
 		minionPathFinderAbilities.SetIdleNavMaskEnabled(true);
@@ -40,18 +49,15 @@ public class SafeCellSensor : Sensor
 		this.navigator.RunQuery(safeCellQuery);
 		minionPathFinderAbilities.SetIdleNavMaskEnabled(false);
 		this.cell = safeCellQuery.GetResultCell();
-		if (this.cell == Grid.PosToCell(this.navigator))
-		{
-			this.cell = Grid.InvalidCell;
-		}
+		return this.cell;
 	}
 
-	public int GetSensorCell()
+		public int GetSensorCell()
 	{
 		return this.cell;
 	}
 
-	public int GetCellQuery()
+		public int GetCellQuery()
 	{
 		if (this.cell == Grid.InvalidCell)
 		{
@@ -60,7 +66,7 @@ public class SafeCellSensor : Sensor
 		return this.cell;
 	}
 
-	public int GetSleepCellQuery()
+		public int GetSleepCellQuery()
 	{
 		if (this.cell == Grid.InvalidCell)
 		{
@@ -69,18 +75,18 @@ public class SafeCellSensor : Sensor
 		return this.cell;
 	}
 
-	public bool HasSafeCell()
+		public bool HasSafeCell()
 	{
 		return this.cell != Grid.InvalidCell && this.cell != Grid.PosToCell(this.sensors);
 	}
 
-	private MinionBrain brain;
+		private MinionBrain brain;
 
-	private Navigator navigator;
+		private Navigator navigator;
 
-	private KPrefabID prefabid;
+		private KPrefabID prefabid;
 
-	private Traits traits;
+		private Traits traits;
 
-	private int cell = Grid.InvalidCell;
+		private int cell = Grid.InvalidCell;
 }

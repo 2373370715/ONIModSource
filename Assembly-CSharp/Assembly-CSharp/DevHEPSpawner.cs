@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class DevHEPSpawner : StateMachineComponent<DevHEPSpawner.StatesInstance>, IHighEnergyParticleDirection, ISingleSliderControl, ISliderControl
 {
-			public EightDirection Direction
+				public EightDirection Direction
 	{
 		get
 		{
@@ -24,7 +24,7 @@ public class DevHEPSpawner : StateMachineComponent<DevHEPSpawner.StatesInstance>
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		DevHEPSpawner component = ((GameObject)data).GetComponent<DevHEPSpawner>();
 		if (component != null)
@@ -34,13 +34,13 @@ public class DevHEPSpawner : StateMachineComponent<DevHEPSpawner.StatesInstance>
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<DevHEPSpawner>(-905833192, DevHEPSpawner.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -51,7 +51,7 @@ public class DevHEPSpawner : StateMachineComponent<DevHEPSpawner.StatesInstance>
 		this.progressMeterController = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, Array.Empty<string>());
 	}
 
-	public void LauncherUpdate(float dt)
+		public void LauncherUpdate(float dt)
 	{
 		if (this.boltAmount <= 0f)
 		{
@@ -78,7 +78,7 @@ public class DevHEPSpawner : StateMachineComponent<DevHEPSpawner.StatesInstance>
 		}
 	}
 
-		public string SliderTitleKey
+			public string SliderTitleKey
 	{
 		get
 		{
@@ -86,7 +86,7 @@ public class DevHEPSpawner : StateMachineComponent<DevHEPSpawner.StatesInstance>
 		}
 	}
 
-		public string SliderUnits
+			public string SliderUnits
 	{
 		get
 		{
@@ -94,78 +94,78 @@ public class DevHEPSpawner : StateMachineComponent<DevHEPSpawner.StatesInstance>
 		}
 	}
 
-	public int SliderDecimalPlaces(int index)
+		public int SliderDecimalPlaces(int index)
 	{
 		return 0;
 	}
 
-	public float GetSliderMin(int index)
+		public float GetSliderMin(int index)
 	{
 		return 0f;
 	}
 
-	public float GetSliderMax(int index)
+		public float GetSliderMax(int index)
 	{
 		return 500f;
 	}
 
-	public float GetSliderValue(int index)
+		public float GetSliderValue(int index)
 	{
 		return this.boltAmount;
 	}
 
-	public void SetSliderValue(float value, int index)
+		public void SetSliderValue(float value, int index)
 	{
 		this.boltAmount = value;
 	}
 
-	public string GetSliderTooltipKey(int index)
+		public string GetSliderTooltipKey(int index)
 	{
 		return "";
 	}
 
-	string ISliderControl.GetSliderTooltip(int index)
+		string ISliderControl.GetSliderTooltip(int index)
 	{
 		return "";
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[Serialize]
+		[Serialize]
 	private EightDirection _direction;
 
-	public float boltAmount;
+		public float boltAmount;
 
-	private EightDirectionController directionController;
+		private EightDirectionController directionController;
 
-	private float launcherTimer;
+		private float launcherTimer;
 
-	private MeterController particleController;
+		private MeterController particleController;
 
-	private MeterController progressMeterController;
+		private MeterController progressMeterController;
 
-	[Serialize]
+		[Serialize]
 	public Ref<HighEnergyParticlePort> capturedByRef = new Ref<HighEnergyParticlePort>();
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<DevHEPSpawner> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<DevHEPSpawner>(delegate(DevHEPSpawner component, object data)
+		private static readonly EventSystem.IntraObjectHandler<DevHEPSpawner> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<DevHEPSpawner>(delegate(DevHEPSpawner component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	public class StatesInstance : GameStateMachine<DevHEPSpawner.States, DevHEPSpawner.StatesInstance, DevHEPSpawner, object>.GameInstance
+		public class StatesInstance : GameStateMachine<DevHEPSpawner.States, DevHEPSpawner.StatesInstance, DevHEPSpawner, object>.GameInstance
 	{
-		public StatesInstance(DevHEPSpawner smi) : base(smi)
+				public StatesInstance(DevHEPSpawner smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<DevHEPSpawner.States, DevHEPSpawner.StatesInstance, DevHEPSpawner>
+		public class States : GameStateMachine<DevHEPSpawner.States, DevHEPSpawner.StatesInstance, DevHEPSpawner>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.inoperational;
 			this.inoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.ready, false);
@@ -175,10 +175,10 @@ public class DevHEPSpawner : StateMachineComponent<DevHEPSpawner.StatesInstance>
 			}, UpdateRate.SIM_EVERY_TICK, false);
 		}
 
-		public StateMachine<DevHEPSpawner.States, DevHEPSpawner.StatesInstance, DevHEPSpawner, object>.BoolParameter isAbsorbingRadiation;
+				public StateMachine<DevHEPSpawner.States, DevHEPSpawner.StatesInstance, DevHEPSpawner, object>.BoolParameter isAbsorbingRadiation;
 
-		public GameStateMachine<DevHEPSpawner.States, DevHEPSpawner.StatesInstance, DevHEPSpawner, object>.State ready;
+				public GameStateMachine<DevHEPSpawner.States, DevHEPSpawner.StatesInstance, DevHEPSpawner, object>.State ready;
 
-		public GameStateMachine<DevHEPSpawner.States, DevHEPSpawner.StatesInstance, DevHEPSpawner, object>.State inoperational;
+				public GameStateMachine<DevHEPSpawner.States, DevHEPSpawner.StatesInstance, DevHEPSpawner, object>.State inoperational;
 	}
 }

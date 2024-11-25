@@ -13,7 +13,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SaveGame")]
 public class SaveGame : KMonoBehaviour, ISaveLoadable
 {
-			public int AutoSaveCycleInterval
+				public int AutoSaveCycleInterval
 	{
 		get
 		{
@@ -25,7 +25,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-			public Vector2I TimelapseResolution
+				public Vector2I TimelapseResolution
 	{
 		get
 		{
@@ -37,7 +37,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-		public string BaseName
+			public string BaseName
 	{
 		get
 		{
@@ -45,12 +45,12 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SaveGame.Instance = null;
 	}
 
-		public ColonyAchievementTracker ColonyAchievementTracker
+			public ColonyAchievementTracker ColonyAchievementTracker
 	{
 		get
 		{
@@ -62,7 +62,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		SaveGame.Instance = this;
 		new ColonyRationMonitor.Instance(this).StartSM();
@@ -72,37 +72,37 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		base.gameObject.AddOrGetDef<ClusterFogOfWarManager.Def>();
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerialize()
 	{
 		this.speed = SpeedControlScreen.Instance.GetSpeed();
 	}
 
-	[OnDeserializing]
+		[OnDeserializing]
 	private void OnDeserialize()
 	{
 		this.baseName = SaveLoader.Instance.GameInfo.baseName;
 	}
 
-	public int GetSpeed()
+		public int GetSpeed()
 	{
 		return this.speed;
 	}
 
-	public byte[] GetSaveHeader(bool isAutoSave, bool isCompressed, out SaveGame.Header header)
+		public byte[] GetSaveHeader(bool isAutoSave, bool isCompressed, out SaveGame.Header header)
 	{
 		string originalSaveFileName = SaveLoader.GetOriginalSaveFileName(SaveLoader.GetActiveSaveFilePath());
 		string s = JsonConvert.SerializeObject(new SaveGame.GameInfo(GameClock.Instance.GetCycle(), Components.LiveMinionIdentities.Count, this.baseName, isAutoSave, originalSaveFileName, SaveLoader.Instance.GameInfo.clusterId, SaveLoader.Instance.GameInfo.worldTraits, SaveLoader.Instance.GameInfo.colonyGuid, SaveLoader.Instance.GameInfo.dlcIds, this.sandboxEnabled));
 		byte[] bytes = Encoding.UTF8.GetBytes(s);
 		header = default(SaveGame.Header);
-		header.buildVersion = 626616U;
+		header.buildVersion = 642695U;
 		header.headerSize = bytes.Length;
 		header.headerVersion = 1U;
 		header.compression = (isCompressed ? 1 : 0);
 		return bytes;
 	}
 
-	public static string GetSaveUniqueID(SaveGame.GameInfo info)
+		public static string GetSaveUniqueID(SaveGame.GameInfo info)
 	{
 		if (!(info.colonyGuid != Guid.Empty))
 		{
@@ -111,7 +111,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		return info.colonyGuid.ToString();
 	}
 
-	public static global::Tuple<SaveGame.Header, SaveGame.GameInfo> GetFileInfo(string filename)
+		public static global::Tuple<SaveGame.Header, SaveGame.GameInfo> GetFileInfo(string filename)
 	{
 		try
 		{
@@ -130,7 +130,7 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		return null;
 	}
 
-	public static SaveGame.GameInfo GetHeader(IReader br, out SaveGame.Header header, string debugFileName)
+		public static SaveGame.GameInfo GetHeader(IReader br, out SaveGame.Header header, string debugFileName)
 	{
 		header = default(SaveGame.Header);
 		header.buildVersion = br.ReadUInt32();
@@ -169,12 +169,12 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		return gameInfo;
 	}
 
-	public static SaveGame.GameInfo GetGameInfo(byte[] data)
+		public static SaveGame.GameInfo GetGameInfo(byte[] data)
 	{
 		return JsonConvert.DeserializeObject<SaveGame.GameInfo>(Encoding.UTF8.GetString(data));
 	}
 
-	public void SetBaseName(string newBaseName)
+		public void SetBaseName(string newBaseName)
 	{
 		if (string.IsNullOrEmpty(newBaseName))
 		{
@@ -184,13 +184,13 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		this.baseName = newBaseName;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		ThreadedHttps<KleiMetrics>.Instance.SendProfileStats();
 		Game.Instance.Trigger(-1917495436, null);
 	}
 
-	public List<global::Tuple<string, TextStyleSetting>> GetColonyToolTip()
+		public List<global::Tuple<string, TextStyleSetting>> GetColonyToolTip()
 	{
 		List<global::Tuple<string, TextStyleSetting>> list = new List<global::Tuple<string, TextStyleSetting>>();
 		SettingLevel currentQualitySetting = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.ClusterLayout);
@@ -258,48 +258,48 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 		return list;
 	}
 
-	[Serialize]
+		[Serialize]
 	private int speed;
 
-	[Serialize]
+		[Serialize]
 	public List<Tag> expandedResourceTags = new List<Tag>();
 
-	[Serialize]
+		[Serialize]
 	public int minGermCountForDisinfect = 10000;
 
-	[Serialize]
+		[Serialize]
 	public bool enableAutoDisinfect = true;
 
-	[Serialize]
+		[Serialize]
 	public bool sandboxEnabled;
 
-	[Serialize]
+		[Serialize]
 	public float relativeTemperatureOverlaySliderValue = 294.15f;
 
-	[Serialize]
+		[Serialize]
 	private int autoSaveCycleInterval = 1;
 
-	[Serialize]
+		[Serialize]
 	private Vector2I timelapseResolution = new Vector2I(512, 768);
 
-	private string baseName;
+		private string baseName;
 
-	public static SaveGame Instance;
+		public static SaveGame Instance;
 
-	private ColonyAchievementTracker colonyAchievementTracker;
+		private ColonyAchievementTracker colonyAchievementTracker;
 
-	public EntombedItemManager entombedItemManager;
+		public EntombedItemManager entombedItemManager;
 
-	public WorldGenSpawner worldGenSpawner;
+		public WorldGenSpawner worldGenSpawner;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public MaterialSelectorSerializer materialSelectorSerializer;
 
-	private static bool debug_SaveFileHeaderBlank_sent;
+		private static bool debug_SaveFileHeaderBlank_sent;
 
-	public struct Header
+		public struct Header
 	{
-				public bool IsCompressed
+						public bool IsCompressed
 		{
 			get
 			{
@@ -307,18 +307,18 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 			}
 		}
 
-		public uint buildVersion;
+				public uint buildVersion;
 
-		public int headerSize;
+				public int headerSize;
 
-		public uint headerVersion;
+				public uint headerVersion;
 
-		public int compression;
+				public int compression;
 	}
 
-	public struct GameInfo
+		public struct GameInfo
 	{
-		public GameInfo(int numberOfCycles, int numberOfDuplicants, string baseName, bool isAutoSave, string originalSaveName, string clusterId, string[] worldTraits, Guid colonyGuid, List<string> dlcIds, bool sandboxEnabled = false)
+				public GameInfo(int numberOfCycles, int numberOfDuplicants, string baseName, bool isAutoSave, string originalSaveName, string clusterId, string[] worldTraits, Guid colonyGuid, List<string> dlcIds, bool sandboxEnabled = false)
 		{
 			this.numberOfCycles = numberOfCycles;
 			this.numberOfDuplicants = numberOfDuplicants;
@@ -332,20 +332,20 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 			this.dlcIds = dlcIds;
 			this.dlcId = null;
 			this.saveMajorVersion = 7;
-			this.saveMinorVersion = 34;
+			this.saveMinorVersion = 35;
 		}
 
-		public bool IsVersionOlderThan(int major, int minor)
+				public bool IsVersionOlderThan(int major, int minor)
 		{
 			return this.saveMajorVersion < major || (this.saveMajorVersion == major && this.saveMinorVersion < minor);
 		}
 
-		public bool IsVersionExactly(int major, int minor)
+				public bool IsVersionExactly(int major, int minor)
 		{
 			return this.saveMajorVersion == major && this.saveMinorVersion == minor;
 		}
 
-		public bool IsCompatableWithCurrentDlcConfiguration(out HashSet<string> dlcIdsToEnable, out HashSet<string> dlcIdToDisable)
+				public bool IsCompatableWithCurrentDlcConfiguration(out HashSet<string> dlcIdsToEnable, out HashSet<string> dlcIdToDisable)
 		{
 			dlcIdsToEnable = new HashSet<string>();
 			foreach (string item in this.dlcIds)
@@ -363,31 +363,31 @@ public class SaveGame : KMonoBehaviour, ISaveLoadable
 			return dlcIdsToEnable.Count == 0 && dlcIdToDisable.Count == 0;
 		}
 
-		public int numberOfCycles;
+				public int numberOfCycles;
 
-		public int numberOfDuplicants;
+				public int numberOfDuplicants;
 
-		public string baseName;
+				public string baseName;
 
-		public bool isAutoSave;
+				public bool isAutoSave;
 
-		public string originalSaveName;
+				public string originalSaveName;
 
-		public int saveMajorVersion;
+				public int saveMajorVersion;
 
-		public int saveMinorVersion;
+				public int saveMinorVersion;
 
-		public string clusterId;
+				public string clusterId;
 
-		public string[] worldTraits;
+				public string[] worldTraits;
 
-		public bool sandboxEnabled;
+				public bool sandboxEnabled;
 
-		public Guid colonyGuid;
+				public Guid colonyGuid;
 
-		[Obsolete("Please use dlcIds instead.")]
+				[Obsolete("Please use dlcIds instead.")]
 		public string dlcId;
 
-		public List<string> dlcIds;
+				public List<string> dlcIds;
 	}
 }

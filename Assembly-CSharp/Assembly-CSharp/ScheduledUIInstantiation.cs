@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ScheduledUIInstantiation")]
 public class ScheduledUIInstantiation : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (this.InstantiateOnAwake)
@@ -16,7 +16,7 @@ public class ScheduledUIInstantiation : KMonoBehaviour
 		Game.Instance.Subscribe((int)this.InstantiationEvent, new Action<object>(this.InstantiateElements));
 	}
 
-	public void InstantiateElements(object data)
+		public void InstantiateElements(object data)
 	{
 		if (this.completed)
 		{
@@ -43,7 +43,7 @@ public class ScheduledUIInstantiation : KMonoBehaviour
 		}
 	}
 
-	public T GetInstantiatedObject<T>() where T : Component
+		public T GetInstantiatedObject<T>() where T : Component
 	{
 		for (int i = 0; i < this.instantiatedObjects.Count; i++)
 		{
@@ -55,27 +55,27 @@ public class ScheduledUIInstantiation : KMonoBehaviour
 		return default(T);
 	}
 
-	public ScheduledUIInstantiation.Instantiation[] UIElements;
+		public ScheduledUIInstantiation.Instantiation[] UIElements;
 
-	public bool InstantiateOnAwake;
+		public bool InstantiateOnAwake;
 
-	public GameHashes InstantiationEvent = GameHashes.StartGameUser;
+		public GameHashes InstantiationEvent = GameHashes.StartGameUser;
 
-	private bool completed;
+		private bool completed;
 
-	private List<GameObject> instantiatedObjects = new List<GameObject>();
+		private List<GameObject> instantiatedObjects = new List<GameObject>();
 
-	[Serializable]
+		[Serializable]
 	public struct Instantiation
 	{
-		public string Name;
+				public string Name;
 
-		public string Comment;
+				public string Comment;
 
-		public GameObject[] prefabs;
+				public GameObject[] prefabs;
 
-		public Transform parent;
+				public Transform parent;
 
-		public string RequiredDlcId;
+				public string RequiredDlcId;
 	}
 }

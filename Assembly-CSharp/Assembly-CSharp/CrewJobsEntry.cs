@@ -7,9 +7,9 @@ using UnityEngine.UI;
 
 public class CrewJobsEntry : CrewListEntry
 {
-			public ChoreConsumer consumer { get; private set; }
+				public ChoreConsumer consumer { get; private set; }
 
-	public override void Populate(MinionIdentity _identity)
+		public override void Populate(MinionIdentity _identity)
 	{
 		base.Populate(_identity);
 		this.consumer = _identity.GetComponent<ChoreConsumer>();
@@ -23,7 +23,7 @@ public class CrewJobsEntry : CrewListEntry
 		this.dirty = true;
 	}
 
-	private void CreateChoreButton(ChoreGroup chore_group)
+		private void CreateChoreButton(ChoreGroup chore_group)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.Prefab_JobPriorityButton, base.transform.gameObject, false);
 		gameObject.GetComponent<OverviewColumnIdentity>().columnID = chore_group.Id;
@@ -45,7 +45,7 @@ public class CrewJobsEntry : CrewListEntry
 		this.PriorityButtons.Add(priorityButton);
 	}
 
-	private void CreateAllTaskButton()
+		private void CreateAllTaskButton()
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.Prefab_JobPriorityButtonAllTasks, base.transform.gameObject, false);
 		gameObject.GetComponent<OverviewColumnIdentity>().columnID = "AllTasks";
@@ -66,7 +66,7 @@ public class CrewJobsEntry : CrewListEntry
 		this.AllTasksButton = priorityButton;
 	}
 
-	private void ToggleTasksAll(Button button)
+		private void ToggleTasksAll(Button button)
 	{
 		bool flag = this.rowToggleState != CrewJobsScreen.everyoneToggleState.on;
 		string name = "HUD_Click_Deselect";
@@ -81,7 +81,7 @@ public class CrewJobsEntry : CrewListEntry
 		}
 	}
 
-	private void OnPriorityPress(ChoreGroup chore_group)
+		private void OnPriorityPress(ChoreGroup chore_group)
 	{
 		bool flag = this.consumer.IsPermittedByUser(chore_group);
 		string name = "HUD_Click";
@@ -93,7 +93,7 @@ public class CrewJobsEntry : CrewListEntry
 		this.consumer.SetPermittedByUser(chore_group, !this.consumer.IsPermittedByUser(chore_group));
 	}
 
-	private void Refresh(object data = null)
+		private void Refresh(object data = null)
 	{
 		if (this.identity == null)
 		{
@@ -176,7 +176,7 @@ public class CrewJobsEntry : CrewListEntry
 		}
 	}
 
-	private string OnPriorityButtonTooltip(CrewJobsEntry.PriorityButton b)
+		private string OnPriorityButtonTooltip(CrewJobsEntry.PriorityButton b)
 	{
 		b.tooltip.ClearMultiStringTooltip();
 		if (this.identity != null)
@@ -209,23 +209,23 @@ public class CrewJobsEntry : CrewListEntry
 		return "";
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		this.Refresh(null);
 	}
 
-	private void OnLevelUp(object data)
+		private void OnLevelUp(object data)
 	{
 		this.Dirty();
 	}
 
-	private void Dirty()
+		private void Dirty()
 	{
 		this.dirty = true;
 		CrewJobsScreen.Instance.Dirty(null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (this.consumer != null)
@@ -235,43 +235,43 @@ public class CrewJobsEntry : CrewListEntry
 		}
 	}
 
-	public GameObject Prefab_JobPriorityButton;
+		public GameObject Prefab_JobPriorityButton;
 
-	public GameObject Prefab_JobPriorityButtonAllTasks;
+		public GameObject Prefab_JobPriorityButtonAllTasks;
 
-	private List<CrewJobsEntry.PriorityButton> PriorityButtons = new List<CrewJobsEntry.PriorityButton>();
+		private List<CrewJobsEntry.PriorityButton> PriorityButtons = new List<CrewJobsEntry.PriorityButton>();
 
-	private CrewJobsEntry.PriorityButton AllTasksButton;
+		private CrewJobsEntry.PriorityButton AllTasksButton;
 
-	public TextStyleSetting TooltipTextStyle_Title;
+		public TextStyleSetting TooltipTextStyle_Title;
 
-	public TextStyleSetting TooltipTextStyle_Ability;
+		public TextStyleSetting TooltipTextStyle_Ability;
 
-	public TextStyleSetting TooltipTextStyle_AbilityPositiveModifier;
+		public TextStyleSetting TooltipTextStyle_AbilityPositiveModifier;
 
-	public TextStyleSetting TooltipTextStyle_AbilityNegativeModifier;
+		public TextStyleSetting TooltipTextStyle_AbilityNegativeModifier;
 
-	private bool dirty;
+		private bool dirty;
 
-	private CrewJobsScreen.everyoneToggleState rowToggleState;
+		private CrewJobsScreen.everyoneToggleState rowToggleState;
 
-	[Serializable]
+		[Serializable]
 	public struct PriorityButton
 	{
-		public Button button;
+				public Button button;
 
-		public GameObject ToggleIcon;
+				public GameObject ToggleIcon;
 
-		public ChoreGroup choreGroup;
+				public ChoreGroup choreGroup;
 
-		public ToolTip tooltip;
+				public ToolTip tooltip;
 
-		public Image border;
+				public Image border;
 
-		public Image background;
+				public Image background;
 
-		public Color baseBorderColor;
+				public Color baseBorderColor;
 
-		public Color baseBackgroundColor;
+				public Color baseBackgroundColor;
 	}
 }

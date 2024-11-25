@@ -7,14 +7,14 @@ using UnityEngine;
 
 public class FoodRehydratorConfig : IBuildingConfig
 {
-	private static Effect ConstructRehydrationEffect()
+		private static Effect ConstructRehydrationEffect()
 	{
-		Effect effect = new Effect("RehydratedFoodConsumed", "RehydratedFoodConsumed", ITEMS.DEHYDRATEDFOODPACKAGE.CONSUMED, 600f, false, false, true, null, -1f, 0f, null, "");
-		effect.Add(new AttributeModifier(Db.Get().Attributes.QualityOfLife.Id, -1f, ITEMS.DEHYDRATEDFOODPACKAGE.CONSUMED, false, false, true));
+		Effect effect = new Effect("RehydratedFoodConsumed", "RehydratedFoodConsumed", STRINGS.ITEMS.DEHYDRATEDFOODPACKAGE.CONSUMED, 600f, false, false, true, null, -1f, 0f, null, "");
+		effect.Add(new AttributeModifier(Db.Get().Attributes.QualityOfLife.Id, -1f, STRINGS.ITEMS.DEHYDRATEDFOODPACKAGE.CONSUMED, false, false, true));
 		return effect;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "FoodRehydrator";
 		int width = 1;
@@ -49,7 +49,7 @@ public class FoodRehydratorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddComponent<Storage>();
 		storage.capacityKg = 5f;
@@ -85,27 +85,27 @@ public class FoodRehydratorConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "FoodRehydrator";
+		public const string ID = "FoodRehydrator";
 
-	public static Tag REHYDRATION_TAG = GameTags.Water;
+		public static Tag REHYDRATION_TAG = GameTags.Water;
 
-	public const float REHYDRATION_COST = 1f;
+		public const float REHYDRATION_COST = 1f;
 
-	public const float REHYDRATOR_PACKAGES_CAPACITY = 5f;
+		public const float REHYDRATOR_PACKAGES_CAPACITY = 5f;
 
-	public const float REHYDRATION_WORK_TIME = 5f;
+		public const float REHYDRATION_WORK_TIME = 5f;
 
-	public static Effect RehydrationEffect = FoodRehydratorConfig.ConstructRehydrationEffect();
+		public static Effect RehydrationEffect = FoodRehydratorConfig.ConstructRehydrationEffect();
 
-	public const string REHYDRATION_DEBUFF_ID = "RehydratedFoodConsumed";
+		public const string REHYDRATION_DEBUFF_ID = "RehydratedFoodConsumed";
 
-	public const string REHDYRATION_DEBUFF_NAME = "RehydratedFoodConsumed";
+		public const string REHDYRATION_DEBUFF_NAME = "RehydratedFoodConsumed";
 
-	public const float REHYDRATION_DEBUFF_DURATION = 600f;
+		public const float REHYDRATION_DEBUFF_DURATION = 600f;
 
-	public const float REHYDRATION_DEBUFF_EFFECT = -1f;
+		public const float REHYDRATION_DEBUFF_EFFECT = -1f;
 }

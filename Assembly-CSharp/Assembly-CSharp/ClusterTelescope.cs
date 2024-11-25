@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.ready.no_visibility;
@@ -30,46 +30,46 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 		this.all_work_complete.OnSignal(this.MeteorIdenificationPriorityChangeSignal, this.ready.no_visibility, (ClusterTelescope.Instance smi) => smi.IsAnyAvailableWorkToBeDone()).ToggleMainStatusItem(Db.Get().BuildingStatusItems.ClusterTelescopeAllWorkComplete, null).EventTransition(GameHashes.ClusterLocationChanged, (ClusterTelescope.Instance smi) => Game.Instance, this.ready.no_visibility, (ClusterTelescope.Instance smi) => smi.IsAnyAvailableWorkToBeDone()).EventTransition(GameHashes.ClusterMapMeteorShowerMoved, (ClusterTelescope.Instance smi) => Game.Instance, this.ready.no_visibility, (ClusterTelescope.Instance smi) => smi.ShouldBeWorkingOnMeteorIdentification());
 	}
 
-	public GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State all_work_complete;
+		public GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State all_work_complete;
 
-	public ClusterTelescope.ReadyStates ready;
+		public ClusterTelescope.ReadyStates ready;
 
-	public StateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.TargetParameter meteorShowerTarget;
+		public StateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.TargetParameter meteorShowerTarget;
 
-	public StateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.Signal MeteorIdenificationPriorityChangeSignal;
+		public StateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.Signal MeteorIdenificationPriorityChangeSignal;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public int clearScanCellRadius = 15;
+				public int clearScanCellRadius = 15;
 
-		public int analyzeClusterRadius = 3;
+				public int analyzeClusterRadius = 3;
 
-		public KAnimFile[] workableOverrideAnims;
+				public KAnimFile[] workableOverrideAnims;
 
-		public bool providesOxygen;
+				public bool providesOxygen;
 
-		public SkyVisibilityInfo skyVisibilityInfo;
+				public SkyVisibilityInfo skyVisibilityInfo;
 	}
 
-	public class WorkStates : GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State
+		public class WorkStates : GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State
 	{
-		public GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State decide;
+				public GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State decide;
 
-		public GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State identifyMeteorShower;
+				public GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State identifyMeteorShower;
 
-		public GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State revealTile;
+				public GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State revealTile;
 	}
 
-	public class ReadyStates : GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State
+		public class ReadyStates : GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State
 	{
-		public GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State no_visibility;
+				public GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.State no_visibility;
 
-		public ClusterTelescope.WorkStates ready_to_work;
+				public ClusterTelescope.WorkStates ready_to_work;
 	}
 
-	public new class Instance : GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.GameInstance, ICheckboxControl, BuildingStatusItems.ISkyVisInfo
+		public new class Instance : GameStateMachine<ClusterTelescope, ClusterTelescope.Instance, IStateMachineTarget, ClusterTelescope.Def>.GameInstance, ICheckboxControl, BuildingStatusItems.ISkyVisInfo
 	{
-				public float PercentClear
+						public float PercentClear
 		{
 			get
 			{
@@ -77,12 +77,12 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			}
 		}
 
-		float BuildingStatusItems.ISkyVisInfo.GetPercentVisible01()
+				float BuildingStatusItems.ISkyVisInfo.GetPercentVisible01()
 		{
 			return this.m_percentClear;
 		}
 
-				private bool hasMeteorShowerTarget
+						private bool hasMeteorShowerTarget
 		{
 			get
 			{
@@ -90,7 +90,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			}
 		}
 
-				private ClusterMapMeteorShower.Instance meteorShowerTarget
+						private ClusterMapMeteorShower.Instance meteorShowerTarget
 		{
 			get
 			{
@@ -103,28 +103,28 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			}
 		}
 
-		public Instance(IStateMachineTarget smi, ClusterTelescope.Def def) : base(smi, def)
+				public Instance(IStateMachineTarget smi, ClusterTelescope.Def def) : base(smi, def)
 		{
 			this.workableOverrideAnims = def.workableOverrideAnims;
 			this.providesOxygen = def.providesOxygen;
 		}
 
-		public bool ShouldBeWorkingOnRevealingTile()
+				public bool ShouldBeWorkingOnRevealingTile()
 		{
 			return this.CheckHasAnalyzeTarget() && (!this.allowMeteorIdentification || !this.CheckHasValidMeteorTarget());
 		}
 
-		public bool ShouldBeWorkingOnMeteorIdentification()
+				public bool ShouldBeWorkingOnMeteorIdentification()
 		{
 			return this.allowMeteorIdentification && this.CheckHasValidMeteorTarget();
 		}
 
-		public bool IsAnyAvailableWorkToBeDone()
+				public bool IsAnyAvailableWorkToBeDone()
 		{
 			return this.CheckHasAnalyzeTarget() || this.ShouldBeWorkingOnMeteorIdentification();
 		}
 
-		public bool CheckHasValidMeteorTarget()
+				public bool CheckHasValidMeteorTarget()
 		{
 			SaveGame.Instance.GetSMI<ClusterFogOfWarManager.Instance>();
 			if (this.HasValidMeteor())
@@ -138,7 +138,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return instance != null;
 		}
 
-		public bool CheckHasAnalyzeTarget()
+				public bool CheckHasAnalyzeTarget()
 		{
 			ClusterFogOfWarManager.Instance smi = SaveGame.Instance.GetSMI<ClusterFogOfWarManager.Instance>();
 			if (this.m_hasAnalyzeTarget && !smi.IsLocationRevealed(this.m_analyzeTarget))
@@ -150,7 +150,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return this.m_hasAnalyzeTarget;
 		}
 
-		private bool HasValidMeteor()
+				private bool HasValidMeteor()
 		{
 			if (!this.hasMeteorShowerTarget)
 			{
@@ -163,7 +163,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return flag && flag2 && !hasBeenIdentified;
 		}
 
-		public Chore CreateRevealTileChore()
+				public Chore CreateRevealTileChore()
 		{
 			WorkChore<ClusterTelescope.ClusterTelescopeWorkable> workChore = new WorkChore<ClusterTelescope.ClusterTelescopeWorkable>(Db.Get().ChoreTypes.Research, this.m_workable, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 			if (this.providesOxygen)
@@ -173,7 +173,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return workChore;
 		}
 
-		public Chore CreateIdentifyMeteorChore()
+				public Chore CreateIdentifyMeteorChore()
 		{
 			WorkChore<ClusterTelescope.ClusterTelescopeIdentifyMeteorWorkable> workChore = new WorkChore<ClusterTelescope.ClusterTelescopeIdentifyMeteorWorkable>(Db.Get().ChoreTypes.Research, this.m_identifyMeteorWorkable, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 			if (this.providesOxygen)
@@ -183,18 +183,18 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return workChore;
 		}
 
-		public ClusterMapMeteorShower.Instance GetMeteorTarget()
+				public ClusterMapMeteorShower.Instance GetMeteorTarget()
 		{
 			return this.meteorShowerTarget;
 		}
 
-		public AxialI GetAnalyzeTarget()
+				public AxialI GetAnalyzeTarget()
 		{
 			global::Debug.Assert(this.m_hasAnalyzeTarget, "GetAnalyzeTarget called but this telescope has no target assigned.");
 			return this.m_analyzeTarget;
 		}
 
-		public bool HasSkyVisibility()
+				public bool HasSkyVisibility()
 		{
 			ValueTuple<bool, float> visibilityOf = base.def.skyVisibilityInfo.GetVisibilityOf(base.gameObject);
 			bool item = visibilityOf.Item1;
@@ -203,7 +203,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return item;
 		}
 
-				public string CheckboxTitleKey
+						public string CheckboxTitleKey
 		{
 			get
 			{
@@ -211,7 +211,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			}
 		}
 
-				public string CheckboxLabel
+						public string CheckboxLabel
 		{
 			get
 			{
@@ -219,7 +219,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			}
 		}
 
-				public string CheckboxTooltip
+						public string CheckboxTooltip
 		{
 			get
 			{
@@ -227,42 +227,42 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			}
 		}
 
-		public bool GetCheckboxValue()
+				public bool GetCheckboxValue()
 		{
 			return this.allowMeteorIdentification;
 		}
 
-		public void SetCheckboxValue(bool value)
+				public void SetCheckboxValue(bool value)
 		{
 			this.allowMeteorIdentification = value;
 			base.sm.MeteorIdenificationPriorityChangeSignal.Trigger(this);
 		}
 
-		private float m_percentClear;
+				private float m_percentClear;
 
-		[Serialize]
+				[Serialize]
 		public bool allowMeteorIdentification = true;
 
-		[Serialize]
+				[Serialize]
 		private bool m_hasAnalyzeTarget;
 
-		[Serialize]
+				[Serialize]
 		private AxialI m_analyzeTarget;
 
-		[MyCmpAdd]
+				[MyCmpAdd]
 		private ClusterTelescope.ClusterTelescopeWorkable m_workable;
 
-		[MyCmpAdd]
+				[MyCmpAdd]
 		private ClusterTelescope.ClusterTelescopeIdentifyMeteorWorkable m_identifyMeteorWorkable;
 
-		public KAnimFile[] workableOverrideAnims;
+				public KAnimFile[] workableOverrideAnims;
 
-		public bool providesOxygen;
+				public bool providesOxygen;
 	}
 
-	public class ClusterTelescopeWorkable : Workable, OxygenBreather.IGasProvider
+		public class ClusterTelescopeWorkable : Workable, OxygenBreather.IGasProvider
 	{
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			base.OnPrefabInit();
 			this.attributeConverter = Db.Get().AttributeConverters.ResearchSpeed;
@@ -274,7 +274,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			this.radiationShielding = new AttributeModifier(Db.Get().Attributes.RadiationResistance.Id, FIXEDTRAITS.COSMICRADIATION.TELESCOPE_RADIATION_SHIELDING, STRINGS.BUILDINGS.PREFABS.CLUSTERTELESCOPEENCLOSED.NAME, false, false, true);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			if (this.telescopeTargetMarker != null)
 			{
@@ -283,7 +283,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			base.OnCleanUp();
 		}
 
-		protected override void OnSpawn()
+				protected override void OnSpawn()
 		{
 			base.OnSpawn();
 			this.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(this.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(this.OnWorkableEvent));
@@ -292,9 +292,9 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			this.overrideAnims = this.m_telescope.workableOverrideAnims;
 		}
 
-		private void OnWorkableEvent(Workable workable, Workable.WorkableEvent ev)
+				private void OnWorkableEvent(Workable workable, Workable.WorkableEvent ev)
 		{
-			Worker worker = base.worker;
+			WorkerBase worker = base.worker;
 			if (worker == null)
 			{
 				return;
@@ -318,9 +318,12 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 				if (this.m_telescope.providesOxygen)
 				{
 					attributes.Add(this.radiationShielding);
-					this.workerGasProvider = component2.GetGasProvider();
-					component2.SetGasProvider(this);
-					component2.GetComponent<CreatureSimTemperatureTransfer>().enabled = false;
+					if (component2 != null)
+					{
+						this.workerGasProvider = component2.GetGasProvider();
+						component2.SetGasProvider(this);
+					}
+					worker.GetComponent<CreatureSimTemperatureTransfer>().enabled = false;
 					component.AddTag(GameTags.Shaded, false);
 				}
 				base.GetComponent<Operational>().SetActive(true, false);
@@ -335,8 +338,11 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			if (this.m_telescope.providesOxygen)
 			{
 				attributes.Remove(this.radiationShielding);
-				component2.SetGasProvider(this.workerGasProvider);
-				component2.GetComponent<CreatureSimTemperatureTransfer>().enabled = true;
+				if (component2 != null)
+				{
+					component2.SetGasProvider(this.workerGasProvider);
+				}
+				worker.GetComponent<CreatureSimTemperatureTransfer>().enabled = true;
 				component.RemoveTag(GameTags.Shaded);
 			}
 			base.GetComponent<Operational>().SetActive(false, false);
@@ -348,7 +354,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			component3.RemoveStatusItem(Db.Get().BuildingStatusItems.TelescopeWorking, this);
 		}
 
-		public override List<Descriptor> GetDescriptors(GameObject go)
+				public override List<Descriptor> GetDescriptors(GameObject go)
 		{
 			List<Descriptor> descriptors = base.GetDescriptors(go);
 			Element element = ElementLoader.FindElementByHash(SimHashes.Oxygen);
@@ -358,12 +364,12 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return descriptors;
 		}
 
-		public override float GetEfficiencyMultiplier(Worker worker)
+				public override float GetEfficiencyMultiplier(WorkerBase worker)
 		{
 			return base.GetEfficiencyMultiplier(worker) * Mathf.Clamp01(this.m_telescope.PercentClear);
 		}
 
-		protected override bool OnWorkTick(Worker worker, float dt)
+				protected override bool OnWorkTick(WorkerBase worker, float dt)
 		{
 			AxialI analyzeTarget = this.m_telescope.GetAnalyzeTarget();
 			bool flag = false;
@@ -393,25 +399,25 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return base.OnWorkTick(worker, dt);
 		}
 
-		public void OnSetOxygenBreather(OxygenBreather oxygen_breather)
+				public void OnSetOxygenBreather(OxygenBreather oxygen_breather)
 		{
 		}
 
-		public void OnClearOxygenBreather(OxygenBreather oxygen_breather)
+				public void OnClearOxygenBreather(OxygenBreather oxygen_breather)
 		{
 		}
 
-		public bool ShouldEmitCO2()
-		{
-			return false;
-		}
-
-		public bool ShouldStoreCO2()
+				public bool ShouldEmitCO2()
 		{
 			return false;
 		}
 
-		public bool ConsumeGas(OxygenBreather oxygen_breather, float amount)
+				public bool ShouldStoreCO2()
+		{
+			return false;
+		}
+
+				public bool ConsumeGas(OxygenBreather oxygen_breather, float amount)
 		{
 			if (this.storage.items.Count <= 0)
 			{
@@ -428,7 +434,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return result;
 		}
 
-		public bool IsLowOxygen()
+				public bool IsLowOxygen()
 		{
 			if (this.storage.items.Count <= 0)
 			{
@@ -438,30 +444,30 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return primaryElement == null || primaryElement.Mass == 0f;
 		}
 
-		[MySmiReq]
+				[MySmiReq]
 		private ClusterTelescope.Instance m_telescope;
 
-		private ClusterFogOfWarManager.Instance m_fowManager;
+				private ClusterFogOfWarManager.Instance m_fowManager;
 
-		private GameObject telescopeTargetMarker;
+				private GameObject telescopeTargetMarker;
 
-		private AxialI currentTarget;
+				private AxialI currentTarget;
 
-		private OxygenBreather.IGasProvider workerGasProvider;
+				private OxygenBreather.IGasProvider workerGasProvider;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Storage storage;
 
-		private AttributeModifier radiationShielding;
+				private AttributeModifier radiationShielding;
 
-		private float checkMarkerTimer;
+				private float checkMarkerTimer;
 
-		private float checkMarkerFrequency = 1f;
+				private float checkMarkerFrequency = 1f;
 	}
 
-	public class ClusterTelescopeIdentifyMeteorWorkable : Workable, OxygenBreather.IGasProvider
+		public class ClusterTelescopeIdentifyMeteorWorkable : Workable, OxygenBreather.IGasProvider
 	{
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			base.OnPrefabInit();
 			this.attributeConverter = Db.Get().AttributeConverters.ResearchSpeed;
@@ -473,7 +479,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			this.radiationShielding = new AttributeModifier(Db.Get().Attributes.RadiationResistance.Id, FIXEDTRAITS.COSMICRADIATION.TELESCOPE_RADIATION_SHIELDING, STRINGS.BUILDINGS.PREFABS.CLUSTERTELESCOPEENCLOSED.NAME, false, false, true);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			if (this.telescopeTargetMarker != null)
 			{
@@ -482,7 +488,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			base.OnCleanUp();
 		}
 
-		protected override void OnSpawn()
+				protected override void OnSpawn()
 		{
 			base.OnSpawn();
 			this.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(this.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(this.OnWorkableEvent));
@@ -491,9 +497,9 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			this.overrideAnims = this.m_telescope.workableOverrideAnims;
 		}
 
-		private void OnWorkableEvent(Workable workable, Workable.WorkableEvent ev)
+				private void OnWorkableEvent(Workable workable, Workable.WorkableEvent ev)
 		{
-			Worker worker = base.worker;
+			WorkerBase worker = base.worker;
 			if (worker == null)
 			{
 				return;
@@ -556,7 +562,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			component3.RemoveStatusItem(Db.Get().BuildingStatusItems.ClusterTelescopeMeteorWorking, this);
 		}
 
-		public override List<Descriptor> GetDescriptors(GameObject go)
+				public override List<Descriptor> GetDescriptors(GameObject go)
 		{
 			List<Descriptor> descriptors = base.GetDescriptors(go);
 			Element element = ElementLoader.FindElementByHash(SimHashes.Oxygen);
@@ -566,7 +572,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return descriptors;
 		}
 
-		protected override bool OnWorkTick(Worker worker, float dt)
+				protected override bool OnWorkTick(WorkerBase worker, float dt)
 		{
 			ClusterMapMeteorShower.Instance meteorTarget = this.m_telescope.GetMeteorTarget();
 			AxialI axialI = meteorTarget.ClusterGridPosition();
@@ -599,25 +605,25 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return base.OnWorkTick(worker, dt);
 		}
 
-		public void OnSetOxygenBreather(OxygenBreather oxygen_breather)
+				public void OnSetOxygenBreather(OxygenBreather oxygen_breather)
 		{
 		}
 
-		public void OnClearOxygenBreather(OxygenBreather oxygen_breather)
+				public void OnClearOxygenBreather(OxygenBreather oxygen_breather)
 		{
 		}
 
-		public bool ShouldEmitCO2()
-		{
-			return false;
-		}
-
-		public bool ShouldStoreCO2()
+				public bool ShouldEmitCO2()
 		{
 			return false;
 		}
 
-		public bool ConsumeGas(OxygenBreather oxygen_breather, float amount)
+				public bool ShouldStoreCO2()
+		{
+			return false;
+		}
+
+				public bool ConsumeGas(OxygenBreather oxygen_breather, float amount)
 		{
 			if (this.storage.items.Count <= 0)
 			{
@@ -634,7 +640,7 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return result;
 		}
 
-		public bool IsLowOxygen()
+				public bool IsLowOxygen()
 		{
 			if (this.storage.items.Count <= 0)
 			{
@@ -644,24 +650,24 @@ public class ClusterTelescope : GameStateMachine<ClusterTelescope, ClusterTelesc
 			return !(gameObject == null) && gameObject.GetComponent<PrimaryElement>().Mass > 0f;
 		}
 
-		[MySmiReq]
+				[MySmiReq]
 		private ClusterTelescope.Instance m_telescope;
 
-		private ClusterFogOfWarManager.Instance m_fowManager;
+				private ClusterFogOfWarManager.Instance m_fowManager;
 
-		private GameObject telescopeTargetMarker;
+				private GameObject telescopeTargetMarker;
 
-		private ClusterMapMeteorShower.Instance currentTarget;
+				private ClusterMapMeteorShower.Instance currentTarget;
 
-		private OxygenBreather.IGasProvider workerGasProvider;
+				private OxygenBreather.IGasProvider workerGasProvider;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Storage storage;
 
-		private AttributeModifier radiationShielding;
+				private AttributeModifier radiationShielding;
 
-		private float checkMarkerTimer;
+				private float checkMarkerTimer;
 
-		private float checkMarkerFrequency = 1f;
+				private float checkMarkerFrequency = 1f;
 	}
 }

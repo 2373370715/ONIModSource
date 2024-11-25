@@ -7,16 +7,16 @@ using UnityEngine;
 
 public class DevToolEntity_RanchStation : DevTool
 {
-	public DevToolEntity_RanchStation() : this(Option.None)
+		public DevToolEntity_RanchStation() : this(Option.None)
 	{
 	}
 
-	public DevToolEntity_RanchStation(Option<DevToolEntityTarget.ForWorldGameObject> target)
+		public DevToolEntity_RanchStation(Option<DevToolEntityTarget.ForWorldGameObject> target)
 	{
 		this.targetOpt = target;
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (ImGui.BeginMenuBar())
 		{
@@ -76,7 +76,7 @@ public class DevToolEntity_RanchStation : DevTool
 		}
 	}
 
-	public static void DrawRanchableCollection(string name, IEnumerable<RanchableMonitor.Instance> ranchables)
+		public static void DrawRanchableCollection(string name, IEnumerable<RanchableMonitor.Instance> ranchables)
 	{
 		if (ImGui.CollapsingHeader(name))
 		{
@@ -104,7 +104,7 @@ public class DevToolEntity_RanchStation : DevTool
 		}
 	}
 
-	public static Option<string> GetErrorForCandidateTarget(DevToolEntityTarget uncastTarget)
+		public static Option<string> GetErrorForCandidateTarget(DevToolEntityTarget uncastTarget)
 	{
 		if (!(uncastTarget is DevToolEntityTarget.ForWorldGameObject))
 		{
@@ -122,7 +122,7 @@ public class DevToolEntity_RanchStation : DevTool
 		return Option.None;
 	}
 
-	private Option<DevToolEntityTarget.ForWorldGameObject> targetOpt;
+		private Option<DevToolEntityTarget.ForWorldGameObject> targetOpt;
 
-	private bool shouldDrawBoundingBox = true;
+		private bool shouldDrawBoundingBox = true;
 }

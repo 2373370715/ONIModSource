@@ -2,11 +2,11 @@
 
 public interface INavDoor
 {
-		bool isSpawned { get; }
+			bool isSpawned { get; }
 
-	bool IsOpen();
+		bool IsOpen();
 
-	void Open();
+		void Open();
 
-	void Close();
+		void Close();
 }

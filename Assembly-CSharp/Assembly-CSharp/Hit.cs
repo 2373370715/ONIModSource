@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class Hit
 {
-	public Hit(AttackProperties properties, GameObject target)
+		public Hit(AttackProperties properties, GameObject target)
 	{
 		this.properties = properties;
 		this.target = target;
 		this.DeliverHit();
 	}
 
-	private float rollDamage()
+		private float rollDamage()
 	{
 		return (float)Mathf.RoundToInt(UnityEngine.Random.Range(this.properties.base_damage_min, this.properties.base_damage_max));
 	}
 
-	private void DeliverHit()
+		private void DeliverHit()
 	{
 		Health component = this.target.GetComponent<Health>();
 		if (!component)
@@ -45,7 +45,7 @@ public class Hit
 		}
 	}
 
-	private AttackProperties properties;
+		private AttackProperties properties;
 
-	private GameObject target;
+		private GameObject target;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HandSanitizerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "HandSanitizer";
 		int width = 1;
@@ -31,14 +31,14 @@ public class HandSanitizerConfig : IBuildingConfig
 		return result;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.WashStation, false);
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.AdvancedWashStation, false);
 		HandSanitizer handSanitizer = go.AddOrGet<HandSanitizer>();
 		handSanitizer.massConsumedPerUse = 0.07f;
 		handSanitizer.consumedElement = SimHashes.BleachStone;
-		handSanitizer.diseaseRemovalCount = 480000;
+		handSanitizer.diseaseRemovalCount = HandSanitizerConfig.DISEASE_REMOVAL_COUNT;
 		HandSanitizer.Work work = go.AddOrGet<HandSanitizer.Work>();
 		work.overrideAnims = new KAnimFile[]
 		{
@@ -59,19 +59,19 @@ public class HandSanitizerConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "HandSanitizer";
+		public const string ID = "HandSanitizer";
 
-	private const float STORAGE_SIZE = 15f;
+		private const float STORAGE_SIZE = 15f;
 
-	private const float MASS_PER_USE = 0.07f;
+		private const float MASS_PER_USE = 0.07f;
 
-	private const int DISEASE_REMOVAL_COUNT = 480000;
+		private static readonly int DISEASE_REMOVAL_COUNT = WashBasinConfig.DISEASE_REMOVAL_COUNT * 4;
 
-	private const float WORK_TIME = 1.8f;
+		private const float WORK_TIME = 1.8f;
 
-	private const SimHashes CONSUMED_ELEMENT = SimHashes.BleachStone;
+		private const SimHashes CONSUMED_ELEMENT = SimHashes.BleachStone;
 }

@@ -7,14 +7,14 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class SolidConduitFlow : IConduitFlow
 {
-	public SolidConduitFlow.SOAInfo GetSOAInfo()
+		public SolidConduitFlow.SOAInfo GetSOAInfo()
 	{
 		return this.soaInfo;
 	}
 
-			public event System.Action onConduitsRebuilt;
+				public event System.Action onConduitsRebuilt;
 
-	public void AddConduitUpdater(Action<float> callback, ConduitFlowPriority priority = ConduitFlowPriority.Default)
+		public void AddConduitUpdater(Action<float> callback, ConduitFlowPriority priority = ConduitFlowPriority.Default)
 	{
 		this.conduitUpdaters.Add(new SolidConduitFlow.ConduitUpdater
 		{
@@ -24,7 +24,7 @@ public class SolidConduitFlow : IConduitFlow
 		this.dirtyConduitUpdaters = true;
 	}
 
-	public void RemoveConduitUpdater(Action<float> callback)
+		public void RemoveConduitUpdater(Action<float> callback)
 	{
 		for (int i = 0; i < this.conduitUpdaters.Count; i++)
 		{
@@ -37,12 +37,12 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	public static int FlowBit(SolidConduitFlow.FlowDirection direction)
+		public static int FlowBit(SolidConduitFlow.FlowDirection direction)
 	{
 		return 1 << direction - SolidConduitFlow.FlowDirection.Left;
 	}
 
-	public SolidConduitFlow(int num_cells, IUtilityNetworkMgr network_mgr, float initial_elapsed_time)
+		public SolidConduitFlow(int num_cells, IUtilityNetworkMgr network_mgr, float initial_elapsed_time)
 	{
 		this.elapsedTime = initial_elapsed_time;
 		this.networkMgr = network_mgr;
@@ -51,7 +51,7 @@ public class SolidConduitFlow : IConduitFlow
 		network_mgr.AddNetworksRebuiltListener(new Action<IList<UtilityNetwork>, ICollection<int>>(this.OnUtilityNetworksRebuilt));
 	}
 
-	public void Initialize(int num_cells)
+		public void Initialize(int num_cells)
 	{
 		this.grid = new SolidConduitFlow.GridNode[num_cells];
 		for (int i = 0; i < num_cells; i++)
@@ -61,7 +61,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	private void OnUtilityNetworksRebuilt(IList<UtilityNetwork> networks, ICollection<int> root_nodes)
+		private void OnUtilityNetworksRebuilt(IList<UtilityNetwork> networks, ICollection<int> root_nodes)
 	{
 		this.RebuildConnections(root_nodes);
 		foreach (UtilityNetwork utilityNetwork in networks)
@@ -72,7 +72,7 @@ public class SolidConduitFlow : IConduitFlow
 		this.RefreshPaths();
 	}
 
-	private void RebuildConnections(IEnumerable<int> root_nodes)
+		private void RebuildConnections(IEnumerable<int> root_nodes)
 	{
 		this.soaInfo.Clear(this);
 		this.pathList.Clear();
@@ -127,7 +127,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	public void ScanNetworkSources(FlowUtilityNetwork network)
+		public void ScanNetworkSources(FlowUtilityNetwork network)
 	{
 		if (network == null)
 		{
@@ -142,7 +142,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	public void RefreshPaths()
+		public void RefreshPaths()
 	{
 		foreach (List<SolidConduitFlow.Conduit> list in this.pathList)
 		{
@@ -159,7 +159,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	private void FindSinks(int source_idx, int cell)
+		private void FindSinks(int source_idx, int cell)
 	{
 		SolidConduitFlow.GridNode gridNode = this.grid[cell];
 		if (gridNode.conduitIdx != -1)
@@ -168,7 +168,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	private void FindSinksInternal(int source_idx, int conduit_idx)
+		private void FindSinksInternal(int source_idx, int conduit_idx)
 	{
 		if (this.visited.Contains(conduit_idx))
 		{
@@ -209,7 +209,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	private SolidConduitFlow.FlowDirection GetDirection(SolidConduitFlow.Conduit conduit, SolidConduitFlow.Conduit target_conduit)
+		private SolidConduitFlow.FlowDirection GetDirection(SolidConduitFlow.Conduit conduit, SolidConduitFlow.Conduit target_conduit)
 	{
 		SolidConduitFlow.ConduitConnections conduitConnections = this.soaInfo.GetConduitConnections(conduit.idx);
 		if (conduitConnections.up == target_conduit.idx)
@@ -231,7 +231,7 @@ public class SolidConduitFlow : IConduitFlow
 		return SolidConduitFlow.FlowDirection.None;
 	}
 
-	private void FoundSink(int source_idx)
+		private void FoundSink(int source_idx)
 	{
 		for (int i = 0; i < this.path.Count - 1; i++)
 		{
@@ -257,7 +257,7 @@ public class SolidConduitFlow : IConduitFlow
 		this.TryAdd(list);
 	}
 
-	private void TryAdd(List<SolidConduitFlow.Conduit> new_path)
+		private void TryAdd(List<SolidConduitFlow.Conduit> new_path)
 	{
 		Predicate<SolidConduitFlow.Conduit> <>9__0;
 		Predicate<SolidConduitFlow.Conduit> <>9__1;
@@ -353,7 +353,7 @@ public class SolidConduitFlow : IConduitFlow
 		this.pathList.Add(new_path);
 	}
 
-	public SolidConduitFlow.ConduitContents GetContents(int cell)
+		public SolidConduitFlow.ConduitContents GetContents(int cell)
 	{
 		SolidConduitFlow.ConduitContents contents = this.grid[cell].contents;
 		SolidConduitFlow.GridNode gridNode = this.grid[cell];
@@ -364,7 +364,7 @@ public class SolidConduitFlow : IConduitFlow
 		return contents;
 	}
 
-	private void SetContents(int cell, SolidConduitFlow.ConduitContents contents)
+		private void SetContents(int cell, SolidConduitFlow.ConduitContents contents)
 	{
 		SolidConduitFlow.GridNode gridNode = this.grid[cell];
 		if (gridNode.conduitIdx != -1)
@@ -375,7 +375,7 @@ public class SolidConduitFlow : IConduitFlow
 		this.grid[cell].contents = contents;
 	}
 
-	public void SetContents(int cell, Pickupable pickupable)
+		public void SetContents(int cell, Pickupable pickupable)
 	{
 		SolidConduitFlow.ConduitContents contents = new SolidConduitFlow.ConduitContents
 		{
@@ -398,7 +398,7 @@ public class SolidConduitFlow : IConduitFlow
 		this.SetContents(cell, contents);
 	}
 
-	public static int GetCellFromDirection(int cell, SolidConduitFlow.FlowDirection direction)
+		public static int GetCellFromDirection(int cell, SolidConduitFlow.FlowDirection direction)
 	{
 		switch (direction)
 		{
@@ -415,7 +415,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	public static SolidConduitFlow.FlowDirection InverseFlow(SolidConduitFlow.FlowDirection direction)
+		public static SolidConduitFlow.FlowDirection InverseFlow(SolidConduitFlow.FlowDirection direction)
 	{
 		switch (direction)
 		{
@@ -432,7 +432,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (dt <= 0f)
 		{
@@ -466,7 +466,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		for (int i = 0; i < this.GetSOAInfo().NumEntries; i++)
 		{
@@ -492,7 +492,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	private void UpdateConduit(SolidConduitFlow.Conduit conduit)
+		private void UpdateConduit(SolidConduitFlow.Conduit conduit)
 	{
 		if (this.soaInfo.GetUpdated(conduit.idx))
 		{
@@ -556,7 +556,7 @@ public class SolidConduitFlow : IConduitFlow
 		this.soaInfo.SetTargetFlowDirection(conduit.idx, conduit.GetNextFlowTarget(this));
 	}
 
-		public float ContinuousLerpPercent
+			public float ContinuousLerpPercent
 	{
 		get
 		{
@@ -564,7 +564,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-		public float DiscreteLerpPercent
+			public float DiscreteLerpPercent
 	{
 		get
 		{
@@ -572,12 +572,12 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	private void AddToGrid(int cell_idx, SolidConduitFlow.ConduitContents contents)
+		private void AddToGrid(int cell_idx, SolidConduitFlow.ConduitContents contents)
 	{
 		this.grid[cell_idx].contents = contents;
 	}
 
-	private SolidConduitFlow.ConduitContents RemoveFromGrid(SolidConduitFlow.Conduit conduit)
+		private SolidConduitFlow.ConduitContents RemoveFromGrid(SolidConduitFlow.Conduit conduit)
 	{
 		int cell = this.soaInfo.GetCell(conduit.idx);
 		SolidConduitFlow.ConduitContents contents = this.grid[cell].contents;
@@ -586,7 +586,7 @@ public class SolidConduitFlow : IConduitFlow
 		return contents;
 	}
 
-	public void AddPickupable(int cell_idx, Pickupable pickupable)
+		public void AddPickupable(int cell_idx, Pickupable pickupable)
 	{
 		if (this.grid[cell_idx].conduitIdx == -1)
 		{
@@ -620,7 +620,7 @@ public class SolidConduitFlow : IConduitFlow
 		this.SetContents(cell_idx, contents);
 	}
 
-	public Pickupable RemovePickupable(int cell_idx)
+		public Pickupable RemovePickupable(int cell_idx)
 	{
 		Pickupable pickupable = null;
 		SolidConduitFlow.Conduit conduit = this.GetConduit(cell_idx);
@@ -642,7 +642,7 @@ public class SolidConduitFlow : IConduitFlow
 		return pickupable;
 	}
 
-	public int GetPermittedFlow(int cell)
+		public int GetPermittedFlow(int cell)
 	{
 		SolidConduitFlow.Conduit conduit = this.GetConduit(cell);
 		if (conduit.idx == -1)
@@ -652,12 +652,12 @@ public class SolidConduitFlow : IConduitFlow
 		return this.soaInfo.GetPermittedFlowDirections(conduit.idx);
 	}
 
-	public bool HasConduit(int cell)
+		public bool HasConduit(int cell)
 	{
 		return this.grid[cell].conduitIdx != -1;
 	}
 
-	public SolidConduitFlow.Conduit GetConduit(int cell)
+		public SolidConduitFlow.Conduit GetConduit(int cell)
 	{
 		int conduitIdx = this.grid[cell].conduitIdx;
 		if (conduitIdx == -1)
@@ -667,7 +667,7 @@ public class SolidConduitFlow : IConduitFlow
 		return this.soaInfo.GetConduit(conduitIdx);
 	}
 
-	private void DumpPipeContents(int cell)
+		private void DumpPipeContents(int cell)
 	{
 		Pickupable pickupable = this.RemovePickupable(cell);
 		if (pickupable)
@@ -676,7 +676,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	private void DumpPickupable(Pickupable pickupable)
+		private void DumpPickupable(Pickupable pickupable)
 	{
 		if (pickupable)
 		{
@@ -684,7 +684,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	public void EmptyConduit(int cell)
+		public void EmptyConduit(int cell)
 	{
 		if (this.replacements.Contains(cell))
 		{
@@ -693,42 +693,42 @@ public class SolidConduitFlow : IConduitFlow
 		this.DumpPipeContents(cell);
 	}
 
-	public void MarkForReplacement(int cell)
+		public void MarkForReplacement(int cell)
 	{
 		this.replacements.Add(cell);
 	}
 
-	public void DeactivateCell(int cell)
+		public void DeactivateCell(int cell)
 	{
 		this.grid[cell].conduitIdx = -1;
 		SolidConduitFlow.ConduitContents contents = SolidConduitFlow.ConduitContents.EmptyContents();
 		this.SetContents(cell, contents);
 	}
 
-	public UtilityNetwork GetNetwork(SolidConduitFlow.Conduit conduit)
+		public UtilityNetwork GetNetwork(SolidConduitFlow.Conduit conduit)
 	{
 		int cell = this.soaInfo.GetCell(conduit.idx);
 		return this.networkMgr.GetNetworkForCell(cell);
 	}
 
-	public void ForceRebuildNetworks()
+		public void ForceRebuildNetworks()
 	{
 		this.networkMgr.ForceRebuildNetworks();
 	}
 
-	public bool IsConduitFull(int cell_idx)
+		public bool IsConduitFull(int cell_idx)
 	{
 		SolidConduitFlow.ConduitContents contents = this.grid[cell_idx].contents;
 		return contents.pickupableHandle.IsValid();
 	}
 
-	public bool IsConduitEmpty(int cell_idx)
+		public bool IsConduitEmpty(int cell_idx)
 	{
 		SolidConduitFlow.ConduitContents contents = this.grid[cell_idx].contents;
 		return !contents.pickupableHandle.IsValid();
 	}
 
-	public void Initialize()
+		public void Initialize()
 	{
 		if (OverlayScreen.Instance != null)
 		{
@@ -739,7 +739,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	private void OnOverlayChanged(HashedString mode)
+		private void OnOverlayChanged(HashedString mode)
 	{
 		bool flag = mode == OverlayModes.SolidConveyor.ID;
 		if (flag == this.viewingConduits)
@@ -761,7 +761,7 @@ public class SolidConduitFlow : IConduitFlow
 		}
 	}
 
-	private void ApplyOverlayVisualization(KBatchedAnimController kbac)
+		private void ApplyOverlayVisualization(KBatchedAnimController kbac)
 	{
 		if (kbac == null)
 		{
@@ -771,7 +771,7 @@ public class SolidConduitFlow : IConduitFlow
 		kbac.TintColour = SolidConduitFlow.OverlayColour;
 	}
 
-	private void ClearOverlayVisualization(KBatchedAnimController kbac)
+		private void ClearOverlayVisualization(KBatchedAnimController kbac)
 	{
 		if (kbac == null)
 		{
@@ -781,7 +781,7 @@ public class SolidConduitFlow : IConduitFlow
 		kbac.TintColour = SolidConduitFlow.NormalColour;
 	}
 
-	public Pickupable GetPickupable(HandleVector<int>.Handle h)
+		public Pickupable GetPickupable(HandleVector<int>.Handle h)
 	{
 		Pickupable result = null;
 		if (h.IsValid())
@@ -791,61 +791,61 @@ public class SolidConduitFlow : IConduitFlow
 		return result;
 	}
 
-	public const float MAX_SOLID_MASS = 20f;
+		public const float MAX_SOLID_MASS = 20f;
 
-	public const float TickRate = 1f;
+		public const float TickRate = 1f;
 
-	public const float WaitTime = 1f;
+		public const float WaitTime = 1f;
 
-	private float elapsedTime;
+		private float elapsedTime;
 
-	private float lastUpdateTime = float.NegativeInfinity;
+		private float lastUpdateTime = float.NegativeInfinity;
 
-	private KCompactedVector<SolidConduitFlow.StoredInfo> conveyorPickupables = new KCompactedVector<SolidConduitFlow.StoredInfo>(0);
+		private KCompactedVector<SolidConduitFlow.StoredInfo> conveyorPickupables = new KCompactedVector<SolidConduitFlow.StoredInfo>(0);
 
-	private List<HandleVector<int>.Handle> freedHandles = new List<HandleVector<int>.Handle>();
+		private List<HandleVector<int>.Handle> freedHandles = new List<HandleVector<int>.Handle>();
 
-	private SolidConduitFlow.SOAInfo soaInfo = new SolidConduitFlow.SOAInfo();
+		private SolidConduitFlow.SOAInfo soaInfo = new SolidConduitFlow.SOAInfo();
 
-	private bool dirtyConduitUpdaters;
+		private bool dirtyConduitUpdaters;
 
-	private List<SolidConduitFlow.ConduitUpdater> conduitUpdaters = new List<SolidConduitFlow.ConduitUpdater>();
+		private List<SolidConduitFlow.ConduitUpdater> conduitUpdaters = new List<SolidConduitFlow.ConduitUpdater>();
 
-	private SolidConduitFlow.GridNode[] grid;
+		private SolidConduitFlow.GridNode[] grid;
 
-	public IUtilityNetworkMgr networkMgr;
+		public IUtilityNetworkMgr networkMgr;
 
-	private HashSet<int> visited = new HashSet<int>();
+		private HashSet<int> visited = new HashSet<int>();
 
-	private HashSet<int> replacements = new HashSet<int>();
+		private HashSet<int> replacements = new HashSet<int>();
 
-	private List<SolidConduitFlow.Conduit> path = new List<SolidConduitFlow.Conduit>();
+		private List<SolidConduitFlow.Conduit> path = new List<SolidConduitFlow.Conduit>();
 
-	private List<List<SolidConduitFlow.Conduit>> pathList = new List<List<SolidConduitFlow.Conduit>>();
+		private List<List<SolidConduitFlow.Conduit>> pathList = new List<List<SolidConduitFlow.Conduit>>();
 
-	public static readonly SolidConduitFlow.ConduitContents emptyContents = new SolidConduitFlow.ConduitContents
+		public static readonly SolidConduitFlow.ConduitContents emptyContents = new SolidConduitFlow.ConduitContents
 	{
 		pickupableHandle = HandleVector<int>.InvalidHandle
 	};
 
-	private int maskedOverlayLayer;
+		private int maskedOverlayLayer;
 
-	private bool viewingConduits;
+		private bool viewingConduits;
 
-	private static readonly Color32 NormalColour = Color.white;
+		private static readonly Color32 NormalColour = Color.white;
 
-	private static readonly Color32 OverlayColour = new Color(0.25f, 0.25f, 0.25f, 0f);
+		private static readonly Color32 OverlayColour = new Color(0.25f, 0.25f, 0.25f, 0f);
 
-	private struct StoredInfo
+		private struct StoredInfo
 	{
-		public KBatchedAnimController kbac;
+				public KBatchedAnimController kbac;
 
-		public Pickupable pickupable;
+				public Pickupable pickupable;
 	}
 
-	public class SOAInfo
+		public class SOAInfo
 	{
-				public int NumEntries
+						public int NumEntries
 		{
 			get
 			{
@@ -853,7 +853,7 @@ public class SolidConduitFlow : IConduitFlow
 			}
 		}
 
-				public List<int> Cells
+						public List<int> Cells
 		{
 			get
 			{
@@ -861,7 +861,7 @@ public class SolidConduitFlow : IConduitFlow
 			}
 		}
 
-		public int AddConduit(SolidConduitFlow manager, GameObject conduit_go, int cell)
+				public int AddConduit(SolidConduitFlow manager, GameObject conduit_go, int cell)
 		{
 			int count = this.conduitConnections.Count;
 			SolidConduitFlow.Conduit item = new SolidConduitFlow.Conduit(count);
@@ -890,7 +890,7 @@ public class SolidConduitFlow : IConduitFlow
 			return count;
 		}
 
-		public void Clear(SolidConduitFlow manager)
+				public void Clear(SolidConduitFlow manager)
 		{
 			for (int i = 0; i < this.conduits.Count; i++)
 			{
@@ -914,27 +914,27 @@ public class SolidConduitFlow : IConduitFlow
 			this.conduits.Clear();
 		}
 
-		public SolidConduitFlow.Conduit GetConduit(int idx)
+				public SolidConduitFlow.Conduit GetConduit(int idx)
 		{
 			return this.conduits[idx];
 		}
 
-		public GameObject GetConduitGO(int idx)
+				public GameObject GetConduitGO(int idx)
 		{
 			return this.conduitGOs[idx];
 		}
 
-		public SolidConduitFlow.ConduitConnections GetConduitConnections(int idx)
+				public SolidConduitFlow.ConduitConnections GetConduitConnections(int idx)
 		{
 			return this.conduitConnections[idx];
 		}
 
-		public void SetConduitConnections(int idx, SolidConduitFlow.ConduitConnections data)
+				public void SetConduitConnections(int idx, SolidConduitFlow.ConduitConnections data)
 		{
 			this.conduitConnections[idx] = data;
 		}
 
-		public void ForcePermanentDiseaseContainer(int idx, bool force_on)
+				public void ForcePermanentDiseaseContainer(int idx, bool force_on)
 		{
 			if (this.diseaseContentsVisible[idx] != force_on)
 			{
@@ -948,7 +948,7 @@ public class SolidConduitFlow : IConduitFlow
 			}
 		}
 
-		public SolidConduitFlow.Conduit GetConduitFromDirection(int idx, SolidConduitFlow.FlowDirection direction)
+				public SolidConduitFlow.Conduit GetConduitFromDirection(int idx, SolidConduitFlow.FlowDirection direction)
 		{
 			SolidConduitFlow.Conduit result = SolidConduitFlow.Conduit.Invalid();
 			SolidConduitFlow.ConduitConnections conduitConnections = this.conduitConnections[idx];
@@ -970,7 +970,7 @@ public class SolidConduitFlow : IConduitFlow
 			return result;
 		}
 
-		public void BeginFrame(SolidConduitFlow manager)
+				public void BeginFrame(SolidConduitFlow manager)
 		{
 			for (int i = 0; i < this.conduits.Count; i++)
 			{
@@ -992,11 +992,11 @@ public class SolidConduitFlow : IConduitFlow
 			manager.freedHandles.Clear();
 		}
 
-		public void EndFrame(SolidConduitFlow manager)
+				public void EndFrame(SolidConduitFlow manager)
 		{
 		}
 
-		public void UpdateFlowDirection(SolidConduitFlow manager)
+				public void UpdateFlowDirection(SolidConduitFlow manager)
 		{
 			for (int i = 0; i < this.conduits.Count; i++)
 			{
@@ -1013,7 +1013,7 @@ public class SolidConduitFlow : IConduitFlow
 			}
 		}
 
-		public void MarkConduitEmpty(int idx, SolidConduitFlow manager)
+				public void MarkConduitEmpty(int idx, SolidConduitFlow manager)
 		{
 			if (this.lastFlowInfo[idx].direction != SolidConduitFlow.FlowDirection.None)
 			{
@@ -1028,7 +1028,7 @@ public class SolidConduitFlow : IConduitFlow
 			}
 		}
 
-		public void SetLastFlowInfo(int idx, SolidConduitFlow.FlowDirection direction)
+				public void SetLastFlowInfo(int idx, SolidConduitFlow.FlowDirection direction)
 		{
 			this.lastFlowInfo[idx] = new SolidConduitFlow.ConduitFlowInfo
 			{
@@ -1036,183 +1036,183 @@ public class SolidConduitFlow : IConduitFlow
 			};
 		}
 
-		public SolidConduitFlow.ConduitContents GetInitialContents(int idx)
+				public SolidConduitFlow.ConduitContents GetInitialContents(int idx)
 		{
 			return this.initialContents[idx];
 		}
 
-		public SolidConduitFlow.ConduitFlowInfo GetLastFlowInfo(int idx)
+				public SolidConduitFlow.ConduitFlowInfo GetLastFlowInfo(int idx)
 		{
 			return this.lastFlowInfo[idx];
 		}
 
-		public int GetPermittedFlowDirections(int idx)
+				public int GetPermittedFlowDirections(int idx)
 		{
 			return this.permittedFlowDirections[idx];
 		}
 
-		public void SetPermittedFlowDirections(int idx, int permitted)
+				public void SetPermittedFlowDirections(int idx, int permitted)
 		{
 			this.permittedFlowDirections[idx] = permitted;
 		}
 
-		public SolidConduitFlow.FlowDirection GetTargetFlowDirection(int idx)
+				public SolidConduitFlow.FlowDirection GetTargetFlowDirection(int idx)
 		{
 			return this.targetFlowDirections[idx];
 		}
 
-		public void SetTargetFlowDirection(int idx, SolidConduitFlow.FlowDirection directions)
+				public void SetTargetFlowDirection(int idx, SolidConduitFlow.FlowDirection directions)
 		{
 			this.targetFlowDirections[idx] = directions;
 		}
 
-		public int GetSrcFlowIdx(int idx)
+				public int GetSrcFlowIdx(int idx)
 		{
 			return this.srcFlowIdx[idx];
 		}
 
-		public void SetSrcFlowIdx(int idx, int new_src_idx)
+				public void SetSrcFlowIdx(int idx, int new_src_idx)
 		{
 			this.srcFlowIdx[idx] = new_src_idx;
 		}
 
-		public SolidConduitFlow.FlowDirection GetSrcFlowDirection(int idx)
+				public SolidConduitFlow.FlowDirection GetSrcFlowDirection(int idx)
 		{
 			return this.srcFlowDirections[idx];
 		}
 
-		public void SetSrcFlowDirection(int idx, SolidConduitFlow.FlowDirection directions)
+				public void SetSrcFlowDirection(int idx, SolidConduitFlow.FlowDirection directions)
 		{
 			this.srcFlowDirections[idx] = directions;
 		}
 
-		public int GetCell(int idx)
+				public int GetCell(int idx)
 		{
 			return this.cells[idx];
 		}
 
-		public void SetCell(int idx, int cell)
+				public void SetCell(int idx, int cell)
 		{
 			this.cells[idx] = cell;
 		}
 
-		public bool GetUpdated(int idx)
+				public bool GetUpdated(int idx)
 		{
 			return this.updated[idx];
 		}
 
-		public void SetUpdated(int idx, bool is_updated)
+				public void SetUpdated(int idx, bool is_updated)
 		{
 			this.updated[idx] = is_updated;
 		}
 
-		private List<SolidConduitFlow.Conduit> conduits = new List<SolidConduitFlow.Conduit>();
+				private List<SolidConduitFlow.Conduit> conduits = new List<SolidConduitFlow.Conduit>();
 
-		private List<SolidConduitFlow.ConduitConnections> conduitConnections = new List<SolidConduitFlow.ConduitConnections>();
+				private List<SolidConduitFlow.ConduitConnections> conduitConnections = new List<SolidConduitFlow.ConduitConnections>();
 
-		private List<SolidConduitFlow.ConduitFlowInfo> lastFlowInfo = new List<SolidConduitFlow.ConduitFlowInfo>();
+				private List<SolidConduitFlow.ConduitFlowInfo> lastFlowInfo = new List<SolidConduitFlow.ConduitFlowInfo>();
 
-		private List<SolidConduitFlow.ConduitContents> initialContents = new List<SolidConduitFlow.ConduitContents>();
+				private List<SolidConduitFlow.ConduitContents> initialContents = new List<SolidConduitFlow.ConduitContents>();
 
-		private List<GameObject> conduitGOs = new List<GameObject>();
+				private List<GameObject> conduitGOs = new List<GameObject>();
 
-		private List<bool> diseaseContentsVisible = new List<bool>();
+				private List<bool> diseaseContentsVisible = new List<bool>();
 
-		private List<bool> updated = new List<bool>();
+				private List<bool> updated = new List<bool>();
 
-		private List<int> cells = new List<int>();
+				private List<int> cells = new List<int>();
 
-		private List<int> permittedFlowDirections = new List<int>();
+				private List<int> permittedFlowDirections = new List<int>();
 
-		private List<int> srcFlowIdx = new List<int>();
+				private List<int> srcFlowIdx = new List<int>();
 
-		private List<SolidConduitFlow.FlowDirection> srcFlowDirections = new List<SolidConduitFlow.FlowDirection>();
+				private List<SolidConduitFlow.FlowDirection> srcFlowDirections = new List<SolidConduitFlow.FlowDirection>();
 
-		private List<SolidConduitFlow.FlowDirection> targetFlowDirections = new List<SolidConduitFlow.FlowDirection>();
+				private List<SolidConduitFlow.FlowDirection> targetFlowDirections = new List<SolidConduitFlow.FlowDirection>();
 	}
 
-	[DebuggerDisplay("{priority} {callback.Target.name} {callback.Target} {callback.Method}")]
+		[DebuggerDisplay("{priority} {callback.Target.name} {callback.Target} {callback.Method}")]
 	public struct ConduitUpdater
 	{
-		public ConduitFlowPriority priority;
+				public ConduitFlowPriority priority;
 
-		public Action<float> callback;
+				public Action<float> callback;
 	}
 
-	public struct GridNode
+		public struct GridNode
 	{
-		public int conduitIdx;
+				public int conduitIdx;
 
-		public SolidConduitFlow.ConduitContents contents;
+				public SolidConduitFlow.ConduitContents contents;
 	}
 
-	public enum FlowDirection
+		public enum FlowDirection
 	{
-		Blocked = -1,
-		None,
-		Left,
-		Right,
-		Up,
-		Down,
-		Num
+				Blocked = -1,
+				None,
+				Left,
+				Right,
+				Up,
+				Down,
+				Num
 	}
 
-	public struct ConduitConnections
+		public struct ConduitConnections
 	{
-		public int left;
+				public int left;
 
-		public int right;
+				public int right;
 
-		public int up;
+				public int up;
 
-		public int down;
+				public int down;
 	}
 
-	public struct ConduitFlowInfo
+		public struct ConduitFlowInfo
 	{
-		public SolidConduitFlow.FlowDirection direction;
+				public SolidConduitFlow.FlowDirection direction;
 	}
 
-	[Serializable]
+		[Serializable]
 	public struct Conduit : IEquatable<SolidConduitFlow.Conduit>
 	{
-		public static SolidConduitFlow.Conduit Invalid()
+				public static SolidConduitFlow.Conduit Invalid()
 		{
 			return new SolidConduitFlow.Conduit(-1);
 		}
 
-		public Conduit(int idx)
+				public Conduit(int idx)
 		{
 			this.idx = idx;
 		}
 
-		public int GetPermittedFlowDirections(SolidConduitFlow manager)
+				public int GetPermittedFlowDirections(SolidConduitFlow manager)
 		{
 			return manager.soaInfo.GetPermittedFlowDirections(this.idx);
 		}
 
-		public void SetPermittedFlowDirections(int permitted, SolidConduitFlow manager)
+				public void SetPermittedFlowDirections(int permitted, SolidConduitFlow manager)
 		{
 			manager.soaInfo.SetPermittedFlowDirections(this.idx, permitted);
 		}
 
-		public SolidConduitFlow.FlowDirection GetTargetFlowDirection(SolidConduitFlow manager)
+				public SolidConduitFlow.FlowDirection GetTargetFlowDirection(SolidConduitFlow manager)
 		{
 			return manager.soaInfo.GetTargetFlowDirection(this.idx);
 		}
 
-		public void SetTargetFlowDirection(SolidConduitFlow.FlowDirection directions, SolidConduitFlow manager)
+				public void SetTargetFlowDirection(SolidConduitFlow.FlowDirection directions, SolidConduitFlow manager)
 		{
 			manager.soaInfo.SetTargetFlowDirection(this.idx, directions);
 		}
 
-		public SolidConduitFlow.ConduitContents GetContents(SolidConduitFlow manager)
+				public SolidConduitFlow.ConduitContents GetContents(SolidConduitFlow manager)
 		{
 			int cell = manager.soaInfo.GetCell(this.idx);
 			return manager.grid[cell].contents;
 		}
 
-		public void SetContents(SolidConduitFlow manager, SolidConduitFlow.ConduitContents contents)
+				public void SetContents(SolidConduitFlow manager, SolidConduitFlow.ConduitContents contents)
 		{
 			int cell = manager.soaInfo.GetCell(this.idx);
 			manager.grid[cell].contents = contents;
@@ -1231,7 +1231,7 @@ public class SolidConduitFlow : IConduitFlow
 			}
 		}
 
-		public SolidConduitFlow.FlowDirection GetNextFlowSource(SolidConduitFlow manager)
+				public SolidConduitFlow.FlowDirection GetNextFlowSource(SolidConduitFlow manager)
 		{
 			if (manager.soaInfo.GetPermittedFlowDirections(this.idx) == -1)
 			{
@@ -1280,7 +1280,7 @@ public class SolidConduitFlow : IConduitFlow
 			return SolidConduitFlow.FlowDirection.None;
 		}
 
-		public SolidConduitFlow.FlowDirection GetNextFlowTarget(SolidConduitFlow manager)
+				public SolidConduitFlow.FlowDirection GetNextFlowTarget(SolidConduitFlow manager)
 		{
 			int permittedFlowDirections = manager.soaInfo.GetPermittedFlowDirections(this.idx);
 			if (permittedFlowDirections == -1)
@@ -1298,38 +1298,38 @@ public class SolidConduitFlow : IConduitFlow
 			return SolidConduitFlow.FlowDirection.Blocked;
 		}
 
-		public SolidConduitFlow.ConduitFlowInfo GetLastFlowInfo(SolidConduitFlow manager)
+				public SolidConduitFlow.ConduitFlowInfo GetLastFlowInfo(SolidConduitFlow manager)
 		{
 			return manager.soaInfo.GetLastFlowInfo(this.idx);
 		}
 
-		public SolidConduitFlow.ConduitContents GetInitialContents(SolidConduitFlow manager)
+				public SolidConduitFlow.ConduitContents GetInitialContents(SolidConduitFlow manager)
 		{
 			return manager.soaInfo.GetInitialContents(this.idx);
 		}
 
-		public int GetCell(SolidConduitFlow manager)
+				public int GetCell(SolidConduitFlow manager)
 		{
 			return manager.soaInfo.GetCell(this.idx);
 		}
 
-		public bool Equals(SolidConduitFlow.Conduit other)
+				public bool Equals(SolidConduitFlow.Conduit other)
 		{
 			return this.idx == other.idx;
 		}
 
-		public int idx;
+				public int idx;
 	}
 
-	[DebuggerDisplay("{pickupable}")]
+		[DebuggerDisplay("{pickupable}")]
 	public struct ConduitContents
 	{
-		public ConduitContents(HandleVector<int>.Handle pickupable_handle)
+				public ConduitContents(HandleVector<int>.Handle pickupable_handle)
 		{
 			this.pickupableHandle = pickupable_handle;
 		}
 
-		public static SolidConduitFlow.ConduitContents EmptyContents()
+				public static SolidConduitFlow.ConduitContents EmptyContents()
 		{
 			return new SolidConduitFlow.ConduitContents
 			{
@@ -1337,6 +1337,6 @@ public class SolidConduitFlow : IConduitFlow
 			};
 		}
 
-		public HandleVector<int>.Handle pickupableHandle;
+				public HandleVector<int>.Handle pickupableHandle;
 	}
 }

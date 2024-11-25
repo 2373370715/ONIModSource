@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class HighEnergyParticleConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateBasicEntity("HighEnergyParticle", ITEMS.RADIATION.HIGHENERGYPARITCLE.NAME, ITEMS.RADIATION.HIGHENERGYPARITCLE.DESC, 1f, false, Assets.GetAnim("spark_radial_high_energy_particles_kanim"), "travel_pre", Grid.SceneLayer.FXFront2, SimHashes.Creature, null, 293f);
 		EntityTemplates.AddCollision(gameObject, EntityTemplates.CollisionShape.CIRCLE, 0.2f, 0.2f);
@@ -24,31 +24,31 @@ public class HighEnergyParticleConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const int PARTICLE_SPEED = 8;
+		public const int PARTICLE_SPEED = 8;
 
-	public const float PARTICLE_COLLISION_SIZE = 0.2f;
+		public const float PARTICLE_COLLISION_SIZE = 0.2f;
 
-	public const float PER_CELL_FALLOFF = 0.1f;
+		public const float PER_CELL_FALLOFF = 0.1f;
 
-	public const float FALLOUT_RATIO = 0.5f;
+		public const float FALLOUT_RATIO = 0.5f;
 
-	public const int MAX_PAYLOAD = 500;
+		public const int MAX_PAYLOAD = 500;
 
-	public const int EXPLOSION_FALLOUT_TEMPERATURE = 5000;
+		public const int EXPLOSION_FALLOUT_TEMPERATURE = 5000;
 
-	public const float EXPLOSION_FALLOUT_MASS_PER_PARTICLE = 0.001f;
+		public const float EXPLOSION_FALLOUT_MASS_PER_PARTICLE = 0.001f;
 
-	public const float EXPLOSION_EMIT_DURRATION = 1f;
+		public const float EXPLOSION_EMIT_DURRATION = 1f;
 
-	public const short EXPLOSION_EMIT_RADIUS = 6;
+		public const short EXPLOSION_EMIT_RADIUS = 6;
 
-	public const string ID = "HighEnergyParticle";
+		public const string ID = "HighEnergyParticle";
 }

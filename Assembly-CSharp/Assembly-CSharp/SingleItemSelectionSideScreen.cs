@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SingleItemSelectionSideScreen : SingleItemSelectionSideScreenBase
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetSMI<StorageTile.Instance>() != null && target.GetComponent<TreeFilterable>() != null;
 	}
 
-	private Tag GetTargetCurrentSelectedTag()
+		private Tag GetTargetCurrentSelectedTag()
 	{
 		if (this.CurrentTarget != null)
 		{
@@ -18,7 +18,7 @@ public class SingleItemSelectionSideScreen : SingleItemSelectionSideScreenBase
 		return this.INVALID_OPTION_TAG;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.CurrentTarget = target.GetSMI<StorageTile.Instance>();
@@ -58,7 +58,7 @@ public class SingleItemSelectionSideScreen : SingleItemSelectionSideScreenBase
 		}
 	}
 
-	private void CreateNoneOption()
+		private void CreateNoneOption()
 	{
 		if (this.noneOptionRow == null)
 		{
@@ -67,7 +67,7 @@ public class SingleItemSelectionSideScreen : SingleItemSelectionSideScreenBase
 		this.noneOptionRow.transform.SetAsFirstSibling();
 	}
 
-	public override void ItemRowClicked(SingleItemSelectionRow rowClicked)
+		public override void ItemRowClicked(SingleItemSelectionRow rowClicked)
 	{
 		base.ItemRowClicked(rowClicked);
 		this.selectedItemLabel.SetItem(rowClicked.tag);
@@ -78,12 +78,12 @@ public class SingleItemSelectionSideScreen : SingleItemSelectionSideScreenBase
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private SingleItemSelectionSideScreen_SelectedItemSection selectedItemLabel;
 
-	private StorageTile.Instance CurrentTarget;
+		private StorageTile.Instance CurrentTarget;
 
-	private SingleItemSelectionRow noneOptionRow;
+		private SingleItemSelectionRow noneOptionRow;
 
-	private Tag INVALID_OPTION_TAG = GameTags.Void;
+		private Tag INVALID_OPTION_TAG = GameTags.Void;
 }

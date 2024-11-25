@@ -5,11 +5,11 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Unsealable")]
 public class Unsealable : Workable
 {
-	private Unsealable()
+		private Unsealable()
 	{
 	}
 
-	public override CellOffset[] GetOffsets(int cell)
+		public override CellOffset[] GetOffsets(int cell)
 	{
 		if (this.facingRight)
 		{
@@ -18,7 +18,7 @@ public class Unsealable : Workable
 		return OffsetGroups.LeftOnly;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.faceTargetWhenWorking = true;
 		base.OnPrefabInit();
@@ -28,7 +28,7 @@ public class Unsealable : Workable
 		};
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.SetWorkTime(3f);
@@ -42,12 +42,12 @@ public class Unsealable : Workable
 		}
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.unsealed = true;
 		base.OnCompleteWork(worker);
@@ -59,9 +59,9 @@ public class Unsealable : Workable
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	public bool facingRight;
 
-	[Serialize]
+		[Serialize]
 	public bool unsealed;
 }

@@ -3,7 +3,7 @@ using TUNING;
 
 public class MorbRoverMakerWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workingStatusItem = Db.Get().BuildingStatusItems.MorbRoverMakerDoctorWorking;
@@ -23,15 +23,15 @@ public class MorbRoverMakerWorkable : Workable
 		this.resetProgressOnStop = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 	}
 
-	public const float DOCTOR_WORKING_TIME = 90f;
+		public const float DOCTOR_WORKING_TIME = 90f;
 }

@@ -4,13 +4,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SelectMarker")]
 public class SelectMarker : KMonoBehaviour
 {
-	public void SetTargetTransform(Transform target_transform)
+		public void SetTargetTransform(Transform target_transform)
 	{
 		this.targetTransform = target_transform;
 		this.LateUpdate();
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (this.targetTransform == null)
 		{
@@ -32,7 +32,7 @@ public class SelectMarker : KMonoBehaviour
 		base.transform.SetPosition(position + b);
 	}
 
-	public float animationOffset = 0.1f;
+		public float animationOffset = 0.1f;
 
-	private Transform targetTransform;
+		private Transform targetTransform;
 }

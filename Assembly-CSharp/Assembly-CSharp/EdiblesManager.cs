@@ -6,14 +6,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/EdiblesManager")]
 public class EdiblesManager : KMonoBehaviour
 {
-	public static List<EdiblesManager.FoodInfo> GetAllLoadedFoodTypes()
+		public static List<EdiblesManager.FoodInfo> GetAllLoadedFoodTypes()
 	{
 		return (from x in EdiblesManager.s_allFoodTypes
 		where DlcManager.IsContentSubscribed(x.DlcId)
 		select x).ToList<EdiblesManager.FoodInfo>();
 	}
 
-	public static List<EdiblesManager.FoodInfo> GetAllFoodTypes()
+		public static List<EdiblesManager.FoodInfo> GetAllFoodTypes()
 	{
 		global::Debug.Assert(SaveLoader.Instance != null, "Call GetAllLoadedFoodTypes from the frontend");
 		return (from x in EdiblesManager.s_allFoodTypes
@@ -21,7 +21,7 @@ public class EdiblesManager : KMonoBehaviour
 		select x).ToList<EdiblesManager.FoodInfo>();
 	}
 
-	public static EdiblesManager.FoodInfo GetFoodInfo(string foodID)
+		public static EdiblesManager.FoodInfo GetFoodInfo(string foodID)
 	{
 		string key = foodID.Replace("Compost", "");
 		EdiblesManager.FoodInfo result = null;
@@ -29,7 +29,7 @@ public class EdiblesManager : KMonoBehaviour
 		return result;
 	}
 
-	public static bool TryGetFoodInfo(string foodID, out EdiblesManager.FoodInfo info)
+		public static bool TryGetFoodInfo(string foodID, out EdiblesManager.FoodInfo info)
 	{
 		info = null;
 		if (string.IsNullOrEmpty(foodID))
@@ -40,13 +40,13 @@ public class EdiblesManager : KMonoBehaviour
 		return info != null;
 	}
 
-	private static List<EdiblesManager.FoodInfo> s_allFoodTypes = new List<EdiblesManager.FoodInfo>();
+		private static List<EdiblesManager.FoodInfo> s_allFoodTypes = new List<EdiblesManager.FoodInfo>();
 
-	private static Dictionary<string, EdiblesManager.FoodInfo> s_allFoodMap = new Dictionary<string, EdiblesManager.FoodInfo>();
+		private static Dictionary<string, EdiblesManager.FoodInfo> s_allFoodMap = new Dictionary<string, EdiblesManager.FoodInfo>();
 
-	public class FoodInfo : IConsumableUIItem
+		public class FoodInfo : IConsumableUIItem
 	{
-		public FoodInfo(string id, string dlcId, float caloriesPerUnit, int quality, float preserveTemperatue, float rotTemperature, float spoilTime, bool can_rot)
+				public FoodInfo(string id, string dlcId, float caloriesPerUnit, int quality, float preserveTemperatue, float rotTemperature, float spoilTime, bool can_rot)
 		{
 			this.Id = id;
 			this.DlcId = dlcId;
@@ -64,7 +64,7 @@ public class EdiblesManager : KMonoBehaviour
 			EdiblesManager.s_allFoodMap[this.Id] = this;
 		}
 
-		public EdiblesManager.FoodInfo AddEffects(List<string> effects, string[] dlcIds)
+				public EdiblesManager.FoodInfo AddEffects(List<string> effects, string[] dlcIds)
 		{
 			if (DlcManager.IsDlcListValidForCurrentContent(dlcIds))
 			{
@@ -73,7 +73,7 @@ public class EdiblesManager : KMonoBehaviour
 			return this;
 		}
 
-				public string ConsumableId
+						public string ConsumableId
 		{
 			get
 			{
@@ -81,7 +81,7 @@ public class EdiblesManager : KMonoBehaviour
 			}
 		}
 
-				public string ConsumableName
+						public string ConsumableName
 		{
 			get
 			{
@@ -89,7 +89,7 @@ public class EdiblesManager : KMonoBehaviour
 			}
 		}
 
-				public int MajorOrder
+						public int MajorOrder
 		{
 			get
 			{
@@ -97,7 +97,7 @@ public class EdiblesManager : KMonoBehaviour
 			}
 		}
 
-				public int MinorOrder
+						public int MinorOrder
 		{
 			get
 			{
@@ -105,7 +105,7 @@ public class EdiblesManager : KMonoBehaviour
 			}
 		}
 
-				public bool Display
+						public bool Display
 		{
 			get
 			{
@@ -113,28 +113,28 @@ public class EdiblesManager : KMonoBehaviour
 			}
 		}
 
-		public string Id;
+				public string Id;
 
-		public string DlcId;
+				public string DlcId;
 
-		public string Name;
+				public string Name;
 
-		public string Description;
+				public string Description;
 
-		public float CaloriesPerUnit;
+				public float CaloriesPerUnit;
 
-		public float PreserveTemperature;
+				public float PreserveTemperature;
 
-		public float RotTemperature;
+				public float RotTemperature;
 
-		public float StaleTime;
+				public float StaleTime;
 
-		public float SpoilTime;
+				public float SpoilTime;
 
-		public bool CanRot;
+				public bool CanRot;
 
-		public int Quality;
+				public int Quality;
 
-		public List<string> Effects;
+				public List<string> Effects;
 	}
 }

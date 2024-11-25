@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/GetBalloonWorkable")]
 public class GetBalloonWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.faceTargetWhenWorking = true;
@@ -22,7 +22,7 @@ public class GetBalloonWorkable : Workable
 		};
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		BalloonOverrideSymbol balloonOverride = this.balloonArtist.GetBalloonOverride();
@@ -34,7 +34,7 @@ public class GetBalloonWorkable : Workable
 		worker.gameObject.GetComponent<SymbolOverrideController>().AddSymbolOverride("body", balloonOverride.symbol.Unwrap(), 0);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab("EquippableBalloon"), worker.transform.GetPosition());
 		gameObject.GetComponent<Equippable>().Assign(worker.GetComponent<MinionIdentity>());
@@ -46,32 +46,32 @@ public class GetBalloonWorkable : Workable
 		gameObject.GetComponent<EquippableBalloon>().SetBalloonOverride(balloonOverride);
 	}
 
-	public override Vector3 GetFacingTarget()
+		public override Vector3 GetFacingTarget()
 	{
 		return this.balloonArtist.master.transform.GetPosition();
 	}
 
-	public void SetBalloonArtist(BalloonArtistChore.StatesInstance chore)
+		public void SetBalloonArtist(BalloonArtistChore.StatesInstance chore)
 	{
 		this.balloonArtist = chore;
 	}
 
-	public BalloonArtistChore.StatesInstance GetBalloonArtist()
+		public BalloonArtistChore.StatesInstance GetBalloonArtist()
 	{
 		return this.balloonArtist;
 	}
 
-	private static readonly HashedString[] GET_BALLOON_ANIMS = new HashedString[]
+		private static readonly HashedString[] GET_BALLOON_ANIMS = new HashedString[]
 	{
 		"working_pre",
 		"working_loop"
 	};
 
-	private static readonly HashedString PST_ANIM = new HashedString("working_pst");
+		private static readonly HashedString PST_ANIM = new HashedString("working_pst");
 
-	private BalloonArtistChore.StatesInstance balloonArtist;
+		private BalloonArtistChore.StatesInstance balloonArtist;
 
-	private const string TARGET_SYMBOL_TO_OVERRIDE = "body";
+		private const string TARGET_SYMBOL_TO_OVERRIDE = "body";
 
-	private const int TARGET_OVERRIDE_PRIORITY = 0;
+		private const int TARGET_OVERRIDE_PRIORITY = 0;
 }

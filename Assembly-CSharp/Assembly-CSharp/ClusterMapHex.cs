@@ -7,9 +7,9 @@ using UnityEngine.UI;
 
 public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 {
-			public AxialI location { get; private set; }
+				public AxialI location { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.rectTransform = base.GetComponent<RectTransform>();
@@ -19,12 +19,12 @@ public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 		this.onExit = new System.Action(this.OnUnhover);
 	}
 
-	public void SetLocation(AxialI location)
+		public void SetLocation(AxialI location)
 	{
 		this.location = location;
 	}
 
-	public void SetRevealed(ClusterRevealLevel level)
+		public void SetRevealed(ClusterRevealLevel level)
 	{
 		this._revealLevel = level;
 		switch (level)
@@ -46,7 +46,7 @@ public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 		}
 	}
 
-	public void SetDestinationStatus(string fail_reason)
+		public void SetDestinationStatus(string fail_reason)
 	{
 		this.m_tooltip.ClearMultiStringTooltip();
 		this.UpdateHoverColors(string.IsNullOrEmpty(fail_reason));
@@ -56,7 +56,7 @@ public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 		}
 	}
 
-	public void SetDestinationStatus(string fail_reason, int pathLength, int rocketRange, bool repeat)
+		public void SetDestinationStatus(string fail_reason, int pathLength, int rocketRange, bool repeat)
 	{
 		this.m_tooltip.ClearMultiStringTooltip();
 		if (pathLength > 0)
@@ -76,7 +76,7 @@ public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 		}
 	}
 
-	public void UpdateToggleState(ClusterMapHex.ToggleState state)
+		public void UpdateToggleState(ClusterMapHex.ToggleState state)
 	{
 		int new_state_index = -1;
 		switch (state)
@@ -94,7 +94,7 @@ public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 		base.ChangeState(new_state_index);
 	}
 
-	private void TrySelect()
+		private void TrySelect()
 	{
 		if (DebugHandler.InstantBuildMode)
 		{
@@ -103,7 +103,7 @@ public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 		ClusterMapScreen.Instance.SelectHex(this);
 	}
 
-	private bool TryGoTo()
+		private bool TryGoTo()
 	{
 		List<WorldContainer> list = (from entity in ClusterGrid.Instance.GetVisibleEntitiesAtCell(this.location)
 		select entity.GetComponent<WorldContainer>() into x
@@ -117,7 +117,7 @@ public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 		return false;
 	}
 
-	private void OnHover()
+		private void OnHover()
 	{
 		this.m_tooltip.ClearMultiStringTooltip();
 		string text = "";
@@ -148,7 +148,7 @@ public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 		ClusterMapScreen.Instance.OnHoverHex(this);
 	}
 
-	private void OnUnhover()
+		private void OnUnhover()
 	{
 		if (ClusterMapScreen.Instance != null)
 		{
@@ -156,7 +156,7 @@ public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 		}
 	}
 
-	private void UpdateHoverColors(bool validDestination)
+		private void UpdateHoverColors(bool validDestination)
 	{
 		Color color_on_hover = validDestination ? this.hoverColorValid : this.hoverColorInvalid;
 		for (int i = 0; i < this.states.Length; i++)
@@ -170,7 +170,7 @@ public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 		base.RefreshHoverColor();
 	}
 
-	public bool IsRaycastLocationValid(Vector2 inputPoint, Camera eventCamera)
+		public bool IsRaycastLocationValid(Vector2 inputPoint, Camera eventCamera)
 	{
 		Vector2 vector = this.rectTransform.position;
 		float num = Mathf.Abs(inputPoint.x - vector.x);
@@ -179,29 +179,29 @@ public class ClusterMapHex : MultiToggle, ICanvasRaycastFilter
 		return num <= vector2.x && num2 <= vector2.y && vector2.y * vector2.x - vector2.y / 2f * num - vector2.x * num2 >= 0f;
 	}
 
-	private RectTransform rectTransform;
+		private RectTransform rectTransform;
 
-	public Color hoverColorValid;
+		public Color hoverColorValid;
 
-	public Color hoverColorInvalid;
+		public Color hoverColorInvalid;
 
-	public Image fogOfWar;
+		public Image fogOfWar;
 
-	public Image peekedTile;
+		public Image peekedTile;
 
-	public TextStyleSetting invalidDestinationTooltipStyle;
+		public TextStyleSetting invalidDestinationTooltipStyle;
 
-	public TextStyleSetting informationTooltipStyle;
+		public TextStyleSetting informationTooltipStyle;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ToolTip m_tooltip;
 
-	private ClusterRevealLevel _revealLevel;
+		private ClusterRevealLevel _revealLevel;
 
-	public enum ToggleState
+		public enum ToggleState
 	{
-		Unselected,
-		Selected,
-		OrbitHighlight
+				Unselected,
+				Selected,
+				OrbitHighlight
 	}
 }

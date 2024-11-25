@@ -2,10 +2,10 @@
 
 namespace Database
 {
-	public abstract class VictoryColonyAchievementRequirement : ColonyAchievementRequirement
+		public abstract class VictoryColonyAchievementRequirement : ColonyAchievementRequirement
 	{
-		public abstract string Name();
+				public abstract string Name();
 
-		public abstract string Description();
+				public abstract string Description();
 	}
 }

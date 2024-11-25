@@ -3,9 +3,9 @@ using STRINGS;
 
 namespace Database
 {
-	public class Deaths : ResourceSet<Death>
+		public class Deaths : ResourceSet<Death>
 	{
-		public Deaths(ResourceSet parent) : base("Deaths", parent)
+				public Deaths(ResourceSet parent) : base("Deaths", parent)
 		{
 			this.Generic = new Death("Generic", this, DUPLICANTS.DEATHS.GENERIC.NAME, DUPLICANTS.DEATHS.GENERIC.DESCRIPTION, "dead_on_back", "dead_on_back");
 			this.Frozen = new Death("Frozen", this, DUPLICANTS.DEATHS.FROZEN.NAME, DUPLICANTS.DEATHS.FROZEN.DESCRIPTION, "death_freeze_trans", "death_freeze_solid");
@@ -21,28 +21,30 @@ namespace Database
 			this.DeadBattery = new Death("DeadBattery", this, DUPLICANTS.DEATHS.HITBYHIGHENERGYPARTICLE.NAME, DUPLICANTS.DEATHS.HITBYHIGHENERGYPARTICLE.DESCRIPTION, "dead_on_back", "dead_on_back");
 		}
 
-		public Death Generic;
+				public Death Generic;
 
-		public Death Frozen;
+				public Death Frozen;
 
-		public Death Suffocation;
+				public Death Suffocation;
 
-		public Death Starvation;
+				public Death Starvation;
 
-		public Death Slain;
+				public Death Slain;
 
-		public Death Overheating;
+				public Death Overheating;
 
-		public Death Drowned;
+				public Death Drowned;
 
-		public Death Explosion;
+				public Death Explosion;
 
-		public Death FatalDisease;
+				public Death FatalDisease;
 
-		public Death Radiation;
+				public Death Radiation;
 
-		public Death HitByHighEnergyParticle;
+				public Death HitByHighEnergyParticle;
 
-		public Death DeadBattery;
+				public Death DeadBattery;
+
+				public Death DeadCyborgChargeExpired;
 	}
 }

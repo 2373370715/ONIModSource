@@ -2,12 +2,12 @@
 
 internal abstract class UserVolumeOneShotUpdater : OneShotSoundParameterUpdater
 {
-	public UserVolumeOneShotUpdater(string parameter, string player_pref) : base(parameter)
+		public UserVolumeOneShotUpdater(string parameter, string player_pref) : base(parameter)
 	{
 		this.playerPref = player_pref;
 	}
 
-	public override void Play(OneShotSoundParameterUpdater.Sound sound)
+		public override void Play(OneShotSoundParameterUpdater.Sound sound)
 	{
 		if (!string.IsNullOrEmpty(this.playerPref))
 		{
@@ -16,5 +16,5 @@ internal abstract class UserVolumeOneShotUpdater : OneShotSoundParameterUpdater
 		}
 	}
 
-	private string playerPref;
+		private string playerPref;
 }

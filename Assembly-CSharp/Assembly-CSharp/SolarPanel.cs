@@ -5,7 +5,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class SolarPanel : Generator
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<SolarPanel>(824508782, SolarPanel.OnActiveChangedDelegate);
@@ -21,20 +21,20 @@ public class SolarPanel : Generator
 		});
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.smi.StopSM("cleanup");
 		Game.Instance.accumulators.Remove(this.accumulator);
 		base.OnCleanUp();
 	}
 
-	protected void OnActiveChanged(object data)
+		protected void OnActiveChanged(object data)
 	{
 		StatusItem status_item = ((Operational)data).IsActive ? Db.Get().BuildingStatusItems.Wattage : Db.Get().BuildingStatusItems.GeneratorOffline;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, this);
 	}
 
-	private void UpdateStatusItem()
+		private void UpdateStatusItem()
 	{
 		this.selectable.RemoveStatusItem(Db.Get().BuildingStatusItems.Wattage, false);
 		if (this.statusHandle == Guid.Empty)
@@ -48,7 +48,7 @@ public class SolarPanel : Generator
 		}
 	}
 
-	public override void EnergySim200ms(float dt)
+		public override void EnergySim200ms(float dt)
 	{
 		base.EnergySim200ms(dt);
 		ushort circuitID = base.CircuitID;
@@ -76,7 +76,7 @@ public class SolarPanel : Generator
 		this.UpdateStatusItem();
 	}
 
-		public float CurrentWattage
+			public float CurrentWattage
 	{
 		get
 		{
@@ -84,15 +84,15 @@ public class SolarPanel : Generator
 		}
 	}
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
+		private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
 
-	private SolarPanel.StatesInstance smi;
+		private SolarPanel.StatesInstance smi;
 
-	private Guid statusHandle;
+		private Guid statusHandle;
 
-	private CellOffset[] solarCellOffsets = new CellOffset[]
+		private CellOffset[] solarCellOffsets = new CellOffset[]
 	{
 		new CellOffset(-3, 2),
 		new CellOffset(-2, 2),
@@ -110,26 +110,26 @@ public class SolarPanel : Generator
 		new CellOffset(3, 1)
 	};
 
-	private static readonly EventSystem.IntraObjectHandler<SolarPanel> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<SolarPanel>(delegate(SolarPanel component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SolarPanel> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<SolarPanel>(delegate(SolarPanel component, object data)
 	{
 		component.OnActiveChanged(data);
 	});
 
-	public class StatesInstance : GameStateMachine<SolarPanel.States, SolarPanel.StatesInstance, SolarPanel, object>.GameInstance
+		public class StatesInstance : GameStateMachine<SolarPanel.States, SolarPanel.StatesInstance, SolarPanel, object>.GameInstance
 	{
-		public StatesInstance(SolarPanel master) : base(master)
+				public StatesInstance(SolarPanel master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<SolarPanel.States, SolarPanel.StatesInstance, SolarPanel>
+		public class States : GameStateMachine<SolarPanel.States, SolarPanel.StatesInstance, SolarPanel>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.idle.DoNothing();
 		}
 
-		public GameStateMachine<SolarPanel.States, SolarPanel.StatesInstance, SolarPanel, object>.State idle;
+				public GameStateMachine<SolarPanel.States, SolarPanel.StatesInstance, SolarPanel, object>.State idle;
 	}
 }

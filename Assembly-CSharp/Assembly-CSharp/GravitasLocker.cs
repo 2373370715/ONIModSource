@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.close;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -26,111 +26,111 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 		}).Enter(new StateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State.Callback(GravitasLocker.Close)).TriggerOnEnter(GameHashes.UIRefresh, null);
 	}
 
-	public static void Open(GravitasLocker.Instance smi)
+		public static void Open(GravitasLocker.Instance smi)
 	{
 		smi.Open();
 	}
 
-	public static void Close(GravitasLocker.Instance smi)
+		public static void Close(GravitasLocker.Instance smi)
 	{
 		smi.Close();
 	}
 
-	public static void SpawnLoot(GravitasLocker.Instance smi)
+		public static void SpawnLoot(GravitasLocker.Instance smi)
 	{
 		smi.SpawnLoot();
 	}
 
-	public static void StartWorkChore_CloseLocker(GravitasLocker.Instance smi)
+		public static void StartWorkChore_CloseLocker(GravitasLocker.Instance smi)
 	{
 		smi.CreateWorkChore_CloseLocker();
 	}
 
-	public static void StartlWorkChore_OpenLocker(GravitasLocker.Instance smi)
+		public static void StartlWorkChore_OpenLocker(GravitasLocker.Instance smi)
 	{
 		smi.CreateWorkChore_OpenLocker();
 	}
 
-	public static void StopWorkChore(GravitasLocker.Instance smi)
+		public static void StopWorkChore(GravitasLocker.Instance smi)
 	{
 		smi.StopWorkChore();
 	}
 
-	public const float CLOSE_WORKTIME = 1f;
+		public const float CLOSE_WORKTIME = 1f;
 
-	public const float OPEN_WORKTIME = 1.5f;
+		public const float OPEN_WORKTIME = 1.5f;
 
-	public const string CLOSED_ANIM_NAME = "on";
+		public const string CLOSED_ANIM_NAME = "on";
 
-	public const string OPENING_ANIM_NAME = "working";
+		public const string OPENING_ANIM_NAME = "working";
 
-	public const string OPENED = "empty";
+		public const string OPENED = "empty";
 
-	private StateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.BoolParameter IsOpen;
+		private StateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.BoolParameter IsOpen;
 
-	private StateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.BoolParameter WasEmptied;
+		private StateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.BoolParameter WasEmptied;
 
-	private StateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.BoolParameter WorkOrderGiven;
+		private StateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.BoolParameter WorkOrderGiven;
 
-	public GravitasLocker.CloseStates close;
+		public GravitasLocker.CloseStates close;
 
-	public GravitasLocker.OpenStates open;
+		public GravitasLocker.OpenStates open;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public bool CanBeClosed;
+				public bool CanBeClosed;
 
-		public string SideScreen_OpenButtonText;
+				public string SideScreen_OpenButtonText;
 
-		public string SideScreen_OpenButtonTooltip;
+				public string SideScreen_OpenButtonTooltip;
 
-		public string SideScreen_CancelOpenButtonText;
+				public string SideScreen_CancelOpenButtonText;
 
-		public string SideScreen_CancelOpenButtonTooltip;
+				public string SideScreen_CancelOpenButtonTooltip;
 
-		public string SideScreen_CloseButtonText;
+				public string SideScreen_CloseButtonText;
 
-		public string SideScreen_CloseButtonTooltip;
+				public string SideScreen_CloseButtonTooltip;
 
-		public string SideScreen_CancelCloseButtonText;
+				public string SideScreen_CancelCloseButtonText;
 
-		public string SideScreen_CancelCloseButtonTooltip;
+				public string SideScreen_CancelCloseButtonTooltip;
 
-		public string OPEN_INTERACT_ANIM_NAME = "anim_interacts_clothingfactory_kanim";
+				public string OPEN_INTERACT_ANIM_NAME = "anim_interacts_clothingfactory_kanim";
 
-		public string CLOSE_INTERACT_ANIM_NAME = "anim_interacts_clothingfactory_kanim";
+				public string CLOSE_INTERACT_ANIM_NAME = "anim_interacts_clothingfactory_kanim";
 
-		public string[] ObjectsToSpawn = new string[0];
+				public string[] ObjectsToSpawn = new string[0];
 
-		public string[] LootSymbols = new string[0];
+				public string[] LootSymbols = new string[0];
 	}
 
-	public class WorkStates : GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State
+		public class WorkStates : GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State
 	{
-		public GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State waitingForDupe;
+				public GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State waitingForDupe;
 
-		public GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State complete;
+				public GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State complete;
 	}
 
-	public class CloseStates : GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State
+		public class CloseStates : GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State
 	{
-		public GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State idle;
+				public GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State idle;
 
-		public GravitasLocker.WorkStates work;
+				public GravitasLocker.WorkStates work;
 	}
 
-	public class OpenStates : GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State
+		public class OpenStates : GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State
 	{
-		public GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State opening;
+				public GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State opening;
 
-		public GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State idle;
+				public GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.State idle;
 
-		public GravitasLocker.WorkStates work;
+				public GravitasLocker.WorkStates work;
 	}
 
-	public new class Instance : GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.GameInstance, ISidescreenButtonControl
+		public new class Instance : GameStateMachine<GravitasLocker, GravitasLocker.Instance, IStateMachineTarget, GravitasLocker.Def>.GameInstance, ISidescreenButtonControl
 	{
-				public bool WorkOrderGiven
+						public bool WorkOrderGiven
 		{
 			get
 			{
@@ -138,7 +138,7 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 			}
 		}
 
-				public bool IsOpen
+						public bool IsOpen
 		{
 			get
 			{
@@ -146,7 +146,7 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 			}
 		}
 
-				public bool HasContents
+						public bool HasContents
 		{
 			get
 			{
@@ -154,33 +154,33 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 			}
 		}
 
-		public Workable GetWorkable()
+				public Workable GetWorkable()
 		{
 			return this.workable;
 		}
 
-		public void Open()
+				public void Open()
 		{
 			base.smi.sm.IsOpen.Set(true, base.smi, false);
 		}
 
-		public void Close()
+				public void Close()
 		{
 			base.smi.sm.IsOpen.Set(false, base.smi, false);
 		}
 
-		public Instance(IStateMachineTarget master, GravitasLocker.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, GravitasLocker.Def def) : base(master, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			this.DefineDropSpawnPositions();
 			base.StartSM();
 			this.UpdateContentPreviewSymbols();
 		}
 
-		public void DefineDropSpawnPositions()
+				public void DefineDropSpawnPositions()
 		{
 			if (this.dropSpawnPositions == null && base.def.LootSymbols.Length != 0)
 			{
@@ -195,7 +195,7 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 			}
 		}
 
-		public void CreateWorkChore_CloseLocker()
+				public void CreateWorkChore_CloseLocker()
 		{
 			if (this.chore == null)
 			{
@@ -204,7 +204,7 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 			}
 		}
 
-		public void CreateWorkChore_OpenLocker()
+				public void CreateWorkChore_OpenLocker()
 		{
 			if (this.chore == null)
 			{
@@ -213,7 +213,7 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 			}
 		}
 
-		public void StopWorkChore()
+				public void StopWorkChore()
 		{
 			if (this.chore != null)
 			{
@@ -222,7 +222,7 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 			}
 		}
 
-		public void SpawnLoot()
+				public void SpawnLoot()
 		{
 			if (this.HasContents)
 			{
@@ -241,7 +241,7 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 			}
 		}
 
-		public void UpdateContentPreviewSymbols()
+				public void UpdateContentPreviewSymbols()
 		{
 			for (int i = 0; i < base.def.LootSymbols.Length; i++)
 			{
@@ -260,7 +260,7 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 			}
 		}
 
-				public string SidescreenButtonText
+						public string SidescreenButtonText
 		{
 			get
 			{
@@ -283,7 +283,7 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 			}
 		}
 
-				public string SidescreenButtonTooltip
+						public string SidescreenButtonTooltip
 		{
 			get
 			{
@@ -306,44 +306,44 @@ public class GravitasLocker : GameStateMachine<GravitasLocker, GravitasLocker.In
 			}
 		}
 
-		public bool SidescreenEnabled()
+				public bool SidescreenEnabled()
 		{
 			return !this.IsOpen || base.def.CanBeClosed;
 		}
 
-		public bool SidescreenButtonInteractable()
+				public bool SidescreenButtonInteractable()
 		{
 			return !this.IsOpen || base.def.CanBeClosed;
 		}
 
-		public int HorizontalGroupID()
+				public int HorizontalGroupID()
 		{
 			return 0;
 		}
 
-		public int ButtonSideScreenSortOrder()
+				public int ButtonSideScreenSortOrder()
 		{
 			return 20;
 		}
 
-		public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
+				public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void OnSidescreenButtonPressed()
+				public void OnSidescreenButtonPressed()
 		{
 			base.smi.sm.WorkOrderGiven.Set(!base.smi.sm.WorkOrderGiven.Get(base.smi), base.smi, false);
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Workable workable;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private KBatchedAnimController animController;
 
-		private Chore chore;
+				private Chore chore;
 
-		private Vector3[] dropSpawnPositions;
+				private Vector3[] dropSpawnPositions;
 	}
 }

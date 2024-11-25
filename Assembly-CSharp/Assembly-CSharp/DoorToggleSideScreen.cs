@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class DoorToggleSideScreen : SideScreenContent
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.InitButtons();
 	}
 
-	private void InitButtons()
+		private void InitButtons()
 	{
 		this.buttonList.Add(new DoorToggleSideScreen.DoorButtonInfo
 		{
@@ -48,12 +48,12 @@ public class DoorToggleSideScreen : SideScreenContent
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<Door>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		if (this.target != null)
 		{
@@ -72,7 +72,7 @@ public class DoorToggleSideScreen : SideScreenContent
 		base.gameObject.SetActive(true);
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 		if (this.target != null)
 		{
@@ -82,7 +82,7 @@ public class DoorToggleSideScreen : SideScreenContent
 		this.target = null;
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		string text = null;
 		string text2 = null;
@@ -158,42 +158,42 @@ public class DoorToggleSideScreen : SideScreenContent
 		this.ContentContainer.SetActive(!this.target.isSealed);
 	}
 
-	private void OnDoorStateChanged(object data)
+		private void OnDoorStateChanged(object data)
 	{
 		this.Refresh();
 	}
 
-	private void OnAccessControlChanged(object data)
+		private void OnAccessControlChanged(object data)
 	{
 		this.Refresh();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle openButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle autoButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText description;
 
-	private Door target;
+		private Door target;
 
-	private AccessControl accessTarget;
+		private AccessControl accessTarget;
 
-	private List<DoorToggleSideScreen.DoorButtonInfo> buttonList = new List<DoorToggleSideScreen.DoorButtonInfo>();
+		private List<DoorToggleSideScreen.DoorButtonInfo> buttonList = new List<DoorToggleSideScreen.DoorButtonInfo>();
 
-	private struct DoorButtonInfo
+		private struct DoorButtonInfo
 	{
-		public KToggle button;
+				public KToggle button;
 
-		public Door.ControlState state;
+				public Door.ControlState state;
 
-		public string currentString;
+				public string currentString;
 
-		public string pendingString;
+				public string pendingString;
 	}
 }

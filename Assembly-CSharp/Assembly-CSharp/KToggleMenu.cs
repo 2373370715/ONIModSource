@@ -5,20 +5,20 @@ using UnityEngine.UI;
 
 public class KToggleMenu : KScreen
 {
-			public event KToggleMenu.OnSelect onSelect;
+				public event KToggleMenu.OnSelect onSelect;
 
-	public void Setup(IList<KToggleMenu.ToggleInfo> toggleInfo)
+		public void Setup(IList<KToggleMenu.ToggleInfo> toggleInfo)
 	{
 		this.toggleInfo = toggleInfo;
 		this.RefreshButtons();
 	}
 
-	protected void Setup()
+		protected void Setup()
 	{
 		this.RefreshButtons();
 	}
 
-	private void RefreshButtons()
+		private void RefreshButtons()
 	{
 		foreach (KToggle ktoggle in this.toggles)
 		{
@@ -58,12 +58,12 @@ public class KToggleMenu : KScreen
 		}
 	}
 
-	public int GetSelected()
+		public int GetSelected()
 	{
 		return KToggleMenu.selected;
 	}
 
-	private void OnClick(int i)
+		private void OnClick(int i)
 	{
 		UISounds.PlaySound(UISounds.Sound.ClickObject);
 		if (this.onSelect == null)
@@ -73,7 +73,7 @@ public class KToggleMenu : KScreen
 		this.onSelect(this.toggleInfo[i]);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.toggles == null)
 		{
@@ -90,38 +90,38 @@ public class KToggleMenu : KScreen
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Transform toggleParent;
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle prefab;
 
-	[SerializeField]
+		[SerializeField]
 	private ToggleGroup group;
 
-	protected IList<KToggleMenu.ToggleInfo> toggleInfo;
+		protected IList<KToggleMenu.ToggleInfo> toggleInfo;
 
-	protected List<KToggle> toggles = new List<KToggle>();
+		protected List<KToggle> toggles = new List<KToggle>();
 
-	private static int selected = -1;
+		private static int selected = -1;
 
-		public delegate void OnSelect(KToggleMenu.ToggleInfo toggleInfo);
+			public delegate void OnSelect(KToggleMenu.ToggleInfo toggleInfo);
 
-	public class ToggleInfo
+		public class ToggleInfo
 	{
-		public ToggleInfo(string text, object user_data = null, global::Action hotKey = global::Action.NumActions)
+				public ToggleInfo(string text, object user_data = null, global::Action hotKey = global::Action.NumActions)
 		{
 			this.text = text;
 			this.userData = user_data;
 			this.hotKey = hotKey;
 		}
 
-		public string text;
+				public string text;
 
-		public object userData;
+				public object userData;
 
-		public KToggle toggle;
+				public KToggle toggle;
 
-		public global::Action hotKey;
+				public global::Action hotKey;
 	}
 }

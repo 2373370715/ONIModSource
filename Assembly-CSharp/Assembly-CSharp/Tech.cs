@@ -1,158 +1,96 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Database;
 using UnityEngine;
 
-public class Tech : Resource
-{
-		public bool FoundNode
-	{
-		get
-		{
-			return this.node != null;
-		}
-	}
+public class Tech : Resource {
+    public  string                    category;
+    public  Dictionary<string, float> costsByResearchTypeID = new Dictionary<string, float>();
+    public  string                    desc;
+    private ResourceTreeNode          node;
+    public  List<Tech>                requiredTech = new List<Tech>();
+    public  Tag[]                     tags;
+    public  int                       tier;
+    public  List<string>              unlockedItemIDs = new List<string>();
+    public  List<TechItem>            unlockedItems   = new List<TechItem>();
+    public  List<Tech>                unlockedTech    = new List<Tech>();
 
-		public Vector2 center
-	{
-		get
-		{
-			return this.node.center;
-		}
-	}
+    public Tech(string                    id,
+                List<string>              unlockedItemIDs,
+                Techs                     techs,
+                Dictionary<string, float> overrideDefaultCosts = null) : base(id,
+                                                                              techs,
+                                                                              Strings.Get("STRINGS.RESEARCH.TECHS." +
+                                                                                  id.ToUpper()                      +
+                                                                                  ".NAME")) {
+        desc                 = Strings.Get("STRINGS.RESEARCH.TECHS." + id.ToUpper() + ".DESC");
+        this.unlockedItemIDs = unlockedItemIDs;
+        if (overrideDefaultCosts != null && DlcManager.IsExpansion1Active())
+            foreach (var keyValuePair in overrideDefaultCosts)
+                costsByResearchTypeID.Add(keyValuePair.Key, keyValuePair.Value);
+    }
 
-		public float width
-	{
-		get
-		{
-			return this.node.width;
-		}
-	}
+    public bool                        FoundNode => node != null;
+    public Vector2                     center    => node.center;
+    public float                       width     => node.width;
+    public float                       height    => node.height;
+    public List<ResourceTreeNode.Edge> edges     => node.edges;
 
-		public float height
-	{
-		get
-		{
-			return this.node.height;
-		}
-	}
+    public void AddUnlockedItemIDs(params string[] ids) {
+        foreach (var item in ids) unlockedItemIDs.Add(item);
+    }
 
-		public List<ResourceTreeNode.Edge> edges
-	{
-		get
-		{
-			return this.node.edges;
-		}
-	}
+    public void RemoveUnlockedItemIDs(params string[] ids) {
+        foreach (var text in ids)
+            if (!unlockedItemIDs.Remove(text))
+                DebugUtil.DevLogError("Tech item '" + text + "' does not exist to remove");
+    }
 
-	public Tech(string id, List<string> unlockedItemIDs, Techs techs, Dictionary<string, float> overrideDefaultCosts = null) : base(id, techs, Strings.Get("STRINGS.RESEARCH.TECHS." + id.ToUpper() + ".NAME"))
-	{
-		this.desc = Strings.Get("STRINGS.RESEARCH.TECHS." + id.ToUpper() + ".DESC");
-		this.unlockedItemIDs = unlockedItemIDs;
-		if (overrideDefaultCosts != null && DlcManager.IsExpansion1Active())
-		{
-			foreach (KeyValuePair<string, float> keyValuePair in overrideDefaultCosts)
-			{
-				this.costsByResearchTypeID.Add(keyValuePair.Key, keyValuePair.Value);
-			}
-		}
-	}
+    public bool RequiresResearchType(string type) {
+        return costsByResearchTypeID.ContainsKey(type) && costsByResearchTypeID[type] > 0f;
+    }
 
-	public void AddUnlockedItemIDs(params string[] ids)
-	{
-		foreach (string item in ids)
-		{
-			this.unlockedItemIDs.Add(item);
-		}
-	}
+    public void SetNode(ResourceTreeNode node, string categoryID) {
+        this.node = node;
+        category  = categoryID;
+    }
 
-	public void RemoveUnlockedItemIDs(params string[] ids)
-	{
-		foreach (string text in ids)
-		{
-			if (!this.unlockedItemIDs.Remove(text))
-			{
-				DebugUtil.DevLogError("Tech item '" + text + "' does not exist to remove");
-			}
-		}
-	}
+    public bool CanAfford(ResearchPointInventory pointInventory) {
+        foreach (var keyValuePair in costsByResearchTypeID)
+            if (pointInventory.PointsByTypeID[keyValuePair.Key] < keyValuePair.Value)
+                return false;
 
-	public bool RequiresResearchType(string type)
-	{
-		return this.costsByResearchTypeID.ContainsKey(type);
-	}
+        return true;
+    }
 
-	public void SetNode(ResourceTreeNode node, string categoryID)
-	{
-		this.node = node;
-		this.category = categoryID;
-	}
+    public string CostString(ResearchTypes types) {
+        var text = "";
+        foreach (var keyValuePair in costsByResearchTypeID) {
+            text += string.Format("{0}:{1}",
+                                  types.GetResearchType(keyValuePair.Key).name,
+                                  keyValuePair.Value.ToString());
 
-	public bool CanAfford(ResearchPointInventory pointInventory)
-	{
-		foreach (KeyValuePair<string, float> keyValuePair in this.costsByResearchTypeID)
-		{
-			if (pointInventory.PointsByTypeID[keyValuePair.Key] < keyValuePair.Value)
-			{
-				return false;
-			}
-		}
-		return true;
-	}
+            text += "\n";
+        }
 
-	public string CostString(ResearchTypes types)
-	{
-		string text = "";
-		foreach (KeyValuePair<string, float> keyValuePair in this.costsByResearchTypeID)
-		{
-			text += string.Format("{0}:{1}", types.GetResearchType(keyValuePair.Key).name.ToString(), keyValuePair.Value.ToString());
-			text += "\n";
-		}
-		return text;
-	}
+        return text;
+    }
 
-	public bool IsComplete()
-	{
-		if (Research.Instance != null)
-		{
-			TechInstance techInstance = Research.Instance.Get(this);
-			return techInstance != null && techInstance.IsComplete();
-		}
-		return false;
-	}
+    public bool IsComplete() {
+        if (Research.Instance != null) {
+            var techInstance = Research.Instance.Get(this);
+            return techInstance != null && techInstance.IsComplete();
+        }
 
-	public bool ArePrerequisitesComplete()
-	{
-		using (List<Tech>.Enumerator enumerator = this.requiredTech.GetEnumerator())
-		{
-			while (enumerator.MoveNext())
-			{
-				if (!enumerator.Current.IsComplete())
-				{
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+        return false;
+    }
 
-	public List<Tech> requiredTech = new List<Tech>();
+    public bool ArePrerequisitesComplete() {
+        using (var enumerator = requiredTech.GetEnumerator()) {
+            while (enumerator.MoveNext())
+                if (!enumerator.Current.IsComplete())
+                    return false;
+        }
 
-	public List<Tech> unlockedTech = new List<Tech>();
-
-	public List<TechItem> unlockedItems = new List<TechItem>();
-
-	public List<string> unlockedItemIDs = new List<string>();
-
-	public int tier;
-
-	public Dictionary<string, float> costsByResearchTypeID = new Dictionary<string, float>();
-
-	public string desc;
-
-	public string category;
-
-	public Tag[] tags;
-
-	private ResourceTreeNode node;
+        return true;
+    }
 }

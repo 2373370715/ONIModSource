@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class GasAndLiquidConsumerMonitor : GameStateMachine<GasAndLiquidConsumerMonitor, GasAndLiquidConsumerMonitor.Instance, IStateMachineTarget, GasAndLiquidConsumerMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.cooldown;
 		this.cooldown.Enter("ClearTargetCell", delegate(GasAndLiquidConsumerMonitor.Instance smi)
@@ -23,58 +23,58 @@ public class GasAndLiquidConsumerMonitor : GameStateMachine<GasAndLiquidConsumer
 		});
 	}
 
-	private GameStateMachine<GasAndLiquidConsumerMonitor, GasAndLiquidConsumerMonitor.Instance, IStateMachineTarget, GasAndLiquidConsumerMonitor.Def>.State cooldown;
+		private GameStateMachine<GasAndLiquidConsumerMonitor, GasAndLiquidConsumerMonitor.Instance, IStateMachineTarget, GasAndLiquidConsumerMonitor.Def>.State cooldown;
 
-	private GameStateMachine<GasAndLiquidConsumerMonitor, GasAndLiquidConsumerMonitor.Instance, IStateMachineTarget, GasAndLiquidConsumerMonitor.Def>.State satisfied;
+		private GameStateMachine<GasAndLiquidConsumerMonitor, GasAndLiquidConsumerMonitor.Instance, IStateMachineTarget, GasAndLiquidConsumerMonitor.Def>.State satisfied;
 
-	private GameStateMachine<GasAndLiquidConsumerMonitor, GasAndLiquidConsumerMonitor.Instance, IStateMachineTarget, GasAndLiquidConsumerMonitor.Def>.State looking;
+		private GameStateMachine<GasAndLiquidConsumerMonitor, GasAndLiquidConsumerMonitor.Instance, IStateMachineTarget, GasAndLiquidConsumerMonitor.Def>.State looking;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Tag[] transitionTag = new Tag[]
+				public Tag[] transitionTag = new Tag[]
 		{
 			GameTags.Creatures.Hungry
 		};
 
-		public Tag behaviourTag = GameTags.Creatures.WantsToEat;
+				public Tag behaviourTag = GameTags.Creatures.WantsToEat;
 
-		public float minCooldown = 5f;
+				public float minCooldown = 5f;
 
-		public float maxCooldown = 5f;
+				public float maxCooldown = 5f;
 
-		public Diet diet;
+				public Diet diet;
 
-		public float consumptionRate = 0.5f;
+				public float consumptionRate = 0.5f;
 
-		public Tag consumableElementTag = Tag.Invalid;
+				public Tag consumableElementTag = Tag.Invalid;
 	}
 
-	public new class Instance : GameStateMachine<GasAndLiquidConsumerMonitor, GasAndLiquidConsumerMonitor.Instance, IStateMachineTarget, GasAndLiquidConsumerMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<GasAndLiquidConsumerMonitor, GasAndLiquidConsumerMonitor.Instance, IStateMachineTarget, GasAndLiquidConsumerMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, GasAndLiquidConsumerMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, GasAndLiquidConsumerMonitor.Def def) : base(master, def)
 		{
 			this.navigator = base.smi.GetComponent<Navigator>();
 			DebugUtil.Assert(base.smi.def.diet != null || this.storage != null, "GasAndLiquidConsumerMonitor needs either a diet or a storage");
 		}
 
-		public void ClearTargetCell()
+				public void ClearTargetCell()
 		{
 			this.targetCell = -1;
 			this.massUnavailableFrameCount = 0;
 		}
 
-		public void FindElement()
+				public void FindElement()
 		{
 			this.targetCell = -1;
 			this.FindTargetCell();
 		}
 
-		public Element GetTargetElement()
+				public Element GetTargetElement()
 		{
 			return this.targetElement;
 		}
 
-		public bool IsConsumableCell(int cell, out Element element)
+				public bool IsConsumableCell(int cell, out Element element)
 		{
 			element = Grid.Element[cell];
 			bool flag = true;
@@ -99,7 +99,7 @@ public class GasAndLiquidConsumerMonitor : GameStateMachine<GasAndLiquidConsumer
 			return flag && flag2;
 		}
 
-		public void FindTargetCell()
+				public void FindTargetCell()
 		{
 			GasAndLiquidConsumerMonitor.ConsumableCellQuery consumableCellQuery = new GasAndLiquidConsumerMonitor.ConsumableCellQuery(base.smi, 25);
 			this.navigator.RunQuery(consumableCellQuery);
@@ -110,18 +110,18 @@ public class GasAndLiquidConsumerMonitor : GameStateMachine<GasAndLiquidConsumer
 			}
 		}
 
-		public void Consume(float dt)
+				public void Consume(float dt)
 		{
 			int index = Game.Instance.massConsumedCallbackManager.Add(new Action<Sim.MassConsumedCallback, object>(GasAndLiquidConsumerMonitor.Instance.OnMassConsumedCallback), this, "GasAndLiquidConsumerMonitor").index;
 			SimMessages.ConsumeMass(Grid.PosToCell(this), this.targetElement.id, base.def.consumptionRate * dt, 3, index);
 		}
 
-		private static void OnMassConsumedCallback(Sim.MassConsumedCallback mcd, object data)
+				private static void OnMassConsumedCallback(Sim.MassConsumedCallback mcd, object data)
 		{
 			((GasAndLiquidConsumerMonitor.Instance)data).OnMassConsumed(mcd);
 		}
 
-		private void OnMassConsumed(Sim.MassConsumedCallback mcd)
+				private void OnMassConsumed(Sim.MassConsumedCallback mcd)
 		{
 			if (!base.IsRunning())
 			{
@@ -162,27 +162,27 @@ public class GasAndLiquidConsumerMonitor : GameStateMachine<GasAndLiquidConsumer
 			}
 		}
 
-		public int targetCell = -1;
+				public int targetCell = -1;
 
-		private Element targetElement;
+				private Element targetElement;
 
-		private Navigator navigator;
+				private Navigator navigator;
 
-		private int massUnavailableFrameCount;
+				private int massUnavailableFrameCount;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Storage storage;
 	}
 
-	public class ConsumableCellQuery : PathFinderQuery
+		public class ConsumableCellQuery : PathFinderQuery
 	{
-		public ConsumableCellQuery(GasAndLiquidConsumerMonitor.Instance smi, int maxIterations)
+				public ConsumableCellQuery(GasAndLiquidConsumerMonitor.Instance smi, int maxIterations)
 		{
 			this.smi = smi;
 			this.maxIterations = maxIterations;
 		}
 
-		public override bool IsMatch(int cell, int parent_cell, int cost)
+				public override bool IsMatch(int cell, int parent_cell, int cost)
 		{
 			int cell2 = Grid.CellAbove(cell);
 			this.success = (this.smi.IsConsumableCell(cell, out this.targetElement) || (Grid.IsValidCell(cell2) && this.smi.IsConsumableCell(cell2, out this.targetElement)));
@@ -195,12 +195,12 @@ public class GasAndLiquidConsumerMonitor : GameStateMachine<GasAndLiquidConsumer
 			return true;
 		}
 
-		public bool success;
+				public bool success;
 
-		public Element targetElement;
+				public Element targetElement;
 
-		private GasAndLiquidConsumerMonitor.Instance smi;
+				private GasAndLiquidConsumerMonitor.Instance smi;
 
-		private int maxIterations;
+				private int maxIterations;
 	}
 }

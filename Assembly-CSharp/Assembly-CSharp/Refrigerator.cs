@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Refrigerator")]
 public class Refrigerator : KMonoBehaviour, IUserControlledCapacity
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.filteredStorage = new FilteredStorage(this, new Tag[]
 		{
@@ -13,7 +13,7 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity
 		}, this, true, Db.Get().ChoreTypes.FoodFetch);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.GetComponent<KAnimControllerBase>().Play("off", KAnim.PlayMode.Once, 1f, 0f);
 		FoodStorage component = base.GetComponent<FoodStorage>();
@@ -26,17 +26,17 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity
 		base.Subscribe<Refrigerator>(-592767678, Refrigerator.UpdateLogicCircuitCBDelegate);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.filteredStorage.CleanUp();
 	}
 
-	public bool IsActive()
+		public bool IsActive()
 	{
 		return this.operational.IsActive;
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		if (gameObject == null)
@@ -51,7 +51,7 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity
 		this.UserMaxCapacity = component.UserMaxCapacity;
 	}
 
-			public float UserMaxCapacity
+				public float UserMaxCapacity
 	{
 		get
 		{
@@ -65,7 +65,7 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float AmountStored
+			public float AmountStored
 	{
 		get
 		{
@@ -73,7 +73,7 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float MinCapacity
+			public float MinCapacity
 	{
 		get
 		{
@@ -81,7 +81,7 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float MaxCapacity
+			public float MaxCapacity
 	{
 		get
 		{
@@ -89,7 +89,7 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public bool WholeValues
+			public bool WholeValues
 	{
 		get
 		{
@@ -97,7 +97,7 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public LocString CapacityUnits
+			public LocString CapacityUnits
 	{
 		get
 		{
@@ -105,12 +105,12 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-	private void UpdateLogicCircuitCB(object data)
+		private void UpdateLogicCircuitCB(object data)
 	{
 		this.UpdateLogicCircuit();
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		bool flag = this.filteredStorage.IsFull();
 		bool isOperational = this.operational.IsOperational;
@@ -119,26 +119,26 @@ public class Refrigerator : KMonoBehaviour, IUserControlledCapacity
 		this.filteredStorage.SetLogicMeter(flag2);
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private LogicPorts ports;
 
-	[Serialize]
+		[Serialize]
 	private float userMaxCapacity = float.PositiveInfinity;
 
-	private FilteredStorage filteredStorage;
+		private FilteredStorage filteredStorage;
 
-	private static readonly EventSystem.IntraObjectHandler<Refrigerator> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Refrigerator>(delegate(Refrigerator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Refrigerator> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Refrigerator>(delegate(Refrigerator component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Refrigerator> UpdateLogicCircuitCBDelegate = new EventSystem.IntraObjectHandler<Refrigerator>(delegate(Refrigerator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Refrigerator> UpdateLogicCircuitCBDelegate = new EventSystem.IntraObjectHandler<Refrigerator>(delegate(Refrigerator component, object data)
 	{
 		component.UpdateLogicCircuitCB(data);
 	});

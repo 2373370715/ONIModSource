@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PropGravitasFloorRobotConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PropGravitasFloorRobot";
 		string name = STRINGS.BUILDINGS.PREFABS.PROPGRAVITASFLOORROBOT.NAME;
@@ -31,7 +31,7 @@ public class PropGravitasFloorRobotConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
 		{
@@ -39,7 +39,7 @@ public class PropGravitasFloorRobotConfig : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 }

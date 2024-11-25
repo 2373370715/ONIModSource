@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MachineShopConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MachineShop";
 		int width = 4;
@@ -26,21 +26,21 @@ public class MachineShopConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.MachineShopType, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "MachineShop";
+		public const string ID = "MachineShop";
 
-	public static readonly Tag MATERIAL_FOR_TINKER = GameTags.RefinedMetal;
+		public static readonly Tag MATERIAL_FOR_TINKER = GameTags.RefinedMetal;
 
-	public const float MASS_PER_TINKER = 5f;
+		public const float MASS_PER_TINKER = 5f;
 
-	public static readonly string ROLE_PERK = "IncreaseMachinery";
+		public static readonly string ROLE_PERK = "IncreaseMachinery";
 }

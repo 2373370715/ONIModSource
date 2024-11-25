@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class HighEnergyParticleDirectionSideScreen : SideScreenContent
 {
-	public override string GetTitle()
+		public override string GetTitle()
 	{
 		return UI.UISIDESCREENS.HIGHENERGYPARTICLEDIRECTIONSIDESCREEN.TITLE;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		for (int i = 0; i < this.Buttons.Count; i++)
@@ -35,12 +35,12 @@ public class HighEnergyParticleDirectionSideScreen : SideScreenContent
 		}
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		return 10;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		HighEnergyParticleRedirector component = target.GetComponent<HighEnergyParticleRedirector>();
 		bool flag = component != null;
@@ -52,7 +52,7 @@ public class HighEnergyParticleDirectionSideScreen : SideScreenContent
 		return (flag || flag2) && target.GetComponent<IHighEnergyParticleDirection>() != null;
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -68,7 +68,7 @@ public class HighEnergyParticleDirectionSideScreen : SideScreenContent
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		int directionIndex = EightDirectionUtil.GetDirectionIndex(this.target.Direction);
 		if (directionIndex >= 0 && directionIndex < this.Buttons.Count)
@@ -86,15 +86,15 @@ public class HighEnergyParticleDirectionSideScreen : SideScreenContent
 		this.directionLabel.SetText(string.Format(UI.UISIDESCREENS.HIGHENERGYPARTICLEDIRECTIONSIDESCREEN.SELECTED_DIRECTION, this.directionStrings[directionIndex]));
 	}
 
-	private IHighEnergyParticleDirection target;
+		private IHighEnergyParticleDirection target;
 
-	public List<KButton> Buttons;
+		public List<KButton> Buttons;
 
-	private KButton activeButton;
+		private KButton activeButton;
 
-	public LocText directionLabel;
+		public LocText directionLabel;
 
-	private string[] directionStrings = new string[]
+		private string[] directionStrings = new string[]
 	{
 		UI.UISIDESCREENS.HIGHENERGYPARTICLEDIRECTIONSIDESCREEN.DIRECTION_N,
 		UI.UISIDESCREENS.HIGHENERGYPARTICLEDIRECTIONSIDESCREEN.DIRECTION_NW,

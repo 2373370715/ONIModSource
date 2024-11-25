@@ -4,12 +4,12 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Ownables : Assignables
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	public void UnassignAll()
+		public void UnassignAll()
 	{
 		foreach (AssignableSlotInstance assignableSlotInstance in this.slots)
 		{

@@ -8,14 +8,14 @@ using UnityEngine.UI;
 
 public class SpeedControlScreen : KScreen
 {
-			public static SpeedControlScreen Instance { get; private set; }
+				public static SpeedControlScreen Instance { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SpeedControlScreen.Instance = null;
 	}
 
-		public bool IsPaused
+			public bool IsPaused
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class SpeedControlScreen : KScreen
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		SpeedControlScreen.Instance = this;
 		this.pauseButton = this.pauseButtonWidget.GetComponent<KToggle>();
@@ -70,7 +70,7 @@ public class SpeedControlScreen : KScreen
 		KInputManager.InputChange.AddListener(new UnityAction(this.ResetToolTip));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (SaveGame.Instance != null)
 		{
@@ -81,18 +81,18 @@ public class SpeedControlScreen : KScreen
 		this.OnChanged();
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		KInputManager.InputChange.RemoveListener(new UnityAction(this.ResetToolTip));
 		base.OnForcedCleanUp();
 	}
 
-	public int GetSpeed()
+		public int GetSpeed()
 	{
 		return this.speed;
 	}
 
-	public void SetSpeed(int Speed)
+		public void SetSpeed(int Speed)
 	{
 		this.speed = Speed % 3;
 		switch (this.speed)
@@ -119,7 +119,7 @@ public class SpeedControlScreen : KScreen
 		this.OnSpeedChange();
 	}
 
-	public void ToggleRidiculousSpeed()
+		public void ToggleRidiculousSpeed()
 	{
 		if (this.ultraSpeed == 3f)
 		{
@@ -133,7 +133,7 @@ public class SpeedControlScreen : KScreen
 		this.OnChanged();
 	}
 
-	public void TogglePause(bool playsound = true)
+		public void TogglePause(bool playsound = true)
 	{
 		if (this.IsPaused)
 		{
@@ -143,7 +143,7 @@ public class SpeedControlScreen : KScreen
 		this.Pause(playsound, false);
 	}
 
-	public void ResetToolTip()
+		public void ResetToolTip()
 	{
 		this.speedButtonWidget_slow.GetComponent<ToolTip>().ClearMultiStringTooltip();
 		this.speedButtonWidget_medium.GetComponent<ToolTip>().ClearMultiStringTooltip();
@@ -161,7 +161,7 @@ public class SpeedControlScreen : KScreen
 		this.pauseButtonWidget.GetComponent<ToolTip>().AddMultiStringTooltip(GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.PAUSE, global::Action.TogglePause), this.TooltipTextStyle);
 	}
 
-	public void Pause(bool playSound = true, bool isCrashed = false)
+		public void Pause(bool playSound = true, bool isCrashed = false)
 	{
 		this.pauseCount++;
 		if (this.pauseCount == 1)
@@ -190,7 +190,7 @@ public class SpeedControlScreen : KScreen
 		}
 	}
 
-	public void Unpause(bool playSound = true)
+		public void Unpause(bool playSound = true)
 	{
 		this.pauseCount = Mathf.Max(0, this.pauseCount - 1);
 		if (this.pauseCount == 0)
@@ -213,17 +213,17 @@ public class SpeedControlScreen : KScreen
 		}
 	}
 
-	private void OnPause()
+		private void OnPause()
 	{
 		this.OnChanged();
 	}
 
-	private void OnPlay()
+		private void OnPlay()
 	{
 		this.OnChanged();
 	}
 
-	public void OnSpeedChange()
+		public void OnSpeedChange()
 	{
 		if (Game.IsQuitting())
 		{
@@ -232,7 +232,7 @@ public class SpeedControlScreen : KScreen
 		this.OnChanged();
 	}
 
-	private void OnChanged()
+		private void OnChanged()
 	{
 		if (this.IsPaused)
 		{
@@ -255,7 +255,7 @@ public class SpeedControlScreen : KScreen
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.TogglePause))
 		{
@@ -284,7 +284,7 @@ public class SpeedControlScreen : KScreen
 		}
 	}
 
-	private void PlaySpeedChangeSound(float speed)
+		private void PlaySpeedChangeSound(float speed)
 	{
 		string sound = GlobalAssets.GetSound("Speed_Change", false);
 		if (sound != null)
@@ -295,7 +295,7 @@ public class SpeedControlScreen : KScreen
 		}
 	}
 
-	public void DebugStepFrame()
+		public void DebugStepFrame()
 	{
 		DebugUtil.LogArgs(new object[]
 		{
@@ -306,7 +306,7 @@ public class SpeedControlScreen : KScreen
 		base.StartCoroutine(this.DebugStepFrameDelay());
 	}
 
-	private IEnumerator DebugStepFrameDelay()
+		private IEnumerator DebugStepFrameDelay()
 	{
 		yield return null;
 		DebugUtil.LogArgs(new object[]
@@ -319,42 +319,42 @@ public class SpeedControlScreen : KScreen
 		yield break;
 	}
 
-	public GameObject playButtonWidget;
+		public GameObject playButtonWidget;
 
-	public GameObject pauseButtonWidget;
+		public GameObject pauseButtonWidget;
 
-	public Image playIcon;
+		public Image playIcon;
 
-	public Image pauseIcon;
+		public Image pauseIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting TooltipTextStyle;
 
-	public GameObject speedButtonWidget_slow;
+		public GameObject speedButtonWidget_slow;
 
-	public GameObject speedButtonWidget_medium;
+		public GameObject speedButtonWidget_medium;
 
-	public GameObject speedButtonWidget_fast;
+		public GameObject speedButtonWidget_fast;
 
-	public GameObject mainMenuWidget;
+		public GameObject mainMenuWidget;
 
-	public float normalSpeed;
+		public float normalSpeed;
 
-	public float fastSpeed;
+		public float fastSpeed;
 
-	public float ultraSpeed;
+		public float ultraSpeed;
 
-	private KToggle pauseButton;
+		private KToggle pauseButton;
 
-	private KToggle slowButton;
+		private KToggle slowButton;
 
-	private KToggle mediumButton;
+		private KToggle mediumButton;
 
-	private KToggle fastButton;
+		private KToggle fastButton;
 
-	private int speed;
+		private int speed;
 
-	private int pauseCount;
+		private int pauseCount;
 
-	private float stepTime;
+		private float stepTime;
 }

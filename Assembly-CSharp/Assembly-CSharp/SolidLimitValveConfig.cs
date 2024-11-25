@@ -6,12 +6,7 @@ using UnityEngine;
 
 public class SolidLimitValveConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_ALL_VERSIONS;
-	}
-
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SolidLimitValve";
 		int width = 1;
@@ -60,12 +55,12 @@ public class SolidLimitValveConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveTransitionController.Def>();
 		go.AddOrGet<RequireOutputs>().ignoreFullPipe = true;
@@ -83,7 +78,7 @@ public class SolidLimitValveConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "SolidLimitValve";
+		public const string ID = "SolidLimitValve";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
 }

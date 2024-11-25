@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class KBatchedAnimTracker : MonoBehaviour
 {
-	private void Start()
+		private void Start()
 	{
 		if (this.controller == null)
 		{
@@ -37,7 +37,7 @@ public class KBatchedAnimTracker : MonoBehaviour
 		kbatchedAnimController.getPositionDataFunctionInUse = (Func<Vector4>)Delegate.Combine(kbatchedAnimController.getPositionDataFunctionInUse, new Func<Vector4>(this.MyAnimGetPosition));
 	}
 
-	private Vector4 MyAnimGetPosition()
+		private Vector4 MyAnimGetPosition()
 	{
 		if (this.myAnim != null && this.controller != null && this.controller.transform == this.myAnim.transform.parent)
 		{
@@ -47,7 +47,7 @@ public class KBatchedAnimTracker : MonoBehaviour
 		return base.transform.GetPosition();
 	}
 
-	private void OnDestroy()
+		private void OnDestroy()
 	{
 		if (this.controller != null)
 		{
@@ -64,7 +64,7 @@ public class KBatchedAnimTracker : MonoBehaviour
 		this.myAnim = null;
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (this.controller != null && (this.controller.IsVisible() || this.forceAlwaysVisible || this.forceUpdate))
 		{
@@ -76,13 +76,13 @@ public class KBatchedAnimTracker : MonoBehaviour
 		}
 	}
 
-	public void SetAnimControllers(KBatchedAnimController controller, KBatchedAnimController parentController)
+		public void SetAnimControllers(KBatchedAnimController controller, KBatchedAnimController parentController)
 	{
 		this.myAnim = controller;
 		this.controller = parentController;
 	}
 
-	private void UpdateFrame()
+		private void UpdateFrame()
 	{
 		this.forceUpdate = false;
 		bool flag = false;
@@ -136,13 +136,13 @@ public class KBatchedAnimTracker : MonoBehaviour
 				this.myAnim.SetDirty();
 			}
 		}
-		if (this.myAnim != null && flag != this.myAnim.enabled)
+		if (this.myAnim != null && flag != this.myAnim.enabled && this.synchronizeEnabledState)
 		{
 			this.myAnim.enabled = flag;
 		}
 	}
 
-	[ContextMenu("ForceAlive")]
+		[ContextMenu("ForceAlive")]
 	private void OnAnimStart(HashedString name)
 	{
 		this.alive = true;
@@ -150,7 +150,7 @@ public class KBatchedAnimTracker : MonoBehaviour
 		this.forceUpdate = true;
 	}
 
-	private void OnAnimStop(HashedString name)
+		private void OnAnimStop(HashedString name)
 	{
 		if (!this.forceAlwaysAlive)
 		{
@@ -158,45 +158,47 @@ public class KBatchedAnimTracker : MonoBehaviour
 		}
 	}
 
-	private void OnLayerChanged(int layer)
+		private void OnLayerChanged(int layer)
 	{
 		this.myAnim.SetLayer(layer);
 	}
 
-	public void SetTarget(Vector3 target)
+		public void SetTarget(Vector3 target)
 	{
 		this.targetPoint = target;
 		this.targetPoint.z = 0f;
 	}
 
-	public KBatchedAnimController controller;
+		public KBatchedAnimController controller;
 
-	public Vector3 offset = Vector3.zero;
+		public Vector3 offset = Vector3.zero;
 
-	public HashedString symbol;
+		public HashedString symbol;
 
-	public Vector3 targetPoint = Vector3.zero;
+		public Vector3 targetPoint = Vector3.zero;
 
-	public Vector3 previousTargetPoint;
+		public Vector3 previousTargetPoint;
 
-	public bool useTargetPoint;
+		public bool useTargetPoint;
 
-	public bool fadeOut = true;
+		public bool fadeOut = true;
 
-	public bool forceAlwaysVisible;
+		public bool forceAlwaysVisible;
 
-	public bool matchParentOffset;
+		public bool matchParentOffset;
 
-	public bool forceAlwaysAlive;
+		public bool forceAlwaysAlive;
 
-	private bool alive = true;
+		private bool alive = true;
 
-	private bool forceUpdate;
+		private bool forceUpdate;
 
-	private Matrix2x3 previousMatrix;
+		private Matrix2x3 previousMatrix;
 
-	private Vector3 previousPosition;
+		private Vector3 previousPosition;
 
-	[SerializeField]
+		public bool synchronizeEnabledState = true;
+
+		[SerializeField]
 	private KBatchedAnimController myAnim;
 }

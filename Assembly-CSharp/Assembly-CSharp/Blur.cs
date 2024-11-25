@@ -1,16 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public static class Blur
-{
-	public static RenderTexture Run(Texture2D image)
-	{
-		if (Blur.blurMaterial == null)
-		{
-			Blur.blurMaterial = new Material(Shader.Find("Klei/PostFX/Blur"));
-		}
-		return null;
-	}
+public static class Blur {
+    private static Material blurMaterial;
 
-	private static Material blurMaterial;
+    public static RenderTexture Run(Texture2D image) {
+        if (blurMaterial == null) blurMaterial = new Material(Shader.Find("Klei/PostFX/Blur"));
+        return null;
+    }
 }

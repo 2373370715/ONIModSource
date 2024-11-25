@@ -3,18 +3,18 @@ using STRINGS;
 
 namespace Database
 {
-	public class BalloonArtistFacadeResource : PermitResource
+		public class BalloonArtistFacadeResource : PermitResource
 	{
-						public string animFilename { get; private set; }
+								public string animFilename { get; private set; }
 
-						public KAnimFile AnimFile { get; private set; }
+								public KAnimFile AnimFile { get; private set; }
 
-		[Obsolete("Please use constructor with dlcIds parameter")]
+				[Obsolete("Please use constructor with dlcIds parameter")]
 		public BalloonArtistFacadeResource(string id, string name, string desc, PermitRarity rarity, string animFile, BalloonArtistFacadeType balloonFacadeType) : this(id, name, desc, rarity, animFile, balloonFacadeType, DlcManager.AVAILABLE_ALL_VERSIONS)
 		{
 		}
 
-		public BalloonArtistFacadeResource(string id, string name, string desc, PermitRarity rarity, string animFile, BalloonArtistFacadeType balloonFacadeType, string[] dlcIds) : base(id, name, desc, PermitCategory.JoyResponse, rarity, dlcIds)
+				public BalloonArtistFacadeResource(string id, string name, string desc, PermitRarity rarity, string animFile, BalloonArtistFacadeType balloonFacadeType, string[] dlcIds) : base(id, name, desc, PermitCategory.JoyResponse, rarity, dlcIds)
 		{
 			this.AnimFile = Assets.GetAnim(animFile);
 			this.animFilename = animFile;
@@ -24,7 +24,7 @@ namespace Database
 			Debug.Assert(this.balloonOverrideSymbolIDs.Length != 0);
 		}
 
-		public override PermitPresentationInfo GetPermitPresentationInfo()
+				public override PermitPresentationInfo GetPermitPresentationInfo()
 		{
 			PermitPresentationInfo result = default(PermitPresentationInfo);
 			result.sprite = Def.GetUISpriteFromMultiObjectAnim(this.AnimFile, "ui", false, "");
@@ -32,24 +32,24 @@ namespace Database
 			return result;
 		}
 
-		public BalloonOverrideSymbol GetNextOverride()
+				public BalloonOverrideSymbol GetNextOverride()
 		{
 			int num = this.nextSymbolIndex;
 			this.nextSymbolIndex = (this.nextSymbolIndex + 1) % this.balloonOverrideSymbolIDs.Length;
 			return new BalloonOverrideSymbol(this.animFilename, this.balloonOverrideSymbolIDs[num]);
 		}
 
-		public BalloonOverrideSymbolIter GetSymbolIter()
+				public BalloonOverrideSymbolIter GetSymbolIter()
 		{
 			return new BalloonOverrideSymbolIter(this);
 		}
 
-		public BalloonOverrideSymbol GetOverrideAt(int index)
+				public BalloonOverrideSymbol GetOverrideAt(int index)
 		{
 			return new BalloonOverrideSymbol(this.animFilename, this.balloonOverrideSymbolIDs[index]);
 		}
 
-		private string[] GetBalloonOverrideSymbolIDs()
+				private string[] GetBalloonOverrideSymbolIDs()
 		{
 			KAnim.Build build = this.AnimFile.GetData().build;
 			BalloonArtistFacadeType balloonArtistFacadeType = this.balloonFacadeType;
@@ -77,10 +77,10 @@ namespace Database
 			return result;
 		}
 
-		private BalloonArtistFacadeType balloonFacadeType;
+				private BalloonArtistFacadeType balloonFacadeType;
 
-		public readonly string[] balloonOverrideSymbolIDs;
+				public readonly string[] balloonOverrideSymbolIDs;
 
-		public int nextSymbolIndex;
+				public int nextSymbolIndex;
 	}
 }

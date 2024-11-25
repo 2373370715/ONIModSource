@@ -3,7 +3,7 @@ using Database;
 
 public class EntityModifierSet : ModifierSet
 {
-	public override void Initialize()
+		public override void Initialize()
 	{
 		base.Initialize();
 		this.DuplicantStatusItems = new DuplicantStatusItems(this.Root);
@@ -11,7 +11,7 @@ public class EntityModifierSet : ModifierSet
 		base.LoadTraits();
 	}
 
-	public DuplicantStatusItems DuplicantStatusItems;
+		public DuplicantStatusItems DuplicantStatusItems;
 
-	public ChoreGroups ChoreGroups;
+		public ChoreGroups ChoreGroups;
 }

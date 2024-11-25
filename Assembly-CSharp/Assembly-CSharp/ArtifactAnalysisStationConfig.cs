@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class ArtifactAnalysisStationConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ArtifactAnalysisStation";
 		int width = 4;
@@ -32,7 +32,7 @@ public class ArtifactAnalysisStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -49,11 +49,11 @@ public class ArtifactAnalysisStationConfig : IBuildingConfig
 		manualDeliveryKG.capacity = 1f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "ArtifactAnalysisStation";
+		public const string ID = "ArtifactAnalysisStation";
 
-	public const float WORK_TIME = 150f;
+		public const float WORK_TIME = 150f;
 }

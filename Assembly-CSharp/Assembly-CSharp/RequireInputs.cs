@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/RequireInputs")]
 public class RequireInputs : KMonoBehaviour, ISim200ms
 {
-		public bool RequiresPower
+			public bool RequiresPower
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class RequireInputs : KMonoBehaviour, ISim200ms
 		}
 	}
 
-		public bool RequiresInputConduit
+			public bool RequiresInputConduit
 	{
 		get
 		{
@@ -21,13 +21,13 @@ public class RequireInputs : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	public void SetRequirements(bool power, bool conduit)
+		public void SetRequirements(bool power, bool conduit)
 	{
 		this.requirePower = power;
 		this.requireConduit = conduit;
 	}
 
-		public bool RequirementsMet
+			public bool RequirementsMet
 	{
 		get
 		{
@@ -35,18 +35,18 @@ public class RequireInputs : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.Bind();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.CheckRequirements(true);
 		this.Bind();
 	}
 
-	[ContextMenu("Bind")]
+		[ContextMenu("Bind")]
 	private void Bind()
 	{
 		if (this.requirePower)
@@ -60,12 +60,12 @@ public class RequireInputs : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		this.CheckRequirements(false);
 	}
 
-	private void CheckRequirements(bool forceEvent)
+		private void CheckRequirements(bool forceEvent)
 	{
 		bool flag = true;
 		bool flag2 = false;
@@ -144,57 +144,57 @@ public class RequireInputs : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	public bool VisualizeRequirement(RequireInputs.Requirements r)
+		public bool VisualizeRequirement(RequireInputs.Requirements r)
 	{
 		return (this.visualizeRequirements & r) == r;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private bool requirePower = true;
 
-	[SerializeField]
+		[SerializeField]
 	private bool requireConduit;
 
-	public bool requireConduitHasMass = true;
+		public bool requireConduitHasMass = true;
 
-	public RequireInputs.Requirements visualizeRequirements = RequireInputs.Requirements.All;
+		public RequireInputs.Requirements visualizeRequirements = RequireInputs.Requirements.All;
 
-	private static readonly Operational.Flag inputConnectedFlag = new Operational.Flag("inputConnected", Operational.Flag.Type.Requirement);
+		private static readonly Operational.Flag inputConnectedFlag = new Operational.Flag("inputConnected", Operational.Flag.Type.Requirement);
 
-	private static readonly Operational.Flag pipesHaveMass = new Operational.Flag("pipesHaveMass", Operational.Flag.Type.Requirement);
+		private static readonly Operational.Flag pipesHaveMass = new Operational.Flag("pipesHaveMass", Operational.Flag.Type.Requirement);
 
-	private Guid noWireStatusGuid;
+		private Guid noWireStatusGuid;
 
-	private Guid needPowerStatusGuid;
+		private Guid needPowerStatusGuid;
 
-	private bool requirementsMet;
+		private bool requirementsMet;
 
-	private BuildingEnabledButton button;
+		private BuildingEnabledButton button;
 
-	private IEnergyConsumer energy;
+		private IEnergyConsumer energy;
 
-	public ConduitConsumer conduitConsumer;
+		public ConduitConsumer conduitConsumer;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private bool previouslyConnected = true;
+		private bool previouslyConnected = true;
 
-	private bool previouslySatisfied = true;
+		private bool previouslySatisfied = true;
 
-	[Flags]
+		[Flags]
 	public enum Requirements
 	{
-		None = 0,
-		NoWire = 1,
-		NeedPower = 2,
-		ConduitConnected = 4,
-		ConduitEmpty = 8,
-		AllPower = 3,
-		AllConduit = 12,
-		All = 15
+				None = 0,
+				NoWire = 1,
+				NeedPower = 2,
+				ConduitConnected = 4,
+				ConduitEmpty = 8,
+				AllPower = 3,
+				AllConduit = 12,
+				All = 15
 	}
 }

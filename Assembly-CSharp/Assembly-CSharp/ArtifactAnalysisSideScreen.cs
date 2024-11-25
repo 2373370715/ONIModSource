@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ArtifactAnalysisSideScreen : SideScreenContent
 {
-	public override string GetTitle()
+		public override string GetTitle()
 	{
 		if (this.targetArtifactStation != null)
 		{
@@ -16,18 +16,18 @@ public class ArtifactAnalysisSideScreen : SideScreenContent
 		return base.GetTitle();
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 		this.targetArtifactStation = null;
 		base.ClearTarget();
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetSMI<ArtifactAnalysisStation.StatesInstance>() != null;
 	}
 
-	private void RefreshRows()
+		private void RefreshRows()
 	{
 		if (this.undiscoveredRow == null)
 		{
@@ -58,7 +58,7 @@ public class ArtifactAnalysisSideScreen : SideScreenContent
 		}
 	}
 
-	private void OpenEvent(GameObject artifactPrefab)
+		private void OpenEvent(GameObject artifactPrefab)
 	{
 		SimpleEvent.StatesInstance statesInstance = GameplayEventManager.Instance.StartNewEvent(Db.Get().GameplayEvents.ArtifactReveal, -1, null).smi as SimpleEvent.StatesInstance;
 		statesInstance.artifact = artifactPrefab;
@@ -81,22 +81,22 @@ public class ArtifactAnalysisSideScreen : SideScreenContent
 		statesInstance.ShowEventPopup();
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.targetArtifactStation = target;
 		base.SetTarget(target);
 		this.RefreshRows();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject rowPrefab;
 
-	private GameObject targetArtifactStation;
+		private GameObject targetArtifactStation;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject rowContainer;
 
-	private Dictionary<string, GameObject> rows = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> rows = new Dictionary<string, GameObject>();
 
-	private GameObject undiscoveredRow;
+		private GameObject undiscoveredRow;
 }

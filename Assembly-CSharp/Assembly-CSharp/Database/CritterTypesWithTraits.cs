@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Database
 {
-	public class CritterTypesWithTraits : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class CritterTypesWithTraits : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public CritterTypesWithTraits(List<Tag> critterTypes)
+				public CritterTypesWithTraits(List<Tag> critterTypes)
 		{
 			foreach (Tag key in critterTypes)
 			{
@@ -18,7 +18,7 @@ namespace Database
 			this.trait = GameTags.Creatures.Wild;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			HashSet<Tag> tamedCritterTypes = SaveGame.Instance.ColonyAchievementTracker.tamedCritterTypes;
 			bool flag = true;
@@ -30,7 +30,7 @@ namespace Database
 			return flag;
 		}
 
-		public void UpdateSavedState()
+				public void UpdateSavedState()
 		{
 			this.revisedCritterTypesToCheckState.Clear();
 			HashSet<Tag> tamedCritterTypes = SaveGame.Instance.ColonyAchievementTracker.tamedCritterTypes;
@@ -44,7 +44,7 @@ namespace Database
 			}
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			this.critterTypesToCheck = new Dictionary<Tag, bool>();
 			int num = reader.ReadInt32();
@@ -58,12 +58,12 @@ namespace Database
 			this.trait = GameTags.Creatures.Wild;
 		}
 
-		public Dictionary<Tag, bool> critterTypesToCheck = new Dictionary<Tag, bool>();
+				public Dictionary<Tag, bool> critterTypesToCheck = new Dictionary<Tag, bool>();
 
-		private Tag trait;
+				private Tag trait;
 
-		private bool hasTrait;
+				private bool hasTrait;
 
-		private Dictionary<Tag, bool> revisedCritterTypesToCheckState = new Dictionary<Tag, bool>();
+				private Dictionary<Tag, bool> revisedCritterTypesToCheckState = new Dictionary<Tag, bool>();
 	}
 }

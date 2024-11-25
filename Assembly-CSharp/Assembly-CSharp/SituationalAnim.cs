@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SituationalAnim")]
 public class SituationalAnim : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		SituationalAnim.Situation situation = this.GetSituation();
@@ -17,7 +17,7 @@ public class SituationalAnim : KMonoBehaviour
 		this.SetAnimForSituation(situation);
 	}
 
-	private void SetAnimForSituation(SituationalAnim.Situation situation)
+		private void SetAnimForSituation(SituationalAnim.Situation situation)
 	{
 		foreach (global::Tuple<SituationalAnim.Situation, string> tuple in this.anims)
 		{
@@ -35,12 +35,12 @@ public class SituationalAnim : KMonoBehaviour
 		}
 	}
 
-	private void SetAnim(string animName)
+		private void SetAnim(string animName)
 	{
 		base.GetComponent<KBatchedAnimController>().Play(animName, KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	private SituationalAnim.Situation GetSituation()
+		private SituationalAnim.Situation GetSituation()
 	{
 		SituationalAnim.Situation situation = (SituationalAnim.Situation)0;
 		Extents extents = base.GetComponent<Building>().GetExtents();
@@ -67,7 +67,7 @@ public class SituationalAnim : KMonoBehaviour
 		return situation;
 	}
 
-	private bool DoesSatisfy(SituationalAnim.MustSatisfy result, SituationalAnim.MustSatisfy requirement)
+		private bool DoesSatisfy(SituationalAnim.MustSatisfy result, SituationalAnim.MustSatisfy requirement)
 	{
 		if (requirement == SituationalAnim.MustSatisfy.All)
 		{
@@ -80,7 +80,7 @@ public class SituationalAnim : KMonoBehaviour
 		return result == SituationalAnim.MustSatisfy.None;
 	}
 
-	private SituationalAnim.MustSatisfy GetSatisfactionForEdge(int minx, int maxx, int miny, int maxy)
+		private SituationalAnim.MustSatisfy GetSatisfactionForEdge(int minx, int maxx, int miny, int maxy)
 	{
 		bool flag = false;
 		bool flag2 = true;
@@ -110,25 +110,25 @@ public class SituationalAnim : KMonoBehaviour
 		return SituationalAnim.MustSatisfy.None;
 	}
 
-	public List<global::Tuple<SituationalAnim.Situation, string>> anims;
+		public List<global::Tuple<SituationalAnim.Situation, string>> anims;
 
-	public Func<int, bool> test;
+		public Func<int, bool> test;
 
-	public SituationalAnim.MustSatisfy mustSatisfy;
+		public SituationalAnim.MustSatisfy mustSatisfy;
 
-	[Flags]
+		[Flags]
 	public enum Situation
 	{
-		Left = 1,
-		Right = 2,
-		Top = 4,
-		Bottom = 8
+				Left = 1,
+				Right = 2,
+				Top = 4,
+				Bottom = 8
 	}
 
-	public enum MustSatisfy
+		public enum MustSatisfy
 	{
-		None,
-		Any,
-		All
+				None,
+				Any,
+				All
 	}
 }

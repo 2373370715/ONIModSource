@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class NotificationAnimator : MonoBehaviour
 {
-	public void Begin(bool startOffset = true)
+		public void Begin(bool startOffset = true)
 	{
 		this.Reset();
 		this.animating = true;
@@ -17,7 +17,7 @@ public class NotificationAnimator : MonoBehaviour
 		this.speed = -10f;
 	}
 
-	private void Reset()
+		private void Reset()
 	{
 		this.bounceCount = 2;
 		this.layoutElement = base.GetComponent<LayoutElement>();
@@ -25,13 +25,13 @@ public class NotificationAnimator : MonoBehaviour
 		this.speed = 1f;
 	}
 
-	public void Stop()
+		public void Stop()
 	{
 		this.Reset();
 		this.animating = false;
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (!this.animating)
 		{
@@ -53,22 +53,22 @@ public class NotificationAnimator : MonoBehaviour
 		}
 	}
 
-	private const float START_SPEED = 1f;
+		private const float START_SPEED = 1f;
 
-	private const float ACCELERATION = 0.5f;
+		private const float ACCELERATION = 0.5f;
 
-	private const float BOUNCE_DAMPEN = 2f;
+		private const float BOUNCE_DAMPEN = 2f;
 
-	private const int BOUNCE_COUNT = 2;
+		private const int BOUNCE_COUNT = 2;
 
-	private const float OFFSETX = 100f;
+		private const float OFFSETX = 100f;
 
-	private float speed = 1f;
+		private float speed = 1f;
 
-	private int bounceCount = 2;
+		private int bounceCount = 2;
 
-	private LayoutElement layoutElement;
+		private LayoutElement layoutElement;
 
-	[SerializeField]
+		[SerializeField]
 	private bool animating = true;
 }

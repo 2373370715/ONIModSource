@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class FoodStorage : KMonoBehaviour
 {
-			public FilteredStorage FilteredStorage { get; set; }
+				public FilteredStorage FilteredStorage { get; set; }
 
-			public bool SpicedFoodOnly
+				public bool SpicedFoodOnly
 	{
 		get
 		{
@@ -30,18 +30,18 @@ public class FoodStorage : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<FoodStorage>(-905833192, FoodStorage.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		FoodStorage component = ((GameObject)data).GetComponent<FoodStorage>();
 		if (component != null)
@@ -50,13 +50,13 @@ public class FoodStorage : KMonoBehaviour
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private bool onlyStoreSpicedFood;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Storage storage;
 
-	private static readonly EventSystem.IntraObjectHandler<FoodStorage> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<FoodStorage>(delegate(FoodStorage component, object data)
+		private static readonly EventSystem.IntraObjectHandler<FoodStorage> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<FoodStorage>(delegate(FoodStorage component, object data)
 	{
 		component.OnCopySettings(data);
 	});

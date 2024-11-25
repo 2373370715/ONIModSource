@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsable, IGameObjectEffectDescriptor, IBasicBuilding
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Building component = base.GetComponent<Building>();
@@ -24,7 +24,7 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 		base.smi.ShowFillMeter();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.liquidConduitFlow.onConduitsRebuilt -= this.OnConduitsRebuilt;
 		Components.BasicBuildings.Remove(this);
@@ -32,36 +32,38 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 		base.OnCleanUp();
 	}
 
-	private void OnConduitsRebuilt()
+		private void OnConduitsRebuilt()
 	{
 		base.Trigger(-2094018600, null);
 	}
 
-	public bool IsUsable()
+		public bool IsUsable()
 	{
 		return base.smi.HasTag(GameTags.Usable);
 	}
 
-	private void Flush(Worker worker)
+		private void Flush(WorkerBase worker)
 	{
+		ToiletWorkableUse component = base.GetComponent<ToiletWorkableUse>();
 		ListPool<GameObject, Storage>.PooledList pooledList = ListPool<GameObject, Storage>.Allocate();
 		this.storage.Find(FlushToilet.WaterTag, pooledList);
 		float num = 0f;
 		float num2 = this.massConsumedPerUse;
 		foreach (GameObject gameObject in pooledList)
 		{
-			PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-			float num3 = Mathf.Min(component.Mass, num2);
-			component.Mass -= num3;
+			PrimaryElement component2 = gameObject.GetComponent<PrimaryElement>();
+			float num3 = Mathf.Min(component2.Mass, num2);
+			component2.Mass -= num3;
 			num2 -= num3;
-			num += num3 * component.Temperature;
+			num += num3 * component2.Temperature;
 		}
 		pooledList.Recycle();
-		float num4 = this.massEmittedPerUse - this.massConsumedPerUse;
-		num += num4 * this.newPeeTemperature;
-		float temperature = num / this.massEmittedPerUse;
+		float lastAmountOfWasteMassRemovedFromDupe = component.lastAmountOfWasteMassRemovedFromDupe;
+		num += lastAmountOfWasteMassRemovedFromDupe * this.newPeeTemperature;
+		float num4 = this.massConsumedPerUse + lastAmountOfWasteMassRemovedFromDupe;
+		float temperature = num / num4;
 		byte index = Db.Get().Diseases.GetIndex(this.diseaseId);
-		this.storage.AddLiquid(SimHashes.DirtyWater, this.massEmittedPerUse, temperature, index, this.diseasePerFlush, false, true);
+		this.storage.AddLiquid(component.lastElementRemovedFromDupe, num4, temperature, index, this.diseasePerFlush, false, true);
 		if (worker != null)
 		{
 			worker.GetComponent<PrimaryElement>().AddDisease(index, this.diseaseOnDupePerFlush, "FlushToilet.Flush");
@@ -75,7 +77,7 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 		});
 	}
 
-	public List<Descriptor> RequirementDescriptors()
+		public List<Descriptor> RequirementDescriptors()
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		string arg = ElementLoader.FindElementByHash(SimHashes.Water).tag.ProperName();
@@ -83,7 +85,7 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 		return list;
 	}
 
-	public List<Descriptor> EffectDescriptors()
+		public List<Descriptor> EffectDescriptors()
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		string arg = ElementLoader.FindElementByHash(SimHashes.DirtyWater).tag.ProperName();
@@ -94,7 +96,7 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 		return list;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		list.AddRange(this.RequirementDescriptors());
@@ -102,7 +104,7 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 		return list;
 	}
 
-	private void OnConduitUpdate(float dt)
+		private void OnConduitUpdate(float dt)
 	{
 		if (this.GetSMI() == null)
 		{
@@ -113,60 +115,60 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 		base.smi.sm.outputBlocked.Set(value, base.smi, false);
 	}
 
-	private MeterController fillMeter;
+		private MeterController fillMeter;
 
-	private MeterController contaminationMeter;
+		private MeterController contaminationMeter;
 
-	public Meter.Offset meterOffset = Meter.Offset.Behind;
+		public Meter.Offset meterOffset = Meter.Offset.Behind;
 
-	[SerializeField]
+		[SerializeField]
 	public float massConsumedPerUse = 5f;
 
-	[SerializeField]
+		[SerializeField]
 	public float massEmittedPerUse = 5f;
 
-	[SerializeField]
+		[SerializeField]
 	public float newPeeTemperature;
 
-	[SerializeField]
+		[SerializeField]
 	public string diseaseId;
 
-	[SerializeField]
+		[SerializeField]
 	public int diseasePerFlush;
 
-	[SerializeField]
+		[SerializeField]
 	public int diseaseOnDupePerFlush;
 
-	[SerializeField]
+		[SerializeField]
 	public bool requireOutput = true;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ConduitConsumer conduitConsumer;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	public static readonly Tag WaterTag = GameTagExtensions.Create(SimHashes.Water);
+		public static readonly Tag WaterTag = GameTagExtensions.Create(SimHashes.Water);
 
-	private int inputCell;
+		private int inputCell;
 
-	private int outputCell;
+		private int outputCell;
 
-	public class SMInstance : GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.GameInstance
+		public class SMInstance : GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.GameInstance
 	{
-		public SMInstance(FlushToilet master) : base(master)
+				public SMInstance(FlushToilet master) : base(master)
 		{
 			this.activeUseChores = new List<Chore>();
 			this.UpdateFullnessState();
 			this.UpdateDirtyState();
 		}
 
-		public bool HasValidConnections()
+				public bool HasValidConnections()
 		{
 			return Game.Instance.liquidConduitFlow.HasConduit(base.master.inputCell) && (!base.master.requireOutput || Game.Instance.liquidConduitFlow.HasConduit(base.master.outputCell));
 		}
 
-		public bool UpdateFullnessState()
+				public bool UpdateFullnessState()
 		{
 			float num = 0f;
 			ListPool<GameObject, FlushToilet>.PooledList pooledList = ListPool<GameObject, FlushToilet>.Allocate();
@@ -184,33 +186,33 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 			return flag;
 		}
 
-		public void UpdateDirtyState()
+				public void UpdateDirtyState()
 		{
 			float percentComplete = base.GetComponent<ToiletWorkableUse>().GetPercentComplete();
 			base.master.contaminationMeter.SetPositionPercent(percentComplete);
 		}
 
-		public void Flush()
+				public void Flush()
 		{
 			base.master.fillMeter.SetPositionPercent(0f);
 			base.master.contaminationMeter.SetPositionPercent(1f);
 			base.smi.ShowFillMeter();
-			Worker worker = base.master.GetComponent<ToiletWorkableUse>().worker;
+			WorkerBase worker = base.master.GetComponent<ToiletWorkableUse>().worker;
 			base.master.Flush(worker);
 		}
 
-		public void ShowFillMeter()
+				public void ShowFillMeter()
 		{
 			base.master.fillMeter.gameObject.SetActive(true);
 			base.master.contaminationMeter.gameObject.SetActive(false);
 		}
 
-		public bool HasContaminatedMass()
+				public bool HasContaminatedMass()
 		{
 			foreach (GameObject gameObject in base.GetComponent<Storage>().items)
 			{
 				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-				if (!(component == null) && component.ElementID == SimHashes.DirtyWater && component.Mass > 0f)
+				if (!(component == null) && (component.ElementID == SimHashes.DirtyWater || component.ElementID == GunkMonitor.GunkElement) && component.Mass > 0f)
 				{
 					return true;
 				}
@@ -218,18 +220,18 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 			return false;
 		}
 
-		public void ShowContaminatedMeter()
+				public void ShowContaminatedMeter()
 		{
 			base.master.fillMeter.gameObject.SetActive(false);
 			base.master.contaminationMeter.gameObject.SetActive(true);
 		}
 
-		public List<Chore> activeUseChores;
+				public List<Chore> activeUseChores;
 	}
 
-	public class States : GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet>
+		public class States : GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.disconnected;
 			this.disconnected.PlayAnim("off").EventTransition(GameHashes.ConduitConnectionChanged, this.backedup, (FlushToilet.SMInstance smi) => smi.HasValidConnections()).Enter(delegate(FlushToilet.SMInstance smi)
@@ -271,7 +273,7 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 			this.flushed.EventTransition(GameHashes.OnStorageChange, this.fillingInactive, (FlushToilet.SMInstance smi) => !smi.HasContaminatedMass()).ParamTransition<bool>(this.outputBlocked, this.backedup, GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.IsTrue);
 		}
 
-		private Chore CreateUrgentUseChore(FlushToilet.SMInstance smi)
+				private Chore CreateUrgentUseChore(FlushToilet.SMInstance smi)
 		{
 			Chore chore = this.CreateUseChore(smi, Db.Get().ChoreTypes.Pee);
 			chore.AddPrecondition(ChorePreconditions.instance.IsBladderFull, null);
@@ -279,14 +281,14 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 			return chore;
 		}
 
-		private Chore CreateBreakUseChore(FlushToilet.SMInstance smi)
+				private Chore CreateBreakUseChore(FlushToilet.SMInstance smi)
 		{
 			Chore chore = this.CreateUseChore(smi, Db.Get().ChoreTypes.BreakPee);
 			chore.AddPrecondition(ChorePreconditions.instance.IsBladderNotFull, null);
 			return chore;
 		}
 
-		private Chore CreateUseChore(FlushToilet.SMInstance smi, ChoreType choreType)
+				private Chore CreateUseChore(FlushToilet.SMInstance smi, ChoreType choreType)
 		{
 			WorkChore<ToiletWorkableUse> workChore = new WorkChore<ToiletWorkableUse>(choreType, smi.master, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, false);
 			smi.activeUseChores.Add(workChore);
@@ -300,27 +302,27 @@ public class FlushToilet : StateMachineComponent<FlushToilet.SMInstance>, IUsabl
 			return workChore;
 		}
 
-		public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State disconnected;
+				public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State disconnected;
 
-		public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State backedup;
+				public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State backedup;
 
-		public FlushToilet.States.ReadyStates ready;
+				public FlushToilet.States.ReadyStates ready;
 
-		public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State fillingInactive;
+				public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State fillingInactive;
 
-		public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State filling;
+				public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State filling;
 
-		public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State flushing;
+				public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State flushing;
 
-		public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State flushed;
+				public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State flushed;
 
-		public StateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.BoolParameter outputBlocked;
+				public StateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.BoolParameter outputBlocked;
 
-		public class ReadyStates : GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State
+				public class ReadyStates : GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State
 		{
-			public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State idle;
+						public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State idle;
 
-			public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State inuse;
+						public GameStateMachine<FlushToilet.States, FlushToilet.SMInstance, FlushToilet, object>.State inuse;
 		}
 	}
 }

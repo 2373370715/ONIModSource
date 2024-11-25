@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StaterpillarGenerator : Generator
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		Staterpillar staterpillar = this.parent.Get();
 		if (staterpillar == null || staterpillar.GetGenerator() != this)
@@ -18,7 +18,7 @@ public class StaterpillarGenerator : Generator
 		base.OnSpawn();
 	}
 
-	public override void EnergySim200ms(float dt)
+		public override void EnergySim200ms(float dt)
 	{
 		base.EnergySim200ms(dt);
 		ushort circuitID = base.CircuitID;
@@ -36,23 +36,23 @@ public class StaterpillarGenerator : Generator
 		}
 	}
 
-	private StaterpillarGenerator.StatesInstance smi;
+		private StaterpillarGenerator.StatesInstance smi;
 
-	[Serialize]
+		[Serialize]
 	public Ref<Staterpillar> parent = new Ref<Staterpillar>();
 
-	public class StatesInstance : GameStateMachine<StaterpillarGenerator.States, StaterpillarGenerator.StatesInstance, StaterpillarGenerator, object>.GameInstance
+		public class StatesInstance : GameStateMachine<StaterpillarGenerator.States, StaterpillarGenerator.StatesInstance, StaterpillarGenerator, object>.GameInstance
 	{
-		public StatesInstance(StaterpillarGenerator master) : base(master)
+				public StatesInstance(StaterpillarGenerator master) : base(master)
 		{
 		}
 
-		private Attributes attributes;
+				private Attributes attributes;
 	}
 
-	public class States : GameStateMachine<StaterpillarGenerator.States, StaterpillarGenerator.StatesInstance, StaterpillarGenerator>
+		public class States : GameStateMachine<StaterpillarGenerator.States, StaterpillarGenerator.StatesInstance, StaterpillarGenerator>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.root;
 			this.root.EventTransition(GameHashes.OperationalChanged, this.idle, (StaterpillarGenerator.StatesInstance smi) => smi.GetComponent<Operational>().IsOperational);
@@ -62,6 +62,6 @@ public class StaterpillarGenerator : Generator
 			});
 		}
 
-		public GameStateMachine<StaterpillarGenerator.States, StaterpillarGenerator.StatesInstance, StaterpillarGenerator, object>.State idle;
+				public GameStateMachine<StaterpillarGenerator.States, StaterpillarGenerator.StatesInstance, StaterpillarGenerator, object>.State idle;
 	}
 }

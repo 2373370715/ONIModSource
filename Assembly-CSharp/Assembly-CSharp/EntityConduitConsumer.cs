@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SpawnableConduitConsumer")]
 public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 {
-		public Storage Storage
+			public Storage Storage
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-		public ConduitType ConduitType
+			public ConduitType ConduitType
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-		public bool IsConnected
+			public bool IsConnected
 	{
 		get
 		{
@@ -30,7 +30,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-		public bool CanConsume
+			public bool CanConsume
 	{
 		get
 		{
@@ -43,7 +43,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-		public float stored_mass
+			public float stored_mass
 	{
 		get
 		{
@@ -59,7 +59,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-		public float space_remaining_kg
+			public float space_remaining_kg
 	{
 		get
 		{
@@ -72,12 +72,12 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-	public void SetConduitData(ConduitType type)
+		public void SetConduitData(ConduitType type)
 	{
 		this.conduitType = type;
 	}
 
-		public ConduitType TypeOfConduit
+			public ConduitType TypeOfConduit
 	{
 		get
 		{
@@ -85,7 +85,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-		public bool IsAlmostEmpty
+			public bool IsAlmostEmpty
 	{
 		get
 		{
@@ -93,7 +93,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-		public bool IsEmpty
+			public bool IsEmpty
 	{
 		get
 		{
@@ -101,7 +101,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-		public float ConsumptionRate
+			public float ConsumptionRate
 	{
 		get
 		{
@@ -109,7 +109,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-			public bool IsSatisfied
+				public bool IsSatisfied
 	{
 		get
 		{
@@ -121,7 +121,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-	private ConduitFlow GetConduitManager()
+		private ConduitFlow GetConduitManager()
 	{
 		ConduitType conduitType = this.conduitType;
 		if (conduitType == ConduitType.Gas)
@@ -135,7 +135,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		return Game.Instance.liquidConduitFlow;
 	}
 
-		public float MassAvailable
+			public float MassAvailable
 	{
 		get
 		{
@@ -145,12 +145,12 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-	private int GetInputCell(ConduitType inputConduitType)
+		private int GetInputCell(ConduitType inputConduitType)
 	{
 		return this.occupyArea.GetOffsetCellWithRotation(this.offset);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		ConduitFlow conduitManager = this.GetConduitManager();
@@ -180,7 +180,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		this.OnConduitConnectionChanged(null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.endpoint.ConduitType == ConduitType.Solid)
 		{
@@ -195,17 +195,17 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		base.OnCleanUp();
 	}
 
-	private void OnConduitConnectionChanged(object data)
+		private void OnConduitConnectionChanged(object data)
 	{
 		base.Trigger(-2094018600, this.IsConnected);
 	}
 
-	public void SetOnState(bool onState)
+		public void SetOnState(bool onState)
 	{
 		this.isOn = onState;
 	}
 
-	private void ConduitUpdate(float dt)
+		private void ConduitUpdate(float dt)
 	{
 		if (this.isConsuming && this.isOn)
 		{
@@ -214,7 +214,7 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-	private void Consume(float dt, ConduitFlow conduit_mgr)
+		private void Consume(float dt, ConduitFlow conduit_mgr)
 	{
 		this.IsSatisfied = false;
 		this.consumedLastTick = false;
@@ -301,70 +301,70 @@ public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
 		}
 	}
 
-	private FlowUtilityNetwork.NetworkItem endpoint;
+		private FlowUtilityNetwork.NetworkItem endpoint;
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitType conduitType;
 
-	[SerializeField]
+		[SerializeField]
 	public bool ignoreMinMassCheck;
 
-	[SerializeField]
+		[SerializeField]
 	public Tag capacityTag = GameTags.Any;
 
-	[SerializeField]
+		[SerializeField]
 	public float capacityKG = float.PositiveInfinity;
 
-	[SerializeField]
+		[SerializeField]
 	public bool forceAlwaysSatisfied;
 
-	[SerializeField]
+		[SerializeField]
 	public bool alwaysConsume;
 
-	[SerializeField]
+		[SerializeField]
 	public bool keepZeroMassObject = true;
 
-	[SerializeField]
+		[SerializeField]
 	public bool isOn = true;
 
-	[NonSerialized]
+		[NonSerialized]
 	public bool isConsuming = true;
 
-	[NonSerialized]
+		[NonSerialized]
 	public bool consumedLastTick = true;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private OccupyArea occupyArea;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private EntityCellVisualizer cellVisualizer;
 
-	public Operational.State OperatingRequirement;
+		public Operational.State OperatingRequirement;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public Storage storage;
 
-	public CellOffset offset;
+		public CellOffset offset;
 
-	private int utilityCell = -1;
+		private int utilityCell = -1;
 
-	public float consumptionRate = float.PositiveInfinity;
+		public float consumptionRate = float.PositiveInfinity;
 
-	public SimHashes lastConsumedElement = SimHashes.Vacuum;
+		public SimHashes lastConsumedElement = SimHashes.Vacuum;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private bool satisfied;
+		private bool satisfied;
 
-	public EntityConduitConsumer.WrongElementResult wrongElementResult;
+		public EntityConduitConsumer.WrongElementResult wrongElementResult;
 
-	public enum WrongElementResult
+		public enum WrongElementResult
 	{
-		Destroy,
-		Dump,
-		Store
+				Destroy,
+				Dump,
+				Store
 	}
 }

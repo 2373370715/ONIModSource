@@ -9,12 +9,12 @@ using UnityEngine.UI;
 
 public class ToolMenu : KScreen
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ToolMenu.Instance = null;
 	}
 
-		public PriorityScreen PriorityScreen
+			public PriorityScreen PriorityScreen
 	{
 		get
 		{
@@ -22,12 +22,12 @@ public class ToolMenu : KScreen
 		}
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 5f;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		ToolMenu.Instance = this;
@@ -36,20 +36,20 @@ public class ToolMenu : KScreen
 		this.priorityScreen.InstantiateButtons(new Action<PrioritySetting>(this.OnPriorityClicked), false);
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		KInputManager.InputChange.RemoveListener(new UnityAction(this.OnInputChange));
 		base.OnForcedCleanUp();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Game.Instance.Unsubscribe(1798162660, new Action<object>(this.OnOverlayChanged));
 		Game.Instance.Unsubscribe(this.refreshScaleHandle);
 	}
 
-	private void OnOverlayChanged(object overlay_data)
+		private void OnOverlayChanged(object overlay_data)
 	{
 		HashedString y = (HashedString)overlay_data;
 		if (PlayerController.Instance.ActiveTool != null && PlayerController.Instance.ActiveTool.ViewMode != OverlayModes.None.ID && PlayerController.Instance.ActiveTool.ViewMode != y)
@@ -59,7 +59,7 @@ public class ToolMenu : KScreen
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.activateOnSpawn = true;
 		base.OnSpawn();
@@ -89,7 +89,7 @@ public class ToolMenu : KScreen
 		this.RefreshScale(null);
 	}
 
-	private void RefreshScale(object data = null)
+		private void RefreshScale(object data = null)
 	{
 		int num = 14;
 		int num2 = 16;
@@ -111,7 +111,7 @@ public class ToolMenu : KScreen
 		}
 	}
 
-	public void OnInputChange()
+		public void OnInputChange()
 	{
 		this.rows.ForEach(delegate(List<ToolMenu.ToolCollection> row)
 		{
@@ -123,7 +123,7 @@ public class ToolMenu : KScreen
 		});
 	}
 
-	private void ResetToolDisplayPlane()
+		private void ResetToolDisplayPlane()
 	{
 		this.toolEffectDisplayPlane = this.CreateToolDisplayPlane("Overlay", World.Instance.transform);
 		this.toolEffectDisplayPlaneTexture = this.CreatePlaneTexture(out this.toolEffectDisplayBytes, Grid.WidthInCells, Grid.HeightInCells);
@@ -133,7 +133,7 @@ public class ToolMenu : KScreen
 		this.RefreshToolDisplayPlaneColor();
 	}
 
-	private GameObject CreateToolDisplayPlane(string layer, Transform parent)
+		private GameObject CreateToolDisplayPlane(string layer, Transform parent)
 	{
 		GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Plane);
 		gameObject.name = "toolEffectDisplayPlane";
@@ -150,7 +150,7 @@ public class ToolMenu : KScreen
 		return gameObject;
 	}
 
-	private Texture2D CreatePlaneTexture(out byte[] textureBytes, int width, int height)
+		private Texture2D CreatePlaneTexture(out byte[] textureBytes, int width, int height)
 	{
 		textureBytes = new byte[width * height * 4];
 		return new Texture2D(width, height, TextureUtil.TextureFormatToGraphicsFormat(TextureFormat.RGBA32), TextureCreationFlags.None)
@@ -161,12 +161,12 @@ public class ToolMenu : KScreen
 		};
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.RefreshToolDisplayPlaneColor();
 	}
 
-	private void RefreshToolDisplayPlaneColor()
+		private void RefreshToolDisplayPlaneColor()
 	{
 		if (PlayerController.Instance.ActiveTool == null || PlayerController.Instance.ActiveTool == SelectTool.Instance)
 		{
@@ -200,21 +200,21 @@ public class ToolMenu : KScreen
 		this.toolEffectDisplayPlaneTexture.Apply();
 	}
 
-	public void ToggleSandboxUI(object data = null)
+		public void ToggleSandboxUI(object data = null)
 	{
 		this.ClearSelection();
 		PlayerController.Instance.ActivateTool(SelectTool.Instance);
 		this.sandboxTools[0].toggle.transform.parent.transform.parent.gameObject.SetActive(Game.Instance.SandboxModeActive);
 	}
 
-	public static ToolMenu.ToolCollection CreateToolCollection(LocString collection_name, string icon_name, global::Action hotkey, string tool_name, LocString tooltip, bool largeIcon)
+		public static ToolMenu.ToolCollection CreateToolCollection(LocString collection_name, string icon_name, global::Action hotkey, string tool_name, LocString tooltip, bool largeIcon)
 	{
 		ToolMenu.ToolCollection toolCollection = new ToolMenu.ToolCollection(collection_name, icon_name, "", false, global::Action.NumActions, largeIcon);
 		new ToolMenu.ToolInfo(collection_name, icon_name, hotkey, tool_name, toolCollection, tooltip, null, null);
 		return toolCollection;
 	}
 
-	private void CreateSandBoxTools()
+		private void CreateSandBoxTools()
 	{
 		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.BRUSH.NAME, "brush", global::Action.SandboxBrush, "SandboxBrushTool", UI.SANDBOXTOOLS.SETTINGS.BRUSH.TOOLTIP, false));
 		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.SPRINKLE.NAME, "sprinkle", global::Action.SandboxSprinkle, "SandboxSprinkleTool", UI.SANDBOXTOOLS.SETTINGS.SPRINKLE.TOOLTIP, false));
@@ -230,7 +230,7 @@ public class ToolMenu : KScreen
 		this.sandboxTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.SANDBOX.SPAWN_STORY_TRAIT.NAME, "sandbox_storytrait", global::Action.SandboxStoryTraitTool, "SandboxStoryTraitTool", UI.SANDBOXTOOLS.SETTINGS.SPAWN_STORY_TRAIT.TOOLTIP, false));
 	}
 
-	private void CreateBasicTools()
+		private void CreateBasicTools()
 	{
 		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.DIG.NAME, "icon_action_dig", global::Action.Dig, "DigTool", UI.TOOLTIPS.DIGBUTTON, true));
 		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.CANCEL.NAME, "icon_action_cancel", global::Action.BuildingCancel, "CancelTool", UI.TOOLTIPS.CANCELBUTTON, true));
@@ -246,7 +246,7 @@ public class ToolMenu : KScreen
 		this.basicTools.Add(ToolMenu.CreateToolCollection(UI.TOOLS.DISCONNECT.NAME, "icon_action_disconnect", global::Action.Disconnect, "DisconnectTool", UI.TOOLS.DISCONNECT.TOOLTIP, false));
 	}
 
-	private void InstantiateCollectionsUI(IList<ToolMenu.ToolCollection> collections)
+		private void InstantiateCollectionsUI(IList<ToolMenu.ToolCollection> collections)
 	{
 		GameObject parent = Util.KInstantiateUI(this.prefabToolRow, base.gameObject, true);
 		GameObject gameObject = Util.KInstantiateUI(this.largeToolSet, parent, true);
@@ -359,7 +359,7 @@ public class ToolMenu : KScreen
 		}
 	}
 
-	private void ChooseTool(ToolMenu.ToolInfo tool)
+		private void ChooseTool(ToolMenu.ToolInfo tool)
 	{
 		if (this.currentlySelectedTool == tool)
 		{
@@ -397,7 +397,7 @@ public class ToolMenu : KScreen
 		});
 	}
 
-	private void RefreshRowDisplay(IList<ToolMenu.ToolCollection> row)
+		private void RefreshRowDisplay(IList<ToolMenu.ToolCollection> row)
 	{
 		for (int i = 0; i < row.Count; i++)
 		{
@@ -447,7 +447,7 @@ public class ToolMenu : KScreen
 		}
 	}
 
-	public void TurnLargeCollectionOff()
+		public void TurnLargeCollectionOff()
 	{
 		if (this.currentlySelectedCollection != null && this.currentlySelectedCollection.tools.Count > this.smallCollectionMax)
 		{
@@ -455,7 +455,7 @@ public class ToolMenu : KScreen
 		}
 	}
 
-	private void ChooseCollection(ToolMenu.ToolCollection collection, bool autoSelectTool = true)
+		private void ChooseCollection(ToolMenu.ToolCollection collection, bool autoSelectTool = true)
 	{
 		if (collection == this.currentlySelectedCollection)
 		{
@@ -483,7 +483,7 @@ public class ToolMenu : KScreen
 		});
 	}
 
-	private void OpenOrCloseCollectionsInRow(IList<ToolMenu.ToolCollection> row, bool autoSelectTool = true)
+		private void OpenOrCloseCollectionsInRow(IList<ToolMenu.ToolCollection> row, bool autoSelectTool = true)
 	{
 		for (int i = 0; i < row.Count; i++)
 		{
@@ -507,7 +507,7 @@ public class ToolMenu : KScreen
 		}
 	}
 
-	private void SetToggleState(KToggle toggle, bool state)
+		private void SetToggleState(KToggle toggle, bool state)
 	{
 		if (state)
 		{
@@ -519,7 +519,7 @@ public class ToolMenu : KScreen
 		toggle.isOn = false;
 	}
 
-	public void ClearSelection()
+		public void ClearSelection()
 	{
 		if (this.currentlySelectedCollection != null)
 		{
@@ -531,7 +531,7 @@ public class ToolMenu : KScreen
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (!e.Consumed)
 		{
@@ -639,7 +639,7 @@ public class ToolMenu : KScreen
 		base.OnKeyDown(e);
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (!e.Consumed)
 		{
@@ -676,7 +676,7 @@ public class ToolMenu : KScreen
 		base.OnKeyUp(e);
 	}
 
-	protected void BuildRowToggles(IList<ToolMenu.ToolCollection> row)
+		protected void BuildRowToggles(IList<ToolMenu.ToolCollection> row)
 	{
 		for (int i = 0; i < row.Count; i++)
 		{
@@ -723,7 +723,7 @@ public class ToolMenu : KScreen
 		}
 	}
 
-	protected void BuildToolToggles(IList<ToolMenu.ToolCollection> row)
+		protected void BuildToolToggles(IList<ToolMenu.ToolCollection> row)
 	{
 		for (int i = 0; i < row.Count; i++)
 		{
@@ -759,7 +759,7 @@ public class ToolMenu : KScreen
 		}
 	}
 
-	public bool HasUniqueKeyBindings()
+		public bool HasUniqueKeyBindings()
 	{
 		bool result = true;
 		this.boundRootActions.Clear();
@@ -788,93 +788,93 @@ public class ToolMenu : KScreen
 		return result;
 	}
 
-	private void OnPriorityClicked(PrioritySetting priority)
+		private void OnPriorityClicked(PrioritySetting priority)
 	{
 		this.priorityScreen.SetScreenPriority(priority, false);
 	}
 
-	public static ToolMenu Instance;
+		public static ToolMenu Instance;
 
-	public GameObject Prefab_collectionContainer;
+		public GameObject Prefab_collectionContainer;
 
-	public GameObject Prefab_collectionContainerWindow;
+		public GameObject Prefab_collectionContainerWindow;
 
-	public PriorityScreen Prefab_priorityScreen;
+		public PriorityScreen Prefab_priorityScreen;
 
-	public GameObject toolIconPrefab;
+		public GameObject toolIconPrefab;
 
-	public GameObject toolIconLargePrefab;
+		public GameObject toolIconLargePrefab;
 
-	public GameObject sandboxToolIconPrefab;
+		public GameObject sandboxToolIconPrefab;
 
-	public GameObject collectionIconPrefab;
+		public GameObject collectionIconPrefab;
 
-	public GameObject prefabToolRow;
+		public GameObject prefabToolRow;
 
-	public GameObject largeToolSet;
+		public GameObject largeToolSet;
 
-	public GameObject smallToolSet;
+		public GameObject smallToolSet;
 
-	public GameObject smallToolBottomRow;
+		public GameObject smallToolBottomRow;
 
-	public GameObject smallToolTopRow;
+		public GameObject smallToolTopRow;
 
-	public GameObject sandboxToolSet;
+		public GameObject sandboxToolSet;
 
-	private PriorityScreen priorityScreen;
+		private PriorityScreen priorityScreen;
 
-	public ToolParameterMenu toolParameterMenu;
+		public ToolParameterMenu toolParameterMenu;
 
-	public GameObject sandboxToolParameterMenu;
+		public GameObject sandboxToolParameterMenu;
 
-	private GameObject toolEffectDisplayPlane;
+		private GameObject toolEffectDisplayPlane;
 
-	private Texture2D toolEffectDisplayPlaneTexture;
+		private Texture2D toolEffectDisplayPlaneTexture;
 
-	public Material toolEffectDisplayMaterial;
+		public Material toolEffectDisplayMaterial;
 
-	private byte[] toolEffectDisplayBytes;
+		private byte[] toolEffectDisplayBytes;
 
-	private List<List<ToolMenu.ToolCollection>> rows = new List<List<ToolMenu.ToolCollection>>();
+		private List<List<ToolMenu.ToolCollection>> rows = new List<List<ToolMenu.ToolCollection>>();
 
-	public List<ToolMenu.ToolCollection> basicTools = new List<ToolMenu.ToolCollection>();
+		public List<ToolMenu.ToolCollection> basicTools = new List<ToolMenu.ToolCollection>();
 
-	public List<ToolMenu.ToolCollection> sandboxTools = new List<ToolMenu.ToolCollection>();
+		public List<ToolMenu.ToolCollection> sandboxTools = new List<ToolMenu.ToolCollection>();
 
-	public ToolMenu.ToolCollection currentlySelectedCollection;
+		public ToolMenu.ToolCollection currentlySelectedCollection;
 
-	public ToolMenu.ToolInfo currentlySelectedTool;
+		public ToolMenu.ToolInfo currentlySelectedTool;
 
-	public InterfaceTool activeTool;
+		public InterfaceTool activeTool;
 
-	private Coroutine activeOpenAnimationRoutine;
+		private Coroutine activeOpenAnimationRoutine;
 
-	private Coroutine activeCloseAnimationRoutine;
+		private Coroutine activeCloseAnimationRoutine;
 
-	private HashSet<global::Action> boundRootActions = new HashSet<global::Action>();
+		private HashSet<global::Action> boundRootActions = new HashSet<global::Action>();
 
-	private HashSet<global::Action> boundSubgroupActions = new HashSet<global::Action>();
+		private HashSet<global::Action> boundSubgroupActions = new HashSet<global::Action>();
 
-	private UnityAction inputChangeReceiver;
+		private UnityAction inputChangeReceiver;
 
-	private int refreshScaleHandle = -1;
+		private int refreshScaleHandle = -1;
 
-	[SerializeField]
+		[SerializeField]
 	public TextStyleSetting ToggleToolTipTextStyleSetting;
 
-	[SerializeField]
+		[SerializeField]
 	public TextStyleSetting CategoryLabelTextStyle_LeftAlign;
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting TooltipHeader;
 
-	private int smallCollectionMax = 5;
+		private int smallCollectionMax = 5;
 
-	private HashSet<ToolMenu.CellColorData> colors = new HashSet<ToolMenu.CellColorData>();
+		private HashSet<ToolMenu.CellColorData> colors = new HashSet<ToolMenu.CellColorData>();
 
-	public class ToolInfo
+		public class ToolInfo
 	{
-		public ToolInfo(string text, string icon_name, global::Action hotkey, string ToolName, ToolMenu.ToolCollection toolCollection, string tooltip = "", Action<object> onSelectCallback = null, object toolData = null)
+				public ToolInfo(string text, string icon_name, global::Action hotkey, string ToolName, ToolMenu.ToolCollection toolCollection, string tooltip = "", Action<object> onSelectCallback = null, object toolData = null)
 		{
 			this.text = text;
 			this.icon = icon_name;
@@ -887,28 +887,28 @@ public class ToolMenu : KScreen
 			this.toolData = toolData;
 		}
 
-		public string text;
+				public string text;
 
-		public string icon;
+				public string icon;
 
-		public global::Action hotkey;
+				public global::Action hotkey;
 
-		public string toolName;
+				public string toolName;
 
-		public ToolMenu.ToolCollection collection;
+				public ToolMenu.ToolCollection collection;
 
-		public string tooltip;
+				public string tooltip;
 
-		public KToggle toggle;
+				public KToggle toggle;
 
-		public Action<object> onSelectCallback;
+				public Action<object> onSelectCallback;
 
-		public object toolData;
+				public object toolData;
 	}
 
-	public class ToolCollection
+		public class ToolCollection
 	{
-		public ToolCollection(string text, string icon_name, string tooltip = "", bool useInfoMenu = false, global::Action hotkey = global::Action.NumActions, bool largeIcon = false)
+				public ToolCollection(string text, string icon_name, string tooltip = "", bool useInfoMenu = false, global::Action hotkey = global::Action.NumActions, bool largeIcon = false)
 		{
 			this.text = text;
 			this.icon = icon_name;
@@ -918,37 +918,37 @@ public class ToolMenu : KScreen
 			this.largeIcon = largeIcon;
 		}
 
-		public string text;
+				public string text;
 
-		public string icon;
+				public string icon;
 
-		public string tooltip;
+				public string tooltip;
 
-		public bool useInfoMenu;
+				public bool useInfoMenu;
 
-		public bool largeIcon;
+				public bool largeIcon;
 
-		public GameObject toggle;
+				public GameObject toggle;
 
-		public List<ToolMenu.ToolInfo> tools = new List<ToolMenu.ToolInfo>();
+				public List<ToolMenu.ToolInfo> tools = new List<ToolMenu.ToolInfo>();
 
-		public GameObject UIMenuDisplay;
+				public GameObject UIMenuDisplay;
 
-		public GameObject MaskContainer;
+				public GameObject MaskContainer;
 
-		public global::Action hotkey;
+				public global::Action hotkey;
 	}
 
-	public struct CellColorData
+		public struct CellColorData
 	{
-		public CellColorData(int cell, Color color)
+				public CellColorData(int cell, Color color)
 		{
 			this.cell = cell;
 			this.color = color;
 		}
 
-		public int cell;
+				public int cell;
 
-		public Color color;
+				public Color color;
 	}
 }

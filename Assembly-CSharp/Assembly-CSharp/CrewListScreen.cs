@@ -1,235 +1,175 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CrewListScreen<EntryType> : KScreen where EntryType : CrewListEntry
-{
-	protected override void OnActivate()
-	{
-		base.OnActivate();
-		this.ClearEntries();
-		this.SpawnEntries();
-		this.PositionColumnTitles();
-		if (this.autoColumn)
-		{
-			this.UpdateColumnTitles();
-		}
-		base.ConsumeMouseScroll = true;
-	}
+public class CrewListScreen<EntryType> : KScreen where EntryType : CrewListEntry {
+    public    bool            autoColumn;
+    public    float           columnTitleHorizontalOffset;
+    public    Transform       ColumnTitlesContainer;
+    public    Transform       EntriesPanelTransform;
+    public    List<EntryType> EntryObjects  = new List<EntryType>();
+    protected Vector2         EntryRectSize = new Vector2(750f, 64f);
+    protected bool            lastSortReversed;
+    protected Toggle          lastSortToggle;
+    public    int             maxEntriesBeforeScroll = 5;
+    public    Scrollbar       PanelScrollbar;
+    public    GameObject      Prefab_ColumnTitle;
+    public    GameObject      Prefab_CrewEntry;
+    public    Transform       ScrollRectTransform;
+    protected ToggleGroup     sortToggleGroup;
 
-	protected override void OnCmpEnable()
-	{
-		if (this.autoColumn)
-		{
-			this.UpdateColumnTitles();
-		}
-		this.Reconstruct();
-	}
+    protected override void OnActivate() {
+        base.OnActivate();
+        ClearEntries();
+        SpawnEntries();
+        PositionColumnTitles();
+        if (autoColumn) UpdateColumnTitles();
+        ConsumeMouseScroll = true;
+    }
 
-	private void ClearEntries()
-	{
-		for (int i = this.EntryObjects.Count - 1; i > -1; i--)
-		{
-			Util.KDestroyGameObject(this.EntryObjects[i]);
-		}
-		this.EntryObjects.Clear();
-	}
+    protected override void OnCmpEnable() {
+        if (autoColumn) UpdateColumnTitles();
+        Reconstruct();
+    }
 
-	protected void RefreshCrewPortraitContent()
-	{
-		this.EntryObjects.ForEach(delegate(EntryType eo)
-		{
-			eo.RefreshCrewPortraitContent();
-		});
-	}
+    private void ClearEntries() {
+        for (var i = EntryObjects.Count - 1; i > -1; i--) Util.KDestroyGameObject(EntryObjects[i]);
+        EntryObjects.Clear();
+    }
 
-	protected virtual void SpawnEntries()
-	{
-		if (this.EntryObjects.Count != 0)
-		{
-			this.ClearEntries();
-		}
-	}
+    protected void RefreshCrewPortraitContent() {
+        EntryObjects.ForEach(delegate(EntryType eo) { eo.RefreshCrewPortraitContent(); });
+    }
 
-	public override void ScreenUpdate(bool topLevel)
-	{
-		base.ScreenUpdate(topLevel);
-		if (this.autoColumn)
-		{
-			this.UpdateColumnTitles();
-		}
-		bool flag = false;
-		List<MinionIdentity> liveIdentities = new List<MinionIdentity>(Components.LiveMinionIdentities.Items);
-		if (this.EntryObjects.Count != liveIdentities.Count || this.EntryObjects.FindAll((EntryType o) => liveIdentities.Contains(o.Identity)).Count != this.EntryObjects.Count)
-		{
-			flag = true;
-		}
-		if (flag)
-		{
-			this.Reconstruct();
-		}
-		this.UpdateScroll();
-	}
+    protected virtual void SpawnEntries() {
+        if (EntryObjects.Count != 0) ClearEntries();
+    }
 
-	public void Reconstruct()
-	{
-		this.ClearEntries();
-		this.SpawnEntries();
-	}
+    public override void ScreenUpdate(bool topLevel) {
+        base.ScreenUpdate(topLevel);
+        if (autoColumn) UpdateColumnTitles();
+        var flag           = false;
+        var liveIdentities = new List<MinionIdentity>(Components.LiveMinionIdentities.Items);
+        if (EntryObjects.Count                                                   != liveIdentities.Count ||
+            EntryObjects.FindAll(o => liveIdentities.Contains(o.Identity)).Count != EntryObjects.Count)
+            flag = true;
 
-	private void UpdateScroll()
-	{
-		if (this.PanelScrollbar)
-		{
-			if (this.EntryObjects.Count <= this.maxEntriesBeforeScroll)
-			{
-				this.PanelScrollbar.value = Mathf.Lerp(this.PanelScrollbar.value, 1f, 10f);
-				this.PanelScrollbar.gameObject.SetActive(false);
-				return;
-			}
-			this.PanelScrollbar.gameObject.SetActive(true);
-		}
-	}
+        if (flag) Reconstruct();
+        UpdateScroll();
+    }
 
-	private void SetHeadersActive(bool state)
-	{
-		for (int i = 0; i < this.ColumnTitlesContainer.childCount; i++)
-		{
-			this.ColumnTitlesContainer.GetChild(i).gameObject.SetActive(state);
-		}
-	}
+    public void Reconstruct() {
+        ClearEntries();
+        SpawnEntries();
+    }
 
-	protected virtual void PositionColumnTitles()
-	{
-		if (this.ColumnTitlesContainer == null)
-		{
-			return;
-		}
-		if (this.EntryObjects.Count <= 0)
-		{
-			this.SetHeadersActive(false);
-			return;
-		}
-		this.SetHeadersActive(true);
-		int childCount = this.EntryObjects[0].transform.childCount;
-		for (int i = 0; i < childCount; i++)
-		{
-			OverviewColumnIdentity component = this.EntryObjects[0].transform.GetChild(i).GetComponent<OverviewColumnIdentity>();
-			if (component != null)
-			{
-				GameObject gameObject = Util.KInstantiate(this.Prefab_ColumnTitle, null, null);
-				gameObject.name = component.Column_DisplayName;
-				LocText componentInChildren = gameObject.GetComponentInChildren<LocText>();
-				gameObject.transform.SetParent(this.ColumnTitlesContainer);
-				componentInChildren.text = (component.StringLookup ? Strings.Get(component.Column_DisplayName) : component.Column_DisplayName);
-				gameObject.GetComponent<ToolTip>().toolTip = string.Format(UI.TOOLTIPS.SORTCOLUMN, componentInChildren.text);
-				gameObject.rectTransform().anchoredPosition = new Vector2(component.rectTransform().anchoredPosition.x, 0f);
-				OverviewColumnIdentity overviewColumnIdentity = gameObject.GetComponent<OverviewColumnIdentity>();
-				if (overviewColumnIdentity == null)
-				{
-					overviewColumnIdentity = gameObject.AddComponent<OverviewColumnIdentity>();
-				}
-				overviewColumnIdentity.Column_DisplayName = component.Column_DisplayName;
-				overviewColumnIdentity.columnID = component.columnID;
-				overviewColumnIdentity.xPivot = component.xPivot;
-				overviewColumnIdentity.Sortable = component.Sortable;
-				if (overviewColumnIdentity.Sortable)
-				{
-					overviewColumnIdentity.GetComponentInChildren<ImageToggleState>(true).gameObject.SetActive(true);
-				}
-			}
-		}
-		this.UpdateColumnTitles();
-		this.sortToggleGroup = base.gameObject.AddComponent<ToggleGroup>();
-		this.sortToggleGroup.allowSwitchOff = true;
-	}
+    private void UpdateScroll() {
+        if (PanelScrollbar) {
+            if (EntryObjects.Count <= maxEntriesBeforeScroll) {
+                PanelScrollbar.value = Mathf.Lerp(PanelScrollbar.value, 1f, 10f);
+                PanelScrollbar.gameObject.SetActive(false);
+                return;
+            }
 
-	protected void SortByName(bool reverse)
-	{
-		List<EntryType> list = new List<EntryType>(this.EntryObjects);
-		list.Sort(delegate(EntryType a, EntryType b)
-		{
-			string text = a.Identity.GetProperName() + a.gameObject.GetInstanceID().ToString();
-			string strB = b.Identity.GetProperName() + b.gameObject.GetInstanceID().ToString();
-			return text.CompareTo(strB);
-		});
-		this.ReorderEntries(list, reverse);
-	}
+            PanelScrollbar.gameObject.SetActive(true);
+        }
+    }
 
-	protected void UpdateColumnTitles()
-	{
-		if (this.EntryObjects.Count <= 0 || !this.EntryObjects[0].gameObject.activeSelf)
-		{
-			this.SetHeadersActive(false);
-			return;
-		}
-		this.SetHeadersActive(true);
-		for (int i = 0; i < this.ColumnTitlesContainer.childCount; i++)
-		{
-			RectTransform rectTransform = this.ColumnTitlesContainer.GetChild(i).rectTransform();
-			for (int j = 0; j < this.EntryObjects[0].transform.childCount; j++)
-			{
-				OverviewColumnIdentity component = this.EntryObjects[0].transform.GetChild(j).GetComponent<OverviewColumnIdentity>();
-				if (component != null && component.Column_DisplayName == rectTransform.name)
-				{
-					rectTransform.pivot = new Vector2(component.xPivot, rectTransform.pivot.y);
-					rectTransform.anchoredPosition = new Vector2(component.rectTransform().anchoredPosition.x + this.columnTitleHorizontalOffset, 0f);
-					rectTransform.sizeDelta = new Vector2(component.rectTransform().sizeDelta.x, rectTransform.sizeDelta.y);
-					if (rectTransform.anchoredPosition.x == 0f)
-					{
-						rectTransform.gameObject.SetActive(false);
-					}
-					else
-					{
-						rectTransform.gameObject.SetActive(true);
-					}
-				}
-			}
-		}
-	}
+    private void SetHeadersActive(bool state) {
+        for (var i = 0; i < ColumnTitlesContainer.childCount; i++)
+            ColumnTitlesContainer.GetChild(i).gameObject.SetActive(state);
+    }
 
-	protected void ReorderEntries(List<EntryType> sortedEntries, bool reverse)
-	{
-		for (int i = 0; i < sortedEntries.Count; i++)
-		{
-			if (reverse)
-			{
-				sortedEntries[i].transform.SetSiblingIndex(sortedEntries.Count - 1 - i);
-			}
-			else
-			{
-				sortedEntries[i].transform.SetSiblingIndex(i);
-			}
-		}
-	}
+    protected virtual void PositionColumnTitles() {
+        if (ColumnTitlesContainer == null) return;
 
-	public GameObject Prefab_CrewEntry;
+        if (EntryObjects.Count <= 0) {
+            SetHeadersActive(false);
+            return;
+        }
 
-	public List<EntryType> EntryObjects = new List<EntryType>();
+        SetHeadersActive(true);
+        var childCount = EntryObjects[0].transform.childCount;
+        for (var i = 0; i < childCount; i++) {
+            var component = EntryObjects[0].transform.GetChild(i).GetComponent<OverviewColumnIdentity>();
+            if (component != null) {
+                var gameObject = Util.KInstantiate(Prefab_ColumnTitle);
+                gameObject.name = component.Column_DisplayName;
+                var componentInChildren = gameObject.GetComponentInChildren<LocText>();
+                gameObject.transform.SetParent(ColumnTitlesContainer);
+                componentInChildren.text = component.StringLookup
+                                               ? Strings.Get(component.Column_DisplayName)
+                                               : component.Column_DisplayName;
 
-	public Transform ScrollRectTransform;
+                gameObject.GetComponent<ToolTip>().toolTip
+                    = string.Format(UI.TOOLTIPS.SORTCOLUMN, componentInChildren.text);
 
-	public Transform EntriesPanelTransform;
+                gameObject.rectTransform().anchoredPosition
+                    = new Vector2(component.rectTransform().anchoredPosition.x, 0f);
 
-	protected Vector2 EntryRectSize = new Vector2(750f, 64f);
+                var overviewColumnIdentity = gameObject.GetComponent<OverviewColumnIdentity>();
+                if (overviewColumnIdentity == null)
+                    overviewColumnIdentity = gameObject.AddComponent<OverviewColumnIdentity>();
 
-	public int maxEntriesBeforeScroll = 5;
+                overviewColumnIdentity.Column_DisplayName = component.Column_DisplayName;
+                overviewColumnIdentity.columnID           = component.columnID;
+                overviewColumnIdentity.xPivot             = component.xPivot;
+                overviewColumnIdentity.Sortable           = component.Sortable;
+                if (overviewColumnIdentity.Sortable)
+                    overviewColumnIdentity.GetComponentInChildren<ImageToggleState>(true).gameObject.SetActive(true);
+            }
+        }
 
-	public Scrollbar PanelScrollbar;
+        UpdateColumnTitles();
+        sortToggleGroup                = this.gameObject.AddComponent<ToggleGroup>();
+        sortToggleGroup.allowSwitchOff = true;
+    }
 
-	protected ToggleGroup sortToggleGroup;
+    protected void SortByName(bool reverse) {
+        var list = new List<EntryType>(EntryObjects);
+        list.Sort(delegate(EntryType a, EntryType b) {
+                      var text = a.Identity.GetProperName() + a.gameObject.GetInstanceID();
+                      var strB = b.Identity.GetProperName() + b.gameObject.GetInstanceID();
+                      return text.CompareTo(strB);
+                  });
 
-	protected Toggle lastSortToggle;
+        ReorderEntries(list, reverse);
+    }
 
-	protected bool lastSortReversed;
+    protected void UpdateColumnTitles() {
+        if (EntryObjects.Count <= 0 || !EntryObjects[0].gameObject.activeSelf) {
+            SetHeadersActive(false);
+            return;
+        }
 
-	public GameObject Prefab_ColumnTitle;
+        SetHeadersActive(true);
+        for (var i = 0; i < ColumnTitlesContainer.childCount; i++) {
+            var rectTransform = ColumnTitlesContainer.GetChild(i).rectTransform();
+            for (var j = 0; j < EntryObjects[0].transform.childCount; j++) {
+                var component = EntryObjects[0].transform.GetChild(j).GetComponent<OverviewColumnIdentity>();
+                if (component != null && component.Column_DisplayName == rectTransform.name) {
+                    rectTransform.pivot = new Vector2(component.xPivot, rectTransform.pivot.y);
+                    rectTransform.anchoredPosition
+                        = new Vector2(component.rectTransform().anchoredPosition.x + columnTitleHorizontalOffset, 0f);
 
-	public Transform ColumnTitlesContainer;
+                    rectTransform.sizeDelta
+                        = new Vector2(component.rectTransform().sizeDelta.x, rectTransform.sizeDelta.y);
 
-	public bool autoColumn;
+                    if (rectTransform.anchoredPosition.x == 0f)
+                        rectTransform.gameObject.SetActive(false);
+                    else
+                        rectTransform.gameObject.SetActive(true);
+                }
+            }
+        }
+    }
 
-	public float columnTitleHorizontalOffset;
+    protected void ReorderEntries(List<EntryType> sortedEntries, bool reverse) {
+        for (var i = 0; i < sortedEntries.Count; i++)
+            if (reverse)
+                sortedEntries[i].transform.SetSiblingIndex(sortedEntries.Count - 1 - i);
+            else
+                sortedEntries[i].transform.SetSiblingIndex(i);
+    }
 }

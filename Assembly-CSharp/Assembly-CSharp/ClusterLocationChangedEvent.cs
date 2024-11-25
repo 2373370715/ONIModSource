@@ -2,9 +2,9 @@
 
 public class ClusterLocationChangedEvent
 {
-	public ClusterGridEntity entity;
+		public ClusterGridEntity entity;
 
-	public AxialI oldLocation;
+		public AxialI oldLocation;
 
-	public AxialI newLocation;
+		public AxialI newLocation;
 }

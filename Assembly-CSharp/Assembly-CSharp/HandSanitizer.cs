@@ -7,13 +7,13 @@ using UnityEngine;
 
 public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IGameObjectEffectDescriptor, IBasicBuilding
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.gameObject.FindOrAddComponent<Workable>();
 	}
 
-	private void RefreshMeters()
+		private void RefreshMeters()
 	{
 		float positionPercent = 0f;
 		PrimaryElement primaryElement = base.GetComponent<Storage>().FindPrimaryElement(this.consumedElement);
@@ -37,7 +37,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 		this.dirtyMeter.SetPositionPercent(positionPercent2);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -58,14 +58,14 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 		this.OnDirectionChanged(base.GetComponent<DirectionControl>().allowedDirection);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.BasicBuildings.Remove(this);
 		Components.HandSanitizers.Remove(this);
 		base.OnCleanUp();
 	}
 
-	private void OnDirectionChanged(WorkableReactable.AllowedDirection allowed_direction)
+		private void OnDirectionChanged(WorkableReactable.AllowedDirection allowed_direction)
 	{
 		if (this.reactable != null)
 		{
@@ -73,7 +73,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 		}
 	}
 
-	public List<Descriptor> RequirementDescriptors()
+		public List<Descriptor> RequirementDescriptors()
 	{
 		return new List<Descriptor>
 		{
@@ -81,7 +81,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 		};
 	}
 
-	public List<Descriptor> EffectDescriptors()
+		public List<Descriptor> EffectDescriptors()
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.outputElement != SimHashes.Vacuum)
@@ -92,7 +92,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 		return list;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		list.AddRange(this.RequirementDescriptors());
@@ -100,7 +100,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 		return list;
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		if (this.dumpWhenFull && base.smi.OutputFull())
 		{
@@ -109,49 +109,49 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 		this.RefreshMeters();
 	}
 
-	public float massConsumedPerUse = 1f;
+		public float massConsumedPerUse = 1f;
 
-	public SimHashes consumedElement = SimHashes.BleachStone;
+		public SimHashes consumedElement = SimHashes.BleachStone;
 
-	public int diseaseRemovalCount = 10000;
+		public int diseaseRemovalCount = 10000;
 
-	public int maxUses = 10;
+		public int maxUses = 10;
 
-	public SimHashes outputElement = SimHashes.Vacuum;
+		public SimHashes outputElement = SimHashes.Vacuum;
 
-	public bool dumpWhenFull;
+		public bool dumpWhenFull;
 
-	public bool alwaysUse;
+		public bool alwaysUse;
 
-	public bool canSanitizeSuit;
+		public bool canSanitizeSuit;
 
-	public bool canSanitizeStorage;
+		public bool canSanitizeStorage;
 
-	private WorkableReactable reactable;
+		private WorkableReactable reactable;
 
-	private MeterController cleanMeter;
+		private MeterController cleanMeter;
 
-	private MeterController dirtyMeter;
+		private MeterController dirtyMeter;
 
-	public Meter.Offset cleanMeterOffset;
+		public Meter.Offset cleanMeterOffset;
 
-	public Meter.Offset dirtyMeterOffset;
+		public Meter.Offset dirtyMeterOffset;
 
-	[Serialize]
+		[Serialize]
 	public int maxPossiblyRemoved;
 
-	private static readonly EventSystem.IntraObjectHandler<HandSanitizer> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<HandSanitizer>(delegate(HandSanitizer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HandSanitizer> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<HandSanitizer>(delegate(HandSanitizer component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	private class WashHandsReactable : WorkableReactable
+		private class WashHandsReactable : WorkableReactable
 	{
-		public WashHandsReactable(Workable workable, ChoreType chore_type, WorkableReactable.AllowedDirection allowed_direction = WorkableReactable.AllowedDirection.Any) : base(workable, "WashHands", chore_type, allowed_direction)
+				public WashHandsReactable(Workable workable, ChoreType chore_type, WorkableReactable.AllowedDirection allowed_direction = WorkableReactable.AllowedDirection.Any) : base(workable, "WashHands", chore_type, allowed_direction)
 		{
 		}
 
-		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
+				public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
 			if (base.InternalCanBegin(new_reactor, transition))
 			{
@@ -174,13 +174,13 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 		}
 	}
 
-	public class SMInstance : GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.GameInstance
+		public class SMInstance : GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.GameInstance
 	{
-		public SMInstance(HandSanitizer master) : base(master)
+				public SMInstance(HandSanitizer master) : base(master)
 		{
 		}
 
-		private bool HasSufficientMass()
+				private bool HasSufficientMass()
 		{
 			bool result = false;
 			PrimaryElement primaryElement = base.GetComponent<Storage>().FindPrimaryElement(base.master.consumedElement);
@@ -191,18 +191,18 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 			return result;
 		}
 
-		public bool OutputFull()
+				public bool OutputFull()
 		{
 			PrimaryElement primaryElement = base.GetComponent<Storage>().FindPrimaryElement(base.master.outputElement);
 			return primaryElement != null && primaryElement.Mass >= (float)base.master.maxUses * base.master.massConsumedPerUse;
 		}
 
-		public bool IsReady()
+				public bool IsReady()
 		{
 			return this.HasSufficientMass() && !this.OutputFull();
 		}
 
-		public void DumpOutput()
+				public void DumpOutput()
 		{
 			Storage component = base.master.GetComponent<Storage>();
 			if (base.master.outputElement != SimHashes.Vacuum)
@@ -212,9 +212,9 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 		}
 	}
 
-	public class States : GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer>
+		public class States : GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.notready;
 			this.root.Update(new Action<HandSanitizer.SMInstance, float>(this.UpdateStatusItems), UpdateRate.SIM_200ms, false);
@@ -239,7 +239,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 			}).WorkableStopTransition((HandSanitizer.SMInstance smi) => smi.GetComponent<HandSanitizer.Work>(), this.notready);
 		}
 
-		private void UpdateStatusItems(HandSanitizer.SMInstance smi, float dt)
+				private void UpdateStatusItems(HandSanitizer.SMInstance smi, float dt)
 		{
 			if (smi.OutputFull())
 			{
@@ -249,28 +249,28 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 			smi.master.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.OutputPipeFull, false);
 		}
 
-		public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State notready;
+				public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State notready;
 
-		public HandSanitizer.States.ReadyStates ready;
+				public HandSanitizer.States.ReadyStates ready;
 
-		public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State notoperational;
+				public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State notoperational;
 
-		public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State full;
+				public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State full;
 
-		public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State empty;
+				public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State empty;
 
-		public class ReadyStates : GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State
+				public class ReadyStates : GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State
 		{
-			public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State free;
+						public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State free;
 
-			public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State occupied;
+						public GameStateMachine<HandSanitizer.States, HandSanitizer.SMInstance, HandSanitizer, object>.State occupied;
 		}
 	}
 
-	[AddComponentMenu("KMonoBehaviour/Workable/Work")]
+		[AddComponentMenu("KMonoBehaviour/Workable/Work")]
 	public class Work : Workable, IGameObjectEffectDescriptor
 	{
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			base.OnPrefabInit();
 			this.resetProgressOnStop = true;
@@ -281,13 +281,23 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 			}, null, null);
 		}
 
-		protected override void OnStartWork(Worker worker)
+				public override Workable.AnimInfo GetAnim(WorkerBase worker)
+		{
+			KAnimFile[] overrideAnims = null;
+			if (this.workerTypeOverrideAnims.TryGetValue(worker.PrefabID(), out overrideAnims))
+			{
+				this.overrideAnims = overrideAnims;
+			}
+			return base.GetAnim(worker);
+		}
+
+				protected override void OnStartWork(WorkerBase worker)
 		{
 			base.OnStartWork(worker);
 			this.diseaseRemoved = 0;
 		}
 
-		protected override bool OnWorkTick(Worker worker, float dt)
+				protected override bool OnWorkTick(WorkerBase worker, float dt)
 		{
 			base.OnWorkTick(worker, dt);
 			HandSanitizer component = base.GetComponent<HandSanitizer>();
@@ -331,7 +341,7 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 			return false;
 		}
 
-		protected override void OnCompleteWork(Worker worker)
+				protected override void OnCompleteWork(WorkerBase worker)
 		{
 			base.OnCompleteWork(worker);
 			if (this.removeIrritation && !worker.HasTag(GameTags.HasSuitTank))
@@ -344,8 +354,10 @@ public class HandSanitizer : StateMachineComponent<HandSanitizer.SMInstance>, IG
 			}
 		}
 
-		public bool removeIrritation;
+				public Dictionary<Tag, KAnimFile[]> workerTypeOverrideAnims = new Dictionary<Tag, KAnimFile[]>();
 
-		private int diseaseRemoved;
+				public bool removeIrritation;
+
+				private int diseaseRemoved;
 	}
 }

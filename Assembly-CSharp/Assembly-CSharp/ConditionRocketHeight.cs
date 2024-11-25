@@ -3,12 +3,12 @@ using STRINGS;
 
 public class ConditionRocketHeight : ProcessCondition
 {
-	public ConditionRocketHeight(RocketEngineCluster engine)
+		public ConditionRocketHeight(RocketEngineCluster engine)
 	{
 		this.engine = engine;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		if (this.engine.maxHeight < this.engine.GetComponent<RocketModuleCluster>().CraftInterface.RocketHeight)
 		{
@@ -17,7 +17,7 @@ public class ConditionRocketHeight : ProcessCondition
 		return ProcessCondition.Status.Ready;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		string result;
 		if (status != ProcessCondition.Status.Failure)
@@ -38,7 +38,7 @@ public class ConditionRocketHeight : ProcessCondition
 		return result;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		string result;
 		if (status != ProcessCondition.Status.Failure)
@@ -59,10 +59,10 @@ public class ConditionRocketHeight : ProcessCondition
 		return result;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private RocketEngineCluster engine;
+		private RocketEngineCluster engine;
 }

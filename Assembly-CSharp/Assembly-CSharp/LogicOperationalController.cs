@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LogicOperationalController")]
 public class LogicOperationalController : KMonoBehaviour
 {
-	public static List<LogicPorts.Port> CreateSingleInputPortList(CellOffset offset)
+		public static List<LogicPorts.Port> CreateSingleInputPortList(CellOffset offset)
 	{
 		return new List<LogicPorts.Port>
 		{
@@ -14,7 +14,7 @@ public class LogicOperationalController : KMonoBehaviour
 		};
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<LogicOperationalController>(-801688580, LogicOperationalController.OnLogicValueChangedDelegate);
@@ -26,13 +26,13 @@ public class LogicOperationalController : KMonoBehaviour
 		this.CheckWireState();
 	}
 
-	private LogicCircuitNetwork GetNetwork()
+		private LogicCircuitNetwork GetNetwork()
 	{
 		int portCell = base.GetComponent<LogicPorts>().GetPortCell(LogicOperationalController.PORT_ID);
 		return Game.Instance.logicCircuitManager.GetNetworkForCell(portCell);
 	}
 
-	private LogicCircuitNetwork CheckWireState()
+		private LogicCircuitNetwork CheckWireState()
 	{
 		LogicCircuitNetwork network = this.GetNetwork();
 		int value = (network != null) ? network.OutputValue : this.unNetworkedValue;
@@ -40,12 +40,12 @@ public class LogicOperationalController : KMonoBehaviour
 		return network;
 	}
 
-	private static string ResolveInfoStatusItemString(string format_str, object data)
+		private static string ResolveInfoStatusItemString(string format_str, object data)
 	{
 		return ((LogicOperationalController)data).operational.GetFlag(LogicOperationalController.LogicOperationalFlag) ? BUILDING.STATUSITEMS.LOGIC.LOGIC_CONTROLLED_ENABLED : BUILDING.STATUSITEMS.LOGIC.LOGIC_CONTROLLED_DISABLED;
 	}
 
-	private void OnLogicValueChanged(object data)
+		private void OnLogicValueChanged(object data)
 	{
 		if (((LogicValueChanged)data).portID == LogicOperationalController.PORT_ID)
 		{
@@ -54,18 +54,18 @@ public class LogicOperationalController : KMonoBehaviour
 		}
 	}
 
-	public static readonly HashedString PORT_ID = "LogicOperational";
+		public static readonly HashedString PORT_ID = "LogicOperational";
 
-	public int unNetworkedValue = 1;
+		public int unNetworkedValue = 1;
 
-	public static readonly Operational.Flag LogicOperationalFlag = new Operational.Flag("LogicOperational", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag LogicOperationalFlag = new Operational.Flag("LogicOperational", Operational.Flag.Type.Requirement);
 
-	private static StatusItem infoStatusItem;
+		private static StatusItem infoStatusItem;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public Operational operational;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicOperationalController> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicOperationalController>(delegate(LogicOperationalController component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicOperationalController> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicOperationalController>(delegate(LogicOperationalController component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});

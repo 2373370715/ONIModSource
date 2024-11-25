@@ -3,12 +3,12 @@
 [SkipSaveFileSerialization]
 public class SolitarySleeper : StateMachineComponent<SolitarySleeper.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	protected bool IsUncomfortable()
+		protected bool IsUncomfortable()
 	{
 		if (!base.gameObject.GetSMI<StaminaMonitor.Instance>().IsSleeping())
 		{
@@ -45,16 +45,16 @@ public class SolitarySleeper : StateMachineComponent<SolitarySleeper.StatesInsta
 		return false;
 	}
 
-	public class StatesInstance : GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper, object>.GameInstance
+		public class StatesInstance : GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper, object>.GameInstance
 	{
-		public StatesInstance(SolitarySleeper master) : base(master)
+				public StatesInstance(SolitarySleeper master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper>
+		public class States : GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.satisfied;
 			this.root.TagTransition(GameTags.Dead, null, false).EventTransition(GameHashes.NewDay, this.satisfied, null).Update("SolitarySleeperCheck", delegate(SolitarySleeper.StatesInstance smi, float dt)
@@ -79,8 +79,8 @@ public class SolitarySleeper : StateMachineComponent<SolitarySleeper.StatesInsta
 			this.satisfied.DoNothing();
 		}
 
-		public GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper, object>.State satisfied;
+				public GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper, object>.State satisfied;
 
-		public GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper, object>.State suffering;
+				public GameStateMachine<SolitarySleeper.States, SolitarySleeper.StatesInstance, SolitarySleeper, object>.State suffering;
 	}
 }

@@ -7,32 +7,32 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FetchManager")]
 public class FetchManager : KMonoBehaviour, ISim1000ms
 {
-	private static int QuantizeRotValue(float rot_value)
+		private static int QuantizeRotValue(float rot_value)
 	{
 		return (int)(4f * rot_value);
 	}
 
-	[Conditional("ENABLE_FETCH_PROFILING")]
+		[Conditional("ENABLE_FETCH_PROFILING")]
 	private static void BeginDetailedSample(string region_name)
 	{
 	}
 
-	[Conditional("ENABLE_FETCH_PROFILING")]
+		[Conditional("ENABLE_FETCH_PROFILING")]
 	private static void BeginDetailedSample(string region_name, int count)
 	{
 	}
 
-	[Conditional("ENABLE_FETCH_PROFILING")]
+		[Conditional("ENABLE_FETCH_PROFILING")]
 	private static void EndDetailedSample(string region_name)
 	{
 	}
 
-	[Conditional("ENABLE_FETCH_PROFILING")]
+		[Conditional("ENABLE_FETCH_PROFILING")]
 	private static void EndDetailedSample(string region_name, int count)
 	{
 	}
 
-	public HandleVector<int>.Handle Add(Pickupable pickupable)
+		public HandleVector<int>.Handle Add(Pickupable pickupable)
 	{
 		Tag tag = pickupable.KPrefabID.PrefabID();
 		FetchManager.FetchablesByPrefabId fetchablesByPrefabId = null;
@@ -44,7 +44,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		return fetchablesByPrefabId.AddPickupable(pickupable);
 	}
 
-	public void Remove(Tag prefab_tag, HandleVector<int>.Handle fetchable_handle)
+		public void Remove(Tag prefab_tag, HandleVector<int>.Handle fetchable_handle)
 	{
 		FetchManager.FetchablesByPrefabId fetchablesByPrefabId;
 		if (this.prefabIdToFetchables.TryGetValue(prefab_tag, out fetchablesByPrefabId))
@@ -53,7 +53,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public void UpdateStorage(Tag prefab_tag, HandleVector<int>.Handle fetchable_handle, Storage storage)
+		public void UpdateStorage(Tag prefab_tag, HandleVector<int>.Handle fetchable_handle, Storage storage)
 	{
 		FetchManager.FetchablesByPrefabId fetchablesByPrefabId;
 		if (this.prefabIdToFetchables.TryGetValue(prefab_tag, out fetchablesByPrefabId))
@@ -62,12 +62,12 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public void UpdateTags(Tag prefab_tag, HandleVector<int>.Handle fetchable_handle)
+		public void UpdateTags(Tag prefab_tag, HandleVector<int>.Handle fetchable_handle)
 	{
 		this.prefabIdToFetchables[prefab_tag].UpdateTags(fetchable_handle);
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		foreach (KeyValuePair<Tag, FetchManager.FetchablesByPrefabId> keyValuePair in this.prefabIdToFetchables)
 		{
@@ -75,14 +75,15 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public void UpdatePickups(PathProber path_prober, Worker worker)
+		public void UpdatePickups(PathProber path_prober, WorkerBase worker)
 	{
 		Navigator component = worker.GetComponent<Navigator>();
+		this.updateOffsetTables.Reset(null);
 		this.updatePickupsWorkItems.Reset(null);
 		foreach (KeyValuePair<Tag, FetchManager.FetchablesByPrefabId> keyValuePair in this.prefabIdToFetchables)
 		{
 			FetchManager.FetchablesByPrefabId value = keyValuePair.Value;
-			value.UpdateOffsetTables();
+			this.updateOffsetTables.Add(new FetchManager.UpdateOffsetTables(value));
 			this.updatePickupsWorkItems.Add(new FetchManager.UpdatePickupWorkItem
 			{
 				fetchablesByPrefabId = value,
@@ -90,6 +91,11 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 				navigator = component,
 				worker = worker.gameObject
 			});
+		}
+		GlobalJobManager.Run(this.updateOffsetTables);
+		for (int i = 0; i < this.updateOffsetTables.Count; i++)
+		{
+			this.updateOffsetTables.GetWorkItem(i).Finish();
 		}
 		OffsetTracker.isExecutingWithinJob = true;
 		GlobalJobManager.Run(this.updatePickupsWorkItems);
@@ -102,7 +108,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		this.pickups.Sort(FetchManager.ComparerNoPriority);
 	}
 
-	public static bool IsFetchablePickup(Pickupable pickup, FetchChore chore, Storage destination)
+		public static bool IsFetchablePickup(Pickupable pickup, FetchChore chore, Storage destination)
 	{
 		KPrefabID kprefabID = pickup.KPrefabID;
 		Storage storage = pickup.storage;
@@ -152,7 +158,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		return true;
 	}
 
-	public static Pickupable FindFetchTarget(List<Pickupable> pickupables, Storage destination, FetchChore chore)
+		public static Pickupable FindFetchTarget(List<Pickupable> pickupables, Storage destination, FetchChore chore)
 	{
 		foreach (Pickupable pickupable in pickupables)
 		{
@@ -164,7 +170,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		return null;
 	}
 
-	public Pickupable FindFetchTarget(Storage destination, FetchChore chore)
+		public Pickupable FindFetchTarget(Storage destination, FetchChore chore)
 	{
 		foreach (FetchManager.Pickup pickup in this.pickups)
 		{
@@ -176,7 +182,15 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		return null;
 	}
 
-	public static bool IsFetchablePickup_Exclude(KPrefabID pickup_id, Storage source, float pickup_unreserved_amount, HashSet<Tag> exclude_tags, Tag required_tag, Storage destination)
+		public static bool IsFetchablePickup_Exclude(KPrefabID pickup_id, Storage source, float pickup_unreserved_amount, HashSet<Tag> exclude_tags, Tag required_tag, Storage destination)
+	{
+		return FetchManager.IsFetchablePickup_Exclude(pickup_id, source, pickup_unreserved_amount, exclude_tags, new Tag[]
+		{
+			required_tag
+		}, destination);
+	}
+
+		public static bool IsFetchablePickup_Exclude(KPrefabID pickup_id, Storage source, float pickup_unreserved_amount, HashSet<Tag> exclude_tags, Tag[] required_tags, Storage destination)
 	{
 		if (pickup_unreserved_amount <= 0f)
 		{
@@ -190,7 +204,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		{
 			return false;
 		}
-		if (!pickup_id.HasTag(required_tag))
+		if (!pickup_id.HasAllTags(required_tags))
 		{
 			return false;
 		}
@@ -208,7 +222,15 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		return true;
 	}
 
-	public Pickupable FindEdibleFetchTarget(Storage destination, HashSet<Tag> exclude_tags, Tag required_tag)
+		public Pickupable FindEdibleFetchTarget(Storage destination, HashSet<Tag> exclude_tags, Tag required_tag)
+	{
+		return this.FindEdibleFetchTarget(destination, exclude_tags, new Tag[]
+		{
+			required_tag
+		});
+	}
+
+		public Pickupable FindEdibleFetchTarget(Storage destination, HashSet<Tag> exclude_tags, Tag[] required_tags)
 	{
 		FetchManager.Pickup pickup = new FetchManager.Pickup
 		{
@@ -219,7 +241,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		foreach (FetchManager.Pickup pickup2 in this.pickups)
 		{
 			Pickupable pickupable = pickup2.pickupable;
-			if (FetchManager.IsFetchablePickup_Exclude(pickupable.KPrefabID, pickupable.storage, pickupable.UnreservedAmount, exclude_tags, required_tag, destination))
+			if (FetchManager.IsFetchablePickup_Exclude(pickupable.KPrefabID, pickupable.storage, pickupable.UnreservedAmount, exclude_tags, required_tags, destination))
 			{
 				int num2 = (int)pickup2.PathCost + (5 - pickup2.foodQuality) * 50;
 				if (num2 < num)
@@ -249,7 +271,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 							{
 								Edible component2 = storage.items[0].GetComponent<Edible>();
 								Pickupable component3 = component2.GetComponent<Pickupable>();
-								if (FetchManager.IsFetchablePickup_Exclude(component3.KPrefabID, component3.storage, component3.UnreservedAmount, exclude_tags, required_tag, destination))
+								if (FetchManager.IsFetchablePickup_Exclude(component3.KPrefabID, component3.storage, component3.UnreservedAmount, exclude_tags, required_tags, destination))
 								{
 									int num3 = cost + (5 - component2.FoodInfo.Quality + 1) * 50 + 5;
 									if (num3 < num)
@@ -269,48 +291,50 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		return pickup.pickupable;
 	}
 
-	private static readonly FetchManager.PickupComparerIncludingPriority ComparerIncludingPriority = new FetchManager.PickupComparerIncludingPriority();
+		private static readonly FetchManager.PickupComparerIncludingPriority ComparerIncludingPriority = new FetchManager.PickupComparerIncludingPriority();
 
-	private static readonly FetchManager.PickupComparerNoPriority ComparerNoPriority = new FetchManager.PickupComparerNoPriority();
+		private static readonly FetchManager.PickupComparerNoPriority ComparerNoPriority = new FetchManager.PickupComparerNoPriority();
 
-	private List<FetchManager.Pickup> pickups = new List<FetchManager.Pickup>();
+		private List<FetchManager.Pickup> pickups = new List<FetchManager.Pickup>();
 
-	public Dictionary<Tag, FetchManager.FetchablesByPrefabId> prefabIdToFetchables = new Dictionary<Tag, FetchManager.FetchablesByPrefabId>();
+		public Dictionary<Tag, FetchManager.FetchablesByPrefabId> prefabIdToFetchables = new Dictionary<Tag, FetchManager.FetchablesByPrefabId>();
 
-	private WorkItemCollection<FetchManager.UpdatePickupWorkItem, object> updatePickupsWorkItems = new WorkItemCollection<FetchManager.UpdatePickupWorkItem, object>();
+		private WorkItemCollection<FetchManager.UpdateOffsetTables, object> updateOffsetTables = new WorkItemCollection<FetchManager.UpdateOffsetTables, object>();
 
-	public struct Fetchable
+		private WorkItemCollection<FetchManager.UpdatePickupWorkItem, object> updatePickupsWorkItems = new WorkItemCollection<FetchManager.UpdatePickupWorkItem, object>();
+
+		public struct Fetchable
 	{
-		public Pickupable pickupable;
+				public Pickupable pickupable;
 
-		public int tagBitsHash;
+				public int tagBitsHash;
 
-		public int masterPriority;
+				public int masterPriority;
 
-		public int freshness;
+				public int freshness;
 
-		public int foodQuality;
+				public int foodQuality;
 	}
 
-	[DebuggerDisplay("{pickupable.name}")]
+		[DebuggerDisplay("{pickupable.name}")]
 	public struct Pickup
 	{
-		public Pickupable pickupable;
+				public Pickupable pickupable;
 
-		public int tagBitsHash;
+				public int tagBitsHash;
 
-		public ushort PathCost;
+				public ushort PathCost;
 
-		public int masterPriority;
+				public int masterPriority;
 
-		public int freshness;
+				public int freshness;
 
-		public int foodQuality;
+				public int foodQuality;
 	}
 
-	private class PickupComparerIncludingPriority : IComparer<FetchManager.Pickup>
+		private class PickupComparerIncludingPriority : IComparer<FetchManager.Pickup>
 	{
-		public int Compare(FetchManager.Pickup a, FetchManager.Pickup b)
+				public int Compare(FetchManager.Pickup a, FetchManager.Pickup b)
 		{
 			int num = a.tagBitsHash.CompareTo(b.tagBitsHash);
 			if (num != 0)
@@ -336,9 +360,9 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	private class PickupComparerNoPriority : IComparer<FetchManager.Pickup>
+		private class PickupComparerNoPriority : IComparer<FetchManager.Pickup>
 	{
-		public int Compare(FetchManager.Pickup a, FetchManager.Pickup b)
+				public int Compare(FetchManager.Pickup a, FetchManager.Pickup b)
 		{
 			int num = a.PathCost.CompareTo(b.PathCost);
 			if (num != 0)
@@ -354,11 +378,11 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 		}
 	}
 
-	public class FetchablesByPrefabId
+		public class FetchablesByPrefabId
 	{
-						public Tag prefabId { get; private set; }
+								public Tag prefabId { get; private set; }
 
-		public FetchablesByPrefabId(Tag prefab_id)
+				public FetchablesByPrefabId(Tag prefab_id)
 		{
 			this.prefabId = prefab_id;
 			this.fetchables = new KCompactedVector<FetchManager.Fetchable>(0);
@@ -366,7 +390,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 			this.finalPickups = new List<FetchManager.Pickup>();
 		}
 
-		public HandleVector<int>.Handle AddPickupable(Pickupable pickupable)
+				public HandleVector<int>.Handle AddPickupable(Pickupable pickupable)
 		{
 			int foodQuality = 5;
 			Edible component = pickupable.GetComponent<Edible>();
@@ -405,13 +429,13 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 			return handle;
 		}
 
-		public void RemovePickupable(HandleVector<int>.Handle fetchable_handle)
+				public void RemovePickupable(HandleVector<int>.Handle fetchable_handle)
 		{
 			this.fetchables.Free(fetchable_handle);
 			this.rotUpdaters.Remove(fetchable_handle);
 		}
 
-		public void UpdatePickups(PathProber path_prober, Navigator worker_navigator, GameObject worker_go)
+				public void UpdatePickups(PathProber path_prober, Navigator worker_navigator, GameObject worker_go)
 		{
 			this.GatherPickupablesWhichCanBePickedUp(worker_go);
 			this.GatherReachablePickups(worker_navigator);
@@ -450,7 +474,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 			}
 		}
 
-		private void GatherPickupablesWhichCanBePickedUp(GameObject worker_go)
+				private void GatherPickupablesWhichCanBePickedUp(GameObject worker_go)
 		{
 			this.pickupsWhichCanBePickedUp.Clear();
 			foreach (FetchManager.Fetchable fetchable in this.fetchables.GetDataList())
@@ -471,7 +495,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 			}
 		}
 
-		public void UpdateOffsetTables()
+				public void UpdateOffsetTables()
 		{
 			foreach (FetchManager.Fetchable fetchable in this.fetchables.GetDataList())
 			{
@@ -479,7 +503,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 			}
 		}
 
-		private void GatherReachablePickups(Navigator navigator)
+				private void GatherReachablePickups(Navigator navigator)
 		{
 			this.cellCosts.Clear();
 			this.finalPickups.Clear();
@@ -507,7 +531,7 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 			}
 		}
 
-		public void UpdateStorage(HandleVector<int>.Handle fetchable_handle, Storage storage)
+				public void UpdateStorage(HandleVector<int>.Handle fetchable_handle, Storage storage)
 		{
 			FetchManager.Fetchable data = this.fetchables.GetData(fetchable_handle);
 			int masterPriority = 0;
@@ -524,14 +548,14 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 			this.fetchables.SetData(fetchable_handle, data);
 		}
 
-		public void UpdateTags(HandleVector<int>.Handle fetchable_handle)
+				public void UpdateTags(HandleVector<int>.Handle fetchable_handle)
 		{
 			FetchManager.Fetchable data = this.fetchables.GetData(fetchable_handle);
 			data.tagBitsHash = data.pickupable.KPrefabID.GetTagsHash();
 			this.fetchables.SetData(fetchable_handle, data);
 		}
 
-		public void Sim1000ms(float dt)
+				public void Sim1000ms(float dt)
 		{
 			foreach (KeyValuePair<HandleVector<int>.Handle, Rottable.Instance> keyValuePair in this.rotUpdaters)
 			{
@@ -543,30 +567,68 @@ public class FetchManager : KMonoBehaviour, ISim1000ms
 			}
 		}
 
-		public KCompactedVector<FetchManager.Fetchable> fetchables;
+				public KCompactedVector<FetchManager.Fetchable> fetchables;
 
-		public List<FetchManager.Pickup> finalPickups = new List<FetchManager.Pickup>();
+				public List<FetchManager.Pickup> finalPickups = new List<FetchManager.Pickup>();
 
-		private Dictionary<HandleVector<int>.Handle, Rottable.Instance> rotUpdaters;
+				private Dictionary<HandleVector<int>.Handle, Rottable.Instance> rotUpdaters;
 
-		private List<FetchManager.Pickup> pickupsWhichCanBePickedUp = new List<FetchManager.Pickup>();
+				private List<FetchManager.Pickup> pickupsWhichCanBePickedUp = new List<FetchManager.Pickup>();
 
-		private Dictionary<int, int> cellCosts = new Dictionary<int, int>();
+				private Dictionary<int, int> cellCosts = new Dictionary<int, int>();
 	}
 
-	private struct UpdatePickupWorkItem : IWorkItem<object>
+		private struct UpdateOffsetTables : IWorkItem<object>
 	{
-		public void Run(object shared_data)
+				public UpdateOffsetTables(FetchManager.FetchablesByPrefabId fetchables)
+		{
+			this.data = fetchables;
+			this.failed = ListPool<Pickupable, FetchManager.UpdateOffsetTables>.Allocate();
+		}
+
+				public void Run(object _)
+		{
+			if (Game.IsOnMainThread())
+			{
+				this.data.UpdateOffsetTables();
+				return;
+			}
+			foreach (FetchManager.Fetchable fetchable in this.data.fetchables.GetDataList())
+			{
+				if (!fetchable.pickupable.ValidateOffsets(fetchable.pickupable.cachedCell))
+				{
+					this.failed.Add(fetchable.pickupable);
+				}
+			}
+		}
+
+				public void Finish()
+		{
+			foreach (Pickupable pickupable in this.failed)
+			{
+				pickupable.GetOffsets(pickupable.cachedCell);
+			}
+			this.failed.Recycle();
+		}
+
+				public FetchManager.FetchablesByPrefabId data;
+
+				private ListPool<Pickupable, FetchManager.UpdateOffsetTables>.PooledList failed;
+	}
+
+		private struct UpdatePickupWorkItem : IWorkItem<object>
+	{
+				public void Run(object shared_data)
 		{
 			this.fetchablesByPrefabId.UpdatePickups(this.pathProber, this.navigator, this.worker);
 		}
 
-		public FetchManager.FetchablesByPrefabId fetchablesByPrefabId;
+				public FetchManager.FetchablesByPrefabId fetchablesByPrefabId;
 
-		public PathProber pathProber;
+				public PathProber pathProber;
 
-		public Navigator navigator;
+				public Navigator navigator;
 
-		public GameObject worker;
+				public GameObject worker;
 	}
 }

@@ -5,32 +5,32 @@ using TUNING;
 
 public class EquippableBalloon : StateMachineComponent<EquippableBalloon.StatesInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.smi.transitionTime = GameClock.Instance.GetTime() + TRAITS.JOY_REACTIONS.JOY_REACTION_DURATION;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 		this.ApplyBalloonOverrideToBalloonFx();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	public void SetBalloonOverride(BalloonOverrideSymbol balloonOverride)
+		public void SetBalloonOverride(BalloonOverrideSymbol balloonOverride)
 	{
 		base.smi.facadeAnim = balloonOverride.animFileID;
 		base.smi.symbolID = balloonOverride.animFileSymbolID;
 		this.ApplyBalloonOverrideToBalloonFx();
 	}
 
-	public void ApplyBalloonOverrideToBalloonFx()
+		public void ApplyBalloonOverrideToBalloonFx()
 	{
 		Equippable component = base.GetComponent<Equippable>();
 		if (!component.IsNullOrDestroyed() && !component.assignee.IsNullOrDestroyed())
@@ -48,25 +48,25 @@ public class EquippableBalloon : StateMachineComponent<EquippableBalloon.StatesI
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<EquippableBalloon.States, EquippableBalloon.StatesInstance, EquippableBalloon, object>.GameInstance
+		public class StatesInstance : GameStateMachine<EquippableBalloon.States, EquippableBalloon.StatesInstance, EquippableBalloon, object>.GameInstance
 	{
-		public StatesInstance(EquippableBalloon master) : base(master)
+				public StatesInstance(EquippableBalloon master) : base(master)
 		{
 		}
 
-		[Serialize]
+				[Serialize]
 		public float transitionTime;
 
-		[Serialize]
+				[Serialize]
 		public string facadeAnim;
 
-		[Serialize]
+				[Serialize]
 		public string symbolID;
 	}
 
-	public class States : GameStateMachine<EquippableBalloon.States, EquippableBalloon.StatesInstance, EquippableBalloon>
+		public class States : GameStateMachine<EquippableBalloon.States, EquippableBalloon.StatesInstance, EquippableBalloon>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.root;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -77,6 +77,6 @@ public class EquippableBalloon : StateMachineComponent<EquippableBalloon.StatesI
 			});
 		}
 
-		public GameStateMachine<EquippableBalloon.States, EquippableBalloon.StatesInstance, EquippableBalloon, object>.State destroy;
+				public GameStateMachine<EquippableBalloon.States, EquippableBalloon.StatesInstance, EquippableBalloon, object>.State destroy;
 	}
 }

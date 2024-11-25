@@ -4,14 +4,14 @@ using STRINGS;
 
 namespace Database
 {
-	public class BuildRoomType : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class BuildRoomType : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public BuildRoomType(RoomType roomType)
+				public BuildRoomType(RoomType roomType)
 		{
 			this.roomType = roomType;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			using (List<Room>.Enumerator enumerator = Game.Instance.roomProber.rooms.GetEnumerator())
 			{
@@ -26,17 +26,17 @@ namespace Database
 			return false;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			string id = reader.ReadKleiString();
 			this.roomType = Db.Get().RoomTypes.Get(id);
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.BUILT_A_ROOM, this.roomType.Name);
 		}
 
-		private RoomType roomType;
+				private RoomType roomType;
 	}
 }

@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class MultipleRenderTarget : MonoBehaviour
 {
-			public event Action<Camera> onSetupComplete;
+				public event Action<Camera> onSetupComplete;
 
-	private void Start()
+		private void Start()
 	{
 		base.StartCoroutine(this.SetupProxy());
 	}
 
-	private IEnumerator SetupProxy()
+		private IEnumerator SetupProxy()
 	{
 		yield return null;
 		Camera component = base.GetComponent<Camera>();
@@ -32,7 +32,7 @@ public class MultipleRenderTarget : MonoBehaviour
 		yield break;
 	}
 
-	private void OnPreCull()
+		private void OnPreCull()
 	{
 		if (this.renderProxy != null)
 		{
@@ -40,7 +40,7 @@ public class MultipleRenderTarget : MonoBehaviour
 		}
 	}
 
-	public void ToggleColouredOverlayView(bool enabled)
+		public void ToggleColouredOverlayView(bool enabled)
 	{
 		if (this.renderProxy != null)
 		{
@@ -48,9 +48,9 @@ public class MultipleRenderTarget : MonoBehaviour
 		}
 	}
 
-	private MultipleRenderTargetProxy renderProxy;
+		private MultipleRenderTargetProxy renderProxy;
 
-	private FullScreenQuad quad;
+		private FullScreenQuad quad;
 
-	public bool isFrontEnd;
+		public bool isFrontEnd;
 }

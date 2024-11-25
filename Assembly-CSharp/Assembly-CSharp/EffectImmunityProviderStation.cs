@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EffectImmunityProviderStation<StateMachineInstanceType> : GameStateMachine<EffectImmunityProviderStation<StateMachineInstanceType>, StateMachineInstanceType, IStateMachineTarget, EffectImmunityProviderStation<StateMachineInstanceType>.Def> where StateMachineInstanceType : EffectImmunityProviderStation<StateMachineInstanceType>.BaseInstance
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.inactive;
@@ -12,13 +12,13 @@ public class EffectImmunityProviderStation<StateMachineInstanceType> : GameState
 		this.active.EventTransition(GameHashes.ActiveChanged, this.inactive, (StateMachineInstanceType smi) => !smi.GetComponent<Operational>().IsActive);
 	}
 
-	public GameStateMachine<EffectImmunityProviderStation<StateMachineInstanceType>, StateMachineInstanceType, IStateMachineTarget, EffectImmunityProviderStation<StateMachineInstanceType>.Def>.State inactive;
+		public GameStateMachine<EffectImmunityProviderStation<StateMachineInstanceType>, StateMachineInstanceType, IStateMachineTarget, EffectImmunityProviderStation<StateMachineInstanceType>.Def>.State inactive;
 
-	public GameStateMachine<EffectImmunityProviderStation<StateMachineInstanceType>, StateMachineInstanceType, IStateMachineTarget, EffectImmunityProviderStation<StateMachineInstanceType>.Def>.State active;
+		public GameStateMachine<EffectImmunityProviderStation<StateMachineInstanceType>, StateMachineInstanceType, IStateMachineTarget, EffectImmunityProviderStation<StateMachineInstanceType>.Def>.State active;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public virtual string[] DefaultAnims()
+				public virtual string[] DefaultAnims()
 		{
 			return new string[]
 			{
@@ -28,12 +28,12 @@ public class EffectImmunityProviderStation<StateMachineInstanceType> : GameState
 			};
 		}
 
-		public virtual string DefaultAnimFileName()
+				public virtual string DefaultAnimFileName()
 		{
 			return "anim_warmup_kanim";
 		}
 
-		public string[] GetAnimNames()
+				public string[] GetAnimNames()
 		{
 			if (this.overrideAnims != null)
 			{
@@ -42,37 +42,34 @@ public class EffectImmunityProviderStation<StateMachineInstanceType> : GameState
 			return this.DefaultAnims();
 		}
 
-		public string GetAnimFileName()
+				public string GetAnimFileName(GameObject entity)
 		{
 			if (this.overrideFileName != null)
 			{
-				return this.overrideFileName;
+				return this.overrideFileName(entity);
 			}
 			return this.DefaultAnimFileName();
 		}
 
-		public Action<GameObject, StateMachineInstanceType> onEffectApplied;
+				public Action<GameObject, StateMachineInstanceType> onEffectApplied;
 
-		public Func<GameObject, bool> specialRequirements;
+				public Func<GameObject, bool> specialRequirements;
 
-		public string overrideFileName;
+				public Func<GameObject, string> overrideFileName;
 
-		public string[] overrideAnims;
+				public string[] overrideAnims;
 
-		public CellOffset[][] range;
+				public CellOffset[][] range;
 	}
 
-	public abstract class BaseInstance : GameStateMachine<EffectImmunityProviderStation<StateMachineInstanceType>, StateMachineInstanceType, IStateMachineTarget, EffectImmunityProviderStation<StateMachineInstanceType>.Def>.GameInstance
+		public abstract class BaseInstance : GameStateMachine<EffectImmunityProviderStation<StateMachineInstanceType>, StateMachineInstanceType, IStateMachineTarget, EffectImmunityProviderStation<StateMachineInstanceType>.Def>.GameInstance
 	{
-				public string AnimFileName
+				public string GetAnimFileName(GameObject entity)
 		{
-			get
-			{
-				return base.def.GetAnimFileName();
-			}
+			return base.def.GetAnimFileName(entity);
 		}
 
-				public string PreAnimName
+						public string PreAnimName
 		{
 			get
 			{
@@ -80,7 +77,7 @@ public class EffectImmunityProviderStation<StateMachineInstanceType> : GameState
 			}
 		}
 
-				public string LoopAnimName
+						public string LoopAnimName
 		{
 			get
 			{
@@ -88,7 +85,7 @@ public class EffectImmunityProviderStation<StateMachineInstanceType> : GameState
 			}
 		}
 
-				public string PstAnimName
+						public string PstAnimName
 		{
 			get
 			{
@@ -96,7 +93,7 @@ public class EffectImmunityProviderStation<StateMachineInstanceType> : GameState
 			}
 		}
 
-				public bool CanBeUsed
+						public bool CanBeUsed
 		{
 			get
 			{
@@ -104,7 +101,7 @@ public class EffectImmunityProviderStation<StateMachineInstanceType> : GameState
 			}
 		}
 
-				protected bool IsActive
+						protected bool IsActive
 		{
 			get
 			{
@@ -112,11 +109,11 @@ public class EffectImmunityProviderStation<StateMachineInstanceType> : GameState
 			}
 		}
 
-		public BaseInstance(IStateMachineTarget master, EffectImmunityProviderStation<StateMachineInstanceType>.Def def) : base(master, def)
+				public BaseInstance(IStateMachineTarget master, EffectImmunityProviderStation<StateMachineInstanceType>.Def def) : base(master, def)
 		{
 		}
 
-		public int GetBestAvailableCell(Navigator dupeLooking, out int _cost)
+				public int GetBestAvailableCell(Navigator dupeLooking, out int _cost)
 		{
 			_cost = int.MaxValue;
 			if (!this.CanBeUsed)
@@ -159,7 +156,7 @@ public class EffectImmunityProviderStation<StateMachineInstanceType> : GameState
 			return Grid.InvalidCell;
 		}
 
-		public void ApplyImmunityEffect(GameObject target, bool triggerEvents = true)
+				public void ApplyImmunityEffect(GameObject target, bool triggerEvents = true)
 		{
 			Effects component = target.GetComponent<Effects>();
 			if (component == null)
@@ -178,15 +175,15 @@ public class EffectImmunityProviderStation<StateMachineInstanceType> : GameState
 			}
 		}
 
-		protected abstract void ApplyImmunityEffect(Effects target);
+				protected abstract void ApplyImmunityEffect(Effects target);
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			Components.EffectImmunityProviderStations.Add(this);
 			base.StartSM();
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			Components.EffectImmunityProviderStations.Remove(this);
 			base.OnCleanUp();

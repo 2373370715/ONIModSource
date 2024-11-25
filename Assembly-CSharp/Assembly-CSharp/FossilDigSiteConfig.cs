@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class FossilDigSiteConfig : IBuildingConfig
 {
-	public static string GetBodyContentForFossil(int id)
+		public static string GetBodyContentForFossil(int id)
 	{
 		return CODEX.STORY_TRAITS.FOSSILHUNT.DNADATA_ENTRY.TELEPORTFAILURE;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "FossilDig";
 		int width = 5;
@@ -40,7 +40,7 @@ public class FossilDigSiteConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddTag(GameTags.Gravitas);
 		go.GetComponent<Deconstructable>().allowDeconstruction = false;
@@ -78,7 +78,7 @@ public class FossilDigSiteConfig : IBuildingConfig
 		go.AddOrGet<LoopingSounds>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		KBatchedAnimController component = go.GetComponent<KBatchedAnimController>();
 		component.defaultAnim = "covered";
@@ -86,7 +86,7 @@ public class FossilDigSiteConfig : IBuildingConfig
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 	}
 
-	private void ConfigureRecipes()
+		private void ConfigureRecipes()
 	{
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[]
 		{
@@ -107,23 +107,23 @@ public class FossilDigSiteConfig : IBuildingConfig
 		complexRecipe.sortOrder = 21;
 	}
 
-	public static int DiscoveredDigsitesRequired = 4;
+		public static int DiscoveredDigsitesRequired = 4;
 
-	public static HashedString hashID = new HashedString("FossilDig");
+		public static HashedString hashID = new HashedString("FossilDig");
 
-	public const string ID = "FossilDig";
+		public const string ID = "FossilDig";
 
-	public static readonly HashedString QUEST_CRITERIA = "LostSpecimen";
+		public static readonly HashedString QUEST_CRITERIA = "LostSpecimen";
 
-	public const string CODEX_ENTRY_ID = "STORYTRAITFOSSILHUNT";
+		public const string CODEX_ENTRY_ID = "STORYTRAITFOSSILHUNT";
 
-	public static class FOSSIL_HUNT_LORE_UNLOCK_ID
+		public static class FOSSIL_HUNT_LORE_UNLOCK_ID
 	{
-		public static string For(int id)
+				public static string For(int id)
 		{
 			return string.Format("story_trait_fossilhunt_poi{0}", Mathf.Clamp(id, 1, FossilDigSiteConfig.FOSSIL_HUNT_LORE_UNLOCK_ID.popupsAvailablesForSmallSites));
 		}
 
-		public static int popupsAvailablesForSmallSites = 3;
+				public static int popupsAvailablesForSmallSites = 3;
 	}
 }

@@ -4,12 +4,12 @@ using UnityEngine.Events;
 
 public class FileNameDialog : KModalScreen
 {
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 150f;
 	}
 
-	public void SetTextAndSelect(string text)
+		public void SetTextAndSelect(string text)
 	{
 		if (this.inputField == null)
 		{
@@ -19,7 +19,7 @@ public class FileNameDialog : KModalScreen
 		this.inputField.Select();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.confirmButton.onClick += this.OnConfirm;
@@ -32,7 +32,7 @@ public class FileNameDialog : KModalScreen
 		this.inputField.onEndEdit.AddListener(new UnityAction<string>(this.OnEndEdit));
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		this.inputField.Select();
@@ -40,13 +40,13 @@ public class FileNameDialog : KModalScreen
 		CameraController.Instance.DisableUserCameraControl = true;
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		CameraController.Instance.DisableUserCameraControl = false;
 		base.OnDeactivate();
 	}
 
-	public void OnConfirm()
+		public void OnConfirm()
 	{
 		if (this.onConfirm != null && !string.IsNullOrEmpty(this.inputField.text))
 		{
@@ -60,7 +60,7 @@ public class FileNameDialog : KModalScreen
 		}
 	}
 
-	private void OnEndEdit(string str)
+		private void OnEndEdit(string str)
 	{
 		if (Localization.HasDirtyWords(str))
 		{
@@ -68,7 +68,7 @@ public class FileNameDialog : KModalScreen
 		}
 	}
 
-	public void OnCancel()
+		public void OnCancel()
 	{
 		if (this.onCancel != null)
 		{
@@ -77,7 +77,7 @@ public class FileNameDialog : KModalScreen
 		this.Deactivate();
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape))
 		{
@@ -90,24 +90,24 @@ public class FileNameDialog : KModalScreen
 		e.Consumed = true;
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		e.Consumed = true;
 	}
 
-	public Action<string> onConfirm;
+		public Action<string> onConfirm;
 
-	public System.Action onCancel;
+		public System.Action onCancel;
 
-	[SerializeField]
+		[SerializeField]
 	private KInputTextField inputField;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton confirmButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton cancelButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LogicRibbonConfig : BaseLogicWireConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LogicRibbon";
 		string anim = "logic_ribbon_kanim";
@@ -14,10 +14,10 @@ public class LogicRibbonConfig : BaseLogicWireConfig
 		return base.CreateBuildingDef(id, anim, construction_time, tier, BUILDINGS.DECOR.PENALTY.TIER0, none);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		base.DoPostConfigureComplete(LogicWire.BitDepth.FourBit, go);
 	}
 
-	public const string ID = "LogicRibbon";
+		public const string ID = "LogicRibbon";
 }

@@ -6,8 +6,9 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/MessStation")]
 public class MessStation : Workable, IGameObjectEffectDescriptor
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
+		this.ownable.AddAssignPrecondition(new Func<MinionAssignablesProxy, bool>(this.HasCaloriesOwnablePrecondition));
 		base.OnPrefabInit();
 		this.overrideAnims = new KAnimFile[]
 		{
@@ -15,19 +16,30 @@ public class MessStation : Workable, IGameObjectEffectDescriptor
 		};
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		private bool HasCaloriesOwnablePrecondition(MinionAssignablesProxy worker)
 	{
-		worker.workable.GetComponent<Edible>().CompleteWork(worker);
+		bool result = false;
+		MinionIdentity minionIdentity = worker.target as MinionIdentity;
+		if (minionIdentity != null)
+		{
+			result = (Db.Get().Amounts.Calories.Lookup(minionIdentity) != null);
+		}
+		return result;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnCompleteWork(WorkerBase worker)
+	{
+		worker.GetWorkable().GetComponent<Edible>().CompleteWork(worker);
+	}
+
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.smi = new MessStation.MessStationSM.Instance(this);
 		this.smi.StartSM();
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (go.GetComponent<Storage>().Has(TableSaltConfig.ID.ToTag()))
@@ -37,7 +49,7 @@ public class MessStation : Workable, IGameObjectEffectDescriptor
 		return list;
 	}
 
-		public bool HasSalt
+			public bool HasSalt
 	{
 		get
 		{
@@ -45,11 +57,14 @@ public class MessStation : Workable, IGameObjectEffectDescriptor
 		}
 	}
 
-	private MessStation.MessStationSM.Instance smi;
+		[MyCmpGet]
+	private Ownable ownable;
 
-	public class MessStationSM : GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation>
+		private MessStation.MessStationSM.Instance smi;
+
+		public class MessStationSM : GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.salt.none;
 			this.salt.none.Transition(this.salt.salty, (MessStation.MessStationSM.Instance smi) => smi.HasSalt, UpdateRate.SIM_200ms).PlayAnim("off");
@@ -57,26 +72,26 @@ public class MessStation : Workable, IGameObjectEffectDescriptor
 			this.eating.Transition(this.salt.salty, (MessStation.MessStationSM.Instance smi) => smi.HasSalt && !smi.IsEating(), UpdateRate.SIM_200ms).Transition(this.salt.none, (MessStation.MessStationSM.Instance smi) => !smi.HasSalt && !smi.IsEating(), UpdateRate.SIM_200ms).PlayAnim("off");
 		}
 
-		public MessStation.MessStationSM.SaltState salt;
+				public MessStation.MessStationSM.SaltState salt;
 
-		public GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation, object>.State eating;
+				public GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation, object>.State eating;
 
-		public class SaltState : GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation, object>.State
+				public class SaltState : GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation, object>.State
 		{
-			public GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation, object>.State none;
+						public GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation, object>.State none;
 
-			public GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation, object>.State salty;
+						public GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation, object>.State salty;
 		}
 
-		public new class Instance : GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation, object>.GameInstance
+				public new class Instance : GameStateMachine<MessStation.MessStationSM, MessStation.MessStationSM.Instance, MessStation, object>.GameInstance
 		{
-			public Instance(MessStation master) : base(master)
+						public Instance(MessStation master) : base(master)
 			{
 				this.saltStorage = master.GetComponent<Storage>();
 				this.assigned = master.GetComponent<Assignable>();
 			}
 
-						public bool HasSalt
+									public bool HasSalt
 			{
 				get
 				{
@@ -84,7 +99,7 @@ public class MessStation : Workable, IGameObjectEffectDescriptor
 				}
 			}
 
-			public bool IsEating()
+						public bool IsEating()
 			{
 				if (this.assigned == null || this.assigned.assignee == null)
 				{
@@ -104,9 +119,9 @@ public class MessStation : Workable, IGameObjectEffectDescriptor
 				return component != null && component.HasChore() && component.GetCurrentChore().choreType.urge == Db.Get().Urges.Eat;
 			}
 
-			private Storage saltStorage;
+						private Storage saltStorage;
 
-			private Assignable assigned;
+						private Assignable assigned;
 		}
 	}
 }

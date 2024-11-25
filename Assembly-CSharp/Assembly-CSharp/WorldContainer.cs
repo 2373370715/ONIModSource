@@ -14,12 +14,12 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class WorldContainer : KMonoBehaviour
 {
-			[Serialize]
+				[Serialize]
 	public WorldInventory worldInventory { get; private set; }
 
-			public Dictionary<Tag, float> materialNeeds { get; private set; }
+				public Dictionary<Tag, float> materialNeeds { get; private set; }
 
-		public bool IsModuleInterior
+			public bool IsModuleInterior
 	{
 		get
 		{
@@ -27,7 +27,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public bool IsDiscovered
+			public bool IsDiscovered
 	{
 		get
 		{
@@ -35,7 +35,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public bool IsStartWorld
+			public bool IsStartWorld
 	{
 		get
 		{
@@ -43,7 +43,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public bool IsDupeVisited
+			public bool IsDupeVisited
 	{
 		get
 		{
@@ -51,7 +51,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public float DupeVisitedTimestamp
+			public float DupeVisitedTimestamp
 	{
 		get
 		{
@@ -59,7 +59,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public float DiscoveryTimestamp
+			public float DiscoveryTimestamp
 	{
 		get
 		{
@@ -67,7 +67,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public bool IsRoverVisted
+			public bool IsRoverVisted
 	{
 		get
 		{
@@ -75,7 +75,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public bool IsSurfaceRevealed
+			public bool IsSurfaceRevealed
 	{
 		get
 		{
@@ -83,7 +83,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public Dictionary<string, int> SunlightFixedTraits
+			public Dictionary<string, int> SunlightFixedTraits
 	{
 		get
 		{
@@ -91,7 +91,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public Dictionary<string, int> NorthernLightsFixedTraits
+			public Dictionary<string, int> NorthernLightsFixedTraits
 	{
 		get
 		{
@@ -99,7 +99,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public Dictionary<string, int> CosmicRadiationFixedTraits
+			public Dictionary<string, int> CosmicRadiationFixedTraits
 	{
 		get
 		{
@@ -107,7 +107,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public List<string> Biomes
+			public List<string> Biomes
 	{
 		get
 		{
@@ -115,7 +115,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public List<string> GeneratedBiomes
+			public List<string> GeneratedBiomes
 	{
 		get
 		{
@@ -123,7 +123,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public List<string> WorldTraitIds
+			public List<string> WorldTraitIds
 	{
 		get
 		{
@@ -131,7 +131,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public List<string> StoryTraitIds
+			public List<string> StoryTraitIds
 	{
 		get
 		{
@@ -139,7 +139,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public AlertStateManager.Instance AlertManager
+			public AlertStateManager.Instance AlertManager
 	{
 		get
 		{
@@ -153,7 +153,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	public void AddTopPriorityPrioritizable(Prioritizable prioritizable)
+		public void AddTopPriorityPrioritizable(Prioritizable prioritizable)
 	{
 		if (!this.yellowAlertTasks.Contains(prioritizable))
 		{
@@ -162,7 +162,7 @@ public class WorldContainer : KMonoBehaviour
 		this.RefreshHasTopPriorityChore();
 	}
 
-	public void RemoveTopPriorityPrioritizable(Prioritizable prioritizable)
+		public void RemoveTopPriorityPrioritizable(Prioritizable prioritizable)
 	{
 		for (int i = this.yellowAlertTasks.Count - 1; i >= 0; i--)
 		{
@@ -174,9 +174,40 @@ public class WorldContainer : KMonoBehaviour
 		this.RefreshHasTopPriorityChore();
 	}
 
-			public int ParentWorldId { get; private set; }
+				public int ParentWorldId { get; private set; }
 
-	public Quadrant[] GetQuadrantOfCell(int cell, int depth = 1)
+		public ICollection<int> GetChildWorldIds()
+	{
+		return this.m_childWorlds;
+	}
+
+		private void OnWorldRemoved(object data)
+	{
+		int num = (data is int) ? ((int)data) : 255;
+		if (num != 255)
+		{
+			this.m_childWorlds.Remove(num);
+		}
+	}
+
+		private void OnWorldParentChanged(object data)
+	{
+		WorldParentChangedEventArgs worldParentChangedEventArgs = data as WorldParentChangedEventArgs;
+		if (worldParentChangedEventArgs == null)
+		{
+			return;
+		}
+		if (worldParentChangedEventArgs.world.ParentWorldId == this.id)
+		{
+			this.m_childWorlds.Add(worldParentChangedEventArgs.world.id);
+		}
+		if (worldParentChangedEventArgs.lastParentId == this.ParentWorldId)
+		{
+			this.m_childWorlds.Remove(worldParentChangedEventArgs.world.id);
+		}
+	}
+
+		public Quadrant[] GetQuadrantOfCell(int cell, int depth = 1)
 	{
 		Vector2 vector = new Vector2((float)this.WorldSize.x * Grid.CellSizeInMeters, (float)this.worldSize.y * Grid.CellSizeInMeters);
 		Vector2 vector2 = Grid.CellToPos2D(Grid.XYToCell(this.WorldOffset.x, this.WorldOffset.y));
@@ -229,21 +260,23 @@ public class WorldContainer : KMonoBehaviour
 		return array;
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		this.ParentWorldId = this.id;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.worldInventory = base.GetComponent<WorldInventory>();
 		this.materialNeeds = new Dictionary<Tag, float>();
 		ClusterManager.Instance.RegisterWorldContainer(this);
+		Game.Instance.Subscribe(880851192, new Action<object>(this.OnWorldParentChanged));
+		ClusterManager.Instance.Subscribe(-1078710002, new Action<object>(this.OnWorldRemoved));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.gameObject.AddOrGet<InfoDescription>().DescriptionLocString = this.worldDescription;
@@ -257,13 +290,15 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		SaveGame.Instance.materialSelectorSerializer.WipeWorldSelectionData(this.id);
+		Game.Instance.Unsubscribe(880851192, new Action<object>(this.OnWorldParentChanged));
+		ClusterManager.Instance.Unsubscribe(-1078710002, new Action<object>(this.OnWorldRemoved));
 		base.OnCleanUp();
 	}
 
-	private void UpgradeFixedTraits()
+		private void UpgradeFixedTraits()
 	{
 		if (this.sunlightFixedTrait == null || this.sunlightFixedTrait == "")
 		{
@@ -363,14 +398,14 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	private void RefreshFixedTraits()
+		private void RefreshFixedTraits()
 	{
 		this.sunlight = this.GetSunlightValueFromFixedTrait();
 		this.cosmicRadiation = this.GetCosmicRadiationValueFromFixedTrait();
 		this.northernlights = this.GetNorthernlightValueFromFixedTrait();
 	}
 
-	private void RefreshHasTopPriorityChore()
+		private void RefreshHasTopPriorityChore()
 	{
 		if (this.AlertManager != null)
 		{
@@ -378,22 +413,22 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	public List<string> GetSeasonIds()
+		public List<string> GetSeasonIds()
 	{
 		return this.m_seasonIds;
 	}
 
-	public bool IsRedAlert()
+		public bool IsRedAlert()
 	{
 		return this.m_alertManager.IsRedAlert();
 	}
 
-	public bool IsYellowAlert()
+		public bool IsYellowAlert()
 	{
 		return this.m_alertManager.IsYellowAlert();
 	}
 
-	public string GetRandomName()
+		public string GetRandomName()
 	{
 		if (!this.overrideName.IsNullOrWhiteSpace())
 		{
@@ -402,13 +437,13 @@ public class WorldContainer : KMonoBehaviour
 		return GameUtil.GenerateRandomWorldName(this.nameTables);
 	}
 
-	public void SetID(int id)
+		public void SetID(int id)
 	{
 		this.id = id;
 		this.ParentWorldId = id;
 	}
 
-	public void SetParentIdx(int parentIdx)
+		public void SetParentIdx(int parentIdx)
 	{
 		this.parentChangeArgs.lastParentId = this.ParentWorldId;
 		this.parentChangeArgs.world = this;
@@ -417,7 +452,7 @@ public class WorldContainer : KMonoBehaviour
 		this.parentChangeArgs.lastParentId = 255;
 	}
 
-		public Vector2 minimumBounds
+			public Vector2 minimumBounds
 	{
 		get
 		{
@@ -425,7 +460,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public Vector2 maximumBounds
+			public Vector2 maximumBounds
 	{
 		get
 		{
@@ -433,7 +468,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public Vector2I WorldSize
+			public Vector2I WorldSize
 	{
 		get
 		{
@@ -441,7 +476,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public Vector2I WorldOffset
+			public Vector2I WorldOffset
 	{
 		get
 		{
@@ -449,7 +484,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public bool FullyEnclosedBorder
+			public bool FullyEnclosedBorder
 	{
 		get
 		{
@@ -457,7 +492,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public int Height
+			public int Height
 	{
 		get
 		{
@@ -465,7 +500,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-		public int Width
+			public int Width
 	{
 		get
 		{
@@ -473,7 +508,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	public void SetDiscovered(bool reveal_surface = false)
+		public void SetDiscovered(bool reveal_surface = false)
 	{
 		if (!this.isDiscovered)
 		{
@@ -487,7 +522,7 @@ public class WorldContainer : KMonoBehaviour
 		Game.Instance.Trigger(-521212405, this);
 	}
 
-	public void SetDupeVisited()
+		public void SetDupeVisited()
 	{
 		if (!this.isDupeVisited)
 		{
@@ -497,12 +532,12 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	public void SetRoverLanded()
+		public void SetRoverLanded()
 	{
 		this.isRoverVisited = true;
 	}
 
-	public void SetRocketInteriorWorldDetails(int world_id, Vector2I size, Vector2I offset)
+		public void SetRocketInteriorWorldDetails(int world_id, Vector2I size, Vector2I offset)
 	{
 		this.SetID(world_id);
 		this.fullyEnclosedBorder = true;
@@ -513,7 +548,7 @@ public class WorldContainer : KMonoBehaviour
 		this.m_seasonIds = new List<string>();
 	}
 
-	private static int IsClockwise(Vector2 first, Vector2 second, Vector2 origin)
+		private static int IsClockwise(Vector2 first, Vector2 second, Vector2 origin)
 	{
 		if (first == second)
 		{
@@ -538,7 +573,7 @@ public class WorldContainer : KMonoBehaviour
 		return 1;
 	}
 
-	public void PlaceInteriorTemplate(string template_name, System.Action callback)
+		public void PlaceInteriorTemplate(string template_name, System.Action callback)
 	{
 		TemplateContainer template = TemplateCache.GetTemplate(template_name);
 		Vector2 pos = new Vector2((float)(this.worldSize.x / 2 + this.worldOffset.x), (float)(this.worldSize.y / 2 + this.worldOffset.y));
@@ -595,7 +630,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	private int GetDefaultValueForFixedTraitCategory(Dictionary<string, int> traitCategory)
+		private int GetDefaultValueForFixedTraitCategory(Dictionary<string, int> traitCategory)
 	{
 		if (traitCategory == this.northernLightsFixedTraits)
 		{
@@ -612,7 +647,7 @@ public class WorldContainer : KMonoBehaviour
 		return 0;
 	}
 
-	private string GetDefaultFixedTraitFor(Dictionary<string, int> traitCategory)
+		private string GetDefaultFixedTraitFor(Dictionary<string, int> traitCategory)
 	{
 		if (traitCategory == this.northernLightsFixedTraits)
 		{
@@ -629,7 +664,7 @@ public class WorldContainer : KMonoBehaviour
 		return null;
 	}
 
-	private string GetFixedTraitsFor(Dictionary<string, int> traitCategory, WorldGen world)
+		private string GetFixedTraitsFor(Dictionary<string, int> traitCategory, WorldGen world)
 	{
 		foreach (string text in world.Settings.world.fixedTraits)
 		{
@@ -641,7 +676,7 @@ public class WorldContainer : KMonoBehaviour
 		return this.GetDefaultFixedTraitFor(traitCategory);
 	}
 
-	private int GetFixedTraitValueForTrait(Dictionary<string, int> traitCategory, ref string trait)
+		private int GetFixedTraitValueForTrait(Dictionary<string, int> traitCategory, ref string trait)
 	{
 		if (trait == null)
 		{
@@ -654,37 +689,37 @@ public class WorldContainer : KMonoBehaviour
 		return this.GetDefaultValueForFixedTraitCategory(traitCategory);
 	}
 
-	private string GetNorthernlightFixedTraits(WorldGen world)
+		private string GetNorthernlightFixedTraits(WorldGen world)
 	{
 		return this.GetFixedTraitsFor(this.northernLightsFixedTraits, world);
 	}
 
-	private string GetSunlightFromFixedTraits(WorldGen world)
+		private string GetSunlightFromFixedTraits(WorldGen world)
 	{
 		return this.GetFixedTraitsFor(this.sunlightFixedTraits, world);
 	}
 
-	private string GetCosmicRadiationFromFixedTraits(WorldGen world)
+		private string GetCosmicRadiationFromFixedTraits(WorldGen world)
 	{
 		return this.GetFixedTraitsFor(this.cosmicRadiationFixedTraits, world);
 	}
 
-	private int GetNorthernlightValueFromFixedTrait()
+		private int GetNorthernlightValueFromFixedTrait()
 	{
 		return this.GetFixedTraitValueForTrait(this.northernLightsFixedTraits, ref this.northernLightFixedTrait);
 	}
 
-	private int GetSunlightValueFromFixedTrait()
+		private int GetSunlightValueFromFixedTrait()
 	{
 		return this.GetFixedTraitValueForTrait(this.sunlightFixedTraits, ref this.sunlightFixedTrait);
 	}
 
-	private int GetCosmicRadiationValueFromFixedTrait()
+		private int GetCosmicRadiationValueFromFixedTrait()
 	{
 		return this.GetFixedTraitValueForTrait(this.cosmicRadiationFixedTraits, ref this.cosmicRadiationFixedTrait);
 	}
 
-	public void SetWorldDetails(WorldGen world)
+		public void SetWorldDetails(WorldGen world)
 	{
 		if (world != null)
 		{
@@ -734,12 +769,12 @@ public class WorldContainer : KMonoBehaviour
 		};
 	}
 
-	public bool ContainsPoint(Vector2 point)
+		public bool ContainsPoint(Vector2 point)
 	{
 		return point.x >= (float)this.worldOffset.x && point.y >= (float)this.worldOffset.y && point.x < (float)(this.worldOffset.x + this.worldSize.x) && point.y < (float)(this.worldOffset.y + this.worldSize.y);
 	}
 
-	public void LookAtSurface()
+		public void LookAtSurface()
 	{
 		if (!this.IsDupeVisited)
 		{
@@ -752,7 +787,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	public void RevealSurface()
+		public void RevealSurface()
 	{
 		if (this.isSurfaceRevealed)
 		{
@@ -773,7 +808,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	private Vector3? SetSurfaceCameraPos()
+		private Vector3? SetSurfaceCameraPos()
 	{
 		if (SaveGame.Instance != null)
 		{
@@ -799,7 +834,7 @@ public class WorldContainer : KMonoBehaviour
 		return null;
 	}
 
-	public void EjectAllDupes(Vector3 spawn_pos)
+		public void EjectAllDupes(Vector3 spawn_pos)
 	{
 		foreach (MinionIdentity minionIdentity in Components.MinionIdentities.GetWorldItems(this.id, false))
 		{
@@ -807,7 +842,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	public void SpacePodAllDupes(AxialI sourceLocation, SimHashes podElement)
+		public void SpacePodAllDupes(AxialI sourceLocation, SimHashes podElement)
 	{
 		foreach (MinionIdentity minionIdentity in Components.MinionIdentities.GetWorldItems(this.id, false))
 		{
@@ -825,7 +860,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	public void DestroyWorldBuildings(out HashSet<int> noRefundTiles)
+		public void DestroyWorldBuildings(out HashSet<int> noRefundTiles)
 	{
 		this.TransferBuildingMaterials(out noRefundTiles);
 		foreach (ClustercraftInteriorDoor cmp in Components.ClusterCraftInteriorDoors.GetWorldItems(this.id, false))
@@ -835,13 +870,13 @@ public class WorldContainer : KMonoBehaviour
 		this.ClearWorldZones();
 	}
 
-	public void TransferResourcesToParentWorld(Vector3 spawn_pos, HashSet<int> noRefundTiles)
+		public void TransferResourcesToParentWorld(Vector3 spawn_pos, HashSet<int> noRefundTiles)
 	{
 		this.TransferPickupables(spawn_pos);
 		this.TransferLiquidsSolidsAndGases(spawn_pos, noRefundTiles);
 	}
 
-	public void TransferResourcesToDebris(AxialI sourceLocation, HashSet<int> noRefundTiles, SimHashes debrisContainerElement)
+		public void TransferResourcesToDebris(AxialI sourceLocation, HashSet<int> noRefundTiles, SimHashes debrisContainerElement)
 	{
 		List<Storage> list = new List<Storage>();
 		this.TransferPickupablesToDebris(ref list, debrisContainerElement);
@@ -854,7 +889,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	private void TransferBuildingMaterials(out HashSet<int> noRefundTiles)
+		private void TransferBuildingMaterials(out HashSet<int> noRefundTiles)
 	{
 		HashSet<int> retTemplateFoundationCells = new HashSet<int>();
 		ListPool<ScenePartitionerEntry, ClusterManager>.PooledList pooledList = ListPool<ScenePartitionerEntry, ClusterManager>.Allocate();
@@ -928,7 +963,7 @@ public class WorldContainer : KMonoBehaviour
 		noRefundTiles = retTemplateFoundationCells;
 	}
 
-	private void TransferPickupables(Vector3 pos)
+		private void TransferPickupables(Vector3 pos)
 	{
 		int cell = Grid.PosToCell(pos);
 		ListPool<ScenePartitionerEntry, ClusterManager>.PooledList pooledList = ListPool<ScenePartitionerEntry, ClusterManager>.Allocate();
@@ -947,7 +982,7 @@ public class WorldContainer : KMonoBehaviour
 		pooledList.Recycle();
 	}
 
-	private void TransferLiquidsSolidsAndGases(Vector3 pos, HashSet<int> noRefundTiles)
+		private void TransferLiquidsSolidsAndGases(Vector3 pos, HashSet<int> noRefundTiles)
 	{
 		int num = (int)this.minimumBounds.x;
 		while ((float)num <= this.maximumBounds.x)
@@ -970,7 +1005,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	private void TransferPickupablesToDebris(ref List<Storage> debrisObjects, SimHashes debrisContainerElement)
+		private void TransferPickupablesToDebris(ref List<Storage> debrisObjects, SimHashes debrisContainerElement)
 	{
 		ListPool<ScenePartitionerEntry, ClusterManager>.PooledList pooledList = ListPool<ScenePartitionerEntry, ClusterManager>.Allocate();
 		GameScenePartitioner.Instance.GatherEntries((int)this.minimumBounds.x, (int)this.minimumBounds.y, this.Width, this.Height, GameScenePartitioner.Instance.pickupablesLayer, pooledList);
@@ -981,7 +1016,7 @@ public class WorldContainer : KMonoBehaviour
 				Pickupable pickupable = scenePartitionerEntry.obj as Pickupable;
 				if (pickupable != null)
 				{
-					if (pickupable.KPrefabID.IsPrefabID(GameTags.Minion))
+					if (pickupable.KPrefabID.HasTag(GameTags.BaseMinion))
 					{
 						global::Util.KDestroyGameObject(pickupable.gameObject);
 					}
@@ -1011,7 +1046,7 @@ public class WorldContainer : KMonoBehaviour
 		pooledList.Recycle();
 	}
 
-	private void TransferLiquidsSolidsAndGasesToDebris(ref List<Storage> debrisObjects, HashSet<int> noRefundTiles, SimHashes debrisContainerElement)
+		private void TransferLiquidsSolidsAndGasesToDebris(ref List<Storage> debrisObjects, HashSet<int> noRefundTiles, SimHashes debrisContainerElement)
 	{
 		int num = (int)this.minimumBounds.x;
 		while ((float)num <= this.maximumBounds.x)
@@ -1051,7 +1086,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	public void CancelChores()
+		public void CancelChores()
 	{
 		for (int i = 0; i < 45; i++)
 		{
@@ -1098,7 +1133,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	public void ClearWorldZones()
+		public void ClearWorldZones()
 	{
 		if (this.overworldCell != null)
 		{
@@ -1131,7 +1166,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	}
 
-	public int GetSafeCell()
+		public int GetSafeCell()
 	{
 		if (this.IsModuleInterior)
 		{
@@ -1159,99 +1194,99 @@ public class WorldContainer : KMonoBehaviour
 		return Grid.XYToCell(this.worldOffset.x + this.worldSize.x / 2, this.worldOffset.y + this.worldSize.y / 2);
 	}
 
-	public string GetStatus()
+		public string GetStatus()
 	{
 		return ColonyDiagnosticUtility.Instance.GetWorldDiagnosticResultStatus(this.id);
 	}
 
-	[Serialize]
+		[Serialize]
 	public int id = -1;
 
-	[Serialize]
+		[Serialize]
 	public Tag prefabTag;
 
-	[Serialize]
+		[Serialize]
 	private Vector2I worldOffset;
 
-	[Serialize]
+		[Serialize]
 	private Vector2I worldSize;
 
-	[Serialize]
+		[Serialize]
 	private bool fullyEnclosedBorder;
 
-	[Serialize]
+		[Serialize]
 	private bool isModuleInterior;
 
-	[Serialize]
+		[Serialize]
 	private WorldDetailSave.OverworldCell overworldCell;
 
-	[Serialize]
+		[Serialize]
 	private bool isDiscovered;
 
-	[Serialize]
+		[Serialize]
 	private bool isStartWorld;
 
-	[Serialize]
+		[Serialize]
 	private bool isDupeVisited;
 
-	[Serialize]
+		[Serialize]
 	private float dupeVisitedTimestamp = -1f;
 
-	[Serialize]
+		[Serialize]
 	private float discoveryTimestamp = -1f;
 
-	[Serialize]
+		[Serialize]
 	private bool isRoverVisited;
 
-	[Serialize]
+		[Serialize]
 	private bool isSurfaceRevealed;
 
-	[Serialize]
+		[Serialize]
 	public string worldName;
 
-	[Serialize]
+		[Serialize]
 	public string[] nameTables;
 
-	[Serialize]
+		[Serialize]
 	public Tag[] worldTags;
 
-	[Serialize]
+		[Serialize]
 	public string overrideName;
 
-	[Serialize]
+		[Serialize]
 	public string worldType;
 
-	[Serialize]
+		[Serialize]
 	public string worldDescription;
 
-	[Serialize]
+		[Serialize]
 	public int northernlights = FIXEDTRAITS.NORTHERNLIGHTS.DEFAULT_VALUE;
 
-	[Serialize]
+		[Serialize]
 	public int sunlight = FIXEDTRAITS.SUNLIGHT.DEFAULT_VALUE;
 
-	[Serialize]
+		[Serialize]
 	public int cosmicRadiation = FIXEDTRAITS.COSMICRADIATION.DEFAULT_VALUE;
 
-	[Serialize]
+		[Serialize]
 	public float currentSunlightIntensity;
 
-	[Serialize]
+		[Serialize]
 	public float currentCosmicIntensity = (float)FIXEDTRAITS.COSMICRADIATION.DEFAULT_VALUE;
 
-	[Serialize]
+		[Serialize]
 	public string sunlightFixedTrait;
 
-	[Serialize]
+		[Serialize]
 	public string cosmicRadiationFixedTrait;
 
-	[Serialize]
+		[Serialize]
 	public string northernLightFixedTrait;
 
-	[Serialize]
+		[Serialize]
 	public int fixedTraitsUpdateVersion = 1;
 
-	private Dictionary<string, int> sunlightFixedTraits = new Dictionary<string, int>
+		private Dictionary<string, int> sunlightFixedTraits = new Dictionary<string, int>
 	{
 		{
 			FIXEDTRAITS.SUNLIGHT.NAME.NONE,
@@ -1299,7 +1334,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	};
 
-	private Dictionary<string, int> northernLightsFixedTraits = new Dictionary<string, int>
+		private Dictionary<string, int> northernLightsFixedTraits = new Dictionary<string, int>
 	{
 		{
 			FIXEDTRAITS.NORTHERNLIGHTS.NAME.NONE,
@@ -1311,7 +1346,7 @@ public class WorldContainer : KMonoBehaviour
 		}
 	};
 
-	private Dictionary<string, int> cosmicRadiationFixedTraits = new Dictionary<string, int>
+		private Dictionary<string, int> cosmicRadiationFixedTraits = new Dictionary<string, int>
 	{
 		{
 			FIXEDTRAITS.COSMICRADIATION.NAME.NONE,
@@ -1355,25 +1390,27 @@ public class WorldContainer : KMonoBehaviour
 		}
 	};
 
-	[Serialize]
+		[Serialize]
 	private List<string> m_seasonIds;
 
-	[Serialize]
+		[Serialize]
 	private List<string> m_subworldNames;
 
-	[Serialize]
+		[Serialize]
 	private List<string> m_worldTraitIds;
 
-	[Serialize]
+		[Serialize]
 	private List<string> m_storyTraitIds;
 
-	[Serialize]
+		[Serialize]
 	private List<string> m_generatedSubworlds;
 
-	private WorldParentChangedEventArgs parentChangeArgs = new WorldParentChangedEventArgs();
+		private WorldParentChangedEventArgs parentChangeArgs = new WorldParentChangedEventArgs();
 
-	[MySmiReq]
+		[MySmiReq]
 	private AlertStateManager.Instance m_alertManager;
 
-	private List<Prioritizable> yellowAlertTasks = new List<Prioritizable>();
+		private List<Prioritizable> yellowAlertTasks = new List<Prioritizable>();
+
+		private List<int> m_childWorlds = new List<int>();
 }

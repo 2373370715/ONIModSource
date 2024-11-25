@@ -4,9 +4,9 @@ using STRINGS;
 
 namespace Database
 {
-	public class Skills : ResourceSet<Skill>
+		public class Skills : ResourceSet<Skill>
 	{
-		public Skills(ResourceSet parent) : base("Skills", parent)
+				public Skills(ResourceSet parent) : base("Skills", parent)
 		{
 			this.Mining1 = this.AddSkill(new Skill("Mining1", DUPLICANTS.ROLES.JUNIOR_MINER.NAME, DUPLICANTS.ROLES.JUNIOR_MINER.DESCRIPTION, "", 0, "hat_role_mining1", "skillbadge_role_mining1", Db.Get().SkillGroups.Mining.Id, new List<SkillPerk>
 			{
@@ -258,7 +258,8 @@ namespace Database
 			this.Technicals2 = this.AddSkill(new Skill("Technicals2", DUPLICANTS.ROLES.POWER_TECHNICIAN.NAME, DUPLICANTS.ROLES.POWER_TECHNICIAN.DESCRIPTION, "", 1, "hat_role_technicals2", "skillbadge_role_technicals2", Db.Get().SkillGroups.Technicals.Id, new List<SkillPerk>
 			{
 				Db.Get().SkillPerks.IncreaseMachineryMedium,
-				Db.Get().SkillPerks.CanPowerTinker
+				Db.Get().SkillPerks.CanPowerTinker,
+				Db.Get().SkillPerks.CanCraftElectronics
 			}, new List<string>
 			{
 				this.Technicals1.Id
@@ -285,7 +286,7 @@ namespace Database
 			{
 				this.Basekeeping1.Id
 			}));
-			this.Pyrotechnics = this.AddSkill(new Skill("Pyrotechnics", DUPLICANTS.ROLES.PYROTECHNIC.NAME, DUPLICANTS.ROLES.PYROTECHNIC.DESCRIPTION, "", 2, "hat_role_technicals2", "skillbadge_role_technicals2", Db.Get().SkillGroups.Basekeeping.Id, new List<SkillPerk>
+			this.Pyrotechnics = this.AddSkill(new Skill("Pyrotechnics", DUPLICANTS.ROLES.PYROTECHNIC.NAME, DUPLICANTS.ROLES.PYROTECHNIC.DESCRIPTION, "", 2, "hat_role_pyrotechnics", "skillbadge_role_technicals2", Db.Get().SkillGroups.Basekeeping.Id, new List<SkillPerk>
 			{
 				Db.Get().SkillPerks.CanMakeMissiles
 			}, new List<string>
@@ -353,7 +354,7 @@ namespace Database
 			}));
 		}
 
-		private Skill AddSkill(Skill skill)
+				private Skill AddSkill(Skill skill)
 		{
 			if (DlcManager.IsContentSubscribed(skill.dlcId))
 			{
@@ -362,7 +363,7 @@ namespace Database
 			return skill;
 		}
 
-		public List<Skill> GetSkillsWithPerk(string perk)
+				public List<Skill> GetSkillsWithPerk(string perk)
 		{
 			List<Skill> list = new List<Skill>();
 			foreach (Skill skill in this.resources)
@@ -375,7 +376,7 @@ namespace Database
 			return list;
 		}
 
-		public List<Skill> GetSkillsWithPerk(SkillPerk perk)
+				public List<Skill> GetSkillsWithPerk(SkillPerk perk)
 		{
 			List<Skill> list = new List<Skill>();
 			foreach (Skill skill in this.resources)
@@ -388,7 +389,7 @@ namespace Database
 			return list;
 		}
 
-		public List<Skill> GetAllPriorSkills(Skill skill)
+				public List<Skill> GetAllPriorSkills(Skill skill)
 		{
 			List<Skill> list = new List<Skill>();
 			foreach (string id in skill.priorSkills)
@@ -400,7 +401,7 @@ namespace Database
 			return list;
 		}
 
-		public List<Skill> GetTerminalSkills()
+				public List<Skill> GetTerminalSkills()
 		{
 			List<Skill> list = new List<Skill>();
 			foreach (Skill skill in this.resources)
@@ -425,86 +426,86 @@ namespace Database
 			return list;
 		}
 
-		public Skill Mining1;
+				public Skill Mining1;
 
-		public Skill Mining2;
+				public Skill Mining2;
 
-		public Skill Mining3;
+				public Skill Mining3;
 
-		public Skill Mining4;
+				public Skill Mining4;
 
-		public Skill Building1;
+				public Skill Building1;
 
-		public Skill Building2;
+				public Skill Building2;
 
-		public Skill Building3;
+				public Skill Building3;
 
-		public Skill Farming1;
+				public Skill Farming1;
 
-		public Skill Farming2;
+				public Skill Farming2;
 
-		public Skill Farming3;
+				public Skill Farming3;
 
-		public Skill Ranching1;
+				public Skill Ranching1;
 
-		public Skill Ranching2;
+				public Skill Ranching2;
 
-		public Skill Researching1;
+				public Skill Researching1;
 
-		public Skill Researching2;
+				public Skill Researching2;
 
-		public Skill Researching3;
+				public Skill Researching3;
 
-		public Skill Researching4;
+				public Skill Researching4;
 
-		public Skill AtomicResearch;
+				public Skill AtomicResearch;
 
-		public Skill SpaceResearch;
+				public Skill SpaceResearch;
 
-		public Skill Astronomy;
+				public Skill Astronomy;
 
-		public Skill RocketPiloting1;
+				public Skill RocketPiloting1;
 
-		public Skill RocketPiloting2;
+				public Skill RocketPiloting2;
 
-		public Skill Cooking1;
+				public Skill Cooking1;
 
-		public Skill Cooking2;
+				public Skill Cooking2;
 
-		public Skill Arting1;
+				public Skill Arting1;
 
-		public Skill Arting2;
+				public Skill Arting2;
 
-		public Skill Arting3;
+				public Skill Arting3;
 
-		public Skill Hauling1;
+				public Skill Hauling1;
 
-		public Skill Hauling2;
+				public Skill Hauling2;
 
-		public Skill ThermalSuits;
+				public Skill ThermalSuits;
 
-		public Skill Suits1;
+				public Skill Suits1;
 
-		public Skill Technicals1;
+				public Skill Technicals1;
 
-		public Skill Technicals2;
+				public Skill Technicals2;
 
-		public Skill Engineering1;
+				public Skill Engineering1;
 
-		public Skill Basekeeping1;
+				public Skill Basekeeping1;
 
-		public Skill Basekeeping2;
+				public Skill Basekeeping2;
 
-		public Skill Pyrotechnics;
+				public Skill Pyrotechnics;
 
-		public Skill Astronauting1;
+				public Skill Astronauting1;
 
-		public Skill Astronauting2;
+				public Skill Astronauting2;
 
-		public Skill Medicine1;
+				public Skill Medicine1;
 
-		public Skill Medicine2;
+				public Skill Medicine2;
 
-		public Skill Medicine3;
+				public Skill Medicine3;
 	}
 }

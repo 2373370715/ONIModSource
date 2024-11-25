@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class GlomConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string text = STRINGS.CREATURES.SPECIES.GLOM.NAME;
 		string id = "Glom";
@@ -58,29 +58,29 @@ public class GlomConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "Glom";
+		public const string ID = "Glom";
 
-	public const string BASE_TRAIT_ID = "GlomBaseTrait";
+		public const string BASE_TRAIT_ID = "GlomBaseTrait";
 
-	public const SimHashes dirtyEmitElement = SimHashes.ContaminatedOxygen;
+		public const SimHashes dirtyEmitElement = SimHashes.ContaminatedOxygen;
 
-	public const float dirtyProbabilityPercent = 25f;
+		public const float dirtyProbabilityPercent = 25f;
 
-	public const float dirtyCellToTargetMass = 1f;
+		public const float dirtyCellToTargetMass = 1f;
 
-	public const float dirtyMassPerDirty = 0.2f;
+		public const float dirtyMassPerDirty = 0.2f;
 
-	public const float dirtyMassReleaseOnDeath = 3f;
+		public const float dirtyMassReleaseOnDeath = 3f;
 
-	public const string emitDisease = "SlimeLung";
+		public const string emitDisease = "SlimeLung";
 
-	public const int emitDiseasePerKg = 1000;
+		public const int emitDiseasePerKg = 1000;
 }

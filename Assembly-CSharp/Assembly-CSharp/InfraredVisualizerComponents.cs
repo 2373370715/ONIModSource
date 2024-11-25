@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class InfraredVisualizerComponents : KGameObjectComponentManager<InfraredVisualizerData>
 {
-	public HandleVector<int>.Handle Add(GameObject go)
+		public HandleVector<int>.Handle Add(GameObject go)
 	{
 		return base.Add(go, new InfraredVisualizerData(go));
 	}
 
-	public void UpdateTemperature()
+		public void UpdateTemperature()
 	{
 		GridArea visibleArea = GridVisibleArea.GetVisibleArea();
 		for (int i = 0; i < this.data.Count; i++)
@@ -25,7 +25,7 @@ public class InfraredVisualizerComponents : KGameObjectComponentManager<Infrared
 		}
 	}
 
-	public void ClearOverlayColour()
+		public void ClearOverlayColour()
 	{
 		Color32 c = Color.black;
 		for (int i = 0; i < this.data.Count; i++)
@@ -38,7 +38,7 @@ public class InfraredVisualizerComponents : KGameObjectComponentManager<Infrared
 		}
 	}
 
-	public static void ClearOverlayColour(KBatchedAnimController controller)
+		public static void ClearOverlayColour(KBatchedAnimController controller)
 	{
 		if (controller != null)
 		{

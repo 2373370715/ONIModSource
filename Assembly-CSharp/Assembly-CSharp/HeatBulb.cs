@@ -5,13 +5,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/HeatBulb")]
 public class HeatBulb : KMonoBehaviour, ISim200ms
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.kanim.Play("off", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		float num = this.kjConsumptionRate * dt;
 		Vector2I vector2I = this.maxCheckOffset - this.minCheckOffset + 1;
@@ -52,27 +52,27 @@ public class HeatBulb : KMonoBehaviour, ISim200ms
 		this.lightSource.enabled = false;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private float minTemperature;
 
-	[SerializeField]
+		[SerializeField]
 	private float kjConsumptionRate;
 
-	[SerializeField]
+		[SerializeField]
 	private float lightKJConsumptionRate;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector2I minCheckOffset;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector2I maxCheckOffset;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Light2D lightSource;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimController kanim;
 
-	[Serialize]
+		[Serialize]
 	private float kjConsumed;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EngineOnBottom : SelectModuleCondition
 {
-	public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
+		public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
 	{
 		if (existingModule == null || existingModule.GetComponent<LaunchPad>() != null)
 		{
@@ -17,7 +17,7 @@ public class EngineOnBottom : SelectModuleCondition
 		return selectionContext == SelectModuleCondition.SelectionContext.AddModuleBelow && existingModule.GetComponent<AttachableBuilding>().GetAttachedTo() == null;
 	}
 
-	public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
+		public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
 	{
 		if (ready)
 		{

@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class ClustercraftInteriorDoorConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = ClustercraftInteriorDoorConfig.ID;
 		string name = STRINGS.BUILDINGS.PREFABS.CLUSTERCRAFTINTERIORDOOR.NAME;
@@ -38,7 +38,7 @@ public class ClustercraftInteriorDoorConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
 		{
@@ -46,7 +46,7 @@ public class ClustercraftInteriorDoorConfig : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		PrimaryElement component = inst.GetComponent<PrimaryElement>();
 		OccupyArea component2 = inst.GetComponent<OccupyArea>();
@@ -70,5 +70,5 @@ public class ClustercraftInteriorDoorConfig : IEntityConfig
 		}
 	}
 
-	public static string ID = "ClustercraftInteriorDoor";
+		public static string ID = "ClustercraftInteriorDoor";
 }

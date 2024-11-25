@@ -3,13 +3,13 @@ using STRINGS;
 
 namespace Database
 {
-	public class ActivateLorePOI : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class ActivateLorePOI : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			foreach (BuildingComplete buildingComplete in Components.TemplateBuildings.Items)
 			{
@@ -25,7 +25,7 @@ namespace Database
 			return false;
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.INVESTIGATE_A_POI;
 		}

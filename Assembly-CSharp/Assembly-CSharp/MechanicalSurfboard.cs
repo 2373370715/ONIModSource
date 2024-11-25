@@ -6,18 +6,18 @@ using UnityEngine;
 
 public class MechanicalSurfboard : StateMachineComponent<MechanicalSurfboard.StatesInstance>, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
+		List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Element element = ElementLoader.FindElementByHash(SimHashes.Water);
@@ -28,24 +28,24 @@ public class MechanicalSurfboard : StateMachineComponent<MechanicalSurfboard.Sta
 		return list;
 	}
 
-	public string specificEffect;
+		public string specificEffect;
 
-	public string trackingEffect;
+		public string trackingEffect;
 
-	public float waterSpillRateKG;
+		public float waterSpillRateKG;
 
-	public float minOperationalWaterKG;
+		public float minOperationalWaterKG;
 
-	public string[] interactAnims = new string[]
+		public string[] interactAnims = new string[]
 	{
 		"anim_interacts_mechanical_surfboard_kanim",
 		"anim_interacts_mechanical_surfboard2_kanim",
 		"anim_interacts_mechanical_surfboard3_kanim"
 	};
 
-	public class States : GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard>
+		public class States : GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.inoperational;
 			this.inoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.operational, false).ToggleMainStatusItem(Db.Get().BuildingStatusItems.MissingRequirements, null);
@@ -56,7 +56,7 @@ public class MechanicalSurfboard : StateMachineComponent<MechanicalSurfboard.Sta
 			this.ready.post.PlayAnim("working_pst").OnAnimQueueComplete(this.ready);
 		}
 
-		private Chore CreateChore(MechanicalSurfboard.StatesInstance smi)
+				private Chore CreateChore(MechanicalSurfboard.StatesInstance smi)
 		{
 			Workable component = smi.master.GetComponent<MechanicalSurfboardWorkable>();
 			WorkChore<MechanicalSurfboardWorkable> workChore = new WorkChore<MechanicalSurfboardWorkable>(Db.Get().ChoreTypes.Relax, component, null, true, null, null, null, false, Db.Get().ScheduleBlockTypes.Recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
@@ -64,31 +64,31 @@ public class MechanicalSurfboard : StateMachineComponent<MechanicalSurfboard.Sta
 			return workChore;
 		}
 
-		private bool IsReady(MechanicalSurfboard.StatesInstance smi)
+				private bool IsReady(MechanicalSurfboard.StatesInstance smi)
 		{
 			PrimaryElement primaryElement = smi.GetComponent<Storage>().FindPrimaryElement(SimHashes.Water);
 			return !(primaryElement == null) && primaryElement.Mass >= smi.master.minOperationalWaterKG;
 		}
 
-		private GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State inoperational;
+				private GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State inoperational;
 
-		private GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State operational;
+				private GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State operational;
 
-		private MechanicalSurfboard.States.ReadyStates ready;
+				private MechanicalSurfboard.States.ReadyStates ready;
 
-		public class ReadyStates : GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State
+				public class ReadyStates : GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State
 		{
-			public GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State idle;
+						public GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State idle;
 
-			public GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State working;
+						public GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State working;
 
-			public GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State post;
+						public GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.State post;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.GameInstance
+		public class StatesInstance : GameStateMachine<MechanicalSurfboard.States, MechanicalSurfboard.StatesInstance, MechanicalSurfboard, object>.GameInstance
 	{
-		public StatesInstance(MechanicalSurfboard smi) : base(smi)
+				public StatesInstance(MechanicalSurfboard smi) : base(smi)
 		{
 		}
 	}

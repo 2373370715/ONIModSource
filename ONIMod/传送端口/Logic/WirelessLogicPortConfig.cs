@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using RsTransferPort;
 using TUNING;
 using UnityEngine;
 using S_BUILDINGS = STRINGS.BUILDINGS;
 
-
+namespace RsTransferPort;
 
 public class WirelessLogicSenderConfig : WirelessLogicConfig {
     public const    string    ID = "RsWirelessLogicSender";

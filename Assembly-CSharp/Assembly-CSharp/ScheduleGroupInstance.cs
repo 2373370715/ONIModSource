@@ -4,7 +4,7 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ScheduleGroupInstance
 {
-			public ScheduleGroup scheduleGroup
+				public ScheduleGroup scheduleGroup
 	{
 		get
 		{
@@ -16,15 +16,15 @@ public class ScheduleGroupInstance
 		}
 	}
 
-	public ScheduleGroupInstance(ScheduleGroup scheduleGroup)
+		public ScheduleGroupInstance(ScheduleGroup scheduleGroup)
 	{
 		this.scheduleGroup = scheduleGroup;
 		this.segments = scheduleGroup.defaultSegments;
 	}
 
-	[Serialize]
+		[Serialize]
 	private string scheduleGroupID;
 
-	[Serialize]
+		[Serialize]
 	public int segments;
 }

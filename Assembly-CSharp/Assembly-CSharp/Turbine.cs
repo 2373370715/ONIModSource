@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Turbine")]
 public class Turbine : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.simEmitCBHandle = Game.Instance.massEmitCallbackManager.Add(new Action<Sim.MassEmittedCallback, object>(Turbine.OnSimEmittedCallback), this, "TurbineEmit");
@@ -25,7 +25,7 @@ public class Turbine : KMonoBehaviour
 		this.CreateMeter();
 	}
 
-	private void CreateMeter()
+		private void CreateMeter()
 	{
 		this.meter = new MeterController(base.gameObject.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new string[]
 		{
@@ -36,7 +36,7 @@ public class Turbine : KMonoBehaviour
 		this.smi.UpdateMeter();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.smi != null)
 		{
@@ -47,7 +47,7 @@ public class Turbine : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	private void Pump(float dt)
+		private void Pump(float dt)
 	{
 		float mass = this.pumpKGRate * dt / (float)this.srcCells.Length;
 		foreach (int gameCell in this.srcCells)
@@ -57,12 +57,12 @@ public class Turbine : KMonoBehaviour
 		}
 	}
 
-	private static void OnSimConsumeCallback(Sim.MassConsumedCallback mass_cb_info, object data)
+		private static void OnSimConsumeCallback(Sim.MassConsumedCallback mass_cb_info, object data)
 	{
 		((Turbine)data).OnSimConsume(mass_cb_info);
 	}
 
-	private void OnSimConsume(Sim.MassConsumedCallback mass_cb_info)
+		private void OnSimConsume(Sim.MassConsumedCallback mass_cb_info)
 	{
 		if (mass_cb_info.mass > 0f)
 		{
@@ -89,12 +89,12 @@ public class Turbine : KMonoBehaviour
 		}
 	}
 
-	private static void OnSimEmittedCallback(Sim.MassEmittedCallback info, object data)
+		private static void OnSimEmittedCallback(Sim.MassEmittedCallback info, object data)
 	{
 		((Turbine)data).OnSimEmitted(info);
 	}
 
-	private void OnSimEmitted(Sim.MassEmittedCallback info)
+		private void OnSimEmitted(Sim.MassEmittedCallback info)
 	{
 		if (info.suceeded != 1)
 		{
@@ -119,7 +119,7 @@ public class Turbine : KMonoBehaviour
 		}
 	}
 
-	public static void InitializeStatusItems()
+		public static void InitializeStatusItems()
 	{
 		Turbine.inputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_INPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022, null);
 		Turbine.outputBlockedStatusItem = new StatusItem("TURBINE_BLOCKED_OUTPUT", "BUILDING", "status_item_vent_disabled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022, null);
@@ -144,7 +144,7 @@ public class Turbine : KMonoBehaviour
 		Turbine.insufficientTemperatureStatusItem.resolveTooltipCallback = new Func<string, object, string>(Turbine.ResolveStrings);
 	}
 
-	private static string ResolveStrings(string str, object data)
+		private static string ResolveStrings(string str, object data)
 	{
 		Turbine turbine = (Turbine)data;
 		str = str.Replace("{SRC_ELEMENT}", ElementLoader.FindElementByHash(turbine.srcElem).name);
@@ -152,73 +152,73 @@ public class Turbine : KMonoBehaviour
 		return str;
 	}
 
-	public SimHashes srcElem;
+		public SimHashes srcElem;
 
-	public float requiredMassFlowDifferential = 3f;
+		public float requiredMassFlowDifferential = 3f;
 
-	public float activePercent = 0.75f;
+		public float activePercent = 0.75f;
 
-	public float minEmitMass;
+		public float minEmitMass;
 
-	public float minActiveTemperature = 400f;
+		public float minActiveTemperature = 400f;
 
-	public float emitTemperature = 300f;
+		public float emitTemperature = 300f;
 
-	public float maxRPM;
+		public float maxRPM;
 
-	public float rpmAcceleration;
+		public float rpmAcceleration;
 
-	public float rpmDeceleration;
+		public float rpmDeceleration;
 
-	public float minGenerationRPM;
+		public float minGenerationRPM;
 
-	public float pumpKGRate;
+		public float pumpKGRate;
 
-	private static readonly HashedString TINT_SYMBOL = new HashedString("meter_fill");
+		private static readonly HashedString TINT_SYMBOL = new HashedString("meter_fill");
 
-	[Serialize]
+		[Serialize]
 	private float storedMass;
 
-	[Serialize]
+		[Serialize]
 	private float storedTemperature;
 
-	[Serialize]
+		[Serialize]
 	private byte diseaseIdx = byte.MaxValue;
 
-	[Serialize]
+		[Serialize]
 	private int diseaseCount;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Generator generator;
 
-	[Serialize]
+		[Serialize]
 	private float currentRPM;
 
-	private int[] srcCells;
+		private int[] srcCells;
 
-	private int[] destCells;
+		private int[] destCells;
 
-	private Turbine.Instance smi;
+		private Turbine.Instance smi;
 
-	private static StatusItem inputBlockedStatusItem;
+		private static StatusItem inputBlockedStatusItem;
 
-	private static StatusItem outputBlockedStatusItem;
+		private static StatusItem outputBlockedStatusItem;
 
-	private static StatusItem insufficientMassStatusItem;
+		private static StatusItem insufficientMassStatusItem;
 
-	private static StatusItem insufficientTemperatureStatusItem;
+		private static StatusItem insufficientTemperatureStatusItem;
 
-	private static StatusItem activeStatusItem;
+		private static StatusItem activeStatusItem;
 
-	private static StatusItem spinningUpStatusItem;
+		private static StatusItem spinningUpStatusItem;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle simEmitCBHandle = HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.InvalidHandle;
+		private HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.Handle simEmitCBHandle = HandleVector<Game.ComplexCallbackInfo<Sim.MassEmittedCallback>>.InvalidHandle;
 
-	public class States : GameStateMachine<Turbine.States, Turbine.Instance, Turbine>
+		public class States : GameStateMachine<Turbine.States, Turbine.Instance, Turbine>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			Turbine.InitializeStatusItems();
 			default_state = this.operational;
@@ -251,33 +251,33 @@ public class Turbine : KMonoBehaviour
 			});
 		}
 
-		public GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.State inoperational;
+				public GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.State inoperational;
 
-		public Turbine.States.OperationalStates operational;
+				public Turbine.States.OperationalStates operational;
 
-		private static readonly HashedString[] ACTIVE_ANIMS = new HashedString[]
+				private static readonly HashedString[] ACTIVE_ANIMS = new HashedString[]
 		{
 			"working_pre",
 			"working_loop"
 		};
 
-		public class OperationalStates : GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.State
+				public class OperationalStates : GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.State
 		{
-			public GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.State idle;
+						public GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.State idle;
 
-			public GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.State spinningUp;
+						public GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.State spinningUp;
 
-			public GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.State active;
+						public GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.State active;
 		}
 	}
 
-	public class Instance : GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.GameInstance
+		public class Instance : GameStateMachine<Turbine.States, Turbine.Instance, Turbine, object>.GameInstance
 	{
-		public Instance(Turbine master) : base(master)
+				public Instance(Turbine master) : base(master)
 		{
 		}
 
-		public void UpdateState(float dt)
+				public void UpdateState(float dt)
 		{
 			float num = this.CanSteamFlow(ref this.insufficientMass, ref this.insufficientTemperature) ? base.master.rpmAcceleration : (-base.master.rpmDeceleration);
 			base.master.currentRPM = Mathf.Clamp(base.master.currentRPM + dt * num, 0f, base.master.maxRPM);
@@ -307,7 +307,7 @@ public class Turbine : KMonoBehaviour
 			}
 		}
 
-		public void UpdateMeter()
+				public void UpdateMeter()
 		{
 			if (base.master.meter != null)
 			{
@@ -317,7 +317,7 @@ public class Turbine : KMonoBehaviour
 			}
 		}
 
-		private bool CanSteamFlow(ref bool insufficient_mass, ref bool insufficient_temperature)
+				private bool CanSteamFlow(ref bool insufficient_mass, ref bool insufficient_temperature)
 		{
 			float num = 0f;
 			float num2 = 0f;
@@ -358,7 +358,7 @@ public class Turbine : KMonoBehaviour
 			return !insufficient_mass && !insufficient_temperature;
 		}
 
-		public void UpdateStatusItems()
+				public void UpdateStatusItems()
 		{
 			KSelectable component = base.GetComponent<KSelectable>();
 			this.inputBlockedHandle = this.UpdateStatusItem(Turbine.inputBlockedStatusItem, this.isInputBlocked, this.inputBlockedHandle, component);
@@ -367,7 +367,7 @@ public class Turbine : KMonoBehaviour
 			this.insufficientTemperatureHandle = this.UpdateStatusItem(Turbine.insufficientTemperatureStatusItem, this.insufficientTemperature, this.insufficientTemperatureHandle, component);
 		}
 
-		private Guid UpdateStatusItem(StatusItem item, bool show, Guid current_handle, KSelectable ksel)
+				private Guid UpdateStatusItem(StatusItem item, bool show, Guid current_handle, KSelectable ksel)
 		{
 			Guid result = current_handle;
 			if (show != (current_handle != Guid.Empty))
@@ -384,7 +384,7 @@ public class Turbine : KMonoBehaviour
 			return result;
 		}
 
-		public void DisableStatusItems()
+				public void DisableStatusItems()
 		{
 			KSelectable component = base.GetComponent<KSelectable>();
 			component.RemoveStatusItem(this.inputBlockedHandle, false);
@@ -393,20 +393,20 @@ public class Turbine : KMonoBehaviour
 			component.RemoveStatusItem(this.insufficientTemperatureHandle, false);
 		}
 
-		public bool isInputBlocked;
+				public bool isInputBlocked;
 
-		public bool isOutputBlocked;
+				public bool isOutputBlocked;
 
-		public bool insufficientMass;
+				public bool insufficientMass;
 
-		public bool insufficientTemperature;
+				public bool insufficientTemperature;
 
-		private Guid inputBlockedHandle = Guid.Empty;
+				private Guid inputBlockedHandle = Guid.Empty;
 
-		private Guid outputBlockedHandle = Guid.Empty;
+				private Guid outputBlockedHandle = Guid.Empty;
 
-		private Guid insufficientMassHandle = Guid.Empty;
+				private Guid insufficientMassHandle = Guid.Empty;
 
-		private Guid insufficientTemperatureHandle = Guid.Empty;
+				private Guid insufficientTemperatureHandle = Guid.Empty;
 	}
 }

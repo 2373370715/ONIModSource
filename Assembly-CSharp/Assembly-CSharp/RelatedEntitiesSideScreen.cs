@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class RelatedEntitiesSideScreen : SideScreenContent, ISim1000ms
 {
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		this.rowPrefab.SetActive(false);
@@ -15,12 +15,12 @@ public class RelatedEntitiesSideScreen : SideScreenContent, ISim1000ms
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<IRelatedEntities>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.target = target;
 		this.targetRelatedEntitiesComponent = target.GetComponent<IRelatedEntities>();
@@ -28,7 +28,7 @@ public class RelatedEntitiesSideScreen : SideScreenContent, ISim1000ms
 		this.uiRefreshSubHandle = Game.Instance.Subscribe(1980521255, new Action<object>(this.RefreshOptions));
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 		if (this.uiRefreshSubHandle != -1 && this.targetRelatedEntitiesComponent != null)
 		{
@@ -37,7 +37,7 @@ public class RelatedEntitiesSideScreen : SideScreenContent, ISim1000ms
 		}
 	}
 
-	private void RefreshOptions(object data = null)
+		private void RefreshOptions(object data = null)
 	{
 		if (!base.gameObject.activeInHierarchy)
 		{
@@ -50,7 +50,7 @@ public class RelatedEntitiesSideScreen : SideScreenContent, ISim1000ms
 		}
 	}
 
-	private void ClearRows()
+		private void ClearRows()
 	{
 		for (int i = this.rowContainer.childCount - 1; i >= 0; i--)
 		{
@@ -59,7 +59,7 @@ public class RelatedEntitiesSideScreen : SideScreenContent, ISim1000ms
 		this.rows.Clear();
 	}
 
-	private void AddRow(KSelectable entity)
+		private void AddRow(KSelectable entity)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.rowPrefab, this.rowContainer.gameObject, true);
 		gameObject.GetComponent<KButton>().onClick += delegate()
@@ -73,7 +73,7 @@ public class RelatedEntitiesSideScreen : SideScreenContent, ISim1000ms
 		this.RefreshMainStatus(entity);
 	}
 
-	private void RefreshMainStatus(KSelectable entity)
+		private void RefreshMainStatus(KSelectable entity)
 	{
 		if (entity.IsNullOrDestroyed())
 		{
@@ -96,7 +96,7 @@ public class RelatedEntitiesSideScreen : SideScreenContent, ISim1000ms
 		reference.SetText("");
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		if (!base.gameObject.activeInHierarchy)
 		{
@@ -108,15 +108,15 @@ public class RelatedEntitiesSideScreen : SideScreenContent, ISim1000ms
 		}
 	}
 
-	private GameObject target;
+		private GameObject target;
 
-	private IRelatedEntities targetRelatedEntitiesComponent;
+		private IRelatedEntities targetRelatedEntitiesComponent;
 
-	public GameObject rowPrefab;
+		public GameObject rowPrefab;
 
-	public RectTransform rowContainer;
+		public RectTransform rowContainer;
 
-	public Dictionary<KSelectable, GameObject> rows = new Dictionary<KSelectable, GameObject>();
+		public Dictionary<KSelectable, GameObject> rows = new Dictionary<KSelectable, GameObject>();
 
-	private int uiRefreshSubHandle = -1;
+		private int uiRefreshSubHandle = -1;
 }

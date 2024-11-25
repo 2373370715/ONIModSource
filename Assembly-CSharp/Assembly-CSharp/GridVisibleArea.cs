@@ -4,42 +4,84 @@ using UnityEngine;
 
 public class GridVisibleArea
 {
-		public GridArea CurrentArea
+			public GridArea CurrentArea
 	{
 		get
 		{
-			return this.Areas[0];
+			return this.VisibleAreas[0];
 		}
 	}
 
-		public GridArea PreviousArea
+			public GridArea PreviousArea
 	{
 		get
 		{
-			return this.Areas[1];
+			return this.VisibleAreas[1];
 		}
 	}
 
-		public GridArea PreviousPreviousArea
+			public GridArea PreviousPreviousArea
 	{
 		get
 		{
-			return this.Areas[2];
+			return this.VisibleAreas[2];
 		}
 	}
 
-	public void Update()
+			public GridArea CurrentAreaExtended
 	{
-		this.Areas[2] = this.Areas[1];
-		this.Areas[1] = this.Areas[0];
-		this.Areas[0] = GridVisibleArea.GetVisibleArea();
+		get
+		{
+			return this.VisibleAreasExtended[0];
+		}
+	}
+
+			public GridArea PreviousAreaExtended
+	{
+		get
+		{
+			return this.VisibleAreasExtended[1];
+		}
+	}
+
+			public GridArea PreviousPreviousAreaExtended
+	{
+		get
+		{
+			return this.VisibleAreasExtended[2];
+		}
+	}
+
+		public GridVisibleArea()
+	{
+	}
+
+		public GridVisibleArea(int padding)
+	{
+		this._padding = padding;
+	}
+
+		public void Update()
+	{
+		if (!this.debugFreezeVisibleArea)
+		{
+			this.VisibleAreas[2] = this.VisibleAreas[1];
+			this.VisibleAreas[1] = this.VisibleAreas[0];
+			this.VisibleAreas[0] = GridVisibleArea.GetVisibleArea();
+		}
+		if (!this.debugFreezeVisibleAreasExtended)
+		{
+			this.VisibleAreasExtended[2] = this.VisibleAreasExtended[1];
+			this.VisibleAreasExtended[1] = this.VisibleAreasExtended[0];
+			this.VisibleAreasExtended[0] = GridVisibleArea.GetVisibleAreaExtended(this._padding);
+		}
 		foreach (GridVisibleArea.Callback callback in this.Callbacks)
 		{
 			callback.OnUpdate();
 		}
 	}
 
-	public void AddCallback(string name, System.Action on_update)
+		public void AddCallback(string name, System.Action on_update)
 	{
 		GridVisibleArea.Callback item = new GridVisibleArea.Callback
 		{
@@ -49,7 +91,7 @@ public class GridVisibleArea
 		this.Callbacks.Add(item);
 	}
 
-	public void Run(Action<int> in_view)
+		public void Run(Action<int> in_view)
 	{
 		if (in_view != null)
 		{
@@ -57,7 +99,15 @@ public class GridVisibleArea
 		}
 	}
 
-	public void Run(Action<int> outside_view, Action<int> inside_view, Action<int> inside_view_second_time)
+		public void RunExtended(Action<int> in_view)
+	{
+		if (in_view != null)
+		{
+			this.CurrentAreaExtended.Run(in_view);
+		}
+	}
+
+		public void Run(Action<int> outside_view, Action<int> inside_view, Action<int> inside_view_second_time)
 	{
 		if (outside_view != null)
 		{
@@ -73,12 +123,38 @@ public class GridVisibleArea
 		}
 	}
 
-	public void RunIfVisible(int cell, Action<int> action)
+		public void RunExtended(Action<int> outside_view, Action<int> inside_view, Action<int> inside_view_second_time)
+	{
+		if (outside_view != null)
+		{
+			this.PreviousAreaExtended.RunOnDifference(this.CurrentAreaExtended, outside_view);
+		}
+		if (inside_view != null)
+		{
+			this.CurrentAreaExtended.RunOnDifference(this.PreviousAreaExtended, inside_view);
+		}
+		if (inside_view_second_time != null)
+		{
+			this.PreviousAreaExtended.RunOnDifference(this.PreviousPreviousAreaExtended, inside_view_second_time);
+		}
+	}
+
+		public void RunIfVisible(int cell, Action<int> action)
 	{
 		this.CurrentArea.RunIfInside(cell, action);
 	}
 
-	public static GridArea GetVisibleArea()
+		public void RunIfVisibleExtended(int cell, Action<int> action)
+	{
+		this.CurrentAreaExtended.RunIfInside(cell, action);
+	}
+
+		public static GridArea GetVisibleArea()
+	{
+		return GridVisibleArea.GetVisibleAreaExtended(0);
+	}
+
+		public static GridArea GetVisibleAreaExtended(int padding)
 	{
 		GridArea result = default(GridArea);
 		Camera mainCamera = Game.MainCamera;
@@ -86,6 +162,10 @@ public class GridVisibleArea
 		{
 			Vector3 vector = mainCamera.ViewportToWorldPoint(new Vector3(1f, 1f, mainCamera.transform.GetPosition().z));
 			Vector3 vector2 = mainCamera.ViewportToWorldPoint(new Vector3(0f, 0f, mainCamera.transform.GetPosition().z));
+			vector.x += (float)padding;
+			vector.y += (float)padding;
+			vector2.x -= (float)padding;
+			vector2.y -= (float)padding;
 			if (CameraController.Instance != null)
 			{
 				Vector2I vector2I;
@@ -101,14 +181,22 @@ public class GridVisibleArea
 		return result;
 	}
 
-	private GridArea[] Areas = new GridArea[3];
+		private GridArea[] VisibleAreas = new GridArea[3];
 
-	private List<GridVisibleArea.Callback> Callbacks = new List<GridVisibleArea.Callback>();
+		private GridArea[] VisibleAreasExtended = new GridArea[3];
 
-	public struct Callback
+		private List<GridVisibleArea.Callback> Callbacks = new List<GridVisibleArea.Callback>();
+
+		public bool debugFreezeVisibleArea;
+
+		public bool debugFreezeVisibleAreasExtended;
+
+		private readonly int _padding;
+
+		public struct Callback
 	{
-		public System.Action OnUpdate;
+				public System.Action OnUpdate;
 
-		public string Name;
+				public string Name;
 	}
 }

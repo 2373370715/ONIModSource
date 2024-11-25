@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class RocketControlStationConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = RocketControlStationConfig.ID;
 		int width = 2;
@@ -39,14 +39,14 @@ public class RocketControlStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		KPrefabID component = go.GetComponent<KPrefabID>();
 		component.AddTag(GameTags.RocketInteriorBuilding, false);
 		component.AddTag(GameTags.UniquePerWorld, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
 		go.AddOrGet<RocketControlStationIdleWorkable>().workLayer = Grid.SceneLayer.BuildingUse;
@@ -56,17 +56,17 @@ public class RocketControlStationConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RocketInterior, false);
 	}
 
-	public static string ID = "RocketControlStation";
+		public static string ID = "RocketControlStation";
 
-	public const float CONSOLE_WORK_TIME = 30f;
+		public const float CONSOLE_WORK_TIME = 30f;
 
-	public const float CONSOLE_IDLE_TIME = 120f;
+		public const float CONSOLE_IDLE_TIME = 120f;
 
-	public const float WARNING_COOLDOWN = 30f;
+		public const float WARNING_COOLDOWN = 30f;
 
-	public const float DEFAULT_SPEED = 1f;
+		public const float DEFAULT_SPEED = 1f;
 
-	public const float SLOW_SPEED = 0.5f;
+		public const float SLOW_SPEED = 0.5f;
 
-	public const float DEFAULT_PILOT_MODIFIER = 1f;
+		public const float DEFAULT_PILOT_MODIFIER = 1f;
 }

@@ -2,111 +2,76 @@
 using STRINGS;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class SearchBar : KMonoBehaviour
-{
-		public string CurrentSearchValue
-	{
-		get
-		{
-			if (!string.IsNullOrEmpty(this.inputField.text))
-			{
-				return this.inputField.text;
-			}
-			return "";
-		}
-	}
+public class SearchBar : KMonoBehaviour {
+    [SerializeField]
+    protected KButton clearButton;
 
-		public bool IsInputFieldEmpty
-	{
-		get
-		{
-			return this.inputField.text == "";
-		}
-	}
+    public Action<bool>  EditingStateChanged;
+    public System.Action Focused;
 
-			public bool isEditing { get; protected set; }
+    [SerializeField]
+    protected KInputTextField inputField;
 
-	public virtual void SetPlaceholder(string text)
-	{
-		this.inputField.placeholder.GetComponent<TextMeshProUGUI>().text = text;
-	}
+    public Action<string> ValueChanged;
 
-	protected override void OnSpawn()
-	{
-		this.inputField.ActivateInputField();
-		KInputTextField kinputTextField = this.inputField;
-		kinputTextField.onFocus = (System.Action)Delegate.Combine(kinputTextField.onFocus, new System.Action(this.OnFocus));
-		this.inputField.onEndEdit.AddListener(new UnityAction<string>(this.OnEndEdit));
-		this.inputField.onValueChanged.AddListener(new UnityAction<string>(this.OnValueChanged));
-		this.clearButton.onClick += this.ClearSearch;
-		this.SetPlaceholder(UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.SEARCH_PLACEHOLDER);
-	}
+    public string CurrentSearchValue {
+        get {
+            if (!string.IsNullOrEmpty(inputField.text)) return inputField.text;
 
-	protected void SetEditingState(bool editing)
-	{
-		this.isEditing = editing;
-		Action<bool> editingStateChanged = this.EditingStateChanged;
-		if (editingStateChanged != null)
-		{
-			editingStateChanged(this.isEditing);
-		}
-		KScreenManager.Instance.RefreshStack();
-	}
+            return "";
+        }
+    }
 
-	protected virtual void OnValueChanged(string value)
-	{
-		Action<string> valueChanged = this.ValueChanged;
-		if (valueChanged == null)
-		{
-			return;
-		}
-		valueChanged(value);
-	}
+    public bool IsInputFieldEmpty => inputField.text == "";
+    public bool isEditing         { get; protected set; }
 
-	protected virtual void OnEndEdit(string value)
-	{
-		this.SetEditingState(false);
-	}
+    public virtual void SetPlaceholder(string text) {
+        inputField.placeholder.GetComponent<TextMeshProUGUI>().text = text;
+    }
 
-	protected virtual void OnFocus()
-	{
-		this.SetEditingState(true);
-		UISounds.PlaySound(UISounds.Sound.ClickHUD);
-		System.Action focused = this.Focused;
-		if (focused == null)
-		{
-			return;
-		}
-		focused();
-	}
+    protected override void OnSpawn() {
+        inputField.ActivateInputField();
+        var kinputTextField = inputField;
+        kinputTextField.onFocus = (System.Action)Delegate.Combine(kinputTextField.onFocus, new System.Action(OnFocus));
+        inputField.onEndEdit.AddListener(OnEndEdit);
+        inputField.onValueChanged.AddListener(OnValueChanged);
+        clearButton.onClick += ClearSearch;
+        SetPlaceholder(UI.UISIDESCREENS.TREEFILTERABLESIDESCREEN.SEARCH_PLACEHOLDER);
+    }
 
-	public virtual void ClearSearch()
-	{
-		this.SetValue("");
-	}
+    protected void SetEditingState(bool editing) {
+        isEditing = editing;
+        var editingStateChanged = EditingStateChanged;
+        if (editingStateChanged != null) editingStateChanged(isEditing);
+        KScreenManager.Instance.RefreshStack();
+    }
 
-	public void SetValue(string value)
-	{
-		this.inputField.text = value;
-		Action<string> valueChanged = this.ValueChanged;
-		if (valueChanged == null)
-		{
-			return;
-		}
-		valueChanged(value);
-	}
+    protected virtual void OnValueChanged(string value) {
+        var valueChanged = ValueChanged;
+        if (valueChanged == null) return;
 
-	[SerializeField]
-	protected KInputTextField inputField;
+        valueChanged(value);
+    }
 
-	[SerializeField]
-	protected KButton clearButton;
+    protected virtual void OnEndEdit(string value) { SetEditingState(false); }
 
-	public Action<string> ValueChanged;
+    protected virtual void OnFocus() {
+        SetEditingState(true);
+        UISounds.PlaySound(UISounds.Sound.ClickHUD);
+        var focused = Focused;
+        if (focused == null) return;
 
-	public Action<bool> EditingStateChanged;
+        focused();
+    }
 
-	public System.Action Focused;
+    public virtual void ClearSearch() { SetValue(""); }
+
+    public void SetValue(string value) {
+        inputField.text = value;
+        var valueChanged = ValueChanged;
+        if (valueChanged == null) return;
+
+        valueChanged(value);
+    }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BuildingPlacementQuery : PathFinderQuery
 {
-	public BuildingPlacementQuery Reset(int max_results, GameObject toPlace)
+		public BuildingPlacementQuery Reset(int max_results, GameObject toPlace)
 	{
 		this.max_results = max_results;
 		this.toPlace = toPlace;
@@ -13,7 +13,7 @@ public class BuildingPlacementQuery : PathFinderQuery
 		return this;
 	}
 
-	public override bool IsMatch(int cell, int parent_cell, int cost)
+		public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
 		if (!this.result_cells.Contains(cell) && this.CheckValidPlaceCell(cell))
 		{
@@ -22,7 +22,7 @@ public class BuildingPlacementQuery : PathFinderQuery
 		return this.result_cells.Count >= this.max_results;
 	}
 
-	private bool CheckValidPlaceCell(int testCell)
+		private bool CheckValidPlaceCell(int testCell)
 	{
 		if (!Grid.IsValidCell(testCell) || Grid.IsSolidCell(testCell) || Grid.ObjectLayers[1].ContainsKey(testCell))
 		{
@@ -57,11 +57,11 @@ public class BuildingPlacementQuery : PathFinderQuery
 		return flag;
 	}
 
-	public List<int> result_cells = new List<int>();
+		public List<int> result_cells = new List<int>();
 
-	private int max_results;
+		private int max_results;
 
-	private GameObject toPlace;
+		private GameObject toPlace;
 
-	private CellOffset[] cellOffsets;
+		private CellOffset[] cellOffsets;
 }

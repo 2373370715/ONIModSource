@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class TemperatureOverlayThresholdAdjustmentWidget : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.scrollbar.onValueChanged.AddListener(new UnityAction<float>(this.OnValueChanged));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.scrollbar.size = TemperatureOverlayThresholdAdjustmentWidget.temperatureWindowSize / TemperatureOverlayThresholdAdjustmentWidget.maxTemperatureRange;
@@ -19,12 +19,12 @@ public class TemperatureOverlayThresholdAdjustmentWidget : KMonoBehaviour
 		this.defaultButton.onClick += this.OnDefaultPressed;
 	}
 
-	private void OnValueChanged(float data)
+		private void OnValueChanged(float data)
 	{
 		this.SetUserConfig(data);
 	}
 
-	private float KelvinToScrollPercentage(float kelvin)
+		private float KelvinToScrollPercentage(float kelvin)
 	{
 		kelvin -= TemperatureOverlayThresholdAdjustmentWidget.minimumSelectionTemperature;
 		if (kelvin < 1f)
@@ -34,7 +34,7 @@ public class TemperatureOverlayThresholdAdjustmentWidget : KMonoBehaviour
 		return Mathf.Clamp01(kelvin / TemperatureOverlayThresholdAdjustmentWidget.maxTemperatureRange);
 	}
 
-	private void SetUserConfig(float scrollPercentage)
+		private void SetUserConfig(float scrollPercentage)
 	{
 		float num = TemperatureOverlayThresholdAdjustmentWidget.minimumSelectionTemperature + TemperatureOverlayThresholdAdjustmentWidget.maxTemperatureRange * scrollPercentage;
 		float num2 = num - TemperatureOverlayThresholdAdjustmentWidget.temperatureWindowSize / 2f;
@@ -47,31 +47,31 @@ public class TemperatureOverlayThresholdAdjustmentWidget : KMonoBehaviour
 		SaveGame.Instance.relativeTemperatureOverlaySliderValue = num;
 	}
 
-	private void OnDefaultPressed()
+		private void OnDefaultPressed()
 	{
 		this.scrollbar.value = this.KelvinToScrollPercentage(294.15f);
 	}
 
-	public const float DEFAULT_TEMPERATURE = 294.15f;
+		public const float DEFAULT_TEMPERATURE = 294.15f;
 
-	[SerializeField]
+		[SerializeField]
 	private Scrollbar scrollbar;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText scrollBarRangeLowText;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText scrollBarRangeCenterText;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText scrollBarRangeHighText;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton defaultButton;
 
-	private static float maxTemperatureRange = 700f;
+		private static float maxTemperatureRange = 700f;
 
-	private static float temperatureWindowSize = 200f;
+		private static float temperatureWindowSize = 200f;
 
-	private static float minimumSelectionTemperature = TemperatureOverlayThresholdAdjustmentWidget.temperatureWindowSize / 2f;
+		private static float minimumSelectionTemperature = TemperatureOverlayThresholdAdjustmentWidget.temperatureWindowSize / 2f;
 }

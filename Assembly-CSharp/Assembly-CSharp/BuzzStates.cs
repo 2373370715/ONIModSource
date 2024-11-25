@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class BuzzStates : GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.idle;
-		this.root.Exit("StopNavigator", delegate(BuzzStates.Instance smi)
+		GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State state = this.root.Exit("StopNavigator", delegate(BuzzStates.Instance smi)
 		{
 			smi.GetComponent<Navigator>().Stop(false, true);
-		}).ToggleStatusItem(CREATURES.STATUSITEMS.IDLE.NAME, CREATURES.STATUSITEMS.IDLE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).ToggleTag(GameTags.Idle);
+		});
+		string name = CREATURES.STATUSITEMS.IDLE.NAME;
+		string tooltip = CREATURES.STATUSITEMS.IDLE.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).ToggleTag(GameTags.Idle);
 		this.idle.Enter(new StateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State.Callback(this.PlayIdle)).ToggleScheduleCallback("DoBuzz", (BuzzStates.Instance smi) => (float)UnityEngine.Random.Range(3, 10), delegate(BuzzStates.Instance smi)
 		{
 			this.numMoves.Set(UnityEngine.Random.Range(4, 6), smi, false);
@@ -25,7 +33,7 @@ public class BuzzStates : GameStateMachine<BuzzStates, BuzzStates.Instance, ISta
 		});
 	}
 
-	public void MoveToNewCell(BuzzStates.Instance smi)
+		public void MoveToNewCell(BuzzStates.Instance smi)
 	{
 		Navigator component = smi.GetComponent<Navigator>();
 		BuzzStates.MoveCellQuery moveCellQuery = new BuzzStates.MoveCellQuery(component.CurrentNavType);
@@ -34,7 +42,7 @@ public class BuzzStates : GameStateMachine<BuzzStates, BuzzStates.Instance, ISta
 		component.GoTo(moveCellQuery.GetResultCell(), null);
 	}
 
-	public void PlayIdle(BuzzStates.Instance smi)
+		public void PlayIdle(BuzzStates.Instance smi)
 	{
 		KAnimControllerBase component = smi.GetComponent<KAnimControllerBase>();
 		Navigator component2 = smi.GetComponent<Navigator>();
@@ -61,46 +69,46 @@ public class BuzzStates : GameStateMachine<BuzzStates, BuzzStates.Instance, ISta
 		component.Play(idleAnim, KAnim.PlayMode.Loop, 1f, 0f);
 	}
 
-	private StateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.IntParameter numMoves;
+		private StateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.IntParameter numMoves;
 
-	private BuzzStates.BuzzingStates buzz;
+		private BuzzStates.BuzzingStates buzz;
 
-	public GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State idle;
+		public GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State idle;
 
-	public GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State move;
+		public GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State move;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public BuzzStates.Def.IdleAnimCallback customIdleAnim;
+				public BuzzStates.Def.IdleAnimCallback customIdleAnim;
 
-				public delegate HashedString IdleAnimCallback(BuzzStates.Instance smi, ref HashedString pre_anim);
+						public delegate HashedString IdleAnimCallback(BuzzStates.Instance smi, ref HashedString pre_anim);
 	}
 
-	public new class Instance : GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.GameInstance
 	{
-		public Instance(Chore<BuzzStates.Instance> chore, BuzzStates.Def def) : base(chore, def)
+				public Instance(Chore<BuzzStates.Instance> chore, BuzzStates.Def def) : base(chore, def)
 		{
 		}
 	}
 
-	public class BuzzingStates : GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State
+		public class BuzzingStates : GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State
 	{
-		public GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State move;
+				public GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State move;
 
-		public GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State pause;
+				public GameStateMachine<BuzzStates, BuzzStates.Instance, IStateMachineTarget, BuzzStates.Def>.State pause;
 	}
 
-	public class MoveCellQuery : PathFinderQuery
+		public class MoveCellQuery : PathFinderQuery
 	{
-						public bool allowLiquid { get; set; }
+								public bool allowLiquid { get; set; }
 
-		public MoveCellQuery(NavType navType)
+				public MoveCellQuery(NavType navType)
 		{
 			this.navType = navType;
 			this.maxIterations = UnityEngine.Random.Range(5, 25);
 		}
 
-		public override bool IsMatch(int cell, int parent_cell, int cost)
+				public override bool IsMatch(int cell, int parent_cell, int cost)
 		{
 			if (!Grid.IsValidCell(cell))
 			{
@@ -123,15 +131,15 @@ public class BuzzStates : GameStateMachine<BuzzStates, BuzzStates.Instance, ISta
 			return num <= 0;
 		}
 
-		public override int GetResultCell()
+				public override int GetResultCell()
 		{
 			return this.targetCell;
 		}
 
-		private NavType navType;
+				private NavType navType;
 
-		private int targetCell = Grid.InvalidCell;
+				private int targetCell = Grid.InvalidCell;
 
-		private int maxIterations;
+				private int maxIterations;
 	}
 }

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.Instance, IStateMachineTarget, WarmthProvider.Def>
 {
-	public static bool IsWarmCell(int cell)
+		public static bool IsWarmCell(int cell)
 	{
 		return WarmthProvider.WarmCells.ContainsKey(cell) && WarmthProvider.WarmCells[cell] > 0;
 	}
 
-	public static int GetWarmthValue(int cell)
+		public static int GetWarmthValue(int cell)
 	{
 		if (!WarmthProvider.WarmCells.ContainsKey(cell))
 		{
@@ -17,7 +17,7 @@ public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.In
 		return (int)WarmthProvider.WarmCells[cell];
 	}
 
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.off;
@@ -25,36 +25,36 @@ public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.In
 		this.on.EventTransition(GameHashes.ActiveChanged, this.off, (WarmthProvider.Instance smi) => !smi.GetComponent<Operational>().IsActive).TagTransition(GameTags.Operational, this.off, true).Enter(new StateMachine<WarmthProvider, WarmthProvider.Instance, IStateMachineTarget, WarmthProvider.Def>.State.Callback(WarmthProvider.AddWarmCells));
 	}
 
-	private static void AddWarmCells(WarmthProvider.Instance smi)
+		private static void AddWarmCells(WarmthProvider.Instance smi)
 	{
 		smi.AddWarmCells();
 	}
 
-	private static void RemoveWarmCells(WarmthProvider.Instance smi)
+		private static void RemoveWarmCells(WarmthProvider.Instance smi)
 	{
 		smi.RemoveWarmCells();
 	}
 
-	public static Dictionary<int, byte> WarmCells = new Dictionary<int, byte>();
+		public static Dictionary<int, byte> WarmCells = new Dictionary<int, byte>();
 
-	public GameStateMachine<WarmthProvider, WarmthProvider.Instance, IStateMachineTarget, WarmthProvider.Def>.State off;
+		public GameStateMachine<WarmthProvider, WarmthProvider.Instance, IStateMachineTarget, WarmthProvider.Def>.State off;
 
-	public GameStateMachine<WarmthProvider, WarmthProvider.Instance, IStateMachineTarget, WarmthProvider.Def>.State on;
+		public GameStateMachine<WarmthProvider, WarmthProvider.Instance, IStateMachineTarget, WarmthProvider.Def>.State on;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Vector2I OriginOffset;
+				public Vector2I OriginOffset;
 
-		public Vector2I RangeMin;
+				public Vector2I RangeMin;
 
-		public Vector2I RangeMax;
+				public Vector2I RangeMax;
 
-		public Func<int, bool> blockingCellCallback = new Func<int, bool>(Grid.IsSolidCell);
+				public Func<int, bool> blockingCellCallback = new Func<int, bool>(Grid.IsSolidCell);
 	}
 
-	public new class Instance : GameStateMachine<WarmthProvider, WarmthProvider.Instance, IStateMachineTarget, WarmthProvider.Def>.GameInstance
+		public new class Instance : GameStateMachine<WarmthProvider, WarmthProvider.Instance, IStateMachineTarget, WarmthProvider.Def>.GameInstance
 	{
-				public bool IsWarming
+						public bool IsWarming
 		{
 			get
 			{
@@ -62,11 +62,11 @@ public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.In
 			}
 		}
 
-		public Instance(IStateMachineTarget master, WarmthProvider.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, WarmthProvider.Def def) : base(master, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			EntityCellVisualizer component = base.GetComponent<EntityCellVisualizer>();
 			if (component != null)
@@ -79,7 +79,7 @@ public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.In
 			base.StartSM();
 		}
 
-		private void SetupRange()
+				private void SetupRange()
 		{
 			Vector2I u = Grid.PosToXY(base.transform.GetPosition());
 			Vector2I vector2I = base.def.OriginOffset;
@@ -99,7 +99,7 @@ public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.In
 			this.origin = u + vector2I;
 		}
 
-		public bool ContainsCell(int cell)
+				public bool ContainsCell(int cell)
 		{
 			if (this.cellsInRange == null)
 			{
@@ -115,7 +115,7 @@ public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.In
 			return false;
 		}
 
-		private void UnmarkAllCellsInRange()
+				private void UnmarkAllCellsInRange()
 		{
 			if (this.cellsInRange != null)
 			{
@@ -134,7 +134,7 @@ public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.In
 			this.cellsInRange = null;
 		}
 
-		private void UpdateCellsInRange()
+				private void UpdateCellsInRange()
 		{
 			this.UnmarkAllCellsInRange();
 			Grid.PosToCell(this);
@@ -162,31 +162,31 @@ public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.In
 			this.cellsInRange = list.ToArray();
 		}
 
-		public void AddWarmCells()
+				public void AddWarmCells()
 		{
 			this.UpdateCellsInRange();
 		}
 
-		public void RemoveWarmCells()
+				public void RemoveWarmCells()
 		{
 			this.UnmarkAllCellsInRange();
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			this.RemoveWarmCells();
 			this.ClearCellListeners();
 			base.OnCleanUp();
 		}
 
-		public bool IsCellVisible(int cell)
+				public bool IsCellVisible(int cell)
 		{
 			Vector2I vector2I = Grid.CellToXY(Grid.PosToCell(this));
 			Vector2I vector2I2 = Grid.CellToXY(cell);
 			return Grid.TestLineOfSight(vector2I.x, vector2I.y, vector2I2.x, vector2I2.y, base.def.blockingCellCallback, false, false);
 		}
 
-		public void OnSolidCellChanged(object obj)
+				public void OnSolidCellChanged(object obj)
 		{
 			if (this.IsWarming)
 			{
@@ -194,7 +194,7 @@ public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.In
 			}
 		}
 
-		private void CreateCellListeners()
+				private void CreateCellListeners()
 		{
 			Grid.PosToCell(this);
 			List<HandleVector<int>.Handle> list = new List<HandleVector<int>.Handle>();
@@ -213,7 +213,7 @@ public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.In
 			this.partitionEntries = list.ToArray();
 		}
 
-		private void ClearCellListeners()
+				private void ClearCellListeners()
 		{
 			if (this.partitionEntries != null)
 			{
@@ -225,16 +225,16 @@ public class WarmthProvider : GameStateMachine<WarmthProvider, WarmthProvider.In
 			}
 		}
 
-		public int WorldID;
+				public int WorldID;
 
-		private int[] cellsInRange;
+				private int[] cellsInRange;
 
-		private HandleVector<int>.Handle[] partitionEntries;
+				private HandleVector<int>.Handle[] partitionEntries;
 
-		public Vector2I range_min;
+				public Vector2I range_min;
 
-		public Vector2I range_max;
+				public Vector2I range_max;
 
-		public Vector2I origin;
+				public Vector2I origin;
 	}
 }

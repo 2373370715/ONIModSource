@@ -11,7 +11,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Constructable")]
 public class Constructable : Workable, ISaveLoadable
 {
-		public Recipe Recipe
+			public Recipe Recipe
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-			public IList<Tag> SelectedElementsTags
+				public IList<Tag> SelectedElementsTags
 	{
 		get
 		{
@@ -35,12 +35,12 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-	public override string GetConversationTopic()
+		public override string GetConversationTopic()
 	{
 		return this.building.Def.PrefabID;
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		float num = 0f;
 		float num2 = 0f;
@@ -144,7 +144,7 @@ public class Constructable : Workable, ISaveLoadable
 		PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Building, base.GetComponent<KSelectable>().GetName(), base.transform, 1.5f, false);
 	}
 
-	private void FinishConstruction(UtilityConnections connections, Worker workerForGameplayEvent)
+		private void FinishConstruction(UtilityConnections connections, WorkerBase workerForGameplayEvent)
 	{
 		Rotatable component = base.GetComponent<Rotatable>();
 		Orientation orientation = (component != null) ? component.GetOrientation() : Orientation.Neutral;
@@ -184,7 +184,7 @@ public class Constructable : Workable, ISaveLoadable
 		this.DeleteObject();
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.invalidLocation = new Notification(MISC.NOTIFICATIONS.INVALIDCONSTRUCTIONLOCATION.NAME, NotificationType.BadMinor, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.INVALIDCONSTRUCTIONLOCATION.TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null, true, false, false);
@@ -213,7 +213,7 @@ public class Constructable : Workable, ISaveLoadable
 		this.workingPstFailed = null;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		CellOffset[][] table = OffsetGroups.InvertedStandardTable;
@@ -316,7 +316,7 @@ public class Constructable : Workable, ISaveLoadable
 		this.OnPriorityChanged(component3.GetMasterPriority());
 	}
 
-	private void OnPriorityChanged(PrioritySetting priority)
+		private void OnPriorityChanged(PrioritySetting priority)
 	{
 		this.building.RunOnArea(delegate(int cell)
 		{
@@ -328,7 +328,7 @@ public class Constructable : Workable, ISaveLoadable
 		});
 	}
 
-	private void MarkArea()
+		private void MarkArea()
 	{
 		int num = Grid.PosToCell(base.transform.GetPosition());
 		BuildingDef def = this.building.Def;
@@ -349,7 +349,7 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-	private void UnmarkArea()
+		private void UnmarkArea()
 	{
 		if (this.unmarked)
 		{
@@ -366,7 +366,7 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-	private void OnNearbyBuildingLayerChanged(object data)
+		private void OnNearbyBuildingLayerChanged(object data)
 	{
 		this.hasLadderNearby = false;
 		for (int i = this.ladderDetectionExtents.y; i < this.ladderDetectionExtents.y + this.ladderDetectionExtents.height; i++)
@@ -385,12 +385,12 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-	private bool IsWire()
+		private bool IsWire()
 	{
 		return this.building.Def.name.Contains("Wire");
 	}
 
-	public bool IconConnectionAnimation(float delay, int connectionCount, string defName, string soundName)
+		public bool IconConnectionAnimation(float delay, int connectionCount, string defName, string soundName)
 	{
 		int num = Grid.PosToCell(base.transform.GetPosition());
 		if (this.building.Def.Name.Contains(defName))
@@ -420,7 +420,7 @@ public class Constructable : Workable, ISaveLoadable
 		return false;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.IsReplacementTile && this.building.Def.isKAnimTile)
 		{
@@ -456,7 +456,7 @@ public class Constructable : Workable, ISaveLoadable
 		base.OnCleanUp();
 	}
 
-	private void OnDiggableReachabilityChanged(object data)
+		private void OnDiggableReachabilityChanged(object data)
 	{
 		if (!this.IsReplacementTile)
 		{
@@ -492,7 +492,7 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-	private void PlaceDiggables()
+		private void PlaceDiggables()
 	{
 		if (this.waitForFetchesBeforeDigging && this.fetchList != null && !this.hasLadderNearby)
 		{
@@ -563,14 +563,14 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-	private void OnFetchListComplete()
+		private void OnFetchListComplete()
 	{
 		this.fetchList = null;
 		this.PlaceDiggables();
 		this.ClearMaterialNeeds();
 	}
 
-	private void ClearMaterialNeeds()
+		private void ClearMaterialNeeds()
 	{
 		if (this.materialNeedsCleared)
 		{
@@ -583,7 +583,7 @@ public class Constructable : Workable, ISaveLoadable
 		this.materialNeedsCleared = true;
 	}
 
-	private void OnSolidChangedOrDigDestroyed(object data)
+		private void OnSolidChangedOrDigDestroyed(object data)
 	{
 		if (this == null || this.finished)
 		{
@@ -592,7 +592,7 @@ public class Constructable : Workable, ISaveLoadable
 		this.PlaceDiggables();
 	}
 
-	private void UpdateBuildState(Chore chore)
+		private void UpdateBuildState(Chore chore)
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		if (chore.InProgress())
@@ -603,7 +603,7 @@ public class Constructable : Workable, ISaveLoadable
 		component.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.UnderConstructionNoWorker, null);
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	internal void OnDeserialized()
 	{
 		if (this.ids != null)
@@ -629,7 +629,7 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-	private void OnReachableChanged(object data)
+		private void OnReachableChanged(object data)
 	{
 		KAnimControllerBase component = base.GetComponent<KAnimControllerBase>();
 		if ((bool)data)
@@ -651,102 +651,102 @@ public class Constructable : Workable, ISaveLoadable
 		}
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("action_cancel", UI.USERMENUACTIONS.CANCELCONSTRUCTION.NAME, new System.Action(this.OnPressCancel), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.CANCELCONSTRUCTION.TOOLTIP, true), 1f);
 	}
 
-	private void OnPressCancel()
+		private void OnPressCancel()
 	{
 		base.gameObject.Trigger(2127324410, null);
 	}
 
-	private void OnCancel(object data = null)
+		private void OnCancel(object data = null)
 	{
 		DetailsScreen.Instance.Show(false);
 		this.ClearMaterialNeeds();
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Storage storage;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Notifier notifier;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Prioritizable prioritizable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Rotatable rotatable;
 
-	private Notification invalidLocation;
+		private Notification invalidLocation;
 
-	private float initialTemperature = -1f;
+		private float initialTemperature = -1f;
 
-	[Serialize]
+		[Serialize]
 	private bool isPrioritized;
 
-	private FetchList2 fetchList;
+		private FetchList2 fetchList;
 
-	private Chore buildChore;
+		private Chore buildChore;
 
-	private bool materialNeedsCleared;
+		private bool materialNeedsCleared;
 
-	private bool hasUnreachableDigs;
+		private bool hasUnreachableDigs;
 
-	private bool finished;
+		private bool finished;
 
-	private bool unmarked;
+		private bool unmarked;
 
-	public bool isDiggingRequired = true;
+		public bool isDiggingRequired = true;
 
-	private bool waitForFetchesBeforeDigging;
+		private bool waitForFetchesBeforeDigging;
 
-	private bool hasLadderNearby;
+		private bool hasLadderNearby;
 
-	private Extents ladderDetectionExtents;
+		private Extents ladderDetectionExtents;
 
-	[Serialize]
+		[Serialize]
 	public bool IsReplacementTile;
 
-	private HandleVector<int>.Handle solidPartitionerEntry;
+		private HandleVector<int>.Handle solidPartitionerEntry;
 
-	private HandleVector<int>.Handle digPartitionerEntry;
+		private HandleVector<int>.Handle digPartitionerEntry;
 
-	private HandleVector<int>.Handle ladderParititonerEntry;
+		private HandleVector<int>.Handle ladderParititonerEntry;
 
-	private LoggerFSS log = new LoggerFSS("Constructable", 35);
+		private LoggerFSS log = new LoggerFSS("Constructable", 35);
 
-	[Serialize]
+		[Serialize]
 	private Tag[] selectedElementsTags;
 
-	private Element[] selectedElements;
+		private Element[] selectedElements;
 
-	[Serialize]
+		[Serialize]
 	private int[] ids;
 
-	private static readonly EventSystem.IntraObjectHandler<Constructable> OnReachableChangedDelegate = new EventSystem.IntraObjectHandler<Constructable>(delegate(Constructable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Constructable> OnReachableChangedDelegate = new EventSystem.IntraObjectHandler<Constructable>(delegate(Constructable component, object data)
 	{
 		component.OnReachableChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Constructable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Constructable>(delegate(Constructable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Constructable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Constructable>(delegate(Constructable component, object data)
 	{
 		component.OnCancel(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Constructable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Constructable>(delegate(Constructable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Constructable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Constructable>(delegate(Constructable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	public struct ReplaceCallbackParameters
+		public struct ReplaceCallbackParameters
 	{
-		public ObjectLayer TileLayer;
+				public ObjectLayer TileLayer;
 
-		public Worker Worker;
+				public WorkerBase Worker;
 	}
 }

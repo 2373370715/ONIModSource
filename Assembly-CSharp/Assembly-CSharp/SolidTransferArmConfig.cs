@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SolidTransferArmConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("SolidTransferArm", 3, 1, "conveyor_transferarm_kanim", 10, 10f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.REFINED_METALS, 1600f, BuildLocationRule.Anywhere, BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NOISY.TIER0, 0.2f);
 		buildingDef.Floodable = false;
@@ -19,31 +19,31 @@ public class SolidTransferArmConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<Operational>();
 		go.AddOrGet<LoopingSounds>();
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		SolidTransferArmConfig.AddVisualizer(go, true);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		SolidTransferArmConfig.AddVisualizer(go, false);
 		go.GetComponent<Constructable>().requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGet<SolidTransferArm>().pickupRange = 4;
 		SolidTransferArmConfig.AddVisualizer(go, false);
 	}
 
-	private static void AddVisualizer(GameObject prefab, bool movable)
+		private static void AddVisualizer(GameObject prefab, bool movable)
 	{
 		RangeVisualizer rangeVisualizer = prefab.AddOrGet<RangeVisualizer>();
 		rangeVisualizer.OriginOffset = new Vector2I(0, 0);
@@ -54,7 +54,7 @@ public class SolidTransferArmConfig : IBuildingConfig
 		rangeVisualizer.BlockingTileVisible = true;
 	}
 
-	public const string ID = "SolidTransferArm";
+		public const string ID = "SolidTransferArm";
 
-	private const int RANGE = 4;
+		private const int RANGE = 4;
 }

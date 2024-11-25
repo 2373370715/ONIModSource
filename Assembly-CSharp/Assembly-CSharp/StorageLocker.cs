@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/StorageLocker")]
 public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.Initialize(false);
 	}
 
-	protected void Initialize(bool use_logic_meter)
+		protected void Initialize(bool use_logic_meter)
 	{
 		base.OnPrefabInit();
 		this.log = new LoggerFS("StorageLocker", 35);
@@ -19,7 +19,7 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 		base.Subscribe<StorageLocker>(-905833192, StorageLocker.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.filteredStorage.FilterChanged();
 		if (this.nameable != null && !this.lockerName.IsNullOrWhiteSpace())
@@ -29,12 +29,12 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 		base.Trigger(-1683615038, null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.filteredStorage.CleanUp();
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		if (gameObject == null)
@@ -49,7 +49,7 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 		this.UserMaxCapacity = component.UserMaxCapacity;
 	}
 
-	public void UpdateForbiddenTag(Tag game_tag, bool forbidden)
+		public void UpdateForbiddenTag(Tag game_tag, bool forbidden)
 	{
 		if (forbidden)
 		{
@@ -59,7 +59,7 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 		this.filteredStorage.AddForbiddenTag(game_tag);
 	}
 
-			public virtual float UserMaxCapacity
+				public virtual float UserMaxCapacity
 	{
 		get
 		{
@@ -72,7 +72,7 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float AmountStored
+			public float AmountStored
 	{
 		get
 		{
@@ -80,7 +80,7 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float MinCapacity
+			public float MinCapacity
 	{
 		get
 		{
@@ -88,7 +88,7 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float MaxCapacity
+			public float MaxCapacity
 	{
 		get
 		{
@@ -96,7 +96,7 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public bool WholeValues
+			public bool WholeValues
 	{
 		get
 		{
@@ -104,7 +104,7 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public LocString CapacityUnits
+			public LocString CapacityUnits
 	{
 		get
 		{
@@ -112,22 +112,22 @@ public class StorageLocker : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-	private LoggerFS log;
+		private LoggerFS log;
 
-	[Serialize]
+		[Serialize]
 	private float userMaxCapacity = float.PositiveInfinity;
 
-	[Serialize]
+		[Serialize]
 	public string lockerName = "";
 
-	protected FilteredStorage filteredStorage;
+		protected FilteredStorage filteredStorage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private UserNameable nameable;
 
-	public string choreTypeID = Db.Get().ChoreTypes.StorageFetch.Id;
+		public string choreTypeID = Db.Get().ChoreTypes.StorageFetch.Id;
 
-	private static readonly EventSystem.IntraObjectHandler<StorageLocker> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<StorageLocker>(delegate(StorageLocker component, object data)
+		private static readonly EventSystem.IntraObjectHandler<StorageLocker> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<StorageLocker>(delegate(StorageLocker component, object data)
 	{
 		component.OnCopySettings(data);
 	});

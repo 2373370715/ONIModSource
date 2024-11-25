@@ -5,19 +5,19 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DietManager")]
 public class DietManager : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		DietManager.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.diets = DietManager.CollectSaveDiets(null);
 		DietManager.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		foreach (Tag tag in DiscoveredResources.Instance.GetDiscovered())
@@ -41,7 +41,7 @@ public class DietManager : KMonoBehaviour
 		DiscoveredResources.Instance.OnDiscover += this.OnWorldInventoryDiscover;
 	}
 
-	private void Discover(Tag tag)
+		private void Discover(Tag tag)
 	{
 		foreach (KeyValuePair<Tag, Diet> keyValuePair in this.diets)
 		{
@@ -52,12 +52,12 @@ public class DietManager : KMonoBehaviour
 		}
 	}
 
-	private void OnWorldInventoryDiscover(Tag category_tag, Tag tag)
+		private void OnWorldInventoryDiscover(Tag category_tag, Tag tag)
 	{
 		this.Discover(tag);
 	}
 
-	public static Dictionary<Tag, Diet> CollectDiets(Tag[] target_species)
+		public static Dictionary<Tag, Diet> CollectDiets(Tag[] target_species)
 	{
 		Dictionary<Tag, Diet> dictionary = new Dictionary<Tag, Diet>();
 		foreach (KPrefabID kprefabID in Assets.Prefabs)
@@ -81,7 +81,7 @@ public class DietManager : KMonoBehaviour
 		return dictionary;
 	}
 
-	public static Dictionary<Tag, Diet> CollectSaveDiets(Tag[] target_species)
+		public static Dictionary<Tag, Diet> CollectSaveDiets(Tag[] target_species)
 	{
 		Dictionary<Tag, Diet> dictionary = new Dictionary<Tag, Diet>();
 		foreach (KPrefabID kprefabID in Assets.Prefabs)
@@ -106,7 +106,7 @@ public class DietManager : KMonoBehaviour
 		return dictionary;
 	}
 
-	public Diet GetPrefabDiet(GameObject owner)
+		public Diet GetPrefabDiet(GameObject owner)
 	{
 		Diet result;
 		if (this.diets.TryGetValue(owner.GetComponent<KPrefabID>().PrefabTag, out result))
@@ -116,7 +116,7 @@ public class DietManager : KMonoBehaviour
 		return null;
 	}
 
-	private Dictionary<Tag, Diet> diets;
+		private Dictionary<Tag, Diet> diets;
 
-	public static DietManager Instance;
+		public static DietManager Instance;
 }

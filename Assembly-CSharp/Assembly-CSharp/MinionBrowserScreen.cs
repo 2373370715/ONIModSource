@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class MinionBrowserScreen : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.gridLayouter = new GridLayouter
@@ -20,7 +20,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 		this.galleryGridItemPool = new UIPrefabLocalPool(this.gridItemPrefab, this.galleryGridContent.gameObject);
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		if (this.isFirstDisplay)
 		{
@@ -49,12 +49,12 @@ public class MinionBrowserScreen : KMonoBehaviour
 		});
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.gridLayouter.CheckIfShouldResizeGrid();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.postponeConfiguration = false;
 		if (this.Config.isValid)
@@ -65,9 +65,9 @@ public class MinionBrowserScreen : KMonoBehaviour
 		this.Configure(MinionBrowserScreenConfig.Personalities(default(Option<Personality>)));
 	}
 
-			public MinionBrowserScreenConfig Config { get; private set; }
+				public MinionBrowserScreenConfig Config { get; private set; }
 
-	public void Configure(MinionBrowserScreenConfig config)
+		public void Configure(MinionBrowserScreenConfig config)
 	{
 		this.Config = config;
 		if (this.postponeConfiguration)
@@ -78,7 +78,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 		this.RefreshPreview();
 	}
 
-	private void RefreshGallery()
+		private void RefreshGallery()
 	{
 		if (this.RefreshGalleryFn != null)
 		{
@@ -86,7 +86,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 		}
 	}
 
-	public void PopulateGallery()
+		public void PopulateGallery()
 	{
 		this.RefreshGalleryFn = null;
 		this.galleryGridItemPool.ReturnAll();
@@ -98,7 +98,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 		this.SelectMinion(this.Config.defaultSelectedItem.Unwrap());
 	}
 
-	private void SelectMinion(MinionBrowserScreen.GridItem item)
+		private void SelectMinion(MinionBrowserScreen.GridItem item)
 	{
 		this.selectedGridItem = item;
 		this.RefreshGallery();
@@ -106,7 +106,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 		this.UIMinion.GetMinionVoice().PlaySoundUI("voice_land");
 	}
 
-	public void RefreshPreview()
+		public void RefreshPreview()
 	{
 		this.UIMinion.SetMinion(this.selectedGridItem.GetPersonality());
 		this.UIMinion.ReactToPersonalityChange();
@@ -117,7 +117,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 		this.SetDioramaBG();
 	}
 
-	private void RefreshOutfitDescription()
+		private void RefreshOutfitDescription()
 	{
 		if (this.RefreshOutfitDescriptionFn != null)
 		{
@@ -125,7 +125,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 		}
 	}
 
-	private void OnClickChangeOutfit()
+		private void OnClickChangeOutfit()
 	{
 		if (this.selectedOutfitType.IsNone())
 		{
@@ -134,7 +134,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 		OutfitBrowserScreenConfig.Minion(this.selectedOutfitType.Unwrap(), this.selectedGridItem).WithOutfit(this.selectedOutfit).ApplyAndOpenScreen();
 	}
 
-	private void RefreshPreviewButtonsInteractable()
+		private void RefreshPreviewButtonsInteractable()
 	{
 		this.editButton.isInteractable = true;
 		if (this.currentOutfitType == ClothingOutfitUtility.OutfitType.JoyResponse)
@@ -151,12 +151,12 @@ public class MinionBrowserScreen : KMonoBehaviour
 		}
 	}
 
-	private void SetDioramaBG()
+		private void SetDioramaBG()
 	{
 		this.dioramaBGImage.sprite = KleiPermitDioramaVis.GetDioramaBackground(this.currentOutfitType);
 	}
 
-	private Option<string> GetJoyResponseEditError()
+		private Option<string> GetJoyResponseEditError()
 	{
 		string joyTrait = this.selectedGridItem.GetPersonality().joyTrait;
 		if (!(joyTrait == "BalloonArtist"))
@@ -166,7 +166,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 		return Option.None;
 	}
 
-	public void SetEditingOutfitType(ClothingOutfitUtility.OutfitType outfitType)
+		public void SetEditingOutfitType(ClothingOutfitUtility.OutfitType outfitType)
 	{
 		this.currentOutfitType = outfitType;
 		switch (outfitType)
@@ -231,7 +231,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 		this.RefreshOutfitDescription();
 	}
 
-	private MinionBrowserScreen.CyclerUI.OnSelectedFn[] CreateCycleOptions()
+		private MinionBrowserScreen.CyclerUI.OnSelectedFn[] CreateCycleOptions()
 	{
 		MinionBrowserScreen.CyclerUI.OnSelectedFn[] array = new MinionBrowserScreen.CyclerUI.OnSelectedFn[3];
 		for (int i = 0; i < 3; i++)
@@ -248,12 +248,12 @@ public class MinionBrowserScreen : KMonoBehaviour
 		return array;
 	}
 
-	private void OnMouseOverToggle()
+		private void OnMouseOverToggle()
 	{
 		KFMOD.PlayUISound(GlobalAssets.GetSound("HUD_Mouseover", false));
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	private void <PopulateGallery>g__AddGridIcon|32_0(MinionBrowserScreen.GridItem item)
 	{
 		GameObject gameObject = this.galleryGridItemPool.Borrow();
@@ -287,85 +287,85 @@ public class MinionBrowserScreen : KMonoBehaviour
 		}));
 	}
 
-	[Header("ItemGalleryColumn")]
+		[Header("ItemGalleryColumn")]
 	[SerializeField]
 	private RectTransform galleryGridContent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject gridItemPrefab;
 
-	private GridLayouter gridLayouter;
+		private GridLayouter gridLayouter;
 
-	[Header("SelectionDetailsColumn")]
+		[Header("SelectionDetailsColumn")]
 	[SerializeField]
 	private KleiPermitDioramaVis permitVis;
 
-	[SerializeField]
+		[SerializeField]
 	private UIMinion UIMinion;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText detailsHeaderText;
 
-	[SerializeField]
+		[SerializeField]
 	private Image detailHeaderIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private OutfitDescriptionPanel outfitDescriptionPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private MinionBrowserScreen.CyclerUI cycler;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton editButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText editButtonText;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton changeOutfitButton;
 
-	private Option<ClothingOutfitUtility.OutfitType> selectedOutfitType;
+		private Option<ClothingOutfitUtility.OutfitType> selectedOutfitType;
 
-	private Option<ClothingOutfitTarget> selectedOutfit;
+		private Option<ClothingOutfitTarget> selectedOutfit;
 
-	[Header("Diorama Backgrounds")]
+		[Header("Diorama Backgrounds")]
 	[SerializeField]
 	private Image dioramaBGImage;
 
-	private MinionBrowserScreen.GridItem selectedGridItem;
+		private MinionBrowserScreen.GridItem selectedGridItem;
 
-	private System.Action OnEditClickedFn;
+		private System.Action OnEditClickedFn;
 
-	private bool isFirstDisplay = true;
+		private bool isFirstDisplay = true;
 
-	private bool postponeConfiguration = true;
+		private bool postponeConfiguration = true;
 
-	private UIPrefabLocalPool galleryGridItemPool;
+		private UIPrefabLocalPool galleryGridItemPool;
 
-	private System.Action RefreshGalleryFn;
+		private System.Action RefreshGalleryFn;
 
-	private System.Action RefreshOutfitDescriptionFn;
+		private System.Action RefreshOutfitDescriptionFn;
 
-	private ClothingOutfitUtility.OutfitType currentOutfitType;
+		private ClothingOutfitUtility.OutfitType currentOutfitType;
 
-	private enum MultiToggleState
+		private enum MultiToggleState
 	{
-		Default,
-		Selected,
-		NonInteractable
+				Default,
+				Selected,
+				NonInteractable
 	}
 
-	[Serializable]
+		[Serializable]
 	public class CyclerUI
 	{
-		public void Initialize(MinionBrowserScreen.CyclerUI.OnSelectedFn[] cycleOptions)
+				public void Initialize(MinionBrowserScreen.CyclerUI.OnSelectedFn[] cycleOptions)
 		{
 			this.cyclePrevButton.onClick += this.CyclePrev;
 			this.cycleNextButton.onClick += this.CycleNext;
 			this.SetCycleOptions(cycleOptions);
 		}
 
-		public void SetCycleOptions(MinionBrowserScreen.CyclerUI.OnSelectedFn[] cycleOptions)
+				public void SetCycleOptions(MinionBrowserScreen.CyclerUI.OnSelectedFn[] cycleOptions)
 		{
 			DebugUtil.Assert(cycleOptions != null);
 			DebugUtil.Assert(cycleOptions.Length != 0);
@@ -373,7 +373,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 			this.GoTo(0);
 		}
 
-		public void GoTo(int wrappingIndex)
+				public void GoTo(int wrappingIndex)
 		{
 			if (this.cycleOptions == null || this.cycleOptions.Length == 0)
 			{
@@ -391,75 +391,75 @@ public class MinionBrowserScreen : KMonoBehaviour
 			this.cycleOptions[this.selectedIndex]();
 		}
 
-		public void CyclePrev()
+				public void CyclePrev()
 		{
 			this.GoTo(this.selectedIndex - 1);
 		}
 
-		public void CycleNext()
+				public void CycleNext()
 		{
 			this.GoTo(this.selectedIndex + 1);
 		}
 
-		public void SetLabel(string text)
+				public void SetLabel(string text)
 		{
 			this.currentLabel.text = text;
 		}
 
-		[SerializeField]
+				[SerializeField]
 		public KButton cyclePrevButton;
 
-		[SerializeField]
+				[SerializeField]
 		public KButton cycleNextButton;
 
-		[SerializeField]
+				[SerializeField]
 		public LocText currentLabel;
 
-		[NonSerialized]
+				[NonSerialized]
 		private int selectedIndex = -1;
 
-		[NonSerialized]
+				[NonSerialized]
 		private MinionBrowserScreen.CyclerUI.OnSelectedFn[] cycleOptions;
 
-				public delegate void OnSelectedFn();
+						public delegate void OnSelectedFn();
 	}
 
-	public abstract class GridItem : IEquatable<MinionBrowserScreen.GridItem>
+		public abstract class GridItem : IEquatable<MinionBrowserScreen.GridItem>
 	{
-		public abstract string GetName();
+				public abstract string GetName();
 
-		public abstract Sprite GetIcon();
+				public abstract Sprite GetIcon();
 
-		public abstract string GetUniqueId();
+				public abstract string GetUniqueId();
 
-		public abstract Personality GetPersonality();
+				public abstract Personality GetPersonality();
 
-		public abstract Option<ClothingOutfitTarget> GetClothingOutfitTarget(ClothingOutfitUtility.OutfitType outfitType);
+				public abstract Option<ClothingOutfitTarget> GetClothingOutfitTarget(ClothingOutfitUtility.OutfitType outfitType);
 
-		public abstract JoyResponseOutfitTarget GetJoyResponseOutfitTarget();
+				public abstract JoyResponseOutfitTarget GetJoyResponseOutfitTarget();
 
-		public override bool Equals(object obj)
+				public override bool Equals(object obj)
 		{
 			MinionBrowserScreen.GridItem gridItem = obj as MinionBrowserScreen.GridItem;
 			return gridItem != null && this.Equals(gridItem);
 		}
 
-		public bool Equals(MinionBrowserScreen.GridItem other)
+				public bool Equals(MinionBrowserScreen.GridItem other)
 		{
 			return this.GetHashCode() == other.GetHashCode();
 		}
 
-		public override int GetHashCode()
+				public override int GetHashCode()
 		{
 			return Hash.SDBMLower(this.GetUniqueId());
 		}
 
-		public override string ToString()
+				public override string ToString()
 		{
 			return this.GetUniqueId();
 		}
 
-		public static MinionBrowserScreen.GridItem.MinionInstanceTarget Of(GameObject minionInstance)
+				public static MinionBrowserScreen.GridItem.MinionInstanceTarget Of(GameObject minionInstance)
 		{
 			MinionIdentity component = minionInstance.GetComponent<MinionIdentity>();
 			return new MinionBrowserScreen.GridItem.MinionInstanceTarget
@@ -470,7 +470,7 @@ public class MinionBrowserScreen : KMonoBehaviour
 			};
 		}
 
-		public static MinionBrowserScreen.GridItem.PersonalityTarget Of(Personality personality)
+				public static MinionBrowserScreen.GridItem.PersonalityTarget Of(Personality personality)
 		{
 			return new MinionBrowserScreen.GridItem.PersonalityTarget
 			{
@@ -478,78 +478,78 @@ public class MinionBrowserScreen : KMonoBehaviour
 			};
 		}
 
-		public class MinionInstanceTarget : MinionBrowserScreen.GridItem
+				public class MinionInstanceTarget : MinionBrowserScreen.GridItem
 		{
-			public override Sprite GetIcon()
+						public override Sprite GetIcon()
 			{
 				return this.personality.GetMiniIcon();
 			}
 
-			public override string GetName()
+						public override string GetName()
 			{
 				return this.minionIdentity.GetProperName();
 			}
 
-			public override string GetUniqueId()
+						public override string GetUniqueId()
 			{
 				return "minion_instance_id::" + this.minionInstance.GetInstanceID().ToString();
 			}
 
-			public override Personality GetPersonality()
+						public override Personality GetPersonality()
 			{
 				return this.personality;
 			}
 
-			public override Option<ClothingOutfitTarget> GetClothingOutfitTarget(ClothingOutfitUtility.OutfitType outfitType)
+						public override Option<ClothingOutfitTarget> GetClothingOutfitTarget(ClothingOutfitUtility.OutfitType outfitType)
 			{
 				return ClothingOutfitTarget.FromMinion(outfitType, this.minionInstance);
 			}
 
-			public override JoyResponseOutfitTarget GetJoyResponseOutfitTarget()
+						public override JoyResponseOutfitTarget GetJoyResponseOutfitTarget()
 			{
 				return JoyResponseOutfitTarget.FromMinion(this.minionInstance);
 			}
 
-			public GameObject minionInstance;
+						public GameObject minionInstance;
 
-			public MinionIdentity minionIdentity;
+						public MinionIdentity minionIdentity;
 
-			public Personality personality;
+						public Personality personality;
 		}
 
-		public class PersonalityTarget : MinionBrowserScreen.GridItem
+				public class PersonalityTarget : MinionBrowserScreen.GridItem
 		{
-			public override Sprite GetIcon()
+						public override Sprite GetIcon()
 			{
 				return this.personality.GetMiniIcon();
 			}
 
-			public override string GetName()
+						public override string GetName()
 			{
 				return this.personality.Name;
 			}
 
-			public override string GetUniqueId()
+						public override string GetUniqueId()
 			{
 				return "personality::" + this.personality.nameStringKey;
 			}
 
-			public override Personality GetPersonality()
+						public override Personality GetPersonality()
 			{
 				return this.personality;
 			}
 
-			public override Option<ClothingOutfitTarget> GetClothingOutfitTarget(ClothingOutfitUtility.OutfitType outfitType)
+						public override Option<ClothingOutfitTarget> GetClothingOutfitTarget(ClothingOutfitUtility.OutfitType outfitType)
 			{
 				return ClothingOutfitTarget.TryFromTemplateId(this.personality.GetSelectedTemplateOutfitId(outfitType));
 			}
 
-			public override JoyResponseOutfitTarget GetJoyResponseOutfitTarget()
+						public override JoyResponseOutfitTarget GetJoyResponseOutfitTarget()
 			{
 				return JoyResponseOutfitTarget.FromPersonality(this.personality);
 			}
 
-			public Personality personality;
+						public Personality personality;
 		}
 	}
 }

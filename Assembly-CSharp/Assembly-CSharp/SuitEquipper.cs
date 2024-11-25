@@ -5,13 +5,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SuitEquipper")]
 public class SuitEquipper : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<SuitEquipper>(493375141, SuitEquipper.OnRefreshUserMenuDelegate);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		foreach (AssignableSlotInstance assignableSlotInstance in base.GetComponent<MinionIdentity>().GetEquipment().Slots)
 		{
@@ -28,7 +28,7 @@ public class SuitEquipper : KMonoBehaviour
 		}
 	}
 
-	public Equippable IsWearingAirtightSuit()
+		public Equippable IsWearingAirtightSuit()
 	{
 		Equippable result = null;
 		foreach (AssignableSlotInstance assignableSlotInstance in base.GetComponent<MinionIdentity>().GetEquipment().Slots)
@@ -43,7 +43,7 @@ public class SuitEquipper : KMonoBehaviour
 		return result;
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<SuitEquipper> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<SuitEquipper>(delegate(SuitEquipper component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SuitEquipper> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<SuitEquipper>(delegate(SuitEquipper component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});

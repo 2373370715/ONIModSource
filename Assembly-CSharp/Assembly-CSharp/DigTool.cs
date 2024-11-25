@@ -3,24 +3,24 @@ using UnityEngine;
 
 public class DigTool : DragTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		DigTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		DigTool.Instance = this;
 	}
 
-	protected override void OnDragTool(int cell, int distFromOrigin)
+		protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		InterfaceTool.ActiveConfig.DigAction.Uproot(cell);
 		InterfaceTool.ActiveConfig.DigAction.Dig(cell, distFromOrigin);
 	}
 
-	public static GameObject PlaceDig(int cell, int animationDelay = 0)
+		public static GameObject PlaceDig(int cell, int animationDelay = 0)
 	{
 		if (Grid.Solid[cell] && !Grid.Foundation[cell] && Grid.Objects[cell, 7] == null)
 		{
@@ -48,17 +48,17 @@ public class DigTool : DragTool
 		return null;
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		ToolMenu.Instance.PriorityScreen.Show(true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		ToolMenu.Instance.PriorityScreen.Show(false);
 	}
 
-	public static DigTool Instance;
+		public static DigTool Instance;
 }

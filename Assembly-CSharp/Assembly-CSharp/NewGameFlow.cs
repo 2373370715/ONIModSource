@@ -5,27 +5,27 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/NewGameFlow")]
 public class NewGameFlow : KMonoBehaviour
 {
-	public void BeginFlow()
+		public void BeginFlow()
 	{
 		this.currentScreenIndex = -1;
 		this.Next();
 	}
 
-	private void Next()
+		private void Next()
 	{
 		this.ClearCurrentScreen();
 		this.currentScreenIndex++;
 		this.ActivateCurrentScreen();
 	}
 
-	private void Previous()
+		private void Previous()
 	{
 		this.ClearCurrentScreen();
 		this.currentScreenIndex--;
 		this.ActivateCurrentScreen();
 	}
 
-	private void ClearCurrentScreen()
+		private void ClearCurrentScreen()
 	{
 		if (this.currentScreen != null)
 		{
@@ -34,7 +34,7 @@ public class NewGameFlow : KMonoBehaviour
 		}
 	}
 
-	private void ActivateCurrentScreen()
+		private void ActivateCurrentScreen()
 	{
 		if (this.currentScreenIndex >= 0 && this.currentScreenIndex < this.newGameFlowScreens.Count)
 		{
@@ -49,9 +49,9 @@ public class NewGameFlow : KMonoBehaviour
 		}
 	}
 
-	public List<NewGameFlowScreen> newGameFlowScreens;
+		public List<NewGameFlowScreen> newGameFlowScreens;
 
-	private int currentScreenIndex = -1;
+		private int currentScreenIndex = -1;
 
-	private NewGameFlowScreen currentScreen;
+		private NewGameFlowScreen currentScreen;
 }

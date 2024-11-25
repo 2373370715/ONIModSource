@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class ExobaseHeadquartersConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ExobaseHeadquarters";
 		int width = 3;
@@ -36,7 +36,7 @@ public class ExobaseHeadquartersConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		LoreBearerUtil.AddLoreTo(go);
 		Telepad telepad = go.AddOrGet<Telepad>();
@@ -95,9 +95,9 @@ public class ExobaseHeadquartersConfig : IBuildingConfig
 		activatable.SetWorkTime(15f);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "ExobaseHeadquarters";
+		public const string ID = "ExobaseHeadquarters";
 }

@@ -2,7 +2,7 @@
 
 public class LogicRibbonBridge : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();

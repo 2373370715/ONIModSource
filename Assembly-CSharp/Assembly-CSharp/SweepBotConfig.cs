@@ -7,12 +7,12 @@ using UnityEngine;
 
 public class SweepBotConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "SweepBot";
 		string text = this.name;
@@ -86,11 +86,11 @@ public class SweepBotConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		StorageUnloadMonitor.Instance smi = inst.GetSMI<StorageUnloadMonitor.Instance>();
 		smi.sm.internalStorage.Set(inst.GetComponents<Storage>()[1], smi, false);
@@ -98,23 +98,23 @@ public class SweepBotConfig : IEntityConfig
 		inst.GetSMI<CreatureFallMonitor.Instance>().anim = "idle_loop";
 	}
 
-	public const string ID = "SweepBot";
+		public const string ID = "SweepBot";
 
-	public const string BASE_TRAIT_ID = "SweepBotBaseTrait";
+		public const string BASE_TRAIT_ID = "SweepBotBaseTrait";
 
-	public const float STORAGE_CAPACITY = 500f;
+		public const float STORAGE_CAPACITY = 500f;
 
-	public const float BATTERY_CAPACITY = 9000f;
+		public const float BATTERY_CAPACITY = 9000f;
 
-	public const float BATTERY_DEPLETION_RATE = 17.142857f;
+		public const float BATTERY_DEPLETION_RATE = 17.142857f;
 
-	public const float MAX_SWEEP_AMOUNT = 10f;
+		public const float MAX_SWEEP_AMOUNT = 10f;
 
-	public const float MOP_SPEED = 10f;
+		public const float MOP_SPEED = 10f;
 
-	private string name = STRINGS.ROBOTS.MODELS.SWEEPBOT.NAME;
+		private string name = STRINGS.ROBOTS.MODELS.SWEEPBOT.NAME;
 
-	private string desc = STRINGS.ROBOTS.MODELS.SWEEPBOT.DESC;
+		private string desc = STRINGS.ROBOTS.MODELS.SWEEPBOT.DESC;
 
-	public static float MASS = 25f;
+		public static float MASS = 25f;
 }

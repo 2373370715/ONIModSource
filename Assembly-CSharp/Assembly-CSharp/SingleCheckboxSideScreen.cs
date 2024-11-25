@@ -1,66 +1,49 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class SingleCheckboxSideScreen : SideScreenContent
-{
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-	}
+public class SingleCheckboxSideScreen : SideScreenContent {
+    public             LocText          label;
+    private            ICheckboxControl target;
+    public             KToggle          toggle;
+    public             KImage           toggleCheckMark;
+    protected override void             OnPrefabInit() { base.OnPrefabInit(); }
 
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.toggle.onValueChanged += this.OnValueChanged;
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        toggle.onValueChanged += OnValueChanged;
+    }
 
-	public override bool IsValidForTarget(GameObject target)
-	{
-		return target.GetComponent<ICheckboxControl>() != null || target.GetSMI<ICheckboxControl>() != null;
-	}
+    public override bool IsValidForTarget(GameObject target) {
+        return target.GetComponent<ICheckboxControl>() != null || target.GetSMI<ICheckboxControl>() != null;
+    }
 
-	public override void SetTarget(GameObject target)
-	{
-		base.SetTarget(target);
-		if (target == null)
-		{
-			global::Debug.LogError("The target object provided was null");
-			return;
-		}
-		this.target = target.GetComponent<ICheckboxControl>();
-		if (this.target == null)
-		{
-			this.target = target.GetSMI<ICheckboxControl>();
-		}
-		if (this.target == null)
-		{
-			global::Debug.LogError("The target provided does not have an ICheckboxControl component");
-			return;
-		}
-		this.label.text = this.target.CheckboxLabel;
-		this.toggle.transform.parent.GetComponent<ToolTip>().SetSimpleTooltip(this.target.CheckboxTooltip);
-		this.titleKey = this.target.CheckboxTitleKey;
-		this.toggle.isOn = this.target.GetCheckboxValue();
-		this.toggleCheckMark.enabled = this.toggle.isOn;
-	}
+    public override void SetTarget(GameObject target) {
+        base.SetTarget(target);
+        if (target == null) {
+            Debug.LogError("The target object provided was null");
+            return;
+        }
 
-	public override void ClearTarget()
-	{
-		base.ClearTarget();
-		this.target = null;
-	}
+        this.target = target.GetComponent<ICheckboxControl>();
+        if (this.target == null) this.target = target.GetSMI<ICheckboxControl>();
+        if (this.target == null) {
+            Debug.LogError("The target provided does not have an ICheckboxControl component");
+            return;
+        }
 
-	private void OnValueChanged(bool value)
-	{
-		this.target.SetCheckboxValue(value);
-		this.toggleCheckMark.enabled = value;
-	}
+        label.text = this.target.CheckboxLabel;
+        toggle.transform.parent.GetComponent<ToolTip>().SetSimpleTooltip(this.target.CheckboxTooltip);
+        titleKey                = this.target.CheckboxTitleKey;
+        toggle.isOn             = this.target.GetCheckboxValue();
+        toggleCheckMark.enabled = toggle.isOn;
+    }
 
-	public KToggle toggle;
+    public override void ClearTarget() {
+        base.ClearTarget();
+        target = null;
+    }
 
-	public KImage toggleCheckMark;
-
-	public LocText label;
-
-	private ICheckboxControl target;
+    private void OnValueChanged(bool value) {
+        target.SetCheckboxValue(value);
+        toggleCheckMark.enabled = value;
+    }
 }

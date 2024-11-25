@@ -3,7 +3,7 @@ using UnityEngine;
 
 public interface IUsable
 {
-	bool IsUsable();
+		bool IsUsable();
 
-		Transform transform { get; }
+			Transform transform { get; }
 }

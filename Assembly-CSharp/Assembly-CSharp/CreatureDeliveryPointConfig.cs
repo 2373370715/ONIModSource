@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CreatureDeliveryPointConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("CreatureDeliveryPoint", 1, 3, "relocator_dropoff_kanim", 10, 10f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER1, MATERIALS.RAW_METALS, 1600f, BuildLocationRule.OnFloor, BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NOISY.TIER0, 0.2f);
 		buildingDef.AudioCategory = "Metal";
@@ -13,7 +13,7 @@ public class CreatureDeliveryPointConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.CreatureRelocator, false);
 		Storage storage = go.AddOrGet<Storage>();
@@ -39,7 +39,7 @@ public class CreatureDeliveryPointConfig : IBuildingConfig
 		go.AddOrGet<TreeFilterable>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<FixedCapturePoint.Def>().isAmountStoredOverCapacity = delegate(FixedCapturePoint.Instance smi, FixedCapturableMonitor.Instance capturable)
 		{
@@ -51,5 +51,5 @@ public class CreatureDeliveryPointConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "CreatureDeliveryPoint";
+		public const string ID = "CreatureDeliveryPoint";
 }

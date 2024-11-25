@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class EmoteReactable : Reactable
 {
-	public EmoteReactable(GameObject gameObject, HashedString id, ChoreType chore_type, int range_width = 15, int range_height = 8, float globalCooldown = 0f, float localCooldown = 20f, float lifeSpan = float.PositiveInfinity, float max_initial_delay = 0f) : base(gameObject, id, chore_type, range_width, range_height, true, globalCooldown, localCooldown, lifeSpan, max_initial_delay, ObjectLayer.NumLayers)
+		public EmoteReactable(GameObject gameObject, HashedString id, ChoreType chore_type, int range_width = 15, int range_height = 8, float globalCooldown = 0f, float localCooldown = 20f, float lifeSpan = float.PositiveInfinity, float max_initial_delay = 0f) : base(gameObject, id, chore_type, range_width, range_height, true, globalCooldown, localCooldown, lifeSpan, max_initial_delay, ObjectLayer.NumLayers)
 	{
 	}
 
-	public EmoteReactable SetEmote(Emote emote)
+		public EmoteReactable SetEmote(Emote emote)
 	{
 		this.emote = emote;
 		return this;
 	}
 
-	public EmoteReactable RegisterEmoteStepCallbacks(HashedString stepName, Action<GameObject> startedCb, Action<GameObject> finishedCb)
+		public EmoteReactable RegisterEmoteStepCallbacks(HashedString stepName, Action<GameObject> startedCb, Action<GameObject> finishedCb)
 	{
 		if (this.callbackHandles == null)
 		{
@@ -25,25 +25,25 @@ public class EmoteReactable : Reactable
 		return this;
 	}
 
-	public EmoteReactable SetExpression(Expression expression)
+		public EmoteReactable SetExpression(Expression expression)
 	{
 		this.expression = expression;
 		return this;
 	}
 
-	public EmoteReactable SetThought(Thought thought)
+		public EmoteReactable SetThought(Thought thought)
 	{
 		this.thought = thought;
 		return this;
 	}
 
-	public EmoteReactable SetOverideAnimSet(string animSet)
+		public EmoteReactable SetOverideAnimSet(string animSet)
 	{
 		this.overrideAnimSet = Assets.GetAnim(animSet);
 		return this;
 	}
 
-	public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
+		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 	{
 		if (this.reactor != null || new_reactor == null)
 		{
@@ -53,7 +53,7 @@ public class EmoteReactable : Reactable
 		return !(component == null) && component.IsMoving() && (-257 & 1 << (int)component.CurrentNavType) != 0 && this.gameObject != new_reactor;
 	}
 
-	public override void Update(float dt)
+		public override void Update(float dt)
 	{
 		if (this.emote == null || !this.emote.IsValidStep(this.currentStep))
 		{
@@ -76,7 +76,7 @@ public class EmoteReactable : Reactable
 		this.elapsed += dt;
 	}
 
-	protected override void InternalBegin()
+		protected override void InternalBegin()
 	{
 		this.kbac = this.reactor.GetComponent<KBatchedAnimController>();
 		this.emote.ApplyAnimOverrides(this.kbac, this.overrideAnimSet);
@@ -91,7 +91,7 @@ public class EmoteReactable : Reactable
 		this.NextStep(null);
 	}
 
-	protected override void InternalEnd()
+		protected override void InternalEnd()
 	{
 		if (this.kbac != null)
 		{
@@ -113,7 +113,7 @@ public class EmoteReactable : Reactable
 		this.currentStep = -1;
 	}
 
-	protected override void InternalCleanup()
+		protected override void InternalCleanup()
 	{
 		if (this.emote == null || this.callbackHandles == null)
 		{
@@ -127,7 +127,7 @@ public class EmoteReactable : Reactable
 		}
 	}
 
-	private void NextStep(HashedString finishedAnim)
+		private void NextStep(HashedString finishedAnim)
 	{
 		if (this.emote.IsValidStep(this.currentStep) && this.emote[this.currentStep].timeout <= 0f)
 		{
@@ -166,19 +166,19 @@ public class EmoteReactable : Reactable
 		}
 	}
 
-	private KBatchedAnimController kbac;
+		private KBatchedAnimController kbac;
 
-	public Expression expression;
+		public Expression expression;
 
-	public Thought thought;
+		public Thought thought;
 
-	public Emote emote;
+		public Emote emote;
 
-	private HandleVector<EmoteStep.Callbacks>.Handle[] callbackHandles;
+		private HandleVector<EmoteStep.Callbacks>.Handle[] callbackHandles;
 
-	protected KAnimFile overrideAnimSet;
+		protected KAnimFile overrideAnimSet;
 
-	private int currentStep = -1;
+		private int currentStep = -1;
 
-	private float elapsed;
+		private float elapsed;
 }

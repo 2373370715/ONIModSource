@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/KSelectable")]
 public class KSelectable : KMonoBehaviour
 {
-		public bool IsSelected
+			public bool IsSelected
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class KSelectable : KMonoBehaviour
 		}
 	}
 
-			public bool IsSelectable
+				public bool IsSelectable
 	{
 		get
 		{
@@ -25,7 +25,7 @@ public class KSelectable : KMonoBehaviour
 		}
 	}
 
-		public bool DisableSelectMarker
+			public bool DisableSelectMarker
 	{
 		get
 		{
@@ -33,7 +33,7 @@ public class KSelectable : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.statusItemGroup = new StatusItemGroup(base.gameObject);
@@ -48,7 +48,7 @@ public class KSelectable : KMonoBehaviour
 		}
 	}
 
-	public virtual string GetName()
+		public virtual string GetName()
 	{
 		if (this.entityName == null || this.entityName == "" || this.entityName.Length <= 0)
 		{
@@ -58,7 +58,7 @@ public class KSelectable : KMonoBehaviour
 		return this.entityName;
 	}
 
-	public void SetStatusIndicatorOffset(Vector3 offset)
+		public void SetStatusIndicatorOffset(Vector3 offset)
 	{
 		if (this.statusItemGroup == null)
 		{
@@ -67,28 +67,28 @@ public class KSelectable : KMonoBehaviour
 		this.statusItemGroup.SetOffset(offset);
 	}
 
-	public void SetName(string name)
+		public void SetName(string name)
 	{
 		this.entityName = name;
 	}
 
-	public void SetGender(string Gender)
+		public void SetGender(string Gender)
 	{
 		this.entityGender = Gender;
 	}
 
-	public float GetZoom()
+		public float GetZoom()
 	{
 		Bounds bounds = Util.GetBounds(base.gameObject);
 		return 1.05f * Mathf.Max(bounds.extents.x, bounds.extents.y);
 	}
 
-	public Vector3 GetPortraitLocation()
+		public Vector3 GetPortraitLocation()
 	{
 		return Util.GetBounds(base.gameObject).center;
 	}
 
-	private void ClearHighlight()
+		private void ClearHighlight()
 	{
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 		if (component != null)
@@ -98,7 +98,7 @@ public class KSelectable : KMonoBehaviour
 		base.Trigger(-1201923725, false);
 	}
 
-	private void ApplyHighlight(float highlight)
+		private void ApplyHighlight(float highlight)
 	{
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 		if (component != null)
@@ -108,7 +108,7 @@ public class KSelectable : KMonoBehaviour
 		base.Trigger(-1201923725, true);
 	}
 
-	public void Select()
+		public void Select()
 	{
 		this.selected = true;
 		this.ClearHighlight();
@@ -138,7 +138,7 @@ public class KSelectable : KMonoBehaviour
 		this.UpdateWorkableSelection(this.selected);
 	}
 
-	public void Unselect()
+		public void Unselect()
 	{
 		if (this.selected)
 		{
@@ -166,7 +166,7 @@ public class KSelectable : KMonoBehaviour
 		this.UpdateWorkableSelection(this.selected);
 	}
 
-	public void Hover(bool playAudio)
+		public void Hover(bool playAudio)
 	{
 		this.ClearHighlight();
 		if (!DebugHandler.HideUI)
@@ -179,7 +179,7 @@ public class KSelectable : KMonoBehaviour
 		}
 	}
 
-	private void PlayHoverSound()
+		private void PlayHoverSound()
 	{
 		if (CellSelectionObject.IsSelectionObject(base.gameObject))
 		{
@@ -188,7 +188,7 @@ public class KSelectable : KMonoBehaviour
 		UISounds.PlaySound(UISounds.Sound.Object_Mouseover);
 	}
 
-	public void Unhover()
+		public void Unhover()
 	{
 		if (!this.selected)
 		{
@@ -196,7 +196,7 @@ public class KSelectable : KMonoBehaviour
 		}
 	}
 
-	public Guid ToggleStatusItem(StatusItem status_item, bool on, object data = null)
+		public Guid ToggleStatusItem(StatusItem status_item, bool on, object data = null)
 	{
 		if (on)
 		{
@@ -205,7 +205,7 @@ public class KSelectable : KMonoBehaviour
 		return this.RemoveStatusItem(status_item, false);
 	}
 
-	public Guid ToggleStatusItem(StatusItem status_item, Guid guid, bool show, object data = null)
+		public Guid ToggleStatusItem(StatusItem status_item, Guid guid, bool show, object data = null)
 	{
 		if (show)
 		{
@@ -225,7 +225,7 @@ public class KSelectable : KMonoBehaviour
 		}
 	}
 
-	public Guid SetStatusItem(StatusItemCategory category, StatusItem status_item, object data = null)
+		public Guid SetStatusItem(StatusItemCategory category, StatusItem status_item, object data = null)
 	{
 		if (this.statusItemGroup == null)
 		{
@@ -234,7 +234,7 @@ public class KSelectable : KMonoBehaviour
 		return this.statusItemGroup.SetStatusItem(category, status_item, data);
 	}
 
-	public Guid ReplaceStatusItem(Guid guid, StatusItem status_item, object data = null)
+		public Guid ReplaceStatusItem(Guid guid, StatusItem status_item, object data = null)
 	{
 		if (this.statusItemGroup == null)
 		{
@@ -247,7 +247,7 @@ public class KSelectable : KMonoBehaviour
 		return this.AddStatusItem(status_item, data);
 	}
 
-	public Guid AddStatusItem(StatusItem status_item, object data = null)
+		public Guid AddStatusItem(StatusItem status_item, object data = null)
 	{
 		if (this.statusItemGroup == null)
 		{
@@ -256,7 +256,7 @@ public class KSelectable : KMonoBehaviour
 		return this.statusItemGroup.AddStatusItem(status_item, data, null);
 	}
 
-	public Guid RemoveStatusItem(StatusItem status_item, bool immediate = false)
+		public Guid RemoveStatusItem(StatusItem status_item, bool immediate = false)
 	{
 		if (this.statusItemGroup == null)
 		{
@@ -266,7 +266,7 @@ public class KSelectable : KMonoBehaviour
 		return Guid.Empty;
 	}
 
-	public Guid RemoveStatusItem(Guid guid, bool immediate = false)
+		public Guid RemoveStatusItem(Guid guid, bool immediate = false)
 	{
 		if (this.statusItemGroup == null)
 		{
@@ -276,22 +276,22 @@ public class KSelectable : KMonoBehaviour
 		return Guid.Empty;
 	}
 
-	public bool HasStatusItem(StatusItem status_item)
+		public bool HasStatusItem(StatusItem status_item)
 	{
 		return this.statusItemGroup != null && this.statusItemGroup.HasStatusItem(status_item);
 	}
 
-	public StatusItemGroup.Entry GetStatusItem(StatusItemCategory category)
+		public StatusItemGroup.Entry GetStatusItem(StatusItemCategory category)
 	{
 		return this.statusItemGroup.GetStatusItem(category);
 	}
 
-	public StatusItemGroup GetStatusItemGroup()
+		public StatusItemGroup GetStatusItemGroup()
 	{
 		return this.statusItemGroup;
 	}
 
-	public void UpdateWorkerSelection(bool selected)
+		public void UpdateWorkerSelection(bool selected)
 	{
 		Workable[] components = base.GetComponents<Workable>();
 		if (components.Length != 0)
@@ -306,12 +306,12 @@ public class KSelectable : KMonoBehaviour
 		}
 	}
 
-	public void UpdateWorkableSelection(bool selected)
+		public void UpdateWorkableSelection(bool selected)
 	{
-		Worker component = base.GetComponent<Worker>();
-		if (component != null && component.workable != null)
+		WorkerBase component = base.GetComponent<WorkerBase>();
+		if (component != null && component.GetWorkable() != null)
 		{
-			Workable workable = base.GetComponent<Worker>().workable;
+			Workable workable = base.GetComponent<WorkerBase>().GetWorkable();
 			if (workable.GetComponent<LoopingSounds>() != null)
 			{
 				workable.GetComponent<LoopingSounds>().UpdateObjectSelection(selected);
@@ -319,13 +319,13 @@ public class KSelectable : KMonoBehaviour
 		}
 	}
 
-	protected override void OnLoadLevel()
+		protected override void OnLoadLevel()
 	{
 		this.OnCleanUp();
 		base.OnLoadLevel();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.statusItemGroup != null)
 		{
@@ -346,21 +346,21 @@ public class KSelectable : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	private const float hoverHighlight = 0.25f;
+		private const float hoverHighlight = 0.25f;
 
-	private const float selectHighlight = 0.2f;
+		private const float selectHighlight = 0.2f;
 
-	public string entityName;
+		public string entityName;
 
-	public string entityGender;
+		public string entityGender;
 
-	private bool selected;
+		private bool selected;
 
-	[SerializeField]
+		[SerializeField]
 	private bool selectable = true;
 
-	[SerializeField]
+		[SerializeField]
 	private bool disableSelectMarker;
 
-	private StatusItemGroup statusItemGroup;
+		private StatusItemGroup statusItemGroup;
 }

@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class StatusItem : Resource
 {
-	private StatusItem(string id, string composed_prefix) : base(id, Strings.Get(composed_prefix + ".NAME"))
+		private StatusItem(string id, string composed_prefix) : base(id, Strings.Get(composed_prefix + ".NAME"))
 	{
 		this.composedPrefix = composed_prefix;
 		this.tooltipText = Strings.Get(composed_prefix + ".TOOLTIP");
 	}
 
-	private void SetIcon(string icon, StatusItem.IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, bool show_world_icon = true, int status_overlays = 129022, Func<string, object, string> resolve_string_callback = null)
+		private void SetIcon(string icon, StatusItem.IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, bool show_world_icon = true, int status_overlays = 129022, Func<string, object, string> resolve_string_callback = null)
 	{
 		switch (icon_type)
 		{
@@ -43,18 +43,18 @@ public class StatusItem : Resource
 		}
 	}
 
-	public StatusItem(string id, string prefix, string icon, StatusItem.IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, bool showWorldIcon = true, int status_overlays = 129022, Func<string, object, string> resolve_string_callback = null) : this(id, "STRINGS." + prefix + ".STATUSITEMS." + id.ToUpper())
+		public StatusItem(string id, string prefix, string icon, StatusItem.IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, bool showWorldIcon = true, int status_overlays = 129022, Func<string, object, string> resolve_string_callback = null) : this(id, "STRINGS." + prefix + ".STATUSITEMS." + id.ToUpper())
 	{
 		this.SetIcon(icon, icon_type, notification_type, allow_multiples, render_overlay, showWorldIcon, status_overlays, resolve_string_callback);
 	}
 
-	public StatusItem(string id, string name, string tooltip, string icon, StatusItem.IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, int status_overlays = 129022, bool showWorldIcon = true, Func<string, object, string> resolve_string_callback = null) : base(id, name)
+		public StatusItem(string id, string name, string tooltip, string icon, StatusItem.IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, int status_overlays = 129022, bool showWorldIcon = true, Func<string, object, string> resolve_string_callback = null) : base(id, name)
 	{
 		this.tooltipText = tooltip;
 		this.SetIcon(icon, icon_type, notification_type, allow_multiples, render_overlay, showWorldIcon, status_overlays, resolve_string_callback);
 	}
 
-	public void AddNotification(string sound_path = null, string notification_text = null, string notification_tooltip = null)
+		public void AddNotification(string sound_path = null, string notification_text = null, string notification_tooltip = null)
 	{
 		this.shouldNotify = true;
 		if (sound_path == null)
@@ -90,17 +90,17 @@ public class StatusItem : Resource
 		this.notificationTooltipText = Strings.Get(this.composedPrefix + ".NOTIFICATION_TOOLTIP");
 	}
 
-	public virtual string GetName(object data)
+		public virtual string GetName(object data)
 	{
 		return this.ResolveString(this.Name, data);
 	}
 
-	public virtual string GetTooltip(object data)
+		public virtual string GetTooltip(object data)
 	{
 		return this.ResolveTooltip(this.tooltipText, data);
 	}
 
-	private string ResolveString(string str, object data)
+		private string ResolveString(string str, object data)
 	{
 		if (this.resolveStringCallback != null && (data != null || this.resolveStringCallback_shouldStillCallIfDataIsNull))
 		{
@@ -109,7 +109,7 @@ public class StatusItem : Resource
 		return str;
 	}
 
-	private string ResolveTooltip(string str, object data)
+		private string ResolveTooltip(string str, object data)
 	{
 		if (data != null)
 		{
@@ -136,19 +136,19 @@ public class StatusItem : Resource
 		return str;
 	}
 
-	public bool ShouldShowIcon()
+		public bool ShouldShowIcon()
 	{
 		return this.iconType == StatusItem.IconType.Custom && this.showShowWorldIcon;
 	}
 
-	public virtual void ShowToolTip(ToolTip tooltip_widget, object data, TextStyleSetting property_style)
+		public virtual void ShowToolTip(ToolTip tooltip_widget, object data, TextStyleSetting property_style)
 	{
 		tooltip_widget.ClearMultiStringTooltip();
 		string tooltip = this.GetTooltip(data);
 		tooltip_widget.AddMultiStringTooltip(tooltip, property_style);
 	}
 
-	public void SetIcon(Image image, object data)
+		public void SetIcon(Image image, object data)
 	{
 		if (this.sprite == null)
 		{
@@ -158,18 +158,18 @@ public class StatusItem : Resource
 		image.sprite = this.sprite.sprite;
 	}
 
-	public bool UseConditionalCallback(HashedString overlay, Transform transform)
+		public bool UseConditionalCallback(HashedString overlay, Transform transform)
 	{
 		return overlay != OverlayModes.None.ID && this.conditionalOverlayCallback != null && this.conditionalOverlayCallback(overlay, transform);
 	}
 
-	public StatusItem SetResolveStringCallback(Func<string, object, string> cb)
+		public StatusItem SetResolveStringCallback(Func<string, object, string> cb)
 	{
 		this.resolveStringCallback = cb;
 		return this;
 	}
 
-	public void OnClick(object data)
+		public void OnClick(object data)
 	{
 		if (this.statusItemClickCallback != null)
 		{
@@ -177,7 +177,7 @@ public class StatusItem : Resource
 		}
 	}
 
-	public static StatusItem.StatusItemOverlays GetStatusItemOverlayBySimViewMode(HashedString mode)
+		public static StatusItem.StatusItemOverlays GetStatusItemOverlayBySimViewMode(HashedString mode)
 	{
 		StatusItem.StatusItemOverlays result;
 		if (!StatusItem.overlayBitfieldMap.TryGetValue(mode, out result))
@@ -190,53 +190,53 @@ public class StatusItem : Resource
 		return result;
 	}
 
-	public string tooltipText;
+		public string tooltipText;
 
-	public string notificationText;
+		public string notificationText;
 
-	public string notificationTooltipText;
+		public string notificationTooltipText;
 
-	public string soundPath;
+		public string soundPath;
 
-	public string iconName;
+		public string iconName;
 
-	public bool unique;
+		public bool unique;
 
-	public TintedSprite sprite;
+		public TintedSprite sprite;
 
-	public bool shouldNotify;
+		public bool shouldNotify;
 
-	public StatusItem.IconType iconType;
+		public StatusItem.IconType iconType;
 
-	public NotificationType notificationType;
+		public NotificationType notificationType;
 
-	public Notification.ClickCallback notificationClickCallback;
+		public Notification.ClickCallback notificationClickCallback;
 
-	public Func<string, object, string> resolveStringCallback;
+		public Func<string, object, string> resolveStringCallback;
 
-	public Func<string, object, string> resolveTooltipCallback;
+		public Func<string, object, string> resolveTooltipCallback;
 
-	public bool resolveStringCallback_shouldStillCallIfDataIsNull;
+		public bool resolveStringCallback_shouldStillCallIfDataIsNull;
 
-	public bool resolveTooltipCallback_shouldStillCallIfDataIsNull;
+		public bool resolveTooltipCallback_shouldStillCallIfDataIsNull;
 
-	public bool allowMultiples;
+		public bool allowMultiples;
 
-	public Func<HashedString, object, bool> conditionalOverlayCallback;
+		public Func<HashedString, object, bool> conditionalOverlayCallback;
 
-	public HashedString render_overlay;
+		public HashedString render_overlay;
 
-	public int status_overlays;
+		public int status_overlays;
 
-	public Action<object> statusItemClickCallback;
+		public Action<object> statusItemClickCallback;
 
-	private string composedPrefix;
+		private string composedPrefix;
 
-	private bool showShowWorldIcon = true;
+		private bool showShowWorldIcon = true;
 
-	public const int ALL_OVERLAYS = 129022;
+		public const int ALL_OVERLAYS = 129022;
 
-	private static Dictionary<HashedString, StatusItem.StatusItemOverlays> overlayBitfieldMap = new Dictionary<HashedString, StatusItem.StatusItemOverlays>
+		private static Dictionary<HashedString, StatusItem.StatusItemOverlays> overlayBitfieldMap = new Dictionary<HashedString, StatusItem.StatusItemOverlays>
 	{
 		{
 			OverlayModes.None.ID,
@@ -308,30 +308,30 @@ public class StatusItem : Resource
 		}
 	};
 
-	public enum IconType
+		public enum IconType
 	{
-		Info,
-		Exclamation,
-		Custom
+				Info,
+				Exclamation,
+				Custom
 	}
 
-	[Flags]
+		[Flags]
 	public enum StatusItemOverlays
 	{
-		None = 2,
-		PowerMap = 4,
-		Temperature = 8,
-		ThermalComfort = 16,
-		Light = 32,
-		LiquidPlumbing = 64,
-		GasPlumbing = 128,
-		Decor = 256,
-		Pathogens = 512,
-		Farming = 1024,
-		Rooms = 4096,
-		Suits = 8192,
-		Logic = 16384,
-		Conveyor = 32768,
-		Radiation = 65536
+				None = 2,
+				PowerMap = 4,
+				Temperature = 8,
+				ThermalComfort = 16,
+				Light = 32,
+				LiquidPlumbing = 64,
+				GasPlumbing = 128,
+				Decor = 256,
+				Pathogens = 512,
+				Farming = 1024,
+				Rooms = 4096,
+				Suits = 8192,
+				Logic = 16384,
+				Conveyor = 32768,
+				Radiation = 65536
 	}
 }

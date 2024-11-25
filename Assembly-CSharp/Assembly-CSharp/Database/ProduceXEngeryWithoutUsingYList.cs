@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace Database
 {
-	public class ProduceXEngeryWithoutUsingYList : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class ProduceXEngeryWithoutUsingYList : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public ProduceXEngeryWithoutUsingYList(float amountToProduce, List<Tag> disallowedBuildings)
+				public ProduceXEngeryWithoutUsingYList(float amountToProduce, List<Tag> disallowedBuildings)
 		{
 			this.disallowedBuildings = disallowedBuildings;
 			this.amountToProduce = amountToProduce;
 			this.usedDisallowedBuilding = false;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			float num = 0f;
 			foreach (KeyValuePair<Tag, float> keyValuePair in Game.Instance.savedInfo.powerCreatedbyGeneratorType)
@@ -25,7 +25,7 @@ namespace Database
 			return num / 1000f > this.amountToProduce;
 		}
 
-		public override bool Fail()
+				public override bool Fail()
 		{
 			foreach (Tag key in this.disallowedBuildings)
 			{
@@ -37,7 +37,7 @@ namespace Database
 			return false;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			int num = reader.ReadInt32();
 			this.disallowedBuildings = new List<Tag>(num);
@@ -51,7 +51,7 @@ namespace Database
 			this.usedDisallowedBuilding = (reader.ReadByte() > 0);
 		}
 
-		public float GetProductionAmount(bool complete)
+				public float GetProductionAmount(bool complete)
 		{
 			if (complete)
 			{
@@ -68,12 +68,12 @@ namespace Database
 			return num;
 		}
 
-		public List<Tag> disallowedBuildings = new List<Tag>();
+				public List<Tag> disallowedBuildings = new List<Tag>();
 
-		public float amountToProduce;
+				public float amountToProduce;
 
-		private float amountProduced;
+				private float amountProduced;
 
-		private bool usedDisallowedBuilding;
+				private bool usedDisallowedBuilding;
 	}
 }

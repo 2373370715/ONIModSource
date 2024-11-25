@@ -9,9 +9,9 @@ using UnityEngine;
 
 public class GlobalAssets : KMonoBehaviour
 {
-			public static GlobalAssets Instance { get; private set; }
+				public static GlobalAssets Instance { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		GlobalAssets.Instance = this;
@@ -107,7 +107,7 @@ public class GlobalAssets : KMonoBehaviour
 		LocString.CreateLocStringKeys(typeof(BLUEPRINTS), "STRINGS.");
 	}
 
-	private void AddColorModeStyles()
+		private void AddColorModeStyles()
 	{
 		TMP_Style style = new TMP_Style("logic_on", string.Format("<color=#{0}>", ColorUtility.ToHtmlStringRGB(this.colorSet.logicOn)), "</color>");
 		TMP_StyleSheet.instance.AddStyle(style);
@@ -116,13 +116,13 @@ public class GlobalAssets : KMonoBehaviour
 		TMP_StyleSheet.RefreshStyles();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		GlobalAssets.Instance = null;
 	}
 
-	public static string GetSound(string name, bool force_no_warning = false)
+		public static string GetSound(string name, bool force_no_warning = false)
 	{
 		if (name == null)
 		{
@@ -134,23 +134,23 @@ public class GlobalAssets : KMonoBehaviour
 		return result;
 	}
 
-	public static bool IsLowPriority(string path)
+		public static bool IsLowPriority(string path)
 	{
 		return GlobalAssets.LowPrioritySounds.Contains(path);
 	}
 
-	public static bool IsHighPriority(string path)
+		public static bool IsHighPriority(string path)
 	{
 		return GlobalAssets.HighPrioritySounds.Contains(path);
 	}
 
-	private static Dictionary<string, string> SoundTable = new Dictionary<string, string>();
+		private static Dictionary<string, string> SoundTable = new Dictionary<string, string>();
 
-	private static HashSet<string> LowPrioritySounds = new HashSet<string>();
+		private static HashSet<string> LowPrioritySounds = new HashSet<string>();
 
-	private static HashSet<string> HighPrioritySounds = new HashSet<string>();
+		private static HashSet<string> HighPrioritySounds = new HashSet<string>();
 
-	public ColorSet colorSet;
+		public ColorSet colorSet;
 
-	public ColorSet[] colorSetOptions;
+		public ColorSet[] colorSetOptions;
 }

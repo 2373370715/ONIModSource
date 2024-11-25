@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CountedSoundEvent : SoundEvent
 {
-	private static string BaseSoundName(string sound_name)
+		private static string BaseSoundName(string sound_name)
 	{
 		int num = sound_name.IndexOf(":");
 		if (num > 0)
@@ -14,14 +14,11 @@ public class CountedSoundEvent : SoundEvent
 		return sound_name;
 	}
 
-	public CountedSoundEvent(string file_name, string sound_name, int frame, bool do_load, bool is_looping, float min_interval, bool is_dynamic) : base(file_name, CountedSoundEvent.BaseSoundName(sound_name), frame, do_load, is_looping, min_interval, is_dynamic)
+		public CountedSoundEvent(string file_name, string sound_name, int frame, bool do_load, bool is_looping, float min_interval, bool is_dynamic) : base(file_name, CountedSoundEvent.BaseSoundName(sound_name), frame, do_load, is_looping, min_interval, is_dynamic)
 	{
 		if (sound_name.Contains(":"))
 		{
-			string[] array = sound_name.Split(new char[]
-			{
-				':'
-			});
+			string[] array = sound_name.Split(':', StringSplitOptions.None);
 			if (array.Length != 2)
 			{
 				DebugUtil.LogErrorArgs(new object[]
@@ -60,7 +57,7 @@ public class CountedSoundEvent : SoundEvent
 		});
 	}
 
-	public override void OnPlay(AnimEventManager.EventPlayerData behaviour)
+		public override void OnPlay(AnimEventManager.EventPlayerData behaviour)
 	{
 		if (string.IsNullOrEmpty(base.sound))
 		{
@@ -82,7 +79,7 @@ public class CountedSoundEvent : SoundEvent
 				int num2 = (this.counterModulus == -1) ? 0 : ((num + 1) % this.counterModulus);
 				GameComps.WhiteBoards.SetValue(h, base.soundHash, num2);
 			}
-			Vector3 vector = behaviour.GetComponent<Transform>().GetPosition();
+			Vector3 vector = behaviour.position;
 			vector.z = 0f;
 			if (base.objectIsSelectedAndVisible)
 			{
@@ -100,7 +97,7 @@ public class CountedSoundEvent : SoundEvent
 		}
 	}
 
-	private void ParseParameter(string param)
+		private void ParseParameter(string param)
 	{
 		this.counterModulus = int.Parse(param);
 		if (this.counterModulus != -1 && this.counterModulus < 2)
@@ -109,9 +106,9 @@ public class CountedSoundEvent : SoundEvent
 		}
 	}
 
-	private const int COUNTER_MODULUS_INVALID = -2147483648;
+		private const int COUNTER_MODULUS_INVALID = -2147483648;
 
-	private const int COUNTER_MODULUS_CLEAR = -1;
+		private const int COUNTER_MODULUS_CLEAR = -1;
 
-	private int counterModulus = int.MinValue;
+		private int counterModulus = int.MinValue;
 }

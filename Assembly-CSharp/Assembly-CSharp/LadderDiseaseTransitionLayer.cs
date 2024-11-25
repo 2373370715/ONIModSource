@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class LadderDiseaseTransitionLayer : TransitionDriver.OverrideLayer
 {
-	public LadderDiseaseTransitionLayer(Navigator navigator) : base(navigator)
+		public LadderDiseaseTransitionLayer(Navigator navigator) : base(navigator)
 	{
 	}
 
-	public override void EndTransition(Navigator navigator, Navigator.ActiveTransition transition)
+		public override void EndTransition(Navigator navigator, Navigator.ActiveTransition transition)
 	{
 		base.EndTransition(navigator, transition);
 		if (transition.end == NavType.Ladder)

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class RocketConduitSender : StateMachineComponent<RocketConduitSender.StatesInstance>, ISecondaryInput
 {
-	public void AddConduitPortToNetwork()
+		public void AddConduitPortToNetwork()
 	{
 		if (this.conduitPort == null)
 		{
@@ -16,7 +16,7 @@ public class RocketConduitSender : StateMachineComponent<RocketConduitSender.Sta
 		networkManager.AddToNetworks(num, this.conduitPort.networkItem, true);
 	}
 
-	public void RemoveConduitPortFromNetwork()
+		public void RemoveConduitPortFromNetwork()
 	{
 		if (this.conduitPort == null)
 		{
@@ -25,7 +25,7 @@ public class RocketConduitSender : StateMachineComponent<RocketConduitSender.Sta
 		Conduit.GetNetworkManager(this.conduitPortInfo.conduitType).RemoveFromNetworks(this.conduitPort.inputCell, this.conduitPort.networkItem, true);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.FindPartner();
@@ -36,14 +36,14 @@ public class RocketConduitSender : StateMachineComponent<RocketConduitSender.Sta
 		Components.RocketConduitSenders.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.RemoveConduitPortFromNetwork();
 		base.OnCleanUp();
 		Components.RocketConduitSenders.Remove(this);
 	}
 
-	private void FindPartner()
+		private void FindPartner()
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(base.gameObject.GetMyWorldId());
 		if (world != null && world.IsModuleInterior)
@@ -86,12 +86,12 @@ public class RocketConduitSender : StateMachineComponent<RocketConduitSender.Sta
 		this.partnerReceiver.SetStorage(this.conduitStorage);
 	}
 
-	bool ISecondaryInput.HasSecondaryConduitType(ConduitType type)
+		bool ISecondaryInput.HasSecondaryConduitType(ConduitType type)
 	{
 		return this.conduitPortInfo.conduitType == type;
 	}
 
-	CellOffset ISecondaryInput.GetSecondaryConduitOffset(ConduitType type)
+		CellOffset ISecondaryInput.GetSecondaryConduitOffset(ConduitType type)
 	{
 		if (this.conduitPortInfo.conduitType == type)
 		{
@@ -100,33 +100,33 @@ public class RocketConduitSender : StateMachineComponent<RocketConduitSender.Sta
 		return CellOffset.none;
 	}
 
-	public Storage conduitStorage;
+		public Storage conduitStorage;
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo conduitPortInfo;
 
-	private RocketConduitSender.ConduitPort conduitPort;
+		private RocketConduitSender.ConduitPort conduitPort;
 
-	private RocketConduitReceiver partnerReceiver;
+		private RocketConduitReceiver partnerReceiver;
 
-	private static readonly EventSystem.IntraObjectHandler<RocketConduitSender> TryFindPartnerDelegate = new EventSystem.IntraObjectHandler<RocketConduitSender>(delegate(RocketConduitSender component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RocketConduitSender> TryFindPartnerDelegate = new EventSystem.IntraObjectHandler<RocketConduitSender>(delegate(RocketConduitSender component, object data)
 	{
 		component.FindPartner();
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<RocketConduitSender> OnLandedDelegate = new EventSystem.IntraObjectHandler<RocketConduitSender>(delegate(RocketConduitSender component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RocketConduitSender> OnLandedDelegate = new EventSystem.IntraObjectHandler<RocketConduitSender>(delegate(RocketConduitSender component, object data)
 	{
 		component.AddConduitPortToNetwork();
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<RocketConduitSender> OnLaunchedDelegate = new EventSystem.IntraObjectHandler<RocketConduitSender>(delegate(RocketConduitSender component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RocketConduitSender> OnLaunchedDelegate = new EventSystem.IntraObjectHandler<RocketConduitSender>(delegate(RocketConduitSender component, object data)
 	{
 		component.RemoveConduitPortFromNetwork();
 	});
 
-	private class ConduitPort
+		private class ConduitPort
 	{
-		public ConduitPort(GameObject parent, ConduitPortInfo info, Storage targetStorage)
+				public ConduitPort(GameObject parent, ConduitPortInfo info, Storage targetStorage)
 		{
 			this.conduitPortInfo = info;
 			ConduitConsumer conduitConsumer = parent.AddComponent<ConduitConsumer>();
@@ -140,25 +140,25 @@ public class RocketConduitSender : StateMachineComponent<RocketConduitSender.Sta
 			this.conduitConsumer.keepZeroMassObject = false;
 		}
 
-		public ConduitPortInfo conduitPortInfo;
+				public ConduitPortInfo conduitPortInfo;
 
-		public int inputCell;
+				public int inputCell;
 
-		public FlowUtilityNetwork.NetworkItem networkItem;
+				public FlowUtilityNetwork.NetworkItem networkItem;
 
-		private ConduitConsumer conduitConsumer;
+				private ConduitConsumer conduitConsumer;
 	}
 
-	public class StatesInstance : GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.GameInstance
+		public class StatesInstance : GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.GameInstance
 	{
-		public StatesInstance(RocketConduitSender smi) : base(smi)
+				public StatesInstance(RocketConduitSender smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender>
+		public class States : GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.on;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -202,20 +202,20 @@ public class RocketConduitSender : StateMachineComponent<RocketConduitSender.Sta
 			});
 		}
 
-		public RocketConduitSender.States.onStates on;
+				public RocketConduitSender.States.onStates on;
 
-		public class onStates : GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.State
+				public class onStates : GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.State
 		{
-			public RocketConduitSender.States.workingStates working;
+						public RocketConduitSender.States.workingStates working;
 
-			public GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.State waiting;
+						public GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.State waiting;
 		}
 
-		public class workingStates : GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.State
+				public class workingStates : GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.State
 		{
-			public GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.State notOnGround;
+						public GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.State notOnGround;
 
-			public GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.State ground;
+						public GameStateMachine<RocketConduitSender.States, RocketConduitSender.StatesInstance, RocketConduitSender, object>.State ground;
 		}
 	}
 }

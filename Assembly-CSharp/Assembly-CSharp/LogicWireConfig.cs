@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LogicWireConfig : BaseLogicWireConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LogicWire";
 		string anim = "logic_wires_kanim";
@@ -14,10 +14,10 @@ public class LogicWireConfig : BaseLogicWireConfig
 		return base.CreateBuildingDef(id, anim, construction_time, tier_TINY, BUILDINGS.DECOR.PENALTY.TIER0, none);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		base.DoPostConfigureComplete(LogicWire.BitDepth.OneBit, go);
 	}
 
-	public const string ID = "LogicWire";
+		public const string ID = "LogicWire";
 }

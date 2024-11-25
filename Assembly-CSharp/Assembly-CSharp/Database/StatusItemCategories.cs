@@ -2,9 +2,9 @@
 
 namespace Database
 {
-	public class StatusItemCategories : ResourceSet<StatusItemCategory>
+		public class StatusItemCategories : ResourceSet<StatusItemCategory>
 	{
-		public StatusItemCategories(ResourceSet parent) : base("StatusItemCategories", parent)
+				public StatusItemCategories(ResourceSet parent) : base("StatusItemCategories", parent)
 		{
 			this.Main = new StatusItemCategory("Main", this, "Main");
 			this.Role = new StatusItemCategory("Role", this, "Role");
@@ -28,44 +28,44 @@ namespace Database
 			this.Ownable = new StatusItemCategory("Ownable", this, "Ownable");
 		}
 
-		public StatusItemCategory Main;
+				public StatusItemCategory Main;
 
-		public StatusItemCategory Role;
+				public StatusItemCategory Role;
 
-		public StatusItemCategory Power;
+				public StatusItemCategory Power;
 
-		public StatusItemCategory Toilet;
+				public StatusItemCategory Toilet;
 
-		public StatusItemCategory Research;
+				public StatusItemCategory Research;
 
-		public StatusItemCategory Hitpoints;
+				public StatusItemCategory Hitpoints;
 
-		public StatusItemCategory Suffocation;
+				public StatusItemCategory Suffocation;
 
-		public StatusItemCategory WoundEffects;
+				public StatusItemCategory WoundEffects;
 
-		public StatusItemCategory EntityReceptacle;
+				public StatusItemCategory EntityReceptacle;
 
-		public StatusItemCategory PreservationState;
+				public StatusItemCategory PreservationState;
 
-		public StatusItemCategory PreservationAtmosphere;
+				public StatusItemCategory PreservationAtmosphere;
 
-		public StatusItemCategory PreservationTemperature;
+				public StatusItemCategory PreservationTemperature;
 
-		public StatusItemCategory ExhaustTemperature;
+				public StatusItemCategory ExhaustTemperature;
 
-		public StatusItemCategory OperatingEnergy;
+				public StatusItemCategory OperatingEnergy;
 
-		public StatusItemCategory AccessControl;
+				public StatusItemCategory AccessControl;
 
-		public StatusItemCategory RequiredRoom;
+				public StatusItemCategory RequiredRoom;
 
-		public StatusItemCategory Yield;
+				public StatusItemCategory Yield;
 
-		public StatusItemCategory Heat;
+				public StatusItemCategory Heat;
 
-		public StatusItemCategory Stored;
+				public StatusItemCategory Stored;
 
-		public StatusItemCategory Ownable;
+				public StatusItemCategory Ownable;
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CritterDropOffConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("CritterDropOff", 1, 3, "relocator_dropoff_02_kanim", 10, 10f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER1, MATERIALS.RAW_METALS, 1600f, BuildLocationRule.OnFloor, TUNING.BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NOISY.TIER0, 0.2f);
 		buildingDef.AudioCategory = "Metal";
@@ -18,7 +18,7 @@ public class CritterDropOffConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.CreatureRelocator, false);
 		Storage storage = go.AddOrGet<Storage>();
@@ -43,11 +43,11 @@ public class CritterDropOffConfig : IBuildingConfig
 		go.AddOrGet<TreeFilterable>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "CritterDropOff";
+		public const string ID = "CritterDropOff";
 
-	public const string INPUT_PORT = "CritterDropOffInput";
+		public const string INPUT_PORT = "CritterDropOffInput";
 }

@@ -5,22 +5,22 @@ using UnityEngine;
 
 public class MovePickupableChore : Chore<MovePickupableChore.StatesInstance>
 {
-	public MovePickupableChore(IStateMachineTarget target, GameObject pickupable, Action<Chore> onEnd) : base((pickupable.GetComponent<CreatureBrain>() == null) ? Db.Get().ChoreTypes.Fetch : Db.Get().ChoreTypes.Ranch, target, target.GetComponent<ChoreProvider>(), false, null, null, onEnd, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+		public MovePickupableChore(IStateMachineTarget target, GameObject pickupable, Action<Chore> onEnd) : base((pickupable.GetComponent<CreatureBrain>() == null) ? Db.Get().ChoreTypes.Fetch : Db.Get().ChoreTypes.Ranch, target, target.GetComponent<ChoreProvider>(), false, null, null, onEnd, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 	{
 		base.smi = new MovePickupableChore.StatesInstance(this);
 		Pickupable component = pickupable.GetComponent<Pickupable>();
-		base.AddPrecondition(ChorePreconditions.instance.CanMoveTo, target.GetComponent<Storage>());
-		base.AddPrecondition(ChorePreconditions.instance.IsNotARobot, this);
-		base.AddPrecondition(ChorePreconditions.instance.IsNotTransferArm, this);
+		this.AddPrecondition(ChorePreconditions.instance.CanMoveTo, target.GetComponent<Storage>());
+		this.AddPrecondition(ChorePreconditions.instance.IsNotARobot, "FetchDrone");
+		this.AddPrecondition(ChorePreconditions.instance.IsNotTransferArm, this);
 		if (pickupable.GetComponent<CreatureBrain>())
 		{
-			base.AddPrecondition(MovePickupableChore.CanReachCritter, pickupable);
-			base.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanWrangleCreatures);
-			base.AddPrecondition(ChorePreconditions.instance.CanMoveTo, pickupable.GetComponent<Capturable>());
+			this.AddPrecondition(MovePickupableChore.CanReachCritter, pickupable);
+			this.AddPrecondition(ChorePreconditions.instance.HasSkillPerk, Db.Get().SkillPerks.CanWrangleCreatures);
+			this.AddPrecondition(ChorePreconditions.instance.CanMoveTo, pickupable.GetComponent<Capturable>());
 		}
 		else
 		{
-			base.AddPrecondition(ChorePreconditions.instance.CanPickup, component);
+			this.AddPrecondition(ChorePreconditions.instance.CanPickup, component);
 		}
 		PrimaryElement primaryElement = component.PrimaryElement;
 		base.smi.sm.requestedamount.Set(primaryElement.Mass, base.smi, false);
@@ -39,13 +39,13 @@ public class MovePickupableChore : Chore<MovePickupableChore.StatesInstance>
 		base.SetPrioritizable(target.GetComponent<Prioritizable>());
 	}
 
-	private void OnReachableChanged(object data)
+		private void OnReachableChanged(object data)
 	{
 		Color color = ((bool)data) ? Color.white : new Color(0.91f, 0.21f, 0.2f);
 		this.SetColor(this.movePlacer, color);
 	}
 
-	private void SetColor(GameObject visualizer, Color color)
+		private void SetColor(GameObject visualizer, Color color)
 	{
 		if (visualizer != null)
 		{
@@ -53,7 +53,7 @@ public class MovePickupableChore : Chore<MovePickupableChore.StatesInstance>
 		}
 	}
 
-	public override void Begin(Chore.Precondition.Context context)
+		public override void Begin(Chore.Precondition.Context context)
 	{
 		if (context.consumerState.consumer == null)
 		{
@@ -79,9 +79,9 @@ public class MovePickupableChore : Chore<MovePickupableChore.StatesInstance>
 		base.Begin(context);
 	}
 
-	public GameObject movePlacer;
+		public GameObject movePlacer;
 
-	public static Chore.Precondition CanReachCritter = new Chore.Precondition
+		public static Chore.Precondition CanReachCritter = new Chore.Precondition
 	{
 		id = "CanReachCritter",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.CAN_MOVE_TO,
@@ -92,16 +92,16 @@ public class MovePickupableChore : Chore<MovePickupableChore.StatesInstance>
 		}
 	};
 
-	public class StatesInstance : GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.GameInstance
 	{
-		public StatesInstance(MovePickupableChore master) : base(master)
+				public StatesInstance(MovePickupableChore master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore>
+		public class States : GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.fetch;
 			base.Target(this.deliverypoint);
@@ -128,10 +128,10 @@ public class MovePickupableChore : Chore<MovePickupableChore.StatesInstance>
 				}
 			}).MoveTo<Capturable>(this.pickupablesource, this.fetch.wrangle, null, null, null);
 			this.fetch.wrangle.EnterTransition(this.fetch.approach, (MovePickupableChore.StatesInstance smi) => this.pickupablesource.Get(smi).HasTag(GameTags.Creatures.Bagged)).ToggleWork<Capturable>(this.pickupablesource, this.fetch.approach, null, null);
-			this.fetch.approach.MoveTo<IApproachable>(this.pickupablesource, this.fetch.pickup, null, null, null);
+			this.fetch.approach.MoveTo<IApproachable>(this.pickupablesource, this.fetch.pickup, new Func<MovePickupableChore.StatesInstance, CellOffset[]>(this.GetFetcherOffset), null, null);
 			this.fetch.pickup.DoPickup(this.pickupablesource, this.pickup, this.actualamount, this.approachstorage, this.delivering.deliverfail);
 			this.approachstorage.DefaultState(this.approachstorage.deliveryStorage);
-			this.approachstorage.deliveryStorage.InitializeStates(this.deliverer, this.deliverypoint, this.delivering.storing, this.delivering.deliverfail, null, NavigationTactics.ReduceTravelDistance);
+			this.approachstorage.deliveryStorage.InitializeStates(this.deliverer, this.deliverypoint, new Func<MovePickupableChore.StatesInstance, CellOffset[]>(this.GetFetcherOffset), this.delivering.storing, this.delivering.deliverfail, NavigationTactics.ReduceTravelDistance);
 			this.delivering.storing.Target(this.deliverer).DoDelivery(this.deliverer, this.deliverypoint, this.success, this.delivering.deliverfail);
 			this.delivering.deliverfail.ReturnFailure();
 			this.success.Enter(delegate(MovePickupableChore.StatesInstance smi)
@@ -164,7 +164,12 @@ public class MovePickupableChore : Chore<MovePickupableChore.StatesInstance>
 			}).ReturnSuccess();
 		}
 
-		private void DropPickupable(Storage storage, GameObject delivered)
+				private CellOffset[] GetFetcherOffset(MovePickupableChore.StatesInstance smi)
+		{
+			return this.deliverer.Get(smi).GetComponent<WorkerBase>().GetFetchCellOffsets();
+		}
+
+				private void DropPickupable(Storage storage, GameObject delivered)
 		{
 			if (delivered.GetComponent<Capturable>() != null)
 			{
@@ -183,77 +188,77 @@ public class MovePickupableChore : Chore<MovePickupableChore.StatesInstance>
 			storage.DropAll(false, false, default(Vector3), true, null);
 		}
 
-		private bool IsDeliveryComplete(MovePickupableChore.StatesInstance smi)
+				private bool IsDeliveryComplete(MovePickupableChore.StatesInstance smi)
 		{
 			GameObject gameObject = smi.sm.deliverypoint.Get(smi);
 			return !(gameObject != null) || gameObject.GetComponent<CancellableMove>().IsDeliveryComplete();
 		}
 
-		private bool IsCritter(MovePickupableChore.StatesInstance smi)
+				private bool IsCritter(MovePickupableChore.StatesInstance smi)
 		{
 			GameObject gameObject = this.pickupablesource.Get(smi);
 			return gameObject != null && gameObject.GetComponent<Capturable>() != null;
 		}
 
-		public static CellOffset[] critterCellOffsets = new CellOffset[]
+				public static CellOffset[] critterCellOffsets = new CellOffset[]
 		{
 			new CellOffset(0, 0)
 		};
 
-		public static HashedString[] critterReleaseWorkAnims = new HashedString[]
+				public static HashedString[] critterReleaseWorkAnims = new HashedString[]
 		{
 			"place",
 			"release"
 		};
 
-		public static KAnimFile[] critterReleaseAnim = new KAnimFile[]
+				public static KAnimFile[] critterReleaseAnim = new KAnimFile[]
 		{
 			Assets.GetAnim("anim_restrain_creature_kanim")
 		};
 
-		public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.TargetParameter deliverer;
+				public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.TargetParameter deliverer;
 
-		public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.TargetParameter pickupablesource;
+				public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.TargetParameter pickupablesource;
 
-		public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.TargetParameter pickup;
+				public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.TargetParameter pickup;
 
-		public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.TargetParameter deliverypoint;
+				public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.TargetParameter deliverypoint;
 
-		public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.FloatParameter requestedamount;
+				public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.FloatParameter requestedamount;
 
-		public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.FloatParameter actualamount;
+				public StateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.FloatParameter actualamount;
 
-		public MovePickupableChore.States.FetchState fetch;
+				public MovePickupableChore.States.FetchState fetch;
 
-		public MovePickupableChore.States.ApproachStorage approachstorage;
+				public MovePickupableChore.States.ApproachStorage approachstorage;
 
-		public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State success;
+				public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State success;
 
-		public MovePickupableChore.States.DeliveryState delivering;
+				public MovePickupableChore.States.DeliveryState delivering;
 
-		public class ApproachStorage : GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State
+				public class ApproachStorage : GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State
 		{
-			public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.ApproachSubState<Storage> deliveryStorage;
+						public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.ApproachSubState<Storage> deliveryStorage;
 
-			public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.ApproachSubState<Storage> unbagCritter;
+						public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.ApproachSubState<Storage> unbagCritter;
 		}
 
-		public class DeliveryState : GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State
+				public class DeliveryState : GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State
 		{
-			public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State storing;
+						public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State storing;
 
-			public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State deliverfail;
+						public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State deliverfail;
 		}
 
-		public class FetchState : GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State
+				public class FetchState : GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State
 		{
-			public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.ApproachSubState<Pickupable> approach;
+						public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.ApproachSubState<Pickupable> approach;
 
-			public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State pickup;
+						public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State pickup;
 
-			public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State approachCritter;
+						public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State approachCritter;
 
-			public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State wrangle;
+						public GameStateMachine<MovePickupableChore.States, MovePickupableChore.StatesInstance, MovePickupableChore, object>.State wrangle;
 		}
 	}
 }

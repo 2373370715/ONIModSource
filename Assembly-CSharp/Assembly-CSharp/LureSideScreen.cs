@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class LureSideScreen : SideScreenContent
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<CreatureLure>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.target_lure = target.GetComponent<CreatureLure>();
@@ -40,7 +40,7 @@ public class LureSideScreen : SideScreenContent
 		this.RefreshToggles();
 	}
 
-	public void SelectToggle(Tag tag)
+		public void SelectToggle(Tag tag)
 	{
 		if (this.target_lure.activeBaitSetting != tag)
 		{
@@ -53,7 +53,7 @@ public class LureSideScreen : SideScreenContent
 		this.RefreshToggles();
 	}
 
-	private void RefreshToggles()
+		private void RefreshToggles()
 	{
 		foreach (KeyValuePair<Tag, MultiToggle> keyValuePair in this.toggles_by_tag)
 		{
@@ -69,15 +69,15 @@ public class LureSideScreen : SideScreenContent
 		}
 	}
 
-	protected CreatureLure target_lure;
+		protected CreatureLure target_lure;
 
-	public GameObject prefab_toggle;
+		public GameObject prefab_toggle;
 
-	public GameObject toggle_container;
+		public GameObject toggle_container;
 
-	public Dictionary<Tag, MultiToggle> toggles_by_tag = new Dictionary<Tag, MultiToggle>();
+		public Dictionary<Tag, MultiToggle> toggles_by_tag = new Dictionary<Tag, MultiToggle>();
 
-	private Dictionary<Tag, string> baitAttractionStrings = new Dictionary<Tag, string>
+		private Dictionary<Tag, string> baitAttractionStrings = new Dictionary<Tag, string>
 	{
 		{
 			GameTags.SlimeMold,

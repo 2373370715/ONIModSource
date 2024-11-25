@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CreditsScreen : KModalScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		foreach (TextAsset csv in this.creditsFiles)
@@ -15,12 +15,12 @@ public class CreditsScreen : KModalScreen
 		this.CloseButton.onClick += this.Close;
 	}
 
-	public void Close()
+		public void Close()
 	{
 		this.Deactivate();
 	}
 
-	private void AddCredits(TextAsset csv)
+		private void AddCredits(TextAsset csv)
 	{
 		string[,] array = CSVReader.SplitCsvGrid(csv.text, csv.name);
 		List<string> list = new List<string>();
@@ -43,15 +43,15 @@ public class CreditsScreen : KModalScreen
 		}
 	}
 
-	public GameObject entryPrefab;
+		public GameObject entryPrefab;
 
-	public GameObject teamHeaderPrefab;
+		public GameObject teamHeaderPrefab;
 
-	private Dictionary<string, GameObject> teamContainers = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> teamContainers = new Dictionary<string, GameObject>();
 
-	public Transform entryContainer;
+		public Transform entryContainer;
 
-	public KButton CloseButton;
+		public KButton CloseButton;
 
-	public TextAsset[] creditsFiles;
+		public TextAsset[] creditsFiles;
 }

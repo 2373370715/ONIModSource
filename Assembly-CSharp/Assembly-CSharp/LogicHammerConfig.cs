@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicHammerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicHammerConfig.ID;
 		int width = 1;
@@ -41,11 +41,11 @@ public class LogicHammerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicHammer>();
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicHammer";
+		public static string ID = "LogicHammer";
 }

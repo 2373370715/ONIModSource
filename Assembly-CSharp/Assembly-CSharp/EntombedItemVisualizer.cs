@@ -5,18 +5,18 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/EntombedItemVisualizer")]
 public class EntombedItemVisualizer : KMonoBehaviour
 {
-	public void Clear()
+		public void Clear()
 	{
 		this.cellEntombedCounts.Clear();
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.entombedItemPool = new GameObjectPool(new Func<GameObject>(this.InstantiateEntombedObject), 32);
 	}
 
-	public bool AddItem(int cell)
+		public bool AddItem(int cell)
 	{
 		bool result = false;
 		if (Grid.Objects[cell, 9] == null)
@@ -43,7 +43,7 @@ public class EntombedItemVisualizer : KMonoBehaviour
 		return result;
 	}
 
-	public void RemoveItem(int cell)
+		public void RemoveItem(int cell)
 	{
 		EntombedItemVisualizer.Data data;
 		if (this.cellEntombedCounts.TryGetValue(cell, out data))
@@ -58,7 +58,7 @@ public class EntombedItemVisualizer : KMonoBehaviour
 		}
 	}
 
-	public void ForceClear(int cell)
+		public void ForceClear(int cell)
 	{
 		EntombedItemVisualizer.Data data;
 		if (this.cellEntombedCounts.TryGetValue(cell, out data))
@@ -67,7 +67,7 @@ public class EntombedItemVisualizer : KMonoBehaviour
 		}
 	}
 
-	private void ReleaseVisualizer(int cell, EntombedItemVisualizer.Data data)
+		private void ReleaseVisualizer(int cell, EntombedItemVisualizer.Data data)
 	{
 		if (data.controller != null)
 		{
@@ -77,22 +77,22 @@ public class EntombedItemVisualizer : KMonoBehaviour
 		this.cellEntombedCounts.Remove(cell);
 	}
 
-	public bool IsEntombedItem(int cell)
+		public bool IsEntombedItem(int cell)
 	{
 		return this.cellEntombedCounts.ContainsKey(cell) && this.cellEntombedCounts[cell].refCount > 0;
 	}
 
-	private GameObject InstantiateEntombedObject()
+		private GameObject InstantiateEntombedObject()
 	{
 		GameObject gameObject = GameUtil.KInstantiate(this.entombedItemPrefab, Grid.SceneLayer.FXFront, null, 0);
 		gameObject.SetActive(false);
 		return gameObject;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject entombedItemPrefab;
 
-	private static readonly string[] EntombedVisualizerAnims = new string[]
+		private static readonly string[] EntombedVisualizerAnims = new string[]
 	{
 		"idle1",
 		"idle2",
@@ -100,14 +100,14 @@ public class EntombedItemVisualizer : KMonoBehaviour
 		"idle4"
 	};
 
-	private GameObjectPool entombedItemPool;
+		private GameObjectPool entombedItemPool;
 
-	private Dictionary<int, EntombedItemVisualizer.Data> cellEntombedCounts = new Dictionary<int, EntombedItemVisualizer.Data>();
+		private Dictionary<int, EntombedItemVisualizer.Data> cellEntombedCounts = new Dictionary<int, EntombedItemVisualizer.Data>();
 
-	private struct Data
+		private struct Data
 	{
-		public int refCount;
+				public int refCount;
 
-		public KBatchedAnimController controller;
+				public KBatchedAnimController controller;
 	}
 }

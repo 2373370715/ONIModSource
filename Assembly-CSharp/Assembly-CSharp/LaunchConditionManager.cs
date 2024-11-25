@@ -6,9 +6,9 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LaunchConditionManager")]
 public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 {
-			public List<RocketModule> rocketModules { get; private set; }
+				public List<RocketModule> rocketModules { get; private set; }
 
-	public void DEBUG_TraceModuleDestruction(string moduleName, string state, string stackTrace)
+		public void DEBUG_TraceModuleDestruction(string moduleName, string state, string stackTrace)
 	{
 		if (this.DEBUG_ModuleDestructions == null)
 		{
@@ -17,7 +17,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		this.DEBUG_ModuleDestructions.Add(new global::Tuple<string, string, string>(moduleName, state, stackTrace));
 	}
 
-	[ContextMenu("Dump Module Destructions")]
+		[ContextMenu("Dump Module Destructions")]
 	private void DEBUG_DumpModuleDestructions()
 	{
 		if (this.DEBUG_ModuleDestructions == null || this.DEBUG_ModuleDestructions.Count == 0)
@@ -42,13 +42,13 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.rocketModules = new List<RocketModule>();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.launchable = base.GetComponent<ILaunchableRocket>();
@@ -59,12 +59,12 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		};
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		Spacecraft spacecraftFromLaunchConditionManager = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this);
 		if (spacecraftFromLaunchConditionManager == null)
@@ -79,7 +79,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		}
 	}
 
-	public void FindModules()
+		public void FindModules()
 	{
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(base.GetComponent<AttachableBuilding>()))
 		{
@@ -92,7 +92,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		}
 	}
 
-	public void RegisterRocketModule(RocketModule module)
+		public void RegisterRocketModule(RocketModule module)
 	{
 		if (!this.rocketModules.Contains(module))
 		{
@@ -100,12 +100,12 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		}
 	}
 
-	public void UnregisterRocketModule(RocketModule module)
+		public void UnregisterRocketModule(RocketModule module)
 	{
 		this.rocketModules.Remove(module);
 	}
 
-	public List<ProcessCondition> GetLaunchConditionList()
+		public List<ProcessCondition> GetLaunchConditionList()
 	{
 		List<ProcessCondition> list = new List<ProcessCondition>();
 		foreach (RocketModule rocketModule in this.rocketModules)
@@ -122,7 +122,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		return list;
 	}
 
-	public void Launch(SpaceDestination destination)
+		public void Launch(SpaceDestination destination)
 	{
 		if (destination == null)
 		{
@@ -140,7 +140,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		}
 	}
 
-	public bool CheckReadyToLaunch()
+		public bool CheckReadyToLaunch()
 	{
 		foreach (RocketModule rocketModule in this.rocketModules)
 		{
@@ -168,7 +168,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		return true;
 	}
 
-	public bool CheckAbleToFly()
+		public bool CheckAbleToFly()
 	{
 		foreach (RocketModule rocketModule in this.rocketModules)
 		{
@@ -186,7 +186,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		return true;
 	}
 
-	private void ClearFlightStatuses()
+		private void ClearFlightStatuses()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		foreach (KeyValuePair<ProcessCondition, Guid> keyValuePair in this.conditionStatuses)
@@ -196,7 +196,7 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		this.conditionStatuses.Clear();
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
 		bool flag = this.CheckReadyToLaunch();
 		LogicPorts component = base.gameObject.GetComponent<LogicPorts>();
@@ -241,20 +241,20 @@ public class LaunchConditionManager : KMonoBehaviour, ISim4000ms, ISim1000ms
 		component.SendSignal(this.statusPort, 0);
 	}
 
-	public HashedString triggerPort;
+		public HashedString triggerPort;
 
-	public HashedString statusPort;
+		public HashedString statusPort;
 
-	private ILaunchableRocket launchable;
+		private ILaunchableRocket launchable;
 
-	[Serialize]
+		[Serialize]
 	private List<global::Tuple<string, string, string>> DEBUG_ModuleDestructions;
 
-	private Dictionary<ProcessCondition, Guid> conditionStatuses = new Dictionary<ProcessCondition, Guid>();
+		private Dictionary<ProcessCondition, Guid> conditionStatuses = new Dictionary<ProcessCondition, Guid>();
 
-	public enum ConditionType
+		public enum ConditionType
 	{
-		Launch,
-		Flight
+				Launch,
+				Flight
 	}
 }

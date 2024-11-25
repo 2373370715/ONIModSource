@@ -13,7 +13,7 @@ using UnityEngine.UI;
 
 public class StarmapScreen : KModalScreen
 {
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		if (base.isEditing)
 		{
@@ -22,12 +22,12 @@ public class StarmapScreen : KModalScreen
 		return 20f;
 	}
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		StarmapScreen.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.ConsumeMouseScroll = true;
@@ -125,7 +125,7 @@ public class StarmapScreen : KModalScreen
 		});
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (this.selectionUpdateHandle != -1)
@@ -135,7 +135,7 @@ public class StarmapScreen : KModalScreen
 		base.StopAllCoroutines();
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (show)
@@ -154,7 +154,7 @@ public class StarmapScreen : KModalScreen
 		this.forceScrollDown = true;
 	}
 
-	public void UpdateDestinationStates()
+		public void UpdateDestinationStates()
 	{
 		int num = 0;
 		int num2 = 0;
@@ -239,23 +239,23 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		StarmapScreen.Instance = this;
 	}
 
-	private string DisplayDistance(float distance)
+		private string DisplayDistance(float distance)
 	{
 		return global::Util.FormatWholeNumber(distance) + " " + UI.UNITSUFFIXES.DISTANCE.KILOMETER;
 	}
 
-	private string DisplayDestinationMass(SpaceDestination selectedDestination)
+		private string DisplayDestinationMass(SpaceDestination selectedDestination)
 	{
 		return GameUtil.GetFormattedMass(selectedDestination.AvailableMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Tonne, true, "{0:0.#}");
 	}
 
-	private string DisplayTotalStorageCapacity(CommandModule command)
+		private string DisplayTotalStorageCapacity(CommandModule command)
 	{
 		float num = 0f;
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(command.GetComponent<AttachableBuilding>()))
@@ -269,7 +269,7 @@ public class StarmapScreen : KModalScreen
 		return GameUtil.GetFormattedMass(num, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Tonne, true, "{0:0.#}");
 	}
 
-	private string StorageCapacityTooltip(CommandModule command, SpaceDestination dest)
+		private string StorageCapacityTooltip(CommandModule command, SpaceDestination dest)
 	{
 		string text = "";
 		bool flag = dest != null && SpacecraftManager.instance.GetDestinationAnalysisState(dest) == SpacecraftManager.DestinationAnalysisState.Complete;
@@ -317,7 +317,7 @@ public class StarmapScreen : KModalScreen
 		return text;
 	}
 
-	private void LoadPlanets()
+		private void LoadPlanets()
 	{
 		foreach (SpaceDestination spaceDestination in Game.Instance.spacecraftManager.destinations)
 		{
@@ -339,7 +339,7 @@ public class StarmapScreen : KModalScreen
 		this.UpdateDestinationStates();
 	}
 
-	private void UnselectAllPlanets()
+		private void UnselectAllPlanets()
 	{
 		if (this.animateSelectedPlanetRoutine != null)
 		{
@@ -352,7 +352,7 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	private void SelectPlanet(StarmapPlanet planet)
+		private void SelectPlanet(StarmapPlanet planet)
 	{
 		planet.SetSelectionActive(true);
 		if (this.animateSelectedPlanetRoutine != null)
@@ -362,7 +362,7 @@ public class StarmapScreen : KModalScreen
 		this.animateSelectedPlanetRoutine = base.StartCoroutine(this.AnimatePlanetSelection(planet));
 	}
 
-	private IEnumerator AnimatePlanetSelection(StarmapPlanet planet)
+		private IEnumerator AnimatePlanetSelection(StarmapPlanet planet)
 	{
 		for (;;)
 		{
@@ -372,7 +372,7 @@ public class StarmapScreen : KModalScreen
 		yield break;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.PositionPlanetWidgets();
 		if (this.forceScrollDown)
@@ -382,13 +382,13 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	private void ScrollToBottom()
+		private void ScrollToBottom()
 	{
 		RectTransform rectTransform = this.Map.GetComponentInChildren<VerticalLayoutGroup>().rectTransform();
 		rectTransform.SetLocalPosition(new Vector3(rectTransform.localPosition.x, rectTransform.rect.height - this.Map.rect.height, rectTransform.localPosition.z));
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.CheckBlockedInput())
 		{
@@ -404,7 +404,7 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	private bool CheckBlockedInput()
+		private bool CheckBlockedInput()
 	{
 		if (UnityEngine.EventSystems.EventSystem.current != null)
 		{
@@ -425,7 +425,7 @@ public class StarmapScreen : KModalScreen
 		return false;
 	}
 
-	private void PositionPlanetWidgets()
+		private void PositionPlanetWidgets()
 	{
 		float num = this.rowPrefab.GetComponent<RectTransform>().rect.height / 2f;
 		foreach (KeyValuePair<SpaceDestination, StarmapPlanet> keyValuePair in this.planetWidgets)
@@ -434,7 +434,7 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	private void OnSelectableChanged(object data)
+		private void OnSelectableChanged(object data)
 	{
 		if (!base.gameObject.activeSelf)
 		{
@@ -474,7 +474,7 @@ public class StarmapScreen : KModalScreen
 		this.Refresh(null);
 	}
 
-	private void ShowRocketListPanel()
+		private void ShowRocketListPanel()
 	{
 		this.listPanel.SetActive(true);
 		this.rocketPanel.SetActive(false);
@@ -483,7 +483,7 @@ public class StarmapScreen : KModalScreen
 		this.UpdateMissionOverlay(null);
 	}
 
-	private void ShowRocketDetailsPanel()
+		private void ShowRocketDetailsPanel()
 	{
 		this.listPanel.SetActive(false);
 		this.rocketPanel.SetActive(true);
@@ -492,7 +492,7 @@ public class StarmapScreen : KModalScreen
 		this.UpdateMissionOverlay(null);
 	}
 
-	private void LaunchRocket(LaunchConditionManager lcm)
+		private void LaunchRocket(LaunchConditionManager lcm)
 	{
 		SpaceDestination spacecraftDestination = SpacecraftManager.instance.GetSpacecraftDestination(lcm);
 		if (spacecraftDestination == null)
@@ -506,18 +506,18 @@ public class StarmapScreen : KModalScreen
 		this.Refresh(null);
 	}
 
-	private void OnStartedTitlebarEditing()
+		private void OnStartedTitlebarEditing()
 	{
 		base.isEditing = true;
 		KScreenManager.Instance.RefreshStack();
 	}
 
-	private void OnEndEditing(string data)
+		private void OnEndEditing(string data)
 	{
 		base.isEditing = false;
 	}
 
-	private void FillRocketListPanel()
+		private void FillRocketListPanel()
 	{
 		this.ClearRocketListPanel();
 		List<Spacecraft> spacecraft = SpacecraftManager.instance.GetSpacecraft();
@@ -679,7 +679,7 @@ public class StarmapScreen : KModalScreen
 		this.UpdateRocketRowsTravelAbility();
 	}
 
-	public static global::Tuple<string, BreakdownListRow.Status> GetTextForState(Spacecraft.MissionState state, Spacecraft spacecraft)
+		public static global::Tuple<string, BreakdownListRow.Status> GetTextForState(Spacecraft.MissionState state, Spacecraft spacecraft)
 	{
 		switch (state)
 		{
@@ -697,7 +697,7 @@ public class StarmapScreen : KModalScreen
 		return new global::Tuple<string, BreakdownListRow.Status>(UI.STARMAP.MISSION_STATUS.DESTROYED, BreakdownListRow.Status.Red);
 	}
 
-	private void ClearRocketListPanel()
+		private void ClearRocketListPanel()
 	{
 		this.listHeaderStatusLabel.text = UI.STARMAP.NO_ROCKETS_TITLE;
 		foreach (KeyValuePair<Spacecraft, HierarchyReferences> keyValuePair in this.listRocketRows)
@@ -707,7 +707,7 @@ public class StarmapScreen : KModalScreen
 		this.listRocketRows.Clear();
 	}
 
-	private void FillChecklist(LaunchConditionManager launchConditionManager)
+		private void FillChecklist(LaunchConditionManager launchConditionManager)
 	{
 		foreach (ProcessCondition processCondition in launchConditionManager.GetLaunchConditionList())
 		{
@@ -732,7 +732,7 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	private void SelectDestination(SpaceDestination destination)
+		private void SelectDestination(SpaceDestination destination)
 	{
 		this.selectedDestination = destination;
 		this.UnselectAllPlanets();
@@ -758,7 +758,7 @@ public class StarmapScreen : KModalScreen
 		this.Refresh(null);
 	}
 
-	private void UpdateRocketRowsTravelAbility()
+		private void UpdateRocketRowsTravelAbility()
 	{
 		foreach (KeyValuePair<Spacecraft, HierarchyReferences> keyValuePair in this.listRocketRows)
 		{
@@ -774,7 +774,7 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	private void RefreshAnalyzeButton()
+		private void RefreshAnalyzeButton()
 	{
 		if (this.selectedDestination == null)
 		{
@@ -829,7 +829,7 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	private void Refresh(object data = null)
+		private void Refresh(object data = null)
 	{
 		this.FillRocketListPanel();
 		this.RefreshAnalyzeButton();
@@ -849,7 +849,7 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	private void ClearRocketPanel()
+		private void ClearRocketPanel()
 	{
 		this.rocketHeaderStatusLabel.text = UI.STARMAP.ROCKETSTATUS.NONE;
 		this.rocketDetailsChecklist.ClearRows();
@@ -868,7 +868,7 @@ public class StarmapScreen : KModalScreen
 		LayoutRebuilder.ForceRebuildLayoutImmediate(this.rocketDetailsContainer);
 	}
 
-	private void FillRocketPanel()
+		private void FillRocketPanel()
 	{
 		this.ClearRocketPanel();
 		this.rocketHeaderStatusLabel.text = UI.STARMAP.STATUS;
@@ -883,7 +883,7 @@ public class StarmapScreen : KModalScreen
 		LayoutRebuilder.ForceRebuildLayoutImmediate(this.rocketDetailsContainer);
 	}
 
-	private void UpdateRangeDisplay()
+		private void UpdateRangeDisplay()
 	{
 		this.rocketDetailsRange.AddRow().ShowData(UI.STARMAP.ROCKETSTATS.TOTAL_OXIDIZABLE_FUEL, GameUtil.GetFormattedMass(this.currentCommandModule.rocketStats.GetTotalOxidizableFuel(), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 		this.rocketDetailsRange.AddRow().ShowData(UI.STARMAP.ROCKETSTATS.ENGINE_EFFICIENCY, GameUtil.GetFormattedEngineEfficiency(this.currentCommandModule.rocketStats.GetEngineEfficiency()));
@@ -908,7 +908,7 @@ public class StarmapScreen : KModalScreen
 		breakdownListRow3.SetImportant(true);
 	}
 
-	private void UpdateMassDisplay()
+		private void UpdateMassDisplay()
 	{
 		this.rocketDetailsMass.AddRow().ShowData(UI.STARMAP.ROCKETSTATS.DRY_MASS, GameUtil.GetFormattedMass(this.currentCommandModule.rocketStats.GetDryMass(), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Tonne, true, "{0:0.#}"));
 		this.rocketDetailsMass.AddRow().ShowData(UI.STARMAP.ROCKETSTATS.WET_MASS, GameUtil.GetFormattedMass(this.currentCommandModule.rocketStats.GetWetMass(), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.Tonne, true, "{0:0.#}"));
@@ -917,7 +917,7 @@ public class StarmapScreen : KModalScreen
 		breakdownListRow.SetImportant(true);
 	}
 
-	private void UpdateFuelDisplay()
+		private void UpdateFuelDisplay()
 	{
 		Tag engineFuelTag = this.currentCommandModule.rocketStats.GetEngineFuelTag();
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.currentCommandModule.GetComponent<AttachableBuilding>()))
@@ -952,7 +952,7 @@ public class StarmapScreen : KModalScreen
 		breakdownListRow3.SetImportant(true);
 	}
 
-	private void UpdateOxidizerDisplay()
+		private void UpdateOxidizerDisplay()
 	{
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.currentCommandModule.GetComponent<AttachableBuilding>()))
 		{
@@ -978,7 +978,7 @@ public class StarmapScreen : KModalScreen
 		breakdownListRow.SetImportant(true);
 	}
 
-	private void UpdateStorageDisplay()
+		private void UpdateStorageDisplay()
 	{
 		float num = (this.selectedDestination != null) ? this.selectedDestination.AvailableMass : 0f;
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.currentCommandModule.GetComponent<AttachableBuilding>()))
@@ -1002,13 +1002,13 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	private void ClearDestinationPanel()
+		private void ClearDestinationPanel()
 	{
 		this.destinationDetailsContainer.gameObject.SetActive(false);
 		this.destinationStatusLabel.text = UI.STARMAP.ROCKETSTATUS.NONE;
 	}
 
-	private void ShowDestinationPanel()
+		private void ShowDestinationPanel()
 	{
 		if (this.selectedDestination == null)
 		{
@@ -1170,7 +1170,7 @@ public class StarmapScreen : KModalScreen
 		LayoutRebuilder.ForceRebuildLayoutImmediate(this.destinationDetailsContainer);
 	}
 
-	private void ValidateTravelAbility()
+		private void ValidateTravelAbility()
 	{
 		if (this.selectedDestination != null && SpacecraftManager.instance.GetDestinationAnalysisState(this.selectedDestination) == SpacecraftManager.DestinationAnalysisState.Complete && this.currentCommandModule != null && this.currentLaunchConditionManager != null)
 		{
@@ -1178,7 +1178,7 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	private void UpdateDistanceOverlay(LaunchConditionManager lcmToVisualize = null)
+		private void UpdateDistanceOverlay(LaunchConditionManager lcmToVisualize = null)
 	{
 		if (lcmToVisualize == null)
 		{
@@ -1204,7 +1204,7 @@ public class StarmapScreen : KModalScreen
 		this.distanceOverlay.gameObject.SetActive(false);
 	}
 
-	private void UpdateMissionOverlay(LaunchConditionManager lcmToVisualize = null)
+		private void UpdateMissionOverlay(LaunchConditionManager lcmToVisualize = null)
 	{
 		if (lcmToVisualize == null)
 		{
@@ -1291,185 +1291,185 @@ public class StarmapScreen : KModalScreen
 		}
 	}
 
-	public GameObject listPanel;
+		public GameObject listPanel;
 
-	public GameObject rocketPanel;
+		public GameObject rocketPanel;
 
-	public LocText listHeaderLabel;
+		public LocText listHeaderLabel;
 
-	public LocText listHeaderStatusLabel;
+		public LocText listHeaderStatusLabel;
 
-	public HierarchyReferences listRocketTemplate;
+		public HierarchyReferences listRocketTemplate;
 
-	public LocText listNoRocketText;
+		public LocText listNoRocketText;
 
-	public RectTransform rocketListContainer;
+		public RectTransform rocketListContainer;
 
-	private Dictionary<Spacecraft, HierarchyReferences> listRocketRows = new Dictionary<Spacecraft, HierarchyReferences>();
+		private Dictionary<Spacecraft, HierarchyReferences> listRocketRows = new Dictionary<Spacecraft, HierarchyReferences>();
 
-	[Header("Shared References")]
+		[Header("Shared References")]
 	public BreakdownList breakdownListPrefab;
 
-	public GameObject progressBarPrefab;
+		public GameObject progressBarPrefab;
 
-	[Header("Selected Rocket References")]
+		[Header("Selected Rocket References")]
 	public LocText rocketHeaderLabel;
 
-	public LocText rocketHeaderStatusLabel;
+		public LocText rocketHeaderStatusLabel;
 
-	private BreakdownList rocketDetailsStatus;
+		private BreakdownList rocketDetailsStatus;
 
-	public Sprite rocketDetailsStatusIcon;
+		public Sprite rocketDetailsStatusIcon;
 
-	private BreakdownList rocketDetailsChecklist;
+		private BreakdownList rocketDetailsChecklist;
 
-	public Sprite rocketDetailsChecklistIcon;
+		public Sprite rocketDetailsChecklistIcon;
 
-	private BreakdownList rocketDetailsMass;
+		private BreakdownList rocketDetailsMass;
 
-	public Sprite rocketDetailsMassIcon;
+		public Sprite rocketDetailsMassIcon;
 
-	private BreakdownList rocketDetailsRange;
+		private BreakdownList rocketDetailsRange;
 
-	public Sprite rocketDetailsRangeIcon;
+		public Sprite rocketDetailsRangeIcon;
 
-	public RocketThrustWidget rocketThrustWidget;
+		public RocketThrustWidget rocketThrustWidget;
 
-	private BreakdownList rocketDetailsStorage;
+		private BreakdownList rocketDetailsStorage;
 
-	public Sprite rocketDetailsStorageIcon;
+		public Sprite rocketDetailsStorageIcon;
 
-	private BreakdownList rocketDetailsDupes;
+		private BreakdownList rocketDetailsDupes;
 
-	public Sprite rocketDetailsDupesIcon;
+		public Sprite rocketDetailsDupesIcon;
 
-	private BreakdownList rocketDetailsFuel;
+		private BreakdownList rocketDetailsFuel;
 
-	public Sprite rocketDetailsFuelIcon;
+		public Sprite rocketDetailsFuelIcon;
 
-	private BreakdownList rocketDetailsOxidizer;
+		private BreakdownList rocketDetailsOxidizer;
 
-	public Sprite rocketDetailsOxidizerIcon;
+		public Sprite rocketDetailsOxidizerIcon;
 
-	public RectTransform rocketDetailsContainer;
+		public RectTransform rocketDetailsContainer;
 
-	[Header("Selected Destination References")]
+		[Header("Selected Destination References")]
 	public LocText destinationHeaderLabel;
 
-	public LocText destinationStatusLabel;
+		public LocText destinationStatusLabel;
 
-	public LocText destinationNameLabel;
+		public LocText destinationNameLabel;
 
-	public LocText destinationTypeNameLabel;
+		public LocText destinationTypeNameLabel;
 
-	public LocText destinationTypeValueLabel;
+		public LocText destinationTypeValueLabel;
 
-	public LocText destinationDistanceNameLabel;
+		public LocText destinationDistanceNameLabel;
 
-	public LocText destinationDistanceValueLabel;
+		public LocText destinationDistanceValueLabel;
 
-	public LocText destinationDescriptionLabel;
+		public LocText destinationDescriptionLabel;
 
-	private BreakdownList destinationDetailsAnalysis;
+		private BreakdownList destinationDetailsAnalysis;
 
-	private GenericUIProgressBar destinationAnalysisProgressBar;
+		private GenericUIProgressBar destinationAnalysisProgressBar;
 
-	public Sprite destinationDetailsAnalysisIcon;
+		public Sprite destinationDetailsAnalysisIcon;
 
-	private BreakdownList destinationDetailsResearch;
+		private BreakdownList destinationDetailsResearch;
 
-	public Sprite destinationDetailsResearchIcon;
+		public Sprite destinationDetailsResearchIcon;
 
-	private BreakdownList destinationDetailsMass;
+		private BreakdownList destinationDetailsMass;
 
-	public Sprite destinationDetailsMassIcon;
+		public Sprite destinationDetailsMassIcon;
 
-	private BreakdownList destinationDetailsComposition;
+		private BreakdownList destinationDetailsComposition;
 
-	public Sprite destinationDetailsCompositionIcon;
+		public Sprite destinationDetailsCompositionIcon;
 
-	private BreakdownList destinationDetailsResources;
+		private BreakdownList destinationDetailsResources;
 
-	public Sprite destinationDetailsResourcesIcon;
+		public Sprite destinationDetailsResourcesIcon;
 
-	private BreakdownList destinationDetailsArtifacts;
+		private BreakdownList destinationDetailsArtifacts;
 
-	public Sprite destinationDetailsArtifactsIcon;
+		public Sprite destinationDetailsArtifactsIcon;
 
-	public RectTransform destinationDetailsContainer;
+		public RectTransform destinationDetailsContainer;
 
-	public MultiToggle showRocketsButton;
+		public MultiToggle showRocketsButton;
 
-	public MultiToggle launchButton;
+		public MultiToggle launchButton;
 
-	public MultiToggle analyzeButton;
+		public MultiToggle analyzeButton;
 
-	private int rocketConditionEventHandler = -1;
+		private int rocketConditionEventHandler = -1;
 
-	[Header("Map References")]
+		[Header("Map References")]
 	public RectTransform Map;
 
-	public RectTransform rowsContiner;
+		public RectTransform rowsContiner;
 
-	public GameObject rowPrefab;
+		public GameObject rowPrefab;
 
-	public StarmapPlanet planetPrefab;
+		public StarmapPlanet planetPrefab;
 
-	public GameObject rocketIconPrefab;
+		public GameObject rocketIconPrefab;
 
-	private List<GameObject> planetRows = new List<GameObject>();
+		private List<GameObject> planetRows = new List<GameObject>();
 
-	private Dictionary<SpaceDestination, StarmapPlanet> planetWidgets = new Dictionary<SpaceDestination, StarmapPlanet>();
+		private Dictionary<SpaceDestination, StarmapPlanet> planetWidgets = new Dictionary<SpaceDestination, StarmapPlanet>();
 
-	private float planetsMaxDistance = 1f;
+		private float planetsMaxDistance = 1f;
 
-	public Image distanceOverlay;
+		public Image distanceOverlay;
 
-	private int distanceOverlayVerticalOffset = 500;
+		private int distanceOverlayVerticalOffset = 500;
 
-	private int distanceOverlayYOffset = 24;
+		private int distanceOverlayYOffset = 24;
 
-	public Image visualizeRocketImage;
+		public Image visualizeRocketImage;
 
-	public Image visualizeRocketTrajectory;
+		public Image visualizeRocketTrajectory;
 
-	public LocText visualizeRocketLabel;
+		public LocText visualizeRocketLabel;
 
-	public LocText visualizeRocketProgress;
+		public LocText visualizeRocketProgress;
 
-	public Color[] distanceColors;
+		public Color[] distanceColors;
 
-	public LocText titleBarLabel;
+		public LocText titleBarLabel;
 
-	public KButton button;
+		public KButton button;
 
-	private const int DESTINATION_ICON_SCALE = 2;
+		private const int DESTINATION_ICON_SCALE = 2;
 
-	public static StarmapScreen Instance;
+		public static StarmapScreen Instance;
 
-	private int selectionUpdateHandle = -1;
+		private int selectionUpdateHandle = -1;
 
-	private SpaceDestination selectedDestination;
+		private SpaceDestination selectedDestination;
 
-	private KSelectable currentSelectable;
+		private KSelectable currentSelectable;
 
-	private CommandModule currentCommandModule;
+		private CommandModule currentCommandModule;
 
-	private LaunchConditionManager currentLaunchConditionManager;
+		private LaunchConditionManager currentLaunchConditionManager;
 
-	private bool currentRocketHasGasContainer;
+		private bool currentRocketHasGasContainer;
 
-	private bool currentRocketHasLiquidContainer;
+		private bool currentRocketHasLiquidContainer;
 
-	private bool currentRocketHasSolidContainer;
+		private bool currentRocketHasSolidContainer;
 
-	private bool currentRocketHasEntitiesContainer;
+		private bool currentRocketHasEntitiesContainer;
 
-	private bool forceScrollDown = true;
+		private bool forceScrollDown = true;
 
-	private Coroutine animateAnalysisRoutine;
+		private Coroutine animateAnalysisRoutine;
 
-	private Coroutine animateSelectedPlanetRoutine;
+		private Coroutine animateSelectedPlanetRoutine;
 
-	private BreakdownListRow rangeRowTotal;
+		private BreakdownListRow rangeRowTotal;
 }

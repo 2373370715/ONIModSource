@@ -5,13 +5,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ConduitBridge")]
 public class ConduitBridge : ConduitBridgeBase, IBridgedNetworkItem
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.accumulator = Game.Instance.accumulators.Add("Flow", this);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Building component = base.GetComponent<Building>();
@@ -20,14 +20,14 @@ public class ConduitBridge : ConduitBridgeBase, IBridgedNetworkItem
 		Conduit.GetFlowManager(this.type).AddConduitUpdater(new Action<float>(this.ConduitUpdate), ConduitFlowPriority.Default);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Conduit.GetFlowManager(this.type).RemoveConduitUpdater(new Action<float>(this.ConduitUpdate));
 		Game.Instance.accumulators.Remove(this.accumulator);
 		base.OnCleanUp();
 	}
 
-	private void ConduitUpdate(float dt)
+		private void ConduitUpdate(float dt)
 	{
 		ConduitFlow flowManager = Conduit.GetFlowManager(this.type);
 		if (!flowManager.HasConduit(this.inputCell) || !flowManager.HasConduit(this.outputCell))
@@ -64,7 +64,7 @@ public class ConduitBridge : ConduitBridgeBase, IBridgedNetworkItem
 		}
 	}
 
-	public void AddNetworks(ICollection<UtilityNetwork> networks)
+		public void AddNetworks(ICollection<UtilityNetwork> networks)
 	{
 		IUtilityNetworkMgr networkManager = Conduit.GetNetworkManager(this.type);
 		UtilityNetwork networkForCell = networkManager.GetNetworkForCell(this.inputCell);
@@ -79,24 +79,24 @@ public class ConduitBridge : ConduitBridgeBase, IBridgedNetworkItem
 		}
 	}
 
-	public bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks)
+		public bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks)
 	{
 		bool flag = false;
 		IUtilityNetworkMgr networkManager = Conduit.GetNetworkManager(this.type);
 		return flag || networks.Contains(networkManager.GetNetworkForCell(this.inputCell)) || networks.Contains(networkManager.GetNetworkForCell(this.outputCell));
 	}
 
-	public int GetNetworkCell()
+		public int GetNetworkCell()
 	{
 		return this.inputCell;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitType type;
 
-	private int inputCell;
+		private int inputCell;
 
-	private int outputCell;
+		private int outputCell;
 
-	private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
+		private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
 }

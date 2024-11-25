@@ -2,13 +2,13 @@
 
 public class CustomGameSettingWidget : KMonoBehaviour
 {
-			public event Action<CustomGameSettingWidget> onSettingChanged;
+				public event Action<CustomGameSettingWidget> onSettingChanged;
 
-			public event System.Action onRefresh;
+				public event System.Action onRefresh;
 
-			public event System.Action onDestroy;
+				public event System.Action onDestroy;
 
-	public virtual void Refresh()
+		public virtual void Refresh()
 	{
 		if (this.onRefresh != null)
 		{
@@ -16,7 +16,7 @@ public class CustomGameSettingWidget : KMonoBehaviour
 		}
 	}
 
-	public void Notify()
+		public void Notify()
 	{
 		if (this.onSettingChanged != null)
 		{
@@ -24,7 +24,7 @@ public class CustomGameSettingWidget : KMonoBehaviour
 		}
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		base.OnForcedCleanUp();
 		if (this.onDestroy != null)

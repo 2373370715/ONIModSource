@@ -4,9 +4,9 @@ using System.IO;
 
 namespace Klei.AI.DiseaseGrowthRules
 {
-	public struct ElemGrowthInfo
+		public struct ElemGrowthInfo
 	{
-		public void Write(BinaryWriter writer)
+				public void Write(BinaryWriter writer)
 		{
 			writer.Write(this.underPopulationDeathRate);
 			writer.Write(this.populationHalfLife);
@@ -18,7 +18,7 @@ namespace Klei.AI.DiseaseGrowthRules
 			writer.Write(this.minDiffusionInfestationTickCount);
 		}
 
-		public static void SetBulk(ElemGrowthInfo[] info, Func<Element, bool> test, ElemGrowthInfo settings)
+				public static void SetBulk(ElemGrowthInfo[] info, Func<Element, bool> test, ElemGrowthInfo settings)
 		{
 			List<Element> elements = ElementLoader.elements;
 			for (int i = 0; i < elements.Count; i++)
@@ -30,7 +30,7 @@ namespace Klei.AI.DiseaseGrowthRules
 			}
 		}
 
-		public float CalculateDiseaseCountDelta(int disease_count, float kg, float dt)
+				public float CalculateDiseaseCountDelta(int disease_count, float kg, float dt)
 		{
 			float num = this.minCountPerKG * kg;
 			float num2 = this.maxCountPerKG * kg;
@@ -50,20 +50,20 @@ namespace Klei.AI.DiseaseGrowthRules
 			return result;
 		}
 
-		public float underPopulationDeathRate;
+				public float underPopulationDeathRate;
 
-		public float populationHalfLife;
+				public float populationHalfLife;
 
-		public float overPopulationHalfLife;
+				public float overPopulationHalfLife;
 
-		public float diffusionScale;
+				public float diffusionScale;
 
-		public float minCountPerKG;
+				public float minCountPerKG;
 
-		public float maxCountPerKG;
+				public float maxCountPerKG;
 
-		public int minDiffusionCount;
+				public int minDiffusionCount;
 
-		public byte minDiffusionInfestationTickCount;
+				public byte minDiffusionInfestationTickCount;
 	}
 }

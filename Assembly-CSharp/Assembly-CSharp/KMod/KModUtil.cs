@@ -4,9 +4,9 @@ using Klei;
 
 namespace KMod
 {
-	public class KModUtil
+		public class KModUtil
 	{
-		public static KModHeader GetHeader(IFileSource file_source, string defaultStaticID, string defaultTitle, string defaultDescription, bool devMod)
+				public static KModHeader GetHeader(IFileSource file_source, string defaultStaticID, string defaultTitle, string defaultDescription, bool devMod)
 		{
 			string text = "mod.yaml";
 			string text2 = file_source.Read(text);

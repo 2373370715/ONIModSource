@@ -5,20 +5,20 @@ using UnityEngine;
 
 public class DreamJournalConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		KAnimFile anim = Assets.GetAnim("dream_journal_kanim");
 		GameObject gameObject = EntityTemplates.CreateLooseEntity(DreamJournalConfig.ID.Name, ITEMS.DREAMJOURNAL.NAME, ITEMS.DREAMJOURNAL.DESC, 1f, true, anim, "object", Grid.SceneLayer.BuildingFront, EntityTemplates.CollisionShape.RECTANGLE, 0.6f, 0.7f, true, 0, SimHashes.Creature, new List<Tag>
@@ -29,15 +29,15 @@ public class DreamJournalConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public static Tag ID = new Tag("DreamJournal");
+		public static Tag ID = new Tag("DreamJournal");
 
-	public const float MASS = 1f;
+		public const float MASS = 1f;
 
-	public const int FABRICATION_TIME_SECONDS = 300;
+		public const int FABRICATION_TIME_SECONDS = 300;
 
-	private const string ANIM_FILE = "dream_journal_kanim";
+		private const string ANIM_FILE = "dream_journal_kanim";
 
-	private const string INITIAL_ANIM = "object";
+		private const string INITIAL_ANIM = "object";
 
-	public const int MAX_STACK_SIZE = 25;
+		public const int MAX_STACK_SIZE = 25;
 }

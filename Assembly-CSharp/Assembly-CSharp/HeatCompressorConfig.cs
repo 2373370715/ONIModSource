@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class HeatCompressorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "HeatCompressor";
 		int width = 4;
@@ -43,7 +43,7 @@ public class HeatCompressorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddComponent<Storage>();
 		storage.showDescriptor = false;
@@ -69,10 +69,10 @@ public class HeatCompressorConfig : IBuildingConfig
 		go.AddOrGet<HeatCompressor>().SetStorage(storage, storage2, storage3);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 	}
 
-	public const string ID = "HeatCompressor";
+		public const string ID = "HeatCompressor";
 }

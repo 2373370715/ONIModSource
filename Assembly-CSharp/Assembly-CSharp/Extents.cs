@@ -3,7 +3,7 @@ using UnityEngine;
 
 public struct Extents
 {
-	public static Extents OneCell(int cell)
+		public static Extents OneCell(int cell)
 	{
 		int num;
 		int num2;
@@ -11,7 +11,7 @@ public struct Extents
 		return new Extents(num, num2, 1, 1);
 	}
 
-	public Extents(int x, int y, int width, int height)
+		public Extents(int x, int y, int width, int height)
 	{
 		this.x = x;
 		this.y = y;
@@ -19,7 +19,7 @@ public struct Extents
 		this.height = height;
 	}
 
-	public Extents(int cell, int radius)
+		public Extents(int cell, int radius)
 	{
 		int num = 0;
 		int num2 = 0;
@@ -30,7 +30,7 @@ public struct Extents
 		this.height = radius * 2 + 1;
 	}
 
-	public Extents(int center_x, int center_y, int radius)
+		public Extents(int center_x, int center_y, int radius)
 	{
 		this.x = center_x - radius;
 		this.y = center_y - radius;
@@ -38,7 +38,7 @@ public struct Extents
 		this.height = radius * 2 + 1;
 	}
 
-	public Extents(int cell, CellOffset[] offsets)
+		public Extents(int cell, CellOffset[] offsets)
 	{
 		int num = 0;
 		int num2 = 0;
@@ -61,7 +61,7 @@ public struct Extents
 		this.height = num4 - num2 + 1;
 	}
 
-	public Extents(int cell, CellOffset[] offsets, Extents.BoundExtendsToGridFlag _)
+		public Extents(int cell, CellOffset[] offsets, Extents.BoundExtendsToGridFlag _)
 	{
 		int num = 0;
 		int num2 = 0;
@@ -88,7 +88,7 @@ public struct Extents
 		this.height = num4 - num2 + 1;
 	}
 
-	public Extents(int cell, CellOffset[] offsets, Orientation orientation)
+		public Extents(int cell, CellOffset[] offsets, Orientation orientation)
 	{
 		int num = 0;
 		int num2 = 0;
@@ -112,7 +112,7 @@ public struct Extents
 		this.height = num4 - num2 + 1;
 	}
 
-	public Extents(int cell, CellOffset[][] offset_table)
+		public Extents(int cell, CellOffset[][] offset_table)
 	{
 		int num = 0;
 		int num2 = 0;
@@ -135,27 +135,27 @@ public struct Extents
 		this.height = num4 - num2 + 1;
 	}
 
-	public bool Contains(Vector2I pos)
+		public bool Contains(Vector2I pos)
 	{
 		return this.x <= pos.x && pos.x < this.x + this.width && this.y <= pos.y && pos.y < this.y + this.height;
 	}
 
-	public bool Contains(Vector3 pos)
+		public bool Contains(Vector3 pos)
 	{
 		return (float)this.x <= pos.x && pos.x < (float)(this.x + this.width) && (float)this.y <= pos.y && pos.y < (float)(this.y + this.height);
 	}
 
-	public int x;
+		public int x;
 
-	public int y;
+		public int y;
 
-	public int width;
+		public int width;
 
-	public int height;
+		public int height;
 
-	public static Extents.BoundExtendsToGridFlag BoundsCheckCoords;
+		public static Extents.BoundExtendsToGridFlag BoundsCheckCoords;
 
-	public struct BoundExtendsToGridFlag
+		public struct BoundExtendsToGridFlag
 	{
 	}
 }

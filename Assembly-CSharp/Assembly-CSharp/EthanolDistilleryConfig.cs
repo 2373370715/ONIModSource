@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EthanolDistilleryConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "EthanolDistillery";
 		int width = 4;
@@ -31,7 +31,7 @@ public class EthanolDistilleryConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		ConduitDispenser conduitDispenser = go.AddOrGet<ConduitDispenser>();
@@ -68,33 +68,33 @@ public class EthanolDistilleryConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "EthanolDistillery";
+		public const string ID = "EthanolDistillery";
 
-	public const float ORGANICS_CONSUME_PER_SECOND = 1f;
+		public const float ORGANICS_CONSUME_PER_SECOND = 1f;
 
-	public const float ORGANICS_STORAGE_AMOUNT = 600f;
+		public const float ORGANICS_STORAGE_AMOUNT = 600f;
 
-	public const float ETHANOL_RATE = 0.5f;
+		public const float ETHANOL_RATE = 0.5f;
 
-	public const float SOLID_WASTE_RATE = 0.33333334f;
+		public const float SOLID_WASTE_RATE = 0.33333334f;
 
-	public const float CO2_WASTE_RATE = 0.16666667f;
+		public const float CO2_WASTE_RATE = 0.16666667f;
 
-	public const float OUTPUT_TEMPERATURE = 346.5f;
+		public const float OUTPUT_TEMPERATURE = 346.5f;
 
-	public const float WASTE_OUTPUT_TEMPERATURE = 366.5f;
+		public const float WASTE_OUTPUT_TEMPERATURE = 366.5f;
 }

@@ -4,17 +4,17 @@ using STRINGS;
 
 public class QualityOfLifeAttributeFormatter : StandardAttributeFormatter
 {
-	public QualityOfLifeAttributeFormatter() : base(GameUtil.UnitClass.SimpleInteger, GameUtil.TimeSlice.None)
+		public QualityOfLifeAttributeFormatter() : base(GameUtil.UnitClass.SimpleInteger, GameUtil.TimeSlice.None)
 	{
 	}
 
-	public override string GetFormattedAttribute(AttributeInstance instance)
+		public override string GetFormattedAttribute(AttributeInstance instance)
 	{
 		AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(instance.gameObject);
 		return string.Format(DUPLICANTS.ATTRIBUTES.QUALITYOFLIFE.DESC_FORMAT, this.GetFormattedValue(instance.GetTotalDisplayValue(), GameUtil.TimeSlice.None), this.GetFormattedValue(attributeInstance.GetTotalDisplayValue(), GameUtil.TimeSlice.None));
 	}
 
-	public override string GetTooltip(Klei.AI.Attribute master, AttributeInstance instance)
+		public override string GetTooltip(Klei.AI.Attribute master, AttributeInstance instance)
 	{
 		string text = base.GetTooltip(master, instance);
 		AttributeInstance attributeInstance = Db.Get().Attributes.QualityOfLifeExpectation.Lookup(instance.gameObject);

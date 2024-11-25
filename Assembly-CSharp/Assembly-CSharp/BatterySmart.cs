@@ -8,13 +8,13 @@ using UnityEngine;
 [DebuggerDisplay("{name}")]
 public class BatterySmart : Battery, IActivationRangeTarget
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<BatterySmart>(-905833192, BatterySmart.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		BatterySmart component = ((GameObject)data).GetComponent<BatterySmart>();
 		if (component != null)
@@ -24,7 +24,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.CreateLogicMeter();
@@ -32,18 +32,18 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		base.Subscribe<BatterySmart>(-592767678, BatterySmart.UpdateLogicCircuitDelegate);
 	}
 
-	private void CreateLogicMeter()
+		private void CreateLogicMeter()
 	{
 		this.logicMeter = new MeterController(base.GetComponent<KBatchedAnimController>(), "logicmeter_target", "logicmeter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, Array.Empty<string>());
 	}
 
-	public override void EnergySim200ms(float dt)
+		public override void EnergySim200ms(float dt)
 	{
 		base.EnergySim200ms(dt);
 		this.UpdateLogicCircuit(null);
 	}
 
-	private void UpdateLogicCircuit(object data)
+		private void UpdateLogicCircuit(object data)
 	{
 		float num = (float)Mathf.RoundToInt(base.PercentFull * 100f);
 		if (this.activated)
@@ -62,7 +62,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		this.logicPorts.SendSignal(BatterySmart.PORT_ID, flag ? 1 : 0);
 	}
 
-	private void OnLogicValueChanged(object data)
+		private void OnLogicValueChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 		if (logicValueChanged.portID == BatterySmart.PORT_ID)
@@ -71,7 +71,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-	public void SetLogicMeter(bool on)
+		public void SetLogicMeter(bool on)
 	{
 		if (this.logicMeter != null)
 		{
@@ -79,7 +79,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-			public float ActivateValue
+				public float ActivateValue
 	{
 		get
 		{
@@ -92,7 +92,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-			public float DeactivateValue
+				public float DeactivateValue
 	{
 		get
 		{
@@ -105,7 +105,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-		public float MinValue
+			public float MinValue
 	{
 		get
 		{
@@ -113,7 +113,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-		public float MaxValue
+			public float MaxValue
 	{
 		get
 		{
@@ -121,7 +121,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-		public bool UseWholeNumbers
+			public bool UseWholeNumbers
 	{
 		get
 		{
@@ -129,7 +129,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-		public string ActivateTooltip
+			public string ActivateTooltip
 	{
 		get
 		{
@@ -137,7 +137,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-		public string DeactivateTooltip
+			public string DeactivateTooltip
 	{
 		get
 		{
@@ -145,7 +145,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-		public string ActivationRangeTitleText
+			public string ActivationRangeTitleText
 	{
 		get
 		{
@@ -153,7 +153,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-		public string ActivateSliderLabelText
+			public string ActivateSliderLabelText
 	{
 		get
 		{
@@ -161,7 +161,7 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-		public string DeactivateSliderLabelText
+			public string DeactivateSliderLabelText
 	{
 		get
 		{
@@ -169,36 +169,36 @@ public class BatterySmart : Battery, IActivationRangeTarget
 		}
 	}
 
-	public static readonly HashedString PORT_ID = "BatterySmartLogicPort";
+		public static readonly HashedString PORT_ID = "BatterySmartLogicPort";
 
-	[Serialize]
+		[Serialize]
 	private int activateValue;
 
-	[Serialize]
+		[Serialize]
 	private int deactivateValue = 100;
 
-	[Serialize]
+		[Serialize]
 	private bool activated;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private LogicPorts logicPorts;
 
-	private MeterController logicMeter;
+		private MeterController logicMeter;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<BatterySmart> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<BatterySmart>(delegate(BatterySmart component, object data)
+		private static readonly EventSystem.IntraObjectHandler<BatterySmart> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<BatterySmart>(delegate(BatterySmart component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<BatterySmart> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<BatterySmart>(delegate(BatterySmart component, object data)
+		private static readonly EventSystem.IntraObjectHandler<BatterySmart> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<BatterySmart>(delegate(BatterySmart component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<BatterySmart> UpdateLogicCircuitDelegate = new EventSystem.IntraObjectHandler<BatterySmart>(delegate(BatterySmart component, object data)
+		private static readonly EventSystem.IntraObjectHandler<BatterySmart> UpdateLogicCircuitDelegate = new EventSystem.IntraObjectHandler<BatterySmart>(delegate(BatterySmart component, object data)
 	{
 		component.UpdateLogicCircuit(data);
 	});

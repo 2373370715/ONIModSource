@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class CurrentJobConversation : ConversationType
 {
-	public CurrentJobConversation()
+		public CurrentJobConversation()
 	{
 		this.id = "CurrentJobConversation";
 	}
 
-	public override void NewTarget(MinionIdentity speaker)
+		public override void NewTarget(MinionIdentity speaker)
 	{
 		this.target = "hows_role";
 	}
 
-	public override Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
+		public override Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
 	{
 		if (lastTopic == null)
 		{
@@ -31,7 +31,7 @@ public class CurrentJobConversation : ConversationType
 		return new Conversation.Topic(this.target, modeType);
 	}
 
-	public override Sprite GetSprite(string topic)
+		public override Sprite GetSprite(string topic)
 	{
 		if (topic == "hows_role")
 		{
@@ -44,17 +44,17 @@ public class CurrentJobConversation : ConversationType
 		return null;
 	}
 
-	private Conversation.ModeType GetModeForRole(MinionIdentity speaker, string roleId)
+		private Conversation.ModeType GetModeForRole(MinionIdentity speaker, string roleId)
 	{
 		return Conversation.ModeType.Nominal;
 	}
 
-	private string GetRoleForSpeaker(MinionIdentity speaker)
+		private string GetRoleForSpeaker(MinionIdentity speaker)
 	{
 		return speaker.GetComponent<MinionResume>().CurrentRole;
 	}
 
-	public static Dictionary<Conversation.ModeType, List<Conversation.ModeType>> transitions = new Dictionary<Conversation.ModeType, List<Conversation.ModeType>>
+		public static Dictionary<Conversation.ModeType, List<Conversation.ModeType>> transitions = new Dictionary<Conversation.ModeType, List<Conversation.ModeType>>
 	{
 		{
 			Conversation.ModeType.Query,

@@ -3,11 +3,11 @@ using ProcGen;
 
 namespace Database
 {
-	public class Story : Resource, IComparable<Story>
+		public class Story : Resource, IComparable<Story>
 	{
-						public int HashId { get; private set; }
+								public int HashId { get; private set; }
 
-				public WorldTrait StoryTrait
+						public WorldTrait StoryTrait
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Database
 			}
 		}
 
-		public Story(string id, string worldgenStoryTraitKey, int displayOrder)
+				public Story(string id, string worldgenStoryTraitKey, int displayOrder)
 		{
 			this.Id = id;
 			this.worldgenStoryTraitKey = worldgenStoryTraitKey;
@@ -30,7 +30,7 @@ namespace Database
 			this.HashId = Hash.SDBMLower(id);
 		}
 
-		public Story(string id, string worldgenStoryTraitKey, int displayOrder, int kleiUseOnlyCoordinateOrder, int updateNumber, string sandboxStampTemplateId)
+				public Story(string id, string worldgenStoryTraitKey, int displayOrder, int kleiUseOnlyCoordinateOrder, int updateNumber, string sandboxStampTemplateId)
 		{
 			this.Id = id;
 			this.worldgenStoryTraitKey = worldgenStoryTraitKey;
@@ -41,44 +41,44 @@ namespace Database
 			this.HashId = Hash.SDBMLower(id);
 		}
 
-		public int CompareTo(Story other)
+				public int CompareTo(Story other)
 		{
 			return this.displayOrder.CompareTo(other.displayOrder);
 		}
 
-		public bool IsNew()
+				public bool IsNew()
 		{
 			return this.updateNumber == LaunchInitializer.UpdateNumber();
 		}
 
-		public Story AutoStart()
+				public Story AutoStart()
 		{
 			this.autoStart = true;
 			return this;
 		}
 
-		public Story SetKeepsake(string prefabId)
+				public Story SetKeepsake(string prefabId)
 		{
 			this.keepsakePrefabId = prefabId;
 			return this;
 		}
 
-		public const int MODDED_STORY = -1;
+				public const int MODDED_STORY = -1;
 
-		public int kleiUseOnlyCoordinateOrder;
+				public int kleiUseOnlyCoordinateOrder;
 
-		public bool autoStart;
+				public bool autoStart;
 
-		public string keepsakePrefabId;
+				public string keepsakePrefabId;
 
-		public readonly string worldgenStoryTraitKey;
+				public readonly string worldgenStoryTraitKey;
 
-		private readonly int displayOrder;
+				private readonly int displayOrder;
 
-		private readonly int updateNumber;
+				private readonly int updateNumber;
 
-		public string sandboxStampTemplateId;
+				public string sandboxStampTemplateId;
 
-		private WorldTrait _cachedStoryTrait;
+				private WorldTrait _cachedStoryTrait;
 	}
 }

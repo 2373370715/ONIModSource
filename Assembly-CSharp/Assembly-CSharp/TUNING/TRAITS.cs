@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace TUNING
 {
-	public class TRAITS
+		public class TRAITS
 	{
-		private static void OnAddStressVomiter(GameObject go)
+				private static void OnAddStressVomiter(GameObject go)
 		{
 			Notification notification = new Notification(DUPLICANTS.STATUSITEMS.STRESSVOMITING.NOTIFICATION_NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => DUPLICANTS.STATUSITEMS.STRESSVOMITING.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null, true, false, false);
 			StatusItem tierOneBehaviourStatusItem = new StatusItem("StressSignalVomiter", DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_VOMITER.NAME, DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_VOMITER.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, 129022, true, null);
@@ -31,7 +31,7 @@ namespace TUNING
 			}, (ChoreProvider chore_provider) => new VomitChore(Db.Get().ChoreTypes.StressVomit, chore_provider, Db.Get().DuplicantStatusItems.Vomiting, notification, null), "anim_loco_vomiter_kanim", 3f).StartSM();
 		}
 
-		private static void OnAddBanshee(GameObject go)
+				private static void OnAddBanshee(GameObject go)
 		{
 			Notification notification = new Notification(DUPLICANTS.MODIFIERS.BANSHEE_WAILING.NOTIFICATION_NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => DUPLICANTS.MODIFIERS.BANSHEE_WAILING.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null, true, false, false);
 			StatusItem tierOneBehaviourStatusItem = new StatusItem("StressSignalBanshee", DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_BANSHEE.NAME, DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_BANSHEE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, 129022, true, null);
@@ -54,7 +54,30 @@ namespace TUNING
 			}, (ChoreProvider chore_provider) => new BansheeChore(Db.Get().ChoreTypes.BansheeWail, chore_provider, notification, null), "anim_loco_banshee_60_kanim", 3f).StartSM();
 		}
 
-		private static void OnAddAggressive(GameObject go)
+				private static void OnAddShocker(GameObject go)
+		{
+			Notification notification = new Notification(DUPLICANTS.MODIFIERS.STRESSSHOCKER.NOTIFICATION_NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => DUPLICANTS.MODIFIERS.STRESSSHOCKER.NOTIFICATION_TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null, true, false, false);
+			StatusItem tierOneBehaviourStatusItem = new StatusItem("StressSignalShocker", DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_STRESS_SHOCKER.NAME, DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_STRESS_SHOCKER.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, 129022, true, null);
+			Func<StatusItem> <>9__3;
+			new StressBehaviourMonitor.Instance(go.GetComponent<KMonoBehaviour>(), delegate(ChoreProvider chore_provider)
+			{
+				ChoreType stressEmote = Db.Get().ChoreTypes.StressEmote;
+				HashedString emote_kanim = "anim_loco_stressshocker_kanim";
+				HashedString[] emote_anims = new HashedString[]
+				{
+					"interrupt_shocker"
+				};
+				KAnim.PlayMode play_mode = KAnim.PlayMode.Once;
+				Func<StatusItem> get_status_item;
+				if ((get_status_item = <>9__3) == null)
+				{
+					get_status_item = (<>9__3 = (() => tierOneBehaviourStatusItem));
+				}
+				return new StressEmoteChore(chore_provider, stressEmote, emote_kanim, emote_anims, play_mode, get_status_item);
+			}, (ChoreProvider chore_provider) => new StressShockChore(Db.Get().ChoreTypes.StressShock, chore_provider, notification, null), "anim_loco_stressshocker_kanim", 12f).StartSM();
+		}
+
+				private static void OnAddAggressive(GameObject go)
 		{
 			StatusItem tierOneBehaviourStatusItem = new StatusItem("StressSignalAggresive", DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_AGGRESIVE.NAME, DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_AGGRESIVE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, 129022, true, null);
 			Func<StatusItem> <>9__2;
@@ -76,7 +99,7 @@ namespace TUNING
 			}, (ChoreProvider chore_provider) => new AggressiveChore(chore_provider, null), "anim_loco_destructive_kanim", 3f).StartSM();
 		}
 
-		private static void OnAddUglyCrier(GameObject go)
+				private static void OnAddUglyCrier(GameObject go)
 		{
 			StatusItem tierOneBehaviourStatusItem = new StatusItem("StressSignalUglyCrier", DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_UGLY_CRIER.NAME, DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_UGLY_CRIER.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, 129022, true, null);
 			Func<StatusItem> <>9__2;
@@ -100,7 +123,7 @@ namespace TUNING
 			}, (ChoreProvider chore_provider) => new UglyCryChore(Db.Get().ChoreTypes.UglyCry, chore_provider, null), "anim_loco_cry_kanim", 3f).StartSM();
 		}
 
-		private static void OnAddBingeEater(GameObject go)
+				private static void OnAddBingeEater(GameObject go)
 		{
 			StatusItem tierOneBehaviourStatusItem = new StatusItem("StressSignalBingeEater", DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_BINGE_EAT.NAME, DUPLICANTS.STATUSITEMS.STRESS_SIGNAL_BINGE_EAT.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.BadMinor, false, OverlayModes.None.ID, 129022, true, null);
 			Func<StatusItem> <>9__2;
@@ -122,92 +145,123 @@ namespace TUNING
 			}, (ChoreProvider chore_provider) => new BingeEatChore(chore_provider, null), "anim_loco_binge_eat_kanim", 8f).StartSM();
 		}
 
-		private static void OnAddBalloonArtist(GameObject go)
+				private static void OnAddBalloonArtist(GameObject go)
 		{
 			new BalloonArtist.Instance(go.GetComponent<KMonoBehaviour>()).StartSM();
 			new JoyBehaviourMonitor.Instance(go.GetComponent<KMonoBehaviour>(), "anim_loco_happy_balloon_kanim", null, Db.Get().Expressions.Balloon).StartSM();
 		}
 
-		private static void OnAddSparkleStreaker(GameObject go)
+				private static void OnAddSparkleStreaker(GameObject go)
 		{
 			new SparkleStreaker.Instance(go.GetComponent<KMonoBehaviour>()).StartSM();
 			new JoyBehaviourMonitor.Instance(go.GetComponent<KMonoBehaviour>(), "anim_loco_sparkle_kanim", null, Db.Get().Expressions.Sparkle).StartSM();
 		}
 
-		private static void OnAddStickerBomber(GameObject go)
+				private static void OnAddStickerBomber(GameObject go)
 		{
 			new StickerBomber.Instance(go.GetComponent<KMonoBehaviour>()).StartSM();
 			new JoyBehaviourMonitor.Instance(go.GetComponent<KMonoBehaviour>(), "anim_loco_stickers_kanim", null, Db.Get().Expressions.Sticker).StartSM();
 		}
 
-		private static void OnAddSuperProductive(GameObject go)
+				private static void OnAddSuperProductive(GameObject go)
 		{
 			new SuperProductive.Instance(go.GetComponent<KMonoBehaviour>()).StartSM();
 			new JoyBehaviourMonitor.Instance(go.GetComponent<KMonoBehaviour>(), "anim_loco_productive_kanim", "anim_loco_walk_productive_kanim", Db.Get().Expressions.Productive).StartSM();
 		}
 
-		private static void OnAddHappySinger(GameObject go)
+				private static void OnAddHappySinger(GameObject go)
 		{
 			new HappySinger.Instance(go.GetComponent<KMonoBehaviour>()).StartSM();
 			new JoyBehaviourMonitor.Instance(go.GetComponent<KMonoBehaviour>(), "anim_loco_singer_kanim", null, Db.Get().Expressions.Music).StartSM();
 		}
 
-		public static float EARLYBIRD_MODIFIER = 2f;
+				private static void OnAddDataRainer(GameObject go)
+		{
+			new DataRainer.Instance(go.GetComponent<KMonoBehaviour>()).StartSM();
+			new JoyBehaviourMonitor.Instance(go.GetComponent<KMonoBehaviour>(), "anim_loco_productive_kanim", "anim_loco_walk_productive_kanim", Db.Get().Expressions.Productive).StartSM();
+		}
 
-		public static int EARLYBIRD_SCHEDULEBLOCK = 5;
+				private static void OnAddRoboDancer(GameObject go)
+		{
+			new RoboDancer.Instance(go.GetComponent<KMonoBehaviour>()).StartSM();
+			new JoyBehaviourMonitor.Instance(go.GetComponent<KMonoBehaviour>(), "anim_loco_walk_robotdance_kanim", null, Db.Get().Expressions.Neutral).StartSM();
+		}
 
-		public static float NIGHTOWL_MODIFIER = 3f;
+				public static float EARLYBIRD_MODIFIER = 2f;
 
-		public static float METEORPHILE_MODIFIER = 3f;
+				public static int EARLYBIRD_SCHEDULEBLOCK = 5;
 
-		public const float FLATULENCE_EMIT_MASS = 0.1f;
+				public static float NIGHTOWL_MODIFIER = 3f;
 
-		public static float FLATULENCE_EMIT_INTERVAL_MIN = 10f;
+				public static float METEORPHILE_MODIFIER = 3f;
 
-		public static float FLATULENCE_EMIT_INTERVAL_MAX = 40f;
+				public const float FLATULENCE_EMIT_MASS = 0.1f;
 
-		public static float STINKY_EMIT_INTERVAL_MIN = 10f;
+				public static float FLATULENCE_EMIT_INTERVAL_MIN = 10f;
 
-		public static float STINKY_EMIT_INTERVAL_MAX = 30f;
+				public static float FLATULENCE_EMIT_INTERVAL_MAX = 40f;
 
-		public static float NARCOLEPSY_INTERVAL_MIN = 300f;
+				public static float STINKY_EMIT_INTERVAL_MIN = 10f;
 
-		public static float NARCOLEPSY_INTERVAL_MAX = 600f;
+				public static float STINKY_EMIT_INTERVAL_MAX = 30f;
 
-		public static float NARCOLEPSY_SLEEPDURATION_MIN = 15f;
+				public static float NARCOLEPSY_INTERVAL_MIN = 300f;
 
-		public static float NARCOLEPSY_SLEEPDURATION_MAX = 30f;
+				public static float NARCOLEPSY_INTERVAL_MAX = 600f;
 
-		public const float INTERRUPTED_SLEEP_STRESS_DELTA = 10f;
+				public static float NARCOLEPSY_SLEEPDURATION_MIN = 15f;
 
-		public const float INTERRUPTED_SLEEP_ATHLETICS_DELTA = -2f;
+				public static float NARCOLEPSY_SLEEPDURATION_MAX = 30f;
 
-		public static int NO_ATTRIBUTE_BONUS = 0;
+				public const float INTERRUPTED_SLEEP_STRESS_DELTA = 10f;
 
-		public static int GOOD_ATTRIBUTE_BONUS = 3;
+				public const float INTERRUPTED_SLEEP_ATHLETICS_DELTA = -2f;
 
-		public static int GREAT_ATTRIBUTE_BONUS = 5;
+				public static int NO_ATTRIBUTE_BONUS = 0;
 
-		public static int BAD_ATTRIBUTE_PENALTY = -3;
+				public static int GOOD_ATTRIBUTE_BONUS = 3;
 
-		public static int HORRIBLE_ATTRIBUTE_PENALTY = -5;
+				public static int GREAT_ATTRIBUTE_BONUS = 5;
 
-		public static float GLOWSTICK_LUX_VALUE = 500f;
+				public static int BAD_ATTRIBUTE_PENALTY = -3;
 
-		public static float GLOWSTICK_RADIATION_RESISTANCE = 0.33f;
+				public static int HORRIBLE_ATTRIBUTE_PENALTY = -5;
 
-		public static float RADIATION_EATER_RECOVERY = -0.25f;
+				public static float GLOWSTICK_LUX_VALUE = 500f;
 
-		public static float RADS_TO_CALS = 333.33f;
+				public static float GLOWSTICK_RADIATION_RESISTANCE = 0.33f;
 
-		public static readonly List<System.Action> TRAIT_CREATORS = new List<System.Action>
+				public static float RADIATION_EATER_RECOVERY = -0.25f;
+
+				public static float RADS_TO_CALS = 333.33f;
+
+				public static readonly List<System.Action> TRAIT_CREATORS = new List<System.Action>
 		{
 			TraitUtil.CreateAttributeEffectTrait("None", DUPLICANTS.CONGENITALTRAITS.NONE.NAME, DUPLICANTS.CONGENITALTRAITS.NONE.DESC, "", (float)TRAITS.NO_ATTRIBUTE_BONUS, false, null, true),
 			TraitUtil.CreateComponentTrait<Stinky>("Stinky", DUPLICANTS.CONGENITALTRAITS.STINKY.NAME, DUPLICANTS.CONGENITALTRAITS.STINKY.DESC, false, null),
-			TraitUtil.CreateAttributeEffectTrait("Ellie", DUPLICANTS.CONGENITALTRAITS.ELLIE.NAME, DUPLICANTS.CONGENITALTRAITS.ELLIE.DESC, "AirConsumptionRate", -0.044999998f, "DecorExpectation", -5f, false),
+			TraitUtil.CreateAttributeEffectTrait("Ellie", DUPLICANTS.CONGENITALTRAITS.ELLIE.NAME, DUPLICANTS.CONGENITALTRAITS.ELLIE.DESC, "AirConsumptionRate", -DUPLICANTSTATS.STANDARD.BaseStats.OXYGEN_USED_PER_SECOND * 0.45f, "DecorExpectation", -5f, false),
 			TraitUtil.CreateDisabledTaskTrait("Joshua", DUPLICANTS.CONGENITALTRAITS.JOSHUA.NAME, DUPLICANTS.CONGENITALTRAITS.JOSHUA.DESC, "Combat", true),
 			TraitUtil.CreateComponentTrait<Stinky>("Liam", DUPLICANTS.CONGENITALTRAITS.LIAM.NAME, DUPLICANTS.CONGENITALTRAITS.LIAM.DESC, false, null),
 			TraitUtil.CreateNamedTrait("AncientKnowledge", DUPLICANTS.TRAITS.ANCIENTKNOWLEDGE.NAME, DUPLICANTS.TRAITS.ANCIENTKNOWLEDGE.DESC, true),
+			TraitUtil.CreateNamedTrait("DefaultBionicBoostDigging", DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTDIGGING.NAME, DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTDIGGING.DESC, true),
+			TraitUtil.CreateNamedTrait("DefaultBionicBoostBuilding", DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTBUILDING.NAME, DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTBUILDING.DESC, true),
+			TraitUtil.CreateNamedTrait("DefaultBionicBoostCooking", DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTCOOKING.NAME, DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTCOOKING.DESC, true),
+			TraitUtil.CreateNamedTrait("DefaultBionicBoostArt", DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTART.NAME, DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTART.DESC, true),
+			TraitUtil.CreateNamedTrait("DefaultBionicBoostFarming", DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTFARMING.NAME, DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTFARMING.DESC, true),
+			TraitUtil.CreateNamedTrait("DefaultBionicBoostRanching", DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTRANCHING.NAME, DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTRANCHING.DESC, true),
+			TraitUtil.CreateNamedTrait("DefaultBionicBoostMedicine", DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTMEDICINE.NAME, DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTMEDICINE.DESC, true),
+			TraitUtil.CreateNamedTrait("DefaultBionicBoostExplorer", DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTEXPLORER.NAME, DUPLICANTS.TRAITS.DEFAULTBIONICBOOSTEXPLORER.DESC, true),
+			TraitUtil.CreateAttributeEffectTrait("BionicBaseline", DUPLICANTS.TRAITS.BIONICBASELINE.NAME, DUPLICANTS.TRAITS.BIONICBASELINE.DESC, new string[]
+			{
+				"Art",
+				"Caring",
+				"Cooking"
+			}, new float[]
+			{
+				-3f,
+				-3f,
+				-3f
+			}, false),
 			TraitUtil.CreateComponentTrait<Chatty>("Chatty", DUPLICANTS.TRAITS.CHATTY.NAME, DUPLICANTS.TRAITS.CHATTY.DESC, true, null),
 			TraitUtil.CreateDisabledTaskTrait("CantResearch", DUPLICANTS.TRAITS.CANTRESEARCH.NAME, DUPLICANTS.TRAITS.CANTRESEARCH.DESC, "Research", true),
 			TraitUtil.CreateDisabledTaskTrait("CantBuild", DUPLICANTS.TRAITS.CANTBUILD.NAME, DUPLICANTS.TRAITS.CANTBUILD.DESC, "Build", false),
@@ -217,9 +271,9 @@ namespace TUNING
 			TraitUtil.CreateDisabledTaskTrait("ScaredyCat", DUPLICANTS.TRAITS.SCAREDYCAT.NAME, DUPLICANTS.TRAITS.SCAREDYCAT.DESC, "Combat", true),
 			TraitUtil.CreateNamedTrait("Allergies", DUPLICANTS.TRAITS.ALLERGIES.NAME, DUPLICANTS.TRAITS.ALLERGIES.DESC, false),
 			TraitUtil.CreateNamedTrait("NightLight", DUPLICANTS.TRAITS.NIGHTLIGHT.NAME, DUPLICANTS.TRAITS.NIGHTLIGHT.DESC, false),
-			TraitUtil.CreateAttributeEffectTrait("MouthBreather", DUPLICANTS.TRAITS.MOUTHBREATHER.NAME, DUPLICANTS.TRAITS.MOUTHBREATHER.DESC, "AirConsumptionRate", 0.1f, false, null, true),
-			TraitUtil.CreateAttributeEffectTrait("CalorieBurner", DUPLICANTS.TRAITS.CALORIEBURNER.NAME, DUPLICANTS.TRAITS.CALORIEBURNER.DESC, "CaloriesDelta", -833.3333f, false, null, true),
-			TraitUtil.CreateAttributeEffectTrait("SmallBladder", DUPLICANTS.TRAITS.SMALLBLADDER.NAME, DUPLICANTS.TRAITS.SMALLBLADDER.DESC, "BladderDelta", 0.00027777778f, false, null, true),
+			TraitUtil.CreateAttributeEffectTrait("MouthBreather", DUPLICANTS.TRAITS.MOUTHBREATHER.NAME, DUPLICANTS.TRAITS.MOUTHBREATHER.DESC, "AirConsumptionRate", DUPLICANTSTATS.STANDARD.BaseStats.OXYGEN_USED_PER_SECOND, false, null, true),
+			TraitUtil.CreateAttributeEffectTrait("CalorieBurner", DUPLICANTS.TRAITS.CALORIEBURNER.NAME, DUPLICANTS.TRAITS.CALORIEBURNER.DESC, "CaloriesDelta", DUPLICANTSTATS.STANDARD.BaseStats.CALORIES_BURNED_PER_SECOND * 0.5f, false, null, true),
+			TraitUtil.CreateAttributeEffectTrait("SmallBladder", DUPLICANTS.TRAITS.SMALLBLADDER.NAME, DUPLICANTS.TRAITS.SMALLBLADDER.DESC, "BladderDelta", DUPLICANTSTATS.STANDARD.BaseStats.BLADDER_INCREASE_PER_SECOND / 600f, false, null, true),
 			TraitUtil.CreateAttributeEffectTrait("Anemic", DUPLICANTS.TRAITS.ANEMIC.NAME, DUPLICANTS.TRAITS.ANEMIC.DESC, "Athletics", (float)TRAITS.HORRIBLE_ATTRIBUTE_PENALTY, false, null, true),
 			TraitUtil.CreateAttributeEffectTrait("SlowLearner", DUPLICANTS.TRAITS.SLOWLEARNER.NAME, DUPLICANTS.TRAITS.SLOWLEARNER.DESC, "Learning", (float)TRAITS.BAD_ATTRIBUTE_PENALTY, false, null, true),
 			TraitUtil.CreateAttributeEffectTrait("NoodleArms", DUPLICANTS.TRAITS.NOODLEARMS.NAME, DUPLICANTS.TRAITS.NOODLEARMS.DESC, "Strength", (float)TRAITS.BAD_ATTRIBUTE_PENALTY, false, null, true),
@@ -233,7 +287,7 @@ namespace TUNING
 			TraitUtil.CreateAttributeEffectTrait("BotanistDown", DUPLICANTS.TRAITS.BOTANISTDOWN.NAME, DUPLICANTS.TRAITS.BOTANISTDOWN.DESC, "Botanist", (float)TRAITS.BAD_ATTRIBUTE_PENALTY, false, null, true),
 			TraitUtil.CreateAttributeEffectTrait("DecorDown", DUPLICANTS.TRAITS.DECORDOWN.NAME, DUPLICANTS.TRAITS.DECORDOWN.DESC, "Decor", (float)BUILDINGS.DECOR.PENALTY.TIER2.amount, false, null, true),
 			TraitUtil.CreateAttributeEffectTrait("Regeneration", DUPLICANTS.TRAITS.REGENERATION.NAME, DUPLICANTS.TRAITS.REGENERATION.DESC, "HitPointsDelta", 0.033333335f, false, null, true),
-			TraitUtil.CreateAttributeEffectTrait("DeeperDiversLungs", DUPLICANTS.TRAITS.DEEPERDIVERSLUNGS.NAME, DUPLICANTS.TRAITS.DEEPERDIVERSLUNGS.DESC, "AirConsumptionRate", -0.05f, false, null, true),
+			TraitUtil.CreateAttributeEffectTrait("DeeperDiversLungs", DUPLICANTS.TRAITS.DEEPERDIVERSLUNGS.NAME, DUPLICANTS.TRAITS.DEEPERDIVERSLUNGS.DESC, "AirConsumptionRate", -DUPLICANTSTATS.STANDARD.BaseStats.OXYGEN_USED_PER_SECOND * 0.5f, false, null, true),
 			TraitUtil.CreateAttributeEffectTrait("SunnyDisposition", DUPLICANTS.TRAITS.SUNNYDISPOSITION.NAME, DUPLICANTS.TRAITS.SUNNYDISPOSITION.DESC, "StressDelta", -0.033333335f, false, delegate(GameObject go)
 			{
 				go.GetComponent<KBatchedAnimController>().AddAnimOverrides(Assets.GetAnim("anim_loco_happy_kanim"), 0f);
@@ -245,7 +299,7 @@ namespace TUNING
 			}, true),
 			TraitUtil.CreateNamedTrait("Archaeologist", DUPLICANTS.TRAITS.ARCHAEOLOGIST.NAME, DUPLICANTS.TRAITS.ARCHAEOLOGIST.DESC, false),
 			TraitUtil.CreateAttributeEffectTrait("WeakImmuneSystem", DUPLICANTS.TRAITS.WEAKIMMUNESYSTEM.NAME, DUPLICANTS.TRAITS.WEAKIMMUNESYSTEM.DESC, "GermResistance", -1f, false, null, true),
-			TraitUtil.CreateAttributeEffectTrait("IrritableBowel", DUPLICANTS.TRAITS.IRRITABLEBOWEL.NAME, DUPLICANTS.TRAITS.IRRITABLEBOWEL.DESC, "ToiletEfficiency", -0.5f, false, null, true),
+			TraitUtil.CreateAttributeEffectTrait("IrritableBowel", DUPLICANTS.TRAITS.IRRITABLEBOWEL.NAME, DUPLICANTS.TRAITS.IRRITABLEBOWEL.DESC, "ToiletEfficiency", -DUPLICANTSTATS.STANDARD.BaseStats.TOILET_EFFICIENCY * 0.5f, false, null, true),
 			TraitUtil.CreateComponentTrait<Flatulence>("Flatulence", DUPLICANTS.TRAITS.FLATULENCE.NAME, DUPLICANTS.TRAITS.FLATULENCE.DESC, false, null),
 			TraitUtil.CreateComponentTrait<Snorer>("Snorer", DUPLICANTS.TRAITS.SNORER.NAME, DUPLICANTS.TRAITS.SNORER.DESC, false, null),
 			TraitUtil.CreateComponentTrait<Narcolepsy>("Narcolepsy", DUPLICANTS.TRAITS.NARCOLEPSY.NAME, DUPLICANTS.TRAITS.NARCOLEPSY.DESC, false, null),
@@ -258,7 +312,7 @@ namespace TUNING
 			TraitUtil.CreateAttributeEffectTrait("Greasemonkey", DUPLICANTS.TRAITS.GREASEMONKEY.NAME, DUPLICANTS.TRAITS.GREASEMONKEY.DESC, "Machinery", (float)TRAITS.GOOD_ATTRIBUTE_BONUS, true, null, true),
 			TraitUtil.CreateAttributeEffectTrait("MoleHands", DUPLICANTS.TRAITS.MOLEHANDS.NAME, DUPLICANTS.TRAITS.MOLEHANDS.DESC, "Digging", (float)TRAITS.GOOD_ATTRIBUTE_BONUS, true, null, true),
 			TraitUtil.CreateAttributeEffectTrait("FastLearner", DUPLICANTS.TRAITS.FASTLEARNER.NAME, DUPLICANTS.TRAITS.FASTLEARNER.DESC, "Learning", (float)TRAITS.GOOD_ATTRIBUTE_BONUS, true, null, true),
-			TraitUtil.CreateAttributeEffectTrait("DiversLung", DUPLICANTS.TRAITS.DIVERSLUNG.NAME, DUPLICANTS.TRAITS.DIVERSLUNG.DESC, "AirConsumptionRate", -0.025f, true, null, true),
+			TraitUtil.CreateAttributeEffectTrait("DiversLung", DUPLICANTS.TRAITS.DIVERSLUNG.NAME, DUPLICANTS.TRAITS.DIVERSLUNG.DESC, "AirConsumptionRate", -DUPLICANTSTATS.STANDARD.BaseStats.OXYGEN_USED_PER_SECOND * 0.25f, true, null, true),
 			TraitUtil.CreateAttributeEffectTrait("StrongArm", DUPLICANTS.TRAITS.STRONGARM.NAME, DUPLICANTS.TRAITS.STRONGARM.DESC, "Strength", (float)TRAITS.GOOD_ATTRIBUTE_BONUS, true, null, true),
 			TraitUtil.CreateAttributeEffectTrait("DecorUp", DUPLICANTS.TRAITS.DECORUP.NAME, DUPLICANTS.TRAITS.DECORUP.DESC, "Decor", (float)BUILDINGS.DECOR.BONUS.TIER4.amount, true, null, true),
 			TraitUtil.CreateAttributeEffectTrait("GreenThumb", DUPLICANTS.TRAITS.GREENTHUMB.NAME, DUPLICANTS.TRAITS.GREENTHUMB.DESC, "Botanist", (float)TRAITS.GOOD_ATTRIBUTE_BONUS, true, null, true),
@@ -314,11 +368,14 @@ namespace TUNING
 			TraitUtil.CreateTrait("BingeEater", DUPLICANTS.TRAITS.BINGEEATER.NAME, DUPLICANTS.TRAITS.BINGEEATER.DESC, new Action<GameObject>(TRAITS.OnAddBingeEater), null, false, null),
 			TraitUtil.CreateTrait("StressVomiter", DUPLICANTS.TRAITS.STRESSVOMITER.NAME, DUPLICANTS.TRAITS.STRESSVOMITER.DESC, new Action<GameObject>(TRAITS.OnAddStressVomiter), null, false, null),
 			TraitUtil.CreateTrait("Banshee", DUPLICANTS.TRAITS.BANSHEE.NAME, DUPLICANTS.TRAITS.BANSHEE.DESC, new Action<GameObject>(TRAITS.OnAddBanshee), null, false, null),
+			TraitUtil.CreateTrait("StressShocker", DUPLICANTS.TRAITS.STRESSSHOCKER.NAME, DUPLICANTS.TRAITS.STRESSSHOCKER.DESC, new Action<GameObject>(TRAITS.OnAddShocker), null, false, null),
 			TraitUtil.CreateTrait("BalloonArtist", DUPLICANTS.TRAITS.BALLOONARTIST.NAME, DUPLICANTS.TRAITS.BALLOONARTIST.DESC, new Action<GameObject>(TRAITS.OnAddBalloonArtist), null, false, null),
 			TraitUtil.CreateTrait("SparkleStreaker", DUPLICANTS.TRAITS.SPARKLESTREAKER.NAME, DUPLICANTS.TRAITS.SPARKLESTREAKER.DESC, new Action<GameObject>(TRAITS.OnAddSparkleStreaker), null, false, null),
 			TraitUtil.CreateTrait("StickerBomber", DUPLICANTS.TRAITS.STICKERBOMBER.NAME, DUPLICANTS.TRAITS.STICKERBOMBER.DESC, new Action<GameObject>(TRAITS.OnAddStickerBomber), null, false, null),
 			TraitUtil.CreateTrait("SuperProductive", DUPLICANTS.TRAITS.SUPERPRODUCTIVE.NAME, DUPLICANTS.TRAITS.SUPERPRODUCTIVE.DESC, new Action<GameObject>(TRAITS.OnAddSuperProductive), null, false, null),
 			TraitUtil.CreateTrait("HappySinger", DUPLICANTS.TRAITS.HAPPYSINGER.NAME, DUPLICANTS.TRAITS.HAPPYSINGER.DESC, new Action<GameObject>(TRAITS.OnAddHappySinger), null, false, null),
+			TraitUtil.CreateTrait("DataRainer", DUPLICANTS.TRAITS.DATARAINER.NAME, DUPLICANTS.TRAITS.DATARAINER.DESC, new Action<GameObject>(TRAITS.OnAddDataRainer), null, false, null),
+			TraitUtil.CreateTrait("RoboDancer", DUPLICANTS.TRAITS.ROBODANCER.NAME, DUPLICANTS.TRAITS.ROBODANCER.DESC, new Action<GameObject>(TRAITS.OnAddRoboDancer), null, false, null),
 			TraitUtil.CreateComponentTrait<EarlyBird>("EarlyBird", DUPLICANTS.TRAITS.EARLYBIRD.NAME, DUPLICANTS.TRAITS.EARLYBIRD.DESC, true, () => string.Format(DUPLICANTS.TRAITS.EARLYBIRD.EXTENDED_DESC, GameUtil.AddPositiveSign(TRAITS.EARLYBIRD_MODIFIER.ToString(), true))),
 			TraitUtil.CreateComponentTrait<NightOwl>("NightOwl", DUPLICANTS.TRAITS.NIGHTOWL.NAME, DUPLICANTS.TRAITS.NIGHTOWL.DESC, true, () => string.Format(DUPLICANTS.TRAITS.NIGHTOWL.EXTENDED_DESC, GameUtil.AddPositiveSign(TRAITS.NIGHTOWL_MODIFIER.ToString(), true))),
 			TraitUtil.CreateComponentTrait<Meteorphile>("Meteorphile", DUPLICANTS.TRAITS.METEORPHILE.NAME, DUPLICANTS.TRAITS.METEORPHILE.DESC, true, () => string.Format(DUPLICANTS.TRAITS.METEORPHILE.EXTENDED_DESC, GameUtil.AddPositiveSign(TRAITS.METEORPHILE_MODIFIER.ToString(), true))),
@@ -332,37 +389,47 @@ namespace TUNING
 			TraitUtil.CreateComponentTrait<Workaholic>("Workaholic", DUPLICANTS.TRAITS.NEEDS.WORKAHOLIC.NAME, DUPLICANTS.TRAITS.NEEDS.WORKAHOLIC.DESC, false, null)
 		};
 
-		public class JOY_REACTIONS
+				public class JOY_REACTIONS
 		{
-			public static float MIN_MORALE_EXCESS = 8f;
+						public static float MIN_MORALE_EXCESS = 8f;
 
-			public static float MAX_MORALE_EXCESS = 20f;
+						public static float MAX_MORALE_EXCESS = 20f;
 
-			public static float MIN_REACTION_CHANCE = 2f;
+						public static float MIN_REACTION_CHANCE = 2f;
 
-			public static float MAX_REACTION_CHANCE = 5f;
+						public static float MAX_REACTION_CHANCE = 5f;
 
-			public static float JOY_REACTION_DURATION = 570f;
+						public static float JOY_REACTION_DURATION = 570f;
 
-			public const float CHARISMATIC_CHANCE = 1f;
+						public const float CHARISMATIC_CHANCE = 1f;
 
-			public class SUPER_PRODUCTIVE
+						public class SUPER_PRODUCTIVE
 			{
-				public static float INSTANT_SUCCESS_CHANCE = 10f;
+								public static float INSTANT_SUCCESS_CHANCE = 10f;
 			}
 
-			public class BALLOON_ARTIST
+						public class BALLOON_ARTIST
 			{
-				public static float MINIMUM_BALLOON_MOVESPEED = 5f;
+								public static float MINIMUM_BALLOON_MOVESPEED = 5f;
 
-				public static int NUM_BALLOONS_TO_GIVE = 4;
+								public static int NUM_BALLOONS_TO_GIVE = 4;
 			}
 
-			public class STICKER_BOMBER
+						public class STICKER_BOMBER
 			{
-				public static float TIME_PER_STICKER_BOMB = 150f;
+								public static float TIME_PER_STICKER_BOMB = 150f;
 
-				public static float STICKER_DURATION = 12000f;
+								public static float STICKER_DURATION = 12000f;
+			}
+
+						public class DATA_RAINER
+			{
+								public static int NUM_MICROCHIPS = 10;
+			}
+
+						public class ROBO_DANCER
+			{
+								public static float DANCE_DURATION = 75f;
 			}
 		}
 	}

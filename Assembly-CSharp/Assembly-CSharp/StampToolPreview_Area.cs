@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class StampToolPreview_Area : IStampToolPreviewPlugin
 {
-	public void Setup(StampToolPreviewContext context)
+		public void Setup(StampToolPreviewContext context)
 	{
 		if (StampToolPreview_Area.material == null)
 		{
@@ -37,5 +37,5 @@ public class StampToolPreview_Area : IStampToolPreviewPlugin
 		}
 	}
 
-	public static Material material;
+		public static Material material;
 }

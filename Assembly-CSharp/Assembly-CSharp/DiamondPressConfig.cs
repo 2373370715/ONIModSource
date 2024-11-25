@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class DiamondPressConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "DiamondPress";
 		int width = 3;
@@ -40,7 +40,7 @@ public class DiamondPressConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<DropAllWorkable>();
@@ -80,7 +80,7 @@ public class DiamondPressConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
@@ -107,13 +107,13 @@ public class DiamondPressConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "DiamondPress";
+		public const string ID = "DiamondPress";
 
-	public const string PORT_ID = "HEP_STORAGE";
+		public const string PORT_ID = "HEP_STORAGE";
 
-	private const int HEP_PER_DIAMOND_KG = 10;
+		private const int HEP_PER_DIAMOND_KG = 10;
 
-	private const int RECIPE_MASS_KG = 100;
+		private const int RECIPE_MASS_KG = 100;
 
-	private const int HEP_STORAGE_CAPACITY = 2000;
+		private const int HEP_STORAGE_CAPACITY = 2000;
 }

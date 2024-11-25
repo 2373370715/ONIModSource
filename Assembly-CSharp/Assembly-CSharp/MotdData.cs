@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 public class MotdData
 {
-	public static MotdData Parse(string inputStr)
+		public static MotdData Parse(string inputStr)
 	{
 		MotdData result;
 		try
@@ -53,7 +53,7 @@ public class MotdData
 		return result;
 	}
 
-	public int liveVersion;
+		public int liveVersion;
 
-	public List<MotdData_Box> boxesLive = new List<MotdData_Box>();
+		public List<MotdData_Box> boxesLive = new List<MotdData_Box>();
 }

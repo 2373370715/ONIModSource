@@ -3,13 +3,13 @@ using STRINGS;
 
 public class LoadingCompleteCondition : ProcessCondition
 {
-	public LoadingCompleteCondition(Storage target)
+		public LoadingCompleteCondition(Storage target)
 	{
 		this.target = target;
 		this.userControlledTarget = target.GetComponent<IUserControlledCapacity>();
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		if (this.userControlledTarget != null)
 		{
@@ -29,22 +29,22 @@ public class LoadingCompleteCondition : ProcessCondition
 		}
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		return (status == ProcessCondition.Status.Ready) ? UI.STARMAP.LAUNCHCHECKLIST.LOADING_COMPLETE.STATUS.READY : UI.STARMAP.LAUNCHCHECKLIST.LOADING_COMPLETE.STATUS.WARNING;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		return (status == ProcessCondition.Status.Ready) ? UI.STARMAP.LAUNCHCHECKLIST.LOADING_COMPLETE.TOOLTIP.READY : UI.STARMAP.LAUNCHCHECKLIST.LOADING_COMPLETE.TOOLTIP.WARNING;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private Storage target;
+		private Storage target;
 
-	private IUserControlledCapacity userControlledTarget;
+		private IUserControlledCapacity userControlledTarget;
 }

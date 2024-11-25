@@ -10,7 +10,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/OfflineWorldGen")]
 public class OfflineWorldGen : KMonoBehaviour
 {
-	private void TrackProgress(string text)
+		private void TrackProgress(string text)
 	{
 		if (this.trackProgress)
 		{
@@ -18,7 +18,7 @@ public class OfflineWorldGen : KMonoBehaviour
 		}
 	}
 
-	public static bool CanLoadSave()
+		public static bool CanLoadSave()
 	{
 		bool flag = WorldGen.CanLoad(SaveLoader.GetActiveSaveFilePath());
 		if (!flag)
@@ -29,7 +29,7 @@ public class OfflineWorldGen : KMonoBehaviour
 		return flag;
 	}
 
-	public void Generate()
+		public void Generate()
 	{
 		this.doWorldGen = !OfflineWorldGen.CanLoadSave();
 		this.updateText.gameObject.SetActive(false);
@@ -79,7 +79,7 @@ public class OfflineWorldGen : KMonoBehaviour
 		this.buttonPrefab.SetActive(false);
 	}
 
-	private void OnResize()
+		private void OnResize()
 	{
 		float canvasScale = base.GetComponentInParent<KCanvasScaler>().GetCanvasScale();
 		if (this.asteriodAnim != null)
@@ -88,7 +88,7 @@ public class OfflineWorldGen : KMonoBehaviour
 		}
 	}
 
-	private void ToggleGenerationUI()
+		private void ToggleGenerationUI()
 	{
 		this.percentText.gameObject.SetActive(false);
 		this.updateText.gameObject.SetActive(true);
@@ -103,7 +103,7 @@ public class OfflineWorldGen : KMonoBehaviour
 		}
 	}
 
-	private bool UpdateProgress(StringKey stringKeyRoot, float completePercent, WorldGenProgressStages.Stages stage)
+		private bool UpdateProgress(StringKey stringKeyRoot, float completePercent, WorldGenProgressStages.Stages stage)
 	{
 		if (this.currentStage != stage)
 		{
@@ -139,7 +139,7 @@ public class OfflineWorldGen : KMonoBehaviour
 		return !this.shouldStop;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.loadTriggered)
 		{
@@ -186,7 +186,7 @@ public class OfflineWorldGen : KMonoBehaviour
 		}
 	}
 
-	private void DisplayErrors()
+		private void DisplayErrors()
 	{
 		this.errorMutex.WaitOne();
 		if (this.errors.Count > 0)
@@ -199,7 +199,7 @@ public class OfflineWorldGen : KMonoBehaviour
 		this.errorMutex.ReleaseMutex();
 	}
 
-	private void DoExitFlow()
+		private void DoExitFlow()
 	{
 		if (this.startedExitFlow)
 		{
@@ -212,12 +212,12 @@ public class OfflineWorldGen : KMonoBehaviour
 		this.DisplayErrors();
 	}
 
-	private void OnConfirmExit()
+		private void OnConfirmExit()
 	{
 		App.LoadScene(this.frontendGameLevel);
 	}
 
-	private void RemoveButtons()
+		private void RemoveButtons()
 	{
 		for (int i = this.buttonRoot.childCount - 1; i >= 0; i--)
 		{
@@ -225,13 +225,13 @@ public class OfflineWorldGen : KMonoBehaviour
 		}
 	}
 
-	private void DoWorldGen(int selectedDimension)
+		private void DoWorldGen(int selectedDimension)
 	{
 		this.RemoveButtons();
 		this.DoWorldGenInitialize();
 	}
 
-	private void DoWorldGenInitialize()
+		private void DoWorldGenInitialize()
 	{
 		string clusterName = "";
 		Func<int, WorldGen, bool> shouldSkipWorldCallback = null;
@@ -247,32 +247,32 @@ public class OfflineWorldGen : KMonoBehaviour
 		this.cluster.Generate(new WorldGen.OfflineCallbackFunction(this.UpdateProgress), new Action<OfflineWorldGen.ErrorInfo>(this.OnError), this.seed, this.seed, this.seed, this.seed, true, false, false);
 	}
 
-	private void OnError(OfflineWorldGen.ErrorInfo error)
+		private void OnError(OfflineWorldGen.ErrorInfo error)
 	{
 		this.errorMutex.WaitOne();
 		this.errors.Add(error);
 		this.errorMutex.ReleaseMutex();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform buttonRoot;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject buttonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform chooseLocationPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject locationButtonPrefab;
 
-	private const float baseScale = 0.005f;
+		private const float baseScale = 0.005f;
 
-	private Mutex errorMutex = new Mutex();
+		private Mutex errorMutex = new Mutex();
 
-	private List<OfflineWorldGen.ErrorInfo> errors = new List<OfflineWorldGen.ErrorInfo>();
+		private List<OfflineWorldGen.ErrorInfo> errors = new List<OfflineWorldGen.ErrorInfo>();
 
-	private OfflineWorldGen.ValidDimensions[] validDimensions = new OfflineWorldGen.ValidDimensions[]
+		private OfflineWorldGen.ValidDimensions[] validDimensions = new OfflineWorldGen.ValidDimensions[]
 	{
 		new OfflineWorldGen.ValidDimensions
 		{
@@ -282,48 +282,48 @@ public class OfflineWorldGen : KMonoBehaviour
 		}
 	};
 
-	public string frontendGameLevel = "frontend";
+		public string frontendGameLevel = "frontend";
 
-	public string mainGameLevel = "backend";
+		public string mainGameLevel = "backend";
 
-	private bool shouldStop;
+		private bool shouldStop;
 
-	private StringKey currentConvertedCurrentStage;
+		private StringKey currentConvertedCurrentStage;
 
-	private float currentPercent;
+		private float currentPercent;
 
-	public bool debug;
+		public bool debug;
 
-	private bool trackProgress = true;
+		private bool trackProgress = true;
 
-	private bool doWorldGen;
+		private bool doWorldGen;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText titleText;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText mainText;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText updateText;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText percentText;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText seedText;
 
-	[SerializeField]
+		[SerializeField]
 	private KBatchedAnimController meterAnim;
 
-	[SerializeField]
+		[SerializeField]
 	private KBatchedAnimController asteriodAnim;
 
-	private Cluster cluster;
+		private Cluster cluster;
 
-	private StringKey currentStringKeyRoot;
+		private StringKey currentStringKeyRoot;
 
-	private List<LocString> convertList = new List<LocString>
+		private List<LocString> convertList = new List<LocString>
 	{
 		UI.WORLDGEN.SETTLESIM,
 		UI.WORLDGEN.BORDERS,
@@ -335,28 +335,28 @@ public class OfflineWorldGen : KMonoBehaviour
 		UI.WORLDGEN.GENERATESOLARSYSTEM
 	};
 
-	private WorldGenProgressStages.Stages currentStage;
+		private WorldGenProgressStages.Stages currentStage;
 
-	private bool loadTriggered;
+		private bool loadTriggered;
 
-	private bool startedExitFlow;
+		private bool startedExitFlow;
 
-	private int seed;
+		private int seed;
 
-	public struct ErrorInfo
+		public struct ErrorInfo
 	{
-		public string errorDesc;
+				public string errorDesc;
 
-		public Exception exception;
+				public Exception exception;
 	}
 
-	[Serializable]
+		[Serializable]
 	private struct ValidDimensions
 	{
-		public int width;
+				public int width;
 
-		public int height;
+				public int height;
 
-		public StringKey name;
+				public StringKey name;
 	}
 }

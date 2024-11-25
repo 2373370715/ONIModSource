@@ -6,357 +6,282 @@ using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CrewJobsScreen : CrewListScreen<CrewJobsEntry>
-{
-	protected override void OnActivate()
-	{
-		CrewJobsScreen.Instance = this;
-		foreach (ChoreGroup item in Db.Get().ChoreGroups.resources)
-		{
-			this.choreGroups.Add(item);
-		}
-		base.OnActivate();
-	}
+public class CrewJobsScreen : CrewListScreen<CrewJobsEntry> {
+    public enum everyoneToggleState {
+        off,
+        mixed,
+        on
+    }
 
-	protected override void OnCmpEnable()
-	{
-		base.OnCmpEnable();
-		base.RefreshCrewPortraitContent();
-		this.SortByPreviousSelected();
-	}
+    public static    CrewJobsScreen                            Instance;
+    private readonly List<ChoreGroup>                          choreGroups = new List<ChoreGroup>();
+    private          bool                                      dirty;
+    private          KeyValuePair<Button, everyoneToggleState> EveryoneAllTaskToggle;
 
-	protected override void OnForcedCleanUp()
-	{
-		CrewJobsScreen.Instance = null;
-		base.OnForcedCleanUp();
-	}
+    private readonly Dictionary<Button, everyoneToggleState> EveryoneToggles
+        = new Dictionary<Button, everyoneToggleState>();
 
-	protected override void SpawnEntries()
-	{
-		base.SpawnEntries();
-		foreach (MinionIdentity identity in Components.LiveMinionIdentities.Items)
-		{
-			CrewJobsEntry component = Util.KInstantiateUI(this.Prefab_CrewEntry, this.EntriesPanelTransform.gameObject, false).GetComponent<CrewJobsEntry>();
-			component.Populate(identity);
-			this.EntryObjects.Add(component);
-		}
-		this.SortEveryoneToggle.group = this.sortToggleGroup;
-		ImageToggleState toggleImage = this.SortEveryoneToggle.GetComponentInChildren<ImageToggleState>(true);
-		this.SortEveryoneToggle.onValueChanged.AddListener(delegate(bool value)
-		{
-			this.SortByName(!this.SortEveryoneToggle.isOn);
-			this.lastSortToggle = this.SortEveryoneToggle;
-			this.lastSortReversed = !this.SortEveryoneToggle.isOn;
-			this.ResetSortToggles(this.SortEveryoneToggle);
-			if (this.SortEveryoneToggle.isOn)
-			{
-				toggleImage.SetActive();
-				return;
-			}
-			toggleImage.SetInactive();
-		});
-		this.SortByPreviousSelected();
-		this.dirty = true;
-	}
+    private float            screenWidth;
+    public  Toggle           SortEveryoneToggle;
+    public  TextStyleSetting TextStyle_JobTooltip_Description;
+    public  TextStyleSetting TextStyle_JobTooltip_RelevantAttributes;
+    public  TextStyleSetting TextStyle_JobTooltip_Title;
 
-	private void SortByPreviousSelected()
-	{
-		if (this.sortToggleGroup == null || this.lastSortToggle == null)
-		{
-			return;
-		}
-		int childCount = this.ColumnTitlesContainer.childCount;
-		for (int i = 0; i < childCount; i++)
-		{
-			if (i < this.choreGroups.Count && this.ColumnTitlesContainer.GetChild(i).Find("Title").GetComponentInChildren<Toggle>() == this.lastSortToggle)
-			{
-				this.SortByEffectiveness(this.choreGroups[i], this.lastSortReversed, false);
-				return;
-			}
-		}
-		if (this.SortEveryoneToggle == this.lastSortToggle)
-		{
-			base.SortByName(this.lastSortReversed);
-		}
-	}
+    protected override void OnActivate() {
+        Instance = this;
+        foreach (var item in Db.Get().ChoreGroups.resources) choreGroups.Add(item);
+        base.OnActivate();
+    }
 
-	protected override void PositionColumnTitles()
-	{
-		base.PositionColumnTitles();
-		int childCount = this.ColumnTitlesContainer.childCount;
-		for (int i = 0; i < childCount; i++)
-		{
-			if (i < this.choreGroups.Count)
-			{
-				Toggle sortToggle = this.ColumnTitlesContainer.GetChild(i).Find("Title").GetComponentInChildren<Toggle>();
-				this.ColumnTitlesContainer.GetChild(i).rectTransform().localScale = Vector3.one;
-				ChoreGroup chore_group = this.choreGroups[i];
-				ImageToggleState toggleImage = sortToggle.GetComponentInChildren<ImageToggleState>(true);
-				sortToggle.group = this.sortToggleGroup;
-				sortToggle.onValueChanged.AddListener(delegate(bool value)
-				{
-					bool playSound = false;
-					if (this.lastSortToggle == sortToggle)
-					{
-						playSound = true;
-					}
-					this.SortByEffectiveness(chore_group, !sortToggle.isOn, playSound);
-					this.lastSortToggle = sortToggle;
-					this.lastSortReversed = !sortToggle.isOn;
-					this.ResetSortToggles(sortToggle);
-					if (sortToggle.isOn)
-					{
-						toggleImage.SetActive();
-						return;
-					}
-					toggleImage.SetInactive();
-				});
-			}
-			ToolTip JobTooltip = this.ColumnTitlesContainer.GetChild(i).GetComponent<ToolTip>();
-			ToolTip jobTooltip = JobTooltip;
-			jobTooltip.OnToolTip = (Func<string>)Delegate.Combine(jobTooltip.OnToolTip, new Func<string>(() => this.GetJobTooltip(JobTooltip.gameObject)));
-			Button componentInChildren = this.ColumnTitlesContainer.GetChild(i).GetComponentInChildren<Button>();
-			this.EveryoneToggles.Add(componentInChildren, CrewJobsScreen.everyoneToggleState.on);
-		}
-		for (int j = 0; j < this.choreGroups.Count; j++)
-		{
-			ChoreGroup chore_group = this.choreGroups[j];
-			Button b = this.EveryoneToggles.Keys.ElementAt(j);
-			this.EveryoneToggles.Keys.ElementAt(j).onClick.AddListener(delegate()
-			{
-				this.ToggleJobEveryone(b, chore_group);
-			});
-		}
-		Button key = this.EveryoneToggles.ElementAt(this.EveryoneToggles.Count - 1).Key;
-		key.transform.parent.Find("Title").gameObject.GetComponentInChildren<Toggle>().gameObject.SetActive(false);
-		key.onClick.AddListener(delegate()
-		{
-			this.ToggleAllTasksEveryone();
-		});
-		this.EveryoneAllTaskToggle = new KeyValuePair<Button, CrewJobsScreen.everyoneToggleState>(key, this.EveryoneAllTaskToggle.Value);
-	}
+    protected override void OnCmpEnable() {
+        base.OnCmpEnable();
+        RefreshCrewPortraitContent();
+        SortByPreviousSelected();
+    }
 
-	private string GetJobTooltip(GameObject go)
-	{
-		ToolTip component = go.GetComponent<ToolTip>();
-		component.ClearMultiStringTooltip();
-		OverviewColumnIdentity component2 = go.GetComponent<OverviewColumnIdentity>();
-		if (component2.columnID != "AllTasks")
-		{
-			ChoreGroup choreGroup = Db.Get().ChoreGroups.Get(component2.columnID);
-			component.AddMultiStringTooltip(component2.Column_DisplayName, this.TextStyle_JobTooltip_Title);
-			component.AddMultiStringTooltip(choreGroup.description, this.TextStyle_JobTooltip_Description);
-			component.AddMultiStringTooltip("\n", this.TextStyle_JobTooltip_Description);
-			component.AddMultiStringTooltip(UI.TOOLTIPS.JOBSSCREEN_ATTRIBUTES, this.TextStyle_JobTooltip_Description);
-			component.AddMultiStringTooltip("•  " + choreGroup.attribute.Name, this.TextStyle_JobTooltip_RelevantAttributes);
-		}
-		return "";
-	}
+    protected override void OnForcedCleanUp() {
+        Instance = null;
+        base.OnForcedCleanUp();
+    }
 
-	private void ToggleAllTasksEveryone()
-	{
-		string name = "HUD_Click_Deselect";
-		if (this.EveryoneAllTaskToggle.Value != CrewJobsScreen.everyoneToggleState.on)
-		{
-			name = "HUD_Click";
-		}
-		KMonoBehaviour.PlaySound(GlobalAssets.GetSound(name, false));
-		for (int i = 0; i < this.choreGroups.Count; i++)
-		{
-			this.SetJobEveryone(this.EveryoneAllTaskToggle.Value != CrewJobsScreen.everyoneToggleState.on, this.choreGroups[i]);
-		}
-	}
+    protected override void SpawnEntries() {
+        base.SpawnEntries();
+        foreach (var identity in Components.LiveMinionIdentities.Items) {
+            var component = Util.KInstantiateUI(Prefab_CrewEntry, EntriesPanelTransform.gameObject)
+                                .GetComponent<CrewJobsEntry>();
 
-	private void SetJobEveryone(Button button, ChoreGroup chore_group)
-	{
-		this.SetJobEveryone(this.EveryoneToggles[button] != CrewJobsScreen.everyoneToggleState.on, chore_group);
-	}
+            component.Populate(identity);
+            EntryObjects.Add(component);
+        }
 
-	private void SetJobEveryone(bool state, ChoreGroup chore_group)
-	{
-		foreach (CrewJobsEntry crewJobsEntry in this.EntryObjects)
-		{
-			crewJobsEntry.consumer.SetPermittedByUser(chore_group, state);
-		}
-	}
+        SortEveryoneToggle.group = sortToggleGroup;
+        var toggleImage = SortEveryoneToggle.GetComponentInChildren<ImageToggleState>(true);
+        SortEveryoneToggle.onValueChanged.AddListener(delegate {
+                                                          SortByName(!SortEveryoneToggle.isOn);
+                                                          lastSortToggle   = SortEveryoneToggle;
+                                                          lastSortReversed = !SortEveryoneToggle.isOn;
+                                                          ResetSortToggles(SortEveryoneToggle);
+                                                          if (SortEveryoneToggle.isOn) {
+                                                              toggleImage.SetActive();
+                                                              return;
+                                                          }
 
-	private void ToggleJobEveryone(Button button, ChoreGroup chore_group)
-	{
-		string name = "HUD_Click_Deselect";
-		if (this.EveryoneToggles[button] != CrewJobsScreen.everyoneToggleState.on)
-		{
-			name = "HUD_Click";
-		}
-		KMonoBehaviour.PlaySound(GlobalAssets.GetSound(name, false));
-		foreach (CrewJobsEntry crewJobsEntry in this.EntryObjects)
-		{
-			crewJobsEntry.consumer.SetPermittedByUser(chore_group, this.EveryoneToggles[button] != CrewJobsScreen.everyoneToggleState.on);
-		}
-	}
+                                                          toggleImage.SetInactive();
+                                                      });
 
-	private void SortByEffectiveness(ChoreGroup chore_group, bool reverse, bool playSound)
-	{
-		if (playSound)
-		{
-			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click", false));
-		}
-		List<CrewJobsEntry> list = new List<CrewJobsEntry>(this.EntryObjects);
-		list.Sort(delegate(CrewJobsEntry a, CrewJobsEntry b)
-		{
-			float value = a.Identity.GetAttributes().GetValue(chore_group.attribute.Id);
-			float value2 = b.Identity.GetAttributes().GetValue(chore_group.attribute.Id);
-			return value.CompareTo(value2);
-		});
-		base.ReorderEntries(list, reverse);
-	}
+        SortByPreviousSelected();
+        dirty = true;
+    }
 
-	private void ResetSortToggles(Toggle exceptToggle)
-	{
-		for (int i = 0; i < this.ColumnTitlesContainer.childCount; i++)
-		{
-			Toggle componentInChildren = this.ColumnTitlesContainer.GetChild(i).Find("Title").GetComponentInChildren<Toggle>();
-			if (!(componentInChildren == null))
-			{
-				ImageToggleState componentInChildren2 = componentInChildren.GetComponentInChildren<ImageToggleState>(true);
-				if (componentInChildren != exceptToggle)
-				{
-					componentInChildren2.SetDisabled();
-				}
-			}
-		}
-		ImageToggleState componentInChildren3 = this.SortEveryoneToggle.GetComponentInChildren<ImageToggleState>(true);
-		if (this.SortEveryoneToggle != exceptToggle)
-		{
-			componentInChildren3.SetDisabled();
-		}
-	}
+    private void SortByPreviousSelected() {
+        if (sortToggleGroup == null || lastSortToggle == null) return;
 
-	private void Refresh()
-	{
-		if (this.dirty)
-		{
-			int childCount = this.ColumnTitlesContainer.childCount;
-			bool flag = false;
-			bool flag2 = false;
-			for (int i = 0; i < childCount; i++)
-			{
-				bool flag3 = false;
-				bool flag4 = false;
-				if (this.choreGroups.Count - 1 >= i)
-				{
-					ChoreGroup chore_group = this.choreGroups[i];
-					for (int j = 0; j < this.EntryObjects.Count; j++)
-					{
-						ChoreConsumer consumer = this.EntryObjects[j].GetComponent<CrewJobsEntry>().consumer;
-						if (consumer.IsPermittedByTraits(chore_group))
-						{
-							if (consumer.IsPermittedByUser(chore_group))
-							{
-								flag3 = true;
-								flag = true;
-							}
-							else
-							{
-								flag4 = true;
-								flag2 = true;
-							}
-						}
-					}
-					if (flag3 && flag4)
-					{
-						this.EveryoneToggles[this.EveryoneToggles.ElementAt(i).Key] = CrewJobsScreen.everyoneToggleState.mixed;
-					}
-					else if (flag3)
-					{
-						this.EveryoneToggles[this.EveryoneToggles.ElementAt(i).Key] = CrewJobsScreen.everyoneToggleState.on;
-					}
-					else
-					{
-						this.EveryoneToggles[this.EveryoneToggles.ElementAt(i).Key] = CrewJobsScreen.everyoneToggleState.off;
-					}
-					Button componentInChildren = this.ColumnTitlesContainer.GetChild(i).GetComponentInChildren<Button>();
-					ImageToggleState component = componentInChildren.GetComponentsInChildren<Image>(true)[1].GetComponent<ImageToggleState>();
-					switch (this.EveryoneToggles[componentInChildren])
-					{
-					case CrewJobsScreen.everyoneToggleState.off:
-						component.SetDisabled();
-						break;
-					case CrewJobsScreen.everyoneToggleState.mixed:
-						component.SetInactive();
-						break;
-					case CrewJobsScreen.everyoneToggleState.on:
-						component.SetActive();
-						break;
-					}
-				}
-			}
-			if (flag && flag2)
-			{
-				this.EveryoneAllTaskToggle = new KeyValuePair<Button, CrewJobsScreen.everyoneToggleState>(this.EveryoneAllTaskToggle.Key, CrewJobsScreen.everyoneToggleState.mixed);
-			}
-			else if (flag)
-			{
-				this.EveryoneAllTaskToggle = new KeyValuePair<Button, CrewJobsScreen.everyoneToggleState>(this.EveryoneAllTaskToggle.Key, CrewJobsScreen.everyoneToggleState.on);
-			}
-			else if (flag2)
-			{
-				this.EveryoneAllTaskToggle = new KeyValuePair<Button, CrewJobsScreen.everyoneToggleState>(this.EveryoneAllTaskToggle.Key, CrewJobsScreen.everyoneToggleState.off);
-			}
-			ImageToggleState component2 = this.EveryoneAllTaskToggle.Key.GetComponentsInChildren<Image>(true)[1].GetComponent<ImageToggleState>();
-			switch (this.EveryoneAllTaskToggle.Value)
-			{
-			case CrewJobsScreen.everyoneToggleState.off:
-				component2.SetDisabled();
-				break;
-			case CrewJobsScreen.everyoneToggleState.mixed:
-				component2.SetInactive();
-				break;
-			case CrewJobsScreen.everyoneToggleState.on:
-				component2.SetActive();
-				break;
-			}
-			this.screenWidth = this.EntriesPanelTransform.rectTransform().sizeDelta.x;
-			this.ScrollRectTransform.GetComponent<LayoutElement>().minWidth = this.screenWidth;
-			float num = 31f;
-			base.GetComponent<LayoutElement>().minWidth = this.screenWidth + num;
-			this.dirty = false;
-		}
-	}
+        var childCount = ColumnTitlesContainer.childCount;
+        for (var i = 0; i < childCount; i++)
+            if (i                                                                                < choreGroups.Count &&
+                ColumnTitlesContainer.GetChild(i).Find("Title").GetComponentInChildren<Toggle>() == lastSortToggle) {
+                SortByEffectiveness(choreGroups[i], lastSortReversed, false);
+                return;
+            }
 
-	private void Update()
-	{
-		this.Refresh();
-	}
+        if (SortEveryoneToggle == lastSortToggle) SortByName(lastSortReversed);
+    }
 
-	public void Dirty(object data = null)
-	{
-		this.dirty = true;
-	}
+    protected override void PositionColumnTitles() {
+        base.PositionColumnTitles();
+        var childCount = ColumnTitlesContainer.childCount;
+        for (var i = 0; i < childCount; i++) {
+            if (i < choreGroups.Count) {
+                var sortToggle = ColumnTitlesContainer.GetChild(i).Find("Title").GetComponentInChildren<Toggle>();
+                ColumnTitlesContainer.GetChild(i).rectTransform().localScale = Vector3.one;
+                var chore_group = choreGroups[i];
+                var toggleImage = sortToggle.GetComponentInChildren<ImageToggleState>(true);
+                sortToggle.group = sortToggleGroup;
+                sortToggle.onValueChanged.AddListener(delegate {
+                                                          var playSound                               = false;
+                                                          if (lastSortToggle == sortToggle) playSound = true;
+                                                          SortByEffectiveness(chore_group, !sortToggle.isOn, playSound);
+                                                          lastSortToggle   = sortToggle;
+                                                          lastSortReversed = !sortToggle.isOn;
+                                                          ResetSortToggles(sortToggle);
+                                                          if (sortToggle.isOn) {
+                                                              toggleImage.SetActive();
+                                                              return;
+                                                          }
 
-	public static CrewJobsScreen Instance;
+                                                          toggleImage.SetInactive();
+                                                      });
+            }
 
-	private Dictionary<Button, CrewJobsScreen.everyoneToggleState> EveryoneToggles = new Dictionary<Button, CrewJobsScreen.everyoneToggleState>();
+            var JobTooltip = ColumnTitlesContainer.GetChild(i).GetComponent<ToolTip>();
+            var jobTooltip = JobTooltip;
+            jobTooltip.OnToolTip
+                = (Func<string>)Delegate.Combine(jobTooltip.OnToolTip,
+                                                 new Func<string>(() => GetJobTooltip(JobTooltip.gameObject)));
 
-	private KeyValuePair<Button, CrewJobsScreen.everyoneToggleState> EveryoneAllTaskToggle;
+            var componentInChildren = ColumnTitlesContainer.GetChild(i).GetComponentInChildren<Button>();
+            EveryoneToggles.Add(componentInChildren, everyoneToggleState.on);
+        }
 
-	public TextStyleSetting TextStyle_JobTooltip_Title;
+        for (var j = 0; j < choreGroups.Count; j++) {
+            var chore_group = choreGroups[j];
+            var b           = EveryoneToggles.Keys.ElementAt(j);
+            EveryoneToggles.Keys.ElementAt(j).onClick.AddListener(delegate { ToggleJobEveryone(b, chore_group); });
+        }
 
-	public TextStyleSetting TextStyle_JobTooltip_Description;
+        var key = EveryoneToggles.ElementAt(EveryoneToggles.Count - 1).Key;
+        key.transform.parent.Find("Title").gameObject.GetComponentInChildren<Toggle>().gameObject.SetActive(false);
+        key.onClick.AddListener(delegate { ToggleAllTasksEveryone(); });
+        EveryoneAllTaskToggle = new KeyValuePair<Button, everyoneToggleState>(key, EveryoneAllTaskToggle.Value);
+    }
 
-	public TextStyleSetting TextStyle_JobTooltip_RelevantAttributes;
+    private string GetJobTooltip(GameObject go) {
+        var component = go.GetComponent<ToolTip>();
+        component.ClearMultiStringTooltip();
+        var component2 = go.GetComponent<OverviewColumnIdentity>();
+        if (component2.columnID != "AllTasks") {
+            var choreGroup = Db.Get().ChoreGroups.Get(component2.columnID);
+            component.AddMultiStringTooltip(component2.Column_DisplayName,     TextStyle_JobTooltip_Title);
+            component.AddMultiStringTooltip(choreGroup.description,            TextStyle_JobTooltip_Description);
+            component.AddMultiStringTooltip("\n",                              TextStyle_JobTooltip_Description);
+            component.AddMultiStringTooltip(UI.TOOLTIPS.JOBSSCREEN_ATTRIBUTES, TextStyle_JobTooltip_Description);
+            component.AddMultiStringTooltip("•  " + choreGroup.attribute.Name, TextStyle_JobTooltip_RelevantAttributes);
+        }
 
-	public Toggle SortEveryoneToggle;
+        return "";
+    }
 
-	private List<ChoreGroup> choreGroups = new List<ChoreGroup>();
+    private void ToggleAllTasksEveryone() {
+        var name                                                        = "HUD_Click_Deselect";
+        if (EveryoneAllTaskToggle.Value != everyoneToggleState.on) name = "HUD_Click";
+        PlaySound(GlobalAssets.GetSound(name));
+        for (var i = 0; i < choreGroups.Count; i++)
+            SetJobEveryone(EveryoneAllTaskToggle.Value != everyoneToggleState.on, choreGroups[i]);
+    }
 
-	private bool dirty;
+    private void SetJobEveryone(Button button, ChoreGroup chore_group) {
+        SetJobEveryone(EveryoneToggles[button] != everyoneToggleState.on, chore_group);
+    }
 
-	private float screenWidth;
+    private void SetJobEveryone(bool state, ChoreGroup chore_group) {
+        foreach (var crewJobsEntry in EntryObjects) crewJobsEntry.consumer.SetPermittedByUser(chore_group, state);
+    }
 
-	public enum everyoneToggleState
-	{
-		off,
-		mixed,
-		on
-	}
+    private void ToggleJobEveryone(Button button, ChoreGroup chore_group) {
+        var name                                                    = "HUD_Click_Deselect";
+        if (EveryoneToggles[button] != everyoneToggleState.on) name = "HUD_Click";
+        PlaySound(GlobalAssets.GetSound(name));
+        foreach (var crewJobsEntry in EntryObjects)
+            crewJobsEntry.consumer.SetPermittedByUser(chore_group, EveryoneToggles[button] != everyoneToggleState.on);
+    }
+
+    private void SortByEffectiveness(ChoreGroup chore_group, bool reverse, bool playSound) {
+        if (playSound) PlaySound(GlobalAssets.GetSound("HUD_Click"));
+        var list = new List<CrewJobsEntry>(EntryObjects);
+        list.Sort(delegate(CrewJobsEntry a, CrewJobsEntry b) {
+                      var value  = a.Identity.GetAttributes().GetValue(chore_group.attribute.Id);
+                      var value2 = b.Identity.GetAttributes().GetValue(chore_group.attribute.Id);
+                      return value.CompareTo(value2);
+                  });
+
+        ReorderEntries(list, reverse);
+    }
+
+    private void ResetSortToggles(Toggle exceptToggle) {
+        for (var i = 0; i < ColumnTitlesContainer.childCount; i++) {
+            var componentInChildren = ColumnTitlesContainer.GetChild(i).Find("Title").GetComponentInChildren<Toggle>();
+            if (!(componentInChildren == null)) {
+                var componentInChildren2 = componentInChildren.GetComponentInChildren<ImageToggleState>(true);
+                if (componentInChildren != exceptToggle) componentInChildren2.SetDisabled();
+            }
+        }
+
+        var componentInChildren3 = SortEveryoneToggle.GetComponentInChildren<ImageToggleState>(true);
+        if (SortEveryoneToggle != exceptToggle) componentInChildren3.SetDisabled();
+    }
+
+    private void Refresh() {
+        if (dirty) {
+            var childCount = ColumnTitlesContainer.childCount;
+            var flag       = false;
+            var flag2      = false;
+            for (var i = 0; i < childCount; i++) {
+                var flag3 = false;
+                var flag4 = false;
+                if (choreGroups.Count - 1 >= i) {
+                    var chore_group = choreGroups[i];
+                    for (var j = 0; j < EntryObjects.Count; j++) {
+                        var consumer = EntryObjects[j].GetComponent<CrewJobsEntry>().consumer;
+                        if (consumer.IsPermittedByTraits(chore_group)) {
+                            if (consumer.IsPermittedByUser(chore_group)) {
+                                flag3 = true;
+                                flag  = true;
+                            } else {
+                                flag4 = true;
+                                flag2 = true;
+                            }
+                        }
+                    }
+
+                    if (flag3 && flag4)
+                        EveryoneToggles[EveryoneToggles.ElementAt(i).Key] = everyoneToggleState.mixed;
+                    else if (flag3)
+                        EveryoneToggles[EveryoneToggles.ElementAt(i).Key] = everyoneToggleState.on;
+                    else
+                        EveryoneToggles[EveryoneToggles.ElementAt(i).Key] = everyoneToggleState.off;
+
+                    var componentInChildren = ColumnTitlesContainer.GetChild(i).GetComponentInChildren<Button>();
+                    var component = componentInChildren.GetComponentsInChildren<Image>(true)[1]
+                                                       .GetComponent<ImageToggleState>();
+
+                    switch (EveryoneToggles[componentInChildren]) {
+                        case everyoneToggleState.off:
+                            component.SetDisabled();
+                            break;
+                        case everyoneToggleState.mixed:
+                            component.SetInactive();
+                            break;
+                        case everyoneToggleState.on:
+                            component.SetActive();
+                            break;
+                    }
+                }
+            }
+
+            if (flag && flag2)
+                EveryoneAllTaskToggle
+                    = new KeyValuePair<Button, everyoneToggleState>(EveryoneAllTaskToggle.Key,
+                                                                    everyoneToggleState.mixed);
+            else if (flag)
+                EveryoneAllTaskToggle
+                    = new KeyValuePair<Button, everyoneToggleState>(EveryoneAllTaskToggle.Key, everyoneToggleState.on);
+            else if (flag2)
+                EveryoneAllTaskToggle
+                    = new KeyValuePair<Button, everyoneToggleState>(EveryoneAllTaskToggle.Key, everyoneToggleState.off);
+
+            var component2 = EveryoneAllTaskToggle.Key.GetComponentsInChildren<Image>(true)[1]
+                                                  .GetComponent<ImageToggleState>();
+
+            switch (EveryoneAllTaskToggle.Value) {
+                case everyoneToggleState.off:
+                    component2.SetDisabled();
+                    break;
+                case everyoneToggleState.mixed:
+                    component2.SetInactive();
+                    break;
+                case everyoneToggleState.on:
+                    component2.SetActive();
+                    break;
+            }
+
+            screenWidth = EntriesPanelTransform.rectTransform().sizeDelta.x;
+            ScrollRectTransform.GetComponent<LayoutElement>().minWidth = screenWidth;
+            var num = 31f;
+            GetComponent<LayoutElement>().minWidth = screenWidth + num;
+            dirty                                  = false;
+        }
+    }
+
+    private void Update()                  { Refresh(); }
+    public  void Dirty(object data = null) { dirty = true; }
 }

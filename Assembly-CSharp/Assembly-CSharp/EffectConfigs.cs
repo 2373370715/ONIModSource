@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EffectConfigs : IMultiEntityConfig
 {
-	public List<GameObject> CreatePrefabs()
+		public List<GameObject> CreatePrefabs()
 	{
 		List<GameObject> list = new List<GameObject>();
 		var array = new <>f__AnonymousType0<string, string[], string, KAnim.PlayMode, bool>[]
@@ -110,25 +110,25 @@ public class EffectConfigs : IMultiEntityConfig
 		return list;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static string EffectTemplateId = "EffectTemplateFx";
+		public static string EffectTemplateId = "EffectTemplateFx";
 
-	public static string EffectTemplateOverrideId = "EffectTemplateOverrideFx";
+		public static string EffectTemplateOverrideId = "EffectTemplateOverrideFx";
 
-	public static string AttackSplashId = "AttackSplashFx";
+		public static string AttackSplashId = "AttackSplashFx";
 
-	public static string OreAbsorbId = "OreAbsorbFx";
+		public static string OreAbsorbId = "OreAbsorbFx";
 
-	public static string PlantDeathId = "PlantDeathFx";
+		public static string PlantDeathId = "PlantDeathFx";
 
-	public static string BuildSplashId = "BuildSplashFx";
+		public static string BuildSplashId = "BuildSplashFx";
 
-	public static string DemolishSplashId = "DemolishSplashFx";
+		public static string DemolishSplashId = "DemolishSplashFx";
 }

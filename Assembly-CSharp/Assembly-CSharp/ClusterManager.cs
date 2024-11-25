@@ -8,12 +8,12 @@ using UnityEngine;
 
 public class ClusterManager : KMonoBehaviour, ISaveLoadable
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ClusterManager.Instance = null;
 	}
 
-		public int worldCount
+			public int worldCount
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-		public int activeWorldId
+			public int activeWorldId
 	{
 		get
 		{
@@ -29,7 +29,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-		public IList<WorldContainer> WorldContainers
+			public IList<WorldContainer> WorldContainers
 	{
 		get
 		{
@@ -37,12 +37,12 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public ClusterPOIManager GetClusterPOIManager()
+		public ClusterPOIManager GetClusterPOIManager()
 	{
 		return this.m_clusterPOIsManager;
 	}
 
-		public Dictionary<int, List<IAssignableIdentity>> MinionsByWorld
+			public Dictionary<int, List<IAssignableIdentity>> MinionsByWorld
 	{
 		get
 		{
@@ -63,43 +63,47 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void RegisterWorldContainer(WorldContainer worldContainer)
+		public void RegisterWorldContainer(WorldContainer worldContainer)
 	{
 		this.m_worldContainers.Add(worldContainer);
 	}
 
-	public void UnregisterWorldContainer(WorldContainer worldContainer)
+		public void UnregisterWorldContainer(WorldContainer worldContainer)
 	{
 		base.Trigger(-1078710002, worldContainer.id);
 		this.m_worldContainers.Remove(worldContainer);
 	}
 
-	public List<int> GetWorldIDsSorted()
+		public List<int> GetWorldIDsSorted()
 	{
-		this.m_worldContainers.Sort((WorldContainer a, WorldContainer b) => a.DiscoveryTimestamp.CompareTo(b.DiscoveryTimestamp));
+		ListPool<WorldContainer, ClusterManager>.PooledList pooledList = ListPool<WorldContainer, ClusterManager>.Allocate(this.m_worldContainers);
+		pooledList.Sort((WorldContainer a, WorldContainer b) => a.DiscoveryTimestamp.CompareTo(b.DiscoveryTimestamp));
 		this._worldIDs.Clear();
-		foreach (WorldContainer worldContainer in this.m_worldContainers)
+		foreach (WorldContainer worldContainer in pooledList)
 		{
 			this._worldIDs.Add(worldContainer.id);
 		}
+		pooledList.Recycle();
 		return this._worldIDs;
 	}
 
-	public List<int> GetDiscoveredAsteroidIDsSorted()
+		public List<int> GetDiscoveredAsteroidIDsSorted()
 	{
-		this.m_worldContainers.Sort((WorldContainer a, WorldContainer b) => a.DiscoveryTimestamp.CompareTo(b.DiscoveryTimestamp));
-		List<int> list = new List<int>();
-		for (int i = 0; i < this.m_worldContainers.Count; i++)
+		ListPool<WorldContainer, ClusterManager>.PooledList pooledList = ListPool<WorldContainer, ClusterManager>.Allocate(this.m_worldContainers);
+		pooledList.Sort((WorldContainer a, WorldContainer b) => a.DiscoveryTimestamp.CompareTo(b.DiscoveryTimestamp));
+		this._discoveredAsteroidIds.Clear();
+		for (int i = 0; i < pooledList.Count; i++)
 		{
-			if (this.m_worldContainers[i].IsDiscovered && !this.m_worldContainers[i].IsModuleInterior)
+			if (pooledList[i].IsDiscovered && !pooledList[i].IsModuleInterior)
 			{
-				list.Add(this.m_worldContainers[i].id);
+				this._discoveredAsteroidIds.Add(pooledList[i].id);
 			}
 		}
-		return list;
+		pooledList.Recycle();
+		return this._discoveredAsteroidIds;
 	}
 
-	public WorldContainer GetStartWorld()
+		public WorldContainer GetStartWorld()
 	{
 		foreach (WorldContainer worldContainer in this.WorldContainers)
 		{
@@ -111,7 +115,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return this.WorldContainers[0];
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		ClusterManager.Instance = this;
@@ -119,7 +123,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		instance.OnWorldGenComplete = (Action<Cluster>)Delegate.Combine(instance.OnWorldGenComplete, new Action<Cluster>(this.OnWorldGenComplete));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (this.m_grid == null)
 		{
@@ -129,12 +133,12 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		base.OnSpawn();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-		public WorldContainer activeWorld
+			public WorldContainer activeWorld
 	{
 		get
 		{
@@ -142,7 +146,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void OnWorldGenComplete(Cluster clusterLayout)
+		private void OnWorldGenComplete(Cluster clusterLayout)
 	{
 		this.m_numRings = clusterLayout.numRings;
 		this.m_grid = new ClusterGrid(this.m_numRings);
@@ -174,7 +178,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		this.m_clusterPOIsManager.PopulatePOIsFromWorldGen(clusterLayout);
 	}
 
-	private int GetNextWorldId()
+		private int GetNextWorldId()
 	{
 		HashSetPool<int, ClusterManager>.PooledHashSet pooledHashSet = HashSetPool<int, ClusterManager>.Allocate();
 		foreach (WorldContainer worldContainer in this.m_worldContainers)
@@ -194,7 +198,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return 255;
 	}
 
-	private WorldContainer CreateAsteroidWorldContainer(WorldGen world)
+		private WorldContainer CreateAsteroidWorldContainer(WorldGen world)
 	{
 		int nextWorldId = this.GetNextWorldId();
 		GameObject gameObject = global::Util.KInstantiate(Assets.GetPrefab("Asteroid"), null, null);
@@ -223,7 +227,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return component;
 	}
 
-	private void CreateDefaultAsteroidWorldContainer()
+		private void CreateDefaultAsteroidWorldContainer()
 	{
 		if (this.m_worldContainers.Count == 0)
 		{
@@ -246,7 +250,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void InitializeWorldGrid()
+		public void InitializeWorldGrid()
 	{
 		if (SaveLoader.Instance.GameInfo.IsVersionOlderThan(7, 20))
 		{
@@ -275,7 +279,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void SetActiveWorld(int worldIdx)
+		public void SetActiveWorld(int worldIdx)
 	{
 		int num = this.activeWorldIdx;
 		if (num != worldIdx)
@@ -286,12 +290,12 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void TimelapseModeOverrideActiveWorld(int overrideValue)
+		public void TimelapseModeOverrideActiveWorld(int overrideValue)
 	{
 		this.activeWorldIdx = overrideValue;
 	}
 
-	public WorldContainer GetWorld(int id)
+		public WorldContainer GetWorld(int id)
 	{
 		for (int i = 0; i < this.m_worldContainers.Count; i++)
 		{
@@ -303,7 +307,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return null;
 	}
 
-	public WorldContainer GetWorldFromPosition(Vector3 position)
+		public WorldContainer GetWorldFromPosition(Vector3 position)
 	{
 		foreach (WorldContainer worldContainer in this.m_worldContainers)
 		{
@@ -315,17 +319,17 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return null;
 	}
 
-	public float CountAllRations()
+		public float CountAllRations()
 	{
 		float result = 0f;
 		foreach (WorldContainer worldContainer in this.m_worldContainers)
 		{
-			RationTracker.Get().CountRations(null, worldContainer.worldInventory, true);
+			WorldResourceAmountTracker<RationTracker>.Get().CountAmount(null, worldContainer.worldInventory, true);
 		}
 		return result;
 	}
 
-	public Dictionary<Tag, float> GetAllWorldsAccessibleAmounts()
+		public Dictionary<Tag, float> GetAllWorldsAccessibleAmounts()
 	{
 		Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
 		foreach (WorldContainer worldContainer in this.m_worldContainers)
@@ -347,17 +351,17 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return dictionary;
 	}
 
-	public void MigrateMinion(MinionIdentity minion, int targetID)
+		public void MigrateMinion(MinionIdentity minion, int targetID)
 	{
 		this.MigrateMinion(minion, targetID, minion.GetMyWorldId());
 	}
 
-	public void MigrateCritter(GameObject critter, int targetID)
+		public void MigrateCritter(GameObject critter, int targetID)
 	{
 		this.MigrateCritter(critter, targetID, critter.GetMyWorldId());
 	}
 
-	public void MigrateCritter(GameObject critter, int targetID, int prevID)
+		public void MigrateCritter(GameObject critter, int targetID, int prevID)
 	{
 		this.critterMigrationEvArg.entity = critter;
 		this.critterMigrationEvArg.prevWorldId = prevID;
@@ -365,7 +369,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		Game.Instance.Trigger(1142724171, this.critterMigrationEvArg);
 	}
 
-	public void MigrateMinion(MinionIdentity minion, int targetID, int prevID)
+		public void MigrateMinion(MinionIdentity minion, int targetID, int prevID)
 	{
 		if (!ClusterManager.Instance.GetWorld(targetID).IsDiscovered)
 		{
@@ -382,7 +386,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		Game.Instance.Trigger(586301400, this.migrationEvArg);
 	}
 
-	public int GetLandingBeaconLocation(int worldId)
+		public int GetLandingBeaconLocation(int worldId)
 	{
 		foreach (object obj in Components.LandingBeacons)
 		{
@@ -395,7 +399,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return Grid.InvalidCell;
 	}
 
-	public int GetRandomClearCell(int worldId)
+		public int GetRandomClearCell(int worldId)
 	{
 		bool flag = false;
 		int num = 0;
@@ -421,13 +425,13 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return Grid.InvalidCell;
 	}
 
-	private bool NotObstructedCell(int x, int y)
+		private bool NotObstructedCell(int x, int y)
 	{
 		int cell = Grid.XYToCell(x, y);
 		return Grid.IsValidCell(cell) && Grid.Objects[cell, 1] == null;
 	}
 
-	private int LowestYThatSeesSky(int topCellYPos, int x)
+		private int LowestYThatSeesSky(int topCellYPos, int x)
 	{
 		int num = topCellYPos;
 		while (!this.ValidSurfaceCell(x, num))
@@ -437,13 +441,13 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return num;
 	}
 
-	private bool ValidSurfaceCell(int x, int y)
+		private bool ValidSurfaceCell(int x, int y)
 	{
 		int i = Grid.XYToCell(x, y - 1);
 		return Grid.Solid[i] || Grid.Foundation[i];
 	}
 
-	public int GetRandomSurfaceCell(int worldID, int width = 1, bool excludeTopBorderHeight = true)
+		public int GetRandomSurfaceCell(int worldID, int width = 1, bool excludeTopBorderHeight = true)
 	{
 		WorldContainer worldContainer = this.m_worldContainers.Find((WorldContainer match) => match.id == worldID);
 		int num = Mathf.RoundToInt(UnityEngine.Random.Range(worldContainer.minimumBounds.x + (float)(worldContainer.Width / 10), worldContainer.maximumBounds.x - (float)(worldContainer.Width / 10)));
@@ -494,7 +498,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return Grid.XYToCell(num3, num4);
 	}
 
-	public bool IsPositionInActiveWorld(Vector3 pos)
+		public bool IsPositionInActiveWorld(Vector3 pos)
 	{
 		if (this.activeWorld != null && !CameraController.Instance.ignoreClusterFX)
 		{
@@ -508,7 +512,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return true;
 	}
 
-	public WorldContainer CreateRocketInteriorWorld(GameObject craft_go, string interiorTemplateName, System.Action callback)
+		public WorldContainer CreateRocketInteriorWorld(GameObject craft_go, string interiorTemplateName, System.Action callback)
 	{
 		Vector2I rocket_INTERIOR_SIZE = ROCKETRY.ROCKET_INTERIOR_SIZE;
 		Vector2I vector2I;
@@ -545,7 +549,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		return null;
 	}
 
-	public void DestoryRocketInteriorWorld(int world_id, ClustercraftExteriorDoor door)
+		public void DestoryRocketInteriorWorld(int world_id, ClustercraftExteriorDoor door)
 	{
 		WorldContainer world = this.GetWorld(world_id);
 		if (world == null || !world.IsModuleInterior)
@@ -608,7 +612,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}, null, null);
 	}
 
-	public void UpdateWorldReverbSnapshot(int worldId)
+		public void UpdateWorldReverbSnapshot(int worldId)
 	{
 		if (!DlcManager.IsPureVanilla())
 		{
@@ -626,7 +630,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void UpdateRocketInteriorAudio()
+		public void UpdateRocketInteriorAudio()
 	{
 		WorldContainer activeWorld = this.activeWorld;
 		if (activeWorld != null && activeWorld.IsModuleInterior)
@@ -653,7 +657,7 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void DeleteWorldObjects(WorldContainer world)
+		private void DeleteWorldObjects(WorldContainer world)
 	{
 		Grid.FreeGridSpace(world.WorldSize, world.WorldOffset);
 		WorldInventory worldInventory = null;
@@ -671,23 +675,23 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public static int MAX_ROCKET_INTERIOR_COUNT = 16;
+		public static int MAX_ROCKET_INTERIOR_COUNT = 16;
 
-	public static ClusterManager.RocketStatesForAudio RocketInteriorState = ClusterManager.RocketStatesForAudio.Grounded;
+		public static ClusterManager.RocketStatesForAudio RocketInteriorState = ClusterManager.RocketStatesForAudio.Grounded;
 
-	public static ClusterManager Instance;
+		public static ClusterManager Instance;
 
-	private ClusterGrid m_grid;
+		private ClusterGrid m_grid;
 
-	[Serialize]
+		[Serialize]
 	private int m_numRings = 9;
 
-	[Serialize]
+		[Serialize]
 	private int activeWorldIdx;
 
-	public const byte INVALID_WORLD_IDX = 255;
+		public const byte INVALID_WORLD_IDX = 255;
 
-	public static Color[] worldColors = new Color[]
+		public static Color[] worldColors = new Color[]
 	{
 		Color.HSVToRGB(0.15f, 0.3f, 0.5f),
 		Color.HSVToRGB(0.3f, 0.3f, 0.5f),
@@ -697,25 +701,27 @@ public class ClusterManager : KMonoBehaviour, ISaveLoadable
 		Color.HSVToRGB(0.9f, 0.3f, 0.5f)
 	};
 
-	private List<WorldContainer> m_worldContainers = new List<WorldContainer>();
+		private List<WorldContainer> m_worldContainers = new List<WorldContainer>();
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ClusterPOIManager m_clusterPOIsManager;
 
-	private Dictionary<int, List<IAssignableIdentity>> minionsByWorld = new Dictionary<int, List<IAssignableIdentity>>();
+		private Dictionary<int, List<IAssignableIdentity>> minionsByWorld = new Dictionary<int, List<IAssignableIdentity>>();
 
-	private MinionMigrationEventArgs migrationEvArg = new MinionMigrationEventArgs();
+		private MinionMigrationEventArgs migrationEvArg = new MinionMigrationEventArgs();
 
-	private MigrationEventArgs critterMigrationEvArg = new MigrationEventArgs();
+		private MigrationEventArgs critterMigrationEvArg = new MigrationEventArgs();
 
-	private List<int> _worldIDs = new List<int>();
+		private List<int> _worldIDs = new List<int>();
 
-	public enum RocketStatesForAudio
+		private List<int> _discoveredAsteroidIds = new List<int>();
+
+		public enum RocketStatesForAudio
 	{
-		Grounded,
-		ReadyForLaunch,
-		Launching,
-		InSpace,
-		Landing
+				Grounded,
+				ReadyForLaunch,
+				Launching,
+				InSpace,
+				Landing
 	}
 }

@@ -7,14 +7,14 @@ using UnityEngine;
 
 public class StressDiagnostic : ColonyDiagnostic
 {
-	public StressDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.STRESSDIAGNOSTIC.ALL_NAME)
+		public StressDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.STRESSDIAGNOSTIC.ALL_NAME)
 	{
 		this.tracker = TrackerTool.Instance.GetWorldTracker<StressTracker>(worldID);
 		this.icon = "mod_stress";
 		base.AddCriterion("CheckStressed", new DiagnosticCriterion(UI.COLONY_DIAGNOSTICS.STRESSDIAGNOSTIC.CRITERIA.CHECKSTRESSED, new Func<ColonyDiagnostic.DiagnosticResult>(this.CheckStressed)));
 	}
 
-	private ColonyDiagnostic.DiagnosticResult CheckStressed()
+		private ColonyDiagnostic.DiagnosticResult CheckStressed()
 	{
 		List<MinionIdentity> worldItems = Components.LiveMinionIdentities.GetWorldItems(base.worldID, false);
 		ColonyDiagnostic.DiagnosticResult result = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null);

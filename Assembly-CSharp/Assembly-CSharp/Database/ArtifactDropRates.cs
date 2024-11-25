@@ -3,14 +3,14 @@ using TUNING;
 
 namespace Database
 {
-	public class ArtifactDropRates : ResourceSet<ArtifactDropRate>
+		public class ArtifactDropRates : ResourceSet<ArtifactDropRate>
 	{
-		public ArtifactDropRates(ResourceSet parent) : base("ArtifactDropRates", parent)
+				public ArtifactDropRates(ResourceSet parent) : base("ArtifactDropRates", parent)
 		{
 			this.CreateDropRates();
 		}
 
-		private void CreateDropRates()
+				private void CreateDropRates()
 		{
 			this.None = new ArtifactDropRate();
 			this.None.AddItem(DECOR.SPACEARTIFACT.TIER_NONE, 1f);
@@ -52,18 +52,18 @@ namespace Database
 			base.Add(this.Perfect);
 		}
 
-		public ArtifactDropRate None;
+				public ArtifactDropRate None;
 
-		public ArtifactDropRate Bad;
+				public ArtifactDropRate Bad;
 
-		public ArtifactDropRate Mediocre;
+				public ArtifactDropRate Mediocre;
 
-		public ArtifactDropRate Good;
+				public ArtifactDropRate Good;
 
-		public ArtifactDropRate Great;
+				public ArtifactDropRate Great;
 
-		public ArtifactDropRate Amazing;
+				public ArtifactDropRate Amazing;
 
-		public ArtifactDropRate Perfect;
+				public ArtifactDropRate Perfect;
 	}
 }

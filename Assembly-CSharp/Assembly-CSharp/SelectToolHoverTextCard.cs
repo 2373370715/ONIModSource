@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using STRINGS;
+using TUNING;
 using UnityEngine;
 
 public class SelectToolHoverTextCard : HoverTextConfiguration
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.overlayFilterMap.Add(OverlayModes.Oxygen.ID, delegate
@@ -46,7 +47,7 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		});
 	}
 
-	public override void ConfigureHoverScreen()
+		public override void ConfigureHoverScreen()
 	{
 		base.ConfigureHoverScreen();
 		HoverTextScreen instance = HoverTextScreen.Instance;
@@ -61,12 +62,12 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		});
 	}
 
-	private bool IsStatusItemWarning(StatusItemGroup.Entry item)
+		private bool IsStatusItemWarning(StatusItemGroup.Entry item)
 	{
 		return item.item.notificationType == NotificationType.Bad || item.item.notificationType == NotificationType.BadMinor || item.item.notificationType == NotificationType.DuplicantThreatening;
 	}
 
-	public override void UpdateHoverElements(List<KSelectable> hoverObjects)
+		public override void UpdateHoverElements(List<KSelectable> hoverObjects)
 	{
 		if (this.iconWarning == null)
 		{
@@ -124,12 +125,12 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		{
 			if (!Grid.Solid[num] && flag3)
 			{
-				float thermalComfort = GameUtil.GetThermalComfort(num, 0f);
-				float thermalComfort2 = GameUtil.GetThermalComfort(num, -0.08368001f);
+				float thermalComfort = GameUtil.GetThermalComfort(GameTags.Minions.Models.Standard, num, 0f);
+				float thermalComfort2 = GameUtil.GetThermalComfort(GameTags.Minions.Models.Standard, num, -DUPLICANTSTATS.STANDARD.BaseStats.DUPLICANT_BASE_GENERATION_KILOWATTS);
 				float num2 = 0f;
 				float dtu_s = 1f * thermalComfort;
 				text = text + " (" + GameUtil.GetFormattedHeatEnergyRate(dtu_s, GameUtil.HeatEnergyFormatterUnit.Automatic) + ")";
-				if (thermalComfort2 * 0.001f > -0.11157334f - num2 && thermalComfort2 * 0.001f < 0.11157334f + num2)
+				if (thermalComfort2 * 0.001f > -ExternalTemperatureMonitor.BASE_STRESS_TOLERANCE_COLD - num2 && thermalComfort2 * 0.001f < ExternalTemperatureMonitor.BASE_STRESS_TOLERANCE_WARM + num2)
 				{
 					text = string.Format(UI.OVERLAYS.HEATFLOW.NEUTRAL_DUPE, text);
 				}
@@ -715,17 +716,17 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		hoverTextDrawer.EndDrawing();
 	}
 
-	public void DrawLogicIcon(HoverTextDrawer drawer, Sprite icon, TextStyleSetting style)
+		public void DrawLogicIcon(HoverTextDrawer drawer, Sprite icon, TextStyleSetting style)
 	{
 		drawer.DrawIcon(icon, this.GetLogicColorFromStyle(style), 18, 2);
 	}
 
-	public void DrawLogicText(HoverTextDrawer drawer, string text, TextStyleSetting style)
+		public void DrawLogicText(HoverTextDrawer drawer, string text, TextStyleSetting style)
 	{
 		drawer.DrawText(text, style, this.GetLogicColorFromStyle(style), true);
 	}
 
-	private Color GetLogicColorFromStyle(TextStyleSetting style)
+		private Color GetLogicColorFromStyle(TextStyleSetting style)
 	{
 		ColorSet colorSet = GlobalAssets.Instance.colorSet;
 		if (style == this.Styles_LogicActive.Selected)
@@ -739,12 +740,12 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		return style.textColor;
 	}
 
-	private bool ShowStatusItemInCurrentOverlay(StatusItem status)
+		private bool ShowStatusItemInCurrentOverlay(StatusItem status)
 	{
 		return !(OverlayScreen.Instance == null) && (status.status_overlays & (int)StatusItem.GetStatusItemOverlayBySimViewMode(OverlayScreen.Instance.GetMode())) == (int)StatusItem.GetStatusItemOverlayBySimViewMode(OverlayScreen.Instance.GetMode());
 	}
 
-	private bool ShouldShowSelectableInCurrentOverlay(KSelectable selectable)
+		private bool ShouldShowSelectableInCurrentOverlay(KSelectable selectable)
 	{
 		bool result = true;
 		if (OverlayScreen.Instance == null)
@@ -768,38 +769,38 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		return result;
 	}
 
-	private static bool ShouldShowOxygenOverlay(KSelectable selectable)
+		private static bool ShouldShowOxygenOverlay(KSelectable selectable)
 	{
 		return selectable.GetComponent<AlgaeHabitat>() != null || selectable.GetComponent<Electrolyzer>() != null || selectable.GetComponent<AirFilter>() != null;
 	}
 
-	private static bool ShouldShowLightOverlay(KSelectable selectable)
+		private static bool ShouldShowLightOverlay(KSelectable selectable)
 	{
 		return selectable.GetComponent<Light2D>() != null;
 	}
 
-	private static bool ShouldShowRadiationOverlay(KSelectable selectable)
+		private static bool ShouldShowRadiationOverlay(KSelectable selectable)
 	{
 		return selectable.GetComponent<HighEnergyParticle>() != null || selectable.GetComponent<HighEnergyParticlePort>();
 	}
 
-	private static bool ShouldShowGasConduitOverlay(KSelectable selectable)
+		private static bool ShouldShowGasConduitOverlay(KSelectable selectable)
 	{
 		return (selectable.GetComponent<Conduit>() != null && selectable.GetComponent<Conduit>().type == ConduitType.Gas) || (selectable.GetComponent<Filterable>() != null && selectable.GetComponent<Filterable>().filterElementState == Filterable.ElementState.Gas) || (selectable.GetComponent<Vent>() != null && selectable.GetComponent<Vent>().conduitType == ConduitType.Gas) || (selectable.GetComponent<Pump>() != null && selectable.GetComponent<Pump>().conduitType == ConduitType.Gas) || (selectable.GetComponent<ValveBase>() != null && selectable.GetComponent<ValveBase>().conduitType == ConduitType.Gas);
 	}
 
-	private static bool ShouldShowLiquidConduitOverlay(KSelectable selectable)
+		private static bool ShouldShowLiquidConduitOverlay(KSelectable selectable)
 	{
 		return (selectable.GetComponent<Conduit>() != null && selectable.GetComponent<Conduit>().type == ConduitType.Liquid) || (selectable.GetComponent<Filterable>() != null && selectable.GetComponent<Filterable>().filterElementState == Filterable.ElementState.Liquid) || (selectable.GetComponent<Vent>() != null && selectable.GetComponent<Vent>().conduitType == ConduitType.Liquid) || (selectable.GetComponent<Pump>() != null && selectable.GetComponent<Pump>().conduitType == ConduitType.Liquid) || (selectable.GetComponent<ValveBase>() != null && selectable.GetComponent<ValveBase>().conduitType == ConduitType.Liquid);
 	}
 
-	private static bool ShouldShowPowerOverlay(KSelectable selectable)
+		private static bool ShouldShowPowerOverlay(KSelectable selectable)
 	{
 		Tag prefabTag = selectable.GetComponent<KPrefabID>().PrefabTag;
 		return OverlayScreen.WireIDs.Contains(prefabTag) || selectable.GetComponent<Battery>() != null || selectable.GetComponent<PowerTransformer>() != null || selectable.GetComponent<EnergyConsumer>() != null || selectable.GetComponent<EnergyGenerator>() != null;
 	}
 
-	private static bool ShouldShowTileOverlay(KSelectable selectable)
+		private static bool ShouldShowTileOverlay(KSelectable selectable)
 	{
 		bool result = false;
 		PrimaryElement component = selectable.GetComponent<PrimaryElement>();
@@ -818,80 +819,80 @@ public class SelectToolHoverTextCard : HoverTextConfiguration
 		return result;
 	}
 
-	private static bool ShouldShowTemperatureOverlay(KSelectable selectable)
+		private static bool ShouldShowTemperatureOverlay(KSelectable selectable)
 	{
 		return selectable.GetComponent<PrimaryElement>() != null;
 	}
 
-	private static bool ShouldShowLogicOverlay(KSelectable selectable)
+		private static bool ShouldShowLogicOverlay(KSelectable selectable)
 	{
 		Tag prefabTag = selectable.GetComponent<KPrefabID>().PrefabTag;
 		return OverlayModes.Logic.HighlightItemIDs.Contains(prefabTag) || selectable.GetComponent<LogicPorts>() != null;
 	}
 
-	private static bool ShouldShowSolidConveyorOverlay(KSelectable selectable)
+		private static bool ShouldShowSolidConveyorOverlay(KSelectable selectable)
 	{
 		Tag prefabTag = selectable.GetComponent<KPrefabID>().PrefabTag;
 		return OverlayScreen.SolidConveyorIDs.Contains(prefabTag);
 	}
 
-	private static bool HideInOverlay(KSelectable selectable)
+		private static bool HideInOverlay(KSelectable selectable)
 	{
 		return false;
 	}
 
-	private static bool ShowOverlayIfHasComponent<T>(KSelectable selectable)
+		private static bool ShowOverlayIfHasComponent<T>(KSelectable selectable)
 	{
 		return selectable.GetComponent<T>() != null;
 	}
 
-	private static bool ShouldShowCropOverlay(KSelectable selectable)
+		private static bool ShouldShowCropOverlay(KSelectable selectable)
 	{
 		return selectable.GetComponent<Uprootable>() != null || selectable.GetComponent<PlanterBox>() != null;
 	}
 
-	public static int maxNumberOfDisplayedSelectableWarnings = 10;
+		public static int maxNumberOfDisplayedSelectableWarnings = 10;
 
-	private Dictionary<HashedString, Func<bool>> overlayFilterMap = new Dictionary<HashedString, Func<bool>>();
+		private Dictionary<HashedString, Func<bool>> overlayFilterMap = new Dictionary<HashedString, Func<bool>>();
 
-	public int recentNumberOfDisplayedSelectables;
+		public int recentNumberOfDisplayedSelectables;
 
-	public int currentSelectedSelectableIndex = -1;
+		public int currentSelectedSelectableIndex = -1;
 
-	[NonSerialized]
+		[NonSerialized]
 	public Sprite iconWarning;
 
-	[NonSerialized]
+		[NonSerialized]
 	public Sprite iconDash;
 
-	[NonSerialized]
+		[NonSerialized]
 	public Sprite iconHighlighted;
 
-	[NonSerialized]
+		[NonSerialized]
 	public Sprite iconActiveAutomationPort;
 
-	public HoverTextConfiguration.TextStylePair Styles_LogicActive;
+		public HoverTextConfiguration.TextStylePair Styles_LogicActive;
 
-	public HoverTextConfiguration.TextStylePair Styles_LogicStandby;
+		public HoverTextConfiguration.TextStylePair Styles_LogicStandby;
 
-	public TextStyleSetting Styles_LogicSignalInactive;
+		public TextStyleSetting Styles_LogicSignalInactive;
 
-	public static List<GameObject> highlightedObjects = new List<GameObject>();
+		public static List<GameObject> highlightedObjects = new List<GameObject>();
 
-	private static readonly List<Type> hiddenChoreConsumerTypes = new List<Type>
+		private static readonly List<Type> hiddenChoreConsumerTypes = new List<Type>
 	{
 		typeof(KSelectableHealthBar)
 	};
 
-	private int maskOverlay;
+		private int maskOverlay;
 
-	private string cachedTemperatureString;
+		private string cachedTemperatureString;
 
-	private float cachedTemperature = float.MinValue;
+		private float cachedTemperature = float.MinValue;
 
-	private List<KSelectable> overlayValidHoverObjects = new List<KSelectable>();
+		private List<KSelectable> overlayValidHoverObjects = new List<KSelectable>();
 
-	private Dictionary<HashedString, Func<KSelectable, bool>> modeFilters = new Dictionary<HashedString, Func<KSelectable, bool>>
+		private Dictionary<HashedString, Func<KSelectable, bool>> modeFilters = new Dictionary<HashedString, Func<KSelectable, bool>>
 	{
 		{
 			OverlayModes.Oxygen.ID,

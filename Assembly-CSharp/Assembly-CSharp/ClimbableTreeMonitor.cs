@@ -1,112 +1,92 @@
-﻿using System;
+﻿using System.Linq;
 using UnityEngine;
 
-public class ClimbableTreeMonitor : GameStateMachine<ClimbableTreeMonitor, ClimbableTreeMonitor.Instance, IStateMachineTarget, ClimbableTreeMonitor.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.root;
-		this.root.ToggleBehaviour(GameTags.Creatures.WantsToClimbTree, (ClimbableTreeMonitor.Instance smi) => smi.UpdateHasClimbable(), delegate(ClimbableTreeMonitor.Instance smi)
-		{
-			smi.OnClimbComplete();
-		});
-	}
+public class ClimbableTreeMonitor
+    : GameStateMachine<ClimbableTreeMonitor, ClimbableTreeMonitor.Instance, IStateMachineTarget,
+        ClimbableTreeMonitor.Def> {
+    private const int MAX_NAV_COST = 2147483647;
 
-	private const int MAX_NAV_COST = 2147483647;
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = root;
+        root.ToggleBehaviour(GameTags.Creatures.WantsToClimbTree,
+                             smi => smi.UpdateHasClimbable(),
+                             delegate(Instance smi) { smi.OnClimbComplete(); });
+    }
 
-	public class Def : StateMachine.BaseDef
-	{
-		public float searchMinInterval = 60f;
+    public class Def : BaseDef {
+        public float searchMaxInterval = 120f;
+        public float searchMinInterval = 60f;
+    }
 
-		public float searchMaxInterval = 120f;
-	}
+    public new class Instance : GameInstance {
+        public GameObject climbTarget;
+        public float      nextSearchTime;
+        public Instance(IStateMachineTarget master, Def def) : base(master, def) { RefreshSearchTime(); }
 
-	public new class Instance : GameStateMachine<ClimbableTreeMonitor, ClimbableTreeMonitor.Instance, IStateMachineTarget, ClimbableTreeMonitor.Def>.GameInstance
-	{
-		public Instance(IStateMachineTarget master, ClimbableTreeMonitor.Def def) : base(master, def)
-		{
-			this.RefreshSearchTime();
-		}
+        private void RefreshSearchTime() {
+            nextSearchTime = Time.time + Mathf.Lerp(def.searchMinInterval, def.searchMaxInterval, Random.value);
+        }
 
-		private void RefreshSearchTime()
-		{
-			this.nextSearchTime = Time.time + Mathf.Lerp(base.def.searchMinInterval, base.def.searchMaxInterval, UnityEngine.Random.value);
-		}
+        public bool UpdateHasClimbable() {
+            if (climbTarget == null) {
+                if (Time.time < nextSearchTime) return false;
 
-		public bool UpdateHasClimbable()
-		{
-			if (this.climbTarget == null)
-			{
-				if (Time.time < this.nextSearchTime)
-				{
-					return false;
-				}
-				this.FindClimbableTree();
-				this.RefreshSearchTime();
-			}
-			return this.climbTarget != null;
-		}
+                FindClimbableTree();
+                RefreshSearchTime();
+            }
 
-		private void FindClimbableTree()
-		{
-			this.climbTarget = null;
-			ListPool<ScenePartitionerEntry, GameScenePartitioner>.PooledList pooledList = ListPool<ScenePartitionerEntry, GameScenePartitioner>.Allocate();
-			ListPool<KMonoBehaviour, ClimbableTreeMonitor>.PooledList pooledList2 = ListPool<KMonoBehaviour, ClimbableTreeMonitor>.Allocate();
-			Vector3 position = base.master.transform.GetPosition();
-			Extents extents = new Extents(Grid.PosToCell(position), 10);
-			GameScenePartitioner.Instance.GatherEntries(extents, GameScenePartitioner.Instance.plants, pooledList);
-			GameScenePartitioner.Instance.GatherEntries(extents, GameScenePartitioner.Instance.completeBuildings, pooledList);
-			Navigator component = base.GetComponent<Navigator>();
-			foreach (ScenePartitionerEntry scenePartitionerEntry in pooledList)
-			{
-				KMonoBehaviour kmonoBehaviour = scenePartitionerEntry.obj as KMonoBehaviour;
-				if (!kmonoBehaviour.HasTag(GameTags.Creatures.ReservedByCreature))
-				{
-					int cell = Grid.PosToCell(kmonoBehaviour);
-					if (component.CanReach(cell))
-					{
-						ForestTreeSeedMonitor component2 = kmonoBehaviour.GetComponent<ForestTreeSeedMonitor>();
-						StorageLocker component3 = kmonoBehaviour.GetComponent<StorageLocker>();
-						if (component2 != null)
-						{
-							if (!component2.ExtraSeedAvailable)
-							{
-								continue;
-							}
-						}
-						else
-						{
-							if (!(component3 != null))
-							{
-								continue;
-							}
-							Storage component4 = component3.GetComponent<Storage>();
-							if (!component4.allowItemRemoval || component4.IsEmpty())
-							{
-								continue;
-							}
-						}
-						pooledList2.Add(kmonoBehaviour);
-					}
-				}
-			}
-			if (pooledList2.Count > 0)
-			{
-				int index = UnityEngine.Random.Range(0, pooledList2.Count);
-				KMonoBehaviour kmonoBehaviour2 = pooledList2[index];
-				this.climbTarget = kmonoBehaviour2.gameObject;
-			}
-			pooledList.Recycle();
-			pooledList2.Recycle();
-		}
+            return climbTarget != null;
+        }
 
-		public void OnClimbComplete()
-		{
-			this.climbTarget = null;
-		}
+        private void FindClimbableTree() {
+            climbTarget = null;
+            var pooledList = ListPool<KMonoBehaviour, ClimbableTreeMonitor>.Allocate();
+            var position   = master.transform.GetPosition();
+            var extents    = new Extents(Grid.PosToCell(position), 10);
+            var component  = GetComponent<Navigator>();
+            var first = GameScenePartitioner.Instance.AsyncSafeEnumerate(extents.x,
+                                                                         extents.y,
+                                                                         extents.width,
+                                                                         extents.height,
+                                                                         GameScenePartitioner.Instance.plants);
 
-		public GameObject climbTarget;
+            var second = GameScenePartitioner.Instance.AsyncSafeEnumerate(extents.x,
+                                                                          extents.y,
+                                                                          extents.width,
+                                                                          extents.height,
+                                                                          GameScenePartitioner.Instance
+                                                                              .completeBuildings);
 
-		public float nextSearchTime;
-	}
+            foreach (var obj in first.Concat(second)) {
+                var kmonoBehaviour = obj as KMonoBehaviour;
+                if (!kmonoBehaviour.HasTag(GameTags.Creatures.ReservedByCreature)) {
+                    var cell = Grid.PosToCell(kmonoBehaviour);
+                    if (component.CanReach(cell)) {
+                        var component2 = kmonoBehaviour.GetComponent<ForestTreeSeedMonitor>();
+                        var component3 = kmonoBehaviour.GetComponent<StorageLocker>();
+                        if (component2 != null) {
+                            if (!component2.ExtraSeedAvailable) continue;
+                        } else {
+                            if (!(component3 != null)) continue;
+
+                            var component4 = component3.GetComponent<Storage>();
+                            if (!component4.allowItemRemoval || component4.IsEmpty()) continue;
+                        }
+
+                        pooledList.Add(kmonoBehaviour);
+                    }
+                }
+            }
+
+            if (pooledList.Count > 0) {
+                var index           = Random.Range(0, pooledList.Count);
+                var kmonoBehaviour2 = pooledList[index];
+                climbTarget = kmonoBehaviour2.gameObject;
+            }
+
+            pooledList.Recycle();
+        }
+
+        public void OnClimbComplete() { climbTarget = null; }
+    }
 }

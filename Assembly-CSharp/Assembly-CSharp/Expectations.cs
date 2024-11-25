@@ -5,17 +5,17 @@ using STRINGS;
 
 public static class Expectations
 {
-	private static AttributeModifier QOLModifier(int level)
+		private static AttributeModifier QOLModifier(int level)
 	{
 		return new AttributeModifier(Db.Get().Attributes.QualityOfLifeExpectation.Id, (float)level, DUPLICANTS.NEEDS.QUALITYOFLIFE.EXPECTATION_MOD_NAME, false, false, true);
 	}
 
-	private static AttributeModifierExpectation QOLExpectation(int level, string name, string description)
+		private static AttributeModifierExpectation QOLExpectation(int level, string name, string description)
 	{
 		return new AttributeModifierExpectation("QOL_" + level.ToString(), name, description, Expectations.QOLModifier(level), Assets.GetSprite("icon_category_morale"));
 	}
 
-	public static List<Expectation[]> ExpectationsByTier = new List<Expectation[]>
+		public static List<Expectation[]> ExpectationsByTier = new List<Expectation[]>
 	{
 		new Expectation[]
 		{

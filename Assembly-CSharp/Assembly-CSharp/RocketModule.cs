@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/RocketModule")]
 public class RocketModule : KMonoBehaviour
 {
-	public ProcessCondition AddModuleCondition(ProcessCondition.ProcessConditionType conditionType, ProcessCondition condition)
+		public ProcessCondition AddModuleCondition(ProcessCondition.ProcessConditionType conditionType, ProcessCondition condition)
 	{
 		if (!this.moduleConditions.ContainsKey(conditionType))
 		{
@@ -20,7 +20,7 @@ public class RocketModule : KMonoBehaviour
 		return condition;
 	}
 
-	public List<ProcessCondition> GetConditionSet(ProcessCondition.ProcessConditionType conditionType)
+		public List<ProcessCondition> GetConditionSet(ProcessCondition.ProcessConditionType conditionType)
 	{
 		List<ProcessCondition> list = new List<ProcessCondition>();
 		if (conditionType == ProcessCondition.ProcessConditionType.All)
@@ -42,19 +42,19 @@ public class RocketModule : KMonoBehaviour
 		return list;
 	}
 
-	public void SetBGKAnim(KAnimFile anim_file)
+		public void SetBGKAnim(KAnimFile anim_file)
 	{
 		this.bgAnimFile = anim_file;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		GameUtil.SubscribeToTags<RocketModule>(this, RocketModule.OnRocketOnGroundTagDelegate, false);
 		GameUtil.SubscribeToTags<RocketModule>(this, RocketModule.OnRocketNotOnGroundTagDelegate, false);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (!DlcManager.FeatureClusterSpaceEnabled())
@@ -82,7 +82,7 @@ public class RocketModule : KMonoBehaviour
 		}
 	}
 
-	public void FixSorting()
+		public void FixSorting()
 	{
 		int num = 0;
 		AttachableBuilding component = base.GetComponent<AttachableBuilding>();
@@ -107,12 +107,12 @@ public class RocketModule : KMonoBehaviour
 		}
 	}
 
-	private void OnAttachmentNetworkChanged(object ab)
+		private void OnAttachmentNetworkChanged(object ab)
 	{
 		this.FixSorting();
 	}
 
-	private void AddBGGantry()
+		private void AddBGGantry()
 	{
 		KAnimControllerBase component = base.GetComponent<KAnimControllerBase>();
 		GameObject gameObject = new GameObject();
@@ -135,7 +135,7 @@ public class RocketModule : KMonoBehaviour
 		gameObject.SetActive(true);
 	}
 
-	private void DEBUG_OnDestroy(object data)
+		private void DEBUG_OnDestroy(object data)
 	{
 		if (this.conditionManager != null && !App.IsExiting && !KMonoBehaviour.isLoadingScene)
 		{
@@ -144,7 +144,7 @@ public class RocketModule : KMonoBehaviour
 		}
 	}
 
-	private void OnRocketOnGroundTag(object data)
+		private void OnRocketOnGroundTag(object data)
 	{
 		this.RegisterComponents();
 		Operational component = base.GetComponent<Operational>();
@@ -154,7 +154,7 @@ public class RocketModule : KMonoBehaviour
 		}
 	}
 
-	private void OnRocketNotOnGroundTag(object data)
+		private void OnRocketNotOnGroundTag(object data)
 	{
 		this.DeregisterComponents();
 		Operational component = base.GetComponent<Operational>();
@@ -164,7 +164,7 @@ public class RocketModule : KMonoBehaviour
 		}
 	}
 
-	public void DeregisterComponents()
+		public void DeregisterComponents()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		component.IsSelectable = false;
@@ -234,7 +234,7 @@ public class RocketModule : KMonoBehaviour
 		}
 	}
 
-	public void RegisterComponents()
+		public void RegisterComponents()
 	{
 		base.GetComponent<KSelectable>().IsSelectable = true;
 		BuildingComplete component = base.GetComponent<BuildingComplete>();
@@ -304,7 +304,7 @@ public class RocketModule : KMonoBehaviour
 		}
 	}
 
-	private void ToggleComponent(Type cmpType, bool enabled)
+		private void ToggleComponent(Type cmpType, bool enabled)
 	{
 		MonoBehaviour monoBehaviour = (MonoBehaviour)base.GetComponent(cmpType);
 		if (monoBehaviour != null)
@@ -313,7 +313,7 @@ public class RocketModule : KMonoBehaviour
 		}
 	}
 
-	public void RegisterWithConditionManager()
+		public void RegisterWithConditionManager()
 	{
 		global::Debug.Assert(!DlcManager.FeatureClusterSpaceEnabled());
 		if (this.conditionManager != null)
@@ -322,7 +322,7 @@ public class RocketModule : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.conditionManager != null)
 		{
@@ -331,7 +331,7 @@ public class RocketModule : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	public virtual LaunchConditionManager FindLaunchConditionManager()
+		public virtual LaunchConditionManager FindLaunchConditionManager()
 	{
 		if (!DlcManager.FeatureClusterSpaceEnabled())
 		{
@@ -347,18 +347,18 @@ public class RocketModule : KMonoBehaviour
 		return null;
 	}
 
-	public void SetParentRocketName(string newName)
+		public void SetParentRocketName(string newName)
 	{
 		this.parentRocketName = newName;
 		NameDisplayScreen.Instance.UpdateName(base.gameObject);
 	}
 
-	public virtual string GetParentRocketName()
+		public virtual string GetParentRocketName()
 	{
 		return this.parentRocketName;
 	}
 
-	public void MoveToSpace()
+		public void MoveToSpace()
 	{
 		Prioritizable component = base.GetComponent<Prioritizable>();
 		if (component != null && component.GetMyWorld() != null)
@@ -378,7 +378,7 @@ public class RocketModule : KMonoBehaviour
 		base.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.Entombed, false, this);
 	}
 
-	public void MoveToPad(int newCell)
+		public void MoveToPad(int newCell)
 	{
 		base.gameObject.transform.SetPosition(Grid.CellToPos(newCell, CellAlignment.Bottom, Grid.SceneLayer.Building));
 		int cell = Grid.PosToCell(base.transform.GetPosition());
@@ -397,36 +397,36 @@ public class RocketModule : KMonoBehaviour
 		}
 	}
 
-	public LaunchConditionManager conditionManager;
+		public LaunchConditionManager conditionManager;
 
-	public Dictionary<ProcessCondition.ProcessConditionType, List<ProcessCondition>> moduleConditions = new Dictionary<ProcessCondition.ProcessConditionType, List<ProcessCondition>>();
+		public Dictionary<ProcessCondition.ProcessConditionType, List<ProcessCondition>> moduleConditions = new Dictionary<ProcessCondition.ProcessConditionType, List<ProcessCondition>>();
 
-	public static readonly Operational.Flag landedFlag = new Operational.Flag("landed", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag landedFlag = new Operational.Flag("landed", Operational.Flag.Type.Requirement);
 
-	public bool operationalLandedRequired = true;
+		public bool operationalLandedRequired = true;
 
-	private string rocket_module_bg_base_string = "{0}{1}";
+		private string rocket_module_bg_base_string = "{0}{1}";
 
-	private string rocket_module_bg_affix = "BG";
+		private string rocket_module_bg_affix = "BG";
 
-	private string rocket_module_bg_anim = "on";
+		private string rocket_module_bg_anim = "on";
 
-	[SerializeField]
+		[SerializeField]
 	private KAnimFile bgAnimFile;
 
-	protected string parentRocketName = UI.STARMAP.DEFAULT_NAME;
+		protected string parentRocketName = UI.STARMAP.DEFAULT_NAME;
 
-	private static readonly EventSystem.IntraObjectHandler<RocketModule> DEBUG_OnDestroyDelegate = new EventSystem.IntraObjectHandler<RocketModule>(delegate(RocketModule component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RocketModule> DEBUG_OnDestroyDelegate = new EventSystem.IntraObjectHandler<RocketModule>(delegate(RocketModule component, object data)
 	{
 		component.DEBUG_OnDestroy(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<RocketModule> OnRocketOnGroundTagDelegate = GameUtil.CreateHasTagHandler<RocketModule>(GameTags.RocketOnGround, delegate(RocketModule component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RocketModule> OnRocketOnGroundTagDelegate = GameUtil.CreateHasTagHandler<RocketModule>(GameTags.RocketOnGround, delegate(RocketModule component, object data)
 	{
 		component.OnRocketOnGroundTag(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<RocketModule> OnRocketNotOnGroundTagDelegate = GameUtil.CreateHasTagHandler<RocketModule>(GameTags.RocketNotOnGround, delegate(RocketModule component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RocketModule> OnRocketNotOnGroundTagDelegate = GameUtil.CreateHasTagHandler<RocketModule>(GameTags.RocketNotOnGround, delegate(RocketModule component, object data)
 	{
 		component.OnRocketNotOnGroundTag(data);
 	});

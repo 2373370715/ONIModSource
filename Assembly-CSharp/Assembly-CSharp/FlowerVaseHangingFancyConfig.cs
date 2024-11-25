@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FlowerVaseHangingFancyConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "FlowerVaseHangingFancy";
 		int width = 1;
@@ -33,7 +33,7 @@ public class FlowerVaseHangingFancyConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<Storage>();
 		Prioritizable.AddRef(go);
@@ -45,9 +45,9 @@ public class FlowerVaseHangingFancyConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.Decoration, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "FlowerVaseHangingFancy";
+		public const string ID = "FlowerVaseHangingFancy";
 }

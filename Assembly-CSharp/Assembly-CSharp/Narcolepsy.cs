@@ -6,17 +6,17 @@ using UnityEngine;
 [SkipSaveFileSerialization]
 public class Narcolepsy : StateMachineComponent<Narcolepsy.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	public bool IsNarcolepsing()
+		public bool IsNarcolepsing()
 	{
 		return base.smi.IsNarcolepsing();
 	}
 
-	public static readonly Chore.Precondition IsNarcolepsingPrecondition = new Chore.Precondition
+		public static readonly Chore.Precondition IsNarcolepsingPrecondition = new Chore.Precondition
 	{
 		id = "IsNarcolepsingPrecondition",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.IS_NARCOLEPSING,
@@ -27,24 +27,24 @@ public class Narcolepsy : StateMachineComponent<Narcolepsy.StatesInstance>
 		}
 	};
 
-	public class StatesInstance : GameStateMachine<Narcolepsy.States, Narcolepsy.StatesInstance, Narcolepsy, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Narcolepsy.States, Narcolepsy.StatesInstance, Narcolepsy, object>.GameInstance
 	{
-		public StatesInstance(Narcolepsy master) : base(master)
+				public StatesInstance(Narcolepsy master) : base(master)
 		{
 		}
 
-		public bool IsSleeping()
+				public bool IsSleeping()
 		{
 			StaminaMonitor.Instance smi = base.master.GetSMI<StaminaMonitor.Instance>();
 			return smi != null && smi.IsSleeping();
 		}
 
-		public bool IsNarcolepsing()
+				public bool IsNarcolepsing()
 		{
 			return this.GetCurrentState() == base.sm.sleepy;
 		}
 
-		public GameObject CreateFloorLocator()
+				public GameObject CreateFloorLocator()
 		{
 			Sleepable safeFloorLocator = SleepChore.GetSafeFloorLocator(base.master.gameObject);
 			safeFloorLocator.effectName = "NarcolepticSleep";
@@ -53,9 +53,9 @@ public class Narcolepsy : StateMachineComponent<Narcolepsy.StatesInstance>
 		}
 	}
 
-	public class States : GameStateMachine<Narcolepsy.States, Narcolepsy.StatesInstance, Narcolepsy>
+		public class States : GameStateMachine<Narcolepsy.States, Narcolepsy.StatesInstance, Narcolepsy>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.root.TagTransition(GameTags.Dead, null, false);
@@ -74,7 +74,7 @@ public class Narcolepsy : StateMachineComponent<Narcolepsy.StatesInstance>
 			}).ToggleUrge(Db.Get().Urges.Narcolepsy).ToggleChore(new Func<Narcolepsy.StatesInstance, Chore>(this.CreateNarcolepsyChore), this.idle);
 		}
 
-		private Chore CreateNarcolepsyChore(Narcolepsy.StatesInstance smi)
+				private Chore CreateNarcolepsyChore(Narcolepsy.StatesInstance smi)
 		{
 			GameObject bed = smi.CreateFloorLocator();
 			SleepChore sleepChore = new SleepChore(Db.Get().ChoreTypes.Narcolepsy, smi.master, bed, true, false);
@@ -82,14 +82,14 @@ public class Narcolepsy : StateMachineComponent<Narcolepsy.StatesInstance>
 			return sleepChore;
 		}
 
-		private float GetNewInterval(float min, float max)
+				private float GetNewInterval(float min, float max)
 		{
 			Mathf.Min(Mathf.Max(Util.GaussianRandom(max - min, 1f), min), max);
 			return UnityEngine.Random.Range(min, max);
 		}
 
-		public GameStateMachine<Narcolepsy.States, Narcolepsy.StatesInstance, Narcolepsy, object>.State idle;
+				public GameStateMachine<Narcolepsy.States, Narcolepsy.StatesInstance, Narcolepsy, object>.State idle;
 
-		public GameStateMachine<Narcolepsy.States, Narcolepsy.StatesInstance, Narcolepsy, object>.State sleepy;
+				public GameStateMachine<Narcolepsy.States, Narcolepsy.StatesInstance, Narcolepsy, object>.State sleepy;
 	}
 }

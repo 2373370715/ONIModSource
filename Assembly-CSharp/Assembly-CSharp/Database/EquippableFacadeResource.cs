@@ -3,27 +3,27 @@ using UnityEngine;
 
 namespace Database
 {
-	public class EquippableFacadeResource : PermitResource
+		public class EquippableFacadeResource : PermitResource
 	{
-						public string BuildOverride { get; private set; }
+								public string BuildOverride { get; private set; }
 
-						public string DefID { get; private set; }
+								public string DefID { get; private set; }
 
-						public KAnimFile AnimFile { get; private set; }
+								public KAnimFile AnimFile { get; private set; }
 
-		[Obsolete("Please use constructor with dlcIds parameter")]
+				[Obsolete("Please use constructor with dlcIds parameter")]
 		public EquippableFacadeResource(string id, string name, string desc, PermitRarity rarity, string buildOverride, string defID, string animFile) : this(id, name, desc, rarity, buildOverride, defID, animFile, DlcManager.AVAILABLE_ALL_VERSIONS)
 		{
 		}
 
-		public EquippableFacadeResource(string id, string name, string desc, PermitRarity rarity, string buildOverride, string defID, string animFile, string[] dlcIds) : base(id, name, desc, PermitCategory.Equipment, rarity, dlcIds)
+				public EquippableFacadeResource(string id, string name, string desc, PermitRarity rarity, string buildOverride, string defID, string animFile, string[] dlcIds) : base(id, name, desc, PermitCategory.Equipment, rarity, dlcIds)
 		{
 			this.DefID = defID;
 			this.BuildOverride = buildOverride;
 			this.AnimFile = Assets.GetAnim(animFile);
 		}
 
-		public global::Tuple<Sprite, Color> GetUISprite()
+				public global::Tuple<Sprite, Color> GetUISprite()
 		{
 			if (this.AnimFile == null)
 			{
@@ -33,7 +33,7 @@ namespace Database
 			return new global::Tuple<Sprite, Color>(uispriteFromMultiObjectAnim, (uispriteFromMultiObjectAnim != null) ? Color.white : Color.clear);
 		}
 
-		public override PermitPresentationInfo GetPermitPresentationInfo()
+				public override PermitPresentationInfo GetPermitPresentationInfo()
 		{
 			PermitPresentationInfo result = default(PermitPresentationInfo);
 			result.sprite = this.GetUISprite().first;

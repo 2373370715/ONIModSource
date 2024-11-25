@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class AudioMixer
 {
-		public static AudioMixer instance
+			public static AudioMixer instance
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class AudioMixer
 		}
 	}
 
-	public static AudioMixer Create()
+		public static AudioMixer Create()
 	{
 		AudioMixer._instance = new AudioMixer();
 		AudioMixerSnapshots audioMixerSnapshots = AudioMixerSnapshots.Get();
@@ -25,20 +25,20 @@ public class AudioMixer
 		return AudioMixer._instance;
 	}
 
-	public static void Destroy()
+		public static void Destroy()
 	{
 		AudioMixer._instance.StopAll(FMOD.Studio.STOP_MODE.IMMEDIATE);
 		AudioMixer._instance = null;
 	}
 
-	public EventInstance Start(EventReference event_ref)
+		public EventInstance Start(EventReference event_ref)
 	{
 		string snapshot;
 		RuntimeManager.GetEventDescription(event_ref.Guid).getPath(out snapshot);
 		return this.Start(snapshot);
 	}
 
-	public EventInstance Start(string snapshot)
+		public EventInstance Start(string snapshot)
 	{
 		EventInstance eventInstance;
 		if (!this.activeSnapshots.TryGetValue(snapshot, out eventInstance))
@@ -59,14 +59,14 @@ public class AudioMixer
 		return eventInstance;
 	}
 
-	public bool Stop(EventReference event_ref, FMOD.Studio.STOP_MODE stop_mode = FMOD.Studio.STOP_MODE.ALLOWFADEOUT)
+		public bool Stop(EventReference event_ref, FMOD.Studio.STOP_MODE stop_mode = FMOD.Studio.STOP_MODE.ALLOWFADEOUT)
 	{
 		string s;
 		RuntimeManager.GetEventDescription(event_ref.Guid).getPath(out s);
 		return this.Stop(s, stop_mode);
 	}
 
-	public bool Stop(HashedString snapshot, FMOD.Studio.STOP_MODE stop_mode = FMOD.Studio.STOP_MODE.ALLOWFADEOUT)
+		public bool Stop(HashedString snapshot, FMOD.Studio.STOP_MODE stop_mode = FMOD.Studio.STOP_MODE.ALLOWFADEOUT)
 	{
 		bool result = false;
 		EventInstance eventInstance;
@@ -98,12 +98,12 @@ public class AudioMixer
 		return result;
 	}
 
-	public void Reset()
+		public void Reset()
 	{
 		this.StopAll(FMOD.Studio.STOP_MODE.IMMEDIATE);
 	}
 
-	public void StopAll(FMOD.Studio.STOP_MODE stop_mode = FMOD.Studio.STOP_MODE.IMMEDIATE)
+		public void StopAll(FMOD.Studio.STOP_MODE stop_mode = FMOD.Studio.STOP_MODE.IMMEDIATE)
 	{
 		List<HashedString> list = new List<HashedString>();
 		foreach (KeyValuePair<HashedString, EventInstance> keyValuePair in this.activeSnapshots)
@@ -119,26 +119,26 @@ public class AudioMixer
 		}
 	}
 
-	public bool SnapshotIsActive(EventReference event_ref)
+		public bool SnapshotIsActive(EventReference event_ref)
 	{
 		string s;
 		RuntimeManager.GetEventDescription(event_ref.Guid).getPath(out s);
 		return this.SnapshotIsActive(s);
 	}
 
-	public bool SnapshotIsActive(HashedString snapshot_name)
+		public bool SnapshotIsActive(HashedString snapshot_name)
 	{
 		return this.activeSnapshots.ContainsKey(snapshot_name);
 	}
 
-	public void SetSnapshotParameter(EventReference event_ref, string parameter_name, float parameter_value, bool shouldLog = true)
+		public void SetSnapshotParameter(EventReference event_ref, string parameter_name, float parameter_value, bool shouldLog = true)
 	{
 		string snapshot_name;
 		RuntimeManager.GetEventDescription(event_ref.Guid).getPath(out snapshot_name);
 		this.SetSnapshotParameter(snapshot_name, parameter_name, parameter_value, shouldLog);
 	}
 
-	public void SetSnapshotParameter(string snapshot_name, string parameter_name, float parameter_value, bool shouldLog = true)
+		public void SetSnapshotParameter(string snapshot_name, string parameter_name, float parameter_value, bool shouldLog = true)
 	{
 		if (shouldLog)
 		{
@@ -162,7 +162,7 @@ public class AudioMixer
 		}));
 	}
 
-	public void StartPersistentSnapshots()
+		public void StartPersistentSnapshots()
 	{
 		this.persistentSnapshotsActive = true;
 		this.Start(AudioMixerSnapshots.Get().DuplicantCountAttenuatorMigrated);
@@ -173,7 +173,7 @@ public class AudioMixer
 		this.Start(AudioMixerSnapshots.Get().PulseSnapshot);
 	}
 
-	public void StopPersistentSnapshots()
+		public void StopPersistentSnapshots()
 	{
 		this.persistentSnapshotsActive = false;
 		this.Stop(AudioMixerSnapshots.Get().DuplicantCountAttenuatorMigrated, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
@@ -184,14 +184,14 @@ public class AudioMixer
 		this.Stop(AudioMixerSnapshots.Get().PulseSnapshot, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 	}
 
-	private string GetSnapshotName(EventReference event_ref)
+		private string GetSnapshotName(EventReference event_ref)
 	{
 		string result;
 		RuntimeManager.GetEventDescription(event_ref.Guid).getPath(out result);
 		return result;
 	}
 
-	public void UpdatePersistentSnapshotParameters()
+		public void UpdatePersistentSnapshotParameters()
 	{
 		this.SetVisibleDuplicants();
 		string snapshotName = this.GetSnapshotName(AudioMixerSnapshots.Get().DuplicantCountMovingSnapshot);
@@ -227,23 +227,23 @@ public class AudioMixer
 		}
 	}
 
-	public void UpdateSpaceVisibleSnapshot(float percent)
+		public void UpdateSpaceVisibleSnapshot(float percent)
 	{
 		this.spaceVisibleInst.setParameterByName("spaceVisible", percent, false);
 	}
 
-	public void PauseSpaceVisibleSnapshot(bool pause)
+		public void PauseSpaceVisibleSnapshot(bool pause)
 	{
 		this.spaceVisibleInst.setParameterByName("spaceVisible", 0f, true);
 		this.spaceVisibleInst.setPaused(pause);
 	}
 
-	public void UpdateFacilityVisibleSnapshot(float percent)
+		public void UpdateFacilityVisibleSnapshot(float percent)
 	{
 		this.facilityVisibleInst.setParameterByName("facilityVisible", percent, false);
 	}
 
-	private void SetVisibleDuplicants()
+		private void SetVisibleDuplicants()
 	{
 		int num = 0;
 		int num2 = 0;
@@ -261,7 +261,7 @@ public class AudioMixer
 				}
 				else
 				{
-					StaminaMonitor.Instance smi = Components.LiveMinionIdentities[i].GetComponent<Worker>().GetSMI<StaminaMonitor.Instance>();
+					StaminaMonitor.Instance smi = Components.LiveMinionIdentities[i].GetComponent<WorkerBase>().GetSMI<StaminaMonitor.Instance>();
 					if (smi != null && smi.IsSleeping())
 					{
 						num3++;
@@ -274,7 +274,7 @@ public class AudioMixer
 		this.visibleDupes["sleeping"] = num3;
 	}
 
-	public void StartUserVolumesSnapshot()
+		public void StartUserVolumesSnapshot()
 	{
 		this.Start(AudioMixerSnapshots.Get().UserVolumeSettingsSnapshot);
 		string snapshotName = this.GetSnapshotName(AudioMixerSnapshots.Get().UserVolumeSettingsSnapshot);
@@ -286,11 +286,8 @@ public class AudioMixer
 			USER_PROPERTY user_PROPERTY;
 			eventDescription.getUserProperty("buses", out user_PROPERTY);
 			string text = user_PROPERTY.stringValue();
-			char c = '-';
-			string[] array = text.Split(new char[]
-			{
-				c
-			});
+			char separator = '-';
+			string[] array = text.Split(separator, StringSplitOptions.None);
 			for (int i = 0; i < array.Length; i++)
 			{
 				float busLevel = 1f;
@@ -308,7 +305,7 @@ public class AudioMixer
 		}
 	}
 
-	public void SetUserVolume(string bus, float value)
+		public void SetUserVolume(string bus, float value)
 	{
 		if (!this.userVolumeSettings.ContainsKey(bus))
 		{
@@ -348,60 +345,60 @@ public class AudioMixer
 		}
 	}
 
-	private void Log(string s)
+		private void Log(string s)
 	{
 	}
 
-	private static AudioMixer _instance = null;
+		private static AudioMixer _instance = null;
 
-	private const string DUPLICANT_COUNT_ID = "duplicantCount";
+		private const string DUPLICANT_COUNT_ID = "duplicantCount";
 
-	private const string PULSE_ID = "Pulse";
+		private const string PULSE_ID = "Pulse";
 
-	private const string SNAPSHOT_ACTIVE_ID = "snapshotActive";
+		private const string SNAPSHOT_ACTIVE_ID = "snapshotActive";
 
-	private const string SPACE_VISIBLE_ID = "spaceVisible";
+		private const string SPACE_VISIBLE_ID = "spaceVisible";
 
-	private const string FACILITY_VISIBLE_ID = "facilityVisible";
+		private const string FACILITY_VISIBLE_ID = "facilityVisible";
 
-	private const string FOCUS_BUS_PATH = "bus:/SFX/Focus";
+		private const string FOCUS_BUS_PATH = "bus:/SFX/Focus";
 
-	public Dictionary<HashedString, EventInstance> activeSnapshots = new Dictionary<HashedString, EventInstance>();
+		public Dictionary<HashedString, EventInstance> activeSnapshots = new Dictionary<HashedString, EventInstance>();
 
-	public List<HashedString> SnapshotDebugLog = new List<HashedString>();
+		public List<HashedString> SnapshotDebugLog = new List<HashedString>();
 
-	public bool activeNIS;
+		public bool activeNIS;
 
-	public static float LOW_PRIORITY_CUTOFF_DISTANCE = 10f;
+		public static float LOW_PRIORITY_CUTOFF_DISTANCE = 10f;
 
-	public static float PULSE_SNAPSHOT_BPM = 120f;
+		public static float PULSE_SNAPSHOT_BPM = 120f;
 
-	public static int VISIBLE_DUPLICANTS_BEFORE_ATTENUATION = 2;
+		public static int VISIBLE_DUPLICANTS_BEFORE_ATTENUATION = 2;
 
-	private EventInstance duplicantCountInst;
+		private EventInstance duplicantCountInst;
 
-	private EventInstance pulseInst;
+		private EventInstance pulseInst;
 
-	private EventInstance duplicantCountMovingInst;
+		private EventInstance duplicantCountMovingInst;
 
-	private EventInstance duplicantCountSleepingInst;
+		private EventInstance duplicantCountSleepingInst;
 
-	private EventInstance spaceVisibleInst;
+		private EventInstance spaceVisibleInst;
 
-	private EventInstance facilityVisibleInst;
+		private EventInstance facilityVisibleInst;
 
-	private static readonly HashedString UserVolumeSettingsHash = new HashedString("event:/Snapshots/Mixing/Snapshot_UserVolumeSettings");
+		private static readonly HashedString UserVolumeSettingsHash = new HashedString("event:/Snapshots/Mixing/Snapshot_UserVolumeSettings");
 
-	public bool persistentSnapshotsActive;
+		public bool persistentSnapshotsActive;
 
-	private Dictionary<string, int> visibleDupes = new Dictionary<string, int>();
+		private Dictionary<string, int> visibleDupes = new Dictionary<string, int>();
 
-	public Dictionary<string, AudioMixer.UserVolumeBus> userVolumeSettings = new Dictionary<string, AudioMixer.UserVolumeBus>();
+		public Dictionary<string, AudioMixer.UserVolumeBus> userVolumeSettings = new Dictionary<string, AudioMixer.UserVolumeBus>();
 
-	public class UserVolumeBus
+		public class UserVolumeBus
 	{
-		public string labelString;
+				public string labelString;
 
-		public float busLevel;
+				public float busLevel;
 	}
 }

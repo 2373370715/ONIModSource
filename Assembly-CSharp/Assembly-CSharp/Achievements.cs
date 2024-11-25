@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Achievements")]
 public class Achievements : KMonoBehaviour
 {
-	public void Unlock(string id)
+		public void Unlock(string id)
 	{
 		if (SteamAchievementService.Instance)
 		{

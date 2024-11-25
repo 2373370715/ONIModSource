@@ -7,12 +7,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/game/MedicinalPill")]
 public class MedicinalPill : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	public List<Descriptor> EffectDescriptors(GameObject go)
+		public List<Descriptor> EffectDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (string.IsNullOrEmpty(this.info.doctorStationId))
@@ -63,10 +63,10 @@ public class MedicinalPill : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return this.EffectDescriptors(go);
 	}
 
-	public MedicineInfo info;
+		public MedicineInfo info;
 }

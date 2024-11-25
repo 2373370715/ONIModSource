@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 public class MainMenu : KScreen
 {
-		public static MainMenu Instance
+			public static MainMenu Instance
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class MainMenu : KScreen
 		}
 	}
 
-	private KButton MakeButton(MainMenu.ButtonInfo info)
+		private KButton MakeButton(MainMenu.ButtonInfo info)
 	{
 		KButton kbutton = global::Util.KInstantiateUI<KButton>(this.buttonPrefab.gameObject, this.buttonParent, true);
 		kbutton.onClick += info.action;
@@ -32,7 +32,7 @@ public class MainMenu : KScreen
 		return kbutton;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		MainMenu._instance = this;
@@ -80,27 +80,24 @@ public class MainMenu : KScreen
 		if (DistributionPlatform.Initialized && this.expansion1Ad != null)
 		{
 			string name = DistributionPlatform.Inst.Name;
-			if (name != null)
+			if (!(name == "Steam"))
 			{
-				if (!(name == "Steam"))
+				if (!(name == "Epic"))
 				{
-					if (!(name == "Epic"))
+					if (name == "Rail")
 					{
-						if (name == "Rail")
-						{
-							targetExpansion1AdURL = "https://www.wegame.com.cn/store/2001539/";
-							sprite = Assets.GetSprite("expansionPromo_cn");
-						}
-					}
-					else
-					{
-						targetExpansion1AdURL = "https://store.epicgames.com/en-US/p/oxygen-not-included--spaced-out";
+						targetExpansion1AdURL = "https://www.wegame.com.cn/store/2001539/";
+						sprite = Assets.GetSprite("expansionPromo_cn");
 					}
 				}
 				else
 				{
-					targetExpansion1AdURL = "https://store.steampowered.com/app/1452490/Oxygen_Not_Included__Spaced_Out/";
+					targetExpansion1AdURL = "https://store.epicgames.com/en-US/p/oxygen-not-included--spaced-out";
 				}
+			}
+			else
+			{
+				targetExpansion1AdURL = "https://store.steampowered.com/app/1452490/Oxygen_Not_Included__Spaced_Out/";
 			}
 			this.expansion1Ad.GetComponentInChildren<KButton>().onClick += delegate()
 			{
@@ -111,40 +108,43 @@ public class MainMenu : KScreen
 		this.activateOnSpawn = true;
 	}
 
-	private void RefreshDLCLogos()
+		private void RefreshDLCLogos()
 	{
 		this.logoDLC1.GetReference<Image>("icon").material = (DlcManager.IsContentSubscribed("EXPANSION1_ID") ? GlobalResources.Instance().AnimUIMaterial : GlobalResources.Instance().AnimMaterialUIDesaturated);
 		this.logoDLC2.GetReference<Image>("icon").material = (DlcManager.IsContentSubscribed("DLC2_ID") ? GlobalResources.Instance().AnimUIMaterial : GlobalResources.Instance().AnimMaterialUIDesaturated);
-		if (DistributionPlatform.Initialized)
+		this.logoDLC3.GetReference<Image>("icon").material = (DlcManager.IsContentSubscribed("DLC3_ID") ? GlobalResources.Instance().AnimUIMaterial : GlobalResources.Instance().AnimMaterialUIDesaturated);
+		if (DistributionPlatform.Initialized || Application.isEditor)
 		{
 			string DLC1_STORE_URL = "";
 			string DLC2_STORE_URL = "";
+			string DLC3_STORE_URL = "";
 			string name = DistributionPlatform.Inst.Name;
-			if (name != null)
+			if (!(name == "Steam"))
 			{
-				if (!(name == "Steam"))
+				if (!(name == "Epic"))
 				{
-					if (!(name == "Epic"))
+					if (name == "Rail")
 					{
-						if (name == "Rail")
-						{
-							DLC1_STORE_URL = "https://www.wegame.com.cn/store/2001539/";
-							DLC2_STORE_URL = "https://www.wegame.com.cn/store/2002196/";
-							this.logoDLC1.GetReference<Image>("icon").sprite = Assets.GetSprite("dlc1_logo_crop_cn");
-							this.logoDLC2.GetReference<Image>("icon").sprite = Assets.GetSprite("dlc2_logo_crop_cn");
-						}
-					}
-					else
-					{
-						DLC1_STORE_URL = "https://store.epicgames.com/en-US/p/oxygen-not-included--spaced-out";
-						DLC2_STORE_URL = "https://store.epicgames.com/p/oxygen-not-included-oxygen-not-included-the-frosty-planet-pack-915ba1";
+						DLC1_STORE_URL = "https://www.wegame.com.cn/store/2001539/";
+						DLC2_STORE_URL = "https://www.wegame.com.cn/store/2002196/";
+						DLC3_STORE_URL = "https://www.wegame.com.cn/store/2002196/";
+						this.logoDLC1.GetReference<Image>("icon").sprite = Assets.GetSprite("dlc1_logo_crop_cn");
+						this.logoDLC2.GetReference<Image>("icon").sprite = Assets.GetSprite("dlc2_logo_crop_cn");
+						this.logoDLC3.GetReference<Image>("icon").sprite = Assets.GetSprite("dlc3_logo_crop_cn");
 					}
 				}
 				else
 				{
-					DLC1_STORE_URL = "https://store.steampowered.com/app/1452490/Oxygen_Not_Included__Spaced_Out/";
-					DLC2_STORE_URL = "https://store.steampowered.com/app/2952300/Oxygen_Not_Included_The_Frosty_Planet_Pack/";
+					DLC1_STORE_URL = "https://store.epicgames.com/en-US/p/oxygen-not-included--spaced-out";
+					DLC2_STORE_URL = "https://store.epicgames.com/p/oxygen-not-included-oxygen-not-included-the-frosty-planet-pack-915ba1";
+					DLC3_STORE_URL = "https://store.epicgames.com/p/oxygen-not-included-oxygen-not-included-the-frosty-planet-pack-915ba1";
 				}
+			}
+			else
+			{
+				DLC1_STORE_URL = "https://store.steampowered.com/app/1452490/Oxygen_Not_Included__Spaced_Out/";
+				DLC2_STORE_URL = "https://store.steampowered.com/app/2952300/Oxygen_Not_Included_The_Frosty_Planet_Pack/";
+				DLC3_STORE_URL = "https://store.steampowered.com/app/2952300/Oxygen_Not_Included_The_Frosty_Planet_Pack/";
 			}
 			MultiToggle reference = this.logoDLC1.GetReference<MultiToggle>("multitoggle");
 			reference.onClick = (System.Action)Delegate.Combine(reference.onClick, new System.Action(delegate()
@@ -175,10 +175,19 @@ public class MainMenu : KScreen
 			string text2 = this.GetDLCStatusString("DLC2_ID", true);
 			text2 = text2 + "\n\n" + UI.FRONTEND.MAINMENU.WISHLIST_AD_TOOLTIP;
 			this.logoDLC2.GetReference<ToolTip>("tooltip").SetSimpleTooltip(text2);
+			MultiToggle reference3 = this.logoDLC3.GetReference<MultiToggle>("multitoggle");
+			reference3.onClick = (System.Action)Delegate.Combine(reference3.onClick, new System.Action(delegate()
+			{
+				App.OpenWebURL(DLC3_STORE_URL);
+			}));
+			this.logoDLC3.GetReference<LocText>("statuslabel").SetText(this.GetDLCStatusString("DLC3_ID", false));
+			string text3 = this.GetDLCStatusString("DLC3_ID", true);
+			text3 = text3 + "\n\n" + UI.FRONTEND.MAINMENU.WISHLIST_AD_TOOLTIP;
+			this.logoDLC3.GetReference<ToolTip>("tooltip").SetSimpleTooltip(text3);
 		}
 	}
 
-	public string GetDLCStatusString(string dlcID, bool tooltip = false)
+		public string GetDLCStatusString(string dlcID, bool tooltip = false)
 	{
 		if (!DlcManager.IsContentOwned(dlcID))
 		{
@@ -191,7 +200,7 @@ public class MainMenu : KScreen
 		return tooltip ? UI.FRONTEND.MAINMENU.DLC.CONTENT_OWNED_NOTINSTALLED_TOOLTIP : UI.FRONTEND.MAINMENU.DLC.CONTENT_OWNED_NOTINSTALLED_LABEL;
 	}
 
-	private void OnApplicationFocus(bool focus)
+		private void OnApplicationFocus(bool focus)
 	{
 		if (focus)
 		{
@@ -199,7 +208,7 @@ public class MainMenu : KScreen
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		base.OnKeyDown(e);
 		if (e.Consumed)
@@ -258,17 +267,17 @@ public class MainMenu : KScreen
 		}
 	}
 
-	private void PlayMouseOverSound()
+		private void PlayMouseOverSound()
 	{
 		KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Mouseover", false));
 	}
 
-	private void PlayMouseClickSound()
+		private void PlayMouseClickSound()
 	{
 		KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Click_Open", false));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		global::Debug.Log("-- MAIN MENU -- ");
 		base.OnSpawn();
@@ -321,18 +330,18 @@ public class MainMenu : KScreen
 		this.RefreshInventoryNotification();
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		base.OnForcedCleanUp();
 	}
 
-	private void RefreshInventoryNotification()
+		private void RefreshInventoryNotification()
 	{
 		bool active = PermitItems.HasUnopenedItem();
 		this.lockerButton.GetComponent<HierarchyReferences>().GetReference<RectTransform>("AttentionIcon").gameObject.SetActive(active);
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		if (!this.ambientLoopEventName.IsNullOrWhiteSpace())
 		{
@@ -344,13 +353,13 @@ public class MainMenu : KScreen
 		}
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		base.OnDeactivate();
 		this.motd.CleanUp();
 	}
 
-	public override void ScreenUpdate(bool topLevel)
+		public override void ScreenUpdate(bool topLevel)
 	{
 		this.refreshResumeButton = topLevel;
 		if (KleiItemDropScreen.Instance != null && KleiItemDropScreen.Instance.gameObject.activeInHierarchy != this.itemDropOpenFlag)
@@ -360,14 +369,14 @@ public class MainMenu : KScreen
 		}
 	}
 
-	protected override void OnLoadLevel()
+		protected override void OnLoadLevel()
 	{
 		base.OnLoadLevel();
 		this.StopAmbience();
 		this.motd.CleanUp();
 	}
 
-	private void ShowLanguageConfirmation()
+		private void ShowLanguageConfirmation()
 	{
 		if (SteamManager.Initialized)
 		{
@@ -384,7 +393,7 @@ public class MainMenu : KScreen
 		}
 	}
 
-	private void ResumeGame()
+		private void ResumeGame()
 	{
 		string text;
 		if (KPlayerPrefs.HasKey("AutoResumeSaveFile"))
@@ -411,13 +420,13 @@ public class MainMenu : KScreen
 		}
 	}
 
-	private void NewGame()
+		private void NewGame()
 	{
 		WorldGen.WaitForPendingLoadSettings();
 		base.GetComponent<NewGameFlow>().BeginFlow();
 	}
 
-	private void InitLoadScreen()
+		private void InitLoadScreen()
 	{
 		if (LoadScreen.Instance == null)
 		{
@@ -425,13 +434,13 @@ public class MainMenu : KScreen
 		}
 	}
 
-	private void LoadGame()
+		private void LoadGame()
 	{
 		this.InitLoadScreen();
 		LoadScreen.Instance.Activate();
 	}
 
-	public static void ActivateRetiredColoniesScreen(GameObject parent, string colonyID = "")
+		public static void ActivateRetiredColoniesScreen(GameObject parent, string colonyID = "")
 	{
 		if (RetiredColonyInfoScreen.Instance == null)
 		{
@@ -448,7 +457,7 @@ public class MainMenu : KScreen
 		}
 	}
 
-	public static void ActivateRetiredColoniesScreenFromData(GameObject parent, RetiredColonyData data)
+		public static void ActivateRetiredColoniesScreenFromData(GameObject parent, RetiredColonyData data)
 	{
 		if (RetiredColonyInfoScreen.Instance == null)
 		{
@@ -458,26 +467,26 @@ public class MainMenu : KScreen
 		RetiredColonyInfoScreen.Instance.LoadColony(data);
 	}
 
-	public static void ActivateInventoyScreen()
+		public static void ActivateInventoyScreen()
 	{
 		LockerNavigator.Instance.PushScreen(LockerNavigator.Instance.kleiInventoryScreen, null);
 	}
 
-	public static void ActivateLockerMenu()
+		public static void ActivateLockerMenu()
 	{
 		LockerMenuScreen.Instance.Show(true);
 	}
 
-	private void SpawnVideoScreen()
+		private void SpawnVideoScreen()
 	{
 		VideoScreen.Instance = global::Util.KInstantiateUI(ScreenPrefabs.Instance.VideoScreen.gameObject, base.gameObject, false).GetComponent<VideoScreen>();
 	}
 
-	private void Update()
+		private void Update()
 	{
 	}
 
-	public void RefreshResumeButton(bool simpleCheck = false)
+		public void RefreshResumeButton(bool simpleCheck = false)
 	{
 		string latestSaveForCurrentDLC = SaveLoader.GetLatestSaveForCurrentDLC();
 		bool flag = !string.IsNullOrEmpty(latestSaveForCurrentDLC) && File.Exists(latestSaveForCurrentDLC);
@@ -509,7 +518,7 @@ public class MainMenu : KScreen
 					header = saveFileEntry.header;
 					gameInfo = saveFileEntry.headerData;
 				}
-				if (header.buildVersion > 626616U || gameInfo.saveMajorVersion != 7 || gameInfo.saveMinorVersion > 34)
+				if (header.buildVersion > 642695U || gameInfo.saveMajorVersion != 7 || gameInfo.saveMinorVersion > 35)
 				{
 					flag = false;
 				}
@@ -546,27 +555,27 @@ public class MainMenu : KScreen
 		global::Debug.LogWarning("Why is the resume game button null?");
 	}
 
-	private void Translations()
+		private void Translations()
 	{
 		global::Util.KInstantiateUI<LanguageOptionsScreen>(ScreenPrefabs.Instance.languageOptionsScreen.gameObject, base.transform.parent.gameObject, false);
 	}
 
-	private void Mods()
+		private void Mods()
 	{
 		global::Util.KInstantiateUI<ModsScreen>(ScreenPrefabs.Instance.modsMenu.gameObject, base.transform.parent.gameObject, false);
 	}
 
-	private void Options()
+		private void Options()
 	{
 		global::Util.KInstantiateUI<OptionsMenuScreen>(ScreenPrefabs.Instance.OptionsScreen.gameObject, base.gameObject, true);
 	}
 
-	private void QuitGame()
+		private void QuitGame()
 	{
 		App.Quit();
 	}
 
-	public void StartFEAudio()
+		public void StartFEAudio()
 	{
 		AudioMixer.instance.Reset();
 		MusicManager.instance.KillAllSongs(STOP_MODE.ALLOWFADEOUT);
@@ -583,7 +592,7 @@ public class MainMenu : KScreen
 		this.CheckForAudioDriverIssue();
 	}
 
-	public void StopAmbience()
+		public void StopAmbience()
 	{
 		if (this.ambientLoop.isValid())
 		{
@@ -593,7 +602,7 @@ public class MainMenu : KScreen
 		}
 	}
 
-	public void StopMainMenuMusic()
+		public void StopMainMenuMusic()
 	{
 		if (MusicManager.instance.SongIsPlaying(this.menuMusicEventName))
 		{
@@ -602,7 +611,7 @@ public class MainMenu : KScreen
 		}
 	}
 
-	private void CheckForAudioDriverIssue()
+		private void CheckForAudioDriverIssue()
 	{
 		if (!KFMOD.didFmodInitializeSuccessfully)
 		{
@@ -613,7 +622,7 @@ public class MainMenu : KScreen
 		}
 	}
 
-	private void CheckPlayerPrefsCorruption()
+		private void CheckPlayerPrefsCorruption()
 	{
 		if (KPlayerPrefs.HasCorruptedFlag())
 		{
@@ -622,7 +631,7 @@ public class MainMenu : KScreen
 		}
 	}
 
-	private void CheckDoubleBoundKeys()
+		private void CheckDoubleBoundKeys()
 	{
 		string text = "";
 		HashSet<BindingEntry> hashSet = new HashSet<BindingEntry>();
@@ -679,92 +688,95 @@ public class MainMenu : KScreen
 		}
 	}
 
-	private void RestartGame()
+		private void RestartGame()
 	{
 		App.instance.Restart();
 	}
 
-	private static MainMenu _instance;
+		private static MainMenu _instance;
 
-	public KButton Button_ResumeGame;
+		public KButton Button_ResumeGame;
 
-	private KButton Button_NewGame;
+		private KButton Button_NewGame;
 
-	private GameObject GameSettingsScreen;
+		private GameObject GameSettingsScreen;
 
-	private bool m_screenshotMode;
+		private bool m_screenshotMode;
 
-	[SerializeField]
+		[SerializeField]
 	private CanvasGroup uiCanvas;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton buttonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject buttonParent;
 
-	[SerializeField]
+		[SerializeField]
 	private ColorStyleSetting topButtonStyle;
 
-	[SerializeField]
+		[SerializeField]
 	private ColorStyleSetting normalButtonStyle;
 
-	[SerializeField]
+		[SerializeField]
 	private string menuMusicEventName;
 
-	[SerializeField]
+		[SerializeField]
 	private string ambientLoopEventName;
 
-	private EventInstance ambientLoop;
+		private EventInstance ambientLoop;
 
-	[SerializeField]
+		[SerializeField]
 	private MainMenu_Motd motd;
 
-	[SerializeField]
+		[SerializeField]
 	private PatchNotesScreen patchNotesScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private NextUpdateTimer nextUpdateTimer;
 
-	[SerializeField]
+		[SerializeField]
 	private DLCToggle expansion1Toggle;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject expansion1Ad;
 
-	[SerializeField]
+		[SerializeField]
 	private BuildWatermark buildWatermark;
 
-	[SerializeField]
+		[SerializeField]
 	public string IntroShortName;
 
-	[SerializeField]
+		[SerializeField]
 	private HierarchyReferences logoDLC1;
 
-	[SerializeField]
+		[SerializeField]
 	private HierarchyReferences logoDLC2;
 
-	private KButton lockerButton;
+		[SerializeField]
+	private HierarchyReferences logoDLC3;
 
-	private bool itemDropOpenFlag;
+		private KButton lockerButton;
 
-	private static bool HasAutoresumedOnce = false;
+		private bool itemDropOpenFlag;
 
-	private bool refreshResumeButton = true;
+		private static bool HasAutoresumedOnce = false;
 
-	private int m_cheatInputCounter;
+		private bool refreshResumeButton = true;
 
-	public const string AutoResumeSaveFileKey = "AutoResumeSaveFile";
+		private int m_cheatInputCounter;
 
-	public const string PLAY_SHORT_ON_LAUNCH = "PlayShortOnLaunch";
+		public const string AutoResumeSaveFileKey = "AutoResumeSaveFile";
 
-	private static int LANGUAGE_CONFIRMATION_VERSION = 2;
+		public const string PLAY_SHORT_ON_LAUNCH = "PlayShortOnLaunch";
 
-	private Dictionary<string, MainMenu.SaveFileEntry> saveFileEntries = new Dictionary<string, MainMenu.SaveFileEntry>();
+		private static int LANGUAGE_CONFIRMATION_VERSION = 2;
 
-	private struct ButtonInfo
+		private Dictionary<string, MainMenu.SaveFileEntry> saveFileEntries = new Dictionary<string, MainMenu.SaveFileEntry>();
+
+		private struct ButtonInfo
 	{
-		public ButtonInfo(LocString text, System.Action action, int font_size, ColorStyleSetting style)
+				public ButtonInfo(LocString text, System.Action action, int font_size, ColorStyleSetting style)
 		{
 			this.text = text;
 			this.action = action;
@@ -772,21 +784,21 @@ public class MainMenu : KScreen
 			this.style = style;
 		}
 
-		public LocString text;
+				public LocString text;
 
-		public System.Action action;
+				public System.Action action;
 
-		public int fontSize;
+				public int fontSize;
 
-		public ColorStyleSetting style;
+				public ColorStyleSetting style;
 	}
 
-	private struct SaveFileEntry
+		private struct SaveFileEntry
 	{
-		public System.DateTime timeStamp;
+				public System.DateTime timeStamp;
 
-		public SaveGame.Header header;
+				public SaveGame.Header header;
 
-		public SaveGame.GameInfo headerData;
+				public SaveGame.GameInfo headerData;
 	}
 }

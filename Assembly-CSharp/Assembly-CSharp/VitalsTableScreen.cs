@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class VitalsTableScreen : TableScreen
 {
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		this.has_default_duplicant_row = false;
 		this.title = UI.VITALS;
@@ -27,7 +27,7 @@ public class VitalsTableScreen : TableScreen
 		base.AddLabelColumn("Immunity", new Action<IAssignableIdentity, GameObject>(this.on_load_sickness), new Func<IAssignableIdentity, GameObject, string>(this.get_value_sickness_label), new Comparison<IAssignableIdentity>(this.compare_rows_sicknesses), new Action<IAssignableIdentity, GameObject, ToolTip>(this.on_tooltip_sicknesses), new Action<IAssignableIdentity, GameObject, ToolTip>(this.on_tooltip_sort_sicknesses), 192, true);
 	}
 
-	private void on_load_stress(IAssignableIdentity minion, GameObject widget_go)
+		private void on_load_stress(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = base.GetWidgetRow(widget_go);
 		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
@@ -39,7 +39,7 @@ public class VitalsTableScreen : TableScreen
 		componentInChildren.text = (widgetRow.isDefault ? "" : UI.VITALSSCREEN.STRESS.ToString());
 	}
 
-	private string get_value_stress_label(IAssignableIdentity identity, GameObject widget_go)
+		private string get_value_stress_label(IAssignableIdentity identity, GameObject widget_go)
 	{
 		TableRow widgetRow = base.GetWidgetRow(widget_go);
 		if (widgetRow.rowType == TableRow.RowType.Minion)
@@ -57,7 +57,7 @@ public class VitalsTableScreen : TableScreen
 		return "";
 	}
 
-	private int compare_rows_stress(IAssignableIdentity a, IAssignableIdentity b)
+		private int compare_rows_stress(IAssignableIdentity a, IAssignableIdentity b)
 	{
 		MinionIdentity minionIdentity = a as MinionIdentity;
 		MinionIdentity minionIdentity2 = b as MinionIdentity;
@@ -78,7 +78,7 @@ public class VitalsTableScreen : TableScreen
 		return value2.CompareTo(value);
 	}
 
-	protected void on_tooltip_stress(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_stress(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -104,7 +104,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	protected void on_tooltip_sort_stress(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_sort_stress(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -121,7 +121,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	private void on_load_qualityoflife_expectations(IAssignableIdentity minion, GameObject widget_go)
+		private void on_load_qualityoflife_expectations(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = base.GetWidgetRow(widget_go);
 		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
@@ -133,7 +133,7 @@ public class VitalsTableScreen : TableScreen
 		componentInChildren.text = (widgetRow.isDefault ? "" : UI.VITALSSCREEN.QUALITYOFLIFE_EXPECTATIONS.ToString());
 	}
 
-	private string get_value_qualityoflife_expectations_label(IAssignableIdentity identity, GameObject widget_go)
+		private string get_value_qualityoflife_expectations_label(IAssignableIdentity identity, GameObject widget_go)
 	{
 		TableRow widgetRow = base.GetWidgetRow(widget_go);
 		if (widgetRow.rowType == TableRow.RowType.Minion)
@@ -151,7 +151,7 @@ public class VitalsTableScreen : TableScreen
 		return "";
 	}
 
-	private int compare_rows_qualityoflife_expectations(IAssignableIdentity a, IAssignableIdentity b)
+		private int compare_rows_qualityoflife_expectations(IAssignableIdentity a, IAssignableIdentity b)
 	{
 		MinionIdentity minionIdentity = a as MinionIdentity;
 		MinionIdentity minionIdentity2 = b as MinionIdentity;
@@ -172,7 +172,7 @@ public class VitalsTableScreen : TableScreen
 		return totalValue.CompareTo(totalValue2);
 	}
 
-	protected void on_tooltip_qualityoflife_expectations(IAssignableIdentity identity, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_qualityoflife_expectations(IAssignableIdentity identity, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -198,7 +198,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	protected void on_tooltip_sort_qualityoflife_expectations(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_sort_qualityoflife_expectations(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -215,7 +215,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	private void on_load_health(IAssignableIdentity minion, GameObject widget_go)
+		private void on_load_health(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = base.GetWidgetRow(widget_go);
 		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
@@ -227,7 +227,7 @@ public class VitalsTableScreen : TableScreen
 		componentInChildren.text = (widgetRow.isDefault ? "" : (componentInChildren.text = UI.VITALSSCREEN_HEALTH.ToString()));
 	}
 
-	private string get_value_health_label(IAssignableIdentity minion, GameObject widget_go)
+		private string get_value_health_label(IAssignableIdentity minion, GameObject widget_go)
 	{
 		if (minion != null)
 		{
@@ -244,7 +244,7 @@ public class VitalsTableScreen : TableScreen
 		return "";
 	}
 
-	private int compare_rows_health(IAssignableIdentity a, IAssignableIdentity b)
+		private int compare_rows_health(IAssignableIdentity a, IAssignableIdentity b)
 	{
 		MinionIdentity minionIdentity = a as MinionIdentity;
 		MinionIdentity minionIdentity2 = b as MinionIdentity;
@@ -265,7 +265,7 @@ public class VitalsTableScreen : TableScreen
 		return value2.CompareTo(value);
 	}
 
-	protected void on_tooltip_health(IAssignableIdentity identity, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_health(IAssignableIdentity identity, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -291,7 +291,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	protected void on_tooltip_sort_health(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_sort_health(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -308,7 +308,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	private void on_load_sickness(IAssignableIdentity minion, GameObject widget_go)
+		private void on_load_sickness(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = base.GetWidgetRow(widget_go);
 		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
@@ -320,7 +320,7 @@ public class VitalsTableScreen : TableScreen
 		componentInChildren.text = (widgetRow.isDefault ? "" : UI.VITALSSCREEN_SICKNESS.ToString());
 	}
 
-	private string get_value_sickness_label(IAssignableIdentity minion, GameObject widget_go)
+		private string get_value_sickness_label(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = base.GetWidgetRow(widget_go);
 		if (widgetRow.rowType == TableRow.RowType.Minion)
@@ -397,13 +397,13 @@ public class VitalsTableScreen : TableScreen
 		return "";
 	}
 
-	private int compare_rows_sicknesses(IAssignableIdentity a, IAssignableIdentity b)
+		private int compare_rows_sicknesses(IAssignableIdentity a, IAssignableIdentity b)
 	{
 		float value = 0f;
 		return 0f.CompareTo(value);
 	}
 
-	protected void on_tooltip_sicknesses(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_sicknesses(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -455,7 +455,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	protected void on_tooltip_sort_sicknesses(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_sort_sicknesses(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -472,7 +472,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	private void on_load_fullness(IAssignableIdentity minion, GameObject widget_go)
+		private void on_load_fullness(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = base.GetWidgetRow(widget_go);
 		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
@@ -484,21 +484,29 @@ public class VitalsTableScreen : TableScreen
 		componentInChildren.text = (widgetRow.isDefault ? "" : UI.VITALSSCREEN_CALORIES.ToString());
 	}
 
-	private string get_value_fullness_label(IAssignableIdentity minion, GameObject widget_go)
+		private string get_value_fullness_label(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = base.GetWidgetRow(widget_go);
 		if (widgetRow.rowType == TableRow.RowType.Minion && minion as MinionIdentity != null)
 		{
-			return Db.Get().Amounts.Calories.Lookup(minion as MinionIdentity).GetValueString();
-		}
-		if (widgetRow.rowType == TableRow.RowType.StoredMinon)
-		{
+			AmountInstance amountInstance = Db.Get().Amounts.Calories.Lookup(minion as MinionIdentity);
+			if (amountInstance != null)
+			{
+				return amountInstance.GetValueString();
+			}
 			return UI.TABLESCREENS.NA;
 		}
-		return "";
+		else
+		{
+			if (widgetRow.rowType == TableRow.RowType.StoredMinon)
+			{
+				return UI.TABLESCREENS.NA;
+			}
+			return "";
+		}
 	}
 
-	private int compare_rows_fullness(IAssignableIdentity a, IAssignableIdentity b)
+		private int compare_rows_fullness(IAssignableIdentity a, IAssignableIdentity b)
 	{
 		MinionIdentity minionIdentity = a as MinionIdentity;
 		MinionIdentity minionIdentity2 = b as MinionIdentity;
@@ -514,12 +522,26 @@ public class VitalsTableScreen : TableScreen
 		{
 			return 1;
 		}
-		float value = Db.Get().Amounts.Calories.Lookup(minionIdentity).value;
-		float value2 = Db.Get().Amounts.Calories.Lookup(minionIdentity2).value;
+		AmountInstance amountInstance = Db.Get().Amounts.Calories.Lookup(minionIdentity);
+		AmountInstance amountInstance2 = Db.Get().Amounts.Calories.Lookup(minionIdentity2);
+		if (amountInstance == null && amountInstance2 == null)
+		{
+			return 0;
+		}
+		if (amountInstance == null)
+		{
+			return -1;
+		}
+		if (amountInstance2 == null)
+		{
+			return 1;
+		}
+		float value = amountInstance.value;
+		float value2 = amountInstance2.value;
 		return value2.CompareTo(value);
 	}
 
-	protected void on_tooltip_fullness(IAssignableIdentity identity, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_fullness(IAssignableIdentity identity, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -532,8 +554,12 @@ public class VitalsTableScreen : TableScreen
 			MinionIdentity minionIdentity = identity as MinionIdentity;
 			if (minionIdentity != null)
 			{
-				tooltip.AddMultiStringTooltip(Db.Get().Amounts.Calories.Lookup(minionIdentity).GetTooltip(), null);
-				return;
+				AmountInstance amountInstance = Db.Get().Amounts.Calories.Lookup(minionIdentity);
+				if (amountInstance != null)
+				{
+					tooltip.AddMultiStringTooltip(amountInstance.GetTooltip(), null);
+					return;
+				}
 			}
 			break;
 		}
@@ -545,7 +571,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	protected void on_tooltip_sort_fullness(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_sort_fullness(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -562,7 +588,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	protected void on_tooltip_name(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_name(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -582,7 +608,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	private void on_load_eaten_today(IAssignableIdentity minion, GameObject widget_go)
+		private void on_load_eaten_today(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = base.GetWidgetRow(widget_go);
 		LocText componentInChildren = widget_go.GetComponentInChildren<LocText>(true);
@@ -594,7 +620,7 @@ public class VitalsTableScreen : TableScreen
 		componentInChildren.text = (widgetRow.isDefault ? "" : UI.VITALSSCREEN_EATENTODAY.ToString());
 	}
 
-	private static float RationsEatenToday(MinionIdentity minion)
+		private static float RationsEatenToday(MinionIdentity minion)
 	{
 		float result = 0f;
 		if (minion != null)
@@ -608,7 +634,7 @@ public class VitalsTableScreen : TableScreen
 		return result;
 	}
 
-	private string get_value_eaten_today_label(IAssignableIdentity minion, GameObject widget_go)
+		private string get_value_eaten_today_label(IAssignableIdentity minion, GameObject widget_go)
 	{
 		TableRow widgetRow = base.GetWidgetRow(widget_go);
 		if (widgetRow.rowType == TableRow.RowType.Minion)
@@ -622,7 +648,7 @@ public class VitalsTableScreen : TableScreen
 		return "";
 	}
 
-	private int compare_rows_eaten_today(IAssignableIdentity a, IAssignableIdentity b)
+		private int compare_rows_eaten_today(IAssignableIdentity a, IAssignableIdentity b)
 	{
 		MinionIdentity minionIdentity = a as MinionIdentity;
 		MinionIdentity minionIdentity2 = b as MinionIdentity;
@@ -642,7 +668,7 @@ public class VitalsTableScreen : TableScreen
 		return VitalsTableScreen.RationsEatenToday(minionIdentity2).CompareTo(value);
 	}
 
-	protected void on_tooltip_eaten_today(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_eaten_today(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -666,7 +692,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	protected void on_tooltip_sort_eaten_today(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
+		protected void on_tooltip_sort_eaten_today(IAssignableIdentity minion, GameObject widget_go, ToolTip tooltip)
 	{
 		tooltip.ClearMultiStringTooltip();
 		switch (base.GetWidgetRow(widget_go).rowType)
@@ -683,7 +709,7 @@ public class VitalsTableScreen : TableScreen
 		}
 	}
 
-	private void StoredMinionTooltip(IAssignableIdentity minion, ToolTip tooltip)
+		private void StoredMinionTooltip(IAssignableIdentity minion, ToolTip tooltip)
 	{
 		if (minion != null && minion as StoredMinionIdentity != null)
 		{

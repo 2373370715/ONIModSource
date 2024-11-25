@@ -7,13 +7,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LogicRibbonWriter")]
 public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRender200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicRibbonWriter>(-905833192, LogicRibbonWriter.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<LogicRibbonWriter>(-801688580, LogicRibbonWriter.OnLogicValueChangedDelegate);
@@ -22,7 +22,7 @@ public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		this.kbac.Play("idle", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	public void OnLogicValueChanged(object data)
+		public void OnLogicValueChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 		if (logicValueChanged.portID != LogicRibbonWriter.INPUT_PORT_ID)
@@ -34,7 +34,7 @@ public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		this.UpdateVisuals();
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicRibbonWriter component = ((GameObject)data).GetComponent<LogicRibbonWriter>();
 		if (component != null)
@@ -43,18 +43,18 @@ public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		}
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		int new_value = this.currentValue << this.selectedBit;
 		base.GetComponent<LogicPorts>().SendSignal(LogicRibbonWriter.OUTPUT_PORT_ID, new_value);
 	}
 
-	public void Render200ms(float dt)
+		public void Render200ms(float dt)
 	{
 		this.UpdateVisuals();
 	}
 
-	private LogicCircuitNetwork GetInputNetwork()
+		private LogicCircuitNetwork GetInputNetwork()
 	{
 		LogicCircuitNetwork result = null;
 		if (this.ports != null)
@@ -65,7 +65,7 @@ public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		return result;
 	}
 
-	private LogicCircuitNetwork GetOutputNetwork()
+		private LogicCircuitNetwork GetOutputNetwork()
 	{
 		LogicCircuitNetwork result = null;
 		if (this.ports != null)
@@ -76,23 +76,23 @@ public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		return result;
 	}
 
-	public void SetBitSelection(int bit)
+		public void SetBitSelection(int bit)
 	{
 		this.selectedBit = bit;
 		this.UpdateLogicCircuit();
 	}
 
-	public int GetBitSelection()
+		public int GetBitSelection()
 	{
 		return this.selectedBit;
 	}
 
-	public int GetBitDepth()
+		public int GetBitDepth()
 	{
 		return this.bitDepth;
 	}
 
-		public string SideScreenTitle
+			public string SideScreenTitle
 	{
 		get
 		{
@@ -100,7 +100,7 @@ public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		}
 	}
 
-		public string SideScreenDescription
+			public string SideScreenDescription
 	{
 		get
 		{
@@ -108,17 +108,17 @@ public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		}
 	}
 
-	public bool SideScreenDisplayWriterDescription()
+		public bool SideScreenDisplayWriterDescription()
 	{
 		return true;
 	}
 
-	public bool SideScreenDisplayReaderDescription()
+		public bool SideScreenDisplayReaderDescription()
 	{
 		return false;
 	}
 
-	public bool IsBitActive(int bit)
+		public bool IsBitActive(int bit)
 	{
 		LogicCircuitNetwork logicCircuitNetwork = null;
 		if (this.ports != null)
@@ -129,7 +129,7 @@ public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		return logicCircuitNetwork != null && logicCircuitNetwork.IsBitActive(bit);
 	}
 
-	public int GetInputValue()
+		public int GetInputValue()
 	{
 		LogicPorts component = base.GetComponent<LogicPorts>();
 		if (!(component != null))
@@ -139,7 +139,7 @@ public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		return component.GetInputValue(LogicRibbonWriter.INPUT_PORT_ID);
 	}
 
-	public int GetOutputValue()
+		public int GetOutputValue()
 	{
 		LogicPorts component = base.GetComponent<LogicPorts>();
 		if (!(component != null))
@@ -149,7 +149,7 @@ public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		return component.GetOutputValue(LogicRibbonWriter.OUTPUT_PORT_ID);
 	}
 
-	public void UpdateVisuals()
+		public void UpdateVisuals()
 	{
 		bool inputNetwork = this.GetInputNetwork() != null;
 		LogicCircuitNetwork outputNetwork = this.GetOutputNetwork();
@@ -170,46 +170,46 @@ public class LogicRibbonWriter : KMonoBehaviour, ILogicRibbonBitSelector, IRende
 		this.kbac.Play(num.ToString() + "_" + (this.GetBitSelection() + 1).ToString(), KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	public static readonly HashedString INPUT_PORT_ID = new HashedString("LogicRibbonWriterInput");
+		public static readonly HashedString INPUT_PORT_ID = new HashedString("LogicRibbonWriterInput");
 
-	public static readonly HashedString OUTPUT_PORT_ID = new HashedString("LogicRibbonWriterOutput");
+		public static readonly HashedString OUTPUT_PORT_ID = new HashedString("LogicRibbonWriterOutput");
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicRibbonWriter> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicRibbonWriter>(delegate(LogicRibbonWriter component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicRibbonWriter> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicRibbonWriter>(delegate(LogicRibbonWriter component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<LogicRibbonWriter> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicRibbonWriter>(delegate(LogicRibbonWriter component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicRibbonWriter> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicRibbonWriter>(delegate(LogicRibbonWriter component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private LogicPorts ports;
+		private LogicPorts ports;
 
-	public int bitDepth = 4;
+		public int bitDepth = 4;
 
-	[Serialize]
+		[Serialize]
 	public int selectedBit;
 
-	[Serialize]
+		[Serialize]
 	private int currentValue;
 
-	private KBatchedAnimController kbac;
+		private KBatchedAnimController kbac;
 
-	private Color colorOn = new Color(0.34117648f, 0.7254902f, 0.36862746f);
+		private Color colorOn = new Color(0.34117648f, 0.7254902f, 0.36862746f);
 
-	private Color colorOff = new Color(0.9529412f, 0.2901961f, 0.2784314f);
+		private Color colorOff = new Color(0.9529412f, 0.2901961f, 0.2784314f);
 
-	private static KAnimHashedString BIT_ONE_SYMBOL = "bit1_bloom";
+		private static KAnimHashedString BIT_ONE_SYMBOL = "bit1_bloom";
 
-	private static KAnimHashedString BIT_TWO_SYMBOL = "bit2_bloom";
+		private static KAnimHashedString BIT_TWO_SYMBOL = "bit2_bloom";
 
-	private static KAnimHashedString BIT_THREE_SYMBOL = "bit3_bloom";
+		private static KAnimHashedString BIT_THREE_SYMBOL = "bit3_bloom";
 
-	private static KAnimHashedString BIT_FOUR_SYMBOL = "bit4_bloom";
+		private static KAnimHashedString BIT_FOUR_SYMBOL = "bit4_bloom";
 
-	private static KAnimHashedString INPUT_SYMBOL = "input_light_bloom";
+		private static KAnimHashedString INPUT_SYMBOL = "input_light_bloom";
 }

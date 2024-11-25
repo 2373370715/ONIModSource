@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class GeneShufflerSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.button.onClick += this.OnButtonClick;
 		this.Refresh();
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<GeneShuffler>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		GeneShuffler component = target.GetComponent<GeneShuffler>();
 		if (component == null)
@@ -28,7 +28,7 @@ public class GeneShufflerSideScreen : SideScreenContent
 		this.Refresh();
 	}
 
-	private void OnButtonClick()
+		private void OnButtonClick()
 	{
 		if (this.target.WorkComplete)
 		{
@@ -42,7 +42,7 @@ public class GeneShufflerSideScreen : SideScreenContent
 		}
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		if (!(this.target != null))
 		{
@@ -85,18 +85,18 @@ public class GeneShufflerSideScreen : SideScreenContent
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText label;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton button;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText buttonLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private GeneShuffler target;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject contents;
 }

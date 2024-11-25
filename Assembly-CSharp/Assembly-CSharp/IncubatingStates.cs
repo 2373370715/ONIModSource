@@ -1,65 +1,72 @@
-﻿using System;
-using STRINGS;
+﻿using STRINGS;
 using UnityEngine;
 
-public class IncubatingStates : GameStateMachine<IncubatingStates, IncubatingStates.Instance, IStateMachineTarget, IncubatingStates.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.incubator;
-		this.root.ToggleStatusItem(CREATURES.STATUSITEMS.IN_INCUBATOR.NAME, CREATURES.STATUSITEMS.IN_INCUBATOR.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main);
-		this.incubator.DefaultState(this.incubator.idle).ToggleTag(GameTags.Creatures.Deliverable).TagTransition(GameTags.Creatures.InIncubator, null, true);
-		this.incubator.idle.Enter("VariantUpdate", new StateMachine<IncubatingStates, IncubatingStates.Instance, IStateMachineTarget, IncubatingStates.Def>.State.Callback(IncubatingStates.VariantUpdate)).PlayAnim("incubator_idle_loop").OnAnimQueueComplete(this.incubator.choose);
-		this.incubator.choose.Transition(this.incubator.variant, new StateMachine<IncubatingStates, IncubatingStates.Instance, IStateMachineTarget, IncubatingStates.Def>.Transition.ConditionCallback(IncubatingStates.DoVariant), UpdateRate.SIM_200ms).Transition(this.incubator.idle, GameStateMachine<IncubatingStates, IncubatingStates.Instance, IStateMachineTarget, IncubatingStates.Def>.Not(new StateMachine<IncubatingStates, IncubatingStates.Instance, IStateMachineTarget, IncubatingStates.Def>.Transition.ConditionCallback(IncubatingStates.DoVariant)), UpdateRate.SIM_200ms);
-		this.incubator.variant.PlayAnim("incubator_variant").OnAnimQueueComplete(this.incubator.idle);
-	}
+public class IncubatingStates
+    : GameStateMachine<IncubatingStates, IncubatingStates.Instance, IStateMachineTarget, IncubatingStates.Def> {
+    public IncubatorStates incubator;
 
-	public static bool DoVariant(IncubatingStates.Instance smi)
-	{
-		return smi.variant_time == 0;
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = incubator;
+        var    root              = this.root;
+        string name              = CREATURES.STATUSITEMS.IN_INCUBATOR.NAME;
+        string tooltip           = CREATURES.STATUSITEMS.IN_INCUBATOR.TOOLTIP;
+        var    icon              = "";
+        var    icon_type         = StatusItem.IconType.Info;
+        var    notification_type = NotificationType.Neutral;
+        var    allow_multiples   = false;
+        var    main              = Db.Get().StatusItemCategories.Main;
+        root.ToggleStatusItem(name,
+                              tooltip,
+                              icon,
+                              icon_type,
+                              notification_type,
+                              allow_multiples,
+                              default(HashedString),
+                              129022,
+                              null,
+                              null,
+                              main);
 
-	public static void VariantUpdate(IncubatingStates.Instance smi)
-	{
-		if (smi.variant_time <= 0)
-		{
-			smi.variant_time = UnityEngine.Random.Range(3, 7);
-			return;
-		}
-		smi.variant_time--;
-	}
+        incubator.DefaultState(incubator.idle)
+                 .ToggleTag(GameTags.Creatures.Deliverable)
+                 .TagTransition(GameTags.Creatures.InIncubator, null, true);
 
-	public IncubatingStates.IncubatorStates incubator;
+        incubator.idle.Enter("VariantUpdate", VariantUpdate)
+                 .PlayAnim("incubator_idle_loop")
+                 .OnAnimQueueComplete(incubator.choose);
 
-	public class Def : StateMachine.BaseDef
-	{
-	}
+        incubator.choose.Transition(incubator.variant, DoVariant).Transition(incubator.idle, Not(DoVariant));
+        incubator.variant.PlayAnim("incubator_variant").OnAnimQueueComplete(incubator.idle);
+    }
 
-	public new class Instance : GameStateMachine<IncubatingStates, IncubatingStates.Instance, IStateMachineTarget, IncubatingStates.Def>.GameInstance
-	{
-		public Instance(Chore<IncubatingStates.Instance> chore, IncubatingStates.Def def) : base(chore, def)
-		{
-			chore.AddPrecondition(IncubatingStates.Instance.IsInIncubator, null);
-		}
+    public static bool DoVariant(Instance smi) { return smi.variant_time == 0; }
 
-		public int variant_time = 3;
+    public static void VariantUpdate(Instance smi) {
+        if (smi.variant_time <= 0) {
+            smi.variant_time = Random.Range(3, 7);
+            return;
+        }
 
-		public static readonly Chore.Precondition IsInIncubator = new Chore.Precondition
-		{
-			id = "IsInIncubator",
-			fn = delegate(ref Chore.Precondition.Context context, object data)
-			{
-				return context.consumerState.prefabid.HasTag(GameTags.Creatures.InIncubator);
-			}
-		};
-	}
+        smi.variant_time--;
+    }
 
-	public class IncubatorStates : GameStateMachine<IncubatingStates, IncubatingStates.Instance, IStateMachineTarget, IncubatingStates.Def>.State
-	{
-		public GameStateMachine<IncubatingStates, IncubatingStates.Instance, IStateMachineTarget, IncubatingStates.Def>.State idle;
+    public class Def : BaseDef { }
 
-		public GameStateMachine<IncubatingStates, IncubatingStates.Instance, IStateMachineTarget, IncubatingStates.Def>.State choose;
+    public new class Instance : GameInstance {
+        public static readonly Chore.Precondition IsInIncubator = new Chore.Precondition {
+            id = "IsInIncubator",
+            fn = delegate(ref Chore.Precondition.Context context, object data) {
+                     return context.consumerState.prefabid.HasTag(GameTags.Creatures.InIncubator);
+                 }
+        };
 
-		public GameStateMachine<IncubatingStates, IncubatingStates.Instance, IStateMachineTarget, IncubatingStates.Def>.State variant;
-	}
+        public int variant_time = 3;
+        public Instance(Chore<Instance> chore, Def def) : base(chore, def) { chore.AddPrecondition(IsInIncubator); }
+    }
+
+    public class IncubatorStates : State {
+        public State choose;
+        public State idle;
+        public State variant;
+    }
 }

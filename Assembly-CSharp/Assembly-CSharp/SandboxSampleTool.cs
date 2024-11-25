@@ -8,19 +8,19 @@ using UnityEngine;
 
 public class SandboxSampleTool : InterfaceTool
 {
-	public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
+		public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
 	{
 		colors = new HashSet<ToolMenu.CellColorData>();
 		colors.Add(new ToolMenu.CellColorData(this.currentCell, this.radiusIndicatorColor));
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		base.OnMouseMove(cursorPos);
 		this.currentCell = Grid.PosToCell(cursorPos);
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		int cell = Grid.PosToCell(cursor_pos);
 		if (!Grid.IsValidCell(cell))
@@ -33,7 +33,7 @@ public class SandboxSampleTool : InterfaceTool
 		this.PlaySound();
 	}
 
-	public static void Sample(int cell)
+		public static void Sample(int cell)
 	{
 		SandboxToolParameterMenu.instance.settings.SetIntSetting("SandboxTools.SelectedElement", (int)Grid.Element[cell].idx);
 		SandboxToolParameterMenu.instance.settings.SetFloatSetting("SandboxTools.Mass", Mathf.Round(Grid.Mass[cell] * 100f) / 100f);
@@ -42,7 +42,7 @@ public class SandboxSampleTool : InterfaceTool
 		SandboxToolParameterMenu.instance.RefreshDisplay();
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		SandboxToolParameterMenu.instance.gameObject.SetActive(true);
@@ -54,14 +54,14 @@ public class SandboxSampleTool : InterfaceTool
 		SandboxToolParameterMenu.instance.diseaseCountSlider.row.SetActive(true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		SandboxToolParameterMenu.instance.gameObject.SetActive(false);
 		this.StopSound();
 	}
 
-	private void PlaySound()
+		private void PlaySound()
 	{
 		Element element = ElementLoader.elements[SandboxToolParameterMenu.instance.settings.GetIntSetting("SandboxTools.SelectedElement")];
 		float volume = 1f;
@@ -98,15 +98,15 @@ public class SandboxSampleTool : InterfaceTool
 		this.ev.start();
 	}
 
-	private void StopSound()
+		private void StopSound()
 	{
 		this.ev.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
 		this.ev.release();
 	}
 
-	protected Color radiusIndicatorColor = new Color(0.5f, 0.7f, 0.5f, 0.2f);
+		protected Color radiusIndicatorColor = new Color(0.5f, 0.7f, 0.5f, 0.2f);
 
-	private int currentCell;
+		private int currentCell;
 
-	private EventInstance ev;
+		private EventInstance ev;
 }

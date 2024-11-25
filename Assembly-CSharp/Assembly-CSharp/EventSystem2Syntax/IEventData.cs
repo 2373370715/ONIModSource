@@ -2,7 +2,7 @@
 
 namespace EventSystem2Syntax
 {
-	internal interface IEventData
+		internal interface IEventData
 	{
 	}
 }

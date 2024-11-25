@@ -5,16 +5,16 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ResourceRef<ResourceType> : ISaveLoadable where ResourceType : Resource
 {
-	public ResourceRef(ResourceType resource)
+		public ResourceRef(ResourceType resource)
 	{
 		this.Set(resource);
 	}
 
-	public ResourceRef()
+		public ResourceRef()
 	{
 	}
 
-		public ResourceGuid Guid
+			public ResourceGuid Guid
 	{
 		get
 		{
@@ -22,18 +22,18 @@ public class ResourceRef<ResourceType> : ISaveLoadable where ResourceType : Reso
 		}
 	}
 
-	public ResourceType Get()
+		public ResourceType Get()
 	{
 		return this.resource;
 	}
 
-	public void Set(ResourceType resource)
+		public void Set(ResourceType resource)
 	{
 		this.guid = null;
 		this.resource = resource;
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerializing()
 	{
 		if (this.resource == null)
@@ -44,7 +44,7 @@ public class ResourceRef<ResourceType> : ISaveLoadable where ResourceType : Reso
 		this.guid = this.resource.Guid;
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (this.guid != null)
@@ -57,8 +57,8 @@ public class ResourceRef<ResourceType> : ISaveLoadable where ResourceType : Reso
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private ResourceGuid guid;
 
-	private ResourceType resource;
+		private ResourceType resource;
 }

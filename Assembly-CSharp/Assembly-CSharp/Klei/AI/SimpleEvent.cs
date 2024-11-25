@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class SimpleEvent : GameplayEvent<SimpleEvent.StatesInstance>
+		public class SimpleEvent : GameplayEvent<SimpleEvent.StatesInstance>
 	{
-		public SimpleEvent(string id, string title, string description, string animFileName, string buttonText = null, string buttonTooltip = null) : base(id, 0, 0)
+				public SimpleEvent(string id, string title, string description, string animFileName, string buttonText = null, string buttonTooltip = null) : base(id, 0, 0)
 		{
 			this.title = title;
 			this.description = description;
@@ -15,24 +15,24 @@ namespace Klei.AI
 			this.animFileName = animFileName;
 		}
 
-		public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
+				public override StateMachine.Instance GetSMI(GameplayEventManager manager, GameplayEventInstance eventInstance)
 		{
 			return new SimpleEvent.StatesInstance(manager, eventInstance, this);
 		}
 
-		private string buttonText;
+				private string buttonText;
 
-		private string buttonTooltip;
+				private string buttonTooltip;
 
-		public class States : GameplayEventStateMachine<SimpleEvent.States, SimpleEvent.StatesInstance, GameplayEventManager, SimpleEvent>
+				public class States : GameplayEventStateMachine<SimpleEvent.States, SimpleEvent.StatesInstance, GameplayEventManager, SimpleEvent>
 		{
-			public override void InitializeStates(out StateMachine.BaseState default_state)
+						public override void InitializeStates(out StateMachine.BaseState default_state)
 			{
 				default_state = this.root;
 				this.ending.ReturnSuccess();
 			}
 
-			public override EventInfoData GenerateEventPopupData(SimpleEvent.StatesInstance smi)
+						public override EventInfoData GenerateEventPopupData(SimpleEvent.StatesInstance smi)
 			{
 				EventInfoData eventInfoData = new EventInfoData(smi.gameplayEvent.title, smi.gameplayEvent.description, smi.gameplayEvent.animFileName);
 				eventInfoData.minions = smi.minions;
@@ -57,16 +57,16 @@ namespace Klei.AI
 				return eventInfoData;
 			}
 
-			public GameStateMachine<SimpleEvent.States, SimpleEvent.StatesInstance, GameplayEventManager, object>.State ending;
+						public GameStateMachine<SimpleEvent.States, SimpleEvent.StatesInstance, GameplayEventManager, object>.State ending;
 		}
 
-		public class StatesInstance : GameplayEventStateMachine<SimpleEvent.States, SimpleEvent.StatesInstance, GameplayEventManager, SimpleEvent>.GameplayEventStateMachineInstance
+				public class StatesInstance : GameplayEventStateMachine<SimpleEvent.States, SimpleEvent.StatesInstance, GameplayEventManager, SimpleEvent>.GameplayEventStateMachineInstance
 		{
-			public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, SimpleEvent simpleEvent) : base(master, eventInstance, simpleEvent)
+						public StatesInstance(GameplayEventManager master, GameplayEventInstance eventInstance, SimpleEvent simpleEvent) : base(master, eventInstance, simpleEvent)
 			{
 			}
 
-			public void SetTextParameter(string key, string value)
+						public void SetTextParameter(string key, string value)
 			{
 				if (this.textParameters == null)
 				{
@@ -75,18 +75,18 @@ namespace Klei.AI
 				this.textParameters.Add(new global::Tuple<string, string>(key, value));
 			}
 
-			public void ShowEventPopup()
+						public void ShowEventPopup()
 			{
 				EventInfoScreen.ShowPopup(base.smi.sm.GenerateEventPopupData(base.smi));
 			}
 
-			public GameObject[] minions;
+						public GameObject[] minions;
 
-			public GameObject artifact;
+						public GameObject artifact;
 
-			public List<global::Tuple<string, string>> textParameters;
+						public List<global::Tuple<string, string>> textParameters;
 
-			public System.Action callback;
+						public System.Action callback;
 		}
 	}
 }

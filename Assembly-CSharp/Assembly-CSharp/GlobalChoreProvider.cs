@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 public class GlobalChoreProvider : ChoreProvider, IRender200ms
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		GlobalChoreProvider.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		GlobalChoreProvider.Instance = this;
 		this.clearableManager = new ClearableManager();
 	}
 
-	protected override void OnWorldRemoved(object data)
+		protected override void OnWorldRemoved(object data)
 	{
 		int num = (int)data;
 		int parentWorldId = ClusterManager.Instance.GetWorld(num).ParentWorldId;
@@ -27,7 +27,7 @@ public class GlobalChoreProvider : ChoreProvider, IRender200ms
 		base.OnWorldRemoved(data);
 	}
 
-	protected override void OnWorldParentChanged(object data)
+		protected override void OnWorldParentChanged(object data)
 	{
 		WorldParentChangedEventArgs worldParentChangedEventArgs = data as WorldParentChangedEventArgs;
 		if (worldParentChangedEventArgs == null || worldParentChangedEventArgs.lastParentId == 255)
@@ -48,7 +48,7 @@ public class GlobalChoreProvider : ChoreProvider, IRender200ms
 		base.TransferChores<FetchChore>(oldChores, newChores, worldParentChangedEventArgs.world.ParentWorldId);
 	}
 
-	public override void AddChore(Chore chore)
+		public override void AddChore(Chore chore)
 	{
 		FetchChore fetchChore = chore as FetchChore;
 		if (fetchChore != null)
@@ -66,7 +66,7 @@ public class GlobalChoreProvider : ChoreProvider, IRender200ms
 		base.AddChore(chore);
 	}
 
-	public override void RemoveChore(Chore chore)
+		public override void RemoveChore(Chore chore)
 	{
 		FetchChore fetchChore = chore as FetchChore;
 		if (fetchChore != null)
@@ -83,7 +83,7 @@ public class GlobalChoreProvider : ChoreProvider, IRender200ms
 		base.RemoveChore(chore);
 	}
 
-	public void UpdateFetches(PathProber path_prober)
+		public void UpdateFetches(PathProber path_prober)
 	{
 		List<FetchChore> list = null;
 		int myParentWorldId = path_prober.gameObject.GetMyParentWorldId();
@@ -144,38 +144,55 @@ public class GlobalChoreProvider : ChoreProvider, IRender200ms
 		this.clearableManager.CollectAndSortClearables(component);
 	}
 
-	public override void CollectChores(ChoreConsumerState consumer_state, List<Chore.Precondition.Context> succeeded, List<Chore.Precondition.Context> failed_contexts)
+		public override void CollectChores(ChoreConsumerState consumer_state, List<Chore.Precondition.Context> succeeded, List<Chore.Precondition.Context> failed_contexts)
 	{
 		base.CollectChores(consumer_state, succeeded, failed_contexts);
 		this.clearableManager.CollectChores(this.fetches, consumer_state, succeeded, failed_contexts);
-		for (int i = 0; i < this.fetches.Count; i++)
+		int num = CPUBudget.coreCount * 4;
+		if (this.fetches.Count > num)
 		{
-			this.fetches[i].chore.CollectChoresFromGlobalChoreProvider(consumer_state, succeeded, failed_contexts, false);
+			GlobalChoreProvider.batch_fetch_collector.Reset(this);
+			int coreCount = CPUBudget.coreCount;
+			int num2 = Math.Min(16, this.fetches.Count / coreCount);
+			for (int i = 0; i < this.fetches.Count; i += num2)
+			{
+				GlobalChoreProvider.batch_fetch_collector.Add(new GlobalChoreProvider.FetchChoreCollectTask(i, Math.Min(i + num2, this.fetches.Count), consumer_state));
+			}
+			GlobalJobManager.Run(GlobalChoreProvider.batch_fetch_collector);
+			for (int j = 0; j < coreCount; j++)
+			{
+				GlobalChoreProvider.batch_fetch_collector.GetWorkItem(j).Finish(succeeded, failed_contexts);
+			}
+			return;
+		}
+		for (int k = 0; k < this.fetches.Count; k++)
+		{
+			this.fetches[k].chore.CollectChoresFromGlobalChoreProvider(consumer_state, succeeded, failed_contexts, false);
 		}
 	}
 
-	public HandleVector<int>.Handle RegisterClearable(Clearable clearable)
+		public HandleVector<int>.Handle RegisterClearable(Clearable clearable)
 	{
 		return this.clearableManager.RegisterClearable(clearable);
 	}
 
-	public void UnregisterClearable(HandleVector<int>.Handle handle)
+		public void UnregisterClearable(HandleVector<int>.Handle handle)
 	{
 		this.clearableManager.UnregisterClearable(handle);
 	}
 
-	protected override void OnLoadLevel()
+		protected override void OnLoadLevel()
 	{
 		base.OnLoadLevel();
 		GlobalChoreProvider.Instance = null;
 	}
 
-	public void Render200ms(float dt)
+		public void Render200ms(float dt)
 	{
 		this.UpdateStorageFetchableBits();
 	}
 
-	private void UpdateStorageFetchableBits()
+		private void UpdateStorageFetchableBits()
 	{
 		ChoreType storageFetch = Db.Get().ChoreTypes.StorageFetch;
 		ChoreType foodFetch = Db.Get().ChoreTypes.FoodFetch;
@@ -202,27 +219,29 @@ public class GlobalChoreProvider : ChoreProvider, IRender200ms
 		}
 	}
 
-	public bool ClearableHasDestination(Pickupable pickupable)
+		public bool ClearableHasDestination(Pickupable pickupable)
 	{
 		KPrefabID kprefabID = pickupable.KPrefabID;
 		return this.storageFetchableTags.Contains(kprefabID.PrefabTag);
 	}
 
-	public static GlobalChoreProvider Instance;
+		public static GlobalChoreProvider Instance;
 
-	public Dictionary<int, List<FetchChore>> fetchMap = new Dictionary<int, List<FetchChore>>();
+		public Dictionary<int, List<FetchChore>> fetchMap = new Dictionary<int, List<FetchChore>>();
 
-	public List<GlobalChoreProvider.Fetch> fetches = new List<GlobalChoreProvider.Fetch>();
+		public List<GlobalChoreProvider.Fetch> fetches = new List<GlobalChoreProvider.Fetch>();
 
-	private static readonly GlobalChoreProvider.FetchComparer Comparer = new GlobalChoreProvider.FetchComparer();
+		private static readonly GlobalChoreProvider.FetchComparer Comparer = new GlobalChoreProvider.FetchComparer();
 
-	private ClearableManager clearableManager;
+		private ClearableManager clearableManager;
 
-	private HashSet<Tag> storageFetchableTags = new HashSet<Tag>();
+		private HashSet<Tag> storageFetchableTags = new HashSet<Tag>();
 
-	public struct Fetch
+		private static WorkItemCollection<GlobalChoreProvider.FetchChoreCollectTask, GlobalChoreProvider> batch_fetch_collector = new WorkItemCollection<GlobalChoreProvider.FetchChoreCollectTask, GlobalChoreProvider>();
+
+		public struct Fetch
 	{
-		public bool IsBetterThan(GlobalChoreProvider.Fetch fetch)
+				public bool IsBetterThan(GlobalChoreProvider.Fetch fetch)
 		{
 			if (this.category != fetch.category)
 			{
@@ -254,20 +273,77 @@ public class GlobalChoreProvider : ChoreProvider, IRender200ms
 			return false;
 		}
 
-		public FetchChore chore;
+				public FetchChore chore;
 
-		public int idsHash;
+				public int idsHash;
 
-		public int cost;
+				public int cost;
 
-		public PrioritySetting priority;
+				public PrioritySetting priority;
 
-		public Storage.FetchCategory category;
+				public Storage.FetchCategory category;
 	}
 
-	private class FetchComparer : IComparer<GlobalChoreProvider.Fetch>
+		private struct FetchChoreCollectTask : IWorkItem<GlobalChoreProvider>
 	{
-		public int Compare(GlobalChoreProvider.Fetch a, GlobalChoreProvider.Fetch b)
+				public FetchChoreCollectTask(int start, int end, ChoreConsumerState consumer_state)
+		{
+			this.start = start;
+			this.end = end;
+			this.consumer_state = consumer_state;
+			this.succeeded = ListPool<Chore.Precondition.Context, GlobalChoreProvider.FetchChoreCollectTask>.Allocate();
+			this.failed = ListPool<Chore.Precondition.Context, GlobalChoreProvider.FetchChoreCollectTask>.Allocate();
+			this.incomplete = ListPool<Chore.Precondition.Context, GlobalChoreProvider.FetchChoreCollectTask>.Allocate();
+		}
+
+				public void Run(GlobalChoreProvider context)
+		{
+			for (int i = this.start; i < this.end; i++)
+			{
+				context.fetches[i].chore.CollectChoresFromGlobalChoreProvider(this.consumer_state, this.succeeded, this.incomplete, this.failed, false);
+			}
+		}
+
+				public void Finish(List<Chore.Precondition.Context> combined_succeeded, List<Chore.Precondition.Context> combined_failed)
+		{
+			combined_succeeded.AddRange(this.succeeded);
+			this.succeeded.Clear();
+			this.succeeded.Recycle();
+			combined_failed.AddRange(this.failed);
+			this.failed.Clear();
+			this.failed.Recycle();
+			foreach (Chore.Precondition.Context item in this.incomplete)
+			{
+				item.FinishPreconditions();
+				if (item.IsSuccess())
+				{
+					combined_succeeded.Add(item);
+				}
+				else
+				{
+					combined_failed.Add(item);
+				}
+			}
+			this.incomplete.Clear();
+			this.incomplete.Recycle();
+		}
+
+				private int start;
+
+				private int end;
+
+				private ChoreConsumerState consumer_state;
+
+				public ListPool<Chore.Precondition.Context, GlobalChoreProvider.FetchChoreCollectTask>.PooledList succeeded;
+
+				public ListPool<Chore.Precondition.Context, GlobalChoreProvider.FetchChoreCollectTask>.PooledList failed;
+
+				public ListPool<Chore.Precondition.Context, GlobalChoreProvider.FetchChoreCollectTask>.PooledList incomplete;
+	}
+
+		private class FetchComparer : IComparer<GlobalChoreProvider.Fetch>
+	{
+				public int Compare(GlobalChoreProvider.Fetch a, GlobalChoreProvider.Fetch b)
 		{
 			int num = b.priority.priority_class - a.priority.priority_class;
 			if (num != 0)
@@ -283,9 +359,9 @@ public class GlobalChoreProvider : ChoreProvider, IRender200ms
 		}
 	}
 
-	private struct FindTopPriorityTask : IWorkItem<object>
+		private struct FindTopPriorityTask : IWorkItem<object>
 	{
-		public FindTopPriorityTask(int start, int end, List<Prioritizable> worldCollection)
+				public FindTopPriorityTask(int start, int end, List<Prioritizable> worldCollection)
 		{
 			this.start = start;
 			this.end = end;
@@ -293,7 +369,7 @@ public class GlobalChoreProvider : ChoreProvider, IRender200ms
 			this.found = false;
 		}
 
-		public void Run(object context)
+				public void Run(object context)
 		{
 			if (GlobalChoreProvider.FindTopPriorityTask.abort)
 			{
@@ -315,14 +391,14 @@ public class GlobalChoreProvider : ChoreProvider, IRender200ms
 			}
 		}
 
-		private int start;
+				private int start;
 
-		private int end;
+				private int end;
 
-		private List<Prioritizable> worldCollection;
+				private List<Prioritizable> worldCollection;
 
-		public bool found;
+				public bool found;
 
-		public static bool abort;
+				public static bool abort;
 	}
 }

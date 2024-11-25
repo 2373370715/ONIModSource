@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/MiniComet")]
 public class MiniComet : KMonoBehaviour, ISim33ms
 {
-		public Vector3 TargetPosition
+			public Vector3 TargetPosition
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-			public Vector2 Velocity
+				public Vector2 Velocity
 	{
 		get
 		{
@@ -28,7 +28,7 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	private float GetVolume(GameObject gameObject)
+		private float GetVolume(GameObject gameObject)
 	{
 		float result = 1f;
 		if (gameObject != null && this.selectable != null && this.selectable.IsSelected)
@@ -38,7 +38,7 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		return result;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.loopingSounds = base.gameObject.GetComponent<LoopingSounds>();
@@ -46,7 +46,7 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		this.RandomizeVelocity();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.anim.Offset = this.offsetPosition;
 		if (this.spawnWithOffset)
@@ -60,12 +60,12 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		this.typeID = base.GetComponent<KPrefabID>().PrefabTag;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	protected void SetupOffset()
+		protected void SetupOffset()
 	{
 		Vector3 position = base.transform.GetPosition();
 		Vector3 position2 = base.transform.GetPosition();
@@ -89,7 +89,7 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		this.anim.Offset = this.offsetPosition;
 	}
 
-	public virtual void RandomizeVelocity()
+		public virtual void RandomizeVelocity()
 	{
 		float num = UnityEngine.Random.Range(this.spawnAngle.x, this.spawnAngle.y);
 		float f = num * 3.1415927f / 180f;
@@ -98,12 +98,12 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		base.GetComponent<KBatchedAnimController>().Rotation = -num - 90f;
 	}
 
-	public int GetRandomNumOres()
+		public int GetRandomNumOres()
 	{
 		return UnityEngine.Random.Range(this.explosionOreCount.x, this.explosionOreCount.y + 1);
 	}
 
-	[ContextMenu("Explode")]
+		[ContextMenu("Explode")]
 	private void Explode(Vector3 pos, int cell, int prev_cell, Element element)
 	{
 		byte b = Grid.WorldIdx[cell];
@@ -140,7 +140,7 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	public float GetDistanceFromImpact()
+		public float GetDistanceFromImpact()
 	{
 		float num = this.velocity.x / this.velocity.y;
 		Vector3 position = base.transform.GetPosition();
@@ -160,12 +160,12 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		return 6f;
 	}
 
-	public float GetSoundDistance()
+		public float GetSoundDistance()
 	{
 		return this.GetDistanceFromImpact();
 	}
 
-	public void Sim33ms(float dt)
+		public void Sim33ms(float dt)
 	{
 		if (this.hasExploded)
 		{
@@ -214,7 +214,7 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		this.age += dt;
 	}
 
-	private void PlayImpactSound(Vector3 pos)
+		private void PlayImpactSound(Vector3 pos)
 	{
 		if (this.impactSound == null)
 		{
@@ -233,13 +233,13 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	private void StartLoopingSound()
+		private void StartLoopingSound()
 	{
 		this.loopingSounds.StartSound(this.flyingSound);
 		this.loopingSounds.UpdateFirstParameter(this.flyingSound, this.FLYING_SOUND_ID_PARAMETER, (float)this.flyingSoundID);
 	}
 
-	public void Explode()
+		public void Explode()
 	{
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
 		Vector3 position = base.transform.GetPosition();
@@ -249,66 +249,66 @@ public class MiniComet : KMonoBehaviour, ISim33ms
 		global::Util.KDestroyGameObject(base.gameObject);
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private PrimaryElement pe;
 
-	public Vector2 spawnVelocity = new Vector2(7f, 9f);
+		public Vector2 spawnVelocity = new Vector2(7f, 9f);
 
-	public Vector2 spawnAngle = new Vector2(30f, 150f);
+		public Vector2 spawnAngle = new Vector2(30f, 150f);
 
-	public SpawnFXHashes explosionEffectHash;
+		public SpawnFXHashes explosionEffectHash;
 
-	public int addDiseaseCount;
+		public int addDiseaseCount;
 
-	public byte diseaseIdx = byte.MaxValue;
+		public byte diseaseIdx = byte.MaxValue;
 
-	public Vector2I explosionOreCount = new Vector2I(1, 1);
+		public Vector2I explosionOreCount = new Vector2I(1, 1);
 
-	public Vector2 explosionSpeedRange = new Vector2(0f, 0f);
+		public Vector2 explosionSpeedRange = new Vector2(0f, 0f);
 
-	public string impactSound;
+		public string impactSound;
 
-	public string flyingSound;
+		public string flyingSound;
 
-	public int flyingSoundID;
+		public int flyingSoundID;
 
-	private HashedString FLYING_SOUND_ID_PARAMETER = "meteorType";
+		private HashedString FLYING_SOUND_ID_PARAMETER = "meteorType";
 
-	public bool Targeted;
+		public bool Targeted;
 
-	[Serialize]
+		[Serialize]
 	protected Vector3 offsetPosition;
 
-	[Serialize]
+		[Serialize]
 	protected Vector2 velocity;
 
-	private Vector3 previousPosition;
+		private Vector3 previousPosition;
 
-	private bool hasExploded;
+		private bool hasExploded;
 
-	public string[] craterPrefabs;
+		public string[] craterPrefabs;
 
-	public bool spawnWithOffset;
+		public bool spawnWithOffset;
 
-	private float age;
+		private float age;
 
-	public System.Action OnImpact;
+		public System.Action OnImpact;
 
-	public Ref<KPrefabID> ignoreObstacleForDamage = new Ref<KPrefabID>();
+		public Ref<KPrefabID> ignoreObstacleForDamage = new Ref<KPrefabID>();
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimController anim;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KSelectable selectable;
 
-	public Tag typeID;
+		public Tag typeID;
 
-	private LoopingSounds loopingSounds;
+		private LoopingSounds loopingSounds;
 
-	private List<GameObject> damagedEntities = new List<GameObject>();
+		private List<GameObject> damagedEntities = new List<GameObject>();
 
-	private List<int> destroyedCells = new List<int>();
+		private List<int> destroyedCells = new List<int>();
 
-	private const float MAX_DISTANCE_TEST = 6f;
+		private const float MAX_DISTANCE_TEST = 6f;
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CritterTemperatureMonitor : GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.comfortable;
 		this.uncomfortableEffect = new Effect("EffectCritterTemperatureUncomfortable", CREATURES.MODIFIERS.CRITTER_TEMPERATURE_UNCOMFORTABLE.NAME, CREATURES.MODIFIERS.CRITTER_TEMPERATURE_UNCOMFORTABLE.TOOLTIP, 0f, false, false, true, null, -1f, 0f, null, "");
@@ -41,7 +41,7 @@ public class CritterTemperatureMonitor : GameStateMachine<CritterTemperatureMoni
 		this.dead.DoNothing();
 	}
 
-	public static void UpdateInternalTemperature(CritterTemperatureMonitor.Instance smi, float dt)
+		public static void UpdateInternalTemperature(CritterTemperatureMonitor.Instance smi, float dt)
 	{
 		CritterTemperatureMonitor.RefreshInternalTemperature(smi);
 		if (smi.OnUpdate_GetTemperatureInternal != null)
@@ -50,7 +50,7 @@ public class CritterTemperatureMonitor : GameStateMachine<CritterTemperatureMoni
 		}
 	}
 
-	public static void RefreshInternalTemperature(CritterTemperatureMonitor.Instance smi)
+		public static void RefreshInternalTemperature(CritterTemperatureMonitor.Instance smi)
 	{
 		if (smi.temperature != null)
 		{
@@ -58,63 +58,64 @@ public class CritterTemperatureMonitor : GameStateMachine<CritterTemperatureMoni
 		}
 	}
 
-	public GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.State comfortable;
+		public GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.State comfortable;
 
-	public GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.State dead;
+		public GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.State dead;
 
-	public CritterTemperatureMonitor.TemperatureStates hot;
+		public CritterTemperatureMonitor.TemperatureStates hot;
 
-	public CritterTemperatureMonitor.TemperatureStates cold;
+		public CritterTemperatureMonitor.TemperatureStates cold;
 
-	public Effect uncomfortableEffect;
+		public Effect uncomfortableEffect;
 
-	public Effect deadlyEffect;
+		public Effect deadlyEffect;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public float GetIdealTemperature()
+				public float GetIdealTemperature()
 		{
 			return (this.temperatureHotUncomfortable + this.temperatureColdUncomfortable) / 2f;
 		}
 
-		public float temperatureHotDeadly = float.MaxValue;
+				public float temperatureHotDeadly = float.MaxValue;
 
-		public float temperatureHotUncomfortable = float.MaxValue;
+				public float temperatureHotUncomfortable = float.MaxValue;
 
-		public float temperatureColdDeadly = float.MinValue;
+				public float temperatureColdDeadly = float.MinValue;
 
-		public float temperatureColdUncomfortable = float.MinValue;
+				public float temperatureColdUncomfortable = float.MinValue;
 
-		public float secondsUntilDamageStarts = 1f;
+				public float secondsUntilDamageStarts = 1f;
 
-		public float damagePerSecond = 0.25f;
+				public float damagePerSecond = 0.25f;
 
-		public bool isBammoth;
+				public bool isBammoth;
 	}
 
-	public class TemperatureStates : GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.State
+		public class TemperatureStates : GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.State
 	{
-		public GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.State uncomfortable;
+				public GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.State uncomfortable;
 
-		public GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.State deadly;
+				public GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.State deadly;
 	}
 
-	public new class Instance : GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<CritterTemperatureMonitor, CritterTemperatureMonitor.Instance, IStateMachineTarget, CritterTemperatureMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, CritterTemperatureMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, CritterTemperatureMonitor.Def def) : base(master, def)
 		{
 			this.health = master.GetComponent<Health>();
 			this.occupyArea = master.GetComponent<OccupyArea>();
 			this.primaryElement = master.GetComponent<PrimaryElement>();
 			this.temperature = Db.Get().Amounts.CritterTemperature.Lookup(base.gameObject);
+			this.pickupable = master.GetComponent<Pickupable>();
 		}
 
-		public void ResetDamageCooldown()
+				public void ResetDamageCooldown()
 		{
 			this.secondsUntilDamage = base.def.secondsUntilDamageStarts;
 		}
 
-		public void TryDamage(float deltaSeconds)
+				public void TryDamage(float deltaSeconds)
 		{
 			if (this.secondsUntilDamage <= 0f)
 			{
@@ -125,13 +126,13 @@ public class CritterTemperatureMonitor : GameStateMachine<CritterTemperatureMoni
 			this.secondsUntilDamage -= deltaSeconds;
 		}
 
-		public StateMachine.BaseState GetTargetState()
+				public StateMachine.BaseState GetTargetState()
 		{
 			bool flag = this.IsEntirelyInVaccum();
 			float temperatureExternal = this.GetTemperatureExternal();
 			float temperatureInternal = this.GetTemperatureInternal();
 			StateMachine.BaseState result;
-			if (base.gameObject.HasTag(GameTags.Dead))
+			if (this.pickupable.KPrefabID.HasTag(GameTags.Dead))
 			{
 				result = base.sm.dead;
 			}
@@ -158,9 +159,9 @@ public class CritterTemperatureMonitor : GameStateMachine<CritterTemperatureMoni
 			return result;
 		}
 
-		public bool IsEntirelyInVaccum()
+				public bool IsEntirelyInVaccum()
 		{
-			int num = Grid.PosToCell(base.gameObject);
+			int cachedCell = this.pickupable.cachedCell;
 			bool result;
 			if (this.occupyArea != null)
 			{
@@ -169,8 +170,8 @@ public class CritterTemperatureMonitor : GameStateMachine<CritterTemperatureMoni
 				{
 					if (!base.def.isBammoth || this.occupyArea.OccupiedCellsOffsets[i].x == 0)
 					{
-						int num2 = Grid.OffsetCell(num, this.occupyArea.OccupiedCellsOffsets[i]);
-						if (!Grid.IsValidCell(num2) || !Grid.Element[num2].IsVacuum)
+						int num = Grid.OffsetCell(cachedCell, this.occupyArea.OccupiedCellsOffsets[i]);
+						if (!Grid.IsValidCell(num) || !Grid.Element[num].IsVacuum)
 						{
 							result = false;
 							break;
@@ -180,55 +181,57 @@ public class CritterTemperatureMonitor : GameStateMachine<CritterTemperatureMoni
 			}
 			else
 			{
-				result = (!Grid.IsValidCell(num) || Grid.Element[num].IsVacuum);
+				result = (!Grid.IsValidCell(cachedCell) || Grid.Element[cachedCell].IsVacuum);
 			}
 			return result;
 		}
 
-		public float GetTemperatureInternal()
+				public float GetTemperatureInternal()
 		{
 			return this.primaryElement.Temperature;
 		}
 
-		public float GetTemperatureExternal()
+				public float GetTemperatureExternal()
 		{
-			int num = Grid.PosToCell(base.gameObject);
+			int cachedCell = this.pickupable.cachedCell;
 			if (this.occupyArea != null)
 			{
-				float num2 = 0f;
-				int num3 = 0;
+				float num = 0f;
+				int num2 = 0;
 				for (int i = 0; i < this.occupyArea.OccupiedCellsOffsets.Length; i++)
 				{
 					if (!base.def.isBammoth || this.occupyArea.OccupiedCellsOffsets[i].x == 0)
 					{
-						int num4 = Grid.OffsetCell(num, this.occupyArea.OccupiedCellsOffsets[i]);
-						if (Grid.IsValidCell(num4))
+						int num3 = Grid.OffsetCell(cachedCell, this.occupyArea.OccupiedCellsOffsets[i]);
+						if (Grid.IsValidCell(num3))
 						{
-							bool flag = Grid.Element[num4].id == SimHashes.Vacuum || Grid.Element[num4].id == SimHashes.Void;
-							num3++;
-							num2 += (flag ? this.GetTemperatureInternal() : Grid.Temperature[num4]);
+							bool flag = Grid.Element[num3].id == SimHashes.Vacuum || Grid.Element[num3].id == SimHashes.Void;
+							num2++;
+							num += (flag ? this.GetTemperatureInternal() : Grid.Temperature[num3]);
 						}
 					}
 				}
-				return num2 / (float)Mathf.Max(1, num3);
+				return num / (float)Mathf.Max(1, num2);
 			}
-			if (Grid.Element[num].id != SimHashes.Vacuum && Grid.Element[num].id != SimHashes.Void)
+			if (Grid.Element[cachedCell].id != SimHashes.Vacuum && Grid.Element[cachedCell].id != SimHashes.Void)
 			{
-				return Grid.Temperature[num];
+				return Grid.Temperature[cachedCell];
 			}
 			return this.GetTemperatureInternal();
 		}
 
-		public AmountInstance temperature;
+				public AmountInstance temperature;
 
-		public Health health;
+				public Health health;
 
-		public OccupyArea occupyArea;
+				public OccupyArea occupyArea;
 
-		public PrimaryElement primaryElement;
+				public PrimaryElement primaryElement;
 
-		public float secondsUntilDamage;
+				public Pickupable pickupable;
 
-		public Action<float, float> OnUpdate_GetTemperatureInternal;
+				public float secondsUntilDamage;
+
+				public Action<float, float> OnUpdate_GetTemperatureInternal;
 	}
 }

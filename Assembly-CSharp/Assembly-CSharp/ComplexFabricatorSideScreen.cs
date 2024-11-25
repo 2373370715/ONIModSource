@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class ComplexFabricatorSideScreen : SideScreenContent
 {
-	public override string GetTitle()
+		public override string GetTitle()
 	{
 		if (this.targetFab == null)
 		{
@@ -17,13 +17,13 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		return string.Format(Strings.Get(this.titleKey), this.targetFab.GetProperName());
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		ComplexFabricator component = target.GetComponent<ComplexFabricator>();
 		return component != null && component.enabled;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		ComplexFabricator component = target.GetComponent<ComplexFabricator>();
 		if (component == null)
@@ -40,7 +40,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		this.UpdateQueueCountLabels(null);
 	}
 
-	private void UpdateQueueCountLabels(object data = null)
+		private void UpdateQueueCountLabels(object data = null)
 	{
 		ComplexRecipe[] recipes = this.targetFab.GetRecipes();
 		for (int i = 0; i < recipes.Length; i++)
@@ -68,7 +68,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		this.nextOrderLabel.text = string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.NEXT_ORDER, UI.UISIDESCREENS.FABRICATORSIDESCREEN.NO_WORKABLE_ORDER);
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		if (show)
 		{
@@ -84,7 +84,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		base.OnShow(show);
 	}
 
-	public void Initialize(ComplexFabricator target)
+		public void Initialize(ComplexFabricator target)
 	{
 		if (target == null)
 		{
@@ -116,7 +116,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			}
 			else if (recipe.RequiresTechUnlock())
 			{
-				if (recipe.IsRequiredTechUnlocked())
+				if ((recipe.IsRequiredTechUnlocked() || Db.Get().Techs.Get(recipe.requiredTech).ArePrerequisitesComplete()) && (!recipe.RequiresAllIngredientsDiscovered || this.AllRecipeRequirementsDiscovered(recipe)))
 				{
 					flag = true;
 				}
@@ -124,6 +124,13 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 			else if (target.GetRecipeQueueCount(recipe) != 0)
 			{
 				flag = true;
+			}
+			else if (recipe.RequiresAllIngredientsDiscovered)
+			{
+				if (this.AllRecipeRequirementsDiscovered(recipe))
+				{
+					flag = true;
+				}
 			}
 			else if (this.AnyRecipeRequirementsDiscovered(recipe))
 			{
@@ -278,7 +285,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		this.RefreshIngredientAvailabilityVis();
 	}
 
-	public void RefreshQueueCountDisplayForRecipe(ComplexRecipe recipe, ComplexFabricator fabricator)
+		public void RefreshQueueCountDisplayForRecipe(ComplexRecipe recipe, ComplexFabricator fabricator)
 	{
 		GameObject gameObject = this.recipeToggles.Find((GameObject match) => this.recipeMap[match] == recipe);
 		if (gameObject != null)
@@ -287,15 +294,27 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		}
 	}
 
-	private void RefreshQueueCountDisplay(GameObject entryGO, ComplexFabricator fabricator)
+		private void RefreshQueueCountDisplay(GameObject entryGO, ComplexFabricator fabricator)
 	{
 		HierarchyReferences component = entryGO.GetComponent<HierarchyReferences>();
 		bool flag = fabricator.GetRecipeQueueCount(this.recipeMap[entryGO]) == ComplexFabricator.QUEUE_INFINITE;
 		component.GetReference<LocText>("CountLabel").text = (flag ? "" : fabricator.GetRecipeQueueCount(this.recipeMap[entryGO]).ToString());
 		component.GetReference<RectTransform>("InfiniteIcon").gameObject.SetActive(flag);
+		bool flag2 = !this.recipeMap[entryGO].IsRequiredTechUnlocked();
+		GameObject gameObject = component.GetReference<RectTransform>("TechRequired").gameObject;
+		gameObject.SetActive(flag2);
+		KButton component2 = gameObject.GetComponent<KButton>();
+		component2.ClearOnClick();
+		if (flag2)
+		{
+			component2.onClick += delegate()
+			{
+				ManagementMenu.Instance.OpenResearch(this.recipeMap[entryGO].requiredTech);
+			};
+		}
 	}
 
-	private void ToggleClicked(KToggle toggle)
+		private void ToggleClicked(KToggle toggle)
 	{
 		if (!this.recipeMap.ContainsKey(toggle.gameObject))
 		{
@@ -325,7 +344,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		DetailsScreen.Instance.ClearSecondarySideScreen();
 	}
 
-	public void CycleRecipe(int increment)
+		public void CycleRecipe(int increment)
 	{
 		int num = 0;
 		if (this.selectedToggle != null)
@@ -340,7 +359,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		this.ToggleClicked(this.recipeToggles[num2].GetComponent<KToggle>());
 	}
 
-	private bool HasAnyRecipeRequirements(ComplexRecipe recipe)
+		private bool HasAnyRecipeRequirements(ComplexRecipe recipe)
 	{
 		foreach (ComplexRecipe.RecipeElement recipeElement in recipe.ingredients)
 		{
@@ -352,7 +371,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		return false;
 	}
 
-	private bool HasAllRecipeRequirements(ComplexRecipe recipe)
+		private bool HasAllRecipeRequirements(ComplexRecipe recipe)
 	{
 		bool result = true;
 		foreach (ComplexRecipe.RecipeElement recipeElement in recipe.ingredients)
@@ -366,7 +385,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		return result;
 	}
 
-	private bool AnyRecipeRequirementsDiscovered(ComplexRecipe recipe)
+		private bool AnyRecipeRequirementsDiscovered(ComplexRecipe recipe)
 	{
 		foreach (ComplexRecipe.RecipeElement recipeElement in recipe.ingredients)
 		{
@@ -378,12 +397,24 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		return false;
 	}
 
-	private void Update()
+		private bool AllRecipeRequirementsDiscovered(ComplexRecipe recipe)
+	{
+		foreach (ComplexRecipe.RecipeElement recipeElement in recipe.ingredients)
+		{
+			if (!DiscoveredResources.Instance.IsDiscovered(recipeElement.material))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+		private void Update()
 	{
 		this.RefreshIngredientAvailabilityVis();
 	}
 
-	private void RefreshIngredientAvailabilityVis()
+		private void RefreshIngredientAvailabilityVis()
 	{
 		foreach (KeyValuePair<GameObject, ComplexRecipe> keyValuePair in this.recipeMap)
 		{
@@ -413,7 +444,7 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		}
 	}
 
-	private Element[] GetRecipeElements(Recipe recipe)
+		private Element[] GetRecipeElements(Recipe recipe)
 	{
 		Element[] array = new Element[recipe.Ingredients.Count];
 		for (int i = 0; i < recipe.Ingredients.Count; i++)
@@ -431,92 +462,92 @@ public class ComplexFabricatorSideScreen : SideScreenContent
 		return array;
 	}
 
-	[Header("Recipe List")]
+		[Header("Recipe List")]
 	[SerializeField]
 	private GameObject recipeGrid;
 
-	[Header("Recipe button variants")]
+		[Header("Recipe button variants")]
 	[SerializeField]
 	private GameObject recipeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject recipeButtonMultiple;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject recipeButtonQueueHybrid;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject recipeCategoryHeader;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite buttonSelectedBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite buttonNormalBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite elementPlaceholderSpr;
 
-	[SerializeField]
+		[SerializeField]
 	public Sprite radboltSprite;
 
-	private KToggle selectedToggle;
+		private KToggle selectedToggle;
 
-	public LayoutElement buttonScrollContainer;
+		public LayoutElement buttonScrollContainer;
 
-	public RectTransform buttonContentContainer;
+		public RectTransform buttonContentContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject elementContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText currentOrderLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText nextOrderLabel;
 
-	private Dictionary<ComplexFabricator, int> selectedRecipeFabricatorMap = new Dictionary<ComplexFabricator, int>();
+		private Dictionary<ComplexFabricator, int> selectedRecipeFabricatorMap = new Dictionary<ComplexFabricator, int>();
 
-	public EventReference createOrderSound;
+		public EventReference createOrderSound;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform content;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText subtitleLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText noRecipesDiscoveredLabel;
 
-	public TextStyleSetting styleTooltipHeader;
+		public TextStyleSetting styleTooltipHeader;
 
-	public TextStyleSetting styleTooltipBody;
+		public TextStyleSetting styleTooltipBody;
 
-	private ComplexFabricator targetFab;
+		private ComplexFabricator targetFab;
 
-	private ComplexRecipe selectedRecipe;
+		private ComplexRecipe selectedRecipe;
 
-	private Dictionary<GameObject, ComplexRecipe> recipeMap;
+		private Dictionary<GameObject, ComplexRecipe> recipeMap;
 
-	private Dictionary<string, GameObject> recipeCategories = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> recipeCategories = new Dictionary<string, GameObject>();
 
-	private List<GameObject> recipeToggles = new List<GameObject>();
+		private List<GameObject> recipeToggles = new List<GameObject>();
 
-	public SelectedRecipeQueueScreen recipeScreenPrefab;
+		public SelectedRecipeQueueScreen recipeScreenPrefab;
 
-	private SelectedRecipeQueueScreen recipeScreen;
+		private SelectedRecipeQueueScreen recipeScreen;
 
-	private int targetOrdersUpdatedSubHandle = -1;
+		private int targetOrdersUpdatedSubHandle = -1;
 
-	public enum StyleSetting
+		public enum StyleSetting
 	{
-		GridResult,
-		ListResult,
-		GridInput,
-		ListInput,
-		ListInputOutput,
-		GridInputOutput,
-		ClassicFabricator,
-		ListQueueHybrid
+				GridResult,
+				ListResult,
+				GridInput,
+				ListInput,
+				ListInputOutput,
+				GridInputOutput,
+				ClassicFabricator,
+				ListQueueHybrid
 	}
 }

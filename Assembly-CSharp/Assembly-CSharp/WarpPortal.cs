@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class WarpPortal : Workable
 {
-		public bool ReadyToWarp
+			public bool ReadyToWarp
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class WarpPortal : Workable
 		}
 	}
 
-		public bool IsWorking
+			public bool IsWorking
 	{
 		get
 		{
@@ -24,13 +24,13 @@ public class WarpPortal : Workable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.assignable.OnAssign += this.Assign;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.warpPortalSMI = new WarpPortal.WarpPortalSM.Instance(this);
@@ -39,7 +39,7 @@ public class WarpPortal : Workable
 		this.selectEventHandle = Game.Instance.Subscribe(-1503271301, new Action<object>(this.OnObjectSelected));
 	}
 
-	private void OnObjectSelected(object data)
+		private void OnObjectSelected(object data)
 	{
 		if (data != null && (GameObject)data == base.gameObject && Components.LiveMinionIdentities.Count > 0)
 		{
@@ -47,13 +47,13 @@ public class WarpPortal : Workable
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.Unsubscribe(this.selectEventHandle);
 		base.OnCleanUp();
 	}
 
-	private void Discover()
+		private void Discover()
 	{
 		if (this.discovered)
 		{
@@ -74,19 +74,19 @@ public class WarpPortal : Workable
 		this.discovered = true;
 	}
 
-	public void StartWarpSequence()
+		public void StartWarpSequence()
 	{
 		this.warpPortalSMI.GoTo(this.warpPortalSMI.sm.occupied.warping);
 	}
 
-	public void CancelAssignment()
+		public void CancelAssignment()
 	{
 		this.CancelChore();
 		this.assignable.Unassign();
 		this.warpPortalSMI.GoTo(this.warpPortalSMI.sm.idle);
 	}
 
-	private int GetTargetWorldID()
+		private int GetTargetWorldID()
 	{
 		SaveGame.Instance.GetComponent<WorldGenSpawner>().SpawnTag(WarpReceiverConfig.ID);
 		foreach (WarpReceiver component in UnityEngine.Object.FindObjectsOfType<WarpReceiver>())
@@ -100,7 +100,7 @@ public class WarpPortal : Workable
 		return -1;
 	}
 
-	private void Warp()
+		private void Warp()
 	{
 		if (base.worker == null || base.worker.HasTag(GameTags.Dying) || base.worker.HasTag(GameTags.Dead))
 		{
@@ -134,13 +134,13 @@ public class WarpPortal : Workable
 		}
 	}
 
-	public IEnumerator DelayedWarp(WarpReceiver receiver)
+		public IEnumerator DelayedWarp(WarpReceiver receiver)
 	{
 		yield return SequenceUtil.WaitForEndOfFrame;
 		int myWorldId = base.worker.GetMyWorldId();
 		int myWorldId2 = receiver.GetMyWorldId();
 		CameraController.Instance.ActiveWorldStarWipe(myWorldId2, Grid.CellToPos(Grid.PosToCell(receiver)), 10f, null);
-		Worker worker = base.worker;
+		WorkerBase worker = base.worker;
 		worker.StopWork();
 		receiver.ReceiveWarpedDuplicant(worker);
 		ClusterManager.Instance.MigrateMinion(worker.GetComponent<MinionIdentity>(), myWorldId2, myWorldId);
@@ -148,13 +148,13 @@ public class WarpPortal : Workable
 		yield break;
 	}
 
-	public void SetAssignable(bool set_it)
+		public void SetAssignable(bool set_it)
 	{
 		this.assignable.SetCanBeAssigned(set_it);
 		this.RefreshSideScreen();
 	}
 
-	private void Assign(IAssignableIdentity new_assignee)
+		private void Assign(IAssignableIdentity new_assignee)
 	{
 		this.CancelChore();
 		if (new_assignee != null)
@@ -163,7 +163,7 @@ public class WarpPortal : Workable
 		}
 	}
 
-	private void ActivateChore()
+		private void ActivateChore()
 	{
 		global::Debug.Assert(this.chore == null);
 		this.chore = new WorkChore<Workable>(Db.Get().ChoreTypes.Migrate, this, null, true, delegate(Chore o)
@@ -188,7 +188,7 @@ public class WarpPortal : Workable
 		this.showProgressBar = false;
 	}
 
-	private void CancelChore()
+		private void CancelChore()
 	{
 		if (this.chore == null)
 		{
@@ -203,14 +203,14 @@ public class WarpPortal : Workable
 		}
 	}
 
-	private void CompleteChore()
+		private void CompleteChore()
 	{
 		this.IsConsumed = true;
 		this.chore.Cleanup();
 		this.chore = null;
 	}
 
-	public void RefreshSideScreen()
+		public void RefreshSideScreen()
 	{
 		if (base.GetComponent<KSelectable>().IsSelected)
 		{
@@ -218,43 +218,43 @@ public class WarpPortal : Workable
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Assignable assignable;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	public Notifier notifier;
 
-	private Chore chore;
+		private Chore chore;
 
-	private WarpPortal.WarpPortalSM.Instance warpPortalSMI;
+		private WarpPortal.WarpPortalSM.Instance warpPortalSMI;
 
-	private Notification notification;
+		private Notification notification;
 
-	public const float RECHARGE_TIME = 3000f;
+		public const float RECHARGE_TIME = 3000f;
 
-	[Serialize]
+		[Serialize]
 	public bool IsConsumed;
 
-	[Serialize]
+		[Serialize]
 	public float rechargeProgress;
 
-	[Serialize]
+		[Serialize]
 	private bool discovered;
 
-	private int selectEventHandle = -1;
+		private int selectEventHandle = -1;
 
-	private Coroutine delayWarpRoutine;
+		private Coroutine delayWarpRoutine;
 
-	private static readonly HashedString[] printing_anim = new HashedString[]
+		private static readonly HashedString[] printing_anim = new HashedString[]
 	{
 		"printing_pre",
 		"printing_loop",
 		"printing_pst"
 	};
 
-	public class WarpPortalSM : GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal>
+		public class WarpPortalSM : GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.root;
 			this.root.Enter(delegate(WarpPortal.WarpPortalSM.Instance smi)
@@ -312,36 +312,36 @@ public class WarpPortal : Workable
 			}, UpdateRate.SIM_200ms, false);
 		}
 
-		public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State idle;
+				public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State idle;
 
-		public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State become_occupied;
+				public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State become_occupied;
 
-		public WarpPortal.WarpPortalSM.OccupiedStates occupied;
+				public WarpPortal.WarpPortalSM.OccupiedStates occupied;
 
-		public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State do_warp;
+				public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State do_warp;
 
-		public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State recharging;
+				public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State recharging;
 
-		public StateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.BoolParameter isCharged;
+				public StateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.BoolParameter isCharged;
 
-		private StateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.TargetParameter worker;
+				private StateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.TargetParameter worker;
 
-		public class OccupiedStates : GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State
+				public class OccupiedStates : GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State
 		{
-			public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State get_on;
+						public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State get_on;
 
-			public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State waiting;
+						public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State waiting;
 
-			public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State warping;
+						public GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.State warping;
 		}
 
-		public new class Instance : GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.GameInstance
+				public new class Instance : GameStateMachine<WarpPortal.WarpPortalSM, WarpPortal.WarpPortalSM.Instance, WarpPortal, object>.GameInstance
 		{
-			public Instance(WarpPortal master) : base(master)
+						public Instance(WarpPortal master) : base(master)
 			{
 			}
 
-			public Notification CreateDupeWaitingNotification()
+						public Notification CreateDupeWaitingNotification()
 			{
 				if (base.master.worker != null)
 				{

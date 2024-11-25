@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/PopFX")]
 public class PopFX : KMonoBehaviour
 {
-	public void Recycle()
+		public void Recycle()
 	{
 		this.icon = null;
 		this.text = "";
@@ -23,7 +23,7 @@ public class PopFX : KMonoBehaviour
 		Game.Instance.Unsubscribe(1983128072, new Action<object>(this.OnActiveWorldChanged));
 	}
 
-	public void Spawn(Sprite Icon, string Text, Transform TargetTransform, Vector3 Offset, float LifeTime = 1.5f, bool TrackTarget = false)
+		public void Spawn(Sprite Icon, string Text, Transform TargetTransform, Vector3 Offset, float LifeTime = 1.5f, bool TrackTarget = false)
 	{
 		this.icon = Icon;
 		this.text = Text;
@@ -51,7 +51,7 @@ public class PopFX : KMonoBehaviour
 		this.Update();
 	}
 
-	private void OnActiveWorldChanged(object data)
+		private void OnActiveWorldChanged(object data)
 	{
 		global::Tuple<int, int> tuple = (global::Tuple<int, int>)data;
 		if (this.isLive)
@@ -60,13 +60,13 @@ public class PopFX : KMonoBehaviour
 		}
 	}
 
-	private void SetWorldActive(int worldId)
+		private void SetWorldActive(int worldId)
 	{
 		int num = Grid.PosToCell((this.trackTarget && this.targetTransform != null) ? this.targetTransform.position : (this.startPos + this.offset));
 		this.isActiveWorld = (!Grid.IsValidCell(num) || (int)Grid.WorldIdx[num] == worldId);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!this.isLive)
 		{
@@ -96,33 +96,33 @@ public class PopFX : KMonoBehaviour
 		this.canvasGroup.alpha = (this.isActiveWorld ? (1.5f * ((this.lifetime - this.lifeElapsed) / this.lifetime)) : 0f);
 	}
 
-	private float Speed = 2f;
+		private float Speed = 2f;
 
-	private Sprite icon;
+		private Sprite icon;
 
-	private string text;
+		private string text;
 
-	private Transform targetTransform;
+		private Transform targetTransform;
 
-	private Vector3 offset;
+		private Vector3 offset;
 
-	public Image IconDisplay;
+		public Image IconDisplay;
 
-	public LocText TextDisplay;
+		public LocText TextDisplay;
 
-	public CanvasGroup canvasGroup;
+		public CanvasGroup canvasGroup;
 
-	private Camera uiCamera;
+		private Camera uiCamera;
 
-	private float lifetime;
+		private float lifetime;
 
-	private float lifeElapsed;
+		private float lifeElapsed;
 
-	private bool trackTarget;
+		private bool trackTarget;
 
-	private Vector3 startPos;
+		private Vector3 startPos;
 
-	private bool isLive;
+		private bool isLive;
 
-	private bool isActiveWorld;
+		private bool isActiveWorld;
 }

@@ -3,15 +3,15 @@ using UnityEngine;
 
 namespace Rendering.World
 {
-	public class DynamicMesh
+		public class DynamicMesh
 	{
-		public DynamicMesh(string name, Bounds bounds)
+				public DynamicMesh(string name, Bounds bounds)
 		{
 			this.Name = name;
 			this.Bounds = bounds;
 		}
 
-		public void Reserve(int vertex_count, int triangle_count)
+				public void Reserve(int vertex_count, int triangle_count)
 		{
 			if (vertex_count > this.VertexCount)
 			{
@@ -56,7 +56,7 @@ namespace Rendering.World
 			this.TriangleCount = triangle_count;
 		}
 
-		public void Commit()
+				public void Commit()
 		{
 			DynamicSubMesh[] meshes = this.Meshes;
 			for (int i = 0; i < meshes.Length; i++)
@@ -68,7 +68,7 @@ namespace Rendering.World
 			this.VertexMeshIdx = 0;
 		}
 
-		public void AddTriangle(int triangle)
+				public void AddTriangle(int triangle)
 		{
 			if (this.Meshes[this.TriangleMeshIdx].AreTrianglesFull())
 			{
@@ -80,7 +80,7 @@ namespace Rendering.World
 			this.Meshes[this.TriangleMeshIdx].AddTriangle(triangle);
 		}
 
-		public void AddUV(Vector2 uv)
+				public void AddUV(Vector2 uv)
 		{
 			DynamicSubMesh dynamicSubMesh = this.Meshes[this.UVMeshIdx];
 			if (dynamicSubMesh.AreUVsFull())
@@ -93,7 +93,7 @@ namespace Rendering.World
 			dynamicSubMesh.AddUV(uv);
 		}
 
-		public void AddVertex(Vector3 vertex)
+				public void AddVertex(Vector3 vertex)
 		{
 			DynamicSubMesh dynamicSubMesh = this.Meshes[this.VertexMeshIdx];
 			if (dynamicSubMesh.AreVerticesFull())
@@ -106,7 +106,7 @@ namespace Rendering.World
 			dynamicSubMesh.AddVertex(vertex);
 		}
 
-		public void Render(Vector3 position, Quaternion rotation, Material material, int layer, MaterialPropertyBlock property_block)
+				public void Render(Vector3 position, Quaternion rotation, Material material, int layer, MaterialPropertyBlock property_block)
 		{
 			DynamicSubMesh[] meshes = this.Meshes;
 			for (int i = 0; i < meshes.Length; i++)
@@ -115,34 +115,34 @@ namespace Rendering.World
 			}
 		}
 
-		private static int TrianglesPerMesh = 65004;
+				private static int TrianglesPerMesh = 65004;
 
-		private static int VerticesPerMesh = 4 * DynamicMesh.TrianglesPerMesh / 6;
+				private static int VerticesPerMesh = 4 * DynamicMesh.TrianglesPerMesh / 6;
 
-		public bool SetUVs;
+				public bool SetUVs;
 
-		public bool SetTriangles;
+				public bool SetTriangles;
 
-		public string Name;
+				public string Name;
 
-		public Bounds Bounds;
+				public Bounds Bounds;
 
-		public DynamicSubMesh[] Meshes = new DynamicSubMesh[0];
+				public DynamicSubMesh[] Meshes = new DynamicSubMesh[0];
 
-		private int VertexCount;
+				private int VertexCount;
 
-		private int TriangleCount;
+				private int TriangleCount;
 
-		private int VertexIdx;
+				private int VertexIdx;
 
-		private int UVIdx;
+				private int UVIdx;
 
-		private int TriangleIdx;
+				private int TriangleIdx;
 
-		private int TriangleMeshIdx;
+				private int TriangleMeshIdx;
 
-		private int VertexMeshIdx;
+				private int VertexMeshIdx;
 
-		private int UVMeshIdx;
+				private int UVMeshIdx;
 	}
 }

@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 public class SkillsScreen : KModalScreen
 {
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		if (base.isEditing)
 		{
@@ -19,7 +19,7 @@ public class SkillsScreen : KModalScreen
 		return 20f;
 	}
 
-			public IAssignableIdentity CurrentlySelectedMinion
+				public IAssignableIdentity CurrentlySelectedMinion
 	{
 		get
 		{
@@ -40,12 +40,12 @@ public class SkillsScreen : KModalScreen
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		ClusterManager.Instance.Subscribe(-1078710002, new Action<object>(this.WorldRemoved));
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.ConsumeMouseScroll = true;
 		base.OnActivate();
@@ -75,7 +75,7 @@ public class SkillsScreen : KModalScreen
 		}));
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		if (show)
 		{
@@ -90,7 +90,7 @@ public class SkillsScreen : KModalScreen
 		base.OnShow(show);
 	}
 
-	public void RefreshAll()
+		public void RefreshAll()
 	{
 		this.dirty = false;
 		this.RefreshSkillWidgets();
@@ -98,14 +98,14 @@ public class SkillsScreen : KModalScreen
 		this.linesPending = true;
 	}
 
-	private void RefreshSelectedMinion()
+		private void RefreshSelectedMinion()
 	{
 		this.minionAnimWidget.SetPortraitAnimator(this.currentlySelectedMinion);
 		this.RefreshProgressBars();
 		this.RefreshHat();
 	}
 
-	public void GetMinionIdentity(IAssignableIdentity assignableIdentity, out MinionIdentity minionIdentity, out StoredMinionIdentity storedMinionIdentity)
+		public void GetMinionIdentity(IAssignableIdentity assignableIdentity, out MinionIdentity minionIdentity, out StoredMinionIdentity storedMinionIdentity)
 	{
 		if (assignableIdentity is MinionAssignablesProxy)
 		{
@@ -117,7 +117,7 @@ public class SkillsScreen : KModalScreen
 		storedMinionIdentity = (assignableIdentity as StoredMinionIdentity);
 	}
 
-	private void RefreshProgressBars()
+		private void RefreshProgressBars()
 	{
 		if (this.currentlySelectedMinion == null || this.currentlySelectedMinion.IsNull())
 		{
@@ -312,7 +312,7 @@ public class SkillsScreen : KModalScreen
 		this.expectationsTooltip.SetSimpleTooltip(text);
 	}
 
-	private void RefreshHat()
+		private void RefreshHat()
 	{
 		if (this.currentlySelectedMinion == null || this.currentlySelectedMinion.IsNull())
 		{
@@ -345,7 +345,7 @@ public class SkillsScreen : KModalScreen
 		this.selectedHat.sprite = Assets.GetSprite(string.IsNullOrEmpty(text) ? "hat_role_none" : text);
 	}
 
-	private void OnHatDropEntryClick(IListableOption skill, object data)
+		private void OnHatDropEntryClick(IListableOption skill, object data)
 	{
 		MinionIdentity minionIdentity;
 		StoredMinionIdentity storedMinionIdentity;
@@ -388,7 +388,7 @@ public class SkillsScreen : KModalScreen
 		}
 	}
 
-	private void hatDropEntryRefreshAction(DropDownEntry entry, object targetData)
+		private void hatDropEntryRefreshAction(DropDownEntry entry, object targetData)
 	{
 		if (entry.entryData != null)
 		{
@@ -397,12 +397,12 @@ public class SkillsScreen : KModalScreen
 		}
 	}
 
-	private int hatDropDownSort(IListableOption a, IListableOption b, object targetData)
+		private int hatDropDownSort(IListableOption a, IListableOption b, object targetData)
 	{
 		return 0;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.dirty)
 		{
@@ -422,7 +422,7 @@ public class SkillsScreen : KModalScreen
 		}
 	}
 
-	private void RefreshSkillWidgets()
+		private void RefreshSkillWidgets()
 	{
 		int num = 1;
 		foreach (SkillGroup skillGroup in Db.Get().SkillGroups.resources)
@@ -434,7 +434,7 @@ public class SkillsScreen : KModalScreen
 				for (int i = 0; i < skillsBySkillGroup.Count; i++)
 				{
 					Skill skill = skillsBySkillGroup[i];
-					if (!skill.deprecated)
+					if (!skill.deprecated && SaveLoader.Instance.IsDLCActiveForCurrentSave(skill.dlcId))
 					{
 						if (!this.skillWidgets.ContainsKey(skill.Id))
 						{
@@ -476,7 +476,7 @@ public class SkillsScreen : KModalScreen
 		this.RefreshWidgetPositions();
 	}
 
-	public void HoverSkill(string skillID)
+		public void HoverSkill(string skillID)
 	{
 		this.hoveredSkillID = skillID;
 		if (this.delayRefreshRoutine != null)
@@ -492,14 +492,14 @@ public class SkillsScreen : KModalScreen
 		this.RefreshProgressBars();
 	}
 
-	private IEnumerator DelayRefreshProgressBars()
+		private IEnumerator DelayRefreshProgressBars()
 	{
 		yield return SequenceUtil.WaitForSecondsRealtime(0.1f);
 		this.RefreshProgressBars();
 		yield break;
 	}
 
-	public void RefreshWidgetPositions()
+		public void RefreshWidgetPositions()
 	{
 		float num = 0f;
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.skillWidgets)
@@ -517,7 +517,7 @@ public class SkillsScreen : KModalScreen
 		this.linesPending = true;
 	}
 
-	public float GetRowPosition(string skillID)
+		public float GetRowPosition(string skillID)
 	{
 		Skill skill = Db.Get().Skills.Get(skillID);
 		int num = this.skillGroupRow[skill.skillGroup];
@@ -537,13 +537,13 @@ public class SkillsScreen : KModalScreen
 		return (float)(this.layoutRowHeight * (num2 + num - 1));
 	}
 
-	private void OnAddMinionIdentity(MinionIdentity add)
+		private void OnAddMinionIdentity(MinionIdentity add)
 	{
 		this.BuildMinions();
 		this.RefreshAll();
 	}
 
-	private void OnRemoveMinionIdentity(MinionIdentity remove)
+		private void OnRemoveMinionIdentity(MinionIdentity remove)
 	{
 		if (this.CurrentlySelectedMinion == remove)
 		{
@@ -553,7 +553,7 @@ public class SkillsScreen : KModalScreen
 		this.RefreshAll();
 	}
 
-	private void BuildMinions()
+		private void BuildMinions()
 	{
 		for (int i = this.sortableRows.Count - 1; i >= 0; i--)
 		{
@@ -609,7 +609,7 @@ public class SkillsScreen : KModalScreen
 		}
 	}
 
-	protected void AddWorldDivider(int worldId)
+		protected void AddWorldDivider(int worldId)
 	{
 		if (!this.worldDividers.ContainsKey(worldId))
 		{
@@ -622,7 +622,7 @@ public class SkillsScreen : KModalScreen
 		}
 	}
 
-	private void WorldRemoved(object worldId)
+		private void WorldRemoved(object worldId)
 	{
 		int key = (int)worldId;
 		GameObject obj;
@@ -633,17 +633,17 @@ public class SkillsScreen : KModalScreen
 		}
 	}
 
-	public Vector2 GetSkillWidgetLineTargetPosition(string skillID)
+		public Vector2 GetSkillWidgetLineTargetPosition(string skillID)
 	{
 		return this.skillWidgets[skillID].GetComponent<SkillWidget>().lines_right.GetPosition();
 	}
 
-	public SkillWidget GetSkillWidget(string skill)
+		public SkillWidget GetSkillWidget(string skill)
 	{
 		return this.skillWidgets[skill].GetComponent<SkillWidget>();
 	}
 
-	public List<Skill> GetSkillsBySkillGroup(string skillGrp)
+		public List<Skill> GetSkillsBySkillGroup(string skillGrp)
 	{
 		List<Skill> list = new List<Skill>();
 		foreach (Skill skill in Db.Get().Skills.resources)
@@ -656,7 +656,7 @@ public class SkillsScreen : KModalScreen
 		return list;
 	}
 
-	private void SelectSortToggle(MultiToggle toggle)
+		private void SelectSortToggle(MultiToggle toggle)
 	{
 		this.dupeSortingToggle.ChangeState(0);
 		this.experienceSortingToggle.ChangeState(0);
@@ -672,7 +672,7 @@ public class SkillsScreen : KModalScreen
 		this.activeSortToggle.ChangeState(this.sortReversed ? 2 : 1);
 	}
 
-	private void SortRows(Comparison<IAssignableIdentity> comparison)
+		private void SortRows(Comparison<IAssignableIdentity> comparison)
 	{
 		this.active_sort_method = comparison;
 		Dictionary<IAssignableIdentity, SkillMinionWidget> dictionary = new Dictionary<IAssignableIdentity, SkillMinionWidget>();
@@ -721,132 +721,132 @@ public class SkillsScreen : KModalScreen
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton CloseButton;
 
-	[Header("Prefabs")]
+		[Header("Prefabs")]
 	[SerializeField]
 	private GameObject Prefab_skillWidget;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject Prefab_skillColumn;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject Prefab_minion;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject Prefab_minionLayout;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject Prefab_tableLayout;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject Prefab_worldDivider;
 
-	[Header("Sort Toggles")]
+		[Header("Sort Toggles")]
 	[SerializeField]
 	private MultiToggle dupeSortingToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle experienceSortingToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle moraleSortingToggle;
 
-	private MultiToggle activeSortToggle;
+		private MultiToggle activeSortToggle;
 
-	private bool sortReversed;
+		private bool sortReversed;
 
-	private Comparison<IAssignableIdentity> active_sort_method;
+		private Comparison<IAssignableIdentity> active_sort_method;
 
-	[Header("Duplicant Animation")]
+		[Header("Duplicant Animation")]
 	[SerializeField]
 	private FullBodyUIMinionWidget minionAnimWidget;
 
-	[Header("Progress Bars")]
+		[Header("Progress Bars")]
 	[SerializeField]
 	private ToolTip expectationsTooltip;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText moraleProgressLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject moraleWarning;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject moraleNotch;
 
-	[SerializeField]
+		[SerializeField]
 	private Color moraleNotchColor;
 
-	private List<GameObject> moraleNotches = new List<GameObject>();
+		private List<GameObject> moraleNotches = new List<GameObject>();
 
-	[SerializeField]
+		[SerializeField]
 	private LocText expectationsProgressLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject expectationWarning;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject expectationNotch;
 
-	[SerializeField]
+		[SerializeField]
 	private Color expectationNotchColor;
 
-	[SerializeField]
+		[SerializeField]
 	private Color expectationNotchProspectColor;
 
-	private List<GameObject> expectationNotches = new List<GameObject>();
+		private List<GameObject> expectationNotches = new List<GameObject>();
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip experienceBarTooltip;
 
-	[SerializeField]
+		[SerializeField]
 	private Image experienceProgressFill;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText EXPCount;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText duplicantLevelIndicator;
 
-	[SerializeField]
+		[SerializeField]
 	private KScrollRect scrollRect;
 
-	[SerializeField]
+		[SerializeField]
 	private float scrollSpeed = 7f;
 
-	[SerializeField]
+		[SerializeField]
 	private DropDown hatDropDown;
 
-	[SerializeField]
+		[SerializeField]
 	public Image selectedHat;
 
-	private IAssignableIdentity currentlySelectedMinion;
+		private IAssignableIdentity currentlySelectedMinion;
 
-	private List<GameObject> rows = new List<GameObject>();
+		private List<GameObject> rows = new List<GameObject>();
 
-	private List<SkillMinionWidget> sortableRows = new List<SkillMinionWidget>();
+		private List<SkillMinionWidget> sortableRows = new List<SkillMinionWidget>();
 
-	private Dictionary<int, GameObject> worldDividers = new Dictionary<int, GameObject>();
+		private Dictionary<int, GameObject> worldDividers = new Dictionary<int, GameObject>();
 
-	private string hoveredSkillID = "";
+		private string hoveredSkillID = "";
 
-	private Dictionary<string, GameObject> skillWidgets = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> skillWidgets = new Dictionary<string, GameObject>();
 
-	private Dictionary<string, int> skillGroupRow = new Dictionary<string, int>();
+		private Dictionary<string, int> skillGroupRow = new Dictionary<string, int>();
 
-	private List<GameObject> skillColumns = new List<GameObject>();
+		private List<GameObject> skillColumns = new List<GameObject>();
 
-	private bool dirty;
+		private bool dirty;
 
-	private bool linesPending;
+		private bool linesPending;
 
-	private int layoutRowHeight = 80;
+		private int layoutRowHeight = 80;
 
-	private Coroutine delayRefreshRoutine;
+		private Coroutine delayRefreshRoutine;
 
-	protected Comparison<IAssignableIdentity> compareByExperience = delegate(IAssignableIdentity a, IAssignableIdentity b)
+		protected Comparison<IAssignableIdentity> compareByExperience = delegate(IAssignableIdentity a, IAssignableIdentity b)
 	{
 		GameObject targetGameObject = ((MinionAssignablesProxy)a).GetTargetGameObject();
 		GameObject targetGameObject2 = ((MinionAssignablesProxy)b).GetTargetGameObject();
@@ -881,9 +881,9 @@ public class SkillsScreen : KModalScreen
 		return num.CompareTo(value);
 	};
 
-	protected Comparison<IAssignableIdentity> compareByMinion = (IAssignableIdentity a, IAssignableIdentity b) => a.GetProperName().CompareTo(b.GetProperName());
+		protected Comparison<IAssignableIdentity> compareByMinion = (IAssignableIdentity a, IAssignableIdentity b) => a.GetProperName().CompareTo(b.GetProperName());
 
-	protected Comparison<IAssignableIdentity> compareByMorale = delegate(IAssignableIdentity a, IAssignableIdentity b)
+		protected Comparison<IAssignableIdentity> compareByMorale = delegate(IAssignableIdentity a, IAssignableIdentity b)
 	{
 		GameObject targetGameObject = ((MinionAssignablesProxy)a).GetTargetGameObject();
 		GameObject targetGameObject2 = ((MinionAssignablesProxy)b).GetTargetGameObject();

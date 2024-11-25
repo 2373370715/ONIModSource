@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class KleiItemDropScreen_PermitVis : KMonoBehaviour
 {
-	public void ConfigureWith(DropScreenPresentationInfo info)
+		public void ConfigureWith(DropScreenPresentationInfo info)
 	{
 		this.ResetState();
 		this.equipmentVis.gameObject.SetActive(false);
@@ -19,17 +19,17 @@ public class KleiItemDropScreen_PermitVis : KMonoBehaviour
 		this.fallbackVis.ConfigureWith(info);
 	}
 
-	public Promise AnimateIn()
+		public Promise AnimateIn()
 	{
 		return Updater.RunRoutine(this, this.AnimateInRoutine());
 	}
 
-	public Promise AnimateOut()
+		public Promise AnimateOut()
 	{
 		return Updater.RunRoutine(this, this.AnimateOutRoutine());
 	}
 
-	private IEnumerator AnimateInRoutine()
+		private IEnumerator AnimateInRoutine()
 	{
 		this.root.gameObject.SetActive(true);
 		yield return Updater.Ease(delegate(Vector3 v3)
@@ -39,7 +39,7 @@ public class KleiItemDropScreen_PermitVis : KMonoBehaviour
 		yield break;
 	}
 
-	private IEnumerator AnimateOutRoutine()
+		private IEnumerator AnimateOutRoutine()
 	{
 		yield return Updater.Ease(delegate(Vector3 v3)
 		{
@@ -49,18 +49,18 @@ public class KleiItemDropScreen_PermitVis : KMonoBehaviour
 		yield break;
 	}
 
-	public void ResetState()
+		public void ResetState()
 	{
 		this.root.transform.localScale = Vector3.zero;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform root;
 
-	[Header("Different Permit Visualizers")]
+		[Header("Different Permit Visualizers")]
 	[SerializeField]
 	private KleiItemDropScreen_PermitVis_Fallback fallbackVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiItemDropScreen_PermitVis_DupeEquipment equipmentVis;
 }

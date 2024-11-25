@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Clinic")]
 public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderControl, ISliderControl
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.showProgressBar = false;
@@ -20,7 +20,7 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		this.assignable.AddAssignPrecondition(new Func<MinionAssignablesProxy, bool>(this.CanManuallyAssignTo));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Prioritizable.AddRef(base.gameObject);
@@ -30,14 +30,14 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		this.clinicSMI.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Prioritizable.RemoveRef(base.gameObject);
 		Components.Clinics.Remove(this);
 		base.OnCleanUp();
 	}
 
-	private KAnimFile[] GetAppropriateOverrideAnims(Worker worker)
+		private KAnimFile[] GetAppropriateOverrideAnims(WorkerBase worker)
 	{
 		KAnimFile[] result = null;
 		if (!worker.GetSMI<WoundMonitor.Instance>().ShouldExitInfirmary())
@@ -51,19 +51,19 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		return result;
 	}
 
-	public override Workable.AnimInfo GetAnim(Worker worker)
+		public override Workable.AnimInfo GetAnim(WorkerBase worker)
 	{
 		this.overrideAnims = this.GetAppropriateOverrideAnims(worker);
 		return base.GetAnim(worker);
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		worker.GetComponent<Effects>().Add("Sleep", false);
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		KAnimFile[] appropriateOverrideAnims = this.GetAppropriateOverrideAnims(worker);
 		if (appropriateOverrideAnims == null || appropriateOverrideAnims != this.overrideAnims)
@@ -74,13 +74,13 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		return false;
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		worker.GetComponent<Effects>().Remove("Sleep");
 		base.OnStopWork(worker);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.assignable.Unassign();
 		base.OnCompleteWork(worker);
@@ -92,17 +92,17 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		}
 	}
 
-	public override bool InstantlyFinish(Worker worker)
+		public override bool InstantlyFinish(WorkerBase worker)
 	{
 		return false;
 	}
 
-	private Chore CreateWorkChore(ChoreType chore_type, bool allow_prioritization, bool allow_in_red_alert, PriorityScreen.PriorityClass priority_class, bool ignore_schedule_block = false)
+		private Chore CreateWorkChore(ChoreType chore_type, bool allow_prioritization, bool allow_in_red_alert, PriorityScreen.PriorityClass priority_class, bool ignore_schedule_block = false)
 	{
 		return new WorkChore<Clinic>(chore_type, this, null, true, null, null, null, allow_in_red_alert, null, ignore_schedule_block, true, null, false, true, allow_prioritization, priority_class, 5, false, false);
 	}
 
-	private bool CanAutoAssignTo(MinionAssignablesProxy worker)
+		private bool CanAutoAssignTo(MinionAssignablesProxy worker)
 	{
 		bool flag = false;
 		MinionIdentity minionIdentity = worker.target as MinionIdentity;
@@ -124,7 +124,7 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		return flag;
 	}
 
-	private bool CanManuallyAssignTo(MinionAssignablesProxy worker)
+		private bool CanManuallyAssignTo(MinionAssignablesProxy worker)
 	{
 		bool result = false;
 		MinionIdentity minionIdentity = worker.target as MinionIdentity;
@@ -135,7 +135,7 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		return result;
 	}
 
-	private bool IsHealthBelowThreshold(GameObject minion)
+		private bool IsHealthBelowThreshold(GameObject minion)
 	{
 		Health health = (minion != null) ? minion.GetComponent<Health>() : null;
 		if (health != null)
@@ -149,17 +149,17 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		return false;
 	}
 
-	private bool IsValidEffect(string effect)
+		private bool IsValidEffect(string effect)
 	{
 		return effect != null && effect != "";
 	}
 
-	private bool AllowDoctoring()
+		private bool AllowDoctoring()
 	{
 		return this.IsValidEffect(this.doctoredDiseaseEffect) || this.IsValidEffect(this.doctoredHealthEffect);
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> descriptors = base.GetDescriptors(go);
 		if (this.IsValidEffect(this.healthEffect))
@@ -187,7 +187,7 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		return descriptors;
 	}
 
-		public float MedicalAttentionMinimum
+			public float MedicalAttentionMinimum
 	{
 		get
 		{
@@ -195,7 +195,7 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		}
 	}
 
-		string ISliderControl.SliderTitleKey
+			string ISliderControl.SliderTitleKey
 	{
 		get
 		{
@@ -203,7 +203,7 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		}
 	}
 
-		string ISliderControl.SliderUnits
+			string ISliderControl.SliderUnits
 	{
 		get
 		{
@@ -211,27 +211,27 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		}
 	}
 
-	int ISliderControl.SliderDecimalPlaces(int index)
+		int ISliderControl.SliderDecimalPlaces(int index)
 	{
 		return 0;
 	}
 
-	float ISliderControl.GetSliderMin(int index)
+		float ISliderControl.GetSliderMin(int index)
 	{
 		return 0f;
 	}
 
-	float ISliderControl.GetSliderMax(int index)
+		float ISliderControl.GetSliderMax(int index)
 	{
 		return 100f;
 	}
 
-	float ISliderControl.GetSliderValue(int index)
+		float ISliderControl.GetSliderValue(int index)
 	{
 		return this.sicknessSliderValue;
 	}
 
-	void ISliderControl.SetSliderValue(float percent, int index)
+		void ISliderControl.SetSliderValue(float percent, int index)
 	{
 		if (percent != this.sicknessSliderValue)
 		{
@@ -240,47 +240,47 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		}
 	}
 
-	string ISliderControl.GetSliderTooltip(int index)
+		string ISliderControl.GetSliderTooltip(int index)
 	{
 		return string.Format(Strings.Get("STRINGS.UI.UISIDESCREENS.MEDICALCOTSIDESCREEN.TOOLTIP"), this.sicknessSliderValue);
 	}
 
-	string ISliderControl.GetSliderTooltipKey(int index)
+		string ISliderControl.GetSliderTooltipKey(int index)
 	{
 		return "STRINGS.UI.UISIDESCREENS.MEDICALCOTSIDESCREEN.TOOLTIP";
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Assignable assignable;
 
-	private static readonly string[] EffectsRemoved = new string[]
+		private static readonly string[] EffectsRemoved = new string[]
 	{
 		"SoreBack"
 	};
 
-	private const int MAX_RANGE = 10;
+		private const int MAX_RANGE = 10;
 
-	private const float CHECK_RANGE_INTERVAL = 10f;
+		private const float CHECK_RANGE_INTERVAL = 10f;
 
-	public float doctorVisitInterval = 300f;
+		public float doctorVisitInterval = 300f;
 
-	public KAnimFile[] workerInjuredAnims;
+		public KAnimFile[] workerInjuredAnims;
 
-	public KAnimFile[] workerDiseasedAnims;
+		public KAnimFile[] workerDiseasedAnims;
 
-	public string diseaseEffect;
+		public string diseaseEffect;
 
-	public string healthEffect;
+		public string healthEffect;
 
-	public string doctoredDiseaseEffect;
+		public string doctoredDiseaseEffect;
 
-	public string doctoredHealthEffect;
+		public string doctoredHealthEffect;
 
-	public string doctoredPlaceholderEffect;
+		public string doctoredPlaceholderEffect;
 
-	private Clinic.ClinicSM.Instance clinicSMI;
+		private Clinic.ClinicSM.Instance clinicSMI;
 
-	public static readonly Chore.Precondition IsOverSicknessThreshold = new Chore.Precondition
+		public static readonly Chore.Precondition IsOverSicknessThreshold = new Chore.Precondition
 	{
 		id = "IsOverSicknessThreshold",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.IS_NOT_BEING_ATTACKED,
@@ -290,12 +290,12 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 		}
 	};
 
-	[Serialize]
+		[Serialize]
 	private float sicknessSliderValue = 70f;
 
-	public class ClinicSM : GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic>
+		public class ClinicSM : GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.Never;
 			default_state = this.unoperational;
@@ -395,33 +395,33 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 			});
 		}
 
-		public GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State unoperational;
+				public GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State unoperational;
 
-		public Clinic.ClinicSM.OperationalStates operational;
+				public Clinic.ClinicSM.OperationalStates operational;
 
-		public class OperationalStates : GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State
+				public class OperationalStates : GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State
 		{
-			public GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State idle;
+						public GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State idle;
 
-			public Clinic.ClinicSM.HealingStates healing;
+						public Clinic.ClinicSM.HealingStates healing;
 		}
 
-		public class HealingStates : GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State
+				public class HealingStates : GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State
 		{
-			public GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State undoctored;
+						public GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State undoctored;
 
-			public GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State doctored;
+						public GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State doctored;
 
-			public GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State newlyDoctored;
+						public GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.State newlyDoctored;
 		}
 
-		public new class Instance : GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.GameInstance
+				public new class Instance : GameStateMachine<Clinic.ClinicSM, Clinic.ClinicSM.Instance, Clinic, object>.GameInstance
 		{
-			public Instance(Clinic master) : base(master)
+						public Instance(Clinic master) : base(master)
 			{
 			}
 
-			public void StartDoctorChore()
+						public void StartDoctorChore()
 			{
 				if (base.master.IsValidEffect(base.master.doctoredHealthEffect) || base.master.IsValidEffect(base.master.doctoredDiseaseEffect))
 				{
@@ -434,7 +434,7 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 				}
 			}
 
-			public void StopDoctorChore()
+						public void StopDoctorChore()
 			{
 				if (this.doctorChore != null)
 				{
@@ -443,7 +443,7 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 				}
 			}
 
-			public bool HasEffect(string effect)
+						public bool HasEffect(string effect)
 			{
 				bool result = false;
 				if (base.master.IsValidEffect(effect))
@@ -453,11 +453,11 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 				return result;
 			}
 
-			public EffectInstance StartEffect(string effect, bool should_save)
+						public EffectInstance StartEffect(string effect, bool should_save)
 			{
 				if (base.master.IsValidEffect(effect))
 				{
-					Worker worker = base.smi.master.worker;
+					WorkerBase worker = base.smi.master.worker;
 					if (worker != null)
 					{
 						Effects component = worker.GetComponent<Effects>();
@@ -470,11 +470,11 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 				return null;
 			}
 
-			public void StopEffect(string effect)
+						public void StopEffect(string effect)
 			{
 				if (base.master.IsValidEffect(effect))
 				{
-					Worker worker = base.smi.master.worker;
+					WorkerBase worker = base.smi.master.worker;
 					if (worker != null)
 					{
 						Effects component = worker.GetComponent<Effects>();
@@ -486,7 +486,7 @@ public class Clinic : Workable, IGameObjectEffectDescriptor, ISingleSliderContro
 				}
 			}
 
-			private WorkChore<DoctorChoreWorkable> doctorChore;
+						private WorkChore<DoctorChoreWorkable> doctorChore;
 		}
 	}
 }

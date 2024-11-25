@@ -2,11 +2,11 @@
 
 public class CreatureVariationSoundEvent : SoundEvent
 {
-	public CreatureVariationSoundEvent(string file_name, string sound_name, int frame, bool do_load, bool is_looping, float min_interval, bool is_dynamic) : base(file_name, sound_name, frame, do_load, is_looping, min_interval, is_dynamic)
+		public CreatureVariationSoundEvent(string file_name, string sound_name, int frame, bool do_load, bool is_looping, float min_interval, bool is_dynamic) : base(file_name, sound_name, frame, do_load, is_looping, min_interval, is_dynamic)
 	{
 	}
 
-	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
+		public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
 	{
 		string sound = base.sound;
 		CreatureBrain component = behaviour.GetComponent<CreatureBrain>();

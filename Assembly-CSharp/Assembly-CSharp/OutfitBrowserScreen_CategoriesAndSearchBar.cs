@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [Serializable]
 public class OutfitBrowserScreen_CategoriesAndSearchBar
 {
-	public void InitializeWith(OutfitBrowserScreen outfitBrowserScreen)
+		public void InitializeWith(OutfitBrowserScreen outfitBrowserScreen)
 	{
 		this.outfitBrowserScreen = outfitBrowserScreen;
 		this.clothingOutfitTypeButton = new OutfitBrowserScreen_CategoriesAndSearchBar.SelectOutfitTypeButton(outfitBrowserScreen, Util.KInstantiateUI(this.selectOutfitType_Prefab.gameObject, this.selectOutfitType_Prefab.transform.parent.gameObject, true));
@@ -54,34 +54,34 @@ public class OutfitBrowserScreen_CategoriesAndSearchBar
 		};
 	}
 
-	public void SetOutfitType(ClothingOutfitUtility.OutfitType outfitType)
+		public void SetOutfitType(ClothingOutfitUtility.OutfitType outfitType)
 	{
 		this.outfitBrowserScreen.state.CurrentOutfitType = outfitType;
 	}
 
-	[NonSerialized]
+		[NonSerialized]
 	public OutfitBrowserScreen_CategoriesAndSearchBar.SelectOutfitTypeButton clothingOutfitTypeButton;
 
-	[NonSerialized]
+		[NonSerialized]
 	public OutfitBrowserScreen_CategoriesAndSearchBar.SelectOutfitTypeButton atmosuitOutfitTypeButton;
 
-	[NonSerialized]
+		[NonSerialized]
 	public OutfitBrowserScreen outfitBrowserScreen;
 
-	public KButton selectOutfitType_Prefab;
+		public KButton selectOutfitType_Prefab;
 
-	public KInputTextField searchTextField;
+		public KInputTextField searchTextField;
 
-	public enum SelectOutfitTypeButtonState
+		public enum SelectOutfitTypeButtonState
 	{
-		Disabled,
-		Unselected,
-		Selected
+				Disabled,
+				Unselected,
+				Selected
 	}
 
-	public readonly struct SelectOutfitTypeButton
+		public readonly struct SelectOutfitTypeButton
 	{
-		public SelectOutfitTypeButton(OutfitBrowserScreen outfitBrowserScreen, GameObject rootGameObject)
+				public SelectOutfitTypeButton(OutfitBrowserScreen outfitBrowserScreen, GameObject rootGameObject)
 		{
 			this.outfitBrowserScreen = outfitBrowserScreen;
 			this.root = rootGameObject.GetComponent<RectTransform>();
@@ -94,7 +94,7 @@ public class OutfitBrowserScreen_CategoriesAndSearchBar
 			global::Debug.Assert(this.icon != null);
 		}
 
-		public void SetState(OutfitBrowserScreen_CategoriesAndSearchBar.SelectOutfitTypeButtonState state)
+				public void SetState(OutfitBrowserScreen_CategoriesAndSearchBar.SelectOutfitTypeButtonState state)
 		{
 			switch (state)
 			{
@@ -118,14 +118,14 @@ public class OutfitBrowserScreen_CategoriesAndSearchBar
 			}
 		}
 
-		public readonly OutfitBrowserScreen outfitBrowserScreen;
+				public readonly OutfitBrowserScreen outfitBrowserScreen;
 
-		public readonly RectTransform root;
+				public readonly RectTransform root;
 
-		public readonly KButton button;
+				public readonly KButton button;
 
-		public readonly KImage buttonImage;
+				public readonly KImage buttonImage;
 
-		public readonly Image icon;
+				public readonly Image icon;
 	}
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-public class WindTunnelWorkerStateMachine : GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, Worker>
+public class WindTunnelWorkerStateMachine : GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, WorkerBase>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.pre_front;
 		base.Target(this.worker);
@@ -15,7 +15,7 @@ public class WindTunnelWorkerStateMachine : GameStateMachine<WindTunnelWorkerSta
 			position.z = Grid.GetLayerZ(Grid.SceneLayer.BuildingUse);
 			smi.transform.SetPosition(position);
 		}).OnAnimQueueComplete(this.loop);
-		this.loop.PlayAnim((WindTunnelWorkerStateMachine.StatesInstance smi) => smi.LoopAnim, KAnim.PlayMode.Loop).EventTransition(GameHashes.WorkerPlayPostAnim, this.pst_back, (WindTunnelWorkerStateMachine.StatesInstance smi) => smi.GetComponent<Worker>().state == Worker.State.PendingCompletion);
+		this.loop.PlayAnim((WindTunnelWorkerStateMachine.StatesInstance smi) => smi.LoopAnim, KAnim.PlayMode.Loop).EventTransition(GameHashes.WorkerPlayPostAnim, this.pst_back, (WindTunnelWorkerStateMachine.StatesInstance smi) => smi.GetComponent<WorkerBase>().GetState() == WorkerBase.State.PendingCompletion);
 		this.pst_back.PlayAnim((WindTunnelWorkerStateMachine.StatesInstance smi) => smi.PstBackAnim, KAnim.PlayMode.Once).OnAnimQueueComplete(this.pst_front);
 		this.pst_front.PlayAnim((WindTunnelWorkerStateMachine.StatesInstance smi) => smi.PstFrontAnim, KAnim.PlayMode.Once).Enter(delegate(WindTunnelWorkerStateMachine.StatesInstance smi)
 		{
@@ -25,29 +25,29 @@ public class WindTunnelWorkerStateMachine : GameStateMachine<WindTunnelWorkerSta
 		}).OnAnimQueueComplete(this.complete);
 	}
 
-	private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, Worker, object>.State pre_front;
+		private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, WorkerBase, object>.State pre_front;
 
-	private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, Worker, object>.State pre_back;
+		private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, WorkerBase, object>.State pre_back;
 
-	private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, Worker, object>.State loop;
+		private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, WorkerBase, object>.State loop;
 
-	private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, Worker, object>.State pst_back;
+		private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, WorkerBase, object>.State pst_back;
 
-	private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, Worker, object>.State pst_front;
+		private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, WorkerBase, object>.State pst_front;
 
-	private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, Worker, object>.State complete;
+		private GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, WorkerBase, object>.State complete;
 
-	public StateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, Worker, object>.TargetParameter worker;
+		public StateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, WorkerBase, object>.TargetParameter worker;
 
-	public class StatesInstance : GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, Worker, object>.GameInstance
+		public class StatesInstance : GameStateMachine<WindTunnelWorkerStateMachine, WindTunnelWorkerStateMachine.StatesInstance, WorkerBase, object>.GameInstance
 	{
-		public StatesInstance(Worker master, VerticalWindTunnelWorkable workable) : base(master)
+				public StatesInstance(WorkerBase master, VerticalWindTunnelWorkable workable) : base(master)
 		{
 			this.workable = workable;
 			base.sm.worker.Set(master, base.smi);
 		}
 
-				public HashedString OverrideAnim
+						public HashedString OverrideAnim
 		{
 			get
 			{
@@ -55,7 +55,7 @@ public class WindTunnelWorkerStateMachine : GameStateMachine<WindTunnelWorkerSta
 			}
 		}
 
-				public string PreFrontAnim
+						public string PreFrontAnim
 		{
 			get
 			{
@@ -63,7 +63,7 @@ public class WindTunnelWorkerStateMachine : GameStateMachine<WindTunnelWorkerSta
 			}
 		}
 
-				public string PreBackAnim
+						public string PreBackAnim
 		{
 			get
 			{
@@ -71,7 +71,7 @@ public class WindTunnelWorkerStateMachine : GameStateMachine<WindTunnelWorkerSta
 			}
 		}
 
-				public string LoopAnim
+						public string LoopAnim
 		{
 			get
 			{
@@ -79,7 +79,7 @@ public class WindTunnelWorkerStateMachine : GameStateMachine<WindTunnelWorkerSta
 			}
 		}
 
-				public string PstBackAnim
+						public string PstBackAnim
 		{
 			get
 			{
@@ -87,7 +87,7 @@ public class WindTunnelWorkerStateMachine : GameStateMachine<WindTunnelWorkerSta
 			}
 		}
 
-				public string PstFrontAnim
+						public string PstFrontAnim
 		{
 			get
 			{
@@ -95,6 +95,6 @@ public class WindTunnelWorkerStateMachine : GameStateMachine<WindTunnelWorkerSta
 			}
 		}
 
-		private VerticalWindTunnelWorkable workable;
+				private VerticalWindTunnelWorkable workable;
 	}
 }

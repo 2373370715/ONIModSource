@@ -9,9 +9,12 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/MinionVitalsPanel")]
 public class MinionVitalsPanel : CollapsibleDetailContentPanel
 {
-	public void Init()
+		public void Init()
 	{
 		this.AddAmountLine(Db.Get().Amounts.HitPoints, null);
+		this.AddAmountLine(Db.Get().Amounts.BionicInternalBattery, null);
+		this.AddAmountLine(Db.Get().Amounts.BionicOil, null);
+		this.AddAmountLine(Db.Get().Amounts.BionicGunk, null);
 		this.AddAttributeLine(Db.Get().CritterAttributes.Happiness, null);
 		this.AddAmountLine(Db.Get().Amounts.Wildness, null);
 		this.AddAmountLine(Db.Get().Amounts.Incubation, null);
@@ -24,6 +27,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		this.AddAttributeLine(Db.Get().Attributes.QualityOfLife, null);
 		this.AddAmountLine(Db.Get().Amounts.Bladder, null);
 		this.AddAmountLine(Db.Get().Amounts.Breath, null);
+		this.AddAmountLine(Db.Get().Amounts.BionicOxygenTank, null);
 		this.AddAmountLine(Db.Get().Amounts.Stamina, null);
 		this.AddAttributeLine(Db.Get().CritterAttributes.Metabolism, null);
 		this.AddAmountLine(Db.Get().Amounts.Calories, null);
@@ -36,6 +40,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		this.AddAmountLine(Db.Get().Amounts.InternalBattery, null);
 		this.AddAmountLine(Db.Get().Amounts.InternalChemicalBattery, null);
 		this.AddAmountLine(Db.Get().Amounts.InternalBioBattery, null);
+		this.AddAmountLine(Db.Get().Amounts.InternalElectroBank, null);
 		if (DlcManager.FeatureRadiationEnabled())
 		{
 			this.AddAmountLine(Db.Get().Amounts.RadiationBalance, null);
@@ -97,25 +102,25 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		}, (GameObject go) => this.check_radiation(go), (GameObject go) => this.GetRadiationTooltip(go));
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.Init();
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		SimAndRenderScheduler.instance.Add(this, false);
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		SimAndRenderScheduler.instance.Remove(this);
 	}
 
-	private void AddAmountLine(Amount amount, Func<AmountInstance, string> tooltip_func = null)
+		private void AddAmountLine(Amount amount, Func<AmountInstance, string> tooltip_func = null)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.LineItemPrefab, this.Content.gameObject, false);
 		gameObject.GetComponentInChildren<Image>().sprite = Assets.GetSprite(amount.uiSprite);
@@ -131,7 +136,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		this.amountsLines.Add(item);
 	}
 
-	private void AddAttributeLine(Klei.AI.Attribute attribute, Func<AttributeInstance, string> tooltip_func = null)
+		private void AddAttributeLine(Klei.AI.Attribute attribute, Func<AttributeInstance, string> tooltip_func = null)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.LineItemPrefab, this.Content.gameObject, false);
 		gameObject.GetComponentInChildren<Image>().sprite = Assets.GetSprite(attribute.uiSprite);
@@ -147,7 +152,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		this.attributesLines.Add(item);
 	}
 
-	private void AddCheckboxLine(Amount amount, Transform parentContainer, Func<GameObject, string> label_text_func, Func<GameObject, MinionVitalsPanel.CheckboxLineDisplayType> display_condition, Func<GameObject, bool> checkbox_value_func, Func<GameObject, string> tooltip_func = null)
+		private void AddCheckboxLine(Amount amount, Transform parentContainer, Func<GameObject, string> label_text_func, Func<GameObject, MinionVitalsPanel.CheckboxLineDisplayType> display_condition, Func<GameObject, bool> checkbox_value_func, Func<GameObject, string> tooltip_func = null)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.CheckboxLinePrefab, this.Content.gameObject, false);
 		HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
@@ -187,11 +192,11 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		this.checkboxLines.Add(checkboxLine);
 	}
 
-	private void ShouldShowVitalsPanel(GameObject selectedEntity)
+		private void ShouldShowVitalsPanel(GameObject selectedEntity)
 	{
 	}
 
-	public void Refresh(GameObject selectedEntity)
+		public void Refresh(GameObject selectedEntity)
 	{
 		if (selectedEntity == null)
 		{
@@ -363,7 +368,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		}
 	}
 
-	private string GetAirPressureTooltip(GameObject go)
+		private string GetAirPressureTooltip(GameObject go)
 	{
 		PressureVulnerable component = go.GetComponent<PressureVulnerable>();
 		if (component == null)
@@ -373,7 +378,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return UI.TOOLTIPS.VITALS_CHECKBOX_PRESSURE.text.Replace("{pressure}", GameUtil.GetFormattedMass(component.GetExternalPressure(), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 	}
 
-	private string GetInternalTemperatureTooltip(GameObject go)
+		private string GetInternalTemperatureTooltip(GameObject go)
 	{
 		TemperatureVulnerable component = go.GetComponent<TemperatureVulnerable>();
 		if (component == null)
@@ -383,7 +388,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return UI.TOOLTIPS.VITALS_CHECKBOX_TEMPERATURE.text.Replace("{temperature}", GameUtil.GetFormattedTemperature(component.InternalTemperature, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 	}
 
-	private string GetFertilizationTooltip(GameObject go)
+		private string GetFertilizationTooltip(GameObject go)
 	{
 		FertilizationMonitor.Instance smi = go.GetSMI<FertilizationMonitor.Instance>();
 		if (smi == null)
@@ -393,7 +398,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return UI.TOOLTIPS.VITALS_CHECKBOX_FERTILIZER.text.Replace("{mass}", GameUtil.GetFormattedMass(smi.total_fertilizer_available, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 	}
 
-	private string GetIrrigationTooltip(GameObject go)
+		private string GetIrrigationTooltip(GameObject go)
 	{
 		IrrigationMonitor.Instance smi = go.GetSMI<IrrigationMonitor.Instance>();
 		if (smi == null)
@@ -403,7 +408,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return UI.TOOLTIPS.VITALS_CHECKBOX_IRRIGATION.text.Replace("{mass}", GameUtil.GetFormattedMass(smi.total_fertilizer_available, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 	}
 
-	private string GetIlluminationTooltip(GameObject go)
+		private string GetIlluminationTooltip(GameObject go)
 	{
 		IIlluminationTracker illuminationTracker = go.GetComponent<IIlluminationTracker>();
 		if (illuminationTracker == null)
@@ -417,7 +422,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return illuminationTracker.GetIlluminationUITooltip();
 	}
 
-	private string GetRadiationTooltip(GameObject go)
+		private string GetRadiationTooltip(GameObject go)
 	{
 		int num = Grid.PosToCell(go);
 		float rads = Grid.IsValidCell(num) ? Grid.Radiation[num] : 0f;
@@ -441,7 +446,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return text;
 	}
 
-	private string GetReceptacleTooltip(GameObject go)
+		private string GetReceptacleTooltip(GameObject go)
 	{
 		ReceptacleMonitor component = go.GetComponent<ReceptacleMonitor>();
 		if (component == null)
@@ -455,7 +460,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return UI.TOOLTIPS.VITALS_CHECKBOX_RECEPTACLE_INOPERATIONAL;
 	}
 
-	private string GetAtmosphereTooltip(GameObject go)
+		private string GetAtmosphereTooltip(GameObject go)
 	{
 		PressureVulnerable component = go.GetComponent<PressureVulnerable>();
 		if (component != null && component.currentAtmoElement != null)
@@ -465,7 +470,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return UI.TOOLTIPS.VITALS_CHECKBOX_ATMOSPHERE;
 	}
 
-	private string GetAirPressureLabel(GameObject go)
+		private string GetAirPressureLabel(GameObject go)
 	{
 		PressureVulnerable component = go.GetComponent<PressureVulnerable>();
 		return string.Concat(new string[]
@@ -478,7 +483,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		});
 	}
 
-	private string GetInternalTemperatureLabel(GameObject go)
+		private string GetInternalTemperatureLabel(GameObject go)
 	{
 		TemperatureVulnerable component = go.GetComponent<TemperatureVulnerable>();
 		return string.Concat(new string[]
@@ -491,7 +496,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		});
 	}
 
-	private string GetFertilizationLabel(GameObject go)
+		private string GetFertilizationLabel(GameObject go)
 	{
 		StateMachine<FertilizationMonitor, FertilizationMonitor.Instance, IStateMachineTarget, FertilizationMonitor.Def>.GenericInstance smi = go.GetSMI<FertilizationMonitor.Instance>();
 		string text = Db.Get().Amounts.Fertilization.Name;
@@ -510,7 +515,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return text;
 	}
 
-	private string GetIrrigationLabel(GameObject go)
+		private string GetIrrigationLabel(GameObject go)
 	{
 		StateMachine<IrrigationMonitor, IrrigationMonitor.Instance, IStateMachineTarget, IrrigationMonitor.Def>.GenericInstance smi = go.GetSMI<IrrigationMonitor.Instance>();
 		string text = Db.Get().Amounts.Irrigation.Name;
@@ -529,7 +534,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return text;
 	}
 
-	private string GetIlluminationLabel(GameObject go)
+		private string GetIlluminationLabel(GameObject go)
 	{
 		IIlluminationTracker illuminationTracker = go.GetComponent<IIlluminationTracker>();
 		if (illuminationTracker == null)
@@ -539,7 +544,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return illuminationTracker.GetIlluminationUILabel();
 	}
 
-	private string GetAtmosphereLabel(GameObject go)
+		private string GetAtmosphereLabel(GameObject go)
 	{
 		PressureVulnerable component = go.GetComponent<PressureVulnerable>();
 		string text = UI.VITALSSCREEN.ATMOSPHERE_CONDITION;
@@ -550,7 +555,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return text;
 	}
 
-	private string GetRadiationLabel(GameObject go)
+		private string GetRadiationLabel(GameObject go)
 	{
 		AttributeInstance attributeInstance = go.GetAttributes().Get(Db.Get().PlantAttributes.MinRadiationThreshold);
 		AttributeInstance attributeInstance2 = go.GetAttributes().Get(Db.Get().PlantAttributes.MaxRadiationThreshold);
@@ -561,25 +566,25 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return UI.GAMEOBJECTEFFECTS.AMBIENT_RADIATION + "\n    • " + UI.GAMEOBJECTEFFECTS.AMBIENT_RADIATION_FMT.Replace("{minRads}", attributeInstance.GetFormattedValue()).Replace("{maxRads}", attributeInstance2.GetFormattedValue());
 	}
 
-	private bool check_pressure(GameObject go)
+		private bool check_pressure(GameObject go)
 	{
 		PressureVulnerable component = go.GetComponent<PressureVulnerable>();
 		return !(component != null) || component.ExternalPressureState == PressureVulnerable.PressureState.Normal;
 	}
 
-	private bool check_temperature(GameObject go)
+		private bool check_temperature(GameObject go)
 	{
 		TemperatureVulnerable component = go.GetComponent<TemperatureVulnerable>();
 		return !(component != null) || component.GetInternalTemperatureState == TemperatureVulnerable.TemperatureState.Normal;
 	}
 
-	private bool check_irrigation(GameObject go)
+		private bool check_irrigation(GameObject go)
 	{
 		IrrigationMonitor.Instance smi = go.GetSMI<IrrigationMonitor.Instance>();
 		return smi == null || (!smi.IsInsideState(smi.sm.replanted.starved) && !smi.IsInsideState(smi.sm.wild));
 	}
 
-	private bool check_illumination(GameObject go)
+		private bool check_illumination(GameObject go)
 	{
 		IIlluminationTracker illuminationTracker = go.GetComponent<IIlluminationTracker>();
 		if (illuminationTracker == null)
@@ -589,7 +594,7 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return illuminationTracker == null || illuminationTracker.ShouldIlluminationUICheckboxBeChecked();
 	}
 
-	private bool check_radiation(GameObject go)
+		private bool check_radiation(GameObject go)
 	{
 		AttributeInstance attributeInstance = go.GetAttributes().Get(Db.Get().PlantAttributes.MinRadiationThreshold);
 		if (attributeInstance != null && attributeInstance.GetTotalValue() != 0f)
@@ -600,44 +605,44 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 		return true;
 	}
 
-	private bool check_receptacle(GameObject go)
+		private bool check_receptacle(GameObject go)
 	{
 		ReceptacleMonitor component = go.GetComponent<ReceptacleMonitor>();
 		return !(component == null) && component.HasOperationalReceptacle();
 	}
 
-	private bool check_fertilizer(GameObject go)
+		private bool check_fertilizer(GameObject go)
 	{
 		FertilizationMonitor.Instance smi = go.GetSMI<FertilizationMonitor.Instance>();
 		return smi == null || smi.sm.hasCorrectFertilizer.Get(smi);
 	}
 
-	private bool check_atmosphere(GameObject go)
+		private bool check_atmosphere(GameObject go)
 	{
 		PressureVulnerable component = go.GetComponent<PressureVulnerable>();
 		return !(component != null) || component.testAreaElementSafe;
 	}
 
-	public GameObject LineItemPrefab;
+		public GameObject LineItemPrefab;
 
-	public GameObject CheckboxLinePrefab;
+		public GameObject CheckboxLinePrefab;
 
-	private GameObject lastSelectedEntity;
+		private GameObject lastSelectedEntity;
 
-	public List<MinionVitalsPanel.AmountLine> amountsLines = new List<MinionVitalsPanel.AmountLine>();
+		public List<MinionVitalsPanel.AmountLine> amountsLines = new List<MinionVitalsPanel.AmountLine>();
 
-	public List<MinionVitalsPanel.AttributeLine> attributesLines = new List<MinionVitalsPanel.AttributeLine>();
+		public List<MinionVitalsPanel.AttributeLine> attributesLines = new List<MinionVitalsPanel.AttributeLine>();
 
-	public List<MinionVitalsPanel.CheckboxLine> checkboxLines = new List<MinionVitalsPanel.CheckboxLine>();
+		public List<MinionVitalsPanel.CheckboxLine> checkboxLines = new List<MinionVitalsPanel.CheckboxLine>();
 
-	public Transform conditionsContainerNormal;
+		public Transform conditionsContainerNormal;
 
-	public Transform conditionsContainerAdditional;
+		public Transform conditionsContainerAdditional;
 
-	[DebuggerDisplay("{amount.Name}")]
+		[DebuggerDisplay("{amount.Name}")]
 	public struct AmountLine
 	{
-		public bool TryUpdate(Amounts amounts)
+				public bool TryUpdate(Amounts amounts)
 		{
 			foreach (AmountInstance amountInstance in amounts)
 			{
@@ -652,23 +657,23 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 			return false;
 		}
 
-		public Amount amount;
+				public Amount amount;
 
-		public GameObject go;
+				public GameObject go;
 
-		public ValueTrendImageToggle imageToggle;
+				public ValueTrendImageToggle imageToggle;
 
-		public LocText locText;
+				public LocText locText;
 
-		public ToolTip toolTip;
+				public ToolTip toolTip;
 
-		public Func<AmountInstance, string> toolTipFunc;
+				public Func<AmountInstance, string> toolTipFunc;
 	}
 
-	[DebuggerDisplay("{attribute.Name}")]
+		[DebuggerDisplay("{attribute.Name}")]
 	public struct AttributeLine
 	{
-		public bool TryUpdate(Attributes attributes)
+				public bool TryUpdate(Attributes attributes)
 		{
 			foreach (AttributeInstance attributeInstance in attributes)
 			{
@@ -682,40 +687,40 @@ public class MinionVitalsPanel : CollapsibleDetailContentPanel
 			return false;
 		}
 
-		public Klei.AI.Attribute attribute;
+				public Klei.AI.Attribute attribute;
 
-		public GameObject go;
+				public GameObject go;
 
-		public LocText locText;
+				public LocText locText;
 
-		public ToolTip toolTip;
+				public ToolTip toolTip;
 
-		public Func<AttributeInstance, string> toolTipFunc;
+				public Func<AttributeInstance, string> toolTipFunc;
 	}
 
-	public struct CheckboxLine
+		public struct CheckboxLine
 	{
-		public Amount amount;
+				public Amount amount;
 
-		public GameObject go;
+				public GameObject go;
 
-		public LocText locText;
+				public LocText locText;
 
-		public Func<GameObject, string> tooltip;
+				public Func<GameObject, string> tooltip;
 
-		public Func<GameObject, bool> get_value;
+				public Func<GameObject, bool> get_value;
 
-		public Func<GameObject, MinionVitalsPanel.CheckboxLineDisplayType> display_condition;
+				public Func<GameObject, MinionVitalsPanel.CheckboxLineDisplayType> display_condition;
 
-		public Func<GameObject, string> label_text_func;
+				public Func<GameObject, string> label_text_func;
 
-		public Transform parentContainer;
+				public Transform parentContainer;
 	}
 
-	public enum CheckboxLineDisplayType
+		public enum CheckboxLineDisplayType
 	{
-		Normal,
-		Diminished,
-		Hidden
+				Normal,
+				Diminished,
+				Hidden
 	}
 }

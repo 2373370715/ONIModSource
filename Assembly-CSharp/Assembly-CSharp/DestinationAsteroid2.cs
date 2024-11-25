@@ -6,15 +6,15 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/DestinationAsteroid2")]
 public class DestinationAsteroid2 : KMonoBehaviour
 {
-			public event Action<ColonyDestinationAsteroidBeltData> OnClicked;
+				public event Action<ColonyDestinationAsteroidBeltData> OnClicked;
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.button.onClick += this.OnClickInternal;
 	}
 
-	public void SetAsteroid(ColonyDestinationAsteroidBeltData newAsteroidData)
+		public void SetAsteroid(ColonyDestinationAsteroidBeltData newAsteroidData)
 	{
 		if (this.asteroidData == null || newAsteroidData.beltPath != this.asteroidData.beltPath)
 		{
@@ -60,7 +60,7 @@ public class DestinationAsteroid2 : KMonoBehaviour
 		}
 	}
 
-	private void OnClickInternal()
+		private void OnClickInternal()
 	{
 		DebugUtil.LogArgs(new object[]
 		{
@@ -70,17 +70,17 @@ public class DestinationAsteroid2 : KMonoBehaviour
 		this.OnClicked(this.asteroidData);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Image asteroidImage;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton button;
 
-	[SerializeField]
+		[SerializeField]
 	private KBatchedAnimController animController;
 
-	[SerializeField]
+		[SerializeField]
 	private Image imageDlcFrom;
 
-	private ColonyDestinationAsteroidBeltData asteroidData;
+		private ColonyDestinationAsteroidBeltData asteroidData;
 }

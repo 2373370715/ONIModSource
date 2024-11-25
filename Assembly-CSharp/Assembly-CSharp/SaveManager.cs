@@ -8,22 +8,22 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SaveManager")]
 public class SaveManager : KMonoBehaviour
 {
-			public event Action<SaveLoadRoot> onRegister;
+				public event Action<SaveLoadRoot> onRegister;
 
-			public event Action<SaveLoadRoot> onUnregister;
+				public event Action<SaveLoadRoot> onUnregister;
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Assets.RegisterOnAddPrefab(new Action<KPrefabID>(this.OnAddPrefab));
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Assets.UnregisterOnAddPrefab(new Action<KPrefabID>(this.OnAddPrefab));
 	}
 
-	private void OnAddPrefab(KPrefabID prefab)
+		private void OnAddPrefab(KPrefabID prefab)
 	{
 		if (prefab == null)
 		{
@@ -33,12 +33,12 @@ public class SaveManager : KMonoBehaviour
 		this.prefabMap[saveLoadTag] = prefab.gameObject;
 	}
 
-	public Dictionary<Tag, List<SaveLoadRoot>> GetLists()
+		public Dictionary<Tag, List<SaveLoadRoot>> GetLists()
 	{
 		return this.sceneObjects;
 	}
 
-	private List<SaveLoadRoot> GetSaveLoadRootList(SaveLoadRoot saver)
+		private List<SaveLoadRoot> GetSaveLoadRootList(SaveLoadRoot saver)
 	{
 		KPrefabID component = saver.GetComponent<KPrefabID>();
 		if (component == null)
@@ -60,7 +60,7 @@ public class SaveManager : KMonoBehaviour
 		return list;
 	}
 
-	public void Register(SaveLoadRoot root)
+		public void Register(SaveLoadRoot root)
 	{
 		List<SaveLoadRoot> saveLoadRootList = this.GetSaveLoadRootList(root);
 		if (saveLoadRootList == null)
@@ -74,7 +74,7 @@ public class SaveManager : KMonoBehaviour
 		}
 	}
 
-	public void Unregister(SaveLoadRoot root)
+		public void Unregister(SaveLoadRoot root)
 	{
 		if (this.onRegister != null)
 		{
@@ -88,7 +88,7 @@ public class SaveManager : KMonoBehaviour
 		saveLoadRootList.Remove(root);
 	}
 
-	public GameObject GetPrefab(Tag tag)
+		public GameObject GetPrefab(Tag tag)
 	{
 		GameObject result = null;
 		if (this.prefabMap.TryGetValue(tag, out result))
@@ -103,11 +103,11 @@ public class SaveManager : KMonoBehaviour
 		return null;
 	}
 
-	public void Save(BinaryWriter writer)
+		public void Save(BinaryWriter writer)
 	{
 		writer.Write(SaveManager.SAVE_HEADER);
 		writer.Write(7);
-		writer.Write(34);
+		writer.Write(35);
 		int num = 0;
 		foreach (KeyValuePair<Tag, List<SaveLoadRoot>> keyValuePair in this.sceneObjects)
 		{
@@ -162,7 +162,7 @@ public class SaveManager : KMonoBehaviour
 		}
 	}
 
-	private void Write(Tag key, List<SaveLoadRoot> value, BinaryWriter writer)
+		private void Write(Tag key, List<SaveLoadRoot> value, BinaryWriter writer)
 	{
 		int count = value.Count;
 		Tag tag = key;
@@ -193,7 +193,7 @@ public class SaveManager : KMonoBehaviour
 		writer.BaseStream.Position = position3;
 	}
 
-	public bool Load(IReader reader)
+		public bool Load(IReader reader)
 	{
 		char[] array = reader.ReadChars(SaveManager.SAVE_HEADER.Length);
 		if (array == null || array.Length != SaveManager.SAVE_HEADER.Length)
@@ -209,14 +209,14 @@ public class SaveManager : KMonoBehaviour
 		}
 		int num = reader.ReadInt32();
 		int num2 = reader.ReadInt32();
-		if (num != 7 || num2 > 34)
+		if (num != 7 || num2 > 35)
 		{
 			DebugUtil.LogWarningArgs(new object[]
 			{
 				string.Format("SAVE FILE VERSION MISMATCH! Expected {0}.{1} but got {2}.{3}", new object[]
 				{
 					7,
-					34,
+					35,
 					num,
 					num2
 				})
@@ -270,7 +270,7 @@ public class SaveManager : KMonoBehaviour
 		return true;
 	}
 
-	private void ClearScene()
+		private void ClearScene()
 	{
 		foreach (KeyValuePair<Tag, List<SaveLoadRoot>> keyValuePair in this.sceneObjects)
 		{
@@ -282,73 +282,75 @@ public class SaveManager : KMonoBehaviour
 		this.sceneObjects.Clear();
 	}
 
-	public const int SAVE_MAJOR_VERSION_LAST_UNDOCUMENTED = 7;
+		public const int SAVE_MAJOR_VERSION_LAST_UNDOCUMENTED = 7;
 
-	public const int SAVE_MAJOR_VERSION = 7;
+		public const int SAVE_MAJOR_VERSION = 7;
 
-	public const int SAVE_MINOR_VERSION_EXPLICIT_VALUE_TYPES = 4;
+		public const int SAVE_MINOR_VERSION_EXPLICIT_VALUE_TYPES = 4;
 
-	public const int SAVE_MINOR_VERSION_LAST_UNDOCUMENTED = 7;
+		public const int SAVE_MINOR_VERSION_LAST_UNDOCUMENTED = 7;
 
-	public const int SAVE_MINOR_VERSION_MOD_IDENTIFIER = 8;
+		public const int SAVE_MINOR_VERSION_MOD_IDENTIFIER = 8;
 
-	public const int SAVE_MINOR_VERSION_FINITE_SPACE_RESOURCES = 9;
+		public const int SAVE_MINOR_VERSION_FINITE_SPACE_RESOURCES = 9;
 
-	public const int SAVE_MINOR_VERSION_COLONY_REQ_ACHIEVEMENTS = 10;
+		public const int SAVE_MINOR_VERSION_COLONY_REQ_ACHIEVEMENTS = 10;
 
-	public const int SAVE_MINOR_VERSION_TRACK_NAV_DISTANCE = 11;
+		public const int SAVE_MINOR_VERSION_TRACK_NAV_DISTANCE = 11;
 
-	public const int SAVE_MINOR_VERSION_EXPANDED_WORLD_INFO = 12;
+		public const int SAVE_MINOR_VERSION_EXPANDED_WORLD_INFO = 12;
 
-	public const int SAVE_MINOR_VERSION_BASIC_COMFORTS_FIX = 13;
+		public const int SAVE_MINOR_VERSION_BASIC_COMFORTS_FIX = 13;
 
-	public const int SAVE_MINOR_VERSION_PLATFORM_TRAIT_NAMES = 14;
+		public const int SAVE_MINOR_VERSION_PLATFORM_TRAIT_NAMES = 14;
 
-	public const int SAVE_MINOR_VERSION_ADD_JOY_REACTIONS = 15;
+		public const int SAVE_MINOR_VERSION_ADD_JOY_REACTIONS = 15;
 
-	public const int SAVE_MINOR_VERSION_NEW_AUTOMATION_WARNING = 16;
+		public const int SAVE_MINOR_VERSION_NEW_AUTOMATION_WARNING = 16;
 
-	public const int SAVE_MINOR_VERSION_ADD_GUID_TO_HEADER = 17;
+		public const int SAVE_MINOR_VERSION_ADD_GUID_TO_HEADER = 17;
 
-	public const int SAVE_MINOR_VERSION_EXPANSION_1_INTRODUCED = 20;
+		public const int SAVE_MINOR_VERSION_EXPANSION_1_INTRODUCED = 20;
 
-	public const int SAVE_MINOR_VERSION_CONTENT_SETTINGS = 21;
+		public const int SAVE_MINOR_VERSION_CONTENT_SETTINGS = 21;
 
-	public const int SAVE_MINOR_VERSION_COLONY_REQ_REMOVE_SERIALIZATION = 22;
+		public const int SAVE_MINOR_VERSION_COLONY_REQ_REMOVE_SERIALIZATION = 22;
 
-	public const int SAVE_MINOR_VERSION_ROTTABLE_TUNING = 23;
+		public const int SAVE_MINOR_VERSION_ROTTABLE_TUNING = 23;
 
-	public const int SAVE_MINOR_VERSION_LAUNCH_PAD_SOLIDITY = 24;
+		public const int SAVE_MINOR_VERSION_LAUNCH_PAD_SOLIDITY = 24;
 
-	public const int SAVE_MINOR_VERSION_BASE_GAME_MERGEDOWN = 25;
+		public const int SAVE_MINOR_VERSION_BASE_GAME_MERGEDOWN = 25;
 
-	public const int SAVE_MINOR_VERSION_FALLING_WATER_WORLDIDX_SERIALIZATION = 26;
+		public const int SAVE_MINOR_VERSION_FALLING_WATER_WORLDIDX_SERIALIZATION = 26;
 
-	public const int SAVE_MINOR_VERSION_ROCKET_RANGE_REBALANCE = 27;
+		public const int SAVE_MINOR_VERSION_ROCKET_RANGE_REBALANCE = 27;
 
-	public const int SAVE_MINOR_VERSION_ENTITIES_WRONG_LAYER = 28;
+		public const int SAVE_MINOR_VERSION_ENTITIES_WRONG_LAYER = 28;
 
-	public const int SAVE_MINOR_VERSION_TAGBITS_REWORK = 29;
+		public const int SAVE_MINOR_VERSION_TAGBITS_REWORK = 29;
 
-	public const int SAVE_MINOR_VERSION_ACCESSORY_SLOT_UPGRADE = 30;
+		public const int SAVE_MINOR_VERSION_ACCESSORY_SLOT_UPGRADE = 30;
 
-	public const int SAVE_MINOR_VERSION_GEYSER_CAN_BE_RENAMED = 31;
+		public const int SAVE_MINOR_VERSION_GEYSER_CAN_BE_RENAMED = 31;
 
-	public const int SAVE_MINOR_VERSION_SPACE_SCANNERS_TELESCOPES = 32;
+		public const int SAVE_MINOR_VERSION_SPACE_SCANNERS_TELESCOPES = 32;
 
-	public const int SAVE_MINOR_VERSION_U50_CRITTERS = 33;
+		public const int SAVE_MINOR_VERSION_U50_CRITTERS = 33;
 
-	public const int SAVE_MINOR_VERSION_DLC_ADD_ONS = 34;
+		public const int SAVE_MINOR_VERSION_DLC_ADD_ONS = 34;
 
-	public const int SAVE_MINOR_VERSION = 34;
+		public const int SAVE_MINOR_VERSION_U53_SCHEDULES = 35;
 
-	private Dictionary<Tag, GameObject> prefabMap = new Dictionary<Tag, GameObject>();
+		public const int SAVE_MINOR_VERSION = 35;
 
-	private Dictionary<Tag, List<SaveLoadRoot>> sceneObjects = new Dictionary<Tag, List<SaveLoadRoot>>();
+		private Dictionary<Tag, GameObject> prefabMap = new Dictionary<Tag, GameObject>();
 
-	public static int DEBUG_OnlyLoadThisCellsObjects = -1;
+		private Dictionary<Tag, List<SaveLoadRoot>> sceneObjects = new Dictionary<Tag, List<SaveLoadRoot>>();
 
-	private static readonly char[] SAVE_HEADER = new char[]
+		public static int DEBUG_OnlyLoadThisCellsObjects = -1;
+
+		private static readonly char[] SAVE_HEADER = new char[]
 	{
 		'K',
 		'S',
@@ -356,12 +358,12 @@ public class SaveManager : KMonoBehaviour
 		'V'
 	};
 
-	private List<Tag> orderedKeys = new List<Tag>();
+		private List<Tag> orderedKeys = new List<Tag>();
 
-	private enum BoundaryTag : uint
+		private enum BoundaryTag : uint
 	{
-		Component = 3735928559U,
-		Prefab = 3131961357U,
-		Complete = 3735929054U
+				Component = 3735928559U,
+				Prefab = 3131961357U,
+				Complete = 3735929054U
 	}
 }

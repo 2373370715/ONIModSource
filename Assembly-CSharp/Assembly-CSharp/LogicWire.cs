@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LogicWire")]
 public class LogicWire : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetworkMgr, IBridgedNetworkItem, IBitRating, IDisconnectable
 {
-	public static int GetBitDepthAsInt(LogicWire.BitDepth rating)
+		public static int GetBitDepthAsInt(LogicWire.BitDepth rating)
 	{
 		if (rating == LogicWire.BitDepth.OneBit)
 		{
@@ -20,7 +20,7 @@ public class LogicWire : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetwor
 		return 4;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		int cell = Grid.PosToCell(base.transform.GetPosition());
@@ -31,7 +31,7 @@ public class LogicWire : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetwor
 		base.GetComponent<KBatchedAnimController>().SetSymbolVisiblity(LogicWire.OutlineSymbol, false);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		BuildingComplete component = base.GetComponent<BuildingComplete>();
@@ -44,7 +44,7 @@ public class LogicWire : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetwor
 		base.OnCleanUp();
 	}
 
-		public bool IsConnected
+			public bool IsConnected
 	{
 		get
 		{
@@ -53,12 +53,12 @@ public class LogicWire : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetwor
 		}
 	}
 
-	public bool IsDisconnected()
+		public bool IsDisconnected()
 	{
 		return this.disconnected;
 	}
 
-	public bool Connect()
+		public bool Connect()
 	{
 		BuildingHP component = base.GetComponent<BuildingHP>();
 		if (component == null || component.HitPoints > 0)
@@ -69,42 +69,42 @@ public class LogicWire : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetwor
 		return !this.disconnected;
 	}
 
-	public void Disconnect()
+		public void Disconnect()
 	{
 		this.disconnected = true;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, Db.Get().BuildingStatusItems.WireDisconnected, null);
 		Game.Instance.logicCircuitSystem.ForceRebuildNetworks();
 	}
 
-	public UtilityConnections GetWireConnections()
+		public UtilityConnections GetWireConnections()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		return Game.Instance.logicCircuitSystem.GetConnections(cell, true);
 	}
 
-	public string GetWireConnectionsString()
+		public string GetWireConnectionsString()
 	{
 		UtilityConnections wireConnections = this.GetWireConnections();
 		return Game.Instance.logicCircuitSystem.GetVisualizerString(wireConnections);
 	}
 
-	private void OnBuildingBroken(object data)
+		private void OnBuildingBroken(object data)
 	{
 		this.Disconnect();
 	}
 
-	private void OnBuildingFullyRepaired(object data)
+		private void OnBuildingFullyRepaired(object data)
 	{
 		this.Connect();
 	}
 
-	public void SetFirstFrameCallback(System.Action ffCb)
+		public void SetFirstFrameCallback(System.Action ffCb)
 	{
 		this.firstFrameCallback = ffCb;
 		base.StartCoroutine(this.RunCallback());
 	}
 
-	private IEnumerator RunCallback()
+		private IEnumerator RunCallback()
 	{
 		yield return null;
 		if (this.firstFrameCallback != null)
@@ -116,17 +116,17 @@ public class LogicWire : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetwor
 		yield break;
 	}
 
-	public LogicWire.BitDepth GetMaxBitRating()
+		public LogicWire.BitDepth GetMaxBitRating()
 	{
 		return this.MaxBitDepth;
 	}
 
-	public IUtilityNetworkMgr GetNetworkManager()
+		public IUtilityNetworkMgr GetNetworkManager()
 	{
 		return Game.Instance.logicCircuitSystem;
 	}
 
-	public void AddNetworks(ICollection<UtilityNetwork> networks)
+		public void AddNetworks(ICollection<UtilityNetwork> networks)
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		UtilityNetwork networkForCell = Game.Instance.logicCircuitSystem.GetNetworkForCell(cell);
@@ -136,42 +136,42 @@ public class LogicWire : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetwor
 		}
 	}
 
-	public bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks)
+		public bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks)
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		UtilityNetwork networkForCell = Game.Instance.logicCircuitSystem.GetNetworkForCell(cell);
 		return networks.Contains(networkForCell);
 	}
 
-	public int GetNetworkCell()
+		public int GetNetworkCell()
 	{
 		return Grid.PosToCell(this);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public LogicWire.BitDepth MaxBitDepth;
 
-	[SerializeField]
+		[SerializeField]
 	private bool disconnected = true;
 
-	public static readonly KAnimHashedString OutlineSymbol = new KAnimHashedString("outline");
+		public static readonly KAnimHashedString OutlineSymbol = new KAnimHashedString("outline");
 
-	private static readonly EventSystem.IntraObjectHandler<LogicWire> OnBuildingBrokenDelegate = new EventSystem.IntraObjectHandler<LogicWire>(delegate(LogicWire component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicWire> OnBuildingBrokenDelegate = new EventSystem.IntraObjectHandler<LogicWire>(delegate(LogicWire component, object data)
 	{
 		component.OnBuildingBroken(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<LogicWire> OnBuildingFullyRepairedDelegate = new EventSystem.IntraObjectHandler<LogicWire>(delegate(LogicWire component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicWire> OnBuildingFullyRepairedDelegate = new EventSystem.IntraObjectHandler<LogicWire>(delegate(LogicWire component, object data)
 	{
 		component.OnBuildingFullyRepaired(data);
 	});
 
-	private System.Action firstFrameCallback;
+		private System.Action firstFrameCallback;
 
-	public enum BitDepth
+		public enum BitDepth
 	{
-		OneBit,
-		FourBit,
-		NumRatings
+				OneBit,
+				FourBit,
+				NumRatings
 	}
 }

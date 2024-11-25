@@ -8,18 +8,18 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LoopingSoundManager")]
 public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		LoopingSoundManager.instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		LoopingSoundManager.instance = this;
 		this.CollectParameterUpdaters();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (SpeedControlScreen.Instance != null && Game.Instance != null)
 		{
@@ -31,12 +31,12 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		});
 	}
 
-	private void OnActiveWorldChanged()
+		private void OnActiveWorldChanged()
 	{
 		this.StopAllSounds();
 	}
 
-	private void CollectParameterUpdaters()
+		private void CollectParameterUpdaters()
 	{
 		foreach (Type type in App.GetCurrentDomainTypes())
 		{
@@ -63,7 +63,7 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		}
 	}
 
-	public void UpdateFirstParameter(HandleVector<int>.Handle handle, HashedString parameter, float value)
+		public void UpdateFirstParameter(HandleVector<int>.Handle handle, HashedString parameter, float value)
 	{
 		LoopingSoundManager.Sound data = this.sounds.GetData(handle);
 		data.firstParameterValue = value;
@@ -75,7 +75,7 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		this.sounds.SetData(handle, data);
 	}
 
-	public void UpdateSecondParameter(HandleVector<int>.Handle handle, HashedString parameter, float value)
+		public void UpdateSecondParameter(HandleVector<int>.Handle handle, HashedString parameter, float value)
 	{
 		LoopingSoundManager.Sound data = this.sounds.GetData(handle);
 		data.secondParameterValue = value;
@@ -87,7 +87,7 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		this.sounds.SetData(handle, data);
 	}
 
-	public void UpdateObjectSelection(HandleVector<int>.Handle handle, Vector3 sound_pos, float vol, bool objectIsSelectedAndVisible)
+		public void UpdateObjectSelection(HandleVector<int>.Handle handle, Vector3 sound_pos, float vol, bool objectIsSelectedAndVisible)
 	{
 		LoopingSoundManager.Sound data = this.sounds.GetData(handle);
 		data.pos = sound_pos;
@@ -102,14 +102,14 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		this.sounds.SetData(handle, data);
 	}
 
-	public void UpdateVelocity(HandleVector<int>.Handle handle, Vector2 velocity)
+		public void UpdateVelocity(HandleVector<int>.Handle handle, Vector2 velocity)
 	{
 		LoopingSoundManager.Sound data = this.sounds.GetData(handle);
 		data.velocity = velocity;
 		this.sounds.SetData(handle, data);
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		ListPool<LoopingSoundManager.Sound, LoopingSoundManager>.PooledList pooledList = ListPool<LoopingSoundManager.Sound, LoopingSoundManager>.Allocate();
 		ListPool<int, LoopingSoundManager>.PooledList pooledList2 = ListPool<int, LoopingSoundManager>.Allocate();
@@ -249,12 +249,12 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		pooledList.Recycle();
 	}
 
-	public static LoopingSoundManager Get()
+		public static LoopingSoundManager Get()
 	{
 		return LoopingSoundManager.instance;
 	}
 
-	public void StopAllSounds()
+		public void StopAllSounds()
 	{
 		foreach (LoopingSoundManager.Sound sound in this.sounds.GetDataList())
 		{
@@ -268,12 +268,12 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		}
 	}
 
-	private SoundDescription GetSoundDescription(HashedString path)
+		private SoundDescription GetSoundDescription(HashedString path)
 	{
 		return KFMOD.GetSoundEventDescription(path);
 	}
 
-	public HandleVector<int>.Handle Add(string path, Vector3 pos, Transform transform = null, bool pause_on_game_pause = true, bool enable_culling = true, bool enable_camera_scaled_position = true, float vol = 1f, bool objectIsSelectedAndVisible = false)
+		public HandleVector<int>.Handle Add(string path, Vector3 pos, Transform transform = null, bool pause_on_game_pause = true, bool enable_culling = true, bool enable_camera_scaled_position = true, float vol = 1f, bool objectIsSelectedAndVisible = false)
 	{
 		SoundDescription soundEventDescription = KFMOD.GetSoundEventDescription(path);
 		LoopingSoundManager.Sound.Flags flags = (LoopingSoundManager.Sound.Flags)0;
@@ -310,12 +310,12 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		return this.sounds.Allocate(initial_data);
 	}
 
-	public static HandleVector<int>.Handle StartSound(EventReference event_ref, Vector3 pos, bool pause_on_game_pause = true, bool enable_culling = true)
+		public static HandleVector<int>.Handle StartSound(EventReference event_ref, Vector3 pos, bool pause_on_game_pause = true, bool enable_culling = true)
 	{
 		return LoopingSoundManager.StartSound(KFMOD.GetEventReferencePath(event_ref), pos, pause_on_game_pause, enable_culling);
 	}
 
-	public static HandleVector<int>.Handle StartSound(string path, Vector3 pos, bool pause_on_game_pause = true, bool enable_culling = true)
+		public static HandleVector<int>.Handle StartSound(string path, Vector3 pos, bool pause_on_game_pause = true, bool enable_culling = true)
 	{
 		if (string.IsNullOrEmpty(path))
 		{
@@ -325,7 +325,7 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		return LoopingSoundManager.Get().Add(path, pos, null, pause_on_game_pause, enable_culling, true, 1f, false);
 	}
 
-	public static void StopSound(HandleVector<int>.Handle handle)
+		public static void StopSound(HandleVector<int>.Handle handle)
 	{
 		if (LoopingSoundManager.Get() == null)
 		{
@@ -357,7 +357,7 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		LoopingSoundManager.Get().sounds.Free(handle);
 	}
 
-	public static void PauseSound(HandleVector<int>.Handle handle, bool paused)
+		public static void PauseSound(HandleVector<int>.Handle handle, bool paused)
 	{
 		LoopingSoundManager.Sound data = LoopingSoundManager.Get().sounds.GetData(handle);
 		if (data.IsPlaying)
@@ -366,7 +366,7 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		}
 	}
 
-	private void OnPauseChanged(object data)
+		private void OnPauseChanged(object data)
 	{
 		bool flag = (bool)data;
 		this.GameIsPaused = flag;
@@ -380,22 +380,22 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 		}
 	}
 
-	private static LoopingSoundManager instance;
+		private static LoopingSoundManager instance;
 
-	private bool GameIsPaused;
+		private bool GameIsPaused;
 
-	private Dictionary<HashedString, LoopingSoundParameterUpdater> parameterUpdaters = new Dictionary<HashedString, LoopingSoundParameterUpdater>();
+		private Dictionary<HashedString, LoopingSoundParameterUpdater> parameterUpdaters = new Dictionary<HashedString, LoopingSoundParameterUpdater>();
 
-	private KCompactedVector<LoopingSoundManager.Sound> sounds = new KCompactedVector<LoopingSoundManager.Sound>(0);
+		private KCompactedVector<LoopingSoundManager.Sound> sounds = new KCompactedVector<LoopingSoundManager.Sound>(0);
 
-	public class Tuning : TuningData<LoopingSoundManager.Tuning>
+		public class Tuning : TuningData<LoopingSoundManager.Tuning>
 	{
-		public float velocityScale;
+				public float velocityScale;
 	}
 
-	public struct Sound
+		public struct Sound
 	{
-				public bool IsPlaying
+						public bool IsPlaying
 		{
 			get
 			{
@@ -403,7 +403,7 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 			}
 		}
 
-				public bool ShouldPauseOnGamePaused
+						public bool ShouldPauseOnGamePaused
 		{
 			get
 			{
@@ -411,7 +411,7 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 			}
 		}
 
-				public bool IsCullingEnabled
+						public bool IsCullingEnabled
 		{
 			get
 			{
@@ -419,7 +419,7 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 			}
 		}
 
-				public bool ShouldCameraScalePosition
+						public bool ShouldCameraScalePosition
 		{
 			get
 			{
@@ -427,41 +427,41 @@ public class LoopingSoundManager : KMonoBehaviour, IRenderEveryTick
 			}
 		}
 
-		public EventInstance ev;
+				public EventInstance ev;
 
-		public Transform transform;
+				public Transform transform;
 
-		public KBatchedAnimController animController;
+				public KBatchedAnimController animController;
 
-		public float falloffDistanceSq;
+				public float falloffDistanceSq;
 
-		public HashedString path;
+				public HashedString path;
 
-		public Vector3 pos;
+				public Vector3 pos;
 
-		public Vector2 velocity;
+				public Vector2 velocity;
 
-		public HashedString firstParameter;
+				public HashedString firstParameter;
 
-		public HashedString secondParameter;
+				public HashedString secondParameter;
 
-		public float firstParameterValue;
+				public float firstParameterValue;
 
-		public float secondParameterValue;
+				public float secondParameterValue;
 
-		public float vol;
+				public float vol;
 
-		public bool objectIsSelectedAndVisible;
+				public bool objectIsSelectedAndVisible;
 
-		public LoopingSoundManager.Sound.Flags flags;
+				public LoopingSoundManager.Sound.Flags flags;
 
-		[Flags]
+				[Flags]
 		public enum Flags
 		{
-			PLAYING = 1,
-			PAUSE_ON_GAME_PAUSED = 2,
-			ENABLE_CULLING = 4,
-			ENABLE_CAMERA_SCALED_POSITION = 8
+						PLAYING = 1,
+						PAUSE_ON_GAME_PAUSED = 2,
+						ENABLE_CULLING = 4,
+						ENABLE_CAMERA_SCALED_POSITION = 8
 		}
 	}
 }

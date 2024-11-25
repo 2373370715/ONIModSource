@@ -5,15 +5,15 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ToolParameterMenu")]
 public class ToolParameterMenu : KMonoBehaviour
 {
-			public event System.Action onParametersChanged;
+				public event System.Action onParametersChanged;
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.ClearMenu();
 	}
 
-	public void PopulateMenu(Dictionary<string, ToolParameterMenu.ToggleState> parameters)
+		public void PopulateMenu(Dictionary<string, ToolParameterMenu.ToggleState> parameters)
 	{
 		this.ClearMenu();
 		this.currentParameters = parameters;
@@ -63,7 +63,7 @@ public class ToolParameterMenu : KMonoBehaviour
 		this.content.SetActive(true);
 	}
 
-	public void ClearMenu()
+		public void ClearMenu()
 	{
 		this.content.SetActive(false);
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.widgets)
@@ -73,7 +73,7 @@ public class ToolParameterMenu : KMonoBehaviour
 		this.widgets.Clear();
 	}
 
-	private void ChangeToSetting(string key)
+		private void ChangeToSetting(string key)
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.widgets)
 		{
@@ -85,7 +85,7 @@ public class ToolParameterMenu : KMonoBehaviour
 		this.currentParameters[key] = ToolParameterMenu.ToggleState.On;
 	}
 
-	private void OnChange()
+		private void OnChange()
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.widgets)
 		{
@@ -109,90 +109,90 @@ public class ToolParameterMenu : KMonoBehaviour
 		}
 	}
 
-	public string GetLastEnabledFilter()
+		public string GetLastEnabledFilter()
 	{
 		return this.lastEnabledFilter;
 	}
 
-	public GameObject content;
+		public GameObject content;
 
-	public GameObject widgetContainer;
+		public GameObject widgetContainer;
 
-	public GameObject widgetPrefab;
+		public GameObject widgetPrefab;
 
-	private Dictionary<string, GameObject> widgets = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> widgets = new Dictionary<string, GameObject>();
 
-	private Dictionary<string, ToolParameterMenu.ToggleState> currentParameters;
+		private Dictionary<string, ToolParameterMenu.ToggleState> currentParameters;
 
-	private string lastEnabledFilter;
+		private string lastEnabledFilter;
 
-	public class FILTERLAYERS
+		public class FILTERLAYERS
 	{
-		public static string BUILDINGS = "BUILDINGS";
+				public static string BUILDINGS = "BUILDINGS";
 
-		public static string TILES = "TILES";
+				public static string TILES = "TILES";
 
-		public static string WIRES = "WIRES";
+				public static string WIRES = "WIRES";
 
-		public static string LIQUIDCONDUIT = "LIQUIDPIPES";
+				public static string LIQUIDCONDUIT = "LIQUIDPIPES";
 
-		public static string GASCONDUIT = "GASPIPES";
+				public static string GASCONDUIT = "GASPIPES";
 
-		public static string SOLIDCONDUIT = "SOLIDCONDUITS";
+				public static string SOLIDCONDUIT = "SOLIDCONDUITS";
 
-		public static string CLEANANDCLEAR = "CLEANANDCLEAR";
+				public static string CLEANANDCLEAR = "CLEANANDCLEAR";
 
-		public static string DIGPLACER = "DIGPLACER";
+				public static string DIGPLACER = "DIGPLACER";
 
-		public static string LOGIC = "LOGIC";
+				public static string LOGIC = "LOGIC";
 
-		public static string BACKWALL = "BACKWALL";
+				public static string BACKWALL = "BACKWALL";
 
-		public static string CONSTRUCTION = "CONSTRUCTION";
+				public static string CONSTRUCTION = "CONSTRUCTION";
 
-		public static string DIG = "DIG";
+				public static string DIG = "DIG";
 
-		public static string CLEAN = "CLEAN";
+				public static string CLEAN = "CLEAN";
 
-		public static string OPERATE = "OPERATE";
+				public static string OPERATE = "OPERATE";
 
-		public static string METAL = "METAL";
+				public static string METAL = "METAL";
 
-		public static string BUILDABLE = "BUILDABLE";
+				public static string BUILDABLE = "BUILDABLE";
 
-		public static string FILTER = "FILTER";
+				public static string FILTER = "FILTER";
 
-		public static string LIQUIFIABLE = "LIQUIFIABLE";
+				public static string LIQUIFIABLE = "LIQUIFIABLE";
 
-		public static string LIQUID = "LIQUID";
+				public static string LIQUID = "LIQUID";
 
-		public static string CONSUMABLEORE = "CONSUMABLEORE";
+				public static string CONSUMABLEORE = "CONSUMABLEORE";
 
-		public static string ORGANICS = "ORGANICS";
+				public static string ORGANICS = "ORGANICS";
 
-		public static string FARMABLE = "FARMABLE";
+				public static string FARMABLE = "FARMABLE";
 
-		public static string GAS = "GAS";
+				public static string GAS = "GAS";
 
-		public static string MISC = "MISC";
+				public static string MISC = "MISC";
 
-		public static string HEATFLOW = "HEATFLOW";
+				public static string HEATFLOW = "HEATFLOW";
 
-		public static string ABSOLUTETEMPERATURE = "ABSOLUTETEMPERATURE";
+				public static string ABSOLUTETEMPERATURE = "ABSOLUTETEMPERATURE";
 
-		public static string RELATIVETEMPERATURE = "RELATIVETEMPERATURE";
+				public static string RELATIVETEMPERATURE = "RELATIVETEMPERATURE";
 
-		public static string ADAPTIVETEMPERATURE = "ADAPTIVETEMPERATURE";
+				public static string ADAPTIVETEMPERATURE = "ADAPTIVETEMPERATURE";
 
-		public static string STATECHANGE = "STATECHANGE";
+				public static string STATECHANGE = "STATECHANGE";
 
-		public static string ALL = "ALL";
+				public static string ALL = "ALL";
 	}
 
-	public enum ToggleState
+		public enum ToggleState
 	{
-		On,
-		Off,
-		Disabled
+				On,
+				Off,
+				Disabled
 	}
 }

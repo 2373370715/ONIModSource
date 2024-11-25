@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class NavGrid
 {
-			public NavTable NavTable { get; private set; }
+				public NavTable NavTable { get; private set; }
 
-			public NavGrid.Transition[] transitions { get; set; }
+				public NavGrid.Transition[] transitions { get; set; }
 
-			public NavGrid.Transition[][] transitionsByNavType { get; private set; }
+				public NavGrid.Transition[][] transitionsByNavType { get; private set; }
 
-			public int updateRangeX { get; private set; }
+				public int updateRangeX { get; private set; }
 
-			public int updateRangeY { get; private set; }
+				public int updateRangeY { get; private set; }
 
-			public int maxLinksPerCell { get; private set; }
+				public int maxLinksPerCell { get; private set; }
 
-	public static NavType MirrorNavType(NavType nav_type)
+		public static NavType MirrorNavType(NavType nav_type)
 	{
 		if (nav_type == NavType.LeftWall)
 		{
@@ -30,8 +30,10 @@ public class NavGrid
 		return nav_type;
 	}
 
-	public NavGrid(string id, NavGrid.Transition[] transitions, NavGrid.NavTypeData[] nav_type_data, CellOffset[] bounding_offsets, NavTableValidator[] validators, int update_range_x, int update_range_y, int max_links_per_cell)
+		public NavGrid(string id, NavGrid.Transition[] transitions, NavGrid.NavTypeData[] nav_type_data, CellOffset[] bounding_offsets, NavTableValidator[] validators, int update_range_x, int update_range_y, int max_links_per_cell)
 	{
+		this.DirtyBitFlags = new byte[(Grid.CellCount + 7) / 8];
+		this.DirtyCells = new List<int>();
 		this.id = id;
 		this.Validators = validators;
 		this.navTypeData = nav_type_data;
@@ -86,7 +88,7 @@ public class NavGrid
 		this.InitializeGraph();
 	}
 
-	public NavGrid.NavTypeData GetNavTypeData(NavType nav_type)
+		public NavGrid.NavTypeData GetNavTypeData(NavType nav_type)
 	{
 		foreach (NavGrid.NavTypeData navTypeData in this.navTypeData)
 		{
@@ -98,7 +100,7 @@ public class NavGrid
 		throw new Exception("Missing nav type data for nav type:" + nav_type.ToString());
 	}
 
-	public bool HasNavTypeData(NavType nav_type)
+		public bool HasNavTypeData(NavType nav_type)
 	{
 		NavGrid.NavTypeData[] array = this.navTypeData;
 		for (int i = 0; i < array.Length; i++)
@@ -111,38 +113,45 @@ public class NavGrid
 		return false;
 	}
 
-	public HashedString GetIdleAnim(NavType nav_type)
+		public HashedString GetIdleAnim(NavType nav_type)
 	{
 		return this.GetNavTypeData(nav_type).idleAnim;
 	}
 
-	public void InitializeGraph()
+		public void InitializeGraph()
 	{
 		NavGridUpdater.InitializeNavGrid(this.NavTable, this.Validators, this.boundingOffsets, this.maxLinksPerCell, this.Links, this.transitionsByNavType);
 	}
 
-	public void UpdateGraph()
+		public void UpdateGraph()
 	{
-		foreach (int cell in this.DirtyCells)
+		int count = this.DirtyCells.Count;
+		for (int i = 0; i < count; i++)
 		{
-			for (int i = -this.updateRangeY; i <= this.updateRangeY; i++)
+			int num;
+			int num2;
+			Grid.CellToXY(this.DirtyCells[i], out num, out num2);
+			int num3 = Grid.ClampX(num - this.updateRangeX);
+			int num4 = Grid.ClampY(num2 - this.updateRangeY);
+			int num5 = Grid.ClampX(num + this.updateRangeX);
+			int num6 = Grid.ClampY(num2 + this.updateRangeY);
+			for (int j = num4; j <= num6; j++)
 			{
-				for (int j = -this.updateRangeX; j <= this.updateRangeX; j++)
+				for (int k = num3; k <= num5; k++)
 				{
-					int num = Grid.OffsetCell(cell, j, i);
-					if (Grid.IsValidCell(num))
-					{
-						this.ExpandedDirtyCells.Add(num);
-					}
+					this.AddDirtyCell(Grid.XYToCell(k, j));
 				}
 			}
 		}
-		this.UpdateGraph(this.ExpandedDirtyCells);
-		this.DirtyCells = new HashSet<int>();
-		this.ExpandedDirtyCells = new HashSet<int>();
+		this.UpdateGraph(this.DirtyCells);
+		foreach (int num7 in this.DirtyCells)
+		{
+			this.DirtyBitFlags[num7 / 8] = 0;
+		}
+		this.DirtyCells.Clear();
 	}
 
-	public void UpdateGraph(HashSet<int> dirty_nav_cells)
+		public void UpdateGraph(IEnumerable<int> dirty_nav_cells)
 	{
 		NavGridUpdater.UpdateNavGrid(this.NavTable, this.Validators, this.boundingOffsets, this.maxLinksPerCell, this.Links, this.transitionsByNavType, this.teleportTransitions, dirty_nav_cells);
 		if (this.OnNavGridUpdateComplete != null)
@@ -151,13 +160,13 @@ public class NavGrid
 		}
 	}
 
-	public static void DebugDrawPath(int start_cell, int end_cell)
+		public static void DebugDrawPath(int start_cell, int end_cell)
 	{
 		Grid.CellToPosCCF(start_cell, Grid.SceneLayer.Move);
 		Grid.CellToPosCCF(end_cell, Grid.SceneLayer.Move);
 	}
 
-	public static void DebugDrawPath(PathFinder.Path path)
+		public static void DebugDrawPath(PathFinder.Path path)
 	{
 		if (path.nodes != null)
 		{
@@ -168,7 +177,7 @@ public class NavGrid
 		}
 	}
 
-	private void DebugDrawValidCells()
+		private void DebugDrawValidCells()
 	{
 		Color white = Color.white;
 		int cellCount = Grid.CellCount;
@@ -185,7 +194,7 @@ public class NavGrid
 		}
 	}
 
-	private void DebugDrawLinks()
+		private void DebugDrawLinks()
 	{
 		Color white = Color.white;
 		for (int i = 0; i < Grid.CellCount; i++)
@@ -203,7 +212,7 @@ public class NavGrid
 		}
 	}
 
-	private bool DrawNavTypeLink(NavType nav_type, ref Color color)
+		private bool DrawNavTypeLink(NavType nav_type, ref Color color)
 	{
 		color = this.NavTypeColor(nav_type);
 		if (this.DebugViewLinksAll)
@@ -220,7 +229,7 @@ public class NavGrid
 		return false;
 	}
 
-	private bool DrawNavTypeCell(NavType nav_type, ref Color color)
+		private bool DrawNavTypeCell(NavType nav_type, ref Color color)
 	{
 		color = this.NavTypeColor(nav_type);
 		if (this.DebugViewValidCellsAll)
@@ -237,7 +246,7 @@ public class NavGrid
 		return false;
 	}
 
-	public void DebugUpdate()
+		public void DebugUpdate()
 	{
 		if (this.DebugViewValidCells)
 		{
@@ -249,12 +258,18 @@ public class NavGrid
 		}
 	}
 
-	public void AddDirtyCell(int cell)
+		public void AddDirtyCell(int cell)
 	{
-		this.DirtyCells.Add(cell);
+		if (Grid.IsValidCell(cell) && ((int)this.DirtyBitFlags[cell / 8] & 1 << cell % 8) == 0)
+		{
+			this.DirtyCells.Add(cell);
+			byte[] dirtyBitFlags = this.DirtyBitFlags;
+			int num = cell / 8;
+			dirtyBitFlags[num] |= (byte)(1 << cell % 8);
+		}
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		NavTableValidator[] validators = this.Validators;
 		for (int i = 0; i < validators.Length; i++)
@@ -263,7 +278,7 @@ public class NavGrid
 		}
 	}
 
-	public Color NavTypeColor(NavType navType)
+		public Color NavTypeColor(NavType navType)
 	{
 		if (this.debugColorLookup == null)
 		{
@@ -283,55 +298,55 @@ public class NavGrid
 		return this.debugColorLookup[(int)navType];
 	}
 
-	public bool DebugViewAllPaths;
+		public bool DebugViewAllPaths;
 
-	public bool DebugViewValidCells;
+		public bool DebugViewValidCells;
 
-	public bool[] DebugViewValidCellsType;
+		public bool[] DebugViewValidCellsType;
 
-	public bool DebugViewValidCellsAll;
+		public bool DebugViewValidCellsAll;
 
-	public bool DebugViewLinks;
+		public bool DebugViewLinks;
 
-	public bool[] DebugViewLinkType;
+		public bool[] DebugViewLinkType;
 
-	public bool DebugViewLinksAll;
+		public bool DebugViewLinksAll;
 
-	public static int InvalidHandle = -1;
+		public static int InvalidHandle = -1;
 
-	public static int InvalidIdx = -1;
+		public static int InvalidIdx = -1;
 
-	public static int InvalidCell = -1;
+		public static int InvalidCell = -1;
 
-	public Dictionary<int, int> teleportTransitions = new Dictionary<int, int>();
+		public Dictionary<int, int> teleportTransitions = new Dictionary<int, int>();
 
-	public NavGrid.Link[] Links;
+		public NavGrid.Link[] Links;
 
-	private HashSet<int> DirtyCells = new HashSet<int>();
+		private byte[] DirtyBitFlags;
 
-	private HashSet<int> ExpandedDirtyCells = new HashSet<int>();
+		private List<int> DirtyCells;
 
-	private NavTableValidator[] Validators = new NavTableValidator[0];
+		private NavTableValidator[] Validators = new NavTableValidator[0];
 
-	private CellOffset[] boundingOffsets;
+		private CellOffset[] boundingOffsets;
 
-	public string id;
+		public string id;
 
-	public bool updateEveryFrame;
+		public bool updateEveryFrame;
 
-	public PathFinder.PotentialScratchPad potentialScratchPad;
+		public PathFinder.PotentialScratchPad potentialScratchPad;
 
-	public Action<HashSet<int>> OnNavGridUpdateComplete;
+		public Action<IEnumerable<int>> OnNavGridUpdateComplete;
 
-	public NavType[] ValidNavTypes;
+		public NavType[] ValidNavTypes;
 
-	public NavGrid.NavTypeData[] navTypeData;
+		public NavGrid.NavTypeData[] navTypeData;
 
-	private Color[] debugColorLookup;
+		private Color[] debugColorLookup;
 
-	public struct Link
+		public struct Link
 	{
-		public Link(int link, NavType start_nav_type, NavType end_nav_type, byte transition_id, byte cost)
+				public Link(int link, NavType start_nav_type, NavType end_nav_type, byte transition_id, byte cost)
 		{
 			this.link = link;
 			this.startNavType = start_nav_type;
@@ -340,35 +355,35 @@ public class NavGrid
 			this.cost = cost;
 		}
 
-		public int link;
+				public int link;
 
-		public NavType startNavType;
+				public NavType startNavType;
 
-		public NavType endNavType;
+				public NavType endNavType;
 
-		public byte transitionId;
+				public byte transitionId;
 
-		public byte cost;
+				public byte cost;
 	}
 
-	public struct NavTypeData
+		public struct NavTypeData
 	{
-		public NavType navType;
+				public NavType navType;
 
-		public Vector2 animControllerOffset;
+				public Vector2 animControllerOffset;
 
-		public bool flipX;
+				public bool flipX;
 
-		public bool flipY;
+				public bool flipY;
 
-		public float rotation;
+				public float rotation;
 
-		public HashedString idleAnim;
+				public HashedString idleAnim;
 	}
 
-	public struct Transition
+		public struct Transition
 	{
-		public override string ToString()
+				public override string ToString()
 		{
 			return string.Format("{0}: {1}->{2} ({3}); offset {4},{5}", new object[]
 			{
@@ -381,7 +396,7 @@ public class NavGrid
 			});
 		}
 
-		public Transition(NavType start, NavType end, int x, int y, NavAxis start_axis, bool is_looping, bool loop_has_pre, bool is_escape, int cost, string anim, CellOffset[] void_offsets, CellOffset[] solid_offsets, NavOffset[] valid_nav_offsets, NavOffset[] invalid_nav_offsets, bool critter = false, float animSpeed = 1f)
+				public Transition(NavType start, NavType end, int x, int y, NavAxis start_axis, bool is_looping, bool loop_has_pre, bool is_escape, int cost, string anim, CellOffset[] void_offsets, CellOffset[] solid_offsets, NavOffset[] valid_nav_offsets, NavOffset[] invalid_nav_offsets, bool critter = false, float animSpeed = 1f)
 		{
 			DebugUtil.Assert(cost <= 255 && cost >= 0);
 			this.id = byte.MaxValue;
@@ -428,7 +443,7 @@ public class NavGrid
 			this.animSpeed = animSpeed;
 		}
 
-		public int IsValid(int cell, NavTable nav_table)
+				public int IsValid(int cell, NavTable nav_table)
 		{
 			if (!Grid.IsCellOffsetValid(cell, this.x, this.y))
 			{
@@ -620,38 +635,38 @@ public class NavGrid
 			return num;
 		}
 
-		public NavType start;
+				public NavType start;
 
-		public NavType end;
+				public NavType end;
 
-		public NavAxis startAxis;
+				public NavAxis startAxis;
 
-		public int x;
+				public int x;
 
-		public int y;
+				public int y;
 
-		public byte id;
+				public byte id;
 
-		public byte cost;
+				public byte cost;
 
-		public bool isLooping;
+				public bool isLooping;
 
-		public bool isEscape;
+				public bool isEscape;
 
-		public string preAnim;
+				public string preAnim;
 
-		public string anim;
+				public string anim;
 
-		public float animSpeed;
+				public float animSpeed;
 
-		public CellOffset[] voidOffsets;
+				public CellOffset[] voidOffsets;
 
-		public CellOffset[] solidOffsets;
+				public CellOffset[] solidOffsets;
 
-		public NavOffset[] validNavOffsets;
+				public NavOffset[] validNavOffsets;
 
-		public NavOffset[] invalidNavOffsets;
+				public NavOffset[] invalidNavOffsets;
 
-		public bool isCritter;
+				public bool isCritter;
 	}
 }

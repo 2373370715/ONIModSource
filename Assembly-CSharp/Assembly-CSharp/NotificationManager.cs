@@ -3,24 +3,24 @@ using System.Collections.Generic;
 
 public class NotificationManager : KMonoBehaviour
 {
-			public static NotificationManager Instance { get; private set; }
+				public static NotificationManager Instance { get; private set; }
 
-			public event Action<Notification> notificationAdded;
+				public event Action<Notification> notificationAdded;
 
-			public event Action<Notification> notificationRemoved;
+				public event Action<Notification> notificationRemoved;
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Debug.Assert(NotificationManager.Instance == null);
 		NotificationManager.Instance = this;
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		NotificationManager.Instance = null;
 	}
 
-	public void AddNotification(Notification notification)
+		public void AddNotification(Notification notification)
 	{
 		this.pendingNotifications.Add(notification);
 		if (NotificationScreen.Instance != null)
@@ -29,7 +29,7 @@ public class NotificationManager : KMonoBehaviour
 		}
 	}
 
-	public void RemoveNotification(Notification notification)
+		public void RemoveNotification(Notification notification)
 	{
 		this.pendingNotifications.Remove(notification);
 		if (NotificationScreen.Instance != null)
@@ -42,7 +42,7 @@ public class NotificationManager : KMonoBehaviour
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		int i = 0;
 		while (i < this.pendingNotifications.Count)
@@ -59,7 +59,7 @@ public class NotificationManager : KMonoBehaviour
 		}
 	}
 
-	private void DoAddNotification(Notification notification)
+		private void DoAddNotification(Notification notification)
 	{
 		this.notifications.Add(notification);
 		if (this.notificationAdded != null)
@@ -68,7 +68,7 @@ public class NotificationManager : KMonoBehaviour
 		}
 	}
 
-	private List<Notification> pendingNotifications = new List<Notification>();
+		private List<Notification> pendingNotifications = new List<Notification>();
 
-	private List<Notification> notifications = new List<Notification>();
+		private List<Notification> notifications = new List<Notification>();
 }

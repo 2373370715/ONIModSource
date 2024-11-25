@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace TUNING
 {
-	public class GERM_EXPOSURE
+		public class GERM_EXPOSURE
 	{
-		// Note: this type is marked as 'beforefieldinit'.
+				// Note: this type is marked as 'beforefieldinit'.
 		static GERM_EXPOSURE()
 		{
 			float[] array = new float[3];
@@ -91,9 +91,9 @@ namespace TUNING
 			};
 		}
 
-		public const float MIN_EXPOSURE_PERIOD = 540f;
+				public const float MIN_EXPOSURE_PERIOD = 540f;
 
-		public static readonly int[] INHALE_TICK_THRESHOLD = new int[]
+				public static readonly int[] INHALE_TICK_THRESHOLD = new int[]
 		{
 			5,
 			10,
@@ -101,10 +101,10 @@ namespace TUNING
 			20
 		};
 
-		public static readonly float[] EXPOSURE_TIER_RESISTANCE_BONUSES;
+				public static readonly float[] EXPOSURE_TIER_RESISTANCE_BONUSES;
 
-		public const int MAX_EXPOSURE_TIER = 3;
+				public const int MAX_EXPOSURE_TIER = 3;
 
-		public static ExposureType[] TYPES;
+				public static ExposureType[] TYPES;
 	}
 }

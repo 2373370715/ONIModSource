@@ -2,13 +2,15 @@
 
 public interface IPlantConsumptionInstructions
 {
-	CellOffset[] GetAllowedOffsets();
+		CellOffset[] GetAllowedOffsets();
 
-	float ConsumePlant(float desiredUnitsToConsume);
+		float ConsumePlant(float desiredUnitsToConsume);
 
-	float PlantProductGrowthPerCycle();
+		float PlantProductGrowthPerCycle();
 
-	bool CanPlantBeEaten();
+		bool CanPlantBeEaten();
 
-	string GetFormattedConsumptionPerCycle(float consumer_caloriesLossPerCaloriesPerKG);
+		string GetFormattedConsumptionPerCycle(float consumer_caloriesLossPerCaloriesPerKG);
+
+		Diet.Info.FoodType GetDietFoodType();
 }

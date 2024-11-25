@@ -1,40 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using STRINGS;
+﻿using STRINGS;
 
-namespace Database
-{
-	public class SurviveARocketWithMinimumMorale : ColonyAchievementRequirement
-	{
-		public SurviveARocketWithMinimumMorale(float minimumMorale, int numberOfCycles)
-		{
-			this.minimumMorale = minimumMorale;
-			this.numberOfCycles = numberOfCycles;
-		}
+namespace Database {
+    public class SurviveARocketWithMinimumMorale : ColonyAchievementRequirement {
+        public float minimumMorale;
+        public int   numberOfCycles;
 
-		public override string GetProgress(bool complete)
-		{
-			if (complete)
-			{
-				return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.SURVIVE_SPACE_COMPLETE, this.minimumMorale, this.numberOfCycles);
-			}
-			return base.GetProgress(complete);
-		}
+        public SurviveARocketWithMinimumMorale(float minimumMorale, int numberOfCycles) {
+            this.minimumMorale  = minimumMorale;
+            this.numberOfCycles = numberOfCycles;
+        }
 
-		public override bool Success()
-		{
-			foreach (KeyValuePair<int, int> keyValuePair in SaveGame.Instance.ColonyAchievementTracker.cyclesRocketDupeMoraleAboveRequirement)
-			{
-				if (keyValuePair.Value >= this.numberOfCycles)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
+        public override string GetProgress(bool complete) {
+            if (complete)
+                return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.SURVIVE_SPACE_COMPLETE,
+                                     minimumMorale,
+                                     numberOfCycles);
 
-		public float minimumMorale;
+            return base.GetProgress(complete);
+        }
 
-		public int numberOfCycles;
-	}
+        public override bool Success() {
+            foreach (var keyValuePair in SaveGame.Instance.ColonyAchievementTracker
+                                                 .cyclesRocketDupeMoraleAboveRequirement)
+                if (keyValuePair.Value >= numberOfCycles)
+                    return true;
+
+            return false;
+        }
+    }
 }

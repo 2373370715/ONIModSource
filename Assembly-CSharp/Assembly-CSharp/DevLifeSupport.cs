@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DevLifeSupport : KMonoBehaviour, ISim200ms
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.elementConsumer != null)
@@ -12,7 +12,7 @@ public class DevLifeSupport : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		Vector2I vector2I = new Vector2I(-this.effectRadius, -this.effectRadius);
 		Vector2I vector2I2 = new Vector2I(this.effectRadius, this.effectRadius);
@@ -41,12 +41,12 @@ public class DevLifeSupport : KMonoBehaviour, ISim200ms
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private ElementConsumer elementConsumer;
 
-	public float targetTemperature = 303.15f;
+		public float targetTemperature = 303.15f;
 
-	public int effectRadius = 7;
+		public int effectRadius = 7;
 
-	private const float temperatureControlK = 0.2f;
+		private const float temperatureControlK = 0.2f;
 }

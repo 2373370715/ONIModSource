@@ -3,105 +3,105 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
-public readonly struct SkyVisibilityInfo
-{
-	public SkyVisibilityInfo(CellOffset scanLeftOffset, int scanLeftCount, CellOffset scanRightOffset, int scanRightCount, int verticalStep)
-	{
-		this.scanLeftOffset = scanLeftOffset;
-		this.scanLeftCount = scanLeftCount;
-		this.scanRightOffset = scanRightOffset;
-		this.scanRightCount = scanRightCount;
-		this.verticalStep = verticalStep;
-		this.totalColumnsCount = scanLeftCount + scanRightCount + (scanRightOffset.x - scanLeftOffset.x + 1);
-	}
+public readonly struct SkyVisibilityInfo {
+    public SkyVisibilityInfo(CellOffset scanLeftOffset,
+                             int        scanLeftCount,
+                             CellOffset scanRightOffset,
+                             int        scanRightCount,
+                             int        verticalStep) {
+        this.scanLeftOffset  = scanLeftOffset;
+        this.scanLeftCount   = scanLeftCount;
+        this.scanRightOffset = scanRightOffset;
+        this.scanRightCount  = scanRightCount;
+        this.verticalStep    = verticalStep;
+        totalColumnsCount    = scanLeftCount + scanRightCount + (scanRightOffset.x - scanLeftOffset.x) + 1;
+    }
 
-	[return: TupleElementNames(new string[]
-	{
-		"isAnyVisible",
-		"percentVisible01"
-	})]
-	public ValueTuple<bool, float> GetVisibilityOf(GameObject gameObject)
-	{
-		return this.GetVisibilityOf(Grid.PosToCell(gameObject));
-	}
+    [return: TupleElementNames(new[] { "isAnyVisible", "percentVisible01" })]
+    public ValueTuple<bool, float> GetVisibilityOf(GameObject gameObject) {
+        return GetVisibilityOf(Grid.PosToCell(gameObject));
+    }
 
-	[return: TupleElementNames(new string[]
-	{
-		"isAnyVisible",
-		"percentVisible01"
-	})]
-	public ValueTuple<bool, float> GetVisibilityOf(int buildingCenterCellId)
-	{
-		int num = 0;
-		WorldContainer world = ClusterManager.Instance.GetWorld((int)Grid.WorldIdx[buildingCenterCellId]);
-		num += SkyVisibilityInfo.ScanAndGetVisibleCellCount(Grid.OffsetCell(buildingCenterCellId, this.scanLeftOffset), -1, this.verticalStep, this.scanLeftCount, world);
-		num += SkyVisibilityInfo.ScanAndGetVisibleCellCount(Grid.OffsetCell(buildingCenterCellId, this.scanRightOffset), 1, this.verticalStep, this.scanRightCount, world);
-		if (this.scanLeftOffset.x == this.scanRightOffset.x)
-		{
-			num = Mathf.Max(0, num - 1);
-		}
-		return new ValueTuple<bool, float>(num > 0, (float)num / (float)this.totalColumnsCount);
-	}
+    [return: TupleElementNames(new[] { "isAnyVisible", "percentVisible01" })]
+    public ValueTuple<bool, float> GetVisibilityOf(int buildingCenterCellId) {
+        var num   = 0;
+        var world = ClusterManager.Instance.GetWorld(Grid.WorldIdx[buildingCenterCellId]);
+        num += ScanAndGetVisibleCellCount(Grid.OffsetCell(buildingCenterCellId, scanLeftOffset),
+                                          -1,
+                                          verticalStep,
+                                          scanLeftCount,
+                                          world);
 
-	public void CollectVisibleCellsTo(HashSet<int> visibleCells, int buildingBottomLeftCellId, WorldContainer originWorld)
-	{
-		SkyVisibilityInfo.ScanAndCollectVisibleCellsTo(visibleCells, Grid.OffsetCell(buildingBottomLeftCellId, this.scanLeftOffset), -1, this.verticalStep, this.scanLeftCount, originWorld);
-		SkyVisibilityInfo.ScanAndCollectVisibleCellsTo(visibleCells, Grid.OffsetCell(buildingBottomLeftCellId, this.scanRightOffset), 1, this.verticalStep, this.scanRightCount, originWorld);
-	}
+        num += ScanAndGetVisibleCellCount(Grid.OffsetCell(buildingCenterCellId, scanRightOffset),
+                                          1,
+                                          verticalStep,
+                                          scanRightCount,
+                                          world);
 
-	private static void ScanAndCollectVisibleCellsTo(HashSet<int> visibleCells, int originCellId, int stepX, int stepY, int stepCountInclusive, WorldContainer originWorld)
-	{
-		for (int i = 0; i <= stepCountInclusive; i++)
-		{
-			int num = Grid.OffsetCell(originCellId, i * stepX, i * stepY);
-			if (!SkyVisibilityInfo.IsVisible(num, originWorld))
-			{
-				break;
-			}
-			visibleCells.Add(num);
-		}
-	}
+        if (scanLeftOffset.x == scanRightOffset.x) num = Mathf.Max(0, num - 1);
+        return new ValueTuple<bool, float>(num > 0, num / (float)totalColumnsCount);
+    }
 
-	private static int ScanAndGetVisibleCellCount(int originCellId, int stepX, int stepY, int stepCountInclusive, WorldContainer originWorld)
-	{
-		for (int i = 0; i <= stepCountInclusive; i++)
-		{
-			if (!SkyVisibilityInfo.IsVisible(Grid.OffsetCell(originCellId, i * stepX, i * stepY), originWorld))
-			{
-				return i;
-			}
-		}
-		return stepCountInclusive + 1;
-	}
+    public void CollectVisibleCellsTo(HashSet<int>   visibleCells,
+                                      int            buildingBottomLeftCellId,
+                                      WorldContainer originWorld) {
+        ScanAndCollectVisibleCellsTo(visibleCells,
+                                     Grid.OffsetCell(buildingBottomLeftCellId, scanLeftOffset),
+                                     -1,
+                                     verticalStep,
+                                     scanLeftCount,
+                                     originWorld);
 
-	public static bool IsVisible(int cellId, WorldContainer originWorld)
-	{
-		if (!Grid.IsValidCell(cellId))
-		{
-			return false;
-		}
-		if (Grid.ExposedToSunlight[cellId] > 0)
-		{
-			return true;
-		}
-		WorldContainer world = ClusterManager.Instance.GetWorld((int)Grid.WorldIdx[cellId]);
-		if (world != null && world.IsModuleInterior)
-		{
-			return true;
-		}
-		originWorld != world;
-		return false;
-	}
+        ScanAndCollectVisibleCellsTo(visibleCells,
+                                     Grid.OffsetCell(buildingBottomLeftCellId, scanRightOffset),
+                                     1,
+                                     verticalStep,
+                                     scanRightCount,
+                                     originWorld);
+    }
 
-	public readonly CellOffset scanLeftOffset;
+    private static void ScanAndCollectVisibleCellsTo(HashSet<int>   visibleCells,
+                                                     int            originCellId,
+                                                     int            stepX,
+                                                     int            stepY,
+                                                     int            stepCountInclusive,
+                                                     WorldContainer originWorld) {
+        for (var i = 0; i <= stepCountInclusive; i++) {
+            var num = Grid.OffsetCell(originCellId, i * stepX, i * stepY);
+            if (!IsVisible(num, originWorld)) break;
 
-	public readonly int scanLeftCount;
+            visibleCells.Add(num);
+        }
+    }
 
-	public readonly CellOffset scanRightOffset;
+    private static int ScanAndGetVisibleCellCount(int            originCellId,
+                                                  int            stepX,
+                                                  int            stepY,
+                                                  int            stepCountInclusive,
+                                                  WorldContainer originWorld) {
+        for (var i = 0; i <= stepCountInclusive; i++)
+            if (!IsVisible(Grid.OffsetCell(originCellId, i * stepX, i * stepY), originWorld))
+                return i;
 
-	public readonly int scanRightCount;
+        return stepCountInclusive + 1;
+    }
 
-	public readonly int verticalStep;
+    public static bool IsVisible(int cellId, WorldContainer originWorld) {
+        if (!Grid.IsValidCell(cellId)) return false;
 
-	public readonly int totalColumnsCount;
+        if (Grid.ExposedToSunlight[cellId] > 0) return true;
+
+        var world = ClusterManager.Instance.GetWorld(Grid.WorldIdx[cellId]);
+        if (world != null && world.IsModuleInterior) return true;
+
+        originWorld != world;
+        return false;
+    }
+
+    public readonly CellOffset scanLeftOffset;
+    public readonly int        scanLeftCount;
+    public readonly CellOffset scanRightOffset;
+    public readonly int        scanRightCount;
+    public readonly int        verticalStep;
+    public readonly int        totalColumnsCount;
 }

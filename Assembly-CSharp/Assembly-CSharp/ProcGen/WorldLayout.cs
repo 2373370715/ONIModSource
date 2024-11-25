@@ -12,22 +12,22 @@ using VoronoiTree;
 
 namespace ProcGen
 {
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	public class WorldLayout
 	{
-						[Serialize]
+								[Serialize]
 		public int mapWidth { get; private set; }
 
-						[Serialize]
+								[Serialize]
 		public int mapHeight { get; private set; }
 
-						public bool layoutOK { get; private set; }
+								public bool layoutOK { get; private set; }
 
-						public static LevelLayer levelLayerGradient { get; private set; }
+								public static LevelLayer levelLayerGradient { get; private set; }
 
-						public WorldGen worldGen { get; private set; }
+								public WorldGen worldGen { get; private set; }
 
-		public WorldLayout(WorldGen worldGen, int seed)
+				public WorldLayout(WorldGen worldGen, int seed)
 		{
 			this.worldGen = worldGen;
 			this.localGraph = new MapGraph(seed);
@@ -35,30 +35,30 @@ namespace ProcGen
 			this.SetSeed(seed);
 		}
 
-		public WorldLayout(WorldGen worldGen, int width, int height, int seed) : this(worldGen, seed)
+				public WorldLayout(WorldGen worldGen, int width, int height, int seed) : this(worldGen, seed)
 		{
 			this.mapWidth = width;
 			this.mapHeight = height;
 		}
 
-		public void SetSeed(int seed)
+				public void SetSeed(int seed)
 		{
 			this.myRandom = new SeededRandom(seed);
 			this.localGraph.SetSeed(seed);
 			this.overworldGraph.SetSeed(seed);
 		}
 
-		public Tree GetVoronoiTree()
+				public Tree GetVoronoiTree()
 		{
 			return this.voronoiTree;
 		}
 
-		public static void SetLayerGradient(LevelLayer newGradient)
+				public static void SetLayerGradient(LevelLayer newGradient)
 		{
 			WorldLayout.levelLayerGradient = newGradient;
 		}
 
-		public static string GetNodeTypeFromLayers(Vector2 point, float mapHeight, SeededRandom rnd)
+				public static string GetNodeTypeFromLayers(Vector2 point, float mapHeight, SeededRandom rnd)
 		{
 			string result = WorldGenTags.TheVoid.Name;
 			int index = rnd.RandomRange(0, WorldLayout.levelLayerGradient[WorldLayout.levelLayerGradient.Count - 1].content.Count);
@@ -75,7 +75,7 @@ namespace ProcGen
 			return result;
 		}
 
-		public Tree GenerateOverworld(bool usePD, bool isRunningDebugGen)
+				public Tree GenerateOverworld(bool usePD, bool isRunningDebugGen)
 		{
 			global::Debug.Assert(this.mapWidth != 0 && this.mapHeight != 0, "Map size has not been set");
 			global::Debug.Assert(this.worldGen.Settings.world != null, "You need to set a world");
@@ -173,7 +173,7 @@ namespace ProcGen
 			return this.voronoiTree;
 		}
 
-		public static void ResetMapGraphFromVoronoiTree(List<Node> nodes, MapGraph graph, bool clear)
+				public static void ResetMapGraphFromVoronoiTree(List<Node> nodes, MapGraph graph, bool clear)
 		{
 			if (clear)
 			{
@@ -203,14 +203,14 @@ namespace ProcGen
 			}
 		}
 
-		public void PopulateSubworlds()
+				public void PopulateSubworlds()
 		{
 			this.AddSubworldChildren();
 			this.GetStartLocation();
 			this.PropagateStartTag();
 		}
 
-		private void PropagateDistanceTags(Tree tree, TagSet tags)
+				private void PropagateDistanceTags(Tree tree, TagSet tags)
 		{
 			foreach (Tag tag in tags)
 			{
@@ -236,7 +236,7 @@ namespace ProcGen
 			}
 		}
 
-		private HashSet<WeightedSubWorld> GetNameFilterSet(Node vn, World.AllowedCellsFilter filter, List<WeightedSubWorld> subworlds)
+				private HashSet<WeightedSubWorld> GetNameFilterSet(Node vn, World.AllowedCellsFilter filter, List<WeightedSubWorld> subworlds)
 		{
 			HashSet<WeightedSubWorld> hashSet = new HashSet<WeightedSubWorld>();
 			switch (filter.tagcommand)
@@ -304,7 +304,7 @@ namespace ProcGen
 			return hashSet;
 		}
 
-		private HashSet<WeightedSubWorld> GetZoneTypeFilterSet(Node vn, World.AllowedCellsFilter filter, Dictionary<string, List<WeightedSubWorld>> subworldsByZoneType)
+				private HashSet<WeightedSubWorld> GetZoneTypeFilterSet(Node vn, World.AllowedCellsFilter filter, Dictionary<string, List<WeightedSubWorld>> subworldsByZoneType)
 		{
 			HashSet<WeightedSubWorld> hashSet = new HashSet<WeightedSubWorld>();
 			switch (filter.tagcommand)
@@ -347,7 +347,7 @@ namespace ProcGen
 			return hashSet;
 		}
 
-		private HashSet<WeightedSubWorld> GetTemperatureFilterSet(Node vn, World.AllowedCellsFilter filter, Dictionary<string, List<WeightedSubWorld>> subworldsByTemperature)
+				private HashSet<WeightedSubWorld> GetTemperatureFilterSet(Node vn, World.AllowedCellsFilter filter, Dictionary<string, List<WeightedSubWorld>> subworldsByTemperature)
 		{
 			HashSet<WeightedSubWorld> hashSet = new HashSet<WeightedSubWorld>();
 			switch (filter.tagcommand)
@@ -390,7 +390,7 @@ namespace ProcGen
 			return hashSet;
 		}
 
-		private void RunFilterClearCommand(Node vn, World.AllowedCellsFilter filter, HashSet<WeightedSubWorld> allowedSubworldsSet)
+				private void RunFilterClearCommand(Node vn, World.AllowedCellsFilter filter, HashSet<WeightedSubWorld> allowedSubworldsSet)
 		{
 			switch (filter.tagcommand)
 			{
@@ -423,7 +423,7 @@ namespace ProcGen
 			}
 		}
 
-		private HashSet<WeightedSubWorld> Filter(Node vn, List<WeightedSubWorld> allSubWorlds, Dictionary<string, List<WeightedSubWorld>> subworldsByTemperature, Dictionary<string, List<WeightedSubWorld>> subworldsByZoneType)
+				private HashSet<WeightedSubWorld> Filter(Node vn, List<WeightedSubWorld> allSubWorlds, Dictionary<string, List<WeightedSubWorld>> subworldsByTemperature, Dictionary<string, List<WeightedSubWorld>> subworldsByZoneType)
 		{
 			HashSet<WeightedSubWorld> hashSet = new HashSet<WeightedSubWorld>();
 			World world = this.worldGen.Settings.world;
@@ -486,7 +486,7 @@ namespace ProcGen
 			return hashSet;
 		}
 
-		private void ConvertUnknownCells(SeededRandom myRandom, bool isRunningDebugGen)
+				private void ConvertUnknownCells(SeededRandom myRandom, bool isRunningDebugGen)
 		{
 			List<Node> list = new List<Node>();
 			this.voronoiTree.GetNodesWithTag(WorldGenTags.UnassignedNode, list);
@@ -587,7 +587,7 @@ namespace ProcGen
 			}
 		}
 
-		private Node ApplySubworldToNode(Node vn, SubWorld subWorld, float overridePower = -1f)
+				private Node ApplySubworldToNode(Node vn, SubWorld subWorld, float overridePower = -1f)
 		{
 			Node node = this.overworldGraph.FindNodeByID(vn.site.id);
 			node.SetType(subWorld.name);
@@ -600,7 +600,7 @@ namespace ProcGen
 			return node;
 		}
 
-		private void FlattenOverworld()
+				private void FlattenOverworld()
 		{
 			try
 			{
@@ -636,7 +636,7 @@ namespace ProcGen
 			}
 		}
 
-		public static bool TestEdgeConsistency(MapGraph graph, Cell cell, out Edge problemEdge)
+				public static bool TestEdgeConsistency(MapGraph graph, Cell cell, out Edge problemEdge)
 		{
 			List<Edge> arcs = graph.GetArcs(cell);
 			foreach (Edge edge in arcs)
@@ -664,7 +664,7 @@ namespace ProcGen
 			return true;
 		}
 
-		private void AddSubworldChildren()
+				private void AddSubworldChildren()
 		{
 			new TagSet().Add(WorldGenTags.Overworld);
 			List<string> defaultMoveTags = this.worldGen.Settings.GetDefaultMoveTags();
@@ -728,7 +728,7 @@ namespace ProcGen
 			Node.maxDepth = this.voronoiTree.MaxDepth(0);
 		}
 
-		private List<Vector2> GetPoints(string name, LoggerSSF log, int minPointCount, int maxPointCount, Polygon boundingArea, float density, float avoidRadius, List<Vector2> avoidPoints, PointGenerator.SampleBehaviour sampleBehaviour, bool testInsideBounds, SeededRandom rnd, bool doShuffle = true, bool testAvoidPoints = true)
+				private List<Vector2> GetPoints(string name, LoggerSSF log, int minPointCount, int maxPointCount, Polygon boundingArea, float density, float avoidRadius, List<Vector2> avoidPoints, PointGenerator.SampleBehaviour sampleBehaviour, bool testInsideBounds, SeededRandom rnd, bool doShuffle = true, bool testAvoidPoints = true)
 		{
 			int num = 0;
 			List<Vector2> randomPoints;
@@ -751,7 +751,7 @@ namespace ProcGen
 			return randomPoints;
 		}
 
-		public void GenerateChildren(SubWorld sw, Tree node, MapGraph graph, float worldHeight, int seed)
+				public void GenerateChildren(SubWorld sw, Tree node, MapGraph graph, float worldHeight, int seed)
 		{
 			SeededRandom seededRandom = new SeededRandom(seed);
 			List<string> defaultMoveTags = this.worldGen.Settings.GetDefaultMoveTags();
@@ -848,7 +848,7 @@ namespace ProcGen
 			}
 		}
 
-		private Node CreateTreeNodeWithFeatureAndBiome(WorldGenSettings settings, SubWorld sw, Tree node, MapGraph graph, Feature feature, Vector2 pos, TagSet newTags, int i)
+				private Node CreateTreeNodeWithFeatureAndBiome(WorldGenSettings settings, SubWorld sw, Tree node, MapGraph graph, Feature feature, Vector2 pos, TagSet newTags, int i)
 		{
 			string text = null;
 			bool flag = false;
@@ -909,7 +909,7 @@ namespace ProcGen
 			return node2;
 		}
 
-		private void TagTopAndBottomSites(Tag topTag, Tag bottomTag)
+				private void TagTopAndBottomSites(Tag topTag, Tag bottomTag)
 		{
 			List<Diagram.Site> list = new List<Diagram.Site>();
 			List<Diagram.Site> list2 = new List<Diagram.Site>();
@@ -925,7 +925,7 @@ namespace ProcGen
 			}
 		}
 
-		private void TagEdgeSites(Tag leftTag, Tag rightTag)
+				private void TagEdgeSites(Tag leftTag, Tag rightTag)
 		{
 			List<Diagram.Site> list = new List<Diagram.Site>();
 			List<Diagram.Site> list2 = new List<Diagram.Site>();
@@ -941,12 +941,12 @@ namespace ProcGen
 			}
 		}
 
-		private bool StartAreaTooLarge(Node node)
+				private bool StartAreaTooLarge(Node node)
 		{
 			return node.tags.Contains(WorldGenTags.AtStart) && node.site.poly.Area() > 2000f;
 		}
 
-		private void PropagateStartTag()
+				private void PropagateStartTag()
 		{
 			foreach (Node node in this.GetStartNodes())
 			{
@@ -955,26 +955,26 @@ namespace ProcGen
 			}
 		}
 
-		public List<Node> GetStartNodes()
+				public List<Node> GetStartNodes()
 		{
 			return this.GetLeafNodesWithTag(WorldGenTags.StartLocation);
 		}
 
-		public List<Node> GetLeafNodesWithTag(Tag tag)
+				public List<Node> GetLeafNodesWithTag(Tag tag)
 		{
 			List<Node> list = new List<Node>();
 			this.voronoiTree.GetLeafNodes(list, (Node node) => node.tags != null && node.tags.Contains(tag));
 			return list;
 		}
 
-		public List<Node> GetInternalNonLeafNodesWithTag(Tag tag)
+				public List<Node> GetInternalNonLeafNodesWithTag(Tag tag)
 		{
 			List<Node> list = new List<Node>();
 			this.voronoiTree.GetInternalNonLeafNodes(list, (Node node) => node.tags != null && node.tags.Contains(tag));
 			return list;
 		}
 
-		public List<Node> GetTerrainNodesForTag(Tag tag)
+				public List<Node> GetTerrainNodesForTag(Tag tag)
 		{
 			List<Node> list = new List<Node>();
 			foreach (Node node in this.GetLeafNodesWithTag(tag))
@@ -988,17 +988,17 @@ namespace ProcGen
 			return list;
 		}
 
-		private Node FindFirstNode(string nodeType)
+				private Node FindFirstNode(string nodeType)
 		{
 			return this.localGraph.FindNode((Cell node) => node.type == nodeType);
 		}
 
-		private Node FindFirstNodeWithTag(Tag tag)
+				private Node FindFirstNodeWithTag(Tag tag)
 		{
 			return this.localGraph.FindNode((Cell node) => node.tags != null && node.tags.Contains(tag));
 		}
 
-		public Vector2I GetStartLocation()
+				public Vector2I GetStartLocation()
 		{
 			if (string.IsNullOrEmpty(this.worldGen.Settings.world.startSubworldName))
 			{
@@ -1024,7 +1024,7 @@ namespace ProcGen
 			return new Vector2I((int)node2.position.x, (int)node2.position.y);
 		}
 
-		private List<Diagram.Site> GetIntersectingSites(Node intersectingSiteSource, Tree sitesSource)
+				private List<Diagram.Site> GetIntersectingSites(Node intersectingSiteSource, Tree sitesSource)
 		{
 			List<Diagram.Site> list = new List<Diagram.Site>();
 			list = new List<Diagram.Site>();
@@ -1039,7 +1039,7 @@ namespace ProcGen
 			return list;
 		}
 
-		public void GetEdgeOfMapSites(Tree vt, List<Diagram.Site> topSites, List<Diagram.Site> bottomSites, List<Diagram.Site> leftSites, List<Diagram.Site> rightSites)
+				public void GetEdgeOfMapSites(Tree vt, List<Diagram.Site> topSites, List<Diagram.Site> bottomSites, List<Diagram.Site> leftSites, List<Diagram.Site> rightSites)
 		{
 			vt.GetIntersectingLeafSites(this.topEdge, topSites);
 			vt.GetIntersectingLeafSites(this.bottomEdge, bottomSites);
@@ -1047,7 +1047,7 @@ namespace ProcGen
 			vt.GetIntersectingLeafSites(this.rightEdge, rightSites);
 		}
 
-		[OnSerializing]
+				[OnSerializing]
 		internal void OnSerializingMethod()
 		{
 			try
@@ -1094,19 +1094,19 @@ namespace ProcGen
 			}
 		}
 
-		[OnSerialized]
+				[OnSerialized]
 		internal void OnSerializedMethod()
 		{
 			this.extra = null;
 		}
 
-		[OnDeserializing]
+				[OnDeserializing]
 		internal void OnDeserializingMethod()
 		{
 			this.extra = new WorldLayout.ExtraIO();
 		}
 
-		[OnDeserialized]
+				[OnDeserialized]
 		internal void OnDeserializedMethod()
 		{
 			try
@@ -1135,43 +1135,43 @@ namespace ProcGen
 			this.extra = null;
 		}
 
-		private Tree voronoiTree;
+				private Tree voronoiTree;
 
-		[Serialize]
+				[Serialize]
 		public MapGraph localGraph;
 
-		[Serialize]
+				[Serialize]
 		public MapGraph overworldGraph;
 
-		[EnumFlags]
+				[EnumFlags]
 		public static WorldLayout.DebugFlags drawOptions;
 
-		private LineSegment topEdge;
+				private LineSegment topEdge;
 
-		private LineSegment bottomEdge;
+				private LineSegment bottomEdge;
 
-		private LineSegment leftEdge;
+				private LineSegment leftEdge;
 
-		private LineSegment rightEdge;
+				private LineSegment rightEdge;
 
-		private SeededRandom myRandom;
+				private SeededRandom myRandom;
 
-		[Serialize]
+				[Serialize]
 		private WorldLayout.ExtraIO extra;
 
-		[Flags]
+				[Flags]
 		public enum DebugFlags
 		{
-			LocalGraph = 1,
-			OverworldGraph = 2,
-			VoronoiTree = 4,
-			PowerDiagram = 8
+						LocalGraph = 1,
+						OverworldGraph = 2,
+						VoronoiTree = 4,
+						PowerDiagram = 8
 		}
 
-		[SerializationConfig(MemberSerialization.OptOut)]
+				[SerializationConfig(MemberSerialization.OptOut)]
 		private class ExtraIO
 		{
-			[OnDeserializing]
+						[OnDeserializing]
 			internal void OnDeserializingMethod()
 			{
 				this.leafs = new List<Leaf>();
@@ -1180,13 +1180,13 @@ namespace ProcGen
 				this.internalInternalParent = new List<KeyValuePair<int, int>>();
 			}
 
-			public List<Leaf> leafs = new List<Leaf>();
+						public List<Leaf> leafs = new List<Leaf>();
 
-			public List<Tree> internals = new List<Tree>();
+						public List<Tree> internals = new List<Tree>();
 
-			public List<KeyValuePair<int, int>> leafInternalParent = new List<KeyValuePair<int, int>>();
+						public List<KeyValuePair<int, int>> leafInternalParent = new List<KeyValuePair<int, int>>();
 
-			public List<KeyValuePair<int, int>> internalInternalParent = new List<KeyValuePair<int, int>>();
+						public List<KeyValuePair<int, int>> internalInternalParent = new List<KeyValuePair<int, int>>();
 		}
 	}
 }

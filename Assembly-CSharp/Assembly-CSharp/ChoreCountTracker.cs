@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class ChoreCountTracker : WorldTracker
 {
-	public ChoreCountTracker(int worldID, ChoreGroup group) : base(worldID)
+		public ChoreCountTracker(int worldID, ChoreGroup group) : base(worldID)
 	{
 		this.choreGroup = group;
 	}
 
-	public override void UpdateData()
+		public override void UpdateData()
 	{
 		float num = 0f;
 		List<Chore> list;
@@ -54,10 +54,10 @@ public class ChoreCountTracker : WorldTracker
 		base.AddPoint(num);
 	}
 
-	public override string FormatValueString(float value)
+		public override string FormatValueString(float value)
 	{
 		return value.ToString();
 	}
 
-	public ChoreGroup choreGroup;
+		public ChoreGroup choreGroup;
 }

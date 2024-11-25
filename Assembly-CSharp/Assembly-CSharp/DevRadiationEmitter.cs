@@ -3,7 +3,7 @@ using STRINGS;
 
 public class DevRadiationEmitter : KMonoBehaviour, ISingleSliderControl, ISliderControl
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.radiationEmitter != null)
@@ -12,7 +12,7 @@ public class DevRadiationEmitter : KMonoBehaviour, ISingleSliderControl, ISlider
 		}
 	}
 
-		public string SliderTitleKey
+			public string SliderTitleKey
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class DevRadiationEmitter : KMonoBehaviour, ISingleSliderControl, ISlider
 		}
 	}
 
-		public string SliderUnits
+			public string SliderUnits
 	{
 		get
 		{
@@ -28,42 +28,42 @@ public class DevRadiationEmitter : KMonoBehaviour, ISingleSliderControl, ISlider
 		}
 	}
 
-	public float GetSliderMax(int index)
+		public float GetSliderMax(int index)
 	{
 		return 5000f;
 	}
 
-	public float GetSliderMin(int index)
+		public float GetSliderMin(int index)
 	{
 		return 0f;
 	}
 
-	public string GetSliderTooltip(int index)
+		public string GetSliderTooltip(int index)
 	{
 		return "";
 	}
 
-	public string GetSliderTooltipKey(int index)
+		public string GetSliderTooltipKey(int index)
 	{
 		return "";
 	}
 
-	public float GetSliderValue(int index)
+		public float GetSliderValue(int index)
 	{
 		return this.radiationEmitter.emitRads;
 	}
 
-	public void SetSliderValue(float value, int index)
+		public void SetSliderValue(float value, int index)
 	{
 		this.radiationEmitter.emitRads = value;
 		this.radiationEmitter.Refresh();
 	}
 
-	public int SliderDecimalPlaces(int index)
+		public int SliderDecimalPlaces(int index)
 	{
 		return 0;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private RadiationEmitter radiationEmitter;
 }

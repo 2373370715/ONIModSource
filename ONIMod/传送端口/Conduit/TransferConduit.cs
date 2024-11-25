@@ -1,4 +1,6 @@
-﻿public class TransferConduit : KMonoBehaviour {
+﻿namespace RsTransferPort;
+
+public class TransferConduit : KMonoBehaviour {
     [MyCmpGet]
     public Building building;
 

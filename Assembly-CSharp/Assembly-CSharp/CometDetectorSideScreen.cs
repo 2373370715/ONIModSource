@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class CometDetectorSideScreen : SideScreenContent
 {
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (show)
@@ -15,7 +15,7 @@ public class CometDetectorSideScreen : SideScreenContent
 		}
 	}
 
-	private void RefreshOptions()
+		private void RefreshOptions()
 	{
 		if (this.clusterDetector != null)
 		{
@@ -45,7 +45,7 @@ public class CometDetectorSideScreen : SideScreenContent
 		}
 	}
 
-	private void ClearRows()
+		private void ClearRows()
 	{
 		for (int i = this.rowContainer.childCount - 1; i >= 0; i--)
 		{
@@ -54,7 +54,7 @@ public class CometDetectorSideScreen : SideScreenContent
 		this.rows.Clear();
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		if (DlcManager.IsExpansion1Active())
 		{
@@ -67,7 +67,7 @@ public class CometDetectorSideScreen : SideScreenContent
 		this.RefreshOptions();
 	}
 
-	private void SetClusterRow(int idx, string name, Sprite icon, ClusterCometDetector.Instance.ClusterCometDetectorState state, Clustercraft rocketTarget = null)
+		private void SetClusterRow(int idx, string name, Sprite icon, ClusterCometDetector.Instance.ClusterCometDetectorState state, Clustercraft rocketTarget = null)
 	{
 		GameObject gameObject;
 		if (idx < this.rowContainer.childCount)
@@ -93,7 +93,7 @@ public class CometDetectorSideScreen : SideScreenContent
 		};
 	}
 
-	private void SetRow(int idx, string name, Sprite icon, LaunchConditionManager target)
+		private void SetRow(int idx, string name, Sprite icon, LaunchConditionManager target)
 	{
 		GameObject gameObject;
 		if (idx < this.rowContainer.childCount)
@@ -117,7 +117,7 @@ public class CometDetectorSideScreen : SideScreenContent
 		};
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		if (DlcManager.IsExpansion1Active())
 		{
@@ -126,13 +126,13 @@ public class CometDetectorSideScreen : SideScreenContent
 		return target.GetSMI<CometDetector.Instance>() != null;
 	}
 
-	private CometDetector.Instance detector;
+		private CometDetector.Instance detector;
 
-	private ClusterCometDetector.Instance clusterDetector;
+		private ClusterCometDetector.Instance clusterDetector;
 
-	public GameObject rowPrefab;
+		public GameObject rowPrefab;
 
-	public RectTransform rowContainer;
+		public RectTransform rowContainer;
 
-	public Dictionary<object, GameObject> rows = new Dictionary<object, GameObject>();
+		public Dictionary<object, GameObject> rows = new Dictionary<object, GameObject>();
 }

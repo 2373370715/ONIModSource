@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SolidVentConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SolidVent";
 		int width = 1;
@@ -30,18 +30,18 @@ public class SolidVentConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LogicOperationalController>();
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.GetComponent<Constructable>().requiredSkillPerk = Db.Get().SkillPerks.ConveyorBuild.Id;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<SimpleVent>();
 		go.AddOrGet<SolidConduitConsumer>();
@@ -51,7 +51,7 @@ public class SolidVentConfig : IBuildingConfig
 		storage.showInUI = true;
 	}
 
-	public const string ID = "SolidVent";
+		public const string ID = "SolidVent";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
 }

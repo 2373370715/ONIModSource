@@ -3,18 +3,18 @@
 [SkipSaveFileSerialization]
 public class StarryEyed : StateMachineComponent<StarryEyed.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	public class StatesInstance : GameStateMachine<StarryEyed.States, StarryEyed.StatesInstance, StarryEyed, object>.GameInstance
+		public class StatesInstance : GameStateMachine<StarryEyed.States, StarryEyed.StatesInstance, StarryEyed, object>.GameInstance
 	{
-		public StatesInstance(StarryEyed master) : base(master)
+				public StatesInstance(StarryEyed master) : base(master)
 		{
 		}
 
-		public bool IsInSpace()
+				public bool IsInSpace()
 		{
 			WorldContainer myWorld = this.GetMyWorld();
 			if (!myWorld)
@@ -27,9 +27,9 @@ public class StarryEyed : StateMachineComponent<StarryEyed.StatesInstance>
 		}
 	}
 
-	public class States : GameStateMachine<StarryEyed.States, StarryEyed.StatesInstance, StarryEyed>
+		public class States : GameStateMachine<StarryEyed.States, StarryEyed.StatesInstance, StarryEyed>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.root.Enter(delegate(StarryEyed.StatesInstance smi)
@@ -43,8 +43,8 @@ public class StarryEyed : StateMachineComponent<StarryEyed.StatesInstance>
 			this.inSpace.EventTransition(GameHashes.MinionMigration, (StarryEyed.StatesInstance smi) => Game.Instance, this.idle, (StarryEyed.StatesInstance smi) => !smi.IsInSpace()).ToggleEffect("StarryEyed");
 		}
 
-		public GameStateMachine<StarryEyed.States, StarryEyed.StatesInstance, StarryEyed, object>.State idle;
+				public GameStateMachine<StarryEyed.States, StarryEyed.StatesInstance, StarryEyed, object>.State idle;
 
-		public GameStateMachine<StarryEyed.States, StarryEyed.StatesInstance, StarryEyed, object>.State inSpace;
+				public GameStateMachine<StarryEyed.States, StarryEyed.StatesInstance, StarryEyed, object>.State inSpace;
 	}
 }

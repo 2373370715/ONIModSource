@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace ImGuiObjectDrawer
 {
-	public class UnityObjectDrawer : PlainCSharpObjectDrawer
+		public class UnityObjectDrawer : PlainCSharpObjectDrawer
 	{
-		public override bool CanDraw(in MemberDrawContext context, in MemberDetails member)
+				public override bool CanDraw(in MemberDrawContext context, in MemberDetails member)
 		{
 			return member.value is UnityEngine.Object;
 		}
 
-		protected override void DrawCustom(in MemberDrawContext context, in MemberDetails member, int depth)
+				protected override void DrawCustom(in MemberDrawContext context, in MemberDetails member, int depth)
 		{
 			UnityEngine.Object @object = (UnityEngine.Object)member.value;
 			ImGuiTreeNodeFlags imGuiTreeNodeFlags = ImGuiTreeNodeFlags.None;

@@ -8,15 +8,15 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SolidConduitSerializer")]
 public class SolidConduitSerializer : KMonoBehaviour, ISaveLoadableDetails
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 	}
 
-	public void Serialize(BinaryWriter writer)
+		public void Serialize(BinaryWriter writer)
 	{
 		SolidConduitFlow solidConduitFlow = Game.Instance.solidConduitFlow;
 		List<int> cells = solidConduitFlow.GetSOAInfo().Cells;
@@ -57,7 +57,7 @@ public class SolidConduitSerializer : KMonoBehaviour, ISaveLoadableDetails
 		}
 	}
 
-	public void Deserialize(IReader reader)
+		public void Deserialize(IReader reader)
 	{
 		SolidConduitFlow solidConduitFlow = Game.Instance.solidConduitFlow;
 		int num = reader.ReadInt32();

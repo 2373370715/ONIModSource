@@ -8,7 +8,7 @@ using UnityEngine;
 
 public static class RetireColonyUtility
 {
-	public static bool SaveColonySummaryData()
+		public static bool SaveColonySummaryData()
 	{
 		if (!Directory.Exists(Util.RootFolder()))
 		{
@@ -92,7 +92,7 @@ public static class RetireColonyUtility
 		return flag2;
 	}
 
-	public static RetiredColonyData GetCurrentColonyRetiredColonyData()
+		public static RetiredColonyData GetCurrentColonyRetiredColonyData()
 	{
 		List<MinionAssignablesProxy> list = new List<MinionAssignablesProxy>();
 		for (int i = 0; i < Components.MinionAssignablesProxy.Count; i++)
@@ -131,7 +131,7 @@ public static class RetireColonyUtility
 		return new RetiredColonyData(SaveGame.Instance.BaseName, GameClock.Instance.GetCycle(), System.DateTime.Now.ToShortDateString(), list2.ToArray(), list.ToArray(), array, startWorld, dictionary);
 	}
 
-	private static RetiredColonyData LoadRetiredColony(string file, bool skipStats, Encoding enc)
+		private static RetiredColonyData LoadRetiredColony(string file, bool skipStats, Encoding enc)
 	{
 		RetiredColonyData retiredColonyData = new RetiredColonyData();
 		using (FileStream fileStream = File.Open(file, FileMode.Open))
@@ -354,7 +354,7 @@ public static class RetireColonyUtility
 		return retiredColonyData;
 	}
 
-	public static RetiredColonyData[] LoadRetiredColonies(bool skipStats = false)
+		public static RetiredColonyData[] LoadRetiredColonies(bool skipStats = false)
 	{
 		List<RetiredColonyData> list = new List<RetiredColonyData>();
 		if (!Directory.Exists(Util.RootFolder()))
@@ -406,7 +406,7 @@ public static class RetireColonyUtility
 		return list.ToArray();
 	}
 
-	public static string[] LoadColonySlideshowFiles(string colonyName, string world_name)
+		public static string[] LoadColonySlideshowFiles(string colonyName, string world_name)
 	{
 		string path = RetireColonyUtility.StripInvalidCharacters(colonyName);
 		string text = Path.Combine(Path.Combine(Util.RootFolder(), Util.GetRetiredColoniesFolderName()), path);
@@ -435,7 +435,7 @@ public static class RetireColonyUtility
 		return list.ToArray();
 	}
 
-	public static Sprite[] LoadColonySlideshow(string colonyName)
+		public static Sprite[] LoadColonySlideshow(string colonyName)
 	{
 		string path = RetireColonyUtility.StripInvalidCharacters(colonyName);
 		string text = Path.Combine(Path.Combine(Util.RootFolder(), Util.GetRetiredColoniesFolderName()), path);
@@ -463,7 +463,7 @@ public static class RetireColonyUtility
 		return list.ToArray();
 	}
 
-	public static Sprite LoadRetiredColonyPreview(string colonyName, string startName = null)
+		public static Sprite LoadRetiredColonyPreview(string colonyName, string startName = null)
 	{
 		try
 		{
@@ -510,7 +510,7 @@ public static class RetireColonyUtility
 		return null;
 	}
 
-	public static Sprite LoadColonyPreview(string savePath, string colonyName, bool fallbackToTimelapse = false)
+		public static Sprite LoadColonyPreview(string savePath, string colonyName, bool fallbackToTimelapse = false)
 	{
 		string path = Path.ChangeExtension(savePath, ".png");
 		if (File.Exists(path))
@@ -554,7 +554,7 @@ public static class RetireColonyUtility
 		return null;
 	}
 
-	public static string StripInvalidCharacters(string source)
+		public static string StripInvalidCharacters(string source)
 	{
 		foreach (char oldChar in RetireColonyUtility.invalidCharacters)
 		{
@@ -564,11 +564,11 @@ public static class RetireColonyUtility
 		return source;
 	}
 
-	private const int FILE_IO_RETRY_ATTEMPTS = 5;
+		private const int FILE_IO_RETRY_ATTEMPTS = 5;
 
-	private static char[] invalidCharacters = "<>:\"\\/|?*.".ToCharArray();
+		private static char[] invalidCharacters = "<>:\"\\/|?*.".ToCharArray();
 
-	private static Encoding[] attempt_encodings = new Encoding[]
+		private static Encoding[] attempt_encodings = new Encoding[]
 	{
 		new UTF8Encoding(false, true),
 		new UnicodeEncoding(false, true, true),

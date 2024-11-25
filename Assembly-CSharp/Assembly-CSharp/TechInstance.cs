@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class TechInstance
 {
-	public TechInstance(Tech tech)
+		public TechInstance(Tech tech)
 	{
 		this.tech = tech;
 	}
 
-	public bool IsComplete()
+		public bool IsComplete()
 	{
 		return this.complete;
 	}
 
-	public void Purchased()
+		public void Purchased()
 	{
 		if (!this.complete)
 		{
@@ -22,7 +22,7 @@ public class TechInstance
 		}
 	}
 
-	public void UnlockPOITech(string tech_id)
+		public void UnlockPOITech(string tech_id)
 	{
 		TechItem techItem = Db.Get().TechItems.Get(tech_id);
 		if (techItem == null || !techItem.isPOIUnlock)
@@ -40,7 +40,7 @@ public class TechInstance
 		}
 	}
 
-	public float GetTotalPercentageComplete()
+		public float GetTotalPercentageComplete()
 	{
 		float num = 0f;
 		int num2 = 0;
@@ -55,7 +55,7 @@ public class TechInstance
 		return num / (float)num2;
 	}
 
-	public float PercentageCompleteResearchType(string type)
+		public float PercentageCompleteResearchType(string type)
 	{
 		if (!this.tech.RequiresResearchType(type))
 		{
@@ -64,7 +64,7 @@ public class TechInstance
 		return Mathf.Clamp01(this.progressInventory.PointsByTypeID[type] / this.tech.costsByResearchTypeID[type]);
 	}
 
-	public TechInstance.SaveData Save()
+		public TechInstance.SaveData Save()
 	{
 		string[] array = new string[this.progressInventory.PointsByTypeID.Count];
 		this.progressInventory.PointsByTypeID.Keys.CopyTo(array, 0);
@@ -81,7 +81,7 @@ public class TechInstance
 		};
 	}
 
-	public void Load(TechInstance.SaveData save_data)
+		public void Load(TechInstance.SaveData save_data)
 	{
 		this.complete = save_data.complete;
 		for (int i = 0; i < save_data.inventoryIDs.Length; i++)
@@ -94,24 +94,24 @@ public class TechInstance
 		}
 	}
 
-	public Tech tech;
+		public Tech tech;
 
-	private bool complete;
+		private bool complete;
 
-	public ResearchPointInventory progressInventory = new ResearchPointInventory();
+		public ResearchPointInventory progressInventory = new ResearchPointInventory();
 
-	public List<string> UnlockedPOITechIds = new List<string>();
+		public List<string> UnlockedPOITechIds = new List<string>();
 
-	public struct SaveData
+		public struct SaveData
 	{
-		public string techId;
+				public string techId;
 
-		public bool complete;
+				public bool complete;
 
-		public string[] inventoryIDs;
+				public string[] inventoryIDs;
 
-		public float[] inventoryValues;
+				public float[] inventoryValues;
 
-		public string[] unlockedPOIIDs;
+				public string[] unlockedPOIIDs;
 	}
 }

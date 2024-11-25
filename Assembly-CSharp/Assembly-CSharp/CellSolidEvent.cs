@@ -3,11 +3,11 @@ using System.Diagnostics;
 
 public class CellSolidEvent : CellEvent
 {
-	public CellSolidEvent(string id, string reason, bool is_send, bool enable_logging = true) : base(id, reason, is_send, enable_logging)
+		public CellSolidEvent(string id, string reason, bool is_send, bool enable_logging = true) : base(id, reason, is_send, enable_logging)
 	{
 	}
 
-	[Conditional("ENABLE_CELL_EVENT_LOGGER")]
+		[Conditional("ENABLE_CELL_EVENT_LOGGER")]
 	public void Log(int cell, bool solid)
 	{
 		if (!this.enableLogging)
@@ -18,7 +18,7 @@ public class CellSolidEvent : CellEvent
 		CellEventLogger.Instance.Add(ev);
 	}
 
-	public override string GetDescription(EventInstanceBase ev)
+		public override string GetDescription(EventInstanceBase ev)
 	{
 		if ((ev as CellEventInstance).data == 1)
 		{

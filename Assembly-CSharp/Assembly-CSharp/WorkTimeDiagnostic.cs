@@ -3,7 +3,7 @@ using STRINGS;
 
 public class WorkTimeDiagnostic : ColonyDiagnostic
 {
-	public WorkTimeDiagnostic(int worldID, ChoreGroup choreGroup) : base(worldID, UI.COLONY_DIAGNOSTICS.WORKTIMEDIAGNOSTIC.ALL_NAME)
+		public WorkTimeDiagnostic(int worldID, ChoreGroup choreGroup) : base(worldID, UI.COLONY_DIAGNOSTICS.WORKTIMEDIAGNOSTIC.ALL_NAME)
 	{
 		this.choreGroup = choreGroup;
 		this.tracker = TrackerTool.Instance.GetWorkTimeTracker(worldID, choreGroup);
@@ -13,7 +13,7 @@ public class WorkTimeDiagnostic : ColonyDiagnostic
 		this.colors[ColonyDiagnostic.DiagnosticResult.Opinion.Good] = Constants.NEUTRAL_COLOR;
 	}
 
-	public override ColonyDiagnostic.DiagnosticResult Evaluate()
+		public override ColonyDiagnostic.DiagnosticResult Evaluate()
 	{
 		return new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null)
 		{
@@ -22,5 +22,5 @@ public class WorkTimeDiagnostic : ColonyDiagnostic
 		};
 	}
 
-	public ChoreGroup choreGroup;
+		public ChoreGroup choreGroup;
 }

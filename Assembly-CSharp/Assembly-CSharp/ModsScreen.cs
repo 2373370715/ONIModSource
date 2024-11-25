@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class ModsScreen : KModalScreen
 {
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		this.closeButtonTitle.onClick += this.Exit;
@@ -37,14 +37,14 @@ public class ModsScreen : KModalScreen
 		modManager.on_update = (Manager.OnUpdate)Delegate.Combine(modManager.on_update, new Manager.OnUpdate(this.RebuildDisplay));
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		Manager modManager = Global.Instance.modManager;
 		modManager.on_update = (Manager.OnUpdate)Delegate.Remove(modManager.on_update, new Manager.OnUpdate(this.RebuildDisplay));
 		base.OnDeactivate();
 	}
 
-	private void Exit()
+		private void Exit()
 	{
 		Global.Instance.modManager.Save();
 		if (!Global.Instance.modManager.MatchFootprint(this.mod_footprint, Content.LayerableFiles | Content.Strings | Content.DLL | Content.Translation | Content.Animation))
@@ -58,7 +58,7 @@ public class ModsScreen : KModalScreen
 		Global.Instance.modManager.events.Clear();
 	}
 
-	private void RebuildDisplay(object change_source)
+		private void RebuildDisplay(object change_source)
 	{
 		if (change_source != this)
 		{
@@ -66,12 +66,12 @@ public class ModsScreen : KModalScreen
 		}
 	}
 
-	private bool ShouldDisplayMod(Mod mod)
+		private bool ShouldDisplayMod(Mod mod)
 	{
 		return mod.status != Mod.Status.NotInstalled && mod.status != Mod.Status.UninstallPending && !mod.HasOnlyTranslationContent();
 	}
 
-	private void BuildDisplay()
+		private void BuildDisplay()
 	{
 		foreach (ModsScreen.DisplayedMod displayedMod in this.displayedMods)
 		{
@@ -173,22 +173,19 @@ public class ModsScreen : KModalScreen
 		int count = this.displayedMods.Count;
 	}
 
-	private static string GetDlcName(string dlcId)
+		private static string GetDlcName(string dlcId)
 	{
-		if (dlcId != null)
+		if (!(dlcId == "EXPANSION1_ID"))
 		{
-			if (dlcId == "EXPANSION1_ID")
-			{
-				return UI.DLC1.NAME_ITAL;
-			}
-			if (dlcId != null && dlcId.Length != 0)
+			if ((dlcId == null || dlcId.Length != 0) && dlcId != null)
 			{
 			}
+			return UI.VANILLA.NAME_ITAL;
 		}
-		return UI.VANILLA.NAME_ITAL;
+		return UI.DLC1.NAME_ITAL;
 	}
 
-	private void OnToggleClicked(MultiToggle toggle, Label mod)
+		private void OnToggleClicked(MultiToggle toggle, Label mod)
 	{
 		Manager modManager = Global.Instance.modManager;
 		bool flag = modManager.IsModEnabled(mod);
@@ -198,17 +195,17 @@ public class ModsScreen : KModalScreen
 		this.UpdateToggleAllButton();
 	}
 
-	private bool AreAnyModsDisabled()
+		private bool AreAnyModsDisabled()
 	{
 		return Global.Instance.modManager.mods.Any((Mod mod) => !mod.IsEmpty() && !mod.IsEnabledForActiveDlc() && this.ShouldDisplayMod(mod));
 	}
 
-	private void UpdateToggleAllButton()
+		private void UpdateToggleAllButton()
 	{
 		this.toggleAllButton.GetComponentInChildren<LocText>().text = (this.AreAnyModsDisabled() ? UI.FRONTEND.MODS.ENABLE_ALL : UI.FRONTEND.MODS.DISABLE_ALL);
 	}
 
-	private void OnToggleAllClicked()
+		private void OnToggleAllClicked()
 	{
 		bool enabled = this.AreAnyModsDisabled();
 		Manager modManager = Global.Instance.modManager;
@@ -223,49 +220,49 @@ public class ModsScreen : KModalScreen
 		this.UpdateToggleAllButton();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButtonTitle;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton toggleAllButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton workshopButton;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject entryPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private Transform entryParent;
 
-	private List<ModsScreen.DisplayedMod> displayedMods = new List<ModsScreen.DisplayedMod>();
+		private List<ModsScreen.DisplayedMod> displayedMods = new List<ModsScreen.DisplayedMod>();
 
-	private List<Label> mod_footprint = new List<Label>();
+		private List<Label> mod_footprint = new List<Label>();
 
-	private struct DisplayedMod
+		private struct DisplayedMod
 	{
-		public RectTransform rect_transform;
+				public RectTransform rect_transform;
 
-		public int mod_index;
+				public int mod_index;
 	}
 
-	private class ModOrderingDragListener : DragMe.IDragListener
+		private class ModOrderingDragListener : DragMe.IDragListener
 	{
-		public ModOrderingDragListener(ModsScreen screen, List<ModsScreen.DisplayedMod> mods)
+				public ModOrderingDragListener(ModsScreen screen, List<ModsScreen.DisplayedMod> mods)
 		{
 			this.screen = screen;
 			this.mods = mods;
 		}
 
-		public void OnBeginDrag(Vector2 pos)
+				public void OnBeginDrag(Vector2 pos)
 		{
 			this.startDragIdx = this.GetDragIdx(pos, false);
 		}
 
-		public void OnEndDrag(Vector2 pos)
+				public void OnEndDrag(Vector2 pos)
 		{
 			if (this.startDragIdx < 0)
 			{
@@ -281,7 +278,7 @@ public class ModsScreen : KModalScreen
 			}
 		}
 
-		private int GetDragIdx(Vector2 pos, bool halfPosition)
+				private int GetDragIdx(Vector2 pos, bool halfPosition)
 		{
 			int result = -1;
 			for (int i = 0; i < this.mods.Count; i++)
@@ -301,10 +298,10 @@ public class ModsScreen : KModalScreen
 			return result;
 		}
 
-		private List<ModsScreen.DisplayedMod> mods;
+				private List<ModsScreen.DisplayedMod> mods;
 
-		private ModsScreen screen;
+				private ModsScreen screen;
 
-		private int startDragIdx = -1;
+				private int startDragIdx = -1;
 	}
 }

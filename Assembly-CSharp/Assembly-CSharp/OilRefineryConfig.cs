@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OilRefineryConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "OilRefinery";
 		int width = 4;
@@ -33,7 +33,7 @@ public class OilRefineryConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -68,21 +68,21 @@ public class OilRefineryConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "OilRefinery";
+		public const string ID = "OilRefinery";
 
-	public const SimHashes INPUT_ELEMENT = SimHashes.CrudeOil;
+		public const SimHashes INPUT_ELEMENT = SimHashes.CrudeOil;
 
-	private const SimHashes OUTPUT_LIQUID_ELEMENT = SimHashes.Petroleum;
+		private const SimHashes OUTPUT_LIQUID_ELEMENT = SimHashes.Petroleum;
 
-	private const SimHashes OUTPUT_GAS_ELEMENT = SimHashes.Methane;
+		private const SimHashes OUTPUT_GAS_ELEMENT = SimHashes.Methane;
 
-	public const float CONSUMPTION_RATE = 10f;
+		public const float CONSUMPTION_RATE = 10f;
 
-	public const float OUTPUT_LIQUID_RATE = 5f;
+		public const float OUTPUT_LIQUID_RATE = 5f;
 
-	public const float OUTPUT_GAS_RATE = 0.09f;
+		public const float OUTPUT_GAS_RATE = 0.09f;
 }

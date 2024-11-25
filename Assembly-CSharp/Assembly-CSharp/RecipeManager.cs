@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RecipeManager
 {
-	public static RecipeManager Get()
+		public static RecipeManager Get()
 	{
 		if (RecipeManager._Instance == null)
 		{
@@ -13,12 +13,12 @@ public class RecipeManager
 		return RecipeManager._Instance;
 	}
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		RecipeManager._Instance = null;
 	}
 
-	public void Add(Recipe recipe)
+		public void Add(Recipe recipe)
 	{
 		this.recipes.Add(recipe);
 		if (recipe.FabricationVisualizer != null)
@@ -27,7 +27,7 @@ public class RecipeManager
 		}
 	}
 
-	private static RecipeManager _Instance;
+		private static RecipeManager _Instance;
 
-	public List<Recipe> recipes = new List<Recipe>();
+		public List<Recipe> recipes = new List<Recipe>();
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class ObjectPool<T>
 {
-	public ObjectPool(Func<T> instantiator, int initial_count = 0)
+		public ObjectPool(Func<T> instantiator, int initial_count = 0)
 	{
 		this.instantiator = instantiator;
 		this.unused = new Stack<T>(initial_count);
@@ -13,7 +13,7 @@ public class ObjectPool<T>
 		}
 	}
 
-	public virtual T GetInstance()
+		public virtual T GetInstance()
 	{
 		T result = default(T);
 		if (this.unused.Count > 0)
@@ -27,7 +27,7 @@ public class ObjectPool<T>
 		return result;
 	}
 
-	public void ReleaseInstance(T instance)
+		public void ReleaseInstance(T instance)
 	{
 		if (object.Equals(instance, null))
 		{
@@ -36,7 +36,7 @@ public class ObjectPool<T>
 		this.unused.Push(instance);
 	}
 
-	protected Stack<T> unused;
+		protected Stack<T> unused;
 
-	protected Func<T> instantiator;
+		protected Func<T> instantiator;
 }

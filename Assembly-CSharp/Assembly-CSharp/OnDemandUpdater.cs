@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class OnDemandUpdater : MonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		OnDemandUpdater.Instance = null;
 	}
 
-	private void Awake()
+		private void Awake()
 	{
 		OnDemandUpdater.Instance = this;
 	}
 
-	public void Register(IUpdateOnDemand updater)
+		public void Register(IUpdateOnDemand updater)
 	{
 		if (!this.Updaters.Contains(updater))
 		{
@@ -22,7 +22,7 @@ public class OnDemandUpdater : MonoBehaviour
 		}
 	}
 
-	public void Unregister(IUpdateOnDemand updater)
+		public void Unregister(IUpdateOnDemand updater)
 	{
 		if (this.Updaters.Contains(updater))
 		{
@@ -30,7 +30,7 @@ public class OnDemandUpdater : MonoBehaviour
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		for (int i = 0; i < this.Updaters.Count; i++)
 		{
@@ -41,7 +41,7 @@ public class OnDemandUpdater : MonoBehaviour
 		}
 	}
 
-	private List<IUpdateOnDemand> Updaters = new List<IUpdateOnDemand>();
+		private List<IUpdateOnDemand> Updaters = new List<IUpdateOnDemand>();
 
-	public static OnDemandUpdater Instance;
+		public static OnDemandUpdater Instance;
 }

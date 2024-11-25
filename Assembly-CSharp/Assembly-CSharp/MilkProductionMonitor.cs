@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, MilkProductionMonitor.Instance, IStateMachineTarget, MilkProductionMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.producing;
@@ -20,53 +20,53 @@ public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, Mil
 		});
 	}
 
-	private static bool IsProducing(MilkProductionMonitor.Instance smi)
+		private static bool IsProducing(MilkProductionMonitor.Instance smi)
 	{
 		return !smi.IsFull && smi.IsUnderProductionEffect;
 	}
 
-	private static bool IsFull(MilkProductionMonitor.Instance smi)
+		private static bool IsFull(MilkProductionMonitor.Instance smi)
 	{
 		return smi.IsFull;
 	}
 
-	private static bool HasCapacity(MilkProductionMonitor.Instance smi)
+		private static bool HasCapacity(MilkProductionMonitor.Instance smi)
 	{
 		return !smi.IsFull;
 	}
 
-	public MilkProductionMonitor.ProducingStates producing;
+		public MilkProductionMonitor.ProducingStates producing;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public override void Configure(GameObject prefab)
+				public override void Configure(GameObject prefab)
 		{
 			prefab.GetComponent<Modifiers>().initialAmounts.Add(Db.Get().Amounts.MilkProduction.Id);
 		}
 
-		public const SimHashes element = SimHashes.Milk;
+				public const SimHashes element = SimHashes.Milk;
 
-		public string effectId;
+				public string effectId;
 
-		public float Capacity = 200f;
+				public float Capacity = 200f;
 
-		public float CaloriesPerCycle = 1000f;
+				public float CaloriesPerCycle = 1000f;
 
-		public float HappinessRequired;
+				public float HappinessRequired;
 	}
 
-	public class ProducingStates : GameStateMachine<MilkProductionMonitor, MilkProductionMonitor.Instance, IStateMachineTarget, MilkProductionMonitor.Def>.State
+		public class ProducingStates : GameStateMachine<MilkProductionMonitor, MilkProductionMonitor.Instance, IStateMachineTarget, MilkProductionMonitor.Def>.State
 	{
-		public GameStateMachine<MilkProductionMonitor, MilkProductionMonitor.Instance, IStateMachineTarget, MilkProductionMonitor.Def>.State paused;
+				public GameStateMachine<MilkProductionMonitor, MilkProductionMonitor.Instance, IStateMachineTarget, MilkProductionMonitor.Def>.State paused;
 
-		public GameStateMachine<MilkProductionMonitor, MilkProductionMonitor.Instance, IStateMachineTarget, MilkProductionMonitor.Def>.State producing;
+				public GameStateMachine<MilkProductionMonitor, MilkProductionMonitor.Instance, IStateMachineTarget, MilkProductionMonitor.Def>.State producing;
 
-		public GameStateMachine<MilkProductionMonitor, MilkProductionMonitor.Instance, IStateMachineTarget, MilkProductionMonitor.Def>.State full;
+				public GameStateMachine<MilkProductionMonitor, MilkProductionMonitor.Instance, IStateMachineTarget, MilkProductionMonitor.Def>.State full;
 	}
 
-	public new class Instance : GameStateMachine<MilkProductionMonitor, MilkProductionMonitor.Instance, IStateMachineTarget, MilkProductionMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<MilkProductionMonitor, MilkProductionMonitor.Instance, IStateMachineTarget, MilkProductionMonitor.Def>.GameInstance
 	{
-				public float MilkAmount
+						public float MilkAmount
 		{
 			get
 			{
@@ -74,7 +74,7 @@ public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, Mil
 			}
 		}
 
-				public float MilkPercentage
+						public float MilkPercentage
 		{
 			get
 			{
@@ -82,7 +82,7 @@ public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, Mil
 			}
 		}
 
-				public bool IsFull
+						public bool IsFull
 		{
 			get
 			{
@@ -90,7 +90,7 @@ public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, Mil
 			}
 		}
 
-				public bool IsUnderProductionEffect
+						public bool IsUnderProductionEffect
 		{
 			get
 			{
@@ -98,11 +98,11 @@ public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, Mil
 			}
 		}
 
-		public Instance(IStateMachineTarget master, MilkProductionMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, MilkProductionMonitor.Def def) : base(master, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			this.milkAmountInstance = Db.Get().Amounts.MilkProduction.Lookup(base.gameObject);
 			if (base.def.effectId != null)
@@ -112,7 +112,7 @@ public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, Mil
 			base.StartSM();
 		}
 
-		public void OnCaloriesConsumed(object data)
+				public void OnCaloriesConsumed(object data)
 		{
 			if (base.def.effectId == null)
 			{
@@ -127,7 +127,7 @@ public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, Mil
 			this.effectInstance.timeRemaining += caloriesConsumedEvent.calories / base.smi.def.CaloriesPerCycle * 600f;
 		}
 
-		private void RemoveMilk(float amount)
+				private void RemoveMilk(float amount)
 		{
 			if (this.milkAmountInstance != null)
 			{
@@ -136,7 +136,7 @@ public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, Mil
 			}
 		}
 
-		public PrimaryElement ExtractMilk(float desiredAmount)
+				public PrimaryElement ExtractMilk(float desiredAmount)
 		{
 			float num = Mathf.Min(desiredAmount, this.MilkAmount);
 			float temperature = base.GetComponent<PrimaryElement>().Temperature;
@@ -150,7 +150,7 @@ public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, Mil
 			return component;
 		}
 
-		public PrimaryElement ExtractMilkIntoElementChunk(float desiredAmount, PrimaryElement elementChunk)
+				public PrimaryElement ExtractMilkIntoElementChunk(float desiredAmount, PrimaryElement elementChunk)
 		{
 			if (elementChunk == null || elementChunk.ElementID != SimHashes.Milk)
 			{
@@ -165,7 +165,7 @@ public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, Mil
 			return elementChunk;
 		}
 
-		public PrimaryElement ExtractMilkIntoStorage(float desiredAmount, Storage storage)
+				public PrimaryElement ExtractMilkIntoStorage(float desiredAmount, Storage storage)
 		{
 			float num = Mathf.Min(desiredAmount, this.MilkAmount);
 			float temperature = base.GetComponent<PrimaryElement>().Temperature;
@@ -173,13 +173,13 @@ public class MilkProductionMonitor : GameStateMachine<MilkProductionMonitor, Mil
 			return storage.AddLiquid(SimHashes.Milk, num, temperature, 0, 0, false, true);
 		}
 
-		public Action<float> OnMilkAmountChanged;
+				public Action<float> OnMilkAmountChanged;
 
-		public AmountInstance milkAmountInstance;
+				public AmountInstance milkAmountInstance;
 
-		public EffectInstance effectInstance;
+				public EffectInstance effectInstance;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Effects effects;
 	}
 }

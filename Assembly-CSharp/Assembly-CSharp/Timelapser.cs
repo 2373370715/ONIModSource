@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Timelapser")]
 public class Timelapser : KMonoBehaviour
 {
-		public bool CapturingTimelapseScreenshot
+			public bool CapturingTimelapseScreenshot
 	{
 		get
 		{
@@ -15,9 +15,9 @@ public class Timelapser : KMonoBehaviour
 		}
 	}
 
-			public Texture2D freezeTexture { get; private set; }
+				public Texture2D freezeTexture { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.RefreshRenderTextureSize(null);
 		Game.Instance.Subscribe(75424175, new Action<object>(this.RefreshRenderTextureSize));
@@ -33,7 +33,7 @@ public class Timelapser : KMonoBehaviour
 		base.StartCoroutine(this.Render());
 	}
 
-	private void OnResize()
+		private void OnResize()
 	{
 		if (this.freezeTexture != null)
 		{
@@ -42,7 +42,7 @@ public class Timelapser : KMonoBehaviour
 		this.freezeTexture = new Texture2D(Camera.main.pixelWidth, Camera.main.pixelHeight, TextureFormat.ARGB32, false);
 	}
 
-	private void RefreshRenderTextureSize(object data = null)
+		private void RefreshRenderTextureSize(object data = null)
 	{
 		if (this.previewScreenshot)
 		{
@@ -65,7 +65,7 @@ public class Timelapser : KMonoBehaviour
 		}
 	}
 
-		private bool timelapseUserEnabled
+			private bool timelapseUserEnabled
 	{
 		get
 		{
@@ -73,13 +73,15 @@ public class Timelapser : KMonoBehaviour
 		}
 	}
 
-	private void OnNewDay(object data = null)
+		private void OnNewDay(object data = null)
 	{
-		DebugUtil.LogWarningArgs(new object[]
+		if (this.worldsToScreenshot.Count == 0)
 		{
-			this.worldsToScreenshot.Count == 0,
-			"Timelapse.OnNewDay but worldsToScreenshot is not empty"
-		});
+			DebugUtil.LogArgs(new object[]
+			{
+				"Timelapse.OnNewDay but worldsToScreenshot is not empty"
+			});
+		}
 		int cycle = GameClock.Instance.GetCycle();
 		foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
 		{
@@ -108,7 +110,7 @@ public class Timelapser : KMonoBehaviour
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.screenshotToday)
 		{
@@ -135,12 +137,12 @@ public class Timelapser : KMonoBehaviour
 		}
 	}
 
-	private float CycleTimeToScreenshot()
+		private float CycleTimeToScreenshot()
 	{
 		return 300f - GameClock.Instance.GetTime() % 600f;
 	}
 
-	private IEnumerator Render()
+		private IEnumerator Render()
 	{
 		for (;;)
 		{
@@ -182,25 +184,25 @@ public class Timelapser : KMonoBehaviour
 		yield break;
 	}
 
-	public void InitialScreenshot()
+		public void InitialScreenshot()
 	{
 		this.worldsToScreenshot.Add(ClusterManager.Instance.GetStartWorld().id);
 		this.SaveScreenshot();
 	}
 
-	private void SaveScreenshot()
+		private void SaveScreenshot()
 	{
 		this.screenshotPending = true;
 	}
 
-	public void SaveColonyPreview(string saveFileName)
+		public void SaveColonyPreview(string saveFileName)
 	{
 		this.previewSaveGamePath = saveFileName;
 		this.previewScreenshot = true;
 		this.SaveScreenshot();
 	}
 
-	private void SetPostionAndOrtho(int world_id)
+		private void SetPostionAndOrtho(int world_id)
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(world_id);
 		if (world == null)
@@ -241,7 +243,7 @@ public class Timelapser : KMonoBehaviour
 		CameraController.Instance.SetPosition(new Vector3(telepad.transform.position.x, telepad.transform.position.y, CameraController.Instance.transform.position.z));
 	}
 
-	private void RenderAndPrint(int world_id)
+		private void RenderAndPrint(int world_id)
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(world_id);
 		if (world == null)
@@ -273,7 +275,7 @@ public class Timelapser : KMonoBehaviour
 		RenderTexture.active = active;
 	}
 
-	public void WriteToPng(RenderTexture renderTex, int world_id = -1)
+		public void WriteToPng(RenderTexture renderTex, int world_id = -1)
 	{
 		Texture2D texture2D = new Texture2D(renderTex.width, renderTex.height, TextureFormat.ARGB32, false);
 		texture2D.ReadPixels(new Rect(0f, 0f, (float)renderTex.width, (float)renderTex.height), 0, 0);
@@ -349,35 +351,35 @@ public class Timelapser : KMonoBehaviour
 		File.WriteAllBytes(text4, bytes);
 	}
 
-	private bool screenshotActive;
+		private bool screenshotActive;
 
-	private bool screenshotPending;
+		private bool screenshotPending;
 
-	private bool previewScreenshot;
+		private bool previewScreenshot;
 
-	private string previewSaveGamePath = "";
+		private string previewSaveGamePath = "";
 
-	private bool screenshotToday;
+		private bool screenshotToday;
 
-	private List<int> worldsToScreenshot = new List<int>();
+		private List<int> worldsToScreenshot = new List<int>();
 
-	private HashedString activeOverlay;
+		private HashedString activeOverlay;
 
-	private Camera freezeCamera;
+		private Camera freezeCamera;
 
-	private RenderTexture bufferRenderTexture;
+		private RenderTexture bufferRenderTexture;
 
-	private Vector3 camPosition;
+		private Vector3 camPosition;
 
-	private float camSize;
+		private float camSize;
 
-	private bool debugScreenShot;
+		private bool debugScreenShot;
 
-	private Vector2Int previewScreenshotResolution = new Vector2Int(Grid.WidthInCells * 2, Grid.HeightInCells * 2);
+		private Vector2Int previewScreenshotResolution = new Vector2Int(Grid.WidthInCells * 2, Grid.HeightInCells * 2);
 
-	private const int DEFAULT_SCREENSHOT_INTERVAL = 10;
+		private const int DEFAULT_SCREENSHOT_INTERVAL = 10;
 
-	private int[] timelapseScreenshotCycles = new int[]
+		private int[] timelapseScreenshotCycles = new int[]
 	{
 		1,
 		2,

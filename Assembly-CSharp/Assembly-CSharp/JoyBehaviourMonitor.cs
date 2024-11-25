@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class JoyBehaviourMonitor : GameStateMachine<JoyBehaviourMonitor, JoyBehaviourMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.neutral;
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -29,6 +29,12 @@ public class JoyBehaviourMonitor : GameStateMachine<JoyBehaviourMonitor, JoyBeha
 			{
 				smi.GoToOverjoyed();
 			}
+		}).EventHandler(GameHashes.PowerSaveFinished, delegate(JoyBehaviourMonitor.Instance smi)
+		{
+			if (smi.ShouldBeOverjoyed())
+			{
+				smi.GoToOverjoyed();
+			}
 		});
 		this.overjoyed.Transition(this.neutral, (JoyBehaviourMonitor.Instance smi) => GameClock.Instance.GetTime() >= smi.transitionTime, UpdateRate.SIM_200ms).ToggleExpression((JoyBehaviourMonitor.Instance smi) => smi.happyExpression).ToggleAnims((JoyBehaviourMonitor.Instance smi) => smi.happyLocoAnim).ToggleAnims((JoyBehaviourMonitor.Instance smi) => smi.happyLocoWalkAnim).ToggleTag(GameTags.Overjoyed).Exit(delegate(JoyBehaviourMonitor.Instance smi)
 		{
@@ -36,15 +42,15 @@ public class JoyBehaviourMonitor : GameStateMachine<JoyBehaviourMonitor, JoyBeha
 		}).OnSignal(this.exitEarly, this.neutral);
 	}
 
-	public StateMachine<JoyBehaviourMonitor, JoyBehaviourMonitor.Instance, IStateMachineTarget, object>.Signal exitEarly;
+		public StateMachine<JoyBehaviourMonitor, JoyBehaviourMonitor.Instance, IStateMachineTarget, object>.Signal exitEarly;
 
-	public GameStateMachine<JoyBehaviourMonitor, JoyBehaviourMonitor.Instance, IStateMachineTarget, object>.State neutral;
+		public GameStateMachine<JoyBehaviourMonitor, JoyBehaviourMonitor.Instance, IStateMachineTarget, object>.State neutral;
 
-	public GameStateMachine<JoyBehaviourMonitor, JoyBehaviourMonitor.Instance, IStateMachineTarget, object>.State overjoyed;
+		public GameStateMachine<JoyBehaviourMonitor, JoyBehaviourMonitor.Instance, IStateMachineTarget, object>.State overjoyed;
 
-	public new class Instance : GameStateMachine<JoyBehaviourMonitor, JoyBehaviourMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<JoyBehaviourMonitor, JoyBehaviourMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, string happy_loco_anim, string happy_loco_walk_anim, Expression happy_expression) : base(master)
+				public Instance(IStateMachineTarget master, string happy_loco_anim, string happy_loco_walk_anim, Expression happy_expression) : base(master)
 		{
 			this.happyLocoAnim = happy_loco_anim;
 			this.happyLocoWalkAnim = happy_loco_walk_anim;
@@ -54,7 +60,7 @@ public class JoyBehaviourMonitor : GameStateMachine<JoyBehaviourMonitor, JoyBeha
 			this.qolAttribute = Db.Get().Attributes.QualityOfLife.Lookup(base.gameObject);
 		}
 
-		public bool ShouldBeOverjoyed()
+				public bool ShouldBeOverjoyed()
 		{
 			float totalValue = this.qolAttribute.GetTotalValue();
 			float totalValue2 = this.expectationAttribute.GetTotalValue();
@@ -67,23 +73,23 @@ public class JoyBehaviourMonitor : GameStateMachine<JoyBehaviourMonitor, JoyBeha
 			return false;
 		}
 
-		public void GoToOverjoyed()
+				public void GoToOverjoyed()
 		{
 			base.smi.transitionTime = GameClock.Instance.GetTime() + TRAITS.JOY_REACTIONS.JOY_REACTION_DURATION;
 			base.smi.GoTo(base.smi.sm.overjoyed);
 		}
 
-		public string happyLocoAnim = "";
+				public string happyLocoAnim = "";
 
-		public string happyLocoWalkAnim = "";
+				public string happyLocoWalkAnim = "";
 
-		public Expression happyExpression;
+				public Expression happyExpression;
 
-		[Serialize]
+				[Serialize]
 		public float transitionTime;
 
-		private AttributeInstance expectationAttribute;
+				private AttributeInstance expectationAttribute;
 
-		private AttributeInstance qolAttribute;
+				private AttributeInstance qolAttribute;
 	}
 }

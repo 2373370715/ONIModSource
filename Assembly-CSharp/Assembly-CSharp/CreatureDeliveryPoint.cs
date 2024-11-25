@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint.SMInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.fetches = new List<FetchOrder2>();
@@ -16,7 +16,7 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 		Prioritizable.AddRef(base.gameObject);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -33,7 +33,7 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 		}
 	}
 
-	private void OnLogicChanged(object data)
+		private void OnLogicChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 		if (logicValueChanged.portID == "CritterDropOffInput")
@@ -47,7 +47,7 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 		}
 	}
 
-	[Obsolete]
+		[Obsolete]
 	[OnDeserialized]
 	private void OnDeserialized()
 	{
@@ -58,7 +58,7 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		if (gameObject == null)
@@ -72,13 +72,13 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 		this.RebalanceFetches();
 	}
 
-	private void OnFilterChanged(HashSet<Tag> tags)
+		private void OnFilterChanged(HashSet<Tag> tags)
 	{
 		this.ClearFetches();
 		this.RebalanceFetches();
 	}
 
-	private void ClearFetches()
+		private void ClearFetches()
 	{
 		for (int i = this.fetches.Count - 1; i >= 0; i--)
 		{
@@ -87,7 +87,7 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 		this.fetches.Clear();
 	}
 
-	private void RebalanceFetches()
+		private void RebalanceFetches()
 	{
 		if (!this.LogicEnabled())
 		{
@@ -150,17 +150,17 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 		}
 	}
 
-	private void OnFetchComplete(FetchOrder2 fetchOrder, Pickupable fetchedItem)
+		private void OnFetchComplete(FetchOrder2 fetchOrder, Pickupable fetchedItem)
 	{
 		this.RebalanceFetches();
 	}
 
-	private void OnFetchBegun(FetchOrder2 fetchOrder, Pickupable fetchedItem)
+		private void OnFetchBegun(FetchOrder2 fetchOrder, Pickupable fetchedItem)
 	{
 		this.RebalanceFetches();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.smi.StopSM("OnCleanUp");
 		TreeFilterable component = base.GetComponent<TreeFilterable>();
@@ -168,51 +168,51 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 		base.OnCleanUp();
 	}
 
-	public bool LogicEnabled()
+		public bool LogicEnabled()
 	{
 		return this.logicPorts == null || !this.logicPorts.IsPortConnected("CritterDropOffInput") || this.logicPorts.GetInputValue("CritterDropOffInput") == 1;
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Prioritizable prioritizable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public BaggableCritterCapacityTracker critterCapacity;
 
-	[Obsolete]
+		[Obsolete]
 	[Serialize]
 	private int creatureLimit = 20;
 
-	public CellOffset[] deliveryOffsets = new CellOffset[1];
+		public CellOffset[] deliveryOffsets = new CellOffset[1];
 
-	public CellOffset spawnOffset = new CellOffset(0, 0);
+		public CellOffset spawnOffset = new CellOffset(0, 0);
 
-	private List<FetchOrder2> fetches;
+		private List<FetchOrder2> fetches;
 
-	public bool playAnimsOnFetch;
+		public bool playAnimsOnFetch;
 
-	private LogicPorts logicPorts;
+		private LogicPorts logicPorts;
 
-	private static readonly EventSystem.IntraObjectHandler<CreatureDeliveryPoint> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<CreatureDeliveryPoint>(delegate(CreatureDeliveryPoint component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CreatureDeliveryPoint> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<CreatureDeliveryPoint>(delegate(CreatureDeliveryPoint component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<CreatureDeliveryPoint> RefreshCreatureCountDelegate = new EventSystem.IntraObjectHandler<CreatureDeliveryPoint>(delegate(CreatureDeliveryPoint component, object data)
+		private static readonly EventSystem.IntraObjectHandler<CreatureDeliveryPoint> RefreshCreatureCountDelegate = new EventSystem.IntraObjectHandler<CreatureDeliveryPoint>(delegate(CreatureDeliveryPoint component, object data)
 	{
 		component.critterCapacity.RefreshCreatureCount(data);
 	});
 
-	public class SMInstance : GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.GameInstance
+		public class SMInstance : GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.GameInstance
 	{
-		public SMInstance(CreatureDeliveryPoint master) : base(master)
+				public SMInstance(CreatureDeliveryPoint master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint>
+		public class States : GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.operational.waiting;
 			this.root.Update("RefreshCreatureCount", delegate(CreatureDeliveryPoint.SMInstance smi, float dt)
@@ -226,7 +226,7 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 			this.operational.interact_delivery.PlayAnim("working_pre").QueueAnim("working_pst", false, null).OnAnimQueueComplete(this.operational.interact_waiting);
 		}
 
-		public static void DropAllCreatures(CreatureDeliveryPoint.SMInstance smi)
+				public static void DropAllCreatures(CreatureDeliveryPoint.SMInstance smi)
 		{
 			Storage component = smi.master.GetComponent<Storage>();
 			if (component.IsEmpty())
@@ -246,17 +246,17 @@ public class CreatureDeliveryPoint : StateMachineComponent<CreatureDeliveryPoint
 			smi.master.critterCapacity.RefreshCreatureCount(null);
 		}
 
-		public CreatureDeliveryPoint.States.OperationalState operational;
+				public CreatureDeliveryPoint.States.OperationalState operational;
 
-		public GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.State unoperational;
+				public GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.State unoperational;
 
-		public class OperationalState : GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.State
+				public class OperationalState : GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.State
 		{
-			public GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.State waiting;
+						public GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.State waiting;
 
-			public GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.State interact_waiting;
+						public GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.State interact_waiting;
 
-			public GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.State interact_delivery;
+						public GameStateMachine<CreatureDeliveryPoint.States, CreatureDeliveryPoint.SMInstance, CreatureDeliveryPoint, object>.State interact_delivery;
 		}
 	}
 }

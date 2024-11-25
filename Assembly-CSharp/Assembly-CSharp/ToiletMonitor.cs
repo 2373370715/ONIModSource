@@ -2,7 +2,7 @@
 
 public class ToiletMonitor : GameStateMachine<ToiletMonitor, ToiletMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.satisfied;
 		this.satisfied.EventHandler(GameHashes.ToiletSensorChanged, delegate(ToiletMonitor.Instance smi)
@@ -14,18 +14,18 @@ public class ToiletMonitor : GameStateMachine<ToiletMonitor, ToiletMonitor.Insta
 		});
 	}
 
-	public GameStateMachine<ToiletMonitor, ToiletMonitor.Instance, IStateMachineTarget, object>.State satisfied;
+		public GameStateMachine<ToiletMonitor, ToiletMonitor.Instance, IStateMachineTarget, object>.State satisfied;
 
-	public GameStateMachine<ToiletMonitor, ToiletMonitor.Instance, IStateMachineTarget, object>.State unsatisfied;
+		public GameStateMachine<ToiletMonitor, ToiletMonitor.Instance, IStateMachineTarget, object>.State unsatisfied;
 
-	public new class Instance : GameStateMachine<ToiletMonitor, ToiletMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<ToiletMonitor, ToiletMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.toiletSensor = base.GetComponent<Sensors>().GetSensor<ToiletSensor>();
 		}
 
-		public void RefreshStatusItem()
+				public void RefreshStatusItem()
 		{
 			StatusItem status_item = null;
 			if (!this.toiletSensor.AreThereAnyToilets())
@@ -43,11 +43,11 @@ public class ToiletMonitor : GameStateMachine<ToiletMonitor, ToiletMonitor.Insta
 			base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Toilet, status_item, null);
 		}
 
-		public void ClearStatusItem()
+				public void ClearStatusItem()
 		{
 			base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Toilet, null, null);
 		}
 
-		private ToiletSensor toiletSensor;
+				private ToiletSensor toiletSensor;
 	}
 }

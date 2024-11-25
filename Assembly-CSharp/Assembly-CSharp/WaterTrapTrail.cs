@@ -2,7 +2,7 @@
 
 public class WaterTrapTrail : GameStateMachine<WaterTrapTrail, WaterTrapTrail.Instance, IStateMachineTarget, WaterTrapTrail.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.retracted;
 		base.serializable = StateMachine.SerializeType.Never;
@@ -22,7 +22,7 @@ public class WaterTrapTrail : GameStateMachine<WaterTrapTrail, WaterTrapTrail.In
 		});
 	}
 
-	public static bool OnTagsChangedWhenOnLooseState(WaterTrapTrail.Instance smi, object tagOBJ)
+		public static bool OnTagsChangedWhenOnLooseState(WaterTrapTrail.Instance smi, object tagOBJ)
 	{
 		ReusableTrap.Instance smi2 = smi.gameObject.GetSMI<ReusableTrap.Instance>();
 		if (smi2 != null)
@@ -32,12 +32,12 @@ public class WaterTrapTrail : GameStateMachine<WaterTrapTrail, WaterTrapTrail.In
 		return WaterTrapTrail.ShouldBeInvisible(smi, tagOBJ);
 	}
 
-	public static bool ShouldBeInvisible(WaterTrapTrail.Instance smi, object tagOBJ)
+		public static bool ShouldBeInvisible(WaterTrapTrail.Instance smi, object tagOBJ)
 	{
 		return !WaterTrapTrail.ShouldBeVisible(smi, tagOBJ);
 	}
 
-	public static bool ShouldBeVisible(WaterTrapTrail.Instance smi, object tagOBJ)
+		public static bool ShouldBeVisible(WaterTrapTrail.Instance smi, object tagOBJ)
 	{
 		ReusableTrap.Instance smi2 = smi.gameObject.GetSMI<ReusableTrap.Instance>();
 		bool isOperational = smi.IsOperational;
@@ -47,7 +47,7 @@ public class WaterTrapTrail : GameStateMachine<WaterTrapTrail, WaterTrapTrail.In
 		return isOperational && (flag || flag2 || flag3);
 	}
 
-	public static void RefreshDepthAvailable(WaterTrapTrail.Instance smi, float dt)
+		public static void RefreshDepthAvailable(WaterTrapTrail.Instance smi, float dt)
 	{
 		bool flag = WaterTrapTrail.ShouldBeVisible(smi, null);
 		int num = Grid.PosToCell(smi);
@@ -70,21 +70,21 @@ public class WaterTrapTrail : GameStateMachine<WaterTrapTrail, WaterTrapTrail.In
 		smi.SetRangeVisualizerVisibility(flag);
 	}
 
-	private static string CAPTURING_SYMBOL_OVERRIDE_NAME = "creatureSymbol";
+		private static string CAPTURING_SYMBOL_OVERRIDE_NAME = "creatureSymbol";
 
-	public GameStateMachine<WaterTrapTrail, WaterTrapTrail.Instance, IStateMachineTarget, WaterTrapTrail.Def>.State retracted;
+		public GameStateMachine<WaterTrapTrail, WaterTrapTrail.Instance, IStateMachineTarget, WaterTrapTrail.Def>.State retracted;
 
-	public GameStateMachine<WaterTrapTrail, WaterTrapTrail.Instance, IStateMachineTarget, WaterTrapTrail.Def>.State loose;
+		public GameStateMachine<WaterTrapTrail, WaterTrapTrail.Instance, IStateMachineTarget, WaterTrapTrail.Def>.State loose;
 
-	private StateMachine<WaterTrapTrail, WaterTrapTrail.Instance, IStateMachineTarget, WaterTrapTrail.Def>.IntParameter depthAvailable = new StateMachine<WaterTrapTrail, WaterTrapTrail.Instance, IStateMachineTarget, WaterTrapTrail.Def>.IntParameter(-1);
+		private StateMachine<WaterTrapTrail, WaterTrapTrail.Instance, IStateMachineTarget, WaterTrapTrail.Def>.IntParameter depthAvailable = new StateMachine<WaterTrapTrail, WaterTrapTrail.Instance, IStateMachineTarget, WaterTrapTrail.Def>.IntParameter(-1);
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<WaterTrapTrail, WaterTrapTrail.Instance, IStateMachineTarget, WaterTrapTrail.Def>.GameInstance
+		public new class Instance : GameStateMachine<WaterTrapTrail, WaterTrapTrail.Instance, IStateMachineTarget, WaterTrapTrail.Def>.GameInstance
 	{
-				public bool IsOperational
+						public bool IsOperational
 		{
 			get
 			{
@@ -92,7 +92,7 @@ public class WaterTrapTrail : GameStateMachine<WaterTrapTrail, WaterTrapTrail.In
 			}
 		}
 
-				public Lure.Instance lureSMI
+						public Lure.Instance lureSMI
 		{
 			get
 			{
@@ -104,17 +104,17 @@ public class WaterTrapTrail : GameStateMachine<WaterTrapTrail, WaterTrapTrail.In
 			}
 		}
 
-		public Instance(IStateMachineTarget master, WaterTrapTrail.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, WaterTrapTrail.Def def) : base(master, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			this.RegisterListenersToCellChanges();
 		}
 
-		private void RegisterListenersToCellChanges()
+				private void RegisterListenersToCellChanges()
 		{
 			int widthInCells = base.GetComponent<BuildingComplete>().Def.WidthInCells;
 			CellOffset[] array = new CellOffset[widthInCells * 4];
@@ -131,34 +131,34 @@ public class WaterTrapTrail : GameStateMachine<WaterTrapTrail, WaterTrapTrail.In
 			this.partitionerEntry_buildings = GameScenePartitioner.Instance.Add("WaterTrapTrail", base.gameObject, extents, GameScenePartitioner.Instance.objectLayers[1], new Action<object>(this.OnLowerCellChanged));
 		}
 
-		private void UnregisterListenersToCellChanges()
+				private void UnregisterListenersToCellChanges()
 		{
 			GameScenePartitioner.Instance.Free(ref this.partitionerEntry_solids);
 			GameScenePartitioner.Instance.Free(ref this.partitionerEntry_buildings);
 		}
 
-		private void OnLowerCellChanged(object o)
+				private void OnLowerCellChanged(object o)
 		{
 			WaterTrapTrail.RefreshDepthAvailable(base.smi, 0f);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			this.UnregisterListenersToCellChanges();
 			base.OnCleanUp();
 		}
 
-		public void SetRangeVisualizerVisibility(bool visible)
+				public void SetRangeVisualizerVisibility(bool visible)
 		{
 			this.rangeVisualizer.RangeMax.x = (visible ? 0 : -1);
 		}
 
-		public void SetRangeVisualizerOffset(Vector2I offset)
+				public void SetRangeVisualizerOffset(Vector2I offset)
 		{
 			this.rangeVisualizer.OriginOffset = offset;
 		}
 
-		public void ChangeTrapCellPosition(int cell)
+				public void ChangeTrapCellPosition(int cell)
 		{
 			if (this.lureSMI != null)
 			{
@@ -167,16 +167,16 @@ public class WaterTrapTrail : GameStateMachine<WaterTrapTrail, WaterTrapTrail.In
 			base.gameObject.GetComponent<TrapTrigger>().SetTriggerCell(cell);
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Operational operational;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private RangeVisualizer rangeVisualizer;
 
-		private HandleVector<int>.Handle partitionerEntry_buildings;
+				private HandleVector<int>.Handle partitionerEntry_buildings;
 
-		private HandleVector<int>.Handle partitionerEntry_solids;
+				private HandleVector<int>.Handle partitionerEntry_solids;
 
-		private Lure.Instance _lureSMI;
+				private Lure.Instance _lureSMI;
 	}
 }

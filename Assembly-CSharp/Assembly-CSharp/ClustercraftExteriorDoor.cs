@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ClustercraftExteriorDoor : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.targetWorldId < 0)
@@ -27,13 +27,13 @@ public class ClustercraftExteriorDoor : KMonoBehaviour
 		base.Subscribe<ClustercraftExteriorDoor>(-887025858, ClustercraftExteriorDoor.OnLandDelegate);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		ClusterManager.Instance.DestoryRocketInteriorWorld(this.targetWorldId, this);
 		base.OnCleanUp();
 	}
 
-	private void PairWithInteriorDoor()
+		private void PairWithInteriorDoor()
 	{
 		foreach (object obj in Components.ClusterCraftInteriorDoors)
 		{
@@ -62,32 +62,32 @@ public class ClustercraftExteriorDoor : KMonoBehaviour
 		targetWorld.gameObject.Trigger(-1118736034, null);
 	}
 
-	public void SetTarget(ClustercraftInteriorDoor target)
+		public void SetTarget(ClustercraftInteriorDoor target)
 	{
 		this.targetDoor = target;
 		target.GetComponent<AssignmentGroupController>().SetGroupID(base.GetComponent<AssignmentGroupController>().AssignmentGroupID);
 		base.GetComponent<NavTeleporter>().TwoWayTarget(target.GetComponent<NavTeleporter>());
 	}
 
-	public bool HasTargetWorld()
+		public bool HasTargetWorld()
 	{
 		return this.targetDoor != null;
 	}
 
-	public WorldContainer GetTargetWorld()
+		public WorldContainer GetTargetWorld()
 	{
 		global::Debug.Assert(this.targetDoor != null, "Clustercraft Exterior Door has no targetDoor");
 		return this.targetDoor.GetMyWorld();
 	}
 
-	public void FerryMinion(GameObject minion)
+		public void FerryMinion(GameObject minion)
 	{
 		Vector3 b = Vector3.left * 3f;
 		minion.transform.SetPosition(Grid.CellToPos(Grid.PosToCell(this.targetDoor.transform.position + b), CellAlignment.Bottom, Grid.SceneLayer.Move));
 		ClusterManager.Instance.MigrateMinion(minion.GetComponent<MinionIdentity>(), this.targetDoor.GetMyWorldId());
 	}
 
-	private void OnLaunch(object data)
+		private void OnLaunch(object data)
 	{
 		NavTeleporter component = base.GetComponent<NavTeleporter>();
 		component.EnableTwoWayTarget(false);
@@ -99,7 +99,7 @@ public class ClustercraftExteriorDoor : KMonoBehaviour
 		}
 	}
 
-	private void OnLand(object data)
+		private void OnLand(object data)
 	{
 		base.GetComponent<NavTeleporter>().EnableTwoWayTarget(true);
 		WorldContainer targetWorld = this.GetTargetWorld();
@@ -110,29 +110,29 @@ public class ClustercraftExteriorDoor : KMonoBehaviour
 		}
 	}
 
-	public int TargetCell()
+		public int TargetCell()
 	{
 		return this.targetDoor.GetComponent<NavTeleporter>().GetCell();
 	}
 
-	public ClustercraftInteriorDoor GetInteriorDoor()
+		public ClustercraftInteriorDoor GetInteriorDoor()
 	{
 		return this.targetDoor;
 	}
 
-	public string interiorTemplateName;
+		public string interiorTemplateName;
 
-	private ClustercraftInteriorDoor targetDoor;
+		private ClustercraftInteriorDoor targetDoor;
 
-	[Serialize]
+		[Serialize]
 	private int targetWorldId = -1;
 
-	private static readonly EventSystem.IntraObjectHandler<ClustercraftExteriorDoor> OnLaunchDelegate = new EventSystem.IntraObjectHandler<ClustercraftExteriorDoor>(delegate(ClustercraftExteriorDoor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ClustercraftExteriorDoor> OnLaunchDelegate = new EventSystem.IntraObjectHandler<ClustercraftExteriorDoor>(delegate(ClustercraftExteriorDoor component, object data)
 	{
 		component.OnLaunch(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<ClustercraftExteriorDoor> OnLandDelegate = new EventSystem.IntraObjectHandler<ClustercraftExteriorDoor>(delegate(ClustercraftExteriorDoor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ClustercraftExteriorDoor> OnLandDelegate = new EventSystem.IntraObjectHandler<ClustercraftExteriorDoor>(delegate(ClustercraftExteriorDoor component, object data)
 	{
 		component.OnLand(data);
 	});

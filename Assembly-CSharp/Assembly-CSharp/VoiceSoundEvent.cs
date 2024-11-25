@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class VoiceSoundEvent : SoundEvent
 {
-	public VoiceSoundEvent(string file_name, string sound_name, int frame, bool is_looping) : base(file_name, sound_name, frame, false, is_looping, (float)SoundEvent.IGNORE_INTERVAL, true)
+		public VoiceSoundEvent(string file_name, string sound_name, int frame, bool is_looping) : base(file_name, sound_name, frame, false, is_looping, (float)SoundEvent.IGNORE_INTERVAL, true)
 	{
 		base.noiseValues = SoundEventVolumeCache.instance.GetVolume("VoiceSoundEvent", sound_name);
 	}
 
-	public override void OnPlay(AnimEventManager.EventPlayerData behaviour)
+		public override void OnPlay(AnimEventManager.EventPlayerData behaviour)
 	{
 		VoiceSoundEvent.PlayVoice(base.name, behaviour.controller, this.intervalBetweenSpeaking, base.looping, false);
 	}
 
-	public static EventInstance PlayVoice(string name, KBatchedAnimController controller, float interval_between_speaking, bool looping, bool objectIsSelectedAndVisible = false)
+		public static EventInstance PlayVoice(string name, KBatchedAnimController controller, float interval_between_speaking, bool looping, bool objectIsSelectedAndVisible = false)
 	{
 		EventInstance eventInstance = default(EventInstance);
 		MinionIdentity component = controller.GetComponent<MinionIdentity>();
@@ -23,18 +23,16 @@ public class VoiceSoundEvent : SoundEvent
 		{
 			return eventInstance;
 		}
+		bool flag = component.model == BionicMinionConfig.MODEL;
 		if (name.Contains(":"))
 		{
-			float num = float.Parse(name.Split(new char[]
-			{
-				':'
-			})[1]);
+			float num = float.Parse(name.Split(':', StringSplitOptions.None)[1]);
 			if ((float)UnityEngine.Random.Range(0, 100) > num)
 			{
 				return eventInstance;
 			}
 		}
-		Worker component2 = controller.GetComponent<Worker>();
+		WorkerBase component2 = controller.GetComponent<WorkerBase>();
 		string assetName = VoiceSoundEvent.GetAssetName(name, component2);
 		StaminaMonitor.Instance smi = component2.GetSMI<StaminaMonitor.Instance>();
 		if (!name.Contains("sleep_") && smi != null && smi.IsSleeping())
@@ -68,10 +66,15 @@ public class VoiceSoundEvent : SoundEvent
 						string.Format("SoundEvent has invalid sound [{0}] on behaviour [{1}]", sound, controller.name)
 					});
 				}
+				else
+				{
+					component3.UpdateFirstParameter(sound, "isBionic", (float)(flag ? 1 : 0));
+				}
 			}
 			else
 			{
 				eventInstance = SoundEvent.BeginOneShot(sound, vector, 1f, false);
+				eventInstance.setParameterByName("isBionic", (float)(flag ? 1 : 0), false);
 				if (sound.Contains("sleep_") && controller.GetComponent<Traits>().HasTrait("Snorer"))
 				{
 					eventInstance.setParameterByName("snoring", 1f, false);
@@ -87,7 +90,7 @@ public class VoiceSoundEvent : SoundEvent
 		return eventInstance;
 	}
 
-	private static string GetAssetName(string name, Component cmp)
+		private static string GetAssetName(string name, Component cmp)
 	{
 		string b = "F01";
 		if (cmp != null)
@@ -101,15 +104,12 @@ public class VoiceSoundEvent : SoundEvent
 		string d = name;
 		if (name.Contains(":"))
 		{
-			d = name.Split(new char[]
-			{
-				':'
-			})[0];
+			d = name.Split(':', StringSplitOptions.None)[0];
 		}
 		return StringFormatter.Combine("DupVoc_", b, "_", d);
 	}
 
-	public override void Stop(AnimEventManager.EventPlayerData behaviour)
+		public override void Stop(AnimEventManager.EventPlayerData behaviour)
 	{
 		if (base.looping)
 		{
@@ -122,9 +122,9 @@ public class VoiceSoundEvent : SoundEvent
 		}
 	}
 
-	public static float locomotionSoundProb = 50f;
+		public static float locomotionSoundProb = 50f;
 
-	public float timeLastSpoke;
+		public float timeLastSpoke;
 
-	public float intervalBetweenSpeaking = 10f;
+		public float intervalBetweenSpeaking = 10f;
 }

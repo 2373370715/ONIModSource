@@ -4,24 +4,24 @@ using UnityEngine;
 
 public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, IStateMachineTarget, PlantBranch.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.root;
 	}
 
-	private StateMachine<PlantBranch, PlantBranch.Instance, IStateMachineTarget, PlantBranch.Def>.TargetParameter Trunk;
+		private StateMachine<PlantBranch, PlantBranch.Instance, IStateMachineTarget, PlantBranch.Def>.TargetParameter Trunk;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Action<PlantBranchGrower.Instance, PlantBranch.Instance> animationSetupCallback;
+				public Action<PlantBranchGrower.Instance, PlantBranch.Instance> animationSetupCallback;
 
-		public Action<PlantBranch.Instance> onEarlySpawn;
+				public Action<PlantBranch.Instance> onEarlySpawn;
 	}
 
-	public new class Instance : GameStateMachine<PlantBranch, PlantBranch.Instance, IStateMachineTarget, PlantBranch.Def>.GameInstance, IWiltCause
+		public new class Instance : GameStateMachine<PlantBranch, PlantBranch.Instance, IStateMachineTarget, PlantBranch.Def>.GameInstance, IWiltCause
 	{
-				public bool HasTrunk
+						public bool HasTrunk
 		{
 			get
 			{
@@ -29,13 +29,13 @@ public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, I
 			}
 		}
 
-		public Instance(IStateMachineTarget master, PlantBranch.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, PlantBranch.Def def) : base(master, def)
 		{
 			this.SetOccupyGridSpace(true);
 			base.Subscribe(1272413801, new Action<object>(this.OnHarvest));
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			Action<PlantBranch.Instance> onEarlySpawn = base.def.onEarlySpawn;
@@ -59,7 +59,7 @@ public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, I
 			animationSetupCallback(this.trunk, this);
 		}
 
-		private void OnHarvest(object data)
+				private void OnHarvest(object data)
 		{
 			if (this.HasTrunk)
 			{
@@ -67,14 +67,14 @@ public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, I
 			}
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			this.UnsubscribeToTrunk();
 			this.SetOccupyGridSpace(false);
 			base.OnCleanUp();
 		}
 
-		private void SetOccupyGridSpace(bool active)
+				private void SetOccupyGridSpace(bool active)
 		{
 			int cell = Grid.PosToCell(base.gameObject);
 			if (!active)
@@ -98,7 +98,7 @@ public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, I
 			Grid.Objects[cell, 5] = base.gameObject;
 		}
 
-		public void SetTrunk(PlantBranchGrower.Instance trunk)
+				public void SetTrunk(PlantBranchGrower.Instance trunk)
 		{
 			this.trunk = trunk;
 			base.smi.sm.Trunk.Set(trunk.gameObject, this, false);
@@ -111,7 +111,7 @@ public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, I
 			animationSetupCallback(trunk, this);
 		}
 
-		public PlantBranchGrower.Instance GetTrunk()
+				public PlantBranchGrower.Instance GetTrunk()
 		{
 			if (base.smi.sm.Trunk.IsNull(this))
 			{
@@ -120,7 +120,7 @@ public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, I
 			return base.sm.Trunk.Get(this).GetSMI<PlantBranchGrower.Instance>();
 		}
 
-		private void SubscribeToTrunk()
+				private void SubscribeToTrunk()
 		{
 			if (!this.HasTrunk)
 			{
@@ -142,7 +142,7 @@ public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, I
 			base.GetComponent<BudUprootedMonitor>().SetParentObject(this.trunk.GetComponent<KPrefabID>());
 		}
 
-		private void UnsubscribeToTrunk()
+				private void UnsubscribeToTrunk()
 		{
 			if (!this.HasTrunk)
 			{
@@ -155,17 +155,17 @@ public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, I
 			this.trunk.OnBranchRemoved(base.gameObject);
 		}
 
-		private void OnTrunkWilt(object data = null)
+				private void OnTrunkWilt(object data = null)
 		{
 			base.Trigger(912965142, false);
 		}
 
-		private void OnTrunkRecover(object data = null)
+				private void OnTrunkRecover(object data = null)
 		{
 			base.Trigger(912965142, true);
 		}
 
-				public string WiltStateString
+						public string WiltStateString
 		{
 			get
 			{
@@ -173,7 +173,7 @@ public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, I
 			}
 		}
 
-				public WiltCondition.Condition[] Conditions
+						public WiltCondition.Condition[] Conditions
 		{
 			get
 			{
@@ -184,10 +184,10 @@ public class PlantBranch : GameStateMachine<PlantBranch, PlantBranch.Instance, I
 			}
 		}
 
-		public PlantBranchGrower.Instance trunk;
+				public PlantBranchGrower.Instance trunk;
 
-		private int trunkWiltHandle = -1;
+				private int trunkWiltHandle = -1;
 
-		private int trunkWiltRecoverHandle = -1;
+				private int trunkWiltRecoverHandle = -1;
 	}
 }

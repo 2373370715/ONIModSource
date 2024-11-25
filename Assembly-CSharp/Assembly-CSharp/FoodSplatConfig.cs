@@ -6,17 +6,17 @@ using UnityEngine;
 
 public class FoodSplatConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
-		return EntityTemplates.CreateBasicEntity("FoodSplat", ITEMS.FOOD.FOODSPLAT.NAME, ITEMS.FOOD.FOODSPLAT.DESC, 1f, true, Assets.GetAnim("sticker_a_kanim"), "idle_sticker_a", Grid.SceneLayer.Backwall, SimHashes.Creature, null, 293f);
+		return EntityTemplates.CreateBasicEntity("FoodSplat", STRINGS.ITEMS.FOOD.FOODSPLAT.NAME, STRINGS.ITEMS.FOOD.FOODSPLAT.DESC, 1f, true, Assets.GetAnim("sticker_a_kanim"), "idle_sticker_a", Grid.SceneLayer.Backwall, SimHashes.Creature, null, 293f);
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.AddOrGet<OccupyArea>().SetCellOffsets(new CellOffset[1]);
 		inst.AddComponent<Modifiers>();
@@ -26,9 +26,9 @@ public class FoodSplatConfig : IEntityConfig
 		inst.AddOrGet<SplatWorkable>();
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "FoodSplat";
+		public const string ID = "FoodSplat";
 }

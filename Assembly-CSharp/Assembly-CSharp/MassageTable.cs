@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActivationRangeTarget
 {
-		public string ActivateTooltip
+			public string ActivateTooltip
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-		public string DeactivateTooltip
+			public string DeactivateTooltip
 	{
 		get
 		{
@@ -23,13 +23,13 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<MassageTable>(-905833192, MassageTable.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		MassageTable component = ((GameObject)data).GetComponent<MassageTable>();
 		if (component != null)
@@ -39,7 +39,7 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		Effects component = worker.GetComponent<Effects>();
@@ -50,7 +50,7 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-	public new List<Descriptor> GetDescriptors(GameObject go)
+		public new List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Descriptor item = default(Descriptor);
@@ -75,15 +75,15 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		return list;
 	}
 
-	protected override WorkChore<RelaxationPoint> CreateWorkChore()
+		protected override WorkChore<RelaxationPoint> CreateWorkChore()
 	{
 		WorkChore<RelaxationPoint> workChore = new WorkChore<RelaxationPoint>(Db.Get().ChoreTypes.StressHeal, this, null, true, null, null, null, false, null, true, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
-		workChore.AddPrecondition(ChorePreconditions.instance.IsNotARobot, this);
+		workChore.AddPrecondition(ChorePreconditions.instance.IsNotARobot, null);
 		workChore.AddPrecondition(MassageTable.IsStressAboveActivationRange, this);
 		return workChore;
 	}
 
-			public float ActivateValue
+				public float ActivateValue
 	{
 		get
 		{
@@ -95,7 +95,7 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-			public float DeactivateValue
+				public float DeactivateValue
 	{
 		get
 		{
@@ -107,7 +107,7 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-		public bool UseWholeNumbers
+			public bool UseWholeNumbers
 	{
 		get
 		{
@@ -115,7 +115,7 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-		public float MinValue
+			public float MinValue
 	{
 		get
 		{
@@ -123,7 +123,7 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-		public float MaxValue
+			public float MaxValue
 	{
 		get
 		{
@@ -131,7 +131,7 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-		public string ActivationRangeTitleText
+			public string ActivationRangeTitleText
 	{
 		get
 		{
@@ -139,7 +139,7 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-		public string ActivateSliderLabelText
+			public string ActivateSliderLabelText
 	{
 		get
 		{
@@ -147,7 +147,7 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-		public string DeactivateSliderLabelText
+			public string DeactivateSliderLabelText
 	{
 		get
 		{
@@ -155,20 +155,20 @@ public class MassageTable : RelaxationPoint, IGameObjectEffectDescriptor, IActiv
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private float activateValue = 50f;
 
-	private static readonly string[] EffectsRemoved = new string[]
+		private static readonly string[] EffectsRemoved = new string[]
 	{
 		"SoreBack"
 	};
 
-	private static readonly EventSystem.IntraObjectHandler<MassageTable> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<MassageTable>(delegate(MassageTable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<MassageTable> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<MassageTable>(delegate(MassageTable component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static readonly Chore.Precondition IsStressAboveActivationRange = new Chore.Precondition
+		private static readonly Chore.Precondition IsStressAboveActivationRange = new Chore.Precondition
 	{
 		id = "IsStressAboveActivationRange",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.IS_STRESS_ABOVE_ACTIVATION_RANGE,

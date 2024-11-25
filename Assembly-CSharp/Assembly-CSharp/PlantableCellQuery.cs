@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlantableCellQuery : PathFinderQuery
 {
-	public PlantableCellQuery Reset(PlantableSeed seed, int max_results)
+		public PlantableCellQuery Reset(PlantableSeed seed, int max_results)
 	{
 		this.seed = seed;
 		this.max_results = max_results;
@@ -12,7 +12,7 @@ public class PlantableCellQuery : PathFinderQuery
 		return this;
 	}
 
-	public override bool IsMatch(int cell, int parent_cell, int cost)
+		public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
 		if (!this.result_cells.Contains(cell) && this.CheckValidPlotCell(this.seed, cell))
 		{
@@ -21,7 +21,7 @@ public class PlantableCellQuery : PathFinderQuery
 		return this.result_cells.Count >= this.max_results;
 	}
 
-	private bool CheckValidPlotCell(PlantableSeed seed, int plant_cell)
+		private bool CheckValidPlotCell(PlantableSeed seed, int plant_cell)
 	{
 		if (!Grid.IsValidCell(plant_cell))
 		{
@@ -83,7 +83,7 @@ public class PlantableCellQuery : PathFinderQuery
 		return true;
 	}
 
-	private static int CountNearbyPlants(int cell, int radius)
+		private static int CountNearbyPlants(int cell, int radius)
 	{
 		int num = 0;
 		int num2 = 0;
@@ -108,13 +108,13 @@ public class PlantableCellQuery : PathFinderQuery
 		return num4;
 	}
 
-	public List<int> result_cells = new List<int>();
+		public List<int> result_cells = new List<int>();
 
-	private PlantableSeed seed;
+		private PlantableSeed seed;
 
-	private int max_results;
+		private int max_results;
 
-	private int plantDetectionRadius = 6;
+		private int plantDetectionRadius = 6;
 
-	private int maxPlantsInRadius = 2;
+		private int maxPlantsInRadius = 2;
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class MissionControlConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetForbiddenDlcIds()
 	{
-		return DlcManager.AVAILABLE_VANILLA_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MissionControl";
 		int width = 3;
@@ -34,7 +34,7 @@ public class MissionControlConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.ScienceBuilding, false);
 		BuildingDef def = go.GetComponent<BuildingComplete>().Def;
@@ -48,7 +48,7 @@ public class MissionControlConfig : IBuildingConfig
 		missionControlWorkable.workLayer = Grid.SceneLayer.BuildingUse;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		RoomTracker roomTracker = go.AddOrGet<RoomTracker>();
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.Laboratory.Id;
@@ -56,17 +56,17 @@ public class MissionControlConfig : IBuildingConfig
 		MissionControlConfig.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		MissionControlConfig.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		MissionControlConfig.AddVisualizer(go);
 	}
 
-	private static void AddVisualizer(GameObject prefab)
+		private static void AddVisualizer(GameObject prefab)
 	{
 		SkyVisibilityVisualizer skyVisibilityVisualizer = prefab.AddOrGet<SkyVisibilityVisualizer>();
 		skyVisibilityVisualizer.OriginOffset.y = 2;
@@ -75,15 +75,15 @@ public class MissionControlConfig : IBuildingConfig
 		skyVisibilityVisualizer.SkipOnModuleInteriors = true;
 	}
 
-	public const string ID = "MissionControl";
+		public const string ID = "MissionControl";
 
-	public const float EFFECT_DURATION = 600f;
+		public const float EFFECT_DURATION = 600f;
 
-	public const float SPEED_MULTIPLIER = 1.2f;
+		public const float SPEED_MULTIPLIER = 1.2f;
 
-	public const int SCAN_RADIUS = 1;
+		public const int SCAN_RADIUS = 1;
 
-	public const int VERTICAL_SCAN_OFFSET = 2;
+		public const int VERTICAL_SCAN_OFFSET = 2;
 
-	public static readonly SkyVisibilityInfo SKY_VISIBILITY_INFO = new SkyVisibilityInfo(new CellOffset(0, 2), 1, new CellOffset(0, 2), 1, 0);
+		public static readonly SkyVisibilityInfo SKY_VISIBILITY_INFO = new SkyVisibilityInfo(new CellOffset(0, 2), 1, new CellOffset(0, 2), 1, 0);
 }

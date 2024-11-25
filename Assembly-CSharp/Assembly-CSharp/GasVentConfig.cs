@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GasVentConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "GasVent";
 		int width = 1;
@@ -31,7 +31,7 @@ public class GasVentConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<Exhaust>();
@@ -47,15 +47,15 @@ public class GasVentConfig : IBuildingConfig
 		go.AddOrGet<SimpleVent>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<VentController.Def>();
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public const string ID = "GasVent";
+		public const string ID = "GasVent";
 
-	public const float OVERPRESSURE_MASS = 2f;
+		public const float OVERPRESSURE_MASS = 2f;
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Gas;
 }

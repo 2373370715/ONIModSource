@@ -2,11 +2,11 @@
 
 namespace KMod
 {
-	public enum ModContentCompatability
+		public enum ModContentCompatability
 	{
-		OK,
-		DoesntSupportDLCConfig,
-		NoContent,
-		OldAPI
+				OK,
+				DoesntSupportDLCConfig,
+				NoContent,
+				OldAPI
 	}
 }

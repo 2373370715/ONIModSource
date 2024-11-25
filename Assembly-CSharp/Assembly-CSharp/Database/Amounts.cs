@@ -1,11 +1,14 @@
 ﻿using System;
+using Klei;
 using Klei.AI;
+using TUNING;
+using UnityEngine;
 
 namespace Database
 {
-	public class Amounts : ResourceSet<Amount>
+		public class Amounts : ResourceSet<Amount>
 	{
-		public void Load()
+				public void Load()
 		{
 			this.Stamina = this.CreateAmount("Stamina", 0f, 100f, false, Units.Flat, 0.35f, true, "STRINGS.DUPLICANTS", "ui_icon_stamina", "attribute_stamina", "mod_stamina");
 			this.Stamina.SetDisplayer(new StandardAmountDisplayer(GameUtil.UnitClass.Percent, GameUtil.TimeSlice.PerCycle, null, GameUtil.IdentityDescriptorTense.Normal));
@@ -50,7 +53,7 @@ namespace Database
 			this.Age.SetDisplayer(new StandardAmountDisplayer(GameUtil.UnitClass.SimpleInteger, GameUtil.TimeSlice.PerCycle, null, GameUtil.IdentityDescriptorTense.Normal));
 			this.Irrigation = this.CreateAmount("Irrigation", 0f, 1f, true, Units.Flat, 0.1675f, true, "STRINGS.CREATURES", null, null, null);
 			this.Irrigation.SetDisplayer(new StandardAmountDisplayer(GameUtil.UnitClass.Percent, GameUtil.TimeSlice.PerSecond, null, GameUtil.IdentityDescriptorTense.Normal));
-			this.ImmuneLevel = this.CreateAmount("ImmuneLevel", 0f, 100f, true, Units.Flat, 0.1675f, true, "STRINGS.DUPLICANTS", "ui_icon_immunelevel", "attribute_immunelevel", null);
+			this.ImmuneLevel = this.CreateAmount("ImmuneLevel", 0f, DUPLICANTSTATS.STANDARD.BaseStats.IMMUNE_LEVEL_MAX, true, Units.Flat, 0.1675f, true, "STRINGS.DUPLICANTS", "ui_icon_immunelevel", "attribute_immunelevel", null);
 			this.ImmuneLevel.SetDisplayer(new AsPercentAmountDisplayer(GameUtil.TimeSlice.PerCycle));
 			this.Rot = this.CreateAmount("Rot", 0f, 0f, false, Units.Flat, 0f, true, "STRINGS.CREATURES", null, null, null);
 			this.Rot.SetDisplayer(new AsPercentAmountDisplayer(GameUtil.TimeSlice.PerCycle));
@@ -64,15 +67,64 @@ namespace Database
 			this.ElementGrowth.SetDisplayer(new AsPercentAmountDisplayer(GameUtil.TimeSlice.PerCycle));
 			this.Beckoning = this.CreateAmount("Beckoning", 0f, 100f, true, Units.Flat, 100.5f, true, "STRINGS.CREATURES", "ui_icon_moo", null, null);
 			this.Beckoning.SetDisplayer(new AsPercentAmountDisplayer(GameUtil.TimeSlice.PerCycle));
+			this.BionicOxygenTank = this.CreateAmount("BionicOxygenTank", 0f, BionicOxygenTankMonitor.OXYGEN_TANK_CAPACITY_KG, true, Units.Flat, 60f, true, "STRINGS.DUPLICANTS", "ui_icon_breath", null, null);
+			this.BionicOxygenTank.SetDisplayer(new BionicOxygenTankDisplayer(GameUtil.TimeSlice.PerCycle));
+			this.BionicOxygenTank.debugSetValue = delegate(AmountInstance instance, float val)
+			{
+				BionicOxygenTankMonitor.Instance smi = instance.gameObject.GetSMI<BionicOxygenTankMonitor.Instance>();
+				if (smi == null)
+				{
+					instance.SetValue(val);
+					return;
+				}
+				float availableOxygen = smi.AvailableOxygen;
+				if (val >= availableOxygen)
+				{
+					float mass = val - availableOxygen;
+					smi.AddGas(SimHashes.Oxygen, mass, 6282.4497f, byte.MaxValue, 0);
+					return;
+				}
+				float amount = Mathf.Min(availableOxygen - val, availableOxygen);
+				float num;
+				SimUtil.DiseaseInfo diseaseInfo;
+				float num2;
+				smi.storage.ConsumeAndGetDisease(GameTags.Breathable, amount, out num, out diseaseInfo, out num2);
+			};
+			this.BionicInternalBattery = this.CreateAmount("BionicInternalBattery", 0f, 360000f, false, Units.Flat, 4000f, true, "STRINGS.DUPLICANTS", "ui_icon_battery", null, null);
+			this.BionicInternalBattery.SetDisplayer(new BionicBatteryDisplayer());
+			this.BionicInternalBattery.debugSetValue = delegate(AmountInstance instance, float val)
+			{
+				BionicBatteryMonitor.Instance smi = instance.gameObject.GetSMI<BionicBatteryMonitor.Instance>();
+				if (smi == null)
+				{
+					instance.SetValue(val);
+					return;
+				}
+				float currentCharge = smi.CurrentCharge;
+				if (val >= currentCharge)
+				{
+					float joules = val - currentCharge;
+					smi.DebugAddCharge(joules);
+					return;
+				}
+				float joules2 = currentCharge - val;
+				smi.ConsumePower(joules2);
+			};
+			this.BionicOil = this.CreateAmount("BionicOil", 0f, 200f, false, Units.Flat, 0.5f, true, "STRINGS.DUPLICANTS", "ui_icon_liquid", null, null);
+			this.BionicOil.SetDisplayer(new StandardAmountDisplayer(GameUtil.UnitClass.Mass, GameUtil.TimeSlice.PerCycle, null, GameUtil.IdentityDescriptorTense.Normal));
+			this.BionicGunk = this.CreateAmount("BionicGunk", 0f, GunkMonitor.GUNK_CAPACITY, false, Units.Flat, 0.5f, true, "STRINGS.DUPLICANTS", "ui_icon_gunk", null, null);
+			this.BionicGunk.SetDisplayer(new BionicGunkDisplayer(GameUtil.TimeSlice.PerCycle));
 			this.InternalBattery = this.CreateAmount("InternalBattery", 0f, 0f, true, Units.Flat, 4000f, true, "STRINGS.ROBOTS", "ui_icon_battery", null, null);
 			this.InternalBattery.SetDisplayer(new StandardAmountDisplayer(GameUtil.UnitClass.Energy, GameUtil.TimeSlice.PerSecond, null, GameUtil.IdentityDescriptorTense.Normal));
 			this.InternalChemicalBattery = this.CreateAmount("InternalChemicalBattery", 0f, 0f, true, Units.Flat, 4000f, true, "STRINGS.ROBOTS", "ui_icon_battery", null, null);
 			this.InternalChemicalBattery.SetDisplayer(new StandardAmountDisplayer(GameUtil.UnitClass.Energy, GameUtil.TimeSlice.PerSecond, null, GameUtil.IdentityDescriptorTense.Normal));
 			this.InternalBioBattery = this.CreateAmount("InternalBioBattery", 0f, 0f, true, Units.Flat, 4000f, true, "STRINGS.ROBOTS", "ui_icon_battery", null, null);
 			this.InternalBioBattery.SetDisplayer(new StandardAmountDisplayer(GameUtil.UnitClass.Energy, GameUtil.TimeSlice.PerSecond, null, GameUtil.IdentityDescriptorTense.Normal));
+			this.InternalElectroBank = this.CreateAmount("InternalElectroBank", 0f, 0f, true, Units.Flat, 4000f, true, "STRINGS.ROBOTS", "ui_icon_battery", null, null);
+			this.InternalElectroBank.SetDisplayer(new StandardAmountDisplayer(GameUtil.UnitClass.Energy, GameUtil.TimeSlice.PerSecond, null, GameUtil.IdentityDescriptorTense.Normal));
 		}
 
-		public Amount CreateAmount(string id, float min, float max, bool show_max, Units units, float delta_threshold, bool show_in_ui, string string_root, string uiSprite = null, string thoughtSprite = null, string uiFullColourSprite = null)
+				public Amount CreateAmount(string id, float min, float max, bool show_max, Units units, float delta_threshold, bool show_in_ui, string string_root, string uiSprite = null, string thoughtSprite = null, string uiFullColourSprite = null)
 		{
 			string text = Strings.Get(string.Format("{1}.STATS.{0}.NAME", id.ToUpper(), string_root.ToUpper()));
 			string description = Strings.Get(string.Format("{1}.STATS.{0}.TOOLTIP", id.ToUpper(), string_root.ToUpper()));
@@ -101,68 +153,78 @@ namespace Database
 			return amount;
 		}
 
-		public Amount Stamina;
+				public Amount Stamina;
 
-		public Amount Calories;
+				public Amount Calories;
 
-		public Amount ImmuneLevel;
+				public Amount ImmuneLevel;
 
-		public Amount Breath;
+				public Amount Breath;
 
-		public Amount Stress;
+				public Amount Stress;
 
-		public Amount Toxicity;
+				public Amount Toxicity;
 
-		public Amount Bladder;
+				public Amount Bladder;
 
-		public Amount Decor;
+				public Amount Decor;
 
-		public Amount RadiationBalance;
+				public Amount RadiationBalance;
 
-		public Amount Temperature;
+				public Amount BionicOxygenTank;
 
-		public Amount CritterTemperature;
+				public Amount BionicOil;
 
-		public Amount HitPoints;
+				public Amount BionicGunk;
 
-		public Amount AirPressure;
+				public Amount BionicInternalBattery;
 
-		public Amount Maturity;
+				public Amount Temperature;
 
-		public Amount OldAge;
+				public Amount CritterTemperature;
 
-		public Amount Age;
+				public Amount HitPoints;
 
-		public Amount Fertilization;
+				public Amount AirPressure;
 
-		public Amount Illumination;
+				public Amount Maturity;
 
-		public Amount Irrigation;
+				public Amount OldAge;
 
-		public Amount Fertility;
+				public Amount Age;
 
-		public Amount Viability;
+				public Amount Fertilization;
 
-		public Amount PowerCharge;
+				public Amount Illumination;
 
-		public Amount Wildness;
+				public Amount Irrigation;
 
-		public Amount Incubation;
+				public Amount Fertility;
 
-		public Amount ScaleGrowth;
+				public Amount Viability;
 
-		public Amount ElementGrowth;
+				public Amount PowerCharge;
 
-		public Amount Beckoning;
+				public Amount Wildness;
 
-		public Amount MilkProduction;
+				public Amount Incubation;
 
-		public Amount InternalBattery;
+				public Amount ScaleGrowth;
 
-		public Amount InternalChemicalBattery;
+				public Amount ElementGrowth;
 
-		public Amount InternalBioBattery;
+				public Amount Beckoning;
 
-		public Amount Rot;
+				public Amount MilkProduction;
+
+				public Amount InternalBattery;
+
+				public Amount InternalChemicalBattery;
+
+				public Amount InternalBioBattery;
+
+				public Amount InternalElectroBank;
+
+				public Amount Rot;
 	}
 }

@@ -2,5 +2,5 @@
 
 public interface IUpdateOnDemand
 {
-	void UpdateOnDemand();
+		void UpdateOnDemand();
 }

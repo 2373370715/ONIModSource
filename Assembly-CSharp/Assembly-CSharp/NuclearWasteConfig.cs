@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class NuclearWasteConfig : IOreConfig
 {
-		public SimHashes ElementID
+			public SimHashes ElementID
 	{
 		get
 		{
@@ -11,12 +11,12 @@ public class NuclearWasteConfig : IOreConfig
 		}
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateLiquidOreEntity(this.ElementID, null);
 		Sublimates sublimates = gameObject.AddOrGet<Sublimates>();

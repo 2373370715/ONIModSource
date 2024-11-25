@@ -3,23 +3,23 @@ using System.Collections.Generic;
 
 public class BuildingInventory : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		BuildingInventory.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		BuildingInventory.Instance = this;
 	}
 
-	public HashSet<BuildingComplete> GetBuildings(Tag tag)
+		public HashSet<BuildingComplete> GetBuildings(Tag tag)
 	{
 		return this.Buildings[tag];
 	}
 
-	public int BuildingCount(Tag tag)
+		public int BuildingCount(Tag tag)
 	{
 		if (!this.Buildings.ContainsKey(tag))
 		{
@@ -28,7 +28,7 @@ public class BuildingInventory : KMonoBehaviour
 		return this.Buildings[tag].Count;
 	}
 
-	public int BuildingCountForWorld_BAD_PERF(Tag tag, int worldId)
+		public int BuildingCountForWorld_BAD_PERF(Tag tag, int worldId)
 	{
 		if (!this.Buildings.ContainsKey(tag))
 		{
@@ -48,7 +48,7 @@ public class BuildingInventory : KMonoBehaviour
 		return num;
 	}
 
-	public void RegisterBuilding(BuildingComplete building)
+		public void RegisterBuilding(BuildingComplete building)
 	{
 		Tag prefabTag = building.prefabid.PrefabTag;
 		HashSet<BuildingComplete> hashSet;
@@ -60,7 +60,7 @@ public class BuildingInventory : KMonoBehaviour
 		hashSet.Add(building);
 	}
 
-	public void UnregisterBuilding(BuildingComplete building)
+		public void UnregisterBuilding(BuildingComplete building)
 	{
 		Tag prefabTag = building.prefabid.PrefabTag;
 		HashSet<BuildingComplete> hashSet;
@@ -72,7 +72,7 @@ public class BuildingInventory : KMonoBehaviour
 		DebugUtil.DevAssert(hashSet.Remove(building), string.Format("Building {0} was not found to be removed", prefabTag), null);
 	}
 
-	public static BuildingInventory Instance;
+		public static BuildingInventory Instance;
 
-	private Dictionary<Tag, HashSet<BuildingComplete>> Buildings = new Dictionary<Tag, HashSet<BuildingComplete>>();
+		private Dictionary<Tag, HashSet<BuildingComplete>> Buildings = new Dictionary<Tag, HashSet<BuildingComplete>>();
 }

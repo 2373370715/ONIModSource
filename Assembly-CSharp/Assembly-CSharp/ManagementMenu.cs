@@ -7,17 +7,17 @@ using UnityEngine.Events;
 
 public class ManagementMenu : KIconToggleMenu
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ManagementMenu.Instance = null;
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 21f;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		ManagementMenu.Instance = this;
@@ -41,7 +41,7 @@ public class ManagementMenu : KIconToggleMenu
 		this.vitalsInfo = new ManagementMenu.ManagementMenuToggleInfo(UI.VITALS, "OverviewUI_vitals_icon", null, global::Action.ManageVitals, UI.TOOLTIPS.MANAGEMENTMENU_VITALS, "");
 		this.AddToggleTooltip(this.vitalsInfo, null);
 		this.researchInfo = new ManagementMenu.ManagementMenuToggleInfo(UI.RESEARCH, "OverviewUI_research_nav_icon", null, global::Action.ManageResearch, UI.TOOLTIPS.MANAGEMENTMENU_RESEARCH, "");
-		this.AddToggleTooltip(this.researchInfo, UI.TOOLTIPS.MANAGEMENTMENU_REQUIRES_RESEARCH);
+		this.AddToggleTooltipForResearch(this.researchInfo, UI.TOOLTIPS.MANAGEMENTMENU_REQUIRES_RESEARCH);
 		this.researchInfo.prefabOverride = this.researchButtonPrefab;
 		this.jobsInfo = new ManagementMenu.ManagementMenuToggleInfo(UI.JOBS, "OverviewUI_priority_icon", null, global::Action.ManagePriorities, UI.TOOLTIPS.MANAGEMENTMENU_JOBS, "");
 		this.AddToggleTooltip(this.jobsInfo, null);
@@ -185,7 +185,7 @@ public class ManagementMenu : KIconToggleMenu
 		this.OnResolutionChanged(null);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.mutuallyExclusiveScreens.Add(AllResourcesScreen.Instance);
@@ -193,13 +193,13 @@ public class ManagementMenu : KIconToggleMenu
 		this.OnNotificationsChanged();
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		KInputManager.InputChange.RemoveListener(new UnityAction(this.OnInputChanged));
 		base.OnForcedCleanUp();
 	}
 
-	private void OnInputChanged()
+		private void OnInputChanged()
 	{
 		this.PauseMenuButton.GetComponent<ToolTip>().toolTip = GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.MANAGEMENTMENU_PAUSEMENU, global::Action.Escape);
 		this.consumablesInfo.tooltip = GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.MANAGEMENTMENU_CONSUMABLES, this.consumablesInfo.hotKey);
@@ -214,7 +214,7 @@ public class ManagementMenu : KIconToggleMenu
 		this.codexInfo.tooltip = GameUtil.ReplaceHotkeyString(UI.TOOLTIPS.MANAGEMENTMENU_CODEX, this.codexInfo.hotKey);
 	}
 
-	private void OnResolutionChanged(object data = null)
+		private void OnResolutionChanged(object data = null)
 	{
 		bool flag = (float)Screen.width < 1300f;
 		foreach (KToggle ktoggle in this.toggles)
@@ -231,7 +231,7 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	private void OnNotificationsChanged()
+		private void OnNotificationsChanged()
 	{
 		foreach (KeyValuePair<ManagementMenu.ManagementMenuToggleInfo, ManagementMenu.ScreenData> keyValuePair in this.ScreenInfoMatch)
 		{
@@ -239,9 +239,9 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	private void AddToggleTooltip(ManagementMenu.ManagementMenuToggleInfo toggleInfo, string disabledTooltip = null)
+		private ToolTip.ComplexTooltipDelegate CreateToggleTooltip(ManagementMenu.ManagementMenuToggleInfo toggleInfo, string disabledTooltip = null)
 	{
-		toggleInfo.getTooltipText = delegate()
+		return delegate()
 		{
 			List<global::Tuple<string, TextStyleSetting>> list = new List<global::Tuple<string, TextStyleSetting>>();
 			if (disabledTooltip != null && !toggleInfo.toggle.interactable)
@@ -258,7 +258,44 @@ public class ManagementMenu : KIconToggleMenu
 		};
 	}
 
-	public bool IsFullscreenUIActive()
+		private void AddToggleTooltip(ManagementMenu.ManagementMenuToggleInfo toggleInfo, string disabledTooltip = null)
+	{
+		toggleInfo.getTooltipText = this.CreateToggleTooltip(toggleInfo, disabledTooltip);
+	}
+
+		private void AddToggleTooltipForResearch(ManagementMenu.ManagementMenuToggleInfo toggleInfo, string disabledTooltip = null)
+	{
+		toggleInfo.getTooltipText = delegate()
+		{
+			List<global::Tuple<string, TextStyleSetting>> list = new List<global::Tuple<string, TextStyleSetting>>();
+			TechInstance activeResearch = Research.Instance.GetActiveResearch();
+			string a = (activeResearch == null) ? UI.TOOLTIPS.MANAGEMENTMENU_RESEARCH_NO_RESEARCH : string.Format(UI.TOOLTIPS.MANAGEMENTMENU_RESEARCH_CARD_NAME, activeResearch.tech.Name);
+			list.Add(new global::Tuple<string, TextStyleSetting>(a, ToolTipScreen.Instance.defaultTooltipHeaderStyle));
+			if (activeResearch != null)
+			{
+				string text = "";
+				for (int i = 0; i < activeResearch.tech.unlockedItems.Count; i++)
+				{
+					TechItem techItem = activeResearch.tech.unlockedItems[i];
+					text = text + "\n" + string.Format(UI.TOOLTIPS.MANAGEMENTMENU_RESEARCH_ITEM_LINE, techItem.Name);
+				}
+				list.Add(new global::Tuple<string, TextStyleSetting>(text, ToolTipScreen.Instance.defaultTooltipBodyStyle));
+			}
+			if (disabledTooltip != null && !toggleInfo.toggle.interactable)
+			{
+				list.Add(new global::Tuple<string, TextStyleSetting>(disabledTooltip, ToolTipScreen.Instance.defaultTooltipBodyStyle));
+				return list;
+			}
+			if (toggleInfo.tooltipHeader != null)
+			{
+				list.Add(new global::Tuple<string, TextStyleSetting>(toggleInfo.tooltipHeader, ToolTipScreen.Instance.defaultTooltipHeaderStyle));
+			}
+			list.Add(new global::Tuple<string, TextStyleSetting>("\n" + toggleInfo.tooltip, ToolTipScreen.Instance.defaultTooltipBodyStyle));
+			return list;
+		};
+	}
+
+		public bool IsFullscreenUIActive()
 	{
 		if (this.activeScreen == null)
 		{
@@ -274,46 +311,53 @@ public class ManagementMenu : KIconToggleMenu
 		return false;
 	}
 
-	private void OnPauseMenuClicked()
+		private void OnPauseMenuClicked()
 	{
 		PauseScreen.Instance.Show(true);
 		this.PauseMenuButton.isOn = false;
 	}
 
-	public void CheckResearch(object o)
+		public void Refresh()
+	{
+		this.CheckResearch(null);
+		this.CheckSkills(null);
+		this.CheckStarmap(null);
+	}
+
+		public void CheckResearch(object o)
 	{
 		if (this.researchInfo.toggle == null)
 		{
 			return;
 		}
-		bool flag = Components.ResearchCenters.Count <= 0 && !DebugHandler.InstantBuildMode;
+		bool flag = Components.ResearchCenters.Count <= 0 && !DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive;
 		bool active = !flag && this.activeScreen != null && this.activeScreen.toggleInfo == this.researchInfo;
 		this.ConfigureToggle(this.researchInfo.toggle, flag, active);
 	}
 
-	public void CheckSkills(object o = null)
+		public void CheckSkills(object o = null)
 	{
 		if (this.skillsInfo.toggle == null)
 		{
 			return;
 		}
-		bool disabled = Components.RoleStations.Count <= 0 && !DebugHandler.InstantBuildMode;
+		bool disabled = Components.RoleStations.Count <= 0 && !DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive;
 		bool active = this.activeScreen != null && this.activeScreen.toggleInfo == this.skillsInfo;
 		this.ConfigureToggle(this.skillsInfo.toggle, disabled, active);
 	}
 
-	public void CheckStarmap(object o = null)
+		public void CheckStarmap(object o = null)
 	{
 		if (this.starmapInfo.toggle == null)
 		{
 			return;
 		}
-		bool disabled = Components.Telescopes.Count <= 0 && !DebugHandler.InstantBuildMode;
+		bool disabled = Components.Telescopes.Count <= 0 && !DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive;
 		bool active = this.activeScreen != null && this.activeScreen.toggleInfo == this.starmapInfo;
 		this.ConfigureToggle(this.starmapInfo.toggle, disabled, active);
 	}
 
-	private void ConfigureToggle(KToggle toggle, bool disabled, bool active)
+		private void ConfigureToggle(KToggle toggle, bool disabled, bool active)
 	{
 		toggle.interactable = !disabled;
 		if (disabled)
@@ -324,7 +368,7 @@ public class ManagementMenu : KIconToggleMenu
 		toggle.GetComponentInChildren<ImageToggleState>().SetActiveState(active);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.activeScreen != null && e.TryConsume(global::Action.Escape))
 		{
@@ -336,7 +380,7 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (this.activeScreen != null && PlayerController.Instance.ConsumeIfNotDragging(e, global::Action.MouseRight))
 		{
@@ -348,7 +392,7 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	private void ToggleIfCancelUnhandled(ManagementMenu.ScreenData screenData)
+		private void ToggleIfCancelUnhandled(ManagementMenu.ScreenData screenData)
 	{
 		if (screenData.cancelHandler == null || !screenData.cancelHandler())
 		{
@@ -356,22 +400,22 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	private bool ResearchAvailable()
+		private bool ResearchAvailable()
 	{
-		return Components.ResearchCenters.Count > 0 || DebugHandler.InstantBuildMode;
+		return Components.ResearchCenters.Count > 0 || DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive;
 	}
 
-	private bool SkillsAvailable()
+		private bool SkillsAvailable()
 	{
-		return Components.RoleStations.Count > 0 || DebugHandler.InstantBuildMode;
+		return Components.RoleStations.Count > 0 || DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive;
 	}
 
-	public static bool StarmapAvailable()
+		public static bool StarmapAvailable()
 	{
-		return Components.Telescopes.Count > 0 || DebugHandler.InstantBuildMode;
+		return Components.Telescopes.Count > 0 || DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive;
 	}
 
-	public void CloseAll()
+		public void CloseAll()
 	{
 		if (this.activeScreen == null)
 		{
@@ -385,12 +429,12 @@ public class ManagementMenu : KIconToggleMenu
 		this.ClearSelection();
 	}
 
-	private void OnUIClear(object data)
+		private void OnUIClear(object data)
 	{
 		this.CloseAll();
 	}
 
-	public void ToggleScreen(ManagementMenu.ScreenData screenData)
+		public void ToggleScreen(ManagementMenu.ScreenData screenData)
 	{
 		if (screenData == null)
 		{
@@ -467,12 +511,12 @@ public class ManagementMenu : KIconToggleMenu
 		screenData.toggleInfo.toggle.gameObject.GetComponentInChildren<ImageToggleState>().SetInactive();
 	}
 
-	public void OnButtonClick(KIconToggleMenu.ToggleInfo toggle_info)
+		public void OnButtonClick(KIconToggleMenu.ToggleInfo toggle_info)
 	{
 		this.ToggleScreen(this.ScreenInfoMatch[(ManagementMenu.ManagementMenuToggleInfo)toggle_info]);
 	}
 
-	private void CloseActive()
+		private void CloseActive()
 	{
 		if (this.activeScreen != null)
 		{
@@ -482,7 +526,7 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	public void ToggleResearch()
+		public void ToggleResearch()
 	{
 		if ((this.ResearchAvailable() || this.activeScreen == this.ScreenInfoMatch[ManagementMenu.Instance.researchInfo]) && this.researchInfo != null)
 		{
@@ -490,12 +534,12 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	public void ToggleCodex()
+		public void ToggleCodex()
 	{
 		this.ToggleScreen(this.ScreenInfoMatch[ManagementMenu.Instance.codexInfo]);
 	}
 
-	public void OpenCodexToLockId(string lockId, bool focusContent = false)
+		public void OpenCodexToLockId(string lockId, bool focusContent = false)
 	{
 		string entryForLock = CodexCache.GetEntryForLock(lockId);
 		if (entryForLock == null)
@@ -523,7 +567,7 @@ public class ManagementMenu : KIconToggleMenu
 		this.OpenCodexToEntry(entryForLock, contentContainer);
 	}
 
-	public void OpenCodexToEntry(string id, ContentContainer targetContainer = null)
+		public void OpenCodexToEntry(string id, ContentContainer targetContainer = null)
 	{
 		if (!this.codexScreen.gameObject.activeInHierarchy)
 		{
@@ -533,7 +577,7 @@ public class ManagementMenu : KIconToggleMenu
 		this.codexScreen.FocusContainer(targetContainer);
 	}
 
-	public void ToggleSkills()
+		public void ToggleSkills()
 	{
 		if ((this.SkillsAvailable() || this.activeScreen == this.ScreenInfoMatch[ManagementMenu.Instance.skillsInfo]) && this.skillsInfo != null)
 		{
@@ -541,7 +585,7 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	public void ToggleStarmap()
+		public void ToggleStarmap()
 	{
 		if (this.starmapInfo != null)
 		{
@@ -549,17 +593,17 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	public void ToggleClusterMap()
+		public void ToggleClusterMap()
 	{
 		this.ToggleScreen(this.ScreenInfoMatch[ManagementMenu.Instance.clusterMapInfo]);
 	}
 
-	public void TogglePriorities()
+		public void TogglePriorities()
 	{
 		this.ToggleScreen(this.ScreenInfoMatch[ManagementMenu.Instance.jobsInfo]);
 	}
 
-	public void OpenReports(int day)
+		public void OpenReports(int day)
 	{
 		if (this.activeScreen != this.ScreenInfoMatch[ManagementMenu.Instance.reportsInfo])
 		{
@@ -568,15 +612,19 @@ public class ManagementMenu : KIconToggleMenu
 		ReportScreen.Instance.ShowReport(day);
 	}
 
-	public void OpenResearch()
+		public void OpenResearch(string zoomToTech = null)
 	{
 		if (this.activeScreen != this.ScreenInfoMatch[ManagementMenu.Instance.researchInfo])
 		{
 			this.ToggleScreen(this.ScreenInfoMatch[ManagementMenu.Instance.researchInfo]);
 		}
+		if (zoomToTech != null)
+		{
+			this.researchScreen.ZoomToTech(zoomToTech);
+		}
 	}
 
-	public void OpenStarmap()
+		public void OpenStarmap()
 	{
 		if (this.activeScreen != this.ScreenInfoMatch[ManagementMenu.Instance.starmapInfo])
 		{
@@ -584,7 +632,7 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	public void OpenClusterMap()
+		public void OpenClusterMap()
 	{
 		if (this.activeScreen != this.ScreenInfoMatch[ManagementMenu.Instance.clusterMapInfo])
 		{
@@ -592,7 +640,7 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	public void CloseClusterMap()
+		public void CloseClusterMap()
 	{
 		if (this.activeScreen == this.ScreenInfoMatch[ManagementMenu.Instance.clusterMapInfo])
 		{
@@ -600,7 +648,7 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	public void OpenSkills(MinionIdentity minionIdentity)
+		public void OpenSkills(MinionIdentity minionIdentity)
 	{
 		this.skillsScreen.CurrentlySelectedMinion = minionIdentity;
 		if (this.activeScreen != this.ScreenInfoMatch[ManagementMenu.Instance.skillsInfo])
@@ -609,120 +657,120 @@ public class ManagementMenu : KIconToggleMenu
 		}
 	}
 
-	public bool IsScreenOpen(KScreen screen)
+		public bool IsScreenOpen(KScreen screen)
 	{
 		return this.activeScreen != null && this.activeScreen.screen == screen;
 	}
 
-	private const float UI_WIDTH_COMPRESS_THRESHOLD = 1300f;
+		private const float UI_WIDTH_COMPRESS_THRESHOLD = 1300f;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public ManagementMenuNotificationDisplayer notificationDisplayer;
 
-	public static ManagementMenu Instance;
+		public static ManagementMenu Instance;
 
-	[Header("Management Menu Specific")]
+		[Header("Management Menu Specific")]
 	[SerializeField]
 	private KToggle smallPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private KToggle researchButtonPrefab;
 
-	public KToggle PauseMenuButton;
+		public KToggle PauseMenuButton;
 
-	[Header("Top Right Screen References")]
+		[Header("Top Right Screen References")]
 	public JobsTableScreen jobsScreen;
 
-	public VitalsTableScreen vitalsScreen;
+		public VitalsTableScreen vitalsScreen;
 
-	public ScheduleScreen scheduleScreen;
+		public ScheduleScreen scheduleScreen;
 
-	public ReportScreen reportsScreen;
+		public ReportScreen reportsScreen;
 
-	public CodexScreen codexScreen;
+		public CodexScreen codexScreen;
 
-	public ConsumablesTableScreen consumablesScreen;
+		public ConsumablesTableScreen consumablesScreen;
 
-	private StarmapScreen starmapScreen;
+		private StarmapScreen starmapScreen;
 
-	private ClusterMapScreen clusterMapScreen;
+		private ClusterMapScreen clusterMapScreen;
 
-	private SkillsScreen skillsScreen;
+		private SkillsScreen skillsScreen;
 
-	private ResearchScreen researchScreen;
+		private ResearchScreen researchScreen;
 
-	[Header("Notification Styles")]
+		[Header("Notification Styles")]
 	public ColorStyleSetting noAlertColorStyle;
 
-	public List<ColorStyleSetting> alertColorStyle;
+		public List<ColorStyleSetting> alertColorStyle;
 
-	public List<TextStyleSetting> alertTextStyle;
+		public List<TextStyleSetting> alertTextStyle;
 
-	private ManagementMenu.ManagementMenuToggleInfo jobsInfo;
+		private ManagementMenu.ManagementMenuToggleInfo jobsInfo;
 
-	private ManagementMenu.ManagementMenuToggleInfo consumablesInfo;
+		private ManagementMenu.ManagementMenuToggleInfo consumablesInfo;
 
-	private ManagementMenu.ManagementMenuToggleInfo scheduleInfo;
+		private ManagementMenu.ManagementMenuToggleInfo scheduleInfo;
 
-	private ManagementMenu.ManagementMenuToggleInfo vitalsInfo;
+		private ManagementMenu.ManagementMenuToggleInfo vitalsInfo;
 
-	private ManagementMenu.ManagementMenuToggleInfo reportsInfo;
+		private ManagementMenu.ManagementMenuToggleInfo reportsInfo;
 
-	private ManagementMenu.ManagementMenuToggleInfo researchInfo;
+		private ManagementMenu.ManagementMenuToggleInfo researchInfo;
 
-	private ManagementMenu.ManagementMenuToggleInfo codexInfo;
+		private ManagementMenu.ManagementMenuToggleInfo codexInfo;
 
-	private ManagementMenu.ManagementMenuToggleInfo starmapInfo;
+		private ManagementMenu.ManagementMenuToggleInfo starmapInfo;
 
-	private ManagementMenu.ManagementMenuToggleInfo clusterMapInfo;
+		private ManagementMenu.ManagementMenuToggleInfo clusterMapInfo;
 
-	private ManagementMenu.ManagementMenuToggleInfo skillsInfo;
+		private ManagementMenu.ManagementMenuToggleInfo skillsInfo;
 
-	private ManagementMenu.ManagementMenuToggleInfo[] fullscreenUIs;
+		private ManagementMenu.ManagementMenuToggleInfo[] fullscreenUIs;
 
-	private Dictionary<ManagementMenu.ManagementMenuToggleInfo, ManagementMenu.ScreenData> ScreenInfoMatch = new Dictionary<ManagementMenu.ManagementMenuToggleInfo, ManagementMenu.ScreenData>();
+		private Dictionary<ManagementMenu.ManagementMenuToggleInfo, ManagementMenu.ScreenData> ScreenInfoMatch = new Dictionary<ManagementMenu.ManagementMenuToggleInfo, ManagementMenu.ScreenData>();
 
-	private ManagementMenu.ScreenData activeScreen;
+		private ManagementMenu.ScreenData activeScreen;
 
-	private KButton activeButton;
+		private KButton activeButton;
 
-	private string skillsTooltip;
+		private string skillsTooltip;
 
-	private string skillsTooltipDisabled;
+		private string skillsTooltipDisabled;
 
-	private string researchTooltip;
+		private string researchTooltip;
 
-	private string researchTooltipDisabled;
+		private string researchTooltipDisabled;
 
-	private string starmapTooltip;
+		private string starmapTooltip;
 
-	private string starmapTooltipDisabled;
+		private string starmapTooltipDisabled;
 
-	private string clusterMapTooltip;
+		private string clusterMapTooltip;
 
-	private string clusterMapTooltipDisabled;
+		private string clusterMapTooltipDisabled;
 
-	private List<KScreen> mutuallyExclusiveScreens = new List<KScreen>();
+		private List<KScreen> mutuallyExclusiveScreens = new List<KScreen>();
 
-	public class ScreenData
+		public class ScreenData
 	{
-		public KScreen screen;
+				public KScreen screen;
 
-		public ManagementMenu.ManagementMenuToggleInfo toggleInfo;
+				public ManagementMenu.ManagementMenuToggleInfo toggleInfo;
 
-		public Func<bool> cancelHandler;
+				public Func<bool> cancelHandler;
 
-		public int tabIdx;
+				public int tabIdx;
 	}
 
-	public class ManagementMenuToggleInfo : KIconToggleMenu.ToggleInfo
+		public class ManagementMenuToggleInfo : KIconToggleMenu.ToggleInfo
 	{
-		public ManagementMenuToggleInfo(string text, string icon, object user_data = null, global::Action hotkey = global::Action.NumActions, string tooltip = "", string tooltip_header = "") : base(text, icon, user_data, hotkey, tooltip, tooltip_header)
+				public ManagementMenuToggleInfo(string text, string icon, object user_data = null, global::Action hotkey = global::Action.NumActions, string tooltip = "", string tooltip_header = "") : base(text, icon, user_data, hotkey, tooltip, tooltip_header)
 		{
 			this.tooltip = GameUtil.ReplaceHotkeyString(this.tooltip, this.hotKey);
 		}
 
-		public void SetNotificationDisplay(bool showAlertImage, bool showGlow, ColorStyleSetting buttonColorStyle, ColorStyleSetting alertColorStyle)
+				public void SetNotificationDisplay(bool showAlertImage, bool showGlow, ColorStyleSetting buttonColorStyle, ColorStyleSetting alertColorStyle)
 		{
 			ImageToggleState component = this.toggle.GetComponent<ImageToggleState>();
 			if (component != null)
@@ -751,7 +799,7 @@ public class ManagementMenu : KIconToggleMenu
 			}
 		}
 
-		public override void SetToggle(KToggle toggle)
+				public override void SetToggle(KToggle toggle)
 		{
 			base.SetToggle(toggle);
 			ImageToggleState component = toggle.GetComponent<ImageToggleState>();
@@ -767,10 +815,10 @@ public class ManagementMenu : KIconToggleMenu
 			}
 		}
 
-		public ImageToggleState alertImage;
+				public ImageToggleState alertImage;
 
-		public ImageToggleState glowImage;
+				public ImageToggleState glowImage;
 
-		private ColorStyleSetting originalButtonSetting;
+				private ColorStyleSetting originalButtonSetting;
 	}
 }

@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class MemorySnapshot
 {
-	public static MemorySnapshot.TypeData GetTypeData(Type type, Dictionary<int, MemorySnapshot.TypeData> types)
+		public static MemorySnapshot.TypeData GetTypeData(Type type, Dictionary<int, MemorySnapshot.TypeData> types)
 	{
 		int hashCode = type.GetHashCode();
 		MemorySnapshot.TypeData typeData = null;
@@ -20,7 +20,7 @@ public class MemorySnapshot
 		return typeData;
 	}
 
-	public static void IncrementFieldCount(Dictionary<int, MemorySnapshot.FieldCount> field_counts, string name)
+		public static void IncrementFieldCount(Dictionary<int, MemorySnapshot.FieldCount> field_counts, string name)
 	{
 		int hashCode = name.GetHashCode();
 		MemorySnapshot.FieldCount fieldCount = null;
@@ -33,7 +33,7 @@ public class MemorySnapshot
 		fieldCount.count++;
 	}
 
-	private void CountReference(MemorySnapshot.ReferenceArgs refArgs)
+		private void CountReference(MemorySnapshot.ReferenceArgs refArgs)
 	{
 		if (MemorySnapshot.ShouldExclude(refArgs.reference_type))
 		{
@@ -142,7 +142,7 @@ public class MemorySnapshot
 		}
 	}
 
-	private void CountField(MemorySnapshot.FieldArgs fieldArgs)
+		private void CountField(MemorySnapshot.FieldArgs fieldArgs)
 	{
 		if (MemorySnapshot.ShouldExclude(fieldArgs.field.FieldType))
 		{
@@ -164,12 +164,12 @@ public class MemorySnapshot
 		this.refsToProcess.Add(new MemorySnapshot.ReferenceArgs(fieldArgs.field.FieldType, field_name, new MemorySnapshot.Lineage(obj, fieldArgs.lineage.parent3, fieldArgs.lineage.parent2, fieldArgs.lineage.parent1, fieldArgs.lineage.parent0, fieldArgs.field.DeclaringType)));
 	}
 
-	private static bool ShouldExclude(Type type)
+		private static bool ShouldExclude(Type type)
 	{
 		return type.IsPrimitive || type.IsEnum || type == typeof(MemorySnapshot);
 	}
 
-	private void CountAll()
+		private void CountAll()
 	{
 		while (this.refsToProcess.Count > 0 || this.fieldsToProcess.Count > 0)
 		{
@@ -188,7 +188,7 @@ public class MemorySnapshot
 		}
 	}
 
-	public MemorySnapshot()
+		public MemorySnapshot()
 	{
 		MemorySnapshot.Lineage lineage = new MemorySnapshot.Lineage(null, null, null, null, null, null);
 		foreach (Type type in App.GetCurrentDomainTypes())
@@ -213,7 +213,7 @@ public class MemorySnapshot
 		this.CountAll();
 	}
 
-	public void WriteTypeDetails(MemorySnapshot compare)
+		public void WriteTypeDetails(MemorySnapshot compare)
 	{
 		List<KeyValuePair<string, MemorySnapshot.DetailInfo>> list = null;
 		if (compare != null)
@@ -257,27 +257,27 @@ public class MemorySnapshot
 		}
 	}
 
-	public Dictionary<int, MemorySnapshot.TypeData> types = new Dictionary<int, MemorySnapshot.TypeData>();
+		public Dictionary<int, MemorySnapshot.TypeData> types = new Dictionary<int, MemorySnapshot.TypeData>();
 
-	public Dictionary<int, MemorySnapshot.FieldCount> fieldCounts = new Dictionary<int, MemorySnapshot.FieldCount>();
+		public Dictionary<int, MemorySnapshot.FieldCount> fieldCounts = new Dictionary<int, MemorySnapshot.FieldCount>();
 
-	public HashSet<object> walked = new HashSet<object>();
+		public HashSet<object> walked = new HashSet<object>();
 
-	public List<FieldInfo> statics = new List<FieldInfo>();
+		public List<FieldInfo> statics = new List<FieldInfo>();
 
-	public Dictionary<string, MemorySnapshot.DetailInfo> detailTypeCount = new Dictionary<string, MemorySnapshot.DetailInfo>();
+		public Dictionary<string, MemorySnapshot.DetailInfo> detailTypeCount = new Dictionary<string, MemorySnapshot.DetailInfo>();
 
-	private static readonly Type detailType = typeof(byte[]);
+		private static readonly Type detailType = typeof(byte[]);
 
-	private static readonly string detailTypeStr = MemorySnapshot.detailType.ToString();
+		private static readonly string detailTypeStr = MemorySnapshot.detailType.ToString();
 
-	private List<MemorySnapshot.FieldArgs> fieldsToProcess = new List<MemorySnapshot.FieldArgs>();
+		private List<MemorySnapshot.FieldArgs> fieldsToProcess = new List<MemorySnapshot.FieldArgs>();
 
-	private List<MemorySnapshot.ReferenceArgs> refsToProcess = new List<MemorySnapshot.ReferenceArgs>();
+		private List<MemorySnapshot.ReferenceArgs> refsToProcess = new List<MemorySnapshot.ReferenceArgs>();
 
-	public struct HierarchyNode
+		public struct HierarchyNode
 	{
-		public HierarchyNode(Type parent_0, Type parent_1, Type parent_2, Type parent_3, Type parent_4)
+				public HierarchyNode(Type parent_0, Type parent_1, Type parent_2, Type parent_3, Type parent_4)
 		{
 			this.parent0 = parent_0;
 			this.parent1 = parent_1;
@@ -286,12 +286,12 @@ public class MemorySnapshot
 			this.parent4 = parent_4;
 		}
 
-		public bool Equals(MemorySnapshot.HierarchyNode a, MemorySnapshot.HierarchyNode b)
+				public bool Equals(MemorySnapshot.HierarchyNode a, MemorySnapshot.HierarchyNode b)
 		{
 			return a.parent0 == b.parent0 && a.parent1 == b.parent1 && a.parent2 == b.parent2 && a.parent3 == b.parent3 && a.parent4 == b.parent4;
 		}
 
-		public override int GetHashCode()
+				public override int GetHashCode()
 		{
 			int num = 0;
 			if (this.parent0 != null)
@@ -317,7 +317,7 @@ public class MemorySnapshot
 			return num;
 		}
 
-		public override string ToString()
+				public override string ToString()
 		{
 			if (this.parent4 != null)
 			{
@@ -365,27 +365,27 @@ public class MemorySnapshot
 			return this.parent0.ToString();
 		}
 
-		public Type parent0;
+				public Type parent0;
 
-		public Type parent1;
+				public Type parent1;
 
-		public Type parent2;
+				public Type parent2;
 
-		public Type parent3;
+				public Type parent3;
 
-		public Type parent4;
+				public Type parent4;
 	}
 
-	public class FieldCount
+		public class FieldCount
 	{
-		public string name;
+				public string name;
 
-		public int count;
+				public int count;
 	}
 
-	public class TypeData
+		public class TypeData
 	{
-		public TypeData(Type type)
+				public TypeData(Type type)
 		{
 			this.type = type;
 			this.fields = new List<FieldInfo>();
@@ -401,29 +401,29 @@ public class MemorySnapshot
 			}
 		}
 
-		public Dictionary<MemorySnapshot.HierarchyNode, int> hierarchies = new Dictionary<MemorySnapshot.HierarchyNode, int>();
+				public Dictionary<MemorySnapshot.HierarchyNode, int> hierarchies = new Dictionary<MemorySnapshot.HierarchyNode, int>();
 
-		public Type type;
+				public Type type;
 
-		public List<FieldInfo> fields;
+				public List<FieldInfo> fields;
 
-		public int instanceCount;
+				public int instanceCount;
 
-		public int refCount;
+				public int refCount;
 
-		public int numArrayEntries;
+				public int numArrayEntries;
 	}
 
-	public struct DetailInfo
+		public struct DetailInfo
 	{
-		public int count;
+				public int count;
 
-		public int numArrayEntries;
+				public int numArrayEntries;
 	}
 
-	private struct Lineage
+		private struct Lineage
 	{
-		public Lineage(object obj, Type parent4, Type parent3, Type parent2, Type parent1, Type parent0)
+				public Lineage(object obj, Type parent4, Type parent3, Type parent2, Type parent1, Type parent0)
 		{
 			this.obj = obj;
 			this.parent0 = parent0;
@@ -433,45 +433,45 @@ public class MemorySnapshot
 			this.parent4 = parent4;
 		}
 
-		public object obj;
+				public object obj;
 
-		public Type parent0;
+				public Type parent0;
 
-		public Type parent1;
+				public Type parent1;
 
-		public Type parent2;
+				public Type parent2;
 
-		public Type parent3;
+				public Type parent3;
 
-		public Type parent4;
+				public Type parent4;
 	}
 
-	private struct ReferenceArgs
+		private struct ReferenceArgs
 	{
-		public ReferenceArgs(Type reference_type, string field_name, MemorySnapshot.Lineage lineage)
+				public ReferenceArgs(Type reference_type, string field_name, MemorySnapshot.Lineage lineage)
 		{
 			this.reference_type = reference_type;
 			this.lineage = lineage;
 			this.field_name = field_name;
 		}
 
-		public Type reference_type;
+				public Type reference_type;
 
-		public string field_name;
+				public string field_name;
 
-		public MemorySnapshot.Lineage lineage;
+				public MemorySnapshot.Lineage lineage;
 	}
 
-	private struct FieldArgs
+		private struct FieldArgs
 	{
-		public FieldArgs(FieldInfo field, MemorySnapshot.Lineage lineage)
+				public FieldArgs(FieldInfo field, MemorySnapshot.Lineage lineage)
 		{
 			this.field = field;
 			this.lineage = lineage;
 		}
 
-		public FieldInfo field;
+				public FieldInfo field;
 
-		public MemorySnapshot.Lineage lineage;
+				public MemorySnapshot.Lineage lineage;
 	}
 }

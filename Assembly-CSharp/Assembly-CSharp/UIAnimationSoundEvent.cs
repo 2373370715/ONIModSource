@@ -2,16 +2,16 @@
 
 public class UIAnimationSoundEvent : SoundEvent
 {
-	public UIAnimationSoundEvent(string file_name, string sound_name, int frame, bool looping) : base(file_name, sound_name, frame, true, looping, (float)SoundEvent.IGNORE_INTERVAL, false)
+		public UIAnimationSoundEvent(string file_name, string sound_name, int frame, bool looping) : base(file_name, sound_name, frame, true, looping, (float)SoundEvent.IGNORE_INTERVAL, false)
 	{
 	}
 
-	public override void OnPlay(AnimEventManager.EventPlayerData behaviour)
+		public override void OnPlay(AnimEventManager.EventPlayerData behaviour)
 	{
 		this.PlaySound(behaviour);
 	}
 
-	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
+		public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
 	{
 		if (base.looping)
 		{
@@ -53,7 +53,7 @@ public class UIAnimationSoundEvent : SoundEvent
 		}
 	}
 
-	public override void Stop(AnimEventManager.EventPlayerData behaviour)
+		public override void Stop(AnimEventManager.EventPlayerData behaviour)
 	{
 		if (base.looping)
 		{

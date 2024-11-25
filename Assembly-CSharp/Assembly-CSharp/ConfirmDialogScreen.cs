@@ -1,155 +1,120 @@
-﻿using System;
-using STRINGS;
+﻿using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ConfirmDialogScreen : KModalScreen
-{
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		base.gameObject.SetActive(false);
-	}
+public class ConfirmDialogScreen : KModalScreen {
+    private System.Action cancelAction;
 
-	public override bool IsModal()
-	{
-		return true;
-	}
+    [SerializeField]
+    private GameObject cancelButton;
 
-	public override void OnKeyDown(KButtonEvent e)
-	{
-		if (e.TryConsume(global::Action.Escape))
-		{
-			this.OnSelect_CANCEL();
-			return;
-		}
-		base.OnKeyDown(e);
-	}
+    private System.Action configurableAction;
 
-	public void PopupConfirmDialog(string text, System.Action on_confirm, System.Action on_cancel, string configurable_text = null, System.Action on_configurable_clicked = null, string title_text = null, string confirm_text = null, string cancel_text = null, Sprite image_sprite = null)
-	{
-		while (base.transform.parent.GetComponent<Canvas>() == null && base.transform.parent.parent != null)
-		{
-			base.transform.SetParent(base.transform.parent.parent);
-		}
-		base.transform.SetAsLastSibling();
-		this.confirmAction = on_confirm;
-		this.cancelAction = on_cancel;
-		this.configurableAction = on_configurable_clicked;
-		int num = 0;
-		if (this.confirmAction != null)
-		{
-			num++;
-		}
-		if (this.cancelAction != null)
-		{
-			num++;
-		}
-		if (this.configurableAction != null)
-		{
-			num++;
-		}
-		this.confirmButton.GetComponentInChildren<LocText>().text = ((confirm_text == null) ? UI.CONFIRMDIALOG.OK.text : confirm_text);
-		this.cancelButton.GetComponentInChildren<LocText>().text = ((cancel_text == null) ? UI.CONFIRMDIALOG.CANCEL.text : cancel_text);
-		this.confirmButton.GetComponent<KButton>().onClick += this.OnSelect_OK;
-		this.cancelButton.GetComponent<KButton>().onClick += this.OnSelect_CANCEL;
-		this.configurableButton.GetComponent<KButton>().onClick += this.OnSelect_third;
-		this.cancelButton.SetActive(on_cancel != null);
-		if (this.configurableButton != null)
-		{
-			this.configurableButton.SetActive(this.configurableAction != null);
-			if (configurable_text != null)
-			{
-				this.configurableButton.GetComponentInChildren<LocText>().text = configurable_text;
-			}
-		}
-		if (image_sprite != null)
-		{
-			this.image.sprite = image_sprite;
-			this.image.gameObject.SetActive(true);
-		}
-		if (title_text != null)
-		{
-			this.titleText.key = "";
-			this.titleText.text = title_text;
-		}
-		this.popupMessage.text = text;
-	}
+    [SerializeField]
+    private GameObject configurableButton;
 
-	public void OnSelect_OK()
-	{
-		if (this.deactivateOnConfirmAction)
-		{
-			this.Deactivate();
-		}
-		if (this.confirmAction != null)
-		{
-			this.confirmAction();
-		}
-	}
+    private System.Action confirmAction;
 
-	public void OnSelect_CANCEL()
-	{
-		if (this.deactivateOnCancelAction)
-		{
-			this.Deactivate();
-		}
-		if (this.cancelAction != null)
-		{
-			this.cancelAction();
-		}
-	}
+    [SerializeField]
+    private GameObject confirmButton;
 
-	public void OnSelect_third()
-	{
-		if (this.deactivateOnConfigurableAction)
-		{
-			this.Deactivate();
-		}
-		if (this.configurableAction != null)
-		{
-			this.configurableAction();
-		}
-	}
+    public bool deactivateOnCancelAction       = true;
+    public bool deactivateOnConfigurableAction = true;
+    public bool deactivateOnConfirmAction      = true;
 
-	protected override void OnDeactivate()
-	{
-		if (this.onDeactivateCB != null)
-		{
-			this.onDeactivateCB();
-		}
-		base.OnDeactivate();
-	}
+    [SerializeField]
+    private Image image;
 
-	private System.Action confirmAction;
+    public System.Action onDeactivateCB;
 
-	private System.Action cancelAction;
+    [SerializeField]
+    private LocText popupMessage;
 
-	private System.Action configurableAction;
+    [SerializeField]
+    private LocText titleText;
 
-	public bool deactivateOnConfigurableAction = true;
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        gameObject.SetActive(false);
+    }
 
-	public bool deactivateOnConfirmAction = true;
+    public override bool IsModal() { return true; }
 
-	public bool deactivateOnCancelAction = true;
+    public override void OnKeyDown(KButtonEvent e) {
+        if (e.TryConsume(Action.Escape)) {
+            OnSelect_CANCEL();
+            return;
+        }
 
-	public System.Action onDeactivateCB;
+        base.OnKeyDown(e);
+    }
 
-	[SerializeField]
-	private GameObject confirmButton;
+    public void PopupConfirmDialog(string        text,
+                                   System.Action on_confirm,
+                                   System.Action on_cancel,
+                                   string        configurable_text       = null,
+                                   System.Action on_configurable_clicked = null,
+                                   string        title_text              = null,
+                                   string        confirm_text            = null,
+                                   string        cancel_text             = null,
+                                   Sprite        image_sprite            = null) {
+        while (transform.parent.GetComponent<Canvas>() == null && transform.parent.parent != null)
+            transform.SetParent(transform.parent.parent);
 
-	[SerializeField]
-	private GameObject cancelButton;
+        transform.SetAsLastSibling();
+        confirmAction      = on_confirm;
+        cancelAction       = on_cancel;
+        configurableAction = on_configurable_clicked;
+        var num = 0;
+        if (confirmAction      != null) num++;
+        if (cancelAction       != null) num++;
+        if (configurableAction != null) num++;
+        confirmButton.GetComponentInChildren<LocText>().text
+            = confirm_text == null ? UI.CONFIRMDIALOG.OK.text : confirm_text;
 
-	[SerializeField]
-	private GameObject configurableButton;
+        cancelButton.GetComponentInChildren<LocText>().text
+            = cancel_text == null ? UI.CONFIRMDIALOG.CANCEL.text : cancel_text;
 
-	[SerializeField]
-	private LocText titleText;
+        confirmButton.GetComponent<KButton>().onClick      += OnSelect_OK;
+        cancelButton.GetComponent<KButton>().onClick       += OnSelect_CANCEL;
+        configurableButton.GetComponent<KButton>().onClick += OnSelect_third;
+        cancelButton.SetActive(on_cancel != null);
+        if (configurableButton != null) {
+            configurableButton.SetActive(configurableAction != null);
+            if (configurable_text != null)
+                configurableButton.GetComponentInChildren<LocText>().text = configurable_text;
+        }
 
-	[SerializeField]
-	private LocText popupMessage;
+        if (image_sprite != null) {
+            image.sprite = image_sprite;
+            image.gameObject.SetActive(true);
+        }
 
-	[SerializeField]
-	private Image image;
+        if (title_text != null) {
+            titleText.key  = "";
+            titleText.text = title_text;
+        }
+
+        popupMessage.text = text;
+    }
+
+    public void OnSelect_OK() {
+        if (deactivateOnConfirmAction) Deactivate();
+        if (confirmAction != null) confirmAction();
+    }
+
+    public void OnSelect_CANCEL() {
+        if (deactivateOnCancelAction) Deactivate();
+        if (cancelAction != null) cancelAction();
+    }
+
+    public void OnSelect_third() {
+        if (deactivateOnConfigurableAction) Deactivate();
+        if (configurableAction != null) configurableAction();
+    }
+
+    protected override void OnDeactivate() {
+        if (onDeactivateCB != null) onDeactivateCB();
+        base.OnDeactivate();
+    }
 }

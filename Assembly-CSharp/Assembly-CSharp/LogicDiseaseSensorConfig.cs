@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicDiseaseSensorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicDiseaseSensorConfig.ID;
 		int width = 1;
@@ -45,7 +45,7 @@ public class LogicDiseaseSensorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		LogicDiseaseSensor logicDiseaseSensor = go.AddOrGet<LogicDiseaseSensor>();
 		logicDiseaseSensor.Threshold = 0f;
@@ -54,5 +54,5 @@ public class LogicDiseaseSensorConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicDiseaseSensor";
+		public static string ID = "LogicDiseaseSensor";
 }

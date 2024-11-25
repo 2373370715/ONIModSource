@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SingleSliderSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		for (int i = 0; i < this.sliderSets.Count; i++)
@@ -13,7 +13,7 @@ public class SingleSliderSideScreen : SideScreenContent
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		KPrefabID component = target.GetComponent<KPrefabID>();
 		ISingleSliderControl singleSliderControl = target.GetComponent<ISingleSliderControl>();
@@ -21,7 +21,7 @@ public class SingleSliderSideScreen : SideScreenContent
 		return singleSliderControl != null && !component.IsPrefabID("HydrogenGenerator".ToTag()) && !component.IsPrefabID("MethaneGenerator".ToTag()) && !component.IsPrefabID("PetroleumGenerator".ToTag()) && !component.IsPrefabID("DevGenerator".ToTag()) && !component.HasTag(GameTags.DeadReactor) && singleSliderControl.GetSliderMin(0) != singleSliderControl.GetSliderMax(0);
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -45,7 +45,7 @@ public class SingleSliderSideScreen : SideScreenContent
 		}
 	}
 
-	private ISingleSliderControl target;
+		private ISingleSliderControl target;
 
-	public List<SliderSet> sliderSets;
+		public List<SliderSet> sliderSets;
 }

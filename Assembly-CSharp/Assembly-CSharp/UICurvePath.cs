@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/UICurvePath")]
 public class UICurvePath : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.Init();
 		ScreenResize instance = ScreenResize.Instance;
@@ -14,7 +14,7 @@ public class UICurvePath : KMonoBehaviour
 		this.startDelay = (float)UnityEngine.Random.Range(0, 8);
 	}
 
-	private void OnResize()
+		private void OnResize()
 	{
 		this.A = this.startPoint.position;
 		this.B = this.controlPointStart.position;
@@ -22,14 +22,14 @@ public class UICurvePath : KMonoBehaviour
 		this.D = this.endPoint.position;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		ScreenResize instance = ScreenResize.Instance;
 		instance.OnResize = (System.Action)Delegate.Remove(instance.OnResize, new System.Action(this.OnResize));
 		base.OnCleanUp();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.startDelay -= Time.unscaledDeltaTime;
 		this.sprite.gameObject.SetActive(this.startDelay < 0f);
@@ -51,7 +51,7 @@ public class UICurvePath : KMonoBehaviour
 		}
 	}
 
-	private void Init()
+		private void Init()
 	{
 		this.sprite.transform.position = this.startPoint.position;
 		this.tick = 0f;
@@ -62,7 +62,7 @@ public class UICurvePath : KMonoBehaviour
 		this.sprite.SetAlpha(this.initialAlpha);
 	}
 
-	private void OnDrawGizmos()
+		private void OnDrawGizmos()
 	{
 		if (!Application.isPlaying)
 		{
@@ -83,7 +83,7 @@ public class UICurvePath : KMonoBehaviour
 		Gizmos.color = Color.green;
 	}
 
-	private Vector3 DeCasteljausAlgorithm(float t)
+		private Vector3 DeCasteljausAlgorithm(float t)
 	{
 		float d = 1f - t;
 		Vector3 a = d * this.A + t * this.B;
@@ -94,35 +94,35 @@ public class UICurvePath : KMonoBehaviour
 		return d * a4 + t * a5;
 	}
 
-	public Transform startPoint;
+		public Transform startPoint;
 
-	public Transform endPoint;
+		public Transform endPoint;
 
-	public Transform controlPointStart;
+		public Transform controlPointStart;
 
-	public Transform controlPointEnd;
+		public Transform controlPointEnd;
 
-	public Image sprite;
+		public Image sprite;
 
-	public bool loop = true;
+		public bool loop = true;
 
-	public bool animateScale;
+		public bool animateScale;
 
-	public Vector3 initialScale;
+		public Vector3 initialScale;
 
-	private float startDelay;
+		private float startDelay;
 
-	public float initialAlpha = 0.5f;
+		public float initialAlpha = 0.5f;
 
-	public float moveSpeed = 0.1f;
+		public float moveSpeed = 0.1f;
 
-	private float tick;
+		private float tick;
 
-	private Vector3 A;
+		private Vector3 A;
 
-	private Vector3 B;
+		private Vector3 B;
 
-	private Vector3 C;
+		private Vector3 C;
 
-	private Vector3 D;
+		private Vector3 D;
 }

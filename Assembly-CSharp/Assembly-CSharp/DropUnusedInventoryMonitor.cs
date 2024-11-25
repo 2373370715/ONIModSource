@@ -1,22 +1,21 @@
-﻿using System;
+﻿public class DropUnusedInventoryMonitor
+    : GameStateMachine<DropUnusedInventoryMonitor, DropUnusedInventoryMonitor.Instance> {
+    public State hasinventory;
+    public State satisfied;
 
-public class DropUnusedInventoryMonitor : GameStateMachine<DropUnusedInventoryMonitor, DropUnusedInventoryMonitor.Instance>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.satisfied;
-		this.satisfied.EventTransition(GameHashes.OnStorageChange, this.hasinventory, (DropUnusedInventoryMonitor.Instance smi) => smi.GetComponent<Storage>().Count > 0);
-		this.hasinventory.EventTransition(GameHashes.OnStorageChange, this.hasinventory, (DropUnusedInventoryMonitor.Instance smi) => smi.GetComponent<Storage>().Count == 0).ToggleChore((DropUnusedInventoryMonitor.Instance smi) => new DropUnusedInventoryChore(Db.Get().ChoreTypes.DropUnusedInventory, smi.master), this.satisfied);
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = satisfied;
+        satisfied.EventTransition(GameHashes.OnStorageChange,
+                                  hasinventory,
+                                  smi => smi.GetComponent<Storage>().Count > 0);
 
-	public GameStateMachine<DropUnusedInventoryMonitor, DropUnusedInventoryMonitor.Instance, IStateMachineTarget, object>.State satisfied;
+        hasinventory
+            .EventTransition(GameHashes.OnStorageChange, hasinventory, smi => smi.GetComponent<Storage>().Count == 0)
+            .ToggleChore(smi => new DropUnusedInventoryChore(Db.Get().ChoreTypes.DropUnusedInventory, smi.master),
+                         satisfied);
+    }
 
-	public GameStateMachine<DropUnusedInventoryMonitor, DropUnusedInventoryMonitor.Instance, IStateMachineTarget, object>.State hasinventory;
-
-	public new class Instance : GameStateMachine<DropUnusedInventoryMonitor, DropUnusedInventoryMonitor.Instance, IStateMachineTarget, object>.GameInstance
-	{
-		public Instance(IStateMachineTarget master) : base(master)
-		{
-		}
-	}
+    public new class Instance : GameInstance {
+        public Instance(IStateMachineTarget master) : base(master) { }
+    }
 }

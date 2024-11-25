@@ -7,30 +7,30 @@ using UnityEngine;
 
 namespace KMod
 {
-	internal struct Directory : IFileSource
+		internal struct Directory : IFileSource
 	{
-		public Directory(string root)
+				public Directory(string root)
 		{
 			this.root = root;
 			this.file_system = new AliasDirectory(root, root, Application.streamingAssetsPath, true);
 		}
 
-		public string GetRoot()
+				public string GetRoot()
 		{
 			return this.root;
 		}
 
-		public bool Exists()
+				public bool Exists()
 		{
 			return Directory.Exists(this.GetRoot());
 		}
 
-		public bool Exists(string relative_path)
+				public bool Exists(string relative_path)
 		{
 			return this.Exists() && new DirectoryInfo(FileSystem.Normalize(Path.Combine(this.root, relative_path))).Exists;
 		}
 
-		public void GetTopLevelItems(List<FileSystemItem> file_system_items, string relative_root)
+				public void GetTopLevelItems(List<FileSystemItem> file_system_items, string relative_root)
 		{
 			relative_root = (relative_root ?? "");
 			string text = FileSystem.Normalize(Path.Combine(this.root, relative_root));
@@ -50,12 +50,12 @@ namespace KMod
 			}
 		}
 
-		public IFileDirectory GetFileSystem()
+				public IFileDirectory GetFileSystem()
 		{
 			return this.file_system;
 		}
 
-		public void CopyTo(string path, List<string> extensions = null)
+				public void CopyTo(string path, List<string> extensions = null)
 		{
 			try
 			{
@@ -75,7 +75,7 @@ namespace KMod
 			}
 		}
 
-		public string Read(string relative_path)
+				public string Read(string relative_path)
 		{
 			string result;
 			try
@@ -94,7 +94,7 @@ namespace KMod
 			return result;
 		}
 
-		private static int CopyDirectory(string sourceDirName, string destDirName, List<string> extensions)
+				private static int CopyDirectory(string sourceDirName, string destDirName, List<string> extensions)
 		{
 			DirectoryInfo directoryInfo = new DirectoryInfo(sourceDirName);
 			if (!directoryInfo.Exists)
@@ -143,12 +143,12 @@ namespace KMod
 			return num;
 		}
 
-		public void Dispose()
+				public void Dispose()
 		{
 		}
 
-		private AliasDirectory file_system;
+				private AliasDirectory file_system;
 
-		private string root;
+				private string root;
 	}
 }

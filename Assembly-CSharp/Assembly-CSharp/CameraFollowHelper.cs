@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/CameraFollowHelper")]
 public class CameraFollowHelper : KMonoBehaviour
 {
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (CameraController.Instance != null)
 		{

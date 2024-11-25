@@ -3,15 +3,15 @@ using UnityEngine;
 
 namespace Rendering.World
 {
-	public class LiquidTileOverlayRenderer : TileRenderer
+		public class LiquidTileOverlayRenderer : TileRenderer
 	{
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			base.OnPrefabInit();
 			ShaderReloader.Register(new System.Action(this.OnShadersReloaded));
 		}
 
-		protected override Mask[] GetMasks()
+				protected override Mask[] GetMasks()
 		{
 			return new Mask[]
 			{
@@ -21,7 +21,7 @@ namespace Rendering.World
 			};
 		}
 
-		public void OnShadersReloaded()
+				public void OnShadersReloaded()
 		{
 			foreach (Element element in ElementLoader.elements)
 			{
@@ -40,7 +40,7 @@ namespace Rendering.World
 			}
 		}
 
-		public override void LoadBrushes()
+				public override void LoadBrushes()
 		{
 			this.Brushes = new Brush[ElementLoader.elements.Count * this.Masks.Length];
 			foreach (Element element in ElementLoader.elements)
@@ -60,7 +60,7 @@ namespace Rendering.World
 			}
 		}
 
-		private void InitAlphaMaterial(Material alpha_material, Element element)
+				private void InitAlphaMaterial(Material alpha_material, Element element)
 		{
 			alpha_material.name = element.name;
 			alpha_material.renderQueue = RenderQueues.BlockTiles + element.substance.idx;
@@ -73,7 +73,7 @@ namespace Rendering.World
 			alpha_material.SetColor("_Colour", element.substance.colour);
 		}
 
-		private bool RenderLiquid(int cell, int cell_above)
+				private bool RenderLiquid(int cell, int cell_above)
 		{
 			bool result = false;
 			if (Grid.Element[cell].IsSolid)
@@ -87,7 +87,7 @@ namespace Rendering.World
 			return result;
 		}
 
-		private void SetBrushIdx(int i, ref Tile tile, int substance_idx, LiquidTileOverlayRenderer.LiquidConnections connections, Brush[] brush_array, int[] brush_grid)
+				private void SetBrushIdx(int i, ref Tile tile, int substance_idx, LiquidTileOverlayRenderer.LiquidConnections connections, Brush[] brush_array, int[] brush_grid)
 		{
 			if (connections == LiquidTileOverlayRenderer.LiquidConnections.Empty)
 			{
@@ -99,7 +99,7 @@ namespace Rendering.World
 			brush_grid[tile.Idx * 4 + i] = brush.Id;
 		}
 
-		public override void MarkDirty(ref Tile tile, Brush[] brush_array, int[] brush_grid)
+				public override void MarkDirty(ref Tile tile, Brush[] brush_array, int[] brush_grid)
 		{
 			if (!this.RenderLiquid(tile.TileCells.Cell0, tile.TileCells.Cell2))
 			{
@@ -117,12 +117,12 @@ namespace Rendering.World
 			this.SetBrushIdx(0, ref tile, Grid.Element[tile.TileCells.Cell2].substance.idx, LiquidTileOverlayRenderer.LiquidConnections.Left, brush_array, brush_grid);
 		}
 
-		private enum LiquidConnections
+				private enum LiquidConnections
 		{
-			Left = 1,
-			Right,
-			Both,
-			Empty = 128
+						Left = 1,
+						Right,
+						Both,
+						Empty = 128
 		}
 	}
 }

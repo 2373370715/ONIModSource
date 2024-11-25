@@ -3,7 +3,7 @@ using STRINGS;
 
 public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.ranch;
 		this.root.Exit("AbandonedRanchStation", delegate(RanchedStates.Instance smi)
@@ -46,15 +46,31 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 		{
 			smi.UpdateWaitingState();
 		}).Exit(new StateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State.Callback(RanchedStates.ClearLayerOverride));
-		this.ranch.Cheer.ToggleStatusItem(CREATURES.STATUSITEMS.EXCITED_TO_GET_RANCHED.NAME, CREATURES.STATUSITEMS.EXCITED_TO_GET_RANCHED.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).Enter("FaceRancher", delegate(RanchedStates.Instance smi)
+		GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State cheer = this.ranch.Cheer;
+		string name = CREATURES.STATUSITEMS.EXCITED_TO_GET_RANCHED.NAME;
+		string tooltip = CREATURES.STATUSITEMS.EXCITED_TO_GET_RANCHED.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		cheer.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).Enter("FaceRancher", delegate(RanchedStates.Instance smi)
 		{
 			smi.GetComponent<Facing>().Face(smi.GetRanchStation().transform.GetPosition());
 		}).PlayAnim("excited_loop").OnAnimQueueComplete(this.ranch.Cheer.Pst).ScheduleGoTo((RanchedStates.Instance smi) => smi.cheerAnimLength, this.ranch.Move);
 		this.ranch.Cheer.Pst.ScheduleGoTo(0.2f, this.ranch.Move);
-		this.ranch.Move.DefaultState(this.ranch.Move.MoveToRanch).Enter("Speedup", delegate(RanchedStates.Instance smi)
+		GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State state = this.ranch.Move.DefaultState(this.ranch.Move.MoveToRanch).Enter("Speedup", delegate(RanchedStates.Instance smi)
 		{
 			smi.GetComponent<Navigator>().defaultSpeed = smi.OriginalSpeed * 1.25f;
-		}).ToggleStatusItem(CREATURES.STATUSITEMS.EXCITED_TO_GET_RANCHED.NAME, CREATURES.STATUSITEMS.EXCITED_TO_GET_RANCHED.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).Exit("RestoreSpeed", delegate(RanchedStates.Instance smi)
+		});
+		string name2 = CREATURES.STATUSITEMS.EXCITED_TO_GET_RANCHED.NAME;
+		string tooltip2 = CREATURES.STATUSITEMS.EXCITED_TO_GET_RANCHED.TOOLTIP;
+		string icon2 = "";
+		StatusItem.IconType icon_type2 = StatusItem.IconType.Info;
+		NotificationType notification_type2 = NotificationType.Neutral;
+		bool allow_multiples2 = false;
+		main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name2, tooltip2, icon2, icon_type2, notification_type2, allow_multiples2, default(HashedString), 129022, null, null, main).Exit("RestoreSpeed", delegate(RanchedStates.Instance smi)
 		{
 			smi.GetComponent<Navigator>().defaultSpeed = smi.OriginalSpeed;
 		});
@@ -78,21 +94,37 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 			}
 			return Db.Get().CreatureStatusItems.GettingRanched;
 		}, null);
-		this.ranch.Wavegoodbye.Enter(new StateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State.Callback(RanchedStates.ClearLayerOverride)).OnAnimQueueComplete(this.ranch.Runaway).ToggleStatusItem(CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.NAME, CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main);
-		this.ranch.Runaway.MoveTo(new Func<RanchedStates.Instance, int>(RanchedStates.GetRunawayCell), null, null, false).ToggleStatusItem(CREATURES.STATUSITEMS.IDLE.NAME, CREATURES.STATUSITEMS.IDLE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main);
+		GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State state2 = this.ranch.Wavegoodbye.Enter(new StateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State.Callback(RanchedStates.ClearLayerOverride)).OnAnimQueueComplete(this.ranch.Runaway);
+		string name3 = CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.NAME;
+		string tooltip3 = CREATURES.STATUSITEMS.EXCITED_TO_BE_RANCHED.TOOLTIP;
+		string icon3 = "";
+		StatusItem.IconType icon_type3 = StatusItem.IconType.Info;
+		NotificationType notification_type3 = NotificationType.Neutral;
+		bool allow_multiples3 = false;
+		main = Db.Get().StatusItemCategories.Main;
+		state2.ToggleStatusItem(name3, tooltip3, icon3, icon_type3, notification_type3, allow_multiples3, default(HashedString), 129022, null, null, main);
+		GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State state3 = this.ranch.Runaway.MoveTo(new Func<RanchedStates.Instance, int>(RanchedStates.GetRunawayCell), null, null, false);
+		string name4 = CREATURES.STATUSITEMS.IDLE.NAME;
+		string tooltip4 = CREATURES.STATUSITEMS.IDLE.TOOLTIP;
+		string icon4 = "";
+		StatusItem.IconType icon_type4 = StatusItem.IconType.Info;
+		NotificationType notification_type4 = NotificationType.Neutral;
+		bool allow_multiples4 = false;
+		main = Db.Get().StatusItemCategories.Main;
+		state3.ToggleStatusItem(name4, tooltip4, icon4, icon_type4, notification_type4, allow_multiples4, default(HashedString), 129022, null, null, main);
 	}
 
-	private static void ClearLayerOverride(RanchedStates.Instance smi)
+		private static void ClearLayerOverride(RanchedStates.Instance smi)
 	{
 		smi.AnimController.SetSceneLayer(Grid.SceneLayer.Creatures);
 	}
 
-	private static RanchStation.Instance GetRanchStation(RanchedStates.Instance smi)
+		private static RanchStation.Instance GetRanchStation(RanchedStates.Instance smi)
 	{
 		return smi.GetRanchStation();
 	}
 
-	private static void GetOnTable(RanchedStates.Instance smi)
+		private static void GetOnTable(RanchedStates.Instance smi)
 	{
 		Navigator navigator = smi.Get<Navigator>();
 		if (navigator.IsValidNavType(NavType.Floor))
@@ -102,19 +134,19 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 		smi.Get<Facing>().SetFacing(false);
 	}
 
-	private static bool IsCrittersTurn(RanchedStates.Instance smi)
+		private static bool IsCrittersTurn(RanchedStates.Instance smi)
 	{
 		RanchStation.Instance ranchStation = RanchedStates.GetRanchStation(smi);
 		return ranchStation != null && ranchStation.IsRancherReady && ranchStation.TryGetRanched(smi);
 	}
 
-	private static int GetRanchNavTarget(RanchedStates.Instance smi)
+		private static int GetRanchNavTarget(RanchedStates.Instance smi)
 	{
 		RanchStation.Instance ranchStation = RanchedStates.GetRanchStation(smi);
 		return smi.ModifyNavTargetForCritter(ranchStation.GetRanchNavTarget());
 	}
 
-	private static int GetRunawayCell(RanchedStates.Instance smi)
+		private static int GetRunawayCell(RanchedStates.Instance smi)
 	{
 		int cell = Grid.PosToCell(smi.transform.GetPosition());
 		int num = Grid.OffsetCell(cell, 2, 0);
@@ -125,24 +157,24 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 		return num;
 	}
 
-	private RanchedStates.RanchStates ranch;
+		private RanchedStates.RanchStates ranch;
 
-	private StateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.TargetParameter ranchTarget;
+		private StateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.TargetParameter ranchTarget;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public string StartWaitingAnim = "queue_pre";
+				public string StartWaitingAnim = "queue_pre";
 
-		public string WaitingAnim = "queue_loop";
+				public string WaitingAnim = "queue_loop";
 
-		public string EndWaitingAnim = "queue_pst";
+				public string EndWaitingAnim = "queue_pst";
 
-		public int WaitCellOffset = 1;
+				public int WaitCellOffset = 1;
 	}
 
-	public new class Instance : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.GameInstance
 	{
-				public RanchableMonitor.Instance Monitor
+						public RanchableMonitor.Instance Monitor
 		{
 			get
 			{
@@ -154,7 +186,7 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 			}
 		}
 
-				public KBatchedAnimController AnimController
+						public KBatchedAnimController AnimController
 		{
 			get
 			{
@@ -162,7 +194,7 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 			}
 		}
 
-		public Instance(Chore<RanchedStates.Instance> chore, RanchedStates.Def def) : base(chore, def)
+				public Instance(Chore<RanchedStates.Instance> chore, RanchedStates.Def def) : base(chore, def)
 		{
 			this.animController = base.GetComponent<KBatchedAnimController>();
 			this.OriginalSpeed = this.Monitor.NavComponent.defaultSpeed;
@@ -171,7 +203,7 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 			this.cheerAnimLength = ((anim != null) ? (anim.totalTime + 0.2f) : 1.2f);
 		}
 
-		public RanchStation.Instance GetRanchStation()
+				public RanchStation.Instance GetRanchStation()
 		{
 			if (this.Monitor != null)
 			{
@@ -180,7 +212,7 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 			return null;
 		}
 
-		public void EnterQueue()
+				public void EnterQueue()
 		{
 			if (this.GetRanchStation() != null)
 			{
@@ -189,7 +221,7 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 			}
 		}
 
-		public void AbandonRanchStation()
+				public void AbandonRanchStation()
 		{
 			if (this.Monitor.TargetRanchStation == null || this.status == StateMachine.Status.Failed)
 			{
@@ -198,7 +230,7 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 			this.StopSM("Abandoned Ranch");
 		}
 
-		public void SetRanchStation(RanchStation.Instance ranch_station)
+				public void SetRanchStation(RanchStation.Instance ranch_station)
 		{
 			if (this.Monitor.TargetRanchStation != null && this.Monitor.TargetRanchStation != ranch_station)
 			{
@@ -208,7 +240,7 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 			this.Monitor.TargetRanchStation = ranch_station;
 		}
 
-		public int ModifyNavTargetForCritter(int navCell)
+				public int ModifyNavTargetForCritter(int navCell)
 		{
 			if (base.smi.HasTag(GameTags.Creatures.Flyer))
 			{
@@ -217,7 +249,7 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 			return navCell;
 		}
 
-		private void InitializeWaitCell()
+				private void InitializeWaitCell()
 		{
 			if (this.GetRanchStation() == null)
 			{
@@ -248,7 +280,7 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 			this.waitCell = Grid.OffsetCell(cell2, offset);
 		}
 
-		public void UpdateWaitingState()
+				public void UpdateWaitingState()
 		{
 			if (!RanchedStates.IsCrittersTurn(base.smi))
 			{
@@ -263,50 +295,50 @@ public class RanchedStates : GameStateMachine<RanchedStates, RanchedStates.Insta
 			base.smi.GoTo(base.smi.sm.ranch.Cheer);
 		}
 
-		public float OriginalSpeed;
+				public float OriginalSpeed;
 
-		private int waitCell;
+				private int waitCell;
 
-		private KBatchedAnimController animController;
+				private KBatchedAnimController animController;
 
-		private RanchableMonitor.Instance ranchMonitor;
+				private RanchableMonitor.Instance ranchMonitor;
 
-		public float cheerAnimLength;
+				public float cheerAnimLength;
 	}
 
-	public class RanchStates : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State
+		public class RanchStates : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State
 	{
-		public RanchedStates.CheerStates Cheer;
+				public RanchedStates.CheerStates Cheer;
 
-		public RanchedStates.MoveStates Move;
+				public RanchedStates.MoveStates Move;
 
-		public RanchedStates.WaitStates Wait;
+				public RanchedStates.WaitStates Wait;
 
-		public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Ranching;
+				public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Ranching;
 
-		public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Wavegoodbye;
+				public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Wavegoodbye;
 
-		public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Runaway;
+				public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Runaway;
 	}
 
-	public class CheerStates : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State
+		public class CheerStates : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State
 	{
-		public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Cheer;
+				public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Cheer;
 
-		public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Pst;
+				public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Pst;
 	}
 
-	public class MoveStates : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State
+		public class MoveStates : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State
 	{
-		public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State MoveToRanch;
+				public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State MoveToRanch;
 	}
 
-	public class WaitStates : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State
+		public class WaitStates : GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State
 	{
-		public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State WaitInLine;
+				public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State WaitInLine;
 
-		public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Waiting;
+				public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State Waiting;
 
-		public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State DoneWaiting;
+				public GameStateMachine<RanchedStates, RanchedStates.Instance, IStateMachineTarget, RanchedStates.Def>.State DoneWaiting;
 	}
 }

@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace Klei.CustomSettings
 {
-	public class WorldMixingSettingConfig : MixingSettingConfig
+		public class WorldMixingSettingConfig : MixingSettingConfig
 	{
-				public override string label
+						public override string label
 		{
 			get
 			{
@@ -22,7 +22,7 @@ namespace Klei.CustomSettings
 			}
 		}
 
-				public override string tooltip
+						public override string tooltip
 		{
 			get
 			{
@@ -36,7 +36,7 @@ namespace Klei.CustomSettings
 			}
 		}
 
-				public override Sprite icon
+						public override Sprite icon
 		{
 			get
 			{
@@ -54,7 +54,7 @@ namespace Klei.CustomSettings
 			}
 		}
 
-				public override List<string> forbiddenClusterTags
+						public override List<string> forbiddenClusterTags
 		{
 			get
 			{
@@ -62,7 +62,7 @@ namespace Klei.CustomSettings
 			}
 		}
 
-				public override bool isModded
+						public override bool isModded
 		{
 			get
 			{
@@ -70,7 +70,7 @@ namespace Klei.CustomSettings
 			}
 		}
 
-		public WorldMixingSettingConfig(string id, string worldgenPath, string[] required_content = null, string dlcIdFrom = null, bool triggers_custom_game = true, long coordinate_range = 5L) : base(id, null, null, null, worldgenPath, coordinate_range, false, triggers_custom_game, required_content, "", false)
+				public WorldMixingSettingConfig(string id, string worldgenPath, string[] required_content = null, string dlcIdFrom = null, bool triggers_custom_game = true, long coordinate_range = 5L) : base(id, null, null, null, worldgenPath, coordinate_range, false, triggers_custom_game, required_content, "", false)
 		{
 			this.dlcIdFrom = dlcIdFrom;
 			List<SettingLevel> levels = new List<SettingLevel>
@@ -82,12 +82,12 @@ namespace Klei.CustomSettings
 			base.StompLevels(levels, "Disabled", "Disabled");
 		}
 
-		private const int COORDINATE_RANGE = 5;
+				private const int COORDINATE_RANGE = 5;
 
-		public const string DisabledLevelId = "Disabled";
+				public const string DisabledLevelId = "Disabled";
 
-		public const string TryMixingLevelId = "TryMixing";
+				public const string TryMixingLevelId = "TryMixing";
 
-		public const string GuaranteeMixingLevelId = "GuranteeMixing";
+				public const string GuaranteeMixingLevelId = "GuranteeMixing";
 	}
 }

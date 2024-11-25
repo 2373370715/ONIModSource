@@ -4,15 +4,21 @@ using STRINGS;
 
 public class CritterTemperatureDeltaAsEnergyAmountDisplayer : StandardAmountDisplayer
 {
-	public CritterTemperatureDeltaAsEnergyAmountDisplayer(GameUtil.UnitClass unitClass, GameUtil.TimeSlice timeSlice) : base(unitClass, timeSlice, null, GameUtil.IdentityDescriptorTense.Normal)
+		public CritterTemperatureDeltaAsEnergyAmountDisplayer(GameUtil.UnitClass unitClass, GameUtil.TimeSlice timeSlice) : base(unitClass, timeSlice, null, GameUtil.IdentityDescriptorTense.Normal)
 	{
 	}
 
-	public override string GetTooltip(Amount master, AmountInstance instance)
+		public override string GetTooltip(Amount master, AmountInstance instance)
 	{
 		CritterTemperatureMonitor.Def def = instance.gameObject.GetDef<CritterTemperatureMonitor.Def>();
 		PrimaryElement component = instance.gameObject.GetComponent<PrimaryElement>();
-		string text = string.Format(master.description, this.formatter.GetFormattedValue(def.temperatureColdUncomfortable, GameUtil.TimeSlice.None), this.formatter.GetFormattedValue(def.temperatureHotUncomfortable, GameUtil.TimeSlice.None));
+		string text = string.Format(master.description, new object[]
+		{
+			this.formatter.GetFormattedValue(def.temperatureColdUncomfortable, GameUtil.TimeSlice.None),
+			this.formatter.GetFormattedValue(def.temperatureHotUncomfortable, GameUtil.TimeSlice.None),
+			this.formatter.GetFormattedValue(def.temperatureColdDeadly, GameUtil.TimeSlice.None),
+			this.formatter.GetFormattedValue(def.temperatureHotDeadly, GameUtil.TimeSlice.None)
+		});
 		float num = ElementLoader.FindElementByHash(SimHashes.Creature).specificHeatCapacity * component.Mass * 1000f;
 		if (this.formatter.DeltaTimeSlice == GameUtil.TimeSlice.PerCycle)
 		{

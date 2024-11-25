@@ -2,13 +2,13 @@
 
 public struct SchedulerHandle
 {
-	public SchedulerHandle(Scheduler scheduler, SchedulerEntry entry)
+		public SchedulerHandle(Scheduler scheduler, SchedulerEntry entry)
 	{
 		this.entry = entry;
 		this.scheduler = scheduler;
 	}
 
-		public float TimeRemaining
+			public float TimeRemaining
 	{
 		get
 		{
@@ -20,13 +20,13 @@ public struct SchedulerHandle
 		}
 	}
 
-	public void FreeResources()
+		public void FreeResources()
 	{
 		this.entry.FreeResources();
 		this.scheduler = null;
 	}
 
-	public void ClearScheduler()
+		public void ClearScheduler()
 	{
 		if (this.scheduler == null)
 		{
@@ -36,7 +36,7 @@ public struct SchedulerHandle
 		this.scheduler = null;
 	}
 
-		public bool IsValid
+			public bool IsValid
 	{
 		get
 		{
@@ -44,7 +44,7 @@ public struct SchedulerHandle
 		}
 	}
 
-	public SchedulerEntry entry;
+		public SchedulerEntry entry;
 
-	private Scheduler scheduler;
+		private Scheduler scheduler;
 }

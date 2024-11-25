@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class RectTransformExtensions
 {
-	public static RectTransform Fill(this RectTransform rectTransform)
+		public static RectTransform Fill(this RectTransform rectTransform)
 	{
 		rectTransform.anchorMin = new Vector2(0f, 0f);
 		rectTransform.anchorMax = new Vector2(1f, 1f);
@@ -12,7 +12,7 @@ public static class RectTransformExtensions
 		return rectTransform;
 	}
 
-	public static RectTransform Fill(this RectTransform rectTransform, Padding padding)
+		public static RectTransform Fill(this RectTransform rectTransform, Padding padding)
 	{
 		rectTransform.anchorMin = new Vector2(0f, 0f);
 		rectTransform.anchorMax = new Vector2(1f, 1f);
@@ -21,13 +21,13 @@ public static class RectTransformExtensions
 		return rectTransform;
 	}
 
-	public static RectTransform Pivot(this RectTransform rectTransform, float x, float y)
+		public static RectTransform Pivot(this RectTransform rectTransform, float x, float y)
 	{
 		rectTransform.pivot = new Vector2(x, y);
 		return rectTransform;
 	}
 
-	public static RectTransform Pivot(this RectTransform rectTransform, Vector2 pivot)
+		public static RectTransform Pivot(this RectTransform rectTransform, Vector2 pivot)
 	{
 		rectTransform.pivot = pivot;
 		return rectTransform;

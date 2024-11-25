@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class CustomGameSettingListWidget : CustomGameSettingWidget
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.CycleLeft.onClick += this.DoCycleLeft;
 		this.CycleRight.onClick += this.DoCycleRight;
 	}
 
-	public void Initialize(ListSettingConfig config, Func<SettingConfig, SettingLevel> getCallback, Func<ListSettingConfig, int, SettingLevel> cycleCallback)
+		public void Initialize(ListSettingConfig config, Func<SettingConfig, SettingLevel> getCallback, Func<ListSettingConfig, int, SettingLevel> cycleCallback)
 	{
 		this.config = config;
 		this.Label.text = config.label;
@@ -20,7 +20,7 @@ public class CustomGameSettingListWidget : CustomGameSettingWidget
 		this.cycleCallback = cycleCallback;
 	}
 
-	public override void Refresh()
+		public override void Refresh()
 	{
 		base.Refresh();
 		SettingLevel settingLevel = this.getCallback(this.config);
@@ -30,39 +30,39 @@ public class CustomGameSettingListWidget : CustomGameSettingWidget
 		this.CycleRight.isInteractable = !this.config.IsLastLevel(settingLevel.id);
 	}
 
-	private void DoCycleLeft()
+		private void DoCycleLeft()
 	{
 		this.cycleCallback(this.config, -1);
 		base.Notify();
 	}
 
-	private void DoCycleRight()
+		private void DoCycleRight()
 	{
 		this.cycleCallback(this.config, 1);
 		base.Notify();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText Label;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip ToolTip;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText ValueLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip ValueToolTip;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton CycleLeft;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton CycleRight;
 
-	private ListSettingConfig config;
+		private ListSettingConfig config;
 
-	protected Func<ListSettingConfig, int, SettingLevel> cycleCallback;
+		protected Func<ListSettingConfig, int, SettingLevel> cycleCallback;
 
-	protected Func<SettingConfig, SettingLevel> getCallback;
+		protected Func<SettingConfig, SettingLevel> getCallback;
 }

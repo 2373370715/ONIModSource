@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MedicalCotConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MedicalCot";
 		int width = 3;
@@ -23,13 +23,13 @@ public class MedicalCotConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.Clinic, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KAnimControllerBase>().initialAnim = "off";
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.BedType, false);
@@ -55,10 +55,12 @@ public class MedicalCotConfig : IBuildingConfig
 		roomTracker.requiredRoomType = Db.Get().RoomTypes.Hospital.Id;
 		roomTracker.requirement = RoomTracker.Requirement.CustomRecommended;
 		roomTracker.customStatusItemID = Db.Get().BuildingStatusItems.ClinicOutsideHospital.Id;
-		go.AddOrGet<Sleepable>().overrideAnims = new KAnimFile[]
+		Sleepable sleepable = go.AddOrGet<Sleepable>();
+		sleepable.overrideAnims = new KAnimFile[]
 		{
 			Assets.GetAnim("anim_interacts_med_cot_sick_kanim")
 		};
+		sleepable.isNormalBed = false;
 		DoctorChoreWorkable doctorChoreWorkable = go.AddOrGet<DoctorChoreWorkable>();
 		doctorChoreWorkable.overrideAnims = new KAnimFile[]
 		{
@@ -68,5 +70,5 @@ public class MedicalCotConfig : IBuildingConfig
 		go.AddOrGet<Ownable>().slotID = Db.Get().AssignableSlots.Clinic.Id;
 	}
 
-	public const string ID = "MedicalCot";
+		public const string ID = "MedicalCot";
 }

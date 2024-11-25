@@ -1,23 +1,15 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/ConduitSecondaryInput")]
-public class ConduitSecondaryInput : KMonoBehaviour, ISecondaryInput
-{
-	public bool HasSecondaryConduitType(ConduitType type)
-	{
-		return this.portInfo.conduitType == type;
-	}
+public class ConduitSecondaryInput : KMonoBehaviour, ISecondaryInput {
+    [SerializeField]
+    public ConduitPortInfo portInfo;
 
-	public CellOffset GetSecondaryConduitOffset(ConduitType type)
-	{
-		if (this.portInfo.conduitType == type)
-		{
-			return this.portInfo.offset;
-		}
-		return CellOffset.none;
-	}
+    public bool HasSecondaryConduitType(ConduitType type) { return portInfo.conduitType == type; }
 
-	[SerializeField]
-	public ConduitPortInfo portInfo;
+    public CellOffset GetSecondaryConduitOffset(ConduitType type) {
+        if (portInfo.conduitType == type) return portInfo.offset;
+
+        return CellOffset.none;
+    }
 }

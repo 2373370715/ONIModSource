@@ -7,12 +7,12 @@ using UnityEngine;
 
 public class OxygenMaskConfig : IEquipmentConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public EquipmentDef CreateEquipmentDef()
+		public EquipmentDef CreateEquipmentDef()
 	{
 		List<AttributeModifier> list = new List<AttributeModifier>();
 		list.Add(new AttributeModifier(TUNING.EQUIPMENT.ATTRIBUTE_MOD_IDS.ATHLETICS, (float)TUNING.EQUIPMENT.SUITS.OXYGEN_MASK_ATHLETICS, STRINGS.EQUIPMENT.PREFABS.OXYGEN_MASK.NAME, false, false, true));
@@ -71,7 +71,7 @@ public class OxygenMaskConfig : IEquipmentConfig
 		return equipmentDef;
 	}
 
-	public void DoPostConfigure(GameObject go)
+		public void DoPostConfigure(GameObject go)
 	{
 		Storage storage = go.AddComponent<Storage>();
 		storage.SetDefaultStoredItemModifiers(Storage.StandardInsulatedStorage);
@@ -89,11 +89,11 @@ public class OxygenMaskConfig : IEquipmentConfig
 		go.AddComponent<SuitDiseaseHandler>();
 	}
 
-	public const string ID = "Oxygen_Mask";
+		public const string ID = "Oxygen_Mask";
 
-	public const string WORN_ID = "Worn_Oxygen_Mask";
+		public const string WORN_ID = "Worn_Oxygen_Mask";
 
-	private const PathFinder.PotentialPath.Flags suit_flags = PathFinder.PotentialPath.Flags.HasOxygenMask;
+		private const PathFinder.PotentialPath.Flags suit_flags = PathFinder.PotentialPath.Flags.HasOxygenMask;
 
-	private AttributeModifier expertAthleticsModifier;
+		private AttributeModifier expertAthleticsModifier;
 }

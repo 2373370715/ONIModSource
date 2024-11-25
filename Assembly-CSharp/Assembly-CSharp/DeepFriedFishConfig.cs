@@ -5,25 +5,25 @@ using UnityEngine;
 
 public class DeepFriedFishConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
-		return EntityTemplates.ExtendEntityToFood(EntityTemplates.CreateLooseEntity("DeepFriedFish", ITEMS.FOOD.DEEPFRIEDFISH.NAME, ITEMS.FOOD.DEEPFRIEDFISH.DESC, 1f, false, Assets.GetAnim("deepfried_fish_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.4f, true, 0, SimHashes.Creature, null), FOOD.FOOD_TYPES.DEEP_FRIED_FISH);
+		return EntityTemplates.ExtendEntityToFood(EntityTemplates.CreateLooseEntity("DeepFriedFish", STRINGS.ITEMS.FOOD.DEEPFRIEDFISH.NAME, STRINGS.ITEMS.FOOD.DEEPFRIEDFISH.DESC, 1f, false, Assets.GetAnim("deepfried_fish_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.4f, true, 0, SimHashes.Creature, null), FOOD.FOOD_TYPES.DEEP_FRIED_FISH);
 	}
 
-	public void OnPrefabInit(GameObject inst)
-	{
-	}
-
-	public void OnSpawn(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public const string ID = "DeepFriedFish";
+		public void OnSpawn(GameObject inst)
+	{
+	}
 
-	public static ComplexRecipe recipe;
+		public const string ID = "DeepFriedFish";
+
+		public static ComplexRecipe recipe;
 }

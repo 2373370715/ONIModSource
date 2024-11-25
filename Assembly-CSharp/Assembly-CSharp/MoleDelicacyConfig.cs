@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class MoleDelicacyConfig : IEntityConfig
 {
-	public static GameObject CreateMole(string id, string name, string desc, string anim_file, bool is_baby = false)
+		public static GameObject CreateMole(string id, string name, string desc, string anim_file, bool is_baby = false)
 	{
 		GameObject gameObject = BaseMoleConfig.BaseMole(id, name, desc, "MoleDelicacyBaseTrait", anim_file, is_baby, 173.15f, 373.15f, 73.149994f, 773.15f, "del_", 5);
 		gameObject.AddTag(GameTags.Creatures.Digger);
@@ -46,12 +46,12 @@ public class MoleDelicacyConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject prefab = MoleDelicacyConfig.CreateMole("MoleDelicacy", STRINGS.CREATURES.SPECIES.MOLE.VARIANT_DELICACY.NAME, STRINGS.CREATURES.SPECIES.MOLE.VARIANT_DELICACY.DESC, "driller_kanim", false);
 		string eggId = "MoleDelicacyEgg";
@@ -66,16 +66,16 @@ public class MoleDelicacyConfig : IEntityConfig
 		return EntityTemplates.ExtendEntityToFertileCreature(prefab, eggId, eggName, eggDesc, egg_anim, egg_MASS, baby_id, fertility_cycles, incubation_cycles, MoleTuning.EGG_CHANCES_DELICACY, this.GetDlcIds(), egg_SORT_ORDER, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		MoleDelicacyConfig.SetSpawnNavType(inst);
 	}
 
-	public static void SetSpawnNavType(GameObject inst)
+		public static void SetSpawnNavType(GameObject inst)
 	{
 		int cell = Grid.PosToCell(inst);
 		Navigator component = inst.GetComponent<Navigator>();
@@ -92,29 +92,29 @@ public class MoleDelicacyConfig : IEntityConfig
 		}
 	}
 
-	public const string ID = "MoleDelicacy";
+		public const string ID = "MoleDelicacy";
 
-	public const string BASE_TRAIT_ID = "MoleDelicacyBaseTrait";
+		public const string BASE_TRAIT_ID = "MoleDelicacyBaseTrait";
 
-	public const string EGG_ID = "MoleDelicacyEgg";
+		public const string EGG_ID = "MoleDelicacyEgg";
 
-	private static float MIN_POOP_SIZE_IN_CALORIES = 2400000f;
+		private static float MIN_POOP_SIZE_IN_CALORIES = 2400000f;
 
-	private static float CALORIES_PER_KG_OF_DIRT = 1000f;
+		private static float CALORIES_PER_KG_OF_DIRT = 1000f;
 
-	public static int EGG_SORT_ORDER = 800;
+		public static int EGG_SORT_ORDER = 800;
 
-	public static float GINGER_GROWTH_TIME_IN_CYCLES = 8f;
+		public static float GINGER_GROWTH_TIME_IN_CYCLES = 8f;
 
-	public static float GINGER_PER_CYCLE = 1f;
+		public static float GINGER_PER_CYCLE = 1f;
 
-	public static Tag SHEAR_DROP_ELEMENT = GingerConfig.ID;
+		public static Tag SHEAR_DROP_ELEMENT = GingerConfig.ID;
 
-	public static float MIN_GROWTH_TEMPERATURE = 343.15f;
+		public static float MIN_GROWTH_TEMPERATURE = 343.15f;
 
-	public static float MAX_GROWTH_TEMPERATURE = 353.15f;
+		public static float MAX_GROWTH_TEMPERATURE = 353.15f;
 
-	public static float EGG_CHANCES_TEMPERATURE_MIN = 333.15f;
+		public static float EGG_CHANCES_TEMPERATURE_MIN = 333.15f;
 
-	public static float EGG_CHANCES_TEMPERATURE_MAX = 373.15f;
+		public static float EGG_CHANCES_TEMPERATURE_MAX = 373.15f;
 }

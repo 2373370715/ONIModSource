@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class MetricsOptionsScreen : KModalScreen
 {
-	private bool IsSettingsDirty()
+		private bool IsSettingsDirty()
 	{
 		return this.disableDataCollection != KPrivacyPrefs.instance.disableDataCollection;
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if ((e.TryConsume(global::Action.Escape) || e.TryConsume(global::Action.MouseRight)) && !this.IsSettingsDirty())
 		{
@@ -19,7 +19,7 @@ public class MetricsOptionsScreen : KModalScreen
 		base.OnKeyDown(e);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.disableDataCollection = KPrivacyPrefs.instance.disableDataCollection;
@@ -51,14 +51,14 @@ public class MetricsOptionsScreen : KModalScreen
 		this.Refresh();
 	}
 
-	private void OnClickToggle()
+		private void OnClickToggle()
 	{
 		this.disableDataCollection = !this.disableDataCollection;
 		this.enableButton.GetComponent<HierarchyReferences>().GetReference("CheckMark").gameObject.SetActive(this.disableDataCollection);
 		this.Refresh();
 	}
 
-	private void ApplySettingsAndDoRestart()
+		private void ApplySettingsAndDoRestart()
 	{
 		KPrivacyPrefs.instance.disableDataCollection = this.disableDataCollection;
 		KPrivacyPrefs.Save();
@@ -69,7 +69,7 @@ public class MetricsOptionsScreen : KModalScreen
 		App.instance.Restart();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		this.enableButton.GetComponent<HierarchyReferences>().GetReference("Button").transform.GetChild(0).gameObject.SetActive(!this.disableDataCollection);
 		this.closeButton.isInteractable = !this.IsSettingsDirty();
@@ -82,17 +82,17 @@ public class MetricsOptionsScreen : KModalScreen
 		this.dismissButton.GetComponentInChildren<LocText>().text = UI.FRONTEND.METRICS_OPTIONS_SCREEN.DONE_BUTTON;
 	}
 
-	public LocText title;
+		public LocText title;
 
-	public KButton dismissButton;
+		public KButton dismissButton;
 
-	public KButton closeButton;
+		public KButton closeButton;
 
-	public GameObject enableButton;
+		public GameObject enableButton;
 
-	public Button descriptionButton;
+		public Button descriptionButton;
 
-	public LocText restartWarningText;
+		public LocText restartWarningText;
 
-	private bool disableDataCollection;
+		private bool disableDataCollection;
 }

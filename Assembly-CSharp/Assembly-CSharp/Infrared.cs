@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class Infrared : MonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		Infrared.Instance = null;
 	}
 
-	private void Awake()
+		private void Awake()
 	{
 		Infrared.temperatureParametersId = Shader.PropertyToID("_TemperatureParameters");
 		Infrared.Instance = this;
@@ -16,13 +16,13 @@ public class Infrared : MonoBehaviour
 		this.UpdateState();
 	}
 
-	private void OnRenderImage(RenderTexture source, RenderTexture dest)
+		private void OnRenderImage(RenderTexture source, RenderTexture dest)
 	{
 		Graphics.Blit(source, this.minionTexture);
 		Graphics.Blit(source, dest);
 	}
 
-	private void OnResize()
+		private void OnResize()
 	{
 		if (this.minionTexture != null)
 		{
@@ -38,7 +38,7 @@ public class Infrared : MonoBehaviour
 		base.GetComponent<Camera>().targetTexture = this.cameraTexture;
 	}
 
-	public void SetMode(Infrared.Mode mode)
+		public void SetMode(Infrared.Mode mode)
 	{
 		Vector4 zero;
 		if (mode != Infrared.Mode.Disabled)
@@ -62,7 +62,7 @@ public class Infrared : MonoBehaviour
 		this.UpdateState();
 	}
 
-	private void UpdateState()
+		private void UpdateState()
 	{
 		base.gameObject.SetActive(this.mode > Infrared.Mode.Disabled);
 		if (base.gameObject.activeSelf)
@@ -71,7 +71,7 @@ public class Infrared : MonoBehaviour
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		switch (this.mode)
 		{
@@ -88,20 +88,20 @@ public class Infrared : MonoBehaviour
 		}
 	}
 
-	private RenderTexture minionTexture;
+		private RenderTexture minionTexture;
 
-	private RenderTexture cameraTexture;
+		private RenderTexture cameraTexture;
 
-	private Infrared.Mode mode;
+		private Infrared.Mode mode;
 
-	public static int temperatureParametersId;
+		public static int temperatureParametersId;
 
-	public static Infrared Instance;
+		public static Infrared Instance;
 
-	public enum Mode
+		public enum Mode
 	{
-		Disabled,
-		Infrared,
-		Disease
+				Disabled,
+				Infrared,
+				Disease
 	}
 }

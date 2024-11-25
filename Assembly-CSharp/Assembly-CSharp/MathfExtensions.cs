@@ -2,7 +2,7 @@
 
 public static class MathfExtensions
 {
-	public static long Max(this long a, long b)
+		public static long Max(this long a, long b)
 	{
 		if (a < b)
 		{
@@ -11,7 +11,7 @@ public static class MathfExtensions
 		return a;
 	}
 
-	public static long Min(this long a, long b)
+		public static long Min(this long a, long b)
 	{
 		if (a > b)
 		{

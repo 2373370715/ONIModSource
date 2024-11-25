@@ -1,43 +1,37 @@
 ﻿using System;
-using FMOD.Studio;
-using UnityEngine;
 
 [Serializable]
-public class RemoteSoundEvent : SoundEvent
-{
-	public RemoteSoundEvent(string file_name, string sound_name, int frame, float min_interval) : base(file_name, sound_name, frame, true, false, min_interval, false)
-	{
-	}
+public class RemoteSoundEvent : SoundEvent {
+    private const string STATE_PARAMETER = "State";
 
-	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
-	{
-		Vector3 vector = behaviour.GetComponent<Transform>().GetPosition();
-		vector.z = 0f;
-		if (SoundEvent.ObjectIsSelectedAndVisible(behaviour.controller.gameObject))
-		{
-			vector = SoundEvent.AudioHighlightListenerPosition(vector);
-		}
-		Workable workable = behaviour.GetComponent<Worker>().workable;
-		if (workable != null)
-		{
-			Toggleable component = workable.GetComponent<Toggleable>();
-			if (component != null)
-			{
-				IToggleHandler toggleHandlerForWorker = component.GetToggleHandlerForWorker(behaviour.GetComponent<Worker>());
-				float value = 1f;
-				if (toggleHandlerForWorker != null && toggleHandlerForWorker.IsHandlerOn())
-				{
-					value = 0f;
-				}
-				if (base.objectIsSelectedAndVisible || SoundEvent.ShouldPlaySound(behaviour.controller, base.sound, base.soundHash, base.looping, this.isDynamic))
-				{
-					EventInstance instance = SoundEvent.BeginOneShot(base.sound, vector, SoundEvent.GetVolume(base.objectIsSelectedAndVisible), false);
-					instance.setParameterByName("State", value, false);
-					SoundEvent.EndOneShot(instance);
-				}
-			}
-		}
-	}
+    public RemoteSoundEvent(string file_name, string sound_name, int frame, float min_interval) : base(file_name,
+     sound_name,
+     frame,
+     true,
+     false,
+     min_interval,
+     false) { }
 
-	private const string STATE_PARAMETER = "State";
+    public override void PlaySound(AnimEventManager.EventPlayerData behaviour) {
+        var vector = behaviour.position;
+        vector.z = 0f;
+        if (ObjectIsSelectedAndVisible(behaviour.controller.gameObject))
+            vector = AudioHighlightListenerPosition(vector);
+
+        var workable = behaviour.GetComponent<WorkerBase>().GetWorkable();
+        if (workable != null) {
+            var component = workable.GetComponent<Toggleable>();
+            if (component != null) {
+                var toggleHandlerForWorker = component.GetToggleHandlerForWorker(behaviour.GetComponent<WorkerBase>());
+                var value = 1f;
+                if (toggleHandlerForWorker != null && toggleHandlerForWorker.IsHandlerOn()) value = 0f;
+                if (objectIsSelectedAndVisible ||
+                    ShouldPlaySound(behaviour.controller, sound, soundHash, looping, isDynamic)) {
+                    var instance = BeginOneShot(sound, vector, GetVolume(objectIsSelectedAndVisible));
+                    instance.setParameterByName("State", value);
+                    EndOneShot(instance);
+                }
+            }
+        }
+    }
 }

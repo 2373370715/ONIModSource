@@ -11,9 +11,9 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Workable")]
 public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 {
-			public Worker worker { get; protected set; }
+				public WorkerBase worker { get; protected set; }
 
-			public float WorkTimeRemaining
+				public float WorkTimeRemaining
 	{
 		get
 		{
@@ -25,19 +25,19 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		}
 	}
 
-			public bool preferUnreservedCell { get; set; }
+				public bool preferUnreservedCell { get; set; }
 
-	public virtual float GetWorkTime()
+		public virtual float GetWorkTime()
 	{
 		return this.workTime;
 	}
 
-	public Worker GetWorker()
+		public WorkerBase GetWorker()
 	{
 		return this.worker;
 	}
 
-	public virtual float GetPercentComplete()
+		public virtual float GetPercentComplete()
 	{
 		if (this.workTimeRemaining > this.workTime)
 		{
@@ -46,13 +46,13 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return 1f - this.workTimeRemaining / this.workTime;
 	}
 
-	public void ConfigureMultitoolContext(HashedString context, Tag hitEffectTag)
+		public void ConfigureMultitoolContext(HashedString context, Tag hitEffectTag)
 	{
 		this.multitoolContext = context;
 		this.multitoolHitEffectTag = hitEffectTag;
 	}
 
-	public virtual Workable.AnimInfo GetAnim(Worker worker)
+		public virtual Workable.AnimInfo GetAnim(WorkerBase worker)
 	{
 		Workable.AnimInfo result = default(Workable.AnimInfo);
 		if (this.overrideAnims != null && this.overrideAnims.Length != 0)
@@ -75,17 +75,17 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return result;
 	}
 
-	public virtual HashedString[] GetWorkAnims(Worker worker)
+		public virtual HashedString[] GetWorkAnims(WorkerBase worker)
 	{
 		return this.workAnims;
 	}
 
-	public virtual KAnim.PlayMode GetWorkAnimPlayMode()
+		public virtual KAnim.PlayMode GetWorkAnimPlayMode()
 	{
 		return this.workAnimPlayMode;
 	}
 
-	public virtual HashedString[] GetWorkPstAnims(Worker worker, bool successfully_completed)
+		public virtual HashedString[] GetWorkPstAnims(WorkerBase worker, bool successfully_completed)
 	{
 		if (successfully_completed)
 		{
@@ -94,12 +94,12 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return this.workingPstFailed;
 	}
 
-	public virtual Vector3 GetWorkOffset()
+		public virtual Vector3 GetWorkOffset()
 	{
 		return Vector3.zero;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workerStatusItem = Db.Get().MiscStatusItems.Using;
@@ -109,7 +109,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		this.workTimeRemaining = Mathf.Min(this.workTimeRemaining, this.workTime);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.shouldShowSkillPerkStatusItem && !string.IsNullOrEmpty(this.requiredSkillPerk))
@@ -135,7 +135,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		this.UpdateStatusItem(null);
 	}
 
-	private void RefreshRoom()
+		private void RefreshRoom()
 	{
 		CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(Grid.PosToCell(base.gameObject));
 		if (cavityForCell != null && cavityForCell.room != null)
@@ -146,7 +146,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		this.OnUpdateRoom(null);
 	}
 
-	private void OnUpdateRoom(object data)
+		private void OnUpdateRoom(object data)
 	{
 		if (this.worker == null)
 		{
@@ -158,7 +158,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 			this.currentlyInLaboratory = true;
 			if (this.laboratoryEfficiencyBonusStatusItemHandle == Guid.Empty)
 			{
-				this.laboratoryEfficiencyBonusStatusItemHandle = this.worker.GetComponent<KSelectable>().AddStatusItem(Db.Get().DuplicantStatusItems.LaboratoryWorkEfficiencyBonus, this);
+				this.laboratoryEfficiencyBonusStatusItemHandle = this.worker.OfferStatusItem(Db.Get().DuplicantStatusItems.LaboratoryWorkEfficiencyBonus, this);
 				return;
 			}
 		}
@@ -167,12 +167,13 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 			this.currentlyInLaboratory = false;
 			if (this.laboratoryEfficiencyBonusStatusItemHandle != Guid.Empty)
 			{
-				this.laboratoryEfficiencyBonusStatusItemHandle = this.worker.GetComponent<KSelectable>().RemoveStatusItem(this.laboratoryEfficiencyBonusStatusItemHandle, false);
+				this.worker.RevokeStatusItem(this.laboratoryEfficiencyBonusStatusItemHandle);
+				this.laboratoryEfficiencyBonusStatusItemHandle = Guid.Empty;
 			}
 		}
 	}
 
-	protected virtual void UpdateStatusItem(object data = null)
+		protected virtual void UpdateStatusItem(object data = null)
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		if (component == null)
@@ -205,18 +206,18 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		}
 	}
 
-	protected override void OnLoadLevel()
+		protected override void OnLoadLevel()
 	{
 		this.overrideAnims = null;
 		base.OnLoadLevel();
 	}
 
-	public virtual int GetCell()
+		public virtual int GetCell()
 	{
 		return Grid.PosToCell(this);
 	}
 
-	public void StartWork(Worker worker_to_start)
+		public void StartWork(WorkerBase worker_to_start)
 	{
 		global::Debug.Assert(worker_to_start != null, "How did we get a null worker?");
 		this.worker = worker_to_start;
@@ -257,7 +258,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		base.gameObject.Trigger(853695848, this);
 	}
 
-	public bool WorkTick(Worker worker, float dt)
+		public bool WorkTick(WorkerBase worker, float dt)
 	{
 		bool flag = false;
 		if (dt > 0f)
@@ -268,26 +269,29 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return flag || this.workTimeRemaining < 0f;
 	}
 
-	public virtual float GetEfficiencyMultiplier(Worker worker)
+		public virtual float GetEfficiencyMultiplier(WorkerBase worker)
 	{
 		float num = 1f;
 		if (this.attributeConverter != null)
 		{
-			AttributeConverterInstance converter = worker.GetComponent<AttributeConverters>().GetConverter(this.attributeConverter.Id);
-			num += converter.Evaluate();
+			AttributeConverterInstance attributeConverterInstance = worker.GetAttributeConverter(this.attributeConverter.Id);
+			if (attributeConverterInstance != null)
+			{
+				num += attributeConverterInstance.Evaluate();
+			}
 		}
 		if (this.lightEfficiencyBonus)
 		{
 			int num2 = Grid.PosToCell(worker.gameObject);
 			if (Grid.IsValidCell(num2))
 			{
-				if (Grid.LightIntensity[num2] > 0)
+				if (Grid.LightIntensity[num2] > DUPLICANTSTATS.STANDARD.Light.NO_LIGHT)
 				{
 					this.currentlyLit = true;
-					num += 0.15f;
+					num += DUPLICANTSTATS.STANDARD.Light.LIGHT_WORK_EFFICIENCY_BONUS;
 					if (this.lightEfficiencyBonusStatusItemHandle == Guid.Empty)
 					{
-						this.lightEfficiencyBonusStatusItemHandle = worker.GetComponent<KSelectable>().AddStatusItem(Db.Get().DuplicantStatusItems.LightWorkEfficiencyBonus, this);
+						this.lightEfficiencyBonusStatusItemHandle = worker.OfferStatusItem(Db.Get().DuplicantStatusItems.LightWorkEfficiencyBonus, this);
 					}
 				}
 				else
@@ -295,7 +299,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 					this.currentlyLit = false;
 					if (this.lightEfficiencyBonusStatusItemHandle != Guid.Empty)
 					{
-						worker.GetComponent<KSelectable>().RemoveStatusItem(this.lightEfficiencyBonusStatusItemHandle, false);
+						worker.RevokeStatusItem(this.lightEfficiencyBonusStatusItemHandle);
 					}
 				}
 			}
@@ -307,7 +311,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return Mathf.Max(num, this.minimumAttributeMultiplier);
 	}
 
-	public virtual Klei.AI.Attribute GetWorkAttribute()
+		public virtual Klei.AI.Attribute GetWorkAttribute()
 	{
 		if (this.attributeConverter != null)
 		{
@@ -316,7 +320,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return null;
 	}
 
-	public virtual string GetConversationTopic()
+		public virtual string GetConversationTopic()
 	{
 		KPrefabID component = base.GetComponent<KPrefabID>();
 		if (!component.HasTag(GameTags.NotConversationTopic))
@@ -326,27 +330,27 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return null;
 	}
 
-	public float GetAttributeExperienceMultiplier()
+		public float GetAttributeExperienceMultiplier()
 	{
 		return this.attributeExperienceMultiplier;
 	}
 
-	public string GetSkillExperienceSkillGroup()
+		public string GetSkillExperienceSkillGroup()
 	{
 		return this.skillExperienceSkillGroup;
 	}
 
-	public float GetSkillExperienceMultiplier()
+		public float GetSkillExperienceMultiplier()
 	{
 		return this.skillExperienceMultiplier;
 	}
 
-	protected virtual bool OnWorkTick(Worker worker, float dt)
+		protected virtual bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		return false;
 	}
 
-	public void StopWork(Worker workerToStop, bool aborted)
+		public void StopWork(WorkerBase workerToStop, bool aborted)
 	{
 		if (this.worker == workerToStop && aborted)
 		{
@@ -368,11 +372,13 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		this.ShowProgressBar(this.alwaysShowProgressBar && this.workTimeRemaining < this.GetWorkTime());
 		if (this.lightEfficiencyBonusStatusItemHandle != Guid.Empty)
 		{
-			this.lightEfficiencyBonusStatusItemHandle = workerToStop.GetComponent<KSelectable>().RemoveStatusItem(this.lightEfficiencyBonusStatusItemHandle, false);
+			workerToStop.RevokeStatusItem(this.lightEfficiencyBonusStatusItemHandle);
+			this.lightEfficiencyBonusStatusItemHandle = Guid.Empty;
 		}
 		if (this.laboratoryEfficiencyBonusStatusItemHandle != Guid.Empty)
 		{
-			this.laboratoryEfficiencyBonusStatusItemHandle = this.worker.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().DuplicantStatusItems.LaboratoryWorkEfficiencyBonus, false);
+			this.worker.RevokeStatusItem(this.laboratoryEfficiencyBonusStatusItemHandle);
+			this.laboratoryEfficiencyBonusStatusItemHandle = Guid.Empty;
 		}
 		if (base.gameObject.GetComponent<KSelectable>() != null && !base.gameObject.GetComponent<KSelectable>().IsSelected && base.gameObject.GetComponent<LoopingSounds>() != null)
 		{
@@ -387,17 +393,17 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		this.UpdateStatusItem(null);
 	}
 
-	public virtual StatusItem GetWorkerStatusItem()
+		public virtual StatusItem GetWorkerStatusItem()
 	{
 		return this.workerStatusItem;
 	}
 
-	public void SetWorkerStatusItem(StatusItem item)
+		public void SetWorkerStatusItem(StatusItem item)
 	{
 		this.workerStatusItem = item;
 	}
 
-	public void CompleteWork(Worker worker)
+		public void CompleteWork(WorkerBase worker)
 	{
 		if (this.shouldTransferDiseaseWithWorker)
 		{
@@ -413,37 +419,37 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		base.gameObject.Trigger(-2011693419, this);
 	}
 
-	public void SetReportType(ReportManager.ReportType report_type)
+		public void SetReportType(ReportManager.ReportType report_type)
 	{
 		this.reportType = report_type;
 	}
 
-	public ReportManager.ReportType GetReportType()
+		public ReportManager.ReportType GetReportType()
 	{
 		return this.reportType;
 	}
 
-	protected virtual void OnStartWork(Worker worker)
+		protected virtual void OnStartWork(WorkerBase worker)
 	{
 	}
 
-	protected virtual void OnStopWork(Worker worker)
+		protected virtual void OnStopWork(WorkerBase worker)
 	{
 	}
 
-	protected virtual void OnCompleteWork(Worker worker)
+		protected virtual void OnCompleteWork(WorkerBase worker)
 	{
 	}
 
-	protected virtual void OnAbortWork(Worker worker)
+		protected virtual void OnAbortWork(WorkerBase worker)
 	{
 	}
 
-	public virtual void OnPendingCompleteWork(Worker worker)
+		public virtual void OnPendingCompleteWork(WorkerBase worker)
 	{
 	}
 
-	public void SetOffsets(CellOffset[] offsets)
+		public void SetOffsets(CellOffset[] offsets)
 	{
 		if (this.offsetTracker != null)
 		{
@@ -452,7 +458,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		this.offsetTracker = new StandardOffsetTracker(offsets);
 	}
 
-	public void SetOffsetTable(CellOffset[][] offset_table)
+		public void SetOffsetTable(CellOffset[][] offset_table)
 	{
 		if (this.offsetTracker != null)
 		{
@@ -461,7 +467,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		this.offsetTracker = new OffsetTableTracker(offset_table, this);
 	}
 
-	public virtual CellOffset[] GetOffsets(int cell)
+		public virtual CellOffset[] GetOffsets(int cell)
 	{
 		if (this.offsetTracker == null)
 		{
@@ -470,28 +476,37 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return this.offsetTracker.GetOffsets(cell);
 	}
 
-	public CellOffset[] GetOffsets()
+		public virtual bool ValidateOffsets(int cell)
+	{
+		if (this.offsetTracker == null)
+		{
+			this.offsetTracker = new StandardOffsetTracker(new CellOffset[1]);
+		}
+		return this.offsetTracker.ValidateOffsets(cell);
+	}
+
+		public CellOffset[] GetOffsets()
 	{
 		return this.GetOffsets(Grid.PosToCell(this));
 	}
 
-	public void SetWorkTime(float work_time)
+		public void SetWorkTime(float work_time)
 	{
 		this.workTime = work_time;
 		this.workTimeRemaining = work_time;
 	}
 
-	public bool ShouldFaceTargetWhenWorking()
+		public bool ShouldFaceTargetWhenWorking()
 	{
 		return this.faceTargetWhenWorking;
 	}
 
-	public virtual Vector3 GetFacingTarget()
+		public virtual Vector3 GetFacingTarget()
 	{
 		return base.transform.GetPosition();
 	}
 
-	public void ShowProgressBar(bool show)
+		public void ShowProgressBar(bool show)
 	{
 		if (show)
 		{
@@ -509,7 +524,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.ShowProgressBar(false);
 		if (this.offsetTracker != null)
@@ -528,7 +543,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		this.OnWorkableEventCB = null;
 	}
 
-	public virtual Vector3 GetTargetPoint()
+		public virtual Vector3 GetTargetPoint()
 	{
 		Vector3 vector = base.transform.GetPosition();
 		float y = vector.y + 0.65f;
@@ -542,17 +557,17 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return vector;
 	}
 
-	public int GetNavigationCost(Navigator navigator, int cell)
+		public int GetNavigationCost(Navigator navigator, int cell)
 	{
 		return navigator.GetNavigationCost(cell, this.GetOffsets(cell));
 	}
 
-	public int GetNavigationCost(Navigator navigator)
+		public int GetNavigationCost(Navigator navigator)
 	{
 		return this.GetNavigationCost(navigator, Grid.PosToCell(this));
 	}
 
-	private void TransferDiseaseWithWorker(Worker worker)
+		private void TransferDiseaseWithWorker(WorkerBase worker)
 	{
 		if (this == null || worker == null)
 		{
@@ -561,7 +576,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		Workable.TransferDiseaseWithWorker(base.gameObject, worker.gameObject);
 	}
 
-	public static void TransferDiseaseWithWorker(GameObject workable, GameObject worker)
+		public static void TransferDiseaseWithWorker(GameObject workable, GameObject worker)
 	{
 		if (workable == null || worker == null)
 		{
@@ -595,7 +610,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		}
 	}
 
-	public void SetShouldShowSkillPerkStatusItem(bool shouldItBeShown)
+		public void SetShouldShowSkillPerkStatusItem(bool shouldItBeShown)
 	{
 		this.shouldShowSkillPerkStatusItem = shouldItBeShown;
 		if (this.skillsUpdateHandle != -1)
@@ -610,9 +625,9 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		this.UpdateStatusItem(null);
 	}
 
-	public virtual bool InstantlyFinish(Worker worker)
+		public virtual bool InstantlyFinish(WorkerBase worker)
 	{
-		float num = worker.workable.WorkTimeRemaining;
+		float num = worker.GetWorkable().WorkTimeRemaining;
 		if (!float.IsInfinity(num))
 		{
 			worker.Work(num);
@@ -622,7 +637,7 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return false;
 	}
 
-	public virtual List<Descriptor> GetDescriptors(GameObject go)
+		public virtual List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.trackUses)
@@ -633,17 +648,17 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		return list;
 	}
 
-	public virtual BuildingFacade GetBuildingFacade()
+		public virtual BuildingFacade GetBuildingFacade()
 	{
 		return base.GetComponent<BuildingFacade>();
 	}
 
-	public virtual KAnimControllerBase GetAnimController()
+		public virtual KAnimControllerBase GetAnimController()
 	{
 		return base.GetComponent<KAnimControllerBase>();
 	}
 
-	[ContextMenu("Refresh Reachability")]
+		[ContextMenu("Refresh Reachability")]
 	public void RefreshReachability()
 	{
 		if (this.offsetTracker != null)
@@ -652,140 +667,140 @@ public class Workable : KMonoBehaviour, ISaveLoadable, IApproachable
 		}
 	}
 
-	public float workTime;
+		public float workTime;
 
-	protected bool showProgressBar = true;
+		protected bool showProgressBar = true;
 
-	public bool alwaysShowProgressBar;
+		public bool alwaysShowProgressBar;
 
-	protected bool lightEfficiencyBonus = true;
+		protected bool lightEfficiencyBonus = true;
 
-	protected Guid lightEfficiencyBonusStatusItemHandle;
+		protected Guid lightEfficiencyBonusStatusItemHandle;
 
-	public bool currentlyLit;
+		public bool currentlyLit;
 
-	public Tag laboratoryEfficiencyBonusTagRequired = RoomConstraints.ConstraintTags.ScienceBuilding;
+		public Tag laboratoryEfficiencyBonusTagRequired = RoomConstraints.ConstraintTags.ScienceBuilding;
 
-	private bool useLaboratoryEfficiencyBonus;
+		private bool useLaboratoryEfficiencyBonus;
 
-	protected Guid laboratoryEfficiencyBonusStatusItemHandle;
+		protected Guid laboratoryEfficiencyBonusStatusItemHandle;
 
-	private bool currentlyInLaboratory;
+		private bool currentlyInLaboratory;
 
-	protected StatusItem workerStatusItem;
+		protected StatusItem workerStatusItem;
 
-	protected StatusItem workingStatusItem;
+		protected StatusItem workingStatusItem;
 
-	protected Guid workStatusItemHandle;
+		protected Guid workStatusItemHandle;
 
-	protected OffsetTracker offsetTracker;
+		protected OffsetTracker offsetTracker;
 
-	[SerializeField]
+		[SerializeField]
 	protected string attributeConverterId;
 
-	protected AttributeConverter attributeConverter;
+		protected AttributeConverter attributeConverter;
 
-	protected float minimumAttributeMultiplier = 0.5f;
+		protected float minimumAttributeMultiplier = 0.5f;
 
-	public bool resetProgressOnStop;
+		public bool resetProgressOnStop;
 
-	protected bool shouldTransferDiseaseWithWorker = true;
+		protected bool shouldTransferDiseaseWithWorker = true;
 
-	[SerializeField]
+		[SerializeField]
 	protected float attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
 
-	[SerializeField]
+		[SerializeField]
 	protected string skillExperienceSkillGroup;
 
-	[SerializeField]
+		[SerializeField]
 	protected float skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
 
-	public bool triggerWorkReactions = true;
+		public bool triggerWorkReactions = true;
 
-	public ReportManager.ReportType reportType = ReportManager.ReportType.WorkTime;
+		public ReportManager.ReportType reportType = ReportManager.ReportType.WorkTime;
 
-	[SerializeField]
+		[SerializeField]
 	[Tooltip("What layer does the dupe switch to when interacting with the building")]
 	public Grid.SceneLayer workLayer = Grid.SceneLayer.Move;
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	protected float workTimeRemaining = float.PositiveInfinity;
 
-	[SerializeField]
+		[SerializeField]
 	public KAnimFile[] overrideAnims;
 
-	[SerializeField]
+		[SerializeField]
 	protected HashedString multitoolContext;
 
-	[SerializeField]
+		[SerializeField]
 	protected Tag multitoolHitEffectTag;
 
-	[SerializeField]
+		[SerializeField]
 	[Tooltip("Whether to user the KAnimSynchronizer or not")]
 	public bool synchronizeAnims = true;
 
-	[SerializeField]
+		[SerializeField]
 	[Tooltip("Whether to display number of uses in the details panel")]
 	public bool trackUses;
 
-	[Serialize]
+		[Serialize]
 	protected int numberOfUses;
 
-	public Action<Workable, Workable.WorkableEvent> OnWorkableEventCB;
+		public Action<Workable, Workable.WorkableEvent> OnWorkableEventCB;
 
-	protected int skillsUpdateHandle = -1;
+		protected int skillsUpdateHandle = -1;
 
-	private int minionUpdateHandle = -1;
+		private int minionUpdateHandle = -1;
 
-	public string requiredSkillPerk;
+		public string requiredSkillPerk;
 
-	[SerializeField]
+		[SerializeField]
 	protected bool shouldShowSkillPerkStatusItem = true;
 
-	[SerializeField]
+		[SerializeField]
 	public bool requireMinionToWork;
 
-	protected StatusItem readyForSkillWorkStatusItem;
+		protected StatusItem readyForSkillWorkStatusItem;
 
-	public HashedString[] workAnims = new HashedString[]
+		public HashedString[] workAnims = new HashedString[]
 	{
 		"working_pre",
 		"working_loop"
 	};
 
-	public HashedString[] workingPstComplete = new HashedString[]
+		public HashedString[] workingPstComplete = new HashedString[]
 	{
 		"working_pst"
 	};
 
-	public HashedString[] workingPstFailed = new HashedString[]
+		public HashedString[] workingPstFailed = new HashedString[]
 	{
 		"working_pst"
 	};
 
-	public KAnim.PlayMode workAnimPlayMode;
+		public KAnim.PlayMode workAnimPlayMode;
 
-	public bool faceTargetWhenWorking;
+		public bool faceTargetWhenWorking;
 
-	private static readonly EventSystem.IntraObjectHandler<Workable> OnUpdateRoomDelegate = new EventSystem.IntraObjectHandler<Workable>(delegate(Workable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Workable> OnUpdateRoomDelegate = new EventSystem.IntraObjectHandler<Workable>(delegate(Workable component, object data)
 	{
 		component.OnUpdateRoom(data);
 	});
 
-	protected ProgressBar progressBar;
+		protected ProgressBar progressBar;
 
-	public enum WorkableEvent
+		public enum WorkableEvent
 	{
-		WorkStarted,
-		WorkCompleted,
-		WorkStopped
+				WorkStarted,
+				WorkCompleted,
+				WorkStopped
 	}
 
-	public struct AnimInfo
+		public struct AnimInfo
 	{
-		public KAnimFile[] overrideAnims;
+				public KAnimFile[] overrideAnims;
 
-		public StateMachine.Instance smi;
+				public StateMachine.Instance smi;
 	}
 }

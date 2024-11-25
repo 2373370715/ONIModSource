@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class ManualHighEnergyParticleSpawnerConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ManualHighEnergyParticleSpawner";
 		int width = 1;
@@ -33,11 +33,13 @@ public class ManualHighEnergyParticleSpawnerConfig : IBuildingConfig
 		buildingDef.HighEnergyParticleOutputOffset = new CellOffset(0, 2);
 		buildingDef.LogicInputPorts = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 0));
 		GeneratedBuildings.RegisterWithOverlay(OverlayScreen.RadiationIDs, "ManualHighEnergyParticleSpawner");
+		buildingDef.DiseaseCellVisName = "RadiationSickness";
+		buildingDef.UtilityOutputOffset = CellOffset.none;
 		buildingDef.Deprecated = !Sim.IsRadiationEnabled();
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGet<DropAllWorkable>();
@@ -98,31 +100,31 @@ public class ManualHighEnergyParticleSpawnerConfig : IBuildingConfig
 		radiationEmitter.emitRads = 120f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "ManualHighEnergyParticleSpawner";
+		public const string ID = "ManualHighEnergyParticleSpawner";
 
-	public const float MIN_LAUNCH_INTERVAL = 2f;
+		public const float MIN_LAUNCH_INTERVAL = 2f;
 
-	public const int MIN_SLIDER = 1;
+		public const int MIN_SLIDER = 1;
 
-	public const int MAX_SLIDER = 100;
+		public const int MAX_SLIDER = 100;
 
-	public const float RADBOLTS_PER_KG = 5f;
+		public const float RADBOLTS_PER_KG = 5f;
 
-	public const float MASS_PER_CRAFT = 1f;
+		public const float MASS_PER_CRAFT = 1f;
 
-	public const float REFINED_BONUS = 5f;
+		public const float REFINED_BONUS = 5f;
 
-	public const int RADBOLTS_PER_CRAFT = 5;
+		public const int RADBOLTS_PER_CRAFT = 5;
 
-	public static readonly Tag WASTE_MATERIAL = SimHashes.DepletedUranium.CreateTag();
+		public static readonly Tag WASTE_MATERIAL = SimHashes.DepletedUranium.CreateTag();
 
-	private const float ORE_FUEL_TO_WASTE_RATIO = 0.5f;
+		private const float ORE_FUEL_TO_WASTE_RATIO = 0.5f;
 
-	private const float REFINED_FUEL_TO_WASTE_RATIO = 0.8f;
+		private const float REFINED_FUEL_TO_WASTE_RATIO = 0.8f;
 
-	private short RAD_LIGHT_SIZE = 3;
+		private short RAD_LIGHT_SIZE = 3;
 }

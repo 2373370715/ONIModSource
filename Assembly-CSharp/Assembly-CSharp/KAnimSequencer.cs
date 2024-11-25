@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/KAnimSequencer")]
 public class KAnimSequencer : KMonoBehaviour, ISaveLoadable
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.kbac = base.GetComponent<KBatchedAnimController>();
@@ -17,12 +17,12 @@ public class KAnimSequencer : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public void Reset()
+		public void Reset()
 	{
 		this.currentIndex = 0;
 	}
 
-	public void PlaySequence()
+		public void PlaySequence()
 	{
 		if (this.sequence != null && this.sequence.Length != 0)
 		{
@@ -35,7 +35,7 @@ public class KAnimSequencer : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void PlayNext(HashedString name)
+		private void PlayNext(HashedString name)
 	{
 		if (this.sequence.Length > this.currentIndex)
 		{
@@ -50,26 +50,26 @@ public class KAnimSequencer : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	public bool autoRun;
 
-	[Serialize]
+		[Serialize]
 	public KAnimSequencer.KAnimSequence[] sequence = new KAnimSequencer.KAnimSequence[0];
 
-	private int currentIndex;
+		private int currentIndex;
 
-	private KBatchedAnimController kbac;
+		private KBatchedAnimController kbac;
 
-	private MinionBrain mb;
+		private MinionBrain mb;
 
-	[SerializationConfig(MemberSerialization.OptOut)]
+		[SerializationConfig(MemberSerialization.OptOut)]
 	[Serializable]
 	public class KAnimSequence
 	{
-		public string anim;
+				public string anim;
 
-		public float speed = 1f;
+				public float speed = 1f;
 
-		public KAnim.PlayMode mode = KAnim.PlayMode.Once;
+				public KAnim.PlayMode mode = KAnim.PlayMode.Once;
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OreScrubberConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "OreScrubber";
 		int width = 3;
@@ -31,13 +31,13 @@ public class OreScrubberConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		OreScrubber oreScrubber = go.AddOrGet<OreScrubber>();
 		oreScrubber.massConsumedPerUse = 0.07f;
 		oreScrubber.consumedElement = SimHashes.ChlorineGas;
-		oreScrubber.diseaseRemovalCount = 480000;
+		oreScrubber.diseaseRemovalCount = OreScrubberConfig.DISEASE_REMOVAL_COUNT;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
 		conduitConsumer.conduitType = ConduitType.Liquid;
 		conduitConsumer.consumptionRate = 1f;
@@ -56,16 +56,16 @@ public class OreScrubberConfig : IBuildingConfig
 		go.AddOrGet<Storage>().SetDefaultStoredItemModifiers(Storage.StandardSealedStorage);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<RequireInputs>().requireConduitHasMass = false;
 	}
 
-	public const string ID = "OreScrubber";
+		public const string ID = "OreScrubber";
 
-	private const float MASS_PER_USE = 0.07f;
+		private const float MASS_PER_USE = 0.07f;
 
-	private const int DISEASE_REMOVAL_COUNT = 480000;
+		private static readonly int DISEASE_REMOVAL_COUNT = WashBasinConfig.DISEASE_REMOVAL_COUNT * 4;
 
-	private const SimHashes CONSUMED_ELEMENT = SimHashes.ChlorineGas;
+		private const SimHashes CONSUMED_ELEMENT = SimHashes.ChlorineGas;
 }

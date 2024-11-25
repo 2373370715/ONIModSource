@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PropGravitasJar2Config : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PropGravitasJar2";
 		string name = STRINGS.BUILDINGS.PREFABS.PROPGRAVITASJAR2.NAME;
@@ -31,7 +31,7 @@ public class PropGravitasJar2Config : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
 		{
@@ -39,7 +39,7 @@ public class PropGravitasJar2Config : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 }

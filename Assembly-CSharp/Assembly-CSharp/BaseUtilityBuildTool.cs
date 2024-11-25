@@ -7,18 +7,18 @@ using UnityEngine;
 
 public class BaseUtilityBuildTool : DragTool
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.buildingCount = UnityEngine.Random.Range(1, 14);
 		this.canChangeDragAxis = false;
 	}
 
-	private void Play(GameObject go, string anim)
+		private void Play(GameObject go, string anim)
 	{
 		go.GetComponent<KBatchedAnimController>().Play(anim, KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		Vector3 cursorPos = PlayerController.GetCursorPos(KInputManager.GetMousePos());
@@ -42,7 +42,7 @@ public class BaseUtilityBuildTool : DragTool
 		}
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		this.StopVisUpdater();
 		ResourceRemainingDisplayScreen.instance.DeactivateDisplay();
@@ -54,7 +54,7 @@ public class BaseUtilityBuildTool : DragTool
 		this.facadeID = null;
 	}
 
-	public void Activate(BuildingDef def, IList<Tag> selected_elements)
+		public void Activate(BuildingDef def, IList<Tag> selected_elements)
 	{
 		this.selectedElements = selected_elements;
 		this.def = def;
@@ -63,13 +63,13 @@ public class BaseUtilityBuildTool : DragTool
 		ResourceRemainingDisplayScreen.instance.SetResources(selected_elements, def.CraftRecipe);
 	}
 
-	public void Activate(BuildingDef def, IList<Tag> selected_elements, string facadeID)
+		public void Activate(BuildingDef def, IList<Tag> selected_elements, string facadeID)
 	{
 		this.facadeID = facadeID;
 		this.Activate(def, selected_elements);
 	}
 
-	protected override void OnDragTool(int cell, int distFromOrigin)
+		protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		if (this.path.Count == 0 || this.path[this.path.Count - 1].cell == cell)
 		{
@@ -113,12 +113,12 @@ public class BaseUtilityBuildTool : DragTool
 		ResourceRemainingDisplayScreen.instance.SetNumberOfPendingConstructions(this.path.Count);
 	}
 
-	protected override int GetDragLength()
+		protected override int GetDragLength()
 	{
 		return this.path.Count;
 	}
 
-	private bool CheckValidPathPiece(int cell)
+		private bool CheckValidPathPiece(int cell)
 	{
 		if (this.def.BuildLocationRule == BuildLocationRule.NotInTiles)
 		{
@@ -140,7 +140,7 @@ public class BaseUtilityBuildTool : DragTool
 		return !(gameObject2 != null) || !(gameObject2.GetComponent<KAnimGraphTileVisualizer>() == null);
 	}
 
-	private bool CheckForConnection(int cell, string defName, string soundName, ref BuildingCellVisualizer outBcv, bool fireEvents = true)
+		private bool CheckForConnection(int cell, string defName, string soundName, ref BuildingCellVisualizer outBcv, bool fireEvents = true)
 	{
 		outBcv = null;
 		DebugUtil.Assert(defName != null, "defName was null");
@@ -259,7 +259,7 @@ public class BaseUtilityBuildTool : DragTool
 		return false;
 	}
 
-	private Building GetBuilding(int cell)
+		private Building GetBuilding(int cell)
 	{
 		GameObject gameObject = Grid.Objects[cell, 1];
 		if (gameObject != null)
@@ -269,12 +269,12 @@ public class BaseUtilityBuildTool : DragTool
 		return null;
 	}
 
-	protected override DragTool.Mode GetMode()
+		protected override DragTool.Mode GetMode()
 	{
 		return DragTool.Mode.Brush;
 	}
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
+		public override void OnLeftClickDown(Vector3 cursor_pos)
 	{
 		if (this.visualizer == null)
 		{
@@ -311,7 +311,7 @@ public class BaseUtilityBuildTool : DragTool
 		base.OnLeftClickDown(cursor_pos);
 	}
 
-	public override void OnLeftClickUp(Vector3 cursor_pos)
+		public override void OnLeftClickUp(Vector3 cursor_pos)
 	{
 		if (this.visualizer == null)
 		{
@@ -324,7 +324,7 @@ public class BaseUtilityBuildTool : DragTool
 		base.OnLeftClickUp(cursor_pos);
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		base.OnMouseMove(cursorPos);
 		int num = Grid.PosToCell(cursorPos);
@@ -346,7 +346,7 @@ public class BaseUtilityBuildTool : DragTool
 		}
 	}
 
-	private void SetColor(GameObject root, Color c, float strength)
+		private void SetColor(GameObject root, Color c, float strength)
 	{
 		KBatchedAnimController component = root.GetComponent<KBatchedAnimController>();
 		if (component != null)
@@ -355,12 +355,12 @@ public class BaseUtilityBuildTool : DragTool
 		}
 	}
 
-	protected virtual void ApplyPathToConduitSystem()
+		protected virtual void ApplyPathToConduitSystem()
 	{
 		DebugUtil.Assert(false, "I don't think this function ever runs");
 	}
 
-	private IEnumerator VisUpdater()
+		private IEnumerator VisUpdater()
 	{
 		for (;;)
 		{
@@ -396,7 +396,7 @@ public class BaseUtilityBuildTool : DragTool
 		yield break;
 	}
 
-	private void BuildPath()
+		private void BuildPath()
 	{
 		this.ApplyPathToConduitSystem();
 		int num = 0;
@@ -522,7 +522,7 @@ public class BaseUtilityBuildTool : DragTool
 		ResourceRemainingDisplayScreen.instance.SetNumberOfPendingConstructions(0);
 	}
 
-	private BaseUtilityBuildTool.PathNode CreateVisualizer(BaseUtilityBuildTool.PathNode node)
+		private BaseUtilityBuildTool.PathNode CreateVisualizer(BaseUtilityBuildTool.PathNode node)
 	{
 		if (node.visualizer == null)
 		{
@@ -534,7 +534,7 @@ public class BaseUtilityBuildTool : DragTool
 		return node;
 	}
 
-	private void StopVisUpdater()
+		private void StopVisUpdater()
 	{
 		for (int i = 0; i < this.path.Count; i++)
 		{
@@ -548,37 +548,37 @@ public class BaseUtilityBuildTool : DragTool
 		}
 	}
 
-	private IList<Tag> selectedElements;
+		private IList<Tag> selectedElements;
 
-	private BuildingDef def;
+		private BuildingDef def;
 
-	protected List<BaseUtilityBuildTool.PathNode> path = new List<BaseUtilityBuildTool.PathNode>();
+		protected List<BaseUtilityBuildTool.PathNode> path = new List<BaseUtilityBuildTool.PathNode>();
 
-	protected IUtilityNetworkMgr conduitMgr;
+		protected IUtilityNetworkMgr conduitMgr;
 
-	private string facadeID;
+		private string facadeID;
 
-	private Coroutine visUpdater;
+		private Coroutine visUpdater;
 
-	private int buildingCount;
+		private int buildingCount;
 
-	private int lastCell = -1;
+		private int lastCell = -1;
 
-	private BuildingCellVisualizer previousCellConnection;
+		private BuildingCellVisualizer previousCellConnection;
 
-	private int previousCell;
+		private int previousCell;
 
-	protected struct PathNode
+		protected struct PathNode
 	{
-		public void Play(string anim)
+				public void Play(string anim)
 		{
 			this.visualizer.GetComponent<KBatchedAnimController>().Play(anim, KAnim.PlayMode.Once, 1f, 0f);
 		}
 
-		public int cell;
+				public int cell;
 
-		public bool valid;
+				public bool valid;
 
-		public GameObject visualizer;
+				public GameObject visualizer;
 	}
 }

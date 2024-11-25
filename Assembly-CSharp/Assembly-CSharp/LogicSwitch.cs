@@ -6,13 +6,13 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicSwitch : Switch, IPlayerControlledToggle, ISim33ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicSwitch>(-905833192, LogicSwitch.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.wasOn = this.switchedOn;
@@ -20,12 +20,12 @@ public class LogicSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		base.GetComponent<KBatchedAnimController>().Play(this.switchedOn ? "on" : "off", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicSwitch component = ((GameObject)data).GetComponent<LogicSwitch>();
 		if (component != null && this.switchedOn != component.switchedOn)
@@ -36,14 +36,14 @@ public class LogicSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		}
 	}
 
-	protected override void Toggle()
+		protected override void Toggle()
 	{
 		base.Toggle();
 		this.UpdateVisualization();
 		this.UpdateLogicCircuit();
 	}
 
-	private void UpdateVisualization()
+		private void UpdateVisualization()
 	{
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 		if (this.wasOn != this.switchedOn)
@@ -54,18 +54,18 @@ public class LogicSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		this.wasOn = this.switchedOn;
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, this.switchedOn ? 1 : 0);
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSwitchStatusActive : Db.Get().BuildingStatusItems.LogicSwitchStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-	public void Sim33ms(float dt)
+		public void Sim33ms(float dt)
 	{
 		if (this.ToggleRequested)
 		{
@@ -75,13 +75,13 @@ public class LogicSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		}
 	}
 
-	public void SetFirstFrameCallback(System.Action ffCb)
+		public void SetFirstFrameCallback(System.Action ffCb)
 	{
 		this.firstFrameCallback = ffCb;
 		base.StartCoroutine(this.RunCallback());
 	}
 
-	private IEnumerator RunCallback()
+		private IEnumerator RunCallback()
 	{
 		yield return null;
 		if (this.firstFrameCallback != null)
@@ -93,22 +93,22 @@ public class LogicSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		yield break;
 	}
 
-	public void ToggledByPlayer()
+		public void ToggledByPlayer()
 	{
 		this.Toggle();
 	}
 
-	public bool ToggledOn()
+		public bool ToggledOn()
 	{
 		return this.switchedOn;
 	}
 
-	public KSelectable GetSelectable()
+		public KSelectable GetSelectable()
 	{
 		return base.GetComponent<KSelectable>();
 	}
 
-		public string SideScreenTitleKey
+			public string SideScreenTitleKey
 	{
 		get
 		{
@@ -116,19 +116,19 @@ public class LogicSwitch : Switch, IPlayerControlledToggle, ISim33ms
 		}
 	}
 
-			public bool ToggleRequested { get; set; }
+				public bool ToggleRequested { get; set; }
 
-	public static readonly HashedString PORT_ID = "LogicSwitch";
+		public static readonly HashedString PORT_ID = "LogicSwitch";
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicSwitch> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicSwitch>(delegate(LogicSwitch component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicSwitch> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicSwitch>(delegate(LogicSwitch component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private bool wasOn;
+		private bool wasOn;
 
-	private System.Action firstFrameCallback;
+		private System.Action firstFrameCallback;
 }

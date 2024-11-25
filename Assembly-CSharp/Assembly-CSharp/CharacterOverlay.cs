@@ -5,13 +5,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/CharacterOverlay")]
 public class CharacterOverlay : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.Register();
 	}
 
-	public void Register()
+		public void Register()
 	{
 		if (this.registered)
 		{
@@ -21,7 +21,7 @@ public class CharacterOverlay : KMonoBehaviour
 		NameDisplayScreen.Instance.AddNewEntry(base.gameObject);
 	}
 
-	public bool shouldShowName;
+		public bool shouldShowName;
 
-	private bool registered;
+		private bool registered;
 }

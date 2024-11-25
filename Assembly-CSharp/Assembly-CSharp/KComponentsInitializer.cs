@@ -2,7 +2,7 @@
 
 public class KComponentsInitializer : KComponentSpawn
 {
-	private void Awake()
+		private void Awake()
 	{
 		KComponentSpawn.instance = this;
 		this.comps = new GameComps();

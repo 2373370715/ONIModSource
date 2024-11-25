@@ -3,7 +3,7 @@ using STRINGS;
 
 public class ConditionHasAtmoSuit : ProcessCondition
 {
-	public ConditionHasAtmoSuit(CommandModule module)
+		public ConditionHasAtmoSuit(CommandModule module)
 	{
 		this.module = module;
 		ManualDeliveryKG manualDeliveryKG = this.module.FindOrAdd<ManualDeliveryKG>();
@@ -15,7 +15,7 @@ public class ConditionHasAtmoSuit : ProcessCondition
 		manualDeliveryKG.capacity = 1f;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		if (this.module.storage.GetAmountAvailable(GameTags.AtmoSuit) < 1f)
 		{
@@ -24,7 +24,7 @@ public class ConditionHasAtmoSuit : ProcessCondition
 		return ProcessCondition.Status.Ready;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		if (status == ProcessCondition.Status.Ready)
 		{
@@ -33,7 +33,7 @@ public class ConditionHasAtmoSuit : ProcessCondition
 		return UI.STARMAP.NOSUIT.NAME;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		if (status == ProcessCondition.Status.Ready)
 		{
@@ -42,10 +42,10 @@ public class ConditionHasAtmoSuit : ProcessCondition
 		return UI.STARMAP.NOSUIT.TOOLTIP;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private CommandModule module;
+		private CommandModule module;
 }

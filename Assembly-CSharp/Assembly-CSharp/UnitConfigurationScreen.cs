@@ -5,7 +5,7 @@ using UnityEngine;
 [Serializable]
 public class UnitConfigurationScreen
 {
-	public void Init()
+		public void Init()
 	{
 		this.celsiusToggle = Util.KInstantiateUI(this.toggleUnitPrefab, this.toggleGroup, true);
 		this.celsiusToggle.GetComponentInChildren<ToolTip>().toolTip = UI.FRONTEND.UNIT_OPTIONS_SCREEN.CELSIUS_TOOLTIP;
@@ -22,7 +22,7 @@ public class UnitConfigurationScreen
 		this.DisplayCurrentUnit();
 	}
 
-	private void DisplayCurrentUnit()
+		private void DisplayCurrentUnit()
 	{
 		GameUtil.TemperatureUnit @int = (GameUtil.TemperatureUnit)KPlayerPrefs.GetInt(UnitConfigurationScreen.TemperatureUnitKey, 0);
 		if (@int == GameUtil.TemperatureUnit.Celsius)
@@ -44,7 +44,7 @@ public class UnitConfigurationScreen
 		this.fahrenheitToggle.GetComponent<HierarchyReferences>().GetReference("Checkmark").gameObject.SetActive(false);
 	}
 
-	private void OnCelsiusClicked()
+		private void OnCelsiusClicked()
 	{
 		GameUtil.temperatureUnit = GameUtil.TemperatureUnit.Celsius;
 		KPlayerPrefs.SetInt(UnitConfigurationScreen.TemperatureUnitKey, GameUtil.temperatureUnit.GetHashCode());
@@ -55,7 +55,7 @@ public class UnitConfigurationScreen
 		}
 	}
 
-	private void OnKelvinClicked()
+		private void OnKelvinClicked()
 	{
 		GameUtil.temperatureUnit = GameUtil.TemperatureUnit.Kelvin;
 		KPlayerPrefs.SetInt(UnitConfigurationScreen.TemperatureUnitKey, GameUtil.temperatureUnit.GetHashCode());
@@ -66,7 +66,7 @@ public class UnitConfigurationScreen
 		}
 	}
 
-	private void OnFahrenheitClicked()
+		private void OnFahrenheitClicked()
 	{
 		GameUtil.temperatureUnit = GameUtil.TemperatureUnit.Fahrenheit;
 		KPlayerPrefs.SetInt(UnitConfigurationScreen.TemperatureUnitKey, GameUtil.temperatureUnit.GetHashCode());
@@ -77,19 +77,19 @@ public class UnitConfigurationScreen
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject toggleUnitPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject toggleGroup;
 
-	private GameObject celsiusToggle;
+		private GameObject celsiusToggle;
 
-	private GameObject kelvinToggle;
+		private GameObject kelvinToggle;
 
-	private GameObject fahrenheitToggle;
+		private GameObject fahrenheitToggle;
 
-	public static readonly string TemperatureUnitKey = "TemperatureUnit";
+		public static readonly string TemperatureUnitKey = "TemperatureUnit";
 
-	public static readonly string MassUnitKey = "MassUnit";
+		public static readonly string MassUnitKey = "MassUnit";
 }

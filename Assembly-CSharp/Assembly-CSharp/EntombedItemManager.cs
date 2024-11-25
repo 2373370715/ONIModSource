@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/EntombedItemManager")]
 public class EntombedItemManager : KMonoBehaviour, ISim33ms
 {
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		this.SpawnUncoveredObjects();
@@ -15,7 +15,7 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 		this.PopulateEntombedItemVisualizers();
 	}
 
-	public static bool CanEntomb(Pickupable pickupable)
+		public static bool CanEntomb(Pickupable pickupable)
 	{
 		if (pickupable == null)
 		{
@@ -29,12 +29,12 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 		return Grid.IsValidCell(num) && Grid.Solid[num] && !(Grid.Objects[num, 9] != null) && (pickupable.PrimaryElement.Element.IsSolid && pickupable.GetComponent<ElementChunk>() != null);
 	}
 
-	public void Add(Pickupable pickupable)
+		public void Add(Pickupable pickupable)
 	{
 		this.pickupables.Add(pickupable);
 	}
 
-	public void Sim33ms(float dt)
+		public void Sim33ms(float dt)
 	{
 		EntombedItemVisualizer component = Game.Instance.GetComponent<EntombedItemVisualizer>();
 		HashSetPool<Pickupable, EntombedItemManager>.PooledHashSet pooledHashSet = HashSetPool<Pickupable, EntombedItemManager>.Allocate();
@@ -75,7 +75,7 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 		pooledHashSet.Recycle();
 	}
 
-	public void OnSolidChanged(List<int> solid_changed_cells)
+		public void OnSolidChanged(List<int> solid_changed_cells)
 	{
 		ListPool<int, EntombedItemManager>.PooledList pooledList = ListPool<int, EntombedItemManager>.Allocate();
 		foreach (int num in solid_changed_cells)
@@ -103,7 +103,7 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 		pooledList2.Recycle();
 	}
 
-	private void SpawnUncoveredObjects()
+		private void SpawnUncoveredObjects()
 	{
 		ListPool<int, EntombedItemManager>.PooledList pooledList = ListPool<int, EntombedItemManager>.Allocate();
 		for (int i = 0; i < this.cells.Count; i++)
@@ -118,7 +118,7 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 		pooledList.Recycle();
 	}
 
-	private void AddMassToWorldIfPossible()
+		private void AddMassToWorldIfPossible()
 	{
 		ListPool<int, EntombedItemManager>.PooledList pooledList = ListPool<int, EntombedItemManager>.Allocate();
 		for (int i = 0; i < this.cells.Count; i++)
@@ -143,7 +143,7 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 		pooledList.Recycle();
 	}
 
-	private void RemoveItem(int item_idx)
+		private void RemoveItem(int item_idx)
 	{
 		this.cells.RemoveAt(item_idx);
 		this.elementIds.RemoveAt(item_idx);
@@ -153,7 +153,7 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 		this.diseaseCounts.RemoveAt(item_idx);
 	}
 
-	private EntombedItemManager.Item GetItem(int item_idx)
+		private EntombedItemManager.Item GetItem(int item_idx)
 	{
 		return new EntombedItemManager.Item
 		{
@@ -166,7 +166,7 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 		};
 	}
 
-	private void SpawnObjects(List<int> uncovered_item_indices)
+		private void SpawnObjects(List<int> uncovered_item_indices)
 	{
 		uncovered_item_indices.Sort();
 		uncovered_item_indices.Reverse();
@@ -184,7 +184,7 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	private void PopulateEntombedItemVisualizers()
+		private void PopulateEntombedItemVisualizers()
 	{
 		EntombedItemVisualizer component = Game.Instance.GetComponent<EntombedItemVisualizer>();
 		foreach (int cell in this.cells)
@@ -193,38 +193,38 @@ public class EntombedItemManager : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private List<int> cells = new List<int>();
 
-	[Serialize]
+		[Serialize]
 	private List<int> elementIds = new List<int>();
 
-	[Serialize]
+		[Serialize]
 	private List<float> masses = new List<float>();
 
-	[Serialize]
+		[Serialize]
 	private List<float> temperatures = new List<float>();
 
-	[Serialize]
+		[Serialize]
 	private List<byte> diseaseIndices = new List<byte>();
 
-	[Serialize]
+		[Serialize]
 	private List<int> diseaseCounts = new List<int>();
 
-	private List<Pickupable> pickupables = new List<Pickupable>();
+		private List<Pickupable> pickupables = new List<Pickupable>();
 
-	private struct Item
+		private struct Item
 	{
-		public int cell;
+				public int cell;
 
-		public int elementId;
+				public int elementId;
 
-		public float mass;
+				public float mass;
 
-		public float temperature;
+				public float temperature;
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		public int diseaseCount;
+				public int diseaseCount;
 	}
 }

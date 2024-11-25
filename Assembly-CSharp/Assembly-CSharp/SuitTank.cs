@@ -9,14 +9,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SuitTank")]
 public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreather.IGasProvider
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<SuitTank>(-1617557748, SuitTank.OnEquippedDelegate);
 		base.Subscribe<SuitTank>(-170173755, SuitTank.OnUnequippedDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.amount != 0f)
@@ -26,7 +26,7 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 		}
 	}
 
-	public float GetTankAmount()
+		public float GetTankAmount()
 	{
 		if (this.storage == null)
 		{
@@ -35,27 +35,27 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 		return this.storage.GetMassAvailable(this.elementTag);
 	}
 
-	public float PercentFull()
+		public float PercentFull()
 	{
 		return this.GetTankAmount() / this.capacity;
 	}
 
-	public bool IsEmpty()
+		public bool IsEmpty()
 	{
 		return this.GetTankAmount() <= 0f;
 	}
 
-	public bool IsFull()
+		public bool IsFull()
 	{
 		return this.PercentFull() >= 1f;
 	}
 
-	public bool NeedsRecharging()
+		public bool NeedsRecharging()
 	{
 		return this.PercentFull() < 0.25f;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.elementTag == GameTags.Breathable)
@@ -66,46 +66,48 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 		return list;
 	}
 
-	private void OnEquipped(object data)
+		private void OnEquipped(object data)
 	{
 		Equipment equipment = (Equipment)data;
 		NameDisplayScreen.Instance.SetSuitTankDisplay(equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject(), new Func<float>(this.PercentFull), true);
-		OxygenBreather component = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<OxygenBreather>();
+		GameObject targetGameObject = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
+		OxygenBreather component = targetGameObject.GetComponent<OxygenBreather>();
 		if (component != null)
 		{
 			component.SetGasProvider(this);
-			component.AddTag(GameTags.HasSuitTank);
 		}
+		targetGameObject.AddTag(GameTags.HasSuitTank);
 	}
 
-	private void OnUnequipped(object data)
+		private void OnUnequipped(object data)
 	{
 		Equipment equipment = (Equipment)data;
 		if (!equipment.destroyed)
 		{
 			NameDisplayScreen.Instance.SetSuitTankDisplay(equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject(), new Func<float>(this.PercentFull), false);
-			OxygenBreather component = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject().GetComponent<OxygenBreather>();
+			GameObject targetGameObject = equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject();
+			OxygenBreather component = targetGameObject.GetComponent<OxygenBreather>();
 			if (component != null)
 			{
 				component.SetGasProvider(new GasBreatherFromWorldProvider());
-				component.RemoveTag(GameTags.HasSuitTank);
 			}
+			targetGameObject.RemoveTag(GameTags.HasSuitTank);
 		}
 	}
 
-	public void OnSetOxygenBreather(OxygenBreather oxygen_breather)
+		public void OnSetOxygenBreather(OxygenBreather oxygen_breather)
 	{
 		this.suitSuffocationMonitor = new SuitSuffocationMonitor.Instance(oxygen_breather, this);
 		this.suitSuffocationMonitor.StartSM();
 	}
 
-	public void OnClearOxygenBreather(OxygenBreather oxygen_breather)
+		public void OnClearOxygenBreather(OxygenBreather oxygen_breather)
 	{
 		this.suitSuffocationMonitor.StopSM("Removed suit tank");
 		this.suitSuffocationMonitor = null;
 	}
 
-	public bool ConsumeGas(OxygenBreather oxygen_breather, float gas_consumed)
+		public bool ConsumeGas(OxygenBreather oxygen_breather, float gas_consumed)
 	{
 		if (this.IsEmpty())
 		{
@@ -121,22 +123,22 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 		return true;
 	}
 
-	public bool ShouldEmitCO2()
+		public bool ShouldEmitCO2()
 	{
 		return !base.GetComponent<KPrefabID>().HasTag(GameTags.AirtightSuit);
 	}
 
-	public bool ShouldStoreCO2()
+		public bool ShouldStoreCO2()
 	{
 		return base.GetComponent<KPrefabID>().HasTag(GameTags.AirtightSuit);
 	}
 
-	public bool IsLowOxygen()
+		public bool IsLowOxygen()
 	{
 		return this.IsEmpty();
 	}
 
-	[ContextMenu("SetToRefillAmount")]
+		[ContextMenu("SetToRefillAmount")]
 	public void SetToRefillAmount()
 	{
 		float tankAmount = this.GetTankAmount();
@@ -147,44 +149,44 @@ public class SuitTank : KMonoBehaviour, IGameObjectEffectDescriptor, OxygenBreat
 		}
 	}
 
-	[ContextMenu("Empty")]
+		[ContextMenu("Empty")]
 	public void Empty()
 	{
 		this.storage.ConsumeIgnoringDisease(this.elementTag, this.GetTankAmount());
 	}
 
-	[ContextMenu("Fill Tank")]
+		[ContextMenu("Fill Tank")]
 	public void FillTank()
 	{
 		this.Empty();
 		this.storage.AddGasChunk(SimHashes.Oxygen, this.capacity, 15f, 0, 0, false, false);
 	}
 
-	[Serialize]
+		[Serialize]
 	public string element;
 
-	[Serialize]
+		[Serialize]
 	public float amount;
 
-	public Tag elementTag;
+		public Tag elementTag;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Storage storage;
 
-	public float capacity;
+		public float capacity;
 
-	public const float REFILL_PERCENT = 0.25f;
+		public const float REFILL_PERCENT = 0.25f;
 
-	public bool underwaterSupport;
+		public bool underwaterSupport;
 
-	private SuitSuffocationMonitor.Instance suitSuffocationMonitor;
+		private SuitSuffocationMonitor.Instance suitSuffocationMonitor;
 
-	private static readonly EventSystem.IntraObjectHandler<SuitTank> OnEquippedDelegate = new EventSystem.IntraObjectHandler<SuitTank>(delegate(SuitTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SuitTank> OnEquippedDelegate = new EventSystem.IntraObjectHandler<SuitTank>(delegate(SuitTank component, object data)
 	{
 		component.OnEquipped(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<SuitTank> OnUnequippedDelegate = new EventSystem.IntraObjectHandler<SuitTank>(delegate(SuitTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SuitTank> OnUnequippedDelegate = new EventSystem.IntraObjectHandler<SuitTank>(delegate(SuitTank component, object data)
 	{
 		component.OnUnequipped(data);
 	});

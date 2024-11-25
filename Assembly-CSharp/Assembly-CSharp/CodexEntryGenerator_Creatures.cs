@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class CodexEntryGenerator_Creatures
 {
-	public static Dictionary<string, CodexEntry> GenerateEntries()
+		public static Dictionary<string, CodexEntry> GenerateEntries()
 	{
 		CodexEntryGenerator_Creatures.<>c__DisplayClass6_0 CS$<>8__locals1;
 		CS$<>8__locals1.results = new Dictionary<string, CodexEntry>();
@@ -37,7 +37,7 @@ public class CodexEntryGenerator_Creatures
 		return CS$<>8__locals1.results;
 	}
 
-	private static CodexEntry GenerateFieldGuideEntry()
+		private static CodexEntry GenerateFieldGuideEntry()
 	{
 		CodexEntryGenerator_Creatures.<>c__DisplayClass7_0 CS$<>8__locals1;
 		CS$<>8__locals1.generalInfoEntry = new CodexEntry("CREATURES", new List<ContentContainer>(), CODEX.CRITTERSTATUS.CRITTERSTATUS_TITLE);
@@ -115,7 +115,7 @@ public class CodexEntryGenerator_Creatures
 		return CS$<>8__locals1.generalInfoEntry;
 	}
 
-	private static CodexEntry GenerateCritterEntry(Tag speciesTag, string name, List<GameObject> brains)
+		private static CodexEntry GenerateCritterEntry(Tag speciesTag, string name, List<GameObject> brains)
 	{
 		CodexEntry codexEntry = null;
 		List<ContentContainer> list = new List<ContentContainer>();
@@ -168,7 +168,7 @@ public class CodexEntryGenerator_Creatures
 		return codexEntry;
 	}
 
-	private static void GenerateCreatureDescriptionContainers(GameObject creature, List<ContentContainer> containers)
+		private static void GenerateCreatureDescriptionContainers(GameObject creature, List<ContentContainer> containers)
 	{
 		containers.Add(new ContentContainer(new List<ICodexWidget>
 		{
@@ -321,7 +321,14 @@ public class CodexEntryGenerator_Creatures
 								float outputAmount = num3 * info.producedConversionRate;
 								if (flag)
 								{
-									list.Add(new CodexConversionPanel(tag2.ProperName(), tag2, num3, true, new Func<Tag, float, bool, string>(GameUtil.GetFormattedPlantConsumptionValuePerCycle), info.producedElement, outputAmount, true, null, creature));
+									if (info.foodType == Diet.Info.FoodType.EatPlantDirectly)
+									{
+										list.Add(new CodexConversionPanel(tag2.ProperName(), tag2, num3, true, new Func<Tag, float, bool, string>(GameUtil.GetFormattedDirectPlantConsumptionValuePerCycle), info.producedElement, outputAmount, true, null, creature));
+									}
+									else if (info.foodType == Diet.Info.FoodType.EatPlantStorage)
+									{
+										list.Add(new CodexConversionPanel(tag2.ProperName(), tag2, num3, true, new Func<Tag, float, bool, string>(GameUtil.GetFormattedPlantStorageConsumptionValuePerCycle), info.producedElement, outputAmount, true, null, creature));
+									}
 								}
 								else
 								{
@@ -348,8 +355,8 @@ public class CodexEntryGenerator_Creatures
 		}
 	}
 
-	[CompilerGenerated]
-	internal static void <GenerateEntries>g__AddEntry|6_0(string entryId, CodexEntry entry, string parentEntryId, ref CodexEntryGenerator_Creatures.<>c__DisplayClass6_0 A_3)
+		[CompilerGenerated]
+	internal static void <GenerateEntries>g__AddEntry|6_0(string entryId, CodexEntry entry, string parentEntryId = "CREATURES", ref CodexEntryGenerator_Creatures.<>c__DisplayClass6_0 A_3)
 	{
 		if (entry == null)
 		{
@@ -360,7 +367,7 @@ public class CodexEntryGenerator_Creatures
 		A_3.results.Add(entryId, entry);
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <GenerateEntries>g__PushCritterEntry|6_1(Tag speciesTag, string name, ref CodexEntryGenerator_Creatures.<>c__DisplayClass6_0 A_2)
 	{
 		CodexEntry codexEntry = CodexEntryGenerator_Creatures.GenerateCritterEntry(speciesTag, name, A_2.brains);
@@ -370,7 +377,7 @@ public class CodexEntryGenerator_Creatures
 		}
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <GenerateEntries>g__PopAndAddAllCritterEntries|6_2(ref CodexEntryGenerator_Creatures.<>c__DisplayClass6_0 A_0)
 	{
 		foreach (ValueTuple<string, CodexEntry> valueTuple in A_0.critterEntries.StableSort((ValueTuple<string, CodexEntry> pair) => UI.StripLinkFormatting(pair.Item2.name)))
@@ -381,7 +388,7 @@ public class CodexEntryGenerator_Creatures
 		}
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <GenerateFieldGuideEntry>g__AddSubEntry|7_0(string id, string name, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_0 A_2, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_3)
 	{
 		A_3.subEntryContents = new List<ICodexWidget>();
@@ -393,32 +400,32 @@ public class CodexEntryGenerator_Creatures
 		A_2.generalInfoEntry.subEntries.Add(A_3.subEntry);
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <GenerateFieldGuideEntry>g__AddImage|7_1(Sprite sprite, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_1)
 	{
 		A_1.subEntryContents.Add(new CodexImage(432, 1, sprite));
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <GenerateFieldGuideEntry>g__AddSubtitle|7_2(string text, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_1)
 	{
 		CodexEntryGenerator_Creatures.<GenerateFieldGuideEntry>g__AddSpacer|7_4(ref A_1);
 		A_1.subEntryContents.Add(new CodexText(text, CodexTextStyle.Subtitle, null));
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <GenerateFieldGuideEntry>g__AddBody|7_3(string text, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_1)
 	{
 		A_1.subEntryContents.Add(new CodexText(text, CodexTextStyle.Body, null));
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <GenerateFieldGuideEntry>g__AddSpacer|7_4(ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_0)
 	{
 		A_0.subEntryContents.Add(new CodexSpacer());
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <GenerateFieldGuideEntry>g__AddBulletPoint|7_5(string text, ref CodexEntryGenerator_Creatures.<>c__DisplayClass7_1 A_1)
 	{
 		if (text.StartsWith("    • "))
@@ -429,15 +436,15 @@ public class CodexEntryGenerator_Creatures
 		A_1.subEntryContents.Add(new CodexText(text, CodexTextStyle.Body, null));
 	}
 
-	public const string CATEGORY_ID = "CREATURES";
+		public const string CATEGORY_ID = "CREATURES";
 
-	public const string GUIDE_ID = "CREATURES::GUIDE";
+		public const string GUIDE_ID = "CREATURES::GUIDE";
 
-	public const string GUIDE_METABOLISM_ID = "CREATURES::GUIDE::METABOLISM";
+		public const string GUIDE_METABOLISM_ID = "CREATURES::GUIDE::METABOLISM";
 
-	public const string GUIDE_MOOD_ID = "CREATURES::GUIDE::MOOD";
+		public const string GUIDE_MOOD_ID = "CREATURES::GUIDE::MOOD";
 
-	public const string GUIDE_FERTILITY_ID = "CREATURES::GUIDE::FERTILITY";
+		public const string GUIDE_FERTILITY_ID = "CREATURES::GUIDE::FERTILITY";
 
-	public const string GUIDE_DOMESTICATION_ID = "CREATURES::GUIDE::DOMESTICATION";
+		public const string GUIDE_DOMESTICATION_ID = "CREATURES::GUIDE::DOMESTICATION";
 }

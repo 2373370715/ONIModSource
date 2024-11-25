@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SubworldZoneRenderData")]
 public class SubworldZoneRenderData : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		ShaderReloader.Register(new System.Action(this.OnShadersReloaded));
@@ -19,7 +19,7 @@ public class SubworldZoneRenderData : KMonoBehaviour
 		});
 	}
 
-	public void OnActiveWorldChanged()
+		public void OnActiveWorldChanged()
 	{
 		byte[] rawTextureData = this.colourTex.GetRawTextureData();
 		byte[] rawTextureData2 = this.indexTex.GetRawTextureData();
@@ -70,7 +70,7 @@ public class SubworldZoneRenderData : KMonoBehaviour
 		this.OnShadersReloaded();
 	}
 
-	public void GenerateTexture()
+		public void GenerateTexture()
 	{
 		byte[] array = new byte[Grid.WidthInCells * Grid.HeightInCells];
 		byte[] array2 = new byte[Grid.WidthInCells * Grid.HeightInCells * 3];
@@ -127,13 +127,13 @@ public class SubworldZoneRenderData : KMonoBehaviour
 		this.InitSimZones(array);
 	}
 
-	private void OnShadersReloaded()
+		private void OnShadersReloaded()
 	{
 		Shader.SetGlobalTexture("_WorldZoneTex", this.colourTex);
 		Shader.SetGlobalTexture("_WorldZoneIndexTex", this.indexTex);
 	}
 
-	public SubWorld.ZoneType GetSubWorldZoneType(int cell)
+		public SubWorld.ZoneType GetSubWorldZoneType(int cell)
 	{
 		if (cell >= 0 && cell < this.worldZoneTypes.Length)
 		{
@@ -142,7 +142,7 @@ public class SubworldZoneRenderData : KMonoBehaviour
 		return SubWorld.ZoneType.Sandstone;
 	}
 
-	private unsafe void InitSimZones(byte[] bytes)
+		private unsafe void InitSimZones(byte[] bytes)
 	{
 		fixed (byte[] array = bytes)
 		{
@@ -159,16 +159,16 @@ public class SubworldZoneRenderData : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Texture2D colourTex;
 
-	[SerializeField]
+		[SerializeField]
 	private Texture2D indexTex;
 
-	[HideInInspector]
+		[HideInInspector]
 	public SubWorld.ZoneType[] worldZoneTypes;
 
-	[SerializeField]
+		[SerializeField]
 	[HideInInspector]
 	public Color32[] zoneColours = new Color32[]
 	{
@@ -192,9 +192,9 @@ public class SubworldZoneRenderData : KMonoBehaviour
 		new Color32(100, 222, 100, 20)
 	};
 
-	private const int NUM_COLOUR_BYTES = 3;
+		private const int NUM_COLOUR_BYTES = 3;
 
-	public int[] zoneTextureArrayIndices = new int[]
+		public int[] zoneTextureArrayIndices = new int[]
 	{
 		0,
 		1,

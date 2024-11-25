@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GeneratedBuildings
 {
-	public static void LoadGeneratedBuildings(List<Type> types)
+		public static void LoadGeneratedBuildings(List<Type> types)
 	{
 		Type typeFromHandle = typeof(IBuildingConfig);
 		List<Type> list = new List<Type>();
@@ -66,7 +66,7 @@ public class GeneratedBuildings
 		}
 	}
 
-	public static void MakeBuildingAlwaysOperational(GameObject go)
+		public static void MakeBuildingAlwaysOperational(GameObject go)
 	{
 		BuildingDef def = go.GetComponent<BuildingComplete>().Def;
 		if (def.LogicInputPorts != null || def.LogicOutputPorts != null)
@@ -76,37 +76,37 @@ public class GeneratedBuildings
 		GeneratedBuildings.MakeBuildingAlwaysOperationalImpl(go);
 	}
 
-	public static void RemoveLoopingSounds(GameObject go)
+		public static void RemoveLoopingSounds(GameObject go)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<LoopingSounds>());
 	}
 
-	public static void RemoveDefaultLogicPorts(GameObject go)
+		public static void RemoveDefaultLogicPorts(GameObject go)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<LogicPorts>());
 	}
 
-	public static void RegisterWithOverlay(HashSet<Tag> overlay_tags, string id)
+		public static void RegisterWithOverlay(HashSet<Tag> overlay_tags, string id)
 	{
 		overlay_tags.Add(new Tag(id));
 		overlay_tags.Add(new Tag(id + "UnderConstruction"));
 	}
 
-	public static void RegisterSingleLogicInputPort(GameObject go)
+		public static void RegisterSingleLogicInputPort(GameObject go)
 	{
 		LogicPorts logicPorts = go.AddOrGet<LogicPorts>();
 		logicPorts.inputPortInfo = LogicOperationalController.CreateSingleInputPortList(new CellOffset(0, 0)).ToArray();
 		logicPorts.outputPortInfo = null;
 	}
 
-	private static void MakeBuildingAlwaysOperationalImpl(GameObject go)
+		private static void MakeBuildingAlwaysOperationalImpl(GameObject go)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<BuildingEnabledButton>());
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<Operational>());
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<LogicPorts>());
 	}
 
-	public static void InitializeLogicPorts(GameObject go, BuildingDef def)
+		public static void InitializeLogicPorts(GameObject go, BuildingDef def)
 	{
 		if (def.AlwaysOperational)
 		{
@@ -122,7 +122,7 @@ public class GeneratedBuildings
 		}
 	}
 
-	public static void InitializeHighEnergyParticlePorts(GameObject go, BuildingDef def)
+		public static void InitializeHighEnergyParticlePorts(GameObject go, BuildingDef def)
 	{
 		if (def.UseHighEnergyParticleInputPort || def.UseHighEnergyParticleOutputPort)
 		{

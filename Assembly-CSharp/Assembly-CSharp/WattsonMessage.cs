@@ -9,12 +9,12 @@ using UnityEngine.UI;
 
 public class WattsonMessage : KScreen
 {
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 8f;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Game.Instance.Subscribe(-122303817, new Action<object>(this.OnNewBaseCreated));
@@ -33,8 +33,9 @@ public class WattsonMessage : KScreen
 		this.message.SetText(UI.WELCOMEMESSAGEBODY);
 	}
 
-	private IEnumerator ExpandPanel()
+		private IEnumerator ExpandPanel()
 	{
+		this.button.isInteractable = false;
 		if (CustomGameSettings.Instance.GetSettingsCoordinate().StartsWith("KF23"))
 		{
 			this.dialog.rectTransform().rotation = Quaternion.Euler(0f, 0f, -90f);
@@ -61,11 +62,12 @@ public class WattsonMessage : KScreen
 			}
 			initialOrientation = default(Quaternion);
 		}
+		this.button.isInteractable = true;
 		yield return null;
 		yield break;
 	}
 
-	private IEnumerator CollapsePanel()
+		private IEnumerator CollapsePanel()
 	{
 		float height = 300f;
 		while (height > 1f)
@@ -79,7 +81,7 @@ public class WattsonMessage : KScreen
 		yield break;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.hideScreensWhileActive.Add(NotificationScreen.Instance);
@@ -111,7 +113,7 @@ public class WattsonMessage : KScreen
 		}
 	}
 
-	public void Update()
+		public void Update()
 	{
 		if (!this.startFade)
 		{
@@ -126,7 +128,7 @@ public class WattsonMessage : KScreen
 		this.bg.color = color;
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		global::Debug.Log("WattsonMessage OnActivate");
 		base.OnActivate();
@@ -198,7 +200,7 @@ public class WattsonMessage : KScreen
 		}, null, null));
 	}
 
-		private string WelcomeMusic
+			private string WelcomeMusic
 	{
 		get
 		{
@@ -211,7 +213,7 @@ public class WattsonMessage : KScreen
 		}
 	}
 
-	protected void PauseAndShowMessage()
+		protected void PauseAndShowMessage()
 	{
 		SpeedControlScreen.Instance.Pause(false, false);
 		base.StartCoroutine(this.ExpandPanel());
@@ -221,7 +223,7 @@ public class WattsonMessage : KScreen
 		this.dialog.GetComponent<KScreen>().Show(true);
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		base.OnDeactivate();
 		AudioMixer.instance.Stop(AudioMixerSnapshots.Get().IntroNIS, FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
@@ -272,7 +274,7 @@ public class WattsonMessage : KScreen
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape))
 		{
@@ -282,58 +284,58 @@ public class WattsonMessage : KScreen
 		e.Consumed = true;
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		e.Consumed = true;
 	}
 
-	private void OnNewBaseCreated(object data)
+		private void OnNewBaseCreated(object data)
 	{
 		base.gameObject.SetActive(true);
 	}
 
-	private const float STARTTIME = 0.1f;
+		private const float STARTTIME = 0.1f;
 
-	private const float ENDTIME = 6.6f;
+		private const float ENDTIME = 6.6f;
 
-	private const float ALPHA_SPEED = 0.01f;
+		private const float ALPHA_SPEED = 0.01f;
 
-	private const float expandedHeight = 300f;
+		private const float expandedHeight = 300f;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject dialog;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform content;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText message;
 
-	[SerializeField]
+		[SerializeField]
 	private Image bg;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton button;
 
-	[SerializeField]
+		[SerializeField]
 	private EventReference dialogSound;
 
-	private List<KScreen> hideScreensWhileActive = new List<KScreen>();
+		private List<KScreen> hideScreensWhileActive = new List<KScreen>();
 
-	private bool startFade;
+		private bool startFade;
 
-	private List<SchedulerHandle> scheduleHandles = new List<SchedulerHandle>();
+		private List<SchedulerHandle> scheduleHandles = new List<SchedulerHandle>();
 
-	private static readonly HashedString[] WorkLoopAnims = new HashedString[]
+		private static readonly HashedString[] WorkLoopAnims = new HashedString[]
 	{
 		"working_pre",
 		"working_loop"
 	};
 
-	private int birthsComplete;
+		private int birthsComplete;
 
-	public class Tuning : TuningData<WattsonMessage.Tuning>
+		public class Tuning : TuningData<WattsonMessage.Tuning>
 	{
-		public float initialOrthographicSize;
+				public float initialOrthographicSize;
 	}
 }

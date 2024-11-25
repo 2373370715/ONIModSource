@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FirePoleConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "FirePole";
 		int width = 1;
@@ -29,7 +29,7 @@ public class FirePoleConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		Ladder ladder = go.AddOrGet<Ladder>();
@@ -39,9 +39,9 @@ public class FirePoleConfig : IBuildingConfig
 		go.AddOrGet<AnimTileable>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "FirePole";
+		public const string ID = "FirePole";
 }

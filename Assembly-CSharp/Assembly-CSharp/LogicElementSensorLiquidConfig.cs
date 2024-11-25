@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicElementSensorLiquidConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicElementSensorLiquidConfig.ID;
 		int width = 1;
@@ -36,7 +36,7 @@ public class LogicElementSensorLiquidConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<Filterable>().filterElementState = Filterable.ElementState.Liquid;
 		LogicElementSensor logicElementSensor = go.AddOrGet<LogicElementSensor>();
@@ -45,5 +45,5 @@ public class LogicElementSensorLiquidConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicElementSensorLiquid";
+		public static string ID = "LogicElementSensorLiquid";
 }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ReportErrorDialog : MonoBehaviour
 {
-	private void Start()
+		private void Start()
 	{
 		ThreadedHttps<KleiMetrics>.Instance.EndSession(true);
 		if (KScreenManager.Instance)
@@ -33,7 +33,7 @@ public class ReportErrorDialog : MonoBehaviour
 		KCrashReporter.onCrashUploadProgress += this.UpdateProgressBar;
 	}
 
-	private void BuildModsList()
+		private void BuildModsList()
 	{
 		DebugUtil.Assert(Global.Instance != null && Global.Instance.modManager != null);
 		Manager mod_mgr = Global.Instance.modManager;
@@ -64,12 +64,12 @@ public class ReportErrorDialog : MonoBehaviour
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		global::Debug.developerConsoleVisible = false;
 	}
 
-	private void OnDestroy()
+		private void OnDestroy()
 	{
 		if (KCrashReporter.terminateOnError)
 		{
@@ -83,7 +83,7 @@ public class ReportErrorDialog : MonoBehaviour
 		KCrashReporter.onCrashUploadProgress -= this.UpdateProgressBar;
 	}
 
-	public void OnKeyDown(KButtonEvent e)
+		public void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape))
 		{
@@ -91,7 +91,7 @@ public class ReportErrorDialog : MonoBehaviour
 		}
 	}
 
-	public void PopupSubmitErrorDialog(string stackTrace, System.Action onSubmit, System.Action onQuit, System.Action onContinue)
+		public void PopupSubmitErrorDialog(string stackTrace, System.Action onSubmit, System.Action onQuit, System.Action onContinue)
 	{
 		this.mode = ReportErrorDialog.Mode.SubmitError;
 		this.m_stackTrace = stackTrace;
@@ -100,7 +100,7 @@ public class ReportErrorDialog : MonoBehaviour
 		this.continueAction = onContinue;
 	}
 
-	public void PopupDisableModsDialog(string stackTrace, System.Action onQuit, System.Action onContinue)
+		public void PopupDisableModsDialog(string stackTrace, System.Action onQuit, System.Action onContinue)
 	{
 		this.mode = ReportErrorDialog.Mode.DisableMods;
 		this.m_stackTrace = stackTrace;
@@ -108,7 +108,7 @@ public class ReportErrorDialog : MonoBehaviour
 		this.continueAction = onContinue;
 	}
 
-	public void OnSelect_MOREINFO()
+		public void OnSelect_MOREINFO()
 	{
 		this.StackTrace.GetComponentInChildren<LocText>().text = this.m_stackTrace;
 		this.StackTrace.SetActive(true);
@@ -117,7 +117,7 @@ public class ReportErrorDialog : MonoBehaviour
 		this.moreInfoButton.onClick += this.OnSelect_COPYTOCLIPBOARD;
 	}
 
-	public void OnSelect_COPYTOCLIPBOARD()
+		public void OnSelect_COPYTOCLIPBOARD()
 	{
 		TextEditor textEditor = new TextEditor();
 		textEditor.text = this.m_stackTrace + "\nBuild: " + BuildWatermark.GetBuildText();
@@ -125,14 +125,14 @@ public class ReportErrorDialog : MonoBehaviour
 		textEditor.Copy();
 	}
 
-	public void OnSelect_SUBMIT()
+		public void OnSelect_SUBMIT()
 	{
 		this.submitButton.GetComponentInChildren<LocText>().text = UI.CRASHSCREEN.REPORTING;
 		this.submitButton.GetComponent<KButton>().isInteractable = false;
 		this.Submit();
 	}
 
-	public void OnSelect_QUIT()
+		public void OnSelect_QUIT()
 	{
 		if (this.quitAction != null)
 		{
@@ -140,7 +140,7 @@ public class ReportErrorDialog : MonoBehaviour
 		}
 	}
 
-	public void OnSelect_CONTINUE()
+		public void OnSelect_CONTINUE()
 	{
 		if (this.continueAction != null)
 		{
@@ -148,7 +148,7 @@ public class ReportErrorDialog : MonoBehaviour
 		}
 	}
 
-	public void OpenRefMessage(bool success)
+		public void OpenRefMessage(bool success)
 	{
 		this.submitButton.gameObject.SetActive(false);
 		this.uploadInProgress.SetActive(false);
@@ -157,7 +157,7 @@ public class ReportErrorDialog : MonoBehaviour
 		this.m_crashSubmitted = success;
 	}
 
-	public void OpenUploadingMessagee()
+		public void OpenUploadingMessagee()
 	{
 		this.submitButton.gameObject.SetActive(false);
 		this.uploadInProgress.SetActive(true);
@@ -166,7 +166,7 @@ public class ReportErrorDialog : MonoBehaviour
 		this.progressText.text = UI.CRASHSCREEN.UPLOADINPROGRESS.Replace("{0}", GameUtil.GetFormattedPercent(0f, GameUtil.TimeSlice.None));
 	}
 
-	public void OnSelect_MESSAGE()
+		public void OnSelect_MESSAGE()
 	{
 		if (!this.m_crashSubmitted)
 		{
@@ -174,82 +174,82 @@ public class ReportErrorDialog : MonoBehaviour
 		}
 	}
 
-	public string UserMessage()
+		public string UserMessage()
 	{
 		return this.messageInputField.text;
 	}
 
-	private void Submit()
+		private void Submit()
 	{
 		this.submitAction();
 		this.OpenUploadingMessagee();
 	}
 
-	public void UpdateProgressBar(float progress)
+		public void UpdateProgressBar(float progress)
 	{
 		this.progressBar.fillAmount = progress;
 		this.progressText.text = UI.CRASHSCREEN.UPLOADINPROGRESS.Replace("{0}", GameUtil.GetFormattedPercent(progress * 100f, GameUtil.TimeSlice.None));
 	}
 
-	private System.Action submitAction;
+		private System.Action submitAction;
 
-	private System.Action quitAction;
+		private System.Action quitAction;
 
-	private System.Action continueAction;
+		private System.Action continueAction;
 
-	public KInputTextField messageInputField;
+		public KInputTextField messageInputField;
 
-	[Header("Message")]
+		[Header("Message")]
 	public GameObject referenceMessage;
 
-	public LocText messageText;
+		public LocText messageText;
 
-	[Header("Upload Progress")]
+		[Header("Upload Progress")]
 	public GameObject uploadInProgress;
 
-	public Image progressBar;
+		public Image progressBar;
 
-	public LocText progressText;
+		public LocText progressText;
 
-	private string m_stackTrace;
+		private string m_stackTrace;
 
-	private bool m_crashSubmitted;
+		private bool m_crashSubmitted;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton submitButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton moreInfoButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton quitButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton continueGameButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText CrashLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject CrashDescription;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject ModsInfo;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject StackTrace;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject modEntryPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private Transform modEntryParent;
 
-	private ReportErrorDialog.Mode mode;
+		private ReportErrorDialog.Mode mode;
 
-	private enum Mode
+		private enum Mode
 	{
-		SubmitError,
-		DisableMods
+				SubmitError,
+				DisableMods
 	}
 }

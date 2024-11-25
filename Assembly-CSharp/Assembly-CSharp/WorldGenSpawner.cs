@@ -10,12 +10,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/WorldGenSpawner")]
 public class WorldGenSpawner : KMonoBehaviour
 {
-	public bool SpawnsRemain()
+		public bool SpawnsRemain()
 	{
 		return this.spawnables.Count > 0;
 	}
 
-	public void SpawnEverything()
+		public void SpawnEverything()
 	{
 		for (int i = 0; i < this.spawnables.Count; i++)
 		{
@@ -23,7 +23,7 @@ public class WorldGenSpawner : KMonoBehaviour
 		}
 	}
 
-	public void SpawnTag(string id)
+		public void SpawnTag(string id)
 	{
 		for (int i = 0; i < this.spawnables.Count; i++)
 		{
@@ -34,7 +34,7 @@ public class WorldGenSpawner : KMonoBehaviour
 		}
 	}
 
-	public void ClearSpawnersInArea(Vector2 root_position, CellOffset[] area)
+		public void ClearSpawnersInArea(Vector2 root_position, CellOffset[] area)
 	{
 		for (int i = 0; i < this.spawnables.Count; i++)
 		{
@@ -45,12 +45,12 @@ public class WorldGenSpawner : KMonoBehaviour
 		}
 	}
 
-	public IReadOnlyList<WorldGenSpawner.Spawnable> GetSpawnables()
+		public IReadOnlyList<WorldGenSpawner.Spawnable> GetSpawnables()
 	{
 		return this.spawnables;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (!this.hasPlacedTemplates)
 		{
@@ -69,7 +69,7 @@ public class WorldGenSpawner : KMonoBehaviour
 		}
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerializing()
 	{
 		List<Prefab> list = new List<Prefab>();
@@ -84,18 +84,18 @@ public class WorldGenSpawner : KMonoBehaviour
 		this.spawnInfos = list.ToArray();
 	}
 
-	private void AddSpawnable(Prefab prefab)
+		private void AddSpawnable(Prefab prefab)
 	{
 		this.spawnables.Add(new WorldGenSpawner.Spawnable(prefab));
 	}
 
-	public void AddLegacySpawner(Tag tag, int cell)
+		public void AddLegacySpawner(Tag tag, int cell)
 	{
 		Vector2I vector2I = Grid.CellToXY(cell);
 		this.AddSpawnable(new Prefab(tag.Name, Prefab.Type.Other, vector2I.x, vector2I.y, SimHashes.Carbon, -1f, 1f, null, 0, Orientation.Neutral, null, null, 0, null));
 	}
 
-	public List<Tag> GetUnspawnedWithType<T>(int worldID) where T : KMonoBehaviour
+		public List<Tag> GetUnspawnedWithType<T>(int worldID) where T : KMonoBehaviour
 	{
 		List<Tag> list = new List<Tag>();
 		List<WorldGenSpawner.Spawnable> list2 = this.spawnables;
@@ -112,7 +112,24 @@ public class WorldGenSpawner : KMonoBehaviour
 		return list;
 	}
 
-	public List<Tag> GetSpawnersWithTag(Tag tag, int worldID, bool includeSpawned = false)
+		public List<WorldGenSpawner.Spawnable> GeInfoOfUnspawnedWithType<T>(int worldID) where T : KMonoBehaviour
+	{
+		List<WorldGenSpawner.Spawnable> list = new List<WorldGenSpawner.Spawnable>();
+		List<WorldGenSpawner.Spawnable> list2 = this.spawnables;
+		Predicate<WorldGenSpawner.Spawnable> <>9__0;
+		Predicate<WorldGenSpawner.Spawnable> match2;
+		if ((match2 = <>9__0) == null)
+		{
+			match2 = (<>9__0 = ((WorldGenSpawner.Spawnable match) => !match.isSpawned && (int)Grid.WorldIdx[match.cell] == worldID && Assets.GetPrefab(match.spawnInfo.id) != null && Assets.GetPrefab(match.spawnInfo.id).GetComponent<T>() != null));
+		}
+		foreach (WorldGenSpawner.Spawnable item in list2.FindAll(match2))
+		{
+			list.Add(item);
+		}
+		return list;
+	}
+
+		public List<Tag> GetSpawnersWithTag(Tag tag, int worldID, bool includeSpawned = false)
 	{
 		List<Tag> list = new List<Tag>();
 		List<WorldGenSpawner.Spawnable> list2 = this.spawnables;
@@ -129,7 +146,24 @@ public class WorldGenSpawner : KMonoBehaviour
 		return list;
 	}
 
-	public List<WorldGenSpawner.Spawnable> GetSpawnablesWithTag(bool includeSpawned = false, params Tag[] tags)
+		public List<WorldGenSpawner.Spawnable> GetSpawnablesWithTag(Tag tag, int worldID, bool includeSpawned = false)
+	{
+		List<WorldGenSpawner.Spawnable> list = new List<WorldGenSpawner.Spawnable>();
+		List<WorldGenSpawner.Spawnable> list2 = this.spawnables;
+		Predicate<WorldGenSpawner.Spawnable> <>9__0;
+		Predicate<WorldGenSpawner.Spawnable> match2;
+		if ((match2 = <>9__0) == null)
+		{
+			match2 = (<>9__0 = ((WorldGenSpawner.Spawnable match) => (includeSpawned || !match.isSpawned) && (int)Grid.WorldIdx[match.cell] == worldID && match.spawnInfo.id == tag));
+		}
+		foreach (WorldGenSpawner.Spawnable item in list2.FindAll(match2))
+		{
+			list.Add(item);
+		}
+		return list;
+	}
+
+		public List<WorldGenSpawner.Spawnable> GetSpawnablesWithTag(bool includeSpawned = false, params Tag[] tags)
 	{
 		List<WorldGenSpawner.Spawnable> list = new List<WorldGenSpawner.Spawnable>();
 		List<WorldGenSpawner.Spawnable> list2 = this.spawnables;
@@ -153,7 +187,7 @@ public class WorldGenSpawner : KMonoBehaviour
 		return list;
 	}
 
-	private void PlaceTemplates(Cluster clusterLayout)
+		private void PlaceTemplates(Cluster clusterLayout)
 	{
 		this.spawnables = new List<WorldGenSpawner.Spawnable>();
 		foreach (WorldGen worldGen in clusterLayout.worlds)
@@ -198,7 +232,7 @@ public class WorldGenSpawner : KMonoBehaviour
 		}
 	}
 
-	private void DoReveal(Cluster clusterLayout)
+		private void DoReveal(Cluster clusterLayout)
 	{
 		foreach (WorldGen worldGen in clusterLayout.worlds)
 		{
@@ -216,23 +250,23 @@ public class WorldGenSpawner : KMonoBehaviour
 		GridVisibility.Reveal(vector2I.x, vector2I.y, radius, innerRadius);
 	}
 
-	[Serialize]
+		[Serialize]
 	private Prefab[] spawnInfos;
 
-	[Serialize]
+		[Serialize]
 	private bool hasPlacedTemplates;
 
-	private List<WorldGenSpawner.Spawnable> spawnables = new List<WorldGenSpawner.Spawnable>();
+		private List<WorldGenSpawner.Spawnable> spawnables = new List<WorldGenSpawner.Spawnable>();
 
-	public class Spawnable
+		public class Spawnable
 	{
-						public Prefab spawnInfo { get; private set; }
+								public Prefab spawnInfo { get; private set; }
 
-						public bool isSpawned { get; private set; }
+								public bool isSpawned { get; private set; }
 
-						public int cell { get; private set; }
+								public int cell { get; private set; }
 
-		public Spawnable(Prefab spawn_info)
+				public Spawnable(Prefab spawn_info)
 		{
 			this.spawnInfo = spawn_info;
 			int num = Grid.XYToCell(this.spawnInfo.location_x, this.spawnInfo.location_y);
@@ -255,7 +289,7 @@ public class WorldGenSpawner : KMonoBehaviour
 			this.fogOfWarPartitionerEntry = GameScenePartitioner.Instance.Add("WorldGenSpawner.OnReveal", this, this.cell, GameScenePartitioner.Instance.fogOfWarChangedLayer, new Action<object>(this.OnReveal));
 		}
 
-		private void OnReveal(object data)
+				private void OnReveal(object data)
 		{
 			if (Grid.Spawnable[this.cell] > 0)
 			{
@@ -263,7 +297,7 @@ public class WorldGenSpawner : KMonoBehaviour
 			}
 		}
 
-		private void OnSolidChanged(object data)
+				private void OnSolidChanged(object data)
 		{
 			if (!Grid.Solid[this.cell])
 			{
@@ -273,7 +307,7 @@ public class WorldGenSpawner : KMonoBehaviour
 			}
 		}
 
-		public void FreeResources()
+				public void FreeResources()
 		{
 			if (this.solidChangedPartitionerEntry.IsValid())
 			{
@@ -287,7 +321,7 @@ public class WorldGenSpawner : KMonoBehaviour
 			this.isSpawned = true;
 		}
 
-		public void TrySpawn()
+				public void TrySpawn()
 		{
 			if (this.isSpawned)
 			{
@@ -332,7 +366,7 @@ public class WorldGenSpawner : KMonoBehaviour
 			this.Spawn();
 		}
 
-		private Tag GetPrefabTag()
+				private Tag GetPrefabTag()
 		{
 			Mob mob = SettingsCache.mobs.GetMob(this.spawnInfo.id);
 			if (mob != null && mob.prefabName != null)
@@ -342,7 +376,7 @@ public class WorldGenSpawner : KMonoBehaviour
 			return new Tag(this.spawnInfo.id);
 		}
 
-		private void Spawn()
+				private void Spawn()
 		{
 			this.isSpawned = true;
 			GameObject gameObject = WorldGenSpawner.Spawnable.GetSpawnableCallback(this.spawnInfo.type)(this.spawnInfo, 0);
@@ -354,7 +388,7 @@ public class WorldGenSpawner : KMonoBehaviour
 			this.FreeResources();
 		}
 
-		public static WorldGenSpawner.Spawnable.PlaceEntityFn GetSpawnableCallback(Prefab.Type type)
+				public static WorldGenSpawner.Spawnable.PlaceEntityFn GetSpawnableCallback(Prefab.Type type)
 		{
 			switch (type)
 			{
@@ -371,10 +405,10 @@ public class WorldGenSpawner : KMonoBehaviour
 			}
 		}
 
-		private HandleVector<int>.Handle fogOfWarPartitionerEntry;
+				private HandleVector<int>.Handle fogOfWarPartitionerEntry;
 
-		private HandleVector<int>.Handle solidChangedPartitionerEntry;
+				private HandleVector<int>.Handle solidChangedPartitionerEntry;
 
-				public delegate GameObject PlaceEntityFn(Prefab prefab, int root_cell);
+						public delegate GameObject PlaceEntityFn(Prefab prefab, int root_cell);
 	}
 }

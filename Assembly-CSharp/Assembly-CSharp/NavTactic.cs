@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class NavTactic
 {
-	public NavTactic(int preferredRange, int rangePenalty = 1, int overlapPenalty = 1, int pathCostPenalty = 1)
+		public NavTactic(int preferredRange, int rangePenalty = 1, int overlapPenalty = 1, int pathCostPenalty = 1)
 	{
 		this._overlapPenalty = overlapPenalty;
 		this._preferredRange = preferredRange;
@@ -11,7 +11,7 @@ public class NavTactic
 		this._pathCostPenalty = pathCostPenalty;
 	}
 
-	public int GetCellPreferences(int root, CellOffset[] offsets, Navigator navigator)
+		public int GetCellPreferences(int root, CellOffset[] offsets, Navigator navigator)
 	{
 		int result = NavigationReservations.InvalidReservation;
 		int num = int.MaxValue;
@@ -31,11 +31,11 @@ public class NavTactic
 		return result;
 	}
 
-	private int _overlapPenalty = 3;
+		private int _overlapPenalty = 3;
 
-	private int _preferredRange;
+		private int _preferredRange;
 
-	private int _rangePenalty = 2;
+		private int _rangePenalty = 2;
 
-	private int _pathCostPenalty = 1;
+		private int _pathCostPenalty = 1;
 }

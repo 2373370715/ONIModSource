@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlaceSpaceAvailable : SelectModuleCondition
 {
-	public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
+		public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
 	{
 		BuildingAttachPoint component = existingModule.GetComponent<BuildingAttachPoint>();
 		switch (selectionContext)
@@ -67,7 +67,7 @@ public class PlaceSpaceAvailable : SelectModuleCondition
 		}
 	}
 
-	public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
+		public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
 	{
 		if (ready)
 		{

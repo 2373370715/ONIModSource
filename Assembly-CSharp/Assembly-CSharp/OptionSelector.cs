@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class OptionSelector : MonoBehaviour
 {
-	private void Start()
+		private void Start()
 	{
 		this.selectedItem.GetComponent<KButton>().onBtnClick += this.OnClick;
 	}
 
-	public void Initialize(object id)
+		public void Initialize(object id)
 	{
 		this.id = id;
 	}
 
-	private void OnClick(KKeyCode button)
+		private void OnClick(KKeyCode button)
 	{
 		if (button == KKeyCode.Mouse0)
 		{
@@ -28,7 +28,7 @@ public class OptionSelector : MonoBehaviour
 		this.OnChangePriority(this.id, -1);
 	}
 
-	public void ConfigureItem(bool disabled, OptionSelector.DisplayOptionInfo display_info)
+		public void ConfigureItem(bool disabled, OptionSelector.DisplayOptionInfo display_info)
 	{
 		HierarchyReferences component = this.selectedItem.GetComponent<HierarchyReferences>();
 		KImage kimage = component.GetReference("BG") as KImage;
@@ -62,26 +62,26 @@ public class OptionSelector : MonoBehaviour
 		}
 	}
 
-	private object id;
+		private object id;
 
-	public Action<object, int> OnChangePriority;
+		public Action<object, int> OnChangePriority;
 
-	[SerializeField]
+		[SerializeField]
 	private KImage selectedItem;
 
-	[SerializeField]
+		[SerializeField]
 	private KImage itemTemplate;
 
-	public class DisplayOptionInfo
+		public class DisplayOptionInfo
 	{
-		public IList<Sprite> bgOptions;
+				public IList<Sprite> bgOptions;
 
-		public IList<Sprite> fgOptions;
+				public IList<Sprite> fgOptions;
 
-		public int bgIndex;
+				public int bgIndex;
 
-		public int fgIndex;
+				public int fgIndex;
 
-		public Color32 fillColour;
+				public Color32 fillColour;
 	}
 }

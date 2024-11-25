@@ -5,7 +5,7 @@ using Klei.AI.DiseaseGrowthRules;
 
 public class ConduitDiseaseManager : KCompactedVector<ConduitDiseaseManager.Data>
 {
-	private static ElemGrowthInfo GetGrowthInfo(byte disease_idx, ushort elem_idx)
+		private static ElemGrowthInfo GetGrowthInfo(byte disease_idx, ushort elem_idx)
 	{
 		ElemGrowthInfo result;
 		if (disease_idx != 255)
@@ -19,19 +19,19 @@ public class ConduitDiseaseManager : KCompactedVector<ConduitDiseaseManager.Data
 		return result;
 	}
 
-	public ConduitDiseaseManager(ConduitTemperatureManager temperature_manager) : base(0)
+		public ConduitDiseaseManager(ConduitTemperatureManager temperature_manager) : base(0)
 	{
 		this.temperatureManager = temperature_manager;
 	}
 
-	public HandleVector<int>.Handle Allocate(HandleVector<int>.Handle temperature_handle, ref ConduitFlow.ConduitContents contents)
+		public HandleVector<int>.Handle Allocate(HandleVector<int>.Handle temperature_handle, ref ConduitFlow.ConduitContents contents)
 	{
 		ushort elementIndex = ElementLoader.GetElementIndex(contents.element);
 		ConduitDiseaseManager.Data initial_data = new ConduitDiseaseManager.Data(temperature_handle, elementIndex, contents.mass, contents.diseaseIdx, contents.diseaseCount);
 		return base.Allocate(initial_data);
 	}
 
-	public void SetData(HandleVector<int>.Handle handle, ref ConduitFlow.ConduitContents contents)
+		public void SetData(HandleVector<int>.Handle handle, ref ConduitFlow.ConduitContents contents)
 	{
 		ConduitDiseaseManager.Data data = base.GetData(handle);
 		data.diseaseCount = contents.diseaseCount;
@@ -44,7 +44,7 @@ public class ConduitDiseaseManager : KCompactedVector<ConduitDiseaseManager.Data
 		base.SetData(handle, data);
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		using (new KProfiler.Region("ConduitDiseaseManager.SimUpdate", null))
 		{
@@ -73,7 +73,7 @@ public class ConduitDiseaseManager : KCompactedVector<ConduitDiseaseManager.Data
 		}
 	}
 
-	public void ModifyDiseaseCount(HandleVector<int>.Handle h, int disease_count_delta)
+		public void ModifyDiseaseCount(HandleVector<int>.Handle h, int disease_count_delta)
 	{
 		ConduitDiseaseManager.Data data = base.GetData(h);
 		data.diseaseCount = Math.Max(0, data.diseaseCount + disease_count_delta);
@@ -84,7 +84,7 @@ public class ConduitDiseaseManager : KCompactedVector<ConduitDiseaseManager.Data
 		base.SetData(h, data);
 	}
 
-	public void AddDisease(HandleVector<int>.Handle h, byte disease_idx, int disease_count)
+		public void AddDisease(HandleVector<int>.Handle h, byte disease_idx, int disease_count)
 	{
 		ConduitDiseaseManager.Data data = base.GetData(h);
 		SimUtil.DiseaseInfo diseaseInfo = SimUtil.CalculateFinalDiseaseInfo(disease_idx, disease_count, data.diseaseIdx, data.diseaseCount);
@@ -93,11 +93,11 @@ public class ConduitDiseaseManager : KCompactedVector<ConduitDiseaseManager.Data
 		base.SetData(h, data);
 	}
 
-	private ConduitTemperatureManager temperatureManager;
+		private ConduitTemperatureManager temperatureManager;
 
-	public struct Data
+		public struct Data
 	{
-		public Data(HandleVector<int>.Handle temperature_handle, ushort elem_idx, float mass, byte disease_idx, int disease_count)
+				public Data(HandleVector<int>.Handle temperature_handle, ushort elem_idx, float mass, byte disease_idx, int disease_count)
 		{
 			this.diseaseIdx = disease_idx;
 			this.elemIdx = elem_idx;
@@ -108,18 +108,18 @@ public class ConduitDiseaseManager : KCompactedVector<ConduitDiseaseManager.Data
 			this.growthInfo = ConduitDiseaseManager.GetGrowthInfo(disease_idx, elem_idx);
 		}
 
-		public byte diseaseIdx;
+				public byte diseaseIdx;
 
-		public ushort elemIdx;
+				public ushort elemIdx;
 
-		public int diseaseCount;
+				public int diseaseCount;
 
-		public float accumulatedError;
+				public float accumulatedError;
 
-		public float mass;
+				public float mass;
 
-		public HandleVector<int>.Handle temperatureHandle;
+				public HandleVector<int>.Handle temperatureHandle;
 
-		public ElemGrowthInfo growthInfo;
+				public ElemGrowthInfo growthInfo;
 	}
 }

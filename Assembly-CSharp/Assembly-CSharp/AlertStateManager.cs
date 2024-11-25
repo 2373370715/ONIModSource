@@ -4,7 +4,7 @@ using STRINGS;
 
 public class AlertStateManager : GameStateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.off;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -41,34 +41,34 @@ public class AlertStateManager : GameStateMachine<AlertStateManager, AlertStateM
 		});
 	}
 
-	public GameStateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.State off;
+		public GameStateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.State off;
 
-	public AlertStateManager.OnStates on;
+		public AlertStateManager.OnStates on;
 
-	public StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter isRedAlert = new StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter();
+		public StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter isRedAlert = new StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter();
 
-	public StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter isYellowAlert = new StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter();
+		public StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter isYellowAlert = new StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter();
 
-	public StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter isOn = new StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter();
+		public StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter isOn = new StateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.BoolParameter();
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public class OnStates : GameStateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.State
+		public class OnStates : GameStateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.State
 	{
-		public GameStateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.State yellow;
+				public GameStateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.State yellow;
 
-		public GameStateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.State red;
+				public GameStateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.State red;
 	}
 
-	public new class Instance : GameStateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.GameInstance
+		public new class Instance : GameStateMachine<AlertStateManager, AlertStateManager.Instance, IStateMachineTarget, AlertStateManager.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, AlertStateManager.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, AlertStateManager.Def def) : base(master, def)
 		{
 		}
 
-		public void UpdateState(float dt)
+				public void UpdateState(float dt)
 		{
 			if (this.IsRedAlert())
 			{
@@ -86,49 +86,49 @@ public class AlertStateManager : GameStateMachine<AlertStateManager, AlertStateM
 			}
 		}
 
-		public bool IsOn()
+				public bool IsOn()
 		{
 			return base.sm.isYellowAlert.Get(base.smi) || base.sm.isRedAlert.Get(base.smi);
 		}
 
-		public bool IsRedAlert()
+				public bool IsRedAlert()
 		{
 			return base.sm.isRedAlert.Get(base.smi);
 		}
 
-		public bool IsYellowAlert()
+				public bool IsYellowAlert()
 		{
 			return base.sm.isYellowAlert.Get(base.smi);
 		}
 
-		public bool IsRedAlertToggledOn()
+				public bool IsRedAlertToggledOn()
 		{
 			return this.isToggled;
 		}
 
-		public void ToggleRedAlert(bool on)
+				public void ToggleRedAlert(bool on)
 		{
 			this.isToggled = on;
 			this.Refresh();
 		}
 
-		public void SetHasTopPriorityChore(bool on)
+				public void SetHasTopPriorityChore(bool on)
 		{
 			this.hasTopPriorityChore = on;
 			this.Refresh();
 		}
 
-		private void Refresh()
+				private void Refresh()
 		{
 			base.sm.isYellowAlert.Set(this.hasTopPriorityChore, base.smi, false);
 			base.sm.isRedAlert.Set(this.isToggled, base.smi, false);
 			base.sm.isOn.Set(this.hasTopPriorityChore || this.isToggled, base.smi, false);
 		}
 
-		private bool isToggled;
+				private bool isToggled;
 
-		private bool hasTopPriorityChore;
+				private bool hasTopPriorityChore;
 
-		public Notification redAlertNotification = new Notification(MISC.NOTIFICATIONS.REDALERT.NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.REDALERT.TOOLTIP, null, false, 0f, null, null, null, true, false, false);
+				public Notification redAlertNotification = new Notification(MISC.NOTIFICATIONS.REDALERT.NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.REDALERT.TOOLTIP, null, false, 0f, null, null, null, true, false, false);
 	}
 }

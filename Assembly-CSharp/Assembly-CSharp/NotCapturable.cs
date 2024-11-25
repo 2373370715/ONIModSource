@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/NotCapturable")]
 public class NotCapturable : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (base.GetComponent<Capturable>() != null)
@@ -17,7 +17,7 @@ public class NotCapturable : KMonoBehaviour
 		Components.NotCapturables.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.NotCapturables.Remove(this);
 		base.OnCleanUp();

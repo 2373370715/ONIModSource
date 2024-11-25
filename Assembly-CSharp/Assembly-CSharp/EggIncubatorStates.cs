@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EggIncubatorStates : GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.empty;
 		this.empty.PlayAnim("off", KAnim.PlayMode.Loop).EventTransition(GameHashes.OccupantChanged, this.egg, new StateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.Transition.ConditionCallback(EggIncubatorStates.HasEgg)).EventTransition(GameHashes.OccupantChanged, this.baby, new StateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.Transition.ConditionCallback(EggIncubatorStates.HasBaby));
@@ -15,53 +15,53 @@ public class EggIncubatorStates : GameStateMachine<EggIncubatorStates, EggIncuba
 		this.baby.idle.PlayAnim("no_power_pre").QueueAnim("no_power_loop", true, null);
 	}
 
-	public static bool IsOperational(EggIncubatorStates.Instance smi)
+		public static bool IsOperational(EggIncubatorStates.Instance smi)
 	{
 		return smi.GetComponent<Operational>().IsOperational;
 	}
 
-	public static bool HasEgg(EggIncubatorStates.Instance smi)
+		public static bool HasEgg(EggIncubatorStates.Instance smi)
 	{
 		GameObject occupant = smi.GetComponent<EggIncubator>().Occupant;
 		return occupant && occupant.HasTag(GameTags.Egg);
 	}
 
-	public static bool HasBaby(EggIncubatorStates.Instance smi)
+		public static bool HasBaby(EggIncubatorStates.Instance smi)
 	{
 		GameObject occupant = smi.GetComponent<EggIncubator>().Occupant;
 		return occupant && occupant.HasTag(GameTags.Creature);
 	}
 
-	public static bool HasAny(EggIncubatorStates.Instance smi)
+		public static bool HasAny(EggIncubatorStates.Instance smi)
 	{
 		return smi.GetComponent<EggIncubator>().Occupant;
 	}
 
-	public StateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.BoolParameter readyToHatch;
+		public StateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.BoolParameter readyToHatch;
 
-	public GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State empty;
+		public GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State empty;
 
-	public EggIncubatorStates.EggStates egg;
+		public EggIncubatorStates.EggStates egg;
 
-	public EggIncubatorStates.BabyStates baby;
+		public EggIncubatorStates.BabyStates baby;
 
-	public class EggStates : GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State
+		public class EggStates : GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State incubating;
+				public GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State incubating;
 
-		public GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State lose_power;
+				public GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State lose_power;
 
-		public GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State unpowered;
+				public GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State unpowered;
 	}
 
-	public class BabyStates : GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State
+		public class BabyStates : GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State idle;
+				public GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.State idle;
 	}
 
-	public new class Instance : GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<EggIncubatorStates, EggIncubatorStates.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 	}

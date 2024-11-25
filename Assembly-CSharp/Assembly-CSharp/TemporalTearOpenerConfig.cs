@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class TemporalTearOpenerConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "TemporalTearOpener";
 		int width = 3;
@@ -38,7 +38,7 @@ public class TemporalTearOpenerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		PrimaryElement component = go.GetComponent<PrimaryElement>();
@@ -54,18 +54,18 @@ public class TemporalTearOpenerConfig : IBuildingConfig
 		def.consumeRate = 5f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<Deconstructable>().allowDeconstruction = false;
 	}
 
-	public const string ID = "TemporalTearOpener";
+		public const string ID = "TemporalTearOpener";
 
-	public const string PORT_ID = "HEP_STORAGE";
+		public const string PORT_ID = "HEP_STORAGE";
 
-	public const float PARTICLES_CAPACITY = 1000f;
+		public const float PARTICLES_CAPACITY = 1000f;
 
-	public const float NUM_PARTICLES_TO_OPEN_TEAR = 10000f;
+		public const float NUM_PARTICLES_TO_OPEN_TEAR = 10000f;
 
-	public const float PARTICLE_CONSUME_RATE = 5f;
+		public const float PARTICLE_CONSUME_RATE = 5f;
 }

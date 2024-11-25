@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SweepBotStationConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SweepBotStation";
 		int width = 2;
@@ -31,7 +31,7 @@ public class SweepBotStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
 		Storage storage = go.AddComponent<Storage>();
@@ -59,12 +59,12 @@ public class SweepBotStationConfig : IBuildingConfig
 		go.AddOrGet<SweepBotStation>().SetStorages(storage, storage2);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<StorageController.Def>();
 	}
 
-	public const string ID = "SweepBotStation";
+		public const string ID = "SweepBotStation";
 
-	public const float POWER_USAGE = 240f;
+		public const float POWER_USAGE = 240f;
 }

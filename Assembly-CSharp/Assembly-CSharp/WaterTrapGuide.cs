@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class WaterTrapGuide : KMonoBehaviour, IRenderEveryTick
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.parentController = this.parent.GetComponent<KBatchedAnimController>();
@@ -12,12 +12,12 @@ public class WaterTrapGuide : KMonoBehaviour, IRenderEveryTick
 		this.RefreshDepthAvailable();
 	}
 
-	private void RefreshTint()
+		private void RefreshTint()
 	{
 		this.guideController.TintColour = this.parentController.TintColour;
 	}
 
-	public void RefreshPosition()
+		public void RefreshPosition()
 	{
 		if (this.guideController != null && this.guideController.IsMoving)
 		{
@@ -25,7 +25,7 @@ public class WaterTrapGuide : KMonoBehaviour, IRenderEveryTick
 		}
 	}
 
-	private void RefreshDepthAvailable()
+		private void RefreshDepthAvailable()
 	{
 		int depthAvailable = WaterTrapGuide.GetDepthAvailable(Grid.PosToCell(this), this.parent);
 		if (depthAvailable != this.previousDepthAvailable)
@@ -48,14 +48,14 @@ public class WaterTrapGuide : KMonoBehaviour, IRenderEveryTick
 		}
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		this.RefreshPosition();
 		this.RefreshTint();
 		this.RefreshDepthAvailable();
 	}
 
-	public static void OccupyArea(GameObject go, int depth_available)
+		public static void OccupyArea(GameObject go, int depth_available)
 	{
 		int cell = Grid.PosToCell(go.transform.GetPosition());
 		for (int i = 1; i <= 4; i++)
@@ -72,7 +72,7 @@ public class WaterTrapGuide : KMonoBehaviour, IRenderEveryTick
 		}
 	}
 
-	public static int GetDepthAvailable(int root_cell, GameObject pump)
+		public static int GetDepthAvailable(int root_cell, GameObject pump)
 	{
 		int num = 4;
 		int result = 0;
@@ -88,13 +88,13 @@ public class WaterTrapGuide : KMonoBehaviour, IRenderEveryTick
 		return result;
 	}
 
-	private int previousDepthAvailable = -1;
+		private int previousDepthAvailable = -1;
 
-	public GameObject parent;
+		public GameObject parent;
 
-	public bool occupyTiles;
+		public bool occupyTiles;
 
-	private KBatchedAnimController parentController;
+		private KBatchedAnimController parentController;
 
-	private KBatchedAnimController guideController;
+		private KBatchedAnimController guideController;
 }

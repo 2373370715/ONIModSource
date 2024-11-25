@@ -7,7 +7,7 @@ using UnityEngine;
 [SkipSaveFileSerialization]
 public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable.StatesInstance>, IGameObjectEffectDescriptor, IWiltCause, ISlicedSim1000ms
 {
-		private OccupyArea occupyArea
+			private OccupyArea occupyArea
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		}
 	}
 
-		public float TemperatureLethalLow
+			public float TemperatureLethalLow
 	{
 		get
 		{
@@ -27,7 +27,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		}
 	}
 
-		public float TemperatureLethalHigh
+			public float TemperatureLethalHigh
 	{
 		get
 		{
@@ -35,7 +35,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		}
 	}
 
-		public float TemperatureWarningLow
+			public float TemperatureWarningLow
 	{
 		get
 		{
@@ -47,7 +47,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		}
 	}
 
-		public float TemperatureWarningHigh
+			public float TemperatureWarningHigh
 	{
 		get
 		{
@@ -59,7 +59,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		}
 	}
 
-		public float InternalTemperature
+			public float InternalTemperature
 	{
 		get
 		{
@@ -67,7 +67,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		}
 	}
 
-		public TemperatureVulnerable.TemperatureState GetInternalTemperatureState
+			public TemperatureVulnerable.TemperatureState GetInternalTemperatureState
 	{
 		get
 		{
@@ -75,7 +75,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		}
 	}
 
-		public bool IsLethal
+			public bool IsLethal
 	{
 		get
 		{
@@ -83,7 +83,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		}
 	}
 
-		public bool IsNormal
+			public bool IsNormal
 	{
 		get
 		{
@@ -91,7 +91,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		}
 	}
 
-		WiltCondition.Condition[] IWiltCause.Conditions
+			WiltCondition.Condition[] IWiltCause.Conditions
 	{
 		get
 		{
@@ -99,7 +99,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		}
 	}
 
-		public string WiltStateString
+			public string WiltStateString
 	{
 		get
 		{
@@ -115,14 +115,14 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Amounts amounts = base.gameObject.GetAmounts();
 		this.displayTemperatureAmount = amounts.Add(new AmountInstance(Db.Get().Amounts.Temperature, base.gameObject));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.wiltTempRangeModAttribute = this.GetAttributes().Get(Db.Get().PlantAttributes.WiltTempRangeMod);
@@ -132,13 +132,13 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		SlicedUpdaterSim1000ms<TemperatureVulnerable>.instance.UnregisterUpdate1000ms(this);
 	}
 
-	public void Configure(float tempWarningLow, float tempLethalLow, float tempWarningHigh, float tempLethalHigh)
+		public void Configure(float tempWarningLow, float tempLethalLow, float tempWarningHigh, float tempLethalHigh)
 	{
 		this.internalTemperatureWarning_Low = tempWarningLow;
 		this.internalTemperatureLethal_Low = tempLethalLow;
@@ -146,13 +146,13 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		this.internalTemperatureWarning_High = tempWarningHigh;
 	}
 
-	public bool IsCellSafe(int cell)
+		public bool IsCellSafe(int cell)
 	{
 		float averageTemperature = this.GetAverageTemperature(cell);
 		return averageTemperature > -1f && averageTemperature > this.TemperatureLethalLow && averageTemperature < this.internalTemperatureLethal_High;
 	}
 
-	public void SlicedSim1000ms(float dt)
+		public void SlicedSim1000ms(float dt)
 	{
 		if (!Grid.IsValidCell(Grid.PosToCell(base.gameObject)))
 		{
@@ -162,7 +162,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		this.displayTemperatureAmount.value = this.InternalTemperature;
 	}
 
-	private static bool GetAverageTemperatureCb(int cell, object data)
+		private static bool GetAverageTemperatureCb(int cell, object data)
 	{
 		TemperatureVulnerable temperatureVulnerable = data as TemperatureVulnerable;
 		if (Grid.Mass[cell] > 0.1f)
@@ -173,7 +173,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		return true;
 	}
 
-	private float GetAverageTemperature(int cell)
+		private float GetAverageTemperature(int cell)
 	{
 		this.averageTemp = 0f;
 		this.cellCount = 0;
@@ -185,7 +185,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		return -1f;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		float num = (this.internalTemperatureWarning_High - this.internalTemperatureWarning_Low) / 2f;
 		float temp = (this.wiltTempRangeModAttribute != null) ? this.TemperatureWarningLow : (this.internalTemperatureWarning_Low + (1f - base.GetComponent<Modifiers>().GetPreModifiedAttributeValue(Db.Get().PlantAttributes.WiltTempRangeMod)) * num);
@@ -196,52 +196,52 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 		};
 	}
 
-	private OccupyArea _occupyArea;
+		private OccupyArea _occupyArea;
 
-	[SerializeField]
+		[SerializeField]
 	private float internalTemperatureLethal_Low;
 
-	[SerializeField]
+		[SerializeField]
 	private float internalTemperatureWarning_Low;
 
-	[SerializeField]
+		[SerializeField]
 	private float internalTemperatureWarning_High;
 
-	[SerializeField]
+		[SerializeField]
 	private float internalTemperatureLethal_High;
 
-	private AttributeInstance wiltTempRangeModAttribute;
+		private AttributeInstance wiltTempRangeModAttribute;
 
-	private float temperatureRangeModScalar;
+		private float temperatureRangeModScalar;
 
-	private const float minimumMassForReading = 0.1f;
+		private const float minimumMassForReading = 0.1f;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private PrimaryElement primaryElement;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private SimTemperatureTransfer temperatureTransfer;
 
-	private AmountInstance displayTemperatureAmount;
+		private AmountInstance displayTemperatureAmount;
 
-	private TemperatureVulnerable.TemperatureState internalTemperatureState = TemperatureVulnerable.TemperatureState.Normal;
+		private TemperatureVulnerable.TemperatureState internalTemperatureState = TemperatureVulnerable.TemperatureState.Normal;
 
-	private float averageTemp;
+		private float averageTemp;
 
-	private int cellCount;
+		private int cellCount;
 
-	private static readonly Func<int, object, bool> GetAverageTemperatureCbDelegate = (int cell, object data) => TemperatureVulnerable.GetAverageTemperatureCb(cell, data);
+		private static readonly Func<int, object, bool> GetAverageTemperatureCbDelegate = (int cell, object data) => TemperatureVulnerable.GetAverageTemperatureCb(cell, data);
 
-	public class StatesInstance : GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.GameInstance
+		public class StatesInstance : GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.GameInstance
 	{
-		public StatesInstance(TemperatureVulnerable master) : base(master)
+				public StatesInstance(TemperatureVulnerable master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable>
+		public class States : GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.normal;
 			this.lethalCold.Enter(delegate(TemperatureVulnerable.StatesInstance smi)
@@ -266,7 +266,7 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 			}).TriggerOnEnter(GameHashes.OptimalTemperatureAchieved, null).ParamTransition<float>(this.internalTemp, this.warningHot, (TemperatureVulnerable.StatesInstance smi, float p) => p > smi.master.TemperatureWarningHigh).ParamTransition<float>(this.internalTemp, this.warningCold, (TemperatureVulnerable.StatesInstance smi, float p) => p < smi.master.TemperatureWarningLow);
 		}
 
-		private static void Kill(StateMachine.Instance smi)
+				private static void Kill(StateMachine.Instance smi)
 		{
 			DeathMonitor.Instance smi2 = smi.GetSMI<DeathMonitor.Instance>();
 			if (smi2 != null)
@@ -275,25 +275,25 @@ public class TemperatureVulnerable : StateMachineComponent<TemperatureVulnerable
 			}
 		}
 
-		public StateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.FloatParameter internalTemp;
+				public StateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.FloatParameter internalTemp;
 
-		public GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.State lethalCold;
+				public GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.State lethalCold;
 
-		public GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.State lethalHot;
+				public GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.State lethalHot;
 
-		public GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.State warningCold;
+				public GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.State warningCold;
 
-		public GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.State warningHot;
+				public GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.State warningHot;
 
-		public GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.State normal;
+				public GameStateMachine<TemperatureVulnerable.States, TemperatureVulnerable.StatesInstance, TemperatureVulnerable, object>.State normal;
 	}
 
-	public enum TemperatureState
+		public enum TemperatureState
 	{
-		LethalCold,
-		WarningCold,
-		Normal,
-		WarningHot,
-		LethalHot
+				LethalCold,
+				WarningCold,
+				Normal,
+				WarningHot,
+				LethalHot
 	}
 }

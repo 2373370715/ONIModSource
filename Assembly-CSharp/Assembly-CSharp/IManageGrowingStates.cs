@@ -2,15 +2,15 @@
 
 public interface IManageGrowingStates
 {
-	float TimeUntilNextHarvest();
+		float TimeUntilNextHarvest();
 
-	float PercentGrown();
+		float PercentGrown();
 
-	Crop GetGropComponent();
+		Crop GetGropComponent();
 
-	void OverrideMaturityLevel(float percentage);
+		void OverrideMaturityLevel(float percentage);
 
-	float DomesticGrowthTime();
+		float DomesticGrowthTime();
 
-	float WildGrowthTime();
+		float WildGrowthTime();
 }

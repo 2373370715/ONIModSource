@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CargoDropperMinion : GameStateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.notLanded;
@@ -29,36 +29,36 @@ public class CargoDropperMinion : GameStateMachine<CargoDropperMinion, CargoDrop
 		});
 	}
 
-	private GameStateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.State notLanded;
+		private GameStateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.State notLanded;
 
-	private GameStateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.State landed;
+		private GameStateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.State landed;
 
-	private GameStateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.State exiting;
+		private GameStateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.State exiting;
 
-	private GameStateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.State complete;
+		private GameStateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.State complete;
 
-	public StateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.BoolParameter hasLanded = new StateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.BoolParameter(false);
+		public StateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.BoolParameter hasLanded = new StateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.BoolParameter(false);
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Vector3 dropOffset;
+				public Vector3 dropOffset;
 
-		public string kAnimName;
+				public string kAnimName;
 
-		public string animName;
+				public string animName;
 
-		public Grid.SceneLayer animLayer = Grid.SceneLayer.Move;
+				public Grid.SceneLayer animLayer = Grid.SceneLayer.Move;
 
-		public bool notifyOnJettison;
+				public bool notifyOnJettison;
 	}
 
-	public class StatesInstance : GameStateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<CargoDropperMinion, CargoDropperMinion.StatesInstance, IStateMachineTarget, CargoDropperMinion.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, CargoDropperMinion.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, CargoDropperMinion.Def def) : base(master, def)
 		{
 		}
 
-		public void JettisonCargo(object data = null)
+				public void JettisonCargo(object data = null)
 		{
 			Vector3 pos = base.master.transform.GetPosition() + base.def.dropOffset;
 			MinionStorage component = base.GetComponent<MinionStorage>();
@@ -91,7 +91,7 @@ public class CargoDropperMinion : GameStateMachine<CargoDropperMinion, CargoDrop
 			}
 		}
 
-		public bool SyncMinionExitAnimation()
+				public bool SyncMinionExitAnimation()
 		{
 			if (this.escapingMinion != null && this.exitAnimChore != null && !this.exitAnimChore.isComplete)
 			{
@@ -106,13 +106,13 @@ public class CargoDropperMinion : GameStateMachine<CargoDropperMinion, CargoDrop
 			return false;
 		}
 
-		public Notification CreateCrashLandedNotification()
+				public Notification CreateCrashLandedNotification()
 		{
 			return new Notification(MISC.NOTIFICATIONS.DUPLICANT_CRASH_LANDED.NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.DUPLICANT_CRASH_LANDED.TOOLTIP + notificationList.ReduceMessages(false), null, true, 0f, null, null, null, true, false, false);
 		}
 
-		public MinionIdentity escapingMinion;
+				public MinionIdentity escapingMinion;
 
-		public Chore exitAnimChore;
+				public Chore exitAnimChore;
 	}
 }

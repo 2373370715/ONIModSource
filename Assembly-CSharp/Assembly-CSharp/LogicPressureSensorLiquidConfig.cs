@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicPressureSensorLiquidConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicPressureSensorLiquidConfig.ID;
 		int width = 1;
@@ -37,7 +37,7 @@ public class LogicPressureSensorLiquidConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		LogicPressureSensor logicPressureSensor = go.AddOrGet<LogicPressureSensor>();
 		logicPressureSensor.rangeMin = 0f;
@@ -49,5 +49,5 @@ public class LogicPressureSensorLiquidConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicPressureSensorLiquid";
+		public static string ID = "LogicPressureSensorLiquid";
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UnstableEntombDefense : GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.disabled;
@@ -21,40 +21,40 @@ public class UnstableEntombDefense : GameStateMachine<UnstableEntombDefense, Uns
 		this.dead.DoNothing();
 	}
 
-	public static void ResetCooldown(UnstableEntombDefense.Instance smi)
+		public static void ResetCooldown(UnstableEntombDefense.Instance smi)
 	{
 		smi.sm.TimeBeforeNextReaction.Set(smi.def.Cooldown, smi, false);
 	}
 
-	public static bool IsEntombedByUnstable(UnstableEntombDefense.Instance smi)
+		public static bool IsEntombedByUnstable(UnstableEntombDefense.Instance smi)
 	{
 		return smi.IsEntombed && smi.IsInPressenceOfUnstableSolids();
 	}
 
-	public static void AttemptToBreakFree(UnstableEntombDefense.Instance smi)
+		public static void AttemptToBreakFree(UnstableEntombDefense.Instance smi)
 	{
 		smi.AttackUnstableCells();
 	}
 
-	public static void CooldownTick(UnstableEntombDefense.Instance smi, float dt)
+		public static void CooldownTick(UnstableEntombDefense.Instance smi, float dt)
 	{
 		float value = smi.RemainingCooldown - dt;
 		smi.sm.TimeBeforeNextReaction.Set(value, smi, false);
 	}
 
-	public UnstableEntombDefense.ActiveState active;
+		public UnstableEntombDefense.ActiveState active;
 
-	public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State disabled;
+		public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State disabled;
 
-	public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State dead;
+		public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State dead;
 
-	public StateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.FloatParameter TimeBeforeNextReaction;
+		public StateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.FloatParameter TimeBeforeNextReaction;
 
-	public StateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.BoolParameter Active = new StateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.BoolParameter(true);
+		public StateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.BoolParameter Active = new StateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.BoolParameter(true);
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject go)
+				public List<Descriptor> GetDescriptors(GameObject go)
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			UnstableEntombDefense.Instance smi = go.GetSMI<UnstableEntombDefense.Instance>();
@@ -69,37 +69,37 @@ public class UnstableEntombDefense : GameStateMachine<UnstableEntombDefense, Uns
 			return list;
 		}
 
-		public float Cooldown = 5f;
+				public float Cooldown = 5f;
 
-		public string defaultAnimName = "";
+				public string defaultAnimName = "";
 	}
 
-	public class SafeStates : GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State
+		public class SafeStates : GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State
 	{
-		public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State idle;
+				public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State idle;
 
-		public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State newThreat;
+				public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State newThreat;
 	}
 
-	public class ThreatenedStates : GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State
+		public class ThreatenedStates : GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State
 	{
-		public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State inCooldown;
+				public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State inCooldown;
 
-		public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State react;
+				public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State react;
 
-		public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State complete;
+				public GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State complete;
 	}
 
-	public class ActiveState : GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State
+		public class ActiveState : GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.State
 	{
-		public UnstableEntombDefense.SafeStates safe;
+				public UnstableEntombDefense.SafeStates safe;
 
-		public UnstableEntombDefense.ThreatenedStates threatened;
+				public UnstableEntombDefense.ThreatenedStates threatened;
 	}
 
-	public new class Instance : GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.GameInstance
+		public new class Instance : GameStateMachine<UnstableEntombDefense, UnstableEntombDefense.Instance, IStateMachineTarget, UnstableEntombDefense.Def>.GameInstance
 	{
-				public float RemainingCooldown
+						public float RemainingCooldown
 		{
 			get
 			{
@@ -107,7 +107,7 @@ public class UnstableEntombDefense : GameStateMachine<UnstableEntombDefense, Uns
 			}
 		}
 
-				public bool IsEntombed
+						public bool IsEntombed
 		{
 			get
 			{
@@ -115,7 +115,7 @@ public class UnstableEntombDefense : GameStateMachine<UnstableEntombDefense, Uns
 			}
 		}
 
-				public bool IsActive
+						public bool IsActive
 		{
 			get
 			{
@@ -123,12 +123,12 @@ public class UnstableEntombDefense : GameStateMachine<UnstableEntombDefense, Uns
 			}
 		}
 
-		public Instance(IStateMachineTarget master, UnstableEntombDefense.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, UnstableEntombDefense.Def def) : base(master, def)
 		{
 			this.UnentombAnimName = ((this.UnentombAnimName == null) ? def.defaultAnimName : this.UnentombAnimName);
 		}
 
-		public bool IsInPressenceOfUnstableSolids()
+				public bool IsInPressenceOfUnstableSolids()
 		{
 			int cell = Grid.PosToCell(this);
 			CellOffset[] occupiedCellsOffsets = this.occupyArea.OccupiedCellsOffsets;
@@ -143,7 +143,7 @@ public class UnstableEntombDefense : GameStateMachine<UnstableEntombDefense, Uns
 			return false;
 		}
 
-		public void AttackUnstableCells()
+				public void AttackUnstableCells()
 		{
 			int cell = Grid.PosToCell(this);
 			CellOffset[] occupiedCellsOffsets = this.occupyArea.OccupiedCellsOffsets;
@@ -157,12 +157,12 @@ public class UnstableEntombDefense : GameStateMachine<UnstableEntombDefense, Uns
 			}
 		}
 
-		public void SetActive(bool active)
+				public void SetActive(bool active)
 		{
 			base.sm.Active.Set(active, this, false);
 		}
 
-		public Descriptor GetStateDescriptor()
+				public Descriptor GetStateDescriptor()
 		{
 			if (base.IsInsideState(base.sm.disabled))
 			{
@@ -186,12 +186,12 @@ public class UnstableEntombDefense : GameStateMachine<UnstableEntombDefense, Uns
 			};
 		}
 
-		public string UnentombAnimName;
+				public string UnentombAnimName;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private EntombVulnerable entombVulnerable;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private OccupyArea occupyArea;
 	}
 }

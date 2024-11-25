@@ -2,9 +2,9 @@
 
 namespace Klei.AI
 {
-	public class FertilityModifier : Resource
+		public class FertilityModifier : Resource
 	{
-		public FertilityModifier(string id, Tag targetTag, string name, string description, Func<string, string> tooltipCB, FertilityModifier.FertilityModFn applyFunction) : base(id, name)
+				public FertilityModifier(string id, Tag targetTag, string name, string description, Func<string, string> tooltipCB, FertilityModifier.FertilityModFn applyFunction) : base(id, name)
 		{
 			this.Description = description;
 			this.TargetTag = targetTag;
@@ -12,7 +12,7 @@ namespace Klei.AI
 			this.ApplyFunction = applyFunction;
 		}
 
-		public string GetTooltip()
+				public string GetTooltip()
 		{
 			if (this.TooltipCB != null)
 			{
@@ -21,14 +21,14 @@ namespace Klei.AI
 			return this.Description;
 		}
 
-		public string Description;
+				public string Description;
 
-		public Tag TargetTag;
+				public Tag TargetTag;
 
-		public Func<string, string> TooltipCB;
+				public Func<string, string> TooltipCB;
 
-		public FertilityModifier.FertilityModFn ApplyFunction;
+				public FertilityModifier.FertilityModFn ApplyFunction;
 
-				public delegate void FertilityModFn(FertilityMonitor.Instance inst, Tag eggTag);
+						public delegate void FertilityModFn(FertilityMonitor.Instance inst, Tag eggTag);
 	}
 }

@@ -10,12 +10,12 @@ using UnityEngine.Events;
 
 public class LocText : TextMeshProUGUI
 {
-	protected override void OnEnable()
+		protected override void OnEnable()
 	{
 		base.OnEnable();
 	}
 
-			public bool AllowLinks
+				public bool AllowLinks
 	{
 		get
 		{
@@ -29,7 +29,7 @@ public class LocText : TextMeshProUGUI
 		}
 	}
 
-	[ContextMenu("Apply Settings")]
+		[ContextMenu("Apply Settings")]
 	public void ApplySettings()
 	{
 		if (this.key != "" && Application.isPlaying)
@@ -43,7 +43,7 @@ public class LocText : TextMeshProUGUI
 		}
 	}
 
-	private new void Awake()
+		private new void Awake()
 	{
 		base.Awake();
 		if (!Application.isPlaying)
@@ -70,19 +70,19 @@ public class LocText : TextMeshProUGUI
 		this.textLinkHandler = base.GetComponent<TextLinkHandler>();
 	}
 
-	private new void Start()
+		private new void Start()
 	{
 		base.Start();
 		this.RefreshLinkHandler();
 	}
 
-	private new void OnDestroy()
+		private new void OnDestroy()
 	{
 		KInputManager.InputChange.RemoveListener(new UnityAction(this.RefreshText));
 		base.OnDestroy();
 	}
 
-	public override void SetLayoutDirty()
+		public override void SetLayoutDirty()
 	{
 		if (this.staticLayout)
 		{
@@ -91,7 +91,7 @@ public class LocText : TextMeshProUGUI
 		base.SetLayoutDirty();
 	}
 
-	public void SetLinkOverrideAction(Func<string, bool> action)
+		public void SetLinkOverrideAction(Func<string, bool> action)
 	{
 		this.RefreshLinkHandler();
 		if (this.textLinkHandler != null)
@@ -100,7 +100,7 @@ public class LocText : TextMeshProUGUI
 		}
 	}
 
-			public override string text
+				public override string text
 	{
 		get
 		{
@@ -112,13 +112,13 @@ public class LocText : TextMeshProUGUI
 		}
 	}
 
-	public override void SetText(string text)
+		public override void SetText(string text)
 	{
 		text = this.FilterInput(text);
 		base.SetText(text);
 	}
 
-	private string FilterInput(string input)
+		private string FilterInput(string input)
 	{
 		if (input != null)
 		{
@@ -140,7 +140,7 @@ public class LocText : TextMeshProUGUI
 		return input;
 	}
 
-	public static string ParseText(string input)
+		public static string ParseText(string input)
 	{
 		string pattern = "\\{Hotkey/(\\w+)\\}";
 		string input2 = Regex.Replace(input, pattern, delegate(Match m)
@@ -170,7 +170,7 @@ public class LocText : TextMeshProUGUI
 		});
 	}
 
-	private void RefreshText()
+		private void RefreshText()
 	{
 		if (this.originalString != string.Empty)
 		{
@@ -178,12 +178,12 @@ public class LocText : TextMeshProUGUI
 		}
 	}
 
-	protected override void GenerateTextMesh()
+		protected override void GenerateTextMesh()
 	{
 		base.GenerateTextMesh();
 	}
 
-	internal void SwapFont(TMP_FontAsset font, bool isRightToLeft)
+		internal void SwapFont(TMP_FontAsset font, bool isRightToLeft)
 	{
 		base.font = font;
 		if (this.key != "")
@@ -195,7 +195,7 @@ public class LocText : TextMeshProUGUI
 		base.isRightToLeftText = isRightToLeft;
 	}
 
-	private static string ModifyLinkStrings(string input)
+		private static string ModifyLinkStrings(string input)
 	{
 		if (input == null || input.IndexOf("<b><style=\"KLink\">") != -1)
 		{
@@ -207,7 +207,7 @@ public class LocText : TextMeshProUGUI
 		return stringBuilder.ToString();
 	}
 
-	private void RefreshLinkHandler()
+		private void RefreshLinkHandler()
 	{
 		if (this.textLinkHandler == null && this.allowLinksInternal)
 		{
@@ -228,24 +228,24 @@ public class LocText : TextMeshProUGUI
 		}
 	}
 
-	public string key;
+		public string key;
 
-	public TextStyleSetting textStyleSetting;
+		public TextStyleSetting textStyleSetting;
 
-	public bool allowOverride;
+		public bool allowOverride;
 
-	public bool staticLayout;
+		public bool staticLayout;
 
-	private TextLinkHandler textLinkHandler;
+		private TextLinkHandler textLinkHandler;
 
-	private string originalString = string.Empty;
+		private string originalString = string.Empty;
 
-	[SerializeField]
+		[SerializeField]
 	private bool allowLinksInternal;
 
-	private static readonly Dictionary<string, global::Action> ActionLookup = Enum.GetNames(typeof(global::Action)).ToDictionary((string x) => x, (string x) => (global::Action)Enum.Parse(typeof(global::Action), x), StringComparer.OrdinalIgnoreCase);
+		private static readonly Dictionary<string, global::Action> ActionLookup = Enum.GetNames(typeof(global::Action)).ToDictionary((string x) => x, (string x) => (global::Action)Enum.Parse(typeof(global::Action), x), StringComparer.OrdinalIgnoreCase);
 
-	private static readonly Dictionary<string, Pair<LocString, LocString>> ClickLookup = new Dictionary<string, Pair<LocString, LocString>>
+		private static readonly Dictionary<string, Pair<LocString, LocString>> ClickLookup = new Dictionary<string, Pair<LocString, LocString>>
 	{
 		{
 			UI.ClickType.Click.ToString(),
@@ -309,15 +309,15 @@ public class LocText : TextMeshProUGUI
 		}
 	};
 
-	private const string linkPrefix_open = "<link=\"";
+		private const string linkPrefix_open = "<link=\"";
 
-	private const string linkSuffix = "</link>";
+		private const string linkSuffix = "</link>";
 
-	private const string linkColorPrefix = "<b><style=\"KLink\">";
+		private const string linkColorPrefix = "<b><style=\"KLink\">";
 
-	private const string linkColorSuffix = "</style></b>";
+		private const string linkColorSuffix = "</style></b>";
 
-	private static readonly string combinedPrefix = "<b><style=\"KLink\"><link=\"";
+		private static readonly string combinedPrefix = "<b><style=\"KLink\"><link=\"";
 
-	private static readonly string combinedSuffix = "</style></b></link>";
+		private static readonly string combinedSuffix = "</style></b></link>";
 }

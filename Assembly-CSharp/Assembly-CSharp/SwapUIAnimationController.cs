@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SwapUIAnimationController : MonoBehaviour
 {
-	public void SetState(bool Primary)
+		public void SetState(bool Primary)
 	{
 		this.AnimationControllerObject_Primary.SetActive(Primary);
 		if (!Primary)
@@ -19,7 +19,7 @@ public class SwapUIAnimationController : MonoBehaviour
 		}
 	}
 
-	public GameObject AnimationControllerObject_Primary;
+		public GameObject AnimationControllerObject_Primary;
 
-	public GameObject AnimationControllerObject_Alternate;
+		public GameObject AnimationControllerObject_Alternate;
 }

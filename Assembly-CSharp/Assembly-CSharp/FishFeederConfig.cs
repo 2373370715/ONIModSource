@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class FishFeederConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "FishFeeder";
 		int width = 1;
@@ -28,11 +28,11 @@ public class FishFeederConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
 		Storage storage = go.AddOrGet<Storage>();
@@ -62,7 +62,7 @@ public class FishFeederConfig : IBuildingConfig
 		creatureFeeder.feederOffset = new CellOffset(0, -2);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<StorageController.Def>();
 		go.AddOrGetDef<FishFeeder.Def>();
@@ -73,7 +73,7 @@ public class FishFeederConfig : IBuildingConfig
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 	}
 
-	public override void ConfigurePost(BuildingDef def)
+		public override void ConfigurePost(BuildingDef def)
 	{
 		List<Tag> list = new List<Tag>();
 		foreach (KeyValuePair<Tag, Diet> keyValuePair in DietManager.CollectDiets(new Tag[]
@@ -86,5 +86,5 @@ public class FishFeederConfig : IBuildingConfig
 		def.BuildingComplete.GetComponent<Storage>().storageFilters = list;
 	}
 
-	public const string ID = "FishFeeder";
+		public const string ID = "FishFeeder";
 }

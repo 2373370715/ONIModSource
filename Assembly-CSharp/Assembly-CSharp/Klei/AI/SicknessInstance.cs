@@ -8,10 +8,10 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	public class SicknessInstance : ModifierInstance<Sickness>, ISaveLoadable
 	{
-				public Sickness Sickness
+						public Sickness Sickness
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Klei.AI
 			}
 		}
 
-				public float TotalCureSpeedMultiplier
+						public float TotalCureSpeedMultiplier
 		{
 			get
 			{
@@ -38,7 +38,7 @@ namespace Klei.AI
 			}
 		}
 
-				public bool IsDoctored
+						public bool IsDoctored
 		{
 			get
 			{
@@ -51,17 +51,17 @@ namespace Klei.AI
 			}
 		}
 
-		public SicknessInstance(GameObject game_object, Sickness disease) : base(game_object, disease)
+				public SicknessInstance(GameObject game_object, Sickness disease) : base(game_object, disease)
 		{
 		}
 
-		[OnDeserialized]
+				[OnDeserialized]
 		private void OnDeserialized()
 		{
 			this.InitializeAndStart();
 		}
 
-						public SicknessExposureInfo ExposureInfo
+								public SicknessExposureInfo ExposureInfo
 		{
 			get
 			{
@@ -74,7 +74,7 @@ namespace Klei.AI
 			}
 		}
 
-		private void InitializeAndStart()
+				private void InitializeAndStart()
 		{
 			Sickness disease = this.modifier;
 			Func<List<Notification>, object, string> tooltip = delegate(List<Notification> notificationList, object data)
@@ -107,7 +107,7 @@ namespace Klei.AI
 			this.smi.StartSM();
 		}
 
-		private string ResolveString(string str, object data)
+				private string ResolveString(string str, object data)
 		{
 			if (this.smi == null)
 			{
@@ -162,17 +162,17 @@ namespace Klei.AI
 			return str;
 		}
 
-		public float GetInfectedTimeRemaining()
+				public float GetInfectedTimeRemaining()
 		{
 			return this.modifier.SicknessDuration * (1f - this.smi.sm.percentRecovered.Get(this.smi)) / this.TotalCureSpeedMultiplier;
 		}
 
-		public float GetFatalityTimeRemaining()
+				public float GetFatalityTimeRemaining()
 		{
 			return this.modifier.fatalityDuration * (1f - this.smi.sm.percentDied.Get(this.smi));
 		}
 
-		public float GetPercentCured()
+				public float GetPercentCured()
 		{
 			if (this.smi == null)
 			{
@@ -181,17 +181,17 @@ namespace Klei.AI
 			return this.smi.sm.percentRecovered.Get(this.smi);
 		}
 
-		public void SetPercentCured(float pct)
+				public void SetPercentCured(float pct)
 		{
 			this.smi.sm.percentRecovered.Set(pct, this.smi, false);
 		}
 
-		public void Cure()
+				public void Cure()
 		{
 			this.smi.Cure();
 		}
 
-		public override void OnCleanUp()
+				public override void OnCleanUp()
 		{
 			if (this.smi != null)
 			{
@@ -200,39 +200,39 @@ namespace Klei.AI
 			}
 		}
 
-		public StatusItem GetStatusItem()
+				public StatusItem GetStatusItem()
 		{
 			return this.statusItem;
 		}
 
-		public List<Descriptor> GetDescriptors()
+				public List<Descriptor> GetDescriptors()
 		{
 			return this.modifier.GetSicknessSourceDescriptors();
 		}
 
-		[Serialize]
+				[Serialize]
 		private SicknessExposureInfo exposureInfo;
 
-		private SicknessInstance.StatesInstance smi;
+				private SicknessInstance.StatesInstance smi;
 
-		private StatusItem statusItem;
+				private StatusItem statusItem;
 
-		private Notification notification;
+				private Notification notification;
 
-		private struct CureInfo
+				private struct CureInfo
 		{
-			public string name;
+						public string name;
 
-			public float multiplier;
+						public float multiplier;
 		}
 
-		public class StatesInstance : GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.GameInstance
+				public class StatesInstance : GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.GameInstance
 		{
-			public StatesInstance(SicknessInstance master) : base(master)
+						public StatesInstance(SicknessInstance master) : base(master)
 			{
 			}
 
-			public void UpdateProgress(float dt)
+						public void UpdateProgress(float dt)
 			{
 				float delta_value = dt * base.master.TotalCureSpeedMultiplier / base.master.modifier.SicknessDuration;
 				base.sm.percentRecovered.Delta(delta_value, base.smi);
@@ -248,7 +248,7 @@ namespace Klei.AI
 				}
 			}
 
-			public void Infect()
+						public void Infect()
 			{
 				Sickness modifier = base.master.modifier;
 				this.componentData = modifier.Infect(base.gameObject, base.master, base.master.exposureInfo);
@@ -258,7 +258,7 @@ namespace Klei.AI
 				}
 			}
 
-			public void Cure()
+						public void Cure()
 			{
 				Sickness modifier = base.master.modifier;
 				base.gameObject.GetComponent<Modifiers>().sicknesses.Cure(modifier);
@@ -277,17 +277,17 @@ namespace Klei.AI
 				}
 			}
 
-			public SicknessExposureInfo GetExposureInfo()
+						public SicknessExposureInfo GetExposureInfo()
 			{
 				return base.master.ExposureInfo;
 			}
 
-			private object[] componentData;
+						private object[] componentData;
 		}
 
-		public class States : GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance>
+				public class States : GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance>
 		{
-			public override void InitializeStates(out StateMachine.BaseState default_state)
+						public override void InitializeStates(out StateMachine.BaseState default_state)
 			{
 				default_state = this.infected;
 				base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -314,17 +314,17 @@ namespace Klei.AI
 				this.fatality.DoNothing();
 			}
 
-			public StateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.FloatParameter percentRecovered;
+						public StateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.FloatParameter percentRecovered;
 
-			public StateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.FloatParameter percentDied;
+						public StateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.FloatParameter percentDied;
 
-			public GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.State infected;
+						public GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.State infected;
 
-			public GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.State cured;
+						public GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.State cured;
 
-			public GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.State fatality_pre;
+						public GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.State fatality_pre;
 
-			public GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.State fatality;
+						public GameStateMachine<SicknessInstance.States, SicknessInstance.StatesInstance, SicknessInstance, object>.State fatality;
 		}
 	}
 }

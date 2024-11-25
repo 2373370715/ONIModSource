@@ -3,7 +3,7 @@ using Klei.AI;
 
 public class HygieneMonitor : GameStateMachine<HygieneMonitor, HygieneMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.needsshower;
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -14,34 +14,34 @@ public class HygieneMonitor : GameStateMachine<HygieneMonitor, HygieneMonitor.In
 		});
 	}
 
-	public StateMachine<HygieneMonitor, HygieneMonitor.Instance, IStateMachineTarget, object>.FloatParameter dirtiness;
+		public StateMachine<HygieneMonitor, HygieneMonitor.Instance, IStateMachineTarget, object>.FloatParameter dirtiness;
 
-	public GameStateMachine<HygieneMonitor, HygieneMonitor.Instance, IStateMachineTarget, object>.State clean;
+		public GameStateMachine<HygieneMonitor, HygieneMonitor.Instance, IStateMachineTarget, object>.State clean;
 
-	public GameStateMachine<HygieneMonitor, HygieneMonitor.Instance, IStateMachineTarget, object>.State needsshower;
+		public GameStateMachine<HygieneMonitor, HygieneMonitor.Instance, IStateMachineTarget, object>.State needsshower;
 
-	public new class Instance : GameStateMachine<HygieneMonitor, HygieneMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<HygieneMonitor, HygieneMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.effects = master.GetComponent<Effects>();
 		}
 
-		public float GetDirtiness()
+				public float GetDirtiness()
 		{
 			return base.sm.dirtiness.Get(this);
 		}
 
-		public void SetDirtiness(float dirtiness)
+				public void SetDirtiness(float dirtiness)
 		{
 			base.sm.dirtiness.Set(dirtiness, this, false);
 		}
 
-		public bool NeedsShower()
+				public bool NeedsShower()
 		{
 			return !this.effects.HasEffect(Shower.SHOWER_EFFECT);
 		}
 
-		private Effects effects;
+				private Effects effects;
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 {
-	private void GetContentsTemperature(out float temperature, out bool hasMass)
+		private void GetContentsTemperature(out float temperature, out bool hasMass)
 	{
 		int cell = Grid.PosToCell(this);
 		if (this.conduitType == ConduitType.Liquid || this.conduitType == ConduitType.Gas)
@@ -29,7 +29,7 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		hasMass = false;
 	}
 
-		public override float CurrentValue
+			public override float CurrentValue
 	{
 		get
 		{
@@ -44,7 +44,7 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public float RangeMin
+			public float RangeMin
 	{
 		get
 		{
@@ -52,7 +52,7 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public float RangeMax
+			public float RangeMax
 	{
 		get
 		{
@@ -60,17 +60,17 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-	public float GetRangeMinInputField()
+		public float GetRangeMinInputField()
 	{
 		return GameUtil.GetConvertedTemperature(this.RangeMin, false);
 	}
 
-	public float GetRangeMaxInputField()
+		public float GetRangeMaxInputField()
 	{
 		return GameUtil.GetConvertedTemperature(this.RangeMax, false);
 	}
 
-		public LocString Title
+			public LocString Title
 	{
 		get
 		{
@@ -78,7 +78,7 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public LocString ThresholdValueName
+			public LocString ThresholdValueName
 	{
 		get
 		{
@@ -86,7 +86,7 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public string AboveToolTip
+			public string AboveToolTip
 	{
 		get
 		{
@@ -94,7 +94,7 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public string BelowToolTip
+			public string BelowToolTip
 	{
 		get
 		{
@@ -102,22 +102,22 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-	public string Format(float value, bool units)
+		public string Format(float value, bool units)
 	{
 		return GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, units, false);
 	}
 
-	public float ProcessedSliderValue(float input)
+		public float ProcessedSliderValue(float input)
 	{
 		return Mathf.Round(input);
 	}
 
-	public float ProcessedInputValue(float input)
+		public float ProcessedInputValue(float input)
 	{
 		return GameUtil.GetTemperatureConvertedToKelvin(input);
 	}
 
-	public LocString ThresholdValueUnits()
+		public LocString ThresholdValueUnits()
 	{
 		LocString result = null;
 		switch (GameUtil.temperatureUnit)
@@ -135,7 +135,7 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		return result;
 	}
 
-		public ThresholdScreenLayoutType LayoutType
+			public ThresholdScreenLayoutType LayoutType
 	{
 		get
 		{
@@ -143,7 +143,7 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public int IncrementScale
+			public int IncrementScale
 	{
 		get
 		{
@@ -151,7 +151,7 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-		public NonLinearSlider.Range[] GetRanges
+			public NonLinearSlider.Range[] GetRanges
 	{
 		get
 		{
@@ -165,10 +165,10 @@ public class ConduitTemperatureSensor : ConduitThresholdSensor, IThresholdSwitch
 		}
 	}
 
-	public float rangeMin;
+		public float rangeMin;
 
-	public float rangeMax = 373.15f;
+		public float rangeMax = 373.15f;
 
-	[Serialize]
+		[Serialize]
 	private float lastValue;
 }

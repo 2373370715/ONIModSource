@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/TableRow")]
 public class TableRow : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (this.selectMinionButton != null)
@@ -16,17 +16,17 @@ public class TableRow : KMonoBehaviour
 		}
 	}
 
-	public GameObject GetScroller(string scrollerID)
+		public GameObject GetScroller(string scrollerID)
 	{
 		return this.scrollers[scrollerID];
 	}
 
-	public GameObject GetScrollerBorder(string scrolledID)
+		public GameObject GetScrollerBorder(string scrolledID)
 	{
 		return this.scrollerBorders[scrolledID];
 	}
 
-	public void SelectMinion()
+		public void SelectMinion()
 	{
 		MinionIdentity minionIdentity = this.minion as MinionIdentity;
 		if (minionIdentity == null)
@@ -36,7 +36,7 @@ public class TableRow : KMonoBehaviour
 		SelectTool.Instance.Select(minionIdentity.GetComponent<KSelectable>(), false);
 	}
 
-	public void SelectAndFocusMinion()
+		public void SelectAndFocusMinion()
 	{
 		MinionIdentity minionIdentity = this.minion as MinionIdentity;
 		if (minionIdentity == null)
@@ -46,7 +46,7 @@ public class TableRow : KMonoBehaviour
 		SelectTool.Instance.SelectAndFocus(minionIdentity.transform.GetPosition(), minionIdentity.GetComponent<KSelectable>(), new Vector3(8f, 0f, 0f));
 	}
 
-	public void ConfigureAsWorldDivider(Dictionary<string, TableColumn> columns, TableScreen screen)
+		public void ConfigureAsWorldDivider(Dictionary<string, TableColumn> columns, TableScreen screen)
 	{
 		ScrollRect scroll_rect = base.gameObject.GetComponentInChildren<ScrollRect>();
 		this.rowType = TableRow.RowType.WorldDivider;
@@ -68,7 +68,7 @@ public class TableRow : KMonoBehaviour
 		});
 	}
 
-	public void ConfigureContent(IAssignableIdentity minion, Dictionary<string, TableColumn> columns, TableScreen screen)
+		public void ConfigureContent(IAssignableIdentity minion, Dictionary<string, TableColumn> columns, TableScreen screen)
 	{
 		this.minion = minion;
 		KImage componentInChildren = base.GetComponentInChildren<KImage>(true);
@@ -109,6 +109,9 @@ public class TableRow : KMonoBehaviour
 						{
 							GameObject gameObject2 = Util.KInstantiateUI(this.scrollerPrefab, base.gameObject, true);
 							ScrollRect scroll_rect = gameObject2.GetComponent<ScrollRect>();
+							this.scrollbar = gameObject2.GetComponentInChildren<Scrollbar>();
+							scroll_rect.horizontalScrollbar = this.scrollbar;
+							scroll_rect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
 							scroll_rect.onValueChanged.AddListener(delegate(Vector2 <p0>)
 							{
 								if (screen.CheckScrollersDirty())
@@ -157,7 +160,7 @@ public class TableRow : KMonoBehaviour
 		}
 	}
 
-	public void RefreshColumns(Dictionary<string, TableColumn> columns)
+		public void RefreshColumns(Dictionary<string, TableColumn> columns)
 	{
 		foreach (KeyValuePair<string, TableColumn> keyValuePair in columns)
 		{
@@ -168,7 +171,7 @@ public class TableRow : KMonoBehaviour
 		}
 	}
 
-	public void RefreshScrollers()
+		public void RefreshScrollers()
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.scrollers)
 		{
@@ -182,7 +185,7 @@ public class TableRow : KMonoBehaviour
 		}
 	}
 
-	public GameObject GetWidget(TableColumn column)
+		public GameObject GetWidget(TableColumn column)
 	{
 		if (this.widgets.ContainsKey(column) && this.widgets[column] != null)
 		{
@@ -192,17 +195,17 @@ public class TableRow : KMonoBehaviour
 		return null;
 	}
 
-	public IAssignableIdentity GetIdentity()
+		public IAssignableIdentity GetIdentity()
 	{
 		return this.minion;
 	}
 
-	public bool ContainsWidget(GameObject widget)
+		public bool ContainsWidget(GameObject widget)
 	{
 		return this.widgets.ContainsValue(widget);
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		foreach (KeyValuePair<TableColumn, GameObject> keyValuePair in this.widgets)
 		{
@@ -211,38 +214,38 @@ public class TableRow : KMonoBehaviour
 		UnityEngine.Object.Destroy(base.gameObject);
 	}
 
-	public TableRow.RowType rowType;
+		public TableRow.RowType rowType;
 
-	private IAssignableIdentity minion;
+		private IAssignableIdentity minion;
 
-	private Dictionary<TableColumn, GameObject> widgets = new Dictionary<TableColumn, GameObject>();
+		private Dictionary<TableColumn, GameObject> widgets = new Dictionary<TableColumn, GameObject>();
 
-	private Dictionary<string, GameObject> scrollers = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> scrollers = new Dictionary<string, GameObject>();
 
-	private Dictionary<string, GameObject> scrollerBorders = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> scrollerBorders = new Dictionary<string, GameObject>();
 
-	public bool isDefault;
+		public bool isDefault;
 
-	public KButton selectMinionButton;
+		public KButton selectMinionButton;
 
-	[SerializeField]
+		[SerializeField]
 	private ColorStyleSetting style_setting_default;
 
-	[SerializeField]
+		[SerializeField]
 	private ColorStyleSetting style_setting_minion;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject scrollerPrefab;
 
-	[SerializeField]
-	private GameObject scrollbarPrefab;
+		[SerializeField]
+	private Scrollbar scrollbar;
 
-	public enum RowType
+		public enum RowType
 	{
-		Header,
-		Default,
-		Minion,
-		StoredMinon,
-		WorldDivider
+				Header,
+				Default,
+				Minion,
+				StoredMinon,
+				WorldDivider
 	}
 }

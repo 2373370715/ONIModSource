@@ -3,7 +3,7 @@ using TUNING;
 
 public class AdvancedApothecary : ComplexFabricator
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.choreType = Db.Get().ChoreTypes.Compound;
@@ -11,7 +11,7 @@ public class AdvancedApothecary : ComplexFabricator
 		this.sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.workable.WorkerStatusItem = Db.Get().DuplicantStatusItems.Fabricating;

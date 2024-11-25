@@ -1,23 +1,19 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-[SkipSaveFileSerialization]
-[AddComponentMenu("KMonoBehaviour/scripts/Insulator")]
-public class Insulator : KMonoBehaviour
-{
-	protected override void OnSpawn()
-	{
-		SimMessages.SetInsulation(Grid.OffsetCell(Grid.PosToCell(base.transform.GetPosition()), this.offset), this.building.Def.ThermalConductivity);
-	}
+[SkipSaveFileSerialization, AddComponentMenu("KMonoBehaviour/scripts/Insulator")]
+public class Insulator : KMonoBehaviour {
+    [MyCmpReq]
+    private Building building;
 
-	protected override void OnCleanUp()
-	{
-		SimMessages.SetInsulation(Grid.OffsetCell(Grid.PosToCell(base.transform.GetPosition()), this.offset), 1f);
-	}
+    [SerializeField]
+    public CellOffset offset = CellOffset.none;
 
-	[MyCmpReq]
-	private Building building;
+    protected override void OnSpawn() {
+        SimMessages.SetInsulation(Grid.OffsetCell(Grid.PosToCell(transform.GetPosition()), offset),
+                                  building.Def.ThermalConductivity);
+    }
 
-	[SerializeField]
-	public CellOffset offset = CellOffset.none;
+    protected override void OnCleanUp() {
+        SimMessages.SetInsulation(Grid.OffsetCell(Grid.PosToCell(transform.GetPosition()), offset), 1f);
+    }
 }

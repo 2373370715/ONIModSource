@@ -1,4 +1,4 @@
-﻿
+﻿namespace RsTransferPort;
 
 public class WirelessPowerPort : UtilityNetworkLink, IHaveUtilityNetworkMgr, ICircuitConnected {
     [MyCmpGet]

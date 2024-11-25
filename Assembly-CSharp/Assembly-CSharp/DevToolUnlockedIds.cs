@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class DevToolUnlockedIds : DevTool
 {
-	public DevToolUnlockedIds()
+		public DevToolUnlockedIds()
 	{
 		this.RequiresGameRunning = true;
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		bool flag;
 		DevToolUnlockedIds.UnlocksWrapper unlocksWrapper;
@@ -80,7 +80,7 @@ public class DevToolUnlockedIds : DevTool
 		}
 	}
 
-	private Option<DevToolUnlockedIds.UnlocksWrapper> GetUnlocks()
+		private Option<DevToolUnlockedIds.UnlocksWrapper> GetUnlocks()
 	{
 		if (App.IsExiting)
 		{
@@ -97,35 +97,35 @@ public class DevToolUnlockedIds : DevTool
 		return Option.Some<DevToolUnlockedIds.UnlocksWrapper>(new DevToolUnlockedIds.UnlocksWrapper(Game.Instance.unlocks));
 	}
 
-	private string filterForUnlockIds = "";
+		private string filterForUnlockIds = "";
 
-	private string unlockIdToAdd = "";
+		private string unlockIdToAdd = "";
 
-	public readonly struct UnlocksWrapper
+		public readonly struct UnlocksWrapper
 	{
-		public UnlocksWrapper(Unlocks unlocks)
+				public UnlocksWrapper(Unlocks unlocks)
 		{
 			this.unlocks = unlocks;
 		}
 
-		public void AddId(string unlockId)
+				public void AddId(string unlockId)
 		{
 			this.unlocks.Unlock(unlockId, true);
 		}
 
-		public void RemoveId(string unlockId)
+				public void RemoveId(string unlockId)
 		{
 			this.unlocks.Lock(unlockId);
 		}
 
-		public IEnumerable<string> GetAllIds()
+				public IEnumerable<string> GetAllIds()
 		{
 			return from s in this.unlocks.GetAllUnlockedIds()
 			orderby s
 			select s;
 		}
 
-				public int Count
+						public int Count
 		{
 			get
 			{
@@ -133,6 +133,6 @@ public class DevToolUnlockedIds : DevTool
 			}
 		}
 
-		public readonly Unlocks unlocks;
+				public readonly Unlocks unlocks;
 	}
 }

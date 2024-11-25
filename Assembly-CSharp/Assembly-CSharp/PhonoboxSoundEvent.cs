@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class PhonoboxSoundEvent : SoundEvent
 {
-	public PhonoboxSoundEvent(string file_name, string sound_name, int frame, float min_interval) : base(file_name, sound_name, frame, true, true, min_interval, false)
+		public PhonoboxSoundEvent(string file_name, string sound_name, int frame, float min_interval) : base(file_name, sound_name, frame, true, true, min_interval, false)
 	{
 	}
 
-	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
+		public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
 	{
-		Vector3 position = behaviour.GetComponent<Transform>().GetPosition();
+		Vector3 position = behaviour.position;
 		position.z = 0f;
 		AudioDebug audioDebug = AudioDebug.Get();
 		if (audioDebug != null && audioDebug.debugSoundEvents)
@@ -68,11 +68,11 @@ public class PhonoboxSoundEvent : SoundEvent
 		}
 	}
 
-	private const string SOUND_PARAM_SONG = "jukeboxSong";
+		private const string SOUND_PARAM_SONG = "jukeboxSong";
 
-	private const string SOUND_PARAM_PITCH = "jukeboxPitch";
+		private const string SOUND_PARAM_PITCH = "jukeboxPitch";
 
-	private int song;
+		private int song;
 
-	private int pitch;
+		private int pitch;
 }

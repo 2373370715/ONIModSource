@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MissionControlWorkable : Workable
 {
-			public Spacecraft TargetSpacecraft
+				public Spacecraft TargetSpacecraft
 	{
 		get
 		{
@@ -17,7 +17,7 @@ public class MissionControlWorkable : Workable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.requiredSkillPerk = Db.Get().SkillPerks.CanMissionControl.Id;
@@ -35,31 +35,31 @@ public class MissionControlWorkable : Workable
 		this.lightEfficiencyBonus = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.MissionControlWorkables.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.MissionControlWorkables.Remove(this);
 		base.OnCleanUp();
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		this.workStatusItem = base.gameObject.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.MissionControlAssistingRocket, this.TargetSpacecraft);
 		this.operational.SetActive(true, false);
 	}
 
-	public override float GetEfficiencyMultiplier(Worker worker)
+		public override float GetEfficiencyMultiplier(WorkerBase worker)
 	{
 		return base.GetEfficiencyMultiplier(worker) * Mathf.Clamp01(this.GetSMI<SkyVisibilityMonitor.Instance>().PercentClearSky);
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		if (this.TargetSpacecraft == null)
 		{
@@ -69,14 +69,14 @@ public class MissionControlWorkable : Workable
 		return base.OnWorkTick(worker, dt);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		global::Debug.Assert(this.TargetSpacecraft != null);
 		base.gameObject.GetSMI<MissionControl.Instance>().ApplyEffect(this.TargetSpacecraft);
 		base.OnCompleteWork(worker);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		base.gameObject.GetComponent<KSelectable>().RemoveStatusItem(this.workStatusItem, false);
@@ -84,10 +84,10 @@ public class MissionControlWorkable : Workable
 		this.operational.SetActive(false, false);
 	}
 
-	private Spacecraft targetSpacecraft;
+		private Spacecraft targetSpacecraft;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	private Guid workStatusItem = Guid.Empty;
+		private Guid workStatusItem = Guid.Empty;
 }

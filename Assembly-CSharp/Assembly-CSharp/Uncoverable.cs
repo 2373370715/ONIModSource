@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Uncoverable")]
 public class Uncoverable : KMonoBehaviour
 {
-		public bool IsUncovered
+			public bool IsUncovered
 	{
 		get
 		{
@@ -15,23 +15,23 @@ public class Uncoverable : KMonoBehaviour
 		}
 	}
 
-	private bool IsAnyCellShowing()
+		private bool IsAnyCellShowing()
 	{
 		int rootCell = Grid.PosToCell(this);
 		return !this.occupyArea.TestArea(rootCell, null, Uncoverable.IsCellBlockedDelegate);
 	}
 
-	private static bool IsCellBlocked(int cell, object data)
+		private static bool IsCellBlocked(int cell, object data)
 	{
 		return Grid.Element[cell].IsSolid && !Grid.Foundation[cell];
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.IsAnyCellShowing())
@@ -46,7 +46,7 @@ public class Uncoverable : KMonoBehaviour
 		}
 	}
 
-	private void OnSolidChanged(object data)
+		private void OnSolidChanged(object data)
 	{
 		if (this.IsAnyCellShowing() && !this.hasBeenUncovered && this.partitionerEntry.IsValid())
 		{
@@ -58,25 +58,25 @@ public class Uncoverable : KMonoBehaviour
 		}
 	}
 
-	private static string OnNotificationToolTip(List<Notification> notifications, object data)
+		private static string OnNotificationToolTip(List<Notification> notifications, object data)
 	{
 		Uncoverable cmp = (Uncoverable)data;
 		return MISC.STATUSITEMS.BURIEDITEM.NOTIFICATION_TOOLTIP.Replace("{Uncoverable}", cmp.GetProperName());
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private OccupyArea occupyArea;
 
-	[Serialize]
+		[Serialize]
 	private bool hasBeenUncovered;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private static readonly Func<int, object, bool> IsCellBlockedDelegate = (int cell, object data) => Uncoverable.IsCellBlocked(cell, data);
+		private static readonly Func<int, object, bool> IsCellBlockedDelegate = (int cell, object data) => Uncoverable.IsCellBlocked(cell, data);
 }

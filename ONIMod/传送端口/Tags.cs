@@ -1,4 +1,4 @@
-﻿
+﻿namespace RsTransferPort;
 
 public class Tags {
     // 定义无线电源相关的标签，用于标识和管理无线电源组件或功能

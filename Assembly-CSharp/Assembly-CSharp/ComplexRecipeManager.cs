@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ComplexRecipeManager
 {
-	public static ComplexRecipeManager Get()
+		public static ComplexRecipeManager Get()
 	{
 		if (ComplexRecipeManager._Instance == null)
 		{
@@ -14,19 +14,19 @@ public class ComplexRecipeManager
 		return ComplexRecipeManager._Instance;
 	}
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ComplexRecipeManager._Instance = null;
 	}
 
-	public static string MakeObsoleteRecipeID(string fabricator, Tag signatureElement)
+		public static string MakeObsoleteRecipeID(string fabricator, Tag signatureElement)
 	{
 		string str = "_";
 		Tag tag = signatureElement;
 		return fabricator + str + tag.ToString();
 	}
 
-	public static string MakeRecipeID(string fabricator, IList<ComplexRecipe.RecipeElement> inputs, IList<ComplexRecipe.RecipeElement> outputs)
+		public static string MakeRecipeID(string fabricator, IList<ComplexRecipe.RecipeElement> inputs, IList<ComplexRecipe.RecipeElement> outputs)
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.Append(fabricator);
@@ -45,7 +45,7 @@ public class ComplexRecipeManager
 		return stringBuilder.ToString();
 	}
 
-	public static string MakeRecipeID(string fabricator, IList<ComplexRecipe.RecipeElement> inputs, IList<ComplexRecipe.RecipeElement> outputs, string facadeID)
+		public static string MakeRecipeID(string fabricator, IList<ComplexRecipe.RecipeElement> inputs, IList<ComplexRecipe.RecipeElement> outputs, string facadeID)
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.Append(fabricator);
@@ -65,7 +65,7 @@ public class ComplexRecipeManager
 		return stringBuilder.ToString();
 	}
 
-	public void Add(ComplexRecipe recipe)
+		public void Add(ComplexRecipe recipe)
 	{
 		using (List<ComplexRecipe>.Enumerator enumerator = this.recipes.GetEnumerator())
 		{
@@ -84,7 +84,7 @@ public class ComplexRecipeManager
 		}
 	}
 
-	public ComplexRecipe GetRecipe(string id)
+		public ComplexRecipe GetRecipe(string id)
 	{
 		if (string.IsNullOrEmpty(id))
 		{
@@ -93,12 +93,12 @@ public class ComplexRecipeManager
 		return this.recipes.Find((ComplexRecipe r) => r.id == id);
 	}
 
-	public void AddObsoleteIDMapping(string obsolete_id, string new_id)
+		public void AddObsoleteIDMapping(string obsolete_id, string new_id)
 	{
 		this.obsoleteIDMapping[obsolete_id] = new_id;
 	}
 
-	public ComplexRecipe GetObsoleteRecipe(string id)
+		public ComplexRecipe GetObsoleteRecipe(string id)
 	{
 		if (string.IsNullOrEmpty(id))
 		{
@@ -113,9 +113,9 @@ public class ComplexRecipeManager
 		return result;
 	}
 
-	private static ComplexRecipeManager _Instance;
+		private static ComplexRecipeManager _Instance;
 
-	public List<ComplexRecipe> recipes = new List<ComplexRecipe>();
+		public List<ComplexRecipe> recipes = new List<ComplexRecipe>();
 
-	private Dictionary<string, string> obsoleteIDMapping = new Dictionary<string, string>();
+		private Dictionary<string, string> obsoleteIDMapping = new Dictionary<string, string>();
 }

@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class RetiredColonyData
 {
-	public RetiredColonyData()
+		public RetiredColonyData()
 	{
 	}
 
-	public RetiredColonyData(string colonyName, int cycleCount, string date, string[] achievements, MinionAssignablesProxy[] minions, BuildingComplete[] buildingCompletes, string startWorld, Dictionary<string, string> worldIdentities)
+		public RetiredColonyData(string colonyName, int cycleCount, string date, string[] achievements, MinionAssignablesProxy[] minions, BuildingComplete[] buildingCompletes, string startWorld, Dictionary<string, string> worldIdentities)
 	{
 		this.colonyName = colonyName;
 		this.cycleCount = cycleCount;
@@ -225,68 +225,68 @@ public class RetiredColonyData
 		}
 	}
 
-			public string colonyName { get; set; }
+				public string colonyName { get; set; }
 
-			public int cycleCount { get; set; }
+				public int cycleCount { get; set; }
 
-			public string date { get; set; }
+				public string date { get; set; }
 
-			public string[] achievements { get; set; }
+				public string[] achievements { get; set; }
 
-			public RetiredColonyData.RetiredDuplicantData[] Duplicants { get; set; }
+				public RetiredColonyData.RetiredDuplicantData[] Duplicants { get; set; }
 
-			public List<global::Tuple<string, int>> buildings { get; set; }
+				public List<global::Tuple<string, int>> buildings { get; set; }
 
-			public RetiredColonyData.RetiredColonyStatistic[] Stats { get; set; }
+				public RetiredColonyData.RetiredColonyStatistic[] Stats { get; set; }
 
-			public Dictionary<string, string> worldIdentities { get; set; }
+				public Dictionary<string, string> worldIdentities { get; set; }
 
-			public string startWorld { get; set; }
+				public string startWorld { get; set; }
 
-	public static class DataIDs
+		public static class DataIDs
 	{
-		public static string OxygenProduced = "oxygenProduced";
+				public static string OxygenProduced = "oxygenProduced";
 
-		public static string OxygenConsumed = "oxygenConsumed";
+				public static string OxygenConsumed = "oxygenConsumed";
 
-		public static string CaloriesProduced = "caloriesProduced";
+				public static string CaloriesProduced = "caloriesProduced";
 
-		public static string CaloriesRemoved = "caloriesRemoved";
+				public static string CaloriesRemoved = "caloriesRemoved";
 
-		public static string PowerProduced = "powerProduced";
+				public static string PowerProduced = "powerProduced";
 
-		public static string PowerWasted = "powerWasted";
+				public static string PowerWasted = "powerWasted";
 
-		public static string WorkTime = "workTime";
+				public static string WorkTime = "workTime";
 
-		public static string TravelTime = "travelTime";
+				public static string TravelTime = "travelTime";
 
-		public static string AverageWorkTime = "averageWorkTime";
+				public static string AverageWorkTime = "averageWorkTime";
 
-		public static string AverageTravelTime = "averageTravelTime";
+				public static string AverageTravelTime = "averageTravelTime";
 
-		public static string LiveDuplicants = "liveDuplicants";
+				public static string LiveDuplicants = "liveDuplicants";
 
-		public static string AverageStressCreated = "averageStressCreated";
+				public static string AverageStressCreated = "averageStressCreated";
 
-		public static string AverageStressRemoved = "averageStressRemoved";
+				public static string AverageStressRemoved = "averageStressRemoved";
 
-		public static string DomesticatedCritters = "domesticatedCritters";
+				public static string DomesticatedCritters = "domesticatedCritters";
 
-		public static string WildCritters = "wildCritters";
+				public static string WildCritters = "wildCritters";
 
-		public static string AverageGerms = "averageGerms";
+				public static string AverageGerms = "averageGerms";
 
-		public static string RocketsInFlight = "rocketsInFlight";
+				public static string RocketsInFlight = "rocketsInFlight";
 	}
 
-	public class RetiredColonyStatistic
+		public class RetiredColonyStatistic
 	{
-		public RetiredColonyStatistic()
+				public RetiredColonyStatistic()
 		{
 		}
 
-		public RetiredColonyStatistic(string id, global::Tuple<float, float>[] data, string name, string axisNameX, string axisNameY)
+				public RetiredColonyStatistic(string id, global::Tuple<float, float>[] data, string name, string axisNameX, string axisNameY)
 		{
 			this.id = id;
 			this.value = data;
@@ -295,7 +295,7 @@ public class RetiredColonyData
 			this.nameY = axisNameY;
 		}
 
-		public global::Tuple<float, float> GetByMaxValue()
+				public global::Tuple<float, float> GetByMaxValue()
 		{
 			if (this.value.Length == 0)
 			{
@@ -318,7 +318,7 @@ public class RetiredColonyData
 			return this.value[num];
 		}
 
-		public global::Tuple<float, float> GetByMaxKey()
+				public global::Tuple<float, float> GetByMaxKey()
 		{
 			if (this.value.Length == 0)
 			{
@@ -337,25 +337,25 @@ public class RetiredColonyData
 			return this.value[num];
 		}
 
-		public string id;
+				public string id;
 
-		public global::Tuple<float, float>[] value;
+				public global::Tuple<float, float>[] value;
 
-		public string name;
+				public string name;
 
-		public string nameX;
+				public string nameX;
 
-		public string nameY;
+				public string nameY;
 	}
 
-	public class RetiredDuplicantData
+		public class RetiredDuplicantData
 	{
-		public string name;
+				public string name;
 
-		public int age;
+				public int age;
 
-		public int skillPointsGained;
+				public int skillPointsGained;
 
-		public Dictionary<string, string> accessories;
+				public Dictionary<string, string> accessories;
 	}
 }

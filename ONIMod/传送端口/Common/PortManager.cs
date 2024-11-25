@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-
+namespace RsTransferPort;
 
 public class PortManager : SingleManager<PortManager> {
     public const     int                                             GLOBAL_CHANNEL_WORLD_ID = -1;

@@ -2,7 +2,7 @@
 
 public class Quest : Resource
 {
-	public Quest(string id, QuestCriteria[] criteria) : base(id, id)
+		public Quest(string id, QuestCriteria[] criteria) : base(id, id)
 	{
 		Debug.Assert(criteria.Length != 0);
 		this.Criteria = criteria;
@@ -22,17 +22,17 @@ public class Quest : Resource
 		}
 	}
 
-	public const string STRINGS_PREFIX = "STRINGS.CODEX.QUESTS.";
+		public const string STRINGS_PREFIX = "STRINGS.CODEX.QUESTS.";
 
-	public readonly QuestCriteria[] Criteria;
+		public readonly QuestCriteria[] Criteria;
 
-	public readonly string Title;
+		public readonly string Title;
 
-	public readonly string CompletionText;
+		public readonly string CompletionText;
 
-	public struct ItemData
+		public struct ItemData
 	{
-						public int ValueHandle
+								public int ValueHandle
 		{
 			get
 			{
@@ -44,23 +44,23 @@ public class Quest : Resource
 			}
 		}
 
-		public int LocalCellId;
+				public int LocalCellId;
 
-		public float CurrentValue;
+				public float CurrentValue;
 
-		public Tag SatisfyingItem;
+				public Tag SatisfyingItem;
 
-		public Tag QualifyingTag;
+				public Tag QualifyingTag;
 
-		public HashedString CriteriaId;
+				public HashedString CriteriaId;
 
-		private int valueHandle;
+				private int valueHandle;
 	}
 
-	public enum State
+		public enum State
 	{
-		NotStarted,
-		InProgress,
-		Completed
+				NotStarted,
+				InProgress,
+				Completed
 	}
 }

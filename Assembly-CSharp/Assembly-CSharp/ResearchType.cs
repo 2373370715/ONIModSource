@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ResearchType
 {
-	public ResearchType(string id, string name, string description, Sprite sprite, Color color, Recipe.Ingredient[] fabricationIngredients, float fabricationTime, HashedString kAnim_ID, string[] fabricators, string recipeDescription)
+		public ResearchType(string id, string name, string description, Sprite sprite, Color color, Recipe.Ingredient[] fabricationIngredients, float fabricationTime, HashedString kAnim_ID, string[] fabricators, string recipeDescription)
 	{
 		this._id = id;
 		this._name = name;
@@ -13,12 +13,12 @@ public class ResearchType
 		this.CreatePrefab(fabricationIngredients, fabricationTime, kAnim_ID, fabricators, recipeDescription, color);
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab(Recipe.Ingredient[] fabricationIngredients, float fabricationTime, HashedString kAnim_ID, string[] fabricators, string recipeDescription, Color color)
+		public GameObject CreatePrefab(Recipe.Ingredient[] fabricationIngredients, float fabricationTime, HashedString kAnim_ID, string[] fabricators, string recipeDescription, Color color)
 	{
 		GameObject gameObject = EntityTemplates.CreateBasicEntity(this.id, this.name, this.description, 1f, true, Assets.GetAnim(kAnim_ID), "ui", Grid.SceneLayer.BuildingFront, SimHashes.Creature, null, 293f);
 		gameObject.AddOrGet<ResearchPointObject>().TypeID = this.id;
@@ -35,15 +35,15 @@ public class ResearchType
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-		public string id
+			public string id
 	{
 		get
 		{
@@ -51,7 +51,7 @@ public class ResearchType
 		}
 	}
 
-		public string name
+			public string name
 	{
 		get
 		{
@@ -59,7 +59,7 @@ public class ResearchType
 		}
 	}
 
-		public string description
+			public string description
 	{
 		get
 		{
@@ -67,7 +67,7 @@ public class ResearchType
 		}
 	}
 
-		public string recipe
+			public string recipe
 	{
 		get
 		{
@@ -75,7 +75,7 @@ public class ResearchType
 		}
 	}
 
-		public Color color
+			public Color color
 	{
 		get
 		{
@@ -83,7 +83,7 @@ public class ResearchType
 		}
 	}
 
-		public Sprite sprite
+			public Sprite sprite
 	{
 		get
 		{
@@ -91,15 +91,15 @@ public class ResearchType
 		}
 	}
 
-	private string _id;
+		private string _id;
 
-	private string _name;
+		private string _name;
 
-	private string _description;
+		private string _description;
 
-	private Recipe _recipe;
+		private Recipe _recipe;
 
-	private Sprite _sprite;
+		private Sprite _sprite;
 
-	private Color _color;
+		private Color _color;
 }

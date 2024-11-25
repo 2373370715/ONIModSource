@@ -5,7 +5,7 @@ using STRINGS;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class RocketEngine : StateMachineComponent<RocketEngine.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -15,32 +15,32 @@ public class RocketEngine : StateMachineComponent<RocketEngine.StatesInstance>
 		}
 	}
 
-	public float exhaustEmitRate = 50f;
+		public float exhaustEmitRate = 50f;
 
-	public float exhaustTemperature = 1500f;
+		public float exhaustTemperature = 1500f;
 
-	public SpawnFXHashes explosionEffectHash;
+		public SpawnFXHashes explosionEffectHash;
 
-	public SimHashes exhaustElement = SimHashes.CarbonDioxide;
+		public SimHashes exhaustElement = SimHashes.CarbonDioxide;
 
-	public Tag fuelTag;
+		public Tag fuelTag;
 
-	public float efficiency = 1f;
+		public float efficiency = 1f;
 
-	public bool requireOxidizer = true;
+		public bool requireOxidizer = true;
 
-	public bool mainEngine = true;
+		public bool mainEngine = true;
 
-	public class StatesInstance : GameStateMachine<RocketEngine.States, RocketEngine.StatesInstance, RocketEngine, object>.GameInstance
+		public class StatesInstance : GameStateMachine<RocketEngine.States, RocketEngine.StatesInstance, RocketEngine, object>.GameInstance
 	{
-		public StatesInstance(RocketEngine smi) : base(smi)
+				public StatesInstance(RocketEngine smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<RocketEngine.States, RocketEngine.StatesInstance, RocketEngine>
+		public class States : GameStateMachine<RocketEngine.States, RocketEngine.StatesInstance, RocketEngine>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.idle.PlayAnim("grounded", KAnim.PlayMode.Loop).EventTransition(GameHashes.IgniteEngine, this.burning, null);
@@ -74,10 +74,10 @@ public class RocketEngine : StateMachineComponent<RocketEngine.StatesInstance>
 			this.burnComplete.PlayAnim("grounded", KAnim.PlayMode.Loop).EventTransition(GameHashes.IgniteEngine, this.burning, null);
 		}
 
-		public GameStateMachine<RocketEngine.States, RocketEngine.StatesInstance, RocketEngine, object>.State idle;
+				public GameStateMachine<RocketEngine.States, RocketEngine.StatesInstance, RocketEngine, object>.State idle;
 
-		public GameStateMachine<RocketEngine.States, RocketEngine.StatesInstance, RocketEngine, object>.State burning;
+				public GameStateMachine<RocketEngine.States, RocketEngine.StatesInstance, RocketEngine, object>.State burning;
 
-		public GameStateMachine<RocketEngine.States, RocketEngine.StatesInstance, RocketEngine, object>.State burnComplete;
+				public GameStateMachine<RocketEngine.States, RocketEngine.StatesInstance, RocketEngine, object>.State burnComplete;
 	}
 }

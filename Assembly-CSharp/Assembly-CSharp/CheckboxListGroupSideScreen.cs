@@ -5,24 +5,24 @@ using UnityEngine.UI;
 
 public class CheckboxListGroupSideScreen : SideScreenContent
 {
-	private CheckboxListGroupSideScreen.CheckboxContainer InstantiateCheckboxContainer()
+		private CheckboxListGroupSideScreen.CheckboxContainer InstantiateCheckboxContainer()
 	{
 		return new CheckboxListGroupSideScreen.CheckboxContainer(Util.KInstantiateUI(this.checkboxGroupPrefab, this.groupParent.gameObject, true).GetComponent<HierarchyReferences>());
 	}
 
-	private GameObject InstantiateCheckbox()
+		private GameObject InstantiateCheckbox()
 	{
 		return Util.KInstantiateUI(this.checkboxPrefab, this.checkboxParent.gameObject, false);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.checkboxPrefab.SetActive(false);
 		this.checkboxGroupPrefab.SetActive(false);
 		base.OnSpawn();
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		ICheckboxListGroupControl[] components = target.GetComponents<ICheckboxListGroupControl>();
 		if (components != null)
@@ -49,7 +49,7 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		return false;
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		if (this.targets == null)
 		{
@@ -58,7 +58,7 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		return this.targets[0].CheckboxSideScreenSortOrder();
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		if (target == null)
 		{
@@ -71,7 +71,7 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		this.uiRefreshSubHandle = this.currentBuildTarget.Subscribe(1980521255, new Action<object>(this.Refresh));
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 		if (this.uiRefreshSubHandle != -1 && this.currentBuildTarget != null)
 		{
@@ -81,7 +81,7 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		this.ReleaseContainers(this.activeChecklistGroups.Count);
 	}
 
-	public override string GetTitle()
+		public override string GetTitle()
 	{
 		if (this.targets != null && this.targets.Count > 0 && this.targets[0] != null)
 		{
@@ -90,7 +90,7 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		return base.GetTitle();
 	}
 
-	private void Rebuild(GameObject buildTarget)
+		private void Rebuild(GameObject buildTarget)
 	{
 		if (this.checkboxContainerPool == null)
 		{
@@ -118,13 +118,13 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		}
 	}
 
-	[ContextMenu("Force refresh")]
+		[ContextMenu("Force refresh")]
 	private void Test()
 	{
 		this.Refresh(null);
 	}
 
-	private void Refresh(object data = null)
+		private void Refresh(object data = null)
 	{
 		int num = 0;
 		foreach (ICheckboxListGroupControl checkboxListGroupControl in this.targets)
@@ -160,7 +160,7 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		this.ReleaseContainers(this.activeChecklistGroups.Count - num);
 	}
 
-	private void ReleaseContainers(int count)
+		private void ReleaseContainers(int count)
 	{
 		int count2 = this.activeChecklistGroups.Count;
 		for (int i = 1; i <= count; i++)
@@ -178,7 +178,7 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		}
 	}
 
-	private void InitContainer(ICheckboxListGroupControl target, ICheckboxListGroupControl.ListGroup group, CheckboxListGroupSideScreen.CheckboxContainer groupUI)
+		private void InitContainer(ICheckboxListGroupControl target, ICheckboxListGroupControl.ListGroup group, CheckboxListGroupSideScreen.CheckboxContainer groupUI)
 	{
 		this.activeChecklistGroups.Add(groupUI);
 		groupUI.container.gameObject.SetActive(true);
@@ -194,7 +194,7 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		}
 	}
 
-	public void RemoveSingleCheckboxFromContainer(HierarchyReferences checkbox, CheckboxListGroupSideScreen.CheckboxContainer container)
+		public void RemoveSingleCheckboxFromContainer(HierarchyReferences checkbox, CheckboxListGroupSideScreen.CheckboxContainer container)
 	{
 		container.checkboxUIItems.Remove(checkbox);
 		checkbox.gameObject.SetActive(false);
@@ -202,7 +202,7 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		this.checkboxPool.ReleaseInstance(checkbox.gameObject);
 	}
 
-	public HierarchyReferences CreateSingleCheckBoxForGroupUI(CheckboxListGroupSideScreen.CheckboxContainer container)
+		public HierarchyReferences CreateSingleCheckBoxForGroupUI(CheckboxListGroupSideScreen.CheckboxContainer container)
 	{
 		HierarchyReferences component = this.checkboxPool.GetInstance().GetComponent<HierarchyReferences>();
 		component.gameObject.SetActive(true);
@@ -211,14 +211,14 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		return component;
 	}
 
-	public HierarchyReferences CreateSingleCheckBoxForGroupUI(ICheckboxListGroupControl.CheckboxItem data, ICheckboxListGroupControl target, CheckboxListGroupSideScreen.CheckboxContainer container)
+		public HierarchyReferences CreateSingleCheckBoxForGroupUI(ICheckboxListGroupControl.CheckboxItem data, ICheckboxListGroupControl target, CheckboxListGroupSideScreen.CheckboxContainer container)
 	{
 		HierarchyReferences hierarchyReferences = this.CreateSingleCheckBoxForGroupUI(container);
 		this.SetCheckboxData(hierarchyReferences, data, target);
 		return hierarchyReferences;
 	}
 
-	public void SetCheckboxData(HierarchyReferences checkboxUI, ICheckboxListGroupControl.CheckboxItem data, ICheckboxListGroupControl target)
+		public void SetCheckboxData(HierarchyReferences checkboxUI, ICheckboxListGroupControl.CheckboxItem data, ICheckboxListGroupControl target)
 	{
 		LocText reference = checkboxUI.GetReference<LocText>("Text");
 		reference.SetText(data.text);
@@ -237,44 +237,44 @@ public class CheckboxListGroupSideScreen : SideScreenContent
 		};
 	}
 
-	public const int DefaultCheckboxListSideScreenSortOrder = 20;
+		public const int DefaultCheckboxListSideScreenSortOrder = 20;
 
-	private ObjectPool<CheckboxListGroupSideScreen.CheckboxContainer> checkboxContainerPool;
+		private ObjectPool<CheckboxListGroupSideScreen.CheckboxContainer> checkboxContainerPool;
 
-	private GameObjectPool checkboxPool;
+		private GameObjectPool checkboxPool;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject checkboxGroupPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject checkboxPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform groupParent;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform checkboxParent;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText descriptionLabel;
 
-	private List<ICheckboxListGroupControl> targets;
+		private List<ICheckboxListGroupControl> targets;
 
-	private GameObject currentBuildTarget;
+		private GameObject currentBuildTarget;
 
-	private int uiRefreshSubHandle = -1;
+		private int uiRefreshSubHandle = -1;
 
-	private List<CheckboxListGroupSideScreen.CheckboxContainer> activeChecklistGroups = new List<CheckboxListGroupSideScreen.CheckboxContainer>();
+		private List<CheckboxListGroupSideScreen.CheckboxContainer> activeChecklistGroups = new List<CheckboxListGroupSideScreen.CheckboxContainer>();
 
-	public class CheckboxContainer
+		public class CheckboxContainer
 	{
-		public CheckboxContainer(HierarchyReferences container)
+				public CheckboxContainer(HierarchyReferences container)
 		{
 			this.container = container;
 		}
 
-		public HierarchyReferences container;
+				public HierarchyReferences container;
 
-		public List<HierarchyReferences> checkboxUIItems = new List<HierarchyReferences>();
+				public List<HierarchyReferences> checkboxUIItems = new List<HierarchyReferences>();
 	}
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class IceKettleConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_DLC_2;
+		return DlcManager.DLC2;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "IceKettle";
 		int width = 2;
@@ -38,7 +38,7 @@ public class IceKettleConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -84,37 +84,37 @@ public class IceKettleConfig : IBuildingConfig
 		go.AddOrGet<IceKettleWorkable>().storage = storage3;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "IceKettle";
+		public const string ID = "IceKettle";
 
-	public const SimHashes TARGET_ELEMENT = SimHashes.Ice;
+		public const SimHashes TARGET_ELEMENT = SimHashes.Ice;
 
-	public const float MASS_KG_PER_BATCH = 100f;
+		public const float MASS_KG_PER_BATCH = 100f;
 
-	public const float CAPACITY = 1000f;
+		public const float CAPACITY = 1000f;
 
-	public const float FINAL_PRODUCT_CAPACITY = 500f;
+		public const float FINAL_PRODUCT_CAPACITY = 500f;
 
-	public static Tag TARGET_ELEMENT_TAG = SimHashes.Ice.CreateTag();
+		public static Tag TARGET_ELEMENT_TAG = SimHashes.Ice.CreateTag();
 
-	public const float TARGET_TEMPERATURE = 298.15f;
+		public const float TARGET_TEMPERATURE = 298.15f;
 
-	public const float PRODUCTION_PER_SECOND = 20f;
+		public const float PRODUCTION_PER_SECOND = 20f;
 
-	public static Tag FUEL_TAG = SimHashes.WoodLog.CreateTag();
+		public static Tag FUEL_TAG = SimHashes.WoodLog.CreateTag();
 
-	public const SimHashes EXHAUST_TAG = SimHashes.CarbonDioxide;
+		public const SimHashes EXHAUST_TAG = SimHashes.CarbonDioxide;
 
-	public const float TOTAL_ENERGY_OF_LUMBER = 7750f;
+		public const float TOTAL_ENERGY_OF_LUMBER = 7750f;
 
-	public const float ENERGY_OF_LUMBER_TAKEN_FOR_BUILDING_SELF_HEAT = 3750f;
+		public const float ENERGY_OF_LUMBER_TAKEN_FOR_BUILDING_SELF_HEAT = 3750f;
 
-	public const float ENERGY_PER_UNIT_OF_LUMBER_TAKEN_FOR_MELTING = 4000f;
+		public const float ENERGY_PER_UNIT_OF_LUMBER_TAKEN_FOR_MELTING = 4000f;
 
-	public const float FUEL_UNITS_REQUIRED_TO_MELT_ABSOLUTE_ZERO_BATCH = 15.280188f;
+		public const float FUEL_UNITS_REQUIRED_TO_MELT_ABSOLUTE_ZERO_BATCH = 15.280188f;
 
-	public const float FUEL_CAPACITY = 152.80188f;
+		public const float FUEL_CAPACITY = 152.80188f;
 }

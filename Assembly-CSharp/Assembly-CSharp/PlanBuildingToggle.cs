@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class PlanBuildingToggle : KToggle
 {
-	public void Config(BuildingDef def, PlanScreen planScreen, HashedString buildingCategory)
+		public void Config(BuildingDef def, PlanScreen planScreen, HashedString buildingCategory)
 	{
 		this.def = def;
 		this.planScreen = planScreen;
@@ -34,7 +34,7 @@ public class PlanBuildingToggle : KToggle
 		this.Refresh();
 	}
 
-	protected override void OnDestroy()
+		protected override void OnDestroy()
 	{
 		if (Game.Instance != null)
 		{
@@ -47,12 +47,12 @@ public class PlanBuildingToggle : KToggle
 		base.OnDestroy();
 	}
 
-	private void CheckResearch(object data = null)
+		private void CheckResearch(object data = null)
 	{
 		this.researchComplete = PlanScreen.TechRequirementsMet(this.techItem);
 	}
 
-	public bool CheckBuildingPassesSearchFilter(Def building)
+		public bool CheckBuildingPassesSearchFilter(Def building)
 	{
 		if (BuildingGroupScreen.SearchIsEmpty)
 		{
@@ -64,12 +64,12 @@ public class PlanBuildingToggle : KToggle
 		return text2.ToUpper().Contains(text) || (this.subcategoryName != null && this.subcategoryName.String.ToUpper().Contains(text));
 	}
 
-	private bool StandardDisplayFilter()
+		private bool StandardDisplayFilter()
 	{
 		return (this.researchComplete || DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive) && (this.planScreen.ActiveCategoryToggleInfo == null || this.buildingCategory == (HashedString)this.planScreen.ActiveCategoryToggleInfo.userData);
 	}
 
-	public bool Refresh()
+		public bool Refresh()
 	{
 		bool flag;
 		if (BuildingGroupScreen.SearchIsEmpty)
@@ -96,7 +96,7 @@ public class PlanBuildingToggle : KToggle
 		return result;
 	}
 
-	public void SwitchViewMode(bool listView)
+		public void SwitchViewMode(bool listView)
 	{
 		this.text.gameObject.SetActive(!listView);
 		this.text_listView.gameObject.SetActive(listView);
@@ -104,7 +104,7 @@ public class PlanBuildingToggle : KToggle
 		this.buildingIcon_listView.gameObject.SetActive(listView);
 	}
 
-	private void RefreshLabel()
+		private void RefreshLabel()
 	{
 		if (this.text != null)
 		{
@@ -115,7 +115,7 @@ public class PlanBuildingToggle : KToggle
 		}
 	}
 
-	private void RefreshDisplay()
+		private void RefreshDisplay()
 	{
 		PlanScreen.RequirementsState buildableState = PlanScreen.Instance.GetBuildableState(this.def);
 		bool flag = buildableState == PlanScreen.RequirementsState.Complete || DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive;
@@ -140,7 +140,7 @@ public class PlanBuildingToggle : KToggle
 		this.RefreshFG(buildableState);
 	}
 
-	private void PositionTooltip()
+		private void PositionTooltip()
 	{
 		this.tooltip.overrideParentObject = (PlanScreen.Instance.ProductInfoScreen.gameObject.activeSelf ? PlanScreen.Instance.ProductInfoScreen.rectTransform() : PlanScreen.Instance.buildingGroupsRoot);
 		this.tooltip.tooltipPivot = Vector2.zero;
@@ -153,7 +153,7 @@ public class PlanBuildingToggle : KToggle
 		this.tooltip.AddMultiStringTooltip(effect, PlanScreen.Instance.buildingToolTipSettings.BuildButtonDescription);
 	}
 
-	private void RefreshBuildingButtonIconAndColors(bool buttonAvailable)
+		private void RefreshBuildingButtonIconAndColors(bool buttonAvailable)
 	{
 		if (this.sprite == null)
 		{
@@ -172,7 +172,7 @@ public class PlanBuildingToggle : KToggle
 		}
 	}
 
-	private void RefreshFG(PlanScreen.RequirementsState requirementsState)
+		private void RefreshFG(PlanScreen.RequirementsState requirementsState)
 	{
 		if (requirementsState == PlanScreen.RequirementsState.Tech)
 		{
@@ -191,41 +191,41 @@ public class PlanBuildingToggle : KToggle
 		}
 	}
 
-	private BuildingDef def;
+		private BuildingDef def;
 
-	private HashedString buildingCategory;
+		private HashedString buildingCategory;
 
-	private TechItem techItem;
+		private TechItem techItem;
 
-	private List<int> gameSubscriptions = new List<int>();
+		private List<int> gameSubscriptions = new List<int>();
 
-	private bool researchComplete;
+		private bool researchComplete;
 
-	private Sprite sprite;
+		private Sprite sprite;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle toggle;
 
-	[SerializeField]
+		[SerializeField]
 	private ToolTip tooltip;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText text;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText text_listView;
 
-	[SerializeField]
+		[SerializeField]
 	private Image buildingIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private Image buildingIcon_listView;
 
-	[SerializeField]
+		[SerializeField]
 	private Image fgIcon;
 
-	[SerializeField]
+		[SerializeField]
 	private PlanScreen planScreen;
 
-	private StringEntry subcategoryName;
+		private StringEntry subcategoryName;
 }

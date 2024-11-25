@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BaseModularLaunchpadPortConfig
 {
-	public static BuildingDef CreateBaseLaunchpadPort(string id, string anim, ConduitType conduitType, bool isLoader, int width = 2, int height = 3)
+		public static BuildingDef CreateBaseLaunchpadPort(string id, string anim, ConduitType conduitType, bool isLoader, int width = 2, int height = 3)
 	{
 		int hitpoints = 1000;
 		float construction_time = 60f;
@@ -51,7 +51,7 @@ public class BaseModularLaunchpadPortConfig
 		return buildingDef;
 	}
 
-	public static void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag, ConduitType conduitType, float storageSize, bool isLoader)
+		public static void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag, ConduitType conduitType, float storageSize, bool isLoader)
 	{
 		go.AddOrGet<LoopingSounds>();
 		KPrefabID component = go.GetComponent<KPrefabID>();
@@ -134,9 +134,9 @@ public class BaseModularLaunchpadPortConfig
 		go.AddOrGet<LogicOperationalController>();
 	}
 
-	public static void DoPostConfigureComplete(GameObject go, bool isLoader)
+		public static void DoPostConfigureComplete(GameObject go, bool isLoader)
 	{
 	}
 
-	public static Tag LinkTag = new Tag("ModularLaunchpadPort");
+		public static Tag LinkTag = new Tag("ModularLaunchpadPort");
 }

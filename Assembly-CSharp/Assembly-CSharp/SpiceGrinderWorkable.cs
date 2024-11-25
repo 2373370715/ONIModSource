@@ -1,81 +1,58 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using TUNING;
 using UnityEngine;
 
-public class SpiceGrinderWorkable : Workable, IConfigurableConsumer
-{
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		this.requiredSkillPerk = Db.Get().SkillPerks.CanSpiceGrinder.Id;
-		this.workerStatusItem = Db.Get().DuplicantStatusItems.Spicing;
-		this.attributeConverter = Db.Get().AttributeConverters.CookingSpeed;
-		this.attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
-		this.skillExperienceSkillGroup = Db.Get().SkillGroups.Cooking.Id;
-		this.skillExperienceMultiplier = SKILLS.PART_DAY_EXPERIENCE;
-		this.overrideAnims = new KAnimFile[]
-		{
-			Assets.GetAnim("anim_interacts_spice_grinder_kanim")
-		};
-		base.SetWorkTime(5f);
-		this.showProgressBar = true;
-		this.lightEfficiencyBonus = true;
-	}
+public class SpiceGrinderWorkable : Workable, IConfigurableConsumer {
+    [SerializeField]
+    public Vector3 finishedSeedDropOffset;
 
-	protected override void OnStartWork(Worker worker)
-	{
-		if (this.Grinder.CurrentFood != null)
-		{
-			float num = this.Grinder.CurrentFood.Calories * 0.001f / 1000f;
-			base.SetWorkTime(num * 5f);
-		}
-		else
-		{
-			global::Debug.LogWarning("SpiceGrider attempted to start spicing with no food");
-			base.StopWork(worker, true);
-		}
-		this.Grinder.UpdateFoodSymbol();
-	}
+    public SpiceGrinder.StatesInstance Grinder;
 
-	protected override void OnAbortWork(Worker worker)
-	{
-		if (this.Grinder.CurrentFood == null)
-		{
-			return;
-		}
-		this.Grinder.UpdateFoodSymbol();
-	}
+    [MyCmpAdd]
+    public Notifier notifier;
 
-	protected override void OnCompleteWork(Worker worker)
-	{
-		if (this.Grinder.CurrentFood == null)
-		{
-			return;
-		}
-		this.Grinder.SpiceFood();
-	}
+    public IConfigurableConsumerOption[] GetSettingOptions() { return SpiceGrinder.SettingOptions.Values.ToArray(); }
+    public IConfigurableConsumerOption   GetSelectedOption() { return Grinder.SelectedOption; }
 
-	public IConfigurableConsumerOption[] GetSettingOptions()
-	{
-		return SpiceGrinder.SettingOptions.Values.ToArray<SpiceGrinder.Option>();
-	}
+    public void SetSelectedOption(IConfigurableConsumerOption option) {
+        Grinder.OnOptionSelected(option as SpiceGrinder.Option);
+    }
 
-	public IConfigurableConsumerOption GetSelectedOption()
-	{
-		return this.Grinder.SelectedOption;
-	}
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        requiredSkillPerk             = Db.Get().SkillPerks.CanSpiceGrinder.Id;
+        workerStatusItem              = Db.Get().DuplicantStatusItems.Spicing;
+        attributeConverter            = Db.Get().AttributeConverters.CookingSpeed;
+        attributeExperienceMultiplier = DUPLICANTSTATS.ATTRIBUTE_LEVELING.PART_DAY_EXPERIENCE;
+        skillExperienceSkillGroup     = Db.Get().SkillGroups.Cooking.Id;
+        skillExperienceMultiplier     = SKILLS.PART_DAY_EXPERIENCE;
+        overrideAnims                 = new[] { Assets.GetAnim("anim_interacts_spice_grinder_kanim") };
+        SetWorkTime(5f);
+        showProgressBar      = true;
+        lightEfficiencyBonus = true;
+    }
 
-	public void SetSelectedOption(IConfigurableConsumerOption option)
-	{
-		this.Grinder.OnOptionSelected(option as SpiceGrinder.Option);
-	}
+    protected override void OnStartWork(WorkerBase worker) {
+        if (Grinder.CurrentFood != null) {
+            var num = Grinder.CurrentFood.Calories * 0.001f / 1000f;
+            SetWorkTime(num                                 * 5f);
+        } else {
+            Debug.LogWarning("SpiceGrider attempted to start spicing with no food");
+            StopWork(worker, true);
+        }
 
-	[MyCmpAdd]
-	public Notifier notifier;
+        Grinder.UpdateFoodSymbol();
+    }
 
-	[SerializeField]
-	public Vector3 finishedSeedDropOffset;
+    protected override void OnAbortWork(WorkerBase worker) {
+        if (Grinder.CurrentFood == null) return;
 
-	public SpiceGrinder.StatesInstance Grinder;
+        Grinder.UpdateFoodSymbol();
+    }
+
+    protected override void OnCompleteWork(WorkerBase worker) {
+        if (Grinder.CurrentFood == null) return;
+
+        Grinder.SpiceFood();
+    }
 }

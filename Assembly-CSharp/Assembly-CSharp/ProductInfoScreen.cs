@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 public class ProductInfoScreen : KScreen
 {
-		public FacadeSelectionPanel FacadeSelectionPanel
+			public FacadeSelectionPanel FacadeSelectionPanel
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class ProductInfoScreen : KScreen
 		}
 	}
 
-	private void RefreshScreen()
+		private void RefreshScreen()
 	{
 		if (this.currentDef != null)
 		{
@@ -26,7 +26,7 @@ public class ProductInfoScreen : KScreen
 		this.ClearProduct(true);
 	}
 
-	public void ClearProduct(bool deactivateTool = true)
+		public void ClearProduct(bool deactivateTool = true)
 	{
 		if (this.materialSelectionPanel == null)
 		{
@@ -46,7 +46,7 @@ public class ProductInfoScreen : KScreen
 		this.Show(false);
 	}
 
-	public new void Awake()
+		public new void Awake()
 	{
 		base.Awake();
 		this.facadeSelectionPanel = Util.KInstantiateUI<FacadeSelectionPanel>(this.facadeSelectionPanelPrefab.gameObject, base.gameObject, false);
@@ -55,7 +55,7 @@ public class ProductInfoScreen : KScreen
 		this.materialSelectionPanel = Util.KInstantiateUI<MaterialSelectionPanel>(this.materialSelectionPanelPrefab.gameObject, base.gameObject, false);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (BuildingGroupScreen.Instance != null)
@@ -96,12 +96,12 @@ public class ProductInfoScreen : KScreen
 		});
 	}
 
-	public void ConfigureScreen(BuildingDef def)
+		public void ConfigureScreen(BuildingDef def)
 	{
 		this.ConfigureScreen(def, this.FacadeSelectionPanel.SelectedFacade);
 	}
 
-	public void ConfigureScreen(BuildingDef def, string facadeID)
+		public void ConfigureScreen(BuildingDef def, string facadeID)
 	{
 		this.configuring = true;
 		this.currentDef = def;
@@ -126,17 +126,17 @@ public class ProductInfoScreen : KScreen
 		this.configuring = false;
 	}
 
-	private void ExpandInfo(PointerEventData data)
+		private void ExpandInfo(PointerEventData data)
 	{
 		this.ToggleExpandedInfo(true);
 	}
 
-	private void CollapseInfo(PointerEventData data)
+		private void CollapseInfo(PointerEventData data)
 	{
 		this.ToggleExpandedInfo(false);
 	}
 
-	public void ToggleExpandedInfo(bool state)
+		public void ToggleExpandedInfo(bool state)
 	{
 		this.expandedInfo = state;
 		if (this.ProductDescriptionPane != null)
@@ -165,13 +165,13 @@ public class ProductInfoScreen : KScreen
 		}
 	}
 
-	private void CheckMouseOver(PointerEventData data)
+		private void CheckMouseOver(PointerEventData data)
 	{
 		bool state = base.GetMouseOver || (PlanScreen.Instance != null && ((PlanScreen.Instance.isActiveAndEnabled && PlanScreen.Instance.GetMouseOver) || BuildingGroupScreen.Instance.GetMouseOver)) || (BuildMenu.Instance != null && BuildMenu.Instance.isActiveAndEnabled && BuildMenu.Instance.GetMouseOver);
 		this.ToggleExpandedInfo(state);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive && this.currentDef != null && this.materialSelectionPanel.CurrentSelectedElement != null && !MaterialSelector.AllowInsufficientMaterialBuild() && this.currentDef.Mass[0] > ClusterManager.Instance.activeWorld.worldInventory.GetAmount(this.materialSelectionPanel.CurrentSelectedElement, true))
 		{
@@ -179,14 +179,14 @@ public class ProductInfoScreen : KScreen
 		}
 	}
 
-	private void SetTitle(BuildingDef def)
+		private void SetTitle(BuildingDef def)
 	{
 		this.titleBar.SetTitle(def.Name);
 		bool flag = (PlanScreen.Instance != null && PlanScreen.Instance.isActiveAndEnabled && PlanScreen.Instance.IsDefBuildable(def)) || (BuildMenu.Instance != null && BuildMenu.Instance.isActiveAndEnabled && BuildMenu.Instance.BuildableState(def) == PlanScreen.RequirementsState.Complete);
 		this.titleBar.GetComponentInChildren<KImage>().ColorState = (flag ? KImage.ColorSelector.Active : KImage.ColorSelector.Disabled);
 	}
 
-	private void SetDescription(BuildingDef def)
+		private void SetDescription(BuildingDef def)
 	{
 		if (def == null)
 		{
@@ -276,7 +276,7 @@ public class ProductInfoScreen : KScreen
 		this.productFlavourText.text = text;
 	}
 
-	private void SetEffects(BuildingDef def)
+		private void SetEffects(BuildingDef def)
 	{
 		if (this.productDescriptionText.text != null)
 		{
@@ -334,7 +334,7 @@ public class ProductInfoScreen : KScreen
 		this.RoomConstrainsPanel.SetDescriptors(list);
 	}
 
-	public void ClearLabels()
+		public void ClearLabels()
 	{
 		List<string> list = new List<string>(this.descLabels.Keys);
 		if (list.Count > 0)
@@ -351,7 +351,7 @@ public class ProductInfoScreen : KScreen
 		}
 	}
 
-	public void SetMaterials(BuildingDef def)
+		public void SetMaterials(BuildingDef def)
 	{
 		this.materialSelectionPanel.gameObject.SetActive(true);
 		Recipe craftRecipe = def.CraftRecipe;
@@ -364,7 +364,7 @@ public class ProductInfoScreen : KScreen
 		this.ActivateAppropriateTool(def);
 	}
 
-	private void OnFacadeSelectionChanged()
+		private void OnFacadeSelectionChanged()
 	{
 		if (this.currentDef == null)
 		{
@@ -373,7 +373,7 @@ public class ProductInfoScreen : KScreen
 		this.ActivateAppropriateTool(this.currentDef);
 	}
 
-	private void onMenuMaterialChanged()
+		private void onMenuMaterialChanged()
 	{
 		if (this.currentDef == null)
 		{
@@ -383,7 +383,7 @@ public class ProductInfoScreen : KScreen
 		this.SetDescription(this.currentDef);
 	}
 
-	private void ActivateAppropriateTool(BuildingDef def)
+		private void ActivateAppropriateTool(BuildingDef def)
 	{
 		global::Debug.Assert(def != null, "def was null");
 		if (((PlanScreen.Instance != null) ? PlanScreen.Instance.IsDefBuildable(def) : (BuildMenu.Instance != null && BuildMenu.Instance.BuildableState(def) == PlanScreen.RequirementsState.Complete)) && this.materialSelectionPanel.AllSelectorsSelected() && this.facadeSelectionPanel.SelectedFacade != null)
@@ -401,7 +401,7 @@ public class ProductInfoScreen : KScreen
 		}
 	}
 
-	public static bool MaterialsMet(Recipe recipe)
+		public static bool MaterialsMet(Recipe recipe)
 	{
 		if (recipe == null)
 		{
@@ -425,7 +425,7 @@ public class ProductInfoScreen : KScreen
 		return result;
 	}
 
-	public void Close()
+		public void Close()
 	{
 		if (this.configuring)
 		{
@@ -435,33 +435,33 @@ public class ProductInfoScreen : KScreen
 		this.Show(false);
 	}
 
-	public TitleBar titleBar;
+		public TitleBar titleBar;
 
-	public GameObject ProductDescriptionPane;
+		public GameObject ProductDescriptionPane;
 
-	public LocText productDescriptionText;
+		public LocText productDescriptionText;
 
-	public DescriptorPanel ProductRequirementsPane;
+		public DescriptorPanel ProductRequirementsPane;
 
-	public DescriptorPanel ProductEffectsPane;
+		public DescriptorPanel ProductEffectsPane;
 
-	public DescriptorPanel RoomConstrainsPanel;
+		public DescriptorPanel RoomConstrainsPanel;
 
-	public GameObject ProductFlavourPane;
+		public GameObject ProductFlavourPane;
 
-	public LocText productFlavourText;
+		public LocText productFlavourText;
 
-	public RectTransform BGPanel;
+		public RectTransform BGPanel;
 
-	public MaterialSelectionPanel materialSelectionPanelPrefab;
+		public MaterialSelectionPanel materialSelectionPanelPrefab;
 
-	public FacadeSelectionPanel facadeSelectionPanelPrefab;
+		public FacadeSelectionPanel facadeSelectionPanelPrefab;
 
-	private Dictionary<string, GameObject> descLabels = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> descLabels = new Dictionary<string, GameObject>();
 
-	public MultiToggle sandboxInstantBuildToggle;
+		public MultiToggle sandboxInstantBuildToggle;
 
-	private List<Tag> HiddenRoomConstrainTags = new List<Tag>
+		private List<Tag> HiddenRoomConstrainTags = new List<Tag>
 	{
 		RoomConstraints.ConstraintTags.Refrigerator,
 		RoomConstraints.ConstraintTags.FarmStationType,
@@ -470,25 +470,24 @@ public class ProductInfoScreen : KScreen
 		RoomConstraints.ConstraintTags.MessTable,
 		RoomConstraints.ConstraintTags.NatureReserve,
 		RoomConstraints.ConstraintTags.Park,
-		RoomConstraints.ConstraintTags.PowerStation,
 		RoomConstraints.ConstraintTags.SpiceStation,
 		RoomConstraints.ConstraintTags.DeStressingBuilding,
 		RoomConstraints.ConstraintTags.Decor20,
 		RoomConstraints.ConstraintTags.MachineShopType
 	};
 
-	[NonSerialized]
+		[NonSerialized]
 	public MaterialSelectionPanel materialSelectionPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private FacadeSelectionPanel facadeSelectionPanel;
 
-	[NonSerialized]
+		[NonSerialized]
 	public BuildingDef currentDef;
 
-	public System.Action onElementsFullySelected;
+		public System.Action onElementsFullySelected;
 
-	private bool expandedInfo = true;
+		private bool expandedInfo = true;
 
-	private bool configuring;
+		private bool configuring;
 }

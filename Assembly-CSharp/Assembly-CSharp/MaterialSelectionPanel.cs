@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class MaterialSelectionPanel : KScreen, IRender200ms
 {
-	public static void ClearStatics()
+		public static void ClearStatics()
 	{
 		MaterialSelectionPanel.elementsWithTag.Clear();
 	}
 
-		public Tag CurrentSelectedElement
+			public Tag CurrentSelectedElement
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		}
 	}
 
-		public IList<Tag> GetSelectedElementAsList
+			public IList<Tag> GetSelectedElementAsList
 	{
 		get
 		{
@@ -39,7 +39,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		}
 	}
 
-		public PriorityScreen PriorityScreen
+			public PriorityScreen PriorityScreen
 	{
 		get
 		{
@@ -47,7 +47,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		MaterialSelectionPanel.elementsWithTag.Clear();
 		base.OnPrefabInit();
@@ -73,13 +73,13 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		}));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.activateOnSpawn = true;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		foreach (int id in this.gameSubscriptionHandles)
@@ -89,7 +89,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		this.gameSubscriptionHandles.Clear();
 	}
 
-	public void AddSelectAction(MaterialSelector.SelectMaterialActions action)
+		public void AddSelectAction(MaterialSelector.SelectMaterialActions action)
 	{
 		this.materialSelectors.ForEach(delegate(MaterialSelector selector)
 		{
@@ -97,7 +97,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		});
 	}
 
-	public void ClearSelectActions()
+		public void ClearSelectActions()
 	{
 		this.materialSelectors.ForEach(delegate(MaterialSelector selector)
 		{
@@ -105,7 +105,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		});
 	}
 
-	public void ClearMaterialToggles()
+		public void ClearMaterialToggles()
 	{
 		this.materialSelectors.ForEach(delegate(MaterialSelector selector)
 		{
@@ -113,7 +113,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		});
 	}
 
-	public void ConfigureScreen(Recipe recipe, MaterialSelectionPanel.GetBuildableStateDelegate buildableStateCB, MaterialSelectionPanel.GetBuildableTooltipDelegate buildableTooltipCB)
+		public void ConfigureScreen(Recipe recipe, MaterialSelectionPanel.GetBuildableStateDelegate buildableStateCB, MaterialSelectionPanel.GetBuildableTooltipDelegate buildableTooltipCB)
 	{
 		this.activeRecipe = recipe;
 		this.GetBuildableState = buildableStateCB;
@@ -121,7 +121,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		this.RefreshSelectors();
 	}
 
-	public bool AllSelectorsSelected()
+		public bool AllSelectorsSelected()
 	{
 		bool flag = false;
 		foreach (MaterialSelector materialSelector in this.materialSelectors)
@@ -135,7 +135,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		return flag;
 	}
 
-	public void RefreshSelectors()
+		public void RefreshSelectors()
 	{
 		if (this.activeRecipe == null)
 		{
@@ -190,7 +190,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		}
 	}
 
-	private void UpdateResourceToggleValues()
+		private void UpdateResourceToggleValues()
 	{
 		if (!base.gameObject.activeInHierarchy)
 		{
@@ -205,7 +205,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		});
 	}
 
-	private void ToggleResearchRequired(bool state)
+		private void ToggleResearchRequired(bool state)
 	{
 		if (this.ResearchRequired == null)
 		{
@@ -214,7 +214,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		this.ResearchRequired.SetActive(state);
 	}
 
-	public bool AutoSelectAvailableMaterial()
+		public bool AutoSelectAvailableMaterial()
 	{
 		bool result = true;
 		for (int i = 0; i < this.materialSelectors.Count; i++)
@@ -227,7 +227,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		return result;
 	}
 
-	public void SelectSourcesMaterials(Building building)
+		public void SelectSourcesMaterials(Building building)
 	{
 		Tag[] array = null;
 		Deconstructable component = building.gameObject.GetComponent<Deconstructable>();
@@ -252,12 +252,12 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		}
 	}
 
-	public void ForceSelectPrimaryTag(Tag tag)
+		public void ForceSelectPrimaryTag(Tag tag)
 	{
 		this.materialSelectors[0].OnSelectMaterial(tag, this.activeRecipe, false);
 	}
 
-	public static MaterialSelectionPanel.SelectedElemInfo Filter(Tag _materialCategoryTag)
+		public static MaterialSelectionPanel.SelectedElemInfo Filter(Tag _materialCategoryTag)
 	{
 		MaterialSelectionPanel.SelectedElemInfo selectedElemInfo = default(MaterialSelectionPanel.SelectedElemInfo);
 		selectedElemInfo.element = null;
@@ -266,10 +266,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		{
 			return selectedElemInfo;
 		}
-		string[] array = _materialCategoryTag.ToString().Split(new char[]
-		{
-			'&'
-		});
+		string[] array = _materialCategoryTag.ToString().Split('&', StringSplitOptions.None);
 		for (int i = 0; i < array.Length; i++)
 		{
 			Tag tag = array[i];
@@ -313,7 +310,7 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		return selectedElemInfo;
 	}
 
-	public void ToggleShowDescriptorPanels(bool show)
+		public void ToggleShowDescriptorPanels(bool show)
 	{
 		for (int i = 0; i < this.materialSelectors.Count; i++)
 		{
@@ -324,57 +321,57 @@ public class MaterialSelectionPanel : KScreen, IRender200ms
 		}
 	}
 
-	private void OnPriorityClicked(PrioritySetting priority)
+		private void OnPriorityClicked(PrioritySetting priority)
 	{
 		this.priorityScreen.SetScreenPriority(priority, false);
 	}
 
-	public void Render200ms(float dt)
+		public void Render200ms(float dt)
 	{
 		this.UpdateResourceToggleValues();
 	}
 
-	public Dictionary<KToggle, Tag> ElementToggles = new Dictionary<KToggle, Tag>();
+		public Dictionary<KToggle, Tag> ElementToggles = new Dictionary<KToggle, Tag>();
 
-	private List<MaterialSelector> materialSelectors = new List<MaterialSelector>();
+		private List<MaterialSelector> materialSelectors = new List<MaterialSelector>();
 
-	private List<Tag> currentSelectedElements = new List<Tag>();
+		private List<Tag> currentSelectedElements = new List<Tag>();
 
-	[SerializeField]
+		[SerializeField]
 	protected PriorityScreen priorityScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	protected GameObject priorityScreenParent;
 
-	[SerializeField]
+		[SerializeField]
 	protected BuildToolRotateButtonUI buildToolRotateButton;
 
-	private PriorityScreen priorityScreen;
+		private PriorityScreen priorityScreen;
 
-	public GameObject MaterialSelectorTemplate;
+		public GameObject MaterialSelectorTemplate;
 
-	public GameObject ResearchRequired;
+		public GameObject ResearchRequired;
 
-	private Recipe activeRecipe;
+		private Recipe activeRecipe;
 
-	private static Dictionary<Tag, List<Tag>> elementsWithTag = new Dictionary<Tag, List<Tag>>();
+		private static Dictionary<Tag, List<Tag>> elementsWithTag = new Dictionary<Tag, List<Tag>>();
 
-	private MaterialSelectionPanel.GetBuildableStateDelegate GetBuildableState;
+		private MaterialSelectionPanel.GetBuildableStateDelegate GetBuildableState;
 
-	private MaterialSelectionPanel.GetBuildableTooltipDelegate GetBuildableTooltip;
+		private MaterialSelectionPanel.GetBuildableTooltipDelegate GetBuildableTooltip;
 
-	private List<int> gameSubscriptionHandles = new List<int>();
+		private List<int> gameSubscriptionHandles = new List<int>();
 
-		public delegate bool GetBuildableStateDelegate(BuildingDef def);
+			public delegate bool GetBuildableStateDelegate(BuildingDef def);
 
-		public delegate string GetBuildableTooltipDelegate(BuildingDef def);
+			public delegate string GetBuildableTooltipDelegate(BuildingDef def);
 
-		public delegate void SelectElement(Element element, float kgAvailable, float recipe_amount);
+			public delegate void SelectElement(Element element, float kgAvailable, float recipe_amount);
 
-	public struct SelectedElemInfo
+		public struct SelectedElemInfo
 	{
-		public Tag element;
+				public Tag element;
 
-		public float kgAvailable;
+				public float kgAvailable;
 	}
 }

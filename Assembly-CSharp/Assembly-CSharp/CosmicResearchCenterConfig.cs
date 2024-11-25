@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class CosmicResearchCenterConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetForbiddenDlcIds()
 	{
-		return DlcManager.AVAILABLE_VANILLA_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "CosmicResearchCenter";
 		int width = 4;
@@ -33,7 +33,7 @@ public class CosmicResearchCenterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.ScienceBuilding, false);
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -66,19 +66,19 @@ public class CosmicResearchCenterConfig : IBuildingConfig
 		go.AddOrGetDef<PoweredController.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "CosmicResearchCenter";
+		public const string ID = "CosmicResearchCenter";
 
-	public const float BASE_SECONDS_PER_POINT = 50f;
+		public const float BASE_SECONDS_PER_POINT = 50f;
 
-	public const float MASS_PER_POINT = 1f;
+		public const float MASS_PER_POINT = 1f;
 
-	public const float BASE_MASS_PER_SECOND = 0.02f;
+		public const float BASE_MASS_PER_SECOND = 0.02f;
 
-	public const float CAPACITY = 300f;
+		public const float CAPACITY = 300f;
 
-	public static readonly Tag INPUT_MATERIAL = ResearchDatabankConfig.TAG;
+		public static readonly Tag INPUT_MATERIAL = ResearchDatabankConfig.TAG;
 }

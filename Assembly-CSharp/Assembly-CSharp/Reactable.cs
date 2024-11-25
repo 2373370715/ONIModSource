@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Reactable
 {
-		public bool IsValid
+			public bool IsValid
 	{
 		get
 		{
@@ -12,9 +12,9 @@ public abstract class Reactable
 		}
 	}
 
-			public float creationTime { get; private set; }
+				public float creationTime { get; private set; }
 
-		public bool IsReacting
+			public bool IsReacting
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public abstract class Reactable
 		}
 	}
 
-	public Reactable(GameObject gameObject, HashedString id, ChoreType chore_type, int range_width = 15, int range_height = 8, bool follow_transform = false, float globalCooldown = 0f, float localCooldown = 0f, float lifeSpan = float.PositiveInfinity, float max_initial_delay = 0f, ObjectLayer overrideLayer = ObjectLayer.NumLayers)
+		public Reactable(GameObject gameObject, HashedString id, ChoreType chore_type, int range_width = 15, int range_height = 8, bool follow_transform = false, float globalCooldown = 0f, float localCooldown = 0f, float lifeSpan = float.PositiveInfinity, float max_initial_delay = 0f, ObjectLayer overrideLayer = ObjectLayer.NumLayers)
 	{
 		this.rangeHeight = range_height;
 		this.rangeWidth = range_width;
@@ -44,7 +44,7 @@ public abstract class Reactable
 		this.Initialize(follow_transform);
 	}
 
-	public void Initialize(bool followTransform)
+		public void Initialize(bool followTransform)
 	{
 		this.UpdateLocation();
 		if (followTransform)
@@ -53,14 +53,14 @@ public abstract class Reactable
 		}
 	}
 
-	public void Begin(GameObject reactor)
+		public void Begin(GameObject reactor)
 	{
 		this.reactor = reactor;
 		this.lastTriggerTime = GameClock.Instance.GetTime();
 		this.InternalBegin();
 	}
 
-	public void End()
+		public void End()
 	{
 		this.InternalEnd();
 		if (this.reactor != null)
@@ -79,7 +79,7 @@ public abstract class Reactable
 		}
 	}
 
-	public bool CanBegin(GameObject reactor, Navigator.ActiveTransition transition)
+		public bool CanBegin(GameObject reactor, Navigator.ActiveTransition transition)
 	{
 		float time = GameClock.Instance.GetTime();
 		float num = time - this.creationTime;
@@ -106,22 +106,22 @@ public abstract class Reactable
 		return this.InternalCanBegin(reactor, transition);
 	}
 
-	public bool IsExpired()
+		public bool IsExpired()
 	{
 		return GameClock.Instance.GetTime() - this.creationTime > this.lifeSpan;
 	}
 
-	public abstract bool InternalCanBegin(GameObject reactor, Navigator.ActiveTransition transition);
+		public abstract bool InternalCanBegin(GameObject reactor, Navigator.ActiveTransition transition);
 
-	public abstract void Update(float dt);
+		public abstract void Update(float dt);
 
-	protected abstract void InternalBegin();
+		protected abstract void InternalBegin();
 
-	protected abstract void InternalEnd();
+		protected abstract void InternalEnd();
 
-	protected abstract void InternalCleanup();
+		protected abstract void InternalCleanup();
 
-	public void Cleanup()
+		public void Cleanup()
 	{
 		this.End();
 		this.InternalCleanup();
@@ -133,7 +133,7 @@ public abstract class Reactable
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 	}
 
-	private void UpdateLocation()
+		private void UpdateLocation()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		if (this.gameObject != null)
@@ -144,7 +144,7 @@ public abstract class Reactable
 		}
 	}
 
-	public Reactable AddPrecondition(Reactable.ReactablePrecondition precondition)
+		public Reactable AddPrecondition(Reactable.ReactablePrecondition precondition)
 	{
 		if (this.additionalPreconditions == null)
 		{
@@ -154,7 +154,7 @@ public abstract class Reactable
 		return this;
 	}
 
-	public void InsertPrecondition(int index, Reactable.ReactablePrecondition precondition)
+		public void InsertPrecondition(int index, Reactable.ReactablePrecondition precondition)
 	{
 		if (this.additionalPreconditions == null)
 		{
@@ -164,41 +164,41 @@ public abstract class Reactable
 		this.additionalPreconditions.Insert(index, precondition);
 	}
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	protected GameObject gameObject;
+		protected GameObject gameObject;
 
-	public HashedString id;
+		public HashedString id;
 
-	public bool preventChoreInterruption = true;
+		public bool preventChoreInterruption = true;
 
-	public int sourceCell;
+		public int sourceCell;
 
-	private int rangeWidth;
+		private int rangeWidth;
 
-	private int rangeHeight;
+		private int rangeHeight;
 
-	private int transformId = -1;
+		private int transformId = -1;
 
-	public float globalCooldown;
+		public float globalCooldown;
 
-	public float localCooldown;
+		public float localCooldown;
 
-	public float lifeSpan = float.PositiveInfinity;
+		public float lifeSpan = float.PositiveInfinity;
 
-	private float lastTriggerTime = -2.1474836E+09f;
+		private float lastTriggerTime = -2.1474836E+09f;
 
-	private float initialDelay;
+		private float initialDelay;
 
-	protected GameObject reactor;
+		protected GameObject reactor;
 
-	private ChoreType choreType;
+		private ChoreType choreType;
 
-	protected LoggerFSS log;
+		protected LoggerFSS log;
 
-	private List<Reactable.ReactablePrecondition> additionalPreconditions;
+		private List<Reactable.ReactablePrecondition> additionalPreconditions;
 
-	private ObjectLayer reactionLayer;
+		private ObjectLayer reactionLayer;
 
-		public delegate bool ReactablePrecondition(GameObject go, Navigator.ActiveTransition transition);
+			public delegate bool ReactablePrecondition(GameObject go, Navigator.ActiveTransition transition);
 }

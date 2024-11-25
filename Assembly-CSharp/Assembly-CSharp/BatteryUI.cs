@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/BatteryUI")]
 public class BatteryUI : KMonoBehaviour
 {
-	private void Initialize()
+		private void Initialize()
 	{
 		if (this.unitLabel == null)
 		{
@@ -21,7 +21,7 @@ public class BatteryUI : KMonoBehaviour
 		}
 	}
 
-	public void SetContent(Battery bat)
+		public void SetContent(Battery bat)
 	{
 		if (bat == null || bat.GetMyWorldId() != ClusterManager.Instance.activeWorldId)
 		{
@@ -69,30 +69,30 @@ public class BatteryUI : KMonoBehaviour
 		this.currentKJLabel.text = bat.JoulesAvailable.ToString("F0");
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText currentKJLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private Image batteryBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Image batteryMeter;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite regularBatteryBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite bigBatteryBG;
 
-	[SerializeField]
+		[SerializeField]
 	private Color energyIncreaseColor = Color.green;
 
-	[SerializeField]
+		[SerializeField]
 	private Color energyDecreaseColor = Color.red;
 
-	private LocText unitLabel;
+		private LocText unitLabel;
 
-	private const float UIUnit = 10f;
+		private const float UIUnit = 10f;
 
-	private Dictionary<float, float> sizeMap;
+		private Dictionary<float, float> sizeMap;
 }

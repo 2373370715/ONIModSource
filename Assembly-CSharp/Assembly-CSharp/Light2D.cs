@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Light2D")]
 public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	private T MaybeDirty<T>(T old_value, T new_value, ref bool dirty)
+		private T MaybeDirty<T>(T old_value, T new_value, ref bool dirty)
 	{
 		if (!EqualityComparer<T>.Default.Equals(old_value, new_value))
 		{
@@ -16,7 +16,7 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		return old_value;
 	}
 
-			public global::LightShape shape
+				public global::LightShape shape
 	{
 		get
 		{
@@ -28,9 +28,9 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-			public LightGridManager.LightGridEmitter emitter { get; private set; }
+				public LightGridManager.LightGridEmitter emitter { get; private set; }
 
-			public Color Color
+				public Color Color
 	{
 		get
 		{
@@ -42,7 +42,7 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-			public int Lux
+				public int Lux
 	{
 		get
 		{
@@ -54,7 +54,7 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-			public DiscreteShadowCaster.Direction LightDirection
+				public DiscreteShadowCaster.Direction LightDirection
 	{
 		get
 		{
@@ -66,7 +66,7 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-			public int Width
+				public int Width
 	{
 		get
 		{
@@ -78,7 +78,7 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-			public float Range
+				public float Range
 	{
 		get
 		{
@@ -90,7 +90,7 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-			private int origin
+				private int origin
 	{
 		get
 		{
@@ -102,7 +102,7 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-			public float FalloffRate
+				public float FalloffRate
 	{
 		get
 		{
@@ -114,9 +114,9 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-			public float IntensityAnimation { get; set; }
+				public float IntensityAnimation { get; set; }
 
-			public Vector2 Offset
+				public Vector2 Offset
 	{
 		get
 		{
@@ -132,7 +132,7 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-		private bool isRegistered
+			private bool isRegistered
 	{
 		get
 		{
@@ -140,20 +140,36 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public Light2D()
+		public Light2D()
 	{
 		this.emitter = new LightGridManager.LightGridEmitter();
 		this.Range = 5f;
 		this.Lux = 1000;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.Subscribe<Light2D>(-592767678, Light2D.OnOperationalChangedDelegate);
+		if (this.disableOnStore)
+		{
+			base.Subscribe(856640610, new Action<object>(this.OnStore));
+		}
 		this.IntensityAnimation = 1f;
 	}
 
-	protected override void OnCmpEnable()
+		private void OnStore(object data)
+	{
+		global::Debug.Assert(this.disableOnStore, "Only Light2Ds that are disabled on storage should be subscribed to OnStore.");
+		Storage storage = data as Storage;
+		if (storage != null)
+		{
+			base.enabled = (storage.GetComponent<ItemPedestal>() != null || storage.GetComponent<MinionIdentity>() != null);
+			return;
+		}
+		base.enabled = true;
+	}
+
+		protected override void OnCmpEnable()
 	{
 		this.materialPropertyBlock = new MaterialPropertyBlock();
 		base.OnCmpEnable();
@@ -166,7 +182,7 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, new System.Action(this.OnMoved), "Light2D.OnMoved");
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, new System.Action(this.OnMoved));
 		Components.Light2Ds.Remove(this);
@@ -174,7 +190,7 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.FullRemove();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.origin = Grid.PosToCell(base.transform.GetPosition() + this.Offset);
@@ -185,12 +201,12 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.FullRemove();
 	}
 
-	private void OnMoved()
+		private void OnMoved()
 	{
 		if (base.isSpawned)
 		{
@@ -198,12 +214,12 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	private HandleVector<int>.Handle AddToLayer(Extents ext, ScenePartitionerLayer layer)
+		private HandleVector<int>.Handle AddToLayer(Extents ext, ScenePartitionerLayer layer)
 	{
 		return GameScenePartitioner.Instance.Add("Light2D", base.gameObject, ext, layer, new Action<object>(this.OnWorldChanged));
 	}
 
-	private Extents ComputeExtents()
+		private Extents ComputeExtents()
 	{
 		Vector2I vector2I = Grid.CellToXY(this.origin);
 		int x = 0;
@@ -245,14 +261,14 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		return new Extents(x, y, width, num);
 	}
 
-	private void AddToScenePartitioner()
+		private void AddToScenePartitioner()
 	{
 		Extents ext = this.ComputeExtents();
 		this.solidPartitionerEntry = this.AddToLayer(ext, GameScenePartitioner.Instance.solidChangedLayer);
 		this.liquidPartitionerEntry = this.AddToLayer(ext, GameScenePartitioner.Instance.liquidChangedLayer);
 	}
 
-	private void RemoveFromScenePartitioner()
+		private void RemoveFromScenePartitioner()
 	{
 		if (this.isRegistered)
 		{
@@ -261,18 +277,18 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	private void MoveInScenePartitioner()
+		private void MoveInScenePartitioner()
 	{
 		GameScenePartitioner.Instance.UpdatePosition(this.solidPartitionerEntry, this.ComputeExtents());
 		GameScenePartitioner.Instance.UpdatePosition(this.liquidPartitionerEntry, this.ComputeExtents());
 	}
 
-	private void EmitterRefresh()
+		private void EmitterRefresh()
 	{
 		this.emitter.Refresh(this.pending_emitter_state, true);
 	}
 
-	[ContextMenu("Refresh")]
+		[ContextMenu("Refresh")]
 	public void FullRefresh()
 	{
 		if (!base.isSpawned || !base.isActiveAndEnabled)
@@ -284,13 +300,13 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.EmitterRefresh();
 	}
 
-	public void FullRemove()
+		public void FullRemove()
 	{
 		this.RemoveFromScenePartitioner();
 		this.emitter.RemoveFromGrid();
 	}
 
-	public Light2D.RefreshResult RefreshShapeAndPosition()
+		public Light2D.RefreshResult RefreshShapeAndPosition()
 	{
 		if (!base.isSpawned)
 		{
@@ -327,12 +343,12 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		return Light2D.RefreshResult.Updated;
 	}
 
-	private void OnWorldChanged(object data)
+		private void OnWorldChanged(object data)
 	{
 		this.FullRefresh();
 	}
 
-	public virtual List<Descriptor> GetDescriptors(GameObject go)
+		public virtual List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return new List<Descriptor>
 		{
@@ -341,35 +357,37 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		};
 	}
 
-	public bool autoRespondToOperational = true;
+		public bool autoRespondToOperational = true;
 
-	private bool dirty_shape;
+		private bool dirty_shape;
 
-	private bool dirty_position;
+		private bool dirty_position;
 
-	private bool dirty_falloff;
+		private bool dirty_falloff;
 
-	[SerializeField]
+		[SerializeField]
 	private LightGridManager.LightGridEmitter.State pending_emitter_state = LightGridManager.LightGridEmitter.State.DEFAULT;
 
-	public float Angle;
+		public float Angle;
 
-	public Vector2 Direction;
+		public Vector2 Direction;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector2 _offset;
 
-	public bool drawOverlay;
+		public bool drawOverlay;
 
-	public Color overlayColour;
+		public Color overlayColour;
 
-	public MaterialPropertyBlock materialPropertyBlock;
+		public MaterialPropertyBlock materialPropertyBlock;
 
-	private HandleVector<int>.Handle solidPartitionerEntry = HandleVector<int>.InvalidHandle;
+		private HandleVector<int>.Handle solidPartitionerEntry = HandleVector<int>.InvalidHandle;
 
-	private HandleVector<int>.Handle liquidPartitionerEntry = HandleVector<int>.InvalidHandle;
+		private HandleVector<int>.Handle liquidPartitionerEntry = HandleVector<int>.InvalidHandle;
 
-	private static readonly EventSystem.IntraObjectHandler<Light2D> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<Light2D>(delegate(Light2D light, object data)
+		public bool disableOnStore;
+
+		private static readonly EventSystem.IntraObjectHandler<Light2D> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<Light2D>(delegate(Light2D light, object data)
 	{
 		if (light.autoRespondToOperational)
 		{
@@ -377,10 +395,10 @@ public class Light2D : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	});
 
-	public enum RefreshResult
+		public enum RefreshResult
 	{
-		None,
-		Removed,
-		Updated
+				None,
+				Removed,
+				Updated
 	}
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class WireBridgeConfig : IBuildingConfig
 {
-	protected virtual string GetID()
+		protected virtual string GetID()
 	{
 		return "WireBridge";
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = this.GetID();
 		int width = 3;
@@ -39,32 +39,32 @@ public class WireBridgeConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		this.AddNetworkLink(go).visualizeOnly = true;
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		this.AddNetworkLink(go).visualizeOnly = true;
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		this.AddNetworkLink(go).visualizeOnly = false;
 		go.AddOrGet<BuildingCellVisualizer>();
 	}
 
-	protected virtual WireUtilityNetworkLink AddNetworkLink(GameObject go)
+		protected virtual WireUtilityNetworkLink AddNetworkLink(GameObject go)
 	{
 		WireUtilityNetworkLink wireUtilityNetworkLink = go.AddOrGet<WireUtilityNetworkLink>();
 		wireUtilityNetworkLink.maxWattageRating = Wire.WattageRating.Max1000;
@@ -73,5 +73,5 @@ public class WireBridgeConfig : IBuildingConfig
 		return wireUtilityNetworkLink;
 	}
 
-	public const string ID = "WireBridge";
+		public const string ID = "WireBridge";
 }

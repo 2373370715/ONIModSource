@@ -9,7 +9,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DecorProvider")]
 public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	private void AddDecor()
+		private void AddDecor()
 	{
 		this.currDecor = 0f;
 		if (this.decor != null)
@@ -82,7 +82,7 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		if (this.currDecor == 0f)
 		{
@@ -93,7 +93,7 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		GameScenePartitioner.Instance.Free(ref this.solidChangedPartitionerEntry);
 	}
 
-	private void RemoveDecor()
+		private void RemoveDecor()
 	{
 		if (this.currDecor == 0f)
 		{
@@ -109,7 +109,7 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public void Refresh()
+		public void Refresh()
 	{
 		this.Clear();
 		this.AddDecor();
@@ -133,7 +133,7 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public float GetDecorForCell(int cell)
+		public float GetDecorForCell(int cell)
 	{
 		for (int i = 0; i < this.cellCount; i++)
 		{
@@ -145,7 +145,7 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		return 0f;
 	}
 
-	public void SetValues(EffectorValues values)
+		public void SetValues(EffectorValues values)
 	{
 		this.baseDecor = (float)values.amount;
 		this.baseRadius = (float)values.radius;
@@ -155,7 +155,7 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.decor = this.GetAttributes().Add(Db.Get().BuildingAttributes.Decor);
@@ -163,7 +163,7 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.UpdateBaseDecorModifiers();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.refreshCallback = new System.Action(this.Refresh);
@@ -180,7 +180,7 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.Refresh();
 	}
 
-	private void UpdateBaseDecorModifiers()
+		private void UpdateBaseDecorModifiers()
 	{
 		Attributes attributes = this.GetAttributes();
 		if (this.baseDecorModifier != null)
@@ -199,17 +199,17 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	private void OnCellChange()
+		private void OnCellChange()
 	{
 		this.Refresh();
 	}
 
-	private void OnCollectDecorProviders(object data)
+		private void OnCollectDecorProviders(object data)
 	{
 		((List<DecorProvider>)data).Add(this);
 	}
 
-	public string GetName()
+		public string GetName()
 	{
 		if (string.IsNullOrEmpty(this.overrideName))
 		{
@@ -218,7 +218,7 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		return this.overrideName;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (base.isSpawned)
@@ -232,7 +232,7 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.Clear();
 	}
 
-	public List<Descriptor> GetEffectDescriptions()
+		public List<Descriptor> GetEffectDescriptions()
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.decor != null && this.decorRadius != null)
@@ -257,7 +257,7 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	public static int GetLightDecorBonus(int cell)
+		public static int GetLightDecorBonus(int cell)
 	{
 		if (Grid.LightIntensity[cell] > 0)
 		{
@@ -266,49 +266,49 @@ public class DecorProvider : KMonoBehaviour, IGameObjectEffectDescriptor
 		return 0;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return this.GetEffectDescriptions();
 	}
 
-	public const string ID = "DecorProvider";
+		public const string ID = "DecorProvider";
 
-	public float baseRadius;
+		public float baseRadius;
 
-	public float baseDecor;
+		public float baseDecor;
 
-	public string overrideName;
+		public string overrideName;
 
-	public System.Action refreshCallback;
+		public System.Action refreshCallback;
 
-	public Action<object> refreshPartionerCallback;
+		public Action<object> refreshPartionerCallback;
 
-	public Action<object> onCollectDecorProvidersCallback;
+		public Action<object> onCollectDecorProvidersCallback;
 
-	public AttributeInstance decor;
+		public AttributeInstance decor;
 
-	public AttributeInstance decorRadius;
+		public AttributeInstance decorRadius;
 
-	private AttributeModifier baseDecorModifier;
+		private AttributeModifier baseDecorModifier;
 
-	private AttributeModifier baseDecorRadiusModifier;
+		private AttributeModifier baseDecorRadiusModifier;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KPrefabID prefabId;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public OccupyArea occupyArea;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public SimCellOccupier simCellOccupier;
 
-	private int[] cells;
+		private int[] cells;
 
-	private int cellCount;
+		private int cellCount;
 
-	public float currDecor;
+		public float currDecor;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private HandleVector<int>.Handle solidChangedPartitionerEntry;
+		private HandleVector<int>.Handle solidChangedPartitionerEntry;
 }

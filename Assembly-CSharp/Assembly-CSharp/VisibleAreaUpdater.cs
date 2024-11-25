@@ -2,7 +2,7 @@
 
 public class VisibleAreaUpdater
 {
-	public VisibleAreaUpdater(Action<int> outside_view_first_time_cb, Action<int> inside_view_first_time_cb, string name)
+		public VisibleAreaUpdater(Action<int> outside_view_first_time_cb, Action<int> inside_view_first_time_cb, string name)
 	{
 		this.OutsideViewFirstTimeCallback = outside_view_first_time_cb;
 		this.InsideViewFirstTimeCallback = inside_view_first_time_cb;
@@ -10,7 +10,7 @@ public class VisibleAreaUpdater
 		this.Name = name;
 	}
 
-	public void Update()
+		public void Update()
 	{
 		if (CameraController.Instance != null && this.VisibleArea == null)
 		{
@@ -19,13 +19,13 @@ public class VisibleAreaUpdater
 		}
 	}
 
-	private void InternalUpdateCell(int cell)
+		private void InternalUpdateCell(int cell)
 	{
 		this.OutsideViewFirstTimeCallback(cell);
 		this.InsideViewFirstTimeCallback(cell);
 	}
 
-	public void UpdateCell(int cell)
+		public void UpdateCell(int cell)
 	{
 		if (this.VisibleArea != null)
 		{
@@ -33,13 +33,13 @@ public class VisibleAreaUpdater
 		}
 	}
 
-	private GridVisibleArea VisibleArea;
+		private GridVisibleArea VisibleArea;
 
-	private Action<int> OutsideViewFirstTimeCallback;
+		private Action<int> OutsideViewFirstTimeCallback;
 
-	private Action<int> InsideViewFirstTimeCallback;
+		private Action<int> InsideViewFirstTimeCallback;
 
-	private Action<int> UpdateCallback;
+		private Action<int> UpdateCallback;
 
-	private string Name;
+		private string Name;
 }

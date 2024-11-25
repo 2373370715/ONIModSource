@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMonitor.Instance, IStateMachineTarget, FertilityMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.fertile;
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -18,12 +18,12 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 		this.infertile.Transition(this.fertile, new StateMachine<FertilityMonitor, FertilityMonitor.Instance, IStateMachineTarget, FertilityMonitor.Def>.Transition.ConditionCallback(FertilityMonitor.IsFertile), UpdateRate.SIM_1000ms);
 	}
 
-	public static bool IsFertile(FertilityMonitor.Instance smi)
+		public static bool IsFertile(FertilityMonitor.Instance smi)
 	{
 		return !smi.HasTag(GameTags.Creatures.PausedReproduction) && !smi.HasTag(GameTags.Creatures.Confined) && !smi.HasTag(GameTags.Creatures.Expecting);
 	}
 
-	public static Tag EggBreedingRoll(List<FertilityMonitor.BreedingChance> breedingChances, bool excludeOriginalCreature = false)
+		public static Tag EggBreedingRoll(List<FertilityMonitor.BreedingChance> breedingChances, bool excludeOriginalCreature = false)
 	{
 		float num = UnityEngine.Random.value;
 		if (excludeOriginalCreature)
@@ -48,35 +48,35 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 		return Tag.Invalid;
 	}
 
-	private GameStateMachine<FertilityMonitor, FertilityMonitor.Instance, IStateMachineTarget, FertilityMonitor.Def>.State fertile;
+		private GameStateMachine<FertilityMonitor, FertilityMonitor.Instance, IStateMachineTarget, FertilityMonitor.Def>.State fertile;
 
-	private GameStateMachine<FertilityMonitor, FertilityMonitor.Instance, IStateMachineTarget, FertilityMonitor.Def>.State infertile;
+		private GameStateMachine<FertilityMonitor, FertilityMonitor.Instance, IStateMachineTarget, FertilityMonitor.Def>.State infertile;
 
-	[Serializable]
+		[Serializable]
 	public class BreedingChance
 	{
-		public Tag egg;
+				public Tag egg;
 
-		public float weight;
+				public float weight;
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public override void Configure(GameObject prefab)
+				public override void Configure(GameObject prefab)
 		{
 			prefab.AddOrGet<Modifiers>().initialAmounts.Add(Db.Get().Amounts.Fertility.Id);
 		}
 
-		public Tag eggPrefab;
+				public Tag eggPrefab;
 
-		public List<FertilityMonitor.BreedingChance> initialBreedingWeights;
+				public List<FertilityMonitor.BreedingChance> initialBreedingWeights;
 
-		public float baseFertileCycles;
+				public float baseFertileCycles;
 	}
 
-	public new class Instance : GameStateMachine<FertilityMonitor, FertilityMonitor.Instance, IStateMachineTarget, FertilityMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<FertilityMonitor, FertilityMonitor.Instance, IStateMachineTarget, FertilityMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, FertilityMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, FertilityMonitor.Def def) : base(master, def)
 		{
 			this.fertility = Db.Get().Amounts.Fertility.Lookup(base.gameObject);
 			if (GenericGameSettings.instance.acceleratedLifecycle)
@@ -89,7 +89,7 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 			this.InitializeBreedingChances();
 		}
 
-		[OnDeserialized]
+				[OnDeserialized]
 		private void OnDeserialized()
 		{
 			int num = (base.def.initialBreedingWeights != null) ? base.def.initialBreedingWeights.Count : 0;
@@ -99,7 +99,7 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 			}
 		}
 
-		private void InitializeBreedingChances()
+				private void InitializeBreedingChances()
 		{
 			this.breedingChances = new List<FertilityMonitor.BreedingChance>();
 			if (base.def.initialBreedingWeights != null)
@@ -120,7 +120,7 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 			}
 		}
 
-		public void ShowEgg()
+				public void ShowEgg()
 		{
 			if (this.egg != null)
 			{
@@ -141,7 +141,7 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 			}
 		}
 
-		public void LayEgg()
+				public void LayEgg()
 		{
 			this.fertility.value = 0f;
 			Vector3 position = base.smi.transform.GetPosition();
@@ -178,12 +178,12 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 			base.Trigger(1193600993, this.egg);
 		}
 
-		public bool IsReadyToLayEgg()
+				public bool IsReadyToLayEgg()
 		{
 			return base.smi.fertility.value >= base.smi.fertility.GetMax();
 		}
 
-		public void AddBreedingChance(Tag type, float addedPercentChance)
+				public void AddBreedingChance(Tag type, float addedPercentChance)
 		{
 			foreach (FertilityMonitor.BreedingChance breedingChance in this.breedingChances)
 			{
@@ -197,7 +197,7 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 			base.master.Trigger(1059811075, this.breedingChances);
 		}
 
-		public float GetBreedingChance(Tag type)
+				public float GetBreedingChance(Tag type)
 		{
 			foreach (FertilityMonitor.BreedingChance breedingChance in this.breedingChances)
 			{
@@ -209,7 +209,7 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 			return -1f;
 		}
 
-		public void NormalizeBreedingChances()
+				public void NormalizeBreedingChances()
 		{
 			float num = 0f;
 			foreach (FertilityMonitor.BreedingChance breedingChance in this.breedingChances)
@@ -222,7 +222,7 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 			}
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.OnCleanUp();
 			if (this.egg != null)
@@ -232,15 +232,15 @@ public class FertilityMonitor : GameStateMachine<FertilityMonitor, FertilityMoni
 			}
 		}
 
-		public AmountInstance fertility;
+				public AmountInstance fertility;
 
-		private GameObject egg;
+				private GameObject egg;
 
-		[Serialize]
+				[Serialize]
 		public List<FertilityMonitor.BreedingChance> breedingChances;
 
-		public Effect fertileEffect;
+				public Effect fertileEffect;
 
-		private static HashedString targetEggSymbol = "snapto_egg";
+				private static HashedString targetEggSymbol = "snapto_egg";
 	}
 }

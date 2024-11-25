@@ -1,150 +1,136 @@
-﻿using System;
-using STRINGS;
+﻿using STRINGS;
 using UnityEngine;
 
-public class TreeClimbStates : GameStateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.moving;
-		this.root.Enter(new StateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def>.State.Callback(TreeClimbStates.SetTarget)).Enter(delegate(TreeClimbStates.Instance smi)
-		{
-			if (!TreeClimbStates.ReserveClimbable(smi))
-			{
-				smi.GoTo(this.behaviourcomplete);
-			}
-		}).Exit(new StateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def>.State.Callback(TreeClimbStates.UnreserveClimbable)).ToggleStatusItem(CREATURES.STATUSITEMS.RUMMAGINGSEED.NAME, CREATURES.STATUSITEMS.RUMMAGINGSEED.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main);
-		this.moving.MoveTo(new Func<TreeClimbStates.Instance, int>(TreeClimbStates.GetClimbableCell), this.climbing, this.behaviourcomplete, false);
-		this.climbing.DefaultState(this.climbing.pre);
-		this.climbing.pre.PlayAnim("rummage_pre").OnAnimQueueComplete(this.climbing.loop);
-		this.climbing.loop.QueueAnim("rummage_loop", true, null).ScheduleGoTo(3.5f, this.climbing.pst).Update(new Action<TreeClimbStates.Instance, float>(TreeClimbStates.Rummage), UpdateRate.SIM_1000ms, false);
-		this.climbing.pst.QueueAnim("rummage_pst", false, null).OnAnimQueueComplete(this.behaviourcomplete);
-		this.behaviourcomplete.BehaviourComplete(GameTags.Creatures.WantsToClimbTree, false);
-	}
+public class TreeClimbStates
+    : GameStateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def> {
+    public State                        behaviourcomplete;
+    public ClimbState                   climbing;
+    public ApproachSubState<Uprootable> moving;
+    public TargetParameter              target;
 
-	private static void SetTarget(TreeClimbStates.Instance smi)
-	{
-		smi.sm.target.Set(smi.GetSMI<ClimbableTreeMonitor.Instance>().climbTarget, smi, false);
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = moving;
+        var state = root.Enter(SetTarget)
+                        .Enter(delegate(Instance smi) {
+                                   if (!ReserveClimbable(smi)) smi.GoTo(behaviourcomplete);
+                               })
+                        .Exit(UnreserveClimbable);
 
-	private static bool ReserveClimbable(TreeClimbStates.Instance smi)
-	{
-		GameObject gameObject = smi.sm.target.Get(smi);
-		if (gameObject != null && !gameObject.HasTag(GameTags.Creatures.ReservedByCreature))
-		{
-			gameObject.AddTag(GameTags.Creatures.ReservedByCreature);
-			return true;
-		}
-		return false;
-	}
+        string name              = CREATURES.STATUSITEMS.RUMMAGINGSEED.NAME;
+        string tooltip           = CREATURES.STATUSITEMS.RUMMAGINGSEED.TOOLTIP;
+        var    icon              = "";
+        var    icon_type         = StatusItem.IconType.Info;
+        var    notification_type = NotificationType.Neutral;
+        var    allow_multiples   = false;
+        var    main              = Db.Get().StatusItemCategories.Main;
+        state.ToggleStatusItem(name,
+                               tooltip,
+                               icon,
+                               icon_type,
+                               notification_type,
+                               allow_multiples,
+                               default(HashedString),
+                               129022,
+                               null,
+                               null,
+                               main);
 
-	private static void UnreserveClimbable(TreeClimbStates.Instance smi)
-	{
-		GameObject gameObject = smi.sm.target.Get(smi);
-		if (gameObject != null)
-		{
-			gameObject.RemoveTag(GameTags.Creatures.ReservedByCreature);
-		}
-	}
+        moving.MoveTo(GetClimbableCell, climbing, behaviourcomplete);
+        climbing.DefaultState(climbing.pre);
+        climbing.pre.PlayAnim("rummage_pre").OnAnimQueueComplete(climbing.loop);
+        climbing.loop.QueueAnim("rummage_loop", true)
+                .ScheduleGoTo(3.5f, climbing.pst)
+                .Update(Rummage, UpdateRate.SIM_1000ms);
 
-	private static void Rummage(TreeClimbStates.Instance smi, float dt)
-	{
-		GameObject gameObject = smi.sm.target.Get(smi);
-		if (gameObject != null)
-		{
-			ForestTreeSeedMonitor component = gameObject.GetComponent<ForestTreeSeedMonitor>();
-			if (component != null)
-			{
-				component.ExtractExtraSeed();
-				return;
-			}
-			Storage component2 = gameObject.GetComponent<Storage>();
-			if (component2 && component2.items.Count > 0)
-			{
-				int index = UnityEngine.Random.Range(0, component2.items.Count - 1);
-				GameObject gameObject2 = component2.items[index];
-				Pickupable pickupable = gameObject2 ? gameObject2.GetComponent<Pickupable>() : null;
-				if (pickupable && pickupable.UnreservedAmount > 0.01f)
-				{
-					smi.Toss(pickupable);
-				}
-			}
-		}
-	}
+        climbing.pst.QueueAnim("rummage_pst").OnAnimQueueComplete(behaviourcomplete);
+        behaviourcomplete.BehaviourComplete(GameTags.Creatures.WantsToClimbTree);
+    }
 
-	private static int GetClimbableCell(TreeClimbStates.Instance smi)
-	{
-		return Grid.PosToCell(smi.sm.target.Get(smi));
-	}
+    private static void SetTarget(Instance smi) {
+        smi.sm.target.Set(smi.GetSMI<ClimbableTreeMonitor.Instance>().climbTarget, smi);
+    }
 
-	public GameStateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def>.ApproachSubState<Uprootable> moving;
+    private static bool ReserveClimbable(Instance smi) {
+        var gameObject = smi.sm.target.Get(smi);
+        if (gameObject != null && !gameObject.HasTag(GameTags.Creatures.ReservedByCreature)) {
+            gameObject.AddTag(GameTags.Creatures.ReservedByCreature);
+            return true;
+        }
 
-	public TreeClimbStates.ClimbState climbing;
+        return false;
+    }
 
-	public GameStateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def>.State behaviourcomplete;
+    private static void UnreserveClimbable(Instance smi) {
+        var gameObject = smi.sm.target.Get(smi);
+        if (gameObject != null) gameObject.RemoveTag(GameTags.Creatures.ReservedByCreature);
+    }
 
-	public StateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def>.TargetParameter target;
+    private static void Rummage(Instance smi, float dt) {
+        var gameObject = smi.sm.target.Get(smi);
+        if (gameObject != null) {
+            var component = gameObject.GetComponent<ForestTreeSeedMonitor>();
+            if (component != null) {
+                component.ExtractExtraSeed();
+                return;
+            }
 
-	public class Def : StateMachine.BaseDef
-	{
-	}
+            var component2 = gameObject.GetComponent<Storage>();
+            if (component2 && component2.items.Count > 0) {
+                var index       = Random.Range(0, component2.items.Count - 1);
+                var gameObject2 = component2.items[index];
+                var pickupable  = gameObject2 ? gameObject2.GetComponent<Pickupable>() : null;
+                if (pickupable && pickupable.UnreservedAmount > 0.01f) smi.Toss(pickupable);
+            }
+        }
+    }
 
-	public new class Instance : GameStateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def>.GameInstance
-	{
-		public Instance(Chore<TreeClimbStates.Instance> chore, TreeClimbStates.Def def) : base(chore, def)
-		{
-			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.WantsToClimbTree);
-			this.storage = base.GetComponent<Storage>();
-		}
+    private static int GetClimbableCell(Instance smi) { return Grid.PosToCell(smi.sm.target.Get(smi)); }
 
-		public void Toss(Pickupable pu)
-		{
-			Pickupable pickupable = pu.Take(Mathf.Min(1f, pu.UnreservedAmount));
-			if (pickupable != null)
-			{
-				this.storage.Store(pickupable.gameObject, true, false, true, false);
-				this.storage.Drop(pickupable.gameObject, true);
-				this.Throw(pickupable.gameObject);
-			}
-		}
+    public class Def : BaseDef { }
 
-		private void Throw(GameObject ore_go)
-		{
-			Vector3 position = base.transform.GetPosition();
-			position.z = Grid.GetLayerZ(Grid.SceneLayer.Ore);
-			int num = Grid.PosToCell(position);
-			int num2 = Grid.CellAbove(num);
-			Vector2 zero;
-			if ((Grid.IsValidCell(num) && Grid.Solid[num]) || (Grid.IsValidCell(num2) && Grid.Solid[num2]))
-			{
-				zero = Vector2.zero;
-			}
-			else
-			{
-				position.y += 0.5f;
-				zero = new Vector2(UnityEngine.Random.Range(TreeClimbStates.Instance.VEL_MIN.x, TreeClimbStates.Instance.VEL_MAX.x), UnityEngine.Random.Range(TreeClimbStates.Instance.VEL_MIN.y, TreeClimbStates.Instance.VEL_MAX.y));
-			}
-			ore_go.transform.SetPosition(position);
-			if (GameComps.Fallers.Has(ore_go))
-			{
-				GameComps.Fallers.Remove(ore_go);
-			}
-			GameComps.Fallers.Add(ore_go, zero);
-		}
+    public new class Instance : GameInstance {
+        private static readonly Vector2 VEL_MIN = new Vector2(-1f, 2f);
+        private static readonly Vector2 VEL_MAX = new Vector2(1f,  4f);
+        private readonly        Storage storage;
 
-		private Storage storage;
+        public Instance(Chore<Instance> chore, Def def) : base(chore, def) {
+            chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition,
+                                  GameTags.Creatures.WantsToClimbTree);
 
-		private static readonly Vector2 VEL_MIN = new Vector2(-1f, 2f);
+            storage = GetComponent<Storage>();
+        }
 
-		private static readonly Vector2 VEL_MAX = new Vector2(1f, 4f);
-	}
+        public void Toss(Pickupable pu) {
+            var pickupable = pu.Take(Mathf.Min(1f, pu.UnreservedAmount));
+            if (pickupable != null) {
+                storage.Store(pickupable.gameObject, true);
+                storage.Drop(pickupable.gameObject);
+                Throw(pickupable.gameObject);
+            }
+        }
 
-	public class ClimbState : GameStateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def>.State
-	{
-		public GameStateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def>.State pre;
+        private void Throw(GameObject ore_go) {
+            var position = transform.GetPosition();
+            position.z = Grid.GetLayerZ(Grid.SceneLayer.Ore);
+            var     num  = Grid.PosToCell(position);
+            var     num2 = Grid.CellAbove(num);
+            Vector2 zero;
+            if ((Grid.IsValidCell(num) && Grid.Solid[num]) || (Grid.IsValidCell(num2) && Grid.Solid[num2]))
+                zero = Vector2.zero;
+            else {
+                position.y += 0.5f;
+                zero       =  new Vector2(Random.Range(VEL_MIN.x, VEL_MAX.x), Random.Range(VEL_MIN.y, VEL_MAX.y));
+            }
 
-		public GameStateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def>.State loop;
+            ore_go.transform.SetPosition(position);
+            if (GameComps.Fallers.Has(ore_go)) GameComps.Fallers.Remove(ore_go);
+            GameComps.Fallers.Add(ore_go, zero);
+        }
+    }
 
-		public GameStateMachine<TreeClimbStates, TreeClimbStates.Instance, IStateMachineTarget, TreeClimbStates.Def>.State pst;
-	}
+    public class ClimbState : State {
+        public State loop;
+        public State pre;
+        public State pst;
+    }
 }

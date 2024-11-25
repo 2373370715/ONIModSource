@@ -6,24 +6,24 @@ using UnityEngine;
 
 namespace Database
 {
-	public class MiscStatusItems : StatusItems
+		public class MiscStatusItems : StatusItems
 	{
-		public MiscStatusItems(ResourceSet parent) : base("MiscStatusItems", parent)
+				public MiscStatusItems(ResourceSet parent) : base("MiscStatusItems", parent)
 		{
 			this.CreateStatusItems();
 		}
 
-		private StatusItem CreateStatusItem(string id, string prefix, string icon, StatusItem.IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, bool showWorldIcon = true, int status_overlays = 129022)
+				private StatusItem CreateStatusItem(string id, string prefix, string icon, StatusItem.IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, bool showWorldIcon = true, int status_overlays = 129022)
 		{
 			return base.Add(new StatusItem(id, prefix, icon, icon_type, notification_type, allow_multiples, render_overlay, showWorldIcon, status_overlays, null));
 		}
 
-		private StatusItem CreateStatusItem(string id, string name, string tooltip, string icon, StatusItem.IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, int status_overlays = 129022)
+				private StatusItem CreateStatusItem(string id, string name, string tooltip, string icon, StatusItem.IconType icon_type, NotificationType notification_type, bool allow_multiples, HashedString render_overlay, int status_overlays = 129022)
 		{
 			return base.Add(new StatusItem(id, name, tooltip, icon, icon_type, notification_type, allow_multiples, render_overlay, status_overlays, true, null));
 		}
 
-		private void CreateStatusItems()
+				private void CreateStatusItems()
 		{
 			this.AttentionRequired = this.CreateStatusItem("AttentionRequired", "MISC", "status_item_doubleexclamation", StatusItem.IconType.Custom, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			this.Edible = this.CreateStatusItem("Edible", "MISC", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
@@ -268,6 +268,14 @@ namespace Database
 				str = str.Replace("{durability}", GameUtil.GetFormattedPercent(component.GetDurability() * 100f, GameUtil.TimeSlice.None));
 				return str;
 			};
+			this.BionicExplorerBooster = this.CreateStatusItem("BionicExplorerBooster", "MISC", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
+			this.BionicExplorerBooster.resolveStringCallback = delegate(string str, object data)
+			{
+				BionicUpgrade_ExplorerBooster.Instance instance = (BionicUpgrade_ExplorerBooster.Instance)data;
+				str = string.Format(str, GameUtil.GetFormattedPercent(instance.Progress * 100f, GameUtil.TimeSlice.None));
+				return str;
+			};
+			this.BionicExplorerBoosterReady = this.CreateStatusItem("BionicExplorerBoosterReady", "MISC", "", StatusItem.IconType.Info, NotificationType.Good, false, OverlayModes.None.ID, true, 129022);
 			this.StoredItemDurability = this.CreateStatusItem("StoredItemDurability", "MISC", "", StatusItem.IconType.Info, NotificationType.Neutral, false, OverlayModes.None.ID, true, 129022);
 			this.StoredItemDurability.resolveStringCallback = delegate(string str, object data)
 			{
@@ -290,112 +298,116 @@ namespace Database
 			this.MoveStorageUnreachable = this.CreateStatusItem("MoveStorageUnreachable", "MISC", "status_item_manually_controlled", StatusItem.IconType.Custom, NotificationType.BadMinor, false, OverlayModes.None.ID, true, 129022);
 		}
 
-		public StatusItem AttentionRequired;
+				public StatusItem AttentionRequired;
 
-		public StatusItem MarkedForDisinfection;
+				public StatusItem MarkedForDisinfection;
 
-		public StatusItem MarkedForCompost;
+				public StatusItem MarkedForCompost;
 
-		public StatusItem MarkedForCompostInStorage;
+				public StatusItem MarkedForCompostInStorage;
 
-		public StatusItem PendingClear;
+				public StatusItem PendingClear;
 
-		public StatusItem PendingClearNoStorage;
+				public StatusItem PendingClearNoStorage;
 
-		public StatusItem Edible;
+				public StatusItem Edible;
 
-		public StatusItem WaitingForDig;
+				public StatusItem WaitingForDig;
 
-		public StatusItem WaitingForMop;
+				public StatusItem WaitingForMop;
 
-		public StatusItem OreMass;
+				public StatusItem OreMass;
 
-		public StatusItem OreTemp;
+				public StatusItem OreTemp;
 
-		public StatusItem ElementalCategory;
+				public StatusItem ElementalCategory;
 
-		public StatusItem ElementalState;
+				public StatusItem ElementalState;
 
-		public StatusItem ElementalTemperature;
+				public StatusItem ElementalTemperature;
 
-		public StatusItem ElementalMass;
+				public StatusItem ElementalMass;
 
-		public StatusItem ElementalDisease;
+				public StatusItem ElementalDisease;
 
-		public StatusItem TreeFilterableTags;
+				public StatusItem TreeFilterableTags;
 
-		public StatusItem SublimationOverpressure;
+				public StatusItem SublimationOverpressure;
 
-		public StatusItem SublimationEmitting;
+				public StatusItem SublimationEmitting;
 
-		public StatusItem SublimationBlocked;
+				public StatusItem SublimationBlocked;
 
-		public StatusItem BuriedItem;
+				public StatusItem BuriedItem;
 
-		public StatusItem SpoutOverPressure;
+				public StatusItem SpoutOverPressure;
 
-		public StatusItem SpoutEmitting;
+				public StatusItem SpoutEmitting;
 
-		public StatusItem SpoutPressureBuilding;
+				public StatusItem SpoutPressureBuilding;
 
-		public StatusItem SpoutIdle;
+				public StatusItem SpoutIdle;
 
-		public StatusItem SpoutDormant;
+				public StatusItem SpoutDormant;
 
-		public StatusItem SpicedFood;
+				public StatusItem SpicedFood;
 
-		public StatusItem RehydratedFood;
+				public StatusItem RehydratedFood;
 
-		public StatusItem OrderAttack;
+				public StatusItem OrderAttack;
 
-		public StatusItem OrderCapture;
+				public StatusItem OrderCapture;
 
-		public StatusItem PendingHarvest;
+				public StatusItem PendingHarvest;
 
-		public StatusItem NotMarkedForHarvest;
+				public StatusItem NotMarkedForHarvest;
 
-		public StatusItem PendingUproot;
+				public StatusItem PendingUproot;
 
-		public StatusItem PickupableUnreachable;
+				public StatusItem PickupableUnreachable;
 
-		public StatusItem Prioritized;
+				public StatusItem Prioritized;
 
-		public StatusItem Using;
+				public StatusItem Using;
 
-		public StatusItem Operating;
+				public StatusItem Operating;
 
-		public StatusItem Cleaning;
+				public StatusItem Cleaning;
 
-		public StatusItem RegionIsBlocked;
+				public StatusItem RegionIsBlocked;
 
-		public StatusItem NoClearLocationsAvailable;
+				public StatusItem NoClearLocationsAvailable;
 
-		public StatusItem AwaitingStudy;
+				public StatusItem AwaitingStudy;
 
-		public StatusItem Studied;
+				public StatusItem Studied;
 
-		public StatusItem StudiedGeyserTimeRemaining;
+				public StatusItem StudiedGeyserTimeRemaining;
 
-		public StatusItem Space;
+				public StatusItem Space;
 
-		public StatusItem HighEnergyParticleCount;
+				public StatusItem HighEnergyParticleCount;
 
-		public StatusItem Durability;
+				public StatusItem Durability;
 
-		public StatusItem StoredItemDurability;
+				public StatusItem StoredItemDurability;
 
-		public StatusItem ArtifactEntombed;
+				public StatusItem ArtifactEntombed;
 
-		public StatusItem TearOpen;
+				public StatusItem TearOpen;
 
-		public StatusItem TearClosed;
+				public StatusItem TearClosed;
 
-		public StatusItem ClusterMeteorRemainingTravelTime;
+				public StatusItem ClusterMeteorRemainingTravelTime;
 
-		public StatusItem MarkedForMove;
+				public StatusItem MarkedForMove;
 
-		public StatusItem MoveStorageUnreachable;
+				public StatusItem MoveStorageUnreachable;
 
-		public StatusItem GrowingBranches;
+				public StatusItem GrowingBranches;
+
+				public StatusItem BionicExplorerBooster;
+
+				public StatusItem BionicExplorerBoosterReady;
 	}
 }

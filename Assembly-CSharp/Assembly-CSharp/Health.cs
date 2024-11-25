@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Health")]
 public class Health : KMonoBehaviour, ISaveLoadable
 {
-		public AmountInstance GetAmountInstance
+			public AmountInstance GetAmountInstance
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-			public float hitPoints
+				public float hitPoints
 	{
 		get
 		{
@@ -27,7 +27,7 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-		public float maxHitPoints
+			public float maxHitPoints
 	{
 		get
 		{
@@ -35,12 +35,12 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public float percent()
+		public float percent()
 	{
 		return this.hitPoints / this.maxHitPoints;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Components.Health.Add(this);
@@ -50,7 +50,7 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		amountInstance.OnDelta = (Action<float>)Delegate.Combine(amountInstance.OnDelta, new Action<float>(this.OnHealthChanged));
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.State == Health.HealthState.Incapacitated || this.hitPoints == 0f)
@@ -73,13 +73,13 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		this.UpdateWoundEffects();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.Health.Remove(this);
 	}
 
-	public void UpdateHealthBar()
+		public void UpdateHealthBar()
 	{
 		if (NameDisplayScreen.Instance == null)
 		{
@@ -89,12 +89,12 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		NameDisplayScreen.Instance.SetHealthDisplay(base.gameObject, new Func<float>(this.percent), !flag);
 	}
 
-	private void Recover()
+		private void Recover()
 	{
 		base.GetComponent<KPrefabID>().RemoveTag(GameTags.HitPointsDepleted);
 	}
 
-	public void OnHealthChanged(float delta)
+		public void OnHealthChanged(float delta)
 	{
 		base.Trigger(-1664904872, delta);
 		if (this.State != Health.HealthState.Invincible)
@@ -120,13 +120,13 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		this.UpdateHealthBar();
 	}
 
-	[ContextMenu("DoDamage")]
+		[ContextMenu("DoDamage")]
 	public void DoDamage()
 	{
 		this.Damage(1f);
 	}
 
-	public void Damage(float amount)
+		public void Damage(float amount)
 	{
 		if (this.State != Health.HealthState.Invincible)
 		{
@@ -135,7 +135,7 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		this.OnHealthChanged(-amount);
 	}
 
-	private void UpdateWoundEffects()
+		private void UpdateWoundEffects()
 	{
 		if (!this.effects)
 		{
@@ -212,7 +212,7 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	private void UpdateStatus()
+		private void UpdateStatus()
 	{
 		float num = this.hitPoints / this.maxHitPoints;
 		Health.HealthState healthState;
@@ -269,24 +269,24 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public bool IsIncapacitated()
+		public bool IsIncapacitated()
 	{
 		return this.State == Health.HealthState.Incapacitated;
 	}
 
-	public bool IsDefeated()
+		public bool IsDefeated()
 	{
 		return this.State == Health.HealthState.Incapacitated || this.State == Health.HealthState.Dead;
 	}
 
-	public void Incapacitate(Tag cause)
+		public void Incapacitate(Tag cause)
 	{
 		this.State = Health.HealthState.Incapacitated;
 		base.GetComponent<KPrefabID>().AddTag(cause, false);
 		this.Damage(this.hitPoints);
 	}
 
-	private void Kill()
+		private void Kill()
 	{
 		if (base.gameObject.GetSMI<DeathMonitor.Instance>() != null)
 		{
@@ -294,34 +294,34 @@ public class Health : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	public bool CanBeIncapacitated;
 
-	[Serialize]
+		[Serialize]
 	public Health.HealthState State;
 
-	[Serialize]
+		[Serialize]
 	private Death source_of_death;
 
-	public HealthBar healthBar;
+		public HealthBar healthBar;
 
-	public bool isCritter;
+		public bool isCritter;
 
-	private bool isCritterPrev;
+		private bool isCritterPrev;
 
-	private Effects effects;
+		private Effects effects;
 
-	private AmountInstance amountInstance;
+		private AmountInstance amountInstance;
 
-	public enum HealthState
+		public enum HealthState
 	{
-		Perfect,
-		Alright,
-		Scuffed,
-		Injured,
-		Critical,
-		Incapacitated,
-		Dead,
-		Invincible
+				Perfect,
+				Alright,
+				Scuffed,
+				Injured,
+				Critical,
+				Incapacitated,
+				Dead,
+				Invincible
 	}
 }

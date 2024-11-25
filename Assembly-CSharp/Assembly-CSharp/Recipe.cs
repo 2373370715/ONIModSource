@@ -8,9 +8,9 @@ using UnityEngine;
 [DebuggerDisplay("{Name}")]
 public class Recipe : IHasSortOrder
 {
-			public int sortOrder { get; set; }
+				public int sortOrder { get; set; }
 
-			public string Name
+				public string Name
 	{
 		get
 		{
@@ -26,11 +26,11 @@ public class Recipe : IHasSortOrder
 		}
 	}
 
-	public Recipe()
+		public Recipe()
 	{
 	}
 
-	public Recipe(string prefabId, float outputUnits = 1f, SimHashes elementOverride = (SimHashes)0, string nameOverride = null, string recipeDescription = null, int sortOrder = 0)
+		public Recipe(string prefabId, float outputUnits = 1f, SimHashes elementOverride = (SimHashes)0, string nameOverride = null, string recipeDescription = null, int sortOrder = 0)
 	{
 		global::Debug.Assert(prefabId != null);
 		this.Result = TagManager.Create(prefabId);
@@ -43,7 +43,7 @@ public class Recipe : IHasSortOrder
 		this.FabricationVisualizer = null;
 	}
 
-	public Recipe SetFabricator(string fabricator, float fabricationTime)
+		public Recipe SetFabricator(string fabricator, float fabricationTime)
 	{
 		this.fabricators = new string[]
 		{
@@ -54,7 +54,7 @@ public class Recipe : IHasSortOrder
 		return this;
 	}
 
-	public Recipe SetFabricators(string[] fabricators, float fabricationTime)
+		public Recipe SetFabricators(string[] fabricators, float fabricationTime)
 	{
 		this.fabricators = fabricators;
 		this.FabricationTime = fabricationTime;
@@ -62,27 +62,27 @@ public class Recipe : IHasSortOrder
 		return this;
 	}
 
-	public Recipe SetIcon(Sprite Icon)
+		public Recipe SetIcon(Sprite Icon)
 	{
 		this.Icon = Icon;
 		this.IconColor = Color.white;
 		return this;
 	}
 
-	public Recipe SetIcon(Sprite Icon, Color IconColor)
+		public Recipe SetIcon(Sprite Icon, Color IconColor)
 	{
 		this.Icon = Icon;
 		this.IconColor = IconColor;
 		return this;
 	}
 
-	public Recipe AddIngredient(Recipe.Ingredient ingredient)
+		public Recipe AddIngredient(Recipe.Ingredient ingredient)
 	{
 		this.Ingredients.Add(ingredient);
 		return this;
 	}
 
-	public Recipe.Ingredient[] GetAllIngredients(IList<Tag> selectedTags)
+		public Recipe.Ingredient[] GetAllIngredients(IList<Tag> selectedTags)
 	{
 		List<Recipe.Ingredient> list = new List<Recipe.Ingredient>();
 		for (int i = 0; i < this.Ingredients.Count; i++)
@@ -100,7 +100,7 @@ public class Recipe : IHasSortOrder
 		return list.ToArray();
 	}
 
-	public Recipe.Ingredient[] GetAllIngredients(IList<Element> selected_elements)
+		public Recipe.Ingredient[] GetAllIngredients(IList<Element> selected_elements)
 	{
 		List<Recipe.Ingredient> list = new List<Recipe.Ingredient>();
 		for (int i = 0; i < this.Ingredients.Count; i++)
@@ -124,13 +124,13 @@ public class Recipe : IHasSortOrder
 		return list.ToArray();
 	}
 
-	public GameObject Craft(Storage resource_storage, IList<Tag> selectedTags)
+		public GameObject Craft(Storage resource_storage, IList<Tag> selectedTags)
 	{
 		Recipe.Ingredient[] allIngredients = this.GetAllIngredients(selectedTags);
 		return this.CraftRecipe(resource_storage, allIngredients);
 	}
 
-	private GameObject CraftRecipe(Storage resource_storage, Recipe.Ingredient[] ingredientTags)
+		private GameObject CraftRecipe(Storage resource_storage, Recipe.Ingredient[] ingredientTags)
 	{
 		SimUtil.DiseaseInfo diseaseInfo = SimUtil.DiseaseInfo.Invalid;
 		float num = 0f;
@@ -192,7 +192,7 @@ public class Recipe : IHasSortOrder
 		return gameObject2;
 	}
 
-		public string[] MaterialOptionNames
+			public string[] MaterialOptionNames
 	{
 		get
 		{
@@ -208,7 +208,7 @@ public class Recipe : IHasSortOrder
 		}
 	}
 
-	public Element[] MaterialOptions()
+		public Element[] MaterialOptions()
 	{
 		List<Element> list = new List<Element>();
 		foreach (Element element in ElementLoader.elements)
@@ -221,7 +221,7 @@ public class Recipe : IHasSortOrder
 		return list.ToArray();
 	}
 
-	public BuildingDef GetBuildingDef()
+		public BuildingDef GetBuildingDef()
 	{
 		BuildingComplete component = Assets.GetPrefab(this.Result).GetComponent<BuildingComplete>();
 		if (component != null)
@@ -231,7 +231,7 @@ public class Recipe : IHasSortOrder
 		return null;
 	}
 
-	public Sprite GetUIIcon()
+		public Sprite GetUIIcon()
 	{
 		Sprite result = null;
 		if (this.Icon != null)
@@ -249,7 +249,7 @@ public class Recipe : IHasSortOrder
 		return result;
 	}
 
-	public Color GetUIColor()
+		public Color GetUIColor()
 	{
 		if (!(this.Icon != null))
 		{
@@ -258,51 +258,51 @@ public class Recipe : IHasSortOrder
 		return this.IconColor;
 	}
 
-	private string nameOverride;
+		private string nameOverride;
 
-	public string HotKey;
+		public string HotKey;
 
-	public string Type;
+		public string Type;
 
-	public List<Recipe.Ingredient> Ingredients;
+		public List<Recipe.Ingredient> Ingredients;
 
-	public string recipeDescription;
+		public string recipeDescription;
 
-	public Tag Result;
+		public Tag Result;
 
-	public GameObject FabricationVisualizer;
+		public GameObject FabricationVisualizer;
 
-	public SimHashes ResultElementOverride;
+		public SimHashes ResultElementOverride;
 
-	public Sprite Icon;
+		public Sprite Icon;
 
-	public Color IconColor = Color.white;
+		public Color IconColor = Color.white;
 
-	public string[] fabricators;
+		public string[] fabricators;
 
-	public float OutputUnits;
+		public float OutputUnits;
 
-	public float FabricationTime;
+		public float FabricationTime;
 
-	public string TechUnlock;
+		public string TechUnlock;
 
-	[DebuggerDisplay("{tag} {amount}")]
+		[DebuggerDisplay("{tag} {amount}")]
 	[Serializable]
 	public class Ingredient
 	{
-		public Ingredient(string tag, float amount)
+				public Ingredient(string tag, float amount)
 		{
 			this.tag = TagManager.Create(tag);
 			this.amount = amount;
 		}
 
-		public Ingredient(Tag tag, float amount)
+				public Ingredient(Tag tag, float amount)
 		{
 			this.tag = tag;
 			this.amount = amount;
 		}
 
-		public List<Element> GetElementOptions()
+				public List<Element> GetElementOptions()
 		{
 			List<Element> list = new List<Element>(ElementLoader.elements);
 			list.RemoveAll((Element e) => !e.IsSolid);
@@ -310,8 +310,8 @@ public class Recipe : IHasSortOrder
 			return list;
 		}
 
-		public Tag tag;
+				public Tag tag;
 
-		public float amount;
+				public float amount;
 	}
 }

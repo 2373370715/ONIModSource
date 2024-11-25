@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class ProgressBarsConfig : ScriptableObject
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ProgressBarsConfig.instance = null;
 	}
 
-		public static ProgressBarsConfig Instance
+			public static ProgressBarsConfig Instance
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class ProgressBarsConfig : ScriptableObject
 		}
 	}
 
-	public void Initialize()
+		public void Initialize()
 	{
 		foreach (ProgressBarsConfig.BarData barData in this.barColorDataList)
 		{
@@ -30,7 +30,7 @@ public class ProgressBarsConfig : ScriptableObject
 		}
 	}
 
-	public string GetBarDescription(string barName)
+		public string GetBarDescription(string barName)
 	{
 		string result = "";
 		if (this.IsBarNameValid(barName))
@@ -40,7 +40,7 @@ public class ProgressBarsConfig : ScriptableObject
 		return result;
 	}
 
-	public Color GetBarColor(string barName)
+		public Color GetBarColor(string barName)
 	{
 		Color result = Color.clear;
 		if (this.IsBarNameValid(barName))
@@ -50,7 +50,7 @@ public class ProgressBarsConfig : ScriptableObject
 		return result;
 	}
 
-	public bool IsBarNameValid(string barName)
+		public bool IsBarNameValid(string barName)
 	{
 		if (string.IsNullOrEmpty(barName))
 		{
@@ -65,25 +65,25 @@ public class ProgressBarsConfig : ScriptableObject
 		return true;
 	}
 
-	public GameObject progressBarPrefab;
+		public GameObject progressBarPrefab;
 
-	public GameObject progressBarUIPrefab;
+		public GameObject progressBarUIPrefab;
 
-	public GameObject healthBarPrefab;
+		public GameObject healthBarPrefab;
 
-	public List<ProgressBarsConfig.BarData> barColorDataList = new List<ProgressBarsConfig.BarData>();
+		public List<ProgressBarsConfig.BarData> barColorDataList = new List<ProgressBarsConfig.BarData>();
 
-	public Dictionary<string, ProgressBarsConfig.BarData> barColorMap = new Dictionary<string, ProgressBarsConfig.BarData>();
+		public Dictionary<string, ProgressBarsConfig.BarData> barColorMap = new Dictionary<string, ProgressBarsConfig.BarData>();
 
-	private static ProgressBarsConfig instance;
+		private static ProgressBarsConfig instance;
 
-	[Serializable]
+		[Serializable]
 	public struct BarData
 	{
-		public string barName;
+				public string barName;
 
-		public Color barColor;
+				public Color barColor;
 
-		public string barDescriptionKey;
+				public string barDescriptionKey;
 	}
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(SymbolOverrideController))]
 public class UIDupeSymbolOverride : MonoBehaviour
 {
-	public void Apply(MinionIdentity minionIdentity)
+		public void Apply(MinionIdentity minionIdentity)
 	{
 		if (this.slots == null)
 		{
@@ -40,7 +40,7 @@ public class UIDupeSymbolOverride : MonoBehaviour
 		this.SetAccessory(this.animController, this.slots.Hand.Lookup(bodyData.hand));
 	}
 
-	private KAnimHashedString SetAccessory(KBatchedAnimController minion, Accessory accessory)
+		private KAnimHashedString SetAccessory(KBatchedAnimController minion, Accessory accessory)
 	{
 		if (accessory != null)
 		{
@@ -52,9 +52,9 @@ public class UIDupeSymbolOverride : MonoBehaviour
 		return HashedString.Invalid;
 	}
 
-	private KBatchedAnimController animController;
+		private KBatchedAnimController animController;
 
-	private AccessorySlots slots;
+		private AccessorySlots slots;
 
-	private SymbolOverrideController symbolOverrideController;
+		private SymbolOverrideController symbolOverrideController;
 }

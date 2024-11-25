@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LiquidConditionerConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidConditioner";
 		int width = 2;
@@ -35,7 +35,7 @@ public class LiquidConditionerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		AirConditioner airConditioner = go.AddOrGet<AirConditioner>();
@@ -52,16 +52,16 @@ public class LiquidConditionerConfig : IBuildingConfig
 		storage.SetDefaultStoredItemModifiers(LiquidConditionerConfig.StoredItemModifiers);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits, false);
 	}
 
-	public const string ID = "LiquidConditioner";
+		public const string ID = "LiquidConditioner";
 
-	private static readonly List<Storage.StoredItemModifier> StoredItemModifiers = new List<Storage.StoredItemModifier>
+		private static readonly List<Storage.StoredItemModifier> StoredItemModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Insulate,

@@ -1,9 +1,10 @@
 ﻿using System;
 using Klei.AI;
+using TUNING;
 
 public class CalorieMonitor : GameStateMachine<CalorieMonitor, CalorieMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.satisfied;
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -19,74 +20,74 @@ public class CalorieMonitor : GameStateMachine<CalorieMonitor, CalorieMonitor.In
 		});
 	}
 
-	public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State satisfied;
+		public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State satisfied;
 
-	public CalorieMonitor.HungryState hungry;
+		public CalorieMonitor.HungryState hungry;
 
-	public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State eating;
+		public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State eating;
 
-	public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State incapacitated;
+		public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State incapacitated;
 
-	public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State depleted;
+		public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State depleted;
 
-	public class HungryState : GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State
+		public class HungryState : GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State working;
+				public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State working;
 
-		public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State normal;
+				public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State normal;
 
-		public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State starving;
+				public GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.State starving;
 	}
 
-	public new class Instance : GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<CalorieMonitor, CalorieMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.calories = Db.Get().Amounts.Calories.Lookup(base.gameObject);
 		}
 
-		private float GetCalories0to1()
+				private float GetCalories0to1()
 		{
 			return this.calories.value / this.calories.GetMax();
 		}
 
-		public bool IsEatTime()
+				public bool IsEatTime()
 		{
 			return base.master.GetComponent<Schedulable>().IsAllowed(Db.Get().ScheduleBlockTypes.Eat);
 		}
 
-		public bool IsHungry()
+				public bool IsHungry()
 		{
-			return this.GetCalories0to1() < 0.825f;
+			return this.GetCalories0to1() < DUPLICANTSTATS.STANDARD.BaseStats.HUNGRY_THRESHOLD;
 		}
 
-		public bool IsStarving()
+				public bool IsStarving()
 		{
-			return this.GetCalories0to1() < 0.25f;
+			return this.GetCalories0to1() < DUPLICANTSTATS.STANDARD.BaseStats.STARVING_THRESHOLD;
 		}
 
-		public bool IsSatisfied()
+				public bool IsSatisfied()
 		{
-			return this.GetCalories0to1() > 0.95f;
+			return this.GetCalories0to1() > DUPLICANTSTATS.STANDARD.BaseStats.SATISFIED_THRESHOLD;
 		}
 
-		public bool IsEating()
+				public bool IsEating()
 		{
 			ChoreDriver component = base.master.GetComponent<ChoreDriver>();
 			return component.HasChore() && component.GetCurrentChore().choreType.urge == Db.Get().Urges.Eat;
 		}
 
-		public bool IsDepleted()
+				public bool IsDepleted()
 		{
 			return this.calories.value <= 0f;
 		}
 
-		public bool ShouldExitInfirmary()
+				public bool ShouldExitInfirmary()
 		{
 			return !this.IsStarving();
 		}
 
-		public void Kill()
+				public void Kill()
 		{
 			if (base.gameObject.GetSMI<DeathMonitor.Instance>() != null)
 			{
@@ -94,6 +95,6 @@ public class CalorieMonitor : GameStateMachine<CalorieMonitor, CalorieMonitor.In
 			}
 		}
 
-		public AmountInstance calories;
+				public AmountInstance calories;
 	}
 }

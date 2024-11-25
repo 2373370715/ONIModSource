@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GeothermalController : StateMachineComponent<GeothermalController.StatesInstance>
 {
-			public GeothermalController.ProgressState State
+				public GeothermalController.ProgressState State
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		}
 	}
 
-	public List<GeothermalVent> FindVents(bool requireEnabled)
+		public List<GeothermalVent> FindVents(bool requireEnabled)
 	{
 		if (!requireEnabled)
 		{
@@ -35,7 +35,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		return list;
 	}
 
-	public void PushToVents(GeothermalVent.ElementInfo info)
+		public void PushToVents(GeothermalVent.ElementInfo info)
 	{
 		List<GeothermalVent> list = this.FindVents(true);
 		if (list.Count == 0)
@@ -58,12 +58,12 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		}
 	}
 
-	public bool IsFull()
+		public bool IsFull()
 	{
 		return this.storage.MassStored() > 11999.9f;
 	}
 
-	public float ComputeContentTemperature()
+		public float ComputeContentTemperature()
 	{
 		float num = 0f;
 		float num2 = 0f;
@@ -82,7 +82,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		return result;
 	}
 
-	public List<GeothermalVent.ElementInfo> ComputeOutputs()
+		public List<GeothermalVent.ElementInfo> ComputeOutputs()
 	{
 		float num = this.ComputeContentTemperature();
 		float temperature = GeothermalControllerConfig.CalculateOutputTemperature(num);
@@ -103,7 +103,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		return impuritiesHelper.results;
 	}
 
-	public void PushToVents()
+		public void PushToVents()
 	{
 		SaveGame.Instance.ColonyAchievementTracker.GeothermalControllerHasVented = true;
 		List<GeothermalVent.ElementInfo> list = this.ComputeOutputs();
@@ -119,7 +119,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		this.fakeProgress = 1f;
 	}
 
-	private void TryAddConduitConsumers()
+		private void TryAddConduitConsumers()
 	{
 		if (base.GetComponents<EntityConduitConsumer>().Length != 0)
 		{
@@ -138,7 +138,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		}
 	}
 
-	public float GetPressure()
+		public float GetPressure()
 	{
 		GeothermalController.ProgressState progressState = this.state;
 		if (progressState > GeothermalController.ProgressState.RECONNECTING_PIPES)
@@ -151,7 +151,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		return 0f;
 	}
 
-	private void FakeMeterDraining(float time)
+		private void FakeMeterDraining(float time)
 	{
 		this.fakeProgress -= time / 16f;
 		if (this.fakeProgress < 0f)
@@ -161,7 +161,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		this.barometer.SetPositionPercent(this.fakeProgress);
 	}
 
-	private void UpdatePressure()
+		private void UpdatePressure()
 	{
 		GeothermalController.ProgressState progressState = this.state;
 		if (progressState > GeothermalController.ProgressState.RECONNECTING_PIPES)
@@ -193,7 +193,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		}
 	}
 
-	public bool IsObstructed()
+		public bool IsObstructed()
 	{
 		if (this.IsFull())
 		{
@@ -218,7 +218,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		return false;
 	}
 
-	public GeothermalVent FirstObstructedVent()
+		public GeothermalVent FirstObstructedVent()
 	{
 		foreach (GeothermalVent geothermalVent in this.FindVents(false))
 		{
@@ -234,13 +234,13 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		return null;
 	}
 
-	public Notification CreateFirstBatchReadyNotification()
+		public Notification CreateFirstBatchReadyNotification()
 	{
 		this.dismissOnSelect = new Notification(COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.NOTIFICATIONS.GEOTHERMAL_PLANT_FIRST_VENT_READY, NotificationType.Event, (List<Notification> _, object __) => COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.NOTIFICATIONS.GEOTHERMAL_PLANT_FIRST_VENT_READY_TOOLTIP, null, false, 0f, null, null, base.transform, true, false, false);
 		return this.dismissOnSelect;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.GeothermalControllers.Add(this.GetMyWorldId(), this);
@@ -252,7 +252,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		base.Subscribe(-1503271301, new Action<object>(this.OnBuildingSelected));
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.Unsubscribe(-1503271301, new Action<object>(this.OnBuildingSelected));
 		if (this.listener != null)
@@ -263,7 +263,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		base.OnCleanUp();
 	}
 
-	protected void OnBuildingSelected(object clicked)
+		protected void OnBuildingSelected(object clicked)
 	{
 		if (!(bool)clicked)
 		{
@@ -281,38 +281,38 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 		}
 	}
 
-	public bool VentingCanFreeKeepsake()
+		public bool VentingCanFreeKeepsake()
 	{
 		List<GeothermalVent.ElementInfo> list = this.ComputeOutputs();
 		return list.Count != 0 && list[0].temperature >= 602f;
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private MeterController thermometer;
+		private MeterController thermometer;
 
-	private MeterController barometer;
+		private MeterController barometer;
 
-	private KBatchedAnimController animController;
+		private KBatchedAnimController animController;
 
-	public Notification dismissOnSelect;
+		public Notification dismissOnSelect;
 
-	public static Operational.Flag allowInputFlag = new Operational.Flag("allowInputFlag", Operational.Flag.Type.Requirement);
+		public static Operational.Flag allowInputFlag = new Operational.Flag("allowInputFlag", Operational.Flag.Type.Requirement);
 
-	private GeothermalController.VentRegistrationListener listener;
+		private GeothermalController.VentRegistrationListener listener;
 
-	[Serialize]
+		[Serialize]
 	private GeothermalController.ProgressState state;
 
-	private float fakeProgress;
+		private float fakeProgress;
 
-	public class ReconnectPipes : Workable
+		public class ReconnectPipes : Workable
 	{
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			base.OnPrefabInit();
 			base.SetWorkTime(5f);
@@ -324,7 +324,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			this.faceTargetWhenWorking = true;
 		}
 
-		protected override void OnCompleteWork(Worker worker)
+				protected override void OnCompleteWork(WorkerBase worker)
 		{
 			base.OnCompleteWork(worker);
 			if (this.storage != null)
@@ -333,31 +333,31 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			}
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Storage storage;
 	}
 
-	private class VentRegistrationListener
+		private class VentRegistrationListener
 	{
-		public Action<GeothermalVent> onAdd;
+				public Action<GeothermalVent> onAdd;
 
-		public Action<GeothermalVent> onRemove;
+				public Action<GeothermalVent> onRemove;
 	}
 
-	public enum ProgressState
+		public enum ProgressState
 	{
-		NOT_STARTED,
-		FETCHING_STEEL,
-		RECONNECTING_PIPES,
-		NOTIFY_REPAIRED,
-		REPAIRED,
-		AT_CAPACITY,
-		COMPLETE
+				NOT_STARTED,
+				FETCHING_STEEL,
+				RECONNECTING_PIPES,
+				NOTIFY_REPAIRED,
+				REPAIRED,
+				AT_CAPACITY,
+				COMPLETE
 	}
 
-	private class ImpuritiesHelper
+		private class ImpuritiesHelper
 	{
-		public void AddMaterial(ushort elementIdx, float mass, float temperature, byte diseaseIdx, int diseaseCount)
+				public void AddMaterial(ushort elementIdx, float mass, float temperature, byte diseaseIdx, int diseaseCount)
 		{
 			Element element = ElementLoader.elements[(int)elementIdx];
 			if (element.lowTemp > temperature)
@@ -402,12 +402,12 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			this.results.Add(elementInfo);
 		}
 
-		public List<GeothermalVent.ElementInfo> results = new List<GeothermalVent.ElementInfo>();
+				public List<GeothermalVent.ElementInfo> results = new List<GeothermalVent.ElementInfo>();
 	}
 
-	public class States : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController>
+		public class States : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.root;
 			this.root.EnterTransition(this.online, (GeothermalController.StatesInstance smi) => smi.master.State == GeothermalController.ProgressState.COMPLETE).EnterTransition(this.offline, (GeothermalController.StatesInstance smi) => smi.master.State != GeothermalController.ProgressState.COMPLETE);
@@ -462,17 +462,17 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			this.online.obstructed.Transition(this.online.active, (GeothermalController.StatesInstance smi) => !smi.master.IsObstructed(), UpdateRate.SIM_1000ms).PlayAnim("on").ToggleMainStatusItem(Db.Get().BuildingStatusItems.GeoControllerStorageStatus, (GeothermalController.StatesInstance smi) => smi.master).ToggleStatusItem(Db.Get().BuildingStatusItems.GeoControllerTemperatureStatus, (GeothermalController.StatesInstance smi) => smi.master).ToggleStatusItem(Db.Get().BuildingStatusItems.GeoControllerCantVent, (GeothermalController.StatesInstance smi) => smi.master).ToggleStatusItem(Db.Get().MiscStatusItems.AttentionRequired, null);
 		}
 
-		protected Chore CreateRepairFetchChore(GeothermalController.StatesInstance smi, HashSet<Tag> tags, float mass_required)
+				protected Chore CreateRepairFetchChore(GeothermalController.StatesInstance smi, HashSet<Tag> tags, float mass_required)
 		{
 			return new FetchChore(Db.Get().ChoreTypes.RepairFetch, smi.master.storage, mass_required, tags, FetchChore.MatchCriteria.MatchID, Tag.Invalid, null, null, true, null, null, null, Operational.State.None, 0);
 		}
 
-		protected Chore CreateRepairChore(GeothermalController.StatesInstance smi)
+				protected Chore CreateRepairChore(GeothermalController.StatesInstance smi)
 		{
 			return new WorkChore<GeothermalController.ReconnectPipes>(Db.Get().ChoreTypes.Repair, smi.master, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.high, 5, false, true);
 		}
 
-		protected Notification CreateRepairedNotification(GeothermalController.StatesInstance smi)
+				protected Notification CreateRepairedNotification(GeothermalController.StatesInstance smi)
 		{
 			smi.master.dismissOnSelect = new Notification(COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.NOTIFICATIONS.GEOTHERMAL_PLANT_RECONNECTED, NotificationType.Event, (List<Notification> _, object __) => COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.NOTIFICATIONS.GEOTHERMAL_PLANT_RECONNECTED_TOOLTIP, null, false, 0f, delegate(object _)
 			{
@@ -482,7 +482,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			return smi.master.dismissOnSelect;
 		}
 
-		protected void SetProgressionToRepaired(GeothermalController.StatesInstance smi)
+				protected void SetProgressionToRepaired(GeothermalController.StatesInstance smi)
 		{
 			SaveGame.Instance.ColonyAchievementTracker.GeothermalControllerRepaired = true;
 			GeothermalPlantComponent.DisplayPopup(COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.POPUPS.GEOTHERMAL_PLANT_REPAIRED_TITLE, COLONY_ACHIEVEMENTS.ACTIVATEGEOTHERMALPLANT.POPUPS.GEOTHERMAL_PLANT_REPAIRED_DESC, "geothermalplantonline_kanim", delegate
@@ -492,62 +492,62 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			}, smi.master.transform);
 		}
 
-		public GeothermalController.States.OfflineStates offline;
+				public GeothermalController.States.OfflineStates offline;
 
-		public GeothermalController.States.OnlineStates online;
+				public GeothermalController.States.OnlineStates online;
 
-		public class OfflineStates : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State
+				public class OfflineStates : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State
 		{
-			public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State initial;
+						public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State initial;
 
-			public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State fetchSteel;
+						public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State fetchSteel;
 
-			public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State checkSupplies;
+						public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State checkSupplies;
 
-			public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State reconnectPipes;
+						public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State reconnectPipes;
 
-			public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State notifyRepaired;
+						public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State notifyRepaired;
 
-			public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State repaired;
+						public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State repaired;
 
-			public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State filling;
+						public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State filling;
 
-			public GeothermalController.States.OfflineStates.FilledStates filled;
+						public GeothermalController.States.OfflineStates.FilledStates filled;
 
-			public class FilledStates : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State
+						public class FilledStates : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State
 			{
-				public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State ready;
+								public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State ready;
 
-				public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State obstructed;
+								public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State obstructed;
 			}
 		}
 
-		public class OnlineStates : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State
+				public class OnlineStates : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State
 		{
-			public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State active;
+						public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State active;
 
-			public GeothermalController.States.OnlineStates.WorkingStates venting;
+						public GeothermalController.States.OnlineStates.WorkingStates venting;
 
-			public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State obstructed;
+						public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State obstructed;
 
-			public class WorkingStates : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State
+						public class WorkingStates : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State
 			{
-				public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State pre;
+								public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State pre;
 
-				public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State loop;
+								public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State loop;
 
-				public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State post;
+								public GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.State post;
 			}
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.GameInstance, ISidescreenButtonControl
+		public class StatesInstance : GameStateMachine<GeothermalController.States, GeothermalController.StatesInstance, GeothermalController, object>.GameInstance, ISidescreenButtonControl
 	{
-		public StatesInstance(GeothermalController smi) : base(smi)
+				public StatesInstance(GeothermalController smi) : base(smi)
 		{
 		}
 
-		public IFetchList GetFetchListForStatusItem()
+				public IFetchList GetFetchListForStatusItem()
 		{
 			GeothermalController.StatesInstance.FakeList fakeList = new GeothermalController.StatesInstance.FakeList();
 			float value = 1200f - base.smi.master.storage.MassStored();
@@ -555,7 +555,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			return fakeList;
 		}
 
-		bool ISidescreenButtonControl.SidescreenButtonInteractable()
+				bool ISidescreenButtonControl.SidescreenButtonInteractable()
 		{
 			switch (base.smi.master.State)
 			{
@@ -575,12 +575,12 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			}
 		}
 
-		bool ISidescreenButtonControl.SidescreenEnabled()
+				bool ISidescreenButtonControl.SidescreenEnabled()
 		{
 			return base.smi.master.State != GeothermalController.ProgressState.COMPLETE;
 		}
 
-		private string getSidescreenButtonText()
+				private string getSidescreenButtonText()
 		{
 			switch (base.smi.master.State)
 			{
@@ -599,7 +599,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			}
 		}
 
-				string ISidescreenButtonControl.SidescreenButtonText
+						string ISidescreenButtonControl.SidescreenButtonText
 		{
 			get
 			{
@@ -607,7 +607,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			}
 		}
 
-		private string getSidescreenButtonTooltip()
+				private string getSidescreenButtonTooltip()
 		{
 			switch (base.smi.master.State)
 			{
@@ -631,7 +631,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			}
 		}
 
-				string ISidescreenButtonControl.SidescreenButtonTooltip
+						string ISidescreenButtonControl.SidescreenButtonTooltip
 		{
 			get
 			{
@@ -639,7 +639,7 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			}
 		}
 
-		void ISidescreenButtonControl.OnSidescreenButtonPressed()
+				void ISidescreenButtonControl.OnSidescreenButtonPressed()
 		{
 			switch (base.smi.master.state)
 			{
@@ -672,24 +672,24 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 			}
 		}
 
-		void ISidescreenButtonControl.SetButtonTextOverride(ButtonMenuTextOverride textOverride)
+				void ISidescreenButtonControl.SetButtonTextOverride(ButtonMenuTextOverride textOverride)
 		{
 			throw new NotImplementedException();
 		}
 
-		int ISidescreenButtonControl.HorizontalGroupID()
+				int ISidescreenButtonControl.HorizontalGroupID()
 		{
 			return -1;
 		}
 
-		int ISidescreenButtonControl.ButtonSideScreenSortOrder()
+				int ISidescreenButtonControl.ButtonSideScreenSortOrder()
 		{
 			return 20;
 		}
 
-		protected class FakeList : IFetchList
+				protected class FakeList : IFetchList
 		{
-						Storage IFetchList.Destination
+									Storage IFetchList.Destination
 			{
 				get
 				{
@@ -697,22 +697,22 @@ public class GeothermalController : StateMachineComponent<GeothermalController.S
 				}
 			}
 
-			float IFetchList.GetMinimumAmount(Tag tag)
+						float IFetchList.GetMinimumAmount(Tag tag)
 			{
 				throw new NotImplementedException();
 			}
 
-			Dictionary<Tag, float> IFetchList.GetRemaining()
+						Dictionary<Tag, float> IFetchList.GetRemaining()
 			{
 				return this.remaining;
 			}
 
-			Dictionary<Tag, float> IFetchList.GetRemainingMinimum()
+						Dictionary<Tag, float> IFetchList.GetRemainingMinimum()
 			{
 				throw new NotImplementedException();
 			}
 
-			public Dictionary<Tag, float> remaining = new Dictionary<Tag, float>();
+						public Dictionary<Tag, float> remaining = new Dictionary<Tag, float>();
 		}
 	}
 }

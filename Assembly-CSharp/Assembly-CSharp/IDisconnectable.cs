@@ -2,9 +2,9 @@
 
 public interface IDisconnectable
 {
-	bool Connect();
+		bool Connect();
 
-	void Disconnect();
+		void Disconnect();
 
-	bool IsDisconnected();
+		bool IsDisconnected();
 }

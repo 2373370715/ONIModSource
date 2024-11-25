@@ -4,7 +4,7 @@ using STRINGS;
 
 public class ConnectionManager : KMonoBehaviour, ISaveLoadable, IToggleHandler
 {
-			public bool IsConnected
+				public bool IsConnected
 	{
 		get
 		{
@@ -17,7 +17,7 @@ public class ConnectionManager : KMonoBehaviour, ISaveLoadable, IToggleHandler
 		}
 	}
 
-		public bool WaitingForToggle
+			public bool WaitingForToggle
 	{
 		get
 		{
@@ -25,14 +25,14 @@ public class ConnectionManager : KMonoBehaviour, ISaveLoadable, IToggleHandler
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.toggleIdx = this.toggleable.SetTarget(this);
 		base.Subscribe<ConnectionManager>(493375141, ConnectionManager.OnRefreshUserMenuDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.toggleQueued)
@@ -43,20 +43,20 @@ public class ConnectionManager : KMonoBehaviour, ISaveLoadable, IToggleHandler
 		this.connectedMeter.SetPositionPercent(this.IsConnected ? 1f : 0f);
 	}
 
-	public void HandleToggle()
+		public void HandleToggle()
 	{
 		this.toggleQueued = false;
 		Prioritizable.RemoveRef(base.gameObject);
 		this.OnToggle();
 	}
 
-	private void OnToggle()
+		private void OnToggle()
 	{
 		this.IsConnected = !this.IsConnected;
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	private void OnMenuToggle()
+		private void OnMenuToggle()
 	{
 		if (!this.toggleable.IsToggleQueued(this.toggleIdx))
 		{
@@ -76,7 +76,7 @@ public class ConnectionManager : KMonoBehaviour, ISaveLoadable, IToggleHandler
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (!this.showButton)
 		{
@@ -96,30 +96,30 @@ public class ConnectionManager : KMonoBehaviour, ISaveLoadable, IToggleHandler
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	bool IToggleHandler.IsHandlerOn()
+		bool IToggleHandler.IsHandlerOn()
 	{
 		return this.IsConnected;
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private ToggleGeothermalVentConnection toggleable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private GeothermalVent vent;
 
-	private int toggleIdx;
+		private int toggleIdx;
 
-	private MeterController connectedMeter;
+		private MeterController connectedMeter;
 
-	public bool showButton;
+		public bool showButton;
 
-	[Serialize]
+		[Serialize]
 	private bool connected;
 
-	[Serialize]
+		[Serialize]
 	private bool toggleQueued;
 
-	private static readonly EventSystem.IntraObjectHandler<ConnectionManager> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<ConnectionManager>(delegate(ConnectionManager component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ConnectionManager> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<ConnectionManager>(delegate(ConnectionManager component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});

@@ -6,14 +6,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Dumpable")]
 public class Dumpable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<Dumpable>(493375141, Dumpable.OnRefreshUserMenuDelegate);
 		this.workerStatusItem = Db.Get().DuplicantStatusItems.Emptying;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.isMarkedForDumping)
@@ -32,7 +32,7 @@ public class Dumpable : Workable
 		base.SetWorkTime(1f);
 	}
 
-	public void ToggleDumping()
+		public void ToggleDumping()
 	{
 		if (DebugHandler.InstantBuildMode)
 		{
@@ -52,7 +52,7 @@ public class Dumpable : Workable
 		this.CreateChore();
 	}
 
-	private void CreateChore()
+		private void CreateChore()
 	{
 		if (this.chore == null)
 		{
@@ -61,7 +61,7 @@ public class Dumpable : Workable
 		}
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.isMarkedForDumping = false;
 		this.chore = null;
@@ -69,12 +69,12 @@ public class Dumpable : Workable
 		Prioritizable.RemoveRef(base.gameObject);
 	}
 
-	public void Dump()
+		public void Dump()
 	{
 		this.Dump(base.transform.GetPosition());
 	}
 
-	public void Dump(Vector3 pos)
+		public void Dump(Vector3 pos)
 	{
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
 		if (component.Mass > 0f)
@@ -91,7 +91,7 @@ public class Dumpable : Workable
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (this.HasTag(GameTags.Stored))
 		{
@@ -101,12 +101,12 @@ public class Dumpable : Workable
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	private Chore chore;
+		private Chore chore;
 
-	[Serialize]
+		[Serialize]
 	private bool isMarkedForDumping;
 
-	private static readonly EventSystem.IntraObjectHandler<Dumpable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Dumpable>(delegate(Dumpable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Dumpable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Dumpable>(delegate(Dumpable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});

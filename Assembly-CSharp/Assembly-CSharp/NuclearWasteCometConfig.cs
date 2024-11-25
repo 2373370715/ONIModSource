@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class NuclearWasteCometConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(NuclearWasteCometConfig.ID, UI.SPACEDESTINATIONS.COMETS.NUCLEAR_WASTE.NAME, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
@@ -47,15 +47,15 @@ public class NuclearWasteCometConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static string ID = "NuclearWasteComet";
+		public static string ID = "NuclearWasteComet";
 
-	public static float MASS = 1f;
+		public static float MASS = 1f;
 }

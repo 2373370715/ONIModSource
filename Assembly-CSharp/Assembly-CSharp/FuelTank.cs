@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 {
-		public IStorage Storage
+			public IStorage Storage
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		}
 	}
 
-		public bool ConsumeFuelOnLand
+			public bool ConsumeFuelOnLand
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		}
 	}
 
-			public float UserMaxCapacity
+				public float UserMaxCapacity
 	{
 		get
 		{
@@ -45,7 +45,7 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		}
 	}
 
-		public float MinCapacity
+			public float MinCapacity
 	{
 		get
 		{
@@ -53,7 +53,7 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		}
 	}
 
-		public float MaxCapacity
+			public float MaxCapacity
 	{
 		get
 		{
@@ -61,7 +61,7 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		}
 	}
 
-		public float AmountStored
+			public float AmountStored
 	{
 		get
 		{
@@ -69,7 +69,7 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		}
 	}
 
-		public bool WholeValues
+			public bool WholeValues
 	{
 		get
 		{
@@ -77,7 +77,7 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		}
 	}
 
-		public LocString CapacityUnits
+			public LocString CapacityUnits
 	{
 		get
 		{
@@ -85,7 +85,7 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		}
 	}
 
-			public Tag FuelType
+				public Tag FuelType
 	{
 		get
 		{
@@ -107,13 +107,13 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<FuelTank>(-905833192, FuelTank.OnCopySettingsDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.targetFillMass == -1f)
@@ -139,12 +139,12 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		base.Subscribe<FuelTank>(-1697596308, FuelTank.OnStorageChangedDelegate);
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		this.meter.SetPositionPercent(this.storage.MassStored() / this.storage.capacityKg);
 	}
 
-	private void OnRocketLanded(object data)
+		private void OnRocketLanded(object data)
 	{
 		if (this.ConsumeFuelOnLand)
 		{
@@ -152,7 +152,7 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		FuelTank component = ((GameObject)data).GetComponent<FuelTank>();
 		if (component != null)
@@ -161,7 +161,7 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		}
 	}
 
-	public void DEBUG_FillTank()
+		public void DEBUG_FillTank()
 	{
 		if (!DlcManager.FeatureClusterSpaceEnabled())
 		{
@@ -229,32 +229,32 @@ public class FuelTank : KMonoBehaviour, IUserControlledCapacity, IFuelTank
 		global::Debug.LogWarning("Fuel tank couldn't find rocket engine");
 	}
 
-	public Storage storage;
+		public Storage storage;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	[Serialize]
+		[Serialize]
 	public float targetFillMass = -1f;
 
-	[SerializeField]
+		[SerializeField]
 	public float physicalFuelCapacity;
 
-	public bool consumeFuelOnLand;
+		public bool consumeFuelOnLand;
 
-	[SerializeField]
+		[SerializeField]
 	private Tag fuelType;
 
-	private static readonly EventSystem.IntraObjectHandler<FuelTank> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<FuelTank>(delegate(FuelTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<FuelTank> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<FuelTank>(delegate(FuelTank component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<FuelTank> OnRocketLandedDelegate = new EventSystem.IntraObjectHandler<FuelTank>(delegate(FuelTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<FuelTank> OnRocketLandedDelegate = new EventSystem.IntraObjectHandler<FuelTank>(delegate(FuelTank component, object data)
 	{
 		component.OnRocketLanded(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<FuelTank> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<FuelTank>(delegate(FuelTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<FuelTank> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<FuelTank>(delegate(FuelTank component, object data)
 	{
 		component.OnStorageChange(data);
 	});

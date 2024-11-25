@@ -4,9 +4,9 @@ using UnityEngine;
 
 public interface IMultiEntityConfig
 {
-	List<GameObject> CreatePrefabs();
+		List<GameObject> CreatePrefabs();
 
-	void OnPrefabInit(GameObject inst);
+		void OnPrefabInit(GameObject inst);
 
-	void OnSpawn(GameObject inst);
+		void OnSpawn(GameObject inst);
 }

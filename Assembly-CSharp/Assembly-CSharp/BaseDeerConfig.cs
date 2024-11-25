@@ -7,7 +7,7 @@ using UnityEngine;
 
 public static class BaseDeerConfig
 {
-	public static GameObject BaseDeer(string id, string name, string desc, string anim_file, string traitId, bool is_baby, string symbolOverridePrefix = null)
+		public static GameObject BaseDeer(string id, string name, string desc, string anim_file, string traitId, bool is_baby, string symbolOverridePrefix = null)
 	{
 		float mass = 100f;
 		int height = is_baby ? 1 : 2;
@@ -51,17 +51,15 @@ public static class BaseDeerConfig
 		return gameObject;
 	}
 
-	public static List<Diet.Info> BasicDiet(Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
+		public static Diet.Info CreateDietInfo(Tag foodTag, Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
 	{
-		HashSet<Tag> hashSet = new HashSet<Tag>();
-		hashSet.Add("HardSkinBerryPlant");
-		return new List<Diet.Info>
+		return new Diet.Info(new HashSet<Tag>
 		{
-			new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, true, false)
-		};
+			foodTag
+		}, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, Diet.Info.FoodType.EatPlantDirectly, false, null);
 	}
 
-	public static GameObject SetupDiet(GameObject prefab, Diet.Info[] diet_infos, float minPoopSizeInKg)
+		public static GameObject SetupDiet(GameObject prefab, Diet.Info[] diet_infos, float minPoopSizeInKg)
 	{
 		Diet diet = new Diet(diet_infos);
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();

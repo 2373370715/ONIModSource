@@ -2,7 +2,7 @@
 
 public class CreatureBrain : Brain
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Navigator component = base.GetComponent<Navigator>();
@@ -12,7 +12,7 @@ public class CreatureBrain : Brain
 		}
 	}
 
-	public string symbolPrefix;
+		public string symbolPrefix;
 
-	public Tag species;
+		public Tag species;
 }

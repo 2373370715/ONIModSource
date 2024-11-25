@@ -1,92 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class RocketLaunchConditionVisualizer : KMonoBehaviour
-{
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		if (DlcManager.FeatureClusterSpaceEnabled())
-		{
-			this.clusterModule = base.GetComponent<RocketModuleCluster>();
-		}
-		else
-		{
-			this.launchConditionManager = base.GetComponent<LaunchConditionManager>();
-		}
-		this.UpdateAllModuleData();
-		base.Subscribe(1512695988, new Action<object>(this.OnAnyRocketModuleChanged));
-	}
+public class RocketLaunchConditionVisualizer : KMonoBehaviour {
+    private RocketModuleCluster         clusterModule;
+    private LaunchConditionManager      launchConditionManager;
+    public  RocketModuleVisualizeData[] moduleVisualizeData;
 
-	protected override void OnCleanUp()
-	{
-		base.Unsubscribe(1512695988, new Action<object>(this.OnAnyRocketModuleChanged));
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        if (DlcManager.FeatureClusterSpaceEnabled())
+            clusterModule = GetComponent<RocketModuleCluster>();
+        else
+            launchConditionManager = GetComponent<LaunchConditionManager>();
 
-	private void OnAnyRocketModuleChanged(object obj)
-	{
-		this.UpdateAllModuleData();
-	}
+        UpdateAllModuleData();
+        Subscribe(1512695988, OnAnyRocketModuleChanged);
+    }
 
-	private void UpdateAllModuleData()
-	{
-		if (this.moduleVisualizeData != null)
-		{
-			this.moduleVisualizeData = null;
-		}
-		bool flag = this.clusterModule != null;
-		List<Ref<RocketModuleCluster>> list = null;
-		List<RocketModule> list2 = null;
-		if (flag)
-		{
-			list = new List<Ref<RocketModuleCluster>>(this.clusterModule.CraftInterface.ClusterModules);
-			this.moduleVisualizeData = new RocketLaunchConditionVisualizer.RocketModuleVisualizeData[list.Count];
-			list.Sort(delegate(Ref<RocketModuleCluster> a, Ref<RocketModuleCluster> b)
-			{
-				int y = Grid.PosToXY(a.Get().transform.GetPosition()).y;
-				int y2 = Grid.PosToXY(b.Get().transform.GetPosition()).y;
-				return y.CompareTo(y2);
-			});
-		}
-		else
-		{
-			list2 = new List<RocketModule>(this.launchConditionManager.rocketModules);
-			list2.Sort(delegate(RocketModule a, RocketModule b)
-			{
-				int y = Grid.PosToXY(a.transform.GetPosition()).y;
-				int y2 = Grid.PosToXY(b.transform.GetPosition()).y;
-				return y.CompareTo(y2);
-			});
-			this.moduleVisualizeData = new RocketLaunchConditionVisualizer.RocketModuleVisualizeData[list2.Count];
-		}
-		for (int i = 0; i < this.moduleVisualizeData.Length; i++)
-		{
-			RocketModule rocketModule = flag ? list[i].Get() : list2[i];
-			Building component = rocketModule.GetComponent<Building>();
-			this.moduleVisualizeData[i] = new RocketLaunchConditionVisualizer.RocketModuleVisualizeData
-			{
-				Module = rocketModule,
-				RangeMax = Mathf.FloorToInt((float)component.Def.WidthInCells / 2f),
-				RangeMin = -Mathf.FloorToInt((float)(component.Def.WidthInCells - 1) / 2f)
-			};
-		}
-	}
+    protected override void OnCleanUp()                          { Unsubscribe(1512695988, OnAnyRocketModuleChanged); }
+    private            void OnAnyRocketModuleChanged(object obj) { UpdateAllModuleData(); }
 
-	public RocketLaunchConditionVisualizer.RocketModuleVisualizeData[] moduleVisualizeData;
+    private void UpdateAllModuleData() {
+        if (moduleVisualizeData != null) moduleVisualizeData = null;
+        var                            flag                  = clusterModule != null;
+        List<Ref<RocketModuleCluster>> list                  = null;
+        List<RocketModule>             list2                 = null;
+        if (flag) {
+            list                = new List<Ref<RocketModuleCluster>>(clusterModule.CraftInterface.ClusterModules);
+            moduleVisualizeData = new RocketModuleVisualizeData[list.Count];
+            list.Sort(delegate(Ref<RocketModuleCluster> a, Ref<RocketModuleCluster> b) {
+                          var y  = Grid.PosToXY(a.Get().transform.GetPosition()).y;
+                          var y2 = Grid.PosToXY(b.Get().transform.GetPosition()).y;
+                          return y.CompareTo(y2);
+                      });
+        } else {
+            list2 = new List<RocketModule>(launchConditionManager.rocketModules);
+            list2.Sort(delegate(RocketModule a, RocketModule b) {
+                           var y  = Grid.PosToXY(a.transform.GetPosition()).y;
+                           var y2 = Grid.PosToXY(b.transform.GetPosition()).y;
+                           return y.CompareTo(y2);
+                       });
 
-	private LaunchConditionManager launchConditionManager;
+            moduleVisualizeData = new RocketModuleVisualizeData[list2.Count];
+        }
 
-	private RocketModuleCluster clusterModule;
+        for (var i = 0; i < moduleVisualizeData.Length; i++) {
+            var rocketModule = flag ? list[i].Get() : list2[i];
+            var component    = rocketModule.GetComponent<Building>();
+            moduleVisualizeData[i] = new RocketModuleVisualizeData {
+                Module   = rocketModule,
+                RangeMax = Mathf.FloorToInt(component.Def.WidthInCells / 2f),
+                RangeMin = -Mathf.FloorToInt((component.Def.WidthInCells - 1) / 2f)
+            };
+        }
+    }
 
-	public struct RocketModuleVisualizeData
-	{
-		public RocketModule Module;
-
-		public Vector2I OriginOffset;
-
-		public int RangeMin;
-
-		public int RangeMax;
-	}
+    public struct RocketModuleVisualizeData {
+        public RocketModule Module;
+        public Vector2I     OriginOffset;
+        public int          RangeMin;
+        public int          RangeMax;
+    }
 }

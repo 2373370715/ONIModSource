@@ -3,9 +3,9 @@ using TUNING;
 
 public abstract class FossilExcavationWorkable : Workable
 {
-	protected abstract bool IsMarkedForExcavation();
+		protected abstract bool IsMarkedForExcavation();
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workingStatusItem = Db.Get().BuildingStatusItems.FossilHuntExcavationInProgress;
@@ -23,7 +23,7 @@ public abstract class FossilExcavationWorkable : Workable
 		this.shouldShowSkillPerkStatusItem = false;
 	}
 
-	protected override void UpdateStatusItem(object data = null)
+		protected override void UpdateStatusItem(object data = null)
 	{
 		base.UpdateStatusItem(data);
 		KSelectable component = base.GetComponent<KSelectable>();
@@ -37,7 +37,7 @@ public abstract class FossilExcavationWorkable : Workable
 		}
 	}
 
-	protected Guid waitingWorkStatusItemHandle;
+		protected Guid waitingWorkStatusItemHandle;
 
-	protected StatusItem waitingForExcavationWorkStatusItem = Db.Get().BuildingStatusItems.FossilHuntExcavationOrdered;
+		protected StatusItem waitingForExcavationWorkStatusItem = Db.Get().BuildingStatusItems.FossilHuntExcavationOrdered;
 }

@@ -3,17 +3,17 @@ using System.Runtime.InteropServices;
 
 public class ConduitTemperatureManager
 {
-	public ConduitTemperatureManager()
+		public ConduitTemperatureManager()
 	{
 		ConduitTemperatureManager.ConduitTemperatureManager_Initialize();
 	}
 
-	public void Shutdown()
+		public void Shutdown()
 	{
 		ConduitTemperatureManager.ConduitTemperatureManager_Shutdown();
 	}
 
-	public HandleVector<int>.Handle Allocate(ConduitType conduit_type, int conduit_idx, HandleVector<int>.Handle conduit_structure_temperature_handle, ref ConduitFlow.ConduitContents contents)
+		public HandleVector<int>.Handle Allocate(ConduitType conduit_type, int conduit_idx, HandleVector<int>.Handle conduit_structure_temperature_handle, ref ConduitFlow.ConduitContents contents)
 	{
 		StructureTemperaturePayload payload = GameComps.StructureTemperatures.GetPayload(conduit_structure_temperature_handle);
 		Element element = payload.primaryElement.Element;
@@ -38,7 +38,7 @@ public class ConduitTemperatureManager
 		return result;
 	}
 
-	public void SetData(HandleVector<int>.Handle handle, ref ConduitFlow.ConduitContents contents)
+		public void SetData(HandleVector<int>.Handle handle, ref ConduitFlow.ConduitContents contents)
 	{
 		if (!handle.IsValid())
 		{
@@ -48,7 +48,7 @@ public class ConduitTemperatureManager
 		ConduitTemperatureManager.ConduitTemperatureManager_Set(handle.index, contents.temperature, contents.mass, (int)contents.element);
 	}
 
-	public void Free(HandleVector<int>.Handle handle)
+		public void Free(HandleVector<int>.Handle handle)
 	{
 		if (handle.IsValid())
 		{
@@ -63,12 +63,12 @@ public class ConduitTemperatureManager
 		}
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		ConduitTemperatureManager.ConduitTemperatureManager_Clear();
 	}
 
-	public unsafe void Sim200ms(float dt)
+		public unsafe void Sim200ms(float dt)
 	{
 		ConduitTemperatureManager.ConduitTemperatureUpdateData* ptr = (ConduitTemperatureManager.ConduitTemperatureUpdateData*)((void*)ConduitTemperatureManager.ConduitTemperatureManager_Update(dt, (IntPtr)((void*)Game.Instance.simData.buildingTemperatures)));
 		int numEntries = ptr->numEntries;
@@ -90,56 +90,56 @@ public class ConduitTemperatureManager
 		}
 	}
 
-	public float GetTemperature(HandleVector<int>.Handle handle)
+		public float GetTemperature(HandleVector<int>.Handle handle)
 	{
 		return this.temperatures[Sim.GetHandleIndex(handle.index)];
 	}
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	private static extern void ConduitTemperatureManager_Initialize();
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	private static extern void ConduitTemperatureManager_Shutdown();
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	private static extern int ConduitTemperatureManager_Add(float contents_temperature, float contents_mass, int contents_element_hash, int conduit_structure_temperature_handle, float conduit_heat_capacity, float conduit_thermal_conductivity, bool conduit_insulated);
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	private static extern int ConduitTemperatureManager_Set(int handle, float contents_temperature, float contents_mass, int contents_element_hash);
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	private static extern void ConduitTemperatureManager_Remove(int handle);
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	private static extern IntPtr ConduitTemperatureManager_Update(float dt, IntPtr building_conductivity_data);
 
-	[DllImport("SimDLL")]
+		[DllImport("SimDLL")]
 	private static extern void ConduitTemperatureManager_Clear();
 
-	private float[] temperatures = new float[0];
+		private float[] temperatures = new float[0];
 
-	private ConduitTemperatureManager.ConduitInfo[] conduitInfo = new ConduitTemperatureManager.ConduitInfo[0];
+		private ConduitTemperatureManager.ConduitInfo[] conduitInfo = new ConduitTemperatureManager.ConduitInfo[0];
 
-	private struct ConduitInfo
+		private struct ConduitInfo
 	{
-		public ConduitType type;
+				public ConduitType type;
 
-		public int idx;
+				public int idx;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	private struct ConduitTemperatureUpdateData
 	{
-		public int numEntries;
+				public int numEntries;
 
-		public unsafe float* temperatures;
+				public unsafe float* temperatures;
 
-		public int numFrozenHandles;
+				public int numFrozenHandles;
 
-		public unsafe int* frozenHandles;
+				public unsafe int* frozenHandles;
 
-		public int numMeltedHandles;
+				public int numMeltedHandles;
 
-		public unsafe int* meltedHandles;
+				public unsafe int* meltedHandles;
 	}
 }

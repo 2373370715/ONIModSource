@@ -8,7 +8,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Phonobox : StateMachineComponent<Phonobox.StatesInstance>, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -31,7 +31,7 @@ public class Phonobox : StateMachineComponent<Phonobox.StatesInstance>, IGameObj
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.UpdateChores(false);
 		for (int i = 0; i < this.workables.Length; i++)
@@ -45,7 +45,7 @@ public class Phonobox : StateMachineComponent<Phonobox.StatesInstance>, IGameObj
 		base.OnCleanUp();
 	}
 
-	private Chore CreateChore(int i)
+		private Chore CreateChore(int i)
 	{
 		Workable workable = this.workables[i];
 		ChoreType relax = Db.Get().ChoreTypes.Relax;
@@ -60,7 +60,7 @@ public class Phonobox : StateMachineComponent<Phonobox.StatesInstance>, IGameObj
 		return workChore;
 	}
 
-	private void OnSocialChoreEnd(Chore chore)
+		private void OnSocialChoreEnd(Chore chore)
 	{
 		if (base.gameObject.HasTag(GameTags.Operational))
 		{
@@ -68,7 +68,7 @@ public class Phonobox : StateMachineComponent<Phonobox.StatesInstance>, IGameObj
 		}
 	}
 
-	public void UpdateChores(bool update = true)
+		public void UpdateChores(bool update = true)
 	{
 		for (int i = 0; i < this.choreOffsets.Length; i++)
 		{
@@ -88,19 +88,19 @@ public class Phonobox : StateMachineComponent<Phonobox.StatesInstance>, IGameObj
 		}
 	}
 
-	public void AddWorker(Worker player)
+		public void AddWorker(WorkerBase player)
 	{
 		this.players.Add(player);
 		base.smi.sm.playerCount.Set(this.players.Count, base.smi, false);
 	}
 
-	public void RemoveWorker(Worker player)
+		public void RemoveWorker(WorkerBase player)
 	{
 		this.players.Remove(player);
 		base.smi.sm.playerCount.Set(this.players.Count, base.smi, false);
 	}
 
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
+		List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Descriptor item = default(Descriptor);
@@ -110,11 +110,11 @@ public class Phonobox : StateMachineComponent<Phonobox.StatesInstance>, IGameObj
 		return list;
 	}
 
-	public const string SPECIFIC_EFFECT = "Danced";
+		public const string SPECIFIC_EFFECT = "Danced";
 
-	public const string TRACKING_EFFECT = "RecentlyDanced";
+		public const string TRACKING_EFFECT = "RecentlyDanced";
 
-	public CellOffset[] choreOffsets = new CellOffset[]
+		public CellOffset[] choreOffsets = new CellOffset[]
 	{
 		new CellOffset(0, 0),
 		new CellOffset(-1, 0),
@@ -123,22 +123,22 @@ public class Phonobox : StateMachineComponent<Phonobox.StatesInstance>, IGameObj
 		new CellOffset(2, 0)
 	};
 
-	private PhonoboxWorkable[] workables;
+		private PhonoboxWorkable[] workables;
 
-	private Chore[] chores;
+		private Chore[] chores;
 
-	private HashSet<Worker> players = new HashSet<Worker>();
+		private HashSet<WorkerBase> players = new HashSet<WorkerBase>();
 
-	private static string[] building_anims = new string[]
+		private static string[] building_anims = new string[]
 	{
 		"working_loop",
 		"working_loop2",
 		"working_loop3"
 	};
 
-	public class States : GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox>
+		public class States : GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.unoperational;
 			this.unoperational.Enter(delegate(Phonobox.StatesInstance smi)
@@ -166,48 +166,48 @@ public class Phonobox : StateMachineComponent<Phonobox.StatesInstance>, IGameObj
 			this.operational.post.PlayAnim("working_pst").OnAnimQueueComplete(this.operational.stopped);
 		}
 
-		public static string GetPlayAnim(Phonobox.StatesInstance smi)
+				public static string GetPlayAnim(Phonobox.StatesInstance smi)
 		{
 			int num = UnityEngine.Random.Range(0, Phonobox.building_anims.Length);
 			return Phonobox.building_anims[num];
 		}
 
-		public StateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.IntParameter playerCount;
+				public StateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.IntParameter playerCount;
 
-		public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State unoperational;
+				public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State unoperational;
 
-		public Phonobox.States.OperationalStates operational;
+				public Phonobox.States.OperationalStates operational;
 
-		public class OperationalStates : GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State
+				public class OperationalStates : GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State
 		{
-			public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State stopped;
+						public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State stopped;
 
-			public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State pre;
+						public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State pre;
 
-			public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State bridge;
+						public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State bridge;
 
-			public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State playing;
+						public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State playing;
 
-			public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State song_end;
+						public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State song_end;
 
-			public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State post;
+						public GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.State post;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Phonobox.States, Phonobox.StatesInstance, Phonobox, object>.GameInstance
 	{
-		public StatesInstance(Phonobox smi) : base(smi)
+				public StatesInstance(Phonobox smi) : base(smi)
 		{
 			this.operational = base.master.GetComponent<Operational>();
 		}
 
-		public void SetActive(bool active)
+				public void SetActive(bool active)
 		{
 			this.operational.SetActive(this.operational.IsOperational && active, false);
 		}
 
-		private FetchChore chore;
+				private FetchChore chore;
 
-		private Operational operational;
+				private Operational operational;
 	}
 }

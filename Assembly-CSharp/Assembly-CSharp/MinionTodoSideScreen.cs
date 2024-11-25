@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MinionTodoSideScreen : SideScreenContent
 {
-		public static List<JobsTableScreen.PriorityInfo> priorityInfo
+			public static List<JobsTableScreen.PriorityInfo> priorityInfo
 	{
 		get
 		{
@@ -26,7 +26,7 @@ public class MinionTodoSideScreen : SideScreenContent
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (this.priorityGroups.Count != 0)
@@ -61,18 +61,18 @@ public class MinionTodoSideScreen : SideScreenContent
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<MinionIdentity>() != null && !target.HasTag(GameTags.Dead);
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 		base.ClearTarget();
 		this.refreshHandle.ClearScheduler();
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.refreshHandle.ClearScheduler();
 		if (this.priorityGroups.Count == 0)
@@ -82,13 +82,13 @@ public class MinionTodoSideScreen : SideScreenContent
 		base.SetTarget(target);
 	}
 
-	public override void ScreenUpdate(bool topLevel)
+		public override void ScreenUpdate(bool topLevel)
 	{
 		base.ScreenUpdate(topLevel);
 		this.PopulateElements(null);
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		this.refreshHandle.ClearScheduler();
@@ -111,7 +111,7 @@ public class MinionTodoSideScreen : SideScreenContent
 		this.PopulateElements(null);
 	}
 
-	private void PopulateElements(object data = null)
+		private void PopulateElements(object data = null)
 	{
 		this.refreshHandle.ClearScheduler();
 		this.refreshHandle = UIScheduler.Instance.Schedule("RefreshToDoList", 0.1f, new Action<object>(this.PopulateElements), null, null);
@@ -132,7 +132,7 @@ public class MinionTodoSideScreen : SideScreenContent
 		Schedule schedule = component.GetSchedule();
 		if (schedule != null)
 		{
-			arg = schedule.GetBlock(Schedule.GetBlockIdx()).name;
+			arg = schedule.GetCurrentScheduleBlock().name;
 		}
 		this.currentScheduleBlockLabel.SetText(string.Format(UI.UISIDESCREENS.MINIONTODOSIDESCREEN.CURRENT_SCHEDULE_BLOCK, arg));
 		this.choreTargets.Clear();
@@ -186,7 +186,7 @@ public class MinionTodoSideScreen : SideScreenContent
 		}
 	}
 
-	private MinionTodoChoreEntry GetChoreEntry(RectTransform parent)
+		private MinionTodoChoreEntry GetChoreEntry(RectTransform parent)
 	{
 		MinionTodoChoreEntry minionTodoChoreEntry;
 		if (this.activeChoreEntries >= this.choreEntries.Count - 1)
@@ -205,7 +205,7 @@ public class MinionTodoSideScreen : SideScreenContent
 		return minionTodoChoreEntry;
 	}
 
-	private HierarchyReferences PriorityGroupForPriority(ChoreConsumer choreConsumer, Chore chore)
+		private HierarchyReferences PriorityGroupForPriority(ChoreConsumer choreConsumer, Chore chore)
 	{
 		foreach (global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences> tuple in this.priorityGroups)
 		{
@@ -224,40 +224,40 @@ public class MinionTodoSideScreen : SideScreenContent
 		return null;
 	}
 
-	private void Button_onPointerEnter()
+		private void Button_onPointerEnter()
 	{
 		throw new NotImplementedException();
 	}
 
-	private bool useOffscreenIndicators;
+		private bool useOffscreenIndicators;
 
-	public MinionTodoChoreEntry taskEntryPrefab;
+		public MinionTodoChoreEntry taskEntryPrefab;
 
-	public GameObject priorityGroupPrefab;
+		public GameObject priorityGroupPrefab;
 
-	public GameObject taskEntryContainer;
+		public GameObject taskEntryContainer;
 
-	public MinionTodoChoreEntry currentTask;
+		public MinionTodoChoreEntry currentTask;
 
-	public LocText currentScheduleBlockLabel;
+		public LocText currentScheduleBlockLabel;
 
-	private List<global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>> priorityGroups = new List<global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>>();
+		private List<global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>> priorityGroups = new List<global::Tuple<PriorityScreen.PriorityClass, int, HierarchyReferences>>();
 
-	private List<MinionTodoChoreEntry> choreEntries = new List<MinionTodoChoreEntry>();
+		private List<MinionTodoChoreEntry> choreEntries = new List<MinionTodoChoreEntry>();
 
-	private List<GameObject> choreTargets = new List<GameObject>();
+		private List<GameObject> choreTargets = new List<GameObject>();
 
-	private SchedulerHandle refreshHandle;
+		private SchedulerHandle refreshHandle;
 
-	private ChoreConsumer choreConsumer;
+		private ChoreConsumer choreConsumer;
 
-	[SerializeField]
+		[SerializeField]
 	private ColorStyleSetting buttonColorSettingCurrent;
 
-	[SerializeField]
+		[SerializeField]
 	private ColorStyleSetting buttonColorSettingStandard;
 
-	private static List<JobsTableScreen.PriorityInfo> _priorityInfo;
+		private static List<JobsTableScreen.PriorityInfo> _priorityInfo;
 
-	private int activeChoreEntries;
+		private int activeChoreEntries;
 }

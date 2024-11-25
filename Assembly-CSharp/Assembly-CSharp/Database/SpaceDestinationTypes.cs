@@ -4,9 +4,9 @@ using STRINGS;
 
 namespace Database
 {
-	public class SpaceDestinationTypes : ResourceSet<SpaceDestinationType>
+		public class SpaceDestinationTypes : ResourceSet<SpaceDestinationType>
 	{
-		public SpaceDestinationTypes(ResourceSet parent) : base("SpaceDestinations", parent)
+				public SpaceDestinationTypes(ResourceSet parent) : base("SpaceDestinations", parent)
 		{
 			this.Satellite = base.Add(new SpaceDestinationType("Satellite", parent, UI.SPACEDESTINATIONS.DEBRIS.SATELLITE.NAME, UI.SPACEDESTINATIONS.DEBRIS.SATELLITE.DESCRIPTION, 16, "asteroid", new Dictionary<SimHashes, MathUtil.MinMax>
 			{
@@ -413,55 +413,55 @@ namespace Database
 			}
 		}
 
-		public SpaceDestinationType Satellite;
+				public SpaceDestinationType Satellite;
 
-		public SpaceDestinationType MetallicAsteroid;
+				public SpaceDestinationType MetallicAsteroid;
 
-		public SpaceDestinationType RockyAsteroid;
+				public SpaceDestinationType RockyAsteroid;
 
-		public SpaceDestinationType CarbonaceousAsteroid;
+				public SpaceDestinationType CarbonaceousAsteroid;
 
-		public SpaceDestinationType IcyDwarf;
+				public SpaceDestinationType IcyDwarf;
 
-		public SpaceDestinationType OrganicDwarf;
+				public SpaceDestinationType OrganicDwarf;
 
-		public SpaceDestinationType DustyMoon;
+				public SpaceDestinationType DustyMoon;
 
-		public SpaceDestinationType TerraPlanet;
+				public SpaceDestinationType TerraPlanet;
 
-		public SpaceDestinationType VolcanoPlanet;
+				public SpaceDestinationType VolcanoPlanet;
 
-		public SpaceDestinationType GasGiant;
+				public SpaceDestinationType GasGiant;
 
-		public SpaceDestinationType IceGiant;
+				public SpaceDestinationType IceGiant;
 
-		public SpaceDestinationType Wormhole;
+				public SpaceDestinationType Wormhole;
 
-		public SpaceDestinationType SaltDwarf;
+				public SpaceDestinationType SaltDwarf;
 
-		public SpaceDestinationType RustPlanet;
+				public SpaceDestinationType RustPlanet;
 
-		public SpaceDestinationType ForestPlanet;
+				public SpaceDestinationType ForestPlanet;
 
-		public SpaceDestinationType RedDwarf;
+				public SpaceDestinationType RedDwarf;
 
-		public SpaceDestinationType GoldAsteroid;
+				public SpaceDestinationType GoldAsteroid;
 
-		public SpaceDestinationType HydrogenGiant;
+				public SpaceDestinationType HydrogenGiant;
 
-		public SpaceDestinationType OilyAsteroid;
+				public SpaceDestinationType OilyAsteroid;
 
-		public SpaceDestinationType ShinyPlanet;
+				public SpaceDestinationType ShinyPlanet;
 
-		public SpaceDestinationType ChlorinePlanet;
+				public SpaceDestinationType ChlorinePlanet;
 
-		public SpaceDestinationType SaltDesertPlanet;
+				public SpaceDestinationType SaltDesertPlanet;
 
-		public SpaceDestinationType Earth;
+				public SpaceDestinationType Earth;
 
-		public SpaceDestinationType DLC2CeresSpaceDestination;
+				public SpaceDestinationType DLC2CeresSpaceDestination;
 
-		public static Dictionary<SimHashes, MathUtil.MinMax> extendedElementTable = new Dictionary<SimHashes, MathUtil.MinMax>
+				public static Dictionary<SimHashes, MathUtil.MinMax> extendedElementTable = new Dictionary<SimHashes, MathUtil.MinMax>
 		{
 			{
 				SimHashes.Niobium,

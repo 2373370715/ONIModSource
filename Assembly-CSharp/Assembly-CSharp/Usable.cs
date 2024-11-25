@@ -2,9 +2,9 @@
 
 public abstract class Usable : KMonoBehaviour, IStateMachineTarget
 {
-	public abstract void StartUsing(User user);
+		public abstract void StartUsing(User user);
 
-	protected void StartUsing(StateMachine.Instance smi, User user)
+		protected void StartUsing(StateMachine.Instance smi, User user)
 	{
 		DebugUtil.Assert(this.smi == null);
 		DebugUtil.Assert(smi != null);
@@ -13,7 +13,7 @@ public abstract class Usable : KMonoBehaviour, IStateMachineTarget
 		smi.StartSM();
 	}
 
-	public void StopUsing(User user)
+		public void StopUsing(User user)
 	{
 		if (this.smi != null)
 		{
@@ -24,5 +24,5 @@ public abstract class Usable : KMonoBehaviour, IStateMachineTarget
 		}
 	}
 
-	private StateMachine.Instance smi;
+		private StateMachine.Instance smi;
 }

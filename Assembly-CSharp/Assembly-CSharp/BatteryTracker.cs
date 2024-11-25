@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class BatteryTracker : WorldTracker
 {
-	public BatteryTracker(int worldID) : base(worldID)
+		public BatteryTracker(int worldID) : base(worldID)
 	{
 	}
 
-	public override void UpdateData()
+		public override void UpdateData()
 	{
 		float num = 0f;
 		foreach (UtilityNetwork utilityNetwork in Game.Instance.electricalConduitSystem.GetNetworks())
@@ -29,7 +29,7 @@ public class BatteryTracker : WorldTracker
 		base.AddPoint(Mathf.Round(num));
 	}
 
-	public override string FormatValueString(float value)
+		public override string FormatValueString(float value)
 	{
 		return GameUtil.GetFormattedJoules(value, "F1", GameUtil.TimeSlice.None);
 	}

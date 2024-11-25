@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class RocketLaunchConditionVisualizerEffect : VisualizerEffect
 {
-	protected override void SetupMaterial()
+		protected override void SetupMaterial()
 	{
 		this.material = new Material(Shader.Find("Klei/PostFX/RocketLaunchCondition"));
 	}
 
-	protected override void SetupOcclusionTex()
+		protected override void SetupOcclusionTex()
 	{
 		this.OcclusionTex = new Texture2D(512, 1, TextureFormat.RGFloat, false);
 		this.OcclusionTex.filterMode = FilterMode.Point;
 		this.OcclusionTex.wrapMode = TextureWrapMode.Clamp;
 	}
 
-	protected override void OnPostRender()
+		protected override void OnPostRender()
 	{
 		RocketLaunchConditionVisualizer rocketLaunchConditionVisualizer = null;
 		if (SelectTool.Instance.selected != null)
@@ -116,7 +116,7 @@ public class RocketLaunchConditionVisualizerEffect : VisualizerEffect
 		}
 	}
 
-	private static void ComputeVisibility(RocketLaunchConditionVisualizer.RocketModuleVisualizeData moduleData, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max)
+		private static void ComputeVisibility(RocketLaunchConditionVisualizer.RocketModuleVisualizeData moduleData, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max)
 	{
 		Vector2I u = Grid.PosToXY(moduleData.Module.transform.GetPosition());
 		int rangeMin = moduleData.RangeMin;
@@ -140,7 +140,7 @@ public class RocketLaunchConditionVisualizerEffect : VisualizerEffect
 		}
 	}
 
-	private static void ComputeVisibility(int x_abs, int y_abs, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max, ref RocketLaunchConditionVisualizerEffect.EvaluationState clearPathEvaluation)
+		private static void ComputeVisibility(int x_abs, int y_abs, NativeArray<float> pixels, Vector2I world_min, Vector2I world_max, ref RocketLaunchConditionVisualizerEffect.EvaluationState clearPathEvaluation)
 	{
 		int num = x_abs - world_min.x;
 		if (x_abs < world_min.x || x_abs > world_max.x || y_abs < world_min.y || y_abs >= world_max.y)
@@ -170,7 +170,7 @@ public class RocketLaunchConditionVisualizerEffect : VisualizerEffect
 		pixels[2 * num + 1] = (float)y_abs;
 	}
 
-	private static void FindWorldBounds(out Vector2I world_min, out Vector2I world_max)
+		private static void FindWorldBounds(out Vector2I world_min, out Vector2I world_max)
 	{
 		if (ClusterManager.Instance != null)
 		{
@@ -185,7 +185,7 @@ public class RocketLaunchConditionVisualizerEffect : VisualizerEffect
 		world_max.y = Grid.HeightInCells;
 	}
 
-	private static bool HasClearPathToSpace(int cell, Vector2I worldMax)
+		private static bool HasClearPathToSpace(int cell, Vector2I worldMax)
 	{
 		if (!Grid.IsValidCell(cell))
 		{
@@ -199,18 +199,18 @@ public class RocketLaunchConditionVisualizerEffect : VisualizerEffect
 		return !Grid.IsSolidCell(cell2) && Grid.CellToXY(cell2).y == worldMax.y;
 	}
 
-	public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
+		public Color highlightColor = new Color(0f, 1f, 0.8f, 1f);
 
-	public Color highlightColor2 = new Color(1f, 0.32f, 0f, 1f);
+		public Color highlightColor2 = new Color(1f, 0.32f, 0f, 1f);
 
-	private static RocketLaunchConditionVisualizerEffect.EvaluationState[] clearPathToSpaceColumn = new RocketLaunchConditionVisualizerEffect.EvaluationState[7];
+		private static RocketLaunchConditionVisualizerEffect.EvaluationState[] clearPathToSpaceColumn = new RocketLaunchConditionVisualizerEffect.EvaluationState[7];
 
-	private static int clearPathToSpaceColumn_middleIndex = Mathf.FloorToInt(3.5f);
+		private static int clearPathToSpaceColumn_middleIndex = Mathf.FloorToInt(3.5f);
 
-	public enum EvaluationState : byte
+		public enum EvaluationState : byte
 	{
-		NotEvaluated,
-		Clear,
-		Obstructed
+				NotEvaluated,
+				Clear,
+				Obstructed
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SolidFilterConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SolidFilter";
 		int width = 3;
@@ -34,38 +34,38 @@ public class SolidFilterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	private void AttachPort(GameObject go)
+		private void AttachPort(GameObject go)
 	{
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.secondaryPort;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		this.AttachPort(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		this.AttachPort(go);
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<ElementFilter>().portInfo = this.secondaryPort;
 		go.AddOrGet<Filterable>().filterElementState = Filterable.ElementState.Solid;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveController.Def>().showWorkingStatus = true;
 	}
 
-	public const string ID = "SolidFilter";
+		public const string ID = "SolidFilter";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
 
-	private ConduitPortInfo secondaryPort = new ConduitPortInfo(ConduitType.Solid, new CellOffset(0, 0));
+		private ConduitPortInfo secondaryPort = new ConduitPortInfo(ConduitType.Solid, new CellOffset(0, 0));
 }

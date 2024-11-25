@@ -2,7 +2,7 @@
 
 public class StorageController : GameStateMachine<StorageController, StorageController.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.off;
 		this.root.EventTransition(GameHashes.OnStorageInteracted, this.working, null);
@@ -11,19 +11,19 @@ public class StorageController : GameStateMachine<StorageController, StorageCont
 		this.working.PlayAnim("working").OnAnimQueueComplete(this.off);
 	}
 
-	public GameStateMachine<StorageController, StorageController.Instance, IStateMachineTarget, object>.State off;
+		public GameStateMachine<StorageController, StorageController.Instance, IStateMachineTarget, object>.State off;
 
-	public GameStateMachine<StorageController, StorageController.Instance, IStateMachineTarget, object>.State on;
+		public GameStateMachine<StorageController, StorageController.Instance, IStateMachineTarget, object>.State on;
 
-	public GameStateMachine<StorageController, StorageController.Instance, IStateMachineTarget, object>.State working;
+		public GameStateMachine<StorageController, StorageController.Instance, IStateMachineTarget, object>.State working;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<StorageController, StorageController.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<StorageController, StorageController.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, StorageController.Def def) : base(master)
+				public Instance(IStateMachineTarget master, StorageController.Def def) : base(master)
 		{
 		}
 	}

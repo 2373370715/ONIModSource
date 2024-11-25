@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StampToolPreview_Placers : IStampToolPreviewPlugin
 {
-	public StampToolPreview_Placers(GameObject placerPrefab)
+		public StampToolPreview_Placers(GameObject placerPrefab)
 	{
 		StampToolPreview_Placers <>4__this = this;
 		this.pool = new GameObjectPool(delegate()
@@ -20,7 +20,7 @@ public class StampToolPreview_Placers : IStampToolPreviewPlugin
 		}, 0);
 	}
 
-	public void Setup(StampToolPreviewContext context)
+		public void Setup(StampToolPreviewContext context)
 	{
 		for (int i = 0; i < context.stampTemplate.cells.Count; i++)
 		{
@@ -56,9 +56,9 @@ public class StampToolPreview_Placers : IStampToolPreviewPlugin
 		}));
 	}
 
-	private List<GameObject> inUse = new List<GameObject>();
+		private List<GameObject> inUse = new List<GameObject>();
 
-	private GameObjectPool pool;
+		private GameObjectPool pool;
 
-	private Transform poolParent;
+		private Transform poolParent;
 }

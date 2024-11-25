@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MooConfig : IEntityConfig
 {
-	public static GameObject CreateMoo(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreateMoo(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		GameObject gameObject = BaseMooConfig.BaseMoo(id, name, CREATURES.SPECIES.MOO.DESC, "MooBaseTrait", anim_file, is_baby, null);
 		EntityTemplates.ExtendEntityToWildCreature(gameObject, MooTuning.PEN_SIZE_PER_CREATURE);
@@ -20,7 +20,7 @@ public class MooConfig : IEntityConfig
 			new Diet.Info(new HashSet<Tag>
 			{
 				"GasGrass".ToTag()
-			}, MooConfig.POOP_ELEMENT, MooConfig.CALORIES_PER_DAY_OF_PLANT_EATEN, MooConfig.KG_POOP_PER_DAY_OF_PLANT, null, 0f, false, true, false)
+			}, MooConfig.POOP_ELEMENT, MooConfig.CALORIES_PER_DAY_OF_PLANT_EATEN, MooConfig.KG_POOP_PER_DAY_OF_PLANT, null, 0f, false, Diet.Info.FoodType.EatPlantDirectly, false, null)
 		});
 		CreatureCalorieMonitor.Def def = gameObject.AddOrGetDef<CreatureCalorieMonitor.Def>();
 		def.diet = diet;
@@ -30,40 +30,40 @@ public class MooConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		return MooConfig.CreateMoo("Moo", CREATURES.SPECIES.MOO.NAME, CREATURES.SPECIES.MOO.DESC, "gassy_moo_kanim", false);
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		BaseMooConfig.OnSpawn(inst);
 	}
 
-	public const string ID = "Moo";
+		public const string ID = "Moo";
 
-	public const string BASE_TRAIT_ID = "MooBaseTrait";
+		public const string BASE_TRAIT_ID = "MooBaseTrait";
 
-	public const SimHashes CONSUME_ELEMENT = SimHashes.Carbon;
+		public const SimHashes CONSUME_ELEMENT = SimHashes.Carbon;
 
-	public static Tag POOP_ELEMENT = SimHashes.Methane.CreateTag();
+		public static Tag POOP_ELEMENT = SimHashes.Methane.CreateTag();
 
-	public static readonly float DAYS_PLANT_GROWTH_EATEN_PER_CYCLE = 2f;
+		public static readonly float DAYS_PLANT_GROWTH_EATEN_PER_CYCLE = 2f;
 
-	private static float CALORIES_PER_DAY_OF_PLANT_EATEN = MooTuning.STANDARD_CALORIES_PER_CYCLE / MooConfig.DAYS_PLANT_GROWTH_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_DAY_OF_PLANT_EATEN = MooTuning.STANDARD_CALORIES_PER_CYCLE / MooConfig.DAYS_PLANT_GROWTH_EATEN_PER_CYCLE;
 
-	private static float KG_POOP_PER_DAY_OF_PLANT = 5f;
+		private static float KG_POOP_PER_DAY_OF_PLANT = 5f;
 
-	private static float MIN_POOP_SIZE_IN_KG = 1.5f;
+		private static float MIN_POOP_SIZE_IN_KG = 1.5f;
 
-	private static float MIN_POOP_SIZE_IN_CALORIES = MooConfig.CALORIES_PER_DAY_OF_PLANT_EATEN * MooConfig.MIN_POOP_SIZE_IN_KG / MooConfig.KG_POOP_PER_DAY_OF_PLANT;
+		private static float MIN_POOP_SIZE_IN_CALORIES = MooConfig.CALORIES_PER_DAY_OF_PLANT_EATEN * MooConfig.MIN_POOP_SIZE_IN_KG / MooConfig.KG_POOP_PER_DAY_OF_PLANT;
 }

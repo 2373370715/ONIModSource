@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/RequireOutputs")]
 public class RequireOutputs : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		ScenePartitionerLayer scenePartitionerLayer = null;
@@ -36,7 +36,7 @@ public class RequireOutputs : KMonoBehaviour
 		this.GetConduitFlow().AddConduitUpdater(new Action<float>(this.UpdatePipeState), ConduitFlowPriority.First);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		IConduitFlow conduitFlow = this.GetConduitFlow();
@@ -47,7 +47,7 @@ public class RequireOutputs : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	private void UpdateConnectionState(bool force_update = false)
+		private void UpdateConnectionState(bool force_update = false)
 	{
 		this.connected = this.IsConnected(this.utilityCell);
 		if (this.connected != this.previouslyConnected || force_update)
@@ -71,7 +71,7 @@ public class RequireOutputs : KMonoBehaviour
 		}
 	}
 
-	private bool OutputPipeIsEmpty()
+		private bool OutputPipeIsEmpty()
 	{
 		if (this.ignoreFullPipe)
 		{
@@ -85,12 +85,12 @@ public class RequireOutputs : KMonoBehaviour
 		return result;
 	}
 
-	private void UpdatePipeState(float dt)
+		private void UpdatePipeState(float dt)
 	{
 		this.UpdatePipeRoomState(false);
 	}
 
-	private void UpdatePipeRoomState(bool force_update = false)
+		private void UpdatePipeRoomState(bool force_update = false)
 	{
 		bool flag = this.OutputPipeIsEmpty();
 		if (flag != this.previouslyHadRoom || force_update)
@@ -106,7 +106,7 @@ public class RequireOutputs : KMonoBehaviour
 		}
 	}
 
-	private IConduitFlow GetConduitFlow()
+		private IConduitFlow GetConduitFlow()
 	{
 		switch (this.conduitType)
 		{
@@ -122,12 +122,12 @@ public class RequireOutputs : KMonoBehaviour
 		}
 	}
 
-	private bool IsConnected(int cell)
+		private bool IsConnected(int cell)
 	{
 		return RequireOutputs.IsConnected(cell, this.conduitType);
 	}
 
-	public static bool IsConnected(int cell, ConduitType conduitType)
+		public static bool IsConnected(int cell, ConduitType conduitType)
 	{
 		ObjectLayer layer = ObjectLayer.NumLayers;
 		switch (conduitType)
@@ -146,31 +146,31 @@ public class RequireOutputs : KMonoBehaviour
 		return gameObject != null && gameObject.GetComponent<BuildingComplete>() != null;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	public bool ignoreFullPipe;
+		public bool ignoreFullPipe;
 
-	private int utilityCell;
+		private int utilityCell;
 
-	private ConduitType conduitType;
+		private ConduitType conduitType;
 
-	private static readonly Operational.Flag outputConnectedFlag = new Operational.Flag("output_connected", Operational.Flag.Type.Requirement);
+		private static readonly Operational.Flag outputConnectedFlag = new Operational.Flag("output_connected", Operational.Flag.Type.Requirement);
 
-	private static readonly Operational.Flag pipesHaveRoomFlag = new Operational.Flag("pipesHaveRoom", Operational.Flag.Type.Requirement);
+		private static readonly Operational.Flag pipesHaveRoomFlag = new Operational.Flag("pipesHaveRoom", Operational.Flag.Type.Requirement);
 
-	private bool previouslyConnected = true;
+		private bool previouslyConnected = true;
 
-	private bool previouslyHadRoom = true;
+		private bool previouslyHadRoom = true;
 
-	private bool connected;
+		private bool connected;
 
-	private Guid hasPipeGuid;
+		private Guid hasPipeGuid;
 
-	private Guid pipeBlockedGuid;
+		private Guid pipeBlockedGuid;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 }

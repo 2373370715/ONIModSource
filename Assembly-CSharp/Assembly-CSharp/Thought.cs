@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Thought : Resource
 {
-	public Thought(string id, ResourceSet parent, Sprite icon, string mode_icon, string sound_name, string bubble, string speech_prefix, LocString hover_text, bool show_immediately = false, float show_time = 4f) : base(id, parent, null)
+		public Thought(string id, ResourceSet parent, Sprite icon, string mode_icon, string sound_name, string bubble, string speech_prefix, LocString hover_text, bool show_immediately = false, float show_time = 4f) : base(id, parent, null)
 	{
 		this.sprite = icon;
 		if (mode_icon != null)
@@ -18,7 +18,7 @@ public class Thought : Resource
 		this.showTime = show_time;
 	}
 
-	public Thought(string id, ResourceSet parent, string icon, string mode_icon, string sound_name, string bubble, string speech_prefix, LocString hover_text, bool show_immediately = false, float show_time = 4f) : base(id, parent, null)
+		public Thought(string id, ResourceSet parent, string icon, string mode_icon, string sound_name, string bubble, string speech_prefix, LocString hover_text, bool show_immediately = false, float show_time = 4f) : base(id, parent, null)
 	{
 		this.sprite = Assets.GetSprite(icon);
 		if (mode_icon != null)
@@ -33,21 +33,21 @@ public class Thought : Resource
 		this.showTime = show_time;
 	}
 
-	public int priority;
+		public int priority;
 
-	public Sprite sprite;
+		public Sprite sprite;
 
-	public Sprite modeSprite;
+		public Sprite modeSprite;
 
-	public string sound;
+		public string sound;
 
-	public Sprite bubbleSprite;
+		public Sprite bubbleSprite;
 
-	public string speechPrefix;
+		public string speechPrefix;
 
-	public LocString hoverText;
+		public LocString hoverText;
 
-	public bool showImmediately;
+		public bool showImmediately;
 
-	public float showTime;
+		public float showTime;
 }

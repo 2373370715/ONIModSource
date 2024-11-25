@@ -5,23 +5,23 @@ using UnityEngine;
 
 public class KleiPermitDioramaVis_JoyResponseBalloon : KMonoBehaviour, IKleiPermitDioramaVisTarget
 {
-	public GameObject GetGameObject()
+		public GameObject GetGameObject()
 	{
 		return base.gameObject;
 	}
 
-	public void ConfigureSetup()
+		public void ConfigureSetup()
 	{
 		this.minionUI.transform.localScale = Vector3.one * 0.7f;
 		this.minionUI.transform.localPosition = new Vector3(this.minionUI.transform.localPosition.x - 73f, this.minionUI.transform.localPosition.y - 152f + 8f, this.minionUI.transform.localPosition.z);
 	}
 
-	public void ConfigureWith(PermitResource permit)
+		public void ConfigureWith(PermitResource permit)
 	{
 		this.ConfigureWith(Option.Some<BalloonArtistFacadeResource>((BalloonArtistFacadeResource)permit));
 	}
 
-	public void ConfigureWith(Option<BalloonArtistFacadeResource> permit)
+		public void ConfigureWith(Option<BalloonArtistFacadeResource> permit)
 	{
 		KleiPermitDioramaVis_JoyResponseBalloon.<>c__DisplayClass10_0 CS$<>8__locals1 = new KleiPermitDioramaVis_JoyResponseBalloon.<>c__DisplayClass10_0();
 		CS$<>8__locals1.permit = permit;
@@ -48,7 +48,7 @@ public class KleiPermitDioramaVis_JoyResponseBalloon : KMonoBehaviour, IKleiPerm
 		this.QueueUpdater(Updater.Series(array));
 	}
 
-	public void SetMinion(Personality personality)
+		public void SetMinion(Personality personality)
 	{
 		this.specificPersonality = personality;
 		if (base.gameObject.activeInHierarchy)
@@ -57,7 +57,7 @@ public class KleiPermitDioramaVis_JoyResponseBalloon : KMonoBehaviour, IKleiPerm
 		}
 	}
 
-	private void QueueUpdater(Updater updater)
+		private void QueueUpdater(Updater updater)
 	{
 		if (base.gameObject.activeInHierarchy)
 		{
@@ -67,7 +67,7 @@ public class KleiPermitDioramaVis_JoyResponseBalloon : KMonoBehaviour, IKleiPerm
 		this.updaterToRunOnStart = updater;
 	}
 
-	private void RunUpdater(Updater updater)
+		private void RunUpdater(Updater updater)
 	{
 		if (this.updaterRoutine != null)
 		{
@@ -77,7 +77,7 @@ public class KleiPermitDioramaVis_JoyResponseBalloon : KMonoBehaviour, IKleiPerm
 		this.updaterRoutine = base.StartCoroutine(updater);
 	}
 
-	private void OnEnable()
+		private void OnEnable()
 	{
 		if (this.updaterToRunOnStart.IsSome())
 		{
@@ -86,26 +86,26 @@ public class KleiPermitDioramaVis_JoyResponseBalloon : KMonoBehaviour, IKleiPerm
 		}
 	}
 
-	private const int FRAMES_TO_MAKE_BALLOON_IN_ANIM = 39;
+		private const int FRAMES_TO_MAKE_BALLOON_IN_ANIM = 39;
 
-	private const float SECONDS_TO_MAKE_BALLOON_IN_ANIM = 1.3f;
+		private const float SECONDS_TO_MAKE_BALLOON_IN_ANIM = 1.3f;
 
-	private const float SECONDS_BETWEEN_BALLOONS = 1.618f;
+		private const float SECONDS_BETWEEN_BALLOONS = 1.618f;
 
-	[SerializeField]
+		[SerializeField]
 	private UIMinion minionUI;
 
-	private bool didAddAnims;
+		private bool didAddAnims;
 
-	private const string TARGET_SYMBOL_TO_OVERRIDE = "body";
+		private const string TARGET_SYMBOL_TO_OVERRIDE = "body";
 
-	private const int TARGET_OVERRIDE_PRIORITY = 0;
+		private const int TARGET_OVERRIDE_PRIORITY = 0;
 
-	private Option<Personality> specificPersonality;
+		private Option<Personality> specificPersonality;
 
-	private Option<PermitResource> lastConfiguredPermit;
+		private Option<PermitResource> lastConfiguredPermit;
 
-	private Option<Updater> updaterToRunOnStart;
+		private Option<Updater> updaterToRunOnStart;
 
-	private Coroutine updaterRoutine;
+		private Coroutine updaterRoutine;
 }

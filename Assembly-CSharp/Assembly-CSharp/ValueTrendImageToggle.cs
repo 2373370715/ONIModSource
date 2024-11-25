@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ValueTrendImageToggle : MonoBehaviour
 {
-	public void SetValue(AmountInstance ainstance)
+		public void SetValue(AmountInstance ainstance)
 	{
 		float delta = ainstance.GetDelta();
 		Sprite sprite = null;
@@ -44,19 +44,19 @@ public class ValueTrendImageToggle : MonoBehaviour
 		this.targetImage.sprite = sprite;
 	}
 
-	public Image targetImage;
+		public Image targetImage;
 
-	public Sprite Up_One;
+		public Sprite Up_One;
 
-	public Sprite Up_Two;
+		public Sprite Up_Two;
 
-	public Sprite Up_Three;
+		public Sprite Up_Three;
 
-	public Sprite Down_One;
+		public Sprite Down_One;
 
-	public Sprite Down_Two;
+		public Sprite Down_Two;
 
-	public Sprite Down_Three;
+		public Sprite Down_Three;
 
-	public Sprite Zero;
+		public Sprite Zero;
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SuitMarker")]
 public class SuitMarker : KMonoBehaviour
 {
-			private bool OnlyTraverseIfUnequipAvailable
+				private bool OnlyTraverseIfUnequipAvailable
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class SuitMarker : KMonoBehaviour
 		}
 	}
 
-			private bool isRotated
+				private bool isRotated
 	{
 		get
 		{
@@ -33,7 +33,7 @@ public class SuitMarker : KMonoBehaviour
 		}
 	}
 
-			private bool isOperational
+				private bool isOperational
 	{
 		get
 		{
@@ -45,7 +45,7 @@ public class SuitMarker : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.OnlyTraverseIfUnequipAvailable = this.onlyTraverseIfUnequipAvailable;
@@ -65,17 +65,17 @@ public class SuitMarker : KMonoBehaviour
 		SuitLocker.UpdateSuitMarkerStates(Grid.PosToCell(base.transform.position), base.gameObject);
 	}
 
-	private void CreateNewEquipReactable()
+		private void CreateNewEquipReactable()
 	{
 		this.equipReactable = new SuitMarker.EquipSuitReactable(this);
 	}
 
-	private void CreateNewUnequipReactable()
+		private void CreateNewUnequipReactable()
 	{
 		this.unequipReactable = new SuitMarker.UnequipSuitReactable(this);
 	}
 
-	public void GetAttachedLockers(List<SuitLocker> suit_lockers)
+		public void GetAttachedLockers(List<SuitLocker> suit_lockers)
 	{
 		int num = this.isRotated ? 1 : -1;
 		int num2 = 1;
@@ -109,17 +109,17 @@ public class SuitMarker : KMonoBehaviour
 		}
 	}
 
-	public static bool DoesTraversalDirectionRequireSuit(int source_cell, int dest_cell, Grid.SuitMarker.Flags flags)
+		public static bool DoesTraversalDirectionRequireSuit(int source_cell, int dest_cell, Grid.SuitMarker.Flags flags)
 	{
 		return Grid.CellColumn(dest_cell) > Grid.CellColumn(source_cell) == ((flags & Grid.SuitMarker.Flags.Rotated) == (Grid.SuitMarker.Flags)0);
 	}
 
-	public bool DoesTraversalDirectionRequireSuit(int source_cell, int dest_cell)
+		public bool DoesTraversalDirectionRequireSuit(int source_cell, int dest_cell)
 	{
 		return SuitMarker.DoesTraversalDirectionRequireSuit(source_cell, dest_cell, this.gridFlags);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		ListPool<SuitLocker, SuitMarker>.PooledList pooledList = ListPool<SuitLocker, SuitMarker>.Allocate();
 		this.GetAttachedLockers(pooledList);
@@ -151,7 +151,7 @@ public class SuitMarker : KMonoBehaviour
 		Grid.UpdateSuitMarker(this.cell, num2, num, this.gridFlags, this.PathFlag);
 	}
 
-	private void RefreshTraverseIfUnequipStatusItem()
+		private void RefreshTraverseIfUnequipStatusItem()
 	{
 		if (this.OnlyTraverseIfUnequipAvailable)
 		{
@@ -163,19 +163,19 @@ public class SuitMarker : KMonoBehaviour
 		base.GetComponent<KSelectable>().AddStatusItem(Db.Get().BuildingStatusItems.SuitMarkerTraversalAnytime, null);
 	}
 
-	private void OnEnableTraverseIfUnequipAvailable()
+		private void OnEnableTraverseIfUnequipAvailable()
 	{
 		this.OnlyTraverseIfUnequipAvailable = true;
 		this.RefreshTraverseIfUnequipStatusItem();
 	}
 
-	private void OnDisableTraverseIfUnequipAvailable()
+		private void OnDisableTraverseIfUnequipAvailable()
 	{
 		this.OnlyTraverseIfUnequipAvailable = false;
 		this.RefreshTraverseIfUnequipStatusItem();
 	}
 
-	private void UpdateGridFlag(Grid.SuitMarker.Flags flag, bool state)
+		private void UpdateGridFlag(Grid.SuitMarker.Flags flag, bool state)
 	{
 		if (state)
 		{
@@ -185,19 +185,19 @@ public class SuitMarker : KMonoBehaviour
 		this.gridFlags &= ~flag;
 	}
 
-	private void OnOperationalChanged(bool isOperational)
+		private void OnOperationalChanged(bool isOperational)
 	{
 		SuitLocker.UpdateSuitMarkerStates(Grid.PosToCell(base.transform.position), base.gameObject);
 		this.isOperational = isOperational;
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		KIconButtonMenu.ButtonInfo button = (!this.OnlyTraverseIfUnequipAvailable) ? new KIconButtonMenu.ButtonInfo("action_clearance", UI.USERMENUACTIONS.SUIT_MARKER_TRAVERSAL.ONLY_WHEN_ROOM_AVAILABLE.NAME, new System.Action(this.OnEnableTraverseIfUnequipAvailable), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.SUIT_MARKER_TRAVERSAL.ONLY_WHEN_ROOM_AVAILABLE.TOOLTIP, true) : new KIconButtonMenu.ButtonInfo("action_clearance", UI.USERMENUACTIONS.SUIT_MARKER_TRAVERSAL.ALWAYS.NAME, new System.Action(this.OnDisableTraverseIfUnequipAvailable), global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.SUIT_MARKER_TRAVERSAL.ALWAYS.TOOLTIP, true);
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (base.isSpawned)
@@ -215,73 +215,73 @@ public class SuitMarker : KMonoBehaviour
 		SuitLocker.UpdateSuitMarkerStates(Grid.PosToCell(base.transform.position), null);
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Building building;
 
-	private SuitMarker.SuitMarkerReactable equipReactable;
+		private SuitMarker.SuitMarkerReactable equipReactable;
 
-	private SuitMarker.SuitMarkerReactable unequipReactable;
+		private SuitMarker.SuitMarkerReactable unequipReactable;
 
-	private bool hasAvailableSuit;
+		private bool hasAvailableSuit;
 
-	[Serialize]
+		[Serialize]
 	private bool onlyTraverseIfUnequipAvailable;
 
-	private Grid.SuitMarker.Flags gridFlags;
+		private Grid.SuitMarker.Flags gridFlags;
 
-	private int cell;
+		private int cell;
 
-	public Tag[] LockerTags;
+		public Tag[] LockerTags;
 
-	public PathFinder.PotentialPath.Flags PathFlag;
+		public PathFinder.PotentialPath.Flags PathFlag;
 
-	public KAnimFile interactAnim = Assets.GetAnim("anim_equip_clothing_kanim");
+		public KAnimFile interactAnim = Assets.GetAnim("anim_equip_clothing_kanim");
 
-	private static readonly EventSystem.IntraObjectHandler<SuitMarker> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<SuitMarker>(delegate(SuitMarker component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SuitMarker> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<SuitMarker>(delegate(SuitMarker component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<SuitMarker> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<SuitMarker>(delegate(SuitMarker component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SuitMarker> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<SuitMarker>(delegate(SuitMarker component, object data)
 	{
 		component.OnOperationalChanged((bool)data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<SuitMarker> OnRotatedDelegate = new EventSystem.IntraObjectHandler<SuitMarker>(delegate(SuitMarker component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SuitMarker> OnRotatedDelegate = new EventSystem.IntraObjectHandler<SuitMarker>(delegate(SuitMarker component, object data)
 	{
 		component.isRotated = ((Rotatable)data).IsRotated;
 	});
 
-	private class EquipSuitReactable : SuitMarker.SuitMarkerReactable
+		private class EquipSuitReactable : SuitMarker.SuitMarkerReactable
 	{
-		public EquipSuitReactable(SuitMarker marker) : base("EquipSuitReactable", marker)
+				public EquipSuitReactable(SuitMarker marker) : base("EquipSuitReactable", marker)
 		{
 		}
 
-		public override bool InternalCanBegin(GameObject newReactor, Navigator.ActiveTransition transition)
+				public override bool InternalCanBegin(GameObject newReactor, Navigator.ActiveTransition transition)
 		{
 			return !newReactor.GetComponent<MinionIdentity>().GetEquipment().IsSlotOccupied(Db.Get().AssignableSlots.Suit) && base.InternalCanBegin(newReactor, transition);
 		}
 
-		protected override void InternalBegin()
+				protected override void InternalBegin()
 		{
 			base.InternalBegin();
 			this.suitMarker.CreateNewEquipReactable();
 		}
 
-		protected override bool MovingTheRightWay(GameObject newReactor, Navigator.ActiveTransition transition)
+				protected override bool MovingTheRightWay(GameObject newReactor, Navigator.ActiveTransition transition)
 		{
 			bool flag = transition.navGridTransition.x < 0;
 			return this.IsRocketDoorExitEquip(newReactor, transition) || flag == this.suitMarker.isRotated;
 		}
 
-		private bool IsRocketDoorExitEquip(GameObject new_reactor, Navigator.ActiveTransition transition)
+				private bool IsRocketDoorExitEquip(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
 			bool flag = transition.end != NavType.Teleport && transition.start != NavType.Teleport;
 			return transition.navGridTransition.x == 0 && new_reactor.GetMyWorld().IsModuleInterior && !flag;
 		}
 
-		protected override void Run()
+				protected override void Run()
 		{
 			ListPool<SuitLocker, SuitMarker>.PooledList pooledList = ListPool<SuitLocker, SuitMarker>.Allocate();
 			this.suitMarker.GetAttachedLockers(pooledList);
@@ -311,31 +311,31 @@ public class SuitMarker : KMonoBehaviour
 		}
 	}
 
-	private class UnequipSuitReactable : SuitMarker.SuitMarkerReactable
+		private class UnequipSuitReactable : SuitMarker.SuitMarkerReactable
 	{
-		public UnequipSuitReactable(SuitMarker marker) : base("UnequipSuitReactable", marker)
+				public UnequipSuitReactable(SuitMarker marker) : base("UnequipSuitReactable", marker)
 		{
 		}
 
-		public override bool InternalCanBegin(GameObject newReactor, Navigator.ActiveTransition transition)
+				public override bool InternalCanBegin(GameObject newReactor, Navigator.ActiveTransition transition)
 		{
 			Navigator component = newReactor.GetComponent<Navigator>();
 			return newReactor.GetComponent<MinionIdentity>().GetEquipment().IsSlotOccupied(Db.Get().AssignableSlots.Suit) && component != null && (component.flags & this.suitMarker.PathFlag) > PathFinder.PotentialPath.Flags.None && base.InternalCanBegin(newReactor, transition);
 		}
 
-		protected override void InternalBegin()
+				protected override void InternalBegin()
 		{
 			base.InternalBegin();
 			this.suitMarker.CreateNewUnequipReactable();
 		}
 
-		protected override bool MovingTheRightWay(GameObject newReactor, Navigator.ActiveTransition transition)
+				protected override bool MovingTheRightWay(GameObject newReactor, Navigator.ActiveTransition transition)
 		{
 			bool flag = transition.navGridTransition.x < 0;
 			return transition.navGridTransition.x != 0 && flag != this.suitMarker.isRotated;
 		}
 
-		protected override void Run()
+				protected override void Run()
 		{
 			Navigator component = this.reactor.GetComponent<Navigator>();
 			Equipment equipment = this.reactor.GetComponent<MinionIdentity>().GetEquipment();
@@ -372,14 +372,14 @@ public class SuitMarker : KMonoBehaviour
 		}
 	}
 
-	private abstract class SuitMarkerReactable : Reactable
+		private abstract class SuitMarkerReactable : Reactable
 	{
-		public SuitMarkerReactable(HashedString id, SuitMarker suit_marker) : base(suit_marker.gameObject, id, Db.Get().ChoreTypes.SuitMarker, 1, 1, false, 0f, 0f, float.PositiveInfinity, 0f, ObjectLayer.NumLayers)
+				public SuitMarkerReactable(HashedString id, SuitMarker suit_marker) : base(suit_marker.gameObject, id, Db.Get().ChoreTypes.SuitMarker, 1, 1, false, 0f, 0f, float.PositiveInfinity, 0f, ObjectLayer.NumLayers)
 		{
 			this.suitMarker = suit_marker;
 		}
 
-		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
+				public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
 			if (this.reactor != null)
 			{
@@ -393,7 +393,7 @@ public class SuitMarker : KMonoBehaviour
 			return this.suitMarker.isOperational && this.MovingTheRightWay(new_reactor, transition);
 		}
 
-		protected override void InternalBegin()
+				protected override void InternalBegin()
 		{
 			this.startTime = Time.time;
 			KBatchedAnimController component = this.reactor.GetComponent<KBatchedAnimController>();
@@ -410,7 +410,7 @@ public class SuitMarker : KMonoBehaviour
 			}
 		}
 
-		public override void Update(float dt)
+				public override void Update(float dt)
 		{
 			Facing facing = this.reactor ? this.reactor.GetComponent<Facing>() : null;
 			if (facing && this.suitMarker)
@@ -428,7 +428,7 @@ public class SuitMarker : KMonoBehaviour
 			}
 		}
 
-		protected override void InternalEnd()
+				protected override void InternalEnd()
 		{
 			if (this.reactor != null)
 			{
@@ -436,16 +436,16 @@ public class SuitMarker : KMonoBehaviour
 			}
 		}
 
-		protected override void InternalCleanup()
+				protected override void InternalCleanup()
 		{
 		}
 
-		protected abstract bool MovingTheRightWay(GameObject reactor, Navigator.ActiveTransition transition);
+				protected abstract bool MovingTheRightWay(GameObject reactor, Navigator.ActiveTransition transition);
 
-		protected abstract void Run();
+				protected abstract void Run();
 
-		protected SuitMarker suitMarker;
+				protected SuitMarker suitMarker;
 
-		protected float startTime;
+				protected float startTime;
 	}
 }

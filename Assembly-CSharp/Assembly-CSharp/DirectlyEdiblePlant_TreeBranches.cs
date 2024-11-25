@@ -1,107 +1,90 @@
-﻿using System;
-using Klei.AI;
+﻿using Klei.AI;
 using TUNING;
 using UnityEngine;
 
-public class DirectlyEdiblePlant_TreeBranches : KMonoBehaviour, IPlantConsumptionInstructions
-{
-	protected override void OnSpawn()
-	{
-		this.trunk = base.gameObject.GetSMI<PlantBranchGrower.Instance>();
-		base.OnSpawn();
-	}
+public class DirectlyEdiblePlant_TreeBranches : KMonoBehaviour, IPlantConsumptionInstructions {
+    public  float                      MinimumEdibleMaturity = 0.25f;
+    public  string                     overrideCropID;
+    private PlantBranchGrower.Instance trunk;
+    public  bool                       CanPlantBeEaten() { return GetMaxBranchMaturity() >= MinimumEdibleMaturity; }
 
-	public bool CanPlantBeEaten()
-	{
-		float num = 0.25f;
-		return this.GetMaxBranchMaturity() >= num;
-	}
+    public float ConsumePlant(float desiredUnitsToConsume) {
+        var maxBranchMaturity = GetMaxBranchMaturity();
+        var num               = Mathf.Min(desiredUnitsToConsume, maxBranchMaturity);
+        var mostMatureBranch  = GetMostMatureBranch();
+        if (!mostMatureBranch) return 0f;
 
-	public float ConsumePlant(float desiredUnitsToConsume)
-	{
-		float maxBranchMaturity = this.GetMaxBranchMaturity();
-		float num = Mathf.Min(desiredUnitsToConsume, maxBranchMaturity);
-		GameObject mostMatureBranch = this.GetMostMatureBranch();
-		if (mostMatureBranch)
-		{
-			Growing component = mostMatureBranch.GetComponent<Growing>();
-			if (component)
-			{
-				Harvestable component2 = mostMatureBranch.GetComponent<Harvestable>();
-				if (component2 != null)
-				{
-					component2.Trigger(2127324410, true);
-				}
-				component.ConsumeMass(num);
-				return num;
-			}
-		}
-		return 0f;
-	}
+        var component = mostMatureBranch.GetComponent<Growing>();
+        if (component) {
+            var component2 = mostMatureBranch.GetComponent<Harvestable>();
+            if (component2 != null) component2.Trigger(2127324410, true);
+            component.ConsumeMass(num);
+            return num;
+        }
 
-	public float PlantProductGrowthPerCycle()
-	{
-		Crop crop = base.GetComponent<Crop>();
-		float num = CROPS.CROP_TYPES.Find((Crop.CropVal m) => m.cropId == crop.cropId).cropDuration / 600f;
-		return 1f / num;
-	}
+        mostMatureBranch.GetAmounts().Get(Db.Get().Amounts.Maturity.Id).ApplyDelta(-desiredUnitsToConsume);
+        gameObject.Trigger(-1793167409);
+        mostMatureBranch.Trigger(-1793167409);
+        return desiredUnitsToConsume;
+    }
 
-	public float GetMaxBranchMaturity()
-	{
-		float max_maturity = 0f;
-		GameObject max_branch = null;
-		this.trunk.ActionPerBranch(delegate(GameObject branch)
-		{
-			if (branch != null)
-			{
-				AmountInstance amountInstance = Db.Get().Amounts.Maturity.Lookup(branch);
-				if (amountInstance != null)
-				{
-					float num = amountInstance.value / amountInstance.GetMax();
-					if (num > max_maturity)
-					{
-						max_maturity = num;
-						max_branch = branch;
-					}
-				}
-			}
-		});
-		return max_maturity;
-	}
+    public float PlantProductGrowthPerCycle() {
+        var component                      = GetComponent<Crop>();
+        var cropID                         = component.cropId;
+        if (overrideCropID != null) cropID = overrideCropID;
+        var num                            = CROPS.CROP_TYPES.Find(m => m.cropId == cropID).cropDuration / 600f;
+        return 1f / num;
+    }
 
-	private GameObject GetMostMatureBranch()
-	{
-		float max_maturity = 0f;
-		GameObject max_branch = null;
-		this.trunk.ActionPerBranch(delegate(GameObject branch)
-		{
-			if (branch != null)
-			{
-				AmountInstance amountInstance = Db.Get().Amounts.Maturity.Lookup(branch);
-				if (amountInstance != null)
-				{
-					float num = amountInstance.value / amountInstance.GetMax();
-					if (num > max_maturity)
-					{
-						max_maturity = num;
-						max_branch = branch;
-					}
-				}
-			}
-		});
-		return max_branch;
-	}
+    public string GetFormattedConsumptionPerCycle(float consumer_KGWorthOfCaloriesLostPerSecond) {
+        var num = PlantProductGrowthPerCycle();
+        return GameUtil.GetFormattedPlantGrowth(consumer_KGWorthOfCaloriesLostPerSecond * num * 100f,
+                                                GameUtil.TimeSlice.PerCycle);
+    }
 
-	public string GetFormattedConsumptionPerCycle(float consumer_KGWorthOfCaloriesLostPerSecond)
-	{
-		float num = this.PlantProductGrowthPerCycle();
-		return GameUtil.GetFormattedPlantGrowth(consumer_KGWorthOfCaloriesLostPerSecond * num * 100f, GameUtil.TimeSlice.PerCycle);
-	}
+    public CellOffset[]       GetAllowedOffsets() { return null; }
+    public Diet.Info.FoodType GetDietFoodType()   { return Diet.Info.FoodType.EatPlantDirectly; }
 
-	public CellOffset[] GetAllowedOffsets()
-	{
-		return null;
-	}
+    protected override void OnSpawn() {
+        trunk = gameObject.GetSMI<PlantBranchGrower.Instance>();
+        base.OnSpawn();
+    }
 
-	private PlantBranchGrower.Instance trunk;
+    public float GetMaxBranchMaturity() {
+        var        max_maturity = 0f;
+        GameObject max_branch   = null;
+        trunk.ActionPerBranch(delegate(GameObject branch) {
+                                  if (branch != null) {
+                                      var amountInstance = Db.Get().Amounts.Maturity.Lookup(branch);
+                                      if (amountInstance != null) {
+                                          var num = amountInstance.value / amountInstance.GetMax();
+                                          if (num > max_maturity) {
+                                              max_maturity = num;
+                                              max_branch   = branch;
+                                          }
+                                      }
+                                  }
+                              });
+
+        return max_maturity;
+    }
+
+    private GameObject GetMostMatureBranch() {
+        var        max_maturity = 0f;
+        GameObject max_branch   = null;
+        trunk.ActionPerBranch(delegate(GameObject branch) {
+                                  if (branch != null) {
+                                      var amountInstance = Db.Get().Amounts.Maturity.Lookup(branch);
+                                      if (amountInstance != null) {
+                                          var num = amountInstance.value / amountInstance.GetMax();
+                                          if (num > max_maturity) {
+                                              max_maturity = num;
+                                              max_branch   = branch;
+                                          }
+                                      }
+                                  }
+                              });
+
+        return max_branch;
+    }
 }

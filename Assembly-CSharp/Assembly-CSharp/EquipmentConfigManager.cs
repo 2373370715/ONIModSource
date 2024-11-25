@@ -5,18 +5,18 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/EquipmentConfigManager")]
 public class EquipmentConfigManager : KMonoBehaviour
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		EquipmentConfigManager.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		EquipmentConfigManager.Instance = this;
 	}
 
-	public void RegisterEquipment(IEquipmentConfig config)
+		public void RegisterEquipment(IEquipmentConfig config)
 	{
 		if (!DlcManager.IsDlcListValidForCurrentContent(config.GetDlcIds()))
 		{
@@ -46,7 +46,7 @@ public class EquipmentConfigManager : KMonoBehaviour
 		}
 	}
 
-	private void LoadRecipe(EquipmentDef def, Equippable equippable)
+		private void LoadRecipe(EquipmentDef def, Equippable equippable)
 	{
 		Recipe recipe = new Recipe(def.Id, 1f, (SimHashes)0, null, def.RecipeDescription, 0);
 		recipe.SetFabricator(def.FabricatorId, def.FabricationTime);
@@ -57,5 +57,5 @@ public class EquipmentConfigManager : KMonoBehaviour
 		}
 	}
 
-	public static EquipmentConfigManager Instance;
+		public static EquipmentConfigManager Instance;
 }

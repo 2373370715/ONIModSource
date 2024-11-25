@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class CodexVideo : CodexWidget<CodexVideo>
 {
-			public string name { get; set; }
+				public string name { get; set; }
 
-			public string videoName
+				public string videoName
 	{
 		get
 		{
@@ -18,16 +18,16 @@ public class CodexVideo : CodexWidget<CodexVideo>
 		}
 	}
 
-			public string overlayName { get; set; }
+				public string overlayName { get; set; }
 
-			public List<string> overlayTexts { get; set; }
+				public List<string> overlayTexts { get; set; }
 
-	public void ConfigureVideo(VideoWidget videoWidget, string clipName, string overlayName = null, List<string> overlayTexts = null)
+		public void ConfigureVideo(VideoWidget videoWidget, string clipName, string overlayName = null, List<string> overlayTexts = null)
 	{
 		videoWidget.SetClip(Assets.GetVideo(clipName), overlayName, overlayTexts);
 	}
 
-	public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		this.ConfigureVideo(contentGameObject.GetComponent<VideoWidget>(), this.name, this.overlayName, this.overlayTexts);
 		base.ConfigurePreferredLayout(contentGameObject);

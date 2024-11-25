@@ -3,25 +3,22 @@ using UnityEngine;
 
 public class UIAnimationVoiceSoundEvent : SoundEvent
 {
-	public UIAnimationVoiceSoundEvent(string file_name, string sound_name, int frame, bool looping) : base(file_name, sound_name, frame, false, looping, (float)SoundEvent.IGNORE_INTERVAL, false)
+		public UIAnimationVoiceSoundEvent(string file_name, string sound_name, int frame, bool looping) : base(file_name, sound_name, frame, false, looping, (float)SoundEvent.IGNORE_INTERVAL, false)
 	{
 		this.actualSoundName = sound_name;
 	}
 
-	public override void OnPlay(AnimEventManager.EventPlayerData behaviour)
+		public override void OnPlay(AnimEventManager.EventPlayerData behaviour)
 	{
 		this.PlaySound(behaviour);
 	}
 
-	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
+		public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
 	{
 		string soundPath = MinionVoice.ByObject(behaviour.controller).UnwrapOr(MinionVoice.Random(), string.Format("Couldn't find MinionVoice on UI {0}, falling back to random voice", behaviour.controller)).GetSoundPath(this.actualSoundName);
 		if (this.actualSoundName.Contains(":"))
 		{
-			float num = float.Parse(this.actualSoundName.Split(new char[]
-			{
-				':'
-			})[1]);
+			float num = float.Parse(this.actualSoundName.Split(':', StringSplitOptions.None)[1]);
 			if ((float)UnityEngine.Random.Range(0, 100) > num)
 			{
 				return;
@@ -64,7 +61,7 @@ public class UIAnimationVoiceSoundEvent : SoundEvent
 		}
 	}
 
-	public override void Stop(AnimEventManager.EventPlayerData behaviour)
+		public override void Stop(AnimEventManager.EventPlayerData behaviour)
 	{
 		if (base.looping)
 		{
@@ -77,7 +74,7 @@ public class UIAnimationVoiceSoundEvent : SoundEvent
 		this.lastPlayedLoopingSoundPath = null;
 	}
 
-	private string actualSoundName;
+		private string actualSoundName;
 
-	private string lastPlayedLoopingSoundPath;
+		private string lastPlayedLoopingSoundPath;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MilkFatSeparatorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MilkFatSeparator";
 		int width = 4;
@@ -33,11 +33,11 @@ public class MilkFatSeparatorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.allowItemRemoval = false;
@@ -75,29 +75,29 @@ public class MilkFatSeparatorConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public override void ConfigurePost(BuildingDef def)
+		public override void ConfigurePost(BuildingDef def)
 	{
 	}
 
-	public const string ID = "MilkFatSeparator";
+		public const string ID = "MilkFatSeparator";
 
-	public const float INPUT_RATE = 1f;
+		public const float INPUT_RATE = 1f;
 
-	public const float MILK_STORED_CAPACITY = 4f;
+		public const float MILK_STORED_CAPACITY = 4f;
 
-	public const float MILK_FAT_CAPACITY = 15f;
+		public const float MILK_FAT_CAPACITY = 15f;
 
-	public const float EFFICIENCY = 0.9f;
+		public const float EFFICIENCY = 0.9f;
 
-	public const float MILKFAT_PERCENT = 0.1f;
+		public const float MILKFAT_PERCENT = 0.1f;
 
-	private const float MILK_TO_FAT_OUTPUT_RATE = 0.089999996f;
+		private const float MILK_TO_FAT_OUTPUT_RATE = 0.089999996f;
 
-	private const float MILK_TO_BRINE_WATER_OUTPUT_RATE = 0.80999994f;
+		private const float MILK_TO_BRINE_WATER_OUTPUT_RATE = 0.80999994f;
 
-	private const float MILK_TO_CO2_RATE = 0.100000024f;
+		private const float MILK_TO_CO2_RATE = 0.100000024f;
 }

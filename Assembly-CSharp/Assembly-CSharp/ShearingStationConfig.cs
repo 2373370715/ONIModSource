@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ShearingStationConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ShearingStation";
 		int width = 3;
@@ -33,7 +33,7 @@ public class ShearingStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -43,7 +43,7 @@ public class ShearingStationConfig : IBuildingConfig
 		roomTracker.requirement = RoomTracker.Requirement.Required;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		RanchStation.Def def = go.AddOrGetDef<RanchStation.Def>();
 		def.IsCritterEligibleToBeRanchedCb = delegate(GameObject creature_go, RanchStation.Instance ranch_station_smi)
@@ -64,5 +64,5 @@ public class ShearingStationConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public const string ID = "ShearingStation";
+		public const string ID = "ShearingStation";
 }

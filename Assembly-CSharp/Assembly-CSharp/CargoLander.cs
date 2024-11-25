@@ -5,7 +5,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class CargoLander : GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.init;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -50,55 +50,55 @@ public class CargoLander : GameStateMachine<CargoLander, CargoLander.StatesInsta
 		this.grounded.empty.PlayAnim("deployed").ParamTransition<bool>(this.hasCargo, this.grounded.loaded, GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.IsTrue);
 	}
 
-	public StateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.BoolParameter hasCargo;
+		public StateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.BoolParameter hasCargo;
 
-	public StateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.Signal emptyCargo;
+		public StateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.Signal emptyCargo;
 
-	public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State init;
+		public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State init;
 
-	public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State stored;
+		public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State stored;
 
-	public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State landing;
+		public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State landing;
 
-	public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State land;
+		public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State land;
 
-	public CargoLander.CrashedStates grounded;
+		public CargoLander.CrashedStates grounded;
 
-	public StateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.BoolParameter isLanded = new StateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.BoolParameter(false);
+		public StateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.BoolParameter isLanded = new StateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.BoolParameter(false);
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Tag previewTag;
+				public Tag previewTag;
 
-		public bool deployOnLanding = true;
+				public bool deployOnLanding = true;
 	}
 
-	public class CrashedStates : GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State
+		public class CrashedStates : GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State
 	{
-		public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State loaded;
+				public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State loaded;
 
-		public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State emptying;
+				public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State emptying;
 
-		public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State empty;
+				public GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.State empty;
 	}
 
-	public class StatesInstance : GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<CargoLander, CargoLander.StatesInstance, IStateMachineTarget, CargoLander.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, CargoLander.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, CargoLander.Def def) : base(master, def)
 		{
 		}
 
-		public void ResetAnimPosition()
+				public void ResetAnimPosition()
 		{
 			base.GetComponent<KBatchedAnimController>().Offset = Vector3.up * this.flightAnimOffset;
 		}
 
-		public void OnJettisoned()
+				public void OnJettisoned()
 		{
 			this.flightAnimOffset = 50f;
 		}
 
-		public void ShowLandingPreview(bool show)
+				public void ShowLandingPreview(bool show)
 		{
 			if (show)
 			{
@@ -110,18 +110,18 @@ public class CargoLander : GameStateMachine<CargoLander, CargoLander.StatesInsta
 			this.landingPreview = null;
 		}
 
-		public void LandingUpdate(float dt)
+				public void LandingUpdate(float dt)
 		{
 			this.flightAnimOffset = Mathf.Max(this.flightAnimOffset - dt * this.topSpeed, 0f);
 			this.ResetAnimPosition();
 			int num = Grid.PosToCell(base.gameObject.transform.GetPosition() + new Vector3(0f, this.flightAnimOffset, 0f));
-			if (Grid.IsValidCell(num))
+			if (Grid.IsValidCell(num) && (int)Grid.WorldIdx[num] == base.gameObject.GetMyWorldId())
 			{
 				SimMessages.EmitMass(num, ElementLoader.GetElementIndex(this.exhaustElement), dt * this.exhaustEmitRate, this.exhaustTemperature, 0, 0, -1);
 			}
 		}
 
-		public void DoLand()
+				public void DoLand()
 		{
 			base.smi.master.GetComponent<KBatchedAnimController>().Offset = Vector3.zero;
 			OccupyArea component = base.smi.GetComponent<OccupyArea>();
@@ -136,7 +136,7 @@ public class CargoLander : GameStateMachine<CargoLander, CargoLander.StatesInsta
 			base.smi.master.gameObject.Trigger(1591811118, this);
 		}
 
-		public bool CheckIfLoaded()
+				public bool CheckIfLoaded()
 		{
 			bool flag = false;
 			MinionStorage component = base.GetComponent<MinionStorage>();
@@ -156,17 +156,17 @@ public class CargoLander : GameStateMachine<CargoLander, CargoLander.StatesInsta
 			return flag;
 		}
 
-		[Serialize]
+				[Serialize]
 		public float flightAnimOffset = 50f;
 
-		public float exhaustEmitRate = 2f;
+				public float exhaustEmitRate = 2f;
 
-		public float exhaustTemperature = 1000f;
+				public float exhaustTemperature = 1000f;
 
-		public SimHashes exhaustElement = SimHashes.CarbonDioxide;
+				public SimHashes exhaustElement = SimHashes.CarbonDioxide;
 
-		public float topSpeed = 5f;
+				public float topSpeed = 5f;
 
-		private GameObject landingPreview;
+				private GameObject landingPreview;
 	}
 }

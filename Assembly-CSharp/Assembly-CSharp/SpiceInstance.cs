@@ -4,7 +4,7 @@ using Klei.AI;
 [Serializable]
 public struct SpiceInstance
 {
-		public AttributeModifier CalorieModifier
+			public AttributeModifier CalorieModifier
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public struct SpiceInstance
 		}
 	}
 
-		public AttributeModifier FoodModifier
+			public AttributeModifier FoodModifier
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public struct SpiceInstance
 		}
 	}
 
-		public Effect StatBonus
+			public Effect StatBonus
 	{
 		get
 		{
@@ -28,7 +28,7 @@ public struct SpiceInstance
 		}
 	}
 
-	public Tag Id;
+		public Tag Id;
 
-	public float TotalKG;
+		public float TotalKG;
 }

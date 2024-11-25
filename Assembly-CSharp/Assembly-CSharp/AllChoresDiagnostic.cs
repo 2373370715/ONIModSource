@@ -3,14 +3,14 @@ using STRINGS;
 
 public class AllChoresDiagnostic : ColonyDiagnostic
 {
-	public AllChoresDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.ALLCHORESDIAGNOSTIC.ALL_NAME)
+		public AllChoresDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.ALLCHORESDIAGNOSTIC.ALL_NAME)
 	{
 		this.tracker = TrackerTool.Instance.GetWorldTracker<AllChoresCountTracker>(worldID);
 		this.colors[ColonyDiagnostic.DiagnosticResult.Opinion.Good] = Constants.NEUTRAL_COLOR;
 		this.icon = "icon_errand_operate";
 	}
 
-	public override ColonyDiagnostic.DiagnosticResult Evaluate()
+		public override ColonyDiagnostic.DiagnosticResult Evaluate()
 	{
 		return new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.GENERIC_CRITERIA_PASS, null)
 		{

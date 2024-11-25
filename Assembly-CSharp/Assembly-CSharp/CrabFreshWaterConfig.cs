@@ -8,7 +8,7 @@ using UnityEngine;
 [EntityConfigOrder(1)]
 public class CrabFreshWaterConfig : IEntityConfig
 {
-	public static GameObject CreateCrabFreshWater(string id, string name, string desc, string anim_file, bool is_baby, string deathDropID = null)
+		public static GameObject CreateCrabFreshWater(string id, string name, string desc, string anim_file, bool is_baby, string deathDropID = null)
 	{
 		GameObject gameObject = BaseCrabConfig.BaseCrab(id, name, desc, anim_file, "CrabFreshWaterBaseTrait", is_baby, CrabFreshWaterConfig.animPrefix, deathDropID, 1);
 		gameObject = EntityTemplates.ExtendEntityToWildCreature(gameObject, CrabTuning.PEN_SIZE_PER_CREATURE);
@@ -34,12 +34,12 @@ public class CrabFreshWaterConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = CrabFreshWaterConfig.CreateCrabFreshWater("CrabFreshWater", STRINGS.CREATURES.SPECIES.CRAB.VARIANT_FRESH_WATER.NAME, STRINGS.CREATURES.SPECIES.CRAB.VARIANT_FRESH_WATER.DESC, "pincher_kanim", false, null);
 		gameObject = EntityTemplates.ExtendEntityToFertileCreature(gameObject, "CrabFreshWaterEgg", STRINGS.CREATURES.SPECIES.CRAB.VARIANT_FRESH_WATER.EGG_NAME, STRINGS.CREATURES.SPECIES.CRAB.VARIANT_FRESH_WATER.DESC, "egg_pincher_kanim", CrabTuning.EGG_MASS, "CrabFreshWaterBaby", 60.000004f, 20f, CrabTuning.EGG_CHANCES_FRESH, this.GetDlcIds(), CrabFreshWaterConfig.EGG_SORT_ORDER, true, false, true, 1f, false);
@@ -63,7 +63,7 @@ public class CrabFreshWaterConfig : IEntityConfig
 		}
 		diseaseEmitter.SetDiseases(list);
 		diseaseEmitter.emitRange = 2;
-		diseaseEmitter.emitCount = -1 * Mathf.RoundToInt(888.8889f);
+		diseaseEmitter.emitCount = -1 * Mathf.RoundToInt((float)DUPLICANTSTATS.STANDARD.Secretions.DISEASE_PER_PEE / 600f * 6f * 2f * 4f / 9f);
 		CleaningMonitor.Def def2 = gameObject.AddOrGetDef<CleaningMonitor.Def>();
 		def2.elementState = Element.State.Liquid;
 		def2.cellOffsets = new CellOffset[]
@@ -78,29 +78,29 @@ public class CrabFreshWaterConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "CrabFreshWater";
+		public const string ID = "CrabFreshWater";
 
-	public const string BASE_TRAIT_ID = "CrabFreshWaterBaseTrait";
+		public const string BASE_TRAIT_ID = "CrabFreshWaterBaseTrait";
 
-	public const string EGG_ID = "CrabFreshWaterEgg";
+		public const string EGG_ID = "CrabFreshWaterEgg";
 
-	private const SimHashes EMIT_ELEMENT = SimHashes.Sand;
+		private const SimHashes EMIT_ELEMENT = SimHashes.Sand;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 70f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 70f;
 
-	private static float CALORIES_PER_KG_OF_ORE = CrabTuning.STANDARD_CALORIES_PER_CYCLE / CrabFreshWaterConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = CrabTuning.STANDARD_CALORIES_PER_CYCLE / CrabFreshWaterConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 25f;
+		private static float MIN_POOP_SIZE_IN_KG = 25f;
 
-	public static int EGG_SORT_ORDER = 0;
+		public static int EGG_SORT_ORDER = 0;
 
-	private static string animPrefix = "fresh_";
+		private static string animPrefix = "fresh_";
 }

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class AccessControlSideScreen : SideScreenContent
 {
-	public override string GetTitle()
+		public override string GetTitle()
 	{
 		if (this.target != null)
 		{
@@ -17,7 +17,7 @@ public class AccessControlSideScreen : SideScreenContent
 		return base.GetTitle();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.sortByNameToggle.onValueChanged.AddListener(delegate(bool reverse_sort)
@@ -31,12 +31,12 @@ public class AccessControlSideScreen : SideScreenContent
 		this.sortByPermissionToggle.onValueChanged.AddListener(new UnityAction<bool>(this.SortByPermission));
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<AccessControl>() != null && target.GetComponent<AccessControl>().controlEnabled;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		if (this.target != null)
 		{
@@ -59,7 +59,7 @@ public class AccessControlSideScreen : SideScreenContent
 		this.Refresh(this.identityList, true);
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 		base.ClearTarget();
 		if (this.target != null)
@@ -69,7 +69,7 @@ public class AccessControlSideScreen : SideScreenContent
 		}
 	}
 
-	private void Refresh(List<MinionAssignablesProxy> identities, bool rebuild)
+		private void Refresh(List<MinionAssignablesProxy> identities, bool rebuild)
 	{
 		Rotatable component = this.target.GetComponent<Rotatable>();
 		bool rotated = component != null && component.IsRotated;
@@ -100,14 +100,14 @@ public class AccessControlSideScreen : SideScreenContent
 		this.ContentContainer.SetActive(this.target.controlEnabled);
 	}
 
-	private void RefreshOnline()
+		private void RefreshOnline()
 	{
 		bool flag = this.target.Online && (this.doorTarget == null || this.doorTarget.CurrentState == Door.ControlState.Auto);
 		this.disabledOverlay.SetActive(!flag);
 		this.headerBG.ColorState = (flag ? KImage.ColorSelector.Active : KImage.ColorSelector.Inactive);
 	}
 
-	private void SortByPermission(bool state)
+		private void SortByPermission(bool state)
 	{
 		this.ExecuteSort<int>(this.sortByPermissionToggle, state, delegate(MinionAssignablesProxy identity)
 		{
@@ -119,7 +119,7 @@ public class AccessControlSideScreen : SideScreenContent
 		}, false);
 	}
 
-	private void ExecuteSort<T>(Toggle toggle, bool state, Func<MinionAssignablesProxy, T> sortFunction, bool refresh = false)
+		private void ExecuteSort<T>(Toggle toggle, bool state, Func<MinionAssignablesProxy, T> sortFunction, bool refresh = false)
 	{
 		toggle.GetComponent<ImageToggleState>().SetActiveState(state);
 		if (!state)
@@ -141,7 +141,7 @@ public class AccessControlSideScreen : SideScreenContent
 		}
 	}
 
-	private void SortEntries(bool reverse_sort, Comparison<MinionAssignablesProxy> compare)
+		private void SortEntries(bool reverse_sort, Comparison<MinionAssignablesProxy> compare)
 	{
 		this.identityList.Sort(compare);
 		if (reverse_sort)
@@ -157,7 +157,7 @@ public class AccessControlSideScreen : SideScreenContent
 		}
 	}
 
-	private void ClearContent()
+		private void ClearContent()
 	{
 		if (this.rowPool != null)
 		{
@@ -166,7 +166,7 @@ public class AccessControlSideScreen : SideScreenContent
 		this.identityRowMap.Clear();
 	}
 
-	private void OnDefaultPermissionChanged(MinionAssignablesProxy identity, AccessControl.Permission permission)
+		private void OnDefaultPermissionChanged(MinionAssignablesProxy identity, AccessControl.Permission permission)
 	{
 		this.target.DefaultPermission = permission;
 		this.Refresh(this.identityList, false);
@@ -179,12 +179,12 @@ public class AccessControlSideScreen : SideScreenContent
 		}
 	}
 
-	private void OnPermissionChanged(MinionAssignablesProxy identity, AccessControl.Permission permission)
+		private void OnPermissionChanged(MinionAssignablesProxy identity, AccessControl.Permission permission)
 	{
 		this.target.SetPermission(identity, permission);
 	}
 
-	private void OnPermissionDefault(MinionAssignablesProxy identity, bool isDefault)
+		private void OnPermissionDefault(MinionAssignablesProxy identity, bool isDefault)
 	{
 		if (isDefault)
 		{
@@ -197,17 +197,17 @@ public class AccessControlSideScreen : SideScreenContent
 		this.Refresh(this.identityList, false);
 	}
 
-	private void OnAccessControlChanged(object data)
+		private void OnAccessControlChanged(object data)
 	{
 		this.RefreshOnline();
 	}
 
-	private void OnDoorStateChanged(object data)
+		private void OnDoorStateChanged(object data)
 	{
 		this.RefreshOnline();
 	}
 
-	private void OnSelectSortFunc(IListableOption role, object data)
+		private void OnSelectSortFunc(IListableOption role, object data)
 	{
 		if (role != null)
 		{
@@ -230,50 +230,50 @@ public class AccessControlSideScreen : SideScreenContent
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private AccessControlSideScreenRow rowPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject rowGroup;
 
-	[SerializeField]
+		[SerializeField]
 	private AccessControlSideScreenDoor defaultsRow;
 
-	[SerializeField]
+		[SerializeField]
 	private Toggle sortByNameToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private Toggle sortByPermissionToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private Toggle sortByRoleToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject disabledOverlay;
 
-	[SerializeField]
+		[SerializeField]
 	private KImage headerBG;
 
-	private AccessControl target;
+		private AccessControl target;
 
-	private Door doorTarget;
+		private Door doorTarget;
 
-	private UIPool<AccessControlSideScreenRow> rowPool;
+		private UIPool<AccessControlSideScreenRow> rowPool;
 
-	private AccessControlSideScreen.MinionIdentitySort.SortInfo sortInfo = AccessControlSideScreen.MinionIdentitySort.SortInfos[0];
+		private AccessControlSideScreen.MinionIdentitySort.SortInfo sortInfo = AccessControlSideScreen.MinionIdentitySort.SortInfos[0];
 
-	private Dictionary<MinionAssignablesProxy, AccessControlSideScreenRow> identityRowMap = new Dictionary<MinionAssignablesProxy, AccessControlSideScreenRow>();
+		private Dictionary<MinionAssignablesProxy, AccessControlSideScreenRow> identityRowMap = new Dictionary<MinionAssignablesProxy, AccessControlSideScreenRow>();
 
-	private List<MinionAssignablesProxy> identityList = new List<MinionAssignablesProxy>();
+		private List<MinionAssignablesProxy> identityList = new List<MinionAssignablesProxy>();
 
-	private static class MinionIdentitySort
+		private static class MinionIdentitySort
 	{
-		public static int CompareByName(MinionAssignablesProxy a, MinionAssignablesProxy b)
+				public static int CompareByName(MinionAssignablesProxy a, MinionAssignablesProxy b)
 		{
 			return a.GetProperName().CompareTo(b.GetProperName());
 		}
 
-		public static int CompareByRole(MinionAssignablesProxy a, MinionAssignablesProxy b)
+				public static int CompareByRole(MinionAssignablesProxy a, MinionAssignablesProxy b)
 		{
 			global::Debug.Assert(a, "a was null");
 			global::Debug.Assert(b, "b was null");
@@ -297,7 +297,7 @@ public class AccessControlSideScreen : SideScreenContent
 			return AccessControlSideScreen.MinionIdentitySort.CompareByName(a, b);
 		}
 
-		public static readonly AccessControlSideScreen.MinionIdentitySort.SortInfo[] SortInfos = new AccessControlSideScreen.MinionIdentitySort.SortInfo[]
+				public static readonly AccessControlSideScreen.MinionIdentitySort.SortInfo[] SortInfos = new AccessControlSideScreen.MinionIdentitySort.SortInfo[]
 		{
 			new AccessControlSideScreen.MinionIdentitySort.SortInfo
 			{
@@ -311,16 +311,16 @@ public class AccessControlSideScreen : SideScreenContent
 			}
 		};
 
-		public class SortInfo : IListableOption
+				public class SortInfo : IListableOption
 		{
-			public string GetProperName()
+						public string GetProperName()
 			{
 				return this.name;
 			}
 
-			public LocString name;
+						public LocString name;
 
-			public Comparison<MinionAssignablesProxy> compare;
+						public Comparison<MinionAssignablesProxy> compare;
 		}
 	}
 }

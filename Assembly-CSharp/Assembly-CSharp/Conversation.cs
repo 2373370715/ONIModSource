@@ -3,36 +3,36 @@ using System.Collections.Generic;
 
 public class Conversation
 {
-	public List<MinionIdentity> minions = new List<MinionIdentity>();
+		public List<MinionIdentity> minions = new List<MinionIdentity>();
 
-	public MinionIdentity lastTalked;
+		public MinionIdentity lastTalked;
 
-	public ConversationType conversationType;
+		public ConversationType conversationType;
 
-	public float lastTalkedTime;
+		public float lastTalkedTime;
 
-	public Conversation.Topic lastTopic;
+		public Conversation.Topic lastTopic;
 
-	public int numUtterances;
+		public int numUtterances;
 
-	public enum ModeType
+		public enum ModeType
 	{
-		Query,
-		Statement,
-		Agreement,
-		Disagreement,
-		Musing,
-		Satisfaction,
-		Nominal,
-		Dissatisfaction,
-		Stressing,
-		Segue,
-		End
+				Query,
+				Statement,
+				Agreement,
+				Disagreement,
+				Musing,
+				Satisfaction,
+				Nominal,
+				Dissatisfaction,
+				Stressing,
+				Segue,
+				End
 	}
 
-	public class Mode
+		public class Mode
 	{
-		public Mode(Conversation.ModeType type, string voice, string icon, string mouth, string anim, bool newTopic = false)
+				public Mode(Conversation.ModeType type, string voice, string icon, string mouth, string anim, bool newTopic = false)
 		{
 			this.type = type;
 			this.voice = voice;
@@ -42,22 +42,22 @@ public class Conversation
 			this.newTopic = newTopic;
 		}
 
-		public Conversation.ModeType type;
+				public Conversation.ModeType type;
 
-		public string voice;
+				public string voice;
 
-		public string mouth;
+				public string mouth;
 
-		public string anim;
+				public string anim;
 
-		public string icon;
+				public string icon;
 
-		public bool newTopic;
+				public bool newTopic;
 	}
 
-	public class Topic
+		public class Topic
 	{
-				public static Dictionary<int, Conversation.Mode> Modes
+						public static Dictionary<int, Conversation.Mode> Modes
 		{
 			get
 			{
@@ -73,13 +73,13 @@ public class Conversation
 			}
 		}
 
-		public Topic(string topic, Conversation.ModeType mode)
+				public Topic(string topic, Conversation.ModeType mode)
 		{
 			this.topic = topic;
 			this.mode = mode;
 		}
 
-		public static List<Conversation.Mode> modeList = new List<Conversation.Mode>
+				public static List<Conversation.Mode> modeList = new List<Conversation.Mode>
 		{
 			new Conversation.Mode(Conversation.ModeType.Query, "conversation_question", "mode_query", SpeechMonitor.PREFIX_HAPPY, "happy", false),
 			new Conversation.Mode(Conversation.ModeType.Statement, "conversation_answer", "mode_statement", SpeechMonitor.PREFIX_HAPPY, "happy", false),
@@ -93,10 +93,10 @@ public class Conversation
 			new Conversation.Mode(Conversation.ModeType.Segue, "conversation_question", "mode_segue", SpeechMonitor.PREFIX_HAPPY, "happy", true)
 		};
 
-		private static Dictionary<int, Conversation.Mode> _modes;
+				private static Dictionary<int, Conversation.Mode> _modes;
 
-		public string topic;
+				public string topic;
 
-		public Conversation.ModeType mode;
+				public Conversation.ModeType mode;
 	}
 }

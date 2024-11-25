@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class DirectVolumeHeater : KMonoBehaviour, ISim33ms, ISim200ms, ISim1000ms, ISim4000ms, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.primaryElement = base.GetComponent<PrimaryElement>();
 		this.structureTemperature = GameComps.StructureTemperatures.GetHandle(base.gameObject);
 	}
 
-	public void Sim33ms(float dt)
+		public void Sim33ms(float dt)
 	{
 		if (this.impulseFrequency == DirectVolumeHeater.TimeMode.ms33)
 		{
@@ -23,7 +23,7 @@ public class DirectVolumeHeater : KMonoBehaviour, ISim33ms, ISim200ms, ISim1000m
 		}
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this.impulseFrequency == DirectVolumeHeater.TimeMode.ms200)
 		{
@@ -34,7 +34,7 @@ public class DirectVolumeHeater : KMonoBehaviour, ISim33ms, ISim200ms, ISim1000m
 		}
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		if (this.impulseFrequency == DirectVolumeHeater.TimeMode.ms1000)
 		{
@@ -45,7 +45,7 @@ public class DirectVolumeHeater : KMonoBehaviour, ISim33ms, ISim200ms, ISim1000m
 		}
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
 		if (this.impulseFrequency == DirectVolumeHeater.TimeMode.ms4000)
 		{
@@ -56,12 +56,12 @@ public class DirectVolumeHeater : KMonoBehaviour, ISim33ms, ISim200ms, ISim1000m
 		}
 	}
 
-	private float CalculateCellWeight(int dx, int dy, int maxDistance)
+		private float CalculateCellWeight(int dx, int dy, int maxDistance)
 	{
 		return 1f + (float)(maxDistance - Math.Abs(dx) - Math.Abs(dy));
 	}
 
-	private bool TestLineOfSight(int offsetCell)
+		private bool TestLineOfSight(int offsetCell)
 	{
 		int cell = Grid.PosToCell(base.gameObject);
 		int x;
@@ -73,7 +73,7 @@ public class DirectVolumeHeater : KMonoBehaviour, ISim33ms, ISim200ms, ISim1000m
 		return Grid.FastTestLineOfSightSolid(x2, y2, x, y);
 	}
 
-	private float AddSelfHeat(float dt)
+		private float AddSelfHeat(float dt)
 	{
 		if (!this.EnableEmission)
 		{
@@ -88,7 +88,7 @@ public class DirectVolumeHeater : KMonoBehaviour, ISim33ms, ISim200ms, ISim1000m
 		return result;
 	}
 
-	private float AddHeatToVolume(float dt)
+		private float AddHeatToVolume(float dt)
 	{
 		if (!this.EnableEmission)
 		{
@@ -139,7 +139,7 @@ public class DirectVolumeHeater : KMonoBehaviour, ISim33ms, ISim200ms, ISim1000m
 		return num8;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		string formattedHeatEnergy = GameUtil.GetFormattedHeatEnergy(this.DTUs, GameUtil.HeatEnergyFormatterUnit.Automatic);
@@ -149,41 +149,41 @@ public class DirectVolumeHeater : KMonoBehaviour, ISim33ms, ISim200ms, ISim1000m
 		return list;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public int width = 12;
 
-	[SerializeField]
+		[SerializeField]
 	public int height = 4;
 
-	[SerializeField]
+		[SerializeField]
 	public float DTUs = 100000f;
 
-	[SerializeField]
+		[SerializeField]
 	public float maximumInternalTemperature = 773.15f;
 
-	[SerializeField]
+		[SerializeField]
 	public float maximumExternalTemperature = 340f;
 
-	[SerializeField]
+		[SerializeField]
 	public Operational operational;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private KBatchedAnimHeatPostProcessingEffect heatEffect;
 
-	public bool EnableEmission;
+		public bool EnableEmission;
 
-	private HandleVector<int>.Handle structureTemperature;
+		private HandleVector<int>.Handle structureTemperature;
 
-	private PrimaryElement primaryElement;
+		private PrimaryElement primaryElement;
 
-	[SerializeField]
+		[SerializeField]
 	private DirectVolumeHeater.TimeMode impulseFrequency = DirectVolumeHeater.TimeMode.ms1000;
 
-	private enum TimeMode
+		private enum TimeMode
 	{
-		ms33,
-		ms200,
-		ms1000,
-		ms4000
+				ms33,
+				ms200,
+				ms1000,
+				ms4000
 	}
 }

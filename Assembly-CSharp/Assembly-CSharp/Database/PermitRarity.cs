@@ -2,15 +2,15 @@
 
 namespace Database
 {
-	public enum PermitRarity
+		public enum PermitRarity
 	{
-		Unknown,
-		Universal,
-		UniversalLocked,
-		Loyalty,
-		Common,
-		Decent,
-		Nifty,
-		Splendid
+				Unknown,
+				Universal,
+				UniversalLocked,
+				Loyalty,
+				Common,
+				Decent,
+				Nifty,
+				Splendid
 	}
 }

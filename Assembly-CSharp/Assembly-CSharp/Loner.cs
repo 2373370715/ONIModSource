@@ -3,18 +3,18 @@
 [SkipSaveFileSerialization]
 public class Loner : StateMachineComponent<Loner.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	public class StatesInstance : GameStateMachine<Loner.States, Loner.StatesInstance, Loner, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Loner.States, Loner.StatesInstance, Loner, object>.GameInstance
 	{
-		public StatesInstance(Loner master) : base(master)
+				public StatesInstance(Loner master) : base(master)
 		{
 		}
 
-		public bool IsAlone()
+				public bool IsAlone()
 		{
 			WorldContainer myWorld = this.GetMyWorld();
 			if (!myWorld)
@@ -40,9 +40,9 @@ public class Loner : StateMachineComponent<Loner.StatesInstance>
 		}
 	}
 
-	public class States : GameStateMachine<Loner.States, Loner.StatesInstance, Loner>
+		public class States : GameStateMachine<Loner.States, Loner.StatesInstance, Loner>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.root.Enter(delegate(Loner.StatesInstance smi)
@@ -56,8 +56,8 @@ public class Loner : StateMachineComponent<Loner.StatesInstance>
 			this.alone.EventTransition(GameHashes.MinionMigration, (Loner.StatesInstance smi) => Game.Instance, this.idle, (Loner.StatesInstance smi) => !smi.IsAlone()).EventTransition(GameHashes.MinionDelta, (Loner.StatesInstance smi) => Game.Instance, this.idle, (Loner.StatesInstance smi) => !smi.IsAlone()).ToggleEffect("Loner");
 		}
 
-		public GameStateMachine<Loner.States, Loner.StatesInstance, Loner, object>.State idle;
+				public GameStateMachine<Loner.States, Loner.StatesInstance, Loner, object>.State idle;
 
-		public GameStateMachine<Loner.States, Loner.StatesInstance, Loner, object>.State alone;
+				public GameStateMachine<Loner.States, Loner.StatesInstance, Loner, object>.State alone;
 	}
 }

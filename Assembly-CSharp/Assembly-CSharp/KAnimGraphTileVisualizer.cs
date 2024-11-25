@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/KAnimGraphTileVisualizer")]
 public class KAnimGraphTileVisualizer : KMonoBehaviour, ISaveLoadable, IUtilityItem
 {
-			public UtilityConnections Connections
+				public UtilityConnections Connections
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class KAnimGraphTileVisualizer : KMonoBehaviour, ISaveLoadable, IUtilityI
 		}
 	}
 
-		public IUtilityNetworkMgr ConnectionManager
+			public IUtilityNetworkMgr ConnectionManager
 	{
 		get
 		{
@@ -43,7 +43,7 @@ public class KAnimGraphTileVisualizer : KMonoBehaviour, ISaveLoadable, IUtilityI
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.connectionManager = this.ConnectionManager;
@@ -53,7 +53,7 @@ public class KAnimGraphTileVisualizer : KMonoBehaviour, ISaveLoadable, IUtilityI
 		TileVisualizer.RefreshCell(cell, component.Def.TileLayer, component.Def.ReplacementLayer);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.connectionManager != null && !this.skipCleanup)
 		{
@@ -65,7 +65,7 @@ public class KAnimGraphTileVisualizer : KMonoBehaviour, ISaveLoadable, IUtilityI
 		}
 	}
 
-	[ContextMenu("Refresh")]
+		[ContextMenu("Refresh")]
 	public void Refresh()
 	{
 		if (this.connectionManager == null || this.skipRefresh)
@@ -89,7 +89,7 @@ public class KAnimGraphTileVisualizer : KMonoBehaviour, ISaveLoadable, IUtilityI
 		}
 	}
 
-	public int GetNetworkID()
+		public int GetNetworkID()
 	{
 		UtilityNetwork network = this.GetNetwork();
 		if (network == null)
@@ -99,19 +99,19 @@ public class KAnimGraphTileVisualizer : KMonoBehaviour, ISaveLoadable, IUtilityI
 		return network.id;
 	}
 
-	private UtilityNetwork GetNetwork()
+		private UtilityNetwork GetNetwork()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		return this.connectionManager.GetNetworkForDirection(cell, Direction.None);
 	}
 
-	public UtilityNetwork GetNetworkForDirection(Direction d)
+		public UtilityNetwork GetNetworkForDirection(Direction d)
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		return this.connectionManager.GetNetworkForDirection(cell, d);
 	}
 
-	public void UpdateConnections(UtilityConnections new_connections)
+		public void UpdateConnections(UtilityConnections new_connections)
 	{
 		this._connections = new_connections;
 		if (this.connectionManager != null)
@@ -121,7 +121,7 @@ public class KAnimGraphTileVisualizer : KMonoBehaviour, ISaveLoadable, IUtilityI
 		}
 	}
 
-	public KAnimGraphTileVisualizer GetNeighbour(Direction d)
+		public KAnimGraphTileVisualizer GetNeighbour(Direction d)
 	{
 		KAnimGraphTileVisualizer result = null;
 		Vector2I vector2I;
@@ -189,27 +189,27 @@ public class KAnimGraphTileVisualizer : KMonoBehaviour, ISaveLoadable, IUtilityI
 		return result;
 	}
 
-	[Serialize]
+		[Serialize]
 	private UtilityConnections _connections;
 
-	public bool isPhysicalBuilding;
+		public bool isPhysicalBuilding;
 
-	public bool skipCleanup;
+		public bool skipCleanup;
 
-	public bool skipRefresh;
+		public bool skipRefresh;
 
-	public KAnimGraphTileVisualizer.ConnectionSource connectionSource;
+		public KAnimGraphTileVisualizer.ConnectionSource connectionSource;
 
-	[NonSerialized]
+		[NonSerialized]
 	public IUtilityNetworkMgr connectionManager;
 
-	public enum ConnectionSource
+		public enum ConnectionSource
 	{
-		Gas,
-		Liquid,
-		Electrical,
-		Logic,
-		Tube,
-		Solid
+				Gas,
+				Liquid,
+				Electrical,
+				Logic,
+				Tube,
+				Solid
 	}
 }

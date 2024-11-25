@@ -2,7 +2,7 @@
 
 public class ElementsAudio
 {
-		public static ElementsAudio Instance
+			public static ElementsAudio Instance
 	{
 		get
 		{
@@ -14,12 +14,12 @@ public class ElementsAudio
 		}
 	}
 
-	public void LoadData(ElementsAudio.ElementAudioConfig[] elements_audio_configs)
+		public void LoadData(ElementsAudio.ElementAudioConfig[] elements_audio_configs)
 	{
 		this.elementAudioConfigs = elements_audio_configs;
 	}
 
-	public ElementsAudio.ElementAudioConfig GetConfigForElement(SimHashes id)
+		public ElementsAudio.ElementAudioConfig GetConfigForElement(SimHashes id)
 	{
 		if (this.elementAudioConfigs != null)
 		{
@@ -34,26 +34,26 @@ public class ElementsAudio
 		return null;
 	}
 
-	private static ElementsAudio _instance;
+		private static ElementsAudio _instance;
 
-	private ElementsAudio.ElementAudioConfig[] elementAudioConfigs;
+		private ElementsAudio.ElementAudioConfig[] elementAudioConfigs;
 
-	public class ElementAudioConfig : Resource
+		public class ElementAudioConfig : Resource
 	{
-		public SimHashes elementID;
+				public SimHashes elementID;
 
-		public AmbienceType ambienceType = AmbienceType.None;
+				public AmbienceType ambienceType = AmbienceType.None;
 
-		public SolidAmbienceType solidAmbienceType = SolidAmbienceType.None;
+				public SolidAmbienceType solidAmbienceType = SolidAmbienceType.None;
 
-		public string miningSound = "";
+				public string miningSound = "";
 
-		public string miningBreakSound = "";
+				public string miningBreakSound = "";
 
-		public string oreBumpSound = "";
+				public string oreBumpSound = "";
 
-		public string floorEventAudioCategory = "";
+				public string floorEventAudioCategory = "";
 
-		public string creatureChewSound = "";
+				public string creatureChewSound = "";
 	}
 }

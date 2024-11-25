@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ForestTreeSeedMonitor : KMonoBehaviour
 {
-		public bool ExtraSeedAvailable
+			public bool ExtraSeedAvailable
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class ForestTreeSeedMonitor : KMonoBehaviour
 		}
 	}
 
-	public void ExtractExtraSeed()
+		public void ExtractExtraSeed()
 	{
 		if (!this.hasExtraSeedAvailable)
 		{
@@ -24,7 +24,7 @@ public class ForestTreeSeedMonitor : KMonoBehaviour
 		Util.KInstantiate(Assets.GetPrefab("ForestTreeSeed"), position).SetActive(true);
 	}
 
-	public void TryRollNewSeed()
+		public void TryRollNewSeed()
 	{
 		if (!this.hasExtraSeedAvailable && UnityEngine.Random.Range(0, 100) < 5)
 		{
@@ -32,6 +32,6 @@ public class ForestTreeSeedMonitor : KMonoBehaviour
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private bool hasExtraSeedAvailable;
 }

@@ -7,11 +7,18 @@ using UnityEngine;
 
 public static class BasePacuConfig
 {
-	public static GameObject CreatePrefab(string id, string base_trait_id, string name, string description, string anim_file, bool is_baby, string symbol_prefix, float warnLowTemp, float warnHighTemp, float lethalLowTemp, float lethalHighTemp)
+		public static GameObject CreatePrefab(string id, string base_trait_id, string name, string description, string anim_file, bool is_baby, string symbol_prefix, float warnLowTemp, float warnHighTemp, float lethalLowTemp, float lethalHighTemp)
 	{
 		float mass = 200f;
 		EffectorValues tier = DECOR.BONUS.TIER0;
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, description, mass, Assets.GetAnim(anim_file), "idle_loop", Grid.SceneLayer.Creatures, 1, 1, tier, default(EffectorValues), SimHashes.Creature, null, (warnLowTemp + warnHighTemp) / 2f);
+		KAnimFile anim = Assets.GetAnim(anim_file);
+		string initialAnim = "idle_loop";
+		Grid.SceneLayer sceneLayer = Grid.SceneLayer.Creatures;
+		int width = 1;
+		int height = 1;
+		EffectorValues decor = tier;
+		float defaultTemperature = (warnLowTemp + warnHighTemp) / 2f;
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, description, mass, anim, initialAnim, sceneLayer, width, height, decor, default(EffectorValues), SimHashes.Creature, null, defaultTemperature);
 		KPrefabID component = gameObject.GetComponent<KPrefabID>();
 		component.AddTag(GameTags.SwimmingCreature, false);
 		component.AddTag(GameTags.Creatures.Swimmer, false);
@@ -48,7 +55,7 @@ public static class BasePacuConfig
 		HashSet<Tag> hashSet = new HashSet<Tag>();
 		hashSet.Add(SimHashes.Algae.CreateTag());
 		List<Diet.Info> list = new List<Diet.Info>();
-		list.Add(new Diet.Info(hashSet, tag, BasePacuConfig.CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.NORMAL, null, 0f, false, false, false));
+		list.Add(new Diet.Info(hashSet, tag, BasePacuConfig.CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.NORMAL, null, 0f, false, Diet.Info.FoodType.EatSolid, false, null));
 		list.AddRange(BasePacuConfig.SeedDiet(tag, PacuTuning.STANDARD_CALORIES_PER_CYCLE, TUNING.CREATURES.CONVERSION_EFFICIENCY.NORMAL));
 		Diet diet = new Diet(list.ToArray());
 		CreatureCalorieMonitor.Def def3 = gameObject.AddOrGetDef<CreatureCalorieMonitor.Def>();
@@ -70,7 +77,7 @@ public static class BasePacuConfig
 		return gameObject;
 	}
 
-	public static List<Diet.Info> SeedDiet(Tag poopTag, float caloriesPerSeed, float producedConversionRate)
+		public static List<Diet.Info> SeedDiet(Tag poopTag, float caloriesPerSeed, float producedConversionRate)
 	{
 		List<Diet.Info> list = new List<Diet.Info>();
 		foreach (GameObject gameObject in Assets.GetPrefabsWithComponent<PlantableSeed>())
@@ -84,14 +91,14 @@ public static class BasePacuConfig
 					list.Add(new Diet.Info(new HashSet<Tag>
 					{
 						new Tag(gameObject.GetComponent<KPrefabID>().PrefabID())
-					}, poopTag, caloriesPerSeed, producedConversionRate, null, 0f, false, false, false));
+					}, poopTag, caloriesPerSeed, producedConversionRate, null, 0f, false, Diet.Info.FoodType.EatSolid, false, null));
 				}
 			}
 		}
 		return list;
 	}
 
-	private static string GetLandAnim(FallStates.Instance smi)
+		private static string GetLandAnim(FallStates.Instance smi)
 	{
 		if (smi.GetSMI<CreatureFallMonitor.Instance>().CanSwimAtCurrentLocation())
 		{
@@ -100,9 +107,9 @@ public static class BasePacuConfig
 		return "flop_loop";
 	}
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 7.5f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 7.5f;
 
-	private static float CALORIES_PER_KG_OF_ORE = PacuTuning.STANDARD_CALORIES_PER_CYCLE / BasePacuConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = PacuTuning.STANDARD_CALORIES_PER_CYCLE / BasePacuConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 25f;
+		private static float MIN_POOP_SIZE_IN_KG = 25f;
 }

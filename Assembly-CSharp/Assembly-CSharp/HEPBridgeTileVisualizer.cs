@@ -2,18 +2,18 @@
 
 public class HEPBridgeTileVisualizer : KMonoBehaviour, IHighEnergyParticleDirection
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.Subscribe<HEPBridgeTileVisualizer>(-1643076535, HEPBridgeTileVisualizer.OnRotateDelegate);
 		this.OnRotate();
 	}
 
-	public void OnRotate()
+		public void OnRotate()
 	{
 		Game.Instance.ForceOverlayUpdate(true);
 	}
 
-			public EightDirection Direction
+				public EightDirection Direction
 	{
 		get
 		{
@@ -44,7 +44,7 @@ public class HEPBridgeTileVisualizer : KMonoBehaviour, IHighEnergyParticleDirect
 		}
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<HEPBridgeTileVisualizer> OnRotateDelegate = new EventSystem.IntraObjectHandler<HEPBridgeTileVisualizer>(delegate(HEPBridgeTileVisualizer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HEPBridgeTileVisualizer> OnRotateDelegate = new EventSystem.IntraObjectHandler<HEPBridgeTileVisualizer>(delegate(HEPBridgeTileVisualizer component, object data)
 	{
 		component.OnRotate();
 	});

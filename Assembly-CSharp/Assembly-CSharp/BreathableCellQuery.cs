@@ -2,16 +2,16 @@
 
 public class BreathableCellQuery : PathFinderQuery
 {
-	public BreathableCellQuery Reset(Brain brain)
+		public BreathableCellQuery Reset(Brain brain)
 	{
 		this.breather = brain.GetComponent<OxygenBreather>();
 		return this;
 	}
 
-	public override bool IsMatch(int cell, int parent_cell, int cost)
+		public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
 		return this.breather.IsBreathableElementAtCell(cell, null);
 	}
 
-	private OxygenBreather breather;
+		private OxygenBreather breather;
 }

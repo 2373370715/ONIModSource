@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class HighEnergyParticleStorage : KMonoBehaviour, IStorage
 {
-		public float Particles
+			public float Particles
 	{
 		get
 		{
@@ -14,9 +14,9 @@ public class HighEnergyParticleStorage : KMonoBehaviour, IStorage
 		}
 	}
 
-			public bool allowUIItemRemoval { get; set; }
+				public bool allowUIItemRemoval { get; set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (this.autoStore)
@@ -28,13 +28,13 @@ public class HighEnergyParticleStorage : KMonoBehaviour, IStorage
 		this.SetupStorageStatusItems();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.UpdateLogicPorts();
 	}
 
-	private void UpdateLogicPorts()
+		private void UpdateLogicPorts()
 	{
 		if (this._logicPorts != null)
 		{
@@ -43,7 +43,7 @@ public class HighEnergyParticleStorage : KMonoBehaviour, IStorage
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		if (this.autoStore)
@@ -53,7 +53,7 @@ public class HighEnergyParticleStorage : KMonoBehaviour, IStorage
 		}
 	}
 
-	private void OnParticleCapture(HighEnergyParticle particle)
+		private void OnParticleCapture(HighEnergyParticle particle)
 	{
 		float num = Mathf.Min(particle.payload, this.capacity - this.particles);
 		this.Store(num);
@@ -64,12 +64,12 @@ public class HighEnergyParticleStorage : KMonoBehaviour, IStorage
 		}
 	}
 
-	private bool OnParticleCaptureAllowed(HighEnergyParticle particle)
+		private bool OnParticleCaptureAllowed(HighEnergyParticle particle)
 	{
 		return this.particles < this.capacity && this.receiverOpen;
 	}
 
-	private void DeltaParticles(float delta)
+		private void DeltaParticles(float delta)
 	{
 		this.particles += delta;
 		if (this.particles <= 0f)
@@ -80,48 +80,48 @@ public class HighEnergyParticleStorage : KMonoBehaviour, IStorage
 		this.UpdateLogicPorts();
 	}
 
-	public float Store(float amount)
+		public float Store(float amount)
 	{
 		float num = Mathf.Min(amount, this.RemainingCapacity());
 		this.DeltaParticles(num);
 		return num;
 	}
 
-	public float ConsumeAndGet(float amount)
+		public float ConsumeAndGet(float amount)
 	{
 		amount = Mathf.Min(this.Particles, amount);
 		this.DeltaParticles(-amount);
 		return amount;
 	}
 
-	[ContextMenu("Trigger Stored Event")]
+		[ContextMenu("Trigger Stored Event")]
 	public void DEBUG_TriggerStorageEvent()
 	{
 		base.Trigger(-1837862626, base.transform.gameObject);
 	}
 
-	[ContextMenu("Trigger Zero Event")]
+		[ContextMenu("Trigger Zero Event")]
 	public void DEBUG_TriggerZeroEvent()
 	{
 		this.ConsumeAndGet(this.particles + 1f);
 	}
 
-	public float ConsumeAll()
+		public float ConsumeAll()
 	{
 		return this.ConsumeAndGet(this.particles);
 	}
 
-	public bool HasRadiation()
+		public bool HasRadiation()
 	{
 		return this.Particles > 0f;
 	}
 
-	public GameObject Drop(GameObject go, bool do_disease_transfer = true)
+		public GameObject Drop(GameObject go, bool do_disease_transfer = true)
 	{
 		return null;
 	}
 
-	public List<GameObject> GetItems()
+		public List<GameObject> GetItems()
 	{
 		return new List<GameObject>
 		{
@@ -129,32 +129,32 @@ public class HighEnergyParticleStorage : KMonoBehaviour, IStorage
 		};
 	}
 
-	public bool IsFull()
+		public bool IsFull()
 	{
 		return this.RemainingCapacity() <= 0f;
 	}
 
-	public bool IsEmpty()
+		public bool IsEmpty()
 	{
 		return this.Particles == 0f;
 	}
 
-	public float Capacity()
+		public float Capacity()
 	{
 		return this.capacity;
 	}
 
-	public float RemainingCapacity()
+		public float RemainingCapacity()
 	{
 		return Mathf.Max(this.capacity - this.Particles, 0f);
 	}
 
-	public bool ShouldShowInUI()
+		public bool ShouldShowInUI()
 	{
 		return this.showInUI;
 	}
 
-	public float GetAmountAvailable(Tag tag)
+		public float GetAmountAvailable(Tag tag)
 	{
 		if (tag != GameTags.HighEnergyParticle)
 		{
@@ -163,13 +163,13 @@ public class HighEnergyParticleStorage : KMonoBehaviour, IStorage
 		return this.Particles;
 	}
 
-	public void ConsumeIgnoringDisease(Tag tag, float amount)
+		public void ConsumeIgnoringDisease(Tag tag, float amount)
 	{
 		DebugUtil.DevAssert(tag == GameTags.HighEnergyParticle, "Consuming non-particle tag as amount", null);
 		this.ConsumeAndGet(amount);
 	}
 
-	private void SetupStorageStatusItems()
+		private void SetupStorageStatusItems()
 	{
 		if (HighEnergyParticleStorage.capacityStatusItem == null)
 		{
@@ -196,27 +196,27 @@ public class HighEnergyParticleStorage : KMonoBehaviour, IStorage
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	[SerializeField]
 	private float particles;
 
-	public float capacity = float.MaxValue;
+		public float capacity = float.MaxValue;
 
-	public bool showInUI = true;
+		public bool showInUI = true;
 
-	public bool showCapacityStatusItem;
+		public bool showCapacityStatusItem;
 
-	public bool showCapacityAsMainStatus;
+		public bool showCapacityAsMainStatus;
 
-	public bool autoStore;
+		public bool autoStore;
 
-	[Serialize]
+		[Serialize]
 	public bool receiverOpen = true;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private LogicPorts _logicPorts;
 
-	public string PORT_ID = "";
+		public string PORT_ID = "";
 
-	private static StatusItem capacityStatusItem;
+		private static StatusItem capacityStatusItem;
 }

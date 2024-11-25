@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class ResourceCategoryScreen : KScreen
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ResourceCategoryScreen.Instance = null;
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		ResourceCategoryScreen.Instance = this;
@@ -29,7 +29,7 @@ public class ResourceCategoryScreen : KScreen
 		this.DisplayedCategoryKeys = this.DisplayedCategories.Keys.ToArray<Tag>();
 	}
 
-	private void CreateTagSetHeaders(IEnumerable<Tag> set, GameUtil.MeasureUnit measure)
+		private void CreateTagSetHeaders(IEnumerable<Tag> set, GameUtil.MeasureUnit measure)
 	{
 		foreach (Tag tag in set)
 		{
@@ -38,7 +38,7 @@ public class ResourceCategoryScreen : KScreen
 		}
 	}
 
-	private void OnHiderClick()
+		private void OnHiderClick()
 	{
 		this.HiderButton.NextState();
 		if (this.HiderButton.CurrentState == 0)
@@ -49,7 +49,7 @@ public class ResourceCategoryScreen : KScreen
 		this.targetContentHideHeight = Mathf.Min(((float)Screen.height - this.maxHeightPadding) / GameScreenManager.Instance.ssOverlayCanvas.GetComponent<KCanvasScaler>().GetCanvasScale(), this.CategoryContainer.rectTransform().rect.height);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (ClusterManager.Instance.activeWorld.worldInventory == null)
 		{
@@ -84,7 +84,7 @@ public class ResourceCategoryScreen : KScreen
 		}
 	}
 
-	private ResourceCategoryHeader NewCategoryHeader(Tag categoryTag, GameUtil.MeasureUnit measure)
+		private ResourceCategoryHeader NewCategoryHeader(Tag categoryTag, GameUtil.MeasureUnit measure)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.Prefab_CategoryBar, this.CategoryContainer.gameObject, false);
 		gameObject.name = "CategoryHeader_" + categoryTag.Name;
@@ -93,7 +93,7 @@ public class ResourceCategoryScreen : KScreen
 		return component;
 	}
 
-	public static string QuantityTextForMeasure(float quantity, GameUtil.MeasureUnit measure)
+		public static string QuantityTextForMeasure(float quantity, GameUtil.MeasureUnit measure)
 	{
 		switch (measure)
 		{
@@ -105,25 +105,25 @@ public class ResourceCategoryScreen : KScreen
 		return quantity.ToString();
 	}
 
-	public static ResourceCategoryScreen Instance;
+		public static ResourceCategoryScreen Instance;
 
-	public GameObject Prefab_CategoryBar;
+		public GameObject Prefab_CategoryBar;
 
-	public Transform CategoryContainer;
+		public Transform CategoryContainer;
 
-	public MultiToggle HiderButton;
+		public MultiToggle HiderButton;
 
-	public KLayoutElement HideTarget;
+		public KLayoutElement HideTarget;
 
-	private float HideSpeedFactor = 12f;
+		private float HideSpeedFactor = 12f;
 
-	private float maxHeightPadding = 480f;
+		private float maxHeightPadding = 480f;
 
-	private float targetContentHideHeight;
+		private float targetContentHideHeight;
 
-	public Dictionary<Tag, ResourceCategoryHeader> DisplayedCategories = new Dictionary<Tag, ResourceCategoryHeader>();
+		public Dictionary<Tag, ResourceCategoryHeader> DisplayedCategories = new Dictionary<Tag, ResourceCategoryHeader>();
 
-	private Tag[] DisplayedCategoryKeys;
+		private Tag[] DisplayedCategoryKeys;
 
-	private int categoryUpdatePacer;
+		private int categoryUpdatePacer;
 }

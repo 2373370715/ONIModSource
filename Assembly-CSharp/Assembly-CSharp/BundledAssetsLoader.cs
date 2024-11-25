@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class BundledAssetsLoader : KMonoBehaviour
 {
-			public BundledAssets Expansion1Assets { get; private set; }
+				public BundledAssets Expansion1Assets { get; private set; }
 
-			public List<BundledAssets> DlcAssetsList { get; private set; }
+				public List<BundledAssets> DlcAssetsList { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		BundledAssetsLoader.instance = this;
 		if (DlcManager.IsExpansion1Active())
@@ -36,5 +36,5 @@ public class BundledAssetsLoader : KMonoBehaviour
 		}
 	}
 
-	public static BundledAssetsLoader instance;
+		public static BundledAssetsLoader instance;
 }

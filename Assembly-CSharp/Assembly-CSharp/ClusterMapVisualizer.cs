@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ClusterMapVisualizer : KMonoBehaviour
 {
-	public void Init(ClusterGridEntity entity, ClusterMapPathDrawer pathDrawer)
+		public void Init(ClusterGridEntity entity, ClusterMapPathDrawer pathDrawer)
 	{
 		this.entity = entity;
 		this.pathDrawer = pathDrawer;
@@ -30,7 +30,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 		entity.Subscribe(543433792, new Action<object>(this.OnClusterDestinationChanged));
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (this.doesTransitionAnimation)
@@ -39,7 +39,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.entity != null)
@@ -65,7 +65,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.entity != null)
 		{
@@ -74,12 +74,12 @@ public class ClusterMapVisualizer : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	private void OnClusterDestinationChanged(object data)
+		private void OnClusterDestinationChanged(object data)
 	{
 		this.RefreshPathDrawing();
 	}
 
-	public void Select(bool selected)
+		public void Select(bool selected)
 	{
 		if (this.animControllers == null || this.animControllers.Count == 0)
 		{
@@ -93,7 +93,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 		this.GetFirstAnimController().SetSymbolVisiblity("selected", selected);
 	}
 
-	public void PlayAnim(string animName, KAnim.PlayMode playMode)
+		public void PlayAnim(string animName, KAnim.PlayMode playMode)
 	{
 		if (this.animControllers.Count > 0)
 		{
@@ -101,12 +101,12 @@ public class ClusterMapVisualizer : KMonoBehaviour
 		}
 	}
 
-	public KBatchedAnimController GetFirstAnimController()
+		public KBatchedAnimController GetFirstAnimController()
 	{
 		return this.GetAnimController(0);
 	}
 
-	public KBatchedAnimController GetAnimController(int index)
+		public KBatchedAnimController GetAnimController(int index)
 	{
 		if (index < this.animControllers.Count)
 		{
@@ -115,12 +115,12 @@ public class ClusterMapVisualizer : KMonoBehaviour
 		return null;
 	}
 
-	public void ManualAddAnimController(KBatchedAnimController externalAnimController)
+		public void ManualAddAnimController(KBatchedAnimController externalAnimController)
 	{
 		this.animControllers.Add(externalAnimController);
 	}
 
-	public void Show(ClusterRevealLevel level)
+		public void Show(ClusterRevealLevel level)
 	{
 		if (!this.entity.IsVisible)
 		{
@@ -180,7 +180,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 		this.entity.OnClusterMapIconShown(level);
 	}
 
-	public void RefreshPathDrawing()
+		public void RefreshPathDrawing()
 	{
 		if (this.entity == null)
 		{
@@ -222,12 +222,12 @@ public class ClusterMapVisualizer : KMonoBehaviour
 		}
 	}
 
-	public void SetAnimRotation(float rotation)
+		public void SetAnimRotation(float rotation)
 	{
 		this.animContainer.localRotation = Quaternion.Euler(0f, 0f, rotation);
 	}
 
-	public float GetPathAngle()
+		public float GetPathAngle()
 	{
 		if (this.mapPath == null)
 		{
@@ -236,7 +236,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 		return this.mapPath.GetRotationForNextSegment();
 	}
 
-	private void ClearAnimControllers()
+		private void ClearAnimControllers()
 	{
 		if (this.animControllers == null)
 		{
@@ -249,38 +249,38 @@ public class ClusterMapVisualizer : KMonoBehaviour
 		this.animControllers.Clear();
 	}
 
-	public KBatchedAnimController animControllerPrefab;
+		public KBatchedAnimController animControllerPrefab;
 
-	public KBatchedAnimController peekControllerPrefab;
+		public KBatchedAnimController peekControllerPrefab;
 
-	public Transform nameTarget;
+		public Transform nameTarget;
 
-	public AlertVignette alertVignette;
+		public AlertVignette alertVignette;
 
-	public bool doesTransitionAnimation;
+		public bool doesTransitionAnimation;
 
-	[HideInInspector]
+		[HideInInspector]
 	public Transform animContainer;
 
-	private ClusterGridEntity entity;
+		private ClusterGridEntity entity;
 
-	private ClusterMapPathDrawer pathDrawer;
+		private ClusterMapPathDrawer pathDrawer;
 
-	private ClusterMapPath mapPath;
+		private ClusterMapPath mapPath;
 
-	private List<KBatchedAnimController> animControllers;
+		private List<KBatchedAnimController> animControllers;
 
-	private bool isSelected;
+		private bool isSelected;
 
-	private ClusterRevealLevel lastRevealLevel;
+		private ClusterRevealLevel lastRevealLevel;
 
-	private class UpdateXPositionParameter : LoopingSoundParameterUpdater
+		private class UpdateXPositionParameter : LoopingSoundParameterUpdater
 	{
-		public UpdateXPositionParameter() : base("Starmap_Position_X")
+				public UpdateXPositionParameter() : base("Starmap_Position_X")
 		{
 		}
 
-		public override void Add(LoopingSoundParameterUpdater.Sound sound)
+				public override void Add(LoopingSoundParameterUpdater.Sound sound)
 		{
 			ClusterMapVisualizer.UpdateXPositionParameter.Entry item = new ClusterMapVisualizer.UpdateXPositionParameter.Entry
 			{
@@ -291,7 +291,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 			this.entries.Add(item);
 		}
 
-		public override void Update(float dt)
+				public override void Update(float dt)
 		{
 			foreach (ClusterMapVisualizer.UpdateXPositionParameter.Entry entry in this.entries)
 			{
@@ -303,7 +303,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 			}
 		}
 
-		public override void Remove(LoopingSoundParameterUpdater.Sound sound)
+				public override void Remove(LoopingSoundParameterUpdater.Sound sound)
 		{
 			for (int i = 0; i < this.entries.Count; i++)
 			{
@@ -315,25 +315,25 @@ public class ClusterMapVisualizer : KMonoBehaviour
 			}
 		}
 
-		private List<ClusterMapVisualizer.UpdateXPositionParameter.Entry> entries = new List<ClusterMapVisualizer.UpdateXPositionParameter.Entry>();
+				private List<ClusterMapVisualizer.UpdateXPositionParameter.Entry> entries = new List<ClusterMapVisualizer.UpdateXPositionParameter.Entry>();
 
-		private struct Entry
+				private struct Entry
 		{
-			public Transform transform;
+						public Transform transform;
 
-			public EventInstance ev;
+						public EventInstance ev;
 
-			public PARAMETER_ID parameterId;
+						public PARAMETER_ID parameterId;
 		}
 	}
 
-	private class UpdateYPositionParameter : LoopingSoundParameterUpdater
+		private class UpdateYPositionParameter : LoopingSoundParameterUpdater
 	{
-		public UpdateYPositionParameter() : base("Starmap_Position_Y")
+				public UpdateYPositionParameter() : base("Starmap_Position_Y")
 		{
 		}
 
-		public override void Add(LoopingSoundParameterUpdater.Sound sound)
+				public override void Add(LoopingSoundParameterUpdater.Sound sound)
 		{
 			ClusterMapVisualizer.UpdateYPositionParameter.Entry item = new ClusterMapVisualizer.UpdateYPositionParameter.Entry
 			{
@@ -344,7 +344,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 			this.entries.Add(item);
 		}
 
-		public override void Update(float dt)
+				public override void Update(float dt)
 		{
 			foreach (ClusterMapVisualizer.UpdateYPositionParameter.Entry entry in this.entries)
 			{
@@ -356,7 +356,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 			}
 		}
 
-		public override void Remove(LoopingSoundParameterUpdater.Sound sound)
+				public override void Remove(LoopingSoundParameterUpdater.Sound sound)
 		{
 			for (int i = 0; i < this.entries.Count; i++)
 			{
@@ -368,25 +368,25 @@ public class ClusterMapVisualizer : KMonoBehaviour
 			}
 		}
 
-		private List<ClusterMapVisualizer.UpdateYPositionParameter.Entry> entries = new List<ClusterMapVisualizer.UpdateYPositionParameter.Entry>();
+				private List<ClusterMapVisualizer.UpdateYPositionParameter.Entry> entries = new List<ClusterMapVisualizer.UpdateYPositionParameter.Entry>();
 
-		private struct Entry
+				private struct Entry
 		{
-			public Transform transform;
+						public Transform transform;
 
-			public EventInstance ev;
+						public EventInstance ev;
 
-			public PARAMETER_ID parameterId;
+						public PARAMETER_ID parameterId;
 		}
 	}
 
-	private class UpdateZoomPercentageParameter : LoopingSoundParameterUpdater
+		private class UpdateZoomPercentageParameter : LoopingSoundParameterUpdater
 	{
-		public UpdateZoomPercentageParameter() : base("Starmap_Zoom_Percentage")
+				public UpdateZoomPercentageParameter() : base("Starmap_Zoom_Percentage")
 		{
 		}
 
-		public override void Add(LoopingSoundParameterUpdater.Sound sound)
+				public override void Add(LoopingSoundParameterUpdater.Sound sound)
 		{
 			ClusterMapVisualizer.UpdateZoomPercentageParameter.Entry item = new ClusterMapVisualizer.UpdateZoomPercentageParameter.Entry
 			{
@@ -396,7 +396,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 			this.entries.Add(item);
 		}
 
-		public override void Update(float dt)
+				public override void Update(float dt)
 		{
 			foreach (ClusterMapVisualizer.UpdateZoomPercentageParameter.Entry entry in this.entries)
 			{
@@ -405,7 +405,7 @@ public class ClusterMapVisualizer : KMonoBehaviour
 			}
 		}
 
-		public override void Remove(LoopingSoundParameterUpdater.Sound sound)
+				public override void Remove(LoopingSoundParameterUpdater.Sound sound)
 		{
 			for (int i = 0; i < this.entries.Count; i++)
 			{
@@ -417,15 +417,15 @@ public class ClusterMapVisualizer : KMonoBehaviour
 			}
 		}
 
-		private List<ClusterMapVisualizer.UpdateZoomPercentageParameter.Entry> entries = new List<ClusterMapVisualizer.UpdateZoomPercentageParameter.Entry>();
+				private List<ClusterMapVisualizer.UpdateZoomPercentageParameter.Entry> entries = new List<ClusterMapVisualizer.UpdateZoomPercentageParameter.Entry>();
 
-		private struct Entry
+				private struct Entry
 		{
-			public Transform transform;
+						public Transform transform;
 
-			public EventInstance ev;
+						public EventInstance ev;
 
-			public PARAMETER_ID parameterId;
+						public PARAMETER_ID parameterId;
 		}
 	}
 }

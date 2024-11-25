@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LiquidConduitBridgeConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidConduitBridge";
 		int width = 3;
@@ -36,21 +36,21 @@ public class LiquidConduitBridgeConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<ConduitBridge>().type = ConduitType.Liquid;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<RequireInputs>());
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitConsumer>());
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<ConduitDispenser>());
 	}
 
-	public const string ID = "LiquidConduitBridge";
+		public const string ID = "LiquidConduitBridge";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
 }

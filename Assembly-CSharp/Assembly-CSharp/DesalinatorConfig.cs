@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DesalinatorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Desalinator";
 		int width = 4;
@@ -33,7 +33,7 @@ public class DesalinatorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		Storage storage = go.AddOrGet<Storage>();
@@ -81,32 +81,32 @@ public class DesalinatorConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<PoweredActiveController.Def>().showWorkingStatus = true;
 	}
 
-	public const string ID = "Desalinator";
+		public const string ID = "Desalinator";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
 
-	private const float INPUT_RATE = 5f;
+		private const float INPUT_RATE = 5f;
 
-	private const float SALT_WATER_TO_SALT_OUTPUT_RATE = 0.35f;
+		private const float SALT_WATER_TO_SALT_OUTPUT_RATE = 0.35f;
 
-	private const float SALT_WATER_TO_CLEAN_WATER_OUTPUT_RATE = 4.65f;
+		private const float SALT_WATER_TO_CLEAN_WATER_OUTPUT_RATE = 4.65f;
 
-	private const float BRINE_TO_SALT_OUTPUT_RATE = 1.5f;
+		private const float BRINE_TO_SALT_OUTPUT_RATE = 1.5f;
 
-	private const float BRINE_TO_CLEAN_WATER_OUTPUT_RATE = 3.5f;
+		private const float BRINE_TO_CLEAN_WATER_OUTPUT_RATE = 3.5f;
 }

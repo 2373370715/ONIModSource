@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Rendering.World
 {
-	public class DynamicSubMesh
+		public class DynamicSubMesh
 	{
-		public DynamicSubMesh(string name, Bounds bounds, int idx_offset)
+				public DynamicSubMesh(string name, Bounds bounds, int idx_offset)
 		{
 			this.IdxOffset = idx_offset;
 			this.Mesh = new Mesh();
@@ -14,7 +14,7 @@ namespace Rendering.World
 			this.Mesh.MarkDynamic();
 		}
 
-		public void Reserve(int vertex_count, int triangle_count)
+				public void Reserve(int vertex_count, int triangle_count)
 		{
 			if (vertex_count > this.Vertices.Length)
 			{
@@ -35,22 +35,22 @@ namespace Rendering.World
 			this.SetTriangles = false;
 		}
 
-		public bool AreTrianglesFull()
+				public bool AreTrianglesFull()
 		{
 			return this.Triangles.Length == this.TriangleIdx;
 		}
 
-		public bool AreVerticesFull()
+				public bool AreVerticesFull()
 		{
 			return this.Vertices.Length == this.VertexIdx;
 		}
 
-		public bool AreUVsFull()
+				public bool AreUVsFull()
 		{
 			return this.UVs.Length == this.UVIdx;
 		}
 
-		public void Commit()
+				public void Commit()
 		{
 			if (this.SetTriangles)
 			{
@@ -70,7 +70,7 @@ namespace Rendering.World
 			this.TriangleIdx = 0;
 		}
 
-		public void AddTriangle(int triangle)
+				public void AddTriangle(int triangle)
 		{
 			int[] triangles = this.Triangles;
 			int triangleIdx = this.TriangleIdx;
@@ -78,7 +78,7 @@ namespace Rendering.World
 			triangles[triangleIdx] = triangle + this.IdxOffset;
 		}
 
-		public void AddUV(Vector2 uv)
+				public void AddUV(Vector2 uv)
 		{
 			Vector2[] uvs = this.UVs;
 			int uvidx = this.UVIdx;
@@ -86,7 +86,7 @@ namespace Rendering.World
 			uvs[uvidx] = uv;
 		}
 
-		public void AddVertex(Vector3 vertex)
+				public void AddVertex(Vector3 vertex)
 		{
 			Vector3[] vertices = this.Vertices;
 			int vertexIdx = this.VertexIdx;
@@ -94,29 +94,29 @@ namespace Rendering.World
 			vertices[vertexIdx] = vertex;
 		}
 
-		public void Render(Vector3 position, Quaternion rotation, Material material, int layer, MaterialPropertyBlock property_block)
+				public void Render(Vector3 position, Quaternion rotation, Material material, int layer, MaterialPropertyBlock property_block)
 		{
 			Graphics.DrawMesh(this.Mesh, position, rotation, material, layer, null, 0, property_block, false, false);
 		}
 
-		public Vector3[] Vertices = new Vector3[0];
+				public Vector3[] Vertices = new Vector3[0];
 
-		public Vector2[] UVs = new Vector2[0];
+				public Vector2[] UVs = new Vector2[0];
 
-		public int[] Triangles = new int[0];
+				public int[] Triangles = new int[0];
 
-		public Mesh Mesh;
+				public Mesh Mesh;
 
-		public bool SetUVs;
+				public bool SetUVs;
 
-		public bool SetTriangles;
+				public bool SetTriangles;
 
-		private int VertexIdx;
+				private int VertexIdx;
 
-		private int UVIdx;
+				private int UVIdx;
 
-		private int TriangleIdx;
+				private int TriangleIdx;
 
-		private int IdxOffset;
+				private int IdxOffset;
 	}
 }

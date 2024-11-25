@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class JetSuitMonitor : GameStateMachine<JetSuitMonitor, JetSuitMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.off;
 		base.Target(this.owner);
@@ -11,25 +11,25 @@ public class JetSuitMonitor : GameStateMachine<JetSuitMonitor, JetSuitMonitor.In
 		this.flying.Enter(new StateMachine<JetSuitMonitor, JetSuitMonitor.Instance, IStateMachineTarget, object>.State.Callback(JetSuitMonitor.StartFlying)).Exit(new StateMachine<JetSuitMonitor, JetSuitMonitor.Instance, IStateMachineTarget, object>.State.Callback(JetSuitMonitor.StopFlying)).EventTransition(GameHashes.PathAdvanced, this.off, new StateMachine<JetSuitMonitor, JetSuitMonitor.Instance, IStateMachineTarget, object>.Transition.ConditionCallback(JetSuitMonitor.ShouldStopFlying)).Update(new Action<JetSuitMonitor.Instance, float>(JetSuitMonitor.Emit), UpdateRate.SIM_200ms, false);
 	}
 
-	public static bool ShouldStartFlying(JetSuitMonitor.Instance smi)
+		public static bool ShouldStartFlying(JetSuitMonitor.Instance smi)
 	{
 		return smi.navigator && smi.navigator.CurrentNavType == NavType.Hover;
 	}
 
-	public static bool ShouldStopFlying(JetSuitMonitor.Instance smi)
+		public static bool ShouldStopFlying(JetSuitMonitor.Instance smi)
 	{
 		return !smi.navigator || smi.navigator.CurrentNavType != NavType.Hover;
 	}
 
-	public static void StartFlying(JetSuitMonitor.Instance smi)
+		public static void StartFlying(JetSuitMonitor.Instance smi)
 	{
 	}
 
-	public static void StopFlying(JetSuitMonitor.Instance smi)
+		public static void StopFlying(JetSuitMonitor.Instance smi)
 	{
 	}
 
-	public static void Emit(JetSuitMonitor.Instance smi, float dt)
+		public static void Emit(JetSuitMonitor.Instance smi, float dt)
 	{
 		if (!smi.navigator)
 		{
@@ -56,23 +56,23 @@ public class JetSuitMonitor : GameStateMachine<JetSuitMonitor, JetSuitMonitor.In
 		}
 	}
 
-	public GameStateMachine<JetSuitMonitor, JetSuitMonitor.Instance, IStateMachineTarget, object>.State off;
+		public GameStateMachine<JetSuitMonitor, JetSuitMonitor.Instance, IStateMachineTarget, object>.State off;
 
-	public GameStateMachine<JetSuitMonitor, JetSuitMonitor.Instance, IStateMachineTarget, object>.State flying;
+		public GameStateMachine<JetSuitMonitor, JetSuitMonitor.Instance, IStateMachineTarget, object>.State flying;
 
-	public StateMachine<JetSuitMonitor, JetSuitMonitor.Instance, IStateMachineTarget, object>.TargetParameter owner;
+		public StateMachine<JetSuitMonitor, JetSuitMonitor.Instance, IStateMachineTarget, object>.TargetParameter owner;
 
-	public new class Instance : GameStateMachine<JetSuitMonitor, JetSuitMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<JetSuitMonitor, JetSuitMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, GameObject owner) : base(master)
+				public Instance(IStateMachineTarget master, GameObject owner) : base(master)
 		{
 			base.sm.owner.Set(owner, base.smi, false);
 			this.navigator = owner.GetComponent<Navigator>();
 			this.jet_suit_tank = master.GetComponent<JetSuitTank>();
 		}
 
-		public Navigator navigator;
+				public Navigator navigator;
 
-		public JetSuitTank jet_suit_tank;
+				public JetSuitTank jet_suit_tank;
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ValveBase")]
 public class ValveBase : KMonoBehaviour, ISaveLoadable
 {
-			public float CurrentFlow
+				public float CurrentFlow
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class ValveBase : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-		public HandleVector<int>.Handle AccumulatorHandle
+			public HandleVector<int>.Handle AccumulatorHandle
 	{
 		get
 		{
@@ -26,7 +26,7 @@ public class ValveBase : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-		public float MaxFlow
+			public float MaxFlow
 	{
 		get
 		{
@@ -34,13 +34,13 @@ public class ValveBase : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.flowAccumulator = Game.Instance.accumulators.Add("Flow", this);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Building component = base.GetComponent<Building>();
@@ -51,14 +51,14 @@ public class ValveBase : KMonoBehaviour, ISaveLoadable
 		this.OnCmpEnable();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.accumulators.Remove(this.flowAccumulator);
 		Conduit.GetFlowManager(this.conduitType).RemoveConduitUpdater(new Action<float>(this.ConduitUpdate));
 		base.OnCleanUp();
 	}
 
-	private void ConduitUpdate(float dt)
+		private void ConduitUpdate(float dt)
 	{
 		ConduitFlow flowManager = Conduit.GetFlowManager(this.conduitType);
 		ConduitFlow.Conduit conduit = flowManager.GetConduit(this.inputCell);
@@ -85,11 +85,11 @@ public class ValveBase : KMonoBehaviour, ISaveLoadable
 		this.UpdateAnim();
 	}
 
-	protected virtual void OnMassTransfer(float amount)
+		protected virtual void OnMassTransfer(float amount)
 	{
 	}
 
-	public virtual void UpdateAnim()
+		public virtual void UpdateAnim()
 	{
 		float averageRate = Game.Instance.accumulators.GetAverageRate(this.flowAccumulator);
 		if (averageRate > 0f)
@@ -117,40 +117,40 @@ public class ValveBase : KMonoBehaviour, ISaveLoadable
 		this.controller.Play("off", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitType conduitType;
 
-	[SerializeField]
+		[SerializeField]
 	public float maxFlow = 0.5f;
 
-	[Serialize]
+		[Serialize]
 	private float currentFlow;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	protected KBatchedAnimController controller;
 
-	protected HandleVector<int>.Handle flowAccumulator = HandleVector<int>.InvalidHandle;
+		protected HandleVector<int>.Handle flowAccumulator = HandleVector<int>.InvalidHandle;
 
-	private int curFlowIdx = -1;
+		private int curFlowIdx = -1;
 
-	private int inputCell;
+		private int inputCell;
 
-	private int outputCell;
+		private int outputCell;
 
-	[SerializeField]
+		[SerializeField]
 	public ValveBase.AnimRangeInfo[] animFlowRanges;
 
-	[Serializable]
+		[Serializable]
 	public struct AnimRangeInfo
 	{
-		public AnimRangeInfo(float min_flow, string anim_name)
+				public AnimRangeInfo(float min_flow, string anim_name)
 		{
 			this.minFlow = min_flow;
 			this.animName = anim_name;
 		}
 
-		public float minFlow;
+				public float minFlow;
 
-		public string animName;
+				public string animName;
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicWattageSensorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicWattageSensorConfig.ID;
 		int width = 1;
@@ -37,7 +37,7 @@ public class LogicWattageSensorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		LogicWattageSensor logicWattageSensor = go.AddOrGet<LogicWattageSensor>();
 		logicWattageSensor.manuallyControlled = false;
@@ -45,7 +45,7 @@ public class LogicWattageSensorConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicWattageSensor";
+		public static string ID = "LogicWattageSensor";
 
-	private static readonly string kanim = "wattage_sensor_kanim";
+		private static readonly string kanim = "wattage_sensor_kanim";
 }

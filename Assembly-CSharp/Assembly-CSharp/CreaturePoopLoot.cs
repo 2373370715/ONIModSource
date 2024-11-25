@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CreaturePoopLoot : GameStateMachine<CreaturePoopLoot, CreaturePoopLoot.Instance, IStateMachineTarget, CreaturePoopLoot.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.idle;
@@ -11,7 +11,7 @@ public class CreaturePoopLoot : GameStateMachine<CreaturePoopLoot, CreaturePoopL
 		this.roll.Enter(new StateMachine<CreaturePoopLoot, CreaturePoopLoot.Instance, IStateMachineTarget, CreaturePoopLoot.Def>.State.Callback(CreaturePoopLoot.RollForLoot)).GoTo(this.idle);
 	}
 
-	public static void RollForLoot(CreaturePoopLoot.Instance smi)
+		public static void RollForLoot(CreaturePoopLoot.Instance smi)
 	{
 		for (int i = 0; i < smi.def.Loot.Length; i++)
 		{
@@ -27,25 +27,25 @@ public class CreaturePoopLoot : GameStateMachine<CreaturePoopLoot, CreaturePoopL
 		}
 	}
 
-	public GameStateMachine<CreaturePoopLoot, CreaturePoopLoot.Instance, IStateMachineTarget, CreaturePoopLoot.Def>.State idle;
+		public GameStateMachine<CreaturePoopLoot, CreaturePoopLoot.Instance, IStateMachineTarget, CreaturePoopLoot.Def>.State idle;
 
-	public GameStateMachine<CreaturePoopLoot, CreaturePoopLoot.Instance, IStateMachineTarget, CreaturePoopLoot.Def>.State roll;
+		public GameStateMachine<CreaturePoopLoot, CreaturePoopLoot.Instance, IStateMachineTarget, CreaturePoopLoot.Def>.State roll;
 
-	public struct LootData
+		public struct LootData
 	{
-		public Tag tag;
+				public Tag tag;
 
-		public float probability;
+				public float probability;
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public CreaturePoopLoot.LootData[] Loot;
+				public CreaturePoopLoot.LootData[] Loot;
 	}
 
-	public new class Instance : GameStateMachine<CreaturePoopLoot, CreaturePoopLoot.Instance, IStateMachineTarget, CreaturePoopLoot.Def>.GameInstance
+		public new class Instance : GameStateMachine<CreaturePoopLoot, CreaturePoopLoot.Instance, IStateMachineTarget, CreaturePoopLoot.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, CreaturePoopLoot.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, CreaturePoopLoot.Def def) : base(master, def)
 		{
 		}
 	}

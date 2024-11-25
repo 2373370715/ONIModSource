@@ -2,13 +2,13 @@
 
 public class MakeBaseSolid : GameStateMachine<MakeBaseSolid, MakeBaseSolid.Instance, IStateMachineTarget, MakeBaseSolid.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.Enter(new StateMachine<MakeBaseSolid, MakeBaseSolid.Instance, IStateMachineTarget, MakeBaseSolid.Def>.State.Callback(MakeBaseSolid.ConvertToSolid)).Exit(new StateMachine<MakeBaseSolid, MakeBaseSolid.Instance, IStateMachineTarget, MakeBaseSolid.Def>.State.Callback(MakeBaseSolid.ConvertToVacuum));
 	}
 
-	private static void ConvertToSolid(MakeBaseSolid.Instance smi)
+		private static void ConvertToSolid(MakeBaseSolid.Instance smi)
 	{
 		if (smi.buildingComplete == null)
 		{
@@ -39,7 +39,7 @@ public class MakeBaseSolid : GameStateMachine<MakeBaseSolid, MakeBaseSolid.Insta
 		}
 	}
 
-	private static void ConvertToVacuum(MakeBaseSolid.Instance smi)
+		private static void ConvertToVacuum(MakeBaseSolid.Instance smi)
 	{
 		if (smi.buildingComplete == null)
 		{
@@ -62,22 +62,22 @@ public class MakeBaseSolid : GameStateMachine<MakeBaseSolid, MakeBaseSolid.Insta
 		}
 	}
 
-	private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)103;
+		private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)103;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public CellOffset[] solidOffsets;
+				public CellOffset[] solidOffsets;
 
-		public bool occupyFoundationLayer = true;
+				public bool occupyFoundationLayer = true;
 	}
 
-	public new class Instance : GameStateMachine<MakeBaseSolid, MakeBaseSolid.Instance, IStateMachineTarget, MakeBaseSolid.Def>.GameInstance
+		public new class Instance : GameStateMachine<MakeBaseSolid, MakeBaseSolid.Instance, IStateMachineTarget, MakeBaseSolid.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, MakeBaseSolid.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, MakeBaseSolid.Def def) : base(master, def)
 		{
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public BuildingComplete buildingComplete;
 	}
 }

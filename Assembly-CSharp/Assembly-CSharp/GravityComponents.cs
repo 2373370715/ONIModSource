@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GravityComponents : KGameObjectComponentManager<GravityComponent>
 {
-	public HandleVector<int>.Handle Add(GameObject go, Vector2 initial_velocity, System.Action on_landed = null)
+		public HandleVector<int>.Handle Add(GameObject go, Vector2 initial_velocity, System.Action on_landed = null)
 	{
 		bool land_on_fake_floors = false;
 		KPrefabID component = go.GetComponent<KPrefabID>();
@@ -16,7 +16,7 @@ public class GravityComponents : KGameObjectComponentManager<GravityComponent>
 		return base.Add(go, new GravityComponent(go.transform, on_landed, initial_velocity, land_on_fake_floors, mayLeaveWorld));
 	}
 
-	public override void FixedUpdate(float dt)
+		public override void FixedUpdate(float dt)
 	{
 		GravityComponents.Tuning tuning = TuningData<GravityComponents.Tuning>.Get();
 		float num = tuning.maxVelocity * tuning.maxVelocity;
@@ -137,19 +137,19 @@ public class GravityComponents : KGameObjectComponentManager<GravityComponent>
 		}
 	}
 
-	private const float Acceleration = -9.8f;
+		private const float Acceleration = -9.8f;
 
-	private static Tag[] LANDS_ON_FAKEFLOOR = new Tag[]
+		private static Tag[] LANDS_ON_FAKEFLOOR = new Tag[]
 	{
-		GameTags.Minion,
+		GameTags.BaseMinion,
 		GameTags.Creatures.Walker,
 		GameTags.Creatures.Hoverer
 	};
 
-	public class Tuning : TuningData<GravityComponents.Tuning>
+		public class Tuning : TuningData<GravityComponents.Tuning>
 	{
-		public float maxVelocity;
+				public float maxVelocity;
 
-		public float maxVelocityInLiquid;
+				public float maxVelocityInLiquid;
 	}
 }

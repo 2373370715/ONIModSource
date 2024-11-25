@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class PuftAlphaConfig : IEntityConfig
 {
-	public static GameObject CreatePuftAlpha(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreatePuftAlpha(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		string symbol_override_prefix = "alp_";
 		GameObject gameObject = BasePuftConfig.BasePuft(id, name, desc, "PuftAlphaBaseTrait", anim_file, is_baby, symbol_override_prefix, 293.15f, 313.15f, 223.15f, 373.15f);
@@ -22,26 +22,26 @@ public class PuftAlphaConfig : IEntityConfig
 			new Diet.Info(new HashSet<Tag>(new Tag[]
 			{
 				SimHashes.ContaminatedOxygen.CreateTag()
-			}), SimHashes.SlimeMold.CreateTag(), PuftAlphaConfig.CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.BAD_2, "SlimeLung", 0f, false, false, false),
+			}), SimHashes.SlimeMold.CreateTag(), PuftAlphaConfig.CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.BAD_2, "SlimeLung", 0f, false, Diet.Info.FoodType.EatSolid, false, null),
 			new Diet.Info(new HashSet<Tag>(new Tag[]
 			{
 				SimHashes.ChlorineGas.CreateTag()
-			}), SimHashes.BleachStone.CreateTag(), PuftAlphaConfig.CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.BAD_2, "SlimeLung", 0f, false, false, false),
+			}), SimHashes.BleachStone.CreateTag(), PuftAlphaConfig.CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.BAD_2, "SlimeLung", 0f, false, Diet.Info.FoodType.EatSolid, false, null),
 			new Diet.Info(new HashSet<Tag>(new Tag[]
 			{
 				SimHashes.Oxygen.CreateTag()
-			}), SimHashes.OxyRock.CreateTag(), PuftAlphaConfig.CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.BAD_2, "SlimeLung", 0f, false, false, false)
+			}), SimHashes.OxyRock.CreateTag(), PuftAlphaConfig.CALORIES_PER_KG_OF_ORE, TUNING.CREATURES.CONVERSION_EFFICIENCY.BAD_2, "SlimeLung", 0f, false, Diet.Info.FoodType.EatSolid, false, null)
 		}.ToArray(), PuftAlphaConfig.CALORIES_PER_KG_OF_ORE, PuftAlphaConfig.MIN_POOP_SIZE_IN_KG);
 		gameObject.AddOrGet<DiseaseSourceVisualizer>().alwaysShowDisease = "SlimeLung";
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject prefab = PuftAlphaConfig.CreatePuftAlpha("PuftAlpha", STRINGS.CREATURES.SPECIES.PUFT.VARIANT_ALPHA.NAME, STRINGS.CREATURES.SPECIES.PUFT.VARIANT_ALPHA.DESC, "puft_kanim", false);
 		string eggId = "PuftAlphaEgg";
@@ -57,35 +57,35 @@ public class PuftAlphaConfig : IEntityConfig
 		return EntityTemplates.ExtendEntityToFertileCreature(prefab, eggId, eggName, eggDesc, egg_anim, egg_MASS, baby_id, fertility_cycles, incubation_cycles, egg_CHANCES_ALPHA, this.GetDlcIds(), egg_SORT_ORDER, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<KBatchedAnimController>().animScale *= 1.1f;
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		BasePuftConfig.OnSpawn(inst);
 	}
 
-	public const string ID = "PuftAlpha";
+		public const string ID = "PuftAlpha";
 
-	public const string BASE_TRAIT_ID = "PuftAlphaBaseTrait";
+		public const string BASE_TRAIT_ID = "PuftAlphaBaseTrait";
 
-	public const string EGG_ID = "PuftAlphaEgg";
+		public const string EGG_ID = "PuftAlphaEgg";
 
-	public const SimHashes CONSUME_ELEMENT = SimHashes.ContaminatedOxygen;
+		public const SimHashes CONSUME_ELEMENT = SimHashes.ContaminatedOxygen;
 
-	public const SimHashes EMIT_ELEMENT = SimHashes.SlimeMold;
+		public const SimHashes EMIT_ELEMENT = SimHashes.SlimeMold;
 
-	public const string EMIT_DISEASE = "SlimeLung";
+		public const string EMIT_DISEASE = "SlimeLung";
 
-	public const float EMIT_DISEASE_PER_KG = 0f;
+		public const float EMIT_DISEASE_PER_KG = 0f;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 30f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 30f;
 
-	private static float CALORIES_PER_KG_OF_ORE = PuftTuning.STANDARD_CALORIES_PER_CYCLE / PuftAlphaConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = PuftTuning.STANDARD_CALORIES_PER_CYCLE / PuftAlphaConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 5f;
+		private static float MIN_POOP_SIZE_IN_KG = 5f;
 
-	public static int EGG_SORT_ORDER = PuftConfig.EGG_SORT_ORDER + 1;
+		public static int EGG_SORT_ORDER = PuftConfig.EGG_SORT_ORDER + 1;
 }

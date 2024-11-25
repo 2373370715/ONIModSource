@@ -4,15 +4,15 @@ using Klei.AI;
 
 namespace Database
 {
-	public class Personalities : ResourceSet<Personality>
+		public class Personalities : ResourceSet<Personality>
 	{
-		public Personalities()
+				public Personalities()
 		{
 			foreach (Personalities.PersonalityInfo personalityInfo in AsyncLoadManager<IGlobalAsyncLoader>.AsyncLoader<Personalities.PersonalityLoader>.Get().entries)
 			{
 				if (string.IsNullOrEmpty(personalityInfo.RequiredDlcId) || DlcManager.IsContentSubscribed(personalityInfo.RequiredDlcId))
 				{
-					base.Add(new Personality(personalityInfo.Name.ToUpper(), Strings.Get(string.Format("STRINGS.DUPLICANTS.PERSONALITIES.{0}.NAME", personalityInfo.Name.ToUpper())), personalityInfo.Gender.ToUpper(), personalityInfo.PersonalityType, personalityInfo.StressTrait, personalityInfo.JoyTrait, personalityInfo.StickerType, personalityInfo.CongenitalTrait, personalityInfo.HeadShape, personalityInfo.Mouth, personalityInfo.Neck, personalityInfo.Eyes, personalityInfo.Hair, personalityInfo.Body, personalityInfo.Belt, personalityInfo.Cuff, personalityInfo.Foot, personalityInfo.Hand, personalityInfo.Pelvis, personalityInfo.Leg, Strings.Get(string.Format("STRINGS.DUPLICANTS.PERSONALITIES.{0}.DESC", personalityInfo.Name.ToUpper())), personalityInfo.ValidStarter, personalityInfo.Grave)
+					base.Add(new Personality(personalityInfo.Name.ToUpper(), Strings.Get(string.Format("STRINGS.DUPLICANTS.PERSONALITIES.{0}.NAME", personalityInfo.Name.ToUpper())), personalityInfo.Gender.ToUpper(), personalityInfo.PersonalityType, personalityInfo.StressTrait, personalityInfo.JoyTrait, personalityInfo.StickerType, personalityInfo.CongenitalTrait, personalityInfo.HeadShape, personalityInfo.Mouth, personalityInfo.Neck, personalityInfo.Eyes, personalityInfo.Hair, personalityInfo.Body, personalityInfo.Belt, personalityInfo.Cuff, personalityInfo.Foot, personalityInfo.Hand, personalityInfo.Pelvis, personalityInfo.Leg, Strings.Get(string.Format("STRINGS.DUPLICANTS.PERSONALITIES.{0}.DESC", personalityInfo.Name.ToUpper())), personalityInfo.ValidStarter, personalityInfo.Grave, personalityInfo.Model)
 					{
 						requiredDlcId = personalityInfo.RequiredDlcId
 					});
@@ -20,7 +20,7 @@ namespace Database
 			}
 		}
 
-		private void AddTrait(Personality personality, string trait_name)
+				private void AddTrait(Personality personality, string trait_name)
 		{
 			Trait trait = Db.Get().traits.TryGet(trait_name);
 			if (trait != null)
@@ -29,7 +29,7 @@ namespace Database
 			}
 		}
 
-		private void SetAttribute(Personality personality, string attribute_name, int value)
+				private void SetAttribute(Personality personality, string attribute_name, int value)
 		{
 			Klei.AI.Attribute attribute = Db.Get().Attributes.TryGet(attribute_name);
 			if (attribute == null)
@@ -40,22 +40,32 @@ namespace Database
 			personality.SetAttribute(attribute, value);
 		}
 
-		public List<Personality> GetStartingPersonalities()
+				public List<Personality> GetStartingPersonalities()
 		{
 			return this.resources.FindAll((Personality x) => x.startingMinion);
 		}
 
-		public List<Personality> GetAll(bool onlyEnabledMinions, bool onlyStartingMinions)
+				public List<Personality> GetAll(bool onlyEnabledMinions, bool onlyStartingMinions)
 		{
 			return this.resources.FindAll((Personality personality) => (!onlyStartingMinions || personality.startingMinion) && (!onlyEnabledMinions || !personality.Disabled) && (!(SaveLoader.Instance != null) || !DlcManager.IsDlcId(personality.requiredDlcId) || SaveLoader.Instance.GameInfo.dlcIds.Contains(personality.requiredDlcId)));
 		}
 
-		public Personality GetRandom(bool onlyEnabledMinions, bool onlyStartingMinions)
+				public Personality GetRandom(bool onlyEnabledMinions, bool onlyStartingMinions)
 		{
 			return this.GetAll(onlyEnabledMinions, onlyStartingMinions).GetRandom<Personality>();
 		}
 
-		public Personality GetPersonalityFromNameStringKey(string name_string_key)
+				public Personality GetRandom(Tag model, bool onlyEnabledMinions, bool onlyStartingMinions)
+		{
+			return this.GetAll(onlyEnabledMinions, onlyStartingMinions).FindAll((Personality personality) => personality.model == model || model == null).GetRandom<Personality>();
+		}
+
+				public Personality GetRandom(List<Tag> models, bool onlyEnabledMinions, bool onlyStartingMinions)
+		{
+			return this.GetAll(onlyEnabledMinions, onlyStartingMinions).FindAll((Personality personality) => models.Contains(personality.model)).GetRandom<Personality>();
+		}
+
+				public Personality GetPersonalityFromNameStringKey(string name_string_key)
 		{
 			foreach (Personality personality in Db.Get().Personalities.resources)
 			{
@@ -67,63 +77,65 @@ namespace Database
 			return null;
 		}
 
-		public class PersonalityLoader : AsyncCsvLoader<Personalities.PersonalityLoader, Personalities.PersonalityInfo>
+				public class PersonalityLoader : AsyncCsvLoader<Personalities.PersonalityLoader, Personalities.PersonalityInfo>
 		{
-			public PersonalityLoader() : base(Assets.instance.personalitiesFile)
+						public PersonalityLoader() : base(Assets.instance.personalitiesFile)
 			{
 			}
 
-			public override void Run()
+						public override void Run()
 			{
 				base.Run();
 			}
 		}
 
-		public class PersonalityInfo : Resource
+				public class PersonalityInfo : Resource
 		{
-			public int HeadShape;
+						public int HeadShape;
 
-			public int Mouth;
+						public int Mouth;
 
-			public int Neck;
+						public int Neck;
 
-			public int Eyes;
+						public int Eyes;
 
-			public int Hair;
+						public int Hair;
 
-			public int Body;
+						public int Body;
 
-			public int Belt;
+						public int Belt;
 
-			public int Cuff;
+						public int Cuff;
 
-			public int Foot;
+						public int Foot;
 
-			public int Hand;
+						public int Hand;
 
-			public int Pelvis;
+						public int Pelvis;
 
-			public int Leg;
+						public int Leg;
 
-			public string Gender;
+						public string Gender;
 
-			public string PersonalityType;
+						public string PersonalityType;
 
-			public string StressTrait;
+						public string StressTrait;
 
-			public string JoyTrait;
+						public string JoyTrait;
 
-			public string StickerType;
+						public string StickerType;
 
-			public string CongenitalTrait;
+						public string CongenitalTrait;
 
-			public string Design;
+						public string Design;
 
-			public bool ValidStarter;
+						public bool ValidStarter;
 
-			public string Grave;
+						public string Grave;
 
-			public string RequiredDlcId;
+						public string Model;
+
+						public string RequiredDlcId;
 		}
 	}
 }

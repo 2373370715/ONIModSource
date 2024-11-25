@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/ToiletWorkableClean")]
 public class ToiletWorkableClean : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workerStatusItem = Db.Get().DuplicantStatusItems.Cleaning;
@@ -26,20 +26,20 @@ public class ToiletWorkableClean : Workable
 		};
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.timesCleaned++;
 		base.OnCompleteWork(worker);
 	}
 
-	[Serialize]
+		[Serialize]
 	public int timesCleaned;
 
-	private static readonly HashedString[] CLEAN_ANIMS = new HashedString[]
+		private static readonly HashedString[] CLEAN_ANIMS = new HashedString[]
 	{
 		"unclog_pre",
 		"unclog_loop"
 	};
 
-	private static readonly HashedString PST_ANIM = new HashedString("unclog_pst");
+		private static readonly HashedString PST_ANIM = new HashedString("unclog_pst");
 }

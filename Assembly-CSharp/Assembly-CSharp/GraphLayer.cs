@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/GraphLayer")]
 public class GraphLayer : KMonoBehaviour
 {
-		public GraphBase graph
+			public GraphBase graph
 	{
 		get
 		{
@@ -17,6 +17,6 @@ public class GraphLayer : KMonoBehaviour
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private GraphBase graph_base;
 }

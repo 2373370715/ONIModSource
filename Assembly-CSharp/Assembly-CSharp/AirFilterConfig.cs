@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AirFilterConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "AirFilter";
 		int width = 1;
@@ -29,7 +29,7 @@ public class AirFilterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		Prioritizable.AddRef(go);
@@ -73,20 +73,20 @@ public class AirFilterConfig : IBuildingConfig
 		go.AddOrGet<KBatchedAnimController>().randomiseLoopedOffset = true;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<ActiveController.Def>();
 	}
 
-	public const string ID = "AirFilter";
+		public const string ID = "AirFilter";
 
-	public const float DIRTY_AIR_CONSUMPTION_RATE = 0.1f;
+		public const float DIRTY_AIR_CONSUMPTION_RATE = 0.1f;
 
-	private const float SAND_CONSUMPTION_RATE = 0.13333334f;
+		private const float SAND_CONSUMPTION_RATE = 0.13333334f;
 
-	private const float REFILL_RATE = 2400f;
+		private const float REFILL_RATE = 2400f;
 
-	private const float SAND_STORAGE_AMOUNT = 320.00003f;
+		private const float SAND_STORAGE_AMOUNT = 320.00003f;
 
-	private const float CLAY_PER_LOAD = 10f;
+		private const float CLAY_PER_LOAD = 10f;
 }

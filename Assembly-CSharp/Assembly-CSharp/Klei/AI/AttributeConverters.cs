@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[AddComponentMenu("KMonoBehaviour/scripts/AttributeConverters")]
+		[AddComponentMenu("KMonoBehaviour/scripts/AttributeConverters")]
 	public class AttributeConverters : KMonoBehaviour
 	{
-				public int Count
+						public int Count
 		{
 			get
 			{
@@ -15,7 +15,7 @@ namespace Klei.AI
 			}
 		}
 
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			foreach (AttributeInstance attributeInstance in this.GetAttributes())
 			{
@@ -27,7 +27,7 @@ namespace Klei.AI
 			}
 		}
 
-		public AttributeConverterInstance Get(AttributeConverter converter)
+				public AttributeConverterInstance Get(AttributeConverter converter)
 		{
 			foreach (AttributeConverterInstance attributeConverterInstance in this.converters)
 			{
@@ -39,7 +39,7 @@ namespace Klei.AI
 			return null;
 		}
 
-		public AttributeConverterInstance GetConverter(string id)
+				public AttributeConverterInstance GetConverter(string id)
 		{
 			foreach (AttributeConverterInstance attributeConverterInstance in this.converters)
 			{
@@ -51,6 +51,6 @@ namespace Klei.AI
 			return null;
 		}
 
-		public List<AttributeConverterInstance> converters = new List<AttributeConverterInstance>();
+				public List<AttributeConverterInstance> converters = new List<AttributeConverterInstance>();
 	}
 }

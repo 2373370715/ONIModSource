@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class ChorePreconditions
 {
-		public static ChorePreconditions instance
+			public static ChorePreconditions instance
 	{
 		get
 		{
@@ -19,12 +19,12 @@ public class ChorePreconditions
 		}
 	}
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		ChorePreconditions._instance = null;
 	}
 
-	public ChorePreconditions()
+		public ChorePreconditions()
 	{
 		Chore.Precondition precondition = default(Chore.Precondition);
 		precondition.id = "IsPreemptable";
@@ -34,6 +34,7 @@ public class ChorePreconditions
 		{
 			return context.isAttemptingOverride || context.chore.CanPreempt(context) || context.chore.driver == null;
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsPreemptable = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "HasUrge";
@@ -53,6 +54,7 @@ public class ChorePreconditions
 			}
 			return false;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.HasUrge = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsValid";
@@ -62,6 +64,7 @@ public class ChorePreconditions
 		{
 			return !context.chore.isNull && context.chore.IsValid();
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsValid = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsPermitted";
@@ -70,6 +73,7 @@ public class ChorePreconditions
 		{
 			return context.consumerState.consumer.IsPermittedOrEnabled(context.choreTypeForPermission, context.chore);
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsPermitted = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsAssignedToMe";
@@ -81,6 +85,7 @@ public class ChorePreconditions
 			IAssignableIdentity component = context.consumerState.gameObject.GetComponent<IAssignableIdentity>();
 			return component != null && assignable.IsAssignedTo(component);
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsAssignedtoMe = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsInMyRoom";
@@ -134,6 +139,7 @@ public class ChorePreconditions
 			}
 			return false;
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsInMyRoom = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsPreferredAssignable";
@@ -144,6 +150,7 @@ public class ChorePreconditions
 			Assignable assignable = (Assignable)data;
 			return Game.Instance.assignmentManager.GetPreferredAssignables(context.consumerState.assignables, assignable.slot).Contains(assignable);
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsPreferredAssignable = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsPreferredAssignableOrUrgent";
@@ -157,8 +164,14 @@ public class ChorePreconditions
 				return true;
 			}
 			PeeChoreMonitor.Instance smi = context.consumerState.gameObject.GetSMI<PeeChoreMonitor.Instance>();
-			return smi != null && smi.IsInsideState(smi.sm.critical);
+			if (smi != null)
+			{
+				return smi.IsInsideState(smi.sm.critical);
+			}
+			GunkMonitor.Instance smi2 = context.consumerState.gameObject.GetSMI<GunkMonitor.Instance>();
+			return smi2 != null && smi2.IsInsideState(smi2.sm.criticalUrge);
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsPreferredAssignableOrUrgentBladder = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsNotTransferArm";
@@ -167,6 +180,7 @@ public class ChorePreconditions
 		{
 			return !context.consumerState.hasSolidTransferArm;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsNotTransferArm = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "HasSkillPerk";
@@ -195,6 +209,7 @@ public class ChorePreconditions
 			}
 			return false;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.HasSkillPerk = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsMinion";
@@ -203,6 +218,7 @@ public class ChorePreconditions
 		{
 			return context.consumerState.resume != null;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsMinion = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsMoreSatisfyingEarly";
@@ -241,6 +257,7 @@ public class ChorePreconditions
 			}
 			return context.priority > currentChore.choreType.priority;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsMoreSatisfyingEarly = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsMoreSatisfyingLate";
@@ -275,6 +292,7 @@ public class ChorePreconditions
 			}
 			return context.priority > currentChore.choreType.priority;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsMoreSatisfyingLate = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "CanChat";
@@ -284,6 +302,7 @@ public class ChorePreconditions
 			KMonoBehaviour kmonoBehaviour = (KMonoBehaviour)data;
 			return !(context.consumerState.consumer == null) && !(context.consumerState.navigator == null) && !(kmonoBehaviour == null) && context.consumerState.navigator.CanReach(Grid.PosToCell(kmonoBehaviour));
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsChattable = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsNotRedAlert";
@@ -292,6 +311,7 @@ public class ChorePreconditions
 		{
 			return context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.topPriority || !context.chore.gameObject.GetMyWorld().IsRedAlert();
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsNotRedAlert = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsScheduledTime";
@@ -306,6 +326,7 @@ public class ChorePreconditions
 			ScheduleBlock scheduleBlock = context.consumerState.scheduleBlock;
 			return scheduleBlock == null || scheduleBlock.IsAllowed(type);
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsScheduledTime = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "CanMoveTo";
@@ -330,6 +351,7 @@ public class ChorePreconditions
 			}
 			return false;
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.CanMoveTo = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "CanMoveToCell";
@@ -353,9 +375,10 @@ public class ChorePreconditions
 			}
 			return false;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.CanMoveToCell = precondition;
 		precondition = default(Chore.Precondition);
-		precondition.id = "CanMoveTo";
+		precondition.id = "CanMoveToDynamicCell";
 		precondition.description = DUPLICANTS.CHORES.PRECONDITIONS.CAN_MOVE_TO;
 		precondition.fn = delegate(ref Chore.Precondition.Context context, object data)
 		{
@@ -381,7 +404,41 @@ public class ChorePreconditions
 			}
 			return false;
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.CanMoveToDynamicCell = precondition;
+		precondition = default(Chore.Precondition);
+		precondition.id = "CanMoveToDynamicCellUntilBegun";
+		precondition.description = DUPLICANTS.CHORES.PRECONDITIONS.CAN_MOVE_TO;
+		precondition.fn = delegate(ref Chore.Precondition.Context context, object data)
+		{
+			if (context.consumerState.consumer == null)
+			{
+				return false;
+			}
+			if (context.chore.InProgress())
+			{
+				return true;
+			}
+			Func<int> func = (Func<int>)data;
+			if (func == null)
+			{
+				return false;
+			}
+			int cell = func();
+			if (!Grid.IsValidCell(cell))
+			{
+				return false;
+			}
+			int num;
+			if (context.consumerState.consumer.GetNavigationCost(cell, out num))
+			{
+				context.cost += num;
+				return true;
+			}
+			return false;
+		};
+		precondition.canExecuteOnAnyThread = false;
+		this.CanMoveToDynamicCellUntilBegun = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "CanPickup";
 		precondition.description = DUPLICANTS.CHORES.PRECONDITIONS.CAN_PICKUP;
@@ -390,6 +447,7 @@ public class ChorePreconditions
 			Pickupable pickupable = (Pickupable)data;
 			return !(pickupable == null) && !(context.consumerState.consumer == null) && !pickupable.KPrefabID.HasTag(GameTags.StoredPrivate) && pickupable.CouldBePickedUpByMinion(context.consumerState.gameObject) && context.consumerState.consumer.CanReach(pickupable);
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.CanPickup = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsAwake";
@@ -401,8 +459,9 @@ public class ChorePreconditions
 				return false;
 			}
 			StaminaMonitor.Instance smi = context.consumerState.consumer.GetSMI<StaminaMonitor.Instance>();
-			return !smi.IsInsideState(smi.sm.sleepy.sleeping);
+			return smi == null || !smi.IsInsideState(smi.sm.sleepy.sleeping);
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsAwake = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsStanding";
@@ -411,6 +470,7 @@ public class ChorePreconditions
 		{
 			return !(context.consumerState.consumer == null) && !(context.consumerState.navigator == null) && context.consumerState.navigator.CurrentNavType == NavType.Floor;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsStanding = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsMoving";
@@ -419,6 +479,7 @@ public class ChorePreconditions
 		{
 			return !(context.consumerState.consumer == null) && !(context.consumerState.navigator == null) && context.consumerState.navigator.IsMoving();
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsMoving = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsOffLadder";
@@ -427,6 +488,7 @@ public class ChorePreconditions
 		{
 			return !(context.consumerState.consumer == null) && !(context.consumerState.navigator == null) && context.consumerState.navigator.CurrentNavType != NavType.Ladder && context.consumerState.navigator.CurrentNavType != NavType.Pole;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsOffLadder = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "NotInTube";
@@ -435,6 +497,7 @@ public class ChorePreconditions
 		{
 			return !(context.consumerState.consumer == null) && !(context.consumerState.navigator == null) && context.consumerState.navigator.CurrentNavType != NavType.Tube;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.NotInTube = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "ConsumerHasTrait";
@@ -445,6 +508,7 @@ public class ChorePreconditions
 			Traits traits = context.consumerState.traits;
 			return !(traits == null) && traits.HasTrait(trait_id);
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.ConsumerHasTrait = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsOperational";
@@ -453,6 +517,7 @@ public class ChorePreconditions
 		{
 			return (data as Operational).IsOperational;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsOperational = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsNotMarkedForDeconstruction";
@@ -462,6 +527,7 @@ public class ChorePreconditions
 			Deconstructable deconstructable = data as Deconstructable;
 			return deconstructable == null || !deconstructable.IsMarkedForDeconstruction();
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsNotMarkedForDeconstruction = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsNotMarkedForDisable";
@@ -471,6 +537,7 @@ public class ChorePreconditions
 			BuildingEnabledButton buildingEnabledButton = data as BuildingEnabledButton;
 			return buildingEnabledButton == null || (buildingEnabledButton.IsEnabled && !buildingEnabledButton.WaitingForDisable);
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsNotMarkedForDisable = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsFunctional";
@@ -479,6 +546,7 @@ public class ChorePreconditions
 		{
 			return (data as Operational).IsFunctional;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsFunctional = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsOverrideTargetNullOrMe";
@@ -487,6 +555,7 @@ public class ChorePreconditions
 		{
 			return context.isAttemptingOverride || context.chore.overrideTarget == null || context.chore.overrideTarget == context.consumerState.consumer;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsOverrideTargetNullOrMe = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "NotChoreCreator";
@@ -496,6 +565,7 @@ public class ChorePreconditions
 			GameObject y = (GameObject)data;
 			return !(context.consumerState.consumer == null) && !(context.consumerState.gameObject == y);
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.NotChoreCreator = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsGettingMoreStressed";
@@ -504,6 +574,7 @@ public class ChorePreconditions
 		{
 			return Db.Get().Amounts.Stress.Lookup(context.consumerState.gameObject).GetDelta() > 0f;
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsGettingMoreStressed = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsAllowedByAutomation";
@@ -512,6 +583,7 @@ public class ChorePreconditions
 		{
 			return ((Automatable)data).AllowedByAutomation(context.consumerState.hasSolidTransferArm);
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsAllowedByAutomation = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "HasTag";
@@ -520,6 +592,7 @@ public class ChorePreconditions
 			Tag tag = (Tag)data;
 			return context.consumerState.prefabid.HasTag(tag);
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.HasTag = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "CheckBehaviourPrecondition";
@@ -528,6 +601,7 @@ public class ChorePreconditions
 			Tag tag = (Tag)data;
 			return context.consumerState.consumer.RunBehaviourPrecondition(tag);
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.CheckBehaviourPrecondition = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "CanDoWorkerPrioritizable";
@@ -551,6 +625,7 @@ public class ChorePreconditions
 			}
 			return false;
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.CanDoWorkerPrioritizable = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsExclusivelyAvailableWithOtherChores";
@@ -566,6 +641,7 @@ public class ChorePreconditions
 			}
 			return true;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.IsExclusivelyAvailableWithOtherChores = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsBladderFull";
@@ -575,6 +651,7 @@ public class ChorePreconditions
 			BladderMonitor.Instance smi = context.consumerState.gameObject.GetSMI<BladderMonitor.Instance>();
 			return smi != null && smi.NeedsToPee();
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsBladderFull = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsBladderNotFull";
@@ -584,6 +661,7 @@ public class ChorePreconditions
 			BladderMonitor.Instance smi = context.consumerState.gameObject.GetSMI<BladderMonitor.Instance>();
 			return smi == null || !smi.NeedsToPee();
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsBladderNotFull = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "NoDeadBodies";
@@ -592,15 +670,27 @@ public class ChorePreconditions
 		{
 			return Components.LiveMinionIdentities.Count == Components.MinionIdentities.Count;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.NoDeadBodies = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "NoRobots";
 		precondition.description = DUPLICANTS.CHORES.PRECONDITIONS.NOT_A_ROBOT;
+		precondition.fn = delegate(ref Chore.Precondition.Context context, object exempt_robot)
+		{
+			Tag b = exempt_robot as string;
+			return context.consumerState.resume != null || context.consumerState.prefabid.PrefabTag == b;
+		};
+		precondition.canExecuteOnAnyThread = true;
+		this.IsNotARobot = precondition;
+		precondition = default(Chore.Precondition);
+		precondition.id = "NoBionic";
+		precondition.description = DUPLICANTS.CHORES.PRECONDITIONS.NOT_A_BIONIC;
 		precondition.fn = delegate(ref Chore.Precondition.Context context, object data)
 		{
-			return context.consumerState.resume != null;
+			return context.consumerState.prefabid.PrefabTag != BionicMinionConfig.ID;
 		};
-		this.IsNotARobot = precondition;
+		precondition.canExecuteOnAnyThread = true;
+		this.IsNotABionic = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "NotCurrentlyPeeing";
 		precondition.description = DUPLICANTS.CHORES.PRECONDITIONS.CURRENTLY_PEEING;
@@ -615,6 +705,7 @@ public class ChorePreconditions
 			}
 			return result;
 		};
+		precondition.canExecuteOnAnyThread = true;
 		this.NotCurrentlyPeeing = precondition;
 		precondition = default(Chore.Precondition);
 		precondition.id = "IsRocketTravelling";
@@ -624,97 +715,102 @@ public class ChorePreconditions
 			Clustercraft component = ClusterManager.Instance.GetWorld(context.chore.gameObject.GetMyWorldId()).GetComponent<Clustercraft>();
 			return !(component == null) && component.IsTravellingAndFueled();
 		};
+		precondition.canExecuteOnAnyThread = false;
 		this.IsRocketTravelling = precondition;
 		base..ctor();
 	}
 
-	private static ChorePreconditions _instance;
+		private static ChorePreconditions _instance;
 
-	public Chore.Precondition IsPreemptable;
+		public Chore.Precondition IsPreemptable;
 
-	public Chore.Precondition HasUrge;
+		public Chore.Precondition HasUrge;
 
-	public Chore.Precondition IsValid;
+		public Chore.Precondition IsValid;
 
-	public Chore.Precondition IsPermitted;
+		public Chore.Precondition IsPermitted;
 
-	public Chore.Precondition IsAssignedtoMe;
+		public Chore.Precondition IsAssignedtoMe;
 
-	public Chore.Precondition IsInMyRoom;
+		public Chore.Precondition IsInMyRoom;
 
-	public Chore.Precondition IsPreferredAssignable;
+		public Chore.Precondition IsPreferredAssignable;
 
-	public Chore.Precondition IsPreferredAssignableOrUrgentBladder;
+		public Chore.Precondition IsPreferredAssignableOrUrgentBladder;
 
-	public Chore.Precondition IsNotTransferArm;
+		public Chore.Precondition IsNotTransferArm;
 
-	public Chore.Precondition HasSkillPerk;
+		public Chore.Precondition HasSkillPerk;
 
-	public Chore.Precondition IsMinion;
+		public Chore.Precondition IsMinion;
 
-	public Chore.Precondition IsMoreSatisfyingEarly;
+		public Chore.Precondition IsMoreSatisfyingEarly;
 
-	public Chore.Precondition IsMoreSatisfyingLate;
+		public Chore.Precondition IsMoreSatisfyingLate;
 
-	public Chore.Precondition IsChattable;
+		public Chore.Precondition IsChattable;
 
-	public Chore.Precondition IsNotRedAlert;
+		public Chore.Precondition IsNotRedAlert;
 
-	public Chore.Precondition IsScheduledTime;
+		public Chore.Precondition IsScheduledTime;
 
-	public Chore.Precondition CanMoveTo;
+		public Chore.Precondition CanMoveTo;
 
-	public Chore.Precondition CanMoveToCell;
+		public Chore.Precondition CanMoveToCell;
 
-	public Chore.Precondition CanMoveToDynamicCell;
+		public Chore.Precondition CanMoveToDynamicCell;
 
-	public Chore.Precondition CanPickup;
+		public Chore.Precondition CanMoveToDynamicCellUntilBegun;
 
-	public Chore.Precondition IsAwake;
+		public Chore.Precondition CanPickup;
 
-	public Chore.Precondition IsStanding;
+		public Chore.Precondition IsAwake;
 
-	public Chore.Precondition IsMoving;
+		public Chore.Precondition IsStanding;
 
-	public Chore.Precondition IsOffLadder;
+		public Chore.Precondition IsMoving;
 
-	public Chore.Precondition NotInTube;
+		public Chore.Precondition IsOffLadder;
 
-	public Chore.Precondition ConsumerHasTrait;
+		public Chore.Precondition NotInTube;
 
-	public Chore.Precondition IsOperational;
+		public Chore.Precondition ConsumerHasTrait;
 
-	public Chore.Precondition IsNotMarkedForDeconstruction;
+		public Chore.Precondition IsOperational;
 
-	public Chore.Precondition IsNotMarkedForDisable;
+		public Chore.Precondition IsNotMarkedForDeconstruction;
 
-	public Chore.Precondition IsFunctional;
+		public Chore.Precondition IsNotMarkedForDisable;
 
-	public Chore.Precondition IsOverrideTargetNullOrMe;
+		public Chore.Precondition IsFunctional;
 
-	public Chore.Precondition NotChoreCreator;
+		public Chore.Precondition IsOverrideTargetNullOrMe;
 
-	public Chore.Precondition IsGettingMoreStressed;
+		public Chore.Precondition NotChoreCreator;
 
-	public Chore.Precondition IsAllowedByAutomation;
+		public Chore.Precondition IsGettingMoreStressed;
 
-	public Chore.Precondition HasTag;
+		public Chore.Precondition IsAllowedByAutomation;
 
-	public Chore.Precondition CheckBehaviourPrecondition;
+		public Chore.Precondition HasTag;
 
-	public Chore.Precondition CanDoWorkerPrioritizable;
+		public Chore.Precondition CheckBehaviourPrecondition;
 
-	public Chore.Precondition IsExclusivelyAvailableWithOtherChores;
+		public Chore.Precondition CanDoWorkerPrioritizable;
 
-	public Chore.Precondition IsBladderFull;
+		public Chore.Precondition IsExclusivelyAvailableWithOtherChores;
 
-	public Chore.Precondition IsBladderNotFull;
+		public Chore.Precondition IsBladderFull;
 
-	public Chore.Precondition NoDeadBodies;
+		public Chore.Precondition IsBladderNotFull;
 
-	public Chore.Precondition IsNotARobot;
+		public Chore.Precondition NoDeadBodies;
 
-	public Chore.Precondition NotCurrentlyPeeing;
+		public Chore.Precondition IsNotARobot;
 
-	public Chore.Precondition IsRocketTravelling;
+		public Chore.Precondition IsNotABionic;
+
+		public Chore.Precondition NotCurrentlyPeeing;
+
+		public Chore.Precondition IsRocketTravelling;
 }

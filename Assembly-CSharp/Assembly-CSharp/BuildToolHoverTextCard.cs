@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class BuildToolHoverTextCard : HoverTextConfiguration
 {
-	public override void UpdateHoverElements(List<KSelectable> hoverObjects)
+		public override void UpdateHoverElements(List<KSelectable> hoverObjects)
 	{
 		HoverTextScreen instance = HoverTextScreen.Instance;
 		HoverTextDrawer hoverTextDrawer = instance.BeginDrawing();
@@ -185,5 +185,5 @@ public class BuildToolHoverTextCard : HoverTextConfiguration
 		hoverTextDrawer.EndDrawing();
 	}
 
-	public BuildingDef currentDef;
+		public BuildingDef currentDef;
 }

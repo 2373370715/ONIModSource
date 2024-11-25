@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WhiteBoard : KGameObjectComponentManager<WhiteBoard.Data>, IKComponentManager
 {
-	public HandleVector<int>.Handle Add(GameObject go)
+		public HandleVector<int>.Handle Add(GameObject go)
 	{
 		return base.Add(go, new WhiteBoard.Data
 		{
@@ -12,7 +12,7 @@ public class WhiteBoard : KGameObjectComponentManager<WhiteBoard.Data>, IKCompon
 		});
 	}
 
-	protected override void OnCleanUp(HandleVector<int>.Handle h)
+		protected override void OnCleanUp(HandleVector<int>.Handle h)
 	{
 		WhiteBoard.Data data = base.GetData(h);
 		data.keyValueStore.Clear();
@@ -20,17 +20,17 @@ public class WhiteBoard : KGameObjectComponentManager<WhiteBoard.Data>, IKCompon
 		base.SetData(h, data);
 	}
 
-	public bool HasValue(HandleVector<int>.Handle h, HashedString key)
+		public bool HasValue(HandleVector<int>.Handle h, HashedString key)
 	{
 		return h.IsValid() && base.GetData(h).keyValueStore.ContainsKey(key);
 	}
 
-	public object GetValue(HandleVector<int>.Handle h, HashedString key)
+		public object GetValue(HandleVector<int>.Handle h, HashedString key)
 	{
 		return base.GetData(h).keyValueStore[key];
 	}
 
-	public void SetValue(HandleVector<int>.Handle h, HashedString key, object value)
+		public void SetValue(HandleVector<int>.Handle h, HashedString key, object value)
 	{
 		if (!h.IsValid())
 		{
@@ -41,7 +41,7 @@ public class WhiteBoard : KGameObjectComponentManager<WhiteBoard.Data>, IKCompon
 		base.SetData(h, data);
 	}
 
-	public void RemoveValue(HandleVector<int>.Handle h, HashedString key)
+		public void RemoveValue(HandleVector<int>.Handle h, HashedString key)
 	{
 		if (!h.IsValid())
 		{
@@ -52,8 +52,8 @@ public class WhiteBoard : KGameObjectComponentManager<WhiteBoard.Data>, IKCompon
 		base.SetData(h, data);
 	}
 
-	public struct Data
+		public struct Data
 	{
-		public Dictionary<HashedString, object> keyValueStore;
+				public Dictionary<HashedString, object> keyValueStore;
 	}
 }

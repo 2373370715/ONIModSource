@@ -2,7 +2,7 @@
 
 namespace KMod
 {
-	public interface IDistributionPlatform
+		public interface IDistributionPlatform
 	{
 	}
 }

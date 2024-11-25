@@ -5,7 +5,7 @@ using KSerialization;
 
 public class AssignmentGroupController : KMonoBehaviour
 {
-			public string AssignmentGroupID
+				public string AssignmentGroupID
 	{
 		get
 		{
@@ -17,12 +17,12 @@ public class AssignmentGroupController : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	protected void CreateOrRestoreGroupID()
 	{
 		if (string.IsNullOrEmpty(this.AssignmentGroupID))
@@ -33,7 +33,7 @@ public class AssignmentGroupController : KMonoBehaviour
 		Game.Instance.assignmentManager.TryCreateAssignmentGroup(this.AssignmentGroupID, new IAssignableIdentity[0], base.gameObject.GetProperName());
 	}
 
-	public void SetGroupID(string id)
+		public void SetGroupID(string id)
 	{
 		DebugUtil.DevAssert(!string.IsNullOrEmpty(id), "Trying to set Assignment group on " + base.gameObject.name + " to null or empty.", null);
 		if (!string.IsNullOrEmpty(id))
@@ -42,13 +42,13 @@ public class AssignmentGroupController : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.RestoreGroupAssignees();
 	}
 
-	private void GenerateGroupID()
+		private void GenerateGroupID()
 	{
 		if (!this.generateGroupOnStart)
 		{
@@ -62,7 +62,7 @@ public class AssignmentGroupController : KMonoBehaviour
 		Game.Instance.assignmentManager.TryCreateAssignmentGroup(this.AssignmentGroupID, new IAssignableIdentity[0], base.gameObject.GetProperName());
 	}
 
-	private void RestoreGroupAssignees()
+		private void RestoreGroupAssignees()
 	{
 		if (!this.generateGroupOnStart)
 		{
@@ -85,7 +85,7 @@ public class AssignmentGroupController : KMonoBehaviour
 		}
 	}
 
-	public bool CheckMinionIsMember(MinionAssignablesProxy minion)
+		public bool CheckMinionIsMember(MinionAssignablesProxy minion)
 	{
 		if (string.IsNullOrEmpty(this.AssignmentGroupID))
 		{
@@ -94,7 +94,7 @@ public class AssignmentGroupController : KMonoBehaviour
 		return Game.Instance.assignmentManager.assignment_groups[this.AssignmentGroupID].HasMember(minion);
 	}
 
-	public void SetMember(MinionAssignablesProxy minion, bool isAllowed)
+		public void SetMember(MinionAssignablesProxy minion, bool isAllowed)
 	{
 		Debug.Assert(DlcManager.IsExpansion1Active());
 		if (!isAllowed)
@@ -108,7 +108,7 @@ public class AssignmentGroupController : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.generateGroupOnStart)
 		{
@@ -117,7 +117,7 @@ public class AssignmentGroupController : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerialize()
 	{
 		Debug.Assert(!string.IsNullOrEmpty(this.AssignmentGroupID), "Assignment group on " + base.gameObject.name + " has null or empty ID");
@@ -129,16 +129,16 @@ public class AssignmentGroupController : KMonoBehaviour
 		}
 	}
 
-	public ReadOnlyCollection<IAssignableIdentity> GetMembers()
+		public ReadOnlyCollection<IAssignableIdentity> GetMembers()
 	{
 		return Game.Instance.assignmentManager.assignment_groups[this.AssignmentGroupID].GetMembers();
 	}
 
-	public bool generateGroupOnStart;
+		public bool generateGroupOnStart;
 
-	[Serialize]
+		[Serialize]
 	private string _assignmentGroupID;
 
-	[Serialize]
+		[Serialize]
 	private Ref<MinionAssignablesProxy>[] minionsInGroupAtLoad;
 }

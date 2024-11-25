@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace ProcGenGame
 {
-	public class TemplateSpawning
+		public class TemplateSpawning
 	{
-		public static List<TemplateSpawning.TemplateSpawner> DetermineTemplatesForWorld(WorldGenSettings settings, List<TerrainCell> terrainCells, SeededRandom myRandom, ref List<RectInt> placedPOIBounds, bool isRunningDebugGen, ref List<WorldTrait> placedStoryTraits, WorldGen.OfflineCallbackFunction successCallbackFn)
+				public static List<TemplateSpawning.TemplateSpawner> DetermineTemplatesForWorld(WorldGenSettings settings, List<TerrainCell> terrainCells, SeededRandom myRandom, ref List<RectInt> placedPOIBounds, bool isRunningDebugGen, ref List<WorldTrait> placedStoryTraits, WorldGen.OfflineCallbackFunction successCallbackFn)
 		{
 			successCallbackFn(UI.WORLDGEN.PLACINGTEMPLATES.key, 0f, WorldGenProgressStages.Stages.PlaceTemplates);
 			List<TemplateSpawning.TemplateSpawner> result = new List<TemplateSpawning.TemplateSpawner>();
@@ -26,12 +26,12 @@ namespace ProcGenGame
 			return result;
 		}
 
-		private static float ProgressPercent(float stagePercent)
+				private static float ProgressPercent(float stagePercent)
 		{
 			return MathUtil.ReRange(stagePercent, 0f, 1f, TemplateSpawning.s_minProgressPercent, TemplateSpawning.s_maxProgressPercent);
 		}
 
-		private static void SpawnStartingTemplate(WorldGenSettings settings, List<TerrainCell> terrainCells, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds, bool isRunningDebugGen, WorldGen.OfflineCallbackFunction successCallbackFn)
+				private static void SpawnStartingTemplate(WorldGenSettings settings, List<TerrainCell> terrainCells, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds, bool isRunningDebugGen, WorldGen.OfflineCallbackFunction successCallbackFn)
 		{
 			TerrainCell terrainCell = terrainCells.Find((TerrainCell tc) => tc.node.tags.Contains(WorldGenTags.StartLocation));
 			if (settings.world.startingBaseTemplate.IsNullOrWhiteSpace())
@@ -56,7 +56,7 @@ namespace ProcGenGame
 			placedPOIBounds.Add(templateBounds);
 		}
 
-		private static void SpawnTemplatesFromTemplateRules(WorldGenSettings settings, List<TerrainCell> terrainCells, SeededRandom myRandom, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds, bool isRunningDebugGen, WorldGen.OfflineCallbackFunction successCallbackFn)
+				private static void SpawnTemplatesFromTemplateRules(WorldGenSettings settings, List<TerrainCell> terrainCells, SeededRandom myRandom, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds, bool isRunningDebugGen, WorldGen.OfflineCallbackFunction successCallbackFn)
 		{
 			List<ProcGen.World.TemplateSpawnRules> list = new List<ProcGen.World.TemplateSpawnRules>();
 			if (settings.world.worldTemplateRules != null)
@@ -98,7 +98,7 @@ namespace ProcGenGame
 			}
 		}
 
-		private static void SpawnStoryTraitTemplates(WorldGenSettings settings, List<TerrainCell> terrainCells, SeededRandom myRandom, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds, ref List<WorldTrait> placedStoryTraits, bool isRunningDebugGen, WorldGen.OfflineCallbackFunction successCallbackFn)
+				private static void SpawnStoryTraitTemplates(WorldGenSettings settings, List<TerrainCell> terrainCells, SeededRandom myRandom, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds, ref List<WorldTrait> placedStoryTraits, bool isRunningDebugGen, WorldGen.OfflineCallbackFunction successCallbackFn)
 		{
 			Queue<WorldTrait> queue = new Queue<WorldTrait>(settings.GetStoryTraitCandiates());
 			int count = queue.Count;
@@ -171,14 +171,14 @@ namespace ProcGenGame
 			}
 		}
 
-		private static void RemoveTemplate(TemplateSpawning.TemplateSpawner toRemove, WorldGenSettings settings, List<TerrainCell> terrainCells, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds)
+				private static void RemoveTemplate(TemplateSpawning.TemplateSpawner toRemove, WorldGenSettings settings, List<TerrainCell> terrainCells, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds)
 		{
 			TemplateSpawning.UpdateNodeTags(toRemove.terrainCell.node, toRemove.container.name, true);
 			templateSpawnTargets.Remove(toRemove);
 			placedPOIBounds.RemoveAll((RectInt bound) => bound.center == toRemove.position);
 		}
 
-		private static bool ApplyTemplateRule(WorldGenSettings settings, List<TerrainCell> terrainCells, SeededRandom myRandom, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds, ProcGen.World.TemplateSpawnRules rule, ref HashSet<string> usedTemplates, out string errorMessage, ref List<TemplateSpawning.TemplateSpawner> newTemplateSpawnTargets)
+				private static bool ApplyTemplateRule(WorldGenSettings settings, List<TerrainCell> terrainCells, SeededRandom myRandom, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds, ProcGen.World.TemplateSpawnRules rule, ref HashSet<string> usedTemplates, out string errorMessage, ref List<TemplateSpawning.TemplateSpawner> newTemplateSpawnTargets)
 		{
 			int i = 0;
 			Predicate<TerrainCell> <>9__0;
@@ -361,7 +361,7 @@ namespace ProcGenGame
 			return true;
 		}
 
-		private static void UpdateNodeTags(Node node, string template, bool remove = false)
+				private static void UpdateNodeTags(Node node, string template, bool remove = false)
 		{
 			Tag tag = template.ToTag();
 			if (remove)
@@ -376,7 +376,7 @@ namespace ProcGenGame
 			node.tags.Add(WorldGenTags.POI);
 		}
 
-		private static TerrainCell FindTargetForTemplate(TemplateContainer template, ProcGen.World.TemplateSpawnRules rule, List<TerrainCell> terrainCells, SeededRandom myRandom, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds, bool guarantee, WorldGenSettings settings)
+				private static TerrainCell FindTargetForTemplate(TemplateContainer template, ProcGen.World.TemplateSpawnRules rule, List<TerrainCell> terrainCells, SeededRandom myRandom, ref List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, ref List<RectInt> placedPOIBounds, bool guarantee, WorldGenSettings settings)
 		{
 			List<TerrainCell> list;
 			if (rule.allowNearStart)
@@ -441,7 +441,7 @@ namespace ProcGenGame
 			return list[list.Count - 1];
 		}
 
-		private static bool IsPOIOverlappingBounds(List<RectInt> placedPOIBounds, RectInt templateBounds)
+				private static bool IsPOIOverlappingBounds(List<RectInt> placedPOIBounds, RectInt templateBounds)
 		{
 			foreach (RectInt other in placedPOIBounds)
 			{
@@ -453,7 +453,7 @@ namespace ProcGenGame
 			return false;
 		}
 
-		private static bool IsPOIOverlappingHighTemperatureDelta(RectInt paddedTemplateBounds, SubWorld subworld, ref List<TerrainCell> allCells, WorldGenSettings settings)
+				private static bool IsPOIOverlappingHighTemperatureDelta(RectInt paddedTemplateBounds, SubWorld subworld, ref List<TerrainCell> allCells, WorldGenSettings settings)
 		{
 			Vector2 b = 2f * Vector2.one * (float)TemplateSpawning.s_poiPadding;
 			Vector2 b2 = 2f * Vector2.one * 3f;
@@ -478,7 +478,7 @@ namespace ProcGenGame
 			return false;
 		}
 
-		private static void RemoveOverlappingPOIs(ref List<TerrainCell> filteredTerrainCells, ref List<TerrainCell> allCells, ref List<RectInt> placedPOIBounds, TemplateContainer container, WorldGenSettings settings, bool allowExtremeTemperatureOverlap, Vector2 poiOffset)
+				private static void RemoveOverlappingPOIs(ref List<TerrainCell> filteredTerrainCells, ref List<TerrainCell> allCells, ref List<RectInt> placedPOIBounds, TemplateContainer container, WorldGenSettings settings, bool allowExtremeTemperatureOverlap, Vector2 poiOffset)
 		{
 			for (int i = filteredTerrainCells.Count - 1; i >= 0; i--)
 			{
@@ -504,7 +504,7 @@ namespace ProcGenGame
 			}
 		}
 
-		private static bool DoesCellMatchFilters(TerrainCell cell, List<ProcGen.World.AllowedCellsFilter> filters)
+				private static bool DoesCellMatchFilters(TerrainCell cell, List<ProcGen.World.AllowedCellsFilter> filters)
 		{
 			bool flag = false;
 			foreach (ProcGen.World.AllowedCellsFilter allowedCellsFilter in filters)
@@ -545,7 +545,7 @@ namespace ProcGenGame
 			return flag;
 		}
 
-		private static bool DoesCellMatchFilter(TerrainCell cell, ProcGen.World.AllowedCellsFilter filter, out bool applied)
+				private static bool DoesCellMatchFilter(TerrainCell cell, ProcGen.World.AllowedCellsFilter filter, out bool applied)
 		{
 			applied = true;
 			if (!TemplateSpawning.ValidateFilter(filter))
@@ -621,7 +621,7 @@ namespace ProcGenGame
 			return true;
 		}
 
-		private static bool ValidateFilter(ProcGen.World.AllowedCellsFilter filter)
+				private static bool ValidateFilter(ProcGen.World.AllowedCellsFilter filter)
 		{
 			if (filter.command == ProcGen.World.AllowedCellsFilter.Command.All)
 			{
@@ -677,19 +677,19 @@ namespace ProcGenGame
 			return true;
 		}
 
-		private static float s_minProgressPercent;
+				private static float s_minProgressPercent;
 
-		private static float s_maxProgressPercent;
+				private static float s_maxProgressPercent;
 
-		private static int s_poiPadding;
+				private static int s_poiPadding;
 
-		private const int TEMPERATURE_PADDING = 3;
+				private const int TEMPERATURE_PADDING = 3;
 
-		private const float EXTREME_POI_OVERLAP_TEMPERATURE_RANGE = 100f;
+				private const float EXTREME_POI_OVERLAP_TEMPERATURE_RANGE = 100f;
 
-		public class TemplateSpawner
+				public class TemplateSpawner
 		{
-			public TemplateSpawner(Vector2I position, RectInt bounds, TemplateContainer container, TerrainCell terrainCell)
+						public TemplateSpawner(Vector2I position, RectInt bounds, TemplateContainer container, TerrainCell terrainCell)
 			{
 				this.position = position;
 				this.container = container;
@@ -697,13 +697,13 @@ namespace ProcGenGame
 				this.bounds = bounds;
 			}
 
-			public Vector2I position;
+						public Vector2I position;
 
-			public TemplateContainer container;
+						public TemplateContainer container;
 
-			public TerrainCell terrainCell;
+						public TerrainCell terrainCell;
 
-			public RectInt bounds;
+						public RectInt bounds;
 		}
 	}
 }

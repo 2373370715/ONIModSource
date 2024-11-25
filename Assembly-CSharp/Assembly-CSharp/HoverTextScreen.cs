@@ -3,19 +3,19 @@ using UnityEngine;
 
 public class HoverTextScreen : KScreen
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		HoverTextScreen.Instance = null;
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		HoverTextScreen.Instance = this;
 		this.drawer = new HoverTextDrawer(this.skin.skin, base.GetComponent<RectTransform>());
 	}
 
-	public HoverTextDrawer BeginDrawing()
+		public HoverTextDrawer BeginDrawing()
 	{
 		Vector2 zero = Vector2.zero;
 		Vector2 screenPoint = KInputManager.GetMousePos();
@@ -27,13 +27,13 @@ public class HoverTextScreen : KScreen
 		return this.drawer;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		bool enabled = PlayerController.Instance.ActiveTool.ShowHoverUI();
 		this.drawer.SetEnabled(enabled);
 	}
 
-	public Sprite GetSprite(string byName)
+		public Sprite GetSprite(string byName)
 	{
 		foreach (Sprite sprite in this.HoverIcons)
 		{
@@ -46,18 +46,18 @@ public class HoverTextScreen : KScreen
 		return null;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		this.drawer.Cleanup();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private HoverTextSkin skin;
 
-	public Sprite[] HoverIcons;
+		public Sprite[] HoverIcons;
 
-	public HoverTextDrawer drawer;
+		public HoverTextDrawer drawer;
 
-	public static HoverTextScreen Instance;
+		public static HoverTextScreen Instance;
 }

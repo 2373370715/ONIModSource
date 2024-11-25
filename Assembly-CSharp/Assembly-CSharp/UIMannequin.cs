@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class UIMannequin : KMonoBehaviour, UIMinionOrMannequin.ITarget
 {
-		public GameObject SpawnedAvatar
+			public GameObject SpawnedAvatar
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class UIMannequin : KMonoBehaviour, UIMinionOrMannequin.ITarget
 		}
 	}
 
-		public Option<Personality> Personality
+			public Option<Personality> Personality
 	{
 		get
 		{
@@ -26,12 +26,12 @@ public class UIMannequin : KMonoBehaviour, UIMinionOrMannequin.ITarget
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.TrySpawn();
 	}
 
-	public void TrySpawn()
+		public void TrySpawn()
 	{
 		if (this.animController == null)
 		{
@@ -41,12 +41,12 @@ public class UIMannequin : KMonoBehaviour, UIMinionOrMannequin.ITarget
 			this.animController.animScale = 0.38f;
 			this.animController.Play("idle", KAnim.PlayMode.Paused, 1f, 0f);
 			this.spawn = this.animController.gameObject;
-			MinionConfig.ConfigureSymbols(this.spawn, false);
+			BaseMinionConfig.ConfigureSymbols(this.spawn, false);
 			base.gameObject.AddOrGet<MinionVoiceProviderMB>().voice = Option.None;
 		}
 	}
 
-	public void SetOutfit(ClothingOutfitUtility.OutfitType outfitType, IEnumerable<ClothingItemResource> outfit)
+		public void SetOutfit(ClothingOutfitUtility.OutfitType outfitType, IEnumerable<ClothingItemResource> outfit)
 	{
 		bool flag = outfit.Count<ClothingItemResource>() == 0;
 		if (this.shouldShowOutfitWithDefaultItems)
@@ -54,7 +54,7 @@ public class UIMannequin : KMonoBehaviour, UIMinionOrMannequin.ITarget
 			outfit = UIMinionOrMannequinITargetExtensions.GetOutfitWithDefaultItems(outfitType, outfit);
 		}
 		this.SpawnedAvatar.GetComponent<SymbolOverrideController>().RemoveAllSymbolOverrides(0);
-		MinionConfig.ConfigureSymbols(this.SpawnedAvatar, false);
+		BaseMinionConfig.ConfigureSymbols(this.SpawnedAvatar, false);
 		Accessorizer component = this.SpawnedAvatar.GetComponent<Accessorizer>();
 		WearableAccessorizer component2 = this.SpawnedAvatar.GetComponent<WearableAccessorizer>();
 		component.ApplyMinionPersonality(this.personalityToUseForDefaultClothing.UnwrapOr(Db.Get().Personalities.Get("ABE"), null));
@@ -107,7 +107,7 @@ public class UIMannequin : KMonoBehaviour, UIMinionOrMannequin.ITarget
 		}
 	}
 
-	private static ClothingItemResource GetItemForCategory(PermitCategory category, IEnumerable<ClothingItemResource> outfit)
+		private static ClothingItemResource GetItemForCategory(PermitCategory category, IEnumerable<ClothingItemResource> outfit)
 	{
 		foreach (ClothingItemResource clothingItemResource in outfit)
 		{
@@ -119,18 +119,18 @@ public class UIMannequin : KMonoBehaviour, UIMinionOrMannequin.ITarget
 		return null;
 	}
 
-	public void React(UIMinionOrMannequinReactSource source)
+		public void React(UIMinionOrMannequinReactSource source)
 	{
 		this.animController.Play("idle", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	public const float ANIM_SCALE = 0.38f;
+		public const float ANIM_SCALE = 0.38f;
 
-	private KBatchedAnimController animController;
+		private KBatchedAnimController animController;
 
-	private GameObject spawn;
+		private GameObject spawn;
 
-	public bool shouldShowOutfitWithDefaultItems = true;
+		public bool shouldShowOutfitWithDefaultItems = true;
 
-	public Option<Personality> personalityToUseForDefaultClothing;
+		public Option<Personality> personalityToUseForDefaultClothing;
 }

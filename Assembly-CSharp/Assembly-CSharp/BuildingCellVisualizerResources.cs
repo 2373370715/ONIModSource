@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BuildingCellVisualizerResources : ScriptableObject
 {
-		public string heatSourceAnimFile
+			public string heatSourceAnimFile
 	{
 		get
 		{
@@ -11,7 +11,7 @@ public class BuildingCellVisualizerResources : ScriptableObject
 		}
 	}
 
-		public string heatAnimName
+			public string heatAnimName
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class BuildingCellVisualizerResources : ScriptableObject
 		}
 	}
 
-		public string heatSinkAnimFile
+			public string heatSinkAnimFile
 	{
 		get
 		{
@@ -27,7 +27,7 @@ public class BuildingCellVisualizerResources : ScriptableObject
 		}
 	}
 
-		public string heatSinkAnimName
+			public string heatSinkAnimName
 	{
 		get
 		{
@@ -35,40 +35,40 @@ public class BuildingCellVisualizerResources : ScriptableObject
 		}
 	}
 
-			public Material backgroundMaterial { get; set; }
+				public Material backgroundMaterial { get; set; }
 
-			public Material iconBackgroundMaterial { get; set; }
+				public Material iconBackgroundMaterial { get; set; }
 
-			public Material powerInputMaterial { get; set; }
+				public Material powerInputMaterial { get; set; }
 
-			public Material powerOutputMaterial { get; set; }
+				public Material powerOutputMaterial { get; set; }
 
-			public Material liquidInputMaterial { get; set; }
+				public Material liquidInputMaterial { get; set; }
 
-			public Material liquidOutputMaterial { get; set; }
+				public Material liquidOutputMaterial { get; set; }
 
-			public Material gasInputMaterial { get; set; }
+				public Material gasInputMaterial { get; set; }
 
-			public Material gasOutputMaterial { get; set; }
+				public Material gasOutputMaterial { get; set; }
 
-			public Material highEnergyParticleInputMaterial { get; set; }
+				public Material highEnergyParticleInputMaterial { get; set; }
 
-			public Material highEnergyParticleOutputMaterial { get; set; }
+				public Material highEnergyParticleOutputMaterial { get; set; }
 
-			public Mesh backgroundMesh { get; set; }
+				public Mesh backgroundMesh { get; set; }
 
-			public Mesh iconMesh { get; set; }
+				public Mesh iconMesh { get; set; }
 
-			public int backgroundLayer { get; set; }
+				public int backgroundLayer { get; set; }
 
-			public int iconLayer { get; set; }
+				public int iconLayer { get; set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		BuildingCellVisualizerResources._Instance = null;
 	}
 
-	public static BuildingCellVisualizerResources Instance()
+		public static BuildingCellVisualizerResources Instance()
 	{
 		if (BuildingCellVisualizerResources._Instance == null)
 		{
@@ -78,7 +78,7 @@ public class BuildingCellVisualizerResources : ScriptableObject
 		return BuildingCellVisualizerResources._Instance;
 	}
 
-	private void Initialize()
+		private void Initialize()
 	{
 		Shader shader = Shader.Find("Klei/BuildingCell");
 		this.backgroundMaterial = new Material(shader);
@@ -100,7 +100,7 @@ public class BuildingCellVisualizerResources : ScriptableObject
 		this.iconLayer = LayerMask.NameToLayer("Place");
 	}
 
-	private Mesh CreateMesh(string name, Vector2 base_offset, float half_size)
+		private Mesh CreateMesh(string name, Vector2 base_offset, float half_size)
 	{
 		Mesh mesh = new Mesh();
 		mesh.name = name;
@@ -131,75 +131,75 @@ public class BuildingCellVisualizerResources : ScriptableObject
 		return mesh;
 	}
 
-	[Header("Electricity")]
+		[Header("Electricity")]
 	public Color electricityInputColor;
 
-	public Color electricityOutputColor;
+		public Color electricityOutputColor;
 
-	public Sprite electricityInputIcon;
+		public Sprite electricityInputIcon;
 
-	public Sprite electricityOutputIcon;
+		public Sprite electricityOutputIcon;
 
-	public Sprite electricityConnectedIcon;
+		public Sprite electricityConnectedIcon;
 
-	public Sprite electricityBridgeIcon;
+		public Sprite electricityBridgeIcon;
 
-	public Sprite electricityBridgeConnectedIcon;
+		public Sprite electricityBridgeConnectedIcon;
 
-	public Sprite electricityArrowIcon;
+		public Sprite electricityArrowIcon;
 
-	public Sprite switchIcon;
+		public Sprite switchIcon;
 
-	public Color32 switchColor;
+		public Color32 switchColor;
 
-	public Color32 switchOffColor = Color.red;
+		public Color32 switchOffColor = Color.red;
 
-	[Header("Gas")]
+		[Header("Gas")]
 	public Sprite gasInputIcon;
 
-	public Sprite gasOutputIcon;
+		public Sprite gasOutputIcon;
 
-	public BuildingCellVisualizerResources.IOColours gasIOColours;
+		public BuildingCellVisualizerResources.IOColours gasIOColours;
 
-	[Header("Liquid")]
+		[Header("Liquid")]
 	public Sprite liquidInputIcon;
 
-	public Sprite liquidOutputIcon;
+		public Sprite liquidOutputIcon;
 
-	public BuildingCellVisualizerResources.IOColours liquidIOColours;
+		public BuildingCellVisualizerResources.IOColours liquidIOColours;
 
-	[Header("High Energy Particle")]
+		[Header("High Energy Particle")]
 	public Sprite highEnergyParticleInputIcon;
 
-	public Sprite[] highEnergyParticleOutputIcons;
+		public Sprite[] highEnergyParticleOutputIcons;
 
-	public Color highEnergyParticleInputColour;
+		public Color highEnergyParticleInputColour;
 
-	public Color highEnergyParticleOutputColour;
+		public Color highEnergyParticleOutputColour;
 
-	[Header("Heat Sources and Sinks")]
+		[Header("Heat Sources and Sinks")]
 	public Sprite heatSourceIcon;
 
-	public Sprite heatSinkIcon;
+		public Sprite heatSinkIcon;
 
-	[Header("Alternate IO Colours")]
+		[Header("Alternate IO Colours")]
 	public BuildingCellVisualizerResources.IOColours alternateIOColours;
 
-	private static BuildingCellVisualizerResources _Instance;
+		private static BuildingCellVisualizerResources _Instance;
 
-	[Serializable]
+		[Serializable]
 	public struct ConnectedDisconnectedColours
 	{
-		public Color32 connected;
+				public Color32 connected;
 
-		public Color32 disconnected;
+				public Color32 disconnected;
 	}
 
-	[Serializable]
+		[Serializable]
 	public struct IOColours
 	{
-		public BuildingCellVisualizerResources.ConnectedDisconnectedColours input;
+				public BuildingCellVisualizerResources.ConnectedDisconnectedColours input;
 
-		public BuildingCellVisualizerResources.ConnectedDisconnectedColours output;
+				public BuildingCellVisualizerResources.ConnectedDisconnectedColours output;
 	}
 }

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class TouristModuleConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetForbiddenDlcIds()
 	{
-		return DlcManager.AVAILABLE_VANILLA_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "TouristModule";
 		int width = 5;
@@ -38,7 +38,7 @@ public class TouristModuleConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -54,7 +54,7 @@ public class TouristModuleConfig : IBuildingConfig
 		go.AddOrGet<MinionStorage>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		BuildingTemplates.ExtendBuildingToRocketModule(go, "rocket_tourist_bg_kanim", false);
 		Ownable ownable = go.AddOrGet<Ownable>();
@@ -62,5 +62,5 @@ public class TouristModuleConfig : IBuildingConfig
 		ownable.canBePublic = false;
 	}
 
-	public const string ID = "TouristModule";
+		public const string ID = "TouristModule";
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public abstract class ColonyDiagnostic : ISim4000ms
 {
-	public GameObject GetNextClickThroughObject()
+		public GameObject GetNextClickThroughObject()
 	{
 		if (this.aggregatedUniqueClickThroughObjects.Count == 0)
 		{
@@ -15,7 +15,7 @@ public abstract class ColonyDiagnostic : ISim4000ms
 		return this.aggregatedUniqueClickThroughObjects[this.clickThroughIndex];
 	}
 
-	public ColonyDiagnostic(int worldID, string name)
+		public ColonyDiagnostic(int worldID, string name)
 	{
 		this.worldID = worldID;
 		this.name = name;
@@ -33,33 +33,33 @@ public abstract class ColonyDiagnostic : ISim4000ms
 		SimAndRenderScheduler.instance.Add(this, true);
 	}
 
-			public int worldID { get; protected set; }
+				public int worldID { get; protected set; }
 
-			public bool IsWorldModuleInterior { get; private set; }
+				public bool IsWorldModuleInterior { get; private set; }
 
-	public virtual string[] GetDlcIds()
+		public virtual string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public void OnCleanUp()
+		public void OnCleanUp()
 	{
 		SimAndRenderScheduler.instance.Remove(this);
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
 		this.SetResult(ColonyDiagnosticUtility.IgnoreFirstUpdate ? ColonyDiagnosticUtility.NoDataResult : this.Evaluate());
 	}
 
-	public DiagnosticCriterion[] GetCriteria()
+		public DiagnosticCriterion[] GetCriteria()
 	{
 		DiagnosticCriterion[] array = new DiagnosticCriterion[this.criteria.Values.Count];
 		this.criteria.Values.CopyTo(array, 0);
 		return array;
 	}
 
-			public ColonyDiagnostic.DiagnosticResult LatestResult
+				public ColonyDiagnostic.DiagnosticResult LatestResult
 	{
 		get
 		{
@@ -71,7 +71,7 @@ public abstract class ColonyDiagnostic : ISim4000ms
 		}
 	}
 
-	public virtual string GetAverageValueString()
+		public virtual string GetAverageValueString()
 	{
 		if (this.tracker != null)
 		{
@@ -80,12 +80,12 @@ public abstract class ColonyDiagnostic : ISim4000ms
 		return "";
 	}
 
-	public virtual string GetCurrentValueString()
+		public virtual string GetCurrentValueString()
 	{
 		return "";
 	}
 
-	protected void AddCriterion(string id, DiagnosticCriterion criterion)
+		protected void AddCriterion(string id, DiagnosticCriterion criterion)
 	{
 		if (!this.criteria.ContainsKey(id))
 		{
@@ -94,10 +94,14 @@ public abstract class ColonyDiagnostic : ISim4000ms
 		}
 	}
 
-	public virtual ColonyDiagnostic.DiagnosticResult Evaluate()
+		public virtual ColonyDiagnostic.DiagnosticResult Evaluate()
 	{
 		ColonyDiagnostic.DiagnosticResult diagnosticResult = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, "", null);
 		bool flag = false;
+		if (!ClusterManager.Instance.GetWorld(this.worldID).IsDiscovered)
+		{
+			return diagnosticResult;
+		}
 		this.aggregatedUniqueClickThroughObjects.Clear();
 		foreach (KeyValuePair<string, DiagnosticCriterion> keyValuePair in this.criteria)
 		{
@@ -126,12 +130,12 @@ public abstract class ColonyDiagnostic : ISim4000ms
 		return diagnosticResult;
 	}
 
-	public void SetResult(ColonyDiagnostic.DiagnosticResult result)
+		public void SetResult(ColonyDiagnostic.DiagnosticResult result)
 	{
 		this.LatestResult = result;
 	}
 
-		protected string NO_MINIONS
+			protected string NO_MINIONS
 	{
 		get
 		{
@@ -139,37 +143,37 @@ public abstract class ColonyDiagnostic : ISim4000ms
 		}
 	}
 
-	private int clickThroughIndex;
+		private int clickThroughIndex;
 
-	private List<GameObject> aggregatedUniqueClickThroughObjects = new List<GameObject>();
+		private List<GameObject> aggregatedUniqueClickThroughObjects = new List<GameObject>();
 
-	public string name;
+		public string name;
 
-	public string id;
+		public string id;
 
-	public string icon = "icon_errand_operate";
+		public string icon = "icon_errand_operate";
 
-	private Dictionary<string, DiagnosticCriterion> criteria = new Dictionary<string, DiagnosticCriterion>();
+		private Dictionary<string, DiagnosticCriterion> criteria = new Dictionary<string, DiagnosticCriterion>();
 
-	public ColonyDiagnostic.PresentationSetting presentationSetting;
+		public ColonyDiagnostic.PresentationSetting presentationSetting;
 
-	private ColonyDiagnostic.DiagnosticResult latestResult = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.NO_DATA, null);
+		private ColonyDiagnostic.DiagnosticResult latestResult = new ColonyDiagnostic.DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion.Normal, UI.COLONY_DIAGNOSTICS.NO_DATA, null);
 
-	public Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, Color> colors = new Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, Color>();
+		public Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, Color> colors = new Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, Color>();
 
-	public Tracker tracker;
+		public Tracker tracker;
 
-	protected float trackerSampleCountSeconds = 4f;
+		protected float trackerSampleCountSeconds = 4f;
 
-	public enum PresentationSetting
+		public enum PresentationSetting
 	{
-		AverageValue,
-		CurrentValue
+				AverageValue,
+				CurrentValue
 	}
 
-	public struct DiagnosticResult
+		public struct DiagnosticResult
 	{
-		public DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion opinion, string message, global::Tuple<Vector3, GameObject> clickThroughTarget = null)
+				public DiagnosticResult(ColonyDiagnostic.DiagnosticResult.Opinion opinion, string message, global::Tuple<Vector3, GameObject> clickThroughTarget = null)
 		{
 			this.message = message;
 			this.opinion = opinion;
@@ -177,7 +181,7 @@ public abstract class ColonyDiagnostic : ISim4000ms
 			this.clickThroughObjects = null;
 		}
 
-						public string Message
+								public string Message
 		{
 			get
 			{
@@ -189,7 +193,7 @@ public abstract class ColonyDiagnostic : ISim4000ms
 			}
 		}
 
-		public string GetFormattedMessage()
+				public string GetFormattedMessage()
 		{
 			switch (this.opinion)
 			{
@@ -243,25 +247,25 @@ public abstract class ColonyDiagnostic : ISim4000ms
 			return this.message;
 		}
 
-		public ColonyDiagnostic.DiagnosticResult.Opinion opinion;
+				public ColonyDiagnostic.DiagnosticResult.Opinion opinion;
 
-		public global::Tuple<Vector3, GameObject> clickThroughTarget;
+				public global::Tuple<Vector3, GameObject> clickThroughTarget;
 
-		public List<GameObject> clickThroughObjects;
+				public List<GameObject> clickThroughObjects;
 
-		private string message;
+				private string message;
 
-		public enum Opinion
+				public enum Opinion
 		{
-			Unset,
-			DuplicantThreatening,
-			Bad,
-			Warning,
-			Concern,
-			Suggestion,
-			Tutorial,
-			Normal,
-			Good
+						Unset,
+						DuplicantThreatening,
+						Bad,
+						Warning,
+						Concern,
+						Suggestion,
+						Tutorial,
+						Normal,
+						Good
 		}
 	}
 }

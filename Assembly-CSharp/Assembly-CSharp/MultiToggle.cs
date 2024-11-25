@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/MultiToggle")]
 public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHandler, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
 {
-		public int CurrentState
+			public int CurrentState
 	{
 		get
 		{
@@ -14,12 +14,12 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		}
 	}
 
-	public void NextState()
+		public void NextState()
 	{
 		this.ChangeState((this.state + 1) % this.states.Length);
 	}
 
-	protected virtual void Update()
+		protected virtual void Update()
 	{
 		if (this.clickHeldDown)
 		{
@@ -31,7 +31,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		}
 	}
 
-	protected override void OnDisable()
+		protected override void OnDisable()
 	{
 		if (!base.gameObject.activeInHierarchy)
 		{
@@ -41,7 +41,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		}
 	}
 
-	public void ChangeState(int new_state_index, bool forceRefreshState)
+		public void ChangeState(int new_state_index, bool forceRefreshState)
 	{
 		if (forceRefreshState)
 		{
@@ -50,7 +50,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		this.ChangeState(new_state_index);
 	}
 
-	public void ChangeState(int new_state_index)
+		public void ChangeState(int new_state_index)
 	{
 		if (!this.stateDirty && new_state_index == this.state)
 		{
@@ -89,7 +89,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		this.RefreshHoverColor();
 	}
 
-	public virtual void OnPointerClick(PointerEventData eventData)
+		public virtual void OnPointerClick(PointerEventData eventData)
 	{
 		if (!this.allowRightClick && eventData.button == PointerEventData.InputButton.Right)
 		{
@@ -111,7 +111,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		this.RefreshHoverColor();
 	}
 
-	public void OnPointerEnter(PointerEventData eventData)
+		public void OnPointerEnter(PointerEventData eventData)
 	{
 		this.pointerOver = true;
 		if (!KInputManager.isFocused)
@@ -144,7 +144,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		}
 	}
 
-	protected void RefreshHoverColor()
+		protected void RefreshHoverColor()
 	{
 		if (base.gameObject.activeInHierarchy)
 		{
@@ -181,7 +181,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		}
 	}
 
-	public void OnPointerExit(PointerEventData eventData)
+		public void OnPointerExit(PointerEventData eventData)
 	{
 		this.pointerOver = false;
 		if (!KInputManager.isFocused)
@@ -214,7 +214,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		}
 	}
 
-	public virtual void OnPointerDown(PointerEventData eventData)
+		public virtual void OnPointerDown(PointerEventData eventData)
 	{
 		if (!this.allowRightClick && eventData.button == PointerEventData.InputButton.Right)
 		{
@@ -241,7 +241,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		}
 	}
 
-	public virtual void OnPointerUp(PointerEventData eventData)
+		public virtual void OnPointerUp(PointerEventData eventData)
 	{
 		if (!this.allowRightClick && eventData.button == PointerEventData.InputButton.Right)
 		{
@@ -250,7 +250,7 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		this.StopHolding();
 	}
 
-	private void StopHolding()
+		private void StopHolding()
 	{
 		if (this.clickHeldDown)
 		{
@@ -267,39 +267,39 @@ public class MultiToggle : KMonoBehaviour, IPointerClickHandler, IEventSystemHan
 		this.totalHeldTime = 0f;
 	}
 
-	[Header("Settings")]
+		[Header("Settings")]
 	[SerializeField]
 	public ToggleState[] states;
 
-	public bool play_sound_on_click = true;
+		public bool play_sound_on_click = true;
 
-	public bool play_sound_on_release;
+		public bool play_sound_on_release;
 
-	public Image toggle_image;
+		public Image toggle_image;
 
-	protected int state;
+		protected int state;
 
-	public System.Action onClick;
+		public System.Action onClick;
 
-	private bool stateDirty = true;
+		private bool stateDirty = true;
 
-	public Func<bool> onDoubleClick;
+		public Func<bool> onDoubleClick;
 
-	public System.Action onEnter;
+		public System.Action onEnter;
 
-	public System.Action onExit;
+		public System.Action onExit;
 
-	public System.Action onHold;
+		public System.Action onHold;
 
-	public System.Action onStopHold;
+		public System.Action onStopHold;
 
-	public bool allowRightClick = true;
+		public bool allowRightClick = true;
 
-	protected bool clickHeldDown;
+		protected bool clickHeldDown;
 
-	protected float totalHeldTime;
+		protected float totalHeldTime;
 
-	protected float heldTimeThreshold = 0.4f;
+		protected float heldTimeThreshold = 0.4f;
 
-	private bool pointerOver;
+		private bool pointerOver;
 }

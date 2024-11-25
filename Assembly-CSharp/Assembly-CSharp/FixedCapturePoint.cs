@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.operational;
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -18,19 +18,19 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 		}, UpdateRate.SIM_1000ms, false);
 	}
 
-	public static readonly Operational.Flag enabledFlag = new Operational.Flag("enabled", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag enabledFlag = new Operational.Flag("enabled", Operational.Flag.Type.Requirement);
 
-	private StateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>.BoolParameter automated;
+		private StateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>.BoolParameter automated;
 
-	public GameStateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>.State unoperational;
+		public GameStateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>.State unoperational;
 
-	public FixedCapturePoint.OperationalState operational;
+		public FixedCapturePoint.OperationalState operational;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Func<FixedCapturePoint.Instance, FixedCapturableMonitor.Instance, bool> isAmountStoredOverCapacity;
+				public Func<FixedCapturePoint.Instance, FixedCapturableMonitor.Instance, bool> isAmountStoredOverCapacity;
 
-		public Func<FixedCapturePoint.Instance, int> getTargetCapturePoint = delegate(FixedCapturePoint.Instance smi)
+				public Func<FixedCapturePoint.Instance, int> getTargetCapturePoint = delegate(FixedCapturePoint.Instance smi)
 		{
 			int num = Grid.PosToCell(smi);
 			Navigator navigator = smi.targetCapturable.Navigator;
@@ -45,24 +45,24 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			return num;
 		};
 
-		public bool allowBabies;
+				public bool allowBabies;
 	}
 
-	public class OperationalState : GameStateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>.State
+		public class OperationalState : GameStateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>.State
 	{
-		public GameStateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>.State manual;
+				public GameStateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>.State manual;
 
-		public GameStateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>.State automated;
+				public GameStateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>.State automated;
 	}
 
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	public new class Instance : GameStateMachine<FixedCapturePoint, FixedCapturePoint.Instance, IStateMachineTarget, FixedCapturePoint.Def>.GameInstance
 	{
-						public FixedCapturableMonitor.Instance targetCapturable { get; private set; }
+								public FixedCapturableMonitor.Instance targetCapturable { get; private set; }
 
-						public bool shouldCreatureGoGetCaptured { get; private set; }
+								public bool shouldCreatureGoGetCaptured { get; private set; }
 
-		public Instance(IStateMachineTarget master, FixedCapturePoint.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, FixedCapturePoint.Def def) : base(master, def)
 		{
 			base.Subscribe(-905833192, new Action<object>(this.OnCopySettings));
 			this.captureCell = Grid.PosToCell(base.transform.GetPosition());
@@ -78,7 +78,7 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			this.operationComp.SetFlag(FixedCapturePoint.enabledFlag, true);
 		}
 
-		private void OnLogicEvent(object data)
+				private void OnLogicEvent(object data)
 		{
 			LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 			if (logicValueChanged.portID == "CritterPickUpInput" && this.logicPorts.IsPortConnected("CritterPickUpInput"))
@@ -87,7 +87,7 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			}
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			if (base.GetComponent<FixedCapturePoint.AutoWrangleCapture>() == null)
@@ -96,7 +96,7 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			}
 		}
 
-		private void OnCopySettings(object data)
+				private void OnCopySettings(object data)
 		{
 			GameObject gameObject = (GameObject)data;
 			if (gameObject == null)
@@ -111,23 +111,23 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			base.sm.automated.Set(base.sm.automated.Get(smi), this, false);
 		}
 
-		public bool GetAutomated()
+				public bool GetAutomated()
 		{
 			return base.sm.automated.Get(this);
 		}
 
-		public void SetAutomated(bool automate)
+				public void SetAutomated(bool automate)
 		{
 			base.sm.automated.Set(automate, this, false);
 		}
 
-		public Chore CreateChore()
+				public Chore CreateChore()
 		{
 			this.FindFixedCapturable();
 			return new FixedCaptureChore(base.GetComponent<KPrefabID>());
 		}
 
-		public bool IsCreatureAvailableForFixedCapture()
+				public bool IsCreatureAvailableForFixedCapture()
 		{
 			if (!this.targetCapturable.IsNullOrStopped())
 			{
@@ -137,17 +137,17 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			return false;
 		}
 
-		public void SetRancherIsAvailableForCapturing()
+				public void SetRancherIsAvailableForCapturing()
 		{
 			this.shouldCreatureGoGetCaptured = true;
 		}
 
-		public void ClearRancherIsAvailableForCapturing()
+				public void ClearRancherIsAvailableForCapturing()
 		{
 			this.shouldCreatureGoGetCaptured = false;
 		}
 
-		private static bool CanCapturableBeCapturedAtCapturePoint(FixedCapturableMonitor.Instance capturable, FixedCapturePoint.Instance capture_point, CavityInfo capture_cavity_info, int capture_cell)
+				private static bool CanCapturableBeCapturedAtCapturePoint(FixedCapturableMonitor.Instance capturable, FixedCapturePoint.Instance capture_point, CavityInfo capture_cavity_info, int capture_cell)
 		{
 			if (!capturable.IsRunning())
 			{
@@ -162,7 +162,7 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			return cavityForCell != null && cavityForCell == capture_cavity_info && !capturable.HasTag(GameTags.Creatures.Bagged) && (!capturable.isBaby || capture_point.def.allowBabies) && capturable.ChoreConsumer.IsChoreEqualOrAboveCurrentChorePriority<FixedCaptureStates>() && capturable.Navigator.GetNavigationCost(capture_cell) != -1 && capture_point.def.isAmountStoredOverCapacity(capture_point, capturable);
 		}
 
-		public void FindFixedCapturable()
+				public void FindFixedCapturable()
 		{
 			int num = Grid.PosToCell(base.transform.GetPosition());
 			CavityInfo cavityForCell = Game.Instance.roomProber.GetCavityForCell(num);
@@ -194,7 +194,7 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			}
 		}
 
-		public void ResetCapturePoint()
+				public void ResetCapturePoint()
 		{
 			base.Trigger(643180843, null);
 			if (!this.targetCapturable.IsNullOrStopped())
@@ -205,24 +205,24 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			}
 		}
 
-		public BaggableCritterCapacityTracker critterCapactiy;
+				public BaggableCritterCapacityTracker critterCapactiy;
 
-		private int captureCell;
+				private int captureCell;
 
-		private Operational operationComp;
+				private Operational operationComp;
 
-		private LogicPorts logicPorts;
+				private LogicPorts logicPorts;
 	}
 
-	public class AutoWrangleCapture : KMonoBehaviour, ICheckboxControl
+		public class AutoWrangleCapture : KMonoBehaviour, ICheckboxControl
 	{
-		protected override void OnSpawn()
+				protected override void OnSpawn()
 		{
 			base.OnSpawn();
 			this.fcp = this.GetSMI<FixedCapturePoint.Instance>();
 		}
 
-				string ICheckboxControl.CheckboxTitleKey
+						string ICheckboxControl.CheckboxTitleKey
 		{
 			get
 			{
@@ -230,7 +230,7 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			}
 		}
 
-				string ICheckboxControl.CheckboxLabel
+						string ICheckboxControl.CheckboxLabel
 		{
 			get
 			{
@@ -238,7 +238,7 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			}
 		}
 
-				string ICheckboxControl.CheckboxTooltip
+						string ICheckboxControl.CheckboxTooltip
 		{
 			get
 			{
@@ -246,16 +246,16 @@ public class FixedCapturePoint : GameStateMachine<FixedCapturePoint, FixedCaptur
 			}
 		}
 
-		bool ICheckboxControl.GetCheckboxValue()
+				bool ICheckboxControl.GetCheckboxValue()
 		{
 			return this.fcp.GetAutomated();
 		}
 
-		void ICheckboxControl.SetCheckboxValue(bool value)
+				void ICheckboxControl.SetCheckboxValue(bool value)
 		{
 			this.fcp.SetAutomated(value);
 		}
 
-		private FixedCapturePoint.Instance fcp;
+				private FixedCapturePoint.Instance fcp;
 	}
 }

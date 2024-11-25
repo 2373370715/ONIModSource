@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class RocketModuleCluster : RocketModule
 {
-			public CraftModuleInterface CraftInterface
+				public CraftModuleInterface CraftInterface
 	{
 		get
 		{
@@ -19,13 +19,13 @@ public class RocketModuleCluster : RocketModule
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<RocketModuleCluster>(2121280625, RocketModuleCluster.OnNewConstructionDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.CraftInterface == null && DlcManager.FeatureClusterSpaceEnabled())
@@ -39,7 +39,7 @@ public class RocketModuleCluster : RocketModule
 		}
 	}
 
-	protected void OnNewConstruction(object data)
+		protected void OnNewConstruction(object data)
 	{
 		Constructable constructable = (Constructable)data;
 		if (constructable == null)
@@ -57,7 +57,7 @@ public class RocketModuleCluster : RocketModule
 		}
 	}
 
-	private void RegisterWithCraftModuleInterface()
+		private void RegisterWithCraftModuleInterface()
 	{
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(base.GetComponent<AttachableBuilding>()))
 		{
@@ -73,18 +73,18 @@ public class RocketModuleCluster : RocketModule
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		this.CraftInterface.RemoveModule(this);
 	}
 
-	public override LaunchConditionManager FindLaunchConditionManager()
+		public override LaunchConditionManager FindLaunchConditionManager()
 	{
 		return this.CraftInterface.FindLaunchConditionManager();
 	}
 
-	public override string GetParentRocketName()
+		public override string GetParentRocketName()
 	{
 		if (this.CraftInterface != null)
 		{
@@ -93,17 +93,17 @@ public class RocketModuleCluster : RocketModule
 		return this.parentRocketName;
 	}
 
-	private void OnLaunchConditionChanged(object data)
+		private void OnLaunchConditionChanged(object data)
 	{
 		this.UpdateAnimations();
 	}
 
-	private void OnLand(object data)
+		private void OnLand(object data)
 	{
 		this.UpdateAnimations();
 	}
 
-	protected void UpdateAnimations()
+		protected void UpdateAnimations()
 	{
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 		Clustercraft clustercraft = (this.CraftInterface == null) ? null : this.CraftInterface.GetComponent<Clustercraft>();
@@ -129,22 +129,22 @@ public class RocketModuleCluster : RocketModule
 		component.Queue("grounded", KAnim.PlayMode.Loop, 1f, 0f);
 	}
 
-	public RocketModulePerformance performanceStats;
+		public RocketModulePerformance performanceStats;
 
-	private static readonly EventSystem.IntraObjectHandler<RocketModuleCluster> OnNewConstructionDelegate = new EventSystem.IntraObjectHandler<RocketModuleCluster>(delegate(RocketModuleCluster component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RocketModuleCluster> OnNewConstructionDelegate = new EventSystem.IntraObjectHandler<RocketModuleCluster>(delegate(RocketModuleCluster component, object data)
 	{
 		component.OnNewConstruction(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<RocketModuleCluster> OnLaunchConditionChangedDelegate = new EventSystem.IntraObjectHandler<RocketModuleCluster>(delegate(RocketModuleCluster component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RocketModuleCluster> OnLaunchConditionChangedDelegate = new EventSystem.IntraObjectHandler<RocketModuleCluster>(delegate(RocketModuleCluster component, object data)
 	{
 		component.OnLaunchConditionChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<RocketModuleCluster> OnLandDelegate = new EventSystem.IntraObjectHandler<RocketModuleCluster>(delegate(RocketModuleCluster component, object data)
+		private static readonly EventSystem.IntraObjectHandler<RocketModuleCluster> OnLandDelegate = new EventSystem.IntraObjectHandler<RocketModuleCluster>(delegate(RocketModuleCluster component, object data)
 	{
 		component.OnLand(data);
 	});
 
-	private CraftModuleInterface _craftInterface;
+		private CraftModuleInterface _craftInterface;
 }

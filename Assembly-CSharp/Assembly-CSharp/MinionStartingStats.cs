@@ -7,25 +7,37 @@ using UnityEngine;
 
 public class MinionStartingStats : ITelepadDeliverable
 {
-	public MinionStartingStats(Personality personality, string guaranteedAptitudeID = null, string guaranteedTraitID = null, bool isDebugMinion = false)
+		public MinionStartingStats(Personality personality, string guaranteedAptitudeID = null, string guaranteedTraitID = null, bool isDebugMinion = false)
 	{
 		this.personality = personality;
 		this.GenerateStats(guaranteedAptitudeID, guaranteedTraitID, isDebugMinion, false);
 	}
 
-	public MinionStartingStats(bool is_starter_minion, string guaranteedAptitudeID = null, string guaranteedTraitID = null, bool isDebugMinion = false)
+		public MinionStartingStats(bool is_starter_minion, string guaranteedAptitudeID = null, string guaranteedTraitID = null, bool isDebugMinion = false)
 	{
 		this.personality = Db.Get().Personalities.GetRandom(true, is_starter_minion);
 		this.GenerateStats(guaranteedAptitudeID, guaranteedTraitID, isDebugMinion, is_starter_minion);
 	}
 
-	private void GenerateStats(string guaranteedAptitudeID = null, string guaranteedTraitID = null, bool isDebugMinion = false, bool is_starter_minion = false)
+		public MinionStartingStats(Tag model, bool is_starter_minion, string guaranteedAptitudeID = null, string guaranteedTraitID = null, bool isDebugMinion = false)
+	{
+		this.personality = Db.Get().Personalities.GetRandom(model, true, is_starter_minion);
+		this.GenerateStats(guaranteedAptitudeID, guaranteedTraitID, isDebugMinion, is_starter_minion);
+	}
+
+		public MinionStartingStats(List<Tag> models, bool is_starter_minion, string guaranteedAptitudeID = null, string guaranteedTraitID = null, bool isDebugMinion = false)
+	{
+		this.personality = Db.Get().Personalities.GetRandom(models, true, is_starter_minion);
+		this.GenerateStats(guaranteedAptitudeID, guaranteedTraitID, isDebugMinion, is_starter_minion);
+	}
+
+		private void GenerateStats(string guaranteedAptitudeID = null, string guaranteedTraitID = null, bool isDebugMinion = false, bool is_starter_minion = false)
 	{
 		this.voiceIdx = UnityEngine.Random.Range(0, 4);
 		this.Name = this.personality.Name;
 		this.NameStringKey = this.personality.nameStringKey;
 		this.GenderStringKey = this.personality.genderStringKey;
-		this.Traits.Add(Db.Get().traits.Get(MinionConfig.MINION_BASE_TRAIT_ID));
+		this.Traits.Add(Db.Get().traits.Get(BaseMinionConfig.GetMinionBaseTraitIDForModel(this.personality.model)));
 		List<ChoreGroup> disabled_chore_groups = new List<ChoreGroup>();
 		this.GenerateAptitudes(guaranteedAptitudeID);
 		int pointsDelta = this.GenerateTraits(is_starter_minion, disabled_chore_groups, guaranteedAptitudeID, guaranteedTraitID, isDebugMinion);
@@ -157,9 +169,9 @@ public class MinionStartingStats : ITelepadDeliverable
 		}
 	}
 
-	private int GenerateTraits(bool is_starter_minion, List<ChoreGroup> disabled_chore_groups, string guaranteedAptitudeID = null, string guaranteedTraitID = null, bool isDebugMinion = false)
+		private int GenerateTraits(bool is_starter_minion, List<ChoreGroup> disabled_chore_groups, string guaranteedAptitudeID = null, string guaranteedTraitID = null, bool isDebugMinion = false)
 	{
-		MinionStartingStats.<>c__DisplayClass17_0 CS$<>8__locals1 = new MinionStartingStats.<>c__DisplayClass17_0();
+		MinionStartingStats.<>c__DisplayClass19_0 CS$<>8__locals1 = new MinionStartingStats.<>c__DisplayClass19_0();
 		CS$<>8__locals1.<>4__this = this;
 		CS$<>8__locals1.is_starter_minion = is_starter_minion;
 		CS$<>8__locals1.isDebugMinion = isDebugMinion;
@@ -181,6 +193,20 @@ public class MinionStartingStats : ITelepadDeliverable
 		else
 		{
 			this.congenitaltrait = trait3;
+		}
+		if (this.personality.model == GameTags.Minions.Models.Bionic)
+		{
+			string[] default_BIONIC_TRAITS = BionicMinionConfig.DEFAULT_BIONIC_TRAITS;
+			for (int i = 0; i < default_BIONIC_TRAITS.Length; i++)
+			{
+				string id = default_BIONIC_TRAITS[i];
+				DUPLICANTSTATS.TraitVal traitVal = DUPLICANTSTATS.BIONICTRAITS.Find((DUPLICANTSTATS.TraitVal match) => match.id == id);
+				CS$<>8__locals1.<GenerateTraits>g__SelectTrait|1(traitVal, Db.Get().traits.Get(id), true);
+			}
+			DUPLICANTSTATS.TraitVal random = DUPLICANTSTATS.BIONICUPGRADETRAITS.GetRandom<DUPLICANTSTATS.TraitVal>();
+			CS$<>8__locals1.<GenerateTraits>g__SelectTrait|1(random, Db.Get().traits.Get(random.id), true);
+			this.IsValid = true;
+			return CS$<>8__locals1.statDelta;
 		}
 		Func<List<DUPLICANTSTATS.TraitVal>, bool, bool> func = delegate(List<DUPLICANTSTATS.TraitVal> traitPossibilities, bool positiveTrait)
 		{
@@ -228,32 +254,32 @@ public class MinionStartingStats : ITelepadDeliverable
 				num7 = Mathf.Min(DUPLICANTSTATS.RARITY_LEGENDARY, num7);
 			}
 			List<DUPLICANTSTATS.TraitVal> list2 = new List<DUPLICANTSTATS.TraitVal>(traitPossibilities);
-			for (int j = list2.Count - 1; j > -1; j--)
+			for (int k = list2.Count - 1; k > -1; k--)
 			{
-				if (list2[j].rarity != num7)
+				if (list2[k].rarity != num7)
 				{
-					list2.RemoveAt(j);
+					list2.RemoveAt(k);
 					num6--;
 				}
 			}
 			list2.ShuffleSeeded(CS$<>8__locals1.randSeed);
-			foreach (DUPLICANTSTATS.TraitVal traitVal3 in list2)
+			foreach (DUPLICANTSTATS.TraitVal traitVal4 in list2)
 			{
 				global::Debug.Assert(SaveLoader.Instance != null, "IsDLCActiveForCurrentSave should not be called from the front end");
-				if (!SaveLoader.Instance.IsDLCActiveForCurrentSave(traitVal3.dlcId))
+				if (!SaveLoader.Instance.IsDLCActiveForCurrentSave(traitVal4.dlcId))
 				{
 					num6--;
 				}
-				else if (CS$<>8__locals1.selectedTraits.Contains(traitVal3.id))
+				else if (CS$<>8__locals1.selectedTraits.Contains(traitVal4.id))
 				{
 					num6--;
 				}
 				else
 				{
-					Trait trait5 = Db.Get().traits.TryGet(traitVal3.id);
+					Trait trait5 = Db.Get().traits.TryGet(traitVal4.id);
 					if (trait5 == null)
 					{
-						global::Debug.LogWarning("Trying to add nonexistent trait: " + traitVal3.id);
+						global::Debug.LogWarning("Trying to add nonexistent trait: " + traitVal4.id);
 						num6--;
 					}
 					else if (!CS$<>8__locals1.isDebugMinion || trait5.disabledChoreGroups == null || trait5.disabledChoreGroups.Length == 0)
@@ -262,23 +288,23 @@ public class MinionStartingStats : ITelepadDeliverable
 						{
 							num6--;
 						}
-						else if (traitVal3.doNotGenerateTrait)
+						else if (traitVal4.doNotGenerateTrait)
 						{
 							num6--;
 						}
-						else if (CS$<>8__locals1.<>4__this.AreTraitAndAptitudesExclusive(traitVal3, CS$<>8__locals1.<>4__this.skillAptitudes))
+						else if (CS$<>8__locals1.<>4__this.AreTraitAndAptitudesExclusive(traitVal4, CS$<>8__locals1.<>4__this.skillAptitudes))
 						{
 							num6--;
 						}
-						else if (CS$<>8__locals1.is_starter_minion && CS$<>8__locals1.guaranteedAptitudeID != null && CS$<>8__locals1.<>4__this.AreTraitAndArchetypeExclusive(traitVal3, CS$<>8__locals1.guaranteedAptitudeID))
+						else if (CS$<>8__locals1.is_starter_minion && CS$<>8__locals1.guaranteedAptitudeID != null && CS$<>8__locals1.<>4__this.AreTraitAndArchetypeExclusive(traitVal4, CS$<>8__locals1.guaranteedAptitudeID))
 						{
 							num6--;
 						}
 						else
 						{
-							if (!CS$<>8__locals1.<>4__this.AreTraitsMutuallyExclusive(traitVal3, CS$<>8__locals1.selectedTraits))
+							if (!CS$<>8__locals1.<>4__this.AreTraitsMutuallyExclusive(traitVal4, CS$<>8__locals1.selectedTraits))
 							{
-								base.<GenerateTraits>g__SelectTrait|1(traitVal3, trait5, positiveTrait);
+								base.<GenerateTraits>g__SelectTrait|1(traitVal4, trait5, positiveTrait);
 								return true;
 							}
 							num6--;
@@ -315,20 +341,20 @@ public class MinionStartingStats : ITelepadDeliverable
 		int num5 = (num2 + num) * 4;
 		if (!string.IsNullOrEmpty(guaranteedTraitID))
 		{
-			DUPLICANTSTATS.TraitVal traitVal = DUPLICANTSTATS.GetTraitVal(guaranteedTraitID);
-			if (traitVal.id == guaranteedTraitID)
+			DUPLICANTSTATS.TraitVal traitVal2 = DUPLICANTSTATS.GetTraitVal(guaranteedTraitID);
+			if (traitVal2.id == guaranteedTraitID)
 			{
-				Trait trait4 = Db.Get().traits.TryGet(traitVal.id);
+				Trait trait4 = Db.Get().traits.TryGet(traitVal2.id);
 				bool positiveTrait2 = trait4.PositiveTrait;
-				CS$<>8__locals1.selectedTraits.Add(traitVal.id);
-				CS$<>8__locals1.statDelta += traitVal.statBonus;
-				this.rarityBalance += (positiveTrait2 ? (-traitVal.rarity) : traitVal.rarity);
+				CS$<>8__locals1.selectedTraits.Add(traitVal2.id);
+				CS$<>8__locals1.statDelta += traitVal2.statBonus;
+				this.rarityBalance += (positiveTrait2 ? (-traitVal2.rarity) : traitVal2.rarity);
 				this.Traits.Add(trait4);
 				if (trait4.disabledChoreGroups != null)
 				{
-					for (int i = 0; i < trait4.disabledChoreGroups.Length; i++)
+					for (int j = 0; j < trait4.disabledChoreGroups.Length; j++)
 					{
-						CS$<>8__locals1.disabled_chore_groups.Add(trait4.disabledChoreGroups[i]);
+						CS$<>8__locals1.disabled_chore_groups.Add(trait4.disabledChoreGroups[j]);
 					}
 				}
 				if (positiveTrait2)
@@ -345,18 +371,18 @@ public class MinionStartingStats : ITelepadDeliverable
 		{
 			if (this.congenitaltrait != null)
 			{
-				DUPLICANTSTATS.TraitVal traitVal2;
+				DUPLICANTSTATS.TraitVal traitVal3;
 				if (this.congenitaltrait.PositiveTrait)
 				{
 					num3++;
-					traitVal2 = DUPLICANTSTATS.GOODTRAITS.Find((DUPLICANTSTATS.TraitVal match) => match.id == CS$<>8__locals1.<>4__this.congenitaltrait.Id);
+					traitVal3 = DUPLICANTSTATS.GOODTRAITS.Find((DUPLICANTSTATS.TraitVal match) => match.id == CS$<>8__locals1.<>4__this.congenitaltrait.Id);
 				}
 				else
 				{
 					num4++;
-					traitVal2 = DUPLICANTSTATS.BADTRAITS.Find((DUPLICANTSTATS.TraitVal match) => match.id == CS$<>8__locals1.<>4__this.congenitaltrait.Id);
+					traitVal3 = DUPLICANTSTATS.BADTRAITS.Find((DUPLICANTSTATS.TraitVal match) => match.id == CS$<>8__locals1.<>4__this.congenitaltrait.Id);
 				}
-				CS$<>8__locals1.<GenerateTraits>g__SelectTrait|1(traitVal2, this.congenitaltrait, this.congenitaltrait.PositiveTrait);
+				CS$<>8__locals1.<GenerateTraits>g__SelectTrait|1(traitVal3, this.congenitaltrait, this.congenitaltrait.PositiveTrait);
 			}
 		}
 		while (num5 > 0 && (num4 < num2 || num3 < num))
@@ -378,7 +404,7 @@ public class MinionStartingStats : ITelepadDeliverable
 		return CS$<>8__locals1.statDelta;
 	}
 
-	private void GenerateAptitudes(string guaranteedAptitudeID = null)
+		private void GenerateAptitudes(string guaranteedAptitudeID = null)
 	{
 		int num = UnityEngine.Random.Range(1, 4);
 		List<SkillGroup> list = new List<SkillGroup>(Db.Get().SkillGroups.resources);
@@ -395,7 +421,7 @@ public class MinionStartingStats : ITelepadDeliverable
 		}
 	}
 
-	private void GenerateAttributes(int pointsDelta, List<ChoreGroup> disabled_chore_groups)
+		private void GenerateAttributes(int pointsDelta, List<ChoreGroup> disabled_chore_groups)
 	{
 		List<string> list = new List<string>(DUPLICANTSTATS.ALL_ATTRIBUTES);
 		for (int i = 0; i < list.Count; i++)
@@ -472,13 +498,14 @@ public class MinionStartingStats : ITelepadDeliverable
 		}
 	}
 
-	public void Apply(GameObject go)
+		public void Apply(GameObject go)
 	{
 		MinionIdentity component = go.GetComponent<MinionIdentity>();
 		component.SetName(this.Name);
 		component.nameStringKey = this.NameStringKey;
 		component.genderStringKey = this.GenderStringKey;
 		component.personalityResourceId = this.personality.IdHash;
+		component.model = this.personality.model;
 		this.ApplyTraits(go);
 		this.ApplyRace(go);
 		this.ApplyAptitudes(go);
@@ -488,7 +515,7 @@ public class MinionStartingStats : ITelepadDeliverable
 		this.ApplyJoyResponseOutfit(this.personality, go);
 	}
 
-	public void ApplyExperience(GameObject go)
+		public void ApplyExperience(GameObject go)
 	{
 		foreach (KeyValuePair<string, int> keyValuePair in this.StartingLevels)
 		{
@@ -496,14 +523,14 @@ public class MinionStartingStats : ITelepadDeliverable
 		}
 	}
 
-	public void ApplyAccessories(GameObject go)
+		public void ApplyAccessories(GameObject go)
 	{
 		Accessorizer component = go.GetComponent<Accessorizer>();
 		component.ApplyMinionPersonality(this.personality);
 		component.UpdateHairBasedOnHat();
 	}
 
-	public void ApplyOutfit(Personality personality, GameObject go)
+		public void ApplyOutfit(Personality personality, GameObject go)
 	{
 		WearableAccessorizer component = go.GetComponent<WearableAccessorizer>();
 		Option<ClothingOutfitTarget> option = ClothingOutfitTarget.TryFromTemplateId(personality.GetSelectedTemplateOutfitId(ClothingOutfitUtility.OutfitType.Clothing));
@@ -513,18 +540,18 @@ public class MinionStartingStats : ITelepadDeliverable
 		}
 	}
 
-	public void ApplyJoyResponseOutfit(Personality personality, GameObject go)
+		public void ApplyJoyResponseOutfit(Personality personality, GameObject go)
 	{
 		JoyResponseOutfitTarget joyResponseOutfitTarget = JoyResponseOutfitTarget.FromPersonality(personality);
 		JoyResponseOutfitTarget.FromMinion(go).WriteFacadeId(joyResponseOutfitTarget.ReadFacadeId());
 	}
 
-	public void ApplyRace(GameObject go)
+		public void ApplyRace(GameObject go)
 	{
 		go.GetComponent<MinionIdentity>().voiceIdx = this.voiceIdx;
 	}
 
-	public static KCompBuilder.BodyData CreateBodyData(Personality p)
+		public static KCompBuilder.BodyData CreateBodyData(Personality p)
 	{
 		return new KCompBuilder.BodyData
 		{
@@ -551,7 +578,7 @@ public class MinionStartingStats : ITelepadDeliverable
 		};
 	}
 
-	public void ApplyAptitudes(GameObject go)
+		public void ApplyAptitudes(GameObject go)
 	{
 		MinionResume component = go.GetComponent<MinionResume>();
 		foreach (KeyValuePair<SkillGroup, float> keyValuePair in this.skillAptitudes)
@@ -560,7 +587,7 @@ public class MinionStartingStats : ITelepadDeliverable
 		}
 	}
 
-	public void ApplyTraits(GameObject go)
+		public void ApplyTraits(GameObject go)
 	{
 		Traits component = go.GetComponent<Traits>();
 		component.Clear();
@@ -577,9 +604,11 @@ public class MinionStartingStats : ITelepadDeliverable
 		go.GetComponent<MinionIdentity>().SetGender(this.GenderStringKey);
 	}
 
-	public GameObject Deliver(Vector3 location)
+		public GameObject Deliver(Vector3 location)
 	{
-		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(MinionConfig.ID), null, null);
+		GameObject prefab = Assets.GetPrefab(this.personality.model);
+		GameObject gameObject = Util.KInstantiate(prefab, null, null);
+		gameObject.name = prefab.name;
 		gameObject.SetActive(true);
 		gameObject.transform.SetLocalPosition(location);
 		this.Apply(gameObject);
@@ -588,7 +617,7 @@ public class MinionStartingStats : ITelepadDeliverable
 		return gameObject;
 	}
 
-	private bool AreTraitAndAptitudesExclusive(DUPLICANTSTATS.TraitVal traitVal, Dictionary<SkillGroup, float> aptitudes)
+		private bool AreTraitAndAptitudesExclusive(DUPLICANTSTATS.TraitVal traitVal, Dictionary<SkillGroup, float> aptitudes)
 	{
 		if (traitVal.mutuallyExclusiveAptitudes == null)
 		{
@@ -610,7 +639,7 @@ public class MinionStartingStats : ITelepadDeliverable
 		return false;
 	}
 
-	private bool AreTraitAndArchetypeExclusive(DUPLICANTSTATS.TraitVal traitVal, string guaranteedAptitudeID)
+		private bool AreTraitAndArchetypeExclusive(DUPLICANTSTATS.TraitVal traitVal, string guaranteedAptitudeID)
 	{
 		if (!DUPLICANTSTATS.ARCHETYPE_TRAIT_EXCLUSIONS.ContainsKey(guaranteedAptitudeID))
 		{
@@ -629,7 +658,7 @@ public class MinionStartingStats : ITelepadDeliverable
 		return false;
 	}
 
-	private bool AreTraitsMutuallyExclusive(DUPLICANTSTATS.TraitVal traitVal, List<string> selectedTraits)
+		private bool AreTraitsMutuallyExclusive(DUPLICANTSTATS.TraitVal traitVal, List<string> selectedTraits)
 	{
 		foreach (string text in selectedTraits)
 		{
@@ -669,33 +698,33 @@ public class MinionStartingStats : ITelepadDeliverable
 		return false;
 	}
 
-	public string Name;
+		public string Name;
 
-	public string NameStringKey;
+		public string NameStringKey;
 
-	public string GenderStringKey;
+		public string GenderStringKey;
 
-	public List<Trait> Traits = new List<Trait>();
+		public List<Trait> Traits = new List<Trait>();
 
-	public int rarityBalance;
+		public int rarityBalance;
 
-	public Trait stressTrait;
+		public Trait stressTrait;
 
-	public Trait joyTrait;
+		public Trait joyTrait;
 
-	public Trait congenitaltrait;
+		public Trait congenitaltrait;
 
-	public string stickerType;
+		public string stickerType;
 
-	public int voiceIdx;
+		public int voiceIdx;
 
-	public Dictionary<string, int> StartingLevels = new Dictionary<string, int>();
+		public Dictionary<string, int> StartingLevels = new Dictionary<string, int>();
 
-	public Personality personality;
+		public Personality personality;
 
-	public List<Accessory> accessories = new List<Accessory>();
+		public List<Accessory> accessories = new List<Accessory>();
 
-	public bool IsValid;
+		public bool IsValid;
 
-	public Dictionary<SkillGroup, float> skillAptitudes = new Dictionary<SkillGroup, float>();
+		public Dictionary<SkillGroup, float> skillAptitudes = new Dictionary<SkillGroup, float>();
 }

@@ -3,18 +3,18 @@ using UnityEngine;
 
 public class OrnamentReceptacle : SingleEntityReceptacle
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.GetComponent<KBatchedAnimController>().SetSymbolVisiblity("snapTo_ornament", false);
 	}
 
-	protected override void PositionOccupyingObject()
+		protected override void PositionOccupyingObject()
 	{
 		KBatchedAnimController component = base.occupyingObject.GetComponent<KBatchedAnimController>();
 		component.transform.SetLocalPosition(new Vector3(0f, 0f, -0.1f));
@@ -24,7 +24,7 @@ public class OrnamentReceptacle : SingleEntityReceptacle
 		this.animLink = new KAnimLink(base.GetComponent<KBatchedAnimController>(), component);
 	}
 
-	protected override void ClearOccupant()
+		protected override void ClearOccupant()
 	{
 		if (this.occupyingTracker != null)
 		{
@@ -39,10 +39,10 @@ public class OrnamentReceptacle : SingleEntityReceptacle
 		base.ClearOccupant();
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private SnapOn snapOn;
 
-	private KBatchedAnimTracker occupyingTracker;
+		private KBatchedAnimTracker occupyingTracker;
 
-	private KAnimLink animLink;
+		private KAnimLink animLink;
 }

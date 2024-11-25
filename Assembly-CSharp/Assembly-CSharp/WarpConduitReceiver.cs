@@ -3,19 +3,19 @@ using UnityEngine;
 
 public class WarpConduitReceiver : StateMachineComponent<WarpConduitReceiver.StatesInstance>, ISecondaryOutput
 {
-	private bool IsReceiving()
+		private bool IsReceiving()
 	{
 		return base.smi.master.gasPort.IsOn() || base.smi.master.liquidPort.IsOn() || base.smi.master.solidPort.IsOn();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.FindPartner();
 		base.smi.StartSM();
 	}
 
-	private void FindPartner()
+		private void FindPartner()
 	{
 		if (this.senderGasStorage != null)
 		{
@@ -40,7 +40,7 @@ public class WarpConduitReceiver : StateMachineComponent<WarpConduitReceiver.Sta
 		WarpConduitStatus.UpdateWarpConduitsOperational(warpConduitSender.gameObject, base.gameObject);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Conduit.GetNetworkManager(this.liquidPortInfo.conduitType).RemoveFromNetworks(this.liquidPort.outputCell, this.liquidPort.networkItem, true);
 		if (this.gasPort.portInfo != null)
@@ -55,7 +55,7 @@ public class WarpConduitReceiver : StateMachineComponent<WarpConduitReceiver.Sta
 		base.OnCleanUp();
 	}
 
-	public void OnActivatedChanged(object data)
+		public void OnActivatedChanged(object data)
 	{
 		if (this.senderGasStorage == null)
 		{
@@ -64,7 +64,7 @@ public class WarpConduitReceiver : StateMachineComponent<WarpConduitReceiver.Sta
 		WarpConduitStatus.UpdateWarpConduitsOperational((this.senderGasStorage != null) ? this.senderGasStorage.gameObject : null, base.gameObject);
 	}
 
-	public void SetStorage(Storage gasStorage, Storage liquidStorage, Storage solidStorage)
+		public void SetStorage(Storage gasStorage, Storage liquidStorage, Storage solidStorage)
 	{
 		this.senderGasStorage = gasStorage;
 		this.senderLiquidStorage = liquidStorage;
@@ -78,12 +78,12 @@ public class WarpConduitReceiver : StateMachineComponent<WarpConduitReceiver.Sta
 		this.liquidPort.airlock.gameObject.GetComponent<KBatchedAnimController>().enabled = true;
 	}
 
-	public bool HasSecondaryConduitType(ConduitType type)
+		public bool HasSecondaryConduitType(ConduitType type)
 	{
 		return type == this.gasPortInfo.conduitType || type == this.liquidPortInfo.conduitType || type == this.solidPortInfo.conduitType;
 	}
 
-	public CellOffset GetSecondaryConduitOffset(ConduitType type)
+		public CellOffset GetSecondaryConduitOffset(ConduitType type)
 	{
 		if (type == this.gasPortInfo.conduitType)
 		{
@@ -100,30 +100,30 @@ public class WarpConduitReceiver : StateMachineComponent<WarpConduitReceiver.Sta
 		return CellOffset.none;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo liquidPortInfo;
 
-	private WarpConduitReceiver.ConduitPort liquidPort;
+		private WarpConduitReceiver.ConduitPort liquidPort;
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo solidPortInfo;
 
-	private WarpConduitReceiver.ConduitPort solidPort;
+		private WarpConduitReceiver.ConduitPort solidPort;
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo gasPortInfo;
 
-	private WarpConduitReceiver.ConduitPort gasPort;
+		private WarpConduitReceiver.ConduitPort gasPort;
 
-	public Storage senderGasStorage;
+		public Storage senderGasStorage;
 
-	public Storage senderLiquidStorage;
+		public Storage senderLiquidStorage;
 
-	public Storage senderSolidStorage;
+		public Storage senderSolidStorage;
 
-	public struct ConduitPort
+		public struct ConduitPort
 	{
-		public void SetPortInfo(GameObject parent, ConduitPortInfo info, Storage senderStorage, int number)
+				public void SetPortInfo(GameObject parent, ConduitPortInfo info, Storage senderStorage, int number)
 		{
 			this.portInfo = info;
 			this.outputCell = Grid.OffsetCell(Grid.PosToCell(parent), this.portInfo.offset);
@@ -161,7 +161,7 @@ public class WarpConduitReceiver : StateMachineComponent<WarpConduitReceiver.Sta
 			});
 		}
 
-		public bool IsOn()
+				public bool IsOn()
 		{
 			if (this.solidDispenser != null)
 			{
@@ -170,7 +170,7 @@ public class WarpConduitReceiver : StateMachineComponent<WarpConduitReceiver.Sta
 			return this.dispenser != null && !this.dispenser.blocked && !this.dispenser.empty;
 		}
 
-		public void UpdatePortAnim()
+				public void UpdatePortAnim()
 		{
 			bool flag = this.IsOn();
 			if (flag != this.open)
@@ -186,37 +186,37 @@ public class WarpConduitReceiver : StateMachineComponent<WarpConduitReceiver.Sta
 			}
 		}
 
-		public ConduitPortInfo portInfo;
+				public ConduitPortInfo portInfo;
 
-		public int outputCell;
+				public int outputCell;
 
-		public FlowUtilityNetwork.NetworkItem networkItem;
+				public FlowUtilityNetwork.NetworkItem networkItem;
 
-		public ConduitDispenser dispenser;
+				public ConduitDispenser dispenser;
 
-		public SolidConduitDispenser solidDispenser;
+				public SolidConduitDispenser solidDispenser;
 
-		public MeterController airlock;
+				public MeterController airlock;
 
-		private bool open;
+				private bool open;
 
-		private string pre;
+				private string pre;
 
-		private string loop;
+				private string loop;
 
-		private string pst;
+				private string pst;
 	}
 
-	public class StatesInstance : GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver, object>.GameInstance
+		public class StatesInstance : GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver, object>.GameInstance
 	{
-		public StatesInstance(WarpConduitReceiver master) : base(master)
+				public StatesInstance(WarpConduitReceiver master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver>
+		public class States : GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.off;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -255,15 +255,15 @@ public class WarpConduitReceiver : StateMachineComponent<WarpConduitReceiver.Sta
 			});
 		}
 
-		public GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver, object>.State off;
+				public GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver, object>.State off;
 
-		public WarpConduitReceiver.States.onStates on;
+				public WarpConduitReceiver.States.onStates on;
 
-		public class onStates : GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver, object>.State
+				public class onStates : GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver, object>.State
 		{
-			public GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver, object>.State working;
+						public GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver, object>.State working;
 
-			public GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver, object>.State idle;
+						public GameStateMachine<WarpConduitReceiver.States, WarpConduitReceiver.StatesInstance, WarpConduitReceiver, object>.State idle;
 		}
 	}
 }

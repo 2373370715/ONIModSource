@@ -3,21 +3,21 @@ using UnityEngine;
 
 public class IdleChore : Chore<IdleChore.StatesInstance>
 {
-	public IdleChore(IStateMachineTarget target) : base(Db.Get().ChoreTypes.Idle, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.idle, 5, false, true, 0, false, ReportManager.ReportType.IdleTime)
+		public IdleChore(IStateMachineTarget target) : base(Db.Get().ChoreTypes.Idle, target, target.GetComponent<ChoreProvider>(), false, null, null, null, PriorityScreen.PriorityClass.idle, 5, false, true, 0, false, ReportManager.ReportType.IdleTime)
 	{
 		this.showAvailabilityInHoverText = false;
 		base.smi = new IdleChore.StatesInstance(this, target.gameObject);
 	}
 
-	public class StatesInstance : GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.GameInstance
+		public class StatesInstance : GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.GameInstance
 	{
-		public StatesInstance(IdleChore master, GameObject idler) : base(master)
+				public StatesInstance(IdleChore master, GameObject idler) : base(master)
 		{
 			base.sm.idler.Set(idler, base.smi, false);
 			this.idleCellSensor = base.GetComponent<Sensors>().GetSensor<IdleCellSensor>();
 		}
 
-		public void UpdateNavType()
+				public void UpdateNavType()
 		{
 			NavType currentNavType = base.GetComponent<Navigator>().CurrentNavType;
 			base.sm.isOnLadder.Set(currentNavType == NavType.Ladder || currentNavType == NavType.Pole, this, false);
@@ -26,22 +26,22 @@ public class IdleChore : Chore<IdleChore.StatesInstance>
 			base.sm.isOnSuitMarkerCell.Set(Grid.IsValidCell(num) && Grid.HasSuitMarker[num], this, false);
 		}
 
-		public int GetIdleCell()
+				public int GetIdleCell()
 		{
 			return this.idleCellSensor.GetCell();
 		}
 
-		public bool HasIdleCell()
+				public bool HasIdleCell()
 		{
 			return this.idleCellSensor.GetCell() != Grid.InvalidCell;
 		}
 
-		private IdleCellSensor idleCellSensor;
+				private IdleCellSensor idleCellSensor;
 	}
 
-	public class States : GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore>
+		public class States : GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			base.Target(this.idler);
@@ -90,27 +90,27 @@ public class IdleChore : Chore<IdleChore.StatesInstance>
 			});
 		}
 
-		public StateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.BoolParameter isOnLadder;
+				public StateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.BoolParameter isOnLadder;
 
-		public StateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.BoolParameter isOnTube;
+				public StateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.BoolParameter isOnTube;
 
-		public StateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.BoolParameter isOnSuitMarkerCell;
+				public StateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.BoolParameter isOnSuitMarkerCell;
 
-		public StateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.TargetParameter idler;
+				public StateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.TargetParameter idler;
 
-		public IdleChore.States.IdleState idle;
+				public IdleChore.States.IdleState idle;
 
-		public class IdleState : GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State
+				public class IdleState : GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State
 		{
-			public GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State onfloor;
+						public GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State onfloor;
 
-			public GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State onladder;
+						public GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State onladder;
 
-			public GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State ontube;
+						public GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State ontube;
 
-			public GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State onsuitmarker;
+						public GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State onsuitmarker;
 
-			public GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State move;
+						public GameStateMachine<IdleChore.States, IdleChore.StatesInstance, IdleChore, object>.State move;
 		}
 	}
 }

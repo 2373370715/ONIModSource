@@ -1,203 +1,216 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
-public class Telepad : StateMachineComponent<Telepad.StatesInstance>
-{
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		base.GetComponent<Deconstructable>().allowDeconstruction = false;
-		int num = 0;
-		int num2 = 0;
-		Grid.CellToXY(Grid.PosToCell(this), out num, out num2);
-		if (num == 0)
-		{
-			global::Debug.LogError(string.Concat(new string[]
-			{
-				"Headquarters spawned at: (",
-				num.ToString(),
-				",",
-				num2.ToString(),
-				")"
-			}));
-		}
-	}
+public class Telepad : StateMachineComponent<Telepad.StatesInstance> {
+    private const          float                     MAX_IMMIGRATION_TIME = 120f;
+    private const          int                       NUM_METER_NOTCHES    = 8;
+    public static readonly HashedString[]            PortalBirthAnim      = { "portalbirth" };
+    private                MeterController           meter;
+    private                List<MinionStartingStats> minionStats;
 
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		Components.Telepads.Add(this);
-		this.meter = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Behind, Grid.SceneLayer.NoLayer, new string[]
-		{
-			"meter_target",
-			"meter_fill",
-			"meter_frame",
-			"meter_OL"
-		});
-		this.meter.gameObject.GetComponent<KBatchedAnimController>().SetDirty();
-		base.smi.StartSM();
-	}
+    [MyCmpReq]
+    private KSelectable selectable;
 
-	protected override void OnCleanUp()
-	{
-		Components.Telepads.Remove(this);
-		base.OnCleanUp();
-	}
+    public float startingSkillPoints;
 
-	public void Update()
-	{
-		if (base.smi.IsColonyLost())
-		{
-			return;
-		}
-		if (Immigration.Instance.ImmigrantsAvailable && base.GetComponent<Operational>().IsOperational)
-		{
-			base.smi.sm.openPortal.Trigger(base.smi);
-			this.selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.NewDuplicantsAvailable, this);
-		}
-		else
-		{
-			base.smi.sm.closePortal.Trigger(base.smi);
-			this.selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.Wattson, this);
-		}
-		if (this.GetTimeRemaining() < -120f)
-		{
-			Messenger.Instance.QueueMessage(new DuplicantsLeftMessage());
-			Immigration.Instance.EndImmigration();
-		}
-	}
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        GetComponent<Deconstructable>().allowDeconstruction = false;
+        var num  = 0;
+        var num2 = 0;
+        Grid.CellToXY(Grid.PosToCell(this), out num, out num2);
+        if (num == 0)
+            Debug.LogError(string.Concat("Headquarters spawned at: (", num.ToString(), ",", num2.ToString(), ")"));
+    }
 
-	public void RejectAll()
-	{
-		Immigration.Instance.EndImmigration();
-		base.smi.sm.closePortal.Trigger(base.smi);
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        Components.Telepads.Add(this);
+        meter = new MeterController(GetComponent<KBatchedAnimController>(),
+                                    "meter_target",
+                                    "meter",
+                                    Meter.Offset.Behind,
+                                    Grid.SceneLayer.NoLayer,
+                                    "meter_target",
+                                    "meter_fill",
+                                    "meter_frame",
+                                    "meter_OL");
 
-	public void OnAcceptDelivery(ITelepadDeliverable delivery)
-	{
-		int cell = Grid.PosToCell(this);
-		Immigration.Instance.EndImmigration();
-		GameObject gameObject = delivery.Deliver(Grid.CellToPosCBC(cell, Grid.SceneLayer.Move));
-		MinionIdentity component = gameObject.GetComponent<MinionIdentity>();
-		if (component != null)
-		{
-			ReportManager.Instance.ReportValue(ReportManager.ReportType.PersonalTime, GameClock.Instance.GetTimeSinceStartOfReport(), string.Format(UI.ENDOFDAYREPORT.NOTES.PERSONAL_TIME, DUPLICANTS.CHORES.NOT_EXISTING_TASK), gameObject.GetProperName());
-			foreach (MinionIdentity minionIdentity in Components.LiveMinionIdentities.GetWorldItems(base.gameObject.GetComponent<KSelectable>().GetMyWorldId(), false))
-			{
-				minionIdentity.GetComponent<Effects>().Add("NewCrewArrival", true);
-			}
-			MinionResume component2 = component.GetComponent<MinionResume>();
-			int num = 0;
-			while ((float)num < this.startingSkillPoints)
-			{
-				component2.ForceAddSkillPoint();
-				num++;
-			}
-		}
-		base.smi.sm.closePortal.Trigger(base.smi);
-	}
+        meter.gameObject.GetComponent<KBatchedAnimController>().SetDirty();
+        smi.StartSM();
+    }
 
-	public float GetTimeRemaining()
-	{
-		return Immigration.Instance.GetTimeRemaining();
-	}
+    protected override void OnCleanUp() {
+        Components.Telepads.Remove(this);
+        base.OnCleanUp();
+    }
 
-	[MyCmpReq]
-	private KSelectable selectable;
+    public void Update() {
+        if (smi.IsColonyLost()) return;
 
-	private MeterController meter;
+        if (Immigration.Instance.ImmigrantsAvailable && GetComponent<Operational>().IsOperational) {
+            smi.sm.openPortal.Trigger(smi);
+            selectable.SetStatusItem(Db.Get().StatusItemCategories.Main,
+                                     Db.Get().BuildingStatusItems.NewDuplicantsAvailable,
+                                     this);
+        } else {
+            smi.sm.closePortal.Trigger(smi);
+            selectable.SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.Wattson, this);
+        }
 
-	private const float MAX_IMMIGRATION_TIME = 120f;
+        if (GetTimeRemaining() < -120f) {
+            Messenger.Instance.QueueMessage(new DuplicantsLeftMessage());
+            Immigration.Instance.EndImmigration();
+        }
+    }
 
-	private const int NUM_METER_NOTCHES = 8;
+    public void RejectAll() {
+        Immigration.Instance.EndImmigration();
+        smi.sm.closePortal.Trigger(smi);
+    }
 
-	private List<MinionStartingStats> minionStats;
+    public void OnAcceptDelivery(ITelepadDeliverable delivery) {
+        var cell = Grid.PosToCell(this);
+        Immigration.Instance.EndImmigration();
+        var gameObject = delivery.Deliver(Grid.CellToPosCBC(cell, Grid.SceneLayer.Move));
+        var component  = gameObject.GetComponent<MinionIdentity>();
+        if (component != null) {
+            ReportManager.Instance.ReportValue(ReportManager.ReportType.PersonalTime,
+                                               GameClock.Instance.GetTimeSinceStartOfReport(),
+                                               string.Format(UI.ENDOFDAYREPORT.NOTES.PERSONAL_TIME,
+                                                             DUPLICANTS.CHORES.NOT_EXISTING_TASK),
+                                               gameObject.GetProperName());
 
-	public float startingSkillPoints;
+            foreach (var minionIdentity in
+                     Components.LiveMinionIdentities.GetWorldItems(this.gameObject.GetComponent<KSelectable>()
+                                                                       .GetMyWorldId()))
+                minionIdentity.GetComponent<Effects>().Add("NewCrewArrival", true);
 
-	public static readonly HashedString[] PortalBirthAnim = new HashedString[]
-	{
-		"portalbirth"
-	};
+            var component2 = component.GetComponent<MinionResume>();
+            var num        = 0;
+            while (num < startingSkillPoints) {
+                component2.ForceAddSkillPoint();
+                num++;
+            }
 
-	public class StatesInstance : GameStateMachine<Telepad.States, Telepad.StatesInstance, Telepad, object>.GameInstance
-	{
-		public StatesInstance(Telepad master) : base(master)
-		{
-		}
+            if (component.HasTag(GameTags.Minions.Models.Bionic))
+                GameScheduler.Instance.Schedule("BonusBatteryDelivery", 5f, delegate { Trigger(1982288670); });
+        }
 
-		public bool IsColonyLost()
-		{
-			return GameFlowManager.Instance != null && GameFlowManager.Instance.IsGameOver();
-		}
+        smi.sm.closePortal.Trigger(smi);
+    }
 
-		public void UpdateMeter()
-		{
-			float timeRemaining = Immigration.Instance.GetTimeRemaining();
-			float totalWaitTime = Immigration.Instance.GetTotalWaitTime();
-			float positionPercent = Mathf.Clamp01(1f - timeRemaining / totalWaitTime);
-			base.master.meter.SetPositionPercent(positionPercent);
-		}
-	}
+    public float GetTimeRemaining() { return Immigration.Instance.GetTimeRemaining(); }
 
-	public class States : GameStateMachine<Telepad.States, Telepad.StatesInstance, Telepad>
-	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
-		{
-			default_state = this.idle;
-			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
-			this.root.OnSignal(this.idlePortal, this.resetToIdle);
-			this.resetToIdle.GoTo(this.idle);
-			this.idle.Enter(delegate(Telepad.StatesInstance smi)
-			{
-				smi.UpdateMeter();
-			}).Update("TelepadMeter", delegate(Telepad.StatesInstance smi, float dt)
-			{
-				smi.UpdateMeter();
-			}, UpdateRate.SIM_4000ms, false).EventTransition(GameHashes.OperationalChanged, this.unoperational, (Telepad.StatesInstance smi) => !smi.GetComponent<Operational>().IsOperational).PlayAnim("idle").OnSignal(this.openPortal, this.opening);
-			this.unoperational.PlayAnim("idle").Enter("StopImmigration", delegate(Telepad.StatesInstance smi)
-			{
-				smi.master.meter.SetPositionPercent(0f);
-			}).EventTransition(GameHashes.OperationalChanged, this.idle, (Telepad.StatesInstance smi) => smi.GetComponent<Operational>().IsOperational);
-			this.opening.Enter(delegate(Telepad.StatesInstance smi)
-			{
-				smi.master.meter.SetPositionPercent(1f);
-			}).PlayAnim("working_pre").OnAnimQueueComplete(this.open);
-			this.open.OnSignal(this.closePortal, this.close).Enter(delegate(Telepad.StatesInstance smi)
-			{
-				smi.master.meter.SetPositionPercent(1f);
-			}).PlayAnim("working_loop", KAnim.PlayMode.Loop).Transition(this.close, (Telepad.StatesInstance smi) => smi.IsColonyLost(), UpdateRate.SIM_200ms).EventTransition(GameHashes.OperationalChanged, this.close, (Telepad.StatesInstance smi) => !smi.GetComponent<Operational>().IsOperational);
-			this.close.Enter(delegate(Telepad.StatesInstance smi)
-			{
-				smi.master.meter.SetPositionPercent(0f);
-			}).PlayAnims((Telepad.StatesInstance smi) => Telepad.States.workingAnims, KAnim.PlayMode.Once).OnAnimQueueComplete(this.idle);
-		}
+    public class StatesInstance : GameStateMachine<States, StatesInstance, Telepad, object>.GameInstance {
+        public StatesInstance(Telepad master) : base(master) { }
+        public bool IsColonyLost() { return GameFlowManager.Instance != null && GameFlowManager.Instance.IsGameOver(); }
 
-		public StateMachine<Telepad.States, Telepad.StatesInstance, Telepad, object>.Signal openPortal;
+        public void UpdateMeter() {
+            var timeRemaining   = Immigration.Instance.GetTimeRemaining();
+            var totalWaitTime   = Immigration.Instance.GetTotalWaitTime();
+            var positionPercent = Mathf.Clamp01(1f - timeRemaining / totalWaitTime);
+            master.meter.SetPositionPercent(positionPercent);
+        }
 
-		public StateMachine<Telepad.States, Telepad.StatesInstance, Telepad, object>.Signal closePortal;
+        public IEnumerator SpawnExtraPowerBanks() {
+            var cellTarget = Grid.OffsetCell(Grid.PosToCell(this.gameObject), 1, 2);
+            var count      = 5;
+            int num;
+            for (var i = 0; i < count; i = num + 1) {
+                PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus,
+                                              MISC.POPFX.EXTRA_POWERBANKS_BIONIC,
+                                              this.gameObject.transform,
+                                              new Vector3(0f, 0.5f, 0f));
 
-		public StateMachine<Telepad.States, Telepad.StatesInstance, Telepad, object>.Signal idlePortal;
+                PlaySound(GlobalAssets.GetSound("SandboxTool_Spawner"));
+                var gameObject = Util.KInstantiate(Assets.GetPrefab("DisposableElectrobank_BasicSingleHarvestPlant"),
+                                                   Grid.CellToPosCBC(cellTarget, Grid.SceneLayer.Front) -
+                                                   Vector3.right / 2f);
 
-		public GameStateMachine<Telepad.States, Telepad.StatesInstance, Telepad, object>.State idle;
+                gameObject.SetActive(true);
+                var initial_velocity = new Vector2((-2.5f + 5f * (i / 5f)) / 2f, 2f);
+                if (GameComps.Fallers.Has(gameObject)) GameComps.Fallers.Remove(gameObject);
+                GameComps.Fallers.Add(gameObject, initial_velocity);
+                yield return new WaitForSeconds(0.25f);
 
-		public GameStateMachine<Telepad.States, Telepad.StatesInstance, Telepad, object>.State resetToIdle;
+                num = i;
+            }
 
-		public GameStateMachine<Telepad.States, Telepad.StatesInstance, Telepad, object>.State opening;
+            yield return 0;
+        }
+    }
 
-		public GameStateMachine<Telepad.States, Telepad.StatesInstance, Telepad, object>.State open;
+    public class States : GameStateMachine<States, StatesInstance, Telepad> {
+        private static readonly HashedString[]      workingAnims = { "working_loop", "working_pst" };
+        public                  BonusDeliveryStates bonusDelivery;
+        public                  State               close;
+        public                  Signal              closePortal;
+        public                  State               idle;
+        public                  Signal              idlePortal;
+        public                  State               open;
+        public                  State               opening;
+        public                  Signal              openPortal;
+        public                  State               resetToIdle;
+        public                  State               unoperational;
 
-		public GameStateMachine<Telepad.States, Telepad.StatesInstance, Telepad, object>.State close;
+        public override void InitializeStates(out BaseState default_state) {
+            default_state = idle;
+            serializable  = SerializeType.Both_DEPRECATED;
+            root.OnSignal(idlePortal, resetToIdle).EventTransition(GameHashes.BonusTelepadDelivery, bonusDelivery.pre);
+            resetToIdle.GoTo(idle);
+            idle.Enter(delegate(StatesInstance smi) { smi.UpdateMeter(); })
+                .Update("TelepadMeter",
+                        delegate(StatesInstance smi, float dt) { smi.UpdateMeter(); },
+                        UpdateRate.SIM_4000ms)
+                .EventTransition(GameHashes.OperationalChanged,
+                                 unoperational,
+                                 smi => !smi.GetComponent<Operational>().IsOperational)
+                .PlayAnim("idle")
+                .OnSignal(openPortal, opening);
 
-		public GameStateMachine<Telepad.States, Telepad.StatesInstance, Telepad, object>.State unoperational;
+            unoperational.PlayAnim("idle")
+                         .Enter("StopImmigration",
+                                delegate(StatesInstance smi) { smi.master.meter.SetPositionPercent(0f); })
+                         .EventTransition(GameHashes.OperationalChanged,
+                                          idle,
+                                          smi => smi.GetComponent<Operational>().IsOperational);
 
-		private static readonly HashedString[] workingAnims = new HashedString[]
-		{
-			"working_loop",
-			"working_pst"
-		};
-	}
+            opening.Enter(delegate(StatesInstance smi) { smi.master.meter.SetPositionPercent(1f); })
+                   .PlayAnim("working_pre")
+                   .OnAnimQueueComplete(open);
+
+            open.OnSignal(closePortal, close)
+                .Enter(delegate(StatesInstance smi) { smi.master.meter.SetPositionPercent(1f); })
+                .PlayAnim("working_loop", KAnim.PlayMode.Loop)
+                .Transition(close, smi => smi.IsColonyLost())
+                .EventTransition(GameHashes.OperationalChanged,
+                                 close,
+                                 smi => !smi.GetComponent<Operational>().IsOperational);
+
+            close.Enter(delegate(StatesInstance smi) { smi.master.meter.SetPositionPercent(0f); })
+                 .PlayAnims(smi => workingAnims)
+                 .OnAnimQueueComplete(idle);
+
+            bonusDelivery.pre.PlayAnim("working_pre").OnAnimQueueComplete(bonusDelivery.loop);
+            bonusDelivery.loop.PlayAnim("working_loop", KAnim.PlayMode.Loop)
+                         .ScheduleAction("SpawnBonusDelivery",
+                                         1f,
+                                         delegate(StatesInstance smi) {
+                                             smi.master.StartCoroutine(smi.SpawnExtraPowerBanks());
+                                         })
+                         .ScheduleGoTo(3f, bonusDelivery.pst);
+
+            bonusDelivery.pst.PlayAnim("working_pst").OnAnimQueueComplete(idle);
+        }
+
+        public class BonusDeliveryStates : State {
+            public State loop;
+            public State pre;
+            public State pst;
+        }
+    }
 }

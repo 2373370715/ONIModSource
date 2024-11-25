@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class LonelyMinionMailbox : KMonoBehaviour
 {
-	public void Initialize(LonelyMinionHouse.Instance house)
+		public void Initialize(LonelyMinionHouse.Instance house)
 	{
 		this.House = house;
 		SingleEntityReceptacle component = base.GetComponent<SingleEntityReceptacle>();
@@ -15,7 +15,7 @@ public class LonelyMinionMailbox : KMonoBehaviour
 		this.OnStoryStateChanged(storyInstance.CurrentState);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (StoryManager.Instance.CheckState(StoryInstance.State.COMPLETE, Db.Get().Stories.LonelyMinion))
 		{
@@ -23,13 +23,13 @@ public class LonelyMinionMailbox : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		StoryInstance storyInstance = StoryManager.Instance.GetStoryInstance(Db.Get().Stories.LonelyMinion.HashId);
 		storyInstance.StoryStateChanged = (Action<StoryInstance.State>)Delegate.Remove(storyInstance.StoryStateChanged, new Action<StoryInstance.State>(this.OnStoryStateChanged));
 	}
 
-	private void OnStoryStateChanged(StoryInstance.State state)
+		private void OnStoryStateChanged(StoryInstance.State state)
 	{
 		QuestInstance quest = QuestManager.GetInstance(this.House.QuestOwnerId, Db.Get().Quests.LonelyMinionFoodQuest);
 		if (state == StoryInstance.State.IN_PROGRESS)
@@ -58,10 +58,10 @@ public class LonelyMinionMailbox : KMonoBehaviour
 		}
 	}
 
-	private void OnStorageChanged(object data)
+		private void OnStorageChanged(object data)
 	{
 		this.House.MailboxContentChanged(data as GameObject);
 	}
 
-	public LonelyMinionHouse.Instance House;
+		public LonelyMinionHouse.Instance House;
 }

@@ -6,7 +6,7 @@ using TUNING;
 
 public class BalloonArtist : GameStateMachine<BalloonArtist, BalloonArtist.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.neutral;
 		this.root.TagTransition(GameTags.Dead, null, false);
@@ -30,34 +30,34 @@ public class BalloonArtist : GameStateMachine<BalloonArtist, BalloonArtist.Insta
 		});
 	}
 
-	public StateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.IntParameter balloonsGivenOut;
+		public StateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.IntParameter balloonsGivenOut;
 
-	public GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.State neutral;
+		public GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.State neutral;
 
-	public BalloonArtist.OverjoyedStates overjoyed;
+		public BalloonArtist.OverjoyedStates overjoyed;
 
-	public class OverjoyedStates : GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.State
+		public class OverjoyedStates : GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.State idle;
+				public GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.State idle;
 
-		public GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.State balloon_stand;
+				public GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.State balloon_stand;
 
-		public GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.State exitEarly;
+				public GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.State exitEarly;
 	}
 
-	public new class Instance : GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<BalloonArtist, BalloonArtist.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 
-		[OnDeserialized]
+				[OnDeserialized]
 		private void OnDeserialized()
 		{
 			base.smi.sm.balloonsGivenOut.Set(this.numBalloonsGiven, base.smi, false);
 		}
 
-		public void Internal_InitBalloons()
+				public void Internal_InitBalloons()
 		{
 			JoyResponseOutfitTarget joyResponseOutfitTarget = JoyResponseOutfitTarget.FromMinion(base.master.gameObject);
 			if (!this.balloonSymbolIter.IsNullOrDestroyed())
@@ -71,12 +71,12 @@ public class BalloonArtist : GameStateMachine<BalloonArtist, BalloonArtist.Insta
 			this.SetBalloonSymbolOverride(this.balloonSymbolIter.Current());
 		}
 
-		public bool IsRecTime()
+				public bool IsRecTime()
 		{
 			return base.master.GetComponent<Schedulable>().IsAllowed(Db.Get().ScheduleBlockTypes.Recreation);
 		}
 
-		public void SetBalloonSymbolOverride(BalloonOverrideSymbol balloonOverrideSymbol)
+				public void SetBalloonSymbolOverride(BalloonOverrideSymbol balloonOverrideSymbol)
 		{
 			if (balloonOverrideSymbol.animFile.IsNone())
 			{
@@ -86,36 +86,36 @@ public class BalloonArtist : GameStateMachine<BalloonArtist, BalloonArtist.Insta
 			base.master.GetComponent<SymbolOverrideController>().AddSymbolOverride("body", balloonOverrideSymbol.symbol.Unwrap(), 0);
 		}
 
-		public BalloonOverrideSymbol GetCurrentBalloonSymbolOverride()
+				public BalloonOverrideSymbol GetCurrentBalloonSymbolOverride()
 		{
 			return this.balloonSymbolIter.Current();
 		}
 
-		public void ApplyNextBalloonSymbolOverride()
+				public void ApplyNextBalloonSymbolOverride()
 		{
 			this.SetBalloonSymbolOverride(this.balloonSymbolIter.Next());
 		}
 
-		public void GiveBalloon()
+				public void GiveBalloon()
 		{
 			this.numBalloonsGiven++;
 			base.smi.sm.balloonsGivenOut.Set(this.numBalloonsGiven, base.smi, false);
 		}
 
-		public void ExitJoyReactionEarly()
+				public void ExitJoyReactionEarly()
 		{
 			JoyBehaviourMonitor.Instance smi = base.master.gameObject.GetSMI<JoyBehaviourMonitor.Instance>();
 			smi.sm.exitEarly.Trigger(smi);
 		}
 
-		[Serialize]
+				[Serialize]
 		public int numBalloonsGiven;
 
-		[NonSerialized]
+				[NonSerialized]
 		private BalloonOverrideSymbolIter balloonSymbolIter;
 
-		private const string TARGET_SYMBOL_TO_OVERRIDE = "body";
+				private const string TARGET_SYMBOL_TO_OVERRIDE = "body";
 
-		private const int TARGET_OVERRIDE_PRIORITY = 0;
+				private const int TARGET_OVERRIDE_PRIORITY = 0;
 	}
 }

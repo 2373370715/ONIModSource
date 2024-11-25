@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class MineableCellQuery : PathFinderQuery
 {
-	public MineableCellQuery Reset(Tag element, int max_results)
+		public MineableCellQuery Reset(Tag element, int max_results)
 	{
 		this.element = element;
 		this.max_results = max_results;
@@ -11,7 +11,7 @@ public class MineableCellQuery : PathFinderQuery
 		return this;
 	}
 
-	public override bool IsMatch(int cell, int parent_cell, int cost)
+		public override bool IsMatch(int cell, int parent_cell, int cost)
 	{
 		if (!this.result_cells.Contains(cell) && this.CheckValidMineCell(this.element, cell))
 		{
@@ -20,7 +20,7 @@ public class MineableCellQuery : PathFinderQuery
 		return this.result_cells.Count >= this.max_results;
 	}
 
-	private bool CheckValidMineCell(Tag element, int testCell)
+		private bool CheckValidMineCell(Tag element, int testCell)
 	{
 		if (!Grid.IsValidCell(testCell))
 		{
@@ -37,13 +37,13 @@ public class MineableCellQuery : PathFinderQuery
 		return false;
 	}
 
-	public List<int> result_cells = new List<int>();
+		public List<int> result_cells = new List<int>();
 
-	private Tag element;
+		private Tag element;
 
-	private int max_results;
+		private int max_results;
 
-	public static List<Direction> DIRECTION_CHECKS = new List<Direction>
+		public static List<Direction> DIRECTION_CHECKS = new List<Direction>
 	{
 		Direction.Down,
 		Direction.Right,

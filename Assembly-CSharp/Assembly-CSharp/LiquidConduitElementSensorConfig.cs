@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LiquidConduitElementSensorConfig : ConduitSensorConfig
 {
-		protected override ConduitType ConduitType
+			protected override ConduitType ConduitType
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class LiquidConduitElementSensorConfig : ConduitSensorConfig
 		}
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef result = base.CreateBuildingDef(LiquidConduitElementSensorConfig.ID, "liquid_element_sensor_kanim", TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER0, MATERIALS.REFINED_METALS, new List<LogicPorts.Port>
 		{
@@ -24,7 +24,7 @@ public class LiquidConduitElementSensorConfig : ConduitSensorConfig
 		return result;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		base.DoPostConfigureComplete(go);
 		go.AddOrGet<Filterable>().filterElementState = Filterable.ElementState.Liquid;
@@ -35,5 +35,5 @@ public class LiquidConduitElementSensorConfig : ConduitSensorConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LiquidConduitElementSensor";
+		public static string ID = "LiquidConduitElementSensor";
 }

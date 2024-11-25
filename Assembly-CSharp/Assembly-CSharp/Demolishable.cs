@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(Prioritizable))]
 public class Demolishable : Workable
 {
-		public bool HasBeenDestroyed
+			public bool HasBeenDestroyed
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class Demolishable : Workable
 		}
 	}
 
-		private CellOffset[] placementOffsets
+			private CellOffset[] placementOffsets
 	{
 		get
 		{
@@ -34,7 +34,7 @@ public class Demolishable : Workable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.requiredSkillPerk = Db.Get().SkillPerks.CanDemolish.Id;
@@ -59,7 +59,7 @@ public class Demolishable : Workable
 		base.SetWorkTime(30f);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<Demolishable>(493375141, Demolishable.OnRefreshUserMenuDelegate);
@@ -82,18 +82,18 @@ public class Demolishable : Workable
 		}
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		this.progressBar.barColor = ProgressBarsConfig.Instance.GetBarColor("DeconstructBar");
 		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().BuildingStatusItems.PendingDemolition, false);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.TriggerDestroy();
 	}
 
-	private void TriggerDestroy()
+		private void TriggerDestroy()
 	{
 		if (this == null || this.destroyed)
 		{
@@ -104,7 +104,7 @@ public class Demolishable : Workable
 		base.gameObject.DeleteObject();
 	}
 
-	private void QueueDemolition()
+		private void QueueDemolition()
 	{
 		if (DebugHandler.InstantBuildMode)
 		{
@@ -123,7 +123,7 @@ public class Demolishable : Workable
 		this.UpdateStatusItem(null);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (!this.allowDemolition)
 		{
@@ -133,7 +133,7 @@ public class Demolishable : Workable
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 0f);
 	}
 
-	public void CancelDemolition()
+		public void CancelDemolition()
 	{
 		if (this.chore != null)
 		{
@@ -147,12 +147,12 @@ public class Demolishable : Workable
 		this.UpdateStatusItem(null);
 	}
 
-	private void OnCancel(object data)
+		private void OnCancel(object data)
 	{
 		this.CancelDemolition();
 	}
 
-	private void OnDemolish(object data)
+		private void OnDemolish(object data)
 	{
 		if (this.allowDemolition || DebugHandler.InstantBuildMode)
 		{
@@ -160,7 +160,7 @@ public class Demolishable : Workable
 		}
 	}
 
-	private void OnDemolish()
+		private void OnDemolish()
 	{
 		if (this.chore == null)
 		{
@@ -170,32 +170,32 @@ public class Demolishable : Workable
 		this.CancelDemolition();
 	}
 
-	protected override void UpdateStatusItem(object data = null)
+		protected override void UpdateStatusItem(object data = null)
 	{
 		this.shouldShowSkillPerkStatusItem = this.isMarkedForDemolition;
 		base.UpdateStatusItem(data);
 	}
 
-	public Chore chore;
+		public Chore chore;
 
-	public bool allowDemolition = true;
+		public bool allowDemolition = true;
 
-	[Serialize]
+		[Serialize]
 	private bool isMarkedForDemolition;
 
-	private bool destroyed;
+		private bool destroyed;
 
-	private static readonly EventSystem.IntraObjectHandler<Demolishable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Demolishable>(delegate(Demolishable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Demolishable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Demolishable>(delegate(Demolishable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Demolishable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Demolishable>(delegate(Demolishable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Demolishable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Demolishable>(delegate(Demolishable component, object data)
 	{
 		component.OnCancel(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Demolishable> OnDeconstructDelegate = new EventSystem.IntraObjectHandler<Demolishable>(delegate(Demolishable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Demolishable> OnDeconstructDelegate = new EventSystem.IntraObjectHandler<Demolishable>(delegate(Demolishable component, object data)
 	{
 		component.OnDemolish(data);
 	});

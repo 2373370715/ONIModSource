@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.traveling;
@@ -18,21 +18,21 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 		this.arrived.Enter(new StateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.State.Callback(ClusterMapMeteorShower.DestinationReached));
 	}
 
-	public static void DestinationReached(ClusterMapMeteorShower.Instance smi)
+		public static void DestinationReached(ClusterMapMeteorShower.Instance smi)
 	{
 		smi.DestinationReached();
 		Util.KDestroyGameObject(smi.gameObject);
 	}
 
-	public StateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.BoolParameter IsIdentified;
+		public StateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.BoolParameter IsIdentified;
 
-	public ClusterMapMeteorShower.TravelingState traveling;
+		public ClusterMapMeteorShower.TravelingState traveling;
 
-	public GameStateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.State arrived;
+		public GameStateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.State arrived;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject go)
+				public List<Descriptor> GetDescriptors(GameObject go)
 		{
 			GameplayEvent gameplayEvent = Db.Get().GameplayEvents.Get(this.eventID);
 			List<Descriptor> list = new List<Descriptor>();
@@ -57,31 +57,31 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			return list;
 		}
 
-		public string name;
+				public string name;
 
-		public string description;
+				public string description;
 
-		public string description_Hidden;
+				public string description_Hidden;
 
-		public string name_Hidden;
+				public string name_Hidden;
 
-		public string eventID;
+				public string eventID;
 
-		public int destinationWorldID;
+				public int destinationWorldID;
 
-		public float arrivalTime;
+				public float arrivalTime;
 	}
 
-	public class TravelingState : GameStateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.State
+		public class TravelingState : GameStateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.State
 	{
-		public GameStateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.State unidentified;
+				public GameStateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.State unidentified;
 
-		public GameStateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.State identified;
+				public GameStateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.State identified;
 	}
 
-	public new class Instance : GameStateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.GameInstance, ISidescreenButtonControl
+		public new class Instance : GameStateMachine<ClusterMapMeteorShower, ClusterMapMeteorShower.Instance, IStateMachineTarget, ClusterMapMeteorShower.Def>.GameInstance, ISidescreenButtonControl
 	{
-				public WorldContainer World_Destination
+						public WorldContainer World_Destination
 		{
 			get
 			{
@@ -89,7 +89,7 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			}
 		}
 
-				public string SidescreenButtonText
+						public string SidescreenButtonText
 		{
 			get
 			{
@@ -101,7 +101,7 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			}
 		}
 
-				public string SidescreenButtonTooltip
+						public string SidescreenButtonTooltip
 		{
 			get
 			{
@@ -113,7 +113,7 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			}
 		}
 
-				public bool HasBeenIdentified
+						public bool HasBeenIdentified
 		{
 			get
 			{
@@ -121,7 +121,7 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			}
 		}
 
-				public float IdentifyingProgress
+						public float IdentifyingProgress
 		{
 			get
 			{
@@ -129,29 +129,29 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			}
 		}
 
-		public AxialI ClusterGridPosition()
+				public AxialI ClusterGridPosition()
 		{
 			return this.visualizer.Location;
 		}
 
-		public Instance(IStateMachineTarget master, ClusterMapMeteorShower.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ClusterMapMeteorShower.Def def) : base(master, def)
 		{
 			this.traveler.getSpeedCB = new Func<float>(this.GetSpeed);
 			this.traveler.onTravelCB = new System.Action(this.OnTravellerMoved);
 		}
 
-		private void OnTravellerMoved()
+				private void OnTravellerMoved()
 		{
 			Game.Instance.Trigger(-1975776133, this);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			this.visualizer.Deselect();
 			base.OnCleanUp();
 		}
 
-		public void Identify()
+				public void Identify()
 		{
 			if (!this.HasBeenIdentified)
 			{
@@ -166,7 +166,7 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			}
 		}
 
-		public void ProgressIdentifiction(float points)
+				public void ProgressIdentifiction(float points)
 		{
 			if (!this.HasBeenIdentified)
 			{
@@ -179,7 +179,7 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			}
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			if (this.DestinationWorldID < 0)
@@ -189,7 +189,7 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			this.RefreshVisuals(false);
 		}
 
-		public void RefreshVisuals(bool playIdentifyAnimationIfVisible = false)
+				public void RefreshVisuals(bool playIdentifyAnimationIfVisible = false)
 		{
 			if (this.HasBeenIdentified)
 			{
@@ -206,7 +206,7 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			base.Trigger(1980521255, null);
 		}
 
-		public void Setup(int destinationWorldID, float arrivalTime)
+				public void Setup(int destinationWorldID, float arrivalTime)
 		{
 			this.DestinationWorldID = destinationWorldID;
 			this.ArrivalTime = arrivalTime;
@@ -218,12 +218,12 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			this.Speed = (float)count / num * 600f;
 		}
 
-		public float GetSpeed()
+				public float GetSpeed()
 		{
 			return this.Speed;
 		}
 
-		public void DestinationReached()
+				public void DestinationReached()
 		{
 			System.Action onDestinationReached = this.OnDestinationReached;
 			if (onDestinationReached == null)
@@ -233,63 +233,63 @@ public class ClusterMapMeteorShower : GameStateMachine<ClusterMapMeteorShower, C
 			onDestinationReached();
 		}
 
-		public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
+				public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
 		{
 			throw new NotImplementedException();
 		}
 
-		public bool SidescreenEnabled()
+				public bool SidescreenEnabled()
 		{
 			return false;
 		}
 
-		public bool SidescreenButtonInteractable()
+				public bool SidescreenButtonInteractable()
 		{
 			return true;
 		}
 
-		public void OnSidescreenButtonPressed()
+				public void OnSidescreenButtonPressed()
 		{
 			this.Identify();
 		}
 
-		public int HorizontalGroupID()
+				public int HorizontalGroupID()
 		{
 			return -1;
 		}
 
-		public int ButtonSideScreenSortOrder()
+				public int ButtonSideScreenSortOrder()
 		{
 			return SORTORDER.KEEPSAKES;
 		}
 
-		[Serialize]
+				[Serialize]
 		public int DestinationWorldID = -1;
 
-		[Serialize]
+				[Serialize]
 		public float ArrivalTime;
 
-		[Serialize]
+				[Serialize]
 		private float Speed;
 
-		[Serialize]
+				[Serialize]
 		private float identifyingProgress;
 
-		public System.Action OnDestinationReached;
+				public System.Action OnDestinationReached;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private InfoDescription descriptor;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private KSelectable selectable;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private ClusterMapMeteorShowerVisualizer visualizer;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private ClusterTraveler traveler;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private ClusterDestinationSelector destinationSelector;
 	}
 }

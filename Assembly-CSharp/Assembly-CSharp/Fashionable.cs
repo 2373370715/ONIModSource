@@ -3,27 +3,27 @@
 [SkipSaveFileSerialization]
 public class Fashionable : StateMachineComponent<Fashionable.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	protected bool IsUncomfortable()
+		protected bool IsUncomfortable()
 	{
 		ClothingWearer component = base.GetComponent<ClothingWearer>();
 		return component != null && component.currentClothing.decorMod <= 0;
 	}
 
-	public class StatesInstance : GameStateMachine<Fashionable.States, Fashionable.StatesInstance, Fashionable, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Fashionable.States, Fashionable.StatesInstance, Fashionable, object>.GameInstance
 	{
-		public StatesInstance(Fashionable master) : base(master)
+				public StatesInstance(Fashionable master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<Fashionable.States, Fashionable.StatesInstance, Fashionable>
+		public class States : GameStateMachine<Fashionable.States, Fashionable.StatesInstance, Fashionable>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.satisfied;
 			this.root.EventHandler(GameHashes.EquippedItemEquipper, delegate(Fashionable.StatesInstance smi)
@@ -47,8 +47,8 @@ public class Fashionable : StateMachineComponent<Fashionable.StatesInstance>
 			this.satisfied.DoNothing();
 		}
 
-		public GameStateMachine<Fashionable.States, Fashionable.StatesInstance, Fashionable, object>.State satisfied;
+				public GameStateMachine<Fashionable.States, Fashionable.StatesInstance, Fashionable, object>.State satisfied;
 
-		public GameStateMachine<Fashionable.States, Fashionable.StatesInstance, Fashionable, object>.State suffering;
+				public GameStateMachine<Fashionable.States, Fashionable.StatesInstance, Fashionable, object>.State suffering;
 	}
 }

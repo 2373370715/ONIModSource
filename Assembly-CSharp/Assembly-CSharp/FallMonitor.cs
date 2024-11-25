@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.standing;
 		this.root.TagTransition(GameTags.Stored, this.instorage, false).Update("CheckLanded", delegate(FallMonitor.Instance smi, float dt)
@@ -51,38 +51,38 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 		}).ToggleChore((FallMonitor.Instance smi) => new EntombedChore(smi.master, smi.entombedAnimOverride), this.standing).ParamTransition<bool>(this.isEntombed, this.standing, GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.IsFalse);
 	}
 
-	public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State standing;
+		public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State standing;
 
-	public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State falling_pre;
+		public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State falling_pre;
 
-	public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State falling;
+		public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State falling;
 
-	public FallMonitor.EntombedStates entombed;
+		public FallMonitor.EntombedStates entombed;
 
-	public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State recoverladder;
+		public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State recoverladder;
 
-	public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State recoverpole;
+		public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State recoverpole;
 
-	public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State recoverinitialfall;
+		public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State recoverinitialfall;
 
-	public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State landfloor;
+		public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State landfloor;
 
-	public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State instorage;
+		public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State instorage;
 
-	public StateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.BoolParameter isEntombed;
+		public StateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.BoolParameter isEntombed;
 
-	public StateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.BoolParameter isFalling;
+		public StateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.BoolParameter isFalling;
 
-	public class EntombedStates : GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State
+		public class EntombedStates : GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State recovering;
+				public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State recovering;
 
-		public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State stuck;
+				public GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.State stuck;
 	}
 
-	public new class Instance : GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<FallMonitor, FallMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, bool shouldPlayEmotes, string entombedAnimOverride = null) : base(master)
+				public Instance(IStateMachineTarget master, bool shouldPlayEmotes, string entombedAnimOverride = null) : base(master)
 		{
 			this.navigator = base.GetComponent<Navigator>();
 			this.shouldPlayEmotes = shouldPlayEmotes;
@@ -93,7 +93,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			base.Subscribe(387220196, new Action<object>(this.OnDestinationReached));
 		}
 
-		private void OnDestinationReached(object data)
+				private void OnDestinationReached(object data)
 		{
 			int item = Grid.PosToCell(base.transform.GetPosition());
 			if (!this.safeCells.Contains(item))
@@ -106,7 +106,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			}
 		}
 
-		private void OnMovementStateChanged(object data)
+				private void OnMovementStateChanged(object data)
 		{
 			if ((GameHashes)data == GameHashes.ObjectMovementWakeUp)
 			{
@@ -122,7 +122,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			}
 		}
 
-		private void OnCellChanged(object data)
+				private void OnCellChanged(object data)
 		{
 			int item = (int)data;
 			if (!this.safeCells.Contains(item))
@@ -135,7 +135,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			}
 		}
 
-		public void Recover()
+				public void Recover()
 		{
 			int cell = Grid.PosToCell(this.navigator);
 			foreach (NavGrid.Transition transition in this.navigator.NavGrid.transitions)
@@ -155,7 +155,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			}
 		}
 
-		public void RecoverEmote()
+				public void RecoverEmote()
 		{
 			if (!this.shouldPlayEmotes)
 			{
@@ -167,13 +167,13 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			}
 		}
 
-		public void LandFloor()
+				public void LandFloor()
 		{
 			this.navigator.SetCurrentNavType(NavType.Floor);
 			base.GetComponent<Transform>().SetPosition(Grid.CellToPosCBC(Grid.PosToCell(base.GetComponent<Transform>().GetPosition()), Grid.SceneLayer.Move));
 		}
 
-		public void AttemptInitialRecovery()
+				public void AttemptInitialRecovery()
 		{
 			if (base.gameObject.HasTag(GameTags.Incapacitated))
 			{
@@ -194,31 +194,31 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			}
 		}
 
-		public bool CanRecoverToLadder()
+				public bool CanRecoverToLadder()
 		{
 			int cell = Grid.PosToCell(base.master.transform.GetPosition());
 			return this.navigator.NavGrid.NavTable.IsValid(cell, NavType.Ladder) && !base.gameObject.HasTag(GameTags.Incapacitated);
 		}
 
-		public void MountLadder()
+				public void MountLadder()
 		{
 			this.navigator.SetCurrentNavType(NavType.Ladder);
 			base.GetComponent<Transform>().SetPosition(Grid.CellToPosCBC(Grid.PosToCell(base.GetComponent<Transform>().GetPosition()), Grid.SceneLayer.Move));
 		}
 
-		public bool CanRecoverToPole()
+				public bool CanRecoverToPole()
 		{
 			int cell = Grid.PosToCell(base.master.transform.GetPosition());
 			return this.navigator.NavGrid.NavTable.IsValid(cell, NavType.Pole) && !base.gameObject.HasTag(GameTags.Incapacitated);
 		}
 
-		public void MountPole()
+				public void MountPole()
 		{
 			this.navigator.SetCurrentNavType(NavType.Pole);
 			base.GetComponent<Transform>().SetPosition(Grid.CellToPosCBC(Grid.PosToCell(base.GetComponent<Transform>().GetPosition()), Grid.SceneLayer.Move));
 		}
 
-		public void UpdateFalling()
+				public void UpdateFalling()
 		{
 			bool value = false;
 			bool flag = false;
@@ -241,7 +241,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			base.sm.isEntombed.Set(flag, base.smi, false);
 		}
 
-		private void TeleportInWorld(int cell)
+				private void TeleportInWorld(int cell)
 		{
 			int num = Grid.CellAbove(cell);
 			WorldContainer world = ClusterManager.Instance.GetWorld((int)Grid.WorldIdx[num]);
@@ -255,12 +255,12 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			global::Debug.LogError(string.Format("Unable to teleport {0} stuck on {1}", this.navigator.name, cell));
 		}
 
-		private bool IsValidNavCell(int cell)
+				private bool IsValidNavCell(int cell)
 		{
 			return this.navigator.NavGrid.NavTable.IsValid(cell, this.navigator.CurrentNavType) && !Grid.DupeImpassable[cell];
 		}
 
-		public void TryEntombedEscape()
+				public void TryEntombedEscape()
 		{
 			int num = Grid.PosToCell(base.transform.GetPosition());
 			int backCell = base.GetComponent<Facing>().GetBackCell();
@@ -317,7 +317,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			this.GoTo(base.sm.entombed.stuck);
 		}
 
-		private void MoveToCell(int cell, bool forceFloorNav = false)
+				private void MoveToCell(int cell, bool forceFloorNav = false)
 		{
 			base.transform.SetPosition(Grid.CellToPosCBC(cell, Grid.SceneLayer.Move));
 			base.transform.GetComponent<Navigator>().Stop(false, true);
@@ -334,7 +334,7 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			this.GoTo(base.sm.standing);
 		}
 
-		private CellOffset[] entombedEscapeOffsets = new CellOffset[]
+				private CellOffset[] entombedEscapeOffsets = new CellOffset[]
 		{
 			new CellOffset(0, 1),
 			new CellOffset(1, 0),
@@ -345,16 +345,16 @@ public class FallMonitor : GameStateMachine<FallMonitor, FallMonitor.Instance>
 			new CellOffset(-1, -1)
 		};
 
-		private Navigator navigator;
+				private Navigator navigator;
 
-		private bool shouldPlayEmotes;
+				private bool shouldPlayEmotes;
 
-		public string entombedAnimOverride;
+				public string entombedAnimOverride;
 
-		private List<int> safeCells = new List<int>();
+				private List<int> safeCells = new List<int>();
 
-		private int MAX_CELLS_TRACKED = 3;
+				private int MAX_CELLS_TRACKED = 3;
 
-		private bool flipRecoverEmote;
+				private bool flipRecoverEmote;
 	}
 }

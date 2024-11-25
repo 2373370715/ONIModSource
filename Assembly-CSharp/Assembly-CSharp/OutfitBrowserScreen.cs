@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 public class OutfitBrowserScreen : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.galleryGridItemPool = new UIPrefabLocalPool(this.gridItemPrefab, this.galleryGridContent.gameObject);
@@ -51,9 +51,9 @@ public class OutfitBrowserScreen : KMonoBehaviour
 		};
 	}
 
-			public OutfitBrowserScreenConfig Config { get; private set; }
+				public OutfitBrowserScreenConfig Config { get; private set; }
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		if (this.isFirstDisplay)
 		{
@@ -70,7 +70,7 @@ public class OutfitBrowserScreen : KMonoBehaviour
 		});
 	}
 
-	private void FirstTimeSetup()
+		private void FirstTimeSetup()
 	{
 		this.state.OnCurrentOutfitTypeChanged += delegate()
 		{
@@ -141,7 +141,7 @@ public class OutfitBrowserScreen : KMonoBehaviour
 		};
 	}
 
-	public void Configure(OutfitBrowserScreenConfig config)
+		public void Configure(OutfitBrowserScreenConfig config)
 	{
 		this.Config = config;
 		if (this.postponeConfiguration)
@@ -169,7 +169,7 @@ public class OutfitBrowserScreen : KMonoBehaviour
 		}
 	}
 
-	private void RefreshGallery()
+		private void RefreshGallery()
 	{
 		if (this.RefreshGalleryFn != null)
 		{
@@ -177,7 +177,7 @@ public class OutfitBrowserScreen : KMonoBehaviour
 		}
 	}
 
-	private void PopulateGallery()
+		private void PopulateGallery()
 	{
 		this.outfits.Clear();
 		this.galleryGridItemPool.ReturnAll();
@@ -208,17 +208,17 @@ public class OutfitBrowserScreen : KMonoBehaviour
 		this.RefreshGallery();
 	}
 
-	private void OnOutfitDesignerWritesToOutfitTarget(ClothingOutfitTarget outfit)
+		private void OnOutfitDesignerWritesToOutfitTarget(ClothingOutfitTarget outfit)
 	{
 		this.Configure(this.Config.WithOutfit(outfit));
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.gridLayouter.CheckIfShouldResizeGrid();
 	}
 
-	private void OnClickPickOutfit()
+		private void OnClickPickOutfit()
 	{
 		OutfitBrowserScreenConfig config = this.Config;
 		if (config.targetMinionInstance.IsSome())
@@ -244,7 +244,7 @@ public class OutfitBrowserScreen : KMonoBehaviour
 		LockerNavigator.Instance.PopScreen();
 	}
 
-	public static void MakeDeletePopup(ClothingOutfitTarget sourceTarget, System.Action deleteFn)
+		public static void MakeDeletePopup(ClothingOutfitTarget sourceTarget, System.Action deleteFn)
 	{
 		Action<InfoDialogScreen> <>9__1;
 		LockerNavigator.Instance.ShowDialogPopup(delegate(InfoDialogScreen dialog)
@@ -267,7 +267,7 @@ public class OutfitBrowserScreen : KMonoBehaviour
 		});
 	}
 
-	public static void MakeRenamePopup(KInputTextField inputFieldPrefab, ClothingOutfitTarget sourceTarget, Func<string> readName, Action<string> writeName)
+		public static void MakeRenamePopup(KInputTextField inputFieldPrefab, ClothingOutfitTarget sourceTarget, Func<string> readName, Action<string> writeName)
 	{
 		KInputTextField inputField;
 		InfoScreenPlainText errorText;
@@ -297,7 +297,7 @@ public class OutfitBrowserScreen : KMonoBehaviour
 		});
 	}
 
-	private void SetButtonClickUISound(Option<ClothingOutfitTarget> target, MultiToggle toggle)
+		private void SetButtonClickUISound(Option<ClothingOutfitTarget> target, MultiToggle toggle)
 	{
 		if (!target.HasValue)
 		{
@@ -316,12 +316,12 @@ public class OutfitBrowserScreen : KMonoBehaviour
 		toggle.states[0].has_sound_parameter = true;
 	}
 
-	private void OnMouseOverToggle()
+		private void OnMouseOverToggle()
 	{
 		KFMOD.PlayUISound(GlobalAssets.GetSound("HUD_Mouseover", false));
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	private void <PopulateGallery>g__AddGridIconForTarget|35_0(Option<ClothingOutfitTarget> target)
 	{
 		GameObject spawn = this.galleryGridItemPool.Borrow();
@@ -411,78 +411,78 @@ public class OutfitBrowserScreen : KMonoBehaviour
 		this.SetButtonClickUISound(target, button);
 	}
 
-	[Header("ItemGalleryColumn")]
+		[Header("ItemGalleryColumn")]
 	[SerializeField]
 	private LocText galleryHeaderLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private OutfitBrowserScreen_CategoriesAndSearchBar categoriesAndSearchBar;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform galleryGridContent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject gridItemPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject addButtonGridItem;
 
-	private UIPrefabLocalPool galleryGridItemPool;
+		private UIPrefabLocalPool galleryGridItemPool;
 
-	private GridLayouter gridLayouter;
+		private GridLayouter gridLayouter;
 
-	[Header("SelectionDetailsColumn")]
+		[Header("SelectionDetailsColumn")]
 	[SerializeField]
 	private LocText selectionHeaderLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private UIMinionOrMannequin dioramaMinionOrMannequin;
 
-	[SerializeField]
+		[SerializeField]
 	private Image dioramaBG;
 
-	[SerializeField]
+		[SerializeField]
 	private OutfitDescriptionPanel outfitDescriptionPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton pickOutfitButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton editOutfitButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton renameOutfitButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton deleteOutfitButton;
 
-	[Header("Misc")]
+		[Header("Misc")]
 	[SerializeField]
 	private KInputTextField inputFieldPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	public ColorStyleSetting selectedCategoryStyle;
 
-	[SerializeField]
+		[SerializeField]
 	public ColorStyleSetting notSelectedCategoryStyle;
 
-	public OutfitBrowserScreen.State state = new OutfitBrowserScreen.State();
+		public OutfitBrowserScreen.State state = new OutfitBrowserScreen.State();
 
-	public Option<ClothingOutfitUtility.OutfitType> lastShownOutfitType = Option.None;
+		public Option<ClothingOutfitUtility.OutfitType> lastShownOutfitType = Option.None;
 
-	private Dictionary<string, MultiToggle> outfits = new Dictionary<string, MultiToggle>();
+		private Dictionary<string, MultiToggle> outfits = new Dictionary<string, MultiToggle>();
 
-	private bool postponeConfiguration = true;
+		private bool postponeConfiguration = true;
 
-	private bool isFirstDisplay = true;
+		private bool isFirstDisplay = true;
 
-	private System.Action RefreshGalleryFn;
+		private System.Action RefreshGalleryFn;
 
-	public class State
+		public class State
 	{
-						public event System.Action OnSelectedOutfitOptChanged;
+								public event System.Action OnSelectedOutfitOptChanged;
 
-						public Option<ClothingOutfitTarget> SelectedOutfitOpt
+								public Option<ClothingOutfitTarget> SelectedOutfitOpt
 		{
 			get
 			{
@@ -498,9 +498,9 @@ public class OutfitBrowserScreen : KMonoBehaviour
 			}
 		}
 
-						public event System.Action OnCurrentOutfitTypeChanged;
+								public event System.Action OnCurrentOutfitTypeChanged;
 
-						public ClothingOutfitUtility.OutfitType CurrentOutfitType
+								public ClothingOutfitUtility.OutfitType CurrentOutfitType
 		{
 			get
 			{
@@ -516,9 +516,9 @@ public class OutfitBrowserScreen : KMonoBehaviour
 			}
 		}
 
-						public event System.Action OnFilterChanged;
+								public event System.Action OnFilterChanged;
 
-						public string Filter
+								public string Filter
 		{
 			get
 			{
@@ -534,17 +534,17 @@ public class OutfitBrowserScreen : KMonoBehaviour
 			}
 		}
 
-		private Option<ClothingOutfitTarget> m_selectedOutfitOpt;
+				private Option<ClothingOutfitTarget> m_selectedOutfitOpt;
 
-		private ClothingOutfitUtility.OutfitType m_currentOutfitType;
+				private ClothingOutfitUtility.OutfitType m_currentOutfitType;
 
-		private string m_filter;
+				private string m_filter;
 	}
 
-	private enum MultiToggleState
+		private enum MultiToggleState
 	{
-		Default,
-		Selected,
-		NonInteractable
+				Default,
+				Selected,
+				NonInteractable
 	}
 }

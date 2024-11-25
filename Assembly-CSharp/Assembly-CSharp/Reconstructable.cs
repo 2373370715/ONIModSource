@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Reconstructable : KMonoBehaviour
 {
-		public bool AllowReconstruct
+			public bool AllowReconstruct
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class Reconstructable : KMonoBehaviour
 		}
 	}
 
-		public Tag PrimarySelectedElementTag
+			public Tag PrimarySelectedElementTag
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class Reconstructable : KMonoBehaviour
 		}
 	}
 
-		public bool ReconstructRequested
+			public bool ReconstructRequested
 	{
 		get
 		{
@@ -28,12 +28,12 @@ public class Reconstructable : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	public void RequestReconstruct(Tag newElement)
+		public void RequestReconstruct(Tag newElement)
 	{
 		if (!this.deconstructable.allowDeconstruction)
 		{
@@ -55,14 +55,14 @@ public class Reconstructable : KMonoBehaviour
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	public void CancelReconstructOrder()
+		public void CancelReconstructOrder()
 	{
 		this.reconstructRequested = false;
 		this.deconstructable.CancelDeconstruction();
 		base.Trigger(954267658, null);
 	}
 
-	public void TryCommenceReconstruct()
+		public void TryCommenceReconstruct()
 	{
 		if (!this.deconstructable.allowDeconstruction)
 		{
@@ -81,15 +81,15 @@ public class Reconstructable : KMonoBehaviour
 		}, null, null);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Deconstructable deconstructable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[Serialize]
+		[Serialize]
 	private Tag[] selectedElementsTags;
 
-	[Serialize]
+		[Serialize]
 	private bool reconstructRequested;
 }

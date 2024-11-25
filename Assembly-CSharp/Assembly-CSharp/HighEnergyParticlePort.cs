@@ -5,45 +5,45 @@ using UnityEngine;
 
 public class HighEnergyParticlePort : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	public int GetHighEnergyParticleInputPortPosition()
+		public int GetHighEnergyParticleInputPortPosition()
 	{
 		return this.m_building.GetHighEnergyParticleInputCell();
 	}
 
-	public int GetHighEnergyParticleOutputPortPosition()
+		public int GetHighEnergyParticleOutputPortPosition()
 	{
 		return this.m_building.GetHighEnergyParticleOutputCell();
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.HighEnergyParticlePorts.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.HighEnergyParticlePorts.Remove(this);
 	}
 
-	public bool InputActive()
+		public bool InputActive()
 	{
 		Operational component = base.GetComponent<Operational>();
 		return this.particleInputEnabled && component != null && component.IsFunctional && (!this.requireOperational || component.IsOperational);
 	}
 
-	public bool AllowCapture(HighEnergyParticle particle)
+		public bool AllowCapture(HighEnergyParticle particle)
 	{
 		return this.onParticleCaptureAllowed == null || this.onParticleCaptureAllowed(particle);
 	}
 
-	public void Capture(HighEnergyParticle particle)
+		public void Capture(HighEnergyParticle particle)
 	{
 		this.currentParticle = particle;
 		if (this.onParticleCapture != null)
@@ -52,7 +52,7 @@ public class HighEnergyParticlePort : KMonoBehaviour, IGameObjectEffectDescripto
 		}
 	}
 
-	public void Uncapture(HighEnergyParticle particle)
+		public void Uncapture(HighEnergyParticle particle)
 	{
 		if (this.onParticleUncapture != null)
 		{
@@ -61,7 +61,7 @@ public class HighEnergyParticlePort : KMonoBehaviour, IGameObjectEffectDescripto
 		this.currentParticle = null;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.particleInputEnabled)
@@ -75,28 +75,28 @@ public class HighEnergyParticlePort : KMonoBehaviour, IGameObjectEffectDescripto
 		return list;
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Building m_building;
 
-	public HighEnergyParticlePort.OnParticleCapture onParticleCapture;
+		public HighEnergyParticlePort.OnParticleCapture onParticleCapture;
 
-	public HighEnergyParticlePort.OnParticleCaptureAllowed onParticleCaptureAllowed;
+		public HighEnergyParticlePort.OnParticleCaptureAllowed onParticleCaptureAllowed;
 
-	public HighEnergyParticlePort.OnParticleCapture onParticleUncapture;
+		public HighEnergyParticlePort.OnParticleCapture onParticleUncapture;
 
-	public HighEnergyParticle currentParticle;
+		public HighEnergyParticle currentParticle;
 
-	public bool requireOperational = true;
+		public bool requireOperational = true;
 
-	public bool particleInputEnabled;
+		public bool particleInputEnabled;
 
-	public bool particleOutputEnabled;
+		public bool particleOutputEnabled;
 
-	public CellOffset particleInputOffset;
+		public CellOffset particleInputOffset;
 
-	public CellOffset particleOutputOffset;
+		public CellOffset particleOutputOffset;
 
-		public delegate void OnParticleCapture(HighEnergyParticle particle);
+			public delegate void OnParticleCapture(HighEnergyParticle particle);
 
-		public delegate bool OnParticleCaptureAllowed(HighEnergyParticle particle);
+			public delegate bool OnParticleCaptureAllowed(HighEnergyParticle particle);
 }

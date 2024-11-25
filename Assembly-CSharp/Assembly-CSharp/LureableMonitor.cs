@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class LureableMonitor : GameStateMachine<LureableMonitor, LureableMonitor.Instance, IStateMachineTarget, LureableMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.cooldown;
 		this.cooldown.ScheduleGoTo((LureableMonitor.Instance smi) => smi.def.cooldown, this.nolure);
@@ -22,17 +22,17 @@ public class LureableMonitor : GameStateMachine<LureableMonitor, LureableMonitor
 		});
 	}
 
-	public StateMachine<LureableMonitor, LureableMonitor.Instance, IStateMachineTarget, LureableMonitor.Def>.TargetParameter targetLure;
+		public StateMachine<LureableMonitor, LureableMonitor.Instance, IStateMachineTarget, LureableMonitor.Def>.TargetParameter targetLure;
 
-	public GameStateMachine<LureableMonitor, LureableMonitor.Instance, IStateMachineTarget, LureableMonitor.Def>.State nolure;
+		public GameStateMachine<LureableMonitor, LureableMonitor.Instance, IStateMachineTarget, LureableMonitor.Def>.State nolure;
 
-	public GameStateMachine<LureableMonitor, LureableMonitor.Instance, IStateMachineTarget, LureableMonitor.Def>.State haslure;
+		public GameStateMachine<LureableMonitor, LureableMonitor.Instance, IStateMachineTarget, LureableMonitor.Def>.State haslure;
 
-	public GameStateMachine<LureableMonitor, LureableMonitor.Instance, IStateMachineTarget, LureableMonitor.Def>.State cooldown;
+		public GameStateMachine<LureableMonitor, LureableMonitor.Instance, IStateMachineTarget, LureableMonitor.Def>.State cooldown;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject go)
+				public List<Descriptor> GetDescriptors(GameObject go)
 		{
 			return new List<Descriptor>
 			{
@@ -40,74 +40,49 @@ public class LureableMonitor : GameStateMachine<LureableMonitor, LureableMonitor
 			};
 		}
 
-		public float cooldown = 20f;
+				public float cooldown = 20f;
 
-		public Tag[] lures;
+				public Tag[] lures;
 	}
 
-	public new class Instance : GameStateMachine<LureableMonitor, LureableMonitor.Instance, IStateMachineTarget, LureableMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<LureableMonitor, LureableMonitor.Instance, IStateMachineTarget, LureableMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, LureableMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, LureableMonitor.Def def) : base(master, def)
 		{
 		}
 
-		public void FindLure()
+				public void FindLure()
 		{
-			LureableMonitor.Instance.LureIterator lureIterator = new LureableMonitor.Instance.LureIterator(this.navigator, base.def.lures);
-			GameScenePartitioner.Instance.Iterate<LureableMonitor.Instance.LureIterator>(Grid.PosToCell(base.smi.transform.GetPosition()), 1, GameScenePartitioner.Instance.lure, ref lureIterator);
-			lureIterator.Cleanup();
-			base.sm.targetLure.Set(lureIterator.result, this, false);
-		}
-
-		public bool HasLure()
-		{
-			return base.sm.targetLure.Get(this) != null;
-		}
-
-		public GameObject GetTargetLure()
-		{
-			return base.sm.targetLure.Get(this);
-		}
-
-		[MyCmpReq]
-		private Navigator navigator;
-
-		private struct LureIterator : GameScenePartitioner.Iterator
-		{
-									public int cost { readonly get; private set; }
-
-									public GameObject result { readonly get; private set; }
-
-			public LureIterator(Navigator navigator, Tag[] lures)
+			int num = -1;
+			GameObject value = null;
+			foreach (object obj in GameScenePartitioner.Instance.AsyncSafeEnumerate(Grid.PosToCell(base.smi.transform.GetPosition()), 1, GameScenePartitioner.Instance.lure))
 			{
-				this.navigator = navigator;
-				this.lures = lures;
-				this.cost = -1;
-				this.result = null;
-			}
-
-			public void Iterate(object target_obj)
-			{
-				Lure.Instance instance = target_obj as Lure.Instance;
-				if (instance == null || !instance.IsActive() || !instance.HasAnyLure(this.lures))
+				Lure.Instance instance = obj as Lure.Instance;
+				if (instance == null || !instance.IsActive() || !instance.HasAnyLure(base.def.lures))
 				{
 					return;
 				}
 				int navigationCost = this.navigator.GetNavigationCost(Grid.PosToCell(instance.transform.GetPosition()), instance.LurePoints);
-				if (navigationCost != -1 && (this.cost == -1 || navigationCost < this.cost))
+				if (navigationCost != -1 && (num == -1 || navigationCost < num))
 				{
-					this.cost = navigationCost;
-					this.result = instance.gameObject;
+					num = navigationCost;
+					value = instance.gameObject;
 				}
 			}
-
-			public void Cleanup()
-			{
-			}
-
-			private Navigator navigator;
-
-			private Tag[] lures;
+			base.sm.targetLure.Set(value, this, false);
 		}
+
+				public bool HasLure()
+		{
+			return base.sm.targetLure.Get(this) != null;
+		}
+
+				public GameObject GetTargetLure()
+		{
+			return base.sm.targetLure.Get(this);
+		}
+
+				[MyCmpReq]
+		private Navigator navigator;
 	}
 }

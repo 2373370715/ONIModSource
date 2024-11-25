@@ -6,26 +6,26 @@ using UnityEngine.UI;
 
 public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		AllResourcesScreen.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.ConsumeMouseScroll = true;
 		this.Init();
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		AllResourcesScreen.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	public void SetFilter(string filter)
+		public void SetFilter(string filter)
 	{
 		if (string.IsNullOrEmpty(filter))
 		{
@@ -34,7 +34,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		this.searchInputField.text = filter;
 	}
 
-	public void Init()
+		public void Init()
 	{
 		if (this.initialized)
 		{
@@ -71,7 +71,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		this.Show(false);
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (show)
@@ -84,7 +84,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		this.SetFilter(null);
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.isHiddenButActive)
 		{
@@ -104,7 +104,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		base.OnKeyDown(e);
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (this.isHiddenButActive)
 		{
@@ -122,17 +122,17 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 50f;
 	}
 
-	public void Populate(object data = null)
+		public void Populate(object data = null)
 	{
 		this.SpawnRows();
 	}
 
-	private void SpawnRows()
+		private void SpawnRows()
 	{
 		WorldInventory worldInventory = ClusterManager.Instance.GetWorld(ClusterManager.Instance.activeWorldId).worldInventory;
 		this.allowDisplayCategories.Add(GameTags.MaterialCategories);
@@ -162,7 +162,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	private void SpawnCategoryRow(Tag categoryTag, GameUtil.MeasureUnit unit)
+		private void SpawnCategoryRow(Tag categoryTag, GameUtil.MeasureUnit unit)
 	{
 		if (!this.categoryRows.ContainsKey(categoryTag))
 		{
@@ -254,12 +254,12 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	private void FilterRowBySearch(Tag tag, string filter)
+		private void FilterRowBySearch(Tag tag, string filter)
 	{
 		this.currentlyDisplayedRows[tag] = this.PassesSearchFilter(tag, filter);
 	}
 
-	private void SearchFilter(string search)
+		private void SearchFilter(string search)
 	{
 		foreach (KeyValuePair<Tag, AllResourcesScreen.ResourceRow> keyValuePair in this.resourceRows)
 		{
@@ -289,14 +289,14 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		this.SetRowsActive();
 	}
 
-	private bool PassesSearchFilter(Tag tag, string filter)
+		private bool PassesSearchFilter(Tag tag, string filter)
 	{
 		filter = filter.ToUpper();
 		string text = tag.ProperNameStripLink().ToUpper();
 		return !(filter != "") || text.Contains(filter);
 	}
 
-	private void EnableCategoriesByActiveChildren()
+		private void EnableCategoriesByActiveChildren()
 	{
 		foreach (KeyValuePair<Tag, AllResourcesScreen.CategoryRow> keyValuePair in this.categoryRows)
 		{
@@ -318,13 +318,13 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	private void RefreshPinnedState(Tag tag)
+		private void RefreshPinnedState(Tag tag)
 	{
 		this.resourceRows[tag].notificiationToggle.ChangeState(ClusterManager.Instance.activeWorld.worldInventory.notifyResources.Contains(tag) ? 1 : 0);
 		this.resourceRows[tag].pinToggle.ChangeState(ClusterManager.Instance.activeWorld.worldInventory.pinnedResources.Contains(tag) ? 1 : 0);
 	}
 
-	public void RefreshRows()
+		public void RefreshRows()
 	{
 		WorldInventory worldInventory = ClusterManager.Instance.GetWorld(ClusterManager.Instance.activeWorldId).worldInventory;
 		this.EnableCategoriesByActiveChildren();
@@ -363,7 +363,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 							break;
 						case GameUtil.MeasureUnit.kcal:
 						{
-							float calories = RationTracker.Get().CountRations(null, ClusterManager.Instance.activeWorld.worldInventory, true);
+							float calories = WorldResourceAmountTracker<RationTracker>.Get().CountAmount(null, ClusterManager.Instance.activeWorld.worldInventory, true);
 							if (keyValuePair.Value.CheckAvailableAmountChanged(amount, true))
 							{
 								keyValuePair.Value.availableLabel.SetText(GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true));
@@ -428,7 +428,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 							break;
 						case GameUtil.MeasureUnit.kcal:
 						{
-							float num = RationTracker.Get().CountRationsByFoodType(keyValuePair2.Key.Name, ClusterManager.Instance.activeWorld.worldInventory, true);
+							float num = WorldResourceAmountTracker<RationTracker>.Get().CountAmountForItemWithID(keyValuePair2.Key.Name, ClusterManager.Instance.activeWorld.worldInventory, true);
 							if (keyValuePair2.Value.CheckAvailableAmountChanged(num, true))
 							{
 								keyValuePair2.Value.availableLabel.SetText(GameUtil.GetFormattedCalories(num, GameUtil.TimeSlice.None, true));
@@ -465,12 +465,12 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	public int UniqueResourceRowCount()
+		public int UniqueResourceRowCount()
 	{
 		return this.resourceRows.Count;
 	}
 
-	private void RefreshCharts()
+		private void RefreshCharts()
 	{
 		float time = GameClock.Instance.GetTime();
 		float num = 3000f;
@@ -525,7 +525,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	private void SetRowsActive()
+		private void SetRowsActive()
 	{
 		foreach (KeyValuePair<Tag, AllResourcesScreen.CategoryRow> keyValuePair in this.categoryRows)
 		{
@@ -547,7 +547,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		}
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
 		if (this.isHiddenButActive)
 		{
@@ -556,7 +556,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		this.RefreshCharts();
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		if (this.isHiddenButActive)
 		{
@@ -565,39 +565,39 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 		this.RefreshRows();
 	}
 
-	private Dictionary<Tag, AllResourcesScreen.ResourceRow> resourceRows = new Dictionary<Tag, AllResourcesScreen.ResourceRow>();
+		private Dictionary<Tag, AllResourcesScreen.ResourceRow> resourceRows = new Dictionary<Tag, AllResourcesScreen.ResourceRow>();
 
-	private Dictionary<Tag, AllResourcesScreen.CategoryRow> categoryRows = new Dictionary<Tag, AllResourcesScreen.CategoryRow>();
+		private Dictionary<Tag, AllResourcesScreen.CategoryRow> categoryRows = new Dictionary<Tag, AllResourcesScreen.CategoryRow>();
 
-	public Dictionary<Tag, GameUtil.MeasureUnit> units = new Dictionary<Tag, GameUtil.MeasureUnit>();
+		public Dictionary<Tag, GameUtil.MeasureUnit> units = new Dictionary<Tag, GameUtil.MeasureUnit>();
 
-	public GameObject rootListContainer;
+		public GameObject rootListContainer;
 
-	public GameObject resourceLinePrefab;
+		public GameObject resourceLinePrefab;
 
-	public GameObject categoryLinePrefab;
+		public GameObject categoryLinePrefab;
 
-	public KButton closeButton;
+		public KButton closeButton;
 
-	public bool allowRefresh = true;
+		public bool allowRefresh = true;
 
-	[SerializeField]
+		[SerializeField]
 	private KInputTextField searchInputField;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton clearSearchButton;
 
-	public static AllResourcesScreen Instance;
+		public static AllResourcesScreen Instance;
 
-	public Dictionary<Tag, bool> currentlyDisplayedRows = new Dictionary<Tag, bool>();
+		public Dictionary<Tag, bool> currentlyDisplayedRows = new Dictionary<Tag, bool>();
 
-	public List<TagSet> allowDisplayCategories = new List<TagSet>();
+		public List<TagSet> allowDisplayCategories = new List<TagSet>();
 
-	private bool initialized;
+		private bool initialized;
 
-	private class ScreenRowBase
+		private class ScreenRowBase
 	{
-		public ScreenRowBase(Tag tag, GameObject gameObject)
+				public ScreenRowBase(Tag tag, GameObject gameObject)
 		{
 			this.Tag = tag;
 			this.GameObject = gameObject;
@@ -608,11 +608,11 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 			this.sparkLayer = component.GetReference<SparkLayer>("Chart");
 		}
 
-						public Tag Tag { get; private set; }
+								public Tag Tag { get; private set; }
 
-						public GameObject GameObject { get; private set; }
+								public GameObject GameObject { get; private set; }
 
-		public bool CheckAvailableAmountChanged(float newAvailableResourceAmount, bool updateIfTrue)
+				public bool CheckAvailableAmountChanged(float newAvailableResourceAmount, bool updateIfTrue)
 		{
 			bool flag = newAvailableResourceAmount != this.oldAvailableResourceAmount;
 			if (flag && updateIfTrue)
@@ -622,7 +622,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 			return flag;
 		}
 
-		public bool CheckTotalResourceAmountChanged(float newTotalResourceAmount, bool updateIfTrue)
+				public bool CheckTotalResourceAmountChanged(float newTotalResourceAmount, bool updateIfTrue)
 		{
 			bool flag = newTotalResourceAmount != this.oldTotalResourceAmount;
 			if (flag && updateIfTrue)
@@ -632,7 +632,7 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 			return flag;
 		}
 
-		public bool CheckReservedResourceAmountChanged(float newReservedResourceAmount, bool updateIfTrue)
+				public bool CheckReservedResourceAmountChanged(float newReservedResourceAmount, bool updateIfTrue)
 		{
 			bool flag = newReservedResourceAmount != this.oldReserverResourceAmount;
 			if (flag && updateIfTrue)
@@ -642,34 +642,34 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 			return flag;
 		}
 
-		public LocText availableLabel;
+				public LocText availableLabel;
 
-		public LocText totalLabel;
+				public LocText totalLabel;
 
-		public LocText reservedLabel;
+				public LocText reservedLabel;
 
-		public SparkLayer sparkLayer;
+				public SparkLayer sparkLayer;
 
-		private float oldAvailableResourceAmount = -1f;
+				private float oldAvailableResourceAmount = -1f;
 
-		private float oldTotalResourceAmount = -1f;
+				private float oldTotalResourceAmount = -1f;
 
-		private float oldReserverResourceAmount = -1f;
+				private float oldReserverResourceAmount = -1f;
 	}
 
-	private class CategoryRow : AllResourcesScreen.ScreenRowBase
+		private class CategoryRow : AllResourcesScreen.ScreenRowBase
 	{
-		public CategoryRow(Tag tag, GameObject gameObject) : base(tag, gameObject)
+				public CategoryRow(Tag tag, GameObject gameObject) : base(tag, gameObject)
 		{
 			this.FoldOutPanel = base.GameObject.GetComponent<FoldOutPanel>();
 		}
 
-						public FoldOutPanel FoldOutPanel { get; private set; }
+								public FoldOutPanel FoldOutPanel { get; private set; }
 	}
 
-	private class ResourceRow : AllResourcesScreen.ScreenRowBase
+		private class ResourceRow : AllResourcesScreen.ScreenRowBase
 	{
-		public ResourceRow(Tag tag, GameObject gameObject) : base(tag, gameObject)
+				public ResourceRow(Tag tag, GameObject gameObject) : base(tag, gameObject)
 		{
 			HierarchyReferences component = base.GameObject.GetComponent<HierarchyReferences>();
 			this.notificiationToggle = component.GetReference<MultiToggle>("NotificationToggle");
@@ -677,10 +677,10 @@ public class AllResourcesScreen : ShowOptimizedKScreen, ISim4000ms, ISim1000ms
 			this.horizontalLayoutGroup = gameObject.GetComponent<HorizontalLayoutGroup>();
 		}
 
-		public MultiToggle notificiationToggle;
+				public MultiToggle notificiationToggle;
 
-		public MultiToggle pinToggle;
+				public MultiToggle pinToggle;
 
-		public HorizontalLayoutGroup horizontalLayoutGroup;
+				public HorizontalLayoutGroup horizontalLayoutGroup;
 	}
 }

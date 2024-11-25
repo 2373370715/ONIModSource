@@ -1,363 +1,226 @@
 ﻿using System;
 using System.Collections.Generic;
-using FMOD.Studio;
 using UnityEngine;
 
-public class BrushTool : InterfaceTool
-{
-		public bool Dragging
-	{
-		get
-		{
-			return this.dragging;
-		}
-	}
+public class BrushTool : InterfaceTool {
+    protected bool affectFoundation;
 
-	protected virtual void PlaySound()
-	{
-	}
+    [SerializeField]
+    private readonly Color32 areaColour = new Color(1f, 1f, 1f, 0.5f);
 
-	protected virtual void clearVisitedCells()
-	{
-		this.visitedCells.Clear();
-	}
+    [SerializeField]
+    private GameObject areaVisualizer;
 
-	protected override void OnActivateTool()
-	{
-		base.OnActivateTool();
-		this.dragging = false;
-	}
+    [SerializeField]
+    private Texture2D brushCursor;
 
-	public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors)
-	{
-		colors = new HashSet<ToolMenu.CellColorData>();
-		foreach (int cell in this.cellsInRadius)
-		{
-			colors.Add(new ToolMenu.CellColorData(cell, this.radiusIndicatorColor));
-		}
-	}
+    protected         List<Vector2> brushOffsets  = new List<Vector2>();
+    protected         int           brushRadius   = -1;
+    protected         HashSet<int>  cellsInRadius = new HashSet<int>();
+    protected         int           currentCell;
+    protected         Vector3       downPos;
+    private           DragAxis      dragAxis = DragAxis.Invalid;
+    protected         bool          interceptNumberKeysForPriority;
+    protected         int           lastCell;
+    protected         Vector3       placementPivot;
+    protected         Color         radiusIndicatorColor = new Color(0.5f, 0.7f, 0.5f, 0.2f);
+    protected         List<int>     visitedCells         = new List<int>();
+    public            bool          Dragging            { get; private set; }
+    protected virtual void          PlaySound()         { }
+    protected virtual void          clearVisitedCells() { visitedCells.Clear(); }
 
-	public virtual void SetBrushSize(int radius)
-	{
-		if (radius == this.brushRadius)
-		{
-			return;
-		}
-		this.brushRadius = radius;
-		this.brushOffsets.Clear();
-		for (int i = 0; i < this.brushRadius * 2; i++)
-		{
-			for (int j = 0; j < this.brushRadius * 2; j++)
-			{
-				if (Vector2.Distance(new Vector2((float)i, (float)j), new Vector2((float)this.brushRadius, (float)this.brushRadius)) < (float)this.brushRadius - 0.8f)
-				{
-					this.brushOffsets.Add(new Vector2((float)(i - this.brushRadius), (float)(j - this.brushRadius)));
-				}
-			}
-		}
-	}
+    protected override void OnActivateTool() {
+        base.OnActivateTool();
+        Dragging = false;
+    }
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
-	{
-		KScreenManager.Instance.SetEventSystemEnabled(true);
-		if (KInputManager.currentControllerIsGamepad)
-		{
-			base.SetCurrentVirtualInputModuleMousMovementMode(false, null);
-		}
-		base.OnDeactivateTool(new_tool);
-	}
+    public override void GetOverlayColorData(out HashSet<ToolMenu.CellColorData> colors) {
+        colors = new HashSet<ToolMenu.CellColorData>();
+        foreach (var cell in cellsInRadius) colors.Add(new ToolMenu.CellColorData(cell, radiusIndicatorColor));
+    }
 
-	protected override void OnPrefabInit()
-	{
-		Game.Instance.Subscribe(1634669191, new Action<object>(this.OnTutorialOpened));
-		base.OnPrefabInit();
-		if (this.visualizer != null)
-		{
-			this.visualizer = global::Util.KInstantiate(this.visualizer, null, null);
-		}
-		if (this.areaVisualizer != null)
-		{
-			this.areaVisualizer = global::Util.KInstantiate(this.areaVisualizer, null, null);
-			this.areaVisualizer.SetActive(false);
-			this.areaVisualizer.GetComponent<RectTransform>().SetParent(base.transform);
-			this.areaVisualizer.GetComponent<Renderer>().material.color = this.areaColour;
-		}
-	}
+    public virtual void SetBrushSize(int radius) {
+        if (radius == brushRadius) return;
 
-	protected override void OnCmpEnable()
-	{
-		this.dragging = false;
-	}
+        brushRadius = radius;
+        brushOffsets.Clear();
+        for (var i = 0; i < brushRadius * 2; i++) {
+            for (var j = 0; j < brushRadius * 2; j++)
+                if (Vector2.Distance(new Vector2(i, j), new Vector2(brushRadius, brushRadius)) < brushRadius - 0.8f)
+                    brushOffsets.Add(new Vector2(i - brushRadius, j - brushRadius));
+        }
+    }
 
-	protected override void OnCmpDisable()
-	{
-		if (this.visualizer != null)
-		{
-			this.visualizer.SetActive(false);
-		}
-		if (this.areaVisualizer != null)
-		{
-			this.areaVisualizer.SetActive(false);
-		}
-	}
+    protected override void OnDeactivateTool(InterfaceTool new_tool) {
+        KScreenManager.Instance.SetEventSystemEnabled(true);
+        if (KInputManager.currentControllerIsGamepad) SetCurrentVirtualInputModuleMousMovementMode(false);
+        base.OnDeactivateTool(new_tool);
+    }
 
-	public override void OnLeftClickDown(Vector3 cursor_pos)
-	{
-		cursor_pos -= this.placementPivot;
-		this.dragging = true;
-		this.downPos = cursor_pos;
-		if (!KInputManager.currentControllerIsGamepad)
-		{
-			KScreenManager.Instance.SetEventSystemEnabled(false);
-		}
-		else
-		{
-			base.SetCurrentVirtualInputModuleMousMovementMode(true, null);
-		}
-		this.Paint();
-	}
+    protected override void OnPrefabInit() {
+        Game.Instance.Subscribe(1634669191, OnTutorialOpened);
+        base.OnPrefabInit();
+        if (visualizer != null) visualizer = Util.KInstantiate(visualizer);
+        if (areaVisualizer != null) {
+            areaVisualizer = Util.KInstantiate(areaVisualizer);
+            areaVisualizer.SetActive(false);
+            areaVisualizer.GetComponent<RectTransform>().SetParent(transform);
+            areaVisualizer.GetComponent<Renderer>().material.color = areaColour;
+        }
+    }
 
-	public override void OnLeftClickUp(Vector3 cursor_pos)
-	{
-		cursor_pos -= this.placementPivot;
-		KScreenManager.Instance.SetEventSystemEnabled(true);
-		if (KInputManager.currentControllerIsGamepad)
-		{
-			base.SetCurrentVirtualInputModuleMousMovementMode(false, null);
-		}
-		if (!this.dragging)
-		{
-			return;
-		}
-		this.dragging = false;
-		BrushTool.DragAxis dragAxis = this.dragAxis;
-		if (dragAxis == BrushTool.DragAxis.Horizontal)
-		{
-			cursor_pos.y = this.downPos.y;
-			this.dragAxis = BrushTool.DragAxis.None;
-			return;
-		}
-		if (dragAxis != BrushTool.DragAxis.Vertical)
-		{
-			return;
-		}
-		cursor_pos.x = this.downPos.x;
-		this.dragAxis = BrushTool.DragAxis.None;
-	}
+    protected override void OnCmpEnable() { Dragging = false; }
 
-	protected virtual string GetConfirmSound()
-	{
-		return "Tile_Confirm";
-	}
+    protected override void OnCmpDisable() {
+        if (visualizer     != null) visualizer.SetActive(false);
+        if (areaVisualizer != null) areaVisualizer.SetActive(false);
+    }
 
-	protected virtual string GetDragSound()
-	{
-		return "Tile_Drag";
-	}
+    public override void OnLeftClickDown(Vector3 cursor_pos) {
+        cursor_pos -= placementPivot;
+        Dragging   =  true;
+        downPos    =  cursor_pos;
+        if (!KInputManager.currentControllerIsGamepad)
+            KScreenManager.Instance.SetEventSystemEnabled(false);
+        else
+            SetCurrentVirtualInputModuleMousMovementMode(true);
 
-	public override string GetDeactivateSound()
-	{
-		return "Tile_Cancel";
-	}
+        Paint();
+    }
 
-	private static int GetGridDistance(int cell, int center_cell)
-	{
-		Vector2I u = Grid.CellToXY(cell);
-		Vector2I v = Grid.CellToXY(center_cell);
-		Vector2I vector2I = u - v;
-		return Math.Abs(vector2I.x) + Math.Abs(vector2I.y);
-	}
+    public override void OnLeftClickUp(Vector3 cursor_pos) {
+        cursor_pos -= placementPivot;
+        KScreenManager.Instance.SetEventSystemEnabled(true);
+        if (KInputManager.currentControllerIsGamepad) SetCurrentVirtualInputModuleMousMovementMode(false);
+        if (!Dragging) return;
 
-	private void Paint()
-	{
-		int count = this.visitedCells.Count;
-		foreach (int num in this.cellsInRadius)
-		{
-			if (Grid.IsValidCell(num) && (int)Grid.WorldIdx[num] == ClusterManager.Instance.activeWorldId && (!Grid.Foundation[num] || this.affectFoundation))
-			{
-				this.OnPaintCell(num, Grid.GetCellDistance(this.currentCell, num));
-			}
-		}
-		if (this.lastCell != this.currentCell)
-		{
-			this.PlayDragSound();
-		}
-		if (count < this.visitedCells.Count)
-		{
-			this.PlaySound();
-		}
-	}
+        Dragging = false;
+        var dragAxis = this.dragAxis;
+        if (dragAxis == DragAxis.Horizontal) {
+            cursor_pos.y  = downPos.y;
+            this.dragAxis = DragAxis.None;
+            return;
+        }
 
-	protected virtual void PlayDragSound()
-	{
-		string dragSound = this.GetDragSound();
-		if (!string.IsNullOrEmpty(dragSound))
-		{
-			string sound = GlobalAssets.GetSound(dragSound, false);
-			if (sound != null)
-			{
-				Vector3 pos = Grid.CellToPos(this.currentCell);
-				pos.z = 0f;
-				int cellDistance = Grid.GetCellDistance(Grid.PosToCell(this.downPos), this.currentCell);
-				EventInstance instance = SoundEvent.BeginOneShot(sound, pos, 1f, false);
-				instance.setParameterByName("tileCount", (float)cellDistance, false);
-				SoundEvent.EndOneShot(instance);
-			}
-		}
-	}
+        if (dragAxis != DragAxis.Vertical) return;
 
-	public override void OnMouseMove(Vector3 cursorPos)
-	{
-		int num = Grid.PosToCell(cursorPos);
-		this.currentCell = num;
-		base.OnMouseMove(cursorPos);
-		this.cellsInRadius.Clear();
-		foreach (Vector2 vector in this.brushOffsets)
-		{
-			int num2 = Grid.OffsetCell(Grid.PosToCell(cursorPos), new CellOffset((int)vector.x, (int)vector.y));
-			if (Grid.IsValidCell(num2) && (int)Grid.WorldIdx[num2] == ClusterManager.Instance.activeWorldId)
-			{
-				this.cellsInRadius.Add(Grid.OffsetCell(Grid.PosToCell(cursorPos), new CellOffset((int)vector.x, (int)vector.y)));
-			}
-		}
-		if (!this.dragging)
-		{
-			return;
-		}
-		this.Paint();
-		this.lastCell = this.currentCell;
-	}
+        cursor_pos.x  = downPos.x;
+        this.dragAxis = DragAxis.None;
+    }
 
-	protected virtual void OnPaintCell(int cell, int distFromOrigin)
-	{
-		if (!this.visitedCells.Contains(cell))
-		{
-			this.visitedCells.Add(cell);
-		}
-	}
+    protected virtual string GetConfirmSound()    { return "Tile_Confirm"; }
+    protected virtual string GetDragSound()       { return "Tile_Drag"; }
+    public override   string GetDeactivateSound() { return "Tile_Cancel"; }
 
-	public override void OnKeyDown(KButtonEvent e)
-	{
-		if (e.TryConsume(global::Action.DragStraight))
-		{
-			this.dragAxis = BrushTool.DragAxis.None;
-		}
-		else if (this.interceptNumberKeysForPriority)
-		{
-			this.HandlePriortyKeysDown(e);
-		}
-		if (!e.Consumed)
-		{
-			base.OnKeyDown(e);
-		}
-	}
+    private static int GetGridDistance(int cell, int center_cell) {
+        var u        = Grid.CellToXY(cell);
+        var v        = Grid.CellToXY(center_cell);
+        var vector2I = u - v;
+        return Math.Abs(vector2I.x) + Math.Abs(vector2I.y);
+    }
 
-	public override void OnKeyUp(KButtonEvent e)
-	{
-		if (e.TryConsume(global::Action.DragStraight))
-		{
-			this.dragAxis = BrushTool.DragAxis.Invalid;
-		}
-		else if (this.interceptNumberKeysForPriority)
-		{
-			this.HandlePriorityKeysUp(e);
-		}
-		if (!e.Consumed)
-		{
-			base.OnKeyUp(e);
-		}
-	}
+    private void Paint() {
+        var count = visitedCells.Count;
+        foreach (var num in cellsInRadius)
+            if (Grid.IsValidCell(num)                                       &&
+                Grid.WorldIdx[num] == ClusterManager.Instance.activeWorldId &&
+                (!Grid.Foundation[num] || affectFoundation))
+                OnPaintCell(num, Grid.GetCellDistance(currentCell, num));
 
-	private void HandlePriortyKeysDown(KButtonEvent e)
-	{
-		global::Action action = e.GetAction();
-		if (global::Action.Plan1 > action || action > global::Action.Plan10 || !e.TryConsume(action))
-		{
-			return;
-		}
-		int num = action - global::Action.Plan1 + 1;
-		if (num <= 9)
-		{
-			ToolMenu.Instance.PriorityScreen.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.basic, num), true);
-			return;
-		}
-		ToolMenu.Instance.PriorityScreen.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.topPriority, 1), true);
-	}
+        if (lastCell != currentCell) PlayDragSound();
+        if (count    < visitedCells.Count) PlaySound();
+    }
 
-	private void HandlePriorityKeysUp(KButtonEvent e)
-	{
-		global::Action action = e.GetAction();
-		if (global::Action.Plan1 <= action && action <= global::Action.Plan10)
-		{
-			e.TryConsume(action);
-		}
-	}
+    protected virtual void PlayDragSound() {
+        var dragSound = GetDragSound();
+        if (!string.IsNullOrEmpty(dragSound)) {
+            var sound = GlobalAssets.GetSound(dragSound);
+            if (sound != null) {
+                var pos = Grid.CellToPos(currentCell);
+                pos.z = 0f;
+                var cellDistance = Grid.GetCellDistance(Grid.PosToCell(downPos), currentCell);
+                var instance     = SoundEvent.BeginOneShot(sound, pos);
+                instance.setParameterByName("tileCount", cellDistance);
+                SoundEvent.EndOneShot(instance);
+            }
+        }
+    }
 
-	public override void OnFocus(bool focus)
-	{
-		if (this.visualizer != null)
-		{
-			this.visualizer.SetActive(focus);
-		}
-		this.hasFocus = focus;
-		base.OnFocus(focus);
-	}
+    public override void OnMouseMove(Vector3 cursorPos) {
+        var num = Grid.PosToCell(cursorPos);
+        currentCell = num;
+        base.OnMouseMove(cursorPos);
+        cellsInRadius.Clear();
+        foreach (var vector in brushOffsets) {
+            var num2 = Grid.OffsetCell(Grid.PosToCell(cursorPos), new CellOffset((int)vector.x, (int)vector.y));
+            if (Grid.IsValidCell(num2) && Grid.WorldIdx[num2] == ClusterManager.Instance.activeWorldId)
+                cellsInRadius.Add(Grid.OffsetCell(Grid.PosToCell(cursorPos),
+                                                  new CellOffset((int)vector.x, (int)vector.y)));
+        }
 
-	private void OnTutorialOpened(object data)
-	{
-		this.dragging = false;
-	}
+        if (!Dragging) return;
 
-	public override bool ShowHoverUI()
-	{
-		return this.dragging || base.ShowHoverUI();
-	}
+        Paint();
+        lastCell = currentCell;
+    }
 
-	public override void LateUpdate()
-	{
-		base.LateUpdate();
-	}
+    protected virtual void OnPaintCell(int cell, int distFromOrigin) {
+        if (!visitedCells.Contains(cell)) visitedCells.Add(cell);
+    }
 
-	[SerializeField]
-	private Texture2D brushCursor;
+    public override void OnKeyDown(KButtonEvent e) {
+        if (e.TryConsume(Action.DragStraight))
+            dragAxis = DragAxis.None;
+        else if (interceptNumberKeysForPriority) HandlePriortyKeysDown(e);
 
-	[SerializeField]
-	private GameObject areaVisualizer;
+        if (!e.Consumed) base.OnKeyDown(e);
+    }
 
-	[SerializeField]
-	private Color32 areaColour = new Color(1f, 1f, 1f, 0.5f);
+    public override void OnKeyUp(KButtonEvent e) {
+        if (e.TryConsume(Action.DragStraight))
+            dragAxis = DragAxis.Invalid;
+        else if (interceptNumberKeysForPriority) HandlePriorityKeysUp(e);
 
-	protected Color radiusIndicatorColor = new Color(0.5f, 0.7f, 0.5f, 0.2f);
+        if (!e.Consumed) base.OnKeyUp(e);
+    }
 
-	protected Vector3 placementPivot;
+    private void HandlePriortyKeysDown(KButtonEvent e) {
+        var action = e.GetAction();
+        if (Action.Plan1 > action || action > Action.Plan10 || !e.TryConsume(action)) return;
 
-	protected bool interceptNumberKeysForPriority;
+        var num = action - Action.Plan1 + 1;
+        if (num <= 9) {
+            ToolMenu.Instance.PriorityScreen.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.basic,
+                                                                num),
+                                                               true);
 
-	protected List<Vector2> brushOffsets = new List<Vector2>();
+            return;
+        }
 
-	protected bool affectFoundation;
+        ToolMenu.Instance.PriorityScreen.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.topPriority,
+                                                                               1),
+                                                           true);
+    }
 
-	private bool dragging;
+    private void HandlePriorityKeysUp(KButtonEvent e) {
+        var action = e.GetAction();
+        if (Action.Plan1 <= action && action <= Action.Plan10) e.TryConsume(action);
+    }
 
-	protected int brushRadius = -1;
+    public override void OnFocus(bool focus) {
+        if (visualizer != null) visualizer.SetActive(focus);
+        hasFocus = focus;
+        base.OnFocus(focus);
+    }
 
-	private BrushTool.DragAxis dragAxis = BrushTool.DragAxis.Invalid;
+    private         void OnTutorialOpened(object data) { Dragging = false; }
+    public override bool ShowHoverUI()                 { return Dragging || base.ShowHoverUI(); }
+    public override void LateUpdate()                  { base.LateUpdate(); }
 
-	protected Vector3 downPos;
-
-	protected int currentCell;
-
-	protected int lastCell;
-
-	protected List<int> visitedCells = new List<int>();
-
-	protected HashSet<int> cellsInRadius = new HashSet<int>();
-
-	private enum DragAxis
-	{
-		Invalid = -1,
-		None,
-		Horizontal,
-		Vertical
-	}
+    private enum DragAxis {
+        Invalid = -1,
+        None,
+        Horizontal,
+        Vertical
+    }
 }

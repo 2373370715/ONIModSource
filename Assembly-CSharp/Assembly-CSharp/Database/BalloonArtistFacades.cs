@@ -2,9 +2,9 @@
 
 namespace Database
 {
-	public class BalloonArtistFacades : ResourceSet<BalloonArtistFacadeResource>
+		public class BalloonArtistFacades : ResourceSet<BalloonArtistFacadeResource>
 	{
-		public BalloonArtistFacades(ResourceSet parent) : base("BalloonArtistFacades", parent)
+				public BalloonArtistFacades(ResourceSet parent) : base("BalloonArtistFacades", parent)
 		{
 			foreach (BalloonArtistFacadeInfo balloonArtistFacadeInfo in Blueprints.Get().all.balloonArtistFacades)
 			{
@@ -12,13 +12,13 @@ namespace Database
 			}
 		}
 
-		[Obsolete("Please use Add(...) with dlcIds parameter")]
+				[Obsolete("Please use Add(...) with dlcIds parameter")]
 		public void Add(string id, string name, string desc, PermitRarity rarity, string animFile, BalloonArtistFacadeType balloonFacadeType)
 		{
 			this.Add(id, name, desc, rarity, animFile, balloonFacadeType, DlcManager.AVAILABLE_ALL_VERSIONS);
 		}
 
-		public void Add(string id, string name, string desc, PermitRarity rarity, string animFile, BalloonArtistFacadeType balloonFacadeType, string[] dlcIds)
+				public void Add(string id, string name, string desc, PermitRarity rarity, string animFile, BalloonArtistFacadeType balloonFacadeType, string[] dlcIds)
 		{
 			BalloonArtistFacadeResource item = new BalloonArtistFacadeResource(id, name, desc, rarity, animFile, balloonFacadeType, dlcIds);
 			this.resources.Add(item);

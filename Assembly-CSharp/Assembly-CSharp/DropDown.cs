@@ -7,9 +7,9 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/DropDown")]
 public class DropDown : KMonoBehaviour
 {
-			public bool open { get; private set; }
+				public bool open { get; private set; }
 
-		public List<IListableOption> Entries
+			public List<IListableOption> Entries
 	{
 		get
 		{
@@ -17,7 +17,7 @@ public class DropDown : KMonoBehaviour
 		}
 	}
 
-	public void Initialize(IEnumerable<IListableOption> contentKeys, Action<IListableOption, object> onEntrySelectedAction, Func<IListableOption, IListableOption, object, int> sortFunction = null, Action<DropDownEntry, object> refreshAction = null, bool displaySelectedValueWhenClosed = true, object targetData = null)
+		public void Initialize(IEnumerable<IListableOption> contentKeys, Action<IListableOption, object> onEntrySelectedAction, Func<IListableOption, IListableOption, object, int> sortFunction = null, Action<DropDownEntry, object> refreshAction = null, bool displaySelectedValueWhenClosed = true, object targetData = null)
 	{
 		this.targetData = targetData;
 		this.sortFunction = sortFunction;
@@ -33,13 +33,13 @@ public class DropDown : KMonoBehaviour
 		this.canvasScaler = GameScreenManager.Instance.ssOverlayCanvas.GetComponent<KCanvasScaler>();
 	}
 
-	public void CustomizeEmptyRow(string txt, Sprite icon)
+		public void CustomizeEmptyRow(string txt, Sprite icon)
 	{
 		this.emptyRowLabel = txt;
 		this.emptyRowSprite = icon;
 	}
 
-	public void OnClick()
+		public void OnClick()
 	{
 		if (!this.open)
 		{
@@ -49,7 +49,7 @@ public class DropDown : KMonoBehaviour
 		this.Close();
 	}
 
-	public void ChangeContent(IEnumerable<IListableOption> contentKeys)
+		public void ChangeContent(IEnumerable<IListableOption> contentKeys)
 	{
 		this.entries.Clear();
 		foreach (IListableOption item in contentKeys)
@@ -59,7 +59,7 @@ public class DropDown : KMonoBehaviour
 		this.built = false;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!this.open)
 		{
@@ -76,7 +76,7 @@ public class DropDown : KMonoBehaviour
 		}
 	}
 
-	private void Build(List<IListableOption> contentKeys)
+		private void Build(List<IListableOption> contentKeys)
 	{
 		this.built = true;
 		for (int i = this.contentContainer.childCount - 1; i >= 0; i--)
@@ -125,7 +125,7 @@ public class DropDown : KMonoBehaviour
 		this.scrollRect.gameObject.SetActive(false);
 	}
 
-	private void RefreshEntries()
+		private void RefreshEntries()
 	{
 		foreach (KeyValuePair<IListableOption, GameObject> keyValuePair in this.rowLookup)
 		{
@@ -159,13 +159,13 @@ public class DropDown : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Util.KDestroyGameObject(this.scrollRect);
 		base.OnCleanUp();
 	}
 
-	public void Open()
+		public void Open()
 	{
 		if (this.open)
 		{
@@ -186,14 +186,15 @@ public class DropDown : KMonoBehaviour
 		{
 			keyValuePair.Value.SetActive(true);
 		}
-		this.scrollRect.rectTransform().sizeDelta = new Vector2(this.scrollRect.rectTransform().sizeDelta.x, 32f * (float)Mathf.Min(this.contentContainer.childCount, 8));
+		float num = Mathf.Max(32f, this.rowEntryPrefab.GetComponent<LayoutElement>().preferredHeight);
+		this.scrollRect.rectTransform().sizeDelta = new Vector2(this.scrollRect.rectTransform().sizeDelta.x, num * (float)Mathf.Min(this.contentContainer.childCount, 8));
 		Vector3 vector = this.dropdownAlignmentTarget.TransformPoint(this.dropdownAlignmentTarget.rect.x, this.dropdownAlignmentTarget.rect.y, 0f);
 		Vector2 v = new Vector2(Mathf.Min(0f, (float)Screen.width - (vector.x + (this.rowEntryPrefab.GetComponent<LayoutElement>().minWidth * this.canvasScaler.GetCanvasScale() + DropDown.edgePadding.x))), -Mathf.Min(0f, vector.y - (this.scrollRect.rectTransform().sizeDelta.y * this.canvasScaler.GetCanvasScale() + DropDown.edgePadding.y)));
 		vector += v;
 		this.scrollRect.rectTransform().SetPosition(vector);
 	}
 
-	public void Close()
+		public void Close()
 	{
 		if (!this.open)
 		{
@@ -207,47 +208,47 @@ public class DropDown : KMonoBehaviour
 		this.scrollRect.SetActive(false);
 	}
 
-	public GameObject targetDropDownContainer;
+		public GameObject targetDropDownContainer;
 
-	public LocText selectedLabel;
+		public LocText selectedLabel;
 
-	public KButton openButton;
+		public KButton openButton;
 
-	public Transform contentContainer;
+		public Transform contentContainer;
 
-	public GameObject scrollRect;
+		public GameObject scrollRect;
 
-	public RectTransform dropdownAlignmentTarget;
+		public RectTransform dropdownAlignmentTarget;
 
-	public GameObject rowEntryPrefab;
+		public GameObject rowEntryPrefab;
 
-	public bool addEmptyRow = true;
+		public bool addEmptyRow = true;
 
-	private static Vector2 edgePadding = new Vector2(8f, 8f);
+		private static Vector2 edgePadding = new Vector2(8f, 8f);
 
-	public object targetData;
+		public object targetData;
 
-	private List<IListableOption> entries = new List<IListableOption>();
+		private List<IListableOption> entries = new List<IListableOption>();
 
-	private Action<IListableOption, object> onEntrySelectedAction;
+		private Action<IListableOption, object> onEntrySelectedAction;
 
-	private Action<DropDownEntry, object> rowRefreshAction;
+		private Action<DropDownEntry, object> rowRefreshAction;
 
-	public Dictionary<IListableOption, GameObject> rowLookup = new Dictionary<IListableOption, GameObject>();
+		public Dictionary<IListableOption, GameObject> rowLookup = new Dictionary<IListableOption, GameObject>();
 
-	private Func<IListableOption, IListableOption, object, int> sortFunction;
+		private Func<IListableOption, IListableOption, object, int> sortFunction;
 
-	private GameObject emptyRow;
+		private GameObject emptyRow;
 
-	private string emptyRowLabel;
+		private string emptyRowLabel;
 
-	private Sprite emptyRowSprite;
+		private Sprite emptyRowSprite;
 
-	private bool built;
+		private bool built;
 
-	private bool displaySelectedValueWhenClosed = true;
+		private bool displaySelectedValueWhenClosed = true;
 
-	private const int ROWS_BEFORE_SCROLL = 8;
+		private const int ROWS_BEFORE_SCROLL = 8;
 
-	private KCanvasScaler canvasScaler;
+		private KCanvasScaler canvasScaler;
 }

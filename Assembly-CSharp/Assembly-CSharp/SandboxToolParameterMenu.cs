@@ -9,17 +9,17 @@ using UnityEngine.UI;
 
 public class SandboxToolParameterMenu : KScreen
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		SandboxToolParameterMenu.instance = null;
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 50f;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.ConfigureSettings();
@@ -27,7 +27,7 @@ public class SandboxToolParameterMenu : KScreen
 		base.ConsumeMouseScroll = true;
 	}
 
-	private void ConfigureSettings()
+		private void ConfigureSettings()
 	{
 		this.massSlider.clampValueLow = 0.001f;
 		this.massSlider.clampValueHigh = 10000f;
@@ -108,9 +108,9 @@ public class SandboxToolParameterMenu : KScreen
 			}
 			this.entitySelector.button.GetComponentInChildren<LocText>().text = gameObject.GetProperName();
 			global::Tuple<Sprite, Color> tuple;
-			if (stringSetting == MinionConfig.ID)
+			if (gameObject.HasTag(GameTags.BaseMinion))
 			{
-				tuple = new global::Tuple<Sprite, Color>(Assets.GetSprite("ui_duplicant_portrait_placeholder"), Color.white);
+				tuple = new global::Tuple<Sprite, Color>(BaseMinionConfig.GetSpriteForMinionModel(gameObject.PrefabID()), Color.white);
 			}
 			else
 			{
@@ -169,7 +169,7 @@ public class SandboxToolParameterMenu : KScreen
 		}));
 	}
 
-	public void DisableParameters()
+		public void DisableParameters()
 	{
 		this.elementSelector.row.SetActive(false);
 		this.entitySelector.row.SetActive(false);
@@ -186,7 +186,7 @@ public class SandboxToolParameterMenu : KScreen
 		this.storySelector.row.SetActive(false);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.ConfigureElementSelector();
@@ -214,7 +214,7 @@ public class SandboxToolParameterMenu : KScreen
 		}
 	}
 
-	private void ConfigureElementSelector()
+		private void ConfigureElementSelector()
 	{
 		Func<object, bool> condition = (object element) => (element as Element).IsSolid;
 		Func<object, bool> condition2 = (object element) => (element as Element).IsLiquid;
@@ -269,7 +269,7 @@ public class SandboxToolParameterMenu : KScreen
 		});
 	}
 
-	private void ConfigureEntitySelector()
+		private void ConfigureEntitySelector()
 	{
 		List<SandboxToolParameterMenu.SelectorValue.SearchFilter> list = new List<SandboxToolParameterMenu.SelectorValue.SearchFilter>();
 		SandboxToolParameterMenu.SelectorValue.SearchFilter item = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.FOOD, delegate(object entity)
@@ -288,9 +288,18 @@ public class SandboxToolParameterMenu : KScreen
 		SandboxToolParameterMenu.SelectorValue.SearchFilter item3 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.SPECIAL, delegate(object entity)
 		{
 			KPrefabID kprefabID2 = entity as KPrefabID;
-			return (entity as KPrefabID).PrefabID().Name == MinionConfig.ID && SaveLoader.Instance.IsDlcListActiveForCurrentSave(kprefabID2.requiredDlcIds);
-		}, null, new global::Tuple<Sprite, Color>(Assets.GetSprite("ui_duplicant_portrait_placeholder"), Color.white));
+			return (entity as KPrefabID).HasTag(GameTags.BaseMinion) && SaveLoader.Instance.IsDlcListActiveForCurrentSave(kprefabID2.requiredDlcIds);
+		}, null, new global::Tuple<Sprite, Color>(BaseMinionConfig.GetSpriteForMinionModel(GameTags.Minions.Models.Standard), Color.white));
 		list.Add(item3);
+		if (SaveLoader.Instance.IsDLCActiveForCurrentSave("DLC3_ID"))
+		{
+			SandboxToolParameterMenu.SelectorValue.SearchFilter item4 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.BIONICUPGRADES, delegate(object entity)
+			{
+				KPrefabID kprefabID2 = entity as KPrefabID;
+				return kprefabID2.HasTag(GameTags.BionicUpgrade) && SaveLoader.Instance.IsDlcListActiveForCurrentSave(kprefabID2.requiredDlcIds);
+			}, null, new global::Tuple<Sprite, Color>(Def.GetUISpriteFromMultiObjectAnim(Assets.GetAnim("upgrade_disc_kanim"), "ui", false, ""), Color.white));
+			list.Add(item4);
+		}
 		SandboxToolParameterMenu.SelectorValue.SearchFilter searchFilter = null;
 		searchFilter = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.CREATURE, (object entity) => false, null, Def.GetUISprite(Assets.GetPrefab("Hatch"), "ui", false));
 		list.Add(searchFilter);
@@ -302,17 +311,17 @@ public class SandboxToolParameterMenu : KScreen
 			{
 				global::Tuple<Sprite, Color> icon = new global::Tuple<Sprite, Color>(CodexCache.entries[brain.species.ToString().ToUpper()].icon, CodexCache.entries[brain.species.ToString().ToUpper()].iconColor);
 				list2.Add(brain.species);
-				SandboxToolParameterMenu.SelectorValue.SearchFilter item4 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(Strings.Get("STRINGS.CREATURES.FAMILY_PLURAL." + brain.species.ToString().ToUpper()), delegate(object entity)
+				SandboxToolParameterMenu.SelectorValue.SearchFilter item5 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(Strings.Get("STRINGS.CREATURES.FAMILY_PLURAL." + brain.species.ToString().ToUpper()), delegate(object entity)
 				{
 					CreatureBrain component = Assets.GetPrefab((entity as KPrefabID).PrefabID()).GetComponent<CreatureBrain>();
 					return (entity as KPrefabID).HasTag(GameTags.CreatureBrain) && component.species == brain.species;
 				}, searchFilter, icon);
-				list.Add(item4);
+				list.Add(item5);
 			}
 		}
-		SandboxToolParameterMenu.SelectorValue.SearchFilter item5 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.CREATURE_EGG, (object entity) => (entity as KPrefabID).HasTag(GameTags.Egg), searchFilter, Def.GetUISprite(Assets.GetPrefab("HatchEgg"), "ui", false));
-		list.Add(item5);
-		SandboxToolParameterMenu.SelectorValue.SearchFilter item6 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.EQUIPMENT, delegate(object entity)
+		SandboxToolParameterMenu.SelectorValue.SearchFilter item6 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.CREATURE_EGG, (object entity) => (entity as KPrefabID).HasTag(GameTags.Egg), searchFilter, Def.GetUISprite(Assets.GetPrefab("HatchEgg"), "ui", false));
+		list.Add(item6);
+		SandboxToolParameterMenu.SelectorValue.SearchFilter item7 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.EQUIPMENT, delegate(object entity)
 		{
 			if ((entity as KPrefabID).gameObject == null)
 			{
@@ -321,14 +330,14 @@ public class SandboxToolParameterMenu : KScreen
 			GameObject gameObject2 = (entity as KPrefabID).gameObject;
 			return gameObject2 != null && gameObject2.GetComponent<Equippable>() != null;
 		}, null, Def.GetUISprite(Assets.GetPrefab("Funky_Vest"), "ui", false));
-		list.Add(item6);
+		list.Add(item7);
 		SandboxToolParameterMenu.SelectorValue.SearchFilter searchFilter2 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.PLANTS, delegate(object entity)
 		{
 			KPrefabID kprefabID2 = entity as KPrefabID;
 			return !(kprefabID2 == null) && !(kprefabID2.gameObject == null) && (kprefabID2 != null && SaveLoader.Instance.IsDlcListActiveForCurrentSave(kprefabID2.requiredDlcIds)) && (kprefabID2.GetComponent<Harvestable>() != null || kprefabID2.GetComponent<WiltCondition>() != null);
 		}, null, Def.GetUISprite(Assets.GetPrefab("PrickleFlower"), "ui", false));
 		list.Add(searchFilter2);
-		SandboxToolParameterMenu.SelectorValue.SearchFilter item7 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.SEEDS, delegate(object entity)
+		SandboxToolParameterMenu.SelectorValue.SearchFilter item8 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.SEEDS, delegate(object entity)
 		{
 			if ((entity as KPrefabID).gameObject == null)
 			{
@@ -337,17 +346,17 @@ public class SandboxToolParameterMenu : KScreen
 			GameObject gameObject2 = (entity as KPrefabID).gameObject;
 			return gameObject2 != null && gameObject2.GetComponent<PlantableSeed>() != null;
 		}, searchFilter2, Def.GetUISprite(Assets.GetPrefab("PrickleFlowerSeed"), "ui", false));
-		list.Add(item7);
-		SandboxToolParameterMenu.SelectorValue.SearchFilter item8 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.INDUSTRIAL_PRODUCTS, delegate(object entity)
+		list.Add(item8);
+		SandboxToolParameterMenu.SelectorValue.SearchFilter item9 = new SandboxToolParameterMenu.SelectorValue.SearchFilter(UI.SANDBOXTOOLS.FILTERS.ENTITIES.INDUSTRIAL_PRODUCTS, delegate(object entity)
 		{
 			if ((entity as KPrefabID).gameObject == null)
 			{
 				return false;
 			}
 			GameObject gameObject2 = (entity as KPrefabID).gameObject;
-			return gameObject2 != null && (gameObject2.HasTag(GameTags.IndustrialIngredient) || gameObject2.HasTag(GameTags.IndustrialProduct) || gameObject2.HasTag(GameTags.Medicine) || gameObject2.HasTag(GameTags.MedicalSupplies));
+			return gameObject2 != null && (gameObject2.HasTag(GameTags.IndustrialIngredient) || gameObject2.HasTag(GameTags.IndustrialProduct) || gameObject2.HasTag(GameTags.Medicine) || gameObject2.HasTag(GameTags.MedicalSupplies) || gameObject2.HasTag(GameTags.ChargedPortableBattery));
 		}, null, Def.GetUISprite(Assets.GetPrefab("BasicCure"), "ui", false));
-		list.Add(item8);
+		list.Add(item9);
 		List<KPrefabID> list3 = new List<KPrefabID>();
 		foreach (KPrefabID kprefabID in Assets.Prefabs)
 		{
@@ -373,14 +382,15 @@ public class SandboxToolParameterMenu : KScreen
 		}, (object entity) => (entity as KPrefabID).GetProperName(), null, delegate(object entity)
 		{
 			GameObject prefab = Assets.GetPrefab((entity as KPrefabID).PrefabTag);
+			KPrefabID component = prefab.GetComponent<KPrefabID>();
 			if (prefab != null)
 			{
-				if (prefab.PrefabID() == MinionConfig.ID)
+				if (component.HasTag(GameTags.BaseMinion))
 				{
-					return new global::Tuple<Sprite, Color>(Assets.GetSprite("ui_duplicant_portrait_placeholder"), Color.white);
+					return new global::Tuple<Sprite, Color>(BaseMinionConfig.GetSpriteForMinionModel((entity as KPrefabID).PrefabID()), Color.white);
 				}
-				KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
-				if (component != null && component.AnimFiles.Length != 0 && component.AnimFiles[0] != null)
+				KBatchedAnimController component2 = prefab.GetComponent<KBatchedAnimController>();
+				if (component2 != null && component2.AnimFiles.Length != 0 && component2.AnimFiles[0] != null)
 				{
 					return Def.GetUISprite(prefab, "ui", false);
 				}
@@ -389,7 +399,7 @@ public class SandboxToolParameterMenu : KScreen
 		}, UI.SANDBOXTOOLS.SETTINGS.SPAWN_ENTITY.NAME, list.ToArray());
 	}
 
-	private void ConfigureStoryTraitSelector()
+		private void ConfigureStoryTraitSelector()
 	{
 		object[] options = Db.Get().Stories.resources.ToArray();
 		this.storySelector = new SandboxToolParameterMenu.SelectorValue(options, delegate(object story)
@@ -398,7 +408,7 @@ public class SandboxToolParameterMenu : KScreen
 		}, (object story) => Strings.Get((story as Story).StoryTrait.name), null, (object story) => new global::Tuple<Sprite, Color>(Assets.GetSprite(((Story)story).StoryTrait.icon), Color.white), UI.SANDBOXTOOLS.SETTINGS.SPAWN_STORY_TRAIT.NAME, null);
 	}
 
-	private void ConfigureDiseaseSelector()
+		private void ConfigureDiseaseSelector()
 	{
 		object[] options = Db.Get().Diseases.resources.ToArray();
 		this.diseaseSelector = new SandboxToolParameterMenu.SelectorValue(options, delegate(object disease)
@@ -407,7 +417,7 @@ public class SandboxToolParameterMenu : KScreen
 		}, (object disease) => (disease as Disease).Name, null, (object disease) => new global::Tuple<Sprite, Color>(Assets.GetSprite("germ"), GlobalAssets.Instance.colorSet.GetColorByName((disease as Disease).overlayColourName)), UI.SANDBOXTOOLS.SETTINGS.DISEASE.NAME, null);
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		if (PlayerController.Instance.ActiveTool != null && SandboxToolParameterMenu.instance != null)
@@ -416,7 +426,7 @@ public class SandboxToolParameterMenu : KScreen
 		}
 	}
 
-	public void RefreshDisplay()
+		public void RefreshDisplay()
 	{
 		this.brushRadiusSlider.row.SetActive(PlayerController.Instance.ActiveTool is BrushTool);
 		if (PlayerController.Instance.ActiveTool is BrushTool)
@@ -432,7 +442,7 @@ public class SandboxToolParameterMenu : KScreen
 		this.moraleSlider.SetValue((float)this.settings.GetIntSetting("SandbosTools.MoraleAdjustment"), true);
 	}
 
-	private void OnTemperatureUnitChanged(object unit)
+		private void OnTemperatureUnitChanged(object unit)
 	{
 		int num = this.settings.GetIntSetting("SandboxTools.SelectedElement");
 		if (num >= ElementLoader.elements.Count)
@@ -444,7 +454,7 @@ public class SandboxToolParameterMenu : KScreen
 		this.temperatureAdditiveSlider.SetValue(5f, true);
 	}
 
-	private void SetAbsoluteTemperatureSliderRange(Element element)
+		private void SetAbsoluteTemperatureSliderRange(Element element)
 	{
 		float num = Mathf.Max(element.lowTemp - 10f, 1f);
 		float num2;
@@ -466,7 +476,7 @@ public class SandboxToolParameterMenu : KScreen
 		this.temperatureSlider.SetRange(num, num2, false);
 	}
 
-	private void RefreshTemperatureUnitDisplays()
+		private void RefreshTemperatureUnitDisplays()
 	{
 		this.temperatureSlider.unitString = GameUtil.GetTemperatureUnitSuffix();
 		this.temperatureSlider.row.GetComponent<HierarchyReferences>().GetReference<LocText>("UnitLabel").text = this.temperatureSlider.unitString;
@@ -474,7 +484,7 @@ public class SandboxToolParameterMenu : KScreen
 		this.temperatureAdditiveSlider.row.GetComponent<HierarchyReferences>().GetReference<LocText>("UnitLabel").text = this.temperatureSlider.unitString;
 	}
 
-	private GameObject SpawnSelector(SandboxToolParameterMenu.SelectorValue selector)
+		private GameObject SpawnSelector(SandboxToolParameterMenu.SelectorValue selector)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.selectorPropertyPrefab, base.gameObject, true);
 		HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
@@ -660,7 +670,7 @@ public class SandboxToolParameterMenu : KScreen
 		return gameObject;
 	}
 
-	private GameObject SpawnSlider(SandboxToolParameterMenu.SliderValue value)
+		private GameObject SpawnSlider(SandboxToolParameterMenu.SliderValue value)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.sliderPropertyPrefab, base.gameObject, true);
 		HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
@@ -727,7 +737,7 @@ public class SandboxToolParameterMenu : KScreen
 		return gameObject;
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (this.CheckBlockedInput())
 		{
@@ -743,7 +753,7 @@ public class SandboxToolParameterMenu : KScreen
 		}
 	}
 
-	private bool CheckBlockedInput()
+		private bool CheckBlockedInput()
 	{
 		bool result = false;
 		if (UnityEngine.EventSystems.EventSystem.current != null)
@@ -764,74 +774,74 @@ public class SandboxToolParameterMenu : KScreen
 		return result;
 	}
 
-	public static SandboxToolParameterMenu instance;
+		public static SandboxToolParameterMenu instance;
 
-	public SandboxSettings settings;
+		public SandboxSettings settings;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject sliderPropertyPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject selectorPropertyPrefab;
 
-	private List<GameObject> inputFields = new List<GameObject>();
+		private List<GameObject> inputFields = new List<GameObject>();
 
-	public SandboxToolParameterMenu.SelectorValue elementSelector;
+		public SandboxToolParameterMenu.SelectorValue elementSelector;
 
-	public SandboxToolParameterMenu.SliderValue brushRadiusSlider = new SandboxToolParameterMenu.SliderValue(1f, 10f, "dash", "circle_hard", "", UI.SANDBOXTOOLS.SETTINGS.BRUSH_SIZE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.BRUSH_SIZE.NAME, delegate(float value)
+		public SandboxToolParameterMenu.SliderValue brushRadiusSlider = new SandboxToolParameterMenu.SliderValue(1f, 10f, "dash", "circle_hard", "", UI.SANDBOXTOOLS.SETTINGS.BRUSH_SIZE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.BRUSH_SIZE.NAME, delegate(float value)
 	{
 		SandboxToolParameterMenu.instance.settings.SetIntSetting("SandboxTools.BrushSize", Mathf.Clamp(Mathf.RoundToInt(value), 1, 50));
 	}, 0);
 
-	public SandboxToolParameterMenu.SliderValue noiseScaleSlider = new SandboxToolParameterMenu.SliderValue(0f, 1f, "little", "lots", "", UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE_SCALE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE_SCALE.NAME, delegate(float value)
+		public SandboxToolParameterMenu.SliderValue noiseScaleSlider = new SandboxToolParameterMenu.SliderValue(0f, 1f, "little", "lots", "", UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE_SCALE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE_SCALE.NAME, delegate(float value)
 	{
 		SandboxToolParameterMenu.instance.settings.SetFloatSetting("SandboxTools.NoiseScale", value);
 	}, 2);
 
-	public SandboxToolParameterMenu.SliderValue noiseDensitySlider = new SandboxToolParameterMenu.SliderValue(1f, 20f, "little", "lots", "", UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE_SCALE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE_DENSITY.NAME, delegate(float value)
+		public SandboxToolParameterMenu.SliderValue noiseDensitySlider = new SandboxToolParameterMenu.SliderValue(1f, 20f, "little", "lots", "", UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE_SCALE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.BRUSH_NOISE_DENSITY.NAME, delegate(float value)
 	{
 		SandboxToolParameterMenu.instance.settings.SetFloatSetting("SandboxTools.NoiseDensity", value);
 	}, 2);
 
-	public SandboxToolParameterMenu.SliderValue massSlider = new SandboxToolParameterMenu.SliderValue(0.1f, 1000f, "action_pacify", "status_item_plant_solid", UI.UNITSUFFIXES.MASS.KILOGRAM, UI.SANDBOXTOOLS.SETTINGS.MASS.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.MASS.NAME, delegate(float value)
+		public SandboxToolParameterMenu.SliderValue massSlider = new SandboxToolParameterMenu.SliderValue(0.1f, 1000f, "action_pacify", "status_item_plant_solid", UI.UNITSUFFIXES.MASS.KILOGRAM, UI.SANDBOXTOOLS.SETTINGS.MASS.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.MASS.NAME, delegate(float value)
 	{
 		SandboxToolParameterMenu.instance.settings.SetFloatSetting("SandboxTools.Mass", Mathf.Clamp(value, 0.001f, 9999f));
 	}, 2);
 
-	public SandboxToolParameterMenu.SliderValue temperatureSlider = new SandboxToolParameterMenu.SliderValue(150f, 500f, "cold", "hot", GameUtil.GetTemperatureUnitSuffix(), UI.SANDBOXTOOLS.SETTINGS.TEMPERATURE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.TEMPERATURE.NAME, delegate(float value)
+		public SandboxToolParameterMenu.SliderValue temperatureSlider = new SandboxToolParameterMenu.SliderValue(150f, 500f, "cold", "hot", GameUtil.GetTemperatureUnitSuffix(), UI.SANDBOXTOOLS.SETTINGS.TEMPERATURE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.TEMPERATURE.NAME, delegate(float value)
 	{
 		SandboxToolParameterMenu.instance.settings.SetFloatSetting("SandbosTools.Temperature", Mathf.Clamp(GameUtil.GetTemperatureConvertedToKelvin(value), 1f, 9999f));
 	}, 0);
 
-	public SandboxToolParameterMenu.SliderValue temperatureAdditiveSlider = new SandboxToolParameterMenu.SliderValue(-15f, 15f, "cold", "hot", GameUtil.GetTemperatureUnitSuffix(), UI.SANDBOXTOOLS.SETTINGS.TEMPERATURE_ADDITIVE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.TEMPERATURE_ADDITIVE.NAME, delegate(float value)
+		public SandboxToolParameterMenu.SliderValue temperatureAdditiveSlider = new SandboxToolParameterMenu.SliderValue(-15f, 15f, "cold", "hot", GameUtil.GetTemperatureUnitSuffix(), UI.SANDBOXTOOLS.SETTINGS.TEMPERATURE_ADDITIVE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.TEMPERATURE_ADDITIVE.NAME, delegate(float value)
 	{
 		SandboxToolParameterMenu.instance.settings.SetFloatSetting("SandbosTools.TemperatureAdditive", GameUtil.GetTemperatureConvertedToKelvin(value));
 	}, 0);
 
-	public SandboxToolParameterMenu.SliderValue stressAdditiveSlider = new SandboxToolParameterMenu.SliderValue(-10f, 10f, "little", "lots", UI.UNITSUFFIXES.PERCENT, UI.SANDBOXTOOLS.SETTINGS.STRESS_ADDITIVE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.STRESS_ADDITIVE.NAME, delegate(float value)
+		public SandboxToolParameterMenu.SliderValue stressAdditiveSlider = new SandboxToolParameterMenu.SliderValue(-10f, 10f, "little", "lots", UI.UNITSUFFIXES.PERCENT, UI.SANDBOXTOOLS.SETTINGS.STRESS_ADDITIVE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.STRESS_ADDITIVE.NAME, delegate(float value)
 	{
 		SandboxToolParameterMenu.instance.settings.SetFloatSetting("SandbosTools.StressAdditive", value);
 	}, 0);
 
-	public SandboxToolParameterMenu.SliderValue moraleSlider = new SandboxToolParameterMenu.SliderValue(-25f, 25f, "little", "lots", UI.UNITSUFFIXES.UNITS, UI.SANDBOXTOOLS.SETTINGS.MORALE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.MORALE.NAME, delegate(float value)
+		public SandboxToolParameterMenu.SliderValue moraleSlider = new SandboxToolParameterMenu.SliderValue(-25f, 25f, "little", "lots", UI.UNITSUFFIXES.UNITS, UI.SANDBOXTOOLS.SETTINGS.MORALE.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.MORALE.NAME, delegate(float value)
 	{
 		SandboxToolParameterMenu.instance.settings.SetIntSetting("SandbosTools.MoraleAdjustment", Mathf.RoundToInt(value));
 	}, 0);
 
-	public SandboxToolParameterMenu.SelectorValue diseaseSelector;
+		public SandboxToolParameterMenu.SelectorValue diseaseSelector;
 
-	public SandboxToolParameterMenu.SliderValue diseaseCountSlider = new SandboxToolParameterMenu.SliderValue(0f, 10000f, "status_item_barren", "germ", UI.UNITSUFFIXES.DISEASE.UNITS, UI.SANDBOXTOOLS.SETTINGS.DISEASE_COUNT.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.DISEASE_COUNT.NAME, delegate(float value)
+		public SandboxToolParameterMenu.SliderValue diseaseCountSlider = new SandboxToolParameterMenu.SliderValue(0f, 10000f, "status_item_barren", "germ", UI.UNITSUFFIXES.DISEASE.UNITS, UI.SANDBOXTOOLS.SETTINGS.DISEASE_COUNT.TOOLTIP, UI.SANDBOXTOOLS.SETTINGS.DISEASE_COUNT.NAME, delegate(float value)
 	{
 		SandboxToolParameterMenu.instance.settings.SetIntSetting("SandboxTools.DiseaseCount", Mathf.RoundToInt(value));
 	}, 0);
 
-	public SandboxToolParameterMenu.SelectorValue entitySelector;
+		public SandboxToolParameterMenu.SelectorValue entitySelector;
 
-	public SandboxToolParameterMenu.SelectorValue storySelector;
+		public SandboxToolParameterMenu.SelectorValue storySelector;
 
-	public class SelectorValue
+		public class SelectorValue
 	{
-		public SelectorValue(object[] options, Action<object> onValueChanged, Func<object, string> getOptionName, Func<string, object, bool> filterOptionFunction, Func<object, global::Tuple<Sprite, Color>> getOptionSprite, string labelText, SandboxToolParameterMenu.SelectorValue.SearchFilter[] filters = null)
+				public SelectorValue(object[] options, Action<object> onValueChanged, Func<object, string> getOptionName, Func<string, object, bool> filterOptionFunction, Func<object, global::Tuple<Sprite, Color>> getOptionSprite, string labelText, SandboxToolParameterMenu.SelectorValue.SearchFilter[] filters = null)
 		{
 			this.options = options;
 			this.onValueChanged = onValueChanged;
@@ -842,38 +852,38 @@ public class SandboxToolParameterMenu : KScreen
 			this.labelText = labelText;
 		}
 
-		public bool runCurrentFilter(object obj)
+				public bool runCurrentFilter(object obj)
 		{
 			return this.currentFilter == null || this.currentFilter.condition(obj);
 		}
 
-		public GameObject row;
+				public GameObject row;
 
-		public List<KeyValuePair<object, GameObject>> optionButtons;
+				public List<KeyValuePair<object, GameObject>> optionButtons;
 
-		public KButton button;
+				public KButton button;
 
-		public object[] options;
+				public object[] options;
 
-		public Action<object> onValueChanged;
+				public Action<object> onValueChanged;
 
-		public Func<object, string> getOptionName;
+				public Func<object, string> getOptionName;
 
-		public Func<string, object, bool> filterOptionFunction;
+				public Func<string, object, bool> filterOptionFunction;
 
-		public Func<object, global::Tuple<Sprite, Color>> getOptionSprite;
+				public Func<object, global::Tuple<Sprite, Color>> getOptionSprite;
 
-		public SandboxToolParameterMenu.SelectorValue.SearchFilter[] filters;
+				public SandboxToolParameterMenu.SelectorValue.SearchFilter[] filters;
 
-		public List<SandboxToolParameterMenu.SelectorValue.SearchFilter> activeFilters = new List<SandboxToolParameterMenu.SelectorValue.SearchFilter>();
+				public List<SandboxToolParameterMenu.SelectorValue.SearchFilter> activeFilters = new List<SandboxToolParameterMenu.SelectorValue.SearchFilter>();
 
-		public SandboxToolParameterMenu.SelectorValue.SearchFilter currentFilter;
+				public SandboxToolParameterMenu.SelectorValue.SearchFilter currentFilter;
 
-		public string labelText;
+				public string labelText;
 
-		public class SearchFilter
+				public class SearchFilter
 		{
-			public SearchFilter(string Name, Func<object, bool> condition, SandboxToolParameterMenu.SelectorValue.SearchFilter parentFilter = null, global::Tuple<Sprite, Color> icon = null)
+						public SearchFilter(string Name, Func<object, bool> condition, SandboxToolParameterMenu.SelectorValue.SearchFilter parentFilter = null, global::Tuple<Sprite, Color> icon = null)
 			{
 				this.Name = Name;
 				this.condition = condition;
@@ -881,19 +891,19 @@ public class SandboxToolParameterMenu : KScreen
 				this.icon = icon;
 			}
 
-			public string Name;
+						public string Name;
 
-			public Func<object, bool> condition;
+						public Func<object, bool> condition;
 
-			public SandboxToolParameterMenu.SelectorValue.SearchFilter parentFilter;
+						public SandboxToolParameterMenu.SelectorValue.SearchFilter parentFilter;
 
-			public global::Tuple<Sprite, Color> icon;
+						public global::Tuple<Sprite, Color> icon;
 		}
 	}
 
-	public class SliderValue
+		public class SliderValue
 	{
-		public SliderValue(float slideMinValue, float slideMaxValue, string bottomSprite, string topSprite, string unitString, string tooltip, string labelText, Action<float> onValueChanged, int decimalPlaces = 0)
+				public SliderValue(float slideMinValue, float slideMaxValue, string bottomSprite, string topSprite, string unitString, string tooltip, string labelText, Action<float> onValueChanged, int decimalPlaces = 0)
 		{
 			this.slideMinValue = slideMinValue;
 			this.slideMaxValue = slideMaxValue;
@@ -908,7 +918,7 @@ public class SandboxToolParameterMenu : KScreen
 			this.clampValueHigh = slideMaxValue;
 		}
 
-		public void SetRange(float min, float max, bool resetCurrentValue = true)
+				public void SetRange(float min, float max, bool resetCurrentValue = true)
 		{
 			this.slideMinValue = min;
 			this.slideMaxValue = max;
@@ -923,7 +933,7 @@ public class SandboxToolParameterMenu : KScreen
 			}
 		}
 
-		public void SetValue(float value, bool runOnValueChanged = true)
+				public void SetValue(float value, bool runOnValueChanged = true)
 		{
 			value = Mathf.Clamp(value, this.clampValueLow, this.clampValueHigh);
 			this.slider.value = value;
@@ -935,37 +945,37 @@ public class SandboxToolParameterMenu : KScreen
 			this.RefreshDisplay();
 		}
 
-		public void RefreshDisplay()
+				public void RefreshDisplay()
 		{
 			this.inputField.SetDisplayValue(((this.roundToDecimalPlaces == 0) ? ((float)Mathf.RoundToInt(this.inputField.currentValue)) : this.inputField.currentValue).ToString());
 		}
 
-		public GameObject row;
+				public GameObject row;
 
-		public string bottomSprite;
+				public string bottomSprite;
 
-		public string topSprite;
+				public string topSprite;
 
-		public float slideMinValue;
+				public float slideMinValue;
 
-		public float slideMaxValue;
+				public float slideMaxValue;
 
-		public float clampValueLow;
+				public float clampValueLow;
 
-		public float clampValueHigh;
+				public float clampValueHigh;
 
-		public string unitString;
+				public string unitString;
 
-		public Action<float> onValueChanged;
+				public Action<float> onValueChanged;
 
-		public string tooltip;
+				public string tooltip;
 
-		public int roundToDecimalPlaces;
+				public int roundToDecimalPlaces;
 
-		public string labelText;
+				public string labelText;
 
-		public KSlider slider;
+				public KSlider slider;
 
-		public KNumberInputField inputField;
+				public KNumberInputField inputField;
 	}
 }

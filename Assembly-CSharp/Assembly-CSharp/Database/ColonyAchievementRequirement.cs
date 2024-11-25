@@ -2,16 +2,16 @@
 
 namespace Database
 {
-	public abstract class ColonyAchievementRequirement
+		public abstract class ColonyAchievementRequirement
 	{
-		public abstract bool Success();
+				public abstract bool Success();
 
-		public virtual bool Fail()
+				public virtual bool Fail()
 		{
 			return false;
 		}
 
-		public virtual string GetProgress(bool complete)
+				public virtual string GetProgress(bool complete)
 		{
 			return "";
 		}

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class ListWithEvents<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnumerable
 {
-		public int Count
+			public int Count
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class ListWithEvents<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnum
 		}
 	}
 
-		public bool IsReadOnly
+			public bool IsReadOnly
 	{
 		get
 		{
@@ -20,11 +20,11 @@ public class ListWithEvents<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnum
 		}
 	}
 
-			public event Action<T> onAdd;
+				public event Action<T> onAdd;
 
-			public event Action<T> onRemove;
+				public event Action<T> onRemove;
 
-	public T this[int index]
+		public T this[int index]
 	{
 		get
 		{
@@ -36,7 +36,7 @@ public class ListWithEvents<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnum
 		}
 	}
 
-	public void Add(T item)
+		public void Add(T item)
 	{
 		this.internalList.Add(item);
 		if (this.onAdd != null)
@@ -45,7 +45,7 @@ public class ListWithEvents<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnum
 		}
 	}
 
-	public void Insert(int index, T item)
+		public void Insert(int index, T item)
 	{
 		this.internalList.Insert(index, item);
 		if (this.onAdd != null)
@@ -54,7 +54,7 @@ public class ListWithEvents<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnum
 		}
 	}
 
-	public void RemoveAt(int index)
+		public void RemoveAt(int index)
 	{
 		T obj = this.internalList[index];
 		this.internalList.RemoveAt(index);
@@ -64,7 +64,7 @@ public class ListWithEvents<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnum
 		}
 	}
 
-	public bool Remove(T item)
+		public bool Remove(T item)
 	{
 		bool flag = this.internalList.Remove(item);
 		if (flag && this.onRemove != null)
@@ -74,7 +74,7 @@ public class ListWithEvents<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnum
 		return flag;
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		while (this.Count > 0)
 		{
@@ -82,30 +82,30 @@ public class ListWithEvents<T> : IList<T>, ICollection<T>, IEnumerable<T>, IEnum
 		}
 	}
 
-	public int IndexOf(T item)
+		public int IndexOf(T item)
 	{
 		return this.internalList.IndexOf(item);
 	}
 
-	public void CopyTo(T[] array, int arrayIndex)
+		public void CopyTo(T[] array, int arrayIndex)
 	{
 		this.internalList.CopyTo(array, arrayIndex);
 	}
 
-	public bool Contains(T item)
+		public bool Contains(T item)
 	{
 		return this.internalList.Contains(item);
 	}
 
-	public IEnumerator<T> GetEnumerator()
+		public IEnumerator<T> GetEnumerator()
 	{
 		return this.internalList.GetEnumerator();
 	}
 
-	IEnumerator IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 	{
 		return this.internalList.GetEnumerator();
 	}
 
-	private List<T> internalList = new List<T>();
+		private List<T> internalList = new List<T>();
 }

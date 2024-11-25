@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/DesalinatorWorkableEmpty")]
 public class DesalinatorWorkableEmpty : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workerStatusItem = Db.Get().DuplicantStatusItems.Cleaning;
@@ -29,20 +29,20 @@ public class DesalinatorWorkableEmpty : Workable
 		this.synchronizeAnims = false;
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.timesCleaned++;
 		base.OnCompleteWork(worker);
 	}
 
-	[Serialize]
+		[Serialize]
 	public int timesCleaned;
 
-	private static readonly HashedString[] WORK_ANIMS = new HashedString[]
+		private static readonly HashedString[] WORK_ANIMS = new HashedString[]
 	{
 		"salt_pre",
 		"salt_loop"
 	};
 
-	private static readonly HashedString PST_ANIM = new HashedString("salt_pst");
+		private static readonly HashedString PST_ANIM = new HashedString("salt_pst");
 }

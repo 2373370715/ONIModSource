@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PriorityScreen : KScreen
 {
-	public void InstantiateButtons(Action<PrioritySetting> on_click, bool playSelectionSound = true)
+		public void InstantiateButtons(Action<PrioritySetting> on_click, bool playSelectionSound = true)
 	{
 		this.onClick = on_click;
 		for (int i = 1; i <= 9; i++)
@@ -34,7 +34,7 @@ public class PriorityScreen : KScreen
 		this.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.basic, 5), false);
 	}
 
-	private void OnClick(PrioritySetting priority)
+		private void OnClick(PrioritySetting priority)
 	{
 		if (this.onClick != null)
 		{
@@ -42,22 +42,22 @@ public class PriorityScreen : KScreen
 		}
 	}
 
-	public void ShowDiagram(bool show)
+		public void ShowDiagram(bool show)
 	{
 		this.diagram.SetActive(show);
 	}
 
-	public void ResetPriority()
+		public void ResetPriority()
 	{
 		this.SetScreenPriority(new PrioritySetting(PriorityScreen.PriorityClass.basic, 5), false);
 	}
 
-	public void PriorityButtonClicked()
+		public void PriorityButtonClicked()
 	{
 		ManagementMenu.Instance.TogglePriorities();
 	}
 
-	private void RefreshButton(PriorityButton b, PrioritySetting priority, bool play_sound)
+		private void RefreshButton(PriorityButton b, PrioritySetting priority, bool play_sound)
 	{
 		if (b.priority == priority)
 		{
@@ -75,7 +75,7 @@ public class PriorityScreen : KScreen
 		}
 	}
 
-	public void SetScreenPriority(PrioritySetting priority, bool play_sound = false)
+		public void SetScreenPriority(PrioritySetting priority, bool play_sound = false)
 	{
 		if (this.lastSelectedPriority == priority)
 		{
@@ -99,12 +99,12 @@ public class PriorityScreen : KScreen
 		this.RefreshButton(this.button_emergency, this.lastSelectedPriority, play_sound);
 	}
 
-	public PrioritySetting GetLastSelectedPriority()
+		public PrioritySetting GetLastSelectedPriority()
 	{
 		return this.lastSelectedPriority;
 	}
 
-	public static void PlayPriorityConfirmSound(PrioritySetting priority)
+		public static void PlayPriorityConfirmSound(PrioritySetting priority)
 	{
 		EventInstance instance = KFMOD.BeginOneShot(GlobalAssets.GetSound("Priority_Tool_Confirm", false), Vector3.zero, 1f);
 		if (instance.isValid())
@@ -124,44 +124,44 @@ public class PriorityScreen : KScreen
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	protected PriorityButton buttonPrefab_basic;
 
-	[SerializeField]
+		[SerializeField]
 	protected GameObject EmergencyContainer;
 
-	[SerializeField]
+		[SerializeField]
 	protected PriorityButton button_emergency;
 
-	[SerializeField]
+		[SerializeField]
 	protected GameObject PriorityMenuContainer;
 
-	[SerializeField]
+		[SerializeField]
 	protected KButton button_priorityMenu;
 
-	[SerializeField]
+		[SerializeField]
 	protected KToggle button_toggleHigh;
 
-	[SerializeField]
+		[SerializeField]
 	protected GameObject diagram;
 
-	protected List<PriorityButton> buttons_basic = new List<PriorityButton>();
+		protected List<PriorityButton> buttons_basic = new List<PriorityButton>();
 
-	protected List<PriorityButton> buttons_emergency = new List<PriorityButton>();
+		protected List<PriorityButton> buttons_emergency = new List<PriorityButton>();
 
-	private PrioritySetting priority;
+		private PrioritySetting priority;
 
-	private PrioritySetting lastSelectedPriority = new PrioritySetting(PriorityScreen.PriorityClass.basic, -1);
+		private PrioritySetting lastSelectedPriority = new PrioritySetting(PriorityScreen.PriorityClass.basic, -1);
 
-	private Action<PrioritySetting> onClick;
+		private Action<PrioritySetting> onClick;
 
-	public enum PriorityClass
+		public enum PriorityClass
 	{
-		idle = -1,
-		basic,
-		high,
-		personalNeeds,
-		topPriority,
-		compulsory
+				idle = -1,
+				basic,
+				high,
+				personalNeeds,
+				topPriority,
+				compulsory
 	}
 }

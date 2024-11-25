@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 public class ClosestEdibleSensor : Sensor
 {
-	public ClosestEdibleSensor(Sensors sensors) : base(sensors)
+		public ClosestEdibleSensor(Sensors sensors) : base(sensors)
 	{
 	}
 
-	public override void Update()
+		public override void Update()
 	{
 		HashSet<Tag> forbiddenTagSet = base.GetComponent<ConsumableConsumer>().forbiddenTagSet;
-		Pickupable pickupable = Game.Instance.fetchManager.FindEdibleFetchTarget(base.GetComponent<Storage>(), forbiddenTagSet, GameTags.Edible);
+		Pickupable pickupable = Game.Instance.fetchManager.FindEdibleFetchTarget(base.GetComponent<Storage>(), forbiddenTagSet, ClosestEdibleSensor.requiredSearchTags);
 		bool flag = this.edibleInReachButNotPermitted;
 		Edible x = null;
 		bool flag2 = false;
@@ -22,7 +22,7 @@ public class ClosestEdibleSensor : Sensor
 		}
 		else
 		{
-			flag = (Game.Instance.fetchManager.FindEdibleFetchTarget(base.GetComponent<Storage>(), new HashSet<Tag>(), GameTags.Edible) != null);
+			flag = (Game.Instance.fetchManager.FindEdibleFetchTarget(base.GetComponent<Storage>(), new HashSet<Tag>(), ClosestEdibleSensor.requiredSearchTags) != null);
 		}
 		if (x != this.edible || this.hasEdible != flag2)
 		{
@@ -33,14 +33,19 @@ public class ClosestEdibleSensor : Sensor
 		}
 	}
 
-	public Edible GetEdible()
+		public Edible GetEdible()
 	{
 		return this.edible;
 	}
 
-	private Edible edible;
+		private Edible edible;
 
-	private bool hasEdible;
+		private bool hasEdible;
 
-	public bool edibleInReachButNotPermitted;
+		public bool edibleInReachButNotPermitted;
+
+		public static Tag[] requiredSearchTags = new Tag[]
+	{
+		GameTags.Edible
+	};
 }

@@ -4,7 +4,7 @@ using KSerialization;
 
 public class CometDetector : GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.off;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -54,45 +54,45 @@ public class CometDetector : GameStateMachine<CometDetector, CometDetector.Insta
 		this.on.working.pst.PlayAnim("detect_pst").OnAnimQueueComplete(this.on.loop);
 	}
 
-	public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State off;
+		public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State off;
 
-	public CometDetector.OnStates on;
+		public CometDetector.OnStates on;
 
-	public StateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.BoolParameter lastIsTargetDetected;
+		public StateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.BoolParameter lastIsTargetDetected;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public class OnStates : GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State
+		public class OnStates : GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State
 	{
-		public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State pre;
+				public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State pre;
 
-		public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State loop;
+				public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State loop;
 
-		public CometDetector.WorkingStates working;
+				public CometDetector.WorkingStates working;
 
-		public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State pst;
+				public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State pst;
 	}
 
-	public class WorkingStates : GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State
+		public class WorkingStates : GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State
 	{
-		public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State pre;
+				public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State pre;
 
-		public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State loop;
+				public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State loop;
 
-		public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State pst;
+				public GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.State pst;
 	}
 
-	public new class Instance : GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.GameInstance
+		public new class Instance : GameStateMachine<CometDetector, CometDetector.Instance, IStateMachineTarget, CometDetector.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, CometDetector.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, CometDetector.Def def) : base(master, def)
 		{
 			this.detectorNetworkDef = new DetectorNetwork.Def();
 			this.targetCraft = new Ref<LaunchConditionManager>();
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			if (this.detectorNetwork == null)
 			{
@@ -102,13 +102,13 @@ public class CometDetector : GameStateMachine<CometDetector, CometDetector.Insta
 			base.StartSM();
 		}
 
-		public override void StopSM(string reason)
+				public override void StopSM(string reason)
 		{
 			base.StopSM(reason);
 			this.detectorNetwork.StopSM(reason);
 		}
 
-		public void UpdateDetectionState(bool currentDetection, bool expectedDetectionForState)
+				public void UpdateDetectionState(bool currentDetection, bool expectedDetectionForState)
 		{
 			KPrefabID component = base.GetComponent<KPrefabID>();
 			if (currentDetection)
@@ -125,7 +125,7 @@ public class CometDetector : GameStateMachine<CometDetector, CometDetector.Insta
 			}
 		}
 
-		public void ScanSky(bool expectedDetectionForState)
+				public void ScanSky(bool expectedDetectionForState)
 		{
 			LaunchConditionManager launchConditionManager = this.targetCraft.Get();
 			Option<SpaceScannerTarget> option;
@@ -146,33 +146,33 @@ public class CometDetector : GameStateMachine<CometDetector, CometDetector.Insta
 			this.UpdateDetectionState(flag, expectedDetectionForState);
 		}
 
-		public void SetLogicSignal(bool on)
+				public void SetLogicSignal(bool on)
 		{
 			base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, on ? 1 : 0);
 		}
 
-		public void SetTargetCraft(LaunchConditionManager target)
+				public void SetTargetCraft(LaunchConditionManager target)
 		{
 			this.targetCraft.Set(target);
 		}
 
-		public LaunchConditionManager GetTargetCraft()
+				public LaunchConditionManager GetTargetCraft()
 		{
 			return this.targetCraft.Get();
 		}
 
-		public bool ShowWorkingStatus;
+				public bool ShowWorkingStatus;
 
-		[Serialize]
+				[Serialize]
 		private Ref<LaunchConditionManager> targetCraft;
 
-		[NonSerialized]
+				[NonSerialized]
 		public float remainingSecondsToFreezeLogicSignal;
 
-		private DetectorNetwork.Def detectorNetworkDef;
+				private DetectorNetwork.Def detectorNetworkDef;
 
-		private DetectorNetwork.Instance detectorNetwork;
+				private DetectorNetwork.Instance detectorNetwork;
 
-		private List<GameplayEventInstance> meteorShowers = new List<GameplayEventInstance>();
+				private List<GameplayEventInstance> meteorShowers = new List<GameplayEventInstance>();
 	}
 }

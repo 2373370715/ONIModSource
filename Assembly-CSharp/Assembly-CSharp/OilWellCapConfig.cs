@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OilWellCapConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "OilWellCap";
 		int width = 4;
@@ -35,7 +35,7 @@ public class OilWellCapConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		BuildingTemplates.CreateDefaultStorage(go, false).showInUI = true;
@@ -62,26 +62,26 @@ public class OilWellCapConfig : IBuildingConfig
 		oilWellCap.releaseGasRate = 0.44444448f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 	}
 
-	private const float WATER_INTAKE_RATE = 1f;
+		private const float WATER_INTAKE_RATE = 1f;
 
-	private const float WATER_TO_OIL_RATIO = 3.3333333f;
+		private const float WATER_TO_OIL_RATIO = 3.3333333f;
 
-	private const float LIQUID_STORAGE = 10f;
+		private const float LIQUID_STORAGE = 10f;
 
-	private const float GAS_RATE = 0.033333335f;
+		private const float GAS_RATE = 0.033333335f;
 
-	private const float OVERPRESSURE_TIME = 2400f;
+		private const float OVERPRESSURE_TIME = 2400f;
 
-	private const float PRESSURE_RELEASE_TIME = 180f;
+		private const float PRESSURE_RELEASE_TIME = 180f;
 
-	private const float PRESSURE_RELEASE_RATE = 0.44444448f;
+		private const float PRESSURE_RELEASE_RATE = 0.44444448f;
 
-	private static readonly Tag INPUT_WATER_TAG = SimHashes.Water.CreateTag();
+		private static readonly Tag INPUT_WATER_TAG = SimHashes.Water.CreateTag();
 
-	public const string ID = "OilWellCap";
+		public const string ID = "OilWellCap";
 }

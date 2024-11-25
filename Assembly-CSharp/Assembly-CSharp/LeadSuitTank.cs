@@ -7,34 +7,34 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LeadSuitTank : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LeadSuitTank>(-1617557748, LeadSuitTank.OnEquippedDelegate);
 		base.Subscribe<LeadSuitTank>(-170173755, LeadSuitTank.OnUnequippedDelegate);
 	}
 
-	public float PercentFull()
+		public float PercentFull()
 	{
 		return this.batteryCharge;
 	}
 
-	public bool IsEmpty()
+		public bool IsEmpty()
 	{
 		return this.batteryCharge <= 0f;
 	}
 
-	public bool IsFull()
+		public bool IsFull()
 	{
 		return this.PercentFull() >= 1f;
 	}
 
-	public bool NeedsRecharging()
+		public bool NeedsRecharging()
 	{
 		return this.PercentFull() <= 0.25f;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		string text = string.Format(UI.UISIDESCREENS.FABRICATORSIDESCREEN.EFFECTS.LEADSUIT_BATTERY, GameUtil.GetFormattedPercent(this.PercentFull() * 100f, GameUtil.TimeSlice.None));
@@ -42,7 +42,7 @@ public class LeadSuitTank : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	private void OnEquipped(object data)
+		private void OnEquipped(object data)
 	{
 		Equipment equipment = (Equipment)data;
 		NameDisplayScreen.Instance.SetSuitBatteryDisplay(equipment.GetComponent<MinionAssignablesProxy>().GetTargetGameObject(), new Func<float>(this.PercentFull), true);
@@ -54,7 +54,7 @@ public class LeadSuitTank : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	private void OnUnequipped(object data)
+		private void OnUnequipped(object data)
 	{
 		Equipment equipment = (Equipment)data;
 		if (!equipment.destroyed)
@@ -70,25 +70,25 @@ public class LeadSuitTank : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	public float batteryCharge = 1f;
 
-	public const float REFILL_PERCENT = 0.25f;
+		public const float REFILL_PERCENT = 0.25f;
 
-	public float batteryDuration = 200f;
+		public float batteryDuration = 200f;
 
-	public float coolingOperationalTemperature = 333.15f;
+		public float coolingOperationalTemperature = 333.15f;
 
-	public Tag coolantTag;
+		public Tag coolantTag;
 
-	private LeadSuitMonitor.Instance leadSuitMonitor;
+		private LeadSuitMonitor.Instance leadSuitMonitor;
 
-	private static readonly EventSystem.IntraObjectHandler<LeadSuitTank> OnEquippedDelegate = new EventSystem.IntraObjectHandler<LeadSuitTank>(delegate(LeadSuitTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LeadSuitTank> OnEquippedDelegate = new EventSystem.IntraObjectHandler<LeadSuitTank>(delegate(LeadSuitTank component, object data)
 	{
 		component.OnEquipped(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<LeadSuitTank> OnUnequippedDelegate = new EventSystem.IntraObjectHandler<LeadSuitTank>(delegate(LeadSuitTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LeadSuitTank> OnUnequippedDelegate = new EventSystem.IntraObjectHandler<LeadSuitTank>(delegate(LeadSuitTank component, object data)
 	{
 		component.OnUnequipped(data);
 	});

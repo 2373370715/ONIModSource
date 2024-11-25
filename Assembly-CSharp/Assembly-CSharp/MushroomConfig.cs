@@ -5,26 +5,26 @@ using UnityEngine;
 
 public class MushroomConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
-		return EntityTemplates.ExtendEntityToFood(EntityTemplates.CreateLooseEntity(MushroomConfig.ID, ITEMS.FOOD.MUSHROOM.NAME, ITEMS.FOOD.MUSHROOM.DESC, 1f, false, Assets.GetAnim("funguscap_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.77f, 0.48f, true, 0, SimHashes.Creature, null), FOOD.FOOD_TYPES.MUSHROOM);
+		return EntityTemplates.ExtendEntityToFood(EntityTemplates.CreateLooseEntity(MushroomConfig.ID, STRINGS.ITEMS.FOOD.MUSHROOM.NAME, STRINGS.ITEMS.FOOD.MUSHROOM.DESC, 1f, false, Assets.GetAnim("funguscap_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.77f, 0.48f, true, 0, SimHashes.Creature, null), FOOD.FOOD_TYPES.MUSHROOM);
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		inst.Subscribe(-10536414, MushroomConfig.OnEatCompleteDelegate);
 	}
 
-	private static void OnEatComplete(Edible edible)
+		private static void OnEatComplete(Edible edible)
 	{
 		if (edible != null)
 		{
@@ -57,11 +57,11 @@ public class MushroomConfig : IEntityConfig
 		}
 	}
 
-	public static float SEEDS_PER_FRUIT_CHANCE = 0.05f;
+		public static float SEEDS_PER_FRUIT_CHANCE = 0.05f;
 
-	public static string ID = "Mushroom";
+		public static string ID = "Mushroom";
 
-	private static readonly EventSystem.IntraObjectHandler<Edible> OnEatCompleteDelegate = new EventSystem.IntraObjectHandler<Edible>(delegate(Edible component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Edible> OnEatCompleteDelegate = new EventSystem.IntraObjectHandler<Edible>(delegate(Edible component, object data)
 	{
 		MushroomConfig.OnEatComplete(component);
 	});

@@ -5,19 +5,19 @@ using UnityEngine.UI;
 
 public class SpriteListDialogScreen : KModalScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.gameObject.SetActive(false);
 		this.buttons = new List<SpriteListDialogScreen.Button>();
 	}
 
-	public override bool IsModal()
+		public override bool IsModal()
 	{
 		return true;
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape))
 		{
@@ -27,7 +27,7 @@ public class SpriteListDialogScreen : KModalScreen
 		base.OnKeyDown(e);
 	}
 
-	public void AddOption(string text, System.Action action)
+		public void AddOption(string text, System.Action action)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.buttonPrefab, this.buttonPanel, true);
 		this.buttons.Add(new SpriteListDialogScreen.Button
@@ -38,7 +38,7 @@ public class SpriteListDialogScreen : KModalScreen
 		});
 	}
 
-	public void AddListRow(Sprite sprite, string text, float width = -1f, float height = -1f)
+		public void AddListRow(Sprite sprite, string text, float width = -1f, float height = -1f)
 	{
 		GameObject gameObject = Util.KInstantiateUI(this.listPrefab, this.listPanel, true);
 		gameObject.GetComponentInChildren<LocText>().text = text;
@@ -65,7 +65,7 @@ public class SpriteListDialogScreen : KModalScreen
 		component2.aspectRatio = aspectRatio;
 	}
 
-	public void PopupConfirmDialog(string text, string title_text = null)
+		public void PopupConfirmDialog(string text, string title_text = null)
 	{
 		foreach (SpriteListDialogScreen.Button button in this.buttons)
 		{
@@ -79,7 +79,7 @@ public class SpriteListDialogScreen : KModalScreen
 		this.popupMessage.text = text;
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		if (this.onDeactivateCB != null)
 		{
@@ -88,34 +88,34 @@ public class SpriteListDialogScreen : KModalScreen
 		base.OnDeactivate();
 	}
 
-	public System.Action onDeactivateCB;
+		public System.Action onDeactivateCB;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject buttonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject buttonPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText titleText;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText popupMessage;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject listPanel;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject listPrefab;
 
-	private List<SpriteListDialogScreen.Button> buttons;
+		private List<SpriteListDialogScreen.Button> buttons;
 
-	private struct Button
+		private struct Button
 	{
-		public System.Action action;
+				public System.Action action;
 
-		public GameObject gameObject;
+				public GameObject gameObject;
 
-		public string label;
+				public string label;
 	}
 }

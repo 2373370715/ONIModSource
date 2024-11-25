@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/HarvestableOverlayWidget")]
 public class HarvestableOverlayWidget : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.condition_sprites.Add(WiltCondition.Condition.AtmosphereElement, this.sprite_atmosphere);
@@ -36,7 +36,7 @@ public class HarvestableOverlayWidget : KMonoBehaviour
 		}
 	}
 
-	public void Refresh(HarvestDesignatable target_harvestable)
+		public void Refresh(HarvestDesignatable target_harvestable)
 	{
 		Image image = this.bar.GetComponent<HierarchyReferences>().GetReference("Fill") as Image;
 		AmountInstance amountInstance = Db.Get().Amounts.Maturity.Lookup(target_harvestable);
@@ -96,52 +96,52 @@ public class HarvestableOverlayWidget : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject vertical_container;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject bar;
 
-	private const int icons_per_row = 2;
+		private const int icons_per_row = 2;
 
-	private const float bar_fill_range = 19f;
+		private const float bar_fill_range = 19f;
 
-	private const float bar_fill_offset = 3f;
+		private const float bar_fill_offset = 3f;
 
-	private static Color growing_color = new Color(0.9843137f, 0.6901961f, 0.23137255f, 1f);
+		private static Color growing_color = new Color(0.9843137f, 0.6901961f, 0.23137255f, 1f);
 
-	private static Color wilting_color = new Color(0.5647059f, 0.5647059f, 0.5647059f, 1f);
+		private static Color wilting_color = new Color(0.5647059f, 0.5647059f, 0.5647059f, 1f);
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite sprite_liquid;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite sprite_atmosphere;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite sprite_pressure;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite sprite_temperature;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite sprite_resource;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite sprite_light;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite sprite_receptacle;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject horizontal_container_prefab;
 
-	private GameObject[] horizontal_containers = new GameObject[6];
+		private GameObject[] horizontal_containers = new GameObject[6];
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject icon_gameobject_prefab;
 
-	private Dictionary<WiltCondition.Condition, GameObject> condition_icons = new Dictionary<WiltCondition.Condition, GameObject>();
+		private Dictionary<WiltCondition.Condition, GameObject> condition_icons = new Dictionary<WiltCondition.Condition, GameObject>();
 
-	private Dictionary<WiltCondition.Condition, Sprite> condition_sprites = new Dictionary<WiltCondition.Condition, Sprite>();
+		private Dictionary<WiltCondition.Condition, Sprite> condition_sprites = new Dictionary<WiltCondition.Condition, Sprite>();
 }

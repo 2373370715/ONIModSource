@@ -7,12 +7,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/DoctorStation")]
 public class DoctorStation : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Prioritizable.AddRef(base.gameObject);
@@ -24,7 +24,7 @@ public class DoctorStation : Workable
 		base.Subscribe<DoctorStation>(-1697596308, DoctorStation.OnStorageChangeDelegate);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Prioritizable.RemoveRef(base.gameObject);
 		if (this.smi != null)
@@ -35,7 +35,7 @@ public class DoctorStation : Workable
 		base.OnCleanUp();
 	}
 
-	private void OnStorageChange(object data = null)
+		private void OnStorageChange(object data = null)
 	{
 		this.treatments_available.Clear();
 		foreach (GameObject gameObject in this.storage.items)
@@ -54,7 +54,7 @@ public class DoctorStation : Workable
 		this.smi.sm.hasSupplies.Set(value, this.smi, false);
 	}
 
-	private void AddTreatment(string id, Tag tag)
+		private void AddTreatment(string id, Tag tag)
 	{
 		if (!this.treatments_available.ContainsKey(id))
 		{
@@ -62,29 +62,29 @@ public class DoctorStation : Workable
 		}
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		this.smi.sm.hasPatient.Set(true, this.smi, false);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		this.smi.sm.hasPatient.Set(false, this.smi, false);
 	}
 
-	public override bool InstantlyFinish(Worker worker)
+		public override bool InstantlyFinish(WorkerBase worker)
 	{
 		return false;
 	}
 
-	public void SetHasDoctor(bool has)
+		public void SetHasDoctor(bool has)
 	{
 		this.smi.sm.hasDoctor.Set(has, this.smi, false);
 	}
 
-	public void CompleteDoctoring()
+		public void CompleteDoctoring()
 	{
 		if (!base.worker)
 		{
@@ -93,7 +93,7 @@ public class DoctorStation : Workable
 		this.CompleteDoctoring(base.worker.gameObject);
 	}
 
-	private void CompleteDoctoring(GameObject target)
+		private void CompleteDoctoring(GameObject target)
 	{
 		Sicknesses sicknesses = target.GetSicknesses();
 		if (sicknesses != null)
@@ -121,7 +121,7 @@ public class DoctorStation : Workable
 		}
 	}
 
-	public bool IsDoctorAvailable(GameObject target)
+		public bool IsDoctorAvailable(GameObject target)
 	{
 		if (!string.IsNullOrEmpty(this.doctor_workable.requiredSkillPerk))
 		{
@@ -134,7 +134,7 @@ public class DoctorStation : Workable
 		return true;
 	}
 
-	public bool IsTreatmentAvailable(GameObject target)
+		public bool IsTreatmentAvailable(GameObject target)
 	{
 		Sicknesses sicknesses = target.GetSicknesses();
 		if (sicknesses != null)
@@ -152,24 +152,24 @@ public class DoctorStation : Workable
 		return false;
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<DoctorStation> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<DoctorStation>(delegate(DoctorStation component, object data)
+		private static readonly EventSystem.IntraObjectHandler<DoctorStation> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<DoctorStation>(delegate(DoctorStation component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Storage storage;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Operational operational;
 
-	private DoctorStationDoctorWorkable doctor_workable;
+		private DoctorStationDoctorWorkable doctor_workable;
 
-	private Dictionary<HashedString, Tag> treatments_available = new Dictionary<HashedString, Tag>();
+		private Dictionary<HashedString, Tag> treatments_available = new Dictionary<HashedString, Tag>();
 
-	private DoctorStation.StatesInstance smi;
+		private DoctorStation.StatesInstance smi;
 
-	public static readonly Chore.Precondition TreatmentAvailable = new Chore.Precondition
+		public static readonly Chore.Precondition TreatmentAvailable = new Chore.Precondition
 	{
 		id = "TreatmentAvailable",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.TREATMENT_AVAILABLE,
@@ -179,7 +179,7 @@ public class DoctorStation : Workable
 		}
 	};
 
-	public static readonly Chore.Precondition DoctorAvailable = new Chore.Precondition
+		public static readonly Chore.Precondition DoctorAvailable = new Chore.Precondition
 	{
 		id = "DoctorAvailable",
 		description = DUPLICANTS.CHORES.PRECONDITIONS.DOCTOR_AVAILABLE,
@@ -189,9 +189,9 @@ public class DoctorStation : Workable
 		}
 	};
 
-	public class States : GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation>
+		public class States : GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.Never;
 			default_state = this.unoperational;
@@ -211,7 +211,7 @@ public class DoctorStation : Workable
 			});
 		}
 
-		private Chore CreatePatientChore(DoctorStation.StatesInstance smi)
+				private Chore CreatePatientChore(DoctorStation.StatesInstance smi)
 		{
 			WorkChore<DoctorStation> workChore = new WorkChore<DoctorStation>(Db.Get().ChoreTypes.GetDoctored, smi.master, null, true, null, null, null, false, null, false, true, null, false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, true);
 			workChore.AddPrecondition(DoctorStation.TreatmentAvailable, smi.master);
@@ -219,47 +219,47 @@ public class DoctorStation : Workable
 			return workChore;
 		}
 
-		private Chore CreateDoctorChore(DoctorStation.StatesInstance smi)
+				private Chore CreateDoctorChore(DoctorStation.StatesInstance smi)
 		{
 			DoctorStationDoctorWorkable component = smi.master.GetComponent<DoctorStationDoctorWorkable>();
 			return new WorkChore<DoctorStationDoctorWorkable>(Db.Get().ChoreTypes.Doctor, component, null, true, null, null, null, false, null, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
 		}
 
-		public GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State unoperational;
+				public GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State unoperational;
 
-		public DoctorStation.States.OperationalStates operational;
+				public DoctorStation.States.OperationalStates operational;
 
-		public StateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.BoolParameter hasSupplies;
+				public StateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.BoolParameter hasSupplies;
 
-		public StateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.BoolParameter hasPatient;
+				public StateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.BoolParameter hasPatient;
 
-		public StateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.BoolParameter hasDoctor;
+				public StateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.BoolParameter hasDoctor;
 
-		public class OperationalStates : GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State
+				public class OperationalStates : GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State
 		{
-			public GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State not_ready;
+						public GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State not_ready;
 
-			public DoctorStation.States.ReadyStates ready;
+						public DoctorStation.States.ReadyStates ready;
 		}
 
-		public class ReadyStates : GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State
+				public class ReadyStates : GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State
 		{
-			public GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State idle;
+						public GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State idle;
 
-			public DoctorStation.States.PatientStates has_patient;
+						public DoctorStation.States.PatientStates has_patient;
 		}
 
-		public class PatientStates : GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State
+				public class PatientStates : GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State
 		{
-			public GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State waiting;
+						public GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State waiting;
 
-			public GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State being_treated;
+						public GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.State being_treated;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.GameInstance
+		public class StatesInstance : GameStateMachine<DoctorStation.States, DoctorStation.StatesInstance, DoctorStation, object>.GameInstance
 	{
-		public StatesInstance(DoctorStation master) : base(master)
+				public StatesInstance(DoctorStation master) : base(master)
 		{
 		}
 	}

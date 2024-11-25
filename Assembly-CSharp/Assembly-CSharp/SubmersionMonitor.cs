@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SubmersionMonitor")]
 public class SubmersionMonitor : KMonoBehaviour, IGameObjectEffectDescriptor, IWiltCause, ISim1000ms
 {
-		public bool Dry
+			public bool Dry
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class SubmersionMonitor : KMonoBehaviour, IGameObjectEffectDescriptor, IW
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.OnMove();
@@ -22,7 +22,7 @@ public class SubmersionMonitor : KMonoBehaviour, IGameObjectEffectDescriptor, IW
 		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, new System.Action(this.OnMove), "SubmersionMonitor.OnSpawn");
 	}
 
-	private void OnMove()
+		private void OnMove()
 	{
 		this.position = Grid.PosToCell(base.gameObject);
 		if (this.partitionerEntry.IsValid())
@@ -38,28 +38,28 @@ public class SubmersionMonitor : KMonoBehaviour, IGameObjectEffectDescriptor, IW
 		this.CheckDry();
 	}
 
-	private void OnDrawGizmosSelected()
+		private void OnDrawGizmosSelected()
 	{
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, new System.Action(this.OnMove));
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		base.OnCleanUp();
 	}
 
-	public void Configure(float _maxStamina, float _staminaRegenRate, float _cellLiquidThreshold = 0.95f)
+		public void Configure(float _maxStamina, float _staminaRegenRate, float _cellLiquidThreshold = 0.95f)
 	{
 		this.cellLiquidThreshold = _cellLiquidThreshold;
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		this.CheckDry();
 	}
 
-	private void CheckDry()
+		private void CheckDry()
 	{
 		if (!this.IsCellSafe())
 		{
@@ -77,18 +77,18 @@ public class SubmersionMonitor : KMonoBehaviour, IGameObjectEffectDescriptor, IW
 		}
 	}
 
-	public bool IsCellSafe()
+		public bool IsCellSafe()
 	{
 		int cell = Grid.PosToCell(base.gameObject);
 		return Grid.IsValidCell(cell) && Grid.IsSubstantialLiquid(cell, this.cellLiquidThreshold);
 	}
 
-	private void OnLiquidChanged(object data)
+		private void OnLiquidChanged(object data)
 	{
 		this.CheckDry();
 	}
 
-		WiltCondition.Condition[] IWiltCause.Conditions
+			WiltCondition.Condition[] IWiltCause.Conditions
 	{
 		get
 		{
@@ -99,7 +99,7 @@ public class SubmersionMonitor : KMonoBehaviour, IGameObjectEffectDescriptor, IW
 		}
 	}
 
-		public string WiltStateString
+			public string WiltStateString
 	{
 		get
 		{
@@ -111,11 +111,11 @@ public class SubmersionMonitor : KMonoBehaviour, IGameObjectEffectDescriptor, IW
 		}
 	}
 
-	public void SetIncapacitated(bool state)
+		public void SetIncapacitated(bool state)
 	{
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return new List<Descriptor>
 		{
@@ -123,13 +123,13 @@ public class SubmersionMonitor : KMonoBehaviour, IGameObjectEffectDescriptor, IW
 		};
 	}
 
-	private int position;
+		private int position;
 
-	private bool dry;
+		private bool dry;
 
-	protected float cellLiquidThreshold = 0.2f;
+		protected float cellLiquidThreshold = 0.2f;
 
-	private Extents extents;
+		private Extents extents;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 }

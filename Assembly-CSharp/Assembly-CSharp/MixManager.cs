@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MixManager : MonoBehaviour
 {
-	private void Update()
+		private void Update()
 	{
 		if (AudioMixer.instance != null && AudioMixer.instance.persistentSnapshotsActive)
 		{
@@ -12,7 +12,7 @@ public class MixManager : MonoBehaviour
 		}
 	}
 
-	private void OnApplicationFocus(bool hasFocus)
+		private void OnApplicationFocus(bool hasFocus)
 	{
 		if (AudioMixer.instance == null || AudioMixerSnapshots.Get() == null)
 		{

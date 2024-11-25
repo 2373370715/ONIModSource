@@ -3,7 +3,7 @@ using KSerialization;
 
 public class EquippableFacade : KMonoBehaviour
 {
-	public static void AddFacadeToEquippable(Equippable equippable, string facadeID)
+		public static void AddFacadeToEquippable(Equippable equippable, string facadeID)
 	{
 		EquippableFacade equippableFacade = equippable.gameObject.AddOrGet<EquippableFacade>();
 		equippableFacade.FacadeID = facadeID;
@@ -11,14 +11,14 @@ public class EquippableFacade : KMonoBehaviour
 		equippableFacade.ApplyAnimOverride();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.OverrideName();
 		this.ApplyAnimOverride();
 	}
 
-			public string FacadeID
+				public string FacadeID
 	{
 		get
 		{
@@ -31,7 +31,7 @@ public class EquippableFacade : KMonoBehaviour
 		}
 	}
 
-	public void ApplyAnimOverride()
+		public void ApplyAnimOverride()
 	{
 		if (this.FacadeID.IsNullOrWhiteSpace())
 		{
@@ -43,12 +43,12 @@ public class EquippableFacade : KMonoBehaviour
 		});
 	}
 
-	private void OverrideName()
+		private void OverrideName()
 	{
 		base.GetComponent<KSelectable>().SetName(EquippableFacade.GetNameOverride(base.GetComponent<Equippable>().def.Id, this.FacadeID));
 	}
 
-	public static string GetNameOverride(string defID, string facadeID)
+		public static string GetNameOverride(string defID, string facadeID)
 	{
 		if (facadeID.IsNullOrWhiteSpace())
 		{
@@ -57,9 +57,9 @@ public class EquippableFacade : KMonoBehaviour
 		return Db.GetEquippableFacades().Get(facadeID).Name;
 	}
 
-	[Serialize]
+		[Serialize]
 	private string _facadeID;
 
-	[Serialize]
+		[Serialize]
 	public string BuildOverride;
 }

@@ -110,7 +110,6 @@
         <Compile Include="建筑\食物\食物压制机.cs" />
         <Compile Include="系统\不会过热.cs" />
         <Compile Include="系统\变速.cs" />
-        <Compile Include="系统\复制人速度.cs" />
         <Compile Include="系统\开局全科技.cs" />
         <Compile Include="系统\挖掘范围.cs" />
         <Compile Include="系统\挖掘质量.cs" />

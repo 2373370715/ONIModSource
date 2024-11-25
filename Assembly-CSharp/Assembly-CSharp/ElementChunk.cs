@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ElementChunk")]
 public class ElementChunk : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		GameComps.OreSizeVisualizers.Add(base.gameObject);
@@ -14,7 +14,7 @@ public class ElementChunk : KMonoBehaviour
 		base.Subscribe<ElementChunk>(-2064133523, ElementChunk.OnAbsorbDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Vector3 position = base.transform.GetPosition();
@@ -29,14 +29,14 @@ public class ElementChunk : KMonoBehaviour
 		component2.AddStatusItem(Db.Get().MiscStatusItems.OreTemp, base.gameObject);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameComps.ElementSplitters.Remove(base.gameObject);
 		GameComps.OreSizeVisualizers.Remove(base.gameObject);
 		base.OnCleanUp();
 	}
 
-	private void OnAbsorb(object data)
+		private void OnAbsorb(object data)
 	{
 		Pickupable pickupable = (Pickupable)data;
 		if (pickupable != null)
@@ -66,7 +66,7 @@ public class ElementChunk : KMonoBehaviour
 		}
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<ElementChunk> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<ElementChunk>(delegate(ElementChunk component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ElementChunk> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<ElementChunk>(delegate(ElementChunk component, object data)
 	{
 		component.OnAbsorb(data);
 	});

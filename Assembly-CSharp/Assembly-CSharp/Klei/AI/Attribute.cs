@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class Attribute : Resource
+		public class Attribute : Resource
 	{
-		public Attribute(string id, bool is_trainable, Attribute.Display show_in_ui, bool is_profession, float base_value = 0f, string uiSprite = null, string thoughtSprite = null, string uiFullColourSprite = null, string[] overrideDLCIDs = null) : base(id, null, null)
+				public Attribute(string id, bool is_trainable, Attribute.Display show_in_ui, bool is_profession, float base_value = 0f, string uiSprite = null, string thoughtSprite = null, string uiFullColourSprite = null, string[] overrideDLCIDs = null) : base(id, null, null)
 		{
 			string str = "STRINGS.DUPLICANTS.ATTRIBUTES." + id.ToUpper();
 			this.Name = Strings.Get(new StringKey(str + ".NAME"));
@@ -26,7 +26,7 @@ namespace Klei.AI
 			}
 		}
 
-		public Attribute(string id, string name, string profession_name, string attribute_description, float base_value, Attribute.Display show_in_ui, bool is_trainable, string uiSprite = null, string thoughtSprite = null, string uiFullColourSprite = null) : base(id, name)
+				public Attribute(string id, string name, string profession_name, string attribute_description, float base_value, Attribute.Display show_in_ui, bool is_trainable, string uiSprite = null, string thoughtSprite = null, string uiFullColourSprite = null) : base(id, name)
 		{
 			this.Description = attribute_description;
 			this.ProfessionName = profession_name;
@@ -42,17 +42,17 @@ namespace Klei.AI
 			}
 		}
 
-		public void SetFormatter(IAttributeFormatter formatter)
+				public void SetFormatter(IAttributeFormatter formatter)
 		{
 			this.formatter = formatter;
 		}
 
-		public AttributeInstance Lookup(Component cmp)
+				public AttributeInstance Lookup(Component cmp)
 		{
 			return this.Lookup(cmp.gameObject);
 		}
 
-		public AttributeInstance Lookup(GameObject go)
+				public AttributeInstance Lookup(GameObject go)
 		{
 			Attributes attributes = go.GetAttributes();
 			if (attributes != null)
@@ -62,50 +62,50 @@ namespace Klei.AI
 			return null;
 		}
 
-		public string GetDescription(AttributeInstance instance)
+				public string GetDescription(AttributeInstance instance)
 		{
 			return instance.GetDescription();
 		}
 
-		public string GetTooltip(AttributeInstance instance)
+				public string GetTooltip(AttributeInstance instance)
 		{
 			return this.formatter.GetTooltip(this, instance);
 		}
 
-		private static readonly StandardAttributeFormatter defaultFormatter = new StandardAttributeFormatter(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.None);
+				private static readonly StandardAttributeFormatter defaultFormatter = new StandardAttributeFormatter(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.None);
 
-		public string Description;
+				public string Description;
 
-		public float BaseValue;
+				public float BaseValue;
 
-		public Attribute.Display ShowInUI;
+				public Attribute.Display ShowInUI;
 
-		public bool IsTrainable;
+				public bool IsTrainable;
 
-		public bool IsProfession;
+				public bool IsProfession;
 
-		public string ProfessionName;
+				public string ProfessionName;
 
-		public List<AttributeConverter> converters = new List<AttributeConverter>();
+				public List<AttributeConverter> converters = new List<AttributeConverter>();
 
-		public string uiSprite;
+				public string uiSprite;
 
-		public string thoughtSprite;
+				public string thoughtSprite;
 
-		public string uiFullColourSprite;
+				public string uiFullColourSprite;
 
-		public string[] DLCIds = DlcManager.AVAILABLE_ALL_VERSIONS;
+				public string[] DLCIds = DlcManager.AVAILABLE_ALL_VERSIONS;
 
-		public IAttributeFormatter formatter;
+				public IAttributeFormatter formatter;
 
-		public enum Display
+				public enum Display
 		{
-			Normal,
-			Skill,
-			Expectation,
-			General,
-			Details,
-			Never
+						Normal,
+						Skill,
+						Expectation,
+						General,
+						Details,
+						Never
 		}
 	}
 }

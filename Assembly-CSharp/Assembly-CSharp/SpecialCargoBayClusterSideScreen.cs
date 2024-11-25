@@ -4,28 +4,28 @@ using UnityEngine.UI;
 
 public class SpecialCargoBayClusterSideScreen : ReceptacleSideScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<SpecialCargoBayClusterReceptacle>() != null;
 	}
 
-	protected override bool RequiresAvailableAmountToDeposit()
+		protected override bool RequiresAvailableAmountToDeposit()
 	{
 		return false;
 	}
 
-	protected override void UpdateState(object data)
+		protected override void UpdateState(object data)
 	{
 		base.UpdateState(data);
 		this.SetDescriptionSidescreenFoldState(this.targetReceptacle != null && this.targetReceptacle.Occupant == null);
 	}
 
-	protected override void SetResultDescriptions(GameObject go)
+		protected override void SetResultDescriptions(GameObject go)
 	{
 		base.SetResultDescriptions(go);
 		if (this.targetReceptacle != null && this.targetReceptacle.Occupant != null)
@@ -37,12 +37,12 @@ public class SpecialCargoBayClusterSideScreen : ReceptacleSideScreen
 		this.SetDescriptionSidescreenFoldState(true);
 	}
 
-	public void SetDescriptionSidescreenFoldState(bool visible)
+		public void SetDescriptionSidescreenFoldState(bool visible)
 	{
 		this.descriptionContent.minHeight = (visible ? this.descriptionLayoutDefaultSize : 0f);
 	}
 
-	public LayoutElement descriptionContent;
+		public LayoutElement descriptionContent;
 
-	public float descriptionLayoutDefaultSize = -1f;
+		public float descriptionLayoutDefaultSize = -1f;
 }

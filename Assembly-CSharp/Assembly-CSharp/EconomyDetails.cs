@@ -5,11 +5,12 @@ using System.Linq;
 using Database;
 using Klei.AI;
 using ProcGen;
+using TUNING;
 using UnityEngine;
 
 public class EconomyDetails
 {
-	public EconomyDetails()
+		public EconomyDetails()
 	{
 		this.massResourceType = new EconomyDetails.Resource.Type("Mass", "kg");
 		this.heatResourceType = new EconomyDetails.Resource.Type("Heat Energy", "kdtu");
@@ -65,11 +66,11 @@ public class EconomyDetails
 			this.CreateTransformation(effect);
 		}
 		EconomyDetails.Transformation transformation = new EconomyDetails.Transformation(TagManager.Create("Duplicant"), this.dupeTransformationType, 1f, false);
-		transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.GetResource(GameTags.Oxygen), -0.1f));
-		transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.GetResource(GameTags.CarbonDioxide), 0.1f * Assets.GetPrefab(MinionConfig.ID).GetComponent<OxygenBreather>().O2toCO2conversion));
+		transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.GetResource(GameTags.Oxygen), -DUPLICANTSTATS.STANDARD.BaseStats.OXYGEN_USED_PER_SECOND));
+		transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.GetResource(GameTags.CarbonDioxide), DUPLICANTSTATS.STANDARD.BaseStats.OXYGEN_USED_PER_SECOND * Assets.GetPrefab(MinionConfig.ID).GetComponent<OxygenBreather>().O2toCO2conversion));
 		transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.duplicantTimeResource, 0.875f));
-		transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.caloriesResource, -1.6666667f));
-		transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.CreateResource(new Tag(Db.Get().Amounts.Bladder.deltaAttribute.Id), this.amountResourceType), 0.16666667f));
+		transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.caloriesResource, DUPLICANTSTATS.STANDARD.BaseStats.GUESSTIMATE_CALORIES_BURNED_PER_SECOND * 0.001f));
+		transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.CreateResource(new Tag(Db.Get().Amounts.Bladder.deltaAttribute.Id), this.amountResourceType), DUPLICANTSTATS.STANDARD.BaseStats.BLADDER_INCREASE_PER_SECOND));
 		this.transformations.Add(transformation);
 		EconomyDetails.Transformation transformation2 = new EconomyDetails.Transformation(TagManager.Create("Electrolysis"), this.referenceTransformationType, 1f, false);
 		transformation2.AddDelta(new EconomyDetails.Transformation.Delta(this.GetResource(GameTags.Oxygen), 1.7777778f));
@@ -89,7 +90,7 @@ public class EconomyDetails
 		this.transformations.Add(transformation4);
 	}
 
-	private static void WriteProduct(StreamWriter o, string a, string b)
+		private static void WriteProduct(StreamWriter o, string a, string b)
 	{
 		o.Write(string.Concat(new string[]
 		{
@@ -101,7 +102,7 @@ public class EconomyDetails
 		}));
 	}
 
-	private static void WriteProduct(StreamWriter o, string a, string b, string c)
+		private static void WriteProduct(StreamWriter o, string a, string b, string c)
 	{
 		o.Write(string.Concat(new string[]
 		{
@@ -115,7 +116,7 @@ public class EconomyDetails
 		}));
 	}
 
-	public void DumpTransformations(EconomyDetails.Scenario scenario, StreamWriter o)
+		public void DumpTransformations(EconomyDetails.Scenario scenario, StreamWriter o)
 	{
 		List<EconomyDetails.Resource> used_resources = new List<EconomyDetails.Resource>();
 		foreach (EconomyDetails.Transformation transformation in this.transformations)
@@ -293,7 +294,7 @@ public class EconomyDetails
 		o.Write("\nCycles:,=" + text + "/" + str2);
 	}
 
-	public EconomyDetails.Resource CreateResource(Tag tag, EconomyDetails.Resource.Type resource_type)
+		public EconomyDetails.Resource CreateResource(Tag tag, EconomyDetails.Resource.Type resource_type)
 	{
 		foreach (EconomyDetails.Resource resource in this.resources)
 		{
@@ -307,12 +308,12 @@ public class EconomyDetails
 		return resource2;
 	}
 
-	public EconomyDetails.Resource CreateResource(Element element)
+		public EconomyDetails.Resource CreateResource(Element element)
 	{
 		return this.CreateResource(element.tag, this.massResourceType);
 	}
 
-	public EconomyDetails.Transformation CreateTransformation(Effect effect)
+		public EconomyDetails.Transformation CreateTransformation(Effect effect)
 	{
 		EconomyDetails.Transformation transformation = new EconomyDetails.Transformation(new Tag(effect.Id), this.effectTransformationType, 1f, false);
 		foreach (AttributeModifier attributeModifier in effect.SelfModifiers)
@@ -324,7 +325,7 @@ public class EconomyDetails
 		return transformation;
 	}
 
-	public EconomyDetails.Transformation GetTransformation(Tag tag)
+		public EconomyDetails.Transformation GetTransformation(Tag tag)
 	{
 		foreach (EconomyDetails.Transformation transformation in this.transformations)
 		{
@@ -336,7 +337,7 @@ public class EconomyDetails
 		return null;
 	}
 
-	public EconomyDetails.Transformation CreateTransformation(KPrefabID prefab_id, Tag tag)
+		public EconomyDetails.Transformation CreateTransformation(KPrefabID prefab_id, Tag tag)
 	{
 		if (tag == new Tag(EconomyDetails.debugTag))
 		{
@@ -568,13 +569,13 @@ public class EconomyDetails
 			}
 			if (component14 != null)
 			{
-				transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.CreateResource(new Tag(Db.Get().Amounts.Bladder.deltaAttribute.Id), this.amountResourceType), -0.16666667f));
+				transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.CreateResource(new Tag(Db.Get().Amounts.Bladder.deltaAttribute.Id), this.amountResourceType), -DUPLICANTSTATS.STANDARD.BaseStats.BLADDER_INCREASE_PER_SECOND));
 				transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.GetResource(SimHashes.Dirt), -component14.solidWastePerUse.mass));
 				transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.GetResource(component14.solidWastePerUse.elementID), component14.solidWastePerUse.mass));
 			}
 			if (component15 != null)
 			{
-				transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.CreateResource(new Tag(Db.Get().Amounts.Bladder.deltaAttribute.Id), this.amountResourceType), -0.16666667f));
+				transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.CreateResource(new Tag(Db.Get().Amounts.Bladder.deltaAttribute.Id), this.amountResourceType), -DUPLICANTSTATS.STANDARD.BaseStats.BLADDER_INCREASE_PER_SECOND));
 				transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.GetResource(SimHashes.Water), -component15.massConsumedPerUse));
 				transformation.AddDelta(new EconomyDetails.Transformation.Delta(this.GetResource(SimHashes.DirtyWater), component15.massEmittedPerUse));
 			}
@@ -595,7 +596,7 @@ public class EconomyDetails
 		return transformation;
 	}
 
-	private void CollectDietTransformations(KPrefabID prefab_id)
+		private void CollectDietTransformations(KPrefabID prefab_id)
 	{
 		Trait trait = Db.Get().traits.Get(prefab_id.GetComponent<Modifiers>().initialTraits[0]);
 		CreatureCalorieMonitor.Def def = prefab_id.gameObject.GetDef<CreatureCalorieMonitor.Def>();
@@ -632,7 +633,7 @@ public class EconomyDetails
 		}
 	}
 
-	private static void CollectDietScenarios(List<EconomyDetails.Scenario> scenarios)
+		private static void CollectDietScenarios(List<EconomyDetails.Scenario> scenarios)
 	{
 		EconomyDetails.Scenario scenario = new EconomyDetails.Scenario("diets/all", 0f, null);
 		foreach (KPrefabID kprefabID in Assets.Prefabs)
@@ -657,7 +658,7 @@ public class EconomyDetails
 		scenarios.Add(scenario);
 	}
 
-	public void GatherStartingBiomeAmounts()
+		public void GatherStartingBiomeAmounts()
 	{
 		for (int i = 0; i < Grid.CellCount; i++)
 		{
@@ -672,12 +673,12 @@ public class EconomyDetails
 		}
 	}
 
-	public EconomyDetails.Resource GetResource(SimHashes element)
+		public EconomyDetails.Resource GetResource(SimHashes element)
 	{
 		return this.GetResource(ElementLoader.FindElementByHash(element).tag);
 	}
 
-	public EconomyDetails.Resource GetResource(Tag tag)
+		public EconomyDetails.Resource GetResource(Tag tag)
 	{
 		foreach (EconomyDetails.Resource resource in this.resources)
 		{
@@ -694,12 +695,12 @@ public class EconomyDetails
 		return null;
 	}
 
-	private float GetDupeBreathingPerSecond(EconomyDetails details)
+		private float GetDupeBreathingPerSecond(EconomyDetails details)
 	{
 		return details.GetTransformation(TagManager.Create("Duplicant")).GetDelta(details.GetResource(GameTags.Oxygen)).amount;
 	}
 
-	private EconomyDetails.BiomeTransformation CreateBiomeTransformationFromTransformation(EconomyDetails details, Tag transformation_tag, Tag input_resource_tag, Tag output_resource_tag)
+		private EconomyDetails.BiomeTransformation CreateBiomeTransformationFromTransformation(EconomyDetails details, Tag transformation_tag, Tag input_resource_tag, Tag output_resource_tag)
 	{
 		EconomyDetails.Resource resource = details.GetResource(input_resource_tag);
 		EconomyDetails.Resource resource2 = details.GetResource(output_resource_tag);
@@ -709,7 +710,7 @@ public class EconomyDetails
 		return new EconomyDetails.BiomeTransformation((transformation_tag.Name + input_resource_tag.Name + "Cycles").ToTag(), resource, num / -num2);
 	}
 
-	private static void DumpEconomyDetails()
+		private static void DumpEconomyDetails()
 	{
 		global::Debug.Log("Starting Economy Details Dump...");
 		EconomyDetails details = new EconomyDetails();
@@ -917,7 +918,7 @@ public class EconomyDetails
 		global::Debug.Log("Completed economy details dump!!");
 	}
 
-	private static void DumpNameMapping()
+		private static void DumpNameMapping()
 	{
 		string path = "assets/Tuning/Economy/name_mapping.csv";
 		if (!Directory.Exists("assets/Tuning/Economy"))
@@ -998,79 +999,79 @@ public class EconomyDetails
 		}
 	}
 
-	private List<EconomyDetails.Transformation> transformations = new List<EconomyDetails.Transformation>();
+		private List<EconomyDetails.Transformation> transformations = new List<EconomyDetails.Transformation>();
 
-	private List<EconomyDetails.Resource> resources = new List<EconomyDetails.Resource>();
+		private List<EconomyDetails.Resource> resources = new List<EconomyDetails.Resource>();
 
-	public Dictionary<Element, float> startingBiomeAmounts = new Dictionary<Element, float>();
+		public Dictionary<Element, float> startingBiomeAmounts = new Dictionary<Element, float>();
 
-	public int startingBiomeCellCount;
+		public int startingBiomeCellCount;
 
-	public EconomyDetails.Resource energyResource;
+		public EconomyDetails.Resource energyResource;
 
-	public EconomyDetails.Resource heatResource;
+		public EconomyDetails.Resource heatResource;
 
-	public EconomyDetails.Resource duplicantTimeResource;
+		public EconomyDetails.Resource duplicantTimeResource;
 
-	public EconomyDetails.Resource caloriesResource;
+		public EconomyDetails.Resource caloriesResource;
 
-	public EconomyDetails.Resource fixedCaloriesResource;
+		public EconomyDetails.Resource fixedCaloriesResource;
 
-	public EconomyDetails.Resource.Type massResourceType;
+		public EconomyDetails.Resource.Type massResourceType;
 
-	public EconomyDetails.Resource.Type heatResourceType;
+		public EconomyDetails.Resource.Type heatResourceType;
 
-	public EconomyDetails.Resource.Type energyResourceType;
+		public EconomyDetails.Resource.Type energyResourceType;
 
-	public EconomyDetails.Resource.Type timeResourceType;
+		public EconomyDetails.Resource.Type timeResourceType;
 
-	public EconomyDetails.Resource.Type attributeResourceType;
+		public EconomyDetails.Resource.Type attributeResourceType;
 
-	public EconomyDetails.Resource.Type caloriesResourceType;
+		public EconomyDetails.Resource.Type caloriesResourceType;
 
-	public EconomyDetails.Resource.Type amountResourceType;
+		public EconomyDetails.Resource.Type amountResourceType;
 
-	public EconomyDetails.Transformation.Type buildingTransformationType;
+		public EconomyDetails.Transformation.Type buildingTransformationType;
 
-	public EconomyDetails.Transformation.Type foodTransformationType;
+		public EconomyDetails.Transformation.Type foodTransformationType;
 
-	public EconomyDetails.Transformation.Type plantTransformationType;
+		public EconomyDetails.Transformation.Type plantTransformationType;
 
-	public EconomyDetails.Transformation.Type creatureTransformationType;
+		public EconomyDetails.Transformation.Type creatureTransformationType;
 
-	public EconomyDetails.Transformation.Type dupeTransformationType;
+		public EconomyDetails.Transformation.Type dupeTransformationType;
 
-	public EconomyDetails.Transformation.Type referenceTransformationType;
+		public EconomyDetails.Transformation.Type referenceTransformationType;
 
-	public EconomyDetails.Transformation.Type effectTransformationType;
+		public EconomyDetails.Transformation.Type effectTransformationType;
 
-	private const string GEYSER_ACTIVE_SUFFIX = "_ActiveOnly";
+		private const string GEYSER_ACTIVE_SUFFIX = "_ActiveOnly";
 
-	public EconomyDetails.Transformation.Type geyserActivePeriodTransformationType;
+		public EconomyDetails.Transformation.Type geyserActivePeriodTransformationType;
 
-	public EconomyDetails.Transformation.Type geyserLifetimeTransformationType;
+		public EconomyDetails.Transformation.Type geyserLifetimeTransformationType;
 
-	private static string debugTag = "CO2Scrubber";
+		private static string debugTag = "CO2Scrubber";
 
-	public class Resource
+		public class Resource
 	{
-						public Tag tag { get; private set; }
+								public Tag tag { get; private set; }
 
-						public EconomyDetails.Resource.Type type { get; private set; }
+								public EconomyDetails.Resource.Type type { get; private set; }
 
-		public Resource(Tag tag, EconomyDetails.Resource.Type type)
+				public Resource(Tag tag, EconomyDetails.Resource.Type type)
 		{
 			this.tag = tag;
 			this.type = type;
 		}
 
-		public class Type
+				public class Type
 		{
-									public string id { get; private set; }
+												public string id { get; private set; }
 
-									public string unit { get; private set; }
+												public string unit { get; private set; }
 
-			public Type(string id, string unit)
+						public Type(string id, string unit)
 			{
 				this.id = id;
 				this.unit = unit;
@@ -1078,22 +1079,22 @@ public class EconomyDetails
 		}
 	}
 
-	public class BiomeTransformation
+		public class BiomeTransformation
 	{
-						public Tag tag { get; private set; }
+								public Tag tag { get; private set; }
 
-						public EconomyDetails.Resource resource { get; private set; }
+								public EconomyDetails.Resource resource { get; private set; }
 
-						public float ratio { get; private set; }
+								public float ratio { get; private set; }
 
-		public BiomeTransformation(Tag tag, EconomyDetails.Resource resource, float ratio)
+				public BiomeTransformation(Tag tag, EconomyDetails.Resource resource, float ratio)
 		{
 			this.tag = tag;
 			this.resource = resource;
 			this.ratio = ratio;
 		}
 
-		public float Transform(Element element, float amount)
+				public float Transform(Element element, float amount)
 		{
 			if (this.resource.tag == element.tag)
 			{
@@ -1103,15 +1104,15 @@ public class EconomyDetails
 		}
 	}
 
-	public class Ratio
+		public class Ratio
 	{
-						public EconomyDetails.Resource input { get; private set; }
+								public EconomyDetails.Resource input { get; private set; }
 
-						public EconomyDetails.Resource output { get; private set; }
+								public EconomyDetails.Resource output { get; private set; }
 
-						public bool allowNegativeOutput { get; private set; }
+								public bool allowNegativeOutput { get; private set; }
 
-		public Ratio(EconomyDetails.Resource input, EconomyDetails.Resource output, bool allow_negative_output)
+				public Ratio(EconomyDetails.Resource input, EconomyDetails.Resource output, bool allow_negative_output)
 		{
 			this.input = input;
 			this.output = output;
@@ -1119,15 +1120,15 @@ public class EconomyDetails
 		}
 	}
 
-	public class Scenario
+		public class Scenario
 	{
-						public string name { get; private set; }
+								public string name { get; private set; }
 
-						public float defaultCount { get; private set; }
+								public float defaultCount { get; private set; }
 
-						public float timeInSeconds { get; set; }
+								public float timeInSeconds { get; set; }
 
-		public Scenario(string name, float default_count, Func<EconomyDetails.Transformation, bool> filter)
+				public Scenario(string name, float default_count, Func<EconomyDetails.Transformation, bool> filter)
 		{
 			this.name = name;
 			this.defaultCount = default_count;
@@ -1135,12 +1136,12 @@ public class EconomyDetails
 			this.timeInSeconds = 600f;
 		}
 
-		public void AddEntry(EconomyDetails.Scenario.Entry entry)
+				public void AddEntry(EconomyDetails.Scenario.Entry entry)
 		{
 			this.entries.Add(entry);
 		}
 
-		public float GetCount(Tag tag)
+				public float GetCount(Tag tag)
 		{
 			foreach (EconomyDetails.Scenario.Entry entry in this.entries)
 			{
@@ -1152,7 +1153,7 @@ public class EconomyDetails
 			return this.defaultCount;
 		}
 
-		public bool IncludesTransformation(EconomyDetails.Transformation transformation)
+				public bool IncludesTransformation(EconomyDetails.Transformation transformation)
 		{
 			if (this.filter != null && this.filter(transformation))
 			{
@@ -1171,17 +1172,17 @@ public class EconomyDetails
 			return false;
 		}
 
-		private Func<EconomyDetails.Transformation, bool> filter;
+				private Func<EconomyDetails.Transformation, bool> filter;
 
-		private List<EconomyDetails.Scenario.Entry> entries = new List<EconomyDetails.Scenario.Entry>();
+				private List<EconomyDetails.Scenario.Entry> entries = new List<EconomyDetails.Scenario.Entry>();
 
-		public class Entry
+				public class Entry
 		{
-									public Tag tag { get; private set; }
+												public Tag tag { get; private set; }
 
-									public float count { get; private set; }
+												public float count { get; private set; }
 
-			public Entry(Tag tag, float count)
+						public Entry(Tag tag, float count)
 			{
 				this.tag = tag;
 				this.count = count;
@@ -1189,17 +1190,17 @@ public class EconomyDetails
 		}
 	}
 
-	public class Transformation
+		public class Transformation
 	{
-						public Tag tag { get; private set; }
+								public Tag tag { get; private set; }
 
-						public EconomyDetails.Transformation.Type type { get; private set; }
+								public EconomyDetails.Transformation.Type type { get; private set; }
 
-						public float timeInSeconds { get; private set; }
+								public float timeInSeconds { get; private set; }
 
-						public bool timeInvariant { get; private set; }
+								public bool timeInvariant { get; private set; }
 
-		public Transformation(Tag tag, EconomyDetails.Transformation.Type type, float time_in_seconds, bool timeInvariant = false)
+				public Transformation(Tag tag, EconomyDetails.Transformation.Type type, float time_in_seconds, bool timeInvariant = false)
 		{
 			this.tag = tag;
 			this.type = type;
@@ -1207,13 +1208,13 @@ public class EconomyDetails
 			this.timeInvariant = timeInvariant;
 		}
 
-		public void AddDelta(EconomyDetails.Transformation.Delta delta)
+				public void AddDelta(EconomyDetails.Transformation.Delta delta)
 		{
 			global::Debug.Assert(delta.resource != null);
 			this.deltas.Add(delta);
 		}
 
-		public EconomyDetails.Transformation.Delta GetDelta(EconomyDetails.Resource resource)
+				public EconomyDetails.Transformation.Delta GetDelta(EconomyDetails.Resource resource)
 		{
 			foreach (EconomyDetails.Transformation.Delta delta in this.deltas)
 			{
@@ -1225,26 +1226,26 @@ public class EconomyDetails
 			return null;
 		}
 
-		public List<EconomyDetails.Transformation.Delta> deltas = new List<EconomyDetails.Transformation.Delta>();
+				public List<EconomyDetails.Transformation.Delta> deltas = new List<EconomyDetails.Transformation.Delta>();
 
-		public class Delta
+				public class Delta
 		{
-									public EconomyDetails.Resource resource { get; private set; }
+												public EconomyDetails.Resource resource { get; private set; }
 
-									public float amount { get; set; }
+												public float amount { get; set; }
 
-			public Delta(EconomyDetails.Resource resource, float amount)
+						public Delta(EconomyDetails.Resource resource, float amount)
 			{
 				this.resource = resource;
 				this.amount = amount;
 			}
 		}
 
-		public class Type
+				public class Type
 		{
-									public string id { get; private set; }
+												public string id { get; private set; }
 
-			public Type(string id)
+						public Type(string id)
 			{
 				this.id = id;
 			}

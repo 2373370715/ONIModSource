@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 public class RoleSlotUnlock
 {
-			public string id { get; protected set; }
+				public string id { get; protected set; }
 
-			public string name { get; protected set; }
+				public string name { get; protected set; }
 
-			public string description { get; protected set; }
+				public string description { get; protected set; }
 
-			public List<global::Tuple<string, int>> slots { get; protected set; }
+				public List<global::Tuple<string, int>> slots { get; protected set; }
 
-			public Func<bool> isSatisfied { get; protected set; }
+				public Func<bool> isSatisfied { get; protected set; }
 
-	public RoleSlotUnlock(string id, string name, string description, List<global::Tuple<string, int>> slots, Func<bool> isSatisfied)
+		public RoleSlotUnlock(string id, string name, string description, List<global::Tuple<string, int>> slots, Func<bool> isSatisfied)
 	{
 		this.id = id;
 		this.name = name;

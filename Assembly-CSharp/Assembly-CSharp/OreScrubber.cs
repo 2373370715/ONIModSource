@@ -7,13 +7,13 @@ using UnityEngine;
 
 public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameObjectEffectDescriptor
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.gameObject.FindOrAddComponent<Workable>();
 	}
 
-	private void RefreshMeters()
+		private void RefreshMeters()
 	{
 		float positionPercent = 0f;
 		PrimaryElement primaryElement = base.GetComponent<Storage>().FindPrimaryElement(this.consumedElement);
@@ -24,7 +24,7 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 		this.cleanMeter.SetPositionPercent(positionPercent);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -39,7 +39,7 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 		this.OnDirectionChanged(base.GetComponent<DirectionControl>().allowedDirection);
 	}
 
-	private void OnDirectionChanged(WorkableReactable.AllowedDirection allowed_direction)
+		private void OnDirectionChanged(WorkableReactable.AllowedDirection allowed_direction)
 	{
 		if (this.reactable != null)
 		{
@@ -47,7 +47,7 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 		}
 	}
 
-	public List<Descriptor> RequirementDescriptors()
+		public List<Descriptor> RequirementDescriptors()
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		string name = ElementLoader.FindElementByHash(this.consumedElement).name;
@@ -55,7 +55,7 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 		return list;
 	}
 
-	public List<Descriptor> EffectDescriptors()
+		public List<Descriptor> EffectDescriptors()
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (this.outputElement != SimHashes.Vacuum)
@@ -66,7 +66,7 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 		return list;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		list.AddRange(this.RequirementDescriptors());
@@ -74,12 +74,12 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 		return list;
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		this.RefreshMeters();
 	}
 
-	private static PrimaryElement GetFirstInfected(Storage storage)
+		private static PrimaryElement GetFirstInfected(Storage storage)
 	{
 		foreach (GameObject gameObject in storage.items)
 		{
@@ -95,33 +95,33 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 		return null;
 	}
 
-	public float massConsumedPerUse = 1f;
+		public float massConsumedPerUse = 1f;
 
-	public SimHashes consumedElement = SimHashes.BleachStone;
+		public SimHashes consumedElement = SimHashes.BleachStone;
 
-	public int diseaseRemovalCount = 10000;
+		public int diseaseRemovalCount = 10000;
 
-	public SimHashes outputElement = SimHashes.Vacuum;
+		public SimHashes outputElement = SimHashes.Vacuum;
 
-	private WorkableReactable reactable;
+		private WorkableReactable reactable;
 
-	private MeterController cleanMeter;
+		private MeterController cleanMeter;
 
-	[Serialize]
+		[Serialize]
 	public int maxPossiblyRemoved;
 
-	private static readonly EventSystem.IntraObjectHandler<OreScrubber> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<OreScrubber>(delegate(OreScrubber component, object data)
+		private static readonly EventSystem.IntraObjectHandler<OreScrubber> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<OreScrubber>(delegate(OreScrubber component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	private class ScrubOreReactable : WorkableReactable
+		private class ScrubOreReactable : WorkableReactable
 	{
-		public ScrubOreReactable(Workable workable, ChoreType chore_type, WorkableReactable.AllowedDirection allowed_direction = WorkableReactable.AllowedDirection.Any) : base(workable, "ScrubOre", chore_type, allowed_direction)
+				public ScrubOreReactable(Workable workable, ChoreType chore_type, WorkableReactable.AllowedDirection allowed_direction = WorkableReactable.AllowedDirection.Any) : base(workable, "ScrubOre", chore_type, allowed_direction)
 		{
 		}
 
-		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
+				public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
 			if (base.InternalCanBegin(new_reactor, transition))
 			{
@@ -135,13 +135,13 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 		}
 	}
 
-	public class SMInstance : GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.GameInstance
+		public class SMInstance : GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.GameInstance
 	{
-		public SMInstance(OreScrubber master) : base(master)
+				public SMInstance(OreScrubber master) : base(master)
 		{
 		}
 
-		public bool HasSufficientMass()
+				public bool HasSufficientMass()
 		{
 			bool result = false;
 			PrimaryElement primaryElement = base.GetComponent<Storage>().FindPrimaryElement(base.master.consumedElement);
@@ -152,7 +152,7 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 			return result;
 		}
 
-		public Dictionary<Tag, float> GetNeededMass()
+				public Dictionary<Tag, float> GetNeededMass()
 		{
 			return new Dictionary<Tag, float>
 			{
@@ -163,11 +163,11 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 			};
 		}
 
-		public void OnCompleteWork(Worker worker)
+				public void OnCompleteWork(WorkerBase worker)
 		{
 		}
 
-		public void DumpOutput()
+				public void DumpOutput()
 		{
 			Storage component = base.master.GetComponent<Storage>();
 			if (base.master.outputElement != SimHashes.Vacuum)
@@ -177,9 +177,9 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 		}
 	}
 
-	public class States : GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber>
+		public class States : GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.notready;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -190,41 +190,41 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 			this.ready.occupied.PlayAnim("working_pre").QueueAnim("working_loop", true, null).WorkableStopTransition((OreScrubber.SMInstance smi) => smi.GetComponent<OreScrubber.Work>(), this.ready);
 		}
 
-		public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State notready;
+				public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State notready;
 
-		public OreScrubber.States.ReadyStates ready;
+				public OreScrubber.States.ReadyStates ready;
 
-		public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State notoperational;
+				public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State notoperational;
 
-		public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State full;
+				public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State full;
 
-		public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State empty;
+				public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State empty;
 
-		public class ReadyStates : GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State
+				public class ReadyStates : GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State
 		{
-			public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State free;
+						public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State free;
 
-			public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State occupied;
+						public GameStateMachine<OreScrubber.States, OreScrubber.SMInstance, OreScrubber, object>.State occupied;
 		}
 	}
 
-	[AddComponentMenu("KMonoBehaviour/Workable/Work")]
+		[AddComponentMenu("KMonoBehaviour/Workable/Work")]
 	public class Work : Workable, IGameObjectEffectDescriptor
 	{
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			base.OnPrefabInit();
 			this.resetProgressOnStop = true;
 			this.shouldTransferDiseaseWithWorker = false;
 		}
 
-		protected override void OnStartWork(Worker worker)
+				protected override void OnStartWork(WorkerBase worker)
 		{
 			base.OnStartWork(worker);
 			this.diseaseRemoved = 0;
 		}
 
-		protected override bool OnWorkTick(Worker worker, float dt)
+				protected override bool OnWorkTick(WorkerBase worker, float dt)
 		{
 			base.OnWorkTick(worker, dt);
 			OreScrubber component = base.GetComponent<OreScrubber>();
@@ -254,11 +254,11 @@ public class OreScrubber : StateMachineComponent<OreScrubber.SMInstance>, IGameO
 			return this.diseaseRemoved > component.diseaseRemovalCount;
 		}
 
-		protected override void OnCompleteWork(Worker worker)
+				protected override void OnCompleteWork(WorkerBase worker)
 		{
 			base.OnCompleteWork(worker);
 		}
 
-		private int diseaseRemoved;
+				private int diseaseRemoved;
 	}
 }

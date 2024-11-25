@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DevToolWarmthZonesVisualizer : DevTool
 {
-	private void SetupColors()
+		private void SetupColors()
 	{
 		if (this.colors == null)
 		{
@@ -15,7 +15,7 @@ public class DevToolWarmthZonesVisualizer : DevTool
 		}
 	}
 
-	private Color CreateColorForWarmthValue(int warmValue)
+		private Color CreateColorForWarmthValue(int warmValue)
 	{
 		float b = (float)Mathf.Clamp(warmValue, 1, 3) / 3f;
 		Color result = this.WARM_CELL_COLOR * b;
@@ -23,20 +23,20 @@ public class DevToolWarmthZonesVisualizer : DevTool
 		return result;
 	}
 
-	private Color GetBorderColor(int warmValue)
+		private Color GetBorderColor(int warmValue)
 	{
 		int num = Mathf.Clamp(warmValue, 0, 3);
 		return this.colors[num];
 	}
 
-	private Color GetFillColor(int warmValue)
+		private Color GetFillColor(int warmValue)
 	{
 		Color borderColor = this.GetBorderColor(warmValue);
 		borderColor.a = 0.3f;
 		return borderColor;
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		this.SetupColors();
 		foreach (int num in WarmthProvider.WarmCells.Keys)
@@ -51,9 +51,9 @@ public class DevToolWarmthZonesVisualizer : DevTool
 		}
 	}
 
-	private const int MAX_COLOR_VARIANTS = 3;
+		private const int MAX_COLOR_VARIANTS = 3;
 
-	private Color WARM_CELL_COLOR = Color.red;
+		private Color WARM_CELL_COLOR = Color.red;
 
-	private Color[] colors;
+		private Color[] colors;
 }

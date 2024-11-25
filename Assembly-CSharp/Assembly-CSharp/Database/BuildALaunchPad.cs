@@ -3,14 +3,14 @@ using STRINGS;
 
 namespace Database
 {
-	public class BuildALaunchPad : ColonyAchievementRequirement
+		public class BuildALaunchPad : ColonyAchievementRequirement
 	{
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.BUILD_A_LAUNCHPAD;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			foreach (LaunchPad component in Components.LaunchPads.Items)
 			{

@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/AttachableBuilding")]
 public class AttachableBuilding : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.RegisterWithAttachPoint(true);
@@ -20,12 +20,12 @@ public class AttachableBuilding : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	public void RegisterWithAttachPoint(bool register)
+		public void RegisterWithAttachPoint(bool register)
 	{
 		BuildingDef buildingDef = null;
 		BuildingComplete component = base.GetComponent<BuildingComplete>();
@@ -63,7 +63,7 @@ public class AttachableBuilding : KMonoBehaviour
 		}
 	}
 
-	public static void GetAttachedBelow(AttachableBuilding searchStart, ref List<GameObject> buildings)
+		public static void GetAttachedBelow(AttachableBuilding searchStart, ref List<GameObject> buildings)
 	{
 		AttachableBuilding attachableBuilding = searchStart;
 		while (attachableBuilding != null)
@@ -78,7 +78,7 @@ public class AttachableBuilding : KMonoBehaviour
 		}
 	}
 
-	public static int CountAttachedBelow(AttachableBuilding searchStart)
+		public static int CountAttachedBelow(AttachableBuilding searchStart)
 	{
 		int num = 0;
 		AttachableBuilding attachableBuilding = searchStart;
@@ -95,7 +95,7 @@ public class AttachableBuilding : KMonoBehaviour
 		return num;
 	}
 
-	public static void GetAttachedAbove(AttachableBuilding searchStart, ref List<GameObject> buildings)
+		public static void GetAttachedAbove(AttachableBuilding searchStart, ref List<GameObject> buildings)
 	{
 		BuildingAttachPoint buildingAttachPoint = searchStart.GetComponent<BuildingAttachPoint>();
 		while (buildingAttachPoint != null)
@@ -128,7 +128,7 @@ public class AttachableBuilding : KMonoBehaviour
 		}
 	}
 
-	public static void NotifyBuildingsNetworkChanged(List<GameObject> buildings, AttachableBuilding attachable = null)
+		public static void NotifyBuildingsNetworkChanged(List<GameObject> buildings, AttachableBuilding attachable = null)
 	{
 		foreach (GameObject gameObject in buildings)
 		{
@@ -140,7 +140,7 @@ public class AttachableBuilding : KMonoBehaviour
 		}
 	}
 
-	public static List<GameObject> GetAttachedNetwork(AttachableBuilding searchStart)
+		public static List<GameObject> GetAttachedNetwork(AttachableBuilding searchStart)
 	{
 		List<GameObject> list = new List<GameObject>();
 		list.Add(searchStart.gameObject);
@@ -149,7 +149,7 @@ public class AttachableBuilding : KMonoBehaviour
 		return list;
 	}
 
-	public BuildingAttachPoint GetAttachedTo()
+		public BuildingAttachPoint GetAttachedTo()
 	{
 		for (int i = 0; i < Components.BuildingAttachPoints.Count; i++)
 		{
@@ -164,7 +164,7 @@ public class AttachableBuilding : KMonoBehaviour
 		return null;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		AttachableBuilding.NotifyBuildingsNetworkChanged(AttachableBuilding.GetAttachedNetwork(this), this);
@@ -172,7 +172,7 @@ public class AttachableBuilding : KMonoBehaviour
 		Components.AttachableBuildings.Remove(this);
 	}
 
-	public Tag attachableToTag;
+		public Tag attachableToTag;
 
-	public Action<object> onAttachmentNetworkChanged;
+		public Action<object> onAttachmentNetworkChanged;
 }

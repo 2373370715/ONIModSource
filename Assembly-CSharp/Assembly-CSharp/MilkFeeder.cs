@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MilkFeeder : GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.off;
 		this.root.Enter(delegate(MilkFeeder.Instance smi)
@@ -46,17 +46,17 @@ public class MilkFeeder : GameStateMachine<MilkFeeder, MilkFeeder.Instance, ISta
 		this.on.pst.PlayAnim("working_pst").OnAnimQueueComplete(this.off);
 	}
 
-	private GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State off;
+		private GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State off;
 
-	private MilkFeeder.OnState on;
+		private MilkFeeder.OnState on;
 
-	public StateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.BoolParameter isReadyToStartFeeding;
+		public StateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.BoolParameter isReadyToStartFeeding;
 
-	public StateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.ObjectParameter<DrinkMilkStates.Instance> currentFeedingCritter;
+		public StateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.ObjectParameter<DrinkMilkStates.Instance> currentFeedingCritter;
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
+		public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
 	{
-		public List<Descriptor> GetDescriptors(GameObject go)
+				public List<Descriptor> GetDescriptors(GameObject go)
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			go.GetSMI<MilkFeeder.Instance>();
@@ -68,62 +68,62 @@ public class MilkFeeder : GameStateMachine<MilkFeeder, MilkFeeder.Instance, ISta
 		}
 	}
 
-	public class OnState : GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State
+		public class OnState : GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State
 	{
-		public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State pre;
+				public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State pre;
 
-		public MilkFeeder.OnState.WorkingState working;
+				public MilkFeeder.OnState.WorkingState working;
 
-		public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State pst;
+				public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State pst;
 
-		public class WorkingState : GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State
+				public class WorkingState : GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State
 		{
-			public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State empty;
+						public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State empty;
 
-			public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State refilling;
+						public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State refilling;
 
-			public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State full;
+						public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State full;
 
-			public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State emptying;
+						public GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.State emptying;
 		}
 	}
 
-	public new class Instance : GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.GameInstance
+		public new class Instance : GameStateMachine<MilkFeeder, MilkFeeder.Instance, IStateMachineTarget, MilkFeeder.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, MilkFeeder.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, MilkFeeder.Def def) : base(master, def)
 		{
 			this.milkStorage = base.GetComponent<Storage>();
 			this.storageMeter = new MeterController(base.smi.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, Array.Empty<string>());
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			Components.MilkFeeders.Add(base.smi.GetMyWorldId(), this);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.OnCleanUp();
 			Components.MilkFeeders.Remove(base.smi.GetMyWorldId(), this);
 		}
 
-		public void UpdateStorageMeter()
+				public void UpdateStorageMeter()
 		{
 			this.storageMeter.SetPositionPercent(1f - Mathf.Clamp01(this.milkStorage.RemainingCapacity() / this.milkStorage.capacityKg));
 		}
 
-		public bool IsOperational()
+				public bool IsOperational()
 		{
 			return base.GetComponent<Operational>().IsOperational;
 		}
 
-		public bool IsReserved()
+				public bool IsReserved()
 		{
 			return base.HasTag(GameTags.Creatures.ReservedByCreature);
 		}
 
-		public void SetReserved(bool isReserved)
+				public void SetReserved(bool isReserved)
 		{
 			if (isReserved)
 			{
@@ -139,17 +139,17 @@ public class MilkFeeder : GameStateMachine<MilkFeeder, MilkFeeder.Instance, ISta
 			global::Debug.LogWarningFormat(base.smi.gameObject, "Tried to unreserve a MilkFeeder that wasn't reserved", Array.Empty<object>());
 		}
 
-		public bool IsReadyToStartFeeding()
+				public bool IsReadyToStartFeeding()
 		{
 			return this.IsOperational() && base.sm.isReadyToStartFeeding.Get(base.smi);
 		}
 
-		public void RequestToStartFeeding(DrinkMilkStates.Instance feedingCritter)
+				public void RequestToStartFeeding(DrinkMilkStates.Instance feedingCritter)
 		{
 			base.sm.currentFeedingCritter.Set(feedingCritter, base.smi, false);
 		}
 
-		public void StopFeeding()
+				public void StopFeeding()
 		{
 			DrinkMilkStates.Instance instance = base.sm.currentFeedingCritter.Get(base.smi);
 			if (instance != null)
@@ -159,24 +159,24 @@ public class MilkFeeder : GameStateMachine<MilkFeeder, MilkFeeder.Instance, ISta
 			base.sm.currentFeedingCritter.Set(null, base.smi, false);
 		}
 
-		public bool HasEnoughMilkForOneFeeding()
+				public bool HasEnoughMilkForOneFeeding()
 		{
 			return this.milkStorage.GetAmountAvailable(MilkFeederConfig.MILK_TAG) >= 5f;
 		}
 
-		public void ConsumeMilkForOneFeeding()
+				public void ConsumeMilkForOneFeeding()
 		{
 			this.milkStorage.ConsumeIgnoringDisease(MilkFeederConfig.MILK_TAG, 5f);
 		}
 
-		public bool IsInCreaturePenRoom()
+				public bool IsInCreaturePenRoom()
 		{
 			Room roomOfGameObject = Game.Instance.roomProber.GetRoomOfGameObject(base.gameObject);
 			return roomOfGameObject != null && roomOfGameObject.roomType == Db.Get().RoomTypes.CreaturePen;
 		}
 
-		public Storage milkStorage;
+				public Storage milkStorage;
 
-		public MeterController storageMeter;
+				public MeterController storageMeter;
 	}
 }

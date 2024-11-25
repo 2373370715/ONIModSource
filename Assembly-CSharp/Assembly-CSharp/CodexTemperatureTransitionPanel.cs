@@ -6,13 +6,13 @@ using UnityEngine.UI;
 
 public class CodexTemperatureTransitionPanel : CodexWidget<CodexTemperatureTransitionPanel>
 {
-	public CodexTemperatureTransitionPanel(Element source, CodexTemperatureTransitionPanel.TransitionType type)
+		public CodexTemperatureTransitionPanel(Element source, CodexTemperatureTransitionPanel.TransitionType type)
 	{
 		this.sourceElement = source;
 		this.transitionType = type;
 	}
 
-	public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		HierarchyReferences component = contentGameObject.GetComponent<HierarchyReferences>();
 		this.materialPrefab = component.GetReference<RectTransform>("MaterialPrefab").gameObject;
@@ -27,7 +27,7 @@ public class CodexTemperatureTransitionPanel : CodexWidget<CodexTemperatureTrans
 		base.ConfigurePreferredLayout(contentGameObject);
 	}
 
-	private void ConfigureSource(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		private void ConfigureSource(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		HierarchyReferences component = Util.KInstantiateUI(this.materialPrefab, this.sourceContainer, true).GetComponent<HierarchyReferences>();
 		global::Tuple<Sprite, Color> uisprite = Def.GetUISprite(this.sourceElement, "ui", false);
@@ -42,7 +42,7 @@ public class CodexTemperatureTransitionPanel : CodexWidget<CodexTemperatureTrans
 		};
 	}
 
-	private void ConfigureTemperature(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		private void ConfigureTemperature(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		float temp = (this.transitionType == CodexTemperatureTransitionPanel.TransitionType.COOL) ? this.sourceElement.lowTemp : this.sourceElement.highTemp;
 		HierarchyReferences component = this.temperaturePanel.GetComponent<HierarchyReferences>();
@@ -53,7 +53,7 @@ public class CodexTemperatureTransitionPanel : CodexWidget<CodexTemperatureTrans
 		component.GetReference<ToolTip>("ToolTip").toolTip = string.Format(format, GameUtil.GetFormattedTemperature(temp, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, true, false));
 	}
 
-	private void ConfigureResults(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		private void ConfigureResults(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		Element primaryElement = (this.transitionType == CodexTemperatureTransitionPanel.TransitionType.COOL) ? this.sourceElement.lowTempTransition : this.sourceElement.highTempTransition;
 		Element secondaryElement = ElementLoader.FindElementByHash((this.transitionType == CodexTemperatureTransitionPanel.TransitionType.COOL) ? this.sourceElement.lowTempTransitionOreID : this.sourceElement.highTempTransitionOreID);
@@ -99,7 +99,7 @@ public class CodexTemperatureTransitionPanel : CodexWidget<CodexTemperatureTrans
 		this.headerLabel.SetText((secondaryElement == null) ? string.Format(CODEX.FORMAT_STRINGS.TRANSITION_LABEL_TO_ONE_ELEMENT, this.sourceElement.name, primaryElement.name) : string.Format(CODEX.FORMAT_STRINGS.TRANSITION_LABEL_TO_TWO_ELEMENTS, this.sourceElement.name, primaryElement.name, secondaryElement.name));
 	}
 
-	private void ClearPanel()
+		private void ClearPanel()
 	{
 		foreach (object obj in this.sourceContainer.transform)
 		{
@@ -111,23 +111,23 @@ public class CodexTemperatureTransitionPanel : CodexWidget<CodexTemperatureTrans
 		}
 	}
 
-	private Element sourceElement;
+		private Element sourceElement;
 
-	private CodexTemperatureTransitionPanel.TransitionType transitionType;
+		private CodexTemperatureTransitionPanel.TransitionType transitionType;
 
-	private GameObject materialPrefab;
+		private GameObject materialPrefab;
 
-	private GameObject sourceContainer;
+		private GameObject sourceContainer;
 
-	private GameObject temperaturePanel;
+		private GameObject temperaturePanel;
 
-	private GameObject resultsContainer;
+		private GameObject resultsContainer;
 
-	private LocText headerLabel;
+		private LocText headerLabel;
 
-	public enum TransitionType
+		public enum TransitionType
 	{
-		HEAT,
-		COOL
+				HEAT,
+				COOL
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Chlorinator : GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.inoperational;
 		this.inoperational.TagTransition(GameTags.Operational, this.ready, false);
@@ -19,56 +19,56 @@ public class Chlorinator : GameStateMachine<Chlorinator, Chlorinator.StatesInsta
 		this.ready.popPst.Target(this.hopper).PlayAnim("meter_hopper_pst").OnAnimQueueComplete(this.ready.wait);
 	}
 
-	public static float GetPoppingDelay(Chlorinator.StatesInstance smi)
+		public static float GetPoppingDelay(Chlorinator.StatesInstance smi)
 	{
 		return smi.def.popWaitRange.Get();
 	}
 
-	private GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State inoperational;
+		private GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State inoperational;
 
-	private Chlorinator.ReadyStates ready;
+		private Chlorinator.ReadyStates ready;
 
-	public StateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.TargetParameter hopper;
+		public StateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.TargetParameter hopper;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public MathUtil.MinMax popWaitRange = new MathUtil.MinMax(0.2f, 0.8f);
+				public MathUtil.MinMax popWaitRange = new MathUtil.MinMax(0.2f, 0.8f);
 
-		public Tag primaryOreTag;
+				public Tag primaryOreTag;
 
-		public float primaryOreMassPerOre;
+				public float primaryOreMassPerOre;
 
-		public MathUtil.MinMaxInt primaryOreCount = new MathUtil.MinMaxInt(1, 1);
+				public MathUtil.MinMaxInt primaryOreCount = new MathUtil.MinMaxInt(1, 1);
 
-		public Tag secondaryOreTag;
+				public Tag secondaryOreTag;
 
-		public float secondaryOreMassPerOre;
+				public float secondaryOreMassPerOre;
 
-		public MathUtil.MinMaxInt secondaryOreCount = new MathUtil.MinMaxInt(1, 1);
+				public MathUtil.MinMaxInt secondaryOreCount = new MathUtil.MinMaxInt(1, 1);
 
-		public Vector3 offset = Vector3.zero;
+				public Vector3 offset = Vector3.zero;
 
-		public MathUtil.MinMax initialVelocity = new MathUtil.MinMax(1f, 3f);
+				public MathUtil.MinMax initialVelocity = new MathUtil.MinMax(1f, 3f);
 
-		public MathUtil.MinMax initialDirectionHalfAngleDegreesRange = new MathUtil.MinMax(160f, 20f);
+				public MathUtil.MinMax initialDirectionHalfAngleDegreesRange = new MathUtil.MinMax(160f, 20f);
 	}
 
-	public class ReadyStates : GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State
+		public class ReadyStates : GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State
 	{
-		public GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State idle;
+				public GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State idle;
 
-		public GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State wait;
+				public GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State wait;
 
-		public GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State popPre;
+				public GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State popPre;
 
-		public GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State pop;
+				public GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State pop;
 
-		public GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State popPst;
+				public GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.State popPst;
 	}
 
-	public class StatesInstance : GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<Chlorinator, Chlorinator.StatesInstance, IStateMachineTarget, Chlorinator.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, Chlorinator.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, Chlorinator.Def def) : base(master, def)
 		{
 			this.storage = base.GetComponent<ComplexFabricator>().outStorage;
 			KAnimControllerBase component = master.GetComponent<KAnimControllerBase>();
@@ -79,18 +79,18 @@ public class Chlorinator : GameStateMachine<Chlorinator, Chlorinator.StatesInsta
 			base.sm.hopper.Set(this.hopperMeter.gameObject, this, false);
 		}
 
-		public bool CanEmit()
+				public bool CanEmit()
 		{
 			return !this.storage.IsEmpty();
 		}
 
-		public void TryEmit()
+				public void TryEmit()
 		{
 			this.TryEmit(base.smi.def.primaryOreCount.Get(), base.def.primaryOreTag, base.def.primaryOreMassPerOre);
 			this.TryEmit(base.smi.def.secondaryOreCount.Get(), base.def.secondaryOreTag, base.def.secondaryOreMassPerOre);
 		}
 
-		private void TryEmit(int oreSpawnCount, Tag emitTag, float amount)
+				private void TryEmit(int oreSpawnCount, Tag emitTag, float amount)
 		{
 			GameObject gameObject = this.storage.FindFirst(emitTag);
 			if (gameObject == null)
@@ -134,8 +134,8 @@ public class Chlorinator : GameStateMachine<Chlorinator, Chlorinator.StatesInsta
 			}
 		}
 
-		public Storage storage;
+				public Storage storage;
 
-		public MeterController hopperMeter;
+				public MeterController hopperMeter;
 	}
 }

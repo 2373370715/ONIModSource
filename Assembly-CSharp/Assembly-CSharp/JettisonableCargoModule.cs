@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.grounded;
 		this.root.Enter(delegate(JettisonableCargoModule.StatesInstance smi)
@@ -33,49 +33,49 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 		this.not_grounded.empty.PlayAnim("deployed").ParamTransition<bool>(this.hasCargo, this.not_grounded.loaded, GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.IsTrue);
 	}
 
-	public StateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.BoolParameter hasCargo;
+		public StateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.BoolParameter hasCargo;
 
-	public StateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.Signal emptyCargo;
+		public StateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.Signal emptyCargo;
 
-	public JettisonableCargoModule.GroundedStates grounded;
+		public JettisonableCargoModule.GroundedStates grounded;
 
-	public JettisonableCargoModule.NotGroundedStates not_grounded;
+		public JettisonableCargoModule.NotGroundedStates not_grounded;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public DefComponent<Storage> landerContainer;
+				public DefComponent<Storage> landerContainer;
 
-		public Tag landerPrefabID;
+				public Tag landerPrefabID;
 
-		public Vector3 cargoDropOffset;
+				public Vector3 cargoDropOffset;
 
-		public string clusterMapFXPrefabID;
+				public string clusterMapFXPrefabID;
 	}
 
-	public class GroundedStates : GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State
+		public class GroundedStates : GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State
 	{
-		public GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State loaded;
+				public GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State loaded;
 
-		public GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State empty;
+				public GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State empty;
 	}
 
-	public class NotGroundedStates : GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State
+		public class NotGroundedStates : GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State
 	{
-		public GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State loaded;
+				public GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State loaded;
 
-		public GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State emptying;
+				public GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State emptying;
 
-		public GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State empty;
+				public GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.State empty;
 	}
 
-	public class StatesInstance : GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.GameInstance, IEmptyableCargo
+		public class StatesInstance : GameStateMachine<JettisonableCargoModule, JettisonableCargoModule.StatesInstance, IStateMachineTarget, JettisonableCargoModule.Def>.GameInstance, IEmptyableCargo
 	{
-		public StatesInstance(IStateMachineTarget master, JettisonableCargoModule.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, JettisonableCargoModule.Def def) : base(master, def)
 		{
 			this.landerContainer = def.landerContainer.Get(this);
 		}
 
-		private void ChooseLanderLocation()
+				private void ChooseLanderLocation()
 		{
 			ClusterGridEntity stableOrbitAsteroid = base.master.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>().GetStableOrbitAsteroid();
 			if (stableOrbitAsteroid != null)
@@ -90,7 +90,7 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 			}
 		}
 
-		private void OnLanderPlaced(Placeable lander, int cell)
+				private void OnLanderPlaced(Placeable lander, int cell)
 		{
 			this.landerPlaced = true;
 			this.landerPlacementCell = cell;
@@ -103,7 +103,7 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 			ClusterMapScreen.Instance.SelectEntity(base.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<ClusterGridEntity>(), true);
 		}
 
-		private void OpenMoveChoreForChosenDuplicant()
+				private void OpenMoveChoreForChosenDuplicant()
 		{
 			RocketModuleCluster component = base.master.GetComponent<RocketModuleCluster>();
 			Clustercraft craft = component.CraftInterface.GetComponent<Clustercraft>();
@@ -117,7 +117,7 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 			});
 		}
 
-		private void EnableTeleport(bool enable)
+				private void EnableTeleport(bool enable)
 		{
 			ClustercraftExteriorDoor component = base.master.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>().ModuleInterface.GetPassengerModule().GetComponent<ClustercraftExteriorDoor>();
 			ClustercraftInteriorDoor interiorDoor = component.GetInteriorDoor();
@@ -144,7 +144,7 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 			component2.SetPermission(this.ChosenDuplicant.assignableProxy.Get(), AccessControl.Permission.Neither);
 		}
 
-		public void FinalDeploy()
+				public void FinalDeploy()
 		{
 			this.landerPlaced = false;
 			Placeable component = this.landerContainer.FindFirst(base.def.landerPrefabID).GetComponent<Placeable>();
@@ -193,13 +193,13 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 			}
 		}
 
-		public bool CheckReadyForFinalDeploy()
+				public bool CheckReadyForFinalDeploy()
 		{
 			MinionStorage component = this.landerContainer.FindFirst(base.def.landerPrefabID).GetComponent<MinionStorage>();
 			return !(component != null) || component.GetStoredMinionInfo().Count > 0;
 		}
 
-		public void CancelPendingDeploy()
+				public void CancelPendingDeploy()
 		{
 			this.landerPlaced = false;
 			if (this.ChosenDuplicant != null && this.CheckIfLoaded())
@@ -208,7 +208,7 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 			}
 		}
 
-		public bool CheckIfLoaded()
+				public bool CheckIfLoaded()
 		{
 			bool flag = false;
 			using (List<GameObject>.Enumerator enumerator = this.landerContainer.items.GetEnumerator())
@@ -229,14 +229,14 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 			return flag;
 		}
 
-		public bool IsValidDropLocation()
+				public bool IsValidDropLocation()
 		{
 			return base.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>().GetStableOrbitAsteroid() != null;
 		}
 
-						public bool AutoDeploy { get; set; }
+								public bool AutoDeploy { get; set; }
 
-				public bool CanAutoDeploy
+						public bool CanAutoDeploy
 		{
 			get
 			{
@@ -244,17 +244,17 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 			}
 		}
 
-		public void EmptyCargo()
+				public void EmptyCargo()
 		{
 			this.ChooseLanderLocation();
 		}
 
-		public bool CanEmptyCargo()
+				public bool CanEmptyCargo()
 		{
 			return base.sm.hasCargo.Get(base.smi) && this.IsValidDropLocation() && (!this.ChooseDuplicant || this.ChosenDuplicant != null) && !this.landerPlaced;
 		}
 
-				public bool ChooseDuplicant
+						public bool ChooseDuplicant
 		{
 			get
 			{
@@ -263,7 +263,7 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 			}
 		}
 
-				public bool ModuleDeployed
+						public bool ModuleDeployed
 		{
 			get
 			{
@@ -271,7 +271,7 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 			}
 		}
 
-						public MinionIdentity ChosenDuplicant
+								public MinionIdentity ChosenDuplicant
 		{
 			get
 			{
@@ -283,14 +283,14 @@ public class JettisonableCargoModule : GameStateMachine<JettisonableCargoModule,
 			}
 		}
 
-		private Storage landerContainer;
+				private Storage landerContainer;
 
-		private bool landerPlaced;
+				private bool landerPlaced;
 
-		private MinionIdentity chosenDuplicant;
+				private MinionIdentity chosenDuplicant;
 
-		private int landerPlacementCell;
+				private int landerPlacementCell;
 
-		public GameObject clusterMapFX;
+				public GameObject clusterMapFX;
 	}
 }

@@ -1,4 +1,4 @@
-﻿
+﻿namespace RsTransferPort;
 
 public class RadiantParticlesTransferChannel : SingleChannelController {
     private int receiverIndex;

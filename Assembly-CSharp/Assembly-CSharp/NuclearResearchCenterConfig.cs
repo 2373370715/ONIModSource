@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class NuclearResearchCenterConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "NuclearResearchCenter";
 		int width = 5;
@@ -43,7 +43,7 @@ public class NuclearResearchCenterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.ScienceBuilding, false);
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -67,19 +67,19 @@ public class NuclearResearchCenterConfig : IBuildingConfig
 		go.AddOrGetDef<PoweredController.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "NuclearResearchCenter";
+		public const string ID = "NuclearResearchCenter";
 
-	public const string PORT_ID = "HEP_STORAGE";
+		public const string PORT_ID = "HEP_STORAGE";
 
-	public const float BASE_TIME_PER_POINT = 100f;
+		public const float BASE_TIME_PER_POINT = 100f;
 
-	public const float PARTICLES_PER_POINT = 10f;
+		public const float PARTICLES_PER_POINT = 10f;
 
-	public const float CAPACITY = 100f;
+		public const float CAPACITY = 100f;
 
-	public static readonly Tag INPUT_MATERIAL = GameTags.HighEnergyParticle;
+		public static readonly Tag INPUT_MATERIAL = GameTags.HighEnergyParticle;
 }

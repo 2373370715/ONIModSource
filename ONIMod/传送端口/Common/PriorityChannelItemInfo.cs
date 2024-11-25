@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
+namespace RsTransferPort;
 
 public class PriorityChannelItemInfo : IComparable<PriorityChannelItemInfo> {
     public List<TransferPortChannel> items = new();

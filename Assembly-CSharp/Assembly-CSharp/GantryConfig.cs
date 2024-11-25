@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GantryConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Gantry";
 		int width = 6;
@@ -42,12 +42,12 @@ public class GantryConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<Gantry>();
 		go.AddOrGetDef<MakeBaseSolid.Def>().solidOffsets = GantryConfig.SOLID_OFFSETS;
@@ -63,15 +63,15 @@ public class GantryConfig : IBuildingConfig
 		UnityEngine.Object.DestroyImmediate(go.GetComponent<LogicOperationalController>());
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		go.AddOrGetDef<MakeBaseSolid.Def>().solidOffsets = GantryConfig.SOLID_OFFSETS;
 	}
 
-	public const string ID = "Gantry";
+		public const string ID = "Gantry";
 
-	private static readonly CellOffset[] SOLID_OFFSETS = new CellOffset[]
+		private static readonly CellOffset[] SOLID_OFFSETS = new CellOffset[]
 	{
 		new CellOffset(-2, 1),
 		new CellOffset(-1, 1)

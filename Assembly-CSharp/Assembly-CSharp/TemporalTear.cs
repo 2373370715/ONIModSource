@@ -5,7 +5,7 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class TemporalTear : ClusterGridEntity
 {
-		public override string Name
+			public override string Name
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class TemporalTear : ClusterGridEntity
 		}
 	}
 
-		public override EntityLayer Layer
+			public override EntityLayer Layer
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class TemporalTear : ClusterGridEntity
 		}
 	}
 
-		public override List<ClusterGridEntity.AnimConfig> AnimConfigs
+			public override List<ClusterGridEntity.AnimConfig> AnimConfigs
 	{
 		get
 		{
@@ -36,7 +36,7 @@ public class TemporalTear : ClusterGridEntity
 		}
 	}
 
-		public override bool IsVisible
+			public override bool IsVisible
 	{
 		get
 		{
@@ -44,7 +44,7 @@ public class TemporalTear : ClusterGridEntity
 		}
 	}
 
-		public override ClusterRevealLevel IsVisibleInFOW
+			public override ClusterRevealLevel IsVisibleInFOW
 	{
 		get
 		{
@@ -52,14 +52,14 @@ public class TemporalTear : ClusterGridEntity
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		ClusterManager.Instance.GetComponent<ClusterPOIManager>().RegisterTemporalTear(this);
 		this.UpdateStatus();
 	}
 
-	public void UpdateStatus()
+		public void UpdateStatus()
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		ClusterMapVisualizer clusterMapVisualizer = null;
@@ -85,12 +85,12 @@ public class TemporalTear : ClusterGridEntity
 		base.GetComponent<KSelectable>().AddStatusItem(Db.Get().MiscStatusItems.TearClosed, null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	public void ConsumeCraft(Clustercraft craft)
+		public void ConsumeCraft(Clustercraft craft)
 	{
 		if (this.m_open && craft.Location == base.Location && !craft.IsFlightInProgress())
 		{
@@ -107,25 +107,25 @@ public class TemporalTear : ClusterGridEntity
 		}
 	}
 
-	public void Open()
+		public void Open()
 	{
 		this.m_open = true;
 		this.UpdateStatus();
 	}
 
-	public bool IsOpen()
+		public bool IsOpen()
 	{
 		return this.m_open;
 	}
 
-	public bool HasConsumedCraft()
+		public bool HasConsumedCraft()
 	{
 		return this.m_hasConsumedCraft;
 	}
 
-	[Serialize]
+		[Serialize]
 	private bool m_open;
 
-	[Serialize]
+		[Serialize]
 	private bool m_hasConsumedCraft;
 }

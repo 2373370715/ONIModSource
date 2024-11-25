@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class AlertVignette : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		Color color = this.image.color;
 		if (ClusterManager.Instance.GetWorld(this.worldID) == null)
@@ -46,7 +46,7 @@ public class AlertVignette : KMonoBehaviour
 		}
 	}
 
-	public Image image;
+		public Image image;
 
-	public int worldID;
+		public int worldID;
 }

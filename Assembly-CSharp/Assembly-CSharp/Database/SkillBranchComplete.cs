@@ -4,14 +4,14 @@ using STRINGS;
 
 namespace Database
 {
-	public class SkillBranchComplete : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class SkillBranchComplete : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public SkillBranchComplete(List<Skill> skillsToMaster)
+				public SkillBranchComplete(List<Skill> skillsToMaster)
 		{
 			this.skillsToMaster = skillsToMaster;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			foreach (MinionResume minionResume in Components.MinionResumes.Items)
 			{
@@ -39,7 +39,7 @@ namespace Database
 			return false;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			this.skillsToMaster = new List<Skill>();
 			int num = reader.ReadInt32();
@@ -50,11 +50,11 @@ namespace Database
 			}
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.SKILL_BRANCH;
 		}
 
-		private List<Skill> skillsToMaster;
+				private List<Skill> skillsToMaster;
 	}
 }

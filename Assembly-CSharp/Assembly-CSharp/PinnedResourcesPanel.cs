@@ -6,13 +6,13 @@ using UnityEngine.UI;
 
 public class PinnedResourcesPanel : KScreen, IRender1000ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.rowContainerLayout = this.rowContainer.GetComponent<QuickLayout>();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		PinnedResourcesPanel.Instance = this;
@@ -45,13 +45,13 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		this.Refresh();
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		PinnedResourcesPanel.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	public void ClearExcessiveNewItems()
+		public void ClearExcessiveNewItems()
 	{
 		if (DiscoveredResources.Instance.CheckAllDiscoveredAreNew())
 		{
@@ -59,7 +59,7 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		}
 	}
 
-	private void ClearAllNew()
+		private void ClearAllNew()
 	{
 		foreach (KeyValuePair<Tag, PinnedResourcesPanel.PinnedResourceRow> keyValuePair in this.rows)
 		{
@@ -70,7 +70,7 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		}
 	}
 
-	private void UnPinAll()
+		private void UnPinAll()
 	{
 		WorldInventory worldInventory = ClusterManager.Instance.GetWorld(ClusterManager.Instance.activeWorldId).worldInventory;
 		foreach (KeyValuePair<Tag, PinnedResourcesPanel.PinnedResourceRow> keyValuePair in this.rows)
@@ -79,7 +79,7 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		}
 	}
 
-	private PinnedResourcesPanel.PinnedResourceRow CreateRow(Tag tag)
+		private PinnedResourcesPanel.PinnedResourceRow CreateRow(Tag tag)
 	{
 		PinnedResourcesPanel.PinnedResourceRow pinnedResourceRow = new PinnedResourcesPanel.PinnedResourceRow(tag);
 		GameObject gameObject = Util.KInstantiateUI(this.linePrefab, this.rowContainer, false);
@@ -110,7 +110,7 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		return pinnedResourceRow;
 	}
 
-	public void Populate(object data = null)
+		public void Populate(object data = null)
 	{
 		WorldInventory worldInventory = ClusterManager.Instance.GetWorld(ClusterManager.Instance.activeWorldId).worldInventory;
 		foreach (KeyValuePair<Tag, float> keyValuePair in DiscoveredResources.Instance.newDiscoveries)
@@ -156,7 +156,7 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		this.rowContainerLayout.ForceUpdate();
 	}
 
-	private void SortRows()
+		private void SortRows()
 	{
 		List<PinnedResourcesPanel.PinnedResourceRow> list = new List<PinnedResourcesPanel.PinnedResourceRow>();
 		foreach (KeyValuePair<Tag, PinnedResourcesPanel.PinnedResourceRow> keyValuePair in this.rows)
@@ -172,7 +172,7 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		this.seeAllButton.transform.SetAsLastSibling();
 	}
 
-	private bool IsDisplayedTag(Tag tag)
+		private bool IsDisplayedTag(Tag tag)
 	{
 		foreach (TagSet tagSet in AllResourcesScreen.Instance.allowDisplayCategories)
 		{
@@ -187,7 +187,7 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		return false;
 	}
 
-	private void SyncRows()
+		private void SyncRows()
 	{
 		WorldInventory worldInventory = ClusterManager.Instance.GetWorld(ClusterManager.Instance.activeWorldId).worldInventory;
 		bool flag = false;
@@ -238,7 +238,7 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		}
 	}
 
-	public void Refresh()
+		public void Refresh()
 	{
 		this.SyncRows();
 		WorldInventory worldInventory = ClusterManager.Instance.GetWorld(ClusterManager.Instance.activeWorldId).worldInventory;
@@ -255,7 +255,7 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		this.seeAllLabel.SetText(string.Format(UI.RESOURCESCREEN.SEE_ALL, AllResourcesScreen.Instance.UniqueResourceRowCount()));
 	}
 
-	private void RefreshLine(Tag tag, WorldInventory inventory, bool initialConfig = false)
+		private void RefreshLine(Tag tag, WorldInventory inventory, bool initialConfig = false)
 	{
 		Tag tag2 = tag;
 		if (!AllResourcesScreen.Instance.units.ContainsKey(tag))
@@ -281,7 +281,7 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 			}
 			case GameUtil.MeasureUnit.kcal:
 			{
-				float num = RationTracker.Get().CountRationsByFoodType(tag.Name, ClusterManager.Instance.activeWorld.worldInventory, true);
+				float num = WorldResourceAmountTracker<RationTracker>.Get().CountAmountForItemWithID(tag.Name, ClusterManager.Instance.activeWorld.worldInventory, true);
 				if (this.rows[tag].CheckAmountChanged(num, true))
 				{
 					this.rows[tag].valueLabel.SetText(GameUtil.GetFormattedCalories(num, GameUtil.TimeSlice.None, true));
@@ -316,7 +316,7 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		};
 	}
 
-	public void Render1000ms(float dt)
+		public void Render1000ms(float dt)
 	{
 		if (this.headerButton != null && this.headerButton.CurrentState == 0)
 		{
@@ -325,41 +325,41 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 		this.Refresh();
 	}
 
-	public GameObject linePrefab;
+		public GameObject linePrefab;
 
-	public GameObject rowContainer;
+		public GameObject rowContainer;
 
-	public MultiToggle headerButton;
+		public MultiToggle headerButton;
 
-	public MultiToggle clearNewButton;
+		public MultiToggle clearNewButton;
 
-	public KButton clearAllButton;
+		public KButton clearAllButton;
 
-	public MultiToggle seeAllButton;
+		public MultiToggle seeAllButton;
 
-	private LocText seeAllLabel;
+		private LocText seeAllLabel;
 
-	private QuickLayout rowContainerLayout;
+		private QuickLayout rowContainerLayout;
 
-	private Dictionary<Tag, PinnedResourcesPanel.PinnedResourceRow> rows = new Dictionary<Tag, PinnedResourcesPanel.PinnedResourceRow>();
+		private Dictionary<Tag, PinnedResourcesPanel.PinnedResourceRow> rows = new Dictionary<Tag, PinnedResourcesPanel.PinnedResourceRow>();
 
-	public static PinnedResourcesPanel Instance;
+		public static PinnedResourcesPanel Instance;
 
-	private int clickIdx;
+		private int clickIdx;
 
-	public class PinnedResourceRow
+		public class PinnedResourceRow
 	{
-		public PinnedResourceRow(Tag tag)
+				public PinnedResourceRow(Tag tag)
 		{
 			this.Tag = tag;
 			this.SortableNameWithoutLink = tag.ProperNameStripLink();
 		}
 
-						public Tag Tag { get; private set; }
+								public Tag Tag { get; private set; }
 
-						public string SortableNameWithoutLink { get; private set; }
+								public string SortableNameWithoutLink { get; private set; }
 
-		public bool CheckAmountChanged(float newResourceAmount, bool updateIfTrue)
+				public bool CheckAmountChanged(float newResourceAmount, bool updateIfTrue)
 		{
 			bool flag = newResourceAmount != this.oldResourceAmount;
 			if (flag && updateIfTrue)
@@ -369,20 +369,20 @@ public class PinnedResourcesPanel : KScreen, IRender1000ms
 			return flag;
 		}
 
-		public GameObject gameObject;
+				public GameObject gameObject;
 
-		public Image icon;
+				public Image icon;
 
-		public LocText nameLabel;
+				public LocText nameLabel;
 
-		public LocText valueLabel;
+				public LocText valueLabel;
 
-		public MultiToggle pinToggle;
+				public MultiToggle pinToggle;
 
-		public MultiToggle notifyToggle;
+				public MultiToggle notifyToggle;
 
-		public MultiToggle newLabel;
+				public MultiToggle newLabel;
 
-		private float oldResourceAmount = -1f;
+				private float oldResourceAmount = -1f;
 	}
 }

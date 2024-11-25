@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ResearchPointObject")]
 public class ResearchPointObject : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Research.Instance.AddResearchPoints(this.TypeID, 1f);
@@ -15,7 +15,7 @@ public class ResearchPointObject : KMonoBehaviour, IGameObjectEffectDescriptor
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		ResearchType researchType = Research.Instance.GetResearchType(this.TypeID);
@@ -23,5 +23,5 @@ public class ResearchPointObject : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	public string TypeID = "";
+		public string TypeID = "";
 }

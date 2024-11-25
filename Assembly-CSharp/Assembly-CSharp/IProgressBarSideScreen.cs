@@ -2,13 +2,13 @@
 
 public interface IProgressBarSideScreen
 {
-	float GetProgressBarMaxValue();
+		float GetProgressBarMaxValue();
 
-	float GetProgressBarFillPercentage();
+		float GetProgressBarFillPercentage();
 
-	string GetProgressBarTitleLabel();
+		string GetProgressBarTitleLabel();
 
-	string GetProgressBarLabel();
+		string GetProgressBarLabel();
 
-	string GetProgressBarTooltip();
+		string GetProgressBarTooltip();
 }

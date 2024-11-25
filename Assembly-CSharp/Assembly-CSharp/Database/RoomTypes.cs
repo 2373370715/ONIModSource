@@ -4,9 +4,9 @@ using STRINGS;
 
 namespace Database
 {
-	public class RoomTypes : ResourceSet<RoomType>
+		public class RoomTypes : ResourceSet<RoomType>
 	{
-		public RoomTypes(ResourceSet parent) : base("RoomTypes", parent)
+				public RoomTypes(ResourceSet parent) : base("RoomTypes", parent)
 		{
 			base.Initialize();
 			this.Neutral = base.Add(new RoomType("Neutral", ROOMS.TYPES.NEUTRAL.NAME, ROOMS.TYPES.NEUTRAL.DESCRIPTION, ROOMS.TYPES.NEUTRAL.TOOLTIP, ROOMS.TYPES.NEUTRAL.EFFECT, Db.Get().RoomTypeCategories.None, null, null, new RoomDetails.Detail[]
@@ -167,15 +167,31 @@ namespace Database
 				RoomDetails.SIZE,
 				RoomDetails.BUILDING_COUNT
 			}, 2, null, true, true, null, 10));
+			if (DlcManager.IsContentSubscribed("DLC3_ID"))
+			{
+				this.BionicUpkeep = base.Add(new RoomType("BionicUpkeep", ROOMS.TYPES.BIONICUPKEEP.NAME, ROOMS.TYPES.BIONICUPKEEP.DESCRIPTION, ROOMS.TYPES.BIONICUPKEEP.TOOLTIP, ROOMS.TYPES.BIONICUPKEEP.EFFECT, Db.Get().RoomTypeCategories.Bionic, RoomConstraints.BIONIC_GUNKEMPTIER, new RoomConstraints.Constraint[]
+				{
+					RoomConstraints.BIONIC_LUBRICATION,
+					RoomConstraints.MINIMUM_SIZE_12,
+					RoomConstraints.MAXIMUM_SIZE_64
+				}, new RoomDetails.Detail[]
+				{
+					RoomDetails.SIZE,
+					RoomDetails.BUILDING_COUNT
+				}, 1, null, false, false, new string[]
+				{
+					"RoomBionicUpkeep"
+				}, 11));
+			}
 			this.PowerPlant = base.Add(new RoomType("PowerPlant", ROOMS.TYPES.POWER_PLANT.NAME, ROOMS.TYPES.POWER_PLANT.DESCRIPTION, ROOMS.TYPES.POWER_PLANT.TOOLTIP, ROOMS.TYPES.POWER_PLANT.EFFECT, Db.Get().RoomTypeCategories.Industrial, RoomConstraints.POWER_STATION, new RoomConstraints.Constraint[]
 			{
 				RoomConstraints.MINIMUM_SIZE_12,
-				RoomConstraints.MAXIMUM_SIZE_96
+				RoomConstraints.MAXIMUM_SIZE_120
 			}, new RoomDetails.Detail[]
 			{
 				RoomDetails.SIZE,
 				RoomDetails.BUILDING_COUNT
-			}, 2, null, true, true, null, 11));
+			}, 2, null, true, true, null, 12));
 			this.Farm = base.Add(new RoomType("Farm", ROOMS.TYPES.FARM.NAME, ROOMS.TYPES.FARM.DESCRIPTION, ROOMS.TYPES.FARM.TOOLTIP, ROOMS.TYPES.FARM.EFFECT, Db.Get().RoomTypeCategories.Agricultural, RoomConstraints.FARM_STATION, new RoomConstraints.Constraint[]
 			{
 				RoomConstraints.MINIMUM_SIZE_12,
@@ -184,7 +200,7 @@ namespace Database
 			{
 				RoomDetails.SIZE,
 				RoomDetails.BUILDING_COUNT
-			}, 2, null, true, true, null, 12));
+			}, 2, null, true, true, null, 13));
 			this.CreaturePen = base.Add(new RoomType("CreaturePen", ROOMS.TYPES.CREATUREPEN.NAME, ROOMS.TYPES.CREATUREPEN.DESCRIPTION, ROOMS.TYPES.CREATUREPEN.TOOLTIP, ROOMS.TYPES.CREATUREPEN.EFFECT, Db.Get().RoomTypeCategories.Agricultural, RoomConstraints.RANCH_STATION, new RoomConstraints.Constraint[]
 			{
 				RoomConstraints.MINIMUM_SIZE_12,
@@ -194,7 +210,7 @@ namespace Database
 				RoomDetails.SIZE,
 				RoomDetails.BUILDING_COUNT,
 				RoomDetails.CREATURE_COUNT
-			}, 2, null, true, true, null, 13));
+			}, 2, null, true, true, null, 14));
 			this.Laboratory = base.Add(new RoomType("Laboratory", ROOMS.TYPES.LABORATORY.NAME, ROOMS.TYPES.LABORATORY.DESCRIPTION, ROOMS.TYPES.LABORATORY.TOOLTIP, ROOMS.TYPES.LABORATORY.EFFECT, Db.Get().RoomTypeCategories.Science, RoomConstraints.SCIENCE_BUILDINGS, new RoomConstraints.Constraint[]
 			{
 				RoomConstraints.LIGHT,
@@ -205,7 +221,7 @@ namespace Database
 			{
 				RoomDetails.SIZE,
 				RoomDetails.BUILDING_COUNT
-			}, 2, null, true, true, null, 14));
+			}, 2, null, true, true, null, 15));
 			this.MachineShop = new RoomType("MachineShop", ROOMS.TYPES.MACHINE_SHOP.NAME, ROOMS.TYPES.MACHINE_SHOP.DESCRIPTION, ROOMS.TYPES.MACHINE_SHOP.TOOLTIP, ROOMS.TYPES.MACHINE_SHOP.EFFECT, Db.Get().RoomTypeCategories.Industrial, RoomConstraints.MACHINE_SHOP, new RoomConstraints.Constraint[]
 			{
 				RoomConstraints.MINIMUM_SIZE_12,
@@ -214,7 +230,7 @@ namespace Database
 			{
 				RoomDetails.SIZE,
 				RoomDetails.BUILDING_COUNT
-			}, 2, null, true, true, null, 14);
+			}, 2, null, true, true, null, 16);
 			this.RecRoom = base.Add(new RoomType("RecRoom", ROOMS.TYPES.REC_ROOM.NAME, ROOMS.TYPES.REC_ROOM.DESCRIPTION, ROOMS.TYPES.REC_ROOM.TOOLTIP, ROOMS.TYPES.REC_ROOM.EFFECT, Db.Get().RoomTypeCategories.Recreation, RoomConstraints.REC_BUILDING, new RoomConstraints.Constraint[]
 			{
 				RoomConstraints.NO_INDUSTRIAL_MACHINERY,
@@ -225,7 +241,7 @@ namespace Database
 			{
 				RoomDetails.SIZE,
 				RoomDetails.BUILDING_COUNT
-			}, 0, null, true, true, null, 15));
+			}, 0, null, true, true, null, 17));
 			this.NatureReserve = base.Add(new RoomType("NatureReserve", ROOMS.TYPES.NATURERESERVE.NAME, ROOMS.TYPES.NATURERESERVE.DESCRIPTION, ROOMS.TYPES.NATURERESERVE.TOOLTIP, ROOMS.TYPES.NATURERESERVE.EFFECT, Db.Get().RoomTypeCategories.Park, RoomConstraints.PARK_BUILDING, new RoomConstraints.Constraint[]
 			{
 				RoomConstraints.WILDPLANTS,
@@ -241,7 +257,7 @@ namespace Database
 			}, 1, null, false, false, new string[]
 			{
 				"RoomNatureReserve"
-			}, 17));
+			}, 19));
 			this.Park = base.Add(new RoomType("Park", ROOMS.TYPES.PARK.NAME, ROOMS.TYPES.PARK.DESCRIPTION, ROOMS.TYPES.PARK.TOOLTIP, ROOMS.TYPES.PARK.EFFECT, Db.Get().RoomTypeCategories.Park, RoomConstraints.PARK_BUILDING, new RoomConstraints.Constraint[]
 			{
 				RoomConstraints.WILDPLANT,
@@ -260,10 +276,10 @@ namespace Database
 			}, false, false, new string[]
 			{
 				"RoomPark"
-			}, 16));
+			}, 18));
 		}
 
-		public Assignables[] GetAssignees(Room room)
+				public Assignables[] GetAssignees(Room room)
 		{
 			if (room == null)
 			{
@@ -295,7 +311,7 @@ namespace Database
 			return list.ToArray();
 		}
 
-		public RoomType GetRoomTypeForID(string id)
+				public RoomType GetRoomTypeForID(string id)
 		{
 			foreach (RoomType roomType in this.resources)
 			{
@@ -307,7 +323,7 @@ namespace Database
 			return null;
 		}
 
-		public RoomType GetRoomType(Room room)
+				public RoomType GetRoomType(Room room)
 		{
 			foreach (RoomType roomType in this.resources)
 			{
@@ -331,7 +347,7 @@ namespace Database
 			return this.Neutral;
 		}
 
-		public bool HasAmbiguousRoomType(Room room, RoomType suspected_type, RoomType potential_type)
+				public bool HasAmbiguousRoomType(Room room, RoomType suspected_type, RoomType potential_type)
 		{
 			RoomType.RoomIdentificationResult roomIdentificationResult = potential_type.isSatisfactory(room);
 			RoomType.RoomIdentificationResult roomIdentificationResult2 = suspected_type.isSatisfactory(room);
@@ -381,7 +397,7 @@ namespace Database
 			return false;
 		}
 
-		public RoomTypes.RoomTypeQueryResult[] GetPossibleRoomTypes(Room room)
+				public RoomTypes.RoomTypeQueryResult[] GetPossibleRoomTypes(Room room)
 		{
 			RoomTypes.RoomTypeQueryResult[] array = new RoomTypes.RoomTypeQueryResult[this.Count];
 			int num = 0;
@@ -414,49 +430,51 @@ namespace Database
 			return array;
 		}
 
-		public RoomType Neutral;
+				public RoomType Neutral;
 
-		public RoomType Latrine;
+				public RoomType Latrine;
 
-		public RoomType PlumbedBathroom;
+				public RoomType PlumbedBathroom;
 
-		public RoomType Barracks;
+				public RoomType Barracks;
 
-		public RoomType Bedroom;
+				public RoomType Bedroom;
 
-		public RoomType PrivateBedroom;
+				public RoomType PrivateBedroom;
 
-		public RoomType MessHall;
+				public RoomType MessHall;
 
-		public RoomType Kitchen;
+				public RoomType Kitchen;
 
-		public RoomType GreatHall;
+				public RoomType GreatHall;
 
-		public RoomType Hospital;
+				public RoomType Hospital;
 
-		public RoomType MassageClinic;
+				public RoomType MassageClinic;
 
-		public RoomType PowerPlant;
+				public RoomType PowerPlant;
 
-		public RoomType Farm;
+				public RoomType Farm;
 
-		public RoomType CreaturePen;
+				public RoomType CreaturePen;
 
-		public RoomType MachineShop;
+				public RoomType MachineShop;
 
-		public RoomType RecRoom;
+				public RoomType RecRoom;
 
-		public RoomType Park;
+				public RoomType Park;
 
-		public RoomType NatureReserve;
+				public RoomType NatureReserve;
 
-		public RoomType Laboratory;
+				public RoomType Laboratory;
 
-		public struct RoomTypeQueryResult
+				public RoomType BionicUpkeep;
+
+				public struct RoomTypeQueryResult
 		{
-			public RoomType Type;
+						public RoomType Type;
 
-			public RoomType.RoomIdentificationResult SatisfactionRating;
+						public RoomType.RoomIdentificationResult SatisfactionRating;
 		}
 	}
 }

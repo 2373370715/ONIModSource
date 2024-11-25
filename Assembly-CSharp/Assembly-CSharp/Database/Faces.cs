@@ -2,9 +2,9 @@
 
 namespace Database
 {
-	public class Faces : ResourceSet<Face>
+		public class Faces : ResourceSet<Face>
 	{
-		public Faces()
+				public Faces()
 		{
 			this.Neutral = base.Add(new Face("Neutral", null));
 			this.Happy = base.Add(new Face("Happy", null));
@@ -36,60 +36,60 @@ namespace Database
 			this.Radiation4 = base.Add(new Face("Radiation4", "headfx_radiation4"));
 		}
 
-		public Face Neutral;
+				public Face Neutral;
 
-		public Face Happy;
+				public Face Happy;
 
-		public Face Uncomfortable;
+				public Face Uncomfortable;
 
-		public Face Cold;
+				public Face Cold;
 
-		public Face Hot;
+				public Face Hot;
 
-		public Face Tired;
+				public Face Tired;
 
-		public Face Sleep;
+				public Face Sleep;
 
-		public Face Hungry;
+				public Face Hungry;
 
-		public Face Angry;
+				public Face Angry;
 
-		public Face Suffocate;
+				public Face Suffocate;
 
-		public Face Dead;
+				public Face Dead;
 
-		public Face Sick;
+				public Face Sick;
 
-		public Face SickSpores;
+				public Face SickSpores;
 
-		public Face Zombie;
+				public Face Zombie;
 
-		public Face SickFierySkin;
+				public Face SickFierySkin;
 
-		public Face SickCold;
+				public Face SickCold;
 
-		public Face Pollen;
+				public Face Pollen;
 
-		public Face Productive;
+				public Face Productive;
 
-		public Face Determined;
+				public Face Determined;
 
-		public Face Sticker;
+				public Face Sticker;
 
-		public Face Balloon;
+				public Face Balloon;
 
-		public Face Sparkle;
+				public Face Sparkle;
 
-		public Face Tickled;
+				public Face Tickled;
 
-		public Face Music;
+				public Face Music;
 
-		public Face Radiation1;
+				public Face Radiation1;
 
-		public Face Radiation2;
+				public Face Radiation2;
 
-		public Face Radiation3;
+				public Face Radiation3;
 
-		public Face Radiation4;
+				public Face Radiation4;
 	}
 }

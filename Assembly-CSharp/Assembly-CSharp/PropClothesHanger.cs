@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PropClothesHanger : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PropClothesHanger";
 		string name = STRINGS.BUILDINGS.PREFABS.PROPCLOTHESHANGER.NAME;
@@ -42,7 +42,7 @@ public class PropClothesHanger : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		SetLocker component = inst.GetComponent<SetLocker>();
 		component.possible_contents_ids = new string[][]
@@ -55,7 +55,7 @@ public class PropClothesHanger : IEntityConfig
 		component.ChooseContents();
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		inst.GetComponent<Deconstructable>().SetWorkTime(5f);
 	}

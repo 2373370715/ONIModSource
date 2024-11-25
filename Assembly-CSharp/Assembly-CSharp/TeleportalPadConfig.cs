@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class TeleportalPadConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "TeleportalPad";
 		int width = 4;
@@ -45,25 +45,25 @@ public class TeleportalPadConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<TeleportalPad>();
 		go.AddOrGet<Teleporter>();
 		go.AddOrGet<PrimaryElement>().SetElement(SimHashes.Unobtanium, true);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 	}
 
-	public const string ID = "TeleportalPad";
+		public const string ID = "TeleportalPad";
 
-	public const string PORTAL_ID_PORT_0 = "TeleportalPad_ID_PORT_0";
+		public const string PORTAL_ID_PORT_0 = "TeleportalPad_ID_PORT_0";
 
-	public const string PORTAL_ID_PORT_1 = "TeleportalPad_ID_PORT_1";
+		public const string PORTAL_ID_PORT_1 = "TeleportalPad_ID_PORT_1";
 
-	public const string PORTAL_ID_PORT_2 = "TeleportalPad_ID_PORT_2";
+		public const string PORTAL_ID_PORT_2 = "TeleportalPad_ID_PORT_2";
 
-	public const string PORTAL_ID_PORT_3 = "TeleportalPad_ID_PORT_3";
+		public const string PORTAL_ID_PORT_3 = "TeleportalPad_ID_PORT_3";
 }

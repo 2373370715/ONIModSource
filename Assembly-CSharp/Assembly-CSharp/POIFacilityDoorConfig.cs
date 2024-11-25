@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class POIFacilityDoorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("POIFacilityDoor", 2, 3, "door_facility_kanim", 30, 60f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER3, MATERIALS.ALL_METALS, 1600f, BuildLocationRule.Anywhere, BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NONE, 0.2f);
 		buildingDef.Overheatable = false;
@@ -24,7 +24,7 @@ public class POIFacilityDoorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Door door = go.AddOrGet<Door>();
 		door.hasComplexUserControls = false;
@@ -42,12 +42,12 @@ public class POIFacilityDoorConfig : IBuildingConfig
 		component.Temperature = 273f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<AccessControl>().controlEnabled = false;
 		go.GetComponent<Deconstructable>().allowDeconstruction = true;
 		go.GetComponent<KBatchedAnimController>().initialAnim = "closed";
 	}
 
-	public const string ID = "POIFacilityDoor";
+		public const string ID = "POIFacilityDoor";
 }

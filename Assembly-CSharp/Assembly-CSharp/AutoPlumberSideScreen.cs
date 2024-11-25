@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AutoPlumberSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.activateButton.onClick += delegate()
 		{
@@ -27,45 +27,47 @@ public class AutoPlumberSideScreen : SideScreenContent
 		};
 	}
 
-	private void SpawnMinion()
+		private void SpawnMinion()
 	{
-		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(MinionConfig.ID), null, null);
-		gameObject.name = Assets.GetPrefab(MinionConfig.ID).name;
+		MinionStartingStats minionStartingStats = new MinionStartingStats(false, null, null, true);
+		GameObject prefab = Assets.GetPrefab(BaseMinionConfig.GetMinionIDForModel(minionStartingStats.personality.model));
+		GameObject gameObject = Util.KInstantiate(prefab, null, null);
+		gameObject.name = prefab.name;
 		Immigration.Instance.ApplyDefaultPersonalPriorities(gameObject);
 		Vector3 position = Grid.CellToPos(Grid.PosToCell(this.building), CellAlignment.Bottom, Grid.SceneLayer.Move);
 		gameObject.transform.SetLocalPosition(position);
 		gameObject.SetActive(true);
-		new MinionStartingStats(false, null, null, true).Apply(gameObject);
+		minionStartingStats.Apply(gameObject);
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		return -150;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return DebugHandler.InstantBuildMode && target.GetComponent<Building>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.building = target.GetComponent<Building>();
 	}
 
-	public override void ClearTarget()
+		public override void ClearTarget()
 	{
 	}
 
-	public KButton activateButton;
+		public KButton activateButton;
 
-	public KButton powerButton;
+		public KButton powerButton;
 
-	public KButton pipesButton;
+		public KButton pipesButton;
 
-	public KButton solidsButton;
+		public KButton solidsButton;
 
-	public KButton minionButton;
+		public KButton minionButton;
 
-	private Building building;
+		private Building building;
 }

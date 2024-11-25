@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class CropTendingMonitor : GameStateMachine<CropTendingMonitor, CropTendingMonitor.Instance, IStateMachineTarget, CropTendingMonitor.Def>
 {
-	private bool InterestedInTendingCrops(CropTendingMonitor.Instance smi)
+		private bool InterestedInTendingCrops(CropTendingMonitor.Instance smi)
 	{
 		return !smi.HasTag(GameTags.Creatures.Hungry) || UnityEngine.Random.value <= smi.def.unsatisfiedTendChance;
 	}
 
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.cooldown;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -26,24 +26,24 @@ public class CropTendingMonitor : GameStateMachine<CropTendingMonitor, CropTendi
 		}).GoTo(this.cooldown);
 	}
 
-	private StateMachine<CropTendingMonitor, CropTendingMonitor.Instance, IStateMachineTarget, CropTendingMonitor.Def>.FloatParameter cooldownTimer;
+		private StateMachine<CropTendingMonitor, CropTendingMonitor.Instance, IStateMachineTarget, CropTendingMonitor.Def>.FloatParameter cooldownTimer;
 
-	private GameStateMachine<CropTendingMonitor, CropTendingMonitor.Instance, IStateMachineTarget, CropTendingMonitor.Def>.State cooldown;
+		private GameStateMachine<CropTendingMonitor, CropTendingMonitor.Instance, IStateMachineTarget, CropTendingMonitor.Def>.State cooldown;
 
-	private GameStateMachine<CropTendingMonitor, CropTendingMonitor.Instance, IStateMachineTarget, CropTendingMonitor.Def>.State lookingForCrop;
+		private GameStateMachine<CropTendingMonitor, CropTendingMonitor.Instance, IStateMachineTarget, CropTendingMonitor.Def>.State lookingForCrop;
 
-	private GameStateMachine<CropTendingMonitor, CropTendingMonitor.Instance, IStateMachineTarget, CropTendingMonitor.Def>.State reset;
+		private GameStateMachine<CropTendingMonitor, CropTendingMonitor.Instance, IStateMachineTarget, CropTendingMonitor.Def>.State reset;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public float numCropsTendedPerCycle = 8f;
+				public float numCropsTendedPerCycle = 8f;
 
-		public float unsatisfiedTendChance = 0.5f;
+				public float unsatisfiedTendChance = 0.5f;
 	}
 
-	public new class Instance : GameStateMachine<CropTendingMonitor, CropTendingMonitor.Instance, IStateMachineTarget, CropTendingMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<CropTendingMonitor, CropTendingMonitor.Instance, IStateMachineTarget, CropTendingMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, CropTendingMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, CropTendingMonitor.Def def) : base(master, def)
 		{
 		}
 	}

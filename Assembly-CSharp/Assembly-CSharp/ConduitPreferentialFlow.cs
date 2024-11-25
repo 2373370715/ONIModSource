@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ConduitPreferentialFlow")]
 public class ConduitPreferentialFlow : KMonoBehaviour, ISecondaryInput
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Building component = base.GetComponent<Building>();
@@ -19,14 +19,14 @@ public class ConduitPreferentialFlow : KMonoBehaviour, ISecondaryInput
 		networkManager.AddToNetworks(this.secondaryInput.Cell, this.secondaryInput, true);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Conduit.GetNetworkManager(this.portInfo.conduitType).RemoveFromNetworks(this.secondaryInput.Cell, this.secondaryInput, true);
 		Conduit.GetFlowManager(this.portInfo.conduitType).RemoveConduitUpdater(new Action<float>(this.ConduitUpdate));
 		base.OnCleanUp();
 	}
 
-	private void ConduitUpdate(float dt)
+		private void ConduitUpdate(float dt)
 	{
 		ConduitFlow flowManager = Conduit.GetFlowManager(this.portInfo.conduitType);
 		if (!flowManager.HasConduit(this.outputCell))
@@ -50,12 +50,12 @@ public class ConduitPreferentialFlow : KMonoBehaviour, ISecondaryInput
 		}
 	}
 
-	public bool HasSecondaryConduitType(ConduitType type)
+		public bool HasSecondaryConduitType(ConduitType type)
 	{
 		return this.portInfo.conduitType == type;
 	}
 
-	public CellOffset GetSecondaryConduitOffset(ConduitType type)
+		public CellOffset GetSecondaryConduitOffset(ConduitType type)
 	{
 		if (this.portInfo.conduitType == type)
 		{
@@ -64,12 +64,12 @@ public class ConduitPreferentialFlow : KMonoBehaviour, ISecondaryInput
 		return CellOffset.none;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitPortInfo portInfo;
 
-	private int inputCell;
+		private int inputCell;
 
-	private int outputCell;
+		private int outputCell;
 
-	private FlowUtilityNetwork.NetworkItem secondaryInput;
+		private FlowUtilityNetwork.NetworkItem secondaryInput;
 }

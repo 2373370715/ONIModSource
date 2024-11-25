@@ -5,19 +5,19 @@ using UnityEngine;
 
 public class WorldGenScreen : NewGameFlowScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		WorldGenScreen.Instance = this;
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		WorldGenScreen.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (MainMenu.Instance != null)
@@ -44,7 +44,7 @@ public class WorldGenScreen : NewGameFlowScreen
 		this.offlineWorldGen.Generate();
 	}
 
-	private void TriggerLoadingMusic()
+		private void TriggerLoadingMusic()
 	{
 		if (AudioDebug.Get().musicEnabled && !MusicManager.instance.SongIsPlaying("Music_FrontEnd"))
 		{
@@ -55,7 +55,7 @@ public class WorldGenScreen : NewGameFlowScreen
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (!e.Consumed)
 		{
@@ -68,8 +68,8 @@ public class WorldGenScreen : NewGameFlowScreen
 		base.OnKeyDown(e);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private OfflineWorldGen offlineWorldGen;
 
-	public static WorldGenScreen Instance;
+		public static WorldGenScreen Instance;
 }

@@ -4,13 +4,29 @@ using UnityEngine;
 
 public class CodexCollapsibleHeader : CodexWidget<CodexCollapsibleHeader>
 {
-	public CodexCollapsibleHeader(string label, ContentContainer contents)
+				protected GameObject ContentsGameObject
+	{
+		get
+		{
+			if (this.contentsGameObject == null)
+			{
+				this.contentsGameObject = this.contents.go;
+			}
+			return this.contentsGameObject;
+		}
+		set
+		{
+			this.contentsGameObject = value;
+		}
+	}
+
+		public CodexCollapsibleHeader(string label, ContentContainer contents)
 	{
 		this.label = label;
 		this.contents = contents;
 	}
 
-	public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		HierarchyReferences component = contentGameObject.GetComponent<HierarchyReferences>();
 		LocText reference = component.GetReference<LocText>("Label");
@@ -21,17 +37,19 @@ public class CodexCollapsibleHeader : CodexWidget<CodexCollapsibleHeader>
 		reference2.ChangeState(1);
 		reference2.onClick = delegate()
 		{
-			this.ToggleCategoryOpen(contentGameObject, !this.contents.go.activeSelf);
+			this.ToggleCategoryOpen(contentGameObject, !this.ContentsGameObject.activeSelf);
 		};
 	}
 
-	private void ToggleCategoryOpen(GameObject header, bool open)
+		private void ToggleCategoryOpen(GameObject header, bool open)
 	{
 		header.GetComponent<HierarchyReferences>().GetReference<MultiToggle>("ExpandToggle").ChangeState(open ? 1 : 0);
-		this.contents.go.SetActive(open);
+		this.ContentsGameObject.SetActive(open);
 	}
 
-	private ContentContainer contents;
+		protected ContentContainer contents;
 
-	private string label;
+		private string label;
+
+		private GameObject contentsGameObject;
 }

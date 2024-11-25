@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 public static class SerializableOutfitData
 {
-	public static int GetVersionFrom(JObject jsonData)
+		public static int GetVersionFrom(JObject jsonData)
 	{
 		int result;
 		if (jsonData["Version"] == null)
@@ -22,7 +22,7 @@ public static class SerializableOutfitData
 		return result;
 	}
 
-	public static SerializableOutfitData.Version2 FromJson(JObject jsonData)
+		public static SerializableOutfitData.Version2 FromJson(JObject jsonData)
 	{
 		int versionFrom = SerializableOutfitData.GetVersionFrom(jsonData);
 		if (versionFrom == 1)
@@ -37,12 +37,12 @@ public static class SerializableOutfitData
 		return SerializableOutfitData.Version2.FromJson(jsonData);
 	}
 
-	public static JObject ToJson(SerializableOutfitData.Version2 data)
+		public static JObject ToJson(SerializableOutfitData.Version2 data)
 	{
 		return SerializableOutfitData.Version2.ToJson(data);
 	}
 
-	public static string ToJsonString(JObject data)
+		public static string ToJsonString(JObject data)
 	{
 		string result;
 		using (StringWriter stringWriter = new StringWriter())
@@ -56,7 +56,7 @@ public static class SerializableOutfitData
 		return result;
 	}
 
-	public static void ToJsonString(JObject data, TextWriter textWriter)
+		public static void ToJsonString(JObject data, TextWriter textWriter)
 	{
 		using (JsonTextWriter jsonTextWriter = new JsonTextWriter(textWriter))
 		{
@@ -64,18 +64,18 @@ public static class SerializableOutfitData
 		}
 	}
 
-	public const string VERSION_KEY = "Version";
+		public const string VERSION_KEY = "Version";
 
-	public class Version2
+		public class Version2
 	{
-		public static SerializableOutfitData.Version2 FromVersion1(SerializableOutfitData.Version1 data)
+				public static SerializableOutfitData.Version2 FromVersion1(SerializableOutfitData.Version1 data)
 		{
 			Dictionary<string, SerializableOutfitData.Version2.CustomTemplateOutfitEntry> dictionary = new Dictionary<string, SerializableOutfitData.Version2.CustomTemplateOutfitEntry>();
-			foreach (KeyValuePair<string, string[]> self in data.CustomOutfits)
+			foreach (KeyValuePair<string, string[]> keyValuePair in data.CustomOutfits)
 			{
 				string text;
 				string[] array;
-				self.Deconstruct(out text, out array);
+				keyValuePair.Deconstruct(out text, out array);
 				string key = text;
 				string[] itemIds = array;
 				dictionary.Add(key, new SerializableOutfitData.Version2.CustomTemplateOutfitEntry
@@ -85,19 +85,19 @@ public static class SerializableOutfitData
 				});
 			}
 			Dictionary<string, Dictionary<string, string>> dictionary2 = new Dictionary<string, Dictionary<string, string>>();
-			foreach (KeyValuePair<string, Dictionary<ClothingOutfitUtility.OutfitType, string>> self2 in data.DuplicantOutfits)
+			foreach (KeyValuePair<string, Dictionary<ClothingOutfitUtility.OutfitType, string>> keyValuePair2 in data.DuplicantOutfits)
 			{
 				string text;
 				Dictionary<ClothingOutfitUtility.OutfitType, string> dictionary3;
-				self2.Deconstruct(out text, out dictionary3);
+				keyValuePair2.Deconstruct(out text, out dictionary3);
 				string key2 = text;
 				Dictionary<ClothingOutfitUtility.OutfitType, string> dictionary4 = dictionary3;
 				Dictionary<string, string> dictionary5 = new Dictionary<string, string>();
 				dictionary2[key2] = dictionary5;
-				foreach (KeyValuePair<ClothingOutfitUtility.OutfitType, string> self3 in dictionary4)
+				foreach (KeyValuePair<ClothingOutfitUtility.OutfitType, string> keyValuePair3 in dictionary4)
 				{
 					ClothingOutfitUtility.OutfitType outfitType;
-					self3.Deconstruct(out outfitType, out text);
+					keyValuePair3.Deconstruct(out outfitType, out text);
 					ClothingOutfitUtility.OutfitType outfitType2 = outfitType;
 					string value = text;
 					dictionary5.Add(Enum.GetName(typeof(ClothingOutfitUtility.OutfitType), outfitType2), value);
@@ -110,19 +110,19 @@ public static class SerializableOutfitData
 			};
 		}
 
-		public static SerializableOutfitData.Version2 FromJson(JObject jsonData)
+				public static SerializableOutfitData.Version2 FromJson(JObject jsonData)
 		{
 			return jsonData.ToObject<SerializableOutfitData.Version2>(SerializableOutfitData.Version2.GetSerializer());
 		}
 
-		public static JObject ToJson(SerializableOutfitData.Version2 data)
+				public static JObject ToJson(SerializableOutfitData.Version2 data)
 		{
 			JObject jobject = JObject.FromObject(data, SerializableOutfitData.Version2.GetSerializer());
 			jobject.AddFirst(new JProperty("Version", 2));
 			return jobject;
 		}
 
-		public static JsonSerializer GetSerializer()
+				public static JsonSerializer GetSerializer()
 		{
 			if (SerializableOutfitData.Version2.s_serializer != null)
 			{
@@ -133,28 +133,28 @@ public static class SerializableOutfitData
 			return SerializableOutfitData.Version2.s_serializer;
 		}
 
-		public Dictionary<string, Dictionary<string, string>> PersonalityIdToAssignedOutfits = new Dictionary<string, Dictionary<string, string>>();
+				public Dictionary<string, Dictionary<string, string>> PersonalityIdToAssignedOutfits = new Dictionary<string, Dictionary<string, string>>();
 
-		public Dictionary<string, SerializableOutfitData.Version2.CustomTemplateOutfitEntry> OutfitIdToUserAuthoredTemplateOutfit = new Dictionary<string, SerializableOutfitData.Version2.CustomTemplateOutfitEntry>();
+				public Dictionary<string, SerializableOutfitData.Version2.CustomTemplateOutfitEntry> OutfitIdToUserAuthoredTemplateOutfit = new Dictionary<string, SerializableOutfitData.Version2.CustomTemplateOutfitEntry>();
 
-		private static JsonSerializer s_serializer;
+				private static JsonSerializer s_serializer;
 
-		public class CustomTemplateOutfitEntry
+				public class CustomTemplateOutfitEntry
 		{
-			public string outfitType;
+						public string outfitType;
 
-			public string[] itemIds;
+						public string[] itemIds;
 		}
 	}
 
-	public class Version1
+		public class Version1
 	{
-		public static JObject ToJson(SerializableOutfitData.Version1 data)
+				public static JObject ToJson(SerializableOutfitData.Version1 data)
 		{
 			return JObject.FromObject(data);
 		}
 
-		public static SerializableOutfitData.Version1 FromJson(JObject jsonData)
+				public static SerializableOutfitData.Version1 FromJson(JObject jsonData)
 		{
 			SerializableOutfitData.Version1 version = new SerializableOutfitData.Version1();
 			SerializableOutfitData.Version1 result;
@@ -254,8 +254,8 @@ public static class SerializableOutfitData
 			return result;
 		}
 
-		public Dictionary<string, Dictionary<ClothingOutfitUtility.OutfitType, string>> DuplicantOutfits = new Dictionary<string, Dictionary<ClothingOutfitUtility.OutfitType, string>>();
+				public Dictionary<string, Dictionary<ClothingOutfitUtility.OutfitType, string>> DuplicantOutfits = new Dictionary<string, Dictionary<ClothingOutfitUtility.OutfitType, string>>();
 
-		public Dictionary<string, string[]> CustomOutfits = new Dictionary<string, string[]>();
+				public Dictionary<string, string[]> CustomOutfits = new Dictionary<string, string[]>();
 	}
 }

@@ -2,7 +2,7 @@
 
 public class WoundMonitor : GameStateMachine<WoundMonitor, WoundMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.healthy;
 		this.root.ToggleAnims("anim_hits_kanim", 0f).EventHandler(GameHashes.HealthChanged, delegate(WoundMonitor.Instance smi, object data)
@@ -37,28 +37,28 @@ public class WoundMonitor : GameStateMachine<WoundMonitor, WoundMonitor.Instance
 		}, UpdateRate.SIM_1000ms, false);
 	}
 
-	public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State healthy;
+		public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State healthy;
 
-	public WoundMonitor.Wounded wounded;
+		public WoundMonitor.Wounded wounded;
 
-	public class Wounded : GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State
+		public class Wounded : GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State light;
+				public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State light;
 
-		public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State medium;
+				public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State medium;
 
-		public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State heavy;
+				public GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.State heavy;
 	}
 
-	public new class Instance : GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<WoundMonitor, WoundMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.health = master.GetComponent<Health>();
-			this.worker = master.GetComponent<Worker>();
+			this.worker = master.GetComponent<WorkerBase>();
 		}
 
-		public void OnHealthChanged(object data)
+				public void OnHealthChanged(object data)
 		{
 			float num = (float)data;
 			if (this.health.hitPoints != 0f && num < 0f)
@@ -67,7 +67,7 @@ public class WoundMonitor : GameStateMachine<WoundMonitor, WoundMonitor.Instance
 			}
 		}
 
-		private void PlayHitAnimation()
+				private void PlayHitAnimation()
 		{
 			string text = null;
 			KBatchedAnimController kbatchedAnimController = base.smi.Get<KBatchedAnimController>();
@@ -148,7 +148,7 @@ public class WoundMonitor : GameStateMachine<WoundMonitor, WoundMonitor.Instance
 			}
 		}
 
-		public void PlayKnockedOverImpactAnimation()
+				public void PlayKnockedOverImpactAnimation()
 		{
 			string text = null;
 			KBatchedAnimController kbatchedAnimController = base.smi.Get<KBatchedAnimController>();
@@ -212,7 +212,7 @@ public class WoundMonitor : GameStateMachine<WoundMonitor, WoundMonitor.Instance
 			}
 		}
 
-		public void GoToProperHeathState()
+				public void GoToProperHeathState()
 		{
 			switch (base.smi.health.State)
 			{
@@ -235,12 +235,12 @@ public class WoundMonitor : GameStateMachine<WoundMonitor, WoundMonitor.Instance
 			}
 		}
 
-		public bool ShouldExitInfirmary()
+				public bool ShouldExitInfirmary()
 		{
 			return this.health.State == Health.HealthState.Perfect;
 		}
 
-		public void FindAvailableMedicalBed()
+				public void FindAvailableMedicalBed()
 		{
 			AssignableSlot clinic = Db.Get().AssignableSlots.Clinic;
 			Ownables soleOwner = base.gameObject.GetComponent<MinionIdentity>().GetSoleOwner();
@@ -250,8 +250,8 @@ public class WoundMonitor : GameStateMachine<WoundMonitor, WoundMonitor.Instance
 			}
 		}
 
-		public Health health;
+				public Health health;
 
-		private Worker worker;
+				private WorkerBase worker;
 	}
 }

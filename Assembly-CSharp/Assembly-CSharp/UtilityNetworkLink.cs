@@ -1,124 +1,101 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public abstract class UtilityNetworkLink : KMonoBehaviour
-{
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		base.Subscribe<UtilityNetworkLink>(774203113, UtilityNetworkLink.OnBuildingBrokenDelegate);
-		base.Subscribe<UtilityNetworkLink>(-1735440190, UtilityNetworkLink.OnBuildingFullyRepairedDelegate);
-		this.Connect();
-	}
+public abstract class UtilityNetworkLink : KMonoBehaviour {
+    private static readonly EventSystem.IntraObjectHandler<UtilityNetworkLink> OnBuildingBrokenDelegate
+        = new EventSystem.IntraObjectHandler<UtilityNetworkLink>(delegate(UtilityNetworkLink component, object data) {
+                                                                     component.OnBuildingBroken(data);
+                                                                 });
 
-	protected override void OnCleanUp()
-	{
-		base.Unsubscribe<UtilityNetworkLink>(774203113, UtilityNetworkLink.OnBuildingBrokenDelegate, false);
-		base.Unsubscribe<UtilityNetworkLink>(-1735440190, UtilityNetworkLink.OnBuildingFullyRepairedDelegate, false);
-		this.Disconnect();
-		base.OnCleanUp();
-	}
+    private static readonly EventSystem.IntraObjectHandler<UtilityNetworkLink> OnBuildingFullyRepairedDelegate
+        = new EventSystem.IntraObjectHandler<UtilityNetworkLink>(delegate(UtilityNetworkLink component, object data) {
+                                                                     component.OnBuildingFullyRepaired(data);
+                                                                 });
 
-	protected void Connect()
-	{
-		if (!this.visualizeOnly && !this.connected)
-		{
-			this.connected = true;
-			int cell;
-			int cell2;
-			this.GetCells(out cell, out cell2);
-			this.OnConnect(cell, cell2);
-		}
-	}
+    private bool connected;
 
-	protected virtual void OnConnect(int cell1, int cell2)
-	{
-	}
+    [SerializeField]
+    public CellOffset link1;
 
-	protected void Disconnect()
-	{
-		if (!this.visualizeOnly && this.connected)
-		{
-			this.connected = false;
-			int cell;
-			int cell2;
-			this.GetCells(out cell, out cell2);
-			this.OnDisconnect(cell, cell2);
-		}
-	}
+    [SerializeField]
+    public CellOffset link2;
 
-	protected virtual void OnDisconnect(int cell1, int cell2)
-	{
-	}
+    [MyCmpGet]
+    private Rotatable rotatable;
 
-	public void GetCells(out int linked_cell1, out int linked_cell2)
-	{
-		Building component = base.GetComponent<Building>();
-		if (component != null)
-		{
-			Orientation orientation = component.Orientation;
-			int cell = Grid.PosToCell(base.transform.GetPosition());
-			this.GetCells(cell, orientation, out linked_cell1, out linked_cell2);
-			return;
-		}
-		linked_cell1 = -1;
-		linked_cell2 = -1;
-	}
+    [SerializeField]
+    public bool visualizeOnly;
 
-	public void GetCells(int cell, Orientation orientation, out int linked_cell1, out int linked_cell2)
-	{
-		CellOffset rotatedCellOffset = Rotatable.GetRotatedCellOffset(this.link1, orientation);
-		CellOffset rotatedCellOffset2 = Rotatable.GetRotatedCellOffset(this.link2, orientation);
-		linked_cell1 = Grid.OffsetCell(cell, rotatedCellOffset);
-		linked_cell2 = Grid.OffsetCell(cell, rotatedCellOffset2);
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        Subscribe(774203113,   OnBuildingBrokenDelegate);
+        Subscribe(-1735440190, OnBuildingFullyRepairedDelegate);
+        Connect();
+    }
 
-	public bool AreCellsValid(int cell, Orientation orientation)
-	{
-		CellOffset rotatedCellOffset = Rotatable.GetRotatedCellOffset(this.link1, orientation);
-		CellOffset rotatedCellOffset2 = Rotatable.GetRotatedCellOffset(this.link2, orientation);
-		return Grid.IsCellOffsetValid(cell, rotatedCellOffset) && Grid.IsCellOffsetValid(cell, rotatedCellOffset2);
-	}
+    protected override void OnCleanUp() {
+        Unsubscribe(774203113,   OnBuildingBrokenDelegate);
+        Unsubscribe(-1735440190, OnBuildingFullyRepairedDelegate);
+        Disconnect();
+        base.OnCleanUp();
+    }
 
-	private void OnBuildingBroken(object data)
-	{
-		this.Disconnect();
-	}
+    protected void Connect() {
+        if (!visualizeOnly && !connected) {
+            connected = true;
+            int cell;
+            int cell2;
+            GetCells(out cell, out cell2);
+            OnConnect(cell, cell2);
+        }
+    }
 
-	private void OnBuildingFullyRepaired(object data)
-	{
-		this.Connect();
-	}
+    protected virtual void OnConnect(int cell1, int cell2) { }
 
-	public int GetNetworkCell()
-	{
-		int result;
-		int num;
-		this.GetCells(out result, out num);
-		return result;
-	}
+    protected void Disconnect() {
+        if (!visualizeOnly && connected) {
+            connected = false;
+            int cell;
+            int cell2;
+            GetCells(out cell, out cell2);
+            OnDisconnect(cell, cell2);
+        }
+    }
 
-	[MyCmpGet]
-	private Rotatable rotatable;
+    protected virtual void OnDisconnect(int cell1, int cell2) { }
 
-	[SerializeField]
-	public CellOffset link1;
+    public void GetCells(out int linked_cell1, out int linked_cell2) {
+        var component = GetComponent<Building>();
+        if (component != null) {
+            var orientation = component.Orientation;
+            var cell        = Grid.PosToCell(transform.GetPosition());
+            GetCells(cell, orientation, out linked_cell1, out linked_cell2);
+            return;
+        }
 
-	[SerializeField]
-	public CellOffset link2;
+        linked_cell1 = -1;
+        linked_cell2 = -1;
+    }
 
-	[SerializeField]
-	public bool visualizeOnly;
+    public void GetCells(int cell, Orientation orientation, out int linked_cell1, out int linked_cell2) {
+        var rotatedCellOffset  = Rotatable.GetRotatedCellOffset(link1, orientation);
+        var rotatedCellOffset2 = Rotatable.GetRotatedCellOffset(link2, orientation);
+        linked_cell1 = Grid.OffsetCell(cell, rotatedCellOffset);
+        linked_cell2 = Grid.OffsetCell(cell, rotatedCellOffset2);
+    }
 
-	private bool connected;
+    public bool AreCellsValid(int cell, Orientation orientation) {
+        var rotatedCellOffset  = Rotatable.GetRotatedCellOffset(link1, orientation);
+        var rotatedCellOffset2 = Rotatable.GetRotatedCellOffset(link2, orientation);
+        return Grid.IsCellOffsetValid(cell, rotatedCellOffset) && Grid.IsCellOffsetValid(cell, rotatedCellOffset2);
+    }
 
-	private static readonly EventSystem.IntraObjectHandler<UtilityNetworkLink> OnBuildingBrokenDelegate = new EventSystem.IntraObjectHandler<UtilityNetworkLink>(delegate(UtilityNetworkLink component, object data)
-	{
-		component.OnBuildingBroken(data);
-	});
+    private void OnBuildingBroken(object        data) { Disconnect(); }
+    private void OnBuildingFullyRepaired(object data) { Connect(); }
 
-	private static readonly EventSystem.IntraObjectHandler<UtilityNetworkLink> OnBuildingFullyRepairedDelegate = new EventSystem.IntraObjectHandler<UtilityNetworkLink>(delegate(UtilityNetworkLink component, object data)
-	{
-		component.OnBuildingFullyRepaired(data);
-	});
+    public int GetNetworkCell() {
+        int result;
+        int num;
+        GetCells(out result, out num);
+        return result;
+    }
 }

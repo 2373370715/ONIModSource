@@ -2,7 +2,7 @@
 
 public class NotificationHighlightTarget : KMonoBehaviour
 {
-	protected void OnEnable()
+		protected void OnEnable()
 	{
 		this.controller = base.GetComponentInParent<NotificationHighlightController>();
 		if (this.controller != null)
@@ -11,7 +11,7 @@ public class NotificationHighlightTarget : KMonoBehaviour
 		}
 	}
 
-	protected override void OnDisable()
+		protected override void OnDisable()
 	{
 		if (this.controller != null)
 		{
@@ -19,12 +19,12 @@ public class NotificationHighlightTarget : KMonoBehaviour
 		}
 	}
 
-	public void View()
+		public void View()
 	{
 		base.GetComponentInParent<NotificationHighlightController>().TargetViewed(this);
 	}
 
-	public string targetKey;
+		public string targetKey;
 
-	private NotificationHighlightController controller;
+		private NotificationHighlightController controller;
 }

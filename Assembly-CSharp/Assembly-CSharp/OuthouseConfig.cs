@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class OuthouseConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Outhouse";
 		int width = 2;
@@ -20,25 +20,25 @@ public class OuthouseConfig : IBuildingConfig
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, raw_MINERALS_OR_WOOD, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER4, none, 0.2f);
 		buildingDef.Overheatable = false;
 		buildingDef.ExhaustKilowattsWhenActive = 0.25f;
-		buildingDef.DiseaseCellVisName = "FoodPoisoning";
+		buildingDef.DiseaseCellVisName = DUPLICANTSTATS.STANDARD.Secretions.PEE_DISEASE;
 		buildingDef.AudioCategory = "Metal";
 		SoundEventVolumeCache.instance.AddVolume("outhouse_kanim", "Latrine_door_open", NOISE_POLLUTION.NOISY.TIER1);
 		SoundEventVolumeCache.instance.AddVolume("outhouse_kanim", "Latrine_door_close", NOISE_POLLUTION.NOISY.TIER1);
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.ToiletType, false);
 		Toilet toilet = go.AddOrGet<Toilet>();
 		toilet.maxFlushes = 15;
 		toilet.dirtUsedPerFlush = 13f;
-		toilet.solidWastePerUse = new Toilet.SpawnInfo(SimHashes.ToxicSand, 6.7f, 0f);
-		toilet.solidWasteTemperature = 310.15f;
-		toilet.diseaseId = "FoodPoisoning";
-		toilet.diseasePerFlush = 100000;
-		toilet.diseaseOnDupePerFlush = 100000;
+		toilet.solidWastePerUse = new Toilet.SpawnInfo(SimHashes.ToxicSand, DUPLICANTSTATS.STANDARD.Secretions.PEE_PER_TOILET_PEE, 0f);
+		toilet.solidWasteTemperature = DUPLICANTSTATS.STANDARD.Temperature.Internal.IDEAL;
+		toilet.diseaseId = DUPLICANTSTATS.STANDARD.Secretions.PEE_DISEASE;
+		toilet.diseasePerFlush = DUPLICANTSTATS.STANDARD.Secretions.DISEASE_PER_PEE;
+		toilet.diseaseOnDupePerFlush = DUPLICANTSTATS.STANDARD.Secretions.DISEASE_PER_PEE;
 		KAnimFile[] overrideAnims = new KAnimFile[]
 		{
 			Assets.GetAnim("anim_interacts_outhouse_kanim")
@@ -69,15 +69,15 @@ public class OuthouseConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "Outhouse";
+		public const string ID = "Outhouse";
 
-	private const int USES_PER_REFILL = 15;
+		private const int USES_PER_REFILL = 15;
 
-	private const float DIRT_PER_REFILL = 200f;
+		private const float DIRT_PER_REFILL = 200f;
 
-	private const float DIRT_PER_USE = 13f;
+		private const float DIRT_PER_USE = 13f;
 }

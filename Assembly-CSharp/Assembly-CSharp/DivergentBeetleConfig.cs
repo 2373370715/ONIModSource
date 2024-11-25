@@ -8,7 +8,7 @@ using UnityEngine;
 [EntityConfigOrder(1)]
 public class DivergentBeetleConfig : IEntityConfig
 {
-	public static GameObject CreateDivergentBeetle(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreateDivergentBeetle(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		GameObject prefab = EntityTemplates.ExtendEntityToWildCreature(BaseDivergentConfig.BaseDivergent(id, name, desc, 50f, anim_file, "DivergentBeetleBaseTrait", is_baby, 8f, null, "DivergentCropTended", 1, true), DivergentTuning.PEN_SIZE_PER_CREATURE);
 		Trait trait = Db.Get().CreateTrait("DivergentBeetleBaseTrait", name, name, null, false, null, true, true);
@@ -22,39 +22,39 @@ public class DivergentBeetleConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		return EntityTemplates.ExtendEntityToFertileCreature(DivergentBeetleConfig.CreateDivergentBeetle("DivergentBeetle", STRINGS.CREATURES.SPECIES.DIVERGENT.VARIANT_BEETLE.NAME, STRINGS.CREATURES.SPECIES.DIVERGENT.VARIANT_BEETLE.DESC, "critter_kanim", false), "DivergentBeetleEgg", STRINGS.CREATURES.SPECIES.DIVERGENT.VARIANT_BEETLE.EGG_NAME, STRINGS.CREATURES.SPECIES.DIVERGENT.VARIANT_BEETLE.DESC, "egg_critter_kanim", DivergentTuning.EGG_MASS, "DivergentBeetleBaby", 45f, 15f, DivergentTuning.EGG_CHANCES_BEETLE, this.GetDlcIds(), DivergentBeetleConfig.EGG_SORT_ORDER, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "DivergentBeetle";
+		public const string ID = "DivergentBeetle";
 
-	public const string BASE_TRAIT_ID = "DivergentBeetleBaseTrait";
+		public const string BASE_TRAIT_ID = "DivergentBeetleBaseTrait";
 
-	public const string EGG_ID = "DivergentBeetleEgg";
+		public const string EGG_ID = "DivergentBeetleEgg";
 
-	private const float LIFESPAN = 75f;
+		private const float LIFESPAN = 75f;
 
-	private const SimHashes EMIT_ELEMENT = SimHashes.Sucrose;
+		private const SimHashes EMIT_ELEMENT = SimHashes.Sucrose;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 20f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 20f;
 
-	private static float CALORIES_PER_KG_OF_ORE = DivergentTuning.STANDARD_CALORIES_PER_CYCLE / DivergentBeetleConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = DivergentTuning.STANDARD_CALORIES_PER_CYCLE / DivergentBeetleConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 4f;
+		private static float MIN_POOP_SIZE_IN_KG = 4f;
 
-	public static int EGG_SORT_ORDER = 0;
+		public static int EGG_SORT_ORDER = 0;
 }

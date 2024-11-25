@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/BuildingElementEmitter")]
 public class BuildingElementEmitter : KMonoBehaviour, IGameObjectEffectDescriptor, IElementEmitter, ISim200ms
 {
-		public float AverageEmitRate
+			public float AverageEmitRate
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class BuildingElementEmitter : KMonoBehaviour, IGameObjectEffectDescripto
 		}
 	}
 
-		public float EmitRate
+			public float EmitRate
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class BuildingElementEmitter : KMonoBehaviour, IGameObjectEffectDescripto
 		}
 	}
 
-		public SimHashes Element
+			public SimHashes Element
 	{
 		get
 		{
@@ -31,7 +31,7 @@ public class BuildingElementEmitter : KMonoBehaviour, IGameObjectEffectDescripto
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.accumulator = Game.Instance.accumulators.Add("Element", this);
@@ -39,25 +39,25 @@ public class BuildingElementEmitter : KMonoBehaviour, IGameObjectEffectDescripto
 		this.SimRegister();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.accumulators.Remove(this.accumulator);
 		this.SimUnregister();
 		base.OnCleanUp();
 	}
 
-	private void OnActiveChanged(object data)
+		private void OnActiveChanged(object data)
 	{
 		this.simActive = ((Operational)data).IsActive;
 		this.dirty = true;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		this.UnsafeUpdate(dt);
 	}
 
-	private unsafe void UnsafeUpdate(float dt)
+		private unsafe void UnsafeUpdate(float dt)
 	{
 		if (!Sim.IsValidHandle(this.simHandle))
 		{
@@ -76,7 +76,7 @@ public class BuildingElementEmitter : KMonoBehaviour, IGameObjectEffectDescripto
 		}
 	}
 
-	private void UpdateSimState()
+		private void UpdateSimState()
 	{
 		if (!this.dirty)
 		{
@@ -97,7 +97,7 @@ public class BuildingElementEmitter : KMonoBehaviour, IGameObjectEffectDescripto
 		this.statusHandle = base.GetComponent<KSelectable>().RemoveStatusItem(this.statusHandle, this);
 	}
 
-	private void SimRegister()
+		private void SimRegister()
 	{
 		if (base.isSpawned && this.simHandle == -1)
 		{
@@ -106,7 +106,7 @@ public class BuildingElementEmitter : KMonoBehaviour, IGameObjectEffectDescripto
 		}
 	}
 
-	private void SimUnregister()
+		private void SimUnregister()
 	{
 		if (this.simHandle != -1)
 		{
@@ -118,12 +118,12 @@ public class BuildingElementEmitter : KMonoBehaviour, IGameObjectEffectDescripto
 		}
 	}
 
-	private static void OnSimRegisteredCallback(int handle, object data)
+		private static void OnSimRegisteredCallback(int handle, object data)
 	{
 		((BuildingElementEmitter)data).OnSimRegistered(handle);
 	}
 
-	private void OnSimRegistered(int handle)
+		private void OnSimRegistered(int handle)
 	{
 		if (this != null)
 		{
@@ -133,7 +133,7 @@ public class BuildingElementEmitter : KMonoBehaviour, IGameObjectEffectDescripto
 		SimMessages.RemoveElementEmitter(-1, handle);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		string arg = ElementLoader.FindElementByHash(this.element).tag.ProperName();
@@ -143,40 +143,40 @@ public class BuildingElementEmitter : KMonoBehaviour, IGameObjectEffectDescripto
 		return list;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public float emitRate = 0.3f;
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	public float temperature = 293f;
 
-	[SerializeField]
+		[SerializeField]
 	[HashedEnum]
 	public SimHashes element = SimHashes.Oxygen;
 
-	[SerializeField]
+		[SerializeField]
 	public Vector2 modifierOffset;
 
-	[SerializeField]
+		[SerializeField]
 	public byte emitRange = 1;
 
-	[SerializeField]
+		[SerializeField]
 	public byte emitDiseaseIdx = byte.MaxValue;
 
-	[SerializeField]
+		[SerializeField]
 	public int emitDiseaseCount;
 
-	private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
+		private HandleVector<int>.Handle accumulator = HandleVector<int>.InvalidHandle;
 
-	private int simHandle = -1;
+		private int simHandle = -1;
 
-	private bool simActive;
+		private bool simActive;
 
-	private bool dirty = true;
+		private bool dirty = true;
 
-	private Guid statusHandle;
+		private Guid statusHandle;
 
-	private static readonly EventSystem.IntraObjectHandler<BuildingElementEmitter> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<BuildingElementEmitter>(delegate(BuildingElementEmitter component, object data)
+		private static readonly EventSystem.IntraObjectHandler<BuildingElementEmitter> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<BuildingElementEmitter>(delegate(BuildingElementEmitter component, object data)
 	{
 		component.OnActiveChanged(data);
 	});

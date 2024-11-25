@@ -12,7 +12,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Repairable")]
 public class Repairable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTableWithCorners);
@@ -29,7 +29,7 @@ public class Repairable : Workable
 		this.workingPstFailed = null;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.smi = new Repairable.SMInstance(this);
@@ -38,18 +38,18 @@ public class Repairable : Workable
 		this.workTimeRemaining = float.PositiveInfinity;
 	}
 
-	private void OnProxyStorageChanged(object data)
+		private void OnProxyStorageChanged(object data)
 	{
 		base.Trigger(-1697596308, data);
 	}
 
-	protected override void OnLoadLevel()
+		protected override void OnLoadLevel()
 	{
 		this.smi = null;
 		base.OnLoadLevel();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.smi != null)
 		{
@@ -58,7 +58,7 @@ public class Repairable : Workable
 		base.OnCleanUp();
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (base.gameObject != null && this.smi != null)
 		{
@@ -71,7 +71,7 @@ public class Repairable : Workable
 		}
 	}
 
-	private void AllowRepair()
+		private void AllowRepair()
 	{
 		if (DebugHandler.InstantBuildMode)
 		{
@@ -82,7 +82,7 @@ public class Repairable : Workable
 		this.OnRefreshUserMenu(null);
 	}
 
-	public void CancelRepair()
+		public void CancelRepair()
 	{
 		if (this.smi != null)
 		{
@@ -91,7 +91,7 @@ public class Repairable : Workable
 		this.OnRefreshUserMenu(null);
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		Operational component = base.GetComponent<Operational>();
@@ -103,7 +103,7 @@ public class Repairable : Workable
 		this.timeSpentRepairing = 0f;
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		float num = Mathf.Sqrt(base.GetComponent<PrimaryElement>().Mass);
 		float num2 = ((this.expectedRepairTime < 0f) ? num : this.expectedRepairTime) * 0.1f;
@@ -126,7 +126,7 @@ public class Repairable : Workable
 		return false;
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		Operational component = base.GetComponent<Operational>();
@@ -136,7 +136,7 @@ public class Repairable : Workable
 		}
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		Operational component = base.GetComponent<Operational>();
 		if (component != null)
@@ -145,7 +145,7 @@ public class Repairable : Workable
 		}
 	}
 
-	public void CreateStorageProxy()
+		public void CreateStorageProxy()
 	{
 		if (this.storageProxy == null)
 		{
@@ -159,7 +159,7 @@ public class Repairable : Workable
 		}
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerializing()
 	{
 		this.storedData = null;
@@ -176,13 +176,13 @@ public class Repairable : Workable
 		}
 	}
 
-	[OnSerialized]
+		[OnSerialized]
 	private void OnSerialized()
 	{
 		this.storedData = null;
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (this.storedData != null)
@@ -194,34 +194,34 @@ public class Repairable : Workable
 		}
 	}
 
-	public float expectedRepairTime = -1f;
+		public float expectedRepairTime = -1f;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private BuildingHP hp;
 
-	private Repairable.SMInstance smi;
+		private Repairable.SMInstance smi;
 
-	private Storage storageProxy;
+		private Storage storageProxy;
 
-	[Serialize]
+		[Serialize]
 	private byte[] storedData;
 
-	private float timeSpentRepairing;
+		private float timeSpentRepairing;
 
-	private static readonly Operational.Flag repairedFlag = new Operational.Flag("repaired", Operational.Flag.Type.Functional);
+		private static readonly Operational.Flag repairedFlag = new Operational.Flag("repaired", Operational.Flag.Type.Functional);
 
-	private static readonly EventSystem.IntraObjectHandler<Repairable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Repairable>(delegate(Repairable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Repairable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Repairable>(delegate(Repairable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	public class SMInstance : GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.GameInstance
+		public class SMInstance : GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.GameInstance
 	{
-		public SMInstance(Repairable smi) : base(smi)
+				public SMInstance(Repairable smi) : base(smi)
 		{
 		}
 
-		public bool HasRequiredMass()
+				public bool HasRequiredMass()
 		{
 			PrimaryElement component = base.GetComponent<PrimaryElement>();
 			float num = component.Mass * 0.1f;
@@ -229,7 +229,7 @@ public class Repairable : Workable
 			return primaryElement != null && primaryElement.Mass >= num;
 		}
 
-		public KeyValuePair<Tag, float> GetRequiredMass()
+				public KeyValuePair<Tag, float> GetRequiredMass()
 		{
 			PrimaryElement component = base.GetComponent<PrimaryElement>();
 			float num = component.Mass * 0.1f;
@@ -238,24 +238,28 @@ public class Repairable : Workable
 			return new KeyValuePair<Tag, float>(component.Element.tag, value);
 		}
 
-		public void ConsumeRepairMaterials()
+				public void ConsumeRepairMaterials()
 		{
 			base.smi.master.storageProxy.ConsumeAllIgnoringDisease();
 		}
 
-		public void DestroyStorageProxy()
+				public void DestroyStorageProxy()
 		{
 			if (base.smi.master.storageProxy != null)
 			{
 				base.smi.master.transform.GetComponent<Prioritizable>().RemoveRef();
 				List<GameObject> list = new List<GameObject>();
-				base.smi.master.storageProxy.DropAll(false, false, default(Vector3), true, list);
+				Storage storageProxy = base.smi.master.storageProxy;
+				bool vent_gas = false;
+				bool dump_liquid = false;
+				List<GameObject> collect_dropped_items = list;
+				storageProxy.DropAll(vent_gas, dump_liquid, default(Vector3), true, collect_dropped_items);
 				GameObject gameObject = base.smi.sm.worker.Get(base.smi);
 				if (gameObject != null)
 				{
 					foreach (GameObject go in list)
 					{
-						go.Trigger(580035959, gameObject.GetComponent<Worker>());
+						go.Trigger(580035959, gameObject.GetComponent<WorkerBase>());
 					}
 				}
 				base.smi.sm.worker.Set(null, base.smi);
@@ -263,17 +267,17 @@ public class Repairable : Workable
 			}
 		}
 
-		public bool NeedsRepairs()
+				public bool NeedsRepairs()
 		{
 			return base.smi.master.GetComponent<BuildingHP>().NeedsRepairs;
 		}
 
-		private const float REQUIRED_MASS_SCALE = 0.1f;
+				private const float REQUIRED_MASS_SCALE = 0.1f;
 	}
 
-	public class States : GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable>
+		public class States : GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.repaired;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -302,7 +306,7 @@ public class Repairable : Workable
 			this.repaired.EventTransition(GameHashes.BuildingReceivedDamage, this.allowed, (Repairable.SMInstance smi) => smi.NeedsRepairs()).OnSignal(this.allow, this.allowed).OnSignal(this.forbid, this.forbidden);
 		}
 
-		private Chore CreateFetchChore(Repairable.SMInstance smi)
+				private Chore CreateFetchChore(Repairable.SMInstance smi)
 		{
 			PrimaryElement component = smi.master.GetComponent<PrimaryElement>();
 			PrimaryElement primaryElement = smi.master.storageProxy.FindPrimaryElement(component.ElementID);
@@ -314,7 +318,7 @@ public class Repairable : Workable
 			return new FetchChore(Db.Get().ChoreTypes.RepairFetch, smi.master.storageProxy, amount, tags, FetchChore.MatchCriteria.MatchID, Tag.Invalid, null, null, true, null, null, null, Operational.State.None, 0);
 		}
 
-		private Chore CreateRepairChore(Repairable.SMInstance smi)
+				private Chore CreateRepairChore(Repairable.SMInstance smi)
 		{
 			WorkChore<Repairable> workChore = new WorkChore<Repairable>(Db.Get().ChoreTypes.Repair, smi.master, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, true, true);
 			Deconstructable component = smi.master.GetComponent<Deconstructable>();
@@ -331,19 +335,19 @@ public class Repairable : Workable
 			return workChore;
 		}
 
-		public StateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.Signal allow;
+				public StateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.Signal allow;
 
-		public StateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.Signal forbid;
+				public StateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.Signal forbid;
 
-		public GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.State forbidden;
+				public GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.State forbidden;
 
-		public Repairable.States.AllowedState allowed;
+				public Repairable.States.AllowedState allowed;
 
-		public GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.State repaired;
+				public GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.State repaired;
 
-		public StateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.TargetParameter worker;
+				public StateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.TargetParameter worker;
 
-		public static readonly Chore.Precondition IsNotBeingAttacked = new Chore.Precondition
+				public static readonly Chore.Precondition IsNotBeingAttacked = new Chore.Precondition
 		{
 			id = "IsNotBeingAttacked",
 			description = DUPLICANTS.CHORES.PRECONDITIONS.IS_NOT_BEING_ATTACKED,
@@ -358,7 +362,7 @@ public class Repairable : Workable
 			}
 		};
 
-		public static readonly Chore.Precondition IsNotAngry = new Chore.Precondition
+				public static readonly Chore.Precondition IsNotAngry = new Chore.Precondition
 		{
 			id = "IsNotAngry",
 			description = DUPLICANTS.CHORES.PRECONDITIONS.IS_NOT_ANGRY,
@@ -370,11 +374,11 @@ public class Repairable : Workable
 			}
 		};
 
-		public class AllowedState : GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.State
+				public class AllowedState : GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.State
 		{
-			public GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.State needMass;
+						public GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.State needMass;
 
-			public GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.State repairable;
+						public GameStateMachine<Repairable.States, Repairable.SMInstance, Repairable, object>.State repairable;
 		}
 	}
 }

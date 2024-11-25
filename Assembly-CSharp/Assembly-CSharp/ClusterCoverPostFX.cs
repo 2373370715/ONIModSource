@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ClusterCoverPostFX : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		if (this.shader != null)
 		{
@@ -11,13 +11,13 @@ public class ClusterCoverPostFX : MonoBehaviour
 		}
 	}
 
-	private void OnRenderImage(RenderTexture source, RenderTexture destination)
+		private void OnRenderImage(RenderTexture source, RenderTexture destination)
 	{
 		this.SetupUVs();
 		Graphics.Blit(source, destination, this.material, 0);
 	}
 
-	private void SetupUVs()
+		private void SetupUVs()
 	{
 		if (this.myCamera == null)
 		{
@@ -56,10 +56,10 @@ public class ClusterCoverPostFX : MonoBehaviour
 		this.material.SetVector("_WorldCoords", value2);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Shader shader;
 
-	private Material material;
+		private Material material;
 
-	private Camera myCamera;
+		private Camera myCamera;
 }

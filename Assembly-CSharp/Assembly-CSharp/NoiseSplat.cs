@@ -4,31 +4,31 @@ using UnityEngine;
 
 public class NoiseSplat : IUniformGridObject
 {
-			public int dB { get; private set; }
+				public int dB { get; private set; }
 
-			public float deathTime { get; private set; }
+				public float deathTime { get; private set; }
 
-	public string GetName()
+		public string GetName()
 	{
 		return this.provider.GetName();
 	}
 
-	public IPolluter GetProvider()
+		public IPolluter GetProvider()
 	{
 		return this.provider;
 	}
 
-	public Vector2 PosMin()
+		public Vector2 PosMin()
 	{
 		return new Vector2(this.position.x - (float)this.radius, this.position.y - (float)this.radius);
 	}
 
-	public Vector2 PosMax()
+		public Vector2 PosMax()
 	{
 		return new Vector2(this.position.x + (float)this.radius, this.position.y + (float)this.radius);
 	}
 
-	public NoiseSplat(NoisePolluter setProvider, float death_time = 0f)
+		public NoiseSplat(NoisePolluter setProvider, float death_time = 0f)
 	{
 		this.deathTime = death_time;
 		this.dB = 0;
@@ -73,7 +73,7 @@ public class NoiseSplat : IUniformGridObject
 		this.solidChangedPartitionerEntry = GameScenePartitioner.Instance.Add("NoiseSplat.SplatSolidCheck", setProvider.gameObject, this.effectExtents, GameScenePartitioner.Instance.solidChangedLayer, setProvider.refreshPartionerCallback);
 	}
 
-	public NoiseSplat(IPolluter setProvider, float death_time = 0f)
+		public NoiseSplat(IPolluter setProvider, float death_time = 0f)
 	{
 		this.deathTime = death_time;
 		this.provider = setProvider;
@@ -106,14 +106,14 @@ public class NoiseSplat : IUniformGridObject
 		this.AddNoise();
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		GameScenePartitioner.Instance.Free(ref this.solidChangedPartitionerEntry);
 		this.RemoveNoise();
 	}
 
-	private void AddNoise()
+		private void AddNoise()
 	{
 		int cell = Grid.PosToCell(this.position);
 		int num = this.effectExtents.x + this.effectExtents.width;
@@ -147,7 +147,7 @@ public class NoiseSplat : IUniformGridObject
 		}
 	}
 
-	public float GetDBForCell(int cell)
+		public float GetDBForCell(int cell)
 	{
 		Vector2 vector = Grid.CellToPos2D(cell);
 		float num = Mathf.Floor(Vector2.Distance(this.position, vector));
@@ -158,7 +158,7 @@ public class NoiseSplat : IUniformGridObject
 		return Mathf.Round((float)this.dB - (float)this.dB * num * 0.05f);
 	}
 
-	private void RemoveNoise()
+		private void RemoveNoise()
 	{
 		for (int i = 0; i < this.decibels.Count; i++)
 		{
@@ -169,7 +169,7 @@ public class NoiseSplat : IUniformGridObject
 		this.decibels.Clear();
 	}
 
-	public float GetLoudness(int cell)
+		public float GetLoudness(int cell)
 	{
 		float result = 0f;
 		for (int i = 0; i < this.decibels.Count; i++)
@@ -184,21 +184,21 @@ public class NoiseSplat : IUniformGridObject
 		return result;
 	}
 
-	public const float noiseFalloff = 0.05f;
+		public const float noiseFalloff = 0.05f;
 
-	private IPolluter provider;
+		private IPolluter provider;
 
-	private Vector2 position;
+		private Vector2 position;
 
-	private int radius;
+		private int radius;
 
-	private Extents effectExtents;
+		private Extents effectExtents;
 
-	private Extents baseExtents;
+		private Extents baseExtents;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private HandleVector<int>.Handle solidChangedPartitionerEntry;
+		private HandleVector<int>.Handle solidChangedPartitionerEntry;
 
-	private List<Pair<int, float>> decibels = new List<Pair<int, float>>();
+		private List<Pair<int, float>> decibels = new List<Pair<int, float>>();
 }

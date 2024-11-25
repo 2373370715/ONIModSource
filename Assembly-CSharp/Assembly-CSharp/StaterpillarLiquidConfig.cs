@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class StaterpillarLiquidConfig : IEntityConfig
 {
-	public static GameObject CreateStaterpillarLiquid(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreateStaterpillarLiquid(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		InhaleStates.Def inhaleDef = new InhaleStates.Def
 		{
@@ -50,46 +50,46 @@ public class StaterpillarLiquidConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public virtual GameObject CreatePrefab()
+		public virtual GameObject CreatePrefab()
 	{
 		return EntityTemplates.ExtendEntityToFertileCreature(StaterpillarLiquidConfig.CreateStaterpillarLiquid("StaterpillarLiquid", STRINGS.CREATURES.SPECIES.STATERPILLAR.VARIANT_LIQUID.NAME, STRINGS.CREATURES.SPECIES.STATERPILLAR.VARIANT_LIQUID.DESC, "caterpillar_kanim", false), "StaterpillarLiquidEgg", STRINGS.CREATURES.SPECIES.STATERPILLAR.VARIANT_LIQUID.EGG_NAME, STRINGS.CREATURES.SPECIES.STATERPILLAR.VARIANT_LIQUID.DESC, "egg_caterpillar_kanim", StaterpillarTuning.EGG_MASS, "StaterpillarLiquidBaby", 60.000004f, 20f, StaterpillarTuning.EGG_CHANCES_LIQUID, this.GetDlcIds(), 2, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 		KBatchedAnimController component = prefab.GetComponent<KBatchedAnimController>();
 		component.SetSymbolVisiblity("electric_bolt_c_bloom", false);
 		component.SetSymbolVisiblity("gulp", false);
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "StaterpillarLiquid";
+		public const string ID = "StaterpillarLiquid";
 
-	public const string BASE_TRAIT_ID = "StaterpillarLiquidBaseTrait";
+		public const string BASE_TRAIT_ID = "StaterpillarLiquidBaseTrait";
 
-	public const string EGG_ID = "StaterpillarLiquidEgg";
+		public const string EGG_ID = "StaterpillarLiquidEgg";
 
-	public const int EGG_SORT_ORDER = 2;
+		public const int EGG_SORT_ORDER = 2;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 30f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 30f;
 
-	private static float CALORIES_PER_KG_OF_ORE = StaterpillarTuning.STANDARD_CALORIES_PER_CYCLE / StaterpillarLiquidConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = StaterpillarTuning.STANDARD_CALORIES_PER_CYCLE / StaterpillarLiquidConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float STORAGE_CAPACITY = 1000f;
+		private static float STORAGE_CAPACITY = 1000f;
 
-	private static float COOLDOWN_MIN = 20f;
+		private static float COOLDOWN_MIN = 20f;
 
-	private static float COOLDOWN_MAX = 40f;
+		private static float COOLDOWN_MAX = 40f;
 
-	private static float CONSUMPTION_RATE = 10f;
+		private static float CONSUMPTION_RATE = 10f;
 
-	private static float INHALE_TIME = 6f;
+		private static float INHALE_TIME = 6f;
 }

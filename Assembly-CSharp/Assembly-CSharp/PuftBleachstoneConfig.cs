@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class PuftBleachstoneConfig : IEntityConfig
 {
-	public static GameObject CreatePuftBleachstone(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreatePuftBleachstone(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		GameObject gameObject = BasePuftConfig.BasePuft(id, name, desc, "PuftBleachstoneBaseTrait", anim_file, is_baby, "anti_", 273.15f, 333.15f, 223.15f, 373.15f);
 		gameObject = EntityTemplates.ExtendEntityToWildCreature(gameObject, PuftTuning.PEN_SIZE_PER_CREATURE);
@@ -25,12 +25,12 @@ public class PuftBleachstoneConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject prefab = PuftBleachstoneConfig.CreatePuftBleachstone("PuftBleachstone", STRINGS.CREATURES.SPECIES.PUFT.VARIANT_BLEACHSTONE.NAME, STRINGS.CREATURES.SPECIES.PUFT.VARIANT_BLEACHSTONE.DESC, "puft_kanim", false);
 		string eggId = "PuftBleachstoneEgg";
@@ -46,30 +46,30 @@ public class PuftBleachstoneConfig : IEntityConfig
 		return EntityTemplates.ExtendEntityToFertileCreature(prefab, eggId, eggName, eggDesc, egg_anim, egg_MASS, baby_id, fertility_cycles, incubation_cycles, egg_CHANCES_BLEACHSTONE, this.GetDlcIds(), egg_SORT_ORDER, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		BasePuftConfig.OnSpawn(inst);
 	}
 
-	public const string ID = "PuftBleachstone";
+		public const string ID = "PuftBleachstone";
 
-	public const string BASE_TRAIT_ID = "PuftBleachstoneBaseTrait";
+		public const string BASE_TRAIT_ID = "PuftBleachstoneBaseTrait";
 
-	public const string EGG_ID = "PuftBleachstoneEgg";
+		public const string EGG_ID = "PuftBleachstoneEgg";
 
-	public const SimHashes CONSUME_ELEMENT = SimHashes.ChlorineGas;
+		public const SimHashes CONSUME_ELEMENT = SimHashes.ChlorineGas;
 
-	public const SimHashes EMIT_ELEMENT = SimHashes.BleachStone;
+		public const SimHashes EMIT_ELEMENT = SimHashes.BleachStone;
 
-	private static float KG_ORE_EATEN_PER_CYCLE = 30f;
+		private static float KG_ORE_EATEN_PER_CYCLE = 30f;
 
-	private static float CALORIES_PER_KG_OF_ORE = PuftTuning.STANDARD_CALORIES_PER_CYCLE / PuftBleachstoneConfig.KG_ORE_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_KG_OF_ORE = PuftTuning.STANDARD_CALORIES_PER_CYCLE / PuftBleachstoneConfig.KG_ORE_EATEN_PER_CYCLE;
 
-	private static float MIN_POOP_SIZE_IN_KG = 15f;
+		private static float MIN_POOP_SIZE_IN_KG = 15f;
 
-	public static int EGG_SORT_ORDER = PuftConfig.EGG_SORT_ORDER + 3;
+		public static int EGG_SORT_ORDER = PuftConfig.EGG_SORT_ORDER + 3;
 }

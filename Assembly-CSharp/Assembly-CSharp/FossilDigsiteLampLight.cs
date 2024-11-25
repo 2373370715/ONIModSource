@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class FossilDigsiteLampLight : Light2D
 {
-			public bool independent { get; private set; }
+				public bool independent { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.Subscribe<FossilDigsiteLampLight>(-592767678, FossilDigsiteLampLight.OnOperationalChangedDelegate);
 		base.IntensityAnimation = 1f;
 	}
 
-	public void SetIndependentState(bool isIndependent, bool checkOperational = true)
+		public void SetIndependentState(bool isIndependent, bool checkOperational = true)
 	{
 		this.independent = isIndependent;
 		Operational component = base.GetComponent<Operational>();
@@ -22,7 +22,7 @@ public class FossilDigsiteLampLight : Light2D
 		}
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		if (this.independent || base.enabled)
 		{
@@ -31,7 +31,7 @@ public class FossilDigsiteLampLight : Light2D
 		return new List<Descriptor>();
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<FossilDigsiteLampLight> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<FossilDigsiteLampLight>(delegate(FossilDigsiteLampLight light, object data)
+		private static readonly EventSystem.IntraObjectHandler<FossilDigsiteLampLight> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<FossilDigsiteLampLight>(delegate(FossilDigsiteLampLight light, object data)
 	{
 		if (light.independent)
 		{

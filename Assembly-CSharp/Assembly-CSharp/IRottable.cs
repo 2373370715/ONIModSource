@@ -3,9 +3,9 @@ using UnityEngine;
 
 public interface IRottable
 {
-		GameObject gameObject { get; }
+			GameObject gameObject { get; }
 
-		float RotTemperature { get; }
+			float RotTemperature { get; }
 
-		float PreserveTemperature { get; }
+			float PreserveTemperature { get; }
 }

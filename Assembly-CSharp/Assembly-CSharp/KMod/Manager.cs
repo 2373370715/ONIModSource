@@ -12,14 +12,14 @@ using UnityEngine;
 
 namespace KMod
 {
-	public class Manager
+		public class Manager
 	{
-		public static string GetDirectory()
+				public static string GetDirectory()
 		{
 			return Path.Combine(Util.RootFolder(), "mods/");
 		}
 
-		public void LoadModDBAndInitialize()
+				public void LoadModDBAndInitialize()
 		{
 			string filename = this.GetFilename();
 			try
@@ -124,7 +124,7 @@ namespace KMod
 			}
 		}
 
-		public void Shutdown()
+				public void Shutdown()
 		{
 			foreach (Mod mod in this.mods)
 			{
@@ -132,7 +132,7 @@ namespace KMod
 			}
 		}
 
-		public void Sanitize(GameObject parent)
+				public void Sanitize(GameObject parent)
 		{
 			ListPool<Label, Manager>.PooledList pooledList = ListPool<Label, Manager>.Allocate();
 			foreach (Mod mod in this.mods)
@@ -150,7 +150,7 @@ namespace KMod
 			this.Report(parent);
 		}
 
-		public bool HaveMods()
+				public bool HaveMods()
 		{
 			foreach (Mod mod in this.mods)
 			{
@@ -162,7 +162,7 @@ namespace KMod
 			return false;
 		}
 
-		public List<Mod> GetAllCrashableMods()
+				public List<Mod> GetAllCrashableMods()
 		{
 			List<Mod> list = new List<Mod>();
 			foreach (Mod mod in this.mods)
@@ -175,12 +175,12 @@ namespace KMod
 			return list;
 		}
 
-		public bool HasCrashableMods()
+				public bool HasCrashableMods()
 		{
 			return this.GetAllCrashableMods().Count > 0;
 		}
 
-		private void Install(Mod mod)
+				private void Install(Mod mod)
 		{
 			if (mod.status != Mod.Status.NotInstalled)
 			{
@@ -214,7 +214,7 @@ namespace KMod
 			});
 		}
 
-		private void Uninstall(Mod mod)
+				private void Uninstall(Mod mod)
 		{
 			if (mod.status == Mod.Status.NotInstalled)
 			{
@@ -237,7 +237,7 @@ namespace KMod
 			}
 		}
 
-		public void Subscribe(Mod mod, object caller)
+				public void Subscribe(Mod mod, object caller)
 		{
 			global::Debug.LogFormat("Subscribe to mod {0}", new object[]
 			{
@@ -316,7 +316,7 @@ namespace KMod
 			this.Update(caller);
 		}
 
-		public void Update(Mod mod, object caller)
+				public void Update(Mod mod, object caller)
 		{
 			global::Debug.LogFormat("Update mod {0}", new object[]
 			{
@@ -359,7 +359,7 @@ namespace KMod
 			this.Update(caller);
 		}
 
-		public void Unsubscribe(Label label, object caller)
+				public void Unsubscribe(Label label, object caller)
 		{
 			global::Debug.LogFormat("Unsubscribe from mod {0}", new object[]
 			{
@@ -426,12 +426,12 @@ namespace KMod
 			this.Update(caller);
 		}
 
-		public bool IsInDevMode()
+				public bool IsInDevMode()
 		{
 			return this.mods.Exists((Mod mod) => mod.IsEnabledForActiveDlc() && mod.label.distribution_platform == Label.DistributionPlatform.Dev);
 		}
 
-		public void Load(Content content)
+				public void Load(Content content)
 		{
 			if ((content & Content.DLL) != (Content)0 && this.load_user_mod_loader_dll)
 			{
@@ -497,7 +497,7 @@ namespace KMod
 			}
 		}
 
-		public void Unload(Content content)
+				public void Unload(Content content)
 		{
 			foreach (Mod mod in this.mods)
 			{
@@ -505,7 +505,7 @@ namespace KMod
 			}
 		}
 
-		public void Update(object change_source)
+				public void Update(object change_source)
 		{
 			if (!this.dirty)
 			{
@@ -519,7 +519,7 @@ namespace KMod
 			}
 		}
 
-		public bool MatchFootprint(List<Label> footprint, Content relevant_content)
+				public bool MatchFootprint(List<Label> footprint, Content relevant_content)
 		{
 			if (footprint == null)
 			{
@@ -614,17 +614,17 @@ namespace KMod
 			return flag2 && flag && !flag3;
 		}
 
-		private string GetFilename()
+				private string GetFilename()
 		{
 			return FileSystem.Normalize(Path.Combine(Manager.GetDirectory(), "mods.json"));
 		}
 
-		public static void Dialog(GameObject parent = null, string title = null, string text = null, string confirm_text = null, System.Action on_confirm = null, string cancel_text = null, System.Action on_cancel = null, string configurable_text = null, System.Action on_configurable_clicked = null, Sprite image_sprite = null)
+				public static void Dialog(GameObject parent = null, string title = null, string text = null, string confirm_text = null, System.Action on_confirm = null, string cancel_text = null, System.Action on_cancel = null, string configurable_text = null, System.Action on_configurable_clicked = null, Sprite image_sprite = null)
 		{
 			((ConfirmDialogScreen)KScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.ConfirmDialogScreen.gameObject, parent ?? Global.Instance.globalCanvas)).PopupConfirmDialog(text, on_confirm, on_cancel, configurable_text, on_configurable_clicked, title, confirm_text, cancel_text, image_sprite);
 		}
 
-		private static string MakeModList(List<Event> events, EventType event_type)
+				private static string MakeModList(List<Event> events, EventType event_type)
 		{
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.AppendLine();
@@ -644,12 +644,12 @@ namespace KMod
 			return stringBuilder.ToString();
 		}
 
-		private static string MakeEventList(List<Event> events)
+				private static string MakeEventList(List<Event> events)
 		{
 			return Manager.MakeEventList(events, "\n");
 		}
 
-		private static string MakeEventList(List<Event> events, string prefix)
+				private static string MakeEventList(List<Event> events, string prefix)
 		{
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.Append(prefix);
@@ -674,12 +674,12 @@ namespace KMod
 			return stringBuilder.ToString();
 		}
 
-		private static string MakeModList(List<Event> events)
+				private static string MakeModList(List<Event> events)
 		{
 			return Manager.MakeModList(events, "\n");
 		}
 
-		private static string MakeModList(List<Event> events, string prefix)
+				private static string MakeModList(List<Event> events, string prefix)
 		{
 			StringBuilder stringBuilder = new StringBuilder();
 			stringBuilder.Append(prefix);
@@ -701,7 +701,7 @@ namespace KMod
 			return stringBuilder.ToString();
 		}
 
-		private void LoadFailureDialog(GameObject parent)
+				private void LoadFailureDialog(GameObject parent)
 		{
 			if (this.events.Count == 0)
 			{
@@ -732,7 +732,7 @@ namespace KMod
 			this.events.Clear();
 		}
 
-		private void DevRestartDialog(GameObject parent, bool is_crash)
+				private void DevRestartDialog(GameObject parent, bool is_crash)
 		{
 			if (this.events.Count == 0)
 			{
@@ -765,7 +765,7 @@ namespace KMod
 			this.events.Clear();
 		}
 
-		public void RestartDialog(string title, string message_format, System.Action on_cancel, bool with_details, GameObject parent, string cancel_text = null)
+				public void RestartDialog(string title, string message_format, System.Action on_cancel, bool with_details, GameObject parent, string cancel_text = null)
 		{
 			if (this.events.Count == 0)
 			{
@@ -778,7 +778,7 @@ namespace KMod
 			this.events.Clear();
 		}
 
-		public void NotifyDialog(string title, string message_format, GameObject parent)
+				public void NotifyDialog(string title, string message_format, GameObject parent)
 		{
 			if (this.events.Count == 0)
 			{
@@ -788,7 +788,7 @@ namespace KMod
 			this.events.Clear();
 		}
 
-		public void SearchForModsInStackTrace(StackTrace stackTrace)
+				public void SearchForModsInStackTrace(StackTrace stackTrace)
 		{
 			foreach (StackFrame stackFrame in stackTrace.GetFrames())
 			{
@@ -826,7 +826,7 @@ namespace KMod
 			this.SearchForModsInStackTrace(stackStr);
 		}
 
-		public void SearchForModsInStackTrace(string stackStr)
+				public void SearchForModsInStackTrace(string stackStr)
 		{
 			foreach (Mod mod in this.mods)
 			{
@@ -845,7 +845,7 @@ namespace KMod
 			}
 		}
 
-		public void HandleErrors(List<YamlIO.Error> world_gen_errors)
+				public void HandleErrors(List<YamlIO.Error> world_gen_errors)
 		{
 			string value = FileSystem.Normalize(Manager.GetDirectory());
 			ListPool<Mod, Manager>.PooledList pooledList = ListPool<Mod, Manager>.Allocate();
@@ -887,7 +887,7 @@ namespace KMod
 			this.Update(this);
 		}
 
-		public void Report(GameObject parent)
+				public void Report(GameObject parent)
 		{
 			if (this.events.Count == 0)
 			{
@@ -964,7 +964,7 @@ namespace KMod
 			this.NotifyDialog(UI.FRONTEND.MOD_DIALOGS.MOD_EVENTS.TITLE, flag4 ? UI.FRONTEND.MOD_DIALOGS.MOD_EVENTS.DEV_MESSAGE : UI.FRONTEND.MOD_DIALOGS.MOD_EVENTS.MESSAGE, parent);
 		}
 
-		public bool Save()
+				public bool Save()
 		{
 			if (!FileUtil.CreateDirectory(Manager.GetDirectory(), 5))
 			{
@@ -989,7 +989,7 @@ namespace KMod
 			return true;
 		}
 
-		public Mod FindMod(Label label)
+				public Mod FindMod(Label label)
 		{
 			foreach (Mod mod in this.mods)
 			{
@@ -1001,13 +1001,13 @@ namespace KMod
 			return null;
 		}
 
-		public bool IsModEnabled(Label id)
+				public bool IsModEnabled(Label id)
 		{
 			Mod mod = this.FindMod(id);
 			return mod != null && mod.IsEnabledForActiveDlc();
 		}
 
-		public bool EnableMod(Label id, bool enabled, object caller)
+				public bool EnableMod(Label id, bool enabled, object caller)
 		{
 			Mod mod = this.FindMod(id);
 			if (mod == null)
@@ -1036,7 +1036,7 @@ namespace KMod
 			return true;
 		}
 
-		public void Reinsert(int source_index, int target_index, bool move_to_end, object caller)
+				public void Reinsert(int source_index, int target_index, bool move_to_end, object caller)
 		{
 			if (move_to_end)
 			{
@@ -1069,7 +1069,7 @@ namespace KMod
 			this.Update(caller);
 		}
 
-		public void SendMetricsEvent()
+				public void SendMetricsEvent()
 		{
 			ListPool<string, Manager>.PooledList pooledList = ListPool<string, Manager>.Allocate();
 			foreach (Mod mod in this.mods)
@@ -1088,47 +1088,47 @@ namespace KMod
 			KCrashReporter.haveActiveMods = (pooledList.Count > 0);
 		}
 
-		public const Content all_content = Content.LayerableFiles | Content.Strings | Content.DLL | Content.Translation | Content.Animation;
+				public const Content all_content = Content.LayerableFiles | Content.Strings | Content.DLL | Content.Translation | Content.Animation;
 
-		public const Content boot_content = Content.LayerableFiles | Content.Strings | Content.DLL | Content.Translation | Content.Animation;
+				public const Content boot_content = Content.LayerableFiles | Content.Strings | Content.DLL | Content.Translation | Content.Animation;
 
-		public const Content on_demand_content = (Content)0;
+				public const Content on_demand_content = (Content)0;
 
-		public List<IDistributionPlatform> distribution_platforms = new List<IDistributionPlatform>();
+				public List<IDistributionPlatform> distribution_platforms = new List<IDistributionPlatform>();
 
-		public List<Mod> mods = new List<Mod>();
+				public List<Mod> mods = new List<Mod>();
 
-		public List<Event> events = new List<Event>();
+				public List<Event> events = new List<Event>();
 
-		private bool dirty = true;
+				private bool dirty = true;
 
-		public Manager.OnUpdate on_update;
+				public Manager.OnUpdate on_update;
 
-		private const int IO_OP_RETRY_COUNT = 5;
+				private const int IO_OP_RETRY_COUNT = 5;
 
-		private bool load_user_mod_loader_dll = true;
+				private bool load_user_mod_loader_dll = true;
 
-		private const int MAX_DIALOG_ENTRIES = 30;
+				private const int MAX_DIALOG_ENTRIES = 30;
 
-		private int current_version = 1;
+				private int current_version = 1;
 
-				public delegate void OnUpdate(object change_source);
+						public delegate void OnUpdate(object change_source);
 
-		private class PersistentData
+				private class PersistentData
 		{
-			public PersistentData()
+						public PersistentData()
 			{
 			}
 
-			public PersistentData(int version, List<Mod> mods)
+						public PersistentData(int version, List<Mod> mods)
 			{
 				this.version = version;
 				this.mods = mods;
 			}
 
-			public int version;
+						public int version;
 
-			public List<Mod> mods;
+						public List<Mod> mods;
 		}
 	}
 }

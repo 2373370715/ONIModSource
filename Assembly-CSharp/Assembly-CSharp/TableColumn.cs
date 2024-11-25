@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TableColumn : IRender1000ms
 {
-		public bool isRevealed
+			public bool isRevealed
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class TableColumn : IRender1000ms
 		}
 	}
 
-	public TableColumn(Action<IAssignableIdentity, GameObject> on_load_action, Comparison<IAssignableIdentity> sort_comparison, Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip = null, Action<IAssignableIdentity, GameObject, ToolTip> on_sort_tooltip = null, Func<bool> revealed = null, bool should_refresh_columns = false, string scrollerID = "")
+		public TableColumn(Action<IAssignableIdentity, GameObject> on_load_action, Comparison<IAssignableIdentity> sort_comparison, Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip = null, Action<IAssignableIdentity, GameObject, ToolTip> on_sort_tooltip = null, Func<bool> revealed = null, bool should_refresh_columns = false, string scrollerID = "")
 	{
 		this.on_load_action = on_load_action;
 		this.sort_comparer = sort_comparison;
@@ -26,7 +26,7 @@ public class TableColumn : IRender1000ms
 		}
 	}
 
-	protected string GetTooltip(ToolTip tool_tip_instance)
+		protected string GetTooltip(ToolTip tool_tip_instance)
 	{
 		GameObject gameObject = tool_tip_instance.gameObject;
 		HierarchyReferences component = tool_tip_instance.GetComponent<HierarchyReferences>();
@@ -50,7 +50,7 @@ public class TableColumn : IRender1000ms
 		return "";
 	}
 
-	protected string GetSortTooltip(ToolTip sort_tooltip_instance)
+		protected string GetSortTooltip(ToolTip sort_tooltip_instance)
 	{
 		GameObject gameObject = sort_tooltip_instance.transform.parent.gameObject;
 		TableRow tableRow = null;
@@ -69,7 +69,7 @@ public class TableColumn : IRender1000ms
 		return "";
 	}
 
-		public bool isDirty
+			public bool isDirty
 	{
 		get
 		{
@@ -77,61 +77,61 @@ public class TableColumn : IRender1000ms
 		}
 	}
 
-	public bool ContainsWidget(GameObject widget)
+		public bool ContainsWidget(GameObject widget)
 	{
 		return this.widgets_by_row.ContainsValue(widget);
 	}
 
-	public virtual GameObject GetMinionWidget(GameObject parent)
+		public virtual GameObject GetMinionWidget(GameObject parent)
 	{
 		global::Debug.LogError("Table Column has no Widget prefab");
 		return null;
 	}
 
-	public virtual GameObject GetHeaderWidget(GameObject parent)
+		public virtual GameObject GetHeaderWidget(GameObject parent)
 	{
 		global::Debug.LogError("Table Column has no Widget prefab");
 		return null;
 	}
 
-	public virtual GameObject GetDefaultWidget(GameObject parent)
+		public virtual GameObject GetDefaultWidget(GameObject parent)
 	{
 		global::Debug.LogError("Table Column has no Widget prefab");
 		return null;
 	}
 
-	public void Render1000ms(float dt)
+		public void Render1000ms(float dt)
 	{
 		this.MarkDirty(null, TableScreen.ResultValues.False);
 	}
 
-	public void MarkDirty(GameObject triggering_obj = null, TableScreen.ResultValues triggering_object_state = TableScreen.ResultValues.False)
+		public void MarkDirty(GameObject triggering_obj = null, TableScreen.ResultValues triggering_object_state = TableScreen.ResultValues.False)
 	{
 		this.dirty = true;
 	}
 
-	public void MarkClean()
+		public void MarkClean()
 	{
 		this.dirty = false;
 	}
 
-	public Action<IAssignableIdentity, GameObject> on_load_action;
+		public Action<IAssignableIdentity, GameObject> on_load_action;
 
-	public Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip;
+		public Action<IAssignableIdentity, GameObject, ToolTip> on_tooltip;
 
-	public Action<IAssignableIdentity, GameObject, ToolTip> on_sort_tooltip;
+		public Action<IAssignableIdentity, GameObject, ToolTip> on_sort_tooltip;
 
-	public Comparison<IAssignableIdentity> sort_comparer;
+		public Comparison<IAssignableIdentity> sort_comparer;
 
-	public Dictionary<TableRow, GameObject> widgets_by_row = new Dictionary<TableRow, GameObject>();
+		public Dictionary<TableRow, GameObject> widgets_by_row = new Dictionary<TableRow, GameObject>();
 
-	public string scrollerID;
+		public string scrollerID;
 
-	public TableScreen screen;
+		public TableScreen screen;
 
-	public MultiToggle column_sort_toggle;
+		public MultiToggle column_sort_toggle;
 
-	private Func<bool> revealed;
+		private Func<bool> revealed;
 
-	protected bool dirty;
+		protected bool dirty;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LimitOneCommandModule : SelectModuleCondition
 {
-	public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
+		public override bool EvaluateCondition(GameObject existingModule, BuildingDef selectedPart, SelectModuleCondition.SelectionContext selectionContext)
 	{
 		if (existingModule == null)
 		{
@@ -27,7 +27,7 @@ public class LimitOneCommandModule : SelectModuleCondition
 		return true;
 	}
 
-	public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
+		public override string GetStatusTooltip(bool ready, GameObject moduleBase, BuildingDef selectedPart)
 	{
 		if (ready)
 		{

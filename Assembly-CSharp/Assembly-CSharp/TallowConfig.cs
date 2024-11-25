@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TallowConfig : IOreConfig
 {
-		public SimHashes ElementID
+			public SimHashes ElementID
 	{
 		get
 		{
@@ -11,17 +11,17 @@ public class TallowConfig : IOreConfig
 		}
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		return EntityTemplates.CreateSolidOreEntity(this.ElementID, null);
 	}
 
-	public const string ID = "Tallow";
+		public const string ID = "Tallow";
 
-	public static readonly Tag TAG = TagManager.Create("Tallow");
+		public static readonly Tag TAG = TagManager.Create("Tallow");
 }

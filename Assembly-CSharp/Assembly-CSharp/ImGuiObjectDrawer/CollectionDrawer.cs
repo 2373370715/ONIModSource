@@ -3,11 +3,11 @@ using ImGuiNET;
 
 namespace ImGuiObjectDrawer
 {
-	public abstract class CollectionDrawer : MemberDrawer
+		public abstract class CollectionDrawer : MemberDrawer
 	{
-		public abstract bool IsEmpty(in MemberDrawContext context, in MemberDetails member);
+				public abstract bool IsEmpty(in MemberDrawContext context, in MemberDetails member);
 
-		public override MemberDrawType GetDrawType(in MemberDrawContext context, in MemberDetails member)
+				public override MemberDrawType GetDrawType(in MemberDrawContext context, in MemberDetails member)
 		{
 			if (this.IsEmpty(context, member))
 			{
@@ -16,24 +16,24 @@ namespace ImGuiObjectDrawer
 			return MemberDrawType.Custom;
 		}
 
-		protected sealed override void DrawInline(in MemberDrawContext context, in MemberDetails member)
+				protected sealed override void DrawInline(in MemberDrawContext context, in MemberDetails member)
 		{
 			Debug.Assert(this.IsEmpty(context, member));
 			this.DrawEmpty(context, member);
 		}
 
-		protected sealed override void DrawCustom(in MemberDrawContext context, in MemberDetails member, int depth)
+				protected sealed override void DrawCustom(in MemberDrawContext context, in MemberDetails member, int depth)
 		{
 			Debug.Assert(!this.IsEmpty(context, member));
 			this.DrawWithContents(context, member, depth);
 		}
 
-		private void DrawEmpty(in MemberDrawContext context, in MemberDetails member)
+				private void DrawEmpty(in MemberDrawContext context, in MemberDetails member)
 		{
 			ImGui.Text(member.name + "(empty)");
 		}
 
-		private void DrawWithContents(in MemberDrawContext context, in MemberDetails member, int depth)
+				private void DrawWithContents(in MemberDrawContext context, in MemberDetails member, int depth)
 		{
 			CollectionDrawer.<>c__DisplayClass5_0 CS$<>8__locals1 = new CollectionDrawer.<>c__DisplayClass5_0();
 			CS$<>8__locals1.depth = depth;
@@ -51,29 +51,29 @@ namespace ImGuiObjectDrawer
 			}
 		}
 
-		protected abstract void VisitElements(CollectionDrawer.ElementVisitor visit, in MemberDrawContext context, in MemberDetails member);
+				protected abstract void VisitElements(CollectionDrawer.ElementVisitor visit, in MemberDrawContext context, in MemberDetails member);
 
-				protected delegate void ElementVisitor(in MemberDrawContext context, CollectionDrawer.Element element);
+						protected delegate void ElementVisitor(in MemberDrawContext context, CollectionDrawer.Element element);
 
-		protected struct Element
+				protected struct Element
 		{
-			public Element(string node_name, System.Action draw_tooltip, Func<object> get_object_to_inspect)
+						public Element(string node_name, System.Action draw_tooltip, Func<object> get_object_to_inspect)
 			{
 				this.node_name = node_name;
 				this.draw_tooltip = draw_tooltip;
 				this.get_object_to_inspect = get_object_to_inspect;
 			}
 
-			public Element(int index, System.Action draw_tooltip, Func<object> get_object_to_inspect)
+						public Element(int index, System.Action draw_tooltip, Func<object> get_object_to_inspect)
 			{
 				this = new CollectionDrawer.Element(string.Format("[{0}]", index), draw_tooltip, get_object_to_inspect);
 			}
 
-			public readonly string node_name;
+						public readonly string node_name;
 
-			public readonly System.Action draw_tooltip;
+						public readonly System.Action draw_tooltip;
 
-			public readonly Func<object> get_object_to_inspect;
+						public readonly Func<object> get_object_to_inspect;
 		}
 	}
 }

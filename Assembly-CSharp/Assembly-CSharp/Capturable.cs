@@ -9,7 +9,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Capturable")]
 public class Capturable : Workable, IGameObjectEffectDescriptor
 {
-		public bool IsMarkedForCapture
+			public bool IsMarkedForCapture
 	{
 		get
 		{
@@ -17,7 +17,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Components.Capturables.Add(this);
@@ -34,7 +34,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		this.multitoolHitEffectTag = "fx_capture_splash";
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<Capturable>(1623392196, Capturable.OnDeathDelegate);
@@ -49,13 +49,13 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		base.SetWorkTime(10f);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.Capturables.Remove(this);
 		base.OnCleanUp();
 	}
 
-	public override Vector3 GetTargetPoint()
+		public override Vector3 GetTargetPoint()
 	{
 		Vector3 result = base.transform.GetPosition();
 		KBoxCollider2D component = base.GetComponent<KBoxCollider2D>();
@@ -67,25 +67,25 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		return result;
 	}
 
-	private void OnDeath(object data)
+		private void OnDeath(object data)
 	{
 		this.allowCapture = false;
 		this.markedForCapture = false;
 		this.UpdateChore();
 	}
 
-	private void OnTagsChanged(object data)
+		private void OnTagsChanged(object data)
 	{
 		this.MarkForCapture(this.markedForCapture);
 	}
 
-	public void MarkForCapture(bool mark)
+		public void MarkForCapture(bool mark)
 	{
 		PrioritySetting priority = new PrioritySetting(PriorityScreen.PriorityClass.basic, 5);
 		this.MarkForCapture(mark, priority, false);
 	}
 
-	public void MarkForCapture(bool mark, PrioritySetting priority, bool updateMarkedPriority = false)
+		public void MarkForCapture(bool mark, PrioritySetting priority, bool updateMarkedPriority = false)
 	{
 		mark = (mark && this.IsCapturable());
 		if (this.markedForCapture && !mark)
@@ -114,12 +114,12 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		this.UpdateChore();
 	}
 
-	public bool IsCapturable()
+		public bool IsCapturable()
 	{
 		return this.allowCapture && !base.gameObject.HasTag(GameTags.Trapped) && !base.gameObject.HasTag(GameTags.Stored) && !base.gameObject.HasTag(GameTags.Creatures.Bagged);
 	}
 
-	private void OnRefreshUserMenu(object data)
+		private void OnRefreshUserMenu(object data)
 	{
 		if (!this.IsCapturable())
 		{
@@ -135,7 +135,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		Game.Instance.userMenu.AddButton(base.gameObject, button, 1f);
 	}
 
-	private void UpdateStatusItem()
+		private void UpdateStatusItem()
 	{
 		this.shouldShowSkillPerkStatusItem = this.markedForCapture;
 		base.UpdateStatusItem(null);
@@ -147,7 +147,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		base.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.OrderCapture, false);
 	}
 
-	private void UpdateChore()
+		private void UpdateChore()
 	{
 		if (this.markedForCapture && this.chore == null)
 		{
@@ -161,7 +161,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		}
 	}
 
-	private void OnChoreBegins(Chore chore)
+		private void OnChoreBegins(Chore chore)
 	{
 		IdleStates.Instance smi = base.gameObject.GetSMI<IdleStates.Instance>();
 		if (smi != null)
@@ -171,7 +171,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		}
 	}
 
-	private void OnChoreEnds(Chore chore)
+		private void OnChoreEnds(Chore chore)
 	{
 		IdleStates.Instance smi = base.gameObject.GetSMI<IdleStates.Instance>();
 		if (smi != null)
@@ -180,17 +180,17 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		}
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.GetComponent<KPrefabID>().AddTag(GameTags.Creatures.Stunned, false);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.GetComponent<KPrefabID>().RemoveTag(GameTags.Creatures.Stunned);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		int num = this.NaturalBuildingCell();
 		if (Grid.Solid[num])
@@ -206,7 +206,7 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		this.baggable.transform.SetPosition(Grid.CellToPosCCC(num, Grid.SceneLayer.Ore));
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> descriptors = base.GetDescriptors(go);
 		if (this.allowCapture)
@@ -216,30 +216,30 @@ public class Capturable : Workable, IGameObjectEffectDescriptor
 		return descriptors;
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Baggable baggable;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Prioritizable prioritizable;
 
-	public bool allowCapture = true;
+		public bool allowCapture = true;
 
-	[Serialize]
+		[Serialize]
 	private bool markedForCapture;
 
-	private Chore chore;
+		private Chore chore;
 
-	private static readonly EventSystem.IntraObjectHandler<Capturable> OnDeathDelegate = new EventSystem.IntraObjectHandler<Capturable>(delegate(Capturable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Capturable> OnDeathDelegate = new EventSystem.IntraObjectHandler<Capturable>(delegate(Capturable component, object data)
 	{
 		component.OnDeath(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Capturable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Capturable>(delegate(Capturable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Capturable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Capturable>(delegate(Capturable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Capturable> OnTagsChangedDelegate = new EventSystem.IntraObjectHandler<Capturable>(delegate(Capturable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Capturable> OnTagsChangedDelegate = new EventSystem.IntraObjectHandler<Capturable>(delegate(Capturable component, object data)
 	{
 		component.OnTagsChanged(data);
 	});

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicCritterCountSensorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicCritterCountSensorConfig.ID;
 		int width = 1;
@@ -37,11 +37,11 @@ public class LogicCritterCountSensorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicCritterCountSensor>().manuallyControlled = false;
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicCritterCountSensor";
+		public static string ID = "LogicCritterCountSensor";
 }

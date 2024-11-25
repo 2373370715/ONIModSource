@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class MoleConfig : IEntityConfig
 {
-	public static GameObject CreateMole(string id, string name, string desc, string anim_file, bool is_baby = false)
+		public static GameObject CreateMole(string id, string name, string desc, string anim_file, bool is_baby = false)
 	{
 		GameObject gameObject = BaseMoleConfig.BaseMole(id, name, STRINGS.CREATURES.SPECIES.MOLE.DESC, "MoleBaseTrait", anim_file, is_baby, 173.15f, 673.15f, 73.149994f, 773.15f, null, 10);
 		gameObject.AddTag(GameTags.Creatures.Digger);
@@ -37,12 +37,12 @@ public class MoleConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject prefab = MoleConfig.CreateMole("Mole", STRINGS.CREATURES.SPECIES.MOLE.NAME, STRINGS.CREATURES.SPECIES.MOLE.DESC, "driller_kanim", false);
 		string eggId = "MoleEgg";
@@ -57,16 +57,16 @@ public class MoleConfig : IEntityConfig
 		return EntityTemplates.ExtendEntityToFertileCreature(prefab, eggId, eggName, eggDesc, egg_anim, egg_MASS, baby_id, fertility_cycles, incubation_cycles, MoleTuning.EGG_CHANCES_BASE, this.GetDlcIds(), egg_SORT_ORDER, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		MoleConfig.SetSpawnNavType(inst);
 	}
 
-	public static void SetSpawnNavType(GameObject inst)
+		public static void SetSpawnNavType(GameObject inst)
 	{
 		int cell = Grid.PosToCell(inst);
 		Navigator component = inst.GetComponent<Navigator>();
@@ -84,15 +84,15 @@ public class MoleConfig : IEntityConfig
 		}
 	}
 
-	public const string ID = "Mole";
+		public const string ID = "Mole";
 
-	public const string BASE_TRAIT_ID = "MoleBaseTrait";
+		public const string BASE_TRAIT_ID = "MoleBaseTrait";
 
-	public const string EGG_ID = "MoleEgg";
+		public const string EGG_ID = "MoleEgg";
 
-	private static float MIN_POOP_SIZE_IN_CALORIES = 2400000f;
+		private static float MIN_POOP_SIZE_IN_CALORIES = 2400000f;
 
-	private static float CALORIES_PER_KG_OF_DIRT = 1000f;
+		private static float CALORIES_PER_KG_OF_DIRT = 1000f;
 
-	public static int EGG_SORT_ORDER = 800;
+		public static int EGG_SORT_ORDER = 800;
 }

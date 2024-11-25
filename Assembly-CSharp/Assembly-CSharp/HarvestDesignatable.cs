@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/HarvestDesignatable")]
 public class HarvestDesignatable : KMonoBehaviour
 {
-		public bool InPlanterBox
+			public bool InPlanterBox
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class HarvestDesignatable : KMonoBehaviour
 		}
 	}
 
-			public bool MarkedForHarvest
+				public bool MarkedForHarvest
 	{
 		get
 		{
@@ -27,7 +27,7 @@ public class HarvestDesignatable : KMonoBehaviour
 		}
 	}
 
-		public bool HarvestWhenReady
+			public bool HarvestWhenReady
 	{
 		get
 		{
@@ -35,18 +35,18 @@ public class HarvestDesignatable : KMonoBehaviour
 		}
 	}
 
-	protected HarvestDesignatable()
+		protected HarvestDesignatable()
 	{
 		this.onEnableOverlayDelegate = new Action<object>(this.OnEnableOverlay);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<HarvestDesignatable>(1309017699, HarvestDesignatable.SetInPlanterBoxTrueDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.isMarkedForHarvest)
@@ -63,7 +63,7 @@ public class HarvestDesignatable : KMonoBehaviour
 		this.area = base.GetComponent<OccupyArea>();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.HarvestDesignatables.Remove(this);
@@ -74,7 +74,7 @@ public class HarvestDesignatable : KMonoBehaviour
 		Game.Instance.Unsubscribe(1983128072, new Action<object>(this.RefreshOverlayIcon));
 	}
 
-	private void DestroyOverlayIcon()
+		private void DestroyOverlayIcon()
 	{
 		if (this.HarvestWhenReadyOverlayIcon != null)
 		{
@@ -83,7 +83,7 @@ public class HarvestDesignatable : KMonoBehaviour
 		}
 	}
 
-	private void CreateOverlayIcon()
+		private void CreateOverlayIcon()
 	{
 		if (this.HarvestWhenReadyOverlayIcon != null)
 		{
@@ -107,12 +107,12 @@ public class HarvestDesignatable : KMonoBehaviour
 		}
 	}
 
-	private void OnDisableOverlay(object data)
+		private void OnDisableOverlay(object data)
 	{
 		this.DestroyOverlayIcon();
 	}
 
-	private void OnEnableOverlay(object data)
+		private void OnEnableOverlay(object data)
 	{
 		if ((HashedString)data == OverlayModes.Harvest.ID)
 		{
@@ -122,7 +122,7 @@ public class HarvestDesignatable : KMonoBehaviour
 		this.DestroyOverlayIcon();
 	}
 
-	private void RefreshOverlayIcon(object data = null)
+		private void RefreshOverlayIcon(object data = null)
 	{
 		if (this.HarvestWhenReadyOverlayIcon != null)
 		{
@@ -153,13 +153,13 @@ public class HarvestDesignatable : KMonoBehaviour
 		}
 	}
 
-	public bool CanBeHarvested()
+		public bool CanBeHarvested()
 	{
 		Harvestable component = base.GetComponent<Harvestable>();
 		return !(component != null) || component.CanBeHarvested;
 	}
 
-	public void SetInPlanterBox(bool state)
+		public void SetInPlanterBox(bool state)
 	{
 		if (state)
 		{
@@ -176,7 +176,7 @@ public class HarvestDesignatable : KMonoBehaviour
 		}
 	}
 
-	public void SetHarvestWhenReady(bool state)
+		public void SetHarvestWhenReady(bool state)
 	{
 		this.harvestWhenReady = state;
 		if (this.harvestWhenReady && this.CanBeHarvested() && !this.isMarkedForHarvest)
@@ -195,11 +195,11 @@ public class HarvestDesignatable : KMonoBehaviour
 		this.RefreshOverlayIcon(null);
 	}
 
-	protected virtual void OnCancel(object data = null)
+		protected virtual void OnCancel(object data = null)
 	{
 	}
 
-	public virtual void MarkForHarvest()
+		public virtual void MarkForHarvest()
 	{
 		if (!this.CanBeHarvested())
 		{
@@ -213,12 +213,12 @@ public class HarvestDesignatable : KMonoBehaviour
 		}
 	}
 
-	protected virtual void OnClickHarvestWhenReady()
+		protected virtual void OnClickHarvestWhenReady()
 	{
 		this.SetHarvestWhenReady(true);
 	}
 
-	protected virtual void OnClickCancelHarvestWhenReady()
+		protected virtual void OnClickCancelHarvestWhenReady()
 	{
 		Harvestable component = base.GetComponent<Harvestable>();
 		if (component != null)
@@ -228,7 +228,7 @@ public class HarvestDesignatable : KMonoBehaviour
 		this.SetHarvestWhenReady(false);
 	}
 
-	public virtual void OnRefreshUserMenu(object data)
+		public virtual void OnRefreshUserMenu(object data)
 	{
 		if (this.showUserMenuButtons)
 		{
@@ -245,38 +245,38 @@ public class HarvestDesignatable : KMonoBehaviour
 		}
 	}
 
-	public Vector2 iconOffset = Vector2.zero;
+		public Vector2 iconOffset = Vector2.zero;
 
-	public bool defaultHarvestStateWhenPlanted = true;
+		public bool defaultHarvestStateWhenPlanted = true;
 
-	public OccupyArea area;
+		public OccupyArea area;
 
-	[Serialize]
+		[Serialize]
 	protected bool isMarkedForHarvest;
 
-	[Serialize]
+		[Serialize]
 	private bool isInPlanterBox;
 
-	public bool showUserMenuButtons = true;
+		public bool showUserMenuButtons = true;
 
-	[Serialize]
+		[Serialize]
 	protected bool harvestWhenReady;
 
-	public RectTransform HarvestWhenReadyOverlayIcon;
+		public RectTransform HarvestWhenReadyOverlayIcon;
 
-	private Action<object> onEnableOverlayDelegate;
+		private Action<object> onEnableOverlayDelegate;
 
-	private static readonly EventSystem.IntraObjectHandler<HarvestDesignatable> OnCancelDelegate = new EventSystem.IntraObjectHandler<HarvestDesignatable>(delegate(HarvestDesignatable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HarvestDesignatable> OnCancelDelegate = new EventSystem.IntraObjectHandler<HarvestDesignatable>(delegate(HarvestDesignatable component, object data)
 	{
 		component.OnCancel(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<HarvestDesignatable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<HarvestDesignatable>(delegate(HarvestDesignatable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HarvestDesignatable> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<HarvestDesignatable>(delegate(HarvestDesignatable component, object data)
 	{
 		component.OnRefreshUserMenu(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<HarvestDesignatable> SetInPlanterBoxTrueDelegate = new EventSystem.IntraObjectHandler<HarvestDesignatable>(delegate(HarvestDesignatable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HarvestDesignatable> SetInPlanterBoxTrueDelegate = new EventSystem.IntraObjectHandler<HarvestDesignatable>(delegate(HarvestDesignatable component, object data)
 	{
 		component.SetInPlanterBox(true);
 	});

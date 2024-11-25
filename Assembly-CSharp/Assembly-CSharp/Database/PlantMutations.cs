@@ -5,9 +5,9 @@ using Klei.AI;
 
 namespace Database
 {
-	public class PlantMutations : ResourceSet<PlantMutation>
+		public class PlantMutations : ResourceSet<PlantMutation>
 	{
-		public PlantMutation AddPlantMutation(string id)
+				public PlantMutation AddPlantMutation(string id)
 		{
 			StringEntry entry = Strings.Get(new StringKey("STRINGS.CREATURES.PLANT_MUTATIONS." + id.ToUpper() + ".NAME"));
 			StringEntry entry2 = Strings.Get(new StringKey("STRINGS.CREATURES.PLANT_MUTATIONS." + id.ToUpper() + ".DESCRIPTION"));
@@ -16,7 +16,7 @@ namespace Database
 			return plantMutation;
 		}
 
-		public PlantMutations(ResourceSet parent) : base("PlantMutations", parent)
+				public PlantMutations(ResourceSet parent) : base("PlantMutations", parent)
 		{
 			this.moderatelyLoose = this.AddPlantMutation("moderatelyLoose").AttributeModifier(Db.Get().PlantAttributes.MinRadiationThreshold, 250f, false).AttributeModifier(Db.Get().PlantAttributes.WiltTempRangeMod, 0.5f, true).AttributeModifier(Db.Get().PlantAttributes.YieldAmount, -0.25f, true).AttributeModifier(Db.Get().PlantAttributes.FertilizerUsageMod, -0.5f, true).VisualTint(-0.4f, -0.4f, -0.4f);
 			this.moderatelyTight = this.AddPlantMutation("moderatelyTight").AttributeModifier(Db.Get().PlantAttributes.MinRadiationThreshold, 250f, false).AttributeModifier(Db.Get().PlantAttributes.WiltTempRangeMod, -0.5f, true).AttributeModifier(Db.Get().PlantAttributes.YieldAmount, 0.5f, true).VisualTint(0.2f, 0.2f, 0.2f);
@@ -30,7 +30,7 @@ namespace Database
 			this.heavyFruit = this.AddPlantMutation("heavyFruit").AttributeModifier(Db.Get().PlantAttributes.MinRadiationThreshold, 250f, false).AttributeModifier(Db.Get().PlantAttributes.FertilizerUsageMod, 0.25f, true).ForceSelfHarvestOnGrown().VisualSymbolTint("swap_crop01", -0.1f, -0.5f, -0.5f).VisualSymbolTint("swap_crop02", -0.1f, -0.5f, -0.5f);
 		}
 
-		public List<string> GetNamesForMutations(List<string> mutationIDs)
+				public List<string> GetNamesForMutations(List<string> mutationIDs)
 		{
 			List<string> list = new List<string>(mutationIDs.Count);
 			foreach (string id in mutationIDs)
@@ -40,31 +40,31 @@ namespace Database
 			return list;
 		}
 
-		public PlantMutation GetRandomMutation(string targetPlantPrefabID)
+				public PlantMutation GetRandomMutation(string targetPlantPrefabID)
 		{
 			return (from m in this.resources
 			where !m.originalMutation && !m.restrictedPrefabIDs.Contains(targetPlantPrefabID) && (m.requiredPrefabIDs.Count == 0 || m.requiredPrefabIDs.Contains(targetPlantPrefabID))
 			select m).ToList<PlantMutation>().GetRandom<PlantMutation>();
 		}
 
-		public PlantMutation moderatelyLoose;
+				public PlantMutation moderatelyLoose;
 
-		public PlantMutation moderatelyTight;
+				public PlantMutation moderatelyTight;
 
-		public PlantMutation extremelyTight;
+				public PlantMutation extremelyTight;
 
-		public PlantMutation bonusLice;
+				public PlantMutation bonusLice;
 
-		public PlantMutation sunnySpeed;
+				public PlantMutation sunnySpeed;
 
-		public PlantMutation slowBurn;
+				public PlantMutation slowBurn;
 
-		public PlantMutation blooms;
+				public PlantMutation blooms;
 
-		public PlantMutation loadedWithFruit;
+				public PlantMutation loadedWithFruit;
 
-		public PlantMutation heavyFruit;
+				public PlantMutation heavyFruit;
 
-		public PlantMutation rottenHeaps;
+				public PlantMutation rottenHeaps;
 	}
 }

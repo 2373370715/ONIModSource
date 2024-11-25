@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ElementDropperMonitor : GameStateMachine<ElementDropperMonitor, ElementDropperMonitor.Instance, IStateMachineTarget, ElementDropperMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.satisfied;
 		this.root.EventHandler(GameHashes.DeathAnimComplete, delegate(ElementDropperMonitor.Instance smi)
@@ -23,63 +23,63 @@ public class ElementDropperMonitor : GameStateMachine<ElementDropperMonitor, Ele
 		});
 	}
 
-	public GameStateMachine<ElementDropperMonitor, ElementDropperMonitor.Instance, IStateMachineTarget, ElementDropperMonitor.Def>.State satisfied;
+		public GameStateMachine<ElementDropperMonitor, ElementDropperMonitor.Instance, IStateMachineTarget, ElementDropperMonitor.Def>.State satisfied;
 
-	public GameStateMachine<ElementDropperMonitor, ElementDropperMonitor.Instance, IStateMachineTarget, ElementDropperMonitor.Def>.State readytodrop;
+		public GameStateMachine<ElementDropperMonitor, ElementDropperMonitor.Instance, IStateMachineTarget, ElementDropperMonitor.Def>.State readytodrop;
 
-	public StateMachine<ElementDropperMonitor, ElementDropperMonitor.Instance, IStateMachineTarget, ElementDropperMonitor.Def>.Signal cellChangedSignal;
+		public StateMachine<ElementDropperMonitor, ElementDropperMonitor.Instance, IStateMachineTarget, ElementDropperMonitor.Def>.Signal cellChangedSignal;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public SimHashes dirtyEmitElement;
+				public SimHashes dirtyEmitElement;
 
-		public float dirtyProbabilityPercent;
+				public float dirtyProbabilityPercent;
 
-		public float dirtyCellToTargetMass;
+				public float dirtyCellToTargetMass;
 
-		public float dirtyMassPerDirty;
+				public float dirtyMassPerDirty;
 
-		public float dirtyMassReleaseOnDeath;
+				public float dirtyMassReleaseOnDeath;
 
-		public byte emitDiseaseIdx = byte.MaxValue;
+				public byte emitDiseaseIdx = byte.MaxValue;
 
-		public float emitDiseasePerKg;
+				public float emitDiseasePerKg;
 	}
 
-	public new class Instance : GameStateMachine<ElementDropperMonitor, ElementDropperMonitor.Instance, IStateMachineTarget, ElementDropperMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<ElementDropperMonitor, ElementDropperMonitor.Instance, IStateMachineTarget, ElementDropperMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, ElementDropperMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, ElementDropperMonitor.Def def) : base(master, def)
 		{
 			Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, new System.Action(this.OnCellChange), "ElementDropperMonitor.Instance");
 		}
 
-		public override void StopSM(string reason)
+				public override void StopSM(string reason)
 		{
 			base.StopSM(reason);
 			Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, new System.Action(this.OnCellChange));
 		}
 
-		private void OnCellChange()
+				private void OnCellChange()
 		{
 			base.sm.cellChangedSignal.Trigger(this);
 		}
 
-		public bool ShouldDropElement()
+				public bool ShouldDropElement()
 		{
 			return this.IsValidDropCell() && UnityEngine.Random.Range(0f, 100f) < base.def.dirtyProbabilityPercent;
 		}
 
-		public void DropDeathElement()
+				public void DropDeathElement()
 		{
 			this.DropElement(base.def.dirtyMassReleaseOnDeath, base.def.dirtyEmitElement, base.def.emitDiseaseIdx, Mathf.RoundToInt(base.def.dirtyMassReleaseOnDeath * base.def.dirtyMassPerDirty));
 		}
 
-		public void DropPeriodicElement()
+				public void DropPeriodicElement()
 		{
 			this.DropElement(base.def.dirtyMassPerDirty, base.def.dirtyEmitElement, base.def.emitDiseaseIdx, Mathf.RoundToInt(base.def.emitDiseasePerKg * base.def.dirtyMassPerDirty));
 		}
 
-		public void DropElement(float mass, SimHashes element_id, byte disease_idx, int disease_count)
+				public void DropElement(float mass, SimHashes element_id, byte disease_idx, int disease_count)
 		{
 			if (mass <= 0f)
 			{
@@ -98,7 +98,7 @@ public class ElementDropperMonitor : GameStateMachine<ElementDropperMonitor, Ele
 			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Resource, element.name, base.gameObject.transform, 1.5f, false);
 		}
 
-		public bool IsValidDropCell()
+				public bool IsValidDropCell()
 		{
 			int num = Grid.PosToCell(base.transform.GetPosition());
 			return Grid.IsValidCell(num) && Grid.IsGas(num) && Grid.Mass[num] <= 1f;

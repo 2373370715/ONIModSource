@@ -4,30 +4,30 @@ using UnityEngine;
 
 public class EntityLuminescence : GameStateMachine<EntityLuminescence, EntityLuminescence.Instance, IStateMachineTarget, EntityLuminescence.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.root;
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Color lightColor;
+				public Color lightColor;
 
-		public float lightRange;
+				public float lightRange;
 
-		public float lightAngle;
+				public float lightAngle;
 
-		public Vector2 lightOffset;
+				public Vector2 lightOffset;
 
-		public Vector2 lightDirection;
+				public Vector2 lightDirection;
 
-		public global::LightShape lightShape;
+				public global::LightShape lightShape;
 	}
 
-	public new class Instance : GameStateMachine<EntityLuminescence, EntityLuminescence.Instance, IStateMachineTarget, EntityLuminescence.Def>.GameInstance
+		public new class Instance : GameStateMachine<EntityLuminescence, EntityLuminescence.Instance, IStateMachineTarget, EntityLuminescence.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, EntityLuminescence.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, EntityLuminescence.Def def) : base(master, def)
 		{
 			this.light.Color = def.lightColor;
 			this.light.Range = def.lightRange;
@@ -37,7 +37,7 @@ public class EntityLuminescence : GameStateMachine<EntityLuminescence, EntityLum
 			this.light.shape = def.lightShape;
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			this.luminescence = Db.Get().Attributes.Luminescence.Lookup(base.gameObject);
@@ -46,12 +46,12 @@ public class EntityLuminescence : GameStateMachine<EntityLuminescence, EntityLum
 			this.RefreshLight();
 		}
 
-		private void OnLuminescenceChanged()
+				private void OnLuminescenceChanged()
 		{
 			this.RefreshLight();
 		}
 
-		public void RefreshLight()
+				public void RefreshLight()
 		{
 			if (this.luminescence != null)
 			{
@@ -65,7 +65,7 @@ public class EntityLuminescence : GameStateMachine<EntityLuminescence, EntityLum
 			}
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			if (this.luminescence != null)
 			{
@@ -75,9 +75,9 @@ public class EntityLuminescence : GameStateMachine<EntityLuminescence, EntityLum
 			base.OnCleanUp();
 		}
 
-		[MyCmpAdd]
+				[MyCmpAdd]
 		private Light2D light;
 
-		private AttributeInstance luminescence;
+				private AttributeInstance luminescence;
 	}
 }

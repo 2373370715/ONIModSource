@@ -3,9 +3,9 @@ using Klei.AI;
 
 namespace Database
 {
-	public class Attributes : ResourceSet<Klei.AI.Attribute>
+		public class Attributes : ResourceSet<Klei.AI.Attribute>
 	{
-		public Attributes(ResourceSet parent) : base("Attributes", parent)
+				public Attributes(ResourceSet parent) : base("Attributes", parent)
 		{
 			this.Construction = base.Add(new Klei.AI.Attribute("Construction", true, Klei.AI.Attribute.Display.Skill, true, 0f, null, null, "mod_construction", null));
 			this.Construction.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.SimpleInteger, GameUtil.TimeSlice.None));
@@ -97,88 +97,88 @@ namespace Database
 			this.Toggle.SetFormatter(new StandardAttributeFormatter(GameUtil.UnitClass.SimpleInteger, GameUtil.TimeSlice.None));
 		}
 
-		public Klei.AI.Attribute Construction;
+				public Klei.AI.Attribute Construction;
 
-		public Klei.AI.Attribute Digging;
+				public Klei.AI.Attribute Digging;
 
-		public Klei.AI.Attribute Machinery;
+				public Klei.AI.Attribute Machinery;
 
-		public Klei.AI.Attribute Athletics;
+				public Klei.AI.Attribute Athletics;
 
-		public Klei.AI.Attribute Learning;
+				public Klei.AI.Attribute Learning;
 
-		public Klei.AI.Attribute Cooking;
+				public Klei.AI.Attribute Cooking;
 
-		public Klei.AI.Attribute Caring;
+				public Klei.AI.Attribute Caring;
 
-		public Klei.AI.Attribute Strength;
+				public Klei.AI.Attribute Strength;
 
-		public Klei.AI.Attribute Art;
+				public Klei.AI.Attribute Art;
 
-		public Klei.AI.Attribute Botanist;
+				public Klei.AI.Attribute Botanist;
 
-		public Klei.AI.Attribute Ranching;
+				public Klei.AI.Attribute Ranching;
 
-		public Klei.AI.Attribute LifeSupport;
+				public Klei.AI.Attribute LifeSupport;
 
-		public Klei.AI.Attribute Toggle;
+				public Klei.AI.Attribute Toggle;
 
-		public Klei.AI.Attribute PowerTinker;
+				public Klei.AI.Attribute PowerTinker;
 
-		public Klei.AI.Attribute FarmTinker;
+				public Klei.AI.Attribute FarmTinker;
 
-		public Klei.AI.Attribute SpaceNavigation;
+				public Klei.AI.Attribute SpaceNavigation;
 
-		public Klei.AI.Attribute Immunity;
+				public Klei.AI.Attribute Immunity;
 
-		public Klei.AI.Attribute GermResistance;
+				public Klei.AI.Attribute GermResistance;
 
-		public Klei.AI.Attribute Insulation;
+				public Klei.AI.Attribute Insulation;
 
-		public Klei.AI.Attribute Luminescence;
+				public Klei.AI.Attribute Luminescence;
 
-		public Klei.AI.Attribute ThermalConductivityBarrier;
+				public Klei.AI.Attribute ThermalConductivityBarrier;
 
-		public Klei.AI.Attribute Decor;
+				public Klei.AI.Attribute Decor;
 
-		public Klei.AI.Attribute FoodQuality;
+				public Klei.AI.Attribute FoodQuality;
 
-		public Klei.AI.Attribute ScaldingThreshold;
+				public Klei.AI.Attribute ScaldingThreshold;
 
-		public Klei.AI.Attribute ScoldingThreshold;
+				public Klei.AI.Attribute ScoldingThreshold;
 
-		public Klei.AI.Attribute GeneratorOutput;
+				public Klei.AI.Attribute GeneratorOutput;
 
-		public Klei.AI.Attribute MachinerySpeed;
+				public Klei.AI.Attribute MachinerySpeed;
 
-		public Klei.AI.Attribute RadiationResistance;
+				public Klei.AI.Attribute RadiationResistance;
 
-		public Klei.AI.Attribute RadiationRecovery;
+				public Klei.AI.Attribute RadiationRecovery;
 
-		public Klei.AI.Attribute DecorExpectation;
+				public Klei.AI.Attribute DecorExpectation;
 
-		public Klei.AI.Attribute FoodExpectation;
+				public Klei.AI.Attribute FoodExpectation;
 
-		public Klei.AI.Attribute RoomTemperaturePreference;
+				public Klei.AI.Attribute RoomTemperaturePreference;
 
-		public Klei.AI.Attribute QualityOfLifeExpectation;
+				public Klei.AI.Attribute QualityOfLifeExpectation;
 
-		public Klei.AI.Attribute AirConsumptionRate;
+				public Klei.AI.Attribute AirConsumptionRate;
 
-		public Klei.AI.Attribute MaxUnderwaterTravelCost;
+				public Klei.AI.Attribute MaxUnderwaterTravelCost;
 
-		public Klei.AI.Attribute ToiletEfficiency;
+				public Klei.AI.Attribute ToiletEfficiency;
 
-		public Klei.AI.Attribute Sneezyness;
+				public Klei.AI.Attribute Sneezyness;
 
-		public Klei.AI.Attribute TransitTubeTravelSpeed;
+				public Klei.AI.Attribute TransitTubeTravelSpeed;
 
-		public Klei.AI.Attribute DiseaseCureSpeed;
+				public Klei.AI.Attribute DiseaseCureSpeed;
 
-		public Klei.AI.Attribute DoctoredLevel;
+				public Klei.AI.Attribute DoctoredLevel;
 
-		public Klei.AI.Attribute CarryAmount;
+				public Klei.AI.Attribute CarryAmount;
 
-		public Klei.AI.Attribute QualityOfLife;
+				public Klei.AI.Attribute QualityOfLife;
 	}
 }

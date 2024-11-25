@@ -2,7 +2,7 @@
 
 public class Lure : GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, Lure.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.off;
@@ -10,33 +10,33 @@ public class Lure : GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, L
 		this.on.Enter(new StateMachine<Lure, Lure.Instance, IStateMachineTarget, Lure.Def>.State.Callback(this.AddToScenePartitioner)).Exit(new StateMachine<Lure, Lure.Instance, IStateMachineTarget, Lure.Def>.State.Callback(this.RemoveFromScenePartitioner));
 	}
 
-	private void AddToScenePartitioner(Lure.Instance smi)
+		private void AddToScenePartitioner(Lure.Instance smi)
 	{
 		Extents extents = new Extents(smi.cell, smi.def.radius);
 		smi.partitionerEntry = GameScenePartitioner.Instance.Add(this.name, smi, extents, GameScenePartitioner.Instance.lure, null);
 	}
 
-	private void RemoveFromScenePartitioner(Lure.Instance smi)
+		private void RemoveFromScenePartitioner(Lure.Instance smi)
 	{
 		GameScenePartitioner.Instance.Free(ref smi.partitionerEntry);
 	}
 
-	public GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, Lure.Def>.State off;
+		public GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, Lure.Def>.State off;
 
-	public GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, Lure.Def>.State on;
+		public GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, Lure.Def>.State on;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public CellOffset[] defaultLurePoints = new CellOffset[1];
+				public CellOffset[] defaultLurePoints = new CellOffset[1];
 
-		public int radius = 50;
+				public int radius = 50;
 
-		public Tag[] initialLures;
+				public Tag[] initialLures;
 	}
 
-	public new class Instance : GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, Lure.Def>.GameInstance
+		public new class Instance : GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, Lure.Def>.GameInstance
 	{
-				public int cell
+						public int cell
 		{
 			get
 			{
@@ -48,7 +48,7 @@ public class Lure : GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, L
 			}
 		}
 
-						public CellOffset[] LurePoints
+								public CellOffset[] LurePoints
 		{
 			get
 			{
@@ -64,11 +64,11 @@ public class Lure : GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, L
 			}
 		}
 
-		public Instance(IStateMachineTarget master, Lure.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, Lure.Def def) : base(master, def)
 		{
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			if (base.def.initialLures != null)
@@ -77,7 +77,7 @@ public class Lure : GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, L
 			}
 		}
 
-		public void ChangeLureCellPosition(int newCell)
+				public void ChangeLureCellPosition(int newCell)
 		{
 			bool flag = base.IsInsideState(base.sm.on);
 			if (flag)
@@ -95,7 +95,7 @@ public class Lure : GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, L
 			}
 		}
 
-		public void SetActiveLures(Tag[] lures)
+				public void SetActiveLures(Tag[] lures)
 		{
 			this.lures = lures;
 			if (lures == null || lures.Length == 0)
@@ -106,12 +106,12 @@ public class Lure : GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, L
 			this.GoTo(base.sm.on);
 		}
 
-		public bool IsActive()
+				public bool IsActive()
 		{
 			return this.GetCurrentState() == base.sm.on;
 		}
 
-		public bool HasAnyLure(Tag[] creature_lures)
+				public bool HasAnyLure(Tag[] creature_lures)
 		{
 			if (this.lures == null || creature_lures == null)
 			{
@@ -130,12 +130,12 @@ public class Lure : GameStateMachine<Lure, Lure.Instance, IStateMachineTarget, L
 			return false;
 		}
 
-		private int _cell = -1;
+				private int _cell = -1;
 
-		private Tag[] lures;
+				private Tag[] lures;
 
-		public HandleVector<int>.Handle partitionerEntry;
+				public HandleVector<int>.Handle partitionerEntry;
 
-		private CellOffset[] _lurePoints;
+				private CellOffset[] _lurePoints;
 	}
 }

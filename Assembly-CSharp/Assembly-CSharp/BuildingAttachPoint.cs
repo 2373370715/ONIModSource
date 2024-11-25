@@ -4,19 +4,19 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/BuildingAttachPoint")]
 public class BuildingAttachPoint : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Components.BuildingAttachPoints.Add(this);
 		this.TryAttachEmptyHardpoints();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	private void TryAttachEmptyHardpoints()
+		private void TryAttachEmptyHardpoints()
 	{
 		for (int i = 0; i < this.points.Length; i++)
 		{
@@ -37,7 +37,7 @@ public class BuildingAttachPoint : KMonoBehaviour
 		}
 	}
 
-	public bool AcceptsAttachment(Tag type, int cell)
+		public bool AcceptsAttachment(Tag type, int cell)
 	{
 		int cell2 = Grid.PosToCell(base.gameObject);
 		for (int i = 0; i < this.points.Length; i++)
@@ -50,28 +50,28 @@ public class BuildingAttachPoint : KMonoBehaviour
 		return false;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.BuildingAttachPoints.Remove(this);
 	}
 
-	public BuildingAttachPoint.HardPoint[] points = new BuildingAttachPoint.HardPoint[0];
+		public BuildingAttachPoint.HardPoint[] points = new BuildingAttachPoint.HardPoint[0];
 
-	[Serializable]
+		[Serializable]
 	public struct HardPoint
 	{
-		public HardPoint(CellOffset position, Tag attachableType, AttachableBuilding attachedBuilding)
+				public HardPoint(CellOffset position, Tag attachableType, AttachableBuilding attachedBuilding)
 		{
 			this.position = position;
 			this.attachableType = attachableType;
 			this.attachedBuilding = attachedBuilding;
 		}
 
-		public CellOffset position;
+				public CellOffset position;
 
-		public Tag attachableType;
+				public Tag attachableType;
 
-		public AttachableBuilding attachedBuilding;
+				public AttachableBuilding attachedBuilding;
 	}
 }

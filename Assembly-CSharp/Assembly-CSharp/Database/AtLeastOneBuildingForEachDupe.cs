@@ -4,14 +4,14 @@ using STRINGS;
 
 namespace Database
 {
-	public class AtLeastOneBuildingForEachDupe : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class AtLeastOneBuildingForEachDupe : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public AtLeastOneBuildingForEachDupe(List<Tag> validBuildingTypes)
+				public AtLeastOneBuildingForEachDupe(List<Tag> validBuildingTypes)
 		{
 			this.validBuildingTypes = validBuildingTypes;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			if (Components.LiveMinionIdentities.Items.Count <= 0)
 			{
@@ -33,12 +33,12 @@ namespace Database
 			return num >= Components.LiveMinionIdentities.Items.Count;
 		}
 
-		public override bool Fail()
+				public override bool Fail()
 		{
 			return false;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			int num = reader.ReadInt32();
 			this.validBuildingTypes = new List<Tag>(num);
@@ -49,7 +49,7 @@ namespace Database
 			}
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			if (this.validBuildingTypes.Contains("FlushToilet"))
 			{
@@ -71,6 +71,6 @@ namespace Database
 			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.BUILING_BEDS, complete ? Components.LiveMinionIdentities.Items.Count : num, Components.LiveMinionIdentities.Items.Count);
 		}
 
-		private List<Tag> validBuildingTypes = new List<Tag>();
+				private List<Tag> validBuildingTypes = new List<Tag>();
 	}
 }

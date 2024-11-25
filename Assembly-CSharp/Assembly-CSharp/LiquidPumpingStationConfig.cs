@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LiquidPumpingStationConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidPumpingStation";
 		int width = 2;
@@ -29,7 +29,7 @@ public class LiquidPumpingStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -46,7 +46,7 @@ public class LiquidPumpingStationConfig : IBuildingConfig
 		go.AddTag(GameTags.LiquidSource);
 	}
 
-	private static void AddGuide(GameObject go, bool occupy_tiles)
+		private static void AddGuide(GameObject go, bool occupy_tiles)
 	{
 		GameObject gameObject = new GameObject();
 		gameObject.transform.parent = go.transform;
@@ -65,7 +65,7 @@ public class LiquidPumpingStationConfig : IBuildingConfig
 		pumpingStationGuide.occupyTiles = occupy_tiles;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		LiquidPumpingStationConfig.AddGuide(go.GetComponent<Building>().Def.BuildingPreview, false);
 		LiquidPumpingStationConfig.AddGuide(go.GetComponent<Building>().Def.BuildingUnderConstruction, false);
@@ -76,7 +76,7 @@ public class LiquidPumpingStationConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "LiquidPumpingStation";
+		public const string ID = "LiquidPumpingStation";
 
-	public const int TAIL_LENGTH = 4;
+		public const int TAIL_LENGTH = 4;
 }

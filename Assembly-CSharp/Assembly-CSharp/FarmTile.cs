@@ -1,54 +1,41 @@
-﻿using System;
+﻿public class FarmTile : StateMachineComponent<FarmTile.SMInstance> {
+    [MyCmpReq]
+    private PlantablePlot plantablePlot;
 
-public class FarmTile : StateMachineComponent<FarmTile.SMInstance>
-{
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		base.smi.StartSM();
-	}
+    [MyCmpReq]
+    private Storage storage;
 
-	[MyCmpReq]
-	private PlantablePlot plantablePlot;
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        smi.StartSM();
+    }
 
-	[MyCmpReq]
-	private Storage storage;
+    public class SMInstance : GameStateMachine<States, SMInstance, FarmTile, object>.GameInstance {
+        public SMInstance(FarmTile master) : base(master) { }
 
-	public class SMInstance : GameStateMachine<FarmTile.States, FarmTile.SMInstance, FarmTile, object>.GameInstance
-	{
-		public SMInstance(FarmTile master) : base(master)
-		{
-		}
+        public bool HasWater() {
+            var primaryElement = master.storage.FindPrimaryElement(SimHashes.Water);
+            return primaryElement != null && primaryElement.Mass > 0f;
+        }
+    }
 
-		public bool HasWater()
-		{
-			PrimaryElement primaryElement = base.master.storage.FindPrimaryElement(SimHashes.Water);
-			return primaryElement != null && primaryElement.Mass > 0f;
-		}
-	}
+    public class States : GameStateMachine<States, SMInstance, FarmTile> {
+        public FarmStates empty;
+        public FarmStates full;
 
-	public class States : GameStateMachine<FarmTile.States, FarmTile.SMInstance, FarmTile>
-	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
-		{
-			default_state = this.empty;
-			this.empty.EventTransition(GameHashes.OccupantChanged, this.full, (FarmTile.SMInstance smi) => smi.master.plantablePlot.Occupant != null);
-			this.empty.wet.EventTransition(GameHashes.OnStorageChange, this.empty.dry, (FarmTile.SMInstance smi) => !smi.HasWater());
-			this.empty.dry.EventTransition(GameHashes.OnStorageChange, this.empty.wet, (FarmTile.SMInstance smi) => !smi.HasWater());
-			this.full.EventTransition(GameHashes.OccupantChanged, this.empty, (FarmTile.SMInstance smi) => smi.master.plantablePlot.Occupant == null);
-			this.full.wet.EventTransition(GameHashes.OnStorageChange, this.full.dry, (FarmTile.SMInstance smi) => !smi.HasWater());
-			this.full.dry.EventTransition(GameHashes.OnStorageChange, this.full.wet, (FarmTile.SMInstance smi) => !smi.HasWater());
-		}
+        public override void InitializeStates(out BaseState default_state) {
+            default_state = empty;
+            empty.EventTransition(GameHashes.OccupantChanged, full, smi => smi.master.plantablePlot.Occupant != null);
+            empty.wet.EventTransition(GameHashes.OnStorageChange, empty.dry, smi => !smi.HasWater());
+            empty.dry.EventTransition(GameHashes.OnStorageChange, empty.wet, smi => !smi.HasWater());
+            full.EventTransition(GameHashes.OccupantChanged, empty, smi => smi.master.plantablePlot.Occupant == null);
+            full.wet.EventTransition(GameHashes.OnStorageChange, full.dry, smi => !smi.HasWater());
+            full.dry.EventTransition(GameHashes.OnStorageChange, full.wet, smi => !smi.HasWater());
+        }
 
-		public FarmTile.States.FarmStates empty;
-
-		public FarmTile.States.FarmStates full;
-
-		public class FarmStates : GameStateMachine<FarmTile.States, FarmTile.SMInstance, FarmTile, object>.State
-		{
-			public GameStateMachine<FarmTile.States, FarmTile.SMInstance, FarmTile, object>.State wet;
-
-			public GameStateMachine<FarmTile.States, FarmTile.SMInstance, FarmTile, object>.State dry;
-		}
-	}
+        public class FarmStates : State {
+            public State dry;
+            public State wet;
+        }
+    }
 }

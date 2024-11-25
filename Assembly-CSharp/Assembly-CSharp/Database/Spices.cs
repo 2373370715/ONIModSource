@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Database
 {
-	public class Spices : ResourceSet<Spice>
+		public class Spices : ResourceSet<Spice>
 	{
-		public Spices(ResourceSet parent) : base("Spices", parent)
+				public Spices(ResourceSet parent) : base("Spices", parent)
 		{
 			this.PreservingSpice = new Spice(this, "PRESERVING_SPICE", new Spice.Ingredient[]
 			{
@@ -86,12 +86,12 @@ namespace Database
 			}, new Color(0.788f, 0.443f, 0.792f), Color.white, null, new AttributeModifier("Machinery", 3f, "Spices", false, false, true), "spice_recipe4", null);
 		}
 
-		public Spice PreservingSpice;
+				public Spice PreservingSpice;
 
-		public Spice PilotingSpice;
+				public Spice PilotingSpice;
 
-		public Spice StrengthSpice;
+				public Spice StrengthSpice;
 
-		public Spice MachinerySpice;
+				public Spice MachinerySpice;
 	}
 }

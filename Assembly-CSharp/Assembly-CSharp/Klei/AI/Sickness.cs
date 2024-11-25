@@ -6,10 +6,10 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[DebuggerDisplay("{base.Id}")]
+		[DebuggerDisplay("{base.Id}")]
 	public abstract class Sickness : Resource
 	{
-				public new string Name
+						public new string Name
 		{
 			get
 			{
@@ -17,7 +17,7 @@ namespace Klei.AI
 			}
 		}
 
-				public float SicknessDuration
+						public float SicknessDuration
 		{
 			get
 			{
@@ -25,7 +25,7 @@ namespace Klei.AI
 			}
 		}
 
-				public StringKey DescriptiveSymptoms
+						public StringKey DescriptiveSymptoms
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Klei.AI
 			}
 		}
 
-		public Sickness(string id, Sickness.SicknessType type, Sickness.Severity severity, float immune_attack_strength, List<Sickness.InfectionVector> infection_vectors, float sickness_duration, string recovery_effect = null) : base(id, null, null)
+				public Sickness(string id, Sickness.SicknessType type, Sickness.Severity severity, float immune_attack_strength, List<Sickness.InfectionVector> infection_vectors, float sickness_duration, string recovery_effect = null) : base(id, null, null)
 		{
 			this.name = new StringKey("STRINGS.DUPLICANTS.DISEASES." + id.ToUpper() + ".NAME");
 			this.id = id;
@@ -49,7 +49,7 @@ namespace Klei.AI
 			Db.Get().Attributes.Add(this.cureSpeedBase);
 		}
 
-		public object[] Infect(GameObject go, SicknessInstance diseaseInstance, SicknessExposureInfo exposure_info)
+				public object[] Infect(GameObject go, SicknessInstance diseaseInstance, SicknessExposureInfo exposure_info)
 		{
 			object[] array = new object[this.components.Count];
 			for (int i = 0; i < this.components.Count; i++)
@@ -59,7 +59,7 @@ namespace Klei.AI
 			return array;
 		}
 
-		public void Cure(GameObject go, object[] componentData)
+				public void Cure(GameObject go, object[] componentData)
 		{
 			for (int i = 0; i < this.components.Count; i++)
 			{
@@ -67,7 +67,7 @@ namespace Klei.AI
 			}
 		}
 
-		public List<Descriptor> GetSymptoms()
+				public List<Descriptor> GetSymptoms()
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			for (int i = 0; i < this.components.Count; i++)
@@ -85,12 +85,12 @@ namespace Klei.AI
 			return list;
 		}
 
-		protected void AddSicknessComponent(Sickness.SicknessComponent cmp)
+				protected void AddSicknessComponent(Sickness.SicknessComponent cmp)
 		{
 			this.components.Add(cmp);
 		}
 
-		public T GetSicknessComponent<T>() where T : Sickness.SicknessComponent
+				public T GetSicknessComponent<T>() where T : Sickness.SicknessComponent
 		{
 			for (int i = 0; i < this.components.Count; i++)
 			{
@@ -102,12 +102,12 @@ namespace Klei.AI
 			return default(T);
 		}
 
-		public virtual List<Descriptor> GetSicknessSourceDescriptors()
+				public virtual List<Descriptor> GetSicknessSourceDescriptors()
 		{
 			return new List<Descriptor>();
 		}
 
-		public List<Descriptor> GetQualitativeDescriptors()
+				public List<Descriptor> GetQualitativeDescriptors()
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			using (List<Sickness.InfectionVector>.Enumerator enumerator = this.infectionVectors.GetEnumerator())
@@ -135,65 +135,65 @@ namespace Klei.AI
 			return list;
 		}
 
-		private StringKey name;
+				private StringKey name;
 
-		private StringKey descriptiveSymptoms;
+				private StringKey descriptiveSymptoms;
 
-		private float sicknessDuration = 600f;
+				private float sicknessDuration = 600f;
 
-		public float fatalityDuration;
+				public float fatalityDuration;
 
-		public HashedString id;
+				public HashedString id;
 
-		public Sickness.SicknessType sicknessType;
+				public Sickness.SicknessType sicknessType;
 
-		public Sickness.Severity severity;
+				public Sickness.Severity severity;
 
-		public string recoveryEffect;
+				public string recoveryEffect;
 
-		public List<Sickness.InfectionVector> infectionVectors;
+				public List<Sickness.InfectionVector> infectionVectors;
 
-		private List<Sickness.SicknessComponent> components = new List<Sickness.SicknessComponent>();
+				private List<Sickness.SicknessComponent> components = new List<Sickness.SicknessComponent>();
 
-		public Amount amount;
+				public Amount amount;
 
-		public Attribute amountDeltaAttribute;
+				public Attribute amountDeltaAttribute;
 
-		public Attribute cureSpeedBase;
+				public Attribute cureSpeedBase;
 
-		public abstract class SicknessComponent
+				public abstract class SicknessComponent
 		{
-			public abstract object OnInfect(GameObject go, SicknessInstance diseaseInstance);
+						public abstract object OnInfect(GameObject go, SicknessInstance diseaseInstance);
 
-			public abstract void OnCure(GameObject go, object instance_data);
+						public abstract void OnCure(GameObject go, object instance_data);
 
-			public virtual List<Descriptor> GetSymptoms()
+						public virtual List<Descriptor> GetSymptoms()
 			{
 				return null;
 			}
 		}
 
-		public enum InfectionVector
+				public enum InfectionVector
 		{
-			Contact,
-			Digestion,
-			Inhalation,
-			Exposure
+						Contact,
+						Digestion,
+						Inhalation,
+						Exposure
 		}
 
-		public enum SicknessType
+				public enum SicknessType
 		{
-			Pathogen,
-			Ailment,
-			Injury
+						Pathogen,
+						Ailment,
+						Injury
 		}
 
-		public enum Severity
+				public enum Severity
 		{
-			Benign,
-			Minor,
-			Major,
-			Critical
+						Benign,
+						Minor,
+						Major,
+						Critical
 		}
 	}
 }

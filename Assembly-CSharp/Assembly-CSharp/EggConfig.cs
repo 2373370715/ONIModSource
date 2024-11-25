@@ -7,13 +7,13 @@ using UnityEngine;
 
 public class EggConfig
 {
-	[Obsolete("Mod compatibility: Use CreateEgg with dlcIds")]
+		[Obsolete("Mod compatibility: Use CreateEgg with dlcIds")]
 	public static GameObject CreateEgg(string id, string name, string desc, Tag creature_id, string anim, float mass, int egg_sort_order, float base_incubation_rate)
 	{
 		return EggConfig.CreateEgg(id, name, desc, creature_id, anim, mass, egg_sort_order, base_incubation_rate, DlcManager.AVAILABLE_ALL_VERSIONS);
 	}
 
-	public static GameObject CreateEgg(string id, string name, string desc, Tag creature_id, string anim, float mass, int egg_sort_order, float base_incubation_rate, string[] dlcIds)
+		public static GameObject CreateEgg(string id, string name, string desc, Tag creature_id, string anim, float mass, int egg_sort_order, float base_incubation_rate, string[] dlcIds)
 	{
 		GameObject gameObject = EntityTemplates.CreateLooseEntity(id, name, desc, mass, true, Assets.GetAnim(anim), "idle", Grid.SceneLayer.Ore, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.8f, true, 0, SimHashes.Creature, null);
 		gameObject.AddOrGet<KBoxCollider2D>().offset = new Vector2f(0f, 0.36f);

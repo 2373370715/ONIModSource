@@ -6,24 +6,24 @@ using Database;
 
 public static class UIMinionOrMannequinITargetExtensions
 {
-	public static void SetOutfit(this UIMinionOrMannequin.ITarget self, ClothingOutfitResource outfit)
+		public static void SetOutfit(this UIMinionOrMannequin.ITarget self, ClothingOutfitResource outfit)
 	{
 		self.SetOutfit(outfit.outfitType, from itemId in outfit.itemsInOutfit
 		select Db.Get().Permits.ClothingItems.Get(itemId));
 	}
 
-	public static void SetOutfit(this UIMinionOrMannequin.ITarget self, OutfitDesignerScreen_OutfitState outfit)
+		public static void SetOutfit(this UIMinionOrMannequin.ITarget self, OutfitDesignerScreen_OutfitState outfit)
 	{
 		self.SetOutfit(outfit.outfitType, from itemId in outfit.GetItems()
 		select Db.Get().Permits.ClothingItems.Get(itemId));
 	}
 
-	public static void SetOutfit(this UIMinionOrMannequin.ITarget self, ClothingOutfitTarget outfit)
+		public static void SetOutfit(this UIMinionOrMannequin.ITarget self, ClothingOutfitTarget outfit)
 	{
 		self.SetOutfit(outfit.OutfitType, outfit.ReadItemValues());
 	}
 
-	public static void SetOutfit(this UIMinionOrMannequin.ITarget self, ClothingOutfitUtility.OutfitType outfitType, Option<ClothingOutfitTarget> outfit)
+		public static void SetOutfit(this UIMinionOrMannequin.ITarget self, ClothingOutfitUtility.OutfitType outfitType, Option<ClothingOutfitTarget> outfit)
 	{
 		if (outfit.HasValue)
 		{
@@ -33,32 +33,32 @@ public static class UIMinionOrMannequinITargetExtensions
 		self.ClearOutfit(outfitType);
 	}
 
-	public static void ClearOutfit(this UIMinionOrMannequin.ITarget self, ClothingOutfitUtility.OutfitType outfitType)
+		public static void ClearOutfit(this UIMinionOrMannequin.ITarget self, ClothingOutfitUtility.OutfitType outfitType)
 	{
 		self.SetOutfit(outfitType, UIMinionOrMannequinITargetExtensions.EMPTY_OUTFIT);
 	}
 
-	public static void React(this UIMinionOrMannequin.ITarget self)
+		public static void React(this UIMinionOrMannequin.ITarget self)
 	{
 		self.React(UIMinionOrMannequinReactSource.None);
 	}
 
-	public static void ReactToClothingItemChange(this UIMinionOrMannequin.ITarget self, PermitCategory clothingChangedCategory)
+		public static void ReactToClothingItemChange(this UIMinionOrMannequin.ITarget self, PermitCategory clothingChangedCategory)
 	{
 		self.React(UIMinionOrMannequinITargetExtensions.<ReactToClothingItemChange>g__GetSource|7_0(clothingChangedCategory));
 	}
 
-	public static void ReactToPersonalityChange(this UIMinionOrMannequin.ITarget self)
+		public static void ReactToPersonalityChange(this UIMinionOrMannequin.ITarget self)
 	{
 		self.React(UIMinionOrMannequinReactSource.OnPersonalityChanged);
 	}
 
-	public static void ReactToFullOutfitChange(this UIMinionOrMannequin.ITarget self)
+		public static void ReactToFullOutfitChange(this UIMinionOrMannequin.ITarget self)
 	{
 		self.React(UIMinionOrMannequinReactSource.OnWholeOutfitChanged);
 	}
 
-	public static IEnumerable<ClothingItemResource> GetOutfitWithDefaultItems(ClothingOutfitUtility.OutfitType outfitType, IEnumerable<ClothingItemResource> outfit)
+		public static IEnumerable<ClothingItemResource> GetOutfitWithDefaultItems(ClothingOutfitUtility.OutfitType outfitType, IEnumerable<ClothingItemResource> outfit)
 	{
 		switch (outfitType)
 		{
@@ -101,7 +101,7 @@ public static class UIMinionOrMannequinITargetExtensions
 		throw new NotImplementedException();
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static UIMinionOrMannequinReactSource <ReactToClothingItemChange>g__GetSource|7_0(PermitCategory clothingChangedCategory)
 	{
 		switch (clothingChangedCategory)
@@ -126,5 +126,5 @@ public static class UIMinionOrMannequinITargetExtensions
 		return UIMinionOrMannequinReactSource.None;
 	}
 
-	public static readonly ClothingItemResource[] EMPTY_OUTFIT = new ClothingItemResource[0];
+		public static readonly ClothingItemResource[] EMPTY_OUTFIT = new ClothingItemResource[0];
 }

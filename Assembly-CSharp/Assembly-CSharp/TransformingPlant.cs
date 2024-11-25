@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class TransformingPlant : KMonoBehaviour
 {
-	public void SubscribeToTransformEvent(GameHashes eventHash)
+		public void SubscribeToTransformEvent(GameHashes eventHash)
 	{
 		base.Subscribe<TransformingPlant>((int)eventHash, TransformingPlant.OnTransformationEventDelegate);
 	}
 
-	public void UnsubscribeToTransformEvent(GameHashes eventHash)
+		public void UnsubscribeToTransformEvent(GameHashes eventHash)
 	{
 		base.Unsubscribe<TransformingPlant>((int)eventHash, TransformingPlant.OnTransformationEventDelegate, false);
 	}
 
-	private void DoPlantTransform(object data)
+		private void DoPlantTransform(object data)
 	{
 		if (this.eventDataCondition != null && !this.eventDataCondition(data))
 		{
@@ -75,19 +75,19 @@ public class TransformingPlant : KMonoBehaviour
 		}
 	}
 
-	public string transformPlantId;
+		public string transformPlantId;
 
-	public Func<object, bool> eventDataCondition;
+		public Func<object, bool> eventDataCondition;
 
-	public bool useGrowthTimeRatio;
+		public bool useGrowthTimeRatio;
 
-	public bool keepPlantablePlotStorage = true;
+		public bool keepPlantablePlotStorage = true;
 
-	public string fxKAnim;
+		public string fxKAnim;
 
-	public string fxAnim;
+		public string fxAnim;
 
-	private static readonly EventSystem.IntraObjectHandler<TransformingPlant> OnTransformationEventDelegate = new EventSystem.IntraObjectHandler<TransformingPlant>(delegate(TransformingPlant component, object data)
+		private static readonly EventSystem.IntraObjectHandler<TransformingPlant> OnTransformationEventDelegate = new EventSystem.IntraObjectHandler<TransformingPlant>(delegate(TransformingPlant component, object data)
 	{
 		component.DoPlantTransform(data);
 	});

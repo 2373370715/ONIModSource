@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class FoodCometConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(FoodCometConfig.ID, UI.SPACEDESTINATIONS.COMETS.FOODCOMET.NAME, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
@@ -44,7 +44,7 @@ public class FoodCometConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 		Comet component = go.GetComponent<Comet>();
 		component.OnImpact = (System.Action)Delegate.Combine(component.OnImpact, new System.Action(delegate()
@@ -65,9 +65,9 @@ public class FoodCometConfig : IEntityConfig
 		}));
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static string ID = "FoodComet";
+		public static string ID = "FoodComet";
 }

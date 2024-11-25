@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class UserMenuScreen : KIconButtonMenu
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.keepMenuOpen = true;
 		base.OnPrefabInit();
@@ -14,27 +14,27 @@ public class UserMenuScreen : KIconButtonMenu
 		this.buttonParent.transform.SetAsLastSibling();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Game.Instance.Subscribe(1980521255, new Action<object>(this.OnUIRefresh));
 		KInputManager.InputChange.AddListener(new UnityAction(base.RefreshButtonTooltip));
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		KInputManager.InputChange.RemoveListener(new UnityAction(base.RefreshButtonTooltip));
 		base.OnForcedCleanUp();
 	}
 
-	public void SetSelected(GameObject go)
+		public void SetSelected(GameObject go)
 	{
 		this.ClearPrioritizable();
 		this.selected = go;
 		this.RefreshPrioritizable();
 	}
 
-	private void ClearPrioritizable()
+		private void ClearPrioritizable()
 	{
 		if (this.selected != null)
 		{
@@ -47,7 +47,7 @@ public class UserMenuScreen : KIconButtonMenu
 		}
 	}
 
-	private void RefreshPrioritizable()
+		private void RefreshPrioritizable()
 	{
 		if (this.selected != null)
 		{
@@ -64,7 +64,7 @@ public class UserMenuScreen : KIconButtonMenu
 		}
 	}
 
-	public void Refresh(GameObject go)
+		public void Refresh(GameObject go)
 	{
 		if (go != this.selected)
 		{
@@ -86,22 +86,22 @@ public class UserMenuScreen : KIconButtonMenu
 		base.transform.parent.gameObject.SetActive(true);
 	}
 
-	public void AddSliders(IList<UserMenu.SliderInfo> sliders)
+		public void AddSliders(IList<UserMenu.SliderInfo> sliders)
 	{
 		this.slidersInfos.AddRange(sliders);
 	}
 
-	public void AddButtons(IList<KIconButtonMenu.ButtonInfo> buttons)
+		public void AddButtons(IList<KIconButtonMenu.ButtonInfo> buttons)
 	{
 		this.buttonInfos.AddRange(buttons);
 	}
 
-	private void OnUIRefresh(object data)
+		private void OnUIRefresh(object data)
 	{
 		this.Refresh(data as GameObject);
 	}
 
-	public void RefreshSliders()
+		public void RefreshSliders()
 	{
 		if (this.sliders != null)
 		{
@@ -144,7 +144,7 @@ public class UserMenuScreen : KIconButtonMenu
 		}
 	}
 
-	private void OnPriorityClicked(PrioritySetting priority)
+		private void OnPriorityClicked(PrioritySetting priority)
 	{
 		if (this.selected != null)
 		{
@@ -156,26 +156,26 @@ public class UserMenuScreen : KIconButtonMenu
 		}
 	}
 
-	private void OnPriorityChanged(PrioritySetting priority)
+		private void OnPriorityChanged(PrioritySetting priority)
 	{
 		this.priorityScreen.SetScreenPriority(priority, false);
 	}
 
-	private GameObject selected;
+		private GameObject selected;
 
-	public MinMaxSlider sliderPrefab;
+		public MinMaxSlider sliderPrefab;
 
-	public GameObject sliderParent;
+		public GameObject sliderParent;
 
-	public PriorityScreen priorityScreenPrefab;
+		public PriorityScreen priorityScreenPrefab;
 
-	public GameObject priorityScreenParent;
+		public GameObject priorityScreenParent;
 
-	private List<MinMaxSlider> sliders = new List<MinMaxSlider>();
+		private List<MinMaxSlider> sliders = new List<MinMaxSlider>();
 
-	private List<UserMenu.SliderInfo> slidersInfos = new List<UserMenu.SliderInfo>();
+		private List<UserMenu.SliderInfo> slidersInfos = new List<UserMenu.SliderInfo>();
 
-	private List<KIconButtonMenu.ButtonInfo> buttonInfos = new List<KIconButtonMenu.ButtonInfo>();
+		private List<KIconButtonMenu.ButtonInfo> buttonInfos = new List<KIconButtonMenu.ButtonInfo>();
 
-	private PriorityScreen priorityScreen;
+		private PriorityScreen priorityScreen;
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HotTubConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "HotTub";
 		int width = 5;
@@ -44,7 +44,7 @@ public class HotTubConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.RecBuilding, false);
 		Storage storage = go.AddOrGet<Storage>();
@@ -83,24 +83,24 @@ public class HotTubConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<RequireInputs>().requireConduitHasMass = false;
 	}
 
-	public const string ID = "HotTub";
+		public const string ID = "HotTub";
 
-	public const string COLD_IMMUNITY_EFFECT_NAME = "WarmTouch";
+		public const string COLD_IMMUNITY_EFFECT_NAME = "WarmTouch";
 
-	public const float COLD_IMMUNITY_DURATION = 1800f;
+		public const float COLD_IMMUNITY_DURATION = 1800f;
 
-	private float WATER_AMOUNT = 100f;
+		private float WATER_AMOUNT = 100f;
 
-	private const float KDTU_TRANSFER_RATE = 15f;
+		private const float KDTU_TRANSFER_RATE = 15f;
 
-	private float MINIMUM_WATER_TEMPERATURE = 310.85f;
+		private float MINIMUM_WATER_TEMPERATURE = 310.85f;
 
-	private float MAXIMUM_TUB_TEMPERATURE = 310.85f;
+		private float MAXIMUM_TUB_TEMPERATURE = 310.85f;
 
-	private float BLEACH_STONE_CONSUMPTION_RATE = 0.11666667f;
+		private float BLEACH_STONE_CONSUMPTION_RATE = 0.11666667f;
 }

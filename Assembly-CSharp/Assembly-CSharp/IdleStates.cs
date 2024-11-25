@@ -1,166 +1,143 @@
-﻿using System;
-using STRINGS;
+﻿using STRINGS;
 using UnityEngine;
 
-public class IdleStates : GameStateMachine<IdleStates, IdleStates.Instance, IStateMachineTarget, IdleStates.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.loop;
-		this.root.Exit("StopNavigator", delegate(IdleStates.Instance smi)
-		{
-			smi.GetComponent<Navigator>().Stop(false, true);
-		}).ToggleStatusItem(CREATURES.STATUSITEMS.IDLE.NAME, CREATURES.STATUSITEMS.IDLE.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).ToggleTag(GameTags.Idle);
-		this.loop.Enter(new StateMachine<IdleStates, IdleStates.Instance, IStateMachineTarget, IdleStates.Def>.State.Callback(this.PlayIdle)).ToggleScheduleCallback("IdleMove", (IdleStates.Instance smi) => (float)UnityEngine.Random.Range(3, 10), delegate(IdleStates.Instance smi)
-		{
-			smi.GoTo(this.move);
-		});
-		this.move.Enter(new StateMachine<IdleStates, IdleStates.Instance, IStateMachineTarget, IdleStates.Def>.State.Callback(this.MoveToNewCell)).EventTransition(GameHashes.DestinationReached, this.loop, null).EventTransition(GameHashes.NavigationFailed, this.loop, null);
-	}
+public class IdleStates : GameStateMachine<IdleStates, IdleStates.Instance, IStateMachineTarget, IdleStates.Def> {
+    private State loop;
+    private State move;
 
-	public void MoveToNewCell(IdleStates.Instance smi)
-	{
-		if (smi.HasTag(GameTags.StationaryIdling))
-		{
-			smi.GoTo(smi.sm.loop);
-			return;
-		}
-		Navigator component = smi.GetComponent<Navigator>();
-		IdleStates.MoveCellQuery moveCellQuery = new IdleStates.MoveCellQuery(component.CurrentNavType);
-		moveCellQuery.allowLiquid = smi.gameObject.HasTag(GameTags.Amphibious);
-		moveCellQuery.submerged = smi.gameObject.HasTag(GameTags.Creatures.Submerged);
-		int num = Grid.PosToCell(component);
-		if (component.CurrentNavType == NavType.Hover && CellSelectionObject.IsExposedToSpace(num))
-		{
-			int num2 = 0;
-			int cell = num;
-			for (int i = 0; i < 10; i++)
-			{
-				cell = Grid.CellBelow(cell);
-				if (!Grid.IsValidCell(cell) || Grid.IsSolidCell(cell) || !CellSelectionObject.IsExposedToSpace(cell))
-				{
-					break;
-				}
-				num2++;
-			}
-			moveCellQuery.lowerCellBias = (num2 == 10);
-		}
-		component.RunQuery(moveCellQuery);
-		component.GoTo(moveCellQuery.GetResultCell(), null);
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = loop;
+        var    state = root.Exit("StopNavigator", delegate(Instance smi) { smi.GetComponent<Navigator>().Stop(); });
+        string name = CREATURES.STATUSITEMS.IDLE.NAME;
+        string tooltip = CREATURES.STATUSITEMS.IDLE.TOOLTIP;
+        var    icon = "";
+        var    icon_type = StatusItem.IconType.Info;
+        var    notification_type = NotificationType.Neutral;
+        var    allow_multiples = false;
+        var    main = Db.Get().StatusItemCategories.Main;
+        state.ToggleStatusItem(name,
+                               tooltip,
+                               icon,
+                               icon_type,
+                               notification_type,
+                               allow_multiples,
+                               default(HashedString),
+                               129022,
+                               null,
+                               null,
+                               main)
+             .ToggleTag(GameTags.Idle);
 
-	public void PlayIdle(IdleStates.Instance smi)
-	{
-		KAnimControllerBase component = smi.GetComponent<KAnimControllerBase>();
-		Navigator component2 = smi.GetComponent<Navigator>();
-		NavType nav_type = component2.CurrentNavType;
-		if (smi.GetComponent<Facing>().GetFacing())
-		{
-			nav_type = NavGrid.MirrorNavType(nav_type);
-		}
-		if (smi.def.customIdleAnim != null)
-		{
-			HashedString invalid = HashedString.Invalid;
-			HashedString hashedString = smi.def.customIdleAnim(smi, ref invalid);
-			if (hashedString != HashedString.Invalid)
-			{
-				if (invalid != HashedString.Invalid)
-				{
-					component.Play(invalid, KAnim.PlayMode.Once, 1f, 0f);
-				}
-				component.Queue(hashedString, KAnim.PlayMode.Loop, 1f, 0f);
-				return;
-			}
-		}
-		HashedString idleAnim = component2.NavGrid.GetIdleAnim(nav_type);
-		component.Play(idleAnim, KAnim.PlayMode.Loop, 1f, 0f);
-	}
+        loop.Enter(PlayIdle)
+            .ToggleScheduleCallback("IdleMove", smi => Random.Range(3, 10), delegate(Instance smi) { smi.GoTo(move); });
 
-	private GameStateMachine<IdleStates, IdleStates.Instance, IStateMachineTarget, IdleStates.Def>.State loop;
+        move.Enter(MoveToNewCell)
+            .EventTransition(GameHashes.DestinationReached, loop)
+            .EventTransition(GameHashes.NavigationFailed,   loop);
+    }
 
-	private GameStateMachine<IdleStates, IdleStates.Instance, IStateMachineTarget, IdleStates.Def>.State move;
+    public void MoveToNewCell(Instance smi) {
+        if (smi.HasTag(GameTags.StationaryIdling)) {
+            smi.GoTo(smi.sm.loop);
+            return;
+        }
 
-	public class Def : StateMachine.BaseDef
-	{
-		public IdleStates.Def.IdleAnimCallback customIdleAnim;
+        var component     = smi.GetComponent<Navigator>();
+        var moveCellQuery = new MoveCellQuery(component.CurrentNavType);
+        moveCellQuery.allowLiquid = smi.gameObject.HasTag(GameTags.Amphibious);
+        moveCellQuery.submerged   = smi.gameObject.HasTag(GameTags.Creatures.Submerged);
+        var num = Grid.PosToCell(component);
+        if (component.CurrentNavType == NavType.Hover && CellSelectionObject.IsExposedToSpace(num)) {
+            var num2 = 0;
+            var cell = num;
+            for (var i = 0; i < 10; i++) {
+                cell = Grid.CellBelow(cell);
+                if (!Grid.IsValidCell(cell) || Grid.IsSolidCell(cell) || !CellSelectionObject.IsExposedToSpace(cell))
+                    break;
 
-				public delegate HashedString IdleAnimCallback(IdleStates.Instance smi, ref HashedString pre_anim);
-	}
+                num2++;
+            }
 
-	public new class Instance : GameStateMachine<IdleStates, IdleStates.Instance, IStateMachineTarget, IdleStates.Def>.GameInstance
-	{
-		public Instance(Chore<IdleStates.Instance> chore, IdleStates.Def def) : base(chore, def)
-		{
-		}
-	}
+            moveCellQuery.lowerCellBias = num2 == 10;
+        }
 
-	public class MoveCellQuery : PathFinderQuery
-	{
-						public bool allowLiquid { get; set; }
+        component.RunQuery(moveCellQuery);
+        component.GoTo(moveCellQuery.GetResultCell());
+    }
 
-						public bool submerged { get; set; }
+    public void PlayIdle(Instance smi) {
+        var component                                        = smi.GetComponent<KAnimControllerBase>();
+        var component2                                       = smi.GetComponent<Navigator>();
+        var nav_type                                         = component2.CurrentNavType;
+        if (smi.GetComponent<Facing>().GetFacing()) nav_type = NavGrid.MirrorNavType(nav_type);
+        if (smi.def.customIdleAnim != null) {
+            var invalid      = HashedString.Invalid;
+            var hashedString = smi.def.customIdleAnim(smi, ref invalid);
+            if (hashedString != HashedString.Invalid) {
+                if (invalid != HashedString.Invalid) component.Play(invalid);
+                component.Queue(hashedString, KAnim.PlayMode.Loop);
+                return;
+            }
+        }
 
-						public bool lowerCellBias { get; set; }
+        var idleAnim = component2.NavGrid.GetIdleAnim(nav_type);
+        component.Play(idleAnim, KAnim.PlayMode.Loop);
+    }
 
-		public MoveCellQuery(NavType navType)
-		{
-			this.navType = navType;
-			this.maxIterations = UnityEngine.Random.Range(5, 25);
-		}
+    public class Def : BaseDef {
+        public delegate HashedString IdleAnimCallback(Instance smi, ref HashedString pre_anim);
 
-		public override bool IsMatch(int cell, int parent_cell, int cost)
-		{
-			if (!Grid.IsValidCell(cell))
-			{
-				return false;
-			}
-			GameObject gameObject;
-			Grid.ObjectLayers[1].TryGetValue(cell, out gameObject);
-			if (gameObject != null)
-			{
-				BuildingUnderConstruction component = gameObject.GetComponent<BuildingUnderConstruction>();
-				if (component != null && (component.Def.IsFoundation || component.HasTag(GameTags.NoCreatureIdling)))
-				{
-					return false;
-				}
-			}
-			bool flag = this.submerged || Grid.IsNavigatableLiquid(cell);
-			bool flag2 = this.navType != NavType.Swim;
-			bool flag3 = this.navType == NavType.Swim || this.allowLiquid;
-			if (flag && !flag3)
-			{
-				return false;
-			}
-			if (!flag && !flag2)
-			{
-				return false;
-			}
-			if (this.targetCell == Grid.InvalidCell || !this.lowerCellBias)
-			{
-				this.targetCell = cell;
-			}
-			else
-			{
-				int num = Grid.CellRow(this.targetCell);
-				if (Grid.CellRow(cell) < num)
-				{
-					this.targetCell = cell;
-				}
-			}
-			int num2 = this.maxIterations - 1;
-			this.maxIterations = num2;
-			return num2 <= 0;
-		}
+        public IdleAnimCallback customIdleAnim;
+    }
 
-		public override int GetResultCell()
-		{
-			return this.targetCell;
-		}
+    public new class Instance : GameInstance {
+        public Instance(Chore<Instance> chore, Def def) : base(chore, def) { }
+    }
 
-		private NavType navType;
+    public class MoveCellQuery : PathFinderQuery {
+        private          int     maxIterations;
+        private readonly NavType navType;
+        private          int     targetCell = Grid.InvalidCell;
 
-		private int targetCell = Grid.InvalidCell;
+        public MoveCellQuery(NavType navType) {
+            this.navType  = navType;
+            maxIterations = Random.Range(5, 25);
+        }
 
-		private int maxIterations;
-	}
+        public bool allowLiquid   { get; set; }
+        public bool submerged     { get; set; }
+        public bool lowerCellBias { get; set; }
+
+        public override bool IsMatch(int cell, int parent_cell, int cost) {
+            if (!Grid.IsValidCell(cell)) return false;
+
+            GameObject gameObject;
+            Grid.ObjectLayers[1].TryGetValue(cell, out gameObject);
+            if (gameObject != null) {
+                var component = gameObject.GetComponent<BuildingUnderConstruction>();
+                if (component != null && (component.Def.IsFoundation || component.HasTag(GameTags.NoCreatureIdling)))
+                    return false;
+            }
+
+            var flag  = submerged || Grid.IsNavigatableLiquid(cell);
+            var flag2 = navType != NavType.Swim;
+            var flag3 = navType == NavType.Swim || allowLiquid;
+            if (flag && !flag3) return false;
+
+            if (!flag && !flag2) return false;
+
+            if (targetCell == Grid.InvalidCell || !lowerCellBias)
+                targetCell = cell;
+            else {
+                var num                                  = Grid.CellRow(targetCell);
+                if (Grid.CellRow(cell) < num) targetCell = cell;
+            }
+
+            var num2 = maxIterations - 1;
+            maxIterations = num2;
+            return num2 <= 0;
+        }
+
+        public override int GetResultCell() { return targetCell; }
+    }
 }

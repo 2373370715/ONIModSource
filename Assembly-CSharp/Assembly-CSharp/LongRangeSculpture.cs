@@ -2,7 +2,7 @@
 
 public class LongRangeSculpture : Sculpture
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.overrideAnims = null;

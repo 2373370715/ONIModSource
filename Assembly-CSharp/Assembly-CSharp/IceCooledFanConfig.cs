@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class IceCooledFanConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "IceCooledFan";
 		int width = 2;
@@ -26,7 +26,7 @@ public class IceCooledFanConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Storage storage = go.AddComponent<Storage>();
 		storage.capacityKg = 50f;
@@ -61,7 +61,7 @@ public class IceCooledFanConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
@@ -73,15 +73,15 @@ public class IceCooledFanConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "IceCooledFan";
+		public const string ID = "IceCooledFan";
 
-	private float COOLING_RATE = 32f;
+		private float COOLING_RATE = 32f;
 
-	private float TARGET_TEMPERATURE = 278.15f;
+		private float TARGET_TEMPERATURE = 278.15f;
 
-	private float ICE_CAPACITY = 50f;
+		private float ICE_CAPACITY = 50f;
 
-	private static readonly CellOffset[] overrideOffsets = new CellOffset[]
+		private static readonly CellOffset[] overrideOffsets = new CellOffset[]
 	{
 		new CellOffset(-2, 1),
 		new CellOffset(2, 1),

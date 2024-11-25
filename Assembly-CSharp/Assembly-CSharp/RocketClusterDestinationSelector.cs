@@ -4,7 +4,7 @@ using KSerialization;
 
 public class RocketClusterDestinationSelector : ClusterDestinationSelector
 {
-			public bool Repeat
+				public bool Repeat
 	{
 		get
 		{
@@ -16,13 +16,13 @@ public class RocketClusterDestinationSelector : ClusterDestinationSelector
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<RocketClusterDestinationSelector>(-1277991738, this.OnLaunchDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (this.isHarvesting)
 		{
@@ -30,7 +30,7 @@ public class RocketClusterDestinationSelector : ClusterDestinationSelector
 		}
 	}
 
-	public LaunchPad GetDestinationPad(AxialI destination)
+		public LaunchPad GetDestinationPad(AxialI destination)
 	{
 		int asteroidWorldIdAtLocation = ClusterUtil.GetAsteroidWorldIdAtLocation(destination);
 		if (this.m_launchPad.ContainsKey(asteroidWorldIdAtLocation))
@@ -40,17 +40,17 @@ public class RocketClusterDestinationSelector : ClusterDestinationSelector
 		return null;
 	}
 
-	public LaunchPad GetDestinationPad()
+		public LaunchPad GetDestinationPad()
 	{
 		return this.GetDestinationPad(this.m_destination);
 	}
 
-	public override void SetDestination(AxialI location)
+		public override void SetDestination(AxialI location)
 	{
 		base.SetDestination(location);
 	}
 
-	public void SetDestinationPad(LaunchPad pad)
+		public void SetDestinationPad(LaunchPad pad)
 	{
 		Debug.Assert(pad == null || ClusterGrid.Instance.IsInRange(pad.GetMyWorldLocation(), this.m_destination, 1), "Tried sending a rocket to a launchpad that wasn't its destination world.");
 		if (pad != null)
@@ -61,7 +61,7 @@ public class RocketClusterDestinationSelector : ClusterDestinationSelector
 		base.GetComponent<CraftModuleInterface>().TriggerEventOnCraftAndRocket(GameHashes.ClusterDestinationChanged, null);
 	}
 
-	private void AddDestinationPad(AxialI location, LaunchPad pad)
+		private void AddDestinationPad(AxialI location, LaunchPad pad)
 	{
 		int asteroidWorldIdAtLocation = ClusterUtil.GetAsteroidWorldIdAtLocation(location);
 		if (asteroidWorldIdAtLocation < 0)
@@ -75,7 +75,7 @@ public class RocketClusterDestinationSelector : ClusterDestinationSelector
 		this.m_launchPad[asteroidWorldIdAtLocation].Set(pad);
 	}
 
-	protected override void OnClusterLocationChanged(object data)
+		protected override void OnClusterLocationChanged(object data)
 	{
 		ClusterLocationChangedEvent clusterLocationChangedEvent = (ClusterLocationChangedEvent)data;
 		if (clusterLocationChangedEvent.newLocation == this.m_destination)
@@ -93,7 +93,7 @@ public class RocketClusterDestinationSelector : ClusterDestinationSelector
 		}
 	}
 
-	private void SetUpReturnTrip()
+		private void SetUpReturnTrip()
 	{
 		this.AddDestinationPad(this.m_prevDestination, this.m_prevLaunchPad.Get());
 		this.m_destination = this.m_prevDestination;
@@ -101,7 +101,7 @@ public class RocketClusterDestinationSelector : ClusterDestinationSelector
 		this.m_prevLaunchPad.Set(base.GetComponent<CraftModuleInterface>().CurrentPad);
 	}
 
-	private bool CanRocketHarvest()
+		private bool CanRocketHarvest()
 	{
 		bool flag = false;
 		List<ResourceHarvestModule.StatesInstance> allResourceHarvestModules = base.GetComponent<Clustercraft>().GetAllResourceHarvestModules();
@@ -138,7 +138,7 @@ public class RocketClusterDestinationSelector : ClusterDestinationSelector
 		return flag;
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		if (!this.CanRocketHarvest())
 		{
@@ -154,7 +154,7 @@ public class RocketClusterDestinationSelector : ClusterDestinationSelector
 		}
 	}
 
-	private void WaitForPOIHarvest()
+		private void WaitForPOIHarvest()
 	{
 		this.isHarvesting = true;
 		foreach (Ref<RocketModuleCluster> @ref in base.GetComponent<Clustercraft>().ModuleInterface.ClusterModules)
@@ -166,7 +166,7 @@ public class RocketClusterDestinationSelector : ClusterDestinationSelector
 		}
 	}
 
-	private void OnLaunch(object data)
+		private void OnLaunch(object data)
 	{
 		CraftModuleInterface component = base.GetComponent<CraftModuleInterface>();
 		this.m_prevLaunchPad.Set(component.CurrentPad);
@@ -174,22 +174,22 @@ public class RocketClusterDestinationSelector : ClusterDestinationSelector
 		this.m_prevDestination = component2.Location;
 	}
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<int, Ref<LaunchPad>> m_launchPad = new Dictionary<int, Ref<LaunchPad>>();
 
-	[Serialize]
+		[Serialize]
 	private bool m_repeat;
 
-	[Serialize]
+		[Serialize]
 	private AxialI m_prevDestination;
 
-	[Serialize]
+		[Serialize]
 	private Ref<LaunchPad> m_prevLaunchPad = new Ref<LaunchPad>();
 
-	[Serialize]
+		[Serialize]
 	private bool isHarvesting;
 
-	private EventSystem.IntraObjectHandler<RocketClusterDestinationSelector> OnLaunchDelegate = new EventSystem.IntraObjectHandler<RocketClusterDestinationSelector>(delegate(RocketClusterDestinationSelector cmp, object data)
+		private EventSystem.IntraObjectHandler<RocketClusterDestinationSelector> OnLaunchDelegate = new EventSystem.IntraObjectHandler<RocketClusterDestinationSelector>(delegate(RocketClusterDestinationSelector cmp, object data)
 	{
 		cmp.OnLaunch(data);
 	});

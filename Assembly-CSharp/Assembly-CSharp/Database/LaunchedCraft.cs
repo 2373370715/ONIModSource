@@ -4,14 +4,14 @@ using STRINGS;
 
 namespace Database
 {
-	public class LaunchedCraft : ColonyAchievementRequirement
+		public class LaunchedCraft : ColonyAchievementRequirement
 	{
-		public override string GetProgress(bool completed)
+				public override string GetProgress(bool completed)
 		{
 			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.LAUNCHED_ROCKET;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			using (IEnumerator enumerator = Components.Clustercrafts.GetEnumerator())
 			{

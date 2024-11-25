@@ -2,49 +2,49 @@
 
 public class SaltPlant : StateMachineComponent<SaltPlant.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<SaltPlant>(-724860998, SaltPlant.OnWiltDelegate);
 		base.Subscribe<SaltPlant>(712767498, SaltPlant.OnWiltRecoverDelegate);
 	}
 
-	private void OnWilt(object data = null)
+		private void OnWilt(object data = null)
 	{
 		base.gameObject.GetComponent<ElementConsumer>().EnableConsumption(false);
 	}
 
-	private void OnWiltRecover(object data = null)
+		private void OnWiltRecover(object data = null)
 	{
 		base.gameObject.GetComponent<ElementConsumer>().EnableConsumption(true);
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<SaltPlant> OnWiltDelegate = new EventSystem.IntraObjectHandler<SaltPlant>(delegate(SaltPlant component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SaltPlant> OnWiltDelegate = new EventSystem.IntraObjectHandler<SaltPlant>(delegate(SaltPlant component, object data)
 	{
 		component.OnWilt(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<SaltPlant> OnWiltRecoverDelegate = new EventSystem.IntraObjectHandler<SaltPlant>(delegate(SaltPlant component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SaltPlant> OnWiltRecoverDelegate = new EventSystem.IntraObjectHandler<SaltPlant>(delegate(SaltPlant component, object data)
 	{
 		component.OnWiltRecover(data);
 	});
 
-	public class StatesInstance : GameStateMachine<SaltPlant.States, SaltPlant.StatesInstance, SaltPlant, object>.GameInstance
+		public class StatesInstance : GameStateMachine<SaltPlant.States, SaltPlant.StatesInstance, SaltPlant, object>.GameInstance
 	{
-		public StatesInstance(SaltPlant master) : base(master)
+				public StatesInstance(SaltPlant master) : base(master)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<SaltPlant.States, SaltPlant.StatesInstance, SaltPlant>
+		public class States : GameStateMachine<SaltPlant.States, SaltPlant.StatesInstance, SaltPlant>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
 			default_state = this.alive;
 			this.alive.DoNothing();
 		}
 
-		public GameStateMachine<SaltPlant.States, SaltPlant.StatesInstance, SaltPlant, object>.State alive;
+				public GameStateMachine<SaltPlant.States, SaltPlant.StatesInstance, SaltPlant, object>.State alive;
 	}
 }

@@ -10,7 +10,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Comet")]
 public class Comet : KMonoBehaviour, ISim33ms
 {
-		public float ExplosionMass
+			public float ExplosionMass
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-		public float AddTileMass
+			public float AddTileMass
 	{
 		get
 		{
@@ -26,7 +26,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-		public Vector3 TargetPosition
+			public Vector3 TargetPosition
 	{
 		get
 		{
@@ -34,7 +34,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-			public Vector2 Velocity
+				public Vector2 Velocity
 	{
 		get
 		{
@@ -46,7 +46,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	private float GetVolume(GameObject gameObject)
+		private float GetVolume(GameObject gameObject)
 	{
 		float result = 1f;
 		if (gameObject != null && this.selectable != null && this.selectable.IsSelected)
@@ -56,7 +56,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		return result;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.remainingTileDamage = this.totalTileDamage;
@@ -65,7 +65,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		this.RandomizeVelocity();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.anim.Offset = this.offsetPosition;
 		if (this.spawnWithOffset)
@@ -81,12 +81,12 @@ public class Comet : KMonoBehaviour, ISim33ms
 		Components.Meteors.Add(base.gameObject.GetMyWorldId(), this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.Meteors.Remove(base.gameObject.GetMyWorldId(), this);
 	}
 
-	protected void SetupOffset()
+		protected void SetupOffset()
 	{
 		Vector3 position = base.transform.GetPosition();
 		Vector3 position2 = base.transform.GetPosition();
@@ -110,7 +110,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		this.anim.Offset = this.offsetPosition;
 	}
 
-	public virtual void RandomizeVelocity()
+		public virtual void RandomizeVelocity()
 	{
 		float num = UnityEngine.Random.Range(this.spawnAngle.x, this.spawnAngle.y);
 		float f = num * 3.1415927f / 180f;
@@ -119,7 +119,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		base.GetComponent<KBatchedAnimController>().Rotation = -num - 90f;
 	}
 
-	public void RandomizeMassAndTemperature()
+		public void RandomizeMassAndTemperature()
 	{
 		float num = UnityEngine.Random.Range(this.massRange.x, this.massRange.y) * this.GetMassMultiplier();
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
@@ -136,49 +136,46 @@ public class Comet : KMonoBehaviour, ISim33ms
 		this.addTileMass = 0f;
 	}
 
-	public float GetMassMultiplier()
+		public float GetMassMultiplier()
 	{
 		float num = 1f;
 		SettingLevel currentQualitySetting = CustomGameSettings.Instance.GetCurrentQualitySetting(CustomGameSettingConfigs.MeteorShowers);
 		if (this.affectedByDifficulty && currentQualitySetting != null)
 		{
 			string id = currentQualitySetting.id;
-			if (id != null)
+			if (!(id == "Infrequent"))
 			{
-				if (!(id == "Infrequent"))
+				if (!(id == "Intense"))
 				{
-					if (!(id == "Intense"))
+					if (id == "Doomed")
 					{
-						if (id == "Doomed")
-						{
-							num *= 0.5f;
-						}
-					}
-					else
-					{
-						num *= 0.8f;
+						num *= 0.5f;
 					}
 				}
 				else
 				{
-					num *= 1f;
+					num *= 0.8f;
 				}
+			}
+			else
+			{
+				num *= 1f;
 			}
 		}
 		return num;
 	}
 
-	public int GetRandomNumOres()
+		public int GetRandomNumOres()
 	{
 		return UnityEngine.Random.Range(this.explosionOreCount.x, this.explosionOreCount.y + 1);
 	}
 
-	public float GetRandomTemperatureForOres()
+		public float GetRandomTemperatureForOres()
 	{
 		return UnityEngine.Random.Range(this.explosionTemperatureRange.x, this.explosionTemperatureRange.y);
 	}
 
-	[ContextMenu("Explode")]
+		[ContextMenu("Explode")]
 	private void Explode(Vector3 pos, int cell, int prev_cell, Element element)
 	{
 		int world = (int)Grid.WorldIdx[cell];
@@ -259,7 +256,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	protected virtual void DepositTiles(int cell, Element element, int world, int prev_cell, float temperature)
+		protected virtual void DepositTiles(int cell, Element element, int world, int prev_cell, float temperature)
 	{
 		float depthOfElement = (float)this.GetDepthOfElement(cell3, element, world);
 		float num = 1f;
@@ -331,7 +328,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		pooledQueue.Recycle();
 	}
 
-	protected virtual void SpawnCraterPrefabs()
+		protected virtual void SpawnCraterPrefabs()
 	{
 		if (this.craterPrefabs != null && this.craterPrefabs.Length != 0)
 		{
@@ -341,7 +338,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	protected int GetDepthOfElement(int cell, Element element, int world)
+		protected int GetDepthOfElement(int cell, Element element, int world)
 	{
 		int num = 0;
 		int num2 = Grid.CellBelow(cell);
@@ -353,7 +350,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		return num;
 	}
 
-	[ContextMenu("DamageTiles")]
+		[ContextMenu("DamageTiles")]
 	private float DamageTiles(int cell, int prev_cell, float input_damage)
 	{
 		GameObject gameObject = Grid.Objects[cell, 9];
@@ -421,7 +418,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		return input_damage * (1f - num4);
 	}
 
-	private void DamageThings(Vector3 pos, int cell, int damage, GameObject ignoreObject = null)
+		private void DamageThings(Vector3 pos, int cell, int damage, GameObject ignoreObject = null)
 	{
 		if (damage == 0 || !Grid.IsValidCell(cell))
 		{
@@ -464,7 +461,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		pooledList.Recycle();
 	}
 
-	public float GetDistanceFromImpact()
+		public float GetDistanceFromImpact()
 	{
 		float num = this.velocity.x / this.velocity.y;
 		Vector3 position = base.transform.GetPosition();
@@ -484,12 +481,12 @@ public class Comet : KMonoBehaviour, ISim33ms
 		return 6f;
 	}
 
-	public float GetSoundDistance()
+		public float GetSoundDistance()
 	{
 		return this.GetDistanceFromImpact();
 	}
 
-	private void PlayTileDamageSound(Element element, Vector3 pos, GameObject tile_go)
+		private void PlayTileDamageSound(Element element, Vector3 pos, GameObject tile_go)
 	{
 		string text = element.substance.GetMiningBreakSound();
 		if (text == null)
@@ -516,7 +513,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	private void PlayBuildingDamageSound(BuildingDef def, Vector3 pos, GameObject building_go)
+		private void PlayBuildingDamageSound(BuildingDef def, Vector3 pos, GameObject building_go)
 	{
 		if (def != null)
 		{
@@ -533,7 +530,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	public void Sim33ms(float dt)
+		public void Sim33ms(float dt)
 	{
 		if (this.hasExploded)
 		{
@@ -612,7 +609,7 @@ public class Comet : KMonoBehaviour, ISim33ms
 		this.age += dt;
 	}
 
-	private void PlayImpactSound(Vector3 pos)
+		private void PlayImpactSound(Vector3 pos)
 	{
 		if (this.impactSound == null)
 		{
@@ -631,13 +628,13 @@ public class Comet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	private void StartLoopingSound()
+		private void StartLoopingSound()
 	{
 		this.loopingSounds.StartSound(this.flyingSound);
 		this.loopingSounds.UpdateFirstParameter(this.flyingSound, this.FLYING_SOUND_ID_PARAMETER, (float)this.flyingSoundID);
 	}
 
-	public void Explode()
+		public void Explode()
 	{
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
 		Vector3 position = base.transform.GetPosition();
@@ -650,106 +647,106 @@ public class Comet : KMonoBehaviour, ISim33ms
 		}
 	}
 
-	public SimHashes EXHAUST_ELEMENT = SimHashes.CarbonDioxide;
+		public SimHashes EXHAUST_ELEMENT = SimHashes.CarbonDioxide;
 
-	public float EXHAUST_RATE = 50f;
+		public float EXHAUST_RATE = 50f;
 
-	public Vector2 spawnVelocity = new Vector2(12f, 15f);
+		public Vector2 spawnVelocity = new Vector2(12f, 15f);
 
-	public Vector2 spawnAngle = new Vector2(-100f, -80f);
+		public Vector2 spawnAngle = new Vector2(-100f, -80f);
 
-	public Vector2 massRange;
+		public Vector2 massRange;
 
-	public Vector2 temperatureRange;
+		public Vector2 temperatureRange;
 
-	public SpawnFXHashes explosionEffectHash;
+		public SpawnFXHashes explosionEffectHash;
 
-	public int splashRadius = 1;
+		public int splashRadius = 1;
 
-	public int addTiles;
+		public int addTiles;
 
-	public int addTilesMinHeight;
+		public int addTilesMinHeight;
 
-	public int addTilesMaxHeight;
+		public int addTilesMaxHeight;
 
-	public int entityDamage = 1;
+		public int entityDamage = 1;
 
-	public float totalTileDamage = 0.2f;
+		public float totalTileDamage = 0.2f;
 
-	protected float addTileMass;
+		protected float addTileMass;
 
-	public int addDiseaseCount;
+		public int addDiseaseCount;
 
-	public byte diseaseIdx = byte.MaxValue;
+		public byte diseaseIdx = byte.MaxValue;
 
-	public Vector2 elementReplaceTileTemperatureRange = new Vector2(800f, 1000f);
+		public Vector2 elementReplaceTileTemperatureRange = new Vector2(800f, 1000f);
 
-	public Vector2I explosionOreCount = new Vector2I(0, 0);
+		public Vector2I explosionOreCount = new Vector2I(0, 0);
 
-	private float explosionMass;
+		private float explosionMass;
 
-	public Vector2 explosionTemperatureRange = new Vector2(500f, 700f);
+		public Vector2 explosionTemperatureRange = new Vector2(500f, 700f);
 
-	public Vector2 explosionSpeedRange = new Vector2(8f, 14f);
+		public Vector2 explosionSpeedRange = new Vector2(8f, 14f);
 
-	public float windowDamageMultiplier = 5f;
+		public float windowDamageMultiplier = 5f;
 
-	public float bunkerDamageMultiplier;
+		public float bunkerDamageMultiplier;
 
-	public string impactSound;
+		public string impactSound;
 
-	public string flyingSound;
+		public string flyingSound;
 
-	public int flyingSoundID;
+		public int flyingSoundID;
 
-	private HashedString FLYING_SOUND_ID_PARAMETER = "meteorType";
+		private HashedString FLYING_SOUND_ID_PARAMETER = "meteorType";
 
-	public bool affectedByDifficulty = true;
+		public bool affectedByDifficulty = true;
 
-	public bool Targeted;
+		public bool Targeted;
 
-	[Serialize]
+		[Serialize]
 	protected Vector3 offsetPosition;
 
-	[Serialize]
+		[Serialize]
 	protected Vector2 velocity;
 
-	[Serialize]
+		[Serialize]
 	private float remainingTileDamage;
 
-	private Vector3 previousPosition;
+		private Vector3 previousPosition;
 
-	private bool hasExploded;
+		private bool hasExploded;
 
-	public bool canHitDuplicants;
+		public bool canHitDuplicants;
 
-	public string[] craterPrefabs;
+		public string[] craterPrefabs;
 
-	public string[] lootOnDestroyedByMissile;
+		public string[] lootOnDestroyedByMissile;
 
-	public bool destroyOnExplode = true;
+		public bool destroyOnExplode = true;
 
-	public bool spawnWithOffset;
+		public bool spawnWithOffset;
 
-	private float age;
+		private float age;
 
-	public System.Action OnImpact;
+		public System.Action OnImpact;
 
-	public Ref<KPrefabID> ignoreObstacleForDamage = new Ref<KPrefabID>();
+		public Ref<KPrefabID> ignoreObstacleForDamage = new Ref<KPrefabID>();
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimController anim;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KSelectable selectable;
 
-	public Tag typeID;
+		public Tag typeID;
 
-	private LoopingSounds loopingSounds;
+		private LoopingSounds loopingSounds;
 
-	private List<GameObject> damagedEntities = new List<GameObject>();
+		private List<GameObject> damagedEntities = new List<GameObject>();
 
-	private List<int> destroyedCells = new List<int>();
+		private List<int> destroyedCells = new List<int>();
 
-	private const float MAX_DISTANCE_TEST = 6f;
+		private const float MAX_DISTANCE_TEST = 6f;
 }

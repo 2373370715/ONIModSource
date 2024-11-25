@@ -2,7 +2,7 @@
 
 public class GasBreatherFromWorldProvider : OxygenBreather.IGasProvider
 {
-	public void OnSetOxygenBreather(OxygenBreather oxygen_breather)
+		public void OnSetOxygenBreather(OxygenBreather oxygen_breather)
 	{
 		this.suffocationMonitor = new SuffocationMonitor.Instance(oxygen_breather);
 		this.suffocationMonitor.StartSM();
@@ -12,28 +12,28 @@ public class GasBreatherFromWorldProvider : OxygenBreather.IGasProvider
 		this.nav = this.oxygenBreather.GetComponent<Navigator>();
 	}
 
-	public void OnClearOxygenBreather(OxygenBreather oxygen_breather)
+		public void OnClearOxygenBreather(OxygenBreather oxygen_breather)
 	{
 		this.suffocationMonitor.StopSM("Removed gas provider");
 		this.safeCellMonitor.StopSM("Removed gas provider");
 	}
 
-	public bool ShouldEmitCO2()
+		public bool ShouldEmitCO2()
 	{
 		return this.nav.CurrentNavType != NavType.Tube;
 	}
 
-	public bool ShouldStoreCO2()
+		public bool ShouldStoreCO2()
 	{
 		return false;
 	}
 
-	public bool IsLowOxygen()
+		public bool IsLowOxygen()
 	{
 		return this.oxygenBreather.IsLowOxygenAtMouthCell();
 	}
 
-	public bool ConsumeGas(OxygenBreather oxygen_breather, float gas_consumed)
+		public bool ConsumeGas(OxygenBreather oxygen_breather, float gas_consumed)
 	{
 		if (this.nav.CurrentNavType != NavType.Tube)
 		{
@@ -48,12 +48,12 @@ public class GasBreatherFromWorldProvider : OxygenBreather.IGasProvider
 		return true;
 	}
 
-	private static void OnSimConsumeCallback(Sim.MassConsumedCallback mass_cb_info, object data)
+		private static void OnSimConsumeCallback(Sim.MassConsumedCallback mass_cb_info, object data)
 	{
 		((GasBreatherFromWorldProvider)data).OnSimConsume(mass_cb_info);
 	}
 
-	private void OnSimConsume(Sim.MassConsumedCallback mass_cb_info)
+		private void OnSimConsume(Sim.MassConsumedCallback mass_cb_info)
 	{
 		if (this.oxygenBreather == null || this.oxygenBreather.GetComponent<KPrefabID>().HasTag(GameTags.Dead))
 		{
@@ -69,11 +69,11 @@ public class GasBreatherFromWorldProvider : OxygenBreather.IGasProvider
 		this.oxygenBreather.Consume(mass_cb_info);
 	}
 
-	private SuffocationMonitor.Instance suffocationMonitor;
+		private SuffocationMonitor.Instance suffocationMonitor;
 
-	private SafeCellMonitor.Instance safeCellMonitor;
+		private SafeCellMonitor.Instance safeCellMonitor;
 
-	private OxygenBreather oxygenBreather;
+		private OxygenBreather oxygenBreather;
 
-	private Navigator nav;
+		private Navigator nav;
 }

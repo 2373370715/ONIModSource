@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/FrontEndManager")]
 public class FrontEndManager : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		FrontEndManager.<>c__DisplayClass2_0 CS$<>8__locals1 = new FrontEndManager.<>c__DisplayClass2_0();
 		CS$<>8__locals1.<>4__this = this;
@@ -14,7 +14,7 @@ public class FrontEndManager : KMonoBehaviour
 		FrontEndManager.Instance = this;
 		GameObject gameObject = base.gameObject;
 		string highestActiveDlcId = DlcManager.GetHighestActiveDlcId();
-		if (highestActiveDlcId == null || (highestActiveDlcId != null && highestActiveDlcId.Length == 0) || !(highestActiveDlcId == "EXPANSION1_ID"))
+		if ((highestActiveDlcId != null && highestActiveDlcId.Length == 0) || !(highestActiveDlcId == "EXPANSION1_ID"))
 		{
 			Util.KInstantiateUI(ScreenPrefabs.Instance.MainMenuForVanilla, gameObject, true);
 		}
@@ -52,13 +52,13 @@ public class FrontEndManager : KMonoBehaviour
 		Singleton<KBatchedAnimUpdater>.Instance.OnClear += CS$<>8__locals2.<OnPrefabInit>g__RecreateCanvases|1;
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		FrontEndManager.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (global::Debug.developerConsoleVisible)
 		{
@@ -69,7 +69,7 @@ public class FrontEndManager : KMonoBehaviour
 		KAnimBatchManager.Instance().Render();
 	}
 
-	public GameObject MakeKleiCanvas(string gameObjectName = "Canvas")
+		public GameObject MakeKleiCanvas(string gameObjectName = "Canvas")
 	{
 		GameObject gameObject = new GameObject(gameObjectName, new Type[]
 		{
@@ -79,7 +79,7 @@ public class FrontEndManager : KMonoBehaviour
 		return gameObject;
 	}
 
-	public void ConfigureAsKleiCanvas(GameObject gameObject)
+		public void ConfigureAsKleiCanvas(GameObject gameObject)
 	{
 		Canvas canvas = gameObject.AddOrGet<Canvas>();
 		canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -96,7 +96,7 @@ public class FrontEndManager : KMonoBehaviour
 		gameObject.AddOrGet<KCanvasScaler>();
 	}
 
-	public static FrontEndManager Instance;
+		public static FrontEndManager Instance;
 
-	public static bool firstInit = true;
+		public static bool firstInit = true;
 }

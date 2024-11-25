@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Klei.CustomSettings
 {
-	public abstract class SettingConfig
+		public abstract class SettingConfig
 	{
-		public SettingConfig(string id, string label, string tooltip, string default_level_id, string nosweat_default_level_id, long coordinate_range = -1L, bool debug_only = false, bool triggers_custom_game = true, string[] required_content = null, string missing_content_default = "", bool hide_in_ui = false)
+				public SettingConfig(string id, string label, string tooltip, string default_level_id, string nosweat_default_level_id, long coordinate_range = -1L, bool debug_only = false, bool triggers_custom_game = true, string[] required_content = null, string missing_content_default = "", bool hide_in_ui = false)
 		{
 			this.id = id;
 			this.label = label;
@@ -18,66 +18,62 @@ namespace Klei.CustomSettings
 			this.required_content = required_content;
 			this.missing_content_default = missing_content_default;
 			this.hide_in_ui = hide_in_ui;
-			if (required_content == null)
-			{
-				this.required_content = DlcManager.AVAILABLE_VANILLA_ONLY;
-			}
 		}
 
-						public string id { get; private set; }
+								public string id { get; private set; }
 
-						public virtual string label { get; private set; }
+								public virtual string label { get; private set; }
 
-						public virtual string tooltip { get; private set; }
+								public virtual string tooltip { get; private set; }
 
-						public long coordinate_range { get; protected set; }
+								public long coordinate_range { get; protected set; }
 
-						public string[] required_content { get; private set; }
+								public string[] required_content { get; private set; }
 
-						public string missing_content_default { get; private set; }
+								public string missing_content_default { get; private set; }
 
-						public bool triggers_custom_game { get; protected set; }
+								public bool triggers_custom_game { get; protected set; }
 
-						public bool debug_only { get; protected set; }
+								public bool debug_only { get; protected set; }
 
-						public bool hide_in_ui { get; protected set; }
+								public bool hide_in_ui { get; protected set; }
 
-		public abstract SettingLevel GetLevel(string level_id);
+				public abstract SettingLevel GetLevel(string level_id);
 
-		public abstract List<SettingLevel> GetLevels();
+				public abstract List<SettingLevel> GetLevels();
 
-		public bool IsDefaultLevel(string level_id)
+				public bool IsDefaultLevel(string level_id)
 		{
 			return level_id == this.default_level_id;
 		}
 
-		public bool ShowInUI()
+				public bool ShowInUI()
 		{
-			return !this.deprecated && !this.hide_in_ui && (!this.debug_only || DebugHandler.enabled) && DlcManager.HasAllContentSubscribed(this.required_content);
+			return !this.deprecated && !this.hide_in_ui && (!this.debug_only || DebugHandler.enabled) && DlcManager.IsAllContentSubscribed(this.required_content);
 		}
 
-		public string GetDefaultLevelId()
+				public string GetDefaultLevelId()
 		{
-			if (!DlcManager.HasAllContentSubscribed(this.required_content) && !string.IsNullOrEmpty(this.missing_content_default))
+			if (!DlcManager.IsAllContentSubscribed(this.required_content) && !string.IsNullOrEmpty(this.missing_content_default))
 			{
 				return this.missing_content_default;
 			}
 			return this.default_level_id;
 		}
 
-		public string GetNoSweatDefaultLevelId()
+				public string GetNoSweatDefaultLevelId()
 		{
-			if (!DlcManager.HasAllContentSubscribed(this.required_content) && !string.IsNullOrEmpty(this.missing_content_default))
+			if (!DlcManager.IsAllContentSubscribed(this.required_content) && !string.IsNullOrEmpty(this.missing_content_default))
 			{
 				return this.missing_content_default;
 			}
 			return this.nosweat_default_level_id;
 		}
 
-		protected string default_level_id;
+				protected string default_level_id;
 
-		protected string nosweat_default_level_id;
+				protected string nosweat_default_level_id;
 
-		public bool deprecated;
+				public bool deprecated;
 	}
 }

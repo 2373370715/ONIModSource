@@ -4,17 +4,17 @@ using UnityEngine;
 
 public static class CreatureHelpers
 {
-	public static bool isClear(int cell)
+		public static bool isClear(int cell)
 	{
 		return Grid.IsValidCell(cell) && !Grid.Solid[cell] && !Grid.IsSubstantialLiquid(cell, 0.9f) && (!Grid.IsValidCell(Grid.CellBelow(cell)) || !Grid.IsLiquid(cell) || !Grid.IsLiquid(Grid.CellBelow(cell)));
 	}
 
-	public static int FindNearbyBreathableCell(int currentLocation, SimHashes breathableElement)
+		public static int FindNearbyBreathableCell(int currentLocation, SimHashes breathableElement)
 	{
 		return currentLocation;
 	}
 
-	public static bool cellsAreClear(int[] cells)
+		public static bool cellsAreClear(int[] cells)
 	{
 		for (int i = 0; i < cells.Length; i++)
 		{
@@ -30,17 +30,17 @@ public static class CreatureHelpers
 		return true;
 	}
 
-	public static Vector3 PositionOfCurrentCell(Vector3 transformPosition)
+		public static Vector3 PositionOfCurrentCell(Vector3 transformPosition)
 	{
 		return Grid.CellToPos(Grid.PosToCell(transformPosition));
 	}
 
-	public static Vector3 CenterPositionOfCell(int cell)
+		public static Vector3 CenterPositionOfCell(int cell)
 	{
 		return Grid.CellToPos(cell) + new Vector3(0.5f, 0.5f, -2f);
 	}
 
-	public static void DeselectCreature(GameObject creature)
+		public static void DeselectCreature(GameObject creature)
 	{
 		KSelectable component = creature.GetComponent<KSelectable>();
 		if (component != null && SelectTool.Instance.selected == component)
@@ -49,17 +49,17 @@ public static class CreatureHelpers
 		}
 	}
 
-	public static bool isSwimmable(int cell)
+		public static bool isSwimmable(int cell)
 	{
 		return Grid.IsValidCell(cell) && !Grid.Solid[cell] && Grid.IsSubstantialLiquid(cell, 0.35f);
 	}
 
-	public static bool isSolidGround(int cell)
+		public static bool isSolidGround(int cell)
 	{
 		return Grid.IsValidCell(cell) && Grid.Solid[cell];
 	}
 
-	public static void FlipAnim(KAnimControllerBase anim, Vector3 heading)
+		public static void FlipAnim(KAnimControllerBase anim, Vector3 heading)
 	{
 		if (heading.x < 0f)
 		{
@@ -72,7 +72,7 @@ public static class CreatureHelpers
 		}
 	}
 
-	public static void FlipAnim(KBatchedAnimController anim, Vector3 heading)
+		public static void FlipAnim(KBatchedAnimController anim, Vector3 heading)
 	{
 		if (heading.x < 0f)
 		{
@@ -85,7 +85,7 @@ public static class CreatureHelpers
 		}
 	}
 
-	public static Vector3 GetWalkMoveTarget(Transform transform, Vector2 Heading)
+		public static Vector3 GetWalkMoveTarget(Transform transform, Vector2 Heading)
 	{
 		int cell = Grid.PosToCell(transform.GetPosition());
 		if (Heading.x == 1f)
@@ -183,7 +183,7 @@ public static class CreatureHelpers
 		return transform.GetPosition();
 	}
 
-	public static bool CrewNearby(Transform transform, int range = 6)
+		public static bool CrewNearby(Transform transform, int range = 6)
 	{
 		int cell = Grid.PosToCell(transform.gameObject);
 		for (int i = 1; i < range; i++)
@@ -202,7 +202,7 @@ public static class CreatureHelpers
 		return false;
 	}
 
-	public static bool CheckHorizontalClear(Vector3 startPosition, Vector3 endPosition)
+		public static bool CheckHorizontalClear(Vector3 startPosition, Vector3 endPosition)
 	{
 		int cell = Grid.PosToCell(startPosition);
 		int num = 1;
@@ -224,7 +224,7 @@ public static class CreatureHelpers
 		return true;
 	}
 
-	public static GameObject GetFleeTargetLocatorObject(GameObject self, GameObject threat)
+		public static GameObject GetFleeTargetLocatorObject(GameObject self, GameObject threat)
 	{
 		if (threat == null)
 		{
@@ -266,14 +266,14 @@ public static class CreatureHelpers
 		return null;
 	}
 
-	private static bool isInFavoredFleeDirection(int targetFleeCell, int threatCell, GameObject self)
+		private static bool isInFavoredFleeDirection(int targetFleeCell, int threatCell, GameObject self)
 	{
 		bool flag = Grid.CellToPos(threatCell).x < self.transform.GetPosition().x;
 		bool flag2 = Grid.CellToPos(threatCell).x < Grid.CellToPos(targetFleeCell).x;
 		return flag == flag2;
 	}
 
-	private static bool CanFleeTo(int cell, Navigator nav)
+		private static bool CanFleeTo(int cell, Navigator nav)
 	{
 		return nav.CanReach(cell) || nav.CanReach(Grid.OffsetCell(cell, -1, -1)) || nav.CanReach(Grid.OffsetCell(cell, 1, -1)) || nav.CanReach(Grid.OffsetCell(cell, -1, 1)) || nav.CanReach(Grid.OffsetCell(cell, 1, 1));
 	}

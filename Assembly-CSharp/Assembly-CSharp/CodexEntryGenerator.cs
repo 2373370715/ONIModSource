@@ -12,7 +12,7 @@ using UnityEngine;
 
 public static class CodexEntryGenerator
 {
-	public static Dictionary<string, CodexEntry> GenerateBuildingEntries()
+		public static Dictionary<string, CodexEntry> GenerateBuildingEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		foreach (PlanScreen.PlanInfo category in TUNING.BUILDINGS.PLANORDER)
@@ -28,7 +28,7 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	private static void GenerateEntriesForBuildingsInCategory(PlanScreen.PlanInfo category, string categoryPrefx, ref Dictionary<string, CodexEntry> categoryEntries)
+		private static void GenerateEntriesForBuildingsInCategory(PlanScreen.PlanInfo category, string categoryPrefx, ref Dictionary<string, CodexEntry> categoryEntries)
 	{
 		string text = HashCache.Get().Get(category.category);
 		string text2 = CodexCache.FormatLinkID(categoryPrefx + text);
@@ -36,7 +36,7 @@ public static class CodexEntryGenerator
 		foreach (KeyValuePair<string, string> keyValuePair in category.buildingAndSubcategoryData)
 		{
 			BuildingDef buildingDef = Assets.GetBuildingDef(keyValuePair.Key);
-			if (SaveLoader.Instance.IsDlcListActiveForCurrentSave(buildingDef.RequiredDlcIds))
+			if (buildingDef.IsValidDLC())
 			{
 				CodexEntry codexEntry = CodexEntryGenerator.GenerateSingleBuildingEntry(buildingDef, text2);
 				if (buildingDef.ExtendCodexEntry != null)
@@ -60,14 +60,14 @@ public static class CodexEntryGenerator
 		categoryEntries.Add(text2, categoryEntry);
 	}
 
-	private static void GenerateBuildingRequirementClassCategoryEntry(string categoryPrefix, ref Dictionary<string, CodexEntry> categoryEntries)
+		private static void GenerateBuildingRequirementClassCategoryEntry(string categoryPrefix, ref Dictionary<string, CodexEntry> categoryEntries)
 	{
 		string str = "REQUIREMENTCLASS";
 		string text = CodexCache.FormatLinkID(categoryPrefix + str);
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		foreach (Tag tag in RoomConstraints.ConstraintTags.AllTags)
 		{
-			if (!CodexEntryGenerator.HiddenRoomConstrainTags.Contains(tag) && (DlcManager.FeatureClusterSpaceEnabled() || !(tag == RoomConstraints.ConstraintTags.RocketInterior)))
+			if (!CodexEntryGenerator.HiddenRoomConstrainTags.Contains(tag) && (DlcManager.FeatureClusterSpaceEnabled() || !(tag == RoomConstraints.ConstraintTags.RocketInterior)) && (!(tag == RoomConstraints.ConstraintTags.BionicUpkeepType) || SaveLoader.Instance.IsDLCActiveForCurrentSave("DLC3_ID")))
 			{
 				CodexEntry codexEntry = CodexEntryGenerator.GenerateEntryForSpecificBuildingRequirementClass(tag, text);
 				dictionary.Add(codexEntry.id, codexEntry);
@@ -80,7 +80,7 @@ public static class CodexEntryGenerator
 		categoryEntries.Add(text, categoryEntry);
 	}
 
-	private static CodexEntry GenerateEntryForSpecificBuildingRequirementClass(Tag requirementClassTag, string categoryEntryID)
+		private static CodexEntry GenerateEntryForSpecificBuildingRequirementClass(Tag requirementClassTag, string categoryEntryID)
 	{
 		string str = "STRINGS.CODEX.ROOM_REQUIREMENT_CLASS." + requirementClassTag.ToString().ToUpper();
 		List<ContentContainer> list = new List<ContentContainer>();
@@ -129,10 +129,7 @@ public static class CodexEntryGenerator
 		{
 			List<ICodexWidget> list6 = new List<ICodexWidget>();
 			List<ICodexWidget> list7 = new List<ICodexWidget>();
-			string[] array = stringEntry.String.Split(new char[]
-			{
-				'\n'
-			});
+			string[] array = stringEntry.String.Split('\n', StringSplitOptions.None);
 			for (int i = 0; i < array.Length; i++)
 			{
 				ICodexWidget item5 = new CodexText(array[i], CodexTextStyle.Body, null);
@@ -153,10 +150,7 @@ public static class CodexEntryGenerator
 		{
 			List<ICodexWidget> list8 = new List<ICodexWidget>();
 			List<ICodexWidget> list9 = new List<ICodexWidget>();
-			string[] array2 = stringEntry2.String.Split(new char[]
-			{
-				'\n'
-			});
+			string[] array2 = stringEntry2.String.Split('\n', StringSplitOptions.None);
 			for (int j = 0; j < array2.Length; j++)
 			{
 				ICodexWidget item7 = new CodexText(array2[j], CodexTextStyle.Body, null);
@@ -184,7 +178,7 @@ public static class CodexEntryGenerator
 		return codexEntry;
 	}
 
-	private static CodexEntry GenerateSingleBuildingEntry(BuildingDef def, string categoryEntryID)
+		private static CodexEntry GenerateSingleBuildingEntry(BuildingDef def, string categoryEntryID)
 	{
 		if (def.DebugOnly || def.Deprecated)
 		{
@@ -212,7 +206,7 @@ public static class CodexEntryGenerator
 		return codexEntry;
 	}
 
-	private static void GenerateDLC1RocketryEntries()
+		private static void GenerateDLC1RocketryEntries()
 	{
 		PlanScreen.PlanInfo planInfo = TUNING.BUILDINGS.PLANORDER.Find((PlanScreen.PlanInfo match) => match.category == new HashedString("Rocketry"));
 		foreach (string prefab_id in SelectModuleSideScreen.moduleButtonSortOrder)
@@ -220,35 +214,38 @@ public static class CodexEntryGenerator
 			string str = HashCache.Get().Get(planInfo.category);
 			string categoryEntryID = CodexCache.FormatLinkID(CodexEntryGenerator.categoryPrefx + str);
 			BuildingDef buildingDef = Assets.GetBuildingDef(prefab_id);
-			CodexEntry codexEntry = CodexEntryGenerator.GenerateSingleBuildingEntry(buildingDef, categoryEntryID);
-			List<ICodexWidget> list = new List<ICodexWidget>();
-			list.Add(new CodexSpacer());
-			list.Add(new CodexText(UI.CLUSTERMAP.ROCKETS.MODULE_STATS.NAME_HEADER, CodexTextStyle.Subtitle, null));
-			list.Add(new CodexSpacer());
-			list.Add(new CodexText(UI.CLUSTERMAP.ROCKETS.SPEED.TOOLTIP, CodexTextStyle.Body, null));
-			RocketModuleCluster component = buildingDef.BuildingComplete.GetComponent<RocketModuleCluster>();
-			float burden = component.performanceStats.Burden;
-			float enginePower = component.performanceStats.EnginePower;
-			RocketEngineCluster component2 = buildingDef.BuildingComplete.GetComponent<RocketEngineCluster>();
-			if (component2 != null)
+			if (!(buildingDef == null))
 			{
-				list.Add(new CodexText("    • " + UI.CLUSTERMAP.ROCKETS.MAX_HEIGHT.NAME_MAX_SUPPORTED + component2.maxHeight.ToString(), CodexTextStyle.Body, null));
+				CodexEntry codexEntry = CodexEntryGenerator.GenerateSingleBuildingEntry(buildingDef, categoryEntryID);
+				List<ICodexWidget> list = new List<ICodexWidget>();
+				list.Add(new CodexSpacer());
+				list.Add(new CodexText(UI.CLUSTERMAP.ROCKETS.MODULE_STATS.NAME_HEADER, CodexTextStyle.Subtitle, null));
+				list.Add(new CodexSpacer());
+				list.Add(new CodexText(UI.CLUSTERMAP.ROCKETS.SPEED.TOOLTIP, CodexTextStyle.Body, null));
+				RocketModuleCluster component = buildingDef.BuildingComplete.GetComponent<RocketModuleCluster>();
+				float burden = component.performanceStats.Burden;
+				float enginePower = component.performanceStats.EnginePower;
+				RocketEngineCluster component2 = buildingDef.BuildingComplete.GetComponent<RocketEngineCluster>();
+				if (component2 != null)
+				{
+					list.Add(new CodexText("    • " + UI.CLUSTERMAP.ROCKETS.MAX_HEIGHT.NAME_MAX_SUPPORTED + component2.maxHeight.ToString(), CodexTextStyle.Body, null));
+				}
+				list.Add(new CodexText("    • " + UI.CLUSTERMAP.ROCKETS.MAX_HEIGHT.NAME_RAW + buildingDef.HeightInCells.ToString(), CodexTextStyle.Body, null));
+				if (burden != 0f)
+				{
+					list.Add(new CodexText("    • " + UI.CLUSTERMAP.ROCKETS.BURDEN_MODULE.NAME + burden.ToString(), CodexTextStyle.Body, null));
+				}
+				if (enginePower != 0f)
+				{
+					list.Add(new CodexText("    • " + UI.CLUSTERMAP.ROCKETS.POWER_MODULE.NAME + enginePower.ToString(), CodexTextStyle.Body, null));
+				}
+				ContentContainer container = new ContentContainer(list, ContentContainer.ContentLayout.Vertical);
+				codexEntry.AddContentContainer(container);
 			}
-			list.Add(new CodexText("    • " + UI.CLUSTERMAP.ROCKETS.MAX_HEIGHT.NAME_RAW + buildingDef.HeightInCells.ToString(), CodexTextStyle.Body, null));
-			if (burden != 0f)
-			{
-				list.Add(new CodexText("    • " + UI.CLUSTERMAP.ROCKETS.BURDEN_MODULE.NAME + burden.ToString(), CodexTextStyle.Body, null));
-			}
-			if (enginePower != 0f)
-			{
-				list.Add(new CodexText("    • " + UI.CLUSTERMAP.ROCKETS.POWER_MODULE.NAME + enginePower.ToString(), CodexTextStyle.Body, null));
-			}
-			ContentContainer container = new ContentContainer(list, ContentContainer.ContentLayout.Vertical);
-			codexEntry.AddContentContainer(container);
 		}
 	}
 
-	public static void GeneratePageNotFound()
+		public static void GeneratePageNotFound()
 	{
 		CodexCache.AddEntry("PageNotFound", new CodexEntry("ROOT", new List<ContentContainer>
 		{
@@ -268,7 +265,7 @@ public static class CodexEntryGenerator
 		}, null);
 	}
 
-	public static Dictionary<string, CodexEntry> GenerateRoomsEntries()
+		public static Dictionary<string, CodexEntry> GenerateRoomsEntries()
 	{
 		Dictionary<string, CodexEntry> result = new Dictionary<string, CodexEntry>();
 		RoomTypes roomTypesData = Db.Get().RoomTypes;
@@ -309,6 +306,10 @@ public static class CodexEntryGenerator
 		};
 		action(Db.Get().RoomTypeCategories.Agricultural);
 		action(Db.Get().RoomTypeCategories.Bathroom);
+		if (SaveLoader.Instance.IsDLCActiveForCurrentSave("DLC3_ID"))
+		{
+			action(Db.Get().RoomTypeCategories.Bionic);
+		}
 		action(Db.Get().RoomTypeCategories.Food);
 		action(Db.Get().RoomTypeCategories.Hospital);
 		action(Db.Get().RoomTypeCategories.Industrial);
@@ -319,7 +320,7 @@ public static class CodexEntryGenerator
 		return result;
 	}
 
-	public static Dictionary<string, CodexEntry> GeneratePlantEntries()
+		public static Dictionary<string, CodexEntry> GeneratePlantEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		List<GameObject> prefabsWithComponent = Assets.GetPrefabsWithComponent<Harvestable>();
@@ -344,7 +345,7 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	public static Dictionary<string, CodexEntry> GenerateFoodEntries()
+		public static Dictionary<string, CodexEntry> GenerateFoodEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		foreach (EdiblesManager.FoodInfo foodInfo in EdiblesManager.GetAllFoodTypes())
@@ -375,7 +376,7 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	private static CodexEntry GenerateFoodEffectEntry()
+		private static CodexEntry GenerateFoodEffectEntry()
 	{
 		List<ICodexWidget> content = new List<ICodexWidget>();
 		CodexEntry codexEntry = new CodexEntry(CodexEntryGenerator.FOOD_CATEGORY_ID, new List<ContentContainer>
@@ -398,11 +399,11 @@ public static class CodexEntryGenerator
 				list.Add(foodInfo);
 			}
 		}
-		foreach (KeyValuePair<string, List<EdiblesManager.FoodInfo>> self in dictionary)
+		foreach (KeyValuePair<string, List<EdiblesManager.FoodInfo>> keyValuePair in dictionary)
 		{
 			string text;
 			List<EdiblesManager.FoodInfo> list2;
-			self.Deconstruct(out text, out list2);
+			keyValuePair.Deconstruct(out text, out list2);
 			string text2 = text;
 			List<EdiblesManager.FoodInfo> list3 = list2;
 			Klei.AI.Modifier modifier = Db.Get().effects.Get(text2);
@@ -433,10 +434,10 @@ public static class CodexEntryGenerator
 		return codexEntry;
 	}
 
-	private static CodexEntry GenerateTabelSaltEntry()
+		private static CodexEntry GenerateTabelSaltEntry()
 	{
-		LocString name = ITEMS.INDUSTRIAL_PRODUCTS.TABLE_SALT.NAME;
-		LocString desc = ITEMS.INDUSTRIAL_PRODUCTS.TABLE_SALT.DESC;
+		LocString name = STRINGS.ITEMS.INDUSTRIAL_PRODUCTS.TABLE_SALT.NAME;
+		LocString desc = STRINGS.ITEMS.INDUSTRIAL_PRODUCTS.TABLE_SALT.DESC;
 		Sprite sprite = Assets.GetSprite("ui_food_table_salt");
 		List<ContentContainer> list = new List<ContentContainer>();
 		CodexEntryGenerator.GenerateImageContainers(sprite, list);
@@ -452,7 +453,7 @@ public static class CodexEntryGenerator
 		};
 	}
 
-	public static Dictionary<string, CodexEntry> GenerateMinionModifierEntries()
+		public static Dictionary<string, CodexEntry> GenerateMinionModifierEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		foreach (Effect effect in Db.Get().effects.resources)
@@ -491,7 +492,7 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	public static Dictionary<string, CodexEntry> GenerateTechEntries()
+		public static Dictionary<string, CodexEntry> GenerateTechEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		foreach (Tech tech in Db.Get().Techs.resources)
@@ -511,12 +512,12 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	public static Dictionary<string, CodexEntry> GenerateRoleEntries()
+		public static Dictionary<string, CodexEntry> GenerateRoleEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		foreach (Skill skill in Db.Get().Skills.resources)
 		{
-			if (!skill.deprecated)
+			if (!skill.deprecated && SaveLoader.Instance.IsDLCActiveForCurrentSave(skill.dlcId))
 			{
 				List<ContentContainer> list = new List<ContentContainer>();
 				Sprite sprite = Assets.GetSprite(skill.hat);
@@ -535,7 +536,7 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	public static Dictionary<string, CodexEntry> GenerateGeyserEntries()
+		public static Dictionary<string, CodexEntry> GenerateGeyserEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		List<GameObject> prefabsWithComponent = Assets.GetPrefabsWithComponent<Geyser>();
@@ -572,7 +573,7 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	public static Dictionary<string, CodexEntry> GenerateEquipmentEntries()
+		public static Dictionary<string, CodexEntry> GenerateEquipmentEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		List<GameObject> prefabsWithComponent = Assets.GetPrefabsWithComponent<Equippable>();
@@ -640,7 +641,7 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	public static Dictionary<string, CodexEntry> GenerateBiomeEntries()
+		public static Dictionary<string, CodexEntry> GenerateBiomeEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		ListPool<YamlIO.Error, WorldGen>.PooledList pooledList = ListPool<YamlIO.Error, WorldGen>.Allocate();
@@ -902,21 +903,18 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	public static Dictionary<string, CodexEntry> GenerateConstructionMaterialEntries()
+		public static Dictionary<string, CodexEntry> GenerateConstructionMaterialEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		Dictionary<Tag, List<BuildingDef>> dictionary2 = new Dictionary<Tag, List<BuildingDef>>();
 		foreach (BuildingDef buildingDef in Assets.BuildingDefs)
 		{
-			if (!buildingDef.Deprecated && !buildingDef.DebugOnly && SaveLoader.Instance.IsDlcListActiveForCurrentSave(buildingDef.RequiredDlcIds) && (buildingDef.ShowInBuildMenu || buildingDef.BuildingComplete.HasTag(GameTags.RocketModule)))
+			if (!buildingDef.Deprecated && !buildingDef.DebugOnly && buildingDef.IsValidDLC() && (buildingDef.ShowInBuildMenu || buildingDef.BuildingComplete.HasTag(GameTags.RocketModule)))
 			{
 				string[] materialCategory = buildingDef.MaterialCategory;
 				for (int i = 0; i < materialCategory.Length; i++)
 				{
-					foreach (string name in materialCategory[i].Split(new char[]
-					{
-						'&'
-					}))
+					foreach (string name in materialCategory[i].Split('&', StringSplitOptions.None))
 					{
 						Tag key = new Tag(name);
 						if (!dictionary2.ContainsKey(key))
@@ -981,7 +979,7 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	public static Dictionary<string, CodexEntry> GenerateDiseaseEntries()
+		public static Dictionary<string, CodexEntry> GenerateDiseaseEntries()
 	{
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
 		foreach (Disease disease in Db.Get().Diseases.resources)
@@ -1001,7 +999,7 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	public static CategoryEntry GenerateCategoryEntry(string id, string name, Dictionary<string, CodexEntry> entries, Sprite icon = null, bool largeFormat = true, bool sort = true, string overrideHeader = null)
+		public static CategoryEntry GenerateCategoryEntry(string id, string name, Dictionary<string, CodexEntry> entries, Sprite icon = null, bool largeFormat = true, bool sort = true, string overrideHeader = null)
 	{
 		List<ContentContainer> list = new List<ContentContainer>();
 		CodexEntryGenerator.GenerateTitleContainers((overrideHeader == null) ? name : overrideHeader, list);
@@ -1020,7 +1018,7 @@ public static class CodexEntryGenerator
 		return categoryEntry;
 	}
 
-	public static Dictionary<string, CodexEntry> GenerateTutorialNotificationEntries()
+		public static Dictionary<string, CodexEntry> GenerateTutorialNotificationEntries()
 	{
 		CodexEntry codexEntry = new CodexEntry("MISCELLANEOUSTIPS", new List<ContentContainer>
 		{
@@ -1030,7 +1028,7 @@ public static class CodexEntryGenerator
 			}, ContentContainer.ContentLayout.Vertical)
 		}, Strings.Get("STRINGS.UI.CODEX.CATEGORYNAMES.MISCELLANEOUSTIPS"));
 		Dictionary<string, CodexEntry> dictionary = new Dictionary<string, CodexEntry>();
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 24; i++)
 		{
 			TutorialMessage tutorialMessage = (TutorialMessage)Tutorial.Instance.TutorialMessage((Tutorial.TutorialMessages)i, false);
 			if (tutorialMessage != null && DlcManager.IsDlcListValidForCurrentContent(tutorialMessage.DLCIDs))
@@ -1082,7 +1080,7 @@ public static class CodexEntryGenerator
 		return dictionary;
 	}
 
-	public static void PopulateCategoryEntries(Dictionary<string, CodexEntry> categoryEntries)
+		public static void PopulateCategoryEntries(Dictionary<string, CodexEntry> categoryEntries)
 	{
 		List<CategoryEntry> list = new List<CategoryEntry>();
 		foreach (KeyValuePair<string, CodexEntry> keyValuePair in categoryEntries)
@@ -1092,7 +1090,7 @@ public static class CodexEntryGenerator
 		CodexEntryGenerator.PopulateCategoryEntries(list, null);
 	}
 
-	public static void PopulateCategoryEntries(List<CategoryEntry> categoryEntries, Comparison<CodexEntry> comparison = null)
+		public static void PopulateCategoryEntries(List<CategoryEntry> categoryEntries, Comparison<CodexEntry> comparison = null)
 	{
 		foreach (CategoryEntry categoryEntry in categoryEntries)
 		{
@@ -1165,7 +1163,7 @@ public static class CodexEntryGenerator
 		}
 	}
 
-	public static void GenerateTitleContainers(string name, List<ContentContainer> containers)
+		public static void GenerateTitleContainers(string name, List<ContentContainer> containers)
 	{
 		containers.Add(new ContentContainer(new List<ICodexWidget>
 		{
@@ -1174,7 +1172,7 @@ public static class CodexEntryGenerator
 		}, ContentContainer.ContentLayout.Vertical));
 	}
 
-	private static void GeneratePrerequisiteTechContainers(Tech tech, List<ContentContainer> containers)
+		private static void GeneratePrerequisiteTechContainers(Tech tech, List<ContentContainer> containers)
 	{
 		if (tech.requiredTech == null || tech.requiredTech.Count == 0)
 		{
@@ -1192,7 +1190,7 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 	}
 
-	private static void GenerateSkillRequirementsAndPerksContainers(Skill skill, List<ContentContainer> containers)
+		private static void GenerateSkillRequirementsAndPerksContainers(Skill skill, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		CodexText item = new CodexText(CODEX.HEADERS.ROLE_PERKS, CodexTextStyle.Subtitle, null);
@@ -1203,14 +1201,17 @@ public static class CodexEntryGenerator
 		list.Add(new CodexSpacer());
 		foreach (SkillPerk skillPerk in skill.perks)
 		{
-			CodexText item3 = new CodexText(skillPerk.Name, CodexTextStyle.Body, null);
-			list.Add(item3);
+			if (SaveLoader.Instance.IsAllDlcActiveForCurrentSave(skillPerk.requiredDlcIds))
+			{
+				CodexText item3 = new CodexText(skillPerk.Name, CodexTextStyle.Body, null);
+				list.Add(item3);
+			}
 		}
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 		list.Add(new CodexSpacer());
 	}
 
-	private static void GenerateRelatedSkillContainers(Skill skill, List<ContentContainer> containers)
+		private static void GenerateRelatedSkillContainers(Skill skill, List<ContentContainer> containers)
 	{
 		bool flag = false;
 		List<ICodexWidget> list = new List<ICodexWidget>();
@@ -1262,7 +1263,7 @@ public static class CodexEntryGenerator
 		}
 	}
 
-	private static void GenerateUnlockContainers(Tech tech, List<ContentContainer> containers)
+		private static void GenerateUnlockContainers(Tech tech, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		CodexText item = new CodexText(CODEX.HEADERS.TECH_UNLOCKS, CodexTextStyle.Subtitle, null);
@@ -1281,7 +1282,7 @@ public static class CodexEntryGenerator
 		}
 	}
 
-	private static void GenerateRecipeContainers(Tag prefabID, List<ContentContainer> containers)
+		private static void GenerateRecipeContainers(Tag prefabID, List<ContentContainer> containers)
 	{
 		Recipe recipe = null;
 		foreach (Recipe recipe2 in RecipeManager.Get().recipes)
@@ -1336,7 +1337,7 @@ public static class CodexEntryGenerator
 		}
 	}
 
-	private static void GenerateRoomTypeDetailsContainers(RoomType roomType, List<ContentContainer> containers)
+		private static void GenerateRoomTypeDetailsContainers(RoomType roomType, List<ContentContainer> containers)
 	{
 		ICodexWidget item = new CodexText(UI.CODEX.DETAILS, CodexTextStyle.Subtitle, null);
 		ICodexWidget item2 = new CodexDividerLine();
@@ -1374,7 +1375,7 @@ public static class CodexEntryGenerator
 		containers.Add(item4);
 	}
 
-	private static void GenerateRoomTypeDescriptionContainers(RoomType roomType, List<ContentContainer> containers)
+		private static void GenerateRoomTypeDescriptionContainers(RoomType roomType, List<ContentContainer> containers)
 	{
 		ContentContainer item = new ContentContainer(new List<ICodexWidget>
 		{
@@ -1384,7 +1385,7 @@ public static class CodexEntryGenerator
 		containers.Add(item);
 	}
 
-	private static void GeneratePlantDescriptionContainers(GameObject plant, List<ContentContainer> containers)
+		private static void GeneratePlantDescriptionContainers(GameObject plant, List<ContentContainer> containers)
 	{
 		SeedProducer component = plant.GetComponent<SeedProducer>();
 		if (component != null)
@@ -1438,12 +1439,12 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 	}
 
-	private static ICodexWidget GetIconWidget(object entity)
+		private static ICodexWidget GetIconWidget(object entity)
 	{
 		return new CodexImage(32, 32, Def.GetUISprite(entity, "ui", false));
 	}
 
-	private static void GenerateDiseaseDescriptionContainers(Disease disease, List<ContentContainer> containers)
+		private static void GenerateDiseaseDescriptionContainers(Disease disease, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		list.Add(new CodexSpacer());
@@ -1461,7 +1462,7 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 	}
 
-	private static void GenerateFoodDescriptionContainers(EdiblesManager.FoodInfo food, List<ContentContainer> containers)
+		private static void GenerateFoodDescriptionContainers(EdiblesManager.FoodInfo food, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>
 		{
@@ -1502,7 +1503,7 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 	}
 
-	private static void GenerateTechDescriptionContainers(Tech tech, List<ContentContainer> containers)
+		private static void GenerateTechDescriptionContainers(Tech tech, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		CodexText item = new CodexText(Strings.Get("STRINGS.RESEARCH.TECHS." + tech.Id.ToUpper() + ".DESC"), CodexTextStyle.Body, null);
@@ -1511,7 +1512,7 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 	}
 
-	private static void GenerateGenericDescriptionContainers(string description, List<ContentContainer> containers)
+		private static void GenerateGenericDescriptionContainers(string description, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		CodexText item = new CodexText(description, CodexTextStyle.Body, null);
@@ -1520,7 +1521,7 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 	}
 
-	private static void GenerateBuildingDescriptionContainers(BuildingDef def, List<ContentContainer> containers)
+		private static void GenerateBuildingDescriptionContainers(BuildingDef def, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		list.Add(new CodexText(Strings.Get("STRINGS.BUILDINGS.PREFABS." + def.PrefabID.ToUpper() + ".EFFECT"), CodexTextStyle.Body, null));
@@ -1582,7 +1583,7 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 	}
 
-	public static string[] GetRoomClassForObject(GameObject obj)
+		public static string[] GetRoomClassForObject(GameObject obj)
 	{
 		List<string> list = new List<string>();
 		KPrefabID component = obj.GetComponent<KPrefabID>();
@@ -1603,7 +1604,7 @@ public static class CodexEntryGenerator
 		return list.ToArray();
 	}
 
-	public static void GenerateImageContainers(Sprite[] sprites, List<ContentContainer> containers, ContentContainer.ContentLayout layout)
+		public static void GenerateImageContainers(Sprite[] sprites, List<ContentContainer> containers, ContentContainer.ContentLayout layout)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		foreach (Sprite sprite in sprites)
@@ -1617,7 +1618,7 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, layout));
 	}
 
-	public static void GenerateImageContainers(global::Tuple<Sprite, Color>[] sprites, List<ContentContainer> containers, ContentContainer.ContentLayout layout)
+		public static void GenerateImageContainers(global::Tuple<Sprite, Color>[] sprites, List<ContentContainer> containers, ContentContainer.ContentLayout layout)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		foreach (global::Tuple<Sprite, Color> tuple in sprites)
@@ -1631,7 +1632,7 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, layout));
 	}
 
-	public static void GenerateImageContainers(Sprite sprite, List<ContentContainer> containers)
+		public static void GenerateImageContainers(Sprite sprite, List<ContentContainer> containers)
 	{
 		List<ICodexWidget> list = new List<ICodexWidget>();
 		CodexImage item = new CodexImage(128, 128, sprite);
@@ -1639,7 +1640,7 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 	}
 
-	public static void CreateUnlockablesContentContainer(SubEntry subentry)
+		public static void CreateUnlockablesContentContainer(SubEntry subentry)
 	{
 		subentry.lockedContentContainer = new ContentContainer(new List<ICodexWidget>
 		{
@@ -1651,7 +1652,7 @@ public static class CodexEntryGenerator
 		};
 	}
 
-	private static void GenerateFabricatorContainers(GameObject entity, List<ContentContainer> containers)
+		private static void GenerateFabricatorContainers(GameObject entity, List<ContentContainer> containers)
 	{
 		ComplexFabricator component = entity.GetComponent<ComplexFabricator>();
 		if (component == null)
@@ -1672,7 +1673,7 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 	}
 
-	private static void GenerateConfigurableConsumerContainers(GameObject buildingComplete, List<ContentContainer> containers)
+		private static void GenerateConfigurableConsumerContainers(GameObject buildingComplete, List<ContentContainer> containers)
 	{
 		IConfigurableConsumer component = buildingComplete.GetComponent<IConfigurableConsumer>();
 		if (component == null)
@@ -1693,7 +1694,7 @@ public static class CodexEntryGenerator
 		containers.Add(new ContentContainer(list, ContentContainer.ContentLayout.Vertical));
 	}
 
-	private static void GenerateReceptacleContainers(GameObject entity, List<ContentContainer> containers)
+		private static void GenerateReceptacleContainers(GameObject entity, List<ContentContainer> containers)
 	{
 		SingleEntityReceptacle plot = entity.GetComponent<SingleEntityReceptacle>();
 		if (plot == null)
@@ -1734,7 +1735,7 @@ public static class CodexEntryGenerator
 		}
 	}
 
-	// Note: this type is marked as 'beforefieldinit'.
+		// Note: this type is marked as 'beforefieldinit'.
 	static CodexEntryGenerator()
 	{
 		Dictionary<Tag, Tag> dictionary = new Dictionary<Tag, Tag>();
@@ -1760,6 +1761,8 @@ public static class CodexEntryGenerator
 		dictionary[ranchStationType] = "RanchStation";
 		Tag bedType = RoomConstraints.ConstraintTags.BedType;
 		dictionary[bedType] = "Bed";
+		Tag generatorType = RoomConstraints.ConstraintTags.GeneratorType;
+		dictionary[generatorType] = "Generator";
 		Tag lightSource = RoomConstraints.ConstraintTags.LightSource;
 		dictionary[lightSource] = "FloorLamp";
 		Tag rocketInterior = RoomConstraints.ConstraintTags.RocketInterior;
@@ -1773,17 +1776,17 @@ public static class CodexEntryGenerator
 		CodexEntryGenerator.RoomConstrainTagIcons = dictionary;
 	}
 
-	private static string categoryPrefx = "BUILD_CATEGORY_";
+		private static string categoryPrefx = "BUILD_CATEGORY_";
 
-	public static readonly string FOOD_CATEGORY_ID = CodexCache.FormatLinkID("FOOD");
+		public static readonly string FOOD_CATEGORY_ID = CodexCache.FormatLinkID("FOOD");
 
-	public static readonly string FOOD_EFFECTS_ENTRY_ID = CodexCache.FormatLinkID("id_food_effects");
+		public static readonly string FOOD_EFFECTS_ENTRY_ID = CodexCache.FormatLinkID("id_food_effects");
 
-	public static readonly string TABLE_SALT_ENTRY_ID = CodexCache.FormatLinkID("id_table_salt");
+		public static readonly string TABLE_SALT_ENTRY_ID = CodexCache.FormatLinkID("id_table_salt");
 
-	public static readonly string MINION_MODIFIERS_CATEGORY_ID = CodexCache.FormatLinkID("MINION_MODIFIERS");
+		public static readonly string MINION_MODIFIERS_CATEGORY_ID = CodexCache.FormatLinkID("MINION_MODIFIERS");
 
-	public static Tag[] HiddenRoomConstrainTags = new Tag[]
+		public static Tag[] HiddenRoomConstrainTags = new Tag[]
 	{
 		RoomConstraints.ConstraintTags.Refrigerator,
 		RoomConstraints.ConstraintTags.FarmStationType,
@@ -1792,12 +1795,13 @@ public static class CodexEntryGenerator
 		RoomConstraints.ConstraintTags.MessTable,
 		RoomConstraints.ConstraintTags.NatureReserve,
 		RoomConstraints.ConstraintTags.Park,
-		RoomConstraints.ConstraintTags.PowerStation,
 		RoomConstraints.ConstraintTags.SpiceStation,
 		RoomConstraints.ConstraintTags.DeStressingBuilding,
 		RoomConstraints.ConstraintTags.Decor20,
-		RoomConstraints.ConstraintTags.MachineShopType
+		RoomConstraints.ConstraintTags.MachineShopType,
+		RoomConstraints.ConstraintTags.LightDutyGeneratorType,
+		RoomConstraints.ConstraintTags.HeavyDutyGeneratorType
 	};
 
-	public static Dictionary<Tag, Tag> RoomConstrainTagIcons;
+		public static Dictionary<Tag, Tag> RoomConstrainTagIcons;
 }

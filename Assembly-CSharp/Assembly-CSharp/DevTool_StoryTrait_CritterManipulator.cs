@@ -5,7 +5,7 @@ using STRINGS;
 
 public class DevTool_StoryTrait_CritterManipulator : DevTool
 {
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (ImGui.CollapsingHeader("Debug species lore unlock popup", ImGuiTreeNodeFlags.DefaultOpen))
 		{
@@ -18,7 +18,7 @@ public class DevTool_StoryTrait_CritterManipulator : DevTool
 		}
 	}
 
-	public void Button_OpenSpecies(Tag species, string speciesName = null)
+		public void Button_OpenSpecies(Tag species, string speciesName = null)
 	{
 		if (speciesName == null)
 		{
@@ -34,7 +34,7 @@ public class DevTool_StoryTrait_CritterManipulator : DevTool
 		}
 	}
 
-	public IEnumerable<Tag> GetCritterSpeciesTags()
+		public IEnumerable<Tag> GetCritterSpeciesTags()
 	{
 		yield return GameTags.Creatures.Species.HatchSpecies;
 		yield return GameTags.Creatures.Species.LightBugSpecies;

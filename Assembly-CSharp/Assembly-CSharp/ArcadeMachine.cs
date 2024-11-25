@@ -6,233 +6,193 @@ using STRINGS;
 using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class ArcadeMachine : StateMachineComponent<ArcadeMachine.StatesInstance>, IGameObjectEffectDescriptor
-{
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		GameScheduler.Instance.Schedule("Scheduling Tutorial", 2f, delegate(object obj)
-		{
-			Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule, true);
-		}, null, null);
-		this.workables = new ArcadeMachineWorkable[this.choreOffsets.Length];
-		this.chores = new Chore[this.choreOffsets.Length];
-		for (int i = 0; i < this.workables.Length; i++)
-		{
-			Vector3 pos = Grid.CellToPosCBC(Grid.OffsetCell(Grid.PosToCell(this), this.choreOffsets[i]), Grid.SceneLayer.Move);
-			GameObject go = ChoreHelpers.CreateLocator("ArcadeMachineWorkable", pos);
-			ArcadeMachineWorkable arcadeMachineWorkable = go.AddOrGet<ArcadeMachineWorkable>();
-			KSelectable kselectable = go.AddOrGet<KSelectable>();
-			kselectable.SetName(this.GetProperName());
-			kselectable.IsSelectable = false;
-			int player_index = i;
-			ArcadeMachineWorkable arcadeMachineWorkable2 = arcadeMachineWorkable;
-			arcadeMachineWorkable2.OnWorkableEventCB = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(arcadeMachineWorkable2.OnWorkableEventCB, new Action<Workable, Workable.WorkableEvent>(delegate(Workable workable, Workable.WorkableEvent ev)
-			{
-				this.OnWorkableEvent(player_index, ev);
-			}));
-			arcadeMachineWorkable.overrideAnims = this.overrideAnims[i];
-			arcadeMachineWorkable.workAnims = this.workAnims[i];
-			this.workables[i] = arcadeMachineWorkable;
-			this.workables[i].owner = this;
-		}
-		base.smi.StartSM();
-	}
+public class ArcadeMachine : StateMachineComponent<ArcadeMachine.StatesInstance>, IGameObjectEffectDescriptor {
+    public  CellOffset[] choreOffsets = { new CellOffset(-1, 0), new CellOffset(1, 0) };
+    private Chore[]      chores;
 
-	protected override void OnCleanUp()
-	{
-		this.UpdateChores(false);
-		for (int i = 0; i < this.workables.Length; i++)
-		{
-			if (this.workables[i])
-			{
-				Util.KDestroyGameObject(this.workables[i]);
-				this.workables[i] = null;
-			}
-		}
-		base.OnCleanUp();
-	}
+    public KAnimFile[][] overrideAnims = {
+        new[] { Assets.GetAnim("anim_interacts_arcade_cabinet_playerone_kanim") },
+        new[] { Assets.GetAnim("anim_interacts_arcade_cabinet_playertwo_kanim") }
+    };
 
-	private Chore CreateChore(int i)
-	{
-		Workable workable = this.workables[i];
-		ChoreType relax = Db.Get().ChoreTypes.Relax;
-		IStateMachineTarget target = workable;
-		ChoreProvider chore_provider = null;
-		bool run_until_complete = true;
-		Action<Chore> on_complete = null;
-		Action<Chore> on_begin = null;
-		ScheduleBlockType recreation = Db.Get().ScheduleBlockTypes.Recreation;
-		WorkChore<ArcadeMachineWorkable> workChore = new WorkChore<ArcadeMachineWorkable>(relax, target, chore_provider, run_until_complete, on_complete, on_begin, new Action<Chore>(this.OnSocialChoreEnd), false, recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
-		workChore.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, workable);
-		return workChore;
-	}
+    public  HashSet<int>            players = new HashSet<int>();
+    private ArcadeMachineWorkable[] workables;
 
-	private void OnSocialChoreEnd(Chore chore)
-	{
-		if (base.gameObject.HasTag(GameTags.Operational))
-		{
-			this.UpdateChores(true);
-		}
-	}
+    public HashedString[][] workAnims = {
+        new HashedString[] { "working_pre", "working_loop_one_p" },
+        new HashedString[] { "working_pre", "working_loop_two_p" }
+    };
 
-	public void UpdateChores(bool update = true)
-	{
-		for (int i = 0; i < this.choreOffsets.Length; i++)
-		{
-			Chore chore = this.chores[i];
-			if (update)
-			{
-				if (chore == null || chore.isComplete)
-				{
-					this.chores[i] = this.CreateChore(i);
-				}
-			}
-			else if (chore != null)
-			{
-				chore.Cancel("locator invalidated");
-				this.chores[i] = null;
-			}
-		}
-	}
+    List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go) {
+        var list = new List<Descriptor>();
+        var item = default(Descriptor);
+        item.SetupDescriptor(UI.BUILDINGEFFECTS.RECREATION, UI.BUILDINGEFFECTS.TOOLTIPS.RECREATION);
+        list.Add(item);
+        Effect.AddModifierDescriptions(gameObject, list, "PlayedArcade", true);
+        return list;
+    }
 
-	public void OnWorkableEvent(int player, Workable.WorkableEvent ev)
-	{
-		if (ev == Workable.WorkableEvent.WorkStarted)
-		{
-			this.players.Add(player);
-		}
-		else
-		{
-			this.players.Remove(player);
-		}
-		base.smi.sm.playerCount.Set(this.players.Count, base.smi, false);
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        GameScheduler.Instance.Schedule("Scheduling Tutorial",
+                                        2f,
+                                        delegate {
+                                            Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Schedule);
+                                        });
 
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
-	{
-		List<Descriptor> list = new List<Descriptor>();
-		Descriptor item = default(Descriptor);
-		item.SetupDescriptor(UI.BUILDINGEFFECTS.RECREATION, UI.BUILDINGEFFECTS.TOOLTIPS.RECREATION, Descriptor.DescriptorType.Effect);
-		list.Add(item);
-		Effect.AddModifierDescriptions(base.gameObject, list, "PlayedArcade", true);
-		return list;
-	}
+        workables = new ArcadeMachineWorkable[choreOffsets.Length];
+        chores = new Chore[choreOffsets.Length];
+        for (var i = 0; i < workables.Length; i++) {
+            var pos = Grid.CellToPosCBC(Grid.OffsetCell(Grid.PosToCell(this), choreOffsets[i]), Grid.SceneLayer.Move);
+            var go = ChoreHelpers.CreateLocator("ArcadeMachineWorkable", pos);
+            var arcadeMachineWorkable = go.AddOrGet<ArcadeMachineWorkable>();
+            var kselectable = go.AddOrGet<KSelectable>();
+            kselectable.SetName(this.GetProperName());
+            kselectable.IsSelectable = false;
+            var player_index           = i;
+            var arcadeMachineWorkable2 = arcadeMachineWorkable;
+            arcadeMachineWorkable2.OnWorkableEventCB
+                = (Action<Workable, Workable.WorkableEvent>)Delegate.Combine(arcadeMachineWorkable2.OnWorkableEventCB,
+                                                                             new Action<Workable,
+                                                                                 Workable.WorkableEvent>(delegate(
+                                                                                 Workable               workable,
+                                                                                 Workable.WorkableEvent ev) {
+                                                                                 OnWorkableEvent(player_index,
+                                                                                  ev);
+                                                                             }));
 
-	public CellOffset[] choreOffsets = new CellOffset[]
-	{
-		new CellOffset(-1, 0),
-		new CellOffset(1, 0)
-	};
+            arcadeMachineWorkable.overrideAnims = overrideAnims[i];
+            arcadeMachineWorkable.workAnims     = workAnims[i];
+            workables[i]                        = arcadeMachineWorkable;
+            workables[i].owner                  = this;
+        }
 
-	private ArcadeMachineWorkable[] workables;
+        smi.StartSM();
+    }
 
-	private Chore[] chores;
+    protected override void OnCleanUp() {
+        UpdateChores(false);
+        for (var i = 0; i < workables.Length; i++)
+            if (workables[i]) {
+                Util.KDestroyGameObject(workables[i]);
+                workables[i] = null;
+            }
 
-	public HashSet<int> players = new HashSet<int>();
+        base.OnCleanUp();
+    }
 
-	public KAnimFile[][] overrideAnims = new KAnimFile[][]
-	{
-		new KAnimFile[]
-		{
-			Assets.GetAnim("anim_interacts_arcade_cabinet_playerone_kanim")
-		},
-		new KAnimFile[]
-		{
-			Assets.GetAnim("anim_interacts_arcade_cabinet_playertwo_kanim")
-		}
-	};
+    private Chore CreateChore(int i) {
+        Workable            workable           = workables[i];
+        var                 relax              = Db.Get().ChoreTypes.Relax;
+        IStateMachineTarget target             = workable;
+        ChoreProvider       chore_provider     = null;
+        var                 run_until_complete = true;
+        Action<Chore>       on_complete        = null;
+        Action<Chore>       on_begin           = null;
+        var                 recreation         = Db.Get().ScheduleBlockTypes.Recreation;
+        var workChore = new WorkChore<ArcadeMachineWorkable>(relax,
+                                                             target,
+                                                             chore_provider,
+                                                             run_until_complete,
+                                                             on_complete,
+                                                             on_begin,
+                                                             OnSocialChoreEnd,
+                                                             false,
+                                                             recreation,
+                                                             false,
+                                                             true,
+                                                             null,
+                                                             false,
+                                                             true,
+                                                             false,
+                                                             PriorityScreen.PriorityClass.high);
 
-	public HashedString[][] workAnims = new HashedString[][]
-	{
-		new HashedString[]
-		{
-			"working_pre",
-			"working_loop_one_p"
-		},
-		new HashedString[]
-		{
-			"working_pre",
-			"working_loop_two_p"
-		}
-	};
+        workChore.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, workable);
+        return workChore;
+    }
 
-	public class States : GameStateMachine<ArcadeMachine.States, ArcadeMachine.StatesInstance, ArcadeMachine>
-	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
-		{
-			default_state = this.unoperational;
-			this.unoperational.Enter(delegate(ArcadeMachine.StatesInstance smi)
-			{
-				smi.SetActive(false);
-			}).TagTransition(GameTags.Operational, this.operational, false).PlayAnim("off");
-			this.operational.TagTransition(GameTags.Operational, this.unoperational, true).Enter("CreateChore", delegate(ArcadeMachine.StatesInstance smi)
-			{
-				smi.master.UpdateChores(true);
-			}).Exit("CancelChore", delegate(ArcadeMachine.StatesInstance smi)
-			{
-				smi.master.UpdateChores(false);
-			}).DefaultState(this.operational.stopped);
-			this.operational.stopped.Enter(delegate(ArcadeMachine.StatesInstance smi)
-			{
-				smi.SetActive(false);
-			}).PlayAnim("on").ParamTransition<int>(this.playerCount, this.operational.pre, (ArcadeMachine.StatesInstance smi, int p) => p > 0);
-			this.operational.pre.Enter(delegate(ArcadeMachine.StatesInstance smi)
-			{
-				smi.SetActive(true);
-			}).PlayAnim("working_pre").OnAnimQueueComplete(this.operational.playing);
-			this.operational.playing.PlayAnim(new Func<ArcadeMachine.StatesInstance, string>(this.GetPlayingAnim), KAnim.PlayMode.Loop).ParamTransition<int>(this.playerCount, this.operational.post, (ArcadeMachine.StatesInstance smi, int p) => p == 0).ParamTransition<int>(this.playerCount, this.operational.playing_coop, (ArcadeMachine.StatesInstance smi, int p) => p > 1);
-			this.operational.playing_coop.PlayAnim(new Func<ArcadeMachine.StatesInstance, string>(this.GetPlayingAnim), KAnim.PlayMode.Loop).ParamTransition<int>(this.playerCount, this.operational.post, (ArcadeMachine.StatesInstance smi, int p) => p == 0).ParamTransition<int>(this.playerCount, this.operational.playing, (ArcadeMachine.StatesInstance smi, int p) => p == 1);
-			this.operational.post.PlayAnim("working_pst").OnAnimQueueComplete(this.operational.stopped);
-		}
+    private void OnSocialChoreEnd(Chore chore) {
+        if (gameObject.HasTag(GameTags.Operational)) UpdateChores();
+    }
 
-		private string GetPlayingAnim(ArcadeMachine.StatesInstance smi)
-		{
-			bool flag = smi.master.players.Contains(0);
-			bool flag2 = smi.master.players.Contains(1);
-			if (flag && !flag2)
-			{
-				return "working_loop_one_p";
-			}
-			if (flag2 && !flag)
-			{
-				return "working_loop_two_p";
-			}
-			return "working_loop_coop_p";
-		}
+    public void UpdateChores(bool update = true) {
+        for (var i = 0; i < choreOffsets.Length; i++) {
+            var chore = chores[i];
+            if (update) {
+                if (chore == null || chore.isComplete) chores[i] = CreateChore(i);
+            } else if (chore != null) {
+                chore.Cancel("locator invalidated");
+                chores[i] = null;
+            }
+        }
+    }
 
-		public StateMachine<ArcadeMachine.States, ArcadeMachine.StatesInstance, ArcadeMachine, object>.IntParameter playerCount;
+    public void OnWorkableEvent(int player, Workable.WorkableEvent ev) {
+        if (ev == Workable.WorkableEvent.WorkStarted)
+            players.Add(player);
+        else
+            players.Remove(player);
 
-		public GameStateMachine<ArcadeMachine.States, ArcadeMachine.StatesInstance, ArcadeMachine, object>.State unoperational;
+        smi.sm.playerCount.Set(players.Count, smi);
+    }
 
-		public ArcadeMachine.States.OperationalStates operational;
+    public class States : GameStateMachine<States, StatesInstance, ArcadeMachine> {
+        public OperationalStates operational;
+        public IntParameter      playerCount;
+        public State             unoperational;
 
-		public class OperationalStates : GameStateMachine<ArcadeMachine.States, ArcadeMachine.StatesInstance, ArcadeMachine, object>.State
-		{
-			public GameStateMachine<ArcadeMachine.States, ArcadeMachine.StatesInstance, ArcadeMachine, object>.State stopped;
+        public override void InitializeStates(out BaseState default_state) {
+            default_state = unoperational;
+            unoperational.Enter(delegate(StatesInstance smi) { smi.SetActive(false); })
+                         .TagTransition(GameTags.Operational, operational)
+                         .PlayAnim("off");
 
-			public GameStateMachine<ArcadeMachine.States, ArcadeMachine.StatesInstance, ArcadeMachine, object>.State pre;
+            operational.TagTransition(GameTags.Operational, unoperational, true)
+                       .Enter("CreateChore", delegate(StatesInstance smi) { smi.master.UpdateChores(); })
+                       .Exit("CancelChore", delegate(StatesInstance  smi) { smi.master.UpdateChores(false); })
+                       .DefaultState(operational.stopped);
 
-			public GameStateMachine<ArcadeMachine.States, ArcadeMachine.StatesInstance, ArcadeMachine, object>.State playing;
+            operational.stopped.Enter(delegate(StatesInstance smi) { smi.SetActive(false); })
+                       .PlayAnim("on")
+                       .ParamTransition(playerCount, operational.pre, (smi, p) => p > 0);
 
-			public GameStateMachine<ArcadeMachine.States, ArcadeMachine.StatesInstance, ArcadeMachine, object>.State playing_coop;
+            operational.pre.Enter(delegate(StatesInstance smi) { smi.SetActive(true); })
+                       .PlayAnim("working_pre")
+                       .OnAnimQueueComplete(operational.playing);
 
-			public GameStateMachine<ArcadeMachine.States, ArcadeMachine.StatesInstance, ArcadeMachine, object>.State post;
-		}
-	}
+            operational.playing.PlayAnim(GetPlayingAnim, KAnim.PlayMode.Loop)
+                       .ParamTransition(playerCount, operational.post,         (smi, p) => p == 0)
+                       .ParamTransition(playerCount, operational.playing_coop, (smi, p) => p > 1);
 
-	public class StatesInstance : GameStateMachine<ArcadeMachine.States, ArcadeMachine.StatesInstance, ArcadeMachine, object>.GameInstance
-	{
-		public StatesInstance(ArcadeMachine smi) : base(smi)
-		{
-			this.operational = base.master.GetComponent<Operational>();
-		}
+            operational.playing_coop.PlayAnim(GetPlayingAnim, KAnim.PlayMode.Loop)
+                       .ParamTransition(playerCount, operational.post,    (smi, p) => p == 0)
+                       .ParamTransition(playerCount, operational.playing, (smi, p) => p == 1);
 
-		public void SetActive(bool active)
-		{
-			this.operational.SetActive(this.operational.IsOperational && active, false);
-		}
+            operational.post.PlayAnim("working_pst").OnAnimQueueComplete(operational.stopped);
+        }
 
-		private Operational operational;
-	}
+        private string GetPlayingAnim(StatesInstance smi) {
+            var flag  = smi.master.players.Contains(0);
+            var flag2 = smi.master.players.Contains(1);
+            if (flag && !flag2) return "working_loop_one_p";
+
+            if (flag2 && !flag) return "working_loop_two_p";
+
+            return "working_loop_coop_p";
+        }
+
+        public class OperationalStates : State {
+            public State playing;
+            public State playing_coop;
+            public State post;
+            public State pre;
+            public State stopped;
+        }
+    }
+
+    public class StatesInstance : GameStateMachine<States, StatesInstance, ArcadeMachine, object>.GameInstance {
+        private readonly Operational operational;
+        public StatesInstance(ArcadeMachine smi) : base(smi) { operational = master.GetComponent<Operational>(); }
+        public void SetActive(bool          active) { operational.SetActive(operational.IsOperational && active); }
+    }
 }

@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PropGravitasFirstAidKitConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PropGravitasFirstAidKit";
 		string name = STRINGS.BUILDINGS.PREFABS.PROPGRAVITASFIRSTAIDKIT.NAME;
@@ -36,7 +36,7 @@ public class PropGravitasFirstAidKitConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public static string[][] GetLockerBaseContents()
+		public static string[][] GetLockerBaseContents()
 	{
 		string text = DlcManager.FeatureRadiationEnabled() ? "BasicRadPill" : "IntermediateCure";
 		return new string[][]
@@ -55,7 +55,7 @@ public class PropGravitasFirstAidKitConfig : IEntityConfig
 		};
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
 		{
@@ -66,7 +66,7 @@ public class PropGravitasFirstAidKitConfig : IEntityConfig
 		component.ChooseContents();
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 }

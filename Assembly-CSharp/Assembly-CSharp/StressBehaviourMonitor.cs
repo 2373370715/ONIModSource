@@ -3,7 +3,7 @@ using TUNING;
 
 public class StressBehaviourMonitor : GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.satisfied;
 		this.root.TagTransition(GameTags.Dead, null, false);
@@ -30,36 +30,36 @@ public class StressBehaviourMonitor : GameStateMachine<StressBehaviourMonitor, S
 		}).ScheduleGoTo((StressBehaviourMonitor.Instance smi) => smi.tierTwoReprieveDuration, this.stressed.tierTwo);
 	}
 
-	public StateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.FloatParameter timeInTierTwoStressResponse;
+		public StateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.FloatParameter timeInTierTwoStressResponse;
 
-	public GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State satisfied;
+		public GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State satisfied;
 
-	public StressBehaviourMonitor.StressedState stressed;
+		public StressBehaviourMonitor.StressedState stressed;
 
-	public class StressedState : GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State
+		public class StressedState : GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public StressBehaviourMonitor.TierOneStates tierOne;
+				public StressBehaviourMonitor.TierOneStates tierOne;
 
-		public StressBehaviourMonitor.TierTwoStates tierTwo;
+				public StressBehaviourMonitor.TierTwoStates tierTwo;
 	}
 
-	public class TierOneStates : GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State
+		public class TierOneStates : GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State actingOut;
+				public GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State actingOut;
 
-		public GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State reprieve;
+				public GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State reprieve;
 	}
 
-	public class TierTwoStates : GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State
+		public class TierTwoStates : GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State actingOut;
+				public GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State actingOut;
 
-		public GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State reprieve;
+				public GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.State reprieve;
 	}
 
-	public new class Instance : GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<StressBehaviourMonitor, StressBehaviourMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, Func<ChoreProvider, Chore> tier_one_stress_chore_creator, Func<ChoreProvider, Chore> tier_two_stress_chore_creator, string tier_one_loco_anim, float tier_two_reprieve_duration = 3f) : base(master)
+				public Instance(IStateMachineTarget master, Func<ChoreProvider, Chore> tier_one_stress_chore_creator, Func<ChoreProvider, Chore> tier_two_stress_chore_creator, string tier_one_loco_anim, float tier_two_reprieve_duration = 3f) : base(master)
 		{
 			this.tierOneLocoAnim = tier_one_loco_anim;
 			this.tierTwoReprieveDuration = tier_two_reprieve_duration;
@@ -67,22 +67,22 @@ public class StressBehaviourMonitor : GameStateMachine<StressBehaviourMonitor, S
 			this.tierTwoStressChoreCreator = tier_two_stress_chore_creator;
 		}
 
-		public Chore CreateTierOneStressChore()
+				public Chore CreateTierOneStressChore()
 		{
 			return this.tierOneStressChoreCreator(base.GetComponent<ChoreProvider>());
 		}
 
-		public Chore CreateTierTwoStressChore()
+				public Chore CreateTierTwoStressChore()
 		{
 			return this.tierTwoStressChoreCreator(base.GetComponent<ChoreProvider>());
 		}
 
-		public Func<ChoreProvider, Chore> tierOneStressChoreCreator;
+				public Func<ChoreProvider, Chore> tierOneStressChoreCreator;
 
-		public Func<ChoreProvider, Chore> tierTwoStressChoreCreator;
+				public Func<ChoreProvider, Chore> tierTwoStressChoreCreator;
 
-		public string tierOneLocoAnim = "";
+				public string tierOneLocoAnim = "";
 
-		public float tierTwoReprieveDuration;
+				public float tierTwoReprieveDuration;
 	}
 }

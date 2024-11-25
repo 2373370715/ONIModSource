@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GraveConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Grave";
 		int width = 1;
@@ -26,7 +26,7 @@ public class GraveConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GraveConfig.STORAGE_OVERRIDE_ANIM_FILES = new KAnimFile[]
 		{
@@ -48,24 +48,24 @@ public class GraveConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "Grave";
+		public const string ID = "Grave";
 
-	public const string AnimFile = "gravestone_kanim";
+		public const string AnimFile = "gravestone_kanim";
 
-	private static KAnimFile[] STORAGE_OVERRIDE_ANIM_FILES;
+		private static KAnimFile[] STORAGE_OVERRIDE_ANIM_FILES;
 
-	private static readonly HashedString[] STORAGE_WORK_ANIMS = new HashedString[]
+		private static readonly HashedString[] STORAGE_WORK_ANIMS = new HashedString[]
 	{
 		"working_pre"
 	};
 
-	private static readonly HashedString STORAGE_PST_ANIM = HashedString.Invalid;
+		private static readonly HashedString STORAGE_PST_ANIM = HashedString.Invalid;
 
-	private static readonly List<Storage.StoredItemModifier> StorageModifiers = new List<Storage.StoredItemModifier>
+		private static readonly List<Storage.StoredItemModifier> StorageModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Preserve

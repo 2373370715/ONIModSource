@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class AmountStateConversation : ConversationType
 {
-	public AmountStateConversation()
+		public AmountStateConversation()
 	{
 		this.id = "AmountStateConversation";
 	}
 
-	public override void NewTarget(MinionIdentity speaker)
+		public override void NewTarget(MinionIdentity speaker)
 	{
 		this.target = AmountStateConversation.targets[UnityEngine.Random.Range(0, AmountStateConversation.targets.Count)];
 	}
 
-	public override Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
+		public override Conversation.Topic GetNextTopic(MinionIdentity speaker, Conversation.Topic lastTopic)
 	{
 		if (lastTopic == null)
 		{
@@ -31,7 +31,7 @@ public class AmountStateConversation : ConversationType
 		return new Conversation.Topic(this.target, modeType);
 	}
 
-	public override Sprite GetSprite(string topic)
+		public override Sprite GetSprite(string topic)
 	{
 		if (Db.Get().Amounts.Exists(topic))
 		{
@@ -44,7 +44,7 @@ public class AmountStateConversation : ConversationType
 		return null;
 	}
 
-	private Conversation.ModeType GetModeForAmount(MinionIdentity speaker, string target)
+		private Conversation.ModeType GetModeForAmount(MinionIdentity speaker, string target)
 	{
 		if (target == Db.Get().Amounts.Stress.Id)
 		{
@@ -89,6 +89,10 @@ public class AmountStateConversation : ConversationType
 		else if (target == Db.Get().Amounts.Calories.Id)
 		{
 			AmountInstance amountInstance3 = Db.Get().Amounts.Calories.Lookup(speaker);
+			if (amountInstance3 == null)
+			{
+				return Conversation.ModeType.Query;
+			}
 			float num4 = amountInstance3.value / amountInstance3.GetMax();
 			if (num4 > 0.85f)
 			{
@@ -102,6 +106,10 @@ public class AmountStateConversation : ConversationType
 		else if (target == Db.Get().Amounts.Stamina.Id)
 		{
 			AmountInstance amountInstance4 = Db.Get().Amounts.Stamina.Lookup(speaker);
+			if (amountInstance4 == null)
+			{
+				return Conversation.ModeType.Query;
+			}
 			float num5 = amountInstance4.value / amountInstance4.GetMax();
 			if (num5 > 0.5f)
 			{
@@ -128,7 +136,7 @@ public class AmountStateConversation : ConversationType
 		return Conversation.ModeType.Nominal;
 	}
 
-	public static Dictionary<Conversation.ModeType, List<Conversation.ModeType>> transitions = new Dictionary<Conversation.ModeType, List<Conversation.ModeType>>
+		public static Dictionary<Conversation.ModeType, List<Conversation.ModeType>> transitions = new Dictionary<Conversation.ModeType, List<Conversation.ModeType>>
 	{
 		{
 			Conversation.ModeType.Query,
@@ -187,7 +195,7 @@ public class AmountStateConversation : ConversationType
 		}
 	};
 
-	public static List<string> targets = new List<string>
+		public static List<string> targets = new List<string>
 	{
 		"Stress",
 		"QualityOfLife",

@@ -9,12 +9,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SaveLoadRoot")]
 public class SaveLoadRoot : KMonoBehaviour
 {
-	public static void DestroyStatics()
+		public static void DestroyStatics()
 	{
 		SaveLoadRoot.serializableComponentManagers = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		if (SaveLoadRoot.serializableComponentManagers == null)
 		{
@@ -32,7 +32,7 @@ public class SaveLoadRoot : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.registered)
@@ -42,12 +42,12 @@ public class SaveLoadRoot : KMonoBehaviour
 		this.hasOnSpawnRun = true;
 	}
 
-	public void DeclareOptionalComponent<T>() where T : KMonoBehaviour
+		public void DeclareOptionalComponent<T>() where T : KMonoBehaviour
 	{
 		this.m_optionalComponentTypeNames.Add(typeof(T).ToString());
 	}
 
-	public void SetRegistered(bool registered)
+		public void SetRegistered(bool registered)
 	{
 		if (this.registered != registered)
 		{
@@ -64,7 +64,7 @@ public class SaveLoadRoot : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (SaveLoader.Instance != null && SaveLoader.Instance.saveManager != null)
 		{
@@ -76,7 +76,7 @@ public class SaveLoadRoot : KMonoBehaviour
 		}
 	}
 
-	public void Save(BinaryWriter writer)
+		public void Save(BinaryWriter writer)
 	{
 		Transform transform = base.transform;
 		writer.Write(transform.GetPosition());
@@ -87,7 +87,7 @@ public class SaveLoadRoot : KMonoBehaviour
 		this.SaveWithoutTransform(writer);
 	}
 
-	public void SaveWithoutTransform(BinaryWriter writer)
+		public void SaveWithoutTransform(BinaryWriter writer)
 	{
 		KMonoBehaviour[] components = base.GetComponents<KMonoBehaviour>();
 		if (components == null)
@@ -147,12 +147,12 @@ public class SaveLoadRoot : KMonoBehaviour
 		}
 	}
 
-	public static SaveLoadRoot Load(Tag tag, IReader reader)
+		public static SaveLoadRoot Load(Tag tag, IReader reader)
 	{
 		return SaveLoadRoot.Load(SaveLoader.Instance.saveManager.GetPrefab(tag), reader);
 	}
 
-	public static SaveLoadRoot Load(GameObject prefab, IReader reader)
+		public static SaveLoadRoot Load(GameObject prefab, IReader reader)
 	{
 		Vector3 vector = reader.ReadVector3();
 		Quaternion rotation = reader.ReadQuaternion();
@@ -173,7 +173,7 @@ public class SaveLoadRoot : KMonoBehaviour
 		return SaveLoadRoot.Load(prefab, vector, rotation, scale, reader);
 	}
 
-	public static SaveLoadRoot Load(GameObject prefab, Vector3 position, Quaternion rotation, Vector3 scale, IReader reader)
+		public static SaveLoadRoot Load(GameObject prefab, Vector3 position, Quaternion rotation, Vector3 scale, IReader reader)
 	{
 		SaveLoadRoot saveLoadRoot = null;
 		if (prefab != null)
@@ -210,7 +210,7 @@ public class SaveLoadRoot : KMonoBehaviour
 		return saveLoadRoot;
 	}
 
-	private static void LoadInternal(GameObject gameObject, IReader reader)
+		private static void LoadInternal(GameObject gameObject, IReader reader)
 	{
 		Dictionary<string, int> dictionary = new Dictionary<string, int>();
 		KMonoBehaviour[] array = (gameObject != null) ? gameObject.GetComponents<KMonoBehaviour>() : null;
@@ -311,14 +311,14 @@ public class SaveLoadRoot : KMonoBehaviour
 		}
 	}
 
-	private bool hasOnSpawnRun;
+		private bool hasOnSpawnRun;
 
-	private bool registered = true;
+		private bool registered = true;
 
-	[SerializeField]
+		[SerializeField]
 	private List<string> m_optionalComponentTypeNames = new List<string>();
 
-	private static Dictionary<string, ISerializableComponentManager> serializableComponentManagers;
+		private static Dictionary<string, ISerializableComponentManager> serializableComponentManagers;
 
-	private static Dictionary<Type, string> sTypeToString = new Dictionary<Type, string>();
+		private static Dictionary<Type, string> sTypeToString = new Dictionary<Type, string>();
 }

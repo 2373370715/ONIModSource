@@ -3,24 +3,24 @@ using UnityEngine;
 
 public class RangedAttackable : AttackableBase
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.preferUnreservedCell = true;
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTable);
 	}
 
-	public new int GetCell()
+		public new int GetCell()
 	{
 		return Grid.PosToCell(this);
 	}
 
-	private void OnDrawGizmosSelected()
+		private void OnDrawGizmosSelected()
 	{
 		Gizmos.color = new Color(0f, 0.5f, 0.5f, 0.15f);
 		foreach (CellOffset offset in base.GetOffsets())

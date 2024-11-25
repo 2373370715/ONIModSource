@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ArtifactPOIConfigurator")]
 public class ArtifactPOIConfigurator : KMonoBehaviour
 {
-	public static ArtifactPOIConfigurator.ArtifactPOIType FindType(HashedString typeId)
+		public static ArtifactPOIConfigurator.ArtifactPOIType FindType(HashedString typeId)
 	{
 		ArtifactPOIConfigurator.ArtifactPOIType artifactPOIType = null;
 		if (typeId != HashedString.Invalid)
@@ -19,12 +19,12 @@ public class ArtifactPOIConfigurator : KMonoBehaviour
 		return artifactPOIType;
 	}
 
-	public ArtifactPOIConfigurator.ArtifactPOIInstanceConfiguration MakeConfiguration()
+		public ArtifactPOIConfigurator.ArtifactPOIInstanceConfiguration MakeConfiguration()
 	{
 		return this.CreateRandomInstance(this.presetType, this.presetMin, this.presetMax);
 	}
 
-	private ArtifactPOIConfigurator.ArtifactPOIInstanceConfiguration CreateRandomInstance(HashedString typeId, float min, float max)
+		private ArtifactPOIConfigurator.ArtifactPOIInstanceConfiguration CreateRandomInstance(HashedString typeId, float min, float max)
 	{
 		int globalWorldSeed = SaveLoader.Instance.clusterDetailSave.globalWorldSeed;
 		ClusterGridEntity component = base.GetComponent<ClusterGridEntity>();
@@ -37,24 +37,24 @@ public class ArtifactPOIConfigurator : KMonoBehaviour
 		};
 	}
 
-	private float Roll(KRandom randomSource, float min, float max)
+		private float Roll(KRandom randomSource, float min, float max)
 	{
 		return (float)(randomSource.NextDouble() * (double)(max - min)) + min;
 	}
 
-	private static List<ArtifactPOIConfigurator.ArtifactPOIType> _poiTypes;
+		private static List<ArtifactPOIConfigurator.ArtifactPOIType> _poiTypes;
 
-	public static ArtifactPOIConfigurator.ArtifactPOIType defaultArtifactPoiType = new ArtifactPOIConfigurator.ArtifactPOIType("HarvestablePOIArtifacts", null, false, 30000f, 60000f, "EXPANSION1_ID");
+		public static ArtifactPOIConfigurator.ArtifactPOIType defaultArtifactPoiType = new ArtifactPOIConfigurator.ArtifactPOIType("HarvestablePOIArtifacts", null, false, 30000f, 60000f, "EXPANSION1_ID");
 
-	public HashedString presetType;
+		public HashedString presetType;
 
-	public float presetMin;
+		public float presetMin;
 
-	public float presetMax = 1f;
+		public float presetMax = 1f;
 
-	public class ArtifactPOIType
+		public class ArtifactPOIType
 	{
-		public ArtifactPOIType(string id, string harvestableArtifactID = null, bool destroyOnHarvest = false, float poiRechargeTimeMin = 30000f, float poiRechargeTimeMax = 60000f, string dlcID = "EXPANSION1_ID")
+				public ArtifactPOIType(string id, string harvestableArtifactID = null, bool destroyOnHarvest = false, float poiRechargeTimeMin = 30000f, float poiRechargeTimeMax = 60000f, string dlcID = "EXPANSION1_ID")
 		{
 			this.id = id;
 			this.idHash = id;
@@ -70,30 +70,30 @@ public class ArtifactPOIConfigurator : KMonoBehaviour
 			ArtifactPOIConfigurator._poiTypes.Add(this);
 		}
 
-		public string id;
+				public string id;
 
-		public HashedString idHash;
+				public HashedString idHash;
 
-		public string harvestableArtifactID;
+				public string harvestableArtifactID;
 
-		public bool destroyOnHarvest;
+				public bool destroyOnHarvest;
 
-		public float poiRechargeTimeMin;
+				public float poiRechargeTimeMin;
 
-		public float poiRechargeTimeMax;
+				public float poiRechargeTimeMax;
 
-		public string dlcID;
+				public string dlcID;
 
-		public List<string> orbitalObject = new List<string>
+				public List<string> orbitalObject = new List<string>
 		{
 			Db.Get().OrbitalTypeCategories.gravitas.Id
 		};
 	}
 
-	[Serializable]
+		[Serializable]
 	public class ArtifactPOIInstanceConfiguration
 	{
-		private void Init()
+				private void Init()
 		{
 			if (this.didInit)
 			{
@@ -103,7 +103,7 @@ public class ArtifactPOIConfigurator : KMonoBehaviour
 			this.poiRechargeTime = MathUtil.ReRange(this.rechargeRoll, 0f, 1f, this.poiType.poiRechargeTimeMin, this.poiType.poiRechargeTimeMax);
 		}
 
-				public ArtifactPOIConfigurator.ArtifactPOIType poiType
+						public ArtifactPOIConfigurator.ArtifactPOIType poiType
 		{
 			get
 			{
@@ -111,30 +111,30 @@ public class ArtifactPOIConfigurator : KMonoBehaviour
 			}
 		}
 
-		public bool DestroyOnHarvest()
+				public bool DestroyOnHarvest()
 		{
 			this.Init();
 			return this.poiType.destroyOnHarvest;
 		}
 
-		public string GetArtifactID()
+				public string GetArtifactID()
 		{
 			this.Init();
 			return this.poiType.harvestableArtifactID;
 		}
 
-		public float GetRechargeTime()
+				public float GetRechargeTime()
 		{
 			this.Init();
 			return this.poiRechargeTime;
 		}
 
-		public HashedString typeId;
+				public HashedString typeId;
 
-		private bool didInit;
+				private bool didInit;
 
-		public float rechargeRoll;
+				public float rechargeRoll;
 
-		private float poiRechargeTime;
+				private float poiRechargeTime;
 	}
 }

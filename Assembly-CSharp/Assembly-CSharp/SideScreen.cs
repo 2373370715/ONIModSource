@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SideScreen : KScreen
 {
-	public void SetContent(SideScreenContent sideScreenContent, GameObject target)
+		public void SetContent(SideScreenContent sideScreenContent, GameObject target)
 	{
 		if (sideScreenContent.transform.parent != this.contentBody.transform)
 		{
@@ -12,6 +12,6 @@ public class SideScreen : KScreen
 		sideScreenContent.SetTarget(target);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject contentBody;
 }

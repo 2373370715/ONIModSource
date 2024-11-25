@@ -85,7 +85,7 @@ public class 建筑 {
         }
 
         public static class 气泵 {
-            public static byte 半径 = 3;
+            public static byte 半径 = 5;
         }
     }
 

@@ -5,17 +5,17 @@ using UnityEngine.UI;
 
 public class ClusterGridWorldSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.viewButton.onClick += this.OnClickView;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<AsteroidGridEntity>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.targetEntity = target.GetComponent<AsteroidGridEntity>();
@@ -31,7 +31,7 @@ public class ClusterGridWorldSideScreen : SideScreenContent
 		this.viewButton.GetComponent<ToolTip>().SetSimpleTooltip(UI.UISIDESCREENS.CLUSTERWORLDSIDESCREEN.VIEW_WORLD_TOOLTIP);
 	}
 
-	private void OnClickView()
+		private void OnClickView()
 	{
 		WorldContainer component = this.targetEntity.GetComponent<WorldContainer>();
 		if (!component.IsDupeVisited)
@@ -42,9 +42,9 @@ public class ClusterGridWorldSideScreen : SideScreenContent
 		ManagementMenu.Instance.CloseAll();
 	}
 
-	public Image icon;
+		public Image icon;
 
-	public KButton viewButton;
+		public KButton viewButton;
 
-	private AsteroidGridEntity targetEntity;
+		private AsteroidGridEntity targetEntity;
 }

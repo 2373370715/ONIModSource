@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class CounterSideScreen : SideScreenContent, IRender200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.resetButton.onClick += this.ResetCounter;
@@ -24,12 +24,12 @@ public class CounterSideScreen : SideScreenContent, IRender200ms
 		this.UpdateCurrentCountLabel(this.targetLogicCounter.currentCount);
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<LogicCounter>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.maxCountInput.minValue = 1f;
@@ -40,7 +40,7 @@ public class CounterSideScreen : SideScreenContent, IRender200ms
 		this.advancedModeCheckmark.enabled = this.targetLogicCounter.advancedMode;
 	}
 
-	public void Render200ms(float dt)
+		public void Render200ms(float dt)
 	{
 		if (this.targetLogicCounter == null)
 		{
@@ -49,7 +49,7 @@ public class CounterSideScreen : SideScreenContent, IRender200ms
 		this.UpdateCurrentCountLabel(this.targetLogicCounter.currentCount);
 	}
 
-	private void UpdateCurrentCountLabel(int value)
+		private void UpdateCurrentCountLabel(int value)
 	{
 		string text = value.ToString();
 		if (value == this.targetLogicCounter.maxCount)
@@ -63,27 +63,27 @@ public class CounterSideScreen : SideScreenContent, IRender200ms
 		this.currentCount.text = (this.targetLogicCounter.advancedMode ? string.Format(UI.UISIDESCREENS.COUNTER_SIDE_SCREEN.CURRENT_COUNT_ADVANCED, text) : string.Format(UI.UISIDESCREENS.COUNTER_SIDE_SCREEN.CURRENT_COUNT_SIMPLE, text));
 	}
 
-	private void UpdateMaxCountLabel(int value)
+		private void UpdateMaxCountLabel(int value)
 	{
 		this.maxCountInput.SetAmount((float)value);
 	}
 
-	private void UpdateMaxCountFromTextInput(float newValue)
+		private void UpdateMaxCountFromTextInput(float newValue)
 	{
 		this.SetMaxCount((int)newValue);
 	}
 
-	private void IncrementMaxCount()
+		private void IncrementMaxCount()
 	{
 		this.SetMaxCount(this.targetLogicCounter.maxCount + 1);
 	}
 
-	private void DecrementMaxCount()
+		private void DecrementMaxCount()
 	{
 		this.SetMaxCount(this.targetLogicCounter.maxCount - 1);
 	}
 
-	private void SetMaxCount(int newValue)
+		private void SetMaxCount(int newValue)
 	{
 		if (newValue > 10)
 		{
@@ -102,12 +102,12 @@ public class CounterSideScreen : SideScreenContent, IRender200ms
 		this.UpdateMaxCountLabel(newValue);
 	}
 
-	private void ResetCounter()
+		private void ResetCounter()
 	{
 		this.targetLogicCounter.ResetCounter();
 	}
 
-	private void UpdateCounterStates()
+		private void UpdateCounterStates()
 	{
 		this.targetLogicCounter.SetCounterState();
 		this.targetLogicCounter.UpdateLogicCircuit();
@@ -115,11 +115,11 @@ public class CounterSideScreen : SideScreenContent, IRender200ms
 		this.targetLogicCounter.UpdateMeter();
 	}
 
-	private void ToggleMode()
+		private void ToggleMode()
 	{
 	}
 
-	private void ToggleAdvanced()
+		private void ToggleAdvanced()
 	{
 		this.targetLogicCounter.advancedMode = !this.targetLogicCounter.advancedMode;
 		this.advancedModeCheckmark.enabled = this.targetLogicCounter.advancedMode;
@@ -127,22 +127,22 @@ public class CounterSideScreen : SideScreenContent, IRender200ms
 		this.UpdateCounterStates();
 	}
 
-	public LogicCounter targetLogicCounter;
+		public LogicCounter targetLogicCounter;
 
-	public KButton resetButton;
+		public KButton resetButton;
 
-	public KButton incrementMaxButton;
+		public KButton incrementMaxButton;
 
-	public KButton decrementMaxButton;
+		public KButton decrementMaxButton;
 
-	public KButton incrementModeButton;
+		public KButton incrementModeButton;
 
-	public KToggle advancedModeToggle;
+		public KToggle advancedModeToggle;
 
-	public KImage advancedModeCheckmark;
+		public KImage advancedModeCheckmark;
 
-	public LocText currentCount;
+		public LocText currentCount;
 
-	[SerializeField]
+		[SerializeField]
 	private KNumberInputField maxCountInput;
 }

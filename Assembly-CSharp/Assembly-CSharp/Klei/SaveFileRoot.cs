@@ -4,23 +4,23 @@ using KMod;
 
 namespace Klei
 {
-	internal class SaveFileRoot
+		internal class SaveFileRoot
 	{
-		public SaveFileRoot()
+				public SaveFileRoot()
 		{
 			this.streamed = new Dictionary<string, byte[]>();
 		}
 
-		public int WidthInCells;
+				public int WidthInCells;
 
-		public int HeightInCells;
+				public int HeightInCells;
 
-		public Dictionary<string, byte[]> streamed;
+				public Dictionary<string, byte[]> streamed;
 
-		public string clusterID;
+				public string clusterID;
 
-		public List<ModInfo> requiredMods;
+				public List<ModInfo> requiredMods;
 
-		public List<Label> active_mods;
+				public List<Label> active_mods;
 	}
 }

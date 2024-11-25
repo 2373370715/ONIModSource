@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class MannequinUIPortrait : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(MannequinUIPortrait.ID, MannequinUIPortrait.ID, true);
 		RectTransform rectTransform = gameObject.AddOrGet<RectTransform>();
@@ -34,17 +34,17 @@ public class MannequinUIPortrait : IEntityConfig
 			Assets.GetAnim("mannequin_kanim")
 		};
 		SymbolOverrideControllerUtil.AddToPrefab(gameObject);
-		MinionConfig.ConfigureSymbols(gameObject, false);
+		BaseMinionConfig.ConfigureSymbols(gameObject, false);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static string ID = "MannequinUIPortrait";
+		public static string ID = "MannequinUIPortrait";
 }

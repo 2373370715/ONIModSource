@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public static class NotificationExtensions
 {
-	public static string ReduceMessages(this List<Notification> notifications, bool countNames = true)
+		public static string ReduceMessages(this List<Notification> notifications, bool countNames = true)
 	{
 		Dictionary<string, int> dictionary = new Dictionary<string, int>();
 		foreach (Notification notification in notifications)

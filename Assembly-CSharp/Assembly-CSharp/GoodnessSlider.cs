@@ -5,13 +5,13 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/GoodnessSlider")]
 public class GoodnessSlider : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.Spawn();
 		this.UpdateValues();
 	}
 
-	public void UpdateValues()
+		public void UpdateValues()
 	{
 		this.text.color = (this.fill.color = this.gradient.Evaluate(this.slider.value));
 		for (int i = 0; i < this.gradient.colorKeys.Length; i++)
@@ -27,15 +27,15 @@ public class GoodnessSlider : KMonoBehaviour
 		}
 	}
 
-	public Image icon;
+		public Image icon;
 
-	public Text text;
+		public Text text;
 
-	public Slider slider;
+		public Slider slider;
 
-	public Image fill;
+		public Image fill;
 
-	public Gradient gradient;
+		public Gradient gradient;
 
-	public string[] names;
+		public string[] names;
 }

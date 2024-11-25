@@ -5,26 +5,26 @@ using UnityEngine;
 
 public class PrickleFruitConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
-		return EntityTemplates.ExtendEntityToFood(EntityTemplates.CreateLooseEntity(PrickleFruitConfig.ID, ITEMS.FOOD.PRICKLEFRUIT.NAME, ITEMS.FOOD.PRICKLEFRUIT.DESC, 1f, false, Assets.GetAnim("bristleberry_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.4f, true, 0, SimHashes.Creature, null), FOOD.FOOD_TYPES.PRICKLEFRUIT);
+		return EntityTemplates.ExtendEntityToFood(EntityTemplates.CreateLooseEntity(PrickleFruitConfig.ID, STRINGS.ITEMS.FOOD.PRICKLEFRUIT.NAME, STRINGS.ITEMS.FOOD.PRICKLEFRUIT.DESC, 1f, false, Assets.GetAnim("bristleberry_kanim"), "object", Grid.SceneLayer.Front, EntityTemplates.CollisionShape.RECTANGLE, 0.8f, 0.4f, true, 0, SimHashes.Creature, null), FOOD.FOOD_TYPES.PRICKLEFRUIT);
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 		inst.Subscribe(-10536414, PrickleFruitConfig.OnEatCompleteDelegate);
 	}
 
-	private static void OnEatComplete(Edible edible)
+		private static void OnEatComplete(Edible edible)
 	{
 		if (edible != null)
 		{
@@ -57,11 +57,11 @@ public class PrickleFruitConfig : IEntityConfig
 		}
 	}
 
-	public static float SEEDS_PER_FRUIT_CHANCE = 0.05f;
+		public static float SEEDS_PER_FRUIT_CHANCE = 0.05f;
 
-	public static string ID = "PrickleFruit";
+		public static string ID = "PrickleFruit";
 
-	private static readonly EventSystem.IntraObjectHandler<Edible> OnEatCompleteDelegate = new EventSystem.IntraObjectHandler<Edible>(delegate(Edible component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Edible> OnEatCompleteDelegate = new EventSystem.IntraObjectHandler<Edible>(delegate(Edible component, object data)
 	{
 		PrickleFruitConfig.OnEatComplete(component);
 	});

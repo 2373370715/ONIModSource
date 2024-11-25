@@ -4,7 +4,7 @@ using STRINGS;
 
 public class HappinessMonitor : GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.satisfied;
 		this.satisfied.Transition(this.happy, new StateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.Transition.ConditionCallback(HappinessMonitor.IsHappy), UpdateRate.SIM_1000ms).Transition(this.neutral, new StateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.Transition.ConditionCallback(HappinessMonitor.IsNeutral), UpdateRate.SIM_1000ms).Transition(this.glum, new StateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.Transition.ConditionCallback(HappinessMonitor.IsGlum), UpdateRate.SIM_1000ms).Transition(this.miserable, new StateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.Transition.ConditionCallback(HappinessMonitor.IsMisirable), UpdateRate.SIM_1000ms);
@@ -37,98 +37,98 @@ public class HappinessMonitor : GameStateMachine<HappinessMonitor, HappinessMoni
 		this.miserableWildEffect.Add(new AttributeModifier(Db.Get().Amounts.Fertility.deltaAttribute.Id, -1f, CREATURES.MODIFIERS.MISERABLE.NAME, true, false, true));
 	}
 
-	private static bool IsHappy(HappinessMonitor.Instance smi)
+		private static bool IsHappy(HappinessMonitor.Instance smi)
 	{
 		return smi.happiness.GetTotalValue() >= smi.def.happyThreshold;
 	}
 
-	private static bool IsNeutral(HappinessMonitor.Instance smi)
+		private static bool IsNeutral(HappinessMonitor.Instance smi)
 	{
 		float totalValue = smi.happiness.GetTotalValue();
 		return totalValue > smi.def.glumThreshold && totalValue < smi.def.happyThreshold;
 	}
 
-	private static bool IsGlum(HappinessMonitor.Instance smi)
+		private static bool IsGlum(HappinessMonitor.Instance smi)
 	{
 		float totalValue = smi.happiness.GetTotalValue();
 		return totalValue > smi.def.miserableThreshold && totalValue <= smi.def.glumThreshold;
 	}
 
-	private static bool IsMisirable(HappinessMonitor.Instance smi)
+		private static bool IsMisirable(HappinessMonitor.Instance smi)
 	{
 		return smi.happiness.GetTotalValue() <= smi.def.miserableThreshold;
 	}
 
-	private GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State satisfied;
+		private GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State satisfied;
 
-	private HappinessMonitor.HappyState happy;
+		private HappinessMonitor.HappyState happy;
 
-	private HappinessMonitor.NeutralState neutral;
+		private HappinessMonitor.NeutralState neutral;
 
-	private HappinessMonitor.UnhappyState glum;
+		private HappinessMonitor.UnhappyState glum;
 
-	private HappinessMonitor.MiserableState miserable;
+		private HappinessMonitor.MiserableState miserable;
 
-	private Effect happyWildEffect;
+		private Effect happyWildEffect;
 
-	private Effect happyTameEffect;
+		private Effect happyTameEffect;
 
-	private Effect neutralTameEffect;
+		private Effect neutralTameEffect;
 
-	private Effect neutralWildEffect;
+		private Effect neutralWildEffect;
 
-	private Effect glumWildEffect;
+		private Effect glumWildEffect;
 
-	private Effect glumTameEffect;
+		private Effect glumTameEffect;
 
-	private Effect miserableWildEffect;
+		private Effect miserableWildEffect;
 
-	private Effect miserableTameEffect;
+		private Effect miserableTameEffect;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public float happyThreshold = 4f;
+				public float happyThreshold = 4f;
 
-		public float glumThreshold = -1f;
+				public float glumThreshold = -1f;
 
-		public float miserableThreshold = -10f;
+				public float miserableThreshold = -10f;
 	}
 
-	public class MiserableState : GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State
+		public class MiserableState : GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State
 	{
-		public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State wild;
+				public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State wild;
 
-		public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State tame;
+				public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State tame;
 	}
 
-	public class NeutralState : GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State
+		public class NeutralState : GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State
 	{
-		public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State wild;
+				public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State wild;
 
-		public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State tame;
+				public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State tame;
 	}
 
-	public class UnhappyState : GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State
+		public class UnhappyState : GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State
 	{
-		public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State wild;
+				public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State wild;
 
-		public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State tame;
+				public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State tame;
 	}
 
-	public class HappyState : GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State
+		public class HappyState : GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State
 	{
-		public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State wild;
+				public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State wild;
 
-		public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State tame;
+				public GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.State tame;
 	}
 
-	public new class Instance : GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<HappinessMonitor, HappinessMonitor.Instance, IStateMachineTarget, HappinessMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, HappinessMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, HappinessMonitor.Def def) : base(master, def)
 		{
 			this.happiness = base.gameObject.GetAttributes().Add(Db.Get().CritterAttributes.Happiness);
 		}
 
-		public AttributeInstance happiness;
+				public AttributeInstance happiness;
 	}
 }

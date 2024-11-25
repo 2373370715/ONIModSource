@@ -1,56 +1,38 @@
-﻿using System;
-using Klei.AI;
+﻿using Klei.AI;
 using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/CreatureFeeder")]
-public class CreatureFeeder : KMonoBehaviour
-{
-	protected override void OnSpawn()
-	{
-		this.storages = base.GetComponents<Storage>();
-		Components.CreatureFeeders.Add(this.GetMyWorldId(), this);
-		base.Subscribe<CreatureFeeder>(-1452790913, CreatureFeeder.OnAteFromStorageDelegate);
-	}
+public class CreatureFeeder : KMonoBehaviour {
+    private static readonly EventSystem.IntraObjectHandler<CreatureFeeder> OnAteFromStorageDelegate
+        = new EventSystem.IntraObjectHandler<CreatureFeeder>(delegate(CreatureFeeder component, object data) {
+                                                                 component.OnAteFromStorage(data);
+                                                             });
 
-	protected override void OnCleanUp()
-	{
-		Components.CreatureFeeders.Remove(this.GetMyWorldId(), this);
-	}
+    public string     effectId;
+    public CellOffset feederOffset = CellOffset.none;
+    public Storage[]  storages;
 
-	private void OnAteFromStorage(object data)
-	{
-		if (string.IsNullOrEmpty(this.effectId))
-		{
-			return;
-		}
-		(data as GameObject).GetComponent<Effects>().Add(this.effectId, true);
-	}
+    protected override void OnSpawn() {
+        storages = GetComponents<Storage>();
+        Components.CreatureFeeders.Add(this.GetMyWorldId(), this);
+        Subscribe(-1452790913, OnAteFromStorageDelegate);
+    }
 
-	public bool StoragesAreEmpty()
-	{
-		foreach (Storage storage in this.storages)
-		{
-			if (!(storage == null) && storage.Count > 0)
-			{
-				return false;
-			}
-		}
-		return true;
-	}
+    protected override void OnCleanUp() { Components.CreatureFeeders.Remove(this.GetMyWorldId(), this); }
 
-	public Vector2I GetTargetFeederCell()
-	{
-		return Grid.CellToXY(Grid.OffsetCell(Grid.PosToCell(this), this.feederOffset));
-	}
+    private void OnAteFromStorage(object data) {
+        if (string.IsNullOrEmpty(effectId)) return;
 
-	public Storage[] storages;
+        (data as GameObject).GetComponent<Effects>().Add(effectId, true);
+    }
 
-	public string effectId;
+    public bool StoragesAreEmpty() {
+        foreach (var storage in storages)
+            if (!(storage == null) && storage.Count > 0)
+                return false;
 
-	public CellOffset feederOffset = CellOffset.none;
+        return true;
+    }
 
-	private static readonly EventSystem.IntraObjectHandler<CreatureFeeder> OnAteFromStorageDelegate = new EventSystem.IntraObjectHandler<CreatureFeeder>(delegate(CreatureFeeder component, object data)
-	{
-		component.OnAteFromStorage(data);
-	});
+    public Vector2I GetTargetFeederCell() { return Grid.CellToXY(Grid.OffsetCell(Grid.PosToCell(this), feederOffset)); }
 }

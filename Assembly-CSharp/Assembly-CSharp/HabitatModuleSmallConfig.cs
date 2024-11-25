@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class HabitatModuleSmallConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "HabitatModuleSmall";
 		int width = 3;
@@ -38,7 +38,7 @@ public class HabitatModuleSmallConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -72,7 +72,7 @@ public class HabitatModuleSmallConfig : IBuildingConfig
 		go.AddComponent<RocketConduitReceiver>().conduitPortInfo = this.gasOutputPort;
 	}
 
-	private void AttachPorts(GameObject go)
+		private void AttachPorts(GameObject go)
 	{
 		go.AddComponent<ConduitSecondaryInput>().portInfo = this.liquidInputPort;
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.liquidOutputPort;
@@ -80,7 +80,7 @@ public class HabitatModuleSmallConfig : IBuildingConfig
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.gasOutputPort;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		BuildingTemplates.ExtendBuildingToRocketModuleCluster(go, null, ROCKETRY.BURDEN.MINOR_PLUS, 0f, 0f);
 		Ownable ownable = go.AddOrGet<Ownable>();
@@ -99,27 +99,27 @@ public class HabitatModuleSmallConfig : IBuildingConfig
 		go.GetComponent<ReorderableBuilding>().buildConditions.Add(new TopOnly());
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		go.AddOrGet<BuildingCellVisualizer>();
 		this.AttachPorts(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.AddOrGet<BuildingCellVisualizer>();
 		this.AttachPorts(go);
 	}
 
-	public const string ID = "HabitatModuleSmall";
+		public const string ID = "HabitatModuleSmall";
 
-	private ConduitPortInfo gasInputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(-1, 0));
+		private ConduitPortInfo gasInputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(-1, 0));
 
-	private ConduitPortInfo gasOutputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(1, 0));
+		private ConduitPortInfo gasOutputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(1, 0));
 
-	private ConduitPortInfo liquidInputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(-1, 1));
+		private ConduitPortInfo liquidInputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(-1, 1));
 
-	private ConduitPortInfo liquidOutputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(1, 1));
+		private ConduitPortInfo liquidOutputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(1, 1));
 }

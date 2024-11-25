@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyParticleRedirector.StatesInstance>, IHighEnergyParticleDirection
 {
-			public EightDirection Direction
+				public EightDirection Direction
 	{
 		get
 		{
@@ -24,7 +24,7 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		HighEnergyParticleRedirector component = ((GameObject)data).GetComponent<HighEnergyParticleRedirector>();
 		if (component != null)
@@ -33,14 +33,14 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<HighEnergyParticleRedirector>(-905833192, HighEnergyParticleRedirector.OnCopySettingsDelegate);
 		base.Subscribe<HighEnergyParticleRedirector>(-801688580, HighEnergyParticleRedirector.OnLogicValueChangedDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		HighEnergyParticlePort component = base.GetComponent<HighEnergyParticlePort>();
@@ -62,12 +62,12 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 		Tutorial.Instance.TutorialMessage(Tutorial.TutorialMessages.TM_Radiation, true);
 	}
 
-	private bool OnParticleCaptureAllowed(HighEnergyParticle particle)
+		private bool OnParticleCaptureAllowed(HighEnergyParticle particle)
 	{
 		return this.AllowIncomingParticles;
 	}
 
-	private void LaunchParticle()
+		private void LaunchParticle()
 	{
 		if (base.smi.master.storage.Particles < 0.1f)
 		{
@@ -89,7 +89,7 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		HighEnergyParticlePort component = base.GetComponent<HighEnergyParticlePort>();
@@ -100,7 +100,7 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 		}
 	}
 
-		public bool AllowIncomingParticles
+			public bool AllowIncomingParticles
 	{
 		get
 		{
@@ -108,7 +108,7 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 		}
 	}
 
-		public bool HasLogicWire
+			public bool HasLogicWire
 	{
 		get
 		{
@@ -116,7 +116,7 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 		}
 	}
 
-		public bool IsLogicActive
+			public bool IsLogicActive
 	{
 		get
 		{
@@ -124,13 +124,13 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 		}
 	}
 
-	private LogicCircuitNetwork GetNetwork()
+		private LogicCircuitNetwork GetNetwork()
 	{
 		int portCell = base.GetComponent<LogicPorts>().GetPortCell(HighEnergyParticleRedirector.PORT_ID);
 		return Game.Instance.logicCircuitManager.GetNetworkForCell(portCell);
 	}
 
-	private void OnLogicValueChanged(object data)
+		private void OnLogicValueChanged(object data)
 	{
 		LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 		if (logicValueChanged.portID == HighEnergyParticleRedirector.PORT_ID)
@@ -140,7 +140,7 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 		}
 	}
 
-	private static string ResolveInfoStatusItem(string format_str, object data)
+		private static string ResolveInfoStatusItem(string format_str, object data)
 	{
 		HighEnergyParticleRedirector highEnergyParticleRedirector = (HighEnergyParticleRedirector)data;
 		if (!highEnergyParticleRedirector.HasLogicWire)
@@ -154,7 +154,7 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 		return BUILDING.STATUSITEMS.HIGHENERGYPARTICLEREDIRECTOR.LOGIC_CONTROLLED_STANDBY;
 	}
 
-	private static string ResolveInfoStatusItemTooltip(string format_str, object data)
+		private static string ResolveInfoStatusItemTooltip(string format_str, object data)
 	{
 		HighEnergyParticleRedirector highEnergyParticleRedirector = (HighEnergyParticleRedirector)data;
 		if (!highEnergyParticleRedirector.HasLogicWire)
@@ -168,55 +168,55 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 		return BUILDING.STATUSITEMS.HIGHENERGYPARTICLEREDIRECTOR.TOOLTIPS.LOGIC_CONTROLLED_STANDBY;
 	}
 
-	public static readonly HashedString PORT_ID = "HEPRedirector";
+		public static readonly HashedString PORT_ID = "HEPRedirector";
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private HighEnergyParticleStorage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private HighEnergyParticlePort port;
 
-	public float directorDelay;
+		public float directorDelay;
 
-	public bool directionControllable = true;
+		public bool directionControllable = true;
 
-	[Serialize]
+		[Serialize]
 	private EightDirection _direction;
 
-	private EightDirectionController directionController;
+		private EightDirectionController directionController;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<HighEnergyParticleRedirector> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<HighEnergyParticleRedirector>(delegate(HighEnergyParticleRedirector component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HighEnergyParticleRedirector> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<HighEnergyParticleRedirector>(delegate(HighEnergyParticleRedirector component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<HighEnergyParticleRedirector> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<HighEnergyParticleRedirector>(delegate(HighEnergyParticleRedirector component, object data)
+		private static readonly EventSystem.IntraObjectHandler<HighEnergyParticleRedirector> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<HighEnergyParticleRedirector>(delegate(HighEnergyParticleRedirector component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});
 
-	private bool hasLogicWire;
+		private bool hasLogicWire;
 
-	private bool isLogicActive;
+		private bool isLogicActive;
 
-	private static StatusItem infoStatusItem_Logic;
+		private static StatusItem infoStatusItem_Logic;
 
-	public class StatesInstance : GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector, object>.GameInstance
+		public class StatesInstance : GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector, object>.GameInstance
 	{
-		public StatesInstance(HighEnergyParticleRedirector smi) : base(smi)
+				public StatesInstance(HighEnergyParticleRedirector smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector>
+		public class States : GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.inoperational;
 			this.inoperational.PlayAnim("off").TagTransition(GameTags.Operational, this.ready, false);
@@ -227,12 +227,12 @@ public class HighEnergyParticleRedirector : StateMachineComponent<HighEnergyPart
 			});
 		}
 
-		public GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector, object>.State inoperational;
+				public GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector, object>.State inoperational;
 
-		public GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector, object>.State ready;
+				public GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector, object>.State ready;
 
-		public GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector, object>.State redirect;
+				public GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector, object>.State redirect;
 
-		public GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector, object>.State launch;
+				public GameStateMachine<HighEnergyParticleRedirector.States, HighEnergyParticleRedirector.StatesInstance, HighEnergyParticleRedirector, object>.State launch;
 	}
 }

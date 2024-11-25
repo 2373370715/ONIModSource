@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using Klei.AI;
 using KSerialization;
 using STRINGS;
+using TUNING;
 using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/Workable/Edible")]
 public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExtendSplitting
 {
-			public float Units
+				public float Units
 	{
 		get
 		{
@@ -20,7 +21,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-		public float MassPerUnit
+			public float MassPerUnit
 	{
 		get
 		{
@@ -28,7 +29,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-			public float Calories
+				public float Calories
 	{
 		get
 		{
@@ -40,7 +41,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-			public EdiblesManager.FoodInfo FoodInfo
+				public EdiblesManager.FoodInfo FoodInfo
 	{
 		get
 		{
@@ -53,9 +54,9 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-			public bool isBeingConsumed { get; private set; }
+				public bool isBeingConsumed { get; private set; }
 
-		public List<SpiceInstance> Spices
+			public List<SpiceInstance> Spices
 	{
 		get
 		{
@@ -63,7 +64,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.primaryElement = base.GetComponent<PrimaryElement>();
 		base.SetReportType(ReportManager.ReportType.PersonalTime);
@@ -86,7 +87,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		Components.Edibles.Add(this);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.ToggleGenericSpicedTag(base.gameObject.HasTag(GameTags.SpicedFood));
@@ -104,7 +105,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().MiscStatusItems.Edible, this);
 	}
 
-	public override HashedString[] GetWorkAnims(Worker worker)
+		public override HashedString[] GetWorkAnims(WorkerBase worker)
 	{
 		EatChore.StatesInstance smi = worker.GetSMI<EatChore.StatesInstance>();
 		bool flag = smi != null && smi.UseSalt();
@@ -127,7 +128,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-	public override HashedString[] GetWorkPstAnims(Worker worker, bool successfully_completed)
+		public override HashedString[] GetWorkPstAnims(WorkerBase worker, bool successfully_completed)
 	{
 		EatChore.StatesInstance smi = worker.GetSMI<EatChore.StatesInstance>();
 		bool flag = smi != null && smi.UseSalt();
@@ -150,12 +151,12 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-	private void OnCraft(object data)
+		private void OnCraft(object data)
 	{
-		RationTracker.Get().RegisterCaloriesProduced(this.Calories);
+		WorldResourceAmountTracker<RationTracker>.Get().RegisterAmountProduced(this.Calories);
 	}
 
-	public float GetFeedingTime(Worker worker)
+		public float GetFeedingTime(WorkerBase worker)
 	{
 		float num = this.Calories * 2E-05f;
 		if (worker != null)
@@ -169,7 +170,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		return num;
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		this.totalFeedingTime = this.GetFeedingTime(worker);
 		base.SetWorkTime(this.totalFeedingTime);
@@ -181,7 +182,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		this.StartConsuming();
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		if (this.currentlyLit)
 		{
@@ -201,7 +202,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		return this.OnTickConsume(worker, dt);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		if (this.currentModifier != null)
 		{
@@ -212,7 +213,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		this.StopConsuming(worker);
 	}
 
-	private bool OnTickConsume(Worker worker, float dt)
+		private bool OnTickConsume(WorkerBase worker, float dt)
 	{
 		if (!this.isBeingConsumed)
 		{
@@ -242,13 +243,13 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		return result;
 	}
 
-	public void SpiceEdible(SpiceInstance spice, StatusItem status)
+		public void SpiceEdible(SpiceInstance spice, StatusItem status)
 	{
 		this.spices.Add(spice);
 		this.ApplySpiceEffects(spice, status);
 	}
 
-	protected virtual void ApplySpiceEffects(SpiceInstance spice, StatusItem status)
+		protected virtual void ApplySpiceEffects(SpiceInstance spice, StatusItem status)
 	{
 		base.GetComponent<KPrefabID>().AddTag(spice.Id, true);
 		this.ToggleGenericSpicedTag(true);
@@ -263,7 +264,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-	private void ToggleGenericSpicedTag(bool isSpiced)
+		private void ToggleGenericSpicedTag(bool isSpiced)
 	{
 		KPrefabID component = base.GetComponent<KPrefabID>();
 		if (isSpiced)
@@ -276,7 +277,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		component.AddTag(GameTags.UnspicedFood, false);
 	}
 
-	public bool CanAbsorb(Edible other)
+		public bool CanAbsorb(Edible other)
 	{
 		bool flag = this.spices.Count == other.spices.Count;
 		flag &= (base.gameObject.HasTag(GameTags.Rehydrated) == other.gameObject.HasTag(GameTags.Rehydrated));
@@ -295,14 +296,14 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		return flag;
 	}
 
-	private void StartConsuming()
+		private void StartConsuming()
 	{
 		DebugUtil.DevAssert(!this.isBeingConsumed, "Can't StartConsuming()...we've already started", null);
 		this.isBeingConsumed = true;
 		base.worker.Trigger(1406130139, this);
 	}
 
-	private void StopConsuming(Worker worker)
+		private void StopConsuming(WorkerBase worker)
 	{
 		DebugUtil.DevAssert(this.isBeingConsumed, "StopConsuming() called without StartConsuming()", null);
 		this.isBeingConsumed = false;
@@ -323,13 +324,13 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-	public static string GetEffectForFoodQuality(int qualityLevel)
+		public static string GetEffectForFoodQuality(int qualityLevel)
 	{
 		qualityLevel = Mathf.Clamp(qualityLevel, -1, 5);
 		return Edible.qualityEffects[qualityLevel];
 	}
 
-	private void AddOnConsumeEffects(Worker worker)
+		private void AddOnConsumeEffects(WorkerBase worker)
 	{
 		int num = Mathf.RoundToInt(worker.GetAttributes().Add(Db.Get().Attributes.FoodExpectation).GetTotalValue());
 		int qualityLevel = this.FoodInfo.Quality + num;
@@ -352,18 +353,18 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.Edibles.Remove(this);
 	}
 
-	public int GetQuality()
+		public int GetQuality()
 	{
 		return this.foodInfo.Quality;
 	}
 
-	public int GetMorale()
+		public int GetMorale()
 	{
 		int num = 0;
 		string effectForFoodQuality = Edible.GetEffectForFoodQuality(this.foodInfo.Quality);
@@ -377,7 +378,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		return num;
 	}
 
-	public override List<Descriptor> GetDescriptors(GameObject go)
+		public override List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		list.Add(new Descriptor(string.Format(UI.GAMEOBJECTEFFECTS.CALORIES, GameUtil.GetFormattedCalories(this.foodInfo.CaloriesPerUnit, GameUtil.TimeSlice.None, true)), string.Format(UI.GAMEOBJECTEFFECTS.TOOLTIPS.CALORIES, GameUtil.GetFormattedCalories(this.foodInfo.CaloriesPerUnit, GameUtil.TimeSlice.None, true)), Descriptor.DescriptorType.Information, false));
@@ -403,7 +404,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		return list;
 	}
 
-	public void ApplySpicesToOtherEdible(Edible other)
+		public void ApplySpicesToOtherEdible(Edible other)
 	{
 		if (this.spices != null && other != null)
 		{
@@ -414,7 +415,7 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-	public void OnSplitTick(Pickupable thePieceTaken)
+		public void OnSplitTick(Pickupable thePieceTaken)
 	{
 		Edible component = thePieceTaken.GetComponent<Edible>();
 		this.ApplySpicesToOtherEdible(component);
@@ -424,81 +425,81 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	}
 
-	private PrimaryElement primaryElement;
+		private PrimaryElement primaryElement;
 
-	public string FoodID;
+		public string FoodID;
 
-	private EdiblesManager.FoodInfo foodInfo;
+		private EdiblesManager.FoodInfo foodInfo;
 
-	public float unitsConsumed = float.NaN;
+		public float unitsConsumed = float.NaN;
 
-	public float caloriesConsumed = float.NaN;
+		public float caloriesConsumed = float.NaN;
 
-	private float totalFeedingTime = float.NaN;
+		private float totalFeedingTime = float.NaN;
 
-	private float totalUnits = float.NaN;
+		private float totalUnits = float.NaN;
 
-	private float totalConsumableCalories = float.NaN;
+		private float totalConsumableCalories = float.NaN;
 
-	[Serialize]
+		[Serialize]
 	private List<SpiceInstance> spices = new List<SpiceInstance>();
 
-	private AttributeModifier caloriesModifier = new AttributeModifier("CaloriesDelta", 50000f, DUPLICANTS.MODIFIERS.EATINGCALORIES.NAME, false, true, true);
+		private AttributeModifier caloriesModifier = new AttributeModifier("CaloriesDelta", 50000f, DUPLICANTS.MODIFIERS.EATINGCALORIES.NAME, false, true, true);
 
-	private AttributeModifier caloriesLitSpaceModifier = new AttributeModifier("CaloriesDelta", 57500f, DUPLICANTS.MODIFIERS.EATINGCALORIES.NAME, false, true, true);
+		private AttributeModifier caloriesLitSpaceModifier = new AttributeModifier("CaloriesDelta", (1f + DUPLICANTSTATS.STANDARD.Light.LIGHT_WORK_EFFICIENCY_BONUS) / 2E-05f, DUPLICANTS.MODIFIERS.EATINGCALORIES.NAME, false, true, true);
 
-	private AttributeModifier currentModifier;
+		private AttributeModifier currentModifier;
 
-	private static readonly EventSystem.IntraObjectHandler<Edible> OnCraftDelegate = new EventSystem.IntraObjectHandler<Edible>(delegate(Edible component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Edible> OnCraftDelegate = new EventSystem.IntraObjectHandler<Edible>(delegate(Edible component, object data)
 	{
 		component.OnCraft(data);
 	});
 
-	private static readonly HashedString[] normalWorkAnims = new HashedString[]
+		private static readonly HashedString[] normalWorkAnims = new HashedString[]
 	{
 		"working_pre",
 		"working_loop"
 	};
 
-	private static readonly HashedString[] hatWorkAnims = new HashedString[]
+		private static readonly HashedString[] hatWorkAnims = new HashedString[]
 	{
 		"hat_pre",
 		"working_loop"
 	};
 
-	private static readonly HashedString[] saltWorkAnims = new HashedString[]
+		private static readonly HashedString[] saltWorkAnims = new HashedString[]
 	{
 		"salt_pre",
 		"salt_loop"
 	};
 
-	private static readonly HashedString[] saltHatWorkAnims = new HashedString[]
+		private static readonly HashedString[] saltHatWorkAnims = new HashedString[]
 	{
 		"salt_hat_pre",
 		"salt_hat_loop"
 	};
 
-	private static readonly HashedString[] normalWorkPstAnim = new HashedString[]
+		private static readonly HashedString[] normalWorkPstAnim = new HashedString[]
 	{
 		"working_pst"
 	};
 
-	private static readonly HashedString[] hatWorkPstAnim = new HashedString[]
+		private static readonly HashedString[] hatWorkPstAnim = new HashedString[]
 	{
 		"hat_pst"
 	};
 
-	private static readonly HashedString[] saltWorkPstAnim = new HashedString[]
+		private static readonly HashedString[] saltWorkPstAnim = new HashedString[]
 	{
 		"salt_pst"
 	};
 
-	private static readonly HashedString[] saltHatWorkPstAnim = new HashedString[]
+		private static readonly HashedString[] saltHatWorkPstAnim = new HashedString[]
 	{
 		"salt_hat_pst"
 	};
 
-	private static Dictionary<int, string> qualityEffects = new Dictionary<int, string>
+		private static Dictionary<int, string> qualityEffects = new Dictionary<int, string>
 	{
 		{
 			-1,
@@ -530,11 +531,11 @@ public class Edible : Workable, IGameObjectEffectDescriptor, ISaveLoadable, IExt
 		}
 	};
 
-	public class EdibleStartWorkInfo : Worker.StartWorkInfo
+		public class EdibleStartWorkInfo : WorkerBase.StartWorkInfo
 	{
-						public float amount { get; private set; }
+								public float amount { get; private set; }
 
-		public EdibleStartWorkInfo(Workable workable, float amount) : base(workable)
+				public EdibleStartWorkInfo(Workable workable, float amount) : base(workable)
 		{
 			this.amount = amount;
 		}

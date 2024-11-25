@@ -7,25 +7,25 @@ using UnityEngine.UI;
 
 public class GeneticAnalysisStationSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.Refresh();
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetSMI<GeneticAnalysisStation.StatesInstance>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.target = target.GetSMI<GeneticAnalysisStation.StatesInstance>();
 		target.GetComponent<GeneticAnalysisStationWorkable>();
 		this.Refresh();
 	}
 
-	private void Refresh()
+		private void Refresh()
 	{
 		if (this.target == null)
 		{
@@ -34,7 +34,7 @@ public class GeneticAnalysisStationSideScreen : SideScreenContent
 		this.DrawPickerMenu();
 	}
 
-	private void DrawPickerMenu()
+		private void DrawPickerMenu()
 	{
 		Dictionary<Tag, List<PlantSubSpeciesCatalog.SubSpeciesInfo>> dictionary = new Dictionary<Tag, List<PlantSubSpeciesCatalog.SubSpeciesInfo>>();
 		foreach (Tag tag in PlantSubSpeciesCatalog.Instance.GetAllDiscoveredSpecies())
@@ -87,7 +87,7 @@ public class GeneticAnalysisStationSideScreen : SideScreenContent
 		this.contents.gameObject.SetActive(true);
 	}
 
-	private void ConfigureButton(HierarchyReferences button, Tag speciesID)
+		private void ConfigureButton(HierarchyReferences button, Tag speciesID)
 	{
 		TMP_Text reference = button.GetReference<LocText>("Label");
 		Image reference2 = button.GetReference<Image>("Icon");
@@ -115,26 +115,26 @@ public class GeneticAnalysisStationSideScreen : SideScreenContent
 		};
 	}
 
-	private Tag GetSeedIDFromPlantID(Tag speciesID)
+		private Tag GetSeedIDFromPlantID(Tag speciesID)
 	{
 		return Assets.GetPrefab(speciesID).GetComponent<SeedProducer>().seedInfo.seedId;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText message;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject contents;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject rowContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private HierarchyReferences rowPrefab;
 
-	private List<HierarchyReferences> rows = new List<HierarchyReferences>();
+		private List<HierarchyReferences> rows = new List<HierarchyReferences>();
 
-	private GeneticAnalysisStation.StatesInstance target;
+		private GeneticAnalysisStation.StatesInstance target;
 
-	private Dictionary<Tag, bool> expandedSeeds = new Dictionary<Tag, bool>();
+		private Dictionary<Tag, bool> expandedSeeds = new Dictionary<Tag, bool>();
 }

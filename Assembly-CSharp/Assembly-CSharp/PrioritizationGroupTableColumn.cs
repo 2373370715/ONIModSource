@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class PrioritizationGroupTableColumn : TableColumn
 {
-	public PrioritizationGroupTableColumn(object user_data, Action<IAssignableIdentity, GameObject> on_load_action, Action<object, int> on_change_priority, Func<object, string> on_hover_widget, Action<object, int> on_change_header_priority, Func<object, string> on_hover_header_option_selector, Action<object> on_sort_clicked, Func<object, string> on_sort_hovered) : base(on_load_action, null, null, null, null, false, "")
+		public PrioritizationGroupTableColumn(object user_data, Action<IAssignableIdentity, GameObject> on_load_action, Action<object, int> on_change_priority, Func<object, string> on_hover_widget, Action<object, int> on_change_header_priority, Func<object, string> on_hover_header_option_selector, Action<object> on_sort_clicked, Func<object, string> on_sort_hovered) : base(on_load_action, null, null, null, null, false, "")
 	{
 		this.userData = user_data;
 		this.onChangePriority = on_change_priority;
@@ -14,17 +14,17 @@ public class PrioritizationGroupTableColumn : TableColumn
 		this.onSortHovered = on_sort_hovered;
 	}
 
-	public override GameObject GetMinionWidget(GameObject parent)
+		public override GameObject GetMinionWidget(GameObject parent)
 	{
 		return this.GetWidget(parent);
 	}
 
-	public override GameObject GetDefaultWidget(GameObject parent)
+		public override GameObject GetDefaultWidget(GameObject parent)
 	{
 		return this.GetWidget(parent);
 	}
 
-	private GameObject GetWidget(GameObject parent)
+		private GameObject GetWidget(GameObject parent)
 	{
 		GameObject widget_go = Util.KInstantiateUI(Assets.UIPrefabs.TableScreenWidgets.PriorityGroupSelector, parent, true);
 		OptionSelector component = widget_go.GetComponent<OptionSelector>();
@@ -50,7 +50,7 @@ public class PrioritizationGroupTableColumn : TableColumn
 		return widget_go;
 	}
 
-	public override GameObject GetHeaderWidget(GameObject parent)
+		public override GameObject GetHeaderWidget(GameObject parent)
 	{
 		GameObject widget_go = Util.KInstantiateUI(Assets.UIPrefabs.TableScreenWidgets.PriorityGroupSelectorHeader, parent, true);
 		HierarchyReferences component = widget_go.GetComponent<HierarchyReferences>();
@@ -83,15 +83,15 @@ public class PrioritizationGroupTableColumn : TableColumn
 		return widget_go;
 	}
 
-	public object userData;
+		public object userData;
 
-	private Action<object, int> onChangePriority;
+		private Action<object, int> onChangePriority;
 
-	private Func<object, string> onHoverWidget;
+		private Func<object, string> onHoverWidget;
 
-	private Func<object, string> onHoverHeaderOptionSelector;
+		private Func<object, string> onHoverHeaderOptionSelector;
 
-	private Action<object> onSortClicked;
+		private Action<object> onSortClicked;
 
-	private Func<object, string> onSortHovered;
+		private Func<object, string> onSortHovered;
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GlassForgeConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "GlassForge";
 		int width = 5;
@@ -31,7 +31,7 @@ public class GlassForgeConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<DropAllWorkable>();
 		go.AddOrGet<BuildingComplete>().isManuallyOperated = true;
@@ -79,7 +79,7 @@ public class GlassForgeConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 		go.AddOrGetDef<PoweredActiveStoppableController.Def>();
@@ -94,19 +94,19 @@ public class GlassForgeConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "GlassForge";
+		public const string ID = "GlassForge";
 
-	private const float INPUT_KG = 100f;
+		private const float INPUT_KG = 100f;
 
-	public static readonly CellOffset outPipeOffset = new CellOffset(1, 3);
+		public static readonly CellOffset outPipeOffset = new CellOffset(1, 3);
 
-	private static readonly List<Storage.StoredItemModifier> RefineryStoredItemModifiers = new List<Storage.StoredItemModifier>
+		private static readonly List<Storage.StoredItemModifier> RefineryStoredItemModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Preserve
 	};
 
-	public static readonly List<Storage.StoredItemModifier> OutputItemModifiers = new List<Storage.StoredItemModifier>
+		public static readonly List<Storage.StoredItemModifier> OutputItemModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Preserve,

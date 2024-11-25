@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AdvancedDoctorStationConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "AdvancedDoctorStation";
 		int width = 2;
@@ -26,13 +26,13 @@ public class AdvancedDoctorStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.Clinic, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.showInUI = true;
@@ -64,5 +64,5 @@ public class AdvancedDoctorStationConfig : IBuildingConfig
 		doctorStationDoctorWorkable.requiredSkillPerk = Db.Get().SkillPerks.CanAdvancedMedicine.Id;
 	}
 
-	public const string ID = "AdvancedDoctorStation";
+		public const string ID = "AdvancedDoctorStation";
 }

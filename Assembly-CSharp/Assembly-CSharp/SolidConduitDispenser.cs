@@ -1,192 +1,138 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using KSerialization;
 using UnityEngine;
 
-[SerializationConfig(MemberSerialization.OptIn)]
-[AddComponentMenu("KMonoBehaviour/scripts/SolidConduitDispenser")]
-public class SolidConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
-{
-		public Storage Storage
-	{
-		get
-		{
-			return this.storage;
-		}
-	}
+[SerializationConfig(MemberSerialization.OptIn), AddComponentMenu("KMonoBehaviour/scripts/SolidConduitDispenser")]
+public class SolidConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser {
+    private static readonly Operational.Flag outputConduitFlag
+        = new Operational.Flag("output_conduit", Operational.Flag.Type.Functional);
 
-		public ConduitType ConduitType
-	{
-		get
-		{
-			return ConduitType.Solid;
-		}
-	}
+    [SerializeField]
+    public bool alwaysDispense;
 
-		public SolidConduitFlow.ConduitContents ConduitContents
-	{
-		get
-		{
-			return this.GetConduitFlow().GetContents(this.utilityCell);
-		}
-	}
+    [SerializeField]
+    public SimHashes[] elementFilter;
 
-		public bool IsDispensing
-	{
-		get
-		{
-			return this.dispensing;
-		}
-	}
+    [SerializeField]
+    public bool invertElementFilter;
 
-	public SolidConduitFlow GetConduitFlow()
-	{
-		return Game.Instance.solidConduitFlow;
-	}
+    [MyCmpReq]
+    private Operational operational;
 
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.utilityCell = this.GetOutputCell();
-		ScenePartitionerLayer layer = GameScenePartitioner.Instance.objectLayers[20];
-		this.partitionerEntry = GameScenePartitioner.Instance.Add("SolidConduitConsumer.OnSpawn", base.gameObject, this.utilityCell, layer, new Action<object>(this.OnConduitConnectionChanged));
-		this.GetConduitFlow().AddConduitUpdater(new Action<float>(this.ConduitUpdate), ConduitFlowPriority.Dispense);
-		this.OnConduitConnectionChanged(null);
-	}
+    private HandleVector<int>.Handle partitionerEntry;
+    private int                      round_robin_index;
 
-	protected override void OnCleanUp()
-	{
-		this.GetConduitFlow().RemoveConduitUpdater(new Action<float>(this.ConduitUpdate));
-		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
-		base.OnCleanUp();
-	}
+    [SerializeField]
+    public bool solidOnly;
 
-	private void OnConduitConnectionChanged(object data)
-	{
-		this.dispensing = (this.dispensing && this.IsConnected);
-		base.Trigger(-2094018600, this.IsConnected);
-	}
+    [MyCmpReq]
+    public Storage storage;
 
-	private void ConduitUpdate(float dt)
-	{
-		bool flag = false;
-		this.operational.SetFlag(SolidConduitDispenser.outputConduitFlag, this.IsConnected);
-		if (this.operational.IsOperational || this.alwaysDispense)
-		{
-			SolidConduitFlow conduitFlow = this.GetConduitFlow();
-			if (conduitFlow.HasConduit(this.utilityCell) && conduitFlow.IsConduitEmpty(this.utilityCell))
-			{
-				Pickupable pickupable = this.FindSuitableItem();
-				if (pickupable)
-				{
-					if (pickupable.PrimaryElement.Mass > 20f)
-					{
-						pickupable = pickupable.Take(20f);
-					}
-					conduitFlow.AddPickupable(this.utilityCell, pickupable);
-					flag = true;
-				}
-			}
-		}
-		this.storage.storageNetworkID = this.GetConnectedNetworkID();
-		this.dispensing = flag;
-	}
+    [SerializeField]
+    public bool useSecondaryOutput;
 
-	private bool isSolid(GameObject o)
-	{
-		PrimaryElement component = o.GetComponent<PrimaryElement>();
-		return component == null || component.Element.IsLiquid || component.Element.IsGas;
-	}
+    private int                              utilityCell = -1;
+    public  SolidConduitFlow.ConduitContents ConduitContents => GetConduitFlow().GetContents(utilityCell);
+    public  bool                             IsDispensing    { get; private set; }
 
-	private Pickupable FindSuitableItem()
-	{
-		List<GameObject> list = this.storage.items;
-		if (this.solidOnly)
-		{
-			List<GameObject> list2 = new List<GameObject>(list);
-			list2.RemoveAll(new Predicate<GameObject>(this.isSolid));
-			list = list2;
-		}
-		if (list.Count < 1)
-		{
-			return null;
-		}
-		this.round_robin_index %= list.Count;
-		GameObject gameObject = list[this.round_robin_index];
-		this.round_robin_index++;
-		if (!gameObject)
-		{
-			return null;
-		}
-		return gameObject.GetComponent<Pickupable>();
-	}
+    public bool IsConnected {
+        get {
+            var gameObject = Grid.Objects[utilityCell, 20];
+            return gameObject != null && gameObject.GetComponent<BuildingComplete>() != null;
+        }
+    }
 
-		public bool IsConnected
-	{
-		get
-		{
-			GameObject gameObject = Grid.Objects[this.utilityCell, 20];
-			return gameObject != null && gameObject.GetComponent<BuildingComplete>() != null;
-		}
-	}
+    public Storage          Storage          => storage;
+    public ConduitType      ConduitType      => ConduitType.Solid;
+    public SolidConduitFlow GetConduitFlow() { return Game.Instance.solidConduitFlow; }
 
-	private int GetConnectedNetworkID()
-	{
-		GameObject gameObject = Grid.Objects[this.utilityCell, 20];
-		SolidConduit solidConduit = (gameObject != null) ? gameObject.GetComponent<SolidConduit>() : null;
-		UtilityNetwork utilityNetwork = (solidConduit != null) ? solidConduit.GetNetwork() : null;
-		if (utilityNetwork == null)
-		{
-			return -1;
-		}
-		return utilityNetwork.id;
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        utilityCell = GetOutputCell();
+        var layer = GameScenePartitioner.Instance.objectLayers[20];
+        partitionerEntry = GameScenePartitioner.Instance.Add("SolidConduitConsumer.OnSpawn",
+                                                             gameObject,
+                                                             utilityCell,
+                                                             layer,
+                                                             OnConduitConnectionChanged);
 
-	private int GetOutputCell()
-	{
-		Building component = base.GetComponent<Building>();
-		if (this.useSecondaryOutput)
-		{
-			foreach (ISecondaryOutput secondaryOutput in base.GetComponents<ISecondaryOutput>())
-			{
-				if (secondaryOutput.HasSecondaryConduitType(ConduitType.Solid))
-				{
-					return Grid.OffsetCell(component.NaturalBuildingCell(), secondaryOutput.GetSecondaryConduitOffset(ConduitType.Solid));
-				}
-			}
-			return Grid.OffsetCell(component.NaturalBuildingCell(), CellOffset.none);
-		}
-		return component.GetUtilityOutputCell();
-	}
+        GetConduitFlow().AddConduitUpdater(ConduitUpdate, ConduitFlowPriority.Dispense);
+        OnConduitConnectionChanged(null);
+    }
 
-	[SerializeField]
-	public SimHashes[] elementFilter;
+    protected override void OnCleanUp() {
+        GetConduitFlow().RemoveConduitUpdater(ConduitUpdate);
+        GameScenePartitioner.Instance.Free(ref partitionerEntry);
+        base.OnCleanUp();
+    }
 
-	[SerializeField]
-	public bool invertElementFilter;
+    private void OnConduitConnectionChanged(object data) {
+        IsDispensing = IsDispensing && IsConnected;
+        Trigger(-2094018600, IsConnected);
+    }
 
-	[SerializeField]
-	public bool alwaysDispense;
+    private void ConduitUpdate(float dt) {
+        var flag = false;
+        operational.SetFlag(outputConduitFlag, IsConnected);
+        if (operational.IsOperational || alwaysDispense) {
+            var conduitFlow = GetConduitFlow();
+            if (conduitFlow.HasConduit(utilityCell) && conduitFlow.IsConduitEmpty(utilityCell)) {
+                var pickupable = FindSuitableItem();
+                if (pickupable) {
+                    if (pickupable.PrimaryElement.Mass > 20f) pickupable = pickupable.Take(20f);
+                    conduitFlow.AddPickupable(utilityCell, pickupable);
+                    flag = true;
+                }
+            }
+        }
 
-	[SerializeField]
-	public bool useSecondaryOutput;
+        storage.storageNetworkID = GetConnectedNetworkID();
+        IsDispensing             = flag;
+    }
 
-	[SerializeField]
-	public bool solidOnly;
+    private bool isSolid(GameObject o) {
+        var component = o.GetComponent<PrimaryElement>();
+        return component == null || component.Element.IsLiquid || component.Element.IsGas;
+    }
 
-	private static readonly Operational.Flag outputConduitFlag = new Operational.Flag("output_conduit", Operational.Flag.Type.Functional);
+    private Pickupable FindSuitableItem() {
+        var list = storage.items;
+        if (solidOnly) {
+            var list2 = new List<GameObject>(list);
+            list2.RemoveAll(isSolid);
+            list = list2;
+        }
 
-	[MyCmpReq]
-	private Operational operational;
+        if (list.Count < 1) return null;
 
-	[MyCmpReq]
-	public Storage storage;
+        round_robin_index %= list.Count;
+        var gameObject = list[round_robin_index];
+        round_robin_index++;
+        if (!gameObject) return null;
 
-	private HandleVector<int>.Handle partitionerEntry;
+        return gameObject.GetComponent<Pickupable>();
+    }
 
-	private int utilityCell = -1;
+    private int GetConnectedNetworkID() {
+        var gameObject     = Grid.Objects[utilityCell, 20];
+        var solidConduit   = gameObject   != null ? gameObject.GetComponent<SolidConduit>() : null;
+        var utilityNetwork = solidConduit != null ? solidConduit.GetNetwork() : null;
+        if (utilityNetwork == null) return -1;
 
-	private bool dispensing;
+        return utilityNetwork.id;
+    }
 
-	private int round_robin_index;
+    private int GetOutputCell() {
+        var component = GetComponent<Building>();
+        if (useSecondaryOutput) {
+            foreach (var secondaryOutput in GetComponents<ISecondaryOutput>())
+                if (secondaryOutput.HasSecondaryConduitType(ConduitType.Solid))
+                    return Grid.OffsetCell(component.NaturalBuildingCell(),
+                                           secondaryOutput.GetSecondaryConduitOffset(ConduitType.Solid));
+
+            return Grid.OffsetCell(component.NaturalBuildingCell(), CellOffset.none);
+        }
+
+        return component.GetUtilityOutputCell();
+    }
 }

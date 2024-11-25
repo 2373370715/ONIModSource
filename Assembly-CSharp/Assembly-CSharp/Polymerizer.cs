@@ -5,7 +5,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Polymerizer : StateMachineComponent<Polymerizer.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
 		this.plasticMeter = new MeterController(component, "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new Vector3(0f, 0f, 0f), null);
@@ -16,7 +16,7 @@ public class Polymerizer : StateMachineComponent<Polymerizer.StatesInstance>
 		base.Subscribe<Polymerizer>(-1697596308, Polymerizer.OnStorageChangedDelegate);
 	}
 
-	private void TryEmit()
+		private void TryEmit()
 	{
 		GameObject gameObject = this.storage.FindFirst(this.emitTag);
 		if (gameObject != null)
@@ -27,7 +27,7 @@ public class Polymerizer : StateMachineComponent<Polymerizer.StatesInstance>
 		}
 	}
 
-	private void TryEmit(PrimaryElement primary_elem)
+		private void TryEmit(PrimaryElement primary_elem)
 	{
 		if (primary_elem.Mass >= this.emitMass)
 		{
@@ -51,13 +51,13 @@ public class Polymerizer : StateMachineComponent<Polymerizer.StatesInstance>
 		}
 	}
 
-	private void UpdatePercentDone(PrimaryElement primary_elem)
+		private void UpdatePercentDone(PrimaryElement primary_elem)
 	{
 		float positionPercent = Mathf.Clamp01(primary_elem.Mass / this.emitMass);
 		this.plasticMeter.SetPositionPercent(positionPercent);
 	}
 
-	private void OnStorageChanged(object data)
+		private void OnStorageChanged(object data)
 	{
 		GameObject gameObject = (GameObject)data;
 		if (gameObject == null)
@@ -70,7 +70,7 @@ public class Polymerizer : StateMachineComponent<Polymerizer.StatesInstance>
 		}
 	}
 
-	private void UpdateOilMeter()
+		private void UpdateOilMeter()
 	{
 		float num = 0f;
 		foreach (GameObject gameObject in this.storage.items)
@@ -85,52 +85,52 @@ public class Polymerizer : StateMachineComponent<Polymerizer.StatesInstance>
 		this.oilMeter.SetPositionPercent(positionPercent);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public float maxMass = 2.5f;
 
-	[SerializeField]
+		[SerializeField]
 	public float emitMass = 1f;
 
-	[SerializeField]
+		[SerializeField]
 	public Tag emitTag;
 
-	[SerializeField]
+		[SerializeField]
 	public Vector3 emitOffset = Vector3.zero;
 
-	[SerializeField]
+		[SerializeField]
 	public SimHashes exhaustElement = SimHashes.Vacuum;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Storage storage;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ConduitConsumer consumer;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ElementConverter converter;
 
-	private MeterController plasticMeter;
+		private MeterController plasticMeter;
 
-	private MeterController oilMeter;
+		private MeterController oilMeter;
 
-	private static readonly EventSystem.IntraObjectHandler<Polymerizer> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<Polymerizer>(delegate(Polymerizer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Polymerizer> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<Polymerizer>(delegate(Polymerizer component, object data)
 	{
 		component.OnStorageChanged(data);
 	});
 
-	public class StatesInstance : GameStateMachine<Polymerizer.States, Polymerizer.StatesInstance, Polymerizer, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Polymerizer.States, Polymerizer.StatesInstance, Polymerizer, object>.GameInstance
 	{
-		public StatesInstance(Polymerizer smi) : base(smi)
+				public StatesInstance(Polymerizer smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<Polymerizer.States, Polymerizer.StatesInstance, Polymerizer>
+		public class States : GameStateMachine<Polymerizer.States, Polymerizer.StatesInstance, Polymerizer>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.off;
 			this.root.EventTransition(GameHashes.OperationalChanged, this.off, (Polymerizer.StatesInstance smi) => !smi.master.operational.IsOperational);
@@ -148,10 +148,10 @@ public class Polymerizer : StateMachineComponent<Polymerizer.StatesInstance>
 			});
 		}
 
-		public GameStateMachine<Polymerizer.States, Polymerizer.StatesInstance, Polymerizer, object>.State off;
+				public GameStateMachine<Polymerizer.States, Polymerizer.StatesInstance, Polymerizer, object>.State off;
 
-		public GameStateMachine<Polymerizer.States, Polymerizer.StatesInstance, Polymerizer, object>.State on;
+				public GameStateMachine<Polymerizer.States, Polymerizer.StatesInstance, Polymerizer, object>.State on;
 
-		public GameStateMachine<Polymerizer.States, Polymerizer.StatesInstance, Polymerizer, object>.State converting;
+				public GameStateMachine<Polymerizer.States, Polymerizer.StatesInstance, Polymerizer, object>.State converting;
 	}
 }

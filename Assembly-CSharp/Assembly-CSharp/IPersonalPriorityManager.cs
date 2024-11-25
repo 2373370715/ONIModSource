@@ -2,13 +2,13 @@
 
 public interface IPersonalPriorityManager
 {
-	int GetAssociatedSkillLevel(ChoreGroup group);
+		int GetAssociatedSkillLevel(ChoreGroup group);
 
-	int GetPersonalPriority(ChoreGroup group);
+		int GetPersonalPriority(ChoreGroup group);
 
-	void SetPersonalPriority(ChoreGroup group, int value);
+		void SetPersonalPriority(ChoreGroup group, int value);
 
-	bool IsChoreGroupDisabled(ChoreGroup group);
+		bool IsChoreGroupDisabled(ChoreGroup group);
 
-	void ResetPersonalPriorities();
+		void ResetPersonalPriorities();
 }

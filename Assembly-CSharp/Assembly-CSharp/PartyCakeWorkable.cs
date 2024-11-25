@@ -3,7 +3,7 @@ using TUNING;
 
 public class PartyCakeWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workerStatusItem = Db.Get().DuplicantStatusItems.Cooking;
@@ -27,18 +27,18 @@ public class PartyCakeWorkable : Workable
 		this.synchronizeAnims = false;
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		base.OnWorkTick(worker, dt);
 		base.GetComponent<KBatchedAnimController>().SetPositionPercent(this.GetPercentComplete());
 		return false;
 	}
 
-	private static readonly HashedString[] WORK_ANIMS = new HashedString[]
+		private static readonly HashedString[] WORK_ANIMS = new HashedString[]
 	{
 		"salt_pre",
 		"salt_loop"
 	};
 
-	private static readonly HashedString PST_ANIM = new HashedString("salt_pst");
+		private static readonly HashedString PST_ANIM = new HashedString("salt_pst");
 }

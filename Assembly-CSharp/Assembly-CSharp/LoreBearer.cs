@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LoreBearer")]
 public class LoreBearer : KMonoBehaviour, ISidescreenButtonControl
 {
-		public string content
+			public string content
 	{
 		get
 		{
@@ -14,30 +14,30 @@ public class LoreBearer : KMonoBehaviour, ISidescreenButtonControl
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	public LoreBearer Internal_SetContent(LoreBearerAction action)
+		public LoreBearer Internal_SetContent(LoreBearerAction action)
 	{
 		this.displayContentAction = action;
 		return this;
 	}
 
-	public LoreBearer Internal_SetContent(LoreBearerAction action, string[] collectionsToUnlockFrom)
+		public LoreBearer Internal_SetContent(LoreBearerAction action, string[] collectionsToUnlockFrom)
 	{
 		this.displayContentAction = action;
 		this.collectionsToUnlockFrom = collectionsToUnlockFrom;
 		return this;
 	}
 
-	public static InfoDialogScreen ShowPopupDialog()
+		public static InfoDialogScreen ShowPopupDialog()
 	{
 		return (InfoDialogScreen)GameScreenManager.Instance.StartScreen(ScreenPrefabs.Instance.InfoDialogScreen.gameObject, GameScreenManager.Instance.ssOverlayCanvas.gameObject, GameScreenManager.UIRenderTarget.ScreenSpaceOverlay);
 	}
 
-	private void OnClickRead()
+		private void OnClickRead()
 	{
 		InfoDialogScreen infoDialogScreen = LoreBearer.ShowPopupDialog().SetHeader(base.gameObject.GetComponent<KSelectable>().GetProperName()).AddDefaultOK(true);
 		if (this.BeenClicked)
@@ -59,7 +59,7 @@ public class LoreBearer : KMonoBehaviour, ISidescreenButtonControl
 		LoreBearerUtil.UnlockNextJournalEntry(infoDialogScreen);
 	}
 
-		public string SidescreenButtonText
+			public string SidescreenButtonText
 	{
 		get
 		{
@@ -67,7 +67,7 @@ public class LoreBearer : KMonoBehaviour, ISidescreenButtonControl
 		}
 	}
 
-		public string SidescreenButtonTooltip
+			public string SidescreenButtonTooltip
 	{
 		get
 		{
@@ -75,42 +75,42 @@ public class LoreBearer : KMonoBehaviour, ISidescreenButtonControl
 		}
 	}
 
-	public int HorizontalGroupID()
+		public int HorizontalGroupID()
 	{
 		return -1;
 	}
 
-	public bool SidescreenEnabled()
+		public bool SidescreenEnabled()
 	{
 		return true;
 	}
 
-	public void OnSidescreenButtonPressed()
+		public void OnSidescreenButtonPressed()
 	{
 		this.OnClickRead();
 	}
 
-	public bool SidescreenButtonInteractable()
+		public bool SidescreenButtonInteractable()
 	{
 		return !this.BeenClicked;
 	}
 
-	public int ButtonSideScreenSortOrder()
+		public int ButtonSideScreenSortOrder()
 	{
 		return 20;
 	}
 
-	public void SetButtonTextOverride(ButtonMenuTextOverride text)
+		public void SetButtonTextOverride(ButtonMenuTextOverride text)
 	{
 		throw new NotImplementedException();
 	}
 
-	[Serialize]
+		[Serialize]
 	private bool BeenClicked;
 
-	public string BeenSearched = UI.USERMENUACTIONS.READLORE.ALREADY_SEARCHED;
+		public string BeenSearched = UI.USERMENUACTIONS.READLORE.ALREADY_SEARCHED;
 
-	private string[] collectionsToUnlockFrom;
+		private string[] collectionsToUnlockFrom;
 
-	private LoreBearerAction displayContentAction;
+		private LoreBearerAction displayContentAction;
 }

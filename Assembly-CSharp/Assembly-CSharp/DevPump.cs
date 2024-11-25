@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DevPump : Filterable, ISim1000ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (this.elementState == Filterable.ElementState.Liquid)
@@ -17,13 +17,13 @@ public class DevPump : Filterable, ISim1000ms
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.filterElementState = this.elementState;
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		if (!base.SelectedTag.IsValid)
 		{
@@ -51,8 +51,8 @@ public class DevPump : Filterable, ISim1000ms
 		}
 	}
 
-	public Filterable.ElementState elementState = Filterable.ElementState.Liquid;
+		public Filterable.ElementState elementState = Filterable.ElementState.Liquid;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 }

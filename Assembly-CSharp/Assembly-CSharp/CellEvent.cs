@@ -2,14 +2,14 @@
 
 public class CellEvent : EventBase
 {
-	public CellEvent(string id, string reason, bool is_send, bool enable_logging = true) : base(id)
+		public CellEvent(string id, string reason, bool is_send, bool enable_logging = true) : base(id)
 	{
 		this.reason = reason;
 		this.isSend = is_send;
 		this.enableLogging = enable_logging;
 	}
 
-	public string GetMessagePrefix()
+		public string GetMessagePrefix()
 	{
 		if (this.isSend)
 		{
@@ -18,9 +18,9 @@ public class CellEvent : EventBase
 		return "<<<: ";
 	}
 
-	public string reason;
+		public string reason;
 
-	public bool isSend;
+		public bool isSend;
 
-	public bool enableLogging;
+		public bool enableLogging;
 }

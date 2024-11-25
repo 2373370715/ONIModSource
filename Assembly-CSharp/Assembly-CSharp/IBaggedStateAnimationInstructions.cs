@@ -2,5 +2,5 @@
 
 public interface IBaggedStateAnimationInstructions
 {
-	string GetBaggedAnimationName();
+		string GetBaggedAnimationName();
 }

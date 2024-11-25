@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class SludgePressConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SludgePress";
 		int width = 4;
@@ -36,7 +36,7 @@ public class SludgePressConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<DropAllWorkable>();
@@ -65,7 +65,7 @@ public class SludgePressConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	private void AddRecipes(GameObject go)
+		private void AddRecipes(GameObject go)
 	{
 		float num = 150f;
 		foreach (Element element in ElementLoader.elements.FindAll((Element e) => e.elementComposition != null))
@@ -96,7 +96,7 @@ public class SludgePressConfig : IBuildingConfig
 		}
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
@@ -110,5 +110,5 @@ public class SludgePressConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "SludgePress";
+		public const string ID = "SludgePress";
 }

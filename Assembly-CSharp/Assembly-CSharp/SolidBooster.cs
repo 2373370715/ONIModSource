@@ -3,13 +3,13 @@ using UnityEngine;
 
 public class SolidBooster : RocketEngine
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<SolidBooster>(-887025858, SolidBooster.OnRocketLandedDelegate);
 	}
 
-	[ContextMenu("Fill Tank")]
+		[ContextMenu("Fill Tank")]
 	public void FillTank()
 	{
 		Element element = ElementLoader.GetElement(this.fuelTag);
@@ -20,7 +20,7 @@ public class SolidBooster : RocketEngine
 		this.fuelStorage.Store(go, false, false, true, false);
 	}
 
-	private void OnRocketLanded(object data)
+		private void OnRocketLanded(object data)
 	{
 		if (this.fuelStorage != null && this.fuelStorage.items != null)
 		{
@@ -32,9 +32,9 @@ public class SolidBooster : RocketEngine
 		}
 	}
 
-	public Storage fuelStorage;
+		public Storage fuelStorage;
 
-	private static readonly EventSystem.IntraObjectHandler<SolidBooster> OnRocketLandedDelegate = new EventSystem.IntraObjectHandler<SolidBooster>(delegate(SolidBooster component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SolidBooster> OnRocketLandedDelegate = new EventSystem.IntraObjectHandler<SolidBooster>(delegate(SolidBooster component, object data)
 	{
 		component.OnRocketLanded(data);
 	});

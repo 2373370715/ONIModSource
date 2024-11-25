@@ -8,14 +8,14 @@ using UnityEngine;
 
 namespace Database
 {
-	public class CreatureStatusItems : StatusItems
+		public class CreatureStatusItems : StatusItems
 	{
-		public CreatureStatusItems(ResourceSet parent) : base("CreatureStatusItems", parent)
+				public CreatureStatusItems(ResourceSet parent) : base("CreatureStatusItems", parent)
 		{
 			this.CreateStatusItems();
 		}
 
-		private void CreateStatusItems()
+				private void CreateStatusItems()
 		{
 			this.Dead = new StatusItem("Dead", "CREATURES", "", StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 129022, null);
 			this.Hot = new StatusItem("Hot", "CREATURES", "", StatusItem.IconType.Exclamation, NotificationType.BadMinor, false, OverlayModes.None.ID, false, 129022, null);
@@ -606,172 +606,172 @@ namespace Database
 			this.TemperatureColdDeadly.resolveStringCallback = this.TemperatureHotDeadly.resolveStringCallback;
 		}
 
-		public StatusItem Dead;
+				public StatusItem Dead;
 
-		public StatusItem HealthStatus;
+				public StatusItem HealthStatus;
 
-		public StatusItem Hot;
+				public StatusItem Hot;
 
-		public StatusItem Hot_Crop;
+				public StatusItem Hot_Crop;
 
-		public StatusItem Scalding;
+				public StatusItem Scalding;
 
-		public StatusItem Scolding;
+				public StatusItem Scolding;
 
-		public StatusItem Cold;
+				public StatusItem Cold;
 
-		public StatusItem Cold_Crop;
+				public StatusItem Cold_Crop;
 
-		public StatusItem Crop_Too_Dark;
+				public StatusItem Crop_Too_Dark;
 
-		public StatusItem Crop_Too_Bright;
+				public StatusItem Crop_Too_Bright;
 
-		public StatusItem Crop_Blighted;
+				public StatusItem Crop_Blighted;
 
-		public StatusItem Hypothermia;
+				public StatusItem Hypothermia;
 
-		public StatusItem Hyperthermia;
+				public StatusItem Hyperthermia;
 
-		public StatusItem Suffocating;
+				public StatusItem Suffocating;
 
-		public StatusItem Hatching;
+				public StatusItem Hatching;
 
-		public StatusItem Incubating;
+				public StatusItem Incubating;
 
-		public StatusItem Drowning;
+				public StatusItem Drowning;
 
-		public StatusItem Saturated;
+				public StatusItem Saturated;
 
-		public StatusItem DryingOut;
+				public StatusItem DryingOut;
 
-		public StatusItem Growing;
+				public StatusItem Growing;
 
-		public StatusItem CropSleeping;
+				public StatusItem CropSleeping;
 
-		public StatusItem ReadyForHarvest;
+				public StatusItem ReadyForHarvest;
 
-		public StatusItem ReadyForHarvest_Branch;
+				public StatusItem ReadyForHarvest_Branch;
 
-		public StatusItem EnvironmentTooWarm;
+				public StatusItem EnvironmentTooWarm;
 
-		public StatusItem EnvironmentTooCold;
+				public StatusItem EnvironmentTooCold;
 
-		public StatusItem Entombed;
+				public StatusItem Entombed;
 
-		public StatusItem Wilting;
+				public StatusItem Wilting;
 
-		public StatusItem WiltingDomestic;
+				public StatusItem WiltingDomestic;
 
-		public StatusItem WiltingNonGrowing;
+				public StatusItem WiltingNonGrowing;
 
-		public StatusItem WiltingNonGrowingDomestic;
+				public StatusItem WiltingNonGrowingDomestic;
 
-		public StatusItem WrongAtmosphere;
+				public StatusItem WrongAtmosphere;
 
-		public StatusItem AtmosphericPressureTooLow;
+				public StatusItem AtmosphericPressureTooLow;
 
-		public StatusItem AtmosphericPressureTooHigh;
+				public StatusItem AtmosphericPressureTooHigh;
 
-		public StatusItem Barren;
+				public StatusItem Barren;
 
-		public StatusItem NeedsFertilizer;
+				public StatusItem NeedsFertilizer;
 
-		public StatusItem NeedsIrrigation;
+				public StatusItem NeedsIrrigation;
 
-		public StatusItem WrongTemperature;
+				public StatusItem WrongTemperature;
 
-		public StatusItem WrongFertilizer;
+				public StatusItem WrongFertilizer;
 
-		public StatusItem WrongIrrigation;
+				public StatusItem WrongIrrigation;
 
-		public StatusItem WrongFertilizerMajor;
+				public StatusItem WrongFertilizerMajor;
 
-		public StatusItem WrongIrrigationMajor;
+				public StatusItem WrongIrrigationMajor;
 
-		public StatusItem CantAcceptFertilizer;
+				public StatusItem CantAcceptFertilizer;
 
-		public StatusItem CantAcceptIrrigation;
+				public StatusItem CantAcceptIrrigation;
 
-		public StatusItem Rotting;
+				public StatusItem Rotting;
 
-		public StatusItem Fresh;
+				public StatusItem Fresh;
 
-		public StatusItem Stale;
+				public StatusItem Stale;
 
-		public StatusItem Spoiled;
+				public StatusItem Spoiled;
 
-		public StatusItem Refrigerated;
+				public StatusItem Refrigerated;
 
-		public StatusItem RefrigeratedFrozen;
+				public StatusItem RefrigeratedFrozen;
 
-		public StatusItem Unrefrigerated;
+				public StatusItem Unrefrigerated;
 
-		public StatusItem SterilizingAtmosphere;
+				public StatusItem SterilizingAtmosphere;
 
-		public StatusItem ContaminatedAtmosphere;
+				public StatusItem ContaminatedAtmosphere;
 
-		public StatusItem Old;
+				public StatusItem Old;
 
-		public StatusItem ExchangingElementOutput;
+				public StatusItem ExchangingElementOutput;
 
-		public StatusItem ExchangingElementConsume;
+				public StatusItem ExchangingElementConsume;
 
-		public StatusItem Hungry;
+				public StatusItem Hungry;
 
-		public StatusItem HiveHungry;
+				public StatusItem HiveHungry;
 
-		public StatusItem NoSleepSpot;
+				public StatusItem NoSleepSpot;
 
-		public StatusItem ProducingSugarWater;
+				public StatusItem ProducingSugarWater;
 
-		public StatusItem SugarWaterProductionPaused;
+				public StatusItem SugarWaterProductionPaused;
 
-		public StatusItem SugarWaterProductionWilted;
+				public StatusItem SugarWaterProductionWilted;
 
-		public StatusItem SpaceTreeBranchLightStatus;
+				public StatusItem SpaceTreeBranchLightStatus;
 
-		public StatusItem OriginalPlantMutation;
+				public StatusItem OriginalPlantMutation;
 
-		public StatusItem UnknownMutation;
+				public StatusItem UnknownMutation;
 
-		public StatusItem SpecificPlantMutation;
+				public StatusItem SpecificPlantMutation;
 
-		public StatusItem Crop_Too_NonRadiated;
+				public StatusItem Crop_Too_NonRadiated;
 
-		public StatusItem Crop_Too_Radiated;
+				public StatusItem Crop_Too_Radiated;
 
-		public StatusItem ElementGrowthGrowing;
+				public StatusItem ElementGrowthGrowing;
 
-		public StatusItem ElementGrowthStunted;
+				public StatusItem ElementGrowthStunted;
 
-		public StatusItem ElementGrowthHalted;
+				public StatusItem ElementGrowthHalted;
 
-		public StatusItem ElementGrowthComplete;
+				public StatusItem ElementGrowthComplete;
 
-		public StatusItem LookingForFood;
+				public StatusItem LookingForFood;
 
-		public StatusItem LookingForGas;
+				public StatusItem LookingForGas;
 
-		public StatusItem LookingForLiquid;
+				public StatusItem LookingForLiquid;
 
-		public StatusItem Beckoning;
+				public StatusItem Beckoning;
 
-		public StatusItem BeckoningBlocked;
+				public StatusItem BeckoningBlocked;
 
-		public StatusItem MilkProducer;
+				public StatusItem MilkProducer;
 
-		public StatusItem MilkFull;
+				public StatusItem MilkFull;
 
-		public StatusItem GettingRanched;
+				public StatusItem GettingRanched;
 
-		public StatusItem GettingMilked;
+				public StatusItem GettingMilked;
 
-		public StatusItem TemperatureHotUncomfortable;
+				public StatusItem TemperatureHotUncomfortable;
 
-		public StatusItem TemperatureHotDeadly;
+				public StatusItem TemperatureHotDeadly;
 
-		public StatusItem TemperatureColdUncomfortable;
+				public StatusItem TemperatureColdUncomfortable;
 
-		public StatusItem TemperatureColdDeadly;
+				public StatusItem TemperatureColdDeadly;
 	}
 }

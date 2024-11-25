@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DetailsPanelDrawer
 {
-	public DetailsPanelDrawer(GameObject label_prefab, GameObject parent)
+		public DetailsPanelDrawer(GameObject label_prefab, GameObject parent)
 	{
 		this.parent = parent;
 		this.labelPrefab = label_prefab;
@@ -12,7 +12,7 @@ public class DetailsPanelDrawer
 		this.floatFormatter = new UIFloatFormatter();
 	}
 
-	public DetailsPanelDrawer NewLabel(string text)
+		public DetailsPanelDrawer NewLabel(string text)
 	{
 		DetailsPanelDrawer.Label label = default(DetailsPanelDrawer.Label);
 		if (this.activeLabelCount >= this.labels.Count)
@@ -34,32 +34,32 @@ public class DetailsPanelDrawer
 		return this;
 	}
 
-	public DetailsPanelDrawer BeginDrawing()
+		public DetailsPanelDrawer BeginDrawing()
 	{
 		return this;
 	}
 
-	public DetailsPanelDrawer EndDrawing()
+		public DetailsPanelDrawer EndDrawing()
 	{
 		return this;
 	}
 
-	private List<DetailsPanelDrawer.Label> labels = new List<DetailsPanelDrawer.Label>();
+		private List<DetailsPanelDrawer.Label> labels = new List<DetailsPanelDrawer.Label>();
 
-	private int activeLabelCount;
+		private int activeLabelCount;
 
-	private UIStringFormatter stringformatter;
+		private UIStringFormatter stringformatter;
 
-	private UIFloatFormatter floatFormatter;
+		private UIFloatFormatter floatFormatter;
 
-	private GameObject parent;
+		private GameObject parent;
 
-	private GameObject labelPrefab;
+		private GameObject labelPrefab;
 
-	private struct Label
+		private struct Label
 	{
-		public LocText text;
+				public LocText text;
 
-		public ToolTip tooltip;
+				public ToolTip tooltip;
 	}
 }

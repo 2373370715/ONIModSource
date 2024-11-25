@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MissileFabricatorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MissileFabricator";
 		int width = 5;
@@ -32,7 +32,7 @@ public class MissileFabricatorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<DropAllWorkable>();
@@ -81,7 +81,7 @@ public class MissileFabricatorConfig : IBuildingConfig
 		{
 			time = 80f,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.ResultWithIngredient,
-			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array[0].material).name, ElementLoader.GetElement(array[1].material).name),
+			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, STRINGS.ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array[0].material).name, ElementLoader.GetElement(array[1].material).name),
 			fabricators = new List<Tag>
 			{
 				TagManager.Create("MissileFabricator")
@@ -103,7 +103,7 @@ public class MissileFabricatorConfig : IBuildingConfig
 		{
 			time = 80f,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.ResultWithIngredient,
-			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array3[0].material).name, ElementLoader.GetElement(array3[1].material).name),
+			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, STRINGS.ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array3[0].material).name, ElementLoader.GetElement(array3[1].material).name),
 			fabricators = new List<Tag>
 			{
 				TagManager.Create("MissileFabricator")
@@ -125,7 +125,7 @@ public class MissileFabricatorConfig : IBuildingConfig
 		{
 			time = 80f,
 			nameDisplay = ComplexRecipe.RecipeNameDisplay.ResultWithIngredient,
-			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array5[0].material).name, ElementLoader.GetElement(array5[1].material).name),
+			description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, STRINGS.ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array5[0].material).name, ElementLoader.GetElement(array5[1].material).name),
 			fabricators = new List<Tag>
 			{
 				TagManager.Create("MissileFabricator")
@@ -149,7 +149,7 @@ public class MissileFabricatorConfig : IBuildingConfig
 			{
 				time = 80f,
 				nameDisplay = ComplexRecipe.RecipeNameDisplay.ResultWithIngredient,
-				description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array7[0].material).name, ElementLoader.GetElement(array7[1].material).name),
+				description = string.Format(STRINGS.BUILDINGS.PREFABS.MISSILEFABRICATOR.RECIPE_DESCRIPTION, STRINGS.ITEMS.MISSILE_BASIC.NAME, ElementLoader.GetElement(array7[0].material).name, ElementLoader.GetElement(array7[1].material).name),
 				fabricators = new List<Tag>
 				{
 					TagManager.Create("MissileFabricator")
@@ -160,7 +160,7 @@ public class MissileFabricatorConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().prefabSpawnFn += delegate(GameObject game_object)
 		{
@@ -174,13 +174,13 @@ public class MissileFabricatorConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "MissileFabricator";
+		public const string ID = "MissileFabricator";
 
-	public const float MISSILE_FABRICATION_TIME = 80f;
+		public const float MISSILE_FABRICATION_TIME = 80f;
 
-	public const float CO2_PRODUCTION_RATE = 0.0125f;
+		public const float CO2_PRODUCTION_RATE = 0.0125f;
 
-	private static readonly List<Storage.StoredItemModifier> RefineryStoredItemModifiers = new List<Storage.StoredItemModifier>
+		private static readonly List<Storage.StoredItemModifier> RefineryStoredItemModifiers = new List<Storage.StoredItemModifier>
 	{
 		Storage.StoredItemModifier.Hide,
 		Storage.StoredItemModifier.Preserve,

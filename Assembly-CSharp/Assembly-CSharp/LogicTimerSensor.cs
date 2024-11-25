@@ -5,13 +5,13 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicTimerSensor : Switch, ISaveLoadable, ISim33ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicTimerSensor>(-905833192, LogicTimerSensor.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicTimerSensor component = ((GameObject)data).GetComponent<LogicTimerSensor>();
 		if (component != null)
@@ -23,7 +23,7 @@ public class LogicTimerSensor : Switch, ISaveLoadable, ISim33ms
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.OnSwitchToggled;
@@ -32,7 +32,7 @@ public class LogicTimerSensor : Switch, ISaveLoadable, ISim33ms
 		this.wasOn = this.switchedOn;
 	}
 
-	public void Sim33ms(float dt)
+		public void Sim33ms(float dt)
 	{
 		if (this.onDuration == 0f && this.offDuration == 0f)
 		{
@@ -56,18 +56,18 @@ public class LogicTimerSensor : Switch, ISaveLoadable, ISim33ms
 		this.SetState(flag);
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateLogicCircuit();
 		this.UpdateVisualState(false);
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, this.switchedOn ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -78,38 +78,38 @@ public class LogicTimerSensor : Switch, ISaveLoadable, ISim33ms
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-	public void ResetTimer()
+		public void ResetTimer()
 	{
 		this.SetState(true);
 		this.OnSwitchToggled(true);
 		this.timeElapsedInCurrentState = 0f;
 	}
 
-	[Serialize]
+		[Serialize]
 	public float onDuration = 10f;
 
-	[Serialize]
+		[Serialize]
 	public float offDuration = 10f;
 
-	[Serialize]
+		[Serialize]
 	public bool displayCyclesMode;
 
-	private bool wasOn;
+		private bool wasOn;
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	public float timeElapsedInCurrentState;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicTimerSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicTimerSensor>(delegate(LogicTimerSensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicTimerSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicTimerSensor>(delegate(LogicTimerSensor component, object data)
 	{
 		component.OnCopySettings(data);
 	});

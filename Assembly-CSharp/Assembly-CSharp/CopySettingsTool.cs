@@ -3,28 +3,28 @@ using UnityEngine;
 
 public class CopySettingsTool : DragTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		CopySettingsTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		CopySettingsTool.Instance = this;
 	}
 
-	public void Activate()
+		public void Activate()
 	{
 		PlayerController.Instance.ActivateTool(this);
 	}
 
-	public void SetSourceObject(GameObject sourceGameObject)
+		public void SetSourceObject(GameObject sourceGameObject)
 	{
 		this.sourceGameObject = sourceGameObject;
 	}
 
-	protected override void OnDragTool(int cell, int distFromOrigin)
+		protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		if (this.sourceGameObject == null)
 		{
@@ -36,20 +36,20 @@ public class CopySettingsTool : DragTool
 		}
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		this.sourceGameObject = null;
 	}
 
-	public static CopySettingsTool Instance;
+		public static CopySettingsTool Instance;
 
-	public GameObject Placer;
+		public GameObject Placer;
 
-	private GameObject sourceGameObject;
+		private GameObject sourceGameObject;
 }

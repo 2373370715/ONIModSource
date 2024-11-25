@@ -7,7 +7,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ClusterPOIManager : KMonoBehaviour
 {
-	private ClusterFogOfWarManager.Instance GetFOWManager()
+		private ClusterFogOfWarManager.Instance GetFOWManager()
 	{
 		if (this.m_fowManager == null)
 		{
@@ -16,7 +16,7 @@ public class ClusterPOIManager : KMonoBehaviour
 		return this.m_fowManager;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (DlcManager.FeatureClusterSpaceEnabled())
@@ -28,22 +28,22 @@ public class ClusterPOIManager : KMonoBehaviour
 		}
 	}
 
-	public void RegisterTemporalTear(TemporalTear temporalTear)
+		public void RegisterTemporalTear(TemporalTear temporalTear)
 	{
 		this.m_temporalTear.Set(temporalTear);
 	}
 
-	public bool HasTemporalTear()
+		public bool HasTemporalTear()
 	{
 		return this.m_temporalTear.Get() != null;
 	}
 
-	public TemporalTear GetTemporalTear()
+		public TemporalTear GetTemporalTear()
 	{
 		return this.m_temporalTear.Get();
 	}
 
-	private void UpgradeOldSaves()
+		private void UpgradeOldSaves()
 	{
 		bool flag = false;
 		foreach (KeyValuePair<AxialI, List<ClusterGridEntity>> keyValuePair in ClusterGrid.Instance.cellContents)
@@ -67,7 +67,7 @@ public class ClusterPOIManager : KMonoBehaviour
 		}
 	}
 
-	public void SpawnSpacePOIsInLegacySave()
+		public void SpawnSpacePOIsInLegacySave()
 	{
 		Dictionary<int[], string[]> dictionary = new Dictionary<int[], string[]>();
 		dictionary.Add(new int[]
@@ -207,7 +207,7 @@ public class ClusterPOIManager : KMonoBehaviour
 		}
 	}
 
-	public void PopulatePOIsFromWorldGen(Cluster clusterLayout)
+		public void PopulatePOIsFromWorldGen(Cluster clusterLayout)
 	{
 		foreach (KeyValuePair<AxialI, string> keyValuePair in clusterLayout.poiPlacements)
 		{
@@ -217,7 +217,7 @@ public class ClusterPOIManager : KMonoBehaviour
 		}
 	}
 
-	public void RevealTemporalTear()
+		public void RevealTemporalTear()
 	{
 		if (this.m_temporalTear.Get() == null)
 		{
@@ -228,7 +228,7 @@ public class ClusterPOIManager : KMonoBehaviour
 		this.GetFOWManager().RevealLocation(location, 1);
 	}
 
-	public bool IsTemporalTearRevealed()
+		public bool IsTemporalTearRevealed()
 	{
 		if (this.m_temporalTear.Get() == null)
 		{
@@ -238,7 +238,7 @@ public class ClusterPOIManager : KMonoBehaviour
 		return this.GetFOWManager().IsLocationRevealed(this.m_temporalTear.Get().Location);
 	}
 
-	public void OpenTemporalTear(int openerWorldId)
+		public void OpenTemporalTear(int openerWorldId)
 	{
 		if (this.m_temporalTear.Get() == null)
 		{
@@ -252,21 +252,21 @@ public class ClusterPOIManager : KMonoBehaviour
 		}
 	}
 
-	public bool HasTemporalTearConsumedCraft()
+		public bool HasTemporalTearConsumedCraft()
 	{
 		return !(this.m_temporalTear.Get() == null) && this.m_temporalTear.Get().HasConsumedCraft();
 	}
 
-	public bool IsTemporalTearOpen()
+		public bool IsTemporalTearOpen()
 	{
 		return !(this.m_temporalTear.Get() == null) && this.m_temporalTear.Get().IsOpen();
 	}
 
-	[Serialize]
+		[Serialize]
 	private List<Ref<ResearchDestination>> m_researchDestinations = new List<Ref<ResearchDestination>>();
 
-	[Serialize]
+		[Serialize]
 	private Ref<TemporalTear> m_temporalTear = new Ref<TemporalTear>();
 
-	private ClusterFogOfWarManager.Instance m_fowManager;
+		private ClusterFogOfWarManager.Instance m_fowManager;
 }

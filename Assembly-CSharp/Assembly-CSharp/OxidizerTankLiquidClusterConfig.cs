@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class OxidizerTankLiquidClusterConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "OxidizerTankLiquidCluster";
 		int width = 5;
@@ -44,7 +44,7 @@ public class OxidizerTankLiquidClusterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<BuildingAttachPoint>().points = new BuildingAttachPoint.HardPoint[]
@@ -55,7 +55,7 @@ public class OxidizerTankLiquidClusterConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = 450f;
@@ -96,7 +96,7 @@ public class OxidizerTankLiquidClusterConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "OxidizerTankLiquidCluster";
+		public const string ID = "OxidizerTankLiquidCluster";
 
-	public const float FuelCapacity = 450f;
+		public const float FuelCapacity = 450f;
 }

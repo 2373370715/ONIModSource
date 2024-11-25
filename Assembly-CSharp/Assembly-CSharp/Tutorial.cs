@@ -3,31 +3,31 @@ using System.Collections.Generic;
 using Klei.AI;
 using KSerialization;
 using STRINGS;
+using TUNING;
 using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/Tutorial")]
 public class Tutorial : KMonoBehaviour, IRender1000ms
 {
-	public static void ResetHiddenTutorialMessages()
+		public static void ResetHiddenTutorialMessages()
 	{
 		if (Tutorial.Instance != null)
 		{
-			Tutorial.Instance.tutorialMessagesRemaining.Clear();
+			Tutorial.Instance.tutorialMessagesSeen.Clear();
 		}
 		foreach (object obj in Enum.GetValues(typeof(Tutorial.TutorialMessages)))
 		{
-			Tutorial.TutorialMessages tutorialMessages = (Tutorial.TutorialMessages)obj;
-			KPlayerPrefs.SetInt("HideTutorial_" + tutorialMessages.ToString(), 0);
+			Tutorial.TutorialMessages key = (Tutorial.TutorialMessages)obj;
+			KPlayerPrefs.SetInt("HideTutorial_" + key.ToString(), 0);
 			if (Tutorial.Instance != null)
 			{
-				Tutorial.Instance.tutorialMessagesRemaining.Add(tutorialMessages);
-				Tutorial.Instance.hiddenTutorialMessages[tutorialMessages] = false;
+				Tutorial.Instance.hiddenTutorialMessages[key] = false;
 			}
 		}
 		KPlayerPrefs.SetInt("HideTutorial_CheckState", 0);
 	}
 
-	private void LoadHiddenTutorialMessages()
+		private void LoadHiddenTutorialMessages()
 	{
 		foreach (object obj in Enum.GetValues(typeof(Tutorial.TutorialMessages)))
 		{
@@ -37,20 +37,20 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		}
 	}
 
-	public void HideTutorialMessage(Tutorial.TutorialMessages message)
+		public void HideTutorialMessage(Tutorial.TutorialMessages message)
 	{
 		this.hiddenTutorialMessages[message] = true;
 		KPlayerPrefs.SetInt("HideTutorial_" + message.ToString(), 1);
 	}
 
-			public static Tutorial Instance { get; private set; }
+				public static Tutorial Instance { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		Tutorial.Instance = null;
 	}
 
-	private void UpdateNotifierPosition()
+		private void UpdateNotifierPosition()
 	{
 		if (this.notifierPosition == Vector3.zero)
 		{
@@ -63,20 +63,56 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		this.notifier.transform.SetPosition(this.notifierPosition);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		Tutorial.Instance = this;
 		this.LoadHiddenTutorialMessages();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
-		if (this.tutorialMessagesRemaining.Count == 0)
+		if (this.tutorialMessagesRemaining.Count != 0)
 		{
-			for (int i = 0; i <= 20; i++)
+			this.tutorialMessagesRemaining.Clear();
+			this.tutorialMessagesSeen.Add(0);
+			this.tutorialMessagesSeen.Add(1);
+			this.tutorialMessagesSeen.Add(15);
+			this.tutorialMessagesSeen.Add(11);
+			if (GameUtil.GetCurrentCycle() > 1)
 			{
-				this.tutorialMessagesRemaining.Add((Tutorial.TutorialMessages)i);
+				this.tutorialMessagesSeen.Add(6);
 			}
+			if (GameUtil.GetCurrentCycle() > 10)
+			{
+				this.tutorialMessagesSeen.Add(5);
+				this.tutorialMessagesSeen.Add(10);
+				this.tutorialMessagesSeen.Add(4);
+				this.tutorialMessagesSeen.Add(13);
+				this.tutorialMessagesSeen.Add(18);
+				this.tutorialMessagesSeen.Add(7);
+				this.tutorialMessagesSeen.Add(2);
+			}
+			if (GameUtil.GetCurrentCycle() > 30)
+			{
+				this.tutorialMessagesSeen.Add(8);
+				this.tutorialMessagesSeen.Add(14);
+				this.tutorialMessagesSeen.Add(19);
+			}
+			if (GameUtil.GetCurrentCycle() > 100)
+			{
+				this.tutorialMessagesSeen.Add(9);
+				this.tutorialMessagesSeen.Add(16);
+				this.tutorialMessagesSeen.Add(17);
+			}
+			if (BuildingInventory.Instance.BuildingCount("SuitLocker") > 0)
+			{
+				this.tutorialMessagesSeen.Add(12);
+			}
+		}
+		if (this.saved_TM_COUNT < 24)
+		{
+			global::Debug.Log("Upgraded tutorial messages");
+			this.saved_TM_COUNT = 24;
 		}
 		List<Tutorial.Item> list = new List<Tutorial.Item>();
 		List<Tutorial.Item> list2 = list;
@@ -166,12 +202,12 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		DiscoveredResources.Instance.OnDiscover += this.OnDiscover;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		DiscoveredResources.Instance.OnDiscover -= this.OnDiscover;
 	}
 
-	private void OnDiscover(Tag category_tag, Tag tag)
+		private void OnDiscover(Tag category_tag, Tag tag)
 	{
 		Element element = ElementLoader.FindElementByHash(SimHashes.UraniumOre);
 		if (element != null && tag == element.tag)
@@ -180,7 +216,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		}
 	}
 
-	public Message TutorialMessage(Tutorial.TutorialMessages tm, bool queueMessage = true)
+		public Message TutorialMessage(Tutorial.TutorialMessages tm, bool queueMessage = true)
 	{
 		bool flag = false;
 		Message message = null;
@@ -253,6 +289,18 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		case Tutorial.TutorialMessages.TM_Radiation:
 			message = new TutorialMessage(Tutorial.TutorialMessages.TM_Radiation, MISC.NOTIFICATIONS.RADIATION.NAME, MISC.NOTIFICATIONS.RADIATION.MESSAGEBODY, MISC.NOTIFICATIONS.RADIATION.TOOLTIP, null, null, null, "icon_category_radiation", DlcManager.AVAILABLE_EXPANSION1_ONLY);
 			break;
+		case Tutorial.TutorialMessages.TM_BionicBattery:
+			message = new TutorialMessage(Tutorial.TutorialMessages.TM_BionicBattery, MISC.NOTIFICATIONS.BIONICBATTERY.NAME, MISC.NOTIFICATIONS.BIONICBATTERY.MESSAGEBODY, MISC.NOTIFICATIONS.BIONICBATTERY.TOOLTIP, null, null, null, "electrobank_large", DlcManager.DLC3);
+			break;
+		case Tutorial.TutorialMessages.TM_GunkedToilet:
+			message = new TutorialMessage(Tutorial.TutorialMessages.TM_GunkedToilet, MISC.NOTIFICATIONS.GUNKEDTOILET.NAME, MISC.NOTIFICATIONS.GUNKEDTOILET.MESSAGEBODY, MISC.NOTIFICATIONS.GUNKEDTOILET.TOOLTIP, null, null, null, "icon_plunger", DlcManager.DLC3);
+			break;
+		case Tutorial.TutorialMessages.TM_SlipperySurface:
+			message = new TutorialMessage(Tutorial.TutorialMessages.TM_SlipperySurface, MISC.NOTIFICATIONS.SLIPPERYSURFACE.NAME, MISC.NOTIFICATIONS.SLIPPERYSURFACE.MESSAGEBODY, MISC.NOTIFICATIONS.SLIPPERYSURFACE.TOOLTIP, null, null, null, "icon_action_mop", null);
+			break;
+		case Tutorial.TutorialMessages.TM_BionicOil:
+			message = new TutorialMessage(Tutorial.TutorialMessages.TM_BionicOil, MISC.NOTIFICATIONS.BIONICOIL.NAME, MISC.NOTIFICATIONS.BIONICOIL.MESSAGEBODY, MISC.NOTIFICATIONS.BIONICOIL.TOOLTIP, null, null, null, "icon_oil", DlcManager.DLC3);
+			break;
 		}
 		DebugUtil.AssertArgs(message != null || flag, new object[]
 		{
@@ -266,7 +314,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 				"Attempted to queue deprecated Tutorial Message",
 				tm
 			});
-			if (!this.tutorialMessagesRemaining.Contains(tm))
+			if (this.tutorialMessagesSeen.Contains((int)tm))
 			{
 				return null;
 			}
@@ -274,19 +322,19 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 			{
 				return null;
 			}
-			this.tutorialMessagesRemaining.Remove(tm);
+			this.tutorialMessagesSeen.Add((int)tm);
 			Messenger.Instance.QueueMessage(message);
 		}
 		return message;
 	}
 
-	private string OnOxygenTooltip(List<Notification> notifications, object data)
+		private string OnOxygenTooltip(List<Notification> notifications, object data)
 	{
 		ReportManager.ReportEntry entry = ReportManager.Instance.YesterdaysReport.GetEntry(ReportManager.ReportType.OxygenCreated);
 		return MISC.NOTIFICATIONS.INSUFFICIENTOXYGENLASTCYCLE.TOOLTIP.Replace("{EmittingRate}", GameUtil.GetFormattedMass(entry.Positive, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")).Replace("{ConsumptionRate}", GameUtil.GetFormattedMass(Mathf.Abs(entry.Negative), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 	}
 
-	private string UnrefrigeratedFoodTooltip(List<Notification> notifications, object data)
+		private string UnrefrigeratedFoodTooltip(List<Notification> notifications, object data)
 	{
 		string text = MISC.NOTIFICATIONS.UNREFRIGERATEDFOOD.TOOLTIP;
 		ListPool<Pickupable, Tutorial>.PooledList pooledList = ListPool<Pickupable, Tutorial>.Allocate();
@@ -299,15 +347,15 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		return text;
 	}
 
-	private string OnLowFoodTooltip(List<Notification> notifications, object data)
+		private string OnLowFoodTooltip(List<Notification> notifications, object data)
 	{
 		global::Debug.Assert(((WorldContainer)data).id == ClusterManager.Instance.activeWorldId);
-		float calories = RationTracker.Get().CountRations(null, ((WorldContainer)data).worldInventory, true);
-		float f = (float)Components.LiveMinionIdentities.GetWorldItems(((WorldContainer)data).id, false).Count * -1000000f;
+		float calories = WorldResourceAmountTracker<RationTracker>.Get().CountAmount(null, ((WorldContainer)data).worldInventory, true);
+		float f = (float)Components.LiveMinionIdentities.GetWorldItems(((WorldContainer)data).id, false).Count * DUPLICANTSTATS.STANDARD.BaseStats.CALORIES_BURNED_PER_CYCLE;
 		return string.Format(MISC.NOTIFICATIONS.FOODLOW.TOOLTIP, GameUtil.GetFormattedCalories(calories, GameUtil.TimeSlice.None, true), GameUtil.GetFormattedCalories(Mathf.Abs(f), GameUtil.TimeSlice.None, true));
 	}
 
-	public void DebugNotification()
+		public void DebugNotification()
 	{
 		NotificationType type;
 		string text;
@@ -334,7 +382,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		this.notifier.Add(notification, "");
 	}
 
-	public void DebugNotificationMessage()
+		public void DebugNotificationMessage()
 	{
 		string str = "This is a message notification. ";
 		int num = this.debugMessageCount;
@@ -343,7 +391,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		Messenger.Instance.QueueMessage(message);
 	}
 
-	public void Render1000ms(float dt)
+		public void Render1000ms(float dt)
 	{
 		if (App.isLoading)
 		{
@@ -401,7 +449,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 				item2.lastNotifyTime = Time.time;
 			}
 		}
-		if (GameClock.Instance.GetCycle() > 0 && !this.tutorialMessagesRemaining.Contains(Tutorial.TutorialMessages.TM_Priorities) && !this.queuedPrioritiesMessage)
+		if (GameClock.Instance.GetCycle() > 0 && !this.tutorialMessagesSeen.Contains(6) && !this.queuedPrioritiesMessage)
 		{
 			this.queuedPrioritiesMessage = true;
 			GameScheduler.Instance.Schedule("PrioritiesTutorial", 2f, delegate(object obj)
@@ -411,17 +459,17 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		}
 	}
 
-	private bool OxygenGeneratorBuilt()
+		private bool OxygenGeneratorBuilt()
 	{
 		return this.oxygenGenerators.Count > 0;
 	}
 
-	private bool OxygenGeneratorNotBuilt()
+		private bool OxygenGeneratorNotBuilt()
 	{
 		return this.oxygenGenerators.Count == 0;
 	}
 
-	private bool SufficientOxygenLastCycleAndThisCycle()
+		private bool SufficientOxygenLastCycleAndThisCycle()
 	{
 		if (ReportManager.Instance.YesterdaysReport == null)
 		{
@@ -431,12 +479,12 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		return ReportManager.Instance.TodaysReport.GetEntry(ReportManager.ReportType.OxygenCreated).Net > 0.0001f || entry.Net > 0.0001f || (GameClock.Instance.GetCycle() < 1 && !GameClock.Instance.IsNighttime());
 	}
 
-	private bool FoodIsRefrigerated()
+		private bool FoodIsRefrigerated()
 	{
 		return this.GetUnrefrigeratedFood(null) <= 0;
 	}
 
-	private int GetUnrefrigeratedFood(List<Pickupable> foods)
+		private int GetUnrefrigeratedFood(List<Pickupable> foods)
 	{
 		int num = 0;
 		if (ClusterManager.Instance.activeWorld.worldInventory != null)
@@ -465,25 +513,25 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		return num;
 	}
 
-	private bool EnergySourceExists()
+		private bool EnergySourceExists()
 	{
 		return Game.Instance.circuitManager.HasGenerators();
 	}
 
-	private bool BedExists()
+		private bool BedExists()
 	{
-		return Components.Sleepables.Count > 0;
+		return Components.NormalBeds.GlobalCount > 0;
 	}
 
-	private bool EnoughFood()
+		private bool EnoughFood()
 	{
 		int count = Components.LiveMinionIdentities.GetWorldItems(ClusterManager.Instance.activeWorldId, false).Count;
-		float num = RationTracker.Get().CountRations(null, ClusterManager.Instance.activeWorld.worldInventory, true);
-		float num2 = (float)count * 1000000f;
+		float num = WorldResourceAmountTracker<RationTracker>.Get().CountAmount(null, ClusterManager.Instance.activeWorld.worldInventory, true);
+		float num2 = (float)count * FOOD.FOOD_CALORIES_PER_CYCLE;
 		return num / num2 >= 1f;
 	}
 
-	private bool CanTreatSickDuplicant()
+		private bool CanTreatSickDuplicant()
 	{
 		bool flag = Components.Clinics.Count >= 1;
 		bool flag2 = false;
@@ -508,7 +556,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		return !flag2 || flag;
 	}
 
-	private bool LongTravelTimes()
+		private bool LongTravelTimes()
 	{
 		if (ReportManager.Instance.reports.Count < 3)
 		{
@@ -525,7 +573,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		return num / num2 <= 0.4f;
 	}
 
-	private bool FoodSourceExistsOnStartingWorld()
+		private bool FoodSourceExistsOnStartingWorld()
 	{
 		using (List<ComplexFabricator>.Enumerator enumerator = Components.ComplexFabricators.Items.GetEnumerator())
 		{
@@ -540,17 +588,17 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		return Components.PlantablePlots.GetItems(ClusterManager.Instance.GetStartWorld().id).Count > 0;
 	}
 
-	private bool HygeneExists()
+		private bool HygeneExists()
 	{
 		return Components.HandSanitizers.Count > 0;
 	}
 
-	private bool ToiletExists()
+		private bool ToiletExists()
 	{
 		return Components.Toilets.Count > 0;
 	}
 
-	private void ZoomToNextOxygenGenerator()
+		private void ZoomToNextOxygenGenerator()
 	{
 		if (this.oxygenGenerators.Count == 0)
 		{
@@ -573,7 +621,7 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		this.focusedOxygenGenerator++;
 	}
 
-	private void ZoomToNextUnrefrigeratedFood()
+		private void ZoomToNextUnrefrigeratedFood()
 	{
 		ListPool<Pickupable, Tutorial>.PooledList pooledList = ListPool<Pickupable, Tutorial>.Allocate();
 		int unrefrigeratedFood = this.GetUnrefrigeratedFood(pooledList);
@@ -594,75 +642,86 @@ public class Tutorial : KMonoBehaviour, IRender1000ms
 		pooledList.Recycle();
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Notifier notifier;
 
+		[Serialize]
+	private int saved_TM_COUNT = 24;
+
+		[Serialize]
+	private List<int> tutorialMessagesSeen = new List<int>();
+
+		[Obsolete("Contains invalid data")]
 	[Serialize]
 	private SerializedList<Tutorial.TutorialMessages> tutorialMessagesRemaining = new SerializedList<Tutorial.TutorialMessages>();
 
-	private const string HIDDEN_TUTORIAL_PREF_KEY_PREFIX = "HideTutorial_";
+		private const string HIDDEN_TUTORIAL_PREF_KEY_PREFIX = "HideTutorial_";
 
-	public const string HIDDEN_TUTORIAL_PREF_BUTTON_KEY = "HideTutorial_CheckState";
+		public const string HIDDEN_TUTORIAL_PREF_BUTTON_KEY = "HideTutorial_CheckState";
 
-	private Dictionary<Tutorial.TutorialMessages, bool> hiddenTutorialMessages = new Dictionary<Tutorial.TutorialMessages, bool>();
+		private Dictionary<Tutorial.TutorialMessages, bool> hiddenTutorialMessages = new Dictionary<Tutorial.TutorialMessages, bool>();
 
-	private int debugMessageCount;
+		private int debugMessageCount;
 
-	private bool queuedPrioritiesMessage;
+		private bool queuedPrioritiesMessage;
 
-	private const float LOW_RATION_AMOUNT = 1f;
+		private const float LOW_RATION_AMOUNT = 1f;
 
-	private List<List<Tutorial.Item>> itemTree = new List<List<Tutorial.Item>>();
+		private List<List<Tutorial.Item>> itemTree = new List<List<Tutorial.Item>>();
 
-	private List<Tutorial.Item> warningItems = new List<Tutorial.Item>();
+		private List<Tutorial.Item> warningItems = new List<Tutorial.Item>();
 
-	private Vector3 notifierPosition;
+		private Vector3 notifierPosition;
 
-	public List<GameObject> oxygenGenerators = new List<GameObject>();
+		public List<GameObject> oxygenGenerators = new List<GameObject>();
 
-	private int focusedOxygenGenerator;
+		private int focusedOxygenGenerator;
 
-	private int focusedUnrefrigFood = -1;
+		private int focusedUnrefrigFood = -1;
 
-	public enum TutorialMessages
+		public enum TutorialMessages
 	{
-		TM_Basics,
-		TM_Welcome,
-		TM_StressManagement,
-		TM_Scheduling,
-		TM_Mopping,
-		TM_Locomotion,
-		TM_Priorities,
-		TM_FetchingWater,
-		TM_ThermalComfort,
-		TM_OverheatingBuildings,
-		TM_LotsOfGerms,
-		TM_DiseaseCooking,
-		TM_Suits,
-		TM_Morale,
-		TM_Schedule,
-		TM_Digging,
-		TM_Power,
-		TM_Insulation,
-		TM_Plumbing,
-		TM_Radiation,
-		TM_COUNT
+				TM_Basics,
+				TM_Welcome,
+				TM_StressManagement,
+				TM_Scheduling,
+				TM_Mopping,
+				TM_Locomotion,
+				TM_Priorities,
+				TM_FetchingWater,
+				TM_ThermalComfort,
+				TM_OverheatingBuildings,
+				TM_LotsOfGerms,
+				TM_DiseaseCooking,
+				TM_Suits,
+				TM_Morale,
+				TM_Schedule,
+				TM_Digging,
+				TM_Power,
+				TM_Insulation,
+				TM_Plumbing,
+				TM_Radiation,
+				TM_BionicBattery,
+				TM_GunkedToilet,
+				TM_SlipperySurface,
+				TM_BionicOil,
+				TM_COUNT
 	}
 
-		private delegate bool HideConditionDelegate();
+			private delegate bool HideConditionDelegate();
 
-		private delegate bool RequirementSatisfiedDelegate();
+			private delegate bool RequirementSatisfiedDelegate();
 
-	private class Item
+		private class Item
 	{
-		public Notification notification;
+				public Notification notification;
 
-		public Tutorial.HideConditionDelegate hideCondition;
+				public Tutorial.HideConditionDelegate hideCondition;
 
-		public Tutorial.RequirementSatisfiedDelegate requirementSatisfied;
+				public Tutorial.RequirementSatisfiedDelegate requirementSatisfied;
 
-		public float minTimeToNotify;
+				public float minTimeToNotify;
 
-		public float lastNotifyTime;
+				public float lastNotifyTime;
 	}
 }

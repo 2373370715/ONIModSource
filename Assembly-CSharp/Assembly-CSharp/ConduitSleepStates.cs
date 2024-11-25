@@ -4,16 +4,32 @@ using UnityEngine;
 
 public class ConduitSleepStates : GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.connector.moveToSleepLocation;
 		this.root.EventTransition(GameHashes.NewDay, (ConduitSleepStates.Instance smi) => GameClock.Instance, this.behaviourcomplete, null).Exit(new StateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State.Callback(ConduitSleepStates.CleanUp));
-		this.connector.moveToSleepLocation.ToggleStatusItem(CREATURES.STATUSITEMS.DROWSY.NAME, CREATURES.STATUSITEMS.DROWSY.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).MoveTo(delegate(ConduitSleepStates.Instance smi)
+		GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State moveToSleepLocation = this.connector.moveToSleepLocation;
+		string name = CREATURES.STATUSITEMS.DROWSY.NAME;
+		string tooltip = CREATURES.STATUSITEMS.DROWSY.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		moveToSleepLocation.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main).MoveTo(delegate(ConduitSleepStates.Instance smi)
 		{
 			ConduitSleepMonitor.Instance smi2 = smi.GetSMI<ConduitSleepMonitor.Instance>();
 			return smi2.sm.targetSleepCell.Get(smi2);
 		}, this.drowsy, this.behaviourcomplete, false);
-		this.drowsy.ToggleStatusItem(CREATURES.STATUSITEMS.DROWSY.NAME, CREATURES.STATUSITEMS.DROWSY.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).Enter(delegate(ConduitSleepStates.Instance smi)
+		GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State state = this.drowsy;
+		string name2 = CREATURES.STATUSITEMS.DROWSY.NAME;
+		string tooltip2 = CREATURES.STATUSITEMS.DROWSY.TOOLTIP;
+		string icon2 = "";
+		StatusItem.IconType icon_type2 = StatusItem.IconType.Info;
+		NotificationType notification_type2 = NotificationType.Neutral;
+		bool allow_multiples2 = false;
+		main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name2, tooltip2, icon2, icon_type2, notification_type2, allow_multiples2, default(HashedString), 129022, null, null, main).Enter(delegate(ConduitSleepStates.Instance smi)
 		{
 			smi.GetComponent<Navigator>().SetCurrentNavType(NavType.Ceiling);
 		}).Enter(delegate(ConduitSleepStates.Instance smi)
@@ -25,7 +41,15 @@ public class ConduitSleepStates : GameStateMachine<ConduitSleepStates, ConduitSl
 		}).DefaultState(this.drowsy.loop);
 		this.drowsy.loop.PlayAnim("drowsy_pre").QueueAnim("drowsy_loop", true, null).EventTransition(GameHashes.Nighttime, (ConduitSleepStates.Instance smi) => GameClock.Instance, this.drowsy.pst, (ConduitSleepStates.Instance smi) => GameClock.Instance.IsNighttime());
 		this.drowsy.pst.PlayAnim("drowsy_pst").OnAnimQueueComplete(this.connector.sleep);
-		this.connector.sleep.ToggleStatusItem(CREATURES.STATUSITEMS.SLEEPING.NAME, CREATURES.STATUSITEMS.SLEEPING.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).Enter(delegate(ConduitSleepStates.Instance smi)
+		GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State sleep = this.connector.sleep;
+		string name3 = CREATURES.STATUSITEMS.SLEEPING.NAME;
+		string tooltip3 = CREATURES.STATUSITEMS.SLEEPING.TOOLTIP;
+		string icon3 = "";
+		StatusItem.IconType icon_type3 = StatusItem.IconType.Info;
+		NotificationType notification_type3 = NotificationType.Neutral;
+		bool allow_multiples3 = false;
+		main = Db.Get().StatusItemCategories.Main;
+		sleep.ToggleStatusItem(name3, tooltip3, icon3, icon_type3, notification_type3, allow_multiples3, default(HashedString), 129022, null, null, main).Enter(delegate(ConduitSleepStates.Instance smi)
 		{
 			if (!smi.staterpillar.IsConnectorBuildingSpawned())
 			{
@@ -54,7 +78,7 @@ public class ConduitSleepStates : GameStateMachine<ConduitSleepStates, ConduitSl
 		this.behaviourcomplete.BehaviourComplete(GameTags.Creatures.WantsConduitConnection, false);
 	}
 
-	private static Grid.SceneLayer GetSleepingLayer(ConduitSleepStates.Instance smi)
+		private static Grid.SceneLayer GetSleepingLayer(ConduitSleepStates.Instance smi)
 	{
 		ObjectLayer conduitLayer = smi.staterpillar.conduitLayer;
 		Grid.SceneLayer result;
@@ -83,7 +107,7 @@ public class ConduitSleepStates : GameStateMachine<ConduitSleepStates, ConduitSl
 		return result;
 	}
 
-	private static StatusItem GetStatusItem(ConduitSleepStates.Instance smi)
+		private static StatusItem GetStatusItem(ConduitSleepStates.Instance smi)
 	{
 		ObjectLayer conduitLayer = smi.staterpillar.conduitLayer;
 		StatusItem result;
@@ -112,7 +136,7 @@ public class ConduitSleepStates : GameStateMachine<ConduitSleepStates, ConduitSl
 		return result;
 	}
 
-	private static void OnStorageChanged(ConduitSleepStates.Instance smi, object obj)
+		private static void OnStorageChanged(ConduitSleepStates.Instance smi, object obj)
 	{
 		GameObject gameObject = obj as GameObject;
 		if (gameObject != null)
@@ -121,13 +145,13 @@ public class ConduitSleepStates : GameStateMachine<ConduitSleepStates, ConduitSl
 		}
 	}
 
-	private static void UpdateGulpSymbol(ConduitSleepStates.Instance smi, float dt)
+		private static void UpdateGulpSymbol(ConduitSleepStates.Instance smi, float dt)
 	{
 		smi.SetGulpSymbolVisibility(smi.amountDeposited > 0f);
 		smi.amountDeposited = 0f;
 	}
 
-	private static void CleanUp(ConduitSleepStates.Instance smi)
+		private static void CleanUp(ConduitSleepStates.Instance smi)
 	{
 		ConduitSleepMonitor.Instance smi2 = smi.GetSMI<ConduitSleepMonitor.Instance>();
 		if (smi2 != null)
@@ -137,25 +161,25 @@ public class ConduitSleepStates : GameStateMachine<ConduitSleepStates, ConduitSl
 		smi.staterpillar.DestroyOrphanedConnectorBuilding();
 	}
 
-	public ConduitSleepStates.DrowsyStates drowsy;
+		public ConduitSleepStates.DrowsyStates drowsy;
 
-	public ConduitSleepStates.HasConnectorStates connector;
+		public ConduitSleepStates.HasConnectorStates connector;
 
-	public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State behaviourcomplete;
+		public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State behaviourcomplete;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public HashedString gulpSymbol = "gulp";
+				public HashedString gulpSymbol = "gulp";
 	}
 
-	public new class Instance : GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.GameInstance
 	{
-		public Instance(Chore<ConduitSleepStates.Instance> chore, ConduitSleepStates.Def def) : base(chore, def)
+				public Instance(Chore<ConduitSleepStates.Instance> chore, ConduitSleepStates.Def def) : base(chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.WantsConduitConnection);
 		}
 
-		public void SetGulpSymbolVisibility(bool state)
+				public void SetGulpSymbolVisibility(bool state)
 		{
 			string sound = GlobalAssets.GetSound("PlugSlug_Charging_Gulp_LP", false);
 			if (this.gulpSymbolVisible != state)
@@ -171,42 +195,42 @@ public class ConduitSleepStates : GameStateMachine<ConduitSleepStates, ConduitSl
 			}
 		}
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public KBatchedAnimController animController;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		public Staterpillar staterpillar;
 
-		[MyCmpAdd]
+				[MyCmpAdd]
 		private LoopingSounds loopingSounds;
 
-		public bool gulpSymbolVisible;
+				public bool gulpSymbolVisible;
 
-		public float amountDeposited;
+				public float amountDeposited;
 	}
 
-	public class SleepStates : GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State
+		public class SleepStates : GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State
 	{
-		public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State connected;
+				public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State connected;
 
-		public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State noConnection;
+				public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State noConnection;
 	}
 
-	public class DrowsyStates : GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State
+		public class DrowsyStates : GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State
 	{
-		public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State loop;
+				public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State loop;
 
-		public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State pst;
+				public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State pst;
 	}
 
-	public class HasConnectorStates : GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State
+		public class HasConnectorStates : GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State
 	{
-		public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State moveToSleepLocation;
+				public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State moveToSleepLocation;
 
-		public ConduitSleepStates.SleepStates sleep;
+				public ConduitSleepStates.SleepStates sleep;
 
-		public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State noConnectionWake;
+				public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State noConnectionWake;
 
-		public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State connectedWake;
+				public GameStateMachine<ConduitSleepStates, ConduitSleepStates.Instance, IStateMachineTarget, ConduitSleepStates.Def>.State connectedWake;
 	}
 }

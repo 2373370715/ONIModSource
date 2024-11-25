@@ -7,14 +7,14 @@ using UnityEngine;
 
 public static class CodexCache
 {
-	public static string FormatLinkID(string linkID)
+		public static string FormatLinkID(string linkID)
 	{
 		linkID = linkID.ToUpper();
 		linkID = linkID.Replace("_", "");
 		return linkID;
 	}
 
-	public static void CodexCacheInit()
+		public static void CodexCacheInit()
 	{
 		CodexCache.entries = new Dictionary<string, CodexEntry>();
 		CodexCache.subEntries = new Dictionary<string, SubEntry>();
@@ -32,7 +32,8 @@ public static class CodexCache
 				new global::Tuple<string, Type>("!CodexLabelWithLargeIcon", typeof(CodexLabelWithLargeIcon)),
 				new global::Tuple<string, Type>("!CodexContentLockedIndicator", typeof(CodexContentLockedIndicator)),
 				new global::Tuple<string, Type>("!CodexLargeSpacer", typeof(CodexLargeSpacer)),
-				new global::Tuple<string, Type>("!CodexVideo", typeof(CodexVideo))
+				new global::Tuple<string, Type>("!CodexVideo", typeof(CodexVideo)),
+				new global::Tuple<string, Type>("!CodexElementCategoryList", typeof(CodexElementCategoryList))
 			};
 		}
 		string text = CodexCache.FormatLinkID("LESSONS");
@@ -153,7 +154,7 @@ public static class CodexCache
 		});
 	}
 
-	public static CodexEntry FindEntry(string id)
+		public static CodexEntry FindEntry(string id)
 	{
 		if (CodexCache.entries == null)
 		{
@@ -168,7 +169,7 @@ public static class CodexCache
 		return null;
 	}
 
-	public static SubEntry FindSubEntry(string id)
+		public static SubEntry FindSubEntry(string id)
 	{
 		foreach (KeyValuePair<string, CodexEntry> keyValuePair in CodexCache.entries)
 		{
@@ -183,7 +184,7 @@ public static class CodexCache
 		return null;
 	}
 
-	private static void CheckUnlockableContent()
+		private static void CheckUnlockableContent()
 	{
 		foreach (KeyValuePair<string, CodexEntry> keyValuePair in CodexCache.entries)
 		{
@@ -198,12 +199,12 @@ public static class CodexCache
 		}
 	}
 
-	private static void CollectYAMLEntries(List<CategoryEntry> categories)
+		private static void CollectYAMLEntries(List<CategoryEntry> categories)
 	{
 		CodexCache.baseEntryPath = Application.streamingAssetsPath + "/codex";
 		foreach (CodexEntry codexEntry in CodexCache.CollectEntries(""))
 		{
-			if (codexEntry != null && codexEntry.id != null && codexEntry.contentContainers != null && SaveLoader.Instance.IsDlcListActiveForCurrentSave(codexEntry.dlcIds))
+			if (codexEntry != null && codexEntry.id != null && codexEntry.contentContainers != null && SaveLoader.Instance.IsCorrectDlcActiveForCurrentSave(codexEntry.dlcIds, codexEntry.forbiddenDLCIds))
 			{
 				if (CodexCache.entries.ContainsKey(CodexCache.FormatLinkID(codexEntry.id)))
 				{
@@ -220,7 +221,7 @@ public static class CodexCache
 		{
 			foreach (CodexEntry codexEntry2 in CodexCache.CollectEntries(Path.GetFileNameWithoutExtension(directories[i])))
 			{
-				if (codexEntry2 != null && codexEntry2.id != null && codexEntry2.contentContainers != null && SaveLoader.Instance.IsDlcListActiveForCurrentSave(codexEntry2.dlcIds))
+				if (codexEntry2 != null && codexEntry2.id != null && codexEntry2.contentContainers != null && SaveLoader.Instance.IsCorrectDlcActiveForCurrentSave(codexEntry2.dlcIds, codexEntry2.forbiddenDLCIds))
 				{
 					if (CodexCache.entries.ContainsKey(CodexCache.FormatLinkID(codexEntry2.id)))
 					{
@@ -235,7 +236,7 @@ public static class CodexCache
 		}
 	}
 
-	private static void CollectYAMLSubEntries(List<CategoryEntry> categories)
+		private static void CollectYAMLSubEntries(List<CategoryEntry> categories)
 	{
 		CodexCache.baseEntryPath = Application.streamingAssetsPath + "/codex";
 		using (List<SubEntry>.Enumerator enumerator = CodexCache.CollectSubEntries("").GetEnumerator())
@@ -243,7 +244,7 @@ public static class CodexCache
 			while (enumerator.MoveNext())
 			{
 				SubEntry v = enumerator.Current;
-				if (v.parentEntryID != null && v.id != null && SaveLoader.Instance.IsDlcListActiveForCurrentSave(v.dlcIds))
+				if (v.parentEntryID != null && v.id != null && SaveLoader.Instance.IsAllDlcActiveForCurrentSave(v.dlcIds))
 				{
 					if (CodexCache.entries.ContainsKey(v.parentEntryID.ToUpper()))
 					{
@@ -305,7 +306,7 @@ public static class CodexCache
 		}
 	}
 
-	private static void AddLockLookup(string lockId, string articleId)
+		private static void AddLockLookup(string lockId, string articleId)
 	{
 		if (!CodexCache.unlockedEntryLookup.ContainsKey(lockId))
 		{
@@ -314,7 +315,7 @@ public static class CodexCache
 		CodexCache.unlockedEntryLookup[lockId].Add(articleId);
 	}
 
-	public static string GetEntryForLock(string lockId)
+		public static string GetEntryForLock(string lockId)
 	{
 		if (CodexCache.unlockedEntryLookup == null)
 		{
@@ -335,7 +336,7 @@ public static class CodexCache
 		return null;
 	}
 
-	public static void AddEntry(string id, CodexEntry entry, List<CategoryEntry> categoryEntries = null)
+		public static void AddEntry(string id, CodexEntry entry, List<CategoryEntry> categoryEntries = null)
 	{
 		id = CodexCache.FormatLinkID(id);
 		if (CodexCache.entries.ContainsKey(id))
@@ -400,15 +401,15 @@ public static class CodexCache
 		}
 	}
 
-	public static void AddSubEntry(string id, SubEntry entry)
+		public static void AddSubEntry(string id, SubEntry entry)
 	{
 	}
 
-	public static void MergeSubEntry(string id, SubEntry entry)
+		public static void MergeSubEntry(string id, SubEntry entry)
 	{
 	}
 
-	public static void MergeEntry(string id, CodexEntry entry)
+		public static void MergeEntry(string id, CodexEntry entry)
 	{
 		id = CodexCache.FormatLinkID(entry.id);
 		entry.id = id;
@@ -436,18 +437,18 @@ public static class CodexCache
 		}
 	}
 
-	public static void Clear()
+		public static void Clear()
 	{
 		CodexCache.entries = null;
 		CodexCache.baseEntryPath = null;
 	}
 
-	public static string GetEntryPath()
+		public static string GetEntryPath()
 	{
 		return CodexCache.baseEntryPath;
 	}
 
-	public static CodexEntry GetTemplate(string templatePath)
+		public static CodexEntry GetTemplate(string templatePath)
 	{
 		if (!CodexCache.entries.ContainsKey(templatePath))
 		{
@@ -466,12 +467,12 @@ public static class CodexCache
 		return CodexCache.entries[templatePath];
 	}
 
-	private static void YamlParseErrorCB(YamlIO.Error error, bool force_log_as_warning)
+		private static void YamlParseErrorCB(YamlIO.Error error, bool force_log_as_warning)
 	{
 		throw new Exception(string.Format("{0} parse error in {1}\n{2}", error.severity, error.file.full_path, error.message), error.inner_exception);
 	}
 
-	public static List<CodexEntry> CollectEntries(string folder)
+		public static List<CodexEntry> CollectEntries(string folder)
 	{
 		List<CodexEntry> list = new List<CodexEntry>();
 		string path = (folder == "") ? CodexCache.baseEntryPath : Path.Combine(CodexCache.baseEntryPath, folder);
@@ -519,7 +520,7 @@ public static class CodexCache
 		return list;
 	}
 
-	public static List<SubEntry> CollectSubEntries(string folder)
+		public static List<SubEntry> CollectSubEntries(string folder)
 	{
 		List<SubEntry> list = new List<SubEntry>();
 		string path = (folder == "") ? CodexCache.baseEntryPath : Path.Combine(CodexCache.baseEntryPath, folder);
@@ -558,18 +559,18 @@ public static class CodexCache
 		return list;
 	}
 
-	public static bool IsSubEntryAtPath(string path)
+		public static bool IsSubEntryAtPath(string path)
 	{
 		return Path.GetFileName(path).Contains("SubEntry");
 	}
 
-	private static string baseEntryPath;
+		private static string baseEntryPath;
 
-	public static Dictionary<string, CodexEntry> entries;
+		public static Dictionary<string, CodexEntry> entries;
 
-	public static Dictionary<string, SubEntry> subEntries;
+		public static Dictionary<string, SubEntry> subEntries;
 
-	private static Dictionary<string, List<string>> unlockedEntryLookup;
+		private static Dictionary<string, List<string>> unlockedEntryLookup;
 
-	private static List<global::Tuple<string, Type>> widgetTagMappings;
+		private static List<global::Tuple<string, Type>> widgetTagMappings;
 }

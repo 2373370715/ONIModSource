@@ -2,7 +2,7 @@
 
 public class NavTableValidator
 {
-	protected bool IsClear(int cell, CellOffset[] bounding_offsets, bool is_dupe)
+		protected bool IsClear(int cell, CellOffset[] bounding_offsets, bool is_dupe)
 	{
 		foreach (CellOffset offset in bounding_offsets)
 		{
@@ -20,7 +20,7 @@ public class NavTableValidator
 		return true;
 	}
 
-	protected static bool IsCellPassable(int cell, bool is_dupe)
+		protected static bool IsCellPassable(int cell, bool is_dupe)
 	{
 		Grid.BuildFlags buildFlags = Grid.BuildMasks[cell] & ~(Grid.BuildFlags.Foundation | Grid.BuildFlags.Door | Grid.BuildFlags.FakeFloor);
 		if (buildFlags == ~(Grid.BuildFlags.Solid | Grid.BuildFlags.Foundation | Grid.BuildFlags.Door | Grid.BuildFlags.DupePassable | Grid.BuildFlags.DupeImpassable | Grid.BuildFlags.CritterImpassable | Grid.BuildFlags.FakeFloor))
@@ -34,13 +34,13 @@ public class NavTableValidator
 		return (buildFlags & (Grid.BuildFlags.Solid | Grid.BuildFlags.CritterImpassable)) == ~(Grid.BuildFlags.Solid | Grid.BuildFlags.Foundation | Grid.BuildFlags.Door | Grid.BuildFlags.DupePassable | Grid.BuildFlags.DupeImpassable | Grid.BuildFlags.CritterImpassable | Grid.BuildFlags.FakeFloor);
 	}
 
-	public virtual void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
+		public virtual void UpdateCell(int cell, NavTable nav_table, CellOffset[] bounding_offsets)
 	{
 	}
 
-	public virtual void Clear()
+		public virtual void Clear()
 	{
 	}
 
-	public Action<int> onDirty;
+		public Action<int> onDirty;
 }

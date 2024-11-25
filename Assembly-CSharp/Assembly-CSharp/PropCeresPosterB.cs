@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class PropCeresPosterB : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PropCeresPosterB";
 		string name = STRINGS.BUILDINGS.PREFABS.PROPCERESPOSTERB.NAME;
@@ -34,11 +34,11 @@ public class PropCeresPosterB : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 }

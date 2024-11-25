@@ -3,7 +3,7 @@ using Klei.AI;
 
 public class BladderMonitor : GameStateMachine<BladderMonitor, BladderMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.satisfied;
 		this.satisfied.Transition(this.urgentwant, (BladderMonitor.Instance smi) => smi.NeedsToPee(), UpdateRate.SIM_200ms).Transition(this.breakwant, (BladderMonitor.Instance smi) => smi.WantsToPee(), UpdateRate.SIM_200ms);
@@ -13,15 +13,15 @@ public class BladderMonitor : GameStateMachine<BladderMonitor, BladderMonitor.In
 		this.breakwant.peeing.ToggleThought(Db.Get().Thoughts.BreakBladder, null);
 	}
 
-	public GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State satisfied;
+		public GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State satisfied;
 
-	public BladderMonitor.WantsToPeeStates urgentwant;
+		public BladderMonitor.WantsToPeeStates urgentwant;
 
-	public BladderMonitor.WantsToPeeStates breakwant;
+		public BladderMonitor.WantsToPeeStates breakwant;
 
-	public class WantsToPeeStates : GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State
+		public class WantsToPeeStates : GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State InitializeStates(GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State donePeeingState)
+				public GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State InitializeStates(GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State donePeeingState)
 		{
 			base.DefaultState(this.wanting).ToggleUrge(Db.Get().Urges.Pee).ToggleStateMachine((BladderMonitor.Instance smi) => new ToiletMonitor.Instance(smi.master));
 			this.wanting.EventTransition(GameHashes.BeginChore, this.peeing, (BladderMonitor.Instance smi) => smi.IsPeeing());
@@ -29,20 +29,20 @@ public class BladderMonitor : GameStateMachine<BladderMonitor, BladderMonitor.In
 			return this;
 		}
 
-		public GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State wanting;
+				public GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State wanting;
 
-		public GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State peeing;
+				public GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.State peeing;
 	}
 
-	public new class Instance : GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<BladderMonitor, BladderMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.bladder = Db.Get().Amounts.Bladder.Lookup(master.gameObject);
 			this.choreDriver = base.GetComponent<ChoreDriver>();
 		}
 
-		public bool NeedsToPee()
+				public bool NeedsToPee()
 		{
 			if (base.master.IsNullOrDestroyed())
 			{
@@ -56,23 +56,23 @@ public class BladderMonitor : GameStateMachine<BladderMonitor, BladderMonitor.In
 			return this.bladder.value >= 100f;
 		}
 
-		public bool WantsToPee()
+				public bool WantsToPee()
 		{
 			return this.NeedsToPee() || (this.IsPeeTime() && this.bladder.value >= 40f);
 		}
 
-		public bool IsPeeing()
+				public bool IsPeeing()
 		{
 			return this.choreDriver.HasChore() && this.choreDriver.GetCurrentChore().SatisfiesUrge(Db.Get().Urges.Pee);
 		}
 
-		public bool IsPeeTime()
+				public bool IsPeeTime()
 		{
 			return base.master.GetComponent<Schedulable>().IsAllowed(Db.Get().ScheduleBlockTypes.Hygiene);
 		}
 
-		private AmountInstance bladder;
+				private AmountInstance bladder;
 
-		private ChoreDriver choreDriver;
+				private ChoreDriver choreDriver;
 	}
 }

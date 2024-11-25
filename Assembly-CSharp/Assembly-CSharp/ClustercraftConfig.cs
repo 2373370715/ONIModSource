@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class ClustercraftConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity("Clustercraft", "Clustercraft", true);
 		SaveLoadRoot saveLoadRoot = gameObject.AddOrGet<SaveLoadRoot>();
@@ -29,13 +29,13 @@ public class ClustercraftConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "Clustercraft";
+		public const string ID = "Clustercraft";
 }

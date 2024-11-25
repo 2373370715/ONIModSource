@@ -2,13 +2,13 @@
 
 namespace KMod
 {
-	[Flags]
+		[Flags]
 	public enum Content : byte
 	{
-		LayerableFiles = 1,
-		Strings = 2,
-		DLL = 4,
-		Translation = 8,
-		Animation = 16
+				LayerableFiles = 1,
+				Strings = 2,
+				DLL = 4,
+				Translation = 8,
+				Animation = 16
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class StorageLockerSmartConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "StorageLockerSmart";
 		int width = 1;
@@ -35,7 +35,7 @@ public class StorageLockerSmartConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		SoundEventVolumeCache.instance.AddVolume("storagelocker_kanim", "StorageLocker_Hit_metallic_low", NOISE_POLLUTION.NOISY.TIER1);
 		Prioritizable.AddRef(go);
@@ -55,5 +55,5 @@ public class StorageLockerSmartConfig : IBuildingConfig
 		go.AddOrGetDef<RocketUsageRestriction.Def>();
 	}
 
-	public const string ID = "StorageLockerSmart";
+		public const string ID = "StorageLockerSmart";
 }

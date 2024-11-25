@@ -4,228 +4,198 @@ using KSerialization;
 using STRINGS;
 using UnityEngine;
 
-public class BuildingInternalConstructor : GameStateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget, BuildingInternalConstructor.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.inoperational;
-		base.serializable = StateMachine.SerializeType.ParamsOnly;
-		this.inoperational.EventTransition(GameHashes.OperationalChanged, this.operational, (BuildingInternalConstructor.Instance smi) => smi.GetComponent<Operational>().IsOperational).Enter(delegate(BuildingInternalConstructor.Instance smi)
-		{
-			smi.ShowConstructionSymbol(false);
-		});
-		this.operational.DefaultState(this.operational.constructionRequired).EventTransition(GameHashes.OperationalChanged, this.inoperational, (BuildingInternalConstructor.Instance smi) => !smi.GetComponent<Operational>().IsOperational);
-		this.operational.constructionRequired.EventTransition(GameHashes.OnStorageChange, this.operational.constructionHappening, (BuildingInternalConstructor.Instance smi) => smi.GetMassForConstruction() != null).EventTransition(GameHashes.OnStorageChange, this.operational.constructionSatisfied, (BuildingInternalConstructor.Instance smi) => smi.HasOutputInStorage()).ToggleFetch((BuildingInternalConstructor.Instance smi) => smi.CreateFetchList(), this.operational.constructionHappening).ParamTransition<bool>(this.constructionRequested, this.operational.constructionSatisfied, GameStateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget, BuildingInternalConstructor.Def>.IsFalse).Enter(delegate(BuildingInternalConstructor.Instance smi)
-		{
-			smi.ShowConstructionSymbol(true);
-		}).Exit(delegate(BuildingInternalConstructor.Instance smi)
-		{
-			smi.ShowConstructionSymbol(false);
-		});
-		this.operational.constructionHappening.EventTransition(GameHashes.OnStorageChange, this.operational.constructionSatisfied, (BuildingInternalConstructor.Instance smi) => smi.HasOutputInStorage()).EventTransition(GameHashes.OnStorageChange, this.operational.constructionRequired, (BuildingInternalConstructor.Instance smi) => smi.GetMassForConstruction() == null).ToggleChore((BuildingInternalConstructor.Instance smi) => smi.CreateWorkChore(), this.operational.constructionHappening, this.operational.constructionHappening).ParamTransition<bool>(this.constructionRequested, this.operational.constructionSatisfied, GameStateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget, BuildingInternalConstructor.Def>.IsFalse).Enter(delegate(BuildingInternalConstructor.Instance smi)
-		{
-			smi.ShowConstructionSymbol(true);
-		}).Exit(delegate(BuildingInternalConstructor.Instance smi)
-		{
-			smi.ShowConstructionSymbol(false);
-		});
-		this.operational.constructionSatisfied.EventTransition(GameHashes.OnStorageChange, this.operational.constructionRequired, (BuildingInternalConstructor.Instance smi) => !smi.HasOutputInStorage() && this.constructionRequested.Get(smi)).ParamTransition<bool>(this.constructionRequested, this.operational.constructionRequired, (BuildingInternalConstructor.Instance smi, bool p) => p && !smi.HasOutputInStorage());
-	}
+public class BuildingInternalConstructor
+    : GameStateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget,
+        BuildingInternalConstructor.Def> {
+    public BoolParameter     constructionRequested = new BoolParameter(true);
+    public State             inoperational;
+    public OperationalStates operational;
 
-	public GameStateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget, BuildingInternalConstructor.Def>.State inoperational;
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = inoperational;
+        serializable  = SerializeType.ParamsOnly;
+        inoperational
+            .EventTransition(GameHashes.OperationalChanged,
+                             operational,
+                             smi => smi.GetComponent<Operational>().IsOperational)
+            .Enter(delegate(Instance smi) { smi.ShowConstructionSymbol(false); });
 
-	public BuildingInternalConstructor.OperationalStates operational;
+        operational.DefaultState(operational.constructionRequired)
+                   .EventTransition(GameHashes.OperationalChanged,
+                                    inoperational,
+                                    smi => !smi.GetComponent<Operational>().IsOperational);
 
-	public StateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget, BuildingInternalConstructor.Def>.BoolParameter constructionRequested = new StateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget, BuildingInternalConstructor.Def>.BoolParameter(true);
+        operational.constructionRequired
+                   .EventTransition(GameHashes.OnStorageChange,
+                                    operational.constructionHappening,
+                                    smi => smi.GetMassForConstruction() != null)
+                   .EventTransition(GameHashes.OnStorageChange,
+                                    operational.constructionSatisfied,
+                                    smi => smi.HasOutputInStorage())
+                   .ToggleFetch(smi => smi.CreateFetchList(), operational.constructionHappening)
+                   .ParamTransition(constructionRequested, operational.constructionSatisfied, IsFalse)
+                   .Enter(delegate(Instance smi) { smi.ShowConstructionSymbol(true); })
+                   .Exit(delegate(Instance  smi) { smi.ShowConstructionSymbol(false); });
 
-	public class Def : StateMachine.BaseDef
-	{
-		public DefComponent<Storage> storage;
+        operational.constructionHappening
+                   .EventTransition(GameHashes.OnStorageChange,
+                                    operational.constructionSatisfied,
+                                    smi => smi.HasOutputInStorage())
+                   .EventTransition(GameHashes.OnStorageChange,
+                                    operational.constructionRequired,
+                                    smi => smi.GetMassForConstruction() == null)
+                   .ToggleChore(smi => smi.CreateWorkChore(),
+                                operational.constructionHappening,
+                                operational.constructionHappening)
+                   .ParamTransition(constructionRequested, operational.constructionSatisfied, IsFalse)
+                   .Enter(delegate(Instance smi) { smi.ShowConstructionSymbol(true); })
+                   .Exit(delegate(Instance  smi) { smi.ShowConstructionSymbol(false); });
 
-		public float constructionMass;
+        operational.constructionSatisfied
+                   .EventTransition(GameHashes.OnStorageChange,
+                                    operational.constructionRequired,
+                                    smi => !smi.HasOutputInStorage() && constructionRequested.Get(smi))
+                   .ParamTransition(constructionRequested,
+                                    operational.constructionRequired,
+                                    (smi, p) => p && !smi.HasOutputInStorage());
+    }
 
-		public List<string> outputIDs;
+    public class Def : BaseDef {
+        public float                 constructionMass;
+        public string                constructionSymbol;
+        public List<string>          outputIDs;
+        public bool                  spawnIntoStorage;
+        public DefComponent<Storage> storage;
+    }
 
-		public bool spawnIntoStorage;
+    public class OperationalStates : State {
+        public State constructionHappening;
+        public State constructionRequired;
+        public State constructionSatisfied;
+    }
 
-		public string constructionSymbol;
-	}
+    public new class Instance : GameInstance, ISidescreenButtonControl {
+        [Serialize]
+        private float constructionElapsed;
 
-	public class OperationalStates : GameStateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget, BuildingInternalConstructor.Def>.State
-	{
-		public GameStateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget, BuildingInternalConstructor.Def>.State constructionRequired;
+        private          ProgressBar progressBar;
+        private readonly Storage     storage;
 
-		public GameStateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget, BuildingInternalConstructor.Def>.State constructionHappening;
+        public Instance(IStateMachineTarget master, Def def) : base(master, def) {
+            storage = def.storage.Get(this);
+            GetComponent<RocketModule>()
+                .AddModuleCondition(ProcessCondition.ProcessConditionType.RocketPrep,
+                                    new InternalConstructionCompleteCondition(this));
+        }
 
-		public GameStateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget, BuildingInternalConstructor.Def>.State constructionSatisfied;
-	}
+        public string SidescreenButtonText {
+            get {
+                if (!smi.sm.constructionRequested.Get(smi))
+                    return string.Format(UI.UISIDESCREENS.BUTTONMENUSIDESCREEN.ALLOW_INTERNAL_CONSTRUCTOR.text,
+                                         Assets.GetPrefab(def.outputIDs[0]).GetProperName());
 
-	public new class Instance : GameStateMachine<BuildingInternalConstructor, BuildingInternalConstructor.Instance, IStateMachineTarget, BuildingInternalConstructor.Def>.GameInstance, ISidescreenButtonControl
-	{
-		public Instance(IStateMachineTarget master, BuildingInternalConstructor.Def def) : base(master, def)
-		{
-			this.storage = def.storage.Get(this);
-			base.GetComponent<RocketModule>().AddModuleCondition(ProcessCondition.ProcessConditionType.RocketPrep, new InternalConstructionCompleteCondition(this));
-		}
+                return string.Format(UI.UISIDESCREENS.BUTTONMENUSIDESCREEN.DISALLOW_INTERNAL_CONSTRUCTOR.text,
+                                     Assets.GetPrefab(def.outputIDs[0]).GetProperName());
+            }
+        }
 
-		protected override void OnCleanUp()
-		{
-			Element element = null;
-			float num = 0f;
-			float num2 = 0f;
-			byte maxValue = byte.MaxValue;
-			int disease_count = 0;
-			foreach (string s in base.def.outputIDs)
-			{
-				GameObject gameObject = this.storage.FindFirst(s);
-				if (gameObject != null)
-				{
-					PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-					global::Debug.Assert(element == null || element == component.Element);
-					element = component.Element;
-					num2 = GameUtil.GetFinalTemperature(num, num2, component.Mass, component.Temperature);
-					num += component.Mass;
-					gameObject.DeleteObject();
-				}
-			}
-			if (element != null)
-			{
-				element.substance.SpawnResource(base.transform.GetPosition(), num, num2, maxValue, disease_count, false, false, false);
-			}
-			base.OnCleanUp();
-		}
+        public string SidescreenButtonTooltip {
+            get {
+                if (!smi.sm.constructionRequested.Get(smi))
+                    return string.Format(UI.UISIDESCREENS.BUTTONMENUSIDESCREEN.ALLOW_INTERNAL_CONSTRUCTOR_TOOLTIP.text,
+                                         Assets.GetPrefab(def.outputIDs[0]).GetProperName());
 
-		public FetchList2 CreateFetchList()
-		{
-			FetchList2 fetchList = new FetchList2(this.storage, Db.Get().ChoreTypes.Fetch);
-			PrimaryElement component = base.GetComponent<PrimaryElement>();
-			fetchList.Add(component.Element.tag, null, base.def.constructionMass, Operational.State.None);
-			return fetchList;
-		}
+                return string.Format(UI.UISIDESCREENS.BUTTONMENUSIDESCREEN.DISALLOW_INTERNAL_CONSTRUCTOR_TOOLTIP.text,
+                                     Assets.GetPrefab(def.outputIDs[0]).GetProperName());
+            }
+        }
 
-		public PrimaryElement GetMassForConstruction()
-		{
-			PrimaryElement component = base.GetComponent<PrimaryElement>();
-			return this.storage.FindFirstWithMass(component.Element.tag, base.def.constructionMass);
-		}
+        public void OnSidescreenButtonPressed() {
+            smi.sm.constructionRequested.Set(!smi.sm.constructionRequested.Get(smi), smi);
+            if (DebugHandler.InstantBuildMode && smi.sm.constructionRequested.Get(smi) && !HasOutputInStorage())
+                ConstructionComplete(true);
+        }
 
-		public bool HasOutputInStorage()
-		{
-			return this.storage.FindFirst(base.def.outputIDs[0].ToTag());
-		}
+        public void SetButtonTextOverride(ButtonMenuTextOverride text) { throw new NotImplementedException(); }
+        public bool SidescreenEnabled()                                { return true; }
+        public bool SidescreenButtonInteractable()                     { return true; }
+        public int  ButtonSideScreenSortOrder()                        { return 20; }
+        public int  HorizontalGroupID()                                { return -1; }
 
-		public bool IsRequestingConstruction()
-		{
-			base.sm.constructionRequested.Get(this);
-			return base.smi.sm.constructionRequested.Get(base.smi);
-		}
+        protected override void OnCleanUp() {
+            Element element       = null;
+            var     num           = 0f;
+            var     num2          = 0f;
+            var     maxValue      = byte.MaxValue;
+            var     disease_count = 0;
+            foreach (var s in def.outputIDs) {
+                var gameObject = storage.FindFirst(s);
+                if (gameObject != null) {
+                    var component = gameObject.GetComponent<PrimaryElement>();
+                    Debug.Assert(element == null || element == component.Element);
+                    element =  component.Element;
+                    num2    =  GameUtil.GetFinalTemperature(num, num2, component.Mass, component.Temperature);
+                    num     += component.Mass;
+                    gameObject.DeleteObject();
+                }
+            }
 
-		public void ConstructionComplete(bool force = false)
-		{
-			SimHashes element_id;
-			if (!force)
-			{
-				PrimaryElement massForConstruction = this.GetMassForConstruction();
-				element_id = massForConstruction.ElementID;
-				float mass = massForConstruction.Mass;
-				float num = massForConstruction.Temperature * massForConstruction.Mass;
-				massForConstruction.Mass -= base.def.constructionMass;
-				Mathf.Clamp(num / mass, 0f, 318.15f);
-			}
-			else
-			{
-				element_id = SimHashes.Cuprite;
-				float temperature = base.GetComponent<PrimaryElement>().Temperature;
-			}
-			foreach (string s in base.def.outputIDs)
-			{
-				GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(s), base.transform.GetPosition(), Grid.SceneLayer.Ore, null, 0);
-				gameObject.GetComponent<PrimaryElement>().SetElement(element_id, false);
-				gameObject.SetActive(true);
-				if (base.def.spawnIntoStorage)
-				{
-					this.storage.Store(gameObject, false, false, true, false);
-				}
-			}
-		}
+            if (element != null)
+                element.substance.SpawnResource(transform.GetPosition(), num, num2, maxValue, disease_count);
 
-		public WorkChore<BuildingInternalConstructorWorkable> CreateWorkChore()
-		{
-			return new WorkChore<BuildingInternalConstructorWorkable>(Db.Get().ChoreTypes.Build, base.master, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
-		}
+            base.OnCleanUp();
+        }
 
-		public void ShowConstructionSymbol(bool show)
-		{
-			KBatchedAnimController component = base.master.GetComponent<KBatchedAnimController>();
-			if (component != null)
-			{
-				component.SetSymbolVisiblity(base.def.constructionSymbol, show);
-			}
-		}
+        public FetchList2 CreateFetchList() {
+            var fetchList = new FetchList2(storage, Db.Get().ChoreTypes.Fetch);
+            var component = GetComponent<PrimaryElement>();
+            fetchList.Add(component.Element.tag, null, def.constructionMass);
+            return fetchList;
+        }
 
-				public string SidescreenButtonText
-		{
-			get
-			{
-				if (!base.smi.sm.constructionRequested.Get(base.smi))
-				{
-					return string.Format(UI.UISIDESCREENS.BUTTONMENUSIDESCREEN.ALLOW_INTERNAL_CONSTRUCTOR.text, Assets.GetPrefab(base.def.outputIDs[0]).GetProperName());
-				}
-				return string.Format(UI.UISIDESCREENS.BUTTONMENUSIDESCREEN.DISALLOW_INTERNAL_CONSTRUCTOR.text, Assets.GetPrefab(base.def.outputIDs[0]).GetProperName());
-			}
-		}
+        public PrimaryElement GetMassForConstruction() {
+            var component = GetComponent<PrimaryElement>();
+            return storage.FindFirstWithMass(component.Element.tag, def.constructionMass);
+        }
 
-				public string SidescreenButtonTooltip
-		{
-			get
-			{
-				if (!base.smi.sm.constructionRequested.Get(base.smi))
-				{
-					return string.Format(UI.UISIDESCREENS.BUTTONMENUSIDESCREEN.ALLOW_INTERNAL_CONSTRUCTOR_TOOLTIP.text, Assets.GetPrefab(base.def.outputIDs[0]).GetProperName());
-				}
-				return string.Format(UI.UISIDESCREENS.BUTTONMENUSIDESCREEN.DISALLOW_INTERNAL_CONSTRUCTOR_TOOLTIP.text, Assets.GetPrefab(base.def.outputIDs[0]).GetProperName());
-			}
-		}
+        public bool HasOutputInStorage() { return storage.FindFirst(def.outputIDs[0].ToTag()); }
 
-		public void OnSidescreenButtonPressed()
-		{
-			base.smi.sm.constructionRequested.Set(!base.smi.sm.constructionRequested.Get(base.smi), base.smi, false);
-			if (DebugHandler.InstantBuildMode && base.smi.sm.constructionRequested.Get(base.smi) && !this.HasOutputInStorage())
-			{
-				this.ConstructionComplete(true);
-			}
-		}
+        public bool IsRequestingConstruction() {
+            sm.constructionRequested.Get(this);
+            return smi.sm.constructionRequested.Get(smi);
+        }
 
-		public void SetButtonTextOverride(ButtonMenuTextOverride text)
-		{
-			throw new NotImplementedException();
-		}
+        public void ConstructionComplete(bool force = false) {
+            SimHashes element_id;
+            if (!force) {
+                var massForConstruction = GetMassForConstruction();
+                element_id = massForConstruction.ElementID;
+                var mass = massForConstruction.Mass;
+                var num  = massForConstruction.Temperature * massForConstruction.Mass;
+                massForConstruction.Mass -= def.constructionMass;
+                Mathf.Clamp(num / mass, 0f, 318.15f);
+            } else {
+                element_id = SimHashes.Cuprite;
+                var temperature = GetComponent<PrimaryElement>().Temperature;
+            }
 
-		public bool SidescreenEnabled()
-		{
-			return true;
-		}
+            foreach (var s in def.outputIDs) {
+                var gameObject
+                    = GameUtil.KInstantiate(Assets.GetPrefab(s), transform.GetPosition(), Grid.SceneLayer.Ore);
 
-		public bool SidescreenButtonInteractable()
-		{
-			return true;
-		}
+                gameObject.GetComponent<PrimaryElement>().SetElement(element_id, false);
+                gameObject.SetActive(true);
+                if (def.spawnIntoStorage) storage.Store(gameObject);
+            }
+        }
 
-		public int ButtonSideScreenSortOrder()
-		{
-			return 20;
-		}
+        public WorkChore<BuildingInternalConstructorWorkable> CreateWorkChore() {
+            return new WorkChore<BuildingInternalConstructorWorkable>(Db.Get().ChoreTypes.Build, master);
+        }
 
-		public int HorizontalGroupID()
-		{
-			return -1;
-		}
-
-		private Storage storage;
-
-		[Serialize]
-		private float constructionElapsed;
-
-		private ProgressBar progressBar;
-	}
+        public void ShowConstructionSymbol(bool show) {
+            var component = master.GetComponent<KBatchedAnimController>();
+            if (component != null) component.SetSymbolVisiblity(def.constructionSymbol, show);
+        }
+    }
 }

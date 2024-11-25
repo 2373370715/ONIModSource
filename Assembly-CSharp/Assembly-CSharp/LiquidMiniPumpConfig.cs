@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LiquidMiniPumpConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidMiniPump";
 		int width = 1;
@@ -34,7 +34,7 @@ public class LiquidMiniPumpConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
@@ -57,5 +57,5 @@ public class LiquidMiniPumpConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public const string ID = "LiquidMiniPump";
+		public const string ID = "LiquidMiniPump";
 }

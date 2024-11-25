@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class EquippableBalloonConfig : IEquipmentConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public EquipmentDef CreateEquipmentDef()
+		public EquipmentDef CreateEquipmentDef()
 	{
 		List<AttributeModifier> attributeModifiers = new List<AttributeModifier>();
 		EquipmentDef equipmentDef = EquipmentTemplates.CreateEquipmentDef("EquippableBalloon", EQUIPMENT.TOYS.SLOT, SimHashes.Carbon, EQUIPMENT.TOYS.BALLOON_MASS, EQUIPMENT.VESTS.WARM_VEST_ICON0, null, null, 0, attributeModifiers, null, false, EntityTemplates.CollisionShape.RECTANGLE, 0.75f, 0.4f, null, null);
@@ -20,7 +20,7 @@ public class EquippableBalloonConfig : IEquipmentConfig
 		return equipmentDef;
 	}
 
-	private void OnEquipBalloon(Equippable eq)
+		private void OnEquipBalloon(Equippable eq)
 	{
 		if (!eq.IsNullOrDestroyed() && !eq.assignee.IsNullOrDestroyed())
 		{
@@ -44,7 +44,7 @@ public class EquippableBalloonConfig : IEquipmentConfig
 		}
 	}
 
-	private void OnUnequipBalloon(Equippable eq)
+		private void OnUnequipBalloon(Equippable eq)
 	{
 		if (!eq.IsNullOrDestroyed() && !eq.assignee.IsNullOrDestroyed())
 		{
@@ -70,7 +70,7 @@ public class EquippableBalloonConfig : IEquipmentConfig
 		Util.KDestroyGameObject(eq.gameObject);
 	}
 
-	public void DoPostConfigure(GameObject go)
+		public void DoPostConfigure(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().AddTag(GameTags.Clothes, false);
 		Equippable equippable = go.GetComponent<Equippable>();
@@ -83,15 +83,15 @@ public class EquippableBalloonConfig : IEquipmentConfig
 		go.AddOrGet<EquippableBalloon>();
 	}
 
-	private void SpawnFxInstanceFor(KMonoBehaviour target)
+		private void SpawnFxInstanceFor(KMonoBehaviour target)
 	{
 		new BalloonFX.Instance(target.GetComponent<KMonoBehaviour>()).StartSM();
 	}
 
-	private void DestroyFxInstanceFor(KMonoBehaviour target)
+		private void DestroyFxInstanceFor(KMonoBehaviour target)
 	{
 		target.GetSMI<BalloonFX.Instance>().StopSM("Unequipped");
 	}
 
-	public const string ID = "EquippableBalloon";
+		public const string ID = "EquippableBalloon";
 }

@@ -5,20 +5,20 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class IceMachine : StateMachineComponent<IceMachine.StatesInstance>, FewOptionSideScreen.IFewOptionSideScreen
 {
-	public void SetStorages(Storage waterStorage, Storage iceStorage)
+		public void SetStorages(Storage waterStorage, Storage iceStorage)
 	{
 		this.waterStorage = waterStorage;
 		this.iceStorage = iceStorage;
 	}
 
-	private bool CanMakeIce()
+		private bool CanMakeIce()
 	{
 		bool flag = this.waterStorage != null && this.waterStorage.GetMassAvailable(SimHashes.Water) >= 0.1f;
 		bool flag2 = this.iceStorage != null && this.iceStorage.IsFull();
 		return flag && !flag2;
 	}
 
-	private void MakeIce(IceMachine.StatesInstance smi, float dt)
+		private void MakeIce(IceMachine.StatesInstance smi, float dt)
 	{
 		float num = this.heatRemovalRate * dt / (float)this.waterStorage.items.Count;
 		foreach (GameObject gameObject in this.waterStorage.items)
@@ -38,13 +38,13 @@ public class IceMachine : StateMachineComponent<IceMachine.StatesInstance>, FewO
 		smi.UpdateIceState();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	public FewOptionSideScreen.IFewOptionSideScreen.Option[] GetOptions()
+		public FewOptionSideScreen.IFewOptionSideScreen.Option[] GetOptions()
 	{
 		FewOptionSideScreen.IFewOptionSideScreen.Option[] array = new FewOptionSideScreen.IFewOptionSideScreen.Option[IceMachineConfig.ELEMENT_OPTIONS.Length];
 		for (int i = 0; i < array.Length; i++)
@@ -55,35 +55,35 @@ public class IceMachine : StateMachineComponent<IceMachine.StatesInstance>, FewO
 		return array;
 	}
 
-	public void OnOptionSelected(FewOptionSideScreen.IFewOptionSideScreen.Option option)
+		public void OnOptionSelected(FewOptionSideScreen.IFewOptionSideScreen.Option option)
 	{
 		this.targetProductionElement = ElementLoader.GetElementID(option.tag);
 	}
 
-	public Tag GetSelectedOption()
+		public Tag GetSelectedOption()
 	{
 		return this.targetProductionElement.CreateTag();
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	public Storage waterStorage;
+		public Storage waterStorage;
 
-	public Storage iceStorage;
+		public Storage iceStorage;
 
-	public float targetTemperature;
+		public float targetTemperature;
 
-	public float heatRemovalRate;
+		public float heatRemovalRate;
 
-	private static StatusItem iceStorageFullStatusItem;
+		private static StatusItem iceStorageFullStatusItem;
 
-	[Serialize]
+		[Serialize]
 	public SimHashes targetProductionElement = SimHashes.Ice;
 
-	public class StatesInstance : GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.GameInstance
+		public class StatesInstance : GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.GameInstance
 	{
-		public StatesInstance(IceMachine smi) : base(smi)
+				public StatesInstance(IceMachine smi) : base(smi)
 		{
 			this.meter = new MeterController(base.gameObject.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.Infront, Grid.SceneLayer.NoLayer, new string[]
 			{
@@ -95,17 +95,17 @@ public class IceMachine : StateMachineComponent<IceMachine.StatesInstance>, FewO
 			base.Subscribe(-1697596308, new Action<object>(this.OnStorageChange));
 		}
 
-		private void OnStorageChange(object data)
+				private void OnStorageChange(object data)
 		{
 			this.UpdateMeter();
 		}
 
-		public void UpdateMeter()
+				public void UpdateMeter()
 		{
 			this.meter.SetPositionPercent(Mathf.Clamp01(base.smi.master.iceStorage.MassStored() / base.smi.master.iceStorage.Capacity()));
 		}
 
-		public void UpdateIceState()
+				public void UpdateIceState()
 		{
 			bool value = false;
 			for (int i = base.smi.master.waterStorage.items.Count; i > 0; i--)
@@ -119,14 +119,14 @@ public class IceMachine : StateMachineComponent<IceMachine.StatesInstance>, FewO
 			base.sm.doneFreezingIce.Set(value, this, false);
 		}
 
-		private MeterController meter;
+				private MeterController meter;
 
-		public Chore emptyChore;
+				public Chore emptyChore;
 	}
 
-	public class States : GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine>
+		public class States : GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.off;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -152,7 +152,7 @@ public class IceMachine : StateMachineComponent<IceMachine.StatesInstance>, FewO
 			this.on.working_pst.Exit(new StateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State.Callback(this.DoTransfer)).PlayAnim("working_pst").OnAnimQueueComplete(this.on);
 		}
 
-		private void DoTransfer(IceMachine.StatesInstance smi)
+				private void DoTransfer(IceMachine.StatesInstance smi)
 		{
 			for (int i = smi.master.waterStorage.items.Count - 1; i >= 0; i--)
 			{
@@ -165,21 +165,21 @@ public class IceMachine : StateMachineComponent<IceMachine.StatesInstance>, FewO
 			smi.UpdateMeter();
 		}
 
-		public StateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.BoolParameter doneFreezingIce;
+				public StateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.BoolParameter doneFreezingIce;
 
-		public GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State off;
+				public GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State off;
 
-		public IceMachine.States.OnStates on;
+				public IceMachine.States.OnStates on;
 
-		public class OnStates : GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State
+				public class OnStates : GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State
 		{
-			public GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State waiting;
+						public GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State waiting;
 
-			public GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State working_pre;
+						public GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State working_pre;
 
-			public GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State working;
+						public GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State working;
 
-			public GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State working_pst;
+						public GameStateMachine<IceMachine.States, IceMachine.StatesInstance, IceMachine, object>.State working_pst;
 		}
 	}
 }

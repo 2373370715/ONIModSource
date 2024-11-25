@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ResearchButtonImageToggleState : ImageToggleState
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Research.Instance.Subscribe(-1914338957, new Action<object>(this.UpdateActiveResearch));
@@ -13,22 +13,52 @@ public class ResearchButtonImageToggleState : ImageToggleState
 		this.toggle = base.GetComponent<KToggle>();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.UpdateActiveResearch(null);
-		this.scrollIconCoroutine = base.StartCoroutine(this.ScrollIcon());
+		this.RestartCoroutine();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
-		base.StopCoroutine(this.scrollIconCoroutine);
-		Research.Instance.Unsubscribe(-1914338957, new Action<object>(this.RefreshProgressBar));
+		this.AbortCoroutine();
+		Research.Instance.Unsubscribe(-1914338957, new Action<object>(this.UpdateActiveResearch));
 		Research.Instance.Unsubscribe(-125623018, new Action<object>(this.RefreshProgressBar));
 		base.OnCleanUp();
 	}
 
-	private void UpdateActiveResearch(object o)
+		protected override void OnCmpEnable()
+	{
+		base.OnCmpEnable();
+		this.RestartCoroutine();
+	}
+
+		protected override void OnCmpDisable()
+	{
+		base.OnCmpDisable();
+		this.AbortCoroutine();
+	}
+
+		private void AbortCoroutine()
+	{
+		if (this.scrollIconCoroutine != null)
+		{
+			base.StopCoroutine(this.scrollIconCoroutine);
+		}
+		this.scrollIconCoroutine = null;
+	}
+
+		private void RestartCoroutine()
+	{
+		this.AbortCoroutine();
+		if (base.gameObject.activeInHierarchy)
+		{
+			this.scrollIconCoroutine = base.StartCoroutine(this.ScrollIcon());
+		}
+	}
+
+		private void UpdateActiveResearch(object o)
 	{
 		TechInstance activeResearch = Research.Instance.GetActiveResearch();
 		if (activeResearch == null)
@@ -48,7 +78,7 @@ public class ResearchButtonImageToggleState : ImageToggleState
 		this.RefreshProgressBar(o);
 	}
 
-	public void RefreshProgressBar(object o)
+		public void RefreshProgressBar(object o)
 	{
 		TechInstance activeResearch = Research.Instance.GetActiveResearch();
 		if (activeResearch == null)
@@ -59,44 +89,44 @@ public class ResearchButtonImageToggleState : ImageToggleState
 		this.progressBar.fillAmount = activeResearch.GetTotalPercentageComplete();
 	}
 
-	public void SetProgressBarVisibility(bool viisble)
+		public void SetProgressBarVisibility(bool viisble)
 	{
 		this.progressBar.enabled = viisble;
 	}
 
-	public override void SetActive()
+		public override void SetActive()
 	{
 		base.SetActive();
 		this.SetProgressBarVisibility(false);
 	}
 
-	public override void SetDisabledActive()
+		public override void SetDisabledActive()
 	{
 		base.SetDisabledActive();
 		this.SetProgressBarVisibility(false);
 	}
 
-	public override void SetDisabled()
+		public override void SetDisabled()
 	{
 		base.SetDisabled();
 		this.SetProgressBarVisibility(false);
 	}
 
-	public override void SetInactive()
+		public override void SetInactive()
 	{
 		base.SetInactive();
 		this.SetProgressBarVisibility(true);
 		this.RefreshProgressBar(null);
 	}
 
-	private void ResetCoroutineTimers()
+		private void ResetCoroutineTimers()
 	{
 		this.mainIconScreenTime = 0f;
 		this.itemScreenTime = 0f;
 		this.item_idx = -1;
 	}
 
-		private bool ReadyToDisplayIcons
+			private bool ReadyToDisplayIcons
 	{
 		get
 		{
@@ -104,7 +134,7 @@ public class ResearchButtonImageToggleState : ImageToggleState
 		}
 	}
 
-	private IEnumerator ScrollIcon()
+		private IEnumerator ScrollIcon()
 	{
 		while (Application.isPlaying)
 		{
@@ -153,24 +183,24 @@ public class ResearchButtonImageToggleState : ImageToggleState
 		yield break;
 	}
 
-	public Image progressBar;
+		public Image progressBar;
 
-	private KToggle toggle;
+		private KToggle toggle;
 
-	[Header("Scroll Options")]
+		[Header("Scroll Options")]
 	public float researchLogoDuration = 5f;
 
-	public float durationPerResearchItemIcon = 0.6f;
+		public float durationPerResearchItemIcon = 0.6f;
 
-	public float fadingDuration = 0.2f;
+		public float fadingDuration = 0.2f;
 
-	private Coroutine scrollIconCoroutine;
+		private Coroutine scrollIconCoroutine;
 
-	private Sprite[] currentResearchIcons;
+		private Sprite[] currentResearchIcons;
 
-	private float mainIconScreenTime;
+		private float mainIconScreenTime;
 
-	private float itemScreenTime;
+		private float itemScreenTime;
 
-	private int item_idx = -1;
+		private int item_idx = -1;
 }

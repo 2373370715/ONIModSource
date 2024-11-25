@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class FullBodyUIMinionWidget : KMonoBehaviour
 {
-			public KBatchedAnimController animController { get; private set; }
+				public KBatchedAnimController animController { get; private set; }
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.TrySpawnDisplayMinion();
 	}
 
-	private void TrySpawnDisplayMinion()
+		private void TrySpawnDisplayMinion()
 	{
 		if (this.animController == null)
 		{
@@ -22,7 +22,7 @@ public class FullBodyUIMinionWidget : KMonoBehaviour
 		}
 	}
 
-	private void InitializeAnimator()
+		private void InitializeAnimator()
 	{
 		this.TrySpawnDisplayMinion();
 		this.animController.Queue("idle_default", KAnim.PlayMode.Loop, 1f, 0f);
@@ -33,7 +33,7 @@ public class FullBodyUIMinionWidget : KMonoBehaviour
 		}
 	}
 
-	public void SetDefaultPortraitAnimator()
+		public void SetDefaultPortraitAnimator()
 	{
 		MinionIdentity minionIdentity = (Components.MinionIdentities.Count > 0) ? Components.MinionIdentities[0] : null;
 		HashedString id = (minionIdentity != null) ? minionIdentity.personalityResourceId : Db.Get().Personalities.resources.GetRandom<Personality>().Id;
@@ -51,7 +51,7 @@ public class FullBodyUIMinionWidget : KMonoBehaviour
 		this.UpdateClothingOverride(this.animController.GetComponent<SymbolOverrideController>(), minionIdentity, null);
 	}
 
-	public void SetPortraitAnimator(IAssignableIdentity assignableIdentity)
+		public void SetPortraitAnimator(IAssignableIdentity assignableIdentity)
 	{
 		if (assignableIdentity == null || assignableIdentity.IsNull())
 		{
@@ -92,7 +92,7 @@ public class FullBodyUIMinionWidget : KMonoBehaviour
 		this.UpdateClothingOverride(this.animController.GetComponent<SymbolOverrideController>(), minionIdentity, storedMinionIdentity);
 	}
 
-	private void UpdateHatOverride(string current_hat, KAnim.Build.Symbol hair_symbol, KAnim.Build.Symbol hat_hair_symbol)
+		private void UpdateHatOverride(string current_hat, KAnim.Build.Symbol hair_symbol, KAnim.Build.Symbol hat_hair_symbol)
 	{
 		AccessorySlot hat = Db.Get().AccessorySlots.Hat;
 		this.animController.SetSymbolVisiblity(hat.targetSymbolId, !string.IsNullOrEmpty(current_hat));
@@ -109,7 +109,7 @@ public class FullBodyUIMinionWidget : KMonoBehaviour
 		}
 	}
 
-	private void UpdateClothingOverride(SymbolOverrideController symbolOverrideController, MinionIdentity identity, StoredMinionIdentity storedMinionIdentity)
+		private void UpdateClothingOverride(SymbolOverrideController symbolOverrideController, MinionIdentity identity, StoredMinionIdentity storedMinionIdentity)
 	{
 		string[] array = null;
 		if (identity != null)
@@ -127,17 +127,17 @@ public class FullBodyUIMinionWidget : KMonoBehaviour
 		}
 	}
 
-	public void UpdateEquipment(Equippable equippable, KAnimFile animFile)
+		public void UpdateEquipment(Equippable equippable, KAnimFile animFile)
 	{
 		this.animController.GetComponent<WearableAccessorizer>().ApplyEquipment(equippable, animFile);
 	}
 
-	public void RemoveEquipment(Equippable equippable)
+		public void RemoveEquipment(Equippable equippable)
 	{
 		this.animController.GetComponent<WearableAccessorizer>().RemoveEquipment(equippable);
 	}
 
-	private void GetMinionIdentity(IAssignableIdentity assignableIdentity, out MinionIdentity minionIdentity, out StoredMinionIdentity storedMinionIdentity)
+		private void GetMinionIdentity(IAssignableIdentity assignableIdentity, out MinionIdentity minionIdentity, out StoredMinionIdentity storedMinionIdentity)
 	{
 		if (assignableIdentity is MinionAssignablesProxy)
 		{
@@ -149,8 +149,8 @@ public class FullBodyUIMinionWidget : KMonoBehaviour
 		storedMinionIdentity = (assignableIdentity as StoredMinionIdentity);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject duplicantAnimAnchor;
 
-	public const float UI_MINION_PORTRAIT_ANIM_SCALE = 0.38f;
+		public const float UI_MINION_PORTRAIT_ANIM_SCALE = 0.38f;
 }

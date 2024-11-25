@@ -1,56 +1,40 @@
-﻿using System;
-using STRINGS;
+﻿using STRINGS;
 using UnityEngine;
 
-public class SingleItemSelectionSideScreen_SelectedItemSection : KMonoBehaviour
-{
-			public Tag Item { get; private set; }
+public class SingleItemSelectionSideScreen_SelectedItemSection : KMonoBehaviour {
+    [SerializeField]
+    private LocText contentText;
 
-	public void Clear()
-	{
-		this.SetItem(null);
-	}
+    [SerializeField]
+    private KImage image;
 
-	public void SetItem(Tag item)
-	{
-		this.Item = item;
-		if (this.Item != GameTags.Void)
-		{
-			this.SetTitleText(UI.UISIDESCREENS.SINGLEITEMSELECTIONSIDESCREEN.CURRENT_ITEM_SELECTED_SECTION.TITLE);
-			this.SetContentText(this.Item.ProperName());
-			global::Tuple<Sprite, Color> uisprite = Def.GetUISprite(this.Item, "ui", false);
-			this.SetImage(uisprite.first, uisprite.second);
-			return;
-		}
-		this.SetTitleText(UI.UISIDESCREENS.SINGLEITEMSELECTIONSIDESCREEN.CURRENT_ITEM_SELECTED_SECTION.NO_ITEM_TITLE);
-		this.SetContentText(UI.UISIDESCREENS.SINGLEITEMSELECTIONSIDESCREEN.CURRENT_ITEM_SELECTED_SECTION.NO_ITEM_MESSAGE);
-		this.SetImage(null, Color.white);
-	}
+    [Header("References"), SerializeField]
+    private LocText title;
 
-	private void SetTitleText(string text)
-	{
-		this.title.text = text;
-	}
+    public Tag  Item    { get; private set; }
+    public void Clear() { SetItem(null); }
 
-	private void SetContentText(string text)
-	{
-		this.contentText.text = text;
-	}
+    public void SetItem(Tag item) {
+        Item = item;
+        if (Item != GameTags.Void) {
+            SetTitleText(UI.UISIDESCREENS.SINGLEITEMSELECTIONSIDESCREEN.CURRENT_ITEM_SELECTED_SECTION.TITLE);
+            SetContentText(Item.ProperName());
+            var uisprite = Def.GetUISprite(Item);
+            SetImage(uisprite.first, uisprite.second);
+            return;
+        }
 
-	private void SetImage(Sprite sprite, Color color)
-	{
-		this.image.sprite = sprite;
-		this.image.color = color;
-		this.image.gameObject.SetActive(sprite != null);
-	}
+        SetTitleText(UI.UISIDESCREENS.SINGLEITEMSELECTIONSIDESCREEN.CURRENT_ITEM_SELECTED_SECTION.NO_ITEM_TITLE);
+        SetContentText(UI.UISIDESCREENS.SINGLEITEMSELECTIONSIDESCREEN.CURRENT_ITEM_SELECTED_SECTION.NO_ITEM_MESSAGE);
+        SetImage(null, Color.white);
+    }
 
-	[Header("References")]
-	[SerializeField]
-	private LocText title;
+    private void SetTitleText(string   text) { title.text       = text; }
+    private void SetContentText(string text) { contentText.text = text; }
 
-	[SerializeField]
-	private LocText contentText;
-
-	[SerializeField]
-	private KImage image;
+    private void SetImage(Sprite sprite, Color color) {
+        image.sprite = sprite;
+        image.color  = color;
+        image.gameObject.SetActive(sprite != null);
+    }
 }

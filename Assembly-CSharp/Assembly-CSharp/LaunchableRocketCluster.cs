@@ -7,7 +7,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketCluster.StatesInstance>, ILaunchableRocket
 {
-		public IList<Ref<RocketModuleCluster>> parts
+			public IList<Ref<RocketModuleCluster>> parts
 	{
 		get
 		{
@@ -15,11 +15,11 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 		}
 	}
 
-			public bool isLanding { get; private set; }
+				public bool isLanding { get; private set; }
 
-			public float rocketSpeed { get; private set; }
+				public float rocketSpeed { get; private set; }
 
-		public LaunchableRocketRegisterType registerType
+			public LaunchableRocketRegisterType registerType
 	{
 		get
 		{
@@ -27,7 +27,7 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 		}
 	}
 
-		public GameObject LaunchableGameObject
+			public GameObject LaunchableGameObject
 	{
 		get
 		{
@@ -35,13 +35,13 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	public List<GameObject> GetEngines()
+		public List<GameObject> GetEngines()
 	{
 		List<GameObject> list = new List<GameObject>();
 		foreach (Ref<RocketModuleCluster> @ref in this.parts)
@@ -54,7 +54,7 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 		return list;
 	}
 
-	private int GetRocketHeight()
+		private int GetRocketHeight()
 	{
 		int num = 0;
 		foreach (Ref<RocketModuleCluster> @ref in this.parts)
@@ -64,20 +64,20 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 		return num;
 	}
 
-	private float InitialFlightAnimOffsetForLanding()
+		private float InitialFlightAnimOffsetForLanding()
 	{
 		int num = Grid.PosToCell(base.gameObject);
 		return ClusterManager.Instance.GetWorld((int)Grid.WorldIdx[num]).maximumBounds.y - base.gameObject.transform.GetPosition().y + (float)this.GetRocketHeight() + 100f;
 	}
 
-	[Serialize]
+		[Serialize]
 	private int takeOffLocation;
 
-	private GameObject soundSpeakerObject;
+		private GameObject soundSpeakerObject;
 
-	public class StatesInstance : GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.GameInstance
+		public class StatesInstance : GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.GameInstance
 	{
-				private float heightLaunchSpeedRatio
+						private float heightLaunchSpeedRatio
 		{
 			get
 			{
@@ -85,7 +85,7 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 			}
 		}
 
-						public float DistanceAboveGround
+								public float DistanceAboveGround
 		{
 			get
 			{
@@ -97,41 +97,41 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 			}
 		}
 
-		public StatesInstance(LaunchableRocketCluster master) : base(master)
+				public StatesInstance(LaunchableRocketCluster master) : base(master)
 		{
 			this.takeoffAccelPowerInv = 1f / TuningData<LaunchableRocketCluster.StatesInstance.Tuning>.Get().takeoffAccelPower;
 		}
 
-		public void SetMissionState(Spacecraft.MissionState state)
+				public void SetMissionState(Spacecraft.MissionState state)
 		{
 			global::Debug.Assert(!DlcManager.FeatureClusterSpaceEnabled());
 			SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(base.master.GetComponent<LaunchConditionManager>()).SetState(state);
 		}
 
-		public Spacecraft.MissionState GetMissionState()
+				public Spacecraft.MissionState GetMissionState()
 		{
 			global::Debug.Assert(!DlcManager.FeatureClusterSpaceEnabled());
 			return SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(base.master.GetComponent<LaunchConditionManager>()).state;
 		}
 
-		public bool IsGrounded()
+				public bool IsGrounded()
 		{
 			return base.smi.master.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>().Status == Clustercraft.CraftStatus.Grounded;
 		}
 
-		public bool IsNotSpaceBound()
+				public bool IsNotSpaceBound()
 		{
 			Clustercraft component = base.smi.master.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>();
 			return component.Status == Clustercraft.CraftStatus.Grounded || component.Status == Clustercraft.CraftStatus.Landing;
 		}
 
-		public bool IsNotGroundBound()
+				public bool IsNotGroundBound()
 		{
 			Clustercraft component = base.smi.master.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>();
 			return component.Status == Clustercraft.CraftStatus.Launching || component.Status == Clustercraft.CraftStatus.InFlight;
 		}
 
-		public void SetupLaunch()
+				public void SetupLaunch()
 		{
 			base.master.isLanding = false;
 			base.master.rocketSpeed = 0f;
@@ -155,23 +155,26 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 			{
 				craftInterface.Trigger(-1277991738, base.master.gameObject);
 				WorldContainer component = craftInterface.GetComponent<WorldContainer>();
-				List<MinionIdentity> worldItems = Components.MinionIdentities.GetWorldItems(component.id, false);
-				MinionMigrationEventArgs minionMigrationEventArgs = new MinionMigrationEventArgs
+				if (component != null)
 				{
-					prevWorldId = component.id,
-					targetWorldId = component.id
-				};
-				foreach (MinionIdentity minionId in worldItems)
-				{
-					minionMigrationEventArgs.minionId = minionId;
-					Game.Instance.Trigger(586301400, minionMigrationEventArgs);
+					List<MinionIdentity> worldItems = Components.MinionIdentities.GetWorldItems(component.id, false);
+					MinionMigrationEventArgs minionMigrationEventArgs = new MinionMigrationEventArgs
+					{
+						prevWorldId = component.id,
+						targetWorldId = component.id
+					};
+					foreach (MinionIdentity minionId in worldItems)
+					{
+						minionMigrationEventArgs.minionId = minionId;
+						Game.Instance.Trigger(586301400, minionMigrationEventArgs);
+					}
 				}
 			}
 			Game.Instance.Trigger(-1277991738, base.gameObject);
 			this.constantVelocityPhase_maxSpeed = 0f;
 		}
 
-		public void LaunchLoop(float dt)
+				public void LaunchLoop(float dt)
 		{
 			base.master.isLanding = false;
 			if (this.constantVelocityPhase_maxSpeed == 0f)
@@ -203,7 +206,7 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 			}
 		}
 
-		public void FinalizeLaunch()
+				public void FinalizeLaunch()
 		{
 			base.master.rocketSpeed = 0f;
 			this.DistanceAboveGround = base.sm.distanceToSpace.Get(base.smi);
@@ -220,7 +223,7 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 			base.smi.master.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>().SetCraftStatus(Clustercraft.CraftStatus.InFlight);
 		}
 
-		public void SetupLanding()
+				public void SetupLanding()
 		{
 			float distanceAboveGround = base.master.InitialFlightAnimOffsetForLanding();
 			this.DistanceAboveGround = distanceAboveGround;
@@ -230,7 +233,7 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 			this.constantVelocityPhase_maxSpeed = 0f;
 		}
 
-		public void LandingLoop(float dt)
+				public void LandingLoop(float dt)
 		{
 			base.master.isLanding = true;
 			if (this.constantVelocityPhase_maxSpeed == 0f)
@@ -260,7 +263,7 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 			this.UpdatePartsAnimPositionsAndDamage(true);
 		}
 
-		public void FinalizeLanding()
+				public void FinalizeLanding()
 		{
 			base.GetComponent<KSelectable>().IsSelectable = true;
 			base.master.rocketSpeed = 0f;
@@ -275,7 +278,7 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 			base.smi.master.GetComponent<RocketModuleCluster>().CraftInterface.GetComponent<Clustercraft>().SetCraftStatus(Clustercraft.CraftStatus.Grounded);
 		}
 
-		private void UpdateSoundSpeakerObject()
+				private void UpdateSoundSpeakerObject()
 		{
 			if (base.master.soundSpeakerObject == null)
 			{
@@ -285,7 +288,7 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 			base.master.soundSpeakerObject.transform.SetLocalPosition(this.DistanceAboveGround * Vector3.up);
 		}
 
-		public int UpdatePartsAnimPositionsAndDamage(bool doDamage = true)
+				public int UpdatePartsAnimPositionsAndDamage(bool doDamage = true)
 		{
 			int myWorldId = base.gameObject.GetMyWorldId();
 			if (myWorldId == -1)
@@ -323,29 +326,29 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 			return num;
 		}
 
-		private float takeoffAccelPowerInv;
+				private float takeoffAccelPowerInv;
 
-		private float constantVelocityPhase_maxSpeed;
+				private float constantVelocityPhase_maxSpeed;
 
-		public class Tuning : TuningData<LaunchableRocketCluster.StatesInstance.Tuning>
+				public class Tuning : TuningData<LaunchableRocketCluster.StatesInstance.Tuning>
 		{
-			public float takeoffAccelPower = 4f;
+						public float takeoffAccelPower = 4f;
 
-			public float maxAccelerationDistance = 25f;
+						public float maxAccelerationDistance = 25f;
 
-			public float warmupTime = 5f;
+						public float warmupTime = 5f;
 
-			public float heightSpeedPower = 0.5f;
+						public float heightSpeedPower = 0.5f;
 
-			public float heightSpeedFactor = 4f;
+						public float heightSpeedFactor = 4f;
 
-			public int maxAccelHeight = 40;
+						public int maxAccelHeight = 40;
 		}
 	}
 
-	public class States : GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster>
+		public class States : GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.grounded;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -404,33 +407,40 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 				{
 					craftInterface.Trigger(-887025858, smi.gameObject);
 					WorldContainer component = craftInterface.GetComponent<WorldContainer>();
-					List<MinionIdentity> worldItems = Components.MinionIdentities.GetWorldItems(component.id, false);
-					MinionMigrationEventArgs minionMigrationEventArgs = new MinionMigrationEventArgs
+					if (component != null)
 					{
-						prevWorldId = component.id,
-						targetWorldId = component.id
-					};
-					foreach (MinionIdentity minionId in worldItems)
-					{
-						minionMigrationEventArgs.minionId = minionId;
-						Game.Instance.Trigger(586301400, minionMigrationEventArgs);
+						List<MinionIdentity> worldItems = Components.MinionIdentities.GetWorldItems(component.id, false);
+						MinionMigrationEventArgs minionMigrationEventArgs = new MinionMigrationEventArgs
+						{
+							prevWorldId = component.id,
+							targetWorldId = component.id
+						};
+						foreach (MinionIdentity minionId in worldItems)
+						{
+							minionMigrationEventArgs.minionId = minionId;
+							Game.Instance.Trigger(586301400, minionMigrationEventArgs);
+						}
 					}
 				}
 				Game.Instance.Trigger(-887025858, smi.gameObject);
 				if (craftInterface != null)
 				{
-					craftInterface.GetPassengerModule().RemovePassengersOnOtherWorlds();
+					PassengerRocketModule passengerModule = craftInterface.GetPassengerModule();
+					if (passengerModule != null)
+					{
+						passengerModule.RemovePassengersOnOtherWorlds();
+					}
 				}
 				smi.GoTo(this.grounded);
 			});
 		}
 
-		public bool IsFullyLanded<T>(LaunchableRocketCluster.StatesInstance smi, T p)
+				public bool IsFullyLanded<T>(LaunchableRocketCluster.StatesInstance smi, T p)
 		{
 			return this.distanceAboveGround.Get(smi) <= 0.0025f && this.warmupTimeRemaining.Get(smi) <= 0f;
 		}
 
-		public static void DoWorldDamage(GameObject part, Vector3 apparentPosition, int actualWorld)
+				public static void DoWorldDamage(GameObject part, Vector3 apparentPosition, int actualWorld)
 		{
 			OccupyArea component = part.GetComponent<OccupyArea>();
 			component.UpdateOccupiedArea();
@@ -464,31 +474,31 @@ public class LaunchableRocketCluster : StateMachineComponent<LaunchableRocketClu
 			}
 		}
 
-		public StateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.FloatParameter warmupTimeRemaining;
+				public StateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.FloatParameter warmupTimeRemaining;
 
-		public StateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.FloatParameter distanceAboveGround;
+				public StateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.FloatParameter distanceAboveGround;
 
-		public StateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.FloatParameter distanceToSpace;
+				public StateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.FloatParameter distanceToSpace;
 
-		public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State grounded;
+				public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State grounded;
 
-		public LaunchableRocketCluster.States.NotGroundedStates not_grounded;
+				public LaunchableRocketCluster.States.NotGroundedStates not_grounded;
 
-		public class NotGroundedStates : GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State
+				public class NotGroundedStates : GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State
 		{
-			public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State launch_setup;
+						public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State launch_setup;
 
-			public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State launch_loop;
+						public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State launch_loop;
 
-			public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State launch_pst;
+						public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State launch_pst;
 
-			public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State space;
+						public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State space;
 
-			public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State landing_setup;
+						public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State landing_setup;
 
-			public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State landing_loop;
+						public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State landing_loop;
 
-			public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State land;
+						public GameStateMachine<LaunchableRocketCluster.States, LaunchableRocketCluster.StatesInstance, LaunchableRocketCluster, object>.State land;
 		}
 	}
 }

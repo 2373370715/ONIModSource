@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 public class OptionsMenuScreen : KModalButtonMenu
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.keepMenuOpen = true;
@@ -23,14 +23,14 @@ public class OptionsMenuScreen : KModalButtonMenu
 		this.backButton.onClick += this.Deactivate;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.title.SetText(UI.FRONTEND.OPTIONS_SCREEN.TITLE);
 		this.backButton.transform.SetAsLastSibling();
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		foreach (GameObject gameObject in this.buttonObjects)
@@ -38,7 +38,7 @@ public class OptionsMenuScreen : KModalButtonMenu
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.TryConsume(global::Action.Escape) || e.TryConsume(global::Action.MouseRight))
 		{
@@ -48,70 +48,70 @@ public class OptionsMenuScreen : KModalButtonMenu
 		base.OnKeyDown(e);
 	}
 
-	private void OnGraphicsOptions()
+		private void OnGraphicsOptions()
 	{
 		base.ActivateChildScreen(this.graphicsOptionsScreenPrefab.gameObject);
 	}
 
-	private void OnAudioOptions()
+		private void OnAudioOptions()
 	{
 		base.ActivateChildScreen(this.audioOptionsScreenPrefab.gameObject);
 	}
 
-	private void OnGameOptions()
+		private void OnGameOptions()
 	{
 		base.ActivateChildScreen(this.gameOptionsScreenPrefab.gameObject);
 	}
 
-	private void OnMetrics()
+		private void OnMetrics()
 	{
 		base.ActivateChildScreen(this.metricsScreenPrefab.gameObject);
 	}
 
-	public void ShowMetricsScreen()
+		public void ShowMetricsScreen()
 	{
 		base.ActivateChildScreen(this.metricsScreenPrefab.gameObject);
 	}
 
-	private void OnFeedback()
+		private void OnFeedback()
 	{
 		base.ActivateChildScreen(this.feedbackScreenPrefab.gameObject);
 	}
 
-	private void OnCredits()
+		private void OnCredits()
 	{
 		base.ActivateChildScreen(this.creditsScreenPrefab.gameObject);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		global::Debug.developerConsoleVisible = false;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameOptionsScreen gameOptionsScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private AudioOptionsScreen audioOptionsScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GraphicsOptionsScreen graphicsOptionsScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private CreditsScreen creditsScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private MetricsOptionsScreen metricsScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private FeedbackScreen feedbackScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText title;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton backButton;
 }

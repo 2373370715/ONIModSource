@@ -7,18 +7,18 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/World")]
 public class World : KMonoBehaviour
 {
-			public static World Instance { get; private set; }
+				public static World Instance { get; private set; }
 
-			public SubworldZoneRenderData zoneRenderData { get; private set; }
+				public SubworldZoneRenderData zoneRenderData { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		global::Debug.Assert(World.Instance == null);
 		World.Instance = this;
 		this.blockTileRenderer = base.GetComponent<BlockTileRenderer>();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.GetComponent<SimDebugView>().OnReset();
 		base.GetComponent<PropertyTextures>().OnReset(null);
@@ -26,7 +26,7 @@ public class World : KMonoBehaviour
 		Grid.OnReveal = (Action<int>)Delegate.Combine(Grid.OnReveal, new Action<int>(this.OnReveal));
 	}
 
-	protected override void OnLoadLevel()
+		protected override void OnLoadLevel()
 	{
 		World.Instance = null;
 		if (this.blockTileRenderer != null)
@@ -44,7 +44,7 @@ public class World : KMonoBehaviour
 		base.OnLoadLevel();
 	}
 
-	public unsafe void UpdateCellInfo(List<SolidInfo> solidInfo, List<CallbackInfo> callbackInfo, int num_solid_substance_change_info, Sim.SolidSubstanceChangeInfo* solid_substance_change_info, int num_liquid_change_info, Sim.LiquidChangeInfo* liquid_change_info)
+		public unsafe void UpdateCellInfo(List<SolidInfo> solidInfo, List<CallbackInfo> callbackInfo, int num_solid_substance_change_info, Sim.SolidSubstanceChangeInfo* solid_substance_change_info, int num_liquid_change_info, Sim.LiquidChangeInfo* liquid_change_info)
 	{
 		int count = solidInfo.Count;
 		this.changedCells.Clear();
@@ -99,12 +99,12 @@ public class World : KMonoBehaviour
 		instance.TriggerEvent(this.changedCells, GameScenePartitioner.Instance.liquidChangedLayer, null);
 	}
 
-	private void OnReveal(int cell)
+		private void OnReveal(int cell)
 	{
 		this.revealedCells.Add(cell);
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (Game.IsQuitting())
 		{
@@ -142,19 +142,19 @@ public class World : KMonoBehaviour
 		}
 	}
 
-	public Action<int> OnSolidChanged;
+		public Action<int> OnSolidChanged;
 
-	public Action<int> OnLiquidChanged;
+		public Action<int> OnLiquidChanged;
 
-	public BlockTileRenderer blockTileRenderer;
+		public BlockTileRenderer blockTileRenderer;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	[NonSerialized]
 	public GroundRenderer groundRenderer;
 
-	private List<int> revealedCells = new List<int>();
+		private List<int> revealedCells = new List<int>();
 
-	public static int DebugCellID = -1;
+		public static int DebugCellID = -1;
 
-	private List<int> changedCells = new List<int>();
+		private List<int> changedCells = new List<int>();
 }

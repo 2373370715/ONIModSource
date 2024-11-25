@@ -3,40 +3,40 @@ using System.Diagnostics;
 
 namespace Database
 {
-	public class StatusItems : ResourceSet<StatusItem>
+		public class StatusItems : ResourceSet<StatusItem>
 	{
-		public StatusItems(string id, ResourceSet parent) : base(id, parent)
+				public StatusItems(string id, ResourceSet parent) : base(id, parent)
 		{
 		}
 
-		[DebuggerDisplay("{Id}")]
+				[DebuggerDisplay("{Id}")]
 		public class StatusItemInfo : Resource
 		{
-			public string Type;
+						public string Type;
 
-			public string Tooltip;
+						public string Tooltip;
 
-			public bool IsIconTinted;
+						public bool IsIconTinted;
 
-			public StatusItem.IconType IconType;
+						public StatusItem.IconType IconType;
 
-			public string Icon;
+						public string Icon;
 
-			public string SoundPath;
+						public string SoundPath;
 
-			public bool ShouldNotify;
+						public bool ShouldNotify;
 
-			public float NotificationDelay;
+						public float NotificationDelay;
 
-			public NotificationType NotificationType;
+						public NotificationType NotificationType;
 
-			public bool AllowMultiples;
+						public bool AllowMultiples;
 
-			public string Effect;
+						public string Effect;
 
-			public HashedString Overlay;
+						public HashedString Overlay;
 
-			public HashedString SecondOverlay;
+						public HashedString SecondOverlay;
 		}
 	}
 }

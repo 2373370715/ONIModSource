@@ -3,9 +3,9 @@ using Klei.AI;
 
 namespace Database
 {
-	public class GameplaySeasons : ResourceSet<GameplaySeason>
+		public class GameplaySeasons : ResourceSet<GameplaySeason>
 	{
-		public GameplaySeasons(ResourceSet parent) : base("GameplaySeasons", parent)
+				public GameplaySeasons(ResourceSet parent) : base("GameplaySeasons", parent)
 		{
 			this.VanillaSeasons();
 			this.Expansion1Seasons();
@@ -13,12 +13,12 @@ namespace Database
 			this.UnusedSeasons();
 		}
 
-		private void VanillaSeasons()
+				private void VanillaSeasons()
 		{
 			this.MeteorShowers = base.Add(new MeteorShowerSeason("MeteorShowers", GameplaySeason.Type.World, "", 14f, false, -1f, true, -1, 0f, float.PositiveInfinity, 1, true, -1f).AddEvent(Db.Get().GameplayEvents.MeteorShowerIronEvent).AddEvent(Db.Get().GameplayEvents.MeteorShowerGoldEvent).AddEvent(Db.Get().GameplayEvents.MeteorShowerCopperEvent));
 		}
 
-		private void Expansion1Seasons()
+				private void Expansion1Seasons()
 		{
 			this.RegolithMoonMeteorShowers = base.Add(new MeteorShowerSeason("RegolithMoonMeteorShowers", GameplaySeason.Type.World, "EXPANSION1_ID", 20f, false, -1f, true, -1, 0f, float.PositiveInfinity, 1, true, 6000f).AddEvent(Db.Get().GameplayEvents.MeteorShowerDustEvent).AddEvent(Db.Get().GameplayEvents.ClusterIronShower).AddEvent(Db.Get().GameplayEvents.ClusterIceShower));
 			this.TemporalTearMeteorShowers = base.Add(new MeteorShowerSeason("TemporalTearMeteorShowers", GameplaySeason.Type.World, "EXPANSION1_ID", 1f, false, 0f, false, -1, 0f, float.PositiveInfinity, 1, false, -1f).AddEvent(Db.Get().GameplayEvents.MeteorShowerFullereneEvent));
@@ -39,59 +39,62 @@ namespace Database
 			this.MiniRadioactiveOceanMeteorShowers = base.Add(new MeteorShowerSeason("MiniRadioactiveOceanMeteorShowers", GameplaySeason.Type.World, "EXPANSION1_ID", 20f, false, -1f, true, -1, 0f, float.PositiveInfinity, 1, true, 6000f).AddEvent(Db.Get().GameplayEvents.ClusterUraniumShower));
 		}
 
-		private void DLCSeasons()
+				private void DLCSeasons()
 		{
 			this.CeresMeteorShowers = base.Add(new MeteorShowerSeason("CeresMeteorShowers", GameplaySeason.Type.World, "DLC2_ID", 20f, false, -1f, true, -1, 10f, float.PositiveInfinity, 1, true, 6000f).AddEvent(Db.Get().GameplayEvents.ClusterIceAndTreesShower));
+			this.MiniCeresStartShowers = base.Add(new MeteorShowerSeason("MiniCeresStartShowers", GameplaySeason.Type.World, "EXPANSION1_ID", 20f, false, -1f, true, -1, 0f, float.PositiveInfinity, 1, true, 6000f).AddEvent(Db.Get().GameplayEvents.ClusterOxyliteShower).AddEvent(Db.Get().GameplayEvents.ClusterSnowShower));
 		}
 
-		private void UnusedSeasons()
+				private void UnusedSeasons()
 		{
 		}
 
-		public GameplaySeason NaturalRandomEvents;
+				public GameplaySeason NaturalRandomEvents;
 
-		public GameplaySeason DupeRandomEvents;
+				public GameplaySeason DupeRandomEvents;
 
-		public GameplaySeason PrickleCropSeason;
+				public GameplaySeason PrickleCropSeason;
 
-		public GameplaySeason BonusEvents;
+				public GameplaySeason BonusEvents;
 
-		public GameplaySeason MeteorShowers;
+				public GameplaySeason MeteorShowers;
 
-		public GameplaySeason TemporalTearMeteorShowers;
+				public GameplaySeason TemporalTearMeteorShowers;
 
-		public GameplaySeason SpacedOutStyleStartMeteorShowers;
+				public GameplaySeason SpacedOutStyleStartMeteorShowers;
 
-		public GameplaySeason SpacedOutStyleRocketMeteorShowers;
+				public GameplaySeason SpacedOutStyleRocketMeteorShowers;
 
-		public GameplaySeason SpacedOutStyleWarpMeteorShowers;
+				public GameplaySeason SpacedOutStyleWarpMeteorShowers;
 
-		public GameplaySeason ClassicStyleStartMeteorShowers;
+				public GameplaySeason ClassicStyleStartMeteorShowers;
 
-		public GameplaySeason ClassicStyleWarpMeteorShowers;
+				public GameplaySeason ClassicStyleWarpMeteorShowers;
 
-		public GameplaySeason TundraMoonletMeteorShowers;
+				public GameplaySeason TundraMoonletMeteorShowers;
 
-		public GameplaySeason MarshyMoonletMeteorShowers;
+				public GameplaySeason MarshyMoonletMeteorShowers;
 
-		public GameplaySeason NiobiumMoonletMeteorShowers;
+				public GameplaySeason NiobiumMoonletMeteorShowers;
 
-		public GameplaySeason WaterMoonletMeteorShowers;
+				public GameplaySeason WaterMoonletMeteorShowers;
 
-		public GameplaySeason GassyMooteorShowers;
+				public GameplaySeason GassyMooteorShowers;
 
-		public GameplaySeason RegolithMoonMeteorShowers;
+				public GameplaySeason RegolithMoonMeteorShowers;
 
-		public GameplaySeason MiniMetallicSwampyMeteorShowers;
+				public GameplaySeason MiniMetallicSwampyMeteorShowers;
 
-		public GameplaySeason MiniForestFrozenMeteorShowers;
+				public GameplaySeason MiniForestFrozenMeteorShowers;
 
-		public GameplaySeason MiniBadlandsMeteorShowers;
+				public GameplaySeason MiniBadlandsMeteorShowers;
 
-		public GameplaySeason MiniFlippedMeteorShowers;
+				public GameplaySeason MiniFlippedMeteorShowers;
 
-		public GameplaySeason MiniRadioactiveOceanMeteorShowers;
+				public GameplaySeason MiniRadioactiveOceanMeteorShowers;
 
-		public GameplaySeason CeresMeteorShowers;
+				public GameplaySeason MiniCeresStartShowers;
+
+				public GameplaySeason CeresMeteorShowers;
 	}
 }

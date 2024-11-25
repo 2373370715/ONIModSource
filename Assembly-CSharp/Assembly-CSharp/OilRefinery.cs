@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.Subscribe<OilRefinery>(-1697596308, OilRefinery.OnStorageChangedDelegate);
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
@@ -15,13 +15,13 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 		this.maxSrcMass = base.GetComponent<ConduitConsumer>().capacityKG;
 	}
 
-	private void OnStorageChanged(object data)
+		private void OnStorageChanged(object data)
 	{
 		float positionPercent = Mathf.Clamp01(this.storage.GetMassAvailable(SimHashes.CrudeOil) / this.maxSrcMass);
 		this.meter.SetPositionPercent(positionPercent);
 	}
 
-	private static bool UpdateStateCb(int cell, object data)
+		private static bool UpdateStateCb(int cell, object data)
 	{
 		OilRefinery oilRefinery = data as OilRefinery;
 		if (Grid.Element[cell].IsGas)
@@ -32,7 +32,7 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 		return true;
 	}
 
-	private void TestAreaPressure()
+		private void TestAreaPressure()
 	{
 		this.envPressure = 0f;
 		this.cellCount = 0f;
@@ -43,58 +43,58 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 		}
 	}
 
-	private bool IsOverPressure()
+		private bool IsOverPressure()
 	{
 		return this.envPressure >= this.overpressureMass;
 	}
 
-	private bool IsOverWarningPressure()
+		private bool IsOverWarningPressure()
 	{
 		return this.envPressure >= this.overpressureWarningMass;
 	}
 
-	private bool wasOverPressure;
+		private bool wasOverPressure;
 
-	[SerializeField]
+		[SerializeField]
 	public float overpressureWarningMass = 4.5f;
 
-	[SerializeField]
+		[SerializeField]
 	public float overpressureMass = 5f;
 
-	private float maxSrcMass;
+		private float maxSrcMass;
 
-	private float envPressure;
+		private float envPressure;
 
-	private float cellCount;
+		private float cellCount;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private OilRefinery.WorkableTarget workable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private OccupyArea occupyArea;
 
-	private const bool hasMeter = true;
+		private const bool hasMeter = true;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private static readonly EventSystem.IntraObjectHandler<OilRefinery> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<OilRefinery>(delegate(OilRefinery component, object data)
+		private static readonly EventSystem.IntraObjectHandler<OilRefinery> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<OilRefinery>(delegate(OilRefinery component, object data)
 	{
 		component.OnStorageChanged(data);
 	});
 
-	public class StatesInstance : GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.GameInstance
+		public class StatesInstance : GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.GameInstance
 	{
-		public StatesInstance(OilRefinery smi) : base(smi)
+				public StatesInstance(OilRefinery smi) : base(smi)
 		{
 		}
 
-		public void TestAreaPressure()
+				public void TestAreaPressure()
 		{
 			base.smi.master.TestAreaPressure();
 			bool flag = base.smi.master.IsOverPressure();
@@ -112,9 +112,9 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 		}
 	}
 
-	public class States : GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery>
+		public class States : GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.disabled;
 			this.root.EventTransition(GameHashes.OperationalChanged, this.disabled, (OilRefinery.StatesInstance smi) => !smi.master.operational.IsOperational);
@@ -130,23 +130,23 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 			}, UpdateRate.SIM_1000ms, false).ParamTransition<bool>(this.isOverPressure, this.ready, GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.IsFalse).ToggleStatusItem(Db.Get().BuildingStatusItems.PressureOk, null);
 		}
 
-		public StateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.BoolParameter isOverPressure;
+				public StateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.BoolParameter isOverPressure;
 
-		public StateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.BoolParameter isOverPressureWarning;
+				public StateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.BoolParameter isOverPressureWarning;
 
-		public GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.State disabled;
+				public GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.State disabled;
 
-		public GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.State overpressure;
+				public GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.State overpressure;
 
-		public GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.State needResources;
+				public GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.State needResources;
 
-		public GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.State ready;
+				public GameStateMachine<OilRefinery.States, OilRefinery.StatesInstance, OilRefinery, object>.State ready;
 	}
 
-	[AddComponentMenu("KMonoBehaviour/Workable/WorkableTarget")]
+		[AddComponentMenu("KMonoBehaviour/Workable/WorkableTarget")]
 	public class WorkableTarget : Workable
 	{
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			base.OnPrefabInit();
 			this.showProgressBar = false;
@@ -159,33 +159,33 @@ public class OilRefinery : StateMachineComponent<OilRefinery.StatesInstance>
 			};
 		}
 
-		protected override void OnSpawn()
+				protected override void OnSpawn()
 		{
 			base.OnSpawn();
 			base.SetWorkTime(float.PositiveInfinity);
 		}
 
-		protected override void OnStartWork(Worker worker)
+				protected override void OnStartWork(WorkerBase worker)
 		{
 			this.operational.SetActive(true, false);
 		}
 
-		protected override void OnStopWork(Worker worker)
+				protected override void OnStopWork(WorkerBase worker)
 		{
 			this.operational.SetActive(false, false);
 		}
 
-		protected override void OnCompleteWork(Worker worker)
+				protected override void OnCompleteWork(WorkerBase worker)
 		{
 			this.operational.SetActive(false, false);
 		}
 
-		public override bool InstantlyFinish(Worker worker)
+				public override bool InstantlyFinish(WorkerBase worker)
 		{
 			return false;
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public Operational operational;
 	}
 }

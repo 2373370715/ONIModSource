@@ -2,7 +2,7 @@
 
 public interface IClusterRange
 {
-	float GetRange();
+		float GetRange();
 
-	int GetRangeInTiles();
+		int GetRangeInTiles();
 }

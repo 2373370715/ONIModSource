@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AgeMonitor : GameStateMachine<AgeMonitor, AgeMonitor.Instance, IStateMachineTarget, AgeMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.alive;
 		this.alive.ToggleAttributeModifier("Aging", (AgeMonitor.Instance smi) => this.aging, null).Transition(this.time_to_die, new StateMachine<AgeMonitor, AgeMonitor.Instance, IStateMachineTarget, AgeMonitor.Def>.Transition.ConditionCallback(AgeMonitor.TimeToDie), UpdateRate.SIM_1000ms).Update(new Action<AgeMonitor.Instance, float>(AgeMonitor.UpdateOldStatusItem), UpdateRate.SIM_1000ms, false);
@@ -13,42 +13,41 @@ public class AgeMonitor : GameStateMachine<AgeMonitor, AgeMonitor.Instance, ISta
 		this.aging = new AttributeModifier(Db.Get().Amounts.Age.deltaAttribute.Id, 0.0016666667f, CREATURES.MODIFIERS.AGE.NAME, false, false, true);
 	}
 
-	private static void Die(AgeMonitor.Instance smi)
+		private static void Die(AgeMonitor.Instance smi)
 	{
 		smi.GetSMI<DeathMonitor.Instance>().Kill(Db.Get().Deaths.Generic);
 	}
 
-	private static bool TimeToDie(AgeMonitor.Instance smi)
+		private static bool TimeToDie(AgeMonitor.Instance smi)
 	{
 		return smi.age.value >= smi.age.GetMax();
 	}
 
-	private static void UpdateOldStatusItem(AgeMonitor.Instance smi, float dt)
+		private static void UpdateOldStatusItem(AgeMonitor.Instance smi, float dt)
 	{
-		KSelectable component = smi.GetComponent<KSelectable>();
 		bool show = smi.age.value > smi.age.GetMax() * 0.9f;
-		smi.oldStatusGuid = component.ToggleStatusItem(Db.Get().CreatureStatusItems.Old, smi.oldStatusGuid, show, smi);
+		smi.oldStatusGuid = smi.kselectable.ToggleStatusItem(Db.Get().CreatureStatusItems.Old, smi.oldStatusGuid, show, smi);
 	}
 
-	public GameStateMachine<AgeMonitor, AgeMonitor.Instance, IStateMachineTarget, AgeMonitor.Def>.State alive;
+		public GameStateMachine<AgeMonitor, AgeMonitor.Instance, IStateMachineTarget, AgeMonitor.Def>.State alive;
 
-	public GameStateMachine<AgeMonitor, AgeMonitor.Instance, IStateMachineTarget, AgeMonitor.Def>.State time_to_die;
+		public GameStateMachine<AgeMonitor, AgeMonitor.Instance, IStateMachineTarget, AgeMonitor.Def>.State time_to_die;
 
-	private AttributeModifier aging;
+		private AttributeModifier aging;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public override void Configure(GameObject prefab)
+				public override void Configure(GameObject prefab)
 		{
 			prefab.AddOrGet<Modifiers>().initialAmounts.Add(Db.Get().Amounts.Age.Id);
 		}
 
-		public float maxAgePercentOnSpawn = 0.75f;
+				public float maxAgePercentOnSpawn = 0.75f;
 	}
 
-	public new class Instance : GameStateMachine<AgeMonitor, AgeMonitor.Instance, IStateMachineTarget, AgeMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<AgeMonitor, AgeMonitor.Instance, IStateMachineTarget, AgeMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, AgeMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, AgeMonitor.Def def) : base(master, def)
 		{
 			this.age = Db.Get().Amounts.Age.Lookup(base.gameObject);
 			base.Subscribe(1119167081, delegate(object data)
@@ -57,7 +56,7 @@ public class AgeMonitor : GameStateMachine<AgeMonitor, AgeMonitor.Instance, ISta
 			});
 		}
 
-		public void RandomizeAge()
+				public void RandomizeAge()
 		{
 			this.age.value = UnityEngine.Random.value * this.age.GetMax() * base.def.maxAgePercentOnSpawn;
 			AmountInstance amountInstance = Db.Get().Amounts.Fertility.Lookup(base.gameObject);
@@ -68,7 +67,7 @@ public class AgeMonitor : GameStateMachine<AgeMonitor, AgeMonitor.Instance, ISta
 			}
 		}
 
-				public float CyclesUntilDeath
+						public float CyclesUntilDeath
 		{
 			get
 			{
@@ -76,8 +75,11 @@ public class AgeMonitor : GameStateMachine<AgeMonitor, AgeMonitor.Instance, ISta
 			}
 		}
 
-		public AmountInstance age;
+				public AmountInstance age;
 
-		public Guid oldStatusGuid;
+				public Guid oldStatusGuid;
+
+				[MyCmpReq]
+		public KSelectable kselectable;
 	}
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/AudioEventManager")]
 public class AudioEventManager : KMonoBehaviour
 {
-	public static AudioEventManager Get()
+		public static AudioEventManager Get()
 	{
 		if (AudioEventManager.instance == null)
 		{
@@ -28,13 +28,13 @@ public class AudioEventManager : KMonoBehaviour
 		return AudioEventManager.instance;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnPrefabInit();
 		this.spatialSplats.Reset(Grid.WidthInCells, Grid.HeightInCells, 16, 16);
 	}
 
-	public static float LoudnessToDB(float loudness)
+		public static float LoudnessToDB(float loudness)
 	{
 		if (loudness <= 0f)
 		{
@@ -43,17 +43,17 @@ public class AudioEventManager : KMonoBehaviour
 		return 10f * Mathf.Log10(loudness);
 	}
 
-	public static float DBToLoudness(float src_db)
+		public static float DBToLoudness(float src_db)
 	{
 		return Mathf.Pow(10f, src_db / 10f);
 	}
 
-	public float GetDecibelsAtCell(int cell)
+		public float GetDecibelsAtCell(int cell)
 	{
 		return Mathf.Round(AudioEventManager.LoudnessToDB(Grid.Loudness[cell]) * 2f) / 2f;
 	}
 
-	public static string GetLoudestNoisePolluterAtCell(int cell)
+		public static string GetLoudestNoisePolluterAtCell(int cell)
 	{
 		float negativeInfinity = float.NegativeInfinity;
 		string result = null;
@@ -71,7 +71,7 @@ public class AudioEventManager : KMonoBehaviour
 		return result;
 	}
 
-	public void ClearNoiseSplat(NoiseSplat splat)
+		public void ClearNoiseSplat(NoiseSplat splat)
 	{
 		if (this.splats.Contains(splat))
 		{
@@ -80,13 +80,13 @@ public class AudioEventManager : KMonoBehaviour
 		}
 	}
 
-	public void AddSplat(NoiseSplat splat)
+		public void AddSplat(NoiseSplat splat)
 	{
 		this.splats.Add(splat);
 		this.spatialSplats.Add(splat);
 	}
 
-	public NoiseSplat CreateNoiseSplat(Vector2 pos, int dB, int radius, string name, GameObject go)
+		public NoiseSplat CreateNoiseSplat(Vector2 pos, int dB, int radius, string name, GameObject go)
 	{
 		Polluter polluter = this.GetPolluter(radius);
 		polluter.SetAttributes(pos, dB, go, name);
@@ -95,7 +95,7 @@ public class AudioEventManager : KMonoBehaviour
 		return noiseSplat;
 	}
 
-	public List<AudioEventManager.PolluterDisplay> GetPollutersForCell(int cell)
+		public List<AudioEventManager.PolluterDisplay> GetPollutersForCell(int cell)
 	{
 		this.polluters.Clear();
 		Vector2I vector2I = Grid.CellToXY(cell);
@@ -116,7 +116,7 @@ public class AudioEventManager : KMonoBehaviour
 		return this.polluters;
 	}
 
-	private void RemoveExpiredSplats()
+		private void RemoveExpiredSplats()
 	{
 		if (this.removeTime.Count > 1)
 		{
@@ -141,12 +141,12 @@ public class AudioEventManager : KMonoBehaviour
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.RemoveExpiredSplats();
 	}
 
-	private Polluter GetPolluter(int radius)
+		private Polluter GetPolluter(int radius)
 	{
 		if (!this.freePool.ContainsKey(radius))
 		{
@@ -170,7 +170,7 @@ public class AudioEventManager : KMonoBehaviour
 		return polluter;
 	}
 
-	private void FreePolluter(Polluter pol)
+		private void FreePolluter(Polluter pol)
 	{
 		if (pol != null)
 		{
@@ -181,7 +181,7 @@ public class AudioEventManager : KMonoBehaviour
 		}
 	}
 
-	public void PlayTimedOnceOff(Vector2 pos, int dB, int radius, string name, GameObject go, float time = 1f)
+		public void PlayTimedOnceOff(Vector2 pos, int dB, int radius, string name, GameObject go, float time = 1f)
 	{
 		if (dB > 0 && radius > 0 && time > 0f)
 		{
@@ -191,52 +191,52 @@ public class AudioEventManager : KMonoBehaviour
 		}
 	}
 
-	private void AddTimedInstance(Polluter p, float time)
+		private void AddTimedInstance(Polluter p, float time)
 	{
 		NoiseSplat noiseSplat = new NoiseSplat(p, time + Time.time);
 		p.SetSplat(noiseSplat);
 		this.removeTime.Add(new Pair<float, NoiseSplat>(time + Time.time, noiseSplat));
 	}
 
-	private static void SoundLog(long itemId, string message)
+		private static void SoundLog(long itemId, string message)
 	{
 		global::Debug.Log(" [" + itemId.ToString() + "] \t" + message);
 	}
 
-	public const float NO_NOISE_EFFECTORS = 0f;
+		public const float NO_NOISE_EFFECTORS = 0f;
 
-	public const float MIN_LOUDNESS_THRESHOLD = 1f;
+		public const float MIN_LOUDNESS_THRESHOLD = 1f;
 
-	private static AudioEventManager instance;
+		private static AudioEventManager instance;
 
-	private List<Pair<float, NoiseSplat>> removeTime = new List<Pair<float, NoiseSplat>>();
+		private List<Pair<float, NoiseSplat>> removeTime = new List<Pair<float, NoiseSplat>>();
 
-	private Dictionary<int, List<Polluter>> freePool = new Dictionary<int, List<Polluter>>();
+		private Dictionary<int, List<Polluter>> freePool = new Dictionary<int, List<Polluter>>();
 
-	private Dictionary<int, List<Polluter>> inusePool = new Dictionary<int, List<Polluter>>();
+		private Dictionary<int, List<Polluter>> inusePool = new Dictionary<int, List<Polluter>>();
 
-	private HashSet<NoiseSplat> splats = new HashSet<NoiseSplat>();
+		private HashSet<NoiseSplat> splats = new HashSet<NoiseSplat>();
 
-	private UniformGrid<NoiseSplat> spatialSplats = new UniformGrid<NoiseSplat>();
+		private UniformGrid<NoiseSplat> spatialSplats = new UniformGrid<NoiseSplat>();
 
-	private List<AudioEventManager.PolluterDisplay> polluters = new List<AudioEventManager.PolluterDisplay>();
+		private List<AudioEventManager.PolluterDisplay> polluters = new List<AudioEventManager.PolluterDisplay>();
 
-	public enum NoiseEffect
+		public enum NoiseEffect
 	{
-		Peaceful,
-		Quiet = 36,
-		TossAndTurn = 45,
-		WakeUp = 60,
-		Passive = 80,
-		Active = 106
+				Peaceful,
+				Quiet = 36,
+				TossAndTurn = 45,
+				WakeUp = 60,
+				Passive = 80,
+				Active = 106
 	}
 
-	public struct PolluterDisplay
+		public struct PolluterDisplay
 	{
-		public string name;
+				public string name;
 
-		public float value;
+				public float value;
 
-		public IPolluter provider;
+				public IPolluter provider;
 	}
 }

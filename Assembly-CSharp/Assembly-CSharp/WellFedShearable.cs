@@ -1,141 +1,123 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Klei.AI;
 using STRINGS;
 using UnityEngine;
 
-public class WellFedShearable : GameStateMachine<WellFedShearable, WellFedShearable.Instance, IStateMachineTarget, WellFedShearable.Def>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.growing;
-		this.root.Enter(delegate(WellFedShearable.Instance smi)
-		{
-			WellFedShearable.UpdateScales(smi, 0f);
-		}).Update(new Action<WellFedShearable.Instance, float>(WellFedShearable.UpdateScales), UpdateRate.SIM_1000ms, false).EventHandler(GameHashes.CaloriesConsumed, delegate(WellFedShearable.Instance smi, object data)
-		{
-			smi.OnCaloriesConsumed(data);
-		});
-		this.growing.Enter(delegate(WellFedShearable.Instance smi)
-		{
-			WellFedShearable.UpdateScales(smi, 0f);
-		}).Transition(this.fullyGrown, new StateMachine<WellFedShearable, WellFedShearable.Instance, IStateMachineTarget, WellFedShearable.Def>.Transition.ConditionCallback(WellFedShearable.AreScalesFullyGrown), UpdateRate.SIM_1000ms);
-		this.fullyGrown.Enter(delegate(WellFedShearable.Instance smi)
-		{
-			WellFedShearable.UpdateScales(smi, 0f);
-		}).ToggleBehaviour(GameTags.Creatures.ScalesGrown, (WellFedShearable.Instance smi) => smi.HasTag(GameTags.Creatures.CanMolt), null).EventTransition(GameHashes.Molt, this.growing, GameStateMachine<WellFedShearable, WellFedShearable.Instance, IStateMachineTarget, WellFedShearable.Def>.Not(new StateMachine<WellFedShearable, WellFedShearable.Instance, IStateMachineTarget, WellFedShearable.Def>.Transition.ConditionCallback(WellFedShearable.AreScalesFullyGrown))).Transition(this.growing, GameStateMachine<WellFedShearable, WellFedShearable.Instance, IStateMachineTarget, WellFedShearable.Def>.Not(new StateMachine<WellFedShearable, WellFedShearable.Instance, IStateMachineTarget, WellFedShearable.Def>.Transition.ConditionCallback(WellFedShearable.AreScalesFullyGrown)), UpdateRate.SIM_1000ms);
-	}
+public class WellFedShearable
+    : GameStateMachine<WellFedShearable, WellFedShearable.Instance, IStateMachineTarget, WellFedShearable.Def> {
+    public State fullyGrown;
+    public State growing;
 
-	private static bool AreScalesFullyGrown(WellFedShearable.Instance smi)
-	{
-		return smi.scaleGrowth.value >= smi.scaleGrowth.GetMax();
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = growing;
+        root.Enter(delegate(Instance smi) { UpdateScales(smi, 0f); })
+            .Enter(delegate(Instance smi) {
+                       if (smi.def.hideSymbols != null)
+                           foreach (var symbol in smi.def.hideSymbols)
+                               smi.animController.SetSymbolVisiblity(symbol, false);
+                   })
+            .Update(UpdateScales, UpdateRate.SIM_1000ms)
+            .EventHandler(GameHashes.CaloriesConsumed,
+                          delegate(Instance smi, object data) { smi.OnCaloriesConsumed(data); });
 
-	private static void UpdateScales(WellFedShearable.Instance smi, float dt)
-	{
-		int num = (int)((float)smi.def.levelCount * smi.scaleGrowth.value / 100f);
-		if (smi.currentScaleLevel != num)
-		{
-			KBatchedAnimController component = smi.GetComponent<KBatchedAnimController>();
-			for (int i = 0; i < WellFedShearable.SCALE_SYMBOL_NAMES.Length; i++)
-			{
-				bool is_visible = i <= num - 1;
-				component.SetSymbolVisiblity(WellFedShearable.SCALE_SYMBOL_NAMES[i], is_visible);
-			}
-			smi.currentScaleLevel = num;
-		}
-	}
+        growing.Enter(delegate(Instance smi) { UpdateScales(smi, 0f); })
+               .Transition(fullyGrown, AreScalesFullyGrown, UpdateRate.SIM_1000ms);
 
-	public GameStateMachine<WellFedShearable, WellFedShearable.Instance, IStateMachineTarget, WellFedShearable.Def>.State growing;
+        fullyGrown.Enter(delegate(Instance smi) { UpdateScales(smi, 0f); })
+                  .ToggleBehaviour(GameTags.Creatures.ScalesGrown, smi => smi.HasTag(GameTags.Creatures.CanMolt))
+                  .EventTransition(GameHashes.Molt, growing, Not(AreScalesFullyGrown))
+                  .Transition(growing, Not(AreScalesFullyGrown), UpdateRate.SIM_1000ms);
+    }
 
-	public GameStateMachine<WellFedShearable, WellFedShearable.Instance, IStateMachineTarget, WellFedShearable.Def>.State fullyGrown;
+    private static bool AreScalesFullyGrown(Instance smi) { return smi.scaleGrowth.value >= smi.scaleGrowth.GetMax(); }
 
-	private static HashedString[] SCALE_SYMBOL_NAMES = new HashedString[]
-	{
-		"scale_0",
-		"scale_1",
-		"scale_2",
-		"scale_3",
-		"scale_4"
-	};
+    private static void UpdateScales(Instance smi, float dt) {
+        var num = (int)(smi.def.levelCount * smi.scaleGrowth.value / 100f);
+        if (smi.currentScaleLevel != num) {
+            for (var i = 0; i < smi.def.scaleGrowthSymbols.Length; i++) {
+                var is_visible = i <= num - 1;
+                smi.animController.SetSymbolVisiblity(smi.def.scaleGrowthSymbols[i], is_visible);
+            }
 
-	public class Def : StateMachine.BaseDef, IGameObjectEffectDescriptor
-	{
-		public override void Configure(GameObject prefab)
-		{
-			prefab.GetComponent<Modifiers>().initialAmounts.Add(Db.Get().Amounts.ScaleGrowth.Id);
-		}
+            smi.currentScaleLevel = num;
+        }
+    }
 
-		public List<Descriptor> GetDescriptors(GameObject obj)
-		{
-			return new List<Descriptor>
-			{
-				new Descriptor(UI.BUILDINGEFFECTS.SCALE_GROWTH.Replace("{Item}", this.itemDroppedOnShear.ProperName()).Replace("{Amount}", GameUtil.GetFormattedMass(this.dropMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")).Replace("{Time}", GameUtil.GetFormattedCycles(this.growthDurationCycles * 600f, "F1", false)), UI.BUILDINGEFFECTS.TOOLTIPS.SCALE_GROWTH_FED.Replace("{Item}", this.itemDroppedOnShear.ProperName()).Replace("{Amount}", GameUtil.GetFormattedMass(this.dropMass, GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")).Replace("{Time}", GameUtil.GetFormattedCycles(this.growthDurationCycles * 600f, "F1", false)), Descriptor.DescriptorType.Effect, false)
-			};
-		}
+    public class Def : BaseDef, IGameObjectEffectDescriptor {
+        public static KAnimHashedString[] SCALE_SYMBOL_NAMES = {
+            "scale_0", "scale_1", "scale_2", "scale_3", "scale_4"
+        };
 
-		public string effectId;
+        public float               caloriesPerCycle;
+        public float               dropMass;
+        public string              effectId;
+        public float               growthDurationCycles;
+        public KAnimHashedString[] hideSymbols;
+        public Tag                 itemDroppedOnShear;
+        public int                 levelCount;
+        public Tag                 requiredDiet       = null;
+        public KAnimHashedString[] scaleGrowthSymbols = SCALE_SYMBOL_NAMES;
 
-		public float caloriesPerCycle;
+        public List<Descriptor> GetDescriptors(GameObject obj) {
+            return new List<Descriptor> {
+                new Descriptor(UI.BUILDINGEFFECTS.SCALE_GROWTH.Replace("{Item}", itemDroppedOnShear.ProperName())
+                                 .Replace("{Amount}", GameUtil.GetFormattedMass(dropMass))
+                                 .Replace("{Time}",   GameUtil.GetFormattedCycles(growthDurationCycles * 600f)),
+                               UI.BUILDINGEFFECTS.TOOLTIPS.SCALE_GROWTH_FED
+                                 .Replace("{Item}",   itemDroppedOnShear.ProperName())
+                                 .Replace("{Amount}", GameUtil.GetFormattedMass(dropMass))
+                                 .Replace("{Time}",   GameUtil.GetFormattedCycles(growthDurationCycles * 600f)))
+            };
+        }
 
-		public float growthDurationCycles;
+        public override void Configure(GameObject prefab) {
+            prefab.GetComponent<Modifiers>().initialAmounts.Add(Db.Get().Amounts.ScaleGrowth.Id);
+        }
+    }
 
-		public int levelCount;
+    public new class Instance : GameInstance, IShearable {
+        [MyCmpGet]
+        public KBatchedAnimController animController;
 
-		public Tag itemDroppedOnShear;
+        public int currentScaleLevel = -1;
 
-		public float dropMass;
-	}
+        [MyCmpGet]
+        private Effects effects;
 
-	public new class Instance : GameStateMachine<WellFedShearable, WellFedShearable.Instance, IStateMachineTarget, WellFedShearable.Def>.GameInstance, IShearable
-	{
-		public Instance(IStateMachineTarget master, WellFedShearable.Def def) : base(master, def)
-		{
-			this.scaleGrowth = Db.Get().Amounts.ScaleGrowth.Lookup(base.gameObject);
-			this.scaleGrowth.value = this.scaleGrowth.GetMax();
-		}
+        public AmountInstance scaleGrowth;
 
-		public bool IsFullyGrown()
-		{
-			return this.currentScaleLevel == base.def.levelCount;
-		}
+        public Instance(IStateMachineTarget master, Def def) : base(master, def) {
+            scaleGrowth       = Db.Get().Amounts.ScaleGrowth.Lookup(gameObject);
+            scaleGrowth.value = scaleGrowth.GetMax();
+        }
 
-		public void OnCaloriesConsumed(object data)
-		{
-			CreatureCalorieMonitor.CaloriesConsumedEvent caloriesConsumedEvent = (CreatureCalorieMonitor.CaloriesConsumedEvent)data;
-			EffectInstance effectInstance = this.effects.Get(base.smi.def.effectId);
-			if (effectInstance == null)
-			{
-				effectInstance = this.effects.Add(base.smi.def.effectId, true);
-			}
-			effectInstance.timeRemaining += caloriesConsumedEvent.calories / base.smi.def.caloriesPerCycle * 600f;
-		}
+        public bool IsFullyGrown() { return currentScaleLevel == def.levelCount; }
 
-		public void Shear()
-		{
-			PrimaryElement component = base.smi.GetComponent<PrimaryElement>();
-			GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(base.def.itemDroppedOnShear), null, null);
-			gameObject.transform.SetPosition(Grid.CellToPosCCC(Grid.CellLeft(Grid.PosToCell(this)), Grid.SceneLayer.Ore));
-			PrimaryElement component2 = gameObject.GetComponent<PrimaryElement>();
-			component2.Temperature = component.Temperature;
-			component2.Mass = base.def.dropMass;
-			component2.AddDisease(component.DiseaseIdx, component.DiseaseCount, "Shearing");
-			gameObject.SetActive(true);
-			Vector2 initial_velocity = new Vector2(UnityEngine.Random.Range(-1f, 1f) * 1f, UnityEngine.Random.value * 2f + 2f);
-			if (GameComps.Fallers.Has(gameObject))
-			{
-				GameComps.Fallers.Remove(gameObject);
-			}
-			GameComps.Fallers.Add(gameObject, initial_velocity);
-			this.scaleGrowth.value = 0f;
-			WellFedShearable.UpdateScales(this, 0f);
-		}
+        public void Shear() {
+            var component  = smi.GetComponent<PrimaryElement>();
+            var gameObject = Util.KInstantiate(Assets.GetPrefab(def.itemDroppedOnShear));
+            gameObject.transform.SetPosition(Grid.CellToPosCCC(Grid.CellLeft(Grid.PosToCell(this)),
+                                                               Grid.SceneLayer.Ore));
 
-		[MyCmpGet]
-		private Effects effects;
+            var component2 = gameObject.GetComponent<PrimaryElement>();
+            component2.Temperature = component.Temperature;
+            component2.Mass        = def.dropMass;
+            component2.AddDisease(component.DiseaseIdx, component.DiseaseCount, "Shearing");
+            gameObject.SetActive(true);
+            var initial_velocity = new Vector2(Random.Range(-1f, 1f) * 1f, Random.value * 2f + 2f);
+            if (GameComps.Fallers.Has(gameObject)) GameComps.Fallers.Remove(gameObject);
+            GameComps.Fallers.Add(gameObject, initial_velocity);
+            scaleGrowth.value = 0f;
+            UpdateScales(this, 0f);
+        }
 
-		public AmountInstance scaleGrowth;
+        public void OnCaloriesConsumed(object data) {
+            var caloriesConsumedEvent = (CreatureCalorieMonitor.CaloriesConsumedEvent)data;
+            if (def.requiredDiet != null && caloriesConsumedEvent.tag != def.requiredDiet) return;
 
-		public int currentScaleLevel = -1;
-	}
+            var effectInstance                         = effects.Get(smi.def.effectId);
+            if (effectInstance == null) effectInstance = effects.Add(smi.def.effectId, true);
+            effectInstance.timeRemaining += caloriesConsumedEvent.calories / smi.def.caloriesPerCycle * 600f;
+        }
+    }
 }

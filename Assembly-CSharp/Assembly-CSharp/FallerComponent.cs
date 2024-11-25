@@ -3,7 +3,7 @@ using UnityEngine;
 
 public struct FallerComponent
 {
-	public FallerComponent(Transform transform, Vector2 initial_velocity)
+		public FallerComponent(Transform transform, Vector2 initial_velocity)
 	{
 		this.transform = transform;
 		this.transformInstanceId = transform.GetInstanceID();
@@ -27,19 +27,19 @@ public struct FallerComponent
 		this.offset = 0f;
 	}
 
-	public Transform transform;
+		public Transform transform;
 
-	public int transformInstanceId;
+		public int transformInstanceId;
 
-	public bool isFalling;
+		public bool isFalling;
 
-	public float offset;
+		public float offset;
 
-	public Vector2 initialVelocity;
+		public Vector2 initialVelocity;
 
-	public HandleVector<int>.Handle partitionerEntry;
+		public HandleVector<int>.Handle partitionerEntry;
 
-	public Action<object> solidChangedCB;
+		public Action<object> solidChangedCB;
 
-	public System.Action cellChangedCB;
+		public System.Action cellChangedCB;
 }

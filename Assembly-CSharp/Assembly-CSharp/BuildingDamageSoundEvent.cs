@@ -4,13 +4,13 @@ using UnityEngine;
 [Serializable]
 public class BuildingDamageSoundEvent : SoundEvent
 {
-	public BuildingDamageSoundEvent(string file_name, string sound_name, int frame) : base(file_name, sound_name, frame, false, false, (float)SoundEvent.IGNORE_INTERVAL, false)
+		public BuildingDamageSoundEvent(string file_name, string sound_name, int frame) : base(file_name, sound_name, frame, false, false, (float)SoundEvent.IGNORE_INTERVAL, false)
 	{
 	}
 
-	public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
+		public override void PlaySound(AnimEventManager.EventPlayerData behaviour)
 	{
-		Vector3 sound_pos = behaviour.GetComponent<Transform>().GetPosition();
+		Vector3 sound_pos = behaviour.position;
 		sound_pos.z = 0f;
 		GameObject gameObject = behaviour.controller.gameObject;
 		base.objectIsSelectedAndVisible = SoundEvent.ObjectIsSelectedAndVisible(gameObject);
@@ -18,7 +18,7 @@ public class BuildingDamageSoundEvent : SoundEvent
 		{
 			sound_pos = SoundEvent.AudioHighlightListenerPosition(sound_pos);
 		}
-		Worker component = behaviour.GetComponent<Worker>();
+		WorkerBase component = behaviour.GetComponent<WorkerBase>();
 		if (component == null)
 		{
 			string sound = GlobalAssets.GetSound("Building_Dmg_Metal", false);
@@ -28,7 +28,7 @@ public class BuildingDamageSoundEvent : SoundEvent
 				return;
 			}
 		}
-		Workable workable = component.workable;
+		Workable workable = component.GetWorkable();
 		if (workable != null)
 		{
 			Building component2 = workable.GetComponent<Building>();

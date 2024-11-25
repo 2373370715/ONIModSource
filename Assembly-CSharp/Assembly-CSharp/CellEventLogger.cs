@@ -4,12 +4,12 @@ using System.Diagnostics;
 
 public class CellEventLogger : EventLogger<CellEventInstance, CellEvent>
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		CellEventLogger.Instance = null;
 	}
 
-	[Conditional("ENABLE_CELL_EVENT_LOGGER")]
+		[Conditional("ENABLE_CELL_EVENT_LOGGER")]
 	public void LogCallbackSend(int cell, int callback_id)
 	{
 		if (callback_id != -1)
@@ -18,14 +18,14 @@ public class CellEventLogger : EventLogger<CellEventInstance, CellEvent>
 		}
 	}
 
-	[Conditional("ENABLE_CELL_EVENT_LOGGER")]
+		[Conditional("ENABLE_CELL_EVENT_LOGGER")]
 	public void LogCallbackReceive(int callback_id)
 	{
 		int invalidCell = Grid.InvalidCell;
 		this.CallbackToCellMap.TryGetValue(callback_id, out invalidCell);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		CellEventLogger.Instance = this;
@@ -92,131 +92,131 @@ public class CellEventLogger : EventLogger<CellEventInstance, CellEvent>
 		this.SolidFilterEvent = (base.AddEvent(new CellSolidFilterEvent("SolidFilterEvent", true)) as CellSolidFilterEvent);
 	}
 
-	public static CellEventLogger Instance;
+		public static CellEventLogger Instance;
 
-	public CellSolidEvent SimMessagesSolid;
+		public CellSolidEvent SimMessagesSolid;
 
-	public CellSolidEvent SimCellOccupierDestroy;
+		public CellSolidEvent SimCellOccupierDestroy;
 
-	public CellSolidEvent SimCellOccupierForceSolid;
+		public CellSolidEvent SimCellOccupierForceSolid;
 
-	public CellSolidEvent SimCellOccupierSolidChanged;
+		public CellSolidEvent SimCellOccupierSolidChanged;
 
-	public CellElementEvent DoorOpen;
+		public CellElementEvent DoorOpen;
 
-	public CellElementEvent DoorClose;
+		public CellElementEvent DoorClose;
 
-	public CellElementEvent Excavator;
+		public CellElementEvent Excavator;
 
-	public CellElementEvent DebugTool;
+		public CellElementEvent DebugTool;
 
-	public CellElementEvent SandBoxTool;
+		public CellElementEvent SandBoxTool;
 
-	public CellElementEvent TemplateLoader;
+		public CellElementEvent TemplateLoader;
 
-	public CellElementEvent Scenario;
+		public CellElementEvent Scenario;
 
-	public CellElementEvent SimCellOccupierOnSpawn;
+		public CellElementEvent SimCellOccupierOnSpawn;
 
-	public CellElementEvent SimCellOccupierDestroySelf;
+		public CellElementEvent SimCellOccupierDestroySelf;
 
-	public CellElementEvent WorldGapManager;
+		public CellElementEvent WorldGapManager;
 
-	public CellElementEvent ReceiveElementChanged;
+		public CellElementEvent ReceiveElementChanged;
 
-	public CellElementEvent ObjectSetSimOnSpawn;
+		public CellElementEvent ObjectSetSimOnSpawn;
 
-	public CellElementEvent DecompositionDirtyWater;
+		public CellElementEvent DecompositionDirtyWater;
 
-	public CellElementEvent LaunchpadDesolidify;
+		public CellElementEvent LaunchpadDesolidify;
 
-	public CellCallbackEvent SendCallback;
+		public CellCallbackEvent SendCallback;
 
-	public CellCallbackEvent ReceiveCallback;
+		public CellCallbackEvent ReceiveCallback;
 
-	public CellDigEvent Dig;
+		public CellDigEvent Dig;
 
-	public CellAddRemoveSubstanceEvent WorldDamageDelayedSpawnFX;
+		public CellAddRemoveSubstanceEvent WorldDamageDelayedSpawnFX;
 
-	public CellAddRemoveSubstanceEvent SublimatesEmit;
+		public CellAddRemoveSubstanceEvent SublimatesEmit;
 
-	public CellAddRemoveSubstanceEvent OxygenModifierSimUpdate;
+		public CellAddRemoveSubstanceEvent OxygenModifierSimUpdate;
 
-	public CellAddRemoveSubstanceEvent LiquidChunkOnStore;
+		public CellAddRemoveSubstanceEvent LiquidChunkOnStore;
 
-	public CellAddRemoveSubstanceEvent FallingWaterAddToSim;
+		public CellAddRemoveSubstanceEvent FallingWaterAddToSim;
 
-	public CellAddRemoveSubstanceEvent ExploderOnSpawn;
+		public CellAddRemoveSubstanceEvent ExploderOnSpawn;
 
-	public CellAddRemoveSubstanceEvent ExhaustSimUpdate;
+		public CellAddRemoveSubstanceEvent ExhaustSimUpdate;
 
-	public CellAddRemoveSubstanceEvent ElementConsumerSimUpdate;
+		public CellAddRemoveSubstanceEvent ElementConsumerSimUpdate;
 
-	public CellAddRemoveSubstanceEvent ElementChunkTransition;
+		public CellAddRemoveSubstanceEvent ElementChunkTransition;
 
-	public CellAddRemoveSubstanceEvent OxyrockEmit;
+		public CellAddRemoveSubstanceEvent OxyrockEmit;
 
-	public CellAddRemoveSubstanceEvent BleachstoneEmit;
+		public CellAddRemoveSubstanceEvent BleachstoneEmit;
 
-	public CellAddRemoveSubstanceEvent UnstableGround;
+		public CellAddRemoveSubstanceEvent UnstableGround;
 
-	public CellAddRemoveSubstanceEvent ConduitFlowEmptyConduit;
+		public CellAddRemoveSubstanceEvent ConduitFlowEmptyConduit;
 
-	public CellAddRemoveSubstanceEvent ConduitConsumerWrongElement;
+		public CellAddRemoveSubstanceEvent ConduitConsumerWrongElement;
 
-	public CellAddRemoveSubstanceEvent OverheatableMeltingDown;
+		public CellAddRemoveSubstanceEvent OverheatableMeltingDown;
 
-	public CellAddRemoveSubstanceEvent FabricatorProduceMelted;
+		public CellAddRemoveSubstanceEvent FabricatorProduceMelted;
 
-	public CellAddRemoveSubstanceEvent PumpSimUpdate;
+		public CellAddRemoveSubstanceEvent PumpSimUpdate;
 
-	public CellAddRemoveSubstanceEvent WallPumpSimUpdate;
+		public CellAddRemoveSubstanceEvent WallPumpSimUpdate;
 
-	public CellAddRemoveSubstanceEvent Vomit;
+		public CellAddRemoveSubstanceEvent Vomit;
 
-	public CellAddRemoveSubstanceEvent Tears;
+		public CellAddRemoveSubstanceEvent Tears;
 
-	public CellAddRemoveSubstanceEvent Pee;
+		public CellAddRemoveSubstanceEvent Pee;
 
-	public CellAddRemoveSubstanceEvent AlgaeHabitat;
+		public CellAddRemoveSubstanceEvent AlgaeHabitat;
 
-	public CellAddRemoveSubstanceEvent CO2FilterOxygen;
+		public CellAddRemoveSubstanceEvent CO2FilterOxygen;
 
-	public CellAddRemoveSubstanceEvent ToiletEmit;
+		public CellAddRemoveSubstanceEvent ToiletEmit;
 
-	public CellAddRemoveSubstanceEvent ElementEmitted;
+		public CellAddRemoveSubstanceEvent ElementEmitted;
 
-	public CellAddRemoveSubstanceEvent Mop;
+		public CellAddRemoveSubstanceEvent Mop;
 
-	public CellAddRemoveSubstanceEvent OreMelted;
+		public CellAddRemoveSubstanceEvent OreMelted;
 
-	public CellAddRemoveSubstanceEvent ConstructTile;
+		public CellAddRemoveSubstanceEvent ConstructTile;
 
-	public CellAddRemoveSubstanceEvent Dumpable;
+		public CellAddRemoveSubstanceEvent Dumpable;
 
-	public CellAddRemoveSubstanceEvent Cough;
+		public CellAddRemoveSubstanceEvent Cough;
 
-	public CellAddRemoveSubstanceEvent Meteor;
+		public CellAddRemoveSubstanceEvent Meteor;
 
-	public CellModifyMassEvent CO2ManagerFixedUpdate;
+		public CellModifyMassEvent CO2ManagerFixedUpdate;
 
-	public CellModifyMassEvent EnvironmentConsumerFixedUpdate;
+		public CellModifyMassEvent EnvironmentConsumerFixedUpdate;
 
-	public CellModifyMassEvent ExcavatorShockwave;
+		public CellModifyMassEvent ExcavatorShockwave;
 
-	public CellModifyMassEvent OxygenBreatherSimUpdate;
+		public CellModifyMassEvent OxygenBreatherSimUpdate;
 
-	public CellModifyMassEvent CO2ScrubberSimUpdate;
+		public CellModifyMassEvent CO2ScrubberSimUpdate;
 
-	public CellModifyMassEvent RiverSourceSimUpdate;
+		public CellModifyMassEvent RiverSourceSimUpdate;
 
-	public CellModifyMassEvent RiverTerminusSimUpdate;
+		public CellModifyMassEvent RiverTerminusSimUpdate;
 
-	public CellModifyMassEvent DebugToolModifyMass;
+		public CellModifyMassEvent DebugToolModifyMass;
 
-	public CellModifyMassEvent EnergyGeneratorModifyMass;
+		public CellModifyMassEvent EnergyGeneratorModifyMass;
 
-	public CellSolidFilterEvent SolidFilterEvent;
+		public CellSolidFilterEvent SolidFilterEvent;
 
-	public Dictionary<int, int> CallbackToCellMap = new Dictionary<int, int>();
+		public Dictionary<int, int> CallbackToCellMap = new Dictionary<int, int>();
 }

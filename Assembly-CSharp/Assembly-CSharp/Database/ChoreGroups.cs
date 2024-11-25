@@ -4,16 +4,16 @@ using STRINGS;
 
 namespace Database
 {
-	public class ChoreGroups : ResourceSet<ChoreGroup>
+		public class ChoreGroups : ResourceSet<ChoreGroup>
 	{
-		private ChoreGroup Add(string id, string name, Klei.AI.Attribute attribute, string sprite, int default_personal_priority, bool user_prioritizable = true)
+				private ChoreGroup Add(string id, string name, Klei.AI.Attribute attribute, string sprite, int default_personal_priority, bool user_prioritizable = true)
 		{
 			ChoreGroup choreGroup = new ChoreGroup(id, name, attribute, sprite, default_personal_priority, user_prioritizable);
 			base.Add(choreGroup);
 			return choreGroup;
 		}
 
-		public ChoreGroups(ResourceSet parent) : base("ChoreGroups", parent)
+				public ChoreGroups(ResourceSet parent) : base("ChoreGroups", parent)
 		{
 			this.Combat = this.Add("Combat", DUPLICANTS.CHOREGROUPS.COMBAT.NAME, Db.Get().Attributes.Digging, "icon_errand_combat", 5, true);
 			this.LifeSupport = this.Add("LifeSupport", DUPLICANTS.CHOREGROUPS.LIFESUPPORT.NAME, Db.Get().Attributes.LifeSupport, "icon_errand_life_support", 5, true);
@@ -38,7 +38,7 @@ namespace Database
 			Debug.Assert(true);
 		}
 
-		public ChoreGroup FindByHash(HashedString id)
+				public ChoreGroup FindByHash(HashedString id)
 		{
 			ChoreGroup result = null;
 			foreach (ChoreGroup choreGroup in Db.Get().ChoreGroups.resources)
@@ -52,38 +52,38 @@ namespace Database
 			return result;
 		}
 
-		public ChoreGroup Build;
+				public ChoreGroup Build;
 
-		public ChoreGroup Basekeeping;
+				public ChoreGroup Basekeeping;
 
-		public ChoreGroup Cook;
+				public ChoreGroup Cook;
 
-		public ChoreGroup Art;
+				public ChoreGroup Art;
 
-		public ChoreGroup Dig;
+				public ChoreGroup Dig;
 
-		public ChoreGroup Research;
+				public ChoreGroup Research;
 
-		public ChoreGroup Farming;
+				public ChoreGroup Farming;
 
-		public ChoreGroup Ranching;
+				public ChoreGroup Ranching;
 
-		public ChoreGroup Hauling;
+				public ChoreGroup Hauling;
 
-		public ChoreGroup Storage;
+				public ChoreGroup Storage;
 
-		public ChoreGroup MachineOperating;
+				public ChoreGroup MachineOperating;
 
-		public ChoreGroup MedicalAid;
+				public ChoreGroup MedicalAid;
 
-		public ChoreGroup Combat;
+				public ChoreGroup Combat;
 
-		public ChoreGroup LifeSupport;
+				public ChoreGroup LifeSupport;
 
-		public ChoreGroup Toggle;
+				public ChoreGroup Toggle;
 
-		public ChoreGroup Recreation;
+				public ChoreGroup Recreation;
 
-		public ChoreGroup Rocketry;
+				public ChoreGroup Rocketry;
 	}
 }

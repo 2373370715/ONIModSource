@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/OxidizerTank")]
 public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 {
-		public bool IsSuspended
+			public bool IsSuspended
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-			public float UserMaxCapacity
+				public float UserMaxCapacity
 	{
 		get
 		{
@@ -38,7 +38,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float MinCapacity
+			public float MinCapacity
 	{
 		get
 		{
@@ -46,7 +46,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float MaxCapacity
+			public float MaxCapacity
 	{
 		get
 		{
@@ -54,7 +54,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float AmountStored
+			public float AmountStored
 	{
 		get
 		{
@@ -62,7 +62,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public float TotalOxidizerPower
+			public float TotalOxidizerPower
 	{
 		get
 		{
@@ -85,7 +85,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public bool WholeValues
+			public bool WholeValues
 	{
 		get
 		{
@@ -93,7 +93,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-		public LocString CapacityUnits
+			public LocString CapacityUnits
 	{
 		get
 		{
@@ -101,7 +101,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<OxidizerTank>(-905833192, OxidizerTank.OnCopySettingsDelegate);
@@ -115,7 +115,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.discoverResourcesOnSpawn != null)
@@ -138,7 +138,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		base.Subscribe<OxidizerTank>(-1697596308, OxidizerTank.OnStorageChangeDelegate);
 	}
 
-	public float GetTotalOxidizerAvailable()
+		public float GetTotalOxidizerAvailable()
 	{
 		float num = 0f;
 		foreach (Tag tag in this.oxidizerTypes)
@@ -148,7 +148,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		return num;
 	}
 
-	public Dictionary<Tag, float> GetOxidizersAvailable()
+		public Dictionary<Tag, float> GetOxidizersAvailable()
 	{
 		Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
 		foreach (Tag tag in this.oxidizerTypes)
@@ -158,17 +158,17 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		return dictionary;
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		this.RefreshMeter();
 	}
 
-	private void OnStorageCapacityChanged(float newCapacity)
+		private void OnStorageCapacityChanged(float newCapacity)
 	{
 		this.RefreshMeter();
 	}
 
-	private void RefreshMeter()
+		private void RefreshMeter()
 	{
 		if (this.filteredStorage != null)
 		{
@@ -176,7 +176,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-	private void OnRocketLanded(object data)
+		private void OnRocketLanded(object data)
 	{
 		if (this.consumeOnLand)
 		{
@@ -188,7 +188,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		OxidizerTank component = ((GameObject)data).GetComponent<OxidizerTank>();
 		if (component != null)
@@ -197,7 +197,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-	[ContextMenu("Fill Tank")]
+		[ContextMenu("Fill Tank")]
 	public void DEBUG_FillTank(SimHashes element)
 	{
 		base.GetComponent<FlatTagFilterable>().selectedTags.Add(element.CreateTag());
@@ -213,7 +213,7 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		}
 	}
 
-	public OxidizerTank()
+		public OxidizerTank()
 	{
 		Tag[] array2;
 		if (!DlcManager.IsExpansion1Active())
@@ -235,40 +235,40 @@ public class OxidizerTank : KMonoBehaviour, IUserControlledCapacity
 		base..ctor();
 	}
 
-	public Storage storage;
+		public Storage storage;
 
-	public bool supportsMultipleOxidizers;
+		public bool supportsMultipleOxidizers;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private bool isSuspended;
+		private bool isSuspended;
 
-	public bool consumeOnLand = true;
+		public bool consumeOnLand = true;
 
-	[Serialize]
+		[Serialize]
 	public float maxFillMass;
 
-	[Serialize]
+		[Serialize]
 	public float targetFillMass;
 
-	public List<SimHashes> discoverResourcesOnSpawn;
+		public List<SimHashes> discoverResourcesOnSpawn;
 
-	[SerializeField]
+		[SerializeField]
 	private Tag[] oxidizerTypes;
 
-	private FilteredStorage filteredStorage;
+		private FilteredStorage filteredStorage;
 
-	private static readonly EventSystem.IntraObjectHandler<OxidizerTank> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<OxidizerTank>(delegate(OxidizerTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<OxidizerTank> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<OxidizerTank>(delegate(OxidizerTank component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<OxidizerTank> OnRocketLandedDelegate = new EventSystem.IntraObjectHandler<OxidizerTank>(delegate(OxidizerTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<OxidizerTank> OnRocketLandedDelegate = new EventSystem.IntraObjectHandler<OxidizerTank>(delegate(OxidizerTank component, object data)
 	{
 		component.OnRocketLanded(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<OxidizerTank> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<OxidizerTank>(delegate(OxidizerTank component, object data)
+		private static readonly EventSystem.IntraObjectHandler<OxidizerTank> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<OxidizerTank>(delegate(OxidizerTank component, object data)
 	{
 		component.OnStorageChange(data);
 	});

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WireConfig : BaseWireConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Wire";
 		string anim = "utilities_electric_kanim";
@@ -15,10 +15,10 @@ public class WireConfig : BaseWireConfig
 		return base.CreateBuildingDef(id, anim, construction_time, tier, insulation, BUILDINGS.DECOR.PENALTY.TIER0, none);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		base.DoPostConfigureComplete(Wire.WattageRating.Max1000, go);
 	}
 
-	public const string ID = "Wire";
+		public const string ID = "Wire";
 }

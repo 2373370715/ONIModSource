@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class IdleCellSensor : Sensor
 {
-	public IdleCellSensor(Sensors sensors) : base(sensors)
+		public IdleCellSensor(Sensors sensors) : base(sensors)
 	{
 		this.navigator = base.GetComponent<Navigator>();
 		this.brain = base.GetComponent<MinionBrain>();
 		this.prefabid = base.GetComponent<KPrefabID>();
 	}
 
-	public override void Update()
+		public override void Update()
 	{
 		if (!this.prefabid.HasTag(GameTags.Idle))
 		{
@@ -25,16 +25,16 @@ public class IdleCellSensor : Sensor
 		this.cell = idleCellQuery.GetResultCell();
 	}
 
-	public int GetCell()
+		public int GetCell()
 	{
 		return this.cell;
 	}
 
-	private MinionBrain brain;
+		private MinionBrain brain;
 
-	private Navigator navigator;
+		private Navigator navigator;
 
-	private KPrefabID prefabid;
+		private KPrefabID prefabid;
 
-	private int cell;
+		private int cell;
 }

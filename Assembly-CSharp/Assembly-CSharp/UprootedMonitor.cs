@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/UprootedMonitor")]
 public class UprootedMonitor : KMonoBehaviour
 {
-		public bool IsUprooted
+			public bool IsUprooted
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class UprootedMonitor : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<UprootedMonitor>(-216549700, UprootedMonitor.OnUprootedDelegate);
@@ -30,7 +30,7 @@ public class UprootedMonitor : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		foreach (HandleVector<int>.Handle handle in this.partitionerEntries)
 		{
@@ -39,12 +39,12 @@ public class UprootedMonitor : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	public bool CheckTileGrowable()
+		public bool CheckTileGrowable()
 	{
 		return !this.canBeUprooted || (!this.uprooted && this.IsSuitableFoundation(this.position));
 	}
 
-	public bool IsSuitableFoundation(int cell)
+		public bool IsSuitableFoundation(int cell)
 	{
 		bool flag = true;
 		foreach (CellOffset offset in this.monitorCells)
@@ -63,7 +63,7 @@ public class UprootedMonitor : KMonoBehaviour
 		return flag;
 	}
 
-	public void OnGroundChanged(object callbackData)
+		public void OnGroundChanged(object callbackData)
 	{
 		if (!this.CheckTileGrowable())
 		{
@@ -76,22 +76,22 @@ public class UprootedMonitor : KMonoBehaviour
 		}
 	}
 
-	private int position;
+		private int position;
 
-	[Serialize]
+		[Serialize]
 	public bool canBeUprooted = true;
 
-	[Serialize]
+		[Serialize]
 	private bool uprooted;
 
-	public CellOffset[] monitorCells = new CellOffset[]
+		public CellOffset[] monitorCells = new CellOffset[]
 	{
 		new CellOffset(0, -1)
 	};
 
-	private List<HandleVector<int>.Handle> partitionerEntries = new List<HandleVector<int>.Handle>();
+		private List<HandleVector<int>.Handle> partitionerEntries = new List<HandleVector<int>.Handle>();
 
-	private static readonly EventSystem.IntraObjectHandler<UprootedMonitor> OnUprootedDelegate = new EventSystem.IntraObjectHandler<UprootedMonitor>(delegate(UprootedMonitor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<UprootedMonitor> OnUprootedDelegate = new EventSystem.IntraObjectHandler<UprootedMonitor>(delegate(UprootedMonitor component, object data)
 	{
 		if (!component.uprooted)
 		{

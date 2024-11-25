@@ -1,73 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
 using KSerialization;
 using STRINGS;
-using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class RequireAttachedComponent : ProcessCondition
-{
-			public Type RequiredType
-	{
-		get
-		{
-			return this.requiredType;
-		}
-		set
-		{
-			this.requiredType = value;
-			this.typeNameString = this.requiredType.Name;
-		}
-	}
+public class RequireAttachedComponent : ProcessCondition {
+    private readonly AttachableBuilding myAttachable;
+    private          Type               requiredType;
+    private          string             typeNameString;
 
-	public RequireAttachedComponent(AttachableBuilding myAttachable, Type required_type, string type_name_string)
-	{
-		this.myAttachable = myAttachable;
-		this.requiredType = required_type;
-		this.typeNameString = type_name_string;
-	}
+    public RequireAttachedComponent(AttachableBuilding myAttachable, Type required_type, string type_name_string) {
+        this.myAttachable = myAttachable;
+        requiredType      = required_type;
+        typeNameString    = type_name_string;
+    }
 
-	public override ProcessCondition.Status EvaluateCondition()
-	{
-		if (this.myAttachable != null)
-		{
-			using (List<GameObject>.Enumerator enumerator = AttachableBuilding.GetAttachedNetwork(this.myAttachable).GetEnumerator())
-			{
-				while (enumerator.MoveNext())
-				{
-					if (enumerator.Current.GetComponent(this.requiredType))
-					{
-						return ProcessCondition.Status.Ready;
-					}
-				}
-			}
-			return ProcessCondition.Status.Failure;
-		}
-		return ProcessCondition.Status.Failure;
-	}
+    public Type RequiredType {
+        get => requiredType;
+        set {
+            requiredType   = value;
+            typeNameString = requiredType.Name;
+        }
+    }
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
-	{
-		return this.typeNameString;
-	}
+    public override Status EvaluateCondition() {
+        if (myAttachable != null) {
+            using (var enumerator = AttachableBuilding.GetAttachedNetwork(myAttachable).GetEnumerator()) {
+                while (enumerator.MoveNext())
+                    if (enumerator.Current.GetComponent(requiredType))
+                        return Status.Ready;
+            }
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
-	{
-		if (status == ProcessCondition.Status.Ready)
-		{
-			return string.Format(UI.STARMAP.LAUNCHCHECKLIST.INSTALLED_TOOLTIP, this.typeNameString.ToLower());
-		}
-		return string.Format(UI.STARMAP.LAUNCHCHECKLIST.MISSING_TOOLTIP, this.typeNameString.ToLower());
-	}
+            return Status.Failure;
+        }
 
-	public override bool ShowInUI()
-	{
-		return true;
-	}
+        return Status.Failure;
+    }
 
-	private string typeNameString;
+    public override string GetStatusMessage(Status status) { return typeNameString; }
 
-	private Type requiredType;
+    public override string GetStatusTooltip(Status status) {
+        if (status == Status.Ready)
+            return string.Format(UI.STARMAP.LAUNCHCHECKLIST.INSTALLED_TOOLTIP, typeNameString.ToLower());
 
-	private AttachableBuilding myAttachable;
+        return string.Format(UI.STARMAP.LAUNCHCHECKLIST.MISSING_TOOLTIP, typeNameString.ToLower());
+    }
+
+    public override bool ShowInUI() { return true; }
 }

@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using FMOD.Studio;
+using TUNING;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class EntityCellVisualizer : KMonoBehaviour
 {
-		public BuildingCellVisualizerResources Resources
+			public BuildingCellVisualizerResources Resources
 	{
 		get
 		{
@@ -15,7 +16,7 @@ public class EntityCellVisualizer : KMonoBehaviour
 		}
 	}
 
-		protected int CenterCell
+			protected int CenterCell
 	{
 		get
 		{
@@ -23,22 +24,22 @@ public class EntityCellVisualizer : KMonoBehaviour
 		}
 	}
 
-	protected virtual void DefinePorts()
+		protected virtual void DefinePorts()
 	{
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.LoadDiseaseIcon();
 		this.DefinePorts();
 	}
 
-	public void ConnectedEventWithDelay(float delay, int connectionCount, int cell, string soundName)
+		public void ConnectedEventWithDelay(float delay, int connectionCount, int cell, string soundName)
 	{
 		base.StartCoroutine(this.ConnectedDelay(delay, connectionCount, cell, soundName));
 	}
 
-	private IEnumerator ConnectedDelay(float delay, int connectionCount, int cell, string soundName)
+		private IEnumerator ConnectedDelay(float delay, int connectionCount, int cell, string soundName)
 	{
 		float startTime = Time.realtimeSinceStartup;
 		float currentTime = startTime;
@@ -60,7 +61,7 @@ public class EntityCellVisualizer : KMonoBehaviour
 		yield break;
 	}
 
-	private int ComputeCell(CellOffset cellOffset)
+		private int ComputeCell(CellOffset cellOffset)
 	{
 		CellOffset offset = cellOffset;
 		if (this.rotatable != null)
@@ -70,7 +71,7 @@ public class EntityCellVisualizer : KMonoBehaviour
 		return Grid.OffsetCell(Grid.PosToCell(base.gameObject), offset);
 	}
 
-	public void ConnectedEvent(int cell)
+		public void ConnectedEvent(int cell)
 	{
 		foreach (EntityCellVisualizer.PortEntry portEntry in this.ports)
 		{
@@ -89,23 +90,23 @@ public class EntityCellVisualizer : KMonoBehaviour
 		}
 	}
 
-	public virtual void AddPort(EntityCellVisualizer.Ports type, CellOffset cell)
+		public virtual void AddPort(EntityCellVisualizer.Ports type, CellOffset cell)
 	{
 		this.AddPort(type, cell, Color.white);
 	}
 
-	public virtual void AddPort(EntityCellVisualizer.Ports type, CellOffset cell, Color tint)
+		public virtual void AddPort(EntityCellVisualizer.Ports type, CellOffset cell, Color tint)
 	{
 		this.AddPort(type, cell, tint, tint, 1.5f, false);
 	}
 
-	public virtual void AddPort(EntityCellVisualizer.Ports type, CellOffset cell, Color connectedTint, Color disconnectedTint, float scale = 1.5f, bool hideBG = false)
+		public virtual void AddPort(EntityCellVisualizer.Ports type, CellOffset cell, Color connectedTint, Color disconnectedTint, float scale = 1.5f, bool hideBG = false)
 	{
 		this.ports.Add(new EntityCellVisualizer.PortEntry(type, cell, connectedTint, disconnectedTint, scale, hideBG));
 		this.addedPorts |= type;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		foreach (EntityCellVisualizer.PortEntry portEntry in this.ports)
 		{
@@ -127,7 +128,7 @@ public class EntityCellVisualizer : KMonoBehaviour
 		base.OnCleanUp();
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		if (this.icons == null)
@@ -137,13 +138,13 @@ public class EntityCellVisualizer : KMonoBehaviour
 		Components.EntityCellVisualizers.Add(this);
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		Components.EntityCellVisualizers.Remove(this);
 	}
 
-	public void DrawIcons(HashedString mode)
+		public void DrawIcons(HashedString mode)
 	{
 		EntityCellVisualizer.Ports ports = (EntityCellVisualizer.Ports)0;
 		if (base.gameObject.GetMyWorldId() != ClusterManager.Instance.activeWorldId)
@@ -232,7 +233,7 @@ public class EntityCellVisualizer : KMonoBehaviour
 		}
 	}
 
-	private Sprite GetSpriteForPortType(EntityCellVisualizer.Ports type, bool connected)
+		private Sprite GetSpriteForPortType(EntityCellVisualizer.Ports type, bool connected)
 	{
 		if (type <= EntityCellVisualizer.Ports.SolidOut)
 		{
@@ -317,7 +318,7 @@ public class EntityCellVisualizer : KMonoBehaviour
 		return null;
 	}
 
-	protected virtual void DrawUtilityIcon(EntityCellVisualizer.PortEntry port)
+		protected virtual void DrawUtilityIcon(EntityCellVisualizer.PortEntry port)
 	{
 		int cell = this.ComputeCell(port.cellOffset);
 		bool flag = true;
@@ -354,7 +355,7 @@ public class EntityCellVisualizer : KMonoBehaviour
 		this.DrawUtilityIcon(cell, this.GetSpriteForPortType(port.type, connected), ref port.visualizer, flag ? port.connectedTint : port.disconnectedTint, port.scale, port.hideBG);
 	}
 
-	protected virtual void LoadDiseaseIcon()
+		protected virtual void LoadDiseaseIcon()
 	{
 		DiseaseVisualization.Info info = Assets.instance.DiseaseVisualization.GetInfo(this.DiseaseCellVisName);
 		if (info.name != null)
@@ -364,7 +365,7 @@ public class EntityCellVisualizer : KMonoBehaviour
 		}
 	}
 
-	protected virtual Sprite GetIconForHighEnergyOutput()
+		protected virtual Sprite GetIconForHighEnergyOutput()
 	{
 		IHighEnergyParticleDirection component = base.GetComponent<IHighEnergyParticleDirection>();
 		Sprite result = this.Resources.highEnergyParticleOutputIcons[0];
@@ -376,7 +377,7 @@ public class EntityCellVisualizer : KMonoBehaviour
 		return result;
 	}
 
-	private void DrawUtilityIcon(int cell, Sprite icon_img, ref GameObject visualizerObj, Color tint, float scaleMultiplier = 1.5f, bool hideBG = false)
+		private void DrawUtilityIcon(int cell, Sprite icon_img, ref GameObject visualizerObj, Color tint, float scaleMultiplier = 1.5f, bool hideBG = false)
 	{
 		Vector3 position = Grid.CellToPosCCC(cell, Grid.SceneLayer.Building);
 		if (visualizerObj == null)
@@ -400,7 +401,7 @@ public class EntityCellVisualizer : KMonoBehaviour
 		}
 	}
 
-	public Image GetPowerOutputIcon()
+		public Image GetPowerOutputIcon()
 	{
 		foreach (EntityCellVisualizer.PortEntry portEntry in this.ports)
 		{
@@ -412,7 +413,7 @@ public class EntityCellVisualizer : KMonoBehaviour
 		return null;
 	}
 
-	public Image GetPowerInputIcon()
+		public Image GetPowerInputIcon()
 	{
 		foreach (EntityCellVisualizer.PortEntry portEntry in this.ports)
 		{
@@ -424,67 +425,67 @@ public class EntityCellVisualizer : KMonoBehaviour
 		return null;
 	}
 
-	protected List<EntityCellVisualizer.PortEntry> ports = new List<EntityCellVisualizer.PortEntry>();
+		protected List<EntityCellVisualizer.PortEntry> ports = new List<EntityCellVisualizer.PortEntry>();
 
-	public EntityCellVisualizer.Ports addedPorts;
+		public EntityCellVisualizer.Ports addedPorts;
 
-	private GameObject switchVisualizer;
+		private GameObject switchVisualizer;
 
-	private GameObject wireVisualizerAlpha;
+		private GameObject wireVisualizerAlpha;
 
-	private GameObject wireVisualizerBeta;
+		private GameObject wireVisualizerBeta;
 
-	public const EntityCellVisualizer.Ports HEAT_PORTS = EntityCellVisualizer.Ports.HeatSource | EntityCellVisualizer.Ports.HeatSink;
+		public const EntityCellVisualizer.Ports HEAT_PORTS = EntityCellVisualizer.Ports.HeatSource | EntityCellVisualizer.Ports.HeatSink;
 
-	public const EntityCellVisualizer.Ports POWER_PORTS = EntityCellVisualizer.Ports.PowerIn | EntityCellVisualizer.Ports.PowerOut;
+		public const EntityCellVisualizer.Ports POWER_PORTS = EntityCellVisualizer.Ports.PowerIn | EntityCellVisualizer.Ports.PowerOut;
 
-	public const EntityCellVisualizer.Ports GAS_PORTS = EntityCellVisualizer.Ports.GasIn | EntityCellVisualizer.Ports.GasOut;
+		public const EntityCellVisualizer.Ports GAS_PORTS = EntityCellVisualizer.Ports.GasIn | EntityCellVisualizer.Ports.GasOut;
 
-	public const EntityCellVisualizer.Ports LIQUID_PORTS = EntityCellVisualizer.Ports.LiquidIn | EntityCellVisualizer.Ports.LiquidOut;
+		public const EntityCellVisualizer.Ports LIQUID_PORTS = EntityCellVisualizer.Ports.LiquidIn | EntityCellVisualizer.Ports.LiquidOut;
 
-	public const EntityCellVisualizer.Ports SOLID_PORTS = EntityCellVisualizer.Ports.SolidIn | EntityCellVisualizer.Ports.SolidOut;
+		public const EntityCellVisualizer.Ports SOLID_PORTS = EntityCellVisualizer.Ports.SolidIn | EntityCellVisualizer.Ports.SolidOut;
 
-	public const EntityCellVisualizer.Ports ENERGY_PARTICLES_PORTS = EntityCellVisualizer.Ports.HighEnergyParticleIn | EntityCellVisualizer.Ports.HighEnergyParticleOut;
+		public const EntityCellVisualizer.Ports ENERGY_PARTICLES_PORTS = EntityCellVisualizer.Ports.HighEnergyParticleIn | EntityCellVisualizer.Ports.HighEnergyParticleOut;
 
-	public const EntityCellVisualizer.Ports DISEASE_PORTS = EntityCellVisualizer.Ports.DiseaseIn | EntityCellVisualizer.Ports.DiseaseOut;
+		public const EntityCellVisualizer.Ports DISEASE_PORTS = EntityCellVisualizer.Ports.DiseaseIn | EntityCellVisualizer.Ports.DiseaseOut;
 
-	public const EntityCellVisualizer.Ports MATTER_PORTS = EntityCellVisualizer.Ports.GasIn | EntityCellVisualizer.Ports.GasOut | EntityCellVisualizer.Ports.LiquidIn | EntityCellVisualizer.Ports.LiquidOut | EntityCellVisualizer.Ports.SolidIn | EntityCellVisualizer.Ports.SolidOut;
+		public const EntityCellVisualizer.Ports MATTER_PORTS = EntityCellVisualizer.Ports.GasIn | EntityCellVisualizer.Ports.GasOut | EntityCellVisualizer.Ports.LiquidIn | EntityCellVisualizer.Ports.LiquidOut | EntityCellVisualizer.Ports.SolidIn | EntityCellVisualizer.Ports.SolidOut;
 
-	protected Sprite diseaseSourceSprite;
+		protected Sprite diseaseSourceSprite;
 
-	protected Color32 diseaseSourceColour;
+		protected Color32 diseaseSourceColour;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Rotatable rotatable;
 
-	protected bool enableRaycast = true;
+		protected bool enableRaycast = true;
 
-	protected Dictionary<GameObject, Image> icons;
+		protected Dictionary<GameObject, Image> icons;
 
-	public string DiseaseCellVisName = "FoodPoisoning";
+		public string DiseaseCellVisName = DUPLICANTSTATS.STANDARD.Secretions.PEE_DISEASE;
 
-	[Flags]
+		[Flags]
 	public enum Ports
 	{
-		PowerIn = 1,
-		PowerOut = 2,
-		GasIn = 4,
-		GasOut = 8,
-		LiquidIn = 16,
-		LiquidOut = 32,
-		SolidIn = 64,
-		SolidOut = 128,
-		HighEnergyParticleIn = 256,
-		HighEnergyParticleOut = 512,
-		DiseaseIn = 1024,
-		DiseaseOut = 2048,
-		HeatSource = 4096,
-		HeatSink = 8192
+				PowerIn = 1,
+				PowerOut = 2,
+				GasIn = 4,
+				GasOut = 8,
+				LiquidIn = 16,
+				LiquidOut = 32,
+				SolidIn = 64,
+				SolidOut = 128,
+				HighEnergyParticleIn = 256,
+				HighEnergyParticleOut = 512,
+				DiseaseIn = 1024,
+				DiseaseOut = 2048,
+				HeatSource = 4096,
+				HeatSink = 8192
 	}
 
-	protected class PortEntry
+		protected class PortEntry
 	{
-		public PortEntry(EntityCellVisualizer.Ports type, CellOffset cellOffset, Color connectedTint, Color disconnectedTint, float scale, bool hideBG)
+				public PortEntry(EntityCellVisualizer.Ports type, CellOffset cellOffset, Color connectedTint, Color disconnectedTint, float scale, bool hideBG)
 		{
 			this.type = type;
 			this.cellOffset = cellOffset;
@@ -495,18 +496,18 @@ public class EntityCellVisualizer : KMonoBehaviour
 			this.hideBG = hideBG;
 		}
 
-		public EntityCellVisualizer.Ports type;
+				public EntityCellVisualizer.Ports type;
 
-		public CellOffset cellOffset;
+				public CellOffset cellOffset;
 
-		public GameObject visualizer;
+				public GameObject visualizer;
 
-		public Color connectedTint;
+				public Color connectedTint;
 
-		public Color disconnectedTint;
+				public Color disconnectedTint;
 
-		public float scale;
+				public float scale;
 
-		public bool hideBG;
+				public bool hideBG;
 	}
 }

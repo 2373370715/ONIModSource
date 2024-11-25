@@ -2,19 +2,19 @@
 
 public class Storable : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<Storable>(856640610, Storable.OnStoreDelegate);
 		base.Subscribe<Storable>(-778359855, Storable.RefreshStorageTagsDelegate);
 	}
 
-	public void OnStore(object data)
+		public void OnStore(object data)
 	{
 		this.RefreshStorageTags(data);
 	}
 
-	private void RefreshStorageTags(object data = null)
+		private void RefreshStorageTags(object data = null)
 	{
 		bool flag = data is Storage || (data != null && (bool)data);
 		Storage storage = (Storage)data;
@@ -57,12 +57,12 @@ public class Storable : KMonoBehaviour
 		}
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<Storable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Storable>(delegate(Storable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Storable> OnStoreDelegate = new EventSystem.IntraObjectHandler<Storable>(delegate(Storable component, object data)
 	{
 		component.OnStore(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Storable> RefreshStorageTagsDelegate = new EventSystem.IntraObjectHandler<Storable>(delegate(Storable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Storable> RefreshStorageTagsDelegate = new EventSystem.IntraObjectHandler<Storable>(delegate(Storable component, object data)
 	{
 		component.RefreshStorageTags(data);
 	});

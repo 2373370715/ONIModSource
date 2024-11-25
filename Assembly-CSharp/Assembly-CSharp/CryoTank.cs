@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CryoTank : StateMachineComponent<CryoTank.StatesInstance>, ISidescreenButtonControl
 {
-		public string SidescreenButtonText
+			public string SidescreenButtonText
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class CryoTank : StateMachineComponent<CryoTank.StatesInstance>, ISidescr
 		}
 	}
 
-		public string SidescreenButtonTooltip
+			public string SidescreenButtonTooltip
 	{
 		get
 		{
@@ -21,37 +21,37 @@ public class CryoTank : StateMachineComponent<CryoTank.StatesInstance>, ISidescr
 		}
 	}
 
-	public bool SidescreenEnabled()
+		public bool SidescreenEnabled()
 	{
 		return true;
 	}
 
-	public void OnSidescreenButtonPressed()
+		public void OnSidescreenButtonPressed()
 	{
 		this.OnClickOpen();
 	}
 
-	public bool SidescreenButtonInteractable()
+		public bool SidescreenButtonInteractable()
 	{
 		return this.HasDefrostedFriend();
 	}
 
-	public int ButtonSideScreenSortOrder()
+		public int ButtonSideScreenSortOrder()
 	{
 		return 20;
 	}
 
-	public void SetButtonTextOverride(ButtonMenuTextOverride text)
+		public void SetButtonTextOverride(ButtonMenuTextOverride text)
 	{
 		throw new NotImplementedException();
 	}
 
-	public int HorizontalGroupID()
+		public int HorizontalGroupID()
 	{
 		return -1;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -62,20 +62,22 @@ public class CryoTank : StateMachineComponent<CryoTank.StatesInstance>, ISidescr
 		}
 	}
 
-	public bool HasDefrostedFriend()
+		public bool HasDefrostedFriend()
 	{
 		return base.smi.IsInsideState(base.smi.sm.closed) && this.chore == null;
 	}
 
-	public void DropContents()
+		public void DropContents()
 	{
-		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(MinionConfig.ID), null, null);
-		gameObject.name = Assets.GetPrefab(MinionConfig.ID).name;
+		MinionStartingStats minionStartingStats = new MinionStartingStats(GameTags.Minions.Models.Standard, false, null, "AncientKnowledge", false);
+		GameObject prefab = Assets.GetPrefab(BaseMinionConfig.GetMinionIDForModel(minionStartingStats.personality.model));
+		GameObject gameObject = Util.KInstantiate(prefab, null, null);
+		gameObject.name = prefab.name;
 		Immigration.Instance.ApplyDefaultPersonalPriorities(gameObject);
 		Vector3 position = Grid.CellToPosCBC(Grid.OffsetCell(Grid.PosToCell(base.transform.position), this.dropOffset), Grid.SceneLayer.Move);
 		gameObject.transform.SetLocalPosition(position);
 		gameObject.SetActive(true);
-		new MinionStartingStats(false, null, "AncientKnowledge", false).Apply(gameObject);
+		minionStartingStats.Apply(gameObject);
 		gameObject.GetComponent<MinionIdentity>().arrivalTime = (float)UnityEngine.Random.Range(-2000, -1000);
 		MinionResume component = gameObject.GetComponent<MinionResume>();
 		int num = 3;
@@ -101,7 +103,7 @@ public class CryoTank : StateMachineComponent<CryoTank.StatesInstance>, ISidescr
 		SaveGame.Instance.ColonyAchievementTracker.defrostedDuplicant = true;
 	}
 
-	public void ShowEventPopup()
+		public void ShowEventPopup()
 	{
 		GameObject gameObject = base.smi.sm.defrostedDuplicant.Get(base.smi);
 		if (this.opener != null && gameObject != null)
@@ -118,7 +120,7 @@ public class CryoTank : StateMachineComponent<CryoTank.StatesInstance>, ISidescr
 		}
 	}
 
-	public void Cheer()
+		public void Cheer()
 	{
 		GameObject gameObject = base.smi.sm.defrostedDuplicant.Get(base.smi);
 		if (this.opener != null && gameObject != null)
@@ -131,17 +133,17 @@ public class CryoTank : StateMachineComponent<CryoTank.StatesInstance>, ISidescr
 		}
 	}
 
-	private void OnClickOpen()
+		private void OnClickOpen()
 	{
 		this.ActivateChore(null);
 	}
 
-	private void OnClickCancel()
+		private void OnClickCancel()
 	{
 		this.CancelActivateChore(null);
 	}
 
-	public void ActivateChore(object param = null)
+		public void ActivateChore(object param = null)
 	{
 		if (this.chore != null)
 		{
@@ -154,7 +156,7 @@ public class CryoTank : StateMachineComponent<CryoTank.StatesInstance>, ISidescr
 		}, null, null, true, null, false, true, Assets.GetAnim(this.overrideAnim), false, true, true, PriorityScreen.PriorityClass.high, 5, false, true);
 	}
 
-	public void CancelActivateChore(object param = null)
+		public void CancelActivateChore(object param = null)
 	{
 		if (this.chore == null)
 		{
@@ -164,7 +166,7 @@ public class CryoTank : StateMachineComponent<CryoTank.StatesInstance>, ISidescr
 		this.chore = null;
 	}
 
-	private void CompleteActivateChore()
+		private void CompleteActivateChore()
 	{
 		this.opener = this.chore.driver.gameObject;
 		base.smi.GoTo(base.smi.sm.open);
@@ -177,30 +179,30 @@ public class CryoTank : StateMachineComponent<CryoTank.StatesInstance>, ISidescr
 		Game.Instance.userMenu.Refresh(base.gameObject);
 	}
 
-	public string[][] possible_contents_ids;
+		public string[][] possible_contents_ids;
 
-	public string machineSound;
+		public string machineSound;
 
-	public string overrideAnim;
+		public string overrideAnim;
 
-	public CellOffset dropOffset = CellOffset.none;
+		public CellOffset dropOffset = CellOffset.none;
 
-	private GameObject opener;
+		private GameObject opener;
 
-	private Chore chore;
+		private Chore chore;
 
-	public class StatesInstance : GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.GameInstance
+		public class StatesInstance : GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.GameInstance
 	{
-		public StatesInstance(CryoTank master) : base(master)
+				public StatesInstance(CryoTank master) : base(master)
 		{
 		}
 
-		public Chore defrostAnimChore;
+				public Chore defrostAnimChore;
 	}
 
-	public class States : GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank>
+		public class States : GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.closed;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -254,16 +256,16 @@ public class CryoTank : StateMachineComponent<CryoTank.StatesInstance>, ISidescr
 			});
 		}
 
-		public StateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.TargetParameter defrostedDuplicant;
+				public StateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.TargetParameter defrostedDuplicant;
 
-		public GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.State closed;
+				public GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.State closed;
 
-		public GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.State open;
+				public GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.State open;
 
-		public GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.State defrost;
+				public GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.State defrost;
 
-		public GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.State defrostExit;
+				public GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.State defrostExit;
 
-		public GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.State off;
+				public GameStateMachine<CryoTank.States, CryoTank.StatesInstance, CryoTank, object>.State off;
 	}
 }

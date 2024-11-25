@@ -2,9 +2,9 @@
 
 namespace TemplateClasses
 {
-	[Serializable]
+		[Serializable]
 	public class Rottable
 	{
-						public float rotAmount { get; set; }
+								public float rotAmount { get; set; }
 	}
 }

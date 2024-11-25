@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-
+namespace RsTransferPort;
 
 public class MyResource {
     public static void InitAllTask() {

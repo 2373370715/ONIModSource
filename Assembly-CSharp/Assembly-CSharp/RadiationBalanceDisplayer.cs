@@ -5,17 +5,17 @@ using UnityEngine;
 
 public class RadiationBalanceDisplayer : StandardAmountDisplayer
 {
-	public RadiationBalanceDisplayer() : base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle, null, GameUtil.IdentityDescriptorTense.Normal)
+		public RadiationBalanceDisplayer() : base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle, null, GameUtil.IdentityDescriptorTense.Normal)
 	{
 		this.formatter = new RadiationBalanceDisplayer.RadiationAttributeFormatter();
 	}
 
-	public override string GetValueString(Amount master, AmountInstance instance)
+		public override string GetValueString(Amount master, AmountInstance instance)
 	{
 		return base.GetValueString(master, instance) + UI.UNITSUFFIXES.RADIATION.RADS;
 	}
 
-	public override string GetTooltip(Amount master, AmountInstance instance)
+		public override string GetTooltip(Amount master, AmountInstance instance)
 	{
 		string text = "";
 		if (instance.gameObject.GetSMI<RadiationMonitor.Instance>() != null)
@@ -34,9 +34,9 @@ public class RadiationBalanceDisplayer : StandardAmountDisplayer
 		return text;
 	}
 
-	public class RadiationAttributeFormatter : StandardAttributeFormatter
+		public class RadiationAttributeFormatter : StandardAttributeFormatter
 	{
-		public RadiationAttributeFormatter() : base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle)
+				public RadiationAttributeFormatter() : base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle)
 		{
 		}
 	}

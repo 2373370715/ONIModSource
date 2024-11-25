@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class HardSkinBerryPlantConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "HardSkinBerryPlant";
 		string name = STRINGS.CREATURES.SPECIES.HARDSKINBERRYPLANT.NAME;
@@ -28,10 +28,20 @@ public class HardSkinBerryPlantConfig : IEntityConfig
 		gameObject.AddOrGet<StandardCropPlant>();
 		gameObject.AddOrGet<DirectlyEdiblePlant_Growth>();
 		gameObject.AddOrGet<LoopingSounds>();
-		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(gameObject, SeedProducer.ProductionType.Harvest, "HardSkinBerryPlantSeed", STRINGS.CREATURES.SPECIES.SEEDS.HARDSKINBERRYPLANT.NAME, STRINGS.CREATURES.SPECIES.SEEDS.HARDSKINBERRYPLANT.DESC, Assets.GetAnim("seed_ice_berry_kanim"), "object", 1, new List<Tag>
-		{
-			GameTags.CropSeed
-		}, SingleEntityReceptacle.ReceptacleDirection.Top, default(Tag), 1, STRINGS.CREATURES.SPECIES.HARDSKINBERRYPLANT.DOMESTICATEDDESC, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, this.GetDlcIds());
+		GameObject plant = gameObject;
+		SeedProducer.ProductionType productionType = SeedProducer.ProductionType.Harvest;
+		string id2 = "HardSkinBerryPlantSeed";
+		string name2 = STRINGS.CREATURES.SPECIES.SEEDS.HARDSKINBERRYPLANT.NAME;
+		string desc2 = STRINGS.CREATURES.SPECIES.SEEDS.HARDSKINBERRYPLANT.DESC;
+		KAnimFile anim = Assets.GetAnim("seed_ice_berry_kanim");
+		string initialAnim = "object";
+		int numberOfSeeds = 1;
+		List<Tag> list = new List<Tag>();
+		list.Add(GameTags.CropSeed);
+		SingleEntityReceptacle.ReceptacleDirection planterDirection = SingleEntityReceptacle.ReceptacleDirection.Top;
+		string domesticatedDescription = STRINGS.CREATURES.SPECIES.HARDSKINBERRYPLANT.DOMESTICATEDDESC;
+		string[] dlcIds = this.GetDlcIds();
+		GameObject seed = EntityTemplates.CreateAndRegisterSeedForPlant(plant, productionType, id2, name2, desc2, anim, initialAnim, numberOfSeeds, list, planterDirection, default(Tag), 1, domesticatedDescription, EntityTemplates.CollisionShape.CIRCLE, 0.3f, 0.3f, null, "", false, dlcIds);
 		EntityTemplates.ExtendPlantToFertilizable(gameObject, new PlantElementAbsorber.ConsumeInfo[]
 		{
 			new PlantElementAbsorber.ConsumeInfo
@@ -46,25 +56,25 @@ public class HardSkinBerryPlantConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "HardSkinBerryPlant";
+		public const string ID = "HardSkinBerryPlant";
 
-	public const string SEED_ID = "HardSkinBerryPlantSeed";
+		public const string SEED_ID = "HardSkinBerryPlantSeed";
 
-	public const float Temperature_lethal_low = 118.149994f;
+		public const float Temperature_lethal_low = 118.149994f;
 
-	public const float Temperature_warning_low = 218.15f;
+		public const float Temperature_warning_low = 218.15f;
 
-	public const float Temperature_lethal_high = 269.15f;
+		public const float Temperature_lethal_high = 269.15f;
 
-	public const float Temperature_warning_high = 259.15f;
+		public const float Temperature_warning_high = 259.15f;
 
-	public const float FERTILIZATION_RATE = 0.008333334f;
+		public const float FERTILIZATION_RATE = 0.008333334f;
 }

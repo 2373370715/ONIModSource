@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BloomEffect : MonoBehaviour
 {
-		protected Material material
+			protected Material material
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class BloomEffect : MonoBehaviour
 		}
 	}
 
-	protected void OnDisable()
+		protected void OnDisable()
 	{
 		if (this.m_Material)
 		{
@@ -24,7 +24,7 @@ public class BloomEffect : MonoBehaviour
 		}
 	}
 
-	protected void Start()
+		protected void Start()
 	{
 		if (!this.blurShader || !this.material.shader.isSupported)
 		{
@@ -35,7 +35,7 @@ public class BloomEffect : MonoBehaviour
 		this.BloomCompositeMaterial = new Material(Shader.Find("Klei/PostFX/BloomComposite"));
 	}
 
-	public void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
+		public void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
 	{
 		float num = 0.5f + (float)iteration * this.blurSpread;
 		Graphics.BlitMultiTap(source, dest, this.material, new Vector2[]
@@ -47,7 +47,7 @@ public class BloomEffect : MonoBehaviour
 		});
 	}
 
-	private void DownSample4x(RenderTexture source, RenderTexture dest)
+		private void DownSample4x(RenderTexture source, RenderTexture dest)
 	{
 		float num = 1f;
 		Graphics.BlitMultiTap(source, dest, this.material, new Vector2[]
@@ -59,7 +59,7 @@ public class BloomEffect : MonoBehaviour
 		});
 	}
 
-	private void OnRenderImage(RenderTexture source, RenderTexture destination)
+		private void OnRenderImage(RenderTexture source, RenderTexture destination)
 	{
 		RenderTexture temporary = RenderTexture.GetTemporary(source.width, source.height, 0);
 		temporary.name = "bloom_source";
@@ -83,15 +83,15 @@ public class BloomEffect : MonoBehaviour
 		RenderTexture.ReleaseTemporary(renderTexture);
 	}
 
-	private Material BloomMaskMaterial;
+		private Material BloomMaskMaterial;
 
-	private Material BloomCompositeMaterial;
+		private Material BloomCompositeMaterial;
 
-	public int iterations = 3;
+		public int iterations = 3;
 
-	public float blurSpread = 0.6f;
+		public float blurSpread = 0.6f;
 
-	public Shader blurShader;
+		public Shader blurShader;
 
-	private Material m_Material;
+		private Material m_Material;
 }

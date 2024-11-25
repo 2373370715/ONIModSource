@@ -6,16 +6,16 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	[AddComponentMenu("KMonoBehaviour/scripts/AttributeLevels")]
 	public class AttributeLevels : KMonoBehaviour, ISaveLoadable
 	{
-		public IEnumerator<AttributeLevel> GetEnumerator()
+				public IEnumerator<AttributeLevel> GetEnumerator()
 		{
 			return this.levels.GetEnumerator();
 		}
 
-						public AttributeLevels.LevelSaveLoad[] SaveLoadLevels
+								public AttributeLevels.LevelSaveLoad[] SaveLoadLevels
 		{
 			get
 			{
@@ -27,7 +27,7 @@ namespace Klei.AI
 			}
 		}
 
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			foreach (AttributeInstance attributeInstance in this.GetAttributes())
 			{
@@ -40,7 +40,7 @@ namespace Klei.AI
 			}
 		}
 
-		[OnSerializing]
+				[OnSerializing]
 		public void OnSerializing()
 		{
 			this.saveLoadLevels = new AttributeLevels.LevelSaveLoad[this.levels.Count];
@@ -52,7 +52,7 @@ namespace Klei.AI
 			}
 		}
 
-		[OnDeserialized]
+				[OnDeserialized]
 		public void OnDeserialized()
 		{
 			foreach (AttributeLevels.LevelSaveLoad levelSaveLoad in this.saveLoadLevels)
@@ -62,7 +62,7 @@ namespace Klei.AI
 			}
 		}
 
-		public int GetLevel(Attribute attribute)
+				public int GetLevel(Attribute attribute)
 		{
 			foreach (AttributeLevel attributeLevel in this.levels)
 			{
@@ -74,7 +74,7 @@ namespace Klei.AI
 			return 1;
 		}
 
-		public AttributeLevel GetAttributeLevel(string attribute_id)
+				public AttributeLevel GetAttributeLevel(string attribute_id)
 		{
 			foreach (AttributeLevel attributeLevel in this.levels)
 			{
@@ -86,7 +86,7 @@ namespace Klei.AI
 			return null;
 		}
 
-		public bool AddExperience(string attribute_id, float time_spent, float multiplier)
+				public bool AddExperience(string attribute_id, float time_spent, float multiplier)
 		{
 			AttributeLevel attributeLevel = this.GetAttributeLevel(attribute_id);
 			if (attributeLevel == null)
@@ -106,7 +106,7 @@ namespace Klei.AI
 			return result;
 		}
 
-		public void SetLevel(string attribute_id, int level)
+				public void SetLevel(string attribute_id, int level)
 		{
 			AttributeLevel attributeLevel = this.GetAttributeLevel(attribute_id);
 			if (attributeLevel != null)
@@ -116,7 +116,7 @@ namespace Klei.AI
 			}
 		}
 
-		public void SetExperience(string attribute_id, float experience)
+				public void SetExperience(string attribute_id, float experience)
 		{
 			AttributeLevel attributeLevel = this.GetAttributeLevel(attribute_id);
 			if (attributeLevel != null)
@@ -126,12 +126,12 @@ namespace Klei.AI
 			}
 		}
 
-		public float GetPercentComplete(string attribute_id)
+				public float GetPercentComplete(string attribute_id)
 		{
 			return this.GetAttributeLevel(attribute_id).GetPercentComplete();
 		}
 
-		public int GetMaxLevel()
+				public int GetMaxLevel()
 		{
 			int num = 0;
 			foreach (AttributeLevel attributeLevel in this)
@@ -144,19 +144,19 @@ namespace Klei.AI
 			return num;
 		}
 
-		private List<AttributeLevel> levels = new List<AttributeLevel>();
+				private List<AttributeLevel> levels = new List<AttributeLevel>();
 
-		[Serialize]
+				[Serialize]
 		private AttributeLevels.LevelSaveLoad[] saveLoadLevels = new AttributeLevels.LevelSaveLoad[0];
 
-		[Serializable]
+				[Serializable]
 		public struct LevelSaveLoad
 		{
-			public string attributeId;
+						public string attributeId;
 
-			public float experience;
+						public float experience;
 
-			public int level;
+						public int level;
 		}
 	}
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LogicMemory")]
 public class LogicMemory : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (LogicMemory.infoStatusItem == null)
 		{
@@ -17,7 +17,7 @@ public class LogicMemory : KMonoBehaviour
 		base.Subscribe<LogicMemory>(-801688580, LogicMemory.OnLogicValueChangedDelegate);
 	}
 
-	public void OnLogicValueChanged(object data)
+		public void OnLogicValueChanged(object data)
 	{
 		if (this.ports == null || base.gameObject == null || this == null)
 		{
@@ -49,27 +49,27 @@ public class LogicMemory : KMonoBehaviour
 		}
 	}
 
-	private static string ResolveInfoStatusItemString(string format_str, object data)
+		private static string ResolveInfoStatusItemString(string format_str, object data)
 	{
 		int outputValue = ((LogicMemory)data).ports.GetOutputValue(LogicMemory.READ_PORT_ID);
 		return string.Format(BUILDINGS.PREFABS.LOGICMEMORY.STATUS_ITEM_VALUE, outputValue);
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private LogicPorts ports;
 
-	[Serialize]
+		[Serialize]
 	private int value;
 
-	private static StatusItem infoStatusItem;
+		private static StatusItem infoStatusItem;
 
-	public static readonly HashedString READ_PORT_ID = new HashedString("LogicMemoryRead");
+		public static readonly HashedString READ_PORT_ID = new HashedString("LogicMemoryRead");
 
-	public static readonly HashedString SET_PORT_ID = new HashedString("LogicMemorySet");
+		public static readonly HashedString SET_PORT_ID = new HashedString("LogicMemorySet");
 
-	public static readonly HashedString RESET_PORT_ID = new HashedString("LogicMemoryReset");
+		public static readonly HashedString RESET_PORT_ID = new HashedString("LogicMemoryReset");
 
-	private static readonly EventSystem.IntraObjectHandler<LogicMemory> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicMemory>(delegate(LogicMemory component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicMemory> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<LogicMemory>(delegate(LogicMemory component, object data)
 	{
 		component.OnLogicValueChanged(data);
 	});

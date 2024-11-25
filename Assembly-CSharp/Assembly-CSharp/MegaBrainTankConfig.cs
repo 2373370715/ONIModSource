@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MegaBrainTankConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MegaBrainTank";
 		int width = 7;
@@ -31,7 +31,7 @@ public class MegaBrainTankConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		base.ConfigureBuildingTemplate(go, prefab_tag);
 		Light2D light2D = go.AddOrGet<Light2D>();
@@ -45,7 +45,7 @@ public class MegaBrainTankConfig : IBuildingConfig
 		go.GetComponent<BuildingHP>().invincible = true;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<Demolishable>();
@@ -103,7 +103,7 @@ public class MegaBrainTankConfig : IBuildingConfig
 		go.GetComponent<Deconstructable>().allowDeconstruction = false;
 	}
 
-	private void ConfigureJournalShelf(KPrefabID parentId)
+		private void ConfigureJournalShelf(KPrefabID parentId)
 	{
 		KBatchedAnimController component = parentId.GetComponent<KBatchedAnimController>();
 		GameObject gameObject = new GameObject("Journal Shelf");
@@ -130,7 +130,7 @@ public class MegaBrainTankConfig : IBuildingConfig
 		}
 	}
 
-	// Note: this type is marked as 'beforefieldinit'.
+		// Note: this type is marked as 'beforefieldinit'.
 	static MegaBrainTankConfig()
 	{
 		object[,] array = new object[6, 3];
@@ -187,63 +187,63 @@ public class MegaBrainTankConfig : IBuildingConfig
 		MegaBrainTankConfig.MaximumAptitude = new StatusItem("MaximumAptitude", DUPLICANTS.MODIFIERS.MEGABRAINTANKBONUS.NAME, DUPLICANTS.MODIFIERS.MEGABRAINTANKBONUS.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Messages, false, OverlayModes.None.ID, 129022, true, null);
 	}
 
-	public const string ID = "MegaBrainTank";
+		public const string ID = "MegaBrainTank";
 
-	public const string INITIAL_LORE_UNLOCK_ID = "story_trait_mega_brain_tank_initial";
+		public const string INITIAL_LORE_UNLOCK_ID = "story_trait_mega_brain_tank_initial";
 
-	public const string COMPLETED_LORE_UNLOCK_ID = "story_trait_mega_brain_tank_competed";
+		public const string COMPLETED_LORE_UNLOCK_ID = "story_trait_mega_brain_tank_competed";
 
-	public const string ACTIVE_EFFECT_ID = "MegaBrainTankBonus";
+		public const string ACTIVE_EFFECT_ID = "MegaBrainTankBonus";
 
-	public static object[,] STAT_BONUSES;
+		public static object[,] STAT_BONUSES;
 
-	private const float KG_OXYGEN_CONSUMED_PER_SECOND = 0.5f;
+		private const float KG_OXYGEN_CONSUMED_PER_SECOND = 0.5f;
 
-	public const float MIN_OXYGEN_TO_WAKE_UP = 1f;
+		public const float MIN_OXYGEN_TO_WAKE_UP = 1f;
 
-	private const float KG_OXYGEN_STORAGE_CAPACITY = 5f;
+		private const float KG_OXYGEN_STORAGE_CAPACITY = 5f;
 
-	public const short JOURNALS_TO_ACTIVATE = 25;
+		public const short JOURNALS_TO_ACTIVATE = 25;
 
-	public const float DIGESTION_RATE = 60f;
+		public const float DIGESTION_RATE = 60f;
 
-	public const float MAX_DIGESTION_TIME = 1500f;
+		public const float MAX_DIGESTION_TIME = 1500f;
 
-	public const float REFILL_THESHOLD_ADJUSTMENT = 1f;
+		public const float REFILL_THESHOLD_ADJUSTMENT = 1f;
 
-	public const short MAX_PHYSICAL_JOURNALS = 5;
+		public const short MAX_PHYSICAL_JOURNALS = 5;
 
-	public const ConduitType CONDUIT_TYPE = ConduitType.Gas;
+		public const ConduitType CONDUIT_TYPE = ConduitType.Gas;
 
-	private const string ANIM_FILE = "gravitas_megabrain_kanim";
+		private const string ANIM_FILE = "gravitas_megabrain_kanim";
 
-	public const string METER_ANIM = "meter";
+		public const string METER_ANIM = "meter";
 
-	public const string METER_TARGET = "meter_oxygen_target";
+		public const string METER_TARGET = "meter_oxygen_target";
 
-	public static string[] METER_SYMBOLS;
+		public static string[] METER_SYMBOLS;
 
-	public const short TOTAL_BRAINS = 5;
+		public const short TOTAL_BRAINS = 5;
 
-	public const string BRAIN_HUM_EVENT = "MegaBrainTank_brain_wave_LP";
+		public const string BRAIN_HUM_EVENT = "MegaBrainTank_brain_wave_LP";
 
-	public const float METER_INCREMENT_SPEED = 0.04f;
+		public const float METER_INCREMENT_SPEED = 0.04f;
 
-	public static HashedString ACTIVATE_ALL;
+		public static HashedString ACTIVATE_ALL;
 
-	public static HashedString DEACTIVATE_ALL;
+		public static HashedString DEACTIVATE_ALL;
 
-	public static HashedString[] ACTIVATION_ANIMS;
+		public static HashedString[] ACTIVATION_ANIMS;
 
-	public const short MAX_STORAGE_WORK_TIME = 2;
+		public const short MAX_STORAGE_WORK_TIME = 2;
 
-	private const string KACHUNK_ANIM = "kachunk";
+		private const string KACHUNK_ANIM = "kachunk";
 
-	public static HashedString KACHUNK;
+		public static HashedString KACHUNK;
 
-	public static HashedString JOURNAL_SHELF;
+		public static HashedString JOURNAL_SHELF;
 
-	public static HashedString[] JOURNAL_SYMBOLS;
+		public static HashedString[] JOURNAL_SYMBOLS;
 
-	public static StatusItem MaximumAptitude;
+		public static StatusItem MaximumAptitude;
 }

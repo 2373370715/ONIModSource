@@ -4,12 +4,12 @@ using UnityEngine.UI;
 
 public class FullMinionUIPortrait : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(FullMinionUIPortrait.ID, FullMinionUIPortrait.ID, true);
 		RectTransform rectTransform = gameObject.AddOrGet<RectTransform>();
@@ -38,17 +38,17 @@ public class FullMinionUIPortrait : IEntityConfig
 			Assets.GetAnim("anim_cheer_kanim")
 		};
 		SymbolOverrideControllerUtil.AddToPrefab(gameObject);
-		MinionConfig.ConfigureSymbols(gameObject, true);
+		BaseMinionConfig.ConfigureSymbols(gameObject, true);
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static string ID = "FullMinionUIPortrait";
+		public static string ID = "FullMinionUIPortrait";
 }

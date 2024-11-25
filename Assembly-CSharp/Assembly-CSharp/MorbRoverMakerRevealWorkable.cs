@@ -2,7 +2,7 @@
 
 public class MorbRoverMakerRevealWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.workAnims = new HashedString[]
 		{
@@ -29,14 +29,14 @@ public class MorbRoverMakerRevealWorkable : Workable
 		base.SetWorkTime(15f);
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 	}
 
-	public const string WORKABLE_PRE_ANIM_NAME = "reveal_working_pre";
+		public const string WORKABLE_PRE_ANIM_NAME = "reveal_working_pre";
 
-	public const string WORKABLE_LOOP_ANIM_NAME = "reveal_working_loop";
+		public const string WORKABLE_LOOP_ANIM_NAME = "reveal_working_loop";
 
-	public const string WORKABLE_PST_ANIM_NAME = "reveal_working_pst";
+		public const string WORKABLE_PST_ANIM_NAME = "reveal_working_pst";
 }

@@ -5,20 +5,20 @@ using UnityEngine;
 
 public class EventInfoData
 {
-	public EventInfoData(string title, string description, HashedString animFileName)
+		public EventInfoData(string title, string description, HashedString animFileName)
 	{
 		this.title = title;
 		this.description = description;
 		this.animFileName = animFileName;
 	}
 
-	public List<EventInfoData.Option> GetOptions()
+		public List<EventInfoData.Option> GetOptions()
 	{
 		this.FinalizeText();
 		return this.options;
 	}
 
-	public EventInfoData.Option AddOption(string mainText, string description = null)
+		public EventInfoData.Option AddOption(string mainText, string description = null)
 	{
 		EventInfoData.Option option = new EventInfoData.Option
 		{
@@ -30,7 +30,7 @@ public class EventInfoData
 		return option;
 	}
 
-	public EventInfoData.Option SimpleOption(string mainText, System.Action callback)
+		public EventInfoData.Option SimpleOption(string mainText, System.Action callback)
 	{
 		EventInfoData.Option option = new EventInfoData.Option
 		{
@@ -42,23 +42,23 @@ public class EventInfoData
 		return option;
 	}
 
-	public EventInfoData.Option AddDefaultOption(System.Action callback = null)
+		public EventInfoData.Option AddDefaultOption(System.Action callback = null)
 	{
 		return this.SimpleOption(GAMEPLAY_EVENTS.DEFAULT_OPTION_NAME, callback);
 	}
 
-	public EventInfoData.Option AddDefaultConsiderLaterOption(System.Action callback = null)
+		public EventInfoData.Option AddDefaultConsiderLaterOption(System.Action callback = null)
 	{
 		return this.SimpleOption(GAMEPLAY_EVENTS.DEFAULT_OPTION_CONSIDER_NAME, callback);
 	}
 
-	public void SetTextParameter(string key, string value)
+		public void SetTextParameter(string key, string value)
 	{
 		this.textParameters[key] = value;
 		this.dirty = true;
 	}
 
-	public void FinalizeText()
+		public void FinalizeText()
 	{
 		if (!this.dirty)
 		{
@@ -116,35 +116,35 @@ public class EventInfoData
 		}
 	}
 
-	public string title;
+		public string title;
 
-	public string description;
+		public string description;
 
-	public string location;
+		public string location;
 
-	public string whenDescription;
+		public string whenDescription;
 
-	public Transform clickFocus;
+		public Transform clickFocus;
 
-	public GameObject[] minions;
+		public GameObject[] minions;
 
-	public GameObject artifact;
+		public GameObject artifact;
 
-	public HashedString animFileName;
+		public HashedString animFileName;
 
-	public HashedString mainAnim = "event";
+		public HashedString mainAnim = "event";
 
-	public Dictionary<string, string> textParameters = new Dictionary<string, string>();
+		public Dictionary<string, string> textParameters = new Dictionary<string, string>();
 
-	public List<EventInfoData.Option> options = new List<EventInfoData.Option>();
+		public List<EventInfoData.Option> options = new List<EventInfoData.Option>();
 
-	public System.Action showCallback;
+		public System.Action showCallback;
 
-	private bool dirty;
+		private bool dirty;
 
-	public class OptionIcon
+		public class OptionIcon
 	{
-		public OptionIcon(Sprite sprite, EventInfoData.OptionIcon.ContainerType containerType, string tooltip, float scale = 1f)
+				public OptionIcon(Sprite sprite, EventInfoData.OptionIcon.ContainerType containerType, string tooltip, float scale = 1f)
 		{
 			this.sprite = sprite;
 			this.containerType = containerType;
@@ -152,57 +152,57 @@ public class EventInfoData
 			this.scale = scale;
 		}
 
-		public EventInfoData.OptionIcon.ContainerType containerType;
+				public EventInfoData.OptionIcon.ContainerType containerType;
 
-		public Sprite sprite;
+				public Sprite sprite;
 
-		public string tooltip;
+				public string tooltip;
 
-		public float scale;
+				public float scale;
 
-		public enum ContainerType
+				public enum ContainerType
 		{
-			Neutral,
-			Positive,
-			Negative,
-			Information
+						Neutral,
+						Positive,
+						Negative,
+						Information
 		}
 	}
 
-	public class Option
+		public class Option
 	{
-		public void AddInformationIcon(string tooltip, float scale = 1f)
+				public void AddInformationIcon(string tooltip, float scale = 1f)
 		{
 			this.informationIcons.Add(new EventInfoData.OptionIcon(null, EventInfoData.OptionIcon.ContainerType.Information, tooltip, scale));
 		}
 
-		public void AddPositiveIcon(Sprite sprite, string tooltip, float scale = 1f)
+				public void AddPositiveIcon(Sprite sprite, string tooltip, float scale = 1f)
 		{
 			this.consequenceIcons.Add(new EventInfoData.OptionIcon(sprite, EventInfoData.OptionIcon.ContainerType.Positive, tooltip, scale));
 		}
 
-		public void AddNeutralIcon(Sprite sprite, string tooltip, float scale = 1f)
+				public void AddNeutralIcon(Sprite sprite, string tooltip, float scale = 1f)
 		{
 			this.consequenceIcons.Add(new EventInfoData.OptionIcon(sprite, EventInfoData.OptionIcon.ContainerType.Neutral, tooltip, scale));
 		}
 
-		public void AddNegativeIcon(Sprite sprite, string tooltip, float scale = 1f)
+				public void AddNegativeIcon(Sprite sprite, string tooltip, float scale = 1f)
 		{
 			this.consequenceIcons.Add(new EventInfoData.OptionIcon(sprite, EventInfoData.OptionIcon.ContainerType.Negative, tooltip, scale));
 		}
 
-		public string mainText;
+				public string mainText;
 
-		public string description;
+				public string description;
 
-		public string tooltip;
+				public string tooltip;
 
-		public System.Action callback;
+				public System.Action callback;
 
-		public List<EventInfoData.OptionIcon> informationIcons = new List<EventInfoData.OptionIcon>();
+				public List<EventInfoData.OptionIcon> informationIcons = new List<EventInfoData.OptionIcon>();
 
-		public List<EventInfoData.OptionIcon> consequenceIcons = new List<EventInfoData.OptionIcon>();
+				public List<EventInfoData.OptionIcon> consequenceIcons = new List<EventInfoData.OptionIcon>();
 
-		public bool allowed = true;
+				public bool allowed = true;
 	}
 }

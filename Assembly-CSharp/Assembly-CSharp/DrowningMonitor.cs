@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/DrowningMonitor")]
 public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISlicedSim1000ms
 {
-		private OccupyArea occupyArea
+			private OccupyArea occupyArea
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISlicedSim1000ms
 		}
 	}
 
-		public bool Drowning
+			public bool Drowning
 	{
 		get
 		{
@@ -27,7 +27,7 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISlicedSim1000ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.timeToDrown = 75f;
@@ -43,7 +43,7 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISlicedSim1000ms
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		SlicedUpdaterSim1000ms<DrowningMonitor>.instance.RegisterUpdate1000ms(this);
@@ -52,7 +52,7 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISlicedSim1000ms
 		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(base.transform, new System.Action(this.OnMove), "DrowningMonitor.OnSpawn");
 	}
 
-	private void OnMove()
+		private void OnMove()
 	{
 		if (this.partitionerEntry.IsValid())
 		{
@@ -66,7 +66,7 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISlicedSim1000ms
 		this.CheckDrowning(null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Singleton<CellChangeMonitor>.Instance.UnregisterCellChangedHandler(base.transform, new System.Action(this.OnMove));
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
@@ -74,7 +74,7 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISlicedSim1000ms
 		base.OnCleanUp();
 	}
 
-	private void CheckDrowning(object data = null)
+		private void CheckDrowning(object data = null)
 	{
 		if (this.drowned)
 		{
@@ -138,17 +138,17 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISlicedSim1000ms
 		}
 	}
 
-	private static bool CellSafeTest(int testCell, object data)
+		private static bool CellSafeTest(int testCell, object data)
 	{
 		return !Grid.IsNavigatableLiquid(testCell);
 	}
 
-	public bool IsCellSafe(int cell)
+		public bool IsCellSafe(int cell)
 	{
 		return this.occupyArea.TestArea(cell, this, DrowningMonitor.CellSafeTestDelegate);
 	}
 
-		WiltCondition.Condition[] IWiltCause.Conditions
+			WiltCondition.Condition[] IWiltCause.Conditions
 	{
 		get
 		{
@@ -159,7 +159,7 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISlicedSim1000ms
 		}
 	}
 
-		public string WiltStateString
+			public string WiltStateString
 	{
 		get
 		{
@@ -171,12 +171,12 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISlicedSim1000ms
 		}
 	}
 
-	private void OnLiquidChanged(object data)
+		private void OnLiquidChanged(object data)
 	{
 		this.CheckDrowning(null);
 	}
 
-	public void SlicedSim1000ms(float dt)
+		public void SlicedSim1000ms(float dt)
 	{
 		this.CheckDrowning(null);
 		if (this.drowning)
@@ -198,44 +198,44 @@ public class DrowningMonitor : KMonoBehaviour, IWiltCause, ISlicedSim1000ms
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Effects effects;
 
-	private OccupyArea _occupyArea;
+		private OccupyArea _occupyArea;
 
-	[Serialize]
+		[Serialize]
 	[SerializeField]
 	private float timeToDrown;
 
-	[Serialize]
+		[Serialize]
 	private bool drowned;
 
-	private bool drowning;
+		private bool drowning;
 
-	protected const float MaxDrownTime = 75f;
+		protected const float MaxDrownTime = 75f;
 
-	protected const float RegenRate = 5f;
+		protected const float RegenRate = 5f;
 
-	protected const float CellLiquidThreshold = 0.95f;
+		protected const float CellLiquidThreshold = 0.95f;
 
-	public bool canDrownToDeath = true;
+		public bool canDrownToDeath = true;
 
-	public bool livesUnderWater;
+		public bool livesUnderWater;
 
-	private Guid drowningStatusGuid;
+		private Guid drowningStatusGuid;
 
-	private Guid saturatedStatusGuid;
+		private Guid saturatedStatusGuid;
 
-	private Extents extents;
+		private Extents extents;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	public static Effect drowningEffect;
+		public static Effect drowningEffect;
 
-	public static Effect saturatedEffect;
+		public static Effect saturatedEffect;
 
-	private static readonly Func<int, object, bool> CellSafeTestDelegate = (int testCell, object data) => DrowningMonitor.CellSafeTest(testCell, data);
+		private static readonly Func<int, object, bool> CellSafeTestDelegate = (int testCell, object data) => DrowningMonitor.CellSafeTest(testCell, data);
 }

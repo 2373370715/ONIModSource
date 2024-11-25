@@ -2,7 +2,7 @@
 
 public class LandingBeacon : GameStateMachine<LandingBeacon, LandingBeacon.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.off;
 		this.root.Update(new Action<LandingBeacon.Instance, float>(LandingBeacon.UpdateLineOfSight), UpdateRate.SIM_200ms, false);
@@ -18,7 +18,7 @@ public class LandingBeacon : GameStateMachine<LandingBeacon, LandingBeacon.Insta
 		});
 	}
 
-	public static void UpdateLineOfSight(LandingBeacon.Instance smi, float dt)
+		public static void UpdateLineOfSight(LandingBeacon.Instance smi, float dt)
 	{
 		WorldContainer myWorld = smi.GetMyWorld();
 		bool flag = true;
@@ -41,55 +41,55 @@ public class LandingBeacon : GameStateMachine<LandingBeacon, LandingBeacon.Insta
 		}
 	}
 
-	public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State off;
+		public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State off;
 
-	public LandingBeacon.WorkingStates working;
+		public LandingBeacon.WorkingStates working;
 
-	public static readonly Operational.Flag noSurfaceSight = new Operational.Flag("noSurfaceSight", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag noSurfaceSight = new Operational.Flag("noSurfaceSight", Operational.Flag.Type.Requirement);
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public class WorkingStates : GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State
+		public class WorkingStates : GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State pre;
+				public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State pre;
 
-		public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State loop;
+				public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State loop;
 
-		public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State pst;
+				public GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.State pst;
 	}
 
-	public new class Instance : GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<LandingBeacon, LandingBeacon.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, LandingBeacon.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, LandingBeacon.Def def) : base(master, def)
 		{
 			Components.LandingBeacons.Add(this);
 			this.operational = base.GetComponent<Operational>();
 			this.selectable = base.GetComponent<KSelectable>();
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			LandingBeacon.UpdateLineOfSight(this, 0f);
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.OnCleanUp();
 			Components.LandingBeacons.Remove(this);
 		}
 
-		public bool CanBeTargeted()
+				public bool CanBeTargeted()
 		{
 			return base.IsInsideState(base.sm.working);
 		}
 
-		public Operational operational;
+				public Operational operational;
 
-		public KSelectable selectable;
+				public KSelectable selectable;
 
-		public bool skyLastVisible = true;
+				public bool skyLastVisible = true;
 	}
 }

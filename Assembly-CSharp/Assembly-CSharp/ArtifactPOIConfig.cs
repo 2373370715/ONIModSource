@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ArtifactPOIConfig : IMultiEntityConfig
 {
-	public List<GameObject> CreatePrefabs()
+		public List<GameObject> CreatePrefabs()
 	{
 		List<GameObject> list = new List<GameObject>();
 		foreach (ArtifactPOIConfig.ArtifactPOIParams artifactPOIParams in this.GenerateConfigs())
@@ -14,7 +14,7 @@ public class ArtifactPOIConfig : IMultiEntityConfig
 		return list;
 	}
 
-	public static GameObject CreateArtifactPOI(string id, string anim, string name, string desc, HashedString poiType)
+		public static GameObject CreateArtifactPOI(string id, string anim, string name, string desc, HashedString poiType)
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(id, id, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
@@ -27,15 +27,15 @@ public class ArtifactPOIConfig : IMultiEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	private List<ArtifactPOIConfig.ArtifactPOIParams> GenerateConfigs()
+		private List<ArtifactPOIConfig.ArtifactPOIParams> GenerateConfigs()
 	{
 		List<ArtifactPOIConfig.ArtifactPOIParams> list = new List<ArtifactPOIConfig.ArtifactPOIParams>();
 		list.Add(new ArtifactPOIConfig.ArtifactPOIParams("station_1", new ArtifactPOIConfigurator.ArtifactPOIType("GravitasSpaceStation1", null, false, 30000f, 60000f, "EXPANSION1_ID")));
@@ -51,27 +51,27 @@ public class ArtifactPOIConfig : IMultiEntityConfig
 		return list;
 	}
 
-	public const string GravitasSpaceStation1 = "GravitasSpaceStation1";
+		public const string GravitasSpaceStation1 = "GravitasSpaceStation1";
 
-	public const string GravitasSpaceStation2 = "GravitasSpaceStation2";
+		public const string GravitasSpaceStation2 = "GravitasSpaceStation2";
 
-	public const string GravitasSpaceStation3 = "GravitasSpaceStation3";
+		public const string GravitasSpaceStation3 = "GravitasSpaceStation3";
 
-	public const string GravitasSpaceStation4 = "GravitasSpaceStation4";
+		public const string GravitasSpaceStation4 = "GravitasSpaceStation4";
 
-	public const string GravitasSpaceStation5 = "GravitasSpaceStation5";
+		public const string GravitasSpaceStation5 = "GravitasSpaceStation5";
 
-	public const string GravitasSpaceStation6 = "GravitasSpaceStation6";
+		public const string GravitasSpaceStation6 = "GravitasSpaceStation6";
 
-	public const string GravitasSpaceStation7 = "GravitasSpaceStation7";
+		public const string GravitasSpaceStation7 = "GravitasSpaceStation7";
 
-	public const string GravitasSpaceStation8 = "GravitasSpaceStation8";
+		public const string GravitasSpaceStation8 = "GravitasSpaceStation8";
 
-	public const string RussellsTeapot = "RussellsTeapot";
+		public const string RussellsTeapot = "RussellsTeapot";
 
-	public struct ArtifactPOIParams
+		public struct ArtifactPOIParams
 	{
-		public ArtifactPOIParams(string anim, ArtifactPOIConfigurator.ArtifactPOIType poiType)
+				public ArtifactPOIParams(string anim, ArtifactPOIConfigurator.ArtifactPOIType poiType)
 		{
 			this.id = "ArtifactSpacePOI_" + poiType.id;
 			this.anim = anim;
@@ -80,14 +80,14 @@ public class ArtifactPOIConfig : IMultiEntityConfig
 			this.poiType = poiType;
 		}
 
-		public string id;
+				public string id;
 
-		public string anim;
+				public string anim;
 
-		public StringKey nameStringKey;
+				public StringKey nameStringKey;
 
-		public StringKey descStringKey;
+				public StringKey descStringKey;
 
-		public ArtifactPOIConfigurator.ArtifactPOIType poiType;
+				public ArtifactPOIConfigurator.ArtifactPOIType poiType;
 	}
 }

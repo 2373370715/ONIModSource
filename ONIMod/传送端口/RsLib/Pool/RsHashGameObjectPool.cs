@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 
 public class RsHashGameObjectPool {
     // private Dictionary<object, GameObject> dic = new Dictionary<object, GameObject>();

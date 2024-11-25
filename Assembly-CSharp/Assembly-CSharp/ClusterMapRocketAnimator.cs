@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ClusterMapRocketAnimator : GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer>
 {
-	public override void InitializeStates(out StateMachine.BaseState defaultState)
+		public override void InitializeStates(out StateMachine.BaseState defaultState)
 	{
 		defaultState = this.idle;
 		this.root.Transition(null, new StateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.Transition.ConditionCallback(this.entityTarget.IsNull), UpdateRate.SIM_200ms).Target(this.entityTarget).EventHandlerTransition(GameHashes.RocketSelfDestructRequested, this.exploding, (ClusterMapRocketAnimator.StatesInstance smi, object data) => true).EventHandlerTransition(GameHashes.StartMining, this.utility.mining, (ClusterMapRocketAnimator.StatesInstance smi, object data) => true).EventHandlerTransition(GameHashes.RocketLaunched, this.moving.takeoff, (ClusterMapRocketAnimator.StatesInstance smi, object data) => true);
@@ -86,44 +86,44 @@ public class ClusterMapRocketAnimator : GameStateMachine<ClusterMapRocketAnimato
 		});
 	}
 
-	private bool ClusterChangedAtMyLocation(ClusterMapRocketAnimator.StatesInstance smi, object data)
+		private bool ClusterChangedAtMyLocation(ClusterMapRocketAnimator.StatesInstance smi, object data)
 	{
 		ClusterLocationChangedEvent clusterLocationChangedEvent = (ClusterLocationChangedEvent)data;
 		return clusterLocationChangedEvent.oldLocation == smi.entity.Location || clusterLocationChangedEvent.newLocation == smi.entity.Location;
 	}
 
-	private bool IsTraveling(ClusterMapRocketAnimator.StatesInstance smi)
+		private bool IsTraveling(ClusterMapRocketAnimator.StatesInstance smi)
 	{
 		return smi.entity.GetComponent<ClusterTraveler>().IsTraveling() && ((Clustercraft)smi.entity).HasResourcesToMove(1, Clustercraft.CombustionResource.All);
 	}
 
-	private bool IsBoosted(ClusterMapRocketAnimator.StatesInstance smi)
+		private bool IsBoosted(ClusterMapRocketAnimator.StatesInstance smi)
 	{
 		return ((Clustercraft)smi.entity).controlStationBuffTimeRemaining > 0f;
 	}
 
-	private bool IsGrounded(ClusterMapRocketAnimator.StatesInstance smi)
+		private bool IsGrounded(ClusterMapRocketAnimator.StatesInstance smi)
 	{
 		return ((Clustercraft)smi.entity).Status == Clustercraft.CraftStatus.Grounded;
 	}
 
-	private bool IsLanding(ClusterMapRocketAnimator.StatesInstance smi)
+		private bool IsLanding(ClusterMapRocketAnimator.StatesInstance smi)
 	{
 		return ((Clustercraft)smi.entity).Status == Clustercraft.CraftStatus.Landing;
 	}
 
-	private bool IsMining(ClusterMapRocketAnimator.StatesInstance smi)
+		private bool IsMining(ClusterMapRocketAnimator.StatesInstance smi)
 	{
 		return ((Clustercraft)smi.entity).HasTag(GameTags.POIHarvesting);
 	}
 
-	private bool IsSurfaceTransitioning(ClusterMapRocketAnimator.StatesInstance smi)
+		private bool IsSurfaceTransitioning(ClusterMapRocketAnimator.StatesInstance smi)
 	{
 		Clustercraft clustercraft = smi.entity as Clustercraft;
 		return clustercraft != null && (clustercraft.Status == Clustercraft.CraftStatus.Landing || clustercraft.Status == Clustercraft.CraftStatus.Launching);
 	}
 
-	private void ToggleSelectable(bool isSelectable, ClusterMapRocketAnimator.StatesInstance smi)
+		private void ToggleSelectable(bool isSelectable, ClusterMapRocketAnimator.StatesInstance smi)
 	{
 		if (smi.entity.IsNullOrDestroyed())
 		{
@@ -138,64 +138,64 @@ public class ClusterMapRocketAnimator : GameStateMachine<ClusterMapRocketAnimato
 		}
 	}
 
-	public StateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.TargetParameter entityTarget;
+		public StateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.TargetParameter entityTarget;
 
-	public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State idle;
+		public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State idle;
 
-	public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State grounded;
+		public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State grounded;
 
-	public ClusterMapRocketAnimator.MovingStates moving;
+		public ClusterMapRocketAnimator.MovingStates moving;
 
-	public ClusterMapRocketAnimator.UtilityStates utility;
+		public ClusterMapRocketAnimator.UtilityStates utility;
 
-	public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State exploding;
+		public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State exploding;
 
-	public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State exploding_pst;
+		public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State exploding_pst;
 
-	public class TravelingStates : GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State
+		public class TravelingStates : GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State
 	{
-		public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State regular;
+				public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State regular;
 
-		public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State boosted;
+				public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State boosted;
 	}
 
-	public class MovingStates : GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State
+		public class MovingStates : GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State
 	{
-		public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State takeoff;
+				public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State takeoff;
 
-		public ClusterMapRocketAnimator.TravelingStates traveling;
+				public ClusterMapRocketAnimator.TravelingStates traveling;
 
-		public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State landing;
+				public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State landing;
 	}
 
-	public class UtilityStates : GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State
+		public class UtilityStates : GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State
 	{
-		public ClusterMapRocketAnimator.UtilityStates.MiningStates mining;
+				public ClusterMapRocketAnimator.UtilityStates.MiningStates mining;
 
-		public class MiningStates : GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State
+				public class MiningStates : GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State
 		{
-			public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State pre;
+						public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State pre;
 
-			public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State loop;
+						public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State loop;
 
-			public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State pst;
+						public GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.State pst;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ClusterMapRocketAnimator, ClusterMapRocketAnimator.StatesInstance, ClusterMapVisualizer, object>.GameInstance
 	{
-		public StatesInstance(ClusterMapVisualizer master, ClusterGridEntity entity) : base(master)
+				public StatesInstance(ClusterMapVisualizer master, ClusterGridEntity entity) : base(master)
 		{
 			this.entity = entity;
 			base.sm.entityTarget.Set(entity, this);
 		}
 
-		public void PlayVisAnim(string animName, KAnim.PlayMode playMode)
+				public void PlayVisAnim(string animName, KAnim.PlayMode playMode)
 		{
 			base.GetComponent<ClusterMapVisualizer>().PlayAnim(animName, playMode);
 		}
 
-		public void ToggleVisAnim(bool on)
+				public void ToggleVisAnim(bool on)
 		{
 			ClusterMapVisualizer component = base.GetComponent<ClusterMapVisualizer>();
 			if (!on)
@@ -204,7 +204,7 @@ public class ClusterMapRocketAnimator : GameStateMachine<ClusterMapRocketAnimato
 			}
 		}
 
-		public void SubscribeOnVisAnimComplete(Action<object> action)
+				public void SubscribeOnVisAnimComplete(Action<object> action)
 		{
 			ClusterMapVisualizer component = base.GetComponent<ClusterMapVisualizer>();
 			this.UnsubscribeOnVisAnimComplete();
@@ -212,7 +212,7 @@ public class ClusterMapRocketAnimator : GameStateMachine<ClusterMapRocketAnimato
 			this.animCompleteHandle = this.animCompleteSubscriber.Subscribe(-1061186183, action);
 		}
 
-		public void UnsubscribeOnVisAnimComplete()
+				public void UnsubscribeOnVisAnimComplete()
 		{
 			if (this.animCompleteHandle != -1)
 			{
@@ -222,16 +222,16 @@ public class ClusterMapRocketAnimator : GameStateMachine<ClusterMapRocketAnimato
 			}
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			base.OnCleanUp();
 			this.UnsubscribeOnVisAnimComplete();
 		}
 
-		public ClusterGridEntity entity;
+				public ClusterGridEntity entity;
 
-		private int animCompleteHandle = -1;
+				private int animCompleteHandle = -1;
 
-		private GameObject animCompleteSubscriber;
+				private GameObject animCompleteSubscriber;
 	}
 }

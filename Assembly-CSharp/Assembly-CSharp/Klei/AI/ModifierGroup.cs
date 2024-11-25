@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Klei.AI
 {
-	public class ModifierGroup<T> : Resource
+		public class ModifierGroup<T> : Resource
 	{
-		public IEnumerator<T> GetEnumerator()
+				public IEnumerator<T> GetEnumerator()
 		{
 			return this.modifiers.GetEnumerator();
 		}
 
-		public T this[int idx]
+				public T this[int idx]
 		{
 			get
 			{
@@ -18,7 +18,7 @@ namespace Klei.AI
 			}
 		}
 
-				public int Count
+						public int Count
 		{
 			get
 			{
@@ -26,15 +26,15 @@ namespace Klei.AI
 			}
 		}
 
-		public ModifierGroup(string id, string name) : base(id, name)
+				public ModifierGroup(string id, string name) : base(id, name)
 		{
 		}
 
-		public void Add(T modifier)
+				public void Add(T modifier)
 		{
 			this.modifiers.Add(modifier);
 		}
 
-		public List<T> modifiers = new List<T>();
+				public List<T> modifiers = new List<T>();
 	}
 }

@@ -3,7 +3,7 @@ using KSerialization;
 
 public class NuclearWaste : GameStateMachine<NuclearWaste, NuclearWaste.Instance, IStateMachineTarget, NuclearWaste.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.idle;
 		this.idle.PlayAnim((NuclearWaste.Instance smi) => smi.GetAnimToPlay(), KAnim.PlayMode.Once).Update(delegate(NuclearWaste.Instance smi, float dt)
@@ -43,23 +43,23 @@ public class NuclearWaste : GameStateMachine<NuclearWaste, NuclearWaste.Instance
 		});
 	}
 
-	private const float lifetime = 600f;
+		private const float lifetime = 600f;
 
-	public GameStateMachine<NuclearWaste, NuclearWaste.Instance, IStateMachineTarget, NuclearWaste.Def>.State idle;
+		public GameStateMachine<NuclearWaste, NuclearWaste.Instance, IStateMachineTarget, NuclearWaste.Def>.State idle;
 
-	public GameStateMachine<NuclearWaste, NuclearWaste.Instance, IStateMachineTarget, NuclearWaste.Def>.State decayed;
+		public GameStateMachine<NuclearWaste, NuclearWaste.Instance, IStateMachineTarget, NuclearWaste.Def>.State decayed;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public new class Instance : GameStateMachine<NuclearWaste, NuclearWaste.Instance, IStateMachineTarget, NuclearWaste.Def>.GameInstance
+		public new class Instance : GameStateMachine<NuclearWaste, NuclearWaste.Instance, IStateMachineTarget, NuclearWaste.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, NuclearWaste.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, NuclearWaste.Def def) : base(master, def)
 		{
 		}
 
-		public string GetAnimToPlay()
+				public string GetAnimToPlay()
 		{
 			this.percentageRemaining = 1f - base.smi.timeAlive / 600f;
 			if (this.percentageRemaining <= 0.33f)
@@ -73,9 +73,9 @@ public class NuclearWaste : GameStateMachine<NuclearWaste, NuclearWaste.Instance
 			return "idle3";
 		}
 
-		[Serialize]
+				[Serialize]
 		public float timeAlive;
 
-		private float percentageRemaining;
+				private float percentageRemaining;
 	}
 }

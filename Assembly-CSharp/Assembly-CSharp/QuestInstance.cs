@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class QuestInstance : ISaveLoadable
 {
-		public HashedString Id
+			public HashedString Id
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class QuestInstance : ISaveLoadable
 		}
 	}
 
-		public int CriteriaCount
+			public int CriteriaCount
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class QuestInstance : ISaveLoadable
 		}
 	}
 
-		public string Name
+			public string Name
 	{
 		get
 		{
@@ -30,7 +30,7 @@ public class QuestInstance : ISaveLoadable
 		}
 	}
 
-		public string CompletionText
+			public string CompletionText
 	{
 		get
 		{
@@ -38,7 +38,7 @@ public class QuestInstance : ISaveLoadable
 		}
 	}
 
-		public bool IsStarted
+			public bool IsStarted
 	{
 		get
 		{
@@ -46,7 +46,7 @@ public class QuestInstance : ISaveLoadable
 		}
 	}
 
-		public bool IsComplete
+			public bool IsComplete
 	{
 		get
 		{
@@ -54,9 +54,9 @@ public class QuestInstance : ISaveLoadable
 		}
 	}
 
-			public float CurrentProgress { get; private set; }
+				public float CurrentProgress { get; private set; }
 
-		public Quest.State CurrentState
+			public Quest.State CurrentState
 	{
 		get
 		{
@@ -64,7 +64,7 @@ public class QuestInstance : ISaveLoadable
 		}
 	}
 
-	public QuestInstance(Quest quest)
+		public QuestInstance(Quest quest)
 	{
 		this.quest = quest;
 		this.criteriaStates = new Dictionary<int, QuestInstance.CriteriaState>(quest.Criteria.Length);
@@ -90,19 +90,19 @@ public class QuestInstance : ISaveLoadable
 		}
 	}
 
-	public void Initialize(Quest quest)
+		public void Initialize(Quest quest)
 	{
 		this.quest = quest;
 		this.ValidateCriteriasOnLoad();
 		this.UpdateQuestProgress(false);
 	}
 
-	public bool HasCriteria(HashedString criteriaId)
+		public bool HasCriteria(HashedString criteriaId)
 	{
 		return this.criteriaStates.ContainsKey(criteriaId.HashValue);
 	}
 
-	public bool HasBehavior(QuestCriteria.BehaviorFlags behavior)
+		public bool HasBehavior(QuestCriteria.BehaviorFlags behavior)
 	{
 		bool flag = false;
 		int num = 0;
@@ -114,7 +114,7 @@ public class QuestInstance : ISaveLoadable
 		return flag;
 	}
 
-	public int GetTargetCount(HashedString criteriaId)
+		public int GetTargetCount(HashedString criteriaId)
 	{
 		QuestInstance.CriteriaState criteriaState;
 		if (!this.criteriaStates.TryGetValue(criteriaId.HashValue, out criteriaState))
@@ -124,7 +124,7 @@ public class QuestInstance : ISaveLoadable
 		return this.quest.Criteria[criteriaState.Handle].RequiredCount;
 	}
 
-	public int GetCurrentCount(HashedString criteriaId)
+		public int GetCurrentCount(HashedString criteriaId)
 	{
 		QuestInstance.CriteriaState criteriaState;
 		if (!this.criteriaStates.TryGetValue(criteriaId.HashValue, out criteriaState))
@@ -134,7 +134,7 @@ public class QuestInstance : ISaveLoadable
 		return criteriaState.CurrentCount;
 	}
 
-	public float GetCurrentValue(HashedString criteriaId, int valueHandle = 0)
+		public float GetCurrentValue(HashedString criteriaId, int valueHandle = 0)
 	{
 		QuestInstance.CriteriaState criteriaState;
 		if (!this.criteriaStates.TryGetValue(criteriaId.HashValue, out criteriaState) || criteriaState.CurrentValues == null)
@@ -144,7 +144,7 @@ public class QuestInstance : ISaveLoadable
 		return criteriaState.CurrentValues[valueHandle];
 	}
 
-	public float GetTargetValue(HashedString criteriaId, int valueHandle = 0)
+		public float GetTargetValue(HashedString criteriaId, int valueHandle = 0)
 	{
 		QuestInstance.CriteriaState criteriaState;
 		if (!this.criteriaStates.TryGetValue(criteriaId.HashValue, out criteriaState))
@@ -158,7 +158,7 @@ public class QuestInstance : ISaveLoadable
 		return this.quest.Criteria[criteriaState.Handle].TargetValues[valueHandle];
 	}
 
-	public Tag GetSatisfyingItem(HashedString criteriaId, int valueHandle = 0)
+		public Tag GetSatisfyingItem(HashedString criteriaId, int valueHandle = 0)
 	{
 		QuestInstance.CriteriaState criteriaState;
 		if (!this.criteriaStates.TryGetValue(criteriaId.HashValue, out criteriaState) || criteriaState.SatisfyingItems == null)
@@ -168,7 +168,7 @@ public class QuestInstance : ISaveLoadable
 		return criteriaState.SatisfyingItems[valueHandle];
 	}
 
-	public float GetAreaAverage(HashedString criteriaId)
+		public float GetAreaAverage(HashedString criteriaId)
 	{
 		QuestInstance.CriteriaState criteriaState;
 		if (!this.criteriaStates.TryGetValue(criteriaId.HashValue, out criteriaState))
@@ -187,7 +187,7 @@ public class QuestInstance : ISaveLoadable
 		return num / (float)criteriaState.CurrentValues.Length;
 	}
 
-	public bool IsItemRedundant(HashedString criteriaId, Tag item)
+		public bool IsItemRedundant(HashedString criteriaId, Tag item)
 	{
 		QuestInstance.CriteriaState criteriaState;
 		if (!this.criteriaStates.TryGetValue(criteriaId.HashValue, out criteriaState) || criteriaState.SatisfyingItems == null)
@@ -204,19 +204,19 @@ public class QuestInstance : ISaveLoadable
 		return flag;
 	}
 
-	public bool IsCriteriaSatisfied(HashedString id)
+		public bool IsCriteriaSatisfied(HashedString id)
 	{
 		QuestInstance.CriteriaState criteriaState;
 		return this.criteriaStates.TryGetValue(id.HashValue, out criteriaState) && this.quest.Criteria[criteriaState.Handle].IsSatisfied(criteriaState.SatisfactionState, this.GetSatisfactionMask(criteriaState));
 	}
 
-	public bool IsCriteriaSatisfied(Tag id)
+		public bool IsCriteriaSatisfied(Tag id)
 	{
 		QuestInstance.CriteriaState criteriaState;
 		return this.criteriaStates.TryGetValue(id.GetHash(), out criteriaState) && this.quest.Criteria[criteriaState.Handle].IsSatisfied(criteriaState.SatisfactionState, this.GetSatisfactionMask(criteriaState));
 	}
 
-	public void TrackAreaForCriteria(HashedString criteriaId, Extents area)
+		public void TrackAreaForCriteria(HashedString criteriaId, Extents area)
 	{
 		QuestInstance.CriteriaState criteriaState;
 		if (!this.criteriaStates.TryGetValue(criteriaId.HashValue, out criteriaState))
@@ -237,7 +237,7 @@ public class QuestInstance : ISaveLoadable
 		this.criteriaStates[criteriaId.HashValue] = criteriaState;
 	}
 
-	private uint GetSatisfactionMask(QuestInstance.CriteriaState state)
+		private uint GetSatisfactionMask(QuestInstance.CriteriaState state)
 	{
 		QuestCriteria questCriteria = this.quest.Criteria[state.Handle];
 		if (QuestCriteria.HasBehavior(questCriteria.EvaluationBehaviors, QuestCriteria.BehaviorFlags.TrackArea))
@@ -256,7 +256,7 @@ public class QuestInstance : ISaveLoadable
 		return questCriteria.GetSatisfactionMask();
 	}
 
-	public int TrackProgress(Quest.ItemData data, out bool dataSatisfies, out bool itemIsRedundant)
+		public int TrackProgress(Quest.ItemData data, out bool dataSatisfies, out bool itemIsRedundant)
 	{
 		dataSatisfies = false;
 		itemIsRedundant = false;
@@ -312,7 +312,7 @@ public class QuestInstance : ISaveLoadable
 		return valueHandle;
 	}
 
-	public bool DataSatisfiesCriteria(Quest.ItemData data, ref int valueHandle)
+		public bool DataSatisfiesCriteria(Quest.ItemData data, ref int valueHandle)
 	{
 		QuestInstance.CriteriaState criteriaState;
 		if (!this.criteriaStates.TryGetValue(data.CriteriaId.HashValue, out criteriaState))
@@ -358,7 +358,7 @@ public class QuestInstance : ISaveLoadable
 		return flag3;
 	}
 
-	private void UpdateQuestProgress(bool startQuest = false)
+		private void UpdateQuestProgress(bool startQuest = false)
 	{
 		if (!this.IsStarted && !startQuest)
 		{
@@ -416,7 +416,7 @@ public class QuestInstance : ISaveLoadable
 		}
 	}
 
-	public ICheckboxListGroupControl.CheckboxItem[] GetCheckBoxData(Func<int, string, QuestInstance, string> resolveToolTip = null)
+		public ICheckboxListGroupControl.CheckboxItem[] GetCheckBoxData(Func<int, string, QuestInstance, string> resolveToolTip = null)
 	{
 		ICheckboxListGroupControl.CheckboxItem[] array = new ICheckboxListGroupControl.CheckboxItem[this.quest.Criteria.Length];
 		for (int i = 0; i < this.quest.Criteria.Length; i++)
@@ -436,7 +436,7 @@ public class QuestInstance : ISaveLoadable
 		return array;
 	}
 
-	public void ValidateCriteriasOnLoad()
+		public void ValidateCriteriasOnLoad()
 	{
 		if (this.criteriaStates.Count != this.quest.Criteria.Length)
 		{
@@ -473,19 +473,19 @@ public class QuestInstance : ISaveLoadable
 		}
 	}
 
-	public Action<QuestInstance, Quest.State, float> QuestProgressChanged;
+		public Action<QuestInstance, Quest.State, float> QuestProgressChanged;
 
-	private Quest quest;
+		private Quest quest;
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<int, QuestInstance.CriteriaState> criteriaStates;
 
-	[Serialize]
+		[Serialize]
 	private Quest.State currentState;
 
-	private struct CriteriaState
+		private struct CriteriaState
 	{
-		public static bool ItemAlreadySatisfying(QuestInstance.CriteriaState state, Tag item)
+				public static bool ItemAlreadySatisfying(QuestInstance.CriteriaState state, Tag item)
 		{
 			bool result = false;
 			int num = 0;
@@ -501,14 +501,14 @@ public class QuestInstance : ISaveLoadable
 			return result;
 		}
 
-		public int Handle;
+				public int Handle;
 
-		public int CurrentCount;
+				public int CurrentCount;
 
-		public uint SatisfactionState;
+				public uint SatisfactionState;
 
-		public Tag[] SatisfyingItems;
+				public Tag[] SatisfyingItems;
 
-		public float[] CurrentValues;
+				public float[] CurrentValues;
 	}
 }

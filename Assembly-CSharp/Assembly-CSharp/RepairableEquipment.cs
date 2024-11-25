@@ -3,7 +3,7 @@ using KSerialization;
 
 public class RepairableEquipment : KMonoBehaviour
 {
-			public EquipmentDef def
+				public EquipmentDef def
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class RepairableEquipment : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (this.def.AdditionalTags != null)
@@ -27,7 +27,7 @@ public class RepairableEquipment : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (!this.facadeID.IsNullOrWhiteSpace())
 		{
@@ -38,8 +38,8 @@ public class RepairableEquipment : KMonoBehaviour
 		}
 	}
 
-	public DefHandle defHandle;
+		public DefHandle defHandle;
 
-	[Serialize]
+		[Serialize]
 	public string facadeID;
 }

@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class Sicknesses : Modifications<Sickness, SicknessInstance>
+		public class Sicknesses : Modifications<Sickness, SicknessInstance>
 	{
-		public Sicknesses(GameObject go) : base(go, Db.Get().Sicknesses)
+				public Sicknesses(GameObject go) : base(go, Db.Get().Sicknesses)
 		{
 		}
 
-		public void Infect(SicknessExposureInfo exposure_info)
+				public void Infect(SicknessExposureInfo exposure_info)
 		{
 			Sickness modifier = Db.Get().Sicknesses.Get(exposure_info.sicknessID);
 			if (!base.Has(modifier))
@@ -18,7 +18,7 @@ namespace Klei.AI
 			}
 		}
 
-		public override SicknessInstance CreateInstance(Sickness sickness)
+				public override SicknessInstance CreateInstance(Sickness sickness)
 		{
 			SicknessInstance sicknessInstance = new SicknessInstance(base.gameObject, sickness);
 			this.Add(sicknessInstance);
@@ -27,17 +27,17 @@ namespace Klei.AI
 			return sicknessInstance;
 		}
 
-		public bool IsInfected()
+				public bool IsInfected()
 		{
 			return base.Count > 0;
 		}
 
-		public bool Cure(Sickness sickness)
+				public bool Cure(Sickness sickness)
 		{
 			return this.Cure(sickness.Id);
 		}
 
-		public bool Cure(string sickness_id)
+				public bool Cure(string sickness_id)
 		{
 			SicknessInstance sicknessInstance = null;
 			foreach (SicknessInstance sicknessInstance2 in this)

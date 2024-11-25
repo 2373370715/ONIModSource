@@ -8,7 +8,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectEffectDescriptor
 {
-		public float PercentFull
+			public float PercentFull
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		GameScheduler.Instance.Schedule("Scheduling Tutorial", 2f, delegate(object obj)
@@ -55,7 +55,7 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.UpdateChores(false);
 		for (int i = 0; i < this.workables.Length; i++)
@@ -69,7 +69,7 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 		base.OnCleanUp();
 	}
 
-	private Chore CreateChore(int i)
+		private Chore CreateChore(int i)
 	{
 		Workable workable = this.workables[i];
 		ChoreType relax = Db.Get().ChoreTypes.Relax;
@@ -81,10 +81,11 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 		ScheduleBlockType recreation = Db.Get().ScheduleBlockTypes.Recreation;
 		WorkChore<HotTubWorkable> workChore = new WorkChore<HotTubWorkable>(relax, target, chore_provider, run_until_complete, on_complete, on_begin, new Action<Chore>(this.OnSocialChoreEnd), false, recreation, false, true, null, false, true, false, PriorityScreen.PriorityClass.high, 5, false, true);
 		workChore.AddPrecondition(ChorePreconditions.instance.CanDoWorkerPrioritizable, workable);
+		workChore.AddPrecondition(ChorePreconditions.instance.IsNotABionic, workable);
 		return workChore;
 	}
 
-	private void OnSocialChoreEnd(Chore chore)
+		private void OnSocialChoreEnd(Chore chore)
 	{
 		if (base.gameObject.HasTag(GameTags.Operational))
 		{
@@ -92,7 +93,7 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 		}
 	}
 
-	public void UpdateChores(bool update = true)
+		public void UpdateChores(bool update = true)
 	{
 		for (int i = 0; i < this.choreOffsets.Length; i++)
 		{
@@ -112,7 +113,7 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 		}
 	}
 
-	public void OnWorkableEvent(int player, Workable.WorkableEvent ev)
+		public void OnWorkableEvent(int player, Workable.WorkableEvent ev)
 	{
 		if (ev == Workable.WorkableEvent.WorkStarted)
 		{
@@ -125,7 +126,7 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 		base.smi.sm.userCount.Set(this.occupants.Count, base.smi, false);
 	}
 
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
+		List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Element element = ElementLoader.FindElementByHash(SimHashes.Water);
@@ -137,13 +138,13 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 		return list;
 	}
 
-	public string specificEffect;
+		public string specificEffect;
 
-	public string trackingEffect;
+		public string trackingEffect;
 
-	public int basePriority;
+		public int basePriority;
 
-	public CellOffset[] choreOffsets = new CellOffset[]
+		public CellOffset[] choreOffsets = new CellOffset[]
 	{
 		new CellOffset(-1, 0),
 		new CellOffset(1, 0),
@@ -151,32 +152,32 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 		new CellOffset(2, 0)
 	};
 
-	private HotTubWorkable[] workables;
+		private HotTubWorkable[] workables;
 
-	private Chore[] chores;
+		private Chore[] chores;
 
-	public HashSet<int> occupants = new HashSet<int>();
+		public HashSet<int> occupants = new HashSet<int>();
 
-	public float waterCoolingRate;
+		public float waterCoolingRate;
 
-	public float hotTubCapacity = 100f;
+		public float hotTubCapacity = 100f;
 
-	public float minimumWaterTemperature;
+		public float minimumWaterTemperature;
 
-	public float bleachStoneConsumption;
+		public float bleachStoneConsumption;
 
-	public float maxOperatingTemperature;
+		public float maxOperatingTemperature;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public Storage waterStorage;
 
-	private MeterController waterMeter;
+		private MeterController waterMeter;
 
-	private MeterController tempMeter;
+		private MeterController tempMeter;
 
-	public class States : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub>
+		public class States : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.ready;
 			this.root.Update(delegate(HotTub.StatesInstance smi, float dt)
@@ -232,7 +233,7 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 			this.ready.on.post.PlayAnim("working_pst").OnAnimQueueComplete(this.ready.idle);
 		}
 
-		private string GetRelaxingAnim(HotTub.StatesInstance smi)
+				private string GetRelaxingAnim(HotTub.StatesInstance smi)
 		{
 			bool flag = smi.master.occupants.Contains(0);
 			bool flag2 = smi.master.occupants.Contains(1);
@@ -247,77 +248,77 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 			return "working_loop_coop_p";
 		}
 
-		public StateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.IntParameter userCount;
+				public StateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.IntParameter userCount;
 
-		public StateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.BoolParameter waterTooCold;
+				public StateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.BoolParameter waterTooCold;
 
-		public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State unoperational;
+				public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State unoperational;
 
-		public HotTub.States.OffStates off;
+				public HotTub.States.OffStates off;
 
-		public HotTub.States.ReadyStates ready;
+				public HotTub.States.ReadyStates ready;
 
-		public class OffStates : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State
+				public class OffStates : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State
 		{
-			public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State draining;
+						public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State draining;
 
-			public HotTub.States.FillingStates filling;
+						public HotTub.States.FillingStates filling;
 
-			public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State too_hot;
+						public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State too_hot;
 
-			public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State awaiting_delivery;
+						public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State awaiting_delivery;
 		}
 
-		public class OnStates : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State
+				public class OnStates : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State
 		{
-			public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State pre;
+						public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State pre;
 
-			public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State relaxing;
+						public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State relaxing;
 
-			public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State relaxing_together;
+						public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State relaxing_together;
 
-			public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State post;
+						public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State post;
 		}
 
-		public class ReadyStates : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State
+				public class ReadyStates : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State
 		{
-			public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State idle;
+						public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State idle;
 
-			public HotTub.States.OnStates on;
+						public HotTub.States.OnStates on;
 		}
 
-		public class FillingStates : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State
+				public class FillingStates : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State
 		{
-			public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State normal;
+						public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State normal;
 
-			public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State too_cold;
+						public GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.State too_cold;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.GameInstance
+		public class StatesInstance : GameStateMachine<HotTub.States, HotTub.StatesInstance, HotTub, object>.GameInstance
 	{
-		public StatesInstance(HotTub smi) : base(smi)
+				public StatesInstance(HotTub smi) : base(smi)
 		{
 			this.operational = base.master.GetComponent<Operational>();
 		}
 
-		public void SetActive(bool active)
+				public void SetActive(bool active)
 		{
 			this.operational.SetActive(this.operational.IsOperational && active, false);
 		}
 
-		public void UpdateWaterMeter()
+				public void UpdateWaterMeter()
 		{
 			base.smi.master.waterMeter.SetPositionPercent(Mathf.Clamp(base.smi.master.waterStorage.GetMassAvailable(SimHashes.Water) / base.smi.master.hotTubCapacity, 0f, 1f));
 		}
 
-		public void UpdateTemperatureMeter(float waterTemp)
+				public void UpdateTemperatureMeter(float waterTemp)
 		{
 			Element element = ElementLoader.GetElement(SimHashes.Water.CreateTag());
 			base.smi.master.tempMeter.SetPositionPercent(Mathf.Clamp((waterTemp - base.smi.master.minimumWaterTemperature) / (element.highTemp - base.smi.master.minimumWaterTemperature), 0f, 1f));
 		}
 
-		public void TestWaterTemperature()
+				public void TestWaterTemperature()
 		{
 			GameObject gameObject = base.smi.master.waterStorage.FindFirst(new Tag(1836671383));
 			float num = 0f;
@@ -337,18 +338,18 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 			base.smi.sm.waterTooCold.Set(false, base.smi, false);
 		}
 
-		public bool IsTubTooHot()
+				public bool IsTubTooHot()
 		{
 			return base.smi.master.GetComponent<PrimaryElement>().Temperature > base.smi.master.maxOperatingTemperature;
 		}
 
-		public bool HasBleachStone()
+				public bool HasBleachStone()
 		{
 			GameObject gameObject = base.smi.master.waterStorage.FindFirst(new Tag(-839728230));
 			return gameObject != null && gameObject.GetComponent<PrimaryElement>().Mass > 0f;
 		}
 
-		public void SapHeatFromWater(float dt)
+				public void SapHeatFromWater(float dt)
 		{
 			float num = base.smi.master.waterCoolingRate * dt / (float)base.smi.master.waterStorage.items.Count;
 			foreach (GameObject gameObject in base.smi.master.waterStorage.items)
@@ -358,11 +359,11 @@ public class HotTub : StateMachineComponent<HotTub.StatesInstance>, IGameObjectE
 			}
 		}
 
-		public void ConsumeBleachstone(float dt)
+				public void ConsumeBleachstone(float dt)
 		{
 			base.smi.master.waterStorage.ConsumeIgnoringDisease(new Tag(-839728230), base.smi.master.bleachStoneConsumption * dt);
 		}
 
-		private Operational operational;
+				private Operational operational;
 	}
 }

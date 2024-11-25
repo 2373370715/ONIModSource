@@ -2,7 +2,7 @@
 
 public enum ArtifactType
 {
-	Space,
-	Terrestrial,
-	Any
+		Space,
+		Terrestrial,
+		Any
 }

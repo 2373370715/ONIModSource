@@ -6,10 +6,10 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	public class Modifications<ModifierType, InstanceType> : ISaveLoadableDetails where ModifierType : Resource where InstanceType : ModifierInstance<ModifierType>
 	{
-				public int Count
+						public int Count
 		{
 			get
 			{
@@ -17,14 +17,14 @@ namespace Klei.AI
 			}
 		}
 
-		public IEnumerator<InstanceType> GetEnumerator()
+				public IEnumerator<InstanceType> GetEnumerator()
 		{
 			return this.ModifierList.GetEnumerator();
 		}
 
-						public GameObject gameObject { get; private set; }
+								public GameObject gameObject { get; private set; }
 
-		public InstanceType this[int idx]
+				public InstanceType this[int idx]
 		{
 			get
 			{
@@ -32,34 +32,34 @@ namespace Klei.AI
 			}
 		}
 
-		public ComponentType GetComponent<ComponentType>()
+				public ComponentType GetComponent<ComponentType>()
 		{
 			return this.gameObject.GetComponent<ComponentType>();
 		}
 
-		public void Trigger(GameHashes hash, object data = null)
+				public void Trigger(GameHashes hash, object data = null)
 		{
 			this.gameObject.GetComponent<KPrefabID>().Trigger((int)hash, data);
 		}
 
-		public virtual InstanceType CreateInstance(ModifierType modifier)
+				public virtual InstanceType CreateInstance(ModifierType modifier)
 		{
 			return default(InstanceType);
 		}
 
-		public Modifications(GameObject go, ResourceSet<ModifierType> resources = null)
+				public Modifications(GameObject go, ResourceSet<ModifierType> resources = null)
 		{
 			this.resources = resources;
 			this.gameObject = go;
 		}
 
-		public virtual InstanceType Add(InstanceType instance)
+				public virtual InstanceType Add(InstanceType instance)
 		{
 			this.ModifierList.Add(instance);
 			return instance;
 		}
 
-		public virtual void Remove(InstanceType instance)
+				public virtual void Remove(InstanceType instance)
 		{
 			for (int i = 0; i < this.ModifierList.Count; i++)
 			{
@@ -72,12 +72,12 @@ namespace Klei.AI
 			}
 		}
 
-		public bool Has(ModifierType modifier)
+				public bool Has(ModifierType modifier)
 		{
 			return this.Get(modifier) != null;
 		}
 
-		public InstanceType Get(ModifierType modifier)
+				public InstanceType Get(ModifierType modifier)
 		{
 			foreach (InstanceType instanceType in this.ModifierList)
 			{
@@ -89,7 +89,7 @@ namespace Klei.AI
 			return default(InstanceType);
 		}
 
-		public InstanceType Get(string id)
+				public InstanceType Get(string id)
 		{
 			foreach (InstanceType instanceType in this.ModifierList)
 			{
@@ -101,7 +101,7 @@ namespace Klei.AI
 			return default(InstanceType);
 		}
 
-		public void Serialize(BinaryWriter writer)
+				public void Serialize(BinaryWriter writer)
 		{
 			writer.Write(this.ModifierList.Count);
 			foreach (InstanceType instanceType in this.ModifierList)
@@ -119,7 +119,7 @@ namespace Klei.AI
 			}
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			int num = reader.ReadInt32();
 			for (int i = 0; i < num; i++)
@@ -171,8 +171,8 @@ namespace Klei.AI
 			}
 		}
 
-		public List<InstanceType> ModifierList = new List<InstanceType>();
+				public List<InstanceType> ModifierList = new List<InstanceType>();
 
-		private ResourceSet<ModifierType> resources;
+				private ResourceSet<ModifierType> resources;
 	}
 }

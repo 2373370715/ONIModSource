@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Radiator")]
 public class Radiator : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.emitter = new RadiationGridEmitter(Grid.PosToCell(base.gameObject), this.intensity);
@@ -24,19 +24,19 @@ public class Radiator : KMonoBehaviour, IGameObjectEffectDescriptor
 		RadiationGridManager.emitters.Add(this.emitter);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		RadiationGridManager.emitters.Remove(this.emitter);
 		base.OnCleanUp();
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		bool isActive = base.GetComponent<Operational>().IsActive;
 		this.emitter.enabled = isActive;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return new List<Descriptor>
 		{
@@ -44,18 +44,18 @@ public class Radiator : KMonoBehaviour, IGameObjectEffectDescriptor
 		};
 	}
 
-	private void Update()
+		private void Update()
 	{
 		this.emitter.originCell = Grid.PosToCell(base.gameObject);
 	}
 
-	public RadiationGridEmitter emitter;
+		public RadiationGridEmitter emitter;
 
-	public int intensity;
+		public int intensity;
 
-	public int projectionCount;
+		public int projectionCount;
 
-	public int direction;
+		public int direction;
 
-	public int angle = 360;
+		public int angle = 360;
 }

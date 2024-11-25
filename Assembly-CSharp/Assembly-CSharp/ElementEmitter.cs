@@ -3,28 +3,28 @@ using UnityEngine;
 
 public class ElementEmitter : SimComponent
 {
-			public bool isEmitterBlocked { get; private set; }
+				public bool isEmitterBlocked { get; private set; }
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.onBlockedHandle = Game.Instance.callbackManager.Add(new Game.CallbackInfo(new System.Action(this.OnEmitterBlocked), true));
 		this.onUnblockedHandle = Game.Instance.callbackManager.Add(new Game.CallbackInfo(new System.Action(this.OnEmitterUnblocked), true));
 		base.OnSpawn();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.ManualReleaseHandle(this.onBlockedHandle);
 		Game.Instance.ManualReleaseHandle(this.onUnblockedHandle);
 		base.OnCleanUp();
 	}
 
-	public void SetEmitting(bool emitting)
+		public void SetEmitting(bool emitting)
 	{
 		base.SetSimActive(emitting);
 	}
 
-	protected override void OnSimActivate()
+		protected override void OnSimActivate()
 	{
 		int game_cell = Grid.OffsetCell(Grid.PosToCell(base.transform.GetPosition()), (int)this.outputElement.outputElementOffset.x, (int)this.outputElement.outputElementOffset.y);
 		if (this.outputElement.elementHash != (SimHashes)0 && this.outputElement.massGenerationRate > 0f && this.emissionFrequency > 0f)
@@ -38,7 +38,7 @@ public class ElementEmitter : SimComponent
 		}
 	}
 
-	protected override void OnSimDeactivate()
+		protected override void OnSimDeactivate()
 	{
 		int game_cell = Grid.OffsetCell(Grid.PosToCell(base.transform.GetPosition()), (int)this.outputElement.outputElementOffset.x, (int)this.outputElement.outputElementOffset.y);
 		SimMessages.ModifyElementEmitter(this.simHandle, game_cell, (int)this.emitRange, SimHashes.Vacuum, 0f, 0f, 0f, 0f, byte.MaxValue, 0);
@@ -48,7 +48,7 @@ public class ElementEmitter : SimComponent
 		}
 	}
 
-	public void ForceEmit(float mass, byte disease_idx, int disease_count, float temperature = -1f)
+		public void ForceEmit(float mass, byte disease_idx, int disease_count, float temperature = -1f)
 	{
 		if (mass <= 0f)
 		{
@@ -67,64 +67,64 @@ public class ElementEmitter : SimComponent
 		PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Resource, ElementLoader.FindElementByHash(this.outputElement.elementHash).name, base.gameObject.transform, 1.5f, false);
 	}
 
-	private void OnEmitterBlocked()
+		private void OnEmitterBlocked()
 	{
 		this.isEmitterBlocked = true;
 		base.Trigger(1615168894, this);
 	}
 
-	private void OnEmitterUnblocked()
+		private void OnEmitterUnblocked()
 	{
 		this.isEmitterBlocked = false;
 		base.Trigger(-657992955, this);
 	}
 
-	protected override void OnSimRegister(HandleVector<Game.ComplexCallbackInfo<int>>.Handle cb_handle)
+		protected override void OnSimRegister(HandleVector<Game.ComplexCallbackInfo<int>>.Handle cb_handle)
 	{
 		Game.Instance.simComponentCallbackManager.GetItem(cb_handle);
 		SimMessages.AddElementEmitter(this.maxPressure, cb_handle.index, this.onBlockedHandle.index, this.onUnblockedHandle.index);
 	}
 
-	protected override void OnSimUnregister()
+		protected override void OnSimUnregister()
 	{
 		ElementEmitter.StaticUnregister(this.simHandle);
 	}
 
-	private static void StaticUnregister(int sim_handle)
+		private static void StaticUnregister(int sim_handle)
 	{
 		global::Debug.Assert(Sim.IsValidHandle(sim_handle));
 		SimMessages.RemoveElementEmitter(-1, sim_handle);
 	}
 
-	private void OnDrawGizmosSelected()
+		private void OnDrawGizmosSelected()
 	{
 		int cell = Grid.OffsetCell(Grid.PosToCell(base.transform.GetPosition()), (int)this.outputElement.outputElementOffset.x, (int)this.outputElement.outputElementOffset.y);
 		Gizmos.color = Color.green;
 		Gizmos.DrawSphere(Grid.CellToPos(cell) + Vector3.right / 2f + Vector3.up / 2f, 0.2f);
 	}
 
-	protected override Action<int> GetStaticUnregister()
+		protected override Action<int> GetStaticUnregister()
 	{
 		return new Action<int>(ElementEmitter.StaticUnregister);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public ElementConverter.OutputElement outputElement;
 
-	[SerializeField]
+		[SerializeField]
 	public float emissionFrequency = 1f;
 
-	[SerializeField]
+		[SerializeField]
 	public byte emitRange = 1;
 
-	[SerializeField]
+		[SerializeField]
 	public float maxPressure = 1f;
 
-	private Guid statusHandle = Guid.Empty;
+		private Guid statusHandle = Guid.Empty;
 
-	public bool showDescriptor = true;
+		public bool showDescriptor = true;
 
-	private HandleVector<Game.CallbackInfo>.Handle onBlockedHandle = HandleVector<Game.CallbackInfo>.InvalidHandle;
+		private HandleVector<Game.CallbackInfo>.Handle onBlockedHandle = HandleVector<Game.CallbackInfo>.InvalidHandle;
 
-	private HandleVector<Game.CallbackInfo>.Handle onUnblockedHandle = HandleVector<Game.CallbackInfo>.InvalidHandle;
+		private HandleVector<Game.CallbackInfo>.Handle onUnblockedHandle = HandleVector<Game.CallbackInfo>.InvalidHandle;
 }

@@ -2,14 +2,14 @@
 
 public class KSelectableHealthBar : KSelectable
 {
-	public override string GetName()
+		public override string GetName()
 	{
 		int num = (int)(this.progressBar.PercentFull * (float)this.scaleAmount);
 		return string.Format("{0} {1}/{2}", this.entityName, num, this.scaleAmount);
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ProgressBar progressBar;
 
-	private int scaleAmount = 100;
+		private int scaleAmount = 100;
 }

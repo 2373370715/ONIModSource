@@ -3,22 +3,22 @@ using STRINGS;
 
 public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 {
-	public Chore GetCurrentChore()
+		public Chore GetCurrentChore()
 	{
 		return base.smi.GetCurrentChore();
 	}
 
-	public bool HasChore()
+		public bool HasChore()
 	{
 		return base.smi.GetCurrentChore() != null;
 	}
 
-	public void StopChore()
+		public void StopChore()
 	{
 		base.smi.sm.stop.Trigger(base.smi);
 	}
 
-	public void SetChore(Chore.Precondition.Context context)
+		public void SetChore(Chore.Precondition.Context context)
 	{
 		Chore currentChore = base.smi.GetCurrentChore();
 		if (currentChore != context.chore)
@@ -52,39 +52,39 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private User user;
 
-	private Chore.Precondition.Context context;
+		private Chore.Precondition.Context context;
 
-	public class StatesInstance : GameStateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.GameInstance
+		public class StatesInstance : GameStateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.GameInstance
 	{
-						public string masterProperName { get; private set; }
+								public string masterProperName { get; private set; }
 
-						public KPrefabID masterPrefabId { get; private set; }
+								public KPrefabID masterPrefabId { get; private set; }
 
-						public Navigator navigator { get; private set; }
+								public Navigator navigator { get; private set; }
 
-						public Worker worker { get; private set; }
+								public WorkerBase worker { get; private set; }
 
-		public StatesInstance(ChoreDriver master) : base(master)
+				public StatesInstance(ChoreDriver master) : base(master)
 		{
 			this.masterProperName = base.master.GetProperName();
 			this.masterPrefabId = base.master.GetComponent<KPrefabID>();
 			this.navigator = base.master.GetComponent<Navigator>();
-			this.worker = base.master.GetComponent<Worker>();
+			this.worker = base.master.GetComponent<WorkerBase>();
 			this.choreConsumer = base.GetComponent<ChoreConsumer>();
 			ChoreConsumer choreConsumer = this.choreConsumer;
 			choreConsumer.choreRulesChanged = (System.Action)Delegate.Combine(choreConsumer.choreRulesChanged, new System.Action(this.OnChoreRulesChanged));
 		}
 
-		public void BeginChore()
+				public void BeginChore()
 		{
 			Chore nextChore = this.GetNextChore();
 			Chore chore = base.smi.sm.currentChore.Set(nextChore, base.smi, false);
@@ -99,7 +99,7 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 			base.Trigger(-1988963660, chore);
 		}
 
-		public void EndChore(string reason)
+				public void EndChore(string reason)
 		{
 			if (this.GetCurrentChore() != null)
 			{
@@ -110,24 +110,28 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 				currentChore.Fail(reason);
 				base.Trigger(1745615042, currentChore);
 			}
+			if (base.smi.choreConsumer.prioritizeBrainIfNoChore)
+			{
+				Game.BrainScheduler.PrioritizeBrain(this.brain);
+			}
 		}
 
-		private void OnChoreExit(Chore chore)
+				private void OnChoreExit(Chore chore)
 		{
 			base.smi.sm.stop.Trigger(base.smi);
 		}
 
-		public Chore GetNextChore()
+				public Chore GetNextChore()
 		{
 			return base.smi.sm.nextChore.Get(base.smi);
 		}
 
-		public Chore GetCurrentChore()
+				public Chore GetCurrentChore()
 		{
 			return base.smi.sm.currentChore.Get(base.smi);
 		}
 
-		private void OnChoreRulesChanged()
+				private void OnChoreRulesChanged()
 		{
 			Chore currentChore = this.GetCurrentChore();
 			if (currentChore != null && !this.choreConsumer.IsPermittedOrEnabled(currentChore.choreType, currentChore))
@@ -136,18 +140,21 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 			}
 		}
 
-		private ChoreConsumer choreConsumer;
+				private ChoreConsumer choreConsumer;
+
+				[MyCmpGet]
+		private Brain brain;
 	}
 
-	public class States : GameStateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver>
+		public class States : GameStateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.nochore;
 			this.saveHistory = true;
 			this.nochore.Update(delegate(ChoreDriver.StatesInstance smi, float dt)
 			{
-				if (smi.masterPrefabId.IsPrefabID(GameTags.Minion) && !smi.masterPrefabId.HasTag(GameTags.Dead))
+				if (smi.masterPrefabId.HasTag(GameTags.BaseMinion) && !smi.masterPrefabId.HasTag(GameTags.Dead))
 				{
 					ReportManager.Instance.ReportValue(ReportManager.ReportType.WorkTime, dt, string.Format(UI.ENDOFDAYREPORT.NOTES.TIME_SPENT, DUPLICANTS.CHORES.THINKING.NAME), smi.master.GetProperName());
 				}
@@ -157,7 +164,7 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 				smi.BeginChore();
 			}).Update(delegate(ChoreDriver.StatesInstance smi, float dt)
 			{
-				if (smi.masterPrefabId.IsPrefabID(GameTags.Minion) && !smi.masterPrefabId.HasTag(GameTags.Dead))
+				if (smi.masterPrefabId.HasTag(GameTags.BaseMinion) && !smi.masterPrefabId.HasTag(GameTags.Dead))
 				{
 					Chore chore = this.currentChore.Get(smi);
 					if (chore == null)
@@ -170,7 +177,7 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 						return;
 					}
 					ReportManager.ReportType reportType = chore.GetReportType();
-					Workable workable = smi.worker.workable;
+					Workable workable = smi.worker.GetWorkable();
 					if (workable != null)
 					{
 						ReportManager.ReportType reportType2 = workable.GetReportType();
@@ -187,14 +194,14 @@ public class ChoreDriver : StateMachineComponent<ChoreDriver.StatesInstance>
 			}).OnSignal(this.stop, this.nochore);
 		}
 
-		public StateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.ObjectParameter<Chore> currentChore;
+				public StateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.ObjectParameter<Chore> currentChore;
 
-		public StateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.ObjectParameter<Chore> nextChore;
+				public StateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.ObjectParameter<Chore> nextChore;
 
-		public StateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.Signal stop;
+				public StateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.Signal stop;
 
-		public GameStateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.State nochore;
+				public GameStateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.State nochore;
 
-		public GameStateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.State haschore;
+				public GameStateMachine<ChoreDriver.States, ChoreDriver.StatesInstance, ChoreDriver, object>.State haschore;
 	}
 }

@@ -3,7 +3,7 @@
 [SkipSaveFileSerialization]
 public class CancellableDig : Cancellable
 {
-	protected override void OnCancel(object data)
+		protected override void OnCancel(object data)
 	{
 		if (data != null && (bool)data)
 		{
@@ -23,7 +23,7 @@ public class CancellableDig : Cancellable
 		componentInChildren.PlayAnimation("ScaleDown", 0.1f);
 	}
 
-	private void DoCancelAnim(string animName)
+		private void DoCancelAnim(string animName)
 	{
 		EasingAnimations componentInChildren = base.GetComponentInChildren<EasingAnimations>();
 		componentInChildren.OnAnimationDone = (Action<string>)Delegate.Remove(componentInChildren.OnAnimationDone, new Action<string>(this.DoCancelAnim));
@@ -31,7 +31,7 @@ public class CancellableDig : Cancellable
 		componentInChildren.PlayAnimation("ScaleDown", 0.1f);
 	}
 
-	private void OnAnimationDone(string animationName)
+		private void OnAnimationDone(string animationName)
 	{
 		if (animationName != "ScaleDown")
 		{

@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/BuddingTrunk")]
 public class BuddingTrunk : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		PlantBranchGrower.Instance smi = base.gameObject.GetSMI<PlantBranchGrower.Instance>();
@@ -15,7 +15,7 @@ public class BuddingTrunk : KMonoBehaviour
 		}
 	}
 
-	public KPrefabID[] GetAndForgetOldSerializedBranches()
+		public KPrefabID[] GetAndForgetOldSerializedBranches()
 	{
 		KPrefabID[] array = null;
 		if (this.buds != null)
@@ -31,6 +31,6 @@ public class BuddingTrunk : KMonoBehaviour
 		return array;
 	}
 
-	[Serialize]
+		[Serialize]
 	private Ref<HarvestDesignatable>[] buds;
 }

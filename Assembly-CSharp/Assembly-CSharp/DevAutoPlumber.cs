@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class DevAutoPlumber
 {
-	public static void AutoPlumbBuilding(Building building)
+		public static void AutoPlumbBuilding(Building building)
 	{
 		DevAutoPlumber.DoElectricalPlumbing(building);
 		DevAutoPlumber.DoLiquidAndGasPlumbing(building);
 		DevAutoPlumber.SetupSolidOreDelivery(building);
 	}
 
-	public static void DoElectricalPlumbing(Building building)
+		public static void DoElectricalPlumbing(Building building)
 	{
 		if (!building.Def.RequiresPowerInput)
 		{
@@ -31,13 +31,13 @@ public class DevAutoPlumber
 		}, DevAutoPlumber.PortSelection.PowerInput);
 	}
 
-	public static void DoLiquidAndGasPlumbing(Building building)
+		public static void DoLiquidAndGasPlumbing(Building building)
 	{
 		DevAutoPlumber.SetupPlumbingInput(building);
 		DevAutoPlumber.SetupPlumbingOutput(building);
 	}
 
-	public static void SetupSolidOreDelivery(Building building)
+		public static void SetupSolidOreDelivery(Building building)
 	{
 		ManualDeliveryKG component = building.GetComponent<ManualDeliveryKG>();
 		if (component != null)
@@ -63,7 +63,7 @@ public class DevAutoPlumber
 		}
 	}
 
-	private static GameObject TrySpawnElementOreFromTag(Tag t, int cell, float amount)
+		private static GameObject TrySpawnElementOreFromTag(Tag t, int cell, float amount)
 	{
 		Element element = ElementLoader.GetElement(t);
 		if (element == null)
@@ -77,7 +77,7 @@ public class DevAutoPlumber
 		return null;
 	}
 
-	private static void SetupPlumbingInput(Building building)
+		private static void SetupPlumbingInput(Building building)
 	{
 		ConduitConsumer component = building.GetComponent<ConduitConsumer>();
 		if (component == null)
@@ -124,7 +124,7 @@ public class DevAutoPlumber
 		gameObject.GetComponent<DevPump>().SelectedTag = ElementLoader.FindElementByHash(SimHashes.Vacuum).tag;
 	}
 
-	private static void SetupPlumbingOutput(Building building)
+		private static void SetupPlumbingOutput(Building building)
 	{
 		ConduitDispenser component = building.GetComponent<ConduitDispenser>();
 		if (component == null)
@@ -164,7 +164,7 @@ public class DevAutoPlumber
 		DevAutoPlumber.PlaceSourceAndUtilityConduit(building, sourceDef, conduitDef, utlityNetworkManager, conduitTypeLayers, DevAutoPlumber.PortSelection.UtilityOutput);
 	}
 
-	private static Element GuessMostRelevantElementForPump(Building destinationBuilding)
+		private static Element GuessMostRelevantElementForPump(Building destinationBuilding)
 	{
 		ConduitConsumer consumer = destinationBuilding.GetComponent<ConduitConsumer>();
 		Tag targetTag = destinationBuilding.GetComponent<ConduitConsumer>().capacityTag;
@@ -217,7 +217,7 @@ public class DevAutoPlumber
 		});
 	}
 
-	private static GameObject PlaceSourceAndUtilityConduit(Building destinationBuilding, BuildingDef sourceDef, BuildingDef conduitDef, IUtilityNetworkMgr utlityNetworkManager, int[] conduitTypeLayers, DevAutoPlumber.PortSelection portSelection)
+		private static GameObject PlaceSourceAndUtilityConduit(Building destinationBuilding, BuildingDef sourceDef, BuildingDef conduitDef, IUtilityNetworkMgr utlityNetworkManager, int[] conduitTypeLayers, DevAutoPlumber.PortSelection portSelection)
 	{
 		Building building = null;
 		List<int> list = new List<int>();
@@ -250,7 +250,7 @@ public class DevAutoPlumber
 		return building.gameObject;
 	}
 
-	private static int FindClearPlacementLocation(int nearStartingCell, int[] placementBlockingObjectLayers, List<int> rejectLocations)
+		private static int FindClearPlacementLocation(int nearStartingCell, int[] placementBlockingObjectLayers, List<int> rejectLocations)
 	{
 		Func<int, object, bool> fn = delegate(int test, object unusedData)
 		{
@@ -294,7 +294,7 @@ public class DevAutoPlumber
 		return GameUtil.FloodFillFind<object>(fn, null, nearStartingCell, max_depth, false, false);
 	}
 
-	private static List<int> GenerateClearConduitPath(Building sourceBuilding, Building destinationBuilding, int[] conduitTypeLayers, DevAutoPlumber.PortSelection portSelection)
+		private static List<int> GenerateClearConduitPath(Building sourceBuilding, Building destinationBuilding, int[] conduitTypeLayers, DevAutoPlumber.PortSelection portSelection)
 	{
 		new List<int>();
 		if (sourceBuilding == null)
@@ -338,7 +338,7 @@ public class DevAutoPlumber
 		}, 20);
 	}
 
-	private static Building PlaceConduitSourceBuilding(int cell, BuildingDef def)
+		private static Building PlaceConduitSourceBuilding(int cell, BuildingDef def)
 	{
 		List<Tag> selected_elements = new List<Tag>
 		{
@@ -347,7 +347,7 @@ public class DevAutoPlumber
 		return def.Build(cell, Orientation.Neutral, null, selected_elements, 273.15f, true, GameClock.Instance.GetTime()).GetComponent<Building>();
 	}
 
-	private static void BuildConduits(List<int> path, BuildingDef conduitDef, object utilityNetwork)
+		private static void BuildConduits(List<int> path, BuildingDef conduitDef, object utilityNetwork)
 	{
 		List<Tag> selected_elements = new List<Tag>
 		{
@@ -376,7 +376,7 @@ public class DevAutoPlumber
 		}
 	}
 
-	private static List<int> GetGridPath(int startCell, int endCell, Func<int, bool> testFunction, int maxDepth = 20)
+		private static List<int> GetGridPath(int startCell, int endCell, Func<int, bool> testFunction, int maxDepth = 20)
 	{
 		DevAutoPlumber.<>c__DisplayClass14_0 CS$<>8__locals1;
 		CS$<>8__locals1.testFunction = testFunction;
@@ -417,7 +417,7 @@ public class DevAutoPlumber
 		return list;
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <GetGridPath>g___ExpandFrontier|14_0(int fromCell, ref DevAutoPlumber.<>c__DisplayClass14_0 A_1)
 	{
 		foreach (int num in new int[]
@@ -442,10 +442,10 @@ public class DevAutoPlumber
 		A_1.touched.Add(fromCell);
 	}
 
-	private enum PortSelection
+		private enum PortSelection
 	{
-		UtilityInput,
-		UtilityOutput,
-		PowerInput
+				UtilityInput,
+				UtilityOutput,
+				PowerInput
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TemperatureControlledSwitchConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = TemperatureControlledSwitchConfig.ID;
 		int width = 1;
@@ -29,7 +29,7 @@ public class TemperatureControlledSwitchConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		TemperatureControlledSwitch temperatureControlledSwitch = go.AddOrGet<TemperatureControlledSwitch>();
@@ -39,10 +39,10 @@ public class TemperatureControlledSwitchConfig : IBuildingConfig
 		temperatureControlledSwitch.maxTemp = 573.15f;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddComponent<BuildingCellVisualizer>();
 	}
 
-	public static string ID = "TemperatureControlledSwitch";
+		public static string ID = "TemperatureControlledSwitch";
 }

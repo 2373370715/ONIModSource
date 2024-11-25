@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class MicrobeMusher : ComplexFabricator
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.choreType = Db.Get().ChoreTypes.Cook;
 		this.fetchChoreTypeIdHash = Db.Get().ChoreTypes.CookFetch.IdHash;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		GameScheduler.Instance.Schedule("WaterFetchingTutorial", 2f, delegate(object obj)
@@ -33,7 +33,7 @@ public class MicrobeMusher : ComplexFabricator
 		this.workable.meter.meterController.SetSymbolVisiblity(MicrobeMusher.meterRationHash, false);
 	}
 
-	protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
+		protected override List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
 	{
 		List<GameObject> list = base.SpawnOrderProduct(recipe);
 		foreach (GameObject gameObject in list)
@@ -55,10 +55,10 @@ public class MicrobeMusher : ComplexFabricator
 		return list;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public Vector3 mushbarSpawnOffset = Vector3.right;
 
-	private static readonly KAnimHashedString meterRationHash = new KAnimHashedString("meter_ration");
+		private static readonly KAnimHashedString meterRationHash = new KAnimHashedString("meter_ration");
 
-	private static readonly KAnimHashedString canHash = new KAnimHashedString("can");
+		private static readonly KAnimHashedString canHash = new KAnimHashedString("can");
 }

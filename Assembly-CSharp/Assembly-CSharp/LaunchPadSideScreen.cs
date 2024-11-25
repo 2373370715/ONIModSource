@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class LaunchPadSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.startNewRocketbutton.onClick += this.ClickStartNewRocket;
 		this.devAutoRocketButton.onClick += this.ClickAutoRocket;
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (!show)
@@ -21,17 +21,17 @@ public class LaunchPadSideScreen : SideScreenContent
 		}
 	}
 
-	public override int GetSideScreenSortOrder()
+		public override int GetSideScreenSortOrder()
 	{
 		return 100;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<LaunchPad>() != null;
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -53,7 +53,7 @@ public class LaunchPadSideScreen : SideScreenContent
 		this.RefreshWaitingToLandList(null);
 	}
 
-	private void RefreshWaitingToLandList(object data = null)
+		private void RefreshWaitingToLandList(object data = null)
 	{
 		for (int i = this.waitingToLandRows.Count - 1; i >= 0; i--)
 		{
@@ -99,12 +99,12 @@ public class LaunchPadSideScreen : SideScreenContent
 		}
 	}
 
-	private void ClickStartNewRocket()
+		private void ClickStartNewRocket()
 	{
 		((SelectModuleSideScreen)DetailsScreen.Instance.SetSecondarySideScreen(this.changeModuleSideScreen, UI.UISIDESCREENS.ROCKETMODULESIDESCREEN.CHANGEMODULEPANEL)).SetLaunchPad(this.selectedPad);
 	}
 
-	private void RefreshRocketButton()
+		private void RefreshRocketButton()
 	{
 		bool isOperational = this.selectedPad.GetComponent<Operational>().IsOperational;
 		this.startNewRocketbutton.isInteractable = (this.selectedPad.LandedRocket == null && isOperational);
@@ -120,32 +120,32 @@ public class LaunchPadSideScreen : SideScreenContent
 		this.devAutoRocketButton.gameObject.SetActive(DebugHandler.InstantBuildMode);
 	}
 
-	private void ClickAutoRocket()
+		private void ClickAutoRocket()
 	{
 		AutoRocketUtility.StartAutoRocket(this.selectedPad);
 	}
 
-	public GameObject content;
+		public GameObject content;
 
-	private LaunchPad selectedPad;
+		private LaunchPad selectedPad;
 
-	public LocText DescriptionText;
+		public LocText DescriptionText;
 
-	public GameObject landableRocketRowPrefab;
+		public GameObject landableRocketRowPrefab;
 
-	public GameObject newRocketPanel;
+		public GameObject newRocketPanel;
 
-	public KButton startNewRocketbutton;
+		public KButton startNewRocketbutton;
 
-	public KButton devAutoRocketButton;
+		public KButton devAutoRocketButton;
 
-	public GameObject landableRowContainer;
+		public GameObject landableRowContainer;
 
-	public GameObject nothingWaitingRow;
+		public GameObject nothingWaitingRow;
 
-	public KScreen changeModuleSideScreen;
+		public KScreen changeModuleSideScreen;
 
-	private int refreshEventHandle = -1;
+		private int refreshEventHandle = -1;
 
-	public List<GameObject> waitingToLandRows = new List<GameObject>();
+		public List<GameObject> waitingToLandRows = new List<GameObject>();
 }

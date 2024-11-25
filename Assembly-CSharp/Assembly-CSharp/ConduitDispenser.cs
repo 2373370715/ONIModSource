@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ConduitDispenser")]
 public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 {
-		public Storage Storage
+			public Storage Storage
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 		}
 	}
 
-		public ConduitType ConduitType
+			public ConduitType ConduitType
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 		}
 	}
 
-		public ConduitFlow.ConduitContents ConduitContents
+			public ConduitFlow.ConduitContents ConduitContents
 	{
 		get
 		{
@@ -31,12 +31,12 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 		}
 	}
 
-	public void SetConduitData(ConduitType type)
+		public void SetConduitData(ConduitType type)
 	{
 		this.conduitType = type;
 	}
 
-	public ConduitFlow GetConduitManager()
+		public ConduitFlow GetConduitManager()
 	{
 		ConduitType conduitType = this.conduitType;
 		if (conduitType == ConduitType.Gas)
@@ -50,12 +50,12 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 		return Game.Instance.liquidConduitFlow;
 	}
 
-	private void OnConduitConnectionChanged(object data)
+		private void OnConduitConnectionChanged(object data)
 	{
 		base.Trigger(-2094018600, this.IsConnected);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		GameScheduler.Instance.Schedule("PlumbingTutorial", 2f, delegate(object obj)
@@ -70,19 +70,19 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 		this.OnConduitConnectionChanged(null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.GetConduitManager().RemoveConduitUpdater(new Action<float>(this.ConduitUpdate));
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		base.OnCleanUp();
 	}
 
-	public void SetOnState(bool onState)
+		public void SetOnState(bool onState)
 	{
 		this.isOn = onState;
 	}
 
-	private void ConduitUpdate(float dt)
+		private void ConduitUpdate(float dt)
 	{
 		if (this.operational != null)
 		{
@@ -95,7 +95,7 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 		}
 	}
 
-	private void Dispense(float dt)
+		private void Dispense(float dt)
 	{
 		if ((this.operational != null && this.operational.IsOperational) || this.alwaysDispense)
 		{
@@ -127,7 +127,7 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 		}
 	}
 
-	private PrimaryElement FindSuitableElement()
+		private PrimaryElement FindSuitableElement()
 	{
 		List<GameObject> items = this.storage.items;
 		int count = items.Count;
@@ -144,7 +144,7 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 		return null;
 	}
 
-	private bool IsFilteredElement(SimHashes element)
+		private bool IsFilteredElement(SimHashes element)
 	{
 		for (int num = 0; num != this.elementFilter.Length; num++)
 		{
@@ -156,7 +156,7 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 		return false;
 	}
 
-		public bool IsConnected
+			public bool IsConnected
 	{
 		get
 		{
@@ -165,7 +165,7 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 		}
 	}
 
-	private int GetOutputCell(ConduitType outputConduitType)
+		private int GetOutputCell(ConduitType outputConduitType)
 	{
 		Building component = base.GetComponent<Building>();
 		if (!(component != null))
@@ -187,47 +187,47 @@ public class ConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDispenser
 		return component.GetUtilityOutputCell();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public ConduitType conduitType;
 
-	[SerializeField]
+		[SerializeField]
 	public SimHashes[] elementFilter;
 
-	[SerializeField]
+		[SerializeField]
 	public bool invertElementFilter;
 
-	[SerializeField]
+		[SerializeField]
 	public bool alwaysDispense;
 
-	[SerializeField]
+		[SerializeField]
 	public bool isOn = true;
 
-	[SerializeField]
+		[SerializeField]
 	public bool blocked;
 
-	[SerializeField]
+		[SerializeField]
 	public bool empty = true;
 
-	[SerializeField]
+		[SerializeField]
 	public bool useSecondaryOutput;
 
-	[SerializeField]
+		[SerializeField]
 	public CellOffset noBuildingOutputCellOffset;
 
-	private static readonly Operational.Flag outputConduitFlag = new Operational.Flag("output_conduit", Operational.Flag.Type.Functional);
+		private static readonly Operational.Flag outputConduitFlag = new Operational.Flag("output_conduit", Operational.Flag.Type.Functional);
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	public Storage storage;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Building building;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private int utilityCell = -1;
+		private int utilityCell = -1;
 
-	private int elementOutputOffset;
+		private int elementOutputOffset;
 }

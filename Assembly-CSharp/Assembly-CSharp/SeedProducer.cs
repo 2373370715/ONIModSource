@@ -7,14 +7,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SeedProducer")]
 public class SeedProducer : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	public void Configure(string SeedID, SeedProducer.ProductionType productionType, int newSeedsProduced = 1)
+		public void Configure(string SeedID, SeedProducer.ProductionType productionType, int newSeedsProduced = 1)
 	{
 		this.seedInfo.seedId = SeedID;
 		this.seedInfo.productionType = productionType;
 		this.seedInfo.newSeedsProduced = newSeedsProduced;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<SeedProducer>(-216549700, SeedProducer.DropSeedDelegate);
@@ -22,7 +22,7 @@ public class SeedProducer : KMonoBehaviour, IGameObjectEffectDescriptor
 		base.Subscribe<SeedProducer>(-1072826864, SeedProducer.CropPickedDelegate);
 	}
 
-	private GameObject ProduceSeed(string seedId, int units = 1, bool canMutate = true)
+		private GameObject ProduceSeed(string seedId, int units = 1, bool canMutate = true)
 	{
 		if (seedId != null && units > 0)
 		{
@@ -63,7 +63,7 @@ public class SeedProducer : KMonoBehaviour, IGameObjectEffectDescriptor
 		return null;
 	}
 
-	public void DropSeed(object data = null)
+		public void DropSeed(object data = null)
 	{
 		if (this.droppedSeedAlready)
 		{
@@ -83,16 +83,16 @@ public class SeedProducer : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.droppedSeedAlready = true;
 	}
 
-	public void CropDepleted(object data)
+		public void CropDepleted(object data)
 	{
 		this.DropSeed(null);
 	}
 
-	public void CropPicked(object data)
+		public void CropPicked(object data)
 	{
 		if (this.seedInfo.productionType == SeedProducer.ProductionType.Harvest)
 		{
-			Worker completed_by = base.GetComponent<Harvestable>().completed_by;
+			WorkerBase completed_by = base.GetComponent<Harvestable>().completed_by;
 			float num = 0.1f;
 			if (completed_by != null)
 			{
@@ -106,7 +106,7 @@ public class SeedProducer : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public bool RollForMutation()
+		public bool RollForMutation()
 	{
 		AttributeInstance attributeInstance = Db.Get().PlantAttributes.MaxRadiationThreshold.Lookup(this);
 		int num = Grid.PosToCell(base.gameObject);
@@ -114,7 +114,7 @@ public class SeedProducer : KMonoBehaviour, IGameObjectEffectDescriptor
 		return UnityEngine.Random.value < num2;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Assets.GetPrefab(new Tag(this.seedInfo.seedId)) != null;
@@ -141,37 +141,37 @@ public class SeedProducer : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	public SeedProducer.SeedInfo seedInfo;
+		public SeedProducer.SeedInfo seedInfo;
 
-	private bool droppedSeedAlready;
+		private bool droppedSeedAlready;
 
-	private static readonly EventSystem.IntraObjectHandler<SeedProducer> DropSeedDelegate = new EventSystem.IntraObjectHandler<SeedProducer>(delegate(SeedProducer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SeedProducer> DropSeedDelegate = new EventSystem.IntraObjectHandler<SeedProducer>(delegate(SeedProducer component, object data)
 	{
 		component.DropSeed(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<SeedProducer> CropPickedDelegate = new EventSystem.IntraObjectHandler<SeedProducer>(delegate(SeedProducer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<SeedProducer> CropPickedDelegate = new EventSystem.IntraObjectHandler<SeedProducer>(delegate(SeedProducer component, object data)
 	{
 		component.CropPicked(data);
 	});
 
-	[Serializable]
+		[Serializable]
 	public struct SeedInfo
 	{
-		public string seedId;
+				public string seedId;
 
-		public SeedProducer.ProductionType productionType;
+				public SeedProducer.ProductionType productionType;
 
-		public int newSeedsProduced;
+				public int newSeedsProduced;
 	}
 
-	public enum ProductionType
+		public enum ProductionType
 	{
-		Hidden,
-		DigOnly,
-		Harvest,
-		Fruit,
-		Sterile,
-		Crop
+				Hidden,
+				DigOnly,
+				Harvest,
+				Fruit,
+				Sterile,
+				Crop
 	}
 }

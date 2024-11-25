@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class ScheduleScreenColumnEntry : MonoBehaviour, IPointerEnterHandler, IEventSystemHandler, IPointerDownHandler
 {
-	public void OnPointerEnter(PointerEventData event_data)
+		public void OnPointerEnter(PointerEventData event_data)
 	{
 		this.RunCallbacks();
 	}
 
-	private void RunCallbacks()
+		private void RunCallbacks()
 	{
 		if (Input.GetMouseButton(0) && this.onLeftClick != null)
 		{
@@ -18,12 +18,12 @@ public class ScheduleScreenColumnEntry : MonoBehaviour, IPointerEnterHandler, IE
 		}
 	}
 
-	public void OnPointerDown(PointerEventData event_data)
+		public void OnPointerDown(PointerEventData event_data)
 	{
 		this.RunCallbacks();
 	}
 
-	public Image image;
+		public Image image;
 
-	public System.Action onLeftClick;
+		public System.Action onLeftClick;
 }

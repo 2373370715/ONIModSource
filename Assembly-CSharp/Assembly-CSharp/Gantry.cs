@@ -3,7 +3,7 @@ using STRINGS;
 
 public class Gantry : Switch
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (Gantry.infoStatusItem == null)
@@ -17,7 +17,7 @@ public class Gantry : Switch
 		base.GetComponent<KSelectable>().ToggleStatusItem(Gantry.infoStatusItem, true, this.smi);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.smi != null)
 		{
@@ -26,18 +26,18 @@ public class Gantry : Switch
 		base.OnCleanUp();
 	}
 
-	public void SetWalkable(bool active)
+		public void SetWalkable(bool active)
 	{
 		this.fakeFloorAdder.SetFloor(active);
 	}
 
-	protected override void Toggle()
+		protected override void Toggle()
 	{
 		base.Toggle();
 		this.smi.SetSwitchState(this.switchedOn);
 	}
 
-	protected override void OnRefreshUserMenu(object data)
+		protected override void OnRefreshUserMenu(object data)
 	{
 		if (!this.smi.IsAutomated())
 		{
@@ -45,11 +45,11 @@ public class Gantry : Switch
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 	}
 
-	private static string ResolveInfoStatusItemString(string format_str, object data)
+		private static string ResolveInfoStatusItemString(string format_str, object data)
 	{
 		Gantry.Instance instance = (Gantry.Instance)data;
 		string format = instance.IsAutomated() ? BUILDING.STATUSITEMS.GANTRY.AUTOMATION_CONTROL : BUILDING.STATUSITEMS.GANTRY.MANUAL_CONTROL;
@@ -57,21 +57,21 @@ public class Gantry : Switch
 		return string.Format(format, arg);
 	}
 
-	public static readonly HashedString PORT_ID = "Gantry";
+		public static readonly HashedString PORT_ID = "Gantry";
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private FakeFloorAdder fakeFloorAdder;
 
-	private Gantry.Instance smi;
+		private Gantry.Instance smi;
 
-	private static StatusItem infoStatusItem;
+		private static StatusItem infoStatusItem;
 
-	public class States : GameStateMachine<Gantry.States, Gantry.Instance, Gantry>
+		public class States : GameStateMachine<Gantry.States, Gantry.Instance, Gantry>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.extended;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -99,20 +99,20 @@ public class Gantry : Switch
 			}).PlayAnim("on").ParamTransition<bool>(this.should_extend, this.retracted_pre, GameStateMachine<Gantry.States, Gantry.Instance, Gantry, object>.IsFalse).ToggleTag(GameTags.GantryExtended);
 		}
 
-		public GameStateMachine<Gantry.States, Gantry.Instance, Gantry, object>.State retracted_pre;
+				public GameStateMachine<Gantry.States, Gantry.Instance, Gantry, object>.State retracted_pre;
 
-		public GameStateMachine<Gantry.States, Gantry.Instance, Gantry, object>.State retracted;
+				public GameStateMachine<Gantry.States, Gantry.Instance, Gantry, object>.State retracted;
 
-		public GameStateMachine<Gantry.States, Gantry.Instance, Gantry, object>.State extended_pre;
+				public GameStateMachine<Gantry.States, Gantry.Instance, Gantry, object>.State extended_pre;
 
-		public GameStateMachine<Gantry.States, Gantry.Instance, Gantry, object>.State extended;
+				public GameStateMachine<Gantry.States, Gantry.Instance, Gantry, object>.State extended;
 
-		public StateMachine<Gantry.States, Gantry.Instance, Gantry, object>.BoolParameter should_extend;
+				public StateMachine<Gantry.States, Gantry.Instance, Gantry, object>.BoolParameter should_extend;
 	}
 
-	public class Instance : GameStateMachine<Gantry.States, Gantry.Instance, Gantry, object>.GameInstance
+		public class Instance : GameStateMachine<Gantry.States, Gantry.Instance, Gantry, object>.GameInstance
 	{
-		public Instance(Gantry master, bool manual_start_state) : base(master)
+				public Instance(Gantry master, bool manual_start_state) : base(master)
 		{
 			this.manual_on = manual_start_state;
 			this.operational = base.GetComponent<Operational>();
@@ -122,12 +122,12 @@ public class Gantry : Switch
 			base.smi.sm.should_extend.Set(true, base.smi, false);
 		}
 
-		public bool IsAutomated()
+				public bool IsAutomated()
 		{
 			return this.logic.IsPortConnected(Gantry.PORT_ID);
 		}
 
-		public bool IsExtended()
+				public bool IsExtended()
 		{
 			if (!this.IsAutomated())
 			{
@@ -136,23 +136,23 @@ public class Gantry : Switch
 			return this.logic_on;
 		}
 
-		public void SetSwitchState(bool on)
+				public void SetSwitchState(bool on)
 		{
 			this.manual_on = on;
 			this.UpdateShouldExtend();
 		}
 
-		public void SetActive(bool active)
+				public void SetActive(bool active)
 		{
 			this.operational.SetActive(this.operational.IsOperational && active, false);
 		}
 
-		private void OnOperationalChanged(object data)
+				private void OnOperationalChanged(object data)
 		{
 			this.UpdateShouldExtend();
 		}
 
-		private void OnLogicValueChanged(object data)
+				private void OnLogicValueChanged(object data)
 		{
 			LogicValueChanged logicValueChanged = (LogicValueChanged)data;
 			if (logicValueChanged.portID != Gantry.PORT_ID)
@@ -163,7 +163,7 @@ public class Gantry : Switch
 			this.UpdateShouldExtend();
 		}
 
-		private void UpdateShouldExtend()
+				private void UpdateShouldExtend()
 		{
 			if (!this.operational.IsOperational)
 			{
@@ -177,12 +177,12 @@ public class Gantry : Switch
 			base.smi.sm.should_extend.Set(this.manual_on, base.smi, false);
 		}
 
-		private Operational operational;
+				private Operational operational;
 
-		public LogicPorts logic;
+				public LogicPorts logic;
 
-		public bool logic_on = true;
+				public bool logic_on = true;
 
-		private bool manual_on;
+				private bool manual_on;
 	}
 }

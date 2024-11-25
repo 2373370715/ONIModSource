@@ -6,7 +6,7 @@ using UnityEngine;
 
 public static class BaseSealConfig
 {
-	public static GameObject BaseSeal(string id, string name, string desc, string anim_file, string traitId, bool is_baby, string symbolOverridePrefix = null)
+		public static GameObject BaseSeal(string id, string name, string desc, string anim_file, string traitId, bool is_baby, string symbolOverridePrefix = null)
 	{
 		float mass = 100f;
 		EffectorValues tier = DECOR.BONUS.TIER0;
@@ -46,17 +46,15 @@ public static class BaseSealConfig
 		return gameObject;
 	}
 
-	public static List<Diet.Info> BasicDiet(Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
+		public static Diet.Info CreateDietInfo(Tag foodTag, Tag poopTag, float caloriesPerKg, float producedConversionRate, string diseaseId, float diseasePerKgProduced)
 	{
-		HashSet<Tag> hashSet = new HashSet<Tag>();
-		hashSet.Add("SpaceTree");
-		return new List<Diet.Info>
+		return new Diet.Info(new HashSet<Tag>
 		{
-			new Diet.Info(hashSet, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, true, false)
-		};
+			foodTag
+		}, poopTag, caloriesPerKg, producedConversionRate, diseaseId, diseasePerKgProduced, false, Diet.Info.FoodType.EatPlantStorage, false, null);
 	}
 
-	public static GameObject SetupDiet(GameObject prefab, List<Diet.Info> diet_infos, float referenceCaloriesPerKg, float minPoopSizeInKg)
+		public static GameObject SetupDiet(GameObject prefab, List<Diet.Info> diet_infos, float referenceCaloriesPerKg, float minPoopSizeInKg)
 	{
 		Diet diet = new Diet(diet_infos.ToArray());
 		CreatureCalorieMonitor.Def def = prefab.AddOrGetDef<CreatureCalorieMonitor.Def>();

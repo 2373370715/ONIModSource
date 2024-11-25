@@ -6,9 +6,9 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Filterable")]
 public class Filterable : KMonoBehaviour
 {
-			public event Action<Tag> onFilterChanged;
+				public event Action<Tag> onFilterChanged;
 
-			public Tag SelectedTag
+				public Tag SelectedTag
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public class Filterable : KMonoBehaviour
 		}
 	}
 
-	public Dictionary<Tag, HashSet<Tag>> GetTagOptions()
+		public Dictionary<Tag, HashSet<Tag>> GetTagOptions()
 	{
 		Dictionary<Tag, HashSet<Tag>> dictionary = new Dictionary<Tag, HashSet<Tag>>();
 		if (this.filterElementState == Filterable.ElementState.Solid)
@@ -51,13 +51,13 @@ public class Filterable : KMonoBehaviour
 		return dictionary;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<Filterable>(-905833192, Filterable.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		Filterable component = ((GameObject)data).GetComponent<Filterable>();
 		if (component != null)
@@ -66,12 +66,12 @@ public class Filterable : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.OnFilterChanged();
 	}
 
-	private void OnFilterChanged()
+		private void OnFilterChanged()
 	{
 		if (this.onFilterChanged != null)
 		{
@@ -84,16 +84,16 @@ public class Filterable : KMonoBehaviour
 		}
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	[Serialize]
+		[Serialize]
 	public Filterable.ElementState filterElementState;
 
-	[Serialize]
+		[Serialize]
 	private Tag selectedTag = GameTags.Void;
 
-	private static TagSet filterableCategories = new TagSet(new TagSet[]
+		private static TagSet filterableCategories = new TagSet(new TagSet[]
 	{
 		GameTags.CalorieCategories,
 		GameTags.UnitCategories,
@@ -101,18 +101,18 @@ public class Filterable : KMonoBehaviour
 		GameTags.MaterialBuildingElements
 	});
 
-	private static readonly Operational.Flag filterSelected = new Operational.Flag("filterSelected", Operational.Flag.Type.Requirement);
+		private static readonly Operational.Flag filterSelected = new Operational.Flag("filterSelected", Operational.Flag.Type.Requirement);
 
-	private static readonly EventSystem.IntraObjectHandler<Filterable> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Filterable>(delegate(Filterable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Filterable> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Filterable>(delegate(Filterable component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	public enum ElementState
+		public enum ElementState
 	{
-		None,
-		Solid,
-		Liquid,
-		Gas
+				None,
+				Solid,
+				Liquid,
+				Gas
 	}
 }

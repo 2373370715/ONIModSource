@@ -9,7 +9,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/Workable/BuildingHP")]
 public class BuildingHP : Workable
 {
-		public int HitPoints
+			public int HitPoints
 	{
 		get
 		{
@@ -17,12 +17,12 @@ public class BuildingHP : Workable
 		}
 	}
 
-	public void SetHitPoints(int hp)
+		public void SetHitPoints(int hp)
 	{
 		this.hitpoints = hp;
 	}
 
-		public int MaxHitPoints
+			public int MaxHitPoints
 	{
 		get
 		{
@@ -30,18 +30,18 @@ public class BuildingHP : Workable
 		}
 	}
 
-	public BuildingHP.DamageSourceInfo GetDamageSourceInfo()
+		public BuildingHP.DamageSourceInfo GetDamageSourceInfo()
 	{
 		return this.damageSourceInfo;
 	}
 
-	protected override void OnLoadLevel()
+		protected override void OnLoadLevel()
 	{
 		this.smi = null;
 		base.OnLoadLevel();
 	}
 
-	public void DoDamage(int damage)
+		public void DoDamage(int damage)
 	{
 		if (!this.invincible)
 		{
@@ -51,7 +51,7 @@ public class BuildingHP : Workable
 		}
 	}
 
-	public void Repair(int repair_amount)
+		public void Repair(int repair_amount)
 	{
 		if (this.hitpoints + repair_amount < this.hitpoints)
 		{
@@ -68,7 +68,7 @@ public class BuildingHP : Workable
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.SetWorkTime(10f);
@@ -76,7 +76,7 @@ public class BuildingHP : Workable
 		this.multitoolHitEffectTag = EffectConfigs.BuildSplashId;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.smi = new BuildingHP.SMInstance(this);
@@ -92,19 +92,19 @@ public class BuildingHP : Workable
 		}
 	}
 
-	private void DestroyOnDamaged(object data)
+		private void DestroyOnDamaged(object data)
 	{
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		int num = (int)Db.Get().Attributes.Machinery.Lookup(worker).GetTotalValue();
 		int repair_amount = 10 + Math.Max(0, num * 10);
 		this.Repair(repair_amount);
 	}
 
-	private void OnDoBuildingDamage(object data)
+		private void OnDoBuildingDamage(object data)
 	{
 		if (this.invincible)
 		{
@@ -116,7 +116,7 @@ public class BuildingHP : Workable
 		this.DoTakeDamageFX(this.damageSourceInfo);
 	}
 
-	private void DoTakeDamageFX(BuildingHP.DamageSourceInfo info)
+		private void DoTakeDamageFX(BuildingHP.DamageSourceInfo info)
 	{
 		if (info.takeDamageEffect != SpawnFXHashes.None)
 		{
@@ -126,7 +126,7 @@ public class BuildingHP : Workable
 		}
 	}
 
-	private void DoDamagePopFX(BuildingHP.DamageSourceInfo info)
+		private void DoDamagePopFX(BuildingHP.DamageSourceInfo info)
 	{
 		if (info.popString != null && Time.time > this.lastPopTime + this.minDamagePopInterval)
 		{
@@ -135,7 +135,7 @@ public class BuildingHP : Workable
 		}
 	}
 
-		public bool IsBroken
+			public bool IsBroken
 	{
 		get
 		{
@@ -143,7 +143,7 @@ public class BuildingHP : Workable
 		}
 	}
 
-		public bool NeedsRepairs
+			public bool NeedsRepairs
 	{
 		get
 		{
@@ -151,70 +151,70 @@ public class BuildingHP : Workable
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	[SerializeField]
 	private int hitpoints;
 
-	[Serialize]
+		[Serialize]
 	private BuildingHP.DamageSourceInfo damageSourceInfo;
 
-	private static readonly EventSystem.IntraObjectHandler<BuildingHP> OnDoBuildingDamageDelegate = new EventSystem.IntraObjectHandler<BuildingHP>(delegate(BuildingHP component, object data)
+		private static readonly EventSystem.IntraObjectHandler<BuildingHP> OnDoBuildingDamageDelegate = new EventSystem.IntraObjectHandler<BuildingHP>(delegate(BuildingHP component, object data)
 	{
 		component.OnDoBuildingDamage(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<BuildingHP> DestroyOnDamagedDelegate = new EventSystem.IntraObjectHandler<BuildingHP>(delegate(BuildingHP component, object data)
+		private static readonly EventSystem.IntraObjectHandler<BuildingHP> DestroyOnDamagedDelegate = new EventSystem.IntraObjectHandler<BuildingHP>(delegate(BuildingHP component, object data)
 	{
 		component.DestroyOnDamaged(data);
 	});
 
-	public static List<Meter> kbacQueryList = new List<Meter>();
+		public static List<Meter> kbacQueryList = new List<Meter>();
 
-	public bool destroyOnDamaged;
+		public bool destroyOnDamaged;
 
-	public bool invincible;
+		public bool invincible;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Building building;
 
-	private BuildingHP.SMInstance smi;
+		private BuildingHP.SMInstance smi;
 
-	private float minDamagePopInterval = 4f;
+		private float minDamagePopInterval = 4f;
 
-	private float lastPopTime;
+		private float lastPopTime;
 
-	public struct DamageSourceInfo
+		public struct DamageSourceInfo
 	{
-		public override string ToString()
+				public override string ToString()
 		{
 			return this.source;
 		}
 
-		public int damage;
+				public int damage;
 
-		public string source;
+				public string source;
 
-		public string popString;
+				public string popString;
 
-		public SpawnFXHashes takeDamageEffect;
+				public SpawnFXHashes takeDamageEffect;
 
-		public string fullDamageEffectName;
+				public string fullDamageEffectName;
 
-		public string statusItemID;
+				public string statusItemID;
 	}
 
-	public class SMInstance : GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.GameInstance
+		public class SMInstance : GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.GameInstance
 	{
-		public SMInstance(BuildingHP master) : base(master)
+				public SMInstance(BuildingHP master) : base(master)
 		{
 		}
 
-		public Notification CreateBrokenMachineNotification()
+				public Notification CreateBrokenMachineNotification()
 		{
 			return new Notification(MISC.NOTIFICATIONS.BROKENMACHINE.NAME, NotificationType.BadMinor, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.BROKENMACHINE.TOOLTIP + notificationList.ReduceMessages(false), "/t• " + base.master.damageSourceInfo.source, false, 0f, null, null, null, true, false, false);
 		}
 
-		public void ShowProgressBar(bool show)
+				public void ShowProgressBar(bool show)
 		{
 			if (show && Grid.IsValidCell(Grid.PosToCell(base.gameObject)) && Grid.IsVisible(Grid.PosToCell(base.gameObject)))
 			{
@@ -228,7 +228,7 @@ public class BuildingHP : Workable
 			}
 		}
 
-		public void UpdateMeter()
+				public void UpdateMeter()
 		{
 			if (this.progressBar == null)
 			{
@@ -240,12 +240,12 @@ public class BuildingHP : Workable
 			}
 		}
 
-		private float HealthPercent()
+				private float HealthPercent()
 		{
 			return (float)base.smi.master.HitPoints / (float)base.smi.master.building.Def.HitPoints;
 		}
 
-		private void CreateProgressBar()
+				private void CreateProgressBar()
 		{
 			if (this.progressBar != null)
 			{
@@ -277,7 +277,7 @@ public class BuildingHP : Workable
 			this.progressBar.SetVisibility(true);
 		}
 
-		private static string ToolTipResolver(List<Notification> notificationList, object data)
+				private static string ToolTipResolver(List<Notification> notificationList, object data)
 		{
 			string text = "";
 			for (int i = 0; i < notificationList.Count; i++)
@@ -292,7 +292,7 @@ public class BuildingHP : Workable
 			return text;
 		}
 
-		public void ShowDamagedEffect()
+				public void ShowDamagedEffect()
 		{
 			if (base.master.damageSourceInfo.takeDamageEffect != SpawnFXHashes.None)
 			{
@@ -302,7 +302,7 @@ public class BuildingHP : Workable
 			}
 		}
 
-		public FXAnim.Instance InstantiateDamageFX()
+				public FXAnim.Instance InstantiateDamageFX()
 		{
 			if (base.master.damageSourceInfo.fullDamageEffectName == null)
 			{
@@ -321,7 +321,7 @@ public class BuildingHP : Workable
 			return new FXAnim.Instance(base.smi.master, base.master.damageSourceInfo.fullDamageEffectName, "idle", KAnim.PlayMode.Loop, zero, Color.white);
 		}
 
-		public void SetCrackOverlayValue(float value)
+				public void SetCrackOverlayValue(float value)
 		{
 			KBatchedAnimController component = base.master.GetComponent<KBatchedAnimController>();
 			if (component == null)
@@ -337,12 +337,12 @@ public class BuildingHP : Workable
 			}
 		}
 
-		private ProgressBar progressBar;
+				private ProgressBar progressBar;
 	}
 
-	public class States : GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP>
+		public class States : GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
 			default_state = this.healthy;
@@ -392,29 +392,29 @@ public class BuildingHP : Workable
 			});
 		}
 
-		private Chore CreateRepairChore(BuildingHP.SMInstance smi)
+				private Chore CreateRepairChore(BuildingHP.SMInstance smi)
 		{
 			return new WorkChore<BuildingHP>(Db.Get().ChoreTypes.Repair, smi.master, null, true, null, null, null, true, null, false, false, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 
-		private static readonly Operational.Flag healthyFlag = new Operational.Flag("healthy", Operational.Flag.Type.Functional);
+				private static readonly Operational.Flag healthyFlag = new Operational.Flag("healthy", Operational.Flag.Type.Functional);
 
-		public GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State damaged;
+				public GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State damaged;
 
-		public BuildingHP.States.Healthy healthy;
+				public BuildingHP.States.Healthy healthy;
 
-		public class Healthy : GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State
+				public class Healthy : GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State
 		{
-			public BuildingHP.States.ImperfectStates imperfect;
+						public BuildingHP.States.ImperfectStates imperfect;
 
-			public GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State perfect;
+						public GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State perfect;
 		}
 
-		public class ImperfectStates : GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State
+				public class ImperfectStates : GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State
 		{
-			public GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State playEffect;
+						public GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State playEffect;
 
-			public GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State waiting;
+						public GameStateMachine<BuildingHP.States, BuildingHP.SMInstance, BuildingHP, object>.State waiting;
 		}
 	}
 }

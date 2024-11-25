@@ -6,1013 +6,1375 @@ using KSerialization;
 using STRINGS;
 using UnityEngine;
 
-[SerializationConfig(MemberSerialization.OptIn), AddComponentMenu("KMonoBehaviour/scripts/ComplexFabricator")]
-public class ComplexFabricator : KMonoBehaviour, ISim200ms, ISim1000ms {
-    private const int MaxPrefetchCount = 2;
-    public static int MAX_QUEUE_SIZE   = 99;
-    public static int QUEUE_INFINITE   = -1;
-
-    private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnStorageChangeDelegate
-        = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data) {
-                                                                    component.OnStorageChange(data);
-                                                                });
-
-    private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnParticleStorageChangedDelegate
-        = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data) {
-                                                                    component.OnStorageChange(data);
-                                                                });
-
-    private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnDroppedAllDelegate
-        = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data) {
-                                                                    component.OnDroppedAll(data);
-                                                                });
-
-    private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnOperationalChangedDelegate
-        = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data) {
-                                                                    component.OnOperationalChanged(data);
-                                                                });
-
-    private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnCopySettingsDelegate
-        = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data) {
-                                                                    component.OnCopySettings(data);
-                                                                });
-
-    private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnRefreshUserMenuDelegate
-        = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data) {
-                                                                    component.OnRefreshUserMenu(data);
-                                                                });
-
-    [SerializeField]
-    public bool allowManualFluidDelivery = true;
-
-    [SerializeField]
-    public Storage buildStorage;
-
-    private bool      cancelling;
-    private Chore     chore;
-    public  ChoreType choreType;
-    public  bool      duplicantOperated = true;
-
-    [MyCmpAdd]
-    protected ComplexFabricatorSM fabricatorSM;
-
-    [SerializeField]
-    public HashedString fetchChoreTypeIdHash = Db.Get().ChoreTypes.FabricateFetch.IdHash;
-
-    private readonly Tag[] forbiddenMutantTags = { GameTags.MutatedSeed };
-
-    [Serialize]
-    private bool forbidMutantSeeds;
-
-    private bool hasOpenOrders;
-
-    [SerializeField]
-    public float heatedTemperature;
-
-    [SerializeField]
-    public Storage inStorage;
-
-    public Tag  keepAdditionalTag = Tag.Invalid;
-    public bool keepExcessLiquids;
-    public bool labelByResult = true;
-
-    [Serialize]
-    private string lastWorkingRecipe;
-
-    [MyCmpAdd]
-    private LoopingSounds loopingSounds;
-
-    private readonly Dictionary<Tag, float> materialNeedCache = new Dictionary<Tag, float>();
-    private          bool                   nextOrderIsWorkable;
-    private readonly List<int>              openOrderCounts = new List<int>();
-
-    [MyCmpReq]
-    protected Operational operational;
-
-    public Vector3 outputOffset = Vector3.zero;
-
-    [SerializeField]
-    public Storage outStorage;
-
-    private ProgressBar     progressBar;
-    private bool            queueDirty = true;
-    private ComplexRecipe[] recipe_list;
-
-    [Serialize]
-    private readonly Dictionary<string, int> recipeQueueCounts = new Dictionary<string, int>();
-
-    public bool   showProgressBar;
-    public string SideScreenRecipeScreenTitle = UI.UISIDESCREENS.FABRICATORSIDESCREEN.RECIPE_DETAILS;
-
-    public ComplexFabricatorSideScreen.StyleSetting sideScreenStyle
-        = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
-
-    public string SideScreenSubtitleLabel = UI.UISIDESCREENS.FABRICATORSIDESCREEN.SUBTITLE;
-
-    [SerializeField]
-    public bool storeProduced;
-
-    protected ComplexFabricatorWorkable workable;
-    private   int                       workingOrderIdx   = -1;
-    public    StatusItem                workingStatusItem = Db.Get().BuildingStatusItems.ComplexFabricatorProducing;
-    public    ComplexFabricatorWorkable Workable => workable;
-
-    public bool ForbidMutantSeeds {
-        get => forbidMutantSeeds;
-        set {
-            forbidMutantSeeds = value;
-            ToggleMutantSeedFetches();
-            UpdateMutantSeedStatusItem();
-        }
-    }
-
-    public Tag[] ForbiddenTags {
-        get {
-            if (!forbidMutantSeeds) return null;
-
-            return forbiddenMutantTags;
-        }
-    }
-
-    public int CurrentOrderIdx { get; private set; }
-
-    public ComplexRecipe CurrentWorkingOrder {
-        get {
-            if (!HasWorkingOrder) return null;
-
-            return recipe_list[workingOrderIdx];
-        }
-    }
-
-    public ComplexRecipe NextOrder {
-        get {
-            if (!nextOrderIsWorkable) return null;
-
-            return recipe_list[CurrentOrderIdx];
-        }
-    }
-
-    [field: Serialize]
-    public float OrderProgress { get; set; }
-
-    public  bool             HasAnyOrder      => HasWorkingOrder    || hasOpenOrders;
-    public  bool             HasWorker        => !duplicantOperated || workable.worker != null;
-    public  bool             WaitingForWorker => HasWorkingOrder && !HasWorker;
-    private bool             HasWorkingOrder  => workingOrderIdx > -1;
-    public  List<FetchList2> DebugFetchLists  { get; } = new List<FetchList2>();
-
-    public void Sim1000ms(float dt) {
-        RefreshAndStartNextOrder();
-        if (materialNeedCache.Count > 0 && DebugFetchLists.Count == 0) {
-            Debug.LogWarningFormat(gameObject,
-                                   "{0} has material needs cached, but no open fetches. materialNeedCache={1}, fetchListList={2}",
-                                   gameObject,
-                                   materialNeedCache.Count,
-                                   DebugFetchLists.Count);
-
-            queueDirty = true;
-        }
-    }
-
-    public void Sim200ms(float dt) {
-        if (!operational.IsOperational) return;
-
-        operational.SetActive(HasWorkingOrder && HasWorker);
-        if (!duplicantOperated && HasWorkingOrder) {
-            var complexRecipe = recipe_list[workingOrderIdx];
-            OrderProgress += dt / complexRecipe.time;
-            if (OrderProgress >= 1f) {
-                ShowProgressBar(false);
-                CompleteWorkingOrder();
-            }
-        }
-    }
-
-    [OnDeserialized]
-    protected virtual void OnDeserializedMethod() {
-        var list = new List<string>();
-        foreach (var text in recipeQueueCounts.Keys)
-            if (ComplexRecipeManager.Get().GetRecipe(text) == null)
-                list.Add(text);
-
-        foreach (var text2 in list) {
-            Debug.LogWarningFormat("{1} removing missing recipe from queue: {0}", text2, name);
-            recipeQueueCounts.Remove(text2);
-        }
-    }
-
-    protected override void OnPrefabInit() {
-        base.OnPrefabInit();
-        GetRecipes();
-        simRenderLoadBalance = true;
-        choreType            = Db.Get().ChoreTypes.Fabricate;
-        Subscribe(-1957399615, OnDroppedAllDelegate);
-        Subscribe(-592767678,  OnOperationalChangedDelegate);
-        Subscribe(-905833192,  OnCopySettingsDelegate);
-        Subscribe(-1697596308, OnStorageChangeDelegate);
-        Subscribe(-1837862626, OnParticleStorageChangedDelegate);
-        workable = GetComponent<ComplexFabricatorWorkable>();
-        Components.ComplexFabricators.Add(this);
-        Subscribe(493375141, OnRefreshUserMenuDelegate);
-    }
-
-    protected override void OnSpawn() {
-        base.OnSpawn();
-        InitRecipeQueueCount();
-        foreach (var key in recipeQueueCounts.Keys)
-            if (recipeQueueCounts[key] == 100)
-                recipeQueueCounts[key] = QUEUE_INFINITE;
-
-        buildStorage.Transfer(inStorage, true, true);
-        DropExcessIngredients(inStorage);
-        var num                       = FindRecipeIndex(lastWorkingRecipe);
-        if (num > -1) CurrentOrderIdx = num;
-        UpdateMutantSeedStatusItem();
-    }
-
-    protected override void OnCleanUp() {
-        CancelAllOpenOrders();
-        CancelChore();
-        Components.ComplexFabricators.Remove(this);
-        base.OnCleanUp();
-    }
-
-    private void OnRefreshUserMenu(object data) {
-        if (SaveLoader.Instance.IsDLCActiveForCurrentSave("EXPANSION1_ID") && HasRecipiesWithSeeds())
-            Game.Instance.userMenu.AddButton(gameObject,
-                                             new KIconButtonMenu.ButtonInfo("action_switch_toggle",
-                                                                            ForbidMutantSeeds
-                                                                                ? UI.USERMENUACTIONS.ACCEPT_MUTANT_SEEDS
-                                                                                    .ACCEPT
-                                                                                : UI.USERMENUACTIONS.ACCEPT_MUTANT_SEEDS
-                                                                                    .REJECT,
-                                                                            delegate {
-                                                                                ForbidMutantSeeds = !ForbidMutantSeeds;
-                                                                                OnRefreshUserMenu(null);
-                                                                            },
-                                                                            Action.NumActions,
-                                                                            null,
-                                                                            null,
-                                                                            null,
-                                                                            UI.USERMENUACTIONS.ACCEPT_MUTANT_SEEDS
-                                                                              .TOOLTIP));
-    }
-
-    private bool HasRecipiesWithSeeds() {
-        var result = false;
-        var array  = recipe_list;
-        for (var i = 0; i < array.Length; i++) {
-            var ingredients = array[i].ingredients;
-            for (var j = 0; j < ingredients.Length; j++) {
-                var prefab = Assets.GetPrefab(ingredients[j].material);
-                if (prefab != null && prefab.GetComponent<PlantableSeed>() != null) {
-                    result = true;
-                    break;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    private void UpdateMutantSeedStatusItem() {
-        gameObject.GetComponent<KSelectable>()
-                  .ToggleStatusItem(Db.Get().BuildingStatusItems.FabricatorAcceptsMutantSeeds,
-                                    SaveLoader.Instance.IsDLCActiveForCurrentSave("EXPANSION1_ID") &&
-                                    HasRecipiesWithSeeds()                                         &&
-                                    !forbidMutantSeeds);
-    }
-
-    private void OnOperationalChanged(object data) {
-        if ((bool)data)
-            queueDirty = true;
-        else
-            CancelAllOpenOrders();
-
-        UpdateChore();
-    }
-
-    private void RefreshAndStartNextOrder() {
-        if (!operational.IsOperational) return;
-
-        if (queueDirty) RefreshQueue();
-        if (!HasWorkingOrder && nextOrderIsWorkable) {
-            ShowProgressBar(true);
-            StartWorkingOrder(CurrentOrderIdx);
-        }
-    }
-
-    public virtual float GetPercentComplete() { return OrderProgress; }
-
-    private void ShowProgressBar(bool show) {
-        if (show && showProgressBar && !duplicantOperated) {
-            if (progressBar == null) progressBar = ProgressBar.CreateProgressBar(gameObject, GetPercentComplete);
-            progressBar.enabled = true;
-            progressBar.SetVisibility(true);
-            return;
-        }
-
-        if (progressBar != null) {
-            progressBar.gameObject.DeleteObject();
-            progressBar = null;
-        }
-    }
-
-    public void SetQueueDirty() { queueDirty = true; }
-
-    private void RefreshQueue() {
-        queueDirty = false;
-        ValidateWorkingOrder();
-        ValidateNextOrder();
-        UpdateOpenOrders();
-        DropExcessIngredients(inStorage);
-        Trigger(1721324763, this);
-    }
-
-    private void StartWorkingOrder(int index) {
-        Debug.Assert(!HasWorkingOrder, "machineOrderIdx already set");
-        workingOrderIdx = index;
-        if (recipe_list[workingOrderIdx].id != lastWorkingRecipe) {
-            OrderProgress     = 0f;
-            lastWorkingRecipe = recipe_list[workingOrderIdx].id;
-        }
-
-        TransferCurrentRecipeIngredientsForBuild();
-        Debug.Assert(openOrderCounts[workingOrderIdx] > 0, "openOrderCount invalid");
-        var list   = openOrderCounts;
-        var index2 = workingOrderIdx;
-        var num    = list[index2];
-        list[index2] = num - 1;
-        UpdateChore();
-        Trigger(2023536846, recipe_list[workingOrderIdx]);
-        AdvanceNextOrder();
-    }
-
-    private void CancelWorkingOrder() {
-        Debug.Assert(HasWorkingOrder, "machineOrderIdx not set");
-        buildStorage.Transfer(inStorage, true, true);
-        workingOrderIdx = -1;
-        OrderProgress   = 0f;
-        UpdateChore();
-    }
-
-    public void CompleteWorkingOrder() {
-        if (!HasWorkingOrder) {
-            Debug.LogWarning("CompleteWorkingOrder called with no working order.", gameObject);
-            return;
-        }
-
-        var complexRecipe = recipe_list[workingOrderIdx];
-        SpawnOrderProduct(complexRecipe);
-        var num = buildStorage.MassStored();
-        if (num != 0f) {
-            Debug.LogWarningFormat(gameObject,
-                                   "{0} build storage contains mass {1} after order completion.",
-                                   gameObject,
-                                   num);
-
-            buildStorage.Transfer(inStorage, true, true);
-        }
-
-        DecrementRecipeQueueCountInternal(complexRecipe);
-        workingOrderIdx = -1;
-        OrderProgress   = 0f;
-        CancelChore();
-        Trigger(1355439576, complexRecipe);
-        if (!cancelling) RefreshAndStartNextOrder();
-    }
-
-    private void ValidateWorkingOrder() {
-        if (!HasWorkingOrder) return;
-
-        var recipe = recipe_list[workingOrderIdx];
-        if (!IsRecipeQueued(recipe)) CancelWorkingOrder();
-    }
-
-    private void UpdateChore() {
-        if (!duplicantOperated) return;
-
-        var flag = operational.IsOperational && HasWorkingOrder;
-        if (flag && chore == null) {
-            CreateChore();
-            return;
-        }
-
-        if (!flag && chore != null) CancelChore();
-    }
-
-    private void AdvanceNextOrder() {
-        for (var i = 0; i < recipe_list.Length; i++) {
-            CurrentOrderIdx = (CurrentOrderIdx + 1) % recipe_list.Length;
-            var recipe = recipe_list[CurrentOrderIdx];
-            nextOrderIsWorkable = GetRemainingQueueCount(recipe) > 0 && HasIngredients(recipe, inStorage);
-            if (nextOrderIsWorkable) break;
-        }
-    }
-
-    private void ValidateNextOrder() {
-        var recipe = recipe_list[CurrentOrderIdx];
-        nextOrderIsWorkable = GetRemainingQueueCount(recipe) > 0 && HasIngredients(recipe, inStorage);
-        if (!nextOrderIsWorkable) AdvanceNextOrder();
-    }
-
-    private void CancelAllOpenOrders() {
-        for (var i = 0; i < openOrderCounts.Count; i++) openOrderCounts[i] = 0;
-        ClearMaterialNeeds();
-        CancelFetches();
-    }
-
-    private void UpdateOpenOrders() {
-        var recipes = GetRecipes();
-        if (recipes.Length != openOrderCounts.Count)
-            Debug.LogErrorFormat(gameObject,
-                                 "Recipe count {0} doesn't match open order count {1}",
-                                 recipes.Length,
-                                 openOrderCounts.Count);
-
-        var flag = false;
-        hasOpenOrders = false;
-        for (var i = 0; i < recipes.Length; i++) {
-            var recipe                                 = recipes[i];
-            var recipePrefetchCount                    = GetRecipePrefetchCount(recipe);
-            if (recipePrefetchCount > 0) hasOpenOrders = true;
-            var num                                    = openOrderCounts[i];
-            if (num != recipePrefetchCount) {
-                if (recipePrefetchCount < num) flag = true;
-                openOrderCounts[i] = recipePrefetchCount;
-            }
-        }
-
-        var pooledDictionary  = DictionaryPool<Tag, float, ComplexFabricator>.Allocate();
-        var pooledDictionary2 = DictionaryPool<Tag, float, ComplexFabricator>.Allocate();
-        for (var j = 0; j < openOrderCounts.Count; j++)
-            if (openOrderCounts[j] > 0)
-                foreach (var recipeElement in recipe_list[j].ingredients)
-                    pooledDictionary[recipeElement.material] = inStorage.GetAmountAvailable(recipeElement.material);
-
-        for (var l = 0; l < recipe_list.Length; l++) {
-            var num2 = openOrderCounts[l];
-            if (num2 > 0)
-                foreach (var recipeElement2 in recipe_list[l].ingredients) {
-                    var num3 = recipeElement2.amount * num2;
-                    var num4 = num3 - pooledDictionary[recipeElement2.material];
-                    if (num4 > 0f) {
-                        float num5;
-                        pooledDictionary2.TryGetValue(recipeElement2.material, out num5);
-                        pooledDictionary2[recipeElement2.material] = num5 + num4;
-                        pooledDictionary[recipeElement2.material]  = 0f;
-                    } else {
-                        var pooledDictionary3 = pooledDictionary;
-                        var material          = recipeElement2.material;
-                        pooledDictionary3[material] -= num3;
-                    }
-                }
-        }
-
-        if (flag) CancelFetches();
-        if (pooledDictionary2.Count > 0) UpdateFetches(pooledDictionary2);
-        UpdateMaterialNeeds(pooledDictionary2);
-        pooledDictionary2.Recycle();
-        pooledDictionary.Recycle();
-    }
-
-    private void UpdateMaterialNeeds(Dictionary<Tag, float> missingAmounts) {
-        ClearMaterialNeeds();
-        foreach (var keyValuePair in missingAmounts) {
-            MaterialNeeds.UpdateNeed(keyValuePair.Key, keyValuePair.Value, gameObject.GetMyWorldId());
-            materialNeedCache.Add(keyValuePair.Key, keyValuePair.Value);
-        }
-    }
-
-    private void ClearMaterialNeeds() {
-        foreach (var keyValuePair in materialNeedCache)
-            MaterialNeeds.UpdateNeed(keyValuePair.Key, -keyValuePair.Value, gameObject.GetMyWorldId());
-
-        materialNeedCache.Clear();
-    }
-
-    public int HighestHEPQueued() {
-        var num = 0;
-        foreach (var keyValuePair in recipeQueueCounts)
-            if (keyValuePair.Value > 0)
-                num = Math.Max(recipe_list[FindRecipeIndex(keyValuePair.Key)].consumedHEP, num);
-
-        return num;
-    }
-
-    private void OnFetchComplete() {
-        for (var i = DebugFetchLists.Count - 1; i >= 0; i--)
-            if (DebugFetchLists[i].IsComplete) {
-                DebugFetchLists.RemoveAt(i);
-                queueDirty = true;
-            }
-    }
-
-    private void OnStorageChange(object data) { queueDirty = true; }
-
-    private void OnDroppedAll(object data) {
-        if (HasWorkingOrder) CancelWorkingOrder();
-        CancelAllOpenOrders();
-        RefreshQueue();
-    }
-
-    private void DropExcessIngredients(Storage storage) {
-        var hashSet = new HashSet<Tag>();
-        if (keepAdditionalTag != Tag.Invalid) hashSet.Add(keepAdditionalTag);
-        for (var i = 0; i < recipe_list.Length; i++) {
-            var complexRecipe = recipe_list[i];
-            if (IsRecipeQueued(complexRecipe))
-                foreach (var recipeElement in complexRecipe.ingredients)
-                    hashSet.Add(recipeElement.material);
-        }
-
-        for (var k = storage.items.Count - 1; k >= 0; k--) {
-            var gameObject = storage.items[k];
-            if (!(gameObject == null)) {
-                var component = gameObject.GetComponent<PrimaryElement>();
-                if (!(component == null) && (!keepExcessLiquids || !component.Element.IsLiquid)) {
-                    var component2 = gameObject.GetComponent<KPrefabID>();
-                    if (component2 && !hashSet.Contains(component2.PrefabID())) storage.Drop(gameObject);
-                }
-            }
-        }
-    }
-
-    private void OnCopySettings(object data) {
-        var gameObject = (GameObject)data;
-        if (gameObject == null) return;
-
-        var component = gameObject.GetComponent<ComplexFabricator>();
-        if (component == null) return;
-
-        ForbidMutantSeeds = component.ForbidMutantSeeds;
-        foreach (var complexRecipe in recipe_list) {
-            int count;
-            if (!component.recipeQueueCounts.TryGetValue(complexRecipe.id, out count)) count = 0;
-            SetRecipeQueueCountInternal(complexRecipe, count);
-        }
-
-        RefreshQueue();
-    }
-
-    private int CompareRecipe(ComplexRecipe a, ComplexRecipe b) {
-        if (a.sortOrder != b.sortOrder) return a.sortOrder - b.sortOrder;
-
-        return StringComparer.InvariantCulture.Compare(a.id, b.id);
-    }
-
-    public ComplexRecipe[] GetRecipes() {
-        if (recipe_list == null) {
-            var prefabTag = GetComponent<KPrefabID>().PrefabTag;
-            var recipes   = ComplexRecipeManager.Get().recipes;
-            var list      = new List<ComplexRecipe>();
-            foreach (var complexRecipe in recipes)
-                using (var enumerator2 = complexRecipe.fabricators.GetEnumerator()) {
-                    while (enumerator2.MoveNext())
-                        if (enumerator2.Current == prefabTag &&
-                            SaveLoader.Instance.IsDlcListActiveForCurrentSave(complexRecipe.GetDlcIds()))
-                            list.Add(complexRecipe);
-                }
-
-            recipe_list = list.ToArray();
-            Array.Sort(recipe_list, CompareRecipe);
-        }
-
-        return recipe_list;
-    }
-
-    private void InitRecipeQueueCount() {
-        foreach (var complexRecipe in GetRecipes()) {
-            var flag = false;
-            using (var enumerator = recipeQueueCounts.Keys.GetEnumerator()) {
-                while (enumerator.MoveNext())
-                    if (enumerator.Current == complexRecipe.id) {
-                        flag = true;
-                        break;
-                    }
-            }
-
-            if (!flag) recipeQueueCounts.Add(complexRecipe.id, 0);
-            openOrderCounts.Add(0);
-        }
-    }
-
-    private int FindRecipeIndex(string id) {
-        for (var i = 0; i < recipe_list.Length; i++)
-            if (recipe_list[i].id == id)
-                return i;
-
-        return -1;
-    }
-
-    public int GetRecipeQueueCount(ComplexRecipe recipe) { return recipeQueueCounts[recipe.id]; }
-
-    public bool IsRecipeQueued(ComplexRecipe recipe) {
-        var num = recipeQueueCounts[recipe.id];
-        Debug.Assert(num >= 0 || num == QUEUE_INFINITE);
-        return num != 0;
-    }
-
-    public int GetRecipePrefetchCount(ComplexRecipe recipe) {
-        var remainingQueueCount = GetRemainingQueueCount(recipe);
-        Debug.Assert(remainingQueueCount >= 0);
-        return Mathf.Min(2, remainingQueueCount);
-    }
-
-    private int GetRemainingQueueCount(ComplexRecipe recipe) {
-        var num = recipeQueueCounts[recipe.id];
-        Debug.Assert(num >= 0 || num == QUEUE_INFINITE);
-        if (num == QUEUE_INFINITE) return MAX_QUEUE_SIZE;
-
-        if (num > 0) {
-            if (IsCurrentRecipe(recipe)) num--;
-            return num;
-        }
-
-        return 0;
-    }
-
-    private bool IsCurrentRecipe(ComplexRecipe recipe) {
-        return workingOrderIdx >= 0 && recipe_list[workingOrderIdx].id == recipe.id;
-    }
-
-    public void SetRecipeQueueCount(ComplexRecipe recipe, int count) {
-        SetRecipeQueueCountInternal(recipe, count);
-        RefreshQueue();
-    }
-
-    private void SetRecipeQueueCountInternal(ComplexRecipe recipe, int count) { recipeQueueCounts[recipe.id] = count; }
-
-    public void IncrementRecipeQueueCount(ComplexRecipe recipe) {
-        if (recipeQueueCounts[recipe.id] == QUEUE_INFINITE)
-            recipeQueueCounts[recipe.id] = 0;
-        else if (recipeQueueCounts[recipe.id] >= MAX_QUEUE_SIZE)
-            recipeQueueCounts[recipe.id] = QUEUE_INFINITE;
-        else {
-            var dictionary = recipeQueueCounts;
-            var id         = recipe.id;
-            var num        = dictionary[id];
-            dictionary[id] = num + 1;
-        }
-
-        RefreshQueue();
-    }
-
-    public void DecrementRecipeQueueCount(ComplexRecipe recipe, bool respectInfinite = true) {
-        DecrementRecipeQueueCountInternal(recipe, respectInfinite);
-        RefreshQueue();
-    }
-
-    private void DecrementRecipeQueueCountInternal(ComplexRecipe recipe, bool respectInfinite = true) {
-        if (!respectInfinite || recipeQueueCounts[recipe.id] != QUEUE_INFINITE) {
-            if (recipeQueueCounts[recipe.id] == QUEUE_INFINITE) {
-                recipeQueueCounts[recipe.id] = MAX_QUEUE_SIZE;
-                return;
-            }
-
-            if (recipeQueueCounts[recipe.id] == 0) {
-                recipeQueueCounts[recipe.id] = QUEUE_INFINITE;
-                return;
-            }
-
-            var dictionary = recipeQueueCounts;
-            var id         = recipe.id;
-            var num        = dictionary[id];
-            dictionary[id] = num - 1;
-        }
-    }
-
-    private void CreateChore() {
-        Debug.Assert(chore == null, "chore should be null");
-        chore = workable.CreateWorkChore(choreType, OrderProgress);
-    }
-
-    private void CancelChore() {
-        if (cancelling) return;
-
-        cancelling = true;
-        if (chore != null) {
-            chore.Cancel("order cancelled");
-            chore = null;
-        }
-
-        cancelling = false;
-    }
-
-    private void UpdateFetches(DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary missingAmounts) {
-        var byHash = Db.Get().ChoreTypes.GetByHash(fetchChoreTypeIdHash);
-        foreach (var keyValuePair in missingAmounts) {
-            if (!allowManualFluidDelivery) {
-                var element = ElementLoader.GetElement(keyValuePair.Key);
-                if (element != null && (element.IsLiquid || element.IsGas)) continue;
-            }
-
-            if (keyValuePair.Value >= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT && !HasPendingFetch(keyValuePair.Key)) {
-                var fetchList  = new FetchList2(inStorage, byHash);
-                var fetchList2 = fetchList;
-                var key        = keyValuePair.Key;
-                var value      = keyValuePair.Value;
-                fetchList2.Add(key, ForbiddenTags, value);
-                fetchList.ShowStatusItem = false;
-                fetchList.Submit(OnFetchComplete, false);
-                DebugFetchLists.Add(fetchList);
-            }
-        }
-    }
-
-    private bool HasPendingFetch(Tag tag) {
-        foreach (var fetchList in DebugFetchLists) {
-            float num;
-            fetchList.MinimumAmount.TryGetValue(tag, out num);
-            if (num > 0f) return true;
-        }
-
-        return false;
-    }
-
-    private void CancelFetches() {
-        foreach (var fetchList in DebugFetchLists) fetchList.Cancel("cancel all orders");
-        DebugFetchLists.Clear();
-    }
-
-    protected virtual void TransferCurrentRecipeIngredientsForBuild() {
-        var ingredients = recipe_list[workingOrderIdx].ingredients;
-        var i           = 0;
-        while (i < ingredients.Length) {
-            var   recipeElement = ingredients[i];
-            float num;
-            for (;;) {
-                num = recipeElement.amount - buildStorage.GetAmountAvailable(recipeElement.material);
-                if (num <= 0f) break;
-
-                if (inStorage.GetAmountAvailable(recipeElement.material) <= 0f) goto Block_2;
-
-                inStorage.Transfer(buildStorage, recipeElement.material, num, false, true);
-            }
-
-            IL_9D:
-            i++;
-            continue;
-
-            Block_2:
-            Debug.LogWarningFormat("TransferCurrentRecipeIngredientsForBuild ran out of {0} but still needed {1} more.",
-                                   recipeElement.material,
-                                   num);
-
-            goto IL_9D;
-        }
-    }
-
-    protected virtual bool HasIngredients(ComplexRecipe recipe, Storage storage) {
-        var ingredients = recipe.ingredients;
-        if (recipe.consumedHEP > 0) {
-            var component = GetComponent<HighEnergyParticleStorage>();
-            if (component == null || component.Particles < recipe.consumedHEP) return false;
-        }
-
-        foreach (var recipeElement in ingredients) {
-            var amountAvailable = storage.GetAmountAvailable(recipeElement.material);
-            if (recipeElement.amount - amountAvailable >= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT) return false;
-        }
-
-        return true;
-    }
-
-    private void ToggleMutantSeedFetches() {
-        if (HasAnyOrder) {
-            var byHash = Db.Get().ChoreTypes.GetByHash(fetchChoreTypeIdHash);
-            var list   = new List<FetchList2>();
-            foreach (var fetchList in DebugFetchLists) {
-                foreach (var fetchOrder in fetchList.FetchOrders) {
-                    foreach (var tag in fetchOrder.Tags) {
-                        var prefab = Assets.GetPrefab(tag);
-                        if (prefab != null && prefab.GetComponent<PlantableSeed>() != null) {
-                            fetchList.Cancel("MutantSeedTagChanged");
-                            list.Add(fetchList);
-                        }
-                    }
-                }
-            }
-
-            foreach (var fetchList2 in list) {
-                DebugFetchLists.Remove(fetchList2);
-                foreach (var fetchOrder2 in fetchList2.FetchOrders) {
-                    foreach (var tag2 in fetchOrder2.Tags) {
-                        var fetchList3  = new FetchList2(inStorage, byHash);
-                        var fetchList4  = fetchList3;
-                        var tag3        = tag2;
-                        var totalAmount = fetchOrder2.TotalAmount;
-                        fetchList4.Add(tag3, ForbiddenTags, totalAmount);
-                        fetchList3.ShowStatusItem = false;
-                        fetchList3.Submit(OnFetchComplete, false);
-                        DebugFetchLists.Add(fetchList3);
-                    }
-                }
-            }
-        }
-    }
-
-    protected virtual List<GameObject> SpawnOrderProduct(ComplexRecipe recipe) {
-        var                 list = new List<GameObject>();
-        SimUtil.DiseaseInfo diseaseInfo;
-        diseaseInfo.count = 0;
-        diseaseInfo.idx   = 0;
-        var    num                                             = 0f;
-        var    num2                                            = 0f;
-        string text                                            = null;
-        foreach (var recipeElement in recipe.ingredients) num2 += recipeElement.amount;
-        ComplexRecipe.RecipeElement recipeElement2             = null;
-        foreach (var recipeElement3 in recipe.ingredients) {
-            var num3 = recipeElement3.amount / num2;
-            if (recipe.ProductHasFacade && text.IsNullOrWhiteSpace()) {
-                var component = buildStorage.FindFirst(recipeElement3.material).GetComponent<RepairableEquipment>();
-                if (component != null) text = component.facadeID;
-            }
-
-            if (recipeElement3.inheritElement || recipeElement3.Edible) recipeElement2 = recipeElement3;
-            if (recipeElement3.Edible)
-                buildStorage.TransferMass(outStorage, recipeElement3.material, recipeElement3.amount, true, true, true);
-            else {
-                float               num4;
-                SimUtil.DiseaseInfo diseaseInfo2;
-                float               num5;
-                buildStorage.ConsumeAndGetDisease(recipeElement3.material,
-                                                  recipeElement3.amount,
-                                                  out num4,
-                                                  out diseaseInfo2,
-                                                  out num5);
-
-                if (diseaseInfo2.count > diseaseInfo.count) diseaseInfo = diseaseInfo2;
-                num += num5 * num3;
-            }
-        }
-
-        if (recipe.consumedHEP > 0) GetComponent<HighEnergyParticleStorage>().ConsumeAndGet(recipe.consumedHEP);
-        foreach (var recipeElement4 in recipe.results) {
-            var gameObject = buildStorage.FindFirst(recipeElement4.material);
-            if (gameObject != null) {
-                var component2 = gameObject.GetComponent<Edible>();
-                if (component2)
-                    ReportManager.Instance.ReportValue(ReportManager.ReportType.CaloriesCreated,
-                                                       -component2.Calories,
-                                                       StringFormatter.Replace(UI.ENDOFDAYREPORT.NOTES.CRAFTED_USED,
-                                                                               "{0}",
-                                                                               component2.GetProperName()),
-                                                       UI.ENDOFDAYREPORT.NOTES.CRAFTED_CONTEXT);
-            }
-
-            switch (recipeElement4.temperatureOperation) {
-                case ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature:
-                case ComplexRecipe.RecipeElement.TemperatureOperation.Heated: {
-                    var gameObject2
-                        = GameUtil.KInstantiate(Assets.GetPrefab(recipeElement4.material), Grid.SceneLayer.Ore);
-
-                    var cell = Grid.PosToCell(this);
-                    gameObject2.transform.SetPosition(Grid.CellToPosCCC(cell, Grid.SceneLayer.Ore) + outputOffset);
-                    var component3 = gameObject2.GetComponent<PrimaryElement>();
-                    component3.Units = recipeElement4.amount;
-                    component3.Temperature
-                        = recipeElement4.temperatureOperation ==
-                          ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature
-                              ? num
-                              : heatedTemperature;
-
-                    if (recipeElement2 != null) {
-                        var element = ElementLoader.GetElement(recipeElement2.material);
-                        if (element != null) component3.SetElement(element.id, false);
-                    }
-
-                    if (recipe.ProductHasFacade && !text.IsNullOrWhiteSpace()) {
-                        var component4 = gameObject2.GetComponent<Equippable>();
-                        if (component4 != null) EquippableFacade.AddFacadeToEquippable(component4, text);
-                    }
-
-                    gameObject2.SetActive(true);
-                    var num6 = recipeElement4.amount / recipe.TotalResultUnits();
-                    component3.AddDisease(diseaseInfo.idx,
-                                          Mathf.RoundToInt(diseaseInfo.count * num6),
-                                          "ComplexFabricator.CompleteOrder");
-
-                    if (!recipeElement4.facadeID.IsNullOrWhiteSpace()) {
-                        var component5 = gameObject2.GetComponent<Equippable>();
-                        if (component5 != null)
-                            EquippableFacade.AddFacadeToEquippable(component5, recipeElement4.facadeID);
-                    }
-
-                    gameObject2.GetComponent<KMonoBehaviour>().Trigger(748399584);
-                    list.Add(gameObject2);
-                    if (storeProduced || recipeElement4.storeElement) outStorage.Store(gameObject2);
-                    break;
-                }
-                case ComplexRecipe.RecipeElement.TemperatureOperation.Melted:
-                    if (storeProduced || recipeElement4.storeElement) {
-                        var temperature = ElementLoader.GetElement(recipeElement4.material).defaultValues.temperature;
-                        outStorage.AddLiquid(ElementLoader.GetElementID(recipeElement4.material),
-                                             recipeElement4.amount,
-                                             temperature,
-                                             0,
-                                             0);
-                    }
-
-                    break;
-                case ComplexRecipe.RecipeElement.TemperatureOperation.Dehydrated:
-                    for (var j = 0; j < (int)recipeElement4.amount; j++) {
-                        var gameObject3
-                            = GameUtil.KInstantiate(Assets.GetPrefab(recipeElement4.material), Grid.SceneLayer.Ore);
-
-                        var cell2 = Grid.PosToCell(this);
-                        gameObject3.transform.SetPosition(Grid.CellToPosCCC(cell2, Grid.SceneLayer.Ore) + outputOffset);
-                        var amount = recipeElement2.amount / recipeElement4.amount;
-                        gameObject3.GetComponent<PrimaryElement>().Temperature
-                            = recipeElement4.temperatureOperation ==
-                              ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature
-                                  ? num
-                                  : heatedTemperature;
-
-                        var component6 = gameObject3.GetComponent<DehydratedFoodPackage>();
-                        if (component6 != null) {
-                            var component7 = component6.GetComponent<Storage>();
-                            outStorage.TransferMass(component7, recipeElement2.material, amount, true);
-                        }
-
-                        gameObject3.SetActive(true);
-                        gameObject3.GetComponent<KMonoBehaviour>().Trigger(748399584);
-                        list.Add(gameObject3);
-                        if (storeProduced || recipeElement4.storeElement) outStorage.Store(gameObject3);
-                    }
-
-                    break;
-            }
-
-            if (list.Count > 0) {
-                var component8 = GetComponent<SymbolOverrideController>();
-                if (component8 != null) {
-                    var build  = list[0].GetComponent<KBatchedAnimController>().AnimFiles[0].GetData().build;
-                    var symbol = build.GetSymbol(build.name);
-                    if (symbol != null) {
-                        component8.TryRemoveSymbolOverride("output_tracker");
-                        component8.AddSymbolOverride("output_tracker", symbol);
-                    } else
-                        Debug.LogWarning(component8.name + " is missing symbol " + build.name);
-                }
-            }
-        }
-
-        if (recipe.producedHEP > 0) GetComponent<HighEnergyParticleStorage>().Store(recipe.producedHEP);
-        return list;
-    }
-
-    public virtual List<Descriptor> GetDescriptors(GameObject go) {
-        var list    = new List<Descriptor>();
-        var recipes = GetRecipes();
-        if (recipes.Length != 0) {
-            var item = default(Descriptor);
-            item.SetupDescriptor(UI.BUILDINGEFFECTS.PROCESSES, UI.BUILDINGEFFECTS.TOOLTIPS.PROCESSES);
-            list.Add(item);
-        }
-
-        foreach (var complexRecipe in recipes) {
-            var text   = "";
-            var uiname = complexRecipe.GetUIName(false);
-            foreach (var recipeElement in complexRecipe.ingredients)
-                text = text +
-                       "• " +
-                       string.Format(UI.BUILDINGEFFECTS.PROCESSEDITEM,
-                                     recipeElement.material.ProperName(),
-                                     recipeElement.amount) +
-                       "\n";
-
-            var item2 = new Descriptor(uiname, string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.FABRICATOR_INGREDIENTS, text));
-            item2.IncreaseIndent();
-            list.Add(item2);
-        }
-
-        return list;
-    }
-
-    public virtual List<Descriptor> AdditionalEffectsForRecipe(ComplexRecipe recipe) { return new List<Descriptor>(); }
-
-    public string GetConversationTopic() {
-        if (HasWorkingOrder) {
-            var complexRecipe = recipe_list[workingOrderIdx];
-            if (complexRecipe != null) return complexRecipe.results[0].material.Name;
-        }
-
-        return null;
-    }
-
-    public bool NeedsMoreHEPForQueuedRecipe() {
-        if (hasOpenOrders) {
-            var component = GetComponent<HighEnergyParticleStorage>();
-            foreach (var keyValuePair in recipeQueueCounts)
-                if (keyValuePair.Value > 0)
-                    foreach (var complexRecipe in GetRecipes())
-                        if (complexRecipe.id == keyValuePair.Key && complexRecipe.consumedHEP > component.Particles)
-                            return true;
-
-            return false;
-        }
-
-        return false;
-    }
+[SerializationConfig(MemberSerialization.OptIn)]
+[AddComponentMenu("KMonoBehaviour/scripts/ComplexFabricator")]
+public class ComplexFabricator : RemoteDockWorkTargetComponent, ISim200ms, ISim1000ms
+{
+			public ComplexFabricatorWorkable Workable
+	{
+		get
+		{
+			return this.workable;
+		}
+	}
+
+				public bool ForbidMutantSeeds
+	{
+		get
+		{
+			return this.forbidMutantSeeds;
+		}
+		set
+		{
+			this.forbidMutantSeeds = value;
+			this.ToggleMutantSeedFetches();
+			this.UpdateMutantSeedStatusItem();
+		}
+	}
+
+			public Tag[] ForbiddenTags
+	{
+		get
+		{
+			if (!this.forbidMutantSeeds)
+			{
+				return null;
+			}
+			return this.forbiddenMutantTags;
+		}
+	}
+
+			public int CurrentOrderIdx
+	{
+		get
+		{
+			return this.nextOrderIdx;
+		}
+	}
+
+			public ComplexRecipe CurrentWorkingOrder
+	{
+		get
+		{
+			if (!this.HasWorkingOrder)
+			{
+				return null;
+			}
+			return this.recipe_list[this.workingOrderIdx];
+		}
+	}
+
+			public ComplexRecipe NextOrder
+	{
+		get
+		{
+			if (!this.nextOrderIsWorkable)
+			{
+				return null;
+			}
+			return this.recipe_list[this.nextOrderIdx];
+		}
+	}
+
+				public float OrderProgress
+	{
+		get
+		{
+			return this.orderProgress;
+		}
+		set
+		{
+			this.orderProgress = value;
+		}
+	}
+
+			public bool HasAnyOrder
+	{
+		get
+		{
+			return this.HasWorkingOrder || this.hasOpenOrders;
+		}
+	}
+
+			public bool HasWorker
+	{
+		get
+		{
+			return !this.duplicantOperated || this.workable.worker != null;
+		}
+	}
+
+			public bool WaitingForWorker
+	{
+		get
+		{
+			return this.HasWorkingOrder && !this.HasWorker;
+		}
+	}
+
+			private bool HasWorkingOrder
+	{
+		get
+		{
+			return this.workingOrderIdx > -1;
+		}
+	}
+
+			public List<FetchList2> DebugFetchLists
+	{
+		get
+		{
+			return this.fetchListList;
+		}
+	}
+
+		[OnDeserialized]
+	protected virtual void OnDeserializedMethod()
+	{
+		List<string> list = new List<string>();
+		foreach (string text in this.recipeQueueCounts.Keys)
+		{
+			if (ComplexRecipeManager.Get().GetRecipe(text) == null)
+			{
+				list.Add(text);
+			}
+		}
+		foreach (string text2 in list)
+		{
+			global::Debug.LogWarningFormat("{1} removing missing recipe from queue: {0}", new object[]
+			{
+				text2,
+				base.name
+			});
+			this.recipeQueueCounts.Remove(text2);
+		}
+	}
+
+		protected override void OnPrefabInit()
+	{
+		base.OnPrefabInit();
+		this.GetRecipes();
+		this.simRenderLoadBalance = true;
+		this.choreType = Db.Get().ChoreTypes.Fabricate;
+		base.Subscribe<ComplexFabricator>(-1957399615, ComplexFabricator.OnDroppedAllDelegate);
+		base.Subscribe<ComplexFabricator>(-592767678, ComplexFabricator.OnOperationalChangedDelegate);
+		base.Subscribe<ComplexFabricator>(-905833192, ComplexFabricator.OnCopySettingsDelegate);
+		base.Subscribe<ComplexFabricator>(-1697596308, ComplexFabricator.OnStorageChangeDelegate);
+		base.Subscribe<ComplexFabricator>(-1837862626, ComplexFabricator.OnParticleStorageChangedDelegate);
+		this.workable = base.GetComponent<ComplexFabricatorWorkable>();
+		Components.ComplexFabricators.Add(this);
+		base.Subscribe<ComplexFabricator>(493375141, ComplexFabricator.OnRefreshUserMenuDelegate);
+	}
+
+		protected override void OnSpawn()
+	{
+		base.OnSpawn();
+		this.InitRecipeQueueCount();
+		foreach (string key in this.recipeQueueCounts.Keys)
+		{
+			if (this.recipeQueueCounts[key] == 100)
+			{
+				this.recipeQueueCounts[key] = ComplexFabricator.QUEUE_INFINITE;
+			}
+		}
+		this.buildStorage.Transfer(this.inStorage, true, true);
+		this.DropExcessIngredients(this.inStorage);
+		int num = this.FindRecipeIndex(this.lastWorkingRecipe);
+		if (num > -1)
+		{
+			this.nextOrderIdx = num;
+		}
+		this.UpdateMutantSeedStatusItem();
+	}
+
+		protected override void OnCleanUp()
+	{
+		this.CancelAllOpenOrders();
+		this.CancelChore();
+		Components.ComplexFabricators.Remove(this);
+		base.OnCleanUp();
+	}
+
+		private void OnRefreshUserMenu(object data)
+	{
+		if (SaveLoader.Instance.IsDLCActiveForCurrentSave("EXPANSION1_ID") && this.HasRecipiesWithSeeds())
+		{
+			Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("action_switch_toggle", this.ForbidMutantSeeds ? UI.USERMENUACTIONS.ACCEPT_MUTANT_SEEDS.ACCEPT : UI.USERMENUACTIONS.ACCEPT_MUTANT_SEEDS.REJECT, delegate()
+			{
+				this.ForbidMutantSeeds = !this.ForbidMutantSeeds;
+				this.OnRefreshUserMenu(null);
+			}, global::Action.NumActions, null, null, null, UI.USERMENUACTIONS.ACCEPT_MUTANT_SEEDS.TOOLTIP, true), 1f);
+		}
+	}
+
+		private bool HasRecipiesWithSeeds()
+	{
+		bool result = false;
+		ComplexRecipe[] array = this.recipe_list;
+		for (int i = 0; i < array.Length; i++)
+		{
+			ComplexRecipe.RecipeElement[] ingredients = array[i].ingredients;
+			for (int j = 0; j < ingredients.Length; j++)
+			{
+				GameObject prefab = Assets.GetPrefab(ingredients[j].material);
+				if (prefab != null && prefab.GetComponent<PlantableSeed>() != null)
+				{
+					result = true;
+					break;
+				}
+			}
+		}
+		return result;
+	}
+
+		private void UpdateMutantSeedStatusItem()
+	{
+		base.gameObject.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.FabricatorAcceptsMutantSeeds, SaveLoader.Instance.IsDLCActiveForCurrentSave("EXPANSION1_ID") && this.HasRecipiesWithSeeds() && !this.forbidMutantSeeds, null);
+	}
+
+		private void OnOperationalChanged(object data)
+	{
+		if ((bool)data)
+		{
+			this.queueDirty = true;
+		}
+		else
+		{
+			this.CancelAllOpenOrders();
+		}
+		this.UpdateChore();
+	}
+
+		public virtual void Sim1000ms(float dt)
+	{
+		this.RefreshAndStartNextOrder();
+		if (this.materialNeedCache.Count > 0 && this.fetchListList.Count == 0)
+		{
+			global::Debug.LogWarningFormat(base.gameObject, "{0} has material needs cached, but no open fetches. materialNeedCache={1}, fetchListList={2}", new object[]
+			{
+				base.gameObject,
+				this.materialNeedCache.Count,
+				this.fetchListList.Count
+			});
+			this.queueDirty = true;
+		}
+	}
+
+		protected virtual float ComputeWorkProgress(float dt, ComplexRecipe recipe)
+	{
+		return dt / recipe.time;
+	}
+
+		public void Sim200ms(float dt)
+	{
+		if (!this.operational.IsOperational)
+		{
+			return;
+		}
+		this.operational.SetActive(this.HasWorkingOrder && this.HasWorker, false);
+		if (!this.duplicantOperated && this.HasWorkingOrder)
+		{
+			this.orderProgress += this.ComputeWorkProgress(dt, this.recipe_list[this.workingOrderIdx]);
+			if (this.orderProgress >= 1f)
+			{
+				this.ShowProgressBar(false);
+				this.CompleteWorkingOrder();
+			}
+		}
+	}
+
+		private void RefreshAndStartNextOrder()
+	{
+		if (!this.operational.IsOperational)
+		{
+			return;
+		}
+		if (this.queueDirty)
+		{
+			this.RefreshQueue();
+		}
+		if (!this.HasWorkingOrder && this.nextOrderIsWorkable)
+		{
+			this.ShowProgressBar(true);
+			this.StartWorkingOrder(this.nextOrderIdx);
+		}
+	}
+
+		public virtual float GetPercentComplete()
+	{
+		return this.orderProgress;
+	}
+
+		private void ShowProgressBar(bool show)
+	{
+		if (show && this.showProgressBar && !this.duplicantOperated)
+		{
+			if (this.progressBar == null)
+			{
+				this.progressBar = ProgressBar.CreateProgressBar(base.gameObject, new Func<float>(this.GetPercentComplete));
+			}
+			this.progressBar.enabled = true;
+			this.progressBar.SetVisibility(true);
+			return;
+		}
+		if (this.progressBar != null)
+		{
+			this.progressBar.gameObject.DeleteObject();
+			this.progressBar = null;
+		}
+	}
+
+		public void SetQueueDirty()
+	{
+		this.queueDirty = true;
+	}
+
+		private void RefreshQueue()
+	{
+		this.queueDirty = false;
+		this.ValidateWorkingOrder();
+		this.ValidateNextOrder();
+		this.UpdateOpenOrders();
+		this.DropExcessIngredients(this.inStorage);
+		base.Trigger(1721324763, this);
+	}
+
+		private void StartWorkingOrder(int index)
+	{
+		global::Debug.Assert(!this.HasWorkingOrder, "machineOrderIdx already set");
+		this.workingOrderIdx = index;
+		if (this.recipe_list[this.workingOrderIdx].id != this.lastWorkingRecipe)
+		{
+			this.orderProgress = 0f;
+			this.lastWorkingRecipe = this.recipe_list[this.workingOrderIdx].id;
+		}
+		this.TransferCurrentRecipeIngredientsForBuild();
+		global::Debug.Assert(this.openOrderCounts[this.workingOrderIdx] > 0, "openOrderCount invalid");
+		List<int> list = this.openOrderCounts;
+		int index2 = this.workingOrderIdx;
+		int num = list[index2];
+		list[index2] = num - 1;
+		this.UpdateChore();
+		base.Trigger(2023536846, this.recipe_list[this.workingOrderIdx]);
+		this.AdvanceNextOrder();
+	}
+
+		private void CancelWorkingOrder()
+	{
+		global::Debug.Assert(this.HasWorkingOrder, "machineOrderIdx not set");
+		this.buildStorage.Transfer(this.inStorage, true, true);
+		this.workingOrderIdx = -1;
+		this.orderProgress = 0f;
+		this.UpdateChore();
+	}
+
+		public void CompleteWorkingOrder()
+	{
+		if (!this.HasWorkingOrder)
+		{
+			global::Debug.LogWarning("CompleteWorkingOrder called with no working order.", base.gameObject);
+			return;
+		}
+		ComplexRecipe complexRecipe = this.recipe_list[this.workingOrderIdx];
+		this.SpawnOrderProduct(complexRecipe);
+		float num = this.buildStorage.MassStored();
+		if (num != 0f)
+		{
+			global::Debug.LogWarningFormat(base.gameObject, "{0} build storage contains mass {1} after order completion.", new object[]
+			{
+				base.gameObject,
+				num
+			});
+			this.buildStorage.Transfer(this.inStorage, true, true);
+		}
+		this.DecrementRecipeQueueCountInternal(complexRecipe, true);
+		this.workingOrderIdx = -1;
+		this.orderProgress = 0f;
+		this.CancelChore();
+		base.Trigger(1355439576, complexRecipe);
+		if (!this.cancelling)
+		{
+			this.RefreshAndStartNextOrder();
+		}
+	}
+
+		private void ValidateWorkingOrder()
+	{
+		if (!this.HasWorkingOrder)
+		{
+			return;
+		}
+		ComplexRecipe recipe = this.recipe_list[this.workingOrderIdx];
+		if (!this.IsRecipeQueued(recipe))
+		{
+			this.CancelWorkingOrder();
+		}
+	}
+
+		private void UpdateChore()
+	{
+		if (!this.duplicantOperated)
+		{
+			return;
+		}
+		bool flag = this.operational.IsOperational && this.HasWorkingOrder;
+		if (flag && this.chore == null)
+		{
+			this.CreateChore();
+			return;
+		}
+		if (!flag && this.chore != null)
+		{
+			this.CancelChore();
+		}
+	}
+
+		private void AdvanceNextOrder()
+	{
+		for (int i = 0; i < this.recipe_list.Length; i++)
+		{
+			this.nextOrderIdx = (this.nextOrderIdx + 1) % this.recipe_list.Length;
+			ComplexRecipe recipe = this.recipe_list[this.nextOrderIdx];
+			this.nextOrderIsWorkable = (this.GetRemainingQueueCount(recipe) > 0 && this.HasIngredients(recipe, this.inStorage));
+			if (this.nextOrderIsWorkable)
+			{
+				break;
+			}
+		}
+	}
+
+		private void ValidateNextOrder()
+	{
+		ComplexRecipe recipe = this.recipe_list[this.nextOrderIdx];
+		this.nextOrderIsWorkable = (this.GetRemainingQueueCount(recipe) > 0 && this.HasIngredients(recipe, this.inStorage));
+		if (!this.nextOrderIsWorkable)
+		{
+			this.AdvanceNextOrder();
+		}
+	}
+
+		private void CancelAllOpenOrders()
+	{
+		for (int i = 0; i < this.openOrderCounts.Count; i++)
+		{
+			this.openOrderCounts[i] = 0;
+		}
+		this.ClearMaterialNeeds();
+		this.CancelFetches();
+	}
+
+		private void UpdateOpenOrders()
+	{
+		ComplexRecipe[] recipes = this.GetRecipes();
+		if (recipes.Length != this.openOrderCounts.Count)
+		{
+			global::Debug.LogErrorFormat(base.gameObject, "Recipe count {0} doesn't match open order count {1}", new object[]
+			{
+				recipes.Length,
+				this.openOrderCounts.Count
+			});
+		}
+		bool flag = false;
+		this.hasOpenOrders = false;
+		for (int i = 0; i < recipes.Length; i++)
+		{
+			ComplexRecipe recipe = recipes[i];
+			int recipePrefetchCount = this.GetRecipePrefetchCount(recipe);
+			if (recipePrefetchCount > 0)
+			{
+				this.hasOpenOrders = true;
+			}
+			int num = this.openOrderCounts[i];
+			if (num != recipePrefetchCount)
+			{
+				if (recipePrefetchCount < num)
+				{
+					flag = true;
+				}
+				this.openOrderCounts[i] = recipePrefetchCount;
+			}
+		}
+		DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary pooledDictionary = DictionaryPool<Tag, float, ComplexFabricator>.Allocate();
+		DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary pooledDictionary2 = DictionaryPool<Tag, float, ComplexFabricator>.Allocate();
+		for (int j = 0; j < this.openOrderCounts.Count; j++)
+		{
+			if (this.openOrderCounts[j] > 0)
+			{
+				foreach (ComplexRecipe.RecipeElement recipeElement in this.recipe_list[j].ingredients)
+				{
+					pooledDictionary[recipeElement.material] = this.inStorage.GetAmountAvailable(recipeElement.material);
+				}
+			}
+		}
+		for (int l = 0; l < this.recipe_list.Length; l++)
+		{
+			int num2 = this.openOrderCounts[l];
+			if (num2 > 0)
+			{
+				foreach (ComplexRecipe.RecipeElement recipeElement2 in this.recipe_list[l].ingredients)
+				{
+					float num3 = recipeElement2.amount * (float)num2;
+					float num4 = num3 - pooledDictionary[recipeElement2.material];
+					if (num4 > 0f)
+					{
+						float num5;
+						pooledDictionary2.TryGetValue(recipeElement2.material, out num5);
+						pooledDictionary2[recipeElement2.material] = num5 + num4;
+						pooledDictionary[recipeElement2.material] = 0f;
+					}
+					else
+					{
+						DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary pooledDictionary3 = pooledDictionary;
+						Tag material = recipeElement2.material;
+						pooledDictionary3[material] -= num3;
+					}
+				}
+			}
+		}
+		if (flag)
+		{
+			this.CancelFetches();
+		}
+		if (pooledDictionary2.Count > 0)
+		{
+			this.UpdateFetches(pooledDictionary2);
+		}
+		this.UpdateMaterialNeeds(pooledDictionary2);
+		pooledDictionary2.Recycle();
+		pooledDictionary.Recycle();
+	}
+
+		private void UpdateMaterialNeeds(Dictionary<Tag, float> missingAmounts)
+	{
+		this.ClearMaterialNeeds();
+		foreach (KeyValuePair<Tag, float> keyValuePair in missingAmounts)
+		{
+			MaterialNeeds.UpdateNeed(keyValuePair.Key, keyValuePair.Value, base.gameObject.GetMyWorldId());
+			this.materialNeedCache.Add(keyValuePair.Key, keyValuePair.Value);
+		}
+	}
+
+		private void ClearMaterialNeeds()
+	{
+		foreach (KeyValuePair<Tag, float> keyValuePair in this.materialNeedCache)
+		{
+			MaterialNeeds.UpdateNeed(keyValuePair.Key, -keyValuePair.Value, base.gameObject.GetMyWorldId());
+		}
+		this.materialNeedCache.Clear();
+	}
+
+		public int HighestHEPQueued()
+	{
+		int num = 0;
+		foreach (KeyValuePair<string, int> keyValuePair in this.recipeQueueCounts)
+		{
+			if (keyValuePair.Value > 0)
+			{
+				num = Math.Max(this.recipe_list[this.FindRecipeIndex(keyValuePair.Key)].consumedHEP, num);
+			}
+		}
+		return num;
+	}
+
+		private void OnFetchComplete()
+	{
+		for (int i = this.fetchListList.Count - 1; i >= 0; i--)
+		{
+			if (this.fetchListList[i].IsComplete)
+			{
+				this.fetchListList.RemoveAt(i);
+				this.queueDirty = true;
+			}
+		}
+	}
+
+		private void OnStorageChange(object data)
+	{
+		this.queueDirty = true;
+	}
+
+		private void OnDroppedAll(object data)
+	{
+		if (this.HasWorkingOrder)
+		{
+			this.CancelWorkingOrder();
+		}
+		this.CancelAllOpenOrders();
+		this.RefreshQueue();
+	}
+
+		private void DropExcessIngredients(Storage storage)
+	{
+		HashSet<Tag> hashSet = new HashSet<Tag>();
+		if (this.keepAdditionalTag != Tag.Invalid)
+		{
+			hashSet.Add(this.keepAdditionalTag);
+		}
+		for (int i = 0; i < this.recipe_list.Length; i++)
+		{
+			ComplexRecipe complexRecipe = this.recipe_list[i];
+			if (this.IsRecipeQueued(complexRecipe))
+			{
+				foreach (ComplexRecipe.RecipeElement recipeElement in complexRecipe.ingredients)
+				{
+					hashSet.Add(recipeElement.material);
+				}
+			}
+		}
+		for (int k = storage.items.Count - 1; k >= 0; k--)
+		{
+			GameObject gameObject = storage.items[k];
+			if (!(gameObject == null))
+			{
+				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
+				if (!(component == null) && (!this.keepExcessLiquids || !component.Element.IsLiquid))
+				{
+					KPrefabID component2 = gameObject.GetComponent<KPrefabID>();
+					if (component2 && !hashSet.Contains(component2.PrefabID()))
+					{
+						storage.Drop(gameObject, true);
+					}
+				}
+			}
+		}
+	}
+
+		private void OnCopySettings(object data)
+	{
+		GameObject gameObject = (GameObject)data;
+		if (gameObject == null)
+		{
+			return;
+		}
+		ComplexFabricator component = gameObject.GetComponent<ComplexFabricator>();
+		if (component == null)
+		{
+			return;
+		}
+		this.ForbidMutantSeeds = component.ForbidMutantSeeds;
+		foreach (ComplexRecipe complexRecipe in this.recipe_list)
+		{
+			int count;
+			if (!component.recipeQueueCounts.TryGetValue(complexRecipe.id, out count))
+			{
+				count = 0;
+			}
+			this.SetRecipeQueueCountInternal(complexRecipe, count);
+		}
+		this.RefreshQueue();
+	}
+
+		private int CompareRecipe(ComplexRecipe a, ComplexRecipe b)
+	{
+		if (a.sortOrder != b.sortOrder)
+		{
+			return a.sortOrder - b.sortOrder;
+		}
+		return StringComparer.InvariantCulture.Compare(a.id, b.id);
+	}
+
+		public ComplexRecipe[] GetRecipes()
+	{
+		if (this.recipe_list == null)
+		{
+			Tag prefabTag = base.GetComponent<KPrefabID>().PrefabTag;
+			List<ComplexRecipe> recipes = ComplexRecipeManager.Get().recipes;
+			List<ComplexRecipe> list = new List<ComplexRecipe>();
+			foreach (ComplexRecipe complexRecipe in recipes)
+			{
+				using (List<Tag>.Enumerator enumerator2 = complexRecipe.fabricators.GetEnumerator())
+				{
+					while (enumerator2.MoveNext())
+					{
+						if (enumerator2.Current == prefabTag && SaveLoader.Instance.IsDlcListActiveForCurrentSave(complexRecipe.GetDlcIds()))
+						{
+							list.Add(complexRecipe);
+						}
+					}
+				}
+			}
+			this.recipe_list = list.ToArray();
+			Array.Sort<ComplexRecipe>(this.recipe_list, new Comparison<ComplexRecipe>(this.CompareRecipe));
+		}
+		return this.recipe_list;
+	}
+
+		private void InitRecipeQueueCount()
+	{
+		foreach (ComplexRecipe complexRecipe in this.GetRecipes())
+		{
+			bool flag = false;
+			using (Dictionary<string, int>.KeyCollection.Enumerator enumerator = this.recipeQueueCounts.Keys.GetEnumerator())
+			{
+				while (enumerator.MoveNext())
+				{
+					if (enumerator.Current == complexRecipe.id)
+					{
+						flag = true;
+						break;
+					}
+				}
+			}
+			if (!flag)
+			{
+				this.recipeQueueCounts.Add(complexRecipe.id, 0);
+			}
+			this.openOrderCounts.Add(0);
+		}
+	}
+
+		private int FindRecipeIndex(string id)
+	{
+		for (int i = 0; i < this.recipe_list.Length; i++)
+		{
+			if (this.recipe_list[i].id == id)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
+		public int GetRecipeQueueCount(ComplexRecipe recipe)
+	{
+		return this.recipeQueueCounts[recipe.id];
+	}
+
+		public bool IsRecipeQueued(ComplexRecipe recipe)
+	{
+		int num = this.recipeQueueCounts[recipe.id];
+		global::Debug.Assert(num >= 0 || num == ComplexFabricator.QUEUE_INFINITE);
+		return num != 0;
+	}
+
+		public int GetRecipePrefetchCount(ComplexRecipe recipe)
+	{
+		int remainingQueueCount = this.GetRemainingQueueCount(recipe);
+		global::Debug.Assert(remainingQueueCount >= 0);
+		return Mathf.Min(2, remainingQueueCount);
+	}
+
+		private int GetRemainingQueueCount(ComplexRecipe recipe)
+	{
+		int num = this.recipeQueueCounts[recipe.id];
+		global::Debug.Assert(num >= 0 || num == ComplexFabricator.QUEUE_INFINITE);
+		if (num == ComplexFabricator.QUEUE_INFINITE)
+		{
+			return ComplexFabricator.MAX_QUEUE_SIZE;
+		}
+		if (num > 0)
+		{
+			if (this.IsCurrentRecipe(recipe))
+			{
+				num--;
+			}
+			return num;
+		}
+		return 0;
+	}
+
+		private bool IsCurrentRecipe(ComplexRecipe recipe)
+	{
+		return this.workingOrderIdx >= 0 && this.recipe_list[this.workingOrderIdx].id == recipe.id;
+	}
+
+		public void SetRecipeQueueCount(ComplexRecipe recipe, int count)
+	{
+		this.SetRecipeQueueCountInternal(recipe, count);
+		this.RefreshQueue();
+	}
+
+		private void SetRecipeQueueCountInternal(ComplexRecipe recipe, int count)
+	{
+		this.recipeQueueCounts[recipe.id] = count;
+	}
+
+		public void IncrementRecipeQueueCount(ComplexRecipe recipe)
+	{
+		if (this.recipeQueueCounts[recipe.id] == ComplexFabricator.QUEUE_INFINITE)
+		{
+			this.recipeQueueCounts[recipe.id] = 0;
+		}
+		else if (this.recipeQueueCounts[recipe.id] >= ComplexFabricator.MAX_QUEUE_SIZE)
+		{
+			this.recipeQueueCounts[recipe.id] = ComplexFabricator.QUEUE_INFINITE;
+		}
+		else
+		{
+			Dictionary<string, int> dictionary = this.recipeQueueCounts;
+			string id = recipe.id;
+			int num = dictionary[id];
+			dictionary[id] = num + 1;
+		}
+		this.RefreshQueue();
+	}
+
+		public void DecrementRecipeQueueCount(ComplexRecipe recipe, bool respectInfinite = true)
+	{
+		this.DecrementRecipeQueueCountInternal(recipe, respectInfinite);
+		this.RefreshQueue();
+	}
+
+		private void DecrementRecipeQueueCountInternal(ComplexRecipe recipe, bool respectInfinite = true)
+	{
+		if (!respectInfinite || this.recipeQueueCounts[recipe.id] != ComplexFabricator.QUEUE_INFINITE)
+		{
+			if (this.recipeQueueCounts[recipe.id] == ComplexFabricator.QUEUE_INFINITE)
+			{
+				this.recipeQueueCounts[recipe.id] = ComplexFabricator.MAX_QUEUE_SIZE;
+				return;
+			}
+			if (this.recipeQueueCounts[recipe.id] == 0)
+			{
+				this.recipeQueueCounts[recipe.id] = ComplexFabricator.QUEUE_INFINITE;
+				return;
+			}
+			Dictionary<string, int> dictionary = this.recipeQueueCounts;
+			string id = recipe.id;
+			int num = dictionary[id];
+			dictionary[id] = num - 1;
+		}
+	}
+
+		private void CreateChore()
+	{
+		global::Debug.Assert(this.chore == null, "chore should be null");
+		this.chore = this.workable.CreateWorkChore(this.choreType, this.orderProgress);
+	}
+
+			public override Chore RemoteDockChore
+	{
+		get
+		{
+			if (!this.duplicantOperated)
+			{
+				return null;
+			}
+			return this.chore;
+		}
+	}
+
+		private void CancelChore()
+	{
+		if (this.cancelling)
+		{
+			return;
+		}
+		this.cancelling = true;
+		if (this.chore != null)
+		{
+			this.chore.Cancel("order cancelled");
+			this.chore = null;
+		}
+		this.cancelling = false;
+	}
+
+		private void UpdateFetches(DictionaryPool<Tag, float, ComplexFabricator>.PooledDictionary missingAmounts)
+	{
+		ChoreType byHash = Db.Get().ChoreTypes.GetByHash(this.fetchChoreTypeIdHash);
+		foreach (KeyValuePair<Tag, float> keyValuePair in missingAmounts)
+		{
+			if (!this.allowManualFluidDelivery)
+			{
+				Element element = ElementLoader.GetElement(keyValuePair.Key);
+				if (element != null && (element.IsLiquid || element.IsGas))
+				{
+					continue;
+				}
+			}
+			if (keyValuePair.Value >= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT && !this.HasPendingFetch(keyValuePair.Key))
+			{
+				FetchList2 fetchList = new FetchList2(this.inStorage, byHash);
+				FetchList2 fetchList2 = fetchList;
+				Tag key = keyValuePair.Key;
+				float value = keyValuePair.Value;
+				fetchList2.Add(key, this.ForbiddenTags, value, Operational.State.None);
+				fetchList.ShowStatusItem = false;
+				fetchList.Submit(new System.Action(this.OnFetchComplete), false);
+				this.fetchListList.Add(fetchList);
+			}
+		}
+	}
+
+		private bool HasPendingFetch(Tag tag)
+	{
+		foreach (FetchList2 fetchList in this.fetchListList)
+		{
+			float num;
+			fetchList.MinimumAmount.TryGetValue(tag, out num);
+			if (num > 0f)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+		private void CancelFetches()
+	{
+		foreach (FetchList2 fetchList in this.fetchListList)
+		{
+			fetchList.Cancel("cancel all orders");
+		}
+		this.fetchListList.Clear();
+	}
+
+		protected virtual void TransferCurrentRecipeIngredientsForBuild()
+	{
+		ComplexRecipe.RecipeElement[] ingredients = this.recipe_list[this.workingOrderIdx].ingredients;
+		int i = 0;
+		while (i < ingredients.Length)
+		{
+			ComplexRecipe.RecipeElement recipeElement = ingredients[i];
+			float num;
+			for (;;)
+			{
+				num = recipeElement.amount - this.buildStorage.GetAmountAvailable(recipeElement.material);
+				if (num <= 0f)
+				{
+					break;
+				}
+				if (this.inStorage.GetAmountAvailable(recipeElement.material) <= 0f)
+				{
+					goto Block_2;
+				}
+				this.inStorage.Transfer(this.buildStorage, recipeElement.material, num, false, true);
+			}
+			IL_9D:
+			i++;
+			continue;
+			Block_2:
+			global::Debug.LogWarningFormat("TransferCurrentRecipeIngredientsForBuild ran out of {0} but still needed {1} more.", new object[]
+			{
+				recipeElement.material,
+				num
+			});
+			goto IL_9D;
+		}
+	}
+
+		protected virtual bool HasIngredients(ComplexRecipe recipe, Storage storage)
+	{
+		ComplexRecipe.RecipeElement[] ingredients = recipe.ingredients;
+		if (recipe.consumedHEP > 0)
+		{
+			HighEnergyParticleStorage component = base.GetComponent<HighEnergyParticleStorage>();
+			if (component == null || component.Particles < (float)recipe.consumedHEP)
+			{
+				return false;
+			}
+		}
+		foreach (ComplexRecipe.RecipeElement recipeElement in ingredients)
+		{
+			float amountAvailable = storage.GetAmountAvailable(recipeElement.material);
+			if (recipeElement.amount - amountAvailable >= PICKUPABLETUNING.MINIMUM_PICKABLE_AMOUNT)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+		private void ToggleMutantSeedFetches()
+	{
+		if (this.HasAnyOrder)
+		{
+			ChoreType byHash = Db.Get().ChoreTypes.GetByHash(this.fetchChoreTypeIdHash);
+			List<FetchList2> list = new List<FetchList2>();
+			foreach (FetchList2 fetchList in this.fetchListList)
+			{
+				foreach (FetchOrder2 fetchOrder in fetchList.FetchOrders)
+				{
+					foreach (Tag tag in fetchOrder.Tags)
+					{
+						GameObject prefab = Assets.GetPrefab(tag);
+						if (prefab != null && prefab.GetComponent<PlantableSeed>() != null)
+						{
+							fetchList.Cancel("MutantSeedTagChanged");
+							list.Add(fetchList);
+						}
+					}
+				}
+			}
+			foreach (FetchList2 fetchList2 in list)
+			{
+				this.fetchListList.Remove(fetchList2);
+				foreach (FetchOrder2 fetchOrder2 in fetchList2.FetchOrders)
+				{
+					foreach (Tag tag2 in fetchOrder2.Tags)
+					{
+						FetchList2 fetchList3 = new FetchList2(this.inStorage, byHash);
+						FetchList2 fetchList4 = fetchList3;
+						Tag tag3 = tag2;
+						float totalAmount = fetchOrder2.TotalAmount;
+						fetchList4.Add(tag3, this.ForbiddenTags, totalAmount, Operational.State.None);
+						fetchList3.ShowStatusItem = false;
+						fetchList3.Submit(new System.Action(this.OnFetchComplete), false);
+						this.fetchListList.Add(fetchList3);
+					}
+				}
+			}
+		}
+	}
+
+		protected virtual List<GameObject> SpawnOrderProduct(ComplexRecipe recipe)
+	{
+		List<GameObject> list = new List<GameObject>();
+		SimUtil.DiseaseInfo diseaseInfo;
+		diseaseInfo.count = 0;
+		diseaseInfo.idx = 0;
+		float num = 0f;
+		float num2 = 0f;
+		string text = null;
+		foreach (ComplexRecipe.RecipeElement recipeElement in recipe.ingredients)
+		{
+			num2 += recipeElement.amount;
+		}
+		ComplexRecipe.RecipeElement recipeElement2 = null;
+		foreach (ComplexRecipe.RecipeElement recipeElement3 in recipe.ingredients)
+		{
+			float num3 = recipeElement3.amount / num2;
+			if (recipe.ProductHasFacade && text.IsNullOrWhiteSpace())
+			{
+				RepairableEquipment component = this.buildStorage.FindFirst(recipeElement3.material).GetComponent<RepairableEquipment>();
+				if (component != null)
+				{
+					text = component.facadeID;
+				}
+			}
+			if (recipeElement3.inheritElement || recipeElement3.Edible)
+			{
+				recipeElement2 = recipeElement3;
+			}
+			if (recipeElement3.Edible)
+			{
+				this.buildStorage.TransferMass(this.outStorage, recipeElement3.material, recipeElement3.amount, true, true, true);
+			}
+			else
+			{
+				float num4;
+				SimUtil.DiseaseInfo diseaseInfo2;
+				float num5;
+				this.buildStorage.ConsumeAndGetDisease(recipeElement3.material, recipeElement3.amount, out num4, out diseaseInfo2, out num5);
+				if (diseaseInfo2.count > diseaseInfo.count)
+				{
+					diseaseInfo = diseaseInfo2;
+				}
+				num += num5 * num3;
+			}
+		}
+		if (recipe.consumedHEP > 0)
+		{
+			base.GetComponent<HighEnergyParticleStorage>().ConsumeAndGet((float)recipe.consumedHEP);
+		}
+		foreach (ComplexRecipe.RecipeElement recipeElement4 in recipe.results)
+		{
+			GameObject gameObject = this.buildStorage.FindFirst(recipeElement4.material);
+			if (gameObject != null)
+			{
+				Edible component2 = gameObject.GetComponent<Edible>();
+				if (component2)
+				{
+					ReportManager.Instance.ReportValue(ReportManager.ReportType.CaloriesCreated, -component2.Calories, StringFormatter.Replace(UI.ENDOFDAYREPORT.NOTES.CRAFTED_USED, "{0}", component2.GetProperName()), UI.ENDOFDAYREPORT.NOTES.CRAFTED_CONTEXT);
+				}
+			}
+			switch (recipeElement4.temperatureOperation)
+			{
+			case ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature:
+			case ComplexRecipe.RecipeElement.TemperatureOperation.Heated:
+			{
+				GameObject gameObject2 = GameUtil.KInstantiate(Assets.GetPrefab(recipeElement4.material), Grid.SceneLayer.Ore, null, 0);
+				int cell = Grid.PosToCell(this);
+				gameObject2.transform.SetPosition(Grid.CellToPosCCC(cell, Grid.SceneLayer.Ore) + this.outputOffset);
+				PrimaryElement component3 = gameObject2.GetComponent<PrimaryElement>();
+				component3.Units = recipeElement4.amount;
+				component3.Temperature = ((recipeElement4.temperatureOperation == ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature) ? num : this.heatedTemperature);
+				if (recipeElement2 != null)
+				{
+					Element element = ElementLoader.GetElement(recipeElement2.material);
+					if (element != null)
+					{
+						component3.SetElement(element.id, false);
+					}
+				}
+				if (recipe.ProductHasFacade && !text.IsNullOrWhiteSpace())
+				{
+					Equippable component4 = gameObject2.GetComponent<Equippable>();
+					if (component4 != null)
+					{
+						EquippableFacade.AddFacadeToEquippable(component4, text);
+					}
+				}
+				gameObject2.SetActive(true);
+				float num6 = recipeElement4.amount / recipe.TotalResultUnits();
+				component3.AddDisease(diseaseInfo.idx, Mathf.RoundToInt((float)diseaseInfo.count * num6), "ComplexFabricator.CompleteOrder");
+				if (!recipeElement4.facadeID.IsNullOrWhiteSpace())
+				{
+					Equippable component5 = gameObject2.GetComponent<Equippable>();
+					if (component5 != null)
+					{
+						EquippableFacade.AddFacadeToEquippable(component5, recipeElement4.facadeID);
+					}
+				}
+				gameObject2.GetComponent<KMonoBehaviour>().Trigger(748399584, null);
+				list.Add(gameObject2);
+				if (this.storeProduced || recipeElement4.storeElement)
+				{
+					this.outStorage.Store(gameObject2, false, false, true, false);
+				}
+				break;
+			}
+			case ComplexRecipe.RecipeElement.TemperatureOperation.Melted:
+				if (this.storeProduced || recipeElement4.storeElement)
+				{
+					float temperature = ElementLoader.GetElement(recipeElement4.material).defaultValues.temperature;
+					this.outStorage.AddLiquid(ElementLoader.GetElementID(recipeElement4.material), recipeElement4.amount, temperature, 0, 0, false, true);
+				}
+				break;
+			case ComplexRecipe.RecipeElement.TemperatureOperation.Dehydrated:
+				for (int j = 0; j < (int)recipeElement4.amount; j++)
+				{
+					GameObject gameObject3 = GameUtil.KInstantiate(Assets.GetPrefab(recipeElement4.material), Grid.SceneLayer.Ore, null, 0);
+					int cell2 = Grid.PosToCell(this);
+					gameObject3.transform.SetPosition(Grid.CellToPosCCC(cell2, Grid.SceneLayer.Ore) + this.outputOffset);
+					float amount = recipeElement2.amount / recipeElement4.amount;
+					gameObject3.GetComponent<PrimaryElement>().Temperature = ((recipeElement4.temperatureOperation == ComplexRecipe.RecipeElement.TemperatureOperation.AverageTemperature) ? num : this.heatedTemperature);
+					DehydratedFoodPackage component6 = gameObject3.GetComponent<DehydratedFoodPackage>();
+					if (component6 != null)
+					{
+						Storage component7 = component6.GetComponent<Storage>();
+						this.outStorage.TransferMass(component7, recipeElement2.material, amount, true, false, false);
+					}
+					gameObject3.SetActive(true);
+					gameObject3.GetComponent<KMonoBehaviour>().Trigger(748399584, null);
+					list.Add(gameObject3);
+					if (this.storeProduced || recipeElement4.storeElement)
+					{
+						this.outStorage.Store(gameObject3, false, false, true, false);
+					}
+				}
+				break;
+			}
+			if (list.Count > 0)
+			{
+				SymbolOverrideController component8 = base.GetComponent<SymbolOverrideController>();
+				if (component8 != null)
+				{
+					KAnim.Build build = list[0].GetComponent<KBatchedAnimController>().AnimFiles[0].GetData().build;
+					KAnim.Build.Symbol symbol = build.GetSymbol(build.name);
+					if (symbol != null)
+					{
+						component8.TryRemoveSymbolOverride("output_tracker", 0);
+						component8.AddSymbolOverride("output_tracker", symbol, 0);
+					}
+					else
+					{
+						global::Debug.LogWarning(component8.name + " is missing symbol " + build.name);
+					}
+				}
+			}
+		}
+		if (recipe.producedHEP > 0)
+		{
+			base.GetComponent<HighEnergyParticleStorage>().Store((float)recipe.producedHEP);
+		}
+		return list;
+	}
+
+		public virtual List<Descriptor> GetDescriptors(GameObject go)
+	{
+		List<Descriptor> list = new List<Descriptor>();
+		ComplexRecipe[] recipes = this.GetRecipes();
+		if (recipes.Length != 0)
+		{
+			Descriptor item = default(Descriptor);
+			item.SetupDescriptor(UI.BUILDINGEFFECTS.PROCESSES, UI.BUILDINGEFFECTS.TOOLTIPS.PROCESSES, Descriptor.DescriptorType.Effect);
+			list.Add(item);
+		}
+		foreach (ComplexRecipe complexRecipe in recipes)
+		{
+			string text = "";
+			string uiname = complexRecipe.GetUIName(false);
+			foreach (ComplexRecipe.RecipeElement recipeElement in complexRecipe.ingredients)
+			{
+				text = text + "• " + string.Format(UI.BUILDINGEFFECTS.PROCESSEDITEM, recipeElement.material.ProperName(), recipeElement.amount) + "\n";
+			}
+			Descriptor item2 = new Descriptor(uiname, string.Format(UI.BUILDINGEFFECTS.TOOLTIPS.FABRICATOR_INGREDIENTS, text), Descriptor.DescriptorType.Effect, false);
+			item2.IncreaseIndent();
+			list.Add(item2);
+		}
+		return list;
+	}
+
+		public virtual List<Descriptor> AdditionalEffectsForRecipe(ComplexRecipe recipe)
+	{
+		return new List<Descriptor>();
+	}
+
+		public string GetConversationTopic()
+	{
+		if (this.HasWorkingOrder)
+		{
+			ComplexRecipe complexRecipe = this.recipe_list[this.workingOrderIdx];
+			if (complexRecipe != null)
+			{
+				return complexRecipe.results[0].material.Name;
+			}
+		}
+		return null;
+	}
+
+		public bool NeedsMoreHEPForQueuedRecipe()
+	{
+		if (this.hasOpenOrders)
+		{
+			HighEnergyParticleStorage component = base.GetComponent<HighEnergyParticleStorage>();
+			foreach (KeyValuePair<string, int> keyValuePair in this.recipeQueueCounts)
+			{
+				if (keyValuePair.Value > 0)
+				{
+					foreach (ComplexRecipe complexRecipe in this.GetRecipes())
+					{
+						if (complexRecipe.id == keyValuePair.Key && (float)complexRecipe.consumedHEP > component.Particles)
+						{
+							return true;
+						}
+					}
+				}
+			}
+			return false;
+		}
+		return false;
+	}
+
+		private const int MaxPrefetchCount = 2;
+
+		public bool duplicantOperated = true;
+
+		protected ComplexFabricatorWorkable workable;
+
+		public string SideScreenSubtitleLabel = UI.UISIDESCREENS.FABRICATORSIDESCREEN.SUBTITLE;
+
+		public string SideScreenRecipeScreenTitle = UI.UISIDESCREENS.FABRICATORSIDESCREEN.RECIPE_DETAILS;
+
+		[SerializeField]
+	public HashedString fetchChoreTypeIdHash = Db.Get().ChoreTypes.FabricateFetch.IdHash;
+
+		[SerializeField]
+	public float heatedTemperature;
+
+		[SerializeField]
+	public bool storeProduced;
+
+		[SerializeField]
+	public bool allowManualFluidDelivery = true;
+
+		public ComplexFabricatorSideScreen.StyleSetting sideScreenStyle = ComplexFabricatorSideScreen.StyleSetting.ListQueueHybrid;
+
+		public bool labelByResult = true;
+
+		public Vector3 outputOffset = Vector3.zero;
+
+		public ChoreType choreType;
+
+		public bool keepExcessLiquids;
+
+		public Tag keepAdditionalTag = Tag.Invalid;
+
+		public StatusItem workingStatusItem = Db.Get().BuildingStatusItems.ComplexFabricatorProducing;
+
+		public static int MAX_QUEUE_SIZE = 99;
+
+		public static int QUEUE_INFINITE = -1;
+
+		[Serialize]
+	private Dictionary<string, int> recipeQueueCounts = new Dictionary<string, int>();
+
+		private int nextOrderIdx;
+
+		private bool nextOrderIsWorkable;
+
+		private int workingOrderIdx = -1;
+
+		[Serialize]
+	private string lastWorkingRecipe;
+
+		[Serialize]
+	private float orderProgress;
+
+		private List<int> openOrderCounts = new List<int>();
+
+		[Serialize]
+	private bool forbidMutantSeeds;
+
+		private Tag[] forbiddenMutantTags = new Tag[]
+	{
+		GameTags.MutatedSeed
+	};
+
+		private bool queueDirty = true;
+
+		private bool hasOpenOrders;
+
+		private List<FetchList2> fetchListList = new List<FetchList2>();
+
+		private Chore chore;
+
+		private bool cancelling;
+
+		private ComplexRecipe[] recipe_list;
+
+		private Dictionary<Tag, float> materialNeedCache = new Dictionary<Tag, float>();
+
+		[SerializeField]
+	public Storage inStorage;
+
+		[SerializeField]
+	public Storage buildStorage;
+
+		[SerializeField]
+	public Storage outStorage;
+
+		[MyCmpAdd]
+	private LoopingSounds loopingSounds;
+
+		[MyCmpReq]
+	protected Operational operational;
+
+		[MyCmpAdd]
+	protected ComplexFabricatorSM fabricatorSM;
+
+		private ProgressBar progressBar;
+
+		public bool showProgressBar;
+
+		private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data)
+	{
+		component.OnStorageChange(data);
+	});
+
+		private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnParticleStorageChangedDelegate = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data)
+	{
+		component.OnStorageChange(data);
+	});
+
+		private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnDroppedAllDelegate = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data)
+	{
+		component.OnDroppedAll(data);
+	});
+
+		private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data)
+	{
+		component.OnOperationalChanged(data);
+	});
+
+		private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data)
+	{
+		component.OnCopySettings(data);
+	});
+
+		private static readonly EventSystem.IntraObjectHandler<ComplexFabricator> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<ComplexFabricator>(delegate(ComplexFabricator component, object data)
+	{
+		component.OnRefreshUserMenu(data);
+	});
 }

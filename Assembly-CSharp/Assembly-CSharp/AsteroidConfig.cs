@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class AsteroidConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity("Asteroid", "Asteroid", true);
 		gameObject.AddOrGet<SaveLoadRoot>();
@@ -21,13 +21,13 @@ public class AsteroidConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "Asteroid";
+		public const string ID = "Asteroid";
 }

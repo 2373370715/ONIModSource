@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class GassyMooComet : Comet
 {
-	public void SetCustomInitialFlip(bool state)
+		public void SetCustomInitialFlip(bool state)
 	{
 		this.initialFlipState = new bool?(state);
 	}
 
-	public override void RandomizeVelocity()
+		public override void RandomizeVelocity()
 	{
 		bool flag = false;
 		byte id = Grid.WorldIdx[Grid.PosToCell(base.gameObject.transform.position)];
@@ -32,7 +32,7 @@ public class GassyMooComet : Comet
 		base.GetComponent<KBatchedAnimController>().FlipX = flag;
 	}
 
-	protected override void SpawnCraterPrefabs()
+		protected override void SpawnCraterPrefabs()
 	{
 		KBatchedAnimController animController = base.GetComponent<KBatchedAnimController>();
 		animController.Play("landing", KAnim.PlayMode.Once, 1f, 0f);
@@ -85,9 +85,9 @@ public class GassyMooComet : Comet
 		};
 	}
 
-	public const float MOO_ANGLE = 15f;
+		public const float MOO_ANGLE = 15f;
 
-	public Vector3 mooSpawnImpactOffset = new Vector3(-0.5f, 0f, 0f);
+		public Vector3 mooSpawnImpactOffset = new Vector3(-0.5f, 0f, 0f);
 
-	private bool? initialFlipState;
+		private bool? initialFlipState;
 }

@@ -5,13 +5,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/AtmoSuit")]
 public class AtmoSuit : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<AtmoSuit>(-1697596308, AtmoSuit.OnStorageChangedDelegate);
 	}
 
-	private void RefreshStatusEffects(object data)
+		private void RefreshStatusEffects(object data)
 	{
 		if (this == null)
 		{
@@ -38,7 +38,7 @@ public class AtmoSuit : KMonoBehaviour
 		}
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<AtmoSuit> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<AtmoSuit>(delegate(AtmoSuit component, object data)
+		private static readonly EventSystem.IntraObjectHandler<AtmoSuit> OnStorageChangedDelegate = new EventSystem.IntraObjectHandler<AtmoSuit>(delegate(AtmoSuit component, object data)
 	{
 		component.RefreshStatusEffects(data);
 	});

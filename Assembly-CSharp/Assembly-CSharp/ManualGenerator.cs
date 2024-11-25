@@ -7,9 +7,9 @@ using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
 [AddComponentMenu("KMonoBehaviour/Workable/ManualGenerator")]
-public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
+public class ManualGenerator : RemoteWorkable, ISingleSliderControl, ISliderControl
 {
-		public string SliderTitleKey
+			public string SliderTitleKey
 	{
 		get
 		{
@@ -17,7 +17,7 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		}
 	}
 
-		public string SliderUnits
+			public string SliderUnits
 	{
 		get
 		{
@@ -25,42 +25,42 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		}
 	}
 
-	public int SliderDecimalPlaces(int index)
+		public int SliderDecimalPlaces(int index)
 	{
 		return 0;
 	}
 
-	public float GetSliderMin(int index)
+		public float GetSliderMin(int index)
 	{
 		return 0f;
 	}
 
-	public float GetSliderMax(int index)
+		public float GetSliderMax(int index)
 	{
 		return 100f;
 	}
 
-	public float GetSliderValue(int index)
+		public float GetSliderValue(int index)
 	{
 		return this.batteryRefillPercent * 100f;
 	}
 
-	public void SetSliderValue(float value, int index)
+		public void SetSliderValue(float value, int index)
 	{
 		this.batteryRefillPercent = value / 100f;
 	}
 
-	public string GetSliderTooltipKey(int index)
+		public string GetSliderTooltipKey(int index)
 	{
 		return "STRINGS.UI.UISIDESCREENS.MANUALGENERATORSIDESCREEN.TOOLTIP";
 	}
 
-	string ISliderControl.GetSliderTooltip(int index)
+		string ISliderControl.GetSliderTooltip(int index)
 	{
 		return string.Format(Strings.Get("STRINGS.UI.UISIDESCREENS.MANUALGENERATORSIDESCREEN.TOOLTIP"), this.batteryRefillPercent * 100f);
 	}
 
-		public bool IsPowered
+			public bool IsPowered
 	{
 		get
 		{
@@ -68,12 +68,20 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		}
 	}
 
-	private ManualGenerator()
+			public override Chore RemoteDockChore
+	{
+		get
+		{
+			return this.chore;
+		}
+	}
+
+		private ManualGenerator()
 	{
 		this.showProgressBar = false;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<ManualGenerator>(-592767678, ManualGenerator.OnOperationalChangedDelegate);
@@ -87,7 +95,7 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		EnergyGenerator.EnsureStatusItemAvailable();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.SetWorkTime(float.PositiveInfinity);
@@ -108,14 +116,14 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		Game.Instance.energySim.AddManualGenerator(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.energySim.RemoveManualGenerator(this);
 		this.smi.StopSM("cleanup");
 		base.OnCleanUp();
 	}
 
-	protected void OnActiveChanged(object is_active)
+		protected void OnActiveChanged(object is_active)
 	{
 		if (this.operational.IsActive)
 		{
@@ -123,7 +131,7 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		}
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		GameObject gameObject = data as GameObject;
 		if (gameObject != null)
@@ -136,7 +144,7 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		}
 	}
 
-	public void EnergySim200ms(float dt)
+		public void EnergySim200ms(float dt)
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		if (this.operational.IsActive)
@@ -188,13 +196,13 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		}
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		this.operational.SetActive(true, false);
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		CircuitManager circuitManager = Game.Instance.circuitManager;
 		bool flag = false;
@@ -212,13 +220,13 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		return !flag;
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		this.operational.SetActive(false, false);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		this.operational.SetActive(false, false);
 		if (this.chore != null)
@@ -228,12 +236,12 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		}
 	}
 
-	public override bool InstantlyFinish(Worker worker)
+		public override bool InstantlyFinish(WorkerBase worker)
 	{
 		return false;
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		if (!this.buildingEnabledButton.IsEnabled)
 		{
@@ -241,31 +249,31 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	[SerializeField]
 	private float batteryRefillPercent = 0.5f;
 
-	private const float batteryStopRunningPercent = 1f;
+		private const float batteryStopRunningPercent = 1f;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Generator generator;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private BuildingEnabledButton buildingEnabledButton;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private Chore chore;
+		private Chore chore;
 
-	private int powerCell;
+		private int powerCell;
 
-	private ManualGenerator.GeneratePowerSM.Instance smi;
+		private ManualGenerator.GeneratePowerSM.Instance smi;
 
-	private static readonly KAnimHashedString[] symbol_names = new KAnimHashedString[]
+		private static readonly KAnimHashedString[] symbol_names = new KAnimHashedString[]
 	{
 		"meter",
 		"meter_target",
@@ -275,24 +283,24 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 		"meter_tubing"
 	};
 
-	private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnActiveChangedDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
 	{
 		component.OnActiveChanged(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ManualGenerator> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<ManualGenerator>(delegate(ManualGenerator component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	public class GeneratePowerSM : GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance>
+		public class GeneratePowerSM : GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.off;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -303,24 +311,24 @@ public class ManualGenerator : Workable, ISingleSliderControl, ISliderControl
 			this.working.loop.PlayAnim("working_loop", KAnim.PlayMode.Loop).EventTransition(GameHashes.ActiveChanged, this.off, (ManualGenerator.GeneratePowerSM.Instance smi) => this.masterTarget.Get(smi) != null && !smi.master.GetComponent<Operational>().IsActive);
 		}
 
-		public GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State off;
+				public GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State off;
 
-		public GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State on;
+				public GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State on;
 
-		public ManualGenerator.GeneratePowerSM.WorkingStates working;
+				public ManualGenerator.GeneratePowerSM.WorkingStates working;
 
-		public class WorkingStates : GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State
+				public class WorkingStates : GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State
 		{
-			public GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State pre;
+						public GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State pre;
 
-			public GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State loop;
+						public GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State loop;
 
-			public GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State pst;
+						public GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.State pst;
 		}
 
-		public new class Instance : GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.GameInstance
+				public new class Instance : GameStateMachine<ManualGenerator.GeneratePowerSM, ManualGenerator.GeneratePowerSM.Instance, IStateMachineTarget, object>.GameInstance
 		{
-			public Instance(IStateMachineTarget master) : base(master)
+						public Instance(IStateMachineTarget master) : base(master)
 			{
 			}
 		}

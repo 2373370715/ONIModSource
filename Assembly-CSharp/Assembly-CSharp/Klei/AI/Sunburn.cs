@@ -4,9 +4,9 @@ using STRINGS;
 
 namespace Klei.AI
 {
-	public class Sunburn : Sickness
+		public class Sunburn : Sickness
 	{
-		public Sunburn() : base("SunburnSickness", Sickness.SicknessType.Ailment, Sickness.Severity.Minor, 0.005f, new List<Sickness.InfectionVector>
+				public Sunburn() : base("SunburnSickness", Sickness.SicknessType.Ailment, Sickness.Severity.Minor, 0.005f, new List<Sickness.InfectionVector>
 		{
 			Sickness.InfectionVector.Exposure
 		}, 1020f, null)
@@ -25,6 +25,6 @@ namespace Klei.AI
 			base.AddSicknessComponent(new PeriodicEmoteSickness(Db.Get().Emotes.Minion.Hot, 5f));
 		}
 
-		public const string ID = "SunburnSickness";
+				public const string ID = "SunburnSickness";
 	}
 }

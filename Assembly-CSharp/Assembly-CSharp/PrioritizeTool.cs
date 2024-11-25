@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class PrioritizeTool : FilteredDragTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		PrioritizeTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.interceptNumberKeysForPriority = true;
@@ -19,7 +19,7 @@ public class PrioritizeTool : FilteredDragTool
 		Game.Instance.prioritizableRenderer.currentTool = this;
 	}
 
-	public override string GetFilterLayerFromGameObject(GameObject input)
+		public override string GetFilterLayerFromGameObject(GameObject input)
 	{
 		bool flag = false;
 		bool flag2 = false;
@@ -51,7 +51,7 @@ public class PrioritizeTool : FilteredDragTool
 		return ToolParameterMenu.FILTERLAYERS.OPERATE;
 	}
 
-	protected override void GetDefaultFilters(Dictionary<string, ToolParameterMenu.ToggleState> filters)
+		protected override void GetDefaultFilters(Dictionary<string, ToolParameterMenu.ToggleState> filters)
 	{
 		filters.Add(ToolParameterMenu.FILTERLAYERS.ALL, ToolParameterMenu.ToggleState.On);
 		filters.Add(ToolParameterMenu.FILTERLAYERS.CONSTRUCTION, ToolParameterMenu.ToggleState.Off);
@@ -60,7 +60,7 @@ public class PrioritizeTool : FilteredDragTool
 		filters.Add(ToolParameterMenu.FILTERLAYERS.OPERATE, ToolParameterMenu.ToggleState.Off);
 	}
 
-	private bool TryPrioritizeGameObject(GameObject target, PrioritySetting priority)
+		private bool TryPrioritizeGameObject(GameObject target, PrioritySetting priority)
 	{
 		string filterLayerFromGameObject = this.GetFilterLayerFromGameObject(target);
 		if (base.IsActiveLayer(filterLayerFromGameObject))
@@ -75,7 +75,7 @@ public class PrioritizeTool : FilteredDragTool
 		return false;
 	}
 
-	protected override void OnDragTool(int cell, int distFromOrigin)
+		protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		PrioritySetting lastSelectedPriority = ToolMenu.Instance.PriorityScreen.GetLastSelectedPriority();
 		int num = 0;
@@ -109,7 +109,7 @@ public class PrioritizeTool : FilteredDragTool
 		}
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		base.OnActivateTool();
 		ToolMenu.Instance.PriorityScreen.ShowDiagram(true);
@@ -117,7 +117,7 @@ public class PrioritizeTool : FilteredDragTool
 		ToolMenu.Instance.PriorityScreen.transform.localScale = new Vector3(1.35f, 1.35f, 1.35f);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		base.OnDeactivateTool(new_tool);
 		ToolMenu.Instance.PriorityScreen.Show(false);
@@ -125,7 +125,7 @@ public class PrioritizeTool : FilteredDragTool
 		ToolMenu.Instance.PriorityScreen.transform.localScale = new Vector3(1f, 1f, 1f);
 	}
 
-	public void Update()
+		public void Update()
 	{
 		PrioritySetting lastSelectedPriority = ToolMenu.Instance.PriorityScreen.GetLastSelectedPriority();
 		int num = 0;
@@ -146,9 +146,9 @@ public class PrioritizeTool : FilteredDragTool
 		}
 	}
 
-	public GameObject Placer;
+		public GameObject Placer;
 
-	public static PrioritizeTool Instance;
+		public static PrioritizeTool Instance;
 
-	public Texture2D[] cursors;
+		public Texture2D[] cursors;
 }

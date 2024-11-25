@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace ProcGenGame
 {
-	public class Border : Path
+		public class Border : Path
 	{
-		public Border(Neighbors neighbors, Vector2 e0, Vector2 e1)
+				public Border(Neighbors neighbors, Vector2 e0, Vector2 e1)
 		{
 			this.neighbors = neighbors;
 			Vector2 vector = e1 - e0;
@@ -21,7 +21,7 @@ namespace ProcGenGame
 			base.AddSegment(e1, e0);
 		}
 
-		private void SetCell(int gridCell, float defaultTemperature, TerrainCell.SetValuesFunction SetValues, SeededRandom rnd)
+				private void SetCell(int gridCell, float defaultTemperature, TerrainCell.SetValuesFunction SetValues, SeededRandom rnd)
 		{
 			WeightedSimHash weightedSimHash = WeightedRandom.Choose<WeightedSimHash>(this.element, rnd);
 			TerrainCell.ElementOverride elementOverride = TerrainCell.GetElementOverride(weightedSimHash.element, weightedSimHash.overrides);
@@ -32,7 +32,7 @@ namespace ProcGenGame
 			SetValues(gridCell, elementOverride.element, elementOverride.pdelement, elementOverride.dc);
 		}
 
-		public void ConvertToMap(Chunk world, TerrainCell.SetValuesFunction SetValues, float neighbour0Temperature, float neighbour1Temperature, float midTemp, SeededRandom rnd, int snapLastCells)
+				public void ConvertToMap(Chunk world, TerrainCell.SetValuesFunction SetValues, float neighbour0Temperature, float neighbour1Temperature, float midTemp, SeededRandom rnd, int snapLastCells)
 		{
 			for (int i = 0; i < this.pathElements.Count; i++)
 			{
@@ -72,10 +72,10 @@ namespace ProcGenGame
 			}
 		}
 
-		public Neighbors neighbors;
+				public Neighbors neighbors;
 
-		public List<WeightedSimHash> element;
+				public List<WeightedSimHash> element;
 
-		public float width;
+				public float width;
 	}
 }

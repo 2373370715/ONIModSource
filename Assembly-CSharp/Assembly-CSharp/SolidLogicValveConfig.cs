@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SolidLogicValveConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SolidLogicValve";
 		int width = 1;
@@ -43,11 +43,11 @@ public class SolidLogicValveConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>().unNetworkedValue = 0;
 		go.GetComponent<RequireInputs>().SetRequirements(true, false);
@@ -55,7 +55,7 @@ public class SolidLogicValveConfig : IBuildingConfig
 		go.AddOrGet<SolidLogicValve>();
 	}
 
-	public const string ID = "SolidLogicValve";
+		public const string ID = "SolidLogicValve";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Solid;
 }

@@ -3,19 +3,19 @@ using System.Collections.Generic;
 
 public class DevPanelList
 {
-	public DevPanel AddPanelFor<T>() where T : DevTool, new()
+		public DevPanel AddPanelFor<T>() where T : DevTool, new()
 	{
 		return this.AddPanelFor(Activator.CreateInstance<T>());
 	}
 
-	public DevPanel AddPanelFor(DevTool devTool)
+		public DevPanel AddPanelFor(DevTool devTool)
 	{
 		DevPanel devPanel = new DevPanel(devTool, this);
 		this.activePanels.Add(devPanel);
 		return devPanel;
 	}
 
-	public Option<T> GetDevTool<T>() where T : DevTool
+		public Option<T> GetDevTool<T>() where T : DevTool
 	{
 		foreach (DevPanel devPanel in this.activePanels)
 		{
@@ -28,7 +28,7 @@ public class DevPanelList
 		return Option.None;
 	}
 
-	public T AddOrGetDevTool<T>() where T : DevTool, new()
+		public T AddOrGetDevTool<T>() where T : DevTool, new()
 	{
 		bool flag;
 		T t;
@@ -43,7 +43,7 @@ public class DevPanelList
 		return t2;
 	}
 
-	public void ClosePanel(DevPanel panel)
+		public void ClosePanel(DevPanel panel)
 	{
 		if (this.activePanels.Remove(panel))
 		{
@@ -51,7 +51,7 @@ public class DevPanelList
 		}
 	}
 
-	public void Render()
+		public void Render()
 	{
 		if (this.activePanels.Count == 0)
 		{
@@ -75,13 +75,13 @@ public class DevPanelList
 		}
 	}
 
-	public void Internal_InitPanelId(Type initialDevToolType, out string panelId, out uint idPostfixNumber)
+		public void Internal_InitPanelId(Type initialDevToolType, out string panelId, out uint idPostfixNumber)
 	{
 		idPostfixNumber = this.Internal_GetUniqueIdPostfix(initialDevToolType);
 		panelId = initialDevToolType.Name + idPostfixNumber.ToString();
 	}
 
-	public uint Internal_GetUniqueIdPostfix(Type initialDevToolType)
+		public uint Internal_GetUniqueIdPostfix(Type initialDevToolType)
 	{
 		uint result;
 		using (HashSetPool<uint, DevPanelList>.PooledHashSet pooledHashSet = HashSetPool<uint, DevPanelList>.Allocate())
@@ -108,7 +108,7 @@ public class DevPanelList
 		return result;
 	}
 
-	private List<DevPanel> activePanels = new List<DevPanel>();
+		private List<DevPanel> activePanels = new List<DevPanel>();
 
-	private uint fallbackUniqueIdPostfixNumber = 300U;
+		private uint fallbackUniqueIdPostfixNumber = 300U;
 }

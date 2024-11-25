@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ClothingWearer")]
 public class ClothingWearer : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.decorProvider = base.GetComponent<DecorProvider>();
@@ -23,7 +23,7 @@ public class ClothingWearer : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.decorProvider.decor.Add(this.decorModifier);
@@ -56,13 +56,13 @@ public class ClothingWearer : KMonoBehaviour
 		}, null, null);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.spawnApplyClothesHandle.ClearScheduler();
 		base.OnCleanUp();
 	}
 
-	public void ChangeClothes(ClothingWearer.ClothingInfo clothingInfo)
+		public void ChangeClothes(ClothingWearer.ClothingInfo clothingInfo)
 	{
 		this.decorProvider.baseRadius = 3f;
 		this.currentClothing = clothingInfo;
@@ -71,25 +71,25 @@ public class ClothingWearer : KMonoBehaviour
 		this.decorModifier.SetValue((float)this.currentClothing.decorMod);
 	}
 
-	public void ChangeToDefaultClothes()
+		public void ChangeToDefaultClothes()
 	{
 		this.ChangeClothes(new ClothingWearer.ClothingInfo(ClothingWearer.ClothingInfo.BASIC_CLOTHING.name, ClothingWearer.ClothingInfo.BASIC_CLOTHING.decorMod, ClothingWearer.ClothingInfo.BASIC_CLOTHING.conductivityMod, ClothingWearer.ClothingInfo.BASIC_CLOTHING.homeostasisEfficiencyMultiplier));
 	}
 
-	private DecorProvider decorProvider;
+		private DecorProvider decorProvider;
 
-	private SchedulerHandle spawnApplyClothesHandle;
+		private SchedulerHandle spawnApplyClothesHandle;
 
-	private AttributeModifier decorModifier;
+		private AttributeModifier decorModifier;
 
-	private AttributeModifier conductivityModifier;
+		private AttributeModifier conductivityModifier;
 
-	[Serialize]
+		[Serialize]
 	public ClothingWearer.ClothingInfo currentClothing;
 
-	public class ClothingInfo
+		public class ClothingInfo
 	{
-		public ClothingInfo(string _name, int _decor, float _temperature, float _homeostasisEfficiencyMultiplier)
+				public ClothingInfo(string _name, int _decor, float _temperature, float _homeostasisEfficiencyMultiplier)
 		{
 			this.name = _name;
 			this.decorMod = _decor;
@@ -97,7 +97,7 @@ public class ClothingWearer : KMonoBehaviour
 			this.homeostasisEfficiencyMultiplier = _homeostasisEfficiencyMultiplier;
 		}
 
-		public static void OnEquipVest(Equippable eq, ClothingWearer.ClothingInfo clothingInfo)
+				public static void OnEquipVest(Equippable eq, ClothingWearer.ClothingInfo clothingInfo)
 		{
 			if (eq == null || eq.assignee == null)
 			{
@@ -117,7 +117,7 @@ public class ClothingWearer : KMonoBehaviour
 			global::Debug.LogWarning("Clothing item cannot be equipped to assignee because they lack ClothingWearer component");
 		}
 
-		public static void OnUnequipVest(Equippable eq)
+				public static void OnUnequipVest(Equippable eq)
 		{
 			if (eq != null && eq.assignee != null)
 			{
@@ -145,7 +145,7 @@ public class ClothingWearer : KMonoBehaviour
 			}
 		}
 
-		public static void SetupVest(GameObject go)
+				public static void SetupVest(GameObject go)
 		{
 			go.GetComponent<KPrefabID>().AddTag(GameTags.Clothes, false);
 			Equippable equippable = go.GetComponent<Equippable>();
@@ -157,28 +157,28 @@ public class ClothingWearer : KMonoBehaviour
 			go.GetComponent<KBatchedAnimController>().sceneLayer = Grid.SceneLayer.BuildingBack;
 		}
 
-		[Serialize]
+				[Serialize]
 		public string name = "";
 
-		[Serialize]
+				[Serialize]
 		public int decorMod;
 
-		[Serialize]
+				[Serialize]
 		public float conductivityMod;
 
-		[Serialize]
+				[Serialize]
 		public float homeostasisEfficiencyMultiplier;
 
-		public static readonly ClothingWearer.ClothingInfo BASIC_CLOTHING = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.COOL_VEST.GENERICNAME, -5, 0.0025f, -1.25f);
+				public static readonly ClothingWearer.ClothingInfo BASIC_CLOTHING = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.COOL_VEST.GENERICNAME, -5, 0.0025f, -1.25f);
 
-		public static readonly ClothingWearer.ClothingInfo WARM_CLOTHING = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.WARM_VEST.NAME, 0, 0.008f, -1.25f);
+				public static readonly ClothingWearer.ClothingInfo WARM_CLOTHING = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.WARM_VEST.NAME, 0, 0.008f, -1.25f);
 
-		public static readonly ClothingWearer.ClothingInfo COOL_CLOTHING = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.COOL_VEST.NAME, -10, 0.0005f, 0f);
+				public static readonly ClothingWearer.ClothingInfo COOL_CLOTHING = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.COOL_VEST.NAME, -10, 0.0005f, 0f);
 
-		public static readonly ClothingWearer.ClothingInfo FANCY_CLOTHING = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.FUNKY_VEST.NAME, 30, 0.0025f, -1.25f);
+				public static readonly ClothingWearer.ClothingInfo FANCY_CLOTHING = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.FUNKY_VEST.NAME, 30, 0.0025f, -1.25f);
 
-		public static readonly ClothingWearer.ClothingInfo CUSTOM_CLOTHING = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.CUSTOMCLOTHING.NAME, 40, 0.0025f, -1.25f);
+				public static readonly ClothingWearer.ClothingInfo CUSTOM_CLOTHING = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.CUSTOMCLOTHING.NAME, 40, 0.0025f, -1.25f);
 
-		public static readonly ClothingWearer.ClothingInfo SLEEP_CLINIC_PAJAMAS = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.CUSTOMCLOTHING.NAME, 40, 0.0025f, -1.25f);
+				public static readonly ClothingWearer.ClothingInfo SLEEP_CLINIC_PAJAMAS = new ClothingWearer.ClothingInfo(EQUIPMENT.PREFABS.CUSTOMCLOTHING.NAME, 40, 0.0025f, -1.25f);
 	}
 }

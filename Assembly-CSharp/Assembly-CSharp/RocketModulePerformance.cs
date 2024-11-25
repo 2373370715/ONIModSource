@@ -3,14 +3,14 @@
 [Serializable]
 public class RocketModulePerformance
 {
-	public RocketModulePerformance(float burden, float fuelKilogramPerDistance, float enginePower)
+		public RocketModulePerformance(float burden, float fuelKilogramPerDistance, float enginePower)
 	{
 		this.burden = burden;
 		this.fuelKilogramPerDistance = fuelKilogramPerDistance;
 		this.enginePower = enginePower;
 	}
 
-		public float Burden
+			public float Burden
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class RocketModulePerformance
 		}
 	}
 
-		public float FuelKilogramPerDistance
+			public float FuelKilogramPerDistance
 	{
 		get
 		{
@@ -26,7 +26,7 @@ public class RocketModulePerformance
 		}
 	}
 
-		public float EnginePower
+			public float EnginePower
 	{
 		get
 		{
@@ -34,9 +34,9 @@ public class RocketModulePerformance
 		}
 	}
 
-	public float burden;
+		public float burden;
 
-	public float fuelKilogramPerDistance;
+		public float fuelKilogramPerDistance;
 
-	public float enginePower;
+		public float enginePower;
 }

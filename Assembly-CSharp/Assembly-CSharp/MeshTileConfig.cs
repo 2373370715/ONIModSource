@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MeshTileConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MeshTile";
 		int width = 1;
@@ -38,7 +38,7 @@ public class MeshTileConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -48,7 +48,7 @@ public class MeshTileConfig : IBuildingConfig
 		go.AddOrGet<BuildingHP>().destroyOnDamaged = true;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
 		go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles, false);
@@ -56,13 +56,13 @@ public class MeshTileConfig : IBuildingConfig
 		go.AddComponent<ZoneTile>();
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.AddOrGet<KAnimGridTileVisualizer>();
 	}
 
-	public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_mesh_tops");
+		public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_mesh_tops");
 
-	public const string ID = "MeshTile";
+		public const string ID = "MeshTile";
 }

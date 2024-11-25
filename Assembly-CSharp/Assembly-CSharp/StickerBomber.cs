@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StickerBomber : GameStateMachine<StickerBomber, StickerBomber.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.neutral;
 		this.root.TagTransition(GameTags.Dead, null, false);
@@ -21,42 +21,42 @@ public class StickerBomber : GameStateMachine<StickerBomber, StickerBomber.Insta
 		}).ToggleReactable((StickerBomber.Instance smi) => smi.CreateReactable()).OnSignal(this.doneStickerBomb, this.overjoyed.idle);
 	}
 
-	public StateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.Signal doneStickerBomb;
+		public StateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.Signal doneStickerBomb;
 
-	public GameStateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.State neutral;
+		public GameStateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.State neutral;
 
-	public StickerBomber.OverjoyedStates overjoyed;
+		public StickerBomber.OverjoyedStates overjoyed;
 
-	public class OverjoyedStates : GameStateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.State
+		public class OverjoyedStates : GameStateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.State idle;
+				public GameStateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.State idle;
 
-		public GameStateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.State place_stickers;
+				public GameStateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.State place_stickers;
 	}
 
-	public new class Instance : GameStateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<StickerBomber, StickerBomber.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 		}
 
-		public Reactable CreateReactable()
+				public Reactable CreateReactable()
 		{
 			return new StickerBomber.Instance.StickerBombReactable(base.master.gameObject, base.smi);
 		}
 
-		[Serialize]
+				[Serialize]
 		public float nextStickerBomb;
 
-		private class StickerBombReactable : Reactable
+				private class StickerBombReactable : Reactable
 		{
-			public StickerBombReactable(GameObject gameObject, StickerBomber.Instance stickerBomber) : base(gameObject, "StickerBombReactable", Db.Get().ChoreTypes.Build, 2, 1, false, 0f, 0f, float.PositiveInfinity, 0f, ObjectLayer.NumLayers)
+						public StickerBombReactable(GameObject gameObject, StickerBomber.Instance stickerBomber) : base(gameObject, "StickerBombReactable", Db.Get().ChoreTypes.Build, 2, 1, false, 0f, 0f, float.PositiveInfinity, 0f, ObjectLayer.NumLayers)
 			{
 				this.preventChoreInterruption = true;
 				this.stickerBomber = stickerBomber;
 			}
 
-			public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
+						public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 			{
 				if (this.reactor != null)
 				{
@@ -74,7 +74,7 @@ public class StickerBomber : GameStateMachine<StickerBomber, StickerBomber.Insta
 				return !(component == null) && component.CurrentNavType != NavType.Tube && component.CurrentNavType != NavType.Ladder && component.CurrentNavType != NavType.Pole;
 			}
 
-			protected override void InternalBegin()
+						protected override void InternalBegin()
 			{
 				this.stickersToPlace = UnityEngine.Random.Range(4, 6);
 				this.STICKER_PLACE_TIMER = this.TIME_PER_STICKER_PLACED;
@@ -90,7 +90,7 @@ public class StickerBomber : GameStateMachine<StickerBomber, StickerBomber.Insta
 				this.kbac.Queue(this.loop_anim, KAnim.PlayMode.Loop, 1f, 0f);
 			}
 
-			public override void Update(float dt)
+						public override void Update(float dt)
 			{
 				this.STICKER_PLACE_TIMER -= dt;
 				if (this.STICKER_PLACE_TIMER <= 0f)
@@ -105,7 +105,7 @@ public class StickerBomber : GameStateMachine<StickerBomber, StickerBomber.Insta
 				}
 			}
 
-			protected override void InternalEnd()
+						protected override void InternalEnd()
 			{
 				if (this.kbac != null)
 				{
@@ -116,7 +116,7 @@ public class StickerBomber : GameStateMachine<StickerBomber, StickerBomber.Insta
 				this.stickersPlaced = 0;
 			}
 
-			private int FindPlacementCell()
+						private int FindPlacementCell()
 			{
 				int cell = Grid.PosToCell(this.reactor.transform.GetPosition() + Vector3.up);
 				ListPool<int, PathFinder>.PooledList pooledList = ListPool<int, PathFinder>.Allocate();
@@ -142,7 +142,7 @@ public class StickerBomber : GameStateMachine<StickerBomber, StickerBomber.Insta
 				return 0;
 			}
 
-			private void PlaceSticker()
+						private void PlaceSticker()
 			{
 				this.stickersPlaced++;
 				Vector3 a = Grid.CellToPos(this.placementCell);
@@ -163,37 +163,37 @@ public class StickerBomber : GameStateMachine<StickerBomber, StickerBomber.Insta
 				}
 			}
 
-			protected override void InternalCleanup()
+						protected override void InternalCleanup()
 			{
 			}
 
-			private int stickersToPlace;
+						private int stickersToPlace;
 
-			private int stickersPlaced;
+						private int stickersPlaced;
 
-			private int placementCell;
+						private int placementCell;
 
-			private float tile_random_range = 1f;
+						private float tile_random_range = 1f;
 
-			private float tile_random_rotation = 90f;
+						private float tile_random_rotation = 90f;
 
-			private float TIME_PER_STICKER_PLACED = 0.66f;
+						private float TIME_PER_STICKER_PLACED = 0.66f;
 
-			private float STICKER_PLACE_TIMER;
+						private float STICKER_PLACE_TIMER;
 
-			private KBatchedAnimController kbac;
+						private KBatchedAnimController kbac;
 
-			private KAnimFile animset = Assets.GetAnim("anim_stickers_kanim");
+						private KAnimFile animset = Assets.GetAnim("anim_stickers_kanim");
 
-			private HashedString pre_anim = "working_pre";
+						private HashedString pre_anim = "working_pre";
 
-			private HashedString loop_anim = "working_loop";
+						private HashedString loop_anim = "working_loop";
 
-			private HashedString pst_anim = "working_pst";
+						private HashedString pst_anim = "working_pst";
 
-			private StickerBomber.Instance stickerBomber;
+						private StickerBomber.Instance stickerBomber;
 
-			private Func<int, bool> canPlaceStickerCb = (int cell) => !Grid.Solid[cell] && (!Grid.IsValidCell(Grid.CellLeft(cell)) || !Grid.Solid[Grid.CellLeft(cell)]) && (!Grid.IsValidCell(Grid.CellRight(cell)) || !Grid.Solid[Grid.CellRight(cell)]) && (!Grid.IsValidCell(Grid.OffsetCell(cell, 0, 1)) || !Grid.Solid[Grid.OffsetCell(cell, 0, 1)]) && (!Grid.IsValidCell(Grid.OffsetCell(cell, 0, -1)) || !Grid.Solid[Grid.OffsetCell(cell, 0, -1)]) && !Grid.IsCellOpenToSpace(cell);
+						private Func<int, bool> canPlaceStickerCb = (int cell) => !Grid.Solid[cell] && (!Grid.IsValidCell(Grid.CellLeft(cell)) || !Grid.Solid[Grid.CellLeft(cell)]) && (!Grid.IsValidCell(Grid.CellRight(cell)) || !Grid.Solid[Grid.CellRight(cell)]) && (!Grid.IsValidCell(Grid.OffsetCell(cell, 0, 1)) || !Grid.Solid[Grid.OffsetCell(cell, 0, 1)]) && (!Grid.IsValidCell(Grid.OffsetCell(cell, 0, -1)) || !Grid.Solid[Grid.OffsetCell(cell, 0, -1)]) && !Grid.IsCellOpenToSpace(cell);
 		}
 	}
 }

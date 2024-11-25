@@ -9,9 +9,9 @@ using TemplateClasses;
 
 namespace ProcGenGame
 {
-	public static class WorldGenSimUtil
+		public static class WorldGenSimUtil
 	{
-		public unsafe static bool DoSettleSim(WorldGenSettings settings, BinaryWriter writer, ref Sim.Cell[] cells, ref float[] bgTemp, ref Sim.DiseaseCell[] dcs, WorldGen.OfflineCallbackFunction updateProgressFn, Data data, List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, Action<OfflineWorldGen.ErrorInfo> error_cb, int baseId)
+				public unsafe static bool DoSettleSim(WorldGenSettings settings, BinaryWriter writer, ref Sim.Cell[] cells, ref float[] bgTemp, ref Sim.DiseaseCell[] dcs, WorldGen.OfflineCallbackFunction updateProgressFn, Data data, List<TemplateSpawning.TemplateSpawner> templateSpawnTargets, Action<OfflineWorldGen.ErrorInfo> error_cb, int baseId)
 		{
 			Sim.SIM_Initialize(new Sim.GAME_MessageHandler(Sim.DLL_MessageHandler));
 			SimMessages.CreateSimElementsTable(ElementLoader.elements);
@@ -112,7 +112,7 @@ namespace ProcGenGame
 			return result;
 		}
 
-		private static bool SaveSim(BinaryWriter writer, Data data, int baseId, Action<OfflineWorldGen.ErrorInfo> error_cb)
+				private static bool SaveSim(BinaryWriter writer, Data data, int baseId, Action<OfflineWorldGen.ErrorInfo> error_cb)
 		{
 			bool result;
 			try
@@ -180,7 +180,7 @@ namespace ProcGenGame
 			return result;
 		}
 
-		public static void LoadSim(IReader reader, int baseCount, List<SimSaveFileStructure> loadedWorlds)
+				public static void LoadSim(IReader reader, int baseCount, List<SimSaveFileStructure> loadedWorlds)
 		{
 			try
 			{
@@ -210,6 +210,6 @@ namespace ProcGenGame
 			}
 		}
 
-		private const int STEPS = 500;
+				private const int STEPS = 500;
 	}
 }

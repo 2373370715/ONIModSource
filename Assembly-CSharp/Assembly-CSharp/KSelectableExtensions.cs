@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class KSelectableExtensions
 {
-	public static string GetProperName(this Component cmp)
+		public static string GetProperName(this Component cmp)
 	{
 		if (cmp != null && cmp.gameObject != null)
 		{
@@ -12,7 +12,7 @@ public static class KSelectableExtensions
 		return "";
 	}
 
-	public static string GetProperName(this GameObject go)
+		public static string GetProperName(this GameObject go)
 	{
 		if (go != null)
 		{
@@ -25,7 +25,7 @@ public static class KSelectableExtensions
 		return "";
 	}
 
-	public static string GetProperName(this KSelectable cmp)
+		public static string GetProperName(this KSelectable cmp)
 	{
 		if (cmp != null)
 		{

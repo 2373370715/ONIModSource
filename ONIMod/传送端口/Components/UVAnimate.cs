@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-
+namespace RsTransferPort;
 
 [RequireComponent(typeof(RawImage))]
 public class UVAnimate : MonoBehaviour {

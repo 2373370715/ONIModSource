@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class CodexImageLayoutMB : UIBehaviour
 {
-	protected override void OnRectTransformDimensionsChange()
+		protected override void OnRectTransformDimensionsChange()
 	{
 		base.OnRectTransformDimensionsChange();
 		if (this.image.preserveAspect && this.image.sprite != null && this.image.sprite)
@@ -24,9 +24,9 @@ public class CodexImageLayoutMB : UIBehaviour
 		this.layoutElement.ignoreLayout = false;
 	}
 
-	public RectTransform rectTransform;
+		public RectTransform rectTransform;
 
-	public LayoutElement layoutElement;
+		public LayoutElement layoutElement;
 
-	public Image image;
+		public Image image;
 }

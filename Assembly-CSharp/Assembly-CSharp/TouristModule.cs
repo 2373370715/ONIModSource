@@ -7,7 +7,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 {
-		public bool IsSuspended
+			public bool IsSuspended
 	{
 		get
 		{
@@ -15,17 +15,17 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	public void SetSuspended(bool state)
+		public void SetSuspended(bool state)
 	{
 		this.isSuspended = state;
 	}
 
-	public void ReleaseAstronaut(object data, bool applyBuff = false)
+		public void ReleaseAstronaut(object data, bool applyBuff = false)
 	{
 		if (this.releasingAstronaut)
 		{
@@ -55,7 +55,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		this.releasingAstronaut = false;
 	}
 
-	public void OnSuspend(object data)
+		public void OnSuspend(object data)
 	{
 		Storage component = base.GetComponent<Storage>();
 		if (component != null)
@@ -70,7 +70,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		this.SetSuspended(true);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.storage = base.GetComponent<Storage>();
@@ -83,7 +83,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		base.Subscribe<TouristModule>(684616645, TouristModule.OnAssigneeChangedDelegate);
 	}
 
-	private void OnGantryChanged(object data)
+		private void OnGantryChanged(object data)
 	{
 		if (base.gameObject != null)
 		{
@@ -100,14 +100,14 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		}
 	}
 
-	private Chore CreateWorkChore()
+		private Chore CreateWorkChore()
 	{
 		WorkChore<CommandModuleWorkable> workChore = new WorkChore<CommandModuleWorkable>(Db.Get().ChoreTypes.Astronaut, this, null, true, null, null, null, false, null, false, true, Assets.GetAnim("anim_hat_kanim"), false, true, false, PriorityScreen.PriorityClass.personalNeeds, 5, false, true);
 		workChore.AddPrecondition(ChorePreconditions.instance.IsAssignedtoMe, this.assignable);
 		return workChore;
 	}
 
-	private void OnAssigneeChanged(object data)
+		private void OnAssigneeChanged(object data)
 	{
 		if (data == null && base.gameObject.HasTag(GameTags.RocketOnGround) && base.GetComponent<MinionStorage>().GetStoredMinionInfo().Count > 0)
 		{
@@ -116,7 +116,7 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		this.partitionerEntry.Clear();
@@ -125,32 +125,32 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		base.smi.StopSM("cleanup");
 	}
 
-	public Storage storage;
+		public Storage storage;
 
-	[Serialize]
+		[Serialize]
 	private bool isSuspended;
 
-	private bool releasingAstronaut;
+		private bool releasingAstronaut;
 
-	private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
+		private const Sim.Cell.Properties floorCellProperties = (Sim.Cell.Properties)39;
 
-	public Assignable assignable;
+		public Assignable assignable;
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private static readonly EventSystem.IntraObjectHandler<TouristModule> OnSuspendDelegate = new EventSystem.IntraObjectHandler<TouristModule>(delegate(TouristModule component, object data)
+		private static readonly EventSystem.IntraObjectHandler<TouristModule> OnSuspendDelegate = new EventSystem.IntraObjectHandler<TouristModule>(delegate(TouristModule component, object data)
 	{
 		component.OnSuspend(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<TouristModule> OnAssigneeChangedDelegate = new EventSystem.IntraObjectHandler<TouristModule>(delegate(TouristModule component, object data)
+		private static readonly EventSystem.IntraObjectHandler<TouristModule> OnAssigneeChangedDelegate = new EventSystem.IntraObjectHandler<TouristModule>(delegate(TouristModule component, object data)
 	{
 		component.OnAssigneeChanged(data);
 	});
 
-	public class StatesInstance : GameStateMachine<TouristModule.States, TouristModule.StatesInstance, TouristModule, object>.GameInstance
+		public class StatesInstance : GameStateMachine<TouristModule.States, TouristModule.StatesInstance, TouristModule, object>.GameInstance
 	{
-		public StatesInstance(TouristModule smi) : base(smi)
+				public StatesInstance(TouristModule smi) : base(smi)
 		{
 			smi.gameObject.Subscribe(-887025858, delegate(object data)
 			{
@@ -161,9 +161,9 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 		}
 	}
 
-	public class States : GameStateMachine<TouristModule.States, TouristModule.StatesInstance, TouristModule>
+		public class States : GameStateMachine<TouristModule.States, TouristModule.StatesInstance, TouristModule>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.idle.PlayAnim("grounded", KAnim.PlayMode.Loop).GoTo(this.awaitingTourist);
@@ -171,10 +171,10 @@ public class TouristModule : StateMachineComponent<TouristModule.StatesInstance>
 			this.hasTourist.PlayAnim("grounded", KAnim.PlayMode.Loop).EventTransition(GameHashes.RocketLanded, this.idle, null).EventTransition(GameHashes.AssigneeChanged, this.idle, null);
 		}
 
-		public GameStateMachine<TouristModule.States, TouristModule.StatesInstance, TouristModule, object>.State idle;
+				public GameStateMachine<TouristModule.States, TouristModule.StatesInstance, TouristModule, object>.State idle;
 
-		public GameStateMachine<TouristModule.States, TouristModule.StatesInstance, TouristModule, object>.State awaitingTourist;
+				public GameStateMachine<TouristModule.States, TouristModule.StatesInstance, TouristModule, object>.State awaitingTourist;
 
-		public GameStateMachine<TouristModule.States, TouristModule.StatesInstance, TouristModule, object>.State hasTourist;
+				public GameStateMachine<TouristModule.States, TouristModule.StatesInstance, TouristModule, object>.State hasTourist;
 	}
 }

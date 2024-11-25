@@ -6,51 +6,51 @@ using UnityEngine;
 
 public abstract class ClusterGridEntity : KMonoBehaviour
 {
-		public abstract string Name { get; }
+			public abstract string Name { get; }
 
-		public abstract EntityLayer Layer { get; }
+			public abstract EntityLayer Layer { get; }
 
-		public abstract List<ClusterGridEntity.AnimConfig> AnimConfigs { get; }
+			public abstract List<ClusterGridEntity.AnimConfig> AnimConfigs { get; }
 
-		public abstract bool IsVisible { get; }
+			public abstract bool IsVisible { get; }
 
-	public virtual bool ShowName()
+		public virtual bool ShowName()
 	{
 		return false;
 	}
 
-	public virtual bool ShowProgressBar()
+		public virtual bool ShowProgressBar()
 	{
 		return false;
 	}
 
-	public virtual float GetProgress()
+		public virtual float GetProgress()
 	{
 		return 0f;
 	}
 
-	public virtual bool SpaceOutInSameHex()
+		public virtual bool SpaceOutInSameHex()
 	{
 		return false;
 	}
 
-	public virtual bool KeepRotationWhenSpacingOutInHex()
+		public virtual bool KeepRotationWhenSpacingOutInHex()
 	{
 		return false;
 	}
 
-	public virtual bool ShowPath()
+		public virtual bool ShowPath()
 	{
 		return true;
 	}
 
-	public virtual void OnClusterMapIconShown(ClusterRevealLevel levelUsed)
+		public virtual void OnClusterMapIconShown(ClusterRevealLevel levelUsed)
 	{
 	}
 
-		public abstract ClusterRevealLevel IsVisibleInFOW { get; }
+			public abstract ClusterRevealLevel IsVisibleInFOW { get; }
 
-			public AxialI Location
+				public AxialI Location
 	{
 		get
 		{
@@ -71,7 +71,7 @@ public abstract class ClusterGridEntity : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		ClusterGrid.Instance.RegisterEntity(this);
 		if (this.m_selectable != null)
@@ -88,12 +88,12 @@ public abstract class ClusterGridEntity : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		ClusterGrid.Instance.UnregisterEntity(this);
 	}
 
-	public virtual Sprite GetUISprite()
+		public virtual Sprite GetUISprite()
 	{
 		if (DlcManager.FeatureClusterSpaceEnabled())
 		{
@@ -119,7 +119,7 @@ public abstract class ClusterGridEntity : KMonoBehaviour
 		return null;
 	}
 
-	public void SendClusterLocationChangedEvent(AxialI oldLocation, AxialI newLocation)
+		public void SendClusterLocationChangedEvent(AxialI oldLocation, AxialI newLocation)
 	{
 		ClusterLocationChangedEvent data = new ClusterLocationChangedEvent
 		{
@@ -135,33 +135,33 @@ public abstract class ClusterGridEntity : KMonoBehaviour
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	protected AxialI m_location;
 
-	public bool positionDirty;
+		public bool positionDirty;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	protected KSelectable m_selectable;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Transform m_transform;
 
-	public bool isWorldEntity;
+		public bool isWorldEntity;
 
-	public struct AnimConfig
+		public struct AnimConfig
 	{
-		public KAnimFile animFile;
+				public KAnimFile animFile;
 
-		public string initialAnim;
+				public string initialAnim;
 
-		public KAnim.PlayMode playMode;
+				public KAnim.PlayMode playMode;
 
-		public string symbolSwapTarget;
+				public string symbolSwapTarget;
 
-		public string symbolSwapSymbol;
+				public string symbolSwapSymbol;
 
-		public Vector3 animOffset;
+				public Vector3 animOffset;
 
-		public float animPlaySpeedModifier;
+				public float animPlaySpeedModifier;
 	}
 }

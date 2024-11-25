@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/SplashMessageScreen")]
 public class SplashMessageScreen : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.forumButton.onClick += delegate()
@@ -22,13 +22,13 @@ public class SplashMessageScreen : KMonoBehaviour
 		this.bodyText.text = UI.DEVELOPMENTBUILDS.ALPHA.LOADING.BODY;
 	}
 
-	private void OnEnable()
+		private void OnEnable()
 	{
 		this.confirmButton.GetComponent<LayoutElement>();
 		this.confirmButton.GetComponentInChildren<LocText>();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (!DlcManager.IsExpansion1Active())
@@ -39,11 +39,11 @@ public class SplashMessageScreen : KMonoBehaviour
 		AudioMixer.instance.Start(AudioMixerSnapshots.Get().FrontEndWelcomeScreenSnapshot);
 	}
 
-	public KButton forumButton;
+		public KButton forumButton;
 
-	public KButton confirmButton;
+		public KButton confirmButton;
 
-	public LocText bodyText;
+		public LocText bodyText;
 
-	public bool previewInEditor;
+		public bool previewInEditor;
 }

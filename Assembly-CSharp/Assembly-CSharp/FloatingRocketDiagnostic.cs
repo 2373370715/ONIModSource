@@ -3,17 +3,17 @@ using STRINGS;
 
 public class FloatingRocketDiagnostic : ColonyDiagnostic
 {
-	public FloatingRocketDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.FLOATINGROCKETDIAGNOSTIC.ALL_NAME)
+		public FloatingRocketDiagnostic(int worldID) : base(worldID, UI.COLONY_DIAGNOSTICS.FLOATINGROCKETDIAGNOSTIC.ALL_NAME)
 	{
 		this.icon = "icon_errand_rocketry";
 	}
 
-	public override string[] GetDlcIds()
+		public override string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public override ColonyDiagnostic.DiagnosticResult Evaluate()
+		public override ColonyDiagnostic.DiagnosticResult Evaluate()
 	{
 		WorldContainer world = ClusterManager.Instance.GetWorld(base.worldID);
 		Clustercraft component = world.gameObject.GetComponent<Clustercraft>();

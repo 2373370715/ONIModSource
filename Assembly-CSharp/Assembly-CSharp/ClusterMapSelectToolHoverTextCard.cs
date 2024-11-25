@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ClusterMapSelectToolHoverTextCard : HoverTextConfiguration
 {
-	public override void ConfigureHoverScreen()
+		public override void ConfigureHoverScreen()
 	{
 		base.ConfigureHoverScreen();
 		HoverTextScreen instance = HoverTextScreen.Instance;
@@ -13,7 +13,7 @@ public class ClusterMapSelectToolHoverTextCard : HoverTextConfiguration
 		this.m_iconHighlighted = instance.GetSprite("dash_arrow");
 	}
 
-	public override void UpdateHoverElements(List<KSelectable> hoverObjects)
+		public override void UpdateHoverElements(List<KSelectable> hoverObjects)
 	{
 		if (this.m_iconWarning == null)
 		{
@@ -54,14 +54,14 @@ public class ClusterMapSelectToolHoverTextCard : HoverTextConfiguration
 		hoverTextDrawer.EndDrawing();
 	}
 
-	private bool IsStatusItemWarning(StatusItemGroup.Entry item)
+		private bool IsStatusItemWarning(StatusItemGroup.Entry item)
 	{
 		return item.item.notificationType == NotificationType.Bad || item.item.notificationType == NotificationType.BadMinor || item.item.notificationType == NotificationType.DuplicantThreatening;
 	}
 
-	private Sprite m_iconWarning;
+		private Sprite m_iconWarning;
 
-	private Sprite m_iconDash;
+		private Sprite m_iconDash;
 
-	private Sprite m_iconHighlighted;
+		private Sprite m_iconHighlighted;
 }

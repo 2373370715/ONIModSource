@@ -1,8 +1,7 @@
-﻿using RsTransferPort;
-using TUNING;
+﻿using TUNING;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 
 public class LiquidTransferConduitSenderConfig : TransferConduitConfig {
     public static string ID   = "RsLiquidTransferConduitSender";

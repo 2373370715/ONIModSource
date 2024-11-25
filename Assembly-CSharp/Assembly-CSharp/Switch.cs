@@ -3,111 +3,86 @@ using KSerialization;
 using STRINGS;
 using UnityEngine;
 
-[SerializationConfig(MemberSerialization.OptIn)]
-[AddComponentMenu("KMonoBehaviour/scripts/Switch")]
-public class Switch : KMonoBehaviour, ISaveLoadable, IToggleHandler
-{
-		public bool IsSwitchedOn
-	{
-		get
-		{
-			return this.switchedOn;
-		}
-	}
+[SerializationConfig(MemberSerialization.OptIn), AddComponentMenu("KMonoBehaviour/scripts/Switch")]
+public class Switch : KMonoBehaviour, ISaveLoadable, IToggleHandler {
+    private static readonly EventSystem.IntraObjectHandler<Switch> OnRefreshUserMenuDelegate
+        = new EventSystem.IntraObjectHandler<Switch>(delegate(Switch component, object data) {
+                                                         component.OnRefreshUserMenu(data);
+                                                     });
 
-			public event Action<bool> OnToggle;
+    [SerializeField]
+    public bool defaultState = true;
 
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		this.switchedOn = this.defaultState;
-	}
+    [SerializeField]
+    public bool manuallyControlled = true;
 
-	protected override void OnSpawn()
-	{
-		this.openToggleIndex = this.openSwitch.SetTarget(this);
-		if (this.OnToggle != null)
-		{
-			this.OnToggle(this.switchedOn);
-		}
-		if (this.manuallyControlled)
-		{
-			base.Subscribe<Switch>(493375141, Switch.OnRefreshUserMenuDelegate);
-		}
-		this.UpdateSwitchStatus();
-	}
+    [MyCmpAdd]
+    private Toggleable openSwitch;
 
-	public void HandleToggle()
-	{
-		this.Toggle();
-	}
+    private int openToggleIndex;
 
-	public bool IsHandlerOn()
-	{
-		return this.switchedOn;
-	}
+    [Serialize]
+    protected bool switchedOn = true;
 
-	private void OnMinionToggle()
-	{
-		if (!DebugHandler.InstantBuildMode)
-		{
-			this.openSwitch.Toggle(this.openToggleIndex);
-			return;
-		}
-		this.Toggle();
-	}
+    public bool               IsSwitchedOn   => switchedOn;
+    public void               HandleToggle() { Toggle(); }
+    public bool               IsHandlerOn()  { return switchedOn; }
+    public event Action<bool> OnToggle;
 
-	protected virtual void Toggle()
-	{
-		this.SetState(!this.switchedOn);
-	}
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        switchedOn = defaultState;
+    }
 
-	protected virtual void SetState(bool on)
-	{
-		if (this.switchedOn != on)
-		{
-			this.switchedOn = on;
-			this.UpdateSwitchStatus();
-			if (this.OnToggle != null)
-			{
-				this.OnToggle(this.switchedOn);
-			}
-			if (this.manuallyControlled)
-			{
-				Game.Instance.userMenu.Refresh(base.gameObject);
-			}
-		}
-	}
+    protected override void OnSpawn() {
+        openToggleIndex = openSwitch.SetTarget(this);
+        if (OnToggle != null) OnToggle(switchedOn);
+        if (manuallyControlled) Subscribe(493375141, OnRefreshUserMenuDelegate);
+        UpdateSwitchStatus();
+    }
 
-	protected virtual void OnRefreshUserMenu(object data)
-	{
-		LocString loc_string = this.switchedOn ? BUILDINGS.PREFABS.SWITCH.TURN_OFF : BUILDINGS.PREFABS.SWITCH.TURN_ON;
-		LocString loc_string2 = this.switchedOn ? BUILDINGS.PREFABS.SWITCH.TURN_OFF_TOOLTIP : BUILDINGS.PREFABS.SWITCH.TURN_ON_TOOLTIP;
-		Game.Instance.userMenu.AddButton(base.gameObject, new KIconButtonMenu.ButtonInfo("action_power", loc_string, new System.Action(this.OnMinionToggle), global::Action.ToggleEnabled, null, null, null, loc_string2, true), 1f);
-	}
+    private void OnMinionToggle() {
+        if (!DebugHandler.InstantBuildMode) {
+            openSwitch.Toggle(openToggleIndex);
+            return;
+        }
 
-	protected virtual void UpdateSwitchStatus()
-	{
-		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.SwitchStatusActive : Db.Get().BuildingStatusItems.SwitchStatusInactive;
-		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
-	}
+        Toggle();
+    }
 
-	[SerializeField]
-	public bool manuallyControlled = true;
+    protected virtual void Toggle() { SetState(!switchedOn); }
 
-	[SerializeField]
-	public bool defaultState = true;
+    protected virtual void SetState(bool on) {
+        if (switchedOn != on) {
+            switchedOn = on;
+            UpdateSwitchStatus();
+            if (OnToggle != null) OnToggle(switchedOn);
+            if (manuallyControlled) Game.Instance.userMenu.Refresh(gameObject);
+        }
+    }
 
-	[Serialize]
-	protected bool switchedOn = true;
+    protected virtual void OnRefreshUserMenu(object data) {
+        var loc_string = switchedOn ? BUILDINGS.PREFABS.SWITCH.TURN_OFF : BUILDINGS.PREFABS.SWITCH.TURN_ON;
+        var loc_string2 = switchedOn
+                              ? BUILDINGS.PREFABS.SWITCH.TURN_OFF_TOOLTIP
+                              : BUILDINGS.PREFABS.SWITCH.TURN_ON_TOOLTIP;
 
-	[MyCmpAdd]
-	private Toggleable openSwitch;
+        Game.Instance.userMenu.AddButton(gameObject,
+                                         new KIconButtonMenu.ButtonInfo("action_power",
+                                                                        loc_string,
+                                                                        OnMinionToggle,
+                                                                        Action.ToggleEnabled,
+                                                                        null,
+                                                                        null,
+                                                                        null,
+                                                                        loc_string2));
+    }
 
-	private int openToggleIndex;
+    protected virtual void UpdateSwitchStatus() {
+        var status_item = switchedOn
+                              ? Db.Get().BuildingStatusItems.SwitchStatusActive
+                              : Db.Get().BuildingStatusItems.SwitchStatusInactive;
 
-	private static readonly EventSystem.IntraObjectHandler<Switch> OnRefreshUserMenuDelegate = new EventSystem.IntraObjectHandler<Switch>(delegate(Switch component, object data)
-	{
-		component.OnRefreshUserMenu(data);
-	});
+        GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item);
+    }
 }

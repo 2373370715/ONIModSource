@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class PlanCategoryNotifications : MonoBehaviour
 {
-	public void ToggleAttention(bool active)
+		public void ToggleAttention(bool active)
 	{
 		if (!this.AttentionImage)
 		{
@@ -13,5 +13,5 @@ public class PlanCategoryNotifications : MonoBehaviour
 		this.AttentionImage.gameObject.SetActive(active);
 	}
 
-	public Image AttentionImage;
+		public Image AttentionImage;
 }

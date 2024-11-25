@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EventInfoDataHelper
 {
-	public static EventInfoData GenerateStoryTraitData(string titleText, string descriptionText, string buttonText, string animFileName, EventInfoDataHelper.PopupType popupType, string buttonTooltip = null, GameObject[] minions = null, System.Action callback = null)
+		public static EventInfoData GenerateStoryTraitData(string titleText, string descriptionText, string buttonText, string animFileName, EventInfoDataHelper.PopupType popupType, string buttonTooltip = null, GameObject[] minions = null, System.Action callback = null)
 	{
 		EventInfoData eventInfoData = new EventInfoData(titleText, descriptionText, animFileName);
 		eventInfoData.minions = minions;
@@ -27,11 +27,11 @@ public class EventInfoDataHelper
 		return eventInfoData;
 	}
 
-	public enum PopupType
+		public enum PopupType
 	{
-		NONE = -1,
-		BEGIN,
-		NORMAL,
-		COMPLETE
+				NONE = -1,
+				BEGIN,
+				NORMAL,
+				COMPLETE
 	}
 }

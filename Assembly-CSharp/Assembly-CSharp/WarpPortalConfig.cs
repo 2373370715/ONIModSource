@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class WarpPortalConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "WarpPortal";
 		string name = STRINGS.BUILDINGS.PREFABS.WARPPORTAL.NAME;
@@ -38,7 +38,7 @@ public class WarpPortalConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<WarpPortal>().workLayer = Grid.SceneLayer.Building;
 		inst.GetComponent<Ownable>().slotID = Db.Get().AssignableSlots.WarpPortal.Id;
@@ -49,9 +49,9 @@ public class WarpPortalConfig : IEntityConfig
 		inst.GetComponent<Deconstructable>();
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "WarpPortal";
+		public const string ID = "WarpPortal";
 }

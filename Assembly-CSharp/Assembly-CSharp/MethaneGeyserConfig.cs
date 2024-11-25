@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class MethaneGeyserConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "MethaneGeyser";
 		string name = STRINGS.CREATURES.SPECIES.METHANEGEYSER.NAME;
@@ -37,13 +37,13 @@ public class MethaneGeyserConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "MethaneGeyser";
+		public const string ID = "MethaneGeyser";
 }

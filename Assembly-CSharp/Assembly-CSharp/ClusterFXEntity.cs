@@ -7,7 +7,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class ClusterFXEntity : ClusterGridEntity
 {
-		public override string Name
+			public override string Name
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class ClusterFXEntity : ClusterGridEntity
 		}
 	}
 
-		public override EntityLayer Layer
+			public override EntityLayer Layer
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class ClusterFXEntity : ClusterGridEntity
 		}
 	}
 
-		public override List<ClusterGridEntity.AnimConfig> AnimConfigs
+			public override List<ClusterGridEntity.AnimConfig> AnimConfigs
 	{
 		get
 		{
@@ -40,7 +40,7 @@ public class ClusterFXEntity : ClusterGridEntity
 		}
 	}
 
-		public override bool IsVisible
+			public override bool IsVisible
 	{
 		get
 		{
@@ -48,7 +48,7 @@ public class ClusterFXEntity : ClusterGridEntity
 		}
 	}
 
-		public override ClusterRevealLevel IsVisibleInFOW
+			public override ClusterRevealLevel IsVisibleInFOW
 	{
 		get
 		{
@@ -56,19 +56,19 @@ public class ClusterFXEntity : ClusterGridEntity
 		}
 	}
 
-	public void Init(AxialI location, Vector3 animOffset)
+		public void Init(AxialI location, Vector3 animOffset)
 	{
 		base.Location = location;
 		this.animOffset = animOffset;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public string kAnimName;
 
-	[SerializeField]
+		[SerializeField]
 	public string animName;
 
-	public KAnim.PlayMode animPlayMode = KAnim.PlayMode.Once;
+		public KAnim.PlayMode animPlayMode = KAnim.PlayMode.Once;
 
-	public Vector3 animOffset;
+		public Vector3 animOffset;
 }

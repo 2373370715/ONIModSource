@@ -4,7 +4,7 @@ using System.Reflection;
 
 public static class DevToolCommandPaletteUtil
 {
-	public static List<DevToolCommandPalette.Command> GenerateDefaultCommandPalette()
+		public static List<DevToolCommandPalette.Command> GenerateDefaultCommandPalette()
 	{
 		List<DevToolCommandPalette.Command> list = new List<DevToolCommandPalette.Command>();
 		using (List<Type>.Enumerator enumerator = ReflectionUtil.CollectTypesThatInheritOrImplement<DevTool>(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy).GetEnumerator())

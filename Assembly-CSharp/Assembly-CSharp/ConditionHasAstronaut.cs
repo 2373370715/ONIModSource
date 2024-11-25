@@ -4,12 +4,12 @@ using STRINGS;
 
 public class ConditionHasAstronaut : ProcessCondition
 {
-	public ConditionHasAstronaut(CommandModule module)
+		public ConditionHasAstronaut(CommandModule module)
 	{
 		this.module = module;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		List<MinionStorage.Info> storedMinionInfo = this.module.GetComponent<MinionStorage>().GetStoredMinionInfo();
 		if (storedMinionInfo.Count > 0 && storedMinionInfo[0].serializedMinion != null)
@@ -19,7 +19,7 @@ public class ConditionHasAstronaut : ProcessCondition
 		return ProcessCondition.Status.Failure;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		if (status == ProcessCondition.Status.Ready)
 		{
@@ -28,7 +28,7 @@ public class ConditionHasAstronaut : ProcessCondition
 		return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUGHT;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		if (status == ProcessCondition.Status.Ready)
 		{
@@ -37,10 +37,10 @@ public class ConditionHasAstronaut : ProcessCondition
 		return UI.STARMAP.LAUNCHCHECKLIST.ASTRONAUGHT;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private CommandModule module;
+		private CommandModule module;
 }

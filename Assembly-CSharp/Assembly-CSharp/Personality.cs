@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Personality : Resource
 {
-		public string description
+			public string description
 	{
 		get
 		{
@@ -13,22 +13,27 @@ public class Personality : Resource
 		}
 	}
 
-	[Obsolete("Modders: Use constructor with isStartingMinion parameter")]
-	public Personality(string name_string_key, string name, string Gender, string PersonalityType, string StressTrait, string JoyTrait, string StickerType, string CongenitalTrait, int headShape, int mouth, int neck, int eyes, int hair, int body, string description) : this(name_string_key, name, Gender, PersonalityType, StressTrait, JoyTrait, StickerType, CongenitalTrait, headShape, mouth, neck, eyes, hair, body, 0, 0, 0, 0, 0, 0, description, true, "")
+		[Obsolete("Modders: Use constructor with isStartingMinion parameter")]
+	public Personality(string name_string_key, string name, string Gender, string PersonalityType, string StressTrait, string JoyTrait, string StickerType, string CongenitalTrait, int headShape, int mouth, int neck, int eyes, int hair, int body, string description) : this(name_string_key, name, Gender, PersonalityType, StressTrait, JoyTrait, StickerType, CongenitalTrait, headShape, mouth, neck, eyes, hair, body, 0, 0, 0, 0, 0, 0, description, true, "", GameTags.Minions.Models.Standard)
 	{
 	}
 
-	[Obsolete("Modders: Added additional body part customization to duplicant personalities")]
-	public Personality(string name_string_key, string name, string Gender, string PersonalityType, string StressTrait, string JoyTrait, string StickerType, string CongenitalTrait, int headShape, int mouth, int neck, int eyes, int hair, int body, string description, bool isStartingMinion) : this(name_string_key, name, Gender, PersonalityType, StressTrait, JoyTrait, StickerType, CongenitalTrait, headShape, mouth, neck, eyes, hair, body, 0, 0, 0, 0, 0, 0, description, true, "")
+		[Obsolete("Modders: Added additional body part customization to duplicant personalities")]
+	public Personality(string name_string_key, string name, string Gender, string PersonalityType, string StressTrait, string JoyTrait, string StickerType, string CongenitalTrait, int headShape, int mouth, int neck, int eyes, int hair, int body, string description, bool isStartingMinion) : this(name_string_key, name, Gender, PersonalityType, StressTrait, JoyTrait, StickerType, CongenitalTrait, headShape, mouth, neck, eyes, hair, body, 0, 0, 0, 0, 0, 0, description, true, "", GameTags.Minions.Models.Standard)
 	{
 	}
 
-	[Obsolete("Modders: Added a custom gravestone image to duplicant personalities")]
-	public Personality(string name_string_key, string name, string Gender, string PersonalityType, string StressTrait, string JoyTrait, string StickerType, string CongenitalTrait, int headShape, int mouth, int neck, int eyes, int hair, int body, int belt, int cuff, int foot, int hand, int pelvis, int leg, string description, bool isStartingMinion) : this(name_string_key, name, Gender, PersonalityType, StressTrait, JoyTrait, StickerType, CongenitalTrait, headShape, mouth, neck, eyes, hair, body, 0, 0, 0, 0, 0, 0, description, isStartingMinion, "")
+		[Obsolete("Modders: Added a custom gravestone image to duplicant personalities")]
+	public Personality(string name_string_key, string name, string Gender, string PersonalityType, string StressTrait, string JoyTrait, string StickerType, string CongenitalTrait, int headShape, int mouth, int neck, int eyes, int hair, int body, int belt, int cuff, int foot, int hand, int pelvis, int leg, string description, bool isStartingMinion) : this(name_string_key, name, Gender, PersonalityType, StressTrait, JoyTrait, StickerType, CongenitalTrait, headShape, mouth, neck, eyes, hair, body, 0, 0, 0, 0, 0, 0, description, isStartingMinion, "", GameTags.Minions.Models.Standard)
 	{
 	}
 
-	public Personality(string name_string_key, string name, string Gender, string PersonalityType, string StressTrait, string JoyTrait, string StickerType, string CongenitalTrait, int headShape, int mouth, int neck, int eyes, int hair, int body, int belt, int cuff, int foot, int hand, int pelvis, int leg, string description, bool isStartingMinion, string graveStone) : base(name_string_key, name)
+		[Obsolete("Modders: Added 'model' to duplicant personalities")]
+	public Personality(string name_string_key, string name, string Gender, string PersonalityType, string StressTrait, string JoyTrait, string StickerType, string CongenitalTrait, int headShape, int mouth, int neck, int eyes, int hair, int body, int belt, int cuff, int foot, int hand, int pelvis, int leg, string description, bool isStartingMinion, string graveStone) : this(name_string_key, name, Gender, PersonalityType, StressTrait, JoyTrait, StickerType, CongenitalTrait, headShape, mouth, neck, eyes, hair, body, 0, 0, 0, 0, 0, 0, description, isStartingMinion, "", GameTags.Minions.Models.Standard)
+	{
+	}
+
+		public Personality(string name_string_key, string name, string Gender, string PersonalityType, string StressTrait, string JoyTrait, string StickerType, string CongenitalTrait, int headShape, int mouth, int neck, int eyes, int hair, int body, int belt, int cuff, int foot, int hand, int pelvis, int leg, string description, bool isStartingMinion, string graveStone, Tag model) : base(name_string_key, name)
 	{
 		this.nameStringKey = name_string_key;
 		this.genderStringKey = Gender;
@@ -52,31 +57,32 @@ public class Personality : Resource
 		this.leg = leg;
 		this.startingMinion = isStartingMinion;
 		this.graveStone = graveStone;
+		this.model = model;
 	}
 
-	public string GetDescription()
+		public string GetDescription()
 	{
 		this.unformattedDescription = this.unformattedDescription.Replace("{0}", this.Name);
 		return this.unformattedDescription;
 	}
 
-	public void SetAttribute(Klei.AI.Attribute attribute, int value)
+		public void SetAttribute(Klei.AI.Attribute attribute, int value)
 	{
 		Personality.StartingAttribute item = new Personality.StartingAttribute(attribute, value);
 		this.attributes.Add(item);
 	}
 
-	public void AddTrait(Trait trait)
+		public void AddTrait(Trait trait)
 	{
 		this.traits.Add(trait);
 	}
 
-	public void SetSelectedTemplateOutfitId(ClothingOutfitUtility.OutfitType outfitType, Option<string> outfit)
+		public void SetSelectedTemplateOutfitId(ClothingOutfitUtility.OutfitType outfitType, Option<string> outfit)
 	{
 		CustomClothingOutfits.Instance.Internal_SetDuplicantPersonalityOutfit(outfitType, this.Id, outfit);
 	}
 
-	public string GetSelectedTemplateOutfitId(ClothingOutfitUtility.OutfitType outfitType)
+		public string GetSelectedTemplateOutfitId(ClothingOutfitUtility.OutfitType outfitType)
 	{
 		string result;
 		if (CustomClothingOutfits.Instance.Internal_TryGetDuplicantPersonalityOutfit(outfitType, this.Id, out result))
@@ -86,7 +92,7 @@ public class Personality : Resource
 		return null;
 	}
 
-	public Sprite GetMiniIcon()
+		public Sprite GetMiniIcon()
 	{
 		if (string.IsNullOrWhiteSpace(this.nameStringKey))
 		{
@@ -104,66 +110,68 @@ public class Personality : Resource
 		return Assets.GetSprite("dreamIcon_" + str);
 	}
 
-	public List<Personality.StartingAttribute> attributes = new List<Personality.StartingAttribute>();
+		public List<Personality.StartingAttribute> attributes = new List<Personality.StartingAttribute>();
 
-	public List<Trait> traits = new List<Trait>();
+		public List<Trait> traits = new List<Trait>();
 
-	public int headShape;
+		public int headShape;
 
-	public int mouth;
+		public int mouth;
 
-	public int neck;
+		public int neck;
 
-	public int eyes;
+		public int eyes;
 
-	public int hair;
+		public int hair;
 
-	public int body;
+		public int body;
 
-	public int belt;
+		public int belt;
 
-	public int cuff;
+		public int cuff;
 
-	public int foot;
+		public int foot;
 
-	public int hand;
+		public int hand;
 
-	public int pelvis;
+		public int pelvis;
 
-	public int leg;
+		public int leg;
 
-	public string nameStringKey;
+		public string nameStringKey;
 
-	public string genderStringKey;
+		public string genderStringKey;
 
-	public string personalityType;
+		public string personalityType;
 
-	public string stresstrait;
+		public Tag model;
 
-	public string joyTrait;
+		public string stresstrait;
 
-	public string stickerType;
+		public string joyTrait;
 
-	public string congenitaltrait;
+		public string stickerType;
 
-	public string unformattedDescription;
+		public string congenitaltrait;
 
-	public string graveStone;
+		public string unformattedDescription;
 
-	public bool startingMinion;
+		public string graveStone;
 
-	public string requiredDlcId;
+		public bool startingMinion;
 
-	public class StartingAttribute
+		public string requiredDlcId;
+
+		public class StartingAttribute
 	{
-		public StartingAttribute(Klei.AI.Attribute attribute, int value)
+				public StartingAttribute(Klei.AI.Attribute attribute, int value)
 		{
 			this.attribute = attribute;
 			this.value = value;
 		}
 
-		public Klei.AI.Attribute attribute;
+				public Klei.AI.Attribute attribute;
 
-		public int value;
+				public int value;
 	}
 }

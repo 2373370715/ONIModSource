@@ -2,9 +2,9 @@
 
 namespace EventSystem2Syntax
 {
-	internal class OldExample : KMonoBehaviour2
+		internal class OldExample : KMonoBehaviour2
 	{
-		protected override void OnPrefabInit()
+				protected override void OnPrefabInit()
 		{
 			base.OnPrefabInit();
 			base.Subscribe(0, new Action<object>(this.OnObjectDestroyed));
@@ -12,7 +12,7 @@ namespace EventSystem2Syntax
 			base.Trigger(0, flag);
 		}
 
-		private void OnObjectDestroyed(object data)
+				private void OnObjectDestroyed(object data)
 		{
 			Debug.Log((bool)data);
 		}

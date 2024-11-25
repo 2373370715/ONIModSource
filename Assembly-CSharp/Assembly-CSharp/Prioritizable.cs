@@ -7,13 +7,13 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Prioritizable")]
 public class Prioritizable : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<Prioritizable>(-905833192, Prioritizable.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		Prioritizable component = ((GameObject)data).GetComponent<Prioritizable>();
 		if (component != null)
@@ -22,7 +22,7 @@ public class Prioritizable : KMonoBehaviour
 		}
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (this.masterPriority != -2147483648)
@@ -37,7 +37,7 @@ public class Prioritizable : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (this.onPriorityChanged != null)
 		{
@@ -51,12 +51,12 @@ public class Prioritizable : KMonoBehaviour
 		Components.Prioritizables.Add(this);
 	}
 
-	public PrioritySetting GetMasterPriority()
+		public PrioritySetting GetMasterPriority()
 	{
 		return this.masterPrioritySetting;
 	}
 
-	public void SetMasterPriority(PrioritySetting priority)
+		public void SetMasterPriority(PrioritySetting priority)
 	{
 		if (!priority.Equals(this.masterPrioritySetting))
 		{
@@ -70,12 +70,12 @@ public class Prioritizable : KMonoBehaviour
 		}
 	}
 
-	private void RefreshTopPriorityOnWorld()
+		private void RefreshTopPriorityOnWorld()
 	{
 		this.SetTopPriorityOnWorld(this.IsTopPriority());
 	}
 
-	private void SetTopPriorityOnWorld(bool state)
+		private void SetTopPriorityOnWorld(bool state)
 	{
 		WorldContainer myWorld = base.gameObject.GetMyWorld();
 		if (Game.Instance == null || myWorld == null)
@@ -90,14 +90,14 @@ public class Prioritizable : KMonoBehaviour
 		myWorld.RemoveTopPriorityPrioritizable(this);
 	}
 
-	public void AddRef()
+		public void AddRef()
 	{
 		this.refCount++;
 		this.RefreshTopPriorityOnWorld();
 		this.RefreshHighPriorityNotification();
 	}
 
-	public void RemoveRef()
+		public void RemoveRef()
 	{
 		this.refCount--;
 		if (this.IsTopPriority() || this.refCount == 0)
@@ -107,17 +107,17 @@ public class Prioritizable : KMonoBehaviour
 		this.RefreshHighPriorityNotification();
 	}
 
-	public bool IsPrioritizable()
+		public bool IsPrioritizable()
 	{
 		return this.refCount > 0;
 	}
 
-	public bool IsTopPriority()
+		public bool IsTopPriority()
 	{
 		return this.masterPrioritySetting.priority_class == PriorityScreen.PriorityClass.topPriority && this.IsPrioritizable();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		WorldContainer myWorld = base.gameObject.GetMyWorld();
 		if (myWorld != null)
@@ -137,7 +137,7 @@ public class Prioritizable : KMonoBehaviour
 		Components.Prioritizables.Remove(this);
 	}
 
-	public static void AddRef(GameObject go)
+		public static void AddRef(GameObject go)
 	{
 		Prioritizable component = go.GetComponent<Prioritizable>();
 		if (component != null)
@@ -146,7 +146,7 @@ public class Prioritizable : KMonoBehaviour
 		}
 	}
 
-	public static void RemoveRef(GameObject go)
+		public static void RemoveRef(GameObject go)
 	{
 		Prioritizable component = go.GetComponent<Prioritizable>();
 		if (component != null)
@@ -155,7 +155,7 @@ public class Prioritizable : KMonoBehaviour
 		}
 	}
 
-	private void RefreshHighPriorityNotification()
+		private void RefreshHighPriorityNotification()
 	{
 		bool flag = this.masterPrioritySetting.priority_class == PriorityScreen.PriorityClass.topPriority && this.IsPrioritizable();
 		if (flag && this.highPriorityStatusItem == Guid.Empty)
@@ -169,31 +169,31 @@ public class Prioritizable : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	private int masterPriority = int.MinValue;
 
-	[SerializeField]
+		[SerializeField]
 	[Serialize]
 	private PrioritySetting masterPrioritySetting = new PrioritySetting(PriorityScreen.PriorityClass.basic, 5);
 
-	public Action<PrioritySetting> onPriorityChanged;
+		public Action<PrioritySetting> onPriorityChanged;
 
-	public bool showIcon = true;
+		public bool showIcon = true;
 
-	public Vector2 iconOffset;
+		public Vector2 iconOffset;
 
-	public float iconScale = 1f;
+		public float iconScale = 1f;
 
-	[SerializeField]
+		[SerializeField]
 	private int refCount;
 
-	private static readonly EventSystem.IntraObjectHandler<Prioritizable> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Prioritizable>(delegate(Prioritizable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Prioritizable> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<Prioritizable>(delegate(Prioritizable component, object data)
 	{
 		component.OnCopySettings(data);
 	});
 
-	private static Dictionary<PrioritySetting, PrioritySetting> conversions = new Dictionary<PrioritySetting, PrioritySetting>
+		private static Dictionary<PrioritySetting, PrioritySetting> conversions = new Dictionary<PrioritySetting, PrioritySetting>
 	{
 		{
 			new PrioritySetting(PriorityScreen.PriorityClass.basic, 1),
@@ -237,7 +237,7 @@ public class Prioritizable : KMonoBehaviour
 		}
 	};
 
-	private HandleVector<int>.Handle scenePartitionerEntry;
+		private HandleVector<int>.Handle scenePartitionerEntry;
 
-	private Guid highPriorityStatusItem;
+		private Guid highPriorityStatusItem;
 }

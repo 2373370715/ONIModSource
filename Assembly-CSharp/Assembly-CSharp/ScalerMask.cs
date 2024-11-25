@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/ScalerMask")]
 public class ScalerMask : KMonoBehaviour, IPointerEnterHandler, IEventSystemHandler, IPointerExitHandler
 {
-		private RectTransform ThisTransform
+			private RectTransform ThisTransform
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class ScalerMask : KMonoBehaviour, IPointerEnterHandler, IEventSystemHand
 		}
 	}
 
-		private LayoutElement ThisLayoutElement
+			private LayoutElement ThisLayoutElement
 	{
 		get
 		{
@@ -30,7 +30,7 @@ public class ScalerMask : KMonoBehaviour, IPointerEnterHandler, IEventSystemHand
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		DetailsScreen componentInParent = base.GetComponentInParent<DetailsScreen>();
@@ -43,7 +43,7 @@ public class ScalerMask : KMonoBehaviour, IPointerEnterHandler, IEventSystemHand
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		DetailsScreen componentInParent = base.GetComponentInParent<DetailsScreen>();
 		if (componentInParent)
@@ -56,7 +56,7 @@ public class ScalerMask : KMonoBehaviour, IPointerEnterHandler, IEventSystemHand
 		base.OnCleanUp();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.SourceTransform != null)
 		{
@@ -79,48 +79,48 @@ public class ScalerMask : KMonoBehaviour, IPointerEnterHandler, IEventSystemHand
 		}
 	}
 
-	public void UpdateSize()
+		public void UpdateSize()
 	{
 		this.queuedSizeUpdate = true;
 	}
 
-	public void OnPointerEnterGrandparent(PointerEventData eventData)
+		public void OnPointerEnterGrandparent(PointerEventData eventData)
 	{
 		this.grandparentIsHovered = true;
 	}
 
-	public void OnPointerExitGrandparent(PointerEventData eventData)
+		public void OnPointerExitGrandparent(PointerEventData eventData)
 	{
 		this.grandparentIsHovered = false;
 	}
 
-	public void OnPointerEnter(PointerEventData eventData)
+		public void OnPointerEnter(PointerEventData eventData)
 	{
 		this.isHovered = true;
 	}
 
-	public void OnPointerExit(PointerEventData eventData)
+		public void OnPointerExit(PointerEventData eventData)
 	{
 		this.isHovered = false;
 	}
 
-	public RectTransform SourceTransform;
+		public RectTransform SourceTransform;
 
-	private RectTransform _thisTransform;
+		private RectTransform _thisTransform;
 
-	private LayoutElement _thisLayoutElement;
+		private LayoutElement _thisLayoutElement;
 
-	public GameObject hoverIndicator;
+		public GameObject hoverIndicator;
 
-	public bool hoverLock;
+		public bool hoverLock;
 
-	private bool grandparentIsHovered;
+		private bool grandparentIsHovered;
 
-	private bool isHovered;
+		private bool isHovered;
 
-	private bool queuedSizeUpdate = true;
+		private bool queuedSizeUpdate = true;
 
-	public float topPadding;
+		public float topPadding;
 
-	public float bottomPadding;
+		public float bottomPadding;
 }

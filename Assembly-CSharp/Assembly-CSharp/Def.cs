@@ -5,12 +5,12 @@ using UnityEngine;
 [Serializable]
 public class Def : ScriptableObject
 {
-	public virtual void InitDef()
+		public virtual void InitDef()
 	{
 		this.Tag = TagManager.Create(this.PrefabID);
 	}
 
-		public virtual string Name
+			public virtual string Name
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class Def : ScriptableObject
 		}
 	}
 
-	public static global::Tuple<Sprite, Color> GetUISprite(object item, string animName = "ui", bool centered = false)
+		public static global::Tuple<Sprite, Color> GetUISprite(object item, string animName = "ui", bool centered = false)
 	{
 		if (item is Substance)
 		{
@@ -53,17 +53,18 @@ public class Def : ScriptableObject
 				{
 					return Def.GetUISprite(ElementLoader.GetElement(gameObject.PrefabID()), animName, centered);
 				}
-				CreatureBrain component = gameObject.GetComponent<CreatureBrain>();
-				if (component != null)
-				{
-					animName = component.symbolPrefix + "ui";
-				}
-				SpaceArtifact component2 = gameObject.GetComponent<SpaceArtifact>();
+				KPrefabID component = gameObject.GetComponent<KPrefabID>();
+				CreatureBrain component2 = gameObject.GetComponent<CreatureBrain>();
 				if (component2 != null)
 				{
-					animName = component2.GetUIAnim();
+					animName = component2.symbolPrefix + "ui";
 				}
-				if (gameObject.HasTag(GameTags.Egg))
+				SpaceArtifact component3 = gameObject.GetComponent<SpaceArtifact>();
+				if (component3 != null)
+				{
+					animName = component3.GetUIAnim();
+				}
+				if (component.HasTag(GameTags.Egg))
 				{
 					IncubationMonitor.Def def = gameObject.GetDef<IncubationMonitor.Def>();
 					if (def != null)
@@ -71,22 +72,26 @@ public class Def : ScriptableObject
 						GameObject prefab = Assets.GetPrefab(def.spawnedCreature);
 						if (prefab)
 						{
-							component = prefab.GetComponent<CreatureBrain>();
-							if (component && !string.IsNullOrEmpty(component.symbolPrefix))
+							component2 = prefab.GetComponent<CreatureBrain>();
+							if (component2 && !string.IsNullOrEmpty(component2.symbolPrefix))
 							{
-								animName = component.symbolPrefix + animName;
+								animName = component2.symbolPrefix + animName;
 							}
 						}
 					}
 				}
-				if (gameObject.HasTag(GameTags.MoltShell))
+				if (component.HasTag(GameTags.MoltShell))
 				{
 					animName = gameObject.GetComponent<SimpleMassStatusItem>().symbolPrefix + animName;
 				}
-				KBatchedAnimController component3 = gameObject.GetComponent<KBatchedAnimController>();
-				if (component3)
+				if (component.HasTag(GameTags.BionicUpgrade))
 				{
-					Sprite uispriteFromMultiObjectAnim = Def.GetUISpriteFromMultiObjectAnim(component3.AnimFiles[0], animName, centered, "");
+					animName = BionicUpgradeComponentConfig.UpgradesData[component.PrefabID()].uiAnimName;
+				}
+				KBatchedAnimController component4 = gameObject.GetComponent<KBatchedAnimController>();
+				if (component4)
+				{
+					Sprite uispriteFromMultiObjectAnim = Def.GetUISpriteFromMultiObjectAnim(component4.AnimFiles[0], animName, centered, "");
 					return new global::Tuple<Sprite, Color>(uispriteFromMultiObjectAnim, (uispriteFromMultiObjectAnim != null) ? Color.white : Color.clear);
 				}
 				if (gameObject.GetComponent<Building>() != null)
@@ -139,7 +144,7 @@ public class Def : ScriptableObject
 		}
 	}
 
-	public static global::Tuple<Sprite, Color> GetUISprite(Tag prefabID, string facadeID)
+		public static global::Tuple<Sprite, Color> GetUISprite(Tag prefabID, string facadeID)
 	{
 		if (Assets.GetPrefab(prefabID).GetComponent<Equippable>() != null && !facadeID.IsNullOrWhiteSpace())
 		{
@@ -148,12 +153,12 @@ public class Def : ScriptableObject
 		return Def.GetUISprite(prefabID, "ui", false);
 	}
 
-	public static Sprite GetFacadeUISprite(string facadeID)
+		public static Sprite GetFacadeUISprite(string facadeID)
 	{
 		return Def.GetUISpriteFromMultiObjectAnim(Assets.GetAnim(Db.GetBuildingFacades().Get(facadeID).AnimFile), "ui", false, "");
 	}
 
-	public static Sprite GetUISpriteFromMultiObjectAnim(KAnimFile animFile, string animName = "ui", bool centered = false, string symbolName = "")
+		public static Sprite GetUISpriteFromMultiObjectAnim(KAnimFile animFile, string animName = "ui", bool centered = false, string symbolName = "")
 	{
 		global::Tuple<KAnimFile, string, bool> key = new global::Tuple<KAnimFile, string, bool>(animFile, animName, centered);
 		if (Def.knownUISprites.ContainsKey(key))
@@ -228,7 +233,7 @@ public class Def : ScriptableObject
 		return sprite;
 	}
 
-	public static KAnimFile GetAnimFileFromPrefabWithTag(GameObject prefab, string desiredAnimName, out string animName)
+		public static KAnimFile GetAnimFileFromPrefabWithTag(GameObject prefab, string desiredAnimName, out string animName)
 	{
 		animName = desiredAnimName;
 		if (prefab == null)
@@ -269,16 +274,16 @@ public class Def : ScriptableObject
 		return prefab.GetComponent<KBatchedAnimController>().AnimFiles[0];
 	}
 
-	public static KAnimFile GetAnimFileFromPrefabWithTag(Tag prefabID, string desiredAnimName, out string animName)
+		public static KAnimFile GetAnimFileFromPrefabWithTag(Tag prefabID, string desiredAnimName, out string animName)
 	{
 		return Def.GetAnimFileFromPrefabWithTag(Assets.GetPrefab(prefabID), desiredAnimName, out animName);
 	}
 
-	public string PrefabID;
+		public string PrefabID;
 
-	public Tag Tag;
+		public Tag Tag;
 
-	private static Dictionary<global::Tuple<KAnimFile, string, bool>, Sprite> knownUISprites = new Dictionary<global::Tuple<KAnimFile, string, bool>, Sprite>();
+		private static Dictionary<global::Tuple<KAnimFile, string, bool>, Sprite> knownUISprites = new Dictionary<global::Tuple<KAnimFile, string, bool>, Sprite>();
 
-	public const string DEFAULT_SPRITE = "unknown";
+		public const string DEFAULT_SPRITE = "unknown";
 }

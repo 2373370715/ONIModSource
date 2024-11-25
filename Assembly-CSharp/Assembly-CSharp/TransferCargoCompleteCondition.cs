@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class TransferCargoCompleteCondition : ProcessCondition
 {
-	public TransferCargoCompleteCondition(GameObject target)
+		public TransferCargoCompleteCondition(GameObject target)
 	{
 		this.target = target;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		LaunchPad component = this.target.GetComponent<LaunchPad>();
 		CraftModuleInterface craftModuleInterface;
@@ -37,7 +37,7 @@ public class TransferCargoCompleteCondition : ProcessCondition
 		return ProcessCondition.Status.Ready;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		if (status == ProcessCondition.Status.Ready)
 		{
@@ -46,7 +46,7 @@ public class TransferCargoCompleteCondition : ProcessCondition
 		return UI.STARMAP.LAUNCHCHECKLIST.CARGO_TRANSFER_COMPLETE.STATUS.WARNING;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		if (status == ProcessCondition.Status.Ready)
 		{
@@ -55,10 +55,10 @@ public class TransferCargoCompleteCondition : ProcessCondition
 		return UI.STARMAP.LAUNCHCHECKLIST.CARGO_TRANSFER_COMPLETE.TOOLTIP.WARNING;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private GameObject target;
+		private GameObject target;
 }

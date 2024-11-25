@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class LiquidFuelTankConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetForbiddenDlcIds()
 	{
-		return DlcManager.AVAILABLE_VANILLA_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LiquidFuelTank";
 		int width = 5;
@@ -41,7 +41,7 @@ public class LiquidFuelTankConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<BuildingAttachPoint>().points = new BuildingAttachPoint.HardPoint[]
@@ -52,7 +52,7 @@ public class LiquidFuelTankConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Storage storage = go.AddOrGet<Storage>();
 		storage.capacityKg = BUILDINGS.ROCKETRY_MASS_KG.FUEL_TANK_WET_MASS[0];
@@ -84,7 +84,7 @@ public class LiquidFuelTankConfig : IBuildingConfig
 		BuildingTemplates.ExtendBuildingToRocketModule(go, "rocket_liquid_fuel_tank_bg_kanim", false);
 	}
 
-	public const string ID = "LiquidFuelTank";
+		public const string ID = "LiquidFuelTank";
 
-	public const float FuelCapacity = 900f;
+		public const float FuelCapacity = 900f;
 }

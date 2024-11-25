@@ -3,14 +3,14 @@ using STRINGS;
 
 namespace Database
 {
-	public class TuneUpGenerator : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class TuneUpGenerator : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public TuneUpGenerator(float numChoreseToComplete)
+				public TuneUpGenerator(float numChoreseToComplete)
 		{
 			this.numChoreseToComplete = numChoreseToComplete;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			float num = 0f;
 			ReportManager.ReportEntry entry = ReportManager.Instance.TodaysReport.GetEntry(ReportManager.ReportType.ChoreStatus);
@@ -41,18 +41,18 @@ namespace Database
 			return Math.Abs(num) >= this.numChoreseToComplete;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			this.numChoreseToComplete = reader.ReadSingle();
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.CHORES_OF_TYPE, complete ? this.numChoreseToComplete : this.choresCompleted, this.numChoreseToComplete, Db.Get().ChoreTypes.PowerTinker.Name);
 		}
 
-		private float numChoreseToComplete;
+				private float numChoreseToComplete;
 
-		private float choresCompleted;
+				private float choresCompleted;
 	}
 }

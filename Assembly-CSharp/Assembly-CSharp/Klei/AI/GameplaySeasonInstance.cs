@@ -6,10 +6,10 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	public class GameplaySeasonInstance : ISaveLoadable
 	{
-				public float NextEventTime
+						public float NextEventTime
 		{
 			get
 			{
@@ -17,7 +17,7 @@ namespace Klei.AI
 			}
 		}
 
-				public GameplaySeason Season
+						public GameplaySeason Season
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Klei.AI
 			}
 		}
 
-		public GameplaySeasonInstance(GameplaySeason season, int worldId)
+				public GameplaySeasonInstance(GameplaySeason season, int worldId)
 		{
 			this.seasonId = season.Id;
 			this.worldId = worldId;
@@ -46,7 +46,7 @@ namespace Klei.AI
 			this.CalculateNextEventTime();
 		}
 
-		private void CalculateNextEventTime()
+				private void CalculateNextEventTime()
 		{
 			float seasonPeriod = this.Season.GetSeasonPeriod();
 			this.randomizedNextTime = UnityEngine.Random.Range(this.Season.randomizedEventStartTime.min, this.Season.randomizedEventStartTime.max);
@@ -59,7 +59,7 @@ namespace Klei.AI
 			}
 		}
 
-		public bool StartEvent(bool ignorePreconditions = false)
+				public bool StartEvent(bool ignorePreconditions = false)
 		{
 			bool result = false;
 			this.CalculateNextEventTime();
@@ -103,7 +103,7 @@ namespace Klei.AI
 			return result;
 		}
 
-		public bool ShouldGenerateEvents()
+				public bool ShouldGenerateEvents()
 		{
 			WorldContainer world = ClusterManager.Instance.GetWorld(this.worldId);
 			if (!world.IsDupeVisited && !world.IsRoverVisted)
@@ -118,25 +118,25 @@ namespace Klei.AI
 			return currentTimeInCycles > this.Season.minCycle && currentTimeInCycles < this.Season.maxCycle;
 		}
 
-		public const int LIMIT_SELECTION = 5;
+				public const int LIMIT_SELECTION = 5;
 
-		[Serialize]
+				[Serialize]
 		public int numStartEvents;
 
-		[Serialize]
+				[Serialize]
 		public int worldId;
 
-		[Serialize]
+				[Serialize]
 		private readonly string seasonId;
 
-		[Serialize]
+				[Serialize]
 		private float nextPeriodTime;
 
-		[Serialize]
+				[Serialize]
 		private float randomizedNextTime;
 
-		private bool allEventWillNotRunAgain;
+				private bool allEventWillNotRunAgain;
 
-		private GameplaySeason _season;
+				private GameplaySeason _season;
 	}
 }

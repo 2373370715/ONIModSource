@@ -9,23 +9,23 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/AsteroidDescriptorPanel")]
 public class AsteroidDescriptorPanel : KMonoBehaviour
 {
-	public bool HasDescriptors()
+		public bool HasDescriptors()
 	{
 		return this.labels.Count > 0;
 	}
 
-	public void EnableClusterDetails(bool setActive)
+		public void EnableClusterDetails(bool setActive)
 	{
 		this.clusterNameLabel.gameObject.SetActive(setActive);
 		this.clusterDifficultyLabel.gameObject.SetActive(setActive);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	public void SetClusterDetailLabels(ColonyDestinationAsteroidBeltData cluster)
+		public void SetClusterDetailLabels(ColonyDestinationAsteroidBeltData cluster)
 	{
 		StringEntry stringEntry;
 		Strings.TryGet(cluster.properName, out stringEntry);
@@ -33,14 +33,11 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		int index = Mathf.Clamp(cluster.difficulty, 0, ColonyDestinationAsteroidBeltData.survivalOptions.Count - 1);
 		global::Tuple<string, string, string> tuple = ColonyDestinationAsteroidBeltData.survivalOptions[index];
 		string text = string.Format(WORLDS.SURVIVAL_CHANCE.TITLE, tuple.first, tuple.third);
-		text = text.Trim(new char[]
-		{
-			'\n'
-		});
+		text = text.Trim('\n');
 		this.clusterDifficultyLabel.SetText(text);
 	}
 
-	public void SetParameterDescriptors(IList<AsteroidDescriptor> descriptors)
+		public void SetParameterDescriptors(IList<AsteroidDescriptor> descriptors)
 	{
 		for (int i = 0; i < this.parameterWidgets.Count; i++)
 		{
@@ -60,7 +57,7 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		}
 	}
 
-	private void ClearTraitDescriptors()
+		private void ClearTraitDescriptors()
 	{
 		for (int i = 0; i < this.traitWidgets.Count; i++)
 		{
@@ -74,7 +71,7 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		this.traitCategoryWidgets.Clear();
 	}
 
-	public void SetTraitDescriptors(IList<AsteroidDescriptor> descriptors, List<string> stories, bool includeDescriptions = true)
+		public void SetTraitDescriptors(IList<AsteroidDescriptor> descriptors, List<string> stories, bool includeDescriptions = true)
 	{
 		foreach (string id in stories)
 		{
@@ -95,7 +92,7 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		this.storyTraitHeader.SetActive(false);
 	}
 
-	public void SetTraitDescriptors(IList<AsteroidDescriptor> descriptors, bool includeDescriptions = true)
+		public void SetTraitDescriptors(IList<AsteroidDescriptor> descriptors, bool includeDescriptions = true)
 	{
 		this.SetTraitDescriptors(new List<IList<AsteroidDescriptor>>
 		{
@@ -103,7 +100,7 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		}, includeDescriptions, null);
 	}
 
-	public void SetTraitDescriptors(List<IList<AsteroidDescriptor>> descriptorSets, bool includeDescriptions = true, List<global::Tuple<string, Sprite>> headerData = null)
+		public void SetTraitDescriptors(List<IList<AsteroidDescriptor>> descriptorSets, bool includeDescriptions = true, List<global::Tuple<string, Sprite>> headerData = null)
 	{
 		this.ClearTraitDescriptors();
 		for (int i = 0; i < descriptorSets.Count; i++)
@@ -160,14 +157,14 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		}
 	}
 
-	public void EnableClusterLocationLabels(bool enable)
+		public void EnableClusterLocationLabels(bool enable)
 	{
 		this.startingAsteroidRowContainer.transform.parent.gameObject.SetActive(enable);
 		this.nearbyAsteroidRowContainer.transform.parent.gameObject.SetActive(enable);
 		this.distantAsteroidRowContainer.transform.parent.gameObject.SetActive(enable);
 	}
 
-	public void RefreshAsteroidLines(ColonyDestinationAsteroidBeltData cluster, AsteroidDescriptorPanel selectedAsteroidDetailsPanel, List<string> storyTraits)
+		public void RefreshAsteroidLines(ColonyDestinationAsteroidBeltData cluster, AsteroidDescriptorPanel selectedAsteroidDetailsPanel, List<string> storyTraits)
 	{
 		cluster.RemixClusterLayout();
 		foreach (KeyValuePair<ProcGen.World, GameObject> keyValuePair in this.asteroidLines)
@@ -208,7 +205,7 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		this.SelectWholeClusterDetails(cluster, selectedAsteroidDetailsPanel, storyTraits);
 	}
 
-	private void SelectAsteroidInCluster(ProcGen.World asteroid, ColonyDestinationAsteroidBeltData cluster, AsteroidDescriptorPanel selectedAsteroidDetailsPanel)
+		private void SelectAsteroidInCluster(ProcGen.World asteroid, ColonyDestinationAsteroidBeltData cluster, AsteroidDescriptorPanel selectedAsteroidDetailsPanel)
 	{
 		selectedAsteroidDetailsPanel.SpacedOutContentContainer.SetActive(true);
 		this.clusterDetailsButton.GetComponent<MultiToggle>().ChangeState(0);
@@ -222,7 +219,7 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		}
 	}
 
-	public void SelectWholeClusterDetails(ColonyDestinationAsteroidBeltData cluster, AsteroidDescriptorPanel selectedAsteroidDetailsPanel, List<string> stories)
+		public void SelectWholeClusterDetails(ColonyDestinationAsteroidBeltData cluster, AsteroidDescriptorPanel selectedAsteroidDetailsPanel, List<string> stories)
 	{
 		selectedAsteroidDetailsPanel.SpacedOutContentContainer.SetActive(false);
 		foreach (KeyValuePair<ProcGen.World, GameObject> keyValuePair in this.asteroidLines)
@@ -233,7 +230,7 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		this.clusterDetailsButton.GetComponent<MultiToggle>().ChangeState(1);
 	}
 
-	private void SpawnAsteroidLine(ProcGen.World asteroid, GameObject parentContainer, ColonyDestinationAsteroidBeltData cluster)
+		private void SpawnAsteroidLine(ProcGen.World asteroid, GameObject parentContainer, ColonyDestinationAsteroidBeltData cluster)
 	{
 		if (this.asteroidLines.ContainsKey(asteroid))
 		{
@@ -310,7 +307,7 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		this.asteroidLines.Add(asteroid, gameObject);
 	}
 
-	private void SetSelectedAsteroid(ProcGen.World asteroid, AsteroidDescriptorPanel detailPanel, List<AsteroidDescriptor> traitDescriptors)
+		private void SetSelectedAsteroid(ProcGen.World asteroid, AsteroidDescriptorPanel detailPanel, List<AsteroidDescriptor> traitDescriptors)
 	{
 		detailPanel.SetTraitDescriptors(traitDescriptors, true);
 		detailPanel.selectedAsteroidIcon.sprite = ColonyDestinationAsteroidBeltData.GetUISprite(asteroid.asteroidIcon);
@@ -319,7 +316,7 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		detailPanel.selectedAsteroidDescription.SetText(asteroid.GetProperDescription());
 	}
 
-	private void SetSelectedCluster(ColonyDestinationAsteroidBeltData cluster, AsteroidDescriptorPanel detailPanel, List<string> stories)
+		private void SetSelectedCluster(ColonyDestinationAsteroidBeltData cluster, AsteroidDescriptorPanel detailPanel, List<string> stories)
 	{
 		List<IList<AsteroidDescriptor>> list = new List<IList<AsteroidDescriptor>>();
 		List<global::Tuple<string, Sprite>> list2 = new List<global::Tuple<string, Sprite>>();
@@ -360,63 +357,63 @@ public class AsteroidDescriptorPanel : KMonoBehaviour
 		detailPanel.selectedAsteroidDescription.SetText("");
 	}
 
-	[Header("Destination Details")]
+		[Header("Destination Details")]
 	[SerializeField]
 	private GameObject customLabelPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabTraitWidget;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabTraitCategoryWidget;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabParameterWidget;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject startingAsteroidRowContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject nearbyAsteroidRowContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject distantAsteroidRowContainer;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText clusterNameLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText clusterDifficultyLabel;
 
-	[SerializeField]
+		[SerializeField]
 	public LocText headerLabel;
 
-	[SerializeField]
+		[SerializeField]
 	public MultiToggle clusterDetailsButton;
 
-	[SerializeField]
+		[SerializeField]
 	public GameObject storyTraitHeader;
 
-	private List<GameObject> labels = new List<GameObject>();
+		private List<GameObject> labels = new List<GameObject>();
 
-	[Header("Selected Asteroid Details")]
+		[Header("Selected Asteroid Details")]
 	[SerializeField]
 	private GameObject SpacedOutContentContainer;
 
-	public Image selectedAsteroidIcon;
+		public Image selectedAsteroidIcon;
 
-	public LocText selectedAsteroidLabel;
+		public LocText selectedAsteroidLabel;
 
-	public LocText selectedAsteroidDescription;
+		public LocText selectedAsteroidDescription;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject prefabAsteroidLine;
 
-	private Dictionary<ProcGen.World, GameObject> asteroidLines = new Dictionary<ProcGen.World, GameObject>();
+		private Dictionary<ProcGen.World, GameObject> asteroidLines = new Dictionary<ProcGen.World, GameObject>();
 
-	private List<GameObject> traitWidgets = new List<GameObject>();
+		private List<GameObject> traitWidgets = new List<GameObject>();
 
-	private List<GameObject> traitCategoryWidgets = new List<GameObject>();
+		private List<GameObject> traitCategoryWidgets = new List<GameObject>();
 
-	private List<GameObject> parameterWidgets = new List<GameObject>();
+		private List<GameObject> parameterWidgets = new List<GameObject>();
 }

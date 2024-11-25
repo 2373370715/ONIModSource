@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class LandingPodConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "LandingPod";
 		string name = STRINGS.BUILDINGS.PREFABS.LANDING_POD.NAME;
@@ -24,7 +24,7 @@ public class LandingPodConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.GetComponent<OccupyArea>().objectLayers = new ObjectLayer[]
 		{
@@ -32,9 +32,9 @@ public class LandingPodConfig : IEntityConfig
 		};
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "LandingPod";
+		public const string ID = "LandingPod";
 }

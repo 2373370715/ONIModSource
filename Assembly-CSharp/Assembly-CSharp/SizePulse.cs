@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SizePulse : MonoBehaviour
 {
-	private void Start()
+		private void Start()
 	{
 		if (base.GetComponents<SizePulse>().Length > 1)
 		{
@@ -15,7 +15,7 @@ public class SizePulse : MonoBehaviour
 		this.to = this.from * this.multiplier;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		float num = this.updateWhenPaused ? Time.unscaledDeltaTime : Time.deltaTime;
 		num *= this.speed;
@@ -48,26 +48,26 @@ public class SizePulse : MonoBehaviour
 		((RectTransform)base.transform).localScale = new Vector3(this.cur.x, this.cur.y, 1f);
 	}
 
-	public System.Action onComplete;
+		public System.Action onComplete;
 
-	public Vector2 from = Vector2.one;
+		public Vector2 from = Vector2.one;
 
-	public Vector2 to = Vector2.one;
+		public Vector2 to = Vector2.one;
 
-	public float multiplier = 1.25f;
+		public float multiplier = 1.25f;
 
-	public float speed = 1f;
+		public float speed = 1f;
 
-	public bool updateWhenPaused;
+		public bool updateWhenPaused;
 
-	private Vector2 cur;
+		private Vector2 cur;
 
-	private SizePulse.State state;
+		private SizePulse.State state;
 
-	private enum State
+		private enum State
 	{
-		Up,
-		Down,
-		Finished
+				Up,
+				Down,
+				Finished
 	}
 }

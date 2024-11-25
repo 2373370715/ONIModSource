@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LiquidReservoirConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("LiquidReservoir", 2, 3, "liquidreservoir_kanim", 100, 120f, TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER4, MATERIALS.ALL_METALS, 800f, BuildLocationRule.OnFloor, TUNING.BUILDINGS.DECOR.PENALTY.TIER1, NOISE_POLLUTION.NOISY.TIER0, 0.2f);
 		buildingDef.InputConduitType = ConduitType.Liquid;
@@ -24,7 +24,7 @@ public class LiquidReservoirConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<Reservoir>();
 		Storage storage = BuildingTemplates.CreateDefaultStorage(go, false);
@@ -47,17 +47,17 @@ public class LiquidReservoirConfig : IBuildingConfig
 		conduitDispenser.elementFilter = null;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<StorageController.Def>();
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits, false);
 	}
 
-	public const string ID = "LiquidReservoir";
+		public const string ID = "LiquidReservoir";
 
-	private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
+		private const ConduitType CONDUIT_TYPE = ConduitType.Liquid;
 
-	private const int WIDTH = 2;
+		private const int WIDTH = 2;
 
-	private const int HEIGHT = 3;
+		private const int HEIGHT = 3;
 }

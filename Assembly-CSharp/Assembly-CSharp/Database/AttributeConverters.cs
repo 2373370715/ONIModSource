@@ -5,9 +5,9 @@ using STRINGS;
 
 namespace Database
 {
-	public class AttributeConverters : ResourceSet<AttributeConverter>
+		public class AttributeConverters : ResourceSet<AttributeConverter>
 	{
-		public AttributeConverter Create(string id, string name, string description, Klei.AI.Attribute attribute, float multiplier, float base_value, IAttributeFormatter formatter, string[] available_dlcs)
+				public AttributeConverter Create(string id, string name, string description, Klei.AI.Attribute attribute, float multiplier, float base_value, IAttributeFormatter formatter, string[] available_dlcs)
 		{
 			AttributeConverter attributeConverter = new AttributeConverter(id, name, description, multiplier, base_value, attribute, formatter);
 			if (DlcManager.IsDlcListValidForCurrentContent(available_dlcs))
@@ -18,7 +18,7 @@ namespace Database
 			return attributeConverter;
 		}
 
-		public AttributeConverters()
+				public AttributeConverters()
 		{
 			ToPercentAttributeFormatter formatter = new ToPercentAttributeFormatter(1f, GameUtil.TimeSlice.None);
 			StandardAttributeFormatter formatter2 = new StandardAttributeFormatter(GameUtil.UnitClass.Mass, GameUtil.TimeSlice.None);
@@ -49,7 +49,7 @@ namespace Database
 			this.PowerTinkerEffectDuration = this.Create("PowerTinkerEffectDuration", "Engie's Tune-Up Effect Duration", DUPLICANTS.ATTRIBUTES.MACHINERY.TINKER_EFFECT_MODIFIER, Db.Get().Attributes.Machinery, 0.025f, 0f, formatter, DlcManager.AVAILABLE_ALL_VERSIONS);
 		}
 
-		public List<AttributeConverter> GetConvertersForAttribute(Klei.AI.Attribute attrib)
+				public List<AttributeConverter> GetConvertersForAttribute(Klei.AI.Attribute attrib)
 		{
 			List<AttributeConverter> list = new List<AttributeConverter>();
 			foreach (AttributeConverter attributeConverter in this.resources)
@@ -62,54 +62,54 @@ namespace Database
 			return list;
 		}
 
-		public AttributeConverter MovementSpeed;
+				public AttributeConverter MovementSpeed;
 
-		public AttributeConverter ConstructionSpeed;
+				public AttributeConverter ConstructionSpeed;
 
-		public AttributeConverter DiggingSpeed;
+				public AttributeConverter DiggingSpeed;
 
-		public AttributeConverter MachinerySpeed;
+				public AttributeConverter MachinerySpeed;
 
-		public AttributeConverter HarvestSpeed;
+				public AttributeConverter HarvestSpeed;
 
-		public AttributeConverter PlantTendSpeed;
+				public AttributeConverter PlantTendSpeed;
 
-		public AttributeConverter CompoundingSpeed;
+				public AttributeConverter CompoundingSpeed;
 
-		public AttributeConverter ResearchSpeed;
+				public AttributeConverter ResearchSpeed;
 
-		public AttributeConverter TrainingSpeed;
+				public AttributeConverter TrainingSpeed;
 
-		public AttributeConverter CookingSpeed;
+				public AttributeConverter CookingSpeed;
 
-		public AttributeConverter ArtSpeed;
+				public AttributeConverter ArtSpeed;
 
-		public AttributeConverter DoctorSpeed;
+				public AttributeConverter DoctorSpeed;
 
-		public AttributeConverter TidyingSpeed;
+				public AttributeConverter TidyingSpeed;
 
-		public AttributeConverter AttackDamage;
+				public AttributeConverter AttackDamage;
 
-		public AttributeConverter PilotingSpeed;
+				public AttributeConverter PilotingSpeed;
 
-		public AttributeConverter ImmuneLevelBoost;
+				public AttributeConverter ImmuneLevelBoost;
 
-		public AttributeConverter ToiletSpeed;
+				public AttributeConverter ToiletSpeed;
 
-		public AttributeConverter CarryAmountFromStrength;
+				public AttributeConverter CarryAmountFromStrength;
 
-		public AttributeConverter TemperatureInsulation;
+				public AttributeConverter TemperatureInsulation;
 
-		public AttributeConverter SeedHarvestChance;
+				public AttributeConverter SeedHarvestChance;
 
-		public AttributeConverter RanchingEffectDuration;
+				public AttributeConverter RanchingEffectDuration;
 
-		public AttributeConverter FarmedEffectDuration;
+				public AttributeConverter FarmedEffectDuration;
 
-		public AttributeConverter PowerTinkerEffectDuration;
+				public AttributeConverter PowerTinkerEffectDuration;
 
-		public AttributeConverter CapturableSpeed;
+				public AttributeConverter CapturableSpeed;
 
-		public AttributeConverter GeotuningSpeed;
+				public AttributeConverter GeotuningSpeed;
 	}
 }

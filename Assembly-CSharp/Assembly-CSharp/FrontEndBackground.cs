@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FrontEndBackground : UIDupeRandomizer
 {
-	protected override void Start()
+		protected override void Start()
 	{
 		this.tuning = TuningData<FrontEndBackground.Tuning>.Get();
 		base.Start();
@@ -30,13 +30,13 @@ public class FrontEndBackground : UIDupeRandomizer
 		}
 	}
 
-	protected override void Update()
+		protected override void Update()
 	{
 		base.Update();
 		this.UpdateDrecko();
 	}
 
-	private void UpdateDrecko()
+		private void UpdateDrecko()
 	{
 		if (this.dreckoController.gameObject.activeInHierarchy && Time.unscaledTime > this.nextDreckoTime)
 		{
@@ -46,12 +46,12 @@ public class FrontEndBackground : UIDupeRandomizer
 		}
 	}
 
-	private void WaitForABit(int minion_idx, HashedString name)
+		private void WaitForABit(int minion_idx, HashedString name)
 	{
 		base.StartCoroutine(this.WaitForTime(minion_idx));
 	}
 
-	private IEnumerator WaitForTime(int minion_idx)
+		private IEnumerator WaitForTime(int minion_idx)
 	{
 		this.anims[minion_idx].lastWaitTime = UnityEngine.Random.Range(this.anims[minion_idx].minSecondsBetweenAction, this.anims[minion_idx].maxSecondsBetweenAction);
 		yield return new WaitForSecondsRealtime(this.anims[minion_idx].lastWaitTime);
@@ -69,20 +69,20 @@ public class FrontEndBackground : UIDupeRandomizer
 		yield break;
 	}
 
-	private KBatchedAnimController dreckoController;
+		private KBatchedAnimController dreckoController;
 
-	private float nextDreckoTime;
+		private float nextDreckoTime;
 
-	private FrontEndBackground.Tuning tuning;
+		private FrontEndBackground.Tuning tuning;
 
-	public class Tuning : TuningData<FrontEndBackground.Tuning>
+		public class Tuning : TuningData<FrontEndBackground.Tuning>
 	{
-		public float minDreckoInterval;
+				public float minDreckoInterval;
 
-		public float maxDreckoInterval;
+				public float maxDreckoInterval;
 
-		public float minFirstDreckoInterval;
+				public float minFirstDreckoInterval;
 
-		public float maxFirstDreckoInterval;
+				public float maxFirstDreckoInterval;
 	}
 }

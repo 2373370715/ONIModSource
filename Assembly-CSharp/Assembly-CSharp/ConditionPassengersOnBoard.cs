@@ -3,12 +3,12 @@ using STRINGS;
 
 public class ConditionPassengersOnBoard : ProcessCondition
 {
-	public ConditionPassengersOnBoard(PassengerRocketModule module)
+		public ConditionPassengersOnBoard(PassengerRocketModule module)
 	{
 		this.module = module;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		global::Tuple<int, int> crewBoardedFraction = this.module.GetCrewBoardedFraction();
 		if (crewBoardedFraction.first != crewBoardedFraction.second)
@@ -18,7 +18,7 @@ public class ConditionPassengersOnBoard : ProcessCondition
 		return ProcessCondition.Status.Ready;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		if (status == ProcessCondition.Status.Ready)
 		{
@@ -27,7 +27,7 @@ public class ConditionPassengersOnBoard : ProcessCondition
 		return UI.STARMAP.LAUNCHCHECKLIST.CREW_BOARDED.FAILURE;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		global::Tuple<int, int> crewBoardedFraction = this.module.GetCrewBoardedFraction();
 		if (status == ProcessCondition.Status.Ready)
@@ -48,10 +48,10 @@ public class ConditionPassengersOnBoard : ProcessCondition
 		}
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private PassengerRocketModule module;
+		private PassengerRocketModule module;
 }

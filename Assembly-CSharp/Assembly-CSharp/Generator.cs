@@ -10,7 +10,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Generator")]
 public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircuitConnected
 {
-		public int PowerDistributionOrder
+			public int PowerDistributionOrder
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		}
 	}
 
-		public virtual float Capacity
+			public virtual float Capacity
 	{
 		get
 		{
@@ -26,7 +26,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		}
 	}
 
-		public virtual bool IsEmpty
+			public virtual bool IsEmpty
 	{
 		get
 		{
@@ -34,7 +34,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		}
 	}
 
-		public virtual float JoulesAvailable
+			public virtual float JoulesAvailable
 	{
 		get
 		{
@@ -42,7 +42,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		}
 	}
 
-		public float WattageRating
+			public float WattageRating
 	{
 		get
 		{
@@ -50,7 +50,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		}
 	}
 
-		public float BaseWattageRating
+			public float BaseWattageRating
 	{
 		get
 		{
@@ -58,7 +58,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		}
 	}
 
-		public float PercentFull
+			public float PercentFull
 	{
 		get
 		{
@@ -70,9 +70,9 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		}
 	}
 
-			public int PowerCell { get; private set; }
+				public int PowerCell { get; private set; }
 
-		public ushort CircuitID
+			public ushort CircuitID
 	{
 		get
 		{
@@ -80,7 +80,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		}
 	}
 
-		private float Efficiency
+			private float Efficiency
 	{
 		get
 		{
@@ -88,18 +88,18 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		}
 	}
 
-			public bool IsVirtual { get; protected set; }
+				public bool IsVirtual { get; protected set; }
 
-			public object VirtualCircuitKey { get; protected set; }
+				public object VirtualCircuitKey { get; protected set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Attributes attributes = base.gameObject.GetAttributes();
 		this.generatorOutputAttribute = attributes.Add(Db.Get().Attributes.GeneratorOutput);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.Generators.Add(this);
@@ -111,7 +111,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		Game.Instance.energySim.AddGenerator(this);
 	}
 
-	private void OnTagsChanged(object data)
+		private void OnTagsChanged(object data)
 	{
 		if (this.HasAllTags(this.connectedTags))
 		{
@@ -121,17 +121,17 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		Game.Instance.circuitManager.Disconnect(this);
 	}
 
-	public virtual bool IsProducingPower()
+		public virtual bool IsProducingPower()
 	{
 		return this.operational.IsActive;
 	}
 
-	public virtual void EnergySim200ms(float dt)
+		public virtual void EnergySim200ms(float dt)
 	{
 		this.CheckConnectionStatus();
 	}
 
-	private void SetStatusItem(StatusItem status_item)
+		private void SetStatusItem(StatusItem status_item)
 	{
 		if (status_item != this.currentStatusItem && this.currentStatusItem != null)
 		{
@@ -144,7 +144,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		this.currentStatusItem = status_item;
 	}
 
-	private void CheckConnectionStatus()
+		private void CheckConnectionStatus()
 	{
 		if (this.CircuitID == 65535)
 		{
@@ -168,7 +168,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		this.operational.SetFlag(Generator.generatorConnectedFlag, true);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Game.Instance.energySim.RemoveGenerator(this);
 		Game.Instance.circuitManager.Disconnect(this);
@@ -176,7 +176,7 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		base.OnCleanUp();
 	}
 
-	public static float CalculateCapacity(BuildingDef def, Element element)
+		public static float CalculateCapacity(BuildingDef def, Element element)
 	{
 		if (element == null)
 		{
@@ -185,20 +185,20 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		return def.GeneratorBaseCapacity * (1f + (element.HasTag(GameTags.RefinedMetal) ? 1f : 0f));
 	}
 
-	public void ResetJoules()
+		public void ResetJoules()
 	{
 		this.joulesAvailable = 0f;
 	}
 
-	public virtual void ApplyDeltaJoules(float joulesDelta, bool canOverPower = false)
+		public virtual void ApplyDeltaJoules(float joulesDelta, bool canOverPower = false)
 	{
 		this.joulesAvailable = Mathf.Clamp(this.joulesAvailable + joulesDelta, 0f, canOverPower ? float.MaxValue : this.Capacity);
 	}
 
-	public void GenerateJoules(float joulesAvailable, bool canOverPower = false)
+		public void GenerateJoules(float joulesAvailable, bool canOverPower = false)
 	{
 		global::Debug.Assert(base.GetComponent<Battery>() == null);
-		this.joulesAvailable = Mathf.Clamp(joulesAvailable, 0f, canOverPower ? float.MaxValue : this.Capacity);
+		this.joulesAvailable = Mathf.Clamp(this.joulesAvailable + joulesAvailable, 0f, canOverPower ? float.MaxValue : this.Capacity);
 		ReportManager.Instance.ReportValue(ReportManager.ReportType.EnergyCreated, this.joulesAvailable, this.GetProperName(), null);
 		if (!Game.Instance.savedInfo.powerCreatedbyGeneratorType.ContainsKey(this.PrefabID()))
 		{
@@ -209,57 +209,57 @@ public class Generator : KMonoBehaviour, ISaveLoadable, IEnergyProducer, ICircui
 		powerCreatedbyGeneratorType[key] += this.joulesAvailable;
 	}
 
-	public void AssignJoulesAvailable(float joulesAvailable)
+		public void AssignJoulesAvailable(float joulesAvailable)
 	{
 		global::Debug.Assert(base.GetComponent<PowerTransformer>() != null);
 		this.joulesAvailable = joulesAvailable;
 	}
 
-	public virtual void ConsumeEnergy(float joules)
+		public virtual void ConsumeEnergy(float joules)
 	{
 		this.joulesAvailable = Mathf.Max(0f, this.JoulesAvailable - joules);
 	}
 
-	protected const int SimUpdateSortKey = 1001;
+		protected const int SimUpdateSortKey = 1001;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	protected Building building;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	protected Operational operational;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	protected KSelectable selectable;
 
-	[Serialize]
+		[Serialize]
 	private float joulesAvailable;
 
-	[SerializeField]
+		[SerializeField]
 	public int powerDistributionOrder;
 
-	public static readonly Operational.Flag generatorConnectedFlag = new Operational.Flag("GeneratorConnected", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag generatorConnectedFlag = new Operational.Flag("GeneratorConnected", Operational.Flag.Type.Requirement);
 
-	protected static readonly Operational.Flag wireConnectedFlag = new Operational.Flag("generatorWireConnected", Operational.Flag.Type.Requirement);
+		protected static readonly Operational.Flag wireConnectedFlag = new Operational.Flag("generatorWireConnected", Operational.Flag.Type.Requirement);
 
-	private float capacity;
+		private float capacity;
 
-	public static readonly Tag[] DEFAULT_CONNECTED_TAGS = new Tag[]
+		public static readonly Tag[] DEFAULT_CONNECTED_TAGS = new Tag[]
 	{
 		GameTags.Operational
 	};
 
-	[SerializeField]
+		[SerializeField]
 	public Tag[] connectedTags = Generator.DEFAULT_CONNECTED_TAGS;
 
-	public bool showConnectedConsumerStatusItems = true;
+		public bool showConnectedConsumerStatusItems = true;
 
-	private StatusItem currentStatusItem;
+		private StatusItem currentStatusItem;
 
-	private Guid statusItemID;
+		private Guid statusItemID;
 
-	private AttributeInstance generatorOutputAttribute;
+		private AttributeInstance generatorOutputAttribute;
 
-	private static readonly EventSystem.IntraObjectHandler<Generator> OnTagsChangedDelegate = new EventSystem.IntraObjectHandler<Generator>(delegate(Generator component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Generator> OnTagsChangedDelegate = new EventSystem.IntraObjectHandler<Generator>(delegate(Generator component, object data)
 	{
 		component.OnTagsChanged(data);
 	});

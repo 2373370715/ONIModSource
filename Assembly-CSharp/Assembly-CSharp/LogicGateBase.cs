@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/LogicGateBase")]
 public class LogicGateBase : KMonoBehaviour
 {
-	private int GetActualCell(CellOffset offset)
+		private int GetActualCell(CellOffset offset)
 	{
 		Rotatable component = base.GetComponent<Rotatable>();
 		if (component != null)
@@ -14,7 +14,7 @@ public class LogicGateBase : KMonoBehaviour
 		return Grid.OffsetCell(Grid.PosToCell(base.transform.GetPosition()), offset);
 	}
 
-		public int InputCellOne
+			public int InputCellOne
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public int InputCellTwo
+			public int InputCellTwo
 	{
 		get
 		{
@@ -30,7 +30,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public int InputCellThree
+			public int InputCellThree
 	{
 		get
 		{
@@ -38,7 +38,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public int InputCellFour
+			public int InputCellFour
 	{
 		get
 		{
@@ -46,7 +46,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public int OutputCellOne
+			public int OutputCellOne
 	{
 		get
 		{
@@ -54,7 +54,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public int OutputCellTwo
+			public int OutputCellTwo
 	{
 		get
 		{
@@ -62,7 +62,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public int OutputCellThree
+			public int OutputCellThree
 	{
 		get
 		{
@@ -70,7 +70,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public int OutputCellFour
+			public int OutputCellFour
 	{
 		get
 		{
@@ -78,7 +78,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public int ControlCellOne
+			public int ControlCellOne
 	{
 		get
 		{
@@ -86,7 +86,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public int ControlCellTwo
+			public int ControlCellTwo
 	{
 		get
 		{
@@ -94,7 +94,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-	public int PortCell(LogicGateBase.PortId port)
+		public int PortCell(LogicGateBase.PortId port)
 	{
 		switch (port)
 		{
@@ -123,7 +123,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-	public bool TryGetPortAtCell(int cell, out LogicGateBase.PortId port)
+		public bool TryGetPortAtCell(int cell, out LogicGateBase.PortId port)
 	{
 		if (cell == this.InputCellOne)
 		{
@@ -179,7 +179,7 @@ public class LogicGateBase : KMonoBehaviour
 		return false;
 	}
 
-		public bool RequiresTwoInputs
+			public bool RequiresTwoInputs
 	{
 		get
 		{
@@ -187,7 +187,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public bool RequiresFourInputs
+			public bool RequiresFourInputs
 	{
 		get
 		{
@@ -195,7 +195,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public bool RequiresFourOutputs
+			public bool RequiresFourOutputs
 	{
 		get
 		{
@@ -203,7 +203,7 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-		public bool RequiresControlInputs
+			public bool RequiresControlInputs
 	{
 		get
 		{
@@ -211,72 +211,72 @@ public class LogicGateBase : KMonoBehaviour
 		}
 	}
 
-	public static bool OpRequiresTwoInputs(LogicGateBase.Op op)
+		public static bool OpRequiresTwoInputs(LogicGateBase.Op op)
 	{
 		return op != LogicGateBase.Op.Not && op - LogicGateBase.Op.CustomSingle > 2;
 	}
 
-	public static bool OpRequiresFourInputs(LogicGateBase.Op op)
+		public static bool OpRequiresFourInputs(LogicGateBase.Op op)
 	{
 		return op == LogicGateBase.Op.Multiplexer;
 	}
 
-	public static bool OpRequiresFourOutputs(LogicGateBase.Op op)
+		public static bool OpRequiresFourOutputs(LogicGateBase.Op op)
 	{
 		return op == LogicGateBase.Op.Demultiplexer;
 	}
 
-	public static bool OpRequiresControlInputs(LogicGateBase.Op op)
+		public static bool OpRequiresControlInputs(LogicGateBase.Op op)
 	{
 		return op - LogicGateBase.Op.Multiplexer <= 1;
 	}
 
-	public static LogicModeUI uiSrcData;
+		public static LogicModeUI uiSrcData;
 
-	public static readonly HashedString OUTPUT_TWO_PORT_ID = new HashedString("LogicGateOutputTwo");
+		public static readonly HashedString OUTPUT_TWO_PORT_ID = new HashedString("LogicGateOutputTwo");
 
-	public static readonly HashedString OUTPUT_THREE_PORT_ID = new HashedString("LogicGateOutputThree");
+		public static readonly HashedString OUTPUT_THREE_PORT_ID = new HashedString("LogicGateOutputThree");
 
-	public static readonly HashedString OUTPUT_FOUR_PORT_ID = new HashedString("LogicGateOutputFour");
+		public static readonly HashedString OUTPUT_FOUR_PORT_ID = new HashedString("LogicGateOutputFour");
 
-	[SerializeField]
+		[SerializeField]
 	public LogicGateBase.Op op;
 
-	public static CellOffset[] portOffsets = new CellOffset[]
+		public static CellOffset[] portOffsets = new CellOffset[]
 	{
 		CellOffset.none,
 		new CellOffset(0, 1),
 		new CellOffset(1, 0)
 	};
 
-	public CellOffset[] inputPortOffsets;
+		public CellOffset[] inputPortOffsets;
 
-	public CellOffset[] outputPortOffsets;
+		public CellOffset[] outputPortOffsets;
 
-	public CellOffset[] controlPortOffsets;
+		public CellOffset[] controlPortOffsets;
 
-	public enum PortId
+		public enum PortId
 	{
-		InputOne,
-		InputTwo,
-		InputThree,
-		InputFour,
-		OutputOne,
-		OutputTwo,
-		OutputThree,
-		OutputFour,
-		ControlOne,
-		ControlTwo
+				InputOne,
+				InputTwo,
+				InputThree,
+				InputFour,
+				OutputOne,
+				OutputTwo,
+				OutputThree,
+				OutputFour,
+				ControlOne,
+				ControlTwo
 	}
 
-	public enum Op
+		public enum Op
 	{
-		And,
-		Or,
-		Not,
-		Xor,
-		CustomSingle,
-		Multiplexer,
-		Demultiplexer
+				And,
+				Or,
+				Not,
+				Xor,
+				CustomSingle,
+				Multiplexer,
+				Demultiplexer
 	}
 }

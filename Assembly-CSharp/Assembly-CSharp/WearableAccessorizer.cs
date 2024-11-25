@@ -9,12 +9,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/WearableAccessorizer")]
 public class WearableAccessorizer : KMonoBehaviour
 {
-	public Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> GetCustomClothingItems()
+		public Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> GetCustomClothingItems()
 	{
 		return this.customOutfitItems;
 	}
 
-		public Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable> Wearables
+			public Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable> Wearables
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	public string[] GetClothingItemsIds(ClothingOutfitUtility.OutfitType outfitType)
+		public string[] GetClothingItemsIds(ClothingOutfitUtility.OutfitType outfitType)
 	{
 		if (this.customOutfitItems.ContainsKey(outfitType))
 		{
@@ -36,17 +36,17 @@ public class WearableAccessorizer : KMonoBehaviour
 		return new string[0];
 	}
 
-	public Option<string> GetJoyResponseId()
+		public Option<string> GetJoyResponseId()
 	{
 		return this.joyResponsePermitId;
 	}
 
-	public void SetJoyResponseId(Option<string> joyResponsePermitId)
+		public void SetJoyResponseId(Option<string> joyResponsePermitId)
 	{
 		this.joyResponsePermitId = joyResponsePermitId.UnwrapOr(null, null);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.animController == null)
@@ -57,7 +57,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		base.Subscribe(-1285462312, new Action<object>(this.UnequippedItem));
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	[Obsolete]
 	private void OnDeserialized()
 	{
@@ -89,7 +89,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		this.ApplyWearable();
 	}
 
-	public void EquippedItem(object data)
+		public void EquippedItem(object data)
 	{
 		KPrefabID kprefabID = data as KPrefabID;
 		if (kprefabID != null)
@@ -99,7 +99,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	public void ApplyEquipment(Equippable equippable, KAnimFile animFile)
+		public void ApplyEquipment(Equippable equippable, KAnimFile animFile)
 	{
 		WearableAccessorizer.WearableType key;
 		if (equippable != null && animFile != null && Enum.TryParse<WearableAccessorizer.WearableType>(equippable.def.Slot, out key))
@@ -122,7 +122,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	private bool TryGetEquippableClothingType(EquipmentDef equipment, out ClothingOutfitUtility.OutfitType outfitType)
+		private bool TryGetEquippableClothingType(EquipmentDef equipment, out ClothingOutfitUtility.OutfitType outfitType)
 	{
 		if (equipment.Id == "Atmo_Suit")
 		{
@@ -133,7 +133,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		return false;
 	}
 
-	private Equippable GetSuitEquippable()
+		private Equippable GetSuitEquippable()
 	{
 		MinionIdentity component = base.GetComponent<MinionIdentity>();
 		if (component != null && component.assignableProxy != null && component.assignableProxy.Get() != null)
@@ -148,7 +148,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		return null;
 	}
 
-	private WearableAccessorizer.WearableType GetHighestAccessory()
+		private WearableAccessorizer.WearableType GetHighestAccessory()
 	{
 		WearableAccessorizer.WearableType wearableType = WearableAccessorizer.WearableType.Basic;
 		foreach (WearableAccessorizer.WearableType wearableType2 in this.wearables.Keys)
@@ -161,7 +161,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		return wearableType;
 	}
 
-	private void ApplyWearable()
+		private void ApplyWearable()
 	{
 		if (this.animController == null)
 		{
@@ -206,7 +206,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		this.UpdateVisibleSymbols(highestAccessory);
 	}
 
-	public void UpdateVisibleSymbols(ClothingOutfitUtility.OutfitType outfitType)
+		public void UpdateVisibleSymbols(ClothingOutfitUtility.OutfitType outfitType)
 	{
 		if (this.animController == null)
 		{
@@ -215,7 +215,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		this.UpdateVisibleSymbols(this.ConvertOutfitTypeToWearableType(outfitType));
 	}
 
-	private void UpdateVisibleSymbols(WearableAccessorizer.WearableType wearableType)
+		private void UpdateVisibleSymbols(WearableAccessorizer.WearableType wearableType)
 	{
 		bool flag = wearableType == WearableAccessorizer.WearableType.Basic;
 		bool hasHat = base.GetComponent<Accessorizer>().GetAccessory(Db.Get().AccessorySlots.Hat) != null;
@@ -248,7 +248,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		WearableAccessorizer.UpdateHairBasedOnHat(this.animController, hasHat);
 	}
 
-	private void SkirtHACK(WearableAccessorizer.WearableType wearable_type)
+		private void SkirtHACK(WearableAccessorizer.WearableType wearable_type)
 	{
 		if (this.wearables.ContainsKey(wearable_type))
 		{
@@ -269,7 +269,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	public static void UpdateHairBasedOnHat(KAnimControllerBase kbac, bool hasHat)
+		public static void UpdateHairBasedOnHat(KAnimControllerBase kbac, bool hasHat)
 	{
 		if (hasHat)
 		{
@@ -283,13 +283,13 @@ public class WearableAccessorizer : KMonoBehaviour
 		kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Hat.targetSymbolId, false);
 	}
 
-	public static void SkirtAccessory(KAnimControllerBase kbac, bool show_skirt)
+		public static void SkirtAccessory(KAnimControllerBase kbac, bool show_skirt)
 	{
 		kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Skirt.targetSymbolId, show_skirt);
 		kbac.SetSymbolVisiblity(Db.Get().AccessorySlots.Leg.targetSymbolId, !show_skirt);
 	}
 
-	private void RemoveAnimBuild(KAnimFile animFile, int override_priority)
+		private void RemoveAnimBuild(KAnimFile animFile, int override_priority)
 	{
 		SymbolOverrideController component = base.GetComponent<SymbolOverrideController>();
 		KAnim.Build build = (animFile != null) ? animFile.GetData().build : null;
@@ -303,7 +303,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	private void UnequippedItem(object data)
+		private void UnequippedItem(object data)
 	{
 		KPrefabID kprefabID = data as KPrefabID;
 		if (kprefabID != null)
@@ -313,7 +313,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	public void RemoveEquipment(Equippable equippable)
+		public void RemoveEquipment(Equippable equippable)
 	{
 		WearableAccessorizer.WearableType key;
 		if (equippable != null && Enum.TryParse<WearableAccessorizer.WearableType>(equippable.def.Slot, out key))
@@ -337,13 +337,13 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	public void ClearClothingItems(ClothingOutfitUtility.OutfitType? forOutfitType = null)
+		public void ClearClothingItems(ClothingOutfitUtility.OutfitType? forOutfitType = null)
 	{
-		foreach (KeyValuePair<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> self in this.customOutfitItems)
+		foreach (KeyValuePair<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> keyValuePair in this.customOutfitItems)
 		{
 			ClothingOutfitUtility.OutfitType outfitType;
 			List<ResourceRef<ClothingItemResource>> list;
-			self.Deconstruct(out outfitType, out list);
+			keyValuePair.Deconstruct(out outfitType, out list);
 			ClothingOutfitUtility.OutfitType outfitType2 = outfitType;
 			if (forOutfitType != null)
 			{
@@ -358,7 +358,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	public void ApplyClothingItems(ClothingOutfitUtility.OutfitType outfitType, IEnumerable<ClothingItemResource> items)
+		public void ApplyClothingItems(ClothingOutfitUtility.OutfitType outfitType, IEnumerable<ClothingItemResource> items)
 	{
 		items = items.StableSort(delegate(ClothingItemResource resource)
 		{
@@ -411,7 +411,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	private void Internal_ApplyClothingItem(ClothingOutfitUtility.OutfitType outfitType, ClothingItemResource clothingItem)
+		private void Internal_ApplyClothingItem(ClothingOutfitUtility.OutfitType outfitType, ClothingItemResource clothingItem)
 	{
 		WearableAccessorizer.WearableType wearableType = this.ConvertOutfitTypeToWearableType(outfitType);
 		if (!this.customOutfitItems.ContainsKey(outfitType))
@@ -455,7 +455,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	private void Internal_RemoveClothingItem(ClothingOutfitUtility.OutfitType outfitType, ClothingItemResource clothing_item)
+		private void Internal_RemoveClothingItem(ClothingOutfitUtility.OutfitType outfitType, ClothingItemResource clothing_item)
 	{
 		WearableAccessorizer.WearableType key = this.ConvertOutfitTypeToWearableType(outfitType);
 		if (this.customOutfitItems.ContainsKey(outfitType))
@@ -475,7 +475,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	private WearableAccessorizer.WearableType ConvertOutfitTypeToWearableType(ClothingOutfitUtility.OutfitType outfitType)
+		private WearableAccessorizer.WearableType ConvertOutfitTypeToWearableType(ClothingOutfitUtility.OutfitType outfitType)
 	{
 		if (outfitType == ClothingOutfitUtility.OutfitType.Clothing)
 		{
@@ -489,7 +489,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		return WearableAccessorizer.WearableType.CustomSuit;
 	}
 
-	public void RestoreWearables(Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable> stored_wearables, Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> clothing)
+		public void RestoreWearables(Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable> stored_wearables, Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> clothing)
 	{
 		if (stored_wearables != null)
 		{
@@ -510,7 +510,7 @@ public class WearableAccessorizer : KMonoBehaviour
 		this.ApplyWearable();
 	}
 
-	public bool HasPermitCategoryItem(ClothingOutfitUtility.OutfitType wearable_type, PermitCategory category)
+		public bool HasPermitCategoryItem(ClothingOutfitUtility.OutfitType wearable_type, PermitCategory category)
 	{
 		bool result = false;
 		if (this.customOutfitItems.ContainsKey(wearable_type))
@@ -520,12 +520,12 @@ public class WearableAccessorizer : KMonoBehaviour
 		return result;
 	}
 
-	private void QueueOutfitChangedFX()
+		private void QueueOutfitChangedFX()
 	{
 		this.waitingForOutfitChangeFX = true;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.waitingForOutfitChangeFX && !LockerNavigator.Instance.gameObject.activeInHierarchy)
 		{
@@ -536,41 +536,41 @@ public class WearableAccessorizer : KMonoBehaviour
 		}
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KAnimControllerBase animController;
 
-	[Obsolete("Deprecated, use customOufitItems[ClothingOutfitUtility.OutfitType.Clothing]")]
+		[Obsolete("Deprecated, use customOufitItems[ClothingOutfitUtility.OutfitType.Clothing]")]
 	[Serialize]
 	private List<ResourceRef<ClothingItemResource>> clothingItems = new List<ResourceRef<ClothingItemResource>>();
 
-	[Serialize]
+		[Serialize]
 	private string joyResponsePermitId;
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>> customOutfitItems = new Dictionary<ClothingOutfitUtility.OutfitType, List<ResourceRef<ClothingItemResource>>>();
 
-	private bool waitingForOutfitChangeFX;
+		private bool waitingForOutfitChangeFX;
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable> wearables = new Dictionary<WearableAccessorizer.WearableType, WearableAccessorizer.Wearable>();
 
-	private static string torso = "torso";
+		private static string torso = "torso";
 
-	private static string cropped = "_cropped";
+		private static string cropped = "_cropped";
 
-	public enum WearableType
+		public enum WearableType
 	{
-		Basic,
-		CustomClothing,
-		Outfit,
-		Suit,
-		CustomSuit
+				Basic,
+				CustomClothing,
+				Outfit,
+				Suit,
+				CustomSuit
 	}
 
-	[SerializationConfig(MemberSerialization.OptIn)]
+		[SerializationConfig(MemberSerialization.OptIn)]
 	public class Wearable
 	{
-				public List<KAnimFile> BuildAnims
+						public List<KAnimFile> BuildAnims
 		{
 			get
 			{
@@ -578,7 +578,7 @@ public class WearableAccessorizer : KMonoBehaviour
 			}
 		}
 
-				public List<string> AnimNames
+						public List<string> AnimNames
 		{
 			get
 			{
@@ -586,7 +586,7 @@ public class WearableAccessorizer : KMonoBehaviour
 			}
 		}
 
-		public Wearable(List<KAnimFile> buildAnims, int buildOverridePriority)
+				public Wearable(List<KAnimFile> buildAnims, int buildOverridePriority)
 		{
 			this.buildAnims = buildAnims;
 			this.animNames = (from animFile in buildAnims
@@ -594,7 +594,7 @@ public class WearableAccessorizer : KMonoBehaviour
 			this.buildOverridePriority = buildOverridePriority;
 		}
 
-		public Wearable(KAnimFile buildAnim, int buildOverridePriority)
+				public Wearable(KAnimFile buildAnim, int buildOverridePriority)
 		{
 			this.buildAnims = new List<KAnimFile>
 			{
@@ -607,7 +607,7 @@ public class WearableAccessorizer : KMonoBehaviour
 			this.buildOverridePriority = buildOverridePriority;
 		}
 
-		public Wearable(List<ResourceRef<ClothingItemResource>> items, int buildOverridePriority)
+				public Wearable(List<ResourceRef<ClothingItemResource>> items, int buildOverridePriority)
 		{
 			this.buildAnims = new List<KAnimFile>();
 			this.animNames = new List<string>();
@@ -620,7 +620,7 @@ public class WearableAccessorizer : KMonoBehaviour
 			}
 		}
 
-		public void AddCustomItems(List<ResourceRef<ClothingItemResource>> items)
+				public void AddCustomItems(List<ResourceRef<ClothingItemResource>> items)
 		{
 			foreach (ResourceRef<ClothingItemResource> resourceRef in items)
 			{
@@ -630,7 +630,7 @@ public class WearableAccessorizer : KMonoBehaviour
 			}
 		}
 
-		public void Deserialize()
+				public void Deserialize()
 		{
 			if (this.animNames != null)
 			{
@@ -646,29 +646,29 @@ public class WearableAccessorizer : KMonoBehaviour
 			}
 		}
 
-		public void AddAnim(KAnimFile animFile)
+				public void AddAnim(KAnimFile animFile)
 		{
 			this.buildAnims.Add(animFile);
 			this.animNames.Add(animFile.name);
 		}
 
-		public bool RemoveAnim(KAnimFile animFile)
+				public bool RemoveAnim(KAnimFile animFile)
 		{
 			return this.buildAnims.Remove(animFile) | this.animNames.Remove(animFile.name);
 		}
 
-		public void ClearAnims()
+				public void ClearAnims()
 		{
 			this.buildAnims.Clear();
 			this.animNames.Clear();
 		}
 
-		private List<KAnimFile> buildAnims;
+				private List<KAnimFile> buildAnims;
 
-		[Serialize]
+				[Serialize]
 		private List<string> animNames;
 
-		[Serialize]
+				[Serialize]
 		public int buildOverridePriority;
 	}
 }

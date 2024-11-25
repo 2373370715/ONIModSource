@@ -8,7 +8,7 @@ using STRINGS;
 
 public static class ClothingOutfitUtility
 {
-	public static string GetName(this ClothingOutfitUtility.OutfitType self)
+		public static string GetName(this ClothingOutfitUtility.OutfitType self)
 	{
 		switch (self)
 		{
@@ -24,7 +24,7 @@ public static class ClothingOutfitUtility
 		}
 	}
 
-	public static bool SaveClothingOutfitData()
+		public static bool SaveClothingOutfitData()
 	{
 		if (!Directory.Exists(Util.RootFolder()))
 		{
@@ -40,7 +40,7 @@ public static class ClothingOutfitUtility
 		return ClothingOutfitUtility.TryWriteTo(path, data);
 	}
 
-	public static void LoadClothingOutfitData(ClothingOutfits dbClothingOutfits)
+		public static void LoadClothingOutfitData(ClothingOutfits dbClothingOutfits)
 	{
 		string pathToJsonFile = ClothingOutfitUtility.GetPathToJsonFile(ClothingOutfitUtility.OutfitFile_U47_to_Present);
 		if (!File.Exists(pathToJsonFile))
@@ -69,11 +69,11 @@ public static class ClothingOutfitUtility
 		{
 			return;
 		}
-		foreach (KeyValuePair<string, SerializableOutfitData.Version2.CustomTemplateOutfitEntry> self in version.OutfitIdToUserAuthoredTemplateOutfit)
+		foreach (KeyValuePair<string, SerializableOutfitData.Version2.CustomTemplateOutfitEntry> keyValuePair in version.OutfitIdToUserAuthoredTemplateOutfit)
 		{
 			string text;
 			SerializableOutfitData.Version2.CustomTemplateOutfitEntry customTemplateOutfitEntry;
-			self.Deconstruct(out text, out customTemplateOutfitEntry);
+			keyValuePair.Deconstruct(out text, out customTemplateOutfitEntry);
 			string text2 = text;
 			SerializableOutfitData.Version2.CustomTemplateOutfitEntry customTemplateOutfitEntry2 = customTemplateOutfitEntry;
 			ClothingOutfitResource clothingOutfitResource = dbClothingOutfits.TryGet(text2);
@@ -92,11 +92,11 @@ public static class ClothingOutfitUtility
 			}
 		}
 		List<string> list = new List<string>();
-		foreach (KeyValuePair<string, Dictionary<string, string>> self2 in version.PersonalityIdToAssignedOutfits)
+		foreach (KeyValuePair<string, Dictionary<string, string>> keyValuePair2 in version.PersonalityIdToAssignedOutfits)
 		{
 			string text;
 			Dictionary<string, string> dictionary;
-			self2.Deconstruct(out text, out dictionary);
+			keyValuePair2.Deconstruct(out text, out dictionary);
 			string text3 = text;
 			Personality personalityFromNameStringKey = Db.Get().Personalities.GetPersonalityFromNameStringKey(text3);
 			if (personalityFromNameStringKey.IsNullOrDestroyed())
@@ -123,10 +123,10 @@ public static class ClothingOutfitUtility
 					{
 						while (enumerator4.MoveNext())
 						{
-							KeyValuePair<string, string> self3 = enumerator4.Current;
+							KeyValuePair<string, string> keyValuePair3 = enumerator4.Current;
 							string text;
 							string text5;
-							self3.Deconstruct(out text, out text5);
+							keyValuePair3.Deconstruct(out text, out text5);
 							string key = text;
 							string value = text5;
 							if (!dictionary3.ContainsKey(key))
@@ -143,12 +143,12 @@ public static class ClothingOutfitUtility
 		CustomClothingOutfits.Instance.Internal_SetOutfitData(version);
 	}
 
-	public static string GetPathToJsonFile(string jsonFileName)
+		public static string GetPathToJsonFile(string jsonFileName)
 	{
 		return Path.Combine(Util.RootFolder(), Util.GetKleiItemUserDataFolderName(), jsonFileName);
 	}
 
-	public static bool TryWriteTo(string path, string data)
+		public static bool TryWriteTo(string path, string data)
 	{
 		bool result = false;
 		try
@@ -167,7 +167,7 @@ public static class ClothingOutfitUtility
 		return result;
 	}
 
-	public static bool TryReadFrom(string path, out string data)
+		public static bool TryReadFrom(string path, out string data)
 	{
 		data = null;
 		bool result = false;
@@ -189,7 +189,7 @@ public static class ClothingOutfitUtility
 		return result;
 	}
 
-	public static readonly PermitCategory[] PERMIT_CATEGORIES_FOR_CLOTHING = new PermitCategory[]
+		public static readonly PermitCategory[] PERMIT_CATEGORIES_FOR_CLOTHING = new PermitCategory[]
 	{
 		PermitCategory.DupeTops,
 		PermitCategory.DupeGloves,
@@ -197,7 +197,7 @@ public static class ClothingOutfitUtility
 		PermitCategory.DupeShoes
 	};
 
-	public static readonly PermitCategory[] PERMIT_CATEGORIES_FOR_ATMO_SUITS = new PermitCategory[]
+		public static readonly PermitCategory[] PERMIT_CATEGORIES_FOR_ATMO_SUITS = new PermitCategory[]
 	{
 		PermitCategory.AtmoSuitHelmet,
 		PermitCategory.AtmoSuitBody,
@@ -206,15 +206,15 @@ public static class ClothingOutfitUtility
 		PermitCategory.AtmoSuitShoes
 	};
 
-	private static string OutfitFile_U44_to_U46 = "OutfitUserData.json";
+		private static string OutfitFile_U44_to_U46 = "OutfitUserData.json";
 
-	private static string OutfitFile_U47_to_Present = "OutfitUserData2.json";
+		private static string OutfitFile_U47_to_Present = "OutfitUserData2.json";
 
-	public enum OutfitType
+		public enum OutfitType
 	{
-		Clothing,
-		JoyResponse,
-		AtmoSuit,
-		LENGTH
+				Clothing,
+				JoyResponse,
+				AtmoSuit,
+				LENGTH
 	}
 }

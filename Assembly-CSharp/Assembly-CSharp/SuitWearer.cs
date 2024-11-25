@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class SuitWearer : GameStateMachine<SuitWearer, SuitWearer.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.EventHandler(GameHashes.PathAdvanced, delegate(SuitWearer.Instance smi, object data)
@@ -17,20 +17,20 @@ public class SuitWearer : GameStateMachine<SuitWearer, SuitWearer.Instance>
 		this.nosuit.DoNothing();
 	}
 
-	public GameStateMachine<SuitWearer, SuitWearer.Instance, IStateMachineTarget, object>.State suit;
+		public GameStateMachine<SuitWearer, SuitWearer.Instance, IStateMachineTarget, object>.State suit;
 
-	public GameStateMachine<SuitWearer, SuitWearer.Instance, IStateMachineTarget, object>.State nosuit;
+		public GameStateMachine<SuitWearer, SuitWearer.Instance, IStateMachineTarget, object>.State nosuit;
 
-	public new class Instance : GameStateMachine<SuitWearer, SuitWearer.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<SuitWearer, SuitWearer.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.navigator = master.GetComponent<Navigator>();
 			this.navigator.SetFlags(PathFinder.PotentialPath.Flags.PerformSuitChecks);
 			this.prefabInstanceID = this.navigator.GetComponent<KPrefabID>().InstanceID;
 		}
 
-		public void OnPathAdvanced(object data)
+				public void OnPathAdvanced(object data)
 		{
 			if (this.navigator.CurrentNavType == NavType.Hover && (this.navigator.flags & PathFinder.PotentialPath.Flags.HasJetPack) <= PathFinder.PotentialPath.Flags.None)
 			{
@@ -40,7 +40,7 @@ public class SuitWearer : GameStateMachine<SuitWearer, SuitWearer.Instance>
 			this.ReserveSuits();
 		}
 
-		public void ReserveSuits()
+				public void ReserveSuits()
 		{
 			PathFinder.Path path = this.navigator.path;
 			if (path.nodes == null)
@@ -112,7 +112,7 @@ public class SuitWearer : GameStateMachine<SuitWearer, SuitWearer.Instance>
 			}
 		}
 
-		public void UnreserveSuits()
+				public void UnreserveSuits()
 		{
 			foreach (int num in this.suitReservations)
 			{
@@ -132,17 +132,17 @@ public class SuitWearer : GameStateMachine<SuitWearer, SuitWearer.Instance>
 			this.emptyLockerReservations.Clear();
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			this.UnreserveSuits();
 		}
 
-		private List<int> suitReservations = new List<int>();
+				private List<int> suitReservations = new List<int>();
 
-		private List<int> emptyLockerReservations = new List<int>();
+				private List<int> emptyLockerReservations = new List<int>();
 
-		private Navigator navigator;
+				private Navigator navigator;
 
-		private int prefabInstanceID;
+				private int prefabInstanceID;
 	}
 }

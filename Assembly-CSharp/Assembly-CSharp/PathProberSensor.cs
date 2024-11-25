@@ -2,15 +2,15 @@
 
 public class PathProberSensor : Sensor
 {
-	public PathProberSensor(Sensors sensors) : base(sensors)
+		public PathProberSensor(Sensors sensors) : base(sensors)
 	{
 		this.navigator = sensors.GetComponent<Navigator>();
 	}
 
-	public override void Update()
+		public override void Update()
 	{
 		this.navigator.UpdateProbe(false);
 	}
 
-	private Navigator navigator;
+		private Navigator navigator;
 }

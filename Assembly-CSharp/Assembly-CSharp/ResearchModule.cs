@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/ResearchModule")]
 public class ResearchModule : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.GetComponent<KBatchedAnimController>().Play("grounded", KAnim.PlayMode.Loop, 1f, 0f);
@@ -13,11 +13,11 @@ public class ResearchModule : KMonoBehaviour
 		base.Subscribe<ResearchModule>(-887025858, ResearchModule.OnLandDelegate);
 	}
 
-	public void OnLaunch(object data)
+		public void OnLaunch(object data)
 	{
 	}
 
-	public void OnLand(object data)
+		public void OnLand(object data)
 	{
 		if (!DlcManager.FeatureClusterSpaceEnabled())
 		{
@@ -46,12 +46,12 @@ public class ResearchModule : KMonoBehaviour
 		gameObject2.GetComponent<PrimaryElement>().Mass = (float)ROCKETRY.DESTINATION_RESEARCH.EVERGREEN;
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<ResearchModule> OnLaunchDelegate = new EventSystem.IntraObjectHandler<ResearchModule>(delegate(ResearchModule component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ResearchModule> OnLaunchDelegate = new EventSystem.IntraObjectHandler<ResearchModule>(delegate(ResearchModule component, object data)
 	{
 		component.OnLaunch(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<ResearchModule> OnLandDelegate = new EventSystem.IntraObjectHandler<ResearchModule>(delegate(ResearchModule component, object data)
+		private static readonly EventSystem.IntraObjectHandler<ResearchModule> OnLandDelegate = new EventSystem.IntraObjectHandler<ResearchModule>(delegate(ResearchModule component, object data)
 	{
 		component.OnLand(data);
 	});

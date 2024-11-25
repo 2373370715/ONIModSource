@@ -3,25 +3,27 @@ using System.Collections.Generic;
 
 public class WorkingToiletTracker : WorldTracker
 {
-	public WorkingToiletTracker(int worldID) : base(worldID)
+		public WorkingToiletTracker(int worldID) : base(worldID)
 	{
 	}
 
-	public override void UpdateData()
+		public override void UpdateData()
 	{
 		int num = 0;
-		List<IUsable> worldItems = Components.Toilets.GetWorldItems(base.WorldID, false);
-		for (int i = 0; i < worldItems.Count; i++)
+		using (IEnumerator<IUsable> enumerator = Components.Toilets.WorldItemsEnumerate(base.WorldID, true).GetEnumerator())
 		{
-			if (worldItems[i].IsUsable())
+			while (enumerator.MoveNext())
 			{
-				num++;
+				if (enumerator.Current.IsUsable())
+				{
+					num++;
+				}
 			}
 		}
 		base.AddPoint((float)num);
 	}
 
-	public override string FormatValueString(float value)
+		public override string FormatValueString(float value)
 	{
 		return value.ToString();
 	}

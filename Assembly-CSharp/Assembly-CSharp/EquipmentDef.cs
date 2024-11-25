@@ -4,7 +4,7 @@ using Klei.AI;
 
 public class EquipmentDef : Def
 {
-		public override string Name
+			public override string Name
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class EquipmentDef : Def
 		}
 	}
 
-		public string Desc
+			public string Desc
 	{
 		get
 		{
@@ -20,7 +20,7 @@ public class EquipmentDef : Def
 		}
 	}
 
-		public string Effect
+			public string Effect
 	{
 		get
 		{
@@ -28,7 +28,7 @@ public class EquipmentDef : Def
 		}
 	}
 
-		public string GenericName
+			public string GenericName
 	{
 		get
 		{
@@ -36,7 +36,7 @@ public class EquipmentDef : Def
 		}
 	}
 
-		public string WornName
+			public string WornName
 	{
 		get
 		{
@@ -44,7 +44,7 @@ public class EquipmentDef : Def
 		}
 	}
 
-		public string WornDesc
+			public string WornDesc
 	{
 		get
 		{
@@ -52,53 +52,53 @@ public class EquipmentDef : Def
 		}
 	}
 
-	public string Id;
+		public string Id;
 
-	public string Slot;
+		public string Slot;
 
-	public string FabricatorId;
+		public string FabricatorId;
 
-	public float FabricationTime;
+		public float FabricationTime;
 
-	public string RecipeTechUnlock;
+		public string RecipeTechUnlock;
 
-	public SimHashes OutputElement;
+		public SimHashes OutputElement;
 
-	public Dictionary<string, float> InputElementMassMap;
+		public Dictionary<string, float> InputElementMassMap;
 
-	public float Mass;
+		public float Mass;
 
-	public KAnimFile Anim;
+		public KAnimFile Anim;
 
-	public string SnapOn;
+		public string SnapOn;
 
-	public string SnapOn1;
+		public string SnapOn1;
 
-	public KAnimFile BuildOverride;
+		public KAnimFile BuildOverride;
 
-	public int BuildOverridePriority;
+		public int BuildOverridePriority;
 
-	public bool IsBody;
+		public bool IsBody;
 
-	public List<AttributeModifier> AttributeModifiers;
+		public List<AttributeModifier> AttributeModifiers;
 
-	public string RecipeDescription;
+		public string RecipeDescription;
 
-	public List<Effect> EffectImmunites = new List<Effect>();
+		public List<Effect> EffectImmunites = new List<Effect>();
 
-	public Action<Equippable> OnEquipCallBack;
+		public Action<Equippable> OnEquipCallBack;
 
-	public Action<Equippable> OnUnequipCallBack;
+		public Action<Equippable> OnUnequipCallBack;
 
-	public EntityTemplates.CollisionShape CollisionShape;
+		public EntityTemplates.CollisionShape CollisionShape;
 
-	public float width;
+		public float width;
 
-	public float height = 0.325f;
+		public float height = 0.325f;
 
-	public Tag[] AdditionalTags;
+		public Tag[] AdditionalTags;
 
-	public string wornID;
+		public string wornID;
 
-	public List<Descriptor> additionalDescriptors = new List<Descriptor>();
+		public List<Descriptor> additionalDescriptors = new List<Descriptor>();
 }

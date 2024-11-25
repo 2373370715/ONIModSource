@@ -4,12 +4,12 @@ using STRINGS;
 
 public class DecorDisplayer : StandardAmountDisplayer
 {
-	public DecorDisplayer() : base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle, null, GameUtil.IdentityDescriptorTense.Normal)
+		public DecorDisplayer() : base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle, null, GameUtil.IdentityDescriptorTense.Normal)
 	{
 		this.formatter = new DecorDisplayer.DecorAttributeFormatter();
 	}
 
-	public override string GetTooltip(Amount master, AmountInstance instance)
+		public override string GetTooltip(Amount master, AmountInstance instance)
 	{
 		string text = string.Format(LocText.ParseText(master.description), this.formatter.GetFormattedValue(instance.value, GameUtil.TimeSlice.None));
 		int cell = Grid.PosToCell(instance.gameObject);
@@ -27,9 +27,9 @@ public class DecorDisplayer : StandardAmountDisplayer
 		return text;
 	}
 
-	public class DecorAttributeFormatter : StandardAttributeFormatter
+		public class DecorAttributeFormatter : StandardAttributeFormatter
 	{
-		public DecorAttributeFormatter() : base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle)
+				public DecorAttributeFormatter() : base(GameUtil.UnitClass.SimpleFloat, GameUtil.TimeSlice.PerCycle)
 		{
 		}
 	}

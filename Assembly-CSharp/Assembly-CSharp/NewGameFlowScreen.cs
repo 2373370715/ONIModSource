@@ -2,21 +2,21 @@
 
 public abstract class NewGameFlowScreen : KModalScreen
 {
-			public event System.Action OnNavigateForward;
+				public event System.Action OnNavigateForward;
 
-			public event System.Action OnNavigateBackward;
+				public event System.Action OnNavigateBackward;
 
-	protected void NavigateBackward()
+		protected void NavigateBackward()
 	{
 		this.OnNavigateBackward();
 	}
 
-	protected void NavigateForward()
+		protected void NavigateForward()
 	{
 		this.OnNavigateForward();
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.Consumed)
 		{

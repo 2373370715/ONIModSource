@@ -5,24 +5,24 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/NextUpdateTimer")]
 public class NextUpdateTimer : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.initialAnimScale = this.UpdateAnimController.animScale;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.RefreshReleaseTimes();
 	}
 
-	public void UpdateReleaseTimes(string lastUpdateTime, string nextUpdateTime, string textOverride)
+		public void UpdateReleaseTimes(string lastUpdateTime, string nextUpdateTime, string textOverride)
 	{
 		if (!System.DateTime.TryParse(lastUpdateTime, out this.currentReleaseDate))
 		{
@@ -36,7 +36,7 @@ public class NextUpdateTimer : KMonoBehaviour
 		this.RefreshReleaseTimes();
 	}
 
-	private void RefreshReleaseTimes()
+		private void RefreshReleaseTimes()
 	{
 		TimeSpan timeSpan = this.nextReleaseDate - this.currentReleaseDate;
 		TimeSpan timeSpan2 = this.nextReleaseDate - System.DateTime.UtcNow;
@@ -78,17 +78,17 @@ public class NextUpdateTimer : KMonoBehaviour
 		this.UpdateAnimMeterController.SetPositionPercent(positionPercent);
 	}
 
-	public LocText TimerText;
+		public LocText TimerText;
 
-	public KBatchedAnimController UpdateAnimController;
+		public KBatchedAnimController UpdateAnimController;
 
-	public KBatchedAnimController UpdateAnimMeterController;
+		public KBatchedAnimController UpdateAnimMeterController;
 
-	public float initialAnimScale;
+		public float initialAnimScale;
 
-	public System.DateTime nextReleaseDate;
+		public System.DateTime nextReleaseDate;
 
-	public System.DateTime currentReleaseDate;
+		public System.DateTime currentReleaseDate;
 
-	private string m_releaseTextOverride;
+		private string m_releaseTextOverride;
 }

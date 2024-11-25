@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-
+namespace RsTransferPort;
 
 public class PortalUtilityNetworkLinkContainer {
     private readonly Dictionary<int, Dictionary<string, HashSet<WirelessPowerPort>>> container;

@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class HardIceCometConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_EXPANSION1_ONLY.Append("DLC2_ID");
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(HardIceCometConfig.ID, UI.SPACEDESTINATIONS.COMETS.HARDICECOMET.NAME, true);
 		gameObject.AddOrGet<SaveLoadRoot>();
@@ -45,17 +45,17 @@ public class HardIceCometConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static readonly string ID = "HardIceComet";
+		public static readonly string ID = "HardIceComet";
 
-	private const SimHashes element = SimHashes.CrushedIce;
+		private const SimHashes element = SimHashes.CrushedIce;
 
-	private const int ADDED_CELLS = 6;
+		private const int ADDED_CELLS = 6;
 }

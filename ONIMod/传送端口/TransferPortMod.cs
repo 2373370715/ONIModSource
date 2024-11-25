@@ -3,12 +3,11 @@ using HarmonyLib;
 using KMod;
 using RsLib;
 using RsLib.Unity;
-using RsTransferPort;
 using RsTransferPort.Assets;
 using TMPro;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 
 // TransferPortMod 类继承自 UserMod2，主要用于初始化和加载模组资源
 public class TransferPortMod : UserMod2 {
@@ -129,9 +128,9 @@ public class TransferPortMod : UserMod2 {
         // 初始化本地化
         RsLocalization.Initialize(mod, harmony)
                       .RegisterLoad(typeof(MYSTRINGS))
-                      .RegisterAddStrings(typeof(STRINGS.BUILDINGS))
-                      .RegisterAddStrings(typeof(STRINGS.UI))
-                      .RegisterAddStrings(typeof(STRINGS.BUILDING));
+                      .RegisterAddStrings(typeof(MYSTRINGS.BUILDINGS))
+                      .RegisterAddStrings(typeof(MYSTRINGS.UI))
+                      .RegisterAddStrings(typeof(MYSTRINGS.BUILDING));
 
         // 初始化侧面屏幕设置
         RsSideScreen.Initialize(mod, harmony)
@@ -150,7 +149,7 @@ public class TransferPortMod : UserMod2 {
                                                 "",
                                                 Action.NumActions,
                                                 MYSTRINGS.UI.TOOLTIPS
-                                                         .PORTCHANNELMODE_OVERLAY_STRING,
+                                                       .PORTCHANNELMODE_OVERLAY_STRING,
                                                 MYSTRINGS.UI.OVERLAYS.PORTCHANNELMODE.BUTTON))
                  .AddOverlayLegendInfo(() => new OverlayLegend.OverlayInfo {
                      mode = MyOverlayModes.PortChannel.ID,

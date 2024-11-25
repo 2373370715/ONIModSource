@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class FilterSideScreen : SingleItemSelectionSideScreenBase
 {
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		bool flag;
 		if (this.isLogicFilter)
@@ -20,7 +20,7 @@ public class FilterSideScreen : SingleItemSelectionSideScreenBase
 		return flag && target.GetComponent<Filterable>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.targetFilterable = target.GetComponent<Filterable>();
@@ -43,13 +43,13 @@ public class FilterSideScreen : SingleItemSelectionSideScreenBase
 		this.SetFilterTag(this.targetFilterable.SelectedTag);
 	}
 
-	public override void ItemRowClicked(SingleItemSelectionRow rowClicked)
+		public override void ItemRowClicked(SingleItemSelectionRow rowClicked)
 	{
 		this.SetFilterTag(rowClicked.tag);
 		base.ItemRowClicked(rowClicked);
 	}
 
-	private void Configure(Filterable filterable)
+		private void Configure(Filterable filterable)
 	{
 		Dictionary<Tag, HashSet<Tag>> tagOptions = filterable.GetTagOptions();
 		Tag tag = GameTags.Void;
@@ -93,7 +93,7 @@ public class FilterSideScreen : SingleItemSelectionSideScreenBase
 		this.RefreshUI();
 	}
 
-	private void SetFilterTag(Tag tag)
+		private void SetFilterTag(Tag tag)
 	{
 		if (this.targetFilterable == null)
 		{
@@ -106,7 +106,7 @@ public class FilterSideScreen : SingleItemSelectionSideScreenBase
 		this.RefreshUI();
 	}
 
-	private void RefreshUI()
+		private void RefreshUI()
 	{
 		LocString loc_string;
 		switch (this.targetFilterable.filterElementState)
@@ -133,25 +133,25 @@ public class FilterSideScreen : SingleItemSelectionSideScreenBase
 		this.currentSelectionLabel.text = UI.UISIDESCREENS.FILTERSIDESCREEN.NO_SELECTION;
 	}
 
-	public HierarchyReferences categoryFoldoutPrefab;
+		public HierarchyReferences categoryFoldoutPrefab;
 
-	public RectTransform elementEntryContainer;
+		public RectTransform elementEntryContainer;
 
-	public Image outputIcon;
+		public Image outputIcon;
 
-	public Image everythingElseIcon;
+		public Image everythingElseIcon;
 
-	public LocText outputElementHeaderLabel;
+		public LocText outputElementHeaderLabel;
 
-	public LocText everythingElseHeaderLabel;
+		public LocText everythingElseHeaderLabel;
 
-	public LocText selectElementHeaderLabel;
+		public LocText selectElementHeaderLabel;
 
-	public LocText currentSelectionLabel;
+		public LocText currentSelectionLabel;
 
-	private SingleItemSelectionRow voidRow;
+		private SingleItemSelectionRow voidRow;
 
-	public bool isLogicFilter;
+		public bool isLogicFilter;
 
-	private Filterable targetFilterable;
+		private Filterable targetFilterable;
 }

@@ -2,11 +2,11 @@
 
 public interface IUtilityItem
 {
-			UtilityConnections Connections { get; set; }
+				UtilityConnections Connections { get; set; }
 
-	void UpdateConnections(UtilityConnections Connections);
+		void UpdateConnections(UtilityConnections Connections);
 
-	int GetNetworkID();
+		int GetNetworkID();
 
-	UtilityNetwork GetNetworkForDirection(Direction d);
+		UtilityNetwork GetNetworkForDirection(Direction d);
 }

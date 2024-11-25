@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DevLightGeneratorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "DevLightGenerator";
 		int width = 1;
@@ -29,7 +29,7 @@ public class DevLightGeneratorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		LightShapePreview lightShapePreview = go.AddComponent<LightShapePreview>();
 		lightShapePreview.lux = 1800;
@@ -37,13 +37,13 @@ public class DevLightGeneratorConfig : IBuildingConfig
 		lightShapePreview.shape = global::LightShape.Circle;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddTag(GameTags.DevBuilding);
 		go.AddTag(RoomConstraints.ConstraintTags.LightSource);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		DevLightGenerator devLightGenerator = go.AddOrGet<DevLightGenerator>();
 		devLightGenerator.overlayColour = LIGHT2D.CEILINGLIGHT_OVERLAYCOLOR;
@@ -58,5 +58,5 @@ public class DevLightGeneratorConfig : IBuildingConfig
 		go.AddOrGetDef<LightController.Def>();
 	}
 
-	public const string ID = "DevLightGenerator";
+		public const string ID = "DevLightGenerator";
 }

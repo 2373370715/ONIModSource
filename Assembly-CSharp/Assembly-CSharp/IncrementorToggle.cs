@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class IncrementorToggle : MultiToggle
 {
-	protected override void Update()
+		protected override void Update()
 	{
 		if (this.clickHeldDown)
 		{
@@ -20,7 +20,7 @@ public class IncrementorToggle : MultiToggle
 		}
 	}
 
-	private void PlayClickSound()
+		private void PlayClickSound()
 	{
 		if (this.play_sound_on_click)
 		{
@@ -33,13 +33,13 @@ public class IncrementorToggle : MultiToggle
 		}
 	}
 
-	public override void OnPointerUp(PointerEventData eventData)
+		public override void OnPointerUp(PointerEventData eventData)
 	{
 		base.OnPointerUp(eventData);
 		this.timeToNextIncrement = this.timeBetweenIncrementsMax;
 	}
 
-	public override void OnPointerDown(PointerEventData eventData)
+		public override void OnPointerDown(PointerEventData eventData)
 	{
 		if (!this.clickHeldDown)
 		{
@@ -57,16 +57,16 @@ public class IncrementorToggle : MultiToggle
 		base.RefreshHoverColor();
 	}
 
-	public override void OnPointerClick(PointerEventData eventData)
+		public override void OnPointerClick(PointerEventData eventData)
 	{
 		base.RefreshHoverColor();
 	}
 
-	private float timeBetweenIncrementsMin = 0.033f;
+		private float timeBetweenIncrementsMin = 0.033f;
 
-	private float timeBetweenIncrementsMax = 0.25f;
+		private float timeBetweenIncrementsMax = 0.25f;
 
-	private const float incrementAccelerationScale = 2.5f;
+		private const float incrementAccelerationScale = 2.5f;
 
-	private float timeToNextIncrement;
+		private float timeToNextIncrement;
 }

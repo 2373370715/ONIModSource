@@ -1,4 +1,4 @@
-﻿
+﻿namespace RsTransferPort;
 // public class TransferConduitManager : SingleManager<TransferConduitManager>
 // {
 //     private readonly Dictionary<ConduitChannelKey, PortalConduitChannel> channels =

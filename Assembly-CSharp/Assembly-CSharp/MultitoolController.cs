@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MultitoolController : GameStateMachine<MultitoolController, MultitoolController.Instance, Worker>
+public class MultitoolController : GameStateMachine<MultitoolController, MultitoolController.Instance, WorkerBase>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.pre;
 		base.Target(this.worker);
@@ -23,14 +23,14 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 		}).Exit("DestroyHitEffect", delegate(MultitoolController.Instance smi)
 		{
 			smi.DestroyHitEffect();
-		}).EventTransition(GameHashes.WorkerPlayPostAnim, this.pst, (MultitoolController.Instance smi) => smi.GetComponent<Worker>().state == Worker.State.PendingCompletion);
+		}).EventTransition(GameHashes.WorkerPlayPostAnim, this.pst, (MultitoolController.Instance smi) => smi.GetComponent<WorkerBase>().GetState() == WorkerBase.State.PendingCompletion);
 		this.pst.Enter("PlayPost", delegate(MultitoolController.Instance smi)
 		{
 			smi.PlayPost();
 		});
 	}
 
-	public static string[] GetAnimationStrings(Workable workable, Worker worker, string toolString = "dig")
+		public static string[] GetAnimationStrings(Workable workable, WorkerBase worker, string toolString = "dig")
 	{
 		global::Debug.Assert(toolString != "build");
 		string[][][] array;
@@ -81,22 +81,38 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 		return array[num4][num5];
 	}
 
-	private static void GetTargetPoints(Workable workable, Worker worker, out Vector3 source, out Vector3 target)
+		private static string[] GetDroneAnimationStrings(HashedString context)
+	{
+		string[] result;
+		if (MultitoolController.drone_anims.TryGetValue(context, out result))
+		{
+			return result;
+		}
+		global::Debug.LogError(string.Format("Missing drone multitool anims for context {0}", context));
+		return new string[]
+		{
+			"",
+			"",
+			""
+		};
+	}
+
+		private static void GetTargetPoints(Workable workable, WorkerBase worker, out Vector3 source, out Vector3 target)
 	{
 		target = workable.GetTargetPoint();
 		source = worker.transform.GetPosition();
 		source.y += 0.7f;
 	}
 
-	public GameStateMachine<MultitoolController, MultitoolController.Instance, Worker, object>.State pre;
+		public GameStateMachine<MultitoolController, MultitoolController.Instance, WorkerBase, object>.State pre;
 
-	public GameStateMachine<MultitoolController, MultitoolController.Instance, Worker, object>.State loop;
+		public GameStateMachine<MultitoolController, MultitoolController.Instance, WorkerBase, object>.State loop;
 
-	public GameStateMachine<MultitoolController, MultitoolController.Instance, Worker, object>.State pst;
+		public GameStateMachine<MultitoolController, MultitoolController.Instance, WorkerBase, object>.State pst;
 
-	public StateMachine<MultitoolController, MultitoolController.Instance, Worker, object>.TargetParameter worker;
+		public StateMachine<MultitoolController, MultitoolController.Instance, WorkerBase, object>.TargetParameter worker;
 
-	private static readonly string[][][] ANIM_BASE = new string[][][]
+		private static readonly string[][][] ANIM_BASE = new string[][][]
 	{
 		new string[][]
 		{
@@ -235,25 +251,52 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 		}
 	};
 
-	private static Dictionary<string, string[][][]> TOOL_ANIM_SETS = new Dictionary<string, string[][][]>();
+		private static Dictionary<string, string[][][]> TOOL_ANIM_SETS = new Dictionary<string, string[][][]>();
 
-	public new class Instance : GameStateMachine<MultitoolController, MultitoolController.Instance, Worker, object>.GameInstance
+		private static Dictionary<HashedString, string[]> drone_anims = new Dictionary<HashedString, string[]>
 	{
-		public Instance(Workable workable, Worker worker, HashedString context, GameObject hit_effect) : base(worker)
+		{
+			"pickup",
+			new string[]
+			{
+				"pickup_pre",
+				"pickup_loop",
+				"pickup_pst"
+			}
+		},
+		{
+			"store",
+			new string[]
+			{
+				"deposit",
+				"deposit",
+				"deposit"
+			}
+		}
+	};
+
+		public new class Instance : GameStateMachine<MultitoolController, MultitoolController.Instance, WorkerBase, object>.GameInstance
+	{
+				public Instance(Workable workable, WorkerBase worker, HashedString context, GameObject hit_effect) : base(worker)
 		{
 			this.hitEffectPrefab = hit_effect;
 			worker.GetComponent<AnimEventHandler>().SetContext(context);
 			base.sm.worker.Set(worker, base.smi);
 			this.workable = workable;
+			if (worker.IsFetchDrone())
+			{
+				this.anims = MultitoolController.GetDroneAnimationStrings(context);
+				return;
+			}
 			this.anims = MultitoolController.GetAnimationStrings(workable, worker, "dig");
 		}
 
-		public void PlayPre()
+				public void PlayPre()
 		{
 			base.sm.worker.Get<KAnimControllerBase>(base.smi).Play(this.anims[0], KAnim.PlayMode.Once, 1f, 0f);
 		}
 
-		public void PlayLoop()
+				public void PlayLoop()
 		{
 			if (base.sm.worker.Get<KAnimControllerBase>(base.smi).currentAnim != this.anims[1])
 			{
@@ -261,7 +304,7 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 			}
 		}
 
-		public void PlayPost()
+				public void PlayPost()
 		{
 			if (base.sm.worker.Get<KAnimControllerBase>(base.smi).currentAnim != this.anims[2])
 			{
@@ -269,39 +312,39 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 			}
 		}
 
-		public void UpdateHitEffectTarget()
+				public void UpdateHitEffectTarget()
 		{
 			if (this.hitEffect == null)
 			{
 				return;
 			}
-			Worker worker = base.sm.worker.Get<Worker>(base.smi);
-			AnimEventHandler component = worker.GetComponent<AnimEventHandler>();
+			WorkerBase workerBase = base.sm.worker.Get<WorkerBase>(base.smi);
+			AnimEventHandler component = workerBase.GetComponent<AnimEventHandler>();
 			Vector3 targetPoint = this.workable.GetTargetPoint();
-			worker.GetComponent<Facing>().Face(this.workable.transform.GetPosition());
-			this.anims = MultitoolController.GetAnimationStrings(this.workable, worker, "dig");
+			workerBase.GetComponent<Facing>().Face(this.workable.transform.GetPosition());
+			this.anims = MultitoolController.GetAnimationStrings(this.workable, workerBase, "dig");
 			this.PlayLoop();
 			component.SetTargetPos(targetPoint);
 			component.UpdateWorkTarget(this.workable.GetTargetPoint());
 			this.hitEffect.transform.SetPosition(targetPoint);
 		}
 
-		public void CreateHitEffect()
+				public void CreateHitEffect()
 		{
-			Worker worker = base.sm.worker.Get<Worker>(base.smi);
-			if (worker == null || this.workable == null)
+			WorkerBase workerBase = base.sm.worker.Get<WorkerBase>(base.smi);
+			if (workerBase == null || this.workable == null)
 			{
 				return;
 			}
-			if (Grid.PosToCell(this.workable) != Grid.PosToCell(worker))
+			if (Grid.PosToCell(this.workable) != Grid.PosToCell(workerBase))
 			{
-				worker.Trigger(-673283254, null);
+				workerBase.Trigger(-673283254, null);
 			}
 			Diggable diggable = this.workable as Diggable;
 			if (diggable)
 			{
 				Element targetElement = diggable.GetTargetElement();
-				worker.Trigger(-1762453998, targetElement);
+				workerBase.Trigger(-1762453998, targetElement);
 			}
 			if (this.hitEffectPrefab == null)
 			{
@@ -311,7 +354,7 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 			{
 				this.DestroyHitEffect();
 			}
-			AnimEventHandler component = worker.GetComponent<AnimEventHandler>();
+			AnimEventHandler component = workerBase.GetComponent<AnimEventHandler>();
 			Vector3 targetPoint = this.workable.GetTargetPoint();
 			component.SetTargetPos(targetPoint);
 			this.hitEffect = GameUtil.KInstantiate(this.hitEffectPrefab, targetPoint, Grid.SceneLayer.FXFront2, null, 0);
@@ -323,13 +366,13 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 			component.UpdateWorkTarget(this.workable.GetTargetPoint());
 		}
 
-		public void DestroyHitEffect()
+				public void DestroyHitEffect()
 		{
-			Worker worker = base.sm.worker.Get<Worker>(base.smi);
-			if (worker != null)
+			WorkerBase workerBase = base.sm.worker.Get<WorkerBase>(base.smi);
+			if (workerBase != null)
 			{
-				worker.Trigger(-1559999068, null);
-				worker.Trigger(939543986, null);
+				workerBase.Trigger(-1559999068, null);
+				workerBase.Trigger(939543986, null);
 			}
 			if (this.hitEffectPrefab == null)
 			{
@@ -342,20 +385,20 @@ public class MultitoolController : GameStateMachine<MultitoolController, Multito
 			this.hitEffect.DeleteObject();
 		}
 
-		public Workable workable;
+				public Workable workable;
 
-		private GameObject hitEffectPrefab;
+				private GameObject hitEffectPrefab;
 
-		private GameObject hitEffect;
+				private GameObject hitEffect;
 
-		private string[] anims;
+				private string[] anims;
 
-		private bool inPlace;
+				private bool inPlace;
 	}
 
-	private enum DigDirection
+		private enum DigDirection
 	{
-		dig_down,
-		dig_up
+				dig_down,
+				dig_up
 	}
 }

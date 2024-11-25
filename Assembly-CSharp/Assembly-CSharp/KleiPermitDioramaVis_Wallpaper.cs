@@ -5,16 +5,16 @@ using UnityEngine.UI;
 
 public class KleiPermitDioramaVis_Wallpaper : KMonoBehaviour, IKleiPermitDioramaVisTarget
 {
-	public GameObject GetGameObject()
+		public GameObject GetGameObject()
 	{
 		return base.gameObject;
 	}
 
-	public void ConfigureSetup()
+		public void ConfigureSetup()
 	{
 	}
 
-	public void ConfigureWith(PermitResource permit)
+		public void ConfigureWith(PermitResource permit)
 	{
 		PermitPresentationInfo permitPresentationInfo = permit.GetPermitPresentationInfo();
 		this.itemSprite.rectTransform().sizeDelta = Vector2.one * 176f;
@@ -38,12 +38,12 @@ public class KleiPermitDioramaVis_Wallpaper : KMonoBehaviour, IKleiPermitDiorama
 		}));
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Image itemSprite;
 
-	private bool itemSpriteDidInit;
+		private bool itemSpriteDidInit;
 
-	private Vector2 itemSpritePosStart;
+		private Vector2 itemSpritePosStart;
 
-	private Vector2 itemSpritePosEnd;
+		private Vector2 itemSpritePosEnd;
 }

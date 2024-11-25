@@ -5,9 +5,9 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/MinMaxSlider")]
 public class MinMaxSlider : KMonoBehaviour
 {
-			public MinMaxSlider.Mode mode { get; private set; }
+				public MinMaxSlider.Mode mode { get; private set; }
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		ToolTip component = base.transform.parent.gameObject.GetComponent<ToolTip>();
@@ -50,7 +50,7 @@ public class MinMaxSlider : KMonoBehaviour
 		}
 	}
 
-	public void SetIcon(Image newIcon)
+		public void SetIcon(Image newIcon)
 	{
 		this.icon = newIcon;
 		this.icon.gameObject.transform.SetParent(base.transform);
@@ -58,7 +58,7 @@ public class MinMaxSlider : KMonoBehaviour
 		this.icon.rectTransform().anchoredPosition = Vector2.zero;
 	}
 
-	public void SetMode(MinMaxSlider.Mode mode)
+		public void SetMode(MinMaxSlider.Mode mode)
 	{
 		this.mode = mode;
 		if (mode == MinMaxSlider.Mode.Single && this.extraSlider != null)
@@ -68,13 +68,13 @@ public class MinMaxSlider : KMonoBehaviour
 		}
 	}
 
-	private void SetAnchor(RectTransform trans, Vector2 min, Vector2 max)
+		private void SetAnchor(RectTransform trans, Vector2 min, Vector2 max)
 	{
 		trans.anchorMin = min;
 		trans.anchorMax = max;
 	}
 
-	public void SetMinMaxValue(float currentMin, float currentMax, float min, float max)
+		public void SetMinMaxValue(float currentMin, float currentMax, float min, float max)
 	{
 		this.minSlider.value = currentMin;
 		this.currentMinValue = currentMin;
@@ -93,13 +93,13 @@ public class MinMaxSlider : KMonoBehaviour
 		}
 	}
 
-	public void SetExtraValue(float current)
+		public void SetExtraValue(float current)
 	{
 		this.extraSlider.value = current;
 		this.toolTip.toolTip = base.transform.parent.name + ": " + current.ToString("F2");
 	}
 
-	public void SetMaxValue(float current, float max)
+		public void SetMaxValue(float current, float max)
 	{
 		float num = current / max * 100f;
 		if (this.isOverPowered != null)
@@ -120,7 +120,7 @@ public class MinMaxSlider : KMonoBehaviour
 		}
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (!this.interactable)
 		{
@@ -139,7 +139,7 @@ public class MinMaxSlider : KMonoBehaviour
 		this.maxRect.anchorMin = new Vector2(this.maxRect.anchorMin.x, this.minSlider.value / this.maxLimit);
 	}
 
-	public void OnMinValueChanged(float ignoreThis)
+		public void OnMinValueChanged(float ignoreThis)
 	{
 		if (!this.interactable)
 		{
@@ -160,7 +160,7 @@ public class MinMaxSlider : KMonoBehaviour
 		}
 	}
 
-	public void OnMaxValueChanged(float ignoreThis)
+		public void OnMaxValueChanged(float ignoreThis)
 	{
 		if (!this.interactable)
 		{
@@ -181,7 +181,7 @@ public class MinMaxSlider : KMonoBehaviour
 		}
 	}
 
-	public void Lock(bool shouldLock)
+		public void Lock(bool shouldLock)
 	{
 		if (!this.interactable)
 		{
@@ -195,7 +195,7 @@ public class MinMaxSlider : KMonoBehaviour
 		}
 	}
 
-	public void ToggleLock()
+		public void ToggleLock()
 	{
 		if (!this.interactable)
 		{
@@ -211,7 +211,7 @@ public class MinMaxSlider : KMonoBehaviour
 		}
 	}
 
-	public void OnDrag()
+		public void OnDrag()
 	{
 		if (!this.interactable)
 		{
@@ -229,73 +229,73 @@ public class MinMaxSlider : KMonoBehaviour
 		}
 	}
 
-	public MinMaxSlider.LockingType lockType = MinMaxSlider.LockingType.Drag;
+		public MinMaxSlider.LockingType lockType = MinMaxSlider.LockingType.Drag;
 
-	public bool lockRange;
+		public bool lockRange;
 
-	public bool interactable = true;
+		public bool interactable = true;
 
-	public float minLimit;
+		public float minLimit;
 
-	public float maxLimit = 100f;
+		public float maxLimit = 100f;
 
-	public float range = 50f;
+		public float range = 50f;
 
-	public float barWidth = 10f;
+		public float barWidth = 10f;
 
-	public float barHeight = 100f;
+		public float barHeight = 100f;
 
-	public float currentMinValue = 10f;
+		public float currentMinValue = 10f;
 
-	public float currentMaxValue = 90f;
+		public float currentMaxValue = 90f;
 
-	public float currentExtraValue = 50f;
+		public float currentExtraValue = 50f;
 
-	public Slider.Direction direction;
+		public Slider.Direction direction;
 
-	public bool wholeNumbers = true;
+		public bool wholeNumbers = true;
 
-	public Action<MinMaxSlider> onMinChange;
+		public Action<MinMaxSlider> onMinChange;
 
-	public Action<MinMaxSlider> onMaxChange;
+		public Action<MinMaxSlider> onMaxChange;
 
-	public Slider minSlider;
+		public Slider minSlider;
 
-	public Slider maxSlider;
+		public Slider maxSlider;
 
-	public Slider extraSlider;
+		public Slider extraSlider;
 
-	public RectTransform minRect;
+		public RectTransform minRect;
 
-	public RectTransform maxRect;
+		public RectTransform maxRect;
 
-	public RectTransform bgFill;
+		public RectTransform bgFill;
 
-	public RectTransform mgFill;
+		public RectTransform mgFill;
 
-	public RectTransform fgFill;
+		public RectTransform fgFill;
 
-	public Text title;
+		public Text title;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	public ToolTip toolTip;
 
-	public Image icon;
+		public Image icon;
 
-	public Image isOverPowered;
+		public Image isOverPowered;
 
-	private Vector3 mousePos;
+		private Vector3 mousePos;
 
-	public enum LockingType
+		public enum LockingType
 	{
-		Toggle,
-		Drag
+				Toggle,
+				Drag
 	}
 
-	public enum Mode
+		public enum Mode
 	{
-		Single,
-		Double,
-		Triple
+				Single,
+				Double,
+				Triple
 	}
 }

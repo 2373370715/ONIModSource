@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LadderFastConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "LadderFast";
 		int width = 1;
@@ -29,7 +29,7 @@ public class LadderFastConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		Ladder ladder = go.AddOrGet<Ladder>();
@@ -38,9 +38,9 @@ public class LadderFastConfig : IBuildingConfig
 		go.AddOrGet<AnimTileable>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "LadderFast";
+		public const string ID = "LadderFast";
 }

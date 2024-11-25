@@ -5,17 +5,17 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/BubbleManager")]
 public class BubbleManager : KMonoBehaviour, ISim33ms, IRenderEveryTick
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		BubbleManager.instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		BubbleManager.instance = this;
 	}
 
-	public void SpawnBubble(Vector2 position, Vector2 velocity, SimHashes element, float mass, float temperature)
+		public void SpawnBubble(Vector2 position, Vector2 velocity, SimHashes element, float mass, float temperature)
 	{
 		BubbleManager.Bubble item = new BubbleManager.Bubble
 		{
@@ -28,7 +28,7 @@ public class BubbleManager : KMonoBehaviour, ISim33ms, IRenderEveryTick
 		this.bubbles.Add(item);
 	}
 
-	public void Sim33ms(float dt)
+		public void Sim33ms(float dt)
 	{
 		ListPool<BubbleManager.Bubble, BubbleManager>.PooledList pooledList = ListPool<BubbleManager.Bubble, BubbleManager>.Allocate();
 		ListPool<BubbleManager.Bubble, BubbleManager>.PooledList pooledList2 = ListPool<BubbleManager.Bubble, BubbleManager>.Allocate();
@@ -56,7 +56,7 @@ public class BubbleManager : KMonoBehaviour, ISim33ms, IRenderEveryTick
 		pooledList.Recycle();
 	}
 
-	public void RenderEveryTick(float dt)
+		public void RenderEveryTick(float dt)
 	{
 		ListPool<SpriteSheetAnimator.AnimInfo, BubbleManager>.PooledList pooledList = ListPool<SpriteSheetAnimator.AnimInfo, BubbleManager>.Allocate();
 		SpriteSheetAnimator spriteSheetAnimator = SpriteSheetAnimManager.instance.GetSpriteSheetAnimator("liquid_splash1");
@@ -76,24 +76,24 @@ public class BubbleManager : KMonoBehaviour, ISim33ms, IRenderEveryTick
 		pooledList.Recycle();
 	}
 
-	public static BubbleManager instance;
+		public static BubbleManager instance;
 
-	private List<BubbleManager.Bubble> bubbles = new List<BubbleManager.Bubble>();
+		private List<BubbleManager.Bubble> bubbles = new List<BubbleManager.Bubble>();
 
-	private struct Bubble
+		private struct Bubble
 	{
-		public Vector2 position;
+				public Vector2 position;
 
-		public Vector2 velocity;
+				public Vector2 velocity;
 
-		public float elapsedTime;
+				public float elapsedTime;
 
-		public int frame;
+				public int frame;
 
-		public SimHashes element;
+				public SimHashes element;
 
-		public float temperature;
+				public float temperature;
 
-		public float mass;
+				public float mass;
 	}
 }

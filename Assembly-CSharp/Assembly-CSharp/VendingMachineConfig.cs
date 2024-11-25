@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class VendingMachineConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "VendingMachine";
 		string name = STRINGS.BUILDINGS.PREFABS.VENDINGMACHINE.NAME;
@@ -43,7 +43,7 @@ public class VendingMachineConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		SetLocker component = inst.GetComponent<SetLocker>();
 		component.possible_contents_ids = new string[][]
@@ -56,7 +56,7 @@ public class VendingMachineConfig : IEntityConfig
 		component.ChooseContents();
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 }

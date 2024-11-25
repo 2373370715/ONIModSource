@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Wire")]
 public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWattageRating, IHaveUtilityNetworkMgr, IBridgedNetworkItem
 {
-	public static float GetMaxWattageAsFloat(Wire.WattageRating rating)
+		public static float GetMaxWattageAsFloat(Wire.WattageRating rating)
 	{
 		switch (rating)
 		{
@@ -26,7 +26,7 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		}
 	}
 
-		public bool IsConnected
+			public bool IsConnected
 	{
 		get
 		{
@@ -35,7 +35,7 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		}
 	}
 
-		public ushort NetworkID
+			public ushort NetworkID
 	{
 		get
 		{
@@ -49,7 +49,7 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		Game.Instance.electricalConduitSystem.AddToNetworks(cell, this, false);
@@ -61,7 +61,7 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		base.GetComponent<KBatchedAnimController>().SetSymbolVisiblity(Wire.OutlineSymbol, false);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		BuildingComplete component = base.GetComponent<BuildingComplete>();
@@ -74,7 +74,7 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		base.OnCleanUp();
 	}
 
-	private void InitializeSwitchState()
+		private void InitializeSwitchState()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		bool flag = false;
@@ -94,29 +94,29 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		}
 	}
 
-	public UtilityConnections GetWireConnections()
+		public UtilityConnections GetWireConnections()
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		return Game.Instance.electricalConduitSystem.GetConnections(cell, true);
 	}
 
-	public string GetWireConnectionsString()
+		public string GetWireConnectionsString()
 	{
 		UtilityConnections wireConnections = this.GetWireConnections();
 		return Game.Instance.electricalConduitSystem.GetVisualizerString(wireConnections);
 	}
 
-	private void OnBuildingBroken(object data)
+		private void OnBuildingBroken(object data)
 	{
 		this.Disconnect();
 	}
 
-	private void OnBuildingFullyRepaired(object data)
+		private void OnBuildingFullyRepaired(object data)
 	{
 		this.InitializeSwitchState();
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.GetComponent<KPrefabID>().AddTag(GameTags.Wires, false);
@@ -179,17 +179,17 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		}
 	}
 
-	public Wire.WattageRating GetMaxWattageRating()
+		public Wire.WattageRating GetMaxWattageRating()
 	{
 		return this.MaxWattageRating;
 	}
 
-	public bool IsDisconnected()
+		public bool IsDisconnected()
 	{
 		return this.disconnected;
 	}
 
-	public bool Connect()
+		public bool Connect()
 	{
 		BuildingHP component = base.GetComponent<BuildingHP>();
 		if (component == null || component.HitPoints > 0)
@@ -200,20 +200,20 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		return !this.disconnected;
 	}
 
-	public void Disconnect()
+		public void Disconnect()
 	{
 		this.disconnected = true;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, Db.Get().BuildingStatusItems.WireDisconnected, null);
 		Game.Instance.electricalConduitSystem.ForceRebuildNetworks();
 	}
 
-	public void SetFirstFrameCallback(System.Action ffCb)
+		public void SetFirstFrameCallback(System.Action ffCb)
 	{
 		this.firstFrameCallback = ffCb;
 		base.StartCoroutine(this.RunCallback());
 	}
 
-	private IEnumerator RunCallback()
+		private IEnumerator RunCallback()
 	{
 		yield return null;
 		if (this.firstFrameCallback != null)
@@ -225,12 +225,12 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		yield break;
 	}
 
-	public IUtilityNetworkMgr GetNetworkManager()
+		public IUtilityNetworkMgr GetNetworkManager()
 	{
 		return Game.Instance.electricalConduitSystem;
 	}
 
-	public void AddNetworks(ICollection<UtilityNetwork> networks)
+		public void AddNetworks(ICollection<UtilityNetwork> networks)
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		UtilityNetwork networkForCell = Game.Instance.electricalConduitSystem.GetNetworkForCell(cell);
@@ -240,51 +240,51 @@ public class Wire : KMonoBehaviour, IDisconnectable, IFirstFrameCallback, IWatta
 		}
 	}
 
-	public bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks)
+		public bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks)
 	{
 		int cell = Grid.PosToCell(base.transform.GetPosition());
 		UtilityNetwork networkForCell = Game.Instance.electricalConduitSystem.GetNetworkForCell(cell);
 		return networks.Contains(networkForCell);
 	}
 
-	public int GetNetworkCell()
+		public int GetNetworkCell()
 	{
 		return Grid.PosToCell(this);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	public Wire.WattageRating MaxWattageRating;
 
-	[SerializeField]
+		[SerializeField]
 	private bool disconnected = true;
 
-	public static readonly KAnimHashedString OutlineSymbol = new KAnimHashedString("outline");
+		public static readonly KAnimHashedString OutlineSymbol = new KAnimHashedString("outline");
 
-	public float circuitOverloadTime;
+		public float circuitOverloadTime;
 
-	private static readonly EventSystem.IntraObjectHandler<Wire> OnBuildingBrokenDelegate = new EventSystem.IntraObjectHandler<Wire>(delegate(Wire component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Wire> OnBuildingBrokenDelegate = new EventSystem.IntraObjectHandler<Wire>(delegate(Wire component, object data)
 	{
 		component.OnBuildingBroken(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<Wire> OnBuildingFullyRepairedDelegate = new EventSystem.IntraObjectHandler<Wire>(delegate(Wire component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Wire> OnBuildingFullyRepairedDelegate = new EventSystem.IntraObjectHandler<Wire>(delegate(Wire component, object data)
 	{
 		component.OnBuildingFullyRepaired(data);
 	});
 
-	private static StatusItem WireCircuitStatus = null;
+		private static StatusItem WireCircuitStatus = null;
 
-	private static StatusItem WireMaxWattageStatus = null;
+		private static StatusItem WireMaxWattageStatus = null;
 
-	private System.Action firstFrameCallback;
+		private System.Action firstFrameCallback;
 
-	public enum WattageRating
+		public enum WattageRating
 	{
-		Max500,
-		Max1000,
-		Max2000,
-		Max20000,
-		Max50000,
-		NumRatings
+				Max500,
+				Max1000,
+				Max2000,
+				Max20000,
+				Max50000,
+				NumRatings
 	}
 }

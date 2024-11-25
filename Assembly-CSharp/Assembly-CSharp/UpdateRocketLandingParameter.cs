@@ -4,11 +4,11 @@ using FMOD.Studio;
 
 internal class UpdateRocketLandingParameter : LoopingSoundParameterUpdater
 {
-	public UpdateRocketLandingParameter() : base("rocketLanding")
+		public UpdateRocketLandingParameter() : base("rocketLanding")
 	{
 	}
 
-	public override void Add(LoopingSoundParameterUpdater.Sound sound)
+		public override void Add(LoopingSoundParameterUpdater.Sound sound)
 	{
 		UpdateRocketLandingParameter.Entry item = new UpdateRocketLandingParameter.Entry
 		{
@@ -19,7 +19,7 @@ internal class UpdateRocketLandingParameter : LoopingSoundParameterUpdater
 		this.entries.Add(item);
 	}
 
-	public override void Update(float dt)
+		public override void Update(float dt)
 	{
 		foreach (UpdateRocketLandingParameter.Entry entry in this.entries)
 		{
@@ -47,7 +47,7 @@ internal class UpdateRocketLandingParameter : LoopingSoundParameterUpdater
 		}
 	}
 
-	public override void Remove(LoopingSoundParameterUpdater.Sound sound)
+		public override void Remove(LoopingSoundParameterUpdater.Sound sound)
 	{
 		for (int i = 0; i < this.entries.Count; i++)
 		{
@@ -59,14 +59,14 @@ internal class UpdateRocketLandingParameter : LoopingSoundParameterUpdater
 		}
 	}
 
-	private List<UpdateRocketLandingParameter.Entry> entries = new List<UpdateRocketLandingParameter.Entry>();
+		private List<UpdateRocketLandingParameter.Entry> entries = new List<UpdateRocketLandingParameter.Entry>();
 
-	private struct Entry
+		private struct Entry
 	{
-		public RocketModule rocketModule;
+				public RocketModule rocketModule;
 
-		public EventInstance ev;
+				public EventInstance ev;
 
-		public PARAMETER_ID parameterId;
+				public PARAMETER_ID parameterId;
 	}
 }

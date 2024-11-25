@@ -3,7 +3,7 @@ using UnityEngine;
 
 internal class LogicEventSender : ILogicEventSender, ILogicNetworkConnection, ILogicUIElement, IUniformGridObject
 {
-	public LogicEventSender(HashedString id, int cell, Action<int, int> on_value_changed, Action<int, bool> on_connection_changed, LogicPortSpriteType sprite_type)
+		public LogicEventSender(HashedString id, int cell, Action<int, int> on_value_changed, Action<int, bool> on_connection_changed, LogicPortSpriteType sprite_type)
 	{
 		this.id = id;
 		this.cell = cell;
@@ -12,7 +12,7 @@ internal class LogicEventSender : ILogicEventSender, ILogicNetworkConnection, IL
 		this.spriteType = sprite_type;
 	}
 
-		public HashedString ID
+			public HashedString ID
 	{
 		get
 		{
@@ -20,48 +20,48 @@ internal class LogicEventSender : ILogicEventSender, ILogicNetworkConnection, IL
 		}
 	}
 
-	public int GetLogicCell()
+		public int GetLogicCell()
 	{
 		return this.cell;
 	}
 
-	public int GetLogicValue()
+		public int GetLogicValue()
 	{
 		return this.logicValue;
 	}
 
-	public int GetLogicUICell()
+		public int GetLogicUICell()
 	{
 		return this.GetLogicCell();
 	}
 
-	public LogicPortSpriteType GetLogicPortSpriteType()
+		public LogicPortSpriteType GetLogicPortSpriteType()
 	{
 		return this.spriteType;
 	}
 
-	public Vector2 PosMin()
+		public Vector2 PosMin()
 	{
 		return Grid.CellToPos2D(this.cell);
 	}
 
-	public Vector2 PosMax()
+		public Vector2 PosMax()
 	{
 		return Grid.CellToPos2D(this.cell);
 	}
 
-	public void SetValue(int value)
+		public void SetValue(int value)
 	{
 		int arg = this.logicValue;
 		this.logicValue = value;
 		this.onValueChanged(value, arg);
 	}
 
-	public void LogicTick()
+		public void LogicTick()
 	{
 	}
 
-	public void OnLogicNetworkConnectionChanged(bool connected)
+		public void OnLogicNetworkConnectionChanged(bool connected)
 	{
 		if (this.onConnectionChanged != null)
 		{
@@ -69,15 +69,15 @@ internal class LogicEventSender : ILogicEventSender, ILogicNetworkConnection, IL
 		}
 	}
 
-	private HashedString id;
+		private HashedString id;
 
-	private int cell;
+		private int cell;
 
-	private int logicValue = -16;
+		private int logicValue = -16;
 
-	private Action<int, int> onValueChanged;
+		private Action<int, int> onValueChanged;
 
-	private Action<int, bool> onConnectionChanged;
+		private Action<int, bool> onConnectionChanged;
 
-	private LogicPortSpriteType spriteType;
+		private LogicPortSpriteType spriteType;
 }

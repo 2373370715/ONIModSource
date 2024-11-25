@@ -5,10 +5,10 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	[DebuggerDisplay("{effect.Id}")]
+		[DebuggerDisplay("{effect.Id}")]
 	public class EffectInstance : ModifierInstance<Effect>
 	{
-		public EffectInstance(GameObject game_object, Effect effect, bool should_save) : base(game_object, effect)
+				public EffectInstance(GameObject game_object, Effect effect, bool should_save) : base(game_object, effect)
 		{
 			this.effect = effect;
 			this.shouldSave = should_save;
@@ -37,7 +37,7 @@ namespace Klei.AI
 			}
 		}
 
-		protected void DefineEffectImmunities()
+				protected void DefineEffectImmunities()
 		{
 			if (this.immunityEffects == null && this.effect.immunityEffectsNames != null)
 			{
@@ -49,7 +49,7 @@ namespace Klei.AI
 			}
 		}
 
-		protected void ApplyImmunities()
+				protected void ApplyImmunities()
 		{
 			if (base.gameObject != null && this.immunityEffects != null)
 			{
@@ -62,7 +62,7 @@ namespace Klei.AI
 			}
 		}
 
-		protected void RemoveImmunities()
+				protected void RemoveImmunities()
 		{
 			if (base.gameObject != null && this.immunityEffects != null)
 			{
@@ -74,7 +74,7 @@ namespace Klei.AI
 			}
 		}
 
-		public void RegisterEmote(string emoteAnim, float cooldown = -1f)
+				public void RegisterEmote(string emoteAnim, float cooldown = -1f)
 		{
 			ReactionMonitor.Instance smi = base.gameObject.GetSMI<ReactionMonitor.Instance>();
 			if (smi == null)
@@ -95,7 +95,7 @@ namespace Klei.AI
 			}
 		}
 
-		public void RegisterEmote(Emote emote, float cooldown = -1f)
+				public void RegisterEmote(Emote emote, float cooldown = -1f)
 		{
 			ReactionMonitor.Instance smi = base.gameObject.GetSMI<ReactionMonitor.Instance>();
 			if (smi == null)
@@ -116,12 +116,12 @@ namespace Klei.AI
 			}
 		}
 
-		private bool NotInATube(GameObject go, Navigator.ActiveTransition transition)
+				private bool NotInATube(GameObject go, Navigator.ActiveTransition transition)
 		{
 			return transition.navGridTransition.start != NavType.Tube && transition.navGridTransition.end != NavType.Tube;
 		}
 
-		public override void OnCleanUp()
+				public override void OnCleanUp()
 		{
 			if (this.statusItem != null)
 			{
@@ -136,17 +136,17 @@ namespace Klei.AI
 			this.RemoveImmunities();
 		}
 
-		public float GetTimeRemaining()
+				public float GetTimeRemaining()
 		{
 			return this.timeRemaining;
 		}
 
-		public bool IsExpired()
+				public bool IsExpired()
 		{
 			return this.effect.duration > 0f && this.timeRemaining <= 0f;
 		}
 
-		private void ConfigureStatusItem()
+				private void ConfigureStatusItem()
 		{
 			StatusItem.IconType iconType = this.effect.isBad ? StatusItem.IconType.Exclamation : StatusItem.IconType.Info;
 			if (!this.effect.customIcon.IsNullOrWhiteSpace())
@@ -166,12 +166,12 @@ namespace Klei.AI
 			this.statusItem.resolveTooltipCallback = new Func<string, object, string>(this.ResolveTooltip);
 		}
 
-		private string ResolveString(string str, object data)
+				private string ResolveString(string str, object data)
 		{
 			return str;
 		}
 
-		private string ResolveTooltip(string str, object data)
+				private string ResolveTooltip(string str, object data)
 		{
 			string text = str;
 			EffectInstance effectInstance = (EffectInstance)data;
@@ -187,16 +187,16 @@ namespace Klei.AI
 			return text;
 		}
 
-		public Effect effect;
+				public Effect effect;
 
-		public bool shouldSave;
+				public bool shouldSave;
 
-		public StatusItem statusItem;
+				public StatusItem statusItem;
 
-		public float timeRemaining;
+				public float timeRemaining;
 
-		public EmoteReactable reactable;
+				public EmoteReactable reactable;
 
-		protected Effect[] immunityEffects;
+				protected Effect[] immunityEffects;
 	}
 }

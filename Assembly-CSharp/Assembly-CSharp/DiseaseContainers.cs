@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class DiseaseContainers : KGameObjectSplitComponentManager<DiseaseHeader, DiseaseContainer>
 {
-	public HandleVector<int>.Handle Add(GameObject go, byte disease_idx, int disease_count)
+		public HandleVector<int>.Handle Add(GameObject go, byte disease_idx, int disease_count)
 	{
 		DiseaseHeader diseaseHeader = new DiseaseHeader
 		{
@@ -24,7 +24,7 @@ public class DiseaseContainers : KGameObjectSplitComponentManager<DiseaseHeader,
 		return base.Add(go, diseaseHeader, ref diseaseContainer);
 	}
 
-	protected override void OnCleanUp(HandleVector<int>.Handle h)
+		protected override void OnCleanUp(HandleVector<int>.Handle h)
 	{
 		AutoDisinfectable autoDisinfectable = base.GetPayload(h).autoDisinfectable;
 		if (autoDisinfectable != null)
@@ -34,7 +34,7 @@ public class DiseaseContainers : KGameObjectSplitComponentManager<DiseaseHeader,
 		base.OnCleanUp(h);
 	}
 
-	public override void Sim200ms(float dt)
+		public override void Sim200ms(float dt)
 	{
 		ListPool<int, DiseaseContainers>.PooledList pooledList = ListPool<int, DiseaseContainers>.Allocate();
 		pooledList.Capacity = Math.Max(pooledList.Capacity, this.headers.Count);
@@ -75,12 +75,12 @@ public class DiseaseContainers : KGameObjectSplitComponentManager<DiseaseHeader,
 		pooledList.Recycle();
 	}
 
-	private static float CalculateDelta(DiseaseHeader header, ref DiseaseContainer container, Disease disease, float dt, bool radiation_enabled)
+		private static float CalculateDelta(DiseaseHeader header, ref DiseaseContainer container, Disease disease, float dt, bool radiation_enabled)
 	{
 		return DiseaseContainers.CalculateDelta(header.diseaseCount, container.elemIdx, header.primaryElement.Mass, Grid.PosToCell(header.primaryElement.transform.GetPosition()), header.primaryElement.Temperature, container.instanceGrowthRate, disease, dt, radiation_enabled);
 	}
 
-	public static float CalculateDelta(int disease_count, ushort element_idx, float mass, int environment_cell, float temperature, float tags_multiplier_base, Disease disease, float dt, bool radiation_enabled)
+		public static float CalculateDelta(int disease_count, ushort element_idx, float mass, int environment_cell, float temperature, float tags_multiplier_base, Disease disease, float dt, bool radiation_enabled)
 	{
 		float num = 0f;
 		ElemGrowthInfo elemGrowthInfo = disease.elemGrowthInfo[(int)element_idx];
@@ -106,7 +106,7 @@ public class DiseaseContainers : KGameObjectSplitComponentManager<DiseaseHeader,
 		return num;
 	}
 
-	public int ModifyDiseaseCount(HandleVector<int>.Handle h, int disease_count_delta)
+		public int ModifyDiseaseCount(HandleVector<int>.Handle h, int disease_count_delta)
 	{
 		DiseaseHeader header = base.GetHeader(h);
 		header.diseaseCount = Math.Max(0, header.diseaseCount + disease_count_delta);
@@ -121,7 +121,7 @@ public class DiseaseContainers : KGameObjectSplitComponentManager<DiseaseHeader,
 		return header.diseaseCount;
 	}
 
-	public int AddDisease(HandleVector<int>.Handle h, byte disease_idx, int disease_count)
+		public int AddDisease(HandleVector<int>.Handle h, byte disease_idx, int disease_count)
 	{
 		DiseaseHeader diseaseHeader;
 		DiseaseContainer diseaseContainer;
@@ -146,7 +146,7 @@ public class DiseaseContainers : KGameObjectSplitComponentManager<DiseaseHeader,
 		return diseaseHeader.diseaseCount;
 	}
 
-	private void GetVisualDiseaseIdxAndCount(DiseaseHeader header, ref DiseaseContainer payload, out int disease_idx, out int disease_count)
+		private void GetVisualDiseaseIdxAndCount(DiseaseHeader header, ref DiseaseContainer payload, out int disease_idx, out int disease_count)
 	{
 		if (payload.visualDiseaseProvider == null)
 		{
@@ -165,7 +165,7 @@ public class DiseaseContainers : KGameObjectSplitComponentManager<DiseaseHeader,
 		}
 	}
 
-	public void UpdateOverlayColours()
+		public void UpdateOverlayColours()
 	{
 		GridArea visibleArea = GridVisibleArea.GetVisibleArea();
 		Diseases diseases = Db.Get().Diseases;
@@ -230,7 +230,7 @@ public class DiseaseContainers : KGameObjectSplitComponentManager<DiseaseHeader,
 		}
 	}
 
-	private void EvaluateGrowthConstants(DiseaseHeader header, ref DiseaseContainer container)
+		private void EvaluateGrowthConstants(DiseaseHeader header, ref DiseaseContainer container)
 	{
 		Disease disease = Db.Get().Diseases[(int)header.diseaseIdx];
 		KPrefabID component = header.primaryElement.GetComponent<KPrefabID>();
@@ -239,7 +239,7 @@ public class DiseaseContainers : KGameObjectSplitComponentManager<DiseaseHeader,
 		container.instanceGrowthRate = disease.GetGrowthRateForTags(component.Tags, header.diseaseCount > container.overpopulationCount);
 	}
 
-	public override void Clear()
+		public override void Clear()
 	{
 		base.Clear();
 		for (int i = 0; i < this.payloads.Count; i++)

@@ -8,7 +8,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.StatesInstance>, IGameObjectEffectDescriptor, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		ElementConsumer[] components = base.GetComponents<ElementConsumer>();
@@ -27,7 +27,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		this.operational = base.GetComponent<Operational>();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.invalidIntake = this.HasInvalidIntake();
@@ -63,7 +63,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.UpdateChores(false);
 		for (int i = 0; i < this.workables.Length; i++)
@@ -77,7 +77,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		base.OnCleanUp();
 	}
 
-	private Chore CreateChore(int i)
+		private Chore CreateChore(int i)
 	{
 		Workable workable = this.workables[i];
 		ChoreType relax = Db.Get().ChoreTypes.Relax;
@@ -92,7 +92,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		return workChore;
 	}
 
-	private void OnSocialChoreEnd(Chore chore)
+		private void OnSocialChoreEnd(Chore chore)
 	{
 		if (base.gameObject.HasTag(GameTags.Operational))
 		{
@@ -100,7 +100,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		}
 	}
 
-	public void UpdateChores(bool update = true)
+		public void UpdateChores(bool update = true)
 	{
 		for (int i = 0; i < this.choreOffsets.Length; i++)
 		{
@@ -120,7 +120,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		}
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		bool flag = this.HasInvalidIntake();
 		if (flag != this.invalidIntake)
@@ -131,7 +131,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		}
 	}
 
-	private float GetIntakeRatio(int fromCell, int radius)
+		private float GetIntakeRatio(int fromCell, int radius)
 	{
 		float num = 0f;
 		float num2 = 0f;
@@ -153,7 +153,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		return num2 / num;
 	}
 
-	private bool HasInvalidIntake()
+		private bool HasInvalidIntake()
 	{
 		Vector3 position = base.transform.GetPosition();
 		int cell = Grid.XYToCell((int)position.x, (int)position.y);
@@ -174,7 +174,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		return this.invalidIntake;
 	}
 
-	public void SetGasWalls(bool set)
+		public void SetGasWalls(bool set)
 	{
 		Building component = base.GetComponent<Building>();
 		Sim.Cell.Properties properties = (Sim.Cell.Properties)3;
@@ -196,7 +196,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		}
 	}
 
-	private void OnElementConsumed(bool isTop, Sim.ConsumedMassInfo info)
+		private void OnElementConsumed(bool isTop, Sim.ConsumedMassInfo info)
 	{
 		Building component = base.GetComponent<Building>();
 		Vector3 position = base.transform.GetPosition();
@@ -204,7 +204,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		SimMessages.AddRemoveSubstance(Grid.OffsetCell(Grid.XYToCell((int)position.x, (int)position.y), offset), info.removedElemIdx, CellEventLogger.Instance.ElementEmitted, info.mass, info.temperature, info.diseaseIdx, info.diseaseCount, true, -1);
 	}
 
-	public void OnWorkableEvent(int player, Workable.WorkableEvent ev)
+		public void OnWorkableEvent(int player, Workable.WorkableEvent ev)
 	{
 		if (ev == Workable.WorkableEvent.WorkStarted)
 		{
@@ -217,7 +217,7 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		base.smi.sm.playerCount.Set(this.players.Count, base.smi, false);
 	}
 
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
+		List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		list.Add(new Descriptor(BUILDINGS.PREFABS.VERTICALWINDTUNNEL.DISPLACEMENTEFFECT.Replace("{amount}", GameUtil.GetFormattedMass(this.displacementAmount_DescriptorOnly, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), BUILDINGS.PREFABS.VERTICALWINDTUNNEL.DISPLACEMENTEFFECT_TOOLTIP.Replace("{amount}", GameUtil.GetFormattedMass(this.displacementAmount_DescriptorOnly, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}")), Descriptor.DescriptorType.Requirement, false));
@@ -226,51 +226,51 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		return list;
 	}
 
-	public string specificEffect;
+		public string specificEffect;
 
-	public string trackingEffect;
+		public string trackingEffect;
 
-	public int basePriority;
+		public int basePriority;
 
-	public float displacementAmount_DescriptorOnly;
+		public float displacementAmount_DescriptorOnly;
 
-	public static readonly Operational.Flag validIntakeFlag = new Operational.Flag("valid_intake", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag validIntakeFlag = new Operational.Flag("valid_intake", Operational.Flag.Type.Requirement);
 
-	private bool invalidIntake;
+		private bool invalidIntake;
 
-	private float avgGasAccumTop;
+		private float avgGasAccumTop;
 
-	private float avgGasAccumBottom;
+		private float avgGasAccumBottom;
 
-	private int avgGasCounter;
+		private int avgGasCounter;
 
-	public CellOffset[] choreOffsets = new CellOffset[]
+		public CellOffset[] choreOffsets = new CellOffset[]
 	{
 		new CellOffset(0, 0),
 		new CellOffset(-1, 0),
 		new CellOffset(1, 0)
 	};
 
-	private VerticalWindTunnelWorkable[] workables;
+		private VerticalWindTunnelWorkable[] workables;
 
-	private Chore[] chores;
+		private Chore[] chores;
 
-	private ElementConsumer bottomConsumer;
+		private ElementConsumer bottomConsumer;
 
-	private ElementConsumer topConsumer;
+		private ElementConsumer topConsumer;
 
-	private Operational operational;
+		private Operational operational;
 
-	public HashSet<int> players = new HashSet<int>();
+		public HashSet<int> players = new HashSet<int>();
 
-	public HashedString[] overrideAnims = new HashedString[]
+		public HashedString[] overrideAnims = new HashedString[]
 	{
 		"anim_interacts_windtunnel_center_kanim",
 		"anim_interacts_windtunnel_left_kanim",
 		"anim_interacts_windtunnel_right_kanim"
 	};
 
-	public string[][] workPreAnims = new string[][]
+		public string[][] workPreAnims = new string[][]
 	{
 		new string[]
 		{
@@ -289,14 +289,14 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		}
 	};
 
-	public string[] workAnims = new string[]
+		public string[] workAnims = new string[]
 	{
 		"weak_working_loop",
 		"medium_working_loop",
 		"strong_working_loop"
 	};
 
-	public string[][] workPstAnims = new string[][]
+		public string[][] workPstAnims = new string[][]
 	{
 		new string[]
 		{
@@ -315,9 +315,9 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 		}
 	};
 
-	public class States : GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel>
+		public class States : GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.unoperational;
 			this.unoperational.Enter(delegate(VerticalWindTunnel.StatesInstance smi)
@@ -349,36 +349,36 @@ public class VerticalWindTunnel : StateMachineComponent<VerticalWindTunnel.State
 			this.operational.post.PlayAnim("working_pst").QueueAnim("off_pre", false, null).OnAnimQueueComplete(this.operational.stopped);
 		}
 
-		public StateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.IntParameter playerCount;
+				public StateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.IntParameter playerCount;
 
-		public GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State unoperational;
+				public GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State unoperational;
 
-		public VerticalWindTunnel.States.OperationalStates operational;
+				public VerticalWindTunnel.States.OperationalStates operational;
 
-		public class OperationalStates : GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State
+				public class OperationalStates : GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State
 		{
-			public GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State stopped;
+						public GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State stopped;
 
-			public GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State pre;
+						public GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State pre;
 
-			public GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State playing;
+						public GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State playing;
 
-			public GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State post;
+						public GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.State post;
 		}
 	}
 
-	public class StatesInstance : GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.GameInstance
+		public class StatesInstance : GameStateMachine<VerticalWindTunnel.States, VerticalWindTunnel.StatesInstance, VerticalWindTunnel, object>.GameInstance
 	{
-		public StatesInstance(VerticalWindTunnel smi) : base(smi)
+				public StatesInstance(VerticalWindTunnel smi) : base(smi)
 		{
 			this.operational = base.master.GetComponent<Operational>();
 		}
 
-		public void SetActive(bool active)
+				public void SetActive(bool active)
 		{
 			this.operational.SetActive(this.operational.IsOperational && active, false);
 		}
 
-		private Operational operational;
+				private Operational operational;
 	}
 }

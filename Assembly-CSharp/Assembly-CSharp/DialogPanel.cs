@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class DialogPanel : MonoBehaviour, IDeselectHandler, IEventSystemHandler
 {
-	public void OnDeselect(BaseEventData eventData)
+		public void OnDeselect(BaseEventData eventData)
 	{
 		if (this.destroyOnDeselect)
 		{
@@ -16,5 +16,5 @@ public class DialogPanel : MonoBehaviour, IDeselectHandler, IEventSystemHandler
 		base.gameObject.SetActive(false);
 	}
 
-	public bool destroyOnDeselect = true;
+		public bool destroyOnDeselect = true;
 }

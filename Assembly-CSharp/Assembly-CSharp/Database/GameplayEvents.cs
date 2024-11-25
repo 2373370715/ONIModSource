@@ -5,9 +5,9 @@ using TUNING;
 
 namespace Database
 {
-	public class GameplayEvents : ResourceSet<GameplayEvent>
+		public class GameplayEvents : ResourceSet<GameplayEvent>
 	{
-		public GameplayEvents(ResourceSet parent) : base("GameplayEvents", parent)
+				public GameplayEvents(ResourceSet parent) : base("GameplayEvents", parent)
 		{
 			this.HatchSpawnEvent = base.Add(new CreatureSpawnEvent());
 			this.PartyEvent = base.Add(new PartyEvent());
@@ -23,7 +23,7 @@ namespace Database
 			this.ArtifactReveal = base.Add(new SimpleEvent("ArtifactReveal", GAMEPLAY_EVENTS.EVENT_TYPES.ARTIFACT_REVEAL.NAME, GAMEPLAY_EVENTS.EVENT_TYPES.ARTIFACT_REVEAL.DESCRIPTION, "analyzeartifact_kanim", GAMEPLAY_EVENTS.EVENT_TYPES.ARTIFACT_REVEAL.BUTTON, null));
 		}
 
-		private void BaseGameMeteorEvents()
+				private void BaseGameMeteorEvents()
 		{
 			string id = "MeteorShowerGoldEvent";
 			float duration = 3000f;
@@ -42,7 +42,7 @@ namespace Database
 			this.MeteorShowerIronEvent = base.Add(new MeteorShowerEvent(id3, duration3, secondsPerMeteor3, new MathUtil.MinMax(300f, 1200f), secondsBombardmentOn, null, true).AddMeteor(IronCometConfig.ID, 1f).AddMeteor(RockCometConfig.ID, 2f).AddMeteor(DustCometConfig.ID, 5f));
 		}
 
-		private void Expansion1MeteorEvents()
+				private void Expansion1MeteorEvents()
 		{
 			string id = "MeteorShowerDustEvent";
 			float duration = 9000f;
@@ -129,7 +129,7 @@ namespace Database
 			this.ClusterUraniumShower = base.Add(new MeteorShowerEvent(id14, duration14, secondsPerMeteor14, METEORS.BOMBARDMENT_OFF.NONE, unlimited, fullID, true).AddMeteor(UraniumCometConfig.ID, 2.5f).AddMeteor(DustCometConfig.ID, 1f).AddMeteor(LightDustCometConfig.ID, 2f));
 		}
 
-		private void DLCMeteorEvents()
+				private void DLCMeteorEvents()
 		{
 			string id = "ClusterIceAndTreesShower";
 			float duration = 300f;
@@ -139,7 +139,7 @@ namespace Database
 			this.ClusterIceAndTreesShower = base.Add(new MeteorShowerEvent(id, duration, secondsPerMeteor, METEORS.BOMBARDMENT_OFF.NONE, unlimited, fullID, true).AddMeteor(SpaceTreeSeedCometConfig.ID, 1f).AddMeteor(HardIceCometConfig.ID, 2f).AddMeteor(SnowballCometConfig.ID, 22f));
 		}
 
-		private void BonusEvents()
+				private void BonusEvents()
 		{
 			GameplayEventMinionFilters instance = GameplayEventMinionFilters.Instance;
 			GameplayEventPreconditions instance2 = GameplayEventPreconditions.Instance;
@@ -229,7 +229,7 @@ namespace Database
 			}).SetExtraCondition((BonusEvent.GameplayEventData data) => (data.workable as SocialGatheringPointWorkable).timesConversed > 0).AddPrecondition(instance2.CycleRestriction(10f, float.PositiveInfinity)));
 		}
 
-		private void VerifyEvents()
+				private void VerifyEvents()
 		{
 			foreach (GameplayEvent gameplayEvent in this.resources)
 			{
@@ -247,7 +247,7 @@ namespace Database
 			}
 		}
 
-		private void VerifyBonusEvent(BonusEvent e)
+				private void VerifyBonusEvent(BonusEvent e)
 		{
 			StringEntry stringEntry;
 			if (!Strings.TryGet("STRINGS.GAMEPLAY_EVENTS.BONUS." + e.Id.ToUpper() + ".NAME", out stringEntry))
@@ -302,96 +302,96 @@ namespace Database
 			}
 		}
 
-		public GameplayEvent HatchSpawnEvent;
+				public GameplayEvent HatchSpawnEvent;
 
-		public GameplayEvent PartyEvent;
+				public GameplayEvent PartyEvent;
 
-		public GameplayEvent EclipseEvent;
+				public GameplayEvent EclipseEvent;
 
-		public GameplayEvent SatelliteCrashEvent;
+				public GameplayEvent SatelliteCrashEvent;
 
-		public GameplayEvent FoodFightEvent;
+				public GameplayEvent FoodFightEvent;
 
-		public GameplayEvent PrickleFlowerBlightEvent;
+				public GameplayEvent PrickleFlowerBlightEvent;
 
-		public GameplayEvent MeteorShowerIronEvent;
+				public GameplayEvent MeteorShowerIronEvent;
 
-		public GameplayEvent MeteorShowerGoldEvent;
+				public GameplayEvent MeteorShowerGoldEvent;
 
-		public GameplayEvent MeteorShowerCopperEvent;
+				public GameplayEvent MeteorShowerCopperEvent;
 
-		public GameplayEvent MeteorShowerDustEvent;
+				public GameplayEvent MeteorShowerDustEvent;
 
-		public GameplayEvent MeteorShowerFullereneEvent;
+				public GameplayEvent MeteorShowerFullereneEvent;
 
-		public GameplayEvent GassyMooteorEvent;
+				public GameplayEvent GassyMooteorEvent;
 
-		public GameplayEvent ClusterSnowShower;
+				public GameplayEvent ClusterSnowShower;
 
-		public GameplayEvent ClusterIceShower;
+				public GameplayEvent ClusterIceShower;
 
-		public GameplayEvent ClusterBiologicalShower;
+				public GameplayEvent ClusterBiologicalShower;
 
-		public GameplayEvent ClusterLightRegolithShower;
+				public GameplayEvent ClusterLightRegolithShower;
 
-		public GameplayEvent ClusterRegolithShower;
+				public GameplayEvent ClusterRegolithShower;
 
-		public GameplayEvent ClusterGoldShower;
+				public GameplayEvent ClusterGoldShower;
 
-		public GameplayEvent ClusterCopperShower;
+				public GameplayEvent ClusterCopperShower;
 
-		public GameplayEvent ClusterIronShower;
+				public GameplayEvent ClusterIronShower;
 
-		public GameplayEvent ClusterUraniumShower;
+				public GameplayEvent ClusterUraniumShower;
 
-		public GameplayEvent ClusterOxyliteShower;
+				public GameplayEvent ClusterOxyliteShower;
 
-		public GameplayEvent ClusterBleachStoneShower;
+				public GameplayEvent ClusterBleachStoneShower;
 
-		public GameplayEvent ClusterIceAndTreesShower;
+				public GameplayEvent ClusterIceAndTreesShower;
 
-		public GameplayEvent BonusDream1;
+				public GameplayEvent BonusDream1;
 
-		public GameplayEvent BonusDream2;
+				public GameplayEvent BonusDream2;
 
-		public GameplayEvent BonusDream3;
+				public GameplayEvent BonusDream3;
 
-		public GameplayEvent BonusDream4;
+				public GameplayEvent BonusDream4;
 
-		public GameplayEvent BonusToilet1;
+				public GameplayEvent BonusToilet1;
 
-		public GameplayEvent BonusToilet2;
+				public GameplayEvent BonusToilet2;
 
-		public GameplayEvent BonusToilet3;
+				public GameplayEvent BonusToilet3;
 
-		public GameplayEvent BonusToilet4;
+				public GameplayEvent BonusToilet4;
 
-		public GameplayEvent BonusResearch;
+				public GameplayEvent BonusResearch;
 
-		public GameplayEvent BonusDigging1;
+				public GameplayEvent BonusDigging1;
 
-		public GameplayEvent BonusStorage;
+				public GameplayEvent BonusStorage;
 
-		public GameplayEvent BonusBuilder;
+				public GameplayEvent BonusBuilder;
 
-		public GameplayEvent BonusOxygen;
+				public GameplayEvent BonusOxygen;
 
-		public GameplayEvent BonusAlgae;
+				public GameplayEvent BonusAlgae;
 
-		public GameplayEvent BonusGenerator;
+				public GameplayEvent BonusGenerator;
 
-		public GameplayEvent BonusDoor;
+				public GameplayEvent BonusDoor;
 
-		public GameplayEvent BonusHitTheBooks;
+				public GameplayEvent BonusHitTheBooks;
 
-		public GameplayEvent BonusLitWorkspace;
+				public GameplayEvent BonusLitWorkspace;
 
-		public GameplayEvent BonusTalker;
+				public GameplayEvent BonusTalker;
 
-		public GameplayEvent CryoFriend;
+				public GameplayEvent CryoFriend;
 
-		public GameplayEvent WarpWorldReveal;
+				public GameplayEvent WarpWorldReveal;
 
-		public GameplayEvent ArtifactReveal;
+				public GameplayEvent ArtifactReveal;
 	}
 }

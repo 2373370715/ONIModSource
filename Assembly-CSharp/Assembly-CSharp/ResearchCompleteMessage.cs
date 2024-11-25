@@ -4,21 +4,21 @@ using STRINGS;
 
 public class ResearchCompleteMessage : Message
 {
-	public ResearchCompleteMessage()
+		public ResearchCompleteMessage()
 	{
 	}
 
-	public ResearchCompleteMessage(Tech tech)
+		public ResearchCompleteMessage(Tech tech)
 	{
 		this.tech.Set(tech);
 	}
 
-	public override string GetSound()
+		public override string GetSound()
 	{
 		return "AI_Notification_ResearchComplete";
 	}
 
-	public override string GetMessageBody()
+		public override string GetMessageBody()
 	{
 		Tech tech = this.tech.Get();
 		string text = "";
@@ -33,22 +33,22 @@ public class ResearchCompleteMessage : Message
 		return string.Format(MISC.NOTIFICATIONS.RESEARCHCOMPLETE.MESSAGEBODY, tech.Name, text);
 	}
 
-	public override string GetTitle()
+		public override string GetTitle()
 	{
 		return MISC.NOTIFICATIONS.RESEARCHCOMPLETE.NAME;
 	}
 
-	public override string GetTooltip()
+		public override string GetTooltip()
 	{
 		Tech tech = this.tech.Get();
 		return string.Format(MISC.NOTIFICATIONS.RESEARCHCOMPLETE.TOOLTIP, tech.Name);
 	}
 
-	public override bool IsValid()
+		public override bool IsValid()
 	{
 		return this.tech.Get() != null;
 	}
 
-	[Serialize]
+		[Serialize]
 	private ResourceRef<Tech> tech = new ResourceRef<Tech>();
 }

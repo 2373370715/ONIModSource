@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ChoreConsumerState
 {
-	public ChoreConsumerState(ChoreConsumer consumer)
+		public ChoreConsumerState(ChoreConsumer consumer)
 	{
 		this.consumer = consumer;
 		this.navigator = consumer.GetComponent<Navigator>();
@@ -35,63 +35,61 @@ public class ChoreConsumerState
 		}
 		this.storage = consumer.GetComponent<Storage>();
 		this.consumableConsumer = consumer.GetComponent<ConsumableConsumer>();
-		this.worker = consumer.GetComponent<Worker>();
+		this.worker = consumer.GetComponent<WorkerBase>();
 		this.selectable = consumer.GetComponent<KSelectable>();
 		if (this.schedulable != null)
 		{
-			int blockIdx = Schedule.GetBlockIdx();
-			this.scheduleBlock = this.schedulable.GetSchedule().GetBlock(blockIdx);
+			this.scheduleBlock = this.schedulable.GetSchedule().GetCurrentScheduleBlock();
 		}
 	}
 
-	public void Refresh()
+		public void Refresh()
 	{
 		if (this.schedulable != null)
 		{
-			int blockIdx = Schedule.GetBlockIdx();
 			Schedule schedule = this.schedulable.GetSchedule();
 			if (schedule != null)
 			{
-				this.scheduleBlock = schedule.GetBlock(blockIdx);
+				this.scheduleBlock = schedule.GetCurrentScheduleBlock();
 			}
 		}
 	}
 
-	public KPrefabID prefabid;
+		public KPrefabID prefabid;
 
-	public GameObject gameObject;
+		public GameObject gameObject;
 
-	public ChoreConsumer consumer;
+		public ChoreConsumer consumer;
 
-	public ChoreProvider choreProvider;
+		public ChoreProvider choreProvider;
 
-	public Navigator navigator;
+		public Navigator navigator;
 
-	public Ownable ownable;
+		public Ownable ownable;
 
-	public Assignables assignables;
+		public Assignables assignables;
 
-	public MinionResume resume;
+		public MinionResume resume;
 
-	public ChoreDriver choreDriver;
+		public ChoreDriver choreDriver;
 
-	public Schedulable schedulable;
+		public Schedulable schedulable;
 
-	public Traits traits;
+		public Traits traits;
 
-	public Equipment equipment;
+		public Equipment equipment;
 
-	public Storage storage;
+		public Storage storage;
 
-	public ConsumableConsumer consumableConsumer;
+		public ConsumableConsumer consumableConsumer;
 
-	public KSelectable selectable;
+		public KSelectable selectable;
 
-	public Worker worker;
+		public WorkerBase worker;
 
-	public SolidTransferArm solidTransferArm;
+		public SolidTransferArm solidTransferArm;
 
-	public bool hasSolidTransferArm;
+		public bool hasSolidTransferArm;
 
-	public ScheduleBlock scheduleBlock;
+		public ScheduleBlock scheduleBlock;
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, FossilHuntInitializer.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.Inactive;
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
@@ -16,7 +16,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 		this.Active.StoryComplete.Enter(new StateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.State.Callback(FossilHuntInitializer.CompleteStoryTrait));
 	}
 
-	public static bool OnUI_Quest_ObjectiveRowClicked(string rowLinkID)
+		public static bool OnUI_Quest_ObjectiveRowClicked(string rowLinkID)
 	{
 		rowLinkID = rowLinkID.ToUpper();
 		if (!rowLinkID.Contains("MOVECAMERATO"))
@@ -42,7 +42,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 		return false;
 	}
 
-	public static void CompleteStoryTrait(FossilHuntInitializer.Instance smi)
+		public static void CompleteStoryTrait(FossilHuntInitializer.Instance smi)
 	{
 		StoryInstance storyInstance = StoryManager.Instance.GetStoryInstance(Db.Get().Stories.FossilHunt.HashId);
 		if (storyInstance == null)
@@ -57,19 +57,19 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 		smi.CompleteEvent();
 	}
 
-	public static string ResolveStrings_QuestObjectivesRowTooltips(string originalText, object obj)
+		public static string ResolveStrings_QuestObjectivesRowTooltips(string originalText, object obj)
 	{
 		return originalText + CODEX.STORY_TRAITS.FOSSILHUNT.QUEST.LINKED_TOOLTIP;
 	}
 
-	public static string ResolveQuestTitle(string title, QuestInstance quest)
+		public static string ResolveQuestTitle(string title, QuestInstance quest)
 	{
 		int discoveredDigsitesRequired = FossilDigSiteConfig.DiscoveredDigsitesRequired;
 		string str = Mathf.RoundToInt(quest.CurrentProgress * (float)discoveredDigsitesRequired).ToString() + "/" + discoveredDigsitesRequired.ToString();
 		return title + " - " + str;
 	}
 
-	public static ICheckboxListGroupControl.ListGroup[] GetFossilHuntQuestData()
+		public static ICheckboxListGroupControl.ListGroup[] GetFossilHuntQuestData()
 	{
 		QuestInstance quest = QuestManager.GetInstance(FossilDigSiteConfig.hashID, Db.Get().Quests.FossilHuntQuest);
 		ICheckboxListGroupControl.CheckboxItem[] checkBoxData = quest.GetCheckBoxData(null);
@@ -88,21 +88,21 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 		return new ICheckboxListGroupControl.ListGroup[0];
 	}
 
-	private GameStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.State Inactive;
+		private GameStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.State Inactive;
 
-	private FossilHuntInitializer.ActiveState Active;
+		private FossilHuntInitializer.ActiveState Active;
 
-	public StateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.BoolParameter storyCompleted;
+		public StateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.BoolParameter storyCompleted;
 
-	public StateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.BoolParameter wasStoryStarted;
+		public StateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.BoolParameter wasStoryStarted;
 
-	public StateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.Signal CompleteStory;
+		public StateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.Signal CompleteStory;
 
-	public const string LINK_OVERRIDE_PREFIX = "MOVECAMERATO";
+		public const string LINK_OVERRIDE_PREFIX = "MOVECAMERATO";
 
-	public class Def : StoryTraitStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, FossilHuntInitializer.Def>.TraitDef
+		public class Def : StoryTraitStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, FossilHuntInitializer.Def>.TraitDef
 	{
-		public override void Configure(GameObject prefab)
+				public override void Configure(GameObject prefab)
 		{
 			this.Story = Db.Get().Stories.FossilHunt;
 			this.CompletionData = new StoryCompleteData
@@ -131,25 +131,25 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			};
 		}
 
-		public const string LORE_UNLOCK_PREFIX = "story_trait_fossilhunt_";
+				public const string LORE_UNLOCK_PREFIX = "story_trait_fossilhunt_";
 
-		public bool IsMainDigsite;
+				public bool IsMainDigsite;
 	}
 
-	public class ActiveState : GameStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.State
+		public class ActiveState : GameStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.State
 	{
-		public GameStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.State inProgress;
+				public GameStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.State inProgress;
 
-		public GameStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.State StoryComplete;
+				public GameStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, StateMachineController, FossilHuntInitializer.Def>.State StoryComplete;
 	}
 
-	public new class Instance : StoryTraitStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, FossilHuntInitializer.Def>.TraitInstance
+		public new class Instance : StoryTraitStateMachine<FossilHuntInitializer, FossilHuntInitializer.Instance, FossilHuntInitializer.Def>.TraitInstance
 	{
-		public Instance(StateMachineController master, FossilHuntInitializer.Def def) : base(master, def)
+				public Instance(StateMachineController master, FossilHuntInitializer.Def def) : base(master, def)
 		{
 		}
 
-				public string Title
+						public string Title
 		{
 			get
 			{
@@ -157,7 +157,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			}
 		}
 
-				public string Description
+						public string Description
 		{
 			get
 			{
@@ -165,7 +165,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			}
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			base.gameObject.GetSMI<MajorFossilDigSite>();
@@ -193,7 +193,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			storyInstance2.StoryStateChanged = (Action<StoryInstance.State>)Delegate.Combine(storyInstance2.StoryStateChanged, new Action<StoryInstance.State>(this.OnStoryStateChanged));
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			StoryInstance storyInstance = StoryManager.Instance.GetStoryInstance(Db.Get().Stories.FossilHunt.HashId);
 			if (storyInstance != null)
@@ -204,7 +204,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			base.OnCleanUp();
 		}
 
-		private void OnStoryStateChanged(StoryInstance.State state)
+				private void OnStoryStateChanged(StoryInstance.State state)
 		{
 			if (state == StoryInstance.State.IN_PROGRESS)
 			{
@@ -212,7 +212,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			}
 		}
 
-		protected override void OnObjectSelect(object clicked)
+				protected override void OnObjectSelect(object clicked)
 		{
 			if (!StoryManager.Instance.HasDisplayedPopup(base.def.Story, EventInfoDataHelper.PopupType.BEGIN))
 			{
@@ -235,7 +235,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			}
 		}
 
-		public override void OnPopupClosed()
+				public override void OnPopupClosed()
 		{
 			if (!StoryManager.Instance.HasDisplayedPopup(base.def.Story, EventInfoDataHelper.PopupType.COMPLETE))
 			{
@@ -244,7 +244,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			base.OnPopupClosed();
 		}
 
-		protected override void OnBuildingActivated(object activated)
+				protected override void OnBuildingActivated(object activated)
 		{
 			StoryInstance storyInstance = StoryManager.Instance.GetStoryInstance(Db.Get().Stories.MegaBrainTank.HashId);
 			if (storyInstance == null || base.sm.wasStoryStarted.Get(this) || storyInstance.CurrentState >= StoryInstance.State.IN_PROGRESS)
@@ -256,7 +256,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			base.OnBuildingActivated(activated);
 		}
 
-		public void RevealMajorFossilDigSites()
+				public void RevealMajorFossilDigSites()
 		{
 			this.RevealAll(8, new Tag[]
 			{
@@ -264,7 +264,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			});
 		}
 
-		public void RevealMinorFossilDigSites()
+				public void RevealMinorFossilDigSites()
 		{
 			this.RevealAll(3, new Tag[]
 			{
@@ -274,7 +274,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			});
 		}
 
-		private void RevealAll(int radius, params Tag[] tags)
+				private void RevealAll(int radius, params Tag[] tags)
 		{
 			foreach (WorldGenSpawner.Spawnable spawnable in SaveGame.Instance.worldGenSpawner.GetSpawnablesWithTag(false, tags))
 			{
@@ -285,7 +285,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			}
 		}
 
-		public override void OnCompleteStorySequence()
+				public override void OnCompleteStorySequence()
 		{
 			if (base.def.IsMainDigsite)
 			{
@@ -293,7 +293,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			}
 		}
 
-		public void ShowLoreUnlockedPopup(int popupID)
+				public void ShowLoreUnlockedPopup(int popupID)
 		{
 			InfoDialogScreen infoDialogScreen = LoreBearer.ShowPopupDialog().SetHeader(CODEX.STORY_TRAITS.FOSSILHUNT.UNLOCK_DNADATA_POPUP.NAME).AddDefaultOK(false);
 			bool flag = CodexCache.GetEntryForLock(FossilDigSiteConfig.FOSSIL_HUNT_LORE_UNLOCK_ID.For(popupID)) != null;
@@ -306,7 +306,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			infoDialogScreen.AddPlainText(GravitasCreatureManipulatorConfig.GetBodyContentForUnknownSpecies());
 		}
 
-		public void ShowObjectiveCompletedNotification()
+				public void ShowObjectiveCompletedNotification()
 		{
 			FossilHuntInitializer.Instance.<>c__DisplayClass16_0 CS$<>8__locals1 = new FossilHuntInitializer.Instance.<>c__DisplayClass16_0();
 			CS$<>8__locals1.<>4__this = this;
@@ -329,7 +329,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			});
 		}
 
-		public void ShowFirstFossilExcavatedNotification()
+				public void ShowFirstFossilExcavatedNotification()
 		{
 			this.<ShowFirstFossilExcavatedNotification>g__ShowNotificationAndWaitForClick|17_1().Then(delegate
 			{
@@ -337,7 +337,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			});
 		}
 
-		public void ShowQuestUnlockedPopup()
+				public void ShowQuestUnlockedPopup()
 		{
 			LoreBearer.ShowPopupDialog().SetHeader(CODEX.STORY_TRAITS.FOSSILHUNT.QUEST_AVAILABLE_POPUP.NAME).AddDefaultOK(false).AddPlainText(CODEX.STORY_TRAITS.FOSSILHUNT.QUEST_AVAILABLE_POPUP.DESCRIPTION.text.Value).AddOption(CODEX.STORY_TRAITS.FOSSILHUNT.QUEST_AVAILABLE_POPUP.CHECK_BUTTON, delegate(InfoDialogScreen dialog)
 			{
@@ -346,7 +346,7 @@ public class FossilHuntInitializer : StoryTraitStateMachine<FossilHuntInitialize
 			}, false);
 		}
 
-		[CompilerGenerated]
+				[CompilerGenerated]
 		private Promise <ShowFirstFossilExcavatedNotification>g__ShowNotificationAndWaitForClick|17_1()
 		{
 			return new Promise(delegate(System.Action resolve)

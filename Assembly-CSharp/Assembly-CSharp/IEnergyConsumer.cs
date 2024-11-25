@@ -2,17 +2,17 @@
 
 public interface IEnergyConsumer : ICircuitConnected
 {
-		float WattsUsed { get; }
+			float WattsUsed { get; }
 
-		float WattsNeededWhenActive { get; }
+			float WattsNeededWhenActive { get; }
 
-		int PowerSortOrder { get; }
+			int PowerSortOrder { get; }
 
-	void SetConnectionStatus(CircuitManager.ConnectionStatus status);
+		void SetConnectionStatus(CircuitManager.ConnectionStatus status);
 
-		string Name { get; }
+			string Name { get; }
 
-		bool IsConnected { get; }
+			bool IsConnected { get; }
 
-		bool IsPowered { get; }
+			bool IsPowered { get; }
 }

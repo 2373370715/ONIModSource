@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using RsLib;
 using RsLib.Adapter;
-using RsTransferPort;
 using UnityEngine;
 using UnityEngine.UI;
 
-
+namespace RsTransferPort;
 
 public class PortChannelDiagram : MonoBehaviour {
     [SerializeField]

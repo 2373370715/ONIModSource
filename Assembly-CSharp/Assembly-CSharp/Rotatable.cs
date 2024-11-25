@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Rotatable")]
 public class Rotatable : KMonoBehaviour, ISaveLoadable
 {
-		public Orientation Orientation
+			public Orientation Orientation
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Building component = base.GetComponent<Building>();
@@ -26,7 +26,7 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		this.OrientCollider(this.orientation);
 	}
 
-	public void SetSize(int width, int height)
+		public void SetSize(int width, int height)
 	{
 		this.width = width;
 		this.height = height;
@@ -40,7 +40,7 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		this.visualizerOffset = Vector3.zero;
 	}
 
-	public Orientation Rotate()
+		public Orientation Rotate()
 	{
 		switch (this.permittedRotations)
 		{
@@ -61,14 +61,14 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		return this.orientation;
 	}
 
-	public void SetOrientation(Orientation new_orientation)
+		public void SetOrientation(Orientation new_orientation)
 	{
 		this.orientation = new_orientation;
 		this.OrientVisualizer(new_orientation);
 		this.OrientCollider(new_orientation);
 	}
 
-	public void Match(Rotatable other)
+		public void Match(Rotatable other)
 	{
 		this.pivot = other.pivot;
 		this.visualizerOffset = other.visualizerOffset;
@@ -78,7 +78,7 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		this.OrientCollider(this.orientation);
 	}
 
-	public float GetVisualizerRotation()
+		public float GetVisualizerRotation()
 	{
 		PermittedRotations permittedRotations = this.permittedRotations;
 		if (permittedRotations - PermittedRotations.R90 <= 1)
@@ -88,17 +88,17 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		return 0f;
 	}
 
-	public bool GetVisualizerFlipX()
+		public bool GetVisualizerFlipX()
 	{
 		return this.orientation == Orientation.FlipH;
 	}
 
-	public bool GetVisualizerFlipY()
+		public bool GetVisualizerFlipY()
 	{
 		return this.orientation == Orientation.FlipV;
 	}
 
-	public Vector3 GetVisualizerPivot()
+		public Vector3 GetVisualizerPivot()
 	{
 		Vector3 result = this.pivot;
 		Orientation orientation = this.orientation;
@@ -115,7 +115,7 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		return result;
 	}
 
-	private Vector3 GetVisualizerOffset()
+		private Vector3 GetVisualizerOffset()
 	{
 		Orientation orientation = this.orientation;
 		Vector3 result;
@@ -137,7 +137,7 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		return result;
 	}
 
-	private void OrientVisualizer(Orientation orientation)
+		private void OrientVisualizer(Orientation orientation)
 	{
 		float visualizerRotation = this.GetVisualizerRotation();
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
@@ -149,7 +149,7 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		base.Trigger(-1643076535, this);
 	}
 
-	private void OrientCollider(Orientation orientation)
+		private void OrientCollider(Orientation orientation)
 	{
 		KBoxCollider2D component = base.GetComponent<KBoxCollider2D>();
 		if (component == null)
@@ -201,12 +201,12 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public CellOffset GetRotatedCellOffset(CellOffset offset)
+		public CellOffset GetRotatedCellOffset(CellOffset offset)
 	{
 		return Rotatable.GetRotatedCellOffset(offset, this.orientation);
 	}
 
-	public static CellOffset GetRotatedCellOffset(CellOffset offset, Orientation orientation)
+		public static CellOffset GetRotatedCellOffset(CellOffset offset, Orientation orientation)
 	{
 		switch (orientation)
 		{
@@ -225,17 +225,17 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public static CellOffset GetRotatedCellOffset(int x, int y, Orientation orientation)
+		public static CellOffset GetRotatedCellOffset(int x, int y, Orientation orientation)
 	{
 		return Rotatable.GetRotatedCellOffset(new CellOffset(x, y), orientation);
 	}
 
-	public Vector3 GetRotatedOffset(Vector3 offset)
+		public Vector3 GetRotatedOffset(Vector3 offset)
 	{
 		return Rotatable.GetRotatedOffset(offset, this.orientation);
 	}
 
-	public static Vector3 GetRotatedOffset(Vector3 offset, Orientation orientation)
+		public static Vector3 GetRotatedOffset(Vector3 offset, Orientation orientation)
 	{
 		switch (orientation)
 		{
@@ -254,7 +254,7 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public Vector2I GetRotatedOffset(Vector2I offset)
+		public Vector2I GetRotatedOffset(Vector2I offset)
 	{
 		switch (this.orientation)
 		{
@@ -273,12 +273,12 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	public Orientation GetOrientation()
+		public Orientation GetOrientation()
 	{
 		return this.orientation;
 	}
 
-		public bool IsRotated
+			public bool IsRotated
 	{
 		get
 		{
@@ -286,21 +286,21 @@ public class Rotatable : KMonoBehaviour, ISaveLoadable
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	[SerializeField]
 	private Orientation orientation;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector3 pivot = Vector3.zero;
 
-	[SerializeField]
+		[SerializeField]
 	private Vector3 visualizerOffset = Vector3.zero;
 
-	public PermittedRotations permittedRotations;
+		public PermittedRotations permittedRotations;
 
-	[SerializeField]
+		[SerializeField]
 	private int width;
 
-	[SerializeField]
+		[SerializeField]
 	private int height;
 }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class MaterialScrollPanel : MonoBehaviour
 {
-	public Text text;
+		public Text text;
 
-	public GridLayoutGroup grid;
+		public GridLayoutGroup grid;
 }

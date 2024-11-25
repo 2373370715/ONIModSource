@@ -5,28 +5,28 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FetchListStatusItemUpdater")]
 public class FetchListStatusItemUpdater : KMonoBehaviour, IRender200ms
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		FetchListStatusItemUpdater.instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		FetchListStatusItemUpdater.instance = this;
 	}
 
-	public void AddFetchList(FetchList2 fetch_list)
+		public void AddFetchList(FetchList2 fetch_list)
 	{
 		this.fetchLists.Add(fetch_list);
 	}
 
-	public void RemoveFetchList(FetchList2 fetch_list)
+		public void RemoveFetchList(FetchList2 fetch_list)
 	{
 		this.fetchLists.Remove(fetch_list);
 	}
 
-	public void Render200ms(float dt)
+		public void Render200ms(float dt)
 	{
 		foreach (WorldContainer worldContainer in ClusterManager.Instance.WorldContainers)
 		{
@@ -152,11 +152,11 @@ public class FetchListStatusItemUpdater : KMonoBehaviour, IRender200ms
 		}
 	}
 
-	public static FetchListStatusItemUpdater instance;
+		public static FetchListStatusItemUpdater instance;
 
-	private List<FetchList2> fetchLists = new List<FetchList2>();
+		private List<FetchList2> fetchLists = new List<FetchList2>();
 
-	private int[] currentIterationIndex = new int[255];
+		private int[] currentIterationIndex = new int[255];
 
-	private int maxIteratingCount = 100;
+		private int maxIteratingCount = 100;
 }

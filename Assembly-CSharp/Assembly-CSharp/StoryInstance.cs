@@ -6,7 +6,7 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class StoryInstance : ISaveLoadable
 {
-			public StoryInstance.State CurrentState
+				public StoryInstance.State CurrentState
 	{
 		get
 		{
@@ -29,7 +29,7 @@ public class StoryInstance : ISaveLoadable
 		}
 	}
 
-		public StoryManager.StoryTelemetry Telemetry
+			public StoryManager.StoryTelemetry Telemetry
 	{
 		get
 		{
@@ -41,13 +41,13 @@ public class StoryInstance : ISaveLoadable
 		}
 	}
 
-			public EventInfoData EventInfo { get; private set; }
+				public EventInfoData EventInfo { get; private set; }
 
-			public Notification Notification { get; private set; }
+				public Notification Notification { get; private set; }
 
-			public EventInfoDataHelper.PopupType PendingType { get; private set; } = EventInfoDataHelper.PopupType.NONE;
+				public EventInfoDataHelper.PopupType PendingType { get; private set; } = EventInfoDataHelper.PopupType.NONE;
 
-	public Story GetStory()
+		public Story GetStory()
 	{
 		if (this._story == null)
 		{
@@ -56,23 +56,23 @@ public class StoryInstance : ISaveLoadable
 		return this._story;
 	}
 
-	public StoryInstance()
+		public StoryInstance()
 	{
 	}
 
-	public StoryInstance(Story story, int worldId)
+		public StoryInstance(Story story, int worldId)
 	{
 		this._story = story;
 		this.storyId = story.Id;
 		this.worldId = worldId;
 	}
 
-	public bool HasDisplayedPopup(EventInfoDataHelper.PopupType type)
+		public bool HasDisplayedPopup(EventInfoDataHelper.PopupType type)
 	{
 		return this.popupDisplayedStates != null && this.popupDisplayedStates.Contains(type);
 	}
 
-	public void SetPopupData(StoryManager.PopupInfo info, EventInfoData eventInfo, Notification notification = null)
+		public void SetPopupData(StoryManager.PopupInfo info, EventInfoData eventInfo, Notification notification = null)
 	{
 		this.EventInfo = eventInfo;
 		this.Notification = notification;
@@ -84,7 +84,7 @@ public class StoryInstance : ISaveLoadable
 		}
 	}
 
-	private void OnPopupDisplayed()
+		private void OnPopupDisplayed()
 	{
 		if (this.popupDisplayedStates == null)
 		{
@@ -96,31 +96,31 @@ public class StoryInstance : ISaveLoadable
 		this.PendingType = EventInfoDataHelper.PopupType.NONE;
 	}
 
-	public Action<StoryInstance.State> StoryStateChanged;
+		public Action<StoryInstance.State> StoryStateChanged;
 
-	[Serialize]
+		[Serialize]
 	public readonly string storyId;
 
-	[Serialize]
+		[Serialize]
 	public int worldId;
 
-	[Serialize]
+		[Serialize]
 	private StoryInstance.State state;
 
-	[Serialize]
+		[Serialize]
 	private StoryManager.StoryTelemetry telemetry;
 
-	[Serialize]
+		[Serialize]
 	private HashSet<EventInfoDataHelper.PopupType> popupDisplayedStates = new HashSet<EventInfoDataHelper.PopupType>();
 
-	private Story _story;
+		private Story _story;
 
-	public enum State
+		public enum State
 	{
-		RETROFITTED = -1,
-		NOT_STARTED,
-		DISCOVERED,
-		IN_PROGRESS,
-		COMPLETE
+				RETROFITTED = -1,
+				NOT_STARTED,
+				DISCOVERED,
+				IN_PROGRESS,
+				COMPLETE
 	}
 }

@@ -2,7 +2,7 @@
 
 public struct StoryCompleteData
 {
-	public CellOffset KeepSakeSpawnOffset;
+		public CellOffset KeepSakeSpawnOffset;
 
-	public CellOffset CameraTargetOffset;
+		public CellOffset CameraTargetOffset;
 }

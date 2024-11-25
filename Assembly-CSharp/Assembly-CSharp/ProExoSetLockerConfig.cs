@@ -6,12 +6,12 @@ using UnityEngine;
 
 public class ProExoSetLockerConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "PropExoSetLocker";
 		string name = STRINGS.BUILDINGS.PREFABS.PROPEXOSETLOCKER.NAME;
@@ -46,7 +46,7 @@ public class ProExoSetLockerConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		SetLocker component = inst.GetComponent<SetLocker>();
 		component.possible_contents_ids = new string[][]
@@ -63,7 +63,7 @@ public class ProExoSetLockerConfig : IEntityConfig
 		component.ChooseContents();
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 }

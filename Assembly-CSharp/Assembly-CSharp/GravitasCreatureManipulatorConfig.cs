@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GravitasCreatureManipulatorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "GravitasCreatureManipulator";
 		int width = 3;
@@ -31,7 +31,7 @@ public class GravitasCreatureManipulatorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		PrimaryElement component = go.GetComponent<PrimaryElement>();
@@ -64,7 +64,7 @@ public class GravitasCreatureManipulatorConfig : IBuildingConfig
 		};
 	}
 
-	public static Option<string> GetBodyContentForSpeciesTag(Tag species)
+		public static Option<string> GetBodyContentForSpeciesTag(Tag species)
 	{
 		Option<string> nameForSpeciesTag = GravitasCreatureManipulatorConfig.GetNameForSpeciesTag(species);
 		Option<string> descriptionForSpeciesTag = GravitasCreatureManipulatorConfig.GetDescriptionForSpeciesTag(species);
@@ -75,17 +75,17 @@ public class GravitasCreatureManipulatorConfig : IBuildingConfig
 		return Option.None;
 	}
 
-	public static string GetBodyContentForUnknownSpecies()
+		public static string GetBodyContentForUnknownSpecies()
 	{
 		return GravitasCreatureManipulatorConfig.GetBodyContent(CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.UNKNOWN_TITLE, CODEX.STORY_TRAITS.CRITTER_MANIPULATOR.SPECIES_ENTRIES.UNKNOWN);
 	}
 
-	public static string GetBodyContent(string name, string desc)
+		public static string GetBodyContent(string name, string desc)
 	{
 		return "<size=125%><b>" + name + "</b></size><line-height=150%>\n</line-height>" + desc;
 	}
 
-	public static Option<string> GetNameForSpeciesTag(Tag species)
+		public static Option<string> GetNameForSpeciesTag(Tag species)
 	{
 		if (species == GameTags.Creatures.Species.HatchSpecies)
 		{
@@ -158,7 +158,7 @@ public class GravitasCreatureManipulatorConfig : IBuildingConfig
 		return Option.None;
 	}
 
-	public static Option<string> GetDescriptionForSpeciesTag(Tag species)
+		public static Option<string> GetDescriptionForSpeciesTag(Tag species)
 	{
 		if (species == GameTags.Creatures.Species.HatchSpecies)
 		{
@@ -231,21 +231,21 @@ public class GravitasCreatureManipulatorConfig : IBuildingConfig
 		return Option.None;
 	}
 
-	public const string ID = "GravitasCreatureManipulator";
+		public const string ID = "GravitasCreatureManipulator";
 
-	public const string CODEX_ENTRY_ID = "STORYTRAITCRITTERMANIPULATOR";
+		public const string CODEX_ENTRY_ID = "STORYTRAITCRITTERMANIPULATOR";
 
-	public const string INITIAL_LORE_UNLOCK_ID = "story_trait_critter_manipulator_initial";
+		public const string INITIAL_LORE_UNLOCK_ID = "story_trait_critter_manipulator_initial";
 
-	public const string PARKING_LORE_UNLOCK_ID = "story_trait_critter_manipulator_parking";
+		public const string PARKING_LORE_UNLOCK_ID = "story_trait_critter_manipulator_parking";
 
-	public const string COMPLETED_LORE_UNLOCK_ID = "story_trait_critter_manipulator_complete";
+		public const string COMPLETED_LORE_UNLOCK_ID = "story_trait_critter_manipulator_complete";
 
-	private const int HEIGHT = 4;
+		private const int HEIGHT = 4;
 
-	public static class CRITTER_LORE_UNLOCK_ID
+		public static class CRITTER_LORE_UNLOCK_ID
 	{
-		public static string For(Tag species)
+				public static string For(Tag species)
 		{
 			return "story_trait_critter_manipulator_" + species.ToString().ToLower();
 		}

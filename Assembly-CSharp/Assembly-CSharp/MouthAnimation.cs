@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class MouthAnimation : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = EntityTemplates.CreateEntity(MouthAnimation.ID, MouthAnimation.ID, false);
 		gameObject.AddOrGet<KBatchedAnimController>().AnimFiles = new KAnimFile[]
@@ -18,13 +18,13 @@ public class MouthAnimation : IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static string ID = "MouthAnimation";
+		public static string ID = "MouthAnimation";
 }

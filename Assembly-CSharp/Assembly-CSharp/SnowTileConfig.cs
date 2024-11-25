@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SnowTileConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SnowTile";
 		int width = 1;
@@ -44,7 +44,7 @@ public class SnowTileConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		GeneratedBuildings.MakeBuildingAlwaysOperational(go);
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
@@ -60,18 +60,18 @@ public class SnowTileConfig : IBuildingConfig
 		component.prefabSpawnFn += this.BuildingComplete_OnSpawn;
 	}
 
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_DLC_2;
+		return DlcManager.DLC2;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		GeneratedBuildings.RemoveLoopingSounds(go);
 		go.GetComponent<KPrefabID>().AddTag(GameTags.FloorTiles, false);
 	}
 
-	private void BuildingComplete_OnInit(GameObject instance)
+		private void BuildingComplete_OnInit(GameObject instance)
 	{
 		PrimaryElement component = instance.GetComponent<PrimaryElement>();
 		component.SetElement(this.STABLE_SNOW_ELEMENT, true);
@@ -86,7 +86,7 @@ public class SnowTileConfig : IBuildingConfig
 		}
 	}
 
-	private void BuildingComplete_OnSpawn(GameObject instance)
+		private void BuildingComplete_OnSpawn(GameObject instance)
 	{
 		instance.GetComponent<PrimaryElement>().SetElement(this.STABLE_SNOW_ELEMENT, true);
 		Deconstructable component = instance.GetComponent<Deconstructable>();
@@ -99,17 +99,17 @@ public class SnowTileConfig : IBuildingConfig
 		}
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.AddOrGet<KAnimGridTileVisualizer>();
 	}
 
-	public const string ID = "SnowTile";
+		public const string ID = "SnowTile";
 
-	public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_snow_tops");
+		public static readonly int BlockTileConnectorID = Hash.SDBMLower("tiles_snow_tops");
 
-	private SimHashes CONSTRUCTION_ELEMENT = SimHashes.Snow;
+		private SimHashes CONSTRUCTION_ELEMENT = SimHashes.Snow;
 
-	private SimHashes STABLE_SNOW_ELEMENT = SimHashes.StableSnow;
+		private SimHashes STABLE_SNOW_ELEMENT = SimHashes.StableSnow;
 }

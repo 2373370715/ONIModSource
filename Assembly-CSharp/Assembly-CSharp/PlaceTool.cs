@@ -3,18 +3,18 @@ using UnityEngine;
 
 public class PlaceTool : DragTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		PlaceTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		PlaceTool.Instance = this;
 		this.tooltip = base.GetComponent<ToolTip>();
 	}
 
-	protected override void OnActivateTool()
+		protected override void OnActivateTool()
 	{
 		this.active = true;
 		base.OnActivateTool();
@@ -37,7 +37,7 @@ public class PlaceTool : DragTool
 		GridCompositor.Instance.ToggleMajor(true);
 	}
 
-	protected override void OnDeactivateTool(InterfaceTool new_tool)
+		protected override void OnDeactivateTool(InterfaceTool new_tool)
 	{
 		this.active = false;
 		GridCompositor.Instance.ToggleMajor(false);
@@ -50,14 +50,14 @@ public class PlaceTool : DragTool
 		base.OnDeactivateTool(new_tool);
 	}
 
-	public void Activate(Placeable source, Action<Placeable, int> onPlacedCallback)
+		public void Activate(Placeable source, Action<Placeable, int> onPlacedCallback)
 	{
 		this.source = source;
 		this.onPlacedCallback = onPlacedCallback;
 		PlayerController.Instance.ActivateTool(this);
 	}
 
-	protected override void OnDragTool(int cell, int distFromOrigin)
+		protected override void OnDragTool(int cell, int distFromOrigin)
 	{
 		if (this.visualizer == null)
 		{
@@ -76,22 +76,22 @@ public class PlaceTool : DragTool
 		}
 	}
 
-	protected override DragTool.Mode GetMode()
+		protected override DragTool.Mode GetMode()
 	{
 		return DragTool.Mode.Brush;
 	}
 
-	private void ShowToolTip()
+		private void ShowToolTip()
 	{
 		ToolTipScreen.Instance.SetToolTip(this.tooltip);
 	}
 
-	private void HideToolTip()
+		private void HideToolTip()
 	{
 		ToolTipScreen.Instance.ClearToolTip(this.tooltip);
 	}
 
-	public override void OnMouseMove(Vector3 cursorPos)
+		public override void OnMouseMove(Vector3 cursorPos)
 	{
 		cursorPos = base.ClampPositionToWorld(cursorPos, ClusterManager.Instance.activeWorld);
 		int cell = Grid.PosToCell(cursorPos);
@@ -108,7 +108,7 @@ public class PlaceTool : DragTool
 		base.OnMouseMove(cursorPos);
 	}
 
-	public void Update()
+		public void Update()
 	{
 		if (this.active)
 		{
@@ -120,21 +120,21 @@ public class PlaceTool : DragTool
 		}
 	}
 
-	public override string GetDeactivateSound()
+		public override string GetDeactivateSound()
 	{
 		return "HUD_Click_Deselect";
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting tooltipStyle;
 
-	private Action<Placeable, int> onPlacedCallback;
+		private Action<Placeable, int> onPlacedCallback;
 
-	private Placeable source;
+		private Placeable source;
 
-	private ToolTip tooltip;
+		private ToolTip tooltip;
 
-	public static PlaceTool Instance;
+		public static PlaceTool Instance;
 
-	private bool active;
+		private bool active;
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Trap : StateMachineComponent<Trap.StatesInstance>
 {
-	private static void CreateStatusItems()
+		private static void CreateStatusItems()
 	{
 		if (Trap.statusSprung == null)
 		{
@@ -19,14 +19,14 @@ public class Trap : StateMachineComponent<Trap.StatesInstance>
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.contents = new Ref<KPrefabID>();
 		Trap.CreateStatusItems();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Storage component = base.GetComponent<Storage>();
@@ -44,22 +44,22 @@ public class Trap : StateMachineComponent<Trap.StatesInstance>
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private Ref<KPrefabID> contents;
 
-	public TagSet captureTags = new TagSet();
+		public TagSet captureTags = new TagSet();
 
-	private static StatusItem statusReady;
+		private static StatusItem statusReady;
 
-	private static StatusItem statusSprung;
+		private static StatusItem statusSprung;
 
-	public class StatesInstance : GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.GameInstance
+		public class StatesInstance : GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.GameInstance
 	{
-		public StatesInstance(Trap master) : base(master)
+				public StatesInstance(Trap master) : base(master)
 		{
 		}
 
-		public void OnTrapTriggered(object data)
+				public void OnTrapTriggered(object data)
 		{
 			KPrefabID component = ((GameObject)data).GetComponent<KPrefabID>();
 			base.master.contents.Set(component);
@@ -67,9 +67,9 @@ public class Trap : StateMachineComponent<Trap.StatesInstance>
 		}
 	}
 
-	public class States : GameStateMachine<Trap.States, Trap.StatesInstance, Trap>
+		public class States : GameStateMachine<Trap.States, Trap.StatesInstance, Trap>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.ready;
 			base.serializable = StateMachine.SerializeType.Never;
@@ -88,21 +88,21 @@ public class Trap : StateMachineComponent<Trap.StatesInstance>
 			});
 		}
 
-		public GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State ready;
+				public GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State ready;
 
-		public GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State trapping;
+				public GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State trapping;
 
-		public GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State finishedUsing;
+				public GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State finishedUsing;
 
-		public GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State destroySelf;
+				public GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State destroySelf;
 
-		public StateMachine<Trap.States, Trap.StatesInstance, Trap, object>.Signal trapTriggered;
+				public StateMachine<Trap.States, Trap.StatesInstance, Trap, object>.Signal trapTriggered;
 
-		public Trap.States.OccupiedStates occupied;
+				public Trap.States.OccupiedStates occupied;
 
-		public class OccupiedStates : GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State
+				public class OccupiedStates : GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State
 		{
-			public GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State idle;
+						public GameStateMachine<Trap.States, Trap.StatesInstance, Trap, object>.State idle;
 		}
 	}
 }

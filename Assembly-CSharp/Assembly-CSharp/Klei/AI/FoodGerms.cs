@@ -3,13 +3,13 @@ using Klei.AI.DiseaseGrowthRules;
 
 namespace Klei.AI
 {
-	public class FoodGerms : Disease
+		public class FoodGerms : Disease
 	{
-		public FoodGerms(bool statsOnly) : base("FoodPoisoning", 10f, new Disease.RangeInfo(248.15f, 278.15f, 313.15f, 348.15f), new Disease.RangeInfo(10f, 1200f, 1200f, 10f), new Disease.RangeInfo(0f, 0f, 1000f, 1000f), Disease.RangeInfo.Idempotent(), 2.5f, statsOnly)
+				public FoodGerms(bool statsOnly) : base("FoodPoisoning", 10f, new Disease.RangeInfo(248.15f, 278.15f, 313.15f, 348.15f), new Disease.RangeInfo(10f, 1200f, 1200f, 10f), new Disease.RangeInfo(0f, 0f, 1000f, 1000f), Disease.RangeInfo.Idempotent(), 2.5f, statsOnly)
 		{
 		}
 
-		protected override void PopulateElemGrowthInfo()
+				protected override void PopulateElemGrowthInfo()
 		{
 			base.InitializeElemGrowthArray(ref this.elemGrowthInfo, Disease.DEFAULT_GROWTH_INFO);
 			base.AddGrowthRule(new GrowthRule
@@ -108,8 +108,8 @@ namespace Klei.AI
 			});
 		}
 
-		public const string ID = "FoodPoisoning";
+				public const string ID = "FoodPoisoning";
 
-		private const float VOMIT_FREQUENCY = 200f;
+				private const float VOMIT_FREQUENCY = 200f;
 	}
 }

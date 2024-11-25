@@ -6,12 +6,12 @@ using UnityEngine;
 
 public static class ArtifactSequence
 {
-	public static void Start(KMonoBehaviour controller)
+		public static void Start(KMonoBehaviour controller)
 	{
 		controller.StartCoroutine(ArtifactSequence.Sequence());
 	}
 
-	private static IEnumerator Sequence()
+		private static IEnumerator Sequence()
 	{
 		if (!SpeedControlScreen.Instance.IsPaused)
 		{

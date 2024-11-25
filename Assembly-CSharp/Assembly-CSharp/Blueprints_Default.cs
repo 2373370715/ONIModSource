@@ -4,12 +4,12 @@ using STRINGS;
 
 public class Blueprints_Default : BlueprintProvider
 {
-	public override string[] GetDlcIds()
+		public override string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public override void SetupBlueprints()
+		public override void SetupBlueprints()
 	{
 		this.SetupBuildingFacades();
 		this.SetupArtables();
@@ -21,11 +21,11 @@ public class Blueprints_Default : BlueprintProvider
 		this.SetupMonumentParts();
 	}
 
-	public void SetupBuildingFacades()
+		public void SetupBuildingFacades()
 	{
 	}
 
-	private void SetupArtables()
+		private void SetupArtables()
 	{
 		this.blueprintCollection.artables.AddRange(new ArtableInfo[]
 		{
@@ -74,19 +74,19 @@ public class Blueprints_Default : BlueprintProvider
 		});
 	}
 
-	private void SetupClothingItems()
+		private void SetupClothingItems()
 	{
 	}
 
-	private void SetupClothingOutfits()
+		private void SetupClothingOutfits()
 	{
 	}
 
-	private void SetupBalloonArtistFacades()
+		private void SetupBalloonArtistFacades()
 	{
 	}
 
-	private void SetupStickerBombFacades()
+		private void SetupStickerBombFacades()
 	{
 		this.blueprintCollection.stickerBombFacades.AddRange(new StickerBombFacadeInfo[]
 		{
@@ -113,7 +113,7 @@ public class Blueprints_Default : BlueprintProvider
 		});
 	}
 
-	private void SetupEquippableFacades()
+		private void SetupEquippableFacades()
 	{
 		this.blueprintCollection.equippableFacades.AddRange(new EquippableFacadeInfo[]
 		{
@@ -132,7 +132,7 @@ public class Blueprints_Default : BlueprintProvider
 		});
 	}
 
-	private void SetupMonumentParts()
+		private void SetupMonumentParts()
 	{
 		this.blueprintCollection.monumentParts.AddRange(new MonumentPartInfo[]
 		{

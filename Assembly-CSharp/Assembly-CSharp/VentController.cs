@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class VentController : GameStateMachine<VentController, VentController.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.off;
 		this.root.EventHandler(GameHashes.VentAnimatingChanged, new GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.GameEvent.Callback(VentController.UpdateMeterColor)).EventTransition(GameHashes.VentClosed, this.closed, (VentController.Instance smi) => smi.GetComponent<Vent>().Closed()).EventTransition(GameHashes.VentOpen, this.off, (VentController.Instance smi) => !smi.GetComponent<Vent>().Closed());
@@ -14,17 +14,17 @@ public class VentController : GameStateMachine<VentController, VentController.In
 		this.closed.PlayAnim("closed").EventTransition(GameHashes.VentAnimatingChanged, this.working_pre, new StateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.Transition.ConditionCallback(VentController.IsAnimating));
 	}
 
-	public static void PlayOutputMeterAnim(VentController.Instance smi)
+		public static void PlayOutputMeterAnim(VentController.Instance smi)
 	{
 		smi.PlayMeterAnim();
 	}
 
-	public static bool IsAnimating(VentController.Instance smi)
+		public static bool IsAnimating(VentController.Instance smi)
 	{
 		return smi.exhaust.IsAnimating();
 	}
 
-	public static void UpdateMeterColor(VentController.Instance smi, object data)
+		public static void UpdateMeterColor(VentController.Instance smi, object data)
 	{
 		if (data != null)
 		{
@@ -33,28 +33,28 @@ public class VentController : GameStateMachine<VentController, VentController.In
 		}
 	}
 
-	public GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.State off;
+		public GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.State off;
 
-	public GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.State working_pre;
+		public GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.State working_pre;
 
-	public GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.State working_loop;
+		public GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.State working_loop;
 
-	public GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.State working_pst;
+		public GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.State working_pst;
 
-	public GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.State closed;
+		public GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.State closed;
 
-	public StateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.BoolParameter isAnimating;
+		public StateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.BoolParameter isAnimating;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public bool usingDynamicColor;
+				public bool usingDynamicColor;
 
-		public string outputSubstanceAnimName;
+				public string outputSubstanceAnimName;
 	}
 
-	public new class Instance : GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<VentController, VentController.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, VentController.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, VentController.Def def) : base(master, def)
 		{
 			if (def.usingDynamicColor)
 			{
@@ -62,7 +62,7 @@ public class VentController : GameStateMachine<VentController, VentController.In
 			}
 		}
 
-		public void PlayMeterAnim()
+				public void PlayMeterAnim()
 		{
 			if (this.outputSubstanceMeter != null)
 			{
@@ -70,7 +70,7 @@ public class VentController : GameStateMachine<VentController, VentController.In
 			}
 		}
 
-		public void SetMeterOutputColor(Color32 color)
+				public void SetMeterOutputColor(Color32 color)
 		{
 			if (this.outputSubstanceMeter != null)
 			{
@@ -78,12 +78,12 @@ public class VentController : GameStateMachine<VentController, VentController.In
 			}
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private KBatchedAnimController anim;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public Exhaust exhaust;
 
-		private MeterController outputSubstanceMeter;
+				private MeterController outputSubstanceMeter;
 	}
 }

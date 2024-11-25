@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class SelectModuleSideScreen : KScreen
 {
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (!show)
@@ -17,7 +17,7 @@ public class SelectModuleSideScreen : KScreen
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		SelectModuleSideScreen.Instance = this;
@@ -25,20 +25,20 @@ public class SelectModuleSideScreen : KScreen
 		this.buildSelectedModuleButton.onClick += this.OnClickBuildSelectedModule;
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		SelectModuleSideScreen.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		this.ClearSubscriptionHandles();
 		this.module = null;
 		base.OnCmpDisable();
 	}
 
-	private void ClearSubscriptionHandles()
+		private void ClearSubscriptionHandles()
 	{
 		foreach (int id in this.gameSubscriptionHandles)
 		{
@@ -47,7 +47,7 @@ public class SelectModuleSideScreen : KScreen
 		this.gameSubscriptionHandles.Clear();
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		this.ClearSubscriptionHandles();
@@ -55,7 +55,7 @@ public class SelectModuleSideScreen : KScreen
 		this.gameSubscriptionHandles.Add(Game.Instance.Subscribe(-1948169901, new Action<object>(this.UpdateBuildableStates)));
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		foreach (int id in this.gameSubscriptionHandles)
 		{
@@ -65,7 +65,7 @@ public class SelectModuleSideScreen : KScreen
 		base.OnCleanUp();
 	}
 
-	public void SetLaunchPad(LaunchPad pad)
+		public void SetLaunchPad(LaunchPad pad)
 	{
 		this.launchPad = pad;
 		this.module = null;
@@ -76,7 +76,7 @@ public class SelectModuleSideScreen : KScreen
 		}
 	}
 
-	public void SetTarget(GameObject new_target)
+		public void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -102,7 +102,7 @@ public class SelectModuleSideScreen : KScreen
 		}
 	}
 
-	private void UpdateBuildableStates(object data = null)
+		private void UpdateBuildableStates(object data = null)
 	{
 		foreach (KeyValuePair<BuildingDef, GameObject> keyValuePair in this.buttons)
 		{
@@ -129,7 +129,7 @@ public class SelectModuleSideScreen : KScreen
 		this.SetButtonColors();
 	}
 
-	private void OnClickBuildSelectedModule()
+		private void OnClickBuildSelectedModule()
 	{
 		if (this.selectedModuleDef != null)
 		{
@@ -137,7 +137,7 @@ public class SelectModuleSideScreen : KScreen
 		}
 	}
 
-	private void ConfigureMaterialSelector()
+		private void ConfigureMaterialSelector()
 	{
 		this.buildSelectedModuleButton.isInteractable = false;
 		if (this.materialSelectionPanel == null)
@@ -152,7 +152,7 @@ public class SelectModuleSideScreen : KScreen
 		this.materialSelectionPanel.AutoSelectAvailableMaterial();
 	}
 
-	private void ConfigureFacadeSelector()
+		private void ConfigureFacadeSelector()
 	{
 		if (this.facadeSelectionPanel == null)
 		{
@@ -162,17 +162,17 @@ public class SelectModuleSideScreen : KScreen
 		this.facadeSelectionPanel.SetBuildingDef(this.selectedModuleDef.PrefabID, null);
 	}
 
-	private bool IsDefBuildable(BuildingDef def)
+		private bool IsDefBuildable(BuildingDef def)
 	{
 		return this.moduleBuildableState.ContainsKey(def) && this.moduleBuildableState[def];
 	}
 
-	private void UpdateBuildButton()
+		private void UpdateBuildButton()
 	{
 		this.buildSelectedModuleButton.isInteractable = (this.materialSelectionPanel != null && this.materialSelectionPanel.AllSelectorsSelected() && this.selectedModuleDef != null && this.moduleBuildableState[this.selectedModuleDef]);
 	}
 
-	public void SetButtonColors()
+		public void SetButtonColors()
 	{
 		foreach (KeyValuePair<BuildingDef, GameObject> keyValuePair in this.buttons)
 		{
@@ -206,7 +206,7 @@ public class SelectModuleSideScreen : KScreen
 		this.UpdateBuildButton();
 	}
 
-	private bool TestBuildable(BuildingDef def)
+		private bool TestBuildable(BuildingDef def)
 	{
 		GameObject buildingComplete = def.BuildingComplete;
 		SelectModuleCondition.SelectionContext selectionContext = this.GetSelectionContext(def);
@@ -236,7 +236,7 @@ public class SelectModuleSideScreen : KScreen
 		return true;
 	}
 
-	private void ClearButtons()
+		private void ClearButtons()
 	{
 		foreach (KeyValuePair<BuildingDef, GameObject> keyValuePair in this.buttons)
 		{
@@ -250,7 +250,7 @@ public class SelectModuleSideScreen : KScreen
 		this.buttons.Clear();
 	}
 
-	public void SpawnButtons(object data = null)
+		public void SpawnButtons(object data = null)
 	{
 		this.ClearButtons();
 		GameObject gameObject = Util.KInstantiateUI(this.categoryPrefab, this.categoryContent, true);
@@ -295,7 +295,7 @@ public class SelectModuleSideScreen : KScreen
 		this.UpdateBuildableStates(null);
 	}
 
-	private void SetupBuildingTooltip(ToolTip tooltip, BuildingDef def)
+		private void SetupBuildingTooltip(ToolTip tooltip, BuildingDef def)
 	{
 		tooltip.ClearMultiStringTooltip();
 		string name = def.Name;
@@ -383,7 +383,7 @@ public class SelectModuleSideScreen : KScreen
 		this.AddErrorTooltips(tooltip, def, false);
 	}
 
-	private SelectModuleCondition.SelectionContext GetSelectionContext(BuildingDef def)
+		private SelectModuleCondition.SelectionContext GetSelectionContext(BuildingDef def)
 	{
 		SelectModuleCondition.SelectionContext result = SelectModuleCondition.SelectionContext.AddModuleAbove;
 		if (this.launchPad == null)
@@ -409,7 +409,7 @@ public class SelectModuleSideScreen : KScreen
 		return result;
 	}
 
-	private string GetErrorTooltips(BuildingDef def)
+		private string GetErrorTooltips(BuildingDef def)
 	{
 		List<SelectModuleCondition> buildConditions = def.BuildingComplete.GetComponent<ReorderableBuilding>().buildConditions;
 		SelectModuleCondition.SelectionContext selectionContext = this.GetSelectionContext(def);
@@ -432,7 +432,7 @@ public class SelectModuleSideScreen : KScreen
 		return text;
 	}
 
-	private void AddErrorTooltips(ToolTip tooltip, BuildingDef def, bool clearFirst = false)
+		private void AddErrorTooltips(ToolTip tooltip, BuildingDef def, bool clearFirst = false)
 	{
 		if (clearFirst)
 		{
@@ -445,7 +445,7 @@ public class SelectModuleSideScreen : KScreen
 		tooltip.AddMultiStringTooltip(this.GetErrorTooltips(def), PlanScreen.Instance.buildingToolTipSettings.MaterialRequirement);
 	}
 
-	public void SelectModule(BuildingDef def)
+		public void SelectModule(BuildingDef def)
 	{
 		this.selectedModuleDef = def;
 		this.ConfigureMaterialSelector();
@@ -455,7 +455,7 @@ public class SelectModuleSideScreen : KScreen
 		this.AddErrorTooltips(this.buildSelectedModuleButton.GetComponent<ToolTip>(), this.selectedModuleDef, true);
 	}
 
-	private void OrderBuildSelectedModule()
+		private void OrderBuildSelectedModule()
 	{
 		BuildingDef previousSelectedDef = this.selectedModuleDef;
 		GameObject gameObject2;
@@ -486,7 +486,7 @@ public class SelectModuleSideScreen : KScreen
 		}
 	}
 
-	private IEnumerator SelectNextFrame(KSelectable selectable, BuildingDef previousSelectedDef, float scrollPosition)
+		private IEnumerator SelectNextFrame(KSelectable selectable, BuildingDef previousSelectedDef, float scrollPosition)
 	{
 		yield return 0;
 		SelectTool.Instance.Select(selectable, false);
@@ -494,52 +494,52 @@ public class SelectModuleSideScreen : KScreen
 		yield break;
 	}
 
-	public RocketModule module;
+		public RocketModule module;
 
-	private LaunchPad launchPad;
+		private LaunchPad launchPad;
 
-	public GameObject mainContents;
+		public GameObject mainContents;
 
-	[Header("Category")]
+		[Header("Category")]
 	public GameObject categoryPrefab;
 
-	public GameObject moduleButtonPrefab;
+		public GameObject moduleButtonPrefab;
 
-	public GameObject categoryContent;
+		public GameObject categoryContent;
 
-	private BuildingDef selectedModuleDef;
+		private BuildingDef selectedModuleDef;
 
-	public List<GameObject> categories = new List<GameObject>();
+		public List<GameObject> categories = new List<GameObject>();
 
-	public Dictionary<BuildingDef, GameObject> buttons = new Dictionary<BuildingDef, GameObject>();
+		public Dictionary<BuildingDef, GameObject> buttons = new Dictionary<BuildingDef, GameObject>();
 
-	private Dictionary<BuildingDef, bool> moduleBuildableState = new Dictionary<BuildingDef, bool>();
+		private Dictionary<BuildingDef, bool> moduleBuildableState = new Dictionary<BuildingDef, bool>();
 
-	public static SelectModuleSideScreen Instance;
+		public static SelectModuleSideScreen Instance;
 
-	public bool addingNewModule;
+		public bool addingNewModule;
 
-	public GameObject materialSelectionPanelPrefab;
+		public GameObject materialSelectionPanelPrefab;
 
-	private MaterialSelectionPanel materialSelectionPanel;
+		private MaterialSelectionPanel materialSelectionPanel;
 
-	public GameObject facadeSelectionPanelPrefab;
+		public GameObject facadeSelectionPanelPrefab;
 
-	private FacadeSelectionPanel facadeSelectionPanel;
+		private FacadeSelectionPanel facadeSelectionPanel;
 
-	public KButton buildSelectedModuleButton;
+		public KButton buildSelectedModuleButton;
 
-	public ColorStyleSetting colorStyleButton;
+		public ColorStyleSetting colorStyleButton;
 
-	public ColorStyleSetting colorStyleButtonSelected;
+		public ColorStyleSetting colorStyleButtonSelected;
 
-	public ColorStyleSetting colorStyleButtonInactive;
+		public ColorStyleSetting colorStyleButtonInactive;
 
-	public ColorStyleSetting colorStyleButtonInactiveSelected;
+		public ColorStyleSetting colorStyleButtonInactiveSelected;
 
-	private List<int> gameSubscriptionHandles = new List<int>();
+		private List<int> gameSubscriptionHandles = new List<int>();
 
-	public static List<string> moduleButtonSortOrder = new List<string>
+		public static List<string> moduleButtonSortOrder = new List<string>
 	{
 		"CO2Engine",
 		"SugarEngine",
@@ -550,6 +550,7 @@ public class SelectModuleSideScreen : KScreen
 		"HydrogenEngineCluster",
 		"HabitatModuleSmall",
 		"HabitatModuleMedium",
+		"RoboPilotModule",
 		"NoseconeBasic",
 		"NoseconeHarvest",
 		"OrbitalCargoModule",

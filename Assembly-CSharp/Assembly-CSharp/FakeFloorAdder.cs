@@ -2,7 +2,7 @@
 
 public class FakeFloorAdder : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.initiallyActive)
@@ -11,7 +11,7 @@ public class FakeFloorAdder : KMonoBehaviour
 		}
 	}
 
-	public void SetFloor(bool active)
+		public void SetFloor(bool active)
 	{
 		if (this.isActive == active)
 		{
@@ -36,15 +36,15 @@ public class FakeFloorAdder : KMonoBehaviour
 		this.isActive = active;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.SetFloor(false);
 		base.OnCleanUp();
 	}
 
-	public CellOffset[] floorOffsets;
+		public CellOffset[] floorOffsets;
 
-	public bool initiallyActive = true;
+		public bool initiallyActive = true;
 
-	private bool isActive;
+		private bool isActive;
 }

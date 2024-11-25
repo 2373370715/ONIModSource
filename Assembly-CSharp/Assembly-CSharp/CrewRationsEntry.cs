@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class CrewRationsEntry : CrewListEntry
 {
-	public override void Populate(MinionIdentity _identity)
+		public override void Populate(MinionIdentity _identity)
 	{
 		base.Populate(_identity);
 		this.rationMonitor = _identity.GetSMI<RationMonitor.Instance>();
 		this.Refresh();
 	}
 
-	public override void Refresh()
+		public override void Refresh()
 	{
 		base.Refresh();
 		this.rationsEatenToday.text = GameUtil.GetFormattedCalories(this.rationMonitor.GetRationsAteToday(), GameUtil.TimeSlice.None, true);
@@ -44,21 +44,21 @@ public class CrewRationsEntry : CrewListEntry
 		}
 	}
 
-	public KButton incRationPerDayButton;
+		public KButton incRationPerDayButton;
 
-	public KButton decRationPerDayButton;
+		public KButton decRationPerDayButton;
 
-	public LocText rationPerDayText;
+		public LocText rationPerDayText;
 
-	public LocText rationsEatenToday;
+		public LocText rationsEatenToday;
 
-	public LocText currentCaloriesText;
+		public LocText currentCaloriesText;
 
-	public LocText currentStressText;
+		public LocText currentStressText;
 
-	public LocText currentHealthText;
+		public LocText currentHealthText;
 
-	public ValueTrendImageToggle stressTrendImage;
+		public ValueTrendImageToggle stressTrendImage;
 
-	private RationMonitor.Instance rationMonitor;
+		private RationMonitor.Instance rationMonitor;
 }

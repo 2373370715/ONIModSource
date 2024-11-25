@@ -11,14 +11,14 @@ using UnityEngine.UI;
 
 public class PlanScreen : KIconToggleMenu
 {
-			public static PlanScreen Instance { get; private set; }
+				public static PlanScreen Instance { get; private set; }
 
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		PlanScreen.Instance = null;
 	}
 
-		public static Dictionary<HashedString, string> IconNameMap
+			public static Dictionary<HashedString, string> IconNameMap
 	{
 		get
 		{
@@ -26,14 +26,14 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	private static HashedString CacheHashedString(string str)
+		private static HashedString CacheHashedString(string str)
 	{
 		return HashCache.Get().Add(str);
 	}
 
-			public ProductInfoScreen ProductInfoScreen { get; private set; }
+				public ProductInfoScreen ProductInfoScreen { get; private set; }
 
-		public KIconToggleMenu.ToggleInfo ActiveCategoryToggleInfo
+			public KIconToggleMenu.ToggleInfo ActiveCategoryToggleInfo
 	{
 		get
 		{
@@ -41,14 +41,14 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-			public GameObject SelectedBuildingGameObject { get; private set; }
+				public GameObject SelectedBuildingGameObject { get; private set; }
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 2f;
 	}
 
-	public PlanScreen.RequirementsState GetBuildableState(BuildingDef def)
+		public PlanScreen.RequirementsState GetBuildableState(BuildingDef def)
 	{
 		if (def == null)
 		{
@@ -57,7 +57,7 @@ public class PlanScreen : KIconToggleMenu
 		return this._buildableStatesByID[def.PrefabID];
 	}
 
-	private bool IsDefResearched(BuildingDef def)
+		private bool IsDefResearched(BuildingDef def)
 	{
 		bool result = false;
 		if (!this._researchedDefs.TryGetValue(def, out result))
@@ -67,12 +67,12 @@ public class PlanScreen : KIconToggleMenu
 		return result;
 	}
 
-	private bool UpdateDefResearched(BuildingDef def)
+		private bool UpdateDefResearched(BuildingDef def)
 	{
 		return this._researchedDefs[def] = Db.Get().TechItems.IsTechItemComplete(def.PrefabID);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		if (BuildMenu.UseHotkeyBuildMenu())
 		{
@@ -95,7 +95,7 @@ public class PlanScreen : KIconToggleMenu
 		this.buildingGroupsRoot.gameObject.SetActive(false);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.ConsumeMouseScroll = true;
@@ -140,7 +140,7 @@ public class PlanScreen : KIconToggleMenu
 		this.listViewButton.onClick += this.OnClickListView;
 	}
 
-	private void RefreshScale(object data = null)
+		private void RefreshScale(object data = null)
 	{
 		base.GetComponent<GridLayoutGroup>().cellSize = (ScreenResolutionMonitor.UsingGamepadUIMode() ? new Vector2(54f, 50f) : new Vector2(45f, 45f));
 		this.toggles.ForEach(delegate(KToggle to)
@@ -172,13 +172,13 @@ public class PlanScreen : KIconToggleMenu
 		this.ProductInfoScreen.rectTransform().anchoredPosition = new Vector2(vector.x + 8f, this.ProductInfoScreen.rectTransform().anchoredPosition.y);
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		KInputManager.InputChange.RemoveListener(new UnityAction(this.RefreshToolTip));
 		base.OnForcedCleanUp();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (Game.Instance != null)
 		{
@@ -187,20 +187,20 @@ public class PlanScreen : KIconToggleMenu
 		base.OnCleanUp();
 	}
 
-	private void OnClickCopyBuilding()
+		private void OnClickCopyBuilding()
 	{
-		if (!this.LastSelectedBuilding.IsNullOrDestroyed() && this.LastSelectedBuilding.gameObject.activeInHierarchy)
+		if (!this.LastSelectedBuilding.IsNullOrDestroyed() && this.LastSelectedBuilding.gameObject.activeInHierarchy && (!this.lastSelectedBuilding.Def.DebugOnly || DebugHandler.InstantBuildMode))
 		{
 			PlanScreen.Instance.CopyBuildingOrder(this.LastSelectedBuilding);
 			return;
 		}
-		if (this.lastSelectedBuildingDef != null)
+		if (this.lastSelectedBuildingDef != null && (!this.lastSelectedBuildingDef.DebugOnly || DebugHandler.InstantBuildMode))
 		{
 			PlanScreen.Instance.CopyBuildingOrder(this.lastSelectedBuildingDef, this.LastSelectedBuildingFacade);
 		}
 	}
 
-	private void OnClickListView()
+		private void OnClickListView()
 	{
 		this.useSubCategoryLayout = true;
 		this.ForceRefreshAllBuildingToggles();
@@ -210,7 +210,7 @@ public class PlanScreen : KIconToggleMenu
 		KPlayerPrefs.SetInt("usePlanScreenListView", 1);
 	}
 
-	private void OnClickGridView()
+		private void OnClickGridView()
 	{
 		this.useSubCategoryLayout = false;
 		this.ForceRefreshAllBuildingToggles();
@@ -220,7 +220,7 @@ public class PlanScreen : KIconToggleMenu
 		KPlayerPrefs.SetInt("usePlanScreenListView", 0);
 	}
 
-			private Building LastSelectedBuilding
+				private Building LastSelectedBuilding
 	{
 		get
 		{
@@ -240,7 +240,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-			public string LastSelectedBuildingFacade
+				public string LastSelectedBuildingFacade
 	{
 		get
 		{
@@ -252,7 +252,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	public void RefreshCopyBuildingButton(object data = null)
+		public void RefreshCopyBuildingButton(object data = null)
 	{
 		this.adjacentPinnedButtons.rectTransform().anchoredPosition = new Vector2(Mathf.Min(base.gameObject.rectTransform().sizeDelta.x, base.transform.parent.rectTransform().rect.width), 0f);
 		MultiToggle component = this.copyBuildingButton.GetComponent<MultiToggle>();
@@ -281,7 +281,7 @@ public class PlanScreen : KIconToggleMenu
 		component.ChangeState(0);
 	}
 
-	public void RefreshToolTip()
+		public void RefreshToolTip()
 	{
 		for (int i = 0; i < TUNING.BUILDINGS.PLANORDER.Count; i++)
 		{
@@ -296,7 +296,7 @@ public class PlanScreen : KIconToggleMenu
 		this.copyBuildingButton.GetComponent<ToolTip>().SetSimpleTooltip(GameUtil.ReplaceHotkeyString(UI.COPY_BUILDING_TOOLTIP, global::Action.CopyBuilding));
 	}
 
-	public void Refresh()
+		public void Refresh()
 	{
 		List<KIconToggleMenu.ToggleInfo> list = new List<KIconToggleMenu.ToggleInfo>();
 		if (this.tagCategoryMap == null)
@@ -361,17 +361,17 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	private void ForceUpdateAllCategoryToggles(object data = null)
+		private void ForceUpdateAllCategoryToggles(object data = null)
 	{
 		this.forceUpdateAllCategoryToggles = true;
 	}
 
-	public void ForceRefreshAllBuildingToggles()
+		public void ForceRefreshAllBuildingToggles()
 	{
 		this.forceRefreshAllBuildings = true;
 	}
 
-	public void CopyBuildingOrder(BuildingDef buildingDef, string facadeID)
+		public void CopyBuildingOrder(BuildingDef buildingDef, string facadeID)
 	{
 		foreach (PlanScreen.PlanInfo planInfo in TUNING.BUILDINGS.PLANORDER)
 		{
@@ -388,7 +388,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	public void CopyBuildingOrder(Building building)
+		public void CopyBuildingOrder(Building building)
 	{
 		this.CopyBuildingOrder(building.Def, building.GetComponent<BuildingFacade>().CurrentFacade);
 		if (this.ProductInfoScreen.materialSelectionPanel == null)
@@ -404,7 +404,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	private static void PopulateOrderInfo(HashedString category, object data, Dictionary<Tag, HashedString> category_map, Dictionary<Tag, int> order_map, ref int building_index)
+		private static void PopulateOrderInfo(HashedString category, object data, Dictionary<Tag, HashedString> category_map, Dictionary<Tag, int> order_map, ref int building_index)
 	{
 		if (data.GetType() == typeof(PlanScreen.PlanInfo))
 		{
@@ -421,18 +421,18 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		this.Refresh();
 		this.RefreshCopyBuildingButton(null);
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		this.ClearButtons();
 	}
 
-	private void ClearButtons()
+		private void ClearButtons()
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.allSubCategoryObjects)
 		{
@@ -446,7 +446,7 @@ public class PlanScreen : KIconToggleMenu
 		this.copyBuildingButton.GetComponent<MultiToggle>().ChangeState(0);
 	}
 
-	public void OnSelectBuilding(GameObject button_go, BuildingDef def, string facadeID = null)
+		public void OnSelectBuilding(GameObject button_go, BuildingDef def, string facadeID = null)
 	{
 		if (button_go == null)
 		{
@@ -492,7 +492,7 @@ public class PlanScreen : KIconToggleMenu
 		this.ignoreToolChangeMessages--;
 	}
 
-	private void RefreshBuildableStates(bool force_update)
+		private void RefreshBuildableStates(bool force_update)
 	{
 		if (Assets.BuildingDefs == null || Assets.BuildingDefs.Count == 0)
 		{
@@ -570,30 +570,31 @@ public class PlanScreen : KIconToggleMenu
 		pooledList.Recycle();
 	}
 
-	private PlanScreen.RequirementsState GetBuildableStateForDef(BuildingDef def)
+		private PlanScreen.RequirementsState GetBuildableStateForDef(BuildingDef def)
 	{
 		if (!def.IsAvailable())
 		{
 			return PlanScreen.RequirementsState.Invalid;
 		}
 		PlanScreen.RequirementsState result = PlanScreen.RequirementsState.Complete;
+		KPrefabID component = def.BuildingComplete.GetComponent<KPrefabID>();
 		if (!DebugHandler.InstantBuildMode && !Game.Instance.SandboxModeActive && !this.IsDefResearched(def))
 		{
 			result = PlanScreen.RequirementsState.Tech;
 		}
-		else if (def.BuildingComplete.HasTag(GameTags.Telepad) && ClusterUtil.ActiveWorldHasPrinter())
+		else if (component.HasTag(GameTags.Telepad) && ClusterUtil.ActiveWorldHasPrinter())
 		{
 			result = PlanScreen.RequirementsState.TelepadBuilt;
 		}
-		else if (def.BuildingComplete.HasTag(GameTags.RocketInteriorBuilding) && !ClusterUtil.ActiveWorldIsRocketInterior())
+		else if (component.HasTag(GameTags.RocketInteriorBuilding) && !ClusterUtil.ActiveWorldIsRocketInterior())
 		{
 			result = PlanScreen.RequirementsState.RocketInteriorOnly;
 		}
-		else if (def.BuildingComplete.HasTag(GameTags.NotRocketInteriorBuilding) && ClusterUtil.ActiveWorldIsRocketInterior())
+		else if (component.HasTag(GameTags.NotRocketInteriorBuilding) && ClusterUtil.ActiveWorldIsRocketInterior())
 		{
 			result = PlanScreen.RequirementsState.RocketInteriorForbidden;
 		}
-		else if (def.BuildingComplete.HasTag(GameTags.UniquePerWorld) && BuildingInventory.Instance.BuildingCountForWorld_BAD_PERF(def.Tag, ClusterManager.Instance.activeWorldId) > 0)
+		else if (component.HasTag(GameTags.UniquePerWorld) && BuildingInventory.Instance.BuildingCountForWorld_BAD_PERF(def.Tag, ClusterManager.Instance.activeWorldId) > 0)
 		{
 			result = PlanScreen.RequirementsState.UniquePerWorld;
 		}
@@ -604,7 +605,7 @@ public class PlanScreen : KIconToggleMenu
 		return result;
 	}
 
-	private void SetCategoryButtonState()
+		private void SetCategoryButtonState()
 	{
 		this.nextCategoryToUpdateIDX = (this.nextCategoryToUpdateIDX + 1) % this.toggleEntries.Count;
 		for (int i = 0; i < this.toggleEntries.Count; i++)
@@ -679,7 +680,7 @@ public class PlanScreen : KIconToggleMenu
 		this.forceUpdateAllCategoryToggles = false;
 	}
 
-	private void DeactivateBuildTools()
+		private void DeactivateBuildTools()
 	{
 		InterfaceTool activeTool = PlayerController.Instance.ActiveTool;
 		if (activeTool != null)
@@ -693,7 +694,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	public void CloseRecipe(bool playSound = false)
+		public void CloseRecipe(bool playSound = false)
 	{
 		if (playSound)
 		{
@@ -715,7 +716,7 @@ public class PlanScreen : KIconToggleMenu
 		this.SelectedBuildingGameObject = null;
 	}
 
-	public void SoftCloseRecipe()
+		public void SoftCloseRecipe()
 	{
 		this.ignoreToolChangeMessages++;
 		if (PlayerController.Instance.ActiveTool is PrebuildTool || PlayerController.Instance.ActiveTool is BuildTool)
@@ -732,7 +733,7 @@ public class PlanScreen : KIconToggleMenu
 		this.ignoreToolChangeMessages--;
 	}
 
-	public void CloseCategoryPanel(bool playSound = true)
+		public void CloseCategoryPanel(bool playSound = true)
 	{
 		this.activeCategoryInfo = null;
 		if (playSound)
@@ -749,7 +750,7 @@ public class PlanScreen : KIconToggleMenu
 		this.ForceUpdateAllCategoryToggles(null);
 	}
 
-	private void OnClickCategory(KIconToggleMenu.ToggleInfo toggle_info)
+		private void OnClickCategory(KIconToggleMenu.ToggleInfo toggle_info)
 	{
 		this.CloseRecipe(false);
 		if (!this.CategoryInteractive.ContainsKey(toggle_info) || !this.CategoryInteractive[toggle_info])
@@ -770,7 +771,7 @@ public class PlanScreen : KIconToggleMenu
 		this.SetScrollPoint(0f);
 	}
 
-	private void OpenCategoryPanel(KIconToggleMenu.ToggleInfo toggle_info, bool play_sound = true)
+		private void OpenCategoryPanel(KIconToggleMenu.ToggleInfo toggle_info, bool play_sound = true)
 	{
 		HashedString hashedString = (HashedString)toggle_info.userData;
 		if (BuildingGroupScreen.Instance != null)
@@ -792,7 +793,7 @@ public class PlanScreen : KIconToggleMenu
 		this.buildingGroupsRoot.GetComponent<ExpandRevealUIContent>().Expand(null);
 	}
 
-	public void RefreshCategoryPanelTitle()
+		public void RefreshCategoryPanelTitle()
 	{
 		if (this.activeCategoryInfo != null)
 		{
@@ -804,7 +805,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	public void OpenCategoryByName(string category)
+		public void OpenCategoryByName(string category)
 	{
 		PlanScreen.ToggleEntry toggleEntry;
 		if (this.GetToggleEntryForCategory(category, out toggleEntry))
@@ -814,7 +815,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	private void UpdateBuildingButtonList(KIconToggleMenu.ToggleInfo toggle_info)
+		private void UpdateBuildingButtonList(KIconToggleMenu.ToggleInfo toggle_info)
 	{
 		KToggle toggle = toggle_info.toggle;
 		if (toggle == null)
@@ -881,7 +882,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	public override void ScreenUpdate(bool topLevel)
+		public override void ScreenUpdate(bool topLevel)
 	{
 		base.ScreenUpdate(topLevel);
 		this.RefreshBuildableStates(false);
@@ -892,7 +893,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	private void BuildButtonList()
+		private void BuildButtonList()
 	{
 		this.activeCategoryBuildingToggles.Clear();
 		Dictionary<string, HashedString> dictionary = new Dictionary<string, HashedString>();
@@ -964,7 +965,7 @@ public class PlanScreen : KIconToggleMenu
 		this.RefreshScale(null);
 	}
 
-	public void ConfigurePanelSize(object data = null)
+		public void ConfigurePanelSize(object data = null)
 	{
 		if (this.useSubCategoryLayout)
 		{
@@ -1027,12 +1028,12 @@ public class PlanScreen : KIconToggleMenu
 		this.RefreshScale(null);
 	}
 
-	private void SetScrollPoint(float targetY)
+		private void SetScrollPoint(float targetY)
 	{
 		this.BuildingGroupContentsRect.anchoredPosition = new Vector2(this.BuildingGroupContentsRect.anchoredPosition.x, targetY);
 	}
 
-	private GameObject CreateButton(BuildingDef def, GameObject parent, HashedString plan_category)
+		private GameObject CreateButton(BuildingDef def, GameObject parent, HashedString plan_category)
 	{
 		GameObject gameObject;
 		PlanBuildingToggle planBuildingToggle;
@@ -1060,17 +1061,17 @@ public class PlanScreen : KIconToggleMenu
 		return gameObject;
 	}
 
-	public static bool TechRequirementsMet(TechItem techItem)
+		public static bool TechRequirementsMet(TechItem techItem)
 	{
 		return DebugHandler.InstantBuildMode || Game.Instance.SandboxModeActive || techItem == null || techItem.IsComplete();
 	}
 
-	private static bool TechRequirementsUpcoming(TechItem techItem)
+		private static bool TechRequirementsUpcoming(TechItem techItem)
 	{
 		return PlanScreen.TechRequirementsMet(techItem);
 	}
 
-	private bool GetToggleEntryForCategory(HashedString category, out PlanScreen.ToggleEntry toggleEntry)
+		private bool GetToggleEntryForCategory(HashedString category, out PlanScreen.ToggleEntry toggleEntry)
 	{
 		toggleEntry = null;
 		foreach (PlanScreen.ToggleEntry toggleEntry2 in this.toggleEntries)
@@ -1084,18 +1085,18 @@ public class PlanScreen : KIconToggleMenu
 		return false;
 	}
 
-	public bool IsDefBuildable(BuildingDef def)
+		public bool IsDefBuildable(BuildingDef def)
 	{
 		return this.GetBuildableState(def) == PlanScreen.RequirementsState.Complete;
 	}
 
-	public string GetTooltipForBuildable(BuildingDef def)
+		public string GetTooltipForBuildable(BuildingDef def)
 	{
 		PlanScreen.RequirementsState buildableState = this.GetBuildableState(def);
 		return PlanScreen.GetTooltipForRequirementsState(def, buildableState);
 	}
 
-	public static string GetTooltipForRequirementsState(BuildingDef def, PlanScreen.RequirementsState state)
+		public static string GetTooltipForRequirementsState(BuildingDef def, PlanScreen.RequirementsState state)
 	{
 		TechItem techItem = Db.Get().TechItems.TryGet(def.PrefabID);
 		string text = null;
@@ -1139,17 +1140,17 @@ public class PlanScreen : KIconToggleMenu
 		return text;
 	}
 
-	private void PointerEnter(PointerEventData data)
+		private void PointerEnter(PointerEventData data)
 	{
 		this.planScreenScrollRect.mouseIsOver = true;
 	}
 
-	private void PointerExit(PointerEventData data)
+		private void PointerExit(PointerEventData data)
 	{
 		this.planScreenScrollRect.mouseIsOver = false;
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.Consumed)
 		{
@@ -1190,7 +1191,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		if (this.mouseOver && base.ConsumeMouseScroll)
 		{
@@ -1225,7 +1226,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	private void OnRecipeElementsFullySelected()
+		private void OnRecipeElementsFullySelected()
 	{
 		BuildingDef buildingDef = null;
 		foreach (KeyValuePair<string, PlanBuildingToggle> keyValuePair in this.allBuildingToggles)
@@ -1249,7 +1250,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	public void OnResearchComplete(object tech)
+		public void OnResearchComplete(object tech)
 	{
 		if (tech is Tech)
 		{
@@ -1271,7 +1272,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	private void AddResearchedBuildingCategory(BuildingDef def)
+		private void AddResearchedBuildingCategory(BuildingDef def)
 	{
 		if (def != null)
 		{
@@ -1290,7 +1291,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	private void OnUIClear(object data)
+		private void OnUIClear(object data)
 	{
 		if (this.activeCategoryInfo != null)
 		{
@@ -1302,7 +1303,7 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	private void OnActiveToolChanged(object data)
+		private void OnActiveToolChanged(object data)
 	{
 		if (data == null)
 		{
@@ -1320,37 +1321,37 @@ public class PlanScreen : KIconToggleMenu
 		}
 	}
 
-	public PrioritySetting GetBuildingPriority()
+		public PrioritySetting GetBuildingPriority()
 	{
 		return this.ProductInfoScreen.materialSelectionPanel.PriorityScreen.GetLastSelectedPriority();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject planButtonPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject recipeInfoScreenParent;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject productInfoScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject copyBuildingButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton gridViewButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton listViewButton;
 
-	private bool useSubCategoryLayout;
+		private bool useSubCategoryLayout;
 
-	private int refreshScaleHandle = -1;
+		private int refreshScaleHandle = -1;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject adjacentPinnedButtons;
 
-	private static Dictionary<HashedString, string> iconNameMap = new Dictionary<HashedString, string>
+		private static Dictionary<HashedString, string> iconNameMap = new Dictionary<HashedString, string>
 	{
 		{
 			PlanScreen.CacheHashedString("Base"),
@@ -1414,116 +1415,116 @@ public class PlanScreen : KIconToggleMenu
 		}
 	};
 
-	private Dictionary<KIconToggleMenu.ToggleInfo, bool> CategoryInteractive = new Dictionary<KIconToggleMenu.ToggleInfo, bool>();
+		private Dictionary<KIconToggleMenu.ToggleInfo, bool> CategoryInteractive = new Dictionary<KIconToggleMenu.ToggleInfo, bool>();
 
-	[SerializeField]
+		[SerializeField]
 	public PlanScreen.BuildingToolTipSettings buildingToolTipSettings;
 
-	public PlanScreen.BuildingNameTextSetting buildingNameTextSettings;
+		public PlanScreen.BuildingNameTextSetting buildingNameTextSettings;
 
-	private KIconToggleMenu.ToggleInfo activeCategoryInfo;
+		private KIconToggleMenu.ToggleInfo activeCategoryInfo;
 
-	public Dictionary<BuildingDef, PlanBuildingToggle> activeCategoryBuildingToggles = new Dictionary<BuildingDef, PlanBuildingToggle>();
+		public Dictionary<BuildingDef, PlanBuildingToggle> activeCategoryBuildingToggles = new Dictionary<BuildingDef, PlanBuildingToggle>();
 
-	private float timeSinceNotificationPing;
+		private float timeSinceNotificationPing;
 
-	private float notificationPingExpire = 0.5f;
+		private float notificationPingExpire = 0.5f;
 
-	private float specialNotificationEmbellishDelay = 8f;
+		private float specialNotificationEmbellishDelay = 8f;
 
-	private int notificationPingCount;
+		private int notificationPingCount;
 
-	private Dictionary<KToggle, Bouncer> toggleBouncers = new Dictionary<KToggle, Bouncer>();
+		private Dictionary<KToggle, Bouncer> toggleBouncers = new Dictionary<KToggle, Bouncer>();
 
-	public const string DEFAULT_SUBCATEGORY_KEY = "default";
+		public const string DEFAULT_SUBCATEGORY_KEY = "default";
 
-	private Dictionary<string, GameObject> allSubCategoryObjects = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> allSubCategoryObjects = new Dictionary<string, GameObject>();
 
-	private Dictionary<string, PlanBuildingToggle> allBuildingToggles = new Dictionary<string, PlanBuildingToggle>();
+		private Dictionary<string, PlanBuildingToggle> allBuildingToggles = new Dictionary<string, PlanBuildingToggle>();
 
-	private static Vector2 bigBuildingButtonSize = new Vector2(98f, 123f);
+		private static Vector2 bigBuildingButtonSize = new Vector2(98f, 123f);
 
-	private static Vector2 standarduildingButtonSize = PlanScreen.bigBuildingButtonSize * 0.8f;
+		private static Vector2 standarduildingButtonSize = PlanScreen.bigBuildingButtonSize * 0.8f;
 
-	public static int fontSizeBigMode = 16;
+		public static int fontSizeBigMode = 16;
 
-	public static int fontSizeStandardMode = 14;
+		public static int fontSizeStandardMode = 14;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject subgroupPrefab;
 
-	public Transform GroupsTransform;
+		public Transform GroupsTransform;
 
-	public Sprite Overlay_NeedTech;
+		public Sprite Overlay_NeedTech;
 
-	public RectTransform buildingGroupsRoot;
+		public RectTransform buildingGroupsRoot;
 
-	public RectTransform BuildButtonBGPanel;
+		public RectTransform BuildButtonBGPanel;
 
-	public RectTransform BuildingGroupContentsRect;
+		public RectTransform BuildingGroupContentsRect;
 
-	public Sprite defaultBuildingIconSprite;
+		public Sprite defaultBuildingIconSprite;
 
-	private KScrollRect planScreenScrollRect;
+		private KScrollRect planScreenScrollRect;
 
-	public Material defaultUIMaterial;
+		public Material defaultUIMaterial;
 
-	public Material desaturatedUIMaterial;
+		public Material desaturatedUIMaterial;
 
-	public LocText PlanCategoryLabel;
+		public LocText PlanCategoryLabel;
 
-	public GameObject noResultMessage;
+		public GameObject noResultMessage;
 
-	private int nextCategoryToUpdateIDX = -1;
+		private int nextCategoryToUpdateIDX = -1;
 
-	private bool forceUpdateAllCategoryToggles;
+		private bool forceUpdateAllCategoryToggles;
 
-	private bool forceRefreshAllBuildings = true;
+		private bool forceRefreshAllBuildings = true;
 
-	private List<PlanScreen.ToggleEntry> toggleEntries = new List<PlanScreen.ToggleEntry>();
+		private List<PlanScreen.ToggleEntry> toggleEntries = new List<PlanScreen.ToggleEntry>();
 
-	private int ignoreToolChangeMessages;
+		private int ignoreToolChangeMessages;
 
-	private Dictionary<string, PlanScreen.RequirementsState> _buildableStatesByID = new Dictionary<string, PlanScreen.RequirementsState>();
+		private Dictionary<string, PlanScreen.RequirementsState> _buildableStatesByID = new Dictionary<string, PlanScreen.RequirementsState>();
 
-	private Dictionary<Def, bool> _researchedDefs = new Dictionary<Def, bool>();
+		private Dictionary<Def, bool> _researchedDefs = new Dictionary<Def, bool>();
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting[] CategoryLabelTextStyles;
 
-	private float initTime;
+		private float initTime;
 
-	private Dictionary<Tag, HashedString> tagCategoryMap;
+		private Dictionary<Tag, HashedString> tagCategoryMap;
 
-	private Dictionary<Tag, int> tagOrderMap;
+		private Dictionary<Tag, int> tagOrderMap;
 
-	private BuildingDef lastSelectedBuildingDef;
+		private BuildingDef lastSelectedBuildingDef;
 
-	private Building lastSelectedBuilding;
+		private Building lastSelectedBuilding;
 
-	private string lastSelectedBuildingFacade = "DEFAULT_FACADE";
+		private string lastSelectedBuildingFacade = "DEFAULT_FACADE";
 
-	private int buildable_state_update_idx;
+		private int buildable_state_update_idx;
 
-	private int building_button_refresh_idx;
+		private int building_button_refresh_idx;
 
-	private int maxToggleRefreshPerFrame = 10;
+		private int maxToggleRefreshPerFrame = 10;
 
-	private bool categoryPanelSizeNeedsRefresh;
+		private bool categoryPanelSizeNeedsRefresh;
 
-	private float buildGrid_bg_width = 320f;
+		private float buildGrid_bg_width = 320f;
 
-	private float buildGrid_bg_borderHeight = 48f;
+		private float buildGrid_bg_borderHeight = 48f;
 
-	private const float BUILDGRID_SEARCHBAR_HEIGHT = 36f;
+		private const float BUILDGRID_SEARCHBAR_HEIGHT = 36f;
 
-	private const int SUBCATEGORY_HEADER_HEIGHT = 24;
+		private const int SUBCATEGORY_HEADER_HEIGHT = 24;
 
-	private float buildGrid_bg_rowHeight;
+		private float buildGrid_bg_rowHeight;
 
-	public struct PlanInfo
+		public struct PlanInfo
 	{
-		public PlanInfo(HashedString category, bool hideIfNotResearched, List<string> listData, string RequiredDlcId = "")
+				public PlanInfo(HashedString category, bool hideIfNotResearched, List<string> listData, string RequiredDlcId = "")
 		{
 			List<KeyValuePair<string, string>> list = new List<KeyValuePair<string, string>>();
 			foreach (string key in listData)
@@ -1537,49 +1538,49 @@ public class PlanScreen : KIconToggleMenu
 			this.RequiredDlcId = RequiredDlcId;
 		}
 
-		public HashedString category;
+				public HashedString category;
 
-		public bool hideIfNotResearched;
+				public bool hideIfNotResearched;
 
-		[Obsolete("Modders: Use ModUtil.AddBuildingToPlanScreen")]
+				[Obsolete("Modders: Use ModUtil.AddBuildingToPlanScreen")]
 		public List<string> data;
 
-		public List<KeyValuePair<string, string>> buildingAndSubcategoryData;
+				public List<KeyValuePair<string, string>> buildingAndSubcategoryData;
 
-		public string RequiredDlcId;
+				public string RequiredDlcId;
 	}
 
-	[Serializable]
+		[Serializable]
 	public struct BuildingToolTipSettings
 	{
-		public TextStyleSetting BuildButtonName;
+				public TextStyleSetting BuildButtonName;
 
-		public TextStyleSetting BuildButtonDescription;
+				public TextStyleSetting BuildButtonDescription;
 
-		public TextStyleSetting MaterialRequirement;
+				public TextStyleSetting MaterialRequirement;
 
-		public TextStyleSetting ResearchRequirement;
+				public TextStyleSetting ResearchRequirement;
 	}
 
-	[Serializable]
+		[Serializable]
 	public struct BuildingNameTextSetting
 	{
-		public TextStyleSetting ActiveSelected;
+				public TextStyleSetting ActiveSelected;
 
-		public TextStyleSetting ActiveDeselected;
+				public TextStyleSetting ActiveDeselected;
 
-		public TextStyleSetting InactiveSelected;
+				public TextStyleSetting InactiveSelected;
 
-		public TextStyleSetting InactiveDeselected;
+				public TextStyleSetting InactiveDeselected;
 	}
 
-	private class ToggleEntry
+		private class ToggleEntry
 	{
-		public ToggleEntry(KIconToggleMenu.ToggleInfo toggle_info, HashedString plan_category, List<BuildingDef> building_defs, bool hideIfNotResearched)
+				public ToggleEntry(KIconToggleMenu.ToggleInfo toggle_info, HashedString plan_category, List<BuildingDef> building_defs, bool hideIfNotResearched)
 		{
 			this.toggleInfo = toggle_info;
 			this.planCategory = plan_category;
-			building_defs.RemoveAll((BuildingDef def) => !SaveLoader.Instance.IsDlcListActiveForCurrentSave(def.RequiredDlcIds));
+			building_defs.RemoveAll((BuildingDef def) => !def.IsValidDLC());
 			this.buildingDefs = building_defs;
 			this.hideIfNotResearched = hideIfNotResearched;
 			this.pendingResearchAttentions = new List<Tag>();
@@ -1602,12 +1603,12 @@ public class PlanScreen : KIconToggleMenu
 			this.Refresh();
 		}
 
-		public bool AreAnyRequiredTechItemsAvailable()
+				public bool AreAnyRequiredTechItemsAvailable()
 		{
 			return this._areAnyRequiredTechItemsAvailable;
 		}
 
-		public void Refresh()
+				public void Refresh()
 		{
 			if (this._areAnyRequiredTechItemsAvailable)
 			{
@@ -1631,37 +1632,37 @@ public class PlanScreen : KIconToggleMenu
 			}
 		}
 
-		public void CollectToggleImages()
+				public void CollectToggleImages()
 		{
 			this.toggleImages = this.toggleInfo.toggle.gameObject.GetComponents<ImageToggleState>();
 		}
 
-		public KIconToggleMenu.ToggleInfo toggleInfo;
+				public KIconToggleMenu.ToggleInfo toggleInfo;
 
-		public HashedString planCategory;
+				public HashedString planCategory;
 
-		public List<BuildingDef> buildingDefs;
+				public List<BuildingDef> buildingDefs;
 
-		public List<Tag> pendingResearchAttentions;
+				public List<Tag> pendingResearchAttentions;
 
-		private List<TechItem> requiredTechItems;
+				private List<TechItem> requiredTechItems;
 
-		public ImageToggleState[] toggleImages;
+				public ImageToggleState[] toggleImages;
 
-		public bool hideIfNotResearched;
+				public bool hideIfNotResearched;
 
-		private bool _areAnyRequiredTechItemsAvailable;
+				private bool _areAnyRequiredTechItemsAvailable;
 	}
 
-	public enum RequirementsState
+		public enum RequirementsState
 	{
-		Invalid,
-		Tech,
-		Materials,
-		Complete,
-		TelepadBuilt,
-		UniquePerWorld,
-		RocketInteriorOnly,
-		RocketInteriorForbidden
+				Invalid,
+				Tech,
+				Materials,
+				Complete,
+				TelepadBuilt,
+				UniquePerWorld,
+				RocketInteriorOnly,
+				RocketInteriorForbidden
 	}
 }

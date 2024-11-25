@@ -5,14 +5,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/LiquidPumpingStation")]
 public class LiquidPumpingStation : Workable, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.resetProgressOnStop = true;
 		this.showProgressBar = false;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.infos = new LiquidPumpingStation.LiquidInfo[LiquidPumpingStation.liquidOffsets.Length * 2];
@@ -36,7 +36,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		}
 	}
 
-	private void RegisterListenersToCellChanges()
+		private void RegisterListenersToCellChanges()
 	{
 		int widthInCells = base.GetComponent<BuildingComplete>().Def.WidthInCells;
 		CellOffset[] array = new CellOffset[widthInCells * 4];
@@ -53,18 +53,18 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		this.partitionerEntry_buildings = GameScenePartitioner.Instance.Add("LiquidPumpingStation", base.gameObject, extents, GameScenePartitioner.Instance.objectLayers[1], new Action<object>(this.OnLowerCellChanged));
 	}
 
-	private void UnregisterListenersToCellChanges()
+		private void UnregisterListenersToCellChanges()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry_solids);
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry_buildings);
 	}
 
-	private void OnLowerCellChanged(object o)
+		private void OnLowerCellChanged(object o)
 	{
 		this.RefreshDepthAvailable();
 	}
 
-	private void RefreshDepthAvailable()
+		private void RefreshDepthAvailable()
 	{
 		int num = PumpingStationGuide.GetDepthAvailable(Grid.PosToCell(this), base.gameObject);
 		int num2 = 4;
@@ -80,7 +80,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		}
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this.session != null)
 		{
@@ -164,7 +164,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		}
 	}
 
-	private void RefreshStatusItem()
+		private void RefreshStatusItem()
 	{
 		if (this.infoCount > 0)
 		{
@@ -174,7 +174,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.EmptyPumpingStation, this);
 	}
 
-	public string ResolveString(string base_string)
+		public string ResolveString(string base_string)
 	{
 		string text = "";
 		for (int i = 0; i < this.infoCount; i++)
@@ -194,12 +194,12 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		return base_string.Replace("{Liquids}", text);
 	}
 
-	public static bool IsLiquidAccessible(Element element)
+		public static bool IsLiquidAccessible(Element element)
 	{
 		return true;
 	}
 
-	public override float GetPercentComplete()
+		public override float GetPercentComplete()
 	{
 		if (this.session != null)
 		{
@@ -208,10 +208,10 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		return 0f;
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
-		Pickupable.PickupableStartWorkInfo pickupableStartWorkInfo = (Pickupable.PickupableStartWorkInfo)worker.startWorkInfo;
+		Pickupable.PickupableStartWorkInfo pickupableStartWorkInfo = (Pickupable.PickupableStartWorkInfo)worker.GetStartWorkInfo();
 		float amount = pickupableStartWorkInfo.amount;
 		Element element = pickupableStartWorkInfo.originalPickupable.PrimaryElement.Element;
 		this.session = new LiquidPumpingStation.WorkSession(Grid.PosToCell(this), element.id, pickupableStartWorkInfo.originalPickupable.GetComponent<SubstanceChunk>(), amount, base.gameObject);
@@ -219,7 +219,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		this.meter.SetSymbolTint(new KAnimHashedString("meter_target"), element.substance.colour);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		if (this.session != null)
@@ -234,7 +234,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 				Pickupable component3 = LiquidSourceManager.Instance.CreateChunk(component2.Element, consumedAmount, this.session.GetTemperature(), diseaseInfo.idx, diseaseInfo.count, base.transform.GetPosition()).GetComponent<Pickupable>();
 				component3.TotalAmount = consumedAmount;
 				component3.Trigger(1335436905, source.GetComponent<Pickupable>());
-				worker.workCompleteData = component3;
+				worker.SetWorkCompleteData(component3);
 				this.Sim200ms(0f);
 				if (component3 != null)
 				{
@@ -247,7 +247,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		base.GetComponent<KAnimControllerBase>().Play("on", KAnim.PlayMode.Once, 1f, 0f);
 	}
 
-	private void OnReservationsChanged(Pickupable _ignore, bool _ignore2, Pickupable.Reservation _ignore3)
+		private void OnReservationsChanged(Pickupable _ignore, bool _ignore2, Pickupable.Reservation _ignore3)
 	{
 		bool forceUnfetchable = false;
 		for (int i = 0; i < this.infoCount; i++)
@@ -271,7 +271,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		}
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		if (this.session != null)
 		{
@@ -284,7 +284,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		return false;
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.UnregisterListenersToCellChanges();
 		base.OnCleanUp();
@@ -302,7 +302,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		}
 	}
 
-	private static readonly CellOffset[] liquidOffsets = new CellOffset[]
+		private static readonly CellOffset[] liquidOffsets = new CellOffset[]
 	{
 		new CellOffset(0, 0),
 		new CellOffset(1, 0),
@@ -316,23 +316,23 @@ public class LiquidPumpingStation : Workable, ISim200ms
 		new CellOffset(1, -4)
 	};
 
-	private LiquidPumpingStation.LiquidInfo[] infos;
+		private LiquidPumpingStation.LiquidInfo[] infos;
 
-	private int infoCount;
+		private int infoCount;
 
-	private int depthAvailable = -1;
+		private int depthAvailable = -1;
 
-	private HandleVector<int>.Handle partitionerEntry_buildings;
+		private HandleVector<int>.Handle partitionerEntry_buildings;
 
-	private HandleVector<int>.Handle partitionerEntry_solids;
+		private HandleVector<int>.Handle partitionerEntry_solids;
 
-	private LiquidPumpingStation.WorkSession session;
+		private LiquidPumpingStation.WorkSession session;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	private class WorkSession
+		private class WorkSession
 	{
-		public WorkSession(int cell, SimHashes element, SubstanceChunk source, float amount_to_pickup, GameObject pump)
+				public WorkSession(int cell, SimHashes element, SubstanceChunk source, float amount_to_pickup, GameObject pump)
 		{
 			this.cell = cell;
 			this.element = element;
@@ -346,12 +346,12 @@ public class LiquidPumpingStation : Workable, ISim200ms
 			this.ConsumeMass();
 		}
 
-		private void OnSimConsumeCallback(Sim.MassConsumedCallback mass_cb_info, object data)
+				private void OnSimConsumeCallback(Sim.MassConsumedCallback mass_cb_info, object data)
 		{
 			((LiquidPumpingStation.WorkSession)data).OnSimConsume(mass_cb_info);
 		}
 
-		private void OnSimConsume(Sim.MassConsumedCallback mass_cb_info)
+				private void OnSimConsume(Sim.MassConsumedCallback mass_cb_info)
 		{
 			if (this.consumedAmount == 0f)
 			{
@@ -372,7 +372,7 @@ public class LiquidPumpingStation : Workable, ISim200ms
 			this.ConsumeMass();
 		}
 
-		private void ConsumeMass()
+				private void ConsumeMass()
 		{
 			if (this.amountPerTick > 0f)
 			{
@@ -384,32 +384,32 @@ public class LiquidPumpingStation : Workable, ISim200ms
 			}
 		}
 
-		public float GetPercentComplete()
+				public float GetPercentComplete()
 		{
 			return this.consumedAmount / this.amountToPickup;
 		}
 
-		public float GetLastTickAmount()
+				public float GetLastTickAmount()
 		{
 			return this.lastTickAmount;
 		}
 
-		public SimUtil.DiseaseInfo GetDiseaseInfo()
+				public SimUtil.DiseaseInfo GetDiseaseInfo()
 		{
 			return this.diseaseInfo;
 		}
 
-		public SubstanceChunk GetSource()
+				public SubstanceChunk GetSource()
 		{
 			return this.source;
 		}
 
-		public float GetConsumedAmount()
+				public float GetConsumedAmount()
 		{
 			return this.consumedAmount;
 		}
 
-		public float GetTemperature()
+				public float GetTemperature()
 		{
 			if (this.temperature <= 0f)
 			{
@@ -419,39 +419,39 @@ public class LiquidPumpingStation : Workable, ISim200ms
 			return this.temperature;
 		}
 
-		public void Cleanup()
+				public void Cleanup()
 		{
 			this.amountPerTick = 0f;
 			this.diseaseInfo = SimUtil.DiseaseInfo.Invalid;
 		}
 
-		private int cell;
+				private int cell;
 
-		private float amountToPickup;
+				private float amountToPickup;
 
-		private float consumedAmount;
+				private float consumedAmount;
 
-		private float temperature;
+				private float temperature;
 
-		private float amountPerTick;
+				private float amountPerTick;
 
-		private SimHashes element;
+				private SimHashes element;
 
-		private float lastTickAmount;
+				private float lastTickAmount;
 
-		private SubstanceChunk source;
+				private SubstanceChunk source;
 
-		private SimUtil.DiseaseInfo diseaseInfo;
+				private SimUtil.DiseaseInfo diseaseInfo;
 
-		private GameObject pump;
+				private GameObject pump;
 	}
 
-	private struct LiquidInfo
+		private struct LiquidInfo
 	{
-		public float amount;
+				public float amount;
 
-		public Element element;
+				public Element element;
 
-		public SubstanceChunk source;
+				public SubstanceChunk source;
 	}
 }

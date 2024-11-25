@@ -3,9 +3,9 @@ using STRINGS;
 
 namespace Database
 {
-	public class Thoughts : ResourceSet<Thought>
+		public class Thoughts : ResourceSet<Thought>
 	{
-		public Thoughts(ResourceSet parent) : base("Thoughts", parent)
+				public Thoughts(ResourceSet parent) : base("Thoughts", parent)
 		{
 			this.GotInfected = new Thought("GotInfected", this, "crew_state_sick", null, "crew_state_sick", "bubble_alert", SpeechMonitor.PREFIX_SAD, DUPLICANTS.THOUGHTS.GOTINFECTED.TOOLTIP, false, 4f);
 			this.Starving = new Thought("Starving", this, "crew_state_hungry", null, "crew_state_hungry", "bubble_alert", SpeechMonitor.PREFIX_SAD, DUPLICANTS.THOUGHTS.STARVING.TOOLTIP, false, 4f);
@@ -13,6 +13,8 @@ namespace Database
 			this.Cold = new Thought("Cold", this, "crew_state_temp_down", null, "crew_state_temp_down", "bubble_alert", SpeechMonitor.PREFIX_SAD, DUPLICANTS.THOUGHTS.COLD.TOOLTIP, false, 4f);
 			this.BreakBladder = new Thought("BreakBladder", this, "crew_state_full_bladder", null, "crew_state_full_bladder", "bubble_conversation", SpeechMonitor.PREFIX_SAD, DUPLICANTS.THOUGHTS.BREAKBLADDER.TOOLTIP, false, 4f);
 			this.FullBladder = new Thought("FullBladder", this, "crew_state_full_bladder", null, "crew_state_full_bladder", "bubble_alert", SpeechMonitor.PREFIX_SAD, DUPLICANTS.THOUGHTS.FULLBLADDER.TOOLTIP, false, 4f);
+			this.ExpellingGunk = new Thought("ExpellingGunk", this, "crew_state_oil_change_desire", null, "crew_state_oil_change_desire", "bubble_conversation", SpeechMonitor.PREFIX_SAD, DUPLICANTS.THOUGHTS.EXPELLINGSPOILEDOIL.TOOLTIP, false, 4f);
+			this.ExpellGunkDesire = new Thought("ExpellGunkDesire", this, "crew_state_oil_change_desire", null, "crew_state_oil_change_desire", "bubble_alert", SpeechMonitor.PREFIX_SAD, DUPLICANTS.THOUGHTS.EXPELLGUNKDESIRE.TOOLTIP, false, 4f);
 			this.PoorDecor = new Thought("PoorDecor", this, "crew_state_decor", null, "crew_state_decor", "bubble_alert", SpeechMonitor.PREFIX_SAD, DUPLICANTS.THOUGHTS.POORDECOR.TOOLTIP, false, 4f);
 			this.PoorFoodQuality = new Thought("PoorFoodQuality", this, "crew_state_yuck", null, "crew_state_yuck", "bubble_alert", SpeechMonitor.PREFIX_SAD, DUPLICANTS.THOUGHTS.POOR_FOOD_QUALITY.TOOLTIP, false, 4f);
 			this.GoodFoodQuality = new Thought("GoodFoodQuality", this, "crew_state_happy", null, "crew_state_happy", "bubble_alert", SpeechMonitor.PREFIX_SAD, DUPLICANTS.THOUGHTS.GOOD_FOOD_QUALITY.TOOLTIP, false, 4f);
@@ -35,48 +37,52 @@ namespace Database
 			}
 		}
 
-		public Thought Starving;
+				public Thought Starving;
 
-		public Thought Hot;
+				public Thought Hot;
 
-		public Thought Cold;
+				public Thought Cold;
 
-		public Thought BreakBladder;
+				public Thought BreakBladder;
 
-		public Thought FullBladder;
+				public Thought FullBladder;
 
-		public Thought Happy;
+				public Thought ExpellGunkDesire;
 
-		public Thought Unhappy;
+				public Thought ExpellingGunk;
 
-		public Thought PoorDecor;
+				public Thought Happy;
 
-		public Thought PoorFoodQuality;
+				public Thought Unhappy;
 
-		public Thought GoodFoodQuality;
+				public Thought PoorDecor;
 
-		public Thought Sleepy;
+				public Thought PoorFoodQuality;
 
-		public Thought Suffocating;
+				public Thought GoodFoodQuality;
 
-		public Thought Angry;
+				public Thought Sleepy;
 
-		public Thought Raging;
+				public Thought Suffocating;
 
-		public Thought GotInfected;
+				public Thought Angry;
 
-		public Thought PutridOdour;
+				public Thought Raging;
 
-		public Thought Noisy;
+				public Thought GotInfected;
 
-		public Thought NewRole;
+				public Thought PutridOdour;
 
-		public Thought Chatty;
+				public Thought Noisy;
 
-		public Thought Encourage;
+				public Thought NewRole;
 
-		public Thought CatchyTune;
+				public Thought Chatty;
 
-		public Thought Dreaming;
+				public Thought Encourage;
+
+				public Thought CatchyTune;
+
+				public Thought Dreaming;
 	}
 }

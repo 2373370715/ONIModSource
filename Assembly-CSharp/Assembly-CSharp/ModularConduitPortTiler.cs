@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ModularConduitPortTiler : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.GetComponent<KPrefabID>().AddTag(GameTags.ModularConduitPort, true);
@@ -16,7 +16,7 @@ public class ModularConduitPortTiler : KMonoBehaviour
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		OccupyArea component = base.GetComponent<OccupyArea>();
 		if (component != null)
@@ -42,13 +42,13 @@ public class ModularConduitPortTiler : KMonoBehaviour
 		this.CorrectAdjacentLaunchPads();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		base.OnCleanUp();
 	}
 
-	private void UpdateEndCaps()
+		private void UpdateEndCaps()
 	{
 		int num;
 		int num2;
@@ -99,7 +99,7 @@ public class ModularConduitPortTiler : KMonoBehaviour
 		}
 	}
 
-	private int GetCellLeft()
+		private int GetCellLeft()
 	{
 		int cell = Grid.PosToCell(this);
 		int num;
@@ -109,7 +109,7 @@ public class ModularConduitPortTiler : KMonoBehaviour
 		return Grid.OffsetCell(cell, offset);
 	}
 
-	private int GetCellRight()
+		private int GetCellRight()
 	{
 		int cell = Grid.PosToCell(this);
 		int num;
@@ -119,7 +119,7 @@ public class ModularConduitPortTiler : KMonoBehaviour
 		return Grid.OffsetCell(cell, offset);
 	}
 
-	private bool HasTileableNeighbour(int neighbour_cell)
+		private bool HasTileableNeighbour(int neighbour_cell)
 	{
 		bool result = false;
 		GameObject gameObject = Grid.Objects[neighbour_cell, (int)this.objectLayer];
@@ -134,13 +134,13 @@ public class ModularConduitPortTiler : KMonoBehaviour
 		return result;
 	}
 
-	private bool HasLaunchpadNeighbour(int neighbour_cell)
+		private bool HasLaunchpadNeighbour(int neighbour_cell)
 	{
 		GameObject gameObject = Grid.Objects[neighbour_cell, (int)this.objectLayer];
 		return gameObject != null && gameObject.GetComponent<LaunchPad>() != null;
 	}
 
-	private void OnNeighbourCellsUpdated(object data)
+		private void OnNeighbourCellsUpdated(object data)
 	{
 		if (this == null || base.gameObject == null)
 		{
@@ -152,7 +152,7 @@ public class ModularConduitPortTiler : KMonoBehaviour
 		}
 	}
 
-	private void CorrectAdjacentLaunchPads()
+		private void CorrectAdjacentLaunchPads()
 	{
 		int cellRight = this.GetCellRight();
 		if (Grid.IsValidCell(cellRight) && this.HasLaunchpadNeighbour(cellRight))
@@ -166,54 +166,54 @@ public class ModularConduitPortTiler : KMonoBehaviour
 		}
 	}
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	public ObjectLayer objectLayer = ObjectLayer.Building;
+		public ObjectLayer objectLayer = ObjectLayer.Building;
 
-	public Tag[] tags;
+		public Tag[] tags;
 
-	public bool manageLeftCap = true;
+		public bool manageLeftCap = true;
 
-	public bool manageRightCap = true;
+		public bool manageRightCap = true;
 
-	public int leftCapDefaultSceneLayerAdjust;
+		public int leftCapDefaultSceneLayerAdjust;
 
-	public int rightCapDefaultSceneLayerAdjust;
+		public int rightCapDefaultSceneLayerAdjust;
 
-	private Extents extents;
+		private Extents extents;
 
-	private ModularConduitPortTiler.AnimCapType leftCapSetting;
+		private ModularConduitPortTiler.AnimCapType leftCapSetting;
 
-	private ModularConduitPortTiler.AnimCapType rightCapSetting;
+		private ModularConduitPortTiler.AnimCapType rightCapSetting;
 
-	private static readonly string leftCapDefaultStr = "#cap_left_default";
+		private static readonly string leftCapDefaultStr = "#cap_left_default";
 
-	private static readonly string leftCapLaunchpadStr = "#cap_left_launchpad";
+		private static readonly string leftCapLaunchpadStr = "#cap_left_launchpad";
 
-	private static readonly string leftCapConduitStr = "#cap_left_conduit";
+		private static readonly string leftCapConduitStr = "#cap_left_conduit";
 
-	private static readonly string rightCapDefaultStr = "#cap_right_default";
+		private static readonly string rightCapDefaultStr = "#cap_right_default";
 
-	private static readonly string rightCapLaunchpadStr = "#cap_right_launchpad";
+		private static readonly string rightCapLaunchpadStr = "#cap_right_launchpad";
 
-	private static readonly string rightCapConduitStr = "#cap_right_conduit";
+		private static readonly string rightCapConduitStr = "#cap_right_conduit";
 
-	private KAnimSynchronizedController leftCapDefault;
+		private KAnimSynchronizedController leftCapDefault;
 
-	private KAnimSynchronizedController leftCapLaunchpad;
+		private KAnimSynchronizedController leftCapLaunchpad;
 
-	private KAnimSynchronizedController leftCapConduit;
+		private KAnimSynchronizedController leftCapConduit;
 
-	private KAnimSynchronizedController rightCapDefault;
+		private KAnimSynchronizedController rightCapDefault;
 
-	private KAnimSynchronizedController rightCapLaunchpad;
+		private KAnimSynchronizedController rightCapLaunchpad;
 
-	private KAnimSynchronizedController rightCapConduit;
+		private KAnimSynchronizedController rightCapConduit;
 
-	private enum AnimCapType
+		private enum AnimCapType
 	{
-		Default,
-		Conduit,
-		Launchpad
+				Default,
+				Conduit,
+				Launchpad
 	}
 }

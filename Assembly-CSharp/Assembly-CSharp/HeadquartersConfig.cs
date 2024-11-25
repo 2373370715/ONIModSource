@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class HeadquartersConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Headquarters";
 		int width = 4;
@@ -31,7 +31,7 @@ public class HeadquartersConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		LoreBearerUtil.AddLoreTo(go, LoreBearerUtil.UnlockSpecificEntry("pod_evacuation", UI.USERMENUACTIONS.READLORE.SEARCH_POD));
 		Telepad telepad = go.AddOrGet<Telepad>();
@@ -71,9 +71,9 @@ public class HeadquartersConfig : IBuildingConfig
 		roleStation.workingPstFailed = null;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "Headquarters";
+		public const string ID = "Headquarters";
 }

@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class FallerComponents : KGameObjectComponentManager<FallerComponent>
 {
-	public HandleVector<int>.Handle Add(GameObject go, Vector2 initial_velocity)
+		public HandleVector<int>.Handle Add(GameObject go, Vector2 initial_velocity)
 	{
 		return base.Add(go, new FallerComponent(go.transform, initial_velocity));
 	}
 
-	public override void Remove(GameObject go)
+		public override void Remove(GameObject go)
 	{
 		HandleVector<int>.Handle handle = base.GetHandle(go);
 		this.OnCleanUpImmediate(handle);
@@ -21,7 +21,7 @@ public class FallerComponents : KGameObjectComponentManager<FallerComponent>
 		base.InternalRemoveComponent(info);
 	}
 
-	protected override void OnPrefabInit(HandleVector<int>.Handle h)
+		protected override void OnPrefabInit(HandleVector<int>.Handle h)
 	{
 		FallerComponent data = base.GetData(h);
 		Vector3 position = data.transform.GetPosition();
@@ -59,14 +59,14 @@ public class FallerComponents : KGameObjectComponentManager<FallerComponent>
 		FallerComponents.AddGravity(data.transform, data.initialVelocity);
 	}
 
-	protected override void OnSpawn(HandleVector<int>.Handle h)
+		protected override void OnSpawn(HandleVector<int>.Handle h)
 	{
 		base.OnSpawn(h);
 		FallerComponent data = base.GetData(h);
 		Singleton<CellChangeMonitor>.Instance.RegisterCellChangedHandler(data.transform, data.cellChangedCB, "FallerComponent.OnSpawn");
 	}
 
-	private void OnCleanUpImmediate(HandleVector<int>.Handle h)
+		private void OnCleanUpImmediate(HandleVector<int>.Handle h)
 	{
 		FallerComponent data = base.GetData(h);
 		GameScenePartitioner.Instance.Free(ref data.partitionerEntry);
@@ -82,7 +82,7 @@ public class FallerComponents : KGameObjectComponentManager<FallerComponent>
 		base.SetData(h, data);
 	}
 
-	private static void AddGravity(Transform transform, Vector2 initial_velocity)
+		private static void AddGravity(Transform transform, Vector2 initial_velocity)
 	{
 		if (!GameComps.Gravities.Has(transform.gameObject))
 		{
@@ -100,7 +100,7 @@ public class FallerComponents : KGameObjectComponentManager<FallerComponent>
 		}
 	}
 
-	private static void RemoveGravity(Transform transform)
+		private static void RemoveGravity(Transform transform)
 	{
 		if (GameComps.Gravities.Has(transform.gameObject))
 		{
@@ -121,12 +121,12 @@ public class FallerComponents : KGameObjectComponentManager<FallerComponent>
 		}
 	}
 
-	private static void OnLanded(Transform transform)
+		private static void OnLanded(Transform transform)
 	{
 		FallerComponents.RemoveGravity(transform);
 	}
 
-	private static void OnSolidChanged(HandleVector<int>.Handle handle)
+		private static void OnSolidChanged(HandleVector<int>.Handle handle)
 	{
 		FallerComponent data = GameComps.Fallers.GetData(handle);
 		if (data.transform == null)
@@ -153,5 +153,5 @@ public class FallerComponents : KGameObjectComponentManager<FallerComponent>
 		}
 	}
 
-	private const float EPSILON = 0.07f;
+		private const float EPSILON = 0.07f;
 }

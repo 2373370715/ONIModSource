@@ -6,13 +6,13 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/BuildingChoresPanelDupeRow")]
 public class BuildingChoresPanelDupeRow : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.button.onClick += this.OnClick;
 	}
 
-	public void Init(BuildingChoresPanel.DupeEntryData data)
+		public void Init(BuildingChoresPanel.DupeEntryData data)
 	{
 		this.choreConsumer = data.consumer;
 		if (data.context.IsPotentialSuccess())
@@ -22,8 +22,8 @@ public class BuildingChoresPanelDupeRow : KMonoBehaviour
 		}
 		else
 		{
-			string text = data.context.chore.GetPreconditions()[data.context.failedPreconditionId].description;
-			DebugUtil.Assert(text != null, "Chore requires description!", data.context.chore.GetPreconditions()[data.context.failedPreconditionId].id);
+			string text = data.context.chore.GetPreconditions()[data.context.failedPreconditionId].condition.description;
+			DebugUtil.Assert(text != null, "Chore requires description!", data.context.chore.GetPreconditions()[data.context.failedPreconditionId].condition.id);
 			if (data.context.chore.driver != null)
 			{
 				text = text.Replace("{Assignee}", data.context.chore.driver.GetProperName());
@@ -35,13 +35,13 @@ public class BuildingChoresPanelDupeRow : KMonoBehaviour
 		this.toolTip.toolTip = BuildingChoresPanelDupeRow.TooltipForDupe(data.context, data.consumer, data.rank);
 	}
 
-	private void OnClick()
+		private void OnClick()
 	{
 		Vector3 pos = this.choreConsumer.gameObject.transform.GetPosition() + Vector3.up;
 		CameraController.Instance.SetTargetPos(pos, 10f, true);
 	}
 
-	private static string TooltipForDupe(Chore.Precondition.Context context, ChoreConsumer choreConsumer, int rank)
+		private static string TooltipForDupe(Chore.Precondition.Context context, ChoreConsumer choreConsumer, int rank)
 	{
 		bool flag = context.IsPotentialSuccess();
 		string text = flag ? UI.DETAILTABS.BUILDING_CHORES.DUPE_TOOLTIP_SUCCEEDED : UI.DETAILTABS.BUILDING_CHORES.DUPE_TOOLTIP_FAILED;
@@ -71,7 +71,7 @@ public class BuildingChoresPanelDupeRow : KMonoBehaviour
 		text = text.Replace("{Errand}", GameUtil.GetChoreName(context.chore, context.data));
 		if (!flag)
 		{
-			text = text.Replace("{FailedPrecondition}", context.chore.GetPreconditions()[context.failedPreconditionId].description);
+			text = text.Replace("{FailedPrecondition}", context.chore.GetPreconditions()[context.failedPreconditionId].condition.description);
 		}
 		else
 		{
@@ -88,13 +88,13 @@ public class BuildingChoresPanelDupeRow : KMonoBehaviour
 		return text;
 	}
 
-	public Image icon;
+		public Image icon;
 
-	public LocText label;
+		public LocText label;
 
-	public ToolTip toolTip;
+		public ToolTip toolTip;
 
-	private ChoreConsumer choreConsumer;
+		private ChoreConsumer choreConsumer;
 
-	public KButton button;
+		public KButton button;
 }

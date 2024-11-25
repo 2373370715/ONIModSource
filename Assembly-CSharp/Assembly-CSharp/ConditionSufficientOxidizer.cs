@@ -3,12 +3,12 @@ using STRINGS;
 
 public class ConditionSufficientOxidizer : ProcessCondition
 {
-	public ConditionSufficientOxidizer(OxidizerTank oxidizerTank)
+		public ConditionSufficientOxidizer(OxidizerTank oxidizerTank)
 	{
 		this.oxidizerTank = oxidizerTank;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		RocketModuleCluster component = this.oxidizerTank.GetComponent<RocketModuleCluster>();
 		if (component != null && component.CraftInterface != null)
@@ -45,7 +45,7 @@ public class ConditionSufficientOxidizer : ProcessCondition
 		return ProcessCondition.Status.Failure;
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		string result;
 		if (status != ProcessCondition.Status.Failure)
@@ -66,7 +66,7 @@ public class ConditionSufficientOxidizer : ProcessCondition
 		return result;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		string result;
 		if (status != ProcessCondition.Status.Failure)
@@ -87,10 +87,10 @@ public class ConditionSufficientOxidizer : ProcessCondition
 		return result;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private OxidizerTank oxidizerTank;
+		private OxidizerTank oxidizerTank;
 }

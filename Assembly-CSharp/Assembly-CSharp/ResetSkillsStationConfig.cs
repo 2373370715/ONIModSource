@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ResetSkillsStationConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "ResetSkillsStation";
 		int width = 3;
@@ -28,7 +28,7 @@ public class ResetSkillsStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddTag(GameTags.NotRoomAssignable);
@@ -43,9 +43,9 @@ public class ResetSkillsStationConfig : IBuildingConfig
 		resetSkillsStation.workLayer = Grid.SceneLayer.BuildingFront;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 	}
 
-	public const string ID = "ResetSkillsStation";
+		public const string ID = "ResetSkillsStation";
 }

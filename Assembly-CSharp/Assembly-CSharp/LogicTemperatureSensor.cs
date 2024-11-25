@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, ISim200ms
 {
-		public float StructureTemperature
+			public float StructureTemperature
 	{
 		get
 		{
@@ -14,13 +14,13 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicTemperatureSensor>(-905833192, LogicTemperatureSensor.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicTemperatureSensor component = ((GameObject)data).GetComponent<LogicTemperatureSensor>();
 		if (component != null)
@@ -30,7 +30,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.structureTemperature = GameComps.StructureTemperatures.GetHandle(base.gameObject);
@@ -40,7 +40,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		this.wasOn = this.switchedOn;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this.simUpdateCounter < 8 && !this.dirty)
 		{
@@ -74,23 +74,23 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-	public float GetTemperature()
+		public float GetTemperature()
 	{
 		return this.averageTemp;
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateVisualState(false);
 		this.UpdateLogicCircuit();
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, this.switchedOn ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -101,13 +101,13 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-			public float Threshold
+				public float Threshold
 	{
 		get
 		{
@@ -120,7 +120,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-			public bool ActivateAboveThreshold
+				public bool ActivateAboveThreshold
 	{
 		get
 		{
@@ -133,7 +133,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-		public float CurrentValue
+			public float CurrentValue
 	{
 		get
 		{
@@ -141,7 +141,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-		public float RangeMin
+			public float RangeMin
 	{
 		get
 		{
@@ -149,7 +149,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-		public float RangeMax
+			public float RangeMax
 	{
 		get
 		{
@@ -157,17 +157,17 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-	public float GetRangeMinInputField()
+		public float GetRangeMinInputField()
 	{
 		return GameUtil.GetConvertedTemperature(this.RangeMin, false);
 	}
 
-	public float GetRangeMaxInputField()
+		public float GetRangeMaxInputField()
 	{
 		return GameUtil.GetConvertedTemperature(this.RangeMax, false);
 	}
 
-		public LocString Title
+			public LocString Title
 	{
 		get
 		{
@@ -175,7 +175,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-		public LocString ThresholdValueName
+			public LocString ThresholdValueName
 	{
 		get
 		{
@@ -183,7 +183,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-		public string AboveToolTip
+			public string AboveToolTip
 	{
 		get
 		{
@@ -191,7 +191,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-		public string BelowToolTip
+			public string BelowToolTip
 	{
 		get
 		{
@@ -199,22 +199,22 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-	public string Format(float value, bool units)
+		public string Format(float value, bool units)
 	{
 		return GameUtil.GetFormattedTemperature(value, GameUtil.TimeSlice.None, GameUtil.TemperatureInterpretation.Absolute, units, true);
 	}
 
-	public float ProcessedSliderValue(float input)
+		public float ProcessedSliderValue(float input)
 	{
 		return Mathf.Round(input);
 	}
 
-	public float ProcessedInputValue(float input)
+		public float ProcessedInputValue(float input)
 	{
 		return GameUtil.GetTemperatureConvertedToKelvin(input);
 	}
 
-	public LocString ThresholdValueUnits()
+		public LocString ThresholdValueUnits()
 	{
 		LocString result = null;
 		switch (GameUtil.temperatureUnit)
@@ -232,7 +232,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		return result;
 	}
 
-		public ThresholdScreenLayoutType LayoutType
+			public ThresholdScreenLayoutType LayoutType
 	{
 		get
 		{
@@ -240,7 +240,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-		public int IncrementScale
+			public int IncrementScale
 	{
 		get
 		{
@@ -248,7 +248,7 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-		public NonLinearSlider.Range[] GetRanges
+			public NonLinearSlider.Range[] GetRanges
 	{
 		get
 		{
@@ -262,35 +262,35 @@ public class LogicTemperatureSensor : Switch, ISaveLoadable, IThresholdSwitch, I
 		}
 	}
 
-	private HandleVector<int>.Handle structureTemperature;
+		private HandleVector<int>.Handle structureTemperature;
 
-	private int simUpdateCounter;
+		private int simUpdateCounter;
 
-	[Serialize]
+		[Serialize]
 	public float thresholdTemperature = 280f;
 
-	[Serialize]
+		[Serialize]
 	public bool activateOnWarmerThan;
 
-	[Serialize]
+		[Serialize]
 	private bool dirty = true;
 
-	public float minTemp;
+		public float minTemp;
 
-	public float maxTemp = 373.15f;
+		public float maxTemp = 373.15f;
 
-	private const int NumFrameDelay = 8;
+		private const int NumFrameDelay = 8;
 
-	private float[] temperatures = new float[8];
+		private float[] temperatures = new float[8];
 
-	private float averageTemp;
+		private float averageTemp;
 
-	private bool wasOn;
+		private bool wasOn;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicTemperatureSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicTemperatureSensor>(delegate(LogicTemperatureSensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicTemperatureSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicTemperatureSensor>(delegate(LogicTemperatureSensor component, object data)
 	{
 		component.OnCopySettings(data);
 	});

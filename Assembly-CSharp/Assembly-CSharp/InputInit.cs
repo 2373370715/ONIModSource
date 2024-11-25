@@ -3,7 +3,7 @@ using UnityEngine;
 
 internal class InputInit : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		GameInputManager inputManager = Global.GetInputManager();
 		for (int i = 0; i < inputManager.GetControllerCount(); i++)

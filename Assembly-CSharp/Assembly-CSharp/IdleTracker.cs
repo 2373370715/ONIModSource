@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 public class IdleTracker : WorldTracker
 {
-	public IdleTracker(int worldID) : base(worldID)
+		public IdleTracker(int worldID) : base(worldID)
 	{
 	}
 
-	public override void UpdateData()
+		public override void UpdateData()
 	{
 		this.objectsOfInterest.Clear();
 		int num = 0;
@@ -23,7 +23,7 @@ public class IdleTracker : WorldTracker
 		base.AddPoint((float)num);
 	}
 
-	public override string FormatValueString(float value)
+		public override string FormatValueString(float value)
 	{
 		return value.ToString();
 	}

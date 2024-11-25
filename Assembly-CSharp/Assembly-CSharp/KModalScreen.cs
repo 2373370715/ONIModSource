@@ -4,13 +4,13 @@ using UnityEngine.UI;
 
 public class KModalScreen : KScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.backgroundRectTransform = KModalScreen.MakeScreenModal(this);
 	}
 
-	public static RectTransform MakeScreenModal(KScreen screen)
+		public static RectTransform MakeScreenModal(KScreen screen)
 	{
 		screen.ConsumeMouseScroll = true;
 		screen.activateOnSpawn = true;
@@ -26,7 +26,7 @@ public class KModalScreen : KScreen
 		return component;
 	}
 
-	public static void ResizeBackground(RectTransform rectTransform)
+		public static void ResizeBackground(RectTransform rectTransform)
 	{
 		rectTransform.SetAsFirstSibling();
 		rectTransform.SetLocalPosition(Vector3.zero);
@@ -36,7 +36,7 @@ public class KModalScreen : KScreen
 		rectTransform.sizeDelta = new Vector2(0f, 0f);
 	}
 
-	protected override void OnCmpEnable()
+		protected override void OnCmpEnable()
 	{
 		base.OnCmpEnable();
 		if (CameraController.Instance != null)
@@ -50,7 +50,7 @@ public class KModalScreen : KScreen
 		}
 	}
 
-	protected override void OnCmpDisable()
+		protected override void OnCmpDisable()
 	{
 		base.OnCmpDisable();
 		if (CameraController.Instance != null)
@@ -65,32 +65,32 @@ public class KModalScreen : KScreen
 		}
 	}
 
-	private void OnResize()
+		private void OnResize()
 	{
 		KModalScreen.ResizeBackground(this.backgroundRectTransform);
 	}
 
-	public override bool IsModal()
+		public override bool IsModal()
 	{
 		return true;
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 100f;
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		this.OnShow(true);
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		this.OnShow(false);
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		if (this.pause && SpeedControlScreen.Instance != null)
@@ -107,7 +107,7 @@ public class KModalScreen : KScreen
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		if (e.Consumed)
 		{
@@ -125,18 +125,18 @@ public class KModalScreen : KScreen
 		e.Consumed = true;
 	}
 
-	public override void OnKeyUp(KButtonEvent e)
+		public override void OnKeyUp(KButtonEvent e)
 	{
 		base.OnKeyUp(e);
 		e.Consumed = true;
 	}
 
-	private bool shown;
+		private bool shown;
 
-	public bool pause = true;
+		public bool pause = true;
 
-	[Tooltip("Only used for main menu")]
+		[Tooltip("Only used for main menu")]
 	public bool canBackoutWithRightClick;
 
-	private RectTransform backgroundRectTransform;
+		private RectTransform backgroundRectTransform;
 }

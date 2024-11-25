@@ -3,32 +3,32 @@ using UnityEngine;
 
 public class CreatureFallMonitor : GameStateMachine<CreatureFallMonitor, CreatureFallMonitor.Instance, IStateMachineTarget, CreatureFallMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.grounded;
 		this.grounded.ToggleBehaviour(GameTags.Creatures.Falling, (CreatureFallMonitor.Instance smi) => smi.ShouldFall(), null);
 	}
 
-	public static float FLOOR_DISTANCE = -0.065f;
+		public static float FLOOR_DISTANCE = -0.065f;
 
-	public GameStateMachine<CreatureFallMonitor, CreatureFallMonitor.Instance, IStateMachineTarget, CreatureFallMonitor.Def>.State grounded;
+		public GameStateMachine<CreatureFallMonitor, CreatureFallMonitor.Instance, IStateMachineTarget, CreatureFallMonitor.Def>.State grounded;
 
-	public GameStateMachine<CreatureFallMonitor, CreatureFallMonitor.Instance, IStateMachineTarget, CreatureFallMonitor.Def>.State falling;
+		public GameStateMachine<CreatureFallMonitor, CreatureFallMonitor.Instance, IStateMachineTarget, CreatureFallMonitor.Def>.State falling;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public bool canSwim;
+				public bool canSwim;
 
-		public bool checkHead = true;
+				public bool checkHead = true;
 	}
 
-	public new class Instance : GameStateMachine<CreatureFallMonitor, CreatureFallMonitor.Instance, IStateMachineTarget, CreatureFallMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<CreatureFallMonitor, CreatureFallMonitor.Instance, IStateMachineTarget, CreatureFallMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, CreatureFallMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, CreatureFallMonitor.Def def) : base(master, def)
 		{
 		}
 
-		public void SnapToGround()
+				public void SnapToGround()
 		{
 			Vector3 position = base.smi.transform.GetPosition();
 			Vector3 position2 = Grid.CellToPosCBC(Grid.PosToCell(position), Grid.SceneLayer.Creatures);
@@ -45,7 +45,7 @@ public class CreatureFallMonitor : GameStateMachine<CreatureFallMonitor, Creatur
 			}
 		}
 
-		public bool ShouldFall()
+				public bool ShouldFall()
 		{
 			if (this.kprefabId.HasTag(GameTags.Stored))
 			{
@@ -90,7 +90,7 @@ public class CreatureFallMonitor : GameStateMachine<CreatureFallMonitor, Creatur
 			return !Grid.IsValidCell(num2) || !Grid.Solid[num2];
 		}
 
-		public bool CanSwimAtCurrentLocation()
+				public bool CanSwimAtCurrentLocation()
 		{
 			if (base.def.canSwim)
 			{
@@ -116,15 +116,15 @@ public class CreatureFallMonitor : GameStateMachine<CreatureFallMonitor, Creatur
 			return false;
 		}
 
-		public string anim = "fall";
+				public string anim = "fall";
 
-		[MyCmpReq]
+				[MyCmpReq]
 		private KPrefabID kprefabId;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		private Navigator navigator;
 
-		[MyCmpReq]
+				[MyCmpReq]
 		private KBoxCollider2D collider;
 	}
 }

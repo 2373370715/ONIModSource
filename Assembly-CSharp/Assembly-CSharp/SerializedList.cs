@@ -7,7 +7,7 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class SerializedList<ItemType>
 {
-		public int Count
+			public int Count
 	{
 		get
 		{
@@ -15,12 +15,12 @@ public class SerializedList<ItemType>
 		}
 	}
 
-	public IEnumerator<ItemType> GetEnumerator()
+		public IEnumerator<ItemType> GetEnumerator()
 	{
 		return this.items.GetEnumerator();
 	}
 
-	public ItemType this[int idx]
+		public ItemType this[int idx]
 	{
 		get
 		{
@@ -28,32 +28,32 @@ public class SerializedList<ItemType>
 		}
 	}
 
-	public void Add(ItemType item)
+		public void Add(ItemType item)
 	{
 		this.items.Add(item);
 	}
 
-	public void Remove(ItemType item)
+		public void Remove(ItemType item)
 	{
 		this.items.Remove(item);
 	}
 
-	public void RemoveAt(int idx)
+		public void RemoveAt(int idx)
 	{
 		this.items.RemoveAt(idx);
 	}
 
-	public bool Contains(ItemType item)
+		public bool Contains(ItemType item)
 	{
 		return this.items.Contains(item);
 	}
 
-	public void Clear()
+		public void Clear()
 	{
 		this.items.Clear();
 	}
 
-	[OnSerializing]
+		[OnSerializing]
 	private void OnSerializing()
 	{
 		MemoryStream memoryStream = new MemoryStream();
@@ -76,7 +76,7 @@ public class SerializedList<ItemType>
 		this.serializationBuffer = memoryStream.ToArray();
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	private void OnDeserialized()
 	{
 		if (this.serializationBuffer == null)
@@ -128,8 +128,8 @@ public class SerializedList<ItemType>
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private byte[] serializationBuffer;
 
-	private List<ItemType> items = new List<ItemType>();
+		private List<ItemType> items = new List<ItemType>();
 }

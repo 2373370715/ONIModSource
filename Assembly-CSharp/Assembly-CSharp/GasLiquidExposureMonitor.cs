@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.normal;
 		this.root.Update(new Action<GasLiquidExposureMonitor.Instance, float>(this.UpdateExposure), UpdateRate.SIM_33ms, false);
@@ -19,12 +19,12 @@ public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonito
 		}).ToggleReactable((GasLiquidExposureMonitor.Instance smi) => smi.GetReactable()).OnSignal(this.reactFinished, this.irritated.irritated);
 	}
 
-	private static bool CanReact(GasLiquidExposureMonitor.Instance smi)
+		private static bool CanReact(GasLiquidExposureMonitor.Instance smi)
 	{
 		return GameClock.Instance.GetTime() > smi.lastReactTime + 60f;
 	}
 
-	private static void InitializeCustomRates()
+		private static void InitializeCustomRates()
 	{
 		if (GasLiquidExposureMonitor.customExposureRates != null)
 		{
@@ -61,7 +61,7 @@ public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonito
 		GasLiquidExposureMonitor.customExposureRates[SimHashes.MercuryGas] = value6;
 	}
 
-	public float GetCurrentExposure(GasLiquidExposureMonitor.Instance smi)
+		public float GetCurrentExposure(GasLiquidExposureMonitor.Instance smi)
 	{
 		float result;
 		if (GasLiquidExposureMonitor.customExposureRates.TryGetValue(smi.CurrentlyExposedToElement().id, out result))
@@ -71,7 +71,7 @@ public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonito
 		return 0f;
 	}
 
-	private void UpdateExposure(GasLiquidExposureMonitor.Instance smi, float dt)
+		private void UpdateExposure(GasLiquidExposureMonitor.Instance smi, float dt)
 	{
 		GasLiquidExposureMonitor.InitializeCustomRates();
 		float exposureRate = 0f;
@@ -121,7 +121,7 @@ public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonito
 		this.ApplyEffects(smi);
 	}
 
-	private void ApplyEffects(GasLiquidExposureMonitor.Instance smi)
+		private void ApplyEffects(GasLiquidExposureMonitor.Instance smi)
 	{
 		if (smi.IsMinorIrritation())
 		{
@@ -147,7 +147,7 @@ public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonito
 		}
 	}
 
-	public Effect GetAppliedEffect(GasLiquidExposureMonitor.Instance smi)
+		public Effect GetAppliedEffect(GasLiquidExposureMonitor.Instance smi)
 	{
 		if (smi.IsMinorIrritation())
 		{
@@ -160,69 +160,69 @@ public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonito
 		return null;
 	}
 
-	public const float MIN_REACT_INTERVAL = 60f;
+		public const float MIN_REACT_INTERVAL = 60f;
 
-	private static Dictionary<SimHashes, float> customExposureRates;
+		private static Dictionary<SimHashes, float> customExposureRates;
 
-	private static Effect minorIrritationEffect;
+		private static Effect minorIrritationEffect;
 
-	private static Effect majorIrritationEffect;
+		private static Effect majorIrritationEffect;
 
-	public StateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.BoolParameter isIrritated;
+		public StateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.BoolParameter isIrritated;
 
-	public StateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.Signal reactFinished;
+		public StateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.Signal reactFinished;
 
-	public GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State normal;
+		public GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State normal;
 
-	public GasLiquidExposureMonitor.IrritatedStates irritated;
+		public GasLiquidExposureMonitor.IrritatedStates irritated;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
 	}
 
-	public class TUNING
+		public class TUNING
 	{
-		public const float MINOR_IRRITATION_THRESHOLD = 8f;
+				public const float MINOR_IRRITATION_THRESHOLD = 8f;
 
-		public const float MAJOR_IRRITATION_THRESHOLD = 15f;
+				public const float MAJOR_IRRITATION_THRESHOLD = 15f;
 
-		public const float MAX_EXPOSURE = 30f;
+				public const float MAX_EXPOSURE = 30f;
 
-		public const float GAS_UNITS = 1f;
+				public const float GAS_UNITS = 1f;
 
-		public const float LIQUID_UNITS = 1000f;
+				public const float LIQUID_UNITS = 1000f;
 
-		public const float REDUCE_EXPOSURE_RATE_FAST = -1f;
+				public const float REDUCE_EXPOSURE_RATE_FAST = -1f;
 
-		public const float REDUCE_EXPOSURE_RATE_SLOW = -0.25f;
+				public const float REDUCE_EXPOSURE_RATE_SLOW = -0.25f;
 
-		public const float NO_CHANGE = 0f;
+				public const float NO_CHANGE = 0f;
 
-		public const float SLOW_EXPOSURE_RATE = 0.5f;
+				public const float SLOW_EXPOSURE_RATE = 0.5f;
 
-		public const float NORMAL_EXPOSURE_RATE = 1f;
+				public const float NORMAL_EXPOSURE_RATE = 1f;
 
-		public const float QUICK_EXPOSURE_RATE = 3f;
+				public const float QUICK_EXPOSURE_RATE = 3f;
 
-		public const float DEFAULT_MIN_TEMPERATURE = -13657.5f;
+				public const float DEFAULT_MIN_TEMPERATURE = -13657.5f;
 
-		public const float DEFAULT_MAX_TEMPERATURE = 27315f;
+				public const float DEFAULT_MAX_TEMPERATURE = 27315f;
 
-		public const float DEFAULT_LOW_RATE = 1f;
+				public const float DEFAULT_LOW_RATE = 1f;
 
-		public const float DEFAULT_HIGH_RATE = 2f;
+				public const float DEFAULT_HIGH_RATE = 2f;
 	}
 
-	public class IrritatedStates : GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State
+		public class IrritatedStates : GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State
 	{
-		public GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State irritated;
+				public GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State irritated;
 
-		public GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State rubbingEyes;
+				public GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.State rubbingEyes;
 	}
 
-	public new class Instance : GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<GasLiquidExposureMonitor, GasLiquidExposureMonitor.Instance, IStateMachineTarget, GasLiquidExposureMonitor.Def>.GameInstance
 	{
-				public float minorIrritationThreshold
+						public float minorIrritationThreshold
 		{
 			get
 			{
@@ -230,12 +230,12 @@ public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonito
 			}
 		}
 
-		public Instance(IStateMachineTarget master, GasLiquidExposureMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, GasLiquidExposureMonitor.Def def) : base(master, def)
 		{
 			this.effects = master.GetComponent<Effects>();
 		}
 
-		public Reactable GetReactable()
+				public Reactable GetReactable()
 		{
 			Emote iritatedEyes = Db.Get().Emotes.Minion.IritatedEyes;
 			SelfEmoteReactable selfEmoteReactable = new SelfEmoteReactable(base.master.gameObject, "IrritatedEyes", Db.Get().ChoreTypes.Cough, 0f, 0f, float.PositiveInfinity, 0f);
@@ -248,17 +248,17 @@ public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonito
 			return selfEmoteReactable;
 		}
 
-		public bool IsMinorIrritation()
+				public bool IsMinorIrritation()
 		{
 			return this.exposure >= 8f && this.exposure < 15f;
 		}
 
-		public bool IsMajorIrritation()
+				public bool IsMajorIrritation()
 		{
 			return this.exposure >= 15f;
 		}
 
-		public Element CurrentlyExposedToElement()
+				public Element CurrentlyExposedToElement()
 		{
 			if (this.isInAirtightEnvironment)
 			{
@@ -268,24 +268,24 @@ public class GasLiquidExposureMonitor : GameStateMachine<GasLiquidExposureMonito
 			return Grid.Element[num];
 		}
 
-		public void ResetExposure()
+				public void ResetExposure()
 		{
 			this.exposure = 0f;
 		}
 
-		[Serialize]
+				[Serialize]
 		public float exposure;
 
-		[Serialize]
+				[Serialize]
 		public float lastReactTime;
 
-		[Serialize]
+				[Serialize]
 		public float exposureRate;
 
-		public Effects effects;
+				public Effects effects;
 
-		public bool isInAirtightEnvironment;
+				public bool isInAirtightEnvironment;
 
-		public bool isImmuneToIrritability;
+				public bool isImmuneToIrritability;
 	}
 }

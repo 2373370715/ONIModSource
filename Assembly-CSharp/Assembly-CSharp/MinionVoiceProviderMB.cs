@@ -3,6 +3,6 @@ using UnityEngine;
 
 public class MinionVoiceProviderMB : MonoBehaviour
 {
-	[NonSerialized]
+		[NonSerialized]
 	public Option<MinionVoice> voice;
 }

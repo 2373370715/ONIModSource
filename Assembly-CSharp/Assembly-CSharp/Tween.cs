@@ -5,22 +5,22 @@ using UnityEngine.UI;
 
 public class Tween : MonoBehaviour, IPointerEnterHandler, IEventSystemHandler, IPointerExitHandler
 {
-	private void Awake()
+		private void Awake()
 	{
 		this.Selectable = base.GetComponent<Selectable>();
 	}
 
-	public void OnPointerEnter(PointerEventData data)
+		public void OnPointerEnter(PointerEventData data)
 	{
 		this.Direction = 1f;
 	}
 
-	public void OnPointerExit(PointerEventData data)
+		public void OnPointerExit(PointerEventData data)
 	{
 		this.Direction = -1f;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.Selectable.interactable)
 		{
@@ -35,11 +35,11 @@ public class Tween : MonoBehaviour, IPointerEnterHandler, IEventSystemHandler, I
 		}
 	}
 
-	private static float Scale = 1.025f;
+		private static float Scale = 1.025f;
 
-	private static float ScaleSpeed = 0.5f;
+		private static float ScaleSpeed = 0.5f;
 
-	private Selectable Selectable;
+		private Selectable Selectable;
 
-	private float Direction = -1f;
+		private float Direction = -1f;
 }

@@ -6,7 +6,7 @@ using Klei.AI;
 
 public class GameplayEventPreconditions
 {
-		public static GameplayEventPreconditions Instance
+			public static GameplayEventPreconditions Instance
 	{
 		get
 		{
@@ -18,7 +18,7 @@ public class GameplayEventPreconditions
 		}
 	}
 
-	public GameplayEventPrecondition LiveMinions(int count = 1)
+		public GameplayEventPrecondition LiveMinions(int count = 1)
 	{
 		return new GameplayEventPrecondition
 		{
@@ -27,7 +27,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition BuildingExists(string buildingId, int count = 1)
+		public GameplayEventPrecondition BuildingExists(string buildingId, int count = 1)
 	{
 		return new GameplayEventPrecondition
 		{
@@ -36,7 +36,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition ResearchCompleted(string techName)
+		public GameplayEventPrecondition ResearchCompleted(string techName)
 	{
 		return new GameplayEventPrecondition
 		{
@@ -45,7 +45,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition AchievementUnlocked(ColonyAchievement achievement)
+		public GameplayEventPrecondition AchievementUnlocked(ColonyAchievement achievement)
 	{
 		return new GameplayEventPrecondition
 		{
@@ -54,7 +54,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition RoomBuilt(RoomType roomType)
+		public GameplayEventPrecondition RoomBuilt(RoomType roomType)
 	{
 		Predicate<Room> <>9__1;
 		return new GameplayEventPrecondition
@@ -73,7 +73,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition CycleRestriction(float min = 0f, float max = float.PositiveInfinity)
+		public GameplayEventPrecondition CycleRestriction(float min = 0f, float max = float.PositiveInfinity)
 	{
 		return new GameplayEventPrecondition
 		{
@@ -82,7 +82,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition MinionsWithEffect(string effectId, int count = 1)
+		public GameplayEventPrecondition MinionsWithEffect(string effectId, int count = 1)
 	{
 		Func<MinionIdentity, bool> <>9__1;
 		return new GameplayEventPrecondition
@@ -101,7 +101,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition MinionsWithStatusItem(StatusItem statusItem, int count = 1)
+		public GameplayEventPrecondition MinionsWithStatusItem(StatusItem statusItem, int count = 1)
 	{
 		Func<MinionIdentity, bool> <>9__1;
 		return new GameplayEventPrecondition
@@ -120,7 +120,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition MinionsWithChoreGroupPriorityOrGreater(ChoreGroup choreGroup, int count, int priority)
+		public GameplayEventPrecondition MinionsWithChoreGroupPriorityOrGreater(ChoreGroup choreGroup, int count, int priority)
 	{
 		Func<MinionIdentity, bool> <>9__1;
 		return new GameplayEventPrecondition
@@ -143,7 +143,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition PastEventCount(string evtId, int count = 1)
+		public GameplayEventPrecondition PastEventCount(string evtId, int count = 1)
 	{
 		return new GameplayEventPrecondition
 		{
@@ -152,7 +152,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition PastEventCountAndNotActive(GameplayEvent evt, int count = 1)
+		public GameplayEventPrecondition PastEventCountAndNotActive(GameplayEvent evt, int count = 1)
 	{
 		return new GameplayEventPrecondition
 		{
@@ -161,7 +161,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition Not(GameplayEventPrecondition precondition)
+		public GameplayEventPrecondition Not(GameplayEventPrecondition precondition)
 	{
 		return new GameplayEventPrecondition
 		{
@@ -170,7 +170,7 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	public GameplayEventPrecondition Or(GameplayEventPrecondition precondition1, GameplayEventPrecondition precondition2)
+		public GameplayEventPrecondition Or(GameplayEventPrecondition precondition1, GameplayEventPrecondition precondition2)
 	{
 		return new GameplayEventPrecondition
 		{
@@ -186,5 +186,5 @@ public class GameplayEventPreconditions
 		};
 	}
 
-	private static GameplayEventPreconditions _instance;
+		private static GameplayEventPreconditions _instance;
 }

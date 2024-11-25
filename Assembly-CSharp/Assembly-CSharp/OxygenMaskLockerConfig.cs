@@ -4,12 +4,7 @@ using UnityEngine;
 
 public class OxygenMaskLockerConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_ALL_VERSIONS;
-	}
-
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "OxygenMaskLocker";
 		int width = 1;
@@ -31,7 +26,7 @@ public class OxygenMaskLockerConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<SuitLocker>().OutfitTags = new Tag[]
 		{
@@ -53,10 +48,10 @@ public class OxygenMaskLockerConfig : IBuildingConfig
 		Prioritizable.AddRef(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 	}
 
-	public const string ID = "OxygenMaskLocker";
+		public const string ID = "OxygenMaskLocker";
 }

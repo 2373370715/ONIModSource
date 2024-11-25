@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MethaneGeneratorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MethaneGenerator";
 		int width = 4;
@@ -19,7 +19,7 @@ public class MethaneGeneratorConfig : IBuildingConfig
 		EffectorValues tier2 = NOISE_POLLUTION.NOISY.TIER5;
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width, height, anim, hitpoints, construction_time, tier, raw_METALS, melting_point, build_location_rule, BUILDINGS.DECOR.PENALTY.TIER2, tier2, 0.2f);
 		buildingDef.GeneratorWattageRating = 800f;
-		buildingDef.GeneratorBaseCapacity = 1000f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
 		buildingDef.ExhaustKilowattsWhenActive = 2f;
 		buildingDef.SelfHeatKilowattsWhenActive = 8f;
 		buildingDef.ViewMode = OverlayModes.Power.ID;
@@ -34,10 +34,13 @@ public class MethaneGeneratorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.PowerBuilding, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.GeneratorType, false);
+		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.HeavyDutyGeneratorType, false);
 		go.AddOrGet<LoopingSounds>();
 		go.AddOrGet<Storage>().capacityKg = 50f;
 		ConduitConsumer conduitConsumer = go.AddOrGet<ConduitConsumer>();
@@ -74,15 +77,15 @@ public class MethaneGeneratorConfig : IBuildingConfig
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "MethaneGenerator";
+		public const string ID = "MethaneGenerator";
 
-	public const float FUEL_CONSUMPTION_RATE = 0.09f;
+		public const float FUEL_CONSUMPTION_RATE = 0.09f;
 
-	private const float CO2_RATIO = 0.25f;
+		private const float CO2_RATIO = 0.25f;
 
-	public const float WATER_OUTPUT_TEMPERATURE = 313.15f;
+		public const float WATER_OUTPUT_TEMPERATURE = 313.15f;
 
-	private const int WIDTH = 4;
+		private const int WIDTH = 4;
 
-	private const int HEIGHT = 3;
+		private const int HEIGHT = 3;
 }

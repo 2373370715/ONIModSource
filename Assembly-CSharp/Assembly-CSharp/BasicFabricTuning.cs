@@ -2,5 +2,5 @@
 
 public class BasicFabricTuning
 {
-	public static int SORTORDER = 1;
+		public static int SORTORDER = 1;
 }

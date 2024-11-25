@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class CodexConversionPanel : CodexWidget<CodexConversionPanel>
 {
-	public CodexConversionPanel(string title, Tag ctag, float inputAmount, bool inputContinuous, Tag ptag, float outputAmount, bool outputContinuous, GameObject converter) : this(title, ctag, inputAmount, inputContinuous, null, ptag, outputAmount, outputContinuous, null, converter)
+		public CodexConversionPanel(string title, Tag ctag, float inputAmount, bool inputContinuous, Tag ptag, float outputAmount, bool outputContinuous, GameObject converter) : this(title, ctag, inputAmount, inputContinuous, null, ptag, outputAmount, outputContinuous, null, converter)
 	{
 	}
 
-	public CodexConversionPanel(string title, Tag ctag, float inputAmount, bool inputContinuous, Func<Tag, float, bool, string> input_customFormating, Tag ptag, float outputAmount, bool outputContinuous, Func<Tag, float, bool, string> output_customFormating, GameObject converter)
+		public CodexConversionPanel(string title, Tag ctag, float inputAmount, bool inputContinuous, Func<Tag, float, bool, string> input_customFormating, Tag ptag, float outputAmount, bool outputContinuous, Func<Tag, float, bool, string> output_customFormating, GameObject converter)
 	{
 		this.title = title;
 		this.ins = new ElementUsage[]
@@ -24,7 +24,7 @@ public class CodexConversionPanel : CodexWidget<CodexConversionPanel>
 		this.Converter = converter;
 	}
 
-	public CodexConversionPanel(string title, ElementUsage[] ins, ElementUsage[] outs, GameObject converter)
+		public CodexConversionPanel(string title, ElementUsage[] ins, ElementUsage[] outs, GameObject converter)
 	{
 		this.title = title;
 		this.ins = ((ins != null) ? ins : new ElementUsage[0]);
@@ -32,7 +32,7 @@ public class CodexConversionPanel : CodexWidget<CodexConversionPanel>
 		this.Converter = converter;
 	}
 
-	public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		HierarchyReferences component = contentGameObject.GetComponent<HierarchyReferences>();
 		this.label = component.GetReference<LocText>("Title");
@@ -47,7 +47,7 @@ public class CodexConversionPanel : CodexWidget<CodexConversionPanel>
 		this.ConfigureConversion();
 	}
 
-	private global::Tuple<Sprite, Color> GetUISprite(Tag tag)
+		private global::Tuple<Sprite, Color> GetUISprite(Tag tag)
 	{
 		if (ElementLoader.GetElement(tag) != null)
 		{
@@ -64,7 +64,7 @@ public class CodexConversionPanel : CodexWidget<CodexConversionPanel>
 		return null;
 	}
 
-	private void ConfigureConversion()
+		private void ConfigureConversion()
 	{
 		this.label.text = this.title;
 		bool active = false;
@@ -147,7 +147,7 @@ public class CodexConversionPanel : CodexWidget<CodexConversionPanel>
 		this.arrow2.SetActive(active2);
 	}
 
-	private void ClearPanel()
+		private void ClearPanel()
 	{
 		foreach (object obj in this.ingredientsContainer.transform)
 		{
@@ -163,27 +163,27 @@ public class CodexConversionPanel : CodexWidget<CodexConversionPanel>
 		}
 	}
 
-	private LocText label;
+		private LocText label;
 
-	private GameObject materialPrefab;
+		private GameObject materialPrefab;
 
-	private GameObject fabricatorPrefab;
+		private GameObject fabricatorPrefab;
 
-	private GameObject ingredientsContainer;
+		private GameObject ingredientsContainer;
 
-	private GameObject resultsContainer;
+		private GameObject resultsContainer;
 
-	private GameObject fabricatorContainer;
+		private GameObject fabricatorContainer;
 
-	private GameObject arrow1;
+		private GameObject arrow1;
 
-	private GameObject arrow2;
+		private GameObject arrow2;
 
-	private string title;
+		private string title;
 
-	private ElementUsage[] ins;
+		private ElementUsage[] ins;
 
-	private ElementUsage[] outs;
+		private ElementUsage[] outs;
 
-	private GameObject Converter;
+		private GameObject Converter;
 }

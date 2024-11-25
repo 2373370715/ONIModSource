@@ -4,14 +4,14 @@ using STRINGS;
 
 namespace Database
 {
-	public class RunReactorForXDays : ColonyAchievementRequirement
+		public class RunReactorForXDays : ColonyAchievementRequirement
 	{
-		public RunReactorForXDays(int numCycles)
+				public RunReactorForXDays(int numCycles)
 		{
 			this.numCycles = numCycles;
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			int num = 0;
 			foreach (Reactor reactor in Components.NuclearReactors.Items)
@@ -24,7 +24,7 @@ namespace Database
 			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.RUN_A_REACTOR, complete ? this.numCycles : num, this.numCycles);
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			using (List<Reactor>.Enumerator enumerator = Components.NuclearReactors.Items.GetEnumerator())
 			{
@@ -39,6 +39,6 @@ namespace Database
 			return false;
 		}
 
-		private int numCycles;
+				private int numCycles;
 	}
 }

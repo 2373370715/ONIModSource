@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/MinionTodoChoreEntry")]
 public class MinionTodoChoreEntry : KMonoBehaviour
 {
-	public void SetMoreAmount(int amount)
+		public void SetMoreAmount(int amount)
 	{
 		if (amount == 0)
 		{
@@ -17,7 +17,7 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 		this.moreLabel.text = string.Format(UI.UISIDESCREENS.MINIONTODOSIDESCREEN.TRUNCATED_CHORES, amount);
 	}
 
-	public void Apply(Chore.Precondition.Context context)
+		public void Apply(Chore.Precondition.Context context)
 	{
 		ChoreConsumer consumer = context.consumerState.consumer;
 		if (this.targetChore == context.chore && context.chore.target == this.lastChoreTarget && context.chore.masterPriority == this.lastPrioritySetting)
@@ -38,7 +38,19 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 		string text3 = (context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.basic) ? context.chore.masterPriority.priority_value.ToString() : "";
 		Sprite sprite = (context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.basic) ? this.prioritySprites[context.chore.masterPriority.priority_value - 1] : null;
 		ChoreGroup choreGroup = MinionTodoChoreEntry.BestPriorityGroup(context, consumer);
-		this.icon.sprite = ((choreGroup != null) ? Assets.GetSprite(choreGroup.sprite) : null);
+		if (choreGroup != null)
+		{
+			this.icon.sprite = Assets.GetSprite(choreGroup.sprite);
+		}
+		else
+		{
+			this.icon.sprite = null;
+			MinionIdentity component = consumer.GetComponent<MinionIdentity>();
+			if (component != null)
+			{
+				this.icon.sprite = Db.Get().Personalities.Get(component.personalityResourceId).GetMiniIcon();
+			}
+		}
 		this.label.SetText(choreName);
 		this.subLabel.SetText(text2);
 		this.priorityLabel.SetText(text3);
@@ -64,7 +76,7 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 		};
 	}
 
-	private static ChoreGroup BestPriorityGroup(Chore.Precondition.Context context, ChoreConsumer choreConsumer)
+		private static ChoreGroup BestPriorityGroup(Chore.Precondition.Context context, ChoreConsumer choreConsumer)
 	{
 		ChoreGroup choreGroup = null;
 		if (context.chore.choreType.groups.Length != 0)
@@ -81,7 +93,7 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 		return choreGroup;
 	}
 
-	private static string TooltipForChore(Chore.Precondition.Context context, ChoreConsumer choreConsumer)
+		private static string TooltipForChore(Chore.Precondition.Context context, ChoreConsumer choreConsumer)
 	{
 		bool flag = context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.basic || context.chore.masterPriority.priority_class == PriorityScreen.PriorityClass.high;
 		string text;
@@ -128,29 +140,29 @@ public class MinionTodoChoreEntry : KMonoBehaviour
 		return text.Replace("{TotalPriority}", num.ToString());
 	}
 
-	public Image icon;
+		public Image icon;
 
-	public Image priorityIcon;
+		public Image priorityIcon;
 
-	public LocText priorityLabel;
+		public LocText priorityLabel;
 
-	public LocText label;
+		public LocText label;
 
-	public LocText subLabel;
+		public LocText subLabel;
 
-	public LocText moreLabel;
+		public LocText moreLabel;
 
-	public List<Sprite> prioritySprites;
+		public List<Sprite> prioritySprites;
 
-	[SerializeField]
+		[SerializeField]
 	private ColorStyleSetting buttonColorSettingCurrent;
 
-	[SerializeField]
+		[SerializeField]
 	private ColorStyleSetting buttonColorSettingStandard;
 
-	private Chore targetChore;
+		private Chore targetChore;
 
-	private IStateMachineTarget lastChoreTarget;
+		private IStateMachineTarget lastChoreTarget;
 
-	private PrioritySetting lastPrioritySetting;
+		private PrioritySetting lastPrioritySetting;
 }

@@ -2,7 +2,7 @@
 
 public class FetchableMonitor : GameStateMachine<FetchableMonitor, FetchableMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.unfetchable;
 		base.serializable = StateMachine.SerializeType.Never;
@@ -16,66 +16,66 @@ public class FetchableMonitor : GameStateMachine<FetchableMonitor, FetchableMoni
 		this.unfetchable.EventTransition(GameHashes.ReachableChanged, this.fetchable, new StateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.Transition.ConditionCallback(this.IsFetchable)).EventTransition(GameHashes.AssigneeChanged, this.fetchable, new StateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.Transition.ConditionCallback(this.IsFetchable)).EventTransition(GameHashes.EntombedChanged, this.fetchable, new StateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.Transition.ConditionCallback(this.IsFetchable)).EventTransition(GameHashes.TagsChanged, this.fetchable, new StateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.Transition.ConditionCallback(this.IsFetchable)).ParamTransition<bool>(this.forceUnfetchable, this.fetchable, new StateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.Parameter<bool>.Callback(this.IsFetchable));
 	}
 
-	private bool IsFetchable(FetchableMonitor.Instance smi, bool param)
+		private bool IsFetchable(FetchableMonitor.Instance smi, bool param)
 	{
 		return this.IsFetchable(smi);
 	}
 
-	private bool IsFetchable(FetchableMonitor.Instance smi)
+		private bool IsFetchable(FetchableMonitor.Instance smi)
 	{
 		return smi.IsFetchable();
 	}
 
-	private void UpdateStorage(FetchableMonitor.Instance smi, object data)
+		private void UpdateStorage(FetchableMonitor.Instance smi, object data)
 	{
 		Game.Instance.fetchManager.UpdateStorage(smi.pickupable.KPrefabID.PrefabID(), smi.fetchable, data as Storage);
 	}
 
-	private void UpdateTags(FetchableMonitor.Instance smi, object data)
+		private void UpdateTags(FetchableMonitor.Instance smi, object data)
 	{
 		Game.Instance.fetchManager.UpdateTags(smi.pickupable.KPrefabID.PrefabID(), smi.fetchable);
 	}
 
-	public GameStateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.State fetchable;
+		public GameStateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.State fetchable;
 
-	public GameStateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.State unfetchable;
+		public GameStateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.State unfetchable;
 
-	public StateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.BoolParameter forceUnfetchable = new StateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.BoolParameter(false);
+		public StateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.BoolParameter forceUnfetchable = new StateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.BoolParameter(false);
 
-	public new class Instance : GameStateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<FetchableMonitor, FetchableMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(Pickupable pickupable) : base(pickupable)
+				public Instance(Pickupable pickupable) : base(pickupable)
 		{
 			this.pickupable = pickupable;
 			this.equippable = base.GetComponent<Equippable>();
 		}
 
-		public void RegisterFetchable()
+				public void RegisterFetchable()
 		{
 			this.fetchable = Game.Instance.fetchManager.Add(this.pickupable);
 			Game.Instance.Trigger(-1588644844, base.gameObject);
 		}
 
-		public void UnregisterFetchable()
+				public void UnregisterFetchable()
 		{
 			Game.Instance.fetchManager.Remove(base.smi.pickupable.KPrefabID.PrefabID(), this.fetchable);
 			Game.Instance.Trigger(-1491270284, base.gameObject);
 		}
 
-		public void SetForceUnfetchable(bool is_unfetchable)
+				public void SetForceUnfetchable(bool is_unfetchable)
 		{
 			base.sm.forceUnfetchable.Set(is_unfetchable, base.smi, false);
 		}
 
-		public bool IsFetchable()
+				public bool IsFetchable()
 		{
 			return !base.sm.forceUnfetchable.Get(this) && !this.pickupable.IsEntombed && this.pickupable.IsReachable() && (!(this.equippable != null) || !this.equippable.isEquipped) && !this.pickupable.KPrefabID.HasTag(GameTags.StoredPrivate) && !this.pickupable.KPrefabID.HasTag(GameTags.Creatures.ReservedByCreature) && (!this.pickupable.KPrefabID.HasTag(GameTags.Creature) || this.pickupable.KPrefabID.HasTag(GameTags.Creatures.Deliverable));
 		}
 
-		public Pickupable pickupable;
+				public Pickupable pickupable;
 
-		private Equippable equippable;
+				private Equippable equippable;
 
-		public HandleVector<int>.Handle fetchable;
+				public HandleVector<int>.Handle fetchable;
 	}
 }

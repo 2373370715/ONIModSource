@@ -7,18 +7,18 @@ using UnityEngine;
 
 public class DebugHandler : IInputHandler
 {
-			public static bool NotificationsDisabled { get; private set; }
+				public static bool NotificationsDisabled { get; private set; }
 
-			public static bool enabled { get; private set; }
+				public static bool enabled { get; private set; }
 
-	public DebugHandler()
+		public DebugHandler()
 	{
 		DebugHandler.enabled = File.Exists(Path.Combine(Application.dataPath, "debug_enable.txt"));
 		DebugHandler.enabled = (DebugHandler.enabled || File.Exists(Path.Combine(Application.dataPath, "../debug_enable.txt")));
 		DebugHandler.enabled = (DebugHandler.enabled || GenericGameSettings.instance.debugEnable);
 	}
 
-		public string handlerName
+			public string handlerName
 	{
 		get
 		{
@@ -26,23 +26,23 @@ public class DebugHandler : IInputHandler
 		}
 	}
 
-			public KInputHandler inputHandler { get; set; }
+				public KInputHandler inputHandler { get; set; }
 
-	public static int GetMouseCell()
+		public static int GetMouseCell()
 	{
 		Vector3 mousePos = KInputManager.GetMousePos();
 		mousePos.z = -Camera.main.transform.GetPosition().z - Grid.CellSizeInMeters;
 		return Grid.PosToCell(Camera.main.ScreenToWorldPoint(mousePos));
 	}
 
-	public static Vector3 GetMousePos()
+		public static Vector3 GetMousePos()
 	{
 		Vector3 mousePos = KInputManager.GetMousePos();
 		mousePos.z = -Camera.main.transform.GetPosition().z - Grid.CellSizeInMeters;
 		return Camera.main.ScreenToWorldPoint(mousePos);
 	}
 
-	private void SpawnMinion(bool addAtmoSuit = false)
+		private void SpawnMinion(bool addAtmoSuit = false)
 	{
 		if (Immigration.Instance == null)
 		{
@@ -53,13 +53,15 @@ public class DebugHandler : IInputHandler
 			PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Negative, UI.DEBUG_TOOLS.INVALID_LOCATION, null, DebugHandler.GetMousePos(), 1.5f, false, true);
 			return;
 		}
-		GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(MinionConfig.ID), null, null);
-		gameObject.name = Assets.GetPrefab(MinionConfig.ID).name;
+		MinionStartingStats minionStartingStats = new MinionStartingStats(false, null, null, true);
+		GameObject prefab = Assets.GetPrefab(BaseMinionConfig.GetMinionIDForModel(minionStartingStats.personality.model));
+		GameObject gameObject = Util.KInstantiate(prefab, null, null);
+		gameObject.name = prefab.name;
 		Immigration.Instance.ApplyDefaultPersonalPriorities(gameObject);
 		Vector3 position = Grid.CellToPosCBC(DebugHandler.GetMouseCell(), Grid.SceneLayer.Move);
 		gameObject.transform.SetLocalPosition(position);
 		gameObject.SetActive(true);
-		new MinionStartingStats(false, null, null, true).Apply(gameObject);
+		minionStartingStats.Apply(gameObject);
 		if (addAtmoSuit)
 		{
 			GameObject gameObject2 = GameUtil.KInstantiate(Assets.GetPrefab("Atmo_Suit"), position, Grid.SceneLayer.Creatures, null, 0);
@@ -79,17 +81,17 @@ public class DebugHandler : IInputHandler
 		gameObject.GetMyWorld().SetDupeVisited();
 	}
 
-	public static void SetDebugEnabled(bool debugEnabled)
+		public static void SetDebugEnabled(bool debugEnabled)
 	{
 		DebugHandler.enabled = debugEnabled;
 	}
 
-	public static void ToggleDisableNotifications()
+		public static void ToggleDisableNotifications()
 	{
 		DebugHandler.NotificationsDisabled = !DebugHandler.NotificationsDisabled;
 	}
 
-	private string GetScreenshotFileName()
+		private string GetScreenshotFileName()
 	{
 		string activeSaveFilePath = SaveLoader.GetActiveSaveFilePath();
 		string text = Path.Combine(Path.GetDirectoryName(activeSaveFilePath), "screenshot");
@@ -107,7 +109,7 @@ public class DebugHandler : IInputHandler
 		return Path.Combine(text, path);
 	}
 
-	public void OnKeyDown(KButtonEvent e)
+		public void OnKeyDown(KButtonEvent e)
 	{
 		if (!DebugHandler.enabled)
 		{
@@ -216,9 +218,7 @@ public class DebugHandler : IInputHandler
 			}
 			if (ManagementMenu.Instance != null)
 			{
-				ManagementMenu.Instance.CheckResearch(null);
-				ManagementMenu.Instance.CheckSkills(null);
-				ManagementMenu.Instance.CheckStarmap(null);
+				ManagementMenu.Instance.Refresh();
 			}
 			if (SelectTool.Instance.selected != null)
 			{
@@ -246,7 +246,7 @@ public class DebugHandler : IInputHandler
 			{
 				if (!(DiscoveredResources.Instance != null))
 				{
-					goto IL_CA5;
+					goto IL_CAD;
 				}
 				using (List<Element>.Enumerator enumerator = ElementLoader.elements.GetEnumerator())
 				{
@@ -255,7 +255,7 @@ public class DebugHandler : IInputHandler
 						Element element = enumerator.Current;
 						DiscoveredResources.Instance.Discover(element.tag, element.GetMaterialCategoryTag());
 					}
-					goto IL_CA5;
+					goto IL_CAD;
 				}
 			}
 			if (e.TryConsume(global::Action.DebugToggleUI))
@@ -361,7 +361,7 @@ public class DebugHandler : IInputHandler
 								smi2.GoToCursor();
 							}
 						}
-						goto IL_CA5;
+						goto IL_CAD;
 					}
 				}
 				if (e.TryConsume(global::Action.DebugTeleport))
@@ -373,6 +373,11 @@ public class DebugHandler : IInputHandler
 					KSelectable selected = SelectTool.Instance.selected;
 					if (selected != null)
 					{
+						Navigator component = selected.GetComponent<Navigator>();
+						if (component != null)
+						{
+							component.Stop(false, true);
+						}
 						int mouseCell = DebugHandler.GetMouseCell();
 						if (!Grid.IsValidBuildingCell(mouseCell))
 						{
@@ -527,7 +532,7 @@ public class DebugHandler : IInputHandler
 				}
 			}
 		}
-		IL_CA5:
+		IL_CAD:
 		if (e.Consumed && Game.Instance != null)
 		{
 			Game.Instance.debugWasUsed = true;
@@ -535,11 +540,11 @@ public class DebugHandler : IInputHandler
 		}
 	}
 
-	public static void SetSelectInEditor(bool select_in_editor)
+		public static void SetSelectInEditor(bool select_in_editor)
 	{
 	}
 
-	public static void ToggleScreenshotMode()
+		public static void ToggleScreenshotMode()
 	{
 		DebugHandler.ScreenshotMode = !DebugHandler.ScreenshotMode;
 		DebugHandler.UpdateUI();
@@ -553,7 +558,7 @@ public class DebugHandler : IInputHandler
 		}
 	}
 
-	public static void SetTimelapseMode(bool enabled, int world_id = 0)
+		public static void SetTimelapseMode(bool enabled, int world_id = 0)
 	{
 		DebugHandler.TimelapseMode = enabled;
 		if (enabled)
@@ -569,7 +574,7 @@ public class DebugHandler : IInputHandler
 		DebugHandler.UpdateUI();
 	}
 
-	private static void UpdateUI()
+		private static void UpdateUI()
 	{
 		if (GameScreenManager.Instance == null)
 		{
@@ -584,39 +589,39 @@ public class DebugHandler : IInputHandler
 		GameScreenManager.Instance.screenshotModeCanvas.GetComponent<CanvasGroup>().alpha = 1f - num;
 	}
 
-	public static bool InstantBuildMode;
+		public static bool InstantBuildMode;
 
-	public static bool InvincibleMode;
+		public static bool InvincibleMode;
 
-	public static bool SelectInEditor;
+		public static bool SelectInEditor;
 
-	public static bool DebugPathFinding;
+		public static bool DebugPathFinding;
 
-	public static bool ScreenshotMode;
+		public static bool ScreenshotMode;
 
-	public static bool TimelapseMode;
+		public static bool TimelapseMode;
 
-	public static bool HideUI;
+		public static bool HideUI;
 
-	public static bool DebugCellInfo;
+		public static bool DebugCellInfo;
 
-	public static bool DebugNextCall;
+		public static bool DebugNextCall;
 
-	public static bool RevealFogOfWar;
+		public static bool RevealFogOfWar;
 
-	private bool superTestMode;
+		private bool superTestMode;
 
-	private bool ultraTestMode;
+		private bool ultraTestMode;
 
-	private bool slowTestMode;
+		private bool slowTestMode;
 
-	private static int activeWorldBeforeOverride = -1;
+		private static int activeWorldBeforeOverride = -1;
 
-	public enum PaintMode
+		public enum PaintMode
 	{
-		None,
-		Element,
-		Hot,
-		Cold
+				None,
+				Element,
+				Hot,
+				Cold
 	}
 }

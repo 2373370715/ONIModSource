@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpaceHeaterConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SpaceHeater";
 		int width = 2;
@@ -29,7 +29,7 @@ public class SpaceHeaterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.WarmingStation, false);
@@ -56,23 +56,23 @@ public class SpaceHeaterConfig : IBuildingConfig
 		this.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		this.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		this.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	private void AddVisualizer(GameObject go)
+		private void AddVisualizer(GameObject go)
 	{
 		RangeVisualizer rangeVisualizer = go.AddOrGet<RangeVisualizer>();
 		rangeVisualizer.RangeMax = SpaceHeaterConfig.MAX_RANGE;
@@ -81,17 +81,17 @@ public class SpaceHeaterConfig : IBuildingConfig
 		go.AddOrGet<EntityCellVisualizer>().AddPort(EntityCellVisualizer.Ports.HeatSource, default(CellOffset));
 	}
 
-	public const string ID = "SpaceHeater";
+		public const string ID = "SpaceHeater";
 
-	public const float MAX_SELF_HEAT = 32f;
+		public const float MAX_SELF_HEAT = 32f;
 
-	public const float MAX_EXHAUST_HEAT = 4f;
+		public const float MAX_EXHAUST_HEAT = 4f;
 
-	public const float MIN_POWER_USAGE = 120f;
+		public const float MIN_POWER_USAGE = 120f;
 
-	public const float MAX_POWER_USAGE = 240f;
+		public const float MAX_POWER_USAGE = 240f;
 
-	public static Vector2I MAX_RANGE = new Vector2I(5, 5);
+		public static Vector2I MAX_RANGE = new Vector2I(5, 5);
 
-	public static Vector2I MIN_RANGE = new Vector2I(-4, -4);
+		public static Vector2I MIN_RANGE = new Vector2I(-4, -4);
 }

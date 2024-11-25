@@ -7,14 +7,14 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		DiscoveredResources.Instance = null;
 	}
 
-			public event Action<Tag, Tag> OnDiscover;
+				public event Action<Tag, Tag> OnDiscover;
 
-	public void Discover(Tag tag, Tag categoryTag)
+		public void Discover(Tag tag, Tag categoryTag)
 	{
 		bool flag = this.Discovered.Add(tag);
 		this.DiscoverCategory(categoryTag, tag);
@@ -31,24 +31,24 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		}
 	}
 
-	public void Discover(Tag tag)
+		public void Discover(Tag tag)
 	{
 		this.Discover(tag, DiscoveredResources.GetCategoryForEntity(Assets.GetPrefab(tag).GetComponent<KPrefabID>()));
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		DiscoveredResources.Instance = this;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.FilterDisabledContent();
 	}
 
-	private void FilterDisabledContent()
+		private void FilterDisabledContent()
 	{
 		HashSet<Tag> hashSet = new HashSet<Tag>();
 		foreach (Tag tag in this.Discovered)
@@ -110,7 +110,7 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		}
 	}
 
-	public bool CheckAllDiscoveredAreNew()
+		public bool CheckAllDiscoveredAreNew()
 	{
 		foreach (Tag key in this.Discovered)
 		{
@@ -122,7 +122,7 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		return true;
 	}
 
-	private void DiscoverCategory(Tag category_tag, Tag item_tag)
+		private void DiscoverCategory(Tag category_tag, Tag item_tag)
 	{
 		HashSet<Tag> hashSet;
 		if (!this.DiscoveredCategories.TryGetValue(category_tag, out hashSet))
@@ -133,17 +133,17 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		hashSet.Add(item_tag);
 	}
 
-	public HashSet<Tag> GetDiscovered()
+		public HashSet<Tag> GetDiscovered()
 	{
 		return this.Discovered;
 	}
 
-	public bool IsDiscovered(Tag tag)
+		public bool IsDiscovered(Tag tag)
 	{
 		return this.Discovered.Contains(tag) || this.DiscoveredCategories.ContainsKey(tag);
 	}
 
-	public bool AnyDiscovered(ICollection<Tag> tags)
+		public bool AnyDiscovered(ICollection<Tag> tags)
 	{
 		foreach (Tag tag in tags)
 		{
@@ -155,12 +155,12 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		return false;
 	}
 
-	public bool TryGetDiscoveredResourcesFromTag(Tag tag, out HashSet<Tag> resources)
+		public bool TryGetDiscoveredResourcesFromTag(Tag tag, out HashSet<Tag> resources)
 	{
 		return this.DiscoveredCategories.TryGetValue(tag, out resources);
 	}
 
-	public HashSet<Tag> GetDiscoveredResourcesFromTag(Tag tag)
+		public HashSet<Tag> GetDiscoveredResourcesFromTag(Tag tag)
 	{
 		HashSet<Tag> result;
 		if (this.DiscoveredCategories.TryGetValue(tag, out result))
@@ -170,7 +170,7 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		return new HashSet<Tag>();
 	}
 
-	public Dictionary<Tag, HashSet<Tag>> GetDiscoveredResourcesFromTagSet(TagSet tagSet)
+		public Dictionary<Tag, HashSet<Tag>> GetDiscoveredResourcesFromTagSet(TagSet tagSet)
 	{
 		Dictionary<Tag, HashSet<Tag>> dictionary = new Dictionary<Tag, HashSet<Tag>>();
 		foreach (Tag key in tagSet)
@@ -184,7 +184,7 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		return dictionary;
 	}
 
-	public static Tag GetCategoryForTags(HashSet<Tag> tags)
+		public static Tag GetCategoryForTags(HashSet<Tag> tags)
 	{
 		Tag result = Tag.Invalid;
 		foreach (Tag tag in tags)
@@ -198,7 +198,7 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		return result;
 	}
 
-	public static Tag GetCategoryForEntity(KPrefabID entity)
+		public static Tag GetCategoryForEntity(KPrefabID entity)
 	{
 		ElementChunk component = entity.GetComponent<ElementChunk>();
 		if (component != null)
@@ -208,7 +208,7 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		return DiscoveredResources.GetCategoryForTags(entity.Tags);
 	}
 
-	public void Sim4000ms(float dt)
+		public void Sim4000ms(float dt)
 	{
 		float num = GameClock.Instance.GetTimeInCycles() + GameClock.Instance.GetCurrentCycleAsPercentage();
 		List<Tag> list = new List<Tag>();
@@ -225,14 +225,14 @@ public class DiscoveredResources : KMonoBehaviour, ISaveLoadable, ISim4000ms
 		}
 	}
 
-	public static DiscoveredResources Instance;
+		public static DiscoveredResources Instance;
 
-	[Serialize]
+		[Serialize]
 	private HashSet<Tag> Discovered = new HashSet<Tag>();
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<Tag, HashSet<Tag>> DiscoveredCategories = new Dictionary<Tag, HashSet<Tag>>();
 
-	[Serialize]
+		[Serialize]
 	public Dictionary<Tag, float> newDiscoveries = new Dictionary<Tag, float>();
 }

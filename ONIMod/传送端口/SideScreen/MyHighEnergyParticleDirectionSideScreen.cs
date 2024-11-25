@@ -3,7 +3,7 @@ using RsLib;
 using STRINGS;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 
 public class MyHighEnergyParticleDirectionSideScreen : RsSideScreenContent {
     [RsSideScreen.CopyField]

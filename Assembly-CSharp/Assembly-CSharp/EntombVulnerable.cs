@@ -4,7 +4,7 @@ using STRINGS;
 
 public class EntombVulnerable : KMonoBehaviour, IWiltCause
 {
-		private OccupyArea occupyArea
+			private OccupyArea occupyArea
 	{
 		get
 		{
@@ -16,7 +16,7 @@ public class EntombVulnerable : KMonoBehaviour, IWiltCause
 		}
 	}
 
-		public bool GetEntombed
+			public bool GetEntombed
 	{
 		get
 		{
@@ -24,7 +24,7 @@ public class EntombVulnerable : KMonoBehaviour, IWiltCause
 		}
 	}
 
-	public void SetStatusItem(StatusItem si)
+		public void SetStatusItem(StatusItem si)
 	{
 		bool flag = this.showStatusItemOnEntombed;
 		this.SetShowStatusItemOnEntombed(false);
@@ -32,7 +32,7 @@ public class EntombVulnerable : KMonoBehaviour, IWiltCause
 		this.SetShowStatusItemOnEntombed(flag);
 	}
 
-	public void SetShowStatusItemOnEntombed(bool val)
+		public void SetShowStatusItemOnEntombed(bool val)
 	{
 		this.showStatusItemOnEntombed = val;
 		if (this.isEntombed && this.EntombedStatusItem != null)
@@ -46,7 +46,7 @@ public class EntombVulnerable : KMonoBehaviour, IWiltCause
 		}
 	}
 
-		public string WiltStateString
+			public string WiltStateString
 	{
 		get
 		{
@@ -54,7 +54,7 @@ public class EntombVulnerable : KMonoBehaviour, IWiltCause
 		}
 	}
 
-		public WiltCondition.Condition[] Conditions
+			public WiltCondition.Condition[] Conditions
 	{
 		get
 		{
@@ -65,7 +65,7 @@ public class EntombVulnerable : KMonoBehaviour, IWiltCause
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.EntombedStatusItem == null)
@@ -81,18 +81,18 @@ public class EntombVulnerable : KMonoBehaviour, IWiltCause
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
 		base.OnCleanUp();
 	}
 
-	private void OnSolidChanged(object data)
+		private void OnSolidChanged(object data)
 	{
 		this.CheckEntombed();
 	}
 
-	private void CheckEntombed()
+		private void CheckEntombed()
 	{
 		int cell = Grid.PosToCell(base.gameObject.transform.GetPosition());
 		if (!Grid.IsValidCell(cell))
@@ -125,37 +125,37 @@ public class EntombVulnerable : KMonoBehaviour, IWiltCause
 		}
 	}
 
-	public bool IsCellSafe(int cell)
+		public bool IsCellSafe(int cell)
 	{
 		return this.occupyArea.TestArea(cell, null, EntombVulnerable.IsCellSafeCBDelegate);
 	}
 
-	private static bool IsCellSafeCB(int cell, object data)
+		private static bool IsCellSafeCB(int cell, object data)
 	{
 		return Grid.IsValidCell(cell) && !Grid.Solid[cell];
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private KSelectable selectable;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private OccupyArea _occupyArea;
+		private OccupyArea _occupyArea;
 
-	[Serialize]
+		[Serialize]
 	private bool isEntombed;
 
-	private StatusItem DefaultEntombedStatusItem = Db.Get().CreatureStatusItems.Entombed;
+		private StatusItem DefaultEntombedStatusItem = Db.Get().CreatureStatusItems.Entombed;
 
-	[NonSerialized]
+		[NonSerialized]
 	private StatusItem EntombedStatusItem;
 
-	private bool showStatusItemOnEntombed = true;
+		private bool showStatusItemOnEntombed = true;
 
-	public static readonly Operational.Flag notEntombedFlag = new Operational.Flag("not_entombed", Operational.Flag.Type.Functional);
+		public static readonly Operational.Flag notEntombedFlag = new Operational.Flag("not_entombed", Operational.Flag.Type.Functional);
 
-	private HandleVector<int>.Handle partitionerEntry;
+		private HandleVector<int>.Handle partitionerEntry;
 
-	private static readonly Func<int, object, bool> IsCellSafeCBDelegate = (int cell, object data) => EntombVulnerable.IsCellSafeCB(cell, data);
+		private static readonly Func<int, object, bool> IsCellSafeCBDelegate = (int cell, object data) => EntombVulnerable.IsCellSafeCB(cell, data);
 }

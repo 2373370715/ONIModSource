@@ -2,37 +2,37 @@
 
 public struct PlantElementAbsorber
 {
-	public void Clear()
+		public void Clear()
 	{
 		this.storage = null;
 		this.consumedElements = null;
 	}
 
-	public Storage storage;
+		public Storage storage;
 
-	public PlantElementAbsorber.LocalInfo localInfo;
+		public PlantElementAbsorber.LocalInfo localInfo;
 
-	public HandleVector<int>.Handle[] accumulators;
+		public HandleVector<int>.Handle[] accumulators;
 
-	public PlantElementAbsorber.ConsumeInfo[] consumedElements;
+		public PlantElementAbsorber.ConsumeInfo[] consumedElements;
 
-	public struct ConsumeInfo
+		public struct ConsumeInfo
 	{
-		public ConsumeInfo(Tag tag, float mass_consumption_rate)
+				public ConsumeInfo(Tag tag, float mass_consumption_rate)
 		{
 			this.tag = tag;
 			this.massConsumptionRate = mass_consumption_rate;
 		}
 
-		public Tag tag;
+				public Tag tag;
 
-		public float massConsumptionRate;
+				public float massConsumptionRate;
 	}
 
-	public struct LocalInfo
+		public struct LocalInfo
 	{
-		public Tag tag;
+				public Tag tag;
 
-		public float massConsumptionRate;
+				public float massConsumptionRate;
 	}
 }

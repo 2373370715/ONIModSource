@@ -5,9 +5,9 @@ using ProcGen;
 
 public static class TemplateCache
 {
-			public static bool Initted { get; private set; }
+				public static bool Initted { get; private set; }
 
-	public static void Init()
+		public static void Init()
 	{
 		if (TemplateCache.Initted)
 		{
@@ -17,13 +17,13 @@ public static class TemplateCache
 		TemplateCache.Initted = true;
 	}
 
-	public static void Clear()
+		public static void Clear()
 	{
 		TemplateCache.templates = null;
 		TemplateCache.Initted = false;
 	}
 
-	public static string RewriteTemplatePath(string scopePath)
+		public static string RewriteTemplatePath(string scopePath)
 	{
 		string dlcId;
 		string str;
@@ -31,12 +31,12 @@ public static class TemplateCache
 		return SettingsCache.GetAbsoluteContentPath(dlcId, "templates/" + str);
 	}
 
-	public static string RewriteTemplateYaml(string scopePath)
+		public static string RewriteTemplateYaml(string scopePath)
 	{
 		return TemplateCache.RewriteTemplatePath(scopePath) + ".yaml";
 	}
 
-	public static TemplateContainer GetTemplate(string templatePath)
+		public static TemplateContainer GetTemplate(string templatePath)
 	{
 		if (!TemplateCache.templates.ContainsKey(templatePath))
 		{
@@ -56,12 +56,12 @@ public static class TemplateCache
 		return TemplateCache.templates[templatePath];
 	}
 
-	public static bool TemplateExists(string templatePath)
+		public static bool TemplateExists(string templatePath)
 	{
 		return FileSystem.FileExists(TemplateCache.RewriteTemplateYaml(templatePath));
 	}
 
-	private const string defaultAssetFolder = "bases";
+		private const string defaultAssetFolder = "bases";
 
-	private static Dictionary<string, TemplateContainer> templates;
+		private static Dictionary<string, TemplateContainer> templates;
 }

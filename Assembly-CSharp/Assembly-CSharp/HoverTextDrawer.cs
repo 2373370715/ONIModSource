@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class HoverTextDrawer
 {
-	public HoverTextDrawer(HoverTextDrawer.Skin skin, RectTransform parent)
+		public HoverTextDrawer(HoverTextDrawer.Skin skin, RectTransform parent)
 	{
 		this.shadowBars = new HoverTextDrawer.Pool<Image>(skin.shadowBarWidget.gameObject, parent);
 		this.selectBorders = new HoverTextDrawer.Pool<Image>(skin.selectBorderWidget.gameObject, parent);
@@ -14,7 +14,7 @@ public class HoverTextDrawer
 		this.skin = skin;
 	}
 
-	public void SetEnabled(bool enabled)
+		public void SetEnabled(bool enabled)
 	{
 		this.shadowBars.SetEnabled(enabled);
 		this.textWidgets.SetEnabled(enabled);
@@ -22,7 +22,7 @@ public class HoverTextDrawer
 		this.selectBorders.SetEnabled(enabled);
 	}
 
-	public void BeginDrawing(Vector2 root_pos)
+		public void BeginDrawing(Vector2 root_pos)
 	{
 		this.rootPos = root_pos + this.skin.baseOffset;
 		if (this.skin.enableDebugOffset)
@@ -38,7 +38,7 @@ public class HoverTextDrawer
 		this.minLineHeight = 0;
 	}
 
-	public void EndDrawing()
+		public void EndDrawing()
 	{
 		this.shadowBars.EndDrawing();
 		this.iconWidgets.EndDrawing();
@@ -46,7 +46,7 @@ public class HoverTextDrawer
 		this.selectBorders.EndDrawing();
 	}
 
-	public void DrawText(string text, TextStyleSetting style, Color color, bool override_color = true)
+		public void DrawText(string text, TextStyleSetting style, Color color, bool override_color = true)
 	{
 		if (!this.skin.drawWidgets)
 		{
@@ -78,12 +78,12 @@ public class HoverTextDrawer
 		this.minLineHeight = (int)Mathf.Max((float)this.minLineHeight, widget.renderedHeight);
 	}
 
-	public void DrawText(string text, TextStyleSetting style)
+		public void DrawText(string text, TextStyleSetting style)
 	{
 		this.DrawText(text, style, Color.white, false);
 	}
 
-	public void AddIndent(int width = 36)
+		public void AddIndent(int width = 36)
 	{
 		if (!this.skin.drawWidgets)
 		{
@@ -92,7 +92,7 @@ public class HoverTextDrawer
 		this.currentPos.x = this.currentPos.x + (float)width;
 	}
 
-	public void NewLine(int min_height = 26)
+		public void NewLine(int min_height = 26)
 	{
 		if (!this.skin.drawWidgets)
 		{
@@ -103,12 +103,12 @@ public class HoverTextDrawer
 		this.minLineHeight = 0;
 	}
 
-	public void DrawIcon(Sprite icon, int min_width = 18)
+		public void DrawIcon(Sprite icon, int min_width = 18)
 	{
 		this.DrawIcon(icon, Color.white, min_width, 2);
 	}
 
-	public void DrawIcon(Sprite icon, Color color, int image_size = 18, int horizontal_spacing = 2)
+		public void DrawIcon(Sprite icon, Color color, int image_size = 18, int horizontal_spacing = 2)
 	{
 		if (!this.skin.drawWidgets)
 		{
@@ -128,7 +128,7 @@ public class HoverTextDrawer
 		this.maxShadowX = Mathf.Max(this.currentPos.x, this.maxShadowX);
 	}
 
-	public void BeginShadowBar(bool selected = false)
+		public void BeginShadowBar(bool selected = false)
 	{
 		if (!this.skin.drawWidgets)
 		{
@@ -147,7 +147,7 @@ public class HoverTextDrawer
 		this.maxShadowX = this.rootPos.x;
 	}
 
-	public void EndShadowBar()
+		public void EndShadowBar()
 	{
 		if (!this.skin.drawWidgets)
 		{
@@ -165,72 +165,72 @@ public class HoverTextDrawer
 		}
 	}
 
-	public void Cleanup()
+		public void Cleanup()
 	{
 		this.shadowBars.Cleanup();
 		this.textWidgets.Cleanup();
 		this.iconWidgets.Cleanup();
 	}
 
-	public HoverTextDrawer.Skin skin;
+		public HoverTextDrawer.Skin skin;
 
-	private Vector2 currentPos;
+		private Vector2 currentPos;
 
-	private Vector2 rootPos;
+		private Vector2 rootPos;
 
-	private Vector2 shadowStartPos;
+		private Vector2 shadowStartPos;
 
-	private float maxShadowX;
+		private float maxShadowX;
 
-	private bool firstShadowBar;
+		private bool firstShadowBar;
 
-	private bool isShadowBarSelected;
+		private bool isShadowBarSelected;
 
-	private int minLineHeight;
+		private int minLineHeight;
 
-	private HoverTextDrawer.Pool<LocText> textWidgets;
+		private HoverTextDrawer.Pool<LocText> textWidgets;
 
-	private HoverTextDrawer.Pool<Image> iconWidgets;
+		private HoverTextDrawer.Pool<Image> iconWidgets;
 
-	private HoverTextDrawer.Pool<Image> shadowBars;
+		private HoverTextDrawer.Pool<Image> shadowBars;
 
-	private HoverTextDrawer.Pool<Image> selectBorders;
+		private HoverTextDrawer.Pool<Image> selectBorders;
 
-	[Serializable]
+		[Serializable]
 	public class Skin
 	{
-		public Vector2 baseOffset;
+				public Vector2 baseOffset;
 
-		public LocText textWidget;
+				public LocText textWidget;
 
-		public Image iconWidget;
+				public Image iconWidget;
 
-		public Vector2 shadowImageOffset;
+				public Vector2 shadowImageOffset;
 
-		public Color shadowImageColor;
+				public Color shadowImageColor;
 
-		public Image shadowBarWidget;
+				public Image shadowBarWidget;
 
-		public Image selectBorderWidget;
+				public Image selectBorderWidget;
 
-		public Vector2 shadowBarBorder;
+				public Vector2 shadowBarBorder;
 
-		public Vector2 selectBorder;
+				public Vector2 selectBorder;
 
-		public bool drawWidgets;
+				public bool drawWidgets;
 
-		public bool enableProfiling;
+				public bool enableProfiling;
 
-		public bool enableDebugOffset;
+				public bool enableDebugOffset;
 
-		public bool drawInProgressHoverText;
+				public bool drawInProgressHoverText;
 
-		public Vector2 debugOffset;
+				public Vector2 debugOffset;
 	}
 
-	private class Pool<WidgetType> where WidgetType : MonoBehaviour
+		private class Pool<WidgetType> where WidgetType : MonoBehaviour
 	{
-		public Pool(GameObject prefab, RectTransform master_root)
+				public Pool(GameObject prefab, RectTransform master_root)
 		{
 			this.prefab = prefab;
 			GameObject gameObject = new GameObject(typeof(WidgetType).Name);
@@ -243,7 +243,7 @@ public class HoverTextDrawer
 			gameObject.AddComponent<CanvasGroup>();
 		}
 
-		public HoverTextDrawer.Pool<WidgetType>.Entry Draw(Vector2 pos)
+				public HoverTextDrawer.Pool<WidgetType>.Entry Draw(Vector2 pos)
 		{
 			HoverTextDrawer.Pool<WidgetType>.Entry entry;
 			if (this.drawnWidgets < this.entries.Count)
@@ -267,12 +267,12 @@ public class HoverTextDrawer
 			return entry;
 		}
 
-		public void BeginDrawing()
+				public void BeginDrawing()
 		{
 			this.drawnWidgets = 0;
 		}
 
-		public void EndDrawing()
+				public void EndDrawing()
 		{
 			for (int i = this.drawnWidgets; i < this.entries.Count; i++)
 			{
@@ -283,7 +283,7 @@ public class HoverTextDrawer
 			}
 		}
 
-		public void SetEnabled(bool enabled)
+				public void SetEnabled(bool enabled)
 		{
 			if (enabled)
 			{
@@ -293,7 +293,7 @@ public class HoverTextDrawer
 			this.root.gameObject.GetComponent<CanvasGroup>().alpha = 0f;
 		}
 
-		public void Cleanup()
+				public void Cleanup()
 		{
 			foreach (HoverTextDrawer.Pool<WidgetType>.Entry entry in this.entries)
 			{
@@ -302,19 +302,19 @@ public class HoverTextDrawer
 			this.entries.Clear();
 		}
 
-		private GameObject prefab;
+				private GameObject prefab;
 
-		private RectTransform root;
+				private RectTransform root;
 
-		private List<HoverTextDrawer.Pool<WidgetType>.Entry> entries = new List<HoverTextDrawer.Pool<WidgetType>.Entry>();
+				private List<HoverTextDrawer.Pool<WidgetType>.Entry> entries = new List<HoverTextDrawer.Pool<WidgetType>.Entry>();
 
-		private int drawnWidgets;
+				private int drawnWidgets;
 
-		public struct Entry
+				public struct Entry
 		{
-			public WidgetType widget;
+						public WidgetType widget;
 
-			public RectTransform rect;
+						public RectTransform rect;
 		}
 	}
 }

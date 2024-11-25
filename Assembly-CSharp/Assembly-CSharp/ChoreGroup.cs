@@ -6,7 +6,7 @@ using Klei.AI;
 [DebuggerDisplay("{IdHash}")]
 public class ChoreGroup : Resource
 {
-		public int DefaultPersonalPriority
+			public int DefaultPersonalPriority
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class ChoreGroup : Resource
 		}
 	}
 
-	public ChoreGroup(string id, string name, Klei.AI.Attribute attribute, string sprite, int default_personal_priority, bool user_prioritizable = true) : base(id, name)
+		public ChoreGroup(string id, string name, Klei.AI.Attribute attribute, string sprite, int default_personal_priority, bool user_prioritizable = true) : base(id, name)
 	{
 		this.attribute = attribute;
 		this.description = Strings.Get("STRINGS.DUPLICANTS.CHOREGROUPS." + id.ToUpper() + ".DESC").String;
@@ -23,15 +23,15 @@ public class ChoreGroup : Resource
 		this.userPrioritizable = user_prioritizable;
 	}
 
-	public List<ChoreType> choreTypes = new List<ChoreType>();
+		public List<ChoreType> choreTypes = new List<ChoreType>();
 
-	public Klei.AI.Attribute attribute;
+		public Klei.AI.Attribute attribute;
 
-	public string description;
+		public string description;
 
-	public string sprite;
+		public string sprite;
 
-	private int defaultPersonalPriority;
+		private int defaultPersonalPriority;
 
-	public bool userPrioritizable;
+		public bool userPrioritizable;
 }

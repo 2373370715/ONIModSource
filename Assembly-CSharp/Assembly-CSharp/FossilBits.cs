@@ -4,17 +4,17 @@ using STRINGS;
 
 public class FossilBits : FossilExcavationWorkable, ISidescreenButtonControl
 {
-	protected override bool IsMarkedForExcavation()
+		protected override bool IsMarkedForExcavation()
 	{
 		return this.MarkedForDig;
 	}
 
-	public void SetEntombStatusItemVisibility(bool visible)
+		public void SetEntombStatusItemVisibility(bool visible)
 	{
 		this.entombComponent.SetShowStatusItemOnEntombed(visible);
 	}
 
-	public void CreateWorkableChore()
+		public void CreateWorkableChore()
 	{
 		if (this.chore == null && this.operational.IsOperational)
 		{
@@ -22,7 +22,7 @@ public class FossilBits : FossilExcavationWorkable, ISidescreenButtonControl
 		}
 	}
 
-	public void CancelWorkChore()
+		public void CancelWorkChore()
 	{
 		if (this.chore != null)
 		{
@@ -31,7 +31,7 @@ public class FossilBits : FossilExcavationWorkable, ISidescreenButtonControl
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.overrideAnims = new KAnimFile[]
@@ -42,14 +42,14 @@ public class FossilBits : FossilExcavationWorkable, ISidescreenButtonControl
 		base.SetWorkTime(30f);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.SetEntombStatusItemVisibility(this.MarkedForDig);
 		base.SetShouldShowSkillPerkStatusItem(this.IsMarkedForExcavation());
 	}
 
-	private void OnOperationalChanged(object state)
+		private void OnOperationalChanged(object state)
 	{
 		if ((bool)state)
 		{
@@ -65,7 +65,7 @@ public class FossilBits : FossilExcavationWorkable, ISidescreenButtonControl
 		}
 	}
 
-	private void DropLoot()
+		private void DropLoot()
 	{
 		PrimaryElement component = base.gameObject.GetComponent<PrimaryElement>();
 		int cell = Grid.PosToCell(base.transform.GetPosition());
@@ -89,19 +89,19 @@ public class FossilBits : FossilExcavationWorkable, ISidescreenButtonControl
 		}
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		this.DropLoot();
 		Util.KDestroyGameObject(base.gameObject);
 	}
 
-	public int HorizontalGroupID()
+		public int HorizontalGroupID()
 	{
 		return -1;
 	}
 
-		public string SidescreenButtonText
+			public string SidescreenButtonText
 	{
 		get
 		{
@@ -113,7 +113,7 @@ public class FossilBits : FossilExcavationWorkable, ISidescreenButtonControl
 		}
 	}
 
-		public string SidescreenButtonTooltip
+			public string SidescreenButtonTooltip
 	{
 		get
 		{
@@ -125,22 +125,22 @@ public class FossilBits : FossilExcavationWorkable, ISidescreenButtonControl
 		}
 	}
 
-	public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
+		public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
 	{
 		throw new NotImplementedException();
 	}
 
-	public bool SidescreenEnabled()
+		public bool SidescreenEnabled()
 	{
 		return true;
 	}
 
-	public bool SidescreenButtonInteractable()
+		public bool SidescreenButtonInteractable()
 	{
 		return true;
 	}
 
-	public void OnSidescreenButtonPressed()
+		public void OnSidescreenButtonPressed()
 	{
 		this.MarkedForDig = !this.MarkedForDig;
 		base.SetShouldShowSkillPerkStatusItem(this.MarkedForDig);
@@ -156,19 +156,19 @@ public class FossilBits : FossilExcavationWorkable, ISidescreenButtonControl
 		this.UpdateStatusItem(null);
 	}
 
-	public int ButtonSideScreenSortOrder()
+		public int ButtonSideScreenSortOrder()
 	{
 		return 20;
 	}
 
-	[Serialize]
+		[Serialize]
 	public bool MarkedForDig;
 
-	private Chore chore;
+		private Chore chore;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private EntombVulnerable entombComponent;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class BuildingFacade : KMonoBehaviour
 {
-		public string CurrentFacade
+			public string CurrentFacade
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class BuildingFacade : KMonoBehaviour
 		}
 	}
 
-		public bool IsOriginal
+			public bool IsOriginal
 	{
 		get
 		{
@@ -23,11 +23,11 @@ public class BuildingFacade : KMonoBehaviour
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (!this.IsOriginal)
 		{
@@ -35,13 +35,13 @@ public class BuildingFacade : KMonoBehaviour
 		}
 	}
 
-	public void ApplyDefaultFacade(bool shouldTryAnimate = false)
+		public void ApplyDefaultFacade(bool shouldTryAnimate = false)
 	{
 		this.currentFacade = "DEFAULT_FACADE";
 		this.ClearFacade(shouldTryAnimate);
 	}
 
-	public void ApplyBuildingFacade(BuildingFacadeResource facade, bool shouldTryAnimate = false)
+		public void ApplyBuildingFacade(BuildingFacadeResource facade, bool shouldTryAnimate = false)
 	{
 		if (facade == null)
 		{
@@ -56,13 +56,13 @@ public class BuildingFacade : KMonoBehaviour
 		this.ChangeBuilding(array, facade.Name, facade.Description, facade.InteractFile, shouldTryAnimate);
 	}
 
-	private void ClearFacade(bool shouldTryAnimate = false)
+		private void ClearFacade(bool shouldTryAnimate = false)
 	{
 		Building component = base.GetComponent<Building>();
 		this.ChangeBuilding(component.Def.AnimFiles, component.Def.Name, component.Def.Desc, null, shouldTryAnimate);
 	}
 
-	private void ChangeBuilding(KAnimFile[] animFiles, string displayName, string desc, Dictionary<string, string> interactAnimsNames = null, bool shouldTryAnimate = false)
+		private void ChangeBuilding(KAnimFile[] animFiles, string displayName, string desc, Dictionary<string, string> interactAnimsNames = null, bool shouldTryAnimate = false)
 	{
 		this.interactAnims.Clear();
 		if (interactAnimsNames != null && interactAnimsNames.Count > 0)
@@ -110,7 +110,7 @@ public class BuildingFacade : KMonoBehaviour
 		}
 	}
 
-	public string GetNextFacade()
+		public string GetNextFacade()
 	{
 		BuildingDef def = base.GetComponent<Building>().Def;
 		int num = def.AvailableFacades.FindIndex((string s) => s == this.currentFacade) + 1;
@@ -121,12 +121,12 @@ public class BuildingFacade : KMonoBehaviour
 		return def.AvailableFacades[num];
 	}
 
-	[Serialize]
+		[Serialize]
 	private string currentFacade;
 
-	public KAnimFile[] animFiles;
+		public KAnimFile[] animFiles;
 
-	public Dictionary<string, KAnimFile[]> interactAnims = new Dictionary<string, KAnimFile[]>();
+		public Dictionary<string, KAnimFile[]> interactAnims = new Dictionary<string, KAnimFile[]>();
 
-	private BuildingFacadeAnimateIn animateIn;
+		private BuildingFacadeAnimateIn animateIn;
 }

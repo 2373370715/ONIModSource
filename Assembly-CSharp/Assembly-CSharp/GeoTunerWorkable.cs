@@ -3,7 +3,7 @@ using TUNING;
 
 public class GeoTunerWorkable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.SetWorkTime(30f);

@@ -1,11 +1,9 @@
-﻿using System;
-using KSerialization;
+﻿using KSerialization;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public abstract class StateMachineComponent : KMonoBehaviour, ISaveLoadable, IStateMachineTarget
-{
-	public abstract StateMachine.Instance GetSMI();
+public abstract class StateMachineComponent : KMonoBehaviour, ISaveLoadable, IStateMachineTarget {
+    [MyCmpAdd]
+    protected StateMachineController stateMachineController;
 
-	[MyCmpAdd]
-	protected StateMachineController stateMachineController;
+    public abstract StateMachine.Instance GetSMI();
 }

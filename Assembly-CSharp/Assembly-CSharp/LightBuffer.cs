@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LightBuffer : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		LightBuffer.Instance = this;
 		this.ColorRangeTag = Shader.PropertyToID("_ColorRange");
@@ -44,7 +44,7 @@ public class LightBuffer : MonoBehaviour
 		this.Camera.targetTexture = this.Texture;
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (PropertyTextures.instance == null)
 		{
@@ -106,39 +106,39 @@ public class LightBuffer : MonoBehaviour
 		}
 	}
 
-	private void OnDestroy()
+		private void OnDestroy()
 	{
 		LightBuffer.Instance = null;
 	}
 
-	private Mesh Mesh;
+		private Mesh Mesh;
 
-	private Camera Camera;
+		private Camera Camera;
 
-	[NonSerialized]
+		[NonSerialized]
 	public Material Material;
 
-	[NonSerialized]
+		[NonSerialized]
 	public Material CircleMaterial;
 
-	[NonSerialized]
+		[NonSerialized]
 	public Material ConeMaterial;
 
-	private int ColorRangeTag;
+		private int ColorRangeTag;
 
-	private int LightPosTag;
+		private int LightPosTag;
 
-	private int LightDirectionAngleTag;
+		private int LightDirectionAngleTag;
 
-	private int TintColorTag;
+		private int TintColorTag;
 
-	private int Layer;
+		private int Layer;
 
-	public RenderTexture Texture;
+		public RenderTexture Texture;
 
-	public Texture WorldLight;
+		public Texture WorldLight;
 
-	public static LightBuffer Instance;
+		public static LightBuffer Instance;
 
-	private const RenderTextureFormat RTFormat = RenderTextureFormat.ARGBHalf;
+		private const RenderTextureFormat RTFormat = RenderTextureFormat.ARGBHalf;
 }

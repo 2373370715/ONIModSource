@@ -4,12 +4,12 @@ using KSerialization;
 
 public class WarpReceiver : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.warpReceiverSMI = new WarpReceiver.WarpReceiverSM.Instance(this);
@@ -17,7 +17,7 @@ public class WarpReceiver : Workable
 		Components.WarpReceivers.Add(this);
 	}
 
-	public void ReceiveWarpedDuplicant(Worker dupe)
+		public void ReceiveWarpedDuplicant(WorkerBase dupe)
 	{
 		dupe.transform.SetPosition(Grid.CellToPos(Grid.PosToCell(this), CellAlignment.Bottom, Grid.SceneLayer.Move));
 		Debug.Assert(this.chore == null);
@@ -58,47 +58,47 @@ public class WarpReceiver : Workable
 		this.Used = true;
 	}
 
-	private void CompleteChore()
+		private void CompleteChore()
 	{
 		this.chore.Cleanup();
 		this.chore = null;
 		this.warpReceiverSMI.GoTo(this.warpReceiverSMI.sm.idle);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.WarpReceivers.Remove(this);
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	public Notifier notifier;
 
-	private WarpReceiver.WarpReceiverSM.Instance warpReceiverSMI;
+		private WarpReceiver.WarpReceiverSM.Instance warpReceiverSMI;
 
-	private Notification notification;
+		private Notification notification;
 
-	[Serialize]
+		[Serialize]
 	public bool IsConsumed;
 
-	private Chore chore;
+		private Chore chore;
 
-	[Serialize]
+		[Serialize]
 	public bool Used;
 
-	public class WarpReceiverSM : GameStateMachine<WarpReceiver.WarpReceiverSM, WarpReceiver.WarpReceiverSM.Instance, WarpReceiver>
+		public class WarpReceiverSM : GameStateMachine<WarpReceiver.WarpReceiverSM, WarpReceiver.WarpReceiverSM.Instance, WarpReceiver>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.idle;
 			this.idle.PlayAnim("idle");
 		}
 
-		public GameStateMachine<WarpReceiver.WarpReceiverSM, WarpReceiver.WarpReceiverSM.Instance, WarpReceiver, object>.State idle;
+				public GameStateMachine<WarpReceiver.WarpReceiverSM, WarpReceiver.WarpReceiverSM.Instance, WarpReceiver, object>.State idle;
 
-		public new class Instance : GameStateMachine<WarpReceiver.WarpReceiverSM, WarpReceiver.WarpReceiverSM.Instance, WarpReceiver, object>.GameInstance
+				public new class Instance : GameStateMachine<WarpReceiver.WarpReceiverSM, WarpReceiver.WarpReceiverSM.Instance, WarpReceiver, object>.GameInstance
 		{
-			public Instance(WarpReceiver master) : base(master)
+						public Instance(WarpReceiver master) : base(master)
 			{
 			}
 		}

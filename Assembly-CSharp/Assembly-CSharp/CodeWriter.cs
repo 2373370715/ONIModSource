@@ -4,17 +4,17 @@ using System.IO;
 
 public class CodeWriter
 {
-	public CodeWriter(string path)
+		public CodeWriter(string path)
 	{
 		this.Path = path;
 	}
 
-	public void Comment(string text)
+		public void Comment(string text)
 	{
 		this.Lines.Add("// " + text);
 	}
 
-	public void BeginPartialClass(string class_name, string parent_name = null)
+		public void BeginPartialClass(string class_name, string parent_name = null)
 	{
 		string text = "public partial class " + class_name;
 		if (parent_name != null)
@@ -26,7 +26,7 @@ public class CodeWriter
 		this.Indent++;
 	}
 
-	public void BeginClass(string class_name, string parent_name = null)
+		public void BeginClass(string class_name, string parent_name = null)
 	{
 		string text = "public class " + class_name;
 		if (parent_name != null)
@@ -38,33 +38,33 @@ public class CodeWriter
 		this.Indent++;
 	}
 
-	public void EndClass()
+		public void EndClass()
 	{
 		this.Indent--;
 		this.Line("}");
 	}
 
-	public void BeginNameSpace(string name)
+		public void BeginNameSpace(string name)
 	{
 		this.Line("namespace " + name);
 		this.Line("{");
 		this.Indent++;
 	}
 
-	public void EndNameSpace()
+		public void EndNameSpace()
 	{
 		this.Indent--;
 		this.Line("}");
 	}
 
-	public void BeginArrayStructureInitialization(string name)
+		public void BeginArrayStructureInitialization(string name)
 	{
 		this.Line("new " + name);
 		this.Line("{");
 		this.Indent++;
 	}
 
-	public void EndArrayStructureInitialization(bool last_item)
+		public void EndArrayStructureInitialization(bool last_item)
 	{
 		this.Indent--;
 		if (!last_item)
@@ -75,14 +75,14 @@ public class CodeWriter
 		this.Line("}");
 	}
 
-	public void BeginArraArrayInitialization(string array_type, string array_name)
+		public void BeginArraArrayInitialization(string array_type, string array_name)
 	{
 		this.Line(array_name + " = new " + array_type + "[]");
 		this.Line("{");
 		this.Indent++;
 	}
 
-	public void EndArrayArrayInitialization(bool last_item)
+		public void EndArrayArrayInitialization(bool last_item)
 	{
 		this.Indent--;
 		if (last_item)
@@ -93,58 +93,58 @@ public class CodeWriter
 		this.Line("},");
 	}
 
-	public void BeginConstructor(string name)
+		public void BeginConstructor(string name)
 	{
 		this.Line("public " + name + "()");
 		this.Line("{");
 		this.Indent++;
 	}
 
-	public void EndConstructor()
+		public void EndConstructor()
 	{
 		this.Indent--;
 		this.Line("}");
 	}
 
-	public void BeginArrayAssignment(string array_type, string array_name)
+		public void BeginArrayAssignment(string array_type, string array_name)
 	{
 		this.Line(array_name + " = new " + array_type + "[]");
 		this.Line("{");
 		this.Indent++;
 	}
 
-	public void EndArrayAssignment()
+		public void EndArrayAssignment()
 	{
 		this.Indent--;
 		this.Line("};");
 	}
 
-	public void FieldAssignment(string field_name, string value)
+		public void FieldAssignment(string field_name, string value)
 	{
 		this.Line(field_name + " = " + value + ";");
 	}
 
-	public void BeginStructureDelegateFieldInitializer(string name)
+		public void BeginStructureDelegateFieldInitializer(string name)
 	{
 		this.Line(name + "=delegate()");
 		this.Line("{");
 		this.Indent++;
 	}
 
-	public void EndStructureDelegateFieldInitializer()
+		public void EndStructureDelegateFieldInitializer()
 	{
 		this.Indent--;
 		this.Line("},");
 	}
 
-	public void BeginIf(string condition)
+		public void BeginIf(string condition)
 	{
 		this.Line("if(" + condition + ")");
 		this.Line("{");
 		this.Indent++;
 	}
 
-	public void BeginElseIf(string condition)
+		public void BeginElseIf(string condition)
 	{
 		this.Indent--;
 		this.Line("}");
@@ -153,13 +153,13 @@ public class CodeWriter
 		this.Indent++;
 	}
 
-	public void EndIf()
+		public void EndIf()
 	{
 		this.Indent--;
 		this.Line("}");
 	}
 
-	public void BeginFunctionDeclaration(string name, string parameter, string return_type)
+		public void BeginFunctionDeclaration(string name, string parameter, string return_type)
 	{
 		this.Line(string.Concat(new string[]
 		{
@@ -175,7 +175,7 @@ public class CodeWriter
 		this.Indent++;
 	}
 
-	public void BeginFunctionDeclaration(string name, string return_type)
+		public void BeginFunctionDeclaration(string name, string return_type)
 	{
 		this.Line(string.Concat(new string[]
 		{
@@ -189,13 +189,13 @@ public class CodeWriter
 		this.Indent++;
 	}
 
-	public void EndFunctionDeclaration()
+		public void EndFunctionDeclaration()
 	{
 		this.Indent--;
 		this.Line("}");
 	}
 
-	private void InternalNamedParameter(string name, string value, bool last_parameter)
+		private void InternalNamedParameter(string name, string value, bool last_parameter)
 	{
 		string str = "";
 		if (!last_parameter)
@@ -205,40 +205,40 @@ public class CodeWriter
 		this.Line(name + ":" + value + str);
 	}
 
-	public void NamedParameterBool(string name, bool value, bool last_parameter = false)
+		public void NamedParameterBool(string name, bool value, bool last_parameter = false)
 	{
 		this.InternalNamedParameter(name, value.ToString().ToLower(), last_parameter);
 	}
 
-	public void NamedParameterInt(string name, int value, bool last_parameter = false)
+		public void NamedParameterInt(string name, int value, bool last_parameter = false)
 	{
 		this.InternalNamedParameter(name, value.ToString(), last_parameter);
 	}
 
-	public void NamedParameterFloat(string name, float value, bool last_parameter = false)
+		public void NamedParameterFloat(string name, float value, bool last_parameter = false)
 	{
 		this.InternalNamedParameter(name, value.ToString() + "f", last_parameter);
 	}
 
-	public void NamedParameterString(string name, string value, bool last_parameter = false)
+		public void NamedParameterString(string name, string value, bool last_parameter = false)
 	{
 		this.InternalNamedParameter(name, value, last_parameter);
 	}
 
-	public void BeginFunctionCall(string name)
+		public void BeginFunctionCall(string name)
 	{
 		this.Line(name);
 		this.Line("(");
 		this.Indent++;
 	}
 
-	public void EndFunctionCall()
+		public void EndFunctionCall()
 	{
 		this.Indent--;
 		this.Line(");");
 	}
 
-	public void FunctionCall(string function_name, params string[] parameters)
+		public void FunctionCall(string function_name, params string[] parameters)
 	{
 		string str = function_name + "(";
 		for (int i = 0; i < parameters.Length; i++)
@@ -252,12 +252,12 @@ public class CodeWriter
 		this.Line(str + ");");
 	}
 
-	public void StructureFieldInitializer(string field, string value)
+		public void StructureFieldInitializer(string field, string value)
 	{
 		this.Line(field + " = " + value + ",");
 	}
 
-	public void StructureArrayFieldInitializer(string field, string field_type, params string[] values)
+		public void StructureArrayFieldInitializer(string field, string field_type, params string[] values)
 	{
 		string text = field + " = new " + field_type + "[]{ ";
 		for (int i = 0; i < values.Length; i++)
@@ -272,7 +272,7 @@ public class CodeWriter
 		this.Line(text);
 	}
 
-	public void Line(string text = "")
+		public void Line(string text = "")
 	{
 		for (int i = 0; i < this.Indent; i++)
 		{
@@ -281,14 +281,14 @@ public class CodeWriter
 		this.Lines.Add(text);
 	}
 
-	public void Flush()
+		public void Flush()
 	{
 		File.WriteAllLines(this.Path, this.Lines.ToArray());
 	}
 
-	private List<string> Lines = new List<string>();
+		private List<string> Lines = new List<string>();
 
-	private string Path;
+		private string Path;
 
-	private int Indent;
+		private int Indent;
 }

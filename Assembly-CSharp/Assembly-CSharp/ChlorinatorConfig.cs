@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class ChlorinatorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "Chlorinator";
 		int width = 3;
@@ -31,11 +31,11 @@ public class ChlorinatorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<DropAllWorkable>();
@@ -50,7 +50,7 @@ public class ChlorinatorConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 	}
 
-	private void ConfigureRecipes()
+		private void ConfigureRecipes()
 	{
 		ComplexRecipe.RecipeElement[] array = new ComplexRecipe.RecipeElement[]
 		{
@@ -72,7 +72,7 @@ public class ChlorinatorConfig : IBuildingConfig
 		complexRecipe.nameDisplay = ComplexRecipe.RecipeNameDisplay.Result;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		Chlorinator.Def def = go.AddOrGetDef<Chlorinator.Def>();
@@ -88,35 +88,35 @@ public class ChlorinatorConfig : IBuildingConfig
 		def.popWaitRange = ChlorinatorConfig.POP_TIMING;
 	}
 
-	public override void ConfigurePost(BuildingDef def)
+		public override void ConfigurePost(BuildingDef def)
 	{
 	}
 
-	public const string ID = "Chlorinator";
+		public const string ID = "Chlorinator";
 
-	public static readonly Tag BLEACH_STONE_TAG = SimHashes.BleachStone.CreateTag();
+		public static readonly Tag BLEACH_STONE_TAG = SimHashes.BleachStone.CreateTag();
 
-	public static readonly Tag SAND_TAG = SimHashes.Sand.CreateTag();
+		public static readonly Tag SAND_TAG = SimHashes.Sand.CreateTag();
 
-	private const float BLEACH_STONE_PER_CYCLE = 150f;
+		private const float BLEACH_STONE_PER_CYCLE = 150f;
 
-	public const float BLEACH_STONE_OUTPUT_PER_RECIPE = 10f;
+		public const float BLEACH_STONE_OUTPUT_PER_RECIPE = 10f;
 
-	public const float INPUT_KG = 30f;
+		public const float INPUT_KG = 30f;
 
-	public const float OUTPUT_BLEACH_STONE_PERCENT = 0.33333334f;
+		public const float OUTPUT_BLEACH_STONE_PERCENT = 0.33333334f;
 
-	public const float OUTPUT_BLEACHSTONE_ORE_SIZE = 2f;
+		public const float OUTPUT_BLEACHSTONE_ORE_SIZE = 2f;
 
-	public const float OUTPUT_SAND_ORE_SIZE = 6f;
+		public const float OUTPUT_SAND_ORE_SIZE = 6f;
 
-	public static readonly MathUtil.MinMax POP_TIMING = new MathUtil.MinMax(0.1f, 0.4f);
+		public static readonly MathUtil.MinMax POP_TIMING = new MathUtil.MinMax(0.1f, 0.4f);
 
-	public static readonly MathUtil.MinMaxInt EMIT_ORE_COUNT_RANGE_BLEACH_STONE = new MathUtil.MinMaxInt(2, 3);
+		public static readonly MathUtil.MinMaxInt EMIT_ORE_COUNT_RANGE_BLEACH_STONE = new MathUtil.MinMaxInt(2, 3);
 
-	public static readonly MathUtil.MinMaxInt EMIT_ORE_COUNT_RANGE_SAND = new MathUtil.MinMaxInt(1, 1);
+		public static readonly MathUtil.MinMaxInt EMIT_ORE_COUNT_RANGE_SAND = new MathUtil.MinMaxInt(1, 1);
 
-	public static readonly MathUtil.MinMax EMIT_ORE_INITIAL_VELOCITY_RANGE = new MathUtil.MinMax(2f, 4f);
+		public static readonly MathUtil.MinMax EMIT_ORE_INITIAL_VELOCITY_RANGE = new MathUtil.MinMax(2f, 4f);
 
-	public static readonly MathUtil.MinMax EMIT_ORE_INITIAL_DIRECTION_HALF_ANGLE_IN_DEGREES_RANGE = new MathUtil.MinMax(40f, 0f);
+		public static readonly MathUtil.MinMax EMIT_ORE_INITIAL_DIRECTION_HALF_ANGLE_IN_DEGREES_RANGE = new MathUtil.MinMax(40f, 0f);
 }

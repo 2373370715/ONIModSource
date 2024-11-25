@@ -1,51 +1,40 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class SealedDoorSideScreen : SideScreenContent
-{
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.button.onClick += delegate()
-		{
-			this.target.OrderUnseal();
-		};
-		this.Refresh();
-	}
+public class SealedDoorSideScreen : SideScreenContent {
+    [SerializeField]
+    private KButton button;
 
-	public override bool IsValidForTarget(GameObject target)
-	{
-		return target.GetComponent<Door>() != null;
-	}
+    [SerializeField]
+    private LocText label;
 
-	public override void SetTarget(GameObject target)
-	{
-		Door component = target.GetComponent<Door>();
-		if (component == null)
-		{
-			global::Debug.LogError("Target doesn't have a Door associated with it.");
-			return;
-		}
-		this.target = component;
-		this.Refresh();
-	}
+    [SerializeField]
+    private Door target;
 
-	private void Refresh()
-	{
-		if (!this.target.isSealed)
-		{
-			this.ContentContainer.SetActive(false);
-			return;
-		}
-		this.ContentContainer.SetActive(true);
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        button.onClick += delegate { target.OrderUnseal(); };
+        Refresh();
+    }
 
-	[SerializeField]
-	private LocText label;
+    public override bool IsValidForTarget(GameObject target) { return target.GetComponent<Door>() != null; }
 
-	[SerializeField]
-	private KButton button;
+    public override void SetTarget(GameObject target) {
+        var component = target.GetComponent<Door>();
+        if (component == null) {
+            Debug.LogError("Target doesn't have a Door associated with it.");
+            return;
+        }
 
-	[SerializeField]
-	private Door target;
+        this.target = component;
+        Refresh();
+    }
+
+    private void Refresh() {
+        if (!target.isSealed) {
+            ContentContainer.SetActive(false);
+            return;
+        }
+
+        ContentContainer.SetActive(true);
+    }
 }

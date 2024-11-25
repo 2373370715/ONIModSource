@@ -3,7 +3,7 @@ using UnityEngine;
 
 public struct ElementSplitter
 {
-	public ElementSplitter(GameObject go)
+		public ElementSplitter(GameObject go)
 	{
 		this.primaryElement = go.GetComponent<PrimaryElement>();
 		this.kPrefabID = go.GetComponent<KPrefabID>();
@@ -11,11 +11,11 @@ public struct ElementSplitter
 		this.canAbsorbCB = null;
 	}
 
-	public PrimaryElement primaryElement;
+		public PrimaryElement primaryElement;
 
-	public Func<Pickupable, float, Pickupable> onTakeCB;
+		public Func<Pickupable, float, Pickupable> onTakeCB;
 
-	public Func<Pickupable, bool> canAbsorbCB;
+		public Func<Pickupable, bool> canAbsorbCB;
 
-	public KPrefabID kPrefabID;
+		public KPrefabID kPrefabID;
 }

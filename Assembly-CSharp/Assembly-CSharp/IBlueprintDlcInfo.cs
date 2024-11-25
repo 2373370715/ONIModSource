@@ -2,5 +2,5 @@
 
 public interface IBlueprintDlcInfo
 {
-			string[] dlcIds { get; set; }
+				string[] dlcIds { get; set; }
 }

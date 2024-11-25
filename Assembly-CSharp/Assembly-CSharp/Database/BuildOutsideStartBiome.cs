@@ -5,9 +5,9 @@ using STRINGS;
 
 namespace Database
 {
-	public class BuildOutsideStartBiome : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class BuildOutsideStartBiome : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public override bool Success()
+				public override bool Success()
 		{
 			WorldDetailSave clusterDetailSave = SaveLoader.Instance.clusterDetailSave;
 			foreach (BuildingComplete buildingComplete in Components.BuildingCompletes.Items)
@@ -28,11 +28,11 @@ namespace Database
 			return false;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			return COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.BUILT_OUTSIDE_START;
 		}

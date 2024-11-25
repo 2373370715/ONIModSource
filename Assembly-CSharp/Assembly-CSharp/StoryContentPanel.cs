@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 public class StoryContentPanel : KMonoBehaviour
 {
-	public List<string> GetActiveStories()
+		public List<string> GetActiveStories()
 	{
 		List<string> list = new List<string>();
 		foreach (KeyValuePair<string, StoryContentPanel.StoryState> keyValuePair in this.storyStates)
@@ -23,7 +23,7 @@ public class StoryContentPanel : KMonoBehaviour
 		return list;
 	}
 
-	public void Init()
+		public void Init()
 	{
 		this.SpawnRows();
 		this.RefreshRows();
@@ -32,18 +32,18 @@ public class StoryContentPanel : KMonoBehaviour
 		CustomGameSettings.Instance.OnStorySettingChanged += this.OnStorySettingChanged;
 	}
 
-	public void Cleanup()
+		public void Cleanup()
 	{
 		CustomGameSettings.Instance.OnStorySettingChanged -= this.OnStorySettingChanged;
 	}
 
-	private void OnStorySettingChanged(SettingConfig config, SettingLevel level)
+		private void OnStorySettingChanged(SettingConfig config, SettingLevel level)
 	{
 		this.storyStates[config.id] = ((level.id == "Guaranteed") ? StoryContentPanel.StoryState.Guaranteed : StoryContentPanel.StoryState.Forbidden);
 		this.RefreshStoryDisplay(config.id);
 	}
 
-	private void SpawnRows()
+		private void SpawnRows()
 	{
 		using (List<Story>.Enumerator enumerator = Db.Get().Stories.resources.GetEnumerator())
 		{
@@ -73,14 +73,14 @@ public class StoryContentPanel : KMonoBehaviour
 		this.mainScreen.RefreshStoryLabel();
 	}
 
-	private void SelectRow(string id)
+		private void SelectRow(string id)
 	{
 		this.selectedStoryId = id;
 		this.RefreshRows();
 		this.RefreshDescriptionPanel();
 	}
 
-	public void SelectDefault()
+		public void SelectDefault()
 	{
 		foreach (KeyValuePair<string, StoryContentPanel.StoryState> keyValuePair in this.storyStates)
 		{
@@ -100,7 +100,7 @@ public class StoryContentPanel : KMonoBehaviour
 		}
 	}
 
-	private void IncrementStorySetting(string storyId, bool forward = true)
+		private void IncrementStorySetting(string storyId, bool forward = true)
 	{
 		int num = (int)this.storyStates[storyId];
 		num += (forward ? 1 : -1);
@@ -113,14 +113,14 @@ public class StoryContentPanel : KMonoBehaviour
 		this.mainScreen.RefreshRowsAndDescriptions();
 	}
 
-	private void SetStoryState(string storyId, StoryContentPanel.StoryState state)
+		private void SetStoryState(string storyId, StoryContentPanel.StoryState state)
 	{
 		this.storyStates[storyId] = state;
 		SettingConfig config = CustomGameSettings.Instance.StorySettings[storyId];
 		CustomGameSettings.Instance.SetStorySetting(config, this.storyStates[storyId] == StoryContentPanel.StoryState.Guaranteed);
 	}
 
-	public void SelectRandomStories(int min = 5, int max = 5, bool useBias = false)
+		public void SelectRandomStories(int min = 5, int max = 5, bool useBias = false)
 	{
 		int num = UnityEngine.Random.Range(min, max);
 		List<Story> list = new List<Story>(Db.Get().Stories.resources);
@@ -154,7 +154,7 @@ public class StoryContentPanel : KMonoBehaviour
 		this.mainScreen.RefreshRowsAndDescriptions();
 	}
 
-	private void RefreshAllStoryStates()
+		private void RefreshAllStoryStates()
 	{
 		foreach (string id in this.storyRows.Keys)
 		{
@@ -162,7 +162,7 @@ public class StoryContentPanel : KMonoBehaviour
 		}
 	}
 
-	private void RefreshStoryDisplay(string id)
+		private void RefreshStoryDisplay(string id)
 	{
 		MultiToggle reference = this.storyRows[id].GetComponent<HierarchyReferences>().GetReference<MultiToggle>("checkbox");
 		StoryContentPanel.StoryState storyState = this.storyStates[id];
@@ -178,7 +178,7 @@ public class StoryContentPanel : KMonoBehaviour
 		reference.ChangeState(1);
 	}
 
-	private void RefreshRows()
+		private void RefreshRows()
 	{
 		foreach (KeyValuePair<string, GameObject> keyValuePair in this.storyRows)
 		{
@@ -186,7 +186,7 @@ public class StoryContentPanel : KMonoBehaviour
 		}
 	}
 
-	private void RefreshDescriptionPanel()
+		private void RefreshDescriptionPanel()
 	{
 		if (this.selectedStoryId.IsNullOrWhiteSpace())
 		{
@@ -201,7 +201,7 @@ public class StoryContentPanel : KMonoBehaviour
 		this.selectedStoryImage.sprite = Assets.GetSprite(s);
 	}
 
-	public string GetTraitsString(bool tooltip = false)
+		public string GetTraitsString(bool tooltip = false)
 	{
 		int num = 0;
 		int num2 = 5;
@@ -259,56 +259,56 @@ public class StoryContentPanel : KMonoBehaviour
 		return text;
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject storyRowPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject storyRowContainer;
 
-	private Dictionary<string, GameObject> storyRows = new Dictionary<string, GameObject>();
+		private Dictionary<string, GameObject> storyRows = new Dictionary<string, GameObject>();
 
-	public const int DEFAULT_RANDOMIZE_STORY_COUNT = 5;
+		public const int DEFAULT_RANDOMIZE_STORY_COUNT = 5;
 
-	private Dictionary<string, StoryContentPanel.StoryState> storyStates = new Dictionary<string, StoryContentPanel.StoryState>();
+		private Dictionary<string, StoryContentPanel.StoryState> storyStates = new Dictionary<string, StoryContentPanel.StoryState>();
 
-	private string selectedStoryId = "";
+		private string selectedStoryId = "";
 
-	[SerializeField]
+		[SerializeField]
 	private ColonyDestinationSelectScreen mainScreen;
 
-	[Header("Trait Count")]
+		[Header("Trait Count")]
 	[Header("SelectedStory")]
 	[SerializeField]
 	private Image selectedStoryImage;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText selectedStoryTitleLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText selectedStoryDescriptionLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite spriteForbidden;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite spritePossible;
 
-	[SerializeField]
+		[SerializeField]
 	private Sprite spriteGuaranteed;
 
-	private StoryContentPanel.StoryState _defaultStoryState;
+		private StoryContentPanel.StoryState _defaultStoryState;
 
-	private List<string> storyTraitSettings = new List<string>
+		private List<string> storyTraitSettings = new List<string>
 	{
 		"None",
 		"Few",
 		"Lots"
 	};
 
-	private enum StoryState
+		private enum StoryState
 	{
-		Forbidden,
-		Guaranteed,
-		LENGTH
+				Forbidden,
+				Guaranteed,
+				LENGTH
 	}
 }

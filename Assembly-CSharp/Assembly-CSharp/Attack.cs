@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Attack
 {
-	public Attack(AttackProperties properties, GameObject[] targets)
+		public Attack(AttackProperties properties, GameObject[] targets)
 	{
 		this.properties = properties;
 		this.targets = targets;
 		this.RollHits();
 	}
 
-	private void RollHits()
+		private void RollHits()
 	{
 		int num = 0;
 		while (num < this.targets.Length && num <= this.properties.maxHits - 1)
@@ -24,9 +24,9 @@ public class Attack
 		}
 	}
 
-	private AttackProperties properties;
+		private AttackProperties properties;
 
-	private GameObject[] targets;
+		private GameObject[] targets;
 
-	public List<Hit> Hits;
+		public List<Hit> Hits;
 }

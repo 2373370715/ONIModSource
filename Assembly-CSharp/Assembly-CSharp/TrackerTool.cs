@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TrackerTool : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		TrackerTool.Instance = this;
 		base.OnSpawn();
@@ -22,13 +22,13 @@ public class TrackerTool : KMonoBehaviour
 		ClusterManager.Instance.Subscribe(-1078710002, new Action<object>(this.RemoveWorld));
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		TrackerTool.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	private void AddMinionTrackers(MinionIdentity identity)
+		private void AddMinionTrackers(MinionIdentity identity)
 	{
 		this.minionTrackers.Add(identity, new List<MinionTracker>());
 		identity.Subscribe(1969584890, delegate(object data)
@@ -37,24 +37,24 @@ public class TrackerTool : KMonoBehaviour
 		});
 	}
 
-	private void Refresh(object data)
+		private void Refresh(object data)
 	{
 		int worldID = (int)data;
 		this.AddNewWorldTrackers(worldID);
 	}
 
-	private void RemoveWorld(object data)
+		private void RemoveWorld(object data)
 	{
 		int world_id = (int)data;
 		this.worldTrackers.RemoveAll((WorldTracker match) => match.WorldID == world_id);
 	}
 
-	public bool IsRocketInterior(int worldID)
+		public bool IsRocketInterior(int worldID)
 	{
 		return ClusterManager.Instance.GetWorld(worldID).IsModuleInterior;
 	}
 
-	private void AddNewWorldTrackers(int worldID)
+		private void AddNewWorldTrackers(int worldID)
 	{
 		this.worldTrackers.Add(new StressTracker(worldID));
 		this.worldTrackers.Add(new KCalTracker(worldID));
@@ -65,6 +65,10 @@ public class TrackerTool : KMonoBehaviour
 		this.worldTrackers.Add(new CropTracker(worldID));
 		this.worldTrackers.Add(new WorkingToiletTracker(worldID));
 		this.worldTrackers.Add(new RadiationTracker(worldID));
+		if (SaveLoader.Instance.IsDLCActiveForCurrentSave("DLC3_ID"))
+		{
+			this.worldTrackers.Add(new ElectrobankJoulesTracker(worldID));
+		}
 		if (ClusterManager.Instance.GetWorld(worldID).IsModuleInterior)
 		{
 			this.worldTrackers.Add(new RocketFuelTracker(worldID));
@@ -123,7 +127,7 @@ public class TrackerTool : KMonoBehaviour
 		}
 	}
 
-	private void AddResourceTracker(int worldID, Tag tag)
+		private void AddResourceTracker(int worldID, Tag tag)
 	{
 		if (this.worldTrackers.Find((WorldTracker match) => match is ResourceTracker && ((ResourceTracker)match).WorldID == worldID && ((ResourceTracker)match).tag == tag) != null)
 		{
@@ -132,32 +136,32 @@ public class TrackerTool : KMonoBehaviour
 		this.worldTrackers.Add(new ResourceTracker(worldID, tag));
 	}
 
-	public ResourceTracker GetResourceStatistic(int worldID, Tag tag)
+		public ResourceTracker GetResourceStatistic(int worldID, Tag tag)
 	{
 		return (ResourceTracker)this.worldTrackers.Find((WorldTracker match) => match is ResourceTracker && ((ResourceTracker)match).WorldID == worldID && ((ResourceTracker)match).tag == tag);
 	}
 
-	public WorldTracker GetWorldTracker<T>(int worldID) where T : WorldTracker
+		public WorldTracker GetWorldTracker<T>(int worldID) where T : WorldTracker
 	{
 		return (T)((object)this.worldTrackers.Find((WorldTracker match) => match is T && ((T)((object)match)).WorldID == worldID));
 	}
 
-	public ChoreCountTracker GetChoreGroupTracker(int worldID, ChoreGroup choreGroup)
+		public ChoreCountTracker GetChoreGroupTracker(int worldID, ChoreGroup choreGroup)
 	{
 		return (ChoreCountTracker)this.worldTrackers.Find((WorldTracker match) => match is ChoreCountTracker && ((ChoreCountTracker)match).WorldID == worldID && ((ChoreCountTracker)match).choreGroup == choreGroup);
 	}
 
-	public WorkTimeTracker GetWorkTimeTracker(int worldID, ChoreGroup choreGroup)
+		public WorkTimeTracker GetWorkTimeTracker(int worldID, ChoreGroup choreGroup)
 	{
 		return (WorkTimeTracker)this.worldTrackers.Find((WorldTracker match) => match is WorkTimeTracker && ((WorkTimeTracker)match).WorldID == worldID && ((WorkTimeTracker)match).choreGroup == choreGroup);
 	}
 
-	public MinionTracker GetMinionTracker<T>(MinionIdentity identity) where T : MinionTracker
+		public MinionTracker GetMinionTracker<T>(MinionIdentity identity) where T : MinionTracker
 	{
 		return (T)((object)this.minionTrackers[identity].Find((MinionTracker match) => match is T));
 	}
 
-	public void Update()
+		public void Update()
 	{
 		if (SpeedControlScreen.Instance.IsPaused)
 		{
@@ -194,17 +198,17 @@ public class TrackerTool : KMonoBehaviour
 		}
 	}
 
-	public static TrackerTool Instance;
+		public static TrackerTool Instance;
 
-	private List<WorldTracker> worldTrackers = new List<WorldTracker>();
+		private List<WorldTracker> worldTrackers = new List<WorldTracker>();
 
-	private Dictionary<MinionIdentity, List<MinionTracker>> minionTrackers = new Dictionary<MinionIdentity, List<MinionTracker>>();
+		private Dictionary<MinionIdentity, List<MinionTracker>> minionTrackers = new Dictionary<MinionIdentity, List<MinionTracker>>();
 
-	private int updatingWorldTracker;
+		private int updatingWorldTracker;
 
-	private int updatingMinionTracker;
+		private int updatingMinionTracker;
 
-	public bool trackerActive = true;
+		public bool trackerActive = true;
 
-	private int numUpdatesPerFrame = 50;
+		private int numUpdatesPerFrame = 50;
 }

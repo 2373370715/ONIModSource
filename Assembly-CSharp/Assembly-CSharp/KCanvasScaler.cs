@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/KCanvasScaler")]
 public class KCanvasScaler : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		if (KPlayerPrefs.HasKey(KCanvasScaler.UIScalePrefKey))
@@ -20,12 +20,12 @@ public class KCanvasScaler : KMonoBehaviour
 		instance.OnResize = (System.Action)Delegate.Combine(instance.OnResize, new System.Action(this.OnResize));
 	}
 
-	private void OnResize()
+		private void OnResize()
 	{
 		this.SetUserScale(this.userScale);
 	}
 
-	public void SetUserScale(float scale)
+		public void SetUserScale(float scale)
 	{
 		if (this.canvasScaler == null)
 		{
@@ -35,17 +35,17 @@ public class KCanvasScaler : KMonoBehaviour
 		this.canvasScaler.scaleFactor = this.GetCanvasScale();
 	}
 
-	public float GetUserScale()
+		public float GetUserScale()
 	{
 		return this.userScale;
 	}
 
-	public float GetCanvasScale()
+		public float GetCanvasScale()
 	{
 		return this.userScale * this.ScreenRelativeScale();
 	}
 
-	private float ScreenRelativeScale()
+		private float ScreenRelativeScale()
 	{
 		float dpi = Screen.dpi;
 		Camera x = Camera.main;
@@ -73,14 +73,14 @@ public class KCanvasScaler : KMonoBehaviour
 		return 1f;
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private CanvasScaler canvasScaler;
 
-	public static string UIScalePrefKey = "UIScalePref";
+		public static string UIScalePrefKey = "UIScalePref";
 
-	private float userScale = 1f;
+		private float userScale = 1f;
 
-	[Range(0.75f, 2f)]
+		[Range(0.75f, 2f)]
 	private KCanvasScaler.ScaleStep[] scaleSteps = new KCanvasScaler.ScaleStep[]
 	{
 		new KCanvasScaler.ScaleStep(720f, 0.86f),
@@ -88,17 +88,17 @@ public class KCanvasScaler : KMonoBehaviour
 		new KCanvasScaler.ScaleStep(2160f, 1.33f)
 	};
 
-	[Serializable]
+		[Serializable]
 	public struct ScaleStep
 	{
-		public ScaleStep(float maxRes_y, float scale)
+				public ScaleStep(float maxRes_y, float scale)
 		{
 			this.maxRes_y = maxRes_y;
 			this.scale = scale;
 		}
 
-		public float scale;
+				public float scale;
 
-		public float maxRes_y;
+				public float maxRes_y;
 	}
 }

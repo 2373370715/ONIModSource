@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UIMinion : KMonoBehaviour, UIMinionOrMannequin.ITarget
 {
-		public GameObject SpawnedAvatar
+			public GameObject SpawnedAvatar
 	{
 		get
 		{
@@ -17,14 +17,14 @@ public class UIMinion : KMonoBehaviour, UIMinionOrMannequin.ITarget
 		}
 	}
 
-			public Option<Personality> Personality { get; private set; }
+				public Option<Personality> Personality { get; private set; }
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.TrySpawn();
 	}
 
-	public void TrySpawn()
+		public void TrySpawn()
 	{
 		if (this.animController == null)
 		{
@@ -32,19 +32,19 @@ public class UIMinion : KMonoBehaviour, UIMinionOrMannequin.ITarget
 			this.animController.gameObject.SetActive(true);
 			this.animController.animScale = 0.38f;
 			this.animController.Play("idle_default", KAnim.PlayMode.Loop, 1f, 0f);
-			MinionConfig.ConfigureSymbols(this.animController.gameObject, true);
+			BaseMinionConfig.ConfigureSymbols(this.animController.gameObject, true);
 			this.spawn = this.animController.gameObject;
 		}
 	}
 
-	public void SetMinion(Personality personality)
+		public void SetMinion(Personality personality)
 	{
 		this.SpawnedAvatar.GetComponent<Accessorizer>().ApplyMinionPersonality(personality);
 		this.Personality = personality;
 		base.gameObject.AddOrGet<MinionVoiceProviderMB>().voice = MinionVoice.ByPersonality(personality);
 	}
 
-	public void SetOutfit(ClothingOutfitUtility.OutfitType outfitType, IEnumerable<ClothingItemResource> outfit)
+		public void SetOutfit(ClothingOutfitUtility.OutfitType outfitType, IEnumerable<ClothingItemResource> outfit)
 	{
 		outfit = UIMinionOrMannequinITargetExtensions.GetOutfitWithDefaultItems(outfitType, outfit);
 		WearableAccessorizer component = this.SpawnedAvatar.GetComponent<WearableAccessorizer>();
@@ -52,12 +52,12 @@ public class UIMinion : KMonoBehaviour, UIMinionOrMannequin.ITarget
 		component.ApplyClothingItems(outfitType, outfit);
 	}
 
-	public MinionVoice GetMinionVoice()
+		public MinionVoice GetMinionVoice()
 	{
 		return MinionVoice.ByObject(this.SpawnedAvatar).UnwrapOr(MinionVoice.Random(), null);
 	}
 
-	public void React(UIMinionOrMannequinReactSource source)
+		public void React(UIMinionOrMannequinReactSource source)
 	{
 		if (source != UIMinionOrMannequinReactSource.OnPersonalityChanged && this.lastReactSource == source)
 		{
@@ -97,11 +97,11 @@ public class UIMinion : KMonoBehaviour, UIMinionOrMannequin.ITarget
 		this.lastReactSource = source;
 	}
 
-	public const float ANIM_SCALE = 0.38f;
+		public const float ANIM_SCALE = 0.38f;
 
-	private KBatchedAnimController animController;
+		private KBatchedAnimController animController;
 
-	private GameObject spawn;
+		private GameObject spawn;
 
-	private UIMinionOrMannequinReactSource lastReactSource;
+		private UIMinionOrMannequinReactSource lastReactSource;
 }

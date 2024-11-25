@@ -7,7 +7,7 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public class RawImageAspectRatioFitter : AspectRatioFitter
 {
-	private void UpdateAspectRatio()
+		private void UpdateAspectRatio()
 	{
 		if (this.targetImage != null && this.targetImage.texture != null)
 		{
@@ -17,18 +17,18 @@ public class RawImageAspectRatioFitter : AspectRatioFitter
 		base.aspectRatio = 1f;
 	}
 
-	protected override void OnTransformParentChanged()
+		protected override void OnTransformParentChanged()
 	{
 		this.UpdateAspectRatio();
 		base.OnTransformParentChanged();
 	}
 
-	protected override void OnRectTransformDimensionsChange()
+		protected override void OnRectTransformDimensionsChange()
 	{
 		this.UpdateAspectRatio();
 		base.OnRectTransformDimensionsChange();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private RawImage targetImage;
 }

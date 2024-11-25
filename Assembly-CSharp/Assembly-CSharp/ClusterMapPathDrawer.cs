@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class ClusterMapPathDrawer : MonoBehaviour
 {
-	public ClusterMapPath AddPath()
+		public ClusterMapPath AddPath()
 	{
 		ClusterMapPath clusterMapPath = UnityEngine.Object.Instantiate<ClusterMapPath>(this.pathPrefab, this.pathContainer);
 		clusterMapPath.Init();
 		return clusterMapPath;
 	}
 
-	public static List<Vector2> GetDrawPathList(Vector2 startLocation, List<AxialI> pathPoints)
+		public static List<Vector2> GetDrawPathList(Vector2 startLocation, List<AxialI> pathPoints)
 	{
 		List<Vector2> list = new List<Vector2>();
 		list.Add(startLocation);
@@ -21,7 +21,7 @@ public class ClusterMapPathDrawer : MonoBehaviour
 		return list;
 	}
 
-	public ClusterMapPath pathPrefab;
+		public ClusterMapPath pathPrefab;
 
-	public Transform pathContainer;
+		public Transform pathContainer;
 }

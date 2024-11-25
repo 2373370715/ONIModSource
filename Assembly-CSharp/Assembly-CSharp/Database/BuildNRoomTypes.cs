@@ -4,15 +4,15 @@ using STRINGS;
 
 namespace Database
 {
-	public class BuildNRoomTypes : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class BuildNRoomTypes : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public BuildNRoomTypes(RoomType roomType, int numToCreate = 1)
+				public BuildNRoomTypes(RoomType roomType, int numToCreate = 1)
 		{
 			this.roomType = roomType;
 			this.numToCreate = numToCreate;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			int num = 0;
 			using (List<Room>.Enumerator enumerator = Game.Instance.roomProber.rooms.GetEnumerator())
@@ -28,14 +28,14 @@ namespace Database
 			return num >= this.numToCreate;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			string id = reader.ReadKleiString();
 			this.roomType = Db.Get().RoomTypes.Get(id);
 			this.numToCreate = reader.ReadInt32();
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			int num = 0;
 			using (List<Room>.Enumerator enumerator = Game.Instance.roomProber.rooms.GetEnumerator())
@@ -51,8 +51,8 @@ namespace Database
 			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.BUILT_N_ROOMS, this.roomType.Name, complete ? this.numToCreate : num, this.numToCreate);
 		}
 
-		private RoomType roomType;
+				private RoomType roomType;
 
-		private int numToCreate;
+				private int numToCreate;
 	}
 }

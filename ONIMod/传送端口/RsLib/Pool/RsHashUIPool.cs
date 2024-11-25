@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 
 public class RsHashUIPool<T> where T : MonoBehaviour {
     // private Dictionary<object, T> dic = new Dictionary<object, T>();

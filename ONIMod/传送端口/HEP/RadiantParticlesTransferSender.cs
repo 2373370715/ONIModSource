@@ -1,6 +1,6 @@
 ﻿using KSerialization;
 
-
+namespace RsTransferPort;
 
 public class RadiantParticlesTransferSender : StateMachineComponent<RadiantParticlesTransferSender.StatesInstance> {
     public static HashedString PORT_ID = "RadiantParticlesTransferSender";

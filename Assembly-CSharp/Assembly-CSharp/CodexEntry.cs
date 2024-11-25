@@ -5,12 +5,11 @@ using UnityEngine;
 
 public class CodexEntry
 {
-	public CodexEntry()
+		public CodexEntry()
 	{
-		this.dlcIds = DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public CodexEntry(string category, List<ContentContainer> contentContainers, string name)
+		public CodexEntry(string category, List<ContentContainer> contentContainers, string name)
 	{
 		this.category = category;
 		this.name = name;
@@ -19,10 +18,9 @@ public class CodexEntry
 		{
 			this.sortString = UI.StripLinkFormatting(name);
 		}
-		this.dlcIds = DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public CodexEntry(string category, string titleKey, List<ContentContainer> contentContainers)
+		public CodexEntry(string category, string titleKey, List<ContentContainer> contentContainers)
 	{
 		this.category = category;
 		this.title = titleKey;
@@ -31,10 +29,9 @@ public class CodexEntry
 		{
 			this.sortString = UI.StripLinkFormatting(this.title);
 		}
-		this.dlcIds = DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-			public List<ContentContainer> contentContainers
+				public List<ContentContainer> contentContainers
 	{
 		get
 		{
@@ -46,7 +43,7 @@ public class CodexEntry
 		}
 	}
 
-	public static List<string> ContentContainerDebug(List<ContentContainer> _contentContainers)
+		public static List<string> ContentContainerDebug(List<ContentContainer> _contentContainers)
 	{
 		List<string> list = new List<string>();
 		foreach (ContentContainer contentContainer in _contentContainers)
@@ -87,7 +84,7 @@ public class CodexEntry
 		return list;
 	}
 
-	private static string GetContentWidgetDebugString(ICodexWidget widget)
+		private static string GetContentWidgetDebugString(ICodexWidget widget)
 	{
 		CodexText codexText = widget as CodexText;
 		if (codexText != null)
@@ -117,37 +114,37 @@ public class CodexEntry
 		return "";
 	}
 
-	public void CreateContentContainerCollection()
+		public void CreateContentContainerCollection()
 	{
 		this.contentContainers = new List<ContentContainer>();
 	}
 
-	public void InsertContentContainer(int index, ContentContainer container)
+		public void InsertContentContainer(int index, ContentContainer container)
 	{
 		this.contentContainers.Insert(index, container);
 	}
 
-	public void RemoveContentContainerAt(int index)
+		public void RemoveContentContainerAt(int index)
 	{
 		this.contentContainers.RemoveAt(index);
 	}
 
-	public void AddContentContainer(ContentContainer container)
+		public void AddContentContainer(ContentContainer container)
 	{
 		this.contentContainers.Add(container);
 	}
 
-	public void AddContentContainerRange(IEnumerable<ContentContainer> containers)
+		public void AddContentContainerRange(IEnumerable<ContentContainer> containers)
 	{
 		this.contentContainers.AddRange(containers);
 	}
 
-	public void RemoveContentContainer(ContentContainer container)
+		public void RemoveContentContainer(ContentContainer container)
 	{
 		this.contentContainers.Remove(container);
 	}
 
-	public ICodexWidget GetFirstWidget()
+		public ICodexWidget GetFirstWidget()
 	{
 		for (int i = 0; i < this.contentContainers.Count; i++)
 		{
@@ -165,7 +162,7 @@ public class CodexEntry
 		return null;
 	}
 
-			public string[] dlcIds
+				public string[] dlcIds
 	{
 		get
 		{
@@ -174,29 +171,15 @@ public class CodexEntry
 		set
 		{
 			this._dlcIds = value;
-			string str = "[ ";
-			for (int i = 0; i < value.Length; i++)
-			{
-				str += ((value[i] == "") ? "\"\" (VANILLA_ID)" : ("\"" + value[i] + "\""));
-				if (i != value.Length - 1)
-				{
-					str += ", ";
-				}
-			}
-			str += " ]";
 		}
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
-		if (this._dlcIds == null)
-		{
-			this._dlcIds = DlcManager.AVAILABLE_ALL_VERSIONS;
-		}
 		return this._dlcIds;
 	}
 
-			public string[] forbiddenDLCIds
+				public string[] forbiddenDLCIds
 	{
 		get
 		{
@@ -217,7 +200,7 @@ public class CodexEntry
 		}
 	}
 
-	public string[] GetForbiddenDLCs()
+		public string[] GetForbiddenDLCs()
 	{
 		if (this._forbiddenDLCIds == null)
 		{
@@ -226,7 +209,7 @@ public class CodexEntry
 		return this._forbiddenDLCIds;
 	}
 
-			public string id
+				public string id
 	{
 		get
 		{
@@ -238,7 +221,7 @@ public class CodexEntry
 		}
 	}
 
-			public string parentId
+				public string parentId
 	{
 		get
 		{
@@ -250,7 +233,7 @@ public class CodexEntry
 		}
 	}
 
-			public string category
+				public string category
 	{
 		get
 		{
@@ -262,7 +245,7 @@ public class CodexEntry
 		}
 	}
 
-			public string title
+				public string title
 	{
 		get
 		{
@@ -274,7 +257,7 @@ public class CodexEntry
 		}
 	}
 
-			public string name
+				public string name
 	{
 		get
 		{
@@ -286,7 +269,7 @@ public class CodexEntry
 		}
 	}
 
-			public string subtitle
+				public string subtitle
 	{
 		get
 		{
@@ -298,7 +281,7 @@ public class CodexEntry
 		}
 	}
 
-			public List<SubEntry> subEntries
+				public List<SubEntry> subEntries
 	{
 		get
 		{
@@ -310,7 +293,7 @@ public class CodexEntry
 		}
 	}
 
-			public List<CodexEntry_MadeAndUsed> contentMadeAndUsed
+				public List<CodexEntry_MadeAndUsed> contentMadeAndUsed
 	{
 		get
 		{
@@ -322,7 +305,7 @@ public class CodexEntry
 		}
 	}
 
-			public Sprite icon
+				public Sprite icon
 	{
 		get
 		{
@@ -334,7 +317,7 @@ public class CodexEntry
 		}
 	}
 
-			public Color iconColor
+				public Color iconColor
 	{
 		get
 		{
@@ -346,7 +329,7 @@ public class CodexEntry
 		}
 	}
 
-			public string iconPrefabID
+				public string iconPrefabID
 	{
 		get
 		{
@@ -358,7 +341,7 @@ public class CodexEntry
 		}
 	}
 
-			public string iconLockID
+				public string iconLockID
 	{
 		get
 		{
@@ -370,7 +353,7 @@ public class CodexEntry
 		}
 	}
 
-			public string iconAssetName
+				public string iconAssetName
 	{
 		get
 		{
@@ -382,7 +365,7 @@ public class CodexEntry
 		}
 	}
 
-			public bool disabled
+				public bool disabled
 	{
 		get
 		{
@@ -394,7 +377,7 @@ public class CodexEntry
 		}
 	}
 
-			public bool searchOnly
+				public bool searchOnly
 	{
 		get
 		{
@@ -406,7 +389,7 @@ public class CodexEntry
 		}
 	}
 
-			public int customContentLength
+				public int customContentLength
 	{
 		get
 		{
@@ -418,7 +401,7 @@ public class CodexEntry
 		}
 	}
 
-			public string sortString
+				public string sortString
 	{
 		get
 		{
@@ -430,7 +413,7 @@ public class CodexEntry
 		}
 	}
 
-			public bool showBeforeGeneratedCategoryLinks
+				public bool showBeforeGeneratedCategoryLinks
 	{
 		get
 		{
@@ -442,49 +425,49 @@ public class CodexEntry
 		}
 	}
 
-	public EntryDevLog log = new EntryDevLog();
+		public EntryDevLog log = new EntryDevLog();
 
-	private List<ContentContainer> _contentContainers = new List<ContentContainer>();
+		private List<ContentContainer> _contentContainers = new List<ContentContainer>();
 
-	private string[] _dlcIds;
+		private string[] _dlcIds;
 
-	private string[] _forbiddenDLCIds;
+		private string[] _forbiddenDLCIds;
 
-	private string[] NONE = new string[0];
+		private string[] NONE = new string[0];
 
-	private string _id;
+		private string _id;
 
-	private string _parentId;
+		private string _parentId;
 
-	private string _category;
+		private string _category;
 
-	private string _title;
+		private string _title;
 
-	private string _name;
+		private string _name;
 
-	private string _subtitle;
+		private string _subtitle;
 
-	private List<SubEntry> _subEntries = new List<SubEntry>();
+		private List<SubEntry> _subEntries = new List<SubEntry>();
 
-	private List<CodexEntry_MadeAndUsed> _contentMadeAndUsed = new List<CodexEntry_MadeAndUsed>();
+		private List<CodexEntry_MadeAndUsed> _contentMadeAndUsed = new List<CodexEntry_MadeAndUsed>();
 
-	private Sprite _icon;
+		private Sprite _icon;
 
-	private Color _iconColor = Color.white;
+		private Color _iconColor = Color.white;
 
-	private string _iconPrefabID;
+		private string _iconPrefabID;
 
-	private string _iconLockID;
+		private string _iconLockID;
 
-	private string _iconAssetName;
+		private string _iconAssetName;
 
-	private bool _disabled;
+		private bool _disabled;
 
-	private bool _searchOnly;
+		private bool _searchOnly;
 
-	private int _customContentLength;
+		private int _customContentLength;
 
-	private string _sortString;
+		private string _sortString;
 
-	private bool _showBeforeGeneratedCategoryLinks;
+		private bool _showBeforeGeneratedCategoryLinks;
 }

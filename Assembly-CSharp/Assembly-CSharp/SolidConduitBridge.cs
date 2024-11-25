@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SolidConduitBridge")]
 public class SolidConduitBridge : ConduitBridgeBase
 {
-		public bool IsDispensing
+			public bool IsDispensing
 	{
 		get
 		{
@@ -12,7 +12,7 @@ public class SolidConduitBridge : ConduitBridgeBase
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Building component = base.GetComponent<Building>();
@@ -21,13 +21,13 @@ public class SolidConduitBridge : ConduitBridgeBase
 		SolidConduit.GetFlowManager().AddConduitUpdater(new Action<float>(this.ConduitUpdate), ConduitFlowPriority.Default);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		SolidConduit.GetFlowManager().RemoveConduitUpdater(new Action<float>(this.ConduitUpdate));
 		base.OnCleanUp();
 	}
 
-	private void ConduitUpdate(float dt)
+		private void ConduitUpdate(float dt)
 	{
 		this.dispensing = false;
 		float num = 0f;
@@ -93,12 +93,12 @@ public class SolidConduitBridge : ConduitBridgeBase
 		}
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Operational operational;
 
-	private int inputCell;
+		private int inputCell;
 
-	private int outputCell;
+		private int outputCell;
 
-	private bool dispensing;
+		private bool dispensing;
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/Disinfectable")]
 public class Disinfectable : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.SetOffsetTable(OffsetGroups.InvertedStandardTableWithCorners);
@@ -22,7 +22,7 @@ public class Disinfectable : Workable
 		base.Subscribe<Disinfectable>(2127324410, Disinfectable.OnCancelDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.isMarkedForDisinfect)
@@ -33,13 +33,13 @@ public class Disinfectable : Workable
 		this.shouldTransferDiseaseWithWorker = false;
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		this.diseasePerSecond = (float)base.GetComponent<PrimaryElement>().DiseaseCount / 10f;
 	}
 
-	protected override bool OnWorkTick(Worker worker, float dt)
+		protected override bool OnWorkTick(WorkerBase worker, float dt)
 	{
 		base.OnWorkTick(worker, dt);
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
@@ -47,7 +47,7 @@ public class Disinfectable : Workable
 		return false;
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		PrimaryElement component = base.GetComponent<PrimaryElement>();
@@ -59,7 +59,7 @@ public class Disinfectable : Workable
 		Prioritizable.RemoveRef(base.gameObject);
 	}
 
-	private void ToggleMarkForDisinfect()
+		private void ToggleMarkForDisinfect()
 	{
 		if (this.isMarkedForDisinfect)
 		{
@@ -70,7 +70,7 @@ public class Disinfectable : Workable
 		this.MarkForDisinfect(false);
 	}
 
-	private void CancelDisinfection()
+		private void CancelDisinfection()
 	{
 		if (this.isMarkedForDisinfect)
 		{
@@ -83,7 +83,7 @@ public class Disinfectable : Workable
 		}
 	}
 
-	public void MarkForDisinfect(bool force = false)
+		public void MarkForDisinfect(bool force = false)
 	{
 		if (!this.isMarkedForDisinfect || force)
 		{
@@ -94,21 +94,21 @@ public class Disinfectable : Workable
 		}
 	}
 
-	private void OnCancel(object data)
+		private void OnCancel(object data)
 	{
 		this.CancelDisinfection();
 	}
 
-	private Chore chore;
+		private Chore chore;
 
-	[Serialize]
+		[Serialize]
 	private bool isMarkedForDisinfect;
 
-	private const float MAX_WORK_TIME = 10f;
+		private const float MAX_WORK_TIME = 10f;
 
-	private float diseasePerSecond;
+		private float diseasePerSecond;
 
-	private static readonly EventSystem.IntraObjectHandler<Disinfectable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Disinfectable>(delegate(Disinfectable component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Disinfectable> OnCancelDelegate = new EventSystem.IntraObjectHandler<Disinfectable>(delegate(Disinfectable component, object data)
 	{
 		component.OnCancel(data);
 	});

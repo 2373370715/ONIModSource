@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class OutfitDesignerScreen_OutfitState
 {
-	private OutfitDesignerScreen_OutfitState(ClothingOutfitUtility.OutfitType outfitType, ClothingOutfitTarget sourceTarget, ClothingOutfitTarget destinationTarget)
+		private OutfitDesignerScreen_OutfitState(ClothingOutfitUtility.OutfitType outfitType, ClothingOutfitTarget sourceTarget, ClothingOutfitTarget destinationTarget)
 	{
 		this.outfitType = outfitType;
 		this.destinationTarget = destinationTarget;
@@ -18,28 +18,28 @@ public class OutfitDesignerScreen_OutfitState
 		}
 	}
 
-	public static OutfitDesignerScreen_OutfitState ForTemplateOutfit(ClothingOutfitTarget outfitTemplate)
+		public static OutfitDesignerScreen_OutfitState ForTemplateOutfit(ClothingOutfitTarget outfitTemplate)
 	{
 		global::Debug.Assert(outfitTemplate.IsTemplateOutfit());
 		return new OutfitDesignerScreen_OutfitState(outfitTemplate.OutfitType, outfitTemplate, outfitTemplate);
 	}
 
-	public static OutfitDesignerScreen_OutfitState ForMinionInstance(ClothingOutfitTarget sourceTarget, GameObject minionInstance)
+		public static OutfitDesignerScreen_OutfitState ForMinionInstance(ClothingOutfitTarget sourceTarget, GameObject minionInstance)
 	{
 		return new OutfitDesignerScreen_OutfitState(sourceTarget.OutfitType, sourceTarget, ClothingOutfitTarget.FromMinion(sourceTarget.OutfitType, minionInstance));
 	}
 
-	public unsafe void ApplyItem(ClothingItemResource item)
+		public unsafe void ApplyItem(ClothingItemResource item)
 	{
 		*this.slots.GetItemSlotForCategory(item.Category) = item;
 	}
 
-	public unsafe Option<ClothingItemResource> GetItemForCategory(PermitCategory category)
+		public unsafe Option<ClothingItemResource> GetItemForCategory(PermitCategory category)
 	{
 		return *this.slots.GetItemSlotForCategory(category);
 	}
 
-	public unsafe void SetItemForCategory(PermitCategory category, Option<ClothingItemResource> item)
+		public unsafe void SetItemForCategory(PermitCategory category, Option<ClothingItemResource> item)
 	{
 		if (item.IsSome())
 		{
@@ -49,7 +49,7 @@ public class OutfitDesignerScreen_OutfitState
 		*this.slots.GetItemSlotForCategory(category) = item;
 	}
 
-	public void AddItemValuesTo(ICollection<ClothingItemResource> clothingItems)
+		public void AddItemValuesTo(ICollection<ClothingItemResource> clothingItems)
 	{
 		for (int i = 0; i < this.slots.array.Length; i++)
 		{
@@ -61,7 +61,7 @@ public class OutfitDesignerScreen_OutfitState
 		}
 	}
 
-	public void AddItemsTo(ICollection<string> itemIds)
+		public void AddItemsTo(ICollection<string> itemIds)
 	{
 		for (int i = 0; i < this.slots.array.Length; i++)
 		{
@@ -73,14 +73,14 @@ public class OutfitDesignerScreen_OutfitState
 		}
 	}
 
-	public string[] GetItems()
+		public string[] GetItems()
 	{
 		List<string> list = new List<string>();
 		this.AddItemsTo(list);
 		return list.ToArray();
 	}
 
-	public bool DoesContainLockedItems()
+		public bool DoesContainLockedItems()
 	{
 		bool result;
 		using (ListPool<string, OutfitDesignerScreen_OutfitState>.PooledList pooledList = PoolsFor<OutfitDesignerScreen_OutfitState>.AllocateList<string>())
@@ -91,7 +91,7 @@ public class OutfitDesignerScreen_OutfitState
 		return result;
 	}
 
-	public bool IsDirty()
+		public bool IsDirty()
 	{
 		using (HashSetPool<string, OutfitDesignerScreen>.PooledHashSet pooledHashSet = PoolsFor<OutfitDesignerScreen>.AllocateHashSet<string>())
 		{
@@ -112,24 +112,24 @@ public class OutfitDesignerScreen_OutfitState
 		return false;
 	}
 
-	public string name;
+		public string name;
 
-	private OutfitDesignerScreen_OutfitState.Slots slots;
+		private OutfitDesignerScreen_OutfitState.Slots slots;
 
-	public ClothingOutfitUtility.OutfitType outfitType;
+		public ClothingOutfitUtility.OutfitType outfitType;
 
-	public ClothingOutfitTarget sourceTarget;
+		public ClothingOutfitTarget sourceTarget;
 
-	public ClothingOutfitTarget destinationTarget;
+		public ClothingOutfitTarget destinationTarget;
 
-	public abstract class Slots
+		public abstract class Slots
 	{
-		private Slots(int slotsCount)
+				private Slots(int slotsCount)
 		{
 			this.array = new Option<ClothingItemResource>[slotsCount];
 		}
 
-		public static OutfitDesignerScreen_OutfitState.Slots For(ClothingOutfitUtility.OutfitType outfitType)
+				public static OutfitDesignerScreen_OutfitState.Slots For(ClothingOutfitUtility.OutfitType outfitType)
 		{
 			switch (outfitType)
 			{
@@ -144,9 +144,9 @@ public class OutfitDesignerScreen_OutfitState
 			}
 		}
 
-		public abstract ref Option<ClothingItemResource> GetItemSlotForCategory(PermitCategory category);
+				public abstract ref Option<ClothingItemResource> GetItemSlotForCategory(PermitCategory category);
 
-		private ref Option<ClothingItemResource> FallbackSlot(OutfitDesignerScreen_OutfitState.Slots self, PermitCategory category)
+				private ref Option<ClothingItemResource> FallbackSlot(OutfitDesignerScreen_OutfitState.Slots self, PermitCategory category)
 		{
 			DebugUtil.DevAssert(false, string.Format("Couldn't get a {0}<{1}> for {2} \"{3}\" on {4}.{5}", new object[]
 			{
@@ -160,17 +160,17 @@ public class OutfitDesignerScreen_OutfitState
 			return ref OutfitDesignerScreen_OutfitState.Slots.dummySlot;
 		}
 
-		public Option<ClothingItemResource>[] array;
+				public Option<ClothingItemResource>[] array;
 
-		private static Option<ClothingItemResource> dummySlot;
+				private static Option<ClothingItemResource> dummySlot;
 
-		public class Clothing : OutfitDesignerScreen_OutfitState.Slots
+				public class Clothing : OutfitDesignerScreen_OutfitState.Slots
 		{
-			public Clothing() : base(6)
+						public Clothing() : base(6)
 			{
 			}
 
-						public ref Option<ClothingItemResource> hatSlot
+									public ref Option<ClothingItemResource> hatSlot
 			{
 				get
 				{
@@ -178,7 +178,7 @@ public class OutfitDesignerScreen_OutfitState
 				}
 			}
 
-						public ref Option<ClothingItemResource> topSlot
+									public ref Option<ClothingItemResource> topSlot
 			{
 				get
 				{
@@ -186,7 +186,7 @@ public class OutfitDesignerScreen_OutfitState
 				}
 			}
 
-						public ref Option<ClothingItemResource> glovesSlot
+									public ref Option<ClothingItemResource> glovesSlot
 			{
 				get
 				{
@@ -194,7 +194,7 @@ public class OutfitDesignerScreen_OutfitState
 				}
 			}
 
-						public ref Option<ClothingItemResource> bottomSlot
+									public ref Option<ClothingItemResource> bottomSlot
 			{
 				get
 				{
@@ -202,7 +202,7 @@ public class OutfitDesignerScreen_OutfitState
 				}
 			}
 
-						public ref Option<ClothingItemResource> shoesSlot
+									public ref Option<ClothingItemResource> shoesSlot
 			{
 				get
 				{
@@ -210,7 +210,7 @@ public class OutfitDesignerScreen_OutfitState
 				}
 			}
 
-						public ref Option<ClothingItemResource> accessorySlot
+									public ref Option<ClothingItemResource> accessorySlot
 			{
 				get
 				{
@@ -218,7 +218,7 @@ public class OutfitDesignerScreen_OutfitState
 				}
 			}
 
-			public override ref Option<ClothingItemResource> GetItemSlotForCategory(PermitCategory category)
+						public override ref Option<ClothingItemResource> GetItemSlotForCategory(PermitCategory category)
 			{
 				if (category == PermitCategory.DupeHats)
 				{
@@ -248,13 +248,13 @@ public class OutfitDesignerScreen_OutfitState
 			}
 		}
 
-		public class Atmosuit : OutfitDesignerScreen_OutfitState.Slots
+				public class Atmosuit : OutfitDesignerScreen_OutfitState.Slots
 		{
-			public Atmosuit() : base(5)
+						public Atmosuit() : base(5)
 			{
 			}
 
-						public ref Option<ClothingItemResource> helmetSlot
+									public ref Option<ClothingItemResource> helmetSlot
 			{
 				get
 				{
@@ -262,7 +262,7 @@ public class OutfitDesignerScreen_OutfitState
 				}
 			}
 
-						public ref Option<ClothingItemResource> bodySlot
+									public ref Option<ClothingItemResource> bodySlot
 			{
 				get
 				{
@@ -270,7 +270,7 @@ public class OutfitDesignerScreen_OutfitState
 				}
 			}
 
-						public ref Option<ClothingItemResource> glovesSlot
+									public ref Option<ClothingItemResource> glovesSlot
 			{
 				get
 				{
@@ -278,7 +278,7 @@ public class OutfitDesignerScreen_OutfitState
 				}
 			}
 
-						public ref Option<ClothingItemResource> beltSlot
+									public ref Option<ClothingItemResource> beltSlot
 			{
 				get
 				{
@@ -286,7 +286,7 @@ public class OutfitDesignerScreen_OutfitState
 				}
 			}
 
-						public ref Option<ClothingItemResource> shoesSlot
+									public ref Option<ClothingItemResource> shoesSlot
 			{
 				get
 				{
@@ -294,7 +294,7 @@ public class OutfitDesignerScreen_OutfitState
 				}
 			}
 
-			public override ref Option<ClothingItemResource> GetItemSlotForCategory(PermitCategory category)
+						public override ref Option<ClothingItemResource> GetItemSlotForCategory(PermitCategory category)
 			{
 				if (category == PermitCategory.AtmoSuitHelmet)
 				{

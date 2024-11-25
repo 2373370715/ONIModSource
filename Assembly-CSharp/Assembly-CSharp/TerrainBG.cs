@@ -4,7 +4,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/TerrainBG")]
 public class TerrainBG : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		this.layer = LayerMask.NameToLayer("Default");
 		this.noiseVolume = this.CreateTexture3D(32);
@@ -19,7 +19,7 @@ public class TerrainBG : KMonoBehaviour
 		}
 	}
 
-	private Texture3D CreateTexture3D(int size)
+		private Texture3D CreateTexture3D(int size)
 	{
 		Color32[] array = new Color32[size * size * size];
 		Texture3D texture3D = new Texture3D(size, size, size, TextureFormat.RGBA32, true);
@@ -39,7 +39,7 @@ public class TerrainBG : KMonoBehaviour
 		return texture3D;
 	}
 
-	public Mesh CreateGasPlane(string name)
+		public Mesh CreateGasPlane(string name)
 	{
 		Mesh mesh = new Mesh();
 		mesh.name = name;
@@ -77,7 +77,7 @@ public class TerrainBG : KMonoBehaviour
 		return mesh;
 	}
 
-	public Mesh CreateWorldPlane(string name)
+		public Mesh CreateWorldPlane(string name)
 	{
 		Mesh mesh = new Mesh();
 		mesh.name = name;
@@ -115,7 +115,7 @@ public class TerrainBG : KMonoBehaviour
 		return mesh;
 	}
 
-	public Mesh CreateStarsPlane(string name)
+		public Mesh CreateStarsPlane(string name)
 	{
 		Mesh mesh = new Mesh();
 		mesh.name = name;
@@ -154,7 +154,7 @@ public class TerrainBG : KMonoBehaviour
 		return mesh;
 	}
 
-	public Mesh CreateNorthernLightsPlane(string name)
+		public Mesh CreateNorthernLightsPlane(string name)
 	{
 		Mesh mesh = new Mesh();
 		mesh.name = name;
@@ -193,7 +193,7 @@ public class TerrainBG : KMonoBehaviour
 		return mesh;
 	}
 
-	private void LateUpdate()
+		private void LateUpdate()
 	{
 		if (!this.doDraw)
 		{
@@ -251,34 +251,34 @@ public class TerrainBG : KMonoBehaviour
 		Graphics.DrawMesh(this.gasPlane, position5, Quaternion.identity, this.gasMaterial, this.layer);
 	}
 
-	public Material northernLightMaterial_ceres;
+		public Material northernLightMaterial_ceres;
 
-	public Material starsMaterial_surface;
+		public Material starsMaterial_surface;
 
-	public Material starsMaterial_orbit;
+		public Material starsMaterial_orbit;
 
-	public Material starsMaterial_space;
+		public Material starsMaterial_space;
 
-	public Material backgroundMaterial;
+		public Material backgroundMaterial;
 
-	public Material gasMaterial;
+		public Material gasMaterial;
 
-	public bool doDraw = true;
+		public bool doDraw = true;
 
-	[SerializeField]
+		[SerializeField]
 	private Texture3D noiseVolume;
 
-	private Mesh starsPlane;
+		private Mesh starsPlane;
 
-	private Mesh northernLightsPlane;
+		private Mesh northernLightsPlane;
 
-	private Mesh worldPlane;
+		private Mesh worldPlane;
 
-	private Mesh gasPlane;
+		private Mesh gasPlane;
 
-	private int layer;
+		private int layer;
 
-	private float northernLightSkySize = 2f;
+		private float northernLightSkySize = 2f;
 
-	private MaterialPropertyBlock[] propertyBlocks;
+		private MaterialPropertyBlock[] propertyBlocks;
 }

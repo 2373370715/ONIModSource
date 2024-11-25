@@ -3,9 +3,9 @@ using STRINGS;
 
 namespace Database
 {
-	public static class PermitRarityExtensions
+		public static class PermitRarityExtensions
 	{
-		public static string GetLocStringName(this PermitRarity rarity)
+				public static string GetLocStringName(this PermitRarity rarity)
 		{
 			switch (rarity)
 			{

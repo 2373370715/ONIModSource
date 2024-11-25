@@ -2,12 +2,12 @@
 
 public class CellVisibility
 {
-	public CellVisibility()
+		public CellVisibility()
 	{
 		Grid.GetVisibleExtents(out this.MinX, out this.MinY, out this.MaxX, out this.MaxY);
 	}
 
-	public bool IsVisible(int cell)
+		public bool IsVisible(int cell)
 	{
 		int num = Grid.CellColumn(cell);
 		if (num < this.MinX || num > this.MaxX)
@@ -18,11 +18,11 @@ public class CellVisibility
 		return num2 >= this.MinY && num2 <= this.MaxY;
 	}
 
-	private int MinX;
+		private int MinX;
 
-	private int MinY;
+		private int MinY;
 
-	private int MaxX;
+		private int MaxX;
 
-	private int MaxY;
+		private int MaxY;
 }

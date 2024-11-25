@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class KAnimSynchronizedController
 {
-			public string Postfix
+				public string Postfix
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class KAnimSynchronizedController
 		}
 	}
 
-	public KAnimSynchronizedController(KAnimControllerBase controller, Grid.SceneLayer layer, string postfix)
+		public KAnimSynchronizedController(KAnimControllerBase controller, Grid.SceneLayer layer, string postfix)
 	{
 		this.controller = controller;
 		this.Postfix = postfix;
@@ -35,12 +35,12 @@ public class KAnimSynchronizedController
 		synchronizer.SyncController(this);
 	}
 
-	public void Enable(bool enable)
+		public void Enable(bool enable)
 	{
 		this.synchronizedController.enabled = enable;
 	}
 
-	public void Play(HashedString anim_name, KAnim.PlayMode mode = KAnim.PlayMode.Once, float speed = 1f, float time_offset = 0f)
+		public void Play(HashedString anim_name, KAnim.PlayMode mode = KAnim.PlayMode.Once, float speed = 1f, float time_offset = 0f)
 	{
 		if (this.synchronizedController.enabled && this.synchronizedController.HasAnimation(anim_name))
 		{
@@ -48,7 +48,7 @@ public class KAnimSynchronizedController
 		}
 	}
 
-	public void Dirty()
+		public void Dirty()
 	{
 		if (this.synchronizedController == null)
 		{
@@ -61,11 +61,11 @@ public class KAnimSynchronizedController
 		this.synchronizedController.FlipY = this.controller.FlipY;
 	}
 
-	private KAnimControllerBase controller;
+		private KAnimControllerBase controller;
 
-	public KAnimControllerBase synchronizedController;
+		public KAnimControllerBase synchronizedController;
 
-	private KAnimLink link;
+		private KAnimLink link;
 
-	private string postfix;
+		private string postfix;
 }

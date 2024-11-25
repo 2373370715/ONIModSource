@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SublimationStationConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SublimationStation";
 		int width = 2;
@@ -34,7 +34,7 @@ public class SublimationStationConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
 		CellOffset cellOffset = new CellOffset(0, 0);
@@ -62,19 +62,19 @@ public class SublimationStationConfig : IBuildingConfig
 		manualDeliveryKG.choreTypeIDHash = Db.Get().ChoreTypes.FetchCritical.IdHash;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<LogicOperationalController>();
 		go.AddOrGetDef<PoweredActiveController.Def>();
 	}
 
-	public const string ID = "SublimationStation";
+		public const string ID = "SublimationStation";
 
-	private const float DIRT_CONSUME_RATE = 1f;
+		private const float DIRT_CONSUME_RATE = 1f;
 
-	private const float DIRT_STORAGE = 600f;
+		private const float DIRT_STORAGE = 600f;
 
-	private const float OXYGEN_GENERATION_RATE = 0.66f;
+		private const float OXYGEN_GENERATION_RATE = 0.66f;
 
-	private const float OXYGEN_TEMPERATURE = 303.15f;
+		private const float OXYGEN_TEMPERATURE = 303.15f;
 }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Database
 {
-	public class PermitResources : ResourceSet<PermitResource>
+		public class PermitResources : ResourceSet<PermitResource>
 	{
-		public PermitResources(ResourceSet parent) : base("PermitResources", parent)
+				public PermitResources(ResourceSet parent) : base("PermitResources", parent)
 		{
 			this.Root = new ResourceSet<Resource>("Root", null);
 			this.Permits = new Dictionary<string, IEnumerable<PermitResource>>();
@@ -29,29 +29,29 @@ namespace Database
 			}
 		}
 
-		public void PostProcess()
+				public void PostProcess()
 		{
 			this.BuildingFacades.PostProcess();
 		}
 
-		public ResourceSet Root;
+				public ResourceSet Root;
 
-		public BuildingFacades BuildingFacades;
+				public BuildingFacades BuildingFacades;
 
-		public EquippableFacades EquippableFacades;
+				public EquippableFacades EquippableFacades;
 
-		public ArtableStages ArtableStages;
+				public ArtableStages ArtableStages;
 
-		public StickerBombs StickerBombs;
+				public StickerBombs StickerBombs;
 
-		public ClothingItems ClothingItems;
+				public ClothingItems ClothingItems;
 
-		public ClothingOutfits ClothingOutfits;
+				public ClothingOutfits ClothingOutfits;
 
-		public MonumentParts MonumentParts;
+				public MonumentParts MonumentParts;
 
-		public BalloonArtistFacades BalloonArtistFacades;
+				public BalloonArtistFacades BalloonArtistFacades;
 
-		public Dictionary<string, IEnumerable<PermitResource>> Permits;
+				public Dictionary<string, IEnumerable<PermitResource>> Permits;
 	}
 }

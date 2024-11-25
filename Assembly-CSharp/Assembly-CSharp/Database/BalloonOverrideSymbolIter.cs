@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Database
 {
-	public class BalloonOverrideSymbolIter
+		public class BalloonOverrideSymbolIter
 	{
-		public BalloonOverrideSymbolIter(Option<BalloonArtistFacadeResource> facade)
+				public BalloonOverrideSymbolIter(Option<BalloonArtistFacadeResource> facade)
 		{
 			global::Debug.Assert(facade.IsNone() || facade.Unwrap().balloonOverrideSymbolIDs.Length != 0);
 			this.facade = facade;
@@ -16,12 +16,12 @@ namespace Database
 			this.Next();
 		}
 
-		public BalloonOverrideSymbol Current()
+				public BalloonOverrideSymbol Current()
 		{
 			return this.current;
 		}
 
-		public BalloonOverrideSymbol Next()
+				public BalloonOverrideSymbol Next()
 		{
 			if (this.facade.IsSome())
 			{
@@ -33,10 +33,10 @@ namespace Database
 			return default(BalloonOverrideSymbol);
 		}
 
-		public readonly Option<BalloonArtistFacadeResource> facade;
+				public readonly Option<BalloonArtistFacadeResource> facade;
 
-		private BalloonOverrideSymbol current;
+				private BalloonOverrideSymbol current;
 
-		private int index;
+				private int index;
 	}
 }

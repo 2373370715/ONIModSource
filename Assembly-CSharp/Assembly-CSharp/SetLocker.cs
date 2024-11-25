@@ -1,236 +1,203 @@
 ﻿using System;
 using KSerialization;
 using STRINGS;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
-public class SetLocker : StateMachineComponent<SetLocker.StatesInstance>, ISidescreenButtonControl
-{
-	protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-	}
+public class SetLocker : StateMachineComponent<SetLocker.StatesInstance>, ISidescreenButtonControl {
+    private Chore chore;
 
-	public void ChooseContents()
-	{
-		this.contents = this.possible_contents_ids[UnityEngine.Random.Range(0, this.possible_contents_ids.GetLength(0))];
-	}
+    [Serialize]
+    private string[] contents;
 
-	protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		base.smi.StartSM();
-		if (this.contents == null)
-		{
-			this.ChooseContents();
-			return;
-		}
-		string[] array = this.contents;
-		for (int i = 0; i < array.Length; i++)
-		{
-			if (Assets.GetPrefab(array[i]) == null)
-			{
-				this.ChooseContents();
-				return;
-			}
-		}
-	}
+    public Vector2I dropOffset = Vector2I.zero;
+    public bool     dropOnDeconstruct;
+    public string   machineSound;
+    public int[]    numDataBanks;
+    public string   overrideAnim;
 
-	public void DropContents()
-	{
-		if (this.contents == null)
-		{
-			return;
-		}
-		if (DlcManager.IsExpansion1Active() && this.numDataBanks.Length >= 2)
-		{
-			int num = UnityEngine.Random.Range(this.numDataBanks[0], this.numDataBanks[1]);
-			for (int i = 0; i <= num; i++)
-			{
-				Scenario.SpawnPrefab(Grid.PosToCell(base.gameObject), this.dropOffset.x, this.dropOffset.y, "OrbitalResearchDatabank", Grid.SceneLayer.Front).SetActive(true);
-				PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, Assets.GetPrefab("OrbitalResearchDatabank".ToTag()).GetProperName(), base.smi.master.transform, 1.5f, false);
-			}
-		}
-		for (int j = 0; j < this.contents.Length; j++)
-		{
-			GameObject gameObject = Scenario.SpawnPrefab(Grid.PosToCell(base.gameObject), this.dropOffset.x, this.dropOffset.y, this.contents[j], Grid.SceneLayer.Front);
-			if (gameObject != null)
-			{
-				gameObject.SetActive(true);
-				PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus, Assets.GetPrefab(this.contents[j].ToTag()).GetProperName(), base.smi.master.transform, 1.5f, false);
-			}
-		}
-		base.gameObject.Trigger(-372600542, this);
-	}
+    [Serialize]
+    private bool pendingRummage;
 
-	private void OnClickOpen()
-	{
-		this.ActivateChore(null);
-	}
+    public string[][] possible_contents_ids;
 
-	private void OnClickCancel()
-	{
-		this.CancelChore(null);
-	}
+    [MyCmpAdd]
+    private Prioritizable prioritizable;
 
-	public void ActivateChore(object param = null)
-	{
-		if (this.chore != null)
-		{
-			return;
-		}
-		base.GetComponent<Workable>().SetWorkTime(1.5f);
-		this.chore = new WorkChore<Workable>(Db.Get().ChoreTypes.EmptyStorage, this, null, true, delegate(Chore o)
-		{
-			this.CompleteChore();
-		}, null, null, true, null, false, true, Assets.GetAnim(this.overrideAnim), false, true, true, PriorityScreen.PriorityClass.high, 5, false, true);
-	}
+    [Serialize]
+    private bool used;
 
-	public void CancelChore(object param = null)
-	{
-		if (this.chore == null)
-		{
-			return;
-		}
-		this.chore.Cancel("User cancelled");
-		this.chore = null;
-	}
+    public string SidescreenButtonText =>
+        chore == null ? UI.USERMENUACTIONS.OPENPOI.NAME : UI.USERMENUACTIONS.OPENPOI.NAME_OFF;
 
-	private void CompleteChore()
-	{
-		this.used = true;
-		base.smi.GoTo(base.smi.sm.open);
-		this.chore = null;
-		Game.Instance.userMenu.Refresh(base.gameObject);
-	}
+    public string SidescreenButtonTooltip =>
+        chore == null ? UI.USERMENUACTIONS.OPENPOI.TOOLTIP : UI.USERMENUACTIONS.OPENPOI.TOOLTIP_OFF;
 
-		public string SidescreenButtonText
-	{
-		get
-		{
-			return (this.chore == null) ? UI.USERMENUACTIONS.OPENPOI.NAME : UI.USERMENUACTIONS.OPENPOI.NAME_OFF;
-		}
-	}
+    public bool SidescreenEnabled() { return true; }
+    public int  HorizontalGroupID() { return -1; }
 
-		public string SidescreenButtonTooltip
-	{
-		get
-		{
-			return (this.chore == null) ? UI.USERMENUACTIONS.OPENPOI.TOOLTIP : UI.USERMENUACTIONS.OPENPOI.TOOLTIP_OFF;
-		}
-	}
+    public void OnSidescreenButtonPressed() {
+        if (chore == null) {
+            OnClickOpen();
+            return;
+        }
 
-	public bool SidescreenEnabled()
-	{
-		return true;
-	}
+        OnClickCancel();
+    }
 
-	public int HorizontalGroupID()
-	{
-		return -1;
-	}
+    public             bool SidescreenButtonInteractable()                     { return !used; }
+    public             int  ButtonSideScreenSortOrder()                        { return 20; }
+    public             void SetButtonTextOverride(ButtonMenuTextOverride text) { throw new NotImplementedException(); }
+    protected override void OnPrefabInit()                                     { base.OnPrefabInit(); }
 
-	public void OnSidescreenButtonPressed()
-	{
-		if (this.chore == null)
-		{
-			this.OnClickOpen();
-			return;
-		}
-		this.OnClickCancel();
-	}
+    public void ChooseContents() {
+        contents = possible_contents_ids[Random.Range(0, possible_contents_ids.GetLength(0))];
+    }
 
-	public bool SidescreenButtonInteractable()
-	{
-		return !this.used;
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        smi.StartSM();
+        if (contents == null)
+            ChooseContents();
+        else {
+            var array = contents;
+            for (var i = 0; i < array.Length; i++)
+                if (Assets.GetPrefab(array[i]) == null) {
+                    ChooseContents();
+                    break;
+                }
+        }
 
-	public int ButtonSideScreenSortOrder()
-	{
-		return 20;
-	}
+        if (pendingRummage) ActivateChore();
+    }
 
-	public void SetButtonTextOverride(ButtonMenuTextOverride text)
-	{
-		throw new NotImplementedException();
-	}
+    public void DropContents() {
+        if (contents == null) return;
 
-	public string[][] possible_contents_ids;
+        if (DlcManager.IsExpansion1Active() && numDataBanks.Length >= 2) {
+            var num = Random.Range(numDataBanks[0], numDataBanks[1]);
+            for (var i = 0; i <= num; i++) {
+                Scenario.SpawnPrefab(Grid.PosToCell(gameObject),
+                                     dropOffset.x,
+                                     dropOffset.y,
+                                     "OrbitalResearchDatabank",
+                                     Grid.SceneLayer.Front)
+                        .SetActive(true);
 
-	public string machineSound;
+                PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus,
+                                              Assets.GetPrefab("OrbitalResearchDatabank".ToTag()).GetProperName(),
+                                              smi.master.transform);
+            }
+        }
 
-	public string overrideAnim;
+        for (var j = 0; j < contents.Length; j++) {
+            var gameObject = Scenario.SpawnPrefab(Grid.PosToCell(this.gameObject),
+                                                  dropOffset.x,
+                                                  dropOffset.y,
+                                                  contents[j],
+                                                  Grid.SceneLayer.Front);
 
-	public Vector2I dropOffset = Vector2I.zero;
+            if (gameObject != null) {
+                gameObject.SetActive(true);
+                PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Plus,
+                                              Assets.GetPrefab(contents[j].ToTag()).GetProperName(),
+                                              smi.master.transform);
+            }
+        }
 
-	public int[] numDataBanks;
+        this.gameObject.Trigger(-372600542, this);
+    }
 
-	[Serialize]
-	private string[] contents;
+    private void OnClickOpen()   { ActivateChore(); }
+    private void OnClickCancel() { CancelChore(); }
 
-	public bool dropOnDeconstruct;
+    public void ActivateChore(object param = null) {
+        if (chore != null) return;
 
-	[Serialize]
-	private bool used;
+        Prioritizable.AddRef(gameObject);
+        Trigger(1980521255);
+        pendingRummage = true;
+        GetComponent<Workable>().SetWorkTime(1.5f);
+        chore = new WorkChore<Workable>(Db.Get().ChoreTypes.EmptyStorage,
+                                        this,
+                                        null,
+                                        true,
+                                        delegate { CompleteChore(); },
+                                        null,
+                                        null,
+                                        true,
+                                        null,
+                                        false,
+                                        true,
+                                        Assets.GetAnim(overrideAnim),
+                                        false,
+                                        true,
+                                        true,
+                                        PriorityScreen.PriorityClass.high);
+    }
 
-	private Chore chore;
+    public void CancelChore(object param = null) {
+        if (chore == null) return;
 
-	public class StatesInstance : GameStateMachine<SetLocker.States, SetLocker.StatesInstance, SetLocker, object>.GameInstance
-	{
-		public StatesInstance(SetLocker master) : base(master)
-		{
-		}
+        pendingRummage = false;
+        Prioritizable.RemoveRef(gameObject);
+        Trigger(1980521255);
+        chore.Cancel("User cancelled");
+        chore = null;
+    }
 
-		public override void StartSM()
-		{
-			base.StartSM();
-			base.smi.Subscribe(-702296337, delegate(object o)
-			{
-				if (base.smi.master.dropOnDeconstruct && base.smi.IsInsideState(base.smi.sm.closed))
-				{
-					base.smi.master.DropContents();
-				}
-			});
-		}
-	}
+    private void CompleteChore() {
+        used = true;
+        smi.GoTo(smi.sm.open);
+        chore          = null;
+        pendingRummage = false;
+        Game.Instance.userMenu.Refresh(gameObject);
+        Prioritizable.RemoveRef(gameObject);
+    }
 
-	public class States : GameStateMachine<SetLocker.States, SetLocker.StatesInstance, SetLocker>
-	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
-		{
-			default_state = this.closed;
-			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
-			this.closed.PlayAnim("on").Enter(delegate(SetLocker.StatesInstance smi)
-			{
-				if (smi.master.machineSound != null)
-				{
-					LoopingSounds component = smi.master.GetComponent<LoopingSounds>();
-					if (component != null)
-					{
-						component.StartSound(GlobalAssets.GetSound(smi.master.machineSound, false));
-					}
-				}
-			});
-			this.open.PlayAnim("working_pre").QueueAnim("working_loop", false, null).QueueAnim("working_pst", false, null).OnAnimQueueComplete(this.off).Exit(delegate(SetLocker.StatesInstance smi)
-			{
-				smi.master.DropContents();
-			});
-			this.off.PlayAnim("off").Enter(delegate(SetLocker.StatesInstance smi)
-			{
-				if (smi.master.machineSound != null)
-				{
-					LoopingSounds component = smi.master.GetComponent<LoopingSounds>();
-					if (component != null)
-					{
-						component.StopSound(GlobalAssets.GetSound(smi.master.machineSound, false));
-					}
-				}
-			});
-		}
+    public class StatesInstance : GameStateMachine<States, StatesInstance, SetLocker, object>.GameInstance {
+        public StatesInstance(SetLocker master) : base(master) { }
 
-		public GameStateMachine<SetLocker.States, SetLocker.StatesInstance, SetLocker, object>.State closed;
+        public override void StartSM() {
+            base.StartSM();
+            smi.Subscribe(-702296337,
+                          delegate {
+                              if (smi.master.dropOnDeconstruct && smi.IsInsideState(smi.sm.closed))
+                                  smi.master.DropContents();
+                          });
+        }
+    }
 
-		public GameStateMachine<SetLocker.States, SetLocker.StatesInstance, SetLocker, object>.State open;
+    public class States : GameStateMachine<States, StatesInstance, SetLocker> {
+        public State closed;
+        public State off;
+        public State open;
 
-		public GameStateMachine<SetLocker.States, SetLocker.StatesInstance, SetLocker, object>.State off;
-	}
+        public override void InitializeStates(out BaseState default_state) {
+            default_state = closed;
+            serializable  = SerializeType.Both_DEPRECATED;
+            closed.PlayAnim("on")
+                  .Enter(delegate(StatesInstance smi) {
+                             if (smi.master.machineSound != null) {
+                                 var component = smi.master.GetComponent<LoopingSounds>();
+                                 if (component != null)
+                                     component.StartSound(GlobalAssets.GetSound(smi.master.machineSound));
+                             }
+                         });
+
+            open.PlayAnim("working_pre")
+                .QueueAnim("working_loop")
+                .QueueAnim("working_pst")
+                .OnAnimQueueComplete(off)
+                .Exit(delegate(StatesInstance smi) { smi.master.DropContents(); });
+
+            off.PlayAnim("off")
+               .Enter(delegate(StatesInstance smi) {
+                          if (smi.master.machineSound != null) {
+                              var component = smi.master.GetComponent<LoopingSounds>();
+                              if (component != null)
+                                  component.StopSound(GlobalAssets.GetSound(smi.master.machineSound));
+                          }
+                      });
+        }
+    }
 }

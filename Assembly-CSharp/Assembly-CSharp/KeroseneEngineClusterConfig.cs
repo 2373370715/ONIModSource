@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class KeroseneEngineClusterConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "KeroseneEngineCluster";
 		int width = 7;
@@ -34,7 +34,7 @@ public class KeroseneEngineClusterConfig : IBuildingConfig
 		buildingDef.ObjectLayer = ObjectLayer.Building;
 		buildingDef.attachablePosition = new CellOffset(0, 0);
 		buildingDef.GeneratorWattageRating = 480f;
-		buildingDef.GeneratorBaseCapacity = 20000f;
+		buildingDef.GeneratorBaseCapacity = buildingDef.GeneratorWattageRating;
 		buildingDef.RequiresPowerInput = false;
 		buildingDef.RequiresPowerOutput = false;
 		buildingDef.CanMove = true;
@@ -43,7 +43,7 @@ public class KeroseneEngineClusterConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -54,7 +54,7 @@ public class KeroseneEngineClusterConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		RocketEngineCluster rocketEngineCluster = go.AddOrGet<RocketEngineCluster>();
 		rocketEngineCluster.maxModules = 7;
@@ -72,7 +72,7 @@ public class KeroseneEngineClusterConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "KeroseneEngineCluster";
+		public const string ID = "KeroseneEngineCluster";
 
-	public const SimHashes FUEL = SimHashes.Petroleum;
+		public const SimHashes FUEL = SimHashes.Petroleum;
 }

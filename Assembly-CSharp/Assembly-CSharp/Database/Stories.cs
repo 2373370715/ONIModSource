@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Database
 {
-	public class Stories : ResourceSet<Story>
+		public class Stories : ResourceSet<Story>
 	{
-		public Stories(ResourceSet parent) : base("Stories", parent)
+				public Stories(ResourceSet parent) : base("Stories", parent)
 		{
 			this.MegaBrainTank = base.Add(new Story("MegaBrainTank", "storytraits/MegaBrainTank", 0, 1, 43, "storytraits/mega_brain_tank").SetKeepsake("keepsake_megabrain"));
 			this.CreatureManipulator = base.Add(new Story("CreatureManipulator", "storytraits/CritterManipulator", 1, 2, 43, "storytraits/creature_manipulator_retrofit").SetKeepsake("keepsake_crittermanipulator"));
@@ -17,14 +17,14 @@ namespace Database
 			this.resources.Sort();
 		}
 
-		public void AddStoryMod(Story mod)
+				public void AddStoryMod(Story mod)
 		{
 			mod.kleiUseOnlyCoordinateOrder = -1;
 			base.Add(mod);
 			this.resources.Sort();
 		}
 
-		public int GetHighestCoordinate()
+				public int GetHighestCoordinate()
 		{
 			int num = 0;
 			foreach (Story story in this.resources)
@@ -34,7 +34,7 @@ namespace Database
 			return num;
 		}
 
-		public WorldTrait GetStoryTrait(string id, bool assertMissingTrait = false)
+				public WorldTrait GetStoryTrait(string id, bool assertMissingTrait = false)
 		{
 			Story story = this.resources.Find((Story x) => x.Id == id);
 			if (story != null)
@@ -44,26 +44,26 @@ namespace Database
 			return null;
 		}
 
-		public Story GetStoryFromStoryTrait(string storyTraitTemplate)
+				public Story GetStoryFromStoryTrait(string storyTraitTemplate)
 		{
 			return this.resources.Find((Story x) => x.worldgenStoryTraitKey == storyTraitTemplate);
 		}
 
-		public List<Story> GetStoriesSortedByCoordinateOrder()
+				public List<Story> GetStoriesSortedByCoordinateOrder()
 		{
 			List<Story> list = new List<Story>(this.resources);
 			list.Sort((Story s1, Story s2) => s1.kleiUseOnlyCoordinateOrder.CompareTo(s2.kleiUseOnlyCoordinateOrder));
 			return list;
 		}
 
-		public Story MegaBrainTank;
+				public Story MegaBrainTank;
 
-		public Story CreatureManipulator;
+				public Story CreatureManipulator;
 
-		public Story LonelyMinion;
+				public Story LonelyMinion;
 
-		public Story FossilHunt;
+				public Story FossilHunt;
 
-		public Story MorbRoverMaker;
+				public Story MorbRoverMaker;
 	}
 }

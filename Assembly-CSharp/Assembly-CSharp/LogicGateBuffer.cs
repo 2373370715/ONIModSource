@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 {
-			public float DelayAmount
+				public float DelayAmount
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 		}
 	}
 
-		private int DelayAmountTicks
+			private int DelayAmountTicks
 	{
 		get
 		{
@@ -31,7 +31,7 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 		}
 	}
 
-		public string SliderTitleKey
+			public string SliderTitleKey
 	{
 		get
 		{
@@ -39,7 +39,7 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 		}
 	}
 
-		public string SliderUnits
+			public string SliderUnits
 	{
 		get
 		{
@@ -47,48 +47,48 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 		}
 	}
 
-	public int SliderDecimalPlaces(int index)
+		public int SliderDecimalPlaces(int index)
 	{
 		return 1;
 	}
 
-	public float GetSliderMin(int index)
+		public float GetSliderMin(int index)
 	{
 		return 0.1f;
 	}
 
-	public float GetSliderMax(int index)
+		public float GetSliderMax(int index)
 	{
 		return 200f;
 	}
 
-	public float GetSliderValue(int index)
+		public float GetSliderValue(int index)
 	{
 		return this.DelayAmount;
 	}
 
-	public void SetSliderValue(float value, int index)
+		public void SetSliderValue(float value, int index)
 	{
 		this.DelayAmount = value;
 	}
 
-	public string GetSliderTooltipKey(int index)
+		public string GetSliderTooltipKey(int index)
 	{
 		return "STRINGS.UI.UISIDESCREENS.LOGIC_BUFFER_SIDE_SCREEN.TOOLTIP";
 	}
 
-	string ISliderControl.GetSliderTooltip(int index)
+		string ISliderControl.GetSliderTooltip(int index)
 	{
 		return string.Format(Strings.Get("STRINGS.UI.UISIDESCREENS.LOGIC_BUFFER_SIDE_SCREEN.TOOLTIP"), this.DelayAmount);
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicGateBuffer>(-905833192, LogicGateBuffer.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicGateBuffer component = ((GameObject)data).GetComponent<LogicGateBuffer>();
 		if (component != null)
@@ -97,7 +97,7 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		KBatchedAnimController component = base.GetComponent<KBatchedAnimController>();
@@ -105,7 +105,7 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 		this.meter.SetPositionPercent(1f);
 	}
 
-	private void Update()
+		private void Update()
 	{
 		float positionPercent;
 		if (this.input_was_previously_positive)
@@ -123,7 +123,7 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 		this.meter.SetPositionPercent(positionPercent);
 	}
 
-	public override void LogicTick()
+		public override void LogicTick()
 	{
 		if (!this.input_was_previously_positive && this.delayTicksRemaining > 0)
 		{
@@ -135,7 +135,7 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 		}
 	}
 
-	protected override int GetCustomValue(int val1, int val2)
+		protected override int GetCustomValue(int val1, int val2)
 	{
 		if (val1 != 0)
 		{
@@ -158,7 +158,7 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 		return 1;
 	}
 
-	private void OnDelay()
+		private void OnDelay()
 	{
 		if (this.cleaningUp)
 		{
@@ -179,21 +179,21 @@ public class LogicGateBuffer : LogicGate, ISingleSliderControl, ISliderControl
 		base.RefreshAnimation();
 	}
 
-	[Serialize]
+		[Serialize]
 	private bool input_was_previously_positive;
 
-	[Serialize]
+		[Serialize]
 	private float delayAmount = 5f;
 
-	[Serialize]
+		[Serialize]
 	private int delayTicksRemaining;
 
-	private MeterController meter;
+		private MeterController meter;
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicGateBuffer> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicGateBuffer>(delegate(LogicGateBuffer component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicGateBuffer> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicGateBuffer>(delegate(LogicGateBuffer component, object data)
 	{
 		component.OnCopySettings(data);
 	});

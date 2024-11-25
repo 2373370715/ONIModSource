@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SicknessMonitor : GameStateMachine<SicknessMonitor, SicknessMonitor.Instance>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
 		default_state = this.healthy;
@@ -33,48 +33,48 @@ public class SicknessMonitor : GameStateMachine<SicknessMonitor, SicknessMonitor
 		this.post.ToggleChore((SicknessMonitor.Instance smi) => new EmoteChore(smi.master, Db.Get().ChoreTypes.EmoteHighPriority, SicknessMonitor.SickPostKAnim, SicknessMonitor.SickPostAnims, KAnim.PlayMode.Once, false), this.healthy);
 	}
 
-	public GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State healthy;
+		public GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State healthy;
 
-	public SicknessMonitor.SickStates sick;
+		public SicknessMonitor.SickStates sick;
 
-	public GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State post;
+		public GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State post;
 
-	public GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State post_nocheer;
+		public GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State post_nocheer;
 
-	private static readonly HashedString SickPostKAnim = "anim_cheer_kanim";
+		private static readonly HashedString SickPostKAnim = "anim_cheer_kanim";
 
-	private static readonly HashedString[] SickPostAnims = new HashedString[]
+		private static readonly HashedString[] SickPostAnims = new HashedString[]
 	{
 		"cheer_pre",
 		"cheer_loop",
 		"cheer_pst"
 	};
 
-	public class SickStates : GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State
+		public class SickStates : GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State
 	{
-		public GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State minor;
+				public GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State minor;
 
-		public GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State major;
+				public GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.State major;
 	}
 
-	public new class Instance : GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.GameInstance
+		public new class Instance : GameStateMachine<SicknessMonitor, SicknessMonitor.Instance, IStateMachineTarget, object>.GameInstance
 	{
-		public Instance(IStateMachineTarget master) : base(master)
+				public Instance(IStateMachineTarget master) : base(master)
 		{
 			this.sicknesses = master.GetComponent<MinionModifiers>().sicknesses;
 		}
 
-		private string OnGetToolTip(List<Notification> notifications, object data)
+				private string OnGetToolTip(List<Notification> notifications, object data)
 		{
 			return DUPLICANTS.STATUSITEMS.HASDISEASE.TOOLTIP;
 		}
 
-		public bool IsSick()
+				public bool IsSick()
 		{
 			return this.sicknesses.Count > 0;
 		}
 
-		public bool HasMajorDisease()
+				public bool HasMajorDisease()
 		{
 			using (IEnumerator<SicknessInstance> enumerator = this.sicknesses.GetEnumerator())
 			{
@@ -89,7 +89,7 @@ public class SicknessMonitor : GameStateMachine<SicknessMonitor, SicknessMonitor
 			return false;
 		}
 
-		public void AutoAssignClinic()
+				public void AutoAssignClinic()
 		{
 			Ownables soleOwner = base.sm.masterTarget.Get(base.smi).GetComponent<MinionIdentity>().GetSoleOwner();
 			AssignableSlot clinic = Db.Get().AssignableSlots.Clinic;
@@ -105,7 +105,7 @@ public class SicknessMonitor : GameStateMachine<SicknessMonitor, SicknessMonitor
 			soleOwner.AutoAssignSlot(clinic);
 		}
 
-		public void UnassignClinic()
+				public void UnassignClinic()
 		{
 			Assignables soleOwner = base.sm.masterTarget.Get(base.smi).GetComponent<MinionIdentity>().GetSoleOwner();
 			AssignableSlot clinic = Db.Get().AssignableSlots.Clinic;
@@ -116,7 +116,7 @@ public class SicknessMonitor : GameStateMachine<SicknessMonitor, SicknessMonitor
 			}
 		}
 
-		public bool IsSleepingOrSleepSchedule()
+				public bool IsSleepingOrSleepSchedule()
 		{
 			Schedulable component = base.GetComponent<Schedulable>();
 			if (component != null && component.IsAllowed(Db.Get().ScheduleBlockTypes.Sleep))
@@ -127,6 +127,6 @@ public class SicknessMonitor : GameStateMachine<SicknessMonitor, SicknessMonitor
 			return component2 != null && component2.HasTag(GameTags.Asleep);
 		}
 
-		private Sicknesses sicknesses;
+				private Sicknesses sicknesses;
 	}
 }

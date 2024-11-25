@@ -19,13 +19,13 @@ using UnityEngine.UI;
 
 public class KCrashReporter : MonoBehaviour
 {
-			public static event Action<bool> onCrashReported;
+				public static event Action<bool> onCrashReported;
 
-			public static event Action<float> onCrashUploadProgress;
+				public static event Action<float> onCrashUploadProgress;
 
-			public static bool hasReportedError { get; private set; }
+				public static bool hasReportedError { get; private set; }
 
-	private void OnEnable()
+		private void OnEnable()
 	{
 		KCrashReporter.dataRoot = Application.dataPath;
 		Application.logMessageReceived += this.HandleLog;
@@ -86,12 +86,12 @@ public class KCrashReporter : MonoBehaviour
 		}
 	}
 
-	private void OnDisable()
+		private void OnDisable()
 	{
 		Application.logMessageReceived -= this.HandleLog;
 	}
 
-	private void HandleLog(string msg, string stack_trace, LogType type)
+		private void HandleLog(string msg, string stack_trace, LogType type)
 	{
 		if ((KCrashReporter.logCount += 1U) == 10000000U)
 		{
@@ -163,7 +163,7 @@ public class KCrashReporter : MonoBehaviour
 		}
 	}
 
-	public bool ShowDialog(string error, string stack_trace)
+		public bool ShowDialog(string error, string stack_trace)
 	{
 		if (this.errorScreen != null)
 		{
@@ -203,7 +203,7 @@ public class KCrashReporter : MonoBehaviour
 		return true;
 	}
 
-	private void OnCloseErrorDialog()
+		private void OnCloseErrorDialog()
 	{
 		UnityEngine.Object.Destroy(this.errorScreen);
 		this.errorScreen = null;
@@ -214,12 +214,12 @@ public class KCrashReporter : MonoBehaviour
 		}
 	}
 
-	private void OnQuitToDesktop()
+		private void OnQuitToDesktop()
 	{
 		App.Quit();
 	}
 
-	private static string GetUserID()
+		private static string GetUserID()
 	{
 		if (DistributionPlatform.Initialized)
 		{
@@ -236,7 +236,7 @@ public class KCrashReporter : MonoBehaviour
 		return "LocalUser_" + Environment.UserName;
 	}
 
-	private static string GetLogContents()
+		private static string GetLogContents()
 	{
 		string path = Util.LogFilePath();
 		if (File.Exists(path))
@@ -252,7 +252,7 @@ public class KCrashReporter : MonoBehaviour
 		return "";
 	}
 
-	public static void ReportDevNotification(string notification_name, string stack_trace, string details = "", bool includeSaveFile = false, string[] extraCategories = null)
+		public static void ReportDevNotification(string notification_name, string stack_trace, string details = "", bool includeSaveFile = false, string[] extraCategories = null)
 	{
 		if (KCrashReporter.previouslyReportedDevNotifications == null)
 		{
@@ -282,7 +282,7 @@ public class KCrashReporter : MonoBehaviour
 		KCrashReporter.hasReportedError = hasReportedError;
 	}
 
-	public static void ReportError(string msg, string stack_trace, ConfirmDialogScreen confirm_prefab, GameObject confirm_parent, string userMessage = "", bool includeSaveFile = true, string[] extraCategories = null, string[] extraFiles = null)
+		public static void ReportError(string msg, string stack_trace, ConfirmDialogScreen confirm_prefab, GameObject confirm_parent, string userMessage = "", bool includeSaveFile = true, string[] extraCategories = null, string[] extraFiles = null)
 	{
 		if (KPrivacyPrefs.instance.disableDataCollection)
 		{
@@ -347,10 +347,7 @@ public class KCrashReporter : MonoBehaviour
 			"KCrashReporter.Assert",
 			"No stack trace."
 		};
-		foreach (string text2 in stack_trace.Split(new char[]
-		{
-			'\n'
-		}))
+		foreach (string text2 in stack_trace.Split('\n', StringSplitOptions.None))
 		{
 			if (list.Count >= 5)
 			{
@@ -435,7 +432,7 @@ public class KCrashReporter : MonoBehaviour
 		};
 	}
 
-	private static IEnumerator SubmitCrashAsync(string jsonString, byte[] archiveData, System.Action successCallback, Action<long> failureCallback)
+		private static IEnumerator SubmitCrashAsync(string jsonString, byte[] archiveData, System.Action successCallback, Action<long> failureCallback)
 	{
 		bool success = false;
 		Uri uri = new Uri("https://games-feedback.klei.com/submit");
@@ -486,13 +483,13 @@ public class KCrashReporter : MonoBehaviour
 		yield break;
 	}
 
-	public static void ReportBug(string msg, GameObject confirmParent)
+		public static void ReportBug(string msg, GameObject confirmParent)
 	{
 		string stack_trace = "Bug Report From: " + KCrashReporter.GetUserID() + " at " + System.DateTime.Now.ToString();
 		KCrashReporter.ReportError(msg, stack_trace, ScreenPrefabs.Instance.ConfirmDialogScreen, confirmParent, "", true, null, null);
 	}
 
-	public static void Assert(bool condition, string message, string[] extraCategories = null)
+		public static void Assert(bool condition, string message, string[] extraCategories = null)
 	{
 		if (!condition && !KCrashReporter.hasReportedError)
 		{
@@ -501,7 +498,7 @@ public class KCrashReporter : MonoBehaviour
 		}
 	}
 
-	public static void ReportSimDLLCrash(string msg, string stack_trace, string dmp_filename)
+		public static void ReportSimDLLCrash(string msg, string stack_trace, string dmp_filename)
 	{
 		if (KCrashReporter.hasReportedError)
 		{
@@ -516,7 +513,7 @@ public class KCrashReporter : MonoBehaviour
 		});
 	}
 
-	private static byte[] CreateArchiveZip(string log, List<string> files)
+		private static byte[] CreateArchiveZip(string log, List<string> files)
 	{
 		byte[] result;
 		using (MemoryStream memoryStream = new MemoryStream())
@@ -563,7 +560,7 @@ public class KCrashReporter : MonoBehaviour
 		return result;
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (KCrashReporter.pendingCrash != null)
 		{
@@ -574,44 +571,44 @@ public class KCrashReporter : MonoBehaviour
 		}
 	}
 
-	public static string MOST_RECENT_SAVEFILE = null;
+		public static string MOST_RECENT_SAVEFILE = null;
 
-	public const string CRASH_REPORTER_SERVER = "https://games-feedback.klei.com";
+		public const string CRASH_REPORTER_SERVER = "https://games-feedback.klei.com";
 
-	public const uint MAX_LOGS = 10000000U;
+		public const uint MAX_LOGS = 10000000U;
 
-	public static bool ignoreAll = false;
+		public static bool ignoreAll = false;
 
-	public static bool debugWasUsed = false;
+		public static bool debugWasUsed = false;
 
-	public static bool haveActiveMods = false;
+		public static bool haveActiveMods = false;
 
-	public static uint logCount = 0U;
+		public static uint logCount = 0U;
 
-	public static string error_canvas_name = "ErrorCanvas";
+		public static string error_canvas_name = "ErrorCanvas";
 
-	public static bool disableDeduping = false;
+		public static bool disableDeduping = false;
 
-	public static bool hasCrash = false;
+		public static bool hasCrash = false;
 
-	private static readonly Regex failedToLoadModuleRegEx = new Regex("^Failed to load '(.*?)' with error (.*)", RegexOptions.Multiline);
+		private static readonly Regex failedToLoadModuleRegEx = new Regex("^Failed to load '(.*?)' with error (.*)", RegexOptions.Multiline);
 
-	[SerializeField]
+		[SerializeField]
 	private LoadScreen loadScreenPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private GameObject reportErrorPrefab;
 
-	[SerializeField]
+		[SerializeField]
 	private ConfirmDialogScreen confirmDialogPrefab;
 
-	private GameObject errorScreen;
+		private GameObject errorScreen;
 
-	public static bool terminateOnError = true;
+		public static bool terminateOnError = true;
 
-	private static string dataRoot;
+		private static string dataRoot;
 
-	private static readonly string[] IgnoreStrings = new string[]
+		private static readonly string[] IgnoreStrings = new string[]
 	{
 		"Releasing render texture whose render buffer is set as Camera's target buffer with Camera.SetTargetBuffers!",
 		"The profiler has run out of samples for this frame. This frame will be skipped. Increase the sample limit using Profiler.maxNumberOfSamplesPerFrame",
@@ -620,38 +617,38 @@ public class KCrashReporter : MonoBehaviour
 		"<I> Failed to get cursor position:\r\nSuccess.\r\n"
 	};
 
-	private static HashSet<int> previouslyReportedDevNotifications;
+		private static HashSet<int> previouslyReportedDevNotifications;
 
-	private static KCrashReporter.PendingCrash pendingCrash;
+		private static KCrashReporter.PendingCrash pendingCrash;
 
-	public class CRASH_CATEGORY
+		public class CRASH_CATEGORY
 	{
-		public static string DEVNOTIFICATION = "DevNotification";
+				public static string DEVNOTIFICATION = "DevNotification";
 
-		public static string VANILLA = "Vanilla";
+				public static string VANILLA = "Vanilla";
 
-		public static string SPACEDOUT = "SpacedOut";
+				public static string SPACEDOUT = "SpacedOut";
 
-		public static string MODDED = "Modded";
+				public static string MODDED = "Modded";
 
-		public static string DEBUGUSED = "DebugUsed";
+				public static string DEBUGUSED = "DebugUsed";
 
-		public static string SANDBOX = "Sandbox";
+				public static string SANDBOX = "Sandbox";
 
-		public static string STEAMDECK = "SteamDeck";
+				public static string STEAMDECK = "SteamDeck";
 
-		public static string SIM = "SimDll";
+				public static string SIM = "SimDll";
 
-		public static string FILEIO = "FileIO";
+				public static string FILEIO = "FileIO";
 
-		public static string MODSYSTEM = "ModSystem";
+				public static string MODSYSTEM = "ModSystem";
 
-		public static string WORLDGENFAILURE = "WorldgenFailure";
+				public static string WORLDGENFAILURE = "WorldgenFailure";
 	}
 
-	private class Error
+		private class Error
 	{
-		public Error()
+				public Error()
 		{
 			this.userName = KCrashReporter.GetUserID();
 			this.platform = Util.GetOperatingSystem();
@@ -674,7 +671,7 @@ public class KCrashReporter : MonoBehaviour
 			}
 		}
 
-		private void InitDefaultCategories()
+				private void InitDefaultCategories()
 		{
 			if (DlcManager.IsPureVanilla())
 			{
@@ -709,7 +706,7 @@ public class KCrashReporter : MonoBehaviour
 			}
 		}
 
-		private void InitSku()
+				private void InitSku()
 		{
 			this.sku = "steam";
 			if (DistributionPlatform.Inst.Initialized)
@@ -734,7 +731,7 @@ public class KCrashReporter : MonoBehaviour
 			}
 		}
 
-		private void InitSlackSummary()
+				private void InitSlackSummary()
 		{
 			string buildText = BuildWatermark.GetBuildText();
 			string text = (GameClock.Instance != null) ? string.Format(" - Cycle {0}", GameClock.Instance.GetCycle() + 1) : "";
@@ -759,59 +756,59 @@ public class KCrashReporter : MonoBehaviour
 			});
 		}
 
-		public string game = "ONI";
+				public string game = "ONI";
 
-		public string userName;
+				public string userName;
 
-		public string platform;
+				public string platform;
 
-		public string version = LaunchInitializer.BuildPrefix();
+				public string version = LaunchInitializer.BuildPrefix();
 
-		public string branch = "default";
+				public string branch = "default";
 
-		public string sku = "";
+				public string sku = "";
 
-		public int build = 626616;
+				public int build = 642695;
 
-		public string callstack = "";
+				public string callstack = "";
 
-		public string fullstack = "";
+				public string fullstack = "";
 
-		public string summaryline = "";
+				public string summaryline = "";
 
-		public string userMessage = "";
+				public string userMessage = "";
 
-		public List<string> categories = new List<string>();
+				public List<string> categories = new List<string>();
 
-		public string slackSummary;
+				public string slackSummary;
 
-		public string logFilename = "Player.log";
+				public string logFilename = "Player.log";
 
-		public string saveFilename = "";
+				public string saveFilename = "";
 
-		public string screenshotFilename = "";
+				public string screenshotFilename = "";
 
-		public List<string> extraFilenames = new List<string>();
+				public List<string> extraFilenames = new List<string>();
 
-		public string title = "";
+				public string title = "";
 
-		public bool isServer;
+				public bool isServer;
 
-		public bool isDedicated;
+				public bool isDedicated;
 
-		public bool isError = true;
+				public bool isError = true;
 
-		public string emote = "";
+				public string emote = "";
 	}
 
-	public class PendingCrash
+		public class PendingCrash
 	{
-		public string jsonString;
+				public string jsonString;
 
-		public byte[] archiveData;
+				public byte[] archiveData;
 
-		public System.Action successCallback;
+				public System.Action successCallback;
 
-		public Action<long> failureCallback;
+				public Action<long> failureCallback;
 	}
 }

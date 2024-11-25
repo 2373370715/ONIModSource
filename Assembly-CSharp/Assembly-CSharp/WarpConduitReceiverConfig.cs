@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class WarpConduitReceiverConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "WarpConduitReceiver";
 		int width = 4;
@@ -33,14 +33,14 @@ public class WarpConduitReceiverConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	private void AttachPorts(GameObject go)
+		private void AttachPorts(GameObject go)
 	{
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.liquidOutputPort;
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.gasOutputPort;
 		go.AddComponent<ConduitSecondaryOutput>().portInfo = this.solidOutputPort;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		Prioritizable.AddRef(go);
 		PrimaryElement component = go.GetComponent<PrimaryElement>();
@@ -74,32 +74,32 @@ public class WarpConduitReceiverConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.Gravitas, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGet<BuildingCellVisualizer>();
 		go.GetComponent<Deconstructable>().SetAllowDeconstruction(false);
 		go.GetComponent<Activatable>().requiredSkillPerk = Db.Get().SkillPerks.CanStudyWorldObjects.Id;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		base.DoPostConfigurePreview(def, go);
 		go.AddOrGet<BuildingCellVisualizer>();
 		this.AttachPorts(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		base.DoPostConfigureUnderConstruction(go);
 		go.AddOrGet<BuildingCellVisualizer>();
 		this.AttachPorts(go);
 	}
 
-	public const string ID = "WarpConduitReceiver";
+		public const string ID = "WarpConduitReceiver";
 
-	private ConduitPortInfo liquidOutputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(0, 1));
+		private ConduitPortInfo liquidOutputPort = new ConduitPortInfo(ConduitType.Liquid, new CellOffset(0, 1));
 
-	private ConduitPortInfo gasOutputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(-1, 1));
+		private ConduitPortInfo gasOutputPort = new ConduitPortInfo(ConduitType.Gas, new CellOffset(-1, 1));
 
-	private ConduitPortInfo solidOutputPort = new ConduitPortInfo(ConduitType.Solid, new CellOffset(1, 1));
+		private ConduitPortInfo solidOutputPort = new ConduitPortInfo(ConduitType.Solid, new CellOffset(1, 1));
 }

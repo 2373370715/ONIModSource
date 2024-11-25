@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BlockTileDecorInfo : ScriptableObject
 {
-	public void PostProcess()
+		public void PostProcess()
 	{
 		if (this.decor != null && this.atlas != null && this.atlas.items != null)
 		{
@@ -49,40 +49,40 @@ public class BlockTileDecorInfo : ScriptableObject
 		}
 	}
 
-	public TextureAtlas atlas;
+		public TextureAtlas atlas;
 
-	public TextureAtlas atlasSpec;
+		public TextureAtlas atlasSpec;
 
-	public int sortOrder;
+		public int sortOrder;
 
-	public BlockTileDecorInfo.Decor[] decor;
+		public BlockTileDecorInfo.Decor[] decor;
 
-	[Serializable]
+		[Serializable]
 	public struct ImageInfo
 	{
-		public string name;
+				public string name;
 
-		public Vector3 offset;
+				public Vector3 offset;
 
-		[NonSerialized]
+				[NonSerialized]
 		public TextureAtlas.Item atlasItem;
 	}
 
-	[Serializable]
+		[Serializable]
 	public struct Decor
 	{
-		public string name;
+				public string name;
 
-		[EnumFlags]
+				[EnumFlags]
 		public BlockTileRenderer.Bits requiredConnections;
 
-		[EnumFlags]
+				[EnumFlags]
 		public BlockTileRenderer.Bits forbiddenConnections;
 
-		public float probabilityCutoff;
+				public float probabilityCutoff;
 
-		public BlockTileDecorInfo.ImageInfo[] variants;
+				public BlockTileDecorInfo.ImageInfo[] variants;
 
-		public int sortOrder;
+				public int sortOrder;
 	}
 }

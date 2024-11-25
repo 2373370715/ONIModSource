@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MassiveHeatSinkConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MassiveHeatSink";
 		int width = 4;
@@ -29,7 +29,7 @@ public class MassiveHeatSinkConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
 		go.AddOrGet<MassiveHeatSink>();
@@ -55,9 +55,9 @@ public class MassiveHeatSinkConfig : IBuildingConfig
 		go.AddOrGet<Demolishable>();
 	}
 
-	public const string ID = "MassiveHeatSink";
+		public const string ID = "MassiveHeatSink";
 
-	private const float CONSUMPTION_RATE = 0.01f;
+		private const float CONSUMPTION_RATE = 0.01f;
 
-	private const float STORAGE_CAPACITY = 0.099999994f;
+		private const float STORAGE_CAPACITY = 0.099999994f;
 }

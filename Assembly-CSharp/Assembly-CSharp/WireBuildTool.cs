@@ -2,19 +2,19 @@
 
 public class WireBuildTool : BaseUtilityBuildTool
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		WireBuildTool.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		WireBuildTool.Instance = this;
 		base.OnPrefabInit();
 		this.viewMode = OverlayModes.Power.ID;
 	}
 
-	protected override void ApplyPathToConduitSystem()
+		protected override void ApplyPathToConduitSystem()
 	{
 		if (this.path.Count < 2)
 		{
@@ -37,5 +37,5 @@ public class WireBuildTool : BaseUtilityBuildTool
 		}
 	}
 
-	public static WireBuildTool Instance;
+		public static WireBuildTool Instance;
 }

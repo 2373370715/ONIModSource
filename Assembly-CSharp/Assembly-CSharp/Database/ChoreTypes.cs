@@ -3,9 +3,9 @@ using STRINGS;
 
 namespace Database
 {
-	public class ChoreTypes : ResourceSet<ChoreType>
+		public class ChoreTypes : ResourceSet<ChoreType>
 	{
-		public ChoreType GetByHash(HashedString id_hash)
+				public ChoreType GetByHash(HashedString id_hash)
 		{
 			int num = this.resources.FindIndex((ChoreType item) => item.IdHash == id_hash);
 			if (num != -1)
@@ -15,7 +15,7 @@ namespace Database
 			return null;
 		}
 
-		private ChoreType Add(string id, string[] chore_groups, string urge, string[] interrupt_exclusion, string name, string status_message, string tooltip, bool skip_implicit_priority_change, int explicit_priority = -1, string report_name = null)
+				private ChoreType Add(string id, string[] chore_groups, string urge, string[] interrupt_exclusion, string name, string status_message, string tooltip, bool skip_implicit_priority_change, int explicit_priority = -1, string report_name = null)
 		{
 			ListPool<Tag, ChoreTypes>.PooledList pooledList = ListPool<Tag, ChoreTypes>.Allocate();
 			for (int i = 0; i < interrupt_exclusion.Length; i++)
@@ -39,11 +39,12 @@ namespace Database
 			return choreType;
 		}
 
-		public ChoreTypes(ResourceSet parent) : base("ChoreTypes", parent)
+				public ChoreTypes(ResourceSet parent) : base("ChoreTypes", parent)
 		{
 			this.Die = this.Add("Die", new string[0], "", new string[0], DUPLICANTS.CHORES.DIE.NAME, DUPLICANTS.CHORES.DIE.STATUS, DUPLICANTS.CHORES.DIE.TOOLTIP, false, -1, null);
 			this.Entombed = this.Add("Entombed", new string[0], "", new string[0], DUPLICANTS.CHORES.ENTOMBED.NAME, DUPLICANTS.CHORES.ENTOMBED.STATUS, DUPLICANTS.CHORES.ENTOMBED.TOOLTIP, false, -1, null);
 			this.SuitMarker = this.Add("SuitMarker", new string[0], "", new string[0], DUPLICANTS.CHORES.WASHHANDS.NAME, DUPLICANTS.CHORES.WASHHANDS.STATUS, DUPLICANTS.CHORES.WASHHANDS.TOOLTIP, false, -1, null);
+			this.Slip = this.Add("Slip", new string[0], "", new string[0], DUPLICANTS.CHORES.SLIP.NAME, DUPLICANTS.CHORES.SLIP.STATUS, DUPLICANTS.CHORES.SLIP.TOOLTIP, false, -1, null);
 			this.Checkpoint = this.Add("Checkpoint", new string[0], "", new string[0], DUPLICANTS.CHORES.CHECKPOINT.NAME, DUPLICANTS.CHORES.CHECKPOINT.STATUS, DUPLICANTS.CHORES.CHECKPOINT.TOOLTIP, false, -1, null);
 			this.TravelTubeEntrance = this.Add("TravelTubeEntrance", new string[0], "", new string[0], DUPLICANTS.CHORES.TRAVELTUBEENTRANCE.NAME, DUPLICANTS.CHORES.TRAVELTUBEENTRANCE.STATUS, DUPLICANTS.CHORES.TRAVELTUBEENTRANCE.TOOLTIP, false, -1, null);
 			this.WashHands = this.Add("WashHands", new string[0], "", new string[0], DUPLICANTS.CHORES.WASHHANDS.NAME, DUPLICANTS.CHORES.WASHHANDS.STATUS, DUPLICANTS.CHORES.WASHHANDS.TOOLTIP, false, -1, null);
@@ -54,6 +55,8 @@ namespace Database
 				"EmoteHighPriority"
 			}, DUPLICANTS.CHORES.HEAL.NAME, DUPLICANTS.CHORES.HEAL.STATUS, DUPLICANTS.CHORES.HEAL.TOOLTIP, false, -1, null);
 			this.BeIncapacitated = this.Add("BeIncapacitated", new string[0], "BeIncapacitated", new string[0], DUPLICANTS.CHORES.BEINCAPACITATED.NAME, DUPLICANTS.CHORES.BEINCAPACITATED.STATUS, DUPLICANTS.CHORES.BEINCAPACITATED.TOOLTIP, false, -1, null);
+			this.BeOffline = this.Add("BeOffline", new string[0], "BeOffline", new string[0], DUPLICANTS.CHORES.BEOFFLINE.NAME, DUPLICANTS.CHORES.BEOFFLINE.STATUS, DUPLICANTS.CHORES.BEOFFLINE.TOOLTIP, false, -1, null);
+			this.BeBatterySaveMode = this.Add("BeBatterySaveMode", new string[0], "", new string[0], DUPLICANTS.CHORES.BEBATTERYSAVEMODE.NAME, DUPLICANTS.CHORES.BEBATTERYSAVEMODE.STATUS, DUPLICANTS.CHORES.BEBATTERYSAVEMODE.TOOLTIP, false, -1, null);
 			this.GeneShuffle = this.Add("GeneShuffle", new string[0], "", new string[0], DUPLICANTS.CHORES.GENESHUFFLE.NAME, DUPLICANTS.CHORES.GENESHUFFLE.STATUS, DUPLICANTS.CHORES.GENESHUFFLE.TOOLTIP, false, -1, null);
 			this.Migrate = this.Add("Migrate", new string[0], "", new string[0], DUPLICANTS.CHORES.MIGRATE.NAME, DUPLICANTS.CHORES.MIGRATE.STATUS, DUPLICANTS.CHORES.MIGRATE.TOOLTIP, false, -1, null);
 			this.DebugGoTo = this.Add("DebugGoTo", new string[0], "", new string[0], DUPLICANTS.CHORES.DEBUGGOTO.NAME, DUPLICANTS.CHORES.DEBUGGOTO.STATUS, DUPLICANTS.CHORES.MOVETO.TOOLTIP, false, -1, null);
@@ -61,6 +64,8 @@ namespace Database
 			this.RocketEnterExit = this.Add("RocketEnterExit", new string[0], "", new string[0], DUPLICANTS.CHORES.ROCKETENTEREXIT.NAME, DUPLICANTS.CHORES.ROCKETENTEREXIT.STATUS, DUPLICANTS.CHORES.ROCKETENTEREXIT.TOOLTIP, false, -1, null);
 			this.DropUnusedInventory = this.Add("DropUnusedInventory", new string[0], "", new string[0], DUPLICANTS.CHORES.DROPUNUSEDINVENTORY.NAME, DUPLICANTS.CHORES.DROPUNUSEDINVENTORY.STATUS, DUPLICANTS.CHORES.DROPUNUSEDINVENTORY.TOOLTIP, false, -1, null);
 			this.Pee = this.Add("Pee", new string[0], "Pee", new string[0], DUPLICANTS.CHORES.PEE.NAME, DUPLICANTS.CHORES.PEE.STATUS, DUPLICANTS.CHORES.PEE.TOOLTIP, false, -1, null);
+			this.ExpellGunk = this.Add("ExpellGunk", new string[0], "GunkPee", new string[0], DUPLICANTS.CHORES.EXPELLGUNK.NAME, DUPLICANTS.CHORES.EXPELLGUNK.STATUS, DUPLICANTS.CHORES.EXPELLGUNK.TOOLTIP, false, -1, null);
+			this.OilChange = this.Add("OilChange", new string[0], "OilRefill", new string[0], DUPLICANTS.CHORES.OILCHANGE.NAME, DUPLICANTS.CHORES.OILCHANGE.STATUS, DUPLICANTS.CHORES.OILCHANGE.TOOLTIP, false, -1, null);
 			this.RecoverBreath = this.Add("RecoverBreath", new string[0], "RecoverBreath", new string[0], DUPLICANTS.CHORES.RECOVERBREATH.NAME, DUPLICANTS.CHORES.RECOVERBREATH.STATUS, DUPLICANTS.CHORES.RECOVERBREATH.TOOLTIP, false, -1, null);
 			this.RecoverWarmth = this.Add("RecoverWarmth", new string[0], "", new string[0], DUPLICANTS.CHORES.RECOVERWARMTH.NAME, DUPLICANTS.CHORES.RECOVERWARMTH.STATUS, DUPLICANTS.CHORES.RECOVERWARMTH.TOOLTIP, false, -1, null);
 			this.RecoverFromHeat = this.Add("RecoverFromHeat", new string[0], "", new string[0], DUPLICANTS.CHORES.RECOVERFROMHEAT.NAME, DUPLICANTS.CHORES.RECOVERFROMHEAT.STATUS, DUPLICANTS.CHORES.RECOVERFROMHEAT.TOOLTIP, false, -1, null);
@@ -80,6 +85,10 @@ namespace Database
 			{
 				"MoveTo"
 			}, DUPLICANTS.CHORES.BANSHEE_WAIL.NAME, DUPLICANTS.CHORES.BANSHEE_WAIL.STATUS, DUPLICANTS.CHORES.BANSHEE_WAIL.TOOLTIP, false, -1, null);
+			this.StressShock = this.Add("StressShock", new string[0], "", new string[]
+			{
+				"MoveTo"
+			}, DUPLICANTS.CHORES.STRESSSHOCK.NAME, DUPLICANTS.CHORES.STRESSSHOCK.STATUS, DUPLICANTS.CHORES.STRESSSHOCK.TOOLTIP, false, -1, null);
 			this.BingeEat = this.Add("BingeEat", new string[0], "", new string[]
 			{
 				"MoveTo"
@@ -90,12 +99,18 @@ namespace Database
 			}, DUPLICANTS.CHORES.STRESSACTINGOUT.NAME, DUPLICANTS.CHORES.STRESSACTINGOUT.STATUS, DUPLICANTS.CHORES.STRESSACTINGOUT.TOOLTIP, false, -1, null);
 			this.Vomit = this.Add("Vomit", new string[0], "EmoteHighPriority", new string[0], DUPLICANTS.CHORES.VOMIT.NAME, DUPLICANTS.CHORES.VOMIT.STATUS, DUPLICANTS.CHORES.VOMIT.TOOLTIP, false, -1, null);
 			this.Cough = this.Add("Cough", new string[0], "EmoteHighPriority", new string[0], DUPLICANTS.CHORES.COUGH.NAME, DUPLICANTS.CHORES.COUGH.STATUS, DUPLICANTS.CHORES.COUGH.TOOLTIP, false, -1, null);
+			this.WaterDamageZap = this.Add("WaterDamageZap", new string[0], "EmoteHighPriority", new string[0], DUPLICANTS.CHORES.WATERDAMAGEZAP.NAME, DUPLICANTS.CHORES.WATERDAMAGEZAP.STATUS, DUPLICANTS.CHORES.WATERDAMAGEZAP.TOOLTIP, false, -1, null);
 			this.RadiationPain = this.Add("RadiationPain", new string[0], "EmoteHighPriority", new string[0], DUPLICANTS.CHORES.RADIATIONPAIN.NAME, DUPLICANTS.CHORES.RADIATIONPAIN.STATUS, DUPLICANTS.CHORES.RADIATIONPAIN.TOOLTIP, false, -1, null);
 			this.SwitchHat = this.Add("SwitchHat", new string[0], "", new string[0], DUPLICANTS.CHORES.LEARNSKILL.NAME, DUPLICANTS.CHORES.LEARNSKILL.STATUS, DUPLICANTS.CHORES.LEARNSKILL.TOOLTIP, false, -1, null);
 			this.StressIdle = this.Add("StressIdle", new string[0], "", new string[0], DUPLICANTS.CHORES.STRESSIDLE.NAME, DUPLICANTS.CHORES.STRESSIDLE.STATUS, DUPLICANTS.CHORES.STRESSIDLE.TOOLTIP, false, -1, null);
 			this.RescueIncapacitated = this.Add("RescueIncapacitated", new string[0], "", new string[0], DUPLICANTS.CHORES.RESCUEINCAPACITATED.NAME, DUPLICANTS.CHORES.RESCUEINCAPACITATED.STATUS, DUPLICANTS.CHORES.RESCUEINCAPACITATED.TOOLTIP, false, -1, null);
 			this.BreakPee = this.Add("BreakPee", new string[0], "Pee", new string[0], DUPLICANTS.CHORES.BREAK_PEE.NAME, DUPLICANTS.CHORES.BREAK_PEE.STATUS, DUPLICANTS.CHORES.BREAK_PEE.TOOLTIP, false, -1, null);
 			this.Eat = this.Add("Eat", new string[0], "Eat", new string[0], DUPLICANTS.CHORES.EAT.NAME, DUPLICANTS.CHORES.EAT.STATUS, DUPLICANTS.CHORES.EAT.TOOLTIP, false, -1, null);
+			this.ReloadElectrobank = this.Add("ReloadElectrobank", new string[0], "ReloadElectrobank", new string[0], DUPLICANTS.CHORES.RELOADELECTROBANK.NAME, DUPLICANTS.CHORES.RELOADELECTROBANK.STATUS, DUPLICANTS.CHORES.RELOADELECTROBANK.TOOLTIP, false, -1, null);
+			this.FindOxygenSourceItem = this.Add("FindOxygenCanister", new string[0], "FindOxygenRefill", new string[0], DUPLICANTS.CHORES.FINDOXYGENSOURCEITEM.NAME, DUPLICANTS.CHORES.FINDOXYGENSOURCEITEM.STATUS, DUPLICANTS.CHORES.FINDOXYGENSOURCEITEM.TOOLTIP, false, -1, null);
+			this.BionicAbsorbOxygen = this.Add("BionicAbsorbOxygen", new string[0], "FindOxygenRefill", new string[0], DUPLICANTS.CHORES.BIONICABSORBOXYGEN.NAME, DUPLICANTS.CHORES.BIONICABSORBOXYGEN.STATUS, DUPLICANTS.CHORES.BIONICABSORBOXYGEN.TOOLTIP, false, -1, null);
+			this.UnloadElectrobank = this.Add("UnloadElectrobank", new string[0], "RemoveDischargedElectrobank", new string[0], DUPLICANTS.CHORES.UNLOADELECTROBANK.NAME, DUPLICANTS.CHORES.UNLOADELECTROBANK.STATUS, DUPLICANTS.CHORES.UNLOADELECTROBANK.TOOLTIP, false, -1, null);
+			this.SeekAndInstallUpgrade = this.Add("SeekAndInstallUpgrade", new string[0], "", new string[0], DUPLICANTS.CHORES.SEEKANDINSTALLUPGRADE.NAME, DUPLICANTS.CHORES.SEEKANDINSTALLUPGRADE.STATUS, DUPLICANTS.CHORES.SEEKANDINSTALLUPGRADE.TOOLTIP, false, -1, null);
 			this.Narcolepsy = this.Add("Narcolepsy", new string[0], "Narcolepsy", new string[0], DUPLICANTS.CHORES.NARCOLEPSY.NAME, DUPLICANTS.CHORES.NARCOLEPSY.STATUS, DUPLICANTS.CHORES.NARCOLEPSY.TOOLTIP, false, -1, null);
 			this.ReturnSuitUrgent = this.Add("ReturnSuitUrgent", new string[0], "", new string[0], DUPLICANTS.CHORES.RETURNSUIT.NAME, DUPLICANTS.CHORES.RETURNSUIT.STATUS, DUPLICANTS.CHORES.RETURNSUIT.TOOLTIP, false, -1, null);
 			this.SleepDueToDisease = this.Add("SleepDueToDisease", new string[0], "Sleep", new string[]
@@ -260,6 +275,10 @@ namespace Database
 			{
 				"MachineOperating"
 			}, "", new string[0], DUPLICANTS.CHORES.POWER_TINKER.NAME, DUPLICANTS.CHORES.POWER_TINKER.STATUS, DUPLICANTS.CHORES.POWER_TINKER.TOOLTIP, false, 5000, null);
+			this.RemoteOperate = this.Add("RemoteOperate", new string[]
+			{
+				"MachineOperating"
+			}, "", new string[0], DUPLICANTS.CHORES.REMOTEWORK.NAME, DUPLICANTS.CHORES.REMOTEWORK.STATUS, DUPLICANTS.CHORES.REMOTEWORK.TOOLTIP, false, 5000, null);
 			this.MachineTinker = this.Add("MachineTinker", new string[]
 			{
 				"MachineOperating"
@@ -426,6 +445,10 @@ namespace Database
 				},
 				new ChoreType[]
 				{
+					this.BeOffline
+				},
+				new ChoreType[]
+				{
 					this.DebugGoTo
 				},
 				new ChoreType[]
@@ -439,7 +462,9 @@ namespace Database
 				},
 				new ChoreType[]
 				{
-					this.RecoverBreath
+					this.RecoverBreath,
+					this.FindOxygenSourceItem,
+					this.BionicAbsorbOxygen
 				},
 				new ChoreType[]
 				{
@@ -452,7 +477,16 @@ namespace Database
 				new ChoreType[]
 				{
 					this.BingeEat,
-					this.BansheeWail
+					this.BansheeWail,
+					this.StressShock
+				},
+				new ChoreType[]
+				{
+					this.WaterDamageZap
+				},
+				new ChoreType[]
+				{
+					this.ExpellGunk
 				},
 				new ChoreType[]
 				{
@@ -464,7 +498,8 @@ namespace Database
 					this.StressIdle,
 					this.RescueIncapacitated,
 					this.SwitchHat,
-					this.RadiationPain
+					this.RadiationPain,
+					this.OilChange
 				},
 				new ChoreType[]
 				{
@@ -484,6 +519,10 @@ namespace Database
 				},
 				new ChoreType[]
 				{
+					this.BeBatterySaveMode
+				},
+				new ChoreType[]
+				{
 					this.Attack
 				},
 				new ChoreType[]
@@ -495,7 +534,10 @@ namespace Database
 					this.LearnSkill,
 					this.UnlearnSkill,
 					this.Eat,
-					this.BreakPee
+					this.ReloadElectrobank,
+					this.UnloadElectrobank,
+					this.BreakPee,
+					this.SeekAndInstallUpgrade
 				},
 				new ChoreType[]
 				{
@@ -556,6 +598,7 @@ namespace Database
 					this.IceCooledFan,
 					this.SuitMarker,
 					this.Checkpoint,
+					this.Slip,
 					this.TravelTubeEntrance,
 					this.WashHands,
 					this.Recharge,
@@ -613,7 +656,8 @@ namespace Database
 					this.FoodFetch,
 					this.StorageFetch,
 					this.RepairFetch,
-					this.EquipmentFetch
+					this.EquipmentFetch,
+					this.RemoteOperate
 				},
 				new ChoreType[]
 				{
@@ -662,262 +706,288 @@ namespace Database
 			}
 		}
 
-		public ChoreType Attack;
+				public ChoreType Attack;
 
-		public ChoreType Capture;
+				public ChoreType Capture;
 
-		public ChoreType Flee;
+				public ChoreType Flee;
 
-		public ChoreType BeIncapacitated;
+				public ChoreType BeIncapacitated;
 
-		public ChoreType DebugGoTo;
+				public ChoreType BeOffline;
 
-		public ChoreType DeliverFood;
+				public ChoreType BeBatterySaveMode;
 
-		public ChoreType Die;
+				public ChoreType DebugGoTo;
 
-		public ChoreType GeneShuffle;
+				public ChoreType DeliverFood;
 
-		public ChoreType Doctor;
+				public ChoreType Die;
 
-		public ChoreType WashHands;
+				public ChoreType GeneShuffle;
 
-		public ChoreType Shower;
+				public ChoreType Doctor;
 
-		public ChoreType Eat;
+				public ChoreType WashHands;
 
-		public ChoreType Entombed;
+				public ChoreType Shower;
 
-		public ChoreType Idle;
+				public ChoreType Eat;
 
-		public ChoreType MoveToQuarantine;
+				public ChoreType ReloadElectrobank;
 
-		public ChoreType RescueIncapacitated;
+				public ChoreType FindOxygenSourceItem;
 
-		public ChoreType RecoverBreath;
+				public ChoreType BionicAbsorbOxygen;
 
-		public ChoreType RecoverWarmth;
+				public ChoreType UnloadElectrobank;
 
-		public ChoreType RecoverFromHeat;
+				public ChoreType SeekAndInstallUpgrade;
 
-		public ChoreType Sigh;
+				public ChoreType Entombed;
 
-		public ChoreType Sleep;
+				public ChoreType Idle;
 
-		public ChoreType Narcolepsy;
+				public ChoreType MoveToQuarantine;
 
-		public ChoreType Vomit;
+				public ChoreType RescueIncapacitated;
 
-		public ChoreType Cough;
+				public ChoreType RecoverBreath;
 
-		public ChoreType Pee;
+				public ChoreType RecoverWarmth;
 
-		public ChoreType BreakPee;
+				public ChoreType RecoverFromHeat;
 
-		public ChoreType TakeMedicine;
+				public ChoreType Sigh;
 
-		public ChoreType GetDoctored;
+				public ChoreType Sleep;
 
-		public ChoreType RestDueToDisease;
+				public ChoreType Narcolepsy;
 
-		public ChoreType SleepDueToDisease;
+				public ChoreType Vomit;
 
-		public ChoreType Heal;
+				public ChoreType WaterDamageZap;
 
-		public ChoreType HealCritical;
+				public ChoreType Cough;
 
-		public ChoreType EmoteIdle;
+				public ChoreType Pee;
 
-		public ChoreType Emote;
+				public ChoreType ExpellGunk;
 
-		public ChoreType EmoteHighPriority;
+				public ChoreType BreakPee;
 
-		public ChoreType StressEmote;
+				public ChoreType TakeMedicine;
 
-		public ChoreType StressActingOut;
+				public ChoreType GetDoctored;
 
-		public ChoreType Relax;
+				public ChoreType RestDueToDisease;
 
-		public ChoreType RadiationPain;
+				public ChoreType SleepDueToDisease;
 
-		public ChoreType StressHeal;
+				public ChoreType Heal;
 
-		public ChoreType MoveToSafety;
+				public ChoreType HealCritical;
 
-		public ChoreType Equip;
+				public ChoreType EmoteIdle;
 
-		public ChoreType Recharge;
+				public ChoreType Emote;
 
-		public ChoreType Unequip;
+				public ChoreType EmoteHighPriority;
 
-		public ChoreType Warmup;
+				public ChoreType StressEmote;
 
-		public ChoreType Cooldown;
+				public ChoreType StressActingOut;
 
-		public ChoreType Mop;
+				public ChoreType Relax;
 
-		public ChoreType Relocate;
+				public ChoreType RadiationPain;
 
-		public ChoreType Toggle;
+				public ChoreType StressHeal;
 
-		public ChoreType Mourn;
+				public ChoreType MoveToSafety;
 
-		public ChoreType Migrate;
+				public ChoreType Equip;
 
-		public ChoreType Fetch;
+				public ChoreType Recharge;
 
-		public ChoreType FetchCritical;
+				public ChoreType Unequip;
 
-		public ChoreType StorageFetch;
+				public ChoreType Warmup;
 
-		public ChoreType Transport;
+				public ChoreType Cooldown;
 
-		public ChoreType RepairFetch;
+				public ChoreType Mop;
 
-		public ChoreType MachineFetch;
+				public ChoreType Relocate;
 
-		public ChoreType ResearchFetch;
+				public ChoreType Toggle;
 
-		public ChoreType FarmFetch;
+				public ChoreType Mourn;
 
-		public ChoreType FabricateFetch;
+				public ChoreType Migrate;
 
-		public ChoreType CookFetch;
+				public ChoreType Fetch;
 
-		public ChoreType PowerFetch;
+				public ChoreType FetchCritical;
 
-		public ChoreType BuildFetch;
+				public ChoreType StorageFetch;
 
-		public ChoreType CreatureFetch;
+				public ChoreType Transport;
 
-		public ChoreType RanchingFetch;
+				public ChoreType RepairFetch;
 
-		public ChoreType FoodFetch;
+				public ChoreType MachineFetch;
 
-		public ChoreType DoctorFetch;
+				public ChoreType ResearchFetch;
 
-		public ChoreType EquipmentFetch;
+				public ChoreType FarmFetch;
 
-		public ChoreType ArmTrap;
+				public ChoreType FabricateFetch;
 
-		public ChoreType Research;
+				public ChoreType CookFetch;
 
-		public ChoreType AnalyzeArtifact;
+				public ChoreType PowerFetch;
 
-		public ChoreType AnalyzeSeed;
+				public ChoreType BuildFetch;
 
-		public ChoreType ExcavateFossil;
+				public ChoreType CreatureFetch;
 
-		public ChoreType Disinfect;
+				public ChoreType RanchingFetch;
 
-		public ChoreType Repair;
+				public ChoreType FoodFetch;
 
-		public ChoreType EmptyStorage;
+				public ChoreType DoctorFetch;
 
-		public ChoreType Deconstruct;
+				public ChoreType EquipmentFetch;
 
-		public ChoreType Demolish;
+				public ChoreType ArmTrap;
 
-		public ChoreType Art;
+				public ChoreType Research;
 
-		public ChoreType GeneratePower;
+				public ChoreType AnalyzeArtifact;
 
-		public ChoreType Harvest;
+				public ChoreType AnalyzeSeed;
 
-		public ChoreType Uproot;
+				public ChoreType ExcavateFossil;
 
-		public ChoreType CleanToilet;
+				public ChoreType Disinfect;
 
-		public ChoreType EmptyDesalinator;
+				public ChoreType Repair;
 
-		public ChoreType LiquidCooledFan;
+				public ChoreType EmptyStorage;
 
-		public ChoreType IceCooledFan;
+				public ChoreType Deconstruct;
 
-		public ChoreType CompostWorkable;
+				public ChoreType Demolish;
 
-		public ChoreType Fabricate;
+				public ChoreType Art;
 
-		public ChoreType FarmingFabricate;
+				public ChoreType GeneratePower;
 
-		public ChoreType PowerFabricate;
+				public ChoreType Harvest;
 
-		public ChoreType Compound;
+				public ChoreType Uproot;
 
-		public ChoreType Cook;
+				public ChoreType CleanToilet;
 
-		public ChoreType ProcessCritter;
+				public ChoreType EmptyDesalinator;
 
-		public ChoreType Train;
+				public ChoreType LiquidCooledFan;
 
-		public ChoreType Ranch;
+				public ChoreType IceCooledFan;
 
-		public ChoreType Build;
+				public ChoreType CompostWorkable;
 
-		public ChoreType BuildDig;
+				public ChoreType Fabricate;
 
-		public ChoreType Dig;
+				public ChoreType FarmingFabricate;
 
-		public ChoreType FlipCompost;
+				public ChoreType PowerFabricate;
 
-		public ChoreType PowerTinker;
+				public ChoreType Compound;
 
-		public ChoreType MachineTinker;
+				public ChoreType Cook;
 
-		public ChoreType CropTend;
+				public ChoreType ProcessCritter;
 
-		public ChoreType Depressurize;
+				public ChoreType Train;
 
-		public ChoreType DropUnusedInventory;
+				public ChoreType Ranch;
 
-		public ChoreType StressVomit;
+				public ChoreType Build;
 
-		public ChoreType MoveTo;
+				public ChoreType BuildDig;
 
-		public ChoreType RocketEnterExit;
+				public ChoreType Dig;
 
-		public ChoreType UglyCry;
+				public ChoreType FlipCompost;
 
-		public ChoreType BansheeWail;
+				public ChoreType PowerTinker;
 
-		public ChoreType BingeEat;
+				public ChoreType RemoteOperate;
 
-		public ChoreType StressIdle;
+				public ChoreType MachineTinker;
 
-		public ChoreType ScrubOre;
+				public ChoreType CropTend;
 
-		public ChoreType SuitMarker;
+				public ChoreType Depressurize;
 
-		public ChoreType ReturnSuitUrgent;
+				public ChoreType DropUnusedInventory;
 
-		public ChoreType ReturnSuitIdle;
+				public ChoreType StressVomit;
 
-		public ChoreType Checkpoint;
+				public ChoreType MoveTo;
 
-		public ChoreType TravelTubeEntrance;
+				public ChoreType RocketEnterExit;
 
-		public ChoreType LearnSkill;
+				public ChoreType UglyCry;
 
-		public ChoreType UnlearnSkill;
+				public ChoreType BansheeWail;
 
-		public ChoreType SwitchHat;
+				public ChoreType StressShock;
 
-		public ChoreType EggSing;
+				public ChoreType BingeEat;
 
-		public ChoreType Astronaut;
+				public ChoreType StressIdle;
 
-		public ChoreType TopPriority;
+				public ChoreType ScrubOre;
 
-		public ChoreType JoyReaction;
+				public ChoreType SuitMarker;
 
-		public ChoreType RocketControl;
+				public ChoreType Slip;
 
-		public ChoreType Party;
+				public ChoreType ReturnSuitUrgent;
 
-		public ChoreType Hug;
+				public ChoreType ReturnSuitIdle;
 
-		private int nextImplicitPriority = 10000;
+				public ChoreType Checkpoint;
 
-		private const int INVALID_PRIORITY = -1;
+				public ChoreType TravelTubeEntrance;
+
+				public ChoreType LearnSkill;
+
+				public ChoreType UnlearnSkill;
+
+				public ChoreType SwitchHat;
+
+				public ChoreType EggSing;
+
+				public ChoreType Astronaut;
+
+				public ChoreType TopPriority;
+
+				public ChoreType JoyReaction;
+
+				public ChoreType RocketControl;
+
+				public ChoreType Party;
+
+				public ChoreType Hug;
+
+				public ChoreType OilChange;
+
+				private int nextImplicitPriority = 10000;
+
+				private const int INVALID_PRIORITY = -1;
 	}
 }

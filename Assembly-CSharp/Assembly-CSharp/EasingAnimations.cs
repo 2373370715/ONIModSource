@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EasingAnimations : MonoBehaviour
 {
-		public bool IsPlaying
+			public bool IsPlaying
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class EasingAnimations : MonoBehaviour
 		}
 	}
 
-	private void Start()
+		private void Start()
 	{
 		if (this.animationMap == null || this.animationMap.Count == 0)
 		{
@@ -21,7 +21,7 @@ public class EasingAnimations : MonoBehaviour
 		}
 	}
 
-	private void Initialize()
+		private void Initialize()
 	{
 		this.animationMap = new Dictionary<string, EasingAnimations.AnimationScales>();
 		foreach (EasingAnimations.AnimationScales animationScales in this.scales)
@@ -30,7 +30,7 @@ public class EasingAnimations : MonoBehaviour
 		}
 	}
 
-	public void PlayAnimation(string animationName, float delay = 0f)
+		public void PlayAnimation(string animationName, float delay = 0f)
 	{
 		if (this.animationMap == null || this.animationMap.Count == 0)
 		{
@@ -50,7 +50,7 @@ public class EasingAnimations : MonoBehaviour
 		this.animationCoroutine = base.StartCoroutine(this.ExecuteAnimation(delay));
 	}
 
-	private IEnumerator ExecuteAnimation(float delay)
+		private IEnumerator ExecuteAnimation(float delay)
 	{
 		float startTime = Time.realtimeSinceStartup;
 		while (Time.realtimeSinceStartup < startTime + delay)
@@ -86,7 +86,7 @@ public class EasingAnimations : MonoBehaviour
 		yield break;
 	}
 
-	private float GetEasing(float t)
+		private float GetEasing(float t)
 	{
 		EasingAnimations.AnimationScales.AnimationType type = this.currentAnimation.type;
 		if (type == EasingAnimations.AnimationScales.AnimationType.EaseOutBack)
@@ -100,7 +100,7 @@ public class EasingAnimations : MonoBehaviour
 		return this.EaseInOutBack(this.currentAnimation.currentScale, this.currentAnimation.endScale, t);
 	}
 
-	public float EaseInOutBack(float start, float end, float value)
+		public float EaseInOutBack(float start, float end, float value)
 	{
 		float num = 1.70158f;
 		end -= start;
@@ -115,7 +115,7 @@ public class EasingAnimations : MonoBehaviour
 		return end * 0.5f * (value * value * ((num + 1f) * value + num) + 2f) + start;
 	}
 
-	public float EaseInBack(float start, float end, float value)
+		public float EaseInBack(float start, float end, float value)
 	{
 		end -= start;
 		value /= 1f;
@@ -123,7 +123,7 @@ public class EasingAnimations : MonoBehaviour
 		return end * value * value * ((num + 1f) * value - num) + start;
 	}
 
-	public float EaseOutBack(float start, float end, float value)
+		public float EaseOutBack(float start, float end, float value)
 	{
 		float num = 1.70158f;
 		end -= start;
@@ -131,37 +131,37 @@ public class EasingAnimations : MonoBehaviour
 		return end * (value * value * ((num + 1f) * value + num) + 1f) + start;
 	}
 
-	public EasingAnimations.AnimationScales[] scales;
+		public EasingAnimations.AnimationScales[] scales;
 
-	private EasingAnimations.AnimationScales currentAnimation;
+		private EasingAnimations.AnimationScales currentAnimation;
 
-	private Coroutine animationCoroutine;
+		private Coroutine animationCoroutine;
 
-	private Dictionary<string, EasingAnimations.AnimationScales> animationMap;
+		private Dictionary<string, EasingAnimations.AnimationScales> animationMap;
 
-	public Action<string> OnAnimationDone;
+		public Action<string> OnAnimationDone;
 
-	[Serializable]
+		[Serializable]
 	public struct AnimationScales
 	{
-		public string name;
+				public string name;
 
-		public float startScale;
+				public float startScale;
 
-		public float endScale;
+				public float endScale;
 
-		public EasingAnimations.AnimationScales.AnimationType type;
+				public EasingAnimations.AnimationScales.AnimationType type;
 
-		public float easingMultiplier;
+				public float easingMultiplier;
 
-		[HideInInspector]
+				[HideInInspector]
 		public float currentScale;
 
-		public enum AnimationType
+				public enum AnimationType
 		{
-			EaseInOutBack,
-			EaseOutBack,
-			EaseInBack
+						EaseInOutBack,
+						EaseOutBack,
+						EaseInBack
 		}
 	}
 }

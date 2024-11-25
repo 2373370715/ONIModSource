@@ -8,9 +8,9 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class Equipment : Assignables
 {
-			public bool destroyed { get; private set; }
+				public bool destroyed { get; private set; }
 
-	public GameObject GetTargetGameObject()
+		public GameObject GetTargetGameObject()
 	{
 		MinionAssignablesProxy minionAssignablesProxy = (MinionAssignablesProxy)base.GetAssignableIdentity();
 		if (minionAssignablesProxy)
@@ -20,27 +20,27 @@ public class Equipment : Assignables
 		return null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		Components.Equipment.Add(this);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.Subscribe<Equipment>(1502190696, Equipment.SetDestroyedTrueDelegate);
 		base.Subscribe<Equipment>(1969584890, Equipment.SetDestroyedTrueDelegate);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		this.refreshHandle.ClearScheduler();
 		Components.Equipment.Remove(this);
 	}
 
-	public void Equip(Equippable equippable)
+		public void Equip(Equippable equippable)
 	{
 		GameObject targetGameObject = this.GetTargetGameObject();
 		bool flag = targetGameObject.GetComponent<KBatchedAnimController>() == null;
@@ -118,7 +118,7 @@ public class Equipment : Assignables
 		Game.Instance.Trigger(-2146166042, null);
 	}
 
-	public void Unequip(Equippable equippable)
+		public void Unequip(Equippable equippable)
 	{
 		AssignableSlotInstance slot = base.GetSlot(equippable.slot);
 		slot.Unassign(true);
@@ -227,18 +227,18 @@ public class Equipment : Assignables
 		Game.Instance.Trigger(-2146166042, null);
 	}
 
-	public bool IsEquipped(Equippable equippable)
+		public bool IsEquipped(Equippable equippable)
 	{
 		return equippable.assignee is Equipment && (Equipment)equippable.assignee == this && equippable.isEquipped;
 	}
 
-	public bool IsSlotOccupied(AssignableSlot slot)
+		public bool IsSlotOccupied(AssignableSlot slot)
 	{
 		EquipmentSlotInstance equipmentSlotInstance = base.GetSlot(slot) as EquipmentSlotInstance;
 		return equipmentSlotInstance.IsAssigned() && (equipmentSlotInstance.assignable as Equippable).isEquipped;
 	}
 
-	public void UnequipAll()
+		public void UnequipAll()
 	{
 		foreach (AssignableSlotInstance assignableSlotInstance in this.slots)
 		{
@@ -249,16 +249,16 @@ public class Equipment : Assignables
 		}
 	}
 
-	private void SetEquippableStoredModifiers(Equippable equippable, bool isStoring)
+		private void SetEquippableStoredModifiers(Equippable equippable, bool isStoring)
 	{
 		GameObject gameObject = equippable.gameObject;
 		Storage.MakeItemTemperatureInsulated(gameObject, isStoring, false);
 		Storage.MakeItemInvisible(gameObject, isStoring, false);
 	}
 
-	private SchedulerHandle refreshHandle;
+		private SchedulerHandle refreshHandle;
 
-	private static readonly EventSystem.IntraObjectHandler<Equipment> SetDestroyedTrueDelegate = new EventSystem.IntraObjectHandler<Equipment>(delegate(Equipment component, object data)
+		private static readonly EventSystem.IntraObjectHandler<Equipment> SetDestroyedTrueDelegate = new EventSystem.IntraObjectHandler<Equipment>(delegate(Equipment component, object data)
 	{
 		component.destroyed = true;
 	});

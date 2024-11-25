@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SymbolOverrideController")]
 public class SymbolOverrideController : KMonoBehaviour
 {
-		public SymbolOverrideController.SymbolEntry[] GetSymbolOverrides
+			public SymbolOverrideController.SymbolEntry[] GetSymbolOverrides
 	{
 		get
 		{
@@ -13,9 +13,9 @@ public class SymbolOverrideController : KMonoBehaviour
 		}
 	}
 
-			public int version { get; private set; }
+				public int version { get; private set; }
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.animController = base.GetComponent<KBatchedAnimController>();
 		DebugUtil.Assert(base.GetComponent<KBatchedAnimController>() != null, "SymbolOverrideController requires KBatchedAnimController");
@@ -30,7 +30,7 @@ public class SymbolOverrideController : KMonoBehaviour
 		this.faceGraph = base.GetComponent<FaceGraph>();
 	}
 
-	public int AddSymbolOverride(HashedString target_symbol, KAnim.Build.Symbol source_symbol, int priority = 0)
+		public int AddSymbolOverride(HashedString target_symbol, KAnim.Build.Symbol source_symbol, int priority = 0)
 	{
 		if (source_symbol == null)
 		{
@@ -58,7 +58,7 @@ public class SymbolOverrideController : KMonoBehaviour
 		return num;
 	}
 
-	public bool RemoveSymbolOverride(HashedString target_symbol, int priority = 0)
+		public bool RemoveSymbolOverride(HashedString target_symbol, int priority = 0)
 	{
 		for (int i = 0; i < this.symbolOverrides.Count; i++)
 		{
@@ -73,13 +73,13 @@ public class SymbolOverrideController : KMonoBehaviour
 		return false;
 	}
 
-	public void RemoveAllSymbolOverrides(int priority = 0)
+		public void RemoveAllSymbolOverrides(int priority = 0)
 	{
 		this.symbolOverrides.RemoveAll((SymbolOverrideController.SymbolEntry x) => x.priority >= priority);
 		this.MarkDirty();
 	}
 
-	public int GetSymbolOverrideIdx(HashedString target_symbol, int priority = 0)
+		public int GetSymbolOverrideIdx(HashedString target_symbol, int priority = 0)
 	{
 		for (int i = 0; i < this.symbolOverrides.Count; i++)
 		{
@@ -92,12 +92,12 @@ public class SymbolOverrideController : KMonoBehaviour
 		return -1;
 	}
 
-	public int GetAtlasIdx(Texture2D atlas)
+		public int GetAtlasIdx(Texture2D atlas)
 	{
 		return this.atlases.GetAtlasIdx(atlas);
 	}
 
-	public void ApplyOverrides()
+		public void ApplyOverrides()
 	{
 		if (this.requiresSorting)
 		{
@@ -167,18 +167,18 @@ public class SymbolOverrideController : KMonoBehaviour
 		}
 	}
 
-	public void ApplyAtlases()
+		public void ApplyAtlases()
 	{
 		KAnimBatch batch = this.animController.GetBatch();
 		this.atlases.Apply(batch.matProperties);
 	}
 
-	public KAnimBatch.AtlasList GetAtlasList()
+		public KAnimBatch.AtlasList GetAtlasList()
 	{
 		return this.atlases;
 	}
 
-	public void MarkDirty()
+		public void MarkDirty()
 	{
 		if (this.animController != null)
 		{
@@ -189,51 +189,51 @@ public class SymbolOverrideController : KMonoBehaviour
 		this.requiresSorting = true;
 	}
 
-	public bool applySymbolOverridesEveryFrame;
+		public bool applySymbolOverridesEveryFrame;
 
-	[SerializeField]
+		[SerializeField]
 	private List<SymbolOverrideController.SymbolEntry> symbolOverrides = new List<SymbolOverrideController.SymbolEntry>();
 
-	private KAnimBatch.AtlasList atlases;
+		private KAnimBatch.AtlasList atlases;
 
-	private KBatchedAnimController animController;
+		private KBatchedAnimController animController;
 
-	private FaceGraph faceGraph;
+		private FaceGraph faceGraph;
 
-	private bool requiresSorting;
+		private bool requiresSorting;
 
-	[Serializable]
+		[Serializable]
 	public struct SymbolEntry
 	{
-		public HashedString targetSymbol;
+				public HashedString targetSymbol;
 
-		[NonSerialized]
+				[NonSerialized]
 		public KAnim.Build.Symbol sourceSymbol;
 
-		public HashedString sourceSymbolId;
+				public HashedString sourceSymbolId;
 
-		public HashedString sourceSymbolBatchTag;
+				public HashedString sourceSymbolBatchTag;
 
-		public int priority;
+				public int priority;
 	}
 
-	private struct SymbolToOverride
+		private struct SymbolToOverride
 	{
-		public KAnim.Build.Symbol sourceSymbol;
+				public KAnim.Build.Symbol sourceSymbol;
 
-		public HashedString targetSymbol;
+				public HashedString targetSymbol;
 
-		public KBatchGroupData data;
+				public KBatchGroupData data;
 
-		public int atlasIdx;
+				public int atlasIdx;
 	}
 
-	private class BatchGroupInfo
+		private class BatchGroupInfo
 	{
-		public KAnim.Build build;
+				public KAnim.Build build;
 
-		public int atlasIdx;
+				public int atlasIdx;
 
-		public KBatchGroupData data;
+				public KBatchGroupData data;
 	}
 }

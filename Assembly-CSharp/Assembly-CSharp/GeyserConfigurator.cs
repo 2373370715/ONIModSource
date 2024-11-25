@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/GeyserConfigurator")]
 public class GeyserConfigurator : KMonoBehaviour
 {
-	public static GeyserConfigurator.GeyserType FindType(HashedString typeId)
+		public static GeyserConfigurator.GeyserType FindType(HashedString typeId)
 	{
 		GeyserConfigurator.GeyserType geyserType = null;
 		if (typeId != HashedString.Invalid)
@@ -20,12 +20,12 @@ public class GeyserConfigurator : KMonoBehaviour
 		return geyserType;
 	}
 
-	public GeyserConfigurator.GeyserInstanceConfiguration MakeConfiguration()
+		public GeyserConfigurator.GeyserInstanceConfiguration MakeConfiguration()
 	{
 		return this.CreateRandomInstance(this.presetType, this.presetMin, this.presetMax);
 	}
 
-	private GeyserConfigurator.GeyserInstanceConfiguration CreateRandomInstance(HashedString typeId, float min, float max)
+		private GeyserConfigurator.GeyserInstanceConfiguration CreateRandomInstance(HashedString typeId, float min, float max)
 	{
 		KRandom randomSource = new KRandom(SaveLoader.Instance.clusterDetailSave.globalWorldSeed + (int)base.transform.GetPosition().x + (int)base.transform.GetPosition().y);
 		return new GeyserConfigurator.GeyserInstanceConfiguration
@@ -39,29 +39,29 @@ public class GeyserConfigurator : KMonoBehaviour
 		};
 	}
 
-	private float Roll(KRandom randomSource, float min, float max)
+		private float Roll(KRandom randomSource, float min, float max)
 	{
 		return (float)(randomSource.NextDouble() * (double)(max - min)) + min;
 	}
 
-	private static List<GeyserConfigurator.GeyserType> geyserTypes;
+		private static List<GeyserConfigurator.GeyserType> geyserTypes;
 
-	public HashedString presetType;
+		public HashedString presetType;
 
-	public float presetMin;
+		public float presetMin;
 
-	public float presetMax = 1f;
+		public float presetMax = 1f;
 
-	public enum GeyserShape
+		public enum GeyserShape
 	{
-		Gas,
-		Liquid,
-		Molten
+				Gas,
+				Liquid,
+				Molten
 	}
 
-	public class GeyserType
+		public class GeyserType
 	{
-		public GeyserType(string id, SimHashes element, GeyserConfigurator.GeyserShape shape, float temperature, float minRatePerCycle, float maxRatePerCycle, float maxPressure, float minIterationLength = 60f, float maxIterationLength = 1140f, float minIterationPercent = 0.1f, float maxIterationPercent = 0.9f, float minYearLength = 15000f, float maxYearLength = 135000f, float minYearPercent = 0.4f, float maxYearPercent = 0.8f, float geyserTemperature = 372.15f, string DlcID = "")
+				public GeyserType(string id, SimHashes element, GeyserConfigurator.GeyserShape shape, float temperature, float minRatePerCycle, float maxRatePerCycle, float maxPressure, float minIterationLength = 60f, float maxIterationLength = 1140f, float minIterationPercent = 0.1f, float maxIterationPercent = 0.9f, float minYearLength = 15000f, float maxYearLength = 135000f, float minYearPercent = 0.4f, float maxYearPercent = 0.8f, float geyserTemperature = 372.15f, string DlcID = "")
 		{
 			this.id = id;
 			this.idHash = id;
@@ -88,13 +88,13 @@ public class GeyserConfigurator : KMonoBehaviour
 			GeyserConfigurator.geyserTypes.Add(this);
 		}
 
-		public GeyserConfigurator.GeyserType AddDisease(SimUtil.DiseaseInfo diseaseInfo)
+				public GeyserConfigurator.GeyserType AddDisease(SimUtil.DiseaseInfo diseaseInfo)
 		{
 			this.diseaseInfo = diseaseInfo;
 			return this;
 		}
 
-		public GeyserType()
+				public GeyserType()
 		{
 			this.id = "Blank";
 			this.element = SimHashes.Void;
@@ -114,60 +114,60 @@ public class GeyserConfigurator : KMonoBehaviour
 			this.DlcID = "";
 		}
 
-		public string id;
+				public string id;
 
-		public HashedString idHash;
+				public HashedString idHash;
 
-		public SimHashes element;
+				public SimHashes element;
 
-		public GeyserConfigurator.GeyserShape shape;
+				public GeyserConfigurator.GeyserShape shape;
 
-		public float temperature;
+				public float temperature;
 
-		public float minRatePerCycle;
+				public float minRatePerCycle;
 
-		public float maxRatePerCycle;
+				public float maxRatePerCycle;
 
-		public float maxPressure;
+				public float maxPressure;
 
-		public SimUtil.DiseaseInfo diseaseInfo = SimUtil.DiseaseInfo.Invalid;
+				public SimUtil.DiseaseInfo diseaseInfo = SimUtil.DiseaseInfo.Invalid;
 
-		public float minIterationLength;
+				public float minIterationLength;
 
-		public float maxIterationLength;
+				public float maxIterationLength;
 
-		public float minIterationPercent;
+				public float minIterationPercent;
 
-		public float maxIterationPercent;
+				public float maxIterationPercent;
 
-		public float minYearLength;
+				public float minYearLength;
 
-		public float maxYearLength;
+				public float maxYearLength;
 
-		public float minYearPercent;
+				public float minYearPercent;
 
-		public float maxYearPercent;
+				public float maxYearPercent;
 
-		public float geyserTemperature;
+				public float geyserTemperature;
 
-		public string DlcID;
+				public string DlcID;
 
-		public const string BLANK_ID = "Blank";
+				public const string BLANK_ID = "Blank";
 
-		public const SimHashes BLANK_ELEMENT = SimHashes.Void;
+				public const SimHashes BLANK_ELEMENT = SimHashes.Void;
 
-		public const string BLANK_DLCID = "";
+				public const string BLANK_DLCID = "";
 	}
 
-	[Serializable]
+		[Serializable]
 	public class GeyserInstanceConfiguration
 	{
-		public Geyser.GeyserModification GetModifier()
+				public Geyser.GeyserModification GetModifier()
 		{
 			return this.modifier;
 		}
 
-		public void Init(bool reinit = false)
+				public void Init(bool reinit = false)
 		{
 			if (this.didInit && !reinit)
 			{
@@ -181,12 +181,12 @@ public class GeyserConfigurator : KMonoBehaviour
 			this.scaledYearPercent = this.Resample(this.yearPercentRoll, this.geyserType.minYearPercent, this.geyserType.maxYearPercent);
 		}
 
-		public void SetModifier(Geyser.GeyserModification modifier)
+				public void SetModifier(Geyser.GeyserModification modifier)
 		{
 			this.modifier = modifier;
 		}
 
-				public GeyserConfigurator.GeyserType geyserType
+						public GeyserConfigurator.GeyserType geyserType
 		{
 			get
 			{
@@ -194,7 +194,7 @@ public class GeyserConfigurator : KMonoBehaviour
 			}
 		}
 
-		private float GetModifiedValue(float geyserVariable, float modifier, Geyser.ModificationMethod method)
+				private float GetModifiedValue(float geyserVariable, float modifier, Geyser.ModificationMethod method)
 		{
 			float num = geyserVariable;
 			if (method != Geyser.ModificationMethod.Values)
@@ -211,68 +211,68 @@ public class GeyserConfigurator : KMonoBehaviour
 			return num;
 		}
 
-		public float GetMaxPressure()
+				public float GetMaxPressure()
 		{
 			return this.GetModifiedValue(this.geyserType.maxPressure, this.modifier.maxPressureModifier, Geyser.maxPressureModificationMethod);
 		}
 
-		public float GetIterationLength()
+				public float GetIterationLength()
 		{
 			this.Init(false);
 			return this.GetModifiedValue(this.scaledIterationLength, this.modifier.iterationDurationModifier, Geyser.IterationDurationModificationMethod);
 		}
 
-		public float GetIterationPercent()
+				public float GetIterationPercent()
 		{
 			this.Init(false);
 			return Mathf.Clamp(this.GetModifiedValue(this.scaledIterationPercent, this.modifier.iterationPercentageModifier, Geyser.IterationPercentageModificationMethod), 0f, 1f);
 		}
 
-		public float GetOnDuration()
+				public float GetOnDuration()
 		{
 			return this.GetIterationLength() * this.GetIterationPercent();
 		}
 
-		public float GetOffDuration()
+				public float GetOffDuration()
 		{
 			return this.GetIterationLength() * (1f - this.GetIterationPercent());
 		}
 
-		public float GetMassPerCycle()
+				public float GetMassPerCycle()
 		{
 			this.Init(false);
 			return this.GetModifiedValue(this.scaledRate, this.modifier.massPerCycleModifier, Geyser.massModificationMethod);
 		}
 
-		public float GetEmitRate()
+				public float GetEmitRate()
 		{
 			float num = 600f / this.GetIterationLength();
 			return this.GetMassPerCycle() / num / this.GetOnDuration();
 		}
 
-		public float GetYearLength()
+				public float GetYearLength()
 		{
 			this.Init(false);
 			return this.GetModifiedValue(this.scaledYearLength, this.modifier.yearDurationModifier, Geyser.yearDurationModificationMethod);
 		}
 
-		public float GetYearPercent()
+				public float GetYearPercent()
 		{
 			this.Init(false);
 			return Mathf.Clamp(this.GetModifiedValue(this.scaledYearPercent, this.modifier.yearPercentageModifier, Geyser.yearPercentageModificationMethod), 0f, 1f);
 		}
 
-		public float GetYearOnDuration()
+				public float GetYearOnDuration()
 		{
 			return this.GetYearLength() * this.GetYearPercent();
 		}
 
-		public float GetYearOffDuration()
+				public float GetYearOffDuration()
 		{
 			return this.GetYearLength() * (1f - this.GetYearPercent());
 		}
 
-		public SimHashes GetElement()
+				public SimHashes GetElement()
 		{
 			if (!this.modifier.modifyElement || this.modifier.newElement == (SimHashes)0)
 			{
@@ -281,28 +281,28 @@ public class GeyserConfigurator : KMonoBehaviour
 			return this.modifier.newElement;
 		}
 
-		public float GetTemperature()
+				public float GetTemperature()
 		{
 			return this.GetModifiedValue(this.geyserType.temperature, this.modifier.temperatureModifier, Geyser.temperatureModificationMethod);
 		}
 
-		public byte GetDiseaseIdx()
+				public byte GetDiseaseIdx()
 		{
 			return this.geyserType.diseaseInfo.idx;
 		}
 
-		public int GetDiseaseCount()
+				public int GetDiseaseCount()
 		{
 			return this.geyserType.diseaseInfo.count;
 		}
 
-		public float GetAverageEmission()
+				public float GetAverageEmission()
 		{
 			float num = this.GetEmitRate() * this.GetOnDuration();
 			return this.GetYearOnDuration() / this.GetIterationLength() * num / this.GetYearLength();
 		}
 
-		private float Resample(float t, float min, float max)
+				private float Resample(float t, float min, float max)
 		{
 			float num = 6f;
 			float num2 = 0.002472623f;
@@ -310,30 +310,30 @@ public class GeyserConfigurator : KMonoBehaviour
 			return (-Mathf.Log(1f / num3 - 1f) + num) / (num * 2f) * (max - min) + min;
 		}
 
-		public HashedString typeId;
+				public HashedString typeId;
 
-		public float rateRoll;
+				public float rateRoll;
 
-		public float iterationLengthRoll;
+				public float iterationLengthRoll;
 
-		public float iterationPercentRoll;
+				public float iterationPercentRoll;
 
-		public float yearLengthRoll;
+				public float yearLengthRoll;
 
-		public float yearPercentRoll;
+				public float yearPercentRoll;
 
-		public float scaledRate;
+				public float scaledRate;
 
-		public float scaledIterationLength;
+				public float scaledIterationLength;
 
-		public float scaledIterationPercent;
+				public float scaledIterationPercent;
 
-		public float scaledYearLength;
+				public float scaledYearLength;
 
-		public float scaledYearPercent;
+				public float scaledYearPercent;
 
-		private bool didInit;
+				private bool didInit;
 
-		private Geyser.GeyserModification modifier;
+				private Geyser.GeyserModification modifier;
 	}
 }

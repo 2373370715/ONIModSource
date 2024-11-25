@@ -1,82 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using STRINGS;
+﻿using STRINGS;
 using UnityEngine;
 
-public class YellowAlertManager : GameStateMachine<YellowAlertManager, YellowAlertManager.Instance>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.off;
-		base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
-		this.off.ParamTransition<bool>(this.isOn, this.on, GameStateMachine<YellowAlertManager, YellowAlertManager.Instance, IStateMachineTarget, object>.IsTrue);
-		this.on.Enter("EnterEvent", delegate(YellowAlertManager.Instance smi)
-		{
-			Game.Instance.Trigger(-741654735, null);
-		}).Exit("ExitEvent", delegate(YellowAlertManager.Instance smi)
-		{
-			Game.Instance.Trigger(-2062778933, null);
-		}).Enter("EnableVignette", delegate(YellowAlertManager.Instance smi)
-		{
-			Vignette.Instance.SetColor(new Color(1f, 1f, 0f, 0.1f));
-		}).Exit("DisableVignette", delegate(YellowAlertManager.Instance smi)
-		{
-			Vignette.Instance.Reset();
-		}).Enter("Sounds", delegate(YellowAlertManager.Instance smi)
-		{
-			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("RedAlert_ON", false));
-		}).ToggleLoopingSound(GlobalAssets.GetSound("RedAlert_LP", false), null, true, true, true).ToggleNotification((YellowAlertManager.Instance smi) => smi.notification).ParamTransition<bool>(this.isOn, this.off, GameStateMachine<YellowAlertManager, YellowAlertManager.Instance, IStateMachineTarget, object>.IsFalse);
-		this.on_pst.Enter("Sounds", delegate(YellowAlertManager.Instance smi)
-		{
-			KMonoBehaviour.PlaySound(GlobalAssets.GetSound("RedAlert_OFF", false));
-		});
-	}
+public class YellowAlertManager : GameStateMachine<YellowAlertManager, YellowAlertManager.Instance> {
+    public BoolParameter isOn = new BoolParameter();
+    public State         off;
+    public State         on;
+    public State         on_pst;
 
-	public GameStateMachine<YellowAlertManager, YellowAlertManager.Instance, IStateMachineTarget, object>.State off;
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = off;
+        serializable  = SerializeType.Both_DEPRECATED;
+        off.ParamTransition(isOn, on, IsTrue);
+        on.Enter("EnterEvent", delegate { Game.Instance.Trigger(-741654735); })
+          .Exit("ExitEvent", delegate { Game.Instance.Trigger(-2062778933); })
+          .Enter("EnableVignette", delegate { Vignette.Instance.SetColor(new Color(1f, 1f, 0f, 0.1f)); })
+          .Exit("DisableVignette", delegate { Vignette.Instance.Reset(); })
+          .Enter("Sounds", delegate { KMonoBehaviour.PlaySound(GlobalAssets.GetSound("RedAlert_ON")); })
+          .ToggleLoopingSound(GlobalAssets.GetSound("RedAlert_LP"))
+          .ToggleNotification(smi => smi.notification)
+          .ParamTransition(isOn, off, IsFalse);
 
-	public GameStateMachine<YellowAlertManager, YellowAlertManager.Instance, IStateMachineTarget, object>.State on;
+        on_pst.Enter("Sounds", delegate { KMonoBehaviour.PlaySound(GlobalAssets.GetSound("RedAlert_OFF")); });
+    }
 
-	public GameStateMachine<YellowAlertManager, YellowAlertManager.Instance, IStateMachineTarget, object>.State on_pst;
+    public new class Instance : GameInstance {
+        private static Instance instance;
+        private        bool     hasTopPriorityChore;
 
-	public StateMachine<YellowAlertManager, YellowAlertManager.Instance, IStateMachineTarget, object>.BoolParameter isOn = new StateMachine<YellowAlertManager, YellowAlertManager.Instance, IStateMachineTarget, object>.BoolParameter();
+        public Notification notification = new Notification(MISC.NOTIFICATIONS.YELLOWALERT.NAME,
+                                                            NotificationType.Bad,
+                                                            (notificationList, data) =>
+                                                                MISC.NOTIFICATIONS.YELLOWALERT.TOOLTIP,
+                                                            null,
+                                                            false);
 
-	public new class Instance : GameStateMachine<YellowAlertManager, YellowAlertManager.Instance, IStateMachineTarget, object>.GameInstance
-	{
-		public static void DestroyInstance()
-		{
-			YellowAlertManager.Instance.instance = null;
-		}
+        public Instance(IStateMachineTarget master) : base(master) { instance = this; }
+        public static void     DestroyInstance() { instance                   = null; }
+        public static Instance Get()             { return instance; }
+        public        bool     IsOn()            { return sm.isOn.Get(smi); }
 
-		public static YellowAlertManager.Instance Get()
-		{
-			return YellowAlertManager.Instance.instance;
-		}
+        public void HasTopPriorityChore(bool on) {
+            hasTopPriorityChore = on;
+            Refresh();
+        }
 
-		public Instance(IStateMachineTarget master) : base(master)
-		{
-			YellowAlertManager.Instance.instance = this;
-		}
-
-		public bool IsOn()
-		{
-			return base.sm.isOn.Get(base.smi);
-		}
-
-		public void HasTopPriorityChore(bool on)
-		{
-			this.hasTopPriorityChore = on;
-			this.Refresh();
-		}
-
-		private void Refresh()
-		{
-			base.sm.isOn.Set(this.hasTopPriorityChore, base.smi, false);
-		}
-
-		private static YellowAlertManager.Instance instance;
-
-		private bool hasTopPriorityChore;
-
-		public Notification notification = new Notification(MISC.NOTIFICATIONS.YELLOWALERT.NAME, NotificationType.Bad, (List<Notification> notificationList, object data) => MISC.NOTIFICATIONS.YELLOWALERT.TOOLTIP, null, false, 0f, null, null, null, true, false, false);
-	}
+        private void Refresh() { sm.isOn.Set(hasTopPriorityChore, smi); }
+    }
 }

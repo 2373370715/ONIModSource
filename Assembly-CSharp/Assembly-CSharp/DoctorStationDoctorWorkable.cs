@@ -5,12 +5,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/DoctorStationDoctorWorkable")]
 public class DoctorStationDoctorWorkable : Workable
 {
-	private DoctorStationDoctorWorkable()
+		private DoctorStationDoctorWorkable()
 	{
 		this.synchronizeAnims = false;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.attributeConverter = Db.Get().AttributeConverters.DoctorSpeed;
@@ -19,29 +19,29 @@ public class DoctorStationDoctorWorkable : Workable
 		this.skillExperienceMultiplier = SKILLS.BARELY_EVER_EXPERIENCE;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		this.station.SetHasDoctor(true);
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		this.station.SetHasDoctor(false);
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		this.station.CompleteDoctoring();
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private DoctorStation station;
 }

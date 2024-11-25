@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class LegacyModMain
 {
-	public static void Load()
+		public static void Load()
 	{
 		List<Type> list = new List<Type>();
 		Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -29,7 +29,7 @@ public class LegacyModMain
 		EntityTemplates.DestroyBaseOreTemplates();
 	}
 
-	private static void Test()
+		private static void Test()
 	{
 		Dictionary<Type, int> dictionary = new Dictionary<Type, int>();
 		UnityEngine.Object[] array = Resources.FindObjectsOfTypeAll(typeof(Component));
@@ -69,7 +69,7 @@ public class LegacyModMain
 		global::Debug.Log(text);
 	}
 
-	private static void ListUnusedTypes()
+		private static void ListUnusedTypes()
 	{
 		HashSet<Type> hashSet = new HashSet<Type>();
 		UnityEngine.Object[] array = Resources.FindObjectsOfTypeAll(typeof(GameObject));
@@ -106,23 +106,23 @@ public class LegacyModMain
 		global::Debug.Log(text);
 	}
 
-	private static void DebugSelected()
+		private static void DebugSelected()
 	{
 	}
 
-	private static void DebugSelected(GameObject go)
+		private static void DebugSelected(GameObject go)
 	{
 		object component = go.GetComponent<Constructable>();
 		int num = 0 + 1;
 		global::Debug.Log(component);
 	}
 
-	private static void LoadOre(List<Type> types)
+		private static void LoadOre(List<Type> types)
 	{
 		GeneratedOre.LoadGeneratedOre(types);
 	}
 
-	private static void LoadBuildings(List<Type> types)
+		private static void LoadBuildings(List<Type> types)
 	{
 		LocString.CreateLocStringKeys(typeof(BUILDINGS.PREFABS), "STRINGS.BUILDINGS.");
 		LocString.CreateLocStringKeys(typeof(BUILDINGS.DAMAGESOURCES), "STRINGS.BUILDINGS.DAMAGESOURCES");
@@ -131,19 +131,19 @@ public class LegacyModMain
 		GeneratedBuildings.LoadGeneratedBuildings(types);
 	}
 
-	private static void LoadEntities(List<Type> types)
+		private static void LoadEntities(List<Type> types)
 	{
 		EntityConfigManager.Instance.LoadGeneratedEntities(types);
 		BuildingConfigManager.Instance.ConfigurePost();
 	}
 
-	private static void LoadEquipment(List<Type> types)
+		private static void LoadEquipment(List<Type> types)
 	{
 		LocString.CreateLocStringKeys(typeof(EQUIPMENT.PREFABS), "STRINGS.EQUIPMENT.");
 		GeneratedEquipment.LoadGeneratedEquipment(types);
 	}
 
-	private static void ConfigElements()
+		private static void ConfigElements()
 	{
 		foreach (LegacyModMain.ElementInfo elementInfo in new LegacyModMain.ElementInfo[]
 		{
@@ -275,19 +275,19 @@ public class LegacyModMain
 		}
 	}
 
-	private struct Entry
+		private struct Entry
 	{
-		public int count;
+				public int count;
 
-		public Type type;
+				public Type type;
 	}
 
-	private struct ElementInfo
+		private struct ElementInfo
 	{
-		public SimHashes id;
+				public SimHashes id;
 
-		public float decor;
+				public float decor;
 
-		public float overheatMod;
+				public float overheatMod;
 	}
 }

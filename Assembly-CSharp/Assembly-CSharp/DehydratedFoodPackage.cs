@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DehydratedFoodPackage : Workable, IApproachable
 {
-			public GameObject Rehydrator
+				public GameObject Rehydrator
 	{
 		get
 		{
@@ -22,7 +22,7 @@ public class DehydratedFoodPackage : Workable, IApproachable
 		}
 	}
 
-	public override BuildingFacade GetBuildingFacade()
+		public override BuildingFacade GetBuildingFacade()
 	{
 		if (!(this.Rehydrator != null))
 		{
@@ -31,7 +31,7 @@ public class DehydratedFoodPackage : Workable, IApproachable
 		return this.Rehydrator.GetComponent<BuildingFacade>();
 	}
 
-	public override KAnimControllerBase GetAnimController()
+		public override KAnimControllerBase GetAnimController()
 	{
 		if (!(this.Rehydrator != null))
 		{
@@ -40,7 +40,7 @@ public class DehydratedFoodPackage : Workable, IApproachable
 		return this.Rehydrator.GetComponent<KAnimControllerBase>();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.SetOffsets(new CellOffset[]
@@ -61,7 +61,7 @@ public class DehydratedFoodPackage : Workable, IApproachable
 		this.DehydrateItem(this.storage.items.ElementAtOrDefault(0));
 	}
 
-	protected override void OnStartWork(Worker worker)
+		protected override void OnStartWork(WorkerBase worker)
 	{
 		base.OnStartWork(worker);
 		if (this.Rehydrator != null)
@@ -75,7 +75,7 @@ public class DehydratedFoodPackage : Workable, IApproachable
 		}
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		base.OnCompleteWork(worker);
 		if (this.storage.items.Count != 1)
@@ -89,14 +89,14 @@ public class DehydratedFoodPackage : Workable, IApproachable
 		DehydratedManager component = this.Rehydrator.GetComponent<DehydratedManager>();
 		this.Rehydrator.GetComponent<AccessabilityManager>().SetActiveWorkable(null);
 		component.ConsumeResourcesForRehydration(base.gameObject, gameObject);
-		DehydratedFoodPackage.RehydrateStartWorkItem rehydrateStartWorkItem = (DehydratedFoodPackage.RehydrateStartWorkItem)worker.startWorkInfo;
+		DehydratedFoodPackage.RehydrateStartWorkItem rehydrateStartWorkItem = (DehydratedFoodPackage.RehydrateStartWorkItem)worker.GetStartWorkInfo();
 		if (rehydrateStartWorkItem != null && rehydrateStartWorkItem.setResultCb != null && gameObject != null)
 		{
 			rehydrateStartWorkItem.setResultCb(gameObject);
 		}
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		base.OnStopWork(worker);
 		if (this.Rehydrator != null)
@@ -105,19 +105,19 @@ public class DehydratedFoodPackage : Workable, IApproachable
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 	}
 
-	private void StorageChangeHandler(object obj)
+		private void StorageChangeHandler(object obj)
 	{
 		GameObject item = (GameObject)obj;
 		DebugUtil.DevAssert(!this.storage.items.Contains(item), "Attempting to add item to a dehydrated food package which is not allowed", null);
 		this.RehydrateItem(item);
 	}
 
-	public void DehydrateItem(GameObject item)
+		public void DehydrateItem(GameObject item)
 	{
 		DebugUtil.DevAssert(item != null, "Attempting to dehydrate contents of an empty packet", null);
 		if (this.storage.items.Count != 1 || item == null)
@@ -128,7 +128,7 @@ public class DehydratedFoodPackage : Workable, IApproachable
 		item.AddTag(GameTags.Dehydrated);
 	}
 
-	public void RehydrateItem(GameObject item)
+		public void RehydrateItem(GameObject item)
 	{
 		if (this.storage.items.Count != 0)
 		{
@@ -140,29 +140,29 @@ public class DehydratedFoodPackage : Workable, IApproachable
 		item.gameObject.GetComponent<KSelectable>().AddStatusItem(Db.Get().MiscStatusItems.RehydratedFood, null);
 	}
 
-	private void Swap<Type>(ref Type a, ref Type b)
+		private void Swap<Type>(ref Type a, ref Type b)
 	{
 		Type type = a;
 		a = b;
 		b = type;
 	}
 
-	[Serialize]
+		[Serialize]
 	public Tag FoodTag;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Storage storage;
 
-	public class RehydrateStartWorkItem : Worker.StartWorkInfo
+		public class RehydrateStartWorkItem : WorkerBase.StartWorkInfo
 	{
-		public RehydrateStartWorkItem(DehydratedFoodPackage pkg, Action<GameObject> setResultCB) : base(pkg)
+				public RehydrateStartWorkItem(DehydratedFoodPackage pkg, Action<GameObject> setResultCB) : base(pkg)
 		{
 			this.package = pkg;
 			this.setResultCb = setResultCB;
 		}
 
-		public DehydratedFoodPackage package;
+				public DehydratedFoodPackage package;
 
-		public Action<GameObject> setResultCb;
+				public Action<GameObject> setResultCb;
 	}
 }

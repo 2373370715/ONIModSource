@@ -6,12 +6,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/WiltCondition")]
 public class WiltCondition : KMonoBehaviour
 {
-	public bool IsWilting()
+		public bool IsWilting()
 	{
 		return this.wilting;
 	}
 
-	public List<WiltCondition.Condition> CurrentWiltSources()
+		public List<WiltCondition.Condition> CurrentWiltSources()
 	{
 		List<WiltCondition.Condition> list = new List<WiltCondition.Condition>();
 		foreach (KeyValuePair<int, bool> keyValuePair in this.WiltConditions)
@@ -24,7 +24,7 @@ public class WiltCondition : KMonoBehaviour
 		return list;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.WiltConditions.Add(0, true);
@@ -69,7 +69,7 @@ public class WiltCondition : KMonoBehaviour
 		base.Subscribe<WiltCondition>(1788072223, WiltCondition.SetRadiationComfortFalseDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.CheckShouldWilt();
@@ -94,14 +94,14 @@ public class WiltCondition : KMonoBehaviour
 		}
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		this.wiltSchedulerHandler.ClearScheduler();
 		this.recoverSchedulerHandler.ClearScheduler();
 		base.OnCleanUp();
 	}
 
-	private void SetCondition(WiltCondition.Condition condition, bool satisfiedState)
+		private void SetCondition(WiltCondition.Condition condition, bool satisfiedState)
 	{
 		if (!this.WiltConditions.ContainsKey((int)condition))
 		{
@@ -111,7 +111,7 @@ public class WiltCondition : KMonoBehaviour
 		this.CheckShouldWilt();
 	}
 
-	private void CheckShouldWilt()
+		private void CheckShouldWilt()
 	{
 		bool flag = false;
 		foreach (KeyValuePair<int, bool> keyValuePair in this.WiltConditions)
@@ -136,7 +136,7 @@ public class WiltCondition : KMonoBehaviour
 		}
 	}
 
-	private void Wilt()
+		private void Wilt()
 	{
 		if (!this.goingToWilt)
 		{
@@ -149,7 +149,7 @@ public class WiltCondition : KMonoBehaviour
 		}
 	}
 
-	private void Recover()
+		private void Recover()
 	{
 		if (this.goingToWilt)
 		{
@@ -162,12 +162,12 @@ public class WiltCondition : KMonoBehaviour
 		}
 	}
 
-	private static void DoWiltCallback(object data)
+		private static void DoWiltCallback(object data)
 	{
 		((WiltCondition)data).DoWilt();
 	}
 
-	private void DoWilt()
+		private void DoWilt()
 	{
 		this.wiltSchedulerHandler.ClearScheduler();
 		KSelectable component = base.GetComponent<KSelectable>();
@@ -200,7 +200,7 @@ public class WiltCondition : KMonoBehaviour
 		}
 	}
 
-	public string WiltCausesString()
+		public string WiltCausesString()
 	{
 		string text = "";
 		List<IWiltCause> allSMI = this.GetAllSMI<IWiltCause>();
@@ -220,12 +220,12 @@ public class WiltCondition : KMonoBehaviour
 		return text;
 	}
 
-	private static void DoRecoverCallback(object data)
+		private static void DoRecoverCallback(object data)
 	{
 		((WiltCondition)data).DoRecover();
 	}
 
-	private void DoRecover()
+		private void DoRecover()
 	{
 		this.recoverSchedulerHandler.ClearScheduler();
 		KSelectable component = base.GetComponent<KSelectable>();
@@ -238,150 +238,150 @@ public class WiltCondition : KMonoBehaviour
 		base.Trigger(712767498, null);
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private ReceptacleMonitor rm;
 
-	[Serialize]
+		[Serialize]
 	private bool goingToWilt;
 
-	[Serialize]
+		[Serialize]
 	private bool wilting;
 
-	private Dictionary<int, bool> WiltConditions = new Dictionary<int, bool>();
+		private Dictionary<int, bool> WiltConditions = new Dictionary<int, bool>();
 
-	public float WiltDelay = 1f;
+		public float WiltDelay = 1f;
 
-	public float RecoveryDelay = 1f;
+		public float RecoveryDelay = 1f;
 
-	private SchedulerHandle wiltSchedulerHandler;
+		private SchedulerHandle wiltSchedulerHandler;
 
-	private SchedulerHandle recoverSchedulerHandler;
+		private SchedulerHandle recoverSchedulerHandler;
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetTemperatureFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetTemperatureFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Temperature, false);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetTemperatureTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetTemperatureTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Temperature, true);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetPressureFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetPressureFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Pressure, false);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetPressureTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetPressureTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Pressure, true);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetAtmosphereElementFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetAtmosphereElementFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.AtmosphereElement, false);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetAtmosphereElementTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetAtmosphereElementTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.AtmosphereElement, true);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetDrowningFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetDrowningFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Drowning, false);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetDrowningTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetDrowningTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Drowning, true);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetDryingOutFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetDryingOutFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.DryingOut, false);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetDryingOutTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetDryingOutTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.DryingOut, true);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetIrrigationFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetIrrigationFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Irrigation, false);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetIrrigationTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetIrrigationTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Irrigation, true);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetFertilizedFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetFertilizedFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Fertilized, false);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetFertilizedTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetFertilizedTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Fertilized, true);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetIlluminationComfortFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetIlluminationComfortFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.IlluminationComfort, false);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetIlluminationComfortTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetIlluminationComfortTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.IlluminationComfort, true);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetReceptacleFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetReceptacleFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Receptacle, false);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetReceptacleTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetReceptacleTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Receptacle, true);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetEntombedDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetEntombedDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Entombed, !(bool)data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetRootHealthDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetRootHealthDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.UnhealthyRoot, (bool)data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetRadiationComfortFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetRadiationComfortFalseDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Radiation, false);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetRadiationComfortTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WiltCondition> SetRadiationComfortTrueDelegate = new EventSystem.IntraObjectHandler<WiltCondition>(delegate(WiltCondition component, object data)
 	{
 		component.SetCondition(WiltCondition.Condition.Radiation, true);
 	});
 
-	public enum Condition
+		public enum Condition
 	{
-		Temperature,
-		Pressure,
-		AtmosphereElement,
-		Drowning,
-		Fertilized,
-		DryingOut,
-		Irrigation,
-		IlluminationComfort,
-		Darkness,
-		Receptacle,
-		Entombed,
-		UnhealthyRoot,
-		Radiation,
-		Count
+				Temperature,
+				Pressure,
+				AtmosphereElement,
+				Drowning,
+				Fertilized,
+				DryingOut,
+				Irrigation,
+				IlluminationComfort,
+				Darkness,
+				Receptacle,
+				Entombed,
+				UnhealthyRoot,
+				Radiation,
+				Count
 	}
 }

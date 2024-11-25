@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MovePickupablePlacerConfig : CommonPlacerConfig, IEntityConfig
 {
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject gameObject = base.CreatePrefab(MovePickupablePlacerConfig.ID, MISC.PLACERS.MOVEPICKUPABLEPLACER.NAME, Assets.instance.movePickupToPlacerAssets.material);
 		gameObject.AddOrGet<CancellableMove>();
@@ -17,19 +17,19 @@ public class MovePickupablePlacerConfig : CommonPlacerConfig, IEntityConfig
 		return gameObject;
 	}
 
-	public void OnPrefabInit(GameObject go)
+		public void OnPrefabInit(GameObject go)
 	{
 	}
 
-	public void OnSpawn(GameObject go)
+		public void OnSpawn(GameObject go)
 	{
 	}
 
-	public static string ID = "MovePickupablePlacer";
+		public static string ID = "MovePickupablePlacer";
 
-	[Serializable]
+		[Serializable]
 	public class MovePickupablePlacerAssets
 	{
-		public Material material;
+				public Material material;
 	}
 }

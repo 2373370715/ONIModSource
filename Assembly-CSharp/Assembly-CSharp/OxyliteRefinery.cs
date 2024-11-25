@@ -5,30 +5,30 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class OxyliteRefinery : StateMachineComponent<OxyliteRefinery.StatesInstance>
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.smi.StartSM();
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private Storage storage;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	public Tag emitTag;
+		public Tag emitTag;
 
-	public float emitMass;
+		public float emitMass;
 
-	public Vector3 dropOffset;
+		public Vector3 dropOffset;
 
-	public class StatesInstance : GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.GameInstance
+		public class StatesInstance : GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.GameInstance
 	{
-		public StatesInstance(OxyliteRefinery smi) : base(smi)
+				public StatesInstance(OxyliteRefinery smi) : base(smi)
 		{
 		}
 
-		public void TryEmit()
+				public void TryEmit()
 		{
 			Storage storage = base.smi.master.storage;
 			GameObject gameObject = storage.FindFirst(base.smi.master.emitTag);
@@ -42,9 +42,9 @@ public class OxyliteRefinery : StateMachineComponent<OxyliteRefinery.StatesInsta
 		}
 	}
 
-	public class States : GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery>
+		public class States : GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.disabled;
 			this.root.EventTransition(GameHashes.OperationalChanged, this.disabled, (OxyliteRefinery.StatesInstance smi) => !smi.master.operational.IsOperational);
@@ -62,10 +62,10 @@ public class OxyliteRefinery : StateMachineComponent<OxyliteRefinery.StatesInsta
 			});
 		}
 
-		public GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.State disabled;
+				public GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.State disabled;
 
-		public GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.State waiting;
+				public GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.State waiting;
 
-		public GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.State converting;
+				public GameStateMachine<OxyliteRefinery.States, OxyliteRefinery.StatesInstance, OxyliteRefinery, object>.State converting;
 	}
 }

@@ -4,13 +4,13 @@ using KSerialization;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicElementSensor : Switch, ISaveLoadable, ISim200ms
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.GetComponent<Filterable>().onFilterChanged += this.OnElementSelected;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.OnSwitchToggled;
@@ -20,7 +20,7 @@ public class LogicElementSensor : Switch, ISaveLoadable, ISim200ms
 		base.Subscribe<LogicElementSensor>(-592767678, LogicElementSensor.OnOperationalChangedDelegate);
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		int i = Grid.PosToCell(this);
 		if (this.sampleIdx < 8)
@@ -42,19 +42,19 @@ public class LogicElementSensor : Switch, ISaveLoadable, ISim200ms
 		}
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateLogicCircuit();
 		this.UpdateVisualState(false);
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		bool flag = this.switchedOn && base.GetComponent<Operational>().IsOperational;
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, flag ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -65,7 +65,7 @@ public class LogicElementSensor : Switch, ISaveLoadable, ISim200ms
 		}
 	}
 
-	private void OnElementSelected(Tag element_tag)
+		private void OnElementSelected(Tag element_tag)
 	{
 		if (!element_tag.IsValid)
 		{
@@ -81,31 +81,31 @@ public class LogicElementSensor : Switch, ISaveLoadable, ISim200ms
 		base.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.NoFilterElementSelected, on, null);
 	}
 
-	private void OnOperationalChanged(object data)
+		private void OnOperationalChanged(object data)
 	{
 		this.UpdateLogicCircuit();
 		this.UpdateVisualState(false);
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-	private bool wasOn;
+		private bool wasOn;
 
-	public Element.State desiredState = Element.State.Gas;
+		public Element.State desiredState = Element.State.Gas;
 
-	private const int WINDOW_SIZE = 8;
+		private const int WINDOW_SIZE = 8;
 
-	private bool[] samples = new bool[8];
+		private bool[] samples = new bool[8];
 
-	private int sampleIdx;
+		private int sampleIdx;
 
-	private ushort desiredElementIdx = ushort.MaxValue;
+		private ushort desiredElementIdx = ushort.MaxValue;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicElementSensor> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<LogicElementSensor>(delegate(LogicElementSensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicElementSensor> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<LogicElementSensor>(delegate(LogicElementSensor component, object data)
 	{
 		component.OnOperationalChanged(data);
 	});

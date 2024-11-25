@@ -6,7 +6,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class LogicClusterLocationSensor : Switch, ISaveLoadable, ISim200ms
 {
-		public bool ActiveInSpace
+			public bool ActiveInSpace
 	{
 		get
 		{
@@ -14,13 +14,13 @@ public class LogicClusterLocationSensor : Switch, ISaveLoadable, ISim200ms
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		base.Subscribe<LogicClusterLocationSensor>(-905833192, LogicClusterLocationSensor.OnCopySettingsDelegate);
 	}
 
-	private void OnCopySettings(object data)
+		private void OnCopySettings(object data)
 	{
 		LogicClusterLocationSensor component = ((GameObject)data).GetComponent<LogicClusterLocationSensor>();
 		if (component != null)
@@ -34,7 +34,7 @@ public class LogicClusterLocationSensor : Switch, ISaveLoadable, ISim200ms
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.OnToggle += this.OnSwitchToggled;
@@ -43,7 +43,7 @@ public class LogicClusterLocationSensor : Switch, ISaveLoadable, ISim200ms
 		this.wasOn = this.switchedOn;
 	}
 
-	public void SetLocationEnabled(AxialI location, bool setting)
+		public void SetLocationEnabled(AxialI location, bool setting)
 	{
 		if (!setting)
 		{
@@ -56,24 +56,24 @@ public class LogicClusterLocationSensor : Switch, ISaveLoadable, ISim200ms
 		}
 	}
 
-	public void SetSpaceEnabled(bool setting)
+		public void SetSpaceEnabled(bool setting)
 	{
 		this.activeInSpace = setting;
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		bool state = this.CheckCurrentLocationSelected();
 		this.SetState(state);
 	}
 
-	private bool CheckCurrentLocationSelected()
+		private bool CheckCurrentLocationSelected()
 	{
 		AxialI myWorldLocation = base.gameObject.GetMyWorldLocation();
 		return this.activeLocations.Contains(myWorldLocation) || (this.activeInSpace && this.CheckInEmptySpace());
 	}
 
-	private bool CheckInEmptySpace()
+		private bool CheckInEmptySpace()
 	{
 		bool result = true;
 		AxialI myWorldLocation = base.gameObject.GetMyWorldLocation();
@@ -88,23 +88,23 @@ public class LogicClusterLocationSensor : Switch, ISaveLoadable, ISim200ms
 		return result;
 	}
 
-	public bool CheckLocationSelected(AxialI location)
+		public bool CheckLocationSelected(AxialI location)
 	{
 		return this.activeLocations.Contains(location);
 	}
 
-	private void OnSwitchToggled(bool toggled_on)
+		private void OnSwitchToggled(bool toggled_on)
 	{
 		this.UpdateLogicCircuit();
 		this.UpdateVisualState(false);
 	}
 
-	private void UpdateLogicCircuit()
+		private void UpdateLogicCircuit()
 	{
 		base.GetComponent<LogicPorts>().SendSignal(LogicSwitch.PORT_ID, this.switchedOn ? 1 : 0);
 	}
 
-	private void UpdateVisualState(bool force = false)
+		private void UpdateVisualState(bool force = false)
 	{
 		if (this.wasOn != this.switchedOn || force)
 		{
@@ -131,24 +131,24 @@ public class LogicClusterLocationSensor : Switch, ISaveLoadable, ISim200ms
 		}
 	}
 
-	protected override void UpdateSwitchStatus()
+		protected override void UpdateSwitchStatus()
 	{
 		StatusItem status_item = this.switchedOn ? Db.Get().BuildingStatusItems.LogicSensorStatusActive : Db.Get().BuildingStatusItems.LogicSensorStatusInactive;
 		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Power, status_item, null);
 	}
 
-	[MyCmpAdd]
+		[MyCmpAdd]
 	private CopyBuildingSettings copyBuildingSettings;
 
-	[Serialize]
+		[Serialize]
 	private List<AxialI> activeLocations = new List<AxialI>();
 
-	[Serialize]
+		[Serialize]
 	private bool activeInSpace = true;
 
-	private bool wasOn;
+		private bool wasOn;
 
-	private static readonly EventSystem.IntraObjectHandler<LogicClusterLocationSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicClusterLocationSensor>(delegate(LogicClusterLocationSensor component, object data)
+		private static readonly EventSystem.IntraObjectHandler<LogicClusterLocationSensor> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<LogicClusterLocationSensor>(delegate(LogicClusterLocationSensor component, object data)
 	{
 		component.OnCopySettings(data);
 	});

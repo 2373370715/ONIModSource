@@ -7,13 +7,13 @@ using KSerialization;
 [Serializable]
 public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 {
-	public Option(T value)
+		public Option(T value)
 	{
 		this.value = value;
 		this.hasValue = true;
 	}
 
-		public bool HasValue
+			public bool HasValue
 	{
 		get
 		{
@@ -21,7 +21,7 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		}
 	}
 
-		public T Value
+			public T Value
 	{
 		get
 		{
@@ -29,7 +29,7 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		}
 	}
 
-	public T Unwrap()
+		public T Unwrap()
 	{
 		if (!this.hasValue)
 		{
@@ -38,7 +38,7 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		return this.value;
 	}
 
-	public T UnwrapOr(T fallback_value, string warn_on_fallback = null)
+		public T UnwrapOr(T fallback_value, string warn_on_fallback = null)
 	{
 		if (!this.hasValue)
 		{
@@ -51,7 +51,7 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		return this.value;
 	}
 
-	public T UnwrapOrElse(Func<T> get_fallback_value_fn, string warn_on_fallback = null)
+		public T UnwrapOrElse(Func<T> get_fallback_value_fn, string warn_on_fallback = null)
 	{
 		if (!this.hasValue)
 		{
@@ -64,7 +64,7 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		return this.value;
 	}
 
-	public T UnwrapOrDefault()
+		public T UnwrapOrDefault()
 	{
 		if (!this.hasValue)
 		{
@@ -73,7 +73,7 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		return this.value;
 	}
 
-	public T Expect(string msg_on_fail)
+		public T Expect(string msg_on_fail)
 	{
 		if (!this.hasValue)
 		{
@@ -82,17 +82,17 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		return this.value;
 	}
 
-	public bool IsSome()
+		public bool IsSome()
 	{
 		return this.hasValue;
 	}
 
-	public bool IsNone()
+		public bool IsNone()
 	{
 		return !this.hasValue;
 	}
 
-	public Option<U> AndThen<U>(Func<T, U> fn)
+		public Option<U> AndThen<U>(Func<T, U> fn)
 	{
 		if (this.IsNone())
 		{
@@ -101,7 +101,7 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		return Option.Maybe<U>(fn(this.value));
 	}
 
-	public Option<U> AndThen<U>(Func<T, Option<U>> fn)
+		public Option<U> AndThen<U>(Func<T, Option<U>> fn)
 	{
 		if (this.IsNone())
 		{
@@ -110,38 +110,38 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		return fn(this.value);
 	}
 
-	public static implicit operator Option<T>(T value)
+		public static implicit operator Option<T>(T value)
 	{
 		return Option.Maybe<T>(value);
 	}
 
-	public static explicit operator T(Option<T> option)
+		public static explicit operator T(Option<T> option)
 	{
 		return option.Unwrap();
 	}
 
-	public static implicit operator Option<T>(Option.Internal.Value_None value)
+		public static implicit operator Option<T>(Option.Internal.Value_None value)
 	{
 		return default(Option<T>);
 	}
 
-	public static implicit operator Option.Internal.Value_HasValue(Option<T> value)
+		public static implicit operator Option.Internal.Value_HasValue(Option<T> value)
 	{
 		return new Option.Internal.Value_HasValue(value.hasValue);
 	}
 
-	public void Deconstruct(out bool hasValue, out T value)
+		public void Deconstruct(out bool hasValue, out T value)
 	{
 		hasValue = this.hasValue;
 		value = this.value;
 	}
 
-	public bool Equals(Option<T> other)
+		public bool Equals(Option<T> other)
 	{
 		return EqualityComparer<bool>.Default.Equals(this.hasValue, other.hasValue) && EqualityComparer<T>.Default.Equals(this.value, other.value);
 	}
 
-	public override bool Equals(object obj)
+		public override bool Equals(object obj)
 	{
 		if (obj is Option<T>)
 		{
@@ -151,22 +151,22 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		return false;
 	}
 
-	public static bool operator ==(Option<T> lhs, Option<T> rhs)
+		public static bool operator ==(Option<T> lhs, Option<T> rhs)
 	{
 		return lhs.Equals(rhs);
 	}
 
-	public static bool operator !=(Option<T> lhs, Option<T> rhs)
+		public static bool operator !=(Option<T> lhs, Option<T> rhs)
 	{
 		return !(lhs == rhs);
 	}
 
-	public override int GetHashCode()
+		public override int GetHashCode()
 	{
 		return (-363764631 * -1521134295 + this.hasValue.GetHashCode()) * -1521134295 + EqualityComparer<T>.Default.GetHashCode(this.value);
 	}
 
-	public override string ToString()
+		public override string ToString()
 	{
 		if (!this.hasValue)
 		{
@@ -175,32 +175,32 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		return string.Format("{0}", this.value);
 	}
 
-	public static bool operator ==(Option<T> lhs, T rhs)
+		public static bool operator ==(Option<T> lhs, T rhs)
 	{
 		return lhs.Equals(rhs);
 	}
 
-	public static bool operator !=(Option<T> lhs, T rhs)
+		public static bool operator !=(Option<T> lhs, T rhs)
 	{
 		return !(lhs == rhs);
 	}
 
-	public static bool operator ==(T lhs, Option<T> rhs)
+		public static bool operator ==(T lhs, Option<T> rhs)
 	{
 		return rhs.Equals(lhs);
 	}
 
-	public static bool operator !=(T lhs, Option<T> rhs)
+		public static bool operator !=(T lhs, Option<T> rhs)
 	{
 		return !(lhs == rhs);
 	}
 
-	public bool Equals(T other)
+		public bool Equals(T other)
 	{
 		return this.HasValue && EqualityComparer<T>.Default.Equals(this.value, other);
 	}
 
-		public static Option<T> None
+			public static Option<T> None
 	{
 		get
 		{
@@ -208,9 +208,9 @@ public readonly struct Option<T> : IEquatable<Option<T>>, IEquatable<T>
 		}
 	}
 
-	[Serialize]
+		[Serialize]
 	private readonly bool hasValue;
 
-	[Serialize]
+		[Serialize]
 	private readonly T value;
 }

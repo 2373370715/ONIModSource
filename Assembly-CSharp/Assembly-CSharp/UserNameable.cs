@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/UserNameable")]
 public class UserNameable : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (string.IsNullOrEmpty(this.savedName))
@@ -16,7 +16,7 @@ public class UserNameable : KMonoBehaviour
 		this.SetName(this.savedName);
 	}
 
-	public void SetName(string name)
+		public void SetName(string name)
 	{
 		KSelectable component = base.GetComponent<KSelectable>();
 		base.name = name;
@@ -38,6 +38,6 @@ public class UserNameable : KMonoBehaviour
 		base.Trigger(1102426921, name);
 	}
 
-	[Serialize]
+		[Serialize]
 	public string savedName = "";
 }

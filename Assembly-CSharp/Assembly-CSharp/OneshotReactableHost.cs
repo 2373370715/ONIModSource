@@ -4,18 +4,18 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/OneshotReactableHost")]
 public class OneshotReactableHost : KMonoBehaviour
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		GameScheduler.Instance.Schedule("CleanupOneshotReactable", this.lifetime, new Action<object>(this.OnExpire), null, null);
 	}
 
-	public void SetReactable(Reactable reactable)
+		public void SetReactable(Reactable reactable)
 	{
 		this.reactable = reactable;
 	}
 
-	private void OnExpire(object obj)
+		private void OnExpire(object obj)
 	{
 		if (!this.reactable.IsReacting)
 		{
@@ -26,7 +26,7 @@ public class OneshotReactableHost : KMonoBehaviour
 		GameScheduler.Instance.Schedule("CleanupOneshotReactable", 0.5f, new Action<object>(this.OnExpire), null, null);
 	}
 
-	private Reactable reactable;
+		private Reactable reactable;
 
-	public float lifetime = 1f;
+		public float lifetime = 1f;
 }

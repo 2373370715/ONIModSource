@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MoveToLocationToolHoverTextCard : HoverTextConfiguration
 {
-	public override void UpdateHoverElements(List<KSelectable> selected)
+		public override void UpdateHoverElements(List<KSelectable> selected)
 	{
 		HoverTextDrawer hoverTextDrawer = HoverTextScreen.Instance.BeginDrawing();
 		int num = Grid.PosToCell(Camera.main.ScreenToWorldPoint(KInputManager.GetMousePos()));

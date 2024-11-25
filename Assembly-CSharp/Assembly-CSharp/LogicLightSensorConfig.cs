@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class LogicLightSensorConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = LogicLightSensorConfig.ID;
 		int width = 1;
@@ -44,7 +44,7 @@ public class LogicLightSensorConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		LogicLightSensor logicLightSensor = go.AddOrGet<LogicLightSensor>();
 		logicLightSensor.manuallyControlled = false;
@@ -53,5 +53,5 @@ public class LogicLightSensorConfig : IBuildingConfig
 		go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits, false);
 	}
 
-	public static string ID = "LogicLightSensor";
+		public static string ID = "LogicLightSensor";
 }

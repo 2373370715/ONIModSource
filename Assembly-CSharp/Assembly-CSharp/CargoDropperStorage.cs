@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class CargoDropperStorage : GameStateMachine<CargoDropperStorage, CargoDropperStorage.StatesInstance, IStateMachineTarget, CargoDropperStorage.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.EventHandler(GameHashes.JettisonCargo, delegate(CargoDropperStorage.StatesInstance smi, object data)
@@ -12,18 +12,18 @@ public class CargoDropperStorage : GameStateMachine<CargoDropperStorage, CargoDr
 		});
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Vector3 dropOffset;
+				public Vector3 dropOffset;
 	}
 
-	public class StatesInstance : GameStateMachine<CargoDropperStorage, CargoDropperStorage.StatesInstance, IStateMachineTarget, CargoDropperStorage.Def>.GameInstance
+		public class StatesInstance : GameStateMachine<CargoDropperStorage, CargoDropperStorage.StatesInstance, IStateMachineTarget, CargoDropperStorage.Def>.GameInstance
 	{
-		public StatesInstance(IStateMachineTarget master, CargoDropperStorage.Def def) : base(master, def)
+				public StatesInstance(IStateMachineTarget master, CargoDropperStorage.Def def) : base(master, def)
 		{
 		}
 
-		public void JettisonCargo(object data)
+				public void JettisonCargo(object data)
 		{
 			Vector3 position = base.master.transform.GetPosition() + base.def.dropOffset;
 			Storage component = base.GetComponent<Storage>();

@@ -5,7 +5,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/AlgaeHabitatEmpty")]
 public class AlgaeHabitatEmpty : Workable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workerStatusItem = Db.Get().DuplicantStatusItems.Cleaning;
@@ -24,11 +24,11 @@ public class AlgaeHabitatEmpty : Workable
 		this.synchronizeAnims = false;
 	}
 
-	private static readonly HashedString[] CLEAN_ANIMS = new HashedString[]
+		private static readonly HashedString[] CLEAN_ANIMS = new HashedString[]
 	{
 		"sponge_pre",
 		"sponge_loop"
 	};
 
-	private static readonly HashedString PST_ANIM = new HashedString("sponge_pst");
+		private static readonly HashedString PST_ANIM = new HashedString("sponge_pst");
 }

@@ -10,7 +10,7 @@ using UnityEngine;
 
 public class Db : EntityModifierSet
 {
-	public static string GetPath(string dlcId, string folder)
+		public static string GetPath(string dlcId, string folder)
 	{
 		string result;
 		if (dlcId == "")
@@ -25,7 +25,7 @@ public class Db : EntityModifierSet
 		return result;
 	}
 
-	public static Db Get()
+		public static Db Get()
 	{
 		if (Db._Instance == null)
 		{
@@ -35,32 +35,32 @@ public class Db : EntityModifierSet
 		return Db._Instance;
 	}
 
-	public static BuildingFacades GetBuildingFacades()
+		public static BuildingFacades GetBuildingFacades()
 	{
 		return Db.Get().Permits.BuildingFacades;
 	}
 
-	public static ArtableStages GetArtableStages()
+		public static ArtableStages GetArtableStages()
 	{
 		return Db.Get().Permits.ArtableStages;
 	}
 
-	public static EquippableFacades GetEquippableFacades()
+		public static EquippableFacades GetEquippableFacades()
 	{
 		return Db.Get().Permits.EquippableFacades;
 	}
 
-	public static StickerBombs GetStickerBombs()
+		public static StickerBombs GetStickerBombs()
 	{
 		return Db.Get().Permits.StickerBombs;
 	}
 
-	public static MonumentParts GetMonumentParts()
+		public static MonumentParts GetMonumentParts()
 	{
 		return Db.Get().Permits.MonumentParts;
 	}
 
-	public override void Initialize()
+		public override void Initialize()
 	{
 		base.Initialize();
 		this.Urges = new Urges();
@@ -119,13 +119,13 @@ public class Db : EntityModifierSet
 		this.CollectResources(this.Root, this.ResourceTable);
 	}
 
-	public void PostProcess()
+		public void PostProcess()
 	{
 		this.Techs.PostProcess();
 		this.Permits.PostProcess();
 	}
 
-	private void CollectResources(Resource resource, List<Resource> resource_table)
+		private void CollectResources(Resource resource, List<Resource> resource_table)
 	{
 		if (resource.Guid != null)
 		{
@@ -141,7 +141,7 @@ public class Db : EntityModifierSet
 		}
 	}
 
-	public ResourceType GetResource<ResourceType>(ResourceGuid guid) where ResourceType : Resource
+		public ResourceType GetResource<ResourceType>(ResourceGuid guid) where ResourceType : Resource
 	{
 		Resource resource = this.ResourceTable.FirstOrDefault((Resource s) => s.Guid == guid);
 		if (resource == null)
@@ -168,104 +168,104 @@ public class Db : EntityModifierSet
 		return resourceType;
 	}
 
-	public void ResetProblematicDbs()
+		public void ResetProblematicDbs()
 	{
 		this.Emotes.ResetProblematicReferences();
 	}
 
-	private static Db _Instance;
+		private static Db _Instance;
 
-	public TextAsset researchTreeFileVanilla;
+		public TextAsset researchTreeFileVanilla;
 
-	public TextAsset researchTreeFileExpansion1;
+		public TextAsset researchTreeFileExpansion1;
 
-	public Diseases Diseases;
+		public Diseases Diseases;
 
-	public Database.Sicknesses Sicknesses;
+		public Database.Sicknesses Sicknesses;
 
-	public Urges Urges;
+		public Urges Urges;
 
-	public AssignableSlots AssignableSlots;
+		public AssignableSlots AssignableSlots;
 
-	public StateMachineCategories StateMachineCategories;
+		public StateMachineCategories StateMachineCategories;
 
-	public Personalities Personalities;
+		public Personalities Personalities;
 
-	public Faces Faces;
+		public Faces Faces;
 
-	public Shirts Shirts;
+		public Shirts Shirts;
 
-	public Expressions Expressions;
+		public Expressions Expressions;
 
-	public Emotes Emotes;
+		public Emotes Emotes;
 
-	public Thoughts Thoughts;
+		public Thoughts Thoughts;
 
-	public Dreams Dreams;
+		public Dreams Dreams;
 
-	public BuildingStatusItems BuildingStatusItems;
+		public BuildingStatusItems BuildingStatusItems;
 
-	public MiscStatusItems MiscStatusItems;
+		public MiscStatusItems MiscStatusItems;
 
-	public CreatureStatusItems CreatureStatusItems;
+		public CreatureStatusItems CreatureStatusItems;
 
-	public RobotStatusItems RobotStatusItems;
+		public RobotStatusItems RobotStatusItems;
 
-	public StatusItemCategories StatusItemCategories;
+		public StatusItemCategories StatusItemCategories;
 
-	public Deaths Deaths;
+		public Deaths Deaths;
 
-	public ChoreTypes ChoreTypes;
+		public ChoreTypes ChoreTypes;
 
-	public TechItems TechItems;
+		public TechItems TechItems;
 
-	public AccessorySlots AccessorySlots;
+		public AccessorySlots AccessorySlots;
 
-	public Accessories Accessories;
+		public Accessories Accessories;
 
-	public ScheduleBlockTypes ScheduleBlockTypes;
+		public ScheduleBlockTypes ScheduleBlockTypes;
 
-	public ScheduleGroups ScheduleGroups;
+		public ScheduleGroups ScheduleGroups;
 
-	public RoomTypeCategories RoomTypeCategories;
+		public RoomTypeCategories RoomTypeCategories;
 
-	public RoomTypes RoomTypes;
+		public RoomTypes RoomTypes;
 
-	public ArtifactDropRates ArtifactDropRates;
+		public ArtifactDropRates ArtifactDropRates;
 
-	public SpaceDestinationTypes SpaceDestinationTypes;
+		public SpaceDestinationTypes SpaceDestinationTypes;
 
-	public SkillPerks SkillPerks;
+		public SkillPerks SkillPerks;
 
-	public SkillGroups SkillGroups;
+		public SkillGroups SkillGroups;
 
-	public Skills Skills;
+		public Skills Skills;
 
-	public ColonyAchievements ColonyAchievements;
+		public ColonyAchievements ColonyAchievements;
 
-	public Quests Quests;
+		public Quests Quests;
 
-	public GameplayEvents GameplayEvents;
+		public GameplayEvents GameplayEvents;
 
-	public GameplaySeasons GameplaySeasons;
+		public GameplaySeasons GameplaySeasons;
 
-	public PlantMutations PlantMutations;
+		public PlantMutations PlantMutations;
 
-	public Spices Spices;
+		public Spices Spices;
 
-	public Techs Techs;
+		public Techs Techs;
 
-	public TechTreeTitles TechTreeTitles;
+		public TechTreeTitles TechTreeTitles;
 
-	public OrbitalTypeCategories OrbitalTypeCategories;
+		public OrbitalTypeCategories OrbitalTypeCategories;
 
-	public PermitResources Permits;
+		public PermitResources Permits;
 
-	public ArtableStatuses ArtableStatuses;
+		public ArtableStatuses ArtableStatuses;
 
-	public Stories Stories;
+		public Stories Stories;
 
-	[Serializable]
+		[Serializable]
 	public class SlotInfo : Resource
 	{
 	}

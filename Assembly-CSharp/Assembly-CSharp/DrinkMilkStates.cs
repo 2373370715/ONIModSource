@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>
 {
-	private static void SetSceneLayer(DrinkMilkStates.Instance smi, Grid.SceneLayer layer)
+		private static void SetSceneLayer(DrinkMilkStates.Instance smi, Grid.SceneLayer layer)
 	{
 		SegmentedCreature.Instance smi2 = smi.GetSMI<SegmentedCreature.Instance>();
 		if (smi2 != null && smi2.segments != null)
@@ -24,7 +24,7 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 		smi.GetComponent<KBatchedAnimController>().SetSceneLayer(layer);
 	}
 
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.goingToDrink;
 		this.root.Enter(new StateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State.Callback(DrinkMilkStates.SetTarget)).Enter(new StateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State.Callback(DrinkMilkStates.CheckIfCramped)).Enter(new StateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State.Callback(DrinkMilkStates.ReserveMilkFeeder)).Exit(new StateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State.Callback(DrinkMilkStates.UnreserveMilkFeeder)).Transition(this.behaviourComplete, delegate(DrinkMilkStates.Instance smi)
@@ -37,8 +37,24 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 			}
 			return false;
 		}, UpdateRate.SIM_200ms);
-		this.goingToDrink.MoveTo(new Func<DrinkMilkStates.Instance, int>(DrinkMilkStates.GetCellToDrinkFrom), this.drink, null, false).ToggleStatusItem(CREATURES.STATUSITEMS.LOOKINGFORMILK.NAME, CREATURES.STATUSITEMS.LOOKINGFORMILK.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main);
-		this.drink.DefaultState(this.drink.pre).Enter("FaceMilkFeeder", new StateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State.Callback(DrinkMilkStates.FaceMilkFeeder)).ToggleStatusItem(CREATURES.STATUSITEMS.DRINKINGMILK.NAME, CREATURES.STATUSITEMS.DRINKINGMILK.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main).Enter(delegate(DrinkMilkStates.Instance smi)
+		GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State state = this.goingToDrink.MoveTo(new Func<DrinkMilkStates.Instance, int>(DrinkMilkStates.GetCellToDrinkFrom), this.drink, null, false);
+		string name = CREATURES.STATUSITEMS.LOOKINGFORMILK.NAME;
+		string tooltip = CREATURES.STATUSITEMS.LOOKINGFORMILK.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main);
+		GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State state2 = this.drink.DefaultState(this.drink.pre).Enter("FaceMilkFeeder", new StateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State.Callback(DrinkMilkStates.FaceMilkFeeder));
+		string name2 = CREATURES.STATUSITEMS.DRINKINGMILK.NAME;
+		string tooltip2 = CREATURES.STATUSITEMS.DRINKINGMILK.TOOLTIP;
+		string icon2 = "";
+		StatusItem.IconType icon_type2 = StatusItem.IconType.Info;
+		NotificationType notification_type2 = NotificationType.Neutral;
+		bool allow_multiples2 = false;
+		main = Db.Get().StatusItemCategories.Main;
+		state2.ToggleStatusItem(name2, tooltip2, icon2, icon_type2, notification_type2, allow_multiples2, default(HashedString), 129022, null, null, main).Enter(delegate(DrinkMilkStates.Instance smi)
 		{
 			DrinkMilkStates.SetSceneLayer(smi, smi.def.shouldBeBehindMilkTank ? Grid.SceneLayer.BuildingUse : Grid.SceneLayer.Creatures);
 		}).Exit(delegate(DrinkMilkStates.Instance smi)
@@ -60,7 +76,7 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 		this.behaviourComplete.QueueAnim("idle_loop", true, null).BehaviourComplete(GameTags.Creatures.Behaviour_TryToDrinkMilkFromFeeder, false);
 	}
 
-	private static MilkFeeder.Instance GetTargetMilkFeeder(DrinkMilkStates.Instance smi)
+		private static MilkFeeder.Instance GetTargetMilkFeeder(DrinkMilkStates.Instance smi)
 	{
 		if (smi.sm.targetMilkFeeder.IsNullOrDestroyed())
 		{
@@ -79,17 +95,17 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 		return smi2;
 	}
 
-	private static void SetTarget(DrinkMilkStates.Instance smi)
+		private static void SetTarget(DrinkMilkStates.Instance smi)
 	{
 		smi.sm.targetMilkFeeder.Set(smi.GetSMI<DrinkMilkMonitor.Instance>().targetMilkFeeder.gameObject, smi, false);
 	}
 
-	private static void CheckIfCramped(DrinkMilkStates.Instance smi)
+		private static void CheckIfCramped(DrinkMilkStates.Instance smi)
 	{
 		smi.critterIsCramped = smi.GetSMI<DrinkMilkMonitor.Instance>().doesTargetMilkFeederHaveSpaceForCritter;
 	}
 
-	private static void ReserveMilkFeeder(DrinkMilkStates.Instance smi)
+		private static void ReserveMilkFeeder(DrinkMilkStates.Instance smi)
 	{
 		MilkFeeder.Instance instance = DrinkMilkStates.GetTargetMilkFeeder(smi);
 		if (instance == null)
@@ -99,7 +115,7 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 		instance.SetReserved(true);
 	}
 
-	private static void UnreserveMilkFeeder(DrinkMilkStates.Instance smi)
+		private static void UnreserveMilkFeeder(DrinkMilkStates.Instance smi)
 	{
 		MilkFeeder.Instance instance = DrinkMilkStates.GetTargetMilkFeeder(smi);
 		if (instance == null)
@@ -109,7 +125,7 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 		instance.SetReserved(false);
 	}
 
-	private static void DrinkMilkComplete(DrinkMilkStates.Instance smi)
+		private static void DrinkMilkComplete(DrinkMilkStates.Instance smi)
 	{
 		MilkFeeder.Instance instance = DrinkMilkStates.GetTargetMilkFeeder(smi);
 		if (instance == null)
@@ -119,7 +135,7 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 		smi.GetSMI<DrinkMilkMonitor.Instance>().NotifyFinishedDrinkingMilkFrom(instance);
 	}
 
-	private static int GetCellToDrinkFrom(DrinkMilkStates.Instance smi)
+		private static int GetCellToDrinkFrom(DrinkMilkStates.Instance smi)
 	{
 		MilkFeeder.Instance instance = DrinkMilkStates.GetTargetMilkFeeder(smi);
 		if (instance == null)
@@ -129,7 +145,7 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 		return smi.GetSMI<DrinkMilkMonitor.Instance>().GetDrinkCellOf(instance, smi.critterIsCramped);
 	}
 
-	private static string GetAnimDrinkPre(DrinkMilkStates.Instance smi)
+		private static string GetAnimDrinkPre(DrinkMilkStates.Instance smi)
 	{
 		if (smi.critterIsCramped)
 		{
@@ -138,7 +154,7 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 		return "drink_pre";
 	}
 
-	private static string GetAnimDrinkLoop(DrinkMilkStates.Instance smi)
+		private static string GetAnimDrinkLoop(DrinkMilkStates.Instance smi)
 	{
 		if (smi.critterIsCramped)
 		{
@@ -147,7 +163,7 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 		return "drink_loop";
 	}
 
-	private static string GetAnimDrinkPst(DrinkMilkStates.Instance smi)
+		private static string GetAnimDrinkPst(DrinkMilkStates.Instance smi)
 	{
 		if (smi.critterIsCramped)
 		{
@@ -156,7 +172,7 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 		return "drink_pst";
 	}
 
-	private static void FaceMilkFeeder(DrinkMilkStates.Instance smi)
+		private static void FaceMilkFeeder(DrinkMilkStates.Instance smi)
 	{
 		MilkFeeder.Instance instance = DrinkMilkStates.GetTargetMilkFeeder(smi);
 		if (instance == null)
@@ -193,24 +209,24 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 		smi.GetComponent<Facing>().Face(target_x);
 	}
 
-	public GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State goingToDrink;
+		public GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State goingToDrink;
 
-	public DrinkMilkStates.EatingState drink;
+		public DrinkMilkStates.EatingState drink;
 
-	public GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State behaviourComplete;
+		public GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State behaviourComplete;
 
-	public StateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.TargetParameter targetMilkFeeder;
+		public StateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.TargetParameter targetMilkFeeder;
 
-	public StateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.Signal requestedToStopFeeding;
+		public StateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.Signal requestedToStopFeeding;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public static CellOffset DrinkCellOffsetGet_CritterOneByOne(MilkFeeder.Instance milkFeederInstance, DrinkMilkMonitor.Instance critterInstance, bool isCramped)
+				public static CellOffset DrinkCellOffsetGet_CritterOneByOne(MilkFeeder.Instance milkFeederInstance, DrinkMilkMonitor.Instance critterInstance, bool isCramped)
 		{
 			return milkFeederInstance.GetComponent<Rotatable>().GetRotatedCellOffset(MilkFeederConfig.DRINK_FROM_OFFSET);
 		}
 
-		public static CellOffset DrinkCellOffsetGet_GassyMoo(MilkFeeder.Instance milkFeederInstance, DrinkMilkMonitor.Instance critterInstance, bool isCramped)
+				public static CellOffset DrinkCellOffsetGet_GassyMoo(MilkFeeder.Instance milkFeederInstance, DrinkMilkMonitor.Instance critterInstance, bool isCramped)
 		{
 			Rotatable component = milkFeederInstance.GetComponent<Rotatable>();
 			CellOffset rotatedCellOffset = component.GetRotatedCellOffset(MilkFeederConfig.DRINK_FROM_OFFSET);
@@ -232,7 +248,7 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 			return rotatedCellOffset;
 		}
 
-		public static CellOffset DrinkCellOffsetGet_BammothAdult(MilkFeeder.Instance milkFeederInstance, DrinkMilkMonitor.Instance critterInstance, bool isCramped)
+				public static CellOffset DrinkCellOffsetGet_BammothAdult(MilkFeeder.Instance milkFeederInstance, DrinkMilkMonitor.Instance critterInstance, bool isCramped)
 		{
 			Rotatable component = milkFeederInstance.GetComponent<Rotatable>();
 			CellOffset rotatedCellOffset = component.GetRotatedCellOffset(MilkFeederConfig.DRINK_FROM_OFFSET);
@@ -271,34 +287,34 @@ public class DrinkMilkStates : GameStateMachine<DrinkMilkStates, DrinkMilkStates
 			return rotatedCellOffset;
 		}
 
-		public bool shouldBeBehindMilkTank = true;
+				public bool shouldBeBehindMilkTank = true;
 
-		public DrinkMilkStates.Def.DrinkCellOffsetGetFn drinkCellOffsetGetFn = new DrinkMilkStates.Def.DrinkCellOffsetGetFn(DrinkMilkStates.Def.DrinkCellOffsetGet_CritterOneByOne);
+				public DrinkMilkStates.Def.DrinkCellOffsetGetFn drinkCellOffsetGetFn = new DrinkMilkStates.Def.DrinkCellOffsetGetFn(DrinkMilkStates.Def.DrinkCellOffsetGet_CritterOneByOne);
 
-				public delegate CellOffset DrinkCellOffsetGetFn(MilkFeeder.Instance milkFeederInstance, DrinkMilkMonitor.Instance critterInstance, bool isCramped);
+						public delegate CellOffset DrinkCellOffsetGetFn(MilkFeeder.Instance milkFeederInstance, DrinkMilkMonitor.Instance critterInstance, bool isCramped);
 	}
 
-	public new class Instance : GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.GameInstance
 	{
-		public Instance(Chore<DrinkMilkStates.Instance> chore, DrinkMilkStates.Def def) : base(chore, def)
+				public Instance(Chore<DrinkMilkStates.Instance> chore, DrinkMilkStates.Def def) : base(chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, GameTags.Creatures.Behaviour_TryToDrinkMilkFromFeeder);
 		}
 
-		public void RequestToStopFeeding()
+				public void RequestToStopFeeding()
 		{
 			base.sm.requestedToStopFeeding.Trigger(base.smi);
 		}
 
-		public bool critterIsCramped;
+				public bool critterIsCramped;
 	}
 
-	public class EatingState : GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State
+		public class EatingState : GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State
 	{
-		public GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State pre;
+				public GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State pre;
 
-		public GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State loop;
+				public GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State loop;
 
-		public GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State pst;
+				public GameStateMachine<DrinkMilkStates, DrinkMilkStates.Instance, IStateMachineTarget, DrinkMilkStates.Def>.State pst;
 	}
 }

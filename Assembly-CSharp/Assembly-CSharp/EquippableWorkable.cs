@@ -6,7 +6,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/Workable/EquippableWorkable")]
 public class EquippableWorkable : Workable, ISaveLoadable
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.workerStatusItem = Db.Get().DuplicantStatusItems.Equipping;
@@ -17,23 +17,23 @@ public class EquippableWorkable : Workable, ISaveLoadable
 		this.synchronizeAnims = false;
 	}
 
-	public global::QualityLevel GetQuality()
+		public global::QualityLevel GetQuality()
 	{
 		return this.quality;
 	}
 
-	public void SetQuality(global::QualityLevel level)
+		public void SetQuality(global::QualityLevel level)
 	{
 		this.quality = level;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.SetWorkTime(1.5f);
 		this.equippable.OnAssign += this.RefreshChore;
 	}
 
-	private void CreateChore()
+		private void CreateChore()
 	{
 		global::Debug.Assert(this.chore == null, "chore should be null");
 		this.chore = new EquipChore(this);
@@ -41,7 +41,7 @@ public class EquippableWorkable : Workable, ISaveLoadable
 		chore.onExit = (Action<Chore>)Delegate.Combine(chore.onExit, new Action<Chore>(this.OnChoreExit));
 	}
 
-	private void OnChoreExit(Chore chore)
+		private void OnChoreExit(Chore chore)
 	{
 		if (!chore.isComplete)
 		{
@@ -49,7 +49,7 @@ public class EquippableWorkable : Workable, ISaveLoadable
 		}
 	}
 
-	public void CancelChore(string reason = "")
+		public void CancelChore(string reason = "")
 	{
 		if (this.chore != null)
 		{
@@ -59,7 +59,7 @@ public class EquippableWorkable : Workable, ISaveLoadable
 		}
 	}
 
-	private void RefreshChore(IAssignableIdentity target)
+		private void RefreshChore(IAssignableIdentity target)
 	{
 		if (this.chore != null)
 		{
@@ -72,7 +72,7 @@ public class EquippableWorkable : Workable, ISaveLoadable
 		}
 	}
 
-	protected override void OnCompleteWork(Worker worker)
+		protected override void OnCompleteWork(WorkerBase worker)
 	{
 		if (this.equippable.assignee != null)
 		{
@@ -86,18 +86,18 @@ public class EquippableWorkable : Workable, ISaveLoadable
 		}
 	}
 
-	protected override void OnStopWork(Worker worker)
+		protected override void OnStopWork(WorkerBase worker)
 	{
 		this.workTimeRemaining = this.GetWorkTime();
 		base.OnStopWork(worker);
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Equippable equippable;
 
-	private Chore chore;
+		private Chore chore;
 
-	private IAssignableIdentity currentTarget;
+		private IAssignableIdentity currentTarget;
 
-	private global::QualityLevel quality;
+		private global::QualityLevel quality;
 }

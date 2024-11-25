@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SpiceGrinderConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SpiceGrinder";
 		int width = 2;
@@ -27,13 +27,13 @@ public class SpiceGrinderConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGet<LoopingSounds>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.SpiceStation, false);
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		SpiceGrinder.InitializeSpices();
 		SymbolOverrideControllerUtil.AddToPrefab(go);
@@ -74,27 +74,27 @@ public class SpiceGrinderConfig : IBuildingConfig
 		roomTracker.requirement = RoomTracker.Requirement.Required;
 	}
 
-	public const string ID = "SpiceGrinder";
+		public const string ID = "SpiceGrinder";
 
-	public static Tag MATERIAL_FOR_TINKER = GameTags.CropSeed;
+		public static Tag MATERIAL_FOR_TINKER = GameTags.CropSeed;
 
-	public static Tag TINKER_TOOLS = FarmStationToolsConfig.tag;
+		public static Tag TINKER_TOOLS = FarmStationToolsConfig.tag;
 
-	public const float MASS_PER_TINKER = 5f;
+		public const float MASS_PER_TINKER = 5f;
 
-	public const float OUTPUT_TEMPERATURE = 313.15f;
+		public const float OUTPUT_TEMPERATURE = 313.15f;
 
-	public const float WORK_TIME_PER_1000KCAL = 5f;
+		public const float WORK_TIME_PER_1000KCAL = 5f;
 
-	public const short SPICE_CAPACITY_PER_INGREDIENT = 10;
+		public const short SPICE_CAPACITY_PER_INGREDIENT = 10;
 
-	public const string PrimaryColorSymbol = "stripe_anim2";
+		public const string PrimaryColorSymbol = "stripe_anim2";
 
-	public const string SecondaryColorSymbol = "stripe_anim1";
+		public const string SecondaryColorSymbol = "stripe_anim1";
 
-	public const string GrinderColorSymbol = "grinder";
+		public const string GrinderColorSymbol = "grinder";
 
-	public static StatusItem SpicedStatus = Db.Get().MiscStatusItems.SpicedFood;
+		public static StatusItem SpicedStatus = Db.Get().MiscStatusItems.SpicedFood;
 
-	private static int STORAGE_PRIORITY = Chore.DefaultPrioritySetting.priority_value - 1;
+		private static int STORAGE_PRIORITY = Chore.DefaultPrioritySetting.priority_value - 1;
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TechTreeTitle : Resource
 {
-		public Vector2 center
+			public Vector2 center
 	{
 		get
 		{
@@ -11,7 +11,7 @@ public class TechTreeTitle : Resource
 		}
 	}
 
-		public float width
+			public float width
 	{
 		get
 		{
@@ -19,7 +19,7 @@ public class TechTreeTitle : Resource
 		}
 	}
 
-		public float height
+			public float height
 	{
 		get
 		{
@@ -27,12 +27,12 @@ public class TechTreeTitle : Resource
 		}
 	}
 
-	public TechTreeTitle(string id, ResourceSet parent, string name, ResourceTreeNode node) : base(id, parent, name)
+		public TechTreeTitle(string id, ResourceSet parent, string name, ResourceTreeNode node) : base(id, parent, name)
 	{
 		this.node = node;
 	}
 
-	public string desc;
+		public string desc;
 
-	private ResourceTreeNode node;
+		private ResourceTreeNode node;
 }

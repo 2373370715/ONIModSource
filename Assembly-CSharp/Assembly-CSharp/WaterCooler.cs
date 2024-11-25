@@ -9,7 +9,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IApproachable, IGameObjectEffectDescriptor, FewOptionSideScreen.IFewOptionSideScreen
 {
-			public Tag ChosenBeverage
+				public Tag ChosenBeverage
 	{
 		get
 		{
@@ -26,7 +26,7 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		}
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.GetComponent<ManualDeliveryKG>().RequestedItemTag = this.chosenBeverage;
@@ -50,7 +50,7 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		GameScenePartitioner.Instance.Free(ref this.validNavCellChangedPartitionerEntry);
 		this.CancelDrinkChores();
@@ -65,7 +65,7 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		base.OnCleanUp();
 	}
 
-	public void UpdateDrinkChores(bool force = true)
+		public void UpdateDrinkChores(bool force = true)
 	{
 		if (!force && !this.choresDirty)
 		{
@@ -95,7 +95,7 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		this.choresDirty = false;
 	}
 
-	public void CancelDrinkChores()
+		public void CancelDrinkChores()
 	{
 		for (int i = 0; i < this.socializeOffsets.Length; i++)
 		{
@@ -108,39 +108,39 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		}
 	}
 
-	private bool IsOffsetValid(CellOffset offset)
+		private bool IsOffsetValid(CellOffset offset)
 	{
 		int cell = Grid.OffsetCell(Grid.PosToCell(this), offset);
 		int anchor_cell = Grid.CellBelow(cell);
 		return GameNavGrids.FloorValidator.IsWalkableCell(cell, anchor_cell, false);
 	}
 
-	private void OnChoreEnd(Chore chore)
+		private void OnChoreEnd(Chore chore)
 	{
 		this.choresDirty = true;
 	}
 
-	private void OnCellChanged(object data)
+		private void OnCellChanged(object data)
 	{
 		this.choresDirty = true;
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		this.choresDirty = true;
 	}
 
-	public CellOffset[] GetOffsets()
+		public CellOffset[] GetOffsets()
 	{
 		return this.drinkOffsets;
 	}
 
-	public int GetCell()
+		public int GetCell()
 	{
 		return Grid.PosToCell(this);
 	}
 
-	private void AddRequirementDesc(List<Descriptor> descs, Tag tag, float mass)
+		private void AddRequirementDesc(List<Descriptor> descs, Tag tag, float mass)
 	{
 		string arg = tag.ProperName();
 		Descriptor item = default(Descriptor);
@@ -148,7 +148,7 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		descs.Add(item);
 	}
 
-	List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
+		List<Descriptor> IGameObjectEffectDescriptor.GetDescriptors(GameObject go)
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		Descriptor item = default(Descriptor);
@@ -162,7 +162,7 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		return list;
 	}
 
-	public FewOptionSideScreen.IFewOptionSideScreen.Option[] GetOptions()
+		public FewOptionSideScreen.IFewOptionSideScreen.Option[] GetOptions()
 	{
 		Effect.CreateTooltip(Db.Get().effects.Get("DuplicantGotMilk"), true, "\n    • ", true);
 		FewOptionSideScreen.IFewOptionSideScreen.Option[] array = new FewOptionSideScreen.IFewOptionSideScreen.Option[WaterCoolerConfig.BEVERAGE_CHOICE_OPTIONS.Length];
@@ -178,21 +178,21 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		return array;
 	}
 
-	public void OnOptionSelected(FewOptionSideScreen.IFewOptionSideScreen.Option option)
+		public void OnOptionSelected(FewOptionSideScreen.IFewOptionSideScreen.Option option)
 	{
 		this.ChosenBeverage = option.tag;
 	}
 
-	public Tag GetSelectedOption()
+		public Tag GetSelectedOption()
 	{
 		return this.ChosenBeverage;
 	}
 
-	public const float DRINK_MASS = 1f;
+		public const float DRINK_MASS = 1f;
 
-	public const string SPECIFIC_EFFECT = "Socialized";
+		public const string SPECIFIC_EFFECT = "Socialized";
 
-	public CellOffset[] socializeOffsets = new CellOffset[]
+		public CellOffset[] socializeOffsets = new CellOffset[]
 	{
 		new CellOffset(-1, 0),
 		new CellOffset(2, 0),
@@ -200,40 +200,40 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 		new CellOffset(1, 0)
 	};
 
-	public int choreCount = 2;
+		public int choreCount = 2;
 
-	public float workTime = 5f;
+		public float workTime = 5f;
 
-	private CellOffset[] drinkOffsets = new CellOffset[]
+		private CellOffset[] drinkOffsets = new CellOffset[]
 	{
 		new CellOffset(0, 0),
 		new CellOffset(1, 0)
 	};
 
-	public static Action<GameObject, GameObject> OnDuplicantDrank;
+		public static Action<GameObject, GameObject> OnDuplicantDrank;
 
-	private Chore[] chores;
+		private Chore[] chores;
 
-	private HandleVector<int>.Handle validNavCellChangedPartitionerEntry;
+		private HandleVector<int>.Handle validNavCellChangedPartitionerEntry;
 
-	private SocialGatheringPointWorkable[] workables;
+		private SocialGatheringPointWorkable[] workables;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Storage storage;
 
-	public bool choresDirty;
+		public bool choresDirty;
 
-	[Serialize]
+		[Serialize]
 	private Tag chosenBeverage = GameTags.Water;
 
-	private static readonly EventSystem.IntraObjectHandler<WaterCooler> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<WaterCooler>(delegate(WaterCooler component, object data)
+		private static readonly EventSystem.IntraObjectHandler<WaterCooler> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<WaterCooler>(delegate(WaterCooler component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	public class States : GameStateMachine<WaterCooler.States, WaterCooler.StatesInstance, WaterCooler>
+		public class States : GameStateMachine<WaterCooler.States, WaterCooler.StatesInstance, WaterCooler>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.unoperational;
 			this.unoperational.TagTransition(GameTags.Operational, this.waitingfordelivery, false).PlayAnim("off");
@@ -259,16 +259,16 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 			}).TagTransition(GameTags.Operational, this.unoperational, true).EventTransition(GameHashes.OnStorageChange, this.waitingfordelivery, (WaterCooler.StatesInstance smi) => !smi.HasMinimumMass()).PlayAnim("working");
 		}
 
-		public GameStateMachine<WaterCooler.States, WaterCooler.StatesInstance, WaterCooler, object>.State unoperational;
+				public GameStateMachine<WaterCooler.States, WaterCooler.StatesInstance, WaterCooler, object>.State unoperational;
 
-		public GameStateMachine<WaterCooler.States, WaterCooler.StatesInstance, WaterCooler, object>.State waitingfordelivery;
+				public GameStateMachine<WaterCooler.States, WaterCooler.StatesInstance, WaterCooler, object>.State waitingfordelivery;
 
-		public GameStateMachine<WaterCooler.States, WaterCooler.StatesInstance, WaterCooler, object>.State dispensing;
+				public GameStateMachine<WaterCooler.States, WaterCooler.StatesInstance, WaterCooler, object>.State dispensing;
 	}
 
-	public class StatesInstance : GameStateMachine<WaterCooler.States, WaterCooler.StatesInstance, WaterCooler, object>.GameInstance
+		public class StatesInstance : GameStateMachine<WaterCooler.States, WaterCooler.StatesInstance, WaterCooler, object>.GameInstance
 	{
-		public StatesInstance(WaterCooler smi) : base(smi)
+				public StatesInstance(WaterCooler smi) : base(smi)
 		{
 			this.meter = new MeterController(base.GetComponent<KBatchedAnimController>(), "meter_bottle", "meter", Meter.Offset.Behind, Grid.SceneLayer.NoLayer, new string[]
 			{
@@ -278,7 +278,7 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 			base.Subscribe(-1697596308, new Action<object>(this.OnStorageChange));
 		}
 
-		public void Drink(GameObject druplicant, bool triggerOnDrinkCallback = true)
+				public void Drink(GameObject druplicant, bool triggerOnDrinkCallback = true)
 		{
 			if (!this.HasMinimumMass())
 			{
@@ -310,18 +310,18 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 			}
 		}
 
-		private void OnStorageChange(object data)
+				private void OnStorageChange(object data)
 		{
 			float positionPercent = Mathf.Clamp01(this.storage.MassStored() / this.storage.capacityKg);
 			this.meter.SetPositionPercent(positionPercent);
 		}
 
-		public void SetOperationalActiveState(bool isActive)
+				public void SetOperationalActiveState(bool isActive)
 		{
 			this.operational.SetActive(isActive, false);
 		}
 
-		public void StartMeter()
+				public void StartMeter()
 		{
 			PrimaryElement primaryElement = this.storage.FindFirstWithMass(base.smi.master.ChosenBeverage, 0f);
 			if (primaryElement == null)
@@ -332,16 +332,16 @@ public class WaterCooler : StateMachineComponent<WaterCooler.StatesInstance>, IA
 			this.OnStorageChange(null);
 		}
 
-		public bool HasMinimumMass()
+				public bool HasMinimumMass()
 		{
 			return this.storage.GetMassAvailable(ElementLoader.GetElement(base.smi.master.ChosenBeverage).id) >= 1f;
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Operational operational;
 
-		private Storage storage;
+				private Storage storage;
 
-		private MeterController meter;
+				private MeterController meter;
 	}
 }

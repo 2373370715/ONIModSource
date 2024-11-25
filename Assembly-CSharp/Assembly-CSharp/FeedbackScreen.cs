@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class FeedbackScreen : KModalScreen
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.title.SetText(UI.FRONTEND.FEEDBACK_SCREEN.TITLE);
@@ -42,17 +42,17 @@ public class FeedbackScreen : KModalScreen
 		}
 	}
 
-	public LocText title;
+		public LocText title;
 
-	public KButton dismissButton;
+		public KButton dismissButton;
 
-	public KButton closeButton;
+		public KButton closeButton;
 
-	public KButton bugForumsButton;
+		public KButton bugForumsButton;
 
-	public KButton suggestionForumsButton;
+		public KButton suggestionForumsButton;
 
-	public KButton logsDirectoryButton;
+		public KButton logsDirectoryButton;
 
-	public KButton saveFilesDirectoryButton;
+		public KButton saveFilesDirectoryButton;
 }

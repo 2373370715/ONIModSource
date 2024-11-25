@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SolidConduitTemperatureSensorConfig : ConduitSensorConfig
 {
-		protected override ConduitType ConduitType
+			protected override ConduitType ConduitType
 	{
 		get
 		{
@@ -14,7 +14,7 @@ public class SolidConduitTemperatureSensorConfig : ConduitSensorConfig
 		}
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef result = base.CreateBuildingDef(SolidConduitTemperatureSensorConfig.ID, "conveyor_temperature_sensor_kanim", TUNING.BUILDINGS.CONSTRUCTION_MASS_KG.TIER0, MATERIALS.REFINED_METALS, new List<LogicPorts.Port>
 		{
@@ -24,7 +24,7 @@ public class SolidConduitTemperatureSensorConfig : ConduitSensorConfig
 		return result;
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		base.DoPostConfigureComplete(go);
 		ConduitTemperatureSensor conduitTemperatureSensor = go.AddComponent<ConduitTemperatureSensor>();
@@ -37,5 +37,5 @@ public class SolidConduitTemperatureSensorConfig : ConduitSensorConfig
 		conduitTemperatureSensor.defaultState = false;
 	}
 
-	public static string ID = "SolidConduitTemperatureSensor";
+		public static string ID = "SolidConduitTemperatureSensor";
 }

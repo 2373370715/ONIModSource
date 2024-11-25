@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SquirrelConfig : IEntityConfig
 {
-	public static GameObject CreateSquirrel(string id, string name, string desc, string anim_file, bool is_baby)
+		public static GameObject CreateSquirrel(string id, string name, string desc, string anim_file, bool is_baby)
 	{
 		GameObject prefab = EntityTemplates.ExtendEntityToWildCreature(BaseSquirrelConfig.BaseSquirrel(id, name, desc, anim_file, "SquirrelBaseTrait", is_baby, null, false), SquirrelTuning.PEN_SIZE_PER_CREATURE);
 		Trait trait = Db.Get().CreateTrait("SquirrelBaseTrait", name, name, null, false, null, true, true);
@@ -20,12 +20,12 @@ public class SquirrelConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_ALL_VERSIONS;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		GameObject prefab = SquirrelConfig.CreateSquirrel("Squirrel", CREATURES.SPECIES.SQUIRREL.NAME, CREATURES.SPECIES.SQUIRREL.DESC, "squirrel_kanim", false);
 		string eggId = "SquirrelEgg";
@@ -41,33 +41,33 @@ public class SquirrelConfig : IEntityConfig
 		return EntityTemplates.ExtendEntityToFertileCreature(prefab, eggId, eggName, eggDesc, egg_anim, egg_MASS, baby_id, fertility_cycles, incubation_cycles, egg_CHANCES_BASE, this.GetDlcIds(), egg_SORT_ORDER, true, false, true, 1f, false);
 	}
 
-	public void OnPrefabInit(GameObject prefab)
+		public void OnPrefabInit(GameObject prefab)
 	{
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	public const string ID = "Squirrel";
+		public const string ID = "Squirrel";
 
-	public const string BASE_TRAIT_ID = "SquirrelBaseTrait";
+		public const string BASE_TRAIT_ID = "SquirrelBaseTrait";
 
-	public const string EGG_ID = "SquirrelEgg";
+		public const string EGG_ID = "SquirrelEgg";
 
-	public const float OXYGEN_RATE = 0.023437504f;
+		public const float OXYGEN_RATE = 0.023437504f;
 
-	public const float BABY_OXYGEN_RATE = 0.011718752f;
+		public const float BABY_OXYGEN_RATE = 0.011718752f;
 
-	private const SimHashes EMIT_ELEMENT = SimHashes.Dirt;
+		private const SimHashes EMIT_ELEMENT = SimHashes.Dirt;
 
-	public static float DAYS_PLANT_GROWTH_EATEN_PER_CYCLE = 0.4f;
+		public static float DAYS_PLANT_GROWTH_EATEN_PER_CYCLE = 0.4f;
 
-	private static float CALORIES_PER_DAY_OF_PLANT_EATEN = SquirrelTuning.STANDARD_CALORIES_PER_CYCLE / SquirrelConfig.DAYS_PLANT_GROWTH_EATEN_PER_CYCLE;
+		private static float CALORIES_PER_DAY_OF_PLANT_EATEN = SquirrelTuning.STANDARD_CALORIES_PER_CYCLE / SquirrelConfig.DAYS_PLANT_GROWTH_EATEN_PER_CYCLE;
 
-	private static float KG_POOP_PER_DAY_OF_PLANT = 50f;
+		private static float KG_POOP_PER_DAY_OF_PLANT = 50f;
 
-	private static float MIN_POOP_SIZE_KG = 40f;
+		private static float MIN_POOP_SIZE_KG = 40f;
 
-	public static int EGG_SORT_ORDER = 0;
+		public static int EGG_SORT_ORDER = 0;
 }

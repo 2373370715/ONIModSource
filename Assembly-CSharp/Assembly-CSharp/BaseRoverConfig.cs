@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class BaseRoverConfig
 {
-	public static GameObject BaseRover(string id, string name, Tag model, string desc, string anim_file, float mass, float width, float height, float carryingAmount, float digging, float construction, float athletics, float hitPoints, float batteryCapacity, float batteryDepletionRate, Amount batteryType, bool deleteOnDeath)
+		public static GameObject BaseRover(string id, string name, Tag model, string desc, string anim_file, float mass, float width, float height, float carryingAmount, float digging, float construction, float athletics, float hitPoints, float batteryCapacity, float batteryDepletionRate, Amount batteryType, bool deleteOnDeath)
 	{
 		GameObject gameObject = EntityTemplates.CreateBasicEntity(id, name, desc, mass, true, Assets.GetAnim(anim_file), "idle_loop", Grid.SceneLayer.Creatures, SimHashes.Creature, new List<Tag>
 		{
@@ -56,7 +56,7 @@ public static class BaseRoverConfig
 		GridVisibility gridVisibility = gameObject.AddOrGet<GridVisibility>();
 		gridVisibility.radius = 30;
 		gridVisibility.innerRadius = 20f;
-		gameObject.AddOrGet<Worker>();
+		gameObject.AddOrGet<StandardWorker>();
 		gameObject.AddOrGet<Effects>();
 		gameObject.AddOrGet<Traits>();
 		gameObject.AddOrGet<AnimEventHandler>();
@@ -105,6 +105,7 @@ public static class BaseRoverConfig
 		navigator.sceneLayer = Grid.SceneLayer.Creatures;
 		gameObject.AddOrGet<Sensors>();
 		gameObject.AddOrGet<Pickupable>().SetWorkTime(5f);
+		gameObject.AddOrGet<Clearable>().isClearable = false;
 		gameObject.AddOrGet<SnapOn>();
 		component.SetSymbolVisiblity("snapto_pivot", false);
 		component.SetSymbolVisiblity("snapto_radar", false);
@@ -113,7 +114,7 @@ public static class BaseRoverConfig
 		return gameObject;
 	}
 
-	private static void SetupLaserEffects(GameObject prefab)
+		private static void SetupLaserEffects(GameObject prefab)
 	{
 		GameObject gameObject = new GameObject("LaserEffect");
 		gameObject.transform.parent = prefab.transform;
@@ -250,7 +251,7 @@ public static class BaseRoverConfig
 		}
 	}
 
-	public static void OnPrefabInit(GameObject inst, Amount batteryType)
+		public static void OnPrefabInit(GameObject inst, Amount batteryType)
 	{
 		ChoreConsumer component = inst.GetComponent<ChoreConsumer>();
 		if (component != null)
@@ -261,7 +262,7 @@ public static class BaseRoverConfig
 		amountInstance.value = amountInstance.GetMax();
 	}
 
-	public static void OnSpawn(GameObject inst)
+		public static void OnSpawn(GameObject inst)
 	{
 		Sensors component = inst.GetComponent<Sensors>();
 		component.Add(new PathProberSensor(component));
@@ -280,14 +281,14 @@ public static class BaseRoverConfig
 		}
 	}
 
-	public struct LaserEffect
+		public struct LaserEffect
 	{
-		public string id;
+				public string id;
 
-		public string animFile;
+				public string animFile;
 
-		public string anim;
+				public string anim;
 
-		public HashedString context;
+				public HashedString context;
 	}
 }

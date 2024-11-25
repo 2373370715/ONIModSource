@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BuildingGroupScreen : KScreen
 {
-		public static bool SearchIsEmpty
+			public static bool SearchIsEmpty
 	{
 		get
 		{
@@ -13,7 +13,7 @@ public class BuildingGroupScreen : KScreen
 		}
 	}
 
-		public static bool IsEditing
+			public static bool IsEditing
 	{
 		get
 		{
@@ -21,14 +21,14 @@ public class BuildingGroupScreen : KScreen
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		BuildingGroupScreen.Instance = this;
 		base.OnPrefabInit();
 		base.ConsumeMouseScroll = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		KInputTextField kinputTextField = this.inputField;
@@ -50,18 +50,18 @@ public class BuildingGroupScreen : KScreen
 		this.clearButton.onClick += this.ClearSearch;
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		base.ConsumeMouseScroll = true;
 	}
 
-	public void ClearSearch()
+		public void ClearSearch()
 	{
 		this.inputField.text = "";
 	}
 
-	private void ConfigurePlanScreenForSearch()
+		private void ConfigurePlanScreenForSearch()
 	{
 		PlanScreen.Instance.SoftCloseRecipe();
 		PlanScreen.Instance.ClearSelection();
@@ -69,10 +69,10 @@ public class BuildingGroupScreen : KScreen
 		PlanScreen.Instance.ConfigurePanelSize(null);
 	}
 
-	public static BuildingGroupScreen Instance;
+		public static BuildingGroupScreen Instance;
 
-	public KInputTextField inputField;
+		public KInputTextField inputField;
 
-	[SerializeField]
+		[SerializeField]
 	public KButton clearButton;
 }

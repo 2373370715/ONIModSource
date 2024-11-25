@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 public class Chatty : KMonoBehaviour, ISimEveryTick
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.GetComponent<KPrefabID>().AddTag(GameTags.AlwaysConverse, false);
 		base.Subscribe(-594200555, new Action<object>(this.OnStartedTalking));
 		this.identity = base.GetComponent<MinionIdentity>();
 	}
 
-	private void OnStartedTalking(object data)
+		private void OnStartedTalking(object data)
 	{
 		MinionIdentity minionIdentity = data as MinionIdentity;
 		if (minionIdentity == null)
@@ -20,7 +20,7 @@ public class Chatty : KMonoBehaviour, ISimEveryTick
 		this.conversationPartners.Add(minionIdentity);
 	}
 
-	public void SimEveryTick(float dt)
+		public void SimEveryTick(float dt)
 	{
 		if (this.conversationPartners.Count == 0)
 		{
@@ -38,7 +38,7 @@ public class Chatty : KMonoBehaviour, ISimEveryTick
 		base.gameObject.AddTag(GameTags.PleasantConversation);
 	}
 
-	private MinionIdentity identity;
+		private MinionIdentity identity;
 
-	private List<MinionIdentity> conversationPartners = new List<MinionIdentity>();
+		private List<MinionIdentity> conversationPartners = new List<MinionIdentity>();
 }

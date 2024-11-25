@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class ScenePartitioner : ISim1000ms
 {
-	public ScenePartitioner(int node_size, int layer_count, int scene_width, int scene_height)
+		public ScenePartitioner(int node_size, int layer_count, int scene_width, int scene_height)
 	{
 		this.nodeSize = node_size;
 		int num = scene_width / node_size;
@@ -22,7 +22,7 @@ public class ScenePartitioner : ISim1000ms
 		SimAndRenderScheduler.instance.Add(this, false);
 	}
 
-	public void FreeResources()
+		public void FreeResources()
 	{
 		for (int i = 0; i < this.nodes.GetLength(0); i++)
 		{
@@ -45,7 +45,7 @@ public class ScenePartitioner : ISim1000ms
 		this.nodes = null;
 	}
 
-	[Obsolete]
+		[Obsolete]
 	public ScenePartitionerLayer CreateMask(HashedString name)
 	{
 		foreach (ScenePartitionerLayer scenePartitionerLayer in this.layers)
@@ -61,7 +61,7 @@ public class ScenePartitioner : ISim1000ms
 		return scenePartitionerLayer2;
 	}
 
-	public ScenePartitionerLayer CreateMask(string name)
+		public ScenePartitionerLayer CreateMask(string name)
 	{
 		foreach (ScenePartitionerLayer scenePartitionerLayer in this.layers)
 		{
@@ -77,17 +77,17 @@ public class ScenePartitioner : ISim1000ms
 		return scenePartitionerLayer2;
 	}
 
-	private int ClampNodeX(int x)
+		private int ClampNodeX(int x)
 	{
 		return Math.Min(Math.Max(x, 0), this.nodes.GetLength(2) - 1);
 	}
 
-	private int ClampNodeY(int y)
+		private int ClampNodeY(int y)
 	{
 		return Math.Min(Math.Max(y, 0), this.nodes.GetLength(1) - 1);
 	}
 
-	private Extents GetNodeExtents(int x, int y, int width, int height)
+		private Extents GetNodeExtents(int x, int y, int width, int height)
 	{
 		Extents extents = default(Extents);
 		extents.x = this.ClampNodeX(x / this.nodeSize);
@@ -97,12 +97,12 @@ public class ScenePartitioner : ISim1000ms
 		return extents;
 	}
 
-	private Extents GetNodeExtents(ScenePartitionerEntry entry)
+		private Extents GetNodeExtents(ScenePartitionerEntry entry)
 	{
 		return this.GetNodeExtents(entry.x, entry.y, entry.width, entry.height);
 	}
 
-	private void Insert(ScenePartitionerEntry entry)
+		private void Insert(ScenePartitionerEntry entry)
 	{
 		if (entry.obj == null)
 		{
@@ -156,7 +156,7 @@ public class ScenePartitioner : ISim1000ms
 		}
 	}
 
-	private void Widthdraw(ScenePartitionerEntry entry)
+		private void Widthdraw(ScenePartitionerEntry entry)
 	{
 		Extents nodeExtents = this.GetNodeExtents(entry);
 		if (nodeExtents.x + nodeExtents.width > this.nodes.GetLength(2))
@@ -202,13 +202,13 @@ public class ScenePartitioner : ISim1000ms
 		}
 	}
 
-	public ScenePartitionerEntry Add(ScenePartitionerEntry entry)
+		public ScenePartitionerEntry Add(ScenePartitionerEntry entry)
 	{
 		this.Insert(entry);
 		return entry;
 	}
 
-	public void UpdatePosition(int x, int y, ScenePartitionerEntry entry)
+		public void UpdatePosition(int x, int y, ScenePartitionerEntry entry)
 	{
 		this.Widthdraw(entry);
 		entry.x = x;
@@ -216,7 +216,7 @@ public class ScenePartitioner : ISim1000ms
 		this.Insert(entry);
 	}
 
-	public void UpdatePosition(Extents e, ScenePartitionerEntry entry)
+		public void UpdatePosition(Extents e, ScenePartitionerEntry entry)
 	{
 		this.Widthdraw(entry);
 		entry.x = e.x;
@@ -226,7 +226,7 @@ public class ScenePartitioner : ISim1000ms
 		this.Insert(entry);
 	}
 
-	public void Remove(ScenePartitionerEntry entry)
+		public void Remove(ScenePartitionerEntry entry)
 	{
 		Extents nodeExtents = this.GetNodeExtents(entry);
 		if (nodeExtents.x + nodeExtents.width > this.nodes.GetLength(2))
@@ -273,7 +273,7 @@ public class ScenePartitioner : ISim1000ms
 		entry.obj = null;
 	}
 
-	public void Sim1000ms(float dt)
+		public void Sim1000ms(float dt)
 	{
 		foreach (ScenePartitioner.DirtyNode dirtyNode in this.dirtyNodes)
 		{
@@ -283,23 +283,7 @@ public class ScenePartitioner : ISim1000ms
 		this.dirtyNodes.Clear();
 	}
 
-	public void TriggerEvent(List<int> cells, ScenePartitionerLayer layer, object event_data)
-	{
-		ListPool<ScenePartitionerEntry, ScenePartitioner>.PooledList pooledList = ListPool<ScenePartitionerEntry, ScenePartitioner>.Allocate();
-		this.queryId++;
-		for (int i = 0; i < cells.Count; i++)
-		{
-			int x = 0;
-			int y = 0;
-			Grid.CellToXY(cells[i], out x, out y);
-			this.GatherEntries(x, y, 1, 1, layer, event_data, pooledList, this.queryId);
-		}
-		this.RunLayerGlobalEvent(cells, layer, event_data);
-		this.RunEntries(pooledList, event_data);
-		pooledList.Recycle();
-	}
-
-	public void TriggerEvent(HashSet<int> cells, ScenePartitionerLayer layer, object event_data)
+		public void TriggerEvent(IEnumerable<int> cells, ScenePartitionerLayer layer, object event_data)
 	{
 		ListPool<ScenePartitionerEntry, ScenePartitioner>.PooledList pooledList = ListPool<ScenePartitionerEntry, ScenePartitioner>.Allocate();
 		this.queryId++;
@@ -315,7 +299,7 @@ public class ScenePartitioner : ISim1000ms
 		pooledList.Recycle();
 	}
 
-	public void TriggerEvent(int x, int y, int width, int height, ScenePartitionerLayer layer, object event_data)
+		public void TriggerEvent(int x, int y, int width, int height, ScenePartitionerLayer layer, object event_data)
 	{
 		ListPool<ScenePartitionerEntry, ScenePartitioner>.PooledList pooledList = ListPool<ScenePartitionerEntry, ScenePartitioner>.Allocate();
 		this.GatherEntries(x, y, width, height, layer, event_data, pooledList);
@@ -324,18 +308,7 @@ public class ScenePartitioner : ISim1000ms
 		pooledList.Recycle();
 	}
 
-	private void RunLayerGlobalEvent(List<int> cells, ScenePartitionerLayer layer, object event_data)
-	{
-		if (layer.OnEvent != null)
-		{
-			for (int i = 0; i < cells.Count; i++)
-			{
-				layer.OnEvent(cells[i], event_data);
-			}
-		}
-	}
-
-	private void RunLayerGlobalEvent(HashSet<int> cells, ScenePartitionerLayer layer, object event_data)
+		private void RunLayerGlobalEvent(IEnumerable<int> cells, ScenePartitionerLayer layer, object event_data)
 	{
 		if (layer.OnEvent != null)
 		{
@@ -346,7 +319,7 @@ public class ScenePartitioner : ISim1000ms
 		}
 	}
 
-	private void RunLayerGlobalEvent(int x, int y, int width, int height, ScenePartitionerLayer layer, object event_data)
+		private void RunLayerGlobalEvent(int x, int y, int width, int height, ScenePartitionerLayer layer, object event_data)
 	{
 		if (layer.OnEvent != null)
 		{
@@ -364,7 +337,7 @@ public class ScenePartitioner : ISim1000ms
 		}
 	}
 
-	private void RunEntries(List<ScenePartitionerEntry> gathered_entries, object event_data)
+		private void RunEntries(List<ScenePartitionerEntry> gathered_entries, object event_data)
 	{
 		for (int i = 0; i < gathered_entries.Count; i++)
 		{
@@ -376,14 +349,14 @@ public class ScenePartitioner : ISim1000ms
 		}
 	}
 
-	public void GatherEntries(int x, int y, int width, int height, ScenePartitionerLayer layer, object event_data, List<ScenePartitionerEntry> gathered_entries)
+		public void GatherEntries(int x, int y, int width, int height, ScenePartitionerLayer layer, object event_data, List<ScenePartitionerEntry> gathered_entries)
 	{
 		int query_id = this.queryId + 1;
 		this.queryId = query_id;
 		this.GatherEntries(x, y, width, height, layer, event_data, gathered_entries, query_id);
 	}
 
-	public void GatherEntries(int x, int y, int width, int height, ScenePartitionerLayer layer, object event_data, List<ScenePartitionerEntry> gathered_entries, int query_id)
+		public void GatherEntries(int x, int y, int width, int height, ScenePartitionerLayer layer, object event_data, List<ScenePartitionerEntry> gathered_entries, int query_id)
 	{
 		Extents nodeExtents = this.GetNodeExtents(x, y, width, height);
 		int num = Math.Min(nodeExtents.y + nodeExtents.height, this.nodes.GetLength(1));
@@ -417,35 +390,41 @@ public class ScenePartitioner : ISim1000ms
 		}
 	}
 
-	public void UnsafeReadonlyGatherEntries(int x, int y, int width, int height, ScenePartitionerLayer layer, List<ScenePartitionerEntry> gathered_entries)
+		public IEnumerable<object> AsyncSafeEnumerate(int x, int y, int width, int height, ScenePartitionerLayer layer)
 	{
 		Extents nodeExtents = this.GetNodeExtents(x, y, width, height);
-		int num = Math.Min(nodeExtents.y + nodeExtents.height, this.nodes.GetLength(1));
-		int num2 = Math.Max(nodeExtents.y, 0);
-		int num3 = Math.Max(nodeExtents.x, 0);
-		int num4 = Math.Min(nodeExtents.x + nodeExtents.width, this.nodes.GetLength(2));
-		int layer2 = layer.layer;
-		for (int i = num2; i < num; i++)
+		int max_y = Math.Min(nodeExtents.y + nodeExtents.height, this.nodes.GetLength(1));
+		int num = Math.Max(nodeExtents.y, 0);
+		int start_x = Math.Max(nodeExtents.x, 0);
+		int max_x = Math.Min(nodeExtents.x + nodeExtents.width, this.nodes.GetLength(2));
+		int layer_idx = layer.layer;
+		int num2;
+		for (int node_y = num; node_y < max_y; node_y = num2)
 		{
-			for (int j = num3; j < num4; j++)
+			for (int node_x = start_x; node_x < max_x; node_x = num2)
 			{
-				foreach (ScenePartitionerEntry scenePartitionerEntry in this.nodes[layer2, i, j].entries)
+				foreach (ScenePartitionerEntry scenePartitionerEntry in this.nodes[layer_idx, node_y, node_x].entries)
 				{
 					if (scenePartitionerEntry != null && scenePartitionerEntry.obj != null && x + width - 1 >= scenePartitionerEntry.x && x <= scenePartitionerEntry.x + scenePartitionerEntry.width - 1 && y + height - 1 >= scenePartitionerEntry.y && y <= scenePartitionerEntry.y + scenePartitionerEntry.height - 1)
 					{
-						gathered_entries.Add(scenePartitionerEntry);
+						yield return scenePartitionerEntry.obj;
 					}
 				}
+				HashSet<ScenePartitionerEntry>.Enumerator enumerator = default(HashSet<ScenePartitionerEntry>.Enumerator);
+				num2 = node_x + 1;
 			}
+			num2 = node_y + 1;
 		}
+		yield break;
+		yield break;
 	}
 
-	public void Cleanup()
+		public void Cleanup()
 	{
 		SimAndRenderScheduler.instance.Remove(this);
 	}
 
-	public bool DoDebugLayersContainItemsOnCell(int cell)
+		public bool DoDebugLayersContainItemsOnCell(int cell)
 	{
 		int x_bottomLeft = 0;
 		int y_bottomLeft = 0;
@@ -463,33 +442,33 @@ public class ScenePartitioner : ISim1000ms
 		return false;
 	}
 
-	public List<ScenePartitionerLayer> layers = new List<ScenePartitionerLayer>();
+		public List<ScenePartitionerLayer> layers = new List<ScenePartitionerLayer>();
 
-	private int nodeSize;
+		private int nodeSize;
 
-	private List<ScenePartitioner.DirtyNode> dirtyNodes = new List<ScenePartitioner.DirtyNode>();
+		private List<ScenePartitioner.DirtyNode> dirtyNodes = new List<ScenePartitioner.DirtyNode>();
 
-	private ScenePartitioner.ScenePartitionerNode[,,] nodes;
+		private ScenePartitioner.ScenePartitionerNode[,,] nodes;
 
-	private int queryId;
+		private int queryId;
 
-	private static readonly Predicate<ScenePartitionerEntry> removeCallback = (ScenePartitionerEntry entry) => entry == null || entry.obj == null;
+		private static readonly Predicate<ScenePartitionerEntry> removeCallback = (ScenePartitionerEntry entry) => entry == null || entry.obj == null;
 
-	public HashSet<ScenePartitionerLayer> toggledLayers = new HashSet<ScenePartitionerLayer>();
+		public HashSet<ScenePartitionerLayer> toggledLayers = new HashSet<ScenePartitionerLayer>();
 
-	private struct ScenePartitionerNode
+		private struct ScenePartitionerNode
 	{
-		public HashSet<ScenePartitionerEntry> entries;
+				public HashSet<ScenePartitionerEntry> entries;
 
-		public bool dirty;
+				public bool dirty;
 	}
 
-	private struct DirtyNode
+		private struct DirtyNode
 	{
-		public int layer;
+				public int layer;
 
-		public int x;
+				public int x;
 
-		public int y;
+				public int y;
 	}
 }

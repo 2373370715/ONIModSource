@@ -7,13 +7,13 @@ using UnityEngine;
 
 public class ColonyDestinationAsteroidBeltData
 {
-			public float TargetScale { get; set; }
+				public float TargetScale { get; set; }
 
-			public float Scale { get; set; }
+				public float Scale { get; set; }
 
-			public int seed { get; private set; }
+				public int seed { get; private set; }
 
-		public string startWorldPath
+			public string startWorldPath
 	{
 		get
 		{
@@ -21,11 +21,11 @@ public class ColonyDestinationAsteroidBeltData
 		}
 	}
 
-			public Sprite sprite { get; private set; }
+				public Sprite sprite { get; private set; }
 
-			public int difficulty { get; private set; }
+				public int difficulty { get; private set; }
 
-		public string startWorldName
+			public string startWorldName
 	{
 		get
 		{
@@ -33,7 +33,7 @@ public class ColonyDestinationAsteroidBeltData
 		}
 	}
 
-		public string properName
+			public string properName
 	{
 		get
 		{
@@ -45,7 +45,7 @@ public class ColonyDestinationAsteroidBeltData
 		}
 	}
 
-		public string beltPath
+			public string beltPath
 	{
 		get
 		{
@@ -57,9 +57,9 @@ public class ColonyDestinationAsteroidBeltData
 		}
 	}
 
-			public List<ProcGen.World> worlds { get; private set; }
+				public List<ProcGen.World> worlds { get; private set; }
 
-		public ClusterLayout Layout
+			public ClusterLayout Layout
 	{
 		get
 		{
@@ -71,7 +71,7 @@ public class ColonyDestinationAsteroidBeltData
 		}
 	}
 
-		public ProcGen.World GetStartWorld
+			public ProcGen.World GetStartWorld
 	{
 		get
 		{
@@ -79,7 +79,7 @@ public class ColonyDestinationAsteroidBeltData
 		}
 	}
 
-	public ColonyDestinationAsteroidBeltData(string staringWorldName, int seed, string clusterPath)
+		public ColonyDestinationAsteroidBeltData(string staringWorldName, int seed, string clusterPath)
 	{
 		this.startWorld = SettingsCache.worlds.GetWorldData(staringWorldName);
 		this.Scale = (this.TargetScale = this.startWorld.iconScale);
@@ -91,7 +91,7 @@ public class ColonyDestinationAsteroidBeltData
 		this.ReInitialize(seed);
 	}
 
-	public static Sprite GetUISprite(string filename)
+		public static Sprite GetUISprite(string filename)
 	{
 		if (filename.IsNullOrWhiteSpace())
 		{
@@ -106,7 +106,7 @@ public class ColonyDestinationAsteroidBeltData
 		return Assets.GetSprite(filename);
 	}
 
-	public void ReInitialize(int seed)
+		public void ReInitialize(int seed)
 	{
 		this.seed = seed;
 		this.paramDescriptors.Clear();
@@ -117,7 +117,7 @@ public class ColonyDestinationAsteroidBeltData
 		this.RemixClusterLayout();
 	}
 
-	public void RemixClusterLayout()
+		public void RemixClusterLayout()
 	{
 		if (!WorldgenMixing.RefreshWorldMixing(this.mutatedClusterLayout, this.seed, true, true))
 		{
@@ -137,7 +137,7 @@ public class ColonyDestinationAsteroidBeltData
 		}
 	}
 
-	public List<AsteroidDescriptor> GetParamDescriptors()
+		public List<AsteroidDescriptor> GetParamDescriptors()
 	{
 		if (this.paramDescriptors.Count == 0)
 		{
@@ -146,7 +146,7 @@ public class ColonyDestinationAsteroidBeltData
 		return this.paramDescriptors;
 	}
 
-	public List<AsteroidDescriptor> GetTraitDescriptors()
+		public List<AsteroidDescriptor> GetTraitDescriptors()
 	{
 		if (this.traitDescriptors.Count == 0)
 		{
@@ -155,7 +155,7 @@ public class ColonyDestinationAsteroidBeltData
 		return this.traitDescriptors;
 	}
 
-	private List<AsteroidDescriptor> GenerateParamDescriptors()
+		private List<AsteroidDescriptor> GenerateParamDescriptors()
 	{
 		List<AsteroidDescriptor> list = new List<AsteroidDescriptor>();
 		if (this.clusterLayout != null && DlcManager.FeatureClusterSpaceEnabled())
@@ -178,7 +178,7 @@ public class ColonyDestinationAsteroidBeltData
 		return list;
 	}
 
-	private List<AsteroidDescriptor> GenerateTraitDescriptors()
+		private List<AsteroidDescriptor> GenerateTraitDescriptors()
 	{
 		List<AsteroidDescriptor> list = new List<AsteroidDescriptor>();
 		List<ProcGen.World> list2 = new List<ProcGen.World>();
@@ -206,7 +206,7 @@ public class ColonyDestinationAsteroidBeltData
 		return list;
 	}
 
-	public List<AsteroidDescriptor> GenerateTraitDescriptors(ProcGen.World singleWorld, bool includeDefaultTrait = true)
+		public List<AsteroidDescriptor> GenerateTraitDescriptors(ProcGen.World singleWorld, bool includeDefaultTrait = true)
 	{
 		List<AsteroidDescriptor> list = new List<AsteroidDescriptor>();
 		List<ProcGen.World> list2 = new List<ProcGen.World>();
@@ -232,7 +232,7 @@ public class ColonyDestinationAsteroidBeltData
 		return list;
 	}
 
-	public List<WorldTrait> GetWorldTraits(ProcGen.World singleWorld)
+		public List<WorldTrait> GetWorldTraits(ProcGen.World singleWorld)
 	{
 		List<WorldTrait> list = new List<WorldTrait>();
 		List<ProcGen.World> list2 = new List<ProcGen.World>();
@@ -258,17 +258,17 @@ public class ColonyDestinationAsteroidBeltData
 		return list;
 	}
 
-	private ProcGen.World startWorld;
+		private ProcGen.World startWorld;
 
-	private ClusterLayout clusterLayout;
+		private ClusterLayout clusterLayout;
 
-	private MutatedClusterLayout mutatedClusterLayout;
+		private MutatedClusterLayout mutatedClusterLayout;
 
-	private List<AsteroidDescriptor> paramDescriptors = new List<AsteroidDescriptor>();
+		private List<AsteroidDescriptor> paramDescriptors = new List<AsteroidDescriptor>();
 
-	private List<AsteroidDescriptor> traitDescriptors = new List<AsteroidDescriptor>();
+		private List<AsteroidDescriptor> traitDescriptors = new List<AsteroidDescriptor>();
 
-	public static List<global::Tuple<string, string, string>> survivalOptions = new List<global::Tuple<string, string, string>>
+		public static List<global::Tuple<string, string, string>> survivalOptions = new List<global::Tuple<string, string, string>>
 	{
 		new global::Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.MOSTHOSPITABLE, "", "D2F40C"),
 		new global::Tuple<string, string, string>(WORLDS.SURVIVAL_CHANCE.VERYHIGH, "", "7DE419"),

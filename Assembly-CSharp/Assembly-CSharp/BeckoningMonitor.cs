@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BeckoningMonitor : GameStateMachine<BeckoningMonitor, BeckoningMonitor.Instance, IStateMachineTarget, BeckoningMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 		this.root.EventHandler(GameHashes.CaloriesConsumed, delegate(BeckoningMonitor.Instance smi, object data)
@@ -16,42 +16,42 @@ public class BeckoningMonitor : GameStateMachine<BeckoningMonitor, BeckoningMoni
 		}, UpdateRate.SIM_1000ms, false);
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public override void Configure(GameObject prefab)
+				public override void Configure(GameObject prefab)
 		{
 			prefab.AddOrGet<Modifiers>().initialAmounts.Add(Db.Get().Amounts.Beckoning.Id);
 		}
 
-		public float caloriesPerCycle;
+				public float caloriesPerCycle;
 
-		public string effectId = "MooWellFed";
+				public string effectId = "MooWellFed";
 	}
 
-	public new class Instance : GameStateMachine<BeckoningMonitor, BeckoningMonitor.Instance, IStateMachineTarget, BeckoningMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<BeckoningMonitor, BeckoningMonitor.Instance, IStateMachineTarget, BeckoningMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, BeckoningMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, BeckoningMonitor.Def def) : base(master, def)
 		{
 			this.beckoning = Db.Get().Amounts.Beckoning.Lookup(base.gameObject);
 		}
 
-		private bool IsSpaceVisible()
+				private bool IsSpaceVisible()
 		{
 			int num = Grid.PosToCell(this);
 			return Grid.IsValidCell(num) && Grid.ExposedToSunlight[num] > 0;
 		}
 
-		private bool IsBeckoningAvailable()
+				private bool IsBeckoningAvailable()
 		{
 			return base.smi.beckoning.value >= base.smi.beckoning.GetMax();
 		}
 
-		public bool IsReadyToBeckon()
+				public bool IsReadyToBeckon()
 		{
 			return this.IsBeckoningAvailable() && this.IsSpaceVisible();
 		}
 
-		public void UpdateBlockedStatusItem()
+				public void UpdateBlockedStatusItem()
 		{
 			bool flag = this.IsSpaceVisible();
 			if (!flag && this.IsBeckoningAvailable() && this.beckoningBlockedHandle == Guid.Empty)
@@ -65,7 +65,7 @@ public class BeckoningMonitor : GameStateMachine<BeckoningMonitor, BeckoningMoni
 			}
 		}
 
-		public void OnCaloriesConsumed(object data)
+				public void OnCaloriesConsumed(object data)
 		{
 			CreatureCalorieMonitor.CaloriesConsumedEvent caloriesConsumedEvent = (CreatureCalorieMonitor.CaloriesConsumedEvent)data;
 			EffectInstance effectInstance = this.effects.Get(base.smi.def.effectId);
@@ -76,14 +76,14 @@ public class BeckoningMonitor : GameStateMachine<BeckoningMonitor, BeckoningMoni
 			effectInstance.timeRemaining += caloriesConsumedEvent.calories / base.smi.def.caloriesPerCycle * 600f;
 		}
 
-		private AmountInstance beckoning;
+				private AmountInstance beckoning;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Effects effects;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public KSelectable kselectable;
 
-		private Guid beckoningBlockedHandle;
+				private Guid beckoningBlockedHandle;
 	}
 }

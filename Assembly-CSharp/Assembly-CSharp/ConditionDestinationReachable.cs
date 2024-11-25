@@ -3,13 +3,13 @@ using STRINGS;
 
 public class ConditionDestinationReachable : ProcessCondition
 {
-	public ConditionDestinationReachable(RocketModule module)
+		public ConditionDestinationReachable(RocketModule module)
 	{
 		this.module = module;
 		this.craftRegisterType = module.GetComponent<ILaunchableRocket>().registerType;
 	}
 
-	public override ProcessCondition.Status EvaluateCondition()
+		public override ProcessCondition.Status EvaluateCondition()
 	{
 		ProcessCondition.Status result = ProcessCondition.Status.Failure;
 		LaunchableRocketRegisterType launchableRocketRegisterType = this.craftRegisterType;
@@ -35,21 +35,21 @@ public class ConditionDestinationReachable : ProcessCondition
 		return result;
 	}
 
-	public bool CanReachSpacecraftDestination(SpaceDestination destination)
+		public bool CanReachSpacecraftDestination(SpaceDestination destination)
 	{
 		Debug.Assert(!DlcManager.FeatureClusterSpaceEnabled());
 		float rocketMaxDistance = this.module.GetComponent<CommandModule>().rocketStats.GetRocketMaxDistance();
 		return (float)destination.OneBasedDistance * 10000f <= rocketMaxDistance;
 	}
 
-	public SpaceDestination GetSpacecraftDestination()
+		public SpaceDestination GetSpacecraftDestination()
 	{
 		Debug.Assert(!DlcManager.FeatureClusterSpaceEnabled());
 		int id = SpacecraftManager.instance.GetSpacecraftFromLaunchConditionManager(this.module.GetComponent<LaunchConditionManager>()).id;
 		return SpacecraftManager.instance.GetSpacecraftDestination(id);
 	}
 
-	public override string GetStatusMessage(ProcessCondition.Status status)
+		public override string GetStatusMessage(ProcessCondition.Status status)
 	{
 		string result = "";
 		LaunchableRocketRegisterType launchableRocketRegisterType = this.craftRegisterType;
@@ -75,7 +75,7 @@ public class ConditionDestinationReachable : ProcessCondition
 		return result;
 	}
 
-	public override string GetStatusTooltip(ProcessCondition.Status status)
+		public override string GetStatusTooltip(ProcessCondition.Status status)
 	{
 		string result = "";
 		LaunchableRocketRegisterType launchableRocketRegisterType = this.craftRegisterType;
@@ -108,12 +108,12 @@ public class ConditionDestinationReachable : ProcessCondition
 		return result;
 	}
 
-	public override bool ShowInUI()
+		public override bool ShowInUI()
 	{
 		return true;
 	}
 
-	private LaunchableRocketRegisterType craftRegisterType;
+		private LaunchableRocketRegisterType craftRegisterType;
 
-	private RocketModule module;
+		private RocketModule module;
 }

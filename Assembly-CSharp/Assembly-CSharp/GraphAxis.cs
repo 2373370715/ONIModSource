@@ -3,7 +3,7 @@
 [Serializable]
 public struct GraphAxis
 {
-		public float range
+			public float range
 	{
 		get
 		{
@@ -11,11 +11,11 @@ public struct GraphAxis
 		}
 	}
 
-	public string name;
+		public string name;
 
-	public float min_value;
+		public float min_value;
 
-	public float max_value;
+		public float max_value;
 
-	public float guide_frequency;
+		public float guide_frequency;
 }

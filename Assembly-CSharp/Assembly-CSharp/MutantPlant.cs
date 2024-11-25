@@ -7,7 +7,7 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-		public List<string> MutationIDs
+			public List<string> MutationIDs
 	{
 		get
 		{
@@ -15,7 +15,7 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-		public bool IsOriginal
+			public bool IsOriginal
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-		public bool IsIdentified
+			public bool IsIdentified
 	{
 		get
 		{
@@ -31,7 +31,7 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-			public Tag SpeciesID
+				public Tag SpeciesID
 	{
 		get
 		{
@@ -44,7 +44,7 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-		public Tag SubSpeciesID
+			public Tag SubSpeciesID
 	{
 		get
 		{
@@ -56,13 +56,13 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.Subscribe<MutantPlant>(-2064133523, MutantPlant.OnAbsorbDelegate);
 		base.Subscribe<MutantPlant>(1335436905, MutantPlant.OnSplitFromChunkDelegate);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		if (this.IsOriginal || this.HasTag(GameTags.Plant))
 		{
@@ -80,19 +80,19 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		PlantSubSpeciesCatalog.Instance.DiscoverSubSpecies(this.GetSubSpeciesInfo(), this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		Components.MutantPlants.Remove(this);
 		base.OnCleanUp();
 	}
 
-	private void OnAbsorb(object data)
+		private void OnAbsorb(object data)
 	{
 		MutantPlant component = (data as Pickupable).GetComponent<MutantPlant>();
 		global::Debug.Assert(component != null && this.SubSpeciesID == component.SubSpeciesID, "Two seeds of different subspecies just absorbed!");
 	}
 
-	private void OnSplitFromChunk(object data)
+		private void OnSplitFromChunk(object data)
 	{
 		MutantPlant component = (data as Pickupable).GetComponent<MutantPlant>();
 		if (component != null)
@@ -101,7 +101,7 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public void Mutate()
+		public void Mutate()
 	{
 		List<string> list = (this.mutationIDs != null) ? new List<string>(this.mutationIDs) : new List<string>();
 		while (list.Count >= 1 && list.Count > 0)
@@ -112,13 +112,13 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.SetSubSpecies(list);
 	}
 
-	public void Analyze()
+		public void Analyze()
 	{
 		this.analyzed = true;
 		this.UpdateNameAndTags();
 	}
 
-	public void ApplyMutations()
+		public void ApplyMutations()
 	{
 		if (this.IsOriginal)
 		{
@@ -130,12 +130,12 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public void DummySetSubspecies(List<string> mutations)
+		public void DummySetSubspecies(List<string> mutations)
 	{
 		this.mutationIDs = mutations;
 	}
 
-	public void SetSubSpecies(List<string> mutations)
+		public void SetSubSpecies(List<string> mutations)
 	{
 		if (base.gameObject.HasTag(this.SubSpeciesID))
 		{
@@ -146,18 +146,18 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.UpdateNameAndTags();
 	}
 
-	public PlantSubSpeciesCatalog.SubSpeciesInfo GetSubSpeciesInfo()
+		public PlantSubSpeciesCatalog.SubSpeciesInfo GetSubSpeciesInfo()
 	{
 		return new PlantSubSpeciesCatalog.SubSpeciesInfo(this.SpeciesID, this.mutationIDs);
 	}
 
-	public void CopyMutationsTo(MutantPlant target)
+		public void CopyMutationsTo(MutantPlant target)
 	{
 		target.SetSubSpecies(this.mutationIDs);
 		target.analyzed = this.analyzed;
 	}
 
-	public void UpdateNameAndTags()
+		public void UpdateNameAndTags()
 	{
 		bool flag = !base.IsInitialized() || this.IsIdentified;
 		bool flag2 = PlantSubSpeciesCatalog.Instance == null || PlantSubSpeciesCatalog.Instance.GetAllSubSpeciesForSpecies(this.SpeciesID).Count == 1;
@@ -191,7 +191,7 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		if (this.IsOriginal)
 		{
@@ -205,7 +205,7 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		return result;
 	}
 
-	public List<string> GetSoundEvents()
+		public List<string> GetSoundEvents()
 	{
 		List<string> list = new List<string>();
 		if (this.mutationIDs != null)
@@ -219,27 +219,27 @@ public class MutantPlant : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	[Serialize]
+		[Serialize]
 	private bool analyzed;
 
-	[Serialize]
+		[Serialize]
 	private List<string> mutationIDs;
 
-	private List<Guid> statusItemHandles = new List<Guid>();
+		private List<Guid> statusItemHandles = new List<Guid>();
 
-	private const int MAX_MUTATIONS = 1;
+		private const int MAX_MUTATIONS = 1;
 
-	[SerializeField]
+		[SerializeField]
 	private Tag speciesID;
 
-	private Tag cachedSubspeciesID;
+		private Tag cachedSubspeciesID;
 
-	private static readonly EventSystem.IntraObjectHandler<MutantPlant> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<MutantPlant>(delegate(MutantPlant component, object data)
+		private static readonly EventSystem.IntraObjectHandler<MutantPlant> OnAbsorbDelegate = new EventSystem.IntraObjectHandler<MutantPlant>(delegate(MutantPlant component, object data)
 	{
 		component.OnAbsorb(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<MutantPlant> OnSplitFromChunkDelegate = new EventSystem.IntraObjectHandler<MutantPlant>(delegate(MutantPlant component, object data)
+		private static readonly EventSystem.IntraObjectHandler<MutantPlant> OnSplitFromChunkDelegate = new EventSystem.IntraObjectHandler<MutantPlant>(delegate(MutantPlant component, object data)
 	{
 		component.OnSplitFromChunk(data);
 	});

@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class RocketStats
 {
-	public RocketStats(CommandModule commandModule)
+		public RocketStats(CommandModule commandModule)
 	{
 		this.commandModule = commandModule;
 	}
 
-	public float GetRocketMaxDistance()
+		public float GetRocketMaxDistance()
 	{
 		float totalMass = this.GetTotalMass();
 		float totalThrust = this.GetTotalThrust();
@@ -18,12 +18,12 @@ public class RocketStats
 		return Mathf.Max(0f, totalThrust - num);
 	}
 
-	public float GetTotalMass()
+		public float GetTotalMass()
 	{
 		return this.GetDryMass() + this.GetWetMass();
 	}
 
-	public float GetDryMass()
+		public float GetDryMass()
 	{
 		float num = 0f;
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.commandModule.GetComponent<AttachableBuilding>()))
@@ -37,7 +37,7 @@ public class RocketStats
 		return num;
 	}
 
-	public float GetWetMass()
+		public float GetWetMass()
 	{
 		float num = 0f;
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.commandModule.GetComponent<AttachableBuilding>()))
@@ -65,7 +65,7 @@ public class RocketStats
 		return num;
 	}
 
-	public Tag GetEngineFuelTag()
+		public Tag GetEngineFuelTag()
 	{
 		RocketEngine mainEngine = this.GetMainEngine();
 		if (mainEngine != null)
@@ -75,7 +75,7 @@ public class RocketStats
 		return null;
 	}
 
-	public float GetTotalFuel(bool includeBoosters = false)
+		public float GetTotalFuel(bool includeBoosters = false)
 	{
 		float num = 0f;
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.commandModule.GetComponent<AttachableBuilding>()))
@@ -98,7 +98,7 @@ public class RocketStats
 		return num;
 	}
 
-	public float GetTotalOxidizer(bool includeBoosters = false)
+		public float GetTotalOxidizer(bool includeBoosters = false)
 	{
 		float num = 0f;
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.commandModule.GetComponent<AttachableBuilding>()))
@@ -120,7 +120,7 @@ public class RocketStats
 		return num;
 	}
 
-	public float GetAverageOxidizerEfficiency()
+		public float GetAverageOxidizerEfficiency()
 	{
 		Dictionary<Tag, float> dictionary = new Dictionary<Tag, float>();
 		dictionary[SimHashes.LiquidOxygen.CreateTag()] = 0f;
@@ -155,7 +155,7 @@ public class RocketStats
 		return num / num2 * 100f;
 	}
 
-	public float GetTotalThrust()
+		public float GetTotalThrust()
 	{
 		float totalFuel = this.GetTotalFuel(false);
 		float totalOxidizer = this.GetTotalOxidizer(false);
@@ -168,7 +168,7 @@ public class RocketStats
 		return (mainEngine.requireOxidizer ? (Mathf.Min(totalFuel, totalOxidizer) * (mainEngine.efficiency * (averageOxidizerEfficiency / 100f))) : (totalFuel * mainEngine.efficiency)) + this.GetBoosterThrust();
 	}
 
-	public float GetBoosterThrust()
+		public float GetBoosterThrust()
 	{
 		float num = 0f;
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.commandModule.GetComponent<AttachableBuilding>()))
@@ -184,7 +184,7 @@ public class RocketStats
 		return num;
 	}
 
-	public float GetEngineEfficiency()
+		public float GetEngineEfficiency()
 	{
 		RocketEngine mainEngine = this.GetMainEngine();
 		if (mainEngine != null)
@@ -194,7 +194,7 @@ public class RocketStats
 		return 0f;
 	}
 
-	public RocketEngine GetMainEngine()
+		public RocketEngine GetMainEngine()
 	{
 		RocketEngine rocketEngine = null;
 		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.commandModule.GetComponent<AttachableBuilding>()))
@@ -208,16 +208,16 @@ public class RocketStats
 		return rocketEngine;
 	}
 
-	public float GetTotalOxidizableFuel()
+		public float GetTotalOxidizableFuel()
 	{
 		float totalFuel = this.GetTotalFuel(false);
 		float totalOxidizer = this.GetTotalOxidizer(false);
 		return Mathf.Min(totalFuel, totalOxidizer);
 	}
 
-	private CommandModule commandModule;
+		private CommandModule commandModule;
 
-	public static Dictionary<Tag, float> oxidizerEfficiencies = new Dictionary<Tag, float>
+		public static Dictionary<Tag, float> oxidizerEfficiencies = new Dictionary<Tag, float>
 	{
 		{
 			SimHashes.OxyRock.CreateTag(),

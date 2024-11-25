@@ -6,12 +6,12 @@ using UnityEngine.UI;
 
 public class TopLeftControlScreen : KScreen
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		TopLeftControlScreen.Instance = null;
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		base.OnActivate();
 		TopLeftControlScreen.Instance = this;
@@ -31,13 +31,13 @@ public class TopLeftControlScreen : KScreen
 		LayoutRebuilder.ForceRebuildLayoutImmediate(this.secondaryRow);
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		KInputManager.InputChange.RemoveListener(new UnityAction(this.ResetToolTip));
 		base.OnForcedCleanUp();
 	}
 
-	public void RefreshName()
+		public void RefreshName()
 	{
 		if (SaveGame.Instance != null)
 		{
@@ -45,7 +45,7 @@ public class TopLeftControlScreen : KScreen
 		}
 	}
 
-	public void ResetToolTip()
+		public void ResetToolTip()
 	{
 		if (this.CheckSandboxModeLocked())
 		{
@@ -55,7 +55,7 @@ public class TopLeftControlScreen : KScreen
 		this.sandboxToggle.GetComponent<ToolTip>().SetSimpleTooltip(GameUtil.ReplaceHotkeyString(UI.SANDBOX_TOGGLE.TOOLTIP_UNLOCKED, global::Action.ToggleSandboxTools));
 	}
 
-	public void UpdateSandboxToggleState()
+		public void UpdateSandboxToggleState()
 	{
 		if (this.CheckSandboxModeLocked())
 		{
@@ -70,7 +70,7 @@ public class TopLeftControlScreen : KScreen
 		this.sandboxToggle.gameObject.SetActive(SaveGame.Instance.sandboxEnabled);
 	}
 
-	private void OnClickSandboxToggle()
+		private void OnClickSandboxToggle()
 	{
 		if (this.CheckSandboxModeLocked())
 		{
@@ -84,7 +84,7 @@ public class TopLeftControlScreen : KScreen
 		this.UpdateSandboxToggleState();
 	}
 
-	private void RefreshKleiItemDropButton()
+		private void RefreshKleiItemDropButton()
 	{
 		if (!KleiItemDropScreen.HasItemsToShow())
 		{
@@ -96,7 +96,7 @@ public class TopLeftControlScreen : KScreen
 		this.kleiItemDropButton.ChangeState(2);
 	}
 
-	private void OnClickKleiItemDropButton()
+		private void OnClickKleiItemDropButton()
 	{
 		this.RefreshKleiItemDropButton();
 		if (!KleiItemDropScreen.HasItemsToShow())
@@ -108,29 +108,29 @@ public class TopLeftControlScreen : KScreen
 		UnityEngine.Object.FindObjectOfType<KleiItemDropScreen>(true).Show(true);
 	}
 
-	private bool CheckSandboxModeLocked()
+		private bool CheckSandboxModeLocked()
 	{
 		return !SaveGame.Instance.sandboxEnabled;
 	}
 
-	public static TopLeftControlScreen Instance;
+		public static TopLeftControlScreen Instance;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle sandboxToggle;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle kleiItemDropButton;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText locText;
 
-	[SerializeField]
+		[SerializeField]
 	private RectTransform secondaryRow;
 
-	private enum MultiToggleState
+		private enum MultiToggleState
 	{
-		Disabled,
-		Off,
-		On
+				Disabled,
+				Off,
+				On
 	}
 }

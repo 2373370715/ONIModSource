@@ -4,12 +4,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/TreeFilterableSideScreenElement")]
 public class TreeFilterableSideScreenElement : KMonoBehaviour
 {
-	public Tag GetElementTag()
+		public Tag GetElementTag()
 	{
 		return this.elementTag;
 	}
 
-		public bool IsSelected
+			public bool IsSelected
 	{
 		get
 		{
@@ -17,12 +17,12 @@ public class TreeFilterableSideScreenElement : KMonoBehaviour
 		}
 	}
 
-	public MultiToggle GetCheckboxToggle()
+		public MultiToggle GetCheckboxToggle()
 	{
 		return this.checkBox;
 	}
 
-			public TreeFilterableSideScreen Parent
+				public TreeFilterableSideScreen Parent
 	{
 		get
 		{
@@ -34,7 +34,7 @@ public class TreeFilterableSideScreenElement : KMonoBehaviour
 		}
 	}
 
-	private void Initialize()
+		private void Initialize()
 	{
 		if (this.initialized)
 		{
@@ -45,13 +45,13 @@ public class TreeFilterableSideScreenElement : KMonoBehaviour
 		this.initialized = true;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.Initialize();
 	}
 
-	public Sprite GetStorageObjectSprite(Tag t)
+		public Sprite GetStorageObjectSprite(Tag t)
 	{
 		Sprite result = null;
 		GameObject prefab = Assets.GetPrefab(t);
@@ -66,7 +66,7 @@ public class TreeFilterableSideScreenElement : KMonoBehaviour
 		return result;
 	}
 
-	public void SetSprite(Tag t)
+		public void SetSprite(Tag t)
 	{
 		global::Tuple<Sprite, Color> uisprite = Def.GetUISprite(t, "ui", false);
 		this.elementImg.sprite = uisprite.first;
@@ -74,7 +74,7 @@ public class TreeFilterableSideScreenElement : KMonoBehaviour
 		this.elementImg.gameObject.SetActive(true);
 	}
 
-	public void SetTag(Tag newTag)
+		public void SetTag(Tag newTag)
 	{
 		this.Initialize();
 		this.elementTag = newTag;
@@ -88,12 +88,12 @@ public class TreeFilterableSideScreenElement : KMonoBehaviour
 		this.elementName.text = text;
 	}
 
-	private void CheckBoxClicked()
+		private void CheckBoxClicked()
 	{
 		this.SetCheckBox(!this.parent.IsTagAllowed(this.GetElementTag()));
 	}
 
-	public void SetCheckBox(bool checkBoxState)
+		public void SetCheckBox(bool checkBoxState)
 	{
 		this.checkBox.ChangeState(checkBoxState ? 1 : 0);
 		this.checkBoxImg.enabled = checkBoxState;
@@ -103,22 +103,22 @@ public class TreeFilterableSideScreenElement : KMonoBehaviour
 		}
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText elementName;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle checkBox;
 
-	[SerializeField]
+		[SerializeField]
 	private KImage elementImg;
 
-	private KImage checkBoxImg;
+		private KImage checkBoxImg;
 
-	private Tag elementTag;
+		private Tag elementTag;
 
-	public Action<Tag, bool> OnSelectionChanged;
+		public Action<Tag, bool> OnSelectionChanged;
 
-	private TreeFilterableSideScreen parent;
+		private TreeFilterableSideScreen parent;
 
-	private bool initialized;
+		private bool initialized;
 }

@@ -1,43 +1,29 @@
-﻿using System;
-using Klei.AI;
+﻿using Klei.AI;
 
-public class MournMonitor : GameStateMachine<MournMonitor, MournMonitor.Instance>
-{
-	public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.idle;
-		this.idle.EventHandler(GameHashes.EffectAdded, new GameStateMachine<MournMonitor, MournMonitor.Instance, IStateMachineTarget, object>.GameEvent.Callback(this.OnEffectAdded)).Enter(delegate(MournMonitor.Instance smi)
-		{
-			if (this.ShouldMourn(smi))
-			{
-				smi.GoTo(this.needsToMourn);
-			}
-		});
-		this.needsToMourn.ToggleChore((MournMonitor.Instance smi) => new MournChore(smi.master), this.idle);
-	}
+public class MournMonitor : GameStateMachine<MournMonitor, MournMonitor.Instance> {
+    private State idle;
+    private State needsToMourn;
 
-	private bool ShouldMourn(MournMonitor.Instance smi)
-	{
-		Effect effect = Db.Get().effects.Get("Mourning");
-		return smi.master.GetComponent<Effects>().HasEffect(effect);
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = idle;
+        idle.EventHandler(GameHashes.EffectAdded, OnEffectAdded)
+            .Enter(delegate(Instance smi) {
+                       if (ShouldMourn(smi)) smi.GoTo(needsToMourn);
+                   });
 
-	private void OnEffectAdded(MournMonitor.Instance smi, object data)
-	{
-		if (this.ShouldMourn(smi))
-		{
-			smi.GoTo(this.needsToMourn);
-		}
-	}
+        needsToMourn.ToggleChore(smi => new MournChore(smi.master), idle);
+    }
 
-	private GameStateMachine<MournMonitor, MournMonitor.Instance, IStateMachineTarget, object>.State idle;
+    private bool ShouldMourn(Instance smi) {
+        var effect = Db.Get().effects.Get("Mourning");
+        return smi.master.GetComponent<Effects>().HasEffect(effect);
+    }
 
-	private GameStateMachine<MournMonitor, MournMonitor.Instance, IStateMachineTarget, object>.State needsToMourn;
+    private void OnEffectAdded(Instance smi, object data) {
+        if (ShouldMourn(smi)) smi.GoTo(needsToMourn);
+    }
 
-	public new class Instance : GameStateMachine<MournMonitor, MournMonitor.Instance, IStateMachineTarget, object>.GameInstance
-	{
-		public Instance(IStateMachineTarget master) : base(master)
-		{
-		}
-	}
+    public new class Instance : GameInstance {
+        public Instance(IStateMachineTarget master) : base(master) { }
+    }
 }

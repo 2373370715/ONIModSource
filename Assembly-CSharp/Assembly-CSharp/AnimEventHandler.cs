@@ -4,14 +4,14 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/AnimEventHandler")]
 public class AnimEventHandler : KMonoBehaviour
 {
-			private event AnimEventHandler.SetPos onWorkTargetSet;
+				private event AnimEventHandler.SetPos onWorkTargetSet;
 
-	public int GetCachedCell()
+		public int GetCachedCell()
 	{
 		return this.pickupable.cachedCell;
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.cachedTransform = base.transform;
@@ -27,23 +27,23 @@ public class AnimEventHandler : KMonoBehaviour
 		AnimEventHandlerManager.Instance.Add(this);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		AnimEventHandlerManager.Instance.Remove(this);
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		this.navigator = null;
 		base.OnForcedCleanUp();
 	}
 
-	public HashedString GetContext()
+		public HashedString GetContext()
 	{
 		return this.context;
 	}
 
-	public void UpdateWorkTarget(Vector3 pos)
+		public void UpdateWorkTarget(Vector3 pos)
 	{
 		if (this.onWorkTargetSet != null)
 		{
@@ -51,27 +51,27 @@ public class AnimEventHandler : KMonoBehaviour
 		}
 	}
 
-	public void SetContext(HashedString context)
+		public void SetContext(HashedString context)
 	{
 		this.context = context;
 	}
 
-	public void SetTargetPos(Vector3 target_pos)
+		public void SetTargetPos(Vector3 target_pos)
 	{
 		this.targetPos = target_pos;
 	}
 
-	public Vector3 GetTargetPos()
+		public Vector3 GetTargetPos()
 	{
 		return this.targetPos;
 	}
 
-	public void ClearContext()
+		public void ClearContext()
 	{
 		this.context = default(HashedString);
 	}
 
-	public void UpdateOffset()
+		public void UpdateOffset()
 	{
 		Vector3 pivotSymbolPosition = this.controller.GetPivotSymbolPosition();
 		Vector3 vector = this.navigator.NavGrid.GetNavTypeData(this.navigator.CurrentNavType).animControllerOffset;
@@ -83,24 +83,24 @@ public class AnimEventHandler : KMonoBehaviour
 		}
 	}
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimController controller;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBoxCollider2D animCollider;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Navigator navigator;
 
-	private Pickupable pickupable;
+		private Pickupable pickupable;
 
-	private Vector3 targetPos;
+		private Vector3 targetPos;
 
-	public Transform cachedTransform;
+		public Transform cachedTransform;
 
-	public Vector2 baseOffset;
+		public Vector2 baseOffset;
 
-	private HashedString context;
+		private HashedString context;
 
-		private delegate void SetPos(Vector3 pos);
+			private delegate void SetPos(Vector3 pos);
 }

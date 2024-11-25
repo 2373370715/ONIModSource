@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class HarvestModuleSideScreen : SideScreenContent, ISimEveryTick
 {
-		private CraftModuleInterface craftModuleInterface
+			private CraftModuleInterface craftModuleInterface
 	{
 		get
 		{
@@ -13,23 +13,23 @@ public class HarvestModuleSideScreen : SideScreenContent, ISimEveryTick
 		}
 	}
 
-	protected override void OnShow(bool show)
+		protected override void OnShow(bool show)
 	{
 		base.OnShow(show);
 		base.ConsumeMouseScroll = true;
 	}
 
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 21f;
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<Clustercraft>() != null && this.GetResourceHarvestModule(target.GetComponent<Clustercraft>()) != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		base.SetTarget(target);
 		this.targetCraft = target.GetComponent<Clustercraft>();
@@ -37,7 +37,7 @@ public class HarvestModuleSideScreen : SideScreenContent, ISimEveryTick
 		this.RefreshModulePanel(resourceHarvestModule);
 	}
 
-	private ResourceHarvestModule.StatesInstance GetResourceHarvestModule(Clustercraft craft)
+		private ResourceHarvestModule.StatesInstance GetResourceHarvestModule(Clustercraft craft)
 	{
 		foreach (Ref<RocketModuleCluster> @ref in craft.GetComponent<CraftModuleInterface>().ClusterModules)
 		{
@@ -50,14 +50,14 @@ public class HarvestModuleSideScreen : SideScreenContent, ISimEveryTick
 		return null;
 	}
 
-	private void RefreshModulePanel(StateMachine.Instance module)
+		private void RefreshModulePanel(StateMachine.Instance module)
 	{
 		HierarchyReferences component = base.GetComponent<HierarchyReferences>();
 		component.GetReference<Image>("icon").sprite = Def.GetUISprite(module.gameObject, "ui", false).first;
 		component.GetReference<LocText>("label").SetText(module.gameObject.GetProperName());
 	}
 
-	public void SimEveryTick(float dt)
+		public void SimEveryTick(float dt)
 	{
 		if (this.targetCraft.IsNullOrDestroyed())
 		{
@@ -89,9 +89,9 @@ public class HarvestModuleSideScreen : SideScreenContent, ISimEveryTick
 		reference2.label.SetText(ElementLoader.GetElement(SimHashes.Diamond.CreateTag()).name + ": " + GameUtil.GetFormattedMass(component2.MassStored(), GameUtil.TimeSlice.None, GameUtil.MetricMassFormat.UseThreshold, true, "{0:0.#}"));
 	}
 
-	private Clustercraft targetCraft;
+		private Clustercraft targetCraft;
 
-	public GameObject moduleContentContainer;
+		public GameObject moduleContentContainer;
 
-	public GameObject modulePanelPrefab;
+		public GameObject modulePanelPrefab;
 }

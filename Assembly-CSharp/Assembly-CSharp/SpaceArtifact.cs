@@ -9,7 +9,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/SpaceArtifact")]
 public class SpaceArtifact : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		if (this.loadCharmed && DlcManager.IsExpansion1Active())
@@ -27,13 +27,13 @@ public class SpaceArtifact : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.UpdateAnim();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		Components.SpaceArtifacts.Remove(this);
 	}
 
-	public void RemoveCharm()
+		public void RemoveCharm()
 	{
 		base.gameObject.RemoveTag(GameTags.CharmedArtifact);
 		this.UpdateStatusItem();
@@ -42,17 +42,17 @@ public class SpaceArtifact : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.SetAnalyzedDecor();
 	}
 
-	private void SetEntombedDecor()
+		private void SetEntombedDecor()
 	{
 		base.GetComponent<DecorProvider>().SetValues(DECOR.BONUS.TIER0);
 	}
 
-	private void SetAnalyzedDecor()
+		private void SetAnalyzedDecor()
 	{
 		base.GetComponent<DecorProvider>().SetValues(this.artifactTier.decorValues);
 	}
 
-	public void UpdateStatusItem()
+		public void UpdateStatusItem()
 	{
 		if (base.gameObject.HasTag(GameTags.CharmedArtifact))
 		{
@@ -62,27 +62,27 @@ public class SpaceArtifact : KMonoBehaviour, IGameObjectEffectDescriptor
 		base.gameObject.GetComponent<KSelectable>().RemoveStatusItem(Db.Get().MiscStatusItems.ArtifactEntombed, false);
 	}
 
-	public void SetArtifactTier(ArtifactTier tier)
+		public void SetArtifactTier(ArtifactTier tier)
 	{
 		this.artifactTier = tier;
 	}
 
-	public ArtifactTier GetArtifactTier()
+		public ArtifactTier GetArtifactTier()
 	{
 		return this.artifactTier;
 	}
 
-	public void SetUIAnim(string anim)
+		public void SetUIAnim(string anim)
 	{
 		this.ui_anim = anim;
 	}
 
-	public string GetUIAnim()
+		public string GetUIAnim()
 	{
 		return this.ui_anim;
 	}
 
-	public List<Descriptor> GetEffectDescriptions()
+		public List<Descriptor> GetEffectDescriptions()
 	{
 		List<Descriptor> list = new List<Descriptor>();
 		if (base.gameObject.HasTag(GameTags.CharmedArtifact))
@@ -95,12 +95,12 @@ public class SpaceArtifact : KMonoBehaviour, IGameObjectEffectDescriptor
 		return list;
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return this.GetEffectDescriptions();
 	}
 
-	private void UpdateAnim()
+		private void UpdateAnim()
 	{
 		string s;
 		if (base.gameObject.HasTag(GameTags.CharmedArtifact))
@@ -114,7 +114,7 @@ public class SpaceArtifact : KMonoBehaviour, IGameObjectEffectDescriptor
 		base.GetComponent<KBatchedAnimController>().Play(s, KAnim.PlayMode.Loop, 1f, 0f);
 	}
 
-	[OnDeserialized]
+		[OnDeserialized]
 	public void OnDeserialize()
 	{
 		Pickupable component = base.GetComponent<Pickupable>();
@@ -124,21 +124,21 @@ public class SpaceArtifact : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	public const string ID = "SpaceArtifact";
+		public const string ID = "SpaceArtifact";
 
-	private const string charmedPrefix = "entombed_";
+		private const string charmedPrefix = "entombed_";
 
-	private const string idlePrefix = "idle_";
+		private const string idlePrefix = "idle_";
 
-	[SerializeField]
+		[SerializeField]
 	private string ui_anim;
 
-	[Serialize]
+		[Serialize]
 	private bool loadCharmed = true;
 
-	public ArtifactTier artifactTier;
+		public ArtifactTier artifactTier;
 
-	public ArtifactType artifactType;
+		public ArtifactType artifactType;
 
-	public string uniqueAnimNameFragment;
+		public string uniqueAnimNameFragment;
 }

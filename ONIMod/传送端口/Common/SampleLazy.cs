@@ -1,6 +1,6 @@
 ﻿using System;
 
-
+namespace RsTransferPort;
 
 public class SampleLazy<T> where T : class {
     private readonly Func<T> m_valueFactory;

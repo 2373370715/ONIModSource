@@ -5,16 +5,16 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/FaceGraph")]
 public class FaceGraph : KMonoBehaviour
 {
-	public IEnumerator<Expression> GetEnumerator()
+		public IEnumerator<Expression> GetEnumerator()
 	{
 		return this.expressions.GetEnumerator();
 	}
 
-			public Expression overrideExpression { get; private set; }
+				public Expression overrideExpression { get; private set; }
 
-			public Expression currentExpression { get; private set; }
+				public Expression currentExpression { get; private set; }
 
-	public void AddExpression(Expression expression)
+		public void AddExpression(Expression expression)
 	{
 		if (this.expressions.Contains(expression))
 		{
@@ -24,7 +24,7 @@ public class FaceGraph : KMonoBehaviour
 		this.UpdateFace();
 	}
 
-	public void RemoveExpression(Expression expression)
+		public void RemoveExpression(Expression expression)
 	{
 		if (this.expressions.Remove(expression))
 		{
@@ -32,7 +32,7 @@ public class FaceGraph : KMonoBehaviour
 		}
 	}
 
-	public void SetOverrideExpression(Expression expression)
+		public void SetOverrideExpression(Expression expression)
 	{
 		if (expression != this.overrideExpression)
 		{
@@ -41,13 +41,18 @@ public class FaceGraph : KMonoBehaviour
 		}
 	}
 
-	public void ApplyShape()
+		public void ApplyShape()
 	{
 		KAnimFile anim = Assets.GetAnim(FaceGraph.HASH_HEAD_MASTER_SWAP_KANIM);
 		bool should_use_sideways_symbol = this.ShouldUseSidewaysSymbol(this.m_controller);
 		if (this.m_blinkMonitor == null)
 		{
+			Accessory accessory = this.m_accessorizer.GetAccessory(Db.Get().AccessorySlots.Eyes);
 			this.m_blinkMonitor = this.m_accessorizer.GetSMI<BlinkMonitor.Instance>();
+			if (this.m_blinkMonitor != null)
+			{
+				this.m_blinkMonitor.eye_anim = accessory.Name;
+			}
 		}
 		if (this.m_speechMonitor == null)
 		{
@@ -67,7 +72,7 @@ public class FaceGraph : KMonoBehaviour
 		this.m_speechMonitor.DrawMouth();
 	}
 
-	private bool ShouldUseSidewaysSymbol(KBatchedAnimController controller)
+		private bool ShouldUseSidewaysSymbol(KBatchedAnimController controller)
 	{
 		KAnim.Anim currentAnim = controller.GetCurrentAnim();
 		if (currentAnim == null)
@@ -93,7 +98,7 @@ public class FaceGraph : KMonoBehaviour
 		return false;
 	}
 
-	private void ApplyShape(KAnim.Build.Symbol variation_symbol, KBatchedAnimController controller, KAnimFile shapes_file, KAnimHashedString symbol_name_in_shape_file, bool should_use_sideways_symbol)
+		private void ApplyShape(KAnim.Build.Symbol variation_symbol, KBatchedAnimController controller, KAnimFile shapes_file, KAnimHashedString symbol_name_in_shape_file, bool should_use_sideways_symbol)
 	{
 		HashedString hashedString = FaceGraph.ANIM_HASH_NEUTRAL;
 		if (this.currentExpression != null)
@@ -145,7 +150,7 @@ public class FaceGraph : KMonoBehaviour
 		controller.SetSymbolOverride(symbol.firstFrameIdx, ref symbolFrameInstance);
 	}
 
-	private void UpdateFace()
+		private void UpdateFace()
 	{
 		Expression expression = null;
 		if (this.overrideExpression != null)
@@ -193,28 +198,28 @@ public class FaceGraph : KMonoBehaviour
 		this.m_controller.SetSymbolVisiblity(headEffects.targetSymbolId, false);
 	}
 
-	private List<Expression> expressions = new List<Expression>();
+		private List<Expression> expressions = new List<Expression>();
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KBatchedAnimController m_controller;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private Accessorizer m_accessorizer;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private SymbolOverrideController m_symbolOverrideController;
 
-	private BlinkMonitor.Instance m_blinkMonitor;
+		private BlinkMonitor.Instance m_blinkMonitor;
 
-	private SpeechMonitor.Instance m_speechMonitor;
+		private SpeechMonitor.Instance m_speechMonitor;
 
-	private static HashedString HASH_HEAD_MASTER_SWAP_KANIM = "head_master_swap_kanim";
+		private static HashedString HASH_HEAD_MASTER_SWAP_KANIM = "head_master_swap_kanim";
 
-	private static KAnimHashedString ANIM_HASH_SNAPTO_EYES = "snapto_eyes";
+		private static KAnimHashedString ANIM_HASH_SNAPTO_EYES = "snapto_eyes";
 
-	private static KAnimHashedString ANIM_HASH_SNAPTO_MOUTH = "snapto_mouth";
+		private static KAnimHashedString ANIM_HASH_SNAPTO_MOUTH = "snapto_mouth";
 
-	private static KAnimHashedString ANIM_HASH_NEUTRAL = "neutral";
+		private static KAnimHashedString ANIM_HASH_NEUTRAL = "neutral";
 
-	private static int FIRST_SIDEWAYS_FRAME = 29;
+		private static int FIRST_SIDEWAYS_FRAME = 29;
 }

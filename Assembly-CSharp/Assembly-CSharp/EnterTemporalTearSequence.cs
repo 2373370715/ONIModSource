@@ -5,12 +5,12 @@ using UnityEngine;
 
 public static class EnterTemporalTearSequence
 {
-	public static void Start(KMonoBehaviour controller)
+		public static void Start(KMonoBehaviour controller)
 	{
 		controller.StartCoroutine(EnterTemporalTearSequence.Sequence());
 	}
 
-	private static IEnumerator Sequence()
+		private static IEnumerator Sequence()
 	{
 		if (!SpeedControlScreen.Instance.IsPaused)
 		{
@@ -116,5 +116,5 @@ public static class EnterTemporalTearSequence
 		yield break;
 	}
 
-	public static GameObject tearOpenerGameObject;
+		public static GameObject tearOpenerGameObject;
 }

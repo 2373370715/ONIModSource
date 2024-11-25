@@ -3,15 +3,15 @@ using STRINGS;
 
 namespace Database
 {
-	public class UpgradeAllBasicBuildings : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
+		public class UpgradeAllBasicBuildings : ColonyAchievementRequirement, AchievementRequirementSerialization_Deprecated
 	{
-		public UpgradeAllBasicBuildings(Tag basicBuilding, Tag upgradeBuilding)
+				public UpgradeAllBasicBuildings(Tag basicBuilding, Tag upgradeBuilding)
 		{
 			this.basicBuilding = basicBuilding;
 			this.upgradeBuilding = upgradeBuilding;
 		}
 
-		public override bool Success()
+				public override bool Success()
 		{
 			bool result = false;
 			foreach (IBasicBuilding basicBuilding in Components.BasicBuildings.Items)
@@ -29,7 +29,7 @@ namespace Database
 			return result;
 		}
 
-		public void Deserialize(IReader reader)
+				public void Deserialize(IReader reader)
 		{
 			string name = reader.ReadKleiString();
 			this.basicBuilding = new Tag(name);
@@ -37,15 +37,15 @@ namespace Database
 			this.upgradeBuilding = new Tag(name2);
 		}
 
-		public override string GetProgress(bool complete)
+				public override string GetProgress(bool complete)
 		{
 			BuildingDef buildingDef = Assets.GetBuildingDef(this.basicBuilding.Name);
 			BuildingDef buildingDef2 = Assets.GetBuildingDef(this.upgradeBuilding.Name);
 			return string.Format(COLONY_ACHIEVEMENTS.MISC_REQUIREMENTS.STATUS.UPGRADE_ALL_BUILDINGS, buildingDef.Name, buildingDef2.Name);
 		}
 
-		private Tag basicBuilding;
+				private Tag basicBuilding;
 
-		private Tag upgradeBuilding;
+				private Tag upgradeBuilding;
 	}
 }

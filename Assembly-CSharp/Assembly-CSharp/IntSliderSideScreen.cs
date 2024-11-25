@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class IntSliderSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		for (int i = 0; i < this.sliderSets.Count; i++)
@@ -14,12 +14,12 @@ public class IntSliderSideScreen : SideScreenContent
 		}
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<IIntSliderControl>() != null || target.GetSMI<IIntSliderControl>() != null;
 	}
 
-	public override void SetTarget(GameObject new_target)
+		public override void SetTarget(GameObject new_target)
 	{
 		if (new_target == null)
 		{
@@ -43,7 +43,7 @@ public class IntSliderSideScreen : SideScreenContent
 		}
 	}
 
-	private IIntSliderControl target;
+		private IIntSliderControl target;
 
-	public List<SliderSet> sliderSets;
+		public List<SliderSet> sliderSets;
 }

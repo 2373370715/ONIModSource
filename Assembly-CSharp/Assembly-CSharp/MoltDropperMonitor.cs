@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MoltDropperMonitor : GameStateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.satisfied;
 		this.root.EventHandler(GameHashes.NewDay, (MoltDropperMonitor.Instance smi) => GameClock.Instance, delegate(MoltDropperMonitor.Instance smi)
@@ -24,35 +24,35 @@ public class MoltDropperMonitor : GameStateMachine<MoltDropperMonitor, MoltDropp
 		}).TriggerOnEnter(GameHashes.Molt, null).EventTransition(GameHashes.NewDay, (MoltDropperMonitor.Instance smi) => GameClock.Instance, this.satisfied, null);
 	}
 
-	public StateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.BoolParameter droppedThisCycle = new StateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.BoolParameter(false);
+		public StateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.BoolParameter droppedThisCycle = new StateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.BoolParameter(false);
 
-	public GameStateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.State satisfied;
+		public GameStateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.State satisfied;
 
-	public MoltDropperMonitor.DropStates drop;
+		public MoltDropperMonitor.DropStates drop;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public bool synchWithBehaviour;
+				public bool synchWithBehaviour;
 
-		public string onGrowDropID;
+				public string onGrowDropID;
 
-		public float massToDrop;
+				public float massToDrop;
 
-		public string amountName;
+				public string amountName;
 
-		public Func<MoltDropperMonitor.Instance, bool> isReadyToMolt;
+				public Func<MoltDropperMonitor.Instance, bool> isReadyToMolt;
 	}
 
-	public class DropStates : GameStateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.State
+		public class DropStates : GameStateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.State
 	{
-		public GameStateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.State dropping;
+				public GameStateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.State dropping;
 
-		public GameStateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.State complete;
+				public GameStateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.State complete;
 	}
 
-	public new class Instance : GameStateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.GameInstance
+		public new class Instance : GameStateMachine<MoltDropperMonitor, MoltDropperMonitor.Instance, IStateMachineTarget, MoltDropperMonitor.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, MoltDropperMonitor.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, MoltDropperMonitor.Def def) : base(master, def)
 		{
 			if (!string.IsNullOrEmpty(def.amountName))
 			{
@@ -61,12 +61,12 @@ public class MoltDropperMonitor : GameStateMachine<MoltDropperMonitor, MoltDropp
 			}
 		}
 
-		private void OnAmountMaxValueReached()
+				private void OnAmountMaxValueReached()
 		{
 			this.lastTineAmountReachedMax = GameClock.Instance.GetTime();
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			if (!string.IsNullOrEmpty(base.def.amountName))
 			{
@@ -76,12 +76,12 @@ public class MoltDropperMonitor : GameStateMachine<MoltDropperMonitor, MoltDropp
 			base.OnCleanUp();
 		}
 
-		public bool ShouldDropElement()
+				public bool ShouldDropElement()
 		{
 			return base.def.isReadyToMolt(this);
 		}
 
-		public void Drop()
+				public void Drop()
 		{
 			GameObject gameObject = Scenario.SpawnPrefab(this.GetDropSpawnLocation(), 0, 0, base.def.onGrowDropID, Grid.SceneLayer.Ore);
 			gameObject.SetActive(true);
@@ -95,7 +95,7 @@ public class MoltDropperMonitor : GameStateMachine<MoltDropperMonitor, MoltDropp
 			}
 		}
 
-		private int GetDropSpawnLocation()
+				private int GetDropSpawnLocation()
 		{
 			int num = Grid.PosToCell(base.gameObject);
 			int num2 = Grid.CellAbove(num);
@@ -106,16 +106,16 @@ public class MoltDropperMonitor : GameStateMachine<MoltDropperMonitor, MoltDropp
 			return num;
 		}
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public KPrefabID prefabID;
 
-		[Serialize]
+				[Serialize]
 		public bool spawnedThisCycle;
 
-		[Serialize]
+				[Serialize]
 		public float timeOfLastDrop;
 
-		[Serialize]
+				[Serialize]
 		public float lastTineAmountReachedMax;
 	}
 }

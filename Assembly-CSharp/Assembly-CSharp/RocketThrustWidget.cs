@@ -8,11 +8,11 @@ using UnityEngine.UI;
 [AddComponentMenu("KMonoBehaviour/scripts/RocketThrustWidget")]
 public class RocketThrustWidget : KMonoBehaviour, IPointerEnterHandler, IEventSystemHandler, IPointerExitHandler
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 	}
 
-	public void Draw(CommandModule commandModule)
+		public void Draw(CommandModule commandModule)
 	{
 		if (this.rectTransform == null)
 		{
@@ -23,7 +23,7 @@ public class RocketThrustWidget : KMonoBehaviour, IPointerEnterHandler, IEventSy
 		this.UpdateGraphDotPos(commandModule);
 	}
 
-	private void UpdateGraphDotPos(CommandModule rocket)
+		private void UpdateGraphDotPos(CommandModule rocket)
 	{
 		this.totalWidth = this.rectTransform.rect.width;
 		float num = Mathf.Lerp(0f, this.totalWidth, rocket.rocketStats.GetTotalMass() / this.maxMass);
@@ -32,7 +32,7 @@ public class RocketThrustWidget : KMonoBehaviour, IPointerEnterHandler, IEventSy
 		this.graphDotText.text = "-" + Util.FormatWholeNumber(rocket.rocketStats.GetTotalThrust() - rocket.rocketStats.GetRocketMaxDistance()) + "km";
 	}
 
-	private void Update()
+		private void Update()
 	{
 		if (this.mouseOver)
 		{
@@ -67,39 +67,39 @@ public class RocketThrustWidget : KMonoBehaviour, IPointerEnterHandler, IEventSy
 		}
 	}
 
-	public void OnPointerEnter(PointerEventData eventData)
+		public void OnPointerEnter(PointerEventData eventData)
 	{
 		this.mouseOver = true;
 		this.hoverMarker.SetAlpha(1f);
 	}
 
-	public void OnPointerExit(PointerEventData eventData)
+		public void OnPointerExit(PointerEventData eventData)
 	{
 		this.mouseOver = false;
 		this.hoverMarker.SetAlpha(0f);
 	}
 
-	public Image graphBar;
+		public Image graphBar;
 
-	public Image graphDot;
+		public Image graphDot;
 
-	public LocText graphDotText;
+		public LocText graphDotText;
 
-	public Image hoverMarker;
+		public Image hoverMarker;
 
-	public ToolTip hoverTooltip;
+		public ToolTip hoverTooltip;
 
-	public RectTransform markersContainer;
+		public RectTransform markersContainer;
 
-	public Image markerTemplate;
+		public Image markerTemplate;
 
-	private RectTransform rectTransform;
+		private RectTransform rectTransform;
 
-	private float maxMass = 20000f;
+		private float maxMass = 20000f;
 
-	private float totalWidth = 5f;
+		private float totalWidth = 5f;
 
-	private bool mouseOver;
+		private bool mouseOver;
 
-	public CommandModule commandModule;
+		public CommandModule commandModule;
 }

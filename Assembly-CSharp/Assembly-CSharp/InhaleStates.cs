@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.goingtoeat;
 		this.root.Enter("SetTarget", delegate(InhaleStates.Instance smi)
@@ -12,7 +12,15 @@ public class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instance
 			this.targetCell.Set(smi.monitor.targetCell, smi, false);
 		});
 		this.goingtoeat.MoveTo((InhaleStates.Instance smi) => this.targetCell.Get(smi), this.inhaling, null, false).ToggleMainStatusItem(new Func<InhaleStates.Instance, StatusItem>(InhaleStates.GetMovingStatusItem), null);
-		this.inhaling.DefaultState(this.inhaling.inhale).ToggleStatusItem(CREATURES.STATUSITEMS.INHALING.NAME, CREATURES.STATUSITEMS.INHALING.TOOLTIP, "", StatusItem.IconType.Info, NotificationType.Neutral, false, default(HashedString), 129022, null, null, Db.Get().StatusItemCategories.Main);
+		GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State state = this.inhaling.DefaultState(this.inhaling.inhale);
+		string name = CREATURES.STATUSITEMS.INHALING.NAME;
+		string tooltip = CREATURES.STATUSITEMS.INHALING.TOOLTIP;
+		string icon = "";
+		StatusItem.IconType icon_type = StatusItem.IconType.Info;
+		NotificationType notification_type = NotificationType.Neutral;
+		bool allow_multiples = false;
+		StatusItemCategory main = Db.Get().StatusItemCategories.Main;
+		state.ToggleStatusItem(name, tooltip, icon, icon_type, notification_type, allow_multiples, default(HashedString), 129022, null, null, main);
 		this.inhaling.inhale.PlayAnim((InhaleStates.Instance smi) => smi.def.inhaleAnimPre, KAnim.PlayMode.Once).QueueAnim((InhaleStates.Instance smi) => smi.def.inhaleAnimLoop, true, null).Enter("ComputeInhaleAmount", delegate(InhaleStates.Instance smi)
 		{
 			smi.ComputeInhaleAmounts();
@@ -31,7 +39,7 @@ public class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instance
 		this.behaviourcomplete.PlayAnim("idle_loop", KAnim.PlayMode.Loop).BehaviourComplete((InhaleStates.Instance smi) => smi.def.behaviourTag, false);
 	}
 
-	private static StatusItem GetMovingStatusItem(InhaleStates.Instance smi)
+		private static StatusItem GetMovingStatusItem(InhaleStates.Instance smi)
 	{
 		if (smi.def.useStorage)
 		{
@@ -40,7 +48,7 @@ public class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instance
 		return Db.Get().CreatureStatusItems.LookingForFood;
 	}
 
-	private static bool IsFull(InhaleStates.Instance smi)
+		private static bool IsFull(InhaleStates.Instance smi)
 	{
 		if (smi.def.useStorage)
 		{
@@ -60,44 +68,44 @@ public class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instance
 		return false;
 	}
 
-	public GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State goingtoeat;
+		public GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State goingtoeat;
 
-	public InhaleStates.InhalingStates inhaling;
+		public InhaleStates.InhalingStates inhaling;
 
-	public GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State behaviourcomplete;
+		public GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State behaviourcomplete;
 
-	public StateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.IntParameter targetCell;
+		public StateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.IntParameter targetCell;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public string inhaleSound;
+				public string inhaleSound;
 
-		public float inhaleTime = 3f;
+				public float inhaleTime = 3f;
 
-		public Tag behaviourTag = GameTags.Creatures.WantsToEat;
+				public Tag behaviourTag = GameTags.Creatures.WantsToEat;
 
-		public bool useStorage;
+				public bool useStorage;
 
-		public string inhaleAnimPre = "inhale_pre";
+				public string inhaleAnimPre = "inhale_pre";
 
-		public string inhaleAnimLoop = "inhale_loop";
+				public string inhaleAnimLoop = "inhale_loop";
 
-		public string inhaleAnimPst = "inhale_pst";
+				public string inhaleAnimPst = "inhale_pst";
 
-		public bool alwaysPlayPstAnim;
+				public bool alwaysPlayPstAnim;
 
-		public StatusItem storageStatusItem = Db.Get().CreatureStatusItems.LookingForGas;
+				public StatusItem storageStatusItem = Db.Get().CreatureStatusItems.LookingForGas;
 	}
 
-	public new class Instance : GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.GameInstance
+		public new class Instance : GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.GameInstance
 	{
-		public Instance(Chore<InhaleStates.Instance> chore, InhaleStates.Def def) : base(chore, def)
+				public Instance(Chore<InhaleStates.Instance> chore, InhaleStates.Def def) : base(chore, def)
 		{
 			chore.AddPrecondition(ChorePreconditions.instance.CheckBehaviourPrecondition, def.behaviourTag);
 			this.inhaleSound = GlobalAssets.GetSound(def.inhaleSound, false);
 		}
 
-		public void StartInhaleSound()
+				public void StartInhaleSound()
 		{
 			LoopingSounds component = base.GetComponent<LoopingSounds>();
 			if (component != null && base.smi.inhaleSound != null)
@@ -106,7 +114,7 @@ public class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instance
 			}
 		}
 
-		public void StopInhaleSound()
+				public void StopInhaleSound()
 		{
 			LoopingSounds component = base.GetComponent<LoopingSounds>();
 			if (component != null)
@@ -115,7 +123,7 @@ public class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instance
 			}
 		}
 
-		public void ComputeInhaleAmounts()
+				public void ComputeInhaleAmounts()
 		{
 			float num = base.def.inhaleTime;
 			this.inhaleTime = num;
@@ -143,25 +151,25 @@ public class InhaleStates : GameStateMachine<InhaleStates, InhaleStates.Instance
 			}
 		}
 
-		public string inhaleSound;
+				public string inhaleSound;
 
-		public float inhaleTime;
+				public float inhaleTime;
 
-		public float consumptionMult;
+				public float consumptionMult;
 
-		[MySmiGet]
+				[MySmiGet]
 		public GasAndLiquidConsumerMonitor.Instance monitor;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		public Storage storage;
 	}
 
-	public class InhalingStates : GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State
+		public class InhalingStates : GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State
 	{
-		public GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State inhale;
+				public GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State inhale;
 
-		public GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State pst;
+				public GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State pst;
 
-		public GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State full;
+				public GameStateMachine<InhaleStates, InhaleStates.Instance, IStateMachineTarget, InhaleStates.Def>.State full;
 	}
 }

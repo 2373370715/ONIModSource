@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using STRINGS;
+using TUNING;
 using UnityEngine;
 
 namespace Klei.AI
 {
-	public class SlimeSickness : Sickness
+		public class SlimeSickness : Sickness
 	{
-		public SlimeSickness() : base("SlimeSickness", Sickness.SicknessType.Pathogen, Sickness.Severity.Minor, 0.00025f, new List<Sickness.InfectionVector>
+				public SlimeSickness() : base("SlimeSickness", Sickness.SicknessType.Pathogen, Sickness.Severity.Minor, 0.00025f, new List<Sickness.InfectionVector>
 		{
 			Sickness.InfectionVector.Inhalation
 		}, 2220f, "SlimeSicknessRecovery")
@@ -15,7 +16,7 @@ namespace Klei.AI
 			base.AddSicknessComponent(new CommonSickEffectSickness());
 			base.AddSicknessComponent(new AttributeModifierSickness(new AttributeModifier[]
 			{
-				new AttributeModifier("BreathDelta", -1.1363636f, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME, false, false, true),
+				new AttributeModifier("BreathDelta", DUPLICANTSTATS.STANDARD.Breath.BREATH_RATE * -1.25f, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME, false, false, true),
 				new AttributeModifier("Athletics", -3f, DUPLICANTS.DISEASES.SLIMESICKNESS.NAME, false, false, true)
 			}));
 			base.AddSicknessComponent(new AnimatedSickness(new HashedString[]
@@ -26,31 +27,31 @@ namespace Klei.AI
 			base.AddSicknessComponent(new SlimeSickness.SlimeLungComponent());
 		}
 
-		private const float COUGH_FREQUENCY = 20f;
+				private const float COUGH_FREQUENCY = 20f;
 
-		private const float COUGH_MASS = 0.1f;
+				private const float COUGH_MASS = 0.1f;
 
-		private const int DISEASE_AMOUNT = 1000;
+				private const int DISEASE_AMOUNT = 1000;
 
-		public const string ID = "SlimeSickness";
+				public const string ID = "SlimeSickness";
 
-		public const string RECOVERY_ID = "SlimeSicknessRecovery";
+				public const string RECOVERY_ID = "SlimeSicknessRecovery";
 
-		public class SlimeLungComponent : Sickness.SicknessComponent
+				public class SlimeLungComponent : Sickness.SicknessComponent
 		{
-			public override object OnInfect(GameObject go, SicknessInstance diseaseInstance)
+						public override object OnInfect(GameObject go, SicknessInstance diseaseInstance)
 			{
 				SlimeSickness.SlimeLungComponent.StatesInstance statesInstance = new SlimeSickness.SlimeLungComponent.StatesInstance(diseaseInstance);
 				statesInstance.StartSM();
 				return statesInstance;
 			}
 
-			public override void OnCure(GameObject go, object instance_data)
+						public override void OnCure(GameObject go, object instance_data)
 			{
 				((SlimeSickness.SlimeLungComponent.StatesInstance)instance_data).StopSM("Cured");
 			}
 
-			public override List<Descriptor> GetSymptoms()
+						public override List<Descriptor> GetSymptoms()
 			{
 				return new List<Descriptor>
 				{
@@ -58,13 +59,13 @@ namespace Klei.AI
 				};
 			}
 
-			public class StatesInstance : GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.GameInstance
+						public class StatesInstance : GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.GameInstance
 			{
-				public StatesInstance(SicknessInstance master) : base(master)
+								public StatesInstance(SicknessInstance master) : base(master)
 				{
 				}
 
-				public Reactable GetReactable()
+								public Reactable GetReactable()
 				{
 					Emote cough = Db.Get().Emotes.Minion.Cough;
 					SelfEmoteReactable selfEmoteReactable = new SelfEmoteReactable(base.master.gameObject, "SlimeLungCough", Db.Get().ChoreTypes.Cough, 0f, 0f, float.PositiveInfinity, 0f);
@@ -73,7 +74,7 @@ namespace Klei.AI
 					return selfEmoteReactable;
 				}
 
-				private void ProduceSlime(GameObject cougher)
+								private void ProduceSlime(GameObject cougher)
 				{
 					AmountInstance amountInstance = Db.Get().Amounts.Temperature.Lookup(cougher);
 					int gameCell = Grid.PosToCell(cougher);
@@ -90,18 +91,18 @@ namespace Klei.AI
 					PopFXManager.Instance.SpawnFX(PopFXManager.Instance.sprite_Resource, string.Format(DUPLICANTS.DISEASES.ADDED_POPFX, base.master.modifier.Name, 1000), cougher.transform, 1.5f, false);
 				}
 
-				private void FinishedCoughing(GameObject cougher)
+								private void FinishedCoughing(GameObject cougher)
 				{
 					this.ProduceSlime(cougher);
 					base.sm.coughFinished.Trigger(this);
 				}
 
-				public float lastCoughTime;
+								public float lastCoughTime;
 			}
 
-			public class States : GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance>
+						public class States : GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance>
 			{
-				public override void InitializeStates(out StateMachine.BaseState default_state)
+								public override void InitializeStates(out StateMachine.BaseState default_state)
 				{
 					default_state = this.breathing;
 					this.breathing.DefaultState(this.breathing.normal).TagTransition(GameTags.NoOxygen, this.notbreathing, false);
@@ -125,17 +126,17 @@ namespace Klei.AI
 					}, this.breathing, true);
 				}
 
-				public StateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.Signal coughFinished;
+								public StateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.Signal coughFinished;
 
-				public SlimeSickness.SlimeLungComponent.States.BreathingStates breathing;
+								public SlimeSickness.SlimeLungComponent.States.BreathingStates breathing;
 
-				public GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.State notbreathing;
+								public GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.State notbreathing;
 
-				public class BreathingStates : GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.State
+								public class BreathingStates : GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.State
 				{
-					public GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.State normal;
+										public GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.State normal;
 
-					public GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.State cough;
+										public GameStateMachine<SlimeSickness.SlimeLungComponent.States, SlimeSickness.SlimeLungComponent.StatesInstance, SicknessInstance, object>.State cough;
 				}
 			}
 		}

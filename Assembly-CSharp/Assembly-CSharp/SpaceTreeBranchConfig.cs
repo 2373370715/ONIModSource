@@ -7,23 +7,30 @@ using UnityEngine;
 
 public class SpaceTreeBranchConfig : IEntityConfig
 {
-	public string[] GetDlcIds()
+		public string[] GetDlcIds()
 	{
 		return DlcManager.AVAILABLE_DLC_2;
 	}
 
-	public GameObject CreatePrefab()
+		public GameObject CreatePrefab()
 	{
 		string id = "SpaceTreeBranch";
 		string name = STRINGS.CREATURES.SPECIES.SPACETREE.NAME;
 		string desc = STRINGS.CREATURES.SPECIES.SPACETREE.DESC;
 		float mass = 8f;
 		EffectorValues tier = DECOR.BONUS.TIER1;
-		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, Assets.GetAnim("syrup_tree_kanim"), "idle_empty", Grid.SceneLayer.BuildingFront, 1, 1, tier, default(EffectorValues), SimHashes.Creature, new List<Tag>
+		KAnimFile anim = Assets.GetAnim("syrup_tree_kanim");
+		string initialAnim = "idle_empty";
+		Grid.SceneLayer sceneLayer = Grid.SceneLayer.BuildingFront;
+		int width = 1;
+		int height = 1;
+		EffectorValues decor = tier;
+		List<Tag> additionalTags = new List<Tag>
 		{
 			GameTags.HideFromSpawnTool,
 			GameTags.PlantBranch
-		}, 255f);
+		};
+		GameObject gameObject = EntityTemplates.CreatePlacedEntity(id, name, desc, mass, anim, initialAnim, sceneLayer, width, height, decor, default(EffectorValues), SimHashes.Creature, additionalTags, 255f);
 		string text = "SpaceTreeBranchOriginal";
 		string text2 = STRINGS.CREATURES.SPECIES.SPACETREE.NAME;
 		EntityTemplates.ExtendEntityToBasicPlant(gameObject, 173.15f, 198.15f, 258.15f, 293.15f, null, false, 0f, 0.15f, null, true, true, false, true, 12000f, 0f, 12200f, text, text2);
@@ -63,7 +70,7 @@ public class SpaceTreeBranchConfig : IEntityConfig
 		return gameObject;
 	}
 
-	public void AdjustAnimation(PlantBranchGrower.Instance trunk, PlantBranch.Instance branch)
+		public void AdjustAnimation(PlantBranchGrower.Instance trunk, PlantBranch.Instance branch)
 	{
 		int base_cell = Grid.PosToCell(trunk);
 		int offset_cell = Grid.PosToCell(branch);
@@ -90,17 +97,17 @@ public class SpaceTreeBranchConfig : IEntityConfig
 		}));
 	}
 
-	public void OnPrefabInit(GameObject inst)
+		public void OnPrefabInit(GameObject inst)
 	{
 		inst.AddOrGet<Harvestable>().readyForHarvestStatusItem = Db.Get().CreatureStatusItems.ReadyForHarvest_Branch;
 		inst.AddOrGet<HarvestDesignatable>().iconOffset = new Vector2(0f, Grid.CellSizeInMeters * 0.5f);
 	}
 
-	public void OnSpawn(GameObject inst)
+		public void OnSpawn(GameObject inst)
 	{
 	}
 
-	// Note: this type is marked as 'beforefieldinit'.
+		// Note: this type is marked as 'beforefieldinit'.
 	static SpaceTreeBranchConfig()
 	{
 		Dictionary<CellOffset, string> dictionary = new Dictionary<CellOffset, string>();
@@ -279,9 +286,9 @@ public class SpaceTreeBranchConfig : IEntityConfig
 		SpaceTreeBranchConfig.animOffset = dictionary3;
 	}
 
-	public const string ID = "SpaceTreeBranch";
+		public const string ID = "SpaceTreeBranch";
 
-	public static string[] BRANCH_NAMES = new string[]
+		public static string[] BRANCH_NAMES = new string[]
 	{
 		"<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_l\">",
 		"<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_tl\">",
@@ -290,13 +297,13 @@ public class SpaceTreeBranchConfig : IEntityConfig
 		"<sprite=\"oni_sprite_assets\" name=\"oni_sprite_assets_syrup_tree_r\">"
 	};
 
-	public const float GROWTH_DURATION = 2700f;
+		public const float GROWTH_DURATION = 2700f;
 
-	public const int WOOD_AMOUNT = 75;
+		public const int WOOD_AMOUNT = 75;
 
-	private static Dictionary<CellOffset, string> entombDefenseAnimNames;
+		private static Dictionary<CellOffset, string> entombDefenseAnimNames;
 
-	private static Dictionary<CellOffset, SpaceTreeBranch.AnimSet> animationSets;
+		private static Dictionary<CellOffset, SpaceTreeBranch.AnimSet> animationSets;
 
-	private static Dictionary<CellOffset, Vector3> animOffset;
+		private static Dictionary<CellOffset, Vector3> animOffset;
 }

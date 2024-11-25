@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FishDeliveryPointConfig : IBuildingConfig
 {
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef("FishDeliveryPoint", 1, 3, "fishrelocator_kanim", 10, 10f, BUILDINGS.CONSTRUCTION_MASS_KG.TIER1, MATERIALS.RAW_METALS, 1600f, BuildLocationRule.Anywhere, BUILDINGS.DECOR.PENALTY.TIER2, NOISE_POLLUTION.NOISY.TIER0, 0.2f);
 		buildingDef.AudioCategory = "Metal";
@@ -15,7 +15,7 @@ public class FishDeliveryPointConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.CreatureRelocator, false);
 		Storage storage = go.AddOrGet<Storage>();
@@ -48,7 +48,7 @@ public class FishDeliveryPointConfig : IBuildingConfig
 		go.AddOrGet<TreeFilterable>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		go.AddOrGetDef<MakeBaseSolid.Def>().solidOffsets = new CellOffset[]
 		{
@@ -56,5 +56,5 @@ public class FishDeliveryPointConfig : IBuildingConfig
 		};
 	}
 
-	public const string ID = "FishDeliveryPoint";
+		public const string ID = "FishDeliveryPoint";
 }

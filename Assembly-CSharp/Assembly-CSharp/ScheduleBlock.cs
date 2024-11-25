@@ -5,18 +5,19 @@ using KSerialization;
 [Serializable]
 public class ScheduleBlock
 {
-			public string GroupId
+			public List<ScheduleBlockType> allowed_types
 	{
 		get
 		{
-			if (this._groupId == null)
-			{
-				ScheduleGroup scheduleGroup = Db.Get().ScheduleGroups.FindGroupForScheduleTypes(this.allowed_types);
-				if (scheduleGroup != null)
-				{
-					this._groupId = scheduleGroup.Id;
-				}
-			}
+			Debug.Assert(!string.IsNullOrEmpty(this._groupId));
+			return Db.Get().ScheduleGroups.Get(this._groupId).allowedTypes;
+		}
+	}
+
+				public string GroupId
+	{
+		get
+		{
 			return this._groupId;
 		}
 		set
@@ -25,14 +26,13 @@ public class ScheduleBlock
 		}
 	}
 
-	public ScheduleBlock(string name, List<ScheduleBlockType> allowed_types, string groupId)
+		public ScheduleBlock(string name, string groupId)
 	{
 		this.name = name;
-		this.allowed_types = allowed_types;
 		this._groupId = groupId;
 	}
 
-	public bool IsAllowed(ScheduleBlockType type)
+		public bool IsAllowed(ScheduleBlockType type)
 	{
 		if (this.allowed_types != null)
 		{
@@ -48,12 +48,9 @@ public class ScheduleBlock
 		return false;
 	}
 
-	[Serialize]
+		[Serialize]
 	public string name;
 
-	[Serialize]
-	public List<ScheduleBlockType> allowed_types;
-
-	[Serialize]
+		[Serialize]
 	private string _groupId;
 }

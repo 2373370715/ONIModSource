@@ -15,7 +15,7 @@ using UnityEngine;
 
 public static class Localization
 {
-		public static TMP_FontAsset FontAsset
+			public static TMP_FontAsset FontAsset
 	{
 		get
 		{
@@ -23,7 +23,7 @@ public static class Localization
 		}
 	}
 
-		public static bool IsRightToLeft
+			public static bool IsRightToLeft
 	{
 		get
 		{
@@ -31,14 +31,14 @@ public static class Localization
 		}
 	}
 
-	private static IEnumerable<Type> CollectLocStringTreeRoots(string locstrings_namespace, Assembly assembly)
+		private static IEnumerable<Type> CollectLocStringTreeRoots(string locstrings_namespace, Assembly assembly)
 	{
 		return from type in assembly.GetTypes()
 		where type.IsClass && type.Namespace == locstrings_namespace && !type.IsNested
 		select type;
 	}
 
-	private static Dictionary<string, object> MakeRuntimeLocStringTree(Type locstring_tree_root)
+		private static Dictionary<string, object> MakeRuntimeLocStringTree(Type locstring_tree_root)
 	{
 		Dictionary<string, object> dictionary = new Dictionary<string, object>();
 		foreach (FieldInfo fieldInfo in locstring_tree_root.GetFields())
@@ -74,7 +74,7 @@ public static class Localization
 		return dictionary;
 	}
 
-	private static void WriteStringsTemplate(string path, StreamWriter writer, Dictionary<string, object> runtime_locstring_tree)
+		private static void WriteStringsTemplate(string path, StreamWriter writer, Dictionary<string, object> runtime_locstring_tree)
 	{
 		List<string> list = new List<string>(runtime_locstring_tree.Keys);
 		list.Sort();
@@ -105,7 +105,7 @@ public static class Localization
 		}
 	}
 
-	public static void GenerateStringsTemplate(string locstrings_namespace, Assembly assembly, string output_filename, Dictionary<string, object> current_runtime_locstring_forest)
+		public static void GenerateStringsTemplate(string locstrings_namespace, Assembly assembly, string output_filename, Dictionary<string, object> current_runtime_locstring_forest)
 	{
 		Dictionary<string, object> dictionary = new Dictionary<string, object>();
 		foreach (Type type in Localization.CollectLocStringTreeRoots(locstrings_namespace, assembly))
@@ -135,7 +135,7 @@ public static class Localization
 		});
 	}
 
-	public static void GenerateStringsTemplate(Type locstring_tree_root, string output_folder)
+		public static void GenerateStringsTemplate(Type locstring_tree_root, string output_folder)
 	{
 		output_folder = FileSystem.Normalize(output_folder);
 		if (!FileUtil.CreateDirectory(output_folder, 5))
@@ -145,7 +145,7 @@ public static class Localization
 		Localization.GenerateStringsTemplate(locstring_tree_root.Namespace, Assembly.GetAssembly(locstring_tree_root), FileSystem.Normalize(Path.Combine(output_folder, string.Format("{0}_template.pot", locstring_tree_root.Namespace.ToLower()))), null);
 	}
 
-	public static void Initialize()
+		public static void Initialize()
 	{
 		DebugUtil.LogArgs(new object[]
 		{
@@ -214,7 +214,7 @@ public static class Localization
 		}
 	}
 
-	public static void VerifyTranslationModSubscription(GameObject context)
+		public static void VerifyTranslationModSubscription(GameObject context)
 	{
 		if (Localization.GetSelectedLanguageType() != Localization.SelectedLanguageType.UGC)
 		{
@@ -253,7 +253,7 @@ public static class Localization
 		component2.PopupConfirmDialog(text, new System.Action(App.instance.Restart), null, null, null, title_text, confirm_text, null, null);
 	}
 
-	public static void LoadPreinstalledTranslation(string code)
+		public static void LoadPreinstalledTranslation(string code)
 	{
 		if (!string.IsNullOrEmpty(code) && code != Localization.DEFAULT_LANGUAGE_CODE)
 		{
@@ -270,7 +270,7 @@ public static class Localization
 		}
 	}
 
-	public static bool LoadLocalTranslationFile(Localization.SelectedLanguageType source, string path)
+		public static bool LoadLocalTranslationFile(Localization.SelectedLanguageType source, string path)
 	{
 		if (!File.Exists(path))
 		{
@@ -286,7 +286,7 @@ public static class Localization
 		return flag;
 	}
 
-	private static bool LoadTranslationFromLines(string[] lines)
+		private static bool LoadTranslationFromLines(string[] lines)
 	{
 		if (lines == null || lines.Length == 0)
 		{
@@ -307,7 +307,7 @@ public static class Localization
 		return flag;
 	}
 
-	public static bool LoadTranslation(string[] lines, bool isTemplate = false)
+		public static bool LoadTranslation(string[] lines, bool isTemplate = false)
 	{
 		bool result;
 		try
@@ -326,12 +326,12 @@ public static class Localization
 		return result;
 	}
 
-	public static Dictionary<string, string> LoadStringsFile(string path, bool isTemplate)
+		public static Dictionary<string, string> LoadStringsFile(string path, bool isTemplate)
 	{
 		return Localization.ExtractTranslatedStrings(File.ReadAllLines(path, Encoding.UTF8), isTemplate);
 	}
 
-	public static Dictionary<string, string> ExtractTranslatedStrings(string[] lines, bool isTemplate = false)
+		public static Dictionary<string, string> ExtractTranslatedStrings(string[] lines, bool isTemplate = false)
 	{
 		Dictionary<string, string> dictionary = new Dictionary<string, string>();
 		Localization.Entry entry = default(Localization.Entry);
@@ -365,7 +365,7 @@ public static class Localization
 		return dictionary;
 	}
 
-	private static string FixupString(string result)
+		private static string FixupString(string result)
 	{
 		result = result.Replace("\\n", "\n");
 		result = result.Replace("\\\"", "\"");
@@ -375,7 +375,7 @@ public static class Localization
 		return result;
 	}
 
-	private static string GetParameter(string key, int idx, string[] all_lines)
+		private static string GetParameter(string key, int idx, string[] all_lines)
 	{
 		if (!all_lines[idx].StartsWith(key))
 		{
@@ -408,7 +408,7 @@ public static class Localization
 		return text3;
 	}
 
-	private static void AddAssembly(string locstrings_namespace, Assembly assembly)
+		private static void AddAssembly(string locstrings_namespace, Assembly assembly)
 	{
 		List<Assembly> list;
 		if (!Localization.translatable_assemblies.TryGetValue(locstrings_namespace, out list))
@@ -419,12 +419,12 @@ public static class Localization
 		list.Add(assembly);
 	}
 
-	public static void AddAssembly(Assembly assembly)
+		public static void AddAssembly(Assembly assembly)
 	{
 		Localization.AddAssembly("STRINGS", assembly);
 	}
 
-	public static void RegisterForTranslation(Type locstring_tree_root)
+		public static void RegisterForTranslation(Type locstring_tree_root)
 	{
 		Assembly assembly = Assembly.GetAssembly(locstring_tree_root);
 		Localization.AddAssembly(locstring_tree_root.Namespace, assembly);
@@ -435,7 +435,7 @@ public static class Localization
 		}
 	}
 
-	public static void OverloadStrings(Dictionary<string, string> translated_strings)
+		public static void OverloadStrings(Dictionary<string, string> translated_strings)
 	{
 		string text = "";
 		string text2 = "";
@@ -474,7 +474,7 @@ public static class Localization
 		}
 	}
 
-	public static void OverloadStrings(Dictionary<string, string> translated_strings, string path, Type locstring_hierarchy, ref string parameter_errors, ref string link_errors, ref string link_count_errors)
+		public static void OverloadStrings(Dictionary<string, string> translated_strings, string path, Type locstring_hierarchy, ref string parameter_errors, ref string link_errors, ref string link_count_errors)
 	{
 		foreach (FieldInfo fieldInfo in locstring_hierarchy.GetFields())
 		{
@@ -512,28 +512,28 @@ public static class Localization
 		}
 	}
 
-	public static string GetDefaultLocalizationFilePath()
+		public static string GetDefaultLocalizationFilePath()
 	{
 		return Path.Combine(Application.streamingAssetsPath, "strings/strings_template.pot");
 	}
 
-	public static string GetModLocalizationFilePath()
+		public static string GetModLocalizationFilePath()
 	{
 		return Path.Combine(Application.streamingAssetsPath, "strings/strings.po");
 	}
 
-	public static string GetPreinstalledLocalizationFilePath(string code)
+		public static string GetPreinstalledLocalizationFilePath(string code)
 	{
 		string path = "strings/strings_preinstalled_" + code + ".po";
 		return Path.Combine(Application.streamingAssetsPath, path);
 	}
 
-	public static string GetPreinstalledLocalizationTitle(string code)
+		public static string GetPreinstalledLocalizationTitle(string code)
 	{
 		return Strings.Get("STRINGS.UI.FRONTEND.TRANSLATIONS_SCREEN.PREINSTALLED_LANGUAGES." + code.ToUpper());
 	}
 
-	public static Texture2D GetPreinstalledLocalizationImage(string code)
+		public static Texture2D GetPreinstalledLocalizationImage(string code)
 	{
 		string path = Path.Combine(Application.streamingAssetsPath, "strings/preinstalled_icon_" + code + ".png");
 		if (File.Exists(path))
@@ -546,7 +546,7 @@ public static class Localization
 		return null;
 	}
 
-	public static void SetLocale(Localization.Locale locale)
+		public static void SetLocale(Localization.Locale locale)
 	{
 		Localization.sLocale = locale;
 		DebugUtil.LogArgs(new object[]
@@ -556,12 +556,12 @@ public static class Localization
 		});
 	}
 
-	public static Localization.Locale GetLocale()
+		public static Localization.Locale GetLocale()
 	{
 		return Localization.sLocale;
 	}
 
-	private static string GetFontParam(string line)
+		private static string GetFontParam(string line)
 	{
 		string text = null;
 		if (line.StartsWith("\"Font:"))
@@ -573,7 +573,7 @@ public static class Localization
 		return text;
 	}
 
-	public static string GetCurrentLanguageCode()
+		public static string GetCurrentLanguageCode()
 	{
 		switch (Localization.GetSelectedLanguageType())
 		{
@@ -588,12 +588,12 @@ public static class Localization
 		}
 	}
 
-	public static Localization.SelectedLanguageType GetSelectedLanguageType()
+		public static Localization.SelectedLanguageType GetSelectedLanguageType()
 	{
 		return (Localization.SelectedLanguageType)Enum.Parse(typeof(Localization.SelectedLanguageType), KPlayerPrefs.GetString(Localization.SELECTED_LANGUAGE_TYPE_KEY, Localization.SelectedLanguageType.None.ToString()), true);
 	}
 
-	private static string GetLanguageCode(string line)
+		private static string GetLanguageCode(string line)
 	{
 		string text = null;
 		if (line.StartsWith("\"Language:"))
@@ -605,7 +605,7 @@ public static class Localization
 		return text;
 	}
 
-	private static Localization.Locale GetLocaleForCode(string code)
+		private static Localization.Locale GetLocaleForCode(string code)
 	{
 		Localization.Locale result = null;
 		foreach (Localization.Locale locale in Localization.Locales)
@@ -619,7 +619,7 @@ public static class Localization
 		return result;
 	}
 
-	public static Localization.Locale GetLocale(string[] lines)
+		public static Localization.Locale GetLocale(string[] lines)
 	{
 		Localization.Locale locale = null;
 		string text = null;
@@ -652,12 +652,12 @@ public static class Localization
 		return locale;
 	}
 
-	private static string GetFontName(string filename)
+		private static string GetFontName(string filename)
 	{
 		return Localization.GetFontName(File.ReadAllLines(filename, Encoding.UTF8));
 	}
 
-	public static Localization.Locale GetDefaultLocale()
+		public static Localization.Locale GetDefaultLocale()
 	{
 		Localization.Locale result = null;
 		foreach (Localization.Locale locale in Localization.Locales)
@@ -671,7 +671,7 @@ public static class Localization
 		return result;
 	}
 
-	public static string GetDefaultFontName()
+		public static string GetDefaultFontName()
 	{
 		string result = null;
 		foreach (Localization.Locale locale in Localization.Locales)
@@ -685,7 +685,7 @@ public static class Localization
 		return result;
 	}
 
-	public static string ValidateFontName(string fontName)
+		public static string ValidateFontName(string fontName)
 	{
 		foreach (Localization.Locale locale in Localization.Locales)
 		{
@@ -697,7 +697,7 @@ public static class Localization
 		return null;
 	}
 
-	public static string GetFontName(string[] lines)
+		public static string GetFontName(string[] lines)
 	{
 		string text = null;
 		if (lines != null)
@@ -732,12 +732,12 @@ public static class Localization
 		return text;
 	}
 
-	public static void SwapToLocalizedFont()
+		public static void SwapToLocalizedFont()
 	{
 		Localization.SwapToLocalizedFont(Localization.currentFontName);
 	}
 
-	public static bool SwapToLocalizedFont(string fontname)
+		public static bool SwapToLocalizedFont(string fontname)
 	{
 		if (string.IsNullOrEmpty(fontname))
 		{
@@ -762,7 +762,7 @@ public static class Localization
 		return true;
 	}
 
-	private static bool SetFont(Type target_type, object target, TMP_FontAsset font, bool is_right_to_left, HashSet<MemberInfo> excluded_members)
+		private static bool SetFont(Type target_type, object target, TMP_FontAsset font, bool is_right_to_left, HashSet<MemberInfo> excluded_members)
 	{
 		if (target_type == null || target == null || font == null)
 		{
@@ -796,12 +796,12 @@ public static class Localization
 		return true;
 	}
 
-	public static bool SetFont<T>(T target, TMP_FontAsset font, bool is_right_to_left, HashSet<MemberInfo> excluded_members)
+		public static bool SetFont<T>(T target, TMP_FontAsset font, bool is_right_to_left, HashSet<MemberInfo> excluded_members)
 	{
 		return Localization.SetFont(typeof(T), target, font, is_right_to_left, excluded_members);
 	}
 
-	public static TMP_FontAsset GetFont(string fontname)
+		public static TMP_FontAsset GetFont(string fontname)
 	{
 		foreach (TMP_FontAsset tmp_FontAsset in Resources.FindObjectsOfTypeAll<TMP_FontAsset>())
 		{
@@ -813,7 +813,7 @@ public static class Localization
 		return null;
 	}
 
-	private static bool HasSameOrLessTokenCount(string english_string, string translated_string, string token)
+		private static bool HasSameOrLessTokenCount(string english_string, string translated_string, string token)
 	{
 		int num = english_string.Split(new string[]
 		{
@@ -826,12 +826,12 @@ public static class Localization
 		return num >= num2;
 	}
 
-	private static bool HasSameOrLessLinkCountAsEnglish(string english_string, string translated_string)
+		private static bool HasSameOrLessLinkCountAsEnglish(string english_string, string translated_string)
 	{
 		return Localization.HasSameOrLessTokenCount(english_string, translated_string, "<link") && Localization.HasSameOrLessTokenCount(english_string, translated_string, "</link");
 	}
 
-	private static bool HasMatchingLinkTags(string str, int idx = 0)
+		private static bool HasMatchingLinkTags(string str, int idx = 0)
 	{
 		int num = str.IndexOf("<link", idx);
 		int num2 = str.IndexOf("</link", idx);
@@ -855,7 +855,7 @@ public static class Localization
 		return (num < 0 || num3 == -1 || num3 >= num2) && Localization.HasMatchingLinkTags(str, num2 + 1);
 	}
 
-	private static bool AreParametersPreserved(string old_string, string new_string)
+		private static bool AreParametersPreserved(string old_string, string new_string)
 	{
 		MatchCollection matchCollection = Regex.Matches(old_string, "({.[^}]*?})(?!.*\\1)");
 		MatchCollection matchCollection2 = Regex.Matches(new_string, "({.[^}]*?})(?!.*\\1)");
@@ -890,22 +890,22 @@ public static class Localization
 		return result;
 	}
 
-	public static bool HasDirtyWords(string str)
+		public static bool HasDirtyWords(string str)
 	{
 		return Localization.FilterDirtyWords(str) != str;
 	}
 
-	public static string FilterDirtyWords(string str)
+		public static string FilterDirtyWords(string str)
 	{
 		return DistributionPlatform.Inst.ApplyWordFilter(str);
 	}
 
-	public static string GetFileDateFormat(int format_idx)
+		public static string GetFileDateFormat(int format_idx)
 	{
 		return "{" + format_idx.ToString() + ":dd / MMM / yyyy}";
 	}
 
-	public static void ClearLanguage()
+		public static void ClearLanguage()
 	{
 		DebugUtil.LogArgs(new object[]
 		{
@@ -924,7 +924,7 @@ public static class Localization
 		LanguageOptionsScreen.CleanUpSavedLanguageMod();
 	}
 
-	private static string ReverseText(string source)
+		private static string ReverseText(string source)
 	{
 		char[] separator = new char[]
 		{
@@ -950,7 +950,7 @@ public static class Localization
 		return text;
 	}
 
-	public static string Fixup(string text)
+		public static string Fixup(string text)
 	{
 		if (Localization.sLocale != null && text != null && text != "" && Localization.sLocale.Lang == Localization.Language.Arabic)
 		{
@@ -959,9 +959,9 @@ public static class Localization
 		return text;
 	}
 
-	private static TMP_FontAsset sFontAsset = null;
+		private static TMP_FontAsset sFontAsset = null;
 
-	private static readonly List<Localization.Locale> Locales = new List<Localization.Locale>
+		private static readonly List<Localization.Locale> Locales = new List<Localization.Locale>
 	{
 		new Localization.Locale(Localization.Language.Chinese, Localization.Direction.LeftToRight, "zh", "NotoSansCJKsc-Regular"),
 		new Localization.Locale(Localization.Language.Japanese, Localization.Direction.LeftToRight, "ja", "NotoSansCJKjp-Regular"),
@@ -973,13 +973,13 @@ public static class Localization
 		new Localization.Locale(Localization.Language.Unspecified, Localization.Direction.LeftToRight, "", "RobotoCondensed-Regular")
 	};
 
-	private static Localization.Locale sLocale = null;
+		private static Localization.Locale sLocale = null;
 
-	private static string currentFontName = null;
+		private static string currentFontName = null;
 
-	public static string DEFAULT_LANGUAGE_CODE = "en";
+		public static string DEFAULT_LANGUAGE_CODE = "en";
 
-	public static readonly List<string> PreinstalledLanguages = new List<string>
+		public static readonly List<string> PreinstalledLanguages = new List<string>
 	{
 		Localization.DEFAULT_LANGUAGE_CODE,
 		"zh_klei",
@@ -987,39 +987,39 @@ public static class Localization
 		"ru_klei"
 	};
 
-	public static string SELECTED_LANGUAGE_TYPE_KEY = "SelectedLanguageType";
+		public static string SELECTED_LANGUAGE_TYPE_KEY = "SelectedLanguageType";
 
-	public static string SELECTED_LANGUAGE_CODE_KEY = "SelectedLanguageCode";
+		public static string SELECTED_LANGUAGE_CODE_KEY = "SelectedLanguageCode";
 
-	private static Dictionary<string, List<Assembly>> translatable_assemblies = new Dictionary<string, List<Assembly>>();
+		private static Dictionary<string, List<Assembly>> translatable_assemblies = new Dictionary<string, List<Assembly>>();
 
-	public const BindingFlags non_static_data_member_fields = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
+		public const BindingFlags non_static_data_member_fields = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;
 
-	private const string start_link_token = "<link";
+		private const string start_link_token = "<link";
 
-	private const string end_link_token = "</link";
+		private const string end_link_token = "</link";
 
-	public enum Language
+		public enum Language
 	{
-		Chinese,
-		Japanese,
-		Korean,
-		Russian,
-		Thai,
-		Arabic,
-		Hebrew,
-		Unspecified
+				Chinese,
+				Japanese,
+				Korean,
+				Russian,
+				Thai,
+				Arabic,
+				Hebrew,
+				Unspecified
 	}
 
-	public enum Direction
+		public enum Direction
 	{
-		LeftToRight,
-		RightToLeft
+				LeftToRight,
+				RightToLeft
 	}
 
-	public class Locale
+		public class Locale
 	{
-		public Locale(Localization.Locale other)
+				public Locale(Localization.Locale other)
 		{
 			this.mLanguage = other.mLanguage;
 			this.mDirection = other.mDirection;
@@ -1027,7 +1027,7 @@ public static class Localization
 			this.mFontName = other.mFontName;
 		}
 
-		public Locale(Localization.Language language, Localization.Direction direction, string code, string fontName)
+				public Locale(Localization.Language language, Localization.Direction direction, string code, string fontName)
 		{
 			this.mLanguage = language;
 			this.mDirection = direction;
@@ -1035,7 +1035,7 @@ public static class Localization
 			this.mFontName = fontName;
 		}
 
-				public Localization.Language Lang
+						public Localization.Language Lang
 		{
 			get
 			{
@@ -1043,12 +1043,12 @@ public static class Localization
 			}
 		}
 
-		public void SetCode(string code)
+				public void SetCode(string code)
 		{
 			this.mCode = code;
 		}
 
-				public string Code
+						public string Code
 		{
 			get
 			{
@@ -1056,7 +1056,7 @@ public static class Localization
 			}
 		}
 
-				public string FontName
+						public string FontName
 		{
 			get
 			{
@@ -1064,7 +1064,7 @@ public static class Localization
 			}
 		}
 
-				public bool IsRightToLeft
+						public bool IsRightToLeft
 		{
 			get
 			{
@@ -1072,17 +1072,17 @@ public static class Localization
 			}
 		}
 
-		public bool MatchesCode(string language_code)
+				public bool MatchesCode(string language_code)
 		{
 			return language_code.ToLower().Contains(this.mCode);
 		}
 
-		public bool MatchesFont(string fontname)
+				public bool MatchesFont(string fontname)
 		{
 			return fontname.ToLower() == this.mFontName.ToLower();
 		}
 
-		public override string ToString()
+				public override string ToString()
 		{
 			return string.Concat(new string[]
 			{
@@ -1096,18 +1096,18 @@ public static class Localization
 			});
 		}
 
-		private Localization.Language mLanguage;
+				private Localization.Language mLanguage;
 
-		private string mCode;
+				private string mCode;
 
-		private string mFontName;
+				private string mFontName;
 
-		private Localization.Direction mDirection;
+				private Localization.Direction mDirection;
 	}
 
-	private struct Entry
+		private struct Entry
 	{
-				public bool IsPopulated
+						public bool IsPopulated
 		{
 			get
 			{
@@ -1115,15 +1115,15 @@ public static class Localization
 			}
 		}
 
-		public string msgctxt;
+				public string msgctxt;
 
-		public string msgstr;
+				public string msgstr;
 	}
 
-	public enum SelectedLanguageType
+		public enum SelectedLanguageType
 	{
-		None,
-		Preinstalled,
-		UGC
+				None,
+				Preinstalled,
+				UGC
 	}
 }

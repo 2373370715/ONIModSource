@@ -3,7 +3,7 @@ using UnityEngine;
 
 public abstract class GameplayEventStateMachine<StateMachineType, StateMachineInstanceType, MasterType, SecondMasterType> : GameStateMachine<StateMachineType, StateMachineInstanceType, MasterType> where StateMachineType : GameplayEventStateMachine<StateMachineType, StateMachineInstanceType, MasterType, SecondMasterType> where StateMachineInstanceType : GameplayEventStateMachine<StateMachineType, StateMachineInstanceType, MasterType, SecondMasterType>.GameplayEventStateMachineInstance where MasterType : IStateMachineTarget where SecondMasterType : GameplayEvent<StateMachineInstanceType>
 {
-	public void MonitorStart(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, object>.TargetParameter target, StateMachineInstanceType smi)
+		public void MonitorStart(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, object>.TargetParameter target, StateMachineInstanceType smi)
 	{
 		GameObject gameObject = target.Get(smi);
 		if (gameObject != null)
@@ -12,7 +12,7 @@ public abstract class GameplayEventStateMachine<StateMachineType, StateMachineIn
 		}
 	}
 
-	public void MonitorChanged(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, object>.TargetParameter target, StateMachineInstanceType smi)
+		public void MonitorChanged(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, object>.TargetParameter target, StateMachineInstanceType smi)
 	{
 		GameObject gameObject = target.Get(smi);
 		if (gameObject != null)
@@ -21,7 +21,7 @@ public abstract class GameplayEventStateMachine<StateMachineType, StateMachineIn
 		}
 	}
 
-	public void MonitorStop(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, object>.TargetParameter target, StateMachineInstanceType smi)
+		public void MonitorStop(StateMachine<StateMachineType, StateMachineInstanceType, MasterType, object>.TargetParameter target, StateMachineInstanceType smi)
 	{
 		GameObject gameObject = target.Get(smi);
 		if (gameObject != null)
@@ -30,14 +30,14 @@ public abstract class GameplayEventStateMachine<StateMachineType, StateMachineIn
 		}
 	}
 
-	public virtual EventInfoData GenerateEventPopupData(StateMachineInstanceType smi)
+		public virtual EventInfoData GenerateEventPopupData(StateMachineInstanceType smi)
 	{
 		return null;
 	}
 
-	public class GameplayEventStateMachineInstance : GameStateMachine<StateMachineType, StateMachineInstanceType, MasterType, object>.GameInstance
+		public class GameplayEventStateMachineInstance : GameStateMachine<StateMachineType, StateMachineInstanceType, MasterType, object>.GameInstance
 	{
-		public GameplayEventStateMachineInstance(MasterType master, GameplayEventInstance eventInstance, SecondMasterType gameplayEvent) : base(master)
+				public GameplayEventStateMachineInstance(MasterType master, GameplayEventInstance eventInstance, SecondMasterType gameplayEvent) : base(master)
 		{
 			this.gameplayEvent = gameplayEvent;
 			this.eventInstance = eventInstance;
@@ -45,8 +45,8 @@ public abstract class GameplayEventStateMachine<StateMachineType, StateMachineIn
 			this.serializationSuffix = gameplayEvent.Id;
 		}
 
-		public GameplayEventInstance eventInstance;
+				public GameplayEventInstance eventInstance;
 
-		public SecondMasterType gameplayEvent;
+				public SecondMasterType gameplayEvent;
 	}
 }

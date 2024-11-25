@@ -9,12 +9,12 @@ using UnityEngine.UI;
 
 public class KleiPermitDioramaVis : KMonoBehaviour
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.Init();
 	}
 
-	private void Init()
+		private void Init()
 	{
 		if (this.initComplete)
 		{
@@ -28,7 +28,7 @@ public class KleiPermitDioramaVis : KMonoBehaviour
 		this.initComplete = true;
 	}
 
-	public void ConfigureWith(PermitResource permit)
+		public void ConfigureWith(PermitResource permit)
 	{
 		if (!this.initComplete)
 		{
@@ -52,7 +52,7 @@ public class KleiPermitDioramaVis : KMonoBehaviour
 		this.dlcImage.gameObject.SetActive(false);
 	}
 
-	private IKleiPermitDioramaVisTarget GetPermitVisTarget(PermitResource permit)
+		private IKleiPermitDioramaVisTarget GetPermitVisTarget(PermitResource permit)
 	{
 		KleiPermitDioramaVis.lastRenderedPermit = permit;
 		if (permit == null)
@@ -168,7 +168,7 @@ public class KleiPermitDioramaVis : KMonoBehaviour
 		}
 	}
 
-	public static Sprite GetDioramaBackground(PermitCategory permitCategory)
+		public static Sprite GetDioramaBackground(PermitCategory permitCategory)
 	{
 		switch (permitCategory)
 		{
@@ -195,7 +195,7 @@ public class KleiPermitDioramaVis : KMonoBehaviour
 		return null;
 	}
 
-	public static Sprite GetDioramaBackground(ClothingOutfitUtility.OutfitType outfitType)
+		public static Sprite GetDioramaBackground(ClothingOutfitUtility.OutfitType outfitType)
 	{
 		switch (outfitType)
 		{
@@ -210,60 +210,60 @@ public class KleiPermitDioramaVis : KMonoBehaviour
 		}
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static bool <GetPermitVisTarget>g__Has|21_0<T>(BuildingDef buildingDef) where T : Component
 	{
 		return !buildingDef.BuildingComplete.GetComponent<T>().IsNullOrDestroyed();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private Image dlcImage;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_Fallback fallbackVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_DupeEquipment equipmentVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_BuildingOnFloor buildingOnFloorVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_BuildingOnFloorBig buildingOnFloorBigVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_BuildingPresentationStand buildingOnWallVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_BuildingPresentationStand buildingOnCeilingVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_BuildingPresentationStand buildingInCeilingCornerVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_BuildingRocket buildingRocketVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_BuildingOnFloor buildingOnFloorBotanicalVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_BuildingHangingHook buildingHangingHookBotanicalVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_Wallpaper wallpaperVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_ArtablePainting artablePaintingVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_ArtableSculpture artableSculptureVis;
 
-	[SerializeField]
+		[SerializeField]
 	private KleiPermitDioramaVis_JoyResponseBalloon joyResponseBalloonVis;
 
-	private bool initComplete;
+		private bool initComplete;
 
-	private IReadOnlyList<IKleiPermitDioramaVisTarget> allVisList;
+		private IReadOnlyList<IKleiPermitDioramaVisTarget> allVisList;
 
-	public static PermitResource lastRenderedPermit;
+		public static PermitResource lastRenderedPermit;
 }

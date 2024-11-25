@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 public class SandboxSettings
 {
-	public void AddIntSetting(string prefsKey, Action<int> setAction, int defaultValue)
+		public void AddIntSetting(string prefsKey, Action<int> setAction, int defaultValue)
 	{
 		this.intSettings.Add(new SandboxSettings.Setting<int>(prefsKey, setAction, defaultValue));
 	}
 
-	public int GetIntSetting(string prefsKey)
+		public int GetIntSetting(string prefsKey)
 	{
 		return KPlayerPrefs.GetInt(prefsKey);
 	}
 
-	public void SetIntSetting(string prefsKey, int value)
+		public void SetIntSetting(string prefsKey, int value)
 	{
 		SandboxSettings.Setting<int> setting = this.intSettings.Find((SandboxSettings.Setting<int> match) => match.PrefsKey == prefsKey);
 		if (setting == null)
@@ -30,7 +30,7 @@ public class SandboxSettings
 		setting.Value = value;
 	}
 
-	public void RestoreIntSetting(string prefsKey)
+		public void RestoreIntSetting(string prefsKey)
 	{
 		if (KPlayerPrefs.HasKey(prefsKey))
 		{
@@ -40,22 +40,22 @@ public class SandboxSettings
 		this.ForceDefaultIntSetting(prefsKey);
 	}
 
-	public void ForceDefaultIntSetting(string prefsKey)
+		public void ForceDefaultIntSetting(string prefsKey)
 	{
 		this.SetIntSetting(prefsKey, this.intSettings.Find((SandboxSettings.Setting<int> match) => match.PrefsKey == prefsKey).defaultValue);
 	}
 
-	public void AddFloatSetting(string prefsKey, Action<float> setAction, float defaultValue)
+		public void AddFloatSetting(string prefsKey, Action<float> setAction, float defaultValue)
 	{
 		this.floatSettings.Add(new SandboxSettings.Setting<float>(prefsKey, setAction, defaultValue));
 	}
 
-	public float GetFloatSetting(string prefsKey)
+		public float GetFloatSetting(string prefsKey)
 	{
 		return KPlayerPrefs.GetFloat(prefsKey);
 	}
 
-	public void SetFloatSetting(string prefsKey, float value)
+		public void SetFloatSetting(string prefsKey, float value)
 	{
 		SandboxSettings.Setting<float> setting = this.floatSettings.Find((SandboxSettings.Setting<float> match) => match.PrefsKey == prefsKey);
 		if (setting == null)
@@ -72,7 +72,7 @@ public class SandboxSettings
 		setting.Value = value;
 	}
 
-	public void RestoreFloatSetting(string prefsKey)
+		public void RestoreFloatSetting(string prefsKey)
 	{
 		if (KPlayerPrefs.HasKey(prefsKey))
 		{
@@ -82,22 +82,22 @@ public class SandboxSettings
 		this.ForceDefaultFloatSetting(prefsKey);
 	}
 
-	public void ForceDefaultFloatSetting(string prefsKey)
+		public void ForceDefaultFloatSetting(string prefsKey)
 	{
 		this.SetFloatSetting(prefsKey, this.floatSettings.Find((SandboxSettings.Setting<float> match) => match.PrefsKey == prefsKey).defaultValue);
 	}
 
-	public void AddStringSetting(string prefsKey, Action<string> setAction, string defaultValue)
+		public void AddStringSetting(string prefsKey, Action<string> setAction, string defaultValue)
 	{
 		this.stringSettings.Add(new SandboxSettings.Setting<string>(prefsKey, setAction, defaultValue));
 	}
 
-	public string GetStringSetting(string prefsKey)
+		public string GetStringSetting(string prefsKey)
 	{
 		return KPlayerPrefs.GetString(prefsKey);
 	}
 
-	public void SetStringSetting(string prefsKey, string value)
+		public void SetStringSetting(string prefsKey, string value)
 	{
 		SandboxSettings.Setting<string> setting = this.stringSettings.Find((SandboxSettings.Setting<string> match) => match.PrefsKey == prefsKey);
 		if (setting == null)
@@ -114,7 +114,7 @@ public class SandboxSettings
 		setting.Value = value;
 	}
 
-	public void RestoreStringSetting(string prefsKey)
+		public void RestoreStringSetting(string prefsKey)
 	{
 		if (KPlayerPrefs.HasKey(prefsKey))
 		{
@@ -124,12 +124,12 @@ public class SandboxSettings
 		this.ForceDefaultStringSetting(prefsKey);
 	}
 
-	public void ForceDefaultStringSetting(string prefsKey)
+		public void ForceDefaultStringSetting(string prefsKey)
 	{
 		this.SetStringSetting(prefsKey, this.stringSettings.Find((SandboxSettings.Setting<string> match) => match.PrefsKey == prefsKey).defaultValue);
 	}
 
-	public SandboxSettings()
+		public SandboxSettings()
 	{
 		this.AddStringSetting("SandboxTools.SelectedEntity", delegate(string data)
 		{
@@ -199,7 +199,7 @@ public class SandboxSettings
 		}, 50);
 	}
 
-	public void RestorePrefs()
+		public void RestorePrefs()
 	{
 		foreach (SandboxSettings.Setting<int> setting in this.intSettings)
 		{
@@ -215,78 +215,78 @@ public class SandboxSettings
 		}
 	}
 
-	private List<SandboxSettings.Setting<int>> intSettings = new List<SandboxSettings.Setting<int>>();
+		private List<SandboxSettings.Setting<int>> intSettings = new List<SandboxSettings.Setting<int>>();
 
-	private List<SandboxSettings.Setting<float>> floatSettings = new List<SandboxSettings.Setting<float>>();
+		private List<SandboxSettings.Setting<float>> floatSettings = new List<SandboxSettings.Setting<float>>();
 
-	private List<SandboxSettings.Setting<string>> stringSettings = new List<SandboxSettings.Setting<string>>();
+		private List<SandboxSettings.Setting<string>> stringSettings = new List<SandboxSettings.Setting<string>>();
 
-	public bool InstantBuild = true;
+		public bool InstantBuild = true;
 
-	private bool hasRestoredElement;
+		private bool hasRestoredElement;
 
-	public Action<bool> OnChangeElement;
+		public Action<bool> OnChangeElement;
 
-	public System.Action OnChangeMass;
+		public System.Action OnChangeMass;
 
-	public System.Action OnChangeDisease;
+		public System.Action OnChangeDisease;
 
-	public System.Action OnChangeDiseaseCount;
+		public System.Action OnChangeDiseaseCount;
 
-	public System.Action OnChangeStory;
+		public System.Action OnChangeStory;
 
-	public System.Action OnChangeEntity;
+		public System.Action OnChangeEntity;
 
-	public System.Action OnChangeBrushSize;
+		public System.Action OnChangeBrushSize;
 
-	public System.Action OnChangeNoiseScale;
+		public System.Action OnChangeNoiseScale;
 
-	public System.Action OnChangeNoiseDensity;
+		public System.Action OnChangeNoiseDensity;
 
-	public System.Action OnChangeTemperature;
+		public System.Action OnChangeTemperature;
 
-	public System.Action OnChangeAdditiveTemperature;
+		public System.Action OnChangeAdditiveTemperature;
 
-	public System.Action OnChangeAdditiveStress;
+		public System.Action OnChangeAdditiveStress;
 
-	public System.Action OnChangeMoraleAdjustment;
+		public System.Action OnChangeMoraleAdjustment;
 
-	public const string KEY_SELECTED_ENTITY = "SandboxTools.SelectedEntity";
+		public const string KEY_SELECTED_ENTITY = "SandboxTools.SelectedEntity";
 
-	public const string KEY_SELECTED_ELEMENT = "SandboxTools.SelectedElement";
+		public const string KEY_SELECTED_ELEMENT = "SandboxTools.SelectedElement";
 
-	public const string KEY_SELECTED_DISEASE = "SandboxTools.SelectedDisease";
+		public const string KEY_SELECTED_DISEASE = "SandboxTools.SelectedDisease";
 
-	public const string KEY_DISEASE_COUNT = "SandboxTools.DiseaseCount";
+		public const string KEY_DISEASE_COUNT = "SandboxTools.DiseaseCount";
 
-	public const string KEY_SELECTED_STORY = "SandboxTools.SelectedStory";
+		public const string KEY_SELECTED_STORY = "SandboxTools.SelectedStory";
 
-	public const string KEY_BRUSH_SIZE = "SandboxTools.BrushSize";
+		public const string KEY_BRUSH_SIZE = "SandboxTools.BrushSize";
 
-	public const string KEY_NOISE_SCALE = "SandboxTools.NoiseScale";
+		public const string KEY_NOISE_SCALE = "SandboxTools.NoiseScale";
 
-	public const string KEY_NOISE_DENSITY = "SandboxTools.NoiseDensity";
+		public const string KEY_NOISE_DENSITY = "SandboxTools.NoiseDensity";
 
-	public const string KEY_MASS = "SandboxTools.Mass";
+		public const string KEY_MASS = "SandboxTools.Mass";
 
-	public const string KEY_TEMPERATURE = "SandbosTools.Temperature";
+		public const string KEY_TEMPERATURE = "SandbosTools.Temperature";
 
-	public const string KEY_TEMPERATURE_ADDITIVE = "SandbosTools.TemperatureAdditive";
+		public const string KEY_TEMPERATURE_ADDITIVE = "SandbosTools.TemperatureAdditive";
 
-	public const string KEY_STRESS_ADDITIVE = "SandbosTools.StressAdditive";
+		public const string KEY_STRESS_ADDITIVE = "SandbosTools.StressAdditive";
 
-	public const string KEY_MORALE_ADJUSTMENT = "SandbosTools.MoraleAdjustment";
+		public const string KEY_MORALE_ADJUSTMENT = "SandbosTools.MoraleAdjustment";
 
-	public class Setting<T>
+		public class Setting<T>
 	{
-		public Setting(string prefsKey, Action<T> setAction, T defaultValue)
+				public Setting(string prefsKey, Action<T> setAction, T defaultValue)
 		{
 			this.prefsKey = prefsKey;
 			this.SetAction = setAction;
 			this.defaultValue = defaultValue;
 		}
 
-				public string PrefsKey
+						public string PrefsKey
 		{
 			get
 			{
@@ -294,7 +294,7 @@ public class SandboxSettings
 			}
 		}
 
-				public T Value
+						public T Value
 		{
 			set
 			{
@@ -302,10 +302,10 @@ public class SandboxSettings
 			}
 		}
 
-		private string prefsKey;
+				private string prefsKey;
 
-		private Action<T> SetAction;
+				private Action<T> SetAction;
 
-		public T defaultValue;
+				public T defaultValue;
 	}
 }

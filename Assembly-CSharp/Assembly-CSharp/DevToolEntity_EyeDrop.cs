@@ -7,13 +7,13 @@ using UnityEngine.EventSystems;
 
 public class DevToolEntity_EyeDrop : DevTool
 {
-	public DevToolEntity_EyeDrop(Action<DevToolEntityTarget> onSelectionMadeFn, Func<DevToolEntityTarget, Option<string>> getErrorForCandidateTargetFn = null)
+		public DevToolEntity_EyeDrop(Action<DevToolEntityTarget> onSelectionMadeFn, Func<DevToolEntityTarget, Option<string>> getErrorForCandidateTargetFn = null)
 	{
 		this.onSelectionMadeFn = onSelectionMadeFn;
 		this.getErrorForCandidateTargetFn = getErrorForCandidateTargetFn;
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (this.requestingNavBack)
 		{
@@ -95,7 +95,7 @@ public class DevToolEntity_EyeDrop : DevTool
 		}
 	}
 
-	public static Option<string> CollectUIGameObjectHitsTo(IList<DevToolEntityTarget> targets, Vector3 screenPosition)
+		public static Option<string> CollectUIGameObjectHitsTo(IList<DevToolEntityTarget> targets, Vector3 screenPosition)
 	{
 		using (ListPool<RaycastResult, DevToolEntity_EyeDrop>.PooledList pooledList = PoolsFor<DevToolEntity_EyeDrop>.AllocateList<RaycastResult>())
 		{
@@ -119,7 +119,7 @@ public class DevToolEntity_EyeDrop : DevTool
 		return Option.None;
 	}
 
-	public static Option<string> CollectWorldGameObjectHitsTo(IList<DevToolEntityTarget> targets, Vector3 screenPosition)
+		public static Option<string> CollectWorldGameObjectHitsTo(IList<DevToolEntityTarget> targets, Vector3 screenPosition)
 	{
 		Camera main = Camera.main;
 		if (main.IsNullOrDestroyed())
@@ -161,7 +161,7 @@ public class DevToolEntity_EyeDrop : DevTool
 		return Option.None;
 	}
 
-	[return: TupleElementNames(new string[]
+		[return: TupleElementNames(new string[]
 	{
 		"target",
 		"error"
@@ -195,7 +195,7 @@ public class DevToolEntity_EyeDrop : DevTool
 		return new ValueTuple<Option<DevToolEntityTarget.ForSimCell>, Option<string>>(new DevToolEntityTarget.ForSimCell(num), Option.None);
 	}
 
-	public static void ImGuiInput_SampleScreenPosition(ref Vector2 unityScreenPosition)
+		public static void ImGuiInput_SampleScreenPosition(ref Vector2 unityScreenPosition)
 	{
 		float num = 4f;
 		float num2 = 12f;
@@ -260,7 +260,7 @@ public class DevToolEntity_EyeDrop : DevTool
 		ImGui.PopStyleVar(2);
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static void <RenderTo>g__DrawBullet|5_0(string groupName, Option<string> error)
 	{
 		ImGui.Bullet();
@@ -276,15 +276,15 @@ public class DevToolEntity_EyeDrop : DevTool
 		ImGui.Text("No errors.");
 	}
 
-	private Vector2 sampleAtScreenPosition;
+		private Vector2 sampleAtScreenPosition;
 
-	private Action<DevToolEntityTarget> onSelectionMadeFn;
+		private Action<DevToolEntityTarget> onSelectionMadeFn;
 
-	private Func<DevToolEntityTarget, Option<string>> getErrorForCandidateTargetFn;
+		private Func<DevToolEntityTarget, Option<string>> getErrorForCandidateTargetFn;
 
-	private bool requestingNavBack;
+		private bool requestingNavBack;
 
-	private static Vector2 posSampler_rectBasePos = new Vector2(200f, 200f);
+		private static Vector2 posSampler_rectBasePos = new Vector2(200f, 200f);
 
-	private static Option<Vector2> posSampler_dragStartPos = Option.None;
+		private static Option<Vector2> posSampler_dragStartPos = Option.None;
 }

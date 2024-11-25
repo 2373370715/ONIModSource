@@ -7,7 +7,7 @@ using UnityEngine;
 
 internal class UpdateObjectCountParameter : LoopingSoundParameterUpdater
 {
-	public static UpdateObjectCountParameter.Settings GetSettings(HashedString path_hash, SoundDescription description)
+		public static UpdateObjectCountParameter.Settings GetSettings(HashedString path_hash, SoundDescription description)
 	{
 		UpdateObjectCountParameter.Settings settings = default(UpdateObjectCountParameter.Settings);
 		if (!UpdateObjectCountParameter.settings.TryGetValue(path_hash, out settings))
@@ -44,7 +44,7 @@ internal class UpdateObjectCountParameter : LoopingSoundParameterUpdater
 		return settings;
 	}
 
-	public static void ApplySettings(EventInstance ev, int count, UpdateObjectCountParameter.Settings settings)
+		public static void ApplySettings(EventInstance ev, int count, UpdateObjectCountParameter.Settings settings)
 	{
 		float num = 0f;
 		if (settings.maxObjects != settings.minObjects)
@@ -59,11 +59,11 @@ internal class UpdateObjectCountParameter : LoopingSoundParameterUpdater
 		ev.setParameterByID(settings.parameterId, num, false);
 	}
 
-	public UpdateObjectCountParameter() : base("objectCount")
+		public UpdateObjectCountParameter() : base("objectCount")
 	{
 	}
 
-	public override void Add(LoopingSoundParameterUpdater.Sound sound)
+		public override void Add(LoopingSoundParameterUpdater.Sound sound)
 	{
 		UpdateObjectCountParameter.Settings settings = UpdateObjectCountParameter.GetSettings(sound.path, sound.description);
 		UpdateObjectCountParameter.Entry item = new UpdateObjectCountParameter.Entry
@@ -74,7 +74,7 @@ internal class UpdateObjectCountParameter : LoopingSoundParameterUpdater
 		this.entries.Add(item);
 	}
 
-	public override void Update(float dt)
+		public override void Update(float dt)
 	{
 		DictionaryPool<HashedString, int, LoopingSoundManager>.PooledDictionary pooledDictionary = DictionaryPool<HashedString, int, LoopingSoundManager>.Allocate();
 		foreach (UpdateObjectCountParameter.Entry entry in this.entries)
@@ -91,7 +91,7 @@ internal class UpdateObjectCountParameter : LoopingSoundParameterUpdater
 		pooledDictionary.Recycle();
 	}
 
-	public override void Remove(LoopingSoundParameterUpdater.Sound sound)
+		public override void Remove(LoopingSoundParameterUpdater.Sound sound)
 	{
 		for (int i = 0; i < this.entries.Count; i++)
 		{
@@ -103,34 +103,34 @@ internal class UpdateObjectCountParameter : LoopingSoundParameterUpdater
 		}
 	}
 
-	public static void Clear()
+		public static void Clear()
 	{
 		UpdateObjectCountParameter.settings.Clear();
 	}
 
-	private List<UpdateObjectCountParameter.Entry> entries = new List<UpdateObjectCountParameter.Entry>();
+		private List<UpdateObjectCountParameter.Entry> entries = new List<UpdateObjectCountParameter.Entry>();
 
-	private static Dictionary<HashedString, UpdateObjectCountParameter.Settings> settings = new Dictionary<HashedString, UpdateObjectCountParameter.Settings>();
+		private static Dictionary<HashedString, UpdateObjectCountParameter.Settings> settings = new Dictionary<HashedString, UpdateObjectCountParameter.Settings>();
 
-	private static readonly HashedString parameterHash = "objectCount";
+		private static readonly HashedString parameterHash = "objectCount";
 
-	private struct Entry
+		private struct Entry
 	{
-		public EventInstance ev;
+				public EventInstance ev;
 
-		public UpdateObjectCountParameter.Settings settings;
+				public UpdateObjectCountParameter.Settings settings;
 	}
 
-	public struct Settings
+		public struct Settings
 	{
-		public HashedString path;
+				public HashedString path;
 
-		public PARAMETER_ID parameterId;
+				public PARAMETER_ID parameterId;
 
-		public float minObjects;
+				public float minObjects;
 
-		public float maxObjects;
+				public float maxObjects;
 
-		public bool useExponentialCurve;
+				public bool useExponentialCurve;
 	}
 }

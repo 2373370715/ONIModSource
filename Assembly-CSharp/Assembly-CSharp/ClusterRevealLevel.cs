@@ -2,7 +2,7 @@
 
 public enum ClusterRevealLevel
 {
-	Hidden,
-	Peeked,
-	Visible
+		Hidden,
+		Peeked,
+		Visible
 }

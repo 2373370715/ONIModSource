@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ShadowText : ShadowRect
 {
-	protected override void MatchRect()
+		protected override void MatchRect()
 	{
 		if (this.RectMain == null || this.RectShadow == null)
 		{
@@ -59,7 +59,7 @@ public class ShadowText : ShadowRect
 		base.MatchRect();
 	}
 
-	private Text shadowText;
+		private Text shadowText;
 
-	private Text mainText;
+		private Text mainText;
 }

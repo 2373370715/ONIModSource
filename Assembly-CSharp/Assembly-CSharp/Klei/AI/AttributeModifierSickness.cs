@@ -5,14 +5,14 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class AttributeModifierSickness : Sickness.SicknessComponent
+		public class AttributeModifierSickness : Sickness.SicknessComponent
 	{
-		public AttributeModifierSickness(AttributeModifier[] attribute_modifiers)
+				public AttributeModifierSickness(AttributeModifier[] attribute_modifiers)
 		{
 			this.attributeModifiers = attribute_modifiers;
 		}
 
-		public override object OnInfect(GameObject go, SicknessInstance diseaseInstance)
+				public override object OnInfect(GameObject go, SicknessInstance diseaseInstance)
 		{
 			Attributes attributes = go.GetAttributes();
 			for (int i = 0; i < this.attributeModifiers.Length; i++)
@@ -23,7 +23,7 @@ namespace Klei.AI
 			return null;
 		}
 
-		public override void OnCure(GameObject go, object instance_data)
+				public override void OnCure(GameObject go, object instance_data)
 		{
 			Attributes attributes = go.GetAttributes();
 			for (int i = 0; i < this.attributeModifiers.Length; i++)
@@ -33,7 +33,7 @@ namespace Klei.AI
 			}
 		}
 
-				public AttributeModifier[] Modifers
+						public AttributeModifier[] Modifers
 		{
 			get
 			{
@@ -41,7 +41,7 @@ namespace Klei.AI
 			}
 		}
 
-		public override List<Descriptor> GetSymptoms()
+				public override List<Descriptor> GetSymptoms()
 		{
 			List<Descriptor> list = new List<Descriptor>();
 			foreach (AttributeModifier attributeModifier in this.attributeModifiers)
@@ -52,6 +52,6 @@ namespace Klei.AI
 			return list;
 		}
 
-		private AttributeModifier[] attributeModifiers;
+				private AttributeModifier[] attributeModifiers;
 	}
 }

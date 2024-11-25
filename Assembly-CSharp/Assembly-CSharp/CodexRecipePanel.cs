@@ -6,24 +6,24 @@ using UnityEngine.UI;
 
 public class CodexRecipePanel : CodexWidget<CodexRecipePanel>
 {
-			public string linkID { get; set; }
+				public string linkID { get; set; }
 
-	public CodexRecipePanel()
+		public CodexRecipePanel()
 	{
 	}
 
-	public CodexRecipePanel(ComplexRecipe recipe, bool shouldUseFabricatorForTitle = false)
+		public CodexRecipePanel(ComplexRecipe recipe, bool shouldUseFabricatorForTitle = false)
 	{
 		this.complexRecipe = recipe;
 		this.useFabricatorForTitle = shouldUseFabricatorForTitle;
 	}
 
-	public CodexRecipePanel(Recipe rec)
+		public CodexRecipePanel(Recipe rec)
 	{
 		this.recipe = rec;
 	}
 
-	public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
+		public override void Configure(GameObject contentGameObject, Transform displayPane, Dictionary<CodexTextStyle, TextStyleSetting> textStyles)
 	{
 		HierarchyReferences component = contentGameObject.GetComponent<HierarchyReferences>();
 		this.title = component.GetReference<LocText>("Title");
@@ -44,7 +44,7 @@ public class CodexRecipePanel : CodexWidget<CodexRecipePanel>
 		}
 	}
 
-	private void ConfigureRecipe()
+		private void ConfigureRecipe()
 	{
 		this.title.text = this.recipe.Result.ProperName();
 		foreach (Recipe.Ingredient ingredient in this.recipe.Ingredients)
@@ -80,7 +80,7 @@ public class CodexRecipePanel : CodexWidget<CodexRecipePanel>
 		gameObject2.GetComponent<ToolTip>().toolTip = text2;
 	}
 
-	private void ConfigureComplexRecipe()
+		private void ConfigureComplexRecipe()
 	{
 		ComplexRecipe.RecipeElement[] array = this.complexRecipe.ingredients;
 		for (int i = 0; i < array.Length; i++)
@@ -126,14 +126,15 @@ public class CodexRecipePanel : CodexWidget<CodexRecipePanel>
 				ManagementMenu.Instance.codexScreen.ChangeArticle(UI.ExtractLinkID(Assets.GetPrefab(res.material).GetProperName()), false, default(Vector3), CodexScreen.HistoryDirection.NewArticle);
 			};
 		}
-		string text3 = this.complexRecipe.id.Substring(0, this.complexRecipe.id.IndexOf('_'));
+		DebugUtil.DevAssert(this.complexRecipe.fabricators.Count > 0, "Codex assumes there is at most one fabricator per recipe, refactor if needed", null);
+		string name = this.complexRecipe.fabricators[0].Name;
 		HierarchyReferences component3 = Util.KInstantiateUI(this.fabricatorPrefab, this.fabricatorContainer, true).GetComponent<HierarchyReferences>();
-		global::Tuple<Sprite, Color> uisprite3 = Def.GetUISprite(text3, "ui", false);
+		global::Tuple<Sprite, Color> uisprite3 = Def.GetUISprite(name, "ui", false);
 		component3.GetReference<Image>("Icon").sprite = uisprite3.first;
 		component3.GetReference<Image>("Icon").color = uisprite3.second;
 		component3.GetReference<LocText>("Time").text = GameUtil.GetFormattedTime(this.complexRecipe.time, "F0");
 		component3.GetReference<LocText>("Time").color = Color.black;
-		GameObject fabricator = Assets.GetPrefab(text3.ToTag());
+		GameObject fabricator = Assets.GetPrefab(name.ToTag());
 		component3.GetReference<ToolTip>("Tooltip").toolTip = fabricator.GetProperName();
 		component3.GetReference<KButton>("Button").onClick += delegate()
 		{
@@ -147,7 +148,7 @@ public class CodexRecipePanel : CodexWidget<CodexRecipePanel>
 		this.title.text = this.complexRecipe.results[0].material.ProperName();
 	}
 
-	private void ClearPanel()
+		private void ClearPanel()
 	{
 		foreach (object obj in this.ingredientsContainer.transform)
 		{
@@ -163,21 +164,21 @@ public class CodexRecipePanel : CodexWidget<CodexRecipePanel>
 		}
 	}
 
-	private LocText title;
+		private LocText title;
 
-	private GameObject materialPrefab;
+		private GameObject materialPrefab;
 
-	private GameObject fabricatorPrefab;
+		private GameObject fabricatorPrefab;
 
-	private GameObject ingredientsContainer;
+		private GameObject ingredientsContainer;
 
-	private GameObject resultsContainer;
+		private GameObject resultsContainer;
 
-	private GameObject fabricatorContainer;
+		private GameObject fabricatorContainer;
 
-	private ComplexRecipe complexRecipe;
+		private ComplexRecipe complexRecipe;
 
-	private Recipe recipe;
+		private Recipe recipe;
 
-	private bool useFabricatorForTitle;
+		private bool useFabricatorForTitle;
 }

@@ -4,12 +4,12 @@ using UnityEngine.EventSystems;
 
 public class SelectableTextStyler : MonoBehaviour, IPointerEnterHandler, IEventSystemHandler, IPointerExitHandler, IPointerClickHandler
 {
-	private void Start()
+		private void Start()
 	{
 		this.SetState(this.state, SelectableTextStyler.HoverState.Normal);
 	}
 
-	private void SetState(SelectableTextStyler.State state, SelectableTextStyler.HoverState hover_state)
+		private void SetState(SelectableTextStyler.State state, SelectableTextStyler.HoverState hover_state)
 	{
 		if (state == SelectableTextStyler.State.Normal)
 		{
@@ -28,41 +28,41 @@ public class SelectableTextStyler : MonoBehaviour, IPointerEnterHandler, IEventS
 		this.target.ApplySettings();
 	}
 
-	public void OnPointerEnter(PointerEventData eventData)
+		public void OnPointerEnter(PointerEventData eventData)
 	{
 		this.SetState(this.state, SelectableTextStyler.HoverState.Hovered);
 	}
 
-	public void OnPointerExit(PointerEventData eventData)
+		public void OnPointerExit(PointerEventData eventData)
 	{
 		this.SetState(this.state, SelectableTextStyler.HoverState.Normal);
 	}
 
-	public void OnPointerClick(PointerEventData eventData)
+		public void OnPointerClick(PointerEventData eventData)
 	{
 		this.SetState(this.state, SelectableTextStyler.HoverState.Normal);
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private LocText target;
 
-	[SerializeField]
+		[SerializeField]
 	private SelectableTextStyler.State state;
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting normalNormal;
 
-	[SerializeField]
+		[SerializeField]
 	private TextStyleSetting normalHovered;
 
-	public enum State
+		public enum State
 	{
-		Normal
+				Normal
 	}
 
-	public enum HoverState
+		public enum HoverState
 	{
-		Normal,
-		Hovered
+				Normal,
+				Hovered
 	}
 }

@@ -5,14 +5,14 @@ using UnityEngine;
 [SerializationConfig(MemberSerialization.OptIn)]
 public class HighEnergyParticle : StateMachineComponent<HighEnergyParticle.StatesInstance>
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.loopingSounds = base.gameObject.GetComponent<LoopingSounds>();
 		this.flyingSound = GlobalAssets.GetSound("Radbolt_travel_LP", false);
 		base.OnPrefabInit();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		Components.HighEnergyParticles.Add(this);
@@ -25,7 +25,7 @@ public class HighEnergyParticle : StateMachineComponent<HighEnergyParticle.State
 		base.smi.StartSM();
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		base.OnCleanUp();
 		this.StopLoopingSound();
@@ -36,14 +36,14 @@ public class HighEnergyParticle : StateMachineComponent<HighEnergyParticle.State
 		}
 	}
 
-	public void SetDirection(EightDirection direction)
+		public void SetDirection(EightDirection direction)
 	{
 		this.direction = direction;
 		float angle = EightDirectionUtil.GetAngle(direction);
 		base.smi.master.transform.rotation = Quaternion.Euler(0f, 0f, angle);
 	}
 
-	public void Collide(HighEnergyParticle.CollisionType collisionType)
+		public void Collide(HighEnergyParticle.CollisionType collisionType)
 	{
 		this.collision = collisionType;
 		GameObject gameObject = new GameObject("HEPcollideFX");
@@ -80,12 +80,12 @@ public class HighEnergyParticle : StateMachineComponent<HighEnergyParticle.State
 		base.smi.sm.destroySignal.Trigger(base.smi);
 	}
 
-	public void DestroyNow()
+		public void DestroyNow()
 	{
 		base.smi.sm.destroySimpleSignal.Trigger(base.smi);
 	}
 
-	private void Capture(HighEnergyParticlePort input)
+		private void Capture(HighEnergyParticlePort input)
 	{
 		if (input.currentParticle != null)
 		{
@@ -110,7 +110,7 @@ public class HighEnergyParticle : StateMachineComponent<HighEnergyParticle.State
 		this.Collide(HighEnergyParticle.CollisionType.CaptureAndRelease);
 	}
 
-	public void Uncapture()
+		public void Uncapture()
 	{
 		if (this.capturedBy != null)
 		{
@@ -119,7 +119,7 @@ public class HighEnergyParticle : StateMachineComponent<HighEnergyParticle.State
 		this.capturedBy = null;
 	}
 
-	public void CheckCollision()
+		public void CheckCollision()
 	{
 		if (this.collision != HighEnergyParticle.CollisionType.None)
 		{
@@ -218,7 +218,7 @@ public class HighEnergyParticle : StateMachineComponent<HighEnergyParticle.State
 		}
 	}
 
-	public void MovingUpdate(float dt)
+		public void MovingUpdate(float dt)
 	{
 		if (this.collision != HighEnergyParticle.CollisionType.None)
 		{
@@ -252,71 +252,71 @@ public class HighEnergyParticle : StateMachineComponent<HighEnergyParticle.State
 		base.transform.SetPosition(vector);
 	}
 
-	private void StartLoopingSound()
+		private void StartLoopingSound()
 	{
 		this.loopingSounds.StartSound(this.flyingSound);
 	}
 
-	private void StopLoopingSound()
+		private void StopLoopingSound()
 	{
 		this.loopingSounds.StopSound(this.flyingSound);
 	}
 
-	[Serialize]
+		[Serialize]
 	private EightDirection direction;
 
-	[Serialize]
+		[Serialize]
 	public float speed;
 
-	[Serialize]
+		[Serialize]
 	public float payload;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private RadiationEmitter emitter;
 
-	[Serialize]
+		[Serialize]
 	public float perCellFalloff;
 
-	[Serialize]
+		[Serialize]
 	public HighEnergyParticle.CollisionType collision;
 
-	[Serialize]
+		[Serialize]
 	public HighEnergyParticlePort capturedBy;
 
-	public short emitRadius;
+		public short emitRadius;
 
-	public float emitRate;
+		public float emitRate;
 
-	public float emitSpeed;
+		public float emitSpeed;
 
-	private LoopingSounds loopingSounds;
+		private LoopingSounds loopingSounds;
 
-	public string flyingSound;
+		public string flyingSound;
 
-	public bool isCollideable;
+		public bool isCollideable;
 
-	public enum CollisionType
+		public enum CollisionType
 	{
-		None,
-		Solid,
-		Creature,
-		Minion,
-		Captured,
-		HighEnergyParticle,
-		CaptureAndRelease,
-		PassThrough
+				None,
+				Solid,
+				Creature,
+				Minion,
+				Captured,
+				HighEnergyParticle,
+				CaptureAndRelease,
+				PassThrough
 	}
 
-	public class StatesInstance : GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.GameInstance
+		public class StatesInstance : GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.GameInstance
 	{
-		public StatesInstance(HighEnergyParticle smi) : base(smi)
+				public StatesInstance(HighEnergyParticle smi) : base(smi)
 		{
 		}
 	}
 
-	public class States : GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle>
+		public class States : GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.ready.pre;
 			base.serializable = StateMachine.SerializeType.Both_DEPRECATED;
@@ -358,7 +358,7 @@ public class HighEnergyParticle : StateMachineComponent<HighEnergyParticle.State
 			});
 		}
 
-		private void EmitRemainingPayload(HighEnergyParticle.StatesInstance smi)
+				private void EmitRemainingPayload(HighEnergyParticle.StatesInstance smi)
 		{
 			smi.master.GetComponent<KBatchedAnimController>().GetCurrentAnim();
 			smi.master.emitter.emitRadiusX = 6;
@@ -372,32 +372,32 @@ public class HighEnergyParticle : StateMachineComponent<HighEnergyParticle.State
 			}, null);
 		}
 
-		public HighEnergyParticle.States.ReadyStates ready;
+				public HighEnergyParticle.States.ReadyStates ready;
 
-		public HighEnergyParticle.States.DestructionStates destroying;
+				public HighEnergyParticle.States.DestructionStates destroying;
 
-		public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State catchAndRelease;
+				public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State catchAndRelease;
 
-		public StateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.Signal destroySignal;
+				public StateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.Signal destroySignal;
 
-		public StateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.Signal destroySimpleSignal;
+				public StateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.Signal destroySimpleSignal;
 
-		public class ReadyStates : GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State
+				public class ReadyStates : GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State
 		{
-			public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State pre;
+						public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State pre;
 
-			public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State moving;
+						public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State moving;
 		}
 
-		public class DestructionStates : GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State
+				public class DestructionStates : GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State
 		{
-			public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State instant;
+						public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State instant;
 
-			public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State explode;
+						public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State explode;
 
-			public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State captured;
+						public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State captured;
 
-			public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State blackhole;
+						public GameStateMachine<HighEnergyParticle.States, HighEnergyParticle.StatesInstance, HighEnergyParticle, object>.State blackhole;
 		}
 	}
 }

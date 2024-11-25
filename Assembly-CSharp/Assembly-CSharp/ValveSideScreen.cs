@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ValveSideScreen : SideScreenContent
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		this.unitsLabel.text = GameUtil.AddTimeSliceText(UI.UNITSUFFIXES.MASS.GRAM, GameUtil.TimeSlice.PerSecond);
@@ -30,17 +30,17 @@ public class ValveSideScreen : SideScreenContent
 		this.numberInput.decimalPlaces = 1;
 	}
 
-	public void OnReleaseHandle()
+		public void OnReleaseHandle()
 	{
 		this.targetValve.ChangeFlow(this.targetFlow);
 	}
 
-	public override bool IsValidForTarget(GameObject target)
+		public override bool IsValidForTarget(GameObject target)
 	{
 		return target.GetComponent<Valve>() != null;
 	}
 
-	public override void SetTarget(GameObject target)
+		public override void SetTarget(GameObject target)
 	{
 		this.targetValve = target.GetComponent<Valve>();
 		if (this.targetValve == null)
@@ -59,27 +59,27 @@ public class ValveSideScreen : SideScreenContent
 		this.numberInput.Activate();
 	}
 
-	private void ReceiveValueFromSlider(float newValue)
+		private void ReceiveValueFromSlider(float newValue)
 	{
 		newValue = Mathf.Round(newValue * 1000f) / 1000f;
 		this.UpdateFlowValue(newValue);
 	}
 
-	private void ReceiveValueFromInput(float input)
+		private void ReceiveValueFromInput(float input)
 	{
 		float newValue = input / 1000f;
 		this.UpdateFlowValue(newValue);
 		this.targetValve.ChangeFlow(this.targetFlow);
 	}
 
-	private void UpdateFlowValue(float newValue)
+		private void UpdateFlowValue(float newValue)
 	{
 		this.targetFlow = newValue;
 		this.flowSlider.value = newValue;
 		this.numberInput.SetDisplayValue(GameUtil.GetFormattedMass(newValue, GameUtil.TimeSlice.PerSecond, GameUtil.MetricMassFormat.Gram, false, "{0:0.#####}"));
 	}
 
-	private IEnumerator SettingDelay(float delay)
+		private IEnumerator SettingDelay(float delay)
 	{
 		float startTime = Time.realtimeSinceStartup;
 		float currentTime = startTime;
@@ -92,24 +92,24 @@ public class ValveSideScreen : SideScreenContent
 		yield break;
 	}
 
-	private Valve targetValve;
+		private Valve targetValve;
 
-	[Header("Slider")]
+		[Header("Slider")]
 	[SerializeField]
 	private KSlider flowSlider;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText minFlowLabel;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText maxFlowLabel;
 
-	[Header("Input Field")]
+		[Header("Input Field")]
 	[SerializeField]
 	private KNumberInputField numberInput;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText unitsLabel;
 
-	private float targetFlow;
+		private float targetFlow;
 }

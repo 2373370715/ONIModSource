@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class RestartWarning : MonoBehaviour
 {
-	private void Update()
+		private void Update()
 	{
 		if (RestartWarning.ShouldWarn)
 		{
@@ -13,9 +13,9 @@ public class RestartWarning : MonoBehaviour
 		}
 	}
 
-	public static bool ShouldWarn;
+		public static bool ShouldWarn;
 
-	public LocText text;
+		public LocText text;
 
-	public Image image;
+		public Image image;
 }

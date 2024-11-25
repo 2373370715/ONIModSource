@@ -1,7 +1,7 @@
 ﻿using TUNING;
 using UnityEngine;
 
-
+namespace RsTransferPort;
 // public class PortalPowerSenderConfig : PortalPowerConfig
 // {
 //     public static string ID = "PortalPowerSender";

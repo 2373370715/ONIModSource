@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class SolidConduitFlowVisualizer
 {
-	public SolidConduitFlowVisualizer(SolidConduitFlow flow_manager, Game.ConduitVisInfo vis_info, EventReference overlay_sound, SolidConduitFlowVisualizer.Tuning tuning)
+		public SolidConduitFlowVisualizer(SolidConduitFlow flow_manager, Game.ConduitVisInfo vis_info, EventReference overlay_sound, SolidConduitFlowVisualizer.Tuning tuning)
 	{
 		this.flowManager = flow_manager;
 		this.visInfo = vis_info;
@@ -16,19 +16,19 @@ public class SolidConduitFlowVisualizer
 		this.staticBallMesh = new SolidConduitFlowVisualizer.ConduitFlowMesh();
 	}
 
-	public void FreeResources()
+		public void FreeResources()
 	{
 		this.movingBallMesh.Cleanup();
 		this.staticBallMesh.Cleanup();
 	}
 
-	private float CalculateMassScale(float mass)
+		private float CalculateMassScale(float mass)
 	{
 		float t = (mass - this.visInfo.overlayMassScaleRange.x) / (this.visInfo.overlayMassScaleRange.y - this.visInfo.overlayMassScaleRange.x);
 		return Mathf.Lerp(this.visInfo.overlayMassScaleValues.x, this.visInfo.overlayMassScaleValues.y, t);
 	}
 
-	private Color32 GetContentsColor(Element element, Color32 default_color)
+		private Color32 GetContentsColor(Element element, Color32 default_color)
 	{
 		if (element != null)
 		{
@@ -39,7 +39,7 @@ public class SolidConduitFlowVisualizer
 		return default_color;
 	}
 
-	private Color32 GetBackgroundColor(float insulation_lerp)
+		private Color32 GetBackgroundColor(float insulation_lerp)
 	{
 		if (this.showContents)
 		{
@@ -48,7 +48,7 @@ public class SolidConduitFlowVisualizer
 		return Color32.Lerp(this.visInfo.tint, this.visInfo.insulatedTint, insulation_lerp);
 	}
 
-	public void Render(float z, int render_layer, float lerp_percent, bool trigger_audio = false)
+		public void Render(float z, int render_layer, float lerp_percent, bool trigger_audio = false)
 	{
 		GridArea visibleArea = GridVisibleArea.GetVisibleArea();
 		Vector2I v = new Vector2I(Mathf.Max(0, visibleArea.Min.x - 1), Mathf.Max(0, visibleArea.Min.y - 1));
@@ -179,13 +179,13 @@ public class SolidConduitFlowVisualizer
 		}
 	}
 
-	public void ColourizePipeContents(bool show_contents, bool move_to_overlay_layer)
+		public void ColourizePipeContents(bool show_contents, bool move_to_overlay_layer)
 	{
 		this.showContents = show_contents;
 		this.layer = ((show_contents && move_to_overlay_layer) ? LayerMask.NameToLayer("MaskedOverlay") : 0);
 	}
 
-	private void AddAudioSource(SolidConduitFlow.Conduit conduit, Vector3 camera_pos)
+		private void AddAudioSource(SolidConduitFlow.Conduit conduit, Vector3 camera_pos)
 	{
 		using (new KProfiler.Region("AddAudioSource", null))
 		{
@@ -223,7 +223,7 @@ public class SolidConduitFlowVisualizer
 		}
 	}
 
-	private void TriggerAudio()
+		private void TriggerAudio()
 	{
 		if (SpeedControlScreen.Instance.IsPaused)
 		{
@@ -255,7 +255,7 @@ public class SolidConduitFlowVisualizer
 		}
 	}
 
-	public void SetInsulated(int cell, bool insulated)
+		public void SetInsulated(int cell, bool insulated)
 	{
 		if (insulated)
 		{
@@ -265,67 +265,67 @@ public class SolidConduitFlowVisualizer
 		this.insulatedCells.Remove(cell);
 	}
 
-	public void SetHighlightedCell(int cell)
+		public void SetHighlightedCell(int cell)
 	{
 		this.highlightedCell = cell;
 	}
 
-	private SolidConduitFlow flowManager;
+		private SolidConduitFlow flowManager;
 
-	private EventReference overlaySound;
+		private EventReference overlaySound;
 
-	private bool showContents;
+		private bool showContents;
 
-	private double animTime;
+		private double animTime;
 
-	private int layer;
+		private int layer;
 
-	private static Vector2 GRID_OFFSET = new Vector2(0.5f, 0.5f);
+		private static Vector2 GRID_OFFSET = new Vector2(0.5f, 0.5f);
 
-	private static int BLOB_SOUND_COUNT = 7;
+		private static int BLOB_SOUND_COUNT = 7;
 
-	private List<SolidConduitFlowVisualizer.AudioInfo> audioInfo;
+		private List<SolidConduitFlowVisualizer.AudioInfo> audioInfo;
 
-	private HashSet<int> insulatedCells = new HashSet<int>();
+		private HashSet<int> insulatedCells = new HashSet<int>();
 
-	private Game.ConduitVisInfo visInfo;
+		private Game.ConduitVisInfo visInfo;
 
-	private SolidConduitFlowVisualizer.ConduitFlowMesh movingBallMesh;
+		private SolidConduitFlowVisualizer.ConduitFlowMesh movingBallMesh;
 
-	private SolidConduitFlowVisualizer.ConduitFlowMesh staticBallMesh;
+		private SolidConduitFlowVisualizer.ConduitFlowMesh staticBallMesh;
 
-	private int highlightedCell = -1;
+		private int highlightedCell = -1;
 
-	private Color32 highlightColour = new Color(0.2f, 0.2f, 0.2f, 0.2f);
+		private Color32 highlightColour = new Color(0.2f, 0.2f, 0.2f, 0.2f);
 
-	private SolidConduitFlowVisualizer.Tuning tuning;
+		private SolidConduitFlowVisualizer.Tuning tuning;
 
-	[Serializable]
+		[Serializable]
 	public class Tuning
 	{
-		public bool renderMesh;
+				public bool renderMesh;
 
-		public float size;
+				public float size;
 
-		public float spriteCount;
+				public float spriteCount;
 
-		public float framesPerSecond;
+				public float framesPerSecond;
 
-		public Texture2D backgroundTexture;
+				public Texture2D backgroundTexture;
 
-		public Texture2D foregroundTexture;
+				public Texture2D foregroundTexture;
 	}
 
-	private class ConduitFlowMesh
+		private class ConduitFlowMesh
 	{
-		public ConduitFlowMesh()
+				public ConduitFlowMesh()
 		{
 			this.mesh = new Mesh();
 			this.mesh.name = "ConduitMesh";
 			this.material = new Material(Shader.Find("Klei/ConduitBall"));
 		}
 
-		public void AddQuad(Vector2 pos, Color32 color, float size, float is_foreground, float highlight, Vector2I uvbl, Vector2I uvtl, Vector2I uvbr, Vector2I uvtr)
+				public void AddQuad(Vector2 pos, Color32 color, float size, float is_foreground, float highlight, Vector2I uvbl, Vector2I uvtl, Vector2I uvbr, Vector2I uvtr)
 		{
 			float num = size * 0.5f;
 			this.positions.Add(new Vector3(pos.x - num, pos.y - num, 0f));
@@ -349,17 +349,17 @@ public class SolidConduitFlowVisualizer
 			this.quadIndex++;
 		}
 
-		public void SetTexture(string id, Texture2D texture)
+				public void SetTexture(string id, Texture2D texture)
 		{
 			this.material.SetTexture(id, texture);
 		}
 
-		public void SetVector(string id, Vector4 data)
+				public void SetVector(string id, Vector4 data)
 		{
 			this.material.SetVector(id, data);
 		}
 
-		public void Begin()
+				public void Begin()
 		{
 			this.positions.Clear();
 			this.uvs.Clear();
@@ -368,7 +368,7 @@ public class SolidConduitFlowVisualizer
 			this.quadIndex = 0;
 		}
 
-		public void End(float z, int layer)
+				public void End(float z, int layer)
 		{
 			this.mesh.Clear();
 			this.mesh.SetVertices(this.positions);
@@ -378,7 +378,7 @@ public class SolidConduitFlowVisualizer
 			Graphics.DrawMesh(this.mesh, new Vector3(SolidConduitFlowVisualizer.GRID_OFFSET.x, SolidConduitFlowVisualizer.GRID_OFFSET.y, z - 0.1f), Quaternion.identity, this.material, layer);
 		}
 
-		public void Cleanup()
+				public void Cleanup()
 		{
 			UnityEngine.Object.Destroy(this.mesh);
 			this.mesh = null;
@@ -386,29 +386,29 @@ public class SolidConduitFlowVisualizer
 			this.material = null;
 		}
 
-		private Mesh mesh;
+				private Mesh mesh;
 
-		private Material material;
+				private Material material;
 
-		private List<Vector3> positions = new List<Vector3>();
+				private List<Vector3> positions = new List<Vector3>();
 
-		private List<Vector4> uvs = new List<Vector4>();
+				private List<Vector4> uvs = new List<Vector4>();
 
-		private List<int> triangles = new List<int>();
+				private List<int> triangles = new List<int>();
 
-		private List<Color32> colors = new List<Color32>();
+				private List<Color32> colors = new List<Color32>();
 
-		private int quadIndex;
+				private int quadIndex;
 	}
 
-	private struct AudioInfo
+		private struct AudioInfo
 	{
-		public int networkID;
+				public int networkID;
 
-		public int blobCount;
+				public int blobCount;
 
-		public float distance;
+				public float distance;
 
-		public Vector3 position;
+				public Vector3 position;
 	}
 }

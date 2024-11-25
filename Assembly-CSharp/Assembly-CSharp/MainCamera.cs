@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MainCamera : MonoBehaviour
 {
-	private void Awake()
+		private void Awake()
 	{
 		if (Camera.main != null)
 		{

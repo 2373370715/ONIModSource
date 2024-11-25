@@ -6,12 +6,12 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/Immigration")]
 public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPriorityManager
 {
-	public static void DestroyInstance()
+		public static void DestroyInstance()
 	{
 		Immigration.Instance = null;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		this.bImmigrantAvailable = false;
 		Immigration.Instance = this;
@@ -22,7 +22,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		this.ConfigureCarePackages();
 	}
 
-	private void SetupDLCCarePackages()
+		private void SetupDLCCarePackages()
 	{
 		Dictionary<string, List<CarePackageInfo>> dictionary = new Dictionary<string, List<CarePackageInfo>>();
 		string key = "DLC2_ID";
@@ -38,11 +38,28 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		list.Add(new CarePackageInfo("BlueGrassSeed", 1f, null));
 		list.Add(new CarePackageInfo("CarrotPlantSeed", 1f, () => Immigration.CycleCondition(24)));
 		list.Add(new CarePackageInfo("SpaceTreeSeed", 1f, () => Immigration.CycleCondition(24)));
+		list.Add(new CarePackageInfo("HardSkinBerryPlantSeed", 3f, null));
 		dictionary.Add(key, list);
+		dictionary.Add("DLC3_ID", new List<CarePackageInfo>
+		{
+			new CarePackageInfo("DisposableElectrobank_BasicSingleHarvestPlant", 5f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_CONSTRUCTION, 1f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_EXCAVATION, 1f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_MACHINERY, 1f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_ATHLETICS, 1f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_COOKING, 1f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_MEDICINE, 1f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_STRENGTH, 1f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_CREATIVITY, 1f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_AGRICULTURE, 1f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_HUSBANDRY, 1f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_SCIENCE, 1f, null),
+			new CarePackageInfo("bionic_upgrade_" + BionicUpgradeComponentConfig.SUFFIX_PILOTING, 1f, null)
+		});
 		this.carePackagesByDlc = dictionary;
 	}
 
-	private void ConfigureCarePackages()
+		private void ConfigureCarePackages()
 	{
 		if (DlcManager.FeatureClusterSpaceEnabled())
 		{
@@ -61,7 +78,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		}
 	}
 
-	private void ConfigureBaseGameCarePackages()
+		private void ConfigureBaseGameCarePackages()
 	{
 		List<CarePackageInfo> list = new List<CarePackageInfo>();
 		list.Add(new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.SandStone).tag.ToString(), 1000f, null));
@@ -126,7 +143,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		this.carePackages = list;
 	}
 
-	private void ConfigureMultiWorldCarePackages()
+		private void ConfigureMultiWorldCarePackages()
 	{
 		List<CarePackageInfo> list = new List<CarePackageInfo>();
 		list.Add(new CarePackageInfo(ElementLoader.FindElementByHash(SimHashes.SandStone).tag.ToString(), 1000f, null));
@@ -201,17 +218,17 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		this.carePackages = list;
 	}
 
-	private static bool CycleCondition(int cycle)
+		private static bool CycleCondition(int cycle)
 	{
 		return GameClock.Instance.GetCycle() >= cycle;
 	}
 
-	private static bool DiscoveredCondition(Tag tag)
+		private static bool DiscoveredCondition(Tag tag)
 	{
 		return DiscoveredResources.Instance.IsDiscovered(tag);
 	}
 
-		public bool ImmigrantsAvailable
+			public bool ImmigrantsAvailable
 	{
 		get
 		{
@@ -219,7 +236,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		}
 	}
 
-	public int EndImmigration()
+		public int EndImmigration()
 	{
 		this.bImmigrantAvailable = false;
 		this.spawnIdx++;
@@ -228,18 +245,18 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		return this.spawnTable[num];
 	}
 
-	public float GetTimeRemaining()
+		public float GetTimeRemaining()
 	{
 		return this.timeBeforeSpawn;
 	}
 
-	public float GetTotalWaitTime()
+		public float GetTotalWaitTime()
 	{
 		int num = Math.Min(this.spawnIdx, this.spawnInterval.Length - 1);
 		return this.spawnInterval[num];
 	}
 
-	public void Sim200ms(float dt)
+		public void Sim200ms(float dt)
 	{
 		if (this.IsHalted() || this.bImmigrantAvailable)
 		{
@@ -253,7 +270,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		}
 	}
 
-	private bool IsHalted()
+		private bool IsHalted()
 	{
 		foreach (Telepad telepad in Components.Telepads.Items)
 		{
@@ -266,7 +283,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		return true;
 	}
 
-	public int GetPersonalPriority(ChoreGroup group)
+		public int GetPersonalPriority(ChoreGroup group)
 	{
 		int result;
 		if (!this.defaultPersonalPriorities.TryGetValue(group.IdHash, out result))
@@ -276,7 +293,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		return result;
 	}
 
-	public CarePackageInfo RandomCarePackage()
+		public CarePackageInfo RandomCarePackage()
 	{
 		List<CarePackageInfo> list = new List<CarePackageInfo>();
 		foreach (CarePackageInfo carePackageInfo in this.carePackages)
@@ -289,17 +306,17 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		return list[UnityEngine.Random.Range(0, list.Count)];
 	}
 
-	public void SetPersonalPriority(ChoreGroup group, int value)
+		public void SetPersonalPriority(ChoreGroup group, int value)
 	{
 		this.defaultPersonalPriorities[group.IdHash] = value;
 	}
 
-	public int GetAssociatedSkillLevel(ChoreGroup group)
+		public int GetAssociatedSkillLevel(ChoreGroup group)
 	{
 		return 0;
 	}
 
-	public void ApplyDefaultPersonalPriorities(GameObject minion)
+		public void ApplyDefaultPersonalPriorities(GameObject minion)
 	{
 		IPersonalPriorityManager instance = Immigration.Instance;
 		IPersonalPriorityManager component = minion.GetComponent<ChoreConsumer>();
@@ -310,7 +327,7 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		}
 	}
 
-	public void ResetPersonalPriorities()
+		public void ResetPersonalPriorities()
 	{
 		bool advancedPersonalPriorities = Game.Instance.advancedPersonalPriorities;
 		foreach (ChoreGroup choreGroup in Db.Get().ChoreGroups.resources)
@@ -319,44 +336,44 @@ public class Immigration : KMonoBehaviour, ISaveLoadable, ISim200ms, IPersonalPr
 		}
 	}
 
-	public bool IsChoreGroupDisabled(ChoreGroup g)
+		public bool IsChoreGroupDisabled(ChoreGroup g)
 	{
 		return false;
 	}
 
-	public float[] spawnInterval;
+		public float[] spawnInterval;
 
-	public int[] spawnTable;
+		public int[] spawnTable;
 
-	[Serialize]
+		[Serialize]
 	private Dictionary<HashedString, int> defaultPersonalPriorities = new Dictionary<HashedString, int>();
 
-	[Serialize]
+		[Serialize]
 	public float timeBeforeSpawn = float.PositiveInfinity;
 
-	[Serialize]
+		[Serialize]
 	private bool bImmigrantAvailable;
 
-	[Serialize]
+		[Serialize]
 	private int spawnIdx;
 
-	private List<CarePackageInfo> carePackages;
+		private List<CarePackageInfo> carePackages;
 
-	private Dictionary<string, List<CarePackageInfo>> carePackagesByDlc;
+		private Dictionary<string, List<CarePackageInfo>> carePackagesByDlc;
 
-	public static Immigration Instance;
+		public static Immigration Instance;
 
-	private const int CYCLE_THRESHOLD_A = 6;
+		private const int CYCLE_THRESHOLD_A = 6;
 
-	private const int CYCLE_THRESHOLD_B = 12;
+		private const int CYCLE_THRESHOLD_B = 12;
 
-	private const int CYCLE_THRESHOLD_C = 24;
+		private const int CYCLE_THRESHOLD_C = 24;
 
-	private const int CYCLE_THRESHOLD_D = 48;
+		private const int CYCLE_THRESHOLD_D = 48;
 
-	private const int CYCLE_THRESHOLD_E = 100;
+		private const int CYCLE_THRESHOLD_E = 100;
 
-	private const int CYCLE_THRESHOLD_UNLOCK_EVERYTHING = 500;
+		private const int CYCLE_THRESHOLD_UNLOCK_EVERYTHING = 500;
 
-	public const string FACADE_SELECT_RANDOM = "SELECTRANDOM";
+		public const string FACADE_SELECT_RANDOM = "SELECTRANDOM";
 }

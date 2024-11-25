@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public class AnimatedSickness : Sickness.SicknessComponent
+		public class AnimatedSickness : Sickness.SicknessComponent
 	{
-		public AnimatedSickness(HashedString[] kanim_filenames, Expression expression)
+				public AnimatedSickness(HashedString[] kanim_filenames, Expression expression)
 		{
 			this.kanims = new KAnimFile[kanim_filenames.Length];
 			for (int i = 0; i < kanim_filenames.Length; i++)
@@ -15,7 +15,7 @@ namespace Klei.AI
 			this.expression = expression;
 		}
 
-		public override object OnInfect(GameObject go, SicknessInstance diseaseInstance)
+				public override object OnInfect(GameObject go, SicknessInstance diseaseInstance)
 		{
 			for (int i = 0; i < this.kanims.Length; i++)
 			{
@@ -28,7 +28,7 @@ namespace Klei.AI
 			return null;
 		}
 
-		public override void OnCure(GameObject go, object instace_data)
+				public override void OnCure(GameObject go, object instace_data)
 		{
 			if (this.expression != null)
 			{
@@ -40,8 +40,8 @@ namespace Klei.AI
 			}
 		}
 
-		private KAnimFile[] kanims;
+				private KAnimFile[] kanims;
 
-		private Expression expression;
+				private Expression expression;
 	}
 }

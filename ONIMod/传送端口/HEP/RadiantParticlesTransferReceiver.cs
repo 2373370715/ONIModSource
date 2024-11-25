@@ -1,6 +1,6 @@
 ﻿using KSerialization;
 
-
+namespace RsTransferPort;
 
 public class RadiantParticlesTransferReceiver
     : StateMachineComponent<RadiantParticlesTransferReceiver.StatesInstance>, IMyHighEnergyParticleDirection {

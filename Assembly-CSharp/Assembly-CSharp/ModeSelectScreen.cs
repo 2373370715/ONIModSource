@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class ModeSelectScreen : NewGameFlowScreen
 {
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		this.LoadWorldAndClusterData();
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		HierarchyReferences component = this.survivalButton.GetComponent<HierarchyReferences>();
@@ -35,7 +35,7 @@ public class ModeSelectScreen : NewGameFlowScreen
 		this.closeButton.onClick += base.NavigateBackward;
 	}
 
-	private void OnHoverEnterSurvival()
+		private void OnHoverEnterSurvival()
 	{
 		KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Mouseover", false));
 		this.survivalButtonSelectionFrame.SetAlpha(1f);
@@ -43,7 +43,7 @@ public class ModeSelectScreen : NewGameFlowScreen
 		this.descriptionArea.text = UI.FRONTEND.MODESELECTSCREEN.SURVIVAL_DESC;
 	}
 
-	private void OnHoverExitSurvival()
+		private void OnHoverExitSurvival()
 	{
 		KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Mouseover", false));
 		this.survivalButtonSelectionFrame.SetAlpha(0f);
@@ -51,14 +51,14 @@ public class ModeSelectScreen : NewGameFlowScreen
 		this.descriptionArea.text = UI.FRONTEND.MODESELECTSCREEN.BLANK_DESC;
 	}
 
-	private void OnClickSurvival()
+		private void OnClickSurvival()
 	{
 		this.Deactivate();
 		CustomGameSettings.Instance.SetSurvivalDefaults();
 		base.NavigateForward();
 	}
 
-	private void LoadWorldAndClusterData()
+		private void LoadWorldAndClusterData()
 	{
 		if (ModeSelectScreen.dataLoaded)
 		{
@@ -69,7 +69,7 @@ public class ModeSelectScreen : NewGameFlowScreen
 		ModeSelectScreen.dataLoaded = true;
 	}
 
-	private void OnHoverEnterNosweat()
+		private void OnHoverEnterNosweat()
 	{
 		KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Mouseover", false));
 		this.nosweatButtonSelectionFrame.SetAlpha(1f);
@@ -77,7 +77,7 @@ public class ModeSelectScreen : NewGameFlowScreen
 		this.descriptionArea.text = UI.FRONTEND.MODESELECTSCREEN.NOSWEAT_DESC;
 	}
 
-	private void OnHoverExitNosweat()
+		private void OnHoverExitNosweat()
 	{
 		KMonoBehaviour.PlaySound(GlobalAssets.GetSound("HUD_Mouseover", false));
 		this.nosweatButtonSelectionFrame.SetAlpha(0f);
@@ -85,38 +85,38 @@ public class ModeSelectScreen : NewGameFlowScreen
 		this.descriptionArea.text = UI.FRONTEND.MODESELECTSCREEN.BLANK_DESC;
 	}
 
-	private void OnClickNosweat()
+		private void OnClickNosweat()
 	{
 		this.Deactivate();
 		CustomGameSettings.Instance.SetNosweatDefaults();
 		base.NavigateForward();
 	}
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle nosweatButton;
 
-	private Image nosweatButtonHeader;
+		private Image nosweatButtonHeader;
 
-	private Image nosweatButtonSelectionFrame;
+		private Image nosweatButtonSelectionFrame;
 
-	[SerializeField]
+		[SerializeField]
 	private MultiToggle survivalButton;
 
-	private Image survivalButtonHeader;
+		private Image survivalButtonHeader;
 
-	private Image survivalButtonSelectionFrame;
+		private Image survivalButtonSelectionFrame;
 
-	[SerializeField]
+		[SerializeField]
 	private LocText descriptionArea;
 
-	[SerializeField]
+		[SerializeField]
 	private KButton closeButton;
 
-	[SerializeField]
+		[SerializeField]
 	private KBatchedAnimController nosweatAnim;
 
-	[SerializeField]
+		[SerializeField]
 	private KBatchedAnimController survivalAnim;
 
-	private static bool dataLoaded;
+		private static bool dataLoaded;
 }

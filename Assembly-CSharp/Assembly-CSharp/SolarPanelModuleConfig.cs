@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class SolarPanelModuleConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
+		public override string[] GetRequiredDlcIds()
 	{
-		return DlcManager.AVAILABLE_EXPANSION1_ONLY;
+		return DlcManager.EXPANSION1;
 	}
 
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "SolarPanelModule";
 		int width = 3;
@@ -44,7 +44,7 @@ public class SolarPanelModuleConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		BuildingConfigManager.Instance.IgnoreDefaultKComponent(typeof(RequiresFoundation), prefab_tag);
 		go.AddOrGet<LoopingSounds>();
@@ -57,7 +57,7 @@ public class SolarPanelModuleConfig : IBuildingConfig
 		go.AddComponent<PartialLightBlocking>();
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		Prioritizable.AddRef(go);
 		go.AddOrGet<ModuleSolarPanel>().showConnectedConsumerStatusItems = false;
@@ -65,11 +65,11 @@ public class SolarPanelModuleConfig : IBuildingConfig
 		go.GetComponent<RocketModule>().operationalLandedRequired = false;
 	}
 
-	public const string ID = "SolarPanelModule";
+		public const string ID = "SolarPanelModule";
 
-	private static readonly CellOffset PLUG_OFFSET = new CellOffset(-1, 0);
+		private static readonly CellOffset PLUG_OFFSET = new CellOffset(-1, 0);
 
-	private const float EFFICIENCY_RATIO = 0.75f;
+		private const float EFFICIENCY_RATIO = 0.75f;
 
-	public const float MAX_WATTS = 60f;
+		public const float MAX_WATTS = 60f;
 }

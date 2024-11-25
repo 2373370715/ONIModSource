@@ -4,44 +4,44 @@ using UnityEngine;
 
 namespace Klei.AI
 {
-	public abstract class StoryTraitStateMachine<TStateMachine, TInstance, TDef> : GameStateMachine<TStateMachine, TInstance, StateMachineController, TDef> where TStateMachine : StoryTraitStateMachine<TStateMachine, TInstance, TDef> where TInstance : StoryTraitStateMachine<TStateMachine, TInstance, TDef>.TraitInstance where TDef : StoryTraitStateMachine<TStateMachine, TInstance, TDef>.TraitDef
+		public abstract class StoryTraitStateMachine<TStateMachine, TInstance, TDef> : GameStateMachine<TStateMachine, TInstance, StateMachineController, TDef> where TStateMachine : StoryTraitStateMachine<TStateMachine, TInstance, TDef> where TInstance : StoryTraitStateMachine<TStateMachine, TInstance, TDef>.TraitInstance where TDef : StoryTraitStateMachine<TStateMachine, TInstance, TDef>.TraitDef
 	{
-		public class TraitDef : StateMachine.BaseDef
+				public class TraitDef : StateMachine.BaseDef
 		{
-			public string InitalLoreId;
+						public string InitalLoreId;
 
-			public string CompleteLoreId;
+						public string CompleteLoreId;
 
-			public Story Story;
+						public Story Story;
 
-			public StoryCompleteData CompletionData;
+						public StoryCompleteData CompletionData;
 
-			public StoryManager.PopupInfo EventIntroInfo = new StoryManager.PopupInfo
+						public StoryManager.PopupInfo EventIntroInfo = new StoryManager.PopupInfo
 			{
 				PopupType = EventInfoDataHelper.PopupType.NONE
 			};
 
-			public StoryManager.PopupInfo EventCompleteInfo = new StoryManager.PopupInfo
+						public StoryManager.PopupInfo EventCompleteInfo = new StoryManager.PopupInfo
 			{
 				PopupType = EventInfoDataHelper.PopupType.NONE
 			};
 		}
 
-		public class TraitInstance : GameStateMachine<TStateMachine, TInstance, StateMachineController, TDef>.GameInstance
+				public class TraitInstance : GameStateMachine<TStateMachine, TInstance, StateMachineController, TDef>.GameInstance
 		{
-			public TraitInstance(StateMachineController master) : base(master)
+						public TraitInstance(StateMachineController master) : base(master)
 			{
 				StoryManager.Instance.ForceCreateStory(base.def.Story, base.gameObject.GetMyWorldId());
 				this.buildingActivatedHandle = master.Subscribe(-1909216579, new Action<object>(this.OnBuildingActivated));
 			}
 
-			public TraitInstance(StateMachineController master, TDef def) : base(master, def)
+						public TraitInstance(StateMachineController master, TDef def) : base(master, def)
 			{
 				StoryManager.Instance.ForceCreateStory(def.Story, base.gameObject.GetMyWorldId());
 				this.buildingActivatedHandle = master.Subscribe(-1909216579, new Action<object>(this.OnBuildingActivated));
 			}
 
-			public override void StartSM()
+						public override void StartSM()
 			{
 				this.selectable = base.GetComponent<KSelectable>();
 				this.notifier = base.gameObject.AddOrGet<Notifier>();
@@ -54,7 +54,7 @@ namespace Klei.AI
 				this.TriggerStoryEvent(StoryInstance.State.DISCOVERED);
 			}
 
-			public override void StopSM(string reason)
+						public override void StopSM(string reason)
 			{
 				base.StopSM(reason);
 				base.Unsubscribe(-1503271301, new Action<object>(this.OnObjectSelect));
@@ -62,7 +62,7 @@ namespace Klei.AI
 				this.buildingActivatedHandle = -1;
 			}
 
-			public void TriggerStoryEvent(StoryInstance.State storyEvent)
+						public void TriggerStoryEvent(StoryInstance.State storyEvent)
 			{
 				switch (storyEvent)
 				{
@@ -86,7 +86,7 @@ namespace Klei.AI
 				}
 			}
 
-			protected virtual void OnBuildingActivated(object activated)
+						protected virtual void OnBuildingActivated(object activated)
 			{
 				if (!(bool)activated)
 				{
@@ -95,7 +95,7 @@ namespace Klei.AI
 				this.TriggerStoryEvent(StoryInstance.State.IN_PROGRESS);
 			}
 
-			protected virtual void OnObjectSelect(object clicked)
+						protected virtual void OnObjectSelect(object clicked)
 			{
 				if (!(bool)clicked)
 				{
@@ -113,7 +113,7 @@ namespace Klei.AI
 				}
 			}
 
-			public virtual void CompleteEvent()
+						public virtual void CompleteEvent()
 			{
 				StoryInstance storyInstance = StoryManager.Instance.GetStoryInstance(base.def.Story.HashId);
 				if (storyInstance == null || storyInstance.CurrentState == StoryInstance.State.COMPLETE)
@@ -123,12 +123,12 @@ namespace Klei.AI
 				this.DisplayPopup(base.def.EventCompleteInfo);
 			}
 
-			public virtual void OnCompleteStorySequence()
+						public virtual void OnCompleteStorySequence()
 			{
 				this.TriggerStoryEvent(StoryInstance.State.COMPLETE);
 			}
 
-			protected void DisplayPopup(StoryManager.PopupInfo info)
+						protected void DisplayPopup(StoryManager.PopupInfo info)
 			{
 				if (info.PopupType == EventInfoDataHelper.PopupType.NONE)
 				{
@@ -142,7 +142,7 @@ namespace Klei.AI
 				}
 			}
 
-			public void OnNotificationClicked(object data = null)
+						public void OnNotificationClicked(object data = null)
 			{
 				StoryInstance storyInstance = StoryManager.Instance.GetStoryInstance(base.def.Story.HashId);
 				if (storyInstance == null)
@@ -164,7 +164,7 @@ namespace Klei.AI
 				this.ShowEventBeginUI();
 			}
 
-			public virtual void OnPopupClosed()
+						public virtual void OnPopupClosed()
 			{
 				StoryInstance storyInstance = StoryManager.Instance.GetStoryInstance(base.def.Story.HashId);
 				if (storyInstance == null)
@@ -179,15 +179,15 @@ namespace Klei.AI
 				Game.Instance.unlocks.Unlock(base.def.InitalLoreId, true);
 			}
 
-			protected virtual void ShowEventBeginUI()
+						protected virtual void ShowEventBeginUI()
 			{
 			}
 
-			protected virtual void ShowEventNormalUI()
+						protected virtual void ShowEventNormalUI()
 			{
 			}
 
-			protected virtual void ShowEventCompleteUI()
+						protected virtual void ShowEventCompleteUI()
 			{
 				StoryInstance storyInstance = StoryManager.Instance.GetStoryInstance(base.def.Story.HashId);
 				if (storyInstance == null)
@@ -207,11 +207,11 @@ namespace Klei.AI
 				});
 			}
 
-			protected int buildingActivatedHandle = -1;
+						protected int buildingActivatedHandle = -1;
 
-			protected Notifier notifier;
+						protected Notifier notifier;
 
-			protected KSelectable selectable;
+						protected KSelectable selectable;
 		}
 	}
 }

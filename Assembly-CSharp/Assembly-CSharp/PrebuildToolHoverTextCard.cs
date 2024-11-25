@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PrebuildToolHoverTextCard : HoverTextConfiguration
 {
-	public override void UpdateHoverElements(List<KSelectable> selected)
+		public override void UpdateHoverElements(List<KSelectable> selected)
 	{
 		HoverTextScreen instance = HoverTextScreen.Instance;
 		HoverTextDrawer hoverTextDrawer = instance.BeginDrawing();
@@ -18,10 +18,7 @@ public class PrebuildToolHoverTextCard : HoverTextConfiguration
 		if (!this.errorMessage.IsNullOrWhiteSpace())
 		{
 			bool flag = true;
-			foreach (string text in this.errorMessage.Split(new char[]
-			{
-				'\n'
-			}))
+			foreach (string text in this.errorMessage.Split('\n', StringSplitOptions.None))
 			{
 				if (!flag)
 				{
@@ -45,7 +42,7 @@ public class PrebuildToolHoverTextCard : HoverTextConfiguration
 		hoverTextDrawer.EndDrawing();
 	}
 
-	public string errorMessage;
+		public string errorMessage;
 
-	public BuildingDef currentDef;
+		public BuildingDef currentDef;
 }

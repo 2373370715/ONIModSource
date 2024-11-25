@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class ChoreTable
 {
-	public ChoreTable(ChoreTable.Entry[] entries)
+		public ChoreTable(ChoreTable.Entry[] entries)
 	{
 		this.entries = entries;
 	}
 
-	public ref ChoreTable.Entry GetEntry<T>()
+		public ref ChoreTable.Entry GetEntry<T>()
 	{
 		ref ChoreTable.Entry result = ref ChoreTable.InvalidEntry;
 		for (int i = 0; i < this.entries.Length; i++)
@@ -22,7 +22,7 @@ public class ChoreTable
 		return ref result;
 	}
 
-	public int GetChorePriority<StateMachineType>(ChoreConsumer chore_consumer)
+		public int GetChorePriority<StateMachineType>(ChoreConsumer chore_consumer)
 	{
 		for (int i = 0; i < this.entries.Length; i++)
 		{
@@ -36,26 +36,26 @@ public class ChoreTable
 		return -1;
 	}
 
-	private ChoreTable.Entry[] entries;
+		private ChoreTable.Entry[] entries;
 
-	public static ChoreTable.Entry InvalidEntry;
+		public static ChoreTable.Entry InvalidEntry;
 
-	public class Builder
+		public class Builder
 	{
-		public ChoreTable.Builder PushInterruptGroup()
+				public ChoreTable.Builder PushInterruptGroup()
 		{
 			this.interruptGroupId++;
 			return this;
 		}
 
-		public ChoreTable.Builder PopInterruptGroup()
+				public ChoreTable.Builder PopInterruptGroup()
 		{
 			DebugUtil.Assert(this.interruptGroupId > 0);
 			this.interruptGroupId--;
 			return this;
 		}
 
-		public ChoreTable.Builder Add(StateMachine.BaseDef def, bool condition = true, int forcePriority = -1)
+				public ChoreTable.Builder Add(StateMachine.BaseDef def, bool condition = true, int forcePriority = -1)
 		{
 			if (condition)
 			{
@@ -70,12 +70,12 @@ public class ChoreTable
 			return this;
 		}
 
-		public bool HasChoreType(Type choreType)
+				public bool HasChoreType(Type choreType)
 		{
 			return this.infos.Exists((ChoreTable.Builder.Info info) => info.def.GetType() == choreType);
 		}
 
-		public bool TryGetChoreDef<T>(out T def) where T : StateMachine.BaseDef
+				public bool TryGetChoreDef<T>(out T def) where T : StateMachine.BaseDef
 		{
 			for (int i = 0; i < this.infos.Count; i++)
 			{
@@ -89,7 +89,7 @@ public class ChoreTable
 			return false;
 		}
 
-		public ChoreTable CreateTable()
+				public ChoreTable CreateTable()
 		{
 			DebugUtil.Assert(this.interruptGroupId == 0);
 			ChoreTable.Entry[] array = new ChoreTable.Entry[this.infos.Count];
@@ -121,34 +121,34 @@ public class ChoreTable
 			return new ChoreTable(array);
 		}
 
-		private int interruptGroupId;
+				private int interruptGroupId;
 
-		private List<ChoreTable.Builder.Info> infos = new List<ChoreTable.Builder.Info>();
+				private List<ChoreTable.Builder.Info> infos = new List<ChoreTable.Builder.Info>();
 
-		private const int INVALID_PRIORITY = -1;
+				private const int INVALID_PRIORITY = -1;
 
-		private struct Info
+				private struct Info
 		{
-			public int interruptGroupId;
+						public int interruptGroupId;
 
-			public int forcePriority;
+						public int forcePriority;
 
-			public StateMachine.BaseDef def;
+						public StateMachine.BaseDef def;
 		}
 	}
 
-	public class ChoreTableChore<StateMachineType, StateMachineInstanceType> : Chore<StateMachineInstanceType> where StateMachineInstanceType : StateMachine.Instance
+		public class ChoreTableChore<StateMachineType, StateMachineInstanceType> : Chore<StateMachineInstanceType> where StateMachineInstanceType : StateMachine.Instance
 	{
-		public ChoreTableChore(StateMachine.BaseDef state_machine_def, ChoreType chore_type, KPrefabID prefab_id) : base(chore_type, prefab_id, prefab_id.GetComponent<ChoreProvider>(), true, null, null, null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
+				public ChoreTableChore(StateMachine.BaseDef state_machine_def, ChoreType chore_type, KPrefabID prefab_id) : base(chore_type, prefab_id, prefab_id.GetComponent<ChoreProvider>(), true, null, null, null, PriorityScreen.PriorityClass.basic, 5, false, true, 0, false, ReportManager.ReportType.WorkTime)
 		{
 			this.showAvailabilityInHoverText = false;
 			base.smi = (state_machine_def.CreateSMI(this) as StateMachineInstanceType);
 		}
 	}
 
-	public struct Entry
+		public struct Entry
 	{
-		public Entry(StateMachine.BaseDef state_machine_def, int priority, int interrupt_priority)
+				public Entry(StateMachine.BaseDef state_machine_def, int priority, int interrupt_priority)
 		{
 			Type stateMachineInstanceType = Singleton<StateMachineManager>.Instance.CreateStateMachine(state_machine_def.GetStateMachineType()).GetStateMachineInstanceType();
 			Type[] typeArguments = new Type[]
@@ -162,16 +162,16 @@ public class ChoreTable
 			this.stateMachineDef = state_machine_def;
 		}
 
-		public Type choreClassType;
+				public Type choreClassType;
 
-		public ChoreType choreType;
+				public ChoreType choreType;
 
-		public StateMachine.BaseDef stateMachineDef;
+				public StateMachine.BaseDef stateMachineDef;
 	}
 
-	public class Instance
+		public class Instance
 	{
-		public static void ResetParameters()
+				public static void ResetParameters()
 		{
 			for (int i = 0; i < ChoreTable.Instance.parameters.Length; i++)
 			{
@@ -179,7 +179,7 @@ public class ChoreTable
 			}
 		}
 
-		public Instance(ChoreTable chore_table, KPrefabID prefab_id)
+				public Instance(ChoreTable chore_table, KPrefabID prefab_id)
 		{
 			this.prefabId = prefab_id;
 			this.entries = ListPool<ChoreTable.Instance.Entry, ChoreTable.Instance>.Allocate();
@@ -189,12 +189,12 @@ public class ChoreTable
 			}
 		}
 
-		~Instance()
+				~Instance()
 		{
 			this.OnCleanUp(this.prefabId);
 		}
 
-		public void OnCleanUp(KPrefabID prefab_id)
+				public void OnCleanUp(KPrefabID prefab_id)
 		{
 			if (this.entries == null)
 			{
@@ -208,15 +208,15 @@ public class ChoreTable
 			this.entries = null;
 		}
 
-		private static object[] parameters = new object[3];
+				private static object[] parameters = new object[3];
 
-		private KPrefabID prefabId;
+				private KPrefabID prefabId;
 
-		private ListPool<ChoreTable.Instance.Entry, ChoreTable.Instance>.PooledList entries;
+				private ListPool<ChoreTable.Instance.Entry, ChoreTable.Instance>.PooledList entries;
 
-		private struct Entry
+				private struct Entry
 		{
-			public Entry(ChoreTable.Entry chore_table_entry, KPrefabID prefab_id)
+						public Entry(ChoreTable.Entry chore_table_entry, KPrefabID prefab_id)
 			{
 				ChoreTable.Instance.parameters[0] = chore_table_entry.stateMachineDef;
 				ChoreTable.Instance.parameters[1] = chore_table_entry.choreType;
@@ -227,7 +227,7 @@ public class ChoreTable
 				ChoreTable.Instance.parameters[2] = null;
 			}
 
-			public void OnCleanUp(KPrefabID prefab_id)
+						public void OnCleanUp(KPrefabID prefab_id)
 			{
 				if (this.chore != null)
 				{
@@ -236,7 +236,7 @@ public class ChoreTable
 				}
 			}
 
-			public Chore chore;
+						public Chore chore;
 		}
 	}
 }

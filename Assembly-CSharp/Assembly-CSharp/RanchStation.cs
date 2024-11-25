@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance, IStateMachineTarget, RanchStation.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.Operational;
 		this.Unoperational.TagTransition(GameTags.Operational, this.Operational, false);
@@ -14,46 +14,46 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 		}, UpdateRate.SIM_200ms, false);
 	}
 
-	public StateMachine<RanchStation, RanchStation.Instance, IStateMachineTarget, RanchStation.Def>.BoolParameter RancherIsReady;
+		public StateMachine<RanchStation, RanchStation.Instance, IStateMachineTarget, RanchStation.Def>.BoolParameter RancherIsReady;
 
-	public GameStateMachine<RanchStation, RanchStation.Instance, IStateMachineTarget, RanchStation.Def>.State Unoperational;
+		public GameStateMachine<RanchStation, RanchStation.Instance, IStateMachineTarget, RanchStation.Def>.State Unoperational;
 
-	public RanchStation.OperationalState Operational;
+		public RanchStation.OperationalState Operational;
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public Func<GameObject, RanchStation.Instance, bool> IsCritterEligibleToBeRanchedCb;
+				public Func<GameObject, RanchStation.Instance, bool> IsCritterEligibleToBeRanchedCb;
 
-		public Action<GameObject> OnRanchCompleteCb;
+				public Action<GameObject> OnRanchCompleteCb;
 
-		public Action<GameObject, float, Workable> OnRanchWorkTick;
+				public Action<GameObject, float, Workable> OnRanchWorkTick;
 
-		public HashedString RanchedPreAnim = "idle_loop";
+				public HashedString RanchedPreAnim = "idle_loop";
 
-		public HashedString RanchedLoopAnim = "idle_loop";
+				public HashedString RanchedLoopAnim = "idle_loop";
 
-		public HashedString RanchedPstAnim = "idle_loop";
+				public HashedString RanchedPstAnim = "idle_loop";
 
-		public HashedString RanchedAbortAnim = "idle_loop";
+				public HashedString RanchedAbortAnim = "idle_loop";
 
-		public HashedString RancherInteractAnim = "anim_interacts_rancherstation_kanim";
+				public HashedString RancherInteractAnim = "anim_interacts_rancherstation_kanim";
 
-		public StatusItem RanchingStatusItem = Db.Get().DuplicantStatusItems.Ranching;
+				public StatusItem RanchingStatusItem = Db.Get().DuplicantStatusItems.Ranching;
 
-		public StatusItem CreatureRanchingStatusItem = Db.Get().CreatureStatusItems.GettingRanched;
+				public StatusItem CreatureRanchingStatusItem = Db.Get().CreatureStatusItems.GettingRanched;
 
-		public float WorkTime = 12f;
+				public float WorkTime = 12f;
 
-		public Func<RanchStation.Instance, int> GetTargetRanchCell = (RanchStation.Instance smi) => Grid.PosToCell(smi);
+				public Func<RanchStation.Instance, int> GetTargetRanchCell = (RanchStation.Instance smi) => Grid.PosToCell(smi);
 	}
 
-	public class OperationalState : GameStateMachine<RanchStation, RanchStation.Instance, IStateMachineTarget, RanchStation.Def>.State
+		public class OperationalState : GameStateMachine<RanchStation, RanchStation.Instance, IStateMachineTarget, RanchStation.Def>.State
 	{
 	}
 
-	public new class Instance : GameStateMachine<RanchStation, RanchStation.Instance, IStateMachineTarget, RanchStation.Def>.GameInstance
+		public new class Instance : GameStateMachine<RanchStation, RanchStation.Instance, IStateMachineTarget, RanchStation.Def>.GameInstance
 	{
-				public RanchedStates.Instance ActiveRanchable
+						public RanchedStates.Instance ActiveRanchable
 		{
 			get
 			{
@@ -61,7 +61,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-				private bool isCritterAvailableForRanching
+						private bool isCritterAvailableForRanching
 		{
 			get
 			{
@@ -69,7 +69,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-				public bool IsCritterAvailableForRanching
+						public bool IsCritterAvailableForRanching
 		{
 			get
 			{
@@ -78,7 +78,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-				public bool HasRancher
+						public bool HasRancher
 		{
 			get
 			{
@@ -86,7 +86,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-				public bool IsRancherReady
+						public bool IsRancherReady
 		{
 			get
 			{
@@ -94,7 +94,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-				public Extents StationExtents
+						public Extents StationExtents
 		{
 			get
 			{
@@ -102,33 +102,33 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-		public int GetRanchNavTarget()
+				public int GetRanchNavTarget()
 		{
 			return base.def.GetTargetRanchCell(this);
 		}
 
-		public Instance(IStateMachineTarget master, RanchStation.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, RanchStation.Def def) : base(master, def)
 		{
 			base.gameObject.AddOrGet<RancherChore.RancherWorkable>();
 			this.station = base.GetComponent<BuildingComplete>();
 		}
 
-		public Chore CreateChore()
+				public Chore CreateChore()
 		{
 			RancherChore rancherChore = new RancherChore(base.GetComponent<KPrefabID>());
 			StateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance, IStateMachineTarget, object>.TargetParameter targetParameter = rancherChore.smi.sm.rancher;
 			StateMachine<RancherChore.RancherChoreStates, RancherChore.RancherChoreStates.Instance, IStateMachineTarget, object>.Parameter<GameObject>.Context context = targetParameter.GetContext(rancherChore.smi);
 			context.onDirty = (Action<RancherChore.RancherChoreStates.Instance>)Delegate.Combine(context.onDirty, new Action<RancherChore.RancherChoreStates.Instance>(this.OnRancherChanged));
-			this.rancher = targetParameter.Get<Worker>(rancherChore.smi);
+			this.rancher = targetParameter.Get<WorkerBase>(rancherChore.smi);
 			return rancherChore;
 		}
 
-		public int GetTargetRanchCell()
+				public int GetTargetRanchCell()
 		{
 			return base.def.GetTargetRanchCell(this);
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			base.Subscribe(144050788, new Action<object>(this.OnRoomUpdated));
@@ -139,13 +139,13 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-		public override void StopSM(string reason)
+				public override void StopSM(string reason)
 		{
 			base.StopSM(reason);
 			base.Unsubscribe(144050788, new Action<object>(this.OnRoomUpdated));
 		}
 
-		private void OnRoomUpdated(object data)
+				private void OnRoomUpdated(object data)
 		{
 			if (data == null)
 			{
@@ -159,31 +159,31 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-		private void OnRancherChanged(RancherChore.RancherChoreStates.Instance choreInstance)
+				private void OnRancherChanged(RancherChore.RancherChoreStates.Instance choreInstance)
 		{
-			this.rancher = choreInstance.sm.rancher.Get<Worker>(choreInstance);
+			this.rancher = choreInstance.sm.rancher.Get<WorkerBase>(choreInstance);
 			this.TriggerRanchStationNoLongerAvailable();
 		}
 
-		public bool TryGetRanched(RanchedStates.Instance ranchable)
+				public bool TryGetRanched(RanchedStates.Instance ranchable)
 		{
 			return this.activeRanchable == null || this.activeRanchable == ranchable;
 		}
 
-		public void MessageCreatureArrived(RanchedStates.Instance critter)
+				public void MessageCreatureArrived(RanchedStates.Instance critter)
 		{
 			this.activeRanchable = critter;
 			base.sm.RancherIsReady.Set(false, this, false);
 			base.Trigger(-1357116271, null);
 		}
 
-		public void MessageRancherReady()
+				public void MessageRancherReady()
 		{
 			base.sm.RancherIsReady.Set(true, base.smi, false);
 			this.MessageRanchables(GameHashes.RancherReadyAtRanchStation);
 		}
 
-		private bool CanRanchableBeRanchedAtRanchStation(RanchableMonitor.Instance ranchable)
+				private bool CanRanchableBeRanchedAtRanchStation(RanchableMonitor.Instance ranchable)
 		{
 			bool flag = !ranchable.IsNullOrStopped();
 			if (flag && ranchable.TargetRanchStation != null && ranchable.TargetRanchStation != this)
@@ -213,7 +213,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			return flag;
 		}
 
-		public void ValidateTargetRanchables()
+				public void ValidateTargetRanchables()
 		{
 			if (!this.HasRancher)
 			{
@@ -228,7 +228,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-		public void FindRanchable(object _ = null)
+				public void FindRanchable(object _ = null)
 		{
 			if (this.ranch == null)
 			{
@@ -260,7 +260,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-		public Option<CavityInfo> GetCavityInfo()
+				public Option<CavityInfo> GetCavityInfo()
 		{
 			if (this.ranch.IsNullOrDestroyed())
 			{
@@ -269,7 +269,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			return this.ranch.cavity;
 		}
 
-		public void RanchCreature()
+				public void RanchCreature()
 		{
 			if (this.activeRanchable.IsNullOrStopped())
 			{
@@ -286,7 +286,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			this.FindRanchable(null);
 		}
 
-		public void TriggerRanchStationNoLongerAvailable()
+				public void TriggerRanchStationNoLongerAvailable()
 		{
 			for (int i = this.targetRanchables.Count - 1; i >= 0; i--)
 			{
@@ -306,7 +306,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			base.sm.RancherIsReady.Set(false, this, false);
 		}
 
-		public void MessageRanchables(GameHashes hash)
+				public void MessageRanchables(GameHashes hash)
 		{
 			for (int i = 0; i < this.targetRanchables.Count; i++)
 			{
@@ -322,7 +322,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-		public void Abandon(RanchableMonitor.Instance critter)
+				public void Abandon(RanchableMonitor.Instance critter)
 		{
 			if (critter == null)
 			{
@@ -350,7 +350,7 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			}
 		}
 
-		private void TryNotifyEmptyRanch()
+				private void TryNotifyEmptyRanch()
 		{
 			if (!this.HasRancher)
 			{
@@ -359,26 +359,26 @@ public class RanchStation : GameStateMachine<RanchStation, RanchStation.Instance
 			this.rancher.Trigger(-364750427, null);
 		}
 
-		public bool IsCritterInQueue(RanchableMonitor.Instance critter)
+				public bool IsCritterInQueue(RanchableMonitor.Instance critter)
 		{
 			return this.targetRanchables.Contains(critter);
 		}
 
-		public List<RanchableMonitor.Instance> DEBUG_GetTargetRanchables()
+				public List<RanchableMonitor.Instance> DEBUG_GetTargetRanchables()
 		{
 			return this.targetRanchables;
 		}
 
-		private const int QUEUE_SIZE = 2;
+				private const int QUEUE_SIZE = 2;
 
-		private List<RanchableMonitor.Instance> targetRanchables = new List<RanchableMonitor.Instance>();
+				private List<RanchableMonitor.Instance> targetRanchables = new List<RanchableMonitor.Instance>();
 
-		private RanchedStates.Instance activeRanchable;
+				private RanchedStates.Instance activeRanchable;
 
-		private Room ranch;
+				private Room ranch;
 
-		private Worker rancher;
+				private WorkerBase rancher;
 
-		private BuildingComplete station;
+				private BuildingComplete station;
 	}
 }

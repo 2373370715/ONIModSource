@@ -2,11 +2,11 @@
 
 public class BreathableAreaSensor : Sensor
 {
-	public BreathableAreaSensor(Sensors sensors) : base(sensors)
+		public BreathableAreaSensor(Sensors sensors) : base(sensors)
 	{
 	}
 
-	public override void Update()
+		public override void Update()
 	{
 		if (this.breather == null)
 		{
@@ -25,17 +25,17 @@ public class BreathableAreaSensor : Sensor
 		}
 	}
 
-	public bool IsBreathable()
+		public bool IsBreathable()
 	{
 		return this.isBreathable;
 	}
 
-	public bool IsUnderwater()
+		public bool IsUnderwater()
 	{
 		return this.breather.IsUnderLiquid;
 	}
 
-	private bool isBreathable;
+		private bool isBreathable;
 
-	private OxygenBreather breather;
+		private OxygenBreather breather;
 }

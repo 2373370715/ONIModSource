@@ -4,25 +4,25 @@ using FMOD.Studio;
 
 public class LadderBed : GameStateMachine<LadderBed, LadderBed.Instance, IStateMachineTarget, LadderBed.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		default_state = this.root;
 	}
 
-	public static string lightBedShakeSoundPath = GlobalAssets.GetSound("LadderBed_LightShake", false);
+		public static string lightBedShakeSoundPath = GlobalAssets.GetSound("LadderBed_LightShake", false);
 
-	public static string noDupeBedShakeSoundPath = GlobalAssets.GetSound("LadderBed_Shake", false);
+		public static string noDupeBedShakeSoundPath = GlobalAssets.GetSound("LadderBed_Shake", false);
 
-	public static string LADDER_BED_COUNT_BELOW_PARAMETER = "bed_count";
+		public static string LADDER_BED_COUNT_BELOW_PARAMETER = "bed_count";
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public CellOffset[] offsets;
+				public CellOffset[] offsets;
 	}
 
-	public new class Instance : GameStateMachine<LadderBed, LadderBed.Instance, IStateMachineTarget, LadderBed.Def>.GameInstance
+		public new class Instance : GameStateMachine<LadderBed, LadderBed.Instance, IStateMachineTarget, LadderBed.Def>.GameInstance
 	{
-		public Instance(IStateMachineTarget master, LadderBed.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, LadderBed.Def def) : base(master, def)
 		{
 			ScenePartitionerLayer scenePartitionerLayer = GameScenePartitioner.Instance.objectLayers[40];
 			this.m_cell = Grid.PosToCell(master.gameObject);
@@ -42,7 +42,7 @@ public class LadderBed : GameStateMachine<LadderBed, LadderBed.Instance, IStateM
 			master.GetComponent<KAnimControllerBase>().GetLayering().GetLink().syncTint = false;
 		}
 
-		private void OnSleepDisturbedByMovement(object obj)
+				private void OnSleepDisturbedByMovement(object obj)
 		{
 			base.GetComponent<KAnimControllerBase>().Play("interrupt_light", KAnim.PlayMode.Once, 1f, 0f);
 			EventInstance instance = SoundEvent.BeginOneShot(LadderBed.lightBedShakeSoundPath, base.smi.transform.GetPosition(), 1f, false);
@@ -50,15 +50,15 @@ public class LadderBed : GameStateMachine<LadderBed, LadderBed.Instance, IStateM
 			SoundEvent.EndOneShot(instance);
 		}
 
-		private void OnAttachmentChanged(object data)
+				private void OnAttachmentChanged(object data)
 		{
 			this.numBelow = AttachableBuilding.CountAttachedBelow(this.m_attachable);
 		}
 
-		private void OnMoverChanged(object obj)
+				private void OnMoverChanged(object obj)
 		{
 			Pickupable pickupable = obj as Pickupable;
-			if (pickupable != null && pickupable.gameObject != null && pickupable.KPrefabID.HasTag(GameTags.Minion) && pickupable.GetComponent<Navigator>().CurrentNavType == NavType.Ladder)
+			if (pickupable != null && pickupable.gameObject != null && pickupable.KPrefabID.HasTag(GameTags.BaseMinion) && pickupable.GetComponent<Navigator>().CurrentNavType == NavType.Ladder)
 			{
 				if (this.m_sleepable.worker == null)
 				{
@@ -75,7 +75,7 @@ public class LadderBed : GameStateMachine<LadderBed, LadderBed.Instance, IStateM
 			}
 		}
 
-		protected override void OnCleanUp()
+				protected override void OnCleanUp()
 		{
 			foreach (HandleVector<int>.Handle handle in this.m_partitionEntires)
 			{
@@ -86,19 +86,19 @@ public class LadderBed : GameStateMachine<LadderBed, LadderBed.Instance, IStateM
 			base.OnCleanUp();
 		}
 
-		private List<HandleVector<int>.Handle> m_partitionEntires = new List<HandleVector<int>.Handle>();
+				private List<HandleVector<int>.Handle> m_partitionEntires = new List<HandleVector<int>.Handle>();
 
-		private int m_cell;
+				private int m_cell;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Ownable m_ownable;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Sleepable m_sleepable;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private AttachableBuilding m_attachable;
 
-		private int numBelow;
+				private int numBelow;
 	}
 }

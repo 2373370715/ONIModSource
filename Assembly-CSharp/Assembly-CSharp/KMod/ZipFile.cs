@@ -9,26 +9,26 @@ using UnityEngine;
 
 namespace KMod
 {
-	internal struct ZipFile : IFileSource
+		internal struct ZipFile : IFileSource
 	{
-		public ZipFile(string filename)
+				public ZipFile(string filename)
 		{
 			this.filename = filename;
 			this.zipfile = ZipFile.Read(filename);
 			this.file_system = new ZipFileDirectory(this.zipfile.Name, this.zipfile, Application.streamingAssetsPath, true);
 		}
 
-		public string GetRoot()
+				public string GetRoot()
 		{
 			return this.filename;
 		}
 
-		public bool Exists()
+				public bool Exists()
 		{
 			return File.Exists(this.GetRoot());
 		}
 
-		public bool Exists(string relative_path)
+				public bool Exists(string relative_path)
 		{
 			if (!this.Exists())
 			{
@@ -47,7 +47,7 @@ namespace KMod
 			return false;
 		}
 
-		public void GetTopLevelItems(List<FileSystemItem> file_system_items, string relative_root)
+				public void GetTopLevelItems(List<FileSystemItem> file_system_items, string relative_root)
 		{
 			HashSetPool<string, ZipFile>.PooledHashSet pooledHashSet = HashSetPool<string, ZipFile>.Allocate();
 			string[] array;
@@ -55,10 +55,7 @@ namespace KMod
 			{
 				relative_root = (relative_root ?? "");
 				relative_root = FileSystem.Normalize(relative_root);
-				array = relative_root.Split(new char[]
-				{
-					'/'
-				});
+				array = relative_root.Split('/', StringSplitOptions.None);
 			}
 			else
 			{
@@ -66,10 +63,7 @@ namespace KMod
 			}
 			foreach (ZipEntry zipEntry in this.zipfile)
 			{
-				List<string> list = (from part in FileSystem.Normalize(zipEntry.FileName).Split(new char[]
-				{
-					'/'
-				})
+				List<string> list = (from part in FileSystem.Normalize(zipEntry.FileName).Split('/', StringSplitOptions.None)
 				where !string.IsNullOrEmpty(part)
 				select part).ToList<string>();
 				if (this.IsSharedRoot(array, list))
@@ -92,7 +86,7 @@ namespace KMod
 			pooledHashSet.Recycle();
 		}
 
-		private bool IsSharedRoot(string[] root_path, List<string> check_path)
+				private bool IsSharedRoot(string[] root_path, List<string> check_path)
 		{
 			for (int i = 0; i < root_path.Length; i++)
 			{
@@ -104,12 +98,12 @@ namespace KMod
 			return true;
 		}
 
-		public IFileDirectory GetFileSystem()
+				public IFileDirectory GetFileSystem()
 		{
 			return this.file_system;
 		}
 
-		public void CopyTo(string path, List<string> extensions = null)
+				public void CopyTo(string path, List<string> extensions = null)
 		{
 			foreach (ZipEntry zipEntry in this.zipfile.Entries)
 			{
@@ -144,7 +138,7 @@ namespace KMod
 			}
 		}
 
-		public string Read(string relative_path)
+				public string Read(string relative_path)
 		{
 			ICollection<ZipEntry> collection = this.zipfile.SelectEntries(relative_path);
 			if (collection.Count == 0)
@@ -162,15 +156,15 @@ namespace KMod
 			return string.Empty;
 		}
 
-		public void Dispose()
+				public void Dispose()
 		{
 			this.zipfile.Dispose();
 		}
 
-		private string filename;
+				private string filename;
 
-		private ZipFile zipfile;
+				private ZipFile zipfile;
 
-		private ZipFileDirectory file_system;
+				private ZipFileDirectory file_system;
 	}
 }

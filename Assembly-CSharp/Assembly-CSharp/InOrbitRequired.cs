@@ -7,7 +7,7 @@ using UnityEngine;
 [AddComponentMenu("KMonoBehaviour/scripts/InOrbitRequired")]
 public class InOrbitRequired : KMonoBehaviour, IGameObjectEffectDescriptor
 {
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		WorldContainer myWorld = this.GetMyWorld();
 		this.craftModuleInterface = myWorld.GetComponent<CraftModuleInterface>();
@@ -17,7 +17,7 @@ public class InOrbitRequired : KMonoBehaviour, IGameObjectEffectDescriptor
 		this.craftModuleInterface.Subscribe(-1582839653, new Action<object>(this.OnTagsChanged));
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.craftModuleInterface != null)
 		{
@@ -25,7 +25,7 @@ public class InOrbitRequired : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	private void OnTagsChanged(object data)
+		private void OnTagsChanged(object data)
 	{
 		TagChangedEventData tagChangedEventData = (TagChangedEventData)data;
 		if (tagChangedEventData.tag == GameTags.RocketNotOnGround)
@@ -34,13 +34,13 @@ public class InOrbitRequired : KMonoBehaviour, IGameObjectEffectDescriptor
 		}
 	}
 
-	private void UpdateFlag(bool newInOrbit)
+		private void UpdateFlag(bool newInOrbit)
 	{
 		this.operational.SetFlag(InOrbitRequired.inOrbitFlag, newInOrbit);
 		base.GetComponent<KSelectable>().ToggleStatusItem(Db.Get().BuildingStatusItems.InOrbitRequired, !newInOrbit, this);
 	}
 
-	public List<Descriptor> GetDescriptors(GameObject go)
+		public List<Descriptor> GetDescriptors(GameObject go)
 	{
 		return new List<Descriptor>
 		{
@@ -48,13 +48,13 @@ public class InOrbitRequired : KMonoBehaviour, IGameObjectEffectDescriptor
 		};
 	}
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Building building;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	public static readonly Operational.Flag inOrbitFlag = new Operational.Flag("in_orbit", Operational.Flag.Type.Requirement);
+		public static readonly Operational.Flag inOrbitFlag = new Operational.Flag("in_orbit", Operational.Flag.Type.Requirement);
 
-	private CraftModuleInterface craftModuleInterface;
+		private CraftModuleInterface craftModuleInterface;
 }

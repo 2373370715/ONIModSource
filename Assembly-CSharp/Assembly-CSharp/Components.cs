@@ -3,234 +3,527 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Components {
-    public static Cmps<RobotAi.Instance>           LiveRobotsIdentities      = new Cmps<RobotAi.Instance>();
-    public static Cmps<MinionIdentity>             LiveMinionIdentities      = new Cmps<MinionIdentity>();
-    public static Cmps<MinionIdentity>             MinionIdentities          = new Cmps<MinionIdentity>();
-    public static Cmps<StoredMinionIdentity>       StoredMinionIdentities    = new Cmps<StoredMinionIdentity>();
-    public static Cmps<MinionStorage>              MinionStorages            = new Cmps<MinionStorage>();
-    public static Cmps<MinionResume>               MinionResumes             = new Cmps<MinionResume>();
-    public static Cmps<Sleepable>                  Sleepables                = new Cmps<Sleepable>();
-    public static Cmps<IUsable>                    Toilets                   = new Cmps<IUsable>();
-    public static Cmps<Pickupable>                 Pickupables               = new Cmps<Pickupable>();
-    public static Cmps<Brain>                      Brains                    = new Cmps<Brain>();
-    public static Cmps<BuildingComplete>           BuildingCompletes         = new Cmps<BuildingComplete>();
-    public static Cmps<Notifier>                   Notifiers                 = new Cmps<Notifier>();
-    public static Cmps<Fabricator>                 Fabricators               = new Cmps<Fabricator>();
-    public static Cmps<Refinery>                   Refineries                = new Cmps<Refinery>();
-    public static CmpsByWorld<PlantablePlot>       PlantablePlots            = new CmpsByWorld<PlantablePlot>();
-    public static Cmps<Ladder>                     Ladders                   = new Cmps<Ladder>();
-    public static Cmps<NavTeleporter>              NavTeleporters            = new Cmps<NavTeleporter>();
-    public static Cmps<ITravelTubePiece>           ITravelTubePieces         = new Cmps<ITravelTubePiece>();
-    public static CmpsByWorld<CreatureFeeder>      CreatureFeeders           = new CmpsByWorld<CreatureFeeder>();
-    public static CmpsByWorld<MilkFeeder.Instance> MilkFeeders               = new CmpsByWorld<MilkFeeder.Instance>();
-    public static Cmps<Light2D>                    Light2Ds                  = new Cmps<Light2D>();
-    public static Cmps<Radiator>                   Radiators                 = new Cmps<Radiator>();
-    public static Cmps<Edible>                     Edibles                   = new Cmps<Edible>();
-    public static Cmps<Diggable>                   Diggables                 = new Cmps<Diggable>();
-    public static Cmps<IResearchCenter>            ResearchCenters           = new Cmps<IResearchCenter>();
-    public static Cmps<Harvestable>                Harvestables              = new Cmps<Harvestable>();
-    public static Cmps<HarvestDesignatable>        HarvestDesignatables      = new Cmps<HarvestDesignatable>();
-    public static Cmps<Uprootable>                 Uprootables               = new Cmps<Uprootable>();
-    public static Cmps<Health>                     Health                    = new Cmps<Health>();
-    public static Cmps<Equipment>                  Equipment                 = new Cmps<Equipment>();
-    public static Cmps<FactionAlignment>           FactionAlignments         = new Cmps<FactionAlignment>();
-    public static Cmps<FactionAlignment>           PlayerTargeted            = new Cmps<FactionAlignment>();
-    public static Cmps<Telepad>                    Telepads                  = new Cmps<Telepad>();
-    public static Cmps<Generator>                  Generators                = new Cmps<Generator>();
-    public static Cmps<EnergyConsumer>             EnergyConsumers           = new Cmps<EnergyConsumer>();
-    public static Cmps<Battery>                    Batteries                 = new Cmps<Battery>();
-    public static Cmps<Breakable>                  Breakables                = new Cmps<Breakable>();
-    public static Cmps<Crop>                       Crops                     = new Cmps<Crop>();
-    public static Cmps<Prioritizable>              Prioritizables            = new Cmps<Prioritizable>();
-    public static Cmps<Clinic>                     Clinics                   = new Cmps<Clinic>();
-    public static Cmps<HandSanitizer>              HandSanitizers            = new Cmps<HandSanitizer>();
-    public static Cmps<EntityCellVisualizer>       EntityCellVisualizers     = new Cmps<EntityCellVisualizer>();
-    public static Cmps<RoleStation>                RoleStations              = new Cmps<RoleStation>();
-    public static Cmps<Telescope>                  Telescopes                = new Cmps<Telescope>();
-    public static Cmps<Capturable>                 Capturables               = new Cmps<Capturable>();
-    public static Cmps<NotCapturable>              NotCapturables            = new Cmps<NotCapturable>();
-    public static Cmps<DiseaseSourceVisualizer>    DiseaseSourceVisualizers  = new Cmps<DiseaseSourceVisualizer>();
-    public static Cmps<Grave>                      Graves                    = new Cmps<Grave>();
-    public static Cmps<AttachableBuilding>         AttachableBuildings       = new Cmps<AttachableBuilding>();
-    public static Cmps<BuildingAttachPoint>        BuildingAttachPoints      = new Cmps<BuildingAttachPoint>();
-    public static Cmps<MinionAssignablesProxy>     MinionAssignablesProxy    = new Cmps<MinionAssignablesProxy>();
-    public static Cmps<ComplexFabricator>          ComplexFabricators        = new Cmps<ComplexFabricator>();
-    public static Cmps<MonumentPart>               MonumentParts             = new Cmps<MonumentPart>();
-    public static Cmps<PlantableSeed>              PlantableSeeds            = new Cmps<PlantableSeed>();
-    public static Cmps<IBasicBuilding>             BasicBuildings            = new Cmps<IBasicBuilding>();
-    public static Cmps<Painting>                   Paintings                 = new Cmps<Painting>();
-    public static Cmps<BuildingComplete>           TemplateBuildings         = new Cmps<BuildingComplete>();
-    public static Cmps<Teleporter>                 Teleporters               = new Cmps<Teleporter>();
-    public static Cmps<MutantPlant>                MutantPlants              = new Cmps<MutantPlant>();
-    public static Cmps<LandingBeacon.Instance>     LandingBeacons            = new Cmps<LandingBeacon.Instance>();
-    public static Cmps<HighEnergyParticle>         HighEnergyParticles       = new Cmps<HighEnergyParticle>();
-    public static Cmps<HighEnergyParticlePort>     HighEnergyParticlePorts   = new Cmps<HighEnergyParticlePort>();
-    public static Cmps<Clustercraft>               Clustercrafts             = new Cmps<Clustercraft>();
-    public static Cmps<ClustercraftInteriorDoor>   ClusterCraftInteriorDoors = new Cmps<ClustercraftInteriorDoor>();
-    public static Cmps<PassengerRocketModule>      PassengerRocketModules    = new Cmps<PassengerRocketModule>();
-    public static Cmps<ClusterTraveler>            ClusterTravelers          = new Cmps<ClusterTraveler>();
-    public static Cmps<LaunchPad>                  LaunchPads                = new Cmps<LaunchPad>();
-    public static Cmps<WarpReceiver>               WarpReceivers             = new Cmps<WarpReceiver>();
-    public static Cmps<RocketControlStation>       RocketControlStations     = new Cmps<RocketControlStation>();
-    public static Cmps<Reactor>                    NuclearReactors           = new Cmps<Reactor>();
-    public static Cmps<BuildingComplete>           EntombedBuildings         = new Cmps<BuildingComplete>();
-    public static Cmps<SpaceArtifact>              SpaceArtifacts            = new Cmps<SpaceArtifact>();
+public class Components
+{
+		public static Components.Cmps<RobotAi.Instance> LiveRobotsIdentities = new Components.Cmps<RobotAi.Instance>();
 
-    public static Cmps<ArtifactAnalysisStationWorkable> ArtifactAnalysisStations
-        = new Cmps<ArtifactAnalysisStationWorkable>();
+		public static Components.Cmps<MinionIdentity> LiveMinionIdentities = new Components.Cmps<MinionIdentity>();
 
-    public static Cmps<RocketConduitReceiver>  RocketConduitReceivers  = new Cmps<RocketConduitReceiver>();
-    public static Cmps<RocketConduitSender>    RocketConduitSenders    = new Cmps<RocketConduitSender>();
-    public static Cmps<LogicBroadcaster>       LogicBroadcasters       = new Cmps<LogicBroadcaster>();
-    public static Cmps<Telephone>              Telephones              = new Cmps<Telephone>();
-    public static Cmps<MissionControlWorkable> MissionControlWorkables = new Cmps<MissionControlWorkable>();
+		public static Components.Cmps<MinionIdentity> MinionIdentities = new Components.Cmps<MinionIdentity>();
 
-    public static Cmps<MissionControlClusterWorkable> MissionControlClusterWorkables
-        = new Cmps<MissionControlClusterWorkable>();
+		public static Components.Cmps<StoredMinionIdentity> StoredMinionIdentities = new Components.Cmps<StoredMinionIdentity>();
 
-    public static Cmps<MinorFossilDigSite.Instance>     MinorFossilDigSites = new Cmps<MinorFossilDigSite.Instance>();
-    public static Cmps<MajorFossilDigSite.Instance>     MajorFossilDigSites = new Cmps<MajorFossilDigSite.Instance>();
-    public static Cmps<GameObject>                      FoodRehydrators = new Cmps<GameObject>();
-    public static CmpsByWorld<Geyser>                   Geysers = new CmpsByWorld<Geyser>();
-    public static CmpsByWorld<GeoTuner.Instance>        GeoTuners = new CmpsByWorld<GeoTuner.Instance>();
-    public static CmpsByWorld<CritterCondo.Instance>    CritterCondos = new CmpsByWorld<CritterCondo.Instance>();
-    public static CmpsByWorld<GeothermalController>     GeothermalControllers = new CmpsByWorld<GeothermalController>();
-    public static CmpsByWorld<GeothermalVent>           GeothermalVents = new CmpsByWorld<GeothermalVent>();
-    public static CmpsByWorld<Comet>                    Meteors = new CmpsByWorld<Comet>();
-    public static CmpsByWorld<DetectorNetwork.Instance> DetectorNetworks = new CmpsByWorld<DetectorNetwork.Instance>();
+		public static Components.Cmps<MinionStorage> MinionStorages = new Components.Cmps<MinionStorage>();
 
-    public static CmpsByWorld<ScannerNetworkVisualizer>
-        ScannerVisualizers = new CmpsByWorld<ScannerNetworkVisualizer>();
+		public static Components.Cmps<MinionResume> MinionResumes = new Components.Cmps<MinionResume>();
 
-    public static Cmps<IncubationMonitor.Instance> IncubationMonitors = new Cmps<IncubationMonitor.Instance>();
+		public static Dictionary<Tag, Components.Cmps<MinionIdentity>> MinionIdentitiesByModel = new Dictionary<Tag, Components.Cmps<MinionIdentity>>();
 
-    public static Cmps<FixedCapturableMonitor.Instance> FixedCapturableMonitors
-        = new Cmps<FixedCapturableMonitor.Instance>();
+		public static Dictionary<Tag, Components.Cmps<MinionIdentity>> LiveMinionIdentitiesByModel = new Dictionary<Tag, Components.Cmps<MinionIdentity>>();
 
-    public static Cmps<BeeHive.StatesInstance> BeeHives                       = new Cmps<BeeHive.StatesInstance>();
-    public static Cmps<StateMachine.Instance>  EffectImmunityProviderStations = new Cmps<StateMachine.Instance>();
+		public static Components.CmpsByWorld<Sleepable> NormalBeds = new Components.CmpsByWorld<Sleepable>();
 
-    public class Cmps<T> : ICollection, IEnumerable, IEnumerable<T> {
-        private readonly KCompactedVector<T>                     items;
-        private readonly Dictionary<T, HandleVector<int>.Handle> table;
+		public static Components.Cmps<IUsable> Toilets = new Components.Cmps<IUsable>();
 
-        public Cmps() {
-            App.OnPreLoadScene = (System.Action)Delegate.Combine(App.OnPreLoadScene, new System.Action(Clear));
-            items              = new KCompactedVector<T>();
-            table              = new Dictionary<T, HandleVector<int>.Handle>();
-        }
+		public static Components.Cmps<Pickupable> Pickupables = new Components.Cmps<Pickupable>();
 
-        public List<T> Items => items.GetDataList();
-        public T this[int idx] => Items[idx];
-        public int              Count                          => items.Count;
-        public bool             IsSynchronized                 => throw new NotImplementedException();
-        public object           SyncRoot                       => throw new NotImplementedException();
-        public void             CopyTo(Array array, int index) { throw new NotImplementedException(); }
-        IEnumerator IEnumerable.GetEnumerator() { return items.GetEnumerator(); }
+		public static Components.Cmps<Brain> Brains = new Components.Cmps<Brain>();
 
-        private void Clear() {
-            items.Clear();
-            table.Clear();
-            OnAdd    = null;
-            OnRemove = null;
-        }
+		public static Components.Cmps<BuildingComplete> BuildingCompletes = new Components.Cmps<BuildingComplete>();
 
-        public void Add(T cmp) {
-            var value = items.Allocate(cmp);
-            table[cmp] = value;
-            if (OnAdd != null) OnAdd(cmp);
-        }
+		public static Components.Cmps<Notifier> Notifiers = new Components.Cmps<Notifier>();
 
-        public void Remove(T cmp) {
-            var invalidHandle = HandleVector<int>.InvalidHandle;
-            if (table.TryGetValue(cmp, out invalidHandle)) {
-                table.Remove(cmp);
-                items.Free(invalidHandle);
-                if (OnRemove != null) OnRemove(cmp);
-            }
-        }
+		public static Components.Cmps<Fabricator> Fabricators = new Components.Cmps<Fabricator>();
 
-        public void Register(Action<T> on_add, Action<T> on_remove) {
-            OnAdd    += on_add;
-            OnRemove += on_remove;
-            foreach (var obj in Items) OnAdd(obj);
-        }
+		public static Components.Cmps<Refinery> Refineries = new Components.Cmps<Refinery>();
 
-        public void Unregister(Action<T> on_add, Action<T> on_remove) {
-            OnAdd    -= on_add;
-            OnRemove -= on_remove;
-        }
+		public static Components.CmpsByWorld<PlantablePlot> PlantablePlots = new Components.CmpsByWorld<PlantablePlot>();
 
-        public List<T> GetWorldItems(int worldId, bool checkChildWorlds = false) {
-            var list = new List<T>();
-            foreach (var t in Items) {
-                var component = t as KMonoBehaviour;
-                var flag      = component.GetMyWorldId() == worldId;
-                if (!flag && checkChildWorlds) {
-                    var myWorld                                                   = component.GetMyWorld();
-                    if (myWorld != null && myWorld.ParentWorldId == worldId) flag = true;
-                }
+		public static Components.Cmps<Ladder> Ladders = new Components.Cmps<Ladder>();
 
-                if (flag) list.Add(t);
-            }
+		public static Components.Cmps<NavTeleporter> NavTeleporters = new Components.Cmps<NavTeleporter>();
 
-            return list;
-        }
+		public static Components.Cmps<ITravelTubePiece> ITravelTubePieces = new Components.Cmps<ITravelTubePiece>();
 
-        public event Action<T> OnAdd;
-        public event Action<T> OnRemove;
-        private IEnumerator<T> IEnumerable;
-        public  IEnumerator<T>    GetEnumerator() { return items.GetEnumerator(); }
-    }
+		public static Components.CmpsByWorld<CreatureFeeder> CreatureFeeders = new Components.CmpsByWorld<CreatureFeeder>();
 
-    public class CmpsByWorld<T> {
-        private readonly Dictionary<int, Cmps<T>> m_CmpsByWorld;
+		public static Components.CmpsByWorld<MilkFeeder.Instance> MilkFeeders = new Components.CmpsByWorld<MilkFeeder.Instance>();
 
-        public CmpsByWorld() {
-            App.OnPreLoadScene = (System.Action)Delegate.Combine(App.OnPreLoadScene, new System.Action(Clear));
-            m_CmpsByWorld      = new Dictionary<int, Cmps<T>>();
-        }
+		public static Components.Cmps<Light2D> Light2Ds = new Components.Cmps<Light2D>();
 
-        public int GlobalCount {
-            get {
-                var num                                         = 0;
-                foreach (var keyValuePair in m_CmpsByWorld) num += m_CmpsByWorld.Count;
-                return num;
-            }
-        }
+		public static Components.Cmps<Radiator> Radiators = new Components.Cmps<Radiator>();
 
-        public void Clear() { m_CmpsByWorld.Clear(); }
+		public static Components.Cmps<Edible> Edibles = new Components.Cmps<Edible>();
 
-        public Cmps<T> CreateOrGetCmps(int worldId) {
-            Cmps<T> cmps;
-            if (!m_CmpsByWorld.TryGetValue(worldId, out cmps)) {
-                cmps                   = new Cmps<T>();
-                m_CmpsByWorld[worldId] = cmps;
-            }
+		public static Components.Cmps<Diggable> Diggables = new Components.Cmps<Diggable>();
 
-            return cmps;
-        }
+		public static Components.Cmps<IResearchCenter> ResearchCenters = new Components.Cmps<IResearchCenter>();
 
-        public void Add(int worldId, T cmp) {
-            DebugUtil.DevAssertArgs(worldId != -1,
-                                    "CmpsByWorld tried to add a component to an invalid world. Did you call this during a state machine's constructor instead of StartSM? ",
-                                    cmp);
+		public static Components.Cmps<Harvestable> Harvestables = new Components.Cmps<Harvestable>();
 
-            CreateOrGetCmps(worldId).Add(cmp);
-        }
+		public static Components.Cmps<HarvestDesignatable> HarvestDesignatables = new Components.Cmps<HarvestDesignatable>();
 
-        public void Remove(int worldId, T cmp) { CreateOrGetCmps(worldId).Remove(cmp); }
+		public static Components.Cmps<Uprootable> Uprootables = new Components.Cmps<Uprootable>();
 
-        public void Register(int worldId, Action<T> on_add, Action<T> on_remove) {
-            CreateOrGetCmps(worldId).Register(on_add, on_remove);
-        }
+		public static Components.Cmps<Health> Health = new Components.Cmps<Health>();
 
-        public void Unregister(int worldId, Action<T> on_add, Action<T> on_remove) {
-            CreateOrGetCmps(worldId).Unregister(on_add, on_remove);
-        }
+		public static Components.Cmps<Equipment> Equipment = new Components.Cmps<Equipment>();
 
-        public List<T>                                GetItems(int worldId) { return CreateOrGetCmps(worldId).Items; }
-        public Dictionary<int, Cmps<T>>.KeyCollection GetWorldsIds()        { return m_CmpsByWorld.Keys; }
-    }
+		public static Components.Cmps<FactionAlignment> FactionAlignments = new Components.Cmps<FactionAlignment>();
+
+		public static Components.Cmps<FactionAlignment> PlayerTargeted = new Components.Cmps<FactionAlignment>();
+
+		public static Components.Cmps<Telepad> Telepads = new Components.Cmps<Telepad>();
+
+		public static Components.Cmps<Generator> Generators = new Components.Cmps<Generator>();
+
+		public static Components.Cmps<EnergyConsumer> EnergyConsumers = new Components.Cmps<EnergyConsumer>();
+
+		public static Components.Cmps<Battery> Batteries = new Components.Cmps<Battery>();
+
+		public static Components.Cmps<Breakable> Breakables = new Components.Cmps<Breakable>();
+
+		public static Components.Cmps<Crop> Crops = new Components.Cmps<Crop>();
+
+		public static Components.Cmps<Prioritizable> Prioritizables = new Components.Cmps<Prioritizable>();
+
+		public static Components.Cmps<Clinic> Clinics = new Components.Cmps<Clinic>();
+
+		public static Components.Cmps<HandSanitizer> HandSanitizers = new Components.Cmps<HandSanitizer>();
+
+		public static Components.Cmps<EntityCellVisualizer> EntityCellVisualizers = new Components.Cmps<EntityCellVisualizer>();
+
+		public static Components.Cmps<RoleStation> RoleStations = new Components.Cmps<RoleStation>();
+
+		public static Components.Cmps<Telescope> Telescopes = new Components.Cmps<Telescope>();
+
+		public static Components.Cmps<Capturable> Capturables = new Components.Cmps<Capturable>();
+
+		public static Components.Cmps<NotCapturable> NotCapturables = new Components.Cmps<NotCapturable>();
+
+		public static Components.Cmps<DiseaseSourceVisualizer> DiseaseSourceVisualizers = new Components.Cmps<DiseaseSourceVisualizer>();
+
+		public static Components.Cmps<Grave> Graves = new Components.Cmps<Grave>();
+
+		public static Components.Cmps<AttachableBuilding> AttachableBuildings = new Components.Cmps<AttachableBuilding>();
+
+		public static Components.Cmps<BuildingAttachPoint> BuildingAttachPoints = new Components.Cmps<BuildingAttachPoint>();
+
+		public static Components.Cmps<MinionAssignablesProxy> MinionAssignablesProxy = new Components.Cmps<MinionAssignablesProxy>();
+
+		public static Components.Cmps<ComplexFabricator> ComplexFabricators = new Components.Cmps<ComplexFabricator>();
+
+		public static Components.Cmps<MonumentPart> MonumentParts = new Components.Cmps<MonumentPart>();
+
+		public static Components.Cmps<PlantableSeed> PlantableSeeds = new Components.Cmps<PlantableSeed>();
+
+		public static Components.Cmps<IBasicBuilding> BasicBuildings = new Components.Cmps<IBasicBuilding>();
+
+		public static Components.Cmps<Painting> Paintings = new Components.Cmps<Painting>();
+
+		public static Components.Cmps<BuildingComplete> TemplateBuildings = new Components.Cmps<BuildingComplete>();
+
+		public static Components.Cmps<Teleporter> Teleporters = new Components.Cmps<Teleporter>();
+
+		public static Components.Cmps<MutantPlant> MutantPlants = new Components.Cmps<MutantPlant>();
+
+		public static Components.Cmps<LandingBeacon.Instance> LandingBeacons = new Components.Cmps<LandingBeacon.Instance>();
+
+		public static Components.Cmps<HighEnergyParticle> HighEnergyParticles = new Components.Cmps<HighEnergyParticle>();
+
+		public static Components.Cmps<HighEnergyParticlePort> HighEnergyParticlePorts = new Components.Cmps<HighEnergyParticlePort>();
+
+		public static Components.Cmps<Clustercraft> Clustercrafts = new Components.Cmps<Clustercraft>();
+
+		public static Components.Cmps<ClustercraftInteriorDoor> ClusterCraftInteriorDoors = new Components.Cmps<ClustercraftInteriorDoor>();
+
+		public static Components.Cmps<PassengerRocketModule> PassengerRocketModules = new Components.Cmps<PassengerRocketModule>();
+
+		public static Components.Cmps<ClusterTraveler> ClusterTravelers = new Components.Cmps<ClusterTraveler>();
+
+		public static Components.Cmps<LaunchPad> LaunchPads = new Components.Cmps<LaunchPad>();
+
+		public static Components.Cmps<WarpReceiver> WarpReceivers = new Components.Cmps<WarpReceiver>();
+
+		public static Components.Cmps<RocketControlStation> RocketControlStations = new Components.Cmps<RocketControlStation>();
+
+		public static Components.Cmps<Reactor> NuclearReactors = new Components.Cmps<Reactor>();
+
+		public static Components.Cmps<BuildingComplete> EntombedBuildings = new Components.Cmps<BuildingComplete>();
+
+		public static Components.Cmps<SpaceArtifact> SpaceArtifacts = new Components.Cmps<SpaceArtifact>();
+
+		public static Components.Cmps<ArtifactAnalysisStationWorkable> ArtifactAnalysisStations = new Components.Cmps<ArtifactAnalysisStationWorkable>();
+
+		public static Components.Cmps<RocketConduitReceiver> RocketConduitReceivers = new Components.Cmps<RocketConduitReceiver>();
+
+		public static Components.Cmps<RocketConduitSender> RocketConduitSenders = new Components.Cmps<RocketConduitSender>();
+
+		public static Components.Cmps<LogicBroadcaster> LogicBroadcasters = new Components.Cmps<LogicBroadcaster>();
+
+		public static Components.Cmps<Telephone> Telephones = new Components.Cmps<Telephone>();
+
+		public static Components.Cmps<MissionControlWorkable> MissionControlWorkables = new Components.Cmps<MissionControlWorkable>();
+
+		public static Components.Cmps<MissionControlClusterWorkable> MissionControlClusterWorkables = new Components.Cmps<MissionControlClusterWorkable>();
+
+		public static Components.Cmps<MinorFossilDigSite.Instance> MinorFossilDigSites = new Components.Cmps<MinorFossilDigSite.Instance>();
+
+		public static Components.Cmps<MajorFossilDigSite.Instance> MajorFossilDigSites = new Components.Cmps<MajorFossilDigSite.Instance>();
+
+		public static Components.Cmps<GameObject> FoodRehydrators = new Components.Cmps<GameObject>();
+
+		public static Components.CmpsByWorld<SocialGatheringPoint> SocialGatheringPoints = new Components.CmpsByWorld<SocialGatheringPoint>();
+
+		public static Components.CmpsByWorld<Geyser> Geysers = new Components.CmpsByWorld<Geyser>();
+
+		public static Components.CmpsByWorld<GeoTuner.Instance> GeoTuners = new Components.CmpsByWorld<GeoTuner.Instance>();
+
+		public static Components.CmpsByWorld<CritterCondo.Instance> CritterCondos = new Components.CmpsByWorld<CritterCondo.Instance>();
+
+		public static Components.CmpsByWorld<GeothermalController> GeothermalControllers = new Components.CmpsByWorld<GeothermalController>();
+
+		public static Components.CmpsByWorld<GeothermalVent> GeothermalVents = new Components.CmpsByWorld<GeothermalVent>();
+
+		public static Components.CmpsByWorld<RemoteWorkerDock> RemoteWorkerDocks = new Components.CmpsByWorld<RemoteWorkerDock>();
+
+		public static Components.CmpsByWorld<IRemoteDockWorkTarget> RemoteDockWorkTargets = new Components.CmpsByWorld<IRemoteDockWorkTarget>();
+
+		public static Components.Cmps<Assignable> AssignableItems = new Components.Cmps<Assignable>();
+
+		public static Components.CmpsByWorld<Comet> Meteors = new Components.CmpsByWorld<Comet>();
+
+		public static Components.CmpsByWorld<DetectorNetwork.Instance> DetectorNetworks = new Components.CmpsByWorld<DetectorNetwork.Instance>();
+
+		public static Components.CmpsByWorld<ScannerNetworkVisualizer> ScannerVisualizers = new Components.CmpsByWorld<ScannerNetworkVisualizer>();
+
+		public static Components.Cmps<IncubationMonitor.Instance> IncubationMonitors = new Components.Cmps<IncubationMonitor.Instance>();
+
+		public static Components.Cmps<FixedCapturableMonitor.Instance> FixedCapturableMonitors = new Components.Cmps<FixedCapturableMonitor.Instance>();
+
+		public static Components.Cmps<BeeHive.StatesInstance> BeeHives = new Components.Cmps<BeeHive.StatesInstance>();
+
+		public static Components.Cmps<StateMachine.Instance> EffectImmunityProviderStations = new Components.Cmps<StateMachine.Instance>();
+
+		public static Components.Cmps<PeeChoreMonitor.Instance> CriticalBladders = new Components.Cmps<PeeChoreMonitor.Instance>();
+
+		public class Cmps<T> : ICollection, IEnumerable, IEnumerable<T>
+	{
+						public List<T> Items
+		{
+			get
+			{
+				return this.items.GetDataList();
+			}
+		}
+
+						public int Count
+		{
+			get
+			{
+				return this.items.Count;
+			}
+		}
+
+				public Cmps()
+		{
+			App.OnPreLoadScene = (System.Action)Delegate.Combine(App.OnPreLoadScene, new System.Action(this.Clear));
+			this.items = new KCompactedVector<T>(0);
+			this.table = new Dictionary<T, HandleVector<int>.Handle>();
+		}
+
+				public T this[int idx]
+		{
+			get
+			{
+				return this.Items[idx];
+			}
+		}
+
+				private void Clear()
+		{
+			this.items.Clear();
+			this.table.Clear();
+			this.OnAdd = null;
+			this.OnRemove = null;
+		}
+
+				public void Add(T cmp)
+		{
+			HandleVector<int>.Handle value = this.items.Allocate(cmp);
+			this.table[cmp] = value;
+			if (this.OnAdd != null)
+			{
+				this.OnAdd(cmp);
+			}
+		}
+
+				public void Remove(T cmp)
+		{
+			HandleVector<int>.Handle invalidHandle = HandleVector<int>.InvalidHandle;
+			if (this.table.TryGetValue(cmp, out invalidHandle))
+			{
+				this.table.Remove(cmp);
+				this.items.Free(invalidHandle);
+				if (this.OnRemove != null)
+				{
+					this.OnRemove(cmp);
+				}
+			}
+		}
+
+				public void Register(Action<T> on_add, Action<T> on_remove)
+		{
+			this.OnAdd += on_add;
+			this.OnRemove += on_remove;
+			foreach (T obj in this.Items)
+			{
+				this.OnAdd(obj);
+			}
+		}
+
+				public void Unregister(Action<T> on_add, Action<T> on_remove)
+		{
+			this.OnAdd -= on_add;
+			this.OnRemove -= on_remove;
+		}
+
+				public List<T> GetWorldItems(int worldId, bool checkChildWorlds = false)
+		{
+			ICollection<int> otherWorldIds = null;
+			if (checkChildWorlds)
+			{
+				otherWorldIds = ClusterManager.Instance.GetWorld(worldId).GetChildWorldIds();
+			}
+			return this.GetWorldItems(worldId, otherWorldIds, null);
+		}
+
+				public List<T> GetWorldItems(int worldId, bool checkChildWorlds, Func<T, bool> filter)
+		{
+			ICollection<int> otherWorldIds = null;
+			if (checkChildWorlds)
+			{
+				otherWorldIds = ClusterManager.Instance.GetWorld(worldId).GetChildWorldIds();
+			}
+			return this.GetWorldItems(worldId, otherWorldIds, filter);
+		}
+
+				public List<T> GetWorldItems(int worldId, ICollection<int> otherWorldIds, Func<T, bool> filter)
+		{
+			List<T> list = new List<T>();
+			for (int i = 0; i < this.Items.Count; i++)
+			{
+				T t = this.Items[i];
+				int myWorldId = (t as KMonoBehaviour).GetMyWorldId();
+				bool flag = worldId == myWorldId;
+				if (!flag && otherWorldIds != null && otherWorldIds.Contains(myWorldId))
+				{
+					flag = true;
+				}
+				if (flag && filter != null)
+				{
+					flag = filter(t);
+				}
+				if (flag)
+				{
+					list.Add(t);
+				}
+			}
+			return list;
+		}
+
+				public IEnumerable<T> WorldItemsEnumerate(int worldId, bool checkChildWorlds = false)
+		{
+			ICollection<int> otherWorldIds = null;
+			if (checkChildWorlds)
+			{
+				otherWorldIds = ClusterManager.Instance.GetWorld(worldId).GetChildWorldIds();
+			}
+			return this.WorldItemsEnumerate(worldId, otherWorldIds);
+		}
+
+				public IEnumerable<T> WorldItemsEnumerate(int worldId, ICollection<int> otherWorldIds = null)
+		{
+			int num;
+			for (int index = 0; index < this.Items.Count; index = num + 1)
+			{
+				T t = this.Items[index];
+				int myWorldId = (t as KMonoBehaviour).GetMyWorldId();
+				if (myWorldId == worldId || (otherWorldIds != null && otherWorldIds.Contains(myWorldId)))
+				{
+					yield return t;
+				}
+				num = index;
+			}
+			yield break;
+		}
+
+								public event Action<T> OnAdd;
+
+								public event Action<T> OnRemove;
+
+						public bool IsSynchronized
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+						public object SyncRoot
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+				public void CopyTo(Array array, int index)
+		{
+			throw new NotImplementedException();
+		}
+
+				IEnumerator IEnumerable.GetEnumerator()
+		{
+			return this.items.GetEnumerator();
+		}
+
+				IEnumerator<T> IEnumerable<!0>.GetEnumerator()
+		{
+			return this.items.GetEnumerator();
+		}
+
+				public IEnumerator GetEnumerator()
+		{
+			return this.items.GetEnumerator();
+		}
+
+				private Dictionary<T, HandleVector<int>.Handle> table;
+
+				private KCompactedVector<T> items;
+	}
+
+		public class CmpsByWorld<T>
+	{
+				public CmpsByWorld()
+		{
+			App.OnPreLoadScene = (System.Action)Delegate.Combine(App.OnPreLoadScene, new System.Action(this.Clear));
+			this.m_CmpsByWorld = new Dictionary<int, Components.Cmps<T>>();
+		}
+
+				public void Clear()
+		{
+			this.m_CmpsByWorld.Clear();
+		}
+
+				public Components.Cmps<T> CreateOrGetCmps(int worldId)
+		{
+			Components.Cmps<T> cmps;
+			if (!this.m_CmpsByWorld.TryGetValue(worldId, out cmps))
+			{
+				cmps = new Components.Cmps<T>();
+				this.m_CmpsByWorld[worldId] = cmps;
+			}
+			return cmps;
+		}
+
+				public void Add(int worldId, T cmp)
+		{
+			DebugUtil.DevAssertArgs(worldId != -1, new object[]
+			{
+				"CmpsByWorld tried to add a component to an invalid world. Did you call this during a state machine's constructor instead of StartSM? ",
+				cmp
+			});
+			this.CreateOrGetCmps(worldId).Add(cmp);
+		}
+
+				public void Remove(int worldId, T cmp)
+		{
+			this.CreateOrGetCmps(worldId).Remove(cmp);
+		}
+
+				public void Register(int worldId, Action<T> on_add, Action<T> on_remove)
+		{
+			this.CreateOrGetCmps(worldId).Register(on_add, on_remove);
+		}
+
+				public void Unregister(int worldId, Action<T> on_add, Action<T> on_remove)
+		{
+			this.CreateOrGetCmps(worldId).Unregister(on_add, on_remove);
+		}
+
+				public List<T> GetItems(int worldId)
+		{
+			return this.CreateOrGetCmps(worldId).Items;
+		}
+
+				public Dictionary<int, Components.Cmps<T>>.KeyCollection GetWorldsIds()
+		{
+			return this.m_CmpsByWorld.Keys;
+		}
+
+						public int GlobalCount
+		{
+			get
+			{
+				int num = 0;
+				foreach (KeyValuePair<int, Components.Cmps<T>> keyValuePair in this.m_CmpsByWorld)
+				{
+					num += keyValuePair.Value.Count;
+				}
+				return num;
+			}
+		}
+
+				public int CountWorldItems(int worldId, bool includeChildren = false)
+		{
+			int num = this.GetItems(worldId).Count;
+			if (includeChildren)
+			{
+				foreach (int worldId2 in ClusterManager.Instance.GetWorld(worldId).GetChildWorldIds())
+				{
+					num += this.GetItems(worldId2).Count;
+				}
+			}
+			return num;
+		}
+
+				public IEnumerable<T> WorldItemsEnumerate(int worldId, bool checkChildWorlds = false)
+		{
+			ICollection<int> otherWorldIds = null;
+			if (checkChildWorlds)
+			{
+				otherWorldIds = ClusterManager.Instance.GetWorld(worldId).GetChildWorldIds();
+			}
+			return this.WorldItemsEnumerate(worldId, otherWorldIds);
+		}
+
+				public IEnumerable<T> WorldItemsEnumerate(int worldId, ICollection<int> otherWorldIds = null)
+		{
+			List<T> items = this.GetItems(worldId);
+			int num;
+			for (int index = 0; index < items.Count; index = num + 1)
+			{
+				yield return items[index];
+				num = index;
+			}
+			if (otherWorldIds != null)
+			{
+				foreach (int worldId2 in otherWorldIds)
+				{
+					items = this.GetItems(worldId2);
+					for (int index = 0; index < items.Count; index = num + 1)
+					{
+						yield return items[index];
+						num = index;
+					}
+				}
+				IEnumerator<int> enumerator = null;
+			}
+			yield break;
+			yield break;
+		}
+
+				private Dictionary<int, Components.Cmps<T>> m_CmpsByWorld;
+	}
 }

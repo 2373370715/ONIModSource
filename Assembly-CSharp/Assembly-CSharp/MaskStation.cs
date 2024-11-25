@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasicBuilding
 {
-			private bool isRotated
+				private bool isRotated
 	{
 		get
 		{
@@ -17,7 +17,7 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 		}
 	}
 
-			private bool isOperational
+				private bool isOperational
 	{
 		get
 		{
@@ -29,7 +29,7 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 		}
 	}
 
-	public void UpdateOperational()
+		public void UpdateOperational()
 	{
 		bool flag = this.GetTotalOxygenAmount() >= this.oxygenConsumedPerMask * (float)this.maxUses;
 		this.shouldPump = this.IsPumpable();
@@ -44,7 +44,7 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 		this.noElementStatusGuid = this.selectable.ToggleStatusItem(Db.Get().BuildingStatusItems.InvalidMaskStationConsumptionState, this.noElementStatusGuid, !this.shouldPump, null);
 	}
 
-	private bool IsPumpable()
+		private bool IsPumpable()
 	{
 		ElementConsumer[] components = base.GetComponents<ElementConsumer>();
 		int num = Grid.PosToCell(base.transform.GetPosition());
@@ -68,31 +68,31 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 		return result;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		base.OnPrefabInit();
 		ChoreType fetch_chore_type = Db.Get().ChoreTypes.Get(this.choreTypeID);
 		this.filteredStorage = new FilteredStorage(this, null, null, false, fetch_chore_type);
 	}
 
-	private List<GameObject> GetPossibleMaterials()
+		private List<GameObject> GetPossibleMaterials()
 	{
 		List<GameObject> result = new List<GameObject>();
 		this.materialStorage.Find(this.materialTag, result);
 		return result;
 	}
 
-	private float GetTotalMaterialAmount()
+		private float GetTotalMaterialAmount()
 	{
 		return this.materialStorage.GetMassAvailable(this.materialTag);
 	}
 
-	private float GetTotalOxygenAmount()
+		private float GetTotalOxygenAmount()
 	{
 		return this.oxygenStorage.GetMassAvailable(this.oxygenTag);
 	}
 
-	private void RefreshMeters()
+		private void RefreshMeters()
 	{
 		float num = this.GetTotalMaterialAmount();
 		num = Mathf.Clamp01(num / ((float)this.maxUses * this.materialConsumedPerMask));
@@ -102,7 +102,7 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 		this.oxygenMeter.SetPositionPercent(num2);
 	}
 
-	protected override void OnSpawn()
+		protected override void OnSpawn()
 	{
 		base.OnSpawn();
 		base.smi.StartSM();
@@ -129,7 +129,7 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 		this.RefreshMeters();
 	}
 
-	private void Update()
+		private void Update()
 	{
 		float a = this.GetTotalMaterialAmount() / this.materialConsumedPerMask;
 		float b = this.GetTotalOxygenAmount() / this.oxygenConsumedPerMask;
@@ -138,7 +138,7 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 		Grid.UpdateSuitMarker(this.cell, fullLockerCount, emptyLockerCount, this.gridFlags, this.PathFlag);
 	}
 
-	protected override void OnCleanUp()
+		protected override void OnCleanUp()
 	{
 		if (this.filteredStorage != null)
 		{
@@ -155,17 +155,17 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 		base.OnCleanUp();
 	}
 
-	private void OnOperationalChanged(bool isOperational)
+		private void OnOperationalChanged(bool isOperational)
 	{
 		this.isOperational = isOperational;
 	}
 
-	private void OnStorageChange(object data)
+		private void OnStorageChange(object data)
 	{
 		this.RefreshMeters();
 	}
 
-	private void UpdateGridFlag(Grid.SuitMarker.Flags flag, bool state)
+		private void UpdateGridFlag(Grid.SuitMarker.Flags flag, bool state)
 	{
 		if (state)
 		{
@@ -175,80 +175,80 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 		this.gridFlags &= ~flag;
 	}
 
-	private void CreateNewReactable()
+		private void CreateNewReactable()
 	{
 		this.reactable = new MaskStation.OxygenMaskReactable(this);
 	}
 
-	private static readonly EventSystem.IntraObjectHandler<MaskStation> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<MaskStation>(delegate(MaskStation component, object data)
+		private static readonly EventSystem.IntraObjectHandler<MaskStation> OnStorageChangeDelegate = new EventSystem.IntraObjectHandler<MaskStation>(delegate(MaskStation component, object data)
 	{
 		component.OnStorageChange(data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<MaskStation> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<MaskStation>(delegate(MaskStation component, object data)
+		private static readonly EventSystem.IntraObjectHandler<MaskStation> OnOperationalChangedDelegate = new EventSystem.IntraObjectHandler<MaskStation>(delegate(MaskStation component, object data)
 	{
 		component.OnOperationalChanged((bool)data);
 	});
 
-	private static readonly EventSystem.IntraObjectHandler<MaskStation> OnRotatedDelegate = new EventSystem.IntraObjectHandler<MaskStation>(delegate(MaskStation component, object data)
+		private static readonly EventSystem.IntraObjectHandler<MaskStation> OnRotatedDelegate = new EventSystem.IntraObjectHandler<MaskStation>(delegate(MaskStation component, object data)
 	{
 		component.isRotated = ((Rotatable)data).IsRotated;
 	});
 
-	public float materialConsumedPerMask = 1f;
+		public float materialConsumedPerMask = 1f;
 
-	public float oxygenConsumedPerMask = 1f;
+		public float oxygenConsumedPerMask = 1f;
 
-	public Tag materialTag = GameTags.Metal;
+		public Tag materialTag = GameTags.Metal;
 
-	public Tag oxygenTag = GameTags.Breathable;
+		public Tag oxygenTag = GameTags.Breathable;
 
-	public int maxUses = 10;
+		public int maxUses = 10;
 
-	[MyCmpReq]
+		[MyCmpReq]
 	private Operational operational;
 
-	[MyCmpGet]
+		[MyCmpGet]
 	private KSelectable selectable;
 
-	public Storage materialStorage;
+		public Storage materialStorage;
 
-	public Storage oxygenStorage;
+		public Storage oxygenStorage;
 
-	private bool shouldPump;
+		private bool shouldPump;
 
-	private MaskStation.OxygenMaskReactable reactable;
+		private MaskStation.OxygenMaskReactable reactable;
 
-	private MeterController materialsMeter;
+		private MeterController materialsMeter;
 
-	private MeterController oxygenMeter;
+		private MeterController oxygenMeter;
 
-	public Meter.Offset materialsMeterOffset = Meter.Offset.Behind;
+		public Meter.Offset materialsMeterOffset = Meter.Offset.Behind;
 
-	public Meter.Offset oxygenMeterOffset;
+		public Meter.Offset oxygenMeterOffset;
 
-	public string choreTypeID;
+		public string choreTypeID;
 
-	protected FilteredStorage filteredStorage;
+		protected FilteredStorage filteredStorage;
 
-	public KAnimFile interactAnim = Assets.GetAnim("anim_equip_clothing_kanim");
+		public KAnimFile interactAnim = Assets.GetAnim("anim_equip_clothing_kanim");
 
-	private int cell;
+		private int cell;
 
-	public PathFinder.PotentialPath.Flags PathFlag;
+		public PathFinder.PotentialPath.Flags PathFlag;
 
-	private Guid noElementStatusGuid;
+		private Guid noElementStatusGuid;
 
-	private Grid.SuitMarker.Flags gridFlags;
+		private Grid.SuitMarker.Flags gridFlags;
 
-	private class OxygenMaskReactable : Reactable
+		private class OxygenMaskReactable : Reactable
 	{
-		public OxygenMaskReactable(MaskStation mask_station) : base(mask_station.gameObject, "OxygenMask", Db.Get().ChoreTypes.SuitMarker, 1, 1, false, 0f, 0f, float.PositiveInfinity, 0f, ObjectLayer.NumLayers)
+				public OxygenMaskReactable(MaskStation mask_station) : base(mask_station.gameObject, "OxygenMask", Db.Get().ChoreTypes.SuitMarker, 1, 1, false, 0f, 0f, float.PositiveInfinity, 0f, ObjectLayer.NumLayers)
 		{
 			this.maskStation = mask_station;
 		}
 
-		public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
+				public override bool InternalCanBegin(GameObject new_reactor, Navigator.ActiveTransition transition)
 		{
 			if (this.reactor != null)
 			{
@@ -272,7 +272,7 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 			return this.maskStation.smi.IsReady() && (x <= 0 || !this.maskStation.isRotated) && (x >= 0 || this.maskStation.isRotated);
 		}
 
-		protected override void InternalBegin()
+				protected override void InternalBegin()
 		{
 			this.startTime = Time.time;
 			KBatchedAnimController component = this.reactor.GetComponent<KBatchedAnimController>();
@@ -283,7 +283,7 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 			this.maskStation.CreateNewReactable();
 		}
 
-		public override void Update(float dt)
+				public override void Update(float dt)
 		{
 			Facing facing = this.reactor ? this.reactor.GetComponent<Facing>() : null;
 			if (facing && this.maskStation)
@@ -297,7 +297,7 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 			}
 		}
 
-		private void Run()
+				private void Run()
 		{
 			GameObject reactor = this.reactor;
 			Equipment equipment = reactor.GetComponent<MinionIdentity>().GetEquipment();
@@ -333,7 +333,7 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 			}
 		}
 
-		protected override void InternalEnd()
+				protected override void InternalEnd()
 		{
 			if (this.reactor != null)
 			{
@@ -341,45 +341,45 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 			}
 		}
 
-		protected override void InternalCleanup()
+				protected override void InternalCleanup()
 		{
 		}
 
-		private MaskStation maskStation;
+				private MaskStation maskStation;
 
-		private float startTime;
+				private float startTime;
 	}
 
-	public class SMInstance : GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.GameInstance
+		public class SMInstance : GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.GameInstance
 	{
-		public SMInstance(MaskStation master) : base(master)
+				public SMInstance(MaskStation master) : base(master)
 		{
 		}
 
-		private bool HasSufficientMaterials()
+				private bool HasSufficientMaterials()
 		{
 			return base.master.GetTotalMaterialAmount() >= base.master.materialConsumedPerMask;
 		}
 
-		private bool HasSufficientOxygen()
+				private bool HasSufficientOxygen()
 		{
 			return base.master.GetTotalOxygenAmount() >= base.master.oxygenConsumedPerMask;
 		}
 
-		public bool OxygenIsFull()
+				public bool OxygenIsFull()
 		{
 			return base.master.GetTotalOxygenAmount() >= base.master.oxygenConsumedPerMask * (float)base.master.maxUses;
 		}
 
-		public bool IsReady()
+				public bool IsReady()
 		{
 			return this.HasSufficientMaterials() && this.HasSufficientOxygen();
 		}
 	}
 
-	public class States : GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation>
+		public class States : GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation>
 	{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
+				public override void InitializeStates(out StateMachine.BaseState default_state)
 		{
 			default_state = this.notOperational;
 			this.notOperational.PlayAnim("off").TagTransition(GameTags.Operational, this.charging, false);
@@ -431,40 +431,40 @@ public class MaskStation : StateMachineComponent<MaskStation.SMInstance>, IBasic
 			this.notCharging.closedChargingPst.PlayAnim("closed_charging_pst").OnAnimQueueComplete(this.notCharging.closed);
 		}
 
-		public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State notOperational;
+				public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State notOperational;
 
-		public MaskStation.States.ChargingStates charging;
+				public MaskStation.States.ChargingStates charging;
 
-		public MaskStation.States.NotChargingStates notCharging;
+				public MaskStation.States.NotChargingStates notCharging;
 
-		public class ChargingStates : GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State
+				public class ChargingStates : GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State
 		{
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State opening;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State opening;
 
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State open;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State open;
 
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closing;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closing;
 
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closed;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closed;
 
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State openChargingPre;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State openChargingPre;
 
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closedChargingPre;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closedChargingPre;
 		}
 
-		public class NotChargingStates : GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State
+				public class NotChargingStates : GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State
 		{
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State opening;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State opening;
 
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State open;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State open;
 
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closing;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closing;
 
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closed;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closed;
 
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State openChargingPst;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State openChargingPst;
 
-			public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closedChargingPst;
+						public GameStateMachine<MaskStation.States, MaskStation.SMInstance, MaskStation, object>.State closedChargingPst;
 		}
 	}
 }

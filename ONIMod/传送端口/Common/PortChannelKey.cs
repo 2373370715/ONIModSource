@@ -1,7 +1,7 @@
 ﻿using System;
 using RsLib;
 
-
+namespace RsTransferPort;
 
 public struct PortChannelKey : IEquatable<PortChannelKey> {
     public static   PortChannelKey Invalid = default(PortChannelKey);

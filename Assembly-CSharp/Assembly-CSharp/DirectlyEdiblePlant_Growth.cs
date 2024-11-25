@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DirectlyEdiblePlant_Growth : KMonoBehaviour, IPlantConsumptionInstructions
 {
-	public bool CanPlantBeEaten()
+		public bool CanPlantBeEaten()
 	{
 		float num = 0.25f;
 		float num2 = 0f;
@@ -17,7 +17,7 @@ public class DirectlyEdiblePlant_Growth : KMonoBehaviour, IPlantConsumptionInstr
 		return num2 >= num;
 	}
 
-	public float ConsumePlant(float desiredUnitsToConsume)
+		public float ConsumePlant(float desiredUnitsToConsume)
 	{
 		AmountInstance amountInstance = Db.Get().Amounts.Maturity.Lookup(this.growing.gameObject);
 		float growthUnitToMaturityRatio = this.GetGrowthUnitToMaturityRatio(amountInstance.GetMax(), base.GetComponent<KPrefabID>());
@@ -27,14 +27,14 @@ public class DirectlyEdiblePlant_Growth : KMonoBehaviour, IPlantConsumptionInstr
 		return num;
 	}
 
-	public float PlantProductGrowthPerCycle()
+		public float PlantProductGrowthPerCycle()
 	{
 		Crop crop = base.GetComponent<Crop>();
 		float num = CROPS.CROP_TYPES.Find((Crop.CropVal m) => m.cropId == crop.cropId).cropDuration / 600f;
 		return 1f / num;
 	}
 
-	private float GetGrowthUnitToMaturityRatio(float maturityMax, KPrefabID prefab_id)
+		private float GetGrowthUnitToMaturityRatio(float maturityMax, KPrefabID prefab_id)
 	{
 		ResourceSet<Trait> traits = Db.Get().traits;
 		Tag prefabTag = prefab_id.PrefabTag;
@@ -50,17 +50,22 @@ public class DirectlyEdiblePlant_Growth : KMonoBehaviour, IPlantConsumptionInstr
 		return 1f;
 	}
 
-	public string GetFormattedConsumptionPerCycle(float consumer_KGWorthOfCaloriesLostPerSecond)
+		public string GetFormattedConsumptionPerCycle(float consumer_KGWorthOfCaloriesLostPerSecond)
 	{
 		float num = this.PlantProductGrowthPerCycle();
 		return GameUtil.GetFormattedPlantGrowth(consumer_KGWorthOfCaloriesLostPerSecond * num * 100f, GameUtil.TimeSlice.PerCycle);
 	}
 
-	public CellOffset[] GetAllowedOffsets()
+		public CellOffset[] GetAllowedOffsets()
 	{
 		return null;
 	}
 
-	[MyCmpGet]
+		public Diet.Info.FoodType GetDietFoodType()
+	{
+		return Diet.Info.FoodType.EatPlantDirectly;
+	}
+
+		[MyCmpGet]
 	private Growing growing;
 }

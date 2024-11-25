@@ -2,7 +2,7 @@
 
 public struct AttributeInfo
 {
-	public string id;
+		public string id;
 
-	public float value;
+		public float value;
 }

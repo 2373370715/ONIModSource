@@ -5,7 +5,7 @@ using KSerialization;
 
 public class StateMachineSerializer
 {
-	public void Serialize(List<StateMachine.Instance> state_machines, BinaryWriter writer)
+		public void Serialize(List<StateMachine.Instance> state_machines, BinaryWriter writer)
 	{
 		writer.Write(StateMachineSerializer.SERIALIZER_VERSION);
 		long position = writer.BaseStream.Position;
@@ -47,7 +47,7 @@ public class StateMachineSerializer
 		writer.BaseStream.Position = position3;
 	}
 
-	public void Deserialize(IReader reader)
+		public void Deserialize(IReader reader)
 	{
 		int num = reader.ReadInt32();
 		int length = reader.ReadInt32();
@@ -81,7 +81,7 @@ public class StateMachineSerializer
 		}
 	}
 
-	private static string TrimAssemblyInfo(string type_name)
+		private static string TrimAssemblyInfo(string type_name)
 	{
 		int num = type_name.IndexOf("[[");
 		if (num != -1)
@@ -91,7 +91,7 @@ public class StateMachineSerializer
 		return type_name;
 	}
 
-	public bool Restore(StateMachine.Instance instance)
+		public bool Restore(StateMachine.Instance instance)
 	{
 		Type type = instance.GetType();
 		for (int i = 0; i < this.entries.Count; i++)
@@ -106,28 +106,28 @@ public class StateMachineSerializer
 		return false;
 	}
 
-	private static bool DoesVersionHaveTypeSuffix(int version)
+		private static bool DoesVersionHaveTypeSuffix(int version)
 	{
 		return version >= 20 || version == 11;
 	}
 
-	public const int SERIALIZER_PRE_DLC1 = 10;
+		public const int SERIALIZER_PRE_DLC1 = 10;
 
-	public const int SERIALIZER_TYPE_SUFFIX = 11;
+		public const int SERIALIZER_TYPE_SUFFIX = 11;
 
-	public const int SERIALIZER_OPTIMIZE_BUFFERS = 12;
+		public const int SERIALIZER_OPTIMIZE_BUFFERS = 12;
 
-	public const int SERIALIZER_EXPANSION1 = 20;
+		public const int SERIALIZER_EXPANSION1 = 20;
 
-	private static int SERIALIZER_VERSION = 20;
+		private static int SERIALIZER_VERSION = 20;
 
-	private const string TargetParameterName = "TargetParameter";
+		private const string TargetParameterName = "TargetParameter";
 
-	private List<StateMachineSerializer.Entry> entries = new List<StateMachineSerializer.Entry>();
+		private List<StateMachineSerializer.Entry> entries = new List<StateMachineSerializer.Entry>();
 
-	private class Entry
+		private class Entry
 	{
-		public static bool TrySerialize(StateMachine.Instance smi, BinaryWriter writer)
+				public static bool TrySerialize(StateMachine.Instance smi, BinaryWriter writer)
 		{
 			if (!smi.IsRunning())
 			{
@@ -175,7 +175,7 @@ public class StateMachineSerializer
 			return false;
 		}
 
-		public static StateMachineSerializer.Entry Deserialize(IReader reader, int serializerVersion)
+				public static StateMachineSerializer.Entry Deserialize(IReader reader, int serializerVersion)
 		{
 			StateMachineSerializer.Entry entry = new StateMachineSerializer.Entry();
 			reader.ReadInt32();
@@ -193,7 +193,7 @@ public class StateMachineSerializer
 			return entry;
 		}
 
-		public bool Restore(StateMachine.Instance smi)
+				public bool Restore(StateMachine.Instance smi)
 		{
 			if (Manager.HasDeserializationMapping(smi.GetType()))
 			{
@@ -238,20 +238,20 @@ public class StateMachineSerializer
 			return false;
 		}
 
-		public int version;
+				public int version;
 
-		public Type type;
+				public Type type;
 
-		public string typeSuffix;
+				public string typeSuffix;
 
-		public string currentState;
+				public string currentState;
 
-		public FastReader entryData;
+				public FastReader entryData;
 	}
 
-	private class OldEntryV11
+		private class OldEntryV11
 	{
-		public OldEntryV11(int version, int dataPos, Type type, string typeSuffix, string currentState)
+				public OldEntryV11(int version, int dataPos, Type type, string typeSuffix, string currentState)
 		{
 			this.version = version;
 			this.dataPos = dataPos;
@@ -260,7 +260,7 @@ public class StateMachineSerializer
 			this.currentState = currentState;
 		}
 
-		public static List<StateMachineSerializer.Entry> DeserializeOldEntries(IReader reader, int serializerVersion)
+				public static List<StateMachineSerializer.Entry> DeserializeOldEntries(IReader reader, int serializerVersion)
 		{
 			Debug.Assert(serializerVersion < 12);
 			List<StateMachineSerializer.OldEntryV11> list = StateMachineSerializer.OldEntryV11.ReadEntries(reader, serializerVersion);
@@ -280,7 +280,7 @@ public class StateMachineSerializer
 			return list2;
 		}
 
-		private static StateMachineSerializer.OldEntryV11 Deserialize(IReader reader, int serializerVersion)
+				private static StateMachineSerializer.OldEntryV11 Deserialize(IReader reader, int serializerVersion)
 		{
 			int num = reader.ReadInt32();
 			int num2 = reader.ReadInt32();
@@ -295,7 +295,7 @@ public class StateMachineSerializer
 			return new StateMachineSerializer.OldEntryV11(num, num2, left, text, text2);
 		}
 
-		private static List<StateMachineSerializer.OldEntryV11> ReadEntries(IReader reader, int serializerVersion)
+				private static List<StateMachineSerializer.OldEntryV11> ReadEntries(IReader reader, int serializerVersion)
 		{
 			List<StateMachineSerializer.OldEntryV11> list = new List<StateMachineSerializer.OldEntryV11>();
 			int num = reader.ReadInt32();
@@ -310,20 +310,20 @@ public class StateMachineSerializer
 			return list;
 		}
 
-		private static byte[] ReadEntryData(IReader reader)
+				private static byte[] ReadEntryData(IReader reader)
 		{
 			int length = reader.ReadInt32();
 			return reader.ReadBytes(length);
 		}
 
-		public int version;
+				public int version;
 
-		public int dataPos;
+				public int dataPos;
 
-		public Type type;
+				public Type type;
 
-		public string typeSuffix;
+				public string typeSuffix;
 
-		public string currentState;
+				public string currentState;
 	}
 }

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 public class PathGrid
 {
-	public void SetGroupProber(IGroupProber group_prober)
+		public void SetGroupProber(IGroupProber group_prober)
 	{
 		this.groupProber = group_prober;
 	}
 
-	public PathGrid(int width_in_cells, int height_in_cells, bool apply_offset, NavType[] valid_nav_types)
+		public PathGrid(int width_in_cells, int height_in_cells, bool apply_offset, NavType[] valid_nav_types)
 	{
 		this.applyOffset = apply_offset;
 		this.widthInCells = width_in_cells;
@@ -36,7 +36,7 @@ public class PathGrid
 		this.isUpdating = false;
 	}
 
-	public void OnCleanUp()
+		public void OnCleanUp()
 	{
 		if (this.groupProber != null)
 		{
@@ -44,12 +44,12 @@ public class PathGrid
 		}
 	}
 
-	public void ResetUpdate()
+		public void ResetUpdate()
 	{
 		this.previousSerialNo = -1;
 	}
 
-	public void BeginUpdate(int root_cell, bool isContinuation)
+		public void BeginUpdate(int root_cell, bool isContinuation)
 	{
 		this.isUpdating = true;
 		this.freshlyOccupiedCells.Clear();
@@ -70,7 +70,7 @@ public class PathGrid
 		}
 	}
 
-	public void EndUpdate(bool isComplete)
+		public void EndUpdate(bool isComplete)
 	{
 		this.isUpdating = false;
 		if (this.groupProber != null)
@@ -88,17 +88,17 @@ public class PathGrid
 		this.previousSerialNo = this.serialNo;
 	}
 
-	private bool IsValidSerialNo(short serialNo)
+		private bool IsValidSerialNo(short serialNo)
 	{
 		return serialNo == this.serialNo || (!this.isUpdating && this.previousSerialNo != -1 && serialNo == this.previousSerialNo);
 	}
 
-	public PathFinder.Cell GetCell(PathFinder.PotentialPath potential_path, out bool is_cell_in_range)
+		public PathFinder.Cell GetCell(PathFinder.PotentialPath potential_path, out bool is_cell_in_range)
 	{
 		return this.GetCell(potential_path.cell, potential_path.navType, out is_cell_in_range);
 	}
 
-	public PathFinder.Cell GetCell(int cell, NavType nav_type, out bool is_cell_in_range)
+		public PathFinder.Cell GetCell(int cell, NavType nav_type, out bool is_cell_in_range)
 	{
 		int num = this.OffsetCell(cell);
 		is_cell_in_range = (-1 != num);
@@ -114,7 +114,7 @@ public class PathGrid
 		return cell2;
 	}
 
-	public void SetCell(PathFinder.PotentialPath potential_path, ref PathFinder.Cell cell_data)
+		public void SetCell(PathFinder.PotentialPath potential_path, ref PathFinder.Cell cell_data)
 	{
 		int num = this.OffsetCell(potential_path.cell);
 		if (-1 == num)
@@ -138,7 +138,7 @@ public class PathGrid
 		}
 	}
 
-	public int GetCostIgnoreProberOffset(int cell, CellOffset[] offsets)
+		public int GetCostIgnoreProberOffset(int cell, CellOffset[] offsets)
 	{
 		int num = -1;
 		foreach (CellOffset offset in offsets)
@@ -156,7 +156,7 @@ public class PathGrid
 		return num;
 	}
 
-	public int GetCost(int cell)
+		public int GetCost(int cell)
 	{
 		int num = this.OffsetCell(cell);
 		if (-1 == num)
@@ -171,7 +171,7 @@ public class PathGrid
 		return proberCell.cost;
 	}
 
-	private int OffsetCell(int cell)
+		private int OffsetCell(int cell)
 	{
 		if (!this.applyOffset)
 		{
@@ -188,43 +188,43 @@ public class PathGrid
 		return (num2 - this.rootY) * this.widthInCells + num3;
 	}
 
-	private PathFinder.Cell[] Cells;
+		private PathFinder.Cell[] Cells;
 
-	private PathGrid.ProberCell[] ProberCells;
+		private PathGrid.ProberCell[] ProberCells;
 
-	private List<int> freshlyOccupiedCells = new List<int>();
+		private List<int> freshlyOccupiedCells = new List<int>();
 
-	private NavType[] ValidNavTypes;
+		private NavType[] ValidNavTypes;
 
-	private int[] NavTypeTable;
+		private int[] NavTypeTable;
 
-	private int widthInCells;
+		private int widthInCells;
 
-	private int heightInCells;
+		private int heightInCells;
 
-	private bool applyOffset;
+		private bool applyOffset;
 
-	private int rootX;
+		private int rootX;
 
-	private int rootY;
+		private int rootY;
 
-	private short serialNo;
+		private short serialNo;
 
-	private short previousSerialNo;
+		private short previousSerialNo;
 
-	private bool isUpdating;
+		private bool isUpdating;
 
-	private IGroupProber groupProber;
+		private IGroupProber groupProber;
 
-	public static readonly PathFinder.Cell InvalidCell = new PathFinder.Cell
+		public static readonly PathFinder.Cell InvalidCell = new PathFinder.Cell
 	{
 		cost = -1
 	};
 
-	private struct ProberCell
+		private struct ProberCell
 	{
-		public int cost;
+				public int cost;
 
-		public short queryId;
+				public short queryId;
 	}
 }

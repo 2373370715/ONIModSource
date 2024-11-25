@@ -2,13 +2,13 @@
 
 public class GameplayEventPrecondition
 {
-	public string description;
+		public string description;
 
-	public GameplayEventPrecondition.PreconditionFn condition;
+		public GameplayEventPrecondition.PreconditionFn condition;
 
-	public bool required;
+		public bool required;
 
-	public int priorityModifier;
+		public int priorityModifier;
 
-		public delegate bool PreconditionFn();
+			public delegate bool PreconditionFn();
 }

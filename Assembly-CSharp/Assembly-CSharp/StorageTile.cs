@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>
 {
-	public override void InitializeStates(out StateMachine.BaseState default_state)
+		public override void InitializeStates(out StateMachine.BaseState default_state)
 	{
 		base.serializable = StateMachine.SerializeType.ParamsOnly;
 		default_state = this.idle;
@@ -17,109 +17,109 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 		this.awaitingDelivery.Enter(new StateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.State.Callback(StorageTile.RefreshContentVisuals)).EventTransition(GameHashes.OnStorageChange, this.idle, new StateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.Transition.ConditionCallback(StorageTile.HasAnyDesiredItemStored)).EventTransition(GameHashes.StorageTileTargetItemChanged, this.change, new StateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.Transition.ConditionCallback(StorageTile.IsAwaitingForSettingChange));
 	}
 
-	public static void DropUndesiredItems(StorageTile.Instance smi)
+		public static void DropUndesiredItems(StorageTile.Instance smi)
 	{
 		smi.DropUndesiredItems();
 	}
 
-	public static void ApplySettings(StorageTile.Instance smi)
+		public static void ApplySettings(StorageTile.Instance smi)
 	{
 		smi.ApplySettings();
 	}
 
-	public static void StartWorkChore(StorageTile.Instance smi)
+		public static void StartWorkChore(StorageTile.Instance smi)
 	{
 		smi.StartChangeSettingChore();
 	}
 
-	public static void CancelWorkChore(StorageTile.Instance smi)
+		public static void CancelWorkChore(StorageTile.Instance smi)
 	{
 		smi.CanceChangeSettingChore();
 	}
 
-	public static void RefreshContentVisuals(StorageTile.Instance smi)
+		public static void RefreshContentVisuals(StorageTile.Instance smi)
 	{
 		smi.UpdateContentSymbol();
 	}
 
-	public static bool IsAwaitingForSettingChange(StorageTile.Instance smi)
+		public static bool IsAwaitingForSettingChange(StorageTile.Instance smi)
 	{
 		return smi.IsPendingChange;
 	}
 
-	public static bool NoLongerAwaitingForSettingChange(StorageTile.Instance smi)
+		public static bool NoLongerAwaitingForSettingChange(StorageTile.Instance smi)
 	{
 		return !smi.IsPendingChange;
 	}
 
-	public static bool HasAnyDesiredItemStored(StorageTile.Instance smi)
+		public static bool HasAnyDesiredItemStored(StorageTile.Instance smi)
 	{
 		return smi.HasAnyDesiredContents;
 	}
 
-	public static void OnStorageChanged(StorageTile.Instance smi)
+		public static void OnStorageChanged(StorageTile.Instance smi)
 	{
 		smi.PlayDoorAnimation();
 		StorageTile.RefreshContentVisuals(smi);
 	}
 
-	public static bool IsAwaitingDelivery(StorageTile.Instance smi)
+		public static bool IsAwaitingDelivery(StorageTile.Instance smi)
 	{
 		return !smi.IsPendingChange && !smi.HasAnyDesiredContents;
 	}
 
-	public const string METER_TARGET = "meter_target";
+		public const string METER_TARGET = "meter_target";
 
-	public const string METER_ANIMATION = "meter";
+		public const string METER_ANIMATION = "meter";
 
-	public static HashedString DOOR_SYMBOL_NAME = new HashedString("storage_door");
+		public static HashedString DOOR_SYMBOL_NAME = new HashedString("storage_door");
 
-	public static HashedString ITEM_SYMBOL_TARGET = new HashedString("meter_target_object");
+		public static HashedString ITEM_SYMBOL_TARGET = new HashedString("meter_target_object");
 
-	public static HashedString ITEM_SYMBOL_NAME = new HashedString("object");
+		public static HashedString ITEM_SYMBOL_NAME = new HashedString("object");
 
-	public const string ITEM_SYMBOL_ANIMATION = "meter_object";
+		public const string ITEM_SYMBOL_ANIMATION = "meter_object";
 
-	public static HashedString ITEM_PREVIEW_SYMBOL_TARGET = new HashedString("meter_target_object_ui");
+		public static HashedString ITEM_PREVIEW_SYMBOL_TARGET = new HashedString("meter_target_object_ui");
 
-	public static HashedString ITEM_PREVIEW_SYMBOL_NAME = new HashedString("object_ui");
+		public static HashedString ITEM_PREVIEW_SYMBOL_NAME = new HashedString("object_ui");
 
-	public const string ITEM_PREVIEW_SYMBOL_ANIMATION = "meter_object_ui";
+		public const string ITEM_PREVIEW_SYMBOL_ANIMATION = "meter_object_ui";
 
-	public static HashedString ITEM_PREVIEW_BACKGROUND_SYMBOL_NAME = new HashedString("placeholder");
+		public static HashedString ITEM_PREVIEW_BACKGROUND_SYMBOL_NAME = new HashedString("placeholder");
 
-	public const string DEFAULT_ANIMATION_NAME = "on";
+		public const string DEFAULT_ANIMATION_NAME = "on";
 
-	public const string STORAGE_CHANGE_ANIMATION_NAME = "door";
+		public const string STORAGE_CHANGE_ANIMATION_NAME = "door";
 
-	public const string SYMBOL_ANIMATION_NAME_AWAITING_DELIVERY = "ui";
+		public const string SYMBOL_ANIMATION_NAME_AWAITING_DELIVERY = "ui";
 
-	public static Tag INVALID_TAG = GameTags.Void;
+		public static Tag INVALID_TAG = GameTags.Void;
 
-	private StateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.TagParameter TargetItemTag = new StateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.TagParameter(StorageTile.INVALID_TAG);
+		private StateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.TagParameter TargetItemTag = new StateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.TagParameter(StorageTile.INVALID_TAG);
 
-	public GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.State idle;
+		public GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.State idle;
 
-	public StorageTile.SettingsChangeStates change;
+		public StorageTile.SettingsChangeStates change;
 
-	public GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.State awaitingDelivery;
+		public GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.State awaitingDelivery;
 
-	public class SpecificItemTagSizeInstruction
+		public class SpecificItemTagSizeInstruction
 	{
-		public SpecificItemTagSizeInstruction(Tag tag, float size)
+				public SpecificItemTagSizeInstruction(Tag tag, float size)
 		{
 			this.tag = tag;
 			this.sizeMultiplier = size;
 		}
 
-		public Tag tag;
+				public Tag tag;
 
-		public float sizeMultiplier;
+				public float sizeMultiplier;
 	}
 
-	public class Def : StateMachine.BaseDef
+		public class Def : StateMachine.BaseDef
 	{
-		public StorageTile.SpecificItemTagSizeInstruction GetSizeInstructionForObject(GameObject obj)
+				public StorageTile.SpecificItemTagSizeInstruction GetSizeInstructionForObject(GameObject obj)
 		{
 			if (this.specialItemCases == null)
 			{
@@ -136,21 +136,21 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			return null;
 		}
 
-		public float MaxCapacity;
+				public float MaxCapacity;
 
-		public StorageTile.SpecificItemTagSizeInstruction[] specialItemCases;
+				public StorageTile.SpecificItemTagSizeInstruction[] specialItemCases;
 	}
 
-	public class SettingsChangeStates : GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.State
+		public class SettingsChangeStates : GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.State
 	{
-		public GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.State awaitingSettingsChange;
+				public GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.State awaitingSettingsChange;
 
-		public GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.State complete;
+				public GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.State complete;
 	}
 
-	public new class Instance : GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.GameInstance, IUserControlledCapacity
+		public new class Instance : GameStateMachine<StorageTile, StorageTile.Instance, IStateMachineTarget, StorageTile.Def>.GameInstance, IUserControlledCapacity
 	{
-				public Tag TargetTag
+						public Tag TargetTag
 		{
 			get
 			{
@@ -158,7 +158,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-				public bool HasContents
+						public bool HasContents
 		{
 			get
 			{
@@ -166,7 +166,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-				public bool HasAnyDesiredContents
+						public bool HasAnyDesiredContents
 		{
 			get
 			{
@@ -178,7 +178,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-				public float AmountOfDesiredContentStored
+						public float AmountOfDesiredContentStored
 		{
 			get
 			{
@@ -190,7 +190,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-				public bool IsPendingChange
+						public bool IsPendingChange
 		{
 			get
 			{
@@ -198,7 +198,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-						public float UserMaxCapacity
+								public float UserMaxCapacity
 		{
 			get
 			{
@@ -212,7 +212,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-				public float AmountStored
+						public float AmountStored
 		{
 			get
 			{
@@ -220,7 +220,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-				public float MinCapacity
+						public float MinCapacity
 		{
 			get
 			{
@@ -228,7 +228,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-				public float MaxCapacity
+						public float MaxCapacity
 		{
 			get
 			{
@@ -236,7 +236,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-				public bool WholeValues
+						public bool WholeValues
 		{
 			get
 			{
@@ -244,7 +244,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-				public LocString CapacityUnits
+						public LocString CapacityUnits
 		{
 			get
 			{
@@ -252,7 +252,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-		private Tag GetTreeFilterableCurrentTag()
+				private Tag GetTreeFilterableCurrentTag()
 		{
 			if (this.treeFilterable.GetTags() != null && this.treeFilterable.GetTags().Count != 0)
 			{
@@ -261,12 +261,12 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			return StorageTile.INVALID_TAG;
 		}
 
-		public StorageTileSwitchItemWorkable GetWorkable()
+				public StorageTileSwitchItemWorkable GetWorkable()
 		{
 			return base.smi.gameObject.GetComponent<StorageTileSwitchItemWorkable>();
 		}
 
-		public Instance(IStateMachineTarget master, StorageTile.Def def) : base(master, def)
+				public Instance(IStateMachineTarget master, StorageTile.Def def) : base(master, def)
 		{
 			this.itemSymbol = this.CreateSymbolOverrideCapsule(StorageTile.ITEM_SYMBOL_TARGET, StorageTile.ITEM_SYMBOL_NAME, "meter_object");
 			this.itemSymbol.usingNewSymbolOverrideSystem = true;
@@ -293,17 +293,21 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			base.Subscribe(1606648047, new Action<object>(this.OnObjectReplaced));
 		}
 
-		public override void StartSM()
+				public override void StartSM()
 		{
 			base.StartSM();
 			this.filteredStorage.FilterChanged();
 		}
 
-		private void OnObjectReplaced(object data)
+				private void OnObjectReplaced(object data)
 		{
 			Constructable.ReplaceCallbackParameters replaceCallbackParameters = (Constructable.ReplaceCallbackParameters)data;
 			List<GameObject> list = new List<GameObject>();
-			this.storage.DropAll(false, false, default(Vector3), true, list);
+			Storage storage = this.storage;
+			bool vent_gas = false;
+			bool dump_liquid = false;
+			List<GameObject> collect_dropped_items = list;
+			storage.DropAll(vent_gas, dump_liquid, default(Vector3), true, collect_dropped_items);
 			if (replaceCallbackParameters.Worker != null)
 			{
 				foreach (GameObject gameObject in list)
@@ -313,7 +317,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-		private void OnDoorAnimationCompleted(HashedString animName)
+				private void OnDoorAnimationCompleted(HashedString animName)
 		{
 			if (animName == "door")
 			{
@@ -321,7 +325,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-		private KBatchedAnimController CreateEmptyKAnimController(string name)
+				private KBatchedAnimController CreateEmptyKAnimController(string name)
 		{
 			GameObject gameObject = new GameObject(base.gameObject.name + "-" + name);
 			gameObject.SetActive(false);
@@ -334,7 +338,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			return kbatchedAnimController;
 		}
 
-		private KBatchedAnimController CreateSymbolOverrideCapsule(HashedString symbolTarget, HashedString symbolName, string animationName)
+				private KBatchedAnimController CreateSymbolOverrideCapsule(HashedString symbolTarget, HashedString symbolName, string animationName)
 		{
 			KBatchedAnimController kbatchedAnimController = this.CreateEmptyKAnimController(symbolTarget.ToString());
 			kbatchedAnimController.initialAnim = animationName;
@@ -355,7 +359,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			return kbatchedAnimController;
 		}
 
-		private void OnCopySettings(object sourceOBJ)
+				private void OnCopySettings(object sourceOBJ)
 		{
 			if (sourceOBJ != null)
 			{
@@ -368,30 +372,30 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-		public void RefreshAmountMeter()
+				public void RefreshAmountMeter()
 		{
 			float positionPercent = (this.UserMaxCapacity == 0f) ? 0f : Mathf.Clamp(this.AmountOfDesiredContentStored / this.UserMaxCapacity, 0f, 1f);
 			this.amountMeter.SetPositionPercent(positionPercent);
 		}
 
-		public void PlayDoorAnimation()
+				public void PlayDoorAnimation()
 		{
 			this.doorSymbol.Play("door", KAnim.PlayMode.Once, 1f, 0f);
 		}
 
-		public void SetTargetItem(Tag tag)
+				public void SetTargetItem(Tag tag)
 		{
 			base.sm.TargetItemTag.Set(tag, this, false);
 			base.gameObject.Trigger(-2076953849, null);
 		}
 
-		public void ApplySettings()
+				public void ApplySettings()
 		{
 			Tag treeFilterableCurrentTag = this.GetTreeFilterableCurrentTag();
 			this.treeFilterable.RemoveTagFromFilter(treeFilterableCurrentTag);
 		}
 
-		public void DropUndesiredItems()
+				public void DropUndesiredItems()
 		{
 			Vector3 position = Grid.CellToPos(this.GetWorkable().LastCellWorkerUsed) + Vector3.right * Grid.CellSizeInMeters * 0.5f + Vector3.up * Grid.CellSizeInMeters * 0.5f;
 			position.z = Grid.GetLayerZ(Grid.SceneLayer.Ore);
@@ -415,7 +419,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			this.storage.DropUnlessHasTag(this.TargetTag);
 		}
 
-		public void UpdateContentSymbol()
+				public void UpdateContentSymbol()
 		{
 			this.RefreshAmountMeter();
 			bool flag = this.TargetTag == StorageTile.INVALID_TAG;
@@ -469,7 +473,7 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			this.itemSymbol.transform.localPosition = localPosition;
 		}
 
-		private void AbortChore()
+				private void AbortChore()
 		{
 			if (this.chore != null)
 			{
@@ -478,49 +482,49 @@ public class StorageTile : GameStateMachine<StorageTile, StorageTile.Instance, I
 			}
 		}
 
-		public void StartChangeSettingChore()
+				public void StartChangeSettingChore()
 		{
 			this.AbortChore();
 			this.chore = new WorkChore<StorageTileSwitchItemWorkable>(Db.Get().ChoreTypes.Toggle, this.GetWorkable(), null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
 		}
 
-		public void CanceChangeSettingChore()
+				public void CanceChangeSettingChore()
 		{
 			this.AbortChore();
 		}
 
-		[Serialize]
+				[Serialize]
 		private float userMaxCapacity = float.PositiveInfinity;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private Storage storage;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private KBatchedAnimController animController;
 
-		[MyCmpGet]
+				[MyCmpGet]
 		private TreeFilterable treeFilterable;
 
-		private FilteredStorage filteredStorage;
+				private FilteredStorage filteredStorage;
 
-		private Chore chore;
+				private Chore chore;
 
-		private MeterController amountMeter;
+				private MeterController amountMeter;
 
-		private KBatchedAnimController doorSymbol;
+				private KBatchedAnimController doorSymbol;
 
-		private KBatchedAnimController itemSymbol;
+				private KBatchedAnimController itemSymbol;
 
-		private SymbolOverrideController itemSymbolOverrideController;
+				private SymbolOverrideController itemSymbolOverrideController;
 
-		private KBatchedAnimController itemPreviewSymbol;
+				private KBatchedAnimController itemPreviewSymbol;
 
-		private KAnimLink doorAnimLink;
+				private KAnimLink doorAnimLink;
 
-		private string choreTypeID = Db.Get().ChoreTypes.StorageFetch.Id;
+				private string choreTypeID = Db.Get().ChoreTypes.StorageFetch.Id;
 
-		private float defaultItemSymbolScale = -1f;
+				private float defaultItemSymbolScale = -1f;
 
-		private Vector3 defaultItemLocalPosition = Vector3.zero;
+				private Vector3 defaultItemLocalPosition = Vector3.zero;
 	}
 }

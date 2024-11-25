@@ -2,7 +2,7 @@
 
 public class ConduitBridgeBase : KMonoBehaviour
 {
-	protected void SendEmptyOnMassTransfer()
+		protected void SendEmptyOnMassTransfer()
 	{
 		if (this.OnMassTransfer != null)
 		{
@@ -10,11 +10,11 @@ public class ConduitBridgeBase : KMonoBehaviour
 		}
 	}
 
-	public ConduitBridgeBase.DesiredMassTransfer desiredMassTransfer;
+		public ConduitBridgeBase.DesiredMassTransfer desiredMassTransfer;
 
-	public ConduitBridgeBase.ConduitBridgeEvent OnMassTransfer;
+		public ConduitBridgeBase.ConduitBridgeEvent OnMassTransfer;
 
-		public delegate float DesiredMassTransfer(float dt, SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, Pickupable pickupable);
+			public delegate float DesiredMassTransfer(float dt, SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, Pickupable pickupable);
 
-		public delegate void ConduitBridgeEvent(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, Pickupable pickupable);
+			public delegate void ConduitBridgeEvent(SimHashes element, float mass, float temperature, byte disease_idx, int disease_count, Pickupable pickupable);
 }

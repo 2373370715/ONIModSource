@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class GridLayouter
 {
-	[Conditional("UNITY_EDITOR")]
+		[Conditional("UNITY_EDITOR")]
 	private void ValidateImportantFieldsAreSet()
 	{
 		global::Debug.Assert(this.minCellSize >= 0f, string.Format("[{0} Error] Minimum cell size is invalid. Given: {1}", "GridLayouter", this.minCellSize));
@@ -15,7 +15,7 @@ public class GridLayouter
 		global::Debug.Assert(this.targetGridLayouts != null, string.Format("[{0} Error] Target grid layout is invalid. Given: {1}", "GridLayouter", this.targetGridLayouts));
 	}
 
-	public void CheckIfShouldResizeGrid()
+		public void CheckIfShouldResizeGrid()
 	{
 		Vector2 lhs = new Vector2((float)Screen.width, (float)Screen.height);
 		if (lhs != this.oldScreenSize)
@@ -32,12 +32,12 @@ public class GridLayouter
 		this.ResizeGridIfRequested();
 	}
 
-	public void RequestGridResize()
+		public void RequestGridResize()
 	{
 		this.framesLeftToResizeGrid = 3;
 	}
 
-	private void ResizeGridIfRequested()
+		private void ResizeGridIfRequested()
 	{
 		if (this.framesLeftToResizeGrid > 0)
 		{
@@ -50,7 +50,7 @@ public class GridLayouter
 		}
 	}
 
-	public void ImmediateSizeGridToScreenResolution()
+		public void ImmediateSizeGridToScreenResolution()
 	{
 		foreach (GridLayoutGroup gridLayoutGroup in this.targetGridLayouts)
 		{
@@ -75,13 +75,13 @@ public class GridLayouter
 		}
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static float <ImmediateSizeGridToScreenResolution>g__GetCellSize|12_0(float workingWidth, float spacingSize, int count)
 	{
 		return (workingWidth - (spacingSize * (float)count - 1f)) / (float)count;
 	}
 
-	[CompilerGenerated]
+		[CompilerGenerated]
 	internal static int <ImmediateSizeGridToScreenResolution>g__GetCellCountToFit|12_1(float cellSize, float spacingSize, float workingWidth)
 	{
 		int num = 0;
@@ -92,19 +92,19 @@ public class GridLayouter
 		return num;
 	}
 
-	public float minCellSize = -1f;
+		public float minCellSize = -1f;
 
-	public float maxCellSize = -1f;
+		public float maxCellSize = -1f;
 
-	public List<GridLayoutGroup> targetGridLayouts;
+		public List<GridLayoutGroup> targetGridLayouts;
 
-	public RectTransform overrideParentForSizeReference;
+		public RectTransform overrideParentForSizeReference;
 
-	public System.Action OnSizeGridComplete;
+		public System.Action OnSizeGridComplete;
 
-	private Vector2 oldScreenSize;
+		private Vector2 oldScreenSize;
 
-	private float oldScreenScale;
+		private float oldScreenScale;
 
-	private int framesLeftToResizeGrid;
+		private int framesLeftToResizeGrid;
 }

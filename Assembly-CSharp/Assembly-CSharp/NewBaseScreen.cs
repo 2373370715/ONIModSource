@@ -7,25 +7,25 @@ using UnityEngine;
 
 public class NewBaseScreen : KScreen
 {
-	public override float GetSortKey()
+		public override float GetSortKey()
 	{
 		return 1f;
 	}
 
-	protected override void OnPrefabInit()
+		protected override void OnPrefabInit()
 	{
 		NewBaseScreen.Instance = this;
 		base.OnPrefabInit();
 		TimeOfDay.Instance.SetScale(0f);
 	}
 
-	protected override void OnForcedCleanUp()
+		protected override void OnForcedCleanUp()
 	{
 		NewBaseScreen.Instance = null;
 		base.OnForcedCleanUp();
 	}
 
-	public static Vector2I SetInitialCamera()
+		public static Vector2I SetInitialCamera()
 	{
 		Vector2I vector2I = SaveLoader.Instance.cachedGSD.baseStartPos;
 		vector2I += ClusterManager.Instance.GetStartWorld().WorldOffset;
@@ -38,7 +38,7 @@ public class NewBaseScreen : KScreen
 		return vector2I;
 	}
 
-	protected override void OnActivate()
+		protected override void OnActivate()
 	{
 		if (this.disabledUIElements != null)
 		{
@@ -58,13 +58,13 @@ public class NewBaseScreen : KScreen
 		this.Final();
 	}
 
-	public void Init(Cluster clusterLayout, ITelepadDeliverable[] startingMinionStats)
+		public void Init(Cluster clusterLayout, ITelepadDeliverable[] startingMinionStats)
 	{
 		this.m_clusterLayout = clusterLayout;
 		this.m_minionStartingStats = startingMinionStats;
 	}
 
-	protected override void OnDeactivate()
+		protected override void OnDeactivate()
 	{
 		Game.Instance.Trigger(-122303817, null);
 		if (this.disabledUIElements != null)
@@ -79,7 +79,7 @@ public class NewBaseScreen : KScreen
 		}
 	}
 
-	public override void OnKeyDown(KButtonEvent e)
+		public override void OnKeyDown(KButtonEvent e)
 	{
 		global::Action[] array = new global::Action[4];
 		RuntimeHelpers.InitializeArray(array, fieldof(<PrivateImplementationDetails>.46E7A7E6CE942EAE1E13925BEDED6E6321F99918099A108FDB32BB9510B8E88D).FieldHandle);
@@ -94,7 +94,7 @@ public class NewBaseScreen : KScreen
 		}
 	}
 
-	private void Final()
+		private void Final()
 	{
 		SpeedControlScreen.Instance.Unpause(false);
 		GameObject telepad = GameUtil.GetTelepad(ClusterManager.Instance.GetStartWorld().id);
@@ -106,7 +106,7 @@ public class NewBaseScreen : KScreen
 		this.Deactivate();
 	}
 
-	private void SpawnMinions(int headquartersCell)
+		private void SpawnMinions(int headquartersCell)
 	{
 		if (headquartersCell == -1)
 		{
@@ -126,14 +126,17 @@ public class NewBaseScreen : KScreen
 		Action<object> <>9__0;
 		for (int i = 0; i < this.m_minionStartingStats.Length; i++)
 		{
+			MinionStartingStats minionStartingStats = (MinionStartingStats)this.m_minionStartingStats[i];
 			int x = num + i % (baseRight - baseLeft) + 1;
 			int y = num2;
 			int cell = Grid.XYToCell(x, y);
-			GameObject gameObject = Util.KInstantiate(Assets.GetPrefab(MinionConfig.ID), null, null);
+			GameObject prefab = Assets.GetPrefab(BaseMinionConfig.GetMinionIDForModel(minionStartingStats.personality.model));
+			GameObject gameObject = Util.KInstantiate(prefab, null, null);
+			gameObject.name = prefab.name;
 			Immigration.Instance.ApplyDefaultPersonalPriorities(gameObject);
 			gameObject.transform.SetLocalPosition(Grid.CellToPosCBC(cell, Grid.SceneLayer.Move));
 			gameObject.SetActive(true);
-			((MinionStartingStats)this.m_minionStartingStats[i]).Apply(gameObject);
+			minionStartingStats.Apply(gameObject);
 			GameScheduler instance = GameScheduler.Instance;
 			string name = "ANewHope";
 			float time = 3f + 0.5f * (float)i;
@@ -151,20 +154,27 @@ public class NewBaseScreen : KScreen
 				});
 			}
 			instance.Schedule(name, time, callback, gameObject, null);
+			if (minionStartingStats.personality.model == GameTags.Minions.Models.Bionic)
+			{
+				GameScheduler.Instance.Schedule("ExtraPowerBanks", 3f + 4.5f * (float)i, delegate(object m)
+				{
+					GameUtil.GetTelepad(ClusterManager.Instance.GetStartWorld().id).Trigger(1982288670, null);
+				}, gameObject, null);
+			}
 		}
 		ClusterManager.Instance.activeWorld.SetDupeVisited();
 	}
 
-	public static NewBaseScreen Instance;
+		public static NewBaseScreen Instance;
 
-	[SerializeField]
+		[SerializeField]
 	private CanvasGroup[] disabledUIElements;
 
-	public EventReference ScanSoundMigrated;
+		public EventReference ScanSoundMigrated;
 
-	public EventReference BuildBaseSoundMigrated;
+		public EventReference BuildBaseSoundMigrated;
 
-	private ITelepadDeliverable[] m_minionStartingStats;
+		private ITelepadDeliverable[] m_minionStartingStats;
 
-	private Cluster m_clusterLayout;
+		private Cluster m_clusterLayout;
 }

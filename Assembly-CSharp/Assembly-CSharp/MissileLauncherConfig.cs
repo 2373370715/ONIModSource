@@ -6,12 +6,7 @@ using UnityEngine;
 
 public class MissileLauncherConfig : IBuildingConfig
 {
-	public override string[] GetDlcIds()
-	{
-		return DlcManager.AVAILABLE_ALL_VERSIONS;
-	}
-
-	public override BuildingDef CreateBuildingDef()
+		public override BuildingDef CreateBuildingDef()
 	{
 		string id = "MissileLauncher";
 		int width = 3;
@@ -42,17 +37,17 @@ public class MissileLauncherConfig : IBuildingConfig
 		return buildingDef;
 	}
 
-	public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
+		public override void DoPostConfigurePreview(BuildingDef def, GameObject go)
 	{
 		this.AddVisualizer(go);
 	}
 
-	public override void DoPostConfigureUnderConstruction(GameObject go)
+		public override void DoPostConfigureUnderConstruction(GameObject go)
 	{
 		this.AddVisualizer(go);
 	}
 
-	public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
+		public override void ConfigureBuildingTemplate(GameObject go, Tag prefab_tag)
 	{
 		go.AddOrGetDef<MissileLauncher.Def>();
 		go.GetComponent<KPrefabID>().AddTag(RoomConstraints.ConstraintTags.IndustrialMachinery, false);
@@ -81,7 +76,7 @@ public class MissileLauncherConfig : IBuildingConfig
 		this.AddVisualizer(go);
 	}
 
-	private void AddVisualizer(GameObject go)
+		private void AddVisualizer(GameObject go)
 	{
 		RangeVisualizer rangeVisualizer = go2.AddOrGet<RangeVisualizer>();
 		rangeVisualizer.OriginOffset = MissileLauncher.Def.LaunchOffset.ToVector2I();
@@ -96,7 +91,7 @@ public class MissileLauncherConfig : IBuildingConfig
 		};
 	}
 
-	public override void DoPostConfigureComplete(GameObject go)
+		public override void DoPostConfigureComplete(GameObject go)
 	{
 		SymbolOverrideControllerUtil.AddToPrefab(go);
 		go.AddOrGet<TreeFilterable>().dropIncorrectOnFilterChange = false;
@@ -105,7 +100,7 @@ public class MissileLauncherConfig : IBuildingConfig
 		flatTagFilterable.headerText = STRINGS.BUILDINGS.PREFABS.MISSILELAUNCHER.TARGET_SELECTION_HEADER;
 	}
 
-	public static bool IsCellSkyBlocked(int cell)
+		public static bool IsCellSkyBlocked(int cell)
 	{
 		if (PlayerController.Instance != null)
 		{
@@ -128,5 +123,5 @@ public class MissileLauncherConfig : IBuildingConfig
 		return false;
 	}
 
-	public const string ID = "MissileLauncher";
+		public const string ID = "MissileLauncher";
 }

@@ -5,12 +5,12 @@ using UnityEngine;
 
 public class DevToolNavGrid : DevTool
 {
-	public DevToolNavGrid()
+		public DevToolNavGrid()
 	{
 		DevToolNavGrid.Instance = this;
 	}
 
-	private bool Init()
+		private bool Init()
 	{
 		if (Pathfinding.Instance == null)
 		{
@@ -25,7 +25,7 @@ public class DevToolNavGrid : DevTool
 		return true;
 	}
 
-	protected override void RenderTo(DevPanel panel)
+		protected override void RenderTo(DevPanel panel)
 	{
 		if (this.Init())
 		{
@@ -35,12 +35,12 @@ public class DevToolNavGrid : DevTool
 		ImGui.Text("Game not initialized");
 	}
 
-	public void SetCell(int cell)
+		public void SetCell(int cell)
 	{
 		this.selectedCell = cell;
 	}
 
-	private void Contents()
+		private void Contents()
 	{
 		ImGui.Combo("Nav Grid ID", ref this.selectedNavGrid, this.navGridNames, this.navGridNames.Length);
 		NavGrid navGrid = Pathfinding.Instance.GetNavGrid(this.navGridNames[this.selectedNavGrid]);
@@ -154,7 +154,7 @@ public class DevToolNavGrid : DevTool
 		}
 	}
 
-	private void DrawLink(int idx, NavGrid.Link l, NavGrid navGrid)
+		private void DrawLink(int idx, NavGrid.Link l, NavGrid navGrid)
 	{
 		NavGrid.Transition transition = navGrid.transitions[(int)l.transitionId];
 		ImGui.Text(string.Format("   {0} -> {1} x:{2} y:{3} anim:{4} cost:{5}", new object[]
@@ -168,7 +168,7 @@ public class DevToolNavGrid : DevTool
 		}));
 	}
 
-	private void DebugDrawLinks(NavGrid navGrid)
+		private void DebugDrawLinks(NavGrid navGrid)
 	{
 		if (Camera.main == null)
 		{
@@ -201,13 +201,13 @@ public class DevToolNavGrid : DevTool
 		}
 	}
 
-	private bool IsInCameraView(Camera camera, Vector3 pos)
+		private bool IsInCameraView(Camera camera, Vector3 pos)
 	{
 		Vector3 vector = camera.WorldToViewportPoint(pos);
 		return vector.x >= 0f && vector.y >= 0f && vector.x <= 1f && vector.y <= 1f;
 	}
 
-	private bool DrawNavTypeLink(NavGrid navGrid, int end_cell_idx, ref Color color)
+		private bool DrawNavTypeLink(NavGrid navGrid, int end_cell_idx, ref Color color)
 	{
 		for (int i = 0; i < navGrid.ValidNavTypes.Length; i++)
 		{
@@ -225,7 +225,7 @@ public class DevToolNavGrid : DevTool
 		return false;
 	}
 
-	private void DrawArrowLink(Vector2 start, Vector2 end, uint color)
+		private void DrawArrowLink(Vector2 start, Vector2 end, uint color)
 	{
 		ImDrawListPtr backgroundDrawList = ImGui.GetBackgroundDrawList();
 		Vector2 vector = end - start;
@@ -240,25 +240,25 @@ public class DevToolNavGrid : DevTool
 		backgroundDrawList.AddTriangleFilled(end, p, p2, color);
 	}
 
-	private const string INVALID_OVERLAY_MODE_STR = "None";
+		private const string INVALID_OVERLAY_MODE_STR = "None";
 
-	private string[] navGridNames;
+		private string[] navGridNames;
 
-	private int selectedNavGrid;
+		private int selectedNavGrid;
 
-	private bool drawLinks;
+		private bool drawLinks;
 
-	public static DevToolNavGrid Instance;
+		public static DevToolNavGrid Instance;
 
-	private int[] linkStats;
+		private int[] linkStats;
 
-	private int highestLinkCell;
+		private int highestLinkCell;
 
-	private int highestLinkCount;
+		private int highestLinkCount;
 
-	private int selectedCell;
+		private int selectedCell;
 
-	private bool follow;
+		private bool follow;
 
-	private GameObject lockObject;
+		private GameObject lockObject;
 }
