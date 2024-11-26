@@ -30,6 +30,10 @@
       <DefineConstants>孵化器;孵化器mod</DefineConstants>
       <OutputPath>bin\孵化器\</OutputPath>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == '火箭速度调节|AnyCPU' ">
+      <OutputPath>bin\火箭速度调节\</OutputPath>
+      <DefineConstants>火箭速度调节</DefineConstants>
+    </PropertyGroup>
     <ItemGroup>
         <Reference Include="0Harmony">
           <HintPath>..\..\..\..\..\..\game\steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\0Harmony.dll</HintPath>
@@ -88,6 +92,7 @@
         <Compile Include="建筑\水管\管道\管道.cs" />
         <Compile Include="建筑\火箭\地堡门.cs" />
         <Compile Include="建筑\火箭\流星爆破炮.cs" />
+        <Compile Include="建筑\火箭\火箭.cs" />
         <Compile Include="建筑\火箭\爆破弹组装机.cs" />
         <Compile Include="建筑\电力\人力发电机.cs" />
         <Compile Include="建筑\电力\巨型电池.cs" />

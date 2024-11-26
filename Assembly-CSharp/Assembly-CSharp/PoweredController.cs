@@ -1,28 +1,20 @@
-﻿using System;
+﻿public class PoweredController : GameStateMachine<PoweredController, PoweredController.Instance> {
+    public State off;
+    public State on;
 
-public class PoweredController : GameStateMachine<PoweredController, PoweredController.Instance>
-{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		default_state = this.off;
-		this.off.PlayAnim("off").EventTransition(GameHashes.OperationalChanged, this.on, (PoweredController.Instance smi) => smi.GetComponent<Operational>().IsOperational);
-		this.on.PlayAnim("on").EventTransition(GameHashes.OperationalChanged, this.off, (PoweredController.Instance smi) => !smi.GetComponent<Operational>().IsOperational);
-	}
+    public override void InitializeStates(out BaseState default_state) {
+        default_state = off;
+        off.PlayAnim("off")
+           .EventTransition(GameHashes.OperationalChanged, on, smi => smi.GetComponent<Operational>().IsOperational);
 
-		public GameStateMachine<PoweredController, PoweredController.Instance, IStateMachineTarget, object>.State off;
+        on.PlayAnim("on")
+          .EventTransition(GameHashes.OperationalChanged, off, smi => !smi.GetComponent<Operational>().IsOperational);
+    }
 
-		public GameStateMachine<PoweredController, PoweredController.Instance, IStateMachineTarget, object>.State on;
+    public class Def : BaseDef { }
 
-		public class Def : StateMachine.BaseDef
-	{
-	}
-
-		public new class Instance : GameStateMachine<PoweredController, PoweredController.Instance, IStateMachineTarget, object>.GameInstance
-	{
-				public Instance(IStateMachineTarget master, PoweredController.Def def) : base(master, def)
-		{
-		}
-
-				public bool ShowWorkingStatus;
-	}
+    public new class Instance : GameInstance {
+        public bool ShowWorkingStatus;
+        public Instance(IStateMachineTarget master, Def def) : base(master, def) { }
+    }
 }

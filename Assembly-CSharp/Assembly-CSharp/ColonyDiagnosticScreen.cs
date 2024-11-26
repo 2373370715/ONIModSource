@@ -5,437 +5,377 @@ using STRINGS;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ColonyDiagnosticScreen : KScreen, ISim1000ms
-{
-		protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		ColonyDiagnosticScreen.Instance = this;
-		this.RefreshSingleWorld(null);
-		Game.Instance.Subscribe(1983128072, new Action<object>(this.RefreshSingleWorld));
-		MultiToggle multiToggle = this.seeAllButton;
-		multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(delegate()
-		{
-			bool flag = !AllDiagnosticsScreen.Instance.isHiddenButActive;
-			AllDiagnosticsScreen.Instance.Show(!flag);
-		}));
-	}
+public class ColonyDiagnosticScreen : KScreen, ISim1000ms {
+    public static ColonyDiagnosticScreen Instance;
 
-		protected override void OnForcedCleanUp()
-	{
-		ColonyDiagnosticScreen.Instance = null;
-		base.OnForcedCleanUp();
-	}
+    public static Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string> notificationSoundsActive
+        = new Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string> {
+            {
+                ColonyDiagnostic.DiagnosticResult.Opinion.DuplicantThreatening, "Diagnostic_Active_DuplicantThreatening"
+            },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Bad, "Diagnostic_Active_Bad" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Warning, "Diagnostic_Active_Warning" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Concern, "Diagnostic_Active_Concern" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Suggestion, "Diagnostic_Active_Suggestion" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Tutorial, "Diagnostic_Active_Tutorial" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Normal, "" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Good, "" }
+        };
 
-		private void RefreshSingleWorld(object data = null)
-	{
-		foreach (ColonyDiagnosticScreen.DiagnosticRow diagnosticRow in this.diagnosticRows)
-		{
-			diagnosticRow.OnCleanUp();
-			Util.KDestroyGameObject(diagnosticRow.gameObject);
-		}
-		this.diagnosticRows.Clear();
-		this.SpawnTrackerLines(ClusterManager.Instance.activeWorldId);
-	}
+    public static Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string> notificationSoundsInactive
+        = new Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string> {
+            {
+                ColonyDiagnostic.DiagnosticResult.Opinion.DuplicantThreatening,
+                "Diagnostic_Inactive_DuplicantThreatening"
+            },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Bad, "Diagnostic_Inactive_Bad" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Warning, "Diagnostic_Inactive_Warning" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Concern, "Diagnostic_Inactive_Concern" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Suggestion, "Diagnostic_Inactive_Suggestion" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Tutorial, "Diagnostic_Inactive_Tutorial" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Normal, "" },
+            { ColonyDiagnostic.DiagnosticResult.Opinion.Good, "" }
+        };
 
-		private void SpawnTrackerLines(int world)
-	{
-		this.AddDiagnostic<BreathabilityDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<FoodDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<StressDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<RadiationDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<ReactorDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<FloatingRocketDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<RocketFuelDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<RocketOxidizerDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<FarmDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<ToiletDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<BedDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<IdleDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<TrappedDuplicantDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<EntombedDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<PowerUseDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<BatteryDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<RocketsInOrbitDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		this.AddDiagnostic<MeteorDiagnostic>(world, this.contentContainer, this.diagnosticRows);
-		List<ColonyDiagnosticScreen.DiagnosticRow> list = new List<ColonyDiagnosticScreen.DiagnosticRow>();
-		foreach (ColonyDiagnosticScreen.DiagnosticRow item in this.diagnosticRows)
-		{
-			list.Add(item);
-		}
-		list.Sort((ColonyDiagnosticScreen.DiagnosticRow a, ColonyDiagnosticScreen.DiagnosticRow b) => a.diagnostic.name.CompareTo(b.diagnostic.name));
-		foreach (ColonyDiagnosticScreen.DiagnosticRow diagnosticRow in list)
-		{
-			diagnosticRow.gameObject.transform.SetAsLastSibling();
-		}
-		list.Clear();
-		this.seeAllButton.transform.SetAsLastSibling();
-		this.RefreshAll();
-	}
+    public           GameObject          contentContainer;
+    private readonly List<DiagnosticRow> diagnosticRows = new List<DiagnosticRow>();
+    public           GameObject          header;
+    public           GameObject          linePrefab;
+    public           GameObject          rootIndicator;
+    public           MultiToggle         seeAllButton;
+    public           void                Sim1000ms(float dt) { RefreshAll(); }
 
-		private GameObject AddDiagnostic<T>(int worldID, GameObject parent, List<ColonyDiagnosticScreen.DiagnosticRow> parentCollection) where T : ColonyDiagnostic
-	{
-		T diagnostic = ColonyDiagnosticUtility.Instance.GetDiagnostic<T>(worldID);
-		if (diagnostic == null)
-		{
-			return null;
-		}
-		GameObject gameObject = Util.KInstantiateUI(this.linePrefab, parent, true);
-		parentCollection.Add(new ColonyDiagnosticScreen.DiagnosticRow(worldID, gameObject, diagnostic));
-		return gameObject;
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        Instance = this;
+        RefreshSingleWorld();
+        Game.Instance.Subscribe(1983128072, RefreshSingleWorld);
+        var multiToggle = seeAllButton;
+        multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick,
+                                                              new System.Action(delegate {
+                                                                                    var flag = !AllDiagnosticsScreen
+                                                                                        .Instance
+                                                                                        .isHiddenButActive;
 
-		public static void SetIndication(ColonyDiagnostic.DiagnosticResult.Opinion opinion, GameObject indicatorGameObject)
-	{
-		indicatorGameObject.GetComponentInChildren<Image>().color = ColonyDiagnosticScreen.GetDiagnosticIndicationColor(opinion);
-	}
+                                                                                    AllDiagnosticsScreen.Instance
+                                                                                        .Show(!flag);
+                                                                                }));
+    }
 
-		public static Color GetDiagnosticIndicationColor(ColonyDiagnostic.DiagnosticResult.Opinion opinion)
-	{
-		switch (opinion)
-		{
-		case ColonyDiagnostic.DiagnosticResult.Opinion.DuplicantThreatening:
-		case ColonyDiagnostic.DiagnosticResult.Opinion.Bad:
-		case ColonyDiagnostic.DiagnosticResult.Opinion.Warning:
-			return Constants.NEGATIVE_COLOR;
-		case ColonyDiagnostic.DiagnosticResult.Opinion.Concern:
-			return Constants.WARNING_COLOR;
-		}
-		return Color.white;
-	}
+    protected override void OnForcedCleanUp() {
+        Instance = null;
+        base.OnForcedCleanUp();
+    }
 
-		public void Sim1000ms(float dt)
-	{
-		this.RefreshAll();
-	}
+    private void RefreshSingleWorld(object data = null) {
+        foreach (var diagnosticRow in diagnosticRows) {
+            diagnosticRow.OnCleanUp();
+            Util.KDestroyGameObject(diagnosticRow.gameObject);
+        }
 
-		public void RefreshAll()
-	{
-		foreach (ColonyDiagnosticScreen.DiagnosticRow diagnosticRow in this.diagnosticRows)
-		{
-			if (diagnosticRow.worldID == ClusterManager.Instance.activeWorldId)
-			{
-				this.UpdateDiagnosticRow(diagnosticRow);
-			}
-		}
-		ColonyDiagnosticScreen.SetIndication(ColonyDiagnosticUtility.Instance.GetWorldDiagnosticResult(ClusterManager.Instance.activeWorldId), this.rootIndicator);
-		this.seeAllButton.GetComponentInChildren<LocText>().SetText(string.Format(UI.DIAGNOSTICS_SCREEN.SEE_ALL, AllDiagnosticsScreen.Instance.GetRowCount()));
-	}
+        diagnosticRows.Clear();
+        SpawnTrackerLines(ClusterManager.Instance.activeWorldId);
+    }
 
-		private ColonyDiagnostic.DiagnosticResult.Opinion UpdateDiagnosticRow(ColonyDiagnosticScreen.DiagnosticRow row)
-	{
-		ColonyDiagnostic.DiagnosticResult.Opinion currentDisplayedResult = row.currentDisplayedResult;
-		bool activeInHierarchy = row.gameObject.activeInHierarchy;
-		if (ColonyDiagnosticUtility.Instance.IsDiagnosticTutorialDisabled(row.diagnostic.id))
-		{
-			this.SetRowActive(row, false);
-		}
-		else
-		{
-			switch (ColonyDiagnosticUtility.Instance.diagnosticDisplaySettings[row.worldID][row.diagnostic.id])
-			{
-			case ColonyDiagnosticUtility.DisplaySetting.Always:
-				this.SetRowActive(row, true);
-				break;
-			case ColonyDiagnosticUtility.DisplaySetting.AlertOnly:
-				this.SetRowActive(row, row.diagnostic.LatestResult.opinion < ColonyDiagnostic.DiagnosticResult.Opinion.Normal);
-				break;
-			case ColonyDiagnosticUtility.DisplaySetting.Never:
-				this.SetRowActive(row, false);
-				break;
-			}
-			if (row.gameObject.activeInHierarchy && (row.currentDisplayedResult < currentDisplayedResult || (row.currentDisplayedResult < ColonyDiagnostic.DiagnosticResult.Opinion.Normal && !activeInHierarchy)) && row.CheckAllowVisualNotification())
-			{
-				row.TriggerVisualNotification();
-			}
-		}
-		return row.diagnostic.LatestResult.opinion;
-	}
+    private void SpawnTrackerLines(int world) {
+        AddDiagnostic<BreathabilityDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<FoodDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<StressDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<RadiationDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<ReactorDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<FloatingRocketDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<RocketFuelDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<RocketOxidizerDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<FarmDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<ToiletDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<BedDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<IdleDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<TrappedDuplicantDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<EntombedDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<PowerUseDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<BatteryDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<RocketsInOrbitDiagnostic>(world, contentContainer, diagnosticRows);
+        AddDiagnostic<MeteorDiagnostic>(world, contentContainer, diagnosticRows);
+        var list = new List<DiagnosticRow>();
+        foreach (var item in diagnosticRows) list.Add(item);
+        list.Sort((a, b) => a.diagnostic.name.CompareTo(b.diagnostic.name));
+        foreach (var diagnosticRow in list) diagnosticRow.gameObject.transform.SetAsLastSibling();
+        list.Clear();
+        seeAllButton.transform.SetAsLastSibling();
+        RefreshAll();
+    }
 
-		private void SetRowActive(ColonyDiagnosticScreen.DiagnosticRow row, bool active)
-	{
-		if (row.gameObject.activeSelf != active)
-		{
-			row.gameObject.SetActive(active);
-			row.ResolveNotificationRoutine();
-		}
-	}
+    private GameObject AddDiagnostic<T>(int worldID, GameObject parent, List<DiagnosticRow> parentCollection)
+        where T : ColonyDiagnostic {
+        var diagnostic = ColonyDiagnosticUtility.Instance.GetDiagnostic<T>(worldID);
+        if (diagnostic == null) return null;
 
-		public GameObject linePrefab;
+        var gameObject = Util.KInstantiateUI(linePrefab, parent, true);
+        parentCollection.Add(new DiagnosticRow(worldID, gameObject, diagnostic));
+        return gameObject;
+    }
 
-		public static ColonyDiagnosticScreen Instance;
+    public static void
+        SetIndication(ColonyDiagnostic.DiagnosticResult.Opinion opinion, GameObject indicatorGameObject) {
+        indicatorGameObject.GetComponentInChildren<Image>().color = GetDiagnosticIndicationColor(opinion);
+    }
 
-		private List<ColonyDiagnosticScreen.DiagnosticRow> diagnosticRows = new List<ColonyDiagnosticScreen.DiagnosticRow>();
+    public static Color GetDiagnosticIndicationColor(ColonyDiagnostic.DiagnosticResult.Opinion opinion) {
+        switch (opinion) {
+            case ColonyDiagnostic.DiagnosticResult.Opinion.DuplicantThreatening:
+            case ColonyDiagnostic.DiagnosticResult.Opinion.Bad:
+            case ColonyDiagnostic.DiagnosticResult.Opinion.Warning:
+                return Constants.NEGATIVE_COLOR;
+            case ColonyDiagnostic.DiagnosticResult.Opinion.Concern:
+                return Constants.WARNING_COLOR;
+        }
 
-		public GameObject header;
+        return Color.white;
+    }
 
-		public GameObject contentContainer;
+    public void RefreshAll() {
+        foreach (var diagnosticRow in diagnosticRows)
+            if (diagnosticRow.worldID == ClusterManager.Instance.activeWorldId)
+                UpdateDiagnosticRow(diagnosticRow);
 
-		public GameObject rootIndicator;
+        SetIndication(ColonyDiagnosticUtility.Instance.GetWorldDiagnosticResult(ClusterManager.Instance.activeWorldId),
+                      rootIndicator);
 
-		public MultiToggle seeAllButton;
+        seeAllButton.GetComponentInChildren<LocText>()
+                    .SetText(string.Format(UI.DIAGNOSTICS_SCREEN.SEE_ALL, AllDiagnosticsScreen.Instance.GetRowCount()));
+    }
 
-		public static Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string> notificationSoundsActive = new Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string>
-	{
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.DuplicantThreatening,
-			"Diagnostic_Active_DuplicantThreatening"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Bad,
-			"Diagnostic_Active_Bad"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Warning,
-			"Diagnostic_Active_Warning"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Concern,
-			"Diagnostic_Active_Concern"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Suggestion,
-			"Diagnostic_Active_Suggestion"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Tutorial,
-			"Diagnostic_Active_Tutorial"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Normal,
-			""
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Good,
-			""
-		}
-	};
+    private ColonyDiagnostic.DiagnosticResult.Opinion UpdateDiagnosticRow(DiagnosticRow row) {
+        var currentDisplayedResult = row.currentDisplayedResult;
+        var activeInHierarchy      = row.gameObject.activeInHierarchy;
+        if (ColonyDiagnosticUtility.Instance.IsDiagnosticTutorialDisabled(row.diagnostic.id))
+            SetRowActive(row, false);
+        else {
+            switch (ColonyDiagnosticUtility.Instance.diagnosticDisplaySettings[row.worldID][row.diagnostic.id]) {
+                case ColonyDiagnosticUtility.DisplaySetting.Always:
+                    SetRowActive(row, true);
+                    break;
+                case ColonyDiagnosticUtility.DisplaySetting.AlertOnly:
+                    SetRowActive(row,
+                                 row.diagnostic.LatestResult.opinion <
+                                 ColonyDiagnostic.DiagnosticResult.Opinion.Normal);
 
-		public static Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string> notificationSoundsInactive = new Dictionary<ColonyDiagnostic.DiagnosticResult.Opinion, string>
-	{
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.DuplicantThreatening,
-			"Diagnostic_Inactive_DuplicantThreatening"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Bad,
-			"Diagnostic_Inactive_Bad"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Warning,
-			"Diagnostic_Inactive_Warning"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Concern,
-			"Diagnostic_Inactive_Concern"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Suggestion,
-			"Diagnostic_Inactive_Suggestion"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Tutorial,
-			"Diagnostic_Inactive_Tutorial"
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Normal,
-			""
-		},
-		{
-			ColonyDiagnostic.DiagnosticResult.Opinion.Good,
-			""
-		}
-	};
+                    break;
+                case ColonyDiagnosticUtility.DisplaySetting.Never:
+                    SetRowActive(row, false);
+                    break;
+            }
 
-		private class DiagnosticRow : ISim4000ms
-	{
-				public DiagnosticRow(int worldID, GameObject gameObject, ColonyDiagnostic diagnostic)
-		{
-			global::Debug.Assert(diagnostic != null);
-			HierarchyReferences component = gameObject.GetComponent<HierarchyReferences>();
-			this.worldID = worldID;
-			this.sparkLayer = component.GetReference<SparkLayer>("SparkLayer");
-			this.diagnostic = diagnostic;
-			this.titleLabel = component.GetReference<LocText>("TitleLabel");
-			this.valueLabel = component.GetReference<LocText>("ValueLabel");
-			this.indicator = component.GetReference<Image>("Indicator");
-			this.image = component.GetReference<Image>("Image");
-			this.tooltip = gameObject.GetComponent<ToolTip>();
-			this.gameObject = gameObject;
-			this.titleLabel.SetText(diagnostic.name);
-			this.sparkLayer.colorRules.setOwnColor = false;
-			if (diagnostic.tracker == null)
-			{
-				this.sparkLayer.transform.parent.gameObject.SetActive(false);
-			}
-			else
-			{
-				this.sparkLayer.ClearLines();
-				global::Tuple<float, float>[] points = diagnostic.tracker.ChartableData(600f);
-				this.sparkLayer.NewLine(points, diagnostic.name);
-			}
-			this.button = gameObject.GetComponent<MultiToggle>();
-			MultiToggle multiToggle = this.button;
-			multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick, new System.Action(delegate()
-			{
-				KSelectable kselectable = null;
-				Vector3 pos = Vector3.zero;
-				if (diagnostic.LatestResult.clickThroughTarget != null)
-				{
-					pos = diagnostic.LatestResult.clickThroughTarget.first;
-					kselectable = ((diagnostic.LatestResult.clickThroughTarget.second == null) ? null : diagnostic.LatestResult.clickThroughTarget.second.GetComponent<KSelectable>());
-				}
-				else
-				{
-					GameObject nextClickThroughObject = diagnostic.GetNextClickThroughObject();
-					if (nextClickThroughObject != null)
-					{
-						kselectable = nextClickThroughObject.GetComponent<KSelectable>();
-						pos = nextClickThroughObject.transform.GetPosition();
-					}
-				}
-				if (kselectable == null)
-				{
-					CameraController.Instance.ActiveWorldStarWipe(diagnostic.worldID, null);
-					return;
-				}
-				SelectTool.Instance.SelectAndFocus(pos, kselectable);
-			}));
-			this.defaultIndicatorSizeDelta = Vector2.zero;
-			this.Update(true);
-			SimAndRenderScheduler.instance.Add(this, true);
-		}
+            if (row.gameObject.activeInHierarchy &&
+                (row.currentDisplayedResult < currentDisplayedResult ||
+                 (row.currentDisplayedResult < ColonyDiagnostic.DiagnosticResult.Opinion.Normal &&
+                  !activeInHierarchy)) &&
+                row.CheckAllowVisualNotification())
+                row.TriggerVisualNotification();
+        }
 
-				public void OnCleanUp()
-		{
-			SimAndRenderScheduler.instance.Remove(this);
-		}
+        return row.diagnostic.LatestResult.opinion;
+    }
 
-				public void Sim4000ms(float dt)
-		{
-			this.Update(false);
-		}
+    private void SetRowActive(DiagnosticRow row, bool active) {
+        if (row.gameObject.activeSelf != active) {
+            row.gameObject.SetActive(active);
+            row.ResolveNotificationRoutine();
+        }
+    }
 
-								public GameObject gameObject { get; private set; }
+    private class DiagnosticRow : ISim4000ms {
+        private const    float                                     displayHistoryPeriod           = 600f;
+        private const    float                                     MIN_TIME_BETWEEN_NOTIFICATIONS = 300f;
+        private          Coroutine                                 activeRoutine;
+        private readonly MultiToggle                               button;
+        public           ColonyDiagnostic.DiagnosticResult.Opinion currentDisplayedResult;
+        private          Vector2                                   defaultIndicatorSizeDelta;
+        public readonly  ColonyDiagnostic                          diagnostic;
+        private readonly Image                                     image;
+        private readonly Image                                     indicator;
+        public readonly  SparkLayer                                sparkLayer;
+        private          float                                     timeOfLastNotification;
+        private readonly LocText                                   titleLabel;
+        private readonly ToolTip                                   tooltip;
+        private readonly LocText                                   valueLabel;
+        public readonly  int                                       worldID;
 
-				public void Update(bool force = false)
-		{
-			if (!force && ClusterManager.Instance.activeWorldId != this.worldID)
-			{
-				return;
-			}
-			Color color = Color.white;
-			global::Debug.Assert(this.diagnostic.LatestResult.opinion > ColonyDiagnostic.DiagnosticResult.Opinion.Unset, string.Format("{0} criteria returned no opinion. Make sure the DiagnosticResult parameters are used or an opinion result is otherwise set in all of its criteria", this.diagnostic));
-			this.currentDisplayedResult = this.diagnostic.LatestResult.opinion;
-			color = this.diagnostic.colors[this.diagnostic.LatestResult.opinion];
-			if (this.diagnostic.tracker != null)
-			{
-				global::Tuple<float, float>[] data = this.diagnostic.tracker.ChartableData(600f);
-				this.sparkLayer.RefreshLine(data, this.diagnostic.name);
-				this.sparkLayer.SetColor(color);
-			}
-			this.indicator.color = this.diagnostic.colors[this.diagnostic.LatestResult.opinion];
-			this.tooltip.SetSimpleTooltip((this.diagnostic.LatestResult.Message.IsNullOrWhiteSpace() ? UI.COLONY_DIAGNOSTICS.GENERIC_STATUS_NORMAL.text : this.diagnostic.LatestResult.Message) + "\n\n" + UI.COLONY_DIAGNOSTICS.MUTE_TUTORIAL.text);
-			ColonyDiagnostic.PresentationSetting presentationSetting = this.diagnostic.presentationSetting;
-			if (presentationSetting == ColonyDiagnostic.PresentationSetting.AverageValue || presentationSetting != ColonyDiagnostic.PresentationSetting.CurrentValue)
-			{
-				this.valueLabel.SetText(this.diagnostic.GetAverageValueString());
-			}
-			else
-			{
-				this.valueLabel.SetText(this.diagnostic.GetCurrentValueString());
-			}
-			if (!string.IsNullOrEmpty(this.diagnostic.icon))
-			{
-				this.image.sprite = Assets.GetSprite(this.diagnostic.icon);
-			}
-			if (color == Constants.NEUTRAL_COLOR)
-			{
-				color = Color.white;
-			}
-			this.titleLabel.color = color;
-		}
+        public DiagnosticRow(int worldID, GameObject gameObject, ColonyDiagnostic diagnostic) {
+            Debug.Assert(diagnostic != null);
+            var component = gameObject.GetComponent<HierarchyReferences>();
+            this.worldID    = worldID;
+            sparkLayer      = component.GetReference<SparkLayer>("SparkLayer");
+            this.diagnostic = diagnostic;
+            titleLabel      = component.GetReference<LocText>("TitleLabel");
+            valueLabel      = component.GetReference<LocText>("ValueLabel");
+            indicator       = component.GetReference<Image>("Indicator");
+            image           = component.GetReference<Image>("Image");
+            tooltip         = gameObject.GetComponent<ToolTip>();
+            this.gameObject = gameObject;
+            titleLabel.SetText(diagnostic.name);
+            sparkLayer.colorRules.setOwnColor = false;
+            if (diagnostic.tracker == null)
+                sparkLayer.transform.parent.gameObject.SetActive(false);
+            else {
+                sparkLayer.ClearLines();
+                var points = diagnostic.tracker.ChartableData(600f);
+                sparkLayer.NewLine(points, diagnostic.name);
+            }
 
-				public bool CheckAllowVisualNotification()
-		{
-			return this.timeOfLastNotification == 0f || GameClock.Instance.GetTime() >= this.timeOfLastNotification + 300f;
-		}
+            button = gameObject.GetComponent<MultiToggle>();
+            var multiToggle = button;
+            multiToggle.onClick = (System.Action)Delegate.Combine(multiToggle.onClick,
+                                                                  new System.Action(delegate {
+                                                                      KSelectable kselectable = null;
+                                                                      var         pos         = Vector3.zero;
+                                                                      if (diagnostic.LatestResult
+                                                                              .clickThroughTarget !=
+                                                                          null) {
+                                                                          pos = diagnostic.LatestResult
+                                                                              .clickThroughTarget.first;
 
-				public void TriggerVisualNotification()
-		{
-			if (DebugHandler.NotificationsDisabled)
-			{
-				return;
-			}
-			if (this.activeRoutine == null)
-			{
-				this.timeOfLastNotification = GameClock.Instance.GetTime();
-				KFMOD.PlayUISound(GlobalAssets.GetSound(ColonyDiagnosticScreen.notificationSoundsActive[this.currentDisplayedResult], false));
-				this.activeRoutine = this.gameObject.GetComponent<KMonoBehaviour>().StartCoroutine(this.VisualNotificationRoutine());
-			}
-		}
+                                                                          kselectable
+                                                                              = diagnostic.LatestResult
+                                                                                          .clickThroughTarget
+                                                                                          .second ==
+                                                                                      null
+                                                                                      ? null
+                                                                                      : diagnostic.LatestResult
+                                                                                          .clickThroughTarget
+                                                                                          .second
+                                                                                          .GetComponent<
+                                                                                              KSelectable>();
+                                                                      } else {
+                                                                          var nextClickThroughObject
+                                                                              = diagnostic
+                                                                                  .GetNextClickThroughObject();
 
-				private IEnumerator VisualNotificationRoutine()
-		{
-			this.gameObject.GetComponentInChildren<NotificationAnimator>().Begin(false);
-			RectTransform indicator = this.gameObject.GetComponent<HierarchyReferences>().GetReference<Image>("Indicator").rectTransform;
-			this.defaultIndicatorSizeDelta = Vector2.zero;
-			indicator.sizeDelta = this.defaultIndicatorSizeDelta;
-			float bounceDuration = 3f;
-			for (float i = 0f; i < bounceDuration; i += Time.unscaledDeltaTime)
-			{
-				indicator.sizeDelta = this.defaultIndicatorSizeDelta + Vector2.one * (float)Mathf.RoundToInt(Mathf.Sin(6f * (3.1415927f * (i / bounceDuration))));
-				yield return 0;
-			}
-			for (float i = 0f; i < bounceDuration; i += Time.unscaledDeltaTime)
-			{
-				indicator.sizeDelta = this.defaultIndicatorSizeDelta + Vector2.one * (float)Mathf.RoundToInt(Mathf.Sin(6f * (3.1415927f * (i / bounceDuration))));
-				yield return 0;
-			}
-			for (float i = 0f; i < bounceDuration; i += Time.unscaledDeltaTime)
-			{
-				indicator.sizeDelta = this.defaultIndicatorSizeDelta + Vector2.one * (float)Mathf.RoundToInt(Mathf.Sin(6f * (3.1415927f * (i / bounceDuration))));
-				yield return 0;
-			}
-			this.ResolveNotificationRoutine();
-			yield break;
-		}
+                                                                          if (nextClickThroughObject != null) {
+                                                                              kselectable
+                                                                                  = nextClickThroughObject
+                                                                                      .GetComponent<
+                                                                                          KSelectable>();
 
-				public void ResolveNotificationRoutine()
-		{
-			this.gameObject.GetComponent<HierarchyReferences>().GetReference<Image>("Indicator").rectTransform.sizeDelta = Vector2.zero;
-			this.gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Content").localPosition = Vector2.zero;
-			this.activeRoutine = null;
-		}
+                                                                              pos = nextClickThroughObject
+                                                                                  .transform.GetPosition();
+                                                                          }
+                                                                      }
 
-				private const float displayHistoryPeriod = 600f;
+                                                                      if (kselectable == null) {
+                                                                          CameraController.Instance
+                                                                              .ActiveWorldStarWipe(diagnostic
+                                                                                  .worldID);
 
-				public ColonyDiagnostic diagnostic;
+                                                                          return;
+                                                                      }
 
-				public SparkLayer sparkLayer;
+                                                                      SelectTool.Instance.SelectAndFocus(pos,
+                                                                       kselectable);
+                                                                  }));
 
-				public int worldID;
+            defaultIndicatorSizeDelta = Vector2.zero;
+            Update(true);
+            SimAndRenderScheduler.instance.Add(this, true);
+        }
 
-				private LocText titleLabel;
+        public GameObject gameObject          { get; }
+        public void       Sim4000ms(float dt) { Update(); }
+        public void       OnCleanUp()         { SimAndRenderScheduler.instance.Remove(this); }
 
-				private LocText valueLabel;
+        public void Update(bool force = false) {
+            if (!force && ClusterManager.Instance.activeWorldId != worldID) return;
 
-				private Image indicator;
+            var color = Color.white;
+            Debug.Assert(diagnostic.LatestResult.opinion > ColonyDiagnostic.DiagnosticResult.Opinion.Unset,
+                         string.Format("{0} criteria returned no opinion. Make sure the DiagnosticResult parameters are used or an opinion result is otherwise set in all of its criteria",
+                                       diagnostic));
 
-				private ToolTip tooltip;
+            currentDisplayedResult = diagnostic.LatestResult.opinion;
+            color                  = diagnostic.colors[diagnostic.LatestResult.opinion];
+            if (diagnostic.tracker != null) {
+                var data = diagnostic.tracker.ChartableData(600f);
+                sparkLayer.RefreshLine(data, diagnostic.name);
+                sparkLayer.SetColor(color);
+            }
 
-				private MultiToggle button;
+            indicator.color = diagnostic.colors[diagnostic.LatestResult.opinion];
+            tooltip.SetSimpleTooltip((diagnostic.LatestResult.Message.IsNullOrWhiteSpace()
+                                          ? UI.COLONY_DIAGNOSTICS.GENERIC_STATUS_NORMAL.text
+                                          : diagnostic.LatestResult.Message) +
+                                     "\n\n"                                  +
+                                     UI.COLONY_DIAGNOSTICS.MUTE_TUTORIAL.text);
 
-				private Image image;
+            var presentationSetting = diagnostic.presentationSetting;
+            if (presentationSetting == ColonyDiagnostic.PresentationSetting.AverageValue ||
+                presentationSetting != ColonyDiagnostic.PresentationSetting.CurrentValue)
+                valueLabel.SetText(diagnostic.GetAverageValueString());
+            else
+                valueLabel.SetText(diagnostic.GetCurrentValueString());
 
-				public ColonyDiagnostic.DiagnosticResult.Opinion currentDisplayedResult;
+            if (!string.IsNullOrEmpty(diagnostic.icon)) image.sprite = Assets.GetSprite(diagnostic.icon);
+            if (color == Constants.NEUTRAL_COLOR) color              = Color.white;
+            titleLabel.color = color;
+        }
 
-				private Vector2 defaultIndicatorSizeDelta;
+        public bool CheckAllowVisualNotification() {
+            return timeOfLastNotification == 0f || GameClock.Instance.GetTime() >= timeOfLastNotification + 300f;
+        }
 
-				private float timeOfLastNotification;
+        public void TriggerVisualNotification() {
+            if (DebugHandler.NotificationsDisabled) return;
 
-				private const float MIN_TIME_BETWEEN_NOTIFICATIONS = 300f;
+            if (activeRoutine == null) {
+                timeOfLastNotification = GameClock.Instance.GetTime();
+                KFMOD.PlayUISound(GlobalAssets.GetSound(notificationSoundsActive[currentDisplayedResult]));
+                activeRoutine = gameObject.GetComponent<KMonoBehaviour>().StartCoroutine(VisualNotificationRoutine());
+            }
+        }
 
-				private Coroutine activeRoutine;
-	}
+        private IEnumerator VisualNotificationRoutine() {
+            gameObject.GetComponentInChildren<NotificationAnimator>().Begin(false);
+            var indicator = gameObject.GetComponent<HierarchyReferences>()
+                                      .GetReference<Image>("Indicator")
+                                      .rectTransform;
+
+            defaultIndicatorSizeDelta = Vector2.zero;
+            indicator.sizeDelta       = defaultIndicatorSizeDelta;
+            var bounceDuration = 3f;
+            for (var i = 0f; i < bounceDuration; i += Time.unscaledDeltaTime) {
+                indicator.sizeDelta = defaultIndicatorSizeDelta +
+                                      Vector2.one *
+                                      Mathf.RoundToInt(Mathf.Sin(6f * (3.1415927f * (i / bounceDuration))));
+
+                yield return 0;
+            }
+
+            for (var i = 0f; i < bounceDuration; i += Time.unscaledDeltaTime) {
+                indicator.sizeDelta = defaultIndicatorSizeDelta +
+                                      Vector2.one *
+                                      Mathf.RoundToInt(Mathf.Sin(6f * (3.1415927f * (i / bounceDuration))));
+
+                yield return 0;
+            }
+
+            for (var i = 0f; i < bounceDuration; i += Time.unscaledDeltaTime) {
+                indicator.sizeDelta = defaultIndicatorSizeDelta +
+                                      Vector2.one *
+                                      Mathf.RoundToInt(Mathf.Sin(6f * (3.1415927f * (i / bounceDuration))));
+
+                yield return 0;
+            }
+
+            ResolveNotificationRoutine();
+        }
+
+        public void ResolveNotificationRoutine() {
+            gameObject.GetComponent<HierarchyReferences>().GetReference<Image>("Indicator").rectTransform.sizeDelta
+                = Vector2.zero;
+
+            gameObject.GetComponent<HierarchyReferences>().GetReference<RectTransform>("Content").localPosition
+                = Vector2.zero;
+
+            activeRoutine = null;
+        }
+    }
 }

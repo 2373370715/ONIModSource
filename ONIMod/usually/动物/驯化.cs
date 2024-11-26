@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Klei.AI;
 
-#if 驯化加速
+#if 驯化加速 || usually
 [HarmonyPatch(typeof(AttributeModifier),
                  MethodType.Constructor,
                  typeof(string),

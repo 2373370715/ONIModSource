@@ -22,6 +22,9 @@
         <WarningLevel>4</WarningLevel>
       <OutputPath>bin\usually\</OutputPath>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == '火箭速度调节|AnyCPU' ">
+      <OutputPath>bin\火箭速度调节\</OutputPath>
+    </PropertyGroup>
     <ItemGroup>
         <Reference Include="System"/>
         <Reference Include="System.Core"/>

@@ -9,7 +9,7 @@ public class 运载管道入口 {
 
     [HarmonyPatch(typeof(TravelTubeEntranceConfig), nameof(TravelTubeEntranceConfig.ConfigureBuildingTemplate)),
      HarmonyPostfix]
-    public static void postfix2(GameObject go) { go.AddOrGet<TravelTubeEntrance>().joulesPerLaunch = 0f; }
+    public static void postfix2(GameObject go) { go.AddOrGet<TravelTubeEntrance>().joulesPerLaunch = 1f; }
 }
 
 #endif

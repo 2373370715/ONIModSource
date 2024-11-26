@@ -1,0 +1,8 @@
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\火箭速度调节\usually.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\火箭速度调节\ModTool.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\火箭速度调节\PLib.dll
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\bin\火箭速度调节\ModTool.pdb
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\火箭速度调节\usually.csproj.AssemblyReference.cache
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\火箭速度调节\usually.csproj.CoreCompileInputs.cache
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\火箭速度调节\usually.csproj.CopyComplete
+C:\Users\admin\Desktop\ONIModSource\ONIMod\usually\obj\火箭速度调节\usually.dll

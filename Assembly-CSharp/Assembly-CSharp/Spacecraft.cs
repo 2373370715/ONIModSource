@@ -1,232 +1,190 @@
-﻿using System;
-using System.Collections.Generic;
-using Database;
+﻿using Database;
 using KSerialization;
 using STRINGS;
 using TUNING;
-using UnityEngine;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class Spacecraft
-{
-		public Spacecraft(LaunchConditionManager launchConditions)
-	{
-		this.launchConditions = launchConditions;
-	}
+public class Spacecraft {
+    public enum MissionState {
+        Grounded,
+        Launching,
+        Underway,
+        WaitingToLand,
+        Landing,
+        Destroyed
+    }
 
-		public Spacecraft()
-	{
-	}
+    [Serialize]
+    public float controlStationBuffTimeRemaining;
 
-				public LaunchConditionManager launchConditions
-	{
-		get
-		{
-			return this.refLaunchConditions.Get();
-		}
-		set
-		{
-			this.refLaunchConditions.Set(value);
-		}
-	}
+    [Serialize]
+    public int id = -1;
 
-		public void SetRocketName(string newName)
-	{
-		this.rocketName = newName;
-		this.UpdateNameOnRocketModules();
-	}
+    [Serialize]
+    private float missionDuration;
 
-		public string GetRocketName()
-	{
-		return this.rocketName;
-	}
+    [Serialize]
+    private float missionElapsed;
 
-		public void UpdateNameOnRocketModules()
-	{
-		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.launchConditions.GetComponent<AttachableBuilding>()))
-		{
-			RocketModule component = gameObject.GetComponent<RocketModule>();
-			if (component != null)
-			{
-				component.SetParentRocketName(this.rocketName);
-			}
-		}
-	}
+    [Serialize]
+    public Ref<LaunchConditionManager> refLaunchConditions = new Ref<LaunchConditionManager>();
 
-		public bool HasInvalidID()
-	{
-		return this.id == -1;
-	}
+    [Serialize]
+    public string rocketName = UI.STARMAP.DEFAULT_NAME;
 
-		public void SetID(int id)
-	{
-		this.id = id;
-	}
+    [Serialize]
+    public MissionState state;
 
-		public void SetState(Spacecraft.MissionState state)
-	{
-		this.state = state;
-	}
+    public Spacecraft(LaunchConditionManager launchConditions) { this.launchConditions = launchConditions; }
+    public Spacecraft() { }
 
-		public void BeginMission(SpaceDestination destination)
-	{
-		this.missionElapsed = 0f;
-		this.missionDuration = (float)destination.OneBasedDistance * ROCKETRY.MISSION_DURATION_SCALE / this.GetPilotNavigationEfficiency();
-		this.SetState(Spacecraft.MissionState.Launching);
-	}
+    public LaunchConditionManager launchConditions {
+        get => refLaunchConditions.Get();
+        set => refLaunchConditions.Set(value);
+    }
 
-		private float GetPilotNavigationEfficiency()
-	{
-		float num = 1f;
-		if (!this.launchConditions.GetComponent<CommandModule>().robotPilotControlled)
-		{
-			List<MinionStorage.Info> storedMinionInfo = this.launchConditions.GetComponent<MinionStorage>().GetStoredMinionInfo();
-			if (storedMinionInfo.Count < 1)
-			{
-				return 1f;
-			}
-			StoredMinionIdentity component = storedMinionInfo[0].serializedMinion.Get().GetComponent<StoredMinionIdentity>();
-			string b = Db.Get().Attributes.SpaceNavigation.Id;
-			using (Dictionary<string, bool>.Enumerator enumerator = component.MasteryBySkillID.GetEnumerator())
-			{
-				while (enumerator.MoveNext())
-				{
-					KeyValuePair<string, bool> keyValuePair = enumerator.Current;
-					foreach (SkillPerk skillPerk in Db.Get().Skills.Get(keyValuePair.Key).perks)
-					{
-						if (SaveLoader.Instance.IsAllDlcActiveForCurrentSave(skillPerk.requiredDlcIds))
-						{
-							SkillAttributePerk skillAttributePerk = skillPerk as SkillAttributePerk;
-							if (skillAttributePerk != null && skillAttributePerk.modifier.AttributeId == b)
-							{
-								num += skillAttributePerk.modifier.Value;
-							}
-						}
-					}
-				}
-				return num;
-			}
-		}
-		RoboPilotModule component2 = this.launchConditions.GetComponent<RoboPilotModule>();
-		if (component2 != null && component2.GetDataBanksStored() >= 1f)
-		{
-			num += component2.FlightEfficiencyModifier();
-		}
-		return num;
-	}
+    public void SetRocketName(string newName) {
+        rocketName = newName;
+        UpdateNameOnRocketModules();
+    }
 
-		public void ForceComplete()
-	{
-		this.missionElapsed = this.missionDuration;
-	}
+    public string GetRocketName() { return rocketName; }
 
-		public void ProgressMission(float deltaTime)
-	{
-		if (this.state == Spacecraft.MissionState.Underway)
-		{
-			this.missionElapsed += deltaTime;
-			if (this.controlStationBuffTimeRemaining > 0f)
-			{
-				this.missionElapsed += deltaTime * 0.20000005f;
-				this.controlStationBuffTimeRemaining -= deltaTime;
-			}
-			else
-			{
-				this.controlStationBuffTimeRemaining = 0f;
-			}
-			if (this.missionElapsed > this.missionDuration)
-			{
-				this.CompleteMission();
-			}
-		}
-	}
+    public void UpdateNameOnRocketModules() {
+        foreach (var gameObject in AttachableBuilding.GetAttachedNetwork(launchConditions
+                                                                             .GetComponent<AttachableBuilding>())) {
+            var component = gameObject.GetComponent<RocketModule>();
+            if (component != null) component.SetParentRocketName(rocketName);
+        }
+    }
 
-		public float GetTimeLeft()
-	{
-		return this.missionDuration - this.missionElapsed;
-	}
+    public bool HasInvalidID()               { return id == -1; }
+    public void SetID(int             id)    { this.id    = id; }
+    public void SetState(MissionState state) { this.state = state; }
 
-		public float GetDuration()
-	{
-		return this.missionDuration;
-	}
+    public void BeginMission(SpaceDestination destination) {
+        // 剩余时间
+        missionElapsed = 0f;
 
-		public void CompleteMission()
-	{
-		SpacecraftManager.instance.PushReadyToLandNotification(this);
-		this.SetState(Spacecraft.MissionState.WaitingToLand);
-		this.Land();
-	}
+        // 发射总时间
+        missionDuration = destination.OneBasedDistance *
+                          ROCKETRY.MISSION_DURATION_SCALE /
+                          GetPilotNavigationEfficiency();
 
-		private void Land()
-	{
-		this.launchConditions.Trigger(-1165815793, SpacecraftManager.instance.GetSpacecraftDestination(this.id));
-		foreach (GameObject gameObject in AttachableBuilding.GetAttachedNetwork(this.launchConditions.GetComponent<AttachableBuilding>()))
-		{
-			if (gameObject != this.launchConditions.gameObject)
-			{
-				gameObject.Trigger(-1165815793, SpacecraftManager.instance.GetSpacecraftDestination(this.id));
-			}
-		}
-	}
+        SetState(MissionState.Launching);
+    }
 
-		public void TemporallyTear()
-	{
-		SpacecraftManager.instance.hasVisitedWormHole = true;
-		LaunchConditionManager launchConditions = this.launchConditions;
-		for (int i = launchConditions.rocketModules.Count - 1; i >= 0; i--)
-		{
-			Storage component = launchConditions.rocketModules[i].GetComponent<Storage>();
-			if (component != null)
-			{
-				component.ConsumeAllIgnoringDisease();
-			}
-			MinionStorage component2 = launchConditions.rocketModules[i].GetComponent<MinionStorage>();
-			if (component2 != null)
-			{
-				List<MinionStorage.Info> storedMinionInfo = component2.GetStoredMinionInfo();
-				for (int j = storedMinionInfo.Count - 1; j >= 0; j--)
-				{
-					component2.DeleteStoredMinion(storedMinionInfo[j].id);
-				}
-			}
-			Util.KDestroyGameObject(launchConditions.rocketModules[i].gameObject);
-		}
-	}
+    /// <summary>
+    /// 获取飞行员的导航效率。
+    /// </summary>
+    /// <returns>返回飞行员的导航效率。</returns>
+    private float GetPilotNavigationEfficiency() {
+        // 初始化导航效率为1.0
+        var num = 1f;
+        
+        // 检查是否是非机器人的飞行员控制
+        if (!launchConditions.GetComponent<CommandModule>().robotPilotControlled) {
+            // 获取存储的随从信息
+            var storedMinionInfo = launchConditions.GetComponent<MinionStorage>().GetStoredMinionInfo();
+            // 如果没有存储的随从信息，则直接返回1.0
+            if (storedMinionInfo.Count < 1) return 1f;
+    
+            // 获取存储随从的身份信息
+            var component = storedMinionInfo[0].serializedMinion.Get().GetComponent<StoredMinionIdentity>();
+            // 获取太空导航属性ID
+            var b         = Db.Get().Attributes.SpaceNavigation.Id;
+            
+            // 遍历随从的技能掌握情况
+            using (var enumerator = component.MasteryBySkillID.GetEnumerator()) {
+                while (enumerator.MoveNext()) {
+                    var keyValuePair = enumerator.Current;
+                    // 遍历当前技能的所有属性提升
+                    foreach (var skillPerk in Db.Get().Skills.Get(keyValuePair.Key).perks)
+                        // 检查技能所需的DLC是否在当前存档中全部激活
+                        if (SaveLoader.Instance.IsAllDlcActiveForCurrentSave(skillPerk.requiredDlcIds)) {
+                            var skillAttributePerk = skillPerk as SkillAttributePerk;
+                            // 如果当前属性提升与太空导航相关，则增加导航效率
+                            if (skillAttributePerk != null && skillAttributePerk.modifier.AttributeId == b)
+                                num += skillAttributePerk.modifier.Value;
+                        }
+                }
+    
+                // 返回计算出的导航效率
+                return num;
+            }
+        }
+    
+        // 如果是机器人的飞行员控制，检查数据银行存储情况
+        var component2 = launchConditions.GetComponent<RoboPilotModule>();
+        // 如果数据银行存储量达到或超过1，增加导航效率
+        if (component2 != null && component2.GetDataBanksStored() >= 1f) num += component2.FlightEfficiencyModifier();
+        
+        // 返回最终的导航效率
+        return num;
+    }
 
-		public void GenerateName()
-	{
-		this.SetRocketName(GameUtil.GenerateRandomRocketName());
-	}
+    public void ForceComplete() { missionElapsed = missionDuration; }
 
-		[Serialize]
-	public int id = -1;
+    /// <summary>
+    /// 根据给定的时间增量推进任务进度。
+    /// </summary>
+    /// <param name="deltaTime">自上次更新以来经过的时间量。</param>
+    public void ProgressMission(float deltaTime) {
+        // 仅当任务状态为进行中时，才推进任务进度
+        if (state == MissionState.Underway) {
+            // 累加经过的时间
+            missionElapsed += deltaTime;
 
-		[Serialize]
-	public string rocketName = UI.STARMAP.DEFAULT_NAME;
+            // 如果控制站增益时间剩余大于0，则加快任务进度并减少剩余增益时间
+            if (controlStationBuffTimeRemaining > 0f) {
+                // 增益效果使任务进度加快
+                missionElapsed += deltaTime * 0.20000005f;
 
-		[Serialize]
-	public float controlStationBuffTimeRemaining;
+                // 减少剩余的增益时间
+                controlStationBuffTimeRemaining -= deltaTime;
+            } else {
+                // 如果增益时间已用完，将剩余增益时间设置为0
+                controlStationBuffTimeRemaining = 0f;
+            }
 
-		[Serialize]
-	public Ref<LaunchConditionManager> refLaunchConditions = new Ref<LaunchConditionManager>();
+            // 如果任务进度超过任务持续时间，则完成任务
+            if (missionElapsed > missionDuration) { CompleteMission(); }
+        }
+    }
 
-		[Serialize]
-	public Spacecraft.MissionState state;
+    public float GetTimeLeft() { return missionDuration - missionElapsed; }
+    public float GetDuration() { return missionDuration; }
 
-		[Serialize]
-	private float missionElapsed;
+    public void CompleteMission() {
+        SpacecraftManager.instance.PushReadyToLandNotification(this);
+        SetState(MissionState.WaitingToLand);
+        Land();
+    }
 
-		[Serialize]
-	private float missionDuration;
+    private void Land() {
+        launchConditions.Trigger(-1165815793, SpacecraftManager.instance.GetSpacecraftDestination(id));
+        foreach (var gameObject in AttachableBuilding.GetAttachedNetwork(launchConditions
+                                                                             .GetComponent<AttachableBuilding>()))
+            if (gameObject != launchConditions.gameObject)
+                gameObject.Trigger(-1165815793, SpacecraftManager.instance.GetSpacecraftDestination(id));
+    }
 
-		public enum MissionState
-	{
-				Grounded,
-				Launching,
-				Underway,
-				WaitingToLand,
-				Landing,
-				Destroyed
-	}
+    public void TemporallyTear() {
+        SpacecraftManager.instance.hasVisitedWormHole = true;
+        var launchConditions = this.launchConditions;
+        for (var i = launchConditions.rocketModules.Count - 1; i >= 0; i--) {
+            var component = launchConditions.rocketModules[i].GetComponent<Storage>();
+            if (component != null) component.ConsumeAllIgnoringDisease();
+            var component2 = launchConditions.rocketModules[i].GetComponent<MinionStorage>();
+            if (component2 != null) {
+                var storedMinionInfo = component2.GetStoredMinionInfo();
+                for (var j = storedMinionInfo.Count - 1; j >= 0; j--)
+                    component2.DeleteStoredMinion(storedMinionInfo[j].id);
+            }
+
+            Util.KDestroyGameObject(launchConditions.rocketModules[i].gameObject);
+        }
+    }
+
+    public void GenerateName() { SetRocketName(GameUtil.GenerateRandomRocketName()); }
 }

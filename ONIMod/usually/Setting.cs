@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.SqlServer.Server;
 using Newtonsoft.Json;
 using PeterHan.PLib.Options;
 
@@ -24,5 +25,10 @@ public class Setting {
 
     [Option("需要抱抱", "egg need hug"), JsonProperty]
     public bool need_hug { get; set; } = true;
+#endif
+#if 火箭速度调节
+    [Option("火箭返回时间倍率", "Rocket return time multiplier", Format = "F2"), JsonProperty]
+    [Limit(0, 1)]
+    public float rocketSpeed { get; set; } = 1f;
 #endif
 }
