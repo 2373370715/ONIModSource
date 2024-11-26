@@ -1,104 +1,94 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [AddComponentMenu("KMonoBehaviour/scripts/SolidConduitBridge")]
-public class SolidConduitBridge : ConduitBridgeBase
-{
-			public bool IsDispensing
-	{
-		get
-		{
-			return this.dispensing;
-		}
-	}
+public class SolidConduitBridge : ConduitBridgeBase {
+    private int inputCell;
 
-		protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		Building component = base.GetComponent<Building>();
-		this.inputCell = component.GetUtilityInputCell();
-		this.outputCell = component.GetUtilityOutputCell();
-		SolidConduit.GetFlowManager().AddConduitUpdater(new Action<float>(this.ConduitUpdate), ConduitFlowPriority.Default);
-	}
+    [MyCmpGet]
+    private Operational operational;
 
-		protected override void OnCleanUp()
-	{
-		SolidConduit.GetFlowManager().RemoveConduitUpdater(new Action<float>(this.ConduitUpdate));
-		base.OnCleanUp();
-	}
+    private int  outputCell;
+    public  bool IsDispensing { get; private set; }
 
-		private void ConduitUpdate(float dt)
-	{
-		this.dispensing = false;
-		float num = 0f;
-		if (this.operational && !this.operational.IsOperational)
-		{
-			base.SendEmptyOnMassTransfer();
-			return;
-		}
-		SolidConduitFlow flowManager = SolidConduit.GetFlowManager();
-		if (!flowManager.HasConduit(this.inputCell) || !flowManager.HasConduit(this.outputCell))
-		{
-			base.SendEmptyOnMassTransfer();
-			return;
-		}
-		if (flowManager.IsConduitFull(this.inputCell) && flowManager.IsConduitEmpty(this.outputCell))
-		{
-			Pickupable pickupable = flowManager.GetPickupable(flowManager.GetContents(this.inputCell).pickupableHandle);
-			if (pickupable == null)
-			{
-				flowManager.RemovePickupable(this.inputCell);
-				base.SendEmptyOnMassTransfer();
-				return;
-			}
-			float num2 = pickupable.PrimaryElement.Mass;
-			if (this.desiredMassTransfer != null)
-			{
-				num2 = this.desiredMassTransfer(dt, pickupable.PrimaryElement.Element.id, pickupable.PrimaryElement.Mass, pickupable.PrimaryElement.Temperature, pickupable.PrimaryElement.DiseaseIdx, pickupable.PrimaryElement.DiseaseCount, pickupable);
-			}
-			if (num2 == 0f)
-			{
-				base.SendEmptyOnMassTransfer();
-				return;
-			}
-			if (num2 < pickupable.PrimaryElement.Mass)
-			{
-				Pickupable pickupable2 = pickupable.Take(num2);
-				flowManager.AddPickupable(this.outputCell, pickupable2);
-				this.dispensing = true;
-				num = pickupable2.PrimaryElement.Mass;
-				if (this.OnMassTransfer != null)
-				{
-					this.OnMassTransfer(pickupable2.PrimaryElement.ElementID, num, pickupable2.PrimaryElement.Temperature, pickupable2.PrimaryElement.DiseaseIdx, pickupable2.PrimaryElement.DiseaseCount, pickupable2);
-				}
-			}
-			else
-			{
-				Pickupable pickupable3 = flowManager.RemovePickupable(this.inputCell);
-				if (pickupable3)
-				{
-					flowManager.AddPickupable(this.outputCell, pickupable3);
-					this.dispensing = true;
-					num = pickupable3.PrimaryElement.Mass;
-					if (this.OnMassTransfer != null)
-					{
-						this.OnMassTransfer(pickupable3.PrimaryElement.ElementID, num, pickupable3.PrimaryElement.Temperature, pickupable3.PrimaryElement.DiseaseIdx, pickupable3.PrimaryElement.DiseaseCount, pickupable3);
-					}
-				}
-			}
-		}
-		if (num == 0f)
-		{
-			base.SendEmptyOnMassTransfer();
-		}
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        var component = GetComponent<Building>();
+        inputCell  = component.GetUtilityInputCell();
+        outputCell = component.GetUtilityOutputCell();
+        SolidConduit.GetFlowManager().AddConduitUpdater(ConduitUpdate);
+    }
 
-		[MyCmpGet]
-	private Operational operational;
+    protected override void OnCleanUp() {
+        SolidConduit.GetFlowManager().RemoveConduitUpdater(ConduitUpdate);
+        base.OnCleanUp();
+    }
 
-		private int inputCell;
+    private void ConduitUpdate(float dt) {
+        IsDispensing = false;
+        var num = 0f;
+        if (operational && !operational.IsOperational) {
+            SendEmptyOnMassTransfer();
+            return;
+        }
 
-		private int outputCell;
+        var flowManager = SolidConduit.GetFlowManager();
+        if (!flowManager.HasConduit(inputCell) || !flowManager.HasConduit(outputCell)) {
+            SendEmptyOnMassTransfer();
+            return;
+        }
 
-		private bool dispensing;
+        if (flowManager.IsConduitFull(inputCell) && flowManager.IsConduitEmpty(outputCell)) {
+            var pickupable = flowManager.GetPickupable(flowManager.GetContents(inputCell).pickupableHandle);
+            if (pickupable == null) {
+                flowManager.RemovePickupable(inputCell);
+                SendEmptyOnMassTransfer();
+                return;
+            }
+
+            var num2 = pickupable.PrimaryElement.Mass;
+            if (desiredMassTransfer != null)
+                num2 = desiredMassTransfer(dt,
+                                           pickupable.PrimaryElement.Element.id,
+                                           pickupable.PrimaryElement.Mass,
+                                           pickupable.PrimaryElement.Temperature,
+                                           pickupable.PrimaryElement.DiseaseIdx,
+                                           pickupable.PrimaryElement.DiseaseCount,
+                                           pickupable);
+
+            if (num2 == 0f) {
+                SendEmptyOnMassTransfer();
+                return;
+            }
+
+            if (num2 < pickupable.PrimaryElement.Mass) {
+                var pickupable2 = pickupable.Take(num2);
+                flowManager.AddPickupable(outputCell, pickupable2);
+                IsDispensing = true;
+                num          = pickupable2.PrimaryElement.Mass;
+                if (OnMassTransfer != null)
+                    OnMassTransfer(pickupable2.PrimaryElement.ElementID,
+                                   num,
+                                   pickupable2.PrimaryElement.Temperature,
+                                   pickupable2.PrimaryElement.DiseaseIdx,
+                                   pickupable2.PrimaryElement.DiseaseCount,
+                                   pickupable2);
+            } else {
+                var pickupable3 = flowManager.RemovePickupable(inputCell);
+                if (pickupable3) {
+                    flowManager.AddPickupable(outputCell, pickupable3);
+                    IsDispensing = true;
+                    num          = pickupable3.PrimaryElement.Mass;
+                    if (OnMassTransfer != null)
+                        OnMassTransfer(pickupable3.PrimaryElement.ElementID,
+                                       num,
+                                       pickupable3.PrimaryElement.Temperature,
+                                       pickupable3.PrimaryElement.DiseaseIdx,
+                                       pickupable3.PrimaryElement.DiseaseCount,
+                                       pickupable3);
+                }
+            }
+        }
+
+        if (num == 0f) SendEmptyOnMassTransfer();
+    }
 }

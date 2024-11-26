@@ -22,7 +22,12 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
     private static readonly WorkItemCollection<BatchUpdateTask, BatchUpdateContext> batch_update_job
         = new WorkItemCollection<BatchUpdateTask, BatchUpdateContext>();
 
-    private static readonly HashedString           HASH_ROTATION = "rotation";
+    private static readonly HashedString           HASH_ROTATION    = "rotation";
+    private readonly        float                  max_carry_weight = 1000f;
+    private readonly        List<Pickupable>       pickupables      = new List<Pickupable>();
+    private readonly        HashSet<int>           reachableCells   = new HashSet<int>();
+    private readonly        string                 rotateSoundName  = "TransferArm_rotate";
+    private readonly        float                  turn_rate        = 360f;
     private                 ArmAnim                arm_anim;
     private                 KBatchedAnimController arm_anim_ctrl;
     private                 GameObject             arm_go;
@@ -34,30 +39,24 @@ public class SolidTransferArm : StateMachineComponent<SolidTransferArm.SMInstanc
     [MyCmpAdd]
     private ChoreDriver choreDriver;
 
-    private          KAnimLink     link;
-    private          LoopingSounds looping_sounds;
-    private readonly float         max_carry_weight = 1000f;
+    private KAnimLink     link;
+    private LoopingSounds looping_sounds;
 
     [MyCmpReq]
     private Operational operational;
 
-    private readonly List<Pickupable> pickupables    = new List<Pickupable>();
-    public           int              pickupRange    = 4;
-    private readonly HashSet<int>     reachableCells = new HashSet<int>();
+    public int pickupRange = 4;
 
     [MyCmpGet]
     private Rotatable rotatable;
 
-    private          EventReference rotateSound;
-    private readonly string         rotateSoundName = "TransferArm_rotate";
-    private          bool           rotateSoundPlaying;
-    private          bool           rotation_complete;
-    private          short          serial_no;
+    private EventReference rotateSound;
+    private bool           rotateSoundPlaying;
+    private bool           rotation_complete;
+    private short          serial_no;
 
     [MyCmpAdd]
     private Storage storage;
-
-    private readonly float turn_rate = 360f;
 
     [MyCmpAdd]
     private StandardWorker worker;

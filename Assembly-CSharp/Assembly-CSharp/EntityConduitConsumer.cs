@@ -2,369 +2,270 @@
 using STRINGS;
 using UnityEngine;
 
-[SkipSaveFileSerialization]
-[AddComponentMenu("KMonoBehaviour/scripts/SpawnableConduitConsumer")]
-public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer
-{
-			public Storage Storage
-	{
-		get
-		{
-			return this.storage;
-		}
-	}
+[SkipSaveFileSerialization, AddComponentMenu("KMonoBehaviour/scripts/SpawnableConduitConsumer")]
+public class EntityConduitConsumer : KMonoBehaviour, IConduitConsumer {
+    public enum WrongElementResult {
+        Destroy,
+        Dump,
+        Store
+    }
 
-			public ConduitType ConduitType
-	{
-		get
-		{
-			return this.conduitType;
-		}
-	}
+    [SerializeField]
+    public bool alwaysConsume;
 
-			public bool IsConnected
-	{
-		get
-		{
-			return Grid.Objects[this.utilityCell, (this.conduitType == ConduitType.Gas) ? 12 : 16] != null;
-		}
-	}
+    [SerializeField]
+    public float capacityKG = float.PositiveInfinity;
 
-			public bool CanConsume
-	{
-		get
-		{
-			bool result = false;
-			if (this.IsConnected)
-			{
-				result = (this.GetConduitManager().GetContents(this.utilityCell).mass > 0f);
-			}
-			return result;
-		}
-	}
+    [SerializeField]
+    public Tag capacityTag = GameTags.Any;
 
-			public float stored_mass
-	{
-		get
-		{
-			if (this.storage == null)
-			{
-				return 0f;
-			}
-			if (!(this.capacityTag != GameTags.Any))
-			{
-				return this.storage.MassStored();
-			}
-			return this.storage.GetMassAvailable(this.capacityTag);
-		}
-	}
+    [MyCmpReq]
+    private EntityCellVisualizer cellVisualizer;
 
-			public float space_remaining_kg
-	{
-		get
-		{
-			float num = this.capacityKG - this.stored_mass;
-			if (!(this.storage == null))
-			{
-				return Mathf.Min(this.storage.RemainingCapacity(), num);
-			}
-			return num;
-		}
-	}
+    [SerializeField]
+    public ConduitType conduitType;
 
-		public void SetConduitData(ConduitType type)
-	{
-		this.conduitType = type;
-	}
+    [NonSerialized]
+    public bool consumedLastTick = true;
 
-			public ConduitType TypeOfConduit
-	{
-		get
-		{
-			return this.conduitType;
-		}
-	}
+    public  float                          consumptionRate = float.PositiveInfinity;
+    private FlowUtilityNetwork.NetworkItem endpoint;
 
-			public bool IsAlmostEmpty
-	{
-		get
-		{
-			return !this.ignoreMinMassCheck && this.MassAvailable < this.ConsumptionRate * 30f;
-		}
-	}
+    [SerializeField]
+    public bool forceAlwaysSatisfied;
 
-			public bool IsEmpty
-	{
-		get
-		{
-			return !this.ignoreMinMassCheck && (this.MassAvailable == 0f || this.MassAvailable < this.ConsumptionRate);
-		}
-	}
+    [SerializeField]
+    public bool ignoreMinMassCheck;
 
-			public float ConsumptionRate
-	{
-		get
-		{
-			return this.consumptionRate;
-		}
-	}
+    [NonSerialized]
+    public bool isConsuming = true;
 
-				public bool IsSatisfied
-	{
-		get
-		{
-			return this.satisfied || !this.isConsuming;
-		}
-		set
-		{
-			this.satisfied = (value || this.forceAlwaysSatisfied);
-		}
-	}
+    [SerializeField]
+    public bool isOn = true;
 
-		private ConduitFlow GetConduitManager()
-	{
-		ConduitType conduitType = this.conduitType;
-		if (conduitType == ConduitType.Gas)
-		{
-			return Game.Instance.gasConduitFlow;
-		}
-		if (conduitType != ConduitType.Liquid)
-		{
-			return null;
-		}
-		return Game.Instance.liquidConduitFlow;
-	}
+    [SerializeField]
+    public bool keepZeroMassObject = true;
 
-			public float MassAvailable
-	{
-		get
-		{
-			ConduitFlow conduitManager = this.GetConduitManager();
-			int inputCell = this.GetInputCell(conduitManager.conduitType);
-			return conduitManager.GetContents(inputCell).mass;
-		}
-	}
+    public SimHashes lastConsumedElement = SimHashes.Vacuum;
 
-		private int GetInputCell(ConduitType inputConduitType)
-	{
-		return this.occupyArea.GetOffsetCellWithRotation(this.offset);
-	}
+    [MyCmpReq]
+    private OccupyArea occupyArea;
 
-		protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		ConduitFlow conduitManager = this.GetConduitManager();
-		this.utilityCell = this.GetInputCell(conduitManager.conduitType);
-		ScenePartitionerLayer layer = GameScenePartitioner.Instance.objectLayers[(this.conduitType == ConduitType.Gas) ? 12 : 16];
-		this.partitionerEntry = GameScenePartitioner.Instance.Add("ConduitConsumer.OnSpawn", base.gameObject, this.utilityCell, layer, new Action<object>(this.OnConduitConnectionChanged));
-		this.GetConduitManager().AddConduitUpdater(new Action<float>(this.ConduitUpdate), ConduitFlowPriority.Default);
-		this.endpoint = new FlowUtilityNetwork.NetworkItem(conduitManager.conduitType, Endpoint.Sink, this.utilityCell, base.gameObject);
-		if (conduitManager.conduitType == ConduitType.Solid)
-		{
-			Game.Instance.solidConduitSystem.AddToNetworks(this.utilityCell, this.endpoint, true);
-		}
-		else
-		{
-			Conduit.GetNetworkManager(conduitManager.conduitType).AddToNetworks(this.utilityCell, this.endpoint, true);
-		}
-		EntityCellVisualizer.Ports type = EntityCellVisualizer.Ports.LiquidIn;
-		if (conduitManager.conduitType == ConduitType.Solid)
-		{
-			type = EntityCellVisualizer.Ports.SolidIn;
-		}
-		else if (conduitManager.conduitType == ConduitType.Gas)
-		{
-			type = EntityCellVisualizer.Ports.GasIn;
-		}
-		this.cellVisualizer.AddPort(type, this.offset);
-		this.OnConduitConnectionChanged(null);
-	}
+    public CellOffset        offset;
+    public Operational.State OperatingRequirement;
 
-		protected override void OnCleanUp()
-	{
-		if (this.endpoint.ConduitType == ConduitType.Solid)
-		{
-			Game.Instance.solidConduitSystem.RemoveFromNetworks(this.endpoint.Cell, this.endpoint, true);
-		}
-		else
-		{
-			Conduit.GetNetworkManager(this.endpoint.ConduitType).RemoveFromNetworks(this.endpoint.Cell, this.endpoint, true);
-		}
-		this.GetConduitManager().RemoveConduitUpdater(new Action<float>(this.ConduitUpdate));
-		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
-		base.OnCleanUp();
-	}
+    [MyCmpReq]
+    public Operational operational;
 
-		private void OnConduitConnectionChanged(object data)
-	{
-		base.Trigger(-2094018600, this.IsConnected);
-	}
+    private HandleVector<int>.Handle partitionerEntry;
+    private bool                     satisfied;
 
-		public void SetOnState(bool onState)
-	{
-		this.isOn = onState;
-	}
+    [MyCmpGet]
+    public Storage storage;
 
-		private void ConduitUpdate(float dt)
-	{
-		if (this.isConsuming && this.isOn)
-		{
-			ConduitFlow conduitManager = this.GetConduitManager();
-			this.Consume(dt, conduitManager);
-		}
-	}
+    private int utilityCell = -1;
+    public  WrongElementResult wrongElementResult;
+    public  bool IsConnected => Grid.Objects[utilityCell, conduitType == ConduitType.Gas ? 12 : 16] != null;
 
-		private void Consume(float dt, ConduitFlow conduit_mgr)
-	{
-		this.IsSatisfied = false;
-		this.consumedLastTick = false;
-		this.utilityCell = this.GetInputCell(conduit_mgr.conduitType);
-		if (!this.IsConnected)
-		{
-			return;
-		}
-		ConduitFlow.ConduitContents contents = conduit_mgr.GetContents(this.utilityCell);
-		if (contents.mass <= 0f)
-		{
-			return;
-		}
-		this.IsSatisfied = true;
-		if (!this.alwaysConsume && !this.operational.MeetsRequirements(this.OperatingRequirement))
-		{
-			return;
-		}
-		float num = this.ConsumptionRate * dt;
-		num = Mathf.Min(num, this.space_remaining_kg);
-		Element element = ElementLoader.FindElementByHash(contents.element);
-		if (contents.element != this.lastConsumedElement)
-		{
-			DiscoveredResources.Instance.Discover(element.tag, element.materialCategory);
-		}
-		float num2 = 0f;
-		if (num > 0f)
-		{
-			ConduitFlow.ConduitContents conduitContents = conduit_mgr.RemoveElement(this.utilityCell, num);
-			num2 = conduitContents.mass;
-			this.lastConsumedElement = conduitContents.element;
-		}
-		bool flag = element.HasTag(this.capacityTag);
-		if (num2 > 0f && this.capacityTag != GameTags.Any && !flag)
-		{
-			base.Trigger(-794517298, new BuildingHP.DamageSourceInfo
-			{
-				damage = 1,
-				source = BUILDINGS.DAMAGESOURCES.BAD_INPUT_ELEMENT,
-				popString = UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.WRONG_ELEMENT
-			});
-		}
-		if (flag || this.wrongElementResult == EntityConduitConsumer.WrongElementResult.Store || contents.element == SimHashes.Vacuum || this.capacityTag == GameTags.Any)
-		{
-			if (num2 > 0f)
-			{
-				this.consumedLastTick = true;
-				int disease_count = (int)((float)contents.diseaseCount * (num2 / contents.mass));
-				Element element2 = ElementLoader.FindElementByHash(contents.element);
-				ConduitType conduitType = this.conduitType;
-				if (conduitType != ConduitType.Gas)
-				{
-					if (conduitType == ConduitType.Liquid)
-					{
-						if (element2.IsLiquid)
-						{
-							this.storage.AddLiquid(contents.element, num2, contents.temperature, contents.diseaseIdx, disease_count, this.keepZeroMassObject, false);
-							return;
-						}
-						global::Debug.LogWarning("Liquid conduit consumer consuming non liquid: " + element2.id.ToString());
-						return;
-					}
-				}
-				else
-				{
-					if (element2.IsGas)
-					{
-						this.storage.AddGasChunk(contents.element, num2, contents.temperature, contents.diseaseIdx, disease_count, this.keepZeroMassObject, false);
-						return;
-					}
-					global::Debug.LogWarning("Gas conduit consumer consuming non gas: " + element2.id.ToString());
-					return;
-				}
-			}
-		}
-		else if (num2 > 0f)
-		{
-			this.consumedLastTick = true;
-			if (this.wrongElementResult == EntityConduitConsumer.WrongElementResult.Dump)
-			{
-				int disease_count2 = (int)((float)contents.diseaseCount * (num2 / contents.mass));
-				SimMessages.AddRemoveSubstance(Grid.PosToCell(base.transform.GetPosition()), contents.element, CellEventLogger.Instance.ConduitConsumerWrongElement, num2, contents.temperature, contents.diseaseIdx, disease_count2, true, -1);
-			}
-		}
-	}
+    public bool CanConsume {
+        get {
+            var result              = false;
+            if (IsConnected) result = GetConduitManager().GetContents(utilityCell).mass > 0f;
+            return result;
+        }
+    }
 
-		private FlowUtilityNetwork.NetworkItem endpoint;
+    public float stored_mass {
+        get {
+            if (storage == null) return 0f;
 
-		[SerializeField]
-	public ConduitType conduitType;
+            if (!(capacityTag != GameTags.Any)) return storage.MassStored();
 
-		[SerializeField]
-	public bool ignoreMinMassCheck;
+            return storage.GetMassAvailable(capacityTag);
+        }
+    }
 
-		[SerializeField]
-	public Tag capacityTag = GameTags.Any;
+    public float space_remaining_kg {
+        get {
+            var num = capacityKG - stored_mass;
+            if (!(storage == null)) return Mathf.Min(storage.RemainingCapacity(), num);
 
-		[SerializeField]
-	public float capacityKG = float.PositiveInfinity;
+            return num;
+        }
+    }
 
-		[SerializeField]
-	public bool forceAlwaysSatisfied;
+    public ConduitType TypeOfConduit => conduitType;
+    public bool        IsAlmostEmpty => !ignoreMinMassCheck && MassAvailable < ConsumptionRate * 30f;
+    public bool        IsEmpty => !ignoreMinMassCheck && (MassAvailable == 0f || MassAvailable < ConsumptionRate);
+    public float       ConsumptionRate => consumptionRate;
 
-		[SerializeField]
-	public bool alwaysConsume;
+    public bool IsSatisfied {
+        get => satisfied || !isConsuming;
+        set => satisfied = value || forceAlwaysSatisfied;
+    }
 
-		[SerializeField]
-	public bool keepZeroMassObject = true;
+    public float MassAvailable {
+        get {
+            var conduitManager = GetConduitManager();
+            var inputCell      = GetInputCell(conduitManager.conduitType);
+            return conduitManager.GetContents(inputCell).mass;
+        }
+    }
 
-		[SerializeField]
-	public bool isOn = true;
+    public Storage     Storage                          => storage;
+    public ConduitType ConduitType                      => conduitType;
+    public void        SetConduitData(ConduitType type) { conduitType = type; }
 
-		[NonSerialized]
-	public bool isConsuming = true;
+    private ConduitFlow GetConduitManager() {
+        var conduitType = this.conduitType;
+        if (conduitType == ConduitType.Gas) return Game.Instance.gasConduitFlow;
 
-		[NonSerialized]
-	public bool consumedLastTick = true;
+        if (conduitType != ConduitType.Liquid) return null;
 
-		[MyCmpReq]
-	public Operational operational;
+        return Game.Instance.liquidConduitFlow;
+    }
 
-		[MyCmpReq]
-	private OccupyArea occupyArea;
+    private int GetInputCell(ConduitType inputConduitType) { return occupyArea.GetOffsetCellWithRotation(offset); }
 
-		[MyCmpReq]
-	private EntityCellVisualizer cellVisualizer;
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        var conduitManager = GetConduitManager();
+        utilityCell = GetInputCell(conduitManager.conduitType);
+        var layer = GameScenePartitioner.Instance.objectLayers[conduitType == ConduitType.Gas ? 12 : 16];
+        partitionerEntry = GameScenePartitioner.Instance.Add("ConduitConsumer.OnSpawn",
+                                                             gameObject,
+                                                             utilityCell,
+                                                             layer,
+                                                             OnConduitConnectionChanged);
 
-		public Operational.State OperatingRequirement;
+        GetConduitManager().AddConduitUpdater(ConduitUpdate);
+        endpoint = new FlowUtilityNetwork.NetworkItem(conduitManager.conduitType,
+                                                      Endpoint.Sink,
+                                                      utilityCell,
+                                                      gameObject);
 
-		[MyCmpGet]
-	public Storage storage;
+        if (conduitManager.conduitType == ConduitType.Solid)
+            Game.Instance.solidConduitSystem.AddToNetworks(utilityCell, endpoint, true);
+        else
+            Conduit.GetNetworkManager(conduitManager.conduitType).AddToNetworks(utilityCell, endpoint, true);
 
-		public CellOffset offset;
+        var type = EntityCellVisualizer.Ports.LiquidIn;
+        if (conduitManager.conduitType == ConduitType.Solid)
+            type                                                     = EntityCellVisualizer.Ports.SolidIn;
+        else if (conduitManager.conduitType == ConduitType.Gas) type = EntityCellVisualizer.Ports.GasIn;
 
-		private int utilityCell = -1;
+        cellVisualizer.AddPort(type, offset);
+        OnConduitConnectionChanged(null);
+    }
 
-		public float consumptionRate = float.PositiveInfinity;
+    protected override void OnCleanUp() {
+        if (endpoint.ConduitType == ConduitType.Solid)
+            Game.Instance.solidConduitSystem.RemoveFromNetworks(endpoint.Cell, endpoint, true);
+        else
+            Conduit.GetNetworkManager(endpoint.ConduitType).RemoveFromNetworks(endpoint.Cell, endpoint, true);
 
-		public SimHashes lastConsumedElement = SimHashes.Vacuum;
+        GetConduitManager().RemoveConduitUpdater(ConduitUpdate);
+        GameScenePartitioner.Instance.Free(ref partitionerEntry);
+        base.OnCleanUp();
+    }
 
-		private HandleVector<int>.Handle partitionerEntry;
+    private void OnConduitConnectionChanged(object data)    { Trigger(-2094018600, IsConnected); }
+    public  void SetOnState(bool                   onState) { isOn = onState; }
 
-		private bool satisfied;
+    private void ConduitUpdate(float dt) {
+        if (isConsuming && isOn) {
+            var conduitManager = GetConduitManager();
+            Consume(dt, conduitManager);
+        }
+    }
 
-		public EntityConduitConsumer.WrongElementResult wrongElementResult;
+    private void Consume(float dt, ConduitFlow conduit_mgr) {
+        IsSatisfied      = false;
+        consumedLastTick = false;
+        utilityCell      = GetInputCell(conduit_mgr.conduitType);
+        if (!IsConnected) return;
 
-		public enum WrongElementResult
-	{
-				Destroy,
-				Dump,
-				Store
-	}
+        var contents = conduit_mgr.GetContents(utilityCell);
+        if (contents.mass <= 0f) return;
+
+        IsSatisfied = true;
+        if (!alwaysConsume && !operational.MeetsRequirements(OperatingRequirement)) return;
+
+        var num = ConsumptionRate * dt;
+        num = Mathf.Min(num, space_remaining_kg);
+        var element = ElementLoader.FindElementByHash(contents.element);
+        if (contents.element != lastConsumedElement)
+            DiscoveredResources.Instance.Discover(element.tag, element.materialCategory);
+
+        var num2 = 0f;
+        if (num > 0f) {
+            var conduitContents = conduit_mgr.RemoveElement(utilityCell, num);
+            num2                = conduitContents.mass;
+            lastConsumedElement = conduitContents.element;
+        }
+
+        var flag = element.HasTag(capacityTag);
+        if (num2 > 0f && capacityTag != GameTags.Any && !flag)
+            Trigger(-794517298,
+                    new BuildingHP.DamageSourceInfo {
+                        damage    = 1,
+                        source    = BUILDINGS.DAMAGESOURCES.BAD_INPUT_ELEMENT,
+                        popString = UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.WRONG_ELEMENT
+                    });
+
+        if (flag                                           ||
+            wrongElementResult == WrongElementResult.Store ||
+            contents.element   == SimHashes.Vacuum         ||
+            capacityTag        == GameTags.Any) {
+            if (num2 > 0f) {
+                consumedLastTick = true;
+                var disease_count = (int)(contents.diseaseCount * (num2 / contents.mass));
+                var element2      = ElementLoader.FindElementByHash(contents.element);
+                var conduitType   = this.conduitType;
+                if (conduitType != ConduitType.Gas) {
+                    if (conduitType == ConduitType.Liquid) {
+                        if (element2.IsLiquid) {
+                            storage.AddLiquid(contents.element,
+                                              num2,
+                                              contents.temperature,
+                                              contents.diseaseIdx,
+                                              disease_count,
+                                              keepZeroMassObject,
+                                              false);
+
+                            return;
+                        }
+
+                        Debug.LogWarning("Liquid conduit consumer consuming non liquid: " + element2.id);
+                    }
+                } else {
+                    if (element2.IsGas) {
+                        storage.AddGasChunk(contents.element,
+                                            num2,
+                                            contents.temperature,
+                                            contents.diseaseIdx,
+                                            disease_count,
+                                            keepZeroMassObject,
+                                            false);
+
+                        return;
+                    }
+
+                    Debug.LogWarning("Gas conduit consumer consuming non gas: " + element2.id);
+                }
+            }
+        } else if (num2 > 0f) {
+            consumedLastTick = true;
+            if (wrongElementResult == WrongElementResult.Dump) {
+                var disease_count2 = (int)(contents.diseaseCount * (num2 / contents.mass));
+                SimMessages.AddRemoveSubstance(Grid.PosToCell(transform.GetPosition()),
+                                               contents.element,
+                                               CellEventLogger.Instance.ConduitConsumerWrongElement,
+                                               num2,
+                                               contents.temperature,
+                                               contents.diseaseIdx,
+                                               disease_count2);
+            }
+        }
+    }
 }

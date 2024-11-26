@@ -71,23 +71,40 @@ public class SolidConduitDispenser : KMonoBehaviour, ISaveLoadable, IConduitDisp
         Trigger(-2094018600, IsConnected);
     }
 
+    /// <summary>
+    /// 更新导管状态和操作逻辑。
+    /// </summary>
+    /// <param name="dt">自上次更新以来的时间间隔。</param>
     private void ConduitUpdate(float dt) {
+        // 初始化标志变量，用于指示是否成功添加了物品到导管。
         var flag = false;
+    
+        // 设置输出导管的运行状态标志。
         operational.SetFlag(outputConduitFlag, IsConnected);
+    
+        // 检查当前是否处于运行状态或是否总是处于分配物品的状态。
         if (operational.IsOperational || alwaysDispense) {
+            // 获取导管流对象。
             var conduitFlow = GetConduitFlow();
+    
+            // 检查指定的公用单元格是否为导管，并且是否为空。
             if (conduitFlow.HasConduit(utilityCell) && conduitFlow.IsConduitEmpty(utilityCell)) {
+                // 尝试找到合适的物品添加到导管中。
                 var pickupable = FindSuitableItem();
                 if (pickupable) {
+                    // 如果物品质量过大，则只取一部分。
                     if (pickupable.PrimaryElement.Mass > 20f) pickupable = pickupable.Take(20f);
+                    // 将物品添加到导管中，并设置标志为true。
                     conduitFlow.AddPickupable(utilityCell, pickupable);
                     flag = true;
                 }
             }
         }
-
+    
+        // 更新存储网络ID。
         storage.storageNetworkID = GetConnectedNetworkID();
-        IsDispensing             = flag;
+        // 设置是否正在分配物品的状态。
+        IsDispensing = flag;
     }
 
     private bool isSolid(GameObject o) {

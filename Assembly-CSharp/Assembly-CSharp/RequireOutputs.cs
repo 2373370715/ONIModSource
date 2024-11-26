@@ -1,176 +1,145 @@
 ﻿using System;
 using UnityEngine;
 
-[SkipSaveFileSerialization]
-[AddComponentMenu("KMonoBehaviour/scripts/RequireOutputs")]
-public class RequireOutputs : KMonoBehaviour
-{
-		protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		ScenePartitionerLayer scenePartitionerLayer = null;
-		Building component = base.GetComponent<Building>();
-		this.utilityCell = component.GetUtilityOutputCell();
-		this.conduitType = component.Def.OutputConduitType;
-		switch (component.Def.OutputConduitType)
-		{
-		case ConduitType.Gas:
-			scenePartitionerLayer = GameScenePartitioner.Instance.gasConduitsLayer;
-			break;
-		case ConduitType.Liquid:
-			scenePartitionerLayer = GameScenePartitioner.Instance.liquidConduitsLayer;
-			break;
-		case ConduitType.Solid:
-			scenePartitionerLayer = GameScenePartitioner.Instance.solidConduitsLayer;
-			break;
-		}
-		this.UpdateConnectionState(true);
-		this.UpdatePipeRoomState(true);
-		if (scenePartitionerLayer != null)
-		{
-			this.partitionerEntry = GameScenePartitioner.Instance.Add("RequireOutputs", base.gameObject, this.utilityCell, scenePartitionerLayer, delegate(object data)
-			{
-				this.UpdateConnectionState(false);
-			});
-		}
-		this.GetConduitFlow().AddConduitUpdater(new Action<float>(this.UpdatePipeState), ConduitFlowPriority.First);
-	}
+[SkipSaveFileSerialization, AddComponentMenu("KMonoBehaviour/scripts/RequireOutputs")]
+public class RequireOutputs : KMonoBehaviour {
+    private static readonly Operational.Flag outputConnectedFlag
+        = new Operational.Flag("output_connected", Operational.Flag.Type.Requirement);
 
-		protected override void OnCleanUp()
-	{
-		GameScenePartitioner.Instance.Free(ref this.partitionerEntry);
-		IConduitFlow conduitFlow = this.GetConduitFlow();
-		if (conduitFlow != null)
-		{
-			conduitFlow.RemoveConduitUpdater(new Action<float>(this.UpdatePipeState));
-		}
-		base.OnCleanUp();
-	}
+    private static readonly Operational.Flag pipesHaveRoomFlag
+        = new Operational.Flag("pipesHaveRoom", Operational.Flag.Type.Requirement);
 
-		private void UpdateConnectionState(bool force_update = false)
-	{
-		this.connected = this.IsConnected(this.utilityCell);
-		if (this.connected != this.previouslyConnected || force_update)
-		{
-			this.operational.SetFlag(RequireOutputs.outputConnectedFlag, this.connected);
-			this.previouslyConnected = this.connected;
-			StatusItem status_item = null;
-			switch (this.conduitType)
-			{
-			case ConduitType.Gas:
-				status_item = Db.Get().BuildingStatusItems.NeedGasOut;
-				break;
-			case ConduitType.Liquid:
-				status_item = Db.Get().BuildingStatusItems.NeedLiquidOut;
-				break;
-			case ConduitType.Solid:
-				status_item = Db.Get().BuildingStatusItems.NeedSolidOut;
-				break;
-			}
-			this.hasPipeGuid = this.selectable.ToggleStatusItem(status_item, this.hasPipeGuid, !this.connected, this);
-		}
-	}
+    private ConduitType conduitType;
+    private bool        connected;
+    private Guid        hasPipeGuid;
+    public  bool        ignoreFullPipe;
 
-		private bool OutputPipeIsEmpty()
-	{
-		if (this.ignoreFullPipe)
-		{
-			return true;
-		}
-		bool result = true;
-		if (this.connected)
-		{
-			result = this.GetConduitFlow().IsConduitEmpty(this.utilityCell);
-		}
-		return result;
-	}
+    [MyCmpReq]
+    private Operational operational;
 
-		private void UpdatePipeState(float dt)
-	{
-		this.UpdatePipeRoomState(false);
-	}
+    private HandleVector<int>.Handle partitionerEntry;
+    private Guid                     pipeBlockedGuid;
+    private bool                     previouslyConnected = true;
+    private bool                     previouslyHadRoom   = true;
 
-		private void UpdatePipeRoomState(bool force_update = false)
-	{
-		bool flag = this.OutputPipeIsEmpty();
-		if (flag != this.previouslyHadRoom || force_update)
-		{
-			this.operational.SetFlag(RequireOutputs.pipesHaveRoomFlag, flag);
-			this.previouslyHadRoom = flag;
-			StatusItem status_item = Db.Get().BuildingStatusItems.ConduitBlockedMultiples;
-			if (this.conduitType == ConduitType.Solid)
-			{
-				status_item = Db.Get().BuildingStatusItems.SolidConduitBlockedMultiples;
-			}
-			this.pipeBlockedGuid = this.selectable.ToggleStatusItem(status_item, this.pipeBlockedGuid, !flag, null);
-		}
-	}
+    [MyCmpReq]
+    private KSelectable selectable;
 
-		private IConduitFlow GetConduitFlow()
-	{
-		switch (this.conduitType)
-		{
-		case ConduitType.Gas:
-			return Game.Instance.gasConduitFlow;
-		case ConduitType.Liquid:
-			return Game.Instance.liquidConduitFlow;
-		case ConduitType.Solid:
-			return Game.Instance.solidConduitFlow;
-		default:
-			global::Debug.LogWarning("GetConduitFlow() called with unexpected conduitType: " + this.conduitType.ToString());
-			return null;
-		}
-	}
+    private int utilityCell;
 
-		private bool IsConnected(int cell)
-	{
-		return RequireOutputs.IsConnected(cell, this.conduitType);
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        ScenePartitionerLayer scenePartitionerLayer = null;
+        var                   component             = GetComponent<Building>();
+        utilityCell = component.GetUtilityOutputCell();
+        conduitType = component.Def.OutputConduitType;
+        switch (component.Def.OutputConduitType) {
+            case ConduitType.Gas:
+                scenePartitionerLayer = GameScenePartitioner.Instance.gasConduitsLayer;
+                break;
+            case ConduitType.Liquid:
+                scenePartitionerLayer = GameScenePartitioner.Instance.liquidConduitsLayer;
+                break;
+            case ConduitType.Solid:
+                scenePartitionerLayer = GameScenePartitioner.Instance.solidConduitsLayer;
+                break;
+        }
 
-		public static bool IsConnected(int cell, ConduitType conduitType)
-	{
-		ObjectLayer layer = ObjectLayer.NumLayers;
-		switch (conduitType)
-		{
-		case ConduitType.Gas:
-			layer = ObjectLayer.GasConduit;
-			break;
-		case ConduitType.Liquid:
-			layer = ObjectLayer.LiquidConduit;
-			break;
-		case ConduitType.Solid:
-			layer = ObjectLayer.SolidConduit;
-			break;
-		}
-		GameObject gameObject = Grid.Objects[cell, (int)layer];
-		return gameObject != null && gameObject.GetComponent<BuildingComplete>() != null;
-	}
+        UpdateConnectionState(true);
+        UpdatePipeRoomState(true);
+        if (scenePartitionerLayer != null)
+            partitionerEntry = GameScenePartitioner.Instance.Add("RequireOutputs",
+                                                                 gameObject,
+                                                                 utilityCell,
+                                                                 scenePartitionerLayer,
+                                                                 delegate { UpdateConnectionState(); });
 
-		[MyCmpReq]
-	private KSelectable selectable;
+        GetConduitFlow().AddConduitUpdater(UpdatePipeState, ConduitFlowPriority.First);
+    }
 
-		[MyCmpReq]
-	private Operational operational;
+    protected override void OnCleanUp() {
+        GameScenePartitioner.Instance.Free(ref partitionerEntry);
+        var conduitFlow = GetConduitFlow();
+        if (conduitFlow != null) conduitFlow.RemoveConduitUpdater(UpdatePipeState);
+        base.OnCleanUp();
+    }
 
-		public bool ignoreFullPipe;
+    private void UpdateConnectionState(bool force_update = false) {
+        connected = IsConnected(utilityCell);
+        if (connected != previouslyConnected || force_update) {
+            operational.SetFlag(outputConnectedFlag, connected);
+            previouslyConnected = connected;
+            StatusItem status_item = null;
+            switch (conduitType) {
+                case ConduitType.Gas:
+                    status_item = Db.Get().BuildingStatusItems.NeedGasOut;
+                    break;
+                case ConduitType.Liquid:
+                    status_item = Db.Get().BuildingStatusItems.NeedLiquidOut;
+                    break;
+                case ConduitType.Solid:
+                    status_item = Db.Get().BuildingStatusItems.NeedSolidOut;
+                    break;
+            }
 
-		private int utilityCell;
+            hasPipeGuid = selectable.ToggleStatusItem(status_item, hasPipeGuid, !connected, this);
+        }
+    }
 
-		private ConduitType conduitType;
+    private bool OutputPipeIsEmpty() {
+        if (ignoreFullPipe) return true;
 
-		private static readonly Operational.Flag outputConnectedFlag = new Operational.Flag("output_connected", Operational.Flag.Type.Requirement);
+        var result            = true;
+        if (connected) result = GetConduitFlow().IsConduitEmpty(utilityCell);
+        return result;
+    }
 
-		private static readonly Operational.Flag pipesHaveRoomFlag = new Operational.Flag("pipesHaveRoom", Operational.Flag.Type.Requirement);
+    private void UpdatePipeState(float dt) { UpdatePipeRoomState(); }
 
-		private bool previouslyConnected = true;
+    private void UpdatePipeRoomState(bool force_update = false) {
+        var flag = OutputPipeIsEmpty();
+        if (flag != previouslyHadRoom || force_update) {
+            operational.SetFlag(pipesHaveRoomFlag, flag);
+            previouslyHadRoom = flag;
+            var status_item = Db.Get().BuildingStatusItems.ConduitBlockedMultiples;
+            if (conduitType == ConduitType.Solid)
+                status_item = Db.Get().BuildingStatusItems.SolidConduitBlockedMultiples;
 
-		private bool previouslyHadRoom = true;
+            pipeBlockedGuid = selectable.ToggleStatusItem(status_item, pipeBlockedGuid, !flag);
+        }
+    }
 
-		private bool connected;
+    private IConduitFlow GetConduitFlow() {
+        switch (conduitType) {
+            case ConduitType.Gas:
+                return Game.Instance.gasConduitFlow;
+            case ConduitType.Liquid:
+                return Game.Instance.liquidConduitFlow;
+            case ConduitType.Solid:
+                return Game.Instance.solidConduitFlow;
+            default:
+                Debug.LogWarning("GetConduitFlow() called with unexpected conduitType: " + conduitType);
+                return null;
+        }
+    }
 
-		private Guid hasPipeGuid;
+    private bool IsConnected(int cell) { return IsConnected(cell, conduitType); }
 
-		private Guid pipeBlockedGuid;
+    public static bool IsConnected(int cell, ConduitType conduitType) {
+        var layer = ObjectLayer.NumLayers;
+        switch (conduitType) {
+            case ConduitType.Gas:
+                layer = ObjectLayer.GasConduit;
+                break;
+            case ConduitType.Liquid:
+                layer = ObjectLayer.LiquidConduit;
+                break;
+            case ConduitType.Solid:
+                layer = ObjectLayer.SolidConduit;
+                break;
+        }
 
-		private HandleVector<int>.Handle partitionerEntry;
+        var gameObject = Grid.Objects[cell, (int)layer];
+        return gameObject != null && gameObject.GetComponent<BuildingComplete>() != null;
+    }
 }

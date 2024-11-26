@@ -1,79 +1,75 @@
-﻿using System;
-using KSerialization;
+﻿using KSerialization;
 
 [SerializationConfig(MemberSerialization.OptIn)]
-public class SolidConduitInbox : StateMachineComponent<SolidConduitInbox.SMInstance>, ISim1000ms
-{
-		protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		this.filteredStorage = new FilteredStorage(this, null, null, false, Db.Get().ChoreTypes.StorageFetch);
-	}
+public class SolidConduitInbox : StateMachineComponent<SolidConduitInbox.SMInstance>, ISim1000ms {
+    [MyCmpReq]
+    private SolidConduitDispenser dispenser;
 
-		protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		this.filteredStorage.FilterChanged();
-		base.smi.StartSM();
-	}
+    private FilteredStorage filteredStorage;
 
-		protected override void OnCleanUp()
-	{
-		base.OnCleanUp();
-	}
+    [MyCmpReq]
+    private Operational operational;
 
-		public void Sim1000ms(float dt)
-	{
-		if (this.operational.IsOperational && this.dispenser.IsDispensing)
-		{
-			this.operational.SetActive(true, false);
-			return;
-		}
-		this.operational.SetActive(false, false);
-	}
+    [MyCmpAdd]
+    private Storage storage;
 
-		[MyCmpReq]
-	private Operational operational;
+    public void Sim1000ms(float dt) {
+        if (operational.IsOperational && dispenser.IsDispensing) {
+            operational.SetActive(true);
+            return;
+        }
 
-		[MyCmpReq]
-	private SolidConduitDispenser dispenser;
+        operational.SetActive(false);
+    }
 
-		[MyCmpAdd]
-	private Storage storage;
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        filteredStorage = new FilteredStorage(this, null, null, false, Db.Get().ChoreTypes.StorageFetch);
+    }
 
-		private FilteredStorage filteredStorage;
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        filteredStorage.FilterChanged();
+        smi.StartSM();
+    }
 
-		public class SMInstance : GameStateMachine<SolidConduitInbox.States, SolidConduitInbox.SMInstance, SolidConduitInbox, object>.GameInstance
-	{
-				public SMInstance(SolidConduitInbox master) : base(master)
-		{
-		}
-	}
+    protected override void OnCleanUp() { base.OnCleanUp(); }
 
-		public class States : GameStateMachine<SolidConduitInbox.States, SolidConduitInbox.SMInstance, SolidConduitInbox>
-	{
-				public override void InitializeStates(out StateMachine.BaseState default_state)
-		{
-			default_state = this.off;
-			this.root.DoNothing();
-			this.off.PlayAnim("off").EventTransition(GameHashes.OperationalChanged, this.on, (SolidConduitInbox.SMInstance smi) => smi.GetComponent<Operational>().IsOperational);
-			this.on.DefaultState(this.on.idle).EventTransition(GameHashes.OperationalChanged, this.off, (SolidConduitInbox.SMInstance smi) => !smi.GetComponent<Operational>().IsOperational);
-			this.on.idle.PlayAnim("on").EventTransition(GameHashes.ActiveChanged, this.on.working, (SolidConduitInbox.SMInstance smi) => smi.GetComponent<Operational>().IsActive);
-			this.on.working.PlayAnim("working_pre").QueueAnim("working_loop", true, null).EventTransition(GameHashes.ActiveChanged, this.on.post, (SolidConduitInbox.SMInstance smi) => !smi.GetComponent<Operational>().IsActive);
-			this.on.post.PlayAnim("working_pst").OnAnimQueueComplete(this.on);
-		}
+    public class SMInstance : GameStateMachine<States, SMInstance, SolidConduitInbox, object>.GameInstance {
+        public SMInstance(SolidConduitInbox master) : base(master) { }
+    }
 
-				public GameStateMachine<SolidConduitInbox.States, SolidConduitInbox.SMInstance, SolidConduitInbox, object>.State off;
+    public class States : GameStateMachine<States, SMInstance, SolidConduitInbox> {
+        public State       off;
+        public ReadyStates on;
 
-				public SolidConduitInbox.States.ReadyStates on;
+        public override void InitializeStates(out BaseState default_state) {
+            default_state = off;
+            root.DoNothing();
+            off.PlayAnim("off")
+               .EventTransition(GameHashes.OperationalChanged,
+                                on,
+                                smi => smi.GetComponent<Operational>().IsOperational);
 
-				public class ReadyStates : GameStateMachine<SolidConduitInbox.States, SolidConduitInbox.SMInstance, SolidConduitInbox, object>.State
-		{
-						public GameStateMachine<SolidConduitInbox.States, SolidConduitInbox.SMInstance, SolidConduitInbox, object>.State idle;
+            on.DefaultState(on.idle)
+              .EventTransition(GameHashes.OperationalChanged,
+                               off,
+                               smi => !smi.GetComponent<Operational>().IsOperational);
 
-						public GameStateMachine<SolidConduitInbox.States, SolidConduitInbox.SMInstance, SolidConduitInbox, object>.State working;
+            on.idle.PlayAnim("on")
+              .EventTransition(GameHashes.ActiveChanged, on.working, smi => smi.GetComponent<Operational>().IsActive);
 
-						public GameStateMachine<SolidConduitInbox.States, SolidConduitInbox.SMInstance, SolidConduitInbox, object>.State post;
-		}
-	}
+            on.working.PlayAnim("working_pre")
+              .QueueAnim("working_loop", true)
+              .EventTransition(GameHashes.ActiveChanged, on.post, smi => !smi.GetComponent<Operational>().IsActive);
+
+            on.post.PlayAnim("working_pst").OnAnimQueueComplete(on);
+        }
+
+        public class ReadyStates : State {
+            public State idle;
+            public State post;
+            public State working;
+        }
+    }
 }

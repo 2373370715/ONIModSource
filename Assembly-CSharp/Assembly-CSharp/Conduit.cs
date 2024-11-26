@@ -1,285 +1,220 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using STRINGS;
 using UnityEngine;
 
-[SkipSaveFileSerialization]
-[AddComponentMenu("KMonoBehaviour/scripts/Conduit")]
-public class Conduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetworkMgr, IBridgedNetworkItem, IDisconnectable, FlowUtilityNetwork.IItem
-{
-		public void SetFirstFrameCallback(System.Action ffCb)
-	{
-		this.firstFrameCallback = ffCb;
-		base.StartCoroutine(this.RunCallback());
-	}
+[SkipSaveFileSerialization, AddComponentMenu("KMonoBehaviour/scripts/Conduit")]
+public class Conduit
+    : KMonoBehaviour,
+      IFirstFrameCallback,
+      IHaveUtilityNetworkMgr,
+      IBridgedNetworkItem,
+      IDisconnectable,
+      FlowUtilityNetwork.IItem {
+    protected static readonly EventSystem.IntraObjectHandler<Conduit> OnHighlightedDelegate
+        = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data) {
+                                                          component.OnHighlighted(data);
+                                                      });
 
-		private IEnumerator RunCallback()
-	{
-		yield return null;
-		if (this.firstFrameCallback != null)
-		{
-			this.firstFrameCallback();
-			this.firstFrameCallback = null;
-		}
-		yield return null;
-		yield break;
-	}
+    protected static readonly EventSystem.IntraObjectHandler<Conduit> OnConduitFrozenDelegate
+        = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data) {
+                                                          component.OnConduitFrozen(data);
+                                                      });
 
-		protected override void OnPrefabInit()
-	{
-		base.OnPrefabInit();
-		base.Subscribe<Conduit>(-1201923725, Conduit.OnHighlightedDelegate);
-		base.Subscribe<Conduit>(-700727624, Conduit.OnConduitFrozenDelegate);
-		base.Subscribe<Conduit>(-1152799878, Conduit.OnConduitBoilingDelegate);
-		base.Subscribe<Conduit>(-1555603773, Conduit.OnStructureTemperatureRegisteredDelegate);
-	}
+    protected static readonly EventSystem.IntraObjectHandler<Conduit> OnConduitBoilingDelegate
+        = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data) {
+                                                          component.OnConduitBoiling(data);
+                                                      });
 
-		protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		base.Subscribe<Conduit>(774203113, Conduit.OnBuildingBrokenDelegate);
-		base.Subscribe<Conduit>(-1735440190, Conduit.OnBuildingFullyRepairedDelegate);
-	}
+    protected static readonly EventSystem.IntraObjectHandler<Conduit> OnStructureTemperatureRegisteredDelegate
+        = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data) {
+                                                          component.OnStructureTemperatureRegistered(data);
+                                                      });
 
-		protected virtual void OnStructureTemperatureRegistered(object data)
-	{
-		int cell = Grid.PosToCell(this);
-		this.GetNetworkManager().AddToNetworks(cell, this, false);
-		this.Connect();
-		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.Pipe, this);
-		BuildingDef def = base.GetComponent<Building>().Def;
-		if (def != null && def.ThermalConductivity != 1f)
-		{
-			this.GetFlowVisualizer().AddThermalConductivity(Grid.PosToCell(base.transform.GetPosition()), def.ThermalConductivity);
-		}
-	}
+    protected static readonly EventSystem.IntraObjectHandler<Conduit> OnBuildingBrokenDelegate
+        = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data) {
+                                                          component.OnBuildingBroken(data);
+                                                      });
 
-		protected override void OnCleanUp()
-	{
-		base.Unsubscribe<Conduit>(774203113, Conduit.OnBuildingBrokenDelegate, false);
-		base.Unsubscribe<Conduit>(-1735440190, Conduit.OnBuildingFullyRepairedDelegate, false);
-		BuildingDef def = base.GetComponent<Building>().Def;
-		if (def != null && def.ThermalConductivity != 1f)
-		{
-			this.GetFlowVisualizer().RemoveThermalConductivity(Grid.PosToCell(base.transform.GetPosition()), def.ThermalConductivity);
-		}
-		int cell = Grid.PosToCell(base.transform.GetPosition());
-		this.GetNetworkManager().RemoveFromNetworks(cell, this, false);
-		BuildingComplete component = base.GetComponent<BuildingComplete>();
-		if (component.Def.ReplacementLayer == ObjectLayer.NumLayers || Grid.Objects[cell, (int)component.Def.ReplacementLayer] == null)
-		{
-			this.GetNetworkManager().RemoveFromNetworks(cell, this, false);
-			this.GetFlowManager().EmptyConduit(Grid.PosToCell(base.transform.GetPosition()));
-		}
-		base.OnCleanUp();
-	}
+    protected static readonly EventSystem.IntraObjectHandler<Conduit> OnBuildingFullyRepairedDelegate
+        = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data) {
+                                                          component.OnBuildingFullyRepaired(data);
+                                                      });
 
-		protected ConduitFlowVisualizer GetFlowVisualizer()
-	{
-		if (this.type != ConduitType.Gas)
-		{
-			return Game.Instance.liquidFlowVisualizer;
-		}
-		return Game.Instance.gasFlowVisualizer;
-	}
+    [SerializeField]
+    private bool disconnected = true;
 
-		public IUtilityNetworkMgr GetNetworkManager()
-	{
-		if (this.type != ConduitType.Gas)
-		{
-			return Game.Instance.liquidConduitSystem;
-		}
-		return Game.Instance.gasConduitSystem;
-	}
+    private System.Action firstFrameCallback;
 
-		public ConduitFlow GetFlowManager()
-	{
-		if (this.type != ConduitType.Gas)
-		{
-			return Game.Instance.liquidConduitFlow;
-		}
-		return Game.Instance.gasConduitFlow;
-	}
+    [MyCmpReq]
+    private KAnimGraphTileVisualizer graphTileDependency;
 
-		public static ConduitFlow GetFlowManager(ConduitType type)
-	{
-		if (type != ConduitType.Gas)
-		{
-			return Game.Instance.liquidConduitFlow;
-		}
-		return Game.Instance.gasConduitFlow;
-	}
+    public ConduitType type;
 
-		public static IUtilityNetworkMgr GetNetworkManager(ConduitType type)
-	{
-		if (type != ConduitType.Gas)
-		{
-			return Game.Instance.liquidConduitSystem;
-		}
-		return Game.Instance.gasConduitSystem;
-	}
+    public virtual void AddNetworks(ICollection<UtilityNetwork> networks) {
+        var networkForCell = GetNetworkManager().GetNetworkForCell(Grid.PosToCell(this));
+        if (networkForCell != null) networks.Add(networkForCell);
+    }
 
-		public virtual void AddNetworks(ICollection<UtilityNetwork> networks)
-	{
-		UtilityNetwork networkForCell = this.GetNetworkManager().GetNetworkForCell(Grid.PosToCell(this));
-		if (networkForCell != null)
-		{
-			networks.Add(networkForCell);
-		}
-	}
+    public virtual bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks) {
+        var networkForCell = GetNetworkManager().GetNetworkForCell(Grid.PosToCell(this));
+        return networks.Contains(networkForCell);
+    }
 
-		public virtual bool IsConnectedToNetworks(ICollection<UtilityNetwork> networks)
-	{
-		UtilityNetwork networkForCell = this.GetNetworkManager().GetNetworkForCell(Grid.PosToCell(this));
-		return networks.Contains(networkForCell);
-	}
+    public virtual int  GetNetworkCell() { return Grid.PosToCell(this); }
+    public         bool IsDisconnected() { return disconnected; }
 
-		public virtual int GetNetworkCell()
-	{
-		return Grid.PosToCell(this);
-	}
+    public bool Connect() {
+        var component = GetComponent<BuildingHP>();
+        if (component == null || component.HitPoints > 0) {
+            disconnected = false;
+            GetNetworkManager().ForceRebuildNetworks();
+        }
 
-		private void OnHighlighted(object data)
-	{
-		int highlightedCell = ((bool)data) ? Grid.PosToCell(base.transform.GetPosition()) : -1;
-		this.GetFlowVisualizer().SetHighlightedCell(highlightedCell);
-	}
+        return !disconnected;
+    }
 
-		private void OnConduitFrozen(object data)
-	{
-		base.Trigger(-794517298, new BuildingHP.DamageSourceInfo
-		{
-			damage = 1,
-			source = BUILDINGS.DAMAGESOURCES.CONDUIT_CONTENTS_FROZE,
-			popString = UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CONDUIT_CONTENTS_FROZE,
-			takeDamageEffect = ((this.ConduitType == ConduitType.Gas) ? SpawnFXHashes.BuildingLeakLiquid : SpawnFXHashes.BuildingFreeze),
-			fullDamageEffectName = ((this.ConduitType == ConduitType.Gas) ? "water_damage_kanim" : "ice_damage_kanim")
-		});
-		this.GetFlowManager().EmptyConduit(Grid.PosToCell(base.transform.GetPosition()));
-	}
+    public void Disconnect() {
+        disconnected = true;
+        GetNetworkManager().ForceRebuildNetworks();
+    }
 
-		private void OnConduitBoiling(object data)
-	{
-		base.Trigger(-794517298, new BuildingHP.DamageSourceInfo
-		{
-			damage = 1,
-			source = BUILDINGS.DAMAGESOURCES.CONDUIT_CONTENTS_BOILED,
-			popString = UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CONDUIT_CONTENTS_BOILED,
-			takeDamageEffect = SpawnFXHashes.BuildingLeakGas,
-			fullDamageEffectName = "gas_damage_kanim"
-		});
-		this.GetFlowManager().EmptyConduit(Grid.PosToCell(base.transform.GetPosition()));
-	}
+    public void SetFirstFrameCallback(System.Action ffCb) {
+        firstFrameCallback = ffCb;
+        StartCoroutine(RunCallback());
+    }
 
-		private void OnBuildingBroken(object data)
-	{
-		this.Disconnect();
-	}
+    public IUtilityNetworkMgr GetNetworkManager() {
+        if (type != ConduitType.Gas) return Game.Instance.liquidConduitSystem;
 
-		private void OnBuildingFullyRepaired(object data)
-	{
-		this.Connect();
-	}
+        return Game.Instance.gasConduitSystem;
+    }
 
-		public bool IsDisconnected()
-	{
-		return this.disconnected;
-	}
+    public FlowUtilityNetwork Network {
+        set { }
+    }
 
-		public bool Connect()
-	{
-		BuildingHP component = base.GetComponent<BuildingHP>();
-		if (component == null || component.HitPoints > 0)
-		{
-			this.disconnected = false;
-			this.GetNetworkManager().ForceRebuildNetworks();
-		}
-		return !this.disconnected;
-	}
+    public int         Cell         => Grid.PosToCell(this);
+    public Endpoint    EndpointType => Endpoint.Conduit;
+    public ConduitType ConduitType  => type;
+    public GameObject  GameObject   => gameObject;
 
-		public void Disconnect()
-	{
-		this.disconnected = true;
-		this.GetNetworkManager().ForceRebuildNetworks();
-	}
+    private IEnumerator RunCallback() {
+        yield return null;
 
-			public FlowUtilityNetwork Network
-	{
-		set
-		{
-		}
-	}
+        if (firstFrameCallback != null) {
+            firstFrameCallback();
+            firstFrameCallback = null;
+        }
 
-			public int Cell
-	{
-		get
-		{
-			return Grid.PosToCell(this);
-		}
-	}
+        yield return null;
+    }
 
-			public Endpoint EndpointType
-	{
-		get
-		{
-			return Endpoint.Conduit;
-		}
-	}
+    protected override void OnPrefabInit() {
+        base.OnPrefabInit();
+        Subscribe(-1201923725, OnHighlightedDelegate);
+        Subscribe(-700727624,  OnConduitFrozenDelegate);
+        Subscribe(-1152799878, OnConduitBoilingDelegate);
+        Subscribe(-1555603773, OnStructureTemperatureRegisteredDelegate);
+    }
 
-			public ConduitType ConduitType
-	{
-		get
-		{
-			return this.type;
-		}
-	}
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        Subscribe(774203113,   OnBuildingBrokenDelegate);
+        Subscribe(-1735440190, OnBuildingFullyRepairedDelegate);
+    }
 
-			public GameObject GameObject
-	{
-		get
-		{
-			return base.gameObject;
-		}
-	}
+    protected virtual void OnStructureTemperatureRegistered(object data) {
+        var cell = Grid.PosToCell(this);
+        GetNetworkManager().AddToNetworks(cell, this, false);
+        Connect();
+        GetComponent<KSelectable>()
+            .SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.Pipe, this);
 
-		[MyCmpReq]
-	private KAnimGraphTileVisualizer graphTileDependency;
+        var def = GetComponent<Building>().Def;
+        if (def != null && def.ThermalConductivity != 1f)
+            GetFlowVisualizer()
+                .AddThermalConductivity(Grid.PosToCell(transform.GetPosition()), def.ThermalConductivity);
+    }
 
-		[SerializeField]
-	private bool disconnected = true;
+    protected override void OnCleanUp() {
+        Unsubscribe(774203113,   OnBuildingBrokenDelegate);
+        Unsubscribe(-1735440190, OnBuildingFullyRepairedDelegate);
+        var def = GetComponent<Building>().Def;
+        if (def != null && def.ThermalConductivity != 1f)
+            GetFlowVisualizer()
+                .RemoveThermalConductivity(Grid.PosToCell(transform.GetPosition()), def.ThermalConductivity);
 
-		public ConduitType type;
+        var cell = Grid.PosToCell(transform.GetPosition());
+        GetNetworkManager().RemoveFromNetworks(cell, this, false);
+        var component = GetComponent<BuildingComplete>();
+        if (component.Def.ReplacementLayer                          == ObjectLayer.NumLayers ||
+            Grid.Objects[cell, (int)component.Def.ReplacementLayer] == null) {
+            GetNetworkManager().RemoveFromNetworks(cell, this, false);
+            GetFlowManager().EmptyConduit(Grid.PosToCell(transform.GetPosition()));
+        }
 
-		private System.Action firstFrameCallback;
+        base.OnCleanUp();
+    }
 
-		protected static readonly EventSystem.IntraObjectHandler<Conduit> OnHighlightedDelegate = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data)
-	{
-		component.OnHighlighted(data);
-	});
+    protected ConduitFlowVisualizer GetFlowVisualizer() {
+        if (type != ConduitType.Gas) return Game.Instance.liquidFlowVisualizer;
 
-		protected static readonly EventSystem.IntraObjectHandler<Conduit> OnConduitFrozenDelegate = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data)
-	{
-		component.OnConduitFrozen(data);
-	});
+        return Game.Instance.gasFlowVisualizer;
+    }
 
-		protected static readonly EventSystem.IntraObjectHandler<Conduit> OnConduitBoilingDelegate = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data)
-	{
-		component.OnConduitBoiling(data);
-	});
+    public ConduitFlow GetFlowManager() {
+        if (type != ConduitType.Gas) return Game.Instance.liquidConduitFlow;
 
-		protected static readonly EventSystem.IntraObjectHandler<Conduit> OnStructureTemperatureRegisteredDelegate = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data)
-	{
-		component.OnStructureTemperatureRegistered(data);
-	});
+        return Game.Instance.gasConduitFlow;
+    }
 
-		protected static readonly EventSystem.IntraObjectHandler<Conduit> OnBuildingBrokenDelegate = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data)
-	{
-		component.OnBuildingBroken(data);
-	});
+    public static ConduitFlow GetFlowManager(ConduitType type) {
+        if (type != ConduitType.Gas) return Game.Instance.liquidConduitFlow;
 
-		protected static readonly EventSystem.IntraObjectHandler<Conduit> OnBuildingFullyRepairedDelegate = new EventSystem.IntraObjectHandler<Conduit>(delegate(Conduit component, object data)
-	{
-		component.OnBuildingFullyRepaired(data);
-	});
+        return Game.Instance.gasConduitFlow;
+    }
+
+    public static IUtilityNetworkMgr GetNetworkManager(ConduitType type) {
+        if (type != ConduitType.Gas) return Game.Instance.liquidConduitSystem;
+
+        return Game.Instance.gasConduitSystem;
+    }
+
+    private void OnHighlighted(object data) {
+        var highlightedCell = (bool)data ? Grid.PosToCell(transform.GetPosition()) : -1;
+        GetFlowVisualizer().SetHighlightedCell(highlightedCell);
+    }
+
+    private void OnConduitFrozen(object data) {
+        Trigger(-794517298,
+                new BuildingHP.DamageSourceInfo {
+                    damage    = 1,
+                    source    = BUILDINGS.DAMAGESOURCES.CONDUIT_CONTENTS_FROZE,
+                    popString = UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CONDUIT_CONTENTS_FROZE,
+                    takeDamageEffect
+                        = ConduitType == ConduitType.Gas
+                              ? SpawnFXHashes.BuildingLeakLiquid
+                              : SpawnFXHashes.BuildingFreeze,
+                    fullDamageEffectName = ConduitType == ConduitType.Gas ? "water_damage_kanim" : "ice_damage_kanim"
+                });
+
+        GetFlowManager().EmptyConduit(Grid.PosToCell(transform.GetPosition()));
+    }
+
+    private void OnConduitBoiling(object data) {
+        Trigger(-794517298,
+                new BuildingHP.DamageSourceInfo {
+                    damage               = 1,
+                    source               = BUILDINGS.DAMAGESOURCES.CONDUIT_CONTENTS_BOILED,
+                    popString            = UI.GAMEOBJECTEFFECTS.DAMAGE_POPS.CONDUIT_CONTENTS_BOILED,
+                    takeDamageEffect     = SpawnFXHashes.BuildingLeakGas,
+                    fullDamageEffectName = "gas_damage_kanim"
+                });
+
+        GetFlowManager().EmptyConduit(Grid.PosToCell(transform.GetPosition()));
+    }
+
+    private void OnBuildingBroken(object        data) { Disconnect(); }
+    private void OnBuildingFullyRepaired(object data) { Connect(); }
 }

@@ -71,6 +71,7 @@
         <Compile Include="建筑\基地Base\PressureDoorAddToBuild.cs" />
         <Compile Include="建筑\基地Base\存储箱.cs" />
         <Compile Include="建筑\基地Base\干板墙.cs" />
+        <Compile Include="建筑\基地Base\运载管道入口.cs" />
         <Compile Include="建筑\基地Base\隔热转.cs" />
         <Compile Include="建筑\实用\BetterCoolers\BetterCoolerControl.cs" />
         <Compile Include="建筑\实用\BetterCoolers\BetterCoolerControlStrings.cs" />
@@ -83,6 +84,11 @@
         <Compile Include="建筑\氧气\空气净化器旋转.cs" />
         <Compile Include="建筑\水管\排液口.cs" />
         <Compile Include="建筑\水管\液泵.cs" />
+        <Compile Include="建筑\水管\管道\LiquidConduitControl.cs" />
+        <Compile Include="建筑\水管\管道\管道.cs" />
+        <Compile Include="建筑\火箭\地堡门.cs" />
+        <Compile Include="建筑\火箭\流星爆破炮.cs" />
+        <Compile Include="建筑\火箭\爆破弹组装机.cs" />
         <Compile Include="建筑\电力\人力发电机.cs" />
         <Compile Include="建筑\电力\巨型电池.cs" />
         <Compile Include="建筑\电力\智能电池.cs" />
@@ -101,6 +107,7 @@
         <Compile Include="建筑\精炼\金属精炼器.cs" />
         <Compile Include="建筑\运输\挖机.cs" />
         <Compile Include="建筑\运输\自动清扫器.cs" />
+        <Compile Include="建筑\运输\运输装载器.cs" />
         <Compile Include="建筑\通风\排气口.cs" />
         <Compile Include="建筑\通风\气泵.cs" />
         <Compile Include="建筑\食物\冰箱.cs" />

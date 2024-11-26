@@ -4,610 +4,460 @@ using KSerialization;
 using STRINGS;
 using UnityEngine;
 
-public class MorbRoverMaker : GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>
-{
-		public override void InitializeStates(out StateMachine.BaseState default_state)
-	{
-		base.serializable = StateMachine.SerializeType.ParamsOnly;
-		default_state = this.no_operational;
-		this.root.Update(new Action<MorbRoverMaker.Instance, float>(MorbRoverMaker.GermsRequiredFeedbackUpdate), UpdateRate.SIM_1000ms, false);
-		this.no_operational.Enter(delegate(MorbRoverMaker.Instance smi)
-		{
-			MorbRoverMaker.DisableManualDelivery(smi, "Disable manual delivery while no operational. in case players disabled the machine on purpose for this reason");
-		}).TagTransition(GameTags.Operational, this.operational, false);
-		this.operational.TagTransition(GameTags.Operational, this.no_operational, true).DefaultState(this.operational.covered);
-		this.operational.covered.ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerDusty, null).ParamTransition<bool>(this.WasUncoverByDuplicant, this.operational.idle, GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.IsTrue).Enter(delegate(MorbRoverMaker.Instance smi)
-		{
-			MorbRoverMaker.DisableManualDelivery(smi, "Machine can't ask for materials if it has not been investigated by a dupe");
-		}).DefaultState(this.operational.covered.idle);
-		this.operational.covered.idle.PlayAnim("dusty").ParamTransition<bool>(this.UncoverOrderRequested, this.operational.covered.careOrderGiven, GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.IsTrue);
-		this.operational.covered.careOrderGiven.PlayAnim("dusty").Enter(new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State.Callback(MorbRoverMaker.StartWorkChore_RevealMachine)).Exit(new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State.Callback(MorbRoverMaker.CancelWorkChore_RevealMachine)).WorkableCompleteTransition((MorbRoverMaker.Instance smi) => smi.GetWorkable_RevealMachine(), this.operational.covered.complete).ParamTransition<bool>(this.UncoverOrderRequested, this.operational.covered.idle, GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.IsFalse);
-		this.operational.covered.complete.Enter(new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State.Callback(MorbRoverMaker.SetUncovered));
-		this.operational.idle.Enter(delegate(MorbRoverMaker.Instance smi)
-		{
-			MorbRoverMaker.EnableManualDelivery(smi, "Operational and discovered");
-		}).EnterTransition(this.operational.crafting, new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.Transition.ConditionCallback(MorbRoverMaker.ShouldBeCrafting)).EnterTransition(this.operational.waitingForMorb, new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.Transition.ConditionCallback(MorbRoverMaker.IsCraftingCompleted)).EventTransition(GameHashes.OnStorageChange, this.operational.crafting, new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.Transition.ConditionCallback(MorbRoverMaker.ShouldBeCrafting)).PlayAnim("idle").ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerGermCollectionProgress, null);
-		this.operational.crafting.DefaultState(this.operational.crafting.pre).ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerGermCollectionProgress, null).ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerCraftingBody, null);
-		this.operational.crafting.conflict.Enter(new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State.Callback(MorbRoverMaker.ResetRoverBodyCraftingProgress)).GoTo(this.operational.idle);
-		this.operational.crafting.pre.EventTransition(GameHashes.OnStorageChange, this.operational.crafting.conflict, GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.Not(new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.Transition.ConditionCallback(MorbRoverMaker.ShouldBeCrafting))).PlayAnim("crafting_pre").OnAnimQueueComplete(this.operational.crafting.loop);
-		this.operational.crafting.loop.EventTransition(GameHashes.OnStorageChange, this.operational.crafting.conflict, GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.Not(new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.Transition.ConditionCallback(MorbRoverMaker.ShouldBeCrafting))).Update(new Action<MorbRoverMaker.Instance, float>(MorbRoverMaker.CraftingUpdate), UpdateRate.SIM_200ms, false).PlayAnim("crafting_loop", KAnim.PlayMode.Loop).ParamTransition<float>(this.CraftProgress, this.operational.crafting.pst, GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.IsOne);
-		this.operational.crafting.pst.Enter(new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State.Callback(MorbRoverMaker.ConsumeRoverBodyCraftingMaterials)).PlayAnim("crafting_pst").OnAnimQueueComplete(this.operational.waitingForMorb);
-		this.operational.waitingForMorb.PlayAnim("crafting_complete").ParamTransition<long>(this.Germs, this.operational.doctor, new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.Parameter<long>.Callback(MorbRoverMaker.HasEnoughGerms)).ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerGermCollectionProgress, null);
-		this.operational.doctor.Enter(new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State.Callback(MorbRoverMaker.StartWorkChore_ReleaseRover)).Exit(new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State.Callback(MorbRoverMaker.CancelWorkChore_ReleaseRover)).WorkableCompleteTransition((MorbRoverMaker.Instance smi) => smi.GetWorkable_ReleaseRover(), this.operational.finish).DefaultState(this.operational.doctor.needed);
-		this.operational.doctor.needed.PlayAnim("waiting", KAnim.PlayMode.Loop).WorkableStartTransition((MorbRoverMaker.Instance smi) => smi.GetWorkable_ReleaseRover(), this.operational.doctor.working).ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerReadyForDoctor, null);
-		this.operational.doctor.working.WorkableStopTransition((MorbRoverMaker.Instance smi) => smi.GetWorkable_ReleaseRover(), this.operational.doctor.needed);
-		this.operational.finish.Enter(new StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State.Callback(MorbRoverMaker.SpawnRover)).GoTo(this.operational.idle);
-	}
-
-		public static bool ShouldBeCrafting(MorbRoverMaker.Instance smi)
-	{
-		return smi.HasMaterialsForRover && smi.RoverDevelopment_Progress < 1f;
-	}
-
-		public static bool IsCraftingCompleted(MorbRoverMaker.Instance smi)
-	{
-		return smi.RoverDevelopment_Progress == 1f;
-	}
-
-		public static bool HasEnoughGerms(MorbRoverMaker.Instance smi, long germCount)
-	{
-		return germCount >= smi.def.GERMS_PER_ROVER;
-	}
-
-		public static void StartWorkChore_ReleaseRover(MorbRoverMaker.Instance smi)
-	{
-		smi.CreateWorkChore_ReleaseRover();
-	}
-
-		public static void CancelWorkChore_ReleaseRover(MorbRoverMaker.Instance smi)
-	{
-		smi.CancelWorkChore_ReleaseRover();
-	}
-
-		public static void StartWorkChore_RevealMachine(MorbRoverMaker.Instance smi)
-	{
-		smi.CreateWorkChore_RevealMachine();
-	}
-
-		public static void CancelWorkChore_RevealMachine(MorbRoverMaker.Instance smi)
-	{
-		smi.CancelWorkChore_RevealMachine();
-	}
-
-		public static void SetUncovered(MorbRoverMaker.Instance smi)
-	{
-		smi.Uncover();
-	}
-
-		public static void SpawnRover(MorbRoverMaker.Instance smi)
-	{
-		smi.SpawnRover();
-	}
-
-		public static void EnableManualDelivery(MorbRoverMaker.Instance smi, string reason)
-	{
-		smi.EnableManualDelivery(reason);
-	}
-
-		public static void DisableManualDelivery(MorbRoverMaker.Instance smi, string reason)
-	{
-		smi.DisableManualDelivery(reason);
-	}
-
-		public static void ConsumeRoverBodyCraftingMaterials(MorbRoverMaker.Instance smi)
-	{
-		smi.ConsumeRoverBodyCraftingMaterials();
-	}
-
-		public static void ResetRoverBodyCraftingProgress(MorbRoverMaker.Instance smi)
-	{
-		smi.SetRoverDevelopmentProgress(0f);
-	}
-
-		public static void CraftingUpdate(MorbRoverMaker.Instance smi, float dt)
-	{
-		float roverDevelopmentProgress = Mathf.Clamp((smi.RoverDevelopment_Progress * smi.def.ROVER_CRAFTING_DURATION + dt) / smi.def.ROVER_CRAFTING_DURATION, 0f, 1f);
-		smi.SetRoverDevelopmentProgress(roverDevelopmentProgress);
-	}
-
-		public static void GermsRequiredFeedbackUpdate(MorbRoverMaker.Instance smi, float dt)
-	{
-		if (GameClock.Instance.GetTime() - smi.lastTimeGermsAdded > smi.def.FEEDBACK_NO_GERMS_DETECTED_TIMEOUT & smi.MorbDevelopment_Progress < 1f & !smi.IsInsideState(smi.sm.operational.doctor) & smi.HasBeenRevealed)
-		{
-			smi.ShowGermRequiredStatusItemAlert();
-			return;
-		}
-		smi.HideGermRequiredStatusItemAlert();
-	}
-
-		private const string ROBOT_PROGRESS_METER_TARGET_NAME = "meter_robot_target";
-
-		private const string ROBOT_PROGRESS_METER_ANIMATION_NAME = "meter_robot";
-
-		private const string COVERED_IDLE_ANIM_NAME = "dusty";
-
-		private const string IDLE_ANIM_NAME = "idle";
-
-		private const string CRAFT_PRE_ANIM_NAME = "crafting_pre";
-
-		private const string CRAFT_LOOP_ANIM_NAME = "crafting_loop";
-
-		private const string CRAFT_PST_ANIM_NAME = "crafting_pst";
-
-		private const string CRAFT_COMPLETED_ANIM_NAME = "crafting_complete";
-
-		private const string WAITING_FOR_DOCTOR_ANIM_NAME = "waiting";
-
-		public StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.BoolParameter UncoverOrderRequested;
-
-		public StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.BoolParameter WasUncoverByDuplicant;
-
-		public StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.LongParameter Germs;
-
-		public StateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.FloatParameter CraftProgress;
-
-		public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State no_operational;
-
-		public MorbRoverMaker.OperationalStates operational;
-
-		public class Def : StateMachine.BaseDef
-	{
-				public float GetConduitMaxPackageMass()
-		{
-			ConduitType germ_INTAKE_CONDUIT_TYPE = this.GERM_INTAKE_CONDUIT_TYPE;
-			if (germ_INTAKE_CONDUIT_TYPE == ConduitType.Gas)
-			{
-				return 1f;
-			}
-			if (germ_INTAKE_CONDUIT_TYPE != ConduitType.Liquid)
-			{
-				return 1f;
-			}
-			return 10f;
-		}
-
-				public float FEEDBACK_NO_GERMS_DETECTED_TIMEOUT = 2f;
-
-				public Tag ROVER_PREFAB_ID;
-
-				public float INITIAL_MORB_DEVELOPMENT_PERCENTAGE;
-
-				public float ROVER_CRAFTING_DURATION;
-
-				public float METAL_PER_ROVER;
-
-				public long GERMS_PER_ROVER;
-
-				public int MAX_GERMS_TAKEN_PER_PACKAGE;
-
-				public int GERM_TYPE;
-
-				public SimHashes ROVER_MATERIAL;
-
-				public ConduitType GERM_INTAKE_CONDUIT_TYPE;
-	}
-
-		public class CoverStates : GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State
-	{
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State idle;
-
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State careOrderGiven;
-
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State complete;
-	}
-
-		public class OperationalStates : GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State
-	{
-				public MorbRoverMaker.CoverStates covered;
-
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State idle;
-
-				public MorbRoverMaker.CraftingStates crafting;
-
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State waitingForMorb;
-
-				public MorbRoverMaker.DoctorStates doctor;
-
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State finish;
-	}
-
-		public class DoctorStates : GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State
-	{
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State needed;
-
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State working;
-	}
-
-		public class CraftingStates : GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State
-	{
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State conflict;
-
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State pre;
-
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State loop;
-
-				public GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.State pst;
-	}
-
-		public new class Instance : GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def>.GameInstance, ISidescreenButtonControl
-	{
-						public long MorbDevelopment_GermsCollected
-		{
-			get
-			{
-				return base.sm.Germs.Get(base.smi);
-			}
-		}
-
-						public long MorbDevelopment_RemainingGerms
-		{
-			get
-			{
-				return base.def.GERMS_PER_ROVER - this.MorbDevelopment_GermsCollected;
-			}
-		}
-
-						public float MorbDevelopment_Progress
-		{
-			get
-			{
-				return Mathf.Clamp((float)this.MorbDevelopment_GermsCollected / (float)base.def.GERMS_PER_ROVER, 0f, 1f);
-			}
-		}
-
-						public bool HasMaterialsForRover
-		{
-			get
-			{
-				return this.storage.GetMassAvailable(base.def.ROVER_MATERIAL) >= base.def.METAL_PER_ROVER;
-			}
-		}
-
-						public float RoverDevelopment_Progress
-		{
-			get
-			{
-				return base.sm.CraftProgress.Get(base.smi);
-			}
-		}
-
-						public bool HasBeenRevealed
-		{
-			get
-			{
-				return base.sm.WasUncoverByDuplicant.Get(base.smi);
-			}
-		}
-
-						public bool CanPumpGerms
-		{
-			get
-			{
-				return this.operational && this.MorbDevelopment_Progress < 1f && this.HasBeenRevealed;
-			}
-		}
-
-				public Workable GetWorkable_RevealMachine()
-		{
-			return this.workable_reveal;
-		}
-
-				public Workable GetWorkable_ReleaseRover()
-		{
-			return this.workable_release;
-		}
-
-				public void ShowGermRequiredStatusItemAlert()
-		{
-			if (this.germsRequiredAlertStatusItemHandle == default(Guid))
-			{
-				this.germsRequiredAlertStatusItemHandle = this.selectable.AddStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerNoGermsConsumedAlert, base.smi);
-			}
-		}
-
-				public void HideGermRequiredStatusItemAlert()
-		{
-			if (this.germsRequiredAlertStatusItemHandle != default(Guid))
-			{
-				this.selectable.RemoveStatusItem(this.germsRequiredAlertStatusItemHandle, false);
-				this.germsRequiredAlertStatusItemHandle = default(Guid);
-			}
-		}
-
-				public Instance(IStateMachineTarget master, MorbRoverMaker.Def def) : base(master, def)
-		{
-			this.RobotProgressMeter = new MeterController(this.buildingAnimCtr, "meter_robot_target", "meter_robot", Meter.Offset.UserSpecified, Grid.SceneLayer.BuildingFront, Array.Empty<string>());
-		}
-
-				public override void StartSM()
-		{
-			Building component = base.GetComponent<Building>();
-			this.inputCell = component.GetUtilityInputCell();
-			this.outputCell = component.GetUtilityOutputCell();
-			base.StartSM();
-			if (!this.HasBeenRevealed)
-			{
-				base.sm.Germs.Set(0L, base.smi, false);
-				this.AddGerms((long)((float)base.def.GERMS_PER_ROVER * base.def.INITIAL_MORB_DEVELOPMENT_PERCENTAGE), false);
-			}
-			Conduit.GetFlowManager(base.def.GERM_INTAKE_CONDUIT_TYPE).AddConduitUpdater(new Action<float>(this.Flow), ConduitFlowPriority.Default);
-			this.UpdateMeters();
-		}
-
-				public void AddGerms(long amount, bool playAnimations = true)
-		{
-			long value = this.MorbDevelopment_GermsCollected + amount;
-			base.sm.Germs.Set(value, base.smi, false);
-			this.UpdateMeters();
-			if (amount > 0L)
-			{
-				if (playAnimations)
-				{
-					this.capsule.PlayPumpGermsAnimation();
-				}
-				Action<long> germsAdded = this.GermsAdded;
-				if (germsAdded != null)
-				{
-					germsAdded(amount);
-				}
-				this.lastTimeGermsAdded = GameClock.Instance.GetTime();
-			}
-		}
-
-				public long RemoveGerms(long amount)
-		{
-			long num = amount.Min(this.MorbDevelopment_GermsCollected);
-			long value = this.MorbDevelopment_GermsCollected - num;
-			base.sm.Germs.Set(value, base.smi, false);
-			this.UpdateMeters();
-			return num;
-		}
-
-				public void EnableManualDelivery(string reason)
-		{
-			this.manualDelivery.Pause(false, reason);
-		}
-
-				public void DisableManualDelivery(string reason)
-		{
-			this.manualDelivery.Pause(true, reason);
-		}
-
-				public void SetRoverDevelopmentProgress(float value)
-		{
-			base.sm.CraftProgress.Set(value, base.smi, false);
-			this.UpdateMeters();
-		}
-
-				public void UpdateMeters()
-		{
-			this.RobotProgressMeter.SetPositionPercent(this.RoverDevelopment_Progress);
-			this.capsule.SetMorbDevelopmentProgress(this.MorbDevelopment_Progress);
-			this.capsule.SetGermMeterProgress(this.HasBeenRevealed ? this.MorbDevelopment_Progress : 0f);
-		}
-
-				public void Uncover()
-		{
-			base.sm.WasUncoverByDuplicant.Set(true, base.smi, false);
-			System.Action onUncovered = this.OnUncovered;
-			if (onUncovered == null)
-			{
-				return;
-			}
-			onUncovered();
-		}
-
-				public void CreateWorkChore_ReleaseRover()
-		{
-			if (this.workChore_releaseRover == null)
-			{
-				this.workChore_releaseRover = new WorkChore<MorbRoverMakerWorkable>(Db.Get().ChoreTypes.Doctor, this.workable_release, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
-			}
-		}
-
-				public void CancelWorkChore_ReleaseRover()
-		{
-			if (this.workChore_releaseRover != null)
-			{
-				this.workChore_releaseRover.Cancel("MorbRoverMaker.CancelWorkChore_ReleaseRover");
-				this.workChore_releaseRover = null;
-			}
-		}
-
-				public void CreateWorkChore_RevealMachine()
-		{
-			if (this.workChore_revealMachine == null)
-			{
-				this.workChore_revealMachine = new WorkChore<MorbRoverMakerRevealWorkable>(Db.Get().ChoreTypes.Repair, this.workable_reveal, null, true, null, null, null, true, null, false, true, null, false, true, true, PriorityScreen.PriorityClass.basic, 5, false, true);
-			}
-		}
-
-				public void CancelWorkChore_RevealMachine()
-		{
-			if (this.workChore_revealMachine != null)
-			{
-				this.workChore_revealMachine.Cancel("MorbRoverMaker.CancelWorkChore_RevealMachine");
-				this.workChore_revealMachine = null;
-			}
-		}
-
-				public void ConsumeRoverBodyCraftingMaterials()
-		{
-			float num = 0f;
-			this.storage.ConsumeAndGetDisease(base.def.ROVER_MATERIAL.CreateTag(), base.def.METAL_PER_ROVER, out num, out this.lastastMaterialsConsumedDiseases, out this.lastastMaterialsConsumedTemp);
-		}
-
-				public void SpawnRover()
-		{
-			if (this.RoverDevelopment_Progress == 1f)
-			{
-				this.RemoveGerms(base.def.GERMS_PER_ROVER);
-				GameObject gameObject = GameUtil.KInstantiate(Assets.GetPrefab(base.def.ROVER_PREFAB_ID), base.gameObject.transform.GetPosition(), Grid.SceneLayer.Creatures, null, 0);
-				PrimaryElement component = gameObject.GetComponent<PrimaryElement>();
-				if (this.lastastMaterialsConsumedDiseases.idx != 255)
-				{
-					component.AddDisease(this.lastastMaterialsConsumedDiseases.idx, this.lastastMaterialsConsumedDiseases.count, "From the materials provided for its creation");
-				}
-				if (this.lastastMaterialsConsumedTemp > 0f)
-				{
-					component.SetMassTemperature(component.Mass, this.lastastMaterialsConsumedTemp);
-				}
-				gameObject.SetActive(true);
-				this.SetRoverDevelopmentProgress(0f);
-				Action<GameObject> onRoverSpawned = this.OnRoverSpawned;
-				if (onRoverSpawned == null)
-				{
-					return;
-				}
-				onRoverSpawned(gameObject);
-			}
-		}
-
-				private void Flow(float dt)
-		{
-			if (this.CanPumpGerms)
-			{
-				ConduitFlow flowManager = Conduit.GetFlowManager(base.def.GERM_INTAKE_CONDUIT_TYPE);
-				int num = 0;
-				if (flowManager.HasConduit(this.inputCell) && flowManager.HasConduit(this.outputCell))
-				{
-					ConduitFlow.ConduitContents contents = flowManager.GetContents(this.inputCell);
-					ConduitFlow.ConduitContents contents2 = flowManager.GetContents(this.outputCell);
-					float num2 = Mathf.Min(contents.mass, base.def.GetConduitMaxPackageMass() * dt);
-					if (flowManager.CanMergeContents(contents, contents2, num2))
-					{
-						float amountAllowedForMerging = flowManager.GetAmountAllowedForMerging(contents, contents2, num2);
-						if (amountAllowedForMerging > 0f)
-						{
-							ConduitFlow conduitFlow = (base.def.GERM_INTAKE_CONDUIT_TYPE == ConduitType.Liquid) ? Game.Instance.liquidConduitFlow : Game.Instance.gasConduitFlow;
-							int num3 = contents.diseaseCount;
-							if (contents.diseaseIdx != 255 && (int)contents.diseaseIdx == base.def.GERM_TYPE)
-							{
-								num = (int)this.MorbDevelopment_RemainingGerms.Min((long)base.def.MAX_GERMS_TAKEN_PER_PACKAGE).Min((long)contents.diseaseCount);
-								num3 -= num;
-							}
-							float num4 = conduitFlow.AddElement(this.outputCell, contents.element, amountAllowedForMerging, contents.temperature, contents.diseaseIdx, num3);
-							if (amountAllowedForMerging != num4)
-							{
-								global::Debug.Log("[Morb Rover Maker] Mass Differs By: " + (amountAllowedForMerging - num4).ToString());
-							}
-							flowManager.RemoveElement(this.inputCell, num4);
-						}
-					}
-				}
-				if (num > 0)
-				{
-					this.AddGerms((long)num, true);
-				}
-			}
-		}
-
-				protected override void OnCleanUp()
-		{
-			base.OnCleanUp();
-			Conduit.GetFlowManager(base.def.GERM_INTAKE_CONDUIT_TYPE).RemoveConduitUpdater(new Action<float>(this.Flow));
-		}
-
-						public string SidescreenButtonText
-		{
-			get
-			{
-				return this.HasBeenRevealed ? CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.DROP_INVENTORY : (base.sm.UncoverOrderRequested.Get(base.smi) ? CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.CANCEL_REVEAL_BTN : CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.REVEAL_BTN);
-			}
-		}
-
-						public string SidescreenButtonTooltip
-		{
-			get
-			{
-				return this.HasBeenRevealed ? CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.DROP_INVENTORY_TOOLTIP : (base.sm.UncoverOrderRequested.Get(base.smi) ? CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.CANCEL_REVEAL_BTN_TOOLTIP : CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.REVEAL_BTN_TOOLTIP);
-			}
-		}
-
-				public bool SidescreenEnabled()
-		{
-			return true;
-		}
-
-				public bool SidescreenButtonInteractable()
-		{
-			return true;
-		}
-
-				public int HorizontalGroupID()
-		{
-			return 0;
-		}
-
-				public int ButtonSideScreenSortOrder()
-		{
-			return 20;
-		}
-
-				public void SetButtonTextOverride(ButtonMenuTextOverride textOverride)
-		{
-			throw new NotImplementedException();
-		}
-
-				public void OnSidescreenButtonPressed()
-		{
-			if (this.HasBeenRevealed)
-			{
-				this.storage.DropAll(false, false, default(Vector3), true, null);
-				return;
-			}
-			bool flag = base.smi.sm.UncoverOrderRequested.Get(base.smi);
-			base.smi.sm.UncoverOrderRequested.Set(!flag, base.smi, false);
-		}
-
-				public Action<long> GermsAdded;
-
-				public System.Action OnUncovered;
-
-				public Action<GameObject> OnRoverSpawned;
-
-				[MyCmpGet]
-		private MorbRoverMakerRevealWorkable workable_reveal;
-
-				[MyCmpGet]
-		private MorbRoverMakerWorkable workable_release;
-
-				[MyCmpGet]
-		private Operational operational;
-
-				[MyCmpGet]
-		private KBatchedAnimController buildingAnimCtr;
-
-				[MyCmpGet]
-		private ManualDeliveryKG manualDelivery;
-
-				[MyCmpGet]
-		private Storage storage;
-
-				[MyCmpGet]
-		private MorbRoverMaker_Capsule capsule;
-
-				[MyCmpGet]
-		private KSelectable selectable;
-
-				private MeterController RobotProgressMeter;
-
-				private int inputCell = -1;
-
-				private int outputCell = -1;
-
-				private Chore workChore_revealMachine;
-
-				private Chore workChore_releaseRover;
-
-				[Serialize]
-		private float lastastMaterialsConsumedTemp = -1f;
-
-				[Serialize]
-		private SimUtil.DiseaseInfo lastastMaterialsConsumedDiseases = SimUtil.DiseaseInfo.Invalid;
-
-				public float lastTimeGermsAdded = -1f;
-
-				private Guid germsRequiredAlertStatusItemHandle;
-	}
+public class MorbRoverMaker
+    : GameStateMachine<MorbRoverMaker, MorbRoverMaker.Instance, IStateMachineTarget, MorbRoverMaker.Def> {
+    private const string            ROBOT_PROGRESS_METER_TARGET_NAME    = "meter_robot_target";
+    private const string            ROBOT_PROGRESS_METER_ANIMATION_NAME = "meter_robot";
+    private const string            COVERED_IDLE_ANIM_NAME              = "dusty";
+    private const string            IDLE_ANIM_NAME                      = "idle";
+    private const string            CRAFT_PRE_ANIM_NAME                 = "crafting_pre";
+    private const string            CRAFT_LOOP_ANIM_NAME                = "crafting_loop";
+    private const string            CRAFT_PST_ANIM_NAME                 = "crafting_pst";
+    private const string            CRAFT_COMPLETED_ANIM_NAME           = "crafting_complete";
+    private const string            WAITING_FOR_DOCTOR_ANIM_NAME        = "waiting";
+    public        FloatParameter    CraftProgress;
+    public        LongParameter     Germs;
+    public        State             no_operational;
+    public        OperationalStates operational;
+    public        BoolParameter     UncoverOrderRequested;
+    public        BoolParameter     WasUncoverByDuplicant;
+
+    public override void InitializeStates(out BaseState default_state) {
+        serializable  = SerializeType.ParamsOnly;
+        default_state = no_operational;
+        root.Update(GermsRequiredFeedbackUpdate, UpdateRate.SIM_1000ms);
+        no_operational.Enter(delegate(Instance smi) {
+                                 DisableManualDelivery(smi,
+                                                       "Disable manual delivery while no operational. in case players disabled the machine on purpose for this reason");
+                             })
+                      .TagTransition(GameTags.Operational, operational);
+
+        operational.TagTransition(GameTags.Operational, no_operational, true).DefaultState(operational.covered);
+        operational.covered.ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerDusty, null)
+                   .ParamTransition(WasUncoverByDuplicant, operational.idle, IsTrue)
+                   .Enter(delegate(Instance smi) {
+                              DisableManualDelivery(smi,
+                                                    "Machine can't ask for materials if it has not been investigated by a dupe");
+                          })
+                   .DefaultState(operational.covered.idle);
+
+        operational.covered.idle.PlayAnim("dusty")
+                   .ParamTransition(UncoverOrderRequested, operational.covered.careOrderGiven, IsTrue);
+
+        operational.covered.careOrderGiven.PlayAnim("dusty")
+                   .Enter(StartWorkChore_RevealMachine)
+                   .Exit(CancelWorkChore_RevealMachine)
+                   .WorkableCompleteTransition(smi => smi.GetWorkable_RevealMachine(), operational.covered.complete)
+                   .ParamTransition(UncoverOrderRequested, operational.covered.idle, IsFalse);
+
+        operational.covered.complete.Enter(SetUncovered);
+        operational.idle.Enter(delegate(Instance smi) { EnableManualDelivery(smi, "Operational and discovered"); })
+                   .EnterTransition(operational.crafting,       ShouldBeCrafting)
+                   .EnterTransition(operational.waitingForMorb, IsCraftingCompleted)
+                   .EventTransition(GameHashes.OnStorageChange, operational.crafting, ShouldBeCrafting)
+                   .PlayAnim("idle")
+                   .ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerGermCollectionProgress, null);
+
+        operational.crafting.DefaultState(operational.crafting.pre)
+                   .ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerGermCollectionProgress, null)
+                   .ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerCraftingBody,           null);
+
+        operational.crafting.conflict.Enter(ResetRoverBodyCraftingProgress).GoTo(operational.idle);
+        operational.crafting.pre
+                   .EventTransition(GameHashes.OnStorageChange, operational.crafting.conflict, Not(ShouldBeCrafting))
+                   .PlayAnim("crafting_pre")
+                   .OnAnimQueueComplete(operational.crafting.loop);
+
+        operational.crafting.loop
+                   .EventTransition(GameHashes.OnStorageChange, operational.crafting.conflict, Not(ShouldBeCrafting))
+                   .Update(CraftingUpdate)
+                   .PlayAnim("crafting_loop", KAnim.PlayMode.Loop)
+                   .ParamTransition(CraftProgress, operational.crafting.pst, IsOne);
+
+        operational.crafting.pst.Enter(ConsumeRoverBodyCraftingMaterials)
+                   .PlayAnim("crafting_pst")
+                   .OnAnimQueueComplete(operational.waitingForMorb);
+
+        operational.waitingForMorb.PlayAnim("crafting_complete")
+                   .ParamTransition(Germs, operational.doctor, HasEnoughGerms)
+                   .ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerGermCollectionProgress, null);
+
+        operational.doctor.Enter(StartWorkChore_ReleaseRover)
+                   .Exit(CancelWorkChore_ReleaseRover)
+                   .WorkableCompleteTransition(smi => smi.GetWorkable_ReleaseRover(), operational.finish)
+                   .DefaultState(operational.doctor.needed);
+
+        operational.doctor.needed.PlayAnim("waiting", KAnim.PlayMode.Loop)
+                   .WorkableStartTransition(smi => smi.GetWorkable_ReleaseRover(), operational.doctor.working)
+                   .ToggleStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerReadyForDoctor, null);
+
+        operational.doctor.working.WorkableStopTransition(smi => smi.GetWorkable_ReleaseRover(),
+                                                          operational.doctor.needed);
+
+        operational.finish.Enter(SpawnRover).GoTo(operational.idle);
+    }
+
+    public static bool ShouldBeCrafting(Instance smi) {
+        return smi.HasMaterialsForRover && smi.RoverDevelopment_Progress < 1f;
+    }
+
+    public static bool IsCraftingCompleted(Instance smi) { return smi.RoverDevelopment_Progress == 1f; }
+    public static bool HasEnoughGerms(Instance smi, long germCount) { return germCount >= smi.def.GERMS_PER_ROVER; }
+    public static void StartWorkChore_ReleaseRover(Instance smi) { smi.CreateWorkChore_ReleaseRover(); }
+    public static void CancelWorkChore_ReleaseRover(Instance smi) { smi.CancelWorkChore_ReleaseRover(); }
+    public static void StartWorkChore_RevealMachine(Instance smi) { smi.CreateWorkChore_RevealMachine(); }
+    public static void CancelWorkChore_RevealMachine(Instance smi) { smi.CancelWorkChore_RevealMachine(); }
+    public static void SetUncovered(Instance smi) { smi.Uncover(); }
+    public static void SpawnRover(Instance smi) { smi.SpawnRover(); }
+    public static void EnableManualDelivery(Instance smi, string reason) { smi.EnableManualDelivery(reason); }
+    public static void DisableManualDelivery(Instance smi, string reason) { smi.DisableManualDelivery(reason); }
+    public static void ConsumeRoverBodyCraftingMaterials(Instance smi) { smi.ConsumeRoverBodyCraftingMaterials(); }
+    public static void ResetRoverBodyCraftingProgress(Instance smi) { smi.SetRoverDevelopmentProgress(0f); }
+
+    public static void CraftingUpdate(Instance smi, float dt) {
+        var roverDevelopmentProgress
+            = Mathf.Clamp((smi.RoverDevelopment_Progress * smi.def.ROVER_CRAFTING_DURATION + dt) /
+                          smi.def.ROVER_CRAFTING_DURATION,
+                          0f,
+                          1f);
+
+        smi.SetRoverDevelopmentProgress(roverDevelopmentProgress);
+    }
+
+    public static void GermsRequiredFeedbackUpdate(Instance smi, float dt) {
+        if ((GameClock.Instance.GetTime() - smi.lastTimeGermsAdded > smi.def.FEEDBACK_NO_GERMS_DETECTED_TIMEOUT) &
+            (smi.MorbDevelopment_Progress                          < 1f)                                         &
+            !smi.IsInsideState(smi.sm.operational.doctor)                                                        &
+            smi.HasBeenRevealed) {
+            smi.ShowGermRequiredStatusItemAlert();
+            return;
+        }
+
+        smi.HideGermRequiredStatusItemAlert();
+    }
+
+    public class Def : BaseDef {
+        public float       FEEDBACK_NO_GERMS_DETECTED_TIMEOUT = 2f;
+        public ConduitType GERM_INTAKE_CONDUIT_TYPE;
+        public int         GERM_TYPE;
+        public long        GERMS_PER_ROVER;
+        public float       INITIAL_MORB_DEVELOPMENT_PERCENTAGE;
+        public int         MAX_GERMS_TAKEN_PER_PACKAGE;
+        public float       METAL_PER_ROVER;
+        public float       ROVER_CRAFTING_DURATION;
+        public SimHashes   ROVER_MATERIAL;
+        public Tag         ROVER_PREFAB_ID;
+
+        public float GetConduitMaxPackageMass() {
+            var germ_INTAKE_CONDUIT_TYPE = GERM_INTAKE_CONDUIT_TYPE;
+            if (germ_INTAKE_CONDUIT_TYPE == ConduitType.Gas) return 1f;
+
+            if (germ_INTAKE_CONDUIT_TYPE != ConduitType.Liquid) return 1f;
+
+            return 10f;
+        }
+    }
+
+    public class CoverStates : State {
+        public State careOrderGiven;
+        public State complete;
+        public State idle;
+    }
+
+    public class OperationalStates : State {
+        public CoverStates    covered;
+        public CraftingStates crafting;
+        public DoctorStates   doctor;
+        public State          finish;
+        public State          idle;
+        public State          waitingForMorb;
+    }
+
+    public class DoctorStates : State {
+        public State needed;
+        public State working;
+    }
+
+    public class CraftingStates : State {
+        public State conflict;
+        public State loop;
+        public State pre;
+        public State pst;
+    }
+
+    public new class Instance : GameInstance, ISidescreenButtonControl {
+        [MyCmpGet]
+        private KBatchedAnimController buildingAnimCtr;
+
+        [MyCmpGet]
+        private MorbRoverMaker_Capsule capsule;
+
+        public  Action<long> GermsAdded;
+        private Guid         germsRequiredAlertStatusItemHandle;
+        private int          inputCell = -1;
+
+        [Serialize]
+        private SimUtil.DiseaseInfo lastastMaterialsConsumedDiseases = SimUtil.DiseaseInfo.Invalid;
+
+        [Serialize]
+        private float lastastMaterialsConsumedTemp = -1f;
+
+        public float lastTimeGermsAdded = -1f;
+
+        [MyCmpGet]
+        private ManualDeliveryKG manualDelivery;
+
+        public Action<GameObject> OnRoverSpawned;
+        public System.Action      OnUncovered;
+
+        [MyCmpGet]
+        private Operational operational;
+
+        private          int             outputCell = -1;
+        private readonly MeterController RobotProgressMeter;
+
+        [MyCmpGet]
+        private KSelectable selectable;
+
+        [MyCmpGet]
+        private Storage storage;
+
+        [MyCmpGet]
+        private MorbRoverMakerWorkable workable_release;
+
+        [MyCmpGet]
+        private MorbRoverMakerRevealWorkable workable_reveal;
+
+        private Chore workChore_releaseRover;
+        private Chore workChore_revealMachine;
+
+        public Instance(IStateMachineTarget master, Def def) : base(master, def) {
+            RobotProgressMeter = new MeterController(buildingAnimCtr,
+                                                     "meter_robot_target",
+                                                     "meter_robot",
+                                                     Meter.Offset.UserSpecified,
+                                                     Grid.SceneLayer.BuildingFront,
+                                                     Array.Empty<string>());
+        }
+
+        public long MorbDevelopment_GermsCollected => sm.Germs.Get(smi);
+        public long MorbDevelopment_RemainingGerms => def.GERMS_PER_ROVER - MorbDevelopment_GermsCollected;
+
+        public float MorbDevelopment_Progress =>
+            Mathf.Clamp(MorbDevelopment_GermsCollected / (float)def.GERMS_PER_ROVER, 0f, 1f);
+
+        public bool  HasMaterialsForRover      => storage.GetMassAvailable(def.ROVER_MATERIAL) >= def.METAL_PER_ROVER;
+        public float RoverDevelopment_Progress => sm.CraftProgress.Get(smi);
+        public bool  HasBeenRevealed           => sm.WasUncoverByDuplicant.Get(smi);
+        public bool  CanPumpGerms              => operational && MorbDevelopment_Progress < 1f && HasBeenRevealed;
+
+        public string SidescreenButtonText =>
+            HasBeenRevealed                   ? CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.DROP_INVENTORY :
+            sm.UncoverOrderRequested.Get(smi) ? CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.CANCEL_REVEAL_BTN :
+                                                CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.REVEAL_BTN;
+
+        public string SidescreenButtonTooltip =>
+            HasBeenRevealed
+                ? CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.DROP_INVENTORY_TOOLTIP
+                :
+                sm.UncoverOrderRequested.Get(smi)
+                    ?
+                    CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.CANCEL_REVEAL_BTN_TOOLTIP
+                    : CODEX.STORY_TRAITS.MORB_ROVER_MAKER.UI_SIDESCREENS.REVEAL_BTN_TOOLTIP;
+
+        public bool SidescreenEnabled()                                        { return true; }
+        public bool SidescreenButtonInteractable()                             { return true; }
+        public int  HorizontalGroupID()                                        { return 0; }
+        public int  ButtonSideScreenSortOrder()                                { return 20; }
+        public void SetButtonTextOverride(ButtonMenuTextOverride textOverride) { throw new NotImplementedException(); }
+
+        public void OnSidescreenButtonPressed() {
+            if (HasBeenRevealed) {
+                storage.DropAll();
+                return;
+            }
+
+            var flag = smi.sm.UncoverOrderRequested.Get(smi);
+            smi.sm.UncoverOrderRequested.Set(!flag, smi);
+        }
+
+        public Workable GetWorkable_RevealMachine() { return workable_reveal; }
+        public Workable GetWorkable_ReleaseRover()  { return workable_release; }
+
+        public void ShowGermRequiredStatusItemAlert() {
+            if (germsRequiredAlertStatusItemHandle == default(Guid))
+                germsRequiredAlertStatusItemHandle
+                    = selectable.AddStatusItem(Db.Get().BuildingStatusItems.MorbRoverMakerNoGermsConsumedAlert, smi);
+        }
+
+        public void HideGermRequiredStatusItemAlert() {
+            if (germsRequiredAlertStatusItemHandle != default(Guid)) {
+                selectable.RemoveStatusItem(germsRequiredAlertStatusItemHandle);
+                germsRequiredAlertStatusItemHandle = default(Guid);
+            }
+        }
+
+        public override void StartSM() {
+            var component = GetComponent<Building>();
+            inputCell  = component.GetUtilityInputCell();
+            outputCell = component.GetUtilityOutputCell();
+            base.StartSM();
+            if (!HasBeenRevealed) {
+                sm.Germs.Set(0L, smi);
+                AddGerms((long)(def.GERMS_PER_ROVER * def.INITIAL_MORB_DEVELOPMENT_PERCENTAGE), false);
+            }
+
+            Conduit.GetFlowManager(def.GERM_INTAKE_CONDUIT_TYPE).AddConduitUpdater(Flow);
+            UpdateMeters();
+        }
+
+        public void AddGerms(long amount, bool playAnimations = true) {
+            var value = MorbDevelopment_GermsCollected + amount;
+            sm.Germs.Set(value, smi);
+            UpdateMeters();
+            if (amount > 0L) {
+                if (playAnimations) capsule.PlayPumpGermsAnimation();
+                var germsAdded = GermsAdded;
+                if (germsAdded != null) germsAdded(amount);
+                lastTimeGermsAdded = GameClock.Instance.GetTime();
+            }
+        }
+
+        public long RemoveGerms(long amount) {
+            var num   = amount.Min(MorbDevelopment_GermsCollected);
+            var value = MorbDevelopment_GermsCollected - num;
+            sm.Germs.Set(value, smi);
+            UpdateMeters();
+            return num;
+        }
+
+        public void EnableManualDelivery(string  reason) { manualDelivery.Pause(false, reason); }
+        public void DisableManualDelivery(string reason) { manualDelivery.Pause(true,  reason); }
+
+        public void SetRoverDevelopmentProgress(float value) {
+            sm.CraftProgress.Set(value, smi);
+            UpdateMeters();
+        }
+
+        public void UpdateMeters() {
+            RobotProgressMeter.SetPositionPercent(RoverDevelopment_Progress);
+            capsule.SetMorbDevelopmentProgress(MorbDevelopment_Progress);
+            capsule.SetGermMeterProgress(HasBeenRevealed ? MorbDevelopment_Progress : 0f);
+        }
+
+        public void Uncover() {
+            sm.WasUncoverByDuplicant.Set(true, smi);
+            var onUncovered = OnUncovered;
+            if (onUncovered == null) return;
+
+            onUncovered();
+        }
+
+        public void CreateWorkChore_ReleaseRover() {
+            if (workChore_releaseRover == null)
+                workChore_releaseRover
+                    = new WorkChore<MorbRoverMakerWorkable>(Db.Get().ChoreTypes.Doctor, workable_release);
+        }
+
+        public void CancelWorkChore_ReleaseRover() {
+            if (workChore_releaseRover != null) {
+                workChore_releaseRover.Cancel("MorbRoverMaker.CancelWorkChore_ReleaseRover");
+                workChore_releaseRover = null;
+            }
+        }
+
+        public void CreateWorkChore_RevealMachine() {
+            if (workChore_revealMachine == null)
+                workChore_revealMachine
+                    = new WorkChore<MorbRoverMakerRevealWorkable>(Db.Get().ChoreTypes.Repair, workable_reveal);
+        }
+
+        public void CancelWorkChore_RevealMachine() {
+            if (workChore_revealMachine != null) {
+                workChore_revealMachine.Cancel("MorbRoverMaker.CancelWorkChore_RevealMachine");
+                workChore_revealMachine = null;
+            }
+        }
+
+        public void ConsumeRoverBodyCraftingMaterials() {
+            var num = 0f;
+            storage.ConsumeAndGetDisease(def.ROVER_MATERIAL.CreateTag(),
+                                         def.METAL_PER_ROVER,
+                                         out num,
+                                         out lastastMaterialsConsumedDiseases,
+                                         out lastastMaterialsConsumedTemp);
+        }
+
+        public void SpawnRover() {
+            if (RoverDevelopment_Progress == 1f) {
+                RemoveGerms(def.GERMS_PER_ROVER);
+                var gameObject = GameUtil.KInstantiate(Assets.GetPrefab(def.ROVER_PREFAB_ID),
+                                                       this.gameObject.transform.GetPosition(),
+                                                       Grid.SceneLayer.Creatures);
+
+                var component = gameObject.GetComponent<PrimaryElement>();
+                if (lastastMaterialsConsumedDiseases.idx != 255)
+                    component.AddDisease(lastastMaterialsConsumedDiseases.idx,
+                                         lastastMaterialsConsumedDiseases.count,
+                                         "From the materials provided for its creation");
+
+                if (lastastMaterialsConsumedTemp > 0f)
+                    component.SetMassTemperature(component.Mass, lastastMaterialsConsumedTemp);
+
+                gameObject.SetActive(true);
+                SetRoverDevelopmentProgress(0f);
+                var onRoverSpawned = OnRoverSpawned;
+                if (onRoverSpawned == null) return;
+
+                onRoverSpawned(gameObject);
+            }
+        }
+
+        private void Flow(float dt) {
+            if (CanPumpGerms) {
+                var flowManager = Conduit.GetFlowManager(def.GERM_INTAKE_CONDUIT_TYPE);
+                var num         = 0;
+                if (flowManager.HasConduit(inputCell) && flowManager.HasConduit(outputCell)) {
+                    var contents  = flowManager.GetContents(inputCell);
+                    var contents2 = flowManager.GetContents(outputCell);
+                    var num2      = Mathf.Min(contents.mass, def.GetConduitMaxPackageMass() * dt);
+                    if (flowManager.CanMergeContents(contents, contents2, num2)) {
+                        var amountAllowedForMerging = flowManager.GetAmountAllowedForMerging(contents, contents2, num2);
+                        if (amountAllowedForMerging > 0f) {
+                            var conduitFlow = def.GERM_INTAKE_CONDUIT_TYPE == ConduitType.Liquid
+                                                  ? Game.Instance.liquidConduitFlow
+                                                  : Game.Instance.gasConduitFlow;
+
+                            var num3 = contents.diseaseCount;
+                            if (contents.diseaseIdx != 255 && contents.diseaseIdx == def.GERM_TYPE) {
+                                num = (int)MorbDevelopment_RemainingGerms.Min(def.MAX_GERMS_TAKEN_PER_PACKAGE)
+                                                                         .Min(contents.diseaseCount);
+
+                                num3 -= num;
+                            }
+
+                            var num4 = conduitFlow.AddElement(outputCell,
+                                                              contents.element,
+                                                              amountAllowedForMerging,
+                                                              contents.temperature,
+                                                              contents.diseaseIdx,
+                                                              num3);
+
+                            if (amountAllowedForMerging != num4)
+                                Debug.Log("[Morb Rover Maker] Mass Differs By: " + (amountAllowedForMerging - num4));
+
+                            flowManager.RemoveElement(inputCell, num4);
+                        }
+                    }
+                }
+
+                if (num > 0) AddGerms(num);
+            }
+        }
+
+        protected override void OnCleanUp() {
+            base.OnCleanUp();
+            Conduit.GetFlowManager(def.GERM_INTAKE_CONDUIT_TYPE).RemoveConduitUpdater(Flow);
+        }
+    }
 }

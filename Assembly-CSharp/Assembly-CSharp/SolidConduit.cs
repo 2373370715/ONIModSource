@@ -1,72 +1,51 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
-[SkipSaveFileSerialization]
-[AddComponentMenu("KMonoBehaviour/scripts/SolidConduit")]
-public class SolidConduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetworkMgr
-{
-		public void SetFirstFrameCallback(System.Action ffCb)
-	{
-		this.firstFrameCallback = ffCb;
-		base.StartCoroutine(this.RunCallback());
-	}
+[SkipSaveFileSerialization, AddComponentMenu("KMonoBehaviour/scripts/SolidConduit")]
+public class SolidConduit : KMonoBehaviour, IFirstFrameCallback, IHaveUtilityNetworkMgr {
+    private System.Action firstFrameCallback;
 
-		private IEnumerator RunCallback()
-	{
-		yield return null;
-		if (this.firstFrameCallback != null)
-		{
-			this.firstFrameCallback();
-			this.firstFrameCallback = null;
-		}
-		yield return null;
-		yield break;
-	}
+    [MyCmpReq]
+    private KAnimGraphTileVisualizer graphTileDependency;
 
-		public IUtilityNetworkMgr GetNetworkManager()
-	{
-		return Game.Instance.solidConduitSystem;
-	}
+    public Vector3 Position => transform.GetPosition();
 
-		public UtilityNetwork GetNetwork()
-	{
-		return this.GetNetworkManager().GetNetworkForCell(Grid.PosToCell(this));
-	}
+    public void SetFirstFrameCallback(System.Action ffCb) {
+        firstFrameCallback = ffCb;
+        StartCoroutine(RunCallback());
+    }
 
-		public static SolidConduitFlow GetFlowManager()
-	{
-		return Game.Instance.solidConduitFlow;
-	}
+    public IUtilityNetworkMgr GetNetworkManager() { return Game.Instance.solidConduitSystem; }
 
-			public Vector3 Position
-	{
-		get
-		{
-			return base.transform.GetPosition();
-		}
-	}
+    private IEnumerator RunCallback() {
+        yield return null;
 
-		protected override void OnSpawn()
-	{
-		base.OnSpawn();
-		base.GetComponent<KSelectable>().SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.Conveyor, this);
-	}
+        if (firstFrameCallback != null) {
+            firstFrameCallback();
+            firstFrameCallback = null;
+        }
 
-		protected override void OnCleanUp()
-	{
-		int cell = Grid.PosToCell(this);
-		BuildingComplete component = base.GetComponent<BuildingComplete>();
-		if (component.Def.ReplacementLayer == ObjectLayer.NumLayers || Grid.Objects[cell, (int)component.Def.ReplacementLayer] == null)
-		{
-			this.GetNetworkManager().RemoveFromNetworks(cell, this, false);
-			SolidConduit.GetFlowManager().EmptyConduit(cell);
-		}
-		base.OnCleanUp();
-	}
+        yield return null;
+    }
 
-		[MyCmpReq]
-	private KAnimGraphTileVisualizer graphTileDependency;
+    public        UtilityNetwork   GetNetwork() { return GetNetworkManager().GetNetworkForCell(Grid.PosToCell(this)); }
+    public static SolidConduitFlow GetFlowManager() { return Game.Instance.solidConduitFlow; }
 
-		private System.Action firstFrameCallback;
+    protected override void OnSpawn() {
+        base.OnSpawn();
+        GetComponent<KSelectable>()
+            .SetStatusItem(Db.Get().StatusItemCategories.Main, Db.Get().BuildingStatusItems.Conveyor, this);
+    }
+
+    protected override void OnCleanUp() {
+        var cell      = Grid.PosToCell(this);
+        var component = GetComponent<BuildingComplete>();
+        if (component.Def.ReplacementLayer                          == ObjectLayer.NumLayers ||
+            Grid.Objects[cell, (int)component.Def.ReplacementLayer] == null) {
+            GetNetworkManager().RemoveFromNetworks(cell, this, false);
+            GetFlowManager().EmptyConduit(cell);
+        }
+
+        base.OnCleanUp();
+    }
 }
